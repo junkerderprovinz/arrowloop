@@ -21,6 +21,7 @@ import (
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/operations"
 
+	"github.com/junkerderprovinz/arrowloop/internal/detach"
 	"github.com/junkerderprovinz/arrowloop/internal/lockprobe"
 	"github.com/junkerderprovinz/arrowloop/internal/pathid"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
@@ -296,7 +297,8 @@ func (t *tally) fatalErr() error {
 // A single action that fails is recorded as a skip and the run carries on,
 // which is safe because a state row is only written once both sides were
 // re-read and found to match. A disagreement stops the run, because it means
-// the engine's picture of the tree is wrong.
+// the engine's picture of the tree is wrong. A stopped context ends it at the
+// step it was on, with the context's error.
 //
 // Directories are created before anything is copied into them and removed
 // after they are emptied, renames run before copies so a freed name is
@@ -329,6 +331,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			continue
 		}
 		if err := applyDir(ctx, ends, db, d); err != nil {
+			if ctx.Err() != nil {
+				return t.res, ctx.Err()
+			}
 			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, d.Kind.String(), "stepFailed", err))
 			continue
 		}
@@ -352,6 +357,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			var dis *DisagreementError
 			if errors.As(err, &dis) {
 				return t.res, err
+			}
+			if ctx.Err() != nil {
+				return t.res, ctx.Err()
 			}
 			t.skip(act.Path, act.Dst.String(), whyFailed(ends, couldHaveLocked(act), "move", "stepFailed", err))
 		}
@@ -378,12 +386,18 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			if errors.As(err, &dis) {
 				return t.res, err
 			}
+			if ctx.Err() != nil {
+				return t.res, ctx.Err()
+			}
 			t.skip(act.Path, "", whyFailed(ends, couldHaveLocked(act), "record", "recordFailed", err))
 		}
 	}
 
 	for _, key := range p.Forget {
 		if err := db.Forget(ctx, key); err != nil {
+			if ctx.Err() != nil {
+				return t.res, ctx.Err()
+			}
 			t.skip(key, "", whyFailed(ends, nil, "record", "recordFailed", err))
 		}
 	}
@@ -395,6 +409,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			continue
 		}
 		if err := applyDir(ctx, ends, db, d); err != nil {
+			if ctx.Err() != nil {
+				return t.res, ctx.Err()
+			}
 			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, "removing the folder", "removeDirFailed", err))
 			continue
 		}
@@ -410,8 +427,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 }
 
 // forEach runs the actions concurrently, up to workers at a time. A failure on
-// one file becomes a skip; a disagreement cancels the context and stops the
-// run. The ends are only needed to classify a failure.
+// one file becomes a skip, unless the run was stopped, which says nothing about
+// the file; a disagreement cancels the context and stops the run. The ends are
+// only needed to classify a failure.
 func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, workers int, fn func(context.Context, plan.Action) error) error {
 	if len(acts) == 0 {
 		return nil
@@ -419,6 +437,7 @@ func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, work
 	if workers < 1 {
 		workers = 1
 	}
+	run := ctx
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -436,6 +455,9 @@ func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, work
 						cancel()
 						return
 					}
+					if ctx.Err() != nil {
+						continue
+					}
 					t.skip(act.Path, act.Dst.String(), whyFailed(ends, couldHaveLocked(act), act.Kind.String(), "stepFailed", err))
 				}
 			}
@@ -452,7 +474,10 @@ feed:
 	}
 	close(ch)
 	wg.Wait()
-	return t.fatalErr()
+	if err := t.fatalErr(); err != nil {
+		return err
+	}
+	return run.Err()
 }
 
 func ofKind(acts []plan.Action, kinds ...plan.Kind) []plan.Action {
@@ -649,6 +674,17 @@ func retrying(ctx context.Context, what func() error) error {
 	}
 }
 
+// copyFile is operations.CopyFile that a stop does not wait out. Once the bytes
+// are across, rclone compares checksums, and an SFTP host reads the whole file
+// for its own. A copy left behind ends in rclone's partial name or in the real
+// one, and either is what the next run finds and compares.
+func copyFile(ctx context.Context, dst, src fs.Fs, dstPath, srcPath string) error {
+	_, err := detach.Until(ctx, func() (struct{}, error) {
+		return struct{}{}, operations.CopyFile(ctx, dst, src, dstPath, srcPath)
+	})
+	return err
+}
+
 func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options, t *tally) error {
 	switch act.Kind {
 	case plan.Copy:
@@ -666,7 +702,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		if err := retrying(ctx, func() error {
-			return operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath)
+			return copyFile(ctx, dst, src, act.DstPath, act.SrcPath)
 		}); err != nil {
 			return err
 		}
@@ -699,7 +735,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		if err := retrying(ctx, func() error {
-			return operations.CopyFile(ctx, dst, src, act.DstPath, act.SrcPath)
+			return copyFile(ctx, dst, src, act.DstPath, act.SrcPath)
 		}); err != nil {
 			return err
 		}
@@ -923,11 +959,11 @@ func conflictSteps(ends Ends, act plan.Action, runID string, window time.Duratio
 		// 2. Give the other side a copy of it, so neither version lives on one
 		//    side only.
 		step(fmt.Sprintf("copy the %s version to the %s side", loser, winner), func(ctx context.Context) error {
-			return operations.CopyFile(ctx, winnerFs, loserFs, losing, losing)
+			return copyFile(ctx, winnerFs, loserFs, losing, losing)
 		}),
 		// 3. The surviving version fills the plain name on both sides.
 		step(fmt.Sprintf("copy the %s version to the %s side", winner, loser), func(ctx context.Context) error {
-			return operations.CopyFile(ctx, loserFs, winnerFs, winnerPath, winnerPath)
+			return copyFile(ctx, loserFs, winnerFs, winnerPath, winnerPath)
 		}),
 	}, nil
 }
@@ -964,7 +1000,7 @@ func chosenSteps(ends Ends, act plan.Action, runID string, window time.Duration)
 			return discard(ctx, loserFs, obj, runID)
 		}),
 		step(fmt.Sprintf("copy the %s version over", winner), func(ctx context.Context) error {
-			return operations.CopyFile(ctx, loserFs, winnerFs, winnerNow.Path, winnerNow.Path)
+			return copyFile(ctx, loserFs, winnerFs, winnerNow.Path, winnerNow.Path)
 		}),
 	}, nil
 }
@@ -1086,7 +1122,7 @@ func hashOf(ctx context.Context, obj fs.Object, slowToo bool) (string, error) {
 	if !slowToo && obj.Fs().Features().SlowHash {
 		return "", errNotRead
 	}
-	sum, err := obj.Hash(ctx, hash.MD5)
+	sum, err := detach.Until(ctx, func() (string, error) { return obj.Hash(ctx, hash.MD5) })
 	if err != nil {
 		return "", err
 	}
