@@ -221,10 +221,24 @@ func (c *Config) KeepHistoryFor() (time.Duration, bool) {
 	return d, true
 }
 
-// Notify says where a run reports to.
+// Notify says where a run reports to and when.
 type Notify struct {
-	Matrix  *Matrix `json:"matrix,omitempty"`
-	Webhook string  `json:"webhook,omitempty"`
+	// On is "never", "failure" or "always". Empty follows OnSuccess, which is
+	// how a file says it that was written before On existed.
+	On string `json:"on,omitempty"`
+
+	Matrix *Matrix `json:"matrix,omitempty"`
+
+	// Webhook is the address a message is posted to, and WebhookFormat shapes
+	// the body for the service behind it: "generic" (the default), "discord",
+	// "slack", "gotify" or "ntfy".
+	Webhook        string `json:"webhook,omitempty"`
+	WebhookFormat  string `json:"webhookFormat,omitempty"`
+	WebhookEnabled *bool  `json:"webhookEnabled,omitempty"`
+
+	SMTP         *SMTP         `json:"smtp,omitempty"`
+	Apprise      *Apprise      `json:"apprise,omitempty"`
+	Healthchecks *Healthchecks `json:"healthchecks,omitempty"`
 
 	// OnSuccess sends a message for every run, not only for failures. It is
 	// off by default, because regular success messages teach people to ignore
@@ -232,11 +246,131 @@ type Notify struct {
 	OnSuccess bool `json:"onSuccess,omitempty"`
 }
 
+// Every channel has an Enabled switch that turns it off without clearing its
+// settings. A file without the switch predates it, and a channel filled in
+// there was meant to send, so nil counts as on.
+
 // Matrix is a room to post into.
 type Matrix struct {
+	Enabled    *bool  `json:"enabled,omitempty"`
 	Homeserver string `json:"homeserver"`
 	Room       string `json:"room"`
 	Token      string `json:"token"`
+}
+
+// SMTP sends each message as a plain-text mail.
+type SMTP struct {
+	Enabled  *bool  `json:"enabled,omitempty"`
+	Host     string `json:"host,omitempty"`
+	Port     int    `json:"port,omitempty"`
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
+	From     string `json:"from,omitempty"`
+	// To takes several addresses, separated by commas or semicolons.
+	To string `json:"to,omitempty"`
+	// TLS is "starttls" (the default), "tls" for a connection that is
+	// encrypted from the start, or "none".
+	TLS string `json:"tls,omitempty"`
+}
+
+// Apprise posts to a user-run Apprise API server, which reaches the services
+// Apprise knows without ArrowLoop carrying any of them.
+type Apprise struct {
+	Enabled *bool `json:"enabled,omitempty"`
+	// URL is the server's notify endpoint, its key included.
+	URL string `json:"url,omitempty"`
+	// Tags limits a shared key to some of its targets, comma separated.
+	Tags string `json:"tags,omitempty"`
+}
+
+// Healthchecks pings a check when a run starts and again with its outcome, so
+// a run that never happens shows up as a missed ping.
+type Healthchecks struct {
+	Enabled *bool  `json:"enabled,omitempty"`
+	URL     string `json:"url,omitempty"`
+	// Jobs gives a job a check of its own, by job name, in place of URL.
+	Jobs map[string]string `json:"jobs,omitempty"`
+}
+
+func switchedOn(enabled *bool) bool { return enabled == nil || *enabled }
+
+// When is On with the older OnSuccess applied.
+func (n Notify) When() string {
+	if n.On != "" {
+		return n.On
+	}
+	if n.OnSuccess {
+		return "always"
+	}
+	return "failure"
+}
+
+// Silent reports whether nothing at all is sent.
+func (n Notify) Silent() bool { return n.When() == "never" }
+
+// Reports reports whether a run with this outcome gets a message.
+func (n Notify) Reports(failed bool) bool {
+	switch n.When() {
+	case "always":
+		return true
+	case "failure":
+		return failed
+	}
+	return false
+}
+
+// WebhookOn reports whether the webhook sends.
+func (n Notify) WebhookOn() bool { return n.Webhook != "" && switchedOn(n.WebhookEnabled) }
+
+// On reports whether the room is switched on and filled in.
+func (m *Matrix) On() bool {
+	return m != nil && switchedOn(m.Enabled) && m.Homeserver != "" && m.Room != "" && m.Token != ""
+}
+
+// On reports whether mail is switched on and has somewhere to go.
+func (s *SMTP) On() bool {
+	return s != nil && switchedOn(s.Enabled) && s.Host != "" && s.From != "" && s.To != ""
+}
+
+// On reports whether the Apprise server is switched on and named.
+func (a *Apprise) On() bool { return a != nil && switchedOn(a.Enabled) && a.URL != "" }
+
+// CheckFor is the Healthchecks address a job pings, or empty when it pings
+// none.
+func (n Notify) CheckFor(job string) string {
+	h := n.Healthchecks
+	if h == nil || !switchedOn(h.Enabled) || n.Silent() {
+		return ""
+	}
+	if own := h.Jobs[job]; own != "" {
+		return own
+	}
+	return h.URL
+}
+
+// check refuses a setting that would otherwise send nothing without a word.
+func (n Notify) check() error {
+	switch n.On {
+	case "", "never", "failure", "always":
+	default:
+		return fmt.Errorf("notify says on %q; it has to be never, failure or always", n.On)
+	}
+	switch n.WebhookFormat {
+	case "", "generic", "discord", "slack", "gotify", "ntfy":
+	default:
+		return fmt.Errorf("notify says webhookFormat %q; it has to be generic, discord, slack, gotify or ntfy", n.WebhookFormat)
+	}
+	if s := n.SMTP; s != nil {
+		switch s.TLS {
+		case "", "starttls", "tls", "none":
+		default:
+			return fmt.Errorf("notify says smtp tls %q; it has to be starttls, tls or none", s.TLS)
+		}
+		if s.Port < 0 || s.Port > 65535 {
+			return fmt.Errorf("notify says smtp port %d, which is no port", s.Port)
+		}
+	}
+	return nil
 }
 
 // Job is one pairing of two ends.
@@ -500,6 +634,9 @@ func Load(path string) (*Config, error) {
 	}
 	if cfg.ParallelJobs <= 0 {
 		cfg.ParallelJobs = 1
+	}
+	if err := cfg.Notify.check(); err != nil {
+		return nil, err
 	}
 
 	// No jobs at all is valid: it is the state before the first job is created

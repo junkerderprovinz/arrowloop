@@ -1,16 +1,17 @@
-import { Field, NumberField, Text } from '../../components/Field'
+import { NumberField } from '../../components/Field'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import type { Settings } from '../../lib/api'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { Reading, useEngineSettings } from './engineSettings'
-import { SecretRow, SettingsRow, SubCard } from './rows'
+import { NotifyCard } from './NotifyCard'
+import { SettingsRow } from './rows'
 
 /**
  * What keeps a job from doing harm and who hears of it: the brakes, which
  * hold a run that would remove or overwrite more than a share of what the job
- * knows about, the anomaly notes, and where a finished run reports to.
+ * knows about, the anomaly notes, and when and where the engine reports.
  */
 export function SafetyPage() {
   const { t } = useT()
@@ -22,8 +23,6 @@ export function SafetyPage() {
   const anomalies = draft.anomalies ?? {}
   const setAnomalies = (next: Partial<NonNullable<Settings['anomalies']>>) => patch({ anomalies: { ...anomalies, ...next } })
   const notify = draft.notify ?? {}
-  const matrix = notify.matrix ?? { homeserver: '', room: '', token: '' }
-  const setMatrix = (next: Partial<typeof matrix>) => patch({ notify: { ...notify, matrix: { ...matrix, ...next } } })
   const on = !anomalies.off
 
   return (
@@ -117,36 +116,9 @@ export function SafetyPage() {
         </Card>
       </div>
 
-      <Card title={t('settings.notifications')} hueIndex={2}>
-        <ToggleRow
-          label={t('engine.onSuccess')}
-          checked={!!notify.onSuccess}
-          onChange={(v) => patch({ notify: { ...notify, onSuccess: v } })}
-          hint={t('engine.onSuccessHint')}
-        />
-        <SubCard label={t('notify.matrix')} hint={t('engine.matrixHint')}>
-          <Field label={t('engine.matrixHome')}>
-            <Text
-              value={matrix.homeserver}
-              onChange={(v) => setMatrix({ homeserver: v })}
-              placeholder="https://matrix.example.org"
-              mono
-            />
-          </Field>
-          <Field label={t('engine.matrixRoom')}>
-            <Text value={matrix.room} onChange={(v) => setMatrix({ room: v })} placeholder="!abc:example.org" mono />
-          </Field>
-          <SecretRow label={t('engine.matrixToken')} value={matrix.token} onChange={(v) => setMatrix({ token: v })} />
-        </SubCard>
-        {/* A webhook's address is its own key, so it is kept like the token. */}
-        <SecretRow
-          label={t('engine.webhook')}
-          hint={t('engine.webhookHint')}
-          value={typeof notify.webhook === 'string' ? notify.webhook : ''}
-          onChange={(v) => patch({ notify: { ...notify, webhook: v } })}
-          placeholder="https://example.org/hook"
-        />
-      </Card>
+      <div data-new="notify-channels">
+        <NotifyCard notify={notify} setNotify={(next) => patch({ notify: next })} hueIndex={2} />
+      </div>
     </Stack>
   )
 }

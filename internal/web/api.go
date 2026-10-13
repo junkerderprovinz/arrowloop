@@ -20,6 +20,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
@@ -125,6 +126,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
 	mux.HandleFunc("GET /api/settings", s.readSettings)
 	mux.HandleFunc("PUT /api/settings", s.writeSettings)
+	mux.HandleFunc("POST /api/notify/test", s.testNotify)
 	mux.HandleFunc("GET /api/config/raw", s.readRawConfig)
 	mux.HandleFunc("PUT /api/config/raw", s.replaceConfig)
 	mux.HandleFunc("DELETE /api/jobs/{name}/state", s.forgetJobState)
@@ -794,46 +796,125 @@ func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
 
 // withheld replaces the notification secrets in a settings map with
 // remotes.Placeholder, as a target's password is: the Matrix token posts as the
-// account, and a webhook's address is its own key.
+// account, the mail password logs in, and the address of a webhook, an Apprise
+// server or a check is its own key.
 func withheld(settings map[string]any) map[string]any {
-	for _, notify := range objects(settings, "notify") {
-		for _, k := range keysLike(notify, "webhook") {
-			if hook, _ := notify[k].(string); hook != "" {
-				notify[k] = remotes.Placeholder
-			}
+	eachSecret(settings, func(holder map[string]any, key string, _ func(job.Notify) string) {
+		if secret, _ := holder[key].(string); secret != "" {
+			holder[key] = remotes.Placeholder
 		}
-		for _, matrix := range objects(notify, "matrix") {
-			for _, k := range keysLike(matrix, "token") {
-				if token, _ := matrix[k].(string); token != "" {
-					matrix[k] = remotes.Placeholder
-				}
-			}
-		}
-	}
+	})
 	return settings
 }
 
 // keepSecrets puts the stored notification secrets back where a settings
 // update carries the placeholder for them.
 func keepSecrets(update map[string]any, stored *job.Config) {
-	for _, notify := range objects(update, "notify") {
-		for _, k := range keysLike(notify, "webhook") {
-			if notify[k] == remotes.Placeholder {
-				notify[k] = stored.Notify.Webhook
+	eachSecret(update, func(holder map[string]any, key string, kept func(job.Notify) string) {
+		if holder[key] == remotes.Placeholder {
+			holder[key] = kept(stored.Notify)
+		}
+	})
+}
+
+// secretAt is one place under "notify" that holds a secret: the objects on
+// the way to it, the key, and the stored value.
+type secretAt struct {
+	path []string
+	key  string
+	kept func(job.Notify) string
+}
+
+var notifySecrets = []secretAt{
+	{nil, "webhook", func(n job.Notify) string { return n.Webhook }},
+	{[]string{"matrix"}, "token", func(n job.Notify) string {
+		if n.Matrix == nil {
+			return ""
+		}
+		return n.Matrix.Token
+	}},
+	{[]string{"smtp"}, "password", func(n job.Notify) string {
+		if n.SMTP == nil {
+			return ""
+		}
+		return n.SMTP.Password
+	}},
+	{[]string{"apprise"}, "url", func(n job.Notify) string {
+		if n.Apprise == nil {
+			return ""
+		}
+		return n.Apprise.URL
+	}},
+	{[]string{"healthchecks"}, "url", func(n job.Notify) string {
+		if n.Healthchecks == nil {
+			return ""
+		}
+		return n.Healthchecks.URL
+	}},
+}
+
+// eachSecret visits every notification secret in a settings map, in whatever
+// case its keys are spelled. A job's own check is named by the job, whose
+// name is matched exactly, as Load does.
+func eachSecret(settings map[string]any, visit func(holder map[string]any, key string, kept func(job.Notify) string)) {
+	for _, notify := range objects(settings, "notify") {
+		for _, s := range notifySecrets {
+			holders := []map[string]any{notify}
+			for _, step := range s.path {
+				var next []map[string]any
+				for _, h := range holders {
+					next = append(next, objects(h, step)...)
+				}
+				holders = next
+			}
+			for _, h := range holders {
+				for _, k := range keysLike(h, s.key) {
+					visit(h, k, s.kept)
+				}
 			}
 		}
-		for _, matrix := range objects(notify, "matrix") {
-			for _, k := range keysLike(matrix, "token") {
-				if matrix[k] != remotes.Placeholder {
-					continue
-				}
-				matrix[k] = ""
-				if stored.Notify.Matrix != nil {
-					matrix[k] = stored.Notify.Matrix.Token
+		for _, checks := range objects(notify, "healthchecks") {
+			for _, jobs := range objects(checks, "jobs") {
+				for name := range jobs {
+					visit(jobs, name, func(n job.Notify) string {
+						if n.Healthchecks == nil {
+							return ""
+						}
+						return n.Healthchecks.Jobs[name]
+					})
 				}
 			}
 		}
 	}
+}
+
+// testNotify sends a test message through one channel as the page shows it,
+// saved or not, with the stored secrets where the page holds placeholders.
+// A refusal is an answer, not an error status, as a target's check is.
+func (s *Server) testNotify(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Channel string         `json:"channel"`
+		Notify  map[string]any `json:"notify"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	keepSecrets(map[string]any{"notify": body.Notify}, s.Runner.Config())
+	var n job.Notify
+	raw, err := json.Marshal(body.Notify)
+	if err == nil {
+		err = json.Unmarshal(raw, &n)
+	}
+	if err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the notification settings: %w", err))
+		return
+	}
+	if err := daemon.SendTest(r.Context(), n, body.Channel); err != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": notify.Redact(err).Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
 // keysLike lists the keys of m that spell name in any case, since Load reads

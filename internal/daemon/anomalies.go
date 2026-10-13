@@ -12,6 +12,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
@@ -72,9 +73,7 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, change anomaly.Ra
 		return
 	}
 	r.log("%s: %s", f.Job, f.Detail)
-	r.mu.Lock()
-	cfg, note := r.cfg, r.note
-	r.mu.Unlock()
+	cfg := r.config()
 	tells := cfg.Anomalies.Tells(f.Held)
 	ev := Event{Job: f.Job, Phase: "anomaly"}
 	if tells {
@@ -85,16 +84,14 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, change anomaly.Ra
 		r.mu.Unlock()
 	}
 	r.publish(ev)
-	if note == nil || !tells {
+	if !tells || cfg.Notify.Silent() {
 		return
 	}
 	subject := fmt.Sprintf("ArrowLoop: %s is held", f.Job)
 	if !f.Held {
 		subject = fmt.Sprintf("ArrowLoop: a note about %s", f.Job)
 	}
-	if err := note.Send(context.WithoutCancel(ctx), subject, f.Detail); err != nil {
-		r.log("could not send the notification for %s: %v", f.Job, err)
-	}
+	r.tell(ctx, f.Job, notify.Message{Subject: subject, Body: f.Detail, Failed: f.Held})
 }
 
 // Found is a new finding somebody should hear of.

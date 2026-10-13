@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Settings } from '../../lib/api'
 
 const saveSettings = vi.fn((s: Settings) => Promise.resolve(s))
+const testNotify = vi.fn((_channel: string, _notify: unknown) => Promise.resolve({ ok: true, reason: undefined as string | undefined }))
 let stored: Settings = {}
 
 vi.mock('../../lib/api', async (actual) => ({
@@ -12,6 +13,8 @@ vi.mock('../../lib/api', async (actual) => ({
   api: {
     settings: () => Promise.resolve(stored),
     saveSettings: (s: Settings) => saveSettings(s),
+    jobs: () => Promise.resolve([{ name: 'photos' }]),
+    testNotify: (channel: string, notify: unknown) => testNotify(channel, notify),
   },
 }))
 
@@ -29,6 +32,7 @@ globalThis.ResizeObserver ??= class {
 
 beforeEach(() => {
   saveSettings.mockClear()
+  testNotify.mockClear()
   stored = { defaults: { emptyDirs: false } }
   localStorage.clear()
 })
@@ -106,5 +110,44 @@ describe('the Targets tile', () => {
       ['.glim-page-enter > .glim-notch-card:first-child', '.glim-page-enter > :first-child > .glim-notch-card:first-child'].join(', '),
     )
     expect(roomy).toBe(first)
+  })
+})
+
+describe('the notification channels', () => {
+  it('keep what a switched-off channel holds', async () => {
+    stored = { notify: { smtp: { host: 'mail.example.org', from: 'a@example.org', to: 'b@example.org', password: '********' } } }
+    const { unmount } = render(<SafetyPage />)
+    expect(await screen.findByDisplayValue('mail.example.org')).toBeTruthy()
+
+    // Webhook, Matrix, then mail.
+    fireEvent.click(screen.getAllByRole('switch', { name: 'Send here' })[2]!)
+    expect(screen.queryByDisplayValue('mail.example.org')).toBeNull()
+    unmount()
+
+    const smtp = saveSettings.mock.calls.at(-1)?.[0].notify?.smtp
+    expect(smtp).toMatchObject({ enabled: false, host: 'mail.example.org', password: '********' })
+  })
+
+  it('send a test of what the card shows and say why it failed', async () => {
+    stored = { notify: { webhook: '********', webhookFormat: 'ntfy' } }
+    testNotify.mockResolvedValueOnce({ ok: false, reason: '403 Forbidden: topic is reserved' })
+    render(<SafetyPage />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Send a test' }))
+
+    expect(await screen.findByText('403 Forbidden: topic is reserved')).toBeTruthy()
+    expect(testNotify).toHaveBeenCalledWith('webhook', expect.objectContaining({ webhook: '********', webhookFormat: 'ntfy' }))
+  })
+
+  it('read the older onSuccess as after every run, and write on once the choice changes', async () => {
+    stored = { notify: { onSuccess: true } }
+    const { unmount } = render(<SafetyPage />)
+    const always = await screen.findByRole('tab', { name: 'After every run' })
+    expect(always.getAttribute('aria-selected')).toBe('true')
+    fireEvent.click(screen.getByRole('tab', { name: 'When a run fails' }))
+    unmount()
+
+    const notify = saveSettings.mock.calls.at(-1)?.[0].notify
+    expect(notify?.on).toBe('failure')
+    expect(notify?.onSuccess).toBeUndefined()
   })
 })
