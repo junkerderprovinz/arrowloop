@@ -17,6 +17,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 )
 
 // Kind is what was found.
@@ -95,6 +97,9 @@ type Finding struct {
 
 	// Detail is the last failure's own words.
 	Detail string `json:"detail,omitempty"`
+	// Failure is what kind of failure Detail names. It is read from Detail
+	// where a finding is handed out rather than stored, like a run's.
+	Failure *failure.Failure `json:"failure,omitempty"`
 
 	// Mark identifies the refused change, so letting it run covers what was
 	// shown and nothing that happened since.

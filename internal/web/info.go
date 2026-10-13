@@ -17,6 +17,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
@@ -238,6 +239,9 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 		files := len(f.Paths)
 		f.Paths = nil
 		f.Detail = scrub(f.Detail)
+		if f.Kind == anomaly.Failing {
+			f.Failure = failure.Of(f.Detail)
+		}
 		out.Findings = append(out.Findings, reportFinding{Finding: f, Files: files})
 	}
 

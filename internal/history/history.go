@@ -5,6 +5,7 @@ package history
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"math"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	_ "modernc.org/sqlite" // pure-Go driver, no cgo, so cross-compiling stays trivial
 
 	"github.com/junkerderprovinz/arrowloop/internal/dbfile"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 )
 
 // Run is one execution of one job.
@@ -37,6 +39,17 @@ type Run struct {
 
 // Failed reports whether the run ended badly.
 func (r Run) Failed() bool { return r.Err != "" }
+
+// MarshalJSON adds what kind of failure Err is, so the interface can say it in
+// the reader's language. It is read from Err as it stands, which covers runs
+// recorded before there were kinds and an Err the bug report has scrubbed.
+func (r Run) MarshalJSON() ([]byte, error) {
+	type plain Run
+	return json.Marshal(struct {
+		plain
+		Failure *failure.Failure `json:",omitempty"`
+	}{plain(r), failure.Of(r.Err)})
+}
 
 // Changed reports whether the run actually moved anything, which is what makes
 // it worth mentioning.

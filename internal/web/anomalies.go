@@ -8,6 +8,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 )
 
 // listAnomalies answers with the open findings, loudest first, and the ones
@@ -20,7 +21,18 @@ func (s *Server) listAnomalies(w http.ResponseWriter, r *http.Request) {
 	if closed == nil {
 		closed = []anomaly.Finding{}
 	}
+	named(open)
+	named(closed)
 	writeJSON(w, http.StatusOK, map[string]any{"open": open, "closed": closed})
+}
+
+// named reads the kind of failure out of each failing finding's own words.
+func named(findings []anomaly.Finding) {
+	for i := range findings {
+		if findings[i].Kind == anomaly.Failing {
+			findings[i].Failure = failure.Of(findings[i].Detail)
+		}
+	}
 }
 
 // listLearning answers with every job and how far its habits are learned.

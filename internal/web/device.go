@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
+
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 )
 
 // The phone decides whether its state should hold scheduled runs and sends the
@@ -35,5 +39,22 @@ func (s *Server) writeDevice(w http.ResponseWriter, r *http.Request) {
 // is Android holding a wake lock until the copying has finished. The summary
 // lets the phone's notification tell success from failure.
 func (s *Server) runDue(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, s.Runner.RunDue(r.Context()))
+	due := dueAnswer{Due: s.Runner.RunDue(r.Context())}
+	if due.Reason != "" {
+		due.Failure = failure.Of(due.Reason)
+		for _, j := range s.Runner.Config().Jobs {
+			if strings.HasPrefix(due.Reason, j.Name+": ") && len(j.Name) > len(due.FailedJob) {
+				due.FailedJob = j.Name
+			}
+		}
+	}
+	writeJSON(w, http.StatusOK, due)
+}
+
+// dueAnswer is a wake-up's summary with the first failure named, so the
+// phone's notification can say it in the phone's language.
+type dueAnswer struct {
+	daemon.Due
+	FailedJob string           `json:"failedJob,omitempty"`
+	Failure   *failure.Failure `json:"failure,omitempty"`
 }
