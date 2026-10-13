@@ -216,5 +216,18 @@ export function cornersFor(shape: string): Record<keyof Radii, Corners> {
   return { card: round(r.card), control: round(r.control), pill: round(r.pill) };
 }
 
+/**
+ * Holds a floating menu against the end edge of a button measured with
+ * measureInWindow, whose numbers are physical, so in a right-to-left layout it
+ * opens from the button's left edge over the screen. React Native swaps `left`
+ * and `right` there, as cornersFor notes.
+ */
+export function endEdge(x: number, width: number, screenWidth: number): { left?: number; right?: number } {
+  const rtl = I18nManager.isRTL;
+  const offset = Math.max(space.sm, rtl ? x : screenWidth - (x + width));
+  const mirrored = rtl && I18nManager.doLeftAndRightSwapInRTL;
+  return rtl && !mirrored ? { left: offset } : { right: offset };
+}
+
 /** Android's minimum touch target. */
 export const TOUCH = 48;

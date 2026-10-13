@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "r
 import Svg, { Path } from "react-native-svg";
 
 import { Glyph } from "./glyphs";
-import { contrastOn, space, text, TOUCH } from "./theme";
+import { contrastOn, endEdge, space, text, TOUCH } from "./theme";
 import { Choice, InfoBubble, Press, Row, useTheme } from "./ui";
 
 type Option<T extends string> = { value: T; label: string; hint?: string };
@@ -111,7 +111,7 @@ function Dropdown<T extends string>({
   const { p, corners, accent, hueAt } = useTheme();
   const screen = useWindowDimensions();
   const button = useRef<View>(null);
-  const [at, setAt] = useState<{ top: number; right: number; width: number } | null>(null);
+  const [at, setAt] = useState<{ top: number; edge: { left?: number; right?: number }; width: number } | null>(null);
   const current = options.find((o) => o.value === value);
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
 
@@ -120,7 +120,7 @@ function Dropdown<T extends string>({
       const height = options.length * (TOUCH + space.xs) + space.sm * 2;
       setAt({
         top: y + h + space.xs + height > screen.height ? Math.max(space.sm, y - height - space.xs) : y + h + space.xs,
-        right: Math.max(space.sm, screen.width - (x + w)),
+        edge: endEdge(x, w, screen.width),
         width: w,
       });
     });
@@ -153,7 +153,7 @@ function Dropdown<T extends string>({
             accessibilityLabel={label}
             style={[
               styles.list,
-              { backgroundColor: p.surface, ...corners.card, top: at?.top, right: at?.right, minWidth: Math.max(200, at?.width ?? 0) },
+              { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge, minWidth: Math.max(200, at?.width ?? 0) },
             ]}
             onPress={() => {}}
           >
