@@ -155,9 +155,9 @@ var providers = []Provider{
 	{ID: "premiumize", Name: "premiumize.me", Backend: "premiumizeme", Group: GroupCloud, Mark: "IconPremiumize"},
 	{ID: "fichier", Name: "1Fichier", Auth: AuthAPIKey, AuthURL: "https://1fichier.com/console/params.pl",
 		Backend: "fichier", Group: GroupCloud, Mark: "IconTabStorage"},
-	{ID: "drime", Name: "Drime", Auth: AuthAPIKey, Backend: "drime", Group: GroupCloud, Mark: "IconTabStorage"},
-	{ID: "filelu", Name: "FileLu", Auth: AuthAPIKey, Backend: "filelu", Group: GroupCloud, Mark: "IconTabStorage"},
-	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconTabStorage"},
+	{ID: "drime", Name: "Drime", Auth: AuthAPIKey, Backend: "drime", Group: GroupCloud, Mark: "IconDrime"},
+	{ID: "filelu", Name: "FileLu", Auth: AuthAPIKey, Backend: "filelu", Group: GroupCloud, Mark: "IconFilelu"},
+	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconShade"},
 	// Storage Made Easy's product, which runs on the customer's own address.
 	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud,
 		Mark: "IconTabStorage", UrlHint: "https://yourfabric.smestorage.com"},
@@ -205,11 +205,11 @@ var providers = []Provider{
 	{ID: "azurefiles", Name: "Azure Files", Backend: "azurefiles", Group: GroupStorage, Mark: "IconAzure"},
 	// Storj before it took the company's name, for an access set up then.
 	{ID: "tardigrade", Name: "Tardigrade", Backend: "tardigrade", Group: GroupStorage, Mark: "IconStorj"},
-	{ID: "qingstor", Name: "QingStor", Backend: "qingstor", Group: GroupStorage, Mark: "IconTabStorage"},
+	{ID: "qingstor", Name: "QingStor", Backend: "qingstor", Group: GroupStorage, Mark: "IconQingcloud"},
 	{ID: "imagekit", Name: "ImageKit", Auth: AuthAPIKey, AuthURL: "https://imagekit.io/dashboard/developer/api-keys",
-		Backend: "imagekit", Group: GroupStorage, Mark: "IconTabStorage"},
+		Backend: "imagekit", Group: GroupStorage, Mark: "IconImagekit"},
 	// Reached through a Sia daemon somebody runs, but a bucket store all the same.
-	{ID: "sia", Name: "Sia", Backend: "sia", Group: GroupStorage, Mark: "IconTabStorage"},
+	{ID: "sia", Name: "Sia", Backend: "sia", Group: GroupStorage, Mark: "IconSia"},
 
 	// Bucket stores somebody runs themselves.
 	{ID: "minio", Name: "MinIO", Backend: "s3", Group: GroupStorage,

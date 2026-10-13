@@ -52,8 +52,31 @@ generator, and in the header of every component built from it.
 Apache-2.0 is one-way compatible with this project's AGPL-3.0: these files may be
 carried into it, and the combined work stays AGPL-3.0.
 
-Every file is copied unmodified; what the generator produces from one is a
-translation into JSX and nothing else. It keeps the drawing's own paths, fills,
+**The brands' own websites and repositories**, for six providers that neither
+Simple Icons nor Dashboard Icons carries. Like the hand-collected marks above,
+each is its owner's, used under the trademark position below.
+
+- `drime.svg`: the brand mark in the footer of <https://drime.cloud>, where the
+  page carries it as an inline SVG.
+- `filelu.svg`: FileLu publishes its logo only as PNG, in the gallery at
+  <https://filelu.com/images/logo/>. The mark is a circle in two blues with four
+  straight-edged shapes on it, so it was traced from `white_logo.png`, the
+  largest of them (3400 px wide): the shapes' corners from the image, the two
+  blues sampled from the top and the bottom of the circle.
+- `shade.svg`: the logo in the header of <https://shade.inc>, an inline SVG
+  symbol, given its own `svg` element with the namespace and nothing else
+  changed.
+- `imagekit.svg`: `nodes/Imagekit/imagekit.light.svg` from ImageKit's own
+  repository <https://github.com/imagekit-developer/n8n-nodes-imagekit>, the
+  same square the site uses as its icon.
+- `qingcloud.svg`: `wp-content/themes/public/assets/images/ai-chat/qingcloud_logo.svg`
+  from <https://www.qingcloud.com>.
+- `sia.svg`: the favicon of <https://sia.tech>, the Sia Foundation's site. The
+  generator drops the light plate it sits on, as it does for every mark drawn
+  on one.
+
+Every file but the traced FileLu mark is copied unmodified; what the generator
+produces from one is a translation into JSX and nothing else. It keeps the drawing's own paths, fills,
 gradients and viewBox, prefixes every `id` with the file's name so two marks on
 one page cannot swap gradients, and dissolves an Illustrator `<style>` block
 into the elements it paints - class names are global to a document, so two marks
@@ -68,7 +91,7 @@ provider mark sits on the row that connects to **that provider**, each is
 reproduced unmodified, and nothing here claims endorsement by or affiliation
 with any of them.
 
-Three provider marks are a judgement call, recorded because the next person
+Four provider marks are a judgement call, recorded because the next person
 should not have to guess.
 
 - **Oracle Object Storage** is part of Oracle Cloud Infrastructure and wears the
@@ -77,8 +100,9 @@ should not have to guess.
   Disk is the consumer storage this app connects to, Cloud is Yandex's
   AWS-shaped platform - and the mark supplied was Cloud's.
 - **Huawei Drive** wears Huawei Cloud's mark, the same case exactly.
+- **QingStor** is QingCloud's object storage and wears QingCloud's mark.
 
-In all three the mark names the right OWNER but a broader product than the row
+In all four the mark names the right OWNER but a broader product than the row
 does. That is the line: a mark naming the right company is better than none, and
 a mark naming a **different company's** product is worse than none. Where only
 the second was available, the provider gets no mark at all.

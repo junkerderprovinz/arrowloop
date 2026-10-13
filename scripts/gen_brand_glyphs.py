@@ -508,6 +508,17 @@ LOCAL = [
      "homarr-labs/dashboard-icons, svg/oracle-cloud.svg", "Apache-2.0"),
     ("IconPremiumize", "premiumize", "premiumize.me",
      "homarr-labs/dashboard-icons, svg/premiumize.svg", "Apache-2.0"),
+
+    # From each brand's own website or repositories.
+    ("IconDrime", "drime", "Drime", "drime.cloud, the brand mark in the page footer", BRAND),
+    ("IconFilelu", "filelu", "FileLu",
+     "traced from filelu.com/images/logo/white_logo.png, which has no vector", BRAND),
+    ("IconShade", "shade", "Shade", "shade.inc, the logo in the page header", BRAND),
+    ("IconImagekit", "imagekit", "ImageKit",
+     "imagekit-developer/n8n-nodes-imagekit, nodes/Imagekit/imagekit.light.svg", BRAND),
+    ("IconQingcloud", "qingcloud", "QingStor, part of QingCloud",
+     "qingcloud.com, wp-content/themes/public/assets/images/ai-chat/qingcloud_logo.svg", BRAND),
+    ("IconSia", "sia", "Sia", "sia.tech, the site's favicon", BRAND),
 ]
 
 # Attributes that mean nothing inside a component, or that the wrapper sets.

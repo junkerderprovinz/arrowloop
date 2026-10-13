@@ -935,6 +935,115 @@ export function IconPremiumize(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Drime. Source: drime.cloud, the brand mark in the page footer (the brand's own mark) */
+export function IconDrime(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 49.951 49.976" overflow="visible" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M 11.583 0 L 4.77 0 C 2.137 0 0 2.145 0 4.781 L 0 18.458 C 0 21.106 2.137 23.239 4.77 23.239 L 11.589 23.239 C 14.785 23.239 17.681 21.937 19.775 19.835 C 21.874 17.741 23.166 14.828 23.166 11.619 C 23.159 5.203 17.976 0 11.583 0 Z M 41.778 1.416 L 28.202 15.042 C 25.187 18.068 27.324 23.246 31.586 23.246 L 45.162 23.246 C 47.807 23.246 49.951 21.094 49.951 18.439 L 49.951 4.813 C 49.951 0.535 44.792 -1.61 41.778 1.416 Z M 18.365 26.731 L 4.789 26.731 C 2.144 26.731 0 28.882 0 31.537 L 0 45.163 C 0 49.441 5.158 51.586 8.173 48.56 L 21.749 34.934 C 24.764 31.908 22.627 26.731 18.365 26.731 Z M 38.368 26.731 C 31.975 26.731 26.785 31.927 26.785 38.35 L 26.785 45.195 C 26.785 47.831 28.923 49.976 31.555 49.976 L 45.181 49.976 C 47.82 49.976 49.951 47.831 49.951 45.195 L 49.951 38.35 C 49.951 35.142 48.653 32.235 46.56 30.134 C 44.473 28.027 41.571 26.731 38.374 26.731 Z" fill="var(--mark-ink, rgb(86,225,108))" />
+    </svg>
+  )
+}
+
+/** FileLu. Source: traced from filelu.com/images/logo/white_logo.png, which has no vector (the brand's own mark) */
+export function IconFilelu(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 100 100" width="1em" height="1em" aria-hidden {...props}>
+      <defs>
+        <linearGradient id="filelu-g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="var(--brand-filelu-0)" />
+          <stop offset="1" stopColor="#00afff" />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="50" fill="var(--mark-ink, url(#filelu-g))" />
+      <path fill="var(--mark-cut, #ffffff)" d="M96.3 45.3 L76.1 47.1 L48.5 63.9 L35.7 51.5 L26.4 57.0 L46.8 76.5Z M44.3 30.7 L63.0 48.9 L72.0 43.5 L53.2 25.2Z M30.7 39.2 L49.2 57.2 L58.2 51.8 L39.7 33.8Z M31.5 47.5 L25.9 42.2 L3.5 56.1 L22.5 53.2Z" />
+    </svg>
+  )
+}
+
+/** Shade. Source: shade.inc, the logo in the page header (the brand's own mark) */
+export function IconShade(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0.32 0 21.53 24" fill="none" width="1em" height="1em" aria-hidden {...props}>
+      <path fillRule="evenodd" clipRule="evenodd" d="M0.319336 18.0294V14.5147L11.0822 20.5246V24L0.319336 18.0294Z" fill="var(--mark-ink, #863EFF)" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M21.8445 18.0294V14.5147L11.0816 20.5246V24L21.8445 18.0294Z" fill="var(--mark-ink, #C37AFF)" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M21.8445 9.52432V6.00962L11.0816 12.0195V15.4949L21.8445 9.52432Z" fill="var(--mark-ink, #C37AFF)" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M21.8457 14.5145L11.0828 20.5244L5.70134 12.4901L11.0828 15.4951L19.4086 10.8762L21.8457 14.5145Z" fill="var(--mark-ink, #4A30DD)" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M11.0822 20.5246L5.70079 12.49L11.0822 15.4949V12.0195L0.319336 6.00962V9.48499L5.70079 17.5193L11.0822 20.5246Z" fill="var(--mark-ink, #863EFF)" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M0.319336 6.00962L11.0822 12.0195L21.8452 6.00991L11.0822 0L0.319336 6.00962Z" fill="var(--mark-ink, #AE4BFF)" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M0.319336 14.5147L2.77112 13.1453L5.70079 17.5193L0.319336 14.5147Z" fill="var(--mark-cut, #4A30DD)" />
+    </svg>
+  )
+}
+
+/** ImageKit. Source: imagekit-developer/n8n-nodes-imagekit, nodes/Imagekit/imagekit.light.svg (the brand's own mark) */
+export function IconImagekit(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 512 512" data-name="Layer 1" width="1em" height="1em" aria-hidden {...props}>
+      <defs />
+      <path d="M0 0h512v512H0z" style={{ fill: "var(--mark-ink, #0450d5)" }} />
+      <path d="M226.05 147.5c-6.78-7.34-10.16-15.81-10.16-27.1.56-10.73 4-19.2 11.29-27.11C235.08 86 243.55 82 254.85 82s19.15 4 26.53 11.29c7.91 7.91 11.86 16.38 11.86 27.11 0 11.29-4.52 19.76-11.86 27.1a38.79 38.79 0 0 1-27.66 10.73c-10.72 0-20.33-3.39-27.67-10.73Zm110.1 193.67c-38.39 104.46-184.07 132.69-157-2.82l31.62-153h66.63c-15.24 81.87-26.54 131.56-37.83 188.59-11.29 58.16 61 15.25 77.36-32.18l19.19-.57Z" style={{ fill: "var(--mark-cut, #fff)", fillRule: "evenodd" }} />
+    </svg>
+  )
+}
+
+/** QingStor, part of QingCloud. Source: qingcloud.com, wp-content/themes/public/assets/images/ai-chat/qingcloud_logo.svg (the brand's own mark) */
+export function IconQingcloud(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="3 0.5 18 23.5" fill="none" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M12.2962 0.5V4.91256L16.0563 2.70562L12.2962 0.5Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M11.7026 4.91006L7.94644 2.70576L11.7026 0.501454V4.91006Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M20.7061 5.43308L16.9461 3.22613V7.64002L20.7061 5.43308Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M3.29893 5.43363L7.05508 7.63793V3.228L3.29893 5.43363Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M20.7048 10.886L16.9461 8.68173V13.0943L20.7048 10.886Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M17.2426 13.6154L21 11.4097V15.817L17.2426 13.6154Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M16.9461 14.1349L20.7048 16.3405L16.9461 18.5475V14.1349Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M6.75874 8.16191L3 10.3636V5.95497L6.75874 8.16191Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M3 15.8205L6.76004 13.6162L3 11.4092V15.8205Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M17.2426 8.16107L21 5.95677V10.3641L17.2426 8.16107Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M16.3526 3.228L12.5938 5.43363L16.3526 7.63661V3.228Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M12.5938 16.3389L16.3526 14.1346V18.5445L12.5938 16.3389Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M16.0562 19.0687L12.2961 16.863V21.2743L16.0562 19.0687Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M12.594 21.797L16.3527 24V19.5901L12.594 21.797Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M11.4086 16.3405L7.64724 14.1349V18.5475L11.4086 16.3405Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M7.64724 3.22427L11.4086 5.43252L7.64724 7.63683V3.22427Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M7.05515 13.0899L3.29771 10.8869L7.05515 8.68394V13.0899Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M3.29893 16.3401L7.05508 18.547V14.1371L3.29893 16.3401Z" fill="var(--mark-ink, #15A675)" />
+      <path d="M11.7038 16.8628L7.94631 19.0684L11.7038 21.274V16.8628Z" fill="var(--mark-ink, #15A675)" />
+    </svg>
+  )
+}
+
+/** Sia. Source: sia.tech, the site's favicon (the brand's own mark) */
+export function IconSia(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" width="1em" height="1em" aria-hidden {...props}>
+      <g clipPath="url(#sia-clip0_123_3640)">
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 32.001 15.9963)" fill="var(--mark-ink, var(--brand-sia-0))" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37117e-08 1 1 -4.37111e-08 15.9956 15.9963)" fill="var(--mark-ink, #E50AAE)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 32.001 31.9987)" fill="var(--mark-ink, #36D955)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 48.0054 15.9963)" fill="var(--mark-ink, #131A06)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(-4.37115e-08 -1 -1 4.37113e-08 15.9946 48.0037)" fill="var(--mark-ink, #131A06)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 48.0054 48.0037)" fill="var(--mark-ink, #0D1104)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(-4.37115e-08 -1 -1 4.37113e-08 15.9946 15.9963)" fill="var(--mark-ink, #0D1104)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 15.9946 48.0037)" fill="var(--mark-ink, #0D1104)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 32 48.0037)" fill="var(--mark-ink, #26320C)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 48.0054 31.9985)" fill="var(--mark-ink, #1D2609)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(-4.37115e-08 -1 -1 4.37113e-08 15.9946 32.0013)" fill="var(--mark-ink, #1D2609)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 15.9946 31.9985)" fill="var(--mark-ink, #1D2609)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 48.0054 -0.00891113)" fill="var(--mark-ink, #26320C)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(-4.37115e-08 -1 -1 4.37113e-08 15.9946 64.0089)" fill="var(--mark-ink, #26320C)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 15.9946 -0.00891113)" fill="var(--mark-ink, #0D1104)" />
+        <rect width="16.0053" height="16.0049" transform="matrix(4.37115e-08 1 1 -4.37113e-08 32 -0.00891113)" fill="var(--mark-ink, #1D2609)" />
+      </g>
+      <defs>
+        <clipPath id="sia-clip0_123_3640">
+          <rect width="64" height="64" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
 /** What each mark's tile lights up in under the pointer: the brand's own colour
  *  and the ink that holds on it ("Brand tiles" in GlimStone). */
 export const BRAND_TILES: Record<string, { tile: string; ink: string }> = {
@@ -997,4 +1106,10 @@ export const BRAND_TILES: Record<string, { tile: string; ink: string }> = {
   IconOnedrive: { tile: '#0078d4', ink: '#ffffff' },
   IconOracleCloud: { tile: '#c74634', ink: '#ffffff' },
   IconPremiumize: { tile: '#ffcc00', ink: '#161616' },
+  IconDrime: { tile: '#56e16c', ink: '#161616' },
+  IconFilelu: { tile: '#00eaff', ink: '#161616' },
+  IconShade: { tile: '#ae4bff', ink: '#ffffff' },
+  IconImagekit: { tile: '#0450d5', ink: '#ffffff' },
+  IconQingcloud: { tile: '#15a675', ink: '#ffffff' },
+  IconSia: { tile: '#0d1104', ink: '#ffffff' },
 }
