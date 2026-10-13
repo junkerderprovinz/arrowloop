@@ -23,6 +23,10 @@ Unicode true
 
 !define TASK_NAME "${INFO_PRODUCTNAME} Update"
 
+# The single-instance lock of a copy on its usual configuration (instanceID in
+# main.go). Wails names a hidden window after it.
+!define INSTANCE "wails-app-com.junkerderprovinz.arrowloop"
+
 # Under the all-users context wails.setShellContext sets, $APPDATA is
 # ProgramData. The folder holds the update switch and the task's log.
 !define DATA_DIR "$APPDATA\${INFO_PRODUCTNAME}"
@@ -72,6 +76,8 @@ LangString DesktopShortcut   ${LANG_ENGLISH} "Shortcut on the desktop"
 LangString DesktopShortcut   ${LANG_GERMAN}  "Verknüpfung auf dem Desktop"
 LangString TaskFailed        ${LANG_ENGLISH} "Could not set up the background updates. ${INFO_PRODUCTNAME} works, but stays at this version."
 LangString TaskFailed        ${LANG_GERMAN}  "Die Updates im Hintergrund ließen sich nicht einrichten. ${INFO_PRODUCTNAME} läuft, bleibt aber auf dieser Version."
+LangString Closing           ${LANG_ENGLISH} "Closing ${INFO_PRODUCTNAME}"
+LangString Closing           ${LANG_GERMAN}  "${INFO_PRODUCTNAME} wird beendet"
 
 Name "${INFO_PRODUCTNAME}"
 OutFile "..\..\bin\${INFO_PROJECTNAME}-${ARCH}-installer.exe"
@@ -89,8 +95,10 @@ Section "-${INFO_PRODUCTNAME}"
     !insertmacro wails.webview2runtime
 
     SetOutPath $INSTDIR
-    # A running copy cannot be overwritten but can be renamed. It steps aside
-    # as .old, as it does for an update, and the next update removes it.
+    Call CloseRunning
+    # A copy still running, in another session or one that would not quit,
+    # cannot be overwritten but can be renamed. It steps aside as .old, as it
+    # does for an update, and the next update removes it.
     Delete "$INSTDIR\${PRODUCT_EXECUTABLE}.old"
     Rename "$INSTDIR\${PRODUCT_EXECUTABLE}" "$INSTDIR\${PRODUCT_EXECUTABLE}.old"
     !insertmacro wails.files
@@ -138,6 +146,55 @@ Section "-remember the shortcuts"
         Delete "$DESKTOP\${INFO_PRODUCTNAME}.lnk"
     ${EndIf}
 SectionEnd
+
+Var Closed
+
+# Asks a copy running from this folder to quit as its own Quit would, so a run
+# under way stops and records itself, and waits for the process to end. Every
+# Wails program has a hidden main-thread window of this class and title that
+# quits it when closed; the lock's window tells which process is ours. The wait
+# covers the 15 seconds a stopped run is given.
+Function CloseRunning
+    StrCpy $Closed 0
+    # -3 is HWND_MESSAGE, where the lock's window lives.
+    System::Call 'user32::FindWindowExW(p -3, p 0, w "${INSTANCE}-sic", w "${INSTANCE}-siw") p .r0'
+    ${If} $0 = 0
+        Return
+    ${EndIf}
+    System::Call 'user32::GetWindowThreadProcessId(p r0, *i .r1)'
+    # SYNCHRONIZE and PROCESS_QUERY_LIMITED_INFORMATION.
+    System::Call 'kernel32::OpenProcess(i 0x101000, i 0, i r1) p .r2'
+    ${If} $2 = 0
+        Return
+    ${EndIf}
+    # A portable copy elsewhere is somebody else's to close.
+    System::Call 'kernel32::QueryFullProcessImageNameW(p r2, i 0, w .r3, *i ${NSIS_MAX_STRLEN})'
+    ${GetParent} $3 $3
+    ${If} $3 != $INSTDIR
+        System::Call 'kernel32::CloseHandle(p r2)'
+        Return
+    ${EndIf}
+
+    StrCpy $3 0
+    ${Do}
+        System::Call 'user32::FindWindowExW(p 0, p r3, w "WailsWebviewWindow", w "__wails_hidden_mainthread") p .r3'
+        ${If} $3 = 0
+            ${Break}
+        ${EndIf}
+        System::Call 'user32::GetWindowThreadProcessId(p r3, *i .r4)'
+        ${If} $4 = $1
+            DetailPrint "$(Closing)"
+            # 0x10 is WM_CLOSE.
+            System::Call 'user32::PostMessageW(p r3, i 0x10, p 0, p 0)'
+            System::Call 'kernel32::WaitForSingleObject(p r2, i 30000) i .r4'
+            ${If} $4 = 0
+                StrCpy $Closed 1
+            ${EndIf}
+            ${Break}
+        ${EndIf}
+    ${Loop}
+    System::Call 'kernel32::CloseHandle(p r2)'
+FunctionEnd
 
 # The copy 1.2.0 installed for the person running this goes, together with its
 # shortcuts and its entry under Apps. Their settings stay where they are, and
@@ -351,16 +408,18 @@ Function .onInit
     ${EndIf}
 FunctionEnd
 
-# An updater runs this with /S /relaunch after closing the program, and the
-# program comes back once the new version is in place. The installer runs as
-# an administrator; Explorer starts the program as the person signed in.
+# A copy the installer closed comes back once the new version is in place, and
+# with /relaunch the program starts even if it was not running. The installer
+# runs as an administrator; Explorer starts the program as the person signed in.
 Function .onInstSuccess
     ${GetParameters} $0
     ClearErrors
     ${GetOptions} $0 "/relaunch" $1
-    ${IfNot} ${Errors}
-        Exec '"$WINDIR\explorer.exe" "$INSTDIR\${PRODUCT_EXECUTABLE}"'
+    ${If} ${Errors}
+    ${AndIf} $Closed != 1
+        Return
     ${EndIf}
+    Exec '"$WINDIR\explorer.exe" "$INSTDIR\${PRODUCT_EXECUTABLE}"'
 FunctionEnd
 
 Section "uninstall"

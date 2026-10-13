@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **The Windows installer closes a running ArrowLoop and starts the new version.** It put the new program in place but left the old one running, so `/S /relaunch` only brought back the old window, and the update waited until somebody quit ArrowLoop by hand. The installer asks the running copy to quit, as Quit in the tray menu would, which lets a sync under way stop cleanly, and starts the new version once it is installed.
+
 ## 2.1.0 - 2026-10-14
 
 ## ✨ Added
