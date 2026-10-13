@@ -544,7 +544,7 @@ const it: Translations = {
   'backup.hint': 'Un solo file contiene tutti i lavori e tutte le impostazioni. Tienilo altrove e una macchina nuova dista un ripristino invece di una serata a ridigitare.',
   'backup.export': 'Esporta le impostazioni',
   'backup.import': 'Importa le impostazioni',
-  'backup.confirm': 'Sostituire tutti i lavori e tutte le impostazioni con {file}? La configurazione su questa macchina sparisce, e torna solo se ne hai una copia.',
+  'backup.confirm': 'Sostituire tutti i lavori e tutte le impostazioni con {file}? La configurazione attuale sparisce, e torna solo se ne hai una copia.',
   'edit.duplicate': 'Duplica',
   'edit.copySuffix': 'copia',
   'history.download': 'Salva questo elenco',

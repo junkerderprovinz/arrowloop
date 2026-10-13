@@ -544,7 +544,7 @@ const hu: Translations = {
   'backup.hint': 'Egyetlen fájl tartalmazza az összes feladatot és az összes beállítást. Tartsd máshol, és egy új gép egy visszaállításnyira lesz, nem pedig egy estényi gépelésre.',
   'backup.export': 'Beállítások exportálása',
   'backup.import': 'Beállítások importálása',
-  'backup.confirm': 'Lecseréled az összes feladatot és az összes beállítást erre: {file}? A gépen lévő beállítás eltűnik, és csak akkor jön vissza, ha van róla másolatod.',
+  'backup.confirm': 'Lecseréled az összes feladatot és az összes beállítást erre: {file}? A jelenlegi beállítás eltűnik, és csak akkor jön vissza, ha van róla másolatod.',
   'edit.duplicate': 'Másolat',
   'edit.copySuffix': 'másolat',
   'history.download': 'Lista mentése',

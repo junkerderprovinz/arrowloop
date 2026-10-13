@@ -544,7 +544,7 @@ const gl: Translations = {
   'backup.hint': 'Un só ficheiro contén todas as tarefas e todos os axustes. Gárdao noutro sitio e unha máquina nova queda a unha restauración de distancia en vez dunha tarde de teclear.',
   'backup.export': 'Exportar a configuración',
   'backup.import': 'Importar a configuración',
-  'backup.confirm': 'Substituír todas as tarefas e todos os axustes por {file}? A configuración desta máquina desaparece e só volve se tes unha copia dela.',
+  'backup.confirm': 'Substituír todas as tarefas e todos os axustes por {file}? A configuración actual desaparece e só volve se tes unha copia dela.',
   'edit.duplicate': 'Duplicar',
   'edit.copySuffix': 'copia',
   'history.download': 'Gardar esta lista',

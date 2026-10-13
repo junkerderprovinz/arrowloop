@@ -544,7 +544,7 @@ const eu: Translations = {
   'backup.hint': 'Fitxategi bakar batek lan guztiak eta ezarpen guztiak gordetzen ditu. Gorde beste nonbait eta makina berri bat leheneratze bakar batera egongo da, ez arratsalde oso bat berridazten.',
   'backup.export': 'Esportatu ezarpenak',
   'backup.import': 'Inportatu ezarpenak',
-  'backup.confirm': 'Lan guztiak eta ezarpen guztiak {file} fitxategiarekin ordeztu? Makina honetako konfigurazioa desagertu egiten da, eta kopia bat baduzu bakarrik itzultzen da.',
+  'backup.confirm': 'Lan guztiak eta ezarpen guztiak {file} fitxategiarekin ordeztu? Oraingo konfigurazioa desagertu egiten da, eta kopia bat baduzu bakarrik itzultzen da.',
   'edit.duplicate': 'Bikoiztu',
   'edit.copySuffix': 'kopia',
   'history.download': 'Gorde zerrenda hau',

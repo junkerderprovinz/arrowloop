@@ -544,7 +544,7 @@ const fr: Translations = {
   'backup.hint': 'Un seul fichier contient toutes les tâches et tous les réglages. Gardez-le ailleurs et une nouvelle machine ne demande qu\'une restauration au lieu d\'une soirée de saisie.',
   'backup.export': 'Exporter les réglages',
   'backup.import': 'Importer les réglages',
-  'backup.confirm': 'Remplacer toutes les tâches et tous les réglages par {file} ? La configuration de cette machine disparaît, et elle ne revient que si vous en avez une copie.',
+  'backup.confirm': 'Remplacer toutes les tâches et tous les réglages par {file} ? La configuration actuelle disparaît, et elle ne revient que si vous en avez une copie.',
   'edit.duplicate': 'Dupliquer',
   'edit.copySuffix': 'copie',
   'history.download': 'Enregistrer cette liste',

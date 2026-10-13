@@ -544,7 +544,7 @@ const ca: Translations = {
   'backup.hint': 'Un sol fitxer conté totes les tasques i tots els paràmetres. Guarda\'l en un altre lloc i una màquina nova serà a una restauració de distància en comptes d\'una tarda de teclejar.',
   'backup.export': 'Exporta les preferències',
   'backup.import': 'Importa les preferències',
-  'backup.confirm': 'Vols substituir totes les tasques i tots els paràmetres per {file}? La configuració d\'aquesta màquina desapareix i només torna si en tens una còpia.',
+  'backup.confirm': 'Vols substituir totes les tasques i tots els paràmetres per {file}? La configuració actual desapareix i només torna si en tens una còpia.',
   'edit.duplicate': 'Duplica',
   'edit.copySuffix': 'còpia',
   'history.download': 'Desa aquesta llista',

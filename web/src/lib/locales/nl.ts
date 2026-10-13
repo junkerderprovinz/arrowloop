@@ -544,7 +544,7 @@ const nl: Translations = {
   'backup.hint': 'Eén bestand bevat alle taken en alle instellingen. Bewaar het ergens anders en een nieuwe machine is één herstel ver in plaats van een avond overtypen.',
   'backup.export': 'Instellingen exporteren',
   'backup.import': 'Instellingen importeren',
-  'backup.confirm': 'Alle taken en alle instellingen vervangen door {file}? De inrichting op deze machine verdwijnt, en komt alleen terug als je er een kopie van hebt.',
+  'backup.confirm': 'Alle taken en alle instellingen vervangen door {file}? De huidige inrichting verdwijnt, en komt alleen terug als je er een kopie van hebt.',
   'edit.duplicate': 'Dupliceren',
   'edit.copySuffix': 'kopie',
   'history.download': 'Deze lijst opslaan',

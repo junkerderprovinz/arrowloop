@@ -544,7 +544,7 @@ const da: Translations = {
   'backup.hint': 'Én fil rummer alle job og alle indstillinger. Gem den et andet sted, så er en ny maskine én gendannelse væk i stedet for en aften med indtastning.',
   'backup.export': 'Eksportér indstillinger',
   'backup.import': 'Importér indstillinger',
-  'backup.confirm': 'Erstat alle job og alle indstillinger med {file}? Opsætningen på denne maskine forsvinder og kommer kun tilbage, hvis du har en kopi af den.',
+  'backup.confirm': 'Erstat alle job og alle indstillinger med {file}? Den nuværende opsætning forsvinder og kommer kun tilbage, hvis du har en kopi af den.',
   'edit.duplicate': 'Dublér',
   'edit.copySuffix': 'kopi',
   'history.download': 'Gem denne liste',

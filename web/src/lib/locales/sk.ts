@@ -544,7 +544,7 @@ const sk: Translations = {
   'backup.hint': 'Jeden súbor obsahuje všetky úlohy a všetky nastavenia. Ulož ho inde a nový stroj je jedno obnovenie ďaleko namiesto večera prepisovania.',
   'backup.export': 'Exportovať nastavenia',
   'backup.import': 'Importovať nastavenia',
-  'backup.confirm': 'Nahradiť všetky úlohy a všetky nastavenia súborom {file}? Nastavenie na tomto stroji zmizne a vráti sa len vtedy, ak máš jeho kópiu.',
+  'backup.confirm': 'Nahradiť všetky úlohy a všetky nastavenia súborom {file}? Súčasné nastavenie zmizne a vráti sa len vtedy, ak máš jeho kópiu.',
   'edit.duplicate': 'Duplikovať',
   'edit.copySuffix': 'kópia',
   'history.download': 'Uložiť tento zoznam',

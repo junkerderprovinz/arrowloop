@@ -544,7 +544,7 @@ const sv: Translations = {
   'backup.hint': 'En enda fil rymmer alla jobb och alla inställningar. Förvara den någon annanstans så är en ny maskin en återställning bort i stället för en kväll av inknappande.',
   'backup.export': 'Exportera inställningar',
   'backup.import': 'Importera inställningar',
-  'backup.confirm': 'Ersätta alla jobb och alla inställningar med {file}? Uppsättningen på den här maskinen försvinner och kommer bara tillbaka om du har en kopia av den.',
+  'backup.confirm': 'Ersätta alla jobb och alla inställningar med {file}? Den nuvarande uppsättningen försvinner och kommer bara tillbaka om du har en kopia av den.',
   'edit.duplicate': 'Duplicera',
   'edit.copySuffix': 'kopia',
   'history.download': 'Spara den här listan',

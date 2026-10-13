@@ -544,7 +544,7 @@ const es: Translations = {
   'backup.hint': 'Un solo archivo contiene todas las tareas y todos los ajustes. Guárdalo en otro sitio y una máquina nueva queda a una restauración de distancia en vez de a una tarde de teclear.',
   'backup.export': 'Exportar la configuración',
   'backup.import': 'Importar la configuración',
-  'backup.confirm': '¿Sustituir todas las tareas y todos los ajustes por {file}? La configuración de esta máquina desaparece, y solo vuelve si tienes una copia.',
+  'backup.confirm': '¿Sustituir todas las tareas y todos los ajustes por {file}? La configuración actual desaparece, y solo vuelve si tienes una copia.',
   'edit.duplicate': 'Duplicar',
   'edit.copySuffix': 'copia',
   'history.download': 'Guardar esta lista',

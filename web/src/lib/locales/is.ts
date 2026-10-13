@@ -544,7 +544,7 @@ const is: Translations = {
   'backup.hint': 'Ein skrá geymir öll verk og allar stillingar. Geymdu hana annars staðar og þá er ný vél í einni endurheimt í burtu í stað kvöldstundar við innslátt.',
   'backup.export': 'Flytja út stillingar',
   'backup.import': 'Flytja inn stillingar',
-  'backup.confirm': 'Skipta öllum verkum og öllum stillingum út fyrir {file}? Uppsetningin á þessari vél hverfur og kemur aðeins aftur ef þú átt afrit af henni.',
+  'backup.confirm': 'Skipta öllum verkum og öllum stillingum út fyrir {file}? Núverandi uppsetning hverfur og kemur aðeins aftur ef þú átt afrit af henni.',
   'edit.duplicate': 'Afrita',
   'edit.copySuffix': 'afrit',
   'history.download': 'Vista þennan lista',

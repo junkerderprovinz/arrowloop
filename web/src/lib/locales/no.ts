@@ -544,7 +544,7 @@ const no: Translations = {
   'backup.hint': 'Én fil rommer alle jobber og alle innstillinger. Oppbevar den et annet sted, så er en ny maskin én gjenoppretting unna i stedet for en kveld med tasting.',
   'backup.export': 'Eksporter innstillinger',
   'backup.import': 'Importer innstillinger',
-  'backup.confirm': 'Erstatte alle jobber og alle innstillinger med {file}? Oppsettet på denne maskinen forsvinner og kommer bare tilbake hvis du har en kopi av det.',
+  'backup.confirm': 'Erstatte alle jobber og alle innstillinger med {file}? Det nåværende oppsettet forsvinner og kommer bare tilbake hvis du har en kopi av det.',
   'edit.duplicate': 'Dupliser',
   'edit.copySuffix': 'kopi',
   'history.download': 'Lagre denne listen',

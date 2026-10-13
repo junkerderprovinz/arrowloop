@@ -544,7 +544,7 @@ const pl: Translations = {
   'backup.hint': 'Jeden plik zawiera wszystkie zadania i wszystkie ustawienia. Trzymaj go gdzie indziej, a nowa maszyna to jedno przywrócenie zamiast wieczoru przepisywania.',
   'backup.export': 'Eksportuj ustawienia',
   'backup.import': 'Importuj ustawienia',
-  'backup.confirm': 'Zastąpić wszystkie zadania i wszystkie ustawienia plikiem {file}? Konfiguracja na tej maszynie zniknie i wróci tylko wtedy, gdy masz jej kopię.',
+  'backup.confirm': 'Zastąpić wszystkie zadania i wszystkie ustawienia plikiem {file}? Obecna konfiguracja zniknie i wróci tylko wtedy, gdy masz jej kopię.',
   'edit.duplicate': 'Duplikuj',
   'edit.copySuffix': 'kopia',
   'history.download': 'Zapisz tę listę',

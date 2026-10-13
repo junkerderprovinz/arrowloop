@@ -544,7 +544,7 @@ const fi: Translations = {
   'backup.hint': 'Yksi tiedosto sisältää kaikki työt ja kaikki asetukset. Säilytä se muualla, niin uusi kone on yhden palautuksen päässä eikä illan näppäilyn.',
   'backup.export': 'Vie asetukset',
   'backup.import': 'Tuo asetukset',
-  'backup.confirm': 'Korvataanko kaikki työt ja kaikki asetukset tiedostolla {file}? Tämän koneen asetukset katoavat, ja ne palaavat vain jos sinulla on niistä kopio.',
+  'backup.confirm': 'Korvataanko kaikki työt ja kaikki asetukset tiedostolla {file}? Nykyiset asetukset katoavat, ja ne palaavat vain jos sinulla on niistä kopio.',
   'edit.duplicate': 'Kahdenna',
   'edit.copySuffix': 'kopio',
   'history.download': 'Tallenna tämä luettelo',

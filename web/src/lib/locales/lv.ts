@@ -544,7 +544,7 @@ const lv: Translations = {
   'backup.hint': 'Viens fails satur visus uzdevumus un visus iestatījumus. Glabā to citur, un jauns dators būs vienas atjaunošanas attālumā, nevis vakara pārrakstīšanas.',
   'backup.export': 'Eksportēt iestatījumus',
   'backup.import': 'Importēt iestatījumus',
-  'backup.confirm': 'Aizstāt visus uzdevumus un visus iestatījumus ar {file}? Šī datora iestatījums pazudīs un atgriezīsies tikai tad, ja tev ir tā kopija.',
+  'backup.confirm': 'Aizstāt visus uzdevumus un visus iestatījumus ar {file}? Pašreizējais iestatījums pazudīs un atgriezīsies tikai tad, ja tev ir tā kopija.',
   'edit.duplicate': 'Dublēt',
   'edit.copySuffix': 'kopija',
   'history.download': 'Saglabāt šo sarakstu',

@@ -544,7 +544,7 @@ const tr: Translations = {
   'backup.hint': 'Tek bir dosya bütün işleri ve bütün ayarları tutar. Onu başka bir yerde sakla, böylece yeni bir makine bir geri yükleme uzaklıkta olur, bir akşamlık yeniden yazma değil.',
   'backup.export': 'Ayarları dışa aktar',
   'backup.import': 'Ayarları içe aktar',
-  'backup.confirm': 'Bütün işler ve bütün ayarlar {file} ile değiştirilsin mi? Bu makinedeki kurulum gider ve yalnızca bir kopyan varsa geri gelir.',
+  'backup.confirm': 'Bütün işler ve bütün ayarlar {file} ile değiştirilsin mi? Mevcut kurulum gider ve yalnızca bir kopyan varsa geri gelir.',
   'edit.duplicate': 'Çoğalt',
   'edit.copySuffix': 'kopya',
   'history.download': 'Bu listeyi kaydet',

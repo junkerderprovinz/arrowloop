@@ -544,7 +544,7 @@ const id: Translations = {
   'backup.hint': 'Satu berkas memuat semua tugas dan semua pengaturan. Simpan di tempat lain, dan mesin baru hanya berjarak satu pemulihan, bukan semalam mengetik ulang.',
   'backup.export': 'Ekspor pengaturan',
   'backup.import': 'Impor pengaturan',
-  'backup.confirm': 'Ganti semua tugas dan semua pengaturan dengan {file}? Penyiapan di mesin ini akan hilang, dan hanya kembali kalau kamu punya salinannya.',
+  'backup.confirm': 'Ganti semua tugas dan semua pengaturan dengan {file}? Penyiapan saat ini akan hilang, dan hanya kembali kalau kamu punya salinannya.',
   'edit.duplicate': 'Duplikat',
   'edit.copySuffix': 'salinan',
   'history.download': 'Simpan daftar ini',

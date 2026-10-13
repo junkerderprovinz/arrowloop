@@ -544,7 +544,7 @@ const sl: Translations = {
   'backup.hint': 'Ena datoteka vsebuje vsa opravila in vse nastavitve. Shrani jo drugje in nov računalnik je oddaljen eno obnovitev namesto večer tipkanja.',
   'backup.export': 'Izvozi nastavitve',
   'backup.import': 'Uvozi nastavitve',
-  'backup.confirm': 'Zamenjam vsa opravila in vse nastavitve z {file}? Nastavitev na tem računalniku izgine in se vrne le, če imaš njeno kopijo.',
+  'backup.confirm': 'Zamenjam vsa opravila in vse nastavitve z {file}? Trenutna nastavitev izgine in se vrne le, če imaš njeno kopijo.',
   'edit.duplicate': 'Podvoji',
   'edit.copySuffix': 'kopija',
   'history.download': 'Shrani ta seznam',

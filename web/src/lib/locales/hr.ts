@@ -544,7 +544,7 @@ const hr: Translations = {
   'backup.hint': 'Jedna datoteka sadrži sve zadatke i sve postavke. Čuvaj je drugdje i novo računalo je jedno vraćanje daleko umjesto večer prepisivanja.',
   'backup.export': 'Izvezi postavke',
   'backup.import': 'Uvezi postavke',
-  'backup.confirm': 'Zamijeniti sve zadatke i sve postavke datotekom {file}? Postavljanje na ovom računalu nestaje i vraća se samo ako imaš njegovu kopiju.',
+  'backup.confirm': 'Zamijeniti sve zadatke i sve postavke datotekom {file}? Trenutačno postavljanje nestaje i vraća se samo ako imaš njegovu kopiju.',
   'edit.duplicate': 'Dupliciraj',
   'edit.copySuffix': 'kopija',
   'history.download': 'Spremi ovaj popis',

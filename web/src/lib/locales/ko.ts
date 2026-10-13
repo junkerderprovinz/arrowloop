@@ -544,7 +544,7 @@ const ko: Translations = {
   'backup.hint': '파일 하나에 모든 작업과 모든 설정이 들어 있습니다. 다른 곳에 보관해 두면 새 기계는 복원 한 번이면 되고, 저녁 내내 다시 입력할 일이 없습니다.',
   'backup.export': '설정 내보내기',
   'backup.import': '설정 가져오기',
-  'backup.confirm': '모든 작업과 모든 설정을 {file}(으)로 바꿀까요? 이 기계의 구성은 사라지며, 사본이 없으면 돌아오지 않습니다.',
+  'backup.confirm': '모든 작업과 모든 설정을 {file}(으)로 바꿀까요? 현재 구성은 사라지며, 사본이 없으면 돌아오지 않습니다.',
   'edit.duplicate': '복제',
   'edit.copySuffix': '사본',
   'history.download': '이 목록 저장',

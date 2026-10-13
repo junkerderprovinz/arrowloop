@@ -544,7 +544,7 @@ const lt: Translations = {
   'backup.hint': 'Vienas failas talpina visas užduotis ir visus nustatymus. Laikyk jį kitur, ir naujas kompiuteris bus per vieną atkūrimą, o ne per vakarą perrašinėjimo.',
   'backup.export': 'Eksportuoti nustatymus',
   'backup.import': 'Importuoti nustatymus',
-  'backup.confirm': 'Pakeisti visas užduotis ir visus nustatymus failu {file}? Šio kompiuterio sąranka dings ir sugrįš tik tada, jei turi jos kopiją.',
+  'backup.confirm': 'Pakeisti visas užduotis ir visus nustatymus failu {file}? Dabartinė sąranka dings ir sugrįš tik tada, jei turi jos kopiją.',
   'edit.duplicate': 'Dubliuoti',
   'edit.copySuffix': 'kopija',
   'history.download': 'Įrašyti šį sąrašą',

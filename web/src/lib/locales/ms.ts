@@ -544,7 +544,7 @@ const ms: Translations = {
   'backup.hint': 'Satu fail memuatkan semua tugas dan semua tetapan. Simpan di tempat lain, maka mesin baharu hanya sejauh satu pemulihan, bukan satu petang menaip semula.',
   'backup.export': 'Eksport tetapan',
   'backup.import': 'Import tetapan',
-  'backup.confirm': 'Gantikan semua tugas dan semua tetapan dengan {file}? Persediaan pada mesin ini akan hilang, dan hanya kembali jika anda ada salinannya.',
+  'backup.confirm': 'Gantikan semua tugas dan semua tetapan dengan {file}? Persediaan semasa akan hilang, dan hanya kembali jika anda ada salinannya.',
   'edit.duplicate': 'Gandakan',
   'edit.copySuffix': 'salinan',
   'history.download': 'Simpan senarai ini',

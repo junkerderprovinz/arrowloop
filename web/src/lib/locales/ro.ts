@@ -544,7 +544,7 @@ const ro: Translations = {
   'backup.hint': 'Un singur fișier conține toate sarcinile și toate setările. Ține-l în altă parte și o mașină nouă e la o restaurare distanță, nu la o seară de tastat.',
   'backup.export': 'Exportă setările',
   'backup.import': 'Importă setările',
-  'backup.confirm': 'Înlocuiești toate sarcinile și toate setările cu {file}? Configurarea de pe această mașină dispare și revine doar dacă ai o copie a ei.',
+  'backup.confirm': 'Înlocuiești toate sarcinile și toate setările cu {file}? Configurarea actuală dispare și revine doar dacă ai o copie a ei.',
   'edit.duplicate': 'Duplică',
   'edit.copySuffix': 'copie',
   'history.download': 'Salvează această listă',

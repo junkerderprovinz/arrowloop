@@ -544,7 +544,7 @@ const pt: Translations = {
   'backup.hint': 'Um só ficheiro contém todas as tarefas e todas as definições. Guarda-o noutro sítio e uma máquina nova fica a um restauro de distância em vez de uma noite a escrever tudo de novo.',
   'backup.export': 'Exportar as definições',
   'backup.import': 'Importar as definições',
-  'backup.confirm': 'Substituir todas as tarefas e todas as definições por {file}? A configuração desta máquina desaparece, e só volta se tiveres uma cópia dela.',
+  'backup.confirm': 'Substituir todas as tarefas e todas as definições por {file}? A configuração atual desaparece, e só volta se tiveres uma cópia dela.',
   'edit.duplicate': 'Duplicar',
   'edit.copySuffix': 'cópia',
   'history.download': 'Guardar esta lista',

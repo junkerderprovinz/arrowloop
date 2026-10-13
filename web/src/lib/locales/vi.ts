@@ -544,7 +544,7 @@ const vi: Translations = {
   'backup.hint': 'Một tệp duy nhất chứa mọi công việc và mọi cài đặt. Cất nó ở nơi khác thì một máy mới chỉ cách một lần khôi phục, thay vì cả buổi tối gõ lại.',
   'backup.export': 'Xuất thiết lập',
   'backup.import': 'Nhập thiết lập',
-  'backup.confirm': 'Thay toàn bộ công việc và cài đặt bằng {file}? Cấu hình trên máy này sẽ mất, và chỉ quay lại nếu bạn có một bản sao của nó.',
+  'backup.confirm': 'Thay toàn bộ công việc và cài đặt bằng {file}? Cấu hình hiện tại sẽ mất, và chỉ quay lại nếu bạn có một bản sao của nó.',
   'edit.duplicate': 'Nhân bản',
   'edit.copySuffix': 'bản sao',
   'history.download': 'Lưu danh sách này',

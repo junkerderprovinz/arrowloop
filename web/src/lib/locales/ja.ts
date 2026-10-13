@@ -544,7 +544,7 @@ const ja: Translations = {
   'backup.hint': '1つのファイルにすべてのジョブとすべての設定が入っています。別の場所に置いておけば、新しい機械は復元1回で済み、一晩の打ち直しになりません。',
   'backup.export': '設定をエクスポート',
   'backup.import': '設定をインポート',
-  'backup.confirm': 'すべてのジョブとすべての設定を {file} で置き換えますか。この機械の設定はなくなり、控えがなければ戻りません。',
+  'backup.confirm': 'すべてのジョブとすべての設定を {file} で置き換えますか。今の設定はなくなり、控えがなければ戻りません。',
   'edit.duplicate': '複製',
   'edit.copySuffix': 'コピー',
   'history.download': 'この一覧を保存',

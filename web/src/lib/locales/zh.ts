@@ -544,7 +544,7 @@ const zh: Translations = {
   'backup.hint': '一个文件装着全部任务和全部设置。把它放在别处，换新机器就只差一次恢复，而不是一晚上的重新输入。',
   'backup.export': '导出设置',
   'backup.import': '导入设置',
-  'backup.confirm': '用 {file} 替换全部任务和全部设置吗？这台机器上的配置将消失，除非你另有副本，否则回不来。',
+  'backup.confirm': '用 {file} 替换全部任务和全部设置吗？当前的配置将消失，除非你另有副本，否则回不来。',
   'edit.duplicate': '复制',
   'edit.copySuffix': '副本',
   'history.download': '保存此列表',

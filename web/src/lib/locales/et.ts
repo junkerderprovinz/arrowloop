@@ -544,7 +544,7 @@ const et: Translations = {
   'backup.hint': 'Üks fail hoiab kõiki töid ja kõiki seadeid. Hoia seda mujal ja uus masin on ühe taastamise kaugusel, mitte õhtu jagu ümbertrükkimist.',
   'backup.export': 'Ekspordi seaded',
   'backup.import': 'Impordi seaded',
-  'backup.confirm': 'Kas asendada kõik tööd ja kõik seaded failiga {file}? Selle masina seadistus kaob ja tuleb tagasi ainult siis, kui sul on sellest koopia.',
+  'backup.confirm': 'Kas asendada kõik tööd ja kõik seaded failiga {file}? Praegune seadistus kaob ja tuleb tagasi ainult siis, kui sul on sellest koopia.',
   'edit.duplicate': 'Dubleeri',
   'edit.copySuffix': 'koopia',
   'history.download': 'Salvesta see loend',
