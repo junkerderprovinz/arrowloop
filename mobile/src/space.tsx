@@ -136,7 +136,7 @@ export function Room({ room, hue }: { room: Room; hue?: string }) {
 
   return (
     <>
-      {total > 0 ? <Meter done={used ?? 0} total={total} hue={hue} /> : null}
+      {total > 0 ? <Meter done={used ?? 0} total={total} hue={hue} slosh /> : null}
       <Caption>
         {total > 0 && free !== undefined
           ? t("targets.spaceFree", { free: bytes(free), total: bytes(total) })

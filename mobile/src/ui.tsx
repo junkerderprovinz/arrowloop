@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import {
   ActivityIndicator,
   Animated,
+  Easing,
   FlatList,
   Modal,
   Pressable,
@@ -39,7 +40,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useT } from "./i18n";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
 import { useWalkedPalette } from "./disco";
-import { springOf, useConfirm, useMotion } from "./motion";
+import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
 
 // GlimStone's controls for React Native, with the design language's shapes
@@ -627,10 +628,74 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
 }
 
 /**
- * A filled track for progress and for how full a target is. A total of zero
- * draws an empty track rather than a NaN width, which would render full.
+ * GlimStone's slosh dials for a bar's end, per motion level: one swing to each
+ * wall and back in ms, how far the end surges out and how far it leans.
  */
-export function Meter({ done, total, hue }: { done: number; total: number; hue?: string }) {
+const SLOSH: Record<MotionIntensity, { dur: number; surge: number; lean: number } | null> = {
+  storm: { dur: 2600, surge: 7, lean: 18 },
+  wild: { dur: 3600, surge: 5, lean: 12 },
+  subtle: { dur: 5000, surge: 3.5, lean: 8 },
+  off: null,
+};
+
+/**
+ * The end of a fill level, which surges out leaning forward and draws back.
+ * It never runs under Android's reduce motion, not even in the storm, since it
+ * never ends.
+ */
+function SloshEnd({ color }: { color: string }) {
+  const { intensity } = useMotion();
+  const reduced = useSystemReduced();
+  const dials = reduced ? null : SLOSH[intensity];
+  const phase = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!dials) return;
+    phase.setValue(0);
+    const loop = Animated.loop(
+      Animated.timing(phase, { toValue: 1, duration: dials.dur, easing: Easing.linear, useNativeDriver: true }),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [dials, phase]);
+
+  if (!dials) return null;
+  const width = dials.surge + 2;
+  const at = (share: number) => -width + dials.surge * share;
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        styles.sloshEnd,
+        {
+          width,
+          backgroundColor: color,
+          transform: [
+            {
+              translateX: phase.interpolate({
+                inputRange: [0, 0.25, 0.5, 0.75, 1],
+                outputRange: [at(0.4), at(0.15), at(0.4), at(1), at(0.4)],
+              }),
+            },
+            {
+              skewX: phase.interpolate({
+                inputRange: [0, 0.25, 0.5, 0.75, 1],
+                outputRange: ["0deg", `${dials.lean * 0.5}deg`, "0deg", `${-dials.lean}deg`, "0deg"],
+              }),
+            },
+          ],
+        },
+      ]}
+    />
+  );
+}
+
+/**
+ * A filled track for progress and for how full a target is. A total of zero
+ * draws an empty track rather than a NaN width, which would render full. A
+ * fill level sloshes at its end; a transfer's progress does not.
+ */
+export function Meter({ done, total, hue, slosh = false }: { done: number; total: number; hue?: string; slosh?: boolean }) {
   const { p, corners, accent } = useTheme();
   const { intensity, ms } = useMotion();
   const fill = hue ?? accent;
@@ -680,7 +745,9 @@ export function Meter({ done, total, hue }: { done: number; total: number; hue?:
             }),
           },
         ]}
-      />
+      >
+        {slosh && part > 0 ? <SloshEnd color={fill} /> : null}
+      </Animated.View>
     </View>
   );
 }
@@ -1429,6 +1496,7 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: text.meta, fontWeight: "600", letterSpacing: 0.2 },
   meter: { height: 6, overflow: "hidden" },
   meterFill: { height: "100%" },
+  sloshEnd: { position: "absolute", left: "100%", top: 0, bottom: 0, borderTopRightRadius: 999, borderBottomRightRadius: 999 },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
   bubbleMark: { fontSize: text.meta, fontWeight: "700", lineHeight: text.meta + 3 },
   tipGround: {

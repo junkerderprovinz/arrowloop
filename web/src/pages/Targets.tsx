@@ -419,6 +419,7 @@ function RemoteRow({
           {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
         </span>
         {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
+        {usage && <UsageBar usage={usage} label={space(usage, t)} />}
       </span>
       <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
         <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit">
@@ -462,6 +463,40 @@ function RemoteRow({
         />
       )}
     </li>
+  )
+}
+
+/** The share of a target in use, where it reports both what it holds and what it can. */
+function usedShare(usage: Usage): number | null {
+  if (!usage.supported || !usage.total) return null
+  const used = usage.used ?? (usage.free !== undefined ? usage.total - usage.free : undefined)
+  return used === undefined ? null : Math.min(1, Math.max(0, used / usage.total))
+}
+
+/**
+ * How full a target is, as a bar under its name. The fill sloshes at its end
+ * like every fill level in GlimStone, as lively as the motion setting allows
+ * and level at "off" or under reduced motion.
+ */
+function UsageBar({ usage, label }: { usage: Usage; label: string }) {
+  const share = usedShare(usage)
+  if (share === null) return null
+  const percent = Math.round(share * 100)
+  return (
+    <span
+      role="meter"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={percent}
+      title={label}
+      className="mt-1.5 block h-1.5 w-full max-w-64 overflow-hidden rounded-full bg-carbon-surface3"
+    >
+      <span className="glim-slosh-edge block h-full rounded-full bg-accent" style={{ width: `${percent}%` }}>
+        <span className="glim-slosh-pop-bar" />
+        <span className="glim-slosh-pop-bar" />
+      </span>
+    </span>
   )
 }
 
