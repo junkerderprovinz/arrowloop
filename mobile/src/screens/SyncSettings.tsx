@@ -14,7 +14,6 @@ import { ScheduleSentence } from "../inherit";
 import { space } from "../theme";
 import { AxisLabel, Body, Button, Caption, Page, Section, Toggle } from "../ui";
 import { WaySwitch } from "../way";
-import type { Notify } from "../../../web/src/lib/notify";
 import {
   BRAKE_SETTINGS,
   SETTING_LABEL,
@@ -24,7 +23,6 @@ import {
   inheritAll,
   type Exception,
 } from "../../../web/src/lib/follows";
-import { NotifySection } from "./NotifySettings";
 
 /**
  * The defaults every job starts from, and the phone's run conditions. A job
@@ -203,12 +201,6 @@ export function SyncSettings() {
           />
         ) : null}
       </Section>
-
-      <NotifySection
-        notify={(settings?.notify ?? {}) as Notify}
-        save={(notify) => void update({ notify })}
-        hue={5}
-      />
 
       {/* Neither power condition holds a run started by hand. */}
       <Section title={t("sync.power")} hue={4}>

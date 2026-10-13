@@ -1,5 +1,5 @@
-// The notification settings as the engine stores them under `notify`, shared by
-// the browser and the phone. internal/job/job.go holds the same rules.
+// The notification settings as the engine stores them under `notify`.
+// internal/job/job.go holds the same rules.
 
 export type When = 'never' | 'failure' | 'always'
 

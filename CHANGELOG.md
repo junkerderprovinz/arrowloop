@@ -14,6 +14,10 @@ The full notes for each release are in
 
 - **The phone app can sync the folders in Android/data**, which Android 11 and later keep from every app but the one each folder belongs to. Switch on Android/data under This phone, and they show up as a target called Android. On a rooted phone ArrowLoop reads and writes them; with Shizuku it only reads them.
 
+## ⚡ Improved
+
+- **The phone app leaves the notification services to the server and the desktop.** Global sync settings on the phone no longer shows Matrix, email, Apprise, Healthchecks.io or the webhook, and the phone tells you about runs through Android's own notifications. A channel set up there before sends nothing from the phone, but its settings stay in the configuration untouched.
+
 ## 🌐 Translations
 
 - **Every new text is in all 42 languages.**

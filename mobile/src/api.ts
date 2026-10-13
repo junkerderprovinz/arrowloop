@@ -7,7 +7,6 @@ import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
 import type { Failure } from "../../web/src/lib/failure";
-import type { Channel, Notify } from "../../web/src/lib/notify";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
 export const ORIGIN = `http://127.0.0.1:${Constants.expoConfig?.extra?.enginePort}`;
@@ -452,16 +451,6 @@ export const api = {
   config: () => call<Config>("/api/config"),
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
-
-  /**
-   * Sends a test message through one channel as the screen shows it. The
-   * engine fills in the secrets the screen holds placeholders for.
-   */
-  testNotify: (channel: Channel, notify: Notify) =>
-    call<{ ok: boolean; reason?: string }>("/api/notify/test", {
-      method: "POST",
-      body: JSON.stringify({ channel, notify }),
-    }),
 
   storage: () => call<Storage>("/api/remotes"),
   /**
