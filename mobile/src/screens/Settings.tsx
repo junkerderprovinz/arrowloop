@@ -94,6 +94,7 @@ export function Settings() {
   const [exported, setExported] = useState(0);
   const [imported, setImported] = useState(0);
   const [reported, setReported] = useState(0);
+  const [dockered, setDockered] = useState(0);
   const [coffee, setCoffee] = useState(false);
   const [crypto, setCrypto] = useState(false);
   const [dockerCopied, setDockerCopied] = useState(false);
@@ -628,7 +629,16 @@ export function Settings() {
             tile={TILE.docker}
             hint={`${t("apps.dockerHint")} ${DOCKER_RUN}`}
             mark={(lit, ink) => <AppMark svg={DOCKER_SVG} ink={lit ? ink : PLATFORM[scheme].docker} />}
-            onPress={() => void engine.copy(DOCKER_RUN).then(() => setDockerCopied(true))}
+            confirm={dockered}
+            onPress={() =>
+              void engine.copy(DOCKER_RUN).then(
+                () => {
+                  setDockerCopied(true);
+                  setDockered((n) => n + 1);
+                },
+                () => {},
+              )
+            }
           />
           <ReadmeButton
             label={t("apps.source")}

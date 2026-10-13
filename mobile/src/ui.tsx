@@ -878,6 +878,7 @@ export function ReadmeButton({
   hint,
   onPress,
   soon,
+  confirm,
 }: {
   label: string;
   /** A second, smaller line under the name. */
@@ -894,10 +895,16 @@ export function ReadmeButton({
    *  says `soon`, the button stays unlit and the mark pales, as on the web. */
   onPress?: () => void;
   soon?: string;
+  /** Increment to swell once, when what the button did has landed. */
+  confirm?: number;
 }) {
   const { p, corners } = useTheme();
   const width = useContext(ReadmeWidth) ?? README_W;
   const press = usePress();
+  const swell = useConfirm();
+  useEffect(() => {
+    if (confirm) swell.confirm();
+  }, [confirm, swell.confirm]);
   const [lit, setLit] = useState(false);
   const shut = !onPress;
   const ink = lit ? tile.ink : shut ? p.textSub : p.text;
@@ -923,7 +930,7 @@ export function ReadmeButton({
           width,
           backgroundColor: lit ? tile.color : p.surface2,
           ...corners.pill,
-          transform: [{ scale: press.scale }],
+          transform: [{ scale: press.scale }, { scale: swell.scale }],
         },
       ]}
     >
