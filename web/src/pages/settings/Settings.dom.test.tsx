@@ -230,3 +230,38 @@ describe('the default schedule', () => {
     expect((field as HTMLInputElement).value).toBe('0 ')
   })
 })
+
+describe('a search result', () => {
+  it('on the tile already open, scrolls to its card and rings it', async () => {
+    const { Settings } = await import('./Settings')
+    const { openSetting, takeJump } = await import('./SettingsSearch')
+    const { settingsTiles } = await import('./tiles')
+    window.history.replaceState(null, '', '/settings/sync')
+    Element.prototype.scrollIntoView ??= () => undefined
+    window.matchMedia ??= ((media: string) => ({
+      matches: false,
+      media,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })) as unknown as typeof window.matchMedia
+    const scrolled = vi.spyOn(Element.prototype, 'scrollIntoView').mockImplementation(() => undefined)
+    render(
+      <Settings
+        tile="sync"
+        tiles={settingsTiles(true)}
+        look={{} as never}
+        version="1.0.0"
+        window={null}
+        onWindow={() => undefined}
+        targets={null}
+      />,
+    )
+    await screen.findByRole('switch', { name: 'Carry empty folders' })
+    act(() => openSetting('sync', { card: 'Global sync settings' }))
+    await waitFor(() => expect(scrolled).toHaveBeenCalled())
+    expect((scrolled.mock.contexts[0] as HTMLElement).classList.contains('glim-search-hit')).toBe(true)
+    expect(takeJump()).toBeNull()
+    scrolled.mockRestore()
+    window.history.replaceState(null, '', '/')
+  })
+})

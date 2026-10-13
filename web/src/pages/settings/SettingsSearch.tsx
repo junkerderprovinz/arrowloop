@@ -102,6 +102,7 @@ export function search<T extends { foldedName: string; foldedProse: string; tier
 
 /** The jump a result asked for, taken by the tile once it has drawn. */
 let pending: SearchJump | null = null
+const asked = new Set<() => void>()
 
 export function takeJump(): SearchJump | null {
   const jump = pending
@@ -109,10 +110,20 @@ export function takeJump(): SearchJump | null {
   return jump
 }
 
+/**
+ * Calls back when a result asks for a jump. A jump on the tile already open
+ * changes no address, so the tile would not hear of it otherwise.
+ */
+export function onJump(listener: () => void): () => void {
+  asked.add(listener)
+  return () => asked.delete(listener)
+}
+
 /** Opens a tile and marks the card or row there, the way a search result does. */
 export function openSetting(tile: TileId, jump: SearchJump | null) {
   pending = jump
   navigate(`/settings/${tile}`)
+  for (const listener of asked) listener()
 }
 
 export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId }) {
