@@ -77,6 +77,7 @@ const gl: Translations = {
   'anomaly.severity.info': 'Nota',
   'anomaly.tile.warning': 'Avisos',
   'anomaly.tile.info': 'Notas',
+  'anomaly.tile.open': 'abertos: {count}',
   'anomaly.filter': 'Filtrar por gravidade',
   'anomaly.none': 'Non hai anomalías abertas.',
   'anomaly.noneShown': 'As anomalías abertas están agochadas. Escolle un número arriba para velas de novo.',

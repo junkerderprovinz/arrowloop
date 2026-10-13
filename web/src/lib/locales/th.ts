@@ -77,6 +77,7 @@ const th: Translations = {
   'anomaly.severity.info': 'หมายเหตุ',
   'anomaly.tile.warning': 'คำเตือน',
   'anomaly.tile.info': 'หมายเหตุ',
+  'anomaly.tile.open': 'เปิดอยู่: {count}',
   'anomaly.filter': 'กรองตามความรุนแรง',
   'anomaly.none': 'ไม่มีความผิดปกติที่ค้างอยู่',
   'anomaly.noneShown': 'ความผิดปกติที่ค้างอยู่ถูกซ่อนไว้ เลือกตัวเลขด้านบนเพื่อแสดงอีกครั้ง',

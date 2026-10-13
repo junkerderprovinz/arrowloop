@@ -77,6 +77,7 @@ const lt: Translations = {
   'anomaly.severity.info': 'Pastaba',
   'anomaly.tile.warning': 'Įspėjimai',
   'anomaly.tile.info': 'Pastabos',
+  'anomaly.tile.open': 'atviri: {count}',
   'anomaly.filter': 'Filtruoti pagal svarbą',
   'anomaly.none': 'Atvirų anomalijų nėra.',
   'anomaly.noneShown': 'Atviros anomalijos paslėptos. Pasirinkite skaičių viršuje, kad jos vėl būtų rodomos.',

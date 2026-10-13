@@ -77,6 +77,7 @@ const cs: Translations = {
   'anomaly.severity.info': 'Poznámka',
   'anomaly.tile.warning': 'Varování',
   'anomaly.tile.info': 'Poznámky',
+  'anomaly.tile.open': 'otevřené: {count}',
   'anomaly.filter': 'Filtrovat podle závažnosti',
   'anomaly.none': 'Žádné otevřené anomálie.',
   'anomaly.noneShown': 'Otevřené anomálie jsou skryté. Vyber nahoře číslo a zobrazí se znovu.',

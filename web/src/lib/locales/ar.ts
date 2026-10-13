@@ -77,6 +77,7 @@ const ar: Translations = {
   'anomaly.severity.info': 'ملاحظة',
   'anomaly.tile.warning': 'تحذيرات',
   'anomaly.tile.info': 'ملاحظات',
+  'anomaly.tile.open': 'مفتوحة: {count}',
   'anomaly.filter': 'تصفية حسب الخطورة',
   'anomaly.none': 'لا توجد حالات شاذة مفتوحة.',
   'anomaly.noneShown': 'الحالات الشاذة المفتوحة مخفية. اختر رقمًا بالأعلى لإظهارها من جديد.',

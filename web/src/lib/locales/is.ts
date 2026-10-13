@@ -77,6 +77,7 @@ const is: Translations = {
   'anomaly.severity.info': 'Athugasemd',
   'anomaly.tile.warning': 'Viðvaranir',
   'anomaly.tile.info': 'Athugasemdir',
+  'anomaly.tile.open': 'opin: {count}',
   'anomaly.filter': 'Sía eftir alvarleika',
   'anomaly.none': 'Engin opin frávik.',
   'anomaly.noneShown': 'Opnu frávikin eru falin. Veldu tölu hér fyrir ofan til að sýna þau aftur.',

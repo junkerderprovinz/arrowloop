@@ -77,6 +77,7 @@ const el: Translations = {
   'anomaly.severity.info': 'Σημείωση',
   'anomaly.tile.warning': 'Προειδοποιήσεις',
   'anomaly.tile.info': 'Σημειώσεις',
+  'anomaly.tile.open': 'ανοιχτά: {count}',
   'anomaly.filter': 'Φιλτράρισμα κατά σοβαρότητα',
   'anomaly.none': 'Δεν υπάρχουν ανοιχτές ανωμαλίες.',
   'anomaly.noneShown': 'Οι ανοιχτές ανωμαλίες είναι κρυφές. Επιλέξτε έναν αριθμό από πάνω για να εμφανιστούν ξανά.',

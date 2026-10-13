@@ -77,6 +77,7 @@ const pt: Translations = {
   'anomaly.severity.info': 'Nota',
   'anomaly.tile.warning': 'Avisos',
   'anomaly.tile.info': 'Notas',
+  'anomaly.tile.open': 'abertos: {count}',
   'anomaly.filter': 'Filtrar por gravidade',
   'anomaly.none': 'Sem anomalias em aberto.',
   'anomaly.noneShown': 'As anomalias em aberto estão ocultas. Escolhe um número acima para as mostrar de novo.',

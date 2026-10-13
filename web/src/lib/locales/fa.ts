@@ -77,6 +77,7 @@ const fa: Translations = {
   'anomaly.severity.info': 'یادداشت',
   'anomaly.tile.warning': 'هشدارها',
   'anomaly.tile.info': 'یادداشت‌ها',
+  'anomaly.tile.open': 'باز: {count}',
   'anomaly.filter': 'فیلتر بر اساس شدت',
   'anomaly.none': 'ناهنجاری بازی وجود ندارد.',
   'anomaly.noneShown': 'ناهنجاری‌های باز پنهان شده‌اند. برای نمایش دوباره‌شان یکی از عددهای بالا را انتخاب کن.',

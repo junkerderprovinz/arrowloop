@@ -77,6 +77,7 @@ const et: Translations = {
   'anomaly.severity.info': 'Märkus',
   'anomaly.tile.warning': 'Hoiatused',
   'anomaly.tile.info': 'Märkused',
+  'anomaly.tile.open': 'avatud: {count}',
   'anomaly.filter': 'Filtreeri tõsiduse järgi',
   'anomaly.none': 'Avatud anomaaliaid pole.',
   'anomaly.noneShown': 'Avatud anomaaliad on peidetud. Valige ülalt number, et neid uuesti näidata.',

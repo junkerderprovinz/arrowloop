@@ -77,6 +77,7 @@ const ms: Translations = {
   'anomaly.severity.info': 'Nota',
   'anomaly.tile.warning': 'Amaran',
   'anomaly.tile.info': 'Nota',
+  'anomaly.tile.open': '{count} terbuka',
   'anomaly.filter': 'Tapis mengikut tahap',
   'anomaly.none': 'Tiada anomali terbuka.',
   'anomaly.noneShown': 'Anomali yang terbuka disembunyikan. Pilih nombor di atas untuk memaparkannya semula.',

@@ -77,6 +77,7 @@ const ca: Translations = {
   'anomaly.severity.info': 'Nota',
   'anomaly.tile.warning': 'Advertències',
   'anomaly.tile.info': 'Notes',
+  'anomaly.tile.open': 'oberts: {count}',
   'anomaly.filter': 'Filtra per gravetat',
   'anomaly.none': 'No hi ha anomalies obertes.',
   'anomaly.noneShown': 'Les anomalies obertes estan amagades. Tria un número de dalt per tornar-les a mostrar.',

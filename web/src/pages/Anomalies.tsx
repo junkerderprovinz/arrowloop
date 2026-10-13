@@ -165,9 +165,12 @@ function SeverityTiles({
     { tile: 'all', label: t('anomalies.all'), count: total },
     ...SEVERITIES.map((s) => ({ tile: s as Tile, label: t(TILE_LABEL[s]), count: counts[s] })),
   ]
+  // BombVault's tile row and tiles, measure for measure: a glyph beside the
+  // name over the count in words, as two rows of two below 860px and as one
+  // row of chips with the number alone below 600px.
   return (
     <div role="group" aria-label={t('anomaly.filter')} className="rounded-card bg-carbon-surface p-3 max-[600px]:p-2">
-      <div className="flex flex-wrap justify-center gap-2 max-[860px]:grid max-[860px]:grid-cols-2 max-[600px]:flex max-[600px]:flex-nowrap max-[600px]:justify-start max-[600px]:overflow-x-auto">
+      <div className="flex flex-wrap gap-2 max-[860px]:grid max-[860px]:grid-cols-2 max-[600px]:flex max-[600px]:flex-nowrap max-[600px]:gap-1.5 max-[600px]:overflow-x-auto max-[600px]:[scrollbar-width:none]">
         {tiles.map(({ tile, label, count }, i) => {
           const on = tile === chosen
           return (
@@ -177,15 +180,18 @@ function SeverityTiles({
               aria-pressed={on}
               onClick={() => onChoose(tile)}
               style={hueVars(i) as CSSProperties}
-              className={`glim-hue flex min-w-40 flex-1 items-center gap-2.5 rounded-card px-3 py-2 text-start transition-colors max-[860px]:min-w-0 max-[600px]:flex-none max-[600px]:rounded-[var(--radius-pill)] max-[600px]:py-1.5 ${
+              className={`glim-hue glim-hue-icon grid min-w-max flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 rounded-card px-3 py-2 text-start transition-colors max-[860px]:min-w-0 max-[600px]:flex max-[600px]:flex-none max-[600px]:gap-x-1.5 max-[600px]:rounded-[var(--radius-pill)] max-[600px]:py-1.5 ${
                 on ? 'glim-active bg-accent text-accentContrast' : 'bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3'
               }`}
             >
-              <span className="flex [&_svg]:h-5 [&_svg]:w-5 max-[600px]:hidden" aria-hidden>
+              <span className="row-span-2 flex [&_svg]:h-[22px] [&_svg]:w-[22px] max-[600px]:[&_svg]:h-4 max-[600px]:[&_svg]:w-4" aria-hidden>
                 <IconAnomalies />
               </span>
-              <span className="min-w-0 flex-1 truncate text-body font-semibold">{label}</span>
-              <span className="glim-num text-body font-semibold">{format.format(count)}</span>
+              <span className="truncate text-body leading-5 font-semibold">{label}</span>
+              <span className="glim-num truncate text-meta leading-4 opacity-75 max-[600px]:hidden">
+                {t('anomaly.tile.open', { count: format.format(count) })}
+              </span>
+              <span className="glim-num hidden text-meta font-semibold opacity-70 max-[600px]:inline">{format.format(count)}</span>
             </button>
           )
         })}

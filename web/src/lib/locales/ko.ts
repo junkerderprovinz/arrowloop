@@ -77,6 +77,7 @@ const ko: Translations = {
   'anomaly.severity.info': '참고',
   'anomaly.tile.warning': '경고',
   'anomaly.tile.info': '참고',
+  'anomaly.tile.open': '미해결: {count}',
   'anomaly.filter': '심각도로 필터',
   'anomaly.none': '열려 있는 이상 징후가 없습니다.',
   'anomaly.noneShown': '열려 있는 이상 징후가 숨겨져 있습니다. 위의 숫자를 선택하면 다시 표시됩니다.',

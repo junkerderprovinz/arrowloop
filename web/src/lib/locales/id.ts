@@ -77,6 +77,7 @@ const id: Translations = {
   'anomaly.severity.info': 'Catatan',
   'anomaly.tile.warning': 'Peringatan',
   'anomaly.tile.info': 'Catatan',
+  'anomaly.tile.open': '{count} terbuka',
   'anomaly.filter': 'Saring menurut tingkat keparahan',
   'anomaly.none': 'Tidak ada anomali terbuka.',
   'anomaly.noneShown': 'Anomali yang terbuka disembunyikan. Pilih angka di atas untuk menampilkannya lagi.',

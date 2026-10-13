@@ -77,6 +77,7 @@ const fi: Translations = {
   'anomaly.severity.info': 'Huomautus',
   'anomaly.tile.warning': 'Varoitukset',
   'anomaly.tile.info': 'Huomautukset',
+  'anomaly.tile.open': 'avoinna: {count}',
   'anomaly.filter': 'Suodata vakavuuden mukaan',
   'anomaly.none': 'Ei avoimia poikkeamia.',
   'anomaly.noneShown': 'Avoimet poikkeamat on piilotettu. Valitse yllä oleva luku näyttääksesi ne uudelleen.',

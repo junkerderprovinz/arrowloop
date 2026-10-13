@@ -77,6 +77,7 @@ const da: Translations = {
   'anomaly.severity.info': 'Bemærkning',
   'anomaly.tile.warning': 'Advarsler',
   'anomaly.tile.info': 'Bemærkninger',
+  'anomaly.tile.open': 'åbne: {count}',
   'anomaly.filter': 'Filtrer efter alvor',
   'anomaly.none': 'Ingen åbne anomalier.',
   'anomaly.noneShown': 'De åbne anomalier er skjult. Vælg et tal ovenfor for at vise dem igen.',

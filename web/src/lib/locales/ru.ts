@@ -77,6 +77,7 @@ const ru: Translations = {
   'anomaly.severity.info': 'Заметка',
   'anomaly.tile.warning': 'Предупреждения',
   'anomaly.tile.info': 'Заметки',
+  'anomaly.tile.open': 'открыто: {count}',
   'anomaly.filter': 'Фильтр по важности',
   'anomaly.none': 'Открытых аномалий нет.',
   'anomaly.noneShown': 'Открытые аномалии скрыты. Выберите число выше, чтобы показать их снова.',

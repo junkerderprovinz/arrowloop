@@ -77,6 +77,7 @@ const nl: Translations = {
   'anomaly.severity.info': 'Opmerking',
   'anomaly.tile.warning': 'Waarschuwingen',
   'anomaly.tile.info': 'Opmerkingen',
+  'anomaly.tile.open': '{count} open',
   'anomaly.filter': 'Filteren op ernst',
   'anomaly.none': 'Geen openstaande afwijkingen.',
   'anomaly.noneShown': 'De openstaande afwijkingen zijn verborgen. Kies hierboven een getal om ze weer te tonen.',

@@ -77,6 +77,7 @@ const sl: Translations = {
   'anomaly.severity.info': 'Opomba',
   'anomaly.tile.warning': 'Opozorila',
   'anomaly.tile.info': 'Opombe',
+  'anomaly.tile.open': 'odprto: {count}',
   'anomaly.filter': 'Filtriraj po resnosti',
   'anomaly.none': 'Ni odprtih anomalij.',
   'anomaly.noneShown': 'Odprte anomalije so skrite. Izberi število zgoraj, da jih spet prikažeš.',

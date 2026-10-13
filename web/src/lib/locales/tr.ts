@@ -77,6 +77,7 @@ const tr: Translations = {
   'anomaly.severity.info': 'Not',
   'anomaly.tile.warning': 'Uyarılar',
   'anomaly.tile.info': 'Notlar',
+  'anomaly.tile.open': 'açık: {count}',
   'anomaly.filter': 'Önem derecesine göre süz',
   'anomaly.none': 'Açık anormallik yok.',
   'anomaly.noneShown': 'Açık anormallikler gizli. Tekrar göstermek için yukarıdan bir sayı seç.',

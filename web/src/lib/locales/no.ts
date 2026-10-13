@@ -77,6 +77,7 @@ const no: Translations = {
   'anomaly.severity.info': 'Merknad',
   'anomaly.tile.warning': 'Advarsler',
   'anomaly.tile.info': 'Merknader',
+  'anomaly.tile.open': 'åpne: {count}',
   'anomaly.filter': 'Filtrer etter alvorlighet',
   'anomaly.none': 'Ingen åpne avvik.',
   'anomaly.noneShown': 'De åpne avvikene er skjult. Velg et tall ovenfor for å vise dem igjen.',

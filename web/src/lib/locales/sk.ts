@@ -77,6 +77,7 @@ const sk: Translations = {
   'anomaly.severity.info': 'Poznámka',
   'anomaly.tile.warning': 'Varovania',
   'anomaly.tile.info': 'Poznámky',
+  'anomaly.tile.open': 'otvorené: {count}',
   'anomaly.filter': 'Filtrovať podľa závažnosti',
   'anomaly.none': 'Žiadne otvorené anomálie.',
   'anomaly.noneShown': 'Otvorené anomálie sú skryté. Vyber vyššie číslo a zobrazia sa znova.',

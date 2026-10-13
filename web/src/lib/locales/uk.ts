@@ -77,6 +77,7 @@ const uk: Translations = {
   'anomaly.severity.info': 'Примітка',
   'anomaly.tile.warning': 'Попередження',
   'anomaly.tile.info': 'Примітки',
+  'anomaly.tile.open': 'відкрито: {count}',
   'anomaly.filter': 'Фільтр за важливістю',
   'anomaly.none': 'Відкритих аномалій немає.',
   'anomaly.noneShown': 'Відкриті аномалії приховано. Виберіть число вище, щоб показати їх знову.',

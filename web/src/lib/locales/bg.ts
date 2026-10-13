@@ -77,6 +77,7 @@ const bg: Translations = {
   'anomaly.severity.info': 'Бележка',
   'anomaly.tile.warning': 'Предупреждения',
   'anomaly.tile.info': 'Бележки',
+  'anomaly.tile.open': 'отворени: {count}',
   'anomaly.filter': 'Филтър по тежест',
   'anomaly.none': 'Няма отворени аномалии.',
   'anomaly.noneShown': 'Отворените аномалии са скрити. Избери число по-горе, за да ги покажеш отново.',

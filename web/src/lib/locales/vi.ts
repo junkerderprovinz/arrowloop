@@ -77,6 +77,7 @@ const vi: Translations = {
   'anomaly.severity.info': 'Ghi chú',
   'anomaly.tile.warning': 'Cảnh báo',
   'anomaly.tile.info': 'Ghi chú',
+  'anomaly.tile.open': 'đang mở: {count}',
   'anomaly.filter': 'Lọc theo mức độ',
   'anomaly.none': 'Không có bất thường nào đang mở.',
   'anomaly.noneShown': 'Các bất thường đang mở đã bị ẩn. Chọn một con số ở trên để hiện lại.',

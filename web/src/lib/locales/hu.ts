@@ -77,6 +77,7 @@ const hu: Translations = {
   'anomaly.severity.info': 'Megjegyzés',
   'anomaly.tile.warning': 'Figyelmeztetések',
   'anomaly.tile.info': 'Megjegyzések',
+  'anomaly.tile.open': '{count} nyitott',
   'anomaly.filter': 'Szűrés súlyosság szerint',
   'anomaly.none': 'Nincs nyitott rendellenesség.',
   'anomaly.noneShown': 'A nyitott rendellenességek el vannak rejtve. Válassz egy számot fent, hogy újra megjelenjenek.',

@@ -77,6 +77,7 @@ const zh: Translations = {
   'anomaly.severity.info': '提示',
   'anomaly.tile.warning': '警告',
   'anomaly.tile.info': '提示',
+  'anomaly.tile.open': '未处理：{count}',
   'anomaly.filter': '按严重程度筛选',
   'anomaly.none': '没有未处理的异常。',
   'anomaly.noneShown': '未处理的异常已隐藏。点上面的数字可再次显示。',

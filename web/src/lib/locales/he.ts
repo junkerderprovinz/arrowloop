@@ -77,6 +77,7 @@ const he: Translations = {
   'anomaly.severity.info': 'הערה',
   'anomaly.tile.warning': 'אזהרות',
   'anomaly.tile.info': 'הערות',
+  'anomaly.tile.open': 'פתוחים: {count}',
   'anomaly.filter': 'סינון לפי חומרה',
   'anomaly.none': 'אין חריגות פתוחות.',
   'anomaly.noneShown': 'החריגות הפתוחות מוסתרות. בחר מספר למעלה כדי להציג אותן שוב.',

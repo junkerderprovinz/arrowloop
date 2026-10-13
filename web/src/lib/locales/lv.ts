@@ -77,6 +77,7 @@ const lv: Translations = {
   'anomaly.severity.info': 'Piezīme',
   'anomaly.tile.warning': 'Brīdinājumi',
   'anomaly.tile.info': 'Piezīmes',
+  'anomaly.tile.open': 'atvērti: {count}',
   'anomaly.filter': 'Filtrēt pēc smaguma',
   'anomaly.none': 'Atvērtu anomāliju nav.',
   'anomaly.noneShown': 'Atvērtās anomālijas ir paslēptas. Izvēlieties skaitli augšā, lai tās atkal parādītu.',

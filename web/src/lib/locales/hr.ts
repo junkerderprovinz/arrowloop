@@ -77,6 +77,7 @@ const hr: Translations = {
   'anomaly.severity.info': 'Napomena',
   'anomaly.tile.warning': 'Upozorenja',
   'anomaly.tile.info': 'Napomene',
+  'anomaly.tile.open': 'otvoreno: {count}',
   'anomaly.filter': 'Filtriraj po težini',
   'anomaly.none': 'Nema otvorenih anomalija.',
   'anomaly.noneShown': 'Otvorene anomalije su skrivene. Odaberi broj iznad da ih ponovno prikažeš.',

@@ -77,6 +77,7 @@ const hi: Translations = {
   'anomaly.severity.info': 'टिप्पणी',
   'anomaly.tile.warning': 'चेतावनियाँ',
   'anomaly.tile.info': 'टिप्पणियाँ',
+  'anomaly.tile.open': 'खुले: {count}',
   'anomaly.filter': 'गंभीरता के अनुसार छानें',
   'anomaly.none': 'कोई खुली विसंगति नहीं।',
   'anomaly.noneShown': 'खुली विसंगतियाँ छिपी हैं। उन्हें फिर दिखाने के लिए ऊपर कोई संख्या चुनें।',

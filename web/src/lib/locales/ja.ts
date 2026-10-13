@@ -77,6 +77,7 @@ const ja: Translations = {
   'anomaly.severity.info': '注意',
   'anomaly.tile.warning': '警告',
   'anomaly.tile.info': '注意',
+  'anomaly.tile.open': '未解決: {count}',
   'anomaly.filter': '重大度で絞り込む',
   'anomaly.none': '未対応の異常はありません。',
   'anomaly.noneShown': '未対応の異常は非表示です。上の数字を選ぶと再び表示されます。',

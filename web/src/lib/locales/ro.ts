@@ -77,6 +77,7 @@ const ro: Translations = {
   'anomaly.severity.info': 'Notă',
   'anomaly.tile.warning': 'Avertismente',
   'anomaly.tile.info': 'Note',
+  'anomaly.tile.open': 'deschise: {count}',
   'anomaly.filter': 'Filtrează după gravitate',
   'anomaly.none': 'Nicio anomalie deschisă.',
   'anomaly.noneShown': 'Anomaliile deschise sunt ascunse. Alege un număr de mai sus ca să le afișezi din nou.',

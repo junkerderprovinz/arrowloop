@@ -77,6 +77,7 @@ const eu: Translations = {
   'anomaly.severity.info': 'Oharra',
   'anomaly.tile.warning': 'Abisuak',
   'anomaly.tile.info': 'Oharrak',
+  'anomaly.tile.open': 'irekita: {count}',
   'anomaly.filter': 'Iragazi larritasunaren arabera',
   'anomaly.none': 'Ez dago anomalia irekirik.',
   'anomaly.noneShown': 'Anomalia irekiak ezkutatuta daude. Aukeratu goiko zenbaki bat berriro erakusteko.',

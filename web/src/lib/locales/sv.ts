@@ -77,6 +77,7 @@ const sv: Translations = {
   'anomaly.severity.info': 'Notering',
   'anomaly.tile.warning': 'Varningar',
   'anomaly.tile.info': 'Noteringar',
+  'anomaly.tile.open': 'öppna: {count}',
   'anomaly.filter': 'Filtrera efter allvarlighet',
   'anomaly.none': 'Inga öppna avvikelser.',
   'anomaly.noneShown': 'De öppna avvikelserna är dolda. Välj en siffra ovan för att visa dem igen.',
