@@ -346,7 +346,7 @@ object AppData {
     private fun listening(port: Int): Boolean {
         repeat(50) {
             try {
-                Socket().use { it.connect(InetSocketAddress(InetAddress.getLoopbackAddress(), port), 200) }
+                Socket().use { it.connect(InetSocketAddress(LOOPBACK, port), 200) }
                 return true
             } catch (_: IOException) {
                 Thread.sleep(200)
@@ -356,7 +356,10 @@ object AppData {
     }
 
     /** A free port. The kernel takes it from its ephemeral range, far above the engine's. */
-    private fun freePort(): Int = ServerSocket(0, 1, InetAddress.getLoopbackAddress()).use { it.localPort }
+    private fun freePort(): Int = ServerSocket(0, 1, LOOPBACK).use { it.localPort }
+
+    // The server listens on IPv4, and Android's getLoopbackAddress() is ::1.
+    private val LOOPBACK: InetAddress = InetAddress.getByName("127.0.0.1")
 
     /** The password and the host key seed, drawn once and kept in the app's private storage. */
     private fun secrets(context: Context): Map<String, String> {
