@@ -133,6 +133,14 @@ describe('the settings tiles', () => {
     expect(screen.getByText('Moved General to place 2')).toBeTruthy()
   })
 
+  it('keep a long press from opening the context menu after the strip became the column', () => {
+    const { rerender } = render(<SettingsRail tiles={settingsTiles(true)} active="look" across />)
+    rerender(<SettingsRail tiles={settingsTiles(true)} active="look" />)
+    const sync = screen.getByRole('tab', { name: 'Sync' })
+    fireEvent.pointerDown(sync, { button: 0, pointerType: 'touch', pointerId: 1 })
+    expect(fireEvent.contextMenu(sync)).toBe(false)
+  })
+
   it('take no step past either end of the column', () => {
     render(<SettingsRail tiles={settingsTiles(true)} active="general" />)
     const [first] = screen.getAllByRole('tab')

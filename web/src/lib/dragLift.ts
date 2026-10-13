@@ -265,10 +265,34 @@ export function useReorder(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settling])
 
+  // The list's element can change under the hook, as when the settings strip
+  // gives way to the column, and its guards have to move with it.
+  const [el, setEl] = useState<HTMLElement | null>(null)
+  useLayoutEffect(() => {
+    if (container.current !== el) setEl(container.current)
+  })
+
+  // Once armed the gesture is the drag's: a long press opens no context menu
+  // and a moving finger does not scroll. Bound natively, since React's
+  // touchmove listener is passive and cannot cancel.
+  useEffect(() => {
+    if (!el) return
+    function onMenu(e: Event) {
+      if (lifted.current || pressed.current?.hold) e.preventDefault()
+    }
+    function onTouchMove(e: TouchEvent) {
+      if (lifted.current) e.preventDefault()
+    }
+    el.addEventListener('contextmenu', onMenu)
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    return () => {
+      el.removeEventListener('contextmenu', onMenu)
+      el.removeEventListener('touchmove', onTouchMove)
+    }
+  }, [el])
+
   // On the document, so a pointer that leaves the pressed item is still tracked.
   useEffect(() => {
-    const el = container.current
-
     function onMove(e: PointerEvent) {
       const p = pressed.current
       if (!p || e.pointerId !== p.pointerId) return
@@ -329,30 +353,16 @@ export function useReorder(
       if (e.key === 'Escape' && h) putBack(h)
     }
 
-    // Once armed the gesture is the drag's: a long press opens no context
-    // menu and a moving finger does not scroll. Bound natively, since React's
-    // touchmove listener is passive and cannot cancel.
-    function onMenu(e: Event) {
-      if (lifted.current || pressed.current?.hold) e.preventDefault()
-    }
-    function onTouchMove(e: TouchEvent) {
-      if (lifted.current) e.preventDefault()
-    }
-
     document.addEventListener('pointermove', onMove)
     document.addEventListener('pointerup', onUp)
     document.addEventListener('pointercancel', onCancel)
     document.addEventListener('keydown', onEscape)
-    el?.addEventListener('contextmenu', onMenu)
-    el?.addEventListener('touchmove', onTouchMove, { passive: false })
     return () => {
       cancelPress()
       document.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp)
       document.removeEventListener('pointercancel', onCancel)
       document.removeEventListener('keydown', onEscape)
-      el?.removeEventListener('contextmenu', onMenu)
-      el?.removeEventListener('touchmove', onTouchMove)
     }
     // The listeners read refs, so only these values need a re-bind.
     // eslint-disable-next-line react-hooks/exhaustive-deps
