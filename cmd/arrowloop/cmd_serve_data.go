@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -26,6 +27,7 @@ func cmdServeData(args []string) error {
 	root := fset.String("root", "/storage/emulated/0/Android/data", "the folder to serve")
 	readOnly := fset.Bool("read-only", false, "refuse every change")
 	adopt := fset.Bool("adopt", false, "hand new files to the app whose folder they are in (root only)")
+	exitOnEOF := fset.Bool("exit-on-eof", false, "stop when standard input closes, so the server ends with the app that started it")
 	if err := fset.Parse(args); err != nil {
 		return err
 	}
@@ -33,14 +35,27 @@ func cmdServeData(args []string) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", envDataHostKey, err)
 	}
-	return appdata.Serve(appdata.Options{
-		Addr:     *addr,
-		Root:     *root,
-		Password: os.Getenv(envDataPass),
-		HostKey:  seed,
-		ReadOnly: *readOnly,
-		Adopt:    *adopt,
-	})
+	done := make(chan error, 2)
+	go func() {
+		done <- appdata.Serve(appdata.Options{
+			Addr:     *addr,
+			Root:     *root,
+			Password: os.Getenv(envDataPass),
+			HostKey:  seed,
+			ReadOnly: *readOnly,
+			Adopt:    *adopt,
+		})
+	}()
+	// A server started through su or Shizuku outlives the app when the app is
+	// killed, and nothing else would ever stop it. The app holds the other end
+	// of the pipe, and the kernel closes it however the app goes.
+	if *exitOnEOF {
+		go func() {
+			_, _ = io.Copy(io.Discard, os.Stdin)
+			done <- nil
+		}()
+	}
+	return <-done
 }
 
 // linkAppData offers Android/data as a target when the phone app runs the
