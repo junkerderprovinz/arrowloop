@@ -32,8 +32,10 @@ export function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolea
   // The path and the arrow beside it say where, so the badge only says what.
   const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
   const note = entryNote(t, e)
+  // shrink-0: in a list of fixed height, min-h-9 would otherwise be all the
+  // room a row keeps, and a path that wraps would run over the next one.
   return (
-    <li className="flex min-h-9 items-center gap-x-3 gap-y-1 py-1 text-subline max-sm:flex-wrap">
+    <li className="flex min-h-9 shrink-0 items-center gap-x-3 gap-y-1 py-1 text-subline max-sm:flex-wrap">
       {/* Wide enough for a conflict's phrase in the longer languages; a longer
           one wraps inside its badge rather than being cut. */}
       <span className="flex w-64 shrink-0 max-md:w-48 max-sm:w-auto max-sm:max-w-full">
