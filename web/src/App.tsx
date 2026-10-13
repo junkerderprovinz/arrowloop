@@ -46,6 +46,7 @@ import { getMotion, setMotion, type MotionIntensity } from './lib/motion'
 import type { NavCounts } from './lib/navModel'
 import { useNavPins } from './lib/navPins'
 import { followSettings, useAnomaliesOn } from './lib/anomalyModule'
+import { coalesce } from './lib/coalesce'
 import { navigate, useLocation } from './lib/router'
 import { jobPlace, resolveRoute } from './lib/routes'
 import { followDevice, paintTheme, storedTheme, storeTheme, type ThemeChoice } from './lib/theme'
@@ -108,6 +109,10 @@ function useSmallWindow(): boolean {
 }
 
 const LABEL_AXES: LabelAxis[] = [...CONTROL_AXES, BOTTOM_BAR_AXIS]
+
+// The findings are asked for at most this often on the engine's events, so an
+// engine that reports a change on every read cannot keep the page asking.
+const FINDINGS_GAP_MS = 1000
 
 /**
  * @param signOut whether a password is set, the one case where the rail
@@ -254,20 +259,31 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     wireTooltips()
     refresh()
     reloadWaiting('')
-    void reloadFindings()
-    return api.watch((ev) => {
+    // The findings an event told of, said once the listing that holds them is in.
+    const told = new Set<string>()
+    const askFindings = coalesce(
+      () =>
+        reloadFindings().then((got) => {
+          for (const id of told) {
+            const fresh = got?.open.find((f) => f.id === id)
+            if (!fresh) continue
+            told.delete(id)
+            const what = t(`anomaly.kind.${fresh.kind}`)
+            push(
+              fresh.held
+                ? t('anomaly.heldNow', { job: fresh.job, what })
+                : `${t('anomaly.noteTitle', { job: fresh.job })}: ${what}`,
+              fresh.held ? 'fail' : undefined,
+            )
+          }
+        }),
+      FINDINGS_GAP_MS,
+    )
+    askFindings()
+    const stop = api.watch((ev) => {
       if (ev.phase === 'anomaly') {
-        void reloadFindings().then((got) => {
-          const fresh = got?.open.find((f) => f.id === ev.told)
-          if (!fresh) return
-          const what = t(`anomaly.kind.${fresh.kind}`)
-          push(
-            fresh.held
-              ? t('anomaly.heldNow', { job: fresh.job, what })
-              : `${t('anomaly.noteTitle', { job: fresh.job })}: ${what}`,
-            fresh.held ? 'fail' : undefined,
-          )
-        })
+        if (ev.told) told.add(ev.told)
+        askFindings()
         return
       }
       // "moving" frames arrive twice a second during a run. Only their speed
@@ -297,10 +313,14 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       refresh()
       if (ev.phase === 'finished') {
         reloadWaiting(ev.job)
-        void reloadFindings()
+        askFindings()
         if (ev.held) setRefused((prev) => ({ ...prev, [ev.job]: (prev[ev.job] ?? 0) + 1 }))
       }
     })
+    return () => {
+      stop()
+      askFindings.cancel()
+    }
     // The toast speaks the language of the moment the stream was opened; a
     // reconnect per language change would drop events for a word.
     // eslint-disable-next-line react-hooks/exhaustive-deps

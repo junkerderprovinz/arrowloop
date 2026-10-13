@@ -21,6 +21,8 @@ const settled: WindowSettings = {
 const session = vi.fn(() => Promise.resolve({ required: false, authenticated: false }))
 const saveWindow = vi.fn((_next: WindowSettings) => Promise.resolve(settled))
 const trashAll = vi.fn(() => Promise.resolve({ sides: [] as TrashSide[] }))
+const anomalies = vi.fn(() => Promise.resolve({ open: [], closed: [] }))
+const settings = vi.fn(() => Promise.resolve({}))
 
 vi.mock('./lib/api', async (actual) => ({
   ...(await actual<typeof import('./lib/api')>()),
@@ -34,11 +36,12 @@ vi.mock('./lib/api', async (actual) => ({
     session: () => session(),
     passkeys: () => Promise.resolve({ supported: false, rpId: '', total: 0, here: 0 }),
     conflicts: () => Promise.resolve({ conflicts: [], unread: [] }),
-    anomalies: () => Promise.resolve({ open: [], closed: [] }),
+    anomalies: () => anomalies(),
+    learning: () => Promise.resolve([]),
     trashAll: () => trashAll(),
     volumeCandidates: () => Promise.resolve({ candidates: [] }),
     config: () => Promise.resolve({ jobs: [] }),
-    settings: () => Promise.resolve({}),
+    settings: () => settings(),
     remotes: () => Promise.resolve({ remotes: [], backends: [], providers: [], unlisted: [] }),
     watch: (on: (ev: RunEvent) => void) => {
       emit = on
@@ -76,6 +79,10 @@ beforeEach(() => {
   desktop.mockImplementation(() => false)
   trashAll.mockReset()
   trashAll.mockImplementation(() => Promise.resolve({ sides: [] }))
+  anomalies.mockReset()
+  anomalies.mockImplementation(() => Promise.resolve({ open: [], closed: [] }))
+  settings.mockReset()
+  settings.mockImplementation(() => Promise.resolve({}))
 })
 afterEach(() => {
   cleanup()
@@ -170,4 +177,30 @@ describe('the app', () => {
 
     expect(await screen.findByText('This interface is protected')).toBeTruthy()
   })
+})
+
+describe('the findings', () => {
+  const photos = {
+    name: 'photos', left: 'D:/Photos', right: 'nas:photos', direction: 'both', schedule: '',
+    watch: false, disabled: false, running: false, lastSuccess: null, recent: [],
+  } as unknown as Job
+
+  // An engine that reports a change on every read must not keep the page asking.
+  for (const path of ['/settings/targets', '/anomalies']) {
+    for (const off of [false, true]) {
+      it(`are asked for a few times at most on ${path} with the notes ${off ? 'off' : 'on'}`, async () => {
+        jobs.mockImplementation(() => Promise.resolve([photos]))
+        settings.mockImplementation(() => Promise.resolve({ anomalies: { off } }))
+        anomalies.mockImplementation(() => {
+          setTimeout(() => emit({ job: 'photos', phase: 'anomaly' }), 0)
+          return Promise.resolve({ open: [], closed: [] })
+        })
+        window.history.replaceState(null, '', path)
+        show()
+        await act(() => new Promise((done) => setTimeout(done, 1500)))
+        expect(anomalies.mock.calls.length).toBeGreaterThanOrEqual(1)
+        expect(anomalies.mock.calls.length).toBeLessThanOrEqual(3)
+      })
+    }
+  }
 })
