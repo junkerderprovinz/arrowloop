@@ -136,12 +136,15 @@ export interface InfoVersionCardProps {
   /** "Check for updates" at the bottom of the card. Omit it and the card
    *  offers no check. */
   updateCheck?: UpdateCheck;
+  /** The app's own "New · n" button, which opens its list of changes. It
+   *  stands before the update check. */
+  whatsNew?: ReactNode;
   openUrl?: OpenUrl;
   hueIndex?: number;
 }
 
 /** The first card: every version as a row, and the update check under them. */
-export function InfoVersionCard({ text, rows, updateCheck, openUrl = openInBrowser, hueIndex }: InfoVersionCardProps) {
+export function InfoVersionCard({ text, rows, updateCheck, whatsNew, openUrl = openInBrowser, hueIndex }: InfoVersionCardProps) {
   return (
     <Card title={text.title} hint={text.hint} hueIndex={hueIndex}>
       <ul className="flex flex-col gap-3">
@@ -155,9 +158,10 @@ export function InfoVersionCard({ text, rows, updateCheck, openUrl = openInBrows
           </li>
         ))}
       </ul>
-      {updateCheck && (
-        <div className="flex justify-end">
-          <UpdateCheckButton {...updateCheck} />
+      {(updateCheck || whatsNew) && (
+        <div className="flex flex-wrap items-end justify-end gap-2">
+          {whatsNew}
+          {updateCheck && <UpdateCheckButton {...updateCheck} />}
         </div>
       )}
     </Card>
@@ -350,23 +354,19 @@ export function InfoHelpCard({
 export interface InfoTileProps {
   version: Omit<InfoVersionCardProps, "hueIndex">;
   help: Omit<InfoHelpCardProps, "hueIndex">;
-  /** The app's own What's new card. It takes the rainbow position after Help's,
-   *  and About moves one further. */
-  whatsNew?: ReactNode;
   about: Omit<InfoAboutCardProps, "hueIndex">;
   /** The Version card's rainbow position; the cards after it take the next ones. */
   hueIndex?: number;
 }
 
 /** The Info tile's cards in their fixed order, for the page that stacks them. */
-export function InfoTile({ version, help, whatsNew, about, hueIndex }: InfoTileProps) {
+export function InfoTile({ version, help, about, hueIndex }: InfoTileProps) {
   const at = (offset: number) => (hueIndex === undefined ? undefined : hueIndex + offset);
   return (
     <>
       <InfoVersionCard {...version} hueIndex={at(0)} />
       <InfoHelpCard {...help} hueIndex={at(1)} />
-      {whatsNew}
-      <InfoAboutCard {...about} hueIndex={at(whatsNew ? 3 : 2)} />
+      <InfoAboutCard {...about} hueIndex={at(2)} />
     </>
   );
 }

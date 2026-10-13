@@ -1,5 +1,5 @@
 // What this browser remembers about the changes of the running version: which
-// release is marked, which of its changes were seen and whether the dots show.
+// release is marked and which of its changes were seen.
 // Kept per browser, since one person's click must not hide a dot for
 // everybody who opens the same engine.
 
@@ -15,7 +15,6 @@ export interface NewsRecord {
   /** The `after` of the release whose changes are listed, '' for none. */
   after: string
   seen: string[]
-  dots: boolean
 }
 
 function readRaw(): string {
@@ -33,8 +32,7 @@ function isRecord(value: unknown): value is NewsRecord {
     typeof r === 'object' &&
     typeof r.version === 'string' &&
     typeof r.after === 'string' &&
-    Array.isArray(r.seen) &&
-    typeof r.dots === 'boolean'
+    Array.isArray(r.seen)
   )
 }
 
@@ -83,10 +81,10 @@ function changesOf(record: NewsRecord | null): Change[] {
 export function recordFor(stored: NewsRecord | null, running: string, settled: boolean): NewsRecord {
   if (stored?.version === running) return stored
   if (stored || settled) {
-    return { version: running, after: releaseSince(stored?.version ?? '', running)?.after ?? '', seen: [], dots: true }
+    return { version: running, after: releaseSince(stored?.version ?? '', running)?.after ?? '', seen: [] }
   }
   const newest = releaseSince('', running)
-  return { version: running, after: newest?.after ?? '', seen: newest?.changes.map((c) => c.id) ?? [], dots: true }
+  return { version: running, after: newest?.after ?? '', seen: newest?.changes.map((c) => c.id) ?? [] }
 }
 
 /** Settles the record once the running version and whether the engine was in use are known. */
@@ -109,10 +107,6 @@ export function markSeen(ids: string[], seen = true) {
   })
 }
 
-export function showDots(dots: boolean) {
-  update(() => ({ dots }))
-}
-
 export interface WhatsNew {
   /** The version the record was made for. */
   version: string
@@ -120,7 +114,6 @@ export interface WhatsNew {
   changes: Change[]
   seen: ReadonlySet<string>
   unseen: Change[]
-  dots: boolean
 }
 
 /** The running version's record, or null until startWhatsNew has settled it. */
@@ -131,6 +124,6 @@ export function useWhatsNew(): WhatsNew | null {
     if (!record) return null
     const changes = changesOf(record)
     const seen = new Set(record.seen)
-    return { version: record.version, changes, seen, unseen: changes.filter((c) => !seen.has(c.id)), dots: record.dots }
+    return { version: record.version, changes, seen, unseen: changes.filter((c) => !seen.has(c.id)) }
   }, [raw])
 }

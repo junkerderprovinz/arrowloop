@@ -24,8 +24,8 @@ const REFUSED: Record<string, TranslationKey> = {
 }
 
 /**
- * The last tile: every version this build is made of, the ways to report a
- * problem, What's new where a release brings one, and the maker's card.
+ * The last tile: every version this build is made of with the button to what
+ * the last update changed, the ways to report a problem, and the maker's card.
  */
 export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: ReactNode }) {
   const { t } = useT()
@@ -87,6 +87,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
               checkFailed: t('info.checkFailed'),
             },
           }}
+          whatsNew={whatsNew}
         />
       </div>
 
@@ -130,9 +131,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
         </div>
       </Card>
 
-      {whatsNew}
-
-      <About hueIndex={whatsNew ? 3 : 2} />
+      <About hueIndex={2} />
     </Stack>
   )
 }

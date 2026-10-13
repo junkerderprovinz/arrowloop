@@ -191,7 +191,7 @@ export function WhatsNewDots({ news, active }: { news: WhatsNew | null; active: 
   const live = useRef(targets)
   live.current = targets
   const unseen = news?.unseen
-  const on = active && !!news?.dots && !!unseen && unseen.length > 0
+  const on = active && !!unseen && unseen.length > 0
 
   const placeAll = () => {
     const rtl = document.documentElement.dir === 'rtl'

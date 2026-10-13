@@ -23,7 +23,7 @@ export interface SettingsProps {
   onWindow: (next: WindowSettings) => void
   /** The Targets page, which its tile draws whole. */
   targets: ReactNode
-  /** The list of what the last update changed, for the Info tile. */
+  /** The button that opens what the last update changed, for the Version card. */
   whatsNew?: ReactNode
 }
 

@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { RELEASES } from './whatsNew'
-import { markSeen, recordFor, showDots, startWhatsNew, type NewsRecord } from './whatsNewStore'
+import { markSeen, recordFor, startWhatsNew, type NewsRecord } from './whatsNewStore'
 
 const newest = RELEASES[0]
 const ids = newest.changes.map((c) => c.id)
@@ -12,8 +12,8 @@ beforeEach(() => localStorage.clear())
 
 describe('what a browser remembers about the changes', () => {
   it('marks every change after an update', () => {
-    const was: NewsRecord = { version: newest.after, after: '', seen: [], dots: true }
-    expect(recordFor(was, 'dev', true)).toEqual({ version: 'dev', after: newest.after, seen: [], dots: true })
+    const was: NewsRecord = { version: newest.after, after: '', seen: [] }
+    expect(recordFor(was, 'dev', true)).toEqual({ version: 'dev', after: newest.after, seen: [] })
   })
 
   it('marks the newest changes for an engine that was in use before this browser kept a record', () => {
@@ -34,9 +34,8 @@ describe('what a browser remembers about the changes', () => {
   it('starts over with all dots when the version changes', () => {
     startWhatsNew('dev', true)
     markSeen(ids)
-    showDots(false)
     startWhatsNew(`v${newest.after}-3-gabc`, true)
-    expect(stored()).toMatchObject({ seen: [], dots: true })
+    expect(stored()).toMatchObject({ seen: [] })
   })
 
   it('brings a seen change back', () => {

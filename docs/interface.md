@@ -351,21 +351,24 @@ leads to the tiles that took its cards, and **App** to Apps.
 
 ## Info
 
-The last tile has four cards. **Version** lists ArrowLoop, GlimStone and
+The last tile has three cards. **Version** lists ArrowLoop, GlimStone and
 rclone, each linked to its release notes, and **Check for updates** asks GitHub
-for a newer release. **Help** leads to GitHub, to email and to this manual, and
-**Bug report** downloads one file with the versions, the settings and jobs
-without passwords or keys, the last 100 runs and the open anomalies. Nothing is
-sent: you attach the file to an issue yourself. Then come **What's new** and
+for a newer release. After an update **New** stands beside it and opens the
+list of changes (see below). **Help** leads to GitHub, to email and to this
+manual, and **Bug report** downloads one file with the versions, the settings
+and jobs without passwords or keys, the last 100 runs and the open anomalies.
+Nothing is sent: you attach the file to an issue yourself. Then comes
 **About**.
 
 ## What's new
 
 After an update a glowing green dot marks each change on its page, and a dot
 on a link says something behind it changed. A click on a dot hides it, and a
-link's dot goes once everything behind it has been seen. The **What's new**
-card on the Info tile lists the changes of the last update with a way to each,
-and has **Show all again**, **Mark all as seen** and a switch for the dots.
+link's dot goes once everything behind it has been seen. **New** in the
+Version card on the Info tile shows how many changes you have not seen yet and
+opens a window listing the changes of the last update, each with a way to it.
+**Mark all as seen** at its top hides every dot. Once nothing is left, the same
+button reads **Show all again** and brings them back.
 
 ## The look
 
