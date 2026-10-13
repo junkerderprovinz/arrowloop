@@ -220,6 +220,10 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	defer r.release(name)
 
 	if err := r.slots.take(ctx, func() int { return r.config().ParallelJobs }); err != nil {
+		// Pausing or removing a job stops it, and one still waiting has not run.
+		if now, ok := r.config().Find(name); !ok || now.Disabled {
+			return history.Run{}, ErrWithdrawn
+		}
 		return history.Run{}, err
 	}
 	defer r.slots.give()
@@ -790,20 +794,34 @@ func (r *Runner) stopCron(c *cron.Cron) {
 // When a rebuild is already pending the signal is dropped, since that rebuild
 // reads the new configuration anyway. The run log stays where it was opened
 // until the next start. A run whose job is gone from the new configuration is
-// stopped, since nothing would list it any more to stop it by hand.
+// stopped, since nothing would list it any more to stop it by hand. So is the
+// run of a job this configuration pauses: somebody who presses Pause expects
+// the copying to stop. A paused job started by hand runs on through later
+// saves.
 func (r *Runner) Reload(cfg *job.Config) {
 	r.mu.Lock()
+	was := r.cfg
 	r.cfg = cfg
 	r.note = Notifier(cfg)
 	gone := map[string]context.CancelFunc{}
+	paused := map[string]context.CancelFunc{}
 	for name, stop := range r.inflight {
-		if _, ok := cfg.Find(name); !ok {
+		now, ok := cfg.Find(name)
+		before, _ := was.Find(name)
+		switch {
+		case !ok:
 			gone[name] = stop
+		case now.Disabled && !before.Disabled:
+			paused[name] = stop
 		}
 	}
 	r.mu.Unlock()
 	for name, stop := range gone {
 		r.log("%s: stopping, the job was removed", name)
+		stop()
+	}
+	for name, stop := range paused {
+		r.log("%s: stopping, the job was paused", name)
 		stop()
 	}
 	// A raised limit lets waiting runs start.
