@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 
 import { Empty, Num, Rows, Rule } from '../components/Shell'
 import { SelectionMark } from '../components/SelectionMark'
@@ -38,14 +38,26 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
   const [resolutions, setResolutions] = useState<Record<string, Resolution>>({})
   const [busy, setBusy] = useState(false)
 
-  // Escape leaves, except while a run is starting or a window above has it.
+  const root = useRef<HTMLDivElement>(null)
+
+  // The button that opened the plan is gone once it shows, which leaves the
+  // focus nowhere, and Escape needs it in here.
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape' && !busy && !document.querySelector('[role="dialog"], [role="menu"]')) onDone()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [busy, onDone])
+    if (document.activeElement === document.body) root.current?.focus({ preventScroll: true })
+  }, [])
+
+  // Escape leaves while the focus is in the plan, except while a run is
+  // starting or a bubble, list or window above takes the key for itself.
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key !== 'Escape' || busy) return
+    if (document.querySelector('[role="tooltip"], [role="dialog"], [role="menu"], [role="listbox"]')) return
+    onDone()
+  }
+  const wrap = (children: ReactNode) => (
+    <div ref={root} tabIndex={-1} onKeyDown={onKeyDown} className="flex flex-col gap-4 outline-none">
+      {children}
+    </div>
+  )
 
   useEffect(() => {
     let live = true
@@ -107,25 +119,25 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
   )
 
   if (error) {
-    return (
+    return wrap(
       <>
         {back}
         <p className="text-subline text-statusFail">{error}</p>
-      </>
+      </>,
     )
   }
   if (!plan) {
-    return (
+    return wrap(
       <>
         {back}
         <Empty>{t('preview.working')}</Empty>
-      </>
+      </>,
     )
   }
 
   const nothingToDo = everything.length === 0
 
-  return (
+  return wrap(
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
         {back}
@@ -182,7 +194,7 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
           </ul>
         </section>
       )}
-    </>
+    </>,
   )
 }
 

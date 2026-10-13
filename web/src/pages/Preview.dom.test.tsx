@@ -48,3 +48,44 @@ describe('the preview', () => {
     })
   })
 })
+
+describe('Escape on the preview', () => {
+  function open() {
+    const onDone = vi.fn()
+    render(
+      <>
+        <button type="button">Elsewhere</button>
+        <Preview job="docs" onDone={onDone} />
+      </>,
+    )
+    return onDone
+  }
+
+  it('leaves the page alone while the focus is elsewhere on it', async () => {
+    const onDone = open()
+    await screen.findByRole('button', { name: /Run 2 of 2/ })
+    const elsewhere = screen.getByRole('button', { name: 'Elsewhere' })
+    elsewhere.focus()
+    fireEvent.keyDown(elsewhere, { key: 'Escape' })
+    expect(onDone).not.toHaveBeenCalled()
+  })
+
+  it('closes the preview from inside it', async () => {
+    const onDone = open()
+    const runButton = await screen.findByRole('button', { name: /Run 2 of 2/ })
+    runButton.focus()
+    fireEvent.keyDown(runButton, { key: 'Escape' })
+    expect(onDone).toHaveBeenCalledOnce()
+  })
+
+  it('only closes an info bubble that is open', async () => {
+    const onDone = open()
+    await screen.findByRole('button', { name: /Run 2 of 2/ })
+    const back = screen.getByRole('button', { name: 'Back' })
+    fireEvent.focus(back)
+    expect(await screen.findByRole('tooltip')).toBeTruthy()
+    fireEvent.keyDown(back, { key: 'Escape' })
+    expect(onDone).not.toHaveBeenCalled()
+    expect(screen.queryByRole('tooltip')).toBeNull()
+  })
+})
