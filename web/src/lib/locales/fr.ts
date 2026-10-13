@@ -306,6 +306,9 @@ const fr: Translations = {
   'edit.pickDrive': 'Un disque enregistré',
   'edit.pickRemote': 'Une cible configurée',
   'targets.addStorage': 'Connecter stockages et clouds',
+  'targets.addStorageHint': 'Choisissez ce que vous voulez connecter. Les clouds, le stockage objet et les serveurs ont chacun leur groupe, et la recherche trouve un service par son nom ou par son nom dans rclone.',
+  'targets.search': 'Rechercher stockages et clouds',
+  'targets.searchNone': 'Rien ne correspond à « {query} ». La plupart des autres services fonctionnent avec {s3} ou {webdav}.',
   'targets.cloudEmpty': 'Aucun cloud connecté pour l\'instant. Dropbox, OneDrive, Google Drive et les autres clouds s\'ajoutent ici.',
   'targets.bucketEmpty': 'Aucun stockage objet pour l\'instant. Les compartiments sur Backblaze B2, Wasabi, MinIO et tout autre stockage S3 s\'ajoutent ici.',
   'targets.serverEmpty': 'Aucun serveur ni partage pour l\'instant. Les hôtes SSH via SFTP, les serveurs WebDAV et les partages Windows s\'ajoutent ici.',
@@ -1148,7 +1151,7 @@ const fr: Translations = {
   'new.change.learning': 'ArrowLoop apprend ce que font d\'habitude les exécutions de chaque tâche et signale une exécution très en dehors. {learning} montre où en est chaque tâche.',
   'new.change.jobBrakes': 'Les freins propres d\'une tâche se règlent sur sa page, sous {brakes}.',
   'new.change.jobMore': 'Chaque carte de tâche a {more}, avec tout ce que propose la page de la tâche. Une tâche peut être modifiée, vérifiée ou supprimée sans l\'ouvrir.',
-  'new.change.providerNames': '{connect} nomme chaque type de stockage que rclone connaît et le range dans son groupe, avec son logo s’il existe.',
+  'new.change.providerNames': '{connect} nomme chaque type de stockage que rclone connaît et le range dans son groupe, avec son logo s’il existe. Une recherche en haut en trouve un par son nom ou par son nom dans rclone.',
 }
 
 export default fr

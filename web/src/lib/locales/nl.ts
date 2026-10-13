@@ -306,6 +306,9 @@ const nl: Translations = {
   'edit.pickDrive': 'Een aangemelde schijf',
   'edit.pickRemote': 'Een ingesteld doel',
   'targets.addStorage': 'Opslag en clouds verbinden',
+  'targets.addStorageHint': 'Kies wat je wilt verbinden. Clouds, objectopslag en servers staan elk in een eigen groep, en het zoeken vindt een dienst op zijn naam of op zijn naam in rclone.',
+  'targets.search': 'Opslag en clouds doorzoeken',
+  'targets.searchNone': 'Niets past bij "{query}". De meeste andere diensten werken met {s3} of {webdav}.',
   'targets.cloudEmpty': 'Nog geen cloud gekoppeld. Dropbox, OneDrive, Google Drive en de andere clouds komen hier.',
   'targets.bucketEmpty': 'Nog geen objectopslag. Buckets bij Backblaze B2, Wasabi, MinIO en elke andere S3-opslag komen hier.',
   'targets.serverEmpty': 'Nog geen server of share. SSH-machines via SFTP, WebDAV-servers en Windows-shares komen hier.',
@@ -1148,7 +1151,7 @@ const nl: Translations = {
   'new.change.learning': 'ArrowLoop leert wat de runs van elke taak meestal doen en meldt een run ver daarbuiten. {learning} laat zien hoe ver elke taak is.',
   'new.change.jobBrakes': 'De eigen remmen van een taak stel je in op de pagina van die taak, onder {brakes}.',
   'new.change.jobMore': 'Elke taakkaart heeft {more}, met alles wat de pagina van de taak biedt. Een taak kun je zo bewerken, controleren of verwijderen zonder hem te openen.',
-  'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is.',
+  'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is. Een zoekveld bovenaan vindt er een op naam of op de naam in rclone.',
 }
 
 export default nl

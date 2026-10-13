@@ -306,6 +306,9 @@ const lv: Translations = {
   'edit.pickDrive': 'Reģistrēts disks',
   'edit.pickRemote': 'Iestatīts galamērķis',
   'targets.addStorage': 'Savienot krātuves un mākoņus',
+  'targets.addStorageHint': 'Izvēlieties, ko savienot. Mākoņiem, objektu krātuvēm un serveriem katram ir sava grupa, un meklēšana atrod pakalpojumu pēc tā nosaukuma vai nosaukuma rclone.',
+  'targets.search': 'Meklēt krātuves un mākoņus',
+  'targets.searchNone': 'Nekas neatbilst “{query}”. Lielākā daļa citu pakalpojumu darbojas ar {s3} vai {webdav}.',
   'targets.cloudEmpty': 'Vēl nav savienots neviens mākonis. Šeit pievieno Dropbox, OneDrive, Google Drive un citus mākoņus.',
   'targets.bucketEmpty': 'Vēl nav objektu krātuves. Šeit pievieno spaiņus Backblaze B2, Wasabi, MinIO un jebkurā citā S3 krātuvē.',
   'targets.serverEmpty': 'Vēl nav servera vai koplietojuma. Šeit pievieno SSH datorus caur SFTP, WebDAV serverus un Windows koplietojumus.',
@@ -1148,7 +1151,7 @@ const lv: Translations = {
   'new.change.learning': 'ArrowLoop mācās, ko katra darba palaišanas parasti dara, un atzīmē palaišanu, kas no tā ir tālu. {learning} rāda, cik tālu ir katrs darbs.',
   'new.change.jobBrakes': 'Darba paša bremzes iestata tā lapā, sadaļā {brakes}.',
   'new.change.jobMore': 'Katrai uzdevuma kartītei ir {more} ar visu, ko piedāvā uzdevuma lapa. Uzdevumu var rediģēt, pārbaudīt vai noņemt, to neatverot.',
-  'new.change.providerNames': '{connect} nosauc katru krātuves veidu, ko pazīst rclone, un ievieto to savā grupā, ar logotipu, ja tāds ir.',
+  'new.change.providerNames': '{connect} nosauc katru krātuves veidu, ko pazīst rclone, un ievieto to savā grupā, ar logotipu, ja tāds ir. Meklēšana augšā atrod veidu pēc nosaukuma vai nosaukuma rclone.',
 }
 
 export default lv

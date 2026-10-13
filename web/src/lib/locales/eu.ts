@@ -306,6 +306,9 @@ const eu: Translations = {
   'edit.pickDrive': 'Erregistratutako disko bat',
   'edit.pickRemote': 'Konfiguratutako helburu bat',
   'targets.addStorage': 'Konektatu biltegiak eta hodeiak',
+  'targets.addStorageHint': 'Hautatu zer konektatu nahi duzun. Hodeiek, objektu-biltegiek eta zerbitzariek bakoitzak bere taldea dute, eta bilaketak zerbitzu bat aurkitzen du bere izenaz edo rclone-ko izenaz.',
+  'targets.search': 'Bilatu biltegiak eta hodeiak',
+  'targets.searchNone': 'Ezer ez dator bat «{query}»-rekin. Beste zerbitzu gehienek {s3} edo {webdav} erabiliz funtzionatzen dute.',
   'targets.cloudEmpty': 'Oraindik ez dago hodeirik konektatuta. Hemen gehitzen dira Dropbox, OneDrive, Google Drive eta beste hodeiak.',
   'targets.bucketEmpty': 'Oraindik ez dago objektu-biltegirik. Hemen gehitzen dira Backblaze B2, Wasabi, MinIO eta beste edozein S3 biltegitako ontziak.',
   'targets.serverEmpty': 'Oraindik ez dago zerbitzari edo partekatzerik. Hemen gehitzen dira SFTP bidezko SSH ostalariak, WebDAV zerbitzariak eta Windows partekatzeak.',
@@ -1148,7 +1151,7 @@ const eu: Translations = {
   'new.change.learning': 'ArrowLoop-ek ikasten du lan bakoitzaren exekuzioek normalean zer egiten duten, eta horretatik oso urrun dagoen exekuzioa adierazten du. {learning} atalak erakusten du lan bakoitza non dagoen.',
   'new.change.jobBrakes': 'Lan baten balazta propioak bere orrian ezartzen dira, {brakes} atalean.',
   'new.change.jobMore': 'Lan-txartel bakoitzak {more} du, lanaren orriak eskaintzen duen guztiarekin. Lan bat editatu, egiaztatu edo kendu daiteke ireki gabe.',
-  'new.change.providerNames': '{connect} aukerak rclone-k ezagutzen duen biltegi mota bakoitza izendatzen du eta bere taldean jartzen du, logoarekin, baldin badago.',
+  'new.change.providerNames': '{connect} aukerak rclone-k ezagutzen duen biltegi mota bakoitza izendatzen du eta bere taldean jartzen du, logoarekin, baldin badago. Goiko bilaketak mota bat aurkitzen du bere izenaz edo rclone-ko izenaz.',
 }
 
 export default eu

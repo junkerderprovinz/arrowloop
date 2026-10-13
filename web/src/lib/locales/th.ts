@@ -306,6 +306,9 @@ const th: Translations = {
   'edit.pickDrive': 'ดิสก์ที่ลงทะเบียนไว้',
   'edit.pickRemote': 'ปลายทางที่ตั้งไว้',
   'targets.addStorage': 'เชื่อมต่อที่เก็บและคลาวด์',
+  'targets.addStorageHint': 'เลือกสิ่งที่จะเชื่อมต่อ คลาวด์ ที่เก็บออบเจ็กต์ และเซิร์ฟเวอร์ต่างอยู่ในกลุ่มของตัวเอง และการค้นหาจะพบบริการจากชื่อหรือชื่อใน rclone',
+  'targets.search': 'ค้นหาที่เก็บและคลาวด์',
+  'targets.searchNone': 'ไม่มีรายการที่ตรงกับ "{query}" บริการอื่นส่วนใหญ่ใช้งานได้ด้วย {s3} หรือ {webdav}',
   'targets.cloudEmpty': 'ยังไม่มีคลาวด์ที่เชื่อมต่อ Dropbox, OneDrive, Google Drive และคลาวด์อื่นๆ เพิ่มได้ที่นี่',
   'targets.bucketEmpty': 'ยังไม่มีที่เก็บอ็อบเจกต์ ถังบน Backblaze B2, Wasabi, MinIO และที่เก็บ S3 อื่นๆ เพิ่มได้ที่นี่',
   'targets.serverEmpty': 'ยังไม่มีเซิร์ฟเวอร์หรือการแชร์ เครื่อง SSH ผ่าน SFTP เซิร์ฟเวอร์ WebDAV และแชร์ของ Windows เพิ่มได้ที่นี่',
@@ -1148,7 +1151,7 @@ const th: Translations = {
   'new.change.learning': 'ArrowLoop เรียนรู้ว่าการรันของแต่ละงานมักทำอะไร และบันทึกการรันที่ห่างจากนั้นมาก {learning} แสดงว่าแต่ละงานไปถึงไหนแล้ว',
   'new.change.jobBrakes': 'เบรกเฉพาะของงานตั้งค่าได้ที่หน้าของงานนั้น ในส่วน {brakes}',
   'new.change.jobMore': 'การ์ดงานทุกใบมี {more} พร้อมทุกอย่างที่หน้าของงานมีให้ แก้ไข ตรวจสอบ หรือลบงานได้โดยไม่ต้องเปิด',
-  'new.change.providerNames': '{connect} ตั้งชื่อพื้นที่จัดเก็บทุกชนิดที่ rclone รู้จักและจัดเข้ากลุ่ม พร้อมโลโก้หากมี',
+  'new.change.providerNames': '{connect} ตั้งชื่อพื้นที่จัดเก็บทุกชนิดที่ rclone รู้จักและจัดเข้ากลุ่ม พร้อมโลโก้หากมี การค้นหาด้านบนหาได้จากชื่อหรือชื่อใน rclone',
 }
 
 export default th

@@ -306,6 +306,9 @@ const sk: Translations = {
   'edit.pickDrive': 'Zaregistrovaný disk',
   'edit.pickRemote': 'Nastavený cieľ',
   'targets.addStorage': 'Pripojiť úložiská a cloudy',
+  'targets.addStorageHint': 'Vyberte, čo chcete pripojiť. Cloudy, objektové úložiská a servery majú každý svoju skupinu a vyhľadávanie nájde službu podľa jej mena alebo mena v rclone.',
+  'targets.search': 'Hľadať úložiská a cloudy',
+  'targets.searchNone': 'Nič nezodpovedá „{query}“. Väčšina ostatných služieb funguje s {s3} alebo {webdav}.',
   'targets.cloudEmpty': 'Zatiaľ nie je pripojený žiadny cloud. Sem patrí Dropbox, OneDrive, Google Drive a ďalšie cloudy.',
   'targets.bucketEmpty': 'Zatiaľ žiadne objektové úložisko. Sem patria koše v Backblaze B2, Wasabi, MinIO a v každom inom úložisku S3.',
   'targets.serverEmpty': 'Zatiaľ žiadny server ani zdieľanie. Sem patria servery SSH cez SFTP, servery WebDAV a zdieľania Windows.',
@@ -1148,7 +1151,7 @@ const sk: Translations = {
   'new.change.learning': 'ArrowLoop sa učí, čo behy každej úlohy zvyčajne robia, a upozorní na beh ďaleko mimo toho. {learning} ukazuje, ako ďaleko je každá úloha.',
   'new.change.jobBrakes': 'Vlastné brzdy úlohy sa nastavujú na jej stránke v časti {brakes}.',
   'new.change.jobMore': 'Každá karta úlohy má {more} so všetkým, čo ponúka stránka úlohy. Úlohu tak možno upraviť, skontrolovať alebo odstrániť bez otvorenia.',
-  'new.change.providerNames': '{connect} pomenuje každý druh úložiska, ktorý rclone pozná, a zaradí ho do jeho skupiny, s logom, ak existuje.',
+  'new.change.providerNames': '{connect} pomenuje každý druh úložiska, ktorý rclone pozná, a zaradí ho do jeho skupiny, s logom, ak existuje. Vyhľadávanie hore nájde druh podľa mena alebo mena v rclone.',
 }
 
 export default sk

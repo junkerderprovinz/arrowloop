@@ -306,6 +306,9 @@ const hu: Translations = {
   'edit.pickDrive': 'Egy bejelentett lemez',
   'edit.pickRemote': 'Egy beállított cél',
   'targets.addStorage': 'Tárhelyek és felhők csatlakoztatása',
+  'targets.addStorageHint': 'Válaszd ki, mit csatlakoztatsz. A felhők, az objektumtárak és a szerverek külön csoportban állnak, és a keresés a szolgáltatást a neve vagy az rclone-beli neve alapján is megtalálja.',
+  'targets.search': 'Tárhelyek és felhők keresése',
+  'targets.searchNone': 'Semmi sem egyezik ezzel: „{query}”. A legtöbb más szolgáltatás {s3} vagy {webdav} révén működik.',
   'targets.cloudEmpty': 'Még nincs csatlakoztatott felhő. Ide kerül a Dropbox, a OneDrive, a Google Drive és a többi felhő.',
   'targets.bucketEmpty': 'Még nincs objektumároló. Ide kerülnek a Backblaze B2, a Wasabi, a MinIO és bármely más S3 tároló vödrei.',
   'targets.serverEmpty': 'Még nincs kiszolgáló vagy megosztás. Ide kerülnek az SFTP-n elérhető SSH gépek, a WebDAV kiszolgálók és a Windows megosztások.',
@@ -1148,7 +1151,7 @@ const hu: Translations = {
   'new.change.learning': 'Az ArrowLoop megtanulja, mit csinálnak általában az egyes feladatok futásai, és jelzi az ettől messze eső futást. A(z) {learning} mutatja, hol tart az egyes feladat.',
   'new.change.jobBrakes': 'Egy feladat saját fékjeit az oldalán, a(z) {brakes} résznél lehet beállítani.',
   'new.change.jobMore': 'Minden feladatkártyán van egy {more} gomb mindazzal, amit a feladat oldala kínál. Egy feladat így megnyitás nélkül szerkeszthető, ellenőrizhető vagy eltávolítható.',
-  'new.change.providerNames': 'A {connect} megnevez minden tárhelytípust, amit az rclone ismer, és a csoportjába sorolja, logóval, ha van.',
+  'new.change.providerNames': 'A {connect} megnevez minden tárhelytípust, amit az rclone ismer, és a csoportjába sorolja, logóval, ha van. A fenti keresés a típust a neve vagy az rclone-beli neve alapján is megtalálja.',
 }
 
 export default hu

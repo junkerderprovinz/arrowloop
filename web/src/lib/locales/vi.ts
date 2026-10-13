@@ -306,6 +306,9 @@ const vi: Translations = {
   'edit.pickDrive': 'Một ổ đĩa đã đăng ký',
   'edit.pickRemote': 'Một đích đã thiết lập',
   'targets.addStorage': 'Kết nối lưu trữ và đám mây',
+  'targets.addStorageHint': 'Hãy chọn thứ bạn muốn kết nối. Đám mây, lưu trữ đối tượng và máy chủ mỗi loại có nhóm riêng, và ô tìm kiếm tìm dịch vụ theo tên hoặc theo tên trong rclone.',
+  'targets.search': 'Tìm lưu trữ và đám mây',
+  'targets.searchNone': 'Không có gì khớp với "{query}". Hầu hết các dịch vụ khác dùng được với {s3} hoặc {webdav}.',
   'targets.cloudEmpty': 'Chưa có đám mây nào được kết nối. Dropbox, OneDrive, Google Drive và các đám mây khác được thêm ở đây.',
   'targets.bucketEmpty': 'Chưa có lưu trữ đối tượng. Bucket trên Backblaze B2, Wasabi, MinIO và mọi kho S3 khác được thêm ở đây.',
   'targets.serverEmpty': 'Chưa có máy chủ hay chia sẻ. Máy SSH qua SFTP, máy chủ WebDAV và thư mục chia sẻ Windows được thêm ở đây.',
@@ -1148,7 +1151,7 @@ const vi: Translations = {
   'new.change.learning': 'ArrowLoop học xem những lần chạy của mỗi tác vụ thường làm gì và ghi chú lần chạy vượt xa mức đó. {learning} cho thấy mỗi tác vụ đã đi được bao xa.',
   'new.change.jobBrakes': 'Phanh riêng của một tác vụ được đặt trên trang của nó, trong mục {brakes}.',
   'new.change.jobMore': 'Mỗi thẻ công việc có {more}, với mọi thứ trang của công việc cung cấp. Có thể sửa, kiểm tra hoặc xoá một công việc mà không cần mở nó.',
-  'new.change.providerNames': '{connect} đặt tên cho mọi loại lưu trữ mà rclone biết và xếp vào nhóm của nó, kèm logo nếu có.',
+  'new.change.providerNames': '{connect} đặt tên cho mọi loại lưu trữ mà rclone biết và xếp vào nhóm của nó, kèm logo nếu có. Ô tìm kiếm ở trên tìm được theo tên hoặc theo tên trong rclone.',
 }
 
 export default vi

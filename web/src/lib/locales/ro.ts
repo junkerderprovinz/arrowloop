@@ -306,6 +306,9 @@ const ro: Translations = {
   'edit.pickDrive': 'Un disc înregistrat',
   'edit.pickRemote': 'O destinație configurată',
   'targets.addStorage': 'Conectează stocare și cloud-uri',
+  'targets.addStorageHint': 'Alege ce vrei să conectezi. Cloud-urile, stocarea de obiecte și serverele au fiecare grupul lor, iar căutarea găsește un serviciu după numele lui sau după numele din rclone.',
+  'targets.search': 'Caută stocare și cloud-uri',
+  'targets.searchNone': 'Nimic nu se potrivește cu „{query}”. Majoritatea celorlalte servicii funcționează cu {s3} sau {webdav}.',
   'targets.cloudEmpty': 'Încă niciun cloud conectat. Aici se adaugă Dropbox, OneDrive, Google Drive și celelalte cloud-uri.',
   'targets.bucketEmpty': 'Încă nicio stocare de obiecte. Aici se adaugă găleți pe Backblaze B2, Wasabi, MinIO și orice altă stocare S3.',
   'targets.serverEmpty': 'Încă niciun server sau partajare. Aici se adaugă gazde SSH prin SFTP, servere WebDAV și partajări Windows.',
@@ -1148,7 +1151,7 @@ const ro: Translations = {
   'new.change.learning': 'ArrowLoop învață ce fac de obicei rulările fiecărei sarcini și semnalează o rulare mult în afara acestui lucru. {learning} arată cât de departe a ajuns fiecare sarcină.',
   'new.change.jobBrakes': 'Frânele proprii ale unei sarcini se setează pe pagina ei, la {brakes}.',
   'new.change.jobMore': 'Fiecare card de sarcină are {more}, cu tot ce oferă pagina sarcinii. O sarcină poate fi editată, verificată sau eliminată fără să o deschizi.',
-  'new.change.providerNames': '{connect} numește fiecare tip de stocare pe care îl cunoaște rclone și îl pune în grupul său, cu logo, acolo unde există.',
+  'new.change.providerNames': '{connect} numește fiecare tip de stocare pe care îl cunoaște rclone și îl pune în grupul său, cu logo, acolo unde există. O căutare sus găsește un tip după nume sau după numele din rclone.',
 }
 
 export default ro

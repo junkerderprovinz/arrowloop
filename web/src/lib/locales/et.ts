@@ -306,6 +306,9 @@ const et: Translations = {
   'edit.pickDrive': 'Registreeritud ketas',
   'edit.pickRemote': 'Seadistatud sihtkoht',
   'targets.addStorage': 'Ühenda hoidlad ja pilved',
+  'targets.addStorageHint': 'Vali, mida ühendada. Pilvedel, objektihoidlatel ja serveritel on igaühel oma rühm ning otsing leiab teenuse selle nime või rclone nime järgi.',
+  'targets.search': 'Otsi hoidlaid ja pilvi',
+  'targets.searchNone': 'Miski ei vasta otsingule „{query}“. Enamik teisi teenuseid töötab {s3} või {webdav} kaudu.',
   'targets.cloudEmpty': 'Ühtegi pilve pole veel ühendatud. Siia lisanduvad Dropbox, OneDrive, Google Drive ja teised pilved.',
   'targets.bucketEmpty': 'Objektisalvestust pole veel. Siia lisanduvad ämbrid Backblaze B2-s, Wasabis, MinIO-s ja igas teises S3 salvestuses.',
   'targets.serverEmpty': 'Serverit ega jagamist pole veel. Siia lisanduvad SSH masinad üle SFTP, WebDAV serverid ja Windowsi jagatud kaustad.',
@@ -1148,7 +1151,7 @@ const et: Translations = {
   'new.change.learning': 'ArrowLoop õpib, mida iga töö käivitused tavaliselt teevad, ja märgib käivituse, mis sellest kaugele kaldub. {learning} näitab, kui kaugel iga töö on.',
   'new.change.jobBrakes': 'Töö oma pidurid seatakse selle lehel jaotises {brakes}.',
   'new.change.jobMore': 'Igal töökaardil on {more} kõigega, mida töö leht pakub. Tööd saab muuta, kontrollida või eemaldada seda avamata.',
-  'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas.',
+  'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas. Otsing üleval leiab liigi nime või rclone nime järgi.',
 }
 
 export default et

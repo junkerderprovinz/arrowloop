@@ -306,6 +306,9 @@ const no: Translations = {
   'edit.pickDrive': 'En innmeldt disk',
   'edit.pickRemote': 'Et oppsatt mål',
   'targets.addStorage': 'Koble til lagring og skyer',
+  'targets.addStorageHint': 'Velg hva du vil koble til. Skyer, objektlagring og servere står hver i sin gruppe, og søket finner en tjeneste etter navnet eller navnet i rclone.',
+  'targets.search': 'Søk i lagring og skyer',
+  'targets.searchNone': 'Ingenting passer til «{query}». De fleste andre tjenester fungerer med {s3} eller {webdav}.',
   'targets.cloudEmpty': 'Ingen sky er koblet til ennå. Dropbox, OneDrive, Google Drive og de andre skyene legges til her.',
   'targets.bucketEmpty': 'Ingen objektlagring ennå. Buckets hos Backblaze B2, Wasabi, MinIO og all annen S3-lagring legges til her.',
   'targets.serverEmpty': 'Ingen server eller deling ennå. SSH-verter via SFTP, WebDAV-servere og Windows-delinger legges til her.',
@@ -1148,7 +1151,7 @@ const no: Translations = {
   'new.change.learning': 'ArrowLoop lærer hva kjøringene til hver jobb vanligvis gjør, og merker en kjøring langt utenfor det. {learning} viser hvor langt hver jobb har kommet.',
   'new.change.jobBrakes': 'En jobbs egne bremser stilles inn på siden dens, under {brakes}.',
   'new.change.jobMore': 'Hvert jobbkort har {more}, med alt jobbens side tilbyr. En jobb kan redigeres, sjekkes eller fjernes uten å åpne den.',
-  'new.change.providerNames': '{connect} navngir hver lagringstype rclone kjenner, og plasserer den i gruppen sin, med logo der det finnes.',
+  'new.change.providerNames': '{connect} navngir hver lagringstype rclone kjenner, og plasserer den i gruppen sin, med logo der det finnes. Et søk øverst finner en etter navnet eller navnet i rclone.',
 }
 
 export default no

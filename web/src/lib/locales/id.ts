@@ -306,6 +306,9 @@ const id: Translations = {
   'edit.pickDrive': 'Cakram yang terdaftar',
   'edit.pickRemote': 'Tujuan yang sudah disiapkan',
   'targets.addStorage': 'Hubungkan penyimpanan dan awan',
+  'targets.addStorageHint': 'Pilih apa yang mau kamu hubungkan. Awan, penyimpanan objek, dan server masing-masing punya kelompok sendiri, dan pencarian menemukan layanan lewat namanya atau nama rclone-nya.',
+  'targets.search': 'Cari penyimpanan dan awan',
+  'targets.searchNone': 'Tidak ada yang cocok dengan "{query}". Sebagian besar layanan lain bekerja dengan {s3} atau {webdav}.',
   'targets.cloudEmpty': 'Belum ada awan yang terhubung. Dropbox, OneDrive, Google Drive dan awan lainnya ditambahkan di sini.',
   'targets.bucketEmpty': 'Belum ada penyimpanan objek. Ember di Backblaze B2, Wasabi, MinIO dan penyimpanan S3 lainnya ditambahkan di sini.',
   'targets.serverEmpty': 'Belum ada server atau berbagi pakai. Mesin SSH lewat SFTP, server WebDAV dan berbagi Windows ditambahkan di sini.',
@@ -1148,7 +1151,7 @@ const id: Translations = {
   'new.change.learning': 'ArrowLoop mempelajari apa yang biasanya dilakukan proses setiap tugas dan mencatat proses yang jauh di luar itu. {learning} menunjukkan sejauh mana setiap tugas.',
   'new.change.jobBrakes': 'Rem milik suatu tugas diatur di halamannya, di bagian {brakes}.',
   'new.change.jobMore': 'Setiap kartu tugas punya {more}, berisi semua yang ditawarkan halaman tugas. Tugas bisa disunting, diperiksa, atau dihapus tanpa membukanya.',
-  'new.change.providerNames': '{connect} menamai setiap jenis penyimpanan yang dikenal rclone dan menaruhnya di kelompoknya, dengan logonya bila ada.',
+  'new.change.providerNames': '{connect} menamai setiap jenis penyimpanan yang dikenal rclone dan menaruhnya di kelompoknya, dengan logonya bila ada. Pencarian di atas menemukannya lewat namanya atau nama rclone-nya.',
 }
 
 export default id

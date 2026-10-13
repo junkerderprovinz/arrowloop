@@ -306,6 +306,9 @@ const it: Translations = {
   'edit.pickDrive': 'Un disco registrato',
   'edit.pickRemote': 'Una destinazione configurata',
   'targets.addStorage': 'Collega archivi e cloud',
+  'targets.addStorageHint': 'Scegli cosa collegare. Cloud, archivi a oggetti e server hanno ciascuno il proprio gruppo, e la ricerca trova un servizio dal suo nome o dal suo nome in rclone.',
+  'targets.search': 'Cerca archivi e cloud',
+  'targets.searchNone': 'Niente corrisponde a «{query}». La maggior parte degli altri servizi funziona con {s3} o {webdav}.',
   'targets.cloudEmpty': 'Ancora nessun cloud collegato. Qui si aggiungono Dropbox, OneDrive, Google Drive e gli altri cloud.',
   'targets.bucketEmpty': 'Ancora nessuna archiviazione a oggetti. Qui si aggiungono i bucket su Backblaze B2, Wasabi, MinIO e ogni altro archivio S3.',
   'targets.serverEmpty': 'Ancora nessun server o condivisione. Qui si aggiungono host SSH tramite SFTP, server WebDAV e condivisioni Windows.',
@@ -1148,7 +1151,7 @@ const it: Translations = {
   'new.change.learning': 'ArrowLoop impara cosa fanno di solito le esecuzioni di ogni attività e segnala un\'esecuzione molto fuori da questo. {learning} mostra a che punto è ogni attività.',
   'new.change.jobBrakes': 'I freni propri di un\'attività si impostano nella sua pagina, sotto {brakes}.',
   'new.change.jobMore': 'Ogni scheda di lavoro ha {more}, con tutto ciò che offre la pagina del lavoro. Un lavoro si può modificare, controllare o rimuovere senza aprirlo.',
-  'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste.',
+  'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste. Una ricerca in alto ne trova uno dal nome o dal nome in rclone.',
 }
 
 export default it

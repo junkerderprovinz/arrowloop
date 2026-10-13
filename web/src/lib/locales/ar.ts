@@ -306,6 +306,9 @@ const ar: Translations = {
   'edit.pickDrive': 'قرص مسجَّل',
   'edit.pickRemote': 'وجهة معدّة',
   'targets.addStorage': 'ربط التخزين والسحابات',
+  'targets.addStorageHint': 'اختر ما تريد ربطه. للسحابات والتخزين الكائني والخوادم مجموعة لكل منها، والبحث يجد الخدمة باسمها أو باسمها في rclone.',
+  'targets.search': 'ابحث في التخزين والسحابات',
+  'targets.searchNone': 'لا شيء يطابق «{query}». معظم الخدمات الأخرى تعمل مع {s3} أو {webdav}.',
   'targets.cloudEmpty': 'لا سحابة متصلة بعد. هنا تُضاف Dropbox وOneDrive وGoogle Drive وسائر السحابات.',
   'targets.bucketEmpty': 'لا تخزين كائنات بعد. هنا تُضاف سلال S3 على Backblaze B2 وWasabi وMinIO وأي تخزين S3 آخر.',
   'targets.serverEmpty': 'لا خوادم ولا مشاركات بعد. هنا تُضاف مضيفات SSH عبر SFTP وخوادم WebDAV ومشاركات ويندوز.',
@@ -1148,7 +1151,7 @@ const ar: Translations = {
   'new.change.learning': 'يتعلّم ArrowLoop ما تفعله تشغيلات كل مهمة عادةً، ويسجّل ملاحظة عن أي تشغيل بعيد جدًا عن ذلك. يُظهر {learning} إلى أين وصلت كل مهمة.',
   'new.change.jobBrakes': 'تُضبط مكابح المهمة الخاصة في صفحتها، ضمن {brakes}.',
   'new.change.jobMore': 'لكل بطاقة مهمة زر {more} فيه كل ما تقدمه صفحة المهمة. يمكن تعديل المهمة أو فحصها أو إزالتها دون فتحها.',
-  'new.change.providerNames': 'يسمّي {connect} كل نوع تخزين يعرفه rclone ويضعه في مجموعته، مع شعاره حيث يوجد.',
+  'new.change.providerNames': 'يسمّي {connect} كل نوع تخزين يعرفه rclone ويضعه في مجموعته، مع شعاره حيث يوجد. ويجد البحث في الأعلى النوع باسمه أو باسمه في rclone.',
 }
 
 export default ar

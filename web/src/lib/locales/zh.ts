@@ -306,6 +306,9 @@ const zh: Translations = {
   'edit.pickDrive': '已登记的磁盘',
   'edit.pickRemote': '已配置的目标',
   'targets.addStorage': '连接存储和云',
+  'targets.addStorageHint': '选择要连接的内容。云、对象存储和服务器各有自己的分组，搜索可以按名称或 rclone 中的名称找到服务。',
+  'targets.search': '搜索存储和云',
+  'targets.searchNone': '没有与“{query}”匹配的内容。其他大多数服务都可以通过 {s3} 或 {webdav} 使用。',
   'targets.cloudEmpty': '还没有连接云服务。Dropbox、OneDrive、Google Drive 等云服务在这里添加。',
   'targets.bucketEmpty': '还没有对象存储。Backblaze B2、Wasabi、MinIO 以及其他 S3 存储上的存储桶在这里添加。',
   'targets.serverEmpty': '还没有服务器或共享。通过 SFTP 的 SSH 主机、WebDAV 服务器和 Windows 共享在这里添加。',
@@ -1148,7 +1151,7 @@ const zh: Translations = {
   'new.change.learning': 'ArrowLoop 会学习每个任务的运行通常做什么，并记下远远超出常规的运行。{learning} 显示每个任务学到了哪一步。',
   'new.change.jobBrakes': '任务自己的制动在其页面的 {brakes} 中设置。',
   'new.change.jobMore': '每张任务卡片都有 {more}，包含任务页面提供的全部功能。无需打开任务，就能编辑、检查或删除它。',
-  'new.change.providerNames': '{connect}为 rclone 支持的每种存储命名并归入相应分组，有标志的会显示标志。',
+  'new.change.providerNames': '{connect}为 rclone 支持的每种存储命名并归入相应分组，有标志的会显示标志。顶部的搜索可按名称或 rclone 中的名称查找。',
 }
 
 export default zh

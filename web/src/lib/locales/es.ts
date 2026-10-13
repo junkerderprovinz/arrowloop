@@ -306,6 +306,9 @@ const es: Translations = {
   'edit.pickDrive': 'Un disco registrado',
   'edit.pickRemote': 'Un destino configurado',
   'targets.addStorage': 'Conectar almacenamiento y nubes',
+  'targets.addStorageHint': 'Elige qué quieres conectar. Las nubes, el almacenamiento de objetos y los servidores tienen cada uno su grupo, y la búsqueda encuentra un servicio por su nombre o por su nombre en rclone.',
+  'targets.search': 'Buscar almacenamiento y nubes',
+  'targets.searchNone': 'Nada coincide con «{query}». La mayoría de los demás servicios funcionan con {s3} o {webdav}.',
   'targets.cloudEmpty': 'Todavía no hay ninguna nube conectada. Aquí se añaden Dropbox, OneDrive, Google Drive y las demás nubes.',
   'targets.bucketEmpty': 'Todavía no hay almacenamiento de objetos. Aquí se añaden contenedores en Backblaze B2, Wasabi, MinIO y cualquier otro almacenamiento S3.',
   'targets.serverEmpty': 'Todavía no hay servidores ni recursos compartidos. Aquí se añaden servidores SSH por SFTP, servidores WebDAV y recursos compartidos de Windows.',
@@ -1148,7 +1151,7 @@ const es: Translations = {
   'new.change.learning': 'ArrowLoop aprende qué suelen hacer las ejecuciones de cada tarea y anota una ejecución muy fuera de eso. {learning} muestra hasta dónde ha llegado cada tarea.',
   'new.change.jobBrakes': 'Los frenos propios de una tarea se ajustan en su página, en {brakes}.',
   'new.change.jobMore': 'Cada tarjeta de tarea tiene {more}, con todo lo que ofrece la página de la tarea. Una tarea se puede editar, comprobar o quitar sin abrirla.',
-  'new.change.providerNames': '{connect} nombra cada tipo de almacenamiento que conoce rclone y lo coloca en su grupo, con su logotipo si existe.',
+  'new.change.providerNames': '{connect} nombra cada tipo de almacenamiento que conoce rclone y lo coloca en su grupo, con su logotipo si existe. Una búsqueda arriba encuentra uno por su nombre o por su nombre en rclone.',
 }
 
 export default es

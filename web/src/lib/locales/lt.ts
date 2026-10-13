@@ -306,6 +306,9 @@ const lt: Translations = {
   'edit.pickDrive': 'Užregistruotas diskas',
   'edit.pickRemote': 'Sukonfigūruota paskirtis',
   'targets.addStorage': 'Prijungti saugyklas ir debesis',
+  'targets.addStorageHint': 'Pasirinkite, ką prijungti. Debesys, objektų saugyklos ir serveriai turi kiekvienas savo grupę, o paieška randa paslaugą pagal jos pavadinimą arba pavadinimą rclone.',
+  'targets.search': 'Ieškoti saugyklų ir debesų',
+  'targets.searchNone': 'Niekas neatitinka „{query}“. Dauguma kitų paslaugų veikia su {s3} arba {webdav}.',
   'targets.cloudEmpty': 'Kol kas neprijungtas joks debesis. Čia pridedami Dropbox, OneDrive, Google Drive ir kiti debesys.',
   'targets.bucketEmpty': 'Kol kas nėra objektų saugyklos. Čia pridedami kibirai Backblaze B2, Wasabi, MinIO ir bet kurioje kitoje S3 saugykloje.',
   'targets.serverEmpty': 'Kol kas nėra serverio ar bendrinimo. Čia pridedami SSH kompiuteriai per SFTP, WebDAV serveriai ir Windows bendrinami aplankai.',
@@ -1148,7 +1151,7 @@ const lt: Translations = {
   'new.change.learning': 'ArrowLoop mokosi, ką paprastai daro kiekvienos užduoties paleidimai, ir pažymi paleidimą, toli nuo to nukrypusį. {learning} rodo, kiek pažengusi kiekviena užduotis.',
   'new.change.jobBrakes': 'Užduoties nuosavi stabdžiai nustatomi jos puslapyje, skiltyje {brakes}.',
   'new.change.jobMore': 'Kiekvienoje užduoties kortelėje yra {more} su viskuo, ką siūlo užduoties puslapis. Užduotį galima redaguoti, patikrinti ar pašalinti jos neatidarius.',
-  'new.change.providerNames': '{connect} įvardija kiekvieną rclone žinomą saugyklos rūšį ir priskiria ją grupei, su logotipu, jei jis yra.',
+  'new.change.providerNames': '{connect} įvardija kiekvieną rclone žinomą saugyklos rūšį ir priskiria ją grupei, su logotipu, jei jis yra. Paieška viršuje randa rūšį pagal pavadinimą arba pavadinimą rclone.',
 }
 
 export default lt

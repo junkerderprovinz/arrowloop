@@ -306,6 +306,9 @@ const gl: Translations = {
   'edit.pickDrive': 'Un disco rexistrado',
   'edit.pickRemote': 'Un destino configurado',
   'targets.addStorage': 'Conectar almacenamento e nubes',
+  'targets.addStorageHint': 'Elixe o que queres conectar. As nubes, o almacenamento de obxectos e os servidores teñen cadanseu grupo, e a busca atopa un servizo polo seu nome ou polo seu nome en rclone.',
+  'targets.search': 'Buscar almacenamento e nubes',
+  'targets.searchNone': 'Nada coincide con «{query}». A maioría dos outros servizos funcionan con {s3} ou {webdav}.',
   'targets.cloudEmpty': 'Aínda non hai ningunha nube conectada. Aquí engádense Dropbox, OneDrive, Google Drive e as demais nubes.',
   'targets.bucketEmpty': 'Aínda non hai almacenamento de obxectos. Aquí engádense baldes en Backblaze B2, Wasabi, MinIO e calquera outro almacenamento S3.',
   'targets.serverEmpty': 'Aínda non hai servidores nin comparticións. Aquí engádense máquinas SSH por SFTP, servidores WebDAV e comparticións de Windows.',
@@ -1148,7 +1151,7 @@ const gl: Translations = {
   'new.change.learning': 'ArrowLoop aprende que adoitan facer as execucións de cada tarefa e anota unha execución moi fóra diso. {learning} amosa ata onde chegou cada tarefa.',
   'new.change.jobBrakes': 'Os freos propios dunha tarefa axústanse na súa páxina, en {brakes}.',
   'new.change.jobMore': 'Cada tarxeta de tarefa ten {more}, con todo o que ofrece a páxina da tarefa. Unha tarefa pódese editar, comprobar ou eliminar sen abrila.',
-  'new.change.providerNames': '{connect} nomea cada tipo de almacenamento que coñece rclone e colócao no seu grupo, co seu logotipo se existe.',
+  'new.change.providerNames': '{connect} nomea cada tipo de almacenamento que coñece rclone e colócao no seu grupo, co seu logotipo se existe. Unha busca arriba atopa un polo seu nome ou polo seu nome en rclone.',
 }
 
 export default gl

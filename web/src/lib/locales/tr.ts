@@ -306,6 +306,9 @@ const tr: Translations = {
   'edit.pickDrive': 'Kaydedilmiş bir disk',
   'edit.pickRemote': 'Kurulmuş bir hedef',
   'targets.addStorage': 'Depolama ve bulutları bağla',
+  'targets.addStorageHint': 'Neyi bağlayacağını seç. Bulutlar, nesne depolama ve sunucular kendi gruplarında durur, arama da bir hizmeti adıyla ya da rclone’daki adıyla bulur.',
+  'targets.search': 'Depolama ve bulutlarda ara',
+  'targets.searchNone': '“{query}” ile eşleşen bir şey yok. Diğer hizmetlerin çoğu {s3} ya da {webdav} ile çalışır.',
   'targets.cloudEmpty': 'Henüz bağlı bulut yok. Dropbox, OneDrive, Google Drive ve diğer bulutlar buraya eklenir.',
   'targets.bucketEmpty': 'Henüz nesne depolama yok. Backblaze B2, Wasabi, MinIO ve diğer tüm S3 depolarındaki kovalar buraya eklenir.',
   'targets.serverEmpty': 'Henüz sunucu veya paylaşım yok. SFTP üzerinden SSH makineleri, WebDAV sunucuları ve Windows paylaşımları buraya eklenir.',
@@ -1148,7 +1151,7 @@ const tr: Translations = {
   'new.change.learning': 'ArrowLoop her işin çalıştırmalarının genelde ne yaptığını öğrenir ve bunun çok dışında kalan bir çalıştırmayı not eder. {learning} her işin ne kadar ilerlediğini gösterir.',
   'new.change.jobBrakes': 'Bir işin kendi frenleri, kendi sayfasında {brakes} altında ayarlanır.',
   'new.change.jobMore': 'Her iş kartında, işin sayfasının sunduğu her şeyle birlikte {more} var. Bir iş açılmadan düzenlenebilir, denetlenebilir ya da kaldırılabilir.',
-  'new.change.providerNames': '{connect}, rclone’un bildiği her depolama türünü adlandırır ve logosu varsa logosuyla birlikte grubuna yerleştirir.',
+  'new.change.providerNames': '{connect}, rclone’un bildiği her depolama türünü adlandırır ve logosu varsa logosuyla birlikte grubuna yerleştirir. Üstteki arama bir türü adıyla ya da rclone’daki adıyla bulur.',
 }
 
 export default tr

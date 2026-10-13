@@ -306,6 +306,9 @@ const pl: Translations = {
   'edit.pickDrive': 'Zgłoszony dysk',
   'edit.pickRemote': 'Skonfigurowany cel',
   'targets.addStorage': 'Połącz magazyny i chmury',
+  'targets.addStorageHint': 'Wybierz, co chcesz połączyć. Chmury, magazyny obiektów i serwery mają każde swoją grupę, a wyszukiwanie znajduje usługę po jej nazwie albo nazwie w rclone.',
+  'targets.search': 'Szukaj magazynów i chmur',
+  'targets.searchNone': 'Nic nie pasuje do „{query}”. Większość innych usług działa z {s3} albo {webdav}.',
   'targets.cloudEmpty': 'Nie połączono jeszcze żadnej chmury. Tutaj dodaje się Dropbox, OneDrive, Google Drive i inne chmury.',
   'targets.bucketEmpty': 'Nie ma jeszcze magazynu obiektowego. Tutaj dodaje się kubełki w Backblaze B2, Wasabi, MinIO i każdym innym magazynie S3.',
   'targets.serverEmpty': 'Nie ma jeszcze serwera ani udziału. Tutaj dodaje się serwery SSH przez SFTP, serwery WebDAV i udziały Windows.',
@@ -1148,7 +1151,7 @@ const pl: Translations = {
   'new.change.learning': 'ArrowLoop uczy się, co zwykle robią uruchomienia każdego zadania, i odnotowuje uruchomienie daleko od tego. {learning} pokazuje, jak daleko jest każde zadanie.',
   'new.change.jobBrakes': 'Własne hamulce zadania ustawia się na jego stronie, w części {brakes}.',
   'new.change.jobMore': 'Każda karta zadania ma {more}, ze wszystkim, co oferuje strona zadania. Zadanie można edytować, sprawdzić lub usunąć bez otwierania go.',
-  'new.change.providerNames': '{connect} nazywa każdy rodzaj magazynu znany rclone i umieszcza go w jego grupie, z logo, jeśli istnieje.',
+  'new.change.providerNames': '{connect} nazywa każdy rodzaj magazynu znany rclone i umieszcza go w jego grupie, z logo, jeśli istnieje. Wyszukiwanie u góry znajduje rodzaj po nazwie albo nazwie w rclone.',
 }
 
 export default pl

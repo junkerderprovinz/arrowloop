@@ -306,6 +306,9 @@ const ms: Translations = {
   'edit.pickDrive': 'Cakera yang didaftarkan',
   'edit.pickRemote': 'Destinasi yang disediakan',
   'targets.addStorage': 'Sambung storan dan awan',
+  'targets.addStorageHint': 'Pilih apa yang hendak disambung. Awan, storan objek dan pelayan masing-masing ada kumpulan sendiri, dan carian menemui perkhidmatan melalui namanya atau nama rclone-nya.',
+  'targets.search': 'Cari storan dan awan',
+  'targets.searchNone': 'Tiada yang sepadan dengan "{query}". Kebanyakan perkhidmatan lain berfungsi dengan {s3} atau {webdav}.',
   'targets.cloudEmpty': 'Belum ada awan yang disambung. Dropbox, OneDrive, Google Drive dan awan lain ditambah di sini.',
   'targets.bucketEmpty': 'Belum ada storan objek. Baldi di Backblaze B2, Wasabi, MinIO dan mana-mana storan S3 lain ditambah di sini.',
   'targets.serverEmpty': 'Belum ada pelayan atau perkongsian. Mesin SSH melalui SFTP, pelayan WebDAV dan perkongsian Windows ditambah di sini.',
@@ -1148,7 +1151,7 @@ const ms: Translations = {
   'new.change.learning': 'ArrowLoop mempelajari apa yang biasanya dilakukan oleh larian setiap tugas dan mencatat larian yang jauh di luar itu. {learning} menunjukkan sejauh mana setiap tugas.',
   'new.change.jobBrakes': 'Brek sendiri sesuatu tugas ditetapkan di halamannya, di bawah {brakes}.',
   'new.change.jobMore': 'Setiap kad tugas ada {more}, dengan segala yang ditawarkan oleh halaman tugas itu. Tugas boleh disunting, disemak atau dibuang tanpa membukanya.',
-  'new.change.providerNames': '{connect} menamakan setiap jenis storan yang dikenali rclone dan meletakkannya dalam kumpulannya, dengan logo jika ada.',
+  'new.change.providerNames': '{connect} menamakan setiap jenis storan yang dikenali rclone dan meletakkannya dalam kumpulannya, dengan logo jika ada. Carian di atas menemuinya melalui namanya atau nama rclone-nya.',
 }
 
 export default ms

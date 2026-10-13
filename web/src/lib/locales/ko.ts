@@ -306,6 +306,9 @@ const ko: Translations = {
   'edit.pickDrive': '등록된 디스크',
   'edit.pickRemote': '설정된 대상',
   'targets.addStorage': '저장소와 클라우드 연결',
+  'targets.addStorageHint': '연결할 것을 고르세요. 클라우드, 오브젝트 저장소, 서버는 각각 자기 그룹에 있고, 검색은 서비스 이름이나 rclone 이름으로 서비스를 찾습니다.',
+  'targets.search': '저장소와 클라우드 검색',
+  'targets.searchNone': '"{query}"와 맞는 항목이 없습니다. 다른 서비스는 대부분 {s3} 또는 {webdav}로 동작합니다.',
   'targets.cloudEmpty': '아직 연결된 클라우드가 없습니다. Dropbox, OneDrive, Google Drive 등 다른 클라우드는 여기에 추가합니다.',
   'targets.bucketEmpty': '아직 오브젝트 스토리지가 없습니다. Backblaze B2, Wasabi, MinIO 등 다른 S3 저장소의 버킷은 여기에 추가합니다.',
   'targets.serverEmpty': '아직 서버나 공유가 없습니다. SFTP를 통한 SSH 호스트, WebDAV 서버, Windows 공유는 여기에 추가합니다.',
@@ -1148,7 +1151,7 @@ const ko: Translations = {
   'new.change.learning': 'ArrowLoop은 각 작업의 평소 실행 모습을 배우고, 그것을 크게 벗어난 실행을 알립니다. {learning}에서 작업별 진행을 볼 수 있습니다.',
   'new.change.jobBrakes': '작업별 브레이크는 해당 작업 페이지의 {brakes}에서 설정합니다.',
   'new.change.jobMore': '모든 작업 카드에 {more} 메뉴가 있어, 작업 페이지에서 할 수 있는 모든 것이 들어 있습니다. 작업을 열지 않고도 편집, 확인, 삭제할 수 있습니다.',
-  'new.change.providerNames': '{connect}은 rclone이 아는 모든 종류의 저장소에 이름을 붙이고 그룹에 넣으며, 로고가 있으면 함께 보여 줍니다.',
+  'new.change.providerNames': '{connect}은 rclone이 아는 모든 종류의 저장소에 이름을 붙이고 그룹에 넣으며, 로고가 있으면 함께 보여 줍니다. 위쪽 검색으로 이름이나 rclone 이름을 써서 찾을 수 있습니다.',
 }
 
 export default ko

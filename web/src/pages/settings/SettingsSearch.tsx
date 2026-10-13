@@ -4,6 +4,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 
 import { IconClose, IconSearch } from '../../components/glyphs'
+import { fold } from '../../lib/fold'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { navigate } from '../../lib/router'
@@ -36,11 +37,6 @@ interface Item {
 const SHOWN = 40
 /** Added to a match found only in explanations, so every name match ranks first. */
 const PROSE = 1000
-
-/** Lowercases and drops accents and hyphens, so "zeitplane" finds "Zeitpläne" and "offsite" finds "Off-site". */
-export function fold(s: string): string {
-  return s.normalize('NFD').replace(/\p{M}/gu, '').replace(/ß/g, 'ss').replace(/-/g, '').toLowerCase()
-}
 
 export function buildItems(t: (k: TranslationKey) => string, tiles: Tile[]): Item[] {
   const items: Item[] = []

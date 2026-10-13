@@ -26,6 +26,7 @@ export function Dialog({
   onClose,
   closeOnBackdrop = true,
   footer,
+  search,
   wide = false,
   children,
 }: {
@@ -45,6 +46,11 @@ export function Dialog({
    * out, the row holds a single Close.
    */
   footer?: ReactNode
+  /**
+   * A picker's search, at the end of the heading's line, where it stays put
+   * while the body scrolls. The line wraps, so a narrow window puts it below.
+   */
+  search?: ReactNode
   /** Room for a list or a form with two columns. */
   wide?: boolean
   children: ReactNode
@@ -98,13 +104,14 @@ export function Dialog({
         }`}
         style={hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : undefined}
       >
-        <div className="px-5 pb-2 pt-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 pb-2 pt-5">
           <h2 className="flex items-center">
             <Badge tone="heading" size="heading" wrap hueIndex={hueIndex}>
               {title}
               {hint && <InfoBubble tip={hint} onAccent />}
             </Badge>
           </h2>
+          {search}
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-2">{children}</div>
         <div className="glim-modal-foot flex flex-wrap items-center justify-end gap-2 px-5 py-4">

@@ -306,6 +306,9 @@ const is: Translations = {
   'edit.pickDrive': 'Skráður diskur',
   'edit.pickRemote': 'Uppsettur áfangastaður',
   'targets.addStorage': 'Tengja geymslur og ský',
+  'targets.addStorageHint': 'Veldu hvað þú vilt tengja. Ský, hlutageymsla og þjónar eru hver í sínum hópi, og leitin finnur þjónustu eftir nafni hennar eða nafni hennar í rclone.',
+  'targets.search': 'Leita í geymslum og skýjum',
+  'targets.searchNone': 'Ekkert passar við „{query}“. Flestar aðrar þjónustur virka með {s3} eða {webdav}.',
   'targets.cloudEmpty': 'Ekkert ský tengt enn. Dropbox, OneDrive, Google Drive og hin skýin bætast við hér.',
   'targets.bucketEmpty': 'Engin hlutageymsla enn. Fötur hjá Backblaze B2, Wasabi, MinIO og hverri annarri S3 geymslu bætast við hér.',
   'targets.serverEmpty': 'Enginn netþjónn eða sameign enn. SSH vélar um SFTP, WebDAV netþjónar og Windows sameignir bætast við hér.',
@@ -1148,7 +1151,7 @@ const is: Translations = {
   'new.change.learning': 'ArrowLoop lærir hvað keyrslur hvers verks gera venjulega og skráir keyrslu langt utan þess. {learning} sýnir hve langt hvert verk er komið.',
   'new.change.jobBrakes': 'Eigin hemlar verks eru stilltir á síðu þess, undir {brakes}.',
   'new.change.jobMore': 'Hvert verkspjald hefur {more}, með öllu sem síða verksins býður. Hægt er að breyta verki, athuga það eða fjarlægja án þess að opna það.',
-  'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til.',
+  'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til. Leit efst finnur gerð eftir nafni hennar eða nafni hennar í rclone.',
 }
 
 export default is

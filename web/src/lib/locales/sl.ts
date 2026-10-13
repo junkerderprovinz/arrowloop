@@ -306,6 +306,9 @@ const sl: Translations = {
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Nastavljen cilj',
   'targets.addStorage': 'Poveži shrambe in oblake',
+  'targets.addStorageHint': 'Izberite, kaj želite povezati. Oblaki, shrambe objektov in strežniki imajo vsak svojo skupino, iskanje pa najde storitev po njenem imenu ali imenu v rclone.',
+  'targets.search': 'Iskanje shramb in oblakov',
+  'targets.searchNone': 'Nič se ne ujema z »{query}«. Večina drugih storitev deluje z {s3} ali {webdav}.',
   'targets.cloudEmpty': 'Noben oblak še ni povezan. Tu se dodajo Dropbox, OneDrive, Google Drive in drugi oblaki.',
   'targets.bucketEmpty': 'Objektne shrambe še ni. Tu se dodajo vedra v Backblaze B2, Wasabi, MinIO in vsaki drugi shrambi S3.',
   'targets.serverEmpty': 'Strežnika ali skupne rabe še ni. Tu se dodajo gostitelji SSH prek SFTP, strežniki WebDAV in mape v skupni rabi Windows.',
@@ -1148,7 +1151,7 @@ const sl: Translations = {
   'new.change.learning': 'ArrowLoop se uči, kaj zagoni vsakega opravila običajno naredijo, in označi zagon daleč zunaj tega. {learning} kaže, kako daleč je vsako opravilo.',
   'new.change.jobBrakes': 'Lastne zavore opravila se nastavijo na njegovi strani, pod {brakes}.',
   'new.change.jobMore': 'Vsaka kartica opravila ima {more} z vsem, kar ponuja stran opravila. Opravilo lahko urediš, preveriš ali odstraniš, ne da bi ga odprl.',
-  'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja.',
+  'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja. Iskanje na vrhu najde vrsto po imenu ali imenu v rclone.',
 }
 
 export default sl

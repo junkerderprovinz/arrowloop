@@ -306,6 +306,9 @@ const he: Translations = {
   'edit.pickDrive': 'כונן רשום',
   'edit.pickRemote': 'יעד מוגדר',
   'targets.addStorage': 'חיבור אחסון ועננים',
+  'targets.addStorageHint': 'בחרו מה לחבר. לעננים, לאחסון אובייקטים ולשרתים יש לכל אחד קבוצה משלו, והחיפוש מוצא שירות לפי השם שלו או לפי השם שלו ב־rclone.',
+  'targets.search': 'חיפוש אחסון ועננים',
+  'targets.searchNone': 'שום דבר לא תואם ל־„{query}“. רוב השירותים האחרים עובדים עם {s3} או {webdav}.',
   'targets.cloudEmpty': 'עדיין לא חובר ענן. כאן מוסיפים את Dropbox, OneDrive, Google Drive ושאר העננים.',
   'targets.bucketEmpty': 'עדיין אין אחסון אובייקטים. כאן מוסיפים דליים ב-Backblaze B2, Wasabi, MinIO ובכל אחסון S3 אחר.',
   'targets.serverEmpty': 'עדיין אין שרת או שיתוף. כאן מוסיפים מארחי SSH דרך SFTP, שרתי WebDAV ושיתופי Windows.',
@@ -1148,7 +1151,7 @@ const he: Translations = {
   'new.change.learning': 'ArrowLoop לומד מה ההרצות של כל משימה עושות בדרך כלל ומסמן הרצה שחורגת מזה הרבה. {learning} מראה כמה התקדמה כל משימה.',
   'new.change.jobBrakes': 'הבלמים של משימה מוגדרים בדף שלה, תחת {brakes}.',
   'new.change.jobMore': 'בכל כרטיס משימה יש {more}, עם כל מה שהדף של המשימה מציע. אפשר לערוך, לבדוק או להסיר משימה בלי לפתוח אותה.',
-  'new.change.providerNames': '{connect} נותן שם לכל סוג אחסון ש־rclone מכיר ומציב אותו בקבוצה שלו, עם הלוגו שלו אם יש.',
+  'new.change.providerNames': '{connect} נותן שם לכל סוג אחסון ש־rclone מכיר ומציב אותו בקבוצה שלו, עם הלוגו שלו אם יש. חיפוש למעלה מוצא סוג לפי השם שלו או לפי השם שלו ב־rclone.',
 }
 
 export default he

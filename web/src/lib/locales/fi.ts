@@ -306,6 +306,9 @@ const fi: Translations = {
   'edit.pickDrive': 'Ilmoitettu levy',
   'edit.pickRemote': 'Määritetty kohde',
   'targets.addStorage': 'Yhdistä tallennustilat ja pilvet',
+  'targets.addStorageHint': 'Valitse, mitä yhdistät. Pilvillä, objektitallennuksella ja palvelimilla on kullakin oma ryhmänsä, ja haku löytää palvelun sen nimellä tai sen rclone-nimellä.',
+  'targets.search': 'Hae tallennustiloja ja pilviä',
+  'targets.searchNone': 'Mikään ei vastaa hakua ”{query}”. Useimmat muut palvelut toimivat {s3}- tai {webdav}-yhteydellä.',
   'targets.cloudEmpty': 'Yhtään pilveä ei ole vielä yhdistetty. Dropbox, OneDrive, Google Drive ja muut pilvet lisätään tänne.',
   'targets.bucketEmpty': 'Ei vielä objektitallennusta. Ämpärit Backblaze B2:ssa, Wasabissa, MinIOssa ja missä tahansa muussa S3-tallennuksessa lisätään tänne.',
   'targets.serverEmpty': 'Ei vielä palvelinta tai jakoa. SSH-koneet SFTP:n kautta, WebDAV-palvelimet ja Windows-jaot lisätään tänne.',
@@ -1148,7 +1151,7 @@ const fi: Translations = {
   'new.change.learning': 'ArrowLoop oppii, mitä kunkin työn ajot tavallisesti tekevät, ja merkitsee ajon, joka poikkeaa siitä kauas. {learning} näyttää, kuinka pitkällä kukin työ on.',
   'new.change.jobBrakes': 'Työn omat jarrut asetetaan sen sivulla kohdassa {brakes}.',
   'new.change.jobMore': 'Jokaisessa työkortissa on {more}, jossa on kaikki, mitä työn sivu tarjoaa. Työtä voi muokata, tarkistaa tai poistaa avaamatta sitä.',
-  'new.change.providerNames': '{connect} nimeää jokaisen rclonen tunteman tallennustyypin ja sijoittaa sen ryhmäänsä, logon kanssa, jos sellainen on.',
+  'new.change.providerNames': '{connect} nimeää jokaisen rclonen tunteman tallennustyypin ja sijoittaa sen ryhmäänsä, logon kanssa, jos sellainen on. Ylhäällä oleva haku löytää tyypin sen nimellä tai rclone-nimellä.',
 }
 
 export default fi

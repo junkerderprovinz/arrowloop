@@ -306,6 +306,9 @@ const ca: Translations = {
   'edit.pickDrive': 'Un disc registrat',
   'edit.pickRemote': 'Una destinació configurada',
   'targets.addStorage': 'Connecta emmagatzematge i núvols',
+  'targets.addStorageHint': 'Tria què vols connectar. Els núvols, l’emmagatzematge d’objectes i els servidors tenen cadascun el seu grup, i la cerca troba un servei pel seu nom o pel seu nom a rclone.',
+  'targets.search': 'Cerca emmagatzematge i núvols',
+  'targets.searchNone': 'No hi ha res que coincideixi amb «{query}». La majoria dels altres serveis funcionen amb {s3} o {webdav}.',
   'targets.cloudEmpty': 'Encara no hi ha cap núvol connectat. Aquí s\'afegeixen Dropbox, OneDrive, Google Drive i els altres núvols.',
   'targets.bucketEmpty': 'Encara no hi ha emmagatzematge d\'objectes. Aquí s\'afegeixen cubells a Backblaze B2, Wasabi, MinIO i qualsevol altre emmagatzematge S3.',
   'targets.serverEmpty': 'Encara no hi ha cap servidor ni compartició. Aquí s\'afegeixen màquines SSH per SFTP, servidors WebDAV i comparticions de Windows.',
@@ -1148,7 +1151,7 @@ const ca: Translations = {
   'new.change.learning': 'ArrowLoop aprèn què fan normalment les execucions de cada tasca i anota una execució molt fora d\'això. {learning} mostra fins on ha arribat cada tasca.',
   'new.change.jobBrakes': 'Els frens propis d\'una tasca es configuren a la seva pàgina, a {brakes}.',
   'new.change.jobMore': 'Cada targeta de tasca té {more}, amb tot el que ofereix la pàgina de la tasca. Una tasca es pot editar, comprovar o treure sense obrir-la.',
-  'new.change.providerNames': '{connect} anomena cada tipus d’emmagatzematge que rclone coneix i el posa al seu grup, amb el logotip si n’hi ha.',
+  'new.change.providerNames': '{connect} anomena cada tipus d’emmagatzematge que rclone coneix i el posa al seu grup, amb el logotip si n’hi ha. Una cerca a dalt en troba un pel seu nom o pel seu nom a rclone.',
 }
 
 export default ca
