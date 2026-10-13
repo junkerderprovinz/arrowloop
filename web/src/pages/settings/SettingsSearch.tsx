@@ -146,7 +146,8 @@ export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId })
       const typing = !!el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))
       const slash = e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !typing
       const palette = e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey
-      if (!slash && !palette) return
+      // A window over the page has its own keys.
+      if ((!slash && !palette) || document.querySelector('[role="dialog"]')) return
       e.preventDefault()
       show()
       setSummoned((n) => n + 1)
