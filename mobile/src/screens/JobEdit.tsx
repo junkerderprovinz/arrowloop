@@ -12,9 +12,11 @@ import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
 import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Body, Button, Caption, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
-import { WaySwitch, wayOf } from "../way";
-import { amount, globalBrakes, ownBrakes, type Brakes, type JobLearning } from "../../../web/src/lib/anomalies";
+import { AxisLabel, Body, Button, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
+import { WaySwitch } from "../way";
+import { Inherits, ScheduleSentence } from "../inherit";
+import { amount, type JobLearning } from "../../../web/src/lib/anomalies";
+import { inForce, inheritPatch, owns, type Defaults, type Inherited } from "../../../web/src/lib/follows";
 import {
   buildSchedule,
   EVERY_UNITS,
@@ -51,8 +53,8 @@ export function JobEdit() {
           found
             ? { ...found }
             : {
-                // A new job is enabled and sets neither direction nor mode, so
-                // it follows the global sync settings.
+                // A new job is enabled and sets nothing the global sync
+                // settings decide, so it follows them.
                 name: t("edit.newJob"),
                 left: "",
                 right: "",
@@ -64,42 +66,9 @@ export function JobEdit() {
     );
   }, [editing, t]);
 
-  // The fields the engine's Defaults fill in when a job leaves them unset
-  // (`applyTo`). A job follows the global settings while it sets none of them.
-  const OWNED = ["direction", "mode", "schedule", "emptyDirs", "metadata"] as const;
-  const follows = OWNED.every((key) => job?.[key] === undefined);
-
-  // What a job that follows runs with, so its direction can be shown.
+  // What a job runs with where it follows the global settings.
   const { settings: engineSettings } = useEngineSettings(true);
-  const defaults = (engineSettings?.defaults ?? {}) as Record<string, unknown>;
-  const defaultWay = wayOf(defaults.direction as string | undefined);
-
-  /**
-   * Switching off writes what the job runs with at that moment, so nothing
-   * about it changes; switching on clears all five, since an absent field
-   * means "follow".
-   */
-  const setFollows = (on: boolean) => {
-    if (on) {
-      set({
-        direction: undefined,
-        mode: undefined,
-        schedule: undefined,
-        emptyDirs: undefined,
-        metadata: undefined,
-      });
-      return;
-    }
-    set({
-      direction: defaultWay,
-      // Written even for a two-way job, which would otherwise inherit a
-      // default mirror or move and be refused, since those need a source side.
-      mode: defaultWay === "both" ? "sync" : String(defaults.mode ?? "sync"),
-      schedule: String(defaults.schedule ?? ""),
-      emptyDirs: Boolean(defaults.emptyDirs),
-      metadata: Boolean(defaults.metadata),
-    });
-  };
+  const defaults = engineSettings?.defaults as Defaults | undefined;
 
   const [picking, setPicking] = useState<"left" | "right" | null>(null);
   const [targets, setTargets] = useState<string[]>([]);
@@ -230,7 +199,18 @@ export function JobEdit() {
 
   const [upper, lower] = sidePair(job.left, job.right, t);
 
-  const way = follows ? defaultWay : wayOf(job.direction);
+  const own = (setting: Inherited) => owns(job, setting);
+  // What the job runs with: its own value, or the default's while it follows.
+  const shown = (setting: Inherited): JobConfig => (own(setting) ? job : { ...job, ...inForce(defaults, setting) });
+  const inherits = (setting: Inherited) => ({
+    setting,
+    own: own(setting),
+    defaults,
+    onOverride: () => set(inForce(defaults, setting), true),
+    onInherit: () => set(inheritPatch(setting), true),
+  });
+  const way = shown("direction").direction ?? "both";
+  const timing = shown("schedule").schedule ?? "";
 
   // A refused Save shakes, says why at the field it concerns and scrolls
   // there, since the field may be far above the button.
@@ -250,14 +230,14 @@ export function JobEdit() {
       return;
     }
     setRefused((n) => n + 1);
-    scroll.reveal(refs[spotOf(refusal.current, follows)]);
+    scroll.reveal(refs[spotOf(refusal.current)]);
   };
 
   // Where the reason for a refusal stands: the form's own check first, then
   // the engine's answer, placed by what it names.
   const problem = problemOf(job, t);
   const said: { spot: Spot; text: string } | null =
-    problem && (editing || tried) ? problem : !problem && error ? { spot: spotOf(error, follows), text: error } : null;
+    problem && (editing || tried) ? problem : !problem && error ? { spot: spotOf(error), text: error } : null;
   const reason = (spot: Spot) => (said?.spot === spot ? said.text : undefined);
 
   return (
@@ -266,8 +246,8 @@ export function JobEdit() {
 
       {/* What the job is: its name, its two sides and the way files go
           between them. Each side is labelled after what it is; see sideName.
-          A job that follows the global settings shows the direction and mode
-          it runs with, locked. */}
+          The mode comes with the direction, so the two are overridden and
+          given back together. */}
       <Section title={t("phone.job")} hue={0}>
         <View ref={nameRef} collapsable={false}>
           <Field
@@ -297,13 +277,14 @@ export function JobEdit() {
           />
         </View>
         <AxisLabel hint={t("direction.hint")}>{t("direction.label")}</AxisLabel>
-        <WaySwitch
-          value={follows ? defaultWay : job.direction}
-          disabled={follows}
-          upper={upper}
-          lower={lower}
-          onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
-        />
+        <Inherits {...inherits("direction")}>
+          <WaySwitch
+            value={way}
+            upper={upper}
+            lower={lower}
+            onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
+          />
+        </Inherits>
         <View ref={rightRef} collapsable={false} style={styles.pickRow}>
           <View style={styles.pickField}>
             <Field
@@ -327,8 +308,8 @@ export function JobEdit() {
         <AxisLabel hint={way === "both" ? t("mode.onlyOneWay") : undefined}>{t("mode.label")}</AxisLabel>
         <Choice
           hue={1}
-          value={way === "both" ? "sync" : String((follows ? defaults.mode : job.mode) ?? "sync")}
-          disabled={follows || way === "both"}
+          value={way === "both" ? "sync" : (shown("direction").mode ?? "sync")}
+          disabled={!own("direction") || way === "both"}
           onChange={(mode) => set({ mode }, true)}
           options={[
             { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
@@ -344,20 +325,15 @@ export function JobEdit() {
           the engine restarts with the app and after every eviction, so it
           would run a job several times a day. */}
       <Section title={t("history.runs")} hue={1}>
-        <Toggle
-          label={t("defaults.follow")}
-          hint={t("defaults.followHint")}
-          value={follows}
-          hue={0}
-          onChange={setFollows}
-        />
-        {!follows ? (
-          <View ref={scheduleRef} collapsable={false} style={styles.stack}>
-            <AxisLabel hint={t("edit.scheduleHint")}>{t("edit.schedule")}</AxisLabel>
-            <Schedule value={job.schedule ?? ""} onChange={(schedule) => set({ schedule }, true)} />
-            {reason("schedule") ? <Refusal text={reason("schedule") ?? ""} /> : null}
-          </View>
-        ) : null}
+        <View ref={scheduleRef} collapsable={false} style={styles.stack}>
+          <AxisLabel hint={t("edit.scheduleHint")}>{t("edit.schedule")}</AxisLabel>
+          <Inherits {...inherits("schedule")}>
+            <ScheduleSentence label={t("edit.schedule")} value={timing} watch={Boolean(job.watch)}>
+              <Schedule value={timing} onChange={(schedule) => set({ schedule }, true)} />
+            </ScheduleSentence>
+          </Inherits>
+          {reason("schedule") ? <Refusal text={reason("schedule") ?? ""} /> : null}
+        </View>
         <Toggle
           label={t("schedule.live")}
           hint={t("schedule.liveHint")}
@@ -386,8 +362,8 @@ export function JobEdit() {
       </Section>
 
       {/* What crosses over: what is left out, and whether empty folders and
-          permissions go along. The last two are global defaults, shown locked
-          while the job follows them. */}
+          permissions go along. The last two come from the global sync
+          settings until the job overrides them. */}
       <Section title={t("settings.contents")} hue={2}>
         <View ref={excludeRef} collapsable={false}>
           <Field
@@ -400,25 +376,37 @@ export function JobEdit() {
             error={reason("exclude")}
           />
         </View>
-        <Toggle
-          label={t("edit.emptyDirs")}
-          hint={t("edit.emptyDirsHint")}
-          value={Boolean(follows ? defaults.emptyDirs : job.emptyDirs)}
-          disabled={follows}
-          onChange={(emptyDirs) => set({ emptyDirs }, true)}
-        />
-        <Toggle
-          label={t("edit.metadata")}
-          hint={t("edit.metadataHint")}
-          value={Boolean(follows ? defaults.metadata : job.metadata)}
-          disabled={follows}
-          onChange={(metadata) => set({ metadata }, true)}
-        />
+        {(["emptyDirs", "metadata"] as const).map((setting) => (
+          <Inherits key={setting} {...inherits(setting)}>
+            <Toggle
+              label={t(`edit.${setting}`)}
+              hint={t(`edit.${setting}Hint`)}
+              value={Boolean(shown(setting)[setting])}
+              onChange={(on) => set({ [setting]: on }, true)}
+            />
+          </Inherits>
+        ))}
       </Section>
 
       {/* The brakes hold a run whether or not the anomaly notes are on, so
           they are the job's own setting rather than the Anomalies screen's. */}
-      {editing ? <BrakesSection job={job} global={globalBrakes(defaults as Partial<Brakes>)} set={set} /> : null}
+      {editing ? (
+        <Section title={t("job.brakes")} hint={t("job.brakesHint")} hue={3}>
+          {BRAKES.map(({ setting, label, hint }) => (
+            <Inherits key={setting} {...inherits(setting)}>
+              <NumberField
+                label={t(label)}
+                hint={t(hint)}
+                value={String(shown(setting)[setting] ?? 0)}
+                onChange={(v) => {
+                  const value = Number(v.replace(/[^\d]/g, ""));
+                  if (!Number.isNaN(value)) set({ [setting]: Math.min(100, value) });
+                }}
+              />
+            </Inherits>
+          ))}
+        </Section>
+      ) : null}
       {editing ? <UsualSection job={editing} /> : null}
 
       {/* Holding a job is an action on the job card, not a setting here. */}
@@ -455,57 +443,11 @@ export function JobEdit() {
   );
 }
 
-/** The job's brakes: the global ones it follows, or its own two values. */
-function BrakesSection({
-  job,
-  global,
-  set,
-}: {
-  job: JobConfig;
-  global: Brakes;
-  set: (patch: Partial<JobConfig>, now?: boolean) => void;
-}) {
-  const { t } = useT();
-  const own = ownBrakes(job, global);
-  const fallback = { brakePercent: global.brakePercent, changePercent: global.changePercent };
-  // An empty box is a value being typed, so it writes nothing.
-  const type = (key: "brakePercent" | "changePercent", text: string) => {
-    const value = Number(text.replace(/[^\d]/g, ""));
-    if (!text.trim() || Number.isNaN(value)) return;
-    set({ ...(own ?? fallback), [key]: Math.min(100, value) });
-  };
-  return (
-    <Section title={t("job.brakes")} hint={t("job.brakesHint")} hue={3}>
-      {!own ? (
-        <Caption>
-          {t("anomaly.follows", { delete: global.brakePercent, change: global.changePercent, floor: global.brakeFloor })}
-        </Caption>
-      ) : null}
-      <Toggle
-        label={t("anomaly.ownBrakes")}
-        hint={t("anomaly.ownBrakesHint")}
-        value={own !== null}
-        onChange={(on) => set(on ? fallback : { brakePercent: undefined, changePercent: undefined }, true)}
-      />
-      {own ? (
-        <>
-          <NumberField
-            label={t("engine.brakePercent")}
-            hint={t("engine.brakePercentHint")}
-            value={String(own.brakePercent)}
-            onChange={(v) => type("brakePercent", v)}
-          />
-          <NumberField
-            label={t("engine.changePercent")}
-            hint={t("engine.changePercentHint")}
-            value={String(own.changePercent)}
-            onChange={(v) => type("changePercent", v)}
-          />
-        </>
-      ) : null}
-    </Section>
-  );
-}
+/** The job's own brakes, each the global value until it is overridden. */
+const BRAKES = [
+  { setting: "brakePercent", label: "engine.brakePercent", hint: "engine.brakePercentHint" },
+  { setting: "changePercent", label: "engine.changePercent", hint: "engine.changePercentHint" },
+] as const;
 
 /** What a run of the job usually does, once enough runs were learned from to say. */
 function UsualSection({ job }: { job: string }) {
@@ -545,11 +487,10 @@ function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
 
 /**
  * The part of the form an engine refusal is about, read from what it names.
- * Most name a place, so the target side is where the rest is said. A job that
- * follows the global schedule has no schedule on the form to point at.
+ * Most name a place, so the target side is where the rest is said.
  */
-function spotOf(message: string, follows: boolean): Spot {
-  if (/schedule|watch/i.test(message) && !follows) return "schedule";
+function spotOf(message: string): Spot {
+  if (/schedule|watch/i.test(message)) return "schedule";
   if (/exclude/i.test(message)) return "exclude";
   if (/no name/i.test(message)) return "name";
   if (/\bleft\b/i.test(message)) return "left";
@@ -571,11 +512,15 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
   // cannot express every mode: an empty cron expression reads back as "off".
   // It is re-seeded when the value changes from outside.
   const [mode, setMode] = useState<ScheduleMode>(derived.mode);
+  // The expression as typed, since the stored one is trimmed and a space
+  // between two fields would vanish as it is typed.
+  const [cron, setCron] = useState(value);
   const seen = useRef(value);
   useEffect(() => {
     if (seen.current !== value) {
       seen.current = value;
       setMode(parseSchedule(value).mode);
+      setCron(value);
     }
   }, [value]);
 
@@ -597,6 +542,13 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
         // Each mode shows different rows, so the change is animated.
         onChange={(mode) => {
           animateNext(motion);
+          // The field starts from the schedule already set, written out.
+          if (mode === "cron") {
+            const text = state.mode === "off" ? buildSchedule({ ...state, mode: "daily" }) : value.trim();
+            setCron(text);
+            set({ mode, cron: text });
+            return;
+          }
           set({ mode });
         }}
         options={[
@@ -664,8 +616,11 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
       {state.mode === "cron" ? (
         <Field
           label={t("schedule.cron")}
-          value={state.cron}
-          onChange={(cron) => set({ cron })}
+          value={cron}
+          onChange={(text) => {
+            setCron(text);
+            set({ cron: text });
+          }}
           placeholder="0 * * * *"
         />
       ) : null}

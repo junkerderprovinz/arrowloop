@@ -115,6 +115,28 @@ export const RELEASES: Release[] = [
       },
       { id: 'job-more', at: ['/jobs'], where: JOBS, text: 'new.change.jobMore', names: { more: 'list.more' } },
       {
+        id: 'own-values',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.ownValues',
+        names: { sync: 'settings.sync', override: 'defaults.override', useDefault: 'defaults.useDefault' },
+      },
+      {
+        id: 'schedule-sentence',
+        at: ['/settings/sync'],
+        where: ['nav.settings', 'settings.sync'],
+        text: 'new.change.scheduleSentence',
+        names: { cron: 'schedule.cron' },
+      },
+      {
+        id: 'exceptions',
+        at: ['/settings/sync'],
+        where: ['nav.settings', 'settings.sync'],
+        text: 'new.change.exceptions',
+        names: { exceptions: 'defaults.exceptions', sync: 'settings.sync' },
+      },
+      {
         id: 'provider-names',
         at: ['/targets', '/settings/targets'],
         where: ['nav.targets'],

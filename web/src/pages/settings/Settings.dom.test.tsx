@@ -1,12 +1,14 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Settings } from '../../lib/api'
+import type { RawJob, Settings } from '../../lib/api'
 
 const saveSettings = vi.fn((s: Settings) => Promise.resolve(s))
 const testNotify = vi.fn((_channel: string, _notify: unknown) => Promise.resolve({ ok: true, reason: undefined as string | undefined }))
 let stored: Settings = {}
+let jobs: RawJob[] = []
+const saveConfig = vi.fn((next: RawJob[]) => Promise.resolve({ jobs: next }))
 
 vi.mock('../../lib/api', async (actual) => ({
   ...(await actual<typeof import('../../lib/api')>()),
@@ -14,6 +16,8 @@ vi.mock('../../lib/api', async (actual) => ({
     settings: () => Promise.resolve(stored),
     saveSettings: (s: Settings) => saveSettings(s),
     jobs: () => Promise.resolve([{ name: 'photos' }]),
+    config: () => Promise.resolve({ jobs }),
+    saveConfig: (next: RawJob[]) => saveConfig(next),
     testNotify: (channel: string, notify: unknown) => testNotify(channel, notify),
   },
 }))
@@ -34,6 +38,8 @@ beforeEach(() => {
   saveSettings.mockClear()
   testNotify.mockClear()
   stored = { defaults: { emptyDirs: false } }
+  jobs = [{ name: 'photos' }]
+  saveConfig.mockClear()
   localStorage.clear()
 })
 afterEach(cleanup)
@@ -149,5 +155,66 @@ describe('the notification channels', () => {
     const notify = saveSettings.mock.calls.at(-1)?.[0].notify
     expect(notify?.on).toBe('failure')
     expect(notify?.onSuccess).toBeUndefined()
+  })
+})
+
+describe('the exceptions', () => {
+  it('stay away while every job follows the defaults', async () => {
+    render(<SyncPage />)
+    await screen.findByRole('switch', { name: 'Carry empty folders' })
+    expect(screen.queryByText('Exceptions')).toBeNull()
+  })
+
+  it('list only the jobs that differ, with what differs', async () => {
+    jobs = [{ name: 'photos' }, { name: 'music', schedule: '', emptyDirs: true }]
+    render(<SyncPage />)
+    const row = (await screen.findByText('music')).closest('li') as HTMLElement
+    expect(row.textContent).toContain('Schedule: on request')
+    expect(row.textContent).toContain('Carry empty folders: On')
+    expect(screen.queryByText('photos')).toBeNull()
+  })
+
+  it('give a job back to the defaults after asking, and go once none differs', async () => {
+    jobs = [{ name: 'photos' }, { name: 'music', schedule: '', emptyDirs: true, brakePercent: 20 }]
+    render(<SyncPage />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Use the default' }))
+    const ask = await screen.findByRole('dialog', { name: 'Use the default?' })
+    fireEvent.click(within(ask).getByRole('button', { name: 'Use the default' }))
+
+    await waitFor(() => expect(saveConfig).toHaveBeenCalledTimes(1))
+    const music = saveConfig.mock.calls[0]![0].find((j) => j.name === 'music')
+    expect(music).toEqual({ name: 'music', brakePercent: 20 })
+    await waitFor(() => expect(screen.queryByText('Exceptions')).toBeNull())
+  })
+
+  it('of the brakes stand on the safety net, not on sync', async () => {
+    jobs = [{ name: 'music', brakePercent: 20 }]
+    const { unmount } = render(<SyncPage />)
+    await screen.findByRole('switch', { name: 'Carry empty folders' })
+    expect(screen.queryByText('Exceptions')).toBeNull()
+    unmount()
+
+    render(<SafetyPage />)
+    const row = (await screen.findByText('music')).closest('li') as HTMLElement
+    expect(row.textContent).toContain('20 %')
+  })
+})
+
+describe('the default schedule', () => {
+  it('reads as a sentence and keeps a typed expression reachable', async () => {
+    stored = { defaults: { schedule: '15 4 * * 1' } }
+    render(<SyncPage />)
+    const sentence = await screen.findByRole('button', { name: /^Schedule:/ })
+    expect(sentence.textContent).toContain('Mon at 04:15')
+
+    fireEvent.click(sentence)
+    const panel = await screen.findByRole('dialog', { name: 'Schedule' })
+    // Real time belongs to a job, so the default does not offer it.
+    expect(within(panel).queryByRole('tab', { name: 'Real time' })).toBeNull()
+    fireEvent.click(within(panel).getByRole('tab', { name: 'Cron' }))
+    const field = within(panel).getByDisplayValue('15 4 * * 1')
+    // Typed one key at a time, the space between two fields stays.
+    fireEvent.change(field, { target: { value: '0 ' } })
+    expect((field as HTMLInputElement).value).toBe('0 ')
   })
 })

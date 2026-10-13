@@ -1,10 +1,14 @@
+import { ExceptionsCard, useExceptions } from '../../components/Exceptions'
 import { ExcludeSetEditor, type Sets } from '../../components/ExcludeSets'
-import { Field, NumberField, Text } from '../../components/Field'
+import { NumberField, Text } from '../../components/Field'
 import { QuietPeriod } from '../../components/QuietPeriod'
+import { ScheduleField } from '../../components/Schedule'
+import { ScheduleButton } from '../../components/ScheduleButton'
 import { Selector } from '../../components/Selector'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import type { Settings } from '../../lib/api'
+import { SYNC_SETTINGS } from '../../lib/follows'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { modesHint } from '../../lib/modes'
@@ -15,12 +19,14 @@ type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 type Mode = 'sync' | 'mirror' | 'move'
 
 /**
- * What every job starts from, how it moves and compares files, how often a
- * failed run is tried again, and the lists of patterns jobs leave out.
+ * What every job starts from, how it moves and compares files, the jobs that
+ * differ from it, how often a failed run is tried again, and the lists of
+ * patterns jobs leave out.
  */
 export function SyncPage() {
   const { t } = useT()
   const { loaded, draft, patch, error } = useEngineSettings()
+  const exceptions = useExceptions(SYNC_SETTINGS)
   if (!loaded) return <Reading title={t('engine.defaults')} error={error} />
 
   const defaults = draft.defaults ?? {}
@@ -29,10 +35,11 @@ export function SyncPage() {
   const retry = draft.retry ?? {}
   const setRetry = (next: Partial<NonNullable<Settings['retry']>>) => patch({ retry: { ...retry, ...next } })
   const selectorHue = counter()
+  const cardHue = counter()
 
   return (
     <Stack>
-      <Card title={t('engine.defaults')} hint={t('settings.syncHint')} hueIndex={0}>
+      <Card title={t('engine.defaults')} hint={t('settings.syncHint')} hueIndex={cardHue()}>
         <SettingsRow label={t('direction.label')} hint={t('defaults.followHint')} wide>
           <Selector<Direction>
             scale="small"
@@ -72,17 +79,16 @@ export function SyncPage() {
             ]}
           />
         </SettingsRow>
-        <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-          <Text
-            value={defaults.schedule ?? ''}
-            onChange={(schedule) => setDefault({ schedule })}
-            placeholder="0 3 * * *"
-            mono
-          />
-        </Field>
+        <div data-new="schedule-sentence">
+          <SettingsRow label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
+            <ScheduleButton label={t('edit.schedule')} value={defaults.schedule ?? ''}>
+              <ScheduleField value={defaults.schedule ?? ''} onChange={(schedule) => setDefault({ schedule })} />
+            </ScheduleButton>
+          </SettingsRow>
+        </div>
       </Card>
 
-      <Card title={t('settings.transfer')} hueIndex={1}>
+      <Card title={t('settings.transfer')} hueIndex={cardHue()}>
         <SettingsRow label={t('engine.transfers')} hint={t('engine.transfersHint')}>
           <NumberField
             value={defaults.transfers ?? 4}
@@ -93,7 +99,9 @@ export function SyncPage() {
           />
         </SettingsRow>
         <SettingsRow label={t('edit.quietPeriod')} hint={t('edit.quietHint')}>
-          <QuietPeriod value={defaults.quietPeriod ?? ''} onChange={(v) => setDefault({ quietPeriod: v })} />
+          {/* Unset is the engine's five seconds, and zero is written as 0s,
+              since an empty value would mean those five seconds again. */}
+          <QuietPeriod value={defaults.quietPeriod || '5s'} onChange={(v) => setDefault({ quietPeriod: v || '0s' })} />
         </SettingsRow>
         <SettingsRow label={t('engine.modWindow')} hint={t('engine.modWindowHint')}>
           <div className="w-32">
@@ -108,7 +116,7 @@ export function SyncPage() {
         </SettingsRow>
       </Card>
 
-      <Card title={t('settings.contents')} hueIndex={2}>
+      <Card title={t('settings.contents')} hueIndex={cardHue()}>
         <ToggleRow
           label={t('edit.emptyDirs')}
           checked={!!defaults.emptyDirs}
@@ -140,9 +148,11 @@ export function SyncPage() {
         </SettingsRow>
       </Card>
 
+      {exceptions.list.length > 0 && <ExceptionsCard exceptions={exceptions} hueIndex={cardHue()} />}
+
       {/* Engine-wide rather than a job default: patience after a failure
           depends on the machine, not on a folder pair. */}
-      <Card title={t('workload.retries')} hint={t('retry.hint')} hueIndex={3}>
+      <Card title={t('workload.retries')} hint={t('retry.hint')} hueIndex={cardHue()}>
         <SettingsRow label={t('retry.attempts')} hint={t('retry.attemptsHint')}>
           <NumberField
             value={retry.attempts ?? 3}
@@ -164,7 +174,7 @@ export function SyncPage() {
         </SettingsRow>
       </Card>
 
-      <Card title={t('engine.sets')} hint={t('engine.setsHint')} hueIndex={4}>
+      <Card title={t('engine.sets')} hint={t('engine.setsHint')} hueIndex={cardHue()}>
         <ExcludeSetEditor
           sets={(draft.excludeSets as Sets | undefined) ?? {}}
           onChange={(next) => patch({ excludeSets: next })}

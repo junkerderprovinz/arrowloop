@@ -1,21 +1,25 @@
+import { ExceptionsCard, useExceptions } from '../../components/Exceptions'
 import { NumberField } from '../../components/Field'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import type { Settings } from '../../lib/api'
+import { BRAKE_SETTINGS } from '../../lib/follows'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { Reading, useEngineSettings } from './engineSettings'
 import { NotifyCard } from './NotifyCard'
-import { SettingsRow } from './rows'
+import { counter, SettingsRow } from './rows'
 
 /**
  * What keeps a job from doing harm and who hears of it: the brakes, which
  * hold a run that would remove or overwrite more than a share of what the job
- * knows about, the anomaly notes, and when and where the engine reports.
+ * knows about, the jobs with brakes of their own, the anomaly notes, and when
+ * and where the engine reports.
  */
 export function SafetyPage() {
   const { t } = useT()
   const { loaded, draft, patch, error } = useEngineSettings()
+  const exceptions = useExceptions(BRAKE_SETTINGS)
   if (!loaded) return <Reading title={t('safety.brakes')} error={error} />
 
   const defaults = draft.defaults ?? {}
@@ -24,10 +28,11 @@ export function SafetyPage() {
   const setAnomalies = (next: Partial<NonNullable<Settings['anomalies']>>) => patch({ anomalies: { ...anomalies, ...next } })
   const notify = draft.notify ?? {}
   const on = !anomalies.off
+  const cardHue = counter()
 
   return (
     <Stack>
-      <Card title={t('safety.brakes')} hueIndex={0}>
+      <Card title={t('safety.brakes')} hueIndex={cardHue()}>
         <SettingsRow label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
           <NumberField
             value={defaults.brakePercent ?? 50}
@@ -57,8 +62,10 @@ export function SafetyPage() {
         </SettingsRow>
       </Card>
 
+      {exceptions.list.length > 0 && <ExceptionsCard exceptions={exceptions} hueIndex={cardHue()} />}
+
       <div data-new="anomalies-module">
-        <Card title={t('nav.anomalies')} hueIndex={1}>
+        <Card title={t('nav.anomalies')} hueIndex={cardHue()}>
           <ToggleRow
             label={t('nav.anomalies')}
             hint={t('anomaly.moduleHint')}
@@ -117,7 +124,7 @@ export function SafetyPage() {
       </div>
 
       <div data-new="notify-channels">
-        <NotifyCard notify={notify} setNotify={(next) => patch({ notify: next })} hueIndex={2} />
+        <NotifyCard notify={notify} setNotify={(next) => patch({ notify: next })} hueIndex={cardHue()} />
       </div>
     </Stack>
   )

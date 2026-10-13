@@ -22,6 +22,9 @@ const RULES: Rule[] = [
   [/^notify\.change$/i, 'IconPencil'],
   [/^notify\.keep$/i, 'IconClose'],
   [/^settings\.open$/i, 'IconLink'],
+  // A setting taken from the defaults: giving it a value of its own, and back.
+  [/^defaults\.override$/i, 'IconPencil'],
+  [/^defaults\.useDefault$/i, 'IconRefresh'],
 
   // The list of what is new: following a change, and showing or settling the lot.
   [/^new\.go$/i, 'IconLink'],

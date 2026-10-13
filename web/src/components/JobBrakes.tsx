@@ -1,22 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Field, NumberField } from './Field'
-import { ToggleRow } from './ToggleRow'
+import { NumberField } from './Field'
+import { InheritButton, InheritedRow } from './Inherited'
 import { Card } from '../lib/glimstone/Card'
-import { globalBrakes, ownBrakes, type Brakes } from '../lib/anomalies'
+import type { RawJob } from '../lib/api'
+import { inForce, inheritPatch, owns } from '../lib/follows'
 import { useT } from '../lib/i18n'
 import type { useJobConfig } from '../pages/Editor'
 
 /** How long a typed brake value waits before it is saved, as on the settings page. */
 const SETTLE_MS = 700
 
-type Own = Pick<Brakes, 'brakePercent' | 'changePercent'>
+type Brake = 'brakePercent' | 'changePercent'
+
+const BRAKES: { setting: Brake; label: 'engine.brakePercent' | 'engine.changePercent'; hint: 'engine.brakePercentHint' | 'engine.changePercentHint' }[] = [
+  { setting: 'brakePercent', label: 'engine.brakePercent', hint: 'engine.brakePercentHint' },
+  { setting: 'changePercent', label: 'engine.changePercent', hint: 'engine.changePercentHint' },
+]
 
 /**
- * The brakes that hold a run of this job: the global ones it follows, or its
- * own two values. They hold whether or not the anomaly notes are on. They are
- * written through the page's own copy of the configuration, so editing the
- * job afterwards keeps them.
+ * The brakes that hold a run of this job, each the global value, locked, or
+ * one of the job's own. They hold whether or not the anomaly notes are on.
+ * They are written through the page's own copy of the configuration, so
+ * editing the job afterwards keeps them.
  */
 export function BrakesCard({
   job,
@@ -28,25 +34,16 @@ export function BrakesCard({
   hueIndex: number
 }) {
   const { t } = useT()
-  const global = globalBrakes(config.defaults)
-  const saved = ownBrakes(
-    config.jobs?.find((j) => j.name === job),
-    global,
-  )
+  const saved = config.jobs?.find((j) => j.name === job) ?? {}
   // What is typed shows at once; the file gets it once the typing settles,
   // since every save makes the engine reload.
-  const [typed, setTyped] = useState<Own | null>(null)
+  const [typed, setTyped] = useState<Partial<Record<Brake, number>>>({})
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const own = typed ?? saved
+  const pending = useRef<(() => void) | null>(null)
 
-  const write = (next: Own | null) =>
-    void config.amend(job, (raw) => {
-      const { brakePercent: _b, changePercent: _c, ...rest } = raw
-      return next ? { ...rest, ...next } : rest
-    })
+  const write = (change: Partial<RawJob>) => void config.amend(job, (raw) => ({ ...raw, ...change }))
 
   // Leaving the page sends a value still waiting to settle.
-  const pending = useRef<(() => void) | null>(null)
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current)
@@ -55,8 +52,8 @@ export function BrakesCard({
     [],
   )
 
-  const type = (change: Partial<Own>) => {
-    const next = { ...(own ?? global), ...change }
+  const type = (setting: Brake, value: number) => {
+    const next = { ...typed, [setting]: value }
     setTyped(next)
     if (timer.current) clearTimeout(timer.current)
     pending.current = () => write(next)
@@ -64,47 +61,38 @@ export function BrakesCard({
       timer.current = null
       pending.current = null
       write(next)
-      setTyped(null)
+      setTyped({})
     }, SETTLE_MS)
   }
 
   return (
     <div data-new="job-brakes">
       <Card title={t('job.brakes')} hint={t('job.brakesHint')} hueIndex={hueIndex}>
-        {!own && (
-          <p className="text-subline text-carbon-textSub">
-            {t('anomaly.follows', { delete: global.brakePercent, change: global.changePercent, floor: global.brakeFloor })}
-          </p>
-        )}
-        <ToggleRow
-          label={t('anomaly.ownBrakes')}
-          hint={t('anomaly.ownBrakesHint')}
-          checked={own !== null}
-          disabled={config.jobs === null || config.busy}
-          onChange={(on) => write(on ? { brakePercent: global.brakePercent, changePercent: global.changePercent } : null)}
-        />
-        {own && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={t('engine.brakePercent')} hint={t('engine.brakePercentHint')}>
-              <NumberField
-                value={own.brakePercent}
-                min={0}
-                max={100}
-                label={t('engine.brakePercent')}
-                onChange={(v) => type({ brakePercent: v })}
-              />
-            </Field>
-            <Field label={t('engine.changePercent')} hint={t('engine.changePercentHint')}>
-              <NumberField
-                value={own.changePercent}
-                min={0}
-                max={100}
-                label={t('engine.changePercent')}
-                onChange={(v) => type({ changePercent: v })}
-              />
-            </Field>
-          </div>
-        )}
+        <div data-new="own-values" className="flex flex-col gap-4">
+          {BRAKES.map(({ setting, label, hint }) => {
+            const own = owns(saved, setting)
+            const value = typed[setting] ?? (own ? saved[setting] : inForce(config.defaults, setting)[setting]) ?? 0
+            return (
+              <InheritedRow
+                key={setting}
+                label={t(label)}
+                hint={t(hint)}
+                own={own}
+                action={
+                  <InheritButton
+                    setting={setting}
+                    own={own}
+                    defaults={config.defaults}
+                    onOverride={() => write(inForce(config.defaults, setting) as Partial<RawJob>)}
+                    onInherit={() => write(inheritPatch(setting) as Partial<RawJob>)}
+                  />
+                }
+              >
+                <NumberField value={value} min={0} max={100} label={t(label)} onChange={(v) => type(setting, v)} />
+              </InheritedRow>
+            )
+          })}
+        </div>
       </Card>
     </div>
   )
