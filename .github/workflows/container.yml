@@ -9,7 +9,7 @@ name: Container
 on:
   push:
     branches: [main]
-    paths-ignore: ["**.md", "LICENSE"]
+    paths-ignore: ["**.md", "LICENSE", ".github/assets/**", "store/**"]
   pull_request:
     branches: [main]
   workflow_dispatch:
