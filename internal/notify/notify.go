@@ -117,6 +117,21 @@ func hostOf(raw string) string {
 	return u.Host
 }
 
+// Refused is a service's answer that was not a success. Said is the start of
+// what it wrote back, which is where a service says why.
+type Refused struct {
+	Code   int
+	Status string
+	Said   string
+}
+
+func (r *Refused) Error() string {
+	if r.Said == "" {
+		return r.Status
+	}
+	return r.Status + ": " + r.Said
+}
+
 var client = &http.Client{Timeout: SendTimeout}
 
 // do sends a request bounded by SendTimeout and reports a refusal with the
@@ -138,10 +153,7 @@ func do(ctx context.Context, method, endpoint string, body io.Reader, header map
 	defer resp.Body.Close()
 	said, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		if s := strings.TrimSpace(string(said)); s != "" {
-			return fmt.Errorf("%s: %s", resp.Status, s)
-		}
-		return errors.New(resp.Status)
+		return &Refused{Code: resp.StatusCode, Status: resp.Status, Said: strings.TrimSpace(string(said))}
 	}
 	return nil
 }

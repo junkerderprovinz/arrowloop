@@ -67,6 +67,7 @@ The full notes for each release are in
 - **A job set to run only when asked stays that way when a default schedule is set.** Its empty schedule was taken as no schedule at all, so the default ran it on the clock. A job without a schedule of its own still follows the default.
 - **The Cron field keeps the spaces you type**, and switching to Cron writes out the schedule already set instead of an empty field.
 - **Overdue after says what it counts.** The setting was called Days without a run, which read wrong for a job that runs once a week. It counts the days from the scheduled run that was missed, and its (i) gives the weekly example.
+- **A saved Matrix token or mail password goes only to the server it was saved for.** After changing the server, type it again. Send a test needs a password when the engine listens on the network, and a failed test names only the status the server answered.
 
 ## 1.9.0 - 2026-10-13
 

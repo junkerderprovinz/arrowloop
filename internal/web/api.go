@@ -800,7 +800,7 @@ func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
 // account, the mail password logs in, and the address of a webhook, an Apprise
 // server or a check is its own key.
 func withheld(settings map[string]any) map[string]any {
-	eachSecret(settings, func(holder map[string]any, key string, _ func(job.Notify) string) {
+	eachSecret(settings, func(holder map[string]any, key string, _ secretAt) {
 		if secret, _ := holder[key].(string); secret != "" {
 			holder[key] = remotes.Placeholder
 		}
@@ -809,44 +809,71 @@ func withheld(settings map[string]any) map[string]any {
 }
 
 // keepSecrets puts the stored notification secrets back where a settings
-// update carries the placeholder for them.
-func keepSecrets(update map[string]any, stored *job.Config) {
-	eachSecret(update, func(holder map[string]any, key string, kept func(job.Notify) string) {
-		if holder[key] == remotes.Placeholder {
-			holder[key] = kept(stored.Notify)
+// update carries the placeholder for them. A token or a password is put back
+// only beside the server it was saved for, as remotes.WithSavedSecrets does,
+// so changing the address cannot send the saved one somewhere else.
+func keepSecrets(update map[string]any, stored *job.Config) error {
+	var refused error
+	eachSecret(update, func(holder map[string]any, key string, s secretAt) {
+		if holder[key] != remotes.Placeholder {
+			return
 		}
+		secret := s.kept(stored.Notify)
+		if secret != "" && s.sameServer != nil && !s.sameServer(holder, stored.Notify) {
+			refused = fmt.Errorf("the saved %s belongs to the server it was saved with; type it again to use it with this one", s.name)
+			return
+		}
+		holder[key] = secret
 	})
+	return refused
 }
 
 // secretAt is one place under "notify" that holds a secret: the objects on
-// the way to it, the key, and the stored value.
+// the way to it, the key, and the stored value. sameServer tells whether the
+// object holding the secret still names the stored server; a secret that is
+// itself the address has none.
 type secretAt struct {
-	path []string
-	key  string
-	kept func(job.Notify) string
+	path       []string
+	key        string
+	name       string
+	kept       func(job.Notify) string
+	sameServer func(holder map[string]any, stored job.Notify) bool
 }
 
 var notifySecrets = []secretAt{
-	{nil, "webhook", func(n job.Notify) string { return n.Webhook }},
-	{[]string{"matrix"}, "token", func(n job.Notify) string {
-		if n.Matrix == nil {
-			return ""
-		}
-		return n.Matrix.Token
-	}},
-	{[]string{"smtp"}, "password", func(n job.Notify) string {
-		if n.SMTP == nil {
-			return ""
-		}
-		return n.SMTP.Password
-	}},
-	{[]string{"apprise"}, "url", func(n job.Notify) string {
+	{key: "webhook", kept: func(n job.Notify) string { return n.Webhook }},
+	{path: []string{"matrix"}, key: "token", name: "Matrix token",
+		kept: func(n job.Notify) string {
+			if n.Matrix == nil {
+				return ""
+			}
+			return n.Matrix.Token
+		},
+		sameServer: func(holder map[string]any, stored job.Notify) bool {
+			var m job.Matrix
+			return decodes(holder, &m) && m.Homeserver == stored.Matrix.Homeserver
+		}},
+	{path: []string{"smtp"}, key: "password", name: "mail password",
+		kept: func(n job.Notify) string {
+			if n.SMTP == nil {
+				return ""
+			}
+			return n.SMTP.Password
+		},
+		// The encryption counts too: "none" would hand the password over in
+		// the clear.
+		sameServer: func(holder map[string]any, stored job.Notify) bool {
+			var s job.SMTP
+			was := stored.SMTP
+			return decodes(holder, &s) && s.Host == was.Host && s.Port == was.Port && s.Username == was.Username && s.TLS == was.TLS
+		}},
+	{path: []string{"apprise"}, key: "url", kept: func(n job.Notify) string {
 		if n.Apprise == nil {
 			return ""
 		}
 		return n.Apprise.URL
 	}},
-	{[]string{"healthchecks"}, "url", func(n job.Notify) string {
+	{path: []string{"healthchecks"}, key: "url", kept: func(n job.Notify) string {
 		if n.Healthchecks == nil {
 			return ""
 		}
@@ -854,10 +881,17 @@ var notifySecrets = []secretAt{
 	}},
 }
 
+// decodes reads a settings object the way Load reads the file, so a key
+// spelled twice in different cases settles as it will when the secret is used.
+func decodes(holder map[string]any, into any) bool {
+	raw, err := json.Marshal(holder)
+	return err == nil && json.Unmarshal(raw, into) == nil
+}
+
 // eachSecret visits every notification secret in a settings map, in whatever
 // case its keys are spelled. A job's own check is named by the job, whose
 // name is matched exactly, as Load does.
-func eachSecret(settings map[string]any, visit func(holder map[string]any, key string, kept func(job.Notify) string)) {
+func eachSecret(settings map[string]any, visit func(holder map[string]any, key string, s secretAt)) {
 	for _, notify := range objects(settings, "notify") {
 		for _, s := range notifySecrets {
 			holders := []map[string]any{notify}
@@ -870,19 +904,19 @@ func eachSecret(settings map[string]any, visit func(holder map[string]any, key s
 			}
 			for _, h := range holders {
 				for _, k := range keysLike(h, s.key) {
-					visit(h, k, s.kept)
+					visit(h, k, s)
 				}
 			}
 		}
 		for _, checks := range objects(notify, "healthchecks") {
 			for _, jobs := range objects(checks, "jobs") {
 				for name := range jobs {
-					visit(jobs, name, func(n job.Notify) string {
+					visit(jobs, name, secretAt{key: name, kept: func(n job.Notify) string {
 						if n.Healthchecks == nil {
 							return ""
 						}
 						return n.Healthchecks.Jobs[name]
-					})
+					}})
 				}
 			}
 		}
@@ -891,7 +925,9 @@ func eachSecret(settings map[string]any, visit func(holder map[string]any, key s
 
 // testNotify sends a test message through one channel as the page shows it,
 // saved or not, with the stored secrets where the page holds placeholders.
-// A refusal is an answer, not an error status, as a target's check is.
+// A refusal is an answer, not an error status, as a target's check is. The
+// address is the caller's choice, so a server's refusal is told by its status
+// alone: what it wrote back could be any page on the network.
 func (s *Server) testNotify(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Channel string         `json:"channel"`
@@ -901,7 +937,10 @@ func (s *Server) testNotify(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	keepSecrets(map[string]any{"notify": body.Notify}, s.Runner.Config())
+	if err := keepSecrets(map[string]any{"notify": body.Notify}, s.Runner.Config()); err != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
+		return
+	}
 	var n job.Notify
 	raw, err := json.Marshal(body.Notify)
 	if err == nil {
@@ -912,7 +951,12 @@ func (s *Server) testNotify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := daemon.SendTest(r.Context(), n, body.Channel); err != nil {
-		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": notify.Redact(err).Error()})
+		reason := notify.Redact(err).Error()
+		var refused *notify.Refused
+		if errors.As(err, &refused) {
+			reason = fmt.Sprintf("the server answered %d %s", refused.Code, http.StatusText(refused.Code))
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": reason})
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
@@ -951,7 +995,10 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 	}
 
 	current := s.Runner.Config()
-	keepSecrets(body, current)
+	if err := keepSecrets(body, current); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
 	next, err := current.SaveSettings(body)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)

@@ -287,3 +287,65 @@ func TestATestMessageUsesTheStoredSecret(t *testing.T) {
 		t.Errorf("the reason carries the address: %s", answer)
 	}
 }
+
+// A placeholder stands for a secret saved for one server. Whoever changes the
+// server beside it has to type the secret, or could have it sent to his own.
+func TestASavedSecretIsNotSentToAnotherServer(t *testing.T) {
+	h := newHarness(t)
+	var reached []string
+	stranger := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reached = append(reached, r.Header.Get("Authorization"))
+	}))
+	defer stranger.Close()
+	putJSON(t, h.srv, "/api/settings", `{"notify":`+allSecrets+`}`)
+
+	_, answer := doJSON(t, h.srv, http.MethodPost, "/api/notify/test",
+		`{"channel":"matrix","notify":{"matrix":{"homeserver":"`+stranger.URL+`","room":"!a:example.org","token":"********"}}}`)
+	if len(reached) != 0 {
+		t.Errorf("the saved token went to another homeserver: %v", reached)
+	}
+	if !strings.Contains(answer, `"ok":false`) || !strings.Contains(answer, "type it again") {
+		t.Errorf("the test answered %s", answer)
+	}
+
+	changed := map[string]string{
+		"matrix homeserver": `"matrix":{"homeserver":"https://elsewhere.example","room":"!a:example.org","token":"********"}`,
+		"mail host":         `"smtp":{"host":"elsewhere.example","from":"a@example.org","to":"b@example.org","username":"arrowloop","password":"********"}`,
+		"mail port":         `"smtp":{"host":"mail.example.org","port":2525,"from":"a@example.org","to":"b@example.org","username":"arrowloop","password":"********"}`,
+		"mail user":         `"smtp":{"host":"mail.example.org","from":"a@example.org","to":"b@example.org","username":"someone","password":"********"}`,
+		"mail encryption":   `"smtp":{"host":"mail.example.org","from":"a@example.org","to":"b@example.org","username":"arrowloop","password":"********","tls":"none"}`,
+	}
+	for what, channel := range changed {
+		resp, body := putJSON(t, h.srv, "/api/settings", `{"notify":{`+channel+`}}`)
+		if resp.StatusCode != http.StatusBadRequest || !strings.Contains(body, "type it again") {
+			t.Errorf("a changed %s with the placeholder answered %s %s", what, resp.Status, body)
+		}
+	}
+	n := h.runner.Config().Notify
+	if n.Matrix.Homeserver != "https://matrix.example.org" || n.SMTP.Host != "mail.example.org" || n.SMTP.Password != "SECRETPASSWORD" {
+		t.Errorf("a refused save changed the settings: %+v %+v", n.Matrix, n.SMTP)
+	}
+
+	// A new server with the secret typed again is a plain change.
+	resp, body := putJSON(t, h.srv, "/api/settings", `{"notify":{"matrix":{"homeserver":"https://elsewhere.example","room":"!a:example.org","token":"NEWTOKEN"}}}`)
+	if resp.StatusCode != http.StatusOK || h.runner.Config().Notify.Matrix.Token != "NEWTOKEN" {
+		t.Errorf("a new homeserver with its token answered %s %s", resp.Status, body)
+	}
+}
+
+// The test can be pointed at any address, so what a server there writes back
+// must not reach the page.
+func TestATestTellsTheStatusButNotWhatTheServerWrote(t *testing.T) {
+	h := newHarness(t)
+	hook := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "INTERNAL ADMIN PAGE", http.StatusForbidden)
+	}))
+	defer hook.Close()
+	_, answer := doJSON(t, h.srv, http.MethodPost, "/api/notify/test", `{"channel":"webhook","notify":{"webhook":"`+hook.URL+`/x"}}`)
+	if strings.Contains(answer, "INTERNAL ADMIN PAGE") {
+		t.Errorf("the reason carries the server's answer: %s", answer)
+	}
+	if !strings.Contains(answer, `"ok":false`) || !strings.Contains(answer, "403") {
+		t.Errorf("the reason lost the status: %s", answer)
+	}
+}

@@ -6,6 +6,7 @@ import { Selector } from '../../components/Selector'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api } from '../../lib/api'
 import { groupStage } from '../../lib/controls'
+import { errorText } from '../../lib/errorText'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
@@ -300,7 +301,7 @@ function TestButton({ channel, notify }: { channel: Channel; notify: Notify }) {
       setVerdict(answer)
       if (!answer.ok) setRefused((n) => n + 1)
     } catch (e) {
-      setVerdict({ ok: false, reason: (e as Error).message })
+      setVerdict({ ok: false, reason: errorText(t, e) })
       setRefused((n) => n + 1)
     } finally {
       setSending(false)
