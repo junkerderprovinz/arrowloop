@@ -17,13 +17,21 @@ export function sideName(side: string | undefined, t: T, expect: "device" | "tar
 /**
  * Names both sides for a line that sets one against the other. Two sides that
  * would carry one name, such as two folders on the device, go by their last
- * folder.
+ * folder, and by as many parent folders as it takes when those match too:
+ * "Handy/Musik" and "Ablage/Musik".
  */
 export function sidePair(left: string | undefined, right: string | undefined, t: T): [string, string] {
   const a = sideName(left, t);
   const b = sideName(right, t, "target");
   if (a !== b) return [a, b];
-  return [leaf(left) || a, leaf(right) || b];
+  const x = folders(left);
+  const y = folders(right);
+  for (let n = 1; n <= Math.max(x.length, y.length); n++) {
+    const one = x.slice(-n).join("/");
+    const two = y.slice(-n).join("/");
+    if (one !== two) return [one || a, two || b];
+  }
+  return [a, b];
 }
 
 /**
@@ -39,10 +47,10 @@ export function jobSides(
   return sidePair(job?.left, job?.right, t);
 }
 
-function leaf(side: string | undefined): string {
+function folders(side: string | undefined): string[] {
   const remote = remoteOf(side);
   const path = (side ?? "").slice(remote ? remote.length + 1 : 0);
-  return path.split(/[/\\]/).filter(Boolean).pop() ?? "";
+  return path.split(/[/\\]/).filter(Boolean);
 }
 
 /**

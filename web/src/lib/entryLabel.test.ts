@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryAction, entryLabel, entryNote, placeOf, sideName } from './entryLabel'
+import { entryAction, entryLabel, entryNote, placeOf, placesOf, sideName } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -68,6 +68,23 @@ describe('what happened to a file', () => {
     const local = job('/mnt/user/testlinks', '/mnt/user/testrechts/')
     expect(entryLabel(t, entry('copy', 'right'), local, drives)).toBe('Nach testrechts kopiert')
     expect(entryLabel(t, entry('trash', 'left'), local, drives)).toBe('In testlinks gelöscht')
+  })
+
+  it('tells two folders of one name apart by the folder they are in', () => {
+    const music = job('/sdcard/ArrowLoopTest/Handy/Musik', '/sdcard/ArrowLoopTest/Ablage/Musik')
+    expect(entryLabel(t, entry('copy', 'right'), music, drives)).toBe('Nach Ablage/Musik kopiert')
+    expect(entryLabel(t, entry('trash', 'left'), music, drives)).toBe('In Handy/Musik gelöscht')
+  })
+
+  it('tells two folders on one target apart by the folder there', () => {
+    expect(placesOf(job('cloud:a/Musik', 'cloud:b/Musik'), drives)).toEqual([
+      { kind: 'target', name: 'cloud/a/Musik' },
+      { kind: 'target', name: 'cloud/b/Musik' },
+    ])
+    expect(placesOf(job('cloud:', 'cloud:Musik'), drives)).toEqual([
+      { kind: 'target', name: 'cloud' },
+      { kind: 'target', name: 'cloud/Musik' },
+    ])
   })
 
   it("copies from a drive onto this device by the drive's name", () => {

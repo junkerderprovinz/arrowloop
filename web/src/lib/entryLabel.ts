@@ -31,6 +31,39 @@ export function placeOf(path: string, drives: Drive[]): Place {
   return { kind: 'device', name: trimmed.split(/[\\/]/).pop() || trimmed }
 }
 
+/**
+ * Both sides of a job as places that can be told apart. Two folders called
+ * Musik go by as many of their parent folders as it takes, "Handy/Musik" and
+ * "Ablage/Musik", and two sides on one target or drive add the folder there.
+ */
+export function placesOf(job: Job, drives: Drive[]): [Place, Place] {
+  const left = placeOf(job.left, drives)
+  const right = placeOf(job.right, drives)
+  if (left.name !== right.name) return [left, right]
+  const a = folders(job.left)
+  const b = folders(job.right)
+  for (let n = 1; n <= Math.max(a.length, b.length); n++) {
+    const x = a.slice(-n).join('/')
+    const y = b.slice(-n).join('/')
+    if (x !== y) return [narrowed(left, x), narrowed(right, y)]
+  }
+  return [left, right]
+}
+
+/** The folders of a side's path, without the target or drive in front. */
+function folders(path: string): string[] {
+  const rest = path.startsWith(DRIVE)
+    ? path.slice(DRIVE.length).split('/').slice(1).join('/')
+    : path.replace(TARGET, '')
+  return rest.split(/[\\/]+/).filter(Boolean)
+}
+
+/** A place narrowed to a folder in it. A device folder is named by its folders alone. */
+function narrowed(place: Place, folder: string): Place {
+  if (!folder) return place
+  return { kind: place.kind, name: place.kind === 'device' ? folder : `${place.name}/${folder}` }
+}
+
 /** The kinds in their plain words, for an entry whose sides are not known. */
 const PLAIN: Record<string, TranslationKey> = {
   copy: 'entry.copy',
@@ -88,14 +121,14 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
   if (e.Kind === 'conflict') {
     if (note === 'keep left' || note === 'keep right') {
       if (!job) return plain
-      const kept = placeOf(note === 'keep left' ? job.left : job.right, drives)
+      const kept = placesOf(job, drives)[note === 'keep left' ? 0 : 1]
       return t('entry.conflictKept', { place: kept.name })
     }
     return t('entry.conflictBoth')
   }
   if (!job || (e.Side !== 'left' && e.Side !== 'right')) return plain
-  const to = placeOf(e.Side === 'left' ? job.left : job.right, drives)
-  const from = placeOf(e.Side === 'left' ? job.right : job.left, drives)
+  const [left, right] = placesOf(job, drives)
+  const [to, from] = e.Side === 'left' ? [left, right] : [right, left]
   // "Locally" only means something when the other side is somewhere else.
   const here = (local: TranslationKey, there: TranslationKey) =>
     to.kind === 'device' && from.kind !== 'device' ? t(local) : t(there, { place: to.name })
