@@ -4,6 +4,13 @@ import type { TranslationKey } from "./i18n";
 // One stack per tab, so back from a detail returns to that tab's list and not
 // to whatever was open in another tab.
 
+/** What the overview opens without leaving its tab, so back returns to it. */
+export type OverviewStack = {
+  OverviewHome: undefined;
+  Anomalies: { job?: string } | undefined;
+  TrashAll: undefined;
+};
+
 export type JobsStack = {
   JobList: undefined;
   JobDetail: { name: string };
@@ -24,6 +31,7 @@ export type HistoryStack = {
   RunList: undefined;
 };
 
+/** The settings and the pages they open, which live behind More. */
 export type SettingsStack = {
   SettingsHome: undefined;
   Language: undefined;
@@ -32,7 +40,7 @@ export type SettingsStack = {
 };
 
 /** The places behind More. The one picked last is the tab's first screen. */
-export type MoreStack = {
+export type MoreStack = SettingsStack & {
   TrashAll: undefined;
   TargetList: undefined;
   TargetPick: undefined;
@@ -44,14 +52,14 @@ export type Nav<T extends Record<string, object | undefined>> = NativeStackNavig
 
 /** A place the bar holds, by the tab that shows it. */
 export interface BarPlace {
-  tab: "JobsTab" | "ConflictsTab" | "HistoryTab" | "SettingsTab";
+  tab: "OverviewTab" | "JobsTab" | "ConflictsTab" | "HistoryTab";
   label: TranslationKey;
   glyph: string;
 }
 
 /** A place behind More, by the first screen it opens on. */
 export interface MorePlace {
-  screen: "TrashAll" | "TargetList" | "Anomalies";
+  screen: "TrashAll" | "TargetList" | "Anomalies" | "SettingsHome";
   label: TranslationKey;
   glyph: string;
 }
@@ -61,15 +69,19 @@ export interface MorePlace {
  * the More sheet, so the bar and the sheet cannot disagree about either.
  */
 export const BAR: BarPlace[] = [
+  { tab: "OverviewTab", label: "nav.overview", glyph: "IconDashboard" },
   { tab: "JobsTab", label: "nav.jobs", glyph: "IconSync" },
   { tab: "ConflictsTab", label: "nav.conflicts", glyph: "IconConflict" },
   { tab: "HistoryTab", label: "nav.history", glyph: "IconHistory" },
-  { tab: "SettingsTab", label: "nav.settings", glyph: "IconGear" },
 ];
 
-/** In the web rail's order; Anomalies goes while its notes are switched off. */
+/**
+ * In the web rail's order, Settings last as the rail has it; Anomalies goes
+ * while its notes are switched off.
+ */
 export const MORE: MorePlace[] = [
   { screen: "Anomalies", label: "nav.anomalies", glyph: "IconAnomalies" },
   { screen: "TrashAll", label: "nav.trash", glyph: "IconTabRecovery" },
   { screen: "TargetList", label: "nav.targets", glyph: "IconTabStorage" },
+  { screen: "SettingsHome", label: "nav.settings", glyph: "IconGear" },
 ];

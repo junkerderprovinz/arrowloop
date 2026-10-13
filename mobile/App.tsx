@@ -25,12 +25,13 @@ import {
   type JobsStack,
   type MorePlace,
   type MoreStack,
-  type SettingsStack,
+  type OverviewStack,
 } from "./src/nav";
 import { History } from "./src/screens/History";
 import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
+import { Overview } from "./src/screens/Overview";
 import { Plan } from "./src/screens/Plan";
 import { Settings } from "./src/screens/Settings";
 import { SyncSettings } from "./src/screens/SyncSettings";
@@ -52,16 +53,16 @@ import { engine } from "./src/engine";
 import { useEngine } from "./src/useEngine";
 import { useWaiting, WaitingProvider } from "./src/waiting";
 
-// Four places on the bar and More for the rest. Each tab has its own stack, so
+// Four places on the bar and More for the rest, the overview first. Each tab has its own stack, so
 // back returns within the tab. The tabs use the material top tab navigator
 // with its bar at the bottom, because the bottom tab navigator has no pager to
 // swipe between pages; swiping is off once a tab has left its root screen,
 // where a sideways drag belongs to the screen.
 const Tabs = createMaterialTopTabNavigator();
+const OverviewNav = createNativeStackNavigator<OverviewStack>();
 const JobsNav = createNativeStackNavigator<JobsStack>();
 const ConflictsNav = createNativeStackNavigator<ConflictsStack>();
 const HistoryNav = createNativeStackNavigator<HistoryStack>();
-const SettingsNav = createNativeStackNavigator<SettingsStack>();
 const MoreNav = createNativeStackNavigator<MoreStack>();
 
 export default function App() {
@@ -180,6 +181,18 @@ function Shell() {
           })}
           tabBar={(props) => <TabBar {...props} />}
         >
+          <Tabs.Screen name="OverviewTab" options={{ title: t("nav.overview") }}>
+            {() => (
+              <OverviewNav.Navigator screenOptions={header}>
+                {/* The first screen carries the product name, untranslated;
+                    its place on the bar keeps the translated label. */}
+                <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: "ArrowLoop" }} />
+                <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+                <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
+              </OverviewNav.Navigator>
+            )}
+          </Tabs.Screen>
+
           <Tabs.Screen name="JobsTab" options={{ title: t("nav.jobs") }}>
             {() => (
               <JobsNav.Navigator screenOptions={header}>
@@ -220,19 +233,9 @@ function Shell() {
             )}
           </Tabs.Screen>
 
-          <Tabs.Screen name="SettingsTab" options={{ title: t("nav.settings") }}>
-            {() => (
-              <SettingsNav.Navigator screenOptions={header}>
-                <SettingsNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
-                <SettingsNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
-                <SettingsNav.Screen name="Sync" component={SyncSettings} options={{ title: t("engine.defaults") }} />
-              </SettingsNav.Navigator>
-            )}
-          </Tabs.Screen>
-
           {/* The places behind More share one tab. Picking one makes it the
               stack's first screen, so back from a target's form returns to
-              the targets, and a swipe from Settings lands where More last led. */}
+              the targets, and a swipe from History lands where More last led. */}
           <Tabs.Screen name="MoreTab" options={{ title: t("more.title") }}>
             {() => (
               <MoreNav.Navigator screenOptions={header}>
@@ -241,6 +244,9 @@ function Shell() {
                 <MoreNav.Screen name="TargetPick" component={TargetPick} options={{ title: t("targets.addStorage") }} />
                 <MoreNav.Screen name="TargetEdit" component={TargetEdit} options={{ title: t("action.edit") }} />
                 <MoreNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+                <MoreNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
+                <MoreNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
+                <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("engine.defaults") }} />
               </MoreNav.Navigator>
             )}
           </Tabs.Screen>
@@ -267,10 +273,10 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   const [sheet, setSheet] = useState(false);
   const current = state.routes[state.index]?.name;
   const counts: Record<BarPlace["tab"], number | null> = {
+    OverviewTab: null,
     JobsTab: running,
     ConflictsTab: conflicts,
     HistoryTab: null,
-    SettingsTab: null,
   };
   // Clear of the gesture bar, with a floor for phones with buttons.
   const below = Math.max(inset.bottom, space.sm);
@@ -436,6 +442,7 @@ function MoreSheet({
     TrashAll: trash,
     TargetList: null,
     Anomalies: findings?.length ?? null,
+    SettingsHome: null,
   };
   const held = findings?.some((f) => f.held) ?? false;
 

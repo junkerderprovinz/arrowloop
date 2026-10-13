@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { speed as perSecond } from "../../web/src/lib/speed";
-import type { Job, RunEvent } from "./api";
+import type { Job, Moving, RunEvent } from "./api";
 import { useT, type T } from "./i18n";
 import { sidePair } from "./sides";
 import { Caption, Meter } from "./ui";
@@ -17,6 +17,16 @@ export interface Progress {
   guess?: boolean;
   /** Bytes a second, read from rclone's accounting; zero while nothing moves. */
   speed: number;
+  /** The files in transfer, as many as rclone moves at once. */
+  moving: Moving[];
+  /** Files a second, sent instead of the rows when files are too many to name. */
+  rate: number;
+  /**
+   * Heard first from a transfer frame. A screen opened after the run's counts
+   * went by gets none until the next file is done, which for one large file is
+   * the end of the run.
+   */
+  joined?: boolean;
 }
 
 /**
@@ -45,8 +55,9 @@ export function useRunProgress(): Record<string, Progress> {
   useEngineStream(true, (event) => {
     const was = heard.current[event.job];
     if (event.phase === "moving") {
-      if (!was) return;
-      heard.current[event.job] = { ...was, speed: event.speed ?? 0 };
+      // The engine omits an empty list (internal/daemon/runner.go).
+      const moving = { speed: event.speed ?? 0, moving: event.moving ?? [], rate: event.rate ?? 0 };
+      heard.current[event.job] = was ? { ...was, ...moving } : { done: 0, total: 0, joined: true, ...moving };
     } else if (event.phase === "progress") {
       heard.current[event.job] = {
         done: event.done ?? 0,
@@ -55,6 +66,8 @@ export function useRunProgress(): Record<string, Progress> {
         side: event.side,
         guess: event.guess,
         speed: was?.speed ?? 0,
+        moving: was?.moving ?? [],
+        rate: was?.rate ?? 0,
       };
     } else if (event.phase === "finished") {
       delete heard.current[event.job];
@@ -74,6 +87,7 @@ export function useRunProgress(): Record<string, Progress> {
 export function RunProgress({ job, at, hue }: { job: Job; at?: Progress; hue: string }) {
   const { t, lang } = useT();
   if (!at) return <Caption>{t("preview.working")}</Caption>;
+  if (at.joined) return at.speed > 0 ? <Caption>{perSecond(at.speed, lang)}</Caption> : null;
   const line = counted(at, t, lang);
   return (
     <>
