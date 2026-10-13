@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { entryLabel, transferLabel } from "../../web/src/lib/entryLabel";
-import type { Job, Moving, Touch } from "./api";
-import { clock } from "./clock";
+import type { Job, Moving } from "./api";
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { animateNext, useMotion } from "./motion";
@@ -10,16 +9,16 @@ import { STEPS_KEPT, type Progress } from "./progress";
 import { remoteOf } from "./sides";
 import { bytes } from "./space";
 import { space, text } from "./theme";
-import { Caption, Meter, Press, Section, useHue, useTheme } from "./ui";
+import { AxisLabel, Caption, Meter, Press, useHue, useTheme } from "./ui";
 
 /**
  * How often the rows may change. A run over many small files finishes dozens a
- * second; they are counted by the run's bar in the card above, and a row that
+ * second; they are counted by the run's bar above the rows, and a row that
  * stands for less than this cannot be read.
  */
 const ROW_MS = 500;
 
-/** One row: a file in transfer, one a run has just finished, or one from the log. */
+/** One row: a file in transfer or one a run has just finished. */
 interface Line {
   key: string;
   job: string;
@@ -29,19 +28,20 @@ interface Line {
   note?: string;
   /** Set while the file is in transfer. */
   moving?: Moving;
-  /** Set on a file from the log, which says when it was touched. */
-  when?: string;
 }
 
 /**
- * The rows to show, newest first. While a run works on files, its files in
- * transfer lead and the ones it just finished follow, across every running
- * job. Otherwise, the last files the log holds.
+ * The rows to show across every running job: the files in transfer first,
+ * then the ones just finished, newest first. Only jobs the engine lists as
+ * running count, since a stream that dropped while the app was away never
+ * delivered the event that clears a finished run.
  */
-function activityLines(progress: Record<string, Progress>, touches: Touch[] | null): Line[] {
+function activityLines(progress: Record<string, Progress>, jobs: Job[]): Line[] {
+  const running = new Set(jobs.filter((j) => j.running).map((j) => j.name));
   const live: Line[] = [];
   const done: (Line & { at: number })[] = [];
   for (const [job, at] of Object.entries(progress)) {
+    if (!running.has(job)) continue;
     const finished = new Set(at.steps.map((s) => `${s.kind}\n${s.path}`));
     // By path, since rclone lists its transfers in no lasting order.
     const moving = [...at.moving].sort((a, b) => a.path.localeCompare(b.path));
@@ -56,51 +56,38 @@ function activityLines(progress: Record<string, Progress>, touches: Touch[] | nu
     }
   }
   done.sort((a, b) => b.at - a.at);
-  const now = [...live, ...done];
-  if (now.length > 0) return now.slice(0, STEPS_KEPT);
-  return (touches ?? []).slice(0, STEPS_KEPT).map((e) => ({
-    key: `${e.Run}\n${e.Kind}\n${e.Path}`,
-    job: e.Job,
-    kind: e.Kind,
-    path: e.Path,
-    side: e.Side,
-    note: e.Note,
-    when: e.When,
-  }));
+  return [...live, ...done].slice(0, STEPS_KEPT);
 }
 
 /**
- * The files being worked on across every running job: what happens to each,
- * a bar while it is in transfer and a tick once it is done. While nothing runs
- * it lists the last files a run touched, with when. It is left out until there
- * is a file to name. Each row leads to its job.
+ * The files being worked on across every running job, as a sub-card of the
+ * running card: what happens to each, a bar while it is in transfer and a
+ * tick once it is done. It is left out while there is no file to name. Each
+ * row leads to its job.
  */
 export function Activity({
   progress,
-  touches,
   jobs,
-  hue,
   onOpen,
 }: {
   progress: Record<string, Progress>;
-  touches: Touch[] | null;
   jobs: Job[];
-  /** The card's position among the page's cards. */
-  hue: number;
   onOpen: (job: string) => void;
 }) {
   const { t } = useT();
-  const lines = useCalm(useMemo(() => activityLines(progress, touches), [progress, touches]));
+  const { p, corners } = useTheme();
+  const lines = useCalm(useMemo(() => activityLines(progress, jobs), [progress, jobs]));
   if (lines.length === 0) return null;
   return (
-    <Section title={t("history.files")} hint={t("overview.filesHint")} hue={hue}>
+    <View style={[styles.well, { backgroundColor: p.surface2, ...corners.card }]}>
+      <AxisLabel>{t("history.files")}</AxisLabel>
       {lines.map((line) => {
         const index = jobs.findIndex((j) => j.name === line.job);
         return (
           <Row key={line.key} line={line} job={jobs[index]} index={Math.max(index, 0)} onOpen={() => onOpen(line.job)} />
         );
       })}
-    </Section>
+    </View>
   );
 }
 
@@ -139,7 +126,7 @@ function keys(lines: Line[]): string {
 function Row({ line, job, index, onOpen }: { line: Line; job: Job | undefined; index: number; onOpen: () => void }) {
   const { t, lang } = useT();
   const { p } = useTheme();
-  // The job's colour, as its bar wears it in the job list and the card above.
+  // The job's colour, as its bar wears it in the job list and above these rows.
   const hue = useHue(index);
   const moving = line.moving;
   const sized = moving !== undefined && moving.size > 0;
@@ -150,7 +137,6 @@ function Row({ line, job, index, onOpen }: { line: Line; job: Job | undefined; i
   // The share done stands beside the name; where the service did not say how
   // big the file is, what has arrived so far stands here instead.
   if (moving) facts.push(bytes(sized ? moving.size : moving.bytes));
-  if (line.when) facts.push(clock(line.when, lang));
 
   return (
     <Press onPress={onOpen} accessibilityRole="button" style={styles.row}>
@@ -161,7 +147,7 @@ function Row({ line, job, index, onOpen }: { line: Line; job: Job | undefined; i
           <Text style={[styles.share, { color: p.textSub }]}>
             {new Intl.NumberFormat(lang, { style: "percent" }).format(moving.bytes / moving.size)}
           </Text>
-        ) : !moving && !line.when ? (
+        ) : !moving ? (
           <Glyph name="IconCheck" color={p.okInk} size={14} />
         ) : null}
       </View>
@@ -220,6 +206,7 @@ function landing(side: string | undefined, job: Job | undefined): string | undef
 const GLYPH = 16;
 
 const styles = StyleSheet.create({
+  well: { padding: space.md, gap: space.sm },
   row: { gap: 2, paddingVertical: space.xs },
   top: { flexDirection: "row", alignItems: "center", gap: space.sm },
   // Under the name rather than under the mark.

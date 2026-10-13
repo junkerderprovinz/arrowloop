@@ -1,6 +1,6 @@
-// What waits for a person, counted in one place so the phone's status head and
-// the card under it can never disagree about it. Shaped by what it reads, so
-// the phone, whose api.ts declares its own types, can share it.
+// What waits for a person, which sets the phone's status head and where it
+// leads. Shaped by what it reads, so the phone, whose api.ts declares its own
+// types, can share it.
 
 import type { Finding } from './anomalies'
 

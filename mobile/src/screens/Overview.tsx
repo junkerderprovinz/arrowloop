@@ -4,14 +4,14 @@ import { AppState, StyleSheet, Text, View } from "react-native";
 import { entryLabel } from "../../../web/src/lib/entryLabel";
 import { jobState, needs, type HeadState, type Need } from "../../../web/src/lib/needs";
 import { Activity } from "../activity";
-import { api, failed, type Job, type Remote, type Run, type Tally, type Touch } from "../api";
+import { api, failed, type Job, type Remote, type Run, type Tally } from "../api";
 import { clock } from "../clock";
 import { engine } from "../engine";
 import { Glyph } from "../glyphs";
-import { useT } from "../i18n";
+import { useT, type T } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
-import { FILE_WORK, RunProgress, STEPS_KEPT, useRunProgress, type Progress } from "../progress";
+import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
 import { bytes, isAccount, ReachBadge, Room, useReach, useRoom } from "../space";
@@ -32,12 +32,10 @@ import {
   Page,
   Pair,
   Press,
-  Row,
   Section,
   Title,
   useHue,
   useTheme,
-  type Tone,
 } from "../ui";
 
 /** How many of the coming runs the overview names. */
@@ -54,10 +52,24 @@ const HEADLINE = {
 } as const satisfies Record<Head, string>;
 
 /**
- * The start screen: how things stand in one sentence, a few counts, what
- * waits for the person, what runs and runs next, the files at work, the last
- * run and how full each target is. Every line that counts something leads to
- * it.
+ * Which need the head names when several wait: what holds work back first,
+ * and a failed job before a note, which the anomalies tile counts anyway.
+ */
+const FIRST: Record<Need["kind"], number> = {
+  conflicts: 0,
+  held: 1,
+  failed: 2,
+  unread: 3,
+  warned: 4,
+  neverRan: 5,
+  notes: 6,
+};
+
+/**
+ * The start screen: how things stand in one sentence that leads to what
+ * needs the person, a few counts, what runs and runs next with the files at
+ * work, the last run and how full each target is. Every line that counts
+ * something leads to it.
  */
 export function Overview() {
   const nav = useNavigation<Nav<OverviewStack>>();
@@ -132,10 +144,38 @@ export function Overview() {
   // Over the job list, so saving the new job lands there.
   const addJob = () => nav.getParent()?.navigate("JobsTab", { screen: "JobEdit", params: {}, initial: false });
 
+  const follow = (need: Need) => {
+    switch (need.kind) {
+      case "conflicts":
+      case "unread":
+        return toTab("ConflictsTab");
+      case "held":
+        return nav.navigate("Anomalies", { job: need.job });
+      case "notes":
+        return nav.navigate("Anomalies");
+      default:
+        return openJob(need.job);
+    }
+  };
+  const top = [...wait.items].sort((a, b) => FIRST[a.kind] - FIRST[b.kind])[0];
+  // Without file access no job on the phone's folders can run, so it comes
+  // before anything the engine reports.
+  const lead =
+    access === false
+      ? {
+          detail: `${t("phone.access")} · ${t("phone.permissionDenied")}`,
+          go: () => void engine.openStorageSettings().catch(() => {}),
+        }
+      : top
+        ? { detail: needLine(top, t), go: () => follow(top) }
+        : null;
+
   return (
     <Floating>
       <Page fab>
-        {known || empty || (heard && head !== "inSync") ? <StatusHead state={head} /> : null}
+        {access === false || known || empty || (heard && head !== "inSync") ? (
+          <StatusHead state={head} detail={lead?.detail} onPress={lead?.go} />
+        ) : null}
 
         <Section title={t("overview.numbers")} hue={0}>
           <View style={styles.tiles}>
@@ -156,28 +196,7 @@ export function Overview() {
           </View>
         </Section>
 
-        {(heard && wait.items.length > 0) || access === false ? (
-          <Section title={t("phone.waiting")} hue={1}>
-            {access === false ? (
-              <Row
-                label={t("phone.access")}
-                onPress={() => void engine.openStorageSettings().catch(() => {})}
-                control={<Badge label={t("phone.permissionDenied")} tone="warn" />}
-              />
-            ) : null}
-            {wait.items.map((need) => (
-              <NeedRow
-                key={needKey(need)}
-                need={need}
-                onConflicts={() => toTab("ConflictsTab")}
-                onFindings={(job) => nav.navigate("Anomalies", job ? { job } : undefined)}
-                onJob={openJob}
-              />
-            ))}
-          </Section>
-        ) : null}
-
-        <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={2}>
+        <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={1}>
           {empty ? (
             <>
               <Body>{t("phone.noJobs")}</Body>
@@ -197,18 +216,17 @@ export function Overview() {
               onOpen={() => openJob(job.name)}
             />
           ))}
+          <Activity progress={progress} jobs={jobs} onOpen={openJob} />
           {empty ? null : <NextRuns jobs={jobs} onOpen={openJob} />}
         </Section>
 
-        <Activity progress={progress} touches={recent.touches} jobs={jobs} hue={3} onOpen={openJob} />
-
-        <Section title={t("overview.status")} hue={4}>
+        <Section title={t("overview.status")} hue={2}>
           <LastRun run={recent.newest} tally={recent.tally} jobs={jobs} />
         </Section>
 
         {/* Left out without a target elsewhere; adding one is the targets page's work. */}
         {accounts === null || accounts.length > 0 ? (
-          <Section title={t("overview.accounts")} hue={5}>
+          <Section title={t("overview.accounts")} hue={3}>
             <Accounts accounts={accounts} />
           </Section>
         ) : null}
@@ -231,14 +249,12 @@ export function Overview() {
 }
 
 /**
- * The newest run across all jobs, what it did, and the last files a run
- * touched. Asked for again only when a run finishes, not on every progress
- * frame.
+ * The newest run across all jobs and what it did. Asked for again only when a
+ * run finishes, not on every progress frame.
  */
 function useRecentRuns() {
   const [newest, setNewest] = useState<Run | null | "none">(null);
   const [tally, setTally] = useState<Tally | null>(null);
-  const [touches, setTouches] = useState<Touch[] | null>(null);
 
   const reload = useCallback(() => {
     api.history(1).then(
@@ -254,7 +270,6 @@ function useRecentRuns() {
       // The app already reports an engine that does not answer.
       () => setNewest((was) => was ?? "none"),
     );
-    api.log({ limit: STEPS_KEPT, kinds: FILE_WORK }).then(setTouches, () => {});
   }, []);
 
   useEffect(reload, [reload]);
@@ -262,7 +277,7 @@ function useRecentRuns() {
     if (event.phase === "finished") reload();
   });
 
-  return { newest, tally, touches, reload };
+  return { newest, tally, reload };
 }
 
 /**
@@ -286,62 +301,58 @@ function useFileAccess(): boolean | null {
   return access;
 }
 
-/** How things stand, in one of four fixed sentences. A note never rounds up to "in sync". */
-function StatusHead({ state }: { state: Head }) {
+/**
+ * How things stand, in one of four fixed sentences. A note never rounds up to
+ * "in sync". When something waits, the line under it names the first thing
+ * and the head leads there; the rest is counted on the tiles or listed on the
+ * jobs page.
+ */
+function StatusHead({ state, detail, onPress }: { state: Head; detail?: string; onPress?: () => void }) {
   const { t } = useT();
   const { p } = useTheme();
   const ink = state === "inSync" ? p.okInk : state === "noJobs" ? p.textSub : p.warnInk;
-  return (
-    <View style={styles.head} accessibilityRole="header">
+  const body = (
+    <View style={styles.head}>
       <Glyph name="IconSync" color={ink} size={22} />
-      <Text style={[styles.headText, { color: p.text }]}>{t(HEADLINE[state])}</Text>
+      <View style={styles.headWords}>
+        <Text style={[styles.headText, { color: p.text }]}>{t(HEADLINE[state])}</Text>
+        {detail ? <Caption>{detail}</Caption> : null}
+      </View>
     </View>
   );
-}
-
-function needKey(need: Need): string {
-  return "job" in need ? `${need.kind}:${need.job}:${"finding" in need ? need.finding : ""}` : need.kind;
-}
-
-/** One thing that waits, as a row that leads to where it is answered. */
-function NeedRow({
-  need,
-  onConflicts,
-  onFindings,
-  onJob,
-}: {
-  need: Need;
-  onConflicts: () => void;
-  /** Opens the findings, of one job where given. */
-  onFindings: (job?: string) => void;
-  onJob: (name: string) => void;
-}) {
-  const { t } = useT();
-  const row = (label: string, badge: string, tone: Tone, onPress: () => void) => (
-    <Row label={label} onPress={onPress} control={<Badge label={badge} tone={tone} />} />
+  return onPress ? (
+    <Press onPress={onPress} accessibilityRole="button">
+      {body}
+    </Press>
+  ) : (
+    <View accessibilityRole="header">{body}</View>
   );
+}
+
+/** One thing that waits: what it is about, then its state in the badges' words. */
+function needLine(need: Need, t: T): string {
   switch (need.kind) {
     case "conflicts":
-      return row(t("nav.conflicts"), String(need.count), "warn", onConflicts);
+      return `${t("nav.conflicts")} · ${need.count}`;
     case "unread":
-      return row(t("needs.unread"), String(need.count), "warn", onConflicts);
+      return `${t("needs.unread")} · ${need.count}`;
     case "held":
-      return row(need.job, t("anomaly.heldBadge"), "warn", () => onFindings(need.job));
+      return `${need.job} · ${t("anomaly.heldBadge")}`;
     case "notes":
-      return row(t("nav.anomalies"), String(need.count), "neutral", () => onFindings());
+      return `${t("nav.anomalies")} · ${need.count}`;
     case "failed":
-      return row(need.job, t("status.failed"), "fail", () => onJob(need.job));
+      return `${need.job} · ${t("status.failed")}`;
     case "warned":
-      return row(need.job, t("status.warned"), "warn", () => onJob(need.job));
+      return `${need.job} · ${t("status.warned")}`;
     case "neverRan":
-      return row(need.job, t("status.never"), "neutral", () => onJob(need.job));
+      return `${need.job} · ${t("status.never")}`;
   }
 }
 
 /**
  * One running job as a sub-card: its two sides with the arrows moving the way
- * the files go and the run's bar. The files themselves stand on the card
- * below, across every job, so that each file is shown once.
+ * the files go and the run's bar. The files themselves stand in one list
+ * under all running jobs, so that each file is shown once.
  */
 function RunningJob({
   job,
@@ -557,7 +568,8 @@ function Account({
 const styles = StyleSheet.create({
   // Flat, with no card around it, like the head of an object's page.
   head: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingVertical: space.xs },
-  headText: { fontSize: text.status, fontWeight: "600", flexShrink: 1 },
+  headWords: { flexShrink: 1 },
+  headText: { fontSize: text.status, fontWeight: "600" },
   // A sub-card: a flat inset group one step above the card, without a shadow.
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
