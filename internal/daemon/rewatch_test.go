@@ -193,6 +193,30 @@ func TestAFolderThatWentAwayIsWatchedAgainOnceItIsBack(t *testing.T) {
 	arrives(t, f.right, f.left)
 }
 
+// A folder deleted and made again between two ticks, or a stick pulled and
+// plugged back under the same letter, keeps its path but loses its watch.
+func TestAFolderMadeAgainBetweenTwoTicksIsWatchedAgain(t *testing.T) {
+	f := folderJob(t)
+	mkdir(t, f.left)
+	mkdir(t, f.right)
+	now := time.Now()
+	ctx := f.watch(t, now)
+
+	if err := os.RemoveAll(f.right); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	deadline := time.Now().Add(10 * time.Second)
+	for _, err := os.Stat(f.right); !errors.Is(err, os.ErrNotExist); _, err = os.Stat(f.right) {
+		if time.Now().After(deadline) {
+			t.Fatalf("the folder is still there: %v", err)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	mkdir(t, f.right)
+	f.r.rewatch(ctx, ctx, now.Add(time.Minute))
+	arrives(t, f.right, f.left)
+}
+
 // failingWatch makes watch.New fail until told otherwise, and counts the
 // tries.
 type failingWatch struct {
