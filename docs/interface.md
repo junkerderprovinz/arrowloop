@@ -21,8 +21,10 @@ is there: running jobs, open conflicts, findings, files in the trash. **Sign
 out** stands at the foot, above **Settings**, and only once a password is set.
 
 **Targets** is a tile under Settings. Its switch **Also show in the sidebar**
-puts the page in the sidebar as well; the tile keeps showing it either way. An
-old link to `/targets` leads to the tile while the page is not in the sidebar.
+puts the page in the sidebar as well. The tile then keeps only its first card,
+with the switch, how many targets and drives are saved and **Open**, so the
+page is set up in one place. An old link to `/targets` leads to the tile while
+the page is not in the sidebar.
 
 In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
 **Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
@@ -325,13 +327,19 @@ show their glyphs alone. Settings opens on the tile used last, and every tile
 has an address of its own, such as `/settings/sync`. An older address such as
 `/settings/workload` leads to the tile that holds its cards.
 
+You can put the tiles in your own order. Hold a tile, or drag it with the
+mouse, and move it along the column; the column wiggles while a tile is
+carried, and Escape puts it back. With the keyboard, Alt and an arrow key move the tile that
+has the focus. The browser keeps the order, and **Reset** in the **Tile order**
+row on **Look** brings back the original one.
+
 - **General**: the settings backup and the workload (bandwidth limit, jobs at
   once and the run log file), and in the desktop app this computer: the
   window, starting with the system and automatic updates.
-- **Look**: language, design (Dark, Light or System), corners, motion, labels
-  and colours.
-- **Sync**: the global sync settings every job starts from, transfer, what gets
-  carried, retries and the shared exclude lists.
+- **Look**: language, design (Dark, Light or System), corners, motion, the
+  tile order, labels and colours.
+- **Sync**: the global sync settings every job starts from, transfer,
+  contents, retries and the shared exclude lists.
 - **Safety net**: the two brakes, the anomaly notes with their switch, and the
   notifications: when they go out, then a webhook (generic, Discord, Slack,
   Gotify or ntfy), Matrix, email, Apprise and Healthchecks.io, each with its
@@ -346,7 +354,8 @@ has an address of its own, such as `/settings/sync`. An older address such as
 The settings have a search. It stays out of sight until you scroll up once more
 at the top of a page, or press `/` or Ctrl+K. It finds a setting by its name or
 by a word from its explanation, and it knows the old names too: **Engine**
-leads to the tiles that took its cards, and **App** to Apps.
+leads to the tiles that took its cards, **App** to Apps, and a card's old title
+such as **What gets carried** to the card that carries it now.
 
 ## Info
 
