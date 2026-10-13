@@ -8,6 +8,18 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **Cancel the run stops a run within seconds, also over SFTP.** Once a file is across, the SFTP server works out its checksum with md5sum, which reads the whole file and cannot be interrupted, so on a large video the stop waited minutes for it. The run now ends a few seconds after the stop and leaves the command to finish on its own. Until the run has ended, the button says Stopping the run. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
+- **A stopped run is recorded as stopped.** It showed up in the history as an ordinary run with the interrupted file skipped.
+- **Pause stops a run that is going.** It only held the schedule, so the run kept copying while the button already said Resume. Pause now stops the run and holds the job until you resume it, on the web and on the phone. Run now still works on a paused job. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
+
 ## 2.1.0 - 2026-10-14
 
 ## ✨ Added
