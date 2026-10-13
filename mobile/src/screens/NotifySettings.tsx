@@ -160,7 +160,10 @@ export function NotifySection({
               key={name}
               label={name}
               value={checks.jobs?.[name] ?? ""}
-              onSave={(url) => setChecks({ jobs: { ...(checks.jobs ?? {}), [name]: url } })}
+              onSave={(url) => {
+                const { [name]: _, ...others } = checks.jobs ?? {};
+                setChecks({ jobs: url ? { ...others, [name]: url } : others });
+              }}
               placeholder="https://hc-ping.com/..."
             />
           ))}
@@ -202,7 +205,10 @@ function TextField({
 
 /**
  * A stored secret, shown as Saved with a Change button: the engine never sends
- * it back, so a box could only show dots that are not the secret.
+ * it back, so a box could only show dots that are not the secret. Change opens
+ * an empty box, and a box left empty clears the secret; Keep goes back to the
+ * stored one. It writes when the box is left, which fields.tsx's SecretField,
+ * made for a form saved as a whole, does not.
  */
 function SecretField({
   label,
@@ -217,7 +223,8 @@ function SecretField({
 }) {
   const { t } = useT();
   const [changing, setChanging] = useState(false);
-  const [typed, setTyped] = useState("");
+  // Null while the box shows what is stored.
+  const [typed, setTyped] = useState<string | null>(null);
   if (value === WITHHELD && !changing) {
     return (
       <Row
@@ -225,7 +232,14 @@ function SecretField({
         control={
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Body muted>{t("notify.saved")}</Body>
-            <Button label={t("notify.change")} labelKey="notify.change" onPress={() => setChanging(true)} />
+            <Button
+              label={t("notify.change")}
+              labelKey="notify.change"
+              onPress={() => {
+                setChanging(true);
+                setTyped("");
+              }}
+            />
           </View>
         }
       />
@@ -237,15 +251,14 @@ function SecretField({
       <Field
         label={label}
         secret
-        value={stored ? typed : (typed || value)}
+        value={typed ?? (stored ? "" : value)}
         placeholder={placeholder}
         onChange={setTyped}
         onBlur={() => {
-          if (typed && typed !== value) {
-            onSave(typed);
-            setChanging(false);
-            setTyped("");
-          }
+          if (typed === null) return;
+          if (typed !== value) onSave(typed);
+          setChanging(false);
+          setTyped(null);
         }}
       />
       {changing ? (
@@ -254,7 +267,7 @@ function SecretField({
           labelKey="notify.keep"
           onPress={() => {
             setChanging(false);
-            setTyped("");
+            setTyped(null);
           }}
         />
       ) : null}
