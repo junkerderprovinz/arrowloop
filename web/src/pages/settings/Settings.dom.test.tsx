@@ -74,6 +74,32 @@ describe('a settings tile', () => {
   })
 })
 
+describe('two tiles', () => {
+  it('keep a change made on one when the other is changed right after', async () => {
+    // The engine takes a moment over a save, and a read before then gets the old settings.
+    saveSettings.mockImplementation(
+      (s: Settings) =>
+        new Promise((done) =>
+          setTimeout(() => {
+            stored = { ...stored, ...s }
+            done(stored)
+          }, 50),
+        ),
+    )
+    const safety = render(<SafetyPage />)
+    const floor = await screen.findByRole('spinbutton', { name: 'Below this many files, no brake' })
+    fireEvent.change(floor, { target: { value: '20' } })
+    fireEvent.blur(floor)
+    safety.unmount()
+
+    render(<SyncPage />)
+    fireEvent.click(await screen.findByRole('switch', { name: 'Carry empty folders' }))
+    await waitFor(() => expect(saveSettings).toHaveBeenCalledTimes(2), { timeout: 2000 })
+    await waitFor(() => expect(stored.defaults).toMatchObject({ brakeFloor: 20, emptyDirs: true }))
+    saveSettings.mockImplementation((s: Settings) => Promise.resolve(s))
+  })
+})
+
 describe('a stored secret', () => {
   it('shows as saved and keeps the saved one until something new is typed', async () => {
     stored = { notify: { webhook: '********' } }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useSyncExternalStore } from 'react'
 
 import { followSettings } from '../../lib/anomalyModule'
 import { api, type Settings } from '../../lib/api'
@@ -13,73 +13,103 @@ import { useToast } from '../../lib/toast'
  */
 const SETTLE_MS = 700
 
+// One copy for every tile. Two tiles show parts of the same fields, such as
+// the defaults, and a copy each would let one tile write its stale part back
+// over what the other just changed.
+let shared: { loaded: Settings | null; draft: Settings; error: string | null } = { loaded: null, draft: {}, error: null }
+const watchers = new Set<() => void>()
+/** The fields changed since the last save, the only ones a save sends. */
+const changed = new Set<keyof Settings>()
+/** The saves under way, in order, so a read waits for what they write. */
+let saves: Promise<unknown> = Promise.resolve()
+let saving = 0
+let timer: ReturnType<typeof setTimeout> | null = null
+
+function update(next: Partial<typeof shared>) {
+  shared = { ...shared, ...next }
+  for (const watcher of watchers) watcher()
+}
+
+function subscribe(watcher: () => void) {
+  watchers.add(watcher)
+  return () => {
+    watchers.delete(watcher)
+  }
+}
+
+/** The changed fields as they stand in the draft, null for one cleared, which the engine then removes. */
+function unsaved(): Settings {
+  const out: Record<string, unknown> = {}
+  for (const key of changed) out[key] = shared.draft[key] ?? null
+  return out as Settings
+}
+
+function send(): Promise<Settings> {
+  if (timer) clearTimeout(timer)
+  timer = null
+  const body = unsaved()
+  changed.clear()
+  const go = () => api.saveSettings(body)
+  // Sent at once when nothing is under way, so a tile that closes has its
+  // change on the wire before the next tile reads.
+  const sent = saving > 0 ? saves.then(go) : go()
+  saving++
+  saves = sent
+    .catch(() => undefined)
+    .then(() => {
+      saving--
+    })
+  return sent
+}
+
+function read() {
+  saves
+    .then(() => api.settings())
+    .then((got) => {
+      // A field changed while the read was under way keeps what was typed.
+      update({ loaded: got, draft: { ...got, ...unsaved() }, error: null })
+      followSettings(got)
+    })
+    .catch((e: Error) => update({ error: e.message }))
+}
+
 /**
  * The engine settings the General, Sync and Safety tiles show, saved as they
  * change. A save is quiet; a refusal says so in a toast, since the field that
- * caused it may be far up a long page. Each tile asks once and hands the result
- * to all its cards, since a save sends the whole draft and a second draft
- * would undo the first one's changes.
+ * caused it may be far up a long page.
  */
 export function useEngineSettings() {
   const { t } = useT()
   const push = useToast()
-  const [loaded, setLoaded] = useState<Settings | null>(null)
-  const [draft, setDraft] = useState<Settings>({})
-  const [error, setError] = useState<string | null>(null)
+  const { loaded, draft, error } = useSyncExternalStore(subscribe, () => shared)
 
+  // Read again on every opening, for a change made in another window. A
+  // change still waiting to settle is sent when the tile closes rather than
+  // lost; nothing is left on screen to take the answer.
   useEffect(() => {
-    api
-      .settings()
-      .then((got) => {
-        setLoaded(got)
-        setDraft(got)
-        followSettings(got)
-      })
-      .catch((e: Error) => setError(e.message))
-  }, [])
-
-  // A ref, because the timer fires long after the render that scheduled it and
-  // would otherwise send a stale draft.
-  const latest = useRef<Settings>({})
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Leaving the tile unmounts it, and a change still waiting to settle is sent
-  // then rather than lost. Nothing is left on screen to take the answer.
-  useEffect(
-    () => () => {
-      if (!timer.current) return
-      clearTimeout(timer.current)
-      void api.saveSettings(latest.current).catch(() => {})
-    },
-    [],
-  )
-
-  const commit = useCallback(async () => {
-    try {
-      // The whole draft rather than a diff; the endpoint merges. Only `loaded`
-      // takes the answer: replacing the draft would overwrite a box somebody
-      // is still typing in.
-      const saved = await api.saveSettings(latest.current)
-      setLoaded(saved)
-      followSettings(saved)
-    } catch (e) {
-      push(errorText(t, e), 'fail')
+    read()
+    return () => {
+      if (timer) void send().catch(() => {})
     }
-  }, [push, t])
+  }, [])
 
   const patch = useCallback(
     (next: Partial<Settings>) => {
-      setDraft((prev) => {
-        const merged = { ...prev, ...next }
-        latest.current = merged
-        return merged
-      })
-      if (timer.current) clearTimeout(timer.current)
-      timer.current = setTimeout(() => {
-        timer.current = null
-        void commit()
+      for (const key of Object.keys(next) as (keyof Settings)[]) changed.add(key)
+      update({ draft: { ...shared.draft, ...next } })
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(() => {
+        send()
+          .then((saved) => {
+            // Only `loaded` takes the answer: replacing the draft would
+            // overwrite a box somebody is still typing in.
+            update({ loaded: saved })
+            followSettings(saved)
+          })
+          .catch((e) => push(errorText(t, e), 'fail'))
       }, SETTLE_MS)
     },
-    [commit],
+    [push, t],
   )
 
   return { loaded, draft, patch, error }
