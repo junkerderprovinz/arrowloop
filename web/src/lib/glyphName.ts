@@ -26,7 +26,9 @@ const RULES: Rule[] = [
   [/^defaults\.override$/i, 'IconPencil'],
   [/^defaults\.useDefault$/i, 'IconRefresh'],
 
-  // The list of what is new: following a change, and showing or settling the lot.
+  // What is new: the releases on GitHub, following a change, and showing or
+  // settling the lot. The releases button passes the GitHub mark itself.
+  [/^new\.releases$/i, 'IconLink'],
   [/^new\.go$/i, 'IconLink'],
   [/^new\.showAll$/i, 'IconEye'],
   [/^new\.markAll$/i, 'IconCheck'],

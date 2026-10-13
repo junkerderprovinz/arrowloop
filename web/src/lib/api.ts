@@ -1023,6 +1023,9 @@ export const api = {
   /** The versions this build is made of, for the Info tile. */
   versions: () => request<{ arrowloop: string; rclone: string; go: string }>('/api/versions'),
 
+  /** The notes of this release and every one before it, newest first, in Markdown. */
+  releaseNotes: () => request<{ notes: { version: string; body: string }[] }>('/api/release-notes'),
+
   /**
    * Asks GitHub for the newest release. A check that cannot run rejects with
    * an ApiError whose code says why: dev-build, offline, rate-limited or

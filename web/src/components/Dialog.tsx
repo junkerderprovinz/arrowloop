@@ -27,6 +27,7 @@ export function Dialog({
   closeOnBackdrop = true,
   footer,
   search,
+  bar,
   wide = false,
   children,
 }: {
@@ -51,6 +52,8 @@ export function Dialog({
    * while the body scrolls. The line wraps, so a narrow window puts it below.
    */
   search?: ReactNode
+  /** A selector between the window's views, under the heading, where it stays put while the body scrolls. */
+  bar?: ReactNode
   /** Room for a list or a form with two columns. */
   wide?: boolean
   children: ReactNode
@@ -113,6 +116,7 @@ export function Dialog({
           </h2>
           {search}
         </div>
+        {bar && <div className="px-5 pb-2 pt-1">{bar}</div>}
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-2">{children}</div>
         <div className="glim-modal-foot flex flex-wrap items-center justify-end gap-2 px-5 py-4">
           {footer ?? (
