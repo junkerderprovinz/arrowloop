@@ -80,6 +80,54 @@ func TestOffIsAnAnswerAndNotAnAbsence(t *testing.T) {
 	}
 }
 
+// A job that runs only when asked writes its schedule empty, and the default
+// schedule must not start running it on the clock.
+func TestAnEmptyScheduleIsAnAnswerAndNotAnAbsence(t *testing.T) {
+	cfg := write(t, `{
+		"defaults": {"schedule": "0 3 * * *"},
+		"jobs": [
+			{"name":"asked","schedule":"",`+sides+`},
+			{"name":"quiet",`+sides+`}
+		]
+	}`)
+
+	asked, _ := cfg.Find("asked")
+	if asked.Schedule != "" {
+		t.Errorf("a job that runs only when asked took the default schedule %q", asked.Schedule)
+	}
+	quiet, _ := cfg.Find("quiet")
+	if quiet.Schedule != "0 3 * * *" {
+		t.Errorf("a job without a schedule of its own got %q, the default said 0 3 * * *", quiet.Schedule)
+	}
+}
+
+// There is no "apply to existing jobs": a job without a value of its own runs
+// with whatever the default is after the change.
+func TestAChangedDefaultReachesEveryJobThatFollowsIt(t *testing.T) {
+	cfg := write(t, `{
+		"defaults": {"schedule": "0 3 * * *", "emptyDirs": false},
+		"jobs": [
+			{"name":"follows",`+sides+`},
+			{"name":"own","schedule":"0 5 * * *","emptyDirs":false,`+sides+`}
+		]
+	}`)
+
+	next, err := cfg.SaveSettings(map[string]any{
+		"defaults": map[string]any{"schedule": "@every 2h", "emptyDirs": true},
+	})
+	if err != nil {
+		t.Fatalf("save the defaults: %v", err)
+	}
+	follows, _ := next.Find("follows")
+	if follows.Schedule != "@every 2h" || follows.EmptyDirs == nil || !*follows.EmptyDirs {
+		t.Errorf("the job that follows did not take the new default: schedule %q, emptyDirs %v", follows.Schedule, follows.EmptyDirs)
+	}
+	own, _ := next.Find("own")
+	if own.Schedule != "0 5 * * *" || own.EmptyDirs == nil || *own.EmptyDirs {
+		t.Errorf("the new default overrode a job's own values: schedule %q, emptyDirs %v", own.Schedule, own.EmptyDirs)
+	}
+}
+
 func TestZeroIsAnAnswerForTheBrakeToo(t *testing.T) {
 	cfg := write(t, `{
 		"defaults": {"brakePercent": 50},

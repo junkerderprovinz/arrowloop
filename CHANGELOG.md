@@ -24,6 +24,9 @@ The full notes for each release are in
 - **Connect storage and clouds and Register a drive float at the bottom right of the window** on the Targets tile too, in the same place as Add a job on Jobs, instead of standing a little higher than on the other pages.
 - **A narrow window gets a bar along the bottom** with Jobs, Conflicts, History, Settings and More.
 - **Every card is titled with a noun for what it holds.** What gets carried is now Contents and Back up your settings is Settings backup; a job's page has Check, Duplicates, Held run and Usual run. On the phone The connection became Network and After a failure became Retries. The settings search still finds the old names and opens the card.
+- **A job shows each setting it takes from the global sync settings with the value in force, locked.** Override gives the job a value of its own, starting from the one it had, and Use the default gives it back after asking. This replaces Use the global sync settings, which switched five settings at once and hid what they were set to. A job's brakes work the same way, on the web and on the phone.
+- **Exceptions on the Sync tile lists the jobs with values of their own**, each with those values and Use the default, and is not there while every job follows the defaults. Safety net has the same card for brakes, and the phone shows it under Global sync settings.
+- **A schedule reads as a sentence on a button**, such as Daily at 03:00, and a click opens its editor beside it, on the phone in a sheet. The default schedule on Sync works the same way instead of being a raw cron field, and Cron in the editor still takes an expression typed by hand.
 
 ## ✨ Added
 
@@ -57,6 +60,8 @@ The full notes for each release are in
 - **Removing a job keeps its state file when ArrowLoop cannot tell whether another job uses it.**
 - **The duplicate search names its sides in whole words.** German read "linksn Seite", and several other languages declined the side word wrongly.
 - **The file log and the run list no longer cut their words.** A long kind such as "Conflict, both versions kept" and a long path wrap instead.
+- **A job set to run only when asked stays that way when a default schedule is set.** Its empty schedule was taken as no schedule at all, so the default ran it on the clock. A job without a schedule of its own still follows the default.
+- **The Cron field keeps the spaces you type**, and switching to Cron writes out the schedule already set instead of an empty field.
 - **Overdue after says what it counts.** The setting was called Days without a run, which read wrong for a job that runs once a week. It counts the days from the scheduled run that was missed, and its (i) gives the weekly example.
 
 ## 1.8.0 - 2026-10-11

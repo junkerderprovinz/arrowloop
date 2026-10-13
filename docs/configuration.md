@@ -56,7 +56,7 @@ manager happened to start the process in.
 | `state` | required | Where this job remembers what the two sides agreed on. |
 | `direction` | both ways | `leftToRight` or `rightToLeft` makes one side the source and never writes to it. Anything else, including an empty field, is both ways. |
 | `mode` | `sync` | What a one-way job does beyond copying: `sync`, `mirror` or `move`. The last two need a one-way `direction`; see [Copy only, mirror or move](#copy-only-mirror-or-move). |
-| `schedule` | none | A cron expression. Empty means the job only runs when somebody asks. |
+| `schedule` | none | A cron expression. Left out, the job takes the default schedule; written as `""`, it only runs when somebody asks, whatever the default says. |
 | `watch` | `false` | Run when a local side changes. Needs a schedule as well; see below. |
 | `watchSettle` | `2s` | How long the tree must go quiet before a change counts. |
 | `runAtStart` | `false` | Run once as soon as the program starts, before waiting for the schedule. Fires once per start and never on a configuration reload. |
@@ -311,7 +311,8 @@ A run a brake refuses holds its job until somebody answers it; see
 themselves are set per job, with `brakePercent`, `changePercent` and
 `brakeFloor`, because what is implausible depends on the folder: a download
 folder is emptied on purpose, a photo archive is not. In the interface a job's
-own brakes are set on the job's page, in its **Brakes** card.
+own brakes are set on the job's page, in its **Brakes** card, with
+**Override**.
 
 `anomalies` sets the notes that hold nothing. `failingAfter` is how many
 failed runs in a row make one, and `overdueDays` how many days late a scheduled
@@ -538,16 +539,19 @@ what makes it different, so the job form stays short:
 filled in when the file is read and before it is checked, so a value from the
 defaults goes through the same rules as one written on the job.
 
-An empty text or a zero number on a job counts as unset and takes the default.
-The switches and the brakes, which can be written as `false` or `0`, keep what
-the job states, so a job can switch off what the defaults switch on.
+An empty text or a zero number on a job counts as unset and takes the default,
+apart from `schedule`, where `""` means the job runs only when asked. The
+switches and the brakes, which can be written as `false` or `0`, keep what the
+job states, so a job can switch off what the defaults switch on.
 `keepVersions` cannot be switched off that way: zero means both off and unset,
 so a job cannot turn versioning off against a default that turns it on. `watch`
 and `noTrash` have no default, since a default that switched either on could not
 be switched off for a single job.
 
 Changing a default changes every job that never disagreed with it, and none of
-the jobs that did.
+the jobs that did. In the interface a job shows each of these values locked
+until **Override** gives it one of its own, and **Exceptions** on the **Sync**
+and **Safety net** tiles lists the jobs that have one.
 
 ## Backup and restore
 

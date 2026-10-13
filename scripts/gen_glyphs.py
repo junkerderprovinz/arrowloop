@@ -64,6 +64,7 @@ STANDARD = [
     "IconFolderAdd",
     "IconGear",
     "IconPhone",
+    "IconSchedules",
     "IconSync",
     # Settings tiles, and the rail entry that gets files back.
     "IconDiagnostics",

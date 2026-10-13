@@ -54,7 +54,7 @@ describe('the dots of what is new', () => {
       expect(found).not.toBeNull()
       return found!
     })
-    expect(way.getAttribute('aria-label')).toMatch(/^New this way \(8\):/)
+    expect(way.getAttribute('aria-label')).toMatch(/^New this way \(10\):/)
     fireEvent.click(way)
     expect(window.location.pathname).toBe('/settings')
   })
@@ -62,7 +62,7 @@ describe('the dots of what is new', () => {
   it('take the dot off a link once everything behind it was seen', async () => {
     render(<Page />)
     await waitFor(() => expect(dot('way')).not.toBeNull())
-    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'notify-channels', 'tile-order']))
+    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'notify-channels', 'tile-order', 'schedule-sentence', 'exceptions']))
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 

@@ -1,16 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 import { heldKey } from "../deviceConditions";
 import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import { useEngineSettings } from "../settings";
 import { useWaiting } from "../waiting";
-import { Field, NumberField } from "../fields";
+import { Field, NumberField, Refusal } from "../fields";
 import { Schedule } from "./JobEdit";
-import { AxisLabel, Body, Choice, Page, Section, Toggle } from "../ui";
+import { api, type JobConfig } from "../api";
+import { ScheduleSentence } from "../inherit";
+import { space } from "../theme";
+import { AxisLabel, Body, Button, Caption, Choice, Page, Section, Toggle } from "../ui";
 import { WaySwitch } from "../way";
 import type { Notify } from "../../../web/src/lib/notify";
+import {
+  BRAKE_SETTINGS,
+  SETTING_LABEL,
+  SYNC_SETTINGS,
+  describeOwn,
+  exceptionsOf,
+  inheritAll,
+  type Exception,
+} from "../../../web/src/lib/follows";
 import { NotifySection } from "./NotifySettings";
 
 /**
@@ -90,10 +102,9 @@ export function SyncSettings() {
           );
         })()}
         <AxisLabel>{t("edit.schedule")}</AxisLabel>
-        <Schedule
-          value={String(defaults.schedule ?? "")}
-          onChange={(schedule) => saveDefaults({ schedule })}
-        />
+        <ScheduleSentence label={t("edit.schedule")} value={String(defaults.schedule ?? "")}>
+          <Schedule value={String(defaults.schedule ?? "")} onChange={(schedule) => saveDefaults({ schedule })} />
+        </ScheduleSentence>
       </Section>
 
       <Section title={t("settings.transfer")} hue={1}>
@@ -147,6 +158,8 @@ export function SyncSettings() {
           onChange={(v) => saveDefaults({ brakeFloor: clamp(v, 0, 100000) })}
         />
       </Section>
+
+      <ExceptionsSection hue={4} />
 
       {/* The two notes that hold nothing, and who hears about a finding. Off,
           the notes and their screen go; a brake still holds a job, and a
@@ -266,6 +279,79 @@ export function SyncSettings() {
 }
 
 /**
+ * The jobs with a value of their own for a default on this screen, each with
+ * those values and Use the default. It is left out while every job follows
+ * the defaults.
+ */
+function ExceptionsSection({ hue }: { hue: number }) {
+  const { t } = useT();
+  const [jobs, setJobs] = useState<JobConfig[]>([]);
+  const [failed, setFailed] = useState<{ name: string; reason: string; shake: number } | null>(null);
+
+  useEffect(() => {
+    api.config().then(
+      (c) => setJobs(c.jobs),
+      () => setJobs([]),
+    );
+  }, []);
+
+  const list = exceptionsOf(jobs, [...SYNC_SETTINGS, ...BRAKE_SETTINGS]);
+  if (list.length === 0) return null;
+
+  // The file is read again first, so a change made elsewhere since this
+  // screen loaded is kept.
+  const inherit = async (exception: Exception) => {
+    try {
+      const current = await api.config();
+      const next = current.jobs.map((j) => (j.name === exception.name ? { ...j, ...inheritAll(exception.own) } : j));
+      await api.writeConfig({ ...current, jobs: next });
+      setJobs(next);
+      setFailed(null);
+    } catch (e) {
+      setFailed((was) => ({ name: exception.name, reason: (e as Error).message, shake: (was?.shake ?? 0) + 1 }));
+    }
+  };
+
+  const ask = (exception: Exception) =>
+    Alert.alert(
+      t("defaults.askTitle"),
+      t("defaults.askAll", {
+        name: exception.name,
+        list: exception.own.map((setting) => t(SETTING_LABEL[setting])).join(", "),
+      }),
+      [
+        { text: t("confirm.cancel"), style: "cancel" },
+        { text: t("defaults.useDefault"), onPress: () => void inherit(exception) },
+      ],
+    );
+
+  return (
+    <Section title={t("defaults.exceptions")} hint={t("defaults.exceptionsHint")} hue={hue}>
+      {list.map((exception) => {
+        const job = jobs.find((j) => j.name === exception.name) ?? {};
+        const mine = failed?.name === exception.name ? failed : null;
+        return (
+          <View key={exception.name} style={styles.exception}>
+            <Body>{exception.name}</Body>
+            <Caption>{exception.own.map((setting) => describeOwn(job, setting, t)).join(" · ")}</Caption>
+            {mine ? <Refusal text={mine.reason} /> : null}
+            <View style={styles.end}>
+              <Button
+                label={t("defaults.useDefault")}
+                labelKey="defaults.useDefault"
+                wide={false}
+                shake={mine?.shake}
+                onPress={() => ask(exception)}
+              />
+            </View>
+          </View>
+        );
+      })}
+    </Section>
+  );
+}
+
+/**
  * Converts the stored Go duration to whole minutes. An unreadable value shows
  * the engine's default of 5, which is what applies.
  */
@@ -285,3 +371,8 @@ function clamp(text: string, low: number, high: number): number | undefined {
   if (!text.trim() || Number.isNaN(value)) return undefined;
   return Math.min(high, Math.max(low, value));
 }
+
+const styles = StyleSheet.create({
+  exception: { gap: space.xs },
+  end: { flexDirection: "row", justifyContent: "flex-end" },
+});

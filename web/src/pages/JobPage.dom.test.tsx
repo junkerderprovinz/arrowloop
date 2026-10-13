@@ -161,15 +161,46 @@ describe('a job page', () => {
     expect(await screen.findByText('There is no job by this name.')).toBeTruthy()
   })
 
-  it('gives the job brakes of its own, written into its entry', async () => {
+  it('shows the global brakes locked until one is overridden, then writes it into the entry', async () => {
     page()
-    const own = await screen.findByRole('switch', { name: 'Own brakes for this job' })
-    await waitFor(() => expect((own as HTMLButtonElement).disabled).toBe(false))
-    fireEvent.click(own)
+    const [brake] = await screen.findAllByRole('button', { name: 'Override' })
+    fireEvent.click(brake!)
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())
     const written = saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')
-    expect(written).toMatchObject({ brakePercent: 50, changePercent: 50 })
+    expect(written?.brakePercent).toBe(50)
+    expect(written?.changePercent).toBeUndefined()
     expect(saveConfig.mock.calls[0][0].find((j) => j.name === 'music')?.brakePercent).toBeUndefined()
+  })
+
+  it('gives an own brake back to the default only after asking', async () => {
+    config.mockImplementation(() => Promise.resolve({ jobs: [{ ...pair()[0]!, brakePercent: 20 }, pair()[1]!] }))
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Use the default' }))
+    expect(saveConfig).not.toHaveBeenCalled()
+    const ask = await screen.findByRole('dialog', { name: 'Use the default?' })
+    expect(ask.textContent).toContain('currently 50 %')
+    fireEvent.click(within(ask).getByRole('button', { name: 'Use the default' }))
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    expect(saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')).not.toHaveProperty('brakePercent', 20)
+    expect(saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')?.brakePercent).toBeUndefined()
+  })
+
+  it('edits an overridden schedule from its sentence', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const editor = await screen.findByRole('dialog')
+    const sentence = within(editor).getByRole('button', { name: /^Schedule:/ })
+    expect(sentence.textContent).toContain('on request')
+    expect(sentence.closest('[inert]')).not.toBeNull()
+
+    const row = sentence.closest('[data-inherited]') as HTMLElement
+    fireEvent.click(within(row).getByRole('button', { name: 'Override' }))
+    const own = within(editor).getByRole('button', { name: /^Schedule:/ })
+    expect(own.closest('[inert]')).toBeNull()
+    fireEvent.click(own)
+    const panel = await screen.findByRole('dialog', { name: 'Schedule' })
+    fireEvent.click(within(panel).getByRole('tab', { name: 'Every day' }))
+    expect(within(editor).getByRole('button', { name: /^Schedule:/ }).textContent).toContain('daily at')
   })
 
   it('answers a held run on the page while the anomaly notes are off', async () => {

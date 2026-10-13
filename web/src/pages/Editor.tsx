@@ -5,13 +5,16 @@ import { Field, Lines, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type Direction, type Mode, type RawJob, type Settings } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
-import { DEFAULT_QUIET } from '../components/QuietPeriod'
+import { InheritButton, InheritedMark, InheritedRow } from '../components/Inherited'
+import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { FolderPicker, PickButton, type Known } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
+import { ScheduleButton } from '../components/ScheduleButton'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
-import { followPatch, followsDefaults } from '../lib/follows'
+import { Toggle } from '../lib/glimstone/Toggle'
+import { inForce, inheritPatch, owns, type Inherited } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useT } from '../lib/i18n'
@@ -152,8 +155,8 @@ export function useJobConfig(onSaved: () => void) {
    *
    * The index comes from the current jobs rather than from inside a state
    * updater, which React runs later. A new job is enabled: with neither side
-   * set the validator treats it as a draft, and it has no schedule yet. The
-   * quiet period is seeded to DEFAULT_QUIET.
+   * set the validator treats it as a draft. It follows the global sync
+   * settings until one of them is overridden.
    */
   const add = useCallback((): number | null => {
     if (!jobs) return null
@@ -165,7 +168,6 @@ export function useJobConfig(onSaved: () => void) {
       left: '',
       right: '',
       state: `state/${name}.db`,
-      quietPeriod: DEFAULT_QUIET,
       exclude: [...DEFAULT_EXCLUDES],
     }
     setJobs([...jobs, next])
@@ -271,15 +273,26 @@ export function JobForm({
 }: {
   job: RawJob
   known: Known[]
-  /** The global sync settings, shown while the job follows them. */
+  /** The global sync settings, whose values the job shows until it overrides them. */
   defaults?: Settings['defaults']
   patch: (next: Partial<RawJob>) => void
 }) {
   const { t } = useT()
-  const follows = followsDefaults(job)
-  // While the job follows, the form shows what it runs with.
-  const direction = (follows ? (defaults?.direction as Direction | undefined) : job.direction) ?? 'both'
-  const schedule = (follows ? defaults?.schedule : job.schedule) ?? ''
+  const own = (setting: Inherited) => owns(job, setting)
+  // What the job runs with: its own value, or the default's while it follows.
+  const shown = (setting: Inherited): RawJob => (own(setting) ? job : { ...job, ...(inForce(defaults, setting) as RawJob) })
+  const action = (setting: Inherited) => (
+    <InheritButton
+      setting={setting}
+      own={own(setting)}
+      defaults={defaults}
+      onOverride={() => patch(inForce(defaults, setting) as Partial<RawJob>)}
+      onInherit={() => patch(inheritPatch(setting) as Partial<RawJob>)}
+    />
+  )
+  const way = shown('direction')
+  const direction: Direction = way.direction ?? 'both'
+  const timing = shown('schedule')
 
   // The state path follows the name while it still has the generated
   // `state/<name>.db` form; a path somebody typed is left alone.
@@ -313,7 +326,7 @@ export function JobForm({
             known={known}
             onChange={(v) => patch({ left: v })}
           />
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5" data-inherited={own('direction') ? undefined : ''}>
             <span className="flex items-center gap-1.5 text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
               {t('direction.label')}
               <InfoBubble tip={t('direction.hint')} />
@@ -323,12 +336,16 @@ export function JobForm({
             <div className="@4xl:-mt-1">
               <DirectionSwitch
                 direction={direction}
-                disabled={follows}
+                disabled={!own('direction')}
                 // Mirror and move need a source side. A two-way job says sync
                 // rather than nothing, or it would take a default mirror.
                 onChange={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
               />
             </div>
+            <span className="flex items-center gap-2 @4xl:justify-center">
+              {!own('direction') && <InheritedMark />}
+              {action('direction')}
+            </span>
           </div>
           <Side
             label={t('edit.right')}
@@ -339,40 +356,54 @@ export function JobForm({
           />
         </div>
 
-        <ToggleRow
-          label={t('defaults.follow')}
-          hint={t('defaults.followHint')}
-          checked={follows}
-          onChange={(on) => patch(followPatch(on, defaults))}
-        />
-
-        {/* The mode exists only once one side is the source. */}
-        {!follows && direction !== 'both' && (
-          <Field label={t('mode.label')}>
+        {/* The mode exists only once one side is the source. It comes with the
+            direction, so its row has no button of its own. */}
+        {direction !== 'both' && (
+          <InheritedRow label={t('mode.label')} own={own('direction')} wide>
             <Selector<Mode>
               scale="small"
               label={t('mode.label')}
               hueOffset={HUE_OFFSET.mode}
-              value={job.mode ?? 'sync'}
+              value={way.mode ?? 'sync'}
               onChange={(v) => patch({ mode: v })}
               options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
             />
-          </Field>
+          </InheritedRow>
         )}
 
-        <Field label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-          <ScheduleField
-            value={schedule}
-            onChange={(v) => patch({ schedule: v })}
-            live={!!job.watch}
-            onLive={(v) => patch({ watch: v })}
-            settle={job.watchSettle ?? ''}
-            onSettle={(v) => patch({ watchSettle: v })}
-            quiet={job.quietPeriod ?? ''}
-            onQuiet={(v) => patch({ quietPeriod: v })}
-            disabled={follows}
+        <div data-new="schedule-sentence">
+          <InheritedRow
+            label={t('edit.schedule')}
+            hint={t('edit.scheduleHint')}
+            own={own('schedule')}
+            action={action('schedule')}
+          >
+            <ScheduleButton label={t('edit.schedule')} value={timing.schedule ?? ''} watch={!!job.watch}>
+              <ScheduleField
+                value={timing.schedule ?? ''}
+                onChange={(v) => patch({ schedule: v })}
+                live={!!job.watch}
+                onLive={(v) => patch({ watch: v })}
+                settle={job.watchSettle ?? ''}
+                onSettle={(v) => patch({ watchSettle: v })}
+              />
+            </ScheduleButton>
+          </InheritedRow>
+        </div>
+
+        {/* Zero is written as 0s, since an empty quiet period is one the job
+            leaves to the defaults. */}
+        <InheritedRow
+          label={t('edit.quietPeriod')}
+          hint={t('edit.quietHint')}
+          own={own('quietPeriod')}
+          action={action('quietPeriod')}
+        >
+          <QuietPeriod
+            value={shown('quietPeriod').quietPeriod ?? ''}
+            onChange={(v) => patch({ quietPeriod: v || '0s' })}
           />
-        </Field>
+        </InheritedRow>
       </div>
 
       <div className="mt-5">
@@ -432,24 +463,22 @@ export function JobForm({
           onChange={(v) => patch({ runAtStart: v })}
           hint={t('edit.runAtStartHint')}
         />
-        {/* These two come from the global sync settings while the job
-            follows them, so they are only offered once it does not. */}
-        {!follows && (
-          <>
-            <ToggleRow
-              label={t('edit.emptyDirs')}
-              checked={!!job.emptyDirs}
-              onChange={(v) => patch({ emptyDirs: v })}
-              hint={t('edit.emptyDirsHint')}
+        {(['emptyDirs', 'metadata'] as const).map((setting) => (
+          <InheritedRow
+            key={setting}
+            label={t(`edit.${setting}`)}
+            hint={t(`edit.${setting}Hint`)}
+            own={own(setting)}
+            action={action(setting)}
+          >
+            <Toggle
+              checked={!!shown(setting)[setting]}
+              onChange={(v) => patch({ [setting]: v })}
+              label={t(`edit.${setting}`)}
+              hideLabel
             />
-            <ToggleRow
-              label={t('edit.metadata')}
-              checked={!!job.metadata}
-              onChange={(v) => patch({ metadata: v })}
-              hint={t('edit.metadataHint')}
-            />
-          </>
-        )}
+          </InheritedRow>
+        ))}
         {/* Inverted from the stored `noTrash`, since a switch labelled with a
             negative gets flipped the wrong way, and here that deletes files. */}
         <ToggleRow
