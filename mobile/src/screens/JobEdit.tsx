@@ -1,7 +1,7 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { api, type Config, type JobConfig } from "../api";
+import { api, type JobConfig } from "../api";
 import { Field, NumberField, Refusal, TimeField } from "../fields";
 import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
@@ -41,14 +41,12 @@ export function JobEdit() {
   const { t } = useT();
   const editing = route.params?.name;
 
-  const [config, setConfig] = useState<Config | null>(null);
   const [job, setJob] = useState<JobConfig | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     api.config().then(
       (c) => {
-        setConfig(c);
         const found = editing ? c.jobs.find((j) => j.name === editing) : undefined;
         setJob(
           found
@@ -178,15 +176,21 @@ export function JobEdit() {
   };
 
   const remove = () => {
-    if (!config || !editing) return;
-    Alert.alert(t("edit.removeJob"), t("edit.removeStakes", { name: editing }), [
+    if (!editing) return;
+    const gone = savedAs.current ?? editing;
+    Alert.alert(t("edit.removeJob"), t("edit.removeStakes", { name: gone }), [
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
         // Not "destructive": GlimStone paints no delete red, dialogs included.
         onPress: async () => {
+          // A typed change still waiting to be written would bring the job back.
+          if (pending.current) clearTimeout(pending.current);
           try {
-            await api.writeConfig({ ...config, jobs: config.jobs.filter((j) => j.name !== editing) });
+            // Read again, so a change made elsewhere since the screen opened
+            // is not written back.
+            const current = await api.config();
+            await api.writeConfig({ ...current, jobs: current.jobs.filter((j) => j.name !== gone) });
             nav.popToTop();
           } catch (e) {
             setError((e as Error).message);
@@ -277,8 +281,7 @@ export function JobEdit() {
             onPress={() => setPicking("left")}
           />
         </View>
-        <AxisLabel hint={t("direction.hint")}>{t("direction.label")}</AxisLabel>
-        <Inherits {...inherits("direction")}>
+        <Inherits {...inherits("direction")} label={t("direction.label")} hint={t("direction.hint")}>
           <WaySwitch
             value={way}
             upper={upper}
@@ -321,27 +324,27 @@ export function JobEdit() {
         />
       </Section>
 
-      {/* When the job runs and what it keeps. Only the schedule expression is
-          a global default; `watch` is a plain bool, where off and unset are
-          the same, so it stays visible either way. No "run at start" switch:
-          the engine restarts with the app and after every eviction, so it
-          would run a job several times a day. */}
+      {/* When the job runs and what it keeps. A watching job owns its
+          schedule, so Live is locked with it while the job follows the
+          default. No "run at start" switch: the engine restarts with the app
+          and after every eviction, so it would run a job several times a day. */}
       <Section title={t("history.runs")} hue={1}>
         <View ref={scheduleRef} collapsable={false} style={styles.stack}>
-          <AxisLabel hint={t("edit.scheduleHint")}>{t("edit.schedule")}</AxisLabel>
-          <Inherits {...inherits("schedule")}>
-            <ScheduleSentence label={t("edit.schedule")} value={timing} watch={Boolean(job.watch)}>
-              <Schedule value={timing} onChange={(schedule) => set({ schedule }, true)} />
-            </ScheduleSentence>
+          <Inherits {...inherits("schedule")} label={t("edit.schedule")} hint={t("edit.scheduleHint")}>
+            <View style={styles.stack}>
+              <ScheduleSentence label={t("edit.schedule")} value={timing} watch={Boolean(job.watch)}>
+                <Schedule value={timing} onChange={(schedule) => set({ schedule }, true)} />
+              </ScheduleSentence>
+              <Toggle
+                label={t("schedule.live")}
+                hint={t("schedule.liveHint")}
+                value={Boolean(job.watch)}
+                onChange={(watch) => set({ watch }, true)}
+              />
+            </View>
           </Inherits>
           {reason("schedule") ? <Refusal text={reason("schedule") ?? ""} /> : null}
         </View>
-        <Toggle
-          label={t("schedule.live")}
-          hint={t("schedule.liveHint")}
-          value={Boolean(job.watch)}
-          onChange={(watch) => set({ watch }, true)}
-        />
         <Toggle
           label={t("edit.trash")}
           hint={t("edit.trashHint")}

@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { space, text } from "./theme";
-import { Button, InfoBubble, Press, Sheet, useTheme } from "./ui";
+import { AxisLabel, Button, InfoBubble, Press, Sheet, useTheme } from "./ui";
 import { describeCadence, readCadence } from "../../web/src/lib/cadence";
 import {
   SETTING_LABEL,
@@ -19,7 +19,8 @@ import {
  * the control shows the value in force, dimmed and out of reach, beside a
  * lock and Override; once the job has its own value, Use the default gives it
  * back after asking, since the own value is lost (GlimStone, "Defaults and
- * exceptions").
+ * exceptions"). A control without a label of its own, such as a selector,
+ * passes `label`, and the lock and the button share that title row.
  */
 export function Inherits({
   setting,
@@ -27,6 +28,8 @@ export function Inherits({
   defaults,
   onOverride,
   onInherit,
+  label,
+  hint,
   children,
 }: {
   setting: Inherited;
@@ -34,6 +37,9 @@ export function Inherits({
   defaults: Defaults | undefined;
   onOverride: () => void;
   onInherit: () => void;
+  label?: string;
+  /** The label's "(i)". */
+  hint?: string;
   /** The control, showing the value in force. */
   children: ReactNode;
 }) {
@@ -51,25 +57,32 @@ export function Inherits({
         { text: t("defaults.useDefault"), onPress: onInherit },
       ],
     );
+  const control = (
+    <View pointerEvents={own ? "auto" : "none"} style={own ? null : styles.locked}>
+      {children}
+    </View>
+  );
+  const line = (
+    <View style={styles.line}>
+      {label ? <AxisLabel hint={hint}>{label}</AxisLabel> : null}
+      {own ? null : (
+        <>
+          <Glyph name="IconLock" color={p.textMuted} />
+          <InfoBubble tip={t("defaults.locked")} />
+        </>
+      )}
+      <View style={styles.fill} />
+      {own ? (
+        <Button label={t("defaults.useDefault")} labelKey="defaults.useDefault" wide={false} onPress={ask} />
+      ) : (
+        <Button label={t("defaults.override")} labelKey="defaults.override" wide={false} onPress={onOverride} />
+      )}
+    </View>
+  );
   return (
     <View style={styles.stack}>
-      <View pointerEvents={own ? "auto" : "none"} style={own ? null : styles.locked}>
-        {children}
-      </View>
-      <View style={styles.line}>
-        {own ? null : (
-          <>
-            <Glyph name="IconLock" color={p.textMuted} />
-            <InfoBubble tip={t("defaults.locked")} />
-          </>
-        )}
-        <View style={styles.fill} />
-        {own ? (
-          <Button label={t("defaults.useDefault")} labelKey="defaults.useDefault" wide={false} onPress={ask} />
-        ) : (
-          <Button label={t("defaults.override")} labelKey="defaults.override" wide={false} onPress={onOverride} />
-        )}
-      </View>
+      {label ? line : control}
+      {label ? control : line}
     </View>
   );
 }
