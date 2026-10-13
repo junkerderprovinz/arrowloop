@@ -326,7 +326,6 @@ const ms: Translations = {
   'action.edit': 'Sunting',
   'targets.cancel': 'Batal',
   'targets.save': 'Simpan',
-  'targets.secretSet': 'Satu nilai telah tersimpan. Biarkan ia dan nilainya akan kekal.',
   'targets.access': 'Akses',
   'targets.drives': 'Cakera',
   'targets.drivesEmpty': 'Tiada cakera didaftarkan. Daftarkan satu supaya tugas menemuinya semula walaupun ia kembali dengan huruf lain.',
@@ -1152,6 +1151,7 @@ const ms: Translations = {
   'new.change.jobBrakes': 'Brek sendiri sesuatu tugas ditetapkan di halamannya, di bawah {brakes}.',
   'new.change.jobMore': 'Setiap kad tugas ada {more}, dengan segala yang ditawarkan oleh halaman tugas itu. Tugas boleh disunting, disemak atau dibuang tanpa membukanya.',
   'new.change.providerNames': '{connect} menamakan setiap jenis storan yang dikenali rclone dan meletakkannya dalam kumpulannya, dengan logo jika ada. Carian di atas menemuinya melalui namanya atau nama rclone-nya.',
+  'new.change.targetRows': 'Butang {test} bagi setiap sasaran sendiri menunjukkan {connected} atau {notConnected}, dengan sebabnya pada baris di bawah nama. Kata laluan atau kunci yang disimpan dipaparkan sebagai {saved}, dan {change} membuka medan itu.',
 }
 
 export default ms

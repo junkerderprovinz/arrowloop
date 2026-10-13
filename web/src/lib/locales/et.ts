@@ -326,7 +326,6 @@ const et: Translations = {
   'action.edit': 'Muuda',
   'targets.cancel': 'Loobu',
   'targets.save': 'Salvesta',
-  'targets.secretSet': 'Väärtus on salvestatud. Jätke see rahule ja see säilib.',
   'targets.access': 'Juurdepääs',
   'targets.drives': 'Kettad',
   'targets.drivesEmpty': 'Ühtegi ketast pole registreeritud. Registreerige üks, et töö leiaks selle uuesti ka siis, kui see naaseb teise tähega.',
@@ -1152,6 +1151,7 @@ const et: Translations = {
   'new.change.jobBrakes': 'Töö oma pidurid seatakse selle lehel jaotises {brakes}.',
   'new.change.jobMore': 'Igal töökaardil on {more} kõigega, mida töö leht pakub. Tööd saab muuta, kontrollida või eemaldada seda avamata.',
   'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas. Otsing üleval leiab liigi nime või rclone nime järgi.',
+  'new.change.targetRows': 'Sihtkoha nupp {test} näitab ise {connected} või {notConnected} ja põhjus on nime all oleval real. Salvestatud parool või võti on kirjas kui {saved} ning {change} avab välja.',
 }
 
 export default et

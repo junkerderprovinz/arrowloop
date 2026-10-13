@@ -113,3 +113,41 @@ describe('the storage picker', () => {
   })
 })
 
+describe('a stored secret in the target form', () => {
+  async function edit() {
+    render(
+      <ToastProvider>
+        <Targets />
+      </ToastProvider>,
+    )
+    await screen.findByText('nas:')
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    return screen.findByRole('dialog')
+  }
+
+  it('shows as Saved with Change instead of a field', async () => {
+    const dialog = await edit()
+    expect(within(dialog).getByText('Saved')).toBeTruthy()
+    expect(dialog.querySelector('input[type="password"]')).toBeNull()
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Change' }))
+    expect(dialog.querySelector('input[type="password"]')).not.toBeNull()
+  })
+
+  it('goes back untouched when somebody saves without changing it', async () => {
+    const dialog = await edit()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveRemote).toHaveBeenCalled())
+    expect(saveRemote.mock.calls[0][2]).toMatchObject({ pass: '********', url: 'https://nas.example/dav' })
+  })
+
+  it('goes back to the stored one when a change is abandoned', async () => {
+    const dialog = await edit()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Change' }))
+    fireEvent.change(dialog.querySelector('input[type="password"]')!, { target: { value: 'half typed' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Keep the saved one' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveRemote).toHaveBeenCalled())
+    expect(saveRemote.mock.calls[0][2]).toMatchObject({ pass: '********' })
+  })
+})

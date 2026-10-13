@@ -326,7 +326,6 @@ const lt: Translations = {
   'action.edit': 'Redaguoti',
   'targets.cancel': 'Atsisakyti',
   'targets.save': 'Įrašyti',
-  'targets.secretSet': 'Reikšmė įrašyta. Palikite ją ramybėje ir ji išliks.',
   'targets.access': 'Prieiga',
   'targets.drives': 'Diskai',
   'targets.drivesEmpty': 'Neužregistruotas nė vienas diskas. Užregistruokite vieną, kad užduotis jį rastų net ir tada, kai jis grįš su kita raide.',
@@ -1152,6 +1151,7 @@ const lt: Translations = {
   'new.change.jobBrakes': 'Užduoties nuosavi stabdžiai nustatomi jos puslapyje, skiltyje {brakes}.',
   'new.change.jobMore': 'Kiekvienoje užduoties kortelėje yra {more} su viskuo, ką siūlo užduoties puslapis. Užduotį galima redaguoti, patikrinti ar pašalinti jos neatidarius.',
   'new.change.providerNames': '{connect} įvardija kiekvieną rclone žinomą saugyklos rūšį ir priskiria ją grupei, su logotipu, jei jis yra. Paieška viršuje randa rūšį pagal pavadinimą arba pavadinimą rclone.',
+  'new.change.targetRows': 'Kiekvienos paskirties mygtukas {test} pats parodo {connected} arba {notConnected}, o priežastis būna eilutėje po pavadinimu. Išsaugotas slaptažodis ar raktas rodomas kaip {saved}, o {change} atveria lauką.',
 }
 
 export default lt

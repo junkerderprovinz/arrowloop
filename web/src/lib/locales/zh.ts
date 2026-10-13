@@ -326,7 +326,6 @@ const zh: Translations = {
   'action.edit': '编辑',
   'targets.cancel': '取消',
   'targets.save': '保存',
-  'targets.secretSet': '已保存一个值。保持原样它就会被保留。',
   'targets.access': '访问信息',
   'targets.drives': '磁盘',
   'targets.drivesEmpty': '没有登记任何磁盘。登记一个，这样即使它以另一个盘符回来，任务也能重新找到它。',
@@ -1152,6 +1151,7 @@ const zh: Translations = {
   'new.change.jobBrakes': '任务自己的制动在其页面的 {brakes} 中设置。',
   'new.change.jobMore': '每张任务卡片都有 {more}，包含任务页面提供的全部功能。无需打开任务，就能编辑、检查或删除它。',
   'new.change.providerNames': '{connect}为 rclone 支持的每种存储命名并归入相应分组，有标志的会显示标志。顶部的搜索可按名称或 rclone 中的名称查找。',
+  'new.change.targetRows': '每个目标的{test}按钮会自己显示{connected}或{notConnected}，原因写在名称下面一行。已保存的密码或密钥显示为{saved}，点{change}打开输入框。',
 }
 
 export default zh

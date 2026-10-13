@@ -326,7 +326,6 @@ const fa: Translations = {
   'action.edit': 'ویرایش',
   'targets.cancel': 'انصراف',
   'targets.save': 'ذخیره',
-  'targets.secretSet': 'مقداری ذخیره شده است. آن را دست‌نخورده بگذارید تا بماند.',
   'targets.access': 'دسترسی',
   'targets.drives': 'دیسک‌ها',
   'targets.drivesEmpty': 'هیچ دیسکی ثبت نشده است. یکی را ثبت کنید تا کار حتی اگر با حرف دیگری بازگردد آن را دوباره بیابد.',
@@ -1152,6 +1151,7 @@ const fa: Translations = {
   'new.change.jobBrakes': 'ترمزهای خاص هر کار در صفحهٔ خودش، در بخش {brakes}، تنظیم می‌شوند.',
   'new.change.jobMore': 'هر کارت کار {more} دارد، با همهٔ آنچه صفحهٔ کار ارائه می‌دهد. می‌توان کاری را بدون باز کردنش ویرایش، بررسی یا حذف کرد.',
   'new.change.providerNames': '{connect} هر نوع فضای ذخیره‌ای را که rclone می‌شناسد نام می‌برد و در گروهش قرار می‌دهد، با لوگو در صورت وجود. جست‌وجوی بالا هر نوع را با نامش یا با نامش در rclone پیدا می‌کند.',
+  'new.change.targetRows': 'دکمهٔ {test} هر مقصد خودش {connected} یا {notConnected} را نشان می‌دهد و دلیل در خط زیر نام می‌آید. گذرواژه یا کلید ذخیره‌شده به شکل {saved} دیده می‌شود و {change} فیلد را باز می‌کند.',
 }
 
 export default fa

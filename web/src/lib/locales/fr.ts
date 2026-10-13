@@ -326,7 +326,6 @@ const fr: Translations = {
   'action.edit': 'Modifier',
   'targets.cancel': 'Annuler',
   'targets.save': 'Enregistrer',
-  'targets.secretSet': 'Une valeur est enregistrée. Laissez-la telle quelle pour la conserver.',
   'targets.access': 'Accès',
   'targets.drives': 'Disques',
   'targets.drivesEmpty': 'Aucun disque enregistré. Enregistrez-en un pour qu\'une tâche le retrouve même s\'il revient sous une autre lettre.',
@@ -1152,6 +1151,7 @@ const fr: Translations = {
   'new.change.jobBrakes': 'Les freins propres d\'une tâche se règlent sur sa page, sous {brakes}.',
   'new.change.jobMore': 'Chaque carte de tâche a {more}, avec tout ce que propose la page de la tâche. Une tâche peut être modifiée, vérifiée ou supprimée sans l\'ouvrir.',
   'new.change.providerNames': '{connect} nomme chaque type de stockage que rclone connaît et le range dans son groupe, avec son logo s’il existe. Une recherche en haut en trouve un par son nom ou par son nom dans rclone.',
+  'new.change.targetRows': 'Le bouton {test} de chaque cible affiche lui-même {connected} ou {notConnected}, avec la raison sur la ligne sous le nom. Un mot de passe ou une clé enregistrés apparaissent comme {saved}, et {change} ouvre le champ.',
 }
 
 export default fr

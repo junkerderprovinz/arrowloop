@@ -326,7 +326,6 @@ const tr: Translations = {
   'action.edit': 'Düzenle',
   'targets.cancel': 'Vazgeç',
   'targets.save': 'Kaydet',
-  'targets.secretSet': 'Kayıtlı bir değer var. Olduğu gibi bırakırsan korunur.',
   'targets.access': 'Erişim',
   'targets.drives': 'Diskler',
   'targets.drivesEmpty': 'Kaydedilmiş bir disk yok. Bir tane kaydet ki bir iş, disk başka bir harfle dönse bile onu yeniden bulsun.',
@@ -1152,6 +1151,7 @@ const tr: Translations = {
   'new.change.jobBrakes': 'Bir işin kendi frenleri, kendi sayfasında {brakes} altında ayarlanır.',
   'new.change.jobMore': 'Her iş kartında, işin sayfasının sunduğu her şeyle birlikte {more} var. Bir iş açılmadan düzenlenebilir, denetlenebilir ya da kaldırılabilir.',
   'new.change.providerNames': '{connect}, rclone’un bildiği her depolama türünü adlandırır ve logosu varsa logosuyla birlikte grubuna yerleştirir. Üstteki arama bir türü adıyla ya da rclone’daki adıyla bulur.',
+  'new.change.targetRows': 'Her hedefin {test} düğmesi {connected} ya da {notConnected} durumunu kendisi gösterir, nedeni de adın altındaki satırda yazar. Kaydedilmiş bir parola ya da anahtar {saved} olarak görünür, {change} alanı açar.',
 }
 
 export default tr

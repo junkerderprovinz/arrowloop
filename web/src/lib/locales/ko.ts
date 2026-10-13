@@ -326,7 +326,6 @@ const ko: Translations = {
   'action.edit': '편집',
   'targets.cancel': '취소',
   'targets.save': '저장',
-  'targets.secretSet': '값이 저장되어 있습니다. 그대로 두면 유지됩니다.',
   'targets.access': '접속 정보',
   'targets.drives': '디스크',
   'targets.drivesEmpty': '등록된 디스크가 없습니다. 다른 문자로 돌아와도 작업이 다시 찾을 수 있도록 하나 등록하세요.',
@@ -1152,6 +1151,7 @@ const ko: Translations = {
   'new.change.jobBrakes': '작업별 브레이크는 해당 작업 페이지의 {brakes}에서 설정합니다.',
   'new.change.jobMore': '모든 작업 카드에 {more} 메뉴가 있어, 작업 페이지에서 할 수 있는 모든 것이 들어 있습니다. 작업을 열지 않고도 편집, 확인, 삭제할 수 있습니다.',
   'new.change.providerNames': '{connect}은 rclone이 아는 모든 종류의 저장소에 이름을 붙이고 그룹에 넣으며, 로고가 있으면 함께 보여 줍니다. 위쪽 검색으로 이름이나 rclone 이름을 써서 찾을 수 있습니다.',
+  'new.change.targetRows': '각 대상의 {test} 버튼이 직접 {connected} 또는 {notConnected}을 보여 주고, 이유는 이름 아래 줄에 나옵니다. 저장된 비밀번호나 키는 {saved}로 표시되고, {change}을 누르면 입력란이 열립니다.',
 }
 
 export default ko

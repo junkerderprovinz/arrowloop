@@ -326,7 +326,6 @@ const lv: Translations = {
   'action.edit': 'Rediģēt',
   'targets.cancel': 'Atcelt',
   'targets.save': 'Saglabāt',
-  'targets.secretSet': 'Vērtība ir saglabāta. Atstājiet to mierā, un tā saglabāsies.',
   'targets.access': 'Piekļuve',
   'targets.drives': 'Diski',
   'targets.drivesEmpty': 'Neviens disks nav reģistrēts. Reģistrējiet vienu, lai uzdevums to atrastu atkal arī tad, ja tas atgriezīsies ar citu burtu.',
@@ -1152,6 +1151,7 @@ const lv: Translations = {
   'new.change.jobBrakes': 'Darba paša bremzes iestata tā lapā, sadaļā {brakes}.',
   'new.change.jobMore': 'Katrai uzdevuma kartītei ir {more} ar visu, ko piedāvā uzdevuma lapa. Uzdevumu var rediģēt, pārbaudīt vai noņemt, to neatverot.',
   'new.change.providerNames': '{connect} nosauc katru krātuves veidu, ko pazīst rclone, un ievieto to savā grupā, ar logotipu, ja tāds ir. Meklēšana augšā atrod veidu pēc nosaukuma vai nosaukuma rclone.',
+  'new.change.targetRows': 'Katra mērķa poga {test} pati rāda {connected} vai {notConnected}, un iemesls ir rindā zem nosaukuma. Saglabāta parole vai atslēga redzama kā {saved}, un {change} atver lauku.',
 }
 
 export default lv

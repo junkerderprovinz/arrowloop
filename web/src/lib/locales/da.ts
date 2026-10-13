@@ -326,7 +326,6 @@ const da: Translations = {
   'action.edit': 'Rediger',
   'targets.cancel': 'Annuller',
   'targets.save': 'Gem',
-  'targets.secretSet': 'Der er gemt en værdi. Lad den stå, så bevares den.',
   'targets.access': 'Adgang',
   'targets.drives': 'Diske',
   'targets.drivesEmpty': 'Der er ikke anmeldt nogen disk. Anmeld en, så et job finder den igen, også hvis den kommer tilbage på et andet bogstav.',
@@ -1152,6 +1151,7 @@ const da: Translations = {
   'new.change.jobBrakes': 'Et jobs egne bremser indstilles på dets side under {brakes}.',
   'new.change.jobMore': 'Hvert jobkort har {more} med alt, hvad jobbets side tilbyder. Et job kan redigeres, tjekkes eller fjernes uden at åbne det.',
   'new.change.providerNames': '{connect} navngiver hver lagertype, rclone kender, og placerer den i sin gruppe med logo, hvor der findes et. En søgning øverst finder en ud fra navnet eller navnet i rclone.',
+  'new.change.targetRows': 'Knappen {test} ved et mål viser selv {connected} eller {notConnected}, med årsagen på linjen under navnet. En gemt adgangskode eller nøgle står som {saved}, og {change} åbner feltet.',
 }
 
 export default da

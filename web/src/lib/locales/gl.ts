@@ -326,7 +326,6 @@ const gl: Translations = {
   'action.edit': 'Editar',
   'targets.cancel': 'Cancelar',
   'targets.save': 'Gardar',
-  'targets.secretSet': 'Hai un valor gardado. Déixao tal como está e conservarase.',
   'targets.access': 'Acceso',
   'targets.drives': 'Discos',
   'targets.drivesEmpty': 'Non hai ningún disco rexistrado. Rexistra un para que unha tarefa o volva atopar aínda que regrese con outra letra.',
@@ -1152,6 +1151,7 @@ const gl: Translations = {
   'new.change.jobBrakes': 'Os freos propios dunha tarefa axústanse na súa páxina, en {brakes}.',
   'new.change.jobMore': 'Cada tarxeta de tarefa ten {more}, con todo o que ofrece a páxina da tarefa. Unha tarefa pódese editar, comprobar ou eliminar sen abrila.',
   'new.change.providerNames': '{connect} nomea cada tipo de almacenamento que coñece rclone e colócao no seu grupo, co seu logotipo se existe. Unha busca arriba atopa un polo seu nome ou polo seu nome en rclone.',
+  'new.change.targetRows': 'O botón {test} de cada destino amosa el mesmo {connected} ou {notConnected}, co motivo na liña baixo o nome. Un contrasinal ou unha chave gardados aparecen como {saved}, e {change} abre o campo.',
 }
 
 export default gl

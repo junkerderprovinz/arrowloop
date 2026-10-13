@@ -326,7 +326,6 @@ const ro: Translations = {
   'action.edit': 'Editează',
   'targets.cancel': 'Renunță',
   'targets.save': 'Salvează',
-  'targets.secretSet': 'Există o valoare salvată. Lăsați-o așa cum este și se păstrează.',
   'targets.access': 'Acces',
   'targets.drives': 'Discuri',
   'targets.drivesEmpty': 'Niciun disc înregistrat. Înregistrați unul ca o sarcină să îl regăsească chiar dacă revine cu altă literă.',
@@ -1152,6 +1151,7 @@ const ro: Translations = {
   'new.change.jobBrakes': 'Frânele proprii ale unei sarcini se setează pe pagina ei, la {brakes}.',
   'new.change.jobMore': 'Fiecare card de sarcină are {more}, cu tot ce oferă pagina sarcinii. O sarcină poate fi editată, verificată sau eliminată fără să o deschizi.',
   'new.change.providerNames': '{connect} numește fiecare tip de stocare pe care îl cunoaște rclone și îl pune în grupul său, cu logo, acolo unde există. O căutare sus găsește un tip după nume sau după numele din rclone.',
+  'new.change.targetRows': 'Butonul {test} al fiecărei ținte arată singur {connected} sau {notConnected}, cu motivul pe rândul de sub nume. O parolă sau o cheie salvată apare ca {saved}, iar {change} deschide câmpul.',
 }
 
 export default ro

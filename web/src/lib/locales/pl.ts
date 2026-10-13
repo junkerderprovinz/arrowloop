@@ -326,7 +326,6 @@ const pl: Translations = {
   'action.edit': 'Edytuj',
   'targets.cancel': 'Anuluj',
   'targets.save': 'Zapisz',
-  'targets.secretSet': 'Wartość jest zapisana. Zostaw ją, a zostanie zachowana.',
   'targets.access': 'Dostęp',
   'targets.drives': 'Dyski',
   'targets.drivesEmpty': 'Nie zgłoszono żadnego dysku. Zgłoś jeden, aby zadanie odnalazło go także wtedy, gdy wróci pod inną literą.',
@@ -1152,6 +1151,7 @@ const pl: Translations = {
   'new.change.jobBrakes': 'Własne hamulce zadania ustawia się na jego stronie, w części {brakes}.',
   'new.change.jobMore': 'Każda karta zadania ma {more}, ze wszystkim, co oferuje strona zadania. Zadanie można edytować, sprawdzić lub usunąć bez otwierania go.',
   'new.change.providerNames': '{connect} nazywa każdy rodzaj magazynu znany rclone i umieszcza go w jego grupie, z logo, jeśli istnieje. Wyszukiwanie u góry znajduje rodzaj po nazwie albo nazwie w rclone.',
+  'new.change.targetRows': 'Przycisk {test} przy każdym celu sam pokazuje {connected} albo {notConnected}, a powód stoi w wierszu pod nazwą. Zapisane hasło lub klucz widać jako {saved}, a {change} otwiera pole.',
 }
 
 export default pl

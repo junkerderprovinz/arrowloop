@@ -326,7 +326,6 @@ const ja: Translations = {
   'action.edit': '編集',
   'targets.cancel': '取り消し',
   'targets.save': '保存',
-  'targets.secretSet': '値が保存されています。そのままにすれば保持されます。',
   'targets.access': '接続情報',
   'targets.drives': 'ドライブ',
   'targets.drivesEmpty': '登録されたドライブがありません。別の文字で戻ってきてもジョブが見つけられるよう、登録してください。',
@@ -1152,6 +1151,7 @@ const ja: Translations = {
   'new.change.jobBrakes': 'ジョブ固有のブレーキは、そのジョブのページの {brakes} で設定します。',
   'new.change.jobMore': 'どのジョブカードにも {more} があり、ジョブのページにある操作がすべて入っています。ジョブを開かずに編集、確認、削除ができます。',
   'new.change.providerNames': '{connect}は rclone が扱うすべての種類のストレージに名前を付けてグループに分け、ロゴがあれば表示します。上の検索では、名前でも rclone での名前でも探せます。',
+  'new.change.targetRows': '各保存先の {test} ボタンが、それ自体で {connected} か {notConnected} を表示し、理由は名前の下の行に出ます。保存済みのパスワードやキーは {saved} と表示され、{change} で入力欄が開きます。',
 }
 
 export default ja

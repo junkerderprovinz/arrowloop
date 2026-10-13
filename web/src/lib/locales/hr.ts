@@ -326,7 +326,6 @@ const hr: Translations = {
   'action.edit': 'Uredi',
   'targets.cancel': 'Odustani',
   'targets.save': 'Spremi',
-  'targets.secretSet': 'Vrijednost je spremljena. Ostavite je i sačuvat će se.',
   'targets.access': 'Pristup',
   'targets.drives': 'Diskovi',
   'targets.drivesEmpty': 'Nijedan disk nije prijavljen. Prijavite jedan kako bi ga zadatak ponovno našao i ako se vrati s drugim slovom.',
@@ -1152,6 +1151,7 @@ const hr: Translations = {
   'new.change.jobBrakes': 'Vlastite kočnice zadatka postavljaju se na njegovoj stranici, pod {brakes}.',
   'new.change.jobMore': 'Svaka kartica zadatka ima {more}, sa svime što nudi stranica zadatka. Zadatak se može urediti, provjeriti ili ukloniti bez otvaranja.',
   'new.change.providerNames': '{connect} imenuje svaku vrstu pohrane koju rclone poznaje i stavlja je u njezinu skupinu, s logotipom ako postoji. Pretraga na vrhu pronalazi vrstu po imenu ili po imenu u rcloneu.',
+  'new.change.targetRows': 'Gumb {test} uz svaki cilj sam prikazuje {connected} ili {notConnected}, a razlog stoji u retku ispod imena. Spremljena lozinka ili ključ prikazuje se kao {saved}, a {change} otvara polje.',
 }
 
 export default hr

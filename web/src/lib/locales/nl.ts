@@ -326,7 +326,6 @@ const nl: Translations = {
   'action.edit': 'Bewerken',
   'targets.cancel': 'Annuleren',
   'targets.save': 'Opslaan',
-  'targets.secretSet': 'Er is een waarde bewaard. Laat hem staan om hem te behouden.',
   'targets.access': 'Toegang',
   'targets.drives': 'Schijven',
   'targets.drivesEmpty': 'Er is geen schijf aangemeld. Meld er een aan zodat een taak hem terugvindt, ook als hij op een andere letter terugkomt.',
@@ -1152,6 +1151,7 @@ const nl: Translations = {
   'new.change.jobBrakes': 'De eigen remmen van een taak stel je in op de pagina van die taak, onder {brakes}.',
   'new.change.jobMore': 'Elke taakkaart heeft {more}, met alles wat de pagina van de taak biedt. Een taak kun je zo bewerken, controleren of verwijderen zonder hem te openen.',
   'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is. Een zoekveld bovenaan vindt er een op naam of op de naam in rclone.',
+  'new.change.targetRows': 'De knop {test} van een doel toont zelf {connected} of {notConnected}, met de reden op de regel onder de naam. Een opgeslagen wachtwoord of sleutel staat er als {saved}, en {change} opent het veld.',
 }
 
 export default nl

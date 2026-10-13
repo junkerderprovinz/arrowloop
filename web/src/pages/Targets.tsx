@@ -26,7 +26,7 @@ import {
   IconTrash,
 } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
-import { Choice, Field, Secret, Text } from '../components/Field'
+import { Choice, Field, Text } from '../components/Field'
 import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import {
@@ -50,6 +50,7 @@ import { matchesQuery } from '../lib/fold'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { errorText } from '../lib/errorText'
+import { SecretRow } from './settings/rows'
 import { failureLine } from '../lib/failure'
 
 /**
@@ -589,40 +590,46 @@ function RemoteForm({
     }
   }
 
-  const field = (o: Backend['options'][number]) => (
-    <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
-      {o.secret ? (
-        <Secret
-          value={values[o.name] ?? ''}
-          onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-          placeholder={values[o.name] ? t('targets.secretSet') : o.default}
-        />
-      ) : kind === 'smb' && o.name === 'host' ? (
-        <ShareHost
-          value={values.host ?? ''}
-          onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
-          placeholder={o.default || o.examples?.[0]?.value}
-          // The account comes along where the field is still empty; the
-          // password cannot be read back from Windows.
-          onShare={(picked) =>
-            setValues((prev) => ({
-              ...prev,
-              host: picked.host,
-              ...(picked.user && !prev.user ? { user: picked.user } : {}),
-              ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
-            }))
-          }
-        />
-      ) : (
-        <Text
-          value={values[o.name] ?? ''}
-          onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-          placeholder={o.default || o.examples?.[0]?.value}
-          mono
-        />
-      )}
-    </Field>
-  )
+  // A stored secret arrives as the placeholder and goes back untouched unless
+  // it is changed, which tells the engine to keep it (remotes.Save).
+  const field = (o: Backend['options'][number]) =>
+    o.secret ? (
+      <SecretRow
+        key={o.name}
+        label={optionLabel(o.name, t)}
+        hint={optionHint(o, t, provider)}
+        value={values[o.name] ?? ''}
+        onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+        placeholder={o.default}
+      />
+    ) : (
+      <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
+        {kind === 'smb' && o.name === 'host' ? (
+          <ShareHost
+            value={values.host ?? ''}
+            onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
+            placeholder={o.default || o.examples?.[0]?.value}
+            // The account comes along where the field is still empty; the
+            // password cannot be read back from Windows.
+            onShare={(picked) =>
+              setValues((prev) => ({
+                ...prev,
+                host: picked.host,
+                ...(picked.user && !prev.user ? { user: picked.user } : {}),
+                ...(picked.domain && !prev.domain ? { domain: picked.domain } : {}),
+              }))
+            }
+          />
+        ) : (
+          <Text
+            value={values[o.name] ?? ''}
+            onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+            placeholder={o.default || o.examples?.[0]?.value}
+            mono
+          />
+        )}
+      </Field>
+    )
 
   return (
     <Dialog

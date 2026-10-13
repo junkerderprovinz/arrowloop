@@ -326,7 +326,6 @@ const sv: Translations = {
   'action.edit': 'Redigera',
   'targets.cancel': 'Avbryt',
   'targets.save': 'Spara',
-  'targets.secretSet': 'Ett värde är sparat. Låt det stå kvar så behålls det.',
   'targets.access': 'Åtkomst',
   'targets.drives': 'Diskar',
   'targets.drivesEmpty': 'Ingen disk är anmäld. Anmäl en så att ett jobb hittar den igen även om den kommer tillbaka på en annan bokstav.',
@@ -1152,6 +1151,7 @@ const sv: Translations = {
   'new.change.jobBrakes': 'Ett jobbs egna bromsar ställs in på dess sida, under {brakes}.',
   'new.change.jobMore': 'Varje jobbkort har {more}, med allt som jobbets sida erbjuder. Ett jobb kan redigeras, kontrolleras eller tas bort utan att öppnas.',
   'new.change.providerNames': '{connect} namnger varje lagringstyp som rclone känner till och placerar den i sin grupp, med logotyp där en finns. En sökning högst upp hittar en på namnet eller namnet i rclone.',
+  'new.change.targetRows': 'Knappen {test} vid ett mål visar själv {connected} eller {notConnected}, med orsaken på raden under namnet. Ett sparat lösenord eller en nyckel visas som {saved}, och {change} öppnar fältet.',
 }
 
 export default sv

@@ -326,7 +326,6 @@ const vi: Translations = {
   'action.edit': 'Sửa',
   'targets.cancel': 'Hủy',
   'targets.save': 'Lưu',
-  'targets.secretSet': 'Đã có một giá trị được lưu. Cứ để nguyên thì nó được giữ lại.',
   'targets.access': 'Truy cập',
   'targets.drives': 'Ổ đĩa',
   'targets.drivesEmpty': 'Chưa đăng ký ổ đĩa nào. Hãy đăng ký một cái để công việc tìm lại được nó ngay cả khi nó quay lại với ký tự khác.',
@@ -1152,6 +1151,7 @@ const vi: Translations = {
   'new.change.jobBrakes': 'Phanh riêng của một tác vụ được đặt trên trang của nó, trong mục {brakes}.',
   'new.change.jobMore': 'Mỗi thẻ công việc có {more}, với mọi thứ trang của công việc cung cấp. Có thể sửa, kiểm tra hoặc xoá một công việc mà không cần mở nó.',
   'new.change.providerNames': '{connect} đặt tên cho mọi loại lưu trữ mà rclone biết và xếp vào nhóm của nó, kèm logo nếu có. Ô tìm kiếm ở trên tìm được theo tên hoặc theo tên trong rclone.',
+  'new.change.targetRows': 'Nút {test} của mỗi đích tự hiện {connected} hoặc {notConnected}, kèm lý do ở dòng dưới tên. Mật khẩu hoặc khóa đã lưu hiện là {saved}, và {change} mở ô nhập.',
 }
 
 export default vi

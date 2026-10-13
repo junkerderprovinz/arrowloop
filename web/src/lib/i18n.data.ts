@@ -486,7 +486,6 @@ export const en = {
   'action.edit': 'Edit',
   'targets.cancel': 'Cancel',
   'targets.save': 'Save',
-  'targets.secretSet': 'A value is stored. Leave this alone to keep it.',
   'targets.access': 'Access',
   'confirm.deleteRemote': 'Delete this storage target',
   'confirm.deleteRemoteStakes':
@@ -1193,6 +1192,7 @@ export const en = {
   'new.change.jobBrakes': 'A job\'s own brakes are set on its page, under {brakes}.',
   'new.change.jobMore': 'Every job card has {more}, with everything the job\'s page offers. A job can be edited, checked or removed without opening it.',
   'new.change.providerNames': '{connect} names every kind of storage rclone knows and puts it in its group, with its logo where one exists. A search at the top finds one by its name or by its rclone name.',
+  'new.change.targetRows': 'A target\'s {test} button shows {connected} or {notConnected} itself, with the reason on the line under the name. A stored password or key shows as {saved}, and {change} opens the field.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1675,7 +1675,6 @@ export const de: Translations = {
   'action.edit': 'Bearbeiten',
   'targets.cancel': 'Abbrechen',
   'targets.save': 'Speichern',
-  'targets.secretSet': 'Ein Wert ist hinterlegt. Lass ihn stehen, dann bleibt er erhalten.',
   'targets.access': 'Zugang',
   'confirm.deleteRemote': 'Dieses Speicherziel löschen',
   'confirm.deleteRemoteStakes':
@@ -2379,6 +2378,7 @@ export const de: Translations = {
   'new.change.jobBrakes': 'Die eigenen Bremsen eines Auftrags stellst du auf seiner Seite unter {brakes} ein.',
   'new.change.jobMore': 'Jede Auftragskarte hat {more} mit allem, was die Seite des Auftrags bietet. Ein Auftrag lässt sich so bearbeiten, prüfen oder entfernen, ohne ihn zu öffnen.',
   'new.change.providerNames': '{connect} nennt jede Speicherart, die rclone kennt, und ordnet sie ihrer Gruppe zu, mit Logo, wo es eines gibt. Eine Suche oben findet eine über ihren Namen oder ihren rclone-Namen.',
+  'new.change.targetRows': 'Der Knopf {test} eines Ziels zeigt selbst {connected} oder {notConnected}, den Grund in der Zeile unter dem Namen. Ein gespeichertes Passwort oder ein Schlüssel steht als {saved} da, und {change} öffnet das Feld.',
 }
 
 export interface Language {

@@ -326,7 +326,6 @@ const sk: Translations = {
   'action.edit': 'Upraviť',
   'targets.cancel': 'Zrušiť',
   'targets.save': 'Uložiť',
-  'targets.secretSet': 'Hodnota je uložená. Nechajte ju tak a zostane zachovaná.',
   'targets.access': 'Prístup',
   'targets.drives': 'Disky',
   'targets.drivesEmpty': 'Nie je zaregistrovaný žiadny disk. Zaregistrujte jeden, aby ho úloha našla aj vtedy, keď sa vráti pod iným písmenom.',
@@ -1152,6 +1151,7 @@ const sk: Translations = {
   'new.change.jobBrakes': 'Vlastné brzdy úlohy sa nastavujú na jej stránke v časti {brakes}.',
   'new.change.jobMore': 'Každá karta úlohy má {more} so všetkým, čo ponúka stránka úlohy. Úlohu tak možno upraviť, skontrolovať alebo odstrániť bez otvorenia.',
   'new.change.providerNames': '{connect} pomenuje každý druh úložiska, ktorý rclone pozná, a zaradí ho do jeho skupiny, s logom, ak existuje. Vyhľadávanie hore nájde druh podľa mena alebo mena v rclone.',
+  'new.change.targetRows': 'Tlačidlo {test} pri každom cieli samo ukáže {connected} alebo {notConnected} a dôvod je v riadku pod menom. Uložené heslo alebo kľúč sa zobrazuje ako {saved} a {change} otvorí pole.',
 }
 
 export default sk

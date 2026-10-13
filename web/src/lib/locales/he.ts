@@ -326,7 +326,6 @@ const he: Translations = {
   'action.edit': 'עריכה',
   'targets.cancel': 'ביטול',
   'targets.save': 'שמירה',
-  'targets.secretSet': 'יש ערך שמור. השאר אותו כמו שהוא והוא יישמר.',
   'targets.access': 'גישה',
   'targets.drives': 'כוננים',
   'targets.drivesEmpty': 'לא נרשם שום כונן. רשום אחד כדי שמשימה תמצא אותו שוב גם אם יחזור באות אחרת.',
@@ -1152,6 +1151,7 @@ const he: Translations = {
   'new.change.jobBrakes': 'הבלמים של משימה מוגדרים בדף שלה, תחת {brakes}.',
   'new.change.jobMore': 'בכל כרטיס משימה יש {more}, עם כל מה שהדף של המשימה מציע. אפשר לערוך, לבדוק או להסיר משימה בלי לפתוח אותה.',
   'new.change.providerNames': '{connect} נותן שם לכל סוג אחסון ש־rclone מכיר ומציב אותו בקבוצה שלו, עם הלוגו שלו אם יש. חיפוש למעלה מוצא סוג לפי השם שלו או לפי השם שלו ב־rclone.',
+  'new.change.targetRows': 'הכפתור {test} של כל יעד מציג בעצמו {connected} או {notConnected}, והסיבה בשורה שמתחת לשם. סיסמה או מפתח שמורים מופיעים כ־{saved}, ו־{change} פותח את השדה.',
 }
 
 export default he

@@ -326,7 +326,6 @@ const no: Translations = {
   'action.edit': 'Rediger',
   'targets.cancel': 'Avbryt',
   'targets.save': 'Lagre',
-  'targets.secretSet': 'En verdi er lagret. La den stå, så beholdes den.',
   'targets.access': 'Tilgang',
   'targets.drives': 'Disker',
   'targets.drivesEmpty': 'Ingen disk er meldt inn. Meld inn en, slik at en jobb finner den igjen selv om den kommer tilbake på en annen bokstav.',
@@ -1152,6 +1151,7 @@ const no: Translations = {
   'new.change.jobBrakes': 'En jobbs egne bremser stilles inn på siden dens, under {brakes}.',
   'new.change.jobMore': 'Hvert jobbkort har {more}, med alt jobbens side tilbyr. En jobb kan redigeres, sjekkes eller fjernes uten å åpne den.',
   'new.change.providerNames': '{connect} navngir hver lagringstype rclone kjenner, og plasserer den i gruppen sin, med logo der det finnes. Et søk øverst finner en etter navnet eller navnet i rclone.',
+  'new.change.targetRows': 'Knappen {test} ved et mål viser selv {connected} eller {notConnected}, med årsaken på linjen under navnet. Et lagret passord eller en nøkkel står som {saved}, og {change} åpner feltet.',
 }
 
 export default no

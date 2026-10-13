@@ -122,6 +122,19 @@ export const RELEASES: Release[] = [
         names: { connect: 'targets.addStorage' },
       },
       {
+        id: 'target-rows',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetRows',
+        names: {
+          test: 'targets.check',
+          connected: 'targets.checkOk',
+          notConnected: 'targets.checkFailed',
+          saved: 'notify.saved',
+          change: 'notify.change',
+        },
+      },
+      {
         id: 'settings-tiles',
         at: ['/settings/:tile'],
         go: '/settings',

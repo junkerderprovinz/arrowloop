@@ -326,7 +326,6 @@ const hu: Translations = {
   'action.edit': 'Szerkesztés',
   'targets.cancel': 'Mégse',
   'targets.save': 'Mentés',
-  'targets.secretSet': 'Van eltárolt érték. Hagyja úgy, ahogy van, és megmarad.',
   'targets.access': 'Hozzáférés',
   'targets.drives': 'Lemezek',
   'targets.drivesEmpty': 'Nincs bejelentett lemez. Jelentsen be egyet, hogy egy feladat akkor is megtalálja, ha másik betűjellel tér vissza.',
@@ -1152,6 +1151,7 @@ const hu: Translations = {
   'new.change.jobBrakes': 'Egy feladat saját fékjeit az oldalán, a(z) {brakes} résznél lehet beállítani.',
   'new.change.jobMore': 'Minden feladatkártyán van egy {more} gomb mindazzal, amit a feladat oldala kínál. Egy feladat így megnyitás nélkül szerkeszthető, ellenőrizhető vagy eltávolítható.',
   'new.change.providerNames': 'A {connect} megnevez minden tárhelytípust, amit az rclone ismer, és a csoportjába sorolja, logóval, ha van. A fenti keresés a típust a neve vagy az rclone-beli neve alapján is megtalálja.',
+  'new.change.targetRows': 'Egy cél {test} gombja maga mutatja, hogy {connected} vagy {notConnected}, az okot pedig a név alatti sor adja meg. A mentett jelszó vagy kulcs {saved} felirattal látszik, és a {change} nyitja meg a mezőt.',
 }
 
 export default hu

@@ -326,7 +326,6 @@ const ca: Translations = {
   'action.edit': 'Edita',
   'targets.cancel': 'Cancel·la',
   'targets.save': 'Desa',
-  'targets.secretSet': 'Hi ha un valor desat. Deixeu-lo tal com és i es conservarà.',
   'targets.access': 'Accés',
   'targets.drives': 'Discs',
   'targets.drivesEmpty': 'No hi ha cap disc registrat. Registreu-ne un perquè una tasca el torni a trobar encara que torni amb una altra lletra.',
@@ -1152,6 +1151,7 @@ const ca: Translations = {
   'new.change.jobBrakes': 'Els frens propis d\'una tasca es configuren a la seva pàgina, a {brakes}.',
   'new.change.jobMore': 'Cada targeta de tasca té {more}, amb tot el que ofereix la pàgina de la tasca. Una tasca es pot editar, comprovar o treure sense obrir-la.',
   'new.change.providerNames': '{connect} anomena cada tipus d’emmagatzematge que rclone coneix i el posa al seu grup, amb el logotip si n’hi ha. Una cerca a dalt en troba un pel seu nom o pel seu nom a rclone.',
+  'new.change.targetRows': 'El botó {test} de cada destinació mostra ell mateix {connected} o {notConnected}, amb el motiu a la línia de sota del nom. Una contrasenya o una clau desada apareix com a {saved}, i {change} obre el camp.',
 }
 
 export default ca

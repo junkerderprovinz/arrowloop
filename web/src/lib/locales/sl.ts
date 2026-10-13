@@ -326,7 +326,6 @@ const sl: Translations = {
   'action.edit': 'Uredi',
   'targets.cancel': 'Prekliči',
   'targets.save': 'Shrani',
-  'targets.secretSet': 'Vrednost je shranjena. Pustite jo pri miru in se bo ohranila.',
   'targets.access': 'Dostop',
   'targets.drives': 'Diski',
   'targets.drivesEmpty': 'Noben disk ni prijavljen. Prijavite enega, da ga opravilo znova najde, tudi če se vrne z drugo črko.',
@@ -1152,6 +1151,7 @@ const sl: Translations = {
   'new.change.jobBrakes': 'Lastne zavore opravila se nastavijo na njegovi strani, pod {brakes}.',
   'new.change.jobMore': 'Vsaka kartica opravila ima {more} z vsem, kar ponuja stran opravila. Opravilo lahko urediš, preveriš ali odstraniš, ne da bi ga odprl.',
   'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja. Iskanje na vrhu najde vrsto po imenu ali imenu v rclone.',
+  'new.change.targetRows': 'Gumb {test} pri vsakem cilju sam pokaže {connected} ali {notConnected}, razlog pa je v vrstici pod imenom. Shranjeno geslo ali ključ je prikazan kot {saved}, {change} pa odpre polje.',
 }
 
 export default sl

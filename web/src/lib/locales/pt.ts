@@ -326,7 +326,6 @@ const pt: Translations = {
   'action.edit': 'Editar',
   'targets.cancel': 'Cancelar',
   'targets.save': 'Guardar',
-  'targets.secretSet': 'Há um valor guardado. Deixe-o como está para o manter.',
   'targets.access': 'Acesso',
   'targets.drives': 'Discos',
   'targets.drivesEmpty': 'Não há nenhum disco registado. Registe um para que uma tarefa o volte a encontrar mesmo que regresse com outra letra.',
@@ -1152,6 +1151,7 @@ const pt: Translations = {
   'new.change.jobBrakes': 'Os travões próprios de uma tarefa definem-se na página dela, em {brakes}.',
   'new.change.jobMore': 'Cada cartão de tarefa tem {more}, com tudo o que a página da tarefa oferece. Uma tarefa pode ser editada, verificada ou removida sem a abrir.',
   'new.change.providerNames': '{connect} dá nome a cada tipo de armazenamento que o rclone conhece e coloca-o no seu grupo, com o logótipo quando existe. Uma pesquisa no topo encontra um pelo nome ou pelo nome no rclone.',
+  'new.change.targetRows': 'O botão {test} de cada destino mostra ele próprio {connected} ou {notConnected}, com o motivo na linha por baixo do nome. Uma palavra-passe ou chave guardada aparece como {saved}, e {change} abre o campo.',
 }
 
 export default pt

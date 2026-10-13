@@ -326,7 +326,6 @@ const it: Translations = {
   'action.edit': 'Modifica',
   'targets.cancel': 'Annulla',
   'targets.save': 'Salva',
-  'targets.secretSet': 'Un valore è memorizzato. Lascialo com\'è per conservarlo.',
   'targets.access': 'Accesso',
   'targets.drives': 'Dischi',
   'targets.drivesEmpty': 'Nessun disco registrato. Registrane uno perché un lavoro lo ritrovi anche se torna con un\'altra lettera.',
@@ -1152,6 +1151,7 @@ const it: Translations = {
   'new.change.jobBrakes': 'I freni propri di un\'attività si impostano nella sua pagina, sotto {brakes}.',
   'new.change.jobMore': 'Ogni scheda di lavoro ha {more}, con tutto ciò che offre la pagina del lavoro. Un lavoro si può modificare, controllare o rimuovere senza aprirlo.',
   'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste. Una ricerca in alto ne trova uno dal nome o dal nome in rclone.',
+  'new.change.targetRows': 'Il pulsante {test} di ogni destinazione mostra da sé {connected} o {notConnected}, con il motivo sulla riga sotto il nome. Una password o una chiave salvata appare come {saved}, e {change} apre il campo.',
 }
 
 export default it

@@ -326,7 +326,6 @@ const id: Translations = {
   'action.edit': 'Sunting',
   'targets.cancel': 'Batal',
   'targets.save': 'Simpan',
-  'targets.secretSet': 'Sebuah nilai sudah tersimpan. Biarkan apa adanya dan nilainya akan tetap ada.',
   'targets.access': 'Akses',
   'targets.drives': 'Cakram',
   'targets.drivesEmpty': 'Belum ada cakram yang terdaftar. Daftarkan satu supaya sebuah tugas menemukannya lagi walau ia kembali dengan huruf lain.',
@@ -1152,6 +1151,7 @@ const id: Translations = {
   'new.change.jobBrakes': 'Rem milik suatu tugas diatur di halamannya, di bagian {brakes}.',
   'new.change.jobMore': 'Setiap kartu tugas punya {more}, berisi semua yang ditawarkan halaman tugas. Tugas bisa disunting, diperiksa, atau dihapus tanpa membukanya.',
   'new.change.providerNames': '{connect} menamai setiap jenis penyimpanan yang dikenal rclone dan menaruhnya di kelompoknya, dengan logonya bila ada. Pencarian di atas menemukannya lewat namanya atau nama rclone-nya.',
+  'new.change.targetRows': 'Tombol {test} pada setiap target menampilkan sendiri {connected} atau {notConnected}, dengan alasannya di baris bawah nama. Kata sandi atau kunci yang tersimpan tampil sebagai {saved}, dan {change} membuka kolomnya.',
 }
 
 export default id

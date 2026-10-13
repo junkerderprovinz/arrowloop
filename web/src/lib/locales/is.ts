@@ -326,7 +326,6 @@ const is: Translations = {
   'action.edit': 'Breyta',
   'targets.cancel': 'Hætta við',
   'targets.save': 'Vista',
-  'targets.secretSet': 'Gildi er vistað. Láttu það vera og það helst.',
   'targets.access': 'Aðgangur',
   'targets.drives': 'Diskar',
   'targets.drivesEmpty': 'Enginn diskur er skráður. Skráðu einn svo verk finni hann aftur þótt hann komi til baka undir öðrum bókstaf.',
@@ -1152,6 +1151,7 @@ const is: Translations = {
   'new.change.jobBrakes': 'Eigin hemlar verks eru stilltir á síðu þess, undir {brakes}.',
   'new.change.jobMore': 'Hvert verkspjald hefur {more}, með öllu sem síða verksins býður. Hægt er að breyta verki, athuga það eða fjarlægja án þess að opna það.',
   'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til. Leit efst finnur gerð eftir nafni hennar eða nafni hennar í rclone.',
+  'new.change.targetRows': 'Hnappurinn {test} við hvert markmið sýnir sjálfur {connected} eða {notConnected}, og ástæðan er á línunni undir nafninu. Vistað lykilorð eða lykill birtist sem {saved}, og {change} opnar reitinn.',
 }
 
 export default is

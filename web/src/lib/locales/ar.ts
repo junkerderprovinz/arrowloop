@@ -326,7 +326,6 @@ const ar: Translations = {
   'action.edit': 'تحرير',
   'targets.cancel': 'إلغاء',
   'targets.save': 'حفظ',
-  'targets.secretSet': 'هناك قيمة محفوظة. اتركها كما هي لتبقى.',
   'targets.access': 'الوصول',
   'targets.drives': 'الأقراص',
   'targets.drivesEmpty': 'لا قرص مسجَّل. سجّل واحداً كي تجده المهمة من جديد حتى لو عاد بحرف آخر.',
@@ -1152,6 +1151,7 @@ const ar: Translations = {
   'new.change.jobBrakes': 'تُضبط مكابح المهمة الخاصة في صفحتها، ضمن {brakes}.',
   'new.change.jobMore': 'لكل بطاقة مهمة زر {more} فيه كل ما تقدمه صفحة المهمة. يمكن تعديل المهمة أو فحصها أو إزالتها دون فتحها.',
   'new.change.providerNames': 'يسمّي {connect} كل نوع تخزين يعرفه rclone ويضعه في مجموعته، مع شعاره حيث يوجد. ويجد البحث في الأعلى النوع باسمه أو باسمه في rclone.',
+  'new.change.targetRows': 'زر {test} في كل هدف يعرض بنفسه {connected} أو {notConnected}، والسبب في السطر تحت الاسم. كلمة المرور أو المفتاح المحفوظ يظهر بعبارة {saved}، و{change} يفتح الحقل.',
 }
 
 export default ar

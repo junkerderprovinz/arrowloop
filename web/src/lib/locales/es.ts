@@ -326,7 +326,6 @@ const es: Translations = {
   'action.edit': 'Editar',
   'targets.cancel': 'Cancelar',
   'targets.save': 'Guardar',
-  'targets.secretSet': 'Hay un valor guardado. Déjalo tal cual para conservarlo.',
   'targets.access': 'Acceso',
   'targets.drives': 'Discos',
   'targets.drivesEmpty': 'No hay ningún disco registrado. Registra uno para que una tarea lo encuentre de nuevo aunque vuelva con otra letra.',
@@ -1152,6 +1151,7 @@ const es: Translations = {
   'new.change.jobBrakes': 'Los frenos propios de una tarea se ajustan en su página, en {brakes}.',
   'new.change.jobMore': 'Cada tarjeta de tarea tiene {more}, con todo lo que ofrece la página de la tarea. Una tarea se puede editar, comprobar o quitar sin abrirla.',
   'new.change.providerNames': '{connect} nombra cada tipo de almacenamiento que conoce rclone y lo coloca en su grupo, con su logotipo si existe. Una búsqueda arriba encuentra uno por su nombre o por su nombre en rclone.',
+  'new.change.targetRows': 'El botón {test} de cada destino muestra él mismo {connected} o {notConnected}, con el motivo en la línea bajo el nombre. Una contraseña o clave guardada aparece como {saved}, y {change} abre el campo.',
 }
 
 export default es
