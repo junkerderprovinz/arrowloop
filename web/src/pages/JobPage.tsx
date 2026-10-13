@@ -4,6 +4,7 @@ import { CheckPanel } from '../components/CheckPanel'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { DupesPanel } from '../components/DupesPanel'
 import { FindingCard } from '../components/FindingCard'
+import { IconAction } from '../components/IconAction'
 import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../components/glyphs'
 import { BrakesCard } from '../components/JobBrakes'
 import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
@@ -241,13 +242,21 @@ function Head({
 
   return (
     <div data-new="job-page" className="flex flex-wrap items-center gap-x-4 gap-y-3">
-      {/* The jobs page rather than history.back(), which leaves the app when
-          the page was opened from a bookmark. */}
-      <Badge as="button" shape="square" size="icon" tone="neutral" tip={t('preview.back')} onClick={() => goTo({ tab: 'jobs', job: '' })}>
-        <IconBack />
-      </Badge>
-      <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
-        <DirectionGlyph direction={job.direction} />
+      <span className="flex shrink-0 items-center gap-2">
+        {/* The jobs page rather than history.back(), which leaves the app when
+            the page was opened from a bookmark. */}
+        <IconAction
+          title={t('preview.back')}
+          labelKey="preview.back"
+          size="key"
+          className="glim-glyph-only flex-none rounded-control"
+          onClick={() => goTo({ tab: 'jobs', job: '' })}
+        >
+          <IconBack />
+        </IconAction>
+        <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
+          <DirectionGlyph direction={job.direction} />
+        </span>
       </span>
       <div className="flex min-w-0 flex-1 basis-[28rem] flex-col gap-0.5">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
