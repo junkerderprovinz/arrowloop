@@ -195,8 +195,10 @@ export function SortButton<T extends string>({
 const FOLD_DELAY_MS = 250
 
 /**
- * A search that waits as a button and opens into a field. It stays open while
- * it holds a query, and Escape clears it.
+ * A search that waits as a button and opens into a field, as every search on
+ * a page does. Ctrl+F opens it too. It stays open while it holds a query, so
+ * a forgotten filter cannot hide behind the button. Escape clears the query,
+ * and on an empty field folds it back with the focus on the button.
  */
 export function SearchFold({
   value,
@@ -211,12 +213,35 @@ export function SearchFold({
   const narrow = useNarrow()
   const [open, setOpen] = useState(false)
   const fold = useRef<number | undefined>(undefined)
+  const button = useRef<HTMLButtonElement>(null)
+  const field = useRef<HTMLInputElement>(null)
+  const backToButton = useRef(false)
 
   useEffect(() => () => window.clearTimeout(fold.current), [])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() !== 'f' || !(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return
+      // A window over the page has its own keys.
+      if (document.querySelector('[role="dialog"]')) return
+      e.preventDefault()
+      setOpen(true)
+      field.current?.focus()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    if (open || !backToButton.current) return
+    backToButton.current = false
+    button.current?.focus()
+  }, [open])
 
   if (!open && value === '') {
     return (
       <Button
+        ref={button}
         label={t('list.search')}
         labelKey="list.search"
         glyph={<IconSearch />}
@@ -233,6 +258,7 @@ export function SearchFold({
         <IconSearch />
       </span>
       <input
+        ref={field}
         type="search"
         aria-label={t('list.search')}
         placeholder={placeholder}
@@ -249,9 +275,15 @@ export function SearchFold({
           fold.current = window.setTimeout(() => setOpen(false), FOLD_DELAY_MS)
         }}
         onKeyDown={(e) => {
-          if (e.key !== 'Escape' || value === '') return
+          if (e.key !== 'Escape') return
           e.stopPropagation()
-          onChange('')
+          if (value !== '') {
+            onChange('')
+            return
+          }
+          window.clearTimeout(fold.current)
+          backToButton.current = true
+          setOpen(false)
         }}
         className="min-w-0 flex-1 bg-transparent text-body text-carbon-text outline-none [&::-webkit-search-cancel-button]:hidden"
       />
