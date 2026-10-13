@@ -206,7 +206,7 @@ You do not have to take my word for it. The code is open and every release note 
 
 ## 7. Support this project
 
-Questions? Check the [support thread](https://forums.unraid.net/topic/200733-support-junkerderprovinz-arrowloop/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/arrowloop/issues).
+Questions? Ask in [Discussions](https://github.com/junkerderprovinz/arrowloop/discussions/categories/q-a) or check the [support thread](https://forums.unraid.net/topic/200733-support-junkerderprovinz-arrowloop/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/arrowloop/issues).
 
 A one-knight job: I build it, keep it running, work through the issues and add what people ask for, until nothing is missing. It is free, with no accounts, no telemetry, no ads and no paid tier. No asterisk anywhere. Nothing readable ever leaves your own walls. Forged on evenings and weekends, with heart and stubbornness.
 
