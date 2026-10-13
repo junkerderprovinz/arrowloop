@@ -211,3 +211,23 @@ func TestNothingLocalIsRefused(t *testing.T) {
 		t.Fatal("a watcher over no local side was created anyway")
 	}
 }
+
+// A watcher started again once a drive is back has to see a file put there
+// straight away, not only once its reading has got going.
+func TestAChangeMadeAsSoonAsTheWatcherIsBuiltIsReported(t *testing.T) {
+	root := t.TempDir()
+	var fired atomic.Int64
+	w, err := watch.New(watch.Options{Roots: []string{root}, Settle: 60 * time.Millisecond}, func() { fired.Add(1) })
+	if err != nil {
+		t.Fatalf("watch: %v", err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(func() {
+		cancel()
+		w.Close()
+	})
+
+	write(t, filepath.Join(root, "new.txt"), "x")
+	go w.Run(ctx)
+	waitFor(t, &fired, 1, "a file written right after the watcher was built")
+}

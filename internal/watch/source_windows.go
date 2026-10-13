@@ -94,6 +94,14 @@ func (t *subtrees) add(dir string) error {
 		return err
 	}
 	s := &subtree{dir: dir, dirH: dirH, ready: ready, stop: stop, buf: make([]byte, 64<<10)}
+	// The system only starts recording changes with the first read, so it is
+	// asked for here: a change made as soon as this returns is not lost.
+	if err := s.listen(); err != nil {
+		windows.CloseHandle(dirH)
+		windows.CloseHandle(ready)
+		windows.CloseHandle(stop)
+		return err
+	}
 	t.roots[dir] = s
 	t.wg.Add(1)
 	go t.read(s)
@@ -140,12 +148,6 @@ func (t *subtrees) read(s *subtree) {
 	defer t.drop(s)
 
 	for {
-		s.ov = windows.Overlapped{HEvent: s.ready}
-		err := windows.ReadDirectoryChanges(s.dirH, &s.buf[0], uint32(len(s.buf)), true, changes, nil, &s.ov, 0)
-		if err != nil {
-			t.fail(fmt.Errorf("watch %s: %w", s.dir, err))
-			return
-		}
 		which, err := windows.WaitForMultipleObjects([]windows.Handle{s.ready, s.stop}, false, windows.INFINITE)
 		if err != nil || which != windows.WAIT_OBJECT_0 {
 			var n uint32
@@ -170,7 +172,20 @@ func (t *subtrees) read(s *subtree) {
 				return
 			}
 		}
+		if err := s.listen(); err != nil {
+			t.fail(err)
+			return
+		}
 	}
+}
+
+// listen asks for the next batch of changes under the root.
+func (s *subtree) listen() error {
+	s.ov = windows.Overlapped{HEvent: s.ready}
+	if err := windows.ReadDirectoryChanges(s.dirH, &s.buf[0], uint32(len(s.buf)), true, changes, nil, &s.ov, 0); err != nil {
+		return fmt.Errorf("watch %s: %w", s.dir, err)
+	}
+	return nil
 }
 
 // drop forgets a root whose reading has ended and closes its handles. The
