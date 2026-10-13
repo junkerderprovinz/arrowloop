@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
@@ -155,40 +156,64 @@ func TestReadingBackGivesTheSettingsAndNotTheJobs(t *testing.T) {
 	}
 }
 
-// The Matrix token posts as the account and a webhook's address is its own
-// key, so neither goes back to the screen, and the placeholder the screen
-// sends back keeps them.
+// allSecrets is a notify block with every secret filled in, each one a word
+// that must not appear anywhere it is sent back.
+const allSecrets = `{
+  "webhook": "https://hooks.example/SECRETHOOK",
+  "matrix": {"homeserver": "https://matrix.example.org", "room": "!a:example.org", "token": "SECRETTOKEN"},
+  "smtp": {"host": "mail.example.org", "from": "a@example.org", "to": "b@example.org", "username": "arrowloop", "password": "SECRETPASSWORD"},
+  "apprise": {"url": "http://apprise:8000/notify/SECRETKEY", "tags": "backups"},
+  "healthchecks": {"url": "https://hc-ping.com/SECRETCHECK", "jobs": {"photos": "https://hc-ping.com/SECRETJOBCHECK"}}
+}`
+
+var secretWords = []string{"SECRETHOOK", "SECRETTOKEN", "SECRETPASSWORD", "SECRETKEY", "SECRETCHECK", "SECRETJOBCHECK"}
+
+// The Matrix token posts as the account, a mail password logs in, and a
+// webhook's, an Apprise server's and a check's address are their own keys, so
+// none goes back to the screen, and the placeholder the screen sends back
+// keeps them.
 func TestTheNotificationSecretsStayOnTheServer(t *testing.T) {
 	h := newHarness(t)
-	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner})
-
-	put := func(notify map[string]any) map[string]any {
-		t.Helper()
-		body, _ := json.Marshal(map[string]any{"notify": notify})
-		req, _ := http.NewRequest(http.MethodPut, srv.URL+"/api/settings", bytes.NewReader(body))
-		req.Header.Set("Content-Type", "application/json")
-		resp, err := srv.Client().Do(req)
-		if err != nil {
-			t.Fatal(err)
-		}
-		defer resp.Body.Close()
-		var got map[string]any
-		if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
-			t.Fatal(err)
-		}
-		return got
+	resp, answer := putJSON(t, h.srv, "/api/settings", `{"notify":`+allSecrets+`}`)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("save: %s %s", resp.Status, answer)
 	}
-	matrix := map[string]any{"homeserver": "https://matrix.example.org", "room": "!a:example.org", "token": "syt_secret"}
-	got := put(map[string]any{"matrix": matrix, "webhook": "https://hooks.example/abc"})
-	if bytes.Contains(mustJSON(t, got), []byte("syt_secret")) || bytes.Contains(mustJSON(t, got), []byte("hooks.example")) {
-		t.Fatalf("the answer carries a secret: %v", got)
+	_, read := doJSON(t, h.srv, http.MethodGet, "/api/settings", "")
+	for _, secret := range secretWords {
+		if strings.Contains(answer, secret) || strings.Contains(read, secret) {
+			t.Errorf("the settings carry %s", secret)
+		}
+	}
+	// What is not secret comes back, or the page could not show it.
+	for _, plain := range []string{"matrix.example.org", "mail.example.org", "arrowloop", "backups", `"photos"`} {
+		if !strings.Contains(read, plain) {
+			t.Errorf("the settings lost %s: %s", plain, read)
+		}
 	}
 
-	matrix["token"] = "********"
-	put(map[string]any{"matrix": matrix, "webhook": "********"})
+	// The page saves back what it was given, placeholders and all.
+	if resp, body := putJSON(t, h.srv, "/api/settings", read); resp.StatusCode != http.StatusOK {
+		t.Fatalf("save the page's copy back: %s %s", resp.Status, body)
+	}
 	n := h.runner.Config().Notify
-	if n.Matrix == nil || n.Matrix.Token != "syt_secret" || n.Webhook != "https://hooks.example/abc" {
-		t.Errorf("the placeholder replaced what was stored: %+v %+v", n, n.Matrix)
+	if n.Webhook != "https://hooks.example/SECRETHOOK" || n.Matrix.Token != "SECRETTOKEN" || n.SMTP.Password != "SECRETPASSWORD" ||
+		n.Apprise.URL != "http://apprise:8000/notify/SECRETKEY" || n.Healthchecks.URL != "https://hc-ping.com/SECRETCHECK" ||
+		n.Healthchecks.Jobs["photos"] != "https://hc-ping.com/SECRETJOBCHECK" {
+		t.Errorf("the placeholder replaced what was stored: %+v", n)
+	}
+}
+
+func TestANewSecretReplacesTheStoredOne(t *testing.T) {
+	h := newHarness(t)
+	putJSON(t, h.srv, "/api/settings", `{"notify":`+allSecrets+`}`)
+	putJSON(t, h.srv, "/api/settings", `{"notify":{"smtp":{"host":"mail.example.org","from":"a@example.org","to":"b@example.org","password":"newpw"},"healthchecks":{"jobs":{"music":"********"}}}}`)
+	n := h.runner.Config().Notify
+	if n.SMTP.Password != "newpw" {
+		t.Errorf("the new password was not stored: %q", n.SMTP.Password)
+	}
+	// A job that never had a check of its own has nothing to keep.
+	if n.Healthchecks.Jobs["music"] != "" {
+		t.Errorf("a placeholder became a check: %q", n.Healthchecks.Jobs["music"])
 	}
 }
 
@@ -205,17 +230,20 @@ func mustJSON(t *testing.T, v any) []byte {
 // "Notify" and the hooks under "Jobs" are as much the file's as under the
 // usual spelling.
 func TestSecretsSpelledInAnotherCaseStayOnTheServer(t *testing.T) {
-	h := engineFor(t, `{"Notify":{"Webhook":"https://hooks.example/CASEWEBHOOK","Matrix":{"homeserver":"https://m.example","room":"!r:m.example","Token":"syt_CASETOKEN"}},`+
+	h := engineFor(t, `{"Notify":{"Webhook":"https://hooks.example/CASEWEBHOOK","Matrix":{"homeserver":"https://m.example","room":"!r:m.example","Token":"syt_CASETOKEN"},`+
+		`"SMTP":{"Host":"m.example","From":"a@b.example","To":"c@d.example","Password":"CASEPASSWORD"},"Apprise":{"URL":"http://a.example/notify/CASEKEY"},`+
+		`"HealthChecks":{"Url":"https://hc.example/CASECHECK","Jobs":{"photos":"https://hc.example/CASEJOBCHECK"}}},`+
 		`"Jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","before":"curl -u admin:HOOKSECRET http://nas"}]}`) // gitleaks:allow
 	if len(h.runner.Config().Jobs) != 1 {
 		t.Fatal("the job under \"Jobs\" was not loaded")
 	}
+	secrets := []string{"CASEWEBHOOK", "syt_CASETOKEN", "HOOKSECRET", "CASEPASSWORD", "CASEKEY", "CASECHECK", "CASEJOBCHECK"}
 	for _, path := range []string{"/api/settings", "/api/diagnostics"} {
 		resp, text := doJSON(t, h.srv, http.MethodGet, path, "")
 		if resp.StatusCode != http.StatusOK {
 			t.Fatalf("GET %s: %s", path, resp.Status)
 		}
-		for _, secret := range []string{"CASEWEBHOOK", "syt_CASETOKEN", "HOOKSECRET"} {
+		for _, secret := range secrets {
 			if strings.Contains(text, secret) {
 				t.Errorf("%s carries %s:\n%s", path, secret, text)
 			}
@@ -227,7 +255,35 @@ func TestSecretsSpelledInAnotherCaseStayOnTheServer(t *testing.T) {
 		t.Fatalf("save the settings back: %s %s", resp.Status, body)
 	}
 	n := h.runner.Config().Notify
-	if n.Webhook != "https://hooks.example/CASEWEBHOOK" || n.Matrix == nil || n.Matrix.Token != "syt_CASETOKEN" {
-		t.Errorf("saving the page's copy back replaced the secrets: %+v %+v", n, n.Matrix)
+	if n.Webhook != "https://hooks.example/CASEWEBHOOK" || n.Matrix == nil || n.Matrix.Token != "syt_CASETOKEN" ||
+		n.SMTP.Password != "CASEPASSWORD" || n.Apprise.URL != "http://a.example/notify/CASEKEY" ||
+		n.Healthchecks.URL != "https://hc.example/CASECHECK" || n.Healthchecks.Jobs["photos"] != "https://hc.example/CASEJOBCHECK" {
+		t.Errorf("saving the page's copy back replaced the secrets: %+v", n)
+	}
+}
+
+// The test button sends what the page shows, which holds placeholders where
+// the secrets are, so the server fills them in from what it keeps.
+func TestATestMessageUsesTheStoredSecret(t *testing.T) {
+	h := newHarness(t)
+	var got []string
+	hook := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = append(got, r.URL.Path)
+	}))
+	defer hook.Close()
+	putJSON(t, h.srv, "/api/settings", `{"notify":{"webhook":"`+hook.URL+`/SECRETPATH","webhookFormat":"slack"}}`)
+
+	_, answer := doJSON(t, h.srv, http.MethodPost, "/api/notify/test", `{"channel":"webhook","notify":{"webhook":"********","webhookFormat":"slack"}}`)
+	if !strings.Contains(answer, `"ok":true`) || len(got) != 1 || got[0] != "/SECRETPATH" {
+		t.Fatalf("the test answered %s and reached %v", answer, got)
+	}
+
+	hook.Close()
+	_, answer = doJSON(t, h.srv, http.MethodPost, "/api/notify/test", `{"channel":"webhook","notify":{"webhook":"********"}}`)
+	if !strings.Contains(answer, `"ok":false`) || !strings.Contains(answer, "reason") {
+		t.Errorf("a failed test answered %s", answer)
+	}
+	if strings.Contains(answer, "SECRETPATH") {
+		t.Errorf("the reason carries the address: %s", answer)
 	}
 }
