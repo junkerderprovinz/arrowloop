@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -163,11 +164,25 @@ func (s *Store) clock() time.Time {
 	return time.Now()
 }
 
+// Raised is what raising a finding did to the list.
+type Raised int
+
+const (
+	// Unchanged confirmed an open finding without changing what it says, or
+	// left an acknowledged note alone.
+	Unchanged Raised = iota
+	// Updated gave an open finding new figures.
+	Updated
+	// New recorded a finding nobody has been told of yet.
+	New
+)
+
 // Raise records a finding, or confirms the open one of the same job and kind
-// with the new figures. It reports the finding as stored and whether it is
-// new, which is when somebody should be told. An acknowledged note whose cause
-// never went away is not raised again.
-func (s *Store) Raise(f Finding) (Finding, bool) {
+// with the new figures. It reports the finding as stored and what changed: a
+// new one is when somebody should be told, and an unchanged one is no news to
+// anybody watching. An acknowledged note whose cause never went away is not
+// raised again.
+func (s *Store) Raise(f Finding) (Finding, Raised) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.clock()
@@ -184,12 +199,17 @@ func (s *Store) Raise(f Finding) (Finding, bool) {
 			f.Severity, f.Held = f.Kind.Severity(), f.Kind.Holds()
 			// A permission covers the change it was given for.
 			f.Allowed = old.Allowed && old.Mark == f.Mark
+			before := *old
+			before.Seen = f.Seen
 			*old = f
 			s.save()
-			return f, false
+			if reflect.DeepEqual(before, f) {
+				return f, Unchanged
+			}
+			return f, Updated
 		}
 		if old.Quiet {
-			return *old, false
+			return *old, Unchanged
 		}
 	}
 	f.ID = strconv.FormatInt(now.UnixNano(), 36)
@@ -197,7 +217,7 @@ func (s *Store) Raise(f Finding) (Finding, bool) {
 	f.Severity, f.Held = f.Kind.Severity(), f.Kind.Holds()
 	s.list = append(s.list, f)
 	s.save()
-	return f, true
+	return f, New
 }
 
 // Settle closes the open findings of a job among the given kinds, because

@@ -14,9 +14,9 @@ func TestFindingsSurviveARestart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("open: %v", err)
 	}
-	f, fresh := s.Raise(Finding{Job: "fotos", Kind: Change, Count: 30, Known: 40, Mark: "abc"})
-	if !fresh || !f.Held || f.Severity != "critical" {
-		t.Fatalf("a first mass change is fresh %v, held %v, %s; want a new critical finding that holds", fresh, f.Held, f.Severity)
+	f, change := s.Raise(Finding{Job: "fotos", Kind: Change, Count: 30, Known: 40, Mark: "abc"})
+	if change != New || !f.Held || f.Severity != "critical" {
+		t.Fatalf("a first mass change raised %v, held %v, %s; want a new critical finding that holds", change, f.Held, f.Severity)
 	}
 
 	again, err := Open(path)

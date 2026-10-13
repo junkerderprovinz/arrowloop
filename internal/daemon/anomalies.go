@@ -56,14 +56,18 @@ func refusal(name string, err error) (anomaly.Finding, bool) {
 
 // hold records what a brake refused and tells whoever is watching, once.
 func (r *Runner) hold(ctx context.Context, f anomaly.Finding) {
-	stored, fresh := r.anomalies.Raise(f)
-	r.noted(ctx, stored, fresh)
+	stored, change := r.anomalies.Raise(f)
+	r.noted(ctx, stored, change)
 }
 
 // noted publishes a change to the findings and sends the message a new one is
-// worth.
-func (r *Runner) noted(ctx context.Context, f anomaly.Finding, fresh bool) {
-	if !fresh {
+// worth. A finding confirmed as it was is not published: the page asks for the
+// findings on every such event, and asking confirms the overdue ones again.
+func (r *Runner) noted(ctx context.Context, f anomaly.Finding, change anomaly.Raised) {
+	switch change {
+	case anomaly.Unchanged:
+		return
+	case anomaly.Updated:
 		r.publish(Event{Job: f.Job, Phase: "anomaly"})
 		return
 	}
@@ -139,11 +143,11 @@ func (r *Runner) review(ctx context.Context, rec history.Run) {
 	if err != nil || fails < after {
 		return
 	}
-	stored, fresh := r.anomalies.Raise(anomaly.Finding{
+	stored, change := r.anomalies.Raise(anomaly.Finding{
 		Job: rec.Job, Kind: anomaly.Failing, Count: fails,
 		Detail: fmt.Sprintf("the last %d runs failed: %s", fails, rec.Err),
 	})
-	r.noted(ctx, stored, fresh)
+	r.noted(ctx, stored, change)
 }
 
 // judge holds a successful run against what the job's earlier successful runs
@@ -166,11 +170,11 @@ func (r *Runner) judge(ctx context.Context, rec history.Run) {
 	for i, m := range odd {
 		said[i] = m.Say()
 	}
-	stored, fresh := r.anomalies.Raise(anomaly.Finding{
+	stored, change := r.anomalies.Raise(anomaly.Finding{
 		Job: rec.Job, Kind: anomaly.Unusual, Figures: odd,
 		Detail: "an unusual run: " + strings.Join(said, ", "),
 	})
-	r.noted(ctx, stored, fresh)
+	r.noted(ctx, stored, change)
 }
 
 // learn learns a job's habits from its latest successful runs, leaving out
@@ -246,11 +250,11 @@ func (r *Runner) overdue(ctx context.Context, now time.Time) {
 		if missed <= after {
 			continue
 		}
-		stored, fresh := r.anomalies.Raise(anomaly.Finding{
+		stored, change := r.anomalies.Raise(anomaly.Finding{
 			Job: j.Name, Kind: anomaly.Overdue, Count: int(now.Sub(last).Hours() / 24),
 			Detail: fmt.Sprintf("has not run since %s, though its schedule is %s", last.Format("2006-01-02 15:04"), j.Schedule),
 		})
-		r.noted(ctx, stored, fresh)
+		r.noted(ctx, stored, change)
 	}
 }
 

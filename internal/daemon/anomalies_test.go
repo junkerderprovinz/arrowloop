@@ -293,6 +293,39 @@ func TestAScheduleNotKeptMakesANote(t *testing.T) {
 	}
 }
 
+// The page asks for the findings on every event about them, and asking looks
+// at the schedules again, so a note confirmed as it was must not be news.
+func TestAnOverdueNoteConfirmedAsItWasIsNoEvent(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	cfg := *r.config()
+	cfg.Jobs = []job.Job{cfg.Jobs[0]}
+	cfg.Jobs[0].Schedule = "@hourly"
+	r.Reload(&cfg)
+	later := time.Now().Add(4 * 24 * time.Hour)
+	r.overdue(context.Background(), later)
+
+	events, stop := r.Subscribe()
+	defer stop()
+	for range 3 {
+		r.overdue(context.Background(), later)
+	}
+	select {
+	case ev := <-events:
+		t.Fatalf("confirming the same note published %+v", ev)
+	default:
+	}
+
+	r.overdue(context.Background(), later.Add(24*time.Hour))
+	select {
+	case ev := <-events:
+		if ev.Phase != "anomaly" {
+			t.Errorf("a day more without a run published %+v, want an anomaly event", ev)
+		}
+	default:
+		t.Error("a day more without a run changed the note without saying so")
+	}
+}
+
 func TestANewFindingIsHandedToTheNextWakeUpOnce(t *testing.T) {
 	r, left, _ := syncedPair(t)
 	emptyOut(t, left, 30)
