@@ -325,17 +325,7 @@ export function Settings() {
           label={t("edit.schedule")}
           value={defaults ? sentence(describeValue(inForce(defaults, "schedule"), "schedule", t)) : ""}
         />
-        <Row
-          label={t("engine.defaults")}
-          control={
-            <Button
-              label={t("settings.open")}
-              labelKey="settings.open"
-              wide={false}
-              onPress={() => nav.navigate("Sync")}
-            />
-          }
-        />
+        <Button label={t("engine.defaults")} glyph="IconSync" onPress={() => nav.navigate("Sync")} />
       </Section>
 
       {/* Each switch reads Android's state; a tap opens the request dialog or
@@ -444,6 +434,34 @@ export function Settings() {
           ]}
         />
 
+        {/* Three modes, without the web's pointer-based `reactive`. The bottom
+            bar has its own setting, since it fits five words across the width. */}
+        <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
+        <Choice<LabelMode>
+          hue={2}
+          // A stored `reactive` shows as symbols, which is how it rendered.
+          value={look.labels === "reactive" ? "glyph" : look.labels}
+          onChange={(labels) => setAppearance({ labels })}
+          options={[
+            { value: "text", label: t("look.labelText") },
+            { value: "textGlyph", label: t("look.labelTextGlyph") },
+            { value: "glyph", label: t("look.labelGlyph") },
+          ]}
+        />
+        <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
+        <Choice<BarLabelMode>
+          hue={3}
+          // The resolved mode, so a stored "same" still lights a segment; see
+          // barMode in ui.tsx.
+          value={barLabels}
+          onChange={(barLabels) => setAppearance({ barLabels })}
+          options={[
+            { value: "text", label: t("look.labelText") },
+            { value: "textGlyph", label: t("look.labelTextGlyph") },
+            { value: "glyph", label: t("look.labelGlyph") },
+          ]}
+        />
+
         {/* Every swatch chooses on the first press and opens the picker on a
             second. The web's reactive switch is left out, since a phone has
             no pointer. */}
@@ -500,93 +518,66 @@ export function Settings() {
           }}
         />
 
-        {/* Dimmed rather than hidden while the rainbow is off, so the colours
-            it would turn on are visible beforehand. */}
-        <View style={look.rainbow ? null : styles.dimmed} pointerEvents={look.rainbow ? "auto" : "none"}>
-          <Toggle
-            label={t("look.rainbowRotate")}
-            hint={t("look.rotateHint")}
-            value={look.rainbowRotate}
-            hue={1}
-            onChange={(rainbowRotate) =>
-              setAppearance({
-                rainbowRotate,
-                // A new offset each time it is switched on.
-                rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
-              })
-            }
-          />
-
-          {disco.offered && (
+        {look.rainbow && (
+          <View>
             <Toggle
-              label={t("look.disco")}
-              hint={t("look.discoHint")}
-              value={look.disco}
-              hue={2}
-              onChange={(on) => setAppearance({ disco: on })}
+              label={t("look.rainbowRotate")}
+              hint={t("look.rotateHint")}
+              value={look.rainbowRotate}
+              hue={1}
+              onChange={(rainbowRotate) =>
+                setAppearance({
+                  rainbowRotate,
+                  // A new offset each time it is switched on.
+                  rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
+                })
+              }
             />
-          )}
 
-          <View style={styles.axisRow}>
-            <View style={styles.axisName}>
-              <Body>{t("look.palette")}</Body>
-              <InfoBubble tip={t("look.paletteHint")} />
+            {disco.offered && (
+              <Toggle
+                label={t("look.disco")}
+                hint={t("look.discoHint")}
+                value={look.disco}
+                hue={2}
+                onChange={(on) => setAppearance({ disco: on })}
+              />
+            )}
+
+            <View style={styles.axisRow}>
+              <View style={styles.axisName}>
+                <Body>{t("look.palette")}</Body>
+                <InfoBubble tip={t("look.paletteHint")} />
+              </View>
+              <View style={styles.swatches}>
+                {palette.map((hex, i) => (
+                  <EditableSwatch
+                    key={`${i}-${hex}`}
+                    hex={hex}
+                    label={hex.toUpperCase()}
+                    // All palette colours are in force, so the ring marks the
+                    // swatch a second press would open.
+                    selected={armed?.kind === "palette" && armed.index === i}
+                    onPress={() => {
+                      if (armed?.kind === "palette" && armed.index === i) {
+                        setEditing({ kind: "palette", index: i, hex });
+                        setArmed(null);
+                      } else {
+                        setArmed({ kind: "palette", index: i });
+                      }
+                    }}
+                  />
+                ))}
+              </View>
+              <ResetMark
+                label={t("look.paletteReset")}
+                disabled={palette.join() === RAINBOW.join()}
+                onPress={() => setAppearance({ palette: [] })}
+              />
             </View>
-            <View style={styles.swatches}>
-              {palette.map((hex, i) => (
-                <EditableSwatch
-                  key={`${i}-${hex}`}
-                  hex={hex}
-                  label={hex.toUpperCase()}
-                  // All palette colours are in force, so the ring marks the
-                  // swatch a second press would open.
-                  selected={armed?.kind === "palette" && armed.index === i}
-                  onPress={() => {
-                    if (armed?.kind === "palette" && armed.index === i) {
-                      setEditing({ kind: "palette", index: i, hex });
-                      setArmed(null);
-                    } else {
-                      setArmed({ kind: "palette", index: i });
-                    }
-                  }}
-                />
-              ))}
-            </View>
-            <ResetMark
-              label={t("look.paletteReset")}
-              disabled={palette.join() === RAINBOW.join()}
-              onPress={() => setAppearance({ palette: [] })}
-            />
           </View>
-        </View>
+        )}
 
-        {/* Three modes, without the web's pointer-based `reactive`. The bottom
-            bar has its own setting, since it fits five words across the width. */}
-        <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
-        <Choice<LabelMode>
-          hue={2}
-          // A stored `reactive` shows as symbols, which is how it rendered.
-          value={look.labels === "reactive" ? "glyph" : look.labels}
-          onChange={(labels) => setAppearance({ labels })}
-          options={[
-            { value: "text", label: t("look.labelText") },
-            { value: "textGlyph", label: t("look.labelTextGlyph") },
-            { value: "glyph", label: t("look.labelGlyph") },
-          ]}
-        />
-        <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
-        <Choice<BarLabelMode>
-          hue={3}
-          // The resolved mode, so a stored "same" still lights a segment; see
-          // barMode in ui.tsx.
-          value={barLabels}
-          onChange={(barLabels) => setAppearance({ barLabels })}
-          options={[
-            { value: "text", label: t("look.labelText") },
-            { value: "textGlyph", label: t("look.labelTextGlyph") },
-            { value: "glyph", label: t("look.labelGlyph") },
-          ]}
-        />
       </Section>
 
       {/* While the phone asks for less motion the bubble says so, or somebody
