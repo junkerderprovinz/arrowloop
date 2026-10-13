@@ -96,7 +96,10 @@ export function SettingsRail({ tiles, active }: { tiles: Tile[]; active: TileId 
             // Grows from a zero basis above a 40px floor, so the tiles share
             // the column's height and a two-line name keeps its neighbours'
             // height; the caption under a reactive tile's glyph needs 48px.
-            className={`glim-nav-row glim-hue glim-hue-icon group flex shrink-0 grow basis-0 items-center rounded-[var(--radius-pill)] text-[15px] leading-5 font-medium transition-colors ${
+            // It grows no taller than a tile of BombVault's column, whose
+            // fourteen tiles share the same height with 4px between them, so
+            // eight tiles leave the rest of the column empty below them.
+            className={`glim-nav-row glim-hue glim-hue-icon group flex max-h-[calc((100%_-_13_*_0.25rem)_/_14)] shrink-0 grow basis-0 items-center rounded-[var(--radius-pill)] text-[15px] leading-5 font-medium transition-colors ${
               reactive ? 'min-h-12 flex-col justify-center gap-0.5 px-1' : 'min-h-10 px-3'
             } ${mode === 'glyph' ? 'justify-center' : reactive ? '' : 'gap-3'} ${
               selected ? 'glim-active bg-accent text-accentContrast' : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'
