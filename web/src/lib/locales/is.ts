@@ -128,6 +128,8 @@ const is: Translations = {
   'anomaly.fig.limit': 'Mörk',
   'anomaly.fig.listed': 'Taldar upp',
   'anomaly.files': 'Skrár sem þetta snertir',
+  'anomaly.showMore': 'Sýna meira',
+  'anomaly.showLess': 'Sýna minna',
   'anomaly.filesHint': 'Skrárnar sem þessi keyrsla myndi snerta, nefndar eins og hliðin sem yrði skrifað á kallar þær.',
   'anomaly.filesMore': 'og {count} í viðbót',
   'anomaly.held': 'Verkið er stöðvað',

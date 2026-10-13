@@ -128,6 +128,8 @@ const fa: Translations = {
   'anomaly.fig.limit': 'حد',
   'anomaly.fig.listed': 'گزارش‌شده',
   'anomaly.files': 'پرونده‌های درگیر',
+  'anomaly.showMore': 'نمایش بیشتر',
+  'anomaly.showLess': 'نمایش کمتر',
   'anomaly.filesHint': 'پرونده‌هایی که این اجرا به آن‌ها دست می‌زد، با نامی که سمتِ مقصد نوشتن به آن‌ها می‌دهد.',
   'anomaly.filesMore': 'و {count} مورد دیگر',
   'anomaly.held': 'کار نگه داشته شده است',

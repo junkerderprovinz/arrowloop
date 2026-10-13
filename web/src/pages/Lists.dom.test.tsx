@@ -146,13 +146,23 @@ describe('the anomalies', () => {
     expect(scrolled).toHaveBeenCalledWith('finding-c')
   })
 
-  it('names the files a brake counted and counts the rest', () => {
+  it('keeps the files a brake counted folded until Show more, then names ten and counts the rest', () => {
     const paths = Array.from({ length: 12 }, (_, i) => `photos/${i}.jpg`)
     const held = { ...finding('c', 'critical'), count: 40, known: 50, paths }
     wrap(<Anomalies listing={{ open: [held], closed: [] }} job="" refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
+    expect(screen.queryByText('photos/0.jpg')).toBeNull()
+    const more = screen.getByRole('button', { name: 'Show more' })
+    expect(more.getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(more)
+    expect(screen.getByRole('button', { name: 'Show less' }).getAttribute('aria-expanded')).toBe('true')
     expect(screen.getByText('photos/9.jpg')).toBeTruthy()
     expect(screen.queryByText('photos/10.jpg')).toBeNull()
     expect(screen.getByText('and 30 more')).toBeTruthy()
+  })
+
+  it('offers Show more only on a card with more to say', () => {
+    wrap(<Anomalies listing={{ open: [finding('w', 'warning')], closed: [] }} job="" refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
+    expect(screen.queryByRole('button', { name: 'Show more' })).toBeNull()
   })
 
   it('lists no jobs that have nothing open', () => {

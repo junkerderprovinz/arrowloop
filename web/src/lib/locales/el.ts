@@ -128,6 +128,8 @@ const el: Translations = {
   'anomaly.fig.limit': 'Όριο',
   'anomaly.fig.listed': 'Αναφερόμενα',
   'anomaly.files': 'Επηρεαζόμενα αρχεία',
+  'anomaly.showMore': 'Εμφάνιση περισσότερων',
+  'anomaly.showLess': 'Εμφάνιση λιγότερων',
   'anomaly.filesHint': 'Τα αρχεία που θα άγγιζε αυτή η εκτέλεση, με τα ονόματα που τους δίνει η πλευρά στην οποία θα γινόταν η εγγραφή.',
   'anomaly.filesMore': 'και άλλα {count}',
   'anomaly.held': 'Η εργασία είναι σταματημένη',

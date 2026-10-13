@@ -128,6 +128,8 @@ const ar: Translations = {
   'anomaly.fig.limit': 'الحد',
   'anomaly.fig.listed': 'المعروضة',
   'anomaly.files': 'الملفات المتأثرة',
+  'anomaly.showMore': 'عرض المزيد',
+  'anomaly.showLess': 'عرض أقل',
   'anomaly.filesHint': 'الملفات التي سيمسّها هذا التشغيل، بأسمائها كما يسميها الجانب الذي ستُكتب عليه.',
   'anomaly.filesMore': 'و{count} أخرى',
   'anomaly.held': 'المهمة موقوفة',

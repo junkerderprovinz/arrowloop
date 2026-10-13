@@ -128,6 +128,8 @@ const id: Translations = {
   'anomaly.fig.limit': 'Batas',
   'anomaly.fig.listed': 'Tercantum',
   'anomaly.files': 'Berkas terdampak',
+  'anomaly.showMore': 'Tampilkan lebih banyak',
+  'anomaly.showLess': 'Tampilkan lebih sedikit',
   'anomaly.filesHint': 'Berkas yang akan disentuh proses ini, dengan nama seperti yang dipakai sisi yang akan ditulisi.',
   'anomaly.filesMore': 'dan {count} lainnya',
   'anomaly.held': 'Tugas ditahan',

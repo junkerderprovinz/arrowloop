@@ -128,6 +128,8 @@ const ms: Translations = {
   'anomaly.fig.limit': 'Had',
   'anomaly.fig.listed': 'Disenaraikan',
   'anomaly.files': 'Fail terjejas',
+  'anomaly.showMore': 'Tunjuk lagi',
+  'anomaly.showLess': 'Tunjuk kurang',
   'anomaly.filesHint': 'Fail yang akan disentuh oleh larian ini, dinamakan seperti pada bahagian yang akan ditulis.',
   'anomaly.filesMore': 'dan {count} lagi',
   'anomaly.held': 'Tugas ditahan',

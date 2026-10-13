@@ -128,6 +128,8 @@ const ja: Translations = {
   'anomaly.fig.limit': '上限',
   'anomaly.fig.listed': '一覧の件数',
   'anomaly.files': '対象のファイル',
+  'anomaly.showMore': 'さらに表示',
+  'anomaly.showLess': '表示を減らす',
   'anomaly.filesHint': 'この実行が触れるファイルです。書き込まれる側での名前で表示します。',
   'anomaly.filesMore': 'ほか {count} 件',
   'anomaly.held': 'ジョブは保留中です',

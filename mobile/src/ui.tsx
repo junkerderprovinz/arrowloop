@@ -17,6 +17,7 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   type StyleProp,
+  type TextProps,
   type ViewStyle,
 } from "react-native";
 import { Glyph, glyphNameForKey, GLYPH, ProviderMark } from "./glyphs";
@@ -543,9 +544,28 @@ export function CardHead({
   );
 }
 
-export function Body({ children, muted }: { children: ReactNode; muted?: boolean }) {
+export function Body({
+  children,
+  muted,
+  lines,
+  onTextLayout,
+}: {
+  children: ReactNode;
+  muted?: boolean;
+  /** The most lines shown, the rest cut with an ellipsis. */
+  lines?: number;
+  onTextLayout?: TextProps["onTextLayout"];
+}) {
   const { p } = useTheme();
-  return <Text style={[styles.body, { color: muted ? p.textMuted : p.textSub }]}>{children}</Text>;
+  return (
+    <Text
+      style={[styles.body, { color: muted ? p.textMuted : p.textSub }]}
+      numberOfLines={lines}
+      onTextLayout={onTextLayout}
+    >
+      {children}
+    </Text>
+  );
 }
 
 export function Caption({ children }: { children: ReactNode }) {

@@ -128,6 +128,8 @@ const ca: Translations = {
   'anomaly.fig.limit': 'Límit',
   'anomaly.fig.listed': 'Mostrats',
   'anomaly.files': 'Fitxers afectats',
+  'anomaly.showMore': 'Mostra més',
+  'anomaly.showLess': 'Mostra menys',
   'anomaly.filesHint': 'Els fitxers que aquesta execució tocaria, amb el nom que els dona el costat on s\'escriuria.',
   'anomaly.filesMore': 'i {count} més',
   'anomaly.held': 'La tasca està aturada',

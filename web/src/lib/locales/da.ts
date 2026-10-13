@@ -128,6 +128,8 @@ const da: Translations = {
   'anomaly.fig.limit': 'Grænse',
   'anomaly.fig.listed': 'Meldt',
   'anomaly.files': 'Berørte filer',
+  'anomaly.showMore': 'Vis mere',
+  'anomaly.showLess': 'Vis mindre',
   'anomaly.filesHint': 'Filerne, som denne kørsel ville røre, med de navne, som siden der skrives til, bruger.',
   'anomaly.filesMore': 'og {count} flere',
   'anomaly.held': 'Jobbet er stoppet',

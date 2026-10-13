@@ -128,6 +128,8 @@ const ru: Translations = {
   'anomaly.fig.limit': 'Предел',
   'anomaly.fig.listed': 'Показано',
   'anomaly.files': 'Затронутые файлы',
+  'anomaly.showMore': 'Показать больше',
+  'anomaly.showLess': 'Показать меньше',
   'anomaly.filesHint': 'Файлы, которых коснулся бы этот запуск, с названиями, как их называет сторона, куда пошла бы запись.',
   'anomaly.filesMore': 'и ещё {count}',
   'anomaly.held': 'Задание приостановлено',

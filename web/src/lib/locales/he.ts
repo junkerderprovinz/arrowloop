@@ -128,6 +128,8 @@ const he: Translations = {
   'anomaly.fig.limit': 'גבול',
   'anomaly.fig.listed': 'מדווחים',
   'anomaly.files': 'קבצים מושפעים',
+  'anomaly.showMore': 'הצג עוד',
+  'anomaly.showLess': 'הצג פחות',
   'anomaly.filesHint': 'הקבצים שההרצה הזו הייתה נוגעת בהם, בשמות שבהם הצד שהיה נכתב אליו מכנה אותם.',
   'anomaly.filesMore': 'ועוד {count}',
   'anomaly.held': 'המשימה מוחזקת',

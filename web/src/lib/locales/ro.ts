@@ -128,6 +128,8 @@ const ro: Translations = {
   'anomaly.fig.limit': 'Limită',
   'anomaly.fig.listed': 'Listate',
   'anomaly.files': 'Fișiere afectate',
+  'anomaly.showMore': 'Arată mai mult',
+  'anomaly.showLess': 'Arată mai puțin',
   'anomaly.filesHint': 'Fișierele pe care le-ar atinge această rulare, denumite așa cum le numește partea pe care s-ar scrie.',
   'anomaly.filesMore': 'și încă {count}',
   'anomaly.held': 'Sarcina este oprită',

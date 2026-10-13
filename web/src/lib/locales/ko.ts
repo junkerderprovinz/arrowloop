@@ -128,6 +128,8 @@ const ko: Translations = {
   'anomaly.fig.limit': '한도',
   'anomaly.fig.listed': '목록에 나온 수',
   'anomaly.files': '영향받는 파일',
+  'anomaly.showMore': '더 보기',
+  'anomaly.showLess': '간단히 보기',
   'anomaly.filesHint': '이 실행이 건드릴 파일이며, 쓰기가 일어날 쪽에서 부르는 이름으로 표시합니다.',
   'anomaly.filesMore': '외 {count}개',
   'anomaly.held': '작업이 보류되었습니다',

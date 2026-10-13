@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { FailureText } from './FailureText'
 import { Since } from './Since'
@@ -36,6 +36,10 @@ const EDGE: Record<Severity, string> = {
  * a brake counted, and the way out. Nothing opens over it. A held job is run
  * anyway or taken back, both of which ask first; a note is acknowledged or the
  * job is run.
+ *
+ * Every card starts at the height of the plainest one, its head, one sentence
+ * and its answers, so a list of them reads as one; a card with more to say
+ * opens in place.
  */
 export function FindingCard({
   finding: f,
@@ -58,10 +62,32 @@ export function FindingCard({
   const push = useToast()
   const openJob = useOpenJob()
   const [asking, setAsking] = useState<'run' | 'back' | null>(null)
+  // A card on its job's page stands alone and says everything at once.
+  const [expanded, setExpanded] = useState(onJobPage)
+  const said = useRef<HTMLParagraphElement>(null)
+  const toggle = useRef<HTMLButtonElement>(null)
+  // Whether the sentence is cut short, which is more to say on its own.
+  const [cut, setCut] = useState(false)
   const places: [string, string] = [t('side.left'), t('side.right')]
   const paths = (f.paths ?? []).slice(0, SHOWN_FILES)
-  const more = (f.count ?? 0) - paths.length
+  const unnamed = (f.count ?? 0) - paths.length
   const shown = figures(f, t)
+  const failure = f.kind === 'failing' && !!f.detail
+  const files = f.open && paths.length > 0
+
+  useLayoutEffect(() => {
+    const el = said.current
+    if (!el || expanded) return
+    const measure = () => setCut(el.scrollHeight > el.clientHeight + 1)
+    measure()
+    const watch = new ResizeObserver(measure)
+    watch.observe(el)
+    return () => watch.disconnect()
+  }, [expanded, f])
+  useEffect(() => {
+    toggle.current?.setAttribute('aria-expanded', String(expanded))
+  }, [expanded, cut])
+  const more = shown.length > 0 || failure || files || cut || expanded
 
   const answer = (how: 'run' | 'back') => {
     if (how === 'run') onAllowed?.(f.job)
@@ -172,41 +198,62 @@ export function FindingCard({
         </span>
       </div>
 
-      <p className="text-body text-carbon-text [overflow-wrap:anywhere]">{sentence(f, t, places)}</p>
+      {/* One line where there is room for the card to keep its height, two
+          on a phone, where a single line would say too little. */}
+      <p
+        ref={said}
+        className={`text-body text-carbon-text [overflow-wrap:anywhere] ${expanded ? '' : 'line-clamp-1 max-sm:line-clamp-2 max-sm:min-h-[2lh]'}`}
+      >
+        {sentence(f, t, places)}
+      </p>
 
-      {shown.length > 0 && (
-        <dl className="flex flex-wrap items-center gap-x-4 gap-y-1 text-subline">
-          {shown.map(([term, value]) => (
-            <div key={term} className="inline-flex items-baseline gap-1.5">
-              <dt className="text-carbon-textSub">{term}</dt>
-              <dd className="glim-num font-medium text-carbon-text">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
+      {expanded && (
+        <div className="flex flex-col gap-2">
+          {shown.length > 0 && (
+            <dl className="flex flex-wrap items-center gap-x-4 gap-y-1 text-subline">
+              {shown.map(([term, value]) => (
+                <div key={term} className="inline-flex items-baseline gap-1.5">
+                  <dt className="text-carbon-textSub">{term}</dt>
+                  <dd className="glim-num font-medium text-carbon-text">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
 
-      {/* What the last failure was about, which names the cause. */}
-      {f.kind === 'failing' && f.detail && <FailureText raw={f.detail} failure={f.failure} className="text-carbon-text" />}
+          {/* What the last failure was about, which names the cause. */}
+          {failure && f.detail && <FailureText raw={f.detail} failure={f.failure} className="text-carbon-text" />}
 
-      {f.open && paths.length > 0 && (
-        <section className="flex flex-col gap-1">
-          <h3 className="glim-eyebrow flex items-center gap-1.5">
-            {t('anomaly.files')}
-            <InfoBubble tip={t('anomaly.filesHint')} />
-          </h3>
-          <ul className="flex flex-col gap-0.5">
-            {paths.map((path) => (
-              <li key={path} dir="ltr" className="text-start font-mono text-subline text-carbon-text [overflow-wrap:anywhere]">
-                {path}
-              </li>
-            ))}
-            {more > 0 && <li className="text-subline text-carbon-textMuted">{t('anomaly.filesMore', { count: more })}</li>}
-          </ul>
-        </section>
+          {files && (
+            <section className="flex flex-col gap-1">
+              <h3 className="glim-eyebrow flex items-center gap-1.5">
+                {t('anomaly.files')}
+                <InfoBubble tip={t('anomaly.filesHint')} />
+              </h3>
+              <ul className="flex flex-col gap-0.5">
+                {paths.map((path) => (
+                  <li key={path} dir="ltr" className="text-start font-mono text-subline text-carbon-text [overflow-wrap:anywhere]">
+                    {path}
+                  </li>
+                ))}
+                {unnamed > 0 && <li className="text-subline text-carbon-textMuted">{t('anomaly.filesMore', { count: unnamed })}</li>}
+              </ul>
+            </section>
+          )}
+        </div>
       )}
 
       <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
-        <span className="flex flex-wrap items-center gap-2">{start}</span>
+        <span className="flex flex-wrap items-center gap-2">
+          {start}
+          {more && (
+            <Button
+              ref={toggle}
+              label={t(expanded ? 'anomaly.showLess' : 'anomaly.showMore')}
+              labelKey={expanded ? 'anomaly.showLess' : 'anomaly.showMore'}
+              onClick={() => setExpanded((was) => !was)}
+            />
+          )}
+        </span>
         <span className="flex flex-wrap items-center justify-end gap-2">
           {onJobPage ? end.filter((button) => button.key !== 'open') : end}
         </span>

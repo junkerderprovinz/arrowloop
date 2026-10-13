@@ -128,6 +128,8 @@ const pl: Translations = {
   'anomaly.fig.limit': 'Limit',
   'anomaly.fig.listed': 'Zgłoszone',
   'anomaly.files': 'Dotknięte pliki',
+  'anomaly.showMore': 'Pokaż więcej',
+  'anomaly.showLess': 'Pokaż mniej',
   'anomaly.filesHint': 'Pliki, których dotknąłby ten przebieg, nazwane tak, jak widzi je strona, na którą trafiłby zapis.',
   'anomaly.filesMore': 'i {count} więcej',
   'anomaly.held': 'Zadanie jest wstrzymane',

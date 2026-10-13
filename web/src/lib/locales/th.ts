@@ -128,6 +128,8 @@ const th: Translations = {
   'anomaly.fig.limit': 'เกณฑ์',
   'anomaly.fig.listed': 'ที่แสดง',
   'anomaly.files': 'ไฟล์ที่ได้รับผลกระทบ',
+  'anomaly.showMore': 'แสดงเพิ่มเติม',
+  'anomaly.showLess': 'แสดงน้อยลง',
   'anomaly.filesHint': 'ไฟล์ที่การทำงานนี้จะแตะต้อง โดยใช้ชื่อตามที่ฝั่งปลายทางที่จะถูกเขียนเรียก',
   'anomaly.filesMore': 'และอีก {count}',
   'anomaly.held': 'งานถูกพักไว้',

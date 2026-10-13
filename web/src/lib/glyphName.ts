@@ -27,6 +27,9 @@ const RULES: Rule[] = [
   [/^new\.go$/i, 'IconLink'],
   [/^new\.showAll$/i, 'IconEye'],
   [/^new\.markAll$/i, 'IconCheck'],
+  // A finding card opening and closing in place.
+  [/^anomaly\.showMore$/i, 'IconEye'],
+  [/^anomaly\.showLess$/i, 'IconEyeOff'],
 
   // A job's trash wears the trash page's own mark, not the pencil `edit.`
   // would give it. The duplicate search looks for something, so a menu that

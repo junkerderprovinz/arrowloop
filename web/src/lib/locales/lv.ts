@@ -128,6 +128,8 @@ const lv: Translations = {
   'anomaly.fig.limit': 'Robeža',
   'anomaly.fig.listed': 'Uzrādīti',
   'anomaly.files': 'Skartie faili',
+  'anomaly.showMore': 'Rādīt vairāk',
+  'anomaly.showLess': 'Rādīt mazāk',
   'anomaly.filesHint': 'Faili, kurus šī palaišana skartu, nosaukti tā, kā tos sauc puse, kurā rakstītu.',
   'anomaly.filesMore': 'un vēl {count}',
   'anomaly.held': 'Uzdevums ir apturēts',

@@ -128,6 +128,8 @@ const hi: Translations = {
   'anomaly.fig.limit': 'सीमा',
   'anomaly.fig.listed': 'बताई गई',
   'anomaly.files': 'प्रभावित फ़ाइलें',
+  'anomaly.showMore': 'और दिखाएँ',
+  'anomaly.showLess': 'कम दिखाएँ',
   'anomaly.filesHint': 'वे फ़ाइलें जिन्हें यह रन छूता, उसी नाम से जो लिखे जाने वाला पक्ष उन्हें देता है।',
   'anomaly.filesMore': 'और {count} अन्य',
   'anomaly.held': 'काम रोका गया है',

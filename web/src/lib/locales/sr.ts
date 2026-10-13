@@ -128,6 +128,8 @@ const sr: Translations = {
   'anomaly.fig.limit': 'Граница',
   'anomaly.fig.listed': 'Пријављено',
   'anomaly.files': 'Погођене датотеке',
+  'anomaly.showMore': 'Прикажи више',
+  'anomaly.showLess': 'Прикажи мање',
   'anomaly.filesHint': 'Датотеке којих би се ово извршавање дотакло, са именима какве има страна на коју би се писало.',
   'anomaly.filesMore': 'и још {count}',
   'anomaly.held': 'Посао је заустављен',

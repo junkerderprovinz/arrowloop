@@ -128,6 +128,8 @@ const cs: Translations = {
   'anomaly.fig.limit': 'Limit',
   'anomaly.fig.listed': 'Nahlášené',
   'anomaly.files': 'Dotčené soubory',
+  'anomaly.showMore': 'Zobrazit více',
+  'anomaly.showLess': 'Zobrazit méně',
   'anomaly.filesHint': 'Soubory, kterých by se tento běh dotkl, pojmenované tak, jak je nazývá strana, na kterou by se zapisovalo.',
   'anomaly.filesMore': 'a dalších {count}',
   'anomaly.held': 'Úloha je zastavená',

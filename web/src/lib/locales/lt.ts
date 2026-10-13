@@ -128,6 +128,8 @@ const lt: Translations = {
   'anomaly.fig.limit': 'Riba',
   'anomaly.fig.listed': 'Išvardyta',
   'anomaly.files': 'Paveikti failai',
+  'anomaly.showMore': 'Rodyti daugiau',
+  'anomaly.showLess': 'Rodyti mažiau',
   'anomaly.filesHint': 'Failai, kuriuos šis paleidimas paliestų, pavadinti taip, kaip juos vadina pusė, į kurią būtų rašoma.',
   'anomaly.filesMore': 'ir dar {count}',
   'anomaly.held': 'Užduotis sustabdyta',

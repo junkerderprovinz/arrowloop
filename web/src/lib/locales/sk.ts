@@ -128,6 +128,8 @@ const sk: Translations = {
   'anomaly.fig.limit': 'Limit',
   'anomaly.fig.listed': 'Nahlásené',
   'anomaly.files': 'Dotknuté súbory',
+  'anomaly.showMore': 'Zobraziť viac',
+  'anomaly.showLess': 'Zobraziť menej',
   'anomaly.filesHint': 'Súbory, ktorých by sa tento beh dotkol, pomenované tak, ako ich volá strana, na ktorú by sa zapisovalo.',
   'anomaly.filesMore': 'a ďalších {count}',
   'anomaly.held': 'Úloha je pozastavená',

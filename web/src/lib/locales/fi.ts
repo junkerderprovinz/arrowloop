@@ -128,6 +128,8 @@ const fi: Translations = {
   'anomaly.fig.limit': 'Raja',
   'anomaly.fig.listed': 'Listattu',
   'anomaly.files': 'Koskevat tiedostot',
+  'anomaly.showMore': 'Näytä lisää',
+  'anomaly.showLess': 'Näytä vähemmän',
   'anomaly.filesHint': 'Tiedostot, joihin tämä ajo koskisi, nimettynä niin kuin kirjoituksen kohteena oleva puoli ne nimeää.',
   'anomaly.filesMore': 'ja {count} muuta',
   'anomaly.held': 'Työ on pysäytetty',

@@ -128,6 +128,8 @@ const pt: Translations = {
   'anomaly.fig.limit': 'Limite',
   'anomaly.fig.listed': 'Listados',
   'anomaly.files': 'Ficheiros afetados',
+  'anomaly.showMore': 'Mostrar mais',
+  'anomaly.showLess': 'Mostrar menos',
   'anomaly.filesHint': 'Os ficheiros que esta execução tocaria, com o nome que lhes dá o lado onde se escreveria.',
   'anomaly.filesMore': 'e mais {count}',
   'anomaly.held': 'A tarefa está retida',

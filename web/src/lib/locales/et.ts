@@ -128,6 +128,8 @@ const et: Translations = {
   'anomaly.fig.limit': 'Piir',
   'anomaly.fig.listed': 'Teatatud',
   'anomaly.files': 'Mõjutatud failid',
+  'anomaly.showMore': 'Näita rohkem',
+  'anomaly.showLess': 'Näita vähem',
   'anomaly.filesHint': 'Failid, mida see käivitus puudutaks, nimedega, nagu neid kutsub pool, kuhu kirjutataks.',
   'anomaly.filesMore': 'ja veel {count}',
   'anomaly.held': 'Töö on peatatud',

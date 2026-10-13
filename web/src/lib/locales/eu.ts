@@ -128,6 +128,8 @@ const eu: Translations = {
   'anomaly.fig.limit': 'Muga',
   'anomaly.fig.listed': 'Zerrendatuak',
   'anomaly.files': 'Eragindako fitxategiak',
+  'anomaly.showMore': 'Erakutsi gehiago',
+  'anomaly.showLess': 'Erakutsi gutxiago',
   'anomaly.filesHint': 'Exekuzio honek ukituko lituzkeen fitxategiak, idatziko litzaien aldeak deitzen dien bezala izendatuta.',
   'anomaly.filesMore': 'eta beste {count}',
   'anomaly.held': 'Lana geldituta dago',

@@ -128,6 +128,8 @@ const gl: Translations = {
   'anomaly.fig.limit': 'Límite',
   'anomaly.fig.listed': 'Indicados',
   'anomaly.files': 'Ficheiros afectados',
+  'anomaly.showMore': 'Amosar máis',
+  'anomaly.showLess': 'Amosar menos',
   'anomaly.filesHint': 'Os ficheiros que esta execución tocaría, co nome que lles dá o lado no que se escribiría.',
   'anomaly.filesMore': 'e {count} máis',
   'anomaly.held': 'A tarefa está retida',

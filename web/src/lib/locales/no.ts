@@ -128,6 +128,8 @@ const no: Translations = {
   'anomaly.fig.limit': 'Grense',
   'anomaly.fig.listed': 'Meldt',
   'anomaly.files': 'Berørte filer',
+  'anomaly.showMore': 'Vis mer',
+  'anomaly.showLess': 'Vis mindre',
   'anomaly.filesHint': 'Filene denne kjøringen ville berørt, navngitt slik siden det skrives til kaller dem.',
   'anomaly.filesMore': 'og {count} til',
   'anomaly.held': 'Jobben er holdt tilbake',

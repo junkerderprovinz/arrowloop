@@ -128,6 +128,8 @@ const tr: Translations = {
   'anomaly.fig.limit': 'Sınır',
   'anomaly.fig.listed': 'Bildirilen',
   'anomaly.files': 'Etkilenen dosyalar',
+  'anomaly.showMore': 'Daha fazla göster',
+  'anomaly.showLess': 'Daha az göster',
   'anomaly.filesHint': 'Bu çalıştırmanın dokunacağı dosyalar, yazılacak tarafın onlara verdiği adlarla.',
   'anomaly.filesMore': 've {count} tane daha',
   'anomaly.held': 'İş durduruldu',

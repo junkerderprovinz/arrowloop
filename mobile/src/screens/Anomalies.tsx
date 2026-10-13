@@ -254,7 +254,8 @@ function Tiles({
  * the files a brake counted, and the way out. A held job has two answers, run
  * or take back, with the one usually meant last; a note is acknowledged or the
  * job is run. Every button is quiet, since a button inside a card is never the
- * screen's accent.
+ * screen's accent. Every card starts at the height of the plainest one, and a
+ * card with more to say opens in place.
  */
 function FindingCard({
   finding: f,
@@ -275,7 +276,13 @@ function FindingCard({
   const { p } = useTheme();
   const edge: Record<Severity, string> = { critical: p.failSolid, warning: p.warnSolid, info: p.surface3 };
   const paths = (f.paths ?? []).slice(0, SHOWN_FILES);
-  const more = (f.count ?? 0) - paths.length;
+  const unnamed = (f.count ?? 0) - paths.length;
+  const shown = figures(f, t);
+  const failed = f.kind === "failing" && !!f.detail;
+  const [expanded, setExpanded] = useState(false);
+  // Whether the sentence runs past two lines, which is more to say on its own.
+  const [cut, setCut] = useState(false);
+  const more = shown.length > 0 || failed || paths.length > 0 || cut;
 
   const open = <Button key="open" label={t("anomaly.openJob")} labelKey="anomaly.openJob" onPress={onOpenJob} />;
   let answers;
@@ -314,22 +321,42 @@ function FindingCard({
       <Caption>
         {`${t(`anomaly.kind.${f.kind}`)} · ${t("anomaly.sinceLabel")} ${clock(f.since, lang)}`}
       </Caption>
-      <Body>{sentence(f, t, places)}</Body>
-      {figures(f, t).map(([term, value]) => (
-        <Pair key={term} label={term} value={value} />
-      ))}
-      {/* What the last failure was about, which names the cause. */}
-      {f.kind === "failing" && f.detail ? <Failed raw={f.detail} failure={f.failure} /> : null}
-      {paths.length > 0 ? (
-        <View style={styles.files}>
-          <AxisLabel hint={t("anomaly.filesHint")}>{t("anomaly.files")}</AxisLabel>
-          {paths.map((path) => (
-            <Mono key={path}>{path}</Mono>
+      <Body
+        lines={expanded ? undefined : 2}
+        onTextLayout={(e) => {
+          if (!expanded && e.nativeEvent.lines.length > 2) setCut(true);
+        }}
+      >
+        {sentence(f, t, places)}
+      </Body>
+      {expanded ? (
+        <>
+          {shown.map(([term, value]) => (
+            <Pair key={term} label={term} value={value} />
           ))}
-          {more > 0 ? <Caption>{t("anomaly.filesMore", { count: more })}</Caption> : null}
-        </View>
+          {/* What the last failure was about, which names the cause. */}
+          {failed && f.detail ? <Failed raw={f.detail} failure={f.failure} /> : null}
+          {paths.length > 0 ? (
+            <View style={styles.files}>
+              <AxisLabel hint={t("anomaly.filesHint")}>{t("anomaly.files")}</AxisLabel>
+              {paths.map((path) => (
+                <Mono key={path}>{path}</Mono>
+              ))}
+              {unnamed > 0 ? <Caption>{t("anomaly.filesMore", { count: unnamed })}</Caption> : null}
+            </View>
+          ) : null}
+        </>
       ) : null}
-      <View style={styles.answers}>{answers}</View>
+      <View style={styles.answers}>
+        {more ? (
+          <Button
+            label={t(expanded ? "anomaly.showLess" : "anomaly.showMore")}
+            labelKey={expanded ? "anomaly.showLess" : "anomaly.showMore"}
+            onPress={() => setExpanded((was) => !was)}
+          />
+        ) : null}
+        {answers}
+      </View>
       <View style={styles.hints}>
         {f.held ? (
           <InfoBubble tip={`${t("anomaly.run")}: ${t("anomaly.runHint")}\n\n${t("anomaly.restore")}: ${t("anomaly.restoreHint")}`} />

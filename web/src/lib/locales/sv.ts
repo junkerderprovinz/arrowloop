@@ -128,6 +128,8 @@ const sv: Translations = {
   'anomaly.fig.limit': 'Gräns',
   'anomaly.fig.listed': 'Redovisade',
   'anomaly.files': 'Berörda filer',
+  'anomaly.showMore': 'Visa mer',
+  'anomaly.showLess': 'Visa mindre',
   'anomaly.filesHint': 'Filerna som den här körningen skulle röra, med de namn som sidan de skulle skrivas till använder.',
   'anomaly.filesMore': 'och {count} till',
   'anomaly.held': 'Jobbet är stoppat',

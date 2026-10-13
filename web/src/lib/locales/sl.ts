@@ -128,6 +128,8 @@ const sl: Translations = {
   'anomaly.fig.limit': 'Meja',
   'anomaly.fig.listed': 'Javljeno',
   'anomaly.files': 'Prizadete datoteke',
+  'anomaly.showMore': 'Prikaži več',
+  'anomaly.showLess': 'Prikaži manj',
   'anomaly.filesHint': 'Datoteke, ki se jih ta zagon dotakne, z imeni, kot jih ima stran, na katero bi se pisalo.',
   'anomaly.filesMore': 'in še {count}',
   'anomaly.held': 'Opravilo je zadržano',

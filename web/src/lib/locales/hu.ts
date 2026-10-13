@@ -128,6 +128,8 @@ const hu: Translations = {
   'anomaly.fig.limit': 'Korlát',
   'anomaly.fig.listed': 'Listázott',
   'anomaly.files': 'Érintett fájlok',
+  'anomaly.showMore': 'Több megjelenítése',
+  'anomaly.showLess': 'Kevesebb megjelenítése',
   'anomaly.filesHint': 'A fájlok, amelyeket ez a futás érintene, úgy elnevezve, ahogy az az oldal hívja őket, amelyre írna.',
   'anomaly.filesMore': 'és még {count}',
   'anomaly.held': 'A feladat fel van függesztve',

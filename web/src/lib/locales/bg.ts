@@ -128,6 +128,8 @@ const bg: Translations = {
   'anomaly.fig.limit': 'Граница',
   'anomaly.fig.listed': 'Показани',
   'anomaly.files': 'Засегнати файлове',
+  'anomaly.showMore': 'Покажи повече',
+  'anomaly.showLess': 'Покажи по-малко',
   'anomaly.filesHint': 'Файловете, които това изпълнение би докоснало, с имената от страната, върху която би се записвало.',
   'anomaly.filesMore': 'и още {count}',
   'anomaly.held': 'Задачата е спряна',

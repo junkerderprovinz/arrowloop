@@ -128,6 +128,8 @@ const zh: Translations = {
   'anomaly.fig.limit': '上限',
   'anomaly.fig.listed': '已列出',
   'anomaly.files': '受影响的文件',
+  'anomaly.showMore': '显示更多',
+  'anomaly.showLess': '收起',
   'anomaly.filesHint': '这次运行会动到的文件，名称按将被写入的一侧的叫法显示。',
   'anomaly.filesMore': '以及另外 {count} 个',
   'anomaly.held': '任务已暂扣',

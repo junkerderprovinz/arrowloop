@@ -128,6 +128,8 @@ const uk: Translations = {
   'anomaly.fig.limit': 'Межа',
   'anomaly.fig.listed': 'Повідомлено',
   'anomaly.files': 'Зачеплені файли',
+  'anomaly.showMore': 'Показати більше',
+  'anomaly.showLess': 'Показати менше',
   'anomaly.filesHint': 'Файли, яких торкнувся б цей запуск, з іменами, як їх називає бік, на який відбувався б запис.',
   'anomaly.filesMore': 'і ще {count}',
   'anomaly.held': 'Завдання призупинено',

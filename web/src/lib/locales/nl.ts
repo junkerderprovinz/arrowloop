@@ -128,6 +128,8 @@ const nl: Translations = {
   'anomaly.fig.limit': 'Limiet',
   'anomaly.fig.listed': 'Gemeld',
   'anomaly.files': 'Betrokken bestanden',
+  'anomaly.showMore': 'Meer tonen',
+  'anomaly.showLess': 'Minder tonen',
   'anomaly.filesHint': 'De bestanden die deze run zou aanraken, genoemd zoals de kant waarnaar geschreven wordt ze noemt.',
   'anomaly.filesMore': 'en nog {count}',
   'anomaly.held': 'De taak is vastgehouden',

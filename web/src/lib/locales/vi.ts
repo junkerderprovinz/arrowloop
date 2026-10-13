@@ -128,6 +128,8 @@ const vi: Translations = {
   'anomaly.fig.limit': 'Ngưỡng',
   'anomaly.fig.listed': 'Đã báo',
   'anomaly.files': 'Tệp bị ảnh hưởng',
+  'anomaly.showMore': 'Hiện thêm',
+  'anomaly.showLess': 'Thu gọn',
   'anomaly.filesHint': 'Các tệp mà lần chạy này sẽ đụng tới, gọi theo tên ở phía sẽ bị ghi.',
   'anomaly.filesMore': 'và {count} tệp nữa',
   'anomaly.held': 'Công việc đang bị giữ lại',
