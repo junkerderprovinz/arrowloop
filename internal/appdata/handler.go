@@ -94,7 +94,17 @@ func (h *handler) Fileread(r *sftp.Request) (io.ReaderAt, error) {
 	if err != nil {
 		return nil, err
 	}
+	if isLink(p) {
+		return nil, errDenied
+	}
 	return os.OpenFile(p, os.O_RDONLY|noFollow, 0)
+}
+
+// isLink reports whether p is a symlink. noFollow closes the gap between this
+// check and the open where the system has O_NOFOLLOW; Windows does not.
+func isLink(p string) bool {
+	info, err := os.Lstat(p)
+	return err == nil && info.Mode()&fs.ModeSymlink != 0
 }
 
 func (h *handler) Filewrite(r *sftp.Request) (io.WriterAt, error) {
@@ -129,7 +139,10 @@ func (h *handler) open(r *sftp.Request, mode int) (*os.File, error) {
 	if flags.Append {
 		mode |= os.O_APPEND
 	}
-	_, statErr := os.Lstat(p)
+	info, statErr := os.Lstat(p)
+	if statErr == nil && info.Mode()&fs.ModeSymlink != 0 {
+		return nil, errDenied
+	}
 	created := errors.Is(statErr, fs.ErrNotExist)
 	f, err := os.OpenFile(p, mode, 0o660)
 	if err != nil {
