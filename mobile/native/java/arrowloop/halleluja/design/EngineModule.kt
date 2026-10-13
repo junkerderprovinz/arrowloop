@@ -119,6 +119,31 @@ class EngineModule(private val context: ReactApplicationContext) :
         Thread { promise.resolve(Engine.token(context)) }.start()
     }
 
+    /**
+     * Reports how Android/data stands, under the names src/engine.ts uses,
+     * and starts its server first if it is switched on and not up yet.
+     */
+    @ReactMethod
+    fun appData(promise: Promise) = slowly(promise) { AppData.settle(context).js }
+
+    @ReactMethod
+    fun setAppData(on: Boolean, promise: Promise) = slowly(promise) { AppData.setEnabled(context, on).js }
+
+    /** Resolves once the person has answered Shizuku's dialog. */
+    @ReactMethod
+    fun askShizuku(promise: Promise) = AppData.askShizuku(context) { promise.resolve(it.js) }
+
+    /** Runs work on a thread of its own, since su and Shizuku can take seconds. */
+    private fun slowly(promise: Promise, work: () -> String) {
+        Thread {
+            try {
+                promise.resolve(work())
+            } catch (e: Exception) {
+                promise.reject("appData", e.message, e)
+            }
+        }.start()
+    }
+
     @ReactMethod
     fun storageGranted(promise: Promise) = promise.resolve(Storage.granted(context))
 
