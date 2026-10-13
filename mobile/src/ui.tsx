@@ -1059,7 +1059,9 @@ export function Choice<T extends string>({
 }: {
   /**
    * `hint` puts an (i) in its segment that explains that one option. `mark`
-   * is drawn in place of the label, which is then only read out.
+   * is drawn in place of the label, which is then only read out. `glyph`
+   * names a glyph that stands beside the label or for it, as the label
+   * setting says, like a button's.
    */
   options: {
     value: T;
@@ -1067,6 +1069,7 @@ export function Choice<T extends string>({
     colour?: string;
     hint?: string;
     mark?: (ink: string) => ReactNode;
+    glyph?: string;
   }[];
   value: T;
   onChange: (next: T) => void;
@@ -1111,14 +1114,16 @@ function Segment({
   fill,
   onPress,
 }: {
-  option: { label: string; hint?: string; mark?: (ink: string) => ReactNode };
+  option: { label: string; hint?: string; mark?: (ink: string) => ReactNode; glyph?: string };
   on: boolean;
   fill: string;
   onPress: () => void;
 }) {
-  const { p, corners } = useTheme();
+  const { p, corners, labels } = useTheme();
   const press = usePress();
   const ink = on ? contrastOn(fill) : p.textSub;
+  const glyph = option.glyph && labels !== "text" ? <Glyph name={option.glyph} color={ink} /> : null;
+  const word = !option.mark && (!glyph || labels !== "glyph");
   return (
     <AnimatedPressable
       onPress={onPress}
@@ -1126,18 +1131,17 @@ function Segment({
       onPressOut={press.onPressOut}
       accessibilityRole="button"
       accessibilityState={{ selected: on }}
-      accessibilityLabel={option.mark ? option.label : undefined}
+      accessibilityLabel={word ? undefined : option.label}
       style={[
         styles.segment,
-        option.hint ? styles.segmentRow : null,
+        option.hint || (glyph && word) ? styles.segmentRow : null,
         corners.pill,
         on ? { backgroundColor: fill } : null,
         { opacity: press.dim, transform: [{ scale: press.scale }] },
       ]}
     >
-      {option.mark ? (
-        option.mark(ink)
-      ) : (
+      {option.mark ? option.mark(ink) : glyph}
+      {word ? (
         <Text
           numberOfLines={1}
           // Shrinks rather than truncates with an ellipsis, down to 0.7;
@@ -1148,7 +1152,7 @@ function Segment({
         >
           {option.label}
         </Text>
-      )}
+      ) : null}
       {/* Its own press target, so reading it does not choose it. */}
       {option.hint ? <InfoBubble tip={option.hint} on={on ? ink : undefined} /> : null}
     </AnimatedPressable>

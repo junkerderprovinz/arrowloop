@@ -4,6 +4,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { hueVars } from '../lib/appearance'
 import { groupStage } from '../lib/controls'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
+import { useLabelMode } from '../lib/glimstone/useLabelMode'
 import { perRowFor } from '../lib/segmentLayout'
 import { useRainbow } from './Shell'
 
@@ -163,6 +164,9 @@ export function Selector<T extends string>({
   // Every segment reads a rainbow position, so the strip repaints when the
   // mode changes.
   useRainbow()
+  // In glyph mode a segment with a glyph shows no words, so its name moves
+  // into the hover bubble. Reactive brings the words back on hover itself.
+  const glyphOnly = useLabelMode('tabs') === 'glyph'
 
   return (
     <div
@@ -189,6 +193,7 @@ export function Selector<T extends string>({
             data-segment
             role="tab"
             aria-selected={active}
+            data-tip={glyphOnly && o.icon ? o.label : undefined}
             onClick={() => onChange(o.value)}
             style={{
               // Each segment takes its own palette position. It sits on the

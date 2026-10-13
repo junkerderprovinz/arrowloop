@@ -41,6 +41,7 @@ import { storedLook, storedSlots, storeSlots } from './lib/look'
 import { applyDisco } from './lib/disco'
 import { getDisco, setDisco } from './lib/discoSetting'
 import { BOTTOM_BAR_AXIS, CONTROL_AXES, getLabelMode, setLabelMode, type LabelAxis, type LabelMode } from './lib/controls'
+import { labelModeChanged } from './lib/glimstone/useLabelMode'
 import { useT } from './lib/i18n'
 import { getMotion, setMotion, type MotionIntensity } from './lib/motion'
 import type { NavCounts } from './lib/navModel'
@@ -418,6 +419,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     onLabels: (axis, next) => {
       setLabelMode(axis, next)
       setLabels((prev) => ({ ...prev, [axis]: next }))
+      // Buttons and strips read the mode themselves rather than through props.
+      labelModeChanged()
     },
     lang,
     onLang: setLanguage,

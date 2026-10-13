@@ -6,7 +6,7 @@ import { IconAction } from '../components/IconAction'
 import { JobChip } from '../components/JobChip'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
-import { IconHistory, IconTrash } from '../components/glyphs'
+import { IconTrash } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
@@ -178,7 +178,7 @@ export function Trash({
           <PageAction
             label={t('trash.prune')}
             labelKey="trash.prune"
-            glyph={<IconHistory />}
+            glyph={<IconTrash />}
             title={t('trash.pruneHint')}
             disabled={busy || totals.entries === 0}
             onClick={() => setPending({ kind: 'prune', sides: full })}

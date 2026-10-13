@@ -235,7 +235,7 @@ function JobCard({
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           <span className="flex min-w-0 flex-1 basis-72 items-center gap-4">
             <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
-              <DirectionGlyph direction={job.direction} />
+              <DirectionGlyph direction={job.direction} flowing={job.running} />
             </span>
             <span className="flex min-w-0 flex-1 flex-col gap-0.5 text-subline text-carbon-textSub">
               <span className="flex min-w-0 flex-wrap items-center gap-x-2">

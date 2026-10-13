@@ -354,9 +354,9 @@ export function Settings() {
           value={look.theme}
           onChange={(theme) => setAppearance({ theme })}
           options={[
-            { value: "dark", label: t("look.dark") },
-            { value: "light", label: t("look.light") },
-            { value: "system", label: t("phone.system") },
+            { value: "dark", label: t("look.dark"), glyph: "IconMoon" },
+            { value: "light", label: t("look.light"), glyph: "IconSun" },
+            { value: "system", label: t("phone.system"), glyph: "IconThemeSystem" },
           ]}
         />
 
@@ -369,10 +369,10 @@ export function Settings() {
             leaf.tap(shape);
           }}
           options={[
-            { value: "round", label: t("look.round") },
-            { value: "soft", label: t("look.soft") },
-            { value: "square", label: t("look.square") },
-            ...(leaf.offered ? [{ value: "leaf" as Shape, label: t("look.leaf") }] : []),
+            { value: "round", label: t("look.round"), glyph: "IconCornerRound" },
+            { value: "soft", label: t("look.soft"), glyph: "IconCornerSoft" },
+            { value: "square", label: t("look.square"), glyph: "IconCornerSquare" },
+            ...(leaf.offered ? [{ value: "leaf" as Shape, label: t("look.leaf"), glyph: "IconCornerLeaf" }] : []),
           ]}
         />
 
@@ -542,10 +542,10 @@ export function Settings() {
             storm.tap(motion);
           }}
           options={[
-            { value: "off", label: t("look.motionOff") },
-            { value: "subtle", label: t("look.motionSubtle") },
-            { value: "wild", label: t("look.motionWild") },
-            ...(storm.offered ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm") }] : []),
+            { value: "off", label: t("look.motionOff"), glyph: "IconMotionOff" },
+            { value: "subtle", label: t("look.motionSubtle"), glyph: "IconMotionSubtle" },
+            { value: "wild", label: t("look.motionWild"), glyph: "IconMotionWild" },
+            ...(storm.offered ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm"), glyph: "IconMotionStorm" }] : []),
           ]}
         />
       </Section>
