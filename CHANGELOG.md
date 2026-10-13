@@ -8,7 +8,7 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## 2.1.0 - 2026-10-13
+## 2.1.0 - 2026-10-14
 
 ## ✨ Added
 
@@ -16,7 +16,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **The phone's Appearance card puts Labels and Bottom bar before the colours.** Colour Rotation, Disco and the colour palette appear only while Rainbow Mode is on, instead of standing there dimmed.
+- **The phone's Appearance card puts Labels and Bottom bar before the colours.** Colour Rotation and the colour palette appear only while Rainbow Mode is on, instead of standing there dimmed.
 - **Global sync settings is one wide button** on the phone's Sync card, in place of a row with an Open button.
 - **The store shows eight screenshots instead of six**, now with the Overview and Conflicts, and the store and README pictures show the 2.0 interface.
 
