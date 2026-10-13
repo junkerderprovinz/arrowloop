@@ -325,8 +325,10 @@ has an address of its own, such as `/settings/sync`. An older address such as
 - **Sync**: the global sync settings every job starts from, transfer, what gets
   carried, retries and the shared exclude lists.
 - **Safety net**: the two brakes, the anomaly notes with their switch, and the
-  notifications by Matrix and webhook. A saved secret shows as **Saved** with
-  **Change** beside it.
+  notifications: when they go out, then a webhook (generic, Discord, Slack,
+  Gotify or ntfy), Matrix, email, Apprise and Healthchecks.io, each with its
+  switch and **Send a test**. A saved secret shows as **Saved** with
+  **Change** beside it; see [Notifications](configuration.md#notifications).
 - **Targets**: the storage targets and drives; see [Drives](#drives).
 - **Security**: password, two-factor authentication and passkeys. The desktop
   app has no such tile, since nobody else reaches its window.

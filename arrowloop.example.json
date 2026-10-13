@@ -2,12 +2,30 @@
   "bwlimit": "08:00,512k 19:00,off",
   "parallelJobs": 1,
   "notify": {
+    "on": "failure",
     "matrix": {
       "homeserver": "https://matrix.example.org",
       "room": "!abcdefghijklmnop:example.org",
       "token": "syt_put_an_access_token_here"
     },
-    "onSuccess": false
+    "webhook": "https://ntfy.sh/put-your-topic-here",
+    "webhookFormat": "ntfy",
+    "smtp": {
+      "enabled": false,
+      "host": "mail.example.org",
+      "port": 587,
+      "tls": "starttls",
+      "username": "arrowloop",
+      "password": "put-the-mail-password-here",
+      "from": "arrowloop@example.org",
+      "to": "me@example.org"
+    },
+    "healthchecks": {
+      "url": "https://hc-ping.com/put-a-check-uuid-here",
+      "jobs": {
+        "photos": "https://hc-ping.com/put-another-check-uuid-here"
+      }
+    }
   },
   "defaults": {
     "quietPeriod": "5s",
