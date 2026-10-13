@@ -9,6 +9,7 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { conflictKey, decisionsByJob, newerSide } from "../../../web/src/lib/conflicts";
+import { failureLine, type Failure } from "../../../web/src/lib/failure";
 import { AxisLabel, Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair } from "../ui";
 import { useWaiting } from "../waiting";
 
@@ -46,7 +47,7 @@ export function Conflicts() {
   const [list, setList] = useState<OpenConflict[] | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [remotes, setRemotes] = useState<Remote[]>([]);
-  const [unread, setUnread] = useState<{ job: string; error: string }[]>([]);
+  const [unread, setUnread] = useState<{ job: string; error: string; failure?: Failure }[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const waiting = useWaiting();
@@ -126,7 +127,7 @@ export function Conflicts() {
       })}
 
       {unread.map((u) => (
-        <Caption key={u.job}>{t("conflicts.unread", { job: u.job, error: u.error })}</Caption>
+        <Caption key={u.job}>{t("conflicts.unread", { job: u.job, error: failureLine(u.error, u.failure, t, lang) })}</Caption>
       ))}
       {error ? <Body>{error}</Body> : null}
 

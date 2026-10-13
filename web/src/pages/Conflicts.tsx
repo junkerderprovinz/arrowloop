@@ -13,6 +13,7 @@ import { ApiError, api, type ConflictListing, type Job, type OpenConflict, type 
 import { bytes } from '../lib/bytes'
 import { conflictKey, decisionsByJob, newerSide } from '../lib/conflicts'
 import { sideName } from '../lib/entryLabel'
+import { failureLine } from '../lib/failure'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { useLive } from '../lib/live'
 import { usePlaces } from '../lib/places'
@@ -54,7 +55,7 @@ export function Conflicts({
   /** Asks for a job's conflicts and trash again after something was decided. */
   onChanged: (job: string) => void
 }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const push = useToast()
   const live = useLive()
   const [busy, setBusy] = useState<Set<string>>(new Set())
@@ -123,7 +124,7 @@ export function Conflicts({
 
       {unread.map((u, i) => (
         <Card key={u.job} title={u.job} hueIndex={groups.length + i}>
-          <p className="text-subline text-statusFail [overflow-wrap:anywhere]">{t('conflicts.unread', { job: u.job, error: u.error })}</p>
+          <p className="text-subline text-statusFail [overflow-wrap:anywhere]">{t('conflicts.unread', { job: u.job, error: failureLine(u.error, u.failure, t, lang) })}</p>
         </Card>
       ))}
 

@@ -466,6 +466,8 @@ export type TrashSide = TrashListing & {
   bytes: number
   /** Why the side could not be read, such as a drive that is not attached. */
   error?: string
+  /** The kind of failure the engine read from `error`, where it knows one. */
+  failure?: Failure
 }
 
 /**
@@ -489,7 +491,7 @@ export type OpenConflict = {
 export type ConflictListing = {
   conflicts: OpenConflict[]
   /** Jobs whose conflicts could not be read right now, and why. */
-  unread: { job: string; error: string }[]
+  unread: { job: string; error: string; failure?: Failure }[]
 }
 
 export type RunEvent = {

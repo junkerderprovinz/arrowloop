@@ -6,6 +6,7 @@ import { jobSides } from "../sides";
 import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
+import { failureLine } from "../../../web/src/lib/failure";
 import { trashTotals } from "../../../web/src/lib/trashView";
 import { Body, Button, Caption, Card, Empty, Fab, Floating, Mono, Page, PickRow, Title } from "../ui";
 
@@ -20,7 +21,7 @@ function itemKey(bin: TrashSide, item: TrashItem): string {
  * Emptying all of it is the screen's floating button, as on the web's page.
  */
 export function TrashAll() {
-  const { t } = useT();
+  const { t, lang } = useT();
   const [bins, setBins] = useState<TrashSide[] | null>(null);
   // For the name of each side, which a bin only knows as left or right.
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -89,7 +90,7 @@ export function TrashAll() {
             <Card key={`${bin.job}/${bin.side}`}>
               <Title>{`${bin.job} · ${place}`}</Title>
               {bin.error ? (
-                <Caption>{t("trash.unread", { error: bin.error })}</Caption>
+                <Caption>{t("trash.unread", { error: failureLine(bin.error, bin.failure, t, lang) })}</Caption>
               ) : (
                 <>
                   <Caption>{t("trash.holding", { count: bin.total, size: bytes(bin.bytes) })}</Caption>

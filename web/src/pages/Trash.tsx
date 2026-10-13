@@ -15,6 +15,7 @@ import { byJob, trashTotals } from '../lib/trashView'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { useToast } from '../lib/toast'
 import { errorText } from '../lib/errorText'
+import { failureLine } from '../lib/failure'
 
 /** What a confirmation is about to remove for good. */
 type Pending =
@@ -238,7 +239,7 @@ function SideList({
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
 }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   return (
     <section className="flex flex-col gap-1">
       <div className="glim-row flex min-h-9 items-center gap-3">
@@ -256,7 +257,7 @@ function SideList({
       </div>
 
       {side.error ? (
-        <p className="text-subline text-statusFail">{t('trash.unread', { error: side.error })}</p>
+        <p className="text-subline text-statusFail">{t('trash.unread', { error: failureLine(side.error, side.failure, t, lang) })}</p>
       ) : (
         <Rows className="-mx-2 flex flex-col">
           {side.entries.map((e) => (

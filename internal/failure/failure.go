@@ -32,14 +32,15 @@ const (
 	AfterFailed      = "afterFailed"
 )
 
-// The sentences the engine composes itself, in internal/daemon and
-// internal/precheck. failure_test.go builds them from there, so a change to one
-// of them fails a test instead of turning its failures back into English. Each
-// may follow a job's name or a finding's own words, as in a notification.
+// The sentences the engine composes itself, in internal/daemon,
+// internal/precheck and the trash listing of internal/web. Their tests build
+// them from there, so a change to one of them fails a test instead of turning
+// its failures back into English. Each may follow a job's name or a finding's
+// own words, as in a notification.
 var (
 	space  = regexp.MustCompile(`not enough room on the destination: the (left|right) side reports (\d+) bytes free and this job would write at least (\d+)`)
-	volume = regexp.MustCompile(`the volume this job points at is not attached: (left|right) side`)
-	side   = regexp.MustCompile(`(?:^|: )(left|right) side "(?:[^"\\]|\\.)*": `)
+	volume = regexp.MustCompile(`the volume this job points at is not attached: (left|right) side|the drive the (left|right) side lives on is not attached`)
+	side   = regexp.MustCompile(`(?:^|: )(?:the )?(left|right) side (?:"(?:[^"\\]|\\.)*"|could not be opened): `)
 	hook   = regexp.MustCompile(`(?:^|: )the command (before|after) the run failed(?:, so the run did not start)?: `)
 )
 
@@ -84,7 +85,7 @@ func Of(text string) *Failure {
 		return &Failure{Code: NotEnoughSpace, Params: map[string]string{"side": m[1], "free": m[2], "needed": m[3]}}
 	}
 	if m := volume.FindStringSubmatch(text); m != nil {
-		return &Failure{Code: VolumeMissing, Params: map[string]string{"side": m[1]}}
+		return &Failure{Code: VolumeMissing, Params: map[string]string{"side": m[1] + m[2]}}
 	}
 	if m := hook.FindStringSubmatchIndex(text); m != nil {
 		code := BeforeFailed

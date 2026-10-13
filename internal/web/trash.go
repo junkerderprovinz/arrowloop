@@ -16,6 +16,7 @@ import (
 
 	rclonefs "github.com/rclone/rclone/fs"
 
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/trash"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -117,10 +118,12 @@ func answerOf(name, side string, store trash.Store, entries []trash.Entry, limit
 }
 
 // sideTrash is one side of one job in the listing across every job. A side
-// that cannot be read carries the reason instead of failing the rest.
+// that cannot be read carries the reason instead of failing the rest, with the
+// kind of failure where the reason names one.
 type sideTrash struct {
 	keptAnswer
-	Error string `json:"error,omitempty"`
+	Error   string           `json:"error,omitempty"`
+	Failure *failure.Failure `json:"failure,omitempty"`
 }
 
 // listAllTrash reads the trash of every job's two sides, or of the one job
@@ -147,12 +150,12 @@ func (s *Server) listAllTrash(w http.ResponseWriter, r *http.Request) {
 			defer wg.Done()
 			f, _, err := s.sideOf(r.Context(), at.Job, at.Side)
 			if err != nil {
-				at.Error = err.Error()
+				at.Error, at.Failure = err.Error(), failure.Of(err.Error())
 				return
 			}
 			entries, err := trash.List(r.Context(), f, trash.Trash)
 			if err != nil {
-				at.Error = err.Error()
+				at.Error, at.Failure = err.Error(), failure.Of(err.Error())
 				return
 			}
 			at.keptAnswer = answerOf(at.Job, at.Side, trash.Trash, entries, limit)

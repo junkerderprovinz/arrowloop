@@ -10,6 +10,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
@@ -30,8 +31,9 @@ type conflictView struct {
 }
 
 type unreadView struct {
-	Job   string `json:"job"`
-	Error string `json:"error"`
+	Job     string           `json:"job"`
+	Error   string           `json:"error"`
+	Failure *failure.Failure `json:"failure,omitempty"`
 }
 
 func versionView(v apply.Version) sideView {
@@ -55,7 +57,7 @@ func (s *Server) listConflicts(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	for _, u := range unread {
-		out.Unread = append(out.Unread, unreadView{Job: u.Job, Error: u.Err.Error()})
+		out.Unread = append(out.Unread, unreadView{Job: u.Job, Error: u.Err.Error(), Failure: failure.Of(u.Err.Error())})
 	}
 	writeJSON(w, http.StatusOK, out)
 }

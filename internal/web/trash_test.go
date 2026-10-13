@@ -85,6 +85,12 @@ func TestASideThatCannotBeOpenedStillListsNoEntries(t *testing.T) {
 		if s["side"] == "right" && s["error"] == nil {
 			t.Errorf("the unreachable side answered without an error: %v", s)
 		}
+		// The page says why in the reader's language from the kind and the side.
+		if f, _ := s["failure"].(map[string]any); s["side"] == "right" {
+			if params, _ := f["params"].(map[string]any); f["code"] == nil || params["side"] != "right" {
+				t.Errorf("the unreachable side named no kind of failure on the right side: %v", s)
+			}
+		}
 	}
 }
 

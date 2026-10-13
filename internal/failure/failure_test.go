@@ -61,6 +61,12 @@ func TestBackendErrorsAreNamedWithTheirSide(t *testing.T) {
 		"googleapi: Error 403: The user's Drive storage quota has been exceeded., storageQuotaExceeded": {
 			Code: failure.QuotaExceeded,
 		},
+		`the right side could not be opened: couldn't connect to ssh-agent: SSH agent requested, but could not detect Pageant`: {
+			Code: failure.SignInFailed, Params: map[string]string{"side": "right"},
+		},
+		"the drive the left side lives on is not attached: USB disk (label Photos)": {
+			Code: failure.VolumeMissing, Params: map[string]string{"side": "left"},
+		},
 		"429 Too Many Requests": {Code: failure.RateLimited},
 		"context canceled":      {Code: failure.Stopped},
 	}

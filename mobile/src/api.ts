@@ -189,6 +189,8 @@ export interface Bin {
 /** One side in the listing across jobs, which says why a side could not be read. */
 export interface TrashSide extends Bin {
   error?: string;
+  /** The kind of failure the engine read from `error`, where it knows one. */
+  failure?: Failure;
 }
 
 /**
@@ -401,7 +403,8 @@ export const api = {
       body: JSON.stringify({ mark }),
     }),
 
-  conflicts: () => call<{ conflicts: OpenConflict[]; unread: { job: string; error: string }[] }>("/api/conflicts"),
+  conflicts: () =>
+    call<{ conflicts: OpenConflict[]; unread: { job: string; error: string; failure?: Failure }[] }>("/api/conflicts"),
 
   anomalies: () => call<FindingListing>("/api/anomalies"),
   /** Every job with how far its runs are learned, and its usual ranges once they are. */
