@@ -223,6 +223,10 @@ object Engine {
         // cmd/arrowloop/android.go.
         builder.environment()["TZ"] = TimeZone.getDefault().id
         nameservers(context)?.let { builder.environment()["ARROWLOOP_DNS"] = it }
+        // The phone reports runs through Android's notifications alone, so the
+        // engine skips the message channels and Healthchecks checks its
+        // configuration may hold. See internal/daemon/notify.go.
+        builder.environment()["ARROWLOOP_NO_CHANNELS"] = "1"
         // Without these the engine takes the Android target away again.
         builder.environment().putAll(AppData.environment(context))
         builder.redirectErrorStream(true)

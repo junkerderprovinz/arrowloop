@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -14,10 +15,21 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scrub"
 )
 
+// NoChannelsEnv names the environment variable that keeps every message
+// channel and every Healthchecks check quiet, whatever the configuration
+// holds. The phone app sets it, since Android's own notifications report runs
+// there. The configuration is read as usual and never rewritten.
+const NoChannelsEnv = "ARROWLOOP_NO_CHANNELS"
+
+func channelsOff() bool { return os.Getenv(NoChannelsEnv) != "" }
+
 // Notifier builds the destination list from the configuration: every channel
 // that is switched on and filled in. Nothing to send to returns nil. Whether
 // a message goes out at all is decided where it is made.
 func Notifier(cfg *job.Config) notify.Notifier {
+	if channelsOff() {
+		return nil
+	}
 	n := cfg.Notify
 	var out notify.Multi
 	if n.Matrix.On() {
@@ -68,7 +80,7 @@ func (r *Runner) tell(ctx context.Context, name string, msg notify.Message) {
 // waits for the start, or the check would see them the wrong way round.
 func (r *Runner) checkIn(ctx context.Context, name string) func(ok bool, detail string) {
 	address := r.config().Notify.CheckFor(name)
-	if address == "" {
+	if address == "" || channelsOff() {
 		return func(bool, string) {}
 	}
 	check := notify.Healthchecks{URL: address}
@@ -136,8 +148,11 @@ var testMessage = notify.Message{
 // SendTest sends a test message through one channel, named as the
 // configuration names it, and reports what went wrong. It ignores the channel's
 // switch and the "when" setting, since a test is how somebody finds out
-// whether a channel they are setting up works.
+// whether a channel they are setting up works. NoChannelsEnv still holds.
 func SendTest(ctx context.Context, n job.Notify, channel string) error {
+	if channelsOff() {
+		return errors.New("this engine sends no messages")
+	}
 	ctx, cancel := context.WithTimeout(ctx, notify.SendTimeout)
 	defer cancel()
 	switch channel {

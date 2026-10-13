@@ -2,12 +2,16 @@ package daemon
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -318,5 +322,64 @@ func TestAMessageCarriesNoPasswordFromTheRunsError(t *testing.T) {
 				t.Errorf("the messages lost %q:\n%s", tc.keep, sent)
 			}
 		})
+	}
+}
+
+func TestNoChannelsKeepsEveryChannelQuietAndLeavesTheSettings(t *testing.T) {
+	r, left, _ := syncedPair(t)
+	hook, apprise, room, hc := newInbox(t), newInbox(t), newInbox(t), newInbox(t)
+	mail, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	t.Cleanup(func() { mail.Close() })
+	var dialled atomic.Int32
+	go func() {
+		for {
+			conn, err := mail.Accept()
+			if err != nil {
+				return
+			}
+			dialled.Add(1)
+			conn.Close()
+		}
+	}()
+
+	n := job.Notify{
+		On:           "always",
+		Webhook:      hook.url("/hook"),
+		Apprise:      &job.Apprise{URL: apprise.url("/notify/key")},
+		Matrix:       &job.Matrix{Homeserver: room.url(""), Room: "!r:x", Token: "t"},
+		SMTP:         &job.SMTP{Host: "127.0.0.1", Port: mail.Addr().(*net.TCPAddr).Port, From: "a@x", To: "b@x", TLS: "none"},
+		Healthchecks: &job.Healthchecks{URL: hc.url("/all"), Jobs: map[string]string{"test": hc.url("/own")}},
+	}
+	stored, _ := json.Marshal(n)
+	t.Setenv(NoChannelsEnv, "1")
+	notifying(r, n)
+
+	if _, err := r.Run(context.Background(), "test"); err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	emptyOut(t, left, 30)
+	held(t, r)
+	if told := r.drainTold(); len(told) != 1 || !told[0].Held {
+		t.Errorf("the phone's own notification lost the held job: %+v", told)
+	}
+	breakBefore(r)
+	r.Run(context.Background(), "test")
+	for _, channel := range []string{"webhook", "matrix", "smtp", "apprise", "healthchecks"} {
+		if err := SendTest(context.Background(), n, channel); err == nil {
+			t.Errorf("a test through %s went out", channel)
+		}
+	}
+
+	if got := slices.Concat(hook.all(), apprise.all(), room.all(), hc.all()); len(got) != 0 {
+		t.Errorf("the channels heard %v", got)
+	}
+	if got := dialled.Load(); got != 0 {
+		t.Errorf("the mail server was dialled %d times", got)
+	}
+	if now, _ := json.Marshal(r.config().Notify); string(now) != string(stored) {
+		t.Errorf("the settings changed from %s to %s", stored, now)
 	}
 }
