@@ -8,7 +8,7 @@ import { GeneralPage } from './GeneralPage'
 import { InfoPage } from './InfoPage'
 import { LookPage, type LookProps } from './LookPage'
 import { SafetyPage } from './SafetyPage'
-import { SettingsRail } from './SettingsRail'
+import { ACROSS, SettingsRail, useMatch } from './SettingsRail'
 import { jumpTarget, markHit, SettingsSearch, takeJump } from './SettingsSearch'
 import { SyncPage } from './SyncPage'
 import { orderTiles, rememberTile, useTileOrder, type Tile } from './tiles'
@@ -34,11 +34,13 @@ const JUMP_PATIENCE_MS = 2000
  * Settings as a column of tiles beside the content, with every card of the
  * open tile one under the other. Only the content column scrolls, so the tiles
  * stay where they are, and the search waits above the cards until somebody
- * scrolls up for it.
+ * scrolls up for it. In a narrow window the column would leave the cards a
+ * sliver, so the tiles stand in a strip above them and the cards take the full
+ * width.
  *
- * The content column reaches down through the gutter and pads its end by the
- * same amount, as the other pages do in App.tsx, so a tile's page actions rest
- * on the window's bottom edge exactly where theirs do.
+ * Beside the column the content column reaches down through the gutter and
+ * pads its end by the same amount, as the other pages do in App.tsx, so a
+ * tile's page actions rest on the window's bottom edge exactly where theirs do.
  */
 export function Settings(props: SettingsProps) {
   const { tile } = props
@@ -46,9 +48,10 @@ export function Settings(props: SettingsProps) {
   const tiles = useMemo(() => orderTiles(props.tiles, saved), [props.tiles, saved])
   const wide = tiles.find((x) => x.id === tile)?.wide ?? false
   const content = useRef<HTMLDivElement>(null)
+  const across = useMatch(ACROSS)
 
-  // The side a new tile's cards slide in from: 1 for one further down the
-  // column, -1 for one above, 0 on arrival.
+  // The side a new tile's cards slide in from: 1 for one further along the
+  // tiles, -1 for one before, 0 on arrival.
   const previous = useRef<TileId | null>(null)
   const order = tiles.map((x) => x.id)
   const toward =
@@ -86,12 +89,15 @@ export function Settings(props: SettingsProps) {
   }, [tile])
 
   return (
-    <div className="flex min-h-0 flex-1">
-      <SettingsRail tiles={tiles} active={tile} />
+    <div className={`flex min-h-0 flex-1${across ? ' flex-col sm:px-6' : ''}`}>
+      <SettingsRail tiles={tiles} active={tile} across={across} />
       <div
         ref={content}
         data-settings-content
-        className="flex min-w-0 flex-1 flex-col overflow-y-auto ps-2 sm:-mb-[var(--page-gutter)] sm:px-6 md:px-8"
+        // Under the strip the room above the first card is the gap between
+        // two cards, and it scrolls with them, so a card passes right up to
+        // the strip's edge instead of vanishing short of it.
+        className={`flex min-w-0 flex-1 flex-col overflow-y-auto sm:-mb-[var(--page-gutter)] ${across ? 'pt-10' : 'ps-2 sm:px-6 md:px-8'}`}
       >
         {/* The search ends where the cards below it do. */}
         <SettingsSearch tiles={tiles} tile={tile} wide={wide} />

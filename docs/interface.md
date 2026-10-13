@@ -360,14 +360,17 @@ Settings is a column of tiles beside the page: **General**, **Look**,
 **Sync**, **Safety net**, **Targets**, **Security**, **Apps** and **Info**. A
 tile shows all its cards, one under the other, and only the cards scroll, so
 the column stays in place. In a window narrower than 1024 pixels the tiles
-show their glyphs alone. Settings opens on the tile used last, and every tile
+show their glyphs alone. Below 768 pixels, and on a phone's browser, they move
+into a strip above the cards, so the cards get the whole width: the open tile
+shows its name, the others their glyph, with the name on hover. Settings opens on the tile used last, and every tile
 has an address of its own, such as `/settings/sync`. An older address such as
 `/settings/workload` leads to the tile that holds its cards.
 
 You can put the tiles in your own order. Hold a tile, or drag it with the
 mouse, and move it along the column; the column wiggles while a tile is
-carried, and Escape puts it back. With the keyboard, Alt and an arrow key move the tile that
-has the focus. The browser keeps the order, and **Reset** in the **Tile order**
+carried, and Escape puts it back. With the keyboard, Alt and an arrow key move
+the tile that has the focus, in the column and in the strip. The strip shows
+the same order. The browser keeps the order, and **Reset** in the **Tile order**
 row on **Look** brings back the original one.
 
 - **General**: the settings backup and the workload (bandwidth limit, jobs at

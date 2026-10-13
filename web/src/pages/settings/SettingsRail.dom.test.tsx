@@ -2,10 +2,16 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { SettingsRail } from './SettingsRail'
+import { SettingsRail, stripPerRow } from './SettingsRail'
 import { isOwnOrder, orderTiles, settingsTiles } from './tiles'
 
 let narrow = false
+
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as unknown as typeof ResizeObserver
 
 window.matchMedia = ((query: string) => ({
   get matches() {
@@ -24,6 +30,57 @@ afterEach(() => {
   cleanup()
   narrow = false
   localStorage.clear()
+  document.documentElement.dir = 'ltr'
+})
+
+describe('the settings strip', () => {
+  it('names the open tile and leaves the others their glyph, with the name for the reader', () => {
+    render(<SettingsRail tiles={settingsTiles(true)} active="sync" across />)
+    const strip = screen.getByRole('tablist', { name: 'Settings pages' })
+    expect(strip.getAttribute('aria-orientation')).toBeNull()
+    expect(screen.getAllByRole('tab').map((el) => el.getAttribute('href'))).toEqual([
+      '/settings/general',
+      '/settings/look',
+      '/settings/sync',
+      '/settings/safety',
+      '/settings/targets',
+      '/settings/security',
+      '/settings/apps',
+      '/settings/info',
+    ])
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe('Sync')
+    const look = screen.getByRole('tab', { name: 'Look' })
+    expect(look.textContent).toBe('')
+    expect(look.getAttribute('data-tip')).toBe('Look')
+  })
+
+  it('moves the focus with the arrow keys across, the other way round from right to left', () => {
+    render(<SettingsRail tiles={settingsTiles(true)} active="look" across />)
+    const [general, look, sync] = screen.getAllByRole('tab')
+    look!.focus()
+    fireEvent.keyDown(look!, { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(sync)
+    document.documentElement.dir = 'rtl'
+    fireEvent.keyDown(sync!, { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(look)
+    fireEvent.keyDown(look!, { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(general)
+  })
+
+  it('moves the focused tile with Alt and an arrow key, in the same order as the column', () => {
+    render(<SettingsRail tiles={settingsTiles(true)} active="general" across />)
+    const [first] = screen.getAllByRole('tab')
+    first!.focus()
+    fireEvent.keyDown(first!, { key: 'ArrowRight', altKey: true })
+    expect(JSON.parse(localStorage.getItem('arrowloop.settingsOrder') ?? '[]').slice(0, 3)).toEqual(['look', 'general', 'sync'])
+  })
+
+  it('shares the tiles evenly between the rows it wraps onto', () => {
+    expect(stripPerRow(8, 500, 120, 40, 4)).toBe(8)
+    expect(stripPerRow(8, 358, 120, 40, 4)).toBe(4)
+    expect(stripPerRow(7, 358, 120, 40, 4)).toBe(4)
+    expect(stripPerRow(8, 150, 140, 40, 4)).toBe(1)
+  })
 })
 
 describe('the settings tiles', () => {
