@@ -69,6 +69,7 @@ The full notes for each release are in
 - **Overdue after says what it counts.** The setting was called Days without a run, which read wrong for a job that runs once a week. It counts the days from the scheduled run that was missed, and its (i) gives the weekly example.
 - **A saved Matrix token or mail password goes only to the server it was saved for.** After changing the server, type it again. Send a test needs a password when the engine listens on the network, and a failed test names only the status the server answered.
 - **Notifications and Healthchecks pings leave out passwords from a run's error**, as the bug report does: the parameters of a connection string such as `:sftp,host=...,pass=...:` and what a failed command before or after the run printed.
+- **The bug report says only whether a mail address, a mail server or a Matrix room is set**, instead of naming them.
 
 ## 1.9.0 - 2026-10-13
 

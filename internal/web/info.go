@@ -201,8 +201,9 @@ type report struct {
 const reportRuns = 100
 
 // diagnostics hands out one file for a bug report: the versions, the settings
-// and jobs without their secrets, the last runs and the open findings. The
-// file goes into a public issue, so every free text in it is scrubbed.
+// and jobs, the last runs and the open findings. The file goes into a public
+// issue, so it leaves out the secrets, says only whether a notification
+// address is set, and scrubs the errors and the paths.
 func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 	cfg := s.Runner.Config()
 	settings, err := cfg.SettingsAsMap()
@@ -223,7 +224,7 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 		Versions: currentVersions(),
 		System:   runtime.GOOS + "/" + runtime.GOARCH,
 		Desktop:  s.Window != nil,
-		Settings: withoutHomeInSettings(withheld(settings)),
+		Settings: withoutAddresses(withoutHomeInSettings(withheld(settings))),
 		Jobs:     make([]reportJob, 0, len(cfg.Jobs)),
 		Runs:     make([]history.Run, 0, len(runs)),
 		Findings: make([]reportFinding, 0, len(open)),
@@ -272,6 +273,32 @@ func withoutHomeInSettings(settings map[string]any) map[string]any {
 				for i, p := range list {
 					if p, ok := p.(string); ok {
 						list[i] = scrub.Home(p)
+					}
+				}
+			}
+		}
+	}
+	return settings
+}
+
+// notifyAddresses are the notification settings that name a person or a
+// server of theirs without being secret.
+var notifyAddresses = map[string][]string{
+	"matrix": {"homeserver", "room"},
+	"smtp":   {"host", "username", "from", "to"},
+}
+
+// withoutAddresses writes every notification address that is filled in as
+// "set", so the report still shows which channels are set up.
+func withoutAddresses(settings map[string]any) map[string]any {
+	for _, notify := range objects(settings, "notify") {
+		for channel, keys := range notifyAddresses {
+			for _, holder := range objects(notify, channel) {
+				for _, key := range keys {
+					for _, k := range keysLike(holder, key) {
+						if v, _ := holder[k].(string); v != "" {
+							holder[k] = "set"
+						}
 					}
 				}
 			}
