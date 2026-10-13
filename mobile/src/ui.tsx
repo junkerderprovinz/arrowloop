@@ -1494,7 +1494,9 @@ const styles = StyleSheet.create({
   // vertical centring.
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
   badgeText: { fontSize: text.meta, fontWeight: "600", letterSpacing: 0.2 },
-  meter: { height: 6, overflow: "hidden" },
+  // The fill is a share of the track's width, so the track has to take the
+  // full width even in a column that packs its children to the start.
+  meter: { height: 6, overflow: "hidden", alignSelf: "stretch" },
   meterFill: { height: "100%" },
   sloshEnd: { position: "absolute", left: "100%", top: 0, bottom: 0, borderTopRightRadius: 999, borderBottomRightRadius: 999 },
   bubble: { width: 18, height: 18, alignItems: "center", justifyContent: "center" },
