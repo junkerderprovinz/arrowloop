@@ -305,7 +305,7 @@ const sr: Translations = {
   'edit.newJob': 'novi-posao',
   'edit.pickDrive': 'Пријављен диск',
   'edit.pickRemote': 'Подешено одредиште',
-  'targets.addStorage': 'Додај складиште или облак',
+  'targets.addStorage': 'Повежи складишта и облаке',
   'targets.cloudEmpty': 'Још ниједан облак није повезан. Овде се додају Dropbox, OneDrive, Google Drive и остали облаци.',
   'targets.bucketEmpty': 'Још нема објектног складишта. Овде се додају канте на Backblaze B2, Wasabi, MinIO и сваком другом S3 складишту.',
   'targets.serverEmpty': 'Још нема сервера ни дељења. Овде се додају машине преко SSH кроз SFTP, WebDAV сервери и дељења на Windows.',

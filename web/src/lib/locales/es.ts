@@ -305,7 +305,7 @@ const es: Translations = {
   'edit.newJob': 'tarea-nueva',
   'edit.pickDrive': 'Un disco registrado',
   'edit.pickRemote': 'Un destino configurado',
-  'targets.addStorage': 'Añadir almacenamiento o nube',
+  'targets.addStorage': 'Conectar almacenamiento y nubes',
   'targets.cloudEmpty': 'Todavía no hay ninguna nube conectada. Aquí se añaden Dropbox, OneDrive, Google Drive y las demás nubes.',
   'targets.bucketEmpty': 'Todavía no hay almacenamiento de objetos. Aquí se añaden contenedores en Backblaze B2, Wasabi, MinIO y cualquier otro almacenamiento S3.',
   'targets.serverEmpty': 'Todavía no hay servidores ni recursos compartidos. Aquí se añaden servidores SSH por SFTP, servidores WebDAV y recursos compartidos de Windows.',

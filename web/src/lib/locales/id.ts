@@ -305,7 +305,7 @@ const id: Translations = {
   'edit.newJob': 'tugas-baru',
   'edit.pickDrive': 'Cakram yang terdaftar',
   'edit.pickRemote': 'Tujuan yang sudah disiapkan',
-  'targets.addStorage': 'Tambah penyimpanan atau awan',
+  'targets.addStorage': 'Hubungkan penyimpanan dan awan',
   'targets.cloudEmpty': 'Belum ada awan yang terhubung. Dropbox, OneDrive, Google Drive dan awan lainnya ditambahkan di sini.',
   'targets.bucketEmpty': 'Belum ada penyimpanan objek. Ember di Backblaze B2, Wasabi, MinIO dan penyimpanan S3 lainnya ditambahkan di sini.',
   'targets.serverEmpty': 'Belum ada server atau berbagi pakai. Mesin SSH lewat SFTP, server WebDAV dan berbagi Windows ditambahkan di sini.',

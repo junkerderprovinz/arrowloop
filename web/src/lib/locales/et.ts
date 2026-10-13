@@ -305,7 +305,7 @@ const et: Translations = {
   'edit.newJob': 'uus-too',
   'edit.pickDrive': 'Registreeritud ketas',
   'edit.pickRemote': 'Seadistatud sihtkoht',
-  'targets.addStorage': 'Lisa hoidla või pilv',
+  'targets.addStorage': 'Ühenda hoidlad ja pilved',
   'targets.cloudEmpty': 'Ühtegi pilve pole veel ühendatud. Siia lisanduvad Dropbox, OneDrive, Google Drive ja teised pilved.',
   'targets.bucketEmpty': 'Objektisalvestust pole veel. Siia lisanduvad ämbrid Backblaze B2-s, Wasabis, MinIO-s ja igas teises S3 salvestuses.',
   'targets.serverEmpty': 'Serverit ega jagamist pole veel. Siia lisanduvad SSH masinad üle SFTP, WebDAV serverid ja Windowsi jagatud kaustad.',

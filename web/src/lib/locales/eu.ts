@@ -305,7 +305,7 @@ const eu: Translations = {
   'edit.newJob': 'lan-berria',
   'edit.pickDrive': 'Erregistratutako disko bat',
   'edit.pickRemote': 'Konfiguratutako helburu bat',
-  'targets.addStorage': 'Gehitu biltegia edo hodeia',
+  'targets.addStorage': 'Konektatu biltegiak eta hodeiak',
   'targets.cloudEmpty': 'Oraindik ez dago hodeirik konektatuta. Hemen gehitzen dira Dropbox, OneDrive, Google Drive eta beste hodeiak.',
   'targets.bucketEmpty': 'Oraindik ez dago objektu-biltegirik. Hemen gehitzen dira Backblaze B2, Wasabi, MinIO eta beste edozein S3 biltegitako ontziak.',
   'targets.serverEmpty': 'Oraindik ez dago zerbitzari edo partekatzerik. Hemen gehitzen dira SFTP bidezko SSH ostalariak, WebDAV zerbitzariak eta Windows partekatzeak.',

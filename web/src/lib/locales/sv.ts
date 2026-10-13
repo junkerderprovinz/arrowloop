@@ -305,7 +305,7 @@ const sv: Translations = {
   'edit.newJob': 'nytt-jobb',
   'edit.pickDrive': 'En anmäld disk',
   'edit.pickRemote': 'Ett inställt mål',
-  'targets.addStorage': 'Lägg till lagring eller moln',
+  'targets.addStorage': 'Anslut lagring och moln',
   'targets.cloudEmpty': 'Inget moln anslutet än. Dropbox, OneDrive, Google Drive och de andra molnen läggs till här.',
   'targets.bucketEmpty': 'Ingen objektlagring än. Buckets hos Backblaze B2, Wasabi, MinIO och all annan S3-lagring läggs till här.',
   'targets.serverEmpty': 'Ingen server eller utdelning än. SSH-värdar via SFTP, WebDAV-servrar och Windows-utdelningar läggs till här.',

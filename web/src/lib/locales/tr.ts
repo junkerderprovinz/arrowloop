@@ -305,7 +305,7 @@ const tr: Translations = {
   'edit.newJob': 'yeni-is',
   'edit.pickDrive': 'Kaydedilmiş bir disk',
   'edit.pickRemote': 'Kurulmuş bir hedef',
-  'targets.addStorage': 'Depolama veya bulut ekle',
+  'targets.addStorage': 'Depolama ve bulutları bağla',
   'targets.cloudEmpty': 'Henüz bağlı bulut yok. Dropbox, OneDrive, Google Drive ve diğer bulutlar buraya eklenir.',
   'targets.bucketEmpty': 'Henüz nesne depolama yok. Backblaze B2, Wasabi, MinIO ve diğer tüm S3 depolarındaki kovalar buraya eklenir.',
   'targets.serverEmpty': 'Henüz sunucu veya paylaşım yok. SFTP üzerinden SSH makineleri, WebDAV sunucuları ve Windows paylaşımları buraya eklenir.',

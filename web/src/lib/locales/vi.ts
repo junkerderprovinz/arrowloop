@@ -305,7 +305,7 @@ const vi: Translations = {
   'edit.newJob': 'cong-viec-moi',
   'edit.pickDrive': 'Một ổ đĩa đã đăng ký',
   'edit.pickRemote': 'Một đích đã thiết lập',
-  'targets.addStorage': 'Thêm lưu trữ hoặc đám mây',
+  'targets.addStorage': 'Kết nối lưu trữ và đám mây',
   'targets.cloudEmpty': 'Chưa có đám mây nào được kết nối. Dropbox, OneDrive, Google Drive và các đám mây khác được thêm ở đây.',
   'targets.bucketEmpty': 'Chưa có lưu trữ đối tượng. Bucket trên Backblaze B2, Wasabi, MinIO và mọi kho S3 khác được thêm ở đây.',
   'targets.serverEmpty': 'Chưa có máy chủ hay chia sẻ. Máy SSH qua SFTP, máy chủ WebDAV và thư mục chia sẻ Windows được thêm ở đây.',

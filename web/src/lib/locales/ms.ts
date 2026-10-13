@@ -305,7 +305,7 @@ const ms: Translations = {
   'edit.newJob': 'tugas-baharu',
   'edit.pickDrive': 'Cakera yang didaftarkan',
   'edit.pickRemote': 'Destinasi yang disediakan',
-  'targets.addStorage': 'Tambah storan atau awan',
+  'targets.addStorage': 'Sambung storan dan awan',
   'targets.cloudEmpty': 'Belum ada awan yang disambung. Dropbox, OneDrive, Google Drive dan awan lain ditambah di sini.',
   'targets.bucketEmpty': 'Belum ada storan objek. Baldi di Backblaze B2, Wasabi, MinIO dan mana-mana storan S3 lain ditambah di sini.',
   'targets.serverEmpty': 'Belum ada pelayan atau perkongsian. Mesin SSH melalui SFTP, pelayan WebDAV dan perkongsian Windows ditambah di sini.',

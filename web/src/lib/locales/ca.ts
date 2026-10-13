@@ -305,7 +305,7 @@ const ca: Translations = {
   'edit.newJob': 'tasca-nova',
   'edit.pickDrive': 'Un disc registrat',
   'edit.pickRemote': 'Una destinació configurada',
-  'targets.addStorage': 'Afegeix emmagatzematge o núvol',
+  'targets.addStorage': 'Connecta emmagatzematge i núvols',
   'targets.cloudEmpty': 'Encara no hi ha cap núvol connectat. Aquí s\'afegeixen Dropbox, OneDrive, Google Drive i els altres núvols.',
   'targets.bucketEmpty': 'Encara no hi ha emmagatzematge d\'objectes. Aquí s\'afegeixen cubells a Backblaze B2, Wasabi, MinIO i qualsevol altre emmagatzematge S3.',
   'targets.serverEmpty': 'Encara no hi ha cap servidor ni compartició. Aquí s\'afegeixen màquines SSH per SFTP, servidors WebDAV i comparticions de Windows.',

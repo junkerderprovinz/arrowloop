@@ -305,7 +305,7 @@ const ru: Translations = {
   'edit.newJob': 'новое-задание',
   'edit.pickDrive': 'Зарегистрированный диск',
   'edit.pickRemote': 'Настроенное назначение',
-  'targets.addStorage': 'Добавить хранилище или облако',
+  'targets.addStorage': 'Подключить хранилища и облака',
   'targets.cloudEmpty': 'Облака пока не подключены. Здесь добавляются Dropbox, OneDrive, Google Drive и другие облака.',
   'targets.bucketEmpty': 'Объектных хранилищ пока нет. Здесь добавляются бакеты в Backblaze B2, Wasabi, MinIO и любом другом хранилище S3.',
   'targets.serverEmpty': 'Серверов и общих папок пока нет. Здесь добавляются узлы SSH через SFTP, серверы WebDAV и общие папки Windows.',

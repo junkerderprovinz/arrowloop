@@ -305,7 +305,7 @@ const fa: Translations = {
   'edit.newJob': 'kar-e-taze',
   'edit.pickDrive': 'یک دیسک ثبت‌شده',
   'edit.pickRemote': 'یک مقصد تنظیم‌شده',
-  'targets.addStorage': 'افزودن فضای ذخیره یا ابر',
+  'targets.addStorage': 'اتصال فضای ذخیره و ابرها',
   'targets.cloudEmpty': 'هنوز هیچ ابری وصل نیست. Dropbox، OneDrive، Google Drive و ابرهای دیگر اینجا افزوده می‌شوند.',
   'targets.bucketEmpty': 'هنوز هیچ ذخیره‌سازی شیءگرایی نیست. سطل‌های Backblaze B2، Wasabi، MinIO و هر ذخیره‌ساز S3 دیگر اینجا افزوده می‌شوند.',
   'targets.serverEmpty': 'هنوز هیچ سرور یا اشتراکی نیست. میزبان‌های SSH از راه SFTP، سرورهای WebDAV و اشتراک‌های ویندوز اینجا افزوده می‌شوند.',

@@ -305,7 +305,7 @@ const cs: Translations = {
   'edit.newJob': 'nova-uloha',
   'edit.pickDrive': 'Zaregistrovaný disk',
   'edit.pickRemote': 'Nastavený cíl',
-  'targets.addStorage': 'Přidat úložiště nebo cloud',
+  'targets.addStorage': 'Připojit úložiště a cloudy',
   'targets.cloudEmpty': 'Zatím není připojený žádný cloud. Sem patří Dropbox, OneDrive, Google Drive a další cloudy.',
   'targets.bucketEmpty': 'Zatím žádné objektové úložiště. Sem patří koše v Backblaze B2, Wasabi, MinIO a v každém jiném úložišti S3.',
   'targets.serverEmpty': 'Zatím žádný server ani sdílení. Sem patří servery SSH přes SFTP, servery WebDAV a sdílení Windows.',

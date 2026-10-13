@@ -305,7 +305,7 @@ const lv: Translations = {
   'edit.newJob': 'jauns-uzdevums',
   'edit.pickDrive': 'Reģistrēts disks',
   'edit.pickRemote': 'Iestatīts galamērķis',
-  'targets.addStorage': 'Pievienot krātuvi vai mākoni',
+  'targets.addStorage': 'Savienot krātuves un mākoņus',
   'targets.cloudEmpty': 'Vēl nav savienots neviens mākonis. Šeit pievieno Dropbox, OneDrive, Google Drive un citus mākoņus.',
   'targets.bucketEmpty': 'Vēl nav objektu krātuves. Šeit pievieno spaiņus Backblaze B2, Wasabi, MinIO un jebkurā citā S3 krātuvē.',
   'targets.serverEmpty': 'Vēl nav servera vai koplietojuma. Šeit pievieno SSH datorus caur SFTP, WebDAV serverus un Windows koplietojumus.',

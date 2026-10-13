@@ -305,7 +305,7 @@ const el: Translations = {
   'edit.newJob': 'nea-ergasia',
   'edit.pickDrive': 'Ένας δηλωμένος δίσκος',
   'edit.pickRemote': 'Ένας ρυθμισμένος προορισμός',
-  'targets.addStorage': 'Προσθήκη αποθήκευσης ή cloud',
+  'targets.addStorage': 'Σύνδεση αποθήκευσης και cloud',
   'targets.cloudEmpty': 'Κανένα cloud συνδεδεμένο ακόμη. Εδώ προστίθενται το Dropbox, το OneDrive, το Google Drive και τα άλλα cloud.',
   'targets.bucketEmpty': 'Καμία αποθήκευση αντικειμένων ακόμη. Εδώ προστίθενται κάδοι σε Backblaze B2, Wasabi, MinIO και κάθε άλλη αποθήκευση S3.',
   'targets.serverEmpty': 'Κανένας διακομιστής ή κοινόχρηστο ακόμη. Εδώ προστίθενται κόμβοι SSH μέσω SFTP, διακομιστές WebDAV και κοινόχρηστα Windows.',

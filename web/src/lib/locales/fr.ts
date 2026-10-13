@@ -305,7 +305,7 @@ const fr: Translations = {
   'edit.newJob': 'nouvelle-tache',
   'edit.pickDrive': 'Un disque enregistré',
   'edit.pickRemote': 'Une cible configurée',
-  'targets.addStorage': 'Ajouter un stockage ou un cloud',
+  'targets.addStorage': 'Connecter stockages et clouds',
   'targets.cloudEmpty': 'Aucun cloud connecté pour l\'instant. Dropbox, OneDrive, Google Drive et les autres clouds s\'ajoutent ici.',
   'targets.bucketEmpty': 'Aucun stockage objet pour l\'instant. Les compartiments sur Backblaze B2, Wasabi, MinIO et tout autre stockage S3 s\'ajoutent ici.',
   'targets.serverEmpty': 'Aucun serveur ni partage pour l\'instant. Les hôtes SSH via SFTP, les serveurs WebDAV et les partages Windows s\'ajoutent ici.',

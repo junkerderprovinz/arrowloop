@@ -305,7 +305,7 @@ const fi: Translations = {
   'edit.newJob': 'uusi-tyo',
   'edit.pickDrive': 'Ilmoitettu levy',
   'edit.pickRemote': 'Määritetty kohde',
-  'targets.addStorage': 'Lisää tallennustila tai pilvi',
+  'targets.addStorage': 'Yhdistä tallennustilat ja pilvet',
   'targets.cloudEmpty': 'Yhtään pilveä ei ole vielä yhdistetty. Dropbox, OneDrive, Google Drive ja muut pilvet lisätään tänne.',
   'targets.bucketEmpty': 'Ei vielä objektitallennusta. Ämpärit Backblaze B2:ssa, Wasabissa, MinIOssa ja missä tahansa muussa S3-tallennuksessa lisätään tänne.',
   'targets.serverEmpty': 'Ei vielä palvelinta tai jakoa. SSH-koneet SFTP:n kautta, WebDAV-palvelimet ja Windows-jaot lisätään tänne.',

@@ -305,7 +305,7 @@ const nl: Translations = {
   'edit.newJob': 'nieuwe-taak',
   'edit.pickDrive': 'Een aangemelde schijf',
   'edit.pickRemote': 'Een ingesteld doel',
-  'targets.addStorage': 'Opslag of cloud toevoegen',
+  'targets.addStorage': 'Opslag en clouds verbinden',
   'targets.cloudEmpty': 'Nog geen cloud gekoppeld. Dropbox, OneDrive, Google Drive en de andere clouds komen hier.',
   'targets.bucketEmpty': 'Nog geen objectopslag. Buckets bij Backblaze B2, Wasabi, MinIO en elke andere S3-opslag komen hier.',
   'targets.serverEmpty': 'Nog geen server of share. SSH-machines via SFTP, WebDAV-servers en Windows-shares komen hier.',

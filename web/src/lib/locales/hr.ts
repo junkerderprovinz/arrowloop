@@ -305,7 +305,7 @@ const hr: Translations = {
   'edit.newJob': 'novi-zadatak',
   'edit.pickDrive': 'Prijavljen disk',
   'edit.pickRemote': 'Postavljeno odredište',
-  'targets.addStorage': 'Dodaj pohranu ili oblak',
+  'targets.addStorage': 'Poveži pohranu i oblake',
   'targets.cloudEmpty': 'Još nije povezan nijedan oblak. Ovdje se dodaju Dropbox, OneDrive, Google Drive i ostali oblaci.',
   'targets.bucketEmpty': 'Još nema objektne pohrane. Ovdje se dodaju kante na Backblaze B2, Wasabi, MinIO i svakoj drugoj pohrani S3.',
   'targets.serverEmpty': 'Još nema poslužitelja ni dijeljenja. Ovdje se dodaju poslužitelji SSH preko SFTP-a, poslužitelji WebDAV i dijeljenja Windows.',
