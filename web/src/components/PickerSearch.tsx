@@ -25,7 +25,7 @@ export function PickerSearch({
 
   return (
     <div
-      className={`flex ${CONTROL_H} w-64 items-center gap-2 bg-carbon-surface2 pe-1 ps-3 transition has-[input:focus]:brightness-125 max-sm:w-full`}
+      className={`flex ${CONTROL_H} w-64 items-center gap-2 bg-carbon-surface2 pe-1 ps-3 outline-offset-2 transition has-[input:focus]:brightness-125 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-solid has-[input:focus-visible]:outline-[var(--focus-ring)] max-sm:w-full`}
       style={{ borderRadius: 'var(--radius-control)' }}
     >
       <span className="shrink-0 text-carbon-textMuted" aria-hidden>
@@ -47,7 +47,9 @@ export function PickerSearch({
           e.preventDefault()
           onChange('')
         }}
-        className="h-full min-w-0 flex-1 bg-transparent text-meta text-carbon-text outline-none placeholder:text-carbon-textMuted [&::-webkit-search-cancel-button]:hidden"
+        className="h-full min-w-0 flex-1 bg-transparent text-meta text-carbon-text placeholder:text-carbon-textMuted [&::-webkit-search-cancel-button]:hidden"
+        // The ring goes round the whole field, icon and clear button included.
+        style={{ outline: 'none' }}
       />
       {value && (
         <button
