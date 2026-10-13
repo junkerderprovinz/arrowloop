@@ -145,8 +145,9 @@ jobs:
           # The second job exists to have a schedule: the engine sends
           # `nextRun` only for an enabled job the clock will reach, and the
           # shape check rejects a field that never arrives. The first of January
-          # at three will not come round inside a CI run.
-          printf '{"jobs":[{"name":"check","left":"%s/left","right":"%s/right","state":"state/check.db","quietPeriod":"0s"},{"name":"scheduled","left":"%s/left","right":"%s/right","state":"state/scheduled.db","schedule":"0 3 1 1 *"}]}' "$work" "$work" "$work" "$work" > "$work/arrowloop.json"
+          # at three will not come round inside a CI run. The third one fails,
+          # because only a failed run carries its `Failure`.
+          printf '{"jobs":[{"name":"check","left":"%s/left","right":"%s/right","state":"state/check.db","quietPeriod":"0s"},{"name":"scheduled","left":"%s/left","right":"%s/right","state":"state/scheduled.db","schedule":"0 3 1 1 *"},{"name":"unreachable","left":"%s/left","right":":sftp,host=127.0.0.1,port=1,user=nobody:/x","state":"state/unreachable.db"}]}' "$work" "$work" "$work" "$work" "$work" > "$work/arrowloop.json"
           cp mobile/native/jniLibs/x86_64/libarrowloop.so "$work/engine"
           chmod +x "$work/engine"
           "$work/engine" web --config "$work/arrowloop.json" --addr 127.0.0.1:18423 &
@@ -178,6 +179,8 @@ jobs:
           rm "$work/right/two.txt"
           echo three > "$work/left/three.txt"
           curl -sf -m 60 -X POST -H 'Content-Type: application/json' http://127.0.0.1:18423/api/jobs/check/run
+          settle
+          curl -sf -m 60 -X POST -H 'Content-Type: application/json' http://127.0.0.1:18423/api/jobs/unreachable/run
           settle
           echo four > "$work/left/four.txt"
           # One file changed on both sides, the only action that carries both

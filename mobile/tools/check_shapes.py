@@ -27,7 +27,8 @@ API = Path(__file__).resolve().parent.parent / "src" / "api.ts"
 # name after it means the objects are under that key.
 CHECKS = [
     ("Job", "/api/jobs", ["[]"]),
-    ("Run", "/api/history?limit=1", ["[]"]),
+    # Several runs, so a successful and a failed one are both in view.
+    ("Run", "/api/history?limit=10", ["[]"]),
     ("Entry", "/api/history/1/entries", ["[]"]),
     ("Plan", "/api/jobs/{job}/plan", []),
     ("Action", "/api/jobs/{job}/plan", ["actions", "[]"]),
