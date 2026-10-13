@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Environment
 import android.os.IBinder
@@ -30,8 +31,8 @@ import java.util.concurrent.TimeUnit
  * belong to the shell and its app could no longer open it.
  *
  * The engine learns of the server from its environment when it starts, so
- * switching this on or off starts the engine over. The server lives as long
- * as the engine does.
+ * switching this on or off, or to another way, starts the engine over. The
+ * server lives as long as the engine does.
  */
 object AppData {
 
@@ -41,23 +42,37 @@ object AppData {
         ROOT("root"),
         SHIZUKU("shizuku"),
         NO_WAY("noWay"),
+        NO_SU("noSu"),
+        ROOT_DENIED("rootDenied"),
+        NO_SHIZUKU("noShizuku"),
         SHIZUKU_STOPPED("shizukuStopped"),
         SHIZUKU_DENIED("shizukuDenied"),
         FAILED("failed"),
     }
 
+    enum class Way(val js: String) { SU("root"), SHIZUKU("shizuku") }
+
+    /**
+     * What the screen shows: how things stand, the way it marks as chosen,
+     * which ways can work on this phone, and the su in use.
+     */
+    class Report(val state: State, val way: Way, val root: Boolean, val shizuku: Boolean, val su: String)
+
+    /** What su answered when last asked for root. */
+    private enum class Root { GRANTED, DENIED, ABSENT }
+
     private const val TAG = "ArrowLoop"
     private const val PREFS = "appdata"
     private const val ENABLED = "enabled"
-    private const val ROOTED = "rooted"
+    private const val WAY = "way"
+    private const val ROOT = "root"
+    private const val SU = "su"
     private const val PASSWORD = "password"
     private const val HOST_KEY = "hostKey"
     private const val ASK = 8424
 
     /** Magisk gives the person ten seconds to answer its first prompt. */
     private const val SU_WAIT_S = 12L
-
-    private enum class Way { SU, SHIZUKU }
 
     private class Server(
         val port: Int,
@@ -75,6 +90,14 @@ object AppData {
     @Volatile
     private var why = State.OFF
 
+    /** The way last tried, which the screen marks while the person has picked none. */
+    @Volatile
+    private var tried: Way? = null
+
+    /** Whether the running engine was given a server's address. */
+    @Volatile
+    private var offered = false
+
     /** Whether the server already died once since it was switched on. */
     private var restarted = false
 
@@ -82,36 +105,85 @@ object AppData {
 
     private fun enabled(context: Context) = prefs(context).getBoolean(ENABLED, false)
 
+    /** The way the person picked; null leaves it to the order in choose. */
+    private fun picked(context: Context): Way? =
+        prefs(context).getString(WAY, null)?.let { js -> Way.values().first { it.js == js } }
+
+    /** What runs as su. Some root managers install it under another name. */
+    private fun su(context: Context): String = prefs(context).getString(SU, null) ?: "su"
+
     /**
      * Starts the server if it is switched on and not up, starts the engine
      * over when it did, and reports how things stand. The screens call this
      * whenever they look, which is how a Shizuku started or allowed in the
      * meantime gets noticed.
      */
-    fun settle(context: Context): State {
+    fun settle(context: Context): Report {
         if (launchIfWanted(context)) Engine.restart(context)
-        if (!enabled(context)) return State.OFF
-        val now = server ?: return why
-        return if (now.writes) State.ROOT else State.SHIZUKU
+        return report(context)
     }
 
-    fun setEnabled(context: Context, on: Boolean): State {
+    // Asked again on switching on, since root may have come or gone.
+    fun setEnabled(context: Context, on: Boolean) = again(context) { putBoolean(ENABLED, on).remove(ROOT) }
+
+    fun setWay(context: Context, way: Way) = again(context) {
+        putString(WAY, way.js)
+        // Asked again on picking root, since it may have been allowed in the
+        // root manager in the meantime.
+        if (way == Way.SU) remove(ROOT)
+    }
+
+    fun setSu(context: Context, su: String) = again(context) { putString(SU, su).remove(ROOT) }
+
+    /**
+     * Runs su again, which makes the root manager ask the person, unless it
+     * was told to remember a refusal.
+     */
+    fun requestRoot(context: Context) = again(context) { remove(ROOT) }
+
+    /**
+     * Stops the server, makes the change and starts the server the way now
+     * wanted. An engine that holds the old server's address starts over even
+     * when no new server came up, so it lets go of the address.
+     */
+    private fun again(context: Context, change: SharedPreferences.Editor.() -> Unit): Report {
         synchronized(this) {
-            // Asked again on switching on, since root may have come or gone.
-            prefs(context).edit().putBoolean(ENABLED, on).remove(ROOTED).apply()
+            val edit = prefs(context).edit()
+            edit.change()
+            edit.apply()
             stop()
             why = State.OFF
             restarted = false
         }
-        if (on) return settle(context)
-        Engine.restart(context)
-        return State.OFF
+        if (launchIfWanted(context) || offered) Engine.restart(context)
+        return report(context)
+    }
+
+    private fun report(context: Context): Report {
+        val now = server
+        val state = when {
+            !enabled(context) -> State.OFF
+            now == null -> why
+            now.writes -> State.ROOT
+            else -> State.SHIZUKU
+        }
+        return Report(
+            state,
+            way = picked(context) ?: now?.way ?: tried ?: Way.SU,
+            // Possible until su is found missing: only running su tells more,
+            // and that can bring up the root manager's prompt.
+            root = prefs(context).getString(ROOT, null) != Root.ABSENT.name,
+            shizuku = Shizuku.pingBinder() || installed(context),
+            su = su(context),
+        )
     }
 
     /** The variables that make the engine offer the Android target; empty without a server. */
     fun environment(context: Context): Map<String, String> {
         launchIfWanted(context)
-        val now = server ?: return emptyMap()
+        val now = server
+        offered = now != null
+        if (now == null) return emptyMap()
         return secrets(context) + ("ARROWLOOP_DATA_ADDR" to "127.0.0.1:${now.port}")
     }
 
@@ -128,7 +200,7 @@ object AppData {
      * person has answered. After "deny and don't ask again" Shizuku shows no
      * dialog, so its app is opened instead, where the permission can be given.
      */
-    fun askShizuku(context: Context, then: (State) -> Unit) {
+    fun askShizuku(context: Context, then: (Report) -> Unit) {
         // Settling may wait for su, Shizuku and the engine, and Shizuku
         // answers on the main thread.
         val answer = { Thread { then(settle(context)) }.start() }
@@ -159,12 +231,20 @@ object AppData {
         enabled(context) && server == null && why != State.FAILED && launch(context, freePort(), null)
 
     /**
-     * Starts the server on port, the way given or the best one there is, and
-     * records why when it cannot.
+     * Starts the server on port, the way given or the one chosen, and records
+     * why when it cannot.
      */
     private fun launch(context: Context, port: Int, way: Way?): Boolean {
+        val chosen = way ?: choose(context).let { (pick, refusal) ->
+            tried = pick
+            if (refusal != null) {
+                why = refusal
+                return false
+            }
+            pick
+        }
         val started = try {
-            when (way ?: pick(context) ?: return false) {
+            when (chosen) {
                 Way.SU -> withSu(context, port)
                 Way.SHIZUKU -> withShizuku(context, port)
             }
@@ -184,45 +264,64 @@ object AppData {
         return true
     }
 
-    /** Root if su gives it, then Shizuku; otherwise records why neither. */
-    private fun pick(context: Context): Way? {
+    /**
+     * The way to start the server, and why it cannot or null when it can:
+     * the way the person picked, or without one, root if su gives it, then
+     * Shizuku.
+     */
+    private fun choose(context: Context): Pair<Way, State?> {
+        when (picked(context)) {
+            Way.SU -> return Way.SU to rootRefusal(context)
+            Way.SHIZUKU -> return Way.SHIZUKU to shizukuRefusal(context)
+            null -> {}
+        }
+        val root = rootRefusal(context) ?: return Way.SU to null
+        val shizuku = shizukuRefusal(context)
+        if (shizuku != State.NO_SHIZUKU) return Way.SHIZUKU to shizuku
+        // With neither, root is the way shown while su answers at all, so it
+        // can be asked for again.
+        return Way.SU to if (root == State.ROOT_DENIED) root else State.NO_WAY
+    }
+
+    /** Null when su gives root, otherwise the reason it does not. */
+    private fun rootRefusal(context: Context): State? {
         val prefs = prefs(context)
-        if (!prefs.contains(ROOTED)) prefs.edit().putBoolean(ROOTED, probeRoot()).apply()
         // Kept rather than asked on every start, since Magisk shows a toast
         // each time it grants.
-        if (prefs.getBoolean(ROOTED, false)) return Way.SU
-        val shizuku = shizuku(context)
-        if (shizuku == State.SHIZUKU) return Way.SHIZUKU
-        why = shizuku
-        return null
+        val root = prefs.getString(ROOT, null)?.let(Root::valueOf)
+            ?: probeRoot(su(context)).also { prefs.edit().putString(ROOT, it.name).apply() }
+        return when (root) {
+            Root.GRANTED -> null
+            Root.DENIED -> State.ROOT_DENIED
+            Root.ABSENT -> State.NO_SU
+        }
     }
 
-    private fun probeRoot(): Boolean = try {
-        val su = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
-        if (su.waitFor(SU_WAIT_S, TimeUnit.SECONDS)) {
-            su.inputStream.bufferedReader().readText().contains("uid=0")
-        } else {
-            su.destroy()
-            false
+    private fun probeRoot(su: String): Root = try {
+        val process = ProcessBuilder(su, "-c", "id").redirectErrorStream(true).start()
+        when {
+            // Nobody answered the root manager's prompt in time.
+            !process.waitFor(SU_WAIT_S, TimeUnit.SECONDS) -> {
+                process.destroy()
+                Root.DENIED
+            }
+            process.inputStream.bufferedReader().readText().contains("uid=0") -> Root.GRANTED
+            else -> Root.DENIED
         }
     } catch (_: IOException) {
-        // No su on this phone.
-        false
+        // Nothing runs under that name.
+        Root.ABSENT
     }
 
-    /** SHIZUKU when Shizuku can start the server, otherwise the reason it cannot. */
-    private fun shizuku(context: Context): State {
+    /** Null when Shizuku can start the server, otherwise the reason it cannot. */
+    private fun shizukuRefusal(context: Context): State? {
         if (!Shizuku.pingBinder()) {
-            if (!installed(context)) return State.NO_WAY
+            if (!installed(context)) return State.NO_SHIZUKU
             if (!awaitBinder()) return State.SHIZUKU_STOPPED
         }
         // Before version 11 Shizuku spoke a protocol this API cannot.
-        if (Shizuku.isPreV11()) return State.NO_WAY
-        return if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-            State.SHIZUKU
-        } else {
-            State.SHIZUKU_DENIED
-        }
+        if (Shizuku.isPreV11()) return State.NO_SHIZUKU
+        return if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) null else State.SHIZUKU_DENIED
     }
 
     private fun installed(context: Context): Boolean = try {
@@ -247,7 +346,7 @@ object AppData {
     }
 
     private fun withSu(context: Context, port: Int): Server {
-        val su = ProcessBuilder("su")
+        val shell = ProcessBuilder(su(context))
             .redirectErrorStream(true)
             .redirectOutput(ProcessBuilder.Redirect.appendTo(log(context)))
             .start()
@@ -256,14 +355,14 @@ object AppData {
         // open as its lifeline.
         val script = secrets(context).entries.joinToString("") { "export ${it.key}='${it.value}'\n" } +
             "exec " + command(context, port, writes = true).joinToString(" ") { "'$it'" } + "\n"
-        su.outputStream.write(script.toByteArray())
-        su.outputStream.flush()
+        shell.outputStream.write(script.toByteArray())
+        shell.outputStream.flush()
         return Server(
             port, Way.SU, writes = true,
-            await = { "the server exited with code ${su.waitFor()}" },
+            await = { "the server exited with code ${shell.waitFor()}" },
             stop = {
-                su.outputStream.close()
-                su.destroy()
+                shell.outputStream.close()
+                shell.destroy()
             },
         )
     }

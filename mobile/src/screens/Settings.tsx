@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
-import { engine, type AppDataState } from "../engine";
+import { engine, type AppData, type AppDataState, type AppDataWay } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE, TOUCH } from "../theme";
@@ -89,9 +89,11 @@ export function Settings() {
   const [possible, setPossible] = useState(true);
   const [notify, setNotify] = useState<boolean | null>(null);
   const [doze, setDoze] = useState<boolean | null>(null);
-  const [appData, setAppData] = useState<AppDataState | null>(null);
-  // What the switch was moved to, shown while su or Shizuku answer.
-  const [appDataWanted, setAppDataWanted] = useState<boolean | null>(null);
+  const [appData, setAppData] = useState<AppData | null>(null);
+  // What the switch or the way was moved to, shown while su or Shizuku answer.
+  const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay } | null>(null);
+  // The su field's text once edited; it is stored when the field is left.
+  const [suDraft, setSuDraft] = useState<string | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
   const [version, setVersion] = useState<string | null>(null);
   // Null until read, so the card never shows the built-in values for a moment.
@@ -245,6 +247,16 @@ export function Settings() {
     return () => sub.remove();
   }, [refresh]);
 
+  const changeAppData = (wanted: { on?: boolean; way?: AppDataWay }, change: () => Promise<AppData>) => {
+    setAppDataWanted(wanted);
+    change()
+      .then(setAppData, () => {})
+      .finally(() => setAppDataWanted(null));
+  };
+  const appDataOn = appDataWanted?.on ?? (appData !== null && appData.state !== "off");
+  const su = suDraft ?? appData?.su ?? "";
+  const suValid = SU_COMMAND.test(su);
+
   // What a report needs and nothing more. No path, no job or target name and
   // no address: it is meant to be pasted into a public issue.
   const appVersion = Constants.expoConfig?.version ?? "?";
@@ -344,25 +356,63 @@ export function Settings() {
         <Toggle
           label={t("phone.appData")}
           hint={t("phone.appDataHint")}
-          value={appDataWanted ?? (appData !== null && appData !== "off")}
+          value={appDataOn}
           disabled={appData === null || appDataWanted !== null}
-          onChange={(on) => {
-            setAppDataWanted(on);
-            engine
-              .setAppData(on)
-              .then(setAppData, () => {})
-              .finally(() => setAppDataWanted(null));
-          }}
+          onChange={(on) => changeAppData({ on }, () => engine.setAppData(on))}
         />
-        {appData && appData !== "off" && appDataWanted === null ? <Caption>{appDataSaid(appData, t)}</Caption> : null}
-        {appData === "shizukuDenied" ? (
-          <View style={styles.actions}>
-            <Button
-              label={t("phone.appDataAsk")}
-              glyph="IconUnlock"
-              onPress={() => engine.askShizuku().then(setAppData, () => {})}
+        {appData && appDataOn ? (
+          <>
+            {/* The way that works is marked until one is picked; a way that
+                cannot work here is dimmed, and the line below says why. */}
+            <Choice<AppDataWay>
+              hue={0}
+              value={appDataWanted?.way ?? appData.way}
+              disabled={appDataWanted !== null}
+              onChange={(way) => {
+                if (way !== appData.way) changeAppData({ way }, () => engine.setAppDataWay(way));
+              }}
+              options={[
+                { value: "root", label: t("phone.appDataWayRoot"), disabled: !appData.root },
+                { value: "shizuku", label: "Shizuku", disabled: !appData.shizuku },
+              ]}
             />
-          </View>
+            {appDataWanted === null && appData.state !== "off" ? (
+              <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
+            ) : null}
+            {/* Also while root is dimmed, since a wrong name for su is one
+                reason it can be. */}
+            {appData.way === "root" || !appData.root ? (
+              <Field
+                label={t("phone.appDataSu")}
+                hint={t("phone.appDataSuHint")}
+                value={su}
+                onChange={setSuDraft}
+                onBlur={() => {
+                  if (suValid && su !== appData.su) changeAppData({}, () => engine.setAppDataSu(su));
+                }}
+                error={suValid ? undefined : t("phone.appDataSuBad")}
+              />
+            ) : null}
+            {appData.way === "root" && (appData.state === "rootDenied" || appData.state === "noSu") ? (
+              <View style={styles.actions}>
+                <Button
+                  label={t("phone.appDataRequestRoot")}
+                  glyph="IconUnlock"
+                  busy={appDataWanted !== null}
+                  onPress={() => changeAppData({}, engine.requestRoot)}
+                />
+              </View>
+            ) : null}
+            {appData.state === "shizukuDenied" ? (
+              <View style={styles.actions}>
+                <Button
+                  label={t("phone.appDataAsk")}
+                  glyph="IconUnlock"
+                  onPress={() => engine.askShizuku().then(setAppData, () => {})}
+                />
+              </View>
+            ) : null}
+          </>
         ) : null}
         <Toggle
           label={t("phone.notify")}
@@ -404,11 +454,12 @@ export function Settings() {
       </Section>
 
       {/* The selectors on this page count through the palette in the order
-          they stand: Design, Corners, the two label rows, then Motion. */}
+          they stand: the Android/data way, Design, Corners, the two label
+          rows, then Motion. */}
       <Section title={t("phone.appearance")} hue={1}>
         <AxisLabel>{t("phone.design")}</AxisLabel>
         <Choice<ThemeChoice>
-          hue={0}
+          hue={1}
           value={look.theme}
           onChange={(theme) => setAppearance({ theme })}
           options={[
@@ -420,7 +471,7 @@ export function Settings() {
 
         <AxisLabel hint={t("look.cornersHint")}>{t("look.corners")}</AxisLabel>
         <Choice<Shape>
-          hue={1}
+          hue={2}
           value={look.shape}
           onChange={(shape) => {
             setAppearance({ shape });
@@ -438,7 +489,7 @@ export function Settings() {
             bar has its own setting, since it fits five words across the width. */}
         <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
         <Choice<LabelMode>
-          hue={2}
+          hue={3}
           // A stored `reactive` shows as symbols, which is how it rendered.
           value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
@@ -450,7 +501,7 @@ export function Settings() {
         />
         <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
         <Choice<BarLabelMode>
-          hue={3}
+          hue={4}
           // The resolved mode, so a stored "same" still lights a segment; see
           // barMode in ui.tsx.
           value={barLabels}
@@ -591,7 +642,7 @@ export function Settings() {
         hue={5}
       >
         <Choice<MotionIntensity>
-          hue={4}
+          hue={5}
           value={look.motion}
           onChange={(motion) => {
             // Animated at the new level, as a preview of it.
@@ -971,8 +1022,21 @@ function directionOf(defaults: Defaults, t: T): string {
   return `${named}, ${t(mode === "mirror" ? "mode.mirror" : mode === "move" ? "mode.move" : "mode.sync")}`;
 }
 
-/** The line under the Android/data switch: what it can do, or why it cannot. */
-function appDataSaid(state: Exclude<AppDataState, "off">, t: T): string {
+/** A command name or an absolute path, either without spaces. */
+const SU_COMMAND = /^(\/[^\s/]+)+$|^[^\s/]+$/;
+
+/**
+ * The line under the Android/data way: what it can do or why it cannot,
+ * then why a way is dimmed where that is not already said.
+ */
+function appDataSaid(state: Exclude<AppDataState, "off">, ways: Pick<AppData, "root" | "shizuku">, t: T): string {
+  const said = [stateSaid(state, t)];
+  if (!ways.root && state !== "noSu" && state !== "noWay") said.push(t("phone.appDataNoSu"));
+  if (!ways.shizuku && state !== "noShizuku" && state !== "noWay") said.push(t("phone.appDataNoShizuku"));
+  return said.join(" ");
+}
+
+function stateSaid(state: Exclude<AppDataState, "off">, t: T): string {
   switch (state) {
     case "root":
       return t("phone.appDataRoot");
@@ -980,6 +1044,12 @@ function appDataSaid(state: Exclude<AppDataState, "off">, t: T): string {
       return t("phone.appDataShizuku");
     case "noWay":
       return t("phone.appDataNoWay");
+    case "noSu":
+      return t("phone.appDataNoSu");
+    case "rootDenied":
+      return t("phone.appDataRootDenied");
+    case "noShizuku":
+      return t("phone.appDataNoShizuku");
     case "shizukuStopped":
       return t("phone.appDataStopped");
     case "shizukuDenied":

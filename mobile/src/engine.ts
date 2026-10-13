@@ -43,11 +43,17 @@ interface EngineNativeModule {
   copy(value: string): Promise<void>;
 
   /** How Android/data stands, after starting its server if it is switched on. */
-  appData(): Promise<AppDataState>;
+  appData(): Promise<AppData>;
   /** Switches Android/data on or off and starts the engine over. */
-  setAppData(on: boolean): Promise<AppDataState>;
+  setAppData(on: boolean): Promise<AppData>;
+  /** Keeps to the given way and starts the server and the engine over. */
+  setAppDataWay(way: AppDataWay): Promise<AppData>;
+  /** Stores what runs as su, asks it for root again and starts over. */
+  setAppDataSu(su: string): Promise<AppData>;
+  /** Runs su again, so the root manager shows its prompt. */
+  requestRoot(): Promise<AppData>;
   /** Shows Shizuku's permission dialog and resolves once it is answered. */
-  askShizuku(): Promise<AppDataState>;
+  askShizuku(): Promise<AppData>;
 }
 
 /**
@@ -62,10 +68,29 @@ export type AppDataState =
   | "shizuku"
   /** Neither root nor Shizuku on this phone. */
   | "noWay"
+  /** Nothing runs under the name set for su. */
+  | "noSu"
+  /** su runs but has not given root. */
+  | "rootDenied"
+  | "noShizuku"
   | "shizukuStopped"
   | "shizukuDenied"
   /** The server stopped twice. */
   | "failed";
+
+export type AppDataWay = "root" | "shizuku";
+
+export interface AppData {
+  state: AppDataState;
+  /** The way picked, or while none is, the way last tried. */
+  way: AppDataWay;
+  /** False once su was found missing, which leaves root out. */
+  root: boolean;
+  /** Whether Shizuku is installed or running. */
+  shizuku: boolean;
+  /** What runs as su: a command name or a path. */
+  su: string;
+}
 
 /**
  * The run conditions somebody chose. Kept apart from the live readings in
@@ -108,6 +133,9 @@ const NOTHING_HELD: DevicePolicy = {
   holding: "",
 };
 
+/** What a build without the native module reports: switched off. */
+const NO_APP_DATA: AppData = { state: "off", way: "root", root: true, shizuku: false, su: "su" };
+
 const native = NativeModules.ArrowLoopEngine as EngineNativeModule | undefined;
 
 /**
@@ -146,8 +174,11 @@ export const engine = {
     native ? native.setDevicePolicy(policy) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
   copy: (value: string) => (native ? native.copy(value) : missing()),
-  appData: (): Promise<AppDataState> => (native ? native.appData() : Promise.resolve("off")),
+  appData: (): Promise<AppData> => (native ? native.appData() : Promise.resolve(NO_APP_DATA)),
   setAppData: (on: boolean) => (native ? native.setAppData(on) : missing()),
+  setAppDataWay: (way: AppDataWay) => (native ? native.setAppDataWay(way) : missing()),
+  setAppDataSu: (su: string) => (native ? native.setAppDataSu(su) : missing()),
+  requestRoot: () => (native ? native.requestRoot() : missing()),
   askShizuku: () => (native ? native.askShizuku() : missing()),
   /** Whether this build has an engine at all. */
   available: Boolean(native),

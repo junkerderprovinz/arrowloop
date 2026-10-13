@@ -124,24 +124,43 @@ class EngineModule(private val context: ReactApplicationContext) :
      * and starts its server first if it is switched on and not up yet.
      */
     @ReactMethod
-    fun appData(promise: Promise) = slowly(promise) { AppData.settle(context).js }
+    fun appData(promise: Promise) = slowly(promise) { AppData.settle(context) }
 
     @ReactMethod
-    fun setAppData(on: Boolean, promise: Promise) = slowly(promise) { AppData.setEnabled(context, on).js }
+    fun setAppData(on: Boolean, promise: Promise) = slowly(promise) { AppData.setEnabled(context, on) }
+
+    @ReactMethod
+    fun setAppDataWay(way: String, promise: Promise) =
+        slowly(promise) { AppData.setWay(context, AppData.Way.values().first { it.js == way }) }
+
+    @ReactMethod
+    fun setAppDataSu(su: String, promise: Promise) = slowly(promise) { AppData.setSu(context, su) }
+
+    /** Resolves once the root manager has had its answer, or after its prompt timed out. */
+    @ReactMethod
+    fun requestRoot(promise: Promise) = slowly(promise) { AppData.requestRoot(context) }
 
     /** Resolves once the person has answered Shizuku's dialog. */
     @ReactMethod
-    fun askShizuku(promise: Promise) = AppData.askShizuku(context) { promise.resolve(it.js) }
+    fun askShizuku(promise: Promise) = AppData.askShizuku(context) { promise.resolve(toJs(it)) }
 
     /** Runs work on a thread of its own, since su and Shizuku can take seconds. */
-    private fun slowly(promise: Promise, work: () -> String) {
+    private fun slowly(promise: Promise, work: () -> AppData.Report) {
         Thread {
             try {
-                promise.resolve(work())
+                promise.resolve(toJs(work()))
             } catch (e: Exception) {
                 promise.reject("appData", e.message, e)
             }
         }.start()
+    }
+
+    private fun toJs(report: AppData.Report) = Arguments.createMap().apply {
+        putString("state", report.state.js)
+        putString("way", report.way.js)
+        putBoolean("root", report.root)
+        putBoolean("shizuku", report.shizuku)
+        putString("su", report.su)
     }
 
     @ReactMethod
