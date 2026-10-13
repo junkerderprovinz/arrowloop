@@ -37,6 +37,9 @@ type shell struct {
 
 	// Unix nanoseconds, read on the main thread, which must not wait on mu.
 	activityHid atomic.Int64
+	// quitChosen is set when somebody quits from the menu or the close button,
+	// rather than the installer or the session ending the program.
+	quitChosen atomic.Bool
 
 	mu         sync.Mutex
 	tray       *application.SystemTray
@@ -145,7 +148,22 @@ func (s *shell) closing(e *application.WindowEvent) {
 		s.toTray()
 		return
 	}
+	s.quit()
+}
+
+// quit ends the program because somebody chose to.
+func (s *shell) quit() {
+	s.quitChosen.Store(true)
 	s.app.Quit()
+}
+
+// ended records the window's place for the next start. A quit somebody chose
+// shows the window then; one from outside leaves it where it was, so a program
+// the installer closes in the tray comes back there.
+func (s *shell) ended() {
+	if s.quitChosen.Load() {
+		s.remember(false)
+	}
 }
 
 // toTray hides the main window behind the icon.
@@ -236,7 +254,7 @@ func (s *shell) startTray() *application.SystemTray {
 		}
 	})
 	menu.AddSeparator()
-	s.items.quit = menu.Add("").OnClick(func(*application.Context) { s.app.Quit() })
+	s.items.quit = menu.Add("").OnClick(func(*application.Context) { s.quit() })
 
 	tray := s.app.SystemTray.New()
 	tray.SetMenu(menu)

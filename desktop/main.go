@@ -196,12 +196,10 @@ func run() error {
 		go up.run(ctx)
 	}
 
-	// Quitting is a decision, and the next start shows the window again. Only a
-	// program ended without the chance to get here comes back in the tray.
 	app.OnShutdown(func() {
 		stop()
 		up.stop()
-		sh.remember(false)
+		sh.ended()
 	})
 	err = app.Run()
 	stopping, cancel := context.WithTimeout(context.Background(), shutdownGrace)

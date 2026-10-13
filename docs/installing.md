@@ -181,11 +181,11 @@ the new installer once moves it.
 
 The installer asks a running ArrowLoop to quit, as Quit in the tray menu would,
 so a sync under way stops cleanly. Once the new version is in place, it starts
-ArrowLoop again as the person signed in. Run as `installer.exe /S /relaunch`, it
-installs silently and starts ArrowLoop even if it was not running. A computer
-with an ARM processor, such as a Snapdragon laptop, takes the one named
-`windows-arm64`; the `amd64` installer would run there too, but through
-emulation and slower.
+ArrowLoop again as the person signed in, back in the tray if that is where it
+was. Run as `installer.exe /S /relaunch`, it installs silently and starts
+ArrowLoop even if it was not running. A computer with an ARM processor, such as
+a Snapdragon laptop, takes the one named `windows-arm64`; the `amd64` installer
+would run there too, but through emulation and slower.
 
 Linux gets the program as a single file, `linux-amd64` for an Intel or AMD
 processor and `linux-arm64` for a 64-bit ARM one. It needs WebKitGTK 4.1
