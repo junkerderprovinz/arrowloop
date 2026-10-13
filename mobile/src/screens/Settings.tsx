@@ -397,14 +397,12 @@ export function Settings() {
               <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
             ) : null}
             {!appData.shizuku || appData.state === "noShizuku" ? (
-              <View style={styles.actionTip}>
-                <Button
-                  label={t("phone.appDataGetShizuku")}
-                  glyph="IconDownload"
-                  onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
-                />
-                <InfoBubble tip={t("phone.appDataGetShizukuHint")} />
-              </View>
+              <Button
+                label={t("phone.appDataGetShizuku")}
+                glyph="IconDownload"
+                hint={t("phone.appDataGetShizukuHint")}
+                onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
+              />
             ) : null}
             {/* Also while root is dimmed, since a wrong name for su is one
                 reason it can be. */}
@@ -1113,7 +1111,6 @@ function langFlag(code: string): string {
 const styles = StyleSheet.create({
   // Wraps, or a row of three buttons clips the last one on a narrow phone.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  actionTip: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },

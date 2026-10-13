@@ -816,6 +816,7 @@ export function Button({
   shake,
   confirm,
   glyph: named,
+  hint,
 }: {
   label: string;
   /** The translation key behind `label`, which picks the glyph. */
@@ -838,6 +839,8 @@ export function Button({
   shake?: number;
   /** Increment to swell once, when what the button did has landed. */
   confirm?: number;
+  /** The "(i)" at the end of the button, for what the name cannot say. */
+  hint?: string;
 }) {
   const { p, corners, labels, accent, hueAt } = useTheme();
   const { ms } = useMotion();
@@ -874,7 +877,7 @@ export function Button({
   const showWord = labels === "text" || labels === "textGlyph" || !glyph;
   const showGlyph = Boolean(glyph) && labels !== "text";
 
-  return (
+  const button = (
     <AnimatedPressable
       onPress={onPress}
       onPressIn={press.onPressIn}
@@ -905,6 +908,17 @@ export function Button({
         </Text>
       ) : null}
     </AnimatedPressable>
+  );
+  if (!hint) return button;
+  // As on the README buttons, the (i) lies over the button's end as its
+  // sibling, so tapping it opens the bubble and not what the button does.
+  return (
+    <View style={{ flexGrow: wide === false ? 0 : 1 }}>
+      {button}
+      <View style={styles.readmeHint} pointerEvents="box-none">
+        <InfoBubble tip={hint} on={tone === "neutral" || tone === "danger" ? undefined : ink} />
+      </View>
+    </View>
   );
 }
 
