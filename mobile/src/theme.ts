@@ -85,11 +85,12 @@ export const palettes: Record<Scheme, Palette> = { dark, light };
  * The About card's brand marks per theme, adjusted from the published brand
  * colours to reach the 3:1 a graphic needs: the published Buy Me a Coffee
  * yellow reads 1.14:1 on the light surface, PayPal's navy fails on the dark
- * one. The mail button takes the accent.
+ * one. The mail button takes the accent, and the manual's book the yellow of
+ * the README's docs button, which is the coffee button's.
  */
-export const BRAND: Record<Scheme, Record<"coffee" | "paypal" | "bitcoin" | "github", string>> = {
-  dark: { coffee: "#ffdd00", paypal: "#4fb5f0", bitcoin: "#f7931a", github: "#ffffff" },
-  light: { coffee: "#8a6d00", paypal: "#003087", bitcoin: "#a85d00", github: "#181717" },
+export const BRAND: Record<Scheme, Record<"coffee" | "docs" | "paypal" | "bitcoin" | "github", string>> = {
+  dark: { coffee: "#ffdd00", docs: "#ffdd00", paypal: "#4fb5f0", bitcoin: "#f7931a", github: "#ffffff" },
+  light: { coffee: "#8a6d00", docs: "#8a6d00", paypal: "#003087", bitcoin: "#a85d00", github: "#181717" },
 };
 
 /**
@@ -98,6 +99,7 @@ export const BRAND: Record<Scheme, Record<"coffee" | "paypal" | "bitcoin" | "git
  */
 export const TILE = {
   coffee: { color: "#ffdd00", ink: "#0d0c22" },
+  docs: { color: "#ffdd00", ink: "#161616" },
   paypal: { color: "#003087", ink: "#ffffff" },
   bitcoin: { color: "#f7931a", ink: "#161616" },
   github: { color: "#181717", ink: "#ffffff" },

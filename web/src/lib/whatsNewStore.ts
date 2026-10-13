@@ -87,11 +87,49 @@ export function recordFor(stored: NewsRecord | null, running: string, settled: b
   return { version: running, after: newest?.after ?? '', seen: newest?.changes.map((c) => c.id) ?? [] }
 }
 
-/** Settles the record once the running version and whether the engine was in use are known. */
+/**
+ * Settles the record once the running version and whether the engine was in
+ * use are known. After an update this browser saw the version before, the
+ * window opens by itself on the release notes. A browser without a record has
+ * not seen an older release, so nothing in the notes is news to it.
+ */
 export function startWhatsNew(running: string, settled: boolean) {
   const stored = parse(readRaw())
   const next = recordFor(stored, running, settled)
-  if (next !== stored) write(next)
+  if (next === stored) return
+  write(next)
+  if (stored) openNewsWindow('notes')
+}
+
+/** The two tabs of the window: the release notes and the list of changes. */
+export type NewsTab = 'notes' | 'changes'
+
+let windowTab: NewsTab | null = null
+const windowListeners = new Set<() => void>()
+
+function setWindow(tab: NewsTab | null) {
+  windowTab = tab
+  for (const listener of windowListeners) listener()
+}
+
+/** Opens the one window "Release notes", "New" and an update share, on the given tab. */
+export function openNewsWindow(tab: NewsTab) {
+  setWindow(tab)
+}
+
+export function closeNewsWindow() {
+  setWindow(null)
+}
+
+/** The tab the window shows, or null while it is closed. */
+export function useNewsWindow(): NewsTab | null {
+  return useSyncExternalStore(
+    (listener) => {
+      windowListeners.add(listener)
+      return () => windowListeners.delete(listener)
+    },
+    () => windowTab,
+  )
 }
 
 function update(fields: (record: NewsRecord) => Partial<NewsRecord>) {

@@ -17,7 +17,7 @@ import { Welcome } from './pages/Welcome'
 import { Settings } from './pages/settings/Settings'
 import { DEFAULT_ACCENT, PRESET_HEXES, type LookProps } from './pages/settings/LookPage'
 import { rememberedTile, settingsTiles } from './pages/settings/tiles'
-import { WhatsNewButton } from './pages/settings/WhatsNew'
+import { WhatsNewButton, WhatsNewHost } from './pages/settings/WhatsNew'
 import {
   api,
   whenSignedOut,
@@ -518,6 +518,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       {small && <BottomBar extras={extras} counts={counts} pathname={pathname} signOut={signOut} />}
 
       <WhatsNewDots news={news} active={fresh === false && news?.version === running && view?.page !== 'welcome'} />
+      <WhatsNewHost />
     </div>
   )
 }

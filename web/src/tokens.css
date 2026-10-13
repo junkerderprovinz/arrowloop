@@ -116,8 +116,10 @@
      3.2, 8.7 and 11.9 on the light one.
 
      The mail button has no brand colour: it reaches the app's own authors and
-     follows the user's accent. */
+     follows the user's accent. The manual's book takes the yellow of the
+     README's docs button, which is the coffee button's. */
   --brand-coffee:  #ffdd00;
+  --brand-docs:    #ffdd00;
   --brand-bitcoin: #f7931a;
   --brand-paypal:  #4fb5f0;
 
@@ -213,6 +215,7 @@
 
     /* Warm brands deepened, dark ones left dark (see the dark block). */
     --brand-coffee:  #8a6d00;
+    --brand-docs:    #8a6d00;
     --brand-bitcoin: #a85d00;
     --brand-paypal:  #003087;
     --brand-android:           #32de84;
@@ -277,6 +280,7 @@
 
   /* The same brand values as the media block, for an explicit light choice. */
   --brand-coffee:  #8a6d00;
+  --brand-docs:    #8a6d00;
   --brand-bitcoin: #a85d00;
   --brand-paypal:  #003087;
   --brand-android:           #32de84;
@@ -861,6 +865,32 @@ body {
     --motion-tab-travel: 18px;
     --motion-wiggle-dur: 280ms;
     --motion-wiggle-angle: .6deg;
+    /* A fill level's slosh: one swing to each wall and back, how far the
+       liquid tilts, how high a crest runs up the wall and the hump rises as
+       multiples of their drawn height, how far a bar's end surges and leans,
+       the time a bubble takes per unit of depth and how strongly it shows,
+       and how far a popping bubble lifts above the surface, swells, rings,
+       sprays its droplets and runs past a bar's end. */
+    --motion-slosh-dur: 3.6s;
+    --motion-slosh-tilt: 5deg;
+    --motion-slosh-run: 3.2;
+    --motion-slosh-hump: .9;
+    --motion-slosh-surge: 5px;
+    --motion-slosh-lean: 12deg;
+    --motion-slosh-bubble-pace: .35s;
+    --motion-slosh-bubble-opacity: .7;
+    --motion-slosh-pop-lift: 3.6;
+    --motion-slosh-pop-swell: 1.5;
+    --motion-slosh-pop-ring: 3.4;
+    --motion-slosh-pop-spray: 1.3;
+    --motion-slosh-pop-reach: 5px;
+    /* A packet landing in a vessel: how long the splash takes to settle, how
+       far it rocks the liquid, and how high its crest and ripple rise as
+       multiples of their drawn height. */
+    --motion-slosh-splash-dur: .9s;
+    --motion-slosh-splash-tilt: 7deg;
+    --motion-slosh-splash-run: 3.4;
+    --motion-slosh-splash-ripple: 1.5;
   }
   :root[data-motion='subtle'] {
     --motion-control-dur: 80ms;
@@ -885,6 +915,23 @@ body {
     --motion-tab-travel: 10px;
     --motion-wiggle-dur: 360ms;
     --motion-wiggle-angle: .3deg;
+    --motion-slosh-dur: 5s;
+    --motion-slosh-tilt: 3deg;
+    --motion-slosh-run: 2.2;
+    --motion-slosh-hump: .6;
+    --motion-slosh-surge: 3.5px;
+    --motion-slosh-lean: 8deg;
+    --motion-slosh-bubble-pace: .5s;
+    --motion-slosh-bubble-opacity: .55;
+    --motion-slosh-pop-lift: 3;
+    --motion-slosh-pop-swell: 1.4;
+    --motion-slosh-pop-ring: 3;
+    --motion-slosh-pop-spray: 1.1;
+    --motion-slosh-pop-reach: 4px;
+    --motion-slosh-splash-dur: 1.1s;
+    --motion-slosh-splash-tilt: 4deg;
+    --motion-slosh-splash-run: 2.2;
+    --motion-slosh-splash-ripple: 1;
   }
   :root[data-motion='off'] {
     --motion-control-dur: 0s;
@@ -910,6 +957,24 @@ body {
     /* A long period rather than none, with no angle, so nothing moves. */
     --motion-wiggle-dur: 400ms;
     --motion-wiggle-angle: 0deg;
+    /* Long rather than 0, and stopped outright after the slosh's rules. */
+    --motion-slosh-dur: 60s;
+    --motion-slosh-tilt: 0deg;
+    --motion-slosh-run: 0;
+    --motion-slosh-hump: 0;
+    --motion-slosh-surge: 0px;
+    --motion-slosh-lean: 0deg;
+    --motion-slosh-bubble-pace: 6s;
+    --motion-slosh-bubble-opacity: 0;
+    --motion-slosh-pop-lift: 0;
+    --motion-slosh-pop-swell: 1;
+    --motion-slosh-pop-ring: 1;
+    --motion-slosh-pop-spray: 0;
+    --motion-slosh-pop-reach: 0px;
+    --motion-slosh-splash-dur: 60s;
+    --motion-slosh-splash-tilt: 0deg;
+    --motion-slosh-splash-run: 0;
+    --motion-slosh-splash-ripple: 0;
   }
   :root[data-motion='off'] * { transition-duration: 0s !important; }
   :root[data-motion='subtle'] .transition,
@@ -963,6 +1028,23 @@ body {
   --motion-tab-travel: 34px;
   --motion-wiggle-dur: 220ms;
   --motion-wiggle-angle: 1deg;
+  --motion-slosh-dur: 2.6s;
+  --motion-slosh-tilt: 7.5deg;
+  --motion-slosh-run: 4.5;
+  --motion-slosh-hump: 1.3;
+  --motion-slosh-surge: 7px;
+  --motion-slosh-lean: 18deg;
+  --motion-slosh-bubble-pace: .25s;
+  --motion-slosh-bubble-opacity: .85;
+  --motion-slosh-pop-lift: 4.4;
+  --motion-slosh-pop-swell: 1.6;
+  --motion-slosh-pop-ring: 3.8;
+  --motion-slosh-pop-spray: 1.5;
+  --motion-slosh-pop-reach: 7px;
+  --motion-slosh-splash-dur: .75s;
+  --motion-slosh-splash-tilt: 10deg;
+  --motion-slosh-splash-run: 4.8;
+  --motion-slosh-splash-ripple: 2;
 }
 :root[data-motion='storm'][dir="rtl"] { --glim-toast-slide: -44px; }
 
@@ -1106,8 +1188,271 @@ body {
   to   { rotate: var(--motion-wiggle-angle, .6deg); }
 }
 
+/* A fill level sloshes ("Illustrations" in the design language). In a vessel
+   the body of the liquid tilts, and the surface runs up the wall it tilts
+   toward in a crest that peaks just after the tilt and drains as the liquid
+   swings back. A small hump crosses the middle on the way between the walls,
+   and a paler back layer lags the front a little. On a lying bar the surface
+   is the fill's end, which surges out leaning forward and draws back. Every
+   part runs on one duration, so a crest rises exactly while the liquid tilts
+   toward its wall. */
+@keyframes glim-slosh-tilt {
+  from { rotate: 0deg; }
+  25%  { rotate: var(--motion-slosh-tilt, 5deg); }
+  50%  { rotate: 0deg; }
+  75%  { rotate: calc(var(--motion-slosh-tilt, 5deg) * -1); }
+  to   { rotate: 0deg; }
+}
+@keyframes glim-slosh-crest-left {
+  from  { scale: 1 0; }
+  12.5% { scale: 1 0; }
+  28%   { scale: 1 var(--motion-slosh-run, 3.2); }
+  52%   { scale: 1 0; }
+  to    { scale: 1 0; }
+}
+@keyframes glim-slosh-crest-right {
+  from  { scale: 1 0; }
+  62.5% { scale: 1 0; }
+  78%   { scale: 1 var(--motion-slosh-run, 3.2); }
+  to    { scale: 1 0; }
+}
+@keyframes glim-slosh-hump {
+  from { translate: 0 0; scale: 1 var(--motion-slosh-hump, .9); }
+  10%  { translate: -2px 0; scale: 1 0; }
+  40%  { translate: -2px 0; scale: 1 0; }
+  50%  { translate: 0 0; scale: 1 var(--motion-slosh-hump, .9); }
+  60%  { translate: 2px 0; scale: 1 0; }
+  90%  { translate: 2px 0; scale: 1 0; }
+  to   { translate: 0 0; scale: 1 var(--motion-slosh-hump, .9); }
+}
+@keyframes glim-slosh-surge {
+  from { translate: calc((-100% + var(--motion-slosh-surge, 5px) * .4) * var(--liquid-dir)) 0; transform: none; }
+  25%  { translate: calc((-100% + var(--motion-slosh-surge, 5px) * .15) * var(--liquid-dir)) 0; transform: skewX(calc(var(--motion-slosh-lean, 12deg) * .5 * var(--liquid-dir))); }
+  50%  { translate: calc((-100% + var(--motion-slosh-surge, 5px) * .4) * var(--liquid-dir)) 0; transform: none; }
+  75%  { translate: calc((-100% + var(--motion-slosh-surge, 5px)) * var(--liquid-dir)) 0; transform: skewX(calc(var(--motion-slosh-lean, 12deg) * -1 * var(--liquid-dir))); }
+  to   { translate: calc((-100% + var(--motion-slosh-surge, 5px) * .4) * var(--liquid-dir)) 0; transform: none; }
+}
+/* A bubble starts at its share of the depth and fades just below the
+   surface. The vessel sets --liquid-depth on its svg, the floor's distance
+   below the surface as a plain number, so bubbles rise at one speed at any
+   level. */
+@keyframes glim-slosh-bubble {
+  from { translate: 0 calc(max(var(--liquid-depth, 10) * var(--bubble-from, 1), 3) * 1px); opacity: 0; }
+  15%  { opacity: var(--motion-slosh-bubble-opacity, .7); }
+  50%  { translate: var(--bubble-sway, 0px) calc(max(var(--liquid-depth, 10) * var(--bubble-from, 1), 3) * .5px); }
+  82%  { opacity: var(--motion-slosh-bubble-opacity, .7); }
+  to   { translate: 0 1.8px; opacity: 0; }
+}
+/* A bar's bubbles drift toward its end, one tile per loop. */
+@keyframes glim-slosh-fizz {
+  to { background-position: 40px 0, 40px 0, 40px 0, 26px 0, 26px 0; }
+}
+/* A popping bubble rises like the others and goes on through the surface into
+   the air above it, swells a little and bursts into a thin ring and three
+   droplets in the liquid's colour, which shows on the empty part of the
+   vessel in every theme. Its parts share one duration and delay through
+   --pop-dur and --pop-delay on its group, so they stay in step. */
+@keyframes glim-slosh-pop {
+  from    { translate: 0 calc(max(var(--liquid-depth, 10) * var(--bubble-from, 1), 3) * 1px); }
+  45%     { translate: var(--bubble-sway, 0px) calc(max(var(--liquid-depth, 10) * var(--bubble-from, 1), 3) * .45px); }
+  72%     { translate: 0 0; }
+  80%     { translate: calc(var(--bubble-sway, 0px) * -.5) calc(var(--motion-slosh-pop-lift, 3.6) * -.8px); }
+  86%, to { translate: 0 calc(var(--motion-slosh-pop-lift, 3.6) * -1px); }
+}
+@keyframes glim-slosh-pop-bubble {
+  from    { opacity: 0; scale: 1; }
+  12%     { opacity: var(--motion-slosh-bubble-opacity, .7); }
+  70%     { opacity: var(--motion-slosh-bubble-opacity, .7); scale: 1; }
+  76%     { opacity: 1; scale: 1.1; }
+  86%     { opacity: 1; scale: 1.15; }
+  89%     { opacity: 0; scale: var(--motion-slosh-pop-swell, 1.5); }
+  to      { opacity: 0; scale: 1; }
+}
+@keyframes glim-slosh-pop-ring {
+  from, 86% { opacity: 0; scale: 1; }
+  87%       { opacity: .9; scale: 1.3; }
+  93%       { opacity: 0; scale: var(--motion-slosh-pop-ring, 3.4); }
+  to        { opacity: 0; scale: 1; }
+}
+@keyframes glim-slosh-pop-drop {
+  from, 86% { opacity: 0; translate: 0 0; }
+  87%       { opacity: 1; }
+  94%       { opacity: 0; translate: calc(var(--drop-x) * var(--motion-slosh-pop-spray, 1.3)) calc(var(--drop-y) * var(--motion-slosh-pop-spray, 1.3)); }
+  to        { opacity: 0; translate: 0 0; }
+}
+/* On a bar a popping bubble runs a few pixels past the fill's end and bursts
+   there, inside the track, which clips it on a full bar. */
+@keyframes glim-slosh-pop-bar {
+  from    { translate: 0 0; }
+  82%     { translate: calc((100cqi - 3px) * var(--liquid-dir)) 0; }
+  90%, to { translate: calc((100cqi + var(--motion-slosh-pop-reach, 5px)) * var(--liquid-dir)) 0; }
+}
+@keyframes glim-slosh-pop-bar-bubble {
+  from    { opacity: 0; scale: 1; }
+  10%     { opacity: var(--motion-slosh-bubble-opacity, .7); }
+  80%     { opacity: var(--motion-slosh-bubble-opacity, .7); scale: 1; }
+  84%     { opacity: 1; scale: 1.15; }
+  90%     { opacity: 1; scale: 1.2; }
+  93%     { opacity: 0; scale: var(--motion-slosh-pop-swell, 1.5); }
+  to      { opacity: 0; scale: 1; }
+}
+@keyframes glim-slosh-pop-bar-ring {
+  from, 90% { opacity: 0; scale: 1; }
+  91%       { opacity: .9; scale: 1.3; }
+  97%       { opacity: 0; scale: var(--motion-slosh-pop-ring, 3.4); }
+  to        { opacity: 0; scale: 1; }
+}
+/* A packet of a transfer flow lands in a vessel from the left. The liquid
+   kicks up that wall, rocks back over the middle and settles in two smaller
+   swings, on top of its slosh. A crest shoots up the left wall and a ripple
+   runs across to the right one, flattening as it goes. */
+@keyframes glim-slosh-splash-tilt {
+  from { rotate: 0deg; }
+  12%  { rotate: var(--motion-slosh-splash-tilt, 7deg); }
+  34%  { rotate: calc(var(--motion-slosh-splash-tilt, 7deg) * -.45); }
+  58%  { rotate: calc(var(--motion-slosh-splash-tilt, 7deg) * .18); }
+  80%  { rotate: calc(var(--motion-slosh-splash-tilt, 7deg) * -.05); }
+  to   { rotate: 0deg; }
+}
+@keyframes glim-slosh-splash-crest {
+  from    { scale: 1 0; }
+  14%     { scale: 1 var(--motion-slosh-splash-run, 3.4); }
+  40%, to { scale: 1 0; }
+}
+@keyframes glim-slosh-splash-ripple {
+  from, 8% { translate: 0 0; scale: 1 0; }
+  22%      { translate: 3px 0; scale: 1 var(--motion-slosh-splash-ripple, 1.5); }
+  70%, to  { translate: 14px 0; scale: 1 0; }
+}
+
 /* Drawn at rest outside the gate, so a checkmark is never left invisible. */
 .glim-check-draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+
+/* The liquid's resting state, outside the gate as well. A still frame is a
+   flat surface: the crests, the hump and a splash's ripple rest at zero height
+   and the bubbles and pops hidden. In a vessel drawn 34 units wide the liquid
+   tilts about the middle, 17 units in. */
+.glim-slosh,
+.glim-slosh-back,
+.glim-slosh-splash-tilt {
+  transform-origin: 17px 0;
+}
+.glim-slosh-crest,
+.glim-slosh-hump,
+.glim-slosh-splash-crest,
+.glim-slosh-splash-ripple {
+  scale: 1 0;
+}
+.glim-slosh-bubble,
+.glim-slosh-pop-bubble,
+.glim-slosh-pop-ring,
+.glim-slosh-pop-drop {
+  opacity: 0;
+}
+.glim-slosh-pop-bubble,
+.glim-slosh-pop-ring,
+.glim-slosh-pop-drop {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* Where the three droplets of a pop fly, before the spray dial scales it. */
+.glim-slosh-pop-drop:nth-child(3) {
+  --drop-x: -1.6px;
+  --drop-y: -1.4px;
+}
+.glim-slosh-pop-drop:nth-child(4) {
+  --drop-x: 1.7px;
+  --drop-y: -1.1px;
+}
+.glim-slosh-pop-drop:nth-child(5) {
+  --drop-x: .3px;
+  --drop-y: -2px;
+}
+
+/* On a bar the surface is the fill's end: a rounded strip in the fill's colour
+   waits under the end and surges out, and the bubbles are dots on two strips
+   of tiles that fade before the end. --liquid-dir turns both round under a
+   right-to-left script. The fill is a size container so a popping bubble's
+   100cqi measures it, and the track rounds and clips whatever passes the end.
+   The bubbles are white in every theme, since they only need to be lighter
+   than the liquid. */
+.glim-slosh-edge {
+  --liquid-dir: 1;
+  position: relative;
+  container-type: inline-size;
+}
+[dir='rtl'] .glim-slosh-edge {
+  --liquid-dir: -1;
+}
+.glim-slosh-edge::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 100%;
+  width: calc(var(--motion-slosh-surge, 0px) + 2px);
+  border-radius: 0 999px 999px 0;
+  background-color: inherit;
+  translate: calc(-100% * var(--liquid-dir)) 0;
+  pointer-events: none;
+}
+[dir='rtl'] .glim-slosh-edge::after {
+  border-radius: 999px 0 0 999px;
+}
+.glim-slosh-edge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle 1.1px at 6px 30%, #fff 55%, transparent),
+    radial-gradient(circle .9px at 19px 70%, #fff 55%, transparent),
+    radial-gradient(circle 1.3px at 31px 45%, #fff 55%, transparent),
+    radial-gradient(circle .8px at 9px 55%, #fff 55%, transparent),
+    radial-gradient(circle 1px at 20px 25%, #fff 55%, transparent);
+  background-size: 40px 100%, 40px 100%, 40px 100%, 26px 100%, 26px 100%;
+  background-repeat: repeat-x;
+  mask: linear-gradient(to left, transparent, #000 10px);
+  opacity: 0;
+  pointer-events: none;
+}
+[dir='rtl'] .glim-slosh-edge::before {
+  mask: linear-gradient(to right, transparent, #000 10px);
+}
+/* A popping bubble on a bar: two empty spans inside the fill. The span has no
+   size of its own and only lends the fill's colour to the bubble's rim and
+   the ring. */
+.glim-slosh-pop-bar {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0;
+  width: 0;
+  height: 0;
+  background-color: inherit;
+  pointer-events: none;
+}
+.glim-slosh-pop-bar::before,
+.glim-slosh-pop-bar::after {
+  content: '';
+  position: absolute;
+  left: -1.5px;
+  top: -1.5px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: inherit;
+  opacity: 0;
+}
+.glim-slosh-pop-bar::before {
+  background-image: radial-gradient(circle closest-side, #fff 60%, transparent 68%);
+}
+.glim-slosh-pop-bar::after {
+  mask: radial-gradient(circle closest-side, transparent 58%, #000 64% 86%, transparent 94%);
+}
+.glim-slosh-pop-bar:nth-child(1) {
+  top: 35%;
+}
+.glim-slosh-pop-bar:nth-child(2) {
+  top: 65%;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   :root.glim-shape-transitions {
@@ -1155,6 +1500,136 @@ body {
 
   .glim-drag-armed > * {
     animation: glim-wiggle var(--motion-wiggle-dur) ease-in-out infinite alternate;
+  }
+
+  /* The slosh. Under reduced motion none of this is read, so the liquid rests
+     level; storm is not restored there, because the slosh never ends. */
+  .glim-slosh {
+    animation: glim-slosh-tilt var(--motion-slosh-dur) ease-in-out infinite;
+  }
+  /* The same swing a twenty-fifth of a loop later. */
+  .glim-slosh-back {
+    animation: glim-slosh-tilt var(--motion-slosh-dur) ease-in-out calc(var(--motion-slosh-dur) * -.96) infinite;
+  }
+  .glim-slosh-crest-left {
+    animation: glim-slosh-crest-left var(--motion-slosh-dur) ease-in-out infinite;
+  }
+  .glim-slosh-crest-right {
+    animation: glim-slosh-crest-right var(--motion-slosh-dur) ease-in-out infinite;
+  }
+  .glim-slosh-hump {
+    animation: glim-slosh-hump var(--motion-slosh-dur) ease-in-out infinite;
+  }
+  .glim-slosh-edge::after {
+    animation: glim-slosh-surge var(--motion-slosh-dur) ease-in-out infinite;
+  }
+  /* Each bubble starts at its own depth, takes its own time and sways to its
+     own side, so they never rise in a row. A shallow level still gives a
+     bubble long enough to be seen. */
+  .glim-slosh-bubble {
+    animation: glim-slosh-bubble 2s linear infinite;
+  }
+  .glim-slosh-bubble:nth-child(1) {
+    --bubble-from: .95;
+    --bubble-sway: .4px;
+    animation-duration: max(1.4s, calc(var(--liquid-depth, 10) * .95 * var(--motion-slosh-bubble-pace)));
+  }
+  .glim-slosh-bubble:nth-child(2) {
+    --bubble-from: .6;
+    --bubble-sway: -.4px;
+    animation-duration: max(1.4s, calc(var(--liquid-depth, 10) * .66 * var(--motion-slosh-bubble-pace)));
+    animation-delay: calc(var(--liquid-depth, 10) * .66 * var(--motion-slosh-bubble-pace) * -.25);
+  }
+  .glim-slosh-bubble:nth-child(3) {
+    --bubble-from: .85;
+    --bubble-sway: .4px;
+    animation-duration: max(1.4s, calc(var(--liquid-depth, 10) * .722 * var(--motion-slosh-bubble-pace)));
+    animation-delay: calc(var(--liquid-depth, 10) * .722 * var(--motion-slosh-bubble-pace) * -.6);
+  }
+  .glim-slosh-edge::before {
+    opacity: var(--motion-slosh-bubble-opacity);
+    animation: glim-slosh-fizz calc(var(--motion-slosh-bubble-pace) * 30) linear infinite;
+  }
+  [dir='rtl'] .glim-slosh-edge::before {
+    animation-direction: reverse;
+  }
+  .glim-slosh-pop {
+    animation: glim-slosh-pop var(--pop-dur, 4s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop-bubble {
+    animation: glim-slosh-pop-bubble var(--pop-dur, 4s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop-ring {
+    animation: glim-slosh-pop-ring var(--pop-dur, 4s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop-drop {
+    animation: glim-slosh-pop-drop var(--pop-dur, 4s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop:nth-child(1) {
+    --bubble-from: .8;
+    --bubble-sway: -.4px;
+    --pop-dur: max(1.8s, calc(var(--liquid-depth, 10) * 1.17 * var(--motion-slosh-bubble-pace)));
+    --pop-delay: calc(var(--liquid-depth, 10) * 1.17 * var(--motion-slosh-bubble-pace) * -.5);
+  }
+  .glim-slosh-pop:nth-child(2) {
+    --bubble-from: .9;
+    --bubble-sway: .4px;
+    --pop-dur: max(1.8s, calc(var(--liquid-depth, 10) * 1.069 * var(--motion-slosh-bubble-pace)));
+    --pop-delay: calc(var(--liquid-depth, 10) * 1.069 * var(--motion-slosh-bubble-pace) * -.75);
+  }
+  .glim-slosh-pop:nth-child(3) {
+    --bubble-from: .9;
+    --bubble-sway: -.4px;
+    --pop-dur: max(1.8s, calc(var(--liquid-depth, 10) * 1.046 * var(--motion-slosh-bubble-pace)));
+    --pop-delay: calc(var(--liquid-depth, 10) * 1.046 * var(--motion-slosh-bubble-pace) * -.15);
+  }
+  .glim-slosh-pop-bar {
+    animation: glim-slosh-pop-bar var(--pop-dur, 6s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop-bar::before {
+    animation: glim-slosh-pop-bar-bubble var(--pop-dur, 6s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop-bar::after {
+    animation: glim-slosh-pop-bar-ring var(--pop-dur, 6s) linear var(--pop-delay, 0s) infinite;
+  }
+  .glim-slosh-pop-bar:nth-child(1) {
+    --pop-dur: calc(var(--motion-slosh-bubble-pace) * 12.6);
+    --pop-delay: calc(var(--motion-slosh-bubble-pace) * -1.26);
+  }
+  .glim-slosh-pop-bar:nth-child(2) {
+    --pop-dur: calc(var(--motion-slosh-bubble-pace) * 16.1);
+    --pop-delay: calc(var(--motion-slosh-bubble-pace) * -9.66);
+  }
+  /* An app sets glim-slosh-splash on a vessel's svg as a packet lands in it,
+     and sets it afresh for the next one. */
+  .glim-slosh-splash .glim-slosh-splash-tilt {
+    animation: glim-slosh-splash-tilt var(--motion-slosh-splash-dur) ease-in-out;
+  }
+  .glim-slosh-splash .glim-slosh-splash-crest {
+    animation: glim-slosh-splash-crest var(--motion-slosh-splash-dur) ease-out;
+  }
+  .glim-slosh-splash .glim-slosh-splash-ripple {
+    animation: glim-slosh-splash-ripple var(--motion-slosh-splash-dur) ease-out;
+  }
+  /* At "off" the surface holds still, as under reduced motion. */
+  :root[data-motion='off'] .glim-slosh,
+  :root[data-motion='off'] .glim-slosh-back,
+  :root[data-motion='off'] .glim-slosh-crest,
+  :root[data-motion='off'] .glim-slosh-hump,
+  :root[data-motion='off'] .glim-slosh-bubble,
+  :root[data-motion='off'] .glim-slosh-edge::before,
+  :root[data-motion='off'] .glim-slosh-edge::after,
+  :root[data-motion='off'] .glim-slosh-pop,
+  :root[data-motion='off'] .glim-slosh-pop-bubble,
+  :root[data-motion='off'] .glim-slosh-pop-ring,
+  :root[data-motion='off'] .glim-slosh-pop-drop,
+  :root[data-motion='off'] .glim-slosh-pop-bar,
+  :root[data-motion='off'] .glim-slosh-pop-bar::before,
+  :root[data-motion='off'] .glim-slosh-pop-bar::after,
+  :root[data-motion='off'] .glim-slosh-splash-tilt,
+  :root[data-motion='off'] .glim-slosh-splash-crest,
+  :root[data-motion='off'] .glim-slosh-splash-ripple {
+    animation: none;
   }
 }
 
@@ -1314,6 +1789,8 @@ body {
 .glim-bitcoin-mark { color: var(--brand-bitcoin); }
 .glim-github-mark { color: var(--brand-github); }
 .glim-house-mark { color: var(--accent-glyph); }
+/* The manual's book, in the yellow of the README's docs button. */
+.glim-docs-mark { color: var(--brand-docs); }
 
 /* A tile carrying a brand mark ("Brand tiles"): under the pointer it fills with
    the brand's own colour (--tile), the same on both themes, and its name and
@@ -1345,11 +1822,11 @@ body {
 .glim-mark-hover { display: none; }
 /* The house marks open: the envelope and the manual's book show their open
    drawing on the focus as well, and under a finger, where nothing hovers. */
-.glim-brand-tile:focus-visible .glim-house-mark .glim-mark-rest { display: none; }
-.glim-brand-tile:focus-visible .glim-house-mark .glim-mark-hover { display: block; }
+.glim-brand-tile:focus-visible :is(.glim-house-mark, .glim-docs-mark) .glim-mark-rest { display: none; }
+.glim-brand-tile:focus-visible :is(.glim-house-mark, .glim-docs-mark) .glim-mark-hover { display: block; }
 @media (hover: none) {
-  .glim-brand-tile:active .glim-house-mark .glim-mark-rest { display: none; }
-  .glim-brand-tile:active .glim-house-mark .glim-mark-hover { display: block; }
+  .glim-brand-tile:active :is(.glim-house-mark, .glim-docs-mark) .glim-mark-rest { display: none; }
+  .glim-brand-tile:active :is(.glim-house-mark, .glim-docs-mark) .glim-mark-hover { display: block; }
 }
 
 /* The brands' tile colours: the true colour and the ink that holds on it, white
@@ -1369,6 +1846,8 @@ body {
 .glim-tile-coffee  { --tile: #ffdd00; --tile-ink: #0d0c22; }
 /* The button that reaches the app's own authors follows the colour engine. */
 .glim-tile-house   { --tile: var(--accent); --tile-ink: var(--accent-contrast); }
+/* The README's docs button, the coffee button's yellow. 13.4:1. */
+.glim-tile-docs    { --tile: #ffdd00; --tile-ink: #161616; }
 
 /* The README button ("The App tab"): the proportions of the download buttons in
    the family's READMEs, 160 by 46.6 with a segment of 87 on a 16px rem, so a
@@ -1381,6 +1860,34 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8125rem;
+}
+
+/* A picker's tiles ("Pickers and wizards"): the README buttons as a grid on
+   the window's own surface, three across a picker window and two on a phone.
+   A brand too numerous for a class of its own hands its colour pair down
+   from its list item as --provider-tile and --provider-ink. */
+.glim-provider-pick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 0.8125rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 47.99rem) {
+  .glim-provider-pick {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+.glim-provider-pick .glim-readme-btn-unit {
+  display: flex;
+  --tile: var(--provider-tile, var(--accent));
+  --tile-ink: var(--provider-ink, var(--accent-contrast));
+}
+.glim-provider-pick .glim-readme-btn {
+  flex: 1;
+  width: auto;
 }
 
 .glim-readme-btn-unit {

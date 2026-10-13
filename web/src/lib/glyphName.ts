@@ -17,6 +17,7 @@ const RULES: Rule[] = [
   [/^about\.repo$/i, 'IconLink'],
   [/^about\.paypal$/i, 'IconLink'],
   [/^about\.mail$/i, 'IconMail'],
+  [/^about\.releaseNotes$/i, 'IconInfo'],
 
   // A stored secret's two buttons, and the way from a settings tile to its page.
   [/^notify\.change$/i, 'IconPencil'],

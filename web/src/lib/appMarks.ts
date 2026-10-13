@@ -4,12 +4,13 @@
 //
 // Google Play's icon rather than its badge, whose artwork may not be altered.
 // Android, Docker, Unraid, Windows and Apple from Dashboard Icons, Linux from
-// Simple Icons (CC0), the ZIP from Font Awesome Free (CC BY 4.0). Android,
-// Docker, Windows and Unraid paint from the --brand-* values in tokens.css;
-// Apple and Linux take the tile's ink, since neither has a colour of its own,
-// and Linux keeps Tux's yellow beak and feet. Under the pointer every part turns
-// the tile's ink through --mark-ink, and the beak and feet, which lie on the
-// body, take the tile colour through --mark-cut ("Brand tiles").
+// Simple Icons (CC0), the ZIP and the manual's closed book from Font Awesome
+// Free (CC BY 4.0). Android, Docker, Windows and Unraid paint from the
+// --brand-* values in tokens.css; Apple and Linux take the tile's ink, since
+// neither has a colour of its own, and Linux keeps Tux's yellow beak and feet.
+// Under the pointer every part turns the tile's ink through --mark-ink, and the
+// beak and feet, which lie on the body, take the tile colour through --mark-cut
+// ("Brand tiles").
 
 export const PLAY_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><linearGradient id="glim-play-a" x1="60.6" x2="276.6" y1="45.4" y2="261.4" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00a0ff"/><stop offset=".01" stop-color="#00a1ff"/><stop offset=".26" stop-color="#00beff"/><stop offset=".51" stop-color="#00d2ff"/><stop offset=".76" stop-color="#00dfff"/><stop offset="1" stop-color="#00e3ff"/></linearGradient><linearGradient id="glim-play-b" x1="446.6" x2="34.3" y1="256" y2="256" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffe000"/><stop offset=".41" stop-color="#ffbd00"/><stop offset=".78" stop-color="#ffa500"/><stop offset="1" stop-color="#ff9c00"/></linearGradient><linearGradient id="glim-play-c" x1="349.6" x2="6.9" y1="295.1" y2="637.8" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff3a44"/><stop offset="1" stop-color="#c31162"/></linearGradient><linearGradient id="glim-play-d" x1="22.9" x2="176" y1="-38.1" y2="115" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#32a071"/><stop offset=".07" stop-color="#2da771"/><stop offset=".48" stop-color="#15cf74"/><stop offset=".8" stop-color="#06e775"/><stop offset="1" stop-color="#00f076"/></linearGradient><path fill="var(--mark-ink, url(#glim-play-a))" d="M39.6 24.1c-5.6 5.9-8.9 15.1-8.9 27v409.8c0 11.9 3.3 21.1 8.9 27l1.4 1.3L270 259.7v-5.4L41 25.4z"/><path fill="var(--mark-ink, url(#glim-play-b))" d="m346.3 336.3-76.3-76.6v-5.4l76.4-76.5 1.7 1L438.5 231c25.8 14.7 25.8 38.7 0 53.4l-90.4 51.4z"/><path fill="var(--mark-ink, url(#glim-play-c))" d="M348 335.3 270 257 39.6 487.9c8.5 9 22.5 10.1 38.4 1.1z"/><path fill="var(--mark-ink, url(#glim-play-d))" d="M348 178.7 78 25.1C62.1 16 48.1 17.2 39.6 26.2L270 257z"/></svg>';
@@ -49,17 +50,14 @@ export const MAIL_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" class="glim-mark-rest" fill="currentColor"><g> <path fill="currentColor" fill-rule="evenodd" d="M0 2.75a1.5 1.5 0 0 1 1.5 -1.5h11a1.5 1.5 0 0 1 1.5 1.5v0.342L7.383 7.504A0.72 0.72 0 0 1 7 7.607a0.72 0.72 0 0 1 -0.383 -0.103L0 3.092V2.75Zm0 1.844v6.656a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5 -1.5V4.594L8.073 8.546l-0.005 0.004A1.966 1.966 0 0 1 7 8.857c-0.375 0 -0.753 -0.102 -1.068 -0.307l-0.005 -0.004L0 4.594Z" clip-rule="evenodd" stroke-width="1"></path> </g></svg>' +
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="2 0.32 20 20" class="glim-mark-hover" fill="currentColor"><path d="M4,8L12,13L20,8V8L12,3L4,8V8M22,8V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V8C2,7.27 2.39,6.64 2.97,6.29L12,0.64L21.03,6.29C21.61,6.64 22,7.27 22,8Z" /></svg>';
 
-// The manual button's pair from glyphs.json: IconManual, the closed book, at
-// rest and IconManualOpen under the pointer, a finger or the focus, each in
-// the viewBox cropped to its own ink.
+// The manual button's pair: at rest the closed book of the README's docs
+// button (Font Awesome Free's `book`, CC BY 4.0), and IconManualOpen from
+// glyphs.json under the pointer, a finger or the focus, each in a square box
+// around its own ink. The mark takes the docs button's yellow through
+// .glim-docs-mark.
 export const MANUAL_SVG =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" class="glim-mark-rest" fill="currentColor"><path fill-rule="evenodd" d="M3 0a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h9.25a.75.75 0 0 0 0-1.5H3a.5.5 0 0 1 0-1h9.25A.75.75 0 0 0 13 10.75V1a1 1 0 0 0-1-1H3Zm1.75 3a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-4.5Z" /></svg>' +
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-32 0 512 512" class="glim-mark-rest" fill="currentColor"><path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z" /></svg>' +
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0.125 14 14" class="glim-mark-hover" fill="currentColor"><path fill-rule="evenodd" d="M1 1.5H3.25C4.63 1.5 5.77 2.19 6.25 3.25V12.75C5.6 11.93 4.55 11.5 3.25 11.5H1A1 1 0 0 1 0 10.5V2.5A1 1 0 0 1 1 1.5ZM2.25 4.25a.75.75 0 0 0 0 1.5H4a.75.75 0 0 0 0-1.5H2.25ZM2.25 7.25a.75.75 0 0 0 0 1.5H4a.75.75 0 0 0 0-1.5H2.25ZM13 1.5H10.75C9.37 1.5 8.23 2.19 7.75 3.25V12.75C8.4 11.93 9.45 11.5 10.75 11.5H13A1 1 0 0 0 14 10.5V2.5A1 1 0 0 0 13 1.5ZM10 4.25a.75.75 0 0 0 0 1.5h1.75a.75.75 0 0 0 0-1.5H10ZM10 7.25a.75.75 0 0 0 0 1.5h1.75a.75.75 0 0 0 0-1.5H10Z" /></svg>';
-
-// The README's own manual button: Font Awesome's closed book (CC BY 4.0), the
-// same drawing at rest and lit, since the README has no open one.
-export const DOCS_SVG =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>';
 
 // F-Droid's mark from Simple Icons (CC0), drawn in one ink like the README's.
 export const FDROID_SVG =
