@@ -2046,7 +2046,7 @@ export const de: Translations = {
   'phone.minBattery': 'Nicht unter dieser Ladung',
   'phone.minBatteryHint': 'In Prozent. Nur ohne Ladekabel: ein Telefon am Strom füllt sich ja. Leer heißt keine Grenze.',
   'phone.metered': 'Nicht über eine kostenpflichtige Verbindung',
-  'phone.anomalyNotifyHeldHint': 'Meldet dir auf diesem Telefon, wenn eine Bremse einen Auftrag anhält.',
+  'phone.anomalyNotifyHeldHint': 'Meldet sich auf diesem Telefon, wenn eine Bremse einen Auftrag anhält.',
   'phone.meteredHint': 'Die Frage nach den Kosten, nicht nach der Technik. Ein WLAN, das sein Betreiber als kostenpflichtig markiert hat, fällt hier durch und oben nicht.',
   'phone.roaming': 'Nicht im Roaming',
   'phone.roamingHint': 'In einem fremden Netz im Ausland. Android beantwortet das ab Version 9; darunter wird nichts zurückgehalten.',
