@@ -282,3 +282,41 @@ func TestATestMessageGoesToTheOneChannelAsked(t *testing.T) {
 		t.Errorf("a refused test says %v", err)
 	}
 }
+
+// A message leaves the machine, so what a run's error quotes of a connection
+// string or of a hook's output stays behind, as it does in the bug report.
+func TestAMessageCarriesNoPasswordFromTheRunsError(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		change func(j *job.Job)
+		secret []string
+		keep   string
+	}{
+		{"a connection string", func(j *job.Job) { j.Right = ":sftp,host=127.0.0.1,port=1,user=bob,pass=TOPSECRETPASS:/x" },
+			[]string{"TOPSECRETPASS", "user=bob"}, ":sftp:/x"},
+		{"a hook's output", func(j *job.Job) { j.Before = "echo HOOKSECRET && exit 3" },
+			[]string{"HOOKSECRET"}, "exit status 3"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r, _, _ := syncedPair(t)
+			hook, hc := newInbox(t), newInbox(t)
+			notifying(r, job.Notify{Webhook: hook.url("/hook"), Healthchecks: &job.Healthchecks{URL: hc.url("/check")}})
+			cfg := *r.config()
+			cfg.Jobs = append([]job.Job(nil), cfg.Jobs...)
+			tc.change(&cfg.Jobs[0])
+			r.Reload(&cfg)
+			if _, err := r.Run(context.Background(), "test"); err == nil {
+				t.Fatal("the run did not fail")
+			}
+			sent := strings.Join(append(hook.all(), hc.all()...), "\n")
+			for _, secret := range tc.secret {
+				if strings.Contains(sent, secret) {
+					t.Errorf("a message carries %s:\n%s", secret, sent)
+				}
+			}
+			if !strings.Contains(sent, tc.keep) {
+				t.Errorf("the messages lost %q:\n%s", tc.keep, sent)
+			}
+		})
+	}
+}

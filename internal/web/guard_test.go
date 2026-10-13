@@ -236,6 +236,7 @@ func TestWithoutAPasswordTheSecretsAndLastingDeletionsAreRefused(t *testing.T) {
 	refused := []struct{ method, path string }{
 		{http.MethodGet, "/api/config/raw"},
 		{http.MethodPut, "/api/config/raw"},
+		{http.MethodPost, "/api/notify/test"},
 		{http.MethodDelete, "/api/jobs/photos/state"},
 		{http.MethodDelete, "/api/remotes/cloud"},
 		{http.MethodPost, "/api/jobs/photos/trash/left/empty"},

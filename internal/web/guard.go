@@ -85,14 +85,16 @@ const passwordNotSet = "password-not-set"
 // while no password is set, since the open port is then all that stands
 // between a stranger on the network and them: the backup carries the
 // notification secrets and the hook commands, a restore replaces every job,
-// and the rest deletes for good. The phone and the desktop window are not
-// asked, as no stranger reaches them.
+// a test message goes to any address the caller names and tells what came
+// back, and the rest deletes for good. The phone and the desktop window are
+// not asked, as no stranger reaches them.
 var guardedWithoutPassword = []struct {
 	method  string
 	pattern *regexp.Regexp
 }{
 	{http.MethodGet, regexp.MustCompile(`^/api/config/raw$`)},
 	{http.MethodPut, regexp.MustCompile(`^/api/config/raw$`)},
+	{http.MethodPost, regexp.MustCompile(`^/api/notify/test$`)},
 	{http.MethodDelete, regexp.MustCompile(`^/api/jobs/[^/]+/state$`)},
 	{http.MethodDelete, regexp.MustCompile(`^/api/remotes/[^/]+$`)},
 	{http.MethodPost, regexp.MustCompile(`^/api/jobs/[^/]+/trash/[^/]+/(delete|empty|prune)$`)},

@@ -259,3 +259,34 @@ func TestTheBugReportShowsAHomeFolderAsATilde(t *testing.T) {
 		}
 	}
 }
+
+// The report goes into a public issue, where a mail address, a mail server or
+// a Matrix room names the person as well as a password would.
+func TestTheBugReportNamesNoAddress(t *testing.T) {
+	h := newHarness(t)
+	settings := `{"notify":{"matrix":{"homeserver":"https://matrix.anna-berger.example","room":"!annasroom:anna-berger.example","token":"t"},` +
+		`"smtp":{"host":"mail.anna-berger.example","port":587,"username":"anna.berger","from":"arrowloop@anna-berger.example","to":"anna@berger.example","password":"p"}}}`
+	if resp, body := putJSON(t, h.srv, "/api/settings", settings); resp.StatusCode != http.StatusOK {
+		t.Fatalf("save settings: %s %s", resp.Status, body)
+	}
+	text := bugReport(t, h)
+	for _, address := range []string{"anna", "berger"} {
+		if strings.Contains(strings.ToLower(text), address) {
+			t.Errorf("the report carries %q:\n%s", address, text)
+		}
+	}
+	var got struct {
+		Settings struct {
+			Notify struct {
+				Matrix map[string]any `json:"matrix"`
+				SMTP   map[string]any `json:"smtp"`
+			} `json:"notify"`
+		} `json:"settings"`
+	}
+	if err := json.Unmarshal([]byte(text), &got); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if got.Settings.Notify.Matrix["room"] != "set" || got.Settings.Notify.SMTP["to"] != "set" || got.Settings.Notify.SMTP["port"] != float64(587) {
+		t.Errorf("the report lost which settings are filled in: %+v", got.Settings.Notify)
+	}
+}
