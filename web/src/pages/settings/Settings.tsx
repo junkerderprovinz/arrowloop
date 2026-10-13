@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
 import type { WindowSettings } from '../../lib/api'
 import type { TileId } from '../../lib/routes'
@@ -9,7 +9,7 @@ import { InfoPage } from './InfoPage'
 import { LookPage, type LookProps } from './LookPage'
 import { SafetyPage } from './SafetyPage'
 import { ACROSS, SettingsRail, useMatch } from './SettingsRail'
-import { jumpTarget, markHit, SettingsSearch, takeJump } from './SettingsSearch'
+import { jumpTarget, markHit, onJump, SettingsSearch, takeJump } from './SettingsSearch'
 import { SyncPage } from './SyncPage'
 import { orderTiles, rememberTile, useTileOrder, type Tile } from './tiles'
 import { TargetsTile } from './TargetsTile'
@@ -65,6 +65,9 @@ export function Settings(props: SettingsProps) {
     if (content.current) content.current.scrollTop = 0
   }, [tile])
 
+  const [jumps, setJumps] = useState(0)
+  useEffect(() => onJump(() => setJumps((n) => n + 1)), [])
+
   useEffect(() => {
     const jump = takeJump()
     if (!jump) return
@@ -85,7 +88,7 @@ export function Settings(props: SettingsProps) {
     }
     frame = requestAnimationFrame(look)
     return () => cancelAnimationFrame(frame)
-  }, [tile])
+  }, [tile, jumps])
 
   return (
     <div className={`flex min-h-0 flex-1${across ? ' flex-col sm:px-6' : ''}`}>

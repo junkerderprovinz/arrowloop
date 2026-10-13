@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import { FieldRow, Secret } from './Field'
 import { StateLine } from './Shell'
 import { ApiError, api, type SecurityStatus } from '../lib/api'
@@ -156,7 +156,7 @@ export function PasswordCard({
       )}
 
       {confirmRemove && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('password.removeTitle')}
           message={t('password.removeStakes')}
           confirmLabel={t('password.remove')}

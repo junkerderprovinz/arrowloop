@@ -226,7 +226,8 @@ function JobCard({
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
 
   return (
-    <li data-testid="job-row" data-new-way="/jobs/:name" onClick={() => open(job.name)} className="cursor-pointer">
+    <li data-testid="job-row" data-new-way="/jobs/:name" onClick={() => open(job.name)} className="relative cursor-pointer">
+      <CardName name={job.name} />
       <Card title={job.name} hueIndex={hueIndex}>
         {/* Two blocks centred on each other: what the job joins on the left,
             and on the right its last runs ending in its status, above its
@@ -293,11 +294,21 @@ function JobCard({
   )
 }
 
+/**
+ * The card's name as a button for the keyboard and screen readers, spread over
+ * the card so its focus ring goes round it. A pointer passes through to the
+ * card underneath, and a press of Enter reaches the card's click as well.
+ */
+function CardName({ name }: { name: string }) {
+  return <button type="button" aria-label={name} className="pointer-events-none absolute inset-0 z-10 rounded-card" />
+}
+
 /** A job the configuration holds but the engine does not run yet, which opens in the editor. */
 function DraftCard({ name, hueIndex, onOpen }: { name: string; hueIndex: number; onOpen: () => void }) {
   const { t } = useT()
   return (
-    <li className="cursor-pointer" onClick={onOpen}>
+    <li className="relative cursor-pointer" onClick={onOpen}>
+      <CardName name={name} />
       <Card title={name} hueIndex={hueIndex}>
         <span className="flex items-center gap-3">
           <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">

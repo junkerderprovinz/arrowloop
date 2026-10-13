@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
-import { ConfirmDialog } from '../../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from '../../components/ConfirmWindow'
 import { IconDownload, IconUpload } from '../../components/glyphs'
 import { replay } from '../../lib/animate'
 import { api } from '../../lib/api'
@@ -83,7 +83,7 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
       )}
 
       {picked && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('backup.import')}
           message={t('backup.confirm', { file: picked.name })}
           confirmLabel={t('backup.import')}

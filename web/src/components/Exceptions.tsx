@@ -6,7 +6,7 @@ import { errorText } from '../lib/errorText'
 import { SETTING_LABEL, describeOwn, exceptionsOf, inheritAll, type Exception, type Inherited } from '../lib/follows'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import { useT } from '../lib/i18n'
 import { Link } from '../lib/router'
 import { useToast } from '../lib/toast'
@@ -97,7 +97,7 @@ export function ExceptionsCard({
         </ul>
       </Card>
       {asking && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('defaults.askTitle')}
           message={t('defaults.askAll', {
             name: asking.name,

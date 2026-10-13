@@ -131,6 +131,23 @@ describe('a job card', () => {
     expect(run).toHaveBeenCalledWith('photos')
   })
 
+  it('names the job in a button the keyboard reaches first, which opens it once', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    const name = within(row('photos')).getAllByRole('button')[0]!
+    expect(name).toBe(screen.getByRole('button', { name: 'photos' }))
+    fireEvent.click(name)
+    expect(opened).toHaveBeenCalledOnce()
+    expect(opened).toHaveBeenCalledWith('photos')
+  })
+
+  it('names a draft in a button that opens it in the editor', async () => {
+    config.mockImplementation(() => Promise.resolve({ jobs: [...pair(), { name: 'draft', left: '', right: '' }] }))
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'draft' }))
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+  })
+
   it('offers in More what the job page offers, without opening the job', async () => {
     page()
     await screen.findAllByRole('button', { name: 'Pause' })

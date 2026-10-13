@@ -11,7 +11,7 @@ import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from '../components/ConfirmWindow'
 import {
   IconAdd,
   IconBack,
@@ -446,7 +446,7 @@ function RemoteRow({
       </span>
 
       {confirming && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('confirm.deleteRemote')}
           message={t('confirm.deleteRemoteStakes', { name: remote.name })}
           confirmLabel={t('confirm.delete')}
@@ -724,7 +724,7 @@ function RemoteForm({
             names the command that produces one. */}
         {backend?.needsToken && (
           <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
-            <InfoBubble tip={t('targets.tokenHowTo')} />
+            <InfoBubble tip={t('targets.tokenHowTo', { backend: backend.name })} />
             <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
           </p>
         )}
@@ -898,7 +898,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
       <Badge tone={volume.attached ? 'ok' : 'neutral'}>{volume.attached ? t('targets.attached') : t('targets.absent')}</Badge>
 
       {confirming && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('confirm.deleteDrive')}
           message={t('confirm.deleteDriveStakes', { name: volume.label })}
           confirmLabel={t('confirm.delete')}

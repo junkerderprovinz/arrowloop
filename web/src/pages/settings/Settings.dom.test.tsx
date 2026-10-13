@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { RawJob, Settings } from '../../lib/api'
@@ -35,6 +36,13 @@ globalThis.ResizeObserver ??= class {
   disconnect() {}
   unobserve() {}
 } as unknown as typeof ResizeObserver
+Element.prototype.scrollIntoView ??= () => undefined
+window.matchMedia ??= ((media: string) => ({
+  matches: false,
+  media,
+  addEventListener: () => undefined,
+  removeEventListener: () => undefined,
+})) as unknown as typeof window.matchMedia
 
 beforeEach(() => {
   saveSettings.mockClear()
@@ -63,6 +71,32 @@ describe('a settings tile', () => {
     unmount()
 
     expect(saveSettings).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('two tiles', () => {
+  it('keep a change made on one when the other is changed right after', async () => {
+    // The engine takes a moment over a save, and a read before then gets the old settings.
+    saveSettings.mockImplementation(
+      (s: Settings) =>
+        new Promise((done) =>
+          setTimeout(() => {
+            stored = { ...stored, ...s }
+            done(stored)
+          }, 50),
+        ),
+    )
+    const safety = render(<SafetyPage />)
+    const floor = await screen.findByRole('spinbutton', { name: 'Below this many files, no brake' })
+    fireEvent.change(floor, { target: { value: '20' } })
+    fireEvent.blur(floor)
+    safety.unmount()
+
+    render(<SyncPage />)
+    fireEvent.click(await screen.findByRole('switch', { name: 'Carry empty folders' }))
+    await waitFor(() => expect(saveSettings).toHaveBeenCalledTimes(2), { timeout: 2000 })
+    await waitFor(() => expect(stored.defaults).toMatchObject({ brakeFloor: 20, emptyDirs: true }))
+    saveSettings.mockImplementation((s: Settings) => Promise.resolve(s))
   })
 })
 
@@ -228,5 +262,55 @@ describe('the default schedule', () => {
     // Typed one key at a time, the space between two fields stays.
     fireEvent.change(field, { target: { value: '0 ' } })
     expect((field as HTMLInputElement).value).toBe('0 ')
+  })
+})
+
+describe('the settings search', () => {
+  async function syncTile(extra?: ReactNode) {
+    const { Settings } = await import('./Settings')
+    const { settingsTiles } = await import('./tiles')
+    window.history.replaceState(null, '', '/settings/sync')
+    render(
+      <>
+        <Settings
+          tile="sync"
+          tiles={settingsTiles(true)}
+          look={{} as never}
+          version="1.0.0"
+          window={null}
+          onWindow={() => undefined}
+          targets={null}
+        />
+        {extra}
+      </>,
+    )
+    await screen.findByRole('switch', { name: 'Carry empty folders' })
+  }
+
+  it('leaves the focus in an open window on Ctrl+K and the slash', async () => {
+    const { Dialog } = await import('../../components/Dialog')
+    await syncTile(
+      <Dialog title="Edit" onClose={() => undefined}>
+        <button type="button">Inside</button>
+      </Dialog>,
+    )
+    const inside = screen.getByRole('button', { name: 'Inside' })
+    inside.focus()
+    fireEvent.keyDown(inside, { key: 'k', ctrlKey: true })
+    fireEvent.keyDown(inside, { key: '/' })
+    expect(document.activeElement).toBe(inside)
+    window.history.replaceState(null, '', '/')
+  })
+
+  it('on the tile already open, scrolls a result to its card and rings it', async () => {
+    const { openSetting, takeJump } = await import('./SettingsSearch')
+    const scrolled = vi.spyOn(Element.prototype, 'scrollIntoView').mockImplementation(() => undefined)
+    await syncTile()
+    act(() => openSetting('sync', { card: 'Global sync settings' }))
+    await waitFor(() => expect(scrolled).toHaveBeenCalled())
+    expect((scrolled.mock.contexts[0] as HTMLElement).classList.contains('glim-search-hit')).toBe(true)
+    expect(takeJump()).toBeNull()
+    scrolled.mockRestore()
+    window.history.replaceState(null, '', '/')
   })
 })

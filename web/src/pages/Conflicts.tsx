@@ -8,7 +8,7 @@ import { Since } from '../components/Since'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from '../components/ConfirmWindow'
 import { ApiError, api, type ConflictListing, type Job, type OpenConflict, type Resolution, type SideVersion } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { conflictKey, decisionsByJob, newerSide } from '../lib/conflicts'
@@ -129,7 +129,7 @@ export function Conflicts({
       ))}
 
       {asking && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t(asking.all)}
           message={t('conflicts.allConfirm', { count: shown.length }) + ' ' + t('conflicts.chooseHint')}
           confirmLabel={t(asking.all)}

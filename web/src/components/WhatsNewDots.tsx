@@ -154,10 +154,11 @@ function inside(at: { x: number; y: number }, el: HTMLElement): boolean {
 }
 
 function Dot({ target, register }: { target: Target; register: (key: string, el: HTMLElement | null) => void }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const way = target.kind === 'way'
   const sentences = target.changes.map((c) => sentenceOf(t, c))
-  const tip = way ? [t('new.way', { count: target.changes.length }), ...sentences].join(' ') : sentences.join(' ')
+  const count = target.changes.length
+  const tip = way ? [t(`new.way.${new Intl.PluralRules(lang).select(count)}`, { count }), ...sentences].join(' ') : sentences.join(' ')
   const bubble = useTipBubble(tip)
   return (
     <>

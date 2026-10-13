@@ -57,7 +57,7 @@ describe('the dots of what is new', () => {
       expect(found).not.toBeNull()
       return found!
     })
-    expect(way.getAttribute('aria-label')).toMatch(/^New this way \(11\):/)
+    expect(way.getAttribute('aria-label')).toMatch(/^This way to 11 changes: /)
     fireEvent.click(way)
     expect(window.location.pathname).toBe('/settings')
   })

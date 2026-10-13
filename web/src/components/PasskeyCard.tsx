@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import { FieldRow, Secret, Text } from './Field'
 import { IconAction } from './IconAction'
 import { StateLine } from './Shell'
@@ -217,7 +217,7 @@ export function PasskeyCard({
       )}
 
       {pendingDelete && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('passkey.removeTitle')}
           message={t('passkey.removeStakes', { name: pendingDelete.name })}
           confirmLabel={t('passkey.remove')}

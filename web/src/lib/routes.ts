@@ -37,9 +37,18 @@ export interface RouteContext {
   fresh?: boolean | null
 }
 
+/** A part of the address as typed when it is no valid escape, so it names no job rather than breaking the page. */
+function decode(part: string): string {
+  try {
+    return decodeURIComponent(part)
+  } catch {
+    return part
+  }
+}
+
 export function resolveRoute(pathname: string, search: URLSearchParams, ctx: RouteContext): Resolved {
   const query = search.toString() ? `?${search}` : ''
-  const parts = pathname.split('/').filter(Boolean).map(decodeURIComponent)
+  const parts = pathname.split('/').filter(Boolean).map(decode)
   const [first, second, third] = parts
 
   switch (first) {

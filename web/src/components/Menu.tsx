@@ -185,6 +185,9 @@ function MenuPanel({
           role="menuitem"
           disabled={item.disabled}
           onClick={() => {
+            // The item goes with the list, so a window it opens would find no
+            // control to hand the focus back to when it closes.
+            anchor?.current?.focus({ preventScroll: true })
             onClose()
             item.onSelect()
           }}

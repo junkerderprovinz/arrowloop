@@ -4,7 +4,7 @@ import { Dialog } from './Dialog'
 import { IconClose, IconSave, IconTrash } from './glyphs'
 import { ToggleRow } from './ToggleRow'
 import { Button } from '../lib/glimstone/Button'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import type { RawJob } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { useToast } from '../lib/toast'
@@ -21,6 +21,7 @@ export function JobEditor({
   at,
   added,
   onClose,
+  onSaved,
 }: {
   config: JobConfig
   /** The entry's place in the configuration. */
@@ -28,6 +29,8 @@ export function JobEditor({
   /** A job made for this window, which Cancel takes away again. */
   added: boolean
   onClose: () => void
+  /** Told the name the job was saved under, which a rename changes. */
+  onSaved?: (name: string) => void
 }) {
   const { t } = useT()
   const [original] = useState<RawJob | undefined>(() => config.jobs?.[at])
@@ -61,9 +64,14 @@ export function JobEditor({
             disabled={config.busy}
             className={refused > 0 ? 'glim-shake' : ''}
             onClick={() => {
+              const name = job.name ?? ''
               void config.save().then((ok) => {
-                if (ok) onClose()
-                else setRefused((n) => n + 1)
+                if (!ok) {
+                  setRefused((n) => n + 1)
+                  return
+                }
+                onClose()
+                onSaved?.(name)
               })
             }}
           />
@@ -96,7 +104,7 @@ export function RemoveJobDialog({
   const name = config.jobs?.[at]?.name
   if (!name) return null
   return (
-    <ConfirmDialog
+    <ConfirmWindow
       title={t('edit.removeJob')}
       message={t('edit.removeStakes', { name })}
       confirmLabel={t('confirm.delete')}
