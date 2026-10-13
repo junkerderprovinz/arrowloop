@@ -83,6 +83,9 @@ export type Duplicates = {
   unhashable: number
 }
 
+/** Whether a target answers, in rclone's words and as a kind the page can say itself. */
+export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure }
+
 /**
  * How full a target is. An absent figure means the target does not know, which
  * is normal for a bucket store and must not render like a figure of zero.
@@ -775,7 +778,7 @@ export const api = {
     }),
 
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
-    request<{ ok: boolean; reason?: string }>('/api/remotes-check', {
+    request<CheckAnswer>('/api/remotes-check', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, settings, name: remote ?? '' }),
@@ -1005,7 +1008,7 @@ export const api = {
 
   /** Open a target and list it. A refusal comes back as ok:false, not an error status. */
   checkRemote: (name: string) =>
-    request<{ ok: boolean; reason?: string }>(`/api/remotes/${encodeURIComponent(name)}/check`, {
+    request<CheckAnswer>(`/api/remotes/${encodeURIComponent(name)}/check`, {
       method: 'POST',
     }),
 

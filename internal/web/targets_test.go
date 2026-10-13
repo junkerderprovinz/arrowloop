@@ -13,6 +13,7 @@ import (
 	_ "github.com/rclone/rclone/backend/smb"
 	"github.com/rclone/rclone/fs/config"
 
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
@@ -284,4 +285,40 @@ func readRcloneConfig(t *testing.T) string {
 		t.Fatalf("read the configuration: %v", err)
 	}
 	return string(body)
+}
+
+// The row's verdict is said in the reader's language, which needs the kind of
+// failure and not only rclone's English.
+func TestACheckThatFailsNamesTheKindOfFailure(t *testing.T) {
+	h := newHarness(t)
+	withRcloneConfig(t)
+
+	// .invalid never resolves, so the answer comes without a network.
+	settings := `{"host":"nowhere.invalid","user":"demo","pass":"demo"}`
+	if resp, said := h.put(t, "/api/remotes/nowhere", `{"type":"sftp","settings":`+settings+`}`); resp.StatusCode != http.StatusOK {
+		t.Fatalf("saving a target: %s %s", resp.Status, said)
+	}
+
+	asks := map[string]string{
+		"/api/remotes/nowhere/check": `{}`,
+		"/api/remotes-check":         `{"type":"sftp","settings":` + settings + `}`,
+	}
+	for path, request := range asks {
+		resp := h.post(t, path, request)
+		var got struct {
+			OK      bool             `json:"ok"`
+			Reason  string           `json:"reason"`
+			Failure *failure.Failure `json:"failure"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		if got.OK || got.Reason == "" {
+			t.Fatalf("%s: a host that does not exist answered ok=%v reason=%q", path, got.OK, got.Reason)
+		}
+		if got.Failure == nil || got.Failure.Code != failure.Unreachable {
+			t.Errorf("%s: failure = %+v for %q, want %s", path, got.Failure, got.Reason, failure.Unreachable)
+		}
+	}
 }
