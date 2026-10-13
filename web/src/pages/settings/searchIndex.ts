@@ -55,6 +55,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
         { key: 'look.design' },
         { key: 'look.corners', hint: 'look.cornersHint' },
         { key: 'look.motion', hint: 'look.motionHint' },
+        { key: 'look.tileOrder', hint: 'look.tileOrderHint' },
       ],
     },
     {

@@ -10,12 +10,14 @@ import { wipeColours } from '../../lib/animate'
 import { ACCENTS, leafTap, RAINBOW, type RainbowState, type Shape } from '../../lib/appearance'
 import { BOTTOM_BAR_AXIS, CONTROL_AXES, LABEL_MODES, type LabelAxis, type LabelMode } from '../../lib/controls'
 import { discoTap } from '../../lib/disco'
+import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
 import { MOTION_INTENSITIES, type MotionIntensity } from '../../lib/motion'
 import type { ThemeChoice } from '../../lib/theme'
 import { counter, SettingsRow } from './rows'
+import { isOwnOrder, setTileOrder, useTileOrder } from './tiles'
 
 /** The house accent a reset returns to, the first preset. */
 export const DEFAULT_ACCENT = ACCENTS[0]?.hex ?? '#FCC419'
@@ -139,6 +141,7 @@ export function LookPage({
   const leaf = useLeafUnlock(shape, onShape)
   const discoUnlock = useDiscoUnlock(disco, onDisco)
   const selectorHue = counter()
+  const tileOrder = useTileOrder()
   // A switch that changes the rainbow wipes across the page. A colour dragged
   // in the picker does not, since it has to follow the pointer.
   const switchRainbow = (next: RainbowState) => {
@@ -214,6 +217,17 @@ export function LookPage({
               ...(storm.offered ? [{ value: 'storm' as MotionIntensity, label: t(motionKey.storm) }] : []),
             ]}
           />
+        </SettingsRow>
+
+        <SettingsRow label={t('look.tileOrder')} hint={t('look.tileOrderHint')}>
+          <span data-new="tile-order" className="flex">
+            <Button
+              label={t('look.orderReset')}
+              labelKey="look.orderReset"
+              disabled={isOwnOrder(tileOrder)}
+              onClick={() => setTileOrder(null)}
+            />
+          </span>
         </SettingsRow>
       </Card>
 
