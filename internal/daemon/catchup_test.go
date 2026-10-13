@@ -284,10 +284,10 @@ func TestAWatchedDriveMissingAtTheStartIsWatchedOnceItIsBack(t *testing.T) {
 		d.r.StopAll(stopped)
 	})
 	j, _ := d.r.config().Find("x")
-	d.r.startWatcher(ctx, ctx, j)
+	d.r.startWatcher(ctx, ctx, j, nil, time.Now())
 
 	d.plug(true)
-	d.r.rewatch(ctx, ctx)
+	d.r.rewatch(ctx, ctx, time.Now())
 
 	if err := os.WriteFile(filepath.Join(photos, "new.jpg"), []byte("a photo"), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
@@ -313,9 +313,9 @@ func TestAWatchedJobWhoseOnlyLocalSideIsOnAMissingDriveIsWatchedOnceItIsBack(t *
 	t.Cleanup(cancel)
 
 	j, _ := d.r.config().Find("x")
-	d.r.startWatcher(ctx, ctx, j)
+	d.r.startWatcher(ctx, ctx, j, nil, time.Now())
 	d.plug(true)
-	d.r.rewatch(ctx, ctx)
+	d.r.rewatch(ctx, ctx, time.Now())
 	if !d.log.said("x: watching 1 folder(s) across 1 local side(s)") {
 		t.Errorf("the drive was not watched once it came back: %q", d.log.lines)
 	}
@@ -333,12 +333,12 @@ func TestAWatcherWhoseDriveWasPulledOutStartsAgainWhenItIsBack(t *testing.T) {
 
 	d.plug(true)
 	j, _ := d.r.config().Find("x")
-	d.r.startWatcher(ctx, ctx, j)
+	d.r.startWatcher(ctx, ctx, j, nil, time.Now())
 	d.plug(false)
 	d.missesItsDrive(t)
 
 	d.plug(true)
-	d.r.rewatch(ctx, ctx)
+	d.r.rewatch(ctx, ctx, time.Now())
 	if !d.log.said("x: its drive is back, watching it too") {
 		t.Errorf("the watcher was not started again: %q", d.log.lines)
 	}

@@ -74,10 +74,17 @@ func (r *Runner) WaitingFor(name string) (time.Time, bool) { return r.waiting.Si
 // ends with the drive, so the job's watcher is started again once it is back.
 func (r *Runner) waitForDrive(name string) {
 	r.waiting.note(name, time.Now())
+	j, ok := r.config().Find(name)
+	if !ok {
+		return
+	}
+	seen := localSides(j)
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	if w := r.watchers[name]; w != nil {
-		w.short = true
+	// The run has said the drive is missing, so what look finds gone is not
+	// logged again.
+	if w := r.watchers[name]; w != nil && w.failed == "" {
+		w.look(seen)
 	}
 }
 

@@ -15,7 +15,6 @@ import (
 
 	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
-	"github.com/rclone/rclone/fs/fspath"
 	"github.com/robfig/cron/v3"
 
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
@@ -31,7 +30,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
-	"github.com/junkerderprovinz/arrowloop/internal/watch"
 )
 
 // ErrAlreadyRunning is returned when a job is asked for while the same job is
@@ -687,12 +685,12 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 		if j.Disabled || !j.Watch {
 			continue
 		}
-		r.startWatcher(ctx, round, j)
+		r.startWatcher(ctx, round, j, nil, time.Now())
 	}
 
 	c.Schedule(cron.Every(time.Minute), cron.FuncJob(func() {
 		r.overdue(ctx, time.Now())
-		r.rewatch(ctx, round)
+		r.rewatch(ctx, round, time.Now())
 		for _, name := range r.Retrying(ctx, time.Now()) {
 			r.log("%s: trying again after a failure", name)
 			r.runAndReport(ctx, name)
@@ -1130,147 +1128,4 @@ func (r *Runner) Running() map[string]bool {
 		out[name] = true
 	}
 	return out
-}
-
-// localRoots returns the sides of a job that live on a real filesystem, and
-// whether a side was left out because its drive is not attached. It parses
-// rather than connects, so starting the daemon does not reach out to a remote.
-func localRoots(j job.Job) (roots []string, missing bool) {
-	for _, side := range []string{j.Left, j.Right} {
-		resolved, err := volume.Resolve(side)
-		if err != nil {
-			missing = true
-			continue
-		}
-		parsed, err := fspath.Parse(resolved)
-		if err != nil || parsed.ConfigString != "" {
-			continue
-		}
-		abs, err := filepath.Abs(parsed.Path)
-		if err != nil {
-			continue
-		}
-		roots = append(roots, filepath.Clean(abs))
-	}
-	return roots, missing
-}
-
-// watched is one job's watcher. short is set while it lacks a side on a drive
-// that was not attached; w is nil when that drive held the only local side.
-type watched struct {
-	w     *watch.Watcher
-	stop  context.CancelFunc
-	short bool
-}
-
-// startWatcher makes one job react to changes as well as to the clock. Only a
-// local side can be watched, and the schedule stays behind it. The watcher
-// lives as long as round; the runs it starts live under ctx.
-func (r *Runner) startWatcher(ctx, round context.Context, j job.Job) {
-	name := j.Name
-	roots, missing := localRoots(j)
-	if len(roots) == 0 {
-		if missing {
-			r.setWatcher(name, &watched{short: true})
-			r.log("%s: its drive is not attached, so watching starts when it is", name)
-			return
-		}
-		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", name)
-		return
-	}
-	opt, err := j.Options()
-	if err != nil {
-		r.log("%s: %v", name, err)
-		return
-	}
-
-	w, err := watch.New(watch.Options{
-		Roots:    roots,
-		Exclude:  opt.Exclude,
-		Settle:   j.SettleFor(),
-		Cooldown: 5 * time.Second,
-		Log:      func(format string, args ...any) { r.log(name+": "+format, args...) },
-	}, func() {
-		rec, err := r.RunAutomatically(ctx, name)
-		switch {
-		case errors.Is(err, ErrAlreadyRunning):
-			// The change arrived while the job was already working on it.
-		case errors.Is(err, ErrWithdrawn):
-			r.log("%s: %v", name, err)
-		case err != nil:
-			r.log("%s failed after a change: %v", name, err)
-		case rec.Changed():
-			r.log("%s: %d copied, %d moved, %d trashed after a change", name, rec.Copied, rec.Moved, rec.Trashed)
-		}
-	})
-	if err != nil {
-		r.log("%s: %v", name, err)
-		return
-	}
-
-	// Its own context, so a watcher started again once a drive is back can
-	// replace it.
-	live, stop := context.WithCancel(round)
-	r.setWatcher(name, &watched{w: w, stop: stop, short: missing})
-
-	r.log("%s: watching %d folder(s) across %d local side(s)", name, w.Watching(), len(roots))
-	go func() {
-		defer w.Close()
-		if err := w.Run(live); err != nil {
-			r.log("%s: watching stopped: %v", name, err)
-		}
-	}()
-}
-
-func (r *Runner) setWatcher(name string, w *watched) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if r.watchers == nil {
-		r.watchers = map[string]*watched{}
-	}
-	r.watchers[name] = w
-}
-
-// rewatch starts again the watchers that a missing drive left short, once
-// the drive is back.
-func (r *Runner) rewatch(ctx, round context.Context) {
-	r.mu.Lock()
-	var short []string
-	for name, w := range r.watchers {
-		if w.short {
-			short = append(short, name)
-		}
-	}
-	r.mu.Unlock()
-	sort.Strings(short)
-
-	for _, name := range short {
-		if round.Err() != nil {
-			return
-		}
-		j, ok := r.config().Find(name)
-		if !ok || j.Disabled || !j.Watch || attached(j) != nil {
-			continue
-		}
-		r.mu.Lock()
-		old := r.watchers[name]
-		delete(r.watchers, name)
-		r.mu.Unlock()
-		if old != nil && old.stop != nil {
-			old.stop()
-		}
-		r.log("%s: its drive is back, watching it too", name)
-		r.startWatcher(ctx, round, j)
-	}
-}
-
-// muteWatcher stops a job's own writes coming back as a change that runs the
-// job again.
-func (r *Runner) muteWatcher(name string) {
-	r.mu.Lock()
-	w := r.watchers[name]
-	r.mu.Unlock()
-	if w != nil && w.w != nil {
-		w.w.Mute()
-	}
 }

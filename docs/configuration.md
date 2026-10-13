@@ -240,6 +240,14 @@ Windows one watch covers each side's whole tree. The tool's own trash and every
 excluded path are ignored, and a job's watcher is muted around its own runs, or
 the engine would spend its life answering its own writes.
 
+A side whose folder is not there, because its drive is unplugged or the folder
+has not been made yet, is left out and the other side is watched meanwhile. The
+engine looks again every minute and starts watching the folder once it turns
+up, and the same happens to a folder that goes away while watched. The log says
+once that a folder is missing and once that it is watched. A watcher that will
+not start for any other reason is tried again after a minute, then after twice
+as long each time, up to an hour.
+
 ## Running at start
 
 `"runAtStart": true` runs the job once as soon as the program starts, before its
