@@ -24,7 +24,7 @@ const BADGE_TONE: Record<Severity, 'fail' | 'warn' | 'neutral'> = {
 // The bar on the leading edge, which flips sides with the reading direction.
 const EDGE: Record<Severity, string> = {
   critical:
-    'bg-[color-mix(in_srgb,var(--status-fail-bg)_50%,var(--carbon-surface2))] shadow-[inset_3px_0_0_var(--status-fail-solid)] rtl:shadow-[inset_-3px_0_0_var(--status-fail-solid)]',
+    'bg-carbon-surface2 shadow-[inset_3px_0_0_var(--status-fail-solid)] rtl:shadow-[inset_-3px_0_0_var(--status-fail-solid)]',
   warning:
     'bg-carbon-surface2 shadow-[inset_3px_0_0_var(--status-warn-solid)] rtl:shadow-[inset_-3px_0_0_var(--status-warn-solid)]',
   info: 'bg-carbon-surface2 shadow-[inset_3px_0_0_var(--carbon-surface3)] rtl:shadow-[inset_-3px_0_0_var(--carbon-surface3)]',
