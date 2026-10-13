@@ -69,7 +69,9 @@ and **Stop all**.
 History has two buttons in its card, at the right end of the row where you
 choose between **Files** and **Runs**. **Filter** narrows the log to one job, a
 kind of entry and a span of days, and the card's heading names the choice.
-**Search** opens a field in the same place and finds an entry by its path. Conflicts, Trash and Anomalies have none
+**Search**, or Ctrl+F, opens a field in the same place and finds an entry by its
+path. Escape empties the field, and on an empty field turns it back into the
+button. Conflicts, Trash and Anomalies have none
 of them: with a handful of jobs a card per job says enough. A link from a job's
 page narrows them to that job, shown as a chip at the top, and the cross on the
 chip shows every job again.
@@ -161,7 +163,8 @@ Each target's row has **Test connection**. A target elsewhere is tested as soon
 as the page opens, and the button shows the answer itself: green with
 **Connected**, or red with **Not connected** and the reason on a line under the
 name, in your language where ArrowLoop recognises the failure. Pressing it
-tests again.
+tests again. Once connected, a target that reports its size shows how full it
+is as a bar under its name.
 
 A password, key or token that is stored shows in the target's form as
 **Saved** with a **Change** button, because the engine never sends a stored
@@ -400,9 +403,9 @@ such as **What gets carried** to the card that carries it now.
 ## Info
 
 The last tile has three cards. **Version** lists ArrowLoop, GlimStone and
-rclone, each linked to its release notes, and **Check for updates** asks GitHub
-for a newer release. After an update **New** stands beside it and opens the
-list of changes (see below). **Help** leads to GitHub, to email and to this
+rclone, each linked to its release notes. Under them stand **Release notes**,
+**New** after an update, and **Check for updates**, which asks GitHub for a
+newer release. **Release notes** and **New** open the same window (see below). **Help** leads to GitHub, to email and to this
 manual, and **Bug report** downloads one file with the versions, the settings
 and jobs without passwords or keys, the last 100 runs and the open anomalies.
 Nothing is sent: you attach the file to an issue yourself. Then comes
@@ -413,15 +416,20 @@ Nothing is sent: you attach the file to an issue yourself. Then comes
 After an update a glowing green dot marks each change on its page, and a dot
 on a link says something behind it changed. A click on a dot hides it, and a
 link's dot goes once everything behind it has been seen. **New** in the
-Version card on the Info tile shows how many changes you have not seen yet and
-opens a window listing the changes of the last update, each with a way to it.
-**Mark all as seen** at its top hides every dot. Once nothing is left, the same
-button reads **Show all again** and brings them back.
+Version card on the Info tile shows how many changes you have not seen yet.
+
+The window it opens has two tabs. **Release notes** holds the notes of the
+version that is running, and **Changes** lists the changes of the last update,
+each with a way to it. **Mark all as seen** at the top of the list hides every
+dot. Once nothing is left, the same button reads **Show all again** and brings
+them back. **All releases** at the foot of the window opens the earlier notes
+on GitHub. After an update the window opens by itself on the release notes, in
+a browser that had the version before open.
 
 ## The look
 
 The interface uses [GlimStone](https://github.com/junkerderprovinz/glimstone)
-3.4.2, with its reference tokens and appearance engine copied in verbatim rather
+3.5.0, with its reference tokens and appearance engine copied in verbatim rather
 than reimplemented. Design, corner shape and accent are the viewer's to set on
 the **Look** tile.
 
