@@ -1,4 +1,5 @@
 import { Dialog } from './Dialog'
+import { FailureText } from './FailureText'
 import { RunDetail } from './RunDetail'
 import type { Run } from '../lib/api'
 import { dayTime } from '../lib/dayTime'
@@ -31,7 +32,7 @@ export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
             </div>
           ))}
         </dl>
-        {run.Err && <p className="break-words font-mono text-subline text-statusFail">{run.Err}</p>}
+        {run.Err && <FailureText raw={run.Err} failure={run.Failure} className="text-statusFail" />}
         <RunDetail run={run.ID} job={run.Job} tick={run.Running ? tick : 0} />
       </div>
     </Dialog>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { entryLabel, entryNote, plainKey } from "../../../web/src/lib/entryLabel";
+import { failureLine } from "../../../web/src/lib/failure";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { Glyph } from "../glyphs";
@@ -537,7 +538,7 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
       {run ? (
         <>
           <Caption>{clock(run.Started, lang)}</Caption>
-          <Body>{failed(run) ? run.Err : counters(run, t)}</Body>
+          <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
         </>
       ) : null}
       {error ? <Body>{error}</Body> : null}

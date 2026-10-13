@@ -1,6 +1,7 @@
 // What a finding says, shared by the browser and the phone: its place in the
 // order, its sentences and its figures. Each surface draws them its own way.
 
+import type { Failure } from './failure'
 import type { TranslationKey } from './i18n.data'
 
 export type AnomalyKind = 'delete' | 'change' | 'empty' | 'failing' | 'overdue' | 'unusual'
@@ -30,6 +31,8 @@ export type Finding = {
   figures?: Measure[]
   /** The engine's own English words: the refusal, or the last failure. */
   detail?: string
+  /** What kind of failure `detail` names, where the engine knows. */
+  failure?: Failure
   open: boolean
   outcome?: Outcome
   closed?: string

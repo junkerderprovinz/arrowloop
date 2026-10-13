@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { FailureText } from './FailureText'
 import { Since } from './Since'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -184,10 +185,8 @@ export function FindingCard({
         </dl>
       )}
 
-      {/* The engine's own words for a failure, which name the cause. */}
-      {f.kind === 'failing' && f.detail && (
-        <p className="font-mono text-subline text-carbon-textMuted [overflow-wrap:anywhere]">{f.detail}</p>
-      )}
+      {/* What the last failure was about, which names the cause. */}
+      {f.kind === 'failing' && f.detail && <FailureText raw={f.detail} failure={f.failure} className="text-carbon-text" />}
 
       {f.open && paths.length > 0 && (
         <section className="flex flex-col gap-1">

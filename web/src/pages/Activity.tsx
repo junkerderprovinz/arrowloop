@@ -9,6 +9,7 @@ import { Button } from '../lib/glimstone/Button'
 import { api, type Job, type LatestRun, type RunEvent, type Touch, type Volume } from '../lib/api'
 import { desk, inDesktopWindow, resizeFromEdges } from '../lib/desk'
 import { entryAction, entryLabel, entryRoute } from '../lib/entryLabel'
+import { failureLine } from '../lib/failure'
 import { useT } from '../lib/i18n'
 import { since } from '../lib/since'
 import { wireTooltips } from '../lib/tooltip'
@@ -352,7 +353,7 @@ function RunRow({ run }: { run: LatestRun }) {
   // A job that runs on every change says how busy it was instead of filling
   // the list with its runs.
   const today = run.Since > 1 ? t('tray.runsToday', { count: run.Since }) : ''
-  const said = failed ? run.Err : counts.length > 0 ? counts.join(' · ') : t('history.ok')
+  const said = failed ? failureLine(run.Err, run.Failure, t, lang) : counts.length > 0 ? counts.join(' · ') : t('history.ok')
   return (
     <li className="flex items-start gap-2">
       <JobMark status={failed ? 'failed' : 'ok'} size={18} />

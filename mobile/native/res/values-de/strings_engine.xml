@@ -31,4 +31,20 @@
     <string name="anomaly_empty">Eine Seite meldet keine einzige Datei</string>
     <string name="anomaly_failing">Die letzten Läufe sind gescheitert</string>
     <string name="anomaly_overdue">Der Zeitplan wird seit Tagen nicht eingehalten</string>
+
+    <string name="failure_of_job">%1$s: %2$s</string>
+    <string name="failure_engine_said">Meldung des Motors: %1$s</string>
+    <string name="failure_space_left">Am Ziel (links) sind %1$s frei, dieser Auftrag würde mindestens %2$s schreiben.</string>
+    <string name="failure_space_right">Am Ziel (rechts) sind %1$s frei, dieser Auftrag würde mindestens %2$s schreiben.</string>
+    <string name="failure_volume_left">Das Laufwerk der linken Seite ist nicht angeschlossen.</string>
+    <string name="failure_volume_right">Das Laufwerk der rechten Seite ist nicht angeschlossen.</string>
+    <string name="failure_unreachable">Der Server war nicht erreichbar.</string>
+    <string name="failure_sign_in">Die Anmeldung ist fehlgeschlagen. Prüfe Benutzername, Passwort oder Schlüssel.</string>
+    <string name="failure_permission">Der Zugriff wurde verweigert: das Konto darf dort nicht lesen oder schreiben.</string>
+    <string name="failure_not_found">Ein Ordner, den der Auftrag braucht, existiert nicht.</string>
+    <string name="failure_quota">Der Speicher ist voll: sein Kontingent ist aufgebraucht.</string>
+    <string name="failure_rate_limited">Der Dienst hat nach zu vielen Anfragen um eine Pause gebeten. Der nächste Lauf versucht es wieder.</string>
+    <string name="failure_stopped">Der Lauf wurde angehalten, bevor er fertig war.</string>
+    <string name="failure_before">Der Befehl vor dem Lauf ist fehlgeschlagen, also hat der Lauf nicht begonnen.</string>
+    <string name="failure_after">Der Befehl nach dem Lauf ist fehlgeschlagen.</string>
 </resources>

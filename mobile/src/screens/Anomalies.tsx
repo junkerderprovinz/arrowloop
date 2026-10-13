@@ -20,6 +20,7 @@ import {
   type JobLearning,
   type Severity,
 } from "../../../web/src/lib/anomalies";
+import { sayFailure, type Failure } from "../../../web/src/lib/failure";
 import type { TranslationKey } from "../i18n";
 import {
   AxisLabel,
@@ -317,8 +318,8 @@ function FindingCard({
       {figures(f, t).map(([term, value]) => (
         <Pair key={term} label={term} value={value} />
       ))}
-      {/* The engine's own words for a failure, which name the cause. */}
-      {f.kind === "failing" && f.detail ? <Mono>{f.detail}</Mono> : null}
+      {/* What the last failure was about, which names the cause. */}
+      {f.kind === "failing" && f.detail ? <Failed raw={f.detail} failure={f.failure} /> : null}
       {paths.length > 0 ? (
         <View style={styles.files}>
           <AxisLabel hint={t("anomaly.filesHint")}>{t("anomaly.files")}</AxisLabel>
@@ -337,6 +338,18 @@ function FindingCard({
         )}
       </View>
     </Card>
+  );
+}
+
+/** Why a job keeps failing: the sentence, and under it the engine's own words where they still tell something. */
+function Failed({ raw, failure }: { raw: string; failure?: Failure }) {
+  const { t, lang } = useT();
+  const { said, engine } = sayFailure(raw, failure, t, lang);
+  return (
+    <>
+      <Body>{said}</Body>
+      {engine ? <Mono>{engine}</Mono> : null}
+    </>
   );
 }
 

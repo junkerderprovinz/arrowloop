@@ -1,5 +1,19 @@
 # When something goes wrong
 
+## A failed run in your language
+
+The interface says why a run failed in the language it shows, with its figures
+written that way: a destination too full for what the run would write, a drive
+that is not plugged in, a server that does not answer, a sign-in that was
+refused, access that was denied, a folder that does not exist, a full quota,
+a service asking for a pause, a run that was stopped, and a command before or
+after the run that failed, with what it printed below. The engine records every
+failure in English, so a run from an older version is said the same way. A
+failure it has no words for shows the engine's own English under **The engine
+reported:**, which is also what a bug report should quote. The phone's
+notification about a failed run does the same in English and German, the two
+languages its notifications come in.
+
 ## The run was refused and nothing happened
 
 Read the message; each refusal names its own reason.

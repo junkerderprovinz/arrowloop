@@ -11,6 +11,7 @@ import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.text.format.Formatter
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
@@ -200,7 +201,7 @@ class EngineService : Service() {
     private fun report(due: Due) {
         due.found.forEach(::tellFound)
         if (due.failed > 0) {
-            tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), due.reason)
+            tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), whyFailed(due))
             return
         }
         if (!due.changed()) return
@@ -276,6 +277,10 @@ class EngineService : Service() {
         val trashed: Int = 0,
         val conflicts: Int = 0,
         val reason: String = "",
+        val failedJob: String = "",
+        /** The kind of failure the engine named in reason, and its figures; internal/failure. */
+        val failure: String = "",
+        val params: Map<String, String> = emptyMap(),
         val found: List<Found> = emptyList(),
     ) {
         fun changed() = copied + moved + trashed + conflicts > 0
@@ -310,8 +315,42 @@ class EngineService : Service() {
             trashed = json.optInt("trashed"),
             conflicts = json.optInt("conflicts"),
             reason = json.optString("reason"),
+            failedJob = json.optString("failedJob"),
+            failure = json.optJSONObject("failure")?.optString("code") ?: "",
+            params = json.optJSONObject("failure")?.optJSONObject("params")?.let { p ->
+                p.keys().asSequence().associateWith { p.optString(it) }
+            } ?: emptyMap(),
         )
     }
+
+    /**
+     * The first failure in the phone's language where the engine named its
+     * kind, and its own English under a lead otherwise.
+     */
+    private fun whyFailed(due: Due): String {
+        val left = due.params["side"] == "left"
+        val said = when (due.failure) {
+            "notEnoughSpace" -> getString(
+                if (left) R.string.failure_space_left else R.string.failure_space_right,
+                size(due.params["free"]),
+                size(due.params["needed"]),
+            )
+            "volumeMissing" -> getString(if (left) R.string.failure_volume_left else R.string.failure_volume_right)
+            "unreachable" -> getString(R.string.failure_unreachable)
+            "signInFailed" -> getString(R.string.failure_sign_in)
+            "permissionDenied" -> getString(R.string.failure_permission)
+            "notFound" -> getString(R.string.failure_not_found)
+            "quotaExceeded" -> getString(R.string.failure_quota)
+            "rateLimited" -> getString(R.string.failure_rate_limited)
+            "stopped" -> getString(R.string.failure_stopped)
+            "beforeFailed" -> getString(R.string.failure_before)
+            "afterFailed" -> getString(R.string.failure_after)
+            else -> return getString(R.string.failure_engine_said, due.reason)
+        }
+        return if (due.failedJob.isEmpty()) said else getString(R.string.failure_of_job, due.failedJob, said)
+    }
+
+    private fun size(bytes: String?): String = Formatter.formatShortFileSize(this, bytes?.toLongOrNull() ?: 0L)
 
     private fun finish() {
         release()

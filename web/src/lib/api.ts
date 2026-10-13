@@ -3,6 +3,7 @@
 
 /** Which way a job is allowed to write. */
 import type { FindingListing, JobLearning } from './anomalies'
+import type { Failure } from './failure'
 
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
@@ -207,6 +208,8 @@ export type Run = {
   Unchanged: number
   Skipped: number
   Err: string
+  /** What kind of failure Err is, where the engine knows. */
+  Failure?: Failure
   /**
    * A run still going, listed only when asked for with `going`. Its id is
    * negative, its counts are what it has done so far and it has no end yet.

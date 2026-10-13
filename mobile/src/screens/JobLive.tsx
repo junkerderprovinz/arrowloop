@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { api, failed, touched, type Job, type Run } from "../api";
 import { describeCadence, readCadence } from "../../../web/src/lib/cadence";
+import { failureLine } from "../../../web/src/lib/failure";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
@@ -104,7 +105,7 @@ export function JobLive({ name }: { name: string }) {
                 <Badge label={t("preview.nothing")} />
               )}
             </View>
-            <Body>{failed(run) ? run.Err : counters(run, t)}</Body>
+            <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
           </Card>
         ))}
       </Section>

@@ -6,6 +6,7 @@
 import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
+import type { Failure } from "../../web/src/lib/failure";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
 export const ORIGIN = `http://127.0.0.1:${Constants.expoConfig?.extra?.enginePort}`;
@@ -88,6 +89,8 @@ export interface Run {
   Unchanged: number;
   Skipped: number;
   Err: string;
+  /** What kind of failure Err is, where the engine knows. */
+  Failure?: Failure;
 }
 
 /**

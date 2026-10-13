@@ -5,9 +5,10 @@ const STEPS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'] as const
  *
  * Binary steps, as file managers use, with the short suffixes rather than
  * KiB/MiB. One decimal below 10 and none above, so the width stays roughly
- * constant in a list.
+ * constant in a list. With a language the number is written its way, such as
+ * 2,5 GB in German.
  */
-export function bytes(n: number): string {
+export function bytes(n: number, lang?: string): string {
   if (!Number.isFinite(n) || n <= 0) return '0 B'
   let value = n
   let step = 0
@@ -15,6 +16,9 @@ export function bytes(n: number): string {
     value /= 1024
     step++
   }
-  if (step === 0) return `${Math.round(value)} B`
-  return `${value < 10 ? value.toFixed(1) : Math.round(value)} ${STEPS[step]}`
+  const digits = step > 0 && value < 10 ? 1 : 0
+  const shown = lang
+    ? new Intl.NumberFormat(lang, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value)
+    : value.toFixed(digits)
+  return `${shown} ${STEPS[step]}`
 }

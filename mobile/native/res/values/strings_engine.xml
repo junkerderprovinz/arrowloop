@@ -64,4 +64,28 @@
     <string name="anomaly_empty">One side lists no files at all</string>
     <string name="anomaly_failing">The last runs failed</string>
     <string name="anomaly_overdue">The schedule has not been kept for days</string>
+
+    <!--
+      Why a scheduled run failed, for the kinds of failure the engine names in
+      internal/failure. Anything else is shown in the engine's English, after
+      failure_engine_said.
+    -->
+    <!-- Two placeholders: the job's name and one of the sentences below. -->
+    <string name="failure_of_job">%1$s: %2$s</string>
+    <!-- One placeholder: the engine's own message. -->
+    <string name="failure_engine_said">The engine reported: %1$s</string>
+    <!-- Two sizes: what is free and what the run would write. -->
+    <string name="failure_space_left">The destination (left) has %1$s free, and this job would write at least %2$s.</string>
+    <string name="failure_space_right">The destination (right) has %1$s free, and this job would write at least %2$s.</string>
+    <string name="failure_volume_left">The drive of the left side is not plugged in.</string>
+    <string name="failure_volume_right">The drive of the right side is not plugged in.</string>
+    <string name="failure_unreachable">The server could not be reached.</string>
+    <string name="failure_sign_in">Signing in failed. Check the user name, the password or the key.</string>
+    <string name="failure_permission">Access was denied: the account may not read or write there.</string>
+    <string name="failure_not_found">A folder the job needs does not exist.</string>
+    <string name="failure_quota">The storage is full: its quota is used up.</string>
+    <string name="failure_rate_limited">The service asked for a pause after too many requests. The next run tries again.</string>
+    <string name="failure_stopped">The run was stopped before it finished.</string>
+    <string name="failure_before">The command before the run failed, so the run did not start.</string>
+    <string name="failure_after">The command after the run failed.</string>
 </resources>
