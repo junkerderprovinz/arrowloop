@@ -38,6 +38,11 @@ describe('the settings search', () => {
     expect(hits.some((h) => h.item.tile === 'apps' && h.item.former)).toBe(true)
   })
 
+  it('finds a card by the title it carried before and leads to it', () => {
+    const [first] = search(buildItems(t, settingsTiles(true)), 'what gets carried')
+    expect(first?.item).toMatchObject({ tile: 'sync', former: true, cardName: 'Contents' })
+  })
+
   it('finds a setting by a word that only its explanation holds', () => {
     const hits = search(buildItems(t, settingsTiles(true)), 'megabyte')
     expect(hits[0]).toMatchObject({ inHint: true, item: { name: 'Bandwidth limit', tile: 'general' } })

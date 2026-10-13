@@ -81,10 +81,9 @@ Back works as well.
 
 Under it, one card for each thing to see or do: **Runs**, where a click opens a
 run's details; **Files touched**, newest first (History searches across every
-job); **Preview**; **Check
-this job**; **Find duplicates**; **Brakes**, where **Own brakes for this job**
-gives the job values of its own instead of the global ones; and, once the job's
-runs are learned, **What a run usually does**, with how many files a run
+job); **Preview**; **Check**; **Duplicates**; **Brakes**, where **Own brakes
+for this job** gives the job values of its own instead of the global ones; and,
+once the job's runs are learned, **Usual run**, with how many files a run
 usually deletes and copies and how long it takes.
 
 ## The preview
@@ -398,7 +397,7 @@ hold a single action is that action's button instead.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
-engine, Back up and restore settings, On a server, Desktop app, Problems?,
+engine, Settings backup, On a server, Desktop app, Problems?,
 About this app and Danger zone.
 
 ## Who can reach it

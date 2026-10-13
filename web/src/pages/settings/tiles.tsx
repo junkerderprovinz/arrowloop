@@ -49,6 +49,8 @@ export function settingsTiles(security: boolean | null): Tile[] {
 export interface FormerName {
   labelKey: TranslationKey
   tile: TileId
+  /** The card that carries the thing under its new name, where it was a card. */
+  card?: TranslationKey
 }
 
 /**
@@ -61,6 +63,8 @@ export const FORMER_NAMES: FormerName[] = [
   { labelKey: 'engine.work', tile: 'general' },
   { labelKey: 'engine.memory', tile: 'general' },
   { labelKey: 'engine.telling', tile: 'safety' },
+  { labelKey: 'former.backup', tile: 'general', card: 'backup.title' },
+  { labelKey: 'former.contents', tile: 'sync', card: 'settings.contents' },
 ]
 
 const REMEMBERED = 'arrowloop.settingsTile'

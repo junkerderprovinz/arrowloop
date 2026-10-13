@@ -73,6 +73,7 @@ export function buildItems(t: (k: TranslationKey) => string, tiles: Tile[]): Ite
       tile: tile.id,
       tileName: t(tile.labelKey),
       name,
+      cardName: f.card && t(f.card),
       former: true,
       tier: 0,
       foldedName: fold(name),
@@ -161,7 +162,10 @@ export function SettingsSearch({ tiles, tile, wide }: { tiles: Tile[]; tile: Til
     setQuery('')
     setOpen(false)
     field.current?.blur()
-    openSetting(item.tile, item.tier === 1 ? { card: item.name } : item.tier === 2 ? { card: item.cardName, row: item.name } : null)
+    openSetting(
+      item.tile,
+      item.tier === 1 ? { card: item.name } : item.tier === 2 ? { card: item.cardName, row: item.name } : item.cardName ? { card: item.cardName } : null,
+    )
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {

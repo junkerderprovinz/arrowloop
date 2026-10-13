@@ -63,7 +63,7 @@ export function JobLive({ name }: { name: string }) {
 
   return (
     <>
-      <Section title={t("jobs.runNow")} hint={t("jobs.runNowHint")}>
+      <Section title={t("job.runCard")} hint={t("jobs.runNowHint")}>
         <View style={styles.actions}>
           <Button
             // Cancel rather than pause: the next run starts from the beginning,

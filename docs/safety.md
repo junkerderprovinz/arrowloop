@@ -231,7 +231,7 @@ compares both against a record that matches both and concludes nothing
 happened. The guard above stops such a record being written; a restore, a
 crash, a hand edit or a database copied between machines can still produce one.
 
-**Check this job**, a card on a job's page, first checks that the job can run
+**Check**, a card on a job's page, first checks that the job can run
 at all, and then compares both sides against the record and reports what it
 finds: a file the record says both sides agreed on while
 the two copies differ, a record whose two halves describe different files, a
