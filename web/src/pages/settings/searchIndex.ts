@@ -55,6 +55,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
         { key: 'look.design' },
         { key: 'look.corners', hint: 'look.cornersHint' },
         { key: 'look.motion', hint: 'look.motionHint' },
+        { key: 'look.tileOrder', hint: 'look.tileOrderHint' },
       ],
     },
     {
@@ -150,7 +151,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
       ],
     },
   ],
-  targets: [{ title: 'nav.targets', rows: [SIDEBAR_ROW] }],
+  targets: [{ title: 'targets.pageCard', rows: [SIDEBAR_ROW, { key: 'nav.targets' }, { key: 'targets.drives' }] }],
   security: [
     { title: 'login.password', hint: 'password.hint', rows: [] },
     { title: 'twoFactor.title', hint: 'twoFactor.hint', rows: [] },

@@ -143,6 +143,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.settingsSearch',
       },
       {
+        id: 'tile-order',
+        at: ['/settings/look'],
+        where: ['nav.settings', 'settings.look'],
+        text: 'new.change.tileOrder',
+        names: { settings: 'nav.settings', reset: 'look.orderReset', look: 'settings.look' },
+      },
+      {
         id: 'anomalies-module',
         at: ['/settings/safety'],
         where: ['nav.settings', 'settings.safetyNet'],

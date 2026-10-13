@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import { useMemo, useSyncExternalStore, type ComponentType } from 'react'
 
 import {
   IconInfo,
@@ -49,6 +49,8 @@ export function settingsTiles(security: boolean | null): Tile[] {
 export interface FormerName {
   labelKey: TranslationKey
   tile: TileId
+  /** The card that carries the thing under its new name, where it was a card. */
+  card?: TranslationKey
 }
 
 /**
@@ -61,6 +63,8 @@ export const FORMER_NAMES: FormerName[] = [
   { labelKey: 'engine.work', tile: 'general' },
   { labelKey: 'engine.memory', tile: 'general' },
   { labelKey: 'engine.telling', tile: 'safety' },
+  { labelKey: 'former.backup', tile: 'general', card: 'backup.title' },
+  { labelKey: 'former.contents', tile: 'sync', card: 'settings.contents' },
 ]
 
 const REMEMBERED = 'arrowloop.settingsTile'
@@ -79,4 +83,75 @@ export function rememberTile(id: TileId) {
   } catch {
     // Without storage Settings opens on its first tile, which is no loss.
   }
+}
+
+const ORDER = 'arrowloop.settingsOrder'
+
+function readOrder(): string {
+  try {
+    return localStorage.getItem(ORDER) ?? ''
+  } catch {
+    return ''
+  }
+}
+
+function parseOrder(raw: string): string[] {
+  try {
+    const stored: unknown = raw ? JSON.parse(raw) : []
+    return Array.isArray(stored) ? stored.filter((id): id is string => typeof id === 'string') : []
+  } catch {
+    // A hand-edited value falls back to the app's own order.
+    return []
+  }
+}
+
+const orderListeners = new Set<() => void>()
+
+function subscribeOrder(listener: () => void) {
+  orderListeners.add(listener)
+  // Another tab moving a tile moves it here too.
+  window.addEventListener('storage', listener)
+  return () => {
+    orderListeners.delete(listener)
+    window.removeEventListener('storage', listener)
+  }
+}
+
+/** The order the person dragged the tiles into, kept per browser; empty for the app's own. */
+export function useTileOrder(): string[] {
+  const raw = useSyncExternalStore(subscribeOrder, readOrder)
+  return useMemo(() => parseOrder(raw), [raw])
+}
+
+/** Keeps an order, or with null goes back to the app's own. */
+export function setTileOrder(ids: string[] | null) {
+  try {
+    if (ids) localStorage.setItem(ORDER, JSON.stringify(ids))
+    else localStorage.removeItem(ORDER)
+  } catch {
+    // Without storage the order lasts until the page reloads.
+    return
+  }
+  for (const listener of orderListeners) listener()
+}
+
+/**
+ * The tiles in the person's order. A tile the stored order does not know yet
+ * goes in after the tile that comes before it in the app's own list, so a new
+ * tile turns up near its topic rather than at the end.
+ */
+export function orderTiles(tiles: Tile[], saved: readonly string[]): Tile[] {
+  const ids = saved.filter((id) => tiles.some((tile) => tile.id === id))
+  tiles.forEach((tile, i) => {
+    if (ids.includes(tile.id)) return
+    const before = i > 0 ? ids.indexOf(tiles[i - 1].id) : -1
+    ids.splice(before + 1, 0, tile.id)
+  })
+  return ids.map((id) => tiles.find((tile) => tile.id === id)!)
+}
+
+/** Whether an order is the app's own, so Reset has nothing to do. */
+export function isOwnOrder(saved: readonly string[]): boolean {
+  const known = saved.filter((id) => (TILE_IDS as readonly string[]).includes(id))
+  return known.every((id, i) => i === 0 || TILE_IDS.indexOf(known[i - 1] as TileId) < TILE_IDS.indexOf(id as TileId))
 }

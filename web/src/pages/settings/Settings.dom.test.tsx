@@ -15,6 +15,8 @@ vi.mock('../../lib/api', async (actual) => ({
     saveSettings: (s: Settings) => saveSettings(s),
     jobs: () => Promise.resolve([{ name: 'photos' }]),
     testNotify: (channel: string, notify: unknown) => testNotify(channel, notify),
+    remotes: () => Promise.resolve({ remotes: [{ name: 'nas' }, { name: 'cloud' }], backends: [] }),
+    volumes: () => Promise.resolve({ volumes: [{ id: 'usb' }] }),
   },
 }))
 
@@ -87,12 +89,22 @@ describe('the anomalies switch', () => {
 })
 
 describe('the Targets tile', () => {
-  it('draws the whole page, pinned or not', () => {
+  it('draws the whole page under its card while the page is not in the sidebar', async () => {
     render(<TargetsTile page={<p>the targets page</p>} />)
     expect(screen.getByText('the targets page')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Open' })).toBeNull()
+    expect(await screen.findByText('2')).toBeTruthy()
+  })
+
+  it('leaves the page to the sidebar once pinned and leads there', async () => {
+    render(<TargetsTile page={<p>the targets page</p>} />)
     act(() => setNavPin('targets', true))
-    expect(screen.getByText('the targets page')).toBeTruthy()
+    expect(screen.queryByText('the targets page')).toBeNull()
     expect(screen.getByRole('switch', { name: 'Also show in the sidebar' }).getAttribute('aria-checked')).toBe('true')
+    fireEvent.click(screen.getByRole('button', { name: 'Open' }))
+    expect(window.location.pathname).toBe('/targets')
+    expect(await screen.findByText('1')).toBeTruthy()
+    window.history.replaceState(null, '', '/')
   })
 
   // The selector is the page-top rule in index.css that drops the first card

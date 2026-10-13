@@ -551,7 +551,7 @@ the jobs that did.
 
 ## Backup and restore
 
-**Back up your settings**, on the **General** tile under **Settings**, has two
+**Settings backup**, on the **General** tile under **Settings**, has two
 rows. **Back up all jobs and all settings** exports them to a single JSON file,
 and **Restore all jobs and all settings** imports one back, so a new machine is
 one restore away. The phone's card uses the same two rows.

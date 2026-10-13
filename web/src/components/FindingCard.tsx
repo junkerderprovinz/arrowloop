@@ -189,7 +189,7 @@ export function FindingCard({
         <span className="text-subline text-carbon-textSub">{t(`anomaly.kind.${f.kind}`)}</span>
         {f.open && f.held && (
           <span className="inline-flex items-center gap-1">
-            <Badge tone="warn">{t('anomaly.held')}</Badge>
+            <Badge tone="warn">{t('status.held')}</Badge>
             <InfoBubble tip={t('anomaly.heldHint')} />
           </span>
         )}

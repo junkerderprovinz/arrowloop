@@ -113,7 +113,7 @@ describe('a job page', () => {
 
   it('has a card for each thing it does, none of them folded', async () => {
     page()
-    for (const title of ['Runs', 'Files touched', 'Preview', 'Check this job', 'Find duplicates']) {
+    for (const title of ['Runs', 'Files touched', 'Preview', 'Check', 'Duplicates']) {
       expect(await screen.findByRole('heading', { level: 2, name: new RegExp(`^${title}`) })).toBeTruthy()
     }
     expect(document.querySelector('[aria-expanded="false"]:not([aria-haspopup])')).toBeNull()
@@ -208,7 +208,7 @@ describe('a job page', () => {
     page()
     await screen.findByRole('heading', { level: 1, name: 'photos' })
     await waitFor(() => expect(learning).toHaveBeenCalled())
-    expect(screen.queryByText('What a run usually does')).toBeNull()
+    expect(screen.queryByText('Usual run')).toBeNull()
     learning.mockImplementation(() => Promise.resolve([]))
   })
 })

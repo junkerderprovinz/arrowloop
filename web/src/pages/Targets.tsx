@@ -37,6 +37,7 @@ import { useToast } from '../lib/toast'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
+import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
 
 /**
@@ -61,10 +62,17 @@ export function Targets() {
       setBackends(r.backends)
       setProviders(r.providers ?? [])
       setUnlisted(r.unlisted ?? [])
+      return r.remotes.length
     })
-    const drives = api.volumes().then((v) => setVolumes(v.volumes))
+    const drives = api.volumes().then((v) => {
+      setVolumes(v.volumes)
+      return v.volumes.length
+    })
     Promise.all([targets, drives])
-      .then(() => setError(null))
+      .then(([saved, registered]) => {
+        setError(null)
+        setTargetCount({ targets: saved, drives: registered })
+      })
       .catch((e: Error) => setError(e.message))
   }, [])
 

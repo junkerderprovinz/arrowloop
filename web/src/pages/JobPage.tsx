@@ -133,7 +133,7 @@ export function JobPage({ name }: { name: string }) {
 
       {/* Without the Anomalies page a held run is answered here. */}
       {anomalies === false && held && (
-        <Card title={t('anomaly.held')} hueIndex={6}>
+        <Card title={t('job.heldCard')} hueIndex={6}>
           <ul className="flex flex-col">
             <FindingCard finding={held} onJobPage onChanged={live.onSaved} />
           </ul>
@@ -145,12 +145,12 @@ export function JobPage({ name }: { name: string }) {
         <PreviewCard job={name} start={card === 'preview'} onDone={live.onSaved} />
       </section>
       <section id={JOB_CARDS.check} tabIndex={-1} className="outline-none">
-        <Card title={t('jobs.check')} hueIndex={3}>
+        <Card title={t('job.checkCard')} hueIndex={3}>
           <CheckPanel job={name} start={card === 'check'} />
         </Card>
       </section>
       <section id={JOB_CARDS.dupes} tabIndex={-1} className="outline-none">
-        <Card title={t('jobs.dupes')} hueIndex={4}>
+        <Card title={t('job.dupesCard')} hueIndex={4}>
           <DupesPanel job={name} />
         </Card>
       </section>

@@ -21,8 +21,10 @@ is there: running jobs, open conflicts, findings, files in the trash. **Sign
 out** stands at the foot, above **Settings**, and only once a password is set.
 
 **Targets** is a tile under Settings. Its switch **Also show in the sidebar**
-puts the page in the sidebar as well; the tile keeps showing it either way. An
-old link to `/targets` leads to the tile while the page is not in the sidebar.
+puts the page in the sidebar as well. The tile then keeps only its first card,
+with the switch, how many targets and drives are saved and **Open**, so the
+page is set up in one place. An old link to `/targets` leads to the tile while
+the page is not in the sidebar.
 
 In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
 **Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
@@ -81,10 +83,9 @@ Back works as well.
 
 Under it, one card for each thing to see or do: **Runs**, where a click opens a
 run's details; **Files touched**, newest first (History searches across every
-job); **Preview**; **Check
-this job**; **Find duplicates**; **Brakes**, where **Own brakes for this job**
-gives the job values of its own instead of the global ones; and, once the job's
-runs are learned, **What a run usually does**, with how many files a run
+job); **Preview**; **Check**; **Duplicates**; **Brakes**, where **Own brakes
+for this job** gives the job values of its own instead of the global ones; and,
+once the job's runs are learned, **Usual run**, with how many files a run
 usually deletes and copies and how long it takes.
 
 ## The preview
@@ -244,7 +245,7 @@ the job has `noTrash`, so a wrong click can be undone from there.
 **Trash** shows every job's trash in a card per job, both sides in it, puts
 files back, and deletes them for good: one file, one side, everything older
 than a number of days, or all of it. **Empty the trash** is the filled button at
-the bottom right, and **Delete entries older than…** stands beside it, with the
+the bottom right, and **Delete old entries** stands beside it, with the
 number of days asked in the window that confirms it; everything newer stays. Putting a file back is one
 click, since it only moves the file. Removing anything for good asks first,
 because the trash is the last copy there is, and emptying a side or all of it
@@ -326,13 +327,19 @@ show their glyphs alone. Settings opens on the tile used last, and every tile
 has an address of its own, such as `/settings/sync`. An older address such as
 `/settings/workload` leads to the tile that holds its cards.
 
+You can put the tiles in your own order. Hold a tile, or drag it with the
+mouse, and move it along the column; the column wiggles while a tile is
+carried, and Escape puts it back. With the keyboard, Alt and an arrow key move the tile that
+has the focus. The browser keeps the order, and **Reset** in the **Tile order**
+row on **Look** brings back the original one.
+
 - **General**: the settings backup and the workload (bandwidth limit, jobs at
   once and the run log file), and in the desktop app this computer: the
   window, starting with the system and automatic updates.
-- **Look**: language, design (Dark, Light or System), corners, motion, labels
-  and colours.
-- **Sync**: the global sync settings every job starts from, transfer, what gets
-  carried, retries and the shared exclude lists.
+- **Look**: language, design (Dark, Light or System), corners, motion, the
+  tile order, labels and colours.
+- **Sync**: the global sync settings every job starts from, transfer,
+  contents, retries and the shared exclude lists.
 - **Safety net**: the two brakes, the anomaly notes with their switch, and the
   notifications: when they go out, then a webhook (generic, Discord, Slack,
   Gotify or ntfy), Matrix, email, Apprise and Healthchecks.io, each with its
@@ -347,7 +354,8 @@ has an address of its own, such as `/settings/sync`. An older address such as
 The settings have a search. It stays out of sight until you scroll up once more
 at the top of a page, or press `/` or Ctrl+K. It finds a setting by its name or
 by a word from its explanation, and it knows the old names too: **Engine**
-leads to the tiles that took its cards, and **App** to Apps.
+leads to the tiles that took its cards, **App** to Apps, and a card's old title
+such as **What gets carried** to the card that carries it now.
 
 ## Info
 
@@ -398,7 +406,7 @@ hold a single action is that action's button instead.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
-engine, Back up and restore settings, On a server, Desktop app, Problems?,
+engine, Settings backup, On a server, Desktop app, Problems?,
 About this app and Danger zone.
 
 ## Who can reach it

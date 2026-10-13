@@ -312,7 +312,7 @@ function FindingCard({
         <Badge label={t(`anomaly.severity.${f.severity}`)} tone={BADGE_TONE[f.severity]} />
         {f.held ? (
           <View style={styles.held}>
-            <Badge label={t("anomaly.held")} tone="warn" />
+            <Badge label={t("anomaly.heldBadge")} tone="warn" />
             <InfoBubble tip={t("anomaly.heldHint")} />
           </View>
         ) : null}

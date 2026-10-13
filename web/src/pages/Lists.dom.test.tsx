@@ -63,10 +63,10 @@ describe('the trash', () => {
   it('asks the age in the window of the action that needs it', async () => {
     wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     expect(screen.queryByRole('spinbutton')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'Delete entries older than…' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete old entries' }))
     const window = await screen.findByRole('dialog')
     fireEvent.change(within(window).getByRole('spinbutton'), { target: { value: '7' } })
-    fireEvent.click(within(window).getByRole('button', { name: 'Delete entries older than…' }))
+    fireEvent.click(within(window).getByRole('button', { name: 'Delete old entries' }))
     await waitFor(() => expect(pruneTrash).toHaveBeenCalledWith('docs', 'left', 7, 'm'))
   })
 
@@ -101,7 +101,7 @@ describe('the trash', () => {
   it('puts its two actions side by side rather than one in a menu', () => {
     wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
-    const prune = screen.getByRole('button', { name: 'Delete entries older than…' })
+    const prune = screen.getByRole('button', { name: 'Delete old entries' })
     expect(prune.closest('[data-testid="page-actions"]')).toBeTruthy()
     expect(prune.className.split(' ')).not.toContain('bg-accent')
   })

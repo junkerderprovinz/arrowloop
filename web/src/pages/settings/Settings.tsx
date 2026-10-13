@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 
 import type { WindowSettings } from '../../lib/api'
 import type { TileId } from '../../lib/routes'
@@ -11,7 +11,7 @@ import { SafetyPage } from './SafetyPage'
 import { SettingsRail } from './SettingsRail'
 import { jumpTarget, markHit, SettingsSearch, takeJump } from './SettingsSearch'
 import { SyncPage } from './SyncPage'
-import { rememberTile, type Tile } from './tiles'
+import { orderTiles, rememberTile, useTileOrder, type Tile } from './tiles'
 import { TargetsTile } from './TargetsTile'
 
 export interface SettingsProps {
@@ -41,7 +41,9 @@ const JUMP_PATIENCE_MS = 2000
  * on the window's bottom edge exactly where theirs do.
  */
 export function Settings(props: SettingsProps) {
-  const { tile, tiles } = props
+  const { tile } = props
+  const saved = useTileOrder()
+  const tiles = useMemo(() => orderTiles(props.tiles, saved), [props.tiles, saved])
   const wide = tiles.find((x) => x.id === tile)?.wide ?? false
   const content = useRef<HTMLDivElement>(null)
 
