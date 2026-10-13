@@ -79,15 +79,12 @@ export function InheritedRow({
   label,
   hint,
   own,
-  wide = false,
   action,
   children,
 }: {
   label: string
   hint?: string
   own: boolean
-  /** A selector, which takes the rest of the row. */
-  wide?: boolean
   /** The InheritButton, or nothing for a setting another row decides. */
   action?: ReactNode
   /** The control, showing the value in force. */
@@ -99,9 +96,9 @@ export function InheritedRow({
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      <div className={`flex min-w-0 flex-wrap items-center justify-end gap-2 ${wide ? 'flex-[2_1_20rem]' : 'max-w-full'}`}>
+      <div className="flex min-w-0 max-w-full flex-wrap items-center justify-end gap-2">
         {!own && <InheritedMark />}
-        <div inert={!own || undefined} className={`flex min-w-0 ${wide ? 'flex-1' : ''} ${own ? '' : 'opacity-45'}`}>
+        <div inert={!own || undefined} className={`flex min-w-0 max-w-full ${own ? '' : 'opacity-45'}`}>
           {children}
         </div>
         {action}

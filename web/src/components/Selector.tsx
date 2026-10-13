@@ -15,7 +15,8 @@ import { useRainbow } from './Shell'
  * so page-level pickers render equally wide; the small scale skips the
  * pinning, for strips that repeat down a page or sit in a narrow panel. At
  * both scales the strip spans the width of its box and the segments share it,
- * since a strip that stops short leaves a ragged edge down a card of them.
+ * since a strip that stops short leaves a ragged edge down a card of them. A
+ * strip at the end of a settings row hugs its segments instead (`hug`).
  */
 export type Option<T extends string> = {
   value: T
@@ -60,6 +61,7 @@ export function Selector<T extends string>({
   labelledBy,
   disabled = false,
   low = false,
+  hug = false,
 }: {
   options: Option<T>[]
   value: T
@@ -93,6 +95,12 @@ export function Selector<T extends string>({
    * control is `--btn-h` high.
    */
   low?: boolean
+  /**
+   * As wide as its segments, for a selector at the end of a settings row,
+   * which has the end of the row rather than the card to itself. Once its
+   * segments run out of room they wrap into even rows as wide as the widest.
+   */
+  hug?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
 
@@ -131,6 +139,25 @@ export function Selector<T extends string>({
     if (most > 0) setWidest(most)
   }, [scale, widest, labelKey])
 
+  // Each segment's one-line width, read at max-content because a wrapped row
+  // grows its segments, and read again once the web font is in.
+  const mode = useLabelMode('tabs')
+  const [natural, setNatural] = useState<number[] | null>(null)
+  useLayoutEffect(() => {
+    const el = track.current
+    if (!hug || !el) return
+    const measure = () => {
+      const segs = [...el.querySelectorAll<HTMLElement>('[data-segment]')]
+      const own = segs.map((s) => s.style.cssText)
+      for (const s of segs) Object.assign(s.style, { flex: 'none', width: 'max-content', minWidth: '0' })
+      const widths = segs.map((s) => parseFloat(getComputedStyle(s).width))
+      segs.forEach((s, i) => (s.style.cssText = own[i] ?? ''))
+      setNatural((was) => (was?.join() === widths.join() ? was : widths))
+    }
+    measure()
+    void document.fonts?.ready.then(measure)
+  }, [hug, labelKey, mode])
+
   // How many segments share a row depends on the room, so it follows the
   // parent's size and not only the labels.
   useLayoutEffect(() => {
@@ -152,10 +179,18 @@ export function Selector<T extends string>({
   // The floor is capped at this strip's share of the room, so a narrow column
   // shrinks the segments together before it wraps the last one.
   const share = inner > 0 ? (inner - gap * (n - 1)) / n : Number.POSITIVE_INFINITY
+  // A hugging strip's box is as wide as the strip until the row runs out, so
+  // the room only falls short of the segments once they no longer fit.
+  const crowded =
+    hug && natural !== null && inner > 0 && natural.reduce((sum, w) => sum + w, 0) + gap * (n - 1) > inner + 1
+      ? natural
+      : null
   const pinned =
     scale === 'big' && widest !== null
       ? Math.min(Math.max(widest, MIN_SEGMENT), Math.max(widest, share))
-      : null
+      : crowded
+        ? Math.min(Math.max(...crowded), inner)
+        : null
   // Once it wraps, the segments share each row evenly and grow to fill it, so
   // no row ends in an empty strip: six that fit four to a row go three and
   // three.
@@ -166,7 +201,7 @@ export function Selector<T extends string>({
   useRainbow()
   // In glyph mode a segment with a glyph shows no words, so its name moves
   // into the hover bubble. Reactive brings the words back on hover itself.
-  const glyphOnly = useLabelMode('tabs') === 'glyph'
+  const glyphOnly = mode === 'glyph'
 
   return (
     <div
@@ -175,9 +210,9 @@ export function Selector<T extends string>({
       aria-label={label}
       aria-labelledby={labelledBy}
       className={
-        variant === 'well'
-          ? 'glim-well flex w-full flex-wrap gap-[0.2rem] p-[0.2rem]'
-          : 'flex w-full flex-wrap gap-1'
+        `${hug ? 'w-fit max-w-full' : 'w-full'} ${
+          variant === 'well' ? 'glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]' : 'flex flex-wrap gap-1'
+        }`
       }
       style={{
         borderRadius: variant === 'well' ? 'var(--radius-pill)' : undefined,

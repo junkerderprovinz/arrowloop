@@ -178,10 +178,11 @@ export function LookPage({
           </div>
         </SettingsRow>
 
-        <SettingsRow label={t('look.design')} wide>
+        <SettingsRow label={t('look.design')}>
           <Selector<ThemeChoice>
             scale="small"
             low
+            hug
             label={t('look.design')}
             hue={selectorHue()}
             value={theme}
@@ -194,10 +195,11 @@ export function LookPage({
           />
         </SettingsRow>
 
-        <SettingsRow label={t('look.corners')} hint={t('look.cornersHint')} wide>
+        <SettingsRow label={t('look.corners')} hint={t('look.cornersHint')}>
           <Selector<Shape>
             scale="small"
             low
+            hug
             label={t('look.corners')}
             hue={selectorHue()}
             value={shape}
@@ -214,10 +216,11 @@ export function LookPage({
           />
         </SettingsRow>
 
-        <SettingsRow label={t('look.motion')} hint={t('look.motionHint')} wide>
+        <SettingsRow label={t('look.motion')} hint={t('look.motionHint')}>
           <Selector<MotionIntensity>
             scale="small"
             low
+            hug
             label={t('look.motion')}
             hue={selectorHue()}
             value={motion}
@@ -250,11 +253,11 @@ export function LookPage({
             key={axis}
             label={t(axisKey[axis])}
             hint={axis === BOTTOM_BAR_AXIS ? t('look.barLabelsWeb') : undefined}
-            wide
           >
             <Selector<LabelMode>
               scale="small"
               low
+              hug
               label={t(axisKey[axis])}
               hue={selectorHue()}
               value={labels[axis]}

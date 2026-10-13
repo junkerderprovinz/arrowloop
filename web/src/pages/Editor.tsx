@@ -340,9 +340,10 @@ export function JobForm({
         {/* The mode exists only once one side is the source. It comes with the
             direction, so its row has no button of its own. */}
         {direction !== 'both' && (
-          <InheritedRow label={t('mode.label')} own={own('direction')} wide>
+          <InheritedRow label={t('mode.label')} own={own('direction')}>
             <Selector<Mode>
               scale="small"
+              hug
               label={t('mode.label')}
               hueOffset={HUE_OFFSET.mode}
               value={way.mode ?? 'sync'}

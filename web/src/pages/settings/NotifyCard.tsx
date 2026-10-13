@@ -65,10 +65,11 @@ export function NotifyCard({
 
   return (
     <Card title={t('settings.notifications')} hueIndex={hueIndex}>
-      <SettingsRow label={t('notify.when')} hint={t('notify.whenHint')} wide>
+      <SettingsRow label={t('notify.when')} hint={t('notify.whenHint')}>
         <Selector<'never' | 'failure' | 'always'>
           scale="small"
           low
+          hug
           label={t('notify.when')}
           value={notifyWhen(notify)}
           // onSuccess is the older spelling of always, and a written on outranks it.
@@ -152,10 +153,11 @@ export function NotifyCard({
                 mono
               />
             </FieldRow>
-            <SettingsRow label={t('notify.smtpTls')} wide>
+            <SettingsRow label={t('notify.smtpTls')}>
               <Selector<'starttls' | 'tls' | 'none'>
                 scale="small"
                 low
+                hug
                 label={t('notify.smtpTls')}
                 value={(smtp.tls as 'starttls' | 'tls' | 'none' | undefined) || 'starttls'}
                 onChange={(tls) => setSmtp({ tls })}

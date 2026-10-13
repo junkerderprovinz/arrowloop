@@ -40,10 +40,11 @@ export function SyncPage() {
   return (
     <Stack>
       <Card title={t('engine.defaults')} hint={t('settings.syncHint')} hueIndex={cardHue()}>
-        <SettingsRow label={t('direction.label')} hint={t('defaults.followHint')} wide>
+        <SettingsRow label={t('direction.label')} hint={t('defaults.followHint')}>
           <Selector<Direction>
             scale="small"
             low
+            hug
             label={t('direction.label')}
             hue={selectorHue()}
             value={direction}
@@ -62,11 +63,11 @@ export function SyncPage() {
         <SettingsRow
           label={t('mode.label')}
           hint={direction === 'both' ? `${t('mode.onlyOneWay')} ${modesHint(t)}` : undefined}
-          wide
         >
           <Selector<Mode>
             scale="small"
             low
+            hug
             label={t('mode.label')}
             hue={selectorHue()}
             disabled={direction === 'both'}
@@ -131,10 +132,11 @@ export function SyncPage() {
         />
         {/* Three answers rather than a switch, since the default "ask the two
             sides" differs from "never fold". */}
-        <SettingsRow label={t('engine.foldCase')} hint={t('engine.foldCaseHint')} wide>
+        <SettingsRow label={t('engine.foldCase')} hint={t('engine.foldCaseHint')}>
           <Selector<'auto' | 'on' | 'off'>
             scale="small"
             low
+            hug
             label={t('engine.foldCase')}
             hue={selectorHue()}
             value={defaults.foldCase === undefined ? 'auto' : defaults.foldCase ? 'on' : 'off'}

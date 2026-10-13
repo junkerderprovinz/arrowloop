@@ -17,21 +17,10 @@ export function counter(start = 0): () => number {
 /**
  * One setting on a line: its name at the start, the explanation behind an (i),
  * and a short control at the end. Where the row is too narrow for both, the
- * control moves under the name and keeps the row's end. A `wide` control, a
- * selector, takes the rest of the row and the whole row once it wraps, so its
- * segments share the width instead of sitting in a narrow block.
+ * control moves under the name and keeps the row's end. A selector here hugs
+ * its segments (`hug`), as a switch or a field keeps its own width.
  */
-export function SettingsRow({
-  label,
-  hint,
-  wide = false,
-  children,
-}: {
-  label: string
-  hint?: string
-  wide?: boolean
-  children: ReactNode
-}) {
+export function SettingsRow({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
       {/* data-glim-label is where the settings search scrolls to. */}
@@ -42,7 +31,7 @@ export function SettingsRow({
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      <div className={wide ? 'flex min-w-0 flex-[2_1_20rem]' : 'inline-flex max-w-full shrink-0'}>{children}</div>
+      <div className="inline-flex max-w-full shrink-0">{children}</div>
     </div>
   )
 }
