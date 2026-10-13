@@ -276,12 +276,12 @@ function withEngineGradle(config) {
       }
       gradle += `
 ${SYNC}
-// React Native's CMake step fails on newer JDKs over restricted-method
+// React Native's CMake step fails on JDKs past 21 over restricted-method
 // warnings, and only minutes into the build, so the JVM Gradle runs on is
-// checked while configuring.
-if (JavaVersion.current() != JavaVersion.VERSION_17) {
+// checked while configuring. F-Droid's build server runs on 21.
+if (JavaVersion.current() > JavaVersion.VERSION_21) {
     throw new GradleException(
-        'mobile/ builds with a JDK 17, but Gradle runs on Java ' + JavaVersion.current() +
+        'mobile/ builds with a JDK 17 to 21, but Gradle runs on Java ' + JavaVersion.current() +
         ' from ' + System.getProperty('java.home') + '. React Native\\'s CMake step fails on newer JDKs. ' +
         'Point JAVA_HOME at a JDK 17 and run the build again.')
 }
