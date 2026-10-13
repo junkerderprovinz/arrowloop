@@ -1006,7 +1006,7 @@ const it: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} e {trash} hanno un posto tutto loro nella navigazione. {targets} è passato in {settings}, dove un interruttore lo riporta qui.',
   'new.change.runStrip': 'Ogni lavoro mostra le sue ultime 14 esecuzioni come una striscia, con uno stato accanto.',
   'new.change.jobPage': 'Ogni lavoro ha una pagina propria, con il suo stato, le sue esecuzioni e i file toccati. Esegui, Pausa e Modifica stanno in una riga in alto.',
-  'new.change.listBar': 'Filtra, Ordina e Cerca stanno sopra l\'elenco in {history}.',
+  'new.change.listBar': '{filter} e {search} si trovano nella scheda {history}, sulla riga di {files} e {runs}.',
   'new.change.settingsSearch': 'La ricerca sopra le schede trova ogni impostazione, anche con il vecchio nome. Premi / oppure Ctrl+K.',
   'new.change.settingsTiles': '{settings} è una colonna di riquadri, e ogni riquadro mostra tutte le sue schede. Ciò che stava in {engine} ora si trova in {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Un interruttore per {anomalies} in {safety} spegne le note e la loro pagina. I freni continuano a trattenere, e a un\'esecuzione trattenuta si risponde allora dal suo lavoro.',
@@ -1109,13 +1109,13 @@ const it: Translations = {
   'job.usualHint': 'Appreso dalle ultime esecuzioni riuscite dell\'attività, cinquanta al massimo. Un\'esecuzione molto al di fuori di questi intervalli riceve una nota nella pagina Anomalie.',
   'anomaly.learn.hint': 'Ogni attività con quanto ArrowLoop ha già imparato di ciò che fanno di solito le sue esecuzioni: un anello di dieci parti, una per ogni esecuzione riuscita. Un anello verde pieno significa appreso, e da lì in poi un\'esecuzione molto fuori dal solito riceve una nota. Un clic apre l\'attività con i suoi intervalli abituali.',
   'anomaly.unusualHint': 'ArrowLoop impara dalle ultime cinquanta esecuzioni riuscite di ogni attività quanti file un\'esecuzione elimina e copia di solito e quanto dura. Dopo dieci esecuzioni l\'attività conta come appresa, e un\'esecuzione molto fuori da quell\'intervallo riceve una nota. La nota non ferma mai un\'esecuzione; lo fanno solo i freni.',
-  'new.change.findingCards': 'Ogni rilevazione in {anomalies} è una scheda a sé, con i suoi numeri, i file contati e le sue risposte. Nulla si apre sopra la pagina.',
+  'new.change.findingCards': 'Ogni rilevamento in {anomalies} è una scheda a sé con le sue risposte, e tutte le schede partono con la stessa altezza. {more} apre sul posto le cifre e i file contati.',
   'new.change.conflictCards': 'Ogni conflitto in {conflicts} dice di quale file si tratta, perché lo è e cosa ha ciascun lato, con risposte che dicono cosa fanno a quale file.',
   'new.change.trashActions': '{prune} sta nell\'angolo accanto a {empty}, come pulsante a sé.',
   'new.change.learning': 'ArrowLoop impara cosa fanno di solito le esecuzioni di ogni attività e segnala un\'esecuzione molto fuori da questo. {learning} mostra a che punto è ogni attività.',
   'new.change.jobBrakes': 'I freni propri di un\'attività si impostano nella sua pagina, sotto {brakes}.',
   'new.change.jobMore': 'Ogni scheda di lavoro ha {more}, con tutto ciò che offre la pagina del lavoro. Un lavoro si può modificare, controllare o rimuovere senza aprirlo.',
-  'new.change.providerNames': 'Ogni tipo di archiviazione che rclone conosce ha un nome e un posto nel suo gruppo quando aggiungi una destinazione, con il suo logo dove esiste.',
+  'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste.',
 }
 
 export default it

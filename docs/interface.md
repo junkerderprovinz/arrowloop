@@ -39,10 +39,11 @@ settings** brings back every job from a backup file; **Start** goes to Jobs.
 ## Jobs
 
 Every job is a card of its own, in the order of their names, with the job's
-name on the card's edge. The card shows the tile of the job's direction, its
-two sides, the schedule and the next run, one status at the card's right end
-with the last fourteen runs as a strip under it, and **Pause**, **Run now** and
-**More**. More holds everything else the job's page offers: **Edit**,
+name on the card's edge. On the left the card shows the tile of the job's
+direction, its two sides, the schedule and the next run. On the right the last
+fourteen runs stand as a strip with the job's one status right after it, and
+under them **More**, **Pause** and **Run now**. Both halves are centred on each
+other, and in a narrow window the right one moves under the left. More holds everything else the job's page offers: **Edit**,
 **Duplicate**, **Preview**, **Check this job**, **Find duplicates**, **Open this
 job's trash** and **Remove**. Edit, Duplicate and Remove open their window on
 the jobs page; Preview, Check and Find duplicates open the job's page at that
@@ -63,9 +64,10 @@ and **Stop all**.
 
 ## Filter, sort and search
 
-History has buttons above its card. **Filter** narrows the log to one job, a
+History has two buttons in its card, at the right end of the row where you
+choose between **Files** and **Runs**. **Filter** narrows the log to one job, a
 kind of entry and a span of days, and the card's heading names the choice.
-**Search** finds an entry by its path. Conflicts, Trash and Anomalies have none
+**Search** opens a field in the same place and finds an entry by its path. Conflicts, Trash and Anomalies have none
 of them: with a handful of jobs a card per job says enough. A link from a job's
 page narrows them to that job, shown as a chip at the top, and the cross on the
 chip shows every job again.
@@ -122,17 +124,17 @@ says why.
 
 The **Targets** tile, or the Targets page when it is pinned to the sidebar,
 lists the saved targets in three cards: **Clouds**, **Object storage** and
-**Servers & shares**, and the registered drives below them. **Add storage or
-cloud** and **Register a drive** float at the bottom right of the window, in the
+**Servers & shares**, and the registered drives below them. **Connect storage
+and clouds** and **Register a drive** float at the bottom right of the window, in the
 same place as **Add a job** on Jobs.
 
-**Add storage or cloud** opens a window with every kind of storage rclone ships,
+**Connect storage and clouds** opens a window with every kind of storage rclone ships,
 each under its product's name and in its group: Clouds such as Dropbox, 1Fichier
 or premiumize.me, Object storage such as Azure Files, QingStor or Sia, and under
 Servers & shares the protocols and the kinds that are built on another target,
 such as Encrypted, Compressed, Merged targets or Alias. A product shows its
-logo where Dashboard Icons or Simple Icons has one, and the app's storage glyph
-where neither does. Picking one opens its form in the same window. Every field
+logo, from Simple Icons, Dashboard Icons or the brand's own site, and the app's
+storage glyph where there is none. Picking one opens its form in the same window. Every field
 has a name in plain words, and its (i) ends with the name rclone gives it, which
 is what rclone's documentation and a hand-written `rclone.conf` use.
 
@@ -248,6 +250,10 @@ click, since it only moves the file. Removing anything for good asks first,
 because the trash is the last copy there is, and emptying a side or all of it
 says how many files and how big before it does.
 
+A side whose trash cannot be read, such as a server that does not answer or a
+drive that is not plugged in, says why in your language, in the same words a
+failed run uses.
+
 ## History
 
 **History** has two views, **Files** and **Runs**. A line keeps all of its
@@ -272,14 +278,17 @@ closes its gaps turns "nothing happened" into "nothing to show".
 **Anomalies** lists what the engine found about a job: a run a safety brake
 refused, a job that keeps failing, a schedule that is not kept, and a run far
 outside what the job usually does. Tiles at the top count the findings by
-severity, and a click on one shows only that severity. **Open or closed**
+severity, as tall as BombVault's, each with its name over how many are open,
+and a click on one shows only that severity. **Open or closed**
 switches to what was closed in the last thirty days, with how it ended.
 
 Every finding is a card of its own, laid out as BombVault lays out its
-findings, and nothing opens over the page. The card shows how bad it is, the
-job, what happened in a whole sentence, the figures, since when it has been
-seen, and for a brake the files it counted, the first ten by name and the rest
-as a number. Its answers stand on the card: a held job offers **Run anyway**
+findings, and nothing opens over the page. Every card starts at the same
+height: how bad it is, the job, since when it has been seen, what happened in
+one line and its answers. **Show more** opens the rest in place: the whole
+sentence, the figures, the engine's words for a failure, and for a brake the
+files it counted, the first ten by name and the rest as a number. **Show less**
+closes it again. Its answers stand on the card: a held job offers **Run anyway**
 and **Take back**, which ask first and are explained in
 [A refused run holds the job](safety.md#a-refused-run-holds-the-job); a note
 offers **Acknowledge** and **Run now**; an unusual run offers **Acknowledge**.
@@ -377,7 +386,8 @@ Delete. **Empty the trash** is the
 floating button on the Trash screen. The Conflicts screen shows every conflict
 as on the web, and from two conflicts up answers all of them at once from the
 card at its foot, after asking. The Anomalies screen shows every finding as a
-card with its answers, and the learning rings below them. A job's own brakes
+card with its answers, two lines high until **Show more** opens the rest, and
+the learning rings below them. A job's own brakes
 and what its runs usually do are on the job's screen. A More menu that would
 hold a single action is that action's button instead.
 

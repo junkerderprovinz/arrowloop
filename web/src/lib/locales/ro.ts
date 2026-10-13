@@ -1006,7 +1006,7 @@ const ro: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} și {trash} au acum un loc propriu în navigare. {targets} s-a mutat în {settings}, iar un comutator de acolo îl readuce.',
   'new.change.runStrip': 'Fiecare sarcină își arată ultimele 14 rulări sub forma unei benzi, cu o singură stare alături.',
   'new.change.jobPage': 'Fiecare sarcină are o pagină proprie, cu starea ei, rulările și fișierele atinse. Rulează, Pauză și Editează stau pe un singur rând, sus.',
-  'new.change.listBar': 'Filtrare, Sortare și Căutare stau deasupra listei în {history}.',
+  'new.change.listBar': '{filter} și {search} sunt în cardul {history}, pe rândul cu {files} și {runs}.',
   'new.change.settingsSearch': 'Căutarea de deasupra cardurilor găsește orice setare, și după numele vechi. Apasă / sau Ctrl+K.',
   'new.change.settingsTiles': '{settings} este o coloană de dale, iar fiecare dală arată toate cardurile ei. Ce era în {engine} se află acum în {general}, {sync} și {safety}.',
   'new.change.anomaliesModule': 'Un comutator pentru {anomalies} în {safety} oprește notele și pagina lor. Frânele continuă să rețină, iar o rulare reținută primește atunci răspuns la lucrarea ei.',
@@ -1109,13 +1109,13 @@ const ro: Translations = {
   'job.usualHint': 'Învățat din ultimele rulări reușite ale sarcinii, cel mult cincizeci. O rulare mult în afara acestor intervale primește o notă pe pagina Anomalii.',
   'anomaly.learn.hint': 'Fiecare sarcină cu cât a învățat ArrowLoop despre ce fac de obicei rulările ei: un inel din zece părți, câte una pentru fiecare rulare reușită. Un inel verde plin înseamnă învățat, iar de atunci o rulare mult în afara obișnuitului primește o notă. Un clic deschide sarcina cu intervalele ei obișnuite.',
   'anomaly.unusualHint': 'ArrowLoop învață din ultimele cincizeci de rulări reușite ale fiecărei sarcini câte fișiere șterge și copiază de obicei o rulare și cât durează. După zece rulări sarcina e socotită învățată, iar o rulare mult în afara acestui interval primește o notă. Nota nu oprește niciodată o rulare; asta fac doar frânele.',
-  'new.change.findingCards': 'Fiecare constatare din {anomalies} e un card separat, cu cifrele, fișierele numărate și răspunsurile ei. Nimic nu se deschide peste pagină.',
+  'new.change.findingCards': 'Fiecare constatare din {anomalies} este un card separat cu răspunsurile sale, iar toate cardurile încep la aceeași înălțime. {more} deschide pe loc cifrele și fișierele numărate.',
   'new.change.conflictCards': 'Fiecare conflict din {conflicts} spune despre ce fișier e vorba, de ce e conflict și ce are fiecare parte, cu răspunsuri care spun ce fac cu ce fișier.',
   'new.change.trashActions': '{prune} stă în colț lângă {empty}, ca buton separat.',
   'new.change.learning': 'ArrowLoop învață ce fac de obicei rulările fiecărei sarcini și semnalează o rulare mult în afara acestui lucru. {learning} arată cât de departe a ajuns fiecare sarcină.',
   'new.change.jobBrakes': 'Frânele proprii ale unei sarcini se setează pe pagina ei, la {brakes}.',
   'new.change.jobMore': 'Fiecare card de sarcină are {more}, cu tot ce oferă pagina sarcinii. O sarcină poate fi editată, verificată sau eliminată fără să o deschizi.',
-  'new.change.providerNames': 'Fiecare tip de stocare pe care îl cunoaște rclone are un nume și un loc în grupul lui când adaugi o destinație, cu logo acolo unde există.',
+  'new.change.providerNames': '{connect} numește fiecare tip de stocare pe care îl cunoaște rclone și îl pune în grupul său, cu logo, acolo unde există.',
 }
 
 export default ro

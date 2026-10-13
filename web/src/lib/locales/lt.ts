@@ -1006,7 +1006,7 @@ const lt: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} ir {trash} turi savo vietą naršyklėje. {targets} perkelti į {settings}, kur jungiklis grąžina juos atgal.',
   'new.change.runStrip': 'Kiekviena užduotis rodo savo paskutinius 14 paleidimų juostele, o šalia yra viena būsena.',
   'new.change.jobPage': 'Kiekviena užduotis turi savo puslapį su jos būsena, paleidimais ir paliestomis rinkmenomis. Paleisti, Pristabdyti ir Redaguoti yra vienoje eilutėje viršuje.',
-  'new.change.listBar': 'Filtras, rikiavimas ir paieška yra virš sąrašo skiltyje {history}.',
+  'new.change.listBar': '{filter} ir {search} yra kortelėje {history}, toje pačioje eilutėje kaip {files} ir {runs}.',
   'new.change.settingsSearch': 'Paieška virš kortelių randa kiekvieną nustatymą, ir pagal seną pavadinimą. Paspauskite / arba Ctrl+K.',
   'new.change.settingsTiles': '{settings} yra plytelių stulpelis, o kiekviena plytelė rodo visas savo korteles. Kas buvo skiltyje {engine}, dabar yra skiltyse {general}, {sync} ir {safety}.',
   'new.change.anomaliesModule': 'Jungiklis {anomalies} skiltyje {safety} išjungia pastabas ir jų puslapį. Stabdžiai toliau sulaiko, o į sulaikytą paleidimą tada atsakoma prie jo užduoties.',
@@ -1109,13 +1109,13 @@ const lt: Translations = {
   'job.usualHint': 'Išmokta iš paskutinių sėkmingų užduoties paleidimų, ne daugiau kaip penkiasdešimties. Paleidimas, toli peržengiantis šias ribas, gauna pastabą puslapyje Anomalijos.',
   'anomaly.learn.hint': 'Kiekviena užduotis ir kiek ArrowLoop jau išmoko, ką paprastai daro jos paleidimai: dešimties dalių žiedas, po dalį kiekvienam sėkmingam paleidimui. Pilnas žalias žiedas reiškia išmokta, ir nuo tada toli nuo įprasto nukrypęs paleidimas gauna pastabą. Paspaudus atsidaro užduotis su įprastomis ribomis.',
   'anomaly.unusualHint': 'ArrowLoop iš paskutinių penkiasdešimties sėkmingų kiekvienos užduoties paleidimų mokosi, kiek failų paleidimas paprastai ištrina ir nukopijuoja ir kiek laiko trunka. Po dešimties paleidimų užduotis laikoma išmokta, o toli už šių ribų esantis paleidimas gauna pastabą. Pastaba niekada nesustabdo paleidimo; tai daro tik stabdžiai.',
-  'new.change.findingCards': 'Kiekvienas radinys skiltyje {anomalies} yra atskira kortelė su skaičiais, suskaičiuotais failais ir atsakymais. Virš puslapio niekas neatsidaro.',
+  'new.change.findingCards': 'Kiekvienas radinys skiltyje {anomalies} yra atskira kortelė su atsakymais, ir visos kortelės iš pradžių vienodo aukščio. {more} vietoje atveria skaičius ir suskaičiuotus failus.',
   'new.change.conflictCards': 'Kiekvienas konfliktas skiltyje {conflicts} pasako, kuris tai failas, kodėl tai konfliktas ir ką turi kiekviena pusė, o atsakymai pasako, ką jie daro su kuriuo failu.',
   'new.change.trashActions': '{prune} yra kampe šalia {empty}, kaip atskiras mygtukas.',
   'new.change.learning': 'ArrowLoop mokosi, ką paprastai daro kiekvienos užduoties paleidimai, ir pažymi paleidimą, toli nuo to nukrypusį. {learning} rodo, kiek pažengusi kiekviena užduotis.',
   'new.change.jobBrakes': 'Užduoties nuosavi stabdžiai nustatomi jos puslapyje, skiltyje {brakes}.',
   'new.change.jobMore': 'Kiekvienoje užduoties kortelėje yra {more} su viskuo, ką siūlo užduoties puslapis. Užduotį galima redaguoti, patikrinti ar pašalinti jos neatidarius.',
-  'new.change.providerNames': 'Pridedant paskirtį, kiekviena rclone žinoma saugyklos rūšis turi pavadinimą ir vietą savo grupėje, su logotipu, kur jis yra.',
+  'new.change.providerNames': '{connect} įvardija kiekvieną rclone žinomą saugyklos rūšį ir priskiria ją grupei, su logotipu, jei jis yra.',
 }
 
 export default lt

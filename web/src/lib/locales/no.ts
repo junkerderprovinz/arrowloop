@@ -1006,7 +1006,7 @@ const no: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} og {trash} har fått sin egen plass i navigasjonen. {targets} er flyttet til {settings}, og en bryter der fester det igjen.',
   'new.change.runStrip': 'Hver jobb viser de siste 14 kjøringene som en stripe, med én status ved siden av.',
   'new.change.jobPage': 'Hver jobb har sin egen side, med tilstand, kjøringer og filene den har rørt. Kjør, Pause og Rediger står på én rad øverst.',
-  'new.change.listBar': 'Filtrer, Sorter og Søk står over listen i {history}.',
+  'new.change.listBar': '{filter} og {search} står i kortet {history}, på raden med {files} og {runs}.',
   'new.change.settingsSearch': 'Søket over kortene finner hver innstilling, også under det gamle navnet. Trykk / eller Ctrl+K.',
   'new.change.settingsTiles': '{settings} er en kolonne med fliser, og hver flis viser alle kortene sine. Det som lå under {engine}, ligger nå under {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'En bryter for {anomalies} under {safety} slår av merknadene og siden deres. Bremsene holder fortsatt igjen, og en tilbakeholdt kjøring besvares da på jobben sin.',
@@ -1109,13 +1109,13 @@ const no: Translations = {
   'job.usualHint': 'Lært av jobbens siste vellykkede kjøringer, høyst femti. En kjøring langt utenfor disse områdene får en merknad på siden Avvik.',
   'anomaly.learn.hint': 'Hver jobb med hvor langt ArrowLoop har kommet i å lære hva kjøringene vanligvis gjør: en ring i ti deler, én for hver vellykket kjøring. En full grønn ring betyr lært, og fra da av får en kjøring langt utenfor det vanlige en merknad. Et klikk åpner jobben med de vanlige områdene.',
   'anomaly.unusualHint': 'ArrowLoop lærer av de siste femti vellykkede kjøringene til hver jobb hvor mange filer en kjøring vanligvis sletter og kopierer, og hvor lenge den varer. Etter ti kjøringer regnes jobben som lært, og en kjøring langt utenfor det får en merknad. Merknaden stopper aldri en kjøring; det gjør bare bremsene.',
-  'new.change.findingCards': 'Hvert funn i {anomalies} er sitt eget kort, med tall, de opptalte filene og svarene. Ingenting åpnes over siden.',
+  'new.change.findingCards': 'Hvert funn i {anomalies} er sitt eget kort med svarene sine, og alle kort starter med samme høyde. {more} åpner tallene og de opptalte filene der de står.',
   'new.change.conflictCards': 'Hver konflikt i {conflicts} sier hvilken fil det er, hvorfor det er en konflikt og hva hver side har, med svar som sier hva de gjør med hvilken fil.',
   'new.change.trashActions': '{prune} står i hjørnet ved siden av {empty}, som en egen knapp.',
   'new.change.learning': 'ArrowLoop lærer hva kjøringene til hver jobb vanligvis gjør, og merker en kjøring langt utenfor det. {learning} viser hvor langt hver jobb har kommet.',
   'new.change.jobBrakes': 'En jobbs egne bremser stilles inn på siden dens, under {brakes}.',
   'new.change.jobMore': 'Hvert jobbkort har {more}, med alt jobbens side tilbyr. En jobb kan redigeres, sjekkes eller fjernes uten å åpne den.',
-  'new.change.providerNames': 'Hver lagringstype rclone kjenner, har et navn og en plass i gruppen sin når du legger til et mål, med logo der det finnes en.',
+  'new.change.providerNames': '{connect} navngir hver lagringstype rclone kjenner, og plasserer den i gruppen sin, med logo der det finnes.',
 }
 
 export default no

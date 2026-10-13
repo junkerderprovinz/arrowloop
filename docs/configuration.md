@@ -487,7 +487,7 @@ has no browser to open.
 
 Run `rclone authorize "<backend>"` on a computer that has a browser. It opens
 the provider's sign-in page and prints a token when you are done; paste that
-whole line into the token field when you add the service with **Add storage or
-cloud** on **Targets**. The
+whole line into the token field when you add the service with **Connect
+storage and clouds** on **Targets**. The
 client id and secret below it are optional and only matter if you registered
 your own application with the provider.

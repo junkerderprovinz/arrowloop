@@ -1006,7 +1006,7 @@ const sv: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} och {trash} har fått en egen plats i navigeringen. {targets} har flyttat in under {settings}, och en reglage där fäster det igen.',
   'new.change.runStrip': 'Varje jobb visar sina 14 senaste körningar som ett band, med en status bredvid.',
   'new.change.jobPage': 'Varje jobb har en egen sida med status, körningar och de filer det rört. Kör, Pausa och Redigera ligger på en rad högst upp.',
-  'new.change.listBar': 'Filtrera, Sortera och Sök står ovanför listan i {history}.',
+  'new.change.listBar': '{filter} och {search} finns i kortet {history}, på raden med {files} och {runs}.',
   'new.change.settingsSearch': 'Sökningen ovanför korten hittar varje inställning, även under det gamla namnet. Tryck på / eller Ctrl+K.',
   'new.change.settingsTiles': '{settings} är en kolumn av rutor, och varje ruta visar alla sina kort. Det som låg under {engine} ligger nu under {general}, {sync} och {safety}.',
   'new.change.anomaliesModule': 'Ett reglage för {anomalies} under {safety} stänger av anteckningarna och deras sida. Bromsarna håller fortfarande kvar, och en kvarhållen körning besvaras då vid sitt jobb.',
@@ -1109,13 +1109,13 @@ const sv: Translations = {
   'job.usualHint': 'Inlärt från jobbets senaste lyckade körningar, högst femtio. En körning långt utanför de här intervallen får en anteckning på sidan Avvikelser.',
   'anomaly.learn.hint': 'Varje jobb med hur långt ArrowLoop har kommit i att lära sig vad dess körningar brukar göra: en ring i tio delar, en för varje lyckad körning. En full grön ring betyder inlärd, och därefter får en körning långt utanför det vanliga en anteckning. Ett klick öppnar jobbet med dess vanliga intervall.',
   'anomaly.unusualHint': 'ArrowLoop lär sig av varje jobbs senaste femtio lyckade körningar hur många filer en körning brukar radera och kopiera och hur länge den tar. Efter tio körningar räknas jobbet som inlärt, och en körning långt utanför det får en anteckning. Anteckningen stoppar aldrig en körning; det gör bara bromsarna.',
-  'new.change.findingCards': 'Varje fynd under {anomalies} är ett eget kort med siffror, de räknade filerna och svaren. Inget öppnas ovanpå sidan.',
+  'new.change.findingCards': 'Varje fynd i {anomalies} är ett eget kort med sina svar, och alla kort börjar lika höga. {more} öppnar siffrorna och de räknade filerna på plats.',
   'new.change.conflictCards': 'Varje konflikt under {conflicts} säger vilken fil det gäller, varför det är en konflikt och vad varje sida har, med svar som säger vad de gör med vilken fil.',
   'new.change.trashActions': '{prune} står i hörnet bredvid {empty}, som en egen knapp.',
   'new.change.learning': 'ArrowLoop lär sig vad varje jobbs körningar brukar göra och noterar en körning långt utanför det. {learning} visar hur långt varje jobb har kommit.',
   'new.change.jobBrakes': 'Ett jobbs egna bromsar ställs in på dess sida, under {brakes}.',
   'new.change.jobMore': 'Varje jobbkort har {more}, med allt som jobbets sida erbjuder. Ett jobb kan redigeras, kontrolleras eller tas bort utan att öppnas.',
-  'new.change.providerNames': 'Varje lagringstyp som rclone känner till har ett namn och en plats i sin grupp när du lägger till ett mål, med sin logotyp där en sådan finns.',
+  'new.change.providerNames': '{connect} namnger varje lagringstyp som rclone känner till och placerar den i sin grupp, med logotyp där en finns.',
 }
 
 export default sv

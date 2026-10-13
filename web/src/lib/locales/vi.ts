@@ -1006,7 +1006,7 @@ const vi: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} và {trash} giờ có chỗ riêng trong thanh điều hướng. {targets} đã chuyển vào {settings}, và một công tắc ở đó ghim lại nó.',
   'new.change.runStrip': 'Mỗi công việc hiện 14 lần chạy gần nhất dưới dạng một dải, kèm một trạng thái bên cạnh.',
   'new.change.jobPage': 'Mỗi công việc có trang riêng, với trạng thái, các lần chạy và những tệp nó đã động đến. Chạy, Tạm dừng và Sửa nằm trên một hàng ở đầu trang.',
-  'new.change.listBar': 'Lọc, Sắp xếp và Tìm nằm phía trên danh sách trong {history}.',
+  'new.change.listBar': '{filter} và {search} nằm trong thẻ {history}, trên cùng hàng với {files} và {runs}.',
   'new.change.settingsSearch': 'Ô tìm kiếm phía trên các thẻ tìm được mọi cài đặt, kể cả theo tên cũ. Nhấn / hoặc Ctrl+K.',
   'new.change.settingsTiles': '{settings} là một cột các ô, và mỗi ô hiện tất cả các thẻ của nó. Những gì trước đây ở {engine} nay nằm trong {general}, {sync} và {safety}.',
   'new.change.anomaliesModule': 'Một công tắc cho {anomalies} trong {safety} tắt các ghi chú và trang của chúng. Phanh vẫn tiếp tục giữ lại, và lần chạy bị giữ khi đó được trả lời ở tác vụ của nó.',
@@ -1109,13 +1109,13 @@ const vi: Translations = {
   'job.usualHint': 'Học từ những lần chạy thành công gần nhất của tác vụ, tối đa năm mươi lần. Lần chạy vượt xa các khoảng này sẽ có ghi chú ở trang Bất thường.',
   'anomaly.learn.hint': 'Mỗi tác vụ cùng mức độ ArrowLoop đã học được những lần chạy của nó thường làm gì: một vòng mười phần, mỗi phần cho một lần chạy thành công. Vòng xanh đầy nghĩa là đã học xong, và từ đó lần chạy nào vượt xa mức thường lệ sẽ có ghi chú. Nhấp để mở tác vụ cùng các khoảng thường lệ của nó.',
   'anomaly.unusualHint': 'ArrowLoop học từ năm mươi lần chạy thành công gần nhất của mỗi tác vụ xem một lần chạy thường xóa và sao chép bao nhiêu tệp và mất bao lâu. Sau mười lần chạy, tác vụ được coi là đã học xong, và lần chạy vượt xa khoảng đó sẽ có ghi chú. Ghi chú không bao giờ dừng lần chạy; chỉ phanh mới làm vậy.',
-  'new.change.findingCards': 'Mỗi phát hiện trong {anomalies} là một thẻ riêng, có số liệu, các tệp đã đếm và các cách trả lời. Không có gì mở chồng lên trang.',
+  'new.change.findingCards': 'Mỗi phát hiện trong {anomalies} là một thẻ riêng kèm câu trả lời, và mọi thẻ đều bắt đầu với cùng chiều cao. {more} mở ngay tại chỗ các con số và các tệp đã đếm.',
   'new.change.conflictCards': 'Mỗi xung đột trong {conflicts} cho biết đó là tệp nào, vì sao xung đột và mỗi bên đang có gì, kèm các cách trả lời nói rõ sẽ làm gì với tệp nào.',
   'new.change.trashActions': '{prune} nằm ở góc cạnh {empty}, là một nút riêng.',
   'new.change.learning': 'ArrowLoop học xem những lần chạy của mỗi tác vụ thường làm gì và ghi chú lần chạy vượt xa mức đó. {learning} cho thấy mỗi tác vụ đã đi được bao xa.',
   'new.change.jobBrakes': 'Phanh riêng của một tác vụ được đặt trên trang của nó, trong mục {brakes}.',
   'new.change.jobMore': 'Mỗi thẻ công việc có {more}, với mọi thứ trang của công việc cung cấp. Có thể sửa, kiểm tra hoặc xoá một công việc mà không cần mở nó.',
-  'new.change.providerNames': 'Mỗi loại lưu trữ mà rclone biết đều có tên và chỗ trong nhóm của nó khi bạn thêm đích, kèm logo nếu có.',
+  'new.change.providerNames': '{connect} đặt tên cho mọi loại lưu trữ mà rclone biết và xếp vào nhóm của nó, kèm logo nếu có.',
 }
 
 export default vi

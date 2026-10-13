@@ -1006,7 +1006,7 @@ const pl: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} i {trash} mają własne miejsce w nawigacji. {targets} przeniesiono do {settings}, a przełącznik tam przypina je z powrotem.',
   'new.change.runStrip': 'Każde zadanie pokazuje swoje ostatnie 14 uruchomień jako pasek, a obok jeden status.',
   'new.change.jobPage': 'Każde zadanie ma własną stronę ze stanem, uruchomieniami i plikami, których dotyczyło. Uruchom, Wstrzymaj i Edytuj stoją w jednym rzędzie u góry.',
-  'new.change.listBar': 'Filtr, sortowanie i wyszukiwanie są nad listą w {history}.',
+  'new.change.listBar': '{filter} i {search} są na karcie {history}, w wierszu z {files} i {runs}.',
   'new.change.settingsSearch': 'Wyszukiwanie nad kartami znajduje każde ustawienie, także po starej nazwie. Naciśnij / lub Ctrl+K.',
   'new.change.settingsTiles': '{settings} to kolumna kafelków, a każdy kafelek pokazuje wszystkie swoje karty. To, co było w {engine}, jest teraz w {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Przełącznik dla {anomalies} w {safety} wyłącza uwagi i ich stronę. Hamulce nadal wstrzymują, a na wstrzymany przebieg odpowiada się wtedy przy jego zadaniu.',
@@ -1109,13 +1109,13 @@ const pl: Translations = {
   'job.usualHint': 'Wyuczone z ostatnich udanych uruchomień zadania, najwyżej pięćdziesięciu. Uruchomienie daleko poza tymi zakresami dostaje uwagę na stronie Anomalie.',
   'anomaly.learn.hint': 'Każde zadanie z tym, ile ArrowLoop zdążył się nauczyć o tym, co zwykle robią jego uruchomienia: pierścień z dziesięciu części, po jednej na każde udane uruchomienie. Pełny zielony pierścień oznacza nauczone, a od tej chwili uruchomienie daleko poza zwykłym zakresem dostaje uwagę. Kliknięcie otwiera zadanie z jego zwykłymi zakresami.',
   'anomaly.unusualHint': 'ArrowLoop uczy się z ostatnich pięćdziesięciu udanych uruchomień każdego zadania, ile plików uruchomienie zwykle usuwa i kopiuje oraz jak długo trwa. Po dziesięciu uruchomieniach zadanie uchodzi za nauczone, a uruchomienie daleko poza tym zakresem dostaje uwagę. Uwaga nigdy nie zatrzymuje uruchomienia; robią to tylko hamulce.',
-  'new.change.findingCards': 'Każde znalezisko w {anomalies} to osobna karta z liczbami, policzonymi plikami i odpowiedziami. Nic nie otwiera się nad stroną.',
+  'new.change.findingCards': 'Każde znalezisko w {anomalies} to osobna karta z odpowiedziami, a wszystkie karty zaczynają z tą samą wysokością. {more} otwiera na miejscu liczby i policzone pliki.',
   'new.change.conflictCards': 'Każdy konflikt w {conflicts} mówi, o który plik chodzi, dlaczego to konflikt i co ma każda strona, a odpowiedzi mówią, co robią z którym plikiem.',
   'new.change.trashActions': '{prune} stoi w rogu obok {empty} jako osobny przycisk.',
   'new.change.learning': 'ArrowLoop uczy się, co zwykle robią uruchomienia każdego zadania, i odnotowuje uruchomienie daleko od tego. {learning} pokazuje, jak daleko jest każde zadanie.',
   'new.change.jobBrakes': 'Własne hamulce zadania ustawia się na jego stronie, w części {brakes}.',
   'new.change.jobMore': 'Każda karta zadania ma {more}, ze wszystkim, co oferuje strona zadania. Zadanie można edytować, sprawdzić lub usunąć bez otwierania go.',
-  'new.change.providerNames': 'Każdy rodzaj magazynu, który zna rclone, ma przy dodawaniu celu nazwę i miejsce w swojej grupie, z logo tam, gdzie ono istnieje.',
+  'new.change.providerNames': '{connect} nazywa każdy rodzaj magazynu znany rclone i umieszcza go w jego grupie, z logo, jeśli istnieje.',
 }
 
 export default pl

@@ -1006,7 +1006,7 @@ const hr: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} i {trash} sada imaju vlastito mjesto u navigaciji. {targets} su se preselili u {settings}, gdje ih prekidač može ponovno prikvačiti.',
   'new.change.runStrip': 'Svaki zadatak prikazuje svojih zadnjih 14 izvođenja kao traku, s jednim statusom pokraj nje.',
   'new.change.jobPage': 'Svaki zadatak ima vlastitu stranicu sa stanjem, izvođenjima i datotekama koje je taknuo. Pokreni, Pauziraj i Uredi nalaze se u jednom retku na vrhu.',
-  'new.change.listBar': 'Filtar, razvrstavanje i pretraga stoje iznad popisa u {history}.',
+  'new.change.listBar': '{filter} i {search} nalaze se na kartici {history}, u retku s {files} i {runs}.',
   'new.change.settingsSearch': 'Pretraga iznad kartica pronalazi svaku postavku, i po starom nazivu. Pritisni / ili Ctrl+K.',
   'new.change.settingsTiles': '{settings} su stupac pločica i svaka pločica prikazuje sve svoje kartice. Ono što je bilo u {engine} sada je u {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Prekidač za {anomalies} u {safety} isključuje napomene i njihovu stranicu. Kočnice i dalje zadržavaju, a na zadržano izvođenje tada se odgovara na njegovom zadatku.',
@@ -1109,13 +1109,13 @@ const hr: Translations = {
   'job.usualHint': 'Naučeno iz zadnjih uspješnih pokretanja zadatka, najviše pedeset. Pokretanje daleko izvan ovih raspona dobiva bilješku na stranici Anomalije.',
   'anomaly.learn.hint': 'Svaki zadatak s onim što je ArrowLoop već naučio o tome što njegova pokretanja obično rade: prsten od deset dijelova, po jedan za svako uspješno pokretanje. Pun zeleni prsten znači naučeno, a odonda pokretanje daleko izvan uobičajenog dobiva bilješku. Klik otvara zadatak s njegovim uobičajenim rasponima.',
   'anomaly.unusualHint': 'ArrowLoop iz zadnjih pedeset uspješnih pokretanja svakog zadatka uči koliko datoteka pokretanje obično izbriše i kopira te koliko traje. Nakon deset pokretanja zadatak se smatra naučenim, a pokretanje daleko izvan toga dobiva bilješku. Bilješka nikad ne zaustavlja pokretanje; to rade samo kočnice.',
-  'new.change.findingCards': 'Svaki nalaz u {anomalies} zasebna je kartica s brojkama, prebrojanim datotekama i odgovorima. Ništa se ne otvara preko stranice.',
+  'new.change.findingCards': 'Svaki nalaz u {anomalies} zasebna je kartica sa svojim odgovorima, a sve kartice počinju jednake visine. {more} na mjestu otvara brojke i prebrojane datoteke.',
   'new.change.conflictCards': 'Svaki sukob u {conflicts} kaže o kojoj je datoteci riječ, zašto je sukob i što ima svaka strana, s odgovorima koji kažu što rade s kojom datotekom.',
   'new.change.trashActions': '{prune} stoji u kutu pokraj {empty} kao zaseban gumb.',
   'new.change.learning': 'ArrowLoop uči što pokretanja svakog zadatka obično rade i bilježi pokretanje daleko izvan toga. {learning} pokazuje dokle je stigao svaki zadatak.',
   'new.change.jobBrakes': 'Vlastite kočnice zadatka postavljaju se na njegovoj stranici, pod {brakes}.',
   'new.change.jobMore': 'Svaka kartica zadatka ima {more}, sa svime što nudi stranica zadatka. Zadatak se može urediti, provjeriti ili ukloniti bez otvaranja.',
-  'new.change.providerNames': 'Svaka vrsta pohrane koju rclone poznaje ima ime i mjesto u svojoj skupini kad dodaješ odredište, s logotipom gdje ga ima.',
+  'new.change.providerNames': '{connect} imenuje svaku vrstu pohrane koju rclone poznaje i stavlja je u njezinu skupinu, s logotipom ako postoji.',
 }
 
 export default hr

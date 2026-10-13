@@ -1006,7 +1006,7 @@ const ja: Translations = {
   'new.change.navigation': '{conflicts}、{anomalies}、{trash}がナビゲーションに独立した項目として加わりました。{targets}は{settings}に移り、そこのスイッチで元に戻せます。',
   'new.change.runStrip': '各ジョブに直近 14 回の実行がストリップで表示され、横に状態が 1 つ付きます。',
   'new.change.jobPage': '各ジョブに専用のページができ、状態、実行、触れたファイルが分かります。実行、一時停止、編集は上部の 1 行に並びます。',
-  'new.change.listBar': '{history} では一覧の上にフィルター・並べ替え・検索があります。',
+  'new.change.listBar': '{filter}と{search}は{history}カードの中、{files}と{runs}の行にあります。',
   'new.change.settingsSearch': 'カードの上の検索で、旧名称でもすべての設定を探せます。/ または Ctrl+K を押してください。',
   'new.change.settingsTiles': '{settings}はタイルの列になり、各タイルにそのカードがすべて表示されます。{engine}にあった項目は{general}、{sync}、{safety}に移りました。',
   'new.change.anomaliesModule': '{safety}にある{anomalies}のスイッチで、注意とそのページをオフにできます。ブレーキは引き続き実行を止め、止められた実行にはそのジョブで答えます。',
@@ -1109,13 +1109,13 @@ const ja: Translations = {
   'job.usualHint': 'このジョブの直近の成功した実行（最大 50 回）から学習した値です。この範囲を大きく外れた実行には、異常ページに通知が付きます。',
   'anomaly.learn.hint': '各ジョブについて、ArrowLoop がいつもの実行の様子をどこまで学んだかを示します。10 分割のリングで、成功した実行 1 回ごとに 1 区画が埋まります。緑で満たされたら学習済みで、以後いつもの範囲を大きく外れた実行には通知が付きます。クリックすると、いつもの範囲とともにジョブが開きます。',
   'anomaly.unusualHint': 'ArrowLoop は各ジョブの直近 50 回の成功した実行から、1 回の実行でいつも何個のファイルを削除・コピーし、どれくらい時間がかかるかを学びます。10 回で学習済みとなり、その範囲を大きく外れた実行には通知が付きます。通知が実行を止めることはありません。止めるのはブレーキだけです。',
-  'new.change.findingCards': '{anomalies} の検出はそれぞれ 1 枚のカードになり、数値・数えたファイル・答え方がそこに並びます。ページの上に何かが開くことはありません。',
+  'new.change.findingCards': '{anomalies}の各検出は回答付きの独立したカードで、どのカードも最初は同じ高さです。{more}でその場に数値と数えたファイルが開きます。',
   'new.change.conflictCards': '{conflicts} の各競合には、どのファイルか、なぜ競合なのか、それぞれの側に何があるかが書かれ、答え方もどのファイルをどうするかが分かる言葉になりました。',
   'new.change.trashActions': '{prune} は隅の {empty} の隣に、独立したボタンとして並びます。',
   'new.change.learning': 'ArrowLoop は各ジョブのいつもの実行の様子を学び、それを大きく外れた実行を通知します。{learning} で各ジョブの進み具合が分かります。',
   'new.change.jobBrakes': 'ジョブ固有のブレーキは、そのジョブのページの {brakes} で設定します。',
   'new.change.jobMore': 'どのジョブカードにも {more} があり、ジョブのページにある操作がすべて入っています。ジョブを開かずに編集、確認、削除ができます。',
-  'new.change.providerNames': 'rclone が扱うすべてのストレージの種類に、接続先を追加するときの名前とグループ内の場所があり、ロゴがあるものはロゴも表示されます。',
+  'new.change.providerNames': '{connect}は rclone が扱うすべての種類のストレージに名前を付けてグループに分け、ロゴがあれば表示します。',
 }
 
 export default ja

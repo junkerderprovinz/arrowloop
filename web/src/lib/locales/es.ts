@@ -1006,7 +1006,7 @@ const es: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} y {trash} tienen su propio lugar en la navegación. {targets} se ha movido a {settings}, y allí un interruptor permite volver a fijarlo en la barra lateral.',
   'new.change.runStrip': 'Cada tarea muestra sus últimas 14 ejecuciones como una franja, con un solo estado al lado.',
   'new.change.jobPage': 'Cada tarea tiene su propia página, con su estado, sus ejecuciones y los archivos que ha tocado. Ejecutar, Pausar y Editar están en una fila arriba.',
-  'new.change.listBar': 'Filtrar, Ordenar y Buscar están sobre la lista en {history}.',
+  'new.change.listBar': '{filter} y {search} están en la tarjeta {history}, en la fila de {files} y {runs}.',
   'new.change.settingsSearch': 'La búsqueda sobre las tarjetas encuentra cada ajuste, también por su nombre antiguo. Pulsa / o Ctrl+K.',
   'new.change.settingsTiles': '{settings} es una columna de mosaicos, y cada mosaico muestra todas sus tarjetas. Lo que había en {engine} está ahora en {general}, {sync} y {safety}.',
   'new.change.anomaliesModule': 'Un interruptor para {anomalies} en {safety} desactiva las notas y su página. Los frenos siguen reteniendo, y una ejecución retenida se responde entonces en su tarea.',
@@ -1109,13 +1109,13 @@ const es: Translations = {
   'job.usualHint': 'Aprendido de las últimas ejecuciones correctas de la tarea, cincuenta como mucho. Una ejecución muy fuera de estos márgenes recibe una nota en la página Anomalías.',
   'anomaly.learn.hint': 'Cada tarea con lo que ArrowLoop ya ha aprendido de lo que suelen hacer sus ejecuciones: un anillo de diez partes, una por cada ejecución correcta. Un anillo verde y lleno significa aprendido, y desde entonces una ejecución muy fuera de lo habitual recibe una nota. Un clic abre la tarea con sus márgenes habituales.',
   'anomaly.unusualHint': 'ArrowLoop aprende de las últimas cincuenta ejecuciones correctas de cada tarea cuántos archivos suele borrar y copiar una ejecución y cuánto dura. Tras diez ejecuciones la tarea cuenta como aprendida, y una ejecución muy fuera de ese margen recibe una nota. La nota nunca detiene una ejecución; eso solo lo hacen los frenos.',
-  'new.change.findingCards': 'Cada hallazgo en {anomalies} es una tarjeta propia, con sus cifras, los archivos contados y sus respuestas. Nada se abre encima de la página.',
+  'new.change.findingCards': 'Cada hallazgo en {anomalies} es una tarjeta propia con sus respuestas, y todas empiezan con la misma altura. {more} abre en su sitio las cifras y los archivos contados.',
   'new.change.conflictCards': 'Cada conflicto en {conflicts} dice de qué archivo se trata, por qué lo es y qué tiene cada lado, con respuestas que dicen qué hacen con qué archivo.',
   'new.change.trashActions': '{prune} está junto a {empty} en la esquina, como un botón propio.',
   'new.change.learning': 'ArrowLoop aprende qué suelen hacer las ejecuciones de cada tarea y anota una ejecución muy fuera de eso. {learning} muestra hasta dónde ha llegado cada tarea.',
   'new.change.jobBrakes': 'Los frenos propios de una tarea se ajustan en su página, en {brakes}.',
   'new.change.jobMore': 'Cada tarjeta de tarea tiene {more}, con todo lo que ofrece la página de la tarea. Una tarea se puede editar, comprobar o quitar sin abrirla.',
-  'new.change.providerNames': 'Cada tipo de almacenamiento que conoce rclone tiene un nombre y un sitio en su grupo al añadir un destino, con su logotipo cuando lo hay.',
+  'new.change.providerNames': '{connect} nombra cada tipo de almacenamiento que conoce rclone y lo coloca en su grupo, con su logotipo si existe.',
 }
 
 export default es

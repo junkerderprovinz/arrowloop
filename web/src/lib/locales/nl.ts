@@ -1006,7 +1006,7 @@ const nl: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} en {trash} hebben een eigen plek in de navigatie. {targets} is naar {settings} verhuisd, en een schakelaar daar zet het terug.',
   'new.change.runStrip': 'Elke taak toont zijn laatste 14 uitvoeringen als een strook, met één status ernaast.',
   'new.change.jobPage': 'Elke taak heeft een eigen pagina, met de status, de uitvoeringen en de bestanden die zijn aangeraakt. Uitvoeren, Pauzeren en Bewerken staan in één rij bovenaan.',
-  'new.change.listBar': 'Filteren, Sorteren en Zoeken staan boven de lijst in {history}.',
+  'new.change.listBar': '{filter} en {search} staan in de kaart {history}, op de rij met {files} en {runs}.',
   'new.change.settingsSearch': 'De zoekbalk boven de kaarten vindt elke instelling, ook onder de oude naam. Druk op / of Ctrl+K.',
   'new.change.settingsTiles': '{settings} is een kolom met tegels, en elke tegel toont al zijn kaarten. Wat onder {engine} stond, staat nu onder {general}, {sync} en {safety}.',
   'new.change.anomaliesModule': 'Een schakelaar voor {anomalies} onder {safety} zet de opmerkingen en hun pagina uit. De remmen blijven tegenhouden, en een tegengehouden run beantwoord je dan bij zijn taak.',
@@ -1109,13 +1109,13 @@ const nl: Translations = {
   'job.usualHint': 'Geleerd van de laatste geslaagde runs van de taak, hoogstens vijftig. Een run ver buiten deze waarden krijgt een melding op de pagina Afwijkingen.',
   'anomaly.learn.hint': 'Elke taak met hoe ver ArrowLoop heeft geleerd wat de runs ervan meestal doen: een ring van tien delen, één voor elke geslaagde run. Een volle groene ring betekent geleerd, en vanaf dan krijgt een run ver buiten het gebruikelijke een melding. Een klik opent de taak met de gebruikelijke waarden.',
   'anomaly.unusualHint': 'ArrowLoop leert van de laatste vijftig geslaagde runs van elke taak hoeveel bestanden een run meestal verwijdert en kopieert en hoe lang hij duurt. Na tien runs geldt een taak als geleerd, en een run ver daarbuiten krijgt een melding. De melding houdt nooit een run tegen; dat doen alleen de remmen.',
-  'new.change.findingCards': 'Elke bevinding op {anomalies} is een eigen kaart, met de cijfers, de getelde bestanden en de antwoorden. Er opent niets boven de pagina.',
+  'new.change.findingCards': 'Elke bevinding in {anomalies} is een eigen kaart met haar antwoorden, en alle kaarten beginnen even hoog. {more} opent ter plekke de cijfers en de getelde bestanden.',
   'new.change.conflictCards': 'Elk conflict op {conflicts} zegt om welk bestand het gaat, waarom het een conflict is en wat elke kant heeft, met antwoorden die zeggen wat ze met welk bestand doen.',
   'new.change.trashActions': '{prune} staat in de hoek naast {empty}, als eigen knop.',
   'new.change.learning': 'ArrowLoop leert wat de runs van elke taak meestal doen en meldt een run ver daarbuiten. {learning} laat zien hoe ver elke taak is.',
   'new.change.jobBrakes': 'De eigen remmen van een taak stel je in op de pagina van die taak, onder {brakes}.',
   'new.change.jobMore': 'Elke taakkaart heeft {more}, met alles wat de pagina van de taak biedt. Een taak kun je zo bewerken, controleren of verwijderen zonder hem te openen.',
-  'new.change.providerNames': 'Elke soort opslag die rclone kent heeft een naam en een plek in zijn groep wanneer je een doel toevoegt, met een logo waar er een is.',
+  'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is.',
 }
 
 export default nl

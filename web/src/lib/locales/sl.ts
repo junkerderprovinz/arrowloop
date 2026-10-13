@@ -1006,7 +1006,7 @@ const sl: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} in {trash} imajo zdaj svoje mesto v navigaciji. {targets} so se preselili v {settings}, kjer jih stikalo spet pripne.',
   'new.change.runStrip': 'Vsako opravilo prikaže zadnjih 14 zagonov kot trak, ob njem pa eno stanje.',
   'new.change.jobPage': 'Vsako opravilo ima svojo stran s stanjem, zagoni in datotekami, ki se jih je dotaknilo. Zaženi, Premor in Uredi so v eni vrstici na vrhu.',
-  'new.change.listBar': 'Filter, razvrščanje in iskanje so nad seznamom v {history}.',
+  'new.change.listBar': '{filter} in {search} sta na kartici {history}, v vrstici z {files} in {runs}.',
   'new.change.settingsSearch': 'Iskanje nad karticami najde vsako nastavitev, tudi po starem imenu. Pritisni / ali Ctrl+K.',
   'new.change.settingsTiles': '{settings} so stolpec ploščic in vsaka ploščica prikaže vse svoje kartice. Kar je bilo v {engine}, je zdaj v {general}, {sync} in {safety}.',
   'new.change.anomaliesModule': 'Stikalo za {anomalies} v {safety} izklopi opombe in njihovo stran. Zavore še naprej zadržujejo, na zadržani zagon pa takrat odgovoriš pri njegovem opravilu.',
@@ -1109,13 +1109,13 @@ const sl: Translations = {
   'job.usualHint': 'Naučeno iz zadnjih uspešnih zagonov opravila, največ petdesetih. Zagon daleč zunaj teh razponov dobi opombo na strani Anomalije.',
   'anomaly.learn.hint': 'Vsako opravilo s tem, koliko se je ArrowLoop že naučil o tem, kaj njegovi zagoni običajno naredijo: obroč iz desetih delov, po eden za vsak uspešen zagon. Poln zelen obroč pomeni naučeno, od takrat naprej pa zagon daleč zunaj običajnega dobi opombo. Klik odpre opravilo z njegovimi običajnimi razponi.',
   'anomaly.unusualHint': 'ArrowLoop se iz zadnjih petdesetih uspešnih zagonov vsakega opravila uči, koliko datotek zagon običajno izbriše in kopira ter kako dolgo traja. Po desetih zagonih velja opravilo za naučeno, zagon daleč zunaj tega pa dobi opombo. Opomba nikoli ne ustavi zagona; to naredijo le zavore.',
-  'new.change.findingCards': 'Vsaka ugotovitev v {anomalies} je svoja kartica s številkami, preštetimi datotekami in odgovori. Nad stranjo se nič ne odpre.',
+  'new.change.findingCards': 'Vsaka ugotovitev v {anomalies} je samostojna kartica s svojimi odgovori in vse kartice se začnejo enako visoke. {more} na mestu odpre številke in preštete datoteke.',
   'new.change.conflictCards': 'Vsak spor v {conflicts} pove, za katero datoteko gre, zakaj je spor in kaj ima vsaka stran, odgovori pa povedo, kaj naredijo s katero datoteko.',
   'new.change.trashActions': '{prune} je v kotu poleg {empty} kot samostojen gumb.',
   'new.change.learning': 'ArrowLoop se uči, kaj zagoni vsakega opravila običajno naredijo, in označi zagon daleč zunaj tega. {learning} kaže, kako daleč je vsako opravilo.',
   'new.change.jobBrakes': 'Lastne zavore opravila se nastavijo na njegovi strani, pod {brakes}.',
   'new.change.jobMore': 'Vsaka kartica opravila ima {more} z vsem, kar ponuja stran opravila. Opravilo lahko urediš, preveriš ali odstraniš, ne da bi ga odprl.',
-  'new.change.providerNames': 'Vsaka vrsta shrambe, ki jo pozna rclone, ima ob dodajanju cilja ime in mesto v svoji skupini, z logotipom, kjer ta obstaja.',
+  'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja.',
 }
 
 export default sl

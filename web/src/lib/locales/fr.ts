@@ -1006,7 +1006,7 @@ const fr: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} et {trash} ont désormais leur propre place dans la navigation. {targets} est passé dans {settings}, où un interrupteur permet de l\'y remettre.',
   'new.change.runStrip': 'Chaque tâche affiche ses 14 dernières exécutions sous forme de bande, avec un seul état à côté.',
   'new.change.jobPage': 'Chaque tâche a sa propre page, avec son état, ses exécutions et les fichiers concernés. Exécuter, Mettre en pause et Modifier se trouvent sur une même ligne en haut.',
-  'new.change.listBar': 'Filtrer, Trier et Rechercher se trouvent au-dessus de la liste dans {history}.',
+  'new.change.listBar': '{filter} et {search} se trouvent dans la carte {history}, sur la ligne de {files} et {runs}.',
   'new.change.settingsSearch': 'La recherche au-dessus des cartes trouve chaque réglage, y compris par son ancien nom. Appuyez sur / ou Ctrl+K.',
   'new.change.settingsTiles': '{settings} est une colonne de tuiles, et chaque tuile montre toutes ses cartes. Ce que contenait {engine} se trouve désormais dans {general}, {sync} et {safety}.',
   'new.change.anomaliesModule': 'Un interrupteur pour {anomalies} dans {safety} désactive les remarques et leur page. Les freins continuent de retenir, et une exécution retenue se règle alors depuis sa tâche.',
@@ -1109,13 +1109,13 @@ const fr: Translations = {
   'job.usualHint': 'Appris des dernières exécutions réussies de la tâche, cinquante au plus. Une exécution très en dehors de ces plages reçoit une note sur la page Anomalies.',
   'anomaly.learn.hint': 'Chaque tâche avec ce qu\'ArrowLoop a déjà appris de ce que font d\'habitude ses exécutions : un anneau de dix parts, une par exécution réussie. Un anneau vert plein signifie appris, et dès lors une exécution très en dehors de l\'habitude reçoit une note. Un clic ouvre la tâche avec ses plages habituelles.',
   'anomaly.unusualHint': 'ArrowLoop apprend des cinquante dernières exécutions réussies de chaque tâche combien de fichiers une exécution supprime et copie d\'habitude, et combien de temps elle dure. Après dix exécutions, la tâche compte comme apprise, et une exécution très en dehors de cette plage reçoit une note. La note n\'arrête jamais une exécution ; seuls les freins le font.',
-  'new.change.findingCards': 'Chaque constat dans {anomalies} est une carte à part, avec ses chiffres, les fichiers comptés et ses réponses. Rien ne s\'ouvre par-dessus la page.',
+  'new.change.findingCards': 'Chaque constat dans {anomalies} est une carte à part avec ses réponses, et toutes les cartes commencent à la même hauteur. {more} ouvre sur place ses chiffres et les fichiers comptés.',
   'new.change.conflictCards': 'Chaque conflit dans {conflicts} dit de quel fichier il s\'agit, pourquoi c\'en est un et ce que contient chaque côté, avec des réponses qui disent ce qu\'elles font à quel fichier.',
   'new.change.trashActions': '{prune} se trouve à côté de {empty} dans le coin, comme bouton à part.',
   'new.change.learning': 'ArrowLoop apprend ce que font d\'habitude les exécutions de chaque tâche et signale une exécution très en dehors. {learning} montre où en est chaque tâche.',
   'new.change.jobBrakes': 'Les freins propres d\'une tâche se règlent sur sa page, sous {brakes}.',
   'new.change.jobMore': 'Chaque carte de tâche a {more}, avec tout ce que propose la page de la tâche. Une tâche peut être modifiée, vérifiée ou supprimée sans l\'ouvrir.',
-  'new.change.providerNames': 'Chaque type de stockage que rclone connaît a un nom et une place dans son groupe quand vous ajoutez une cible, avec son logo s\'il en existe un.',
+  'new.change.providerNames': '{connect} nomme chaque type de stockage que rclone connaît et le range dans son groupe, avec son logo s’il existe.',
 }
 
 export default fr

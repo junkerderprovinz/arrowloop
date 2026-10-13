@@ -1006,7 +1006,7 @@ const fi: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} ja {trash} ovat nyt omilla paikoillaan navigoinnissa. {targets} siirtyi kohtaan {settings}, jossa kytkin kiinnittää sen takaisin.',
   'new.change.runStrip': 'Jokainen työ näyttää 14 viimeisintä suoritustaan nauhana, ja vieressä on yksi tila.',
   'new.change.jobPage': 'Jokaisella työllä on oma sivunsa, jossa näkyvät sen tila, suoritukset ja käsitellyt tiedostot. Suorita, Keskeytä ja Muokkaa ovat samalla rivillä ylhäällä.',
-  'new.change.listBar': 'Suodatus, lajittelu ja haku ovat luettelon yläpuolella sivulla {history}.',
+  'new.change.listBar': '{filter} ja {search} ovat kortilla {history}, samalla rivillä kuin {files} ja {runs}.',
   'new.change.settingsSearch': 'Korttien yläpuolella oleva haku löytää jokaisen asetuksen, myös vanhalla nimellä. Paina / tai Ctrl+K.',
   'new.change.settingsTiles': 'Kohta {settings} on ruutujen sarake, ja jokainen ruutu näyttää kaikki korttinsa. Se, mikä oli kohdassa {engine}, on nyt kohdissa {general}, {sync} ja {safety}.',
   'new.change.anomaliesModule': 'Kohdan {safety} kytkin osiolle {anomalies} kytkee huomautukset ja niiden sivun pois. Jarrut pysäyttävät edelleen, ja pysäytettyyn ajoon vastataan silloin sen työn kohdalla.',
@@ -1109,13 +1109,13 @@ const fi: Translations = {
   'job.usualHint': 'Opittu työn viimeisimmistä onnistuneista ajoista, enintään viidestäkymmenestä. Ajo, joka on kaukana näiden rajojen ulkopuolella, saa huomautuksen Poikkeamat-sivulle.',
   'anomaly.learn.hint': 'Jokainen työ ja se, kuinka pitkälle ArrowLoop on oppinut, mitä sen ajot tavallisesti tekevät: kymmenen osan rengas, yksi osa jokaista onnistunutta ajoa kohden. Täysi vihreä rengas tarkoittaa opittua, ja siitä eteenpäin tavallisesta kauas poikkeava ajo saa huomautuksen. Napsautus avaa työn tavallisine vaihteluväleineen.',
   'anomaly.unusualHint': 'ArrowLoop oppii kunkin työn viimeisimmistä viidestäkymmenestä onnistuneesta ajosta, montako tiedostoa ajo tavallisesti poistaa ja kopioi ja kuinka kauan se kestää. Kymmenen ajon jälkeen työ katsotaan opituksi, ja siitä kauas poikkeava ajo saa huomautuksen. Huomautus ei koskaan pysäytä ajoa; sen tekevät vain jarrut.',
-  'new.change.findingCards': 'Jokainen löydös sivulla {anomalies} on oma korttinsa lukuineen, laskettuine tiedostoineen ja vastauksineen. Sivun päälle ei avaudu mitään.',
+  'new.change.findingCards': 'Jokainen löydös sivulla {anomalies} on oma korttinsa vastauksineen, ja kaikki kortit ovat aluksi yhtä korkeita. {more} avaa luvut ja lasketut tiedostot paikallaan.',
   'new.change.conflictCards': 'Jokainen ristiriita sivulla {conflicts} kertoo, mistä tiedostosta on kyse, miksi se on ristiriita ja mitä kummallakin puolella on, ja vastaukset kertovat, mitä ne tekevät millekin tiedostolle.',
   'new.change.trashActions': '{prune} on kulmassa omana painikkeenaan painikkeen {empty} vieressä.',
   'new.change.learning': 'ArrowLoop oppii, mitä kunkin työn ajot tavallisesti tekevät, ja merkitsee ajon, joka poikkeaa siitä kauas. {learning} näyttää, kuinka pitkällä kukin työ on.',
   'new.change.jobBrakes': 'Työn omat jarrut asetetaan sen sivulla kohdassa {brakes}.',
   'new.change.jobMore': 'Jokaisessa työkortissa on {more}, jossa on kaikki, mitä työn sivu tarjoaa. Työtä voi muokata, tarkistaa tai poistaa avaamatta sitä.',
-  'new.change.providerNames': 'Jokaisella rclonen tuntemalla tallennustyypillä on nimi ja paikka ryhmässään, kun lisäät kohteen, ja logo, jos sellainen on.',
+  'new.change.providerNames': '{connect} nimeää jokaisen rclonen tunteman tallennustyypin ja sijoittaa sen ryhmäänsä, logon kanssa, jos sellainen on.',
 }
 
 export default fi

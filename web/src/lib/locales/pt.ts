@@ -1006,7 +1006,7 @@ const pt: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} e {trash} têm agora um lugar próprio na navegação. {targets} passou para {settings}, onde um interruptor o volta a fixar.',
   'new.change.runStrip': 'Cada tarefa mostra as suas últimas 14 execuções numa faixa, com um estado ao lado.',
   'new.change.jobPage': 'Cada tarefa tem uma página própria, com o seu estado, as execuções e os ficheiros que tocou. Executar, Pausar e Editar ficam numa só linha, no topo.',
-  'new.change.listBar': 'Filtrar, Ordenar e Pesquisar estão por cima da lista em {history}.',
+  'new.change.listBar': '{filter} e {search} ficam no cartão {history}, na linha de {files} e {runs}.',
   'new.change.settingsSearch': 'A pesquisa acima dos cartões encontra cada definição, também pelo nome antigo. Prima / ou Ctrl+K.',
   'new.change.settingsTiles': '{settings} é uma coluna de mosaicos, e cada mosaico mostra todos os seus cartões. O que estava em {engine} está agora em {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Um interruptor para {anomalies} em {safety} desliga as notas e a sua página. Os travões continuam a reter, e uma execução retida responde-se então na sua tarefa.',
@@ -1109,13 +1109,13 @@ const pt: Translations = {
   'job.usualHint': 'Aprendido das últimas execuções bem-sucedidas da tarefa, cinquenta no máximo. Uma execução muito fora destes intervalos recebe uma nota na página Anomalias.',
   'anomaly.learn.hint': 'Cada tarefa com o que o ArrowLoop já aprendeu sobre o que as suas execuções costumam fazer: um anel de dez partes, uma por cada execução bem-sucedida. Um anel verde cheio significa aprendido, e a partir daí uma execução muito fora do habitual recebe uma nota. Um clique abre a tarefa com os seus intervalos habituais.',
   'anomaly.unusualHint': 'O ArrowLoop aprende com as últimas cinquenta execuções bem-sucedidas de cada tarefa quantos ficheiros uma execução costuma apagar e copiar e quanto tempo demora. Ao fim de dez execuções a tarefa conta como aprendida, e uma execução muito fora desse intervalo recebe uma nota. A nota nunca para uma execução; isso só os travões fazem.',
-  'new.change.findingCards': 'Cada achado em {anomalies} é um cartão próprio, com os números, os ficheiros contados e as respostas. Nada se abre por cima da página.',
+  'new.change.findingCards': 'Cada achado em {anomalies} é um cartão próprio com as suas respostas, e todos os cartões começam com a mesma altura. {more} abre no lugar os números e os ficheiros contados.',
   'new.change.conflictCards': 'Cada conflito em {conflicts} diz de que ficheiro se trata, porque o é e o que tem cada lado, com respostas que dizem o que fazem a que ficheiro.',
   'new.change.trashActions': '{prune} está no canto ao lado de {empty}, como botão próprio.',
   'new.change.learning': 'O ArrowLoop aprende o que as execuções de cada tarefa costumam fazer e assinala uma execução muito fora disso. {learning} mostra até onde chegou cada tarefa.',
   'new.change.jobBrakes': 'Os travões próprios de uma tarefa definem-se na página dela, em {brakes}.',
   'new.change.jobMore': 'Cada cartão de tarefa tem {more}, com tudo o que a página da tarefa oferece. Uma tarefa pode ser editada, verificada ou removida sem a abrir.',
-  'new.change.providerNames': 'Cada tipo de armazenamento que o rclone conhece tem um nome e um lugar no seu grupo quando adicionas um destino, com o logótipo quando existe.',
+  'new.change.providerNames': '{connect} dá nome a cada tipo de armazenamento que o rclone conhece e coloca-o no seu grupo, com o logótipo quando existe.',
 }
 
 export default pt

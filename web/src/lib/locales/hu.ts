@@ -1006,7 +1006,7 @@ const hu: Translations = {
   'new.change.navigation': 'Az {conflicts}, a {anomalies} és a {trash} saját helyet kapott a navigációban. A {targets} átkerült a {settings} alá, és egy ottani kapcsolóval vissza lehet tűzni.',
   'new.change.runStrip': 'Minden feladat az utolsó 14 futását egy sávban mutatja, mellette egyetlen állapottal.',
   'new.change.jobPage': 'Minden feladatnak saját oldala van az állapotával, a futásaival és az érintett fájlokkal. A Futtatás, a Szünet és a Szerkesztés egy sorban áll felül.',
-  'new.change.listBar': 'A szűrés, rendezés és keresés a lista fölött áll itt: {history}.',
+  'new.change.listBar': 'A {filter} és a {search} a {history} kártyán van, a {files} és {runs} sorában.',
   'new.change.settingsSearch': 'A kártyák feletti keresés minden beállítást megtalál, a régi nevén is. Nyomd meg a / vagy a Ctrl+K billentyűt.',
   'new.change.settingsTiles': 'A(z) {settings} csempék oszlopa, és minden csempe az összes kártyáját mutatja. Ami a(z) {engine} alatt volt, most a(z) {general}, {sync} és {safety} alatt van.',
   'new.change.anomaliesModule': 'A(z) {safety} alatti kapcsoló a(z) {anomalies} számára kikapcsolja a megjegyzéseket és az oldalukat. A fékek továbbra is visszatartanak, és a visszatartott futásról akkor a saját feladatánál lehet dönteni.',
@@ -1109,13 +1109,13 @@ const hu: Translations = {
   'job.usualHint': 'A feladat legutóbbi sikeres futásaiból tanulva, legfeljebb ötvenből. Az ezeken a sávokon messze kívül eső futás jelzést kap a Rendellenességek oldalon.',
   'anomaly.learn.hint': 'Minden feladat azzal, hogy az ArrowLoop mennyit tanult meg arról, mit csinálnak általában a futásai: tízrészes gyűrű, minden sikeres futásért egy rész. A teli zöld gyűrű azt jelenti, hogy megtanulta, és onnantól a szokásostól messze eső futás jelzést kap. Egy kattintás megnyitja a feladatot a szokásos sávjaival.',
   'anomaly.unusualHint': 'Az ArrowLoop minden feladat utolsó ötven sikeres futásából megtanulja, hány fájlt töröl és másol általában egy futás, és mennyi ideig tart. Tíz futás után a feladat megtanultnak számít, és az ettől messze eső futás jelzést kap. A jelzés soha nem állít meg futást; ezt csak a fékek teszik.',
-  'new.change.findingCards': 'Minden lelet itt: {anomalies} külön kártya a számaival, a megszámolt fájlokkal és a válaszaival. Semmi sem nyílik az oldal fölé.',
+  'new.change.findingCards': 'Minden {anomalies}-lelet saját kártya a válaszaival, és minden kártya azonos magasságban indul. A {more} helyben nyitja meg a számokat és a megszámolt fájlokat.',
   'new.change.conflictCards': 'Minden ütközés itt: {conflicts} megmondja, melyik fájlról van szó, miért ütközés, és mi van az egyes oldalakon, a válaszok pedig azt, mit tesznek melyik fájllal.',
   'new.change.trashActions': 'A(z) {prune} külön gombként áll a sarokban a(z) {empty} mellett.',
   'new.change.learning': 'Az ArrowLoop megtanulja, mit csinálnak általában az egyes feladatok futásai, és jelzi az ettől messze eső futást. A(z) {learning} mutatja, hol tart az egyes feladat.',
   'new.change.jobBrakes': 'Egy feladat saját fékjeit az oldalán, a(z) {brakes} résznél lehet beállítani.',
   'new.change.jobMore': 'Minden feladatkártyán van egy {more} gomb mindazzal, amit a feladat oldala kínál. Egy feladat így megnyitás nélkül szerkeszthető, ellenőrizhető vagy eltávolítható.',
-  'new.change.providerNames': 'Az rclone által ismert minden tárolófajtának van neve és helye a csoportjában, amikor célt adsz hozzá, és logója is, ahol van ilyen.',
+  'new.change.providerNames': 'A {connect} megnevez minden tárhelytípust, amit az rclone ismer, és a csoportjába sorolja, logóval, ha van.',
 }
 
 export default hu

@@ -1047,7 +1047,7 @@ export const en = {
   'new.change.navigation': '{conflicts}, {anomalies} and {trash} have a place of their own in the navigation. {targets} moved into {settings}, and a switch there pins it back.',
   'new.change.runStrip': 'Every job shows its last 14 runs as a strip, with one status beside it.',
   'new.change.jobPage': 'Every job has a page of its own, with its state, its runs and the files it touched. Run, Pause and Edit stand in one row at the top.',
-  'new.change.listBar': 'Filter, Sort and Search stand above the list on {history}.',
+  'new.change.listBar': '{filter} and {search} stand in the {history} card, on the row with {files} and {runs}.',
   'new.change.settingsSearch': 'The search above the cards finds every setting, by its old name too. Press / or Ctrl+K.',
   'new.change.settingsTiles': '{settings} is a column of tiles, and each tile shows all its cards. What {engine} held is now under {general}, {sync} and {safety}.',
   'new.change.anomaliesModule': 'A switch for {anomalies} on {safety} turns the notes and their page off. The brakes keep holding, and a held run is then answered on its job.',
@@ -1150,13 +1150,13 @@ export const en = {
   'job.usualHint': 'Learned from the job\'s last successful runs, fifty at most. A run far outside these ranges gets a note on the Anomalies page.',
   'anomaly.learn.hint': 'Each job with how far ArrowLoop has learned what its runs usually do: a ring of ten parts, one for each successful run. A full green ring means learned, and from then on a run far outside the usual range gets a note. A click opens the job with its usual ranges.',
   'anomaly.unusualHint': 'ArrowLoop learns from each job\'s last fifty successful runs how many files a run usually deletes and copies and how long it takes. After ten runs a job counts as learned, and a run far outside that range gets a note. The note never stops a run; only the brakes do that.',
-  'new.change.findingCards': 'Every finding on {anomalies} is a card of its own, with its figures, the files it counted and its answers. Nothing opens over the page.',
+  'new.change.findingCards': 'Every finding on {anomalies} is a card of its own with its answers, and every card starts at the same height. {more} opens its figures and the files it counted in place.',
   'new.change.conflictCards': 'Every conflict on {conflicts} says which file it is, why it is one and what each side holds, with answers that say what they do to which file.',
   'new.change.trashActions': '{prune} stands beside {empty} in the corner, as a button of its own.',
   'new.change.learning': 'ArrowLoop learns what each job\'s runs usually do and notes a run far outside it. {learning} shows how far each job has got.',
   'new.change.jobBrakes': 'A job\'s own brakes are set on its page, under {brakes}.',
   'new.change.jobMore': 'Every job card has {more}, with everything the job\'s page offers. A job can be edited, checked or removed without opening it.',
-  'new.change.providerNames': 'Every kind of storage rclone knows has a name and a place in its group when you add a target, with its logo where one exists.',
+  'new.change.providerNames': '{connect} names every kind of storage rclone knows and puts it in its group, with its logo where one exists.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2197,7 +2197,7 @@ export const de: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} und {trash} haben einen eigenen Platz in der Navigation. {targets} ist in die {settings} gewandert, und ein Schalter dort holt es zurück.',
   'new.change.runStrip': 'Jeder Auftrag zeigt seine letzten 14 Läufe als Streifen und daneben einen Status.',
   'new.change.jobPage': 'Jeder Auftrag hat eine eigene Seite mit seinem Zustand, seinen Läufen und den Dateien, die er angefasst hat. Ausführen, Pausieren und Bearbeiten stehen oben in einer Reihe.',
-  'new.change.listBar': 'Filtern, Sortieren und Suchen stehen über der Liste in {history}.',
+  'new.change.listBar': '{filter} und {search} stehen in der Karte {history}, in der Zeile mit {files} und {runs}.',
   'new.change.settingsSearch': 'Die Suche über den Karten findet jede Einstellung, auch unter ihrem alten Namen. Drück / oder Strg+K.',
   'new.change.settingsTiles': 'Die {settings} sind eine Spalte aus Kacheln, und jede Kachel zeigt alle ihre Karten. Was unter {engine} stand, steht jetzt unter {general}, {sync} und {safety}.',
   'new.change.anomaliesModule': 'Ein Schalter für {anomalies} unter {safety} schaltet die Hinweise und ihre Seite ab. Die Bremsen halten weiter an, und ein angehaltener Lauf wird dann bei seinem Auftrag beantwortet.',
@@ -2300,13 +2300,13 @@ export const de: Translations = {
   'job.usualHint': 'Gelernt aus den letzten erfolgreichen Läufen des Auftrags, höchstens fünfzig. Ein Lauf weit außerhalb dieser Werte bekommt einen Hinweis auf der Seite Anomalien.',
   'anomaly.learn.hint': 'Jeder Auftrag mit dem, was ArrowLoop schon über seine Läufe gelernt hat: ein Ring aus zehn Teilen, einer für jeden erfolgreichen Lauf. Ein voller, grüner Ring heißt gelernt, und ab dann bekommt ein Lauf weit außerhalb des Üblichen einen Hinweis. Ein Klick öffnet den Auftrag mit seinen üblichen Werten.',
   'anomaly.unusualHint': 'ArrowLoop lernt aus den letzten fünfzig erfolgreichen Läufen jedes Auftrags, wie viele Dateien ein Lauf üblicherweise löscht und kopiert und wie lange er dauert. Nach zehn Läufen gilt ein Auftrag als gelernt, und ein Lauf weit außerhalb davon bekommt einen Hinweis. Der Hinweis hält nie einen Lauf an; das tun nur die Bremsen.',
-  'new.change.findingCards': 'Jeder Fund in {anomalies} ist eine eigene Karte mit seinen Zahlen, den gezählten Dateien und seinen Antworten. Nichts öffnet sich über der Seite.',
+  'new.change.findingCards': 'Jeder Fund in {anomalies} ist eine eigene Karte mit seinen Antworten, und alle Karten sind zuerst gleich hoch. {more} öffnet seine Zahlen und die gezählten Dateien an Ort und Stelle.',
   'new.change.conflictCards': 'Jeder Konflikt in {conflicts} sagt, um welche Datei es geht, warum es einer ist und was jede Seite hat, mit Antworten, die sagen, was sie mit welcher Datei tun.',
   'new.change.trashActions': '{prune} steht in der Ecke als eigener Knopf neben {empty}.',
   'new.change.learning': 'ArrowLoop lernt, was die Läufe jedes Auftrags üblicherweise tun, und meldet einen Lauf weit außerhalb davon. {learning} zeigt, wie weit jeder Auftrag ist.',
   'new.change.jobBrakes': 'Die eigenen Bremsen eines Auftrags stellst du auf seiner Seite unter {brakes} ein.',
   'new.change.jobMore': 'Jede Auftragskarte hat {more} mit allem, was die Seite des Auftrags bietet. Ein Auftrag lässt sich so bearbeiten, prüfen oder entfernen, ohne ihn zu öffnen.',
-  'new.change.providerNames': 'Jede Speicherart, die rclone kennt, hat beim Anlegen eines Ziels einen Namen und einen Platz in ihrer Gruppe, mit Logo, wo es eines gibt.',
+  'new.change.providerNames': '{connect} nennt jede Speicherart, die rclone kennt, und ordnet sie ihrer Gruppe zu, mit Logo, wo es eines gibt.',
 }
 
 export interface Language {

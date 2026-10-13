@@ -1006,7 +1006,7 @@ const ko: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies}, {trash}이 탐색에 자기 자리를 얻었습니다. {targets}은 {settings}으로 옮겨졌고, 거기 있는 스위치로 다시 고정할 수 있습니다.',
   'new.change.runStrip': '각 작업에 최근 실행 14건이 띠로 표시되고, 그 옆에 상태가 하나 표시됩니다.',
   'new.change.jobPage': '각 작업에 상태, 실행 기록, 건드린 파일을 보여 주는 전용 페이지가 생겼습니다. 실행, 일시 정지, 편집은 맨 위 한 줄에 있습니다.',
-  'new.change.listBar': '{history}의 목록 위에 필터, 정렬, 검색이 있습니다.',
+  'new.change.listBar': '{filter}와 {search}는 {history} 카드 안, {files}와 {runs}가 있는 줄에 있습니다.',
   'new.change.settingsSearch': '카드 위의 검색은 예전 이름으로도 모든 설정을 찾아 줍니다. / 또는 Ctrl+K를 누르세요.',
   'new.change.settingsTiles': '{settings}은(는) 타일이 세로로 늘어선 구성이며, 각 타일에 모든 카드가 표시됩니다. {engine}에 있던 항목은 이제 {general}, {sync}, {safety}에 있습니다.',
   'new.change.anomaliesModule': '{safety}의 {anomalies} 스위치로 참고와 그 페이지를 끌 수 있습니다. 브레이크는 계속 멈추고, 멈춘 실행에는 해당 작업에서 답합니다.',
@@ -1109,13 +1109,13 @@ const ko: Translations = {
   'job.usualHint': '이 작업의 최근 성공한 실행(최대 50회)에서 배운 값입니다. 이 범위를 크게 벗어난 실행은 이상 징후 페이지에 알림이 붙습니다.',
   'anomaly.learn.hint': '각 작업에 대해 ArrowLoop이 평소 실행 모습을 얼마나 배웠는지 보여 줍니다. 열 조각으로 된 고리이며, 성공한 실행마다 한 조각이 찹니다. 초록색으로 꽉 차면 학습 완료이고, 그 뒤로 평소 범위를 크게 벗어난 실행에는 알림이 붙습니다. 누르면 평소 범위와 함께 작업이 열립니다.',
   'anomaly.unusualHint': 'ArrowLoop은 각 작업의 최근 성공한 실행 50회에서 한 번의 실행이 보통 몇 개의 파일을 삭제하고 복사하는지, 얼마나 걸리는지 배웁니다. 10회가 지나면 학습 완료로 보고, 그 범위를 크게 벗어난 실행에는 알림이 붙습니다. 알림은 실행을 멈추지 않습니다. 멈추는 것은 브레이크뿐입니다.',
-  'new.change.findingCards': '{anomalies}의 발견 사항은 각각 하나의 카드이며, 수치와 센 파일, 응답이 함께 있습니다. 페이지 위로 열리는 것은 없습니다.',
+  'new.change.findingCards': '{anomalies}의 각 발견은 답변이 달린 별도의 카드이며, 모든 카드는 같은 높이로 시작합니다. {more}을 누르면 수치와 센 파일이 그 자리에서 열립니다.',
   'new.change.conflictCards': '{conflicts}의 각 충돌은 어떤 파일인지, 왜 충돌인지, 양쪽에 무엇이 있는지 알려 주며, 응답도 어떤 파일을 어떻게 하는지 말해 줍니다.',
   'new.change.trashActions': '{prune}이(가) 모서리의 {empty} 옆에 별도 버튼으로 있습니다.',
   'new.change.learning': 'ArrowLoop은 각 작업의 평소 실행 모습을 배우고, 그것을 크게 벗어난 실행을 알립니다. {learning}에서 작업별 진행을 볼 수 있습니다.',
   'new.change.jobBrakes': '작업별 브레이크는 해당 작업 페이지의 {brakes}에서 설정합니다.',
   'new.change.jobMore': '모든 작업 카드에 {more} 메뉴가 있어, 작업 페이지에서 할 수 있는 모든 것이 들어 있습니다. 작업을 열지 않고도 편집, 확인, 삭제할 수 있습니다.',
-  'new.change.providerNames': 'rclone이 아는 모든 저장소 종류에는 대상을 추가할 때 보이는 이름과 그룹 안의 자리가 있으며, 로고가 있으면 로고도 함께 표시됩니다.',
+  'new.change.providerNames': '{connect}은 rclone이 아는 모든 종류의 저장소에 이름을 붙이고 그룹에 넣으며, 로고가 있으면 함께 보여 줍니다.',
 }
 
 export default ko

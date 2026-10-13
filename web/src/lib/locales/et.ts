@@ -1006,7 +1006,7 @@ const et: Translations = {
   'new.change.navigation': 'Jaotistel {conflicts}, {anomalies} ja {trash} on navigeerimises oma koht. Jaotis {targets} viidi üle jaotisse {settings}, ning seal olev lüliti toob selle külgribale tagasi.',
   'new.change.runStrip': 'Iga töö näitab oma viimast 14 käivitust ribana, kõrval üks olek.',
   'new.change.jobPage': 'Igal tööl on oma leht oma oleku, käivituste ja puudutatud failidega. Käivita, Peata ja Muuda on ühes reas üleval.',
-  'new.change.listBar': 'Filter, sortimine ja otsing on loendi kohal lehel {history}.',
+  'new.change.listBar': '{filter} ja {search} on kaardil {history}, samal real kui {files} ja {runs}.',
   'new.change.settingsSearch': 'Kaartide kohal olev otsing leiab iga seade, ka vana nime järgi. Vajuta / või Ctrl+K.',
   'new.change.settingsTiles': '{settings} on paanide veerg ja iga paan näitab kõiki oma kaarte. Mis oli jaotises {engine}, on nüüd jaotistes {general}, {sync} ja {safety}.',
   'new.change.anomaliesModule': 'Jaotises {safety} olev lüliti {anomalies} jaoks lülitab märkused ja nende lehe välja. Pidurid peatavad edasi ja peatatud käivitusele vastatakse siis selle töö juures.',
@@ -1109,13 +1109,13 @@ const et: Translations = {
   'job.usualHint': 'Õpitud töö viimastest õnnestunud käivitustest, kõige rohkem viiekümnest. Käivitus, mis jääb neist vahemikest kaugele välja, saab lehel Anomaaliad märkuse.',
   'anomaly.learn.hint': 'Iga töö ja see, kui palju on ArrowLoop õppinud, mida selle käivitused tavaliselt teevad: kümnest osast rõngas, üks osa iga õnnestunud käivituse kohta. Täis roheline rõngas tähendab õpitud ja sealt edasi saab tavapärasest kaugele kalduv käivitus märkuse. Klõps avab töö koos selle tavaliste vahemikega.',
   'anomaly.unusualHint': 'ArrowLoop õpib iga töö viimasest viiekümnest õnnestunud käivitusest, mitu faili käivitus tavaliselt kustutab ja kopeerib ning kui kaua see kestab. Pärast kümmet käivitust loetakse töö õpituks ja sellest kaugele kalduv käivitus saab märkuse. Märkus ei peata kunagi käivitust; seda teevad ainult pidurid.',
-  'new.change.findingCards': 'Iga leid lehel {anomalies} on eraldi kaart oma arvude, loendatud failide ja vastustega. Lehe peale ei avane midagi.',
+  'new.change.findingCards': 'Iga leid lehel {anomalies} on eraldi kaart oma vastustega ja kõik kaardid algavad sama kõrgena. {more} avab kohapeal arvud ja loendatud failid.',
   'new.change.conflictCards': 'Iga konflikt lehel {conflicts} ütleb, millise failiga on tegu, miks see on konflikt ja mis kummalgi poolel on, ning vastused ütlevad, mida need millise failiga teevad.',
   'new.change.trashActions': '{prune} on nurgas eraldi nupuna {empty} kõrval.',
   'new.change.learning': 'ArrowLoop õpib, mida iga töö käivitused tavaliselt teevad, ja märgib käivituse, mis sellest kaugele kaldub. {learning} näitab, kui kaugel iga töö on.',
   'new.change.jobBrakes': 'Töö oma pidurid seatakse selle lehel jaotises {brakes}.',
   'new.change.jobMore': 'Igal töökaardil on {more} kõigega, mida töö leht pakub. Tööd saab muuta, kontrollida või eemaldada seda avamata.',
-  'new.change.providerNames': 'Igal salvestusliigil, mida rclone tunneb, on sihtkoha lisamisel nimi ja koht oma rühmas, koos logoga, kui see olemas on.',
+  'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas.',
 }
 
 export default et

@@ -1006,7 +1006,7 @@ const lv: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} un {trash} navigācijā ir sava vieta. {targets} pārcēlās uz {settings}, kur slēdzis tos atgriež atpakaļ.',
   'new.change.runStrip': 'Katrs uzdevums rāda savas pēdējās 14 palaišanas kā joslu, un blakus ir viens statuss.',
   'new.change.jobPage': 'Katram uzdevumam ir sava lapa ar tā stāvokli, palaišanām un datnēm, kurām tas pieskārās. Palaist, Apturēt un Rediģēt ir vienā rindā augšā.',
-  'new.change.listBar': 'Filtrs, kārtošana un meklēšana ir virs saraksta sadaļā {history}.',
+  'new.change.listBar': '{filter} un {search} ir kartītē {history}, rindā ar {files} un {runs}.',
   'new.change.settingsSearch': 'Meklēšana virs kartītēm atrod katru iestatījumu, arī pēc vecā nosaukuma. Nospied / vai Ctrl+K.',
   'new.change.settingsTiles': '{settings} ir flīžu kolonna, un katra flīze rāda visas savas kartītes. Tas, kas bija sadaļā {engine}, tagad ir sadaļās {general}, {sync} un {safety}.',
   'new.change.anomaliesModule': 'Slēdzis {anomalies} sadaļā {safety} izslēdz piezīmes un to lapu. Bremzes joprojām aiztur, un uz aizturēto palaišanu tad atbild pie tās uzdevuma.',
@@ -1109,13 +1109,13 @@ const lv: Translations = {
   'job.usualHint': 'Iemācīts no darba pēdējām veiksmīgajām palaišanām, ne vairāk kā piecdesmit. Palaišana, kas ir tālu ārpus šiem diapazoniem, saņem piezīmi lapā Anomālijas.',
   'anomaly.learn.hint': 'Katrs darbs un tas, cik ArrowLoop jau iemācījies par to, ko tā palaišanas parasti dara: desmit daļu gredzens, pa daļai par katru veiksmīgu palaišanu. Pilns zaļš gredzens nozīmē iemācīts, un no tā brīža palaišana, kas ir tālu no ierastā, saņem piezīmi. Klikšķis atver darbu ar tā ierastajiem diapazoniem.',
   'anomaly.unusualHint': 'ArrowLoop no katra darba pēdējām piecdesmit veiksmīgajām palaišanām mācās, cik failu palaišana parasti izdzēš un kopē un cik ilgi tā ilgst. Pēc desmit palaišanām darbs skaitās iemācīts, un palaišana tālu ārpus tā saņem piezīmi. Piezīme nekad neaptur palaišanu; to dara tikai bremzes.',
-  'new.change.findingCards': 'Katrs atradums sadaļā {anomalies} ir atsevišķa kartīte ar saviem skaitļiem, saskaitītajiem failiem un atbildēm. Virs lapas nekas neatveras.',
+  'new.change.findingCards': 'Katrs atradums sadaļā {anomalies} ir atsevišķa kartīte ar atbildēm, un visas kartītes sākumā ir vienā augstumā. {more} turpat atver skaitļus un saskaitītos failus.',
   'new.change.conflictCards': 'Katrs konflikts sadaļā {conflicts} pasaka, par kuru failu ir runa, kāpēc tas ir konflikts un kas ir katrā pusē, un atbildes pasaka, ko tās dara ar kuru failu.',
   'new.change.trashActions': '{prune} atrodas stūrī blakus {empty} kā atsevišķa poga.',
   'new.change.learning': 'ArrowLoop mācās, ko katra darba palaišanas parasti dara, un atzīmē palaišanu, kas no tā ir tālu. {learning} rāda, cik tālu ir katrs darbs.',
   'new.change.jobBrakes': 'Darba paša bremzes iestata tā lapā, sadaļā {brakes}.',
   'new.change.jobMore': 'Katrai uzdevuma kartītei ir {more} ar visu, ko piedāvā uzdevuma lapa. Uzdevumu var rediģēt, pārbaudīt vai noņemt, to neatverot.',
-  'new.change.providerNames': 'Katram krātuves veidam, ko pazīst rclone, ir nosaukums un vieta savā grupā, kad pievienojat galamērķi, ar logotipu, ja tāds ir.',
+  'new.change.providerNames': '{connect} nosauc katru krātuves veidu, ko pazīst rclone, un ievieto to savā grupā, ar logotipu, ja tāds ir.',
 }
 
 export default lv

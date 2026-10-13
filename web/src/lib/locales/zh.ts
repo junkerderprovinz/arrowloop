@@ -1006,7 +1006,7 @@ const zh: Translations = {
   'new.change.navigation': '{conflicts}、{anomalies}和{trash}在导航里有了自己的位置。{targets}移到了{settings}中，那里的开关可以把它重新固定回来。',
   'new.change.runStrip': '每个任务都用一条色带显示最近 14 次运行，旁边附一个状态。',
   'new.change.jobPage': '每个任务都有自己的页面，显示状态、运行记录和它涉及的文件。运行、暂停和编辑排在顶部同一行。',
-  'new.change.listBar': '{history} 中列表上方有筛选、排序和搜索。',
+  'new.change.listBar': '{filter}和{search}位于{history}卡片中，与{files}和{runs}在同一行。',
   'new.change.settingsSearch': '卡片上方的搜索能找到每一项设置，用旧名称也能找到。按 / 或 Ctrl+K。',
   'new.change.settingsTiles': '{settings}是一列磁贴，每个磁贴都会显示它的全部卡片。原来在{engine}里的内容现在位于{general}、{sync}和{safety}。',
   'new.change.anomaliesModule': '{safety}中有一个{anomalies}开关，可关闭提示及其页面。制动仍会拦下运行，被拦下的运行随后在它的任务中处理。',
@@ -1109,13 +1109,13 @@ const zh: Translations = {
   'job.usualHint': '从该任务最近的成功运行中学得，最多五十次。远远超出这些范围的运行会在“异常”页面得到一条提示。',
   'anomaly.learn.hint': '每个任务以及 ArrowLoop 已学到的、它的运行通常会做什么：一个分成十段的圆环，每次成功运行填满一段。圆环全绿表示已学会，此后远远超出常规的运行会得到一条提示。点击可打开该任务及其常规范围。',
   'anomaly.unusualHint': 'ArrowLoop 会从每个任务最近五十次成功运行中学习：一次运行通常删除和复制多少文件、耗时多久。十次运行后即视为已学会，远远超出这一范围的运行会得到一条提示。提示从不会让运行停下，只有制动会。',
-  'new.change.findingCards': '{anomalies} 中的每项发现都是一张独立的卡片，附带数字、统计到的文件和应对方式。页面上不会再弹出任何窗口。',
+  'new.change.findingCards': '{anomalies}中的每个发现都是一张带有处理选项的独立卡片，所有卡片初始高度相同。{more}会在原处展开数字和统计的文件。',
   'new.change.conflictCards': '{conflicts} 中的每个冲突都会写明是哪个文件、为何冲突、两侧各有什么，答复按钮也写明会对哪个文件做什么。',
   'new.change.trashActions': '{prune} 作为单独的按钮，位于角落中 {empty} 旁边。',
   'new.change.learning': 'ArrowLoop 会学习每个任务的运行通常做什么，并记下远远超出常规的运行。{learning} 显示每个任务学到了哪一步。',
   'new.change.jobBrakes': '任务自己的制动在其页面的 {brakes} 中设置。',
   'new.change.jobMore': '每张任务卡片都有 {more}，包含任务页面提供的全部功能。无需打开任务，就能编辑、检查或删除它。',
-  'new.change.providerNames': '添加目标时，rclone 认识的每种存储都有名称，并在所属分组里有自己的位置，有图标的还会显示图标。',
+  'new.change.providerNames': '{connect}为 rclone 支持的每种存储命名并归入相应分组，有标志的会显示标志。',
 }
 
 export default zh

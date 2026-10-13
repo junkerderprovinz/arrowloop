@@ -1006,7 +1006,7 @@ const id: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies}, dan {trash} punya tempat sendiri di navigasi. {targets} pindah ke {settings}, dan sebuah sakelar di sana bisa menyematkannya kembali.',
   'new.change.runStrip': 'Setiap tugas menampilkan 14 jalannya yang terakhir sebagai satu strip, dengan satu status di sampingnya.',
   'new.change.jobPage': 'Setiap tugas punya halaman sendiri berisi statusnya, jalannya, dan berkas yang disentuhnya. Jalankan, Jeda, dan Sunting berada dalam satu baris di atas.',
-  'new.change.listBar': 'Filter, Urutkan, dan Cari ada di atas daftar di {history}.',
+  'new.change.listBar': '{filter} dan {search} ada di kartu {history}, di baris yang sama dengan {files} dan {runs}.',
   'new.change.settingsSearch': 'Pencarian di atas kartu menemukan setiap pengaturan, termasuk lewat nama lamanya. Tekan / atau Ctrl+K.',
   'new.change.settingsTiles': '{settings} berupa kolom petak, dan setiap petak menampilkan semua kartunya. Isi {engine} sekarang ada di {general}, {sync}, dan {safety}.',
   'new.change.anomaliesModule': 'Sakelar {anomalies} di {safety} mematikan catatan beserta halamannya. Rem tetap menahan, dan proses yang ditahan lalu dijawab di tugasnya.',
@@ -1109,13 +1109,13 @@ const id: Translations = {
   'job.usualHint': 'Dipelajari dari proses berhasil terakhir tugas ini, paling banyak lima puluh. Proses yang jauh di luar rentang ini mendapat catatan di halaman Anomali.',
   'anomaly.learn.hint': 'Setiap tugas beserta sejauh mana ArrowLoop sudah mempelajari apa yang biasanya dilakukan prosesnya: cincin sepuluh bagian, satu untuk setiap proses yang berhasil. Cincin hijau penuh berarti sudah dipelajari, dan sejak itu proses yang jauh di luar kebiasaan mendapat catatan. Klik untuk membuka tugas beserta rentang biasanya.',
   'anomaly.unusualHint': 'ArrowLoop mempelajari dari lima puluh proses berhasil terakhir setiap tugas berapa file yang biasanya dihapus dan disalin oleh satu proses dan berapa lama prosesnya. Setelah sepuluh proses, tugas dianggap sudah dipelajari, dan proses yang jauh di luar rentang itu mendapat catatan. Catatan tidak pernah menghentikan proses; hanya rem yang melakukannya.',
-  'new.change.findingCards': 'Setiap temuan di {anomalies} adalah kartu tersendiri, dengan angka, file yang dihitung, dan jawabannya. Tidak ada yang terbuka di atas halaman.',
+  'new.change.findingCards': 'Setiap temuan di {anomalies} adalah kartu tersendiri dengan jawabannya, dan semua kartu dimulai dengan tinggi yang sama. {more} membuka angka dan file yang dihitung di tempat.',
   'new.change.conflictCards': 'Setiap konflik di {conflicts} menyebut file mana, mengapa itu konflik, dan apa yang ada di tiap sisi, dengan jawaban yang menyebut apa yang dilakukan pada file mana.',
   'new.change.trashActions': '{prune} ada di sudut di samping {empty}, sebagai tombol tersendiri.',
   'new.change.learning': 'ArrowLoop mempelajari apa yang biasanya dilakukan proses setiap tugas dan mencatat proses yang jauh di luar itu. {learning} menunjukkan sejauh mana setiap tugas.',
   'new.change.jobBrakes': 'Rem milik suatu tugas diatur di halamannya, di bagian {brakes}.',
   'new.change.jobMore': 'Setiap kartu tugas punya {more}, berisi semua yang ditawarkan halaman tugas. Tugas bisa disunting, diperiksa, atau dihapus tanpa membukanya.',
-  'new.change.providerNames': 'Setiap jenis penyimpanan yang dikenal rclone punya nama dan tempat di kelompoknya saat Anda menambahkan tujuan, beserta logonya jika ada.',
+  'new.change.providerNames': '{connect} menamai setiap jenis penyimpanan yang dikenal rclone dan menaruhnya di kelompoknya, dengan logonya bila ada.',
 }
 
 export default id

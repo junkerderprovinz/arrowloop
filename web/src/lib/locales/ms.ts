@@ -1006,7 +1006,7 @@ const ms: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} dan {trash} kini ada tempat sendiri dalam navigasi. {targets} berpindah ke {settings}, dan suis di sana menyematkannya semula.',
   'new.change.runStrip': 'Setiap tugas memaparkan 14 larian terakhirnya sebagai satu jalur, dengan satu status di sebelahnya.',
   'new.change.jobPage': 'Setiap tugas mempunyai halaman sendiri, dengan keadaannya, larian dan fail yang disentuhnya. Jalankan, Jeda dan Sunting berada dalam satu baris di bahagian atas.',
-  'new.change.listBar': 'Tapis, Isih dan Cari berada di atas senarai dalam {history}.',
+  'new.change.listBar': '{filter} dan {search} berada dalam kad {history}, pada baris yang sama dengan {files} dan {runs}.',
   'new.change.settingsSearch': 'Carian di atas kad menemui setiap tetapan, termasuk melalui nama lamanya. Tekan / atau Ctrl+K.',
   'new.change.settingsTiles': '{settings} ialah satu lajur jubin, dan setiap jubin memaparkan semua kadnya. Apa yang dahulu dalam {engine} kini di bawah {general}, {sync} dan {safety}.',
   'new.change.anomaliesModule': 'Suis untuk {anomalies} dalam {safety} mematikan nota dan halamannya. Brek terus menahan, dan larian yang ditahan kemudian dijawab pada tugasnya.',
@@ -1109,13 +1109,13 @@ const ms: Translations = {
   'job.usualHint': 'Dipelajari daripada larian berjaya terakhir tugas ini, paling banyak lima puluh. Larian yang jauh di luar julat ini mendapat nota di halaman Anomali.',
   'anomaly.learn.hint': 'Setiap tugas bersama sejauh mana ArrowLoop telah mempelajari apa yang biasanya dilakukan oleh lariannya: gelang sepuluh bahagian, satu bagi setiap larian berjaya. Gelang hijau penuh bermakna sudah dipelajari, dan sejak itu larian yang jauh dari kebiasaan mendapat nota. Klik untuk membuka tugas bersama julat biasanya.',
   'anomaly.unusualHint': 'ArrowLoop mempelajari daripada lima puluh larian berjaya terakhir setiap tugas berapa banyak fail yang biasanya dipadam dan disalin oleh satu larian dan berapa lama ia mengambil masa. Selepas sepuluh larian, tugas dikira sudah dipelajari, dan larian yang jauh di luar julat itu mendapat nota. Nota tidak pernah menghentikan larian; hanya brek yang berbuat begitu.',
-  'new.change.findingCards': 'Setiap penemuan dalam {anomalies} ialah kad tersendiri, dengan angka, fail yang dikira dan jawapannya. Tiada apa yang terbuka di atas halaman.',
+  'new.change.findingCards': 'Setiap penemuan dalam {anomalies} ialah kad tersendiri dengan jawapannya, dan semua kad bermula pada ketinggian yang sama. {more} membuka angka dan fail yang dikira di tempatnya.',
   'new.change.conflictCards': 'Setiap konflik dalam {conflicts} menyatakan fail mana, mengapa ia konflik dan apa yang ada pada setiap belah, dengan jawapan yang menyatakan apa yang dilakukan pada fail mana.',
   'new.change.trashActions': '{prune} berada di sudut di sebelah {empty}, sebagai butang tersendiri.',
   'new.change.learning': 'ArrowLoop mempelajari apa yang biasanya dilakukan oleh larian setiap tugas dan mencatat larian yang jauh di luar itu. {learning} menunjukkan sejauh mana setiap tugas.',
   'new.change.jobBrakes': 'Brek sendiri sesuatu tugas ditetapkan di halamannya, di bawah {brakes}.',
   'new.change.jobMore': 'Setiap kad tugas ada {more}, dengan segala yang ditawarkan oleh halaman tugas itu. Tugas boleh disunting, disemak atau dibuang tanpa membukanya.',
-  'new.change.providerNames': 'Setiap jenis storan yang dikenali rclone mempunyai nama dan tempat dalam kumpulannya apabila anda menambah destinasi, dengan logonya jika ada.',
+  'new.change.providerNames': '{connect} menamakan setiap jenis storan yang dikenali rclone dan meletakkannya dalam kumpulannya, dengan logo jika ada.',
 }
 
 export default ms

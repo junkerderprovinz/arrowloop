@@ -1006,7 +1006,7 @@ const tr: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} ve {trash} artık gezinmede kendi yerine sahip. {targets} {settings} içine taşındı ve oradaki bir anahtar onu geri sabitler.',
   'new.change.runStrip': 'Her iş son 14 çalıştırmasını bir şerit olarak gösterir, yanında tek bir durum bulunur.',
   'new.change.jobPage': 'Her işin kendi sayfası var: durumu, çalıştırmaları ve dokunduğu dosyalar burada. Çalıştır, Duraklat ve Düzenle üstte tek satırda durur.',
-  'new.change.listBar': '{history} sayfasında listenin üstünde Filtre, Sırala ve Ara var.',
+  'new.change.listBar': '{filter} ve {search}, {history} kartında, {files} ve {runs} ile aynı satırda.',
   'new.change.settingsSearch': 'Kartların üstündeki arama her ayarı, eski adıyla da bulur. / veya Ctrl+K tuşuna basın.',
   'new.change.settingsTiles': '{settings} bir karo sütunudur ve her karo tüm kartlarını gösterir. {engine} içinde olanlar artık {general}, {sync} ve {safety} altında.',
   'new.change.anomaliesModule': '{safety} altındaki {anomalies} anahtarı notları ve sayfalarını kapatır. Frenler tutmaya devam eder ve tutulan bir çalışmaya o zaman kendi işinde yanıt verilir.',
@@ -1109,13 +1109,13 @@ const tr: Translations = {
   'job.usualHint': 'İşin son başarılı çalıştırmalarından, en çok elli tanesinden öğrenildi. Bu aralıkların çok dışında kalan bir çalıştırma Anormallikler sayfasında not alır.',
   'anomaly.learn.hint': 'Her iş ve ArrowLoop\'un o işin çalıştırmalarının genelde ne yaptığını ne kadar öğrendiği: on parçalı bir halka, her başarılı çalıştırma için bir parça. Dolu yeşil halka öğrenildi demektir; o andan sonra olağanın çok dışındaki bir çalıştırma not alır. Tıklayınca iş, olağan aralıklarıyla açılır.',
   'anomaly.unusualHint': 'ArrowLoop her işin son elli başarılı çalıştırmasından bir çalıştırmanın genelde kaç dosya silip kopyaladığını ve ne kadar sürdüğünü öğrenir. On çalıştırmadan sonra iş öğrenilmiş sayılır ve bunun çok dışında kalan bir çalıştırma not alır. Not hiçbir çalıştırmayı durdurmaz; bunu yalnızca frenler yapar.',
-  'new.change.findingCards': '{anomalies} sayfasındaki her bulgu, rakamları, saydığı dosyalar ve yanıtlarıyla kendi kartıdır. Sayfanın üstünde hiçbir şey açılmaz.',
+  'new.change.findingCards': '{anomalies} içindeki her bulgu yanıtlarıyla birlikte ayrı bir karttır ve tüm kartlar aynı yükseklikte başlar. {more}, sayıları ve sayılan dosyaları yerinde açar.',
   'new.change.conflictCards': '{conflicts} sayfasındaki her çakışma hangi dosya olduğunu, neden çakışma olduğunu ve her tarafta ne olduğunu söyler; yanıtlar da hangi dosyaya ne yapacaklarını söyler.',
   'new.change.trashActions': '{prune}, köşede {empty} düğmesinin yanında ayrı bir düğme olarak durur.',
   'new.change.learning': 'ArrowLoop her işin çalıştırmalarının genelde ne yaptığını öğrenir ve bunun çok dışında kalan bir çalıştırmayı not eder. {learning} her işin ne kadar ilerlediğini gösterir.',
   'new.change.jobBrakes': 'Bir işin kendi frenleri, kendi sayfasında {brakes} altında ayarlanır.',
   'new.change.jobMore': 'Her iş kartında, işin sayfasının sunduğu her şeyle birlikte {more} var. Bir iş açılmadan düzenlenebilir, denetlenebilir ya da kaldırılabilir.',
-  'new.change.providerNames': 'rclone\'un bildiği her depolama türünün, bir hedef eklerken bir adı ve kendi grubunda bir yeri var, varsa logosuyla birlikte.',
+  'new.change.providerNames': '{connect}, rclone’un bildiği her depolama türünü adlandırır ve logosu varsa logosuyla birlikte grubuna yerleştirir.',
 }
 
 export default tr

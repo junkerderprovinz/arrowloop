@@ -1006,7 +1006,7 @@ const eu: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} eta {trash} leku propioa dute orain nabigazioan. {targets} {settings} atalera joan da, eta han etengailu batek berriro finkatzen du.',
   'new.change.runStrip': 'Lan bakoitzak azken 14 exekuzioak erakusten ditu zerrenda batean, egoera bakarrarekin ondoan.',
   'new.change.jobPage': 'Lan bakoitzak bere orria du, bere egoerarekin, exekuzioekin eta ukitutako fitxategiekin. Exekutatu, Pausatu eta Editatu goiko lerro batean daude.',
-  'new.change.listBar': 'Iragazi, Ordenatu eta Bilatu zerrendaren gainean daude {history} orrian.',
+  'new.change.listBar': '{filter} eta {search} {history} txartelean daude, {files} eta {runs} dituen errenkadan.',
   'new.change.settingsSearch': 'Txartelen gaineko bilaketak ezarpen guztiak aurkitzen ditu, baita izen zaharraren bidez ere. Sakatu / edo Ctrl+K.',
   'new.change.settingsTiles': '{settings} lauza-zutabe bat da, eta lauza bakoitzak bere txartel guztiak erakusten ditu. {engine} atalean zegoena orain {general}, {sync} eta {safety} ataletan dago.',
   'new.change.anomaliesModule': '{safety} ataleko {anomalies} etengailuak oharrak eta haien orria itzaltzen ditu. Balaztek geldiarazten jarraitzen dute, eta geldiarazitako exekuzioari bere lanean erantzuten zaio orduan.',
@@ -1109,13 +1109,13 @@ const eu: Translations = {
   'job.usualHint': 'Lanaren azken exekuzio arrakastatsuetatik ikasia, berrogeita hamar gehienez. Tarte hauetatik oso kanpo dagoen exekuzioak oharra jasotzen du Anomaliak orrian.',
   'anomaly.learn.hint': 'Lan bakoitza, ArrowLoop-ek bere exekuzioek normalean egiten dutenaz zenbat ikasi duen erakutsita: hamar zatiko eraztun bat, zati bat exekuzio arrakastatsu bakoitzeko. Eraztun berde osoak ikasita esan nahi du, eta handik aurrera ohikotik oso urrun dagoen exekuzioak oharra jasotzen du. Klik eginda lana irekitzen da bere ohiko tarteekin.',
   'anomaly.unusualHint': 'ArrowLoop-ek lan bakoitzaren azken berrogeita hamar exekuzio arrakastatsuetatik ikasten du exekuzio batek normalean zenbat fitxategi ezabatu eta kopiatzen dituen eta zenbat irauten duen. Hamar exekuzioren ondoren lana ikasitzat jotzen da, eta tarte horretatik oso urrun dagoen exekuzioak oharra jasotzen du. Oharrak ez du inoiz exekuziorik gelditzen; hori balaztek bakarrik egiten dute.',
-  'new.change.findingCards': '{anomalies} orriko aurkikuntza bakoitza txartel bat da, bere zenbakiekin, zenbatutako fitxategiekin eta erantzunekin. Ez da ezer irekitzen orriaren gainean.',
+  'new.change.findingCards': '{anomalies} orriko aurkikuntza bakoitza txartel bat da bere erantzunekin, eta txartel guztiak altuera berean hasten dira. {more} aukerak bertan irekitzen ditu zifrak eta zenbatutako fitxategiak.',
   'new.change.conflictCards': '{conflicts} orriko gatazka bakoitzak esaten du zein fitxategi den, zergatik den gatazka eta zer duen alde bakoitzak, eta erantzunek esaten dute zer egiten dioten zein fitxategiri.',
   'new.change.trashActions': '{prune} {empty} botoiaren ondoan dago izkinan, botoi bereizi gisa.',
   'new.change.learning': 'ArrowLoop-ek ikasten du lan bakoitzaren exekuzioek normalean zer egiten duten, eta horretatik oso urrun dagoen exekuzioa adierazten du. {learning} atalak erakusten du lan bakoitza non dagoen.',
   'new.change.jobBrakes': 'Lan baten balazta propioak bere orrian ezartzen dira, {brakes} atalean.',
   'new.change.jobMore': 'Lan-txartel bakoitzak {more} du, lanaren orriak eskaintzen duen guztiarekin. Lan bat editatu, egiaztatu edo kendu daiteke ireki gabe.',
-  'new.change.providerNames': 'rclone-k ezagutzen duen biltegiratze mota bakoitzak izen bat eta leku bat du bere taldean helburu bat gehitzean, eta logoa ere bai, baldin badago.',
+  'new.change.providerNames': '{connect} aukerak rclone-k ezagutzen duen biltegi mota bakoitza izendatzen du eta bere taldean jartzen du, logoarekin, baldin badago.',
 }
 
 export default eu

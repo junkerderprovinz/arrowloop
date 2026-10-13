@@ -1006,7 +1006,7 @@ const gl: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} e {trash} teñen agora un lugar propio na navegación. {targets} pasou a {settings}, onde un interruptor permite volver fixalo.',
   'new.change.runStrip': 'Cada tarefa mostra as súas últimas 14 execucións nunha franxa, cun só estado ao lado.',
   'new.change.jobPage': 'Cada tarefa ten a súa propia páxina, co seu estado, as súas execucións e os ficheiros que tocou. Executar, Pausar e Editar están nunha mesma fila arriba.',
-  'new.change.listBar': 'Filtrar, Ordenar e Buscar están enriba da lista en {history}.',
+  'new.change.listBar': '{filter} e {search} están na tarxeta {history}, na fila de {files} e {runs}.',
   'new.change.settingsSearch': 'A busca enriba das tarxetas atopa cada axuste, tamén polo seu nome antigo. Preme / ou Ctrl+K.',
   'new.change.settingsTiles': '{settings} é unha columna de mosaicos, e cada mosaico mostra todas as súas tarxetas. O que había en {engine} está agora en {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Un interruptor para {anomalies} en {safety} desactiva as notas e a súa páxina. Os freos seguen retendo, e unha execución retida respóndese entón na súa tarefa.',
@@ -1109,13 +1109,13 @@ const gl: Translations = {
   'job.usualHint': 'Aprendido das últimas execucións correctas da tarefa, cincuenta como moito. Unha execución moi fóra destas marxes recibe unha nota na páxina Anomalías.',
   'anomaly.learn.hint': 'Cada tarefa co que ArrowLoop xa aprendeu do que adoitan facer as súas execucións: un anel de dez partes, unha por cada execución correcta. Un anel verde e cheo quere dicir aprendido, e desde entón unha execución moi fóra do habitual recibe unha nota. Un clic abre a tarefa coas súas marxes habituais.',
   'anomaly.unusualHint': 'ArrowLoop aprende das últimas cincuenta execucións correctas de cada tarefa cantos ficheiros adoita borrar e copiar unha execución e canto dura. Despois de dez execucións a tarefa conta como aprendida, e unha execución moi fóra desa marxe recibe unha nota. A nota nunca detén unha execución; iso só o fan os freos.',
-  'new.change.findingCards': 'Cada achado en {anomalies} é unha tarxeta propia, coas súas cifras, os ficheiros contados e as súas respostas. Nada se abre enriba da páxina.',
+  'new.change.findingCards': 'Cada achado en {anomalies} é unha tarxeta propia coas súas respostas, e todas comezan coa mesma altura. {more} abre no seu sitio as cifras e os ficheiros contados.',
   'new.change.conflictCards': 'Cada conflito en {conflicts} di de que ficheiro se trata, por que o é e que ten cada lado, con respostas que din que lle fan a que ficheiro.',
   'new.change.trashActions': '{prune} está xunto a {empty} na esquina, como botón propio.',
   'new.change.learning': 'ArrowLoop aprende que adoitan facer as execucións de cada tarefa e anota unha execución moi fóra diso. {learning} amosa ata onde chegou cada tarefa.',
   'new.change.jobBrakes': 'Os freos propios dunha tarefa axústanse na súa páxina, en {brakes}.',
   'new.change.jobMore': 'Cada tarxeta de tarefa ten {more}, con todo o que ofrece a páxina da tarefa. Unha tarefa pódese editar, comprobar ou eliminar sen abrila.',
-  'new.change.providerNames': 'Cada tipo de almacenamento que coñece rclone ten un nome e un lugar no seu grupo cando engades un destino, co seu logo onde o hai.',
+  'new.change.providerNames': '{connect} nomea cada tipo de almacenamento que coñece rclone e colócao no seu grupo, co seu logotipo se existe.',
 }
 
 export default gl

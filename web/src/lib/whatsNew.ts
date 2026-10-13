@@ -69,14 +69,20 @@ export const RELEASES: Release[] = [
         at: ['/history'],
         where: ['nav.history'],
         text: 'new.change.listBar',
-        names: { history: 'nav.history' },
+        names: {
+          history: 'nav.history',
+          filter: 'list.filter',
+          search: 'list.search',
+          files: 'history.files',
+          runs: 'history.runs',
+        },
       },
       {
         id: 'finding-cards',
         at: ['/anomalies'],
         where: ['nav.anomalies'],
         text: 'new.change.findingCards',
-        names: { anomalies: 'nav.anomalies' },
+        names: { anomalies: 'nav.anomalies', more: 'anomaly.showMore' },
       },
       {
         id: 'learning',
@@ -113,6 +119,7 @@ export const RELEASES: Release[] = [
         at: ['/targets', '/settings/targets'],
         where: ['nav.targets'],
         text: 'new.change.providerNames',
+        names: { connect: 'targets.addStorage' },
       },
       {
         id: 'settings-tiles',

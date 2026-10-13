@@ -1006,7 +1006,7 @@ const da: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} og {trash} har fået deres eget sted i navigationen. {targets} er flyttet ind under {settings}, og en kontakt dér sætter dem fast i sidepanelet igen.',
   'new.change.runStrip': 'Hvert job viser sine seneste 14 kørsler som en stribe med én status ved siden af.',
   'new.change.jobPage': 'Hvert job har sin egen side med status, kørsler og de filer, det har rørt. Kør, Sæt på pause og Rediger står i én række øverst.',
-  'new.change.listBar': 'Filtrér, Sortér og Søg står over listen i {history}.',
+  'new.change.listBar': '{filter} og {search} står i kortet {history} på rækken med {files} og {runs}.',
   'new.change.settingsSearch': 'Søgningen over kortene finder enhver indstilling, også på det gamle navn. Tryk på / eller Ctrl+K.',
   'new.change.settingsTiles': '{settings} er en kolonne af felter, og hvert felt viser alle sine kort. Det, der lå under {engine}, ligger nu under {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'En kontakt for {anomalies} under {safety} slår bemærkningerne og deres side fra. Bremserne holder stadig tilbage, og en tilbageholdt kørsel besvares så på sit job.',
@@ -1109,13 +1109,13 @@ const da: Translations = {
   'job.usualHint': 'Lært af jobbets seneste vellykkede kørsler, højst halvtreds. En kørsel langt uden for disse intervaller får en note på siden Anomalier.',
   'anomaly.learn.hint': 'Hvert job med hvor langt ArrowLoop er nået med at lære, hvad dets kørsler normalt gør: en ring i ti dele, én for hver vellykket kørsel. En fuld grøn ring betyder lært, og fra da af får en kørsel langt uden for det normale en note. Et klik åbner jobbet med dets normale intervaller.',
   'anomaly.unusualHint': 'ArrowLoop lærer af hvert jobs seneste halvtreds vellykkede kørsler, hvor mange filer en kørsel normalt sletter og kopierer, og hvor længe den varer. Efter ti kørsler regnes jobbet for lært, og en kørsel langt uden for det får en note. Noten stopper aldrig en kørsel; det gør kun bremserne.',
-  'new.change.findingCards': 'Hvert fund i {anomalies} er sit eget kort med tal, de talte filer og svarene. Intet åbner oven på siden.',
+  'new.change.findingCards': 'Hvert fund i {anomalies} er sit eget kort med sine svar, og alle kort starter i samme højde. {more} åbner tallene og de talte filer på stedet.',
   'new.change.conflictCards': 'Hver konflikt i {conflicts} siger, hvilken fil det er, hvorfor det er en konflikt, og hvad hver side har, med svar der siger, hvad de gør ved hvilken fil.',
   'new.change.trashActions': '{prune} står ved siden af {empty} i hjørnet som en knap for sig.',
   'new.change.learning': 'ArrowLoop lærer, hvad hvert jobs kørsler normalt gør, og noterer en kørsel langt uden for det. {learning} viser, hvor langt hvert job er nået.',
   'new.change.jobBrakes': 'Et jobs egne bremser indstilles på dets side under {brakes}.',
   'new.change.jobMore': 'Hvert jobkort har {more} med alt, hvad jobbets side tilbyder. Et job kan redigeres, tjekkes eller fjernes uden at åbne det.',
-  'new.change.providerNames': 'Hver slags lager, rclone kender, har et navn og en plads i sin gruppe, når du tilføjer et mål, med logo, hvor der findes et.',
+  'new.change.providerNames': '{connect} navngiver hver lagertype, rclone kender, og placerer den i sin gruppe med logo, hvor der findes et.',
 }
 
 export default da

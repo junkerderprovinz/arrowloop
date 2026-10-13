@@ -1006,7 +1006,7 @@ const cs: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} a {trash} mají v navigaci své vlastní místo. {targets} se přesunuly do {settings}, kde je přepínač vrátí zpět do postranního panelu.',
   'new.change.runStrip': 'Každá úloha ukazuje svých posledních 14 běhů jako pruh a vedle něj jeden stav.',
   'new.change.jobPage': 'Každá úloha má vlastní stránku se svým stavem, běhy a soubory, kterých se dotkla. Spustit, Pozastavit a Upravit jsou v jedné řadě nahoře.',
-  'new.change.listBar': 'Filtr, řazení a hledání jsou nad seznamem v {history}.',
+  'new.change.listBar': '{filter} a {search} jsou na kartě {history}, na řádku s {files} a {runs}.',
   'new.change.settingsSearch': 'Hledání nad kartami najde každé nastavení, i podle starého názvu. Stiskni / nebo Ctrl+K.',
   'new.change.settingsTiles': '{settings} jsou sloupec dlaždic a každá dlaždice ukazuje všechny své karty. Co bylo v části {engine}, je teď v {general}, {sync} a {safety}.',
   'new.change.anomaliesModule': 'Přepínač pro {anomalies} v části {safety} vypne poznámky i jejich stránku. Brzdy dál zadržují a zadržený běh se pak řeší u své úlohy.',
@@ -1109,13 +1109,13 @@ const cs: Translations = {
   'job.usualHint': 'Naučeno z posledních úspěšných běhů úlohy, nejvýš padesáti. Běh daleko mimo tyto rozsahy dostane poznámku na stránce Anomálie.',
   'anomaly.learn.hint': 'Každá úloha a kolik se toho ArrowLoop naučil o tom, co její běhy obvykle dělají: kruh z deseti dílků, jeden za každý úspěšný běh. Plný zelený kruh znamená naučeno a od té doby dostane běh daleko mimo obvyklý rozsah poznámku. Kliknutím se otevře úloha s obvyklými rozsahy.',
   'anomaly.unusualHint': 'ArrowLoop se z posledních padesáti úspěšných běhů každé úlohy učí, kolik souborů běh obvykle smaže a zkopíruje a jak dlouho trvá. Po deseti bězích se úloha počítá za naučenou a běh daleko mimo tento rozsah dostane poznámku. Poznámka nikdy běh nezastaví; to dělají jen brzdy.',
-  'new.change.findingCards': 'Každý nález v {anomalies} je samostatná karta s čísly, započítanými soubory a odpověďmi. Nad stránkou se nic neotevírá.',
+  'new.change.findingCards': 'Každý nález v {anomalies} je samostatná karta se svými odpověďmi a všechny karty začínají stejně vysoké. {more} na místě otevře čísla a spočítané soubory.',
   'new.change.conflictCards': 'Každý konflikt v {conflicts} říká, o jaký soubor jde, proč je to konflikt a co má každá strana, s odpověďmi, které říkají, co udělají s kterým souborem.',
   'new.change.trashActions': '{prune} stojí v rohu vedle {empty} jako samostatné tlačítko.',
   'new.change.learning': 'ArrowLoop se učí, co běhy každé úlohy obvykle dělají, a upozorní na běh daleko mimo to. {learning} ukazuje, jak daleko je každá úloha.',
   'new.change.jobBrakes': 'Vlastní brzdy úlohy se nastavují na její stránce v části {brakes}.',
   'new.change.jobMore': 'Každá karta úlohy má {more} se vším, co nabízí stránka úlohy. Úlohu jde upravit, zkontrolovat nebo odstranit bez otevření.',
-  'new.change.providerNames': 'Každý druh úložiště, který rclone zná, má při přidávání cíle název a místo ve své skupině, a k tomu logo, pokud nějaké existuje.',
+  'new.change.providerNames': '{connect} pojmenuje každý druh úložiště, který rclone zná, a zařadí ho do jeho skupiny, s logem, pokud existuje.',
 }
 
 export default cs

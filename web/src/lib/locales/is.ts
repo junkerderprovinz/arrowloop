@@ -1006,7 +1006,7 @@ const is: Translations = {
   'new.change.navigation': '{conflicts}, {anomalies} og {trash} hafa nú sinn eigin stað í leiðsögninni. {targets} fluttist í {settings} og þar er rofi sem festir það aftur.',
   'new.change.runStrip': 'Hvert verk sýnir síðustu 14 keyrslur sínar sem ræmu, með einni stöðu við hliðina.',
   'new.change.jobPage': 'Hvert verk hefur sína eigin síðu með stöðu þess, keyrslum og skrám sem það snerti. Keyra, Gera hlé og Breyta eru í einni röð efst.',
-  'new.change.listBar': 'Sía, röðun og leit eru fyrir ofan listann í {history}.',
+  'new.change.listBar': '{filter} og {search} eru á spjaldinu {history}, í línunni með {files} og {runs}.',
   'new.change.settingsSearch': 'Leitin fyrir ofan spjöldin finnur hverja stillingu, líka undir gamla heitinu. Ýttu á / eða Ctrl+K.',
   'new.change.settingsTiles': '{settings} eru dálkur af reitum og hver reitur sýnir öll sín spjöld. Það sem var í {engine} er nú undir {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'Rofi fyrir {anomalies} undir {safety} slekkur á athugasemdunum og síðunni þeirra. Bremsurnar halda áfram og keyrslu sem haldið er er þá svarað við verkið hennar.',
@@ -1109,13 +1109,13 @@ const is: Translations = {
   'job.usualHint': 'Lært af síðustu vel heppnuðu keyrslum verksins, mest fimmtíu. Keyrsla langt utan þessara marka fær athugasemd á síðunni Frávik.',
   'anomaly.learn.hint': 'Hvert verk og hve langt ArrowLoop er komið með að læra hvað keyrslur þess gera venjulega: hringur í tíu hlutum, einn fyrir hverja vel heppnaða keyrslu. Fullur grænn hringur þýðir lært, og upp frá því fær keyrsla langt utan hins venjulega athugasemd. Smellur opnar verkið með venjulegum mörkum þess.',
   'anomaly.unusualHint': 'ArrowLoop lærir af síðustu fimmtíu vel heppnuðu keyrslum hvers verks hve margar skrár keyrsla eyðir og afritar venjulega og hve lengi hún tekur. Eftir tíu keyrslur telst verkið lært, og keyrsla langt utan þess fær athugasemd. Athugasemdin stöðvar aldrei keyrslu; það gera aðeins hemlarnir.',
-  'new.change.findingCards': 'Hver niðurstaða í {anomalies} er sitt eigið spjald, með tölum, töldum skrám og svörum. Ekkert opnast yfir síðunni.',
+  'new.change.findingCards': 'Hver niðurstaða í {anomalies} er sérstakt spjald með svörum sínum og öll spjöld byrja jafnhá. {more} opnar tölurnar og taldar skrár á staðnum.',
   'new.change.conflictCards': 'Hver árekstur í {conflicts} segir hvaða skrá er um að ræða, hvers vegna og hvað hvor hlið geymir, með svörum sem segja hvað þau gera við hvaða skrá.',
   'new.change.trashActions': '{prune} er í horninu við hlið {empty}, sem sérstakur hnappur.',
   'new.change.learning': 'ArrowLoop lærir hvað keyrslur hvers verks gera venjulega og skráir keyrslu langt utan þess. {learning} sýnir hve langt hvert verk er komið.',
   'new.change.jobBrakes': 'Eigin hemlar verks eru stilltir á síðu þess, undir {brakes}.',
   'new.change.jobMore': 'Hvert verkspjald hefur {more}, með öllu sem síða verksins býður. Hægt er að breyta verki, athuga það eða fjarlægja án þess að opna það.',
-  'new.change.providerNames': 'Hver geymslutegund sem rclone þekkir hefur heiti og stað í sínum hópi þegar þú bætir við áfangastað, með merki sínu þar sem það er til.',
+  'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til.',
 }
 
 export default is
