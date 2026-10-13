@@ -4,6 +4,7 @@
 /** Which way a job is allowed to write. */
 import type { FindingListing, JobLearning } from './anomalies'
 import type { Failure } from './failure'
+import type { Channel, Notify } from './notify'
 
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
@@ -354,11 +355,7 @@ export type Settings = {
   }
   /** Reusable pattern lists, by name. A job asks for them by name. */
   excludeSets?: Record<string, string[]>
-  notify?: {
-    matrix?: { homeserver: string; room: string; token: string }
-    webhook?: string
-    onSuccess?: boolean
-  }
+  notify?: Notify
   [key: string]: unknown
 }
 
@@ -763,6 +760,18 @@ export const api = {
    * `remote` names the target being edited, whose stored secrets fill the
    * password boxes the form left empty.
    */
+  /**
+   * Sends a test message through one channel as the page shows it. The engine
+   * fills in the secrets the page holds placeholders for, and a refusal comes
+   * back as ok:false with the reason.
+   */
+  testNotify: (channel: Channel, notify: Notify) =>
+    request<{ ok: boolean; reason?: string }>('/api/notify/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channel, notify }),
+    }),
+
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
     request<{ ok: boolean; reason?: string }>('/api/remotes-check', {
       method: 'POST',

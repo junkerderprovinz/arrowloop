@@ -155,6 +155,13 @@ export const RELEASES: Release[] = [
         where: ['nav.settings', 'settings.security'],
         text: 'new.change.loginReset',
       },
+      {
+        id: 'notify-channels',
+        at: ['/settings/safety'],
+        where: ['nav.settings', 'settings.safetyNet'],
+        text: 'new.change.notifyChannels',
+        names: { notifications: 'settings.notifications', safety: 'settings.safetyNet' },
+      },
     ],
   },
 ]
