@@ -138,6 +138,26 @@ storage glyph where there is none. Picking one opens its form in the same window
 has a name in plain words, and its (i) ends with the name rclone gives it, which
 is what rclone's documentation and a hand-written `rclone.conf` use.
 
+A search field stands at the top right of the window from the moment it opens.
+It narrows all three groups as you type, by the name shown or by rclone's own
+name, and ignores accents, so `drive` finds Google Drive and `uloz` finds
+Ulož.to. Escape empties it, and a second Escape closes the window. When nothing
+matches, the window says so and points to **S3 compatible** and **WebDAV**,
+which most other services speak. The phone's picker has the same search above
+its tiles.
+
+Each target's row has **Test connection**. A target elsewhere is tested as soon
+as the page opens, and the button shows the answer itself: green with
+**Connected**, or red with **Not connected** and the reason on a line under the
+name, in your language where ArrowLoop recognises the failure. Pressing it
+tests again.
+
+A password, key or token that is stored shows in the target's form as
+**Saved** with a **Change** button, because the engine never sends a stored
+secret back to the page. **Change** opens an empty field. The stored value
+stays until you type a new one, and **Keep the saved one** goes back to it.
+Saving without touching it keeps it.
+
 ## Drives
 
 A USB disk or a share is added on the **Targets** tile with **Register a
