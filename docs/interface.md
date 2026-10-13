@@ -245,7 +245,7 @@ the job has `noTrash`, so a wrong click can be undone from there.
 **Trash** shows every job's trash in a card per job, both sides in it, puts
 files back, and deletes them for good: one file, one side, everything older
 than a number of days, or all of it. **Empty the trash** is the filled button at
-the bottom right, and **Delete entries older than…** stands beside it, with the
+the bottom right, and **Delete old entries** stands beside it, with the
 number of days asked in the window that confirms it; everything newer stays. Putting a file back is one
 click, since it only moves the file. Removing anything for good asks first,
 because the trash is the last copy there is, and emptying a side or all of it

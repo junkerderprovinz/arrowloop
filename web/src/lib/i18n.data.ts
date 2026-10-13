@@ -282,7 +282,6 @@ export const en = {
   'anomaly.showLess': 'Show less',
   'anomaly.filesHint': 'The files this run would touch, named as the side that would be written calls them.',
   'anomaly.filesMore': 'and {count} more',
-  'anomaly.held': 'The job is held',
   'anomaly.heldHint': 'Every run of it stops at this point, on its schedule or by hand, until you decide or the cause is gone. The other jobs keep running.',
   'anomaly.heldBadge': 'Held',
   'anomaly.run': 'Run anyway',
@@ -344,7 +343,7 @@ export const en = {
   'trash.unknownAge': 'age unknown',
   'trash.more': '{total} in the trash, showing {shown}.',
   'trash.days': 'Older than, in days',
-  'trash.prune': 'Delete entries older than…',
+  'trash.prune': 'Delete old entries',
   'trash.pruned': '{entries} removed from the trash.',
   'trash.hint':
     'Each job keeps a trash on both sides, inside the synced folder. Deleted files land there, and so does the losing version of a decided conflict. Putting a file back is always safe; removing it from the trash is final.',
@@ -1482,7 +1481,6 @@ export const de: Translations = {
   'anomaly.showLess': 'Weniger anzeigen',
   'anomaly.filesHint': 'Die Dateien, die dieser Lauf anfassen würde, benannt wie auf der Seite, auf die geschrieben würde.',
   'anomaly.filesMore': 'und {count} weitere',
-  'anomaly.held': 'Der Auftrag ist angehalten',
   'anomaly.heldHint': 'Jeder Lauf hält an dieser Stelle an, nach Zeitplan wie von Hand, bis du entschieden hast oder die Ursache weg ist. Die anderen Aufträge laufen weiter.',
   'anomaly.heldBadge': 'Angehalten',
   'anomaly.run': 'Trotzdem ausführen',
@@ -1543,7 +1541,7 @@ export const de: Translations = {
   'trash.unknownAge': 'Alter unbekannt',
   'trash.more': '{total} im Papierkorb, angezeigt werden {shown}.',
   'trash.days': 'Älter als, in Tagen',
-  'trash.prune': 'Einträge löschen, die älter sind als …',
+  'trash.prune': 'Alte Einträge löschen',
   'trash.pruned': '{entries} aus dem Papierkorb entfernt.',
   'trash.hint':
     'Jeder Auftrag hat auf beiden Seiten einen Papierkorb im synchronisierten Ordner. Gelöschte Dateien landen dort, ebenso die unterlegene Fassung eines entschiedenen Konflikts. Zurücklegen ist immer gefahrlos; was du aus dem Papierkorb löschst, ist endgültig weg.',
