@@ -184,9 +184,7 @@ function Shell() {
           <Tabs.Screen name="OverviewTab" options={{ title: t("nav.overview") }}>
             {() => (
               <OverviewNav.Navigator screenOptions={header}>
-                {/* The first screen carries the product name, untranslated;
-                    its place on the bar keeps the translated label. */}
-                <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: "ArrowLoop" }} />
+                <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: t("nav.overview") }} />
                 <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
                 <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
               </OverviewNav.Navigator>

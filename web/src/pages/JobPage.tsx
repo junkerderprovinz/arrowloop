@@ -370,7 +370,7 @@ function Now({ event, speed }: { event?: RunEvent; speed?: number }) {
   const format = new Intl.NumberFormat(lang)
   const counts = { done: format.format(done), total: format.format(total) }
 
-  let words = t('progress.starting')
+  let words = t(event ? 'progress.starting' : 'progress.opening')
   if (known) words = t(event?.guess ? 'progress.about' : 'progress.of', counts)
   else if (event?.stage) words = t('progress.found', counts)
 

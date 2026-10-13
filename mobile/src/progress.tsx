@@ -82,11 +82,11 @@ export function useRunProgress(): Record<string, Progress> {
 
 /**
  * A running job's bar and one line under it. Before the first progress frame
- * the engine is still building its plan, and the line says so.
+ * the run is reading both sides, and the line says so.
  */
 export function RunProgress({ job, at, hue }: { job: Job; at?: Progress; hue: string }) {
   const { t, lang } = useT();
-  if (!at) return <Caption>{t("preview.working")}</Caption>;
+  if (!at) return <Caption>{t("progress.opening")}</Caption>;
   if (at.joined) return at.speed > 0 ? <Caption>{perSecond(at.speed, lang)}</Caption> : null;
   const line = counted(at, t, lang);
   return (

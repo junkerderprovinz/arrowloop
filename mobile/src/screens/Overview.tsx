@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { AppState, StyleSheet, Text, View } from "react-native";
+import { entryLabel } from "../../../web/src/lib/entryLabel";
 import { jobState, needs, type HeadState, type Need } from "../../../web/src/lib/needs";
 import { api, failed, type Job, type Moving, type Remote, type Run, type Tally } from "../api";
 import { clock } from "../clock";
@@ -164,7 +165,7 @@ export function Overview() {
         </Section>
 
         <Section title={t("overview.status")} hue={2}>
-          <LastRun run={recent.newest} tally={recent.tally} />
+          <LastRun run={recent.newest} tally={recent.tally} jobs={jobs} />
         </Section>
 
         <Section title={t("overview.numbers")} hue={3}>
@@ -432,7 +433,7 @@ function span(secs: number): string {
  * The newest run across all jobs: which job, when, how long, and what it moved.
  * The change rows stand at zero too, so the card does not shift between runs.
  */
-function LastRun({ run, tally }: { run: Run | null | "none"; tally: Tally | null }) {
+function LastRun({ run, tally, jobs }: { run: Run | null | "none"; tally: Tally | null; jobs: Job[] }) {
   const { t, lang } = useT();
   const { p, corners } = useTheme();
   if (run === null) return <Caption>{t("history.working")}</Caption>;
@@ -454,16 +455,37 @@ function LastRun({ run, tally }: { run: Run | null | "none"; tally: Tally | null
       <View style={[styles.well, { backgroundColor: p.surface2, ...corners.card }]}>
         <AxisLabel>{t("overview.changes")}</AxisLabel>
         {tally ? (
-          <>
-            <Pair label={t("overview.uploadedLabel")} value={String(tally.up)} />
-            <Pair label={t("overview.downloadedLabel")} value={String(tally.down)} />
-            <Pair label={t("overview.deletedHere")} value={String(tally.trashedLeft)} />
-            <Pair label={t("overview.deletedThere")} value={String(tally.trashedRight)} />
-          </>
+          <Changes tally={tally} job={jobs.find((j) => j.name === run.Job)} />
         ) : (
           <Caption>{t("history.working")}</Caption>
         )}
       </View>
+    </>
+  );
+}
+
+/**
+ * What the run copied and deleted on each side, in the history's words, so
+ * two folders or two targets go by their names rather than "locally". A job
+ * removed since has no sides left to name.
+ */
+function Changes({ tally, job }: { tally: Tally; job: Job | undefined }) {
+  const { t } = useT();
+  if (!job) {
+    return (
+      <>
+        <Pair label={t("entry.copied")} value={String(tally.up + tally.down)} />
+        <Pair label={t("entry.deleted")} value={String(tally.trashed)} />
+      </>
+    );
+  }
+  const label = (Kind: string, Side: string) => entryLabel(t, { Kind, Side }, job, []);
+  return (
+    <>
+      <Pair label={label("copy", "right")} value={String(tally.up)} />
+      <Pair label={label("copy", "left")} value={String(tally.down)} />
+      <Pair label={label("trash", "left")} value={String(tally.trashedLeft)} />
+      <Pair label={label("trash", "right")} value={String(tally.trashedRight)} />
     </>
   );
 }
