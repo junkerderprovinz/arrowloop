@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { IconAction } from './IconAction'
@@ -9,6 +9,7 @@ import { Card } from '../lib/glimstone/Card'
 import { IconCheck, IconClose, IconFolder, IconFolderAdd, IconFolderUp, IconTabStorage } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
+import { useModal } from '../lib/modal'
 
 /**
  * A place the picker offers above the folders. A registered drive is taken as
@@ -58,14 +59,8 @@ export function FolderPicker({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, start])
 
-  useEffect(() => {
-    if (!open) return
-    const key = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', key)
-    return () => document.removeEventListener('keydown', key)
-  }, [open, onClose])
+  const picker = useRef<HTMLDivElement>(null)
+  useModal(picker, onClose, { open, focus: 'first' })
 
   /**
    * Lists one folder. With fallback set, an unusable starting path (often a
@@ -114,6 +109,7 @@ export function FolderPicker({
   // would pin the fixed backdrop to itself instead of the window.
   return createPortal(
     <div
+      ref={picker}
       className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-6"
       role="dialog"
       aria-modal="true"

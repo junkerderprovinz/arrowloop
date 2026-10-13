@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
+import { useRef, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 import { hueVars } from '../lib/appearance'
@@ -7,6 +7,7 @@ import { Button } from '../lib/glimstone/Button'
 import { IconClose } from '../lib/glimstone/glyphs'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useT } from '../lib/i18n'
+import { useModal } from '../lib/modal'
 
 /**
  * A window over the dimmed page, built like GlimStone's confirmation dialog:
@@ -16,8 +17,7 @@ import { useT } from '../lib/i18n'
  * that row stays under the thumb.
  *
  * Rendered into the body, so a transformed ancestor cannot become its
- * containing block. Focus moves into the card on open and back to the control
- * that opened it on close.
+ * containing block. The keyboard stays inside while it is open (useModal).
  */
 export function Dialog({
   title,
@@ -60,31 +60,10 @@ export function Dialog({
 }) {
   const { t } = useT()
   const card = useRef<HTMLDivElement>(null)
-  const close = useRef(onClose)
-  useEffect(() => {
-    close.current = onClose
-  })
+  useModal(card, onClose)
   // A press that starts inside the card and ends on the backdrop, as when
   // selecting text, is not a click on the backdrop.
   const pressedBackdrop = useRef(false)
-
-  useEffect(() => {
-    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    card.current?.focus()
-    const onKey = (e: KeyboardEvent) => {
-      // An open dropdown or menu inside the window takes the Escape for itself,
-      // and a window opened from this one closes first.
-      if (e.key !== 'Escape' || document.querySelector('[role="listbox"], [role="menu"]')) return
-      const windows = document.querySelectorAll('[role="dialog"]')
-      if (windows[windows.length - 1] !== card.current) return
-      close.current()
-    }
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      opener?.focus()
-    }
-  }, [])
 
   return createPortal(
     <div
