@@ -6,12 +6,13 @@ import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
 import { useEngineSettings } from "../settings";
 import { useWaiting } from "../waiting";
+import { ChoiceRow } from "../choiceRow";
 import { Field, NumberField, Refusal } from "../fields";
 import { Schedule } from "./JobEdit";
 import { api, type JobConfig } from "../api";
 import { ScheduleSentence } from "../inherit";
 import { space } from "../theme";
-import { AxisLabel, Body, Button, Caption, Choice, Page, Section, Toggle } from "../ui";
+import { AxisLabel, Body, Button, Caption, Page, Section, Toggle } from "../ui";
 import { WaySwitch } from "../way";
 import type { Notify } from "../../../web/src/lib/notify";
 import {
@@ -64,6 +65,8 @@ export function SyncSettings() {
   const heldAt = heldKey(policy);
   const held = heldAt ? t(heldAt) : "";
 
+  const oneMode = (defaults.direction ?? "both") === "both";
+
   return (
     <Page>
       <Section title={t("engine.defaults")} hint={t("defaults.followHint")} hue={0}>
@@ -80,27 +83,19 @@ export function SyncSettings() {
         />
         {/* Both ways has only one mode, so the selector goes inert on `sync`
             instead of vanishing and changing the card's shape. */}
-        {(() => {
-          const both = (defaults.direction ?? "both") === "both";
-          return (
-            <>
-              <AxisLabel hint={both ? t("mode.onlyOneWay") : undefined}>
-                {t("mode.label")}
-              </AxisLabel>
-              <Choice
-                hue={1}
-                disabled={both}
-                value={both ? "sync" : String(defaults.mode ?? "sync")}
-                onChange={(mode) => saveDefaults({ mode })}
-                options={[
-                  { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
-                  { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
-                  { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
-                ]}
-              />
-            </>
-          );
-        })()}
+        <ChoiceRow
+          label={t("mode.label")}
+          hint={oneMode ? t("mode.onlyOneWay") : undefined}
+          hue={1}
+          disabled={oneMode}
+          value={oneMode ? "sync" : String(defaults.mode ?? "sync")}
+          onChange={(mode) => saveDefaults({ mode })}
+          options={[
+            { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
+            { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
+            { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
+          ]}
+        />
         <AxisLabel>{t("edit.schedule")}</AxisLabel>
         <ScheduleSentence label={t("edit.schedule")} value={String(defaults.schedule ?? "")}>
           <Schedule value={String(defaults.schedule ?? "")} onChange={(schedule) => saveDefaults({ schedule })} />

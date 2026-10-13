@@ -311,10 +311,6 @@ export function JobForm({
         <FieldRow label={t('edit.name')} hint={t('edit.nameHint')}>
           <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} label={t('edit.name')} />
         </FieldRow>
-        <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
-          <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
-        </FieldRow>
-
         <Side
           label={t('edit.left')}
           hint={t('edit.sideHint')}
@@ -337,6 +333,9 @@ export function JobForm({
           known={known}
           onChange={(v) => patch({ right: v })}
         />
+        <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
+          <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
+        </FieldRow>
 
         {/* The mode exists only once one side is the source. It comes with the
             direction, so its row has no button of its own. */}

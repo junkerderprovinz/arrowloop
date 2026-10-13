@@ -148,9 +148,9 @@ export function ScheduleField({
         options={modes.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
       />
 
-      {/* Every labelled row shares one grid, so the boxes of the settle time,
-          the backstop and the time start at the same edge. A narrow
-          card puts each label above its box instead. */}
+      {/* Every labelled row shares one grid, its names at the start and its
+          boxes at the end, as in a settings card. A narrow panel puts each
+          box under its name, still at the end. */}
       <div className="grid grid-cols-1 gap-x-4 gap-y-1.5 @md:grid-cols-[max-content_minmax(0,1fr)] @md:items-center @md:gap-y-3">
         {state.mode === 'live' && onSettle && (
           <Row label={t('schedule.settle')} hint={t('schedule.settleHint')}>
@@ -230,7 +230,7 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      <div className="flex min-w-0 flex-wrap items-center gap-2">{children}</div>
+      <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">{children}</div>
     </>
   )
 }

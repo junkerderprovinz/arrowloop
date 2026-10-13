@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { api, type Config, type JobConfig } from "../api";
 import { Field, NumberField, Refusal, TimeField } from "../fields";
+import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { Glyph } from "../glyphs";
@@ -304,9 +305,10 @@ export function JobEdit() {
           />
         </View>
         {/* Each mode explains itself in its segment. A both-ways job has only
-            one, so the label's bubble says why the strip stands still. */}
-        <AxisLabel hint={way === "both" ? t("mode.onlyOneWay") : undefined}>{t("mode.label")}</AxisLabel>
-        <Choice
+            one, so the name's bubble says why the choice stands still. */}
+        <ChoiceRow
+          label={t("mode.label")}
+          hint={way === "both" ? t("mode.onlyOneWay") : undefined}
           hue={1}
           value={way === "both" ? "sync" : (shown("direction").mode ?? "sync")}
           disabled={!own("direction") || way === "both"}
@@ -535,7 +537,8 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
 
   return (
     <View style={styles.stack}>
-      <Choice<ScheduleMode>
+      <ChoiceRow<ScheduleMode>
+        label={t("edit.schedule")}
         hue={2}
         value={state.mode}
         // No `live` mode: watching is stored on the job, not in the expression.
