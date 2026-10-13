@@ -82,8 +82,9 @@ Back works as well.
 Under it, one card for each thing to see or do: **Runs**, where a click opens a
 run's details; **Files touched**, newest first (History searches across every
 job); **Preview**; **Check
-this job**; **Find duplicates**; **Brakes**, where **Own brakes for this job**
-gives the job values of its own instead of the global ones; and, once the job's
+this job**; **Find duplicates**; **Brakes**, which shows the global brakes
+locked until **Override** gives the job a value of its own, with **Use the
+default** to go back; and, once the job's
 runs are learned, **What a run usually does**, with how many files a run
 usually deletes and copies and how long it takes.
 
@@ -108,6 +109,15 @@ every row out does nothing rather than running everything.
 
 **Add a job** opens the form in a window, and **Edit** on a job's page does the
 same for that job. **Save** is the window's main button.
+
+A new job takes its direction, mode, schedule, quiet period and what gets
+carried from the global sync settings, and the form shows each of them with the
+value in force, locked, beside a lock and **Override**. **Override** gives the
+job a value of its own, starting from the one it had, and the control unlocks.
+**Use the default** beside an own value gives it back after asking, since the
+own value is lost. A job that follows a setting changes with it; a job with its
+own value keeps it. The mode comes with the direction, so the two are
+overridden and given back together.
 
 It writes the same configuration file a person can still open in an editor,
 and it validates through the same function that guards it there. A refused edit
@@ -178,6 +188,11 @@ job created in the interface, it starts without `before` and `after` commands.
 
 ## Building a schedule
 
+A schedule reads as a sentence, such as *Daily at 03:00* or *Mon, Fri at
+04:15*, on a button. A click on it opens the schedule's editor beside it, on
+the phone in a sheet from the bottom. The default schedule on the **Sync** tile
+works the same way.
+
 A schedule is built rather than typed. The stored value is a cron expression,
 because that is what the engine reads and what a hand-edited file contains, but
 the common answers are pickers: **Manual**, **Real time**, **Every N** minutes,
@@ -187,7 +202,9 @@ rather than typed into a field.
 
 An expression the pickers cannot say opens in the **Cron** mode exactly as
 written and is never rewritten, since an editor that simplified a schedule it
-did not understand would destroy the thing it was opened to look at.
+did not understand would destroy the thing it was opened to look at. Its
+sentence then names the expression. **Cron** also writes out any other schedule
+as an expression, for whoever wants to type one.
 
 **Real time** is one of the schedules rather than a switch beside them; picking
 it sets `"watch": true` and writes a backstop schedule as well.
@@ -332,7 +349,10 @@ has an address of its own, such as `/settings/sync`. An older address such as
 - **Look**: language, design (Dark, Light or System), corners, motion, labels
   and colours.
 - **Sync**: the global sync settings every job starts from, transfer, what gets
-  carried, retries and the shared exclude lists.
+  carried, **Exceptions**, retries and the shared exclude lists. **Exceptions**
+  lists only the jobs with a value of their own, each with those values and
+  **Use the default**, and is not there while every job follows the defaults.
+  **Safety net** has the same card for jobs with brakes of their own.
 - **Safety net**: the two brakes, the anomaly notes with their switch, and the
   notifications: when they go out, then a webhook (generic, Discord, Slack,
   Gotify or ntfy), Matrix, email, Apprise and Healthchecks.io, each with its
