@@ -1,7 +1,20 @@
 import { useRef, useState } from 'react'
 
 import { Choice } from '../../components/Field'
-import { IconRefresh } from '../../components/glyphs'
+import {
+  IconCornerLeaf,
+  IconCornerRound,
+  IconCornerSoft,
+  IconCornerSquare,
+  IconMoon,
+  IconMotionOff,
+  IconMotionStorm,
+  IconMotionSubtle,
+  IconMotionWild,
+  IconRefresh,
+  IconSun,
+  IconThemeSystem,
+} from '../../components/glyphs'
 import { Selector } from '../../components/Selector'
 import { Stack } from '../../components/Shell'
 import { AccentSwatches, PaletteSwatches } from '../../components/Swatches'
@@ -174,9 +187,9 @@ export function LookPage({
             value={theme}
             onChange={onTheme}
             options={[
-              { value: 'dark', label: t('look.dark') },
-              { value: 'light', label: t('look.light') },
-              { value: 'system', label: t('look.system') },
+              { value: 'dark', label: t('look.dark'), icon: <IconMoon /> },
+              { value: 'light', label: t('look.light'), icon: <IconSun /> },
+              { value: 'system', label: t('look.system'), icon: <IconThemeSystem /> },
             ]}
           />
         </SettingsRow>
@@ -193,10 +206,10 @@ export function LookPage({
               leaf.click(next)
             }}
             options={[
-              { value: 'round', label: t('look.round') },
-              { value: 'soft', label: t('look.soft') },
-              { value: 'square', label: t('look.square') },
-              ...(leaf.offered ? [{ value: 'leaf' as Shape, label: t('look.leaf') }] : []),
+              { value: 'round', label: t('look.round'), icon: <IconCornerRound /> },
+              { value: 'soft', label: t('look.soft'), icon: <IconCornerSoft /> },
+              { value: 'square', label: t('look.square'), icon: <IconCornerSquare /> },
+              ...(leaf.offered ? [{ value: 'leaf' as Shape, label: t('look.leaf'), icon: <IconCornerLeaf /> }] : []),
             ]}
           />
         </SettingsRow>
@@ -213,8 +226,8 @@ export function LookPage({
               storm.click(next)
             }}
             options={[
-              ...MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]) })),
-              ...(storm.offered ? [{ value: 'storm' as MotionIntensity, label: t(motionKey.storm) }] : []),
+              ...MOTION_INTENSITIES.map((m) => ({ value: m, label: t(motionKey[m]), icon: motionGlyph[m] })),
+              ...(storm.offered ? [{ value: 'storm' as MotionIntensity, label: t(motionKey.storm), icon: motionGlyph.storm }] : []),
             ]}
           />
         </SettingsRow>
@@ -374,6 +387,13 @@ const motionKey = {
   wild: 'look.motionWild',
   storm: 'look.motionStorm',
 } as const
+
+const motionGlyph = {
+  off: <IconMotionOff />,
+  subtle: <IconMotionSubtle />,
+  wild: <IconMotionWild />,
+  storm: <IconMotionStorm />,
+}
 
 const axisKey = {
   buttons: 'look.labelsButtons',
