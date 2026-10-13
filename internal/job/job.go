@@ -380,8 +380,9 @@ type Job struct {
 	Right string `json:"right"`
 	State string `json:"state"`
 
-	// Schedule is a cron expression. Empty means the job only runs when
-	// somebody asks for it by name.
+	// Schedule is a cron expression. Left out, the job takes the default
+	// schedule; written as an empty string, it runs only when somebody asks
+	// for it by name, whatever the default says.
 	Schedule string `json:"schedule,omitempty"`
 
 	// Watch runs the job when a local side changes. It does not replace the
@@ -597,6 +598,34 @@ func withoutRetired(data []byte) ([]byte, []string) {
 	return out, found
 }
 
+// unscheduled reports which jobs, by position, write their schedule as an
+// empty string. Once decoded that cannot be told from a schedule left out, and
+// only one left out takes the default.
+func unscheduled(data []byte) map[int]bool {
+	var doc map[string]json.RawMessage
+	if json.Unmarshal(data, &doc) != nil {
+		return nil
+	}
+	out := map[int]bool{}
+	for top, raw := range doc {
+		if !strings.EqualFold(top, "jobs") {
+			continue
+		}
+		var jobs []map[string]json.RawMessage
+		if json.Unmarshal(raw, &jobs) != nil {
+			return nil
+		}
+		for i, j := range jobs {
+			for key, value := range j {
+				if strings.EqualFold(key, "schedule") && string(value) == `""` {
+					out[i] = true
+				}
+			}
+		}
+	}
+	return out
+}
+
 // Retired reports the retired fields found in the file this was loaded from.
 func (c *Config) Retired() []string { return c.retired }
 
@@ -642,11 +671,15 @@ func Load(path string) (*Config, error) {
 	// No jobs at all is valid: it is the state before the first job is created
 	// and after the last one is deleted.
 	seen := map[string]bool{}
+	onRequest := unscheduled(cleaned)
 	for i := range cfg.Jobs {
 		j := &cfg.Jobs[i]
 		// Defaults are applied before validation, so a value from the defaults
 		// is checked by the same rules as one written on the job.
 		cfg.Defaults.applyTo(j)
+		if onRequest[i] {
+			j.Schedule = ""
+		}
 		if j.Name == "" {
 			return nil, fmt.Errorf("job %d has no name", i+1)
 		}
