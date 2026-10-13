@@ -8,15 +8,27 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.1.0 - 2026-10-13
 
 ## ✨ Added
 
-- **The phone app can sync the folders in Android/data**, which Android 11 and later keep from every app but the one each folder belongs to. Switch on Android/data under This phone, and they show up as a target called Android. On a rooted phone ArrowLoop reads and writes them; with Shizuku it only reads them. You can pick either way yourself and set the path to su, for root managers that rename it. Without Shizuku, a button takes you to its download page.
+- **The phone app can sync the folders in Android/data**, which Android 11 and later keep from every app but the one each folder belongs to. Switch on Android/data under This phone, and they show up as a target called Android. Through root ArrowLoop reads and writes them and hands each new file to the app that owns the folder; through Shizuku it only reads them. You pick root or Shizuku yourself, and a way the phone cannot offer is dimmed, with a line that says why. The su command field takes the name or path of su for root managers that rename or move it, Request root brings up the root manager's prompt again, Ask Shizuku asks Shizuku for access, and Get Shizuku opens its download page while it is not installed.
+
+## 🎨 Design
+
+- **The phone's Appearance card puts Labels and Bottom bar before the colours.** Colour Rotation, Disco and the colour palette appear only while Rainbow Mode is on, instead of standing there dimmed.
+- **Global sync settings is one wide button** on the phone's Sync card, in place of a row with an Open button.
+- **The store shows eight screenshots instead of six**, now with the Overview and Conflicts, and the store and README pictures show the 2.0 interface.
 
 ## ⚡ Improved
 
-- **The phone app leaves the notification services to the server and the desktop.** Global sync settings on the phone no longer shows Matrix, email, Apprise, Healthchecks.io or the webhook, and the phone tells you about runs through Android's own notifications. A channel set up there before sends nothing from the phone, but its settings stay in the configuration untouched.
+- **The phone app leaves the notification services to the server and the desktop.** Global sync settings on the phone no longer shows Matrix, email, Apprise, Healthchecks.io or the webhook, and the phone tells you about runs through Android's own notifications. A channel set up there before sends nothing from the phone, but its settings stay in the configuration untouched. The hint under Report a held job says the message comes as a notification on this phone.
+
+## 🐛 Fixed
+
+- **The first job card on the Jobs page shows its whole badge.** The card comes after its name button, so the rule that leaves room above the first card never reached it, and the badge was cut off at the top of the page.
+- **A running job's card on the phone shows its progress bar.** The bar's track took no width in the card's column, so the fill had nothing to fill.
+- **The phone app builds with JDK 17 to 21.** The build accepted only JDK 17, and F-Droid's build server runs Java 21. JDKs past 21 are still turned away, since React Native's CMake step fails on them.
 
 ## 🌐 Translations
 
