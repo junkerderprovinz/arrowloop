@@ -35,6 +35,9 @@ type Run struct {
 	// Running marks a run that has not finished. Its counts are what it has
 	// done so far and Finished is zero; see Live.
 	Running bool
+	// Answered marks a run somebody allowed or took back after a brake held
+	// the job. It did what they asked, not what the job usually does.
+	Answered bool `json:",omitempty"`
 }
 
 // Failed reports whether the run ended badly.
@@ -92,7 +95,8 @@ CREATE TABLE IF NOT EXISTS runs (
 	dirs_removed INTEGER NOT NULL,
 	unchanged    INTEGER NOT NULL,
 	skipped      INTEGER NOT NULL,
-	err          TEXT    NOT NULL
+	err          TEXT    NOT NULL,
+	answered     INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS runs_job_started ON runs (job, started DESC);
 
@@ -138,6 +142,7 @@ CREATE TABLE IF NOT EXISTS going_entries (
 // already run; they are separate so that one failing does not stop the rest.
 var migrations = []string{
 	`ALTER TABLE entries ADD COLUMN size INTEGER NOT NULL DEFAULT 0`,
+	`ALTER TABLE runs ADD COLUMN answered INTEGER NOT NULL DEFAULT 0`,
 }
 
 // version is the history's layout. It goes up when a newer layout would be
@@ -202,10 +207,10 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 	defer tx.Rollback() //nolint:errcheck // a committed transaction rolls back to nothing
 
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		r.Job, r.Started.UnixNano(), r.Finished.UnixNano(),
-		r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Unchanged, r.Skipped, r.Err)
+		r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Unchanged, r.Skipped, r.Err, r.Answered)
 	if err != nil {
 		return fmt.Errorf("record run for %q: %w", r.Job, err)
 	}
@@ -364,9 +369,11 @@ const (
 	ShowChanged Show = "changed"
 	// ShowFailed is the runs that ended badly.
 	ShowFailed Show = "failed"
-	// ShowSucceeded is the runs that ended well, which are what a job's
-	// habits are learned from.
+	// ShowSucceeded is the runs that ended well.
 	ShowSucceeded Show = "succeeded"
+	// ShowUsual is the runs that ended well and that nobody answered, which
+	// are what a job's habits are learned from.
+	ShowUsual Show = "usual"
 )
 
 // where is the SQL condition for this filter, or "" for all runs. The changed
@@ -379,6 +386,8 @@ func (s Show) where() string {
 		return `err <> ''`
 	case ShowSucceeded:
 		return `err = ''`
+	case ShowUsual:
+		return `err = '' AND answered = 0`
 	default:
 		return ``
 	}
@@ -416,7 +425,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	if limit <= 0 {
 		limit = 20
 	}
-	query := `SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err
+	query := `SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered
 	          FROM runs`
 	args := []any{}
 	var conds []string
@@ -452,7 +461,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 		var r Run
 		var started, finished int64
 		if err := rows.Scan(&r.ID, &r.Job, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err); err != nil {
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		r.Started = time.Unix(0, started)

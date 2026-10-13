@@ -497,6 +497,25 @@ func TestLearningIsListedPerJob(t *testing.T) {
 	}
 }
 
+// A run somebody allowed is the one they asked for, so it is neither an
+// unusual run nor a lesson in what the job usually does.
+func TestAnAllowedRunIsNotJudgedAndTeachesNothing(t *testing.T) {
+	r, left, _ := syncedPair(t)
+	learned(t, r)
+	emptyOut(t, left, 30)
+	f := held(t, r)
+
+	if _, err := r.Approve(context.Background(), f.ID); err != nil {
+		t.Fatalf("approve: %v", err)
+	}
+	if r.anomalies.Has("test", anomaly.Unusual) {
+		t.Error("the allowed run was noted as unusual")
+	}
+	if got := r.Learning(context.Background()); got[0].Runs != anomaly.LearnAfter+1 {
+		t.Errorf("the job learned from %d runs, want %d without the allowed one", got[0].Runs, anomaly.LearnAfter+1)
+	}
+}
+
 func TestTheRunBeingJudgedDoesNotCountTowardsLearning(t *testing.T) {
 	r, _, _ := syncedPair(t)
 	// With the first run of syncedPair, one short of learned.

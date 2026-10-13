@@ -245,7 +245,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	r.muteWatcher(name)
 	defer r.muteWatcher(name)
 
-	rec := history.Run{Job: name, Started: time.Now()}
+	rec := history.Run{Job: name, Started: time.Now(), Answered: ans.outcome != passed.outcome}
 	// Begun before the start is announced, so a screen that looks at the log
 	// on hearing it finds the run there.
 	var live *history.Live
