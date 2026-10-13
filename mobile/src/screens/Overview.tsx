@@ -3,16 +3,17 @@ import { useCallback, useEffect, useState } from "react";
 import { AppState, StyleSheet, Text, View } from "react-native";
 import { entryLabel } from "../../../web/src/lib/entryLabel";
 import { jobState, needs, type HeadState, type Need } from "../../../web/src/lib/needs";
-import { api, failed, type Job, type Moving, type Remote, type Run, type Tally } from "../api";
+import { Activity } from "../activity";
+import { api, failed, type Job, type Remote, type Run, type Tally, type Touch } from "../api";
 import { clock } from "../clock";
 import { engine } from "../engine";
 import { Glyph } from "../glyphs";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
-import { RunProgress, useRunProgress, type Progress } from "../progress";
+import { FILE_WORK, RunProgress, STEPS_KEPT, useRunProgress, type Progress } from "../progress";
 import { SideRow, sideMark } from "../sideRow";
-import { remoteOf, sidePair } from "../sides";
+import { sidePair } from "../sides";
 import { bytes, isAccount, ReachBadge, Room, useReach, useRoom } from "../space";
 import { space, text } from "../theme";
 import { useEngineEvents, useEngineStream } from "../useEngine";
@@ -28,8 +29,6 @@ import {
   Empty,
   Fab,
   Floating,
-  Meter,
-  Mono,
   Page,
   Pair,
   Press,
@@ -59,8 +58,9 @@ const HEADLINE = {
 
 /**
  * The start screen: how things stand in one sentence, a few counts, what
- * waits for the person, what runs and runs next, the last run and how full
- * each target is. Every line that counts something leads to it.
+ * waits for the person, what runs and runs next, the files at work, the last
+ * run and how full each target is. Every line that counts something leads to
+ * it.
  */
 export function Overview() {
   const nav = useNavigation<Nav<OverviewStack>>();
@@ -197,13 +197,15 @@ export function Overview() {
           {empty ? null : <NextRuns jobs={jobs} onOpen={openJob} />}
         </Section>
 
-        <Section title={t("overview.status")} hue={3}>
+        <Activity progress={progress} touches={recent.touches} jobs={jobs} hue={3} onOpen={openJob} />
+
+        <Section title={t("overview.status")} hue={4}>
           <LastRun run={recent.newest} tally={recent.tally} jobs={jobs} />
         </Section>
 
         {/* Left out without a target elsewhere; adding one is the targets page's work. */}
         {accounts === null || accounts.length > 0 ? (
-          <Section title={t("overview.accounts")} hue={4}>
+          <Section title={t("overview.accounts")} hue={5}>
             <Accounts accounts={accounts} />
           </Section>
         ) : null}
@@ -226,14 +228,15 @@ export function Overview() {
 }
 
 /**
- * The newest run across all jobs, what it did, and how many runs started
- * today. Asked for again only when a run finishes, not on every progress
- * frame.
+ * The newest run across all jobs, what it did, how many runs started today,
+ * and the last files a run touched. Asked for again only when a run
+ * finishes, not on every progress frame.
  */
 function useRecentRuns() {
   const [newest, setNewest] = useState<Run | null | "none">(null);
   const [tally, setTally] = useState<Tally | null>(null);
   const [today, setToday] = useState<number | null>(null);
+  const [touches, setTouches] = useState<Touch[] | null>(null);
 
   const reload = useCallback(() => {
     api.history(RECENT).then(
@@ -252,6 +255,7 @@ function useRecentRuns() {
       // The app already reports an engine that does not answer.
       () => setNewest((was) => was ?? "none"),
     );
+    api.log({ limit: STEPS_KEPT, kinds: FILE_WORK }).then(setTouches, () => {});
   }, []);
 
   useEffect(reload, [reload]);
@@ -259,7 +263,7 @@ function useRecentRuns() {
     if (event.phase === "finished") reload();
   });
 
-  return { newest, tally, today, reload };
+  return { newest, tally, today, touches, reload };
 }
 
 /**
@@ -337,7 +341,8 @@ function NeedRow({
 
 /**
  * One running job as a sub-card: its two sides with the arrows moving the way
- * the files go, the run's bar, and a bar for each file in transfer.
+ * the files go and the run's bar. The files themselves stand on the card
+ * below, across every job, so that each file is shown once.
  */
 function RunningJob({
   job,
@@ -367,50 +372,12 @@ function RunningJob({
       </View>
       <SideRow path={lower} mark={sideMark(job.right, remotes)} />
       <RunProgress job={job} at={at} hue={hue} />
-      {(at?.moving ?? []).map((file) => (
-        <InFlight key={file.path} file={file} glyph={landingGlyph(file.side, job)} hue={hue} />
-      ))}
       {/* Too many small files to name: the engine sends a rate instead of
-          rows, so the space does not look like a stall. */}
+          rows, so the run does not look stalled. */}
       {at && at.moving.length === 0 && at.rate > 0 ? (
         <Caption>{t("overview.manySmall", { count: Math.round(at.rate) })}</Caption>
       ) : null}
     </Press>
-  );
-}
-
-/**
- * The mark for a file in transfer: up when it lands on a target and comes from
- * the device, down the other way round. Between two folders or two targets
- * neither word fits, and there is no mark.
- */
-function landingGlyph(side: string | undefined, job: Job): string | undefined {
-  if (side !== "left" && side !== "right") return undefined;
-  const [to, from] = side === "left" ? [job.left, job.right] : [job.right, job.left];
-  const up = Boolean(remoteOf(to));
-  if (up === Boolean(remoteOf(from))) return undefined;
-  return up ? "IconUpload" : "IconDownload";
-}
-
-/**
- * One file in transfer. The bar is drawn only when the service reported the
- * file's size, which some clouds do not.
- */
-function InFlight({ file, glyph, hue }: { file: Moving; glyph?: string; hue: string }) {
-  const { p } = useTheme();
-  const known = file.size > 0;
-  return (
-    <View style={styles.file}>
-      <View style={styles.line}>
-        {glyph ? <Glyph name={glyph} color={p.textSub} size={16} /> : null}
-        {/* Wraps rather than truncates; the end of a path tells files apart. */}
-        <View style={styles.fileName}>
-          <Mono>{file.path}</Mono>
-        </View>
-      </View>
-      {known ? <Meter done={file.bytes} total={file.size} hue={hue} /> : null}
-      <Caption>{known ? `${bytes(file.bytes)} / ${bytes(file.size)}` : bytes(file.bytes)}</Caption>
-    </View>
   );
 }
 
@@ -596,8 +563,6 @@ const styles = StyleSheet.create({
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   line: { flexDirection: "row", alignItems: "center", gap: space.sm, flexWrap: "wrap" },
-  file: { gap: space.xs, marginTop: space.xs },
-  fileName: { flex: 1, minWidth: 0 },
   nextRow: { minHeight: 32, justifyContent: "center" },
   actions: { flexDirection: "row" },
   tiles: { flexDirection: "row", gap: space.sm },

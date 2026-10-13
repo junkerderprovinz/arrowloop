@@ -164,6 +164,21 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
 }
 
 /**
+ * What is happening to a file while it is in transfer, said like a finished
+ * copy in entryLabel: uploading to which cloud, downloading from where. `side`
+ * is where it lands, and without it or the job there is only the verb.
+ */
+export function transferLabel(t: T, side: string | undefined, job: Job | undefined, drives: Drive[]): string {
+  if (!job || (side !== 'left' && side !== 'right')) return t('entry.copying')
+  const [left, right] = placesOf(job, drives)
+  const [to, from] = side === 'left' ? [left, right] : [right, left]
+  if (to.kind === 'target' && from.kind !== 'target') return t('entry.uploading', { place: to.name })
+  if (from.kind === 'target' && to.kind !== 'target') return t('entry.downloading', { place: from.name })
+  if (from.kind === 'drive' && to.kind === 'device') return t('entry.copyingFrom', { place: from.name })
+  return t('entry.copyingTo', { place: to.name })
+}
+
+/**
  * What happened to one file, in a word and without where: for a list that
  * shows the full paths underneath, where naming the place again only gets in
  * the way. Kinds without such a word are labelled as entryLabel does.

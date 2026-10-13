@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryAction, entryLabel, entryNote, placeOf, placesOf, sideName } from './entryLabel'
+import { entryAction, entryLabel, entryNote, placeOf, placesOf, sideName, transferLabel } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -99,6 +99,21 @@ describe('what happened to a file', () => {
 
   it('keeps the plain word once the job is gone', () => {
     expect(entryLabel(t, entry('copy', 'right'), undefined, drives)).toBe(de['entry.copy'])
+  })
+})
+
+describe('what is happening to a file in transfer', () => {
+  it('says which way it goes, as a finished copy does', () => {
+    const cloud = job('/data/fotos', 'OpenCloud-Test:Fotos')
+    expect(transferLabel(t, 'right', cloud, drives)).toBe('Wird nach OpenCloud-Test hochgeladen')
+    expect(transferLabel(t, 'left', cloud, drives)).toBe('Wird von OpenCloud-Test heruntergeladen')
+    expect(transferLabel(t, 'left', job('/data', 'volume:a1b2/x'), drives)).toBe('Wird von Backup-Platte kopiert')
+    expect(transferLabel(t, 'right', job('/data/a/Musik', '/data/b/Musik'), drives)).toBe('Wird nach b/Musik kopiert')
+  })
+
+  it('keeps the verb alone without a side or a job', () => {
+    expect(transferLabel(t, undefined, job('/data', 'cloud:x'), drives)).toBe('Wird kopiert')
+    expect(transferLabel(t, 'right', undefined, drives)).toBe('Wird kopiert')
   })
 })
 

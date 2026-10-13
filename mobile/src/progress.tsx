@@ -9,6 +9,26 @@ import { useEngineStream } from "./useEngine";
 /** How often stream updates reach the screen, in milliseconds. */
 const DRAW_MS = 120;
 
+/** How many finished files a run keeps, as many as the overview names at once. */
+export const STEPS_KEPT = 3;
+
+/**
+ * The kinds of finished work that name a file a person would look for, as
+ * opposed to a folder made or a file found already the same. `delete` is an
+ * older engine's word for `trash`.
+ */
+export const FILE_WORK = ["copy", "move", "trash", "delete", "conflict"];
+
+/** A file a run has just finished with, as the engine reported the step. */
+export interface Step {
+  kind: string;
+  path: string;
+  side?: string;
+  note?: string;
+  /** When the screen heard of it, to put the files of several runs in order. */
+  at: number;
+}
+
 export interface Progress {
   done: number;
   total: number;
@@ -27,6 +47,8 @@ export interface Progress {
    * the end of the run.
    */
   joined?: boolean;
+  /** The files the run finished last, newest first. */
+  steps: Step[];
 }
 
 /**
@@ -57,7 +79,7 @@ export function useRunProgress(): Record<string, Progress> {
     if (event.phase === "moving") {
       // The engine omits an empty list (internal/daemon/runner.go).
       const moving = { speed: event.speed ?? 0, moving: event.moving ?? [], rate: event.rate ?? 0 };
-      heard.current[event.job] = was ? { ...was, ...moving } : { done: 0, total: 0, joined: true, ...moving };
+      heard.current[event.job] = was ? { ...was, ...moving } : { done: 0, total: 0, joined: true, steps: [], ...moving };
     } else if (event.phase === "progress") {
       heard.current[event.job] = {
         done: event.done ?? 0,
@@ -68,6 +90,7 @@ export function useRunProgress(): Record<string, Progress> {
         speed: was?.speed ?? 0,
         moving: was?.moving ?? [],
         rate: was?.rate ?? 0,
+        steps: stepped(was?.steps ?? [], event),
       };
     } else if (event.phase === "finished") {
       delete heard.current[event.job];
@@ -78,6 +101,13 @@ export function useRunProgress(): Record<string, Progress> {
   });
 
   return shown;
+}
+
+/** The run's last files with this event's file in front, when it names one. */
+function stepped(steps: Step[], event: RunEvent): Step[] {
+  if (!event.path || !event.kind || !FILE_WORK.includes(event.kind)) return steps;
+  const step = { kind: event.kind, path: event.path, side: event.side, note: event.note, at: Date.now() };
+  return [step, ...steps].slice(0, STEPS_KEPT);
 }
 
 /**
