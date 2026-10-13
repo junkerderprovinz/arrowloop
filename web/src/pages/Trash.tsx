@@ -8,7 +8,7 @@ import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { IconTrash } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from '../components/ConfirmWindow'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { byJob, trashTotals } from '../lib/trashView'
@@ -153,7 +153,7 @@ export function Trash({
       )}
 
       {pending && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t(TITLES[pending.kind])}
           message={stakes(pending, t)}
           confirmLabel={pending.kind === 'entry' ? t('confirm.delete') : t(TITLES[pending.kind])}

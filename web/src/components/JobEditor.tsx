@@ -4,7 +4,7 @@ import { Dialog } from './Dialog'
 import { IconClose, IconSave, IconTrash } from './glyphs'
 import { ToggleRow } from './ToggleRow'
 import { Button } from '../lib/glimstone/Button'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import type { RawJob } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { useToast } from '../lib/toast'
@@ -96,7 +96,7 @@ export function RemoveJobDialog({
   const name = config.jobs?.[at]?.name
   if (!name) return null
   return (
-    <ConfirmDialog
+    <ConfirmWindow
       title={t('edit.removeJob')}
       message={t('edit.removeStakes', { name })}
       confirmLabel={t('confirm.delete')}

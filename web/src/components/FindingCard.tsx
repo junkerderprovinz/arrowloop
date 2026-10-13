@@ -4,7 +4,7 @@ import { FailureText } from './FailureText'
 import { Since } from './Since'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { figures, leadingAnswer, sentence, type Finding, type Severity } from '../lib/anomalies'
 import { api } from '../lib/api'
@@ -260,7 +260,7 @@ export function FindingCard({
       </div>
 
       {asking && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t(asking === 'run' ? 'anomaly.runAsk' : 'anomaly.restoreAsk', { job: f.job })}
           message={
             asking === 'run'

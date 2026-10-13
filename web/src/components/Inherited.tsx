@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react'
 
 import { IconLock, IconPencil, IconRefresh } from './glyphs'
 import { Button } from '../lib/glimstone/Button'
-import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
+import { ConfirmWindow } from './ConfirmWindow'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { SETTING_LABEL, describeValue, inForce, type Defaults, type Inherited } from '../lib/follows'
 import { useT } from '../lib/i18n'
@@ -39,7 +39,7 @@ export function InheritButton({
         onClick={() => setAsking(true)}
       />
       {asking && (
-        <ConfirmDialog
+        <ConfirmWindow
           title={t('defaults.askTitle')}
           message={t('defaults.askOne', {
             setting: t(SETTING_LABEL[setting]),
