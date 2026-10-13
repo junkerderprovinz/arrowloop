@@ -12,7 +12,6 @@ on:
       - "web/**"
       - "go.mod"
       - "go.sum"
-      - "android/debug.keystore"
       - ".github/workflows/mobile.yml"
   # On a release tag release.yml calls this and publishes the APKs it keeps as
   # an artifact. github.event_name is then the tag push, which RELEASE and
@@ -83,7 +82,7 @@ jobs:
       # getString fills by position, so a translation with fewer placeholders
       # silently drops the remaining arguments.
       - name: The translations carry the same placeholders
-        run: python android/tools/check_strings.py mobile/native/res
+        run: python mobile/tools/check_strings.py
 
       # A key used without the number it carries renders a literal {count},
       # which neither the compiler nor the language parity test can see.
@@ -191,8 +190,8 @@ jobs:
           curl -sf -m 10 -X PUT -H 'Content-Type: application/json' -d '{"type":"sftp","settings":{"host":"example.org","user":"nobody"}}' http://127.0.0.1:18423/api/remotes/somewhere
           python mobile/tools/check_shapes.py http://127.0.0.1:18423
 
-      # 17, not the 25 android.yml builds with: React Native's CMake step
-      # fails on 25 over restricted-method warnings.
+      # 17, since React Native's CMake step fails on 25 over
+      # restricted-method warnings.
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: temurin
@@ -269,7 +268,7 @@ jobs:
 
       # A React Native debug build loads its JavaScript from Metro at runtime;
       # only the release build packages the bundle into the APK. Unless SIGNED,
-      # it is signed with the stable, public android/debug.keystore. A signed
+      # it is signed with the stable, public mobile/debug.keystore. A signed
       # build also makes the app bundle Google Play takes, signed with the same
       # key as its upload key. The bundle is arm64 only: on x86_64 Android
       # the engine's SQLite calls lstat, which the app sandbox kills with

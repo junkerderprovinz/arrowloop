@@ -41,5 +41,8 @@ func useRcloneConfig(path string) error {
 		return fmt.Errorf("point rclone at it: %w", err)
 	}
 	configfile.Install()
+	// rclone reads the file on first use without a lock, and the trash opens
+	// its sides in parallel. The server's start reads it before anything runs.
+	config.LoadedData()
 	return nil
 }
