@@ -11,9 +11,10 @@ import { IconFilter, IconSearch, IconSort } from './glyphs'
 import { Selector, type Option } from './Selector'
 
 /**
- * The bar above a list's card: what it leaves out, how it is ordered and the
- * search, three buttons of the same weight at the end of the row. Anything a
- * page puts first, such as a view selector, stands at the start.
+ * The bar of a list, above its card or at the top inside it: what it leaves
+ * out, how it is ordered and the search, three buttons of the same weight at
+ * the end of the row. Anything a page puts first, such as a view selector,
+ * stands at the start.
  */
 export function ListBar({ start, newId, children }: { start?: ReactNode; newId?: string; children: ReactNode }) {
   return (

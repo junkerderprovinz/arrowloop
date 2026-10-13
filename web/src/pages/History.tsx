@@ -82,83 +82,86 @@ export function History({
   const filtered = job !== '' || (view === 'files' ? kind !== 'all' : show !== 'all' || since !== '' || until !== '')
 
   return (
-    <div className="flex flex-col gap-6">
-      <ListBar newId="list-bar">
-        <FilterButton active={filtered}>
-          <FilterChoice
-            label={t('history.filterJob')}
-            value={job}
-            onChange={setJob}
-            options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
-          />
-          {view === 'files' ? (
-            <FilterChoice<Kind>
-              label={t('history.filterKind')}
-              value={kind}
-              onChange={setKind}
-              options={[
-                { value: 'all', label: t('history.everything') },
-                { value: 'copied', label: t('history.onlyCopied') },
-                { value: 'gone', label: t('history.onlyGone') },
-                { value: 'trouble', label: t('history.onlyTrouble') },
-              ]}
+    // The card reaches the bottom of the window however short its list.
+    <div className="flex flex-1 flex-col *:flex-1">
+      <Card title={t('history.title')} hueIndex={0}>
+        {/* The view, its filter and its search act on the list below, so they
+            stand at its top. */}
+        <ListBar
+          newId="list-bar"
+          start={
+            <div className="min-w-0 flex-1 basis-48 sm:max-w-xs">
+              <ViewSwitch value={view} onChange={setView} />
+            </div>
+          }
+        >
+          <FilterButton active={filtered}>
+            <FilterChoice
+              label={t('history.filterJob')}
+              value={job}
+              onChange={setJob}
+              options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
             />
-          ) : (
-            <>
-              <FilterChoice<HistoryShow>
-                label={t('history.filterShow')}
-                value={show}
-                onChange={setShow}
+            {view === 'files' ? (
+              <FilterChoice<Kind>
+                label={t('history.filterKind')}
+                value={kind}
+                onChange={setKind}
                 options={[
-                  { value: 'all', label: t('history.showAll') },
-                  { value: 'changed', label: t('history.showChanged') },
-                  { value: 'failed', label: t('history.showFailed') },
+                  { value: 'all', label: t('history.everything') },
+                  { value: 'copied', label: t('history.onlyCopied') },
+                  { value: 'gone', label: t('history.onlyGone') },
+                  { value: 'trouble', label: t('history.onlyTrouble') },
                 ]}
               />
-              {/* Two free days rather than presets, since the day in question
-                  is usually the day it went wrong. */}
-              <div className="flex items-end gap-2">
-                <Field label={t('history.since')}>
-                  {/* A backwards range would look like an empty log. */}
-                  <Day value={since} onChange={setSince} label={t('history.since')} max={until || undefined} />
-                </Field>
-                <Field label={t('history.until')}>
-                  <Day value={until} onChange={setUntil} label={t('history.until')} />
-                </Field>
-                {(since || until) && (
-                  <IconAction
-                    title={t('history.rangeReset')}
-                    labelKey="history.rangeReset"
-                    onClick={() => {
-                      setSince('')
-                      setUntil('')
-                    }}
-                  />
-                )}
-              </div>
-            </>
-          )}
-        </FilterButton>
-        <SearchFold
-          value={typed}
-          onChange={setTyped}
-          placeholder={view === 'files' ? t('history.pathHint') : t('history.runSearch')}
-        />
-      </ListBar>
-
-      {/* The card reaches the bottom of the window however short its list. */}
-      <div className="flex flex-1 flex-col *:flex-1">
-        <Card title={t('history.title')} hueIndex={0}>
-          <div className="w-full sm:max-w-xs">
-            <ViewSwitch value={view} onChange={setView} />
-          </div>
-          {view === 'files' ? (
-            <Touches job={job} kinds={SHOWS[kind]} query={query} tick={tick} />
-          ) : (
-            <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
-          )}
-        </Card>
-      </div>
+            ) : (
+              <>
+                <FilterChoice<HistoryShow>
+                  label={t('history.filterShow')}
+                  value={show}
+                  onChange={setShow}
+                  options={[
+                    { value: 'all', label: t('history.showAll') },
+                    { value: 'changed', label: t('history.showChanged') },
+                    { value: 'failed', label: t('history.showFailed') },
+                  ]}
+                />
+                {/* Two free days rather than presets, since the day in question
+                    is usually the day it went wrong. */}
+                <div className="flex items-end gap-2">
+                  <Field label={t('history.since')}>
+                    {/* A backwards range would look like an empty log. */}
+                    <Day value={since} onChange={setSince} label={t('history.since')} max={until || undefined} />
+                  </Field>
+                  <Field label={t('history.until')}>
+                    <Day value={until} onChange={setUntil} label={t('history.until')} />
+                  </Field>
+                  {(since || until) && (
+                    <IconAction
+                      title={t('history.rangeReset')}
+                      labelKey="history.rangeReset"
+                      onClick={() => {
+                        setSince('')
+                        setUntil('')
+                      }}
+                    />
+                  )}
+                </div>
+              </>
+            )}
+          </FilterButton>
+          <SearchFold
+            value={typed}
+            onChange={setTyped}
+            placeholder={view === 'files' ? t('history.pathHint') : t('history.runSearch')}
+          />
+        </ListBar>
+        {view === 'files' ? (
+          <Touches job={job} kinds={SHOWS[kind]} query={query} tick={tick} />
+        ) : (
+          <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
+        )}
+      </Card>
     </div>
   )
 }
