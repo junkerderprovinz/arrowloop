@@ -25,6 +25,7 @@ export function Glyph({
   size = GLYPH,
   width,
   height,
+  part,
 }: {
   name: string;
   color: string;
@@ -32,10 +33,23 @@ export function Glyph({
   /** A non-square box; both default to `size`. */
   width?: number;
   height?: number;
+  /** Draws only this group of the mark, on the mark's own grid, for a part that moves on its own. */
+  part?: number;
 }) {
   const glyph = GLYPHS[name];
   if (!glyph) return null;
-  return <Drawn glyph={glyph} color={color} width={width ?? size} height={height ?? size} />;
+  const drawn = part === undefined ? glyph : { ...glyph, groups: glyph.groups.slice(part, part + 1) };
+  return <Drawn glyph={drawn} color={color} width={width ?? size} height={height ?? size} />;
+}
+
+/** How many separately drawn groups a mark has. */
+export function glyphParts(name: string): number {
+  return GLYPHS[name]?.groups.length ?? 0;
+}
+
+/** The width of a mark's grid, to turn a distance on it into points. */
+export function glyphSpan(name: string): number {
+  return Number(GLYPHS[name]?.box.split(/\s+/)[2] ?? 14);
 }
 
 /**

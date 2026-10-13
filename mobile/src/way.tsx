@@ -1,6 +1,8 @@
-import { StyleSheet, View } from "react-native";
-import { Glyph } from "./glyphs";
+import { useEffect, useRef } from "react";
+import { Animated, Easing, StyleSheet, View } from "react-native";
+import { Glyph, glyphParts, glyphSpan } from "./glyphs";
 import { useT } from "./i18n";
+import { useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { space } from "./theme";
 import { Caption, Choice, useTheme } from "./ui";
 
@@ -29,11 +31,97 @@ const GLYPHS: Record<Way, string> = {
   rightToLeft: "IconToLeft",
 };
 
-/** The arrow between two stacked sides: down for left to right, up for the other way. */
-export function WayGlyph({ way, color, size = 18 }: { way: Way; color: string; size?: number }) {
+/**
+ * How long one arrow takes to travel and how far it goes, in grid units: the
+ * web's --motion-flow-dur and --motion-flow-dist per level.
+ */
+const FLOW: Record<MotionIntensity, { ms: number; reach: number }> = {
+  storm: { ms: 1200, reach: 3 },
+  wild: { ms: 1800, reach: 2 },
+  subtle: { ms: 2800, reach: 1.5 },
+  off: { ms: 0, reach: 0 },
+};
+
+/**
+ * The arrow between two stacked sides: down for left to right, up for the
+ * other way. While the job runs (`flowing`) the arrows travel the way the
+ * files go, each arrow on its own.
+ */
+export function WayGlyph({
+  way,
+  color,
+  size = 18,
+  flowing,
+}: {
+  way: Way;
+  color: string;
+  size?: number;
+  flowing?: boolean;
+}) {
+  const { intensity } = useMotion();
+  // A loop that never ends stops for a phone that asks for less motion, the
+  // storm included, as the web's does.
+  const reduced = useSystemReduced();
+  const flow = FLOW[intensity];
   return (
     <View style={styles.turned}>
-      <Glyph name={GLYPHS[way]} color={color} size={size} />
+      {flowing && !reduced && flow.ms ? (
+        <Flow way={way} color={color} size={size} ms={flow.ms} reach={flow.reach} />
+      ) : (
+        <Glyph name={GLYPHS[way]} color={color} size={size} />
+      )}
+    </View>
+  );
+}
+
+/**
+ * The arrows of a direction mark travelling one way and fading at both ends
+ * of their run, so the jump back to the start never shows. Both ways sends
+ * its two arrows in opposite directions, half a beat apart.
+ */
+function Flow({
+  way,
+  color,
+  size,
+  ms,
+  reach,
+}: {
+  way: Way;
+  color: string;
+  size: number;
+  ms: number;
+  reach: number;
+}) {
+  const beat = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    beat.setValue(0);
+    const loop = Animated.loop(
+      Animated.timing(beat, { toValue: 1, duration: ms, easing: Easing.linear, useNativeDriver: true }),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [beat, ms]);
+
+  const name = GLYPHS[way];
+  const far = (reach * size) / glyphSpan(name);
+  return (
+    <View style={{ width: size, height: size }}>
+      {Array.from({ length: glyphParts(name) }, (_, part) => {
+        const back = way === "rightToLeft" || (way === "both" && part === 1);
+        const late = way === "both" && part === 1;
+        const sign = back ? -1 : 1;
+        const translateX = late
+          ? beat.interpolate({ inputRange: [0, 0.4999, 0.5, 1], outputRange: [0, far * sign, -far * sign, 0] })
+          : beat.interpolate({ inputRange: [0, 1], outputRange: [-far * sign, far * sign] });
+        const opacity = late
+          ? beat.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [1, 1, 0, 1, 1] })
+          : beat.interpolate({ inputRange: [0, 0.25, 0.75, 1], outputRange: [0, 1, 1, 0] });
+        return (
+          <Animated.View key={part} style={[StyleSheet.absoluteFill, { opacity, transform: [{ translateX }] }]}>
+            <Glyph name={name} color={color} size={size} part={part} />
+          </Animated.View>
+        );
+      })}
     </View>
   );
 }

@@ -345,7 +345,7 @@ function JobCard({
         accessible
         accessibilityLabel={wayLabel(wayOf(job.direction), ...sidePair(job.left, job.right, t), t("direction.both"))}
       >
-        <WayGlyph way={wayOf(job.direction)} color={p.textSub} />
+        <WayGlyph way={wayOf(job.direction)} color={p.textSub} flowing={job.running} />
       </View>
       <SideRow path={job.right} mark={rightMark} />
 

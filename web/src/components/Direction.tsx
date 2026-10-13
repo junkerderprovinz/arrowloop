@@ -19,9 +19,21 @@ export const directionKey: Record<Direction, TranslationKey> = {
   rightToLeft: 'direction.toLeft',
 }
 
-export function DirectionGlyph({ direction, size }: { direction: Direction; size?: number }) {
+export function DirectionGlyph({
+  direction,
+  size,
+  flowing,
+}: {
+  direction: Direction
+  size?: number
+  /** While the job runs, the arrows travel the way the files go (`.al-flow` in index.css). */
+  flowing?: boolean
+}) {
   // Where the two sides are set larger, the arrow between them grows too.
-  const box = size ? { width: size, height: size } : {}
+  const box = {
+    ...(size ? { width: size, height: size } : {}),
+    ...(flowing ? { className: 'al-flow shrink-0', 'data-way': direction } : {}),
+  }
   if (direction === 'leftToRight') return <IconToRight {...box} />
   if (direction === 'rightToLeft') return <IconToLeft {...box} />
   return <IconBothWays {...box} />
