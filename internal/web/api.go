@@ -141,6 +141,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/shares", s.listSharesHandler)
 	mux.HandleFunc("GET /api/capabilities", s.capabilities)
 	mux.HandleFunc("GET /api/versions", s.versions)
+	mux.HandleFunc("GET /api/release-notes", s.releaseNotes)
 	mux.HandleFunc("POST /api/update-check", s.checkUpdate)
 	mux.HandleFunc("GET /api/diagnostics", s.diagnostics)
 

@@ -20,6 +20,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/releasenotes"
 )
 
 // releaseAPI is where the update check asks when the server names nothing else.
@@ -49,6 +50,10 @@ func currentVersions() versions {
 
 func (s *Server) versions(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, currentVersions())
+}
+
+func (s *Server) releaseNotes(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]any{"notes": releasenotes.UpTo(boot.Version)})
 }
 
 // updateCheck is the answer to one press of "Check for updates".

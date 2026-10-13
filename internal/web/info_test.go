@@ -37,6 +37,24 @@ func TestTheVersionsNameTheBuildAndTheRcloneItCarries(t *testing.T) {
 	}
 }
 
+func TestTheReleaseNotesEndAtTheRunningRelease(t *testing.T) {
+	runningVersion(t, "v1.2.0")
+	h := newHarness(t)
+	var got struct {
+		Notes []struct {
+			Version string `json:"version"`
+			Body    string `json:"body"`
+		} `json:"notes"`
+	}
+	h.get(t, "/api/release-notes", &got)
+	if len(got.Notes) != 3 || got.Notes[0].Version != "v1.2.0" || got.Notes[2].Version != "v1.0.0" {
+		t.Fatalf("notes = %+v, want v1.2.0, v1.1.0 and v1.0.0", got.Notes)
+	}
+	if got.Notes[0].Body == "" {
+		t.Error("the notes of v1.2.0 are empty")
+	}
+}
+
 // fakeGitHub answers the latest-release question with the given status and body.
 func fakeGitHub(t *testing.T, status int, header http.Header, body string) string {
 	t.Helper()
