@@ -7,10 +7,10 @@ import { ReadmeButton } from "./ReadmeButton";
 
 // The Info tile, the last tile in Settings ("The Info tile and the About card"
 // in design-language.md): the Version card with every version the app is made
-// of and the way to its release notes and changes, the Help card with the ways
-// to report something, and the About card with the maker's sentence and the
-// give row. Each sentence sits directly above the buttons it asks for, and no
-// card names a route no control on it can reach. Every string is passed in.
+// of and one button to its release notes and changes, the Help card with the
+// ways to report something, and the About card with the maker's sentence and
+// the give row. Each sentence sits directly above the buttons it asks for, and
+// no card names a route no control on it can reach. Every string is passed in.
 
 type OpenUrl = (url: string) => void;
 
@@ -130,7 +130,7 @@ export interface InfoVersionCardProps {
     /** The card's "(i)", such as what a click on a number opens. */
     hint?: string;
     unreleased: (version: string) => string;
-    /** "Release notes". Only drawn together with `onReleaseNotes`. */
+    /** "Release notes". Only drawn with `onReleaseNotes` and without `whatsNew`. */
     releaseNotes?: string;
   };
   /** The app first, then the design language, then every component it ships. */
@@ -138,16 +138,17 @@ export interface InfoVersionCardProps {
   /** "Check for updates" at the bottom of the card. Omit it and the card
    *  offers no check. */
   updateCheck?: UpdateCheck;
-  /** Opens the app's window on the running version's release notes. */
+  /** Opens the app's window on the running version's release notes, for an
+   *  app that marks no changes. */
   onReleaseNotes?: () => void;
-  /** The app's own "New · n" button, which opens the same window on the list
-   *  of changes. It stands between "Release notes" and the update check. */
+  /** The app's own "New · n" button, which opens the window with both tabs.
+   *  It takes the place of "Release notes", so the card has one button there. */
   whatsNew?: ReactNode;
   openUrl?: OpenUrl;
   hueIndex?: number;
 }
 
-/** The first card: every version as a row, and the release notes, the New button and the update check under them. */
+/** The first card: every version as a row, and the New or Release notes button and the update check under them. */
 export function InfoVersionCard({
   text,
   rows,
@@ -157,7 +158,7 @@ export function InfoVersionCard({
   openUrl = openInBrowser,
   hueIndex,
 }: InfoVersionCardProps) {
-  const notes = onReleaseNotes && text.releaseNotes;
+  const notes = !whatsNew && onReleaseNotes && text.releaseNotes;
   return (
     <Card title={text.title} hint={text.hint} hueIndex={hueIndex}>
       <ul className="flex flex-col gap-3">

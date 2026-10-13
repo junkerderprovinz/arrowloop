@@ -33,7 +33,9 @@ function engineAnswers(notes: typeof NOTES | null) {
 beforeEach(() => {
   localStorage.clear()
   window.history.replaceState(null, '', '/settings/info')
-  startWhatsNew('dev', true)
+  // Updated from the release before, so every change is unseen.
+  localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: RELEASES[0].after, after: '', seen: [] }))
+  startWhatsNew('dev')
   closeNewsWindow()
   engineAnswers(NOTES)
 })
@@ -66,10 +68,17 @@ describe('the New button', () => {
     expect(screen.getByRole('button', { name: 'New' })).toBeTruthy()
   })
 
-  it('opens the window on the list of changes', () => {
+  it('opens the window on the list of changes while something is unseen', () => {
     render(<Card />)
     pressNew()
     expect(screen.getByRole('tab', { name: `Changes · ${all}`, selected: true })).toBeTruthy()
+  })
+
+  it('opens the window on the release notes once everything was seen', () => {
+    act(() => markSeen(RELEASES[0].changes.map((c) => c.id)))
+    render(<Card />)
+    pressNew()
+    expect(screen.getByRole('tab', { name: 'Release notes', selected: true })).toBeTruthy()
   })
 })
 
@@ -77,14 +86,14 @@ describe('the window', () => {
   it('opens by itself on the release notes after an update', () => {
     localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: RELEASES[0].after, after: '', seen: [] }))
     render(<WhatsNewHost />)
-    act(() => startWhatsNew('dev', true))
+    act(() => startWhatsNew('dev'))
     expect(screen.getByRole('tab', { name: 'Release notes', selected: true })).toBeTruthy()
   })
 
   it('stays shut in a browser that never saw an older release', () => {
     localStorage.clear()
     render(<WhatsNewHost />)
-    act(() => startWhatsNew('dev', true))
+    act(() => startWhatsNew('dev'))
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 

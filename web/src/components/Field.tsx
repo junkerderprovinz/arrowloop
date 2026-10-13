@@ -63,15 +63,15 @@ export function FieldRow({
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      <span className={`flex ${width} max-w-full`}>{children}</span>
+      <span className={`flex ${width} max-w-full justify-end`}>{children}</span>
     </label>
   )
 }
 
 /**
  * The height every control in a row with a field shares; Field.height.test.ts
- * fails if a call site writes its own. It reads --btn-h because the editor's
- * name row lines up with a spacer sized in that token.
+ * fails if a call site writes its own. It reads --btn-h so a field and the
+ * button beside it stand equally tall.
  */
 export const CONTROL_H = 'h-[var(--btn-h)]'
 

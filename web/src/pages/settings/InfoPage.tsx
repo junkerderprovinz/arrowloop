@@ -15,7 +15,7 @@ import { BrandMark, ReadmeButton } from '../../lib/glimstone/ReadmeButton'
 import { GLIMSTONE_VERSION } from '../../lib/glimstone/version'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { useToast } from '../../lib/toast'
-import { openNewsWindow } from '../../lib/whatsNewStore'
+import { openNewsWindow, useWhatsNew } from '../../lib/whatsNewStore'
 
 const REFUSED: Record<string, TranslationKey> = {
   'dev-build': 'info.refusedDevBuild',
@@ -25,7 +25,7 @@ const REFUSED: Record<string, TranslationKey> = {
 }
 
 /**
- * The last tile: every version this build is made of with the ways to the
+ * The last tile: every version this build is made of with the one way to the
  * release notes and to what the last update changed, the ways to report a
  * problem, and the maker's card.
  */
@@ -33,6 +33,10 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
   const { t } = useT()
   const push = useToast()
   const [versions, setVersions] = useState<{ arrowloop: string; rclone: string } | null>(null)
+  // A release that marks no changes has no list for New to count, so the card
+  // offers its notes instead.
+  const news = useWhatsNew()
+  const listed = !!news && news.changes.length > 0
 
   useEffect(() => {
     let live = true
@@ -91,7 +95,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
             },
           }}
           onReleaseNotes={() => openNewsWindow('notes')}
-          whatsNew={whatsNew}
+          whatsNew={listed ? whatsNew : undefined}
         />
       </div>
 

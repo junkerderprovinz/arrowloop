@@ -1,18 +1,17 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
-import { Field, Lines, Text } from '../components/Field'
+import { Field, FieldRow, Lines, Text } from '../components/Field'
 import { ToggleRow } from '../components/ToggleRow'
 import { api, type Direction, type Mode, type RawJob, type Settings } from '../lib/api'
 import { DirectionSwitch } from '../components/Direction'
-import { InheritButton, InheritedMark, InheritedRow } from '../components/Inherited'
+import { InheritButton, InheritedRow } from '../components/Inherited'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { FolderPicker, PickButton, type Known } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
 import { ScheduleButton } from '../components/ScheduleButton'
 import { HUE_OFFSET, Selector } from '../components/Selector'
-import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Toggle } from '../lib/glimstone/Toggle'
 import { inForce, inheritPatch, owns, type Inherited } from '../lib/follows'
 import { MODES } from '../lib/modes'
@@ -264,6 +263,9 @@ export function useJobConfig(onSaved: () => void) {
   return { jobs, known, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, amend, duplicate }
 }
 
+/** A path's box with its browse button, wide enough to read a path beside its name. */
+const PATH_W = 'w-[31rem]'
+
 /** One job's fields, with the direction between the two sides it relates. */
 export function JobForm({
   job,
@@ -305,56 +307,36 @@ export function JobForm({
 
   return (
     <>
-      {/* One grid for the name row and the sides row, so the name stands over
-          the left side and the state file over the right, with the direction
-          switch between them. A card too narrow for a path and its browse
-          button in each column stacks all five. */}
-      <div className="flex flex-col gap-4 @container">
-        <div className="grid grid-cols-1 gap-4 @4xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] @4xl:gap-x-8">
-          <Field label={t('edit.name')} hint={t('edit.nameHint')}>
-            <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} />
-          </Field>
-          <div className="hidden @4xl:block" aria-hidden />
-          <Field label={t('edit.state')} hint={t('edit.stateHint')}>
-            <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} mono />
-          </Field>
+      <div className="flex flex-col gap-4">
+        <FieldRow label={t('edit.name')} hint={t('edit.nameHint')}>
+          <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} label={t('edit.name')} />
+        </FieldRow>
+        <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
+          <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
+        </FieldRow>
 
-          <Side
-            label={t('edit.left')}
-            hint={t('edit.sideHint')}
-            value={job.left ?? ''}
-            known={known}
-            onChange={(v) => patch({ left: v })}
+        <Side
+          label={t('edit.left')}
+          hint={t('edit.sideHint')}
+          value={job.left ?? ''}
+          known={known}
+          onChange={(v) => patch({ left: v })}
+        />
+        <InheritedRow label={t('direction.label')} hint={t('direction.hint')} own={own('direction')} action={action('direction')}>
+          <DirectionSwitch
+            direction={direction}
+            // Mirror and move need a source side. A two-way job says sync
+            // rather than nothing, or it would take a default mirror.
+            onChange={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
           />
-          <div className="flex flex-col gap-1.5" data-inherited={own('direction') ? undefined : ''}>
-            <span className="flex items-center gap-1.5 text-meta font-medium uppercase tracking-wider text-carbon-textMuted">
-              {t('direction.label')}
-              <InfoBubble tip={t('direction.hint')} />
-            </span>
-            {/* Raised by half of what it is taller than the boxes beside it, so
-                it sits centred on them. */}
-            <div className="@4xl:-mt-1">
-              <DirectionSwitch
-                direction={direction}
-                disabled={!own('direction')}
-                // Mirror and move need a source side. A two-way job says sync
-                // rather than nothing, or it would take a default mirror.
-                onChange={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
-              />
-            </div>
-            <span className="flex items-center gap-2 @4xl:justify-center">
-              {!own('direction') && <InheritedMark />}
-              {action('direction')}
-            </span>
-          </div>
-          <Side
-            label={t('edit.right')}
-            hint={t('edit.sideHint')}
-            value={job.right ?? ''}
-            known={known}
-            onChange={(v) => patch({ right: v })}
-          />
-        </div>
+        </InheritedRow>
+        <Side
+          label={t('edit.right')}
+          hint={t('edit.sideHint')}
+          value={job.right ?? ''}
+          known={known}
+          onChange={(v) => patch({ right: v })}
+        />
 
         {/* The mode exists only once one side is the source. It comes with the
             direction, so its row has no button of its own. */}
@@ -511,18 +493,15 @@ function Side({
 }) {
   const [picking, setPicking] = useState(false)
   return (
-    <div className="flex flex-col gap-2">
-      {/* The button at the box's end, the height of the box. Where the column
-          is too narrow for both it drops under the box, so a long path keeps
-          room to be read. */}
-      <Field label={label} hint={hint}>
-        <span className="flex flex-wrap items-center justify-end gap-2">
-          <span className="min-w-48 flex-1">
-            <Text value={value} onChange={onChange} mono />
+    <>
+      <FieldRow label={label} hint={hint} width={PATH_W}>
+        <span className="flex w-full items-center gap-2">
+          <span className="min-w-0 flex-1">
+            <Text value={value} onChange={onChange} label={label} mono />
           </span>
           <PickButton onClick={() => setPicking(true)} />
         </span>
-      </Field>
+      </FieldRow>
       <FolderPicker
         open={picking}
         known={known}
@@ -533,6 +512,6 @@ function Side({
           setPicking(false)
         }}
       />
-    </div>
+    </>
   )
 }

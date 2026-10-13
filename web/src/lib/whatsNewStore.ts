@@ -73,29 +73,25 @@ function changesOf(record: NewsRecord | null): Change[] {
 /**
  * The record for the running version, given the one kept last. The same
  * version keeps its record; another starts over with every dot of the release
- * the update passed. With nothing kept, `settled` tells an engine that was in
- * use before this browser kept records from a new install: the first gets the
- * dots of the newest release, the second its list with every change already
- * seen, so "Show all again" can still bring them out.
+ * the update passed. A browser with nothing kept never saw an older release,
+ * so it gets the newest release's list with every change already seen, and
+ * "Show all again" can still bring them out.
  */
-export function recordFor(stored: NewsRecord | null, running: string, settled: boolean): NewsRecord {
+export function recordFor(stored: NewsRecord | null, running: string): NewsRecord {
   if (stored?.version === running) return stored
-  if (stored || settled) {
-    return { version: running, after: releaseSince(stored?.version ?? '', running)?.after ?? '', seen: [] }
-  }
+  if (stored) return { version: running, after: releaseSince(stored.version, running)?.after ?? '', seen: [] }
   const newest = releaseSince('', running)
   return { version: running, after: newest?.after ?? '', seen: newest?.changes.map((c) => c.id) ?? [] }
 }
 
 /**
- * Settles the record once the running version and whether the engine was in
- * use are known. After an update this browser saw the version before, the
- * window opens by itself on the release notes. A browser without a record has
- * not seen an older release, so nothing in the notes is news to it.
+ * Settles the record once the running version is known. After an update this
+ * browser saw the version before, the window opens by itself on the release
+ * notes.
  */
-export function startWhatsNew(running: string, settled: boolean) {
+export function startWhatsNew(running: string) {
   const stored = parse(readRaw())
-  const next = recordFor(stored, running, settled)
+  const next = recordFor(stored, running)
   if (next === stored) return
   write(next)
   if (stored) openNewsWindow('notes')
@@ -112,7 +108,7 @@ function setWindow(tab: NewsTab | null) {
   for (const listener of windowListeners) listener()
 }
 
-/** Opens the one window "Release notes", "New" and an update share, on the given tab. */
+/** Opens the one window the Version card and an update share, on the given tab. */
 export function openNewsWindow(tab: NewsTab) {
   setWindow(tab)
 }

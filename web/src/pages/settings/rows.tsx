@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 
-import { Field, FieldRow, Secret } from '../../components/Field'
+import { FieldRow, Secret } from '../../components/Field'
 import { Button } from '../../lib/glimstone/Button'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
@@ -79,38 +79,27 @@ export function SecretRow({
   value,
   onChange,
   placeholder,
-  stacked = false,
 }: {
   label: string
   hint?: string
   value: string
   onChange: (next: string) => void
   placeholder?: string
-  /** Keeps the name above Saved, for a form whose fields all carry it there. */
-  stacked?: boolean
 }) {
   const { t } = useT()
   const [changing, setChanging] = useState(false)
   const stored = value === WITHHELD
 
   if (stored && !changing) {
-    const saved = (
-      <span className="flex items-center gap-3">
-        <span className="text-subline text-carbon-textSub">{t('notify.saved')}</span>
-        <Button label={t('notify.change')} labelKey="notify.change" onClick={() => setChanging(true)} />
-      </span>
-    )
-    return stacked ? (
-      <Field label={label} hint={hint} plain>
-        {saved}
-      </Field>
-    ) : (
+    return (
       <SettingsRow label={label} hint={hint}>
-        {saved}
+        <span className="flex items-center gap-3">
+          <span className="text-subline text-carbon-textSub">{t('notify.saved')}</span>
+          <Button label={t('notify.change')} labelKey="notify.change" onClick={() => setChanging(true)} />
+        </span>
       </SettingsRow>
     )
   }
-  const field = <Secret value={stored ? '' : value} onChange={onChange} placeholder={placeholder} autoComplete="off" label={label} />
   const keep = changing && (
     <Button
       label={t('notify.keep')}
@@ -121,24 +110,12 @@ export function SecretRow({
       }}
     />
   )
-  if (!stacked) {
-    return (
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        <div className="min-w-0 flex-[1_1_24rem]">
-          <FieldRow label={label} hint={hint}>
-            {field}
-          </FieldRow>
-        </div>
-        {keep}
-      </div>
-    )
-  }
   return (
-    <div className="flex items-end gap-2">
-      <div className="min-w-0 flex-1">
-        <Field label={label} hint={hint}>
-          {field}
-        </Field>
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <div className="min-w-0 flex-[1_1_24rem]">
+        <FieldRow label={label} hint={hint}>
+          <Secret value={stored ? '' : value} onChange={onChange} placeholder={placeholder} autoComplete="off" label={label} />
+        </FieldRow>
       </div>
       {keep}
     </div>

@@ -350,8 +350,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   const fresh = jobsRead ? jobs.length === 0 : null
   const news = useWhatsNew()
   useEffect(() => {
-    if (running !== null && fresh !== null) startWhatsNew(running, !fresh)
-  }, [running, fresh])
+    if (running !== null) startWhatsNew(running)
+  }, [running])
 
   const tiles = useMemo(() => settingsTiles(canSecure), [canSecure])
   const resolved = useMemo(

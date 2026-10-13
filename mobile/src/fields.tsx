@@ -17,6 +17,7 @@ export function Field({
   keyboard,
   onBlur,
   error,
+  short,
 }: {
   label: string;
   hint?: string;
@@ -29,50 +30,54 @@ export function Field({
   onBlur?: () => void;
   /** Why the value was refused, said under the field it concerns. */
   error?: string;
+  /** A box for a few characters, which fits beside its name on a phone. */
+  short?: boolean;
 }) {
   const { p, corners } = useTheme();
   const [hidden, setHidden] = useState(Boolean(secret));
   return (
     <View style={styles.field}>
-      <View style={styles.labelRow}>
-        <Text style={[styles.label, { color: p.text }]}>{label}</Text>
-        {hint ? <InfoBubble tip={hint} /> : null}
-      </View>
-      <View style={styles.row}>
-        <TextInput
-          value={value}
-          onChangeText={onChange}
-          onBlur={onBlur}
-          placeholder={placeholder}
-          placeholderTextColor={p.textMuted}
-          secureTextEntry={hidden}
-          multiline={multiline}
-          keyboardType={keyboard === "numeric" ? "number-pad" : "default"}
-          // Paths, patterns and cron expressions are not prose, and
-          // autocorrect or capitalisation would break them.
-          autoCapitalize="none"
-          autoCorrect={false}
-          spellCheck={false}
-          style={[
-            styles.input,
-            {
-              color: p.text,
-              backgroundColor: p.surface2,
-              ...corners.control,
-              minHeight: multiline ? TOUCH * 2 : TOUCH,
-              textAlignVertical: multiline ? "top" : "center",
-            },
-          ]}
-        />
-        {secret ? (
-          <Press
-            onPress={() => setHidden((h) => !h)}
-            android_ripple={{ color: p.hover }}
-            style={[styles.eye, { backgroundColor: p.surface3, ...corners.pill }]}
-          >
-            <Glyph name={hidden ? "IconEye" : "IconEyeOff"} color={p.text} size={18} />
-          </Press>
-        ) : null}
+      <View style={short ? styles.beside : styles.field}>
+        <View style={[styles.labelRow, short ? styles.besideLabel : null]}>
+          <Text style={[styles.label, { color: p.text, flexShrink: 1 }]}>{label}</Text>
+          {hint ? <InfoBubble tip={hint} /> : null}
+        </View>
+        <View style={[styles.row, short ? styles.shortBox : null]}>
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            placeholderTextColor={p.textMuted}
+            secureTextEntry={hidden}
+            multiline={multiline}
+            keyboardType={keyboard === "numeric" ? "number-pad" : "default"}
+            // Paths, patterns and cron expressions are not prose, and
+            // autocorrect or capitalisation would break them.
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            style={[
+              styles.input,
+              {
+                color: p.text,
+                backgroundColor: p.surface2,
+                ...corners.control,
+                minHeight: multiline ? TOUCH * 2 : TOUCH,
+                textAlignVertical: multiline ? "top" : "center",
+              },
+            ]}
+          />
+          {secret ? (
+            <Press
+              onPress={() => setHidden((h) => !h)}
+              android_ripple={{ color: p.hover }}
+              style={[styles.eye, { backgroundColor: p.surface3, ...corners.pill }]}
+            >
+              <Glyph name={hidden ? "IconEye" : "IconEyeOff"} color={p.text} size={18} />
+            </Press>
+          ) : null}
+        </View>
       </View>
       {error ? <Refusal text={error} /> : null}
     </View>
@@ -164,6 +169,7 @@ export function NumberField({
       label={label}
       hint={hint}
       keyboard="numeric"
+      short
       value={typed ?? value}
       onChange={(next) => {
         setTyped(next);
@@ -195,9 +201,9 @@ export function TimeField({
   const { hour, minute } = readTime(value);
 
   return (
-    <View style={styles.field}>
-      <View style={styles.labelRow}>
-        <Text style={[styles.label, { color: p.text }]}>{label}</Text>
+    <View style={styles.beside}>
+      <View style={[styles.labelRow, styles.besideLabel]}>
+        <Text style={[styles.label, { color: p.text, flexShrink: 1 }]}>{label}</Text>
         {hint ? <InfoBubble tip={hint} /> : null}
       </View>
       <Press
@@ -206,6 +212,7 @@ export function TimeField({
         style={[
           styles.input,
           styles.timeBox,
+          styles.shortBox,
           { backgroundColor: p.surface2, ...corners.control, minHeight: TOUCH },
         ]}
       >
@@ -264,6 +271,18 @@ const styles = StyleSheet.create({
   eye: { width: TOUCH, alignItems: "center", justifyContent: "center" },
   saved: { flexDirection: "row", alignItems: "center", gap: space.sm },
   timeBox: { justifyContent: "center" },
+  // Where the name is too long for one line beside the box, the box moves
+  // under it and keeps the row's end.
+  beside: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    columnGap: space.md,
+    rowGap: space.xs,
+  },
+  besideLabel: { flexGrow: 1, flexShrink: 1, flexBasis: 180 },
+  shortBox: { width: 104 },
   timeText: { fontSize: text.body },
 });
 

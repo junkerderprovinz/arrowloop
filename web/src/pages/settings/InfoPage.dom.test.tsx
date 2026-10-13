@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ApiError } from '../../lib/api'
+import { RELEASES } from '../../lib/whatsNew'
 
 const updateCheck = vi.fn()
 const diagnostics = vi.fn(() => Promise.resolve('{"versions":{}}'))
@@ -69,6 +70,23 @@ describe('the Info tile', () => {
     expect(screen.getByRole('link', { name: '3.5.0' }).getAttribute('href')).toBe(
       'https://github.com/junkerderprovinz/glimstone/releases/tag/v3.5.0',
     )
+  })
+
+  it('has one button to the release notes and the changes, before the update check', async () => {
+    localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'dev', after: RELEASES[0].after, seen: [] }))
+    render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} />)
+    await screen.findByRole('link', { name: 'v1.75.2' })
+    const buttons = [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label') ?? b.textContent)
+    expect(buttons.slice(0, 2)).toEqual(['New · 3', 'Check for updates'])
+    expect(screen.queryByRole('button', { name: 'Release notes' })).toBeNull()
+  })
+
+  it('offers the release notes in its place for a release that marks no changes', async () => {
+    localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'dev', after: 'none', seen: [] }))
+    render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} />)
+    await screen.findByRole('link', { name: 'v1.75.2' })
+    expect(screen.getByRole('button', { name: 'Release notes' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'New · 3' })).toBeNull()
   })
 
   it('says why an update check could not run, in the reader\'s words', async () => {

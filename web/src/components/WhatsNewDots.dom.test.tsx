@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { en } from '../lib/i18n.data'
+import { RELEASES } from '../lib/whatsNew'
 import { Link } from '../lib/router'
 import { markSeen, startWhatsNew, useWhatsNew } from '../lib/whatsNewStore'
 import { WhatsNewDots } from './WhatsNewDots'
@@ -15,7 +16,9 @@ beforeEach(() => {
   )
   localStorage.clear()
   window.history.replaceState(null, '', '/jobs')
-  startWhatsNew('dev', true)
+  // Updated from the release before, so every change carries its dot.
+  localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: RELEASES[0].after, after: '', seen: [] }))
+  startWhatsNew('dev')
 })
 afterEach(() => {
   cleanup()
