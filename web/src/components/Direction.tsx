@@ -62,31 +62,26 @@ export function nextDirection(current: Direction): Direction {
 }
 
 /**
- * The editable direction, placed between the two sides it relates so the row
- * reads as one sentence. It names the current answer in words beside the
- * arrow, since an arrow alone is easy to pass over. Clicking or an arrow key
- * cycles through the three answers.
+ * The editable direction, between the rows of the two sides it relates. It
+ * names the current answer in words beside the arrow, since an arrow alone is
+ * easy to pass over. Clicking or an arrow key cycles through the three answers.
  */
 export function DirectionSwitch({
   direction,
   onChange,
-  disabled,
 }: {
   direction: Direction
   onChange: (next: Direction) => void
-  /** Showing the direction the job follows from the global sync settings. */
-  disabled?: boolean
 }) {
   const { t } = useT()
   const name = t(directionKey[direction])
-  // At least as wide as the longest of the three names, so the sides beside
-  // it keep their width while it cycles.
+  // At least as wide as the longest of the three names, so the button does
+  // not change size while it cycles.
   const stage = groupStage(DIRECTIONS.map((d) => t(directionKey[d])))
 
   return (
     <button
       type="button"
-      disabled={disabled}
       onClick={() => onChange(nextDirection(direction))}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -100,7 +95,7 @@ export function DirectionSwitch({
         }
       }}
       aria-label={`${t('direction.label')}: ${name}`}
-      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} shrink-0 items-center justify-center gap-2 bg-accent px-4 text-body font-medium text-accentContrast transition hover:bg-accentHover disabled:pointer-events-none disabled:opacity-45`}
+      className={`glim-btn glim-btn-key glim-hue inline-flex ${KEY_CONTROL_H} shrink-0 items-center justify-center gap-2 bg-accent px-4 text-body font-medium text-accentContrast transition hover:bg-accentHover`}
       style={{
         borderRadius: 'var(--radius-pill)',
         minWidth: `var(--btn-w-${stage})`,

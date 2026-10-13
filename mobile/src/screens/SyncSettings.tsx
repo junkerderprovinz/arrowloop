@@ -228,6 +228,7 @@ export function SyncSettings() {
           label={t("phone.minBattery")}
           hint={t("phone.minBatteryHint")}
           keyboard="numeric"
+          short
           value={policy?.minBattery ? String(policy.minBattery) : ""}
           onChange={(v) => setConditions({ minBattery: clamp(v, 0, 95) ?? 0 })}
         />

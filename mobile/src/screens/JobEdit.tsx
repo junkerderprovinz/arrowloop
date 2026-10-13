@@ -567,6 +567,7 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
           <Field
             label={t("schedule.everyLabel")}
             keyboard="numeric"
+            short
             value={String(state.everyCount)}
             onChange={(v) => set({ everyCount: Math.max(1, Math.round(Number(v) || 1)) })}
           />

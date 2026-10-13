@@ -26,7 +26,7 @@ import {
   IconTrash,
 } from '../components/glyphs'
 import { brandMark } from '../components/brandMarks'
-import { Choice, Field, Text } from '../components/Field'
+import { Choice, FieldRow, Text } from '../components/Field'
 import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
 import {
@@ -643,12 +643,12 @@ function RemoteForm({
         value={values[o.name] ?? ''}
         onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
         placeholder={o.default}
-        stacked
       />
     ) : (
-      <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
+      <FieldRow key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
         {kind === 'smb' && o.name === 'host' ? (
           <ShareHost
+            label={optionLabel(o.name, t)}
             value={values.host ?? ''}
             onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
             placeholder={o.default || o.examples?.[0]?.value}
@@ -668,10 +668,11 @@ function RemoteForm({
             value={values[o.name] ?? ''}
             onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
             placeholder={o.default || o.examples?.[0]?.value}
+            label={optionLabel(o.name, t)}
             mono
           />
         )}
-      </Field>
+      </FieldRow>
     )
 
   return (
@@ -729,11 +730,11 @@ function RemoteForm({
         )}
         {/* No backend type on screen: the picker already chose it in terms of
             products. */}
-        <Field label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
+        <FieldRow label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
           {/* Fixed once saved: the jobs that use the target name it, and its
               secrets never reach this form to be written under a new name. */}
-          <Text value={name} onChange={setName} placeholder="backup" mono readOnly={!!existing} />
-        </Field>
+          <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
+        </FieldRow>
         {first.map(field)}
         {rest.length > 0 && (
           <section className="glim-subcard flex flex-col gap-4 p-4">
@@ -752,11 +753,13 @@ function RemoteForm({
  * Windows machine reports any; elsewhere the list says there are none.
  */
 function ShareHost({
+  label,
   value,
   onChange,
   placeholder,
   onShare,
 }: {
+  label: string
   value: string
   onChange: (next: string) => void
   placeholder?: string
@@ -781,9 +784,9 @@ function ShareHost({
   }
 
   return (
-    <div ref={row} className="flex items-center gap-2">
+    <div ref={row} className="flex w-full items-center gap-2">
       <div className="min-w-0 flex-1">
-        <Text value={value} onChange={onChange} placeholder={placeholder} mono />
+        <Text value={value} onChange={onChange} placeholder={placeholder} label={label} mono />
       </div>
       <IconAction
         title={t('targets.pickShare')}
@@ -985,8 +988,8 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
       ) : none ? (
         <Empty>{t('targets.noCandidates')}</Empty>
       ) : (
-        <div className="grid gap-4 py-2 sm:grid-cols-2">
-          <Field label={t('targets.driveMount')}>
+        <div className="flex flex-col gap-4 py-2">
+          <FieldRow label={t('targets.driveMount')}>
             <Choice
               value={mount}
               onChange={(next) => {
@@ -996,8 +999,8 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
               label={t('targets.driveMount')}
               options={candidates.map((c) => ({ value: c.mount, label: c.name ? `${c.mount} · ${c.name}` : c.mount }))}
             />
-          </Field>
-          <Field label={t('targets.driveLabel')} hint={t('targets.driveLabelHint')}>
+          </FieldRow>
+          <FieldRow label={t('targets.driveLabel')} hint={t('targets.driveLabelHint')}>
             <Text
               value={label}
               onChange={(next) => {
@@ -1005,8 +1008,9 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
                 setTyped(true)
               }}
               placeholder="Backup drive"
+              label={t('targets.driveLabel')}
             />
-          </Field>
+          </FieldRow>
         </div>
       )}
     </Dialog>

@@ -35,7 +35,7 @@ describe('one height, named once', () => {
 
   it.each([
     ['./Field.tsx', 'the fields themselves'],
-    ['./Direction.tsx', 'the direction button between two of them'],
+    ['./Direction.tsx', 'the direction button in its row'],
   ])('%s takes it rather than writing its own', (file) => {
     const source = read(file)
     expect(source).toContain('CONTROL_H')
@@ -48,22 +48,9 @@ describe('one height, named once', () => {
       .toHaveLength(0)
   })
 
-  it('centres the direction button on the boxes beside it', () => {
-    // The editor raises the button by half of what the key height adds to the
-    // field height, written as a spacing step of a quarter rem.
-    const tokens = read('../tokens.css')
-    const rem = (name: string) => {
-      const m = new RegExp(`${name}: ([0-9.]+)rem;`).exec(tokens)
-      expect(m, name).not.toBeNull()
-      return Number((m as RegExpExecArray)[1])
-    }
-    const steps = (rem('--btn-h-key') - rem('--btn-h')) / 2 / 0.25
-    expect(read('../pages/Editor.tsx')).toContain(`@4xl:-mt-${steps}`)
-  })
-
   it('gives the direction button room for its longest name', () => {
-    // The name changes as the button cycles, and the sides beside it must not
-    // move when it does.
+    // The name changes as the button cycles, and the row must not move when
+    // it does.
     const source = read('./Direction.tsx')
     expect(source).toMatch(/groupStage\(DIRECTIONS\.map/)
     expect(source).toContain('minWidth: `var(--btn-w-${stage})`')
