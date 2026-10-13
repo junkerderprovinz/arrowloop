@@ -410,7 +410,7 @@ function RemoteRow({
           <span className="truncate text-body font-medium">{remote.name}:</span>
           {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
         </span>
-        {why && <span className="truncate text-subline text-statusFail">{why}</span>}
+        {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
       </span>
       <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
         <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit">
@@ -420,7 +420,7 @@ function RemoteRow({
           <IconTrash />
         </IconAction>
       </span>
-      <span data-new={newId} className={`${result || checking ? '' : 'glim-row-actions '}flex shrink-0`}>
+      <span data-new={newId} className={`${result || checking ? '' : 'glim-row-actions '}glim-row-verdict flex shrink-0`}>
         <Button
           ref={checkButton}
           label={
@@ -431,7 +431,6 @@ function RemoteRow({
           tone={checking || !result ? 'neutral' : result.ok ? 'ok' : 'danger'}
           title={why || t('targets.checkHint')}
           busy={checking}
-          stage={groupStage([t('targets.check'), t('targets.checking'), t('targets.checkOk'), t('targets.checkFailed')])}
           onClick={() => void check(true)}
           disabled={checking}
         />
@@ -600,8 +599,8 @@ function RemoteForm({
         hint={optionHint(o, t, provider)}
         value={values[o.name] ?? ''}
         onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-        stacked
         placeholder={o.default}
+        stacked
       />
     ) : (
       <Field key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
