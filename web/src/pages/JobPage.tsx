@@ -32,7 +32,7 @@ import { usePlaces } from '../lib/places'
 import { stageKey } from '../lib/readingStage'
 import { JOB_CARDS, readJobCard, type JobPageCard } from '../lib/jobCards'
 import { navigate, useLocation } from '../lib/router'
-import { useToast } from '../lib/toast'
+import { useStartStop } from '../lib/startStop'
 import { useJobConfig } from './Editor'
 import { PreviewPlan } from './Preview'
 import { RunRow } from './History'
@@ -47,7 +47,6 @@ const HOLD_CARD_MS = 1500
  */
 export function JobPage({ name }: { name: string }) {
   const { t } = useT()
-  const push = useToast()
   const goTo = useGoTo()
   const live = useLive()
   const anomalies = useAnomaliesOn()
@@ -89,6 +88,7 @@ export function JobPage({ name }: { name: string }) {
               <Button
                 label={job.disabled ? t('jobs.resume') : t('jobs.pause')}
                 labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
+                title={job.disabled ? undefined : t('jobs.pauseHint')}
                 glyph={job.disabled ? <IconPlay /> : <IconPause />}
                 disabled={config.busy}
                 onClick={() => void config.setDisabled(job.name, !job.disabled)}
@@ -119,17 +119,7 @@ export function JobPage({ name }: { name: string }) {
             )}
             {/* What the page is for, so it is its one filled button, the way
                 forward at the end of the row. */}
-            <Button
-              label={job.running ? t('jobs.cancelRun') : t('jobs.runNow')}
-              labelKey={job.running ? 'jobs.cancelRun' : 'jobs.runNow'}
-              title={job.running ? undefined : t('jobs.runNowHint')}
-              tone="accent"
-              className="glim-btn-key"
-              onClick={() => {
-                const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
-                asked.catch((e: Error) => push(e.message, 'fail'))
-              }}
-            />
+            <StartStop job={job} />
           </>
         }
       />
@@ -184,6 +174,21 @@ export function JobPage({ name }: { name: string }) {
         />
       )}
     </Stack>
+  )
+}
+
+function StartStop({ job }: { job: Job }) {
+  const startStop = useStartStop(job)
+  return (
+    <Button
+      label={startStop.label}
+      labelKey={startStop.labelKey}
+      title={startStop.hint}
+      tone="accent"
+      className="glim-btn-key"
+      disabled={startStop.disabled}
+      onClick={startStop.press}
+    />
   )
 }
 

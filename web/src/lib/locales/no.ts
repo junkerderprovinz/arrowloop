@@ -24,6 +24,8 @@ const no: Translations = {
   'jobs.resume': 'Fortsett',
   'jobs.runNow': 'Kjør nå',
   'jobs.cancelRun': 'Avbryt kjøringen',
+  'jobs.stopping': 'Kjøringen stoppes',
+  'jobs.pauseHint': 'Stopper kjøringen som pågår, hvis det er en, og holder jobben til du fortsetter den. Du kan fortsatt starte den for hånd.',
   'jobs.runNowHint': 'Start jobben med en gang, uten forhåndsvisning. De samme sikkerhetsnettene gjelder: ingenting slettes for godt, og en kjøring som ville fjerne mer enn halvparten av alt den kjenner til, stopper og sier fra.',
   'jobs.check': 'Sjekk jobben',
   'jobs.dupes': 'Finn duplikater',

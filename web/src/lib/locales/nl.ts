@@ -24,6 +24,8 @@ const nl: Translations = {
   'jobs.resume': 'Hervatten',
   'jobs.runNow': 'Nu uitvoeren',
   'jobs.cancelRun': 'Run afbreken',
+  'jobs.stopping': 'Run wordt gestopt',
+  'jobs.pauseHint': 'Stopt de run die bezig is, als die er is, en houdt de taak vast tot je hem hervat. Met de hand starten kan nog steeds.',
   'jobs.runNowHint': 'Deze taak meteen starten, zonder voorbeeld. Dezelfde vangnetten blijven: niets wordt definitief verwijderd, en een run die meer dan de helft van alles wat hij kent zou weghalen stopt en zegt het.',
   'jobs.check': 'Taak controleren',
   'jobs.dupes': 'Dubbele bestanden zoeken',

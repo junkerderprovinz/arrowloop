@@ -24,6 +24,8 @@ const sl: Translations = {
   'jobs.resume': 'Nadaljuj',
   'jobs.runNow': 'Zaženi zdaj',
   'jobs.cancelRun': 'Prekliči zagon',
+  'jobs.stopping': 'Zagon se ustavlja',
+  'jobs.pauseHint': 'Ustavi zagon, ki teče, če obstaja, in zadrži opravilo, dokler ga ne nadaljujete. Ročno ga lahko še vedno zaženete.',
   'jobs.runNowHint': 'Zaženi to opravilo takoj, brez predogleda. Iste varovalke ostanejo: nič se ne izbriše dokončno, zagon, ki bi odstranil več kot polovico vsega znanega, pa se ustavi in to pove.',
   'jobs.check': 'Preveri opravilo',
   'jobs.dupes': 'Poišči podvojeno',

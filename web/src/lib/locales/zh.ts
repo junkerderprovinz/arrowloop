@@ -24,6 +24,8 @@ const zh: Translations = {
   'jobs.resume': '继续',
   'jobs.runNow': '立即运行',
   'jobs.cancelRun': '中止运行',
+  'jobs.stopping': '正在中止运行',
+  'jobs.pauseHint': '停止正在进行的运行（如有），并保留该任务，直到你继续它。你仍可以手动运行它。',
   'jobs.runNowHint': '立即运行此任务，不做预览。同样的保护仍在：不会彻底删除任何内容，若一次运行将移除已知文件的一半以上，它会中止并说明原因。',
   'jobs.check': '检查此任务',
   'jobs.dupes': '查找重复文件',

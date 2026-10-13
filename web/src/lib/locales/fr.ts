@@ -24,6 +24,8 @@ const fr: Translations = {
   'jobs.resume': 'Reprendre',
   'jobs.runNow': 'Exécuter maintenant',
   'jobs.cancelRun': 'Annuler l\'exécution',
+  'jobs.stopping': 'Arrêt de l\'exécution',
+  'jobs.pauseHint': 'Arrête l\'exécution en cours, s\'il y en a une, et met la tâche en attente jusqu\'à ce que vous la repreniez. Vous pouvez toujours la lancer à la main.',
   'jobs.runNowHint': 'Lancer cette tâche tout de suite, sans aperçu. Les mêmes filets restent en place : rien n\'est supprimé définitivement, et une exécution qui retirerait plus de la moitié de ce qu\'elle connaît s\'arrête et le dit.',
   'jobs.check': 'Vérifier la tâche',
   'jobs.dupes': 'Chercher les doublons',

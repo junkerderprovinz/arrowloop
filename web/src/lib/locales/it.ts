@@ -24,6 +24,8 @@ const it: Translations = {
   'jobs.resume': 'Riprendi',
   'jobs.runNow': 'Esegui ora',
   'jobs.cancelRun': 'Annulla l\'esecuzione',
+  'jobs.stopping': 'Arresto dell\'esecuzione',
+  'jobs.pauseHint': 'Ferma l\'esecuzione in corso, se c\'è, e tiene ferma l\'attività finché non la riprendi. Puoi comunque avviarla a mano.',
   'jobs.runNowHint': 'Avvia subito questo lavoro, senza anteprima. Le stesse reti restano: nulla viene cancellato per sempre, e un\'esecuzione che rimuoverebbe più della metà di tutto ciò che conosce si ferma e lo dice.',
   'jobs.check': 'Controlla il lavoro',
   'jobs.dupes': 'Cerca duplicati',

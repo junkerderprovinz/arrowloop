@@ -24,6 +24,8 @@ const sv: Translations = {
   'jobs.resume': 'Återuppta',
   'jobs.runNow': 'Kör nu',
   'jobs.cancelRun': 'Avbryt körningen',
+  'jobs.stopping': 'Körningen stoppas',
+  'jobs.pauseHint': 'Stoppar körningen som pågår, om det finns en, och håller jobbet tills du återupptar det. Du kan fortfarande starta det för hand.',
   'jobs.runNowHint': 'Starta jobbet direkt, utan förhandsvisning. Samma skyddsnät gäller: inget raderas för gott, och en körning som skulle ta bort mer än hälften av allt den känner till stannar och säger till.',
   'jobs.check': 'Kontrollera jobbet',
   'jobs.dupes': 'Hitta dubbletter',
