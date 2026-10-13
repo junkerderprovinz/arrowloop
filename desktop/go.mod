@@ -15,7 +15,7 @@ godebug winsymlink=0
 replace github.com/junkerderprovinz/arrowloop => ../
 
 require (
-	github.com/junkerderprovinz/arrowloop v1.6.2
+	github.com/junkerderprovinz/arrowloop v1.9.0
 	github.com/rclone/rclone v1.75.2
 	github.com/wailsapp/wails/v3 v3.0.0-beta.28
 	golang.org/x/image v0.47.0
