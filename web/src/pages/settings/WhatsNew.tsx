@@ -182,7 +182,8 @@ export function WhatsNewHost() {
 /**
  * "New · 5" in the Version card, the number being what is still unseen. Its
  * dot turns grey and the number goes once nothing is left. It opens the window
- * on the list of changes.
+ * on the list of changes while anything is unseen and on the release notes
+ * after that, since the card has no other way to the notes.
  */
 export function WhatsNewButton() {
   const { t } = useT()
@@ -196,7 +197,7 @@ export function WhatsNewButton() {
       labelKey={null}
       glyph={<i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />}
       keepLabel
-      onClick={() => openNewsWindow('changes')}
+      onClick={() => openNewsWindow(left > 0 ? 'changes' : 'notes')}
     />
   )
 }
