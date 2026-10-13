@@ -251,8 +251,8 @@ function JobCard({
               </span>
             </span>
           </span>
-          <span className="ms-auto flex shrink-0 flex-col items-end gap-3">
-            <span className="flex items-center gap-3">
+          <span className="ms-auto flex min-w-0 max-w-full flex-col items-end gap-3">
+            <span className="flex flex-wrap items-center justify-end gap-3">
               <span data-new="run-strip" className="flex">
                 <RunStrip recent={job.recent} />
               </span>
@@ -262,7 +262,7 @@ function JobCard({
             </span>
             {/* Holding and starting are separate controls: a held job can still
                 be started by hand, and stays held. */}
-            <span data-testid="job-actions" className="flex shrink-0 items-center gap-1.5" onClick={keepInCard}>
+            <span data-testid="job-actions" className="flex flex-wrap items-center justify-end gap-1.5" onClick={keepInCard}>
               <span data-new="job-more" className="flex">
                 <Menu label={t('list.more')} labelKey="list.more" items={more} />
               </span>
