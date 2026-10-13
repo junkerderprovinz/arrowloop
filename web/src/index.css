@@ -392,9 +392,16 @@ body {
 /* Every button gives way to .97 on press, the web's side of the phone's press.
    The design language states the rule but its stylesheet has no line for it,
    so it stands here until tokens.css carries one. The individual `scale`
-   property leaves any transform a button already has alone. */
+   property leaves any transform a button already has alone. The give row and
+   the three donation windows stay as they are. */
 @media (prefers-reduced-motion: no-preference) {
-  :root:not([data-motion='off']) :is(button, [role='button'], a.glim-readme-btn, a.glim-nav-row):not(:disabled):active {
+  :root:not([data-motion='off'])
+    :is(button, [role='button'], a.glim-readme-btn, a.glim-nav-row):not(:disabled):not(
+      .glim-about-give *,
+      [aria-labelledby='coffee-title'] *,
+      [aria-labelledby='paypal-window-title'] *,
+      [aria-labelledby='cryptodonate-title'] *
+    ):active {
     scale: 0.97;
   }
   .glim-btn {

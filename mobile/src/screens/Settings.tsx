@@ -18,7 +18,7 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import { glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { COFFEE, glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
@@ -26,7 +26,7 @@ import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
-import { CoffeeDonate, CryptoDonate } from "../donate";
+import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
 import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
@@ -95,7 +95,6 @@ export function Settings() {
   const [imported, setImported] = useState(0);
   const [reported, setReported] = useState(0);
   const [dockered, setDockered] = useState(0);
-  const [coffee, setCoffee] = useState(false);
   const [crypto, setCrypto] = useState(false);
   const [dockerCopied, setDockerCopied] = useState(false);
   const [reportCopied, setReportCopied] = useState(false);
@@ -732,16 +731,15 @@ export function Settings() {
 
         <Body>{t("about.coffee")}</Body>
         {/* The README's give buttons, a blank line below the sentence above,
-            since they are the loudest row on the card. Coffee and crypto stay
-            in the app; PayPal leaves for the browser, since its buttons need
-            popups a web view does not open. */}
+            since they are the loudest row on the card. Brand marks are passed
+            explicitly, never matched from the label key. */}
         <ReadmeRow style={styles.give}>
           <ReadmeButton
             label={t("about.coffeeButton")}
             art
             tile={TILE.coffee}
             mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
-            onPress={() => setCoffee(true)}
+            onPress={() => Linking.openURL(COFFEE)}
           />
           <ReadmeButton
             label={t("about.paypal")}
@@ -823,7 +821,6 @@ export function Settings() {
         </View>
       </Section>
 
-      {coffee ? <CoffeeDonate onClose={() => setCoffee(false)} /> : null}
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
 
       {/* One picker for both rows, applying the colour live during the drag. */}

@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
-import { WebView } from "react-native-webview";
 
-import { COFFEE_WIDGET, CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from "../../web/src/lib/donate";
+import { CRYPTO_COINS, type CryptoCoin, type CryptoNetwork } from "../../web/src/lib/donate";
 import { buildQR } from "../../web/src/lib/qr";
 import { CoinMark } from "./glyphs";
 import { useT } from "./i18n";
 import { engine } from "./engine";
 import { animateNext, useMotion } from "./motion";
 import { contrastOn, space, text, TOUCH } from "./theme";
-import { Button, Press, useTheme } from "./ui";
+import { Button, useTheme } from "./ui";
 
 /**
  * The crypto donation dialog, built from the web app's lib/donate.ts and
@@ -82,7 +81,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                   const on = n.id === network.id;
                   const fill = hueAt(i) ?? accent;
                   return (
-                    <Press
+                    <Pressable
                       key={n.id}
                       accessibilityRole="radio"
                       accessibilityState={{ checked: on }}
@@ -103,7 +102,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
                       <Text style={[styles.chainText, { color: on ? contrastOn(fill) : p.textSub }]}>
                         {n.name}
                       </Text>
-                    </Press>
+                    </Pressable>
                   );
                 })}
               </View>
@@ -197,53 +196,6 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 }
 
 /**
- * The coffee window: Buy Me a Coffee's widget page, the one page of theirs that
- * may be framed, in a web view inside the house's window. It is mounted only
- * while the window is open, so nothing of theirs loads before somebody asks
- * for it, and it takes all the height the screen allows, since the payment
- * step runs long.
- */
-export function CoffeeDonate({ onClose }: { onClose: () => void }) {
-  const { t } = useT();
-  const { p, corners, accent } = useTheme();
-  const { ms } = useMotion();
-  return (
-    <Modal visible transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
-      {/* The window is no pressable, so the frame's own scrolling and taps
-          reach it untouched; the scrim behind it closes. */}
-      <View style={styles.ground}>
-        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
-        <View style={[styles.card, styles.tall, { backgroundColor: p.surface, ...corners.card }]}>
-          <View style={styles.titleRow}>
-            <View style={[styles.title, { backgroundColor: accent, ...corners.pill }]}>
-              <Text style={[styles.titleText, { color: contrastOn(accent) }]} numberOfLines={2}>
-                {t("about.coffeeButton")}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.body}>
-            <Text style={[styles.intro, { color: p.text }]}>{t("about.donateAppeal")}</Text>
-            <Text style={[styles.intro, { color: p.textSub }]}>{t("about.coffeeIntro")}</Text>
-          </View>
-          <View style={[styles.frame, { backgroundColor: p.surface2, ...corners.control }]}>
-            <WebView
-              source={{ uri: COFFEE_WIDGET }}
-              originWhitelist={["https://*"]}
-              // A page that opens a new window loads it here instead.
-              setSupportMultipleWindows={false}
-              style={{ backgroundColor: p.surface2 }}
-            />
-          </View>
-          <View style={styles.footer}>
-            <Button label={t("common.close")} labelKey="common.close" onPress={onClose} />
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-/**
  * The address as a QR code, black on white in every theme: many scanners
  * cannot read an inverted code.
  */
@@ -257,6 +209,11 @@ function QR({ value, size }: { value: string; size: number }) {
   );
 }
 
+// The donation window keeps its own two small sizes outside the type scale, so
+// a change to the scale leaves it as it is.
+const CAPTION = 11;
+const DENSE = 12;
+
 const styles = StyleSheet.create({
   ground: {
     flex: 1,
@@ -265,12 +222,9 @@ const styles = StyleSheet.create({
     padding: space.lg,
   },
   card: { width: "100%", maxWidth: 420, maxHeight: "88%", overflow: "hidden" },
-  // The screen's height less the ground's margin, which keeps it a window.
-  tall: { flex: 1, maxHeight: "100%" },
-  frame: { flex: 1, marginHorizontal: space.lg, marginBottom: space.lg, overflow: "hidden" },
   titleRow: { paddingHorizontal: space.lg, paddingTop: space.lg },
   title: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
-  titleText: { fontSize: text.meta, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+  titleText: { fontSize: CAPTION, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
   scroll: { flexGrow: 0, flexShrink: 1 },
   body: { padding: space.lg, gap: space.md },
   intro: { fontSize: text.body, lineHeight: text.body + 6 },
@@ -278,14 +232,14 @@ const styles = StyleSheet.create({
   answer: { padding: space.lg, gap: space.md, alignItems: "center" },
   address: {
     fontFamily: "monospace",
-    fontSize: text.meta,
+    fontSize: DENSE,
     textAlign: "center",
     width: "100%",
   },
   chains: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: space.sm },
   chain: { paddingHorizontal: space.md, paddingVertical: 6 },
-  chainText: { fontSize: text.meta, fontWeight: "500" },
-  note: { fontSize: text.subline, textAlign: "center" },
+  chainText: { fontSize: DENSE, fontWeight: "500" },
+  note: { fontSize: DENSE, textAlign: "center" },
   copyRow: { flexDirection: "row", alignSelf: "stretch" },
 
   // Four across at any width: five 20% bases plus the gaps overflow, and
@@ -300,7 +254,7 @@ const styles = StyleSheet.create({
     gap: space.xs,
     paddingVertical: space.md,
   },
-  ticker: { fontSize: text.meta, fontWeight: "500" },
+  ticker: { fontSize: CAPTION, fontWeight: "500" },
 
   footer: { flexDirection: "row", justifyContent: "flex-end", padding: space.lg, paddingTop: 0 },
 });
