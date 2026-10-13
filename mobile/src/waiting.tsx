@@ -16,8 +16,6 @@ export interface Waiting {
   conflicts: number | null;
   /** The jobs with a conflict waiting for an answer. */
   conflicted: string[] | null;
-  /** How many conflict lists could not be read, which may hide one waiting. */
-  unread: number | null;
   findings: Finding[] | null;
   /** Files in the trash of every job's two sides. */
   trash: number | null;
@@ -33,7 +31,6 @@ const Ctx = createContext<Waiting>({
   running: null,
   conflicts: null,
   conflicted: null,
-  unread: null,
   findings: null,
   trash: null,
   trashBytes: null,
@@ -45,7 +42,6 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   const [running, setRunning] = useState<number | null>(null);
   const [conflicts, setConflicts] = useState<number | null>(null);
   const [conflicted, setConflicted] = useState<string[] | null>(null);
-  const [unread, setUnread] = useState<number | null>(null);
   const [findings, setFindings] = useState<Finding[] | null>(null);
   const [trash, setTrash] = useState<number | null>(null);
   const [trashBytes, setTrashBytes] = useState<number | null>(null);
@@ -58,7 +54,6 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
       (got) => {
         setConflicts(got.conflicts.length);
         setConflicted([...new Set(got.conflicts.map((c) => c.job))]);
-        setUnread(got.unread.length);
       },
       () => {},
     );
@@ -94,8 +89,8 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ running, conflicts, conflicted, unread, findings, trash, trashBytes, anomaliesOn, refresh }),
-    [running, conflicts, conflicted, unread, findings, trash, trashBytes, anomaliesOn, refresh],
+    () => ({ running, conflicts, conflicted, findings, trash, trashBytes, anomaliesOn, refresh }),
+    [running, conflicts, conflicted, findings, trash, trashBytes, anomaliesOn, refresh],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

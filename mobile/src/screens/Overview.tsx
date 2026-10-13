@@ -2,20 +2,18 @@ import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { AppState, StyleSheet, Text, View } from "react-native";
 import { entryLabel } from "../../../web/src/lib/entryLabel";
-import { jobState, needs, type HeadState, type Need } from "../../../web/src/lib/needs";
 import { Activity } from "../activity";
 import { api, failed, type Job, type Remote, type Run, type Tally } from "../api";
 import { clock } from "../clock";
 import { engine } from "../engine";
-import { Glyph } from "../glyphs";
-import { useT, type T } from "../i18n";
+import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
 import { bytes, isAccount, ReachBadge, Room, useReach, useRoom } from "../space";
-import { space, text } from "../theme";
+import { softOn, space, text } from "../theme";
 import { useEngineEvents, useEngineStream } from "../useEngine";
 import { useWaiting } from "../waiting";
 import { WayGlyph, wayLabel, wayOf } from "../way";
@@ -41,35 +39,10 @@ import {
 /** How many of the coming runs the overview names. */
 const NEXT_SHOWN = 3;
 
-/** The head's states, and one more for a phone with no job, where nothing can be in sync. */
-type Head = HeadState | "noJobs";
-
-const HEADLINE = {
-  inSync: "phone.headInSync",
-  withNotes: "phone.headWithNotes",
-  needsYou: "phone.needsYou",
-  noJobs: "phone.headNoJobs",
-} as const satisfies Record<Head, string>;
-
 /**
- * Which need the head names when several wait: what holds work back first,
- * and a failed job before a note, which the anomalies tile counts anyway.
- */
-const FIRST: Record<Need["kind"], number> = {
-  conflicts: 0,
-  held: 1,
-  failed: 2,
-  unread: 3,
-  warned: 4,
-  neverRan: 5,
-  notes: 6,
-};
-
-/**
- * The start screen: how things stand in one sentence that leads to what
- * needs the person, a few counts, what runs and runs next with the files at
- * work, the last run and how full each target is. Every line that counts
- * something leads to it.
+ * The start screen: the counts of what waits, what runs and runs next with
+ * the files at work, the last run and how full each target is. Every line
+ * that counts something leads to it.
  */
 export function Overview() {
   const nav = useNavigation<Nav<OverviewStack>>();
@@ -118,17 +91,7 @@ export function Overview() {
 
   if (!jobs) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  // A running job's last result is about to be replaced, so it says nothing yet.
-  const settled = jobs.filter((j) => !j.running).map(jobState);
-  // The findings are enough to list what waits: listing the conflicts opens
-  // every two-way job's sides, and a target that is slow to answer must not
-  // hold back a held run. Only "in sync" waits for both.
-  const heard = waiting.findings !== null;
-  const known = heard && waiting.conflicts !== null;
-  const wait = needs(waiting.conflicts ?? 0, waiting.findings ?? [], settled, waiting.unread ?? 0);
   const empty = jobs.length === 0;
-  const head: Head = access === false ? "needsYou" : empty ? "noJobs" : wait.head;
-
   const running = jobs.filter((j) => j.running);
   // Held jobs and drafts without both sides stay out. The requests go out
   // together, since the engine limits how many run at once itself.
@@ -144,38 +107,10 @@ export function Overview() {
   // Over the job list, so saving the new job lands there.
   const addJob = () => nav.getParent()?.navigate("JobsTab", { screen: "JobEdit", params: {}, initial: false });
 
-  const follow = (need: Need) => {
-    switch (need.kind) {
-      case "conflicts":
-      case "unread":
-        return toTab("ConflictsTab");
-      case "held":
-        return nav.navigate("Anomalies", { job: need.job });
-      case "notes":
-        return nav.navigate("Anomalies");
-      default:
-        return openJob(need.job);
-    }
-  };
-  const top = [...wait.items].sort((a, b) => FIRST[a.kind] - FIRST[b.kind])[0];
-  // Without file access no job on the phone's folders can run, so it comes
-  // before anything the engine reports.
-  const lead =
-    access === false
-      ? {
-          detail: `${t("phone.access")} · ${t("phone.permissionDenied")}`,
-          go: () => void engine.openStorageSettings().catch(() => {}),
-        }
-      : top
-        ? { detail: needLine(top, t), go: () => follow(top) }
-        : null;
-
   return (
     <Floating>
       <Page fab>
-        {access === false || known || empty || (heard && head !== "inSync") ? (
-          <StatusHead state={head} detail={lead?.detail} onPress={lead?.go} />
-        ) : null}
+        {access === false ? <AccessNotice /> : null}
 
         <Section title={t("overview.numbers")} hue={0}>
           <View style={styles.tiles}>
@@ -302,51 +237,26 @@ function useFileAccess(): boolean | null {
 }
 
 /**
- * How things stand, in one of four fixed sentences. A note never rounds up to
- * "in sync". When something waits, the line under it names the first thing
- * and the head leads there; the rest is counted on the tiles or listed on the
- * jobs page.
+ * Without file access no job on the phone's folders can run, so this is the
+ * one thing that stands above the counts. Android grants it on a settings
+ * page, not in a dialog.
  */
-function StatusHead({ state, detail, onPress }: { state: Head; detail?: string; onPress?: () => void }) {
+function AccessNotice() {
   const { t } = useT();
-  const { p } = useTheme();
-  const ink = state === "inSync" ? p.okInk : state === "noJobs" ? p.textSub : p.warnInk;
-  const body = (
-    <View style={styles.head}>
-      <Glyph name="IconSync" color={ink} size={22} />
-      <View style={styles.headWords}>
-        <Text style={[styles.headText, { color: p.text }]}>{t(HEADLINE[state])}</Text>
-        {detail ? <Caption>{detail}</Caption> : null}
-      </View>
+  const { p, corners } = useTheme();
+  return (
+    <View style={[styles.notice, { backgroundColor: softOn(p.warnInk, 0.15), ...corners.card }]}>
+      <Text style={[styles.noticeText, { color: p.warnInk }]}>
+        {`${t("phone.access")} · ${t("phone.permissionDenied")}`}
+      </Text>
+      <Button
+        label={t("phone.openSettings")}
+        labelKey="phone.openSettings"
+        wide={false}
+        onPress={() => void engine.openStorageSettings().catch(() => {})}
+      />
     </View>
   );
-  return onPress ? (
-    <Press onPress={onPress} accessibilityRole="button">
-      {body}
-    </Press>
-  ) : (
-    <View accessibilityRole="header">{body}</View>
-  );
-}
-
-/** One thing that waits: what it is about, then its state in the badges' words. */
-function needLine(need: Need, t: T): string {
-  switch (need.kind) {
-    case "conflicts":
-      return `${t("nav.conflicts")} · ${need.count}`;
-    case "unread":
-      return `${t("needs.unread")} · ${need.count}`;
-    case "held":
-      return `${need.job} · ${t("anomaly.heldBadge")}`;
-    case "notes":
-      return `${t("nav.anomalies")} · ${need.count}`;
-    case "failed":
-      return `${need.job} · ${t("status.failed")}`;
-    case "warned":
-      return `${need.job} · ${t("status.warned")}`;
-    case "neverRan":
-      return `${need.job} · ${t("status.never")}`;
-  }
 }
 
 /**
@@ -566,10 +476,8 @@ function Account({
 }
 
 const styles = StyleSheet.create({
-  // Flat, with no card around it, like the head of an object's page.
-  head: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingVertical: space.xs },
-  headWords: { flexShrink: 1 },
-  headText: { fontSize: text.status, fontWeight: "600" },
+  notice: { flexDirection: "row", alignItems: "center", gap: space.sm, padding: space.sm, paddingStart: space.md },
+  noticeText: { flex: 1, fontSize: text.body, fontWeight: "600" },
   // A sub-card: a flat inset group one step above the card, without a shadow.
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
