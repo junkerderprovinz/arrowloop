@@ -44,7 +44,6 @@ export function Settings(props: SettingsProps) {
   const { tile } = props
   const saved = useTileOrder()
   const tiles = useMemo(() => orderTiles(props.tiles, saved), [props.tiles, saved])
-  const wide = tiles.find((x) => x.id === tile)?.wide ?? false
   const content = useRef<HTMLDivElement>(null)
 
   // The side a new tile's cards slide in from: 1 for one further down the
@@ -93,14 +92,10 @@ export function Settings(props: SettingsProps) {
         data-settings-content
         className="flex min-w-0 flex-1 flex-col overflow-y-auto ps-2 sm:-mb-[var(--page-gutter)] sm:px-6 md:px-8"
       >
-        {/* The search ends where the cards below it do. */}
-        <SettingsSearch tiles={tiles} tile={tile} wide={wide} />
-        {/* The cap belongs to the page: a form of rows with a name at one end
-            and a control at the other is held to 880px so the two stay
-            together in a wide window. */}
+        <SettingsSearch tiles={tiles} tile={tile} />
         <div
           key={tile}
-          className={`glim-page-enter flex w-full grow flex-col gap-10 pb-4 sm:pb-[var(--page-gutter)]${wide ? '' : ' max-w-[880px]'}${toward ? ' glim-tab-slide' : ''}`}
+          className={`glim-page-enter flex w-full grow flex-col gap-10 pb-4 sm:pb-[var(--page-gutter)]${toward ? ' glim-tab-slide' : ''}`}
           style={{ '--tab-dir': toward } as CSSProperties}
         >
           <TilePage {...props} />

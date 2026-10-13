@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { Field, Text } from './Field'
+import { FieldRow, Text } from './Field'
 import { IconCheckDraw } from './glyphs'
 import { QRCode } from './QRCode'
 import { StateLine } from './Shell'
@@ -171,9 +171,9 @@ export function TwoFactorCard({
               />
             </div>
           </div>
-          <Field label={t('twoFactor.confirmCode')}>
-            <Text value={code} onChange={setCode} placeholder="000000" code mono />
-          </Field>
+          <FieldRow label={t('twoFactor.confirmCode')} width="w-40">
+            <Text value={code} onChange={setCode} placeholder="000000" label={t('twoFactor.confirmCode')} code mono />
+          </FieldRow>
           {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
           <div className="flex justify-end gap-2">
             {cancel}
@@ -242,9 +242,9 @@ export function TwoFactorCard({
                 if (code.trim() !== '') void disable()
               }}
             >
-              <Field label={t('twoFactor.disableCodePrompt')}>
-                <Text value={code} onChange={setCode} placeholder="000000" code mono />
-              </Field>
+              <FieldRow label={t('twoFactor.disableCodePrompt')} width="w-40">
+                <Text value={code} onChange={setCode} placeholder="000000" label={t('twoFactor.disableCodePrompt')} code mono />
+              </FieldRow>
               {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
               <div className="flex justify-end gap-2">
                 {cancel}

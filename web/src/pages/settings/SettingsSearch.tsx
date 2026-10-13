@@ -115,8 +115,7 @@ export function openSetting(tile: TileId, jump: SearchJump | null) {
   navigate(`/settings/${tile}`)
 }
 
-/** `wide` lets the bar run the page's width, over a tile that is a list rather than a form. */
-export function SettingsSearch({ tiles, tile, wide }: { tiles: Tile[]; tile: TileId; wide: boolean }) {
+export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId }) {
   const { t } = useT()
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -206,7 +205,7 @@ export function SettingsSearch({ tiles, tile, wide }: { tiles: Tile[]; tile: Til
       ref={barRef}
       data-settings-search
       data-new="settings-search"
-      className={`relative mb-6 w-full${wide ? '' : ' max-w-[880px]'}`}
+      className="relative mb-6 w-full"
     >
       <div
         className="flex h-[var(--btn-h)] items-center gap-2 bg-carbon-surface2 ps-3 pe-1"

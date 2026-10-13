@@ -17,12 +17,6 @@ export interface Tile {
   id: TileId
   labelKey: TranslationKey
   icon: ComponentType
-  /**
-   * A list rather than a form, which uses the page's whole width. Every other
-   * tile is rows with a name at one end and a control at the other, capped at
-   * 880px so the two stay together in a wide window.
-   */
-  wide?: boolean
 }
 
 const TILES: Record<TileId, Tile> = {
@@ -30,7 +24,7 @@ const TILES: Record<TileId, Tile> = {
   look: { id: 'look', labelKey: 'settings.look', icon: IconTabLook },
   sync: { id: 'sync', labelKey: 'settings.sync', icon: IconSync },
   safety: { id: 'safety', labelKey: 'settings.safetyNet', icon: IconShieldOn },
-  targets: { id: 'targets', labelKey: 'nav.targets', icon: IconTabStorage, wide: true },
+  targets: { id: 'targets', labelKey: 'nav.targets', icon: IconTabStorage },
   security: { id: 'security', labelKey: 'settings.security', icon: IconTabSecurity },
   apps: { id: 'apps', labelKey: 'settings.apps', icon: IconTabApp },
   info: { id: 'info', labelKey: 'settings.info', icon: IconInfo },

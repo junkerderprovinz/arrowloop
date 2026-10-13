@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmDialog } from '../lib/glimstone/ConfirmDialog'
-import { Field, Secret, Text } from './Field'
+import { FieldRow, Secret, Text } from './Field'
 import { IconAction } from './IconAction'
 import { StateLine } from './Shell'
 import { ApiError, api, pageIsSecure, passkeysAvailableInBrowser, type PasskeyStatus, type PasskeyView } from '../lib/api'
@@ -192,16 +192,16 @@ export function PasskeyCard({
             void add()
           }}
         >
-          <Field label={t('passkey.nameLabel')}>
-            <Text value={name} onChange={setName} placeholder={t('passkey.namePlaceholder')} />
-          </Field>
-          <Field label={t('password.current')}>
-            <Secret value={current} onChange={setCurrent} autoComplete="current-password" />
-          </Field>
+          <FieldRow label={t('passkey.nameLabel')}>
+            <Text value={name} onChange={setName} placeholder={t('passkey.namePlaceholder')} label={t('passkey.nameLabel')} />
+          </FieldRow>
+          <FieldRow label={t('password.current')}>
+            <Secret value={current} onChange={setCurrent} autoComplete="current-password" label={t('password.current')} />
+          </FieldRow>
           {twoFactor && (
-            <Field label={t('login.code')} hint={t('login.codeHint')}>
-              <Text value={code} onChange={setCode} placeholder="000000" code mono />
-            </Field>
+            <FieldRow label={t('login.code')} hint={t('login.codeHint')} width="w-40">
+              <Text value={code} onChange={setCode} placeholder="000000" label={t('login.code')} code mono />
+            </FieldRow>
           )}
           <div className="flex justify-end gap-2">
             <Button label={t('confirm.cancel')} labelKey="confirm.cancel" onClick={close} />

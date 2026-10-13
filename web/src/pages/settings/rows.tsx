@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 
-import { Field, Secret } from '../../components/Field'
+import { Field, FieldRow, Secret } from '../../components/Field'
 import { Button } from '../../lib/glimstone/Button'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
@@ -110,23 +110,37 @@ export function SecretRow({
       </SettingsRow>
     )
   }
+  const field = <Secret value={stored ? '' : value} onChange={onChange} placeholder={placeholder} autoComplete="off" label={label} />
+  const keep = changing && (
+    <Button
+      label={t('notify.keep')}
+      labelKey="notify.keep"
+      onClick={() => {
+        setChanging(false)
+        onChange(WITHHELD)
+      }}
+    />
+  )
+  if (!stacked) {
+    return (
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <div className="min-w-0 flex-[1_1_24rem]">
+          <FieldRow label={label} hint={hint}>
+            {field}
+          </FieldRow>
+        </div>
+        {keep}
+      </div>
+    )
+  }
   return (
     <div className="flex items-end gap-2">
       <div className="min-w-0 flex-1">
         <Field label={label} hint={hint}>
-          <Secret value={stored ? '' : value} onChange={onChange} placeholder={placeholder} autoComplete="off" />
+          {field}
         </Field>
       </div>
-      {changing && (
-        <Button
-          label={t('notify.keep')}
-          labelKey="notify.keep"
-          onClick={() => {
-            setChanging(false)
-            onChange(WITHHELD)
-          }}
-        />
-      )}
+      {keep}
     </div>
   )
 }
