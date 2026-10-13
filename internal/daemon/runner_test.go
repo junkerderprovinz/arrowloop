@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -411,6 +413,41 @@ func TestTheAfterCommandRunsWhenTheDriveGoesAwayAfterTheBeforeCommand(t *testing
 	}
 }
 
+// A drive that is away is no failed run, so the check hears nothing of it,
+// whether or not a before command tried to mount the drive first.
+func TestADriveThatIsAwaySendsNoCheckPing(t *testing.T) {
+	for _, withBefore := range []bool{false, true} {
+		t.Run(fmt.Sprintf("before command %v", withBefore), func(t *testing.T) {
+			r, _, _ := stickJob(t, func(string, string) bool { return false })
+			var mu sync.Mutex
+			var pings []string
+			check := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				mu.Lock()
+				pings = append(pings, req.URL.Path)
+				mu.Unlock()
+			}))
+			t.Cleanup(check.Close)
+
+			cfg := *r.Config()
+			cfg.Jobs = append([]job.Job(nil), cfg.Jobs...)
+			if !withBefore {
+				cfg.Jobs[0].Before = ""
+			}
+			cfg.Notify = job.Notify{Healthchecks: &job.Healthchecks{URL: check.URL + "/check"}}
+			r.Reload(&cfg)
+
+			if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {
+				t.Fatalf("an unplugged drive reported %v", err)
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			if len(pings) != 0 {
+				t.Errorf("the check was pinged for a drive that is away: %q", pings)
+			}
+		})
+	}
+}
+
 // A job saved without its sides is refused with its own error rather than
 // handing an empty path to a backend.
 func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
@@ -433,6 +470,43 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 	}
 	if len(runs) != 0 {
 		t.Errorf("a job that was refused before it started left %d rows in the history", len(runs))
+	}
+}
+
+// A job with both sides in one place loads with the others, so they keep
+// running, and its own runs fail with the reason where the job's history
+// shows it.
+func TestASnakeJobFailsEveryRunAndTouchesNothing(t *testing.T) {
+	var after string
+	cfg, hist, left, _ := fixture(t, func(dir, left, right string) string {
+		after = filepath.Join(dir, "after-ran")
+		command, _ := json.Marshal(`echo ran > "` + after + `"`)
+		return fmt.Sprintf(`{"jobs":[{"name":"snake","left":"%s","right":"%s","state":"%s","quietPeriod":"0s","before":"exit 1","after":%s}]}`,
+			jsonPath(left), jsonPath(left), jsonPath(filepath.Join(dir, "snake.db")), command)
+	})
+	if err := os.WriteFile(filepath.Join(left, "a.txt"), []byte("hello"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := daemon.New(cfg, hist, nil)
+	if _, err := r.Run(t.Context(), "snake"); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
+		t.Fatalf("running a job with one place on both sides reported %v", err)
+	}
+	if _, err := r.Preview(t.Context(), "snake"); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
+		t.Errorf("previewing a job with one place on both sides reported %v", err)
+	}
+	runs, err := hist.Recent(t.Context(), "snake", history.ShowAll, 10)
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if len(runs) != 1 || !strings.Contains(runs[0].Err, "snake eating its own tail") {
+		t.Errorf("the history does not say why the job did not run: %+v", runs)
+	}
+	if _, err := os.Stat(filepath.Join(left, ".arrowloop")); err == nil {
+		t.Error("the refused job wrote into its folder")
+	}
+	if _, err := os.Stat(after); err == nil {
+		t.Error("the after command ran for a job that never started")
 	}
 }
 

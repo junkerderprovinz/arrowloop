@@ -248,15 +248,18 @@ func (r *Runner) rewatch(ctx, round context.Context, now time.Time) {
 		r.mu.Lock()
 		old := r.watchers[name]
 		var gone, back []spot
-		due := false
+		due, lost := false, false
 		if old != nil {
 			if old.failed != "" {
 				due = !now.Before(old.retry)
 			} else {
 				gone, back = old.look(seen)
+				// A folder made again under the same path between two ticks
+				// looks unchanged here, and its watch ended all the same.
+				lost = old.w != nil && old.w.Lost()
 			}
 		}
-		again := due || len(back) > 0
+		again := due || lost || len(back) > 0
 		if again {
 			delete(r.watchers, name)
 		}
@@ -267,6 +270,9 @@ func (r *Runner) rewatch(ctx, round context.Context, now time.Time) {
 		}
 		if !again {
 			continue
+		}
+		if lost && len(back) == 0 {
+			r.log("%s: a watch ended, watching again", name)
 		}
 		for _, s := range back {
 			if s.unplugged {

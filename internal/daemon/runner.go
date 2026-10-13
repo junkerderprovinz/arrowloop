@@ -142,6 +142,9 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	if j.Left == "" || j.Right == "" {
 		return nil, fmt.Errorf("%w: %s", ErrHalfWritten, name)
 	}
+	if err := j.Refused(); err != nil {
+		return nil, err
+	}
 	opt, err := j.Options()
 	if err != nil {
 		return nil, err
@@ -235,7 +238,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	r.muteWatcher(name)
 	defer r.muteWatcher(name)
 
-	rec := history.Run{Job: name, Started: time.Now()}
+	rec := history.Run{Job: name, Started: time.Now(), Answered: ans.outcome != passed.outcome}
 	// Begun before the start is announced, so a screen that looks at the log
 	// on hearing it finds the run there.
 	var live *history.Live
@@ -245,26 +248,29 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	r.publish(Event{Job: name, Phase: "started"})
 	var res apply.Result
 	var p *plan.Plan
-	// A drive that is missing before anything has run leaves nothing for the
-	// after command to undo. A before command may be what mounts it, so a job
-	// with one finds out once the command has run.
-	var err error
-	if j.Before == "" {
-		_, _, err = resolve(j)
-	}
+	// A refused job runs neither command and is recorded as failed, so its
+	// history says why. A before command may be what mounts the drive, so the
+	// drive is looked for once it has run.
+	err := j.Refused()
 	ranBefore := false
-	// Past the missing drive, which is no run, the job's check hears of every
-	// way this ends.
-	checkOut := func(bool, string) {}
-	if err == nil {
-		checkOut = r.checkIn(ctx, name)
-		err = hook.Run(ctx, j.Before, hookEnv(j, nil))
-		if err != nil {
+	if err == nil && j.Before != "" {
+		if err = hook.Run(ctx, j.Before, hookEnv(j, nil)); err != nil {
 			err = fmt.Errorf("%s: %w", hook.BeforeFailed, err)
 		} else {
 			ranBefore = true
-			res, p, err = do(ctx, j, live)
 		}
+	}
+	if err == nil {
+		_, _, err = resolve(j)
+	}
+	// A drive that is away is no run and no failure, so the job's check hears
+	// of every other way this ends and of that one not at all.
+	checkOut := func(bool, string) {}
+	if !errors.Is(err, ErrVolumeMissing) {
+		checkOut = r.checkIn(ctx, name)
+	}
+	if err == nil {
+		res, p, err = do(ctx, j, live)
 	}
 
 	// A plan a brake refused holds the job. It is not a failure, or the retries
@@ -308,10 +314,12 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	rec.Skipped = len(res.Skipped)
 
 	// Runs even when the run was stopped, since cleaning up after it is what
-	// the command is usually for.
-	if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
-		rec.Err = fmt.Sprintf("%s: %v", hook.AfterFailed, aErr)
-		err = errors.New(rec.Err)
+	// the command is usually for. A refused job never got that far.
+	if j.Refused() == nil {
+		if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
+			rec.Err = fmt.Sprintf("%s: %v", hook.AfterFailed, aErr)
+			err = errors.New(rec.Err)
+		}
 	}
 
 	// A stopped run is recorded too, so the write cannot use the run's own

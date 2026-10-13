@@ -59,6 +59,11 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **Two accounts on one server are two places.** A job between two Nextcloud users, or between two access keys on one S3 endpoint, looked like a job pointing at itself, and ArrowLoop refused to start. A job whose two sides really are one place now stops alone and says why in its history, while the other jobs keep running.
+- **A job that sets its own direction no longer takes the default's mode.** With mirror as the default, a job set to run right to left mirrored that way too, and a job set to mirror changed sides when the default direction changed. Direction and mode now go together, as the editor shows them: a job with a direction and no mode copies, and a mirror or move without a direction of its own stops and says it needs one.
+- **A watched folder deleted and made again, or a stick plugged back under the same letter, is watched again** from the next minute. Until then the job ran only on its schedule.
+- **A held run you allow is no unusual run.** Run anyway and Take back no longer leave a note about the deletions you just allowed, and the job does not learn from that run what it usually does.
+- **Healthchecks.io hears nothing while a job's drive is unplugged**, also for a job with a command before the run. Such a job reported a failed run at every turn.
 - **A job whose schedule was missed no longer makes the page ask for the findings without end.** Reading the findings confirmed the overdue note, the engine reported that as a change, and the page read the findings again, tens of thousands of times until the browser gave up or the job ran. The engine now reports only a real change, and the page asks at most once a second.
 - **The duplicate search names its sides in whole words.** German read "linksn Seite", and several other languages declined the side word wrongly.
 - **Enterprise File Fabric no longer wears Nasuni's mark.** Its own logo is gone, so the target picker shows the storage glyph.

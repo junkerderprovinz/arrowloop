@@ -47,21 +47,78 @@ func TestADraftWithNoSidesIsNotASnake(t *testing.T) {
 // Being switched off excuses a job from being complete, not from a destructive
 // shape, because switching it on is one tap.
 func TestSwitchingItOffDoesNotExcuseIt(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "arrowloop.json")
-	write(t, path, `{"jobs":[{"name":"Schlange","disabled":true,"left":"/fotos","right":"/fotos","state":"state/x.db"}]}`)
-	if _, err := Load(path); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
-		t.Errorf("a disabled job with one place on both sides was accepted: %v", err)
+	cfg := loadBody(t, `{"jobs":[{"name":"Schlange","disabled":true,"left":"/fotos","right":"/fotos","state":"state/x.db"}]}`)
+	j, _ := cfg.Find("Schlange")
+	if err := j.Refused(); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
+		t.Errorf("a disabled job with one place on both sides was not refused: %v", err)
 	}
 }
 
+// One job that cannot run must not keep the program from starting, or every
+// other job stops with it.
+func TestASnakeIsRefusedAloneAndTheOthersLoad(t *testing.T) {
+	cfg := loadBody(t, `{"jobs":[
+		{"name":"Schlange","left":"/fotos","right":"/fotos","state":"state/x.db"},
+		{"name":"Fotos","left":"/fotos","right":"/sicherung","state":"state/y.db"}
+	]}`)
+	snake, _ := cfg.Find("Schlange")
+	if snake.Refused() == nil {
+		t.Error("the job with one place on both sides was not refused")
+	}
+	fine, ok := cfg.Find("Fotos")
+	if !ok || fine.Refused() != nil {
+		t.Errorf("the job beside it was refused too: %v", fine.Refused())
+	}
+}
+
+// A file that already holds a refused job can still be saved, while an edit
+// that makes a job refused is turned down like any other bad edit.
+func TestASaveIsRefusedOnlyForTheSnakeItMakes(t *testing.T) {
+	cfg := loadBody(t, `{"jobs":[
+		{"name":"Schlange","left":"/fotos","right":"/fotos","state":"state/x.db"},
+		{"name":"Fotos","left":"/fotos","right":"/sicherung","state":"state/y.db"}
+	]}`)
+	if _, err := cfg.SaveSettings(map[string]any{"parallelJobs": 2.0}); err != nil {
+		t.Errorf("a settings change was refused over a job it did not touch: %v", err)
+	}
+	jobs, err := cfg.JobsAsMaps()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, j := range jobs {
+		if j["name"] == "Fotos" {
+			j["right"] = "/fotos"
+		}
+	}
+	if _, err := cfg.SaveJobs(jobs); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
+		t.Errorf("an edit that points a job at itself was saved: %v", err)
+	}
+}
+
+// loadWithSides loads one job between two sides and returns why it would not
+// load or would not run.
 func loadWithSides(t *testing.T, left, right string) error {
 	t.Helper()
 	dir := t.TempDir()
 	path := filepath.Join(dir, "arrowloop.json")
 	write(t, path, `{"jobs":[{"name":"Test","left":`+quote(left)+`,"right":`+quote(right)+`,"state":"state/x.db"}]}`)
-	_, err := Load(path)
-	return err
+	cfg, err := Load(path)
+	if err != nil {
+		return err
+	}
+	j, _ := cfg.Find("Test")
+	return j.Refused()
+}
+
+func loadBody(t *testing.T, body string) *Config {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "arrowloop.json")
+	write(t, path, body)
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("load: %v", err)
+	}
+	return cfg
 }
 
 // quote escapes the backslashes of a Windows path, which is all the JSON

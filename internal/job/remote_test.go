@@ -13,8 +13,10 @@ import (
 	_ "github.com/rclone/rclone/backend/local"
 	_ "github.com/rclone/rclone/backend/onedrive"
 	_ "github.com/rclone/rclone/backend/s3"
+	_ "github.com/rclone/rclone/backend/seafile"
 	_ "github.com/rclone/rclone/backend/sftp"
 	_ "github.com/rclone/rclone/backend/smb"
+	_ "github.com/rclone/rclone/backend/swift"
 	_ "github.com/rclone/rclone/backend/webdav"
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configfile"
@@ -103,11 +105,11 @@ func TestServerTargetsAreComparedByHostPortAndUser(t *testing.T) {
 
 func TestBucketTargetsAreComparedByEndpointAndBucket(t *testing.T) {
 	targets(t,
-		"aws: type=s3 provider=AWS",
-		"aws2: type=s3 provider=AWS endpoint=https://s3.eu-central-1.amazonaws.com/",
-		"minio: type=s3 provider=Minio endpoint=http://minio.local:9000",
-		"minio2: type=s3 provider=Minio endpoint=minio.local:9000",
-		"vague: type=s3 provider=Minio",
+		"aws: type=s3 provider=AWS access_key_id=AKIA1",
+		"aws2: type=s3 provider=AWS access_key_id=AKIA1 endpoint=https://s3.eu-central-1.amazonaws.com/",
+		"minio: type=s3 provider=Minio access_key_id=minio endpoint=http://minio.local:9000",
+		"minio2: type=s3 provider=Minio access_key_id=minio endpoint=minio.local:9000",
+		"vague: type=s3 provider=Minio access_key_id=minio",
 	)
 	checkPlaces(t, []placeCase{
 		{"one AWS bucket under two names", "aws:eimer/fotos", "aws2:/eimer/fotos/", true, false},
@@ -121,16 +123,52 @@ func TestBucketTargetsAreComparedByEndpointAndBucket(t *testing.T) {
 
 func TestWebdavTargetsAreComparedByAddress(t *testing.T) {
 	targets(t,
-		"cloud: type=webdav url=https://Cloud.example/remote.php/dav/files/bob/",
-		"cloud2: type=webdav url=https://cloud.example:443/remote.php/dav/files/bob",
-		"dav: type=webdav url=https://cloud.example/remote.php/dav",
-		"elsewhere: type=webdav url=https://other.example/remote.php/dav/files/bob",
+		"cloud: type=webdav user=bob url=https://Cloud.example/remote.php/dav/files/bob/",
+		"cloud2: type=webdav user=bob url=https://cloud.example:443/remote.php/dav/files/bob",
+		"dav: type=webdav user=bob url=https://cloud.example/remote.php/dav",
+		"elsewhere: type=webdav user=bob url=https://other.example/remote.php/dav/files/bob",
 	)
 	checkPlaces(t, []placeCase{
 		{"one folder under two names", "cloud:fotos", "cloud2:fotos", true, false},
 		{"the address carries part of the path", "cloud:fotos", "dav:files/bob/fotos", true, false},
 		{"another server", "cloud:fotos", "elsewhere:fotos", false, true},
 	})
+}
+
+// A Nextcloud or an S3 service is one address for all of its accounts, and
+// every account has its own files there.
+func TestTwoAccountsOnOneServerAreTwoPlaces(t *testing.T) {
+	targets(t,
+		"alice: type=webdav vendor=nextcloud user=alice url=https://cloud.example/remote.php/dav/files/",
+		"bob: type=webdav vendor=nextcloud user=bob url=https://cloud.example/remote.php/dav/files/",
+		"token: type=webdav bearer_token=secret url=https://cloud.example/remote.php/dav/files/",
+		"tenant1: type=s3 provider=Ceph access_key_id=one endpoint=https://rgw.example",
+		"tenant2: type=s3 provider=Ceph access_key_id=two endpoint=https://rgw.example",
+		"anon: type=s3 provider=Ceph endpoint=https://rgw.example",
+		"projA: type=swift auth=https://keystone.example/v3 user=sam tenant=a",
+		"projB: type=swift auth=https://keystone.example/v3 user=sam tenant=b",
+		"lib1: type=seafile url=https://sea.example user=alice library=fotos",
+		"lib2: type=seafile url=https://sea.example user=bob library=fotos",
+	)
+	checkPlaces(t, []placeCase{
+		{"two Nextcloud users", "alice:", "bob:", false, true},
+		{"a WebDAV account that only its token names", "token:fotos", "bob:fotos", false, false},
+		{"one WebDAV token account under one name", "token:fotos", "token:fotos/", true, false},
+		{"two access keys on one endpoint", "tenant1:eimer", "tenant2:eimer", false, true},
+		{"a bucket without an access key", "anon:eimer", "tenant1:eimer", false, false},
+		{"two Swift projects", "projA:fotos", "projB:fotos", false, true},
+		{"two Seafile users", "lib1:", "lib2:", false, true},
+	})
+}
+
+func TestAJobBetweenTwoAccountsLoads(t *testing.T) {
+	targets(t,
+		"alice: type=webdav user=alice url=https://cloud.example/remote.php/dav/files/",
+		"bob: type=webdav user=bob url=https://cloud.example/remote.php/dav/files/",
+	)
+	if err := loadWithSides(t, "alice:fotos", "bob:fotos"); err != nil {
+		t.Errorf("a job between two accounts was refused: %v", err)
+	}
 }
 
 func TestDriveTargetsAreComparedByTheirDrive(t *testing.T) {

@@ -125,7 +125,11 @@ func (r *Runner) settle(name, outcome string, kinds ...anomaly.Kind) {
 func (r *Runner) review(ctx context.Context, rec history.Run) {
 	if !rec.Failed() {
 		r.settle(rec.Job, anomaly.Resolved, anomaly.Failing, anomaly.Overdue)
-		r.judge(ctx, rec)
+		// An answered run did what somebody just allowed, however far that is
+		// from the usual.
+		if !rec.Answered {
+			r.judge(ctx, rec)
+		}
 		return
 	}
 	after := r.config().Anomalies.FailingCount()
@@ -174,10 +178,10 @@ func (r *Runner) judge(ctx context.Context, rec history.Run) {
 	r.noted(ctx, stored, change)
 }
 
-// learn learns a job's habits from its latest successful runs, leaving out
-// the run started at skip, which is the one being judged.
+// learn learns a job's habits from its latest successful runs that nobody
+// answered, leaving out the run started at skip, which is the one being judged.
 func (r *Runner) learn(ctx context.Context, name string, skip time.Time) (anomaly.Learning, error) {
-	runs, err := r.hist.Recent(ctx, name, history.ShowSucceeded, anomaly.LearnFrom+1)
+	runs, err := r.hist.Recent(ctx, name, history.ShowUsual, anomaly.LearnFrom+1)
 	if err != nil {
 		return anomaly.Learning{}, err
 	}

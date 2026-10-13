@@ -13,6 +13,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -52,6 +53,26 @@ type Watcher struct {
 	mu      sync.Mutex
 	muted   time.Time
 	watched map[string]bool
+	lost    bool
+}
+
+// Lost reports whether the watch on a root has ended, because reading it
+// failed or the root itself went away. Nothing under that root is reported
+// until a new watcher is started, even once a folder of the same name is back.
+func (w *Watcher) Lost() bool {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	return w.lost
+}
+
+func (w *Watcher) lose() {
+	w.mu.Lock()
+	w.lost = true
+	w.mu.Unlock()
+}
+
+func (w *Watcher) isRoot(name string) bool {
+	return slices.Contains(w.opt.Roots, filepath.Clean(name))
 }
 
 // New builds a watcher over the given roots. It returns an error when there is
@@ -127,6 +148,9 @@ func (w *Watcher) Run(ctx context.Context) error {
 			if !open {
 				return nil
 			}
+			if (ev.Has(fsnotify.Remove) || ev.Has(fsnotify.Rename)) && w.isRoot(ev.Name) {
+				w.lose()
+			}
 			if !w.interesting(ev) {
 				continue
 			}
@@ -160,8 +184,10 @@ func (w *Watcher) Run(ctx context.Context) error {
 			if !open {
 				return nil
 			}
-			// The schedule still catches what the watcher misses.
+			// The schedule still catches what the watcher misses, and the
+			// caller starts a new one.
 			w.opt.Log("watch error: %v", err)
+			w.lose()
 		}
 	}
 }
