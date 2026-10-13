@@ -188,8 +188,8 @@ function keepInCard(e: MouseEvent) {
 /**
  * One job as a card that opens its page wherever it is clicked: its name in
  * the notch, the tile of its direction, what it joins and when it runs, its
- * one status with its last runs under it, and its two everyday buttons beside
- * More.
+ * last runs with its one status after them, and More beside its two everyday
+ * buttons.
  */
 function JobCard({
   job,
@@ -228,58 +228,63 @@ function JobCard({
   return (
     <li data-testid="job-row" data-new-way="/jobs/:name" onClick={() => open(job.name)} className="cursor-pointer">
       <Card title={job.name} hueIndex={hueIndex}>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-          <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
-            <DirectionGlyph direction={job.direction} />
-          </span>
-          <span className="flex min-w-0 flex-1 basis-64 flex-col gap-0.5 text-subline text-carbon-textSub">
-            <span className="flex min-w-0 flex-wrap items-center gap-x-2">
-              <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(job.left, drives)}</span>
-              <DirectionMark direction={job.direction} />
-              <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(job.right, drives)}</span>
+        {/* Two blocks centred on each other: what the job joins on the left,
+            and on the right its last runs ending in its status, above its
+            buttons. Where the window is too narrow for both, the right block
+            moves under the left one. */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <span className="flex min-w-0 flex-1 basis-72 items-center gap-4">
+            <span className="glim-row-glyph flex h-10 w-10 shrink-0 items-center justify-center rounded-control [&_svg]:h-5 [&_svg]:w-5">
+              <DirectionGlyph direction={job.direction} />
             </span>
-            <span className="flex flex-wrap gap-x-4">
-              <span>{t('jobs.runs', { cadence: describeCadence(readCadence(job.schedule ?? '', !!job.watch), t) })}</span>
-              {job.nextRun && !job.disabled && (
-                <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })}</span>
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5 text-subline text-carbon-textSub">
+              <span className="flex min-w-0 flex-wrap items-center gap-x-2">
+                <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(job.left, drives)}</span>
+                <DirectionMark direction={job.direction} />
+                <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(job.right, drives)}</span>
+              </span>
+              <span className="flex flex-wrap gap-x-4">
+                <span>{t('jobs.runs', { cadence: describeCadence(readCadence(job.schedule ?? '', !!job.watch), t) })}</span>
+                {job.nextRun && !job.disabled && (
+                  <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })}</span>
+                )}
+              </span>
+            </span>
+          </span>
+          <span className="ms-auto flex shrink-0 flex-col items-end gap-3">
+            <span className="flex items-center gap-3">
+              <span data-new="run-strip" className="flex">
+                <RunStrip recent={job.recent} />
+              </span>
+              <span data-testid="job-status" className="flex justify-end">
+                <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
+              </span>
+            </span>
+            {/* Holding and starting are separate controls: a held job can still
+                be started by hand, and stays held. */}
+            <span data-testid="job-actions" className="flex shrink-0 items-center gap-1.5" onClick={keepInCard}>
+              <span data-new="job-more" className="flex">
+                <Menu label={t('list.more')} labelKey="list.more" items={more} />
+              </span>
+              {canPause && (
+                <IconAction
+                  title={job.disabled ? t('jobs.resume') : t('jobs.pause')}
+                  labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
+                  disabled={busy}
+                  onClick={onPause}
+                >
+                  {job.disabled ? <IconPlay /> : <IconPause />}
+                </IconAction>
               )}
-            </span>
-          </span>
-          {/* The status and the runs that led to it, at the card's end. */}
-          <span className="ms-auto flex shrink-0 flex-col items-end gap-2">
-            <span data-testid="job-status" className="flex justify-end">
-              <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
-            </span>
-            <span data-new="run-strip" className="flex">
-              <RunStrip recent={job.recent} />
-            </span>
-          </span>
-        </div>
-        <div className="flex flex-wrap items-center justify-end gap-3">
-          {/* Holding and starting are separate controls: a held job can still
-              be started by hand, and stays held. */}
-          <span data-testid="job-actions" className="ms-auto flex shrink-0 items-center gap-1.5" onClick={keepInCard}>
-            {canPause && (
               <IconAction
-                title={job.disabled ? t('jobs.resume') : t('jobs.pause')}
-                labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
-                disabled={busy}
-                onClick={onPause}
-              >
-                {job.disabled ? <IconPlay /> : <IconPause />}
-              </IconAction>
-            )}
-            <IconAction
-              title={job.running ? t('jobs.cancelRun') : t('jobs.runNow')}
-              labelKey={job.running ? 'jobs.cancelRun' : 'jobs.runNow'}
-              hint={job.running ? undefined : t('jobs.runNowHint')}
-              onClick={() => {
-                const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
-                asked.catch((e: Error) => push(e.message, 'fail'))
-              }}
-            />
-            <span data-new="job-more" className="flex">
-              <Menu label={t('list.more')} labelKey="list.more" items={more} />
+                title={job.running ? t('jobs.cancelRun') : t('jobs.runNow')}
+                labelKey={job.running ? 'jobs.cancelRun' : 'jobs.runNow'}
+                hint={job.running ? undefined : t('jobs.runNowHint')}
+                onClick={() => {
+                  const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
+                  asked.catch((e: Error) => push(e.message, 'fail'))
+                }}
+              />
             </span>
           </span>
         </div>

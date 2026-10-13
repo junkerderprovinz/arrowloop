@@ -116,12 +116,12 @@ describe('the jobs page', () => {
 })
 
 describe('a job card', () => {
-  it('carries pause, run and More as its buttons, and opens the job anywhere else', async () => {
+  it('carries More, Pause and Run now in that order, and opens the job anywhere else', async () => {
     page()
     await screen.findAllByRole('button', { name: 'Pause' })
     const photos = row('photos')
     const actions = within(photos).getByTestId('job-actions')
-    expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['Pause', 'Run now', 'More'])
+    expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['More', 'Pause', 'Run now'])
 
     fireEvent.click(photos)
     expect(opened).toHaveBeenCalledWith('photos')
