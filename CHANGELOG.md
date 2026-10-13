@@ -8,6 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **The phone app can sync the folders in Android/data**, which Android 11 and later keep from every app but the one each folder belongs to. Switch on Android/data under This phone, and they show up as a target called Android. On a rooted phone ArrowLoop reads and writes them; with Shizuku it only reads them.
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
+
 ## 2.0.0 - 2026-10-13
 
 ## ✨ Added

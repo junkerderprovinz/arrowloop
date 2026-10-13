@@ -10,6 +10,7 @@ import java.net.URL
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -222,6 +223,8 @@ object Engine {
         // cmd/arrowloop/android.go.
         builder.environment()["TZ"] = TimeZone.getDefault().id
         nameservers(context)?.let { builder.environment()["ARROWLOOP_DNS"] = it }
+        // Without these the engine takes the Android target away again.
+        builder.environment().putAll(AppData.environment(context))
         builder.redirectErrorStream(true)
         builder.redirectOutput(ProcessBuilder.Redirect.appendTo(log))
 
@@ -259,6 +262,26 @@ object Engine {
     fun stop() {
         process?.destroy()
         process = null
+        AppData.stop()
+    }
+
+    /**
+     * Starts the engine over, so it reads its environment again. Only an
+     * engine this process started can be; any other picks the change up when
+     * it next starts.
+     */
+    @Synchronized
+    fun restart(context: Context) {
+        val old = process ?: return
+        old.destroy()
+        // An engine still running would answer the probe in start, which
+        // would then leave it be and start nothing.
+        if (!old.waitFor(10, TimeUnit.SECONDS)) {
+            old.destroyForcibly()
+            old.waitFor()
+        }
+        process = null
+        start(context)
     }
 
     /**

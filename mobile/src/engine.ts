@@ -41,7 +41,31 @@ interface EngineNativeModule {
   batteryExempt(): Promise<boolean>;
   /** Copies to the clipboard; React Native's own Clipboard is deprecated. */
   copy(value: string): Promise<void>;
+
+  /** How Android/data stands, after starting its server if it is switched on. */
+  appData(): Promise<AppDataState>;
+  /** Switches Android/data on or off and starts the engine over. */
+  setAppData(on: boolean): Promise<AppDataState>;
+  /** Shows Shizuku's permission dialog and resolves once it is answered. */
+  askShizuku(): Promise<AppDataState>;
 }
+
+/**
+ * Whether the engine can reach Android/data, and if not, why. Anything but
+ * `off` means the switch is on.
+ */
+export type AppDataState =
+  | "off"
+  /** Through su: read and write. */
+  | "root"
+  /** Through Shizuku as the adb shell user: read only. */
+  | "shizuku"
+  /** Neither root nor Shizuku on this phone. */
+  | "noWay"
+  | "shizukuStopped"
+  | "shizukuDenied"
+  /** The server stopped twice. */
+  | "failed";
 
 /**
  * The run conditions somebody chose. Kept apart from the live readings in
@@ -122,6 +146,9 @@ export const engine = {
     native ? native.setDevicePolicy(policy) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
   copy: (value: string) => (native ? native.copy(value) : missing()),
+  appData: (): Promise<AppDataState> => (native ? native.appData() : Promise.resolve("off")),
+  setAppData: (on: boolean) => (native ? native.setAppData(on) : missing()),
+  askShizuku: () => (native ? native.askShizuku() : missing()),
   /** Whether this build has an engine at all. */
   available: Boolean(native),
 };

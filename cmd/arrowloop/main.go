@@ -33,7 +33,7 @@ const usage = `arrowloop synchronises two folders in both directions.
   arrowloop history  -config <file> [-job <name>]             what the runs did
   arrowloop service  [-config <file>] [-os <goos>]            the service file for this system
   arrowloop hash-password                                     the value for ARROWLOOP_PASSWORD_HASH
-  arrowloop serve-data [-read-only] [-adopt]                  serve Android/data to the phone app's engine
+  arrowloop serve-data [-read-only] [-adopt] [-exit-on-eof]   serve Android/data to the phone app's engine
   arrowloop version                                           which build this is
 
 Every command takes -h for its own flags.

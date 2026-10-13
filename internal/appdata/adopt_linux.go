@@ -1,6 +1,7 @@
 package appdata
 
 import (
+	"errors"
 	"os"
 	"syscall"
 
@@ -41,5 +42,11 @@ func (h *handler) handOver(p, app string, dir bool) error {
 		// No label to copy, which is the case off Android.
 		return nil
 	}
-	return unix.Lsetxattr(p, selinuxLabel, label[:n], 0)
+	err = unix.Lsetxattr(p, selinuxLabel, label[:n], 0)
+	if errors.Is(err, unix.EOPNOTSUPP) {
+		// Under /storage/emulated, Android's FUSE layer labels new files
+		// itself and refuses the attribute.
+		return nil
+	}
+	return err
 }

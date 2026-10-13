@@ -148,7 +148,10 @@ function withPackageRegistered(config) {
   });
 }
 
-/** Adds the services and the boot receiver, and allows cleartext to loopback only. */
+/**
+ * Adds the services, the boot receiver and Shizuku's provider, and allows
+ * cleartext to loopback only.
+ */
 function withEngineManifest(config) {
   return withAndroidManifest(config, (cfg) => {
     const app = AndroidConfig.Manifest.getMainApplicationOrThrow(cfg.modResults);
@@ -183,6 +186,34 @@ function withEngineManifest(config) {
         $: { "android:name": ".BootReceiver", "android:exported": "true", "android:enabled": "true" },
         "intent-filter": [{ action: [{ $: { "android:name": "android.intent.action.BOOT_COMPLETED" } }] }],
       });
+    }
+
+    // Shizuku hands the app its binder through this provider. The permission
+    // is one the shell holds and apps do not, so only Shizuku can call it.
+    app.provider = app.provider ?? [];
+    if (!app.provider.some((p) => p.$["android:name"] === "rikka.shizuku.ShizukuProvider")) {
+      app.provider.push({
+        $: {
+          "android:name": "rikka.shizuku.ShizukuProvider",
+          "android:authorities": "${applicationId}.shizuku",
+          "android:multiprocess": "false",
+          "android:enabled": "true",
+          "android:exported": "true",
+          "android:permission": "android.permission.INTERACT_ACROSS_USERS_FULL",
+        },
+      });
+    }
+
+    // Android 11 and later hide other apps unless they are named here, and
+    // AppData looks for the Shizuku app to tell "not running" from "not
+    // installed".
+    const manifest = cfg.modResults.manifest;
+    manifest.queries = manifest.queries ?? [{}];
+    const queries = manifest.queries[0];
+    queries.package = queries.package ?? [];
+    const shizuku = "moe.shizuku.privileged.api";
+    if (!queries.package.some((p) => p.$["android:name"] === shizuku)) {
+      queries.package.push({ $: { "android:name": shizuku } });
     }
 
     // expo-build-properties sets usesCleartextTraffic, which would allow plain
@@ -266,6 +297,12 @@ copy {
 copy {
     from rootProject.file('../native/jniLibs')
     into file('src/main/jniLibs')
+}
+
+// Shizuku starts the Android/data server as the adb shell user; see AppData.kt.
+dependencies {
+    implementation 'dev.rikka.shizuku:api:13.1.5'
+    implementation 'dev.rikka.shizuku:provider:13.1.5'
 }
 
 // Fails on an engine older than the Go sources. The prebuild step checks the

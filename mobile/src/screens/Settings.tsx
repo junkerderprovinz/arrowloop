@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AppState, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
-import { engine } from "../engine";
+import { engine, type AppDataState } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE, TOUCH } from "../theme";
@@ -89,6 +89,9 @@ export function Settings() {
   const [possible, setPossible] = useState(true);
   const [notify, setNotify] = useState<boolean | null>(null);
   const [doze, setDoze] = useState<boolean | null>(null);
+  const [appData, setAppData] = useState<AppDataState | null>(null);
+  // What the switch was moved to, shown while su or Shizuku answer.
+  const [appDataWanted, setAppDataWanted] = useState<boolean | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
   const [version, setVersion] = useState<string | null>(null);
   // Null until read, so the card never shows the built-in values for a moment.
@@ -210,6 +213,8 @@ export function Settings() {
     setRunning(alive);
     setDoze(exempt);
     engine.hasDeviceLock().then(setLockable, () => setLockable(false));
+    // Not awaited: starting the server can take seconds.
+    engine.appData().then(setAppData, () => {});
     // Shows where a backup would go before one exists.
     engine.backupPath().then(
       (where) => setBackupFile((old) => old || where),
@@ -346,6 +351,29 @@ export function Settings() {
           disabled={!possible}
           onChange={() => engine.openStorageSettings()}
         />
+        <Toggle
+          label={t("phone.appData")}
+          hint={t("phone.appDataHint")}
+          value={appDataWanted ?? (appData !== null && appData !== "off")}
+          disabled={appData === null || appDataWanted !== null}
+          onChange={(on) => {
+            setAppDataWanted(on);
+            engine
+              .setAppData(on)
+              .then(setAppData, () => {})
+              .finally(() => setAppDataWanted(null));
+          }}
+        />
+        {appData && appData !== "off" && appDataWanted === null ? <Caption>{appDataSaid(appData, t)}</Caption> : null}
+        {appData === "shizukuDenied" ? (
+          <View style={styles.actions}>
+            <Button
+              label={t("phone.appDataAsk")}
+              glyph="IconUnlock"
+              onPress={() => engine.askShizuku().then(setAppData, () => {})}
+            />
+          </View>
+        ) : null}
         <Toggle
           label={t("phone.notify")}
           hint={t("phone.permissionHint")}
@@ -950,6 +978,24 @@ function directionOf(defaults: Defaults, t: T): string {
   const named = wayLabel(way, t("side.onDevice"), t("side.target"), t("direction.both"));
   if (way === "both") return named;
   return `${named}, ${t(mode === "mirror" ? "mode.mirror" : mode === "move" ? "mode.move" : "mode.sync")}`;
+}
+
+/** The line under the Android/data switch: what it can do, or why it cannot. */
+function appDataSaid(state: Exclude<AppDataState, "off">, t: T): string {
+  switch (state) {
+    case "root":
+      return t("phone.appDataRoot");
+    case "shizuku":
+      return t("phone.appDataShizuku");
+    case "noWay":
+      return t("phone.appDataNoWay");
+    case "shizukuStopped":
+      return t("phone.appDataStopped");
+    case "shizukuDenied":
+      return t("phone.appDataDenied");
+    case "failed":
+      return t("phone.appDataFailed");
+  }
 }
 
 /** A cadence starts mid-sentence in lower case; standing alone it takes a capital. */
