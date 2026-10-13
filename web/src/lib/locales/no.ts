@@ -510,7 +510,6 @@ const no: Translations = {
   'phone.waiting': 'Venter',
   'needs.unread': 'Konflikter som ikke kunne leses',
   'overview.numbers': 'I tall',
-  'overview.runsToday': 'Kjøringer i dag',
   'settings.general': 'Generelt',
   'settings.look': 'Utseende',
   'settings.engine': 'Motor',

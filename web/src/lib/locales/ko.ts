@@ -510,7 +510,6 @@ const ko: Translations = {
   'phone.waiting': '대기 중',
   'needs.unread': '읽을 수 없었던 충돌',
   'overview.numbers': '숫자로 보기',
-  'overview.runsToday': '오늘 실행',
   'settings.general': '일반',
   'settings.look': '모양',
   'settings.engine': '엔진',

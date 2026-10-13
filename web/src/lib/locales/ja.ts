@@ -510,7 +510,6 @@ const ja: Translations = {
   'phone.waiting': '待機中',
   'needs.unread': '読み込めなかった競合',
   'overview.numbers': '数字で見る',
-  'overview.runsToday': '今日の実行',
   'settings.general': '一般',
   'settings.look': '外観',
   'settings.engine': 'エンジン',

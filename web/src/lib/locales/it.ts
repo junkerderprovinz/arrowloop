@@ -510,7 +510,6 @@ const it: Translations = {
   'phone.waiting': 'In attesa',
   'needs.unread': 'Conflitti che non è stato possibile leggere',
   'overview.numbers': 'In cifre',
-  'overview.runsToday': 'Esecuzioni di oggi',
   'settings.general': 'Generale',
   'settings.look': 'Aspetto',
   'settings.engine': 'Motore',

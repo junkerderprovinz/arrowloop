@@ -510,7 +510,6 @@ const ca: Translations = {
   'phone.waiting': 'En espera',
   'needs.unread': 'Conflictes que no s\'han pogut llegir',
   'overview.numbers': 'En xifres',
-  'overview.runsToday': 'Execucions d\'avui',
   'settings.general': 'General',
   'settings.look': 'Aparença',
   'settings.engine': 'Motor',

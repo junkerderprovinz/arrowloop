@@ -510,7 +510,6 @@ const et: Translations = {
   'phone.waiting': 'Ootel',
   'needs.unread': 'Vastuolud, mida ei õnnestunud lugeda',
   'overview.numbers': 'Arvudes',
-  'overview.runsToday': 'Tänased käivitused',
   'settings.general': 'Üldine',
   'settings.look': 'Välimus',
   'settings.engine': 'Mootor',

@@ -510,7 +510,6 @@ const ru: Translations = {
   'phone.waiting': 'Ожидают',
   'needs.unread': 'Конфликты, которые не удалось прочитать',
   'overview.numbers': 'В цифрах',
-  'overview.runsToday': 'Запуски сегодня',
   'settings.general': 'Общие',
   'settings.look': 'Внешний вид',
   'settings.engine': 'Движок',

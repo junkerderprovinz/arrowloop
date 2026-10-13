@@ -510,7 +510,6 @@ const ro: Translations = {
   'phone.waiting': 'În așteptare',
   'needs.unread': 'Conflicte care nu au putut fi citite',
   'overview.numbers': 'În cifre',
-  'overview.runsToday': 'Rulări de azi',
   'settings.general': 'General',
   'settings.look': 'Aspect',
   'settings.engine': 'Motor',

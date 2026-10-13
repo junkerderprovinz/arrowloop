@@ -510,7 +510,6 @@ const id: Translations = {
   'phone.waiting': 'Menunggu',
   'needs.unread': 'Konflik yang tidak dapat dibaca',
   'overview.numbers': 'Dalam angka',
-  'overview.runsToday': 'Jalan hari ini',
   'settings.general': 'Umum',
   'settings.look': 'Tampilan',
   'settings.engine': 'Mesin',

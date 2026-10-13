@@ -510,7 +510,6 @@ const tr: Translations = {
   'phone.waiting': 'Bekleyenler',
   'needs.unread': 'Okunamayan çakışmalar',
   'overview.numbers': 'Sayılarla',
-  'overview.runsToday': 'Bugünkü çalışmalar',
   'settings.general': 'Genel',
   'settings.look': 'Görünüm',
   'settings.engine': 'Motor',

@@ -510,7 +510,6 @@ const el: Translations = {
   'phone.waiting': 'Σε αναμονή',
   'needs.unread': 'Διενέξεις που δεν ήταν δυνατό να διαβαστούν',
   'overview.numbers': 'Σε αριθμούς',
-  'overview.runsToday': 'Εκτελέσεις σήμερα',
   'settings.general': 'Γενικά',
   'settings.look': 'Εμφάνιση',
   'settings.engine': 'Μηχανή',

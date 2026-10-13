@@ -510,7 +510,6 @@ const fa: Translations = {
   'phone.waiting': 'در انتظار',
   'needs.unread': 'تعارض‌هایی که خوانده نشدند',
   'overview.numbers': 'به عدد',
-  'overview.runsToday': 'اجراهای امروز',
   'settings.general': 'عمومی',
   'settings.look': 'ظاهر',
   'settings.engine': 'موتور',

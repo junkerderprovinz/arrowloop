@@ -510,7 +510,6 @@ const bg: Translations = {
   'phone.waiting': 'Чакат',
   'needs.unread': 'Конфликти, които не можаха да се прочетат',
   'overview.numbers': 'В числа',
-  'overview.runsToday': 'Изпълнения днес',
   'settings.general': 'Общи',
   'settings.look': 'Външен вид',
   'settings.engine': 'Двигател',

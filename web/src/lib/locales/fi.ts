@@ -510,7 +510,6 @@ const fi: Translations = {
   'phone.waiting': 'Odottaa',
   'needs.unread': 'Ristiriidat, joita ei voitu lukea',
   'overview.numbers': 'Lukuina',
-  'overview.runsToday': 'Ajot tänään',
   'settings.general': 'Yleiset',
   'settings.look': 'Ulkoasu',
   'settings.engine': 'Moottori',

@@ -510,7 +510,6 @@ const th: Translations = {
   'phone.waiting': 'รอดำเนินการ',
   'needs.unread': 'ข้อขัดแย้งที่อ่านไม่ได้',
   'overview.numbers': 'เป็นตัวเลข',
-  'overview.runsToday': 'การทำงานวันนี้',
   'settings.general': 'ทั่วไป',
   'settings.look': 'รูปลักษณ์',
   'settings.engine': 'เอนจิน',

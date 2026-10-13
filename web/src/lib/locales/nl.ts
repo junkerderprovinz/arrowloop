@@ -510,7 +510,6 @@ const nl: Translations = {
   'phone.waiting': 'Wacht',
   'needs.unread': 'Conflicten die niet gelezen konden worden',
   'overview.numbers': 'In cijfers',
-  'overview.runsToday': 'Runs vandaag',
   'settings.general': 'Algemeen',
   'settings.look': 'Uiterlijk',
   'settings.engine': 'Motor',

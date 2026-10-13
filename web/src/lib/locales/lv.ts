@@ -510,7 +510,6 @@ const lv: Translations = {
   'phone.waiting': 'Gaida',
   'needs.unread': 'Konflikti, kurus neizdevās nolasīt',
   'overview.numbers': 'Skaitļos',
-  'overview.runsToday': 'Šodienas palaišanas',
   'settings.general': 'Vispārīgi',
   'settings.look': 'Izskats',
   'settings.engine': 'Dzinējs',

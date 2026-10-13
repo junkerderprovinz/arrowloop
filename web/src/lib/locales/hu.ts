@@ -510,7 +510,6 @@ const hu: Translations = {
   'phone.waiting': 'Várakozik',
   'needs.unread': 'Ütközések, amelyeket nem sikerült beolvasni',
   'overview.numbers': 'Számokban',
-  'overview.runsToday': 'Mai futások',
   'settings.general': 'Általános',
   'settings.look': 'Megjelenés',
   'settings.engine': 'Motor',

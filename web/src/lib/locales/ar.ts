@@ -510,7 +510,6 @@ const ar: Translations = {
   'phone.waiting': 'قيد الانتظار',
   'needs.unread': 'تعارضات تعذّرت قراءتها',
   'overview.numbers': 'بالأرقام',
-  'overview.runsToday': 'عمليات اليوم',
   'settings.general': 'عام',
   'settings.look': 'المظهر',
   'settings.engine': 'المحرك',

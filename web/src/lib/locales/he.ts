@@ -510,7 +510,6 @@ const he: Translations = {
   'phone.waiting': 'ממתינים',
   'needs.unread': 'התנגשויות שלא ניתן היה לקרוא',
   'overview.numbers': 'במספרים',
-  'overview.runsToday': 'הרצות היום',
   'settings.general': 'כללי',
   'settings.look': 'מראה',
   'settings.engine': 'מנוע',

@@ -510,7 +510,6 @@ const sv: Translations = {
   'phone.waiting': 'Väntar',
   'needs.unread': 'Konflikter som inte kunde läsas',
   'overview.numbers': 'I siffror',
-  'overview.runsToday': 'Körningar i dag',
   'settings.general': 'Allmänt',
   'settings.look': 'Utseende',
   'settings.engine': 'Motor',

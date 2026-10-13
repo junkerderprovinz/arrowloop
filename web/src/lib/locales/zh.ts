@@ -510,7 +510,6 @@ const zh: Translations = {
   'phone.waiting': '等待中',
   'needs.unread': '无法读取的冲突',
   'overview.numbers': '数字一览',
-  'overview.runsToday': '今日运行',
   'settings.general': '常规',
   'settings.look': '外观',
   'settings.engine': '引擎',

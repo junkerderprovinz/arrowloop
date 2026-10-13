@@ -510,7 +510,6 @@ const sl: Translations = {
   'phone.waiting': 'Čaka',
   'needs.unread': 'Spori, ki jih ni bilo mogoče prebrati',
   'overview.numbers': 'V številkah',
-  'overview.runsToday': 'Zagoni danes',
   'settings.general': 'Splošno',
   'settings.look': 'Videz',
   'settings.engine': 'Pogon',

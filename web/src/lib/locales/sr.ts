@@ -510,7 +510,6 @@ const sr: Translations = {
   'phone.waiting': 'Чекају',
   'needs.unread': 'Сукоби који нису могли да се прочитају',
   'overview.numbers': 'У бројевима',
-  'overview.runsToday': 'Покретања данас',
   'settings.general': 'Опште',
   'settings.look': 'Изглед',
   'settings.engine': 'Погон',

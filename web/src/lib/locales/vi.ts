@@ -510,7 +510,6 @@ const vi: Translations = {
   'phone.waiting': 'Đang chờ',
   'needs.unread': 'Xung đột không đọc được',
   'overview.numbers': 'Bằng con số',
-  'overview.runsToday': 'Lần chạy hôm nay',
   'settings.general': 'Chung',
   'settings.look': 'Giao diện',
   'settings.engine': 'Bộ máy',

@@ -510,7 +510,6 @@ const eu: Translations = {
   'phone.waiting': 'Zain daude',
   'needs.unread': 'Irakurri ezin izan diren gatazkak',
   'overview.numbers': 'Zenbakitan',
-  'overview.runsToday': 'Gaurko exekuzioak',
   'settings.general': 'Orokorra',
   'settings.look': 'Itxura',
   'settings.engine': 'Motorra',

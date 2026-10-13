@@ -510,7 +510,6 @@ const pl: Translations = {
   'phone.waiting': 'Oczekuje',
   'needs.unread': 'Konflikty, których nie udało się odczytać',
   'overview.numbers': 'W liczbach',
-  'overview.runsToday': 'Przebiegi dziś',
   'settings.general': 'Ogólne',
   'settings.look': 'Wygląd',
   'settings.engine': 'Silnik',

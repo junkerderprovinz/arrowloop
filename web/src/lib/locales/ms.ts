@@ -510,7 +510,6 @@ const ms: Translations = {
   'phone.waiting': 'Menunggu',
   'needs.unread': 'Konflik yang tidak dapat dibaca',
   'overview.numbers': 'Dalam angka',
-  'overview.runsToday': 'Larian hari ini',
   'settings.general': 'Umum',
   'settings.look': 'Rupa',
   'settings.engine': 'Enjin',

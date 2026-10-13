@@ -510,7 +510,6 @@ const cs: Translations = {
   'phone.waiting': 'Čeká',
   'needs.unread': 'Konflikty, které se nepodařilo načíst',
   'overview.numbers': 'V číslech',
-  'overview.runsToday': 'Běhy dnes',
   'settings.general': 'Obecné',
   'settings.look': 'Vzhled',
   'settings.engine': 'Jádro',

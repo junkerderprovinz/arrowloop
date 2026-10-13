@@ -510,7 +510,6 @@ const lt: Translations = {
   'phone.waiting': 'Laukia',
   'needs.unread': 'Konfliktai, kurių nepavyko perskaityti',
   'overview.numbers': 'Skaičiais',
-  'overview.runsToday': 'Šiandienos paleidimai',
   'settings.general': 'Bendra',
   'settings.look': 'Išvaizda',
   'settings.engine': 'Variklis',

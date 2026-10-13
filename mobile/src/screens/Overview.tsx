@@ -40,9 +40,6 @@ import {
   type Tone,
 } from "../ui";
 
-/** The runs asked for to count today's; more than a phone's jobs run in a day. */
-const RECENT = 200;
-
 /** How many of the coming runs the overview names. */
 const NEXT_SHOWN = 3;
 
@@ -142,8 +139,14 @@ export function Overview() {
 
         <Section title={t("overview.numbers")} hue={0}>
           <View style={styles.tiles}>
-            <Tile value={jobs.length} label={t("nav.jobs")} onPress={() => toTab("JobsTab")} />
-            <Tile value={recent.today} label={t("overview.runsToday")} onPress={() => toTab("HistoryTab")} />
+            <Tile value={waiting.conflicts} label={t("nav.conflicts")} onPress={() => toTab("ConflictsTab")} />
+            {waiting.anomaliesOn !== false ? (
+              <Tile
+                value={waiting.findings === null ? null : waiting.findings.length}
+                label={t("nav.anomalies")}
+                onPress={() => nav.navigate("Anomalies")}
+              />
+            ) : null}
             <Tile
               value={waiting.trash}
               label={t("nav.trash")}
@@ -228,22 +231,18 @@ export function Overview() {
 }
 
 /**
- * The newest run across all jobs, what it did, how many runs started today,
- * and the last files a run touched. Asked for again only when a run
- * finishes, not on every progress frame.
+ * The newest run across all jobs, what it did, and the last files a run
+ * touched. Asked for again only when a run finishes, not on every progress
+ * frame.
  */
 function useRecentRuns() {
   const [newest, setNewest] = useState<Run | null | "none">(null);
   const [tally, setTally] = useState<Tally | null>(null);
-  const [today, setToday] = useState<number | null>(null);
   const [touches, setTouches] = useState<Touch[] | null>(null);
 
   const reload = useCallback(() => {
-    api.history(RECENT).then(
+    api.history(1).then(
       (runs) => {
-        const midnight = new Date();
-        midnight.setHours(0, 0, 0, 0);
-        setToday(runs.filter((r) => new Date(r.Started) >= midnight).length);
         const first = runs[0];
         if (!first) {
           setNewest("none");
@@ -263,7 +262,7 @@ function useRecentRuns() {
     if (event.phase === "finished") reload();
   });
 
-  return { newest, tally, today, touches, reload };
+  return { newest, tally, touches, reload };
 }
 
 /**

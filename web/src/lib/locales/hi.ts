@@ -510,7 +510,6 @@ const hi: Translations = {
   'phone.waiting': 'प्रतीक्षा में',
   'needs.unread': 'वे टकराव जिन्हें पढ़ा नहीं जा सका',
   'overview.numbers': 'आँकड़ों में',
-  'overview.runsToday': 'आज के चक्र',
   'settings.general': 'सामान्य',
   'settings.look': 'रूप',
   'settings.engine': 'इंजन',

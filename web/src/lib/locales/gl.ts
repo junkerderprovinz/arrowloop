@@ -510,7 +510,6 @@ const gl: Translations = {
   'phone.waiting': 'En espera',
   'needs.unread': 'Conflitos que non se puideron ler',
   'overview.numbers': 'En cifras',
-  'overview.runsToday': 'Execucións de hoxe',
   'settings.general': 'Xeral',
   'settings.look': 'Aparencia',
   'settings.engine': 'Motor',

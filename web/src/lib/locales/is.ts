@@ -510,7 +510,6 @@ const is: Translations = {
   'phone.waiting': 'Bíður',
   'needs.unread': 'Árekstrar sem ekki tókst að lesa',
   'overview.numbers': 'Í tölum',
-  'overview.runsToday': 'Keyrslur í dag',
   'settings.general': 'Almennt',
   'settings.look': 'Útlit',
   'settings.engine': 'Vél',

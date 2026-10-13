@@ -510,7 +510,6 @@ const uk: Translations = {
   'phone.waiting': 'Очікують',
   'needs.unread': 'Конфлікти, які не вдалося прочитати',
   'overview.numbers': 'У цифрах',
-  'overview.runsToday': 'Запуски сьогодні',
   'settings.general': 'Загальні',
   'settings.look': 'Вигляд',
   'settings.engine': 'Рушій',

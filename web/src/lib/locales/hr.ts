@@ -510,7 +510,6 @@ const hr: Translations = {
   'phone.waiting': 'Čeka',
   'needs.unread': 'Sukobi koji se nisu mogli pročitati',
   'overview.numbers': 'U brojkama',
-  'overview.runsToday': 'Pokretanja danas',
   'settings.general': 'Općenito',
   'settings.look': 'Izgled',
   'settings.engine': 'Pogon',
