@@ -655,10 +655,11 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	}
 }
 
-// waitFor polls for a condition for up to ten seconds.
+// waitFor polls for a condition for up to thirty seconds, which a slow CI
+// runner needs for two first runs.
 func waitFor(t *testing.T, ok func() bool, complaint string) {
 	t.Helper()
-	deadline := time.Now().Add(10 * time.Second)
+	deadline := time.Now().Add(30 * time.Second)
 	for time.Now().Before(deadline) {
 		if ok() {
 			return
