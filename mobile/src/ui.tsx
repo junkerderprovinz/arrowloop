@@ -1462,7 +1462,8 @@ export function Floating({ children }: { children: ReactNode }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  page: { padding: space.lg, gap: space.md },
+  // Every page sits under a title bar, which already leaves room above.
+  page: { padding: space.lg, paddingTop: space.xs, gap: space.md },
   card: { padding: space.lg, gap: space.sm, overflow: "hidden" },
   edge: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4 },
 
