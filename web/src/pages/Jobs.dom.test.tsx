@@ -71,6 +71,7 @@ function job(name: string, over: Partial<Job> = {}): Job {
 
 const opened = vi.fn((_name: string) => undefined)
 const went = vi.fn((_place: unknown) => undefined)
+const saved = vi.fn()
 
 function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[], conflicts = [] as { job: string }[] } = {}) {
   render(
@@ -78,7 +79,7 @@ function page({ jobs = [job('photos'), job('music')], findings = [] as Finding[]
       <ToastProvider>
         <GoTo.Provider value={went}>
           <OpenJob.Provider value={opened}>
-            <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={() => undefined} />
+            <Jobs jobs={jobs} findings={findings} progress={{}} conflicts={conflicts} onSaved={saved} />
           </OpenJob.Provider>
         </GoTo.Provider>
       </ToastProvider>
@@ -379,5 +380,25 @@ describe('the first job card', () => {
     const [first, second] = [...document.querySelectorAll('li > .glim-notch-card')] as HTMLElement[]
     expect(selectors.some((s) => first.matches(s))).toBe(true)
     expect(selectors.some((s) => second.matches(s))).toBe(false)
+  })
+})
+
+describe('Run now on the Jobs page', () => {
+  it('asks for the jobs again once the engine has taken the run', async () => {
+    page()
+    await screen.findByText('photos')
+    saved.mockClear()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Run now' })[0])
+    await waitFor(() => expect(run).toHaveBeenCalledWith('music'))
+    await waitFor(() => expect(saved).toHaveBeenCalled())
+  })
+
+  it('asks for the jobs again after Run all', async () => {
+    page()
+    await screen.findByText('photos')
+    saved.mockClear()
+    fireEvent.click(within(screen.getByTestId('page-actions')).getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Run all' }))
+    await waitFor(() => expect(saved).toHaveBeenCalled())
   })
 })

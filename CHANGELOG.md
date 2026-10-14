@@ -13,6 +13,9 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **The Windows installer closes a running ArrowLoop and starts the new version.** It put the new program in place but left the old one running, so `/S /relaunch` only brought back the old window, and the update waited until somebody quit ArrowLoop by hand. The installer asks the running copy to quit, as Quit in the tray menu would, which lets a sync under way stop cleanly, and starts the new version once it is installed. A copy that sat in the tray comes back there, without opening its window.
+- **Long paths in a job's Files touched list stay on their own row.** Each row is as tall as its path needs. The list has a fixed height, which squeezed the rows to one line, so a wrapped path ran over the ones below.
+- **Run now shows the run straight away** on a job's page and on the Jobs page, also while the run waits for another job to finish. Until it had its turn, the page heard nothing and kept offering Run now.
+- **A target that could not be deleted says why on its row**, for example that a password has to be set first. The reason used to appear for a few seconds in a corner while the target stayed in the list.
 
 ## 2.1.0 - 2026-10-14
 

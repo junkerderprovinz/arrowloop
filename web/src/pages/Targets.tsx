@@ -349,7 +349,6 @@ function RemoteRow({
   onChanged: () => void
 }) {
   const { t, lang } = useT()
-  const push = useToast()
   const [checking, setChecking] = useState(false)
   const [result, setResult] = useState<CheckAnswer | null>(null)
   // A failed test somebody pressed shakes the button; the one on opening does
@@ -364,6 +363,9 @@ function RemoteRow({
   const [usage, setUsage] = useState<Usage | null>(null)
   // Deleting a target takes its credentials, which nothing here can restore.
   const [confirming, setConfirming] = useState(false)
+  // Kept on the row rather than in a toast, which is gone in seconds while
+  // the target it was about stays in the list.
+  const [notDeleted, setNotDeleted] = useState('')
 
   async function check(asked = false) {
     setChecking(true)
@@ -419,6 +421,11 @@ function RemoteRow({
           {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
         </span>
         {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
+        {notDeleted && (
+          <span className="text-subline text-statusFail [overflow-wrap:anywhere]" role="alert">
+            {notDeleted}
+          </span>
+        )}
         {usage && <UsageBar usage={usage} label={space(usage, t)} />}
       </span>
       <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
@@ -455,10 +462,11 @@ function RemoteRow({
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false)
+            setNotDeleted('')
             api
               .deleteRemote(remote.name)
               .then(onChanged)
-              .catch((e: Error) => push(errorText(t, e), 'fail'))
+              .catch((e: Error) => setNotDeleted(errorText(t, e)))
           }}
         />
       )}

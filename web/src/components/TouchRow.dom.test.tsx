@@ -20,4 +20,16 @@ describe('a line of the file log', () => {
     expect(screen.getByText(/^Today, /)).toBeTruthy()
     expect(screen.queryByText(/ago$/)).toBeNull()
   })
+
+  it('keeps the height of a path that wraps when its list is short of room', () => {
+    const path = 'Serien/Dublin Murders/Dublin.Murders.2019.S01E07.1080p.BluRay.HEVC.x265.5.1-BONE.mkv'
+    const touch = { Job: 'video', When: new Date().toISOString(), Seq: 1, Kind: 'copy', Side: 'right', Path: path, Size: 931135488, Note: '' } as Touch
+    render(
+      <ul className="flex max-h-96 flex-col overflow-y-auto">
+        <TouchRow touch={touch} />
+      </ul>,
+    )
+    const row = screen.getByText(path).closest('li')!
+    expect(row.classList.contains('shrink-0')).toBe(true)
+  })
 })

@@ -122,6 +122,14 @@ describe('Targets', () => {
     expect(await screen.findByText('no remote called "home"')).toBeTruthy()
   })
 
+  it('keeps the reason a target was not deleted on its row', async () => {
+    deleteRemote.mockImplementationOnce(() => Promise.reject(new Error('set a password under Settings, Security first')))
+    show()
+    await deleteFirst()
+    const row = (await screen.findByText('home:')).closest('li') as HTMLElement
+    expect(await within(row).findByText('set a password under Settings, Security first')).toBeTruthy()
+  })
+
   it('says why a drive could not be forgotten', async () => {
     const drive: Volume = { id: 'abc', label: 'Backup drive', mount: '/mnt/backup',attached: true, lastSeen: null, path: 'volume:abc' }
     volumes.mockImplementation(() => Promise.resolve({ volumes: [drive] }))
