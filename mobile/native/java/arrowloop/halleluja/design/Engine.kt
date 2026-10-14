@@ -229,6 +229,7 @@ object Engine {
         builder.environment()["ARROWLOOP_NO_CHANNELS"] = "1"
         // Without these the engine takes the Android target away again.
         builder.environment().putAll(AppData.environment(context))
+        builder.environment().putAll(Docs.environment(context))
         builder.redirectErrorStream(true)
         builder.redirectOutput(ProcessBuilder.Redirect.appendTo(log))
 

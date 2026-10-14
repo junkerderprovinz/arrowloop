@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AppState, Keyboard, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
-import { engine, type AppData, type AppDataState, type AppDataWay } from "../engine";
+import { engine, type AppData, type AppDataState, type AppDataWay, type SharedFolder } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE, TOUCH } from "../theme";
@@ -90,6 +90,9 @@ export function Settings() {
   const [notify, setNotify] = useState<boolean | null>(null);
   const [doze, setDoze] = useState<boolean | null>(null);
   const [appData, setAppData] = useState<AppData | null>(null);
+  const [shared, setShared] = useState<SharedFolder[]>([]);
+  // "add" while the file picker is open, or the grant being given back.
+  const [sharedBusy, setSharedBusy] = useState<string | null>(null);
   // What the switch or the way was moved to, shown while su or Shizuku answer.
   const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay } | null>(null);
   // The su field's text once edited; it is stored when the field is left.
@@ -220,6 +223,7 @@ export function Settings() {
     engine.hasDeviceLock().then(setLockable, () => setLockable(false));
     // Not awaited: starting the server can take seconds.
     engine.appData().then(setAppData, () => {});
+    engine.sharedFolders().then(setShared, () => {});
     // Shows where a backup would go before one exists.
     engine.backupPath().then(
       (where) => setBackupFile((old) => old || where),
@@ -255,6 +259,12 @@ export function Settings() {
     change()
       .then(setAppData, () => {})
       .finally(() => setAppDataWanted(null));
+  };
+  const changeShared = (busy: string, change: () => Promise<SharedFolder[]>) => {
+    setSharedBusy(busy);
+    change()
+      .then(setShared, () => {})
+      .finally(() => setSharedBusy(null));
   };
   const appDataOn = appDataWanted?.on ?? (appData !== null && appData.state !== "off");
   const su = suDraft ?? appData?.su ?? "";
@@ -440,6 +450,31 @@ export function Settings() {
             ) : null}
           </>
         ) : null}
+        {/* What an app offers in Android's file picker needs neither root
+            nor Shizuku, so it stands apart from Android/data. */}
+        <Button
+          label={t("phone.sharedAdd")}
+          glyph="IconFolderAdd"
+          hint={t("phone.sharedAddHint")}
+          busy={sharedBusy === "add"}
+          disabled={sharedBusy !== null}
+          onPress={() => changeShared("add", engine.addSharedFolder)}
+        />
+        {shared.map((folder) => (
+          <Row
+            key={folder.uri}
+            label={`${folder.name} · ${folder.app}`}
+            control={
+              <Button
+                label={t("phone.sharedRemove")}
+                glyph="IconTrash"
+                busy={sharedBusy === folder.uri}
+                disabled={sharedBusy !== null}
+                onPress={() => changeShared(folder.uri, () => engine.removeSharedFolder(folder.uri))}
+              />
+            }
+          />
+        ))}
         <Toggle
           label={t("phone.notify")}
           hint={t("phone.permissionHint")}

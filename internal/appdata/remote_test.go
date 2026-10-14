@@ -54,10 +54,10 @@ func TestLinkOffersTheTargetAndUnlinkTakesItAway(t *testing.T) {
 	_, _ = rand.Read(seed)
 	knownHosts := filepath.Join(t.TempDir(), "known_hosts")
 
-	if err := Link("127.0.0.1:8423", "s3cret", seed, knownHosts); err != nil {
+	if err := AndroidData.Link("127.0.0.1:8423", "s3cret", seed, knownHosts); err != nil {
 		t.Fatal(err)
 	}
-	r := remoteNamed(RemoteName)
+	r := remoteNamed(AndroidData.Name)
 	if r == nil || r.Type != "sftp" {
 		t.Fatalf("remote after Link: %+v", r)
 	}
@@ -66,20 +66,20 @@ func TestLinkOffersTheTargetAndUnlinkTakesItAway(t *testing.T) {
 		t.Fatalf("known_hosts: %q, %v", line, err)
 	}
 
-	if err := Unlink(); err != nil {
+	if err := AndroidData.Unlink(); err != nil {
 		t.Fatal(err)
 	}
-	if remoteNamed(RemoteName) != nil {
+	if remoteNamed(AndroidData.Name) != nil {
 		t.Fatal("the remote is still there after Unlink")
 	}
 }
 
 func TestRcloneCopiesIntoAnAppFolderKeepingTheTime(t *testing.T) {
 	root, seed, addr := start(t, false)
-	if err := Link(addr, testPassword, seed, filepath.Join(t.TempDir(), "kh")); err != nil {
+	if err := AndroidData.Link(addr, testPassword, seed, filepath.Join(t.TempDir(), "kh")); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { _ = Unlink() })
+	t.Cleanup(func() { _ = AndroidData.Unlink() })
 
 	src := t.TempDir()
 	when := time.Date(2023, 1, 2, 3, 4, 5, 0, time.UTC)
@@ -96,7 +96,7 @@ func TestRcloneCopiesIntoAnAppFolderKeepingTheTime(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	to, err := rclonefs.NewFs(ctx, RemoteName+":com.example/files")
+	to, err := rclonefs.NewFs(ctx, AndroidData.Name+":com.example/files")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -114,19 +114,19 @@ func TestRcloneCopiesIntoAnAppFolderKeepingTheTime(t *testing.T) {
 }
 
 func TestATargetSomeoneNamedAndroidIsLeftAlone(t *testing.T) {
-	if err := remotes.Save(RemoteName, "local", map[string]string{}); err != nil {
+	if err := remotes.Save(AndroidData.Name, "local", map[string]string{}); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { _ = remotes.Delete(RemoteName) })
+	t.Cleanup(func() { _ = remotes.Delete(AndroidData.Name) })
 	seed := make([]byte, 32)
 
-	if err := Link("127.0.0.1:8423", "s3cret", seed, filepath.Join(t.TempDir(), "kh")); err == nil {
+	if err := AndroidData.Link("127.0.0.1:8423", "s3cret", seed, filepath.Join(t.TempDir(), "kh")); err == nil {
 		t.Fatal("Link took over a remote it did not set up")
 	}
-	if err := Unlink(); err != nil {
+	if err := AndroidData.Unlink(); err != nil {
 		t.Fatal(err)
 	}
-	if r := remoteNamed(RemoteName); r == nil || r.Type != "local" {
+	if r := remoteNamed(AndroidData.Name); r == nil || r.Type != "local" {
 		t.Fatalf("the person's remote changed: %+v", r)
 	}
 }

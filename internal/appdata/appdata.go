@@ -55,37 +55,43 @@ func Serve(o Options) error {
 }
 
 func serve(ln net.Listener, o Options) error {
-	if len(o.HostKey) != ed25519.SeedSize {
-		return fmt.Errorf("the host key must be a %d byte seed", ed25519.SeedSize)
-	}
-	if o.Password == "" {
-		return errors.New("a password is required")
-	}
 	h, err := newHandler(o.Root, o.ReadOnly, o.Adopt)
 	if err != nil {
 		return err
 	}
-	signer, err := ssh.NewSignerFromKey(ed25519.NewKeyFromSeed(o.HostKey))
+	log.Printf("serving %s on %s (read only: %t, adopting: %t)", h.root, ln.Addr(), o.ReadOnly, o.Adopt)
+	return ServeSFTP(ln, o.Password, o.HostKey, sftp.Handlers{FileGet: h, FilePut: h, FileCmd: h, FileList: h})
+}
+
+// ServeSFTP answers SFTP sessions on ln with handlers until the listener
+// fails. A client logs in as User with password, and the server proves itself
+// with the ed25519 key grown from hostKey.
+func ServeSFTP(ln net.Listener, password string, hostKey []byte, handlers sftp.Handlers) error {
+	if len(hostKey) != ed25519.SeedSize {
+		return fmt.Errorf("the host key must be a %d byte seed", ed25519.SeedSize)
+	}
+	if password == "" {
+		return errors.New("a password is required")
+	}
+	signer, err := ssh.NewSignerFromKey(ed25519.NewKeyFromSeed(hostKey))
 	if err != nil {
 		return err
 	}
 	config := &ssh.ServerConfig{
 		PasswordCallback: func(c ssh.ConnMetadata, given []byte) (*ssh.Permissions, error) {
-			if c.User() == User && subtle.ConstantTimeCompare(given, []byte(o.Password)) == 1 {
+			if c.User() == User && subtle.ConstantTimeCompare(given, []byte(password)) == 1 {
 				return nil, nil
 			}
 			return nil, errors.New("wrong password")
 		},
 	}
 	config.AddHostKey(signer)
-
-	log.Printf("serving %s on %s (read only: %t, adopting: %t)", h.root, ln.Addr(), o.ReadOnly, o.Adopt)
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
 			return err
 		}
-		go serveConn(conn, config, h)
+		go serveConn(conn, config, handlers)
 	}
 }
 
@@ -97,7 +103,7 @@ func PublicKey(seed []byte) (ssh.PublicKey, error) {
 	return ssh.NewPublicKey(ed25519.NewKeyFromSeed(seed).Public())
 }
 
-func serveConn(conn net.Conn, config *ssh.ServerConfig, h *handler) {
+func serveConn(conn net.Conn, config *ssh.ServerConfig, handlers sftp.Handlers) {
 	defer conn.Close()
 	_, chans, reqs, err := ssh.NewServerConn(conn, config)
 	if err != nil {
@@ -113,13 +119,13 @@ func serveConn(conn net.Conn, config *ssh.ServerConfig, h *handler) {
 		if err != nil {
 			continue
 		}
-		go serveSession(ch, requests, h)
+		go serveSession(ch, requests, handlers)
 	}
 }
 
 // serveSession answers the sftp subsystem and nothing else. rclone asks for a
 // shell to work out hash commands; refusing it makes rclone go without.
-func serveSession(ch ssh.Channel, requests <-chan *ssh.Request, h *handler) {
+func serveSession(ch ssh.Channel, requests <-chan *ssh.Request, handlers sftp.Handlers) {
 	defer ch.Close()
 	for req := range requests {
 		if req.Type != "subsystem" || !isSFTP(req.Payload) {
@@ -127,7 +133,7 @@ func serveSession(ch ssh.Channel, requests <-chan *ssh.Request, h *handler) {
 			continue
 		}
 		_ = req.Reply(true, nil)
-		server := sftp.NewRequestServer(ch, sftp.Handlers{FileGet: h, FilePut: h, FileCmd: h, FileList: h})
+		server := sftp.NewRequestServer(ch, handlers)
 		if err := server.Serve(); err != nil && !errors.Is(err, io.EOF) {
 			log.Printf("sftp session: %v", err)
 		}

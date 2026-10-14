@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **Folders that other apps share in Android's file picker can be synced, without root or Shizuku.** Some apps, the keyboard Fcitx5 for Android among them, keep their files in their own storage and offer them in the system file picker. That is how FolderSync reaches them, and ArrowLoop goes the same way. In Settings, This phone, Add a folder from an app opens the picker, and each folder you pick shows up in a target called Apps. The file picker cannot set a file's modification time, so ArrowLoop remembers the time it gave a file and reports it until the file changes. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+
 ## 🐛 Fixed
 
 - **The Windows installer closes a running ArrowLoop and starts the new version.** It put the new program in place but left the old one running, so `/S /relaunch` only brought back the old window, and the update waited until somebody quit ArrowLoop by hand. The installer asks the running copy to quit, as Quit in the tray menu would, which lets a sync under way stop cleanly, and starts the new version once it is installed. A copy that sat in the tray comes back there, without opening its window.

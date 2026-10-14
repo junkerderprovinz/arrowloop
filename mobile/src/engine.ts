@@ -54,6 +54,22 @@ interface EngineNativeModule {
   requestRoot(): Promise<AppData>;
   /** Shows Shizuku's permission dialog and resolves once it is answered. */
   askShizuku(): Promise<AppData>;
+
+  /** The folders other apps share with ArrowLoop through Android's file picker. */
+  sharedFolders(): Promise<SharedFolder[]>;
+  /** Opens the file picker; resolves once a folder is kept and the engine started over. */
+  addSharedFolder(): Promise<SharedFolder[]>;
+  /** Gives a folder back and starts the engine over. */
+  removeSharedFolder(uri: string): Promise<SharedFolder[]>;
+}
+
+/** A folder another app shares, as it shows up in the Apps target. */
+export interface SharedFolder {
+  name: string;
+  /** The grant, which removeSharedFolder takes back. */
+  uri: string;
+  /** The app the folder comes from. */
+  app: string;
 }
 
 /**
@@ -180,6 +196,9 @@ export const engine = {
   setAppDataSu: (su: string) => (native ? native.setAppDataSu(su) : missing()),
   requestRoot: () => (native ? native.requestRoot() : missing()),
   askShizuku: () => (native ? native.askShizuku() : missing()),
+  sharedFolders: (): Promise<SharedFolder[]> => (native ? native.sharedFolders() : Promise.resolve([])),
+  addSharedFolder: () => (native ? native.addSharedFolder() : missing()),
+  removeSharedFolder: (uri: string) => (native ? native.removeSharedFolder(uri) : missing()),
   /** Whether this build has an engine at all. */
   available: Boolean(native),
 };

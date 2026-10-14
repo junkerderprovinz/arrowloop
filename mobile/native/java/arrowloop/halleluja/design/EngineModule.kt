@@ -163,6 +163,53 @@ class EngineModule(private val context: ReactApplicationContext) :
         putString("su", report.su)
     }
 
+    /** The folders other apps share with ArrowLoop, as src/engine.ts reads them. */
+    @ReactMethod
+    fun sharedFolders(promise: Promise) {
+        Thread { promise.resolve(foldersToJs()) }.start()
+    }
+
+    /**
+     * Opens Android's folder picker and resolves with the folders once one
+     * was picked and the engine started over, or at once on Back.
+     */
+    @ReactMethod
+    fun addSharedFolder(promise: Promise) {
+        val activity = context.currentActivity
+        if (activity == null) {
+            promise.reject("folder", "there is no screen to ask in front of")
+            return
+        }
+        picking?.reject("folder", "another folder was already being picked")
+        picking = promise
+        try {
+            activity.startActivityForResult(Docs.pickIntent(), PICK_REQUEST)
+        } catch (e: ActivityNotFoundException) {
+            picking = null
+            promise.reject("folder", "this phone has no folder picker")
+        }
+    }
+
+    @ReactMethod
+    fun removeSharedFolder(uri: String, promise: Promise) {
+        Thread {
+            Docs.remove(context, Uri.parse(uri))
+            promise.resolve(foldersToJs())
+        }.start()
+    }
+
+    private fun foldersToJs() = Arguments.createArray().apply {
+        for (folder in Docs.folders(context)) {
+            pushMap(
+                Arguments.createMap().apply {
+                    putString("name", folder.name)
+                    putString("uri", folder.uri.toString())
+                    putString("app", folder.app)
+                },
+            )
+        }
+    }
+
     @ReactMethod
     fun storageGranted(promise: Promise) = promise.resolve(Storage.granted(context))
 
@@ -414,6 +461,20 @@ class EngineModule(private val context: ReactApplicationContext) :
     // Non-null parameters, as React Native's interface declares them; nullable
     // ones would override nothing.
     override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == PICK_REQUEST) {
+            val waiting = picking ?: return
+            picking = null
+            // Starting the engine over waits for it, which the main thread must not.
+            Thread {
+                try {
+                    if (resultCode == Activity.RESULT_OK && data != null) Docs.add(context, data)
+                    waiting.resolve(foldersToJs())
+                } catch (e: Exception) {
+                    waiting.reject("folder", e.message ?: "could not keep the folder")
+                }
+            }.start()
+            return
+        }
         if (requestCode != UNLOCK_REQUEST) return
         val waiting = pending ?: return
         pending = null
@@ -427,7 +488,10 @@ class EngineModule(private val context: ReactApplicationContext) :
         // its own backup rather than overwriting the real one.
         val BACKUP_NAME = if (BuildConfig.SIDE_BY_SIDE) "arrowloop-test-einstellungen.json" else "arrowloop-einstellungen.json"
         private const val UNLOCK_REQUEST = 8422
+        private const val PICK_REQUEST = 8425
     }
 
     private var pending: Promise? = null
+
+    private var picking: Promise? = null
 }

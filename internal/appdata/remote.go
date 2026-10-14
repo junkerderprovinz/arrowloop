@@ -11,19 +11,23 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 )
 
-// RemoteName is the target the app folders show up as.
-const RemoteName = "Android"
+// Target is a remote ArrowLoop sets up by itself to reach one of these
+// servers. Its description tells it from a remote a person named the same.
+type Target struct {
+	Name   string
+	Marker string
+}
 
-// marker tells the remote set up here from one a person named the same.
-const marker = "Android/data on this phone, set up by ArrowLoop"
+// AndroidData is the target the app folders show up as.
+var AndroidData = Target{Name: "Android", Marker: "Android/data on this phone, set up by ArrowLoop"}
 
 // Link points the remote at a server on addr and pins its host key in
 // knownHosts.
-func Link(addr, password string, seed []byte, knownHosts string) error {
+func (t Target) Link(addr, password string, seed []byte, knownHosts string) error {
 	data := config.LoadedData()
-	if data.HasSection(RemoteName) {
-		if v, _ := data.GetValue(RemoteName, "description"); v != marker {
-			return fmt.Errorf("a target called %s already exists, so Android/data is not offered", RemoteName)
+	if data.HasSection(t.Name) {
+		if v, _ := data.GetValue(t.Name, "description"); v != t.Marker {
+			return fmt.Errorf("a target called %s already exists, so it is not set up", t.Name)
 		}
 	}
 	pub, err := PublicKey(seed)
@@ -38,7 +42,7 @@ func Link(addr, password string, seed []byte, knownHosts string) error {
 	if err := os.WriteFile(knownHosts, []byte(line+"\n"), 0o600); err != nil {
 		return err
 	}
-	return remotes.Save(RemoteName, "sftp", map[string]string{
+	return remotes.Save(t.Name, "sftp", map[string]string{
 		"host":             host,
 		"port":             port,
 		"user":             User,
@@ -49,15 +53,15 @@ func Link(addr, password string, seed []byte, knownHosts string) error {
 		"shell_type":      "none",
 		"md5sum_command":  "none",
 		"sha1sum_command": "none",
-		"description":     marker,
+		"description":     t.Marker,
 	})
 }
 
 // Unlink removes the remote if it is the one Link set up.
-func Unlink() error {
+func (t Target) Unlink() error {
 	data := config.LoadedData()
-	if v, _ := data.GetValue(RemoteName, "description"); v != marker {
+	if v, _ := data.GetValue(t.Name, "description"); v != t.Marker {
 		return nil
 	}
-	return remotes.Delete(RemoteName)
+	return remotes.Delete(t.Name)
 }

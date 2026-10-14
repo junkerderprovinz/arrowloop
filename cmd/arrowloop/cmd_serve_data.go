@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/junkerderprovinz/arrowloop/internal/appdata"
+	"github.com/junkerderprovinz/arrowloop/internal/appdocs"
 )
 
 // The phone app hands the same secrets to the server and to the engine. They
@@ -63,16 +64,35 @@ func cmdServeData(args []string) error {
 func linkAppData(home string) {
 	addr := os.Getenv(envDataAddr)
 	if addr == "" {
-		if err := appdata.Unlink(); err != nil {
+		if err := appdata.AndroidData.Unlink(); err != nil {
 			logf("Android/data: %v", err)
 		}
 		return
 	}
 	seed, err := base64.StdEncoding.DecodeString(os.Getenv(envDataHostKey))
 	if err == nil {
-		err = appdata.Link(addr, os.Getenv(envDataPass), seed, filepath.Join(home, "android-data.known_hosts"))
+		err = appdata.AndroidData.Link(addr, os.Getenv(envDataPass), seed, filepath.Join(home, "android-data.known_hosts"))
 	}
 	if err != nil {
 		logf("Android/data: %v", err)
+	}
+}
+
+// envDocsSocket names the socket on which the phone app answers for the
+// folders other apps share with it; see internal/appdocs.
+const envDocsSocket = "ARROWLOOP_DOCS_SOCKET"
+
+// linkAppDocs offers those folders as a target while the phone app has any,
+// and takes it away again when it has none.
+func linkAppDocs(home string) {
+	socket := os.Getenv(envDocsSocket)
+	var err error
+	if socket == "" {
+		err = appdocs.Shared.Unlink()
+	} else {
+		err = appdocs.Offer(socket, os.TempDir(), filepath.Join(home, "apps.known_hosts"))
+	}
+	if err != nil {
+		logf("shared folders: %v", err)
 	}
 }
