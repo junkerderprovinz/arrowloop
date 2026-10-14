@@ -87,6 +87,7 @@ function Shell() {
   const { t } = useT();
   const { state, log, retry } = useEngine(t);
   const look = useAppearance();
+  const inset = useSafeAreaInsets();
   useDiscoWalk();
 
   // The optional lock gates the whole app, since the job list alone shows
@@ -138,13 +139,19 @@ function Shell() {
     },
   };
 
-  const header = {
-    headerStyle: { backgroundColor: p.background },
-    headerTitleStyle: { color: p.text, fontSize: text.title, fontWeight: "600" },
-    headerTintColor: p.text,
-    headerShadowVisible: false,
-    contentStyle: { backgroundColor: p.background },
-  } as const;
+  // The bar names the tab, so a tab's first page goes without a title bar and
+  // only the pages opened from it carry one, beside their back arrow.
+  const header = ({ navigation, route }: { navigation: { getState(): { routes: { key: string }[] } }; route: { key: string } }) => {
+    const first = navigation.getState().routes[0]?.key === route.key;
+    return {
+      headerShown: !first,
+      headerStyle: { backgroundColor: p.background },
+      headerTitleStyle: { color: p.text, fontSize: text.title, fontWeight: "600" },
+      headerTintColor: p.text,
+      headerShadowVisible: false,
+      contentStyle: { backgroundColor: p.background, paddingTop: first ? inset.top : 0 },
+    } as const;
+  };
 
   // Asks for the notification permission once the engine is up; the settings
   // screen covers a later change of mind.

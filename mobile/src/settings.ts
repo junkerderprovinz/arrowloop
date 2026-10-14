@@ -71,7 +71,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   disco: false,
   shape: DEFAULT_SHAPE,
   labels: "textGlyph",
-  barLabels: "textGlyph",
+  barLabels: "glyph",
   motion: "subtle",
   lock: false,
 };
