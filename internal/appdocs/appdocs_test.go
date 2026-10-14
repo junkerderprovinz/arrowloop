@@ -101,7 +101,12 @@ func (f *fakeApp) serve(conn net.Conn) {
 	case "remove", "rmdir":
 		err = os.Remove(at)
 	case "rename":
-		err = os.Rename(at, filepath.Join(f.root, filepath.FromSlash(req.To)))
+		to := filepath.Join(f.root, filepath.FromSlash(req.To))
+		if _, there := os.Stat(to); there == nil && !req.Replace {
+			err = errors.New(req.To + " already exists")
+		} else {
+			err = os.Rename(at, to)
+		}
 	default:
 		err = errors.New("unknown op " + req.Op)
 	}
@@ -183,6 +188,29 @@ func TestRcloneCopiesIntoASharedFolderKeepingTheTime(t *testing.T) {
 	}
 	if !info.ModTime().Equal(when) {
 		t.Fatalf("modification time %v, want %v", info.ModTime(), when)
+	}
+}
+
+func TestAChangedFileReplacesTheOneInTheSharedFolder(t *testing.T) {
+	_, rime := shared(t)
+	src := t.TempDir()
+	file := filepath.Join(src, "user.dict.txt")
+	ctx := context.Background()
+	for i, content := range []string{"你好 nihao 3", "你好 nihao 3\n世界 shijie 5"} {
+		if err := os.WriteFile(file, []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		when := time.Date(2024, 6, 20, 8, 51+i, 0, 0, time.UTC)
+		if err := os.Chtimes(file, when, when); err != nil {
+			t.Fatal(err)
+		}
+		if err := sync.CopyDir(ctx, remoteFs(t, Shared.Name+":rime"), remoteFs(t, src), false); err != nil {
+			t.Fatal(err)
+		}
+		data, err := os.ReadFile(filepath.Join(rime, "user.dict.txt"))
+		if err != nil || string(data) != content {
+			t.Fatalf("copy %d: %q, %v", i+1, data, err)
+		}
 	}
 }
 

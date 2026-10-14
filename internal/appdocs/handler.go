@@ -98,7 +98,9 @@ func (h *handler) Filecmd(r *sftp.Request) error {
 	case "Remove":
 		return h.app.do("remove", p)
 	case "Rename", "PosixRename":
-		_, err := h.app.call(request{Op: "rename", Path: p, To: clean(r.Target), Replace: r.Method == "PosixRename"}, nil, nil)
+		// Both replace a file already there, as rename(2) does: rclone puts a
+		// changed file in place by renaming its upload over the old one.
+		_, err := h.app.call(request{Op: "rename", Path: p, To: clean(r.Target), Replace: true}, nil, nil)
 		return err
 	}
 	return sftp.ErrSSHFxOpUnsupported
