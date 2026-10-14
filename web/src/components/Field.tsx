@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
+import { entries } from '../lib/lines'
 import { attachNumberSteppers } from '../lib/numberField'
 import { enableWheelStep, stepIndex } from '../lib/selectScroll'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
@@ -190,24 +191,31 @@ export function NumberField({
   )
 }
 
-/** The same, for a value that runs to several lines. */
+/** The same, for a list with one entry per line. */
 export function Lines({
   value,
   onChange,
   placeholder,
   rows = 4,
 }: {
-  value: string
-  onChange: (next: string) => void
+  value: string[]
+  onChange: (next: string[]) => void
   placeholder?: string
   rows?: number
 }) {
+  const [text, setText] = useState(() => value.join('\n'))
+  // A line just started is blank and so not in the list yet; the text is only
+  // replaced when the list changed from somewhere else.
+  if (entries(text).join('\n') !== value.join('\n')) setText(value.join('\n'))
   return (
     <textarea
-      value={value}
+      value={text}
       rows={rows}
       placeholder={placeholder}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        setText(e.target.value)
+        onChange(entries(e.target.value))
+      }}
       className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125"
       style={{ borderRadius: 'var(--radius-control)' }}
     />

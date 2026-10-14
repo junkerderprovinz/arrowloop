@@ -2,7 +2,7 @@ import { useNavigation, useRoute, type RouteProp } from "@react-navigation/nativ
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { api, type JobConfig } from "../api";
-import { Field, NumberField, Refusal, TimeField } from "../fields";
+import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
 import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
@@ -371,12 +371,11 @@ export function JobEdit() {
           settings until the job overrides them. */}
       <Section title={t("settings.contents")} hue={2}>
         <View ref={excludeRef} collapsable={false}>
-          <Field
+          <LinesField
             label={t("edit.exclude")}
             hint={t("edit.excludeHint")}
-            value={(job.exclude ?? []).join("\n")}
-            onChange={(raw) => set({ exclude: raw.split("\n").map((l) => l.trim()).filter(Boolean) })}
-            multiline
+            value={job.exclude ?? []}
+            onChange={(list) => set({ exclude: list })}
             placeholder={"*.tmp\n.thumbnails/"}
             error={reason("exclude")}
           />

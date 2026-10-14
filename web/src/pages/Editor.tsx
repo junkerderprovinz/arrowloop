@@ -400,15 +400,8 @@ export function JobForm({
       <div className="mt-5">
         <Field label={t('edit.exclude')} hint={t('edit.excludeHint')}>
           <Lines
-            value={(job.exclude ?? []).join('\n')}
-            onChange={(v) =>
-              patch({
-                exclude: v
-                  .split('\n')
-                  .map((l) => l.trim())
-                  .filter(Boolean),
-              })
-            }
+            value={job.exclude ?? []}
+            onChange={(v) => patch({ exclude: v })}
             placeholder={'*.tmp\n**/node_modules/**'}
           />
         </Field>

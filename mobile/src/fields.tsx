@@ -1,6 +1,7 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { entries } from "../../web/src/lib/lines";
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { radiusFor, space, text, TOUCH } from "./theme";
@@ -83,6 +84,32 @@ export function Field({
       </View>
       {error ? <Refusal text={error} /> : null}
     </View>
+  );
+}
+
+/** A field for a list with one entry per line. */
+export function LinesField({
+  value,
+  onChange,
+  ...rest
+}: Omit<Parameters<typeof Field>[0], "value" | "onChange" | "multiline"> & {
+  value: string[];
+  onChange: (next: string[]) => void;
+}) {
+  const [raw, setRaw] = useState(() => value.join("\n"));
+  // A line just started is blank and so not in the list yet; the text is only
+  // replaced when the list changed from somewhere else.
+  if (entries(raw).join("\n") !== value.join("\n")) setRaw(value.join("\n"));
+  return (
+    <Field
+      {...rest}
+      multiline
+      value={raw}
+      onChange={(next) => {
+        setRaw(next);
+        onChange(entries(next));
+      }}
+    />
   );
 }
 

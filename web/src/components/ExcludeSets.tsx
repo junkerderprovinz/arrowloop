@@ -52,16 +52,9 @@ export function ExcludeSetEditor({
             </IconAction>
           </div>
           <Lines
-            value={sets[name].join('\n')}
+            value={sets[name]}
             rows={4}
-            onChange={(text) =>
-              onChange({
-                ...sets,
-                // An empty pattern matches nothing in some engines and
-                // everything in others.
-                [name]: text.split('\n').map((l) => l.trim()).filter(Boolean),
-              })
-            }
+            onChange={(list) => onChange({ ...sets, [name]: list })}
           />
         </div>
       ))}
