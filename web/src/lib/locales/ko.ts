@@ -24,6 +24,8 @@ const ko: Translations = {
   'jobs.resume': '다시 시작',
   'jobs.runNow': '지금 실행',
   'jobs.cancelRun': '실행 취소',
+  'jobs.stopping': '실행을 중지하는 중',
+  'jobs.pauseHint': '진행 중인 실행이 있으면 중지하고, 다시 시작할 때까지 작업을 보류합니다. 수동으로는 계속 실행할 수 있습니다.',
   'jobs.runNowHint': '미리 보기 없이 이 작업을 지금 시작합니다. 같은 안전장치가 그대로 적용됩니다. 완전히 지우지 않으며, 알고 있는 파일의 절반 이상을 없앨 실행은 중단하고 그 사실을 알립니다.',
   'jobs.check': '작업 점검',
   'jobs.dupes': '중복 찾기',

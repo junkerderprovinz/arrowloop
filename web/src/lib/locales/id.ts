@@ -24,6 +24,8 @@ const id: Translations = {
   'jobs.resume': 'Lanjutkan',
   'jobs.runNow': 'Jalankan sekarang',
   'jobs.cancelRun': 'Batalkan jalannya',
+  'jobs.stopping': 'Menghentikan proses',
+  'jobs.pauseHint': 'Menghentikan proses yang sedang berjalan, jika ada, dan menahan tugas sampai kamu melanjutkannya. Kamu tetap bisa menjalankannya secara manual.',
   'jobs.runNowHint': 'Mulai tugas ini sekarang juga, tanpa pratinjau. Jaring pengaman yang sama tetap berlaku: tidak ada yang dihapus permanen, dan proses yang akan menghapus lebih dari separuh semua yang diketahuinya akan berhenti dan mengatakannya.',
   'jobs.check': 'Periksa tugas ini',
   'jobs.dupes': 'Cari duplikat',

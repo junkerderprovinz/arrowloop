@@ -24,6 +24,8 @@ const ro: Translations = {
   'jobs.resume': 'Reia',
   'jobs.runNow': 'Rulează acum',
   'jobs.cancelRun': 'Anulează rularea',
+  'jobs.stopping': 'Rularea se oprește',
+  'jobs.pauseHint': 'Oprește rularea în curs, dacă există, și ține sarcina pe loc până o reiei. O poți porni în continuare manual.',
   'jobs.runNowHint': 'Pornește această sarcină imediat, fără previzualizare. Aceleași plase rămân: nimic nu se șterge definitiv, iar o rulare care ar elimina mai mult de jumătate din tot ce cunoaște se oprește și o spune.',
   'jobs.check': 'Verifică sarcina',
   'jobs.dupes': 'Caută duplicate',

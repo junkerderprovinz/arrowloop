@@ -19,6 +19,7 @@ import (
 	"github.com/rclone/rclone/fs/rc"
 	"github.com/rclone/rclone/fs/walk"
 
+	"github.com/junkerderprovinz/arrowloop/internal/detach"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
 	"github.com/junkerderprovinz/arrowloop/internal/pathid"
 )
@@ -246,7 +247,9 @@ func (e *Entry) Hash(ctx context.Context) string {
 	if e.obj == nil {
 		return ""
 	}
-	sum, err := e.obj.Hash(ctx, hash.MD5)
+	// An SFTP host reads the whole file in a command that does not stop with
+	// the run, so a stop leaves it behind.
+	sum, err := detach.Until(ctx, func() (string, error) { return e.obj.Hash(ctx, hash.MD5) })
 	if err != nil {
 		if !errors.Is(err, hash.ErrUnsupported) {
 			fs.Debugf(e.obj, "hash failed, falling back to size and time: %v", err)

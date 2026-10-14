@@ -24,6 +24,8 @@ const pt: Translations = {
   'jobs.resume': 'Retomar',
   'jobs.runNow': 'Executar agora',
   'jobs.cancelRun': 'Cancelar a execução',
+  'jobs.stopping': 'A parar a execução',
+  'jobs.pauseHint': 'Para a execução em curso, se houver, e retém a tarefa até a retomares. Podes continuar a iniciá-la à mão.',
   'jobs.runNowHint': 'Iniciar esta tarefa já, sem pré-visualização. As mesmas redes continuam: nada é apagado definitivamente, e uma execução que removeria mais de metade de tudo o que conhece para e avisa.',
   'jobs.check': 'Verificar a tarefa',
   'jobs.dupes': 'Procurar duplicados',

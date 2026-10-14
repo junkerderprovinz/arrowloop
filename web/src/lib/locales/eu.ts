@@ -24,6 +24,8 @@ const eu: Translations = {
   'jobs.resume': 'Berrekin',
   'jobs.runNow': 'Exekutatu orain',
   'jobs.cancelRun': 'Utzi exekuzioa',
+  'jobs.stopping': 'Exekuzioa gelditzen',
+  'jobs.pauseHint': 'Abian dagoen exekuzioa gelditzen du, baldin badago, eta lana geldirik uzten du berrekin arte. Eskuz abiarazten jarrai dezakezu.',
   'jobs.runNowHint': 'Hasi lan hau berehala, aurrebistarik gabe. Segurtasun-sareak berdinak dira: ez da ezer betiko ezabatzen, eta ezagutzen duen guztiaren erdia baino gehiago kenduko lukeen exekuzio bat gelditu eta esan egiten du.',
   'jobs.check': 'Egiaztatu lana',
   'jobs.dupes': 'Bilatu bikoiztuak',

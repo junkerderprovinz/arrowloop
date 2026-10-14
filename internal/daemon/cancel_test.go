@@ -166,3 +166,84 @@ func TestARunningJobStops(t *testing.T) {
 		t.Errorf("everything was copied anyway (%d files), so the stop did nothing", len(entries))
 	}
 }
+
+// paused is the runner's configuration with the test job paused.
+func paused(r *Runner) *job.Config {
+	next := *r.config()
+	next.Jobs = append([]job.Job(nil), next.Jobs...)
+	next.Jobs[0].Disabled = true
+	return &next
+}
+
+// Pause is the button somebody reaches for when a run is copying what they
+// did not want copied, so it stops the run as well as the schedule.
+func TestPausingAJobStopsItsRun(t *testing.T) {
+	r, _, right := newRunner(t)
+	// Files just written are otherwise left for later, and there would be no
+	// copying to stop.
+	r.config().Jobs[0].QuietPeriod = "0s"
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := r.Run(context.Background(), "test")
+		done <- err
+	}()
+	deadline := time.Now().Add(10 * time.Second)
+	for !r.Running()["test"] {
+		if time.Now().After(deadline) {
+			t.Fatal("the run never started")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	r.Reload(paused(r))
+
+	select {
+	case err := <-done:
+		if err == nil {
+			t.Error("the paused run reported success")
+		}
+	case <-time.After(30 * time.Second):
+		t.Fatal("the run went on after the job was paused")
+	}
+	entries, err := os.ReadDir(right)
+	if err != nil {
+		t.Fatalf("read the right side: %v", err)
+	}
+	if len(entries) >= files {
+		t.Errorf("everything was copied anyway (%d files)", len(entries))
+	}
+}
+
+// A paused job can still be started by hand, and saving some other setting
+// while it runs is not pressing Pause.
+func TestARunStartedByHandOnAPausedJobOutlivesASave(t *testing.T) {
+	r, _, _ := newRunner(t)
+	r.config().Jobs[0].QuietPeriod = "0s"
+	r.Reload(paused(r))
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := r.Run(context.Background(), "test")
+		done <- err
+	}()
+	deadline := time.Now().Add(10 * time.Second)
+	for !r.Running()["test"] {
+		if time.Now().After(deadline) {
+			t.Fatal("the run never started")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	r.Reload(paused(r))
+
+	// A run the save stopped would end within moments. One still going after
+	// that is stopped here, so a slow machine need not copy everything.
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("the run was stopped by a save: %v", err)
+		}
+	case <-time.After(time.Second):
+		r.Cancel("test")
+		<-done
+	}
+}

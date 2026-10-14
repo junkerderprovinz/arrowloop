@@ -24,6 +24,8 @@ const lv: Translations = {
   'jobs.resume': 'Atsākt',
   'jobs.runNow': 'Palaist tagad',
   'jobs.cancelRun': 'Atcelt palaišanu',
+  'jobs.stopping': 'Palaišana tiek apturēta',
+  'jobs.pauseHint': 'Aptur notiekošo palaišanu, ja tāda ir, un aiztur uzdevumu, līdz to atsāksiet. Manuāli to joprojām varat palaist.',
   'jobs.runNowHint': 'Palaist šo uzdevumu uzreiz, bez priekšskatījuma. Paliek tie paši drošības tīkli: nekas netiek dzēsts galīgi, un palaišana, kas noņemtu vairāk nekā pusi no visa zināmā, apstājas un to pasaka.',
   'jobs.check': 'Pārbaudīt uzdevumu',
   'jobs.dupes': 'Meklēt dublikātus',

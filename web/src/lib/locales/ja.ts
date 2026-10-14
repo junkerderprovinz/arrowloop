@@ -24,6 +24,8 @@ const ja: Translations = {
   'jobs.resume': '再開',
   'jobs.runNow': '今すぐ実行',
   'jobs.cancelRun': '実行を中止',
+  'jobs.stopping': '実行を中止しています',
+  'jobs.pauseHint': '実行中の処理があれば中止し、再開するまでジョブを保留します。手動での実行は引き続きできます。',
   'jobs.runNowHint': 'このジョブをプレビューなしで今すぐ開始します。安全策は同じです。完全な削除は行わず、把握しているファイルの半分以上を消すことになる実行は中止して、その旨を伝えます。',
   'jobs.check': 'ジョブを点検',
   'jobs.dupes': '重複を探す',

@@ -24,6 +24,7 @@ import { jobStatus } from '../lib/jobList'
 import { useOpenJob } from '../lib/openJob'
 import { usePlaces } from '../lib/places'
 import { navigate } from '../lib/router'
+import { useStartStop } from '../lib/startStop'
 import { useToast } from '../lib/toast'
 
 /**
@@ -226,10 +227,10 @@ function JobCard({
   more: MenuItem[]
 }) {
   const { t, lang } = useT()
-  const push = useToast()
   const open = useOpenJob()
   const { drives } = usePlaces()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
+  const startStop = useStartStop(job, onAnswered)
 
   return (
     <li data-testid="job-row" data-new-way="/jobs/:name" onClick={() => open(job.name)} className="relative cursor-pointer">
@@ -277,6 +278,7 @@ function JobCard({
                 <IconAction
                   title={job.disabled ? t('jobs.resume') : t('jobs.pause')}
                   labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
+                  hint={job.disabled ? undefined : t('jobs.pauseHint')}
                   disabled={busy}
                   onClick={onPause}
                 >
@@ -284,13 +286,11 @@ function JobCard({
                 </IconAction>
               )}
               <IconAction
-                title={job.running ? t('jobs.cancelRun') : t('jobs.runNow')}
-                labelKey={job.running ? 'jobs.cancelRun' : 'jobs.runNow'}
-                hint={job.running ? undefined : t('jobs.runNowHint')}
-                onClick={() => {
-                  const asked = job.running ? api.stopJob(job.name) : api.run(job.name)
-                  asked.then(onAnswered, (e: Error) => push(e.message, 'fail'))
-                }}
+                title={startStop.label}
+                labelKey={startStop.labelKey}
+                hint={startStop.hint}
+                disabled={startStop.disabled}
+                onClick={startStop.press}
               />
             </span>
           </span>

@@ -35,7 +35,7 @@ vi.mock('../lib/api', () => ({
     checkJob: (name: string) => checkJob(name),
     verifyJob: () => Promise.resolve({ findings: [], truncated: false }),
     run: () => Promise.resolve({}),
-    stopJob: () => Promise.resolve({}),
+    stopJob: () => Promise.resolve({ stopped: true }),
   },
 }))
 
@@ -90,6 +90,21 @@ describe('a job page', () => {
     await screen.findByRole('button', { name: 'Edit' })
     const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
     expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
+  })
+
+  it('says the run is stopping until it has stopped', async () => {
+    render(
+      <ToastProvider>
+        <LiveJobs.Provider
+          value={{ jobs: [{ ...job('photos'), running: true }], findings: [], conflicted: [], progress: {}, speeds: {}, onSaved: () => undefined }}
+        >
+          <JobPage name="photos" />
+        </LiveJobs.Provider>
+      </ToastProvider>,
+    )
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel the run' }))
+    const stopping = await screen.findByRole('button', { name: 'Stopping the run' })
+    expect((stopping as HTMLButtonElement).disabled).toBe(true)
   })
 
   it('leads back to the jobs from its head', async () => {

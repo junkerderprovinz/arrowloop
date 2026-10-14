@@ -24,6 +24,8 @@ const hu: Translations = {
   'jobs.resume': 'Folytatás',
   'jobs.runNow': 'Futtatás most',
   'jobs.cancelRun': 'Futás megszakítása',
+  'jobs.stopping': 'Futás leállítása',
+  'jobs.pauseHint': 'Leállítja a folyamatban lévő futást, ha van ilyen, és visszatartja a feladatot, amíg nem folytatod. Kézzel továbbra is elindíthatod.',
   'jobs.runNowHint': 'Indítsd el ezt a feladatot azonnal, előnézet nélkül. Ugyanazok a védőhálók maradnak: semmi nem törlődik véglegesen, és az a futás, amely az összes ismert fájl több mint felét eltávolítaná, leáll és szól.',
   'jobs.check': 'Feladat ellenőrzése',
   'jobs.dupes': 'Duplikátumok keresése',

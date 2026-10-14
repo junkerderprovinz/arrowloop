@@ -24,6 +24,8 @@ const tr: Translations = {
   'jobs.resume': 'Sürdür',
   'jobs.runNow': 'Şimdi çalıştır',
   'jobs.cancelRun': 'Çalışmayı iptal et',
+  'jobs.stopping': 'Çalışma durduruluyor',
+  'jobs.pauseHint': 'Süren bir çalışma varsa onu durdurur ve sen sürdürene kadar işi bekletir. Elle başlatmaya devam edebilirsin.',
   'jobs.runNowHint': 'Bu işi önizleme olmadan hemen başlat. Aynı emniyet ağları geçerli: hiçbir şey kalıcı olarak silinmez ve bildiği her şeyin yarısından fazlasını kaldıracak bir çalıştırma durur ve bunu söyler.',
   'jobs.check': 'İşi denetle',
   'jobs.dupes': 'Kopyaları bul',
