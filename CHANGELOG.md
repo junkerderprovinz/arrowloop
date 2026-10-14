@@ -16,7 +16,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **The first page of each tab shows ArrowLoop's mark before its title.** The bottom bar names the tabs by glyph alone, so the title says where you are.
+- **Page titles are larger, with ArrowLoop's mark before them on each tab's first page.** The first card sits closer under the title. The bottom bar names the tabs by glyph alone, so the title says where you are.
 - **The bottom bar shows only glyphs unless you choose otherwise.** The words come back under Settings, Look, Bottom bar.
 
 ## ⚡ Improved
