@@ -144,7 +144,7 @@ function Shell() {
     const first = navigation.getState().routes[0]?.key === route.key;
     return {
       headerStyle: { backgroundColor: p.background },
-      headerTitleStyle: { color: p.text, fontSize: text.title, fontWeight: "600" },
+      headerTitleStyle: { color: p.text, fontSize: text.status, fontWeight: "600" },
       headerTintColor: p.text,
       headerShadowVisible: false,
       headerLeft: first ? () => <Image source={MARK} style={styles.mark} accessibilityIgnoresInvertColors /> : undefined,
