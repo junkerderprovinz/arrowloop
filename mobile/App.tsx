@@ -13,7 +13,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, AppState, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, AppState, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { I18nProvider, useT } from "./src/i18n";
 import {
@@ -87,7 +87,6 @@ function Shell() {
   const { t } = useT();
   const { state, log, retry } = useEngine(t);
   const look = useAppearance();
-  const inset = useSafeAreaInsets();
   useDiscoWalk();
 
   // The optional lock gates the whole app, since the job list alone shows
@@ -139,17 +138,17 @@ function Shell() {
     },
   };
 
-  // The bar names the tab, so a tab's first page goes without a title bar and
-  // only the pages opened from it carry one, beside their back arrow.
+  // A tab's first page carries the app's mark where a page opened from it
+  // has its back arrow.
   const header = ({ navigation, route }: { navigation: { getState(): { routes: { key: string }[] } }; route: { key: string } }) => {
     const first = navigation.getState().routes[0]?.key === route.key;
     return {
-      headerShown: !first,
       headerStyle: { backgroundColor: p.background },
       headerTitleStyle: { color: p.text, fontSize: text.title, fontWeight: "600" },
       headerTintColor: p.text,
       headerShadowVisible: false,
-      contentStyle: { backgroundColor: p.background, paddingTop: first ? inset.top : 0 },
+      headerLeft: first ? () => <Image source={MARK} style={styles.mark} accessibilityIgnoresInvertColors /> : undefined,
+      contentStyle: { backgroundColor: p.background },
     } as const;
   };
 
@@ -553,7 +552,12 @@ function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry:
   );
 }
 
+
+// No image types are declared for the bundle, so the mark is required.
+const MARK = require("./assets/icon.png");
+
 const styles = StyleSheet.create({
+  mark: { width: 28, height: 28, borderRadius: 7, marginRight: space.sm },
   centre: {
     flex: 1,
     alignItems: "center",
