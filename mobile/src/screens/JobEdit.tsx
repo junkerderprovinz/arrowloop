@@ -435,8 +435,7 @@ export function JobEdit() {
       <FolderPicker
         visible={picking !== null}
         start={picking === "left" ? job.left : job.right}
-        // Targets are offered only for the right side.
-        targets={picking === "right" ? targets : []}
+        targets={targets}
         onPick={(path) => {
           if (picking) set({ [picking]: path } as Partial<JobConfig>);
           setPicking(null);
