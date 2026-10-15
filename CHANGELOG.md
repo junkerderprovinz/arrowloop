@@ -21,10 +21,13 @@ The full notes for each release are in
 
 ## ⚡ Improved
 
+- **A job's left side can be a folder from Apps.** The folder picker on the phone offered targets only for the right side, so a folder another app shares could not be picked for the left one. Both sides offer them. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **The phone asks for the port of an SMB share.** The port was only under More settings on the web, which the phone does not have, so a share behind a forwarded port could not be set up there. It is on the first screen now, on the web too. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
 - **Pause stops a run that is going.** It only held the schedule, so the run kept copying while the button already said Resume. Pause stops the run and holds the job until you resume it, on the web and on the phone. Run now still works on a paused job. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
 
 ## 🐛 Fixed
 
+- **Targets on the internet keep working on the phone after it leaves the Wi-Fi.** The app told the engine the phone's DNS servers once, when it started. After a switch to mobile data the engine kept asking the router at home, so every target reached by name ran out after 30 seconds. The engine asks the servers of the network the phone is on, and when one of them does not answer, it tries the next one. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
 - **Cancel the run stops a run within seconds, also over SFTP.** Once a file is across, the SFTP server works out its checksum with md5sum, which reads the whole file and cannot be interrupted, so on a large video the stop waited minutes for it. The run ends a few seconds after the stop and leaves the command to finish on its own. Until the run has ended, the button says Stopping the run. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
 - **A stopped run is recorded as stopped.** It showed up in the history as an ordinary run with the interrupted file skipped. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
 - **Run now shows the run straight away** on a job's page and on the Jobs page, also while the run waits for another job to finish. Until it had its turn, the page heard nothing and kept offering Run now. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
