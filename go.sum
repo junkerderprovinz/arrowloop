@@ -436,6 +436,8 @@ github.com/rclone/go-proton-api v1.0.4 h1:AJW0e9pB4j0hVK4WqyGErFwaI+5MUQWPCtj5FY
 github.com/rclone/go-proton-api v1.0.4/go.mod h1:QAlkFfswzrBuxvCORWV8rZdddg52hahMN98CFWoFW1E=
 github.com/rclone/gofakes3 v0.0.10 h1:LIwNoz4PzpldElhyC7+SI4WwZmytlwoFky6AzTTe5B8=
 github.com/rclone/gofakes3 v0.0.10/go.mod h1:0udb2hmIO9mHXDAgcdycCzSPPASAGIz410t+m0LKmnE=
+github.com/rclone/gofakes3 v0.0.11 h1:HvdX1ClCce4qgvgxuyQViM/nkoydSM1TNbO+ndkfn/A=
+github.com/rclone/gofakes3 v0.0.11/go.mod h1:0udb2hmIO9mHXDAgcdycCzSPPASAGIz410t+m0LKmnE=
 github.com/rclone/rclone v1.75.2 h1:0cqa6P3WmhGnu2NeOdZSetJnacpwCRtpsNbHOICqPk8=
 github.com/rclone/rclone v1.75.2/go.mod h1:YmKNkhnFIoIwLsEZl7FSN756Iq5ZXy3LPDuypnuFocA=
 github.com/relvacode/iso8601 v1.7.0 h1:BXy+V60stMP6cpswc+a93Mq3e65PfXCgDFfhvNNGrdo=
