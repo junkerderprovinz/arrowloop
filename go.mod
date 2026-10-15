@@ -13,7 +13,7 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/pkg/sftp v1.13.11
-	github.com/rclone/gofakes3 v0.0.10
+	github.com/rclone/gofakes3 v0.0.11
 	github.com/rclone/rclone v1.75.2
 	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/crypto v0.58.0
