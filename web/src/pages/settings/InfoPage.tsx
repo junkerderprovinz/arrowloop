@@ -82,8 +82,8 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
           }}
           rows={[
             { name: 'ArrowLoop', version: versions?.arrowloop ?? version, repoUrl: REPO },
-            { name: 'GlimStone', sub: t('info.glimstoneSub'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO },
-            ...(versions ? [{ name: 'rclone', sub: t('info.rcloneSub'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
+            { name: 'GlimStone', hint: t('info.glimstoneHint'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO },
+            ...(versions ? [{ name: 'rclone', hint: t('info.rcloneHint'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
           ]}
           updateCheck={{
             run: updateCheck,

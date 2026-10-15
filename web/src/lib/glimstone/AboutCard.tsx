@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import { groupStage } from "../controls";
 import { Button, type ButtonTone } from "./Button";
 import { Card } from "./Card";
+import { InfoBubble } from "./InfoBubble";
 import { ReadmeButton } from "./ReadmeButton";
 
 // The Info tile, the last tile in Settings ("The Info tile and the About card"
@@ -99,6 +100,8 @@ export interface VersionRow {
   name: string;
   /** What the component is, as a sub-line under the name. */
   sub?: string;
+  /** What the component is, behind an (i) beside the name. */
+  hint?: string;
   /** Read from the build or from the copied files that own it, never typed in. */
   version: string;
   /** The repository whose release page the number opens. Without one the
@@ -165,7 +168,10 @@ export function InfoVersionCard({
         {rows.map((row) => (
           <li key={row.name} className="flex items-center justify-between gap-4">
             <span className="flex min-w-0 flex-col">
-              <span className="text-sm text-carbon-text">{row.name}</span>
+              <span className="flex items-center gap-1.5 text-sm text-carbon-text">
+                {row.name}
+                {row.hint && <InfoBubble tip={row.hint} />}
+              </span>
               {row.sub && <span className="text-subline text-carbon-textMuted">{row.sub}</span>}
             </span>
             <VersionNumber row={row} unreleased={text.unreleased} openUrl={openUrl} />

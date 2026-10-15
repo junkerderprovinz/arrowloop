@@ -167,7 +167,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
       title: 'about.version',
       hint: 'info.versionHint',
       rows: [{ key: 'info.check' }],
-      body: ['info.glimstoneSub', 'info.rcloneSub'],
+      body: ['info.glimstoneHint', 'info.rcloneHint'],
     },
     {
       title: 'info.help',
