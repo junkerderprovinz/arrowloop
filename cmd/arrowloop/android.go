@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"os"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	// Android has no /usr/share/zoneinfo in a form Go reads, so without the
@@ -21,8 +23,11 @@ import (
 // mobile/native/java/arrowloop/halleluja/design/Engine.kt), and this file
 // turns them into settings the runtime honours.
 
-// dnsVar holds the nameservers the app found, comma-separated, IP only.
-const dnsVar = "ARROWLOOP_DNS"
+// dnsVar names the file holding the active network's nameservers,
+// comma-separated, IP only. The app rewrites it whenever the phone changes
+// networks, so the list cannot be fixed at start: an engine started on Wi-Fi
+// would keep asking the router at home once the phone is on mobile data.
+const dnsVar = "ARROWLOOP_DNS_FILE"
 
 // nameservers turns the app's list into addresses that can be dialled. Entries
 // without a port get 53, IPv6 addresses get brackets, and empty entries are
@@ -42,24 +47,33 @@ func nameservers(list string) []string {
 	return out
 }
 
-// useNameservers points net.DefaultResolver at the given servers, which covers
-// every lookup in the process, rclone's clients included. The servers are
-// tried in order, as with the lines of a resolv.conf.
-func useNameservers(list string) {
-	servers := nameservers(list)
-	if len(servers) == 0 {
-		return
-	}
-
+// useNameservers points net.DefaultResolver at the servers listed in file,
+// which covers every lookup in the process, rclone's clients included. The
+// file is read on every dial, since the list changes with the network.
+func useNameservers(file string) {
+	var next atomic.Uint32
 	net.DefaultResolver = &net.Resolver{
 		// The system resolver is what cannot be reached here.
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, _ string) (net.Conn, error) {
+			list, err := os.ReadFile(file)
+			if err != nil {
+				return nil, fmt.Errorf("no nameservers known: %w", err)
+			}
+			servers := nameservers(string(list))
+			if len(servers) == 0 {
+				return nil, errors.New("no nameservers known")
+			}
+			// A UDP dial succeeds without sending anything, so a server that
+			// never answers is only found out by the query timing out. Each
+			// of Go's retries starts one server further on, so they do not
+			// all wait for the same dead one.
+			first := int(next.Add(1) - 1)
 			var last error
-			for _, server := range servers {
+			for i := range servers {
 				// Five seconds per server, the resolv.conf default.
 				dialer := net.Dialer{Timeout: 5 * time.Second}
-				conn, err := dialer.DialContext(ctx, network, server)
+				conn, err := dialer.DialContext(ctx, network, servers[(first+i)%len(servers)])
 				if err == nil {
 					return conn, nil
 				}
@@ -110,8 +124,8 @@ func useSystemCertificates() string {
 // before the first TLS handshake, which reads and caches the certificate
 // store. Elsewhere neither setting applies and nothing changes.
 func applyAndroidEnvironment() {
-	if list := os.Getenv(dnsVar); list != "" {
-		useNameservers(list)
+	if file := os.Getenv(dnsVar); file != "" {
+		useNameservers(file)
 	}
 	useSystemCertificates()
 }

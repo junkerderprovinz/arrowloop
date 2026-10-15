@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"net"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestTheNameserverListIsReadTheWayAndroidWritesIt(t *testing.T) {
@@ -63,25 +65,24 @@ func TestTheNameserverListIsReadTheWayAndroidWritesIt(t *testing.T) {
 	}
 }
 
-// An empty list is the desktop or container case, and also a phone whose
-// framework gave no answer, where guessing a public resolver would be worse.
-func TestAnEmptyListLeavesTheResolverAlone(t *testing.T) {
-	for _, list := range []string{"", "   ", ",", " , , "} {
-		previous := net.DefaultResolver
-		useNameservers(list)
-		if net.DefaultResolver != previous {
-			net.DefaultResolver = previous
-			t.Errorf("%q replaced the resolver", list)
-		}
+// Without the variable this is the desktop or container, where the system
+// resolver works.
+func TestNoFileLeavesTheResolverAlone(t *testing.T) {
+	t.Setenv(dnsVar, "")
+	previous := net.DefaultResolver
+	applyAndroidEnvironment()
+	if net.DefaultResolver != previous {
+		net.DefaultResolver = previous
+		t.Error("the resolver was replaced without a nameserver file")
 	}
 }
 
 // Without PreferGo the runtime may still use the system resolver.
-func TestAListReplacesTheResolverAndPrefersGosOwn(t *testing.T) {
+func TestAFileReplacesTheResolverAndPrefersGosOwn(t *testing.T) {
 	previous := net.DefaultResolver
 	t.Cleanup(func() { net.DefaultResolver = previous })
 
-	useNameservers("192.168.1.1")
+	useNameservers(filepath.Join(t.TempDir(), "nameservers"))
 	if net.DefaultResolver == previous {
 		t.Fatal("the resolver was not replaced")
 	}
@@ -90,6 +91,106 @@ func TestAListReplacesTheResolverAndPrefersGosOwn(t *testing.T) {
 	}
 	if net.DefaultResolver.Dial == nil {
 		t.Error("the replacement has no dialler, so it would use the system one")
+	}
+}
+
+// nameserver stands in for a DNS server reached over TCP and reports each
+// connection the resolver opens to it.
+func nameserver(t *testing.T) (string, <-chan struct{}) {
+	t.Helper()
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	t.Cleanup(func() { listener.Close() })
+	reached := make(chan struct{}, 8)
+	go func() {
+		for {
+			conn, err := listener.Accept()
+			if err != nil {
+				return
+			}
+			conn.Close()
+			reached <- struct{}{}
+		}
+	}()
+	return listener.Addr().String(), reached
+}
+
+func dialResolver(t *testing.T) {
+	t.Helper()
+	conn, err := net.DefaultResolver.Dial(context.Background(), "tcp", "127.0.0.1:53")
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	conn.Close()
+}
+
+func expectReached(t *testing.T, name string, reached <-chan struct{}) {
+	t.Helper()
+	select {
+	case <-reached:
+	case <-time.After(2 * time.Second):
+		t.Fatalf("the lookup did not go to %s", name)
+	}
+}
+
+func TestLookupsFollowTheNetworkThePhoneIsOnNow(t *testing.T) {
+	previous := net.DefaultResolver
+	t.Cleanup(func() { net.DefaultResolver = previous })
+	router, atHome := nameserver(t)
+	carrier, onTheRoad := nameserver(t)
+	file := filepath.Join(t.TempDir(), "nameservers")
+
+	if err := os.WriteFile(file, []byte(router), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	useNameservers(file)
+	dialResolver(t)
+	expectReached(t, "the router on Wi-Fi", atHome)
+
+	if err := os.WriteFile(file, []byte(carrier), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	dialResolver(t)
+	expectReached(t, "the carrier's server on mobile data", onTheRoad)
+}
+
+func TestARetryAsksTheNextServer(t *testing.T) {
+	previous := net.DefaultResolver
+	t.Cleanup(func() { net.DefaultResolver = previous })
+	first, toFirst := nameserver(t)
+	second, toSecond := nameserver(t)
+	file := filepath.Join(t.TempDir(), "nameservers")
+	if err := os.WriteFile(file, []byte(first+","+second), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	useNameservers(file)
+	dialResolver(t)
+	expectReached(t, "the first server", toFirst)
+	dialResolver(t)
+	expectReached(t, "the second server", toSecond)
+}
+
+// Dialling Go's fallback on localhost instead would only fail later and
+// less clearly.
+func TestAnEmptyOrMissingFileFailsTheLookup(t *testing.T) {
+	previous := net.DefaultResolver
+	t.Cleanup(func() { net.DefaultResolver = previous })
+	dir := t.TempDir()
+	empty := filepath.Join(dir, "empty")
+	if err := os.WriteFile(empty, []byte(" , "), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, file := range []string{empty, filepath.Join(dir, "missing")} {
+		useNameservers(file)
+		conn, err := net.DefaultResolver.Dial(context.Background(), "udp", "127.0.0.1:53")
+		if err == nil {
+			conn.Close()
+			t.Errorf("%s: a lookup went out with no nameserver known", filepath.Base(file))
+		}
 	}
 }
 

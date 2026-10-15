@@ -2,6 +2,8 @@ package arrowloop.halleluja.design
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.LinkProperties
+import android.net.Network
 import android.os.Build
 import android.util.Log
 import java.io.File
@@ -78,22 +80,52 @@ object Engine {
             setRequestProperty(TOKEN_HEADER, token(context))
         }
 
+    @Volatile
+    private var following: ConnectivityManager.NetworkCallback? = null
+
+    /** The active network's nameservers, which the engine reads on every lookup. */
+    private fun nameserverFile(context: Context) = File(home(context), "nameservers")
+
     /**
-     * Returns the active network's nameservers, comma-separated, or null when
-     * Android will not say. Null leaves the engine's own behaviour in place
-     * rather than guessing a public resolver.
+     * Keeps the nameserver file on the network the phone is on. An
+     * engine started on Wi-Fi would otherwise keep asking the router at home
+     * after the phone has left it, and every lookup would time out.
      */
-    private fun nameservers(context: Context): String? {
-        return try {
-            val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
-                ?: return null
-            val active = manager.activeNetwork ?: return null
-            val links = manager.getLinkProperties(active) ?: return null
-            val list = links.dnsServers.mapNotNull { it.hostAddress }.filter { it.isNotBlank() }
-            if (list.isEmpty()) null else list.joinToString(",")
+    @Synchronized
+    private fun followNameservers(caller: Context) {
+        if (following != null) return
+        val context = caller.applicationContext
+        try {
+            val manager = context.getSystemService(ConnectivityManager::class.java) ?: return
+            // The callback reports the current network too, but only after the
+            // engine may already have made its first lookup.
+            writeNameservers(context, manager.activeNetwork?.let { manager.getLinkProperties(it) })
+            val callback = object : ConnectivityManager.NetworkCallback() {
+                override fun onLinkPropertiesChanged(network: Network, links: LinkProperties) =
+                    writeNameservers(context, links)
+            }
+            manager.registerDefaultNetworkCallback(callback)
+            following = callback
         } catch (e: Exception) {
-            Log.w(TAG, "could not read the nameservers: ${e.javaClass.simpleName}")
-            null
+            Log.w(TAG, "could not follow the network's nameservers: ${e.javaClass.simpleName}")
+        }
+    }
+
+    /**
+     * Writes the nameservers, if Android names any. With none the last list
+     * stays, rather than a guessed public resolver.
+     */
+    private fun writeNameservers(context: Context, links: LinkProperties?) {
+        val list = links?.dnsServers?.mapNotNull { it.hostAddress }?.filter { it.isNotBlank() }
+        if (list.isNullOrEmpty()) return
+        try {
+            val file = nameserverFile(context)
+            val next = File(file.parentFile, "${file.name}.new")
+            next.writeText(list.joinToString(","))
+            // Renamed into place, so the engine never reads half a list.
+            if (!next.renameTo(file)) Log.w(TAG, "could not replace the nameserver file")
+        } catch (e: Exception) {
+            Log.w(TAG, "could not write the nameservers: ${e.javaClass.simpleName}")
         }
     }
 
@@ -172,6 +204,9 @@ object Engine {
      */
     @Synchronized
     fun start(context: Context): Boolean {
+        // Before the checks below, since an engine an earlier process of this
+        // app left running reads the same file.
+        followNameservers(context)
         // The process handle is checked first: the two callers arrive
         // milliseconds apart, and a freshly spawned engine has not bound its
         // port yet, so the HTTP probe alone would start a second engine. The
@@ -222,7 +257,7 @@ object Engine {
         // lookup goes to a resolver on localhost that does not exist. See
         // cmd/arrowloop/android.go.
         builder.environment()["TZ"] = TimeZone.getDefault().id
-        nameservers(context)?.let { builder.environment()["ARROWLOOP_DNS"] = it }
+        builder.environment()["ARROWLOOP_DNS_FILE"] = nameserverFile(context).absolutePath
         // The phone reports runs through Android's notifications alone, so the
         // engine skips the message channels and Healthchecks checks its
         // configuration may hold. See internal/daemon/notify.go.
