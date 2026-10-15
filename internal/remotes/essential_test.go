@@ -68,3 +68,24 @@ func TestTheCredentialsAreOnTheFirstScreen(t *testing.T) {
 		}
 	}
 }
+
+// The phone shows only the first screen, so a port behind the advanced switch
+// cannot be set there at all.
+func TestThePortIsOnTheFirstScreen(t *testing.T) {
+	for _, b := range remotes.Backends() {
+		switch b.Name {
+		case "smb", "sftp", "ftp":
+		default:
+			continue
+		}
+		found := false
+		for _, o := range b.Options {
+			if o.Name == "port" {
+				found = o.Required || o.Essential
+			}
+		}
+		if !found {
+			t.Errorf("the %s form hides the port behind the advanced switch", b.Name)
+		}
+	}
+}

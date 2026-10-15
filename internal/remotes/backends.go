@@ -74,6 +74,9 @@ var essential = map[string]map[string]bool{
 		"pass": true,
 		// Blank is right at home and wrong in an office.
 		"domain": true,
+		// A share reached from outside the house often sits behind a
+		// forwarded port other than 445.
+		"port": true,
 	},
 	"sftp": {
 		"host": true,
