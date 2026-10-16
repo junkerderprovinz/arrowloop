@@ -3,7 +3,6 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { en } from '../lib/i18n.data'
-import { RELEASES } from '../lib/whatsNew'
 import { Link } from '../lib/router'
 import { markSeen, startWhatsNew, useWhatsNew } from '../lib/whatsNewStore'
 import { WhatsNewDots } from './WhatsNewDots'
@@ -16,8 +15,8 @@ beforeEach(() => {
   )
   localStorage.clear()
   window.history.replaceState(null, '', '/jobs')
-  // Updated from the release before, so every change carries its dot.
-  localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: RELEASES[0].after, after: '', seen: [] }))
+  // Updated from a release before every change, so each one carries its dot.
+  localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'v1.9.0', from: '', seen: [] }))
   startWhatsNew('dev')
 })
 afterEach(() => {
@@ -84,6 +83,8 @@ describe('the dots of what is new', () => {
     for (const key of ['new.change.runStrip'] as const) {
       expect(page.getAttribute('aria-label')).toContain(en[key])
     }
+    // A change no page draws keeps its dot in the list.
+    expect(page.getAttribute('aria-label')).not.toContain(en['new.change.releaseCards'])
     act(() => page.click())
     await waitFor(() => expect(dot('page')).toBeNull())
     expect(JSON.parse(localStorage.getItem('arrowloop.whatsNew')!).seen).toEqual(expect.arrayContaining(['run-strip']))

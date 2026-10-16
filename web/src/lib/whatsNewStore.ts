@@ -1,18 +1,28 @@
-// What this browser remembers about the changes of the running version: which
-// release is marked and which of its changes were seen.
+// What this browser remembers about the changes: the release it had open
+// before the last update and which changes it has seen.
 // Kept per browser, since one person's click must not hide a dot for
 // everybody who opens the same engine.
 
 import { useMemo, useSyncExternalStore } from 'react'
 
-import { RELEASES, releaseSince, type Change } from './whatsNew'
+import { CHANGES, compareReleases, releaseNumber, type Change } from './whatsNew'
 
 const KEY = 'arrowloop.whatsNew'
 
 export interface NewsRecord {
-  /** The version the record was made for. Another one starts it over. */
+  /** The version the record was made for. Another one means an update. */
   version: string
-  /** The `after` of the release whose changes are listed, '' for none. */
+  /** The release this browser had open before the last update, as x.y.z, '' for none. */
+  from: string
+  seen: string[]
+}
+
+/**
+ * A record from the versions that listed the changes of one release only,
+ * named by its `after`. The first read takes it over.
+ */
+interface OneReleaseRecord {
+  version: string
   after: string
   seen: string[]
 }
@@ -25,24 +35,24 @@ function readRaw(): string {
   }
 }
 
-function isRecord(value: unknown): value is NewsRecord {
-  const r = value as NewsRecord | null
-  return (
-    !!r &&
-    typeof r === 'object' &&
-    typeof r.version === 'string' &&
-    typeof r.after === 'string' &&
-    Array.isArray(r.seen)
-  )
+const isIds = (list: unknown): list is string[] => Array.isArray(list) && list.every((id) => typeof id === 'string')
+
+/** The record a one-release list becomes: what that list did not hold had no dot then and gets none now. */
+function takeOver(old: OneReleaseRecord): NewsRecord {
+  const others = CHANGES.filter((c) => c.after !== old.after).map((c) => c.id)
+  return { version: old.version, from: old.after, seen: [...old.seen, ...others.filter((id) => !old.seen.includes(id))] }
 }
 
 function parse(raw: string): NewsRecord | null {
   try {
-    const stored: unknown = raw ? JSON.parse(raw) : null
-    return isRecord(stored) ? stored : null
+    const r = (raw ? JSON.parse(raw) : null) as Partial<NewsRecord & OneReleaseRecord> | null
+    if (!r || typeof r !== 'object' || typeof r.version !== 'string' || !isIds(r.seen)) return null
+    if (typeof r.from === 'string') return { version: r.version, from: r.from, seen: r.seen }
+    if (typeof r.after === 'string') return takeOver({ version: r.version, after: r.after, seen: r.seen })
   } catch {
-    return null
+    // Anything else in the slot counts as nothing kept.
   }
+  return null
 }
 
 const listeners = new Set<() => void>()
@@ -65,66 +75,59 @@ function subscribe(listener: () => void) {
   }
 }
 
-/** The changes a record lists. */
-function changesOf(record: NewsRecord | null): Change[] {
-  return RELEASES.find((r) => r.after === record?.after)?.changes ?? []
-}
-
 /**
  * The record for the running version, given the one kept last. The same
- * version keeps its record; another starts over with every dot of the release
- * the update passed. A browser with nothing kept never saw an older release,
- * so it gets the newest release's list with every change already seen, and
- * "Show all again" can still bring them out.
+ * version keeps its record. After an update every change of a release newer
+ * than the one the browser had is new, and what it had seen of the older ones
+ * stays seen. A browser with nothing kept never saw an older release, so every
+ * change starts as seen, and "Show all again" can still bring them out.
  */
 export function recordFor(stored: NewsRecord | null, running: string): NewsRecord {
-  if (stored?.version === running) return stored
-  if (stored) return { version: running, after: releaseSince(stored.version, running)?.after ?? '', seen: [] }
-  const newest = releaseSince('', running)
-  return { version: running, after: newest?.after ?? '', seen: newest?.changes.map((c) => c.id) ?? [] }
+  if (!stored) return { version: running, from: '', seen: CHANGES.map((c) => c.id) }
+  if (stored.version === running) return stored
+  const from = releaseNumber(stored.version)
+  // A build without a number says nothing about which changes it showed.
+  if (!from) return { ...stored, version: running }
+  const older = new Set(CHANGES.filter((c) => compareReleases(c.after, from) < 0).map((c) => c.id))
+  return { version: running, from, seen: stored.seen.filter((id) => older.has(id)) }
 }
 
 /**
  * Settles the record once the running version is known. After an update this
- * browser saw the version before, the window opens by itself on the release
- * notes.
+ * browser saw the version before, the window opens by itself.
  */
 export function startWhatsNew(running: string) {
-  const stored = parse(readRaw())
+  const raw = readRaw()
+  const stored = parse(raw)
   const next = recordFor(stored, running)
-  if (next === stored) return
-  write(next)
-  if (stored) openNewsWindow('notes')
+  if (JSON.stringify(next) !== raw) write(next)
+  if (stored && stored.version !== running) openNewsWindow()
 }
 
-/** The two tabs of the window: the release notes and the list of changes. */
-export type NewsTab = 'notes' | 'changes'
-
-let windowTab: NewsTab | null = null
+let windowOpen = false
 const windowListeners = new Set<() => void>()
 
-function setWindow(tab: NewsTab | null) {
-  windowTab = tab
+function setWindow(open: boolean) {
+  windowOpen = open
   for (const listener of windowListeners) listener()
 }
 
-/** Opens the one window the Version card and an update share, on the given tab. */
-export function openNewsWindow(tab: NewsTab) {
-  setWindow(tab)
+/** Opens the one window the Version card and an update share. */
+export function openNewsWindow() {
+  setWindow(true)
 }
 
 export function closeNewsWindow() {
-  setWindow(null)
+  setWindow(false)
 }
 
-/** The tab the window shows, or null while it is closed. */
-export function useNewsWindow(): NewsTab | null {
+export function useNewsWindow(): boolean {
   return useSyncExternalStore(
     (listener) => {
       windowListeners.add(listener)
       return () => windowListeners.delete(listener)
     },
-    () => windowTab,
+    () => windowOpen,
   )
 }
 
@@ -144,7 +147,9 @@ export function markSeen(ids: string[], seen = true) {
 export interface WhatsNew {
   /** The version the record was made for. */
   version: string
-  /** Every change the record lists, seen or not. */
+  /** The release this browser had open before the last update, as x.y.z, '' for none. */
+  from: string
+  /** The changes that came after `from`, and any older one still unseen. */
   changes: Change[]
   seen: ReadonlySet<string>
   unseen: Change[]
@@ -156,8 +161,14 @@ export function useWhatsNew(): WhatsNew | null {
   return useMemo(() => {
     const record = parse(raw)
     if (!record) return null
-    const changes = changesOf(record)
     const seen = new Set(record.seen)
-    return { version: record.version, changes, seen, unseen: changes.filter((c) => !seen.has(c.id)) }
+    const since = (c: Change) => record.from !== '' && compareReleases(c.after, record.from) >= 0
+    return {
+      version: record.version,
+      from: record.from,
+      changes: CHANGES.filter((c) => since(c) || !seen.has(c.id)),
+      seen,
+      unseen: CHANGES.filter((c) => !seen.has(c.id)),
+    }
   }, [raw])
 }

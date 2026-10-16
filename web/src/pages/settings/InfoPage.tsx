@@ -94,7 +94,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
               checkFailed: t('info.checkFailed'),
             },
           }}
-          onReleaseNotes={() => openNewsWindow('notes')}
+          onReleaseNotes={openNewsWindow}
           whatsNew={listed ? whatsNew : undefined}
         />
       </div>

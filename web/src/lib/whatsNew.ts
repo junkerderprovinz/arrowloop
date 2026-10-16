@@ -1,14 +1,16 @@
-// What an update changed, by release (GlimStone, "First start and what's
-// new"). After an update a glowing dot marks each change where it is drawn and
-// on every link that leads there. The way is read from the change's address,
-// so a change names where it is and nothing about how to get there.
+// What each release brought (GlimStone, "First start and what's new"). After
+// an update a glowing dot marks each change of every release since the one the
+// browser had before, where it is drawn and on every link that leads there.
+// The way is read from the change's address, so a change names where it is and
+// nothing about how to get there.
 //
 // A release adds one entry at the top of RELEASES and its sentences under
 // new.change.* in the translation tables.
 
 import type { Translate, TranslationKey } from './i18n.data'
 
-export interface Change {
+/** A change drawn on a page, marked on its element and on the way there. */
+interface Placed {
   /** The value of data-new on the changed element, and what "seen" remembers. */
   id: string
   /**
@@ -26,6 +28,14 @@ export interface Change {
   names?: Record<string, TranslationKey>
 }
 
+/** A change no page of the web interface draws, such as one in the phone app. Its dot stands in the list only. */
+interface Unplaced {
+  id: string
+  at?: undefined
+  text: TranslationKey
+  names?: Record<string, TranslationKey>
+}
+
 export interface Release {
   /**
    * The last release without these changes. The number of the one that brings
@@ -33,13 +43,34 @@ export interface Release {
    * written.
    */
   after: string
-  changes: Change[]
+  changes: (Placed | Unplaced)[]
+}
+
+export type Change = (Placed | Unplaced) & { after: string }
+export type PlacedChange = Placed & { after: string }
+
+export function placed(change: Change): change is PlacedChange {
+  return change.at !== undefined
 }
 
 const JOBS: TranslationKey[] = ['nav.jobs']
 
-/** Newest first. Only the newest release an update passes is marked. */
+/** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
+  {
+    after: '2.2.3',
+    changes: [{ id: 'release-cards', text: 'new.change.releaseCards' }],
+  },
+  {
+    after: '2.1.0',
+    changes: [
+      {
+        id: 'app-folders',
+        text: 'new.change.appFolders',
+        names: { add: 'phone.sharedAdd', settings: 'nav.settings', phone: 'phone.thisPhone' },
+      },
+    ],
+  },
   {
     after: '1.9.0',
     changes: [
@@ -215,31 +246,40 @@ export const RELEASES: Release[] = [
   },
 ]
 
+export const CHANGES: Change[] = RELEASES.flatMap((release) => release.changes.map((change) => ({ ...change, after: release.after })))
+
 type Version = [number, number, number]
 
-function parse(version: string): Version | null {
-  const m = /^v?(\d+)\.(\d+)\.(\d+)$/.exec(version.split('+')[0].trim())
+function parse(release: string): Version | null {
+  const m = /(\d+)\.(\d+)\.(\d+)/.exec(release)
   return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null
 }
 
-function compare(a: Version, b: Version): number {
-  return a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
+/** The x.y.z a version starts from, so "v2.2.3-4-gabc" gives 2.2.3, or null for one without a number such as "dev". */
+export function releaseNumber(version: string): string | null {
+  const v = parse(version)
+  return v ? v.join('.') : null
+}
+
+/** Whether a version is a release itself rather than a build between two tags. */
+export function isRelease(version: string): boolean {
+  return /^v?\d+\.\d+\.\d+$/.test(version.split('+')[0].trim())
+}
+
+/** Orders two release numbers, older first. */
+export function compareReleases(a: string, b: string): number {
+  const [x, y] = [parse(a) ?? [0, 0, 0], parse(b) ?? [0, 0, 0]]
+  return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]
 }
 
 /**
- * The newest release whose changes an update from `from` to `running` passes.
- * A stamp that is no release number, such as "dev" or a build between two
- * tags, is what comes next when it runs and older than every release when it
- * was left.
+ * The release that brought a change: the oldest of `releases` past its
+ * `after`, or undefined while none is, as in a build of what comes next.
  */
-export function releaseSince(from: string, running: string, releases: Release[] = RELEASES): Release | undefined {
-  const was = parse(from)
-  const now = parse(running)
-  return releases.find((r) => {
-    const after = parse(r.after)
-    if (!after) return false
-    return (!was || compare(after, was) >= 0) && (!now || compare(after, now) < 0)
-  })
+export function broughtBy(change: Change, releases: string[]): string | undefined {
+  return releases
+    .filter((release) => compareReleases(release, change.after) > 0)
+    .sort(compareReleases)[0]
 }
 
 /** Whether a path is drawn at a route, segment by segment. */
@@ -250,7 +290,7 @@ export function matchRoute(route: string, path: string): boolean {
 }
 
 /** Whether `here` is one of the addresses a change is drawn at. */
-export function isAt(change: Change, here: string): boolean {
+export function isAt(change: PlacedChange, here: string): boolean {
   return change.at.some((route) => matchRoute(route, here))
 }
 
@@ -276,6 +316,6 @@ export function sentenceOf(t: Translate, change: Change): string {
 }
 
 /** Where "Go there" leads for a change. */
-export function goOf(change: Change): string {
+export function goOf(change: PlacedChange): string {
   return change.go ?? change.at[0]
 }

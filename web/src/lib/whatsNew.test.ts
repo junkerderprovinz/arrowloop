@@ -1,12 +1,29 @@
+import { readdirSync, readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import { describe, expect, it } from 'vitest'
 
 import { en } from './i18n'
-import { isAt, matchRoute, RELEASES, releaseSince, sentenceOf, trail, type Release } from './whatsNew'
+import {
+  broughtBy,
+  CHANGES,
+  compareReleases,
+  isAt,
+  isRelease,
+  matchRoute,
+  placed,
+  RELEASES,
+  releaseNumber,
+  sentenceOf,
+  trail,
+  type Change,
+} from './whatsNew'
 
-const releases: Release[] = [
-  { after: '1.9.0', changes: [] },
-  { after: '1.8.0', changes: [] },
-]
+const NOTES = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '.github', 'release-notes')
+const NOTED = readdirSync(NOTES)
+  .map((name) => /^v(\d+\.\d+\.\d+)\.md$/.exec(name)?.[1])
+  .filter((v) => v !== undefined)
 
 describe('the way to a change', () => {
   it('leads through every section above the page', () => {
@@ -29,39 +46,66 @@ describe('the way to a change', () => {
   it('matches a named segment against any one segment', () => {
     expect(matchRoute('/settings/:tile', '/settings/look')).toBe(true)
     expect(matchRoute('/settings/:tile', '/settings')).toBe(false)
-    expect(isAt(RELEASES[0].changes.find((c) => c.id === 'list-bar')!, '/history')).toBe(true)
+    const listBar = CHANGES.find((c) => c.id === 'list-bar')!
+    expect(placed(listBar) && isAt(listBar, '/history')).toBe(true)
   })
 })
 
-describe('the release an update passes', () => {
-  it('is the newest one between the two versions', () => {
-    expect(releaseSince('1.8.0', '1.9.0', releases)?.after).toBe('1.8.0')
-    expect(releaseSince('1.8.0', '2.0.0', releases)?.after).toBe('1.9.0')
+describe('the release a change came with', () => {
+  const change = (after: string) => ({ id: 'x', text: 'new.title', after }) as Change
+
+  it('is the oldest release past the one before it', () => {
+    expect(broughtBy(change('2.1.0'), ['2.2.1', '2.1.0', '2.2.0', '1.9.0'])).toBe('2.2.0')
   })
 
-  it('is none for a patch of the same release', () => {
-    expect(releaseSince('1.9.0', '1.9.1', [{ after: '1.8.0', changes: [] }])).toBeUndefined()
+  it('is none yet in a build of what comes next', () => {
+    expect(broughtBy(change('2.2.3'), ['2.2.3', '2.2.0'])).toBeUndefined()
   })
 
-  it('treats a build without a release number as the next release', () => {
-    expect(releaseSince('v1.8.0', 'dev', releases)?.after).toBe('1.9.0')
-    expect(releaseSince('1.8.0', 'v1.8.0-12-gabcdef', [{ after: '1.8.0', changes: [] }])?.after).toBe('1.8.0')
+  it('reads the number a build starts from, and tells a release from a build between two', () => {
+    expect(releaseNumber('v2.2.3-4-gabcdef')).toBe('2.2.3')
+    expect(releaseNumber('dev')).toBeNull()
+    expect(isRelease('v2.2.3')).toBe(true)
+    expect(isRelease('2.2.3+main')).toBe(true)
+    expect(isRelease('v2.2.3-4-gabcdef')).toBe(false)
+    expect(compareReleases('2.10.0', '2.9.1')).toBeGreaterThan(0)
   })
 })
 
 describe('the list of changes', () => {
-  const changes = RELEASES.flatMap((r) => r.changes)
+  it('names each release once, newest first, after a release that exists', () => {
+    const afters = RELEASES.map((r) => r.after)
+    expect(afters.every((after, i) => i === 0 || compareReleases(afters[i - 1], after) > 0)).toBe(true)
+    for (const after of afters) expect(NOTED, after).toContain(after)
+  })
 
-  it('names each change once within a release', () => {
-    for (const release of RELEASES) {
-      const ids = release.changes.map((c) => c.id)
-      expect(new Set(ids).size).toBe(ids.length)
+  it('names each change once', () => {
+    const ids = CHANGES.map((c) => c.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  // From 2.2.0 on, every feature a release adds under Added in its notes gets
+  // a change of its own, on a page or in the list alone.
+  it('gives every feature a release adds a change of its own', () => {
+    const short: string[] = []
+    for (const version of NOTED) {
+      if (compareReleases(version, '2.2.0') < 0) continue
+      const notes = readFileSync(join(NOTES, `v${version}.md`), 'utf8')
+      const added = /^## .*Added\s*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(notes)?.[1] ?? ''
+      const features = added.split('\n').filter((line) => line.startsWith('- ')).length
+      const changes = CHANGES.filter((c) => broughtBy(c, NOTED) === version).length
+      if (changes < features) short.push(`${version}: ${features} added, ${changes} listed`)
     }
+    expect(short).toEqual([])
+  })
+
+  it('names the page of every change a page draws', () => {
+    for (const change of CHANGES.filter(placed)) expect(change.where.length, change.id).toBeGreaterThan(0)
   })
 
   it('fills every label a sentence quotes', () => {
     const t = (key: keyof typeof en, vars?: Record<string, string | number>) =>
       en[key].replace(/\{(\w+)\}/g, (all, name: string) => String(vars?.[name] ?? all))
-    for (const change of changes) expect(sentenceOf(t, change)).not.toMatch(/\{\w+\}/)
+    for (const change of CHANGES) expect(sentenceOf(t, change)).not.toMatch(/\{\w+\}/)
   })
 })

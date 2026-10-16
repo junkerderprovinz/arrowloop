@@ -8,13 +8,13 @@
 // The dots live in one layer in <body> rather than inside the components, so
 // marking a change costs its component one attribute and no layout.
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { useTipBubble } from '../lib/glimstone/useTipBubble'
 import { useT } from '../lib/i18n'
 import { useLocation } from '../lib/router'
-import { isAt, matchRoute, sentenceOf, trail, type Change } from '../lib/whatsNew'
+import { isAt, matchRoute, placed, sentenceOf, trail, type PlacedChange } from '../lib/whatsNew'
 import { markSeen, type WhatsNew } from '../lib/whatsNewStore'
 
 /** The navigation: the rail, the bottom bar, its More sheet and the settings column. */
@@ -41,7 +41,7 @@ interface Target {
   el: HTMLElement
   /** `change` stands on the changed element, `page` on the page for what it does not draw, `way` on a link. */
   kind: 'change' | 'page' | 'way'
-  changes: Change[]
+  changes: PlacedChange[]
 }
 
 const drawn = (el: Element): el is HTMLElement => el instanceof HTMLElement && el.getClientRects().length > 0
@@ -76,7 +76,7 @@ function wayKey(el: Element): string {
 }
 
 /** Where each unseen change is marked: on its element, on its page or on the links that lead there. */
-function collect(unseen: Change[], here: string, arrived: boolean): Target[] {
+function collect(unseen: PlacedChange[], here: string, arrived: boolean): Target[] {
   const marked = new Map<string, HTMLElement>()
   for (const el of document.querySelectorAll('[data-new]')) {
     const id = el.getAttribute('data-new') ?? ''
@@ -85,9 +85,9 @@ function collect(unseen: Change[], here: string, arrived: boolean): Target[] {
   const page = document.querySelector<HTMLElement>('[data-settings-content]') ?? document.querySelector<HTMLElement>('main')
 
   const targets: Target[] = []
-  const undrawn: Change[] = []
-  const ways = new Map<HTMLElement, Change[]>()
-  const lead = (el: HTMLElement, change: Change) => ways.set(el, [...(ways.get(el) ?? []), change])
+  const undrawn: PlacedChange[] = []
+  const ways = new Map<HTMLElement, PlacedChange[]>()
+  const lead = (el: HTMLElement, change: PlacedChange) => ways.set(el, [...(ways.get(el) ?? []), change])
   for (const change of unseen) {
     const el = marked.get(change.id)
     if (el) {
@@ -186,8 +186,8 @@ function Dot({ target, register }: { target: Target; register: (key: string, el:
 }
 
 /**
- * Draws a dot for every unseen change, where it is or on the way to it.
- * `active` is false during the first start, where nothing can be new.
+ * Draws a dot for every unseen change a page draws, where it is or on the way
+ * to it. `active` is false during the first start, where nothing can be new.
  */
 export function WhatsNewDots({ news, active }: { news: WhatsNew | null; active: boolean }) {
   const here = useLocation().pathname.replace(/\/+$/, '') || '/'
@@ -196,7 +196,7 @@ export function WhatsNewDots({ news, active }: { news: WhatsNew | null; active: 
   const dots = useRef(new Map<string, HTMLElement>())
   const live = useRef(targets)
   live.current = targets
-  const unseen = news?.unseen
+  const unseen = useMemo(() => news?.unseen.filter(placed), [news])
   const on = active && !!unseen && unseen.length > 0
 
   const placeAll = () => {
