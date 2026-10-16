@@ -29,7 +29,7 @@ vi.mock('../lib/api', () => ({
     volumes: () => Promise.resolve({ volumes: [] }),
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
     history: () => Promise.resolve([] as Run[]),
-    jobTouches: () => Promise.resolve([]),
+    log: () => Promise.resolve([]),
     historyStats: () => Promise.reject(new Error('none')),
     forgetJobState: (name: string) => forgetJobState(name),
     checkJob: (name: string) => checkJob(name),
@@ -113,10 +113,11 @@ describe('a job page', () => {
     expect(went).toHaveBeenCalledWith({ tab: 'jobs', job: '' })
   })
 
-  it('lists the files touched without a search of its own', async () => {
+  it('lists the files touched with a filter and a search of their own', async () => {
     page()
     expect(await screen.findByRole('heading', { level: 2, name: /^Files touched/ })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Filter' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Search' })).toBeTruthy()
   })
 
   it('starts the check when the address asks for its card, then forgets the ask', async () => {

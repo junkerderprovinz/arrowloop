@@ -6,6 +6,7 @@ import { IconAction } from '../components/IconAction'
 import { FilterButton, FilterChoice, ListBar, SearchFold } from '../components/ListBar'
 import { RunSheet } from '../components/RunSheet'
 import { Stats } from '../components/Stats'
+import { TOUCH_KINDS, TouchKindChoice, type TouchKind } from '../components/TouchKinds'
 import { TouchRow, touchKey } from '../components/TouchRow'
 import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
@@ -15,20 +16,6 @@ import { dayTime } from '../lib/dayTime'
 import { useT } from '../lib/i18n'
 import { useLiveTick } from '../lib/liveTick'
 import { useRemembered } from '../lib/remember'
-
-/**
- * The kinds behind each choice of the file log's filter, grouped by what
- * somebody looks for. A `skip` carries the reason a path was not touched, and
- * there is no "error" kind, so trouble means conflict or skip.
- */
-const SHOWS = {
-  all: [] as string[],
-  copied: ['copy', 'move'],
-  gone: ['trash', 'rmdir'],
-  trouble: ['conflict', 'skip'],
-}
-
-type Kind = keyof typeof SHOWS
 
 const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs'
 
@@ -57,7 +44,7 @@ export function History({
   const [view, setView] = useRemembered<LogView>('arrowloop.history.view', 'files', isLogView)
   const tick = useLiveTick(jobs.some((j) => j.running))
   const [job, setJob] = useState('')
-  const [kind, setKind] = useState<Kind>('all')
+  const [kind, setKind] = useState<TouchKind>('all')
   const [show, setShow] = useState<HistoryShow>('all')
   // Two calendar days bounding the runs; blank means open-ended.
   const [since, setSince] = useState('')
@@ -103,17 +90,7 @@ export function History({
               options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
             />
             {view === 'files' ? (
-              <FilterChoice<Kind>
-                label={t('history.filterKind')}
-                value={kind}
-                onChange={setKind}
-                options={[
-                  { value: 'all', label: t('history.everything') },
-                  { value: 'copied', label: t('history.onlyCopied') },
-                  { value: 'gone', label: t('history.onlyGone') },
-                  { value: 'trouble', label: t('history.onlyTrouble') },
-                ]}
-              />
+              <TouchKindChoice value={kind} onChange={setKind} />
             ) : (
               <>
                 <FilterChoice<HistoryShow>
@@ -157,7 +134,7 @@ export function History({
           />
         </ListBar>
         {view === 'files' ? (
-          <Touches job={job} kinds={SHOWS[kind]} query={query} tick={tick} />
+          <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} />
         ) : (
           <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
         )}

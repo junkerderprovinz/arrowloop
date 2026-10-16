@@ -9,10 +9,12 @@ import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../compo
 import { BrakesCard } from '../components/JobBrakes'
 import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
+import { FilterButton, ListBar, SearchFold } from '../components/ListBar'
 import { Menu } from '../components/Menu'
 import { Pace } from '../components/Pace'
 import { RunSheet } from '../components/RunSheet'
 import { Empty, Rows, Stack } from '../components/Shell'
+import { TOUCH_KINDS, TouchKindChoice, type TouchKind } from '../components/TouchKinds'
 import { TouchRow, touchKey } from '../components/TouchRow'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
@@ -443,11 +445,22 @@ function FilesCard({ job }: { job: Job }) {
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [limit, setLimit] = useState(60)
+  const [kind, setKind] = useState<TouchKind>('all')
+  // The box answers every keystroke; the engine only gets the settled query.
+  const [typed, setTyped] = useState('')
+  const [query, setQuery] = useState('')
+  useEffect(() => {
+    const timer = setTimeout(() => setQuery(typed.trim()), 250)
+    return () => clearTimeout(timer)
+  }, [typed])
+
+  // A new question starts again at one screenful.
+  useEffect(() => setLimit(60), [query, kind])
 
   useEffect(() => {
     let live = true
     api
-      .jobTouches(job.name, limit, '')
+      .log(job.name, TOUCH_KINDS[kind], query, limit)
       .then((got) => {
         if (!live) return
         setError(null)
@@ -457,16 +470,22 @@ function FilesCard({ job }: { job: Job }) {
     return () => {
       live = false
     }
-  }, [job.name, limit, tick])
+  }, [job.name, kind, query, limit, tick])
 
   return (
     <Card title={t('job.files')} hueIndex={1}>
+      <ListBar>
+        <FilterButton active={kind !== 'all'}>
+          <TouchKindChoice value={kind} onChange={setKind} />
+        </FilterButton>
+        <SearchFold value={typed} onChange={setTyped} placeholder={t('history.pathHint')} />
+      </ListBar>
       {error ? (
         <p className="text-subline text-statusFail">{error}</p>
       ) : !touches ? (
         <Empty>{t('jobs.historyLoading')}</Empty>
       ) : touches.length === 0 ? (
-        <Empty>{t('jobs.historyEmpty')}</Empty>
+        <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
       ) : (
         // Loads more near the bottom; 40px rather than the exact end, which a
         // trackpad stops a pixel or two short of.
