@@ -16,6 +16,8 @@ BUTTONS = {
     "linux-arm": RELEASE + "arrowloop-linux-arm64",
     "unraid": "https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1",
     "mos": "https://mos-official.net/apps.html?search=ArrowLoop",
+    "zimaos": "https://github.com/junkerderprovinz/zimaos-apps#install",
+    "umbrel": "https://github.com/junkerderprovinz/umbrel-apps#install",
     "compose": "https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml",
     # A release's "Source code (zip)" is the whole repository at that tag, and
     # GitHub gives the newest one no fixed address, so this leads to the release
