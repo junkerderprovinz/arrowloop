@@ -42,9 +42,9 @@ ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone an
   &nbsp;
   <a href="https://mos-official.net/apps.html?search=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=7052b94f4ecb#svgView(viewBox(866,0,841.9,245.3))" alt="Install from the MOS Hub" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/zimaos-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=7052b94f4ecb#svgView(viewBox(1732,0,841.9,245.3))" alt="Install from the ZimaOS and CasaOS store" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/zimaos-apps#arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=7052b94f4ecb#svgView(viewBox(1732,0,841.9,245.3))" alt="Install from the ZimaOS and CasaOS store" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/umbrel-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=7052b94f4ecb#svgView(viewBox(2598,0,841.9,245.3))" alt="Install from the umbrelOS community app store" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/umbrel-apps#arrowloop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=7052b94f4ecb#svgView(viewBox(2598,0,841.9,245.3))" alt="Install from the umbrelOS community app store" width="160" height="46.618"></a>
 </p>
 <p align="center">
   <a href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=7052b94f4ecb#svgView(viewBox(3464,0,841.9,245.3))" alt="Download the docker-compose file" width="160" height="46.618"></a>
