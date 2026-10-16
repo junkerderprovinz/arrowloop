@@ -8,6 +8,20 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.2.2 - 2026-10-16
+
+## 🎨 Design
+
+- **The Version card in the settings keeps its notes in info bubbles.** The rclone bubble says what rclone is and that every job runs through it.
+
+## ⚡ Improved
+
+- **A compose file for Docker hosts other than Unraid.** `compose.yaml` in the repository starts the container with the same ports, folders and settings as the Unraid template, and the README links it next to the MOS Hub.
+
+## 🐛 Fixed
+
+- **A job over a whole OneDrive gets past the Personal Vault.** OneDrive shows the Personal Vault as a folder but lets no app open it, so the preview stopped with "ObjectHandle is Invalid". ArrowLoop leaves the vault out on both sides and lists it under skipped, with the reason. If the record already holds files from a folder that stops opening this way, the run stops instead, so none of them reads as deleted. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
+
 ## 2.2.1 - 2026-10-15
 
 ## ⚡ Improved

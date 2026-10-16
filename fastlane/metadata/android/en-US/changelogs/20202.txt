@@ -1,0 +1,1 @@
+Your Personal Vault stays personal. ArrowLoop used to trip over it when backing up a whole OneDrive. Now it walks around it and tells you so in the preview.
