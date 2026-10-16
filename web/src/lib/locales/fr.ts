@@ -399,6 +399,7 @@ const fr: Translations = {
   'reason.heldOpenAdmin': 'un autre programme le tient ouvert à {side}; en tant que service avec des droits d\'administrateur, ArrowLoop le copierait depuis un cliché instantané',
   'reason.snapshotFailed': 'un autre programme le tient ouvert à {side}, et aucun cliché instantané n\'a pu être pris pour le lire : {error}',
   'reason.unsupported': '{kind} à {side}, que ce moteur n\'emporte pas',
+  'reason.sealed': 'verrouillé à {side} : OneDrive ne livre son Coffre-fort personnel à aucune application, ce dossier est donc laissé de côté',
   'reason.recordFailed': 'l\'enregistrement n\'a pas pu être écrit, laissé pour la prochaine exécution : {error}',
   'reason.conflictGone': 'l\'une des deux versions a disparu, il n\'y a donc plus rien à décider',
   'look.palette': 'Palette de couleurs',

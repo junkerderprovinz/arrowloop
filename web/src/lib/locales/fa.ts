@@ -399,6 +399,7 @@ const fa: Translations = {
   'reason.heldOpenAdmin': 'برنامهٔ دیگری آن را در طرف {side} باز نگه داشته; ArrowLoop اگر به‌صورت سرویس با دسترسی مدیر اجرا شود، آن را از یک کپی سایه کپی می‌کند',
   'reason.snapshotFailed': 'برنامهٔ دیگری آن را در طرف {side} باز نگه داشته, و هیچ کپی سایه‌ای برای خواندن آن ساخته نشد: {error}',
   'reason.unsupported': '{kind} در طرف {side}، که این موتور آن را نمی‌برد',
+  'reason.sealed': 'قفل در طرف {side}: OneDrive گاوصندوق شخصی (Personal Vault) خود را به هیچ برنامه‌ای نمی‌دهد، پس این پوشه کنار گذاشته می‌شود',
   'reason.recordFailed': 'نوشتن یادداشت ممکن نشد و برای اجرای بعدی می‌ماند: {error}',
   'reason.conflictGone': 'یکی از دو نسخه از میان رفته، پس چیزی برای تصمیم‌گیری نمانده',
   'look.palette': 'پالت رنگ',

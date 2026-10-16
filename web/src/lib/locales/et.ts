@@ -399,6 +399,7 @@ const et: Translations = {
   'reason.heldOpenAdmin': '{side} pool: teine programm hoiab seda lahti; teenusena administraatori õigustega kopeeriks ArrowLoop selle varikoopiast',
   'reason.snapshotFailed': '{side} pool: teine programm hoiab seda lahti, ja varikoopiat, millest seda lugeda, ei õnnestunud teha: {error}',
   'reason.unsupported': '{side} pool: {kind}, mida see mootor kaasa ei võta',
+  'reason.sealed': '{side}: lukus, OneDrive ei anna oma isiklikku seifi (Personal Vault) ühelegi rakendusele, seega jääb see kaust välja',
   'reason.recordFailed': 'Kirjet ei õnnestunud kirjutada, see jääb järgmisele käivitusele: {error}',
   'reason.conflictGone': 'üks kahest versioonist on kadunud, nii et otsustada pole enam midagi',
   'look.palette': 'Värvipalett',

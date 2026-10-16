@@ -399,6 +399,7 @@ const nl: Translations = {
   'reason.heldOpenAdmin': 'wordt {side} door een ander programma opengehouden; als dienst met beheerdersrechten zou ArrowLoop het uit een schaduwkopie kopiëren',
   'reason.snapshotFailed': 'wordt {side} door een ander programma opengehouden, en er kon geen schaduwkopie worden gemaakt om het uit te lezen: {error}',
   'reason.unsupported': '{kind} {side}, wat deze motor niet meeneemt',
+  'reason.sealed': 'vergrendeld {side}: OneDrive geeft zijn Persoonlijke kluis aan geen enkele app, dus deze map blijft buiten beschouwing',
   'reason.recordFailed': 'De aantekening kon niet worden weggeschreven, blijft liggen voor de volgende uitvoering: {error}',
   'reason.conflictGone': 'een van de twee versies is verdwenen, dus er valt niets meer te beslissen',
   'look.palette': 'Kleurenpalet',

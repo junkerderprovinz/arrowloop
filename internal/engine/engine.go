@@ -15,6 +15,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/pathid"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
@@ -167,6 +168,10 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	if err != nil {
 		return nil, compare, err
 	}
+	sealed, err := passOverSealed(left, right, visible, compare.FoldCase)
+	if err != nil {
+		return nil, compare, err
+	}
 
 	if err := somethingToWorkWith(ctx, ends, left, right, visible); err != nil {
 		return nil, compare, err
@@ -194,8 +199,46 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 
 	p.Skipped = append(p.Skipped, leftOdd...)
 	p.Skipped = append(p.Skipped, rightOdd...)
+	p.Skipped = append(p.Skipped, sealed...)
 
 	return p, compare, nil
+}
+
+// passOverSealed takes the folders one side will not open out of both
+// listings, so nothing is copied into them and nothing on the other side reads
+// as new. If the record holds files in one, the folder could be read before,
+// and passing over it would read those files as deleted.
+func passOverSealed(left, right *scan.Listing, visible map[string]state.Entry, fold bool) ([]plan.Skip, error) {
+	var skips []plan.Skip
+	for _, side := range []plan.Side{plan.Left, plan.Right} {
+		listing := left
+		if side == plan.Right {
+			listing = right
+		}
+		for _, dir := range listing.Sealed {
+			key := pathid.Key(dir, fold)
+			inside := func(p string) bool { return strings.HasPrefix(pathid.Key(p, fold), key+"/") }
+			for _, entry := range visible {
+				if inside(entry.LeftPath) || inside(entry.RightPath) {
+					return nil, fmt.Errorf("the %s side no longer lets %s be read, and the record holds files in it", side, dir)
+				}
+			}
+			for _, l := range []*scan.Listing{left, right} {
+				for k, e := range l.Files {
+					if inside(e.Path) {
+						delete(l.Files, k)
+					}
+				}
+				for k, name := range l.Dirs {
+					if k == key || inside(name) {
+						delete(l.Dirs, k)
+					}
+				}
+			}
+			skips = append(skips, plan.Skip{Path: dir, Reason: plan.Because("sealed", "side", side.String())})
+		}
+	}
+	return skips, nil
 }
 
 // readSide lists one side and names what it holds that cannot be synced. A

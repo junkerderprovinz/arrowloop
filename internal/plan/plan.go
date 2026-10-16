@@ -70,6 +70,7 @@ var reasonText = map[string]string{
 	"unverified":      "{what} finished, but the {side} side could not produce a checksum and this job insists on one; leaving it for the next run",
 	"changedDuring":   "changed on the {side} side while this run was going, leaving it for the next run",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
+	"sealed":          "locked on the {side} side: OneDrive hands its Personal Vault to no app, so this folder is left out",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
 	"conflictGone":    "one of the two versions is gone, so there is nothing left to decide",

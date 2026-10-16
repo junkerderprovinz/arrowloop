@@ -399,6 +399,7 @@ const is: Translations = {
   'reason.heldOpenAdmin': '{side} hlið: annað forrit heldur henni opinni; sem þjónusta með stjórnandaréttindi myndi ArrowLoop afrita hana úr skuggaafriti',
   'reason.snapshotFailed': '{side} hlið: annað forrit heldur henni opinni, og ekki tókst að taka skuggaafrit til að lesa hana úr: {error}',
   'reason.unsupported': '{side} hlið: {kind}, sem þessi vél flytur ekki með',
+  'reason.sealed': '{side}: læst, OneDrive afhendir engu forriti persónulega hólfið sitt (Personal Vault), svo þessi mappa er skilin eftir',
   'reason.recordFailed': 'Ekki tókst að skrifa færsluna, hún bíður næstu keyrslu: {error}',
   'reason.conflictGone': 'önnur útgáfan er horfin, svo það er ekkert eftir að ákveða',
   'look.palette': 'Litaspjald',

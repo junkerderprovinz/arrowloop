@@ -399,6 +399,7 @@ const hu: Translations = {
   'reason.heldOpenAdmin': 'egy másik program nyitva tartja a {side} oldalon; rendszergazdai jogokkal, szolgáltatásként futva az ArrowLoop árnyékmásolatból másolná',
   'reason.snapshotFailed': 'egy másik program nyitva tartja a {side} oldalon, és nem sikerült árnyékmásolatot készíteni, amelyből olvasni lehetne: {error}',
   'reason.unsupported': '{kind} a {side} oldalon, amit ez a motor nem visz tovább',
+  'reason.sealed': 'zárolva a {side} oldalon: a OneDrive a Személyes tárolóját egyetlen alkalmazásnak sem adja ki, ezért ez a mappa kimarad',
   'reason.recordFailed': 'A bejegyzést nem sikerült kiírni, a következő futásra marad: {error}',
   'reason.conflictGone': 'a két változat egyike eltűnt, így nincs már mit eldönteni',
   'look.palette': 'Színpaletta',

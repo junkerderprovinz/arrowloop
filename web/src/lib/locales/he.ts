@@ -399,6 +399,7 @@ const he: Translations = {
   'reason.heldOpenAdmin': 'תוכנה אחרת מחזיקה אותו פתוח בצד {side}; ArrowLoop כשירות עם הרשאות מנהל היה מעתיק אותו מעותק צל',
   'reason.snapshotFailed': 'תוכנה אחרת מחזיקה אותו פתוח בצד {side}, ולא ניתן היה ליצור עותק צל כדי לקרוא ממנו: {error}',
   'reason.unsupported': '{kind} בצד {side}, והמנוע הזה לא מעביר את זה',
+  'reason.sealed': 'נעול בצד {side}: OneDrive לא מוסר את הכספת האישית שלו לאף אפליקציה, ולכן התיקייה הזו נשארת בחוץ',
   'reason.recordFailed': 'לא ניתן היה לכתוב את הרישום, נשאר להרצה הבאה: {error}',
   'reason.conflictGone': 'אחת משתי הגרסאות נעלמה, כך שאין עוד מה להכריע',
   'look.palette': 'לוח צבעים',

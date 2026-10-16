@@ -399,6 +399,7 @@ const it: Translations = {
   'reason.heldOpenAdmin': 'un altro programma lo tiene aperto a {side}; ArrowLoop come servizio, con diritti di amministratore, lo copierebbe da una copia shadow',
   'reason.snapshotFailed': 'un altro programma lo tiene aperto a {side}, e non è stato possibile creare una copia shadow da cui leggerlo: {error}',
   'reason.unsupported': '{kind} a {side}, che questo motore non porta con sé',
+  'reason.sealed': 'bloccato a {side}: OneDrive non consegna il suo Archivio personale a nessuna app, quindi questa cartella resta fuori',
   'reason.recordFailed': 'non è stato possibile scrivere il registro, resta alla prossima esecuzione: {error}',
   'reason.conflictGone': 'una delle due versioni è sparita, quindi non resta niente da decidere',
   'look.palette': 'Tavolozza dei colori',

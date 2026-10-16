@@ -399,6 +399,7 @@ const eu: Translations = {
   'reason.heldOpenAdmin': 'beste programa batek zabalik dauka ({side}); ArrowLoop-ek zerbitzu gisa, administratzaile-eskubideekin, itzal-kopia batetik kopiatuko luke',
   'reason.snapshotFailed': 'beste programa batek zabalik dauka ({side}), eta ezin izan da itzal-kopiarik egin hura irakurtzeko: {error}',
   'reason.unsupported': '{kind} ({side}), motor honek eramaten ez duena',
+  'reason.sealed': 'blokeatuta ({side}): OneDrive-k ez dio bere kutxa gotor pertsonala (Personal Vault) inongo aplikaziori ematen, beraz karpeta hau kanpoan geratzen da',
   'reason.recordFailed': 'Erregistroa ezin izan da idatzi, hurrengo exekuziorako uzten da: {error}',
   'reason.conflictGone': 'bi bertsioetako bat desagertu da, beraz ez dago erabakitzeko ezer',
   'look.palette': 'Kolore-paleta',

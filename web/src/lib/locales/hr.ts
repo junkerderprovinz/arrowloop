@@ -399,6 +399,7 @@ const hr: Translations = {
   'reason.heldOpenAdmin': 'drugi program drži ovu datoteku otvorenom {side}; ArrowLoop kao usluga s administratorskim pravima kopirao bi je iz sjenovite kopije',
   'reason.snapshotFailed': 'drugi program drži ovu datoteku otvorenom {side}, a nije se mogla napraviti sjenovita kopija iz koje bi se čitala: {error}',
   'reason.unsupported': '{kind} {side}, što ovaj pogon ne prenosi',
+  'reason.sealed': 'zaključano {side}: OneDrive ne daje svoj Osobni trezor nijednoj aplikaciji, pa ova mapa ostaje izvan',
   'reason.recordFailed': 'Zapis nije bilo moguće spremiti pa ostaje za sljedeće pokretanje: {error}',
   'reason.conflictGone': 'jedna od dviju inačica je nestala, pa više nema što odlučiti',
   'look.palette': 'Paleta boja',

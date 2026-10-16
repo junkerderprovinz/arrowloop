@@ -399,6 +399,7 @@ const th: Translations = {
   'reason.heldOpenAdmin': 'มีอีกโปรแกรมเปิดค้างไว้ที่ฝั่ง{side} ถ้า ArrowLoop ทำงานเป็นเซอร์วิสด้วยสิทธิ์ผู้ดูแลระบบ จะคัดลอกจากสำเนาเงาได้',
   'reason.snapshotFailed': 'มีอีกโปรแกรมเปิดค้างไว้ที่ฝั่ง{side} และสร้างสำเนาเงาเพื่ออ่านไฟล์ไม่ได้: {error}',
   'reason.unsupported': '{kind} ที่ฝั่ง{side} ซึ่งกลไกนี้ไม่พาไปด้วย',
+  'reason.sealed': 'ล็อกอยู่ที่ฝั่ง{side}: OneDrive ไม่ส่ง Personal Vault ให้แอปใดเลย จึงข้ามโฟลเดอร์นี้ไป',
   'reason.recordFailed': 'เขียนบันทึกไม่ได้ เก็บไว้ให้รอบถัดไป: {error}',
   'reason.conflictGone': 'รุ่นหนึ่งในสองรุ่นหายไปแล้ว จึงไม่มีอะไรให้ตัดสินอีก',
   'look.palette': 'จานสี',

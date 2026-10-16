@@ -399,6 +399,7 @@ const da: Translations = {
   'reason.heldOpenAdmin': 'et andet program holder den åben på {side} side; ArrowLoop som tjeneste med administratorrettigheder ville kopiere den fra en skyggekopi',
   'reason.snapshotFailed': 'et andet program holder den åben på {side} side, og der kunne ikke tages en skyggekopi at læse den fra: {error}',
   'reason.unsupported': '{kind} på {side} side, som denne motor ikke tager med',
+  'reason.sealed': 'låst på {side} side: OneDrive udleverer ikke sin Personlige boks til nogen app, så mappen bliver udeladt',
   'reason.recordFailed': 'Noten kunne ikke skrives, bliver liggende til næste kørsel: {error}',
   'reason.conflictGone': 'en af de to versioner er væk, så der er intet tilbage at afgøre',
   'look.palette': 'Farvepalet',

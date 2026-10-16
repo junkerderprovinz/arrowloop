@@ -399,6 +399,7 @@ const fi: Translations = {
   'reason.heldOpenAdmin': '{side} puoli: toinen ohjelma pitää sitä auki; palveluna järjestelmänvalvojan oikeuksin ArrowLoop kopioisi sen varjokopiosta',
   'reason.snapshotFailed': '{side} puoli: toinen ohjelma pitää sitä auki, eikä varjokopiota, josta sen voisi lukea, saatu tehtyä: {error}',
   'reason.unsupported': '{side} puoli: {kind}, jota tämä moottori ei kuljeta',
+  'reason.sealed': '{side}: lukittu, OneDrive ei anna Henkilökohtaista holviaan millekään sovellukselle, joten kansio jää pois',
   'reason.recordFailed': 'Merkintää ei voitu kirjoittaa, se jää seuraavaan ajoon: {error}',
   'reason.conflictGone': 'toinen kahdesta versiosta on kadonnut, joten ratkaistavaa ei ole jäljellä',
   'look.palette': 'Väripaletti',

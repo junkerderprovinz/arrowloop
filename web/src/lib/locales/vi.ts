@@ -399,6 +399,7 @@ const vi: Translations = {
   'reason.heldOpenAdmin': 'một chương trình khác đang giữ nó mở ở bên {side}; khi chạy như một dịch vụ với quyền quản trị, ArrowLoop sẽ sao chép nó từ một bản sao bóng',
   'reason.snapshotFailed': 'một chương trình khác đang giữ nó mở ở bên {side}, và không tạo được bản sao bóng để đọc nó: {error}',
   'reason.unsupported': '{kind} ở bên {side}, thứ mà bộ máy này không mang theo',
+  'reason.sealed': 'bị khóa ở bên {side}: OneDrive không giao Kho bảo mật cá nhân cho ứng dụng nào, nên thư mục này được bỏ qua',
   'reason.recordFailed': 'Không ghi được ghi chú, để lại cho lần chạy sau: {error}',
   'reason.conflictGone': 'một trong hai bản đã không còn, nên không còn gì để quyết định',
   'look.palette': 'Bảng màu',

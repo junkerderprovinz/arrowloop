@@ -399,6 +399,7 @@ const ko: Translations = {
   'reason.heldOpenAdmin': '{side}에서 다른 프로그램이 열어 두고 있음; 관리자 권한의 서비스로 실행되는 ArrowLoop라면 섀도 복사본에서 복사합니다',
   'reason.snapshotFailed': '{side}에서 다른 프로그램이 열어 두고 있음, 그리고 읽어 올 섀도 복사본을 만들 수 없었음: {error}',
   'reason.unsupported': '{side}의 {kind}. 이 엔진은 옮기지 않습니다',
+  'reason.sealed': '{side}에서 잠김: OneDrive는 개인 중요 보관소를 어떤 앱에도 내주지 않으므로 이 폴더는 건너뜁니다',
   'reason.recordFailed': '기록을 쓰지 못해 다음 실행으로 미룹니다: {error}',
   'reason.conflictGone': '두 판 중 하나가 사라져 더 결정할 것이 없음',
   'look.palette': '색상 팔레트',

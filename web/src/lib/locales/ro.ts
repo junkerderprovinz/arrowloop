@@ -399,6 +399,7 @@ const ro: Translations = {
   'reason.heldOpenAdmin': 'un alt program îl ține deschis în {side}; ArrowLoop ca serviciu, cu drepturi de administrator, l-ar copia dintr-o copie umbră',
   'reason.snapshotFailed': 'un alt program îl ține deschis în {side}, și nu s-a putut crea o copie umbră din care să fie citit: {error}',
   'reason.unsupported': '{kind} în {side}, ceva ce acest motor nu duce mai departe',
+  'reason.sealed': 'blocat în {side}: OneDrive nu dă Seiful personal niciunei aplicații, așa că acest folder rămâne pe dinafară',
   'reason.recordFailed': 'Însemnarea nu a putut fi scrisă, rămâne pentru rularea următoare: {error}',
   'reason.conflictGone': 'una dintre cele două versiuni a dispărut, așa că nu mai este nimic de decis',
   'look.palette': 'Paletă de culori',

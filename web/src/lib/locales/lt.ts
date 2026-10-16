@@ -399,6 +399,7 @@ const lt: Translations = {
   'reason.heldOpenAdmin': 'kita programa jį laiko atvertą ({side} pusė); ArrowLoop kaip tarnyba su administratoriaus teisėmis jį nukopijuotų iš šešėlinės kopijos',
   'reason.snapshotFailed': 'kita programa jį laiko atvertą ({side} pusė), ir nepavyko sukurti šešėlinės kopijos, iš kurios jį būtų galima nuskaityti: {error}',
   'reason.unsupported': '{kind} ({side} pusė), o šis variklis to neperkelia',
+  'reason.sealed': 'užrakinta, {side} pusė: OneDrive savo Asmeninės saugyklos neatiduoda jokiai programai, todėl šis aplankas praleidžiamas',
   'reason.recordFailed': 'Įrašo nepavyko išsaugoti, paliekama kitam paleidimui: {error}',
   'reason.conflictGone': 'viena iš dviejų versijų dingo, tad nebėra ką spręsti',
   'look.palette': 'Spalvų paletė',

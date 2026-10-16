@@ -399,6 +399,7 @@ const lv: Translations = {
   'reason.heldOpenAdmin': 'cita programma to tur atvērtu ({side} puse); ArrowLoop kā pakalpojums ar administratora tiesībām to nokopētu no ēnkopijas',
   'reason.snapshotFailed': 'cita programma to tur atvērtu ({side} puse), un neizdevās izveidot ēnkopiju, no kuras to nolasīt: {error}',
   'reason.unsupported': '{kind} ({side} puse), ko šis dzinējs neņem līdzi',
+  'reason.sealed': 'bloķēts, {side} puse: OneDrive savu Personisko glabātuvi nedod nevienai lietotnei, tāpēc šī mape tiek izlaista',
   'reason.recordFailed': 'Ierakstu nevarēja saglabāt, paliek nākamajai izpildei: {error}',
   'reason.conflictGone': 'viena no abām versijām ir pazudusi, tāpēc vairs nav ko izlemt',
   'look.palette': 'Krāsu palete',

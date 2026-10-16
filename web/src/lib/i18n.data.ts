@@ -633,6 +633,7 @@ export const en = {
   'reason.heldOpenAdmin': 'another program is holding it open on the {side}; ArrowLoop running as a service, with administrator rights, would copy it from a shadow copy',
   'reason.snapshotFailed': 'another program is holding it open on the {side}, and no shadow copy could be taken to read it from: {error}',
   'reason.unsupported': '{kind} on the {side}, which this engine does not carry',
+  'reason.sealed': 'locked on the {side}: OneDrive hands its Personal Vault to no app, so this folder is left out',
   'reason.recordFailed': 'the record could not be written, leaving it for the next run: {error}',
   'reason.conflictGone': 'one of the two versions is gone, so there is nothing left to decide',
 
@@ -1899,6 +1900,7 @@ export const de: Translations = {
   'reason.heldOpenAdmin': 'wird {side} von einem anderen Programm offen gehalten; als Dienst mit Administratorrechten würde ArrowLoop sie aus einer Schattenkopie kopieren',
   'reason.snapshotFailed': 'wird {side} von einem anderen Programm offen gehalten, und es ließ sich keine Schattenkopie anlegen, aus der sie gelesen werden könnte: {error}',
   'reason.unsupported': '{kind} {side}, was dieser Dienst nicht mitnimmt',
+  'reason.sealed': '{side} gesperrt: OneDrive gibt den Persönlichen Tresor an keine App heraus, der Ordner bleibt außen vor',
   'reason.recordFailed': 'Der Vermerk ließ sich nicht schreiben, bleibt für den nächsten Lauf liegen: {error}',
   'reason.conflictGone': 'eine der beiden Fassungen ist weg, es gibt nichts mehr zu entscheiden',
 

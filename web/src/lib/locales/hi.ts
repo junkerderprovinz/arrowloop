@@ -399,6 +399,7 @@ const hi: Translations = {
   'reason.heldOpenAdmin': '{side} कोई दूसरा प्रोग्राम इसे खोले हुए है; एडमिनिस्ट्रेटर अधिकारों वाली सेवा के रूप में ArrowLoop इसे शैडो कॉपी से कॉपी कर लेता',
   'reason.snapshotFailed': '{side} कोई दूसरा प्रोग्राम इसे खोले हुए है, और इसे पढ़ने के लिए कोई शैडो कॉपी नहीं बन सकी: {error}',
   'reason.unsupported': '{side} {kind}, जिसे यह इंजन साथ नहीं ले जाता',
+  'reason.sealed': '{side} लॉक है: OneDrive अपना Personal Vault किसी ऐप को नहीं देता, इसलिए यह फ़ोल्डर छोड़ दिया जाता है',
   'reason.recordFailed': 'लेखा लिखा नहीं जा सका, अगली बारी के लिए छोड़ा जा रहा है: {error}',
   'reason.conflictGone': 'दोनों में से एक संस्करण गायब है, इसलिए तय करने को कुछ नहीं बचा',
   'look.palette': 'कलर पैलेट',

@@ -399,6 +399,7 @@ const sk: Translations = {
   'reason.heldOpenAdmin': 'iný program to drží otvorené {side}; ArrowLoop ako služba s právami správcu by to skopíroval z tieňovej kópie',
   'reason.snapshotFailed': 'iný program to drží otvorené {side}, a nepodarilo sa vytvoriť tieňovú kópiu, z ktorej by sa to dalo čítať: {error}',
   'reason.unsupported': '{kind} {side}, čo tento motor neberie',
+  'reason.sealed': 'zamknuté {side}: OneDrive nevydá svoj Osobný trezor žiadnej aplikácii, preto tento priečinok zostáva bokom',
   'reason.recordFailed': 'Záznam sa nepodarilo zapísať, zostáva na ďalší beh: {error}',
   'reason.conflictGone': 'jedna z oboch verzií zmizla, takže už nie je o čom rozhodovať',
   'look.palette': 'Farebná paleta',

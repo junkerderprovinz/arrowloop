@@ -399,6 +399,7 @@ const pt: Translations = {
   'reason.heldOpenAdmin': 'outro programa mantém-no aberto à {side}; o ArrowLoop como serviço, com direitos de administrador, copiá-lo-ia a partir de uma cópia sombra',
   'reason.snapshotFailed': 'outro programa mantém-no aberto à {side}, e não foi possível criar uma cópia sombra a partir da qual o ler: {error}',
   'reason.unsupported': '{kind} à {side}, que este motor não leva',
+  'reason.sealed': 'bloqueado à {side}: o OneDrive não entrega o seu Cofre Pessoal a nenhuma aplicação, por isso esta pasta fica de fora',
   'reason.recordFailed': 'não foi possível escrever o registo, fica para a execução seguinte: {error}',
   'reason.conflictGone': 'uma das duas versões já não existe, por isso não há nada para decidir',
   'look.palette': 'Paleta de cores',

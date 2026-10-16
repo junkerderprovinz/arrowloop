@@ -399,6 +399,7 @@ const ar: Translations = {
   'reason.heldOpenAdmin': 'يُبقيه برنامج آخر مفتوحاً على {side}; لو عمل ArrowLoop كخدمة بصلاحيات المسؤول لنسخه من نسخة الظل',
   'reason.snapshotFailed': 'يُبقيه برنامج آخر مفتوحاً على {side}, ولم يمكن إنشاء نسخة ظل لقراءته منها: {error}',
   'reason.unsupported': '{kind} على {side}، وهو ما لا ينقله هذا المحرك',
+  'reason.sealed': 'مقفل على {side}: لا يسلّم OneDrive خزنته الشخصية (Personal Vault) لأي تطبيق، لذلك يُستثنى هذا المجلد',
   'reason.recordFailed': 'تعذّرت كتابة القيد، ويبقى للتشغيل التالي: {error}',
   'reason.conflictGone': 'اختفت إحدى النسختين، فلم يبقَ ما يُحسم',
   'look.palette': 'لوحة الألوان',

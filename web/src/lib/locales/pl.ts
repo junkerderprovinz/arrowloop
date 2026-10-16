@@ -399,6 +399,7 @@ const pl: Translations = {
   'reason.heldOpenAdmin': 'inny program trzyma plik otwarty, strona {side}; ArrowLoop jako usługa z uprawnieniami administratora skopiowałby go z kopii w tle',
   'reason.snapshotFailed': 'inny program trzyma plik otwarty, strona {side}, i nie udało się utworzyć kopii w tle, z której można by go odczytać: {error}',
   'reason.unsupported': '{kind}, strona {side}, czego ten silnik nie przenosi',
+  'reason.sealed': 'zablokowane, strona {side}: OneDrive nie wydaje swojego Magazynu osobistego żadnej aplikacji, więc ten folder zostaje pominięty',
   'reason.recordFailed': 'Nie udało się zapisać wpisu, zostaje na następne uruchomienie: {error}',
   'reason.conflictGone': 'jednej z dwóch wersji już nie ma, więc nie ma czego rozstrzygać',
   'look.palette': 'Paleta kolorów',

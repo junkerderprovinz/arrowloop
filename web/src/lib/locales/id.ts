@@ -399,6 +399,7 @@ const id: Translations = {
   'reason.heldOpenAdmin': 'program lain menahannya tetap terbuka di sisi {side}; ArrowLoop sebagai layanan dengan hak administrator akan menyalinnya dari salinan bayangan',
   'reason.snapshotFailed': 'program lain menahannya tetap terbuka di sisi {side}, dan tidak ada salinan bayangan yang bisa dibuat untuk membacanya: {error}',
   'reason.unsupported': '{kind} di sisi {side}, yang tidak dibawa oleh mesin ini',
+  'reason.sealed': 'terkunci di sisi {side}: OneDrive tidak memberikan Brankas Pribadi-nya ke aplikasi mana pun, jadi folder ini dilewati',
   'reason.recordFailed': 'Catatannya tidak dapat ditulis, ditinggalkan untuk jalannya yang berikut: {error}',
   'reason.conflictGone': 'salah satu dari kedua versi sudah hilang, jadi tidak ada lagi yang perlu diputuskan',
   'look.palette': 'Palet warna',

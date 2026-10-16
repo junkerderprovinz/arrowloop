@@ -399,6 +399,7 @@ const sl: Translations = {
   'reason.heldOpenAdmin': 'drug program ima to datoteko {side} odprto; ArrowLoop kot storitev s skrbniškimi pravicami bi jo kopiral iz senčne kopije',
   'reason.snapshotFailed': 'drug program ima to datoteko {side} odprto, in ni bilo mogoče ustvariti senčne kopije, iz katere bi jo prebral: {error}',
   'reason.unsupported': '{kind} {side}, česar ta pogon ne prenaša',
+  'reason.sealed': 'zaklenjeno {side}: OneDrive svojega Osebnega trezorja ne da nobeni aplikaciji, zato ta mapa ostane zunaj',
   'reason.recordFailed': 'Zapisa ni bilo mogoče shraniti, ostane za naslednji tek: {error}',
   'reason.conflictGone': 'ene od obeh različic ni več, zato ni več česa odločati',
   'look.palette': 'Barvna paleta',

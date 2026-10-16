@@ -399,6 +399,7 @@ const sv: Translations = {
   'reason.heldOpenAdmin': 'ett annat program håller den öppen på {side} sida; ArrowLoop som tjänst med administratörsrättigheter skulle kopiera den från en skuggkopia',
   'reason.snapshotFailed': 'ett annat program håller den öppen på {side} sida, och ingen skuggkopia kunde tas att läsa den från: {error}',
   'reason.unsupported': '{kind} på {side} sida, som den här motorn inte tar med',
+  'reason.sealed': 'låst på {side} sida: OneDrive lämnar inte ut sitt Personliga valv till någon app, så mappen hoppas över',
   'reason.recordFailed': 'Anteckningen gick inte att skriva, lämnas till nästa körning: {error}',
   'reason.conflictGone': 'en av de två versionerna är borta, så det finns inget kvar att avgöra',
   'look.palette': 'Färgpalett',

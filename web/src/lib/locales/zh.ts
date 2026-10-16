@@ -399,6 +399,7 @@ const zh: Translations = {
   'reason.heldOpenAdmin': '{side}有另一个程序把它开着；以管理员权限作为服务运行时，ArrowLoop 会从卷影副本复制它',
   'reason.snapshotFailed': '{side}有另一个程序把它开着，而且无法创建卷影副本来读取它：{error}',
   'reason.unsupported': '{side}的 {kind}，这个引擎不带它走',
+  'reason.sealed': '{side}已锁定：OneDrive 不会把个人保管库交给任何应用，因此跳过此文件夹',
   'reason.recordFailed': '记录写不进去，留到下一次运行：{error}',
   'reason.conflictGone': '两个版本之一已不在，没有什么需要决定的了',
   'look.palette': '调色板',

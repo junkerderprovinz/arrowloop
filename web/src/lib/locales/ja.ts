@@ -399,6 +399,7 @@ const ja: Translations = {
   'reason.heldOpenAdmin': '{side}側で別のプログラムが開いたままにしています。管理者権限のサービスとして動く ArrowLoop ならシャドウ コピーからコピーできます',
   'reason.snapshotFailed': '{side}側で別のプログラムが開いたままにしています。さらに、読み取るためのシャドウ コピーを作成できませんでした: {error}',
   'reason.unsupported': '{side}側の {kind} は、このエンジンでは運べません',
+  'reason.sealed': '{side}側でロック中: OneDrive は個人用 Vault をどのアプリにも渡さないため、このフォルダーは対象外です',
   'reason.recordFailed': '記録を書き込めなかったため、次回の実行に持ち越します: {error}',
   'reason.conflictGone': 'どちらかの版が消えたため、決めることはもう残っていません',
   'look.palette': 'カラーパレット',

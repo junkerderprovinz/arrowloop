@@ -399,6 +399,7 @@ const es: Translations = {
   'reason.heldOpenAdmin': 'otro programa lo tiene abierto a la {side}; ArrowLoop como servicio, con derechos de administrador, lo copiaría desde una instantánea de volumen',
   'reason.snapshotFailed': 'otro programa lo tiene abierto a la {side}, y no se pudo crear una instantánea de volumen desde la que leerlo: {error}',
   'reason.unsupported': '{kind} a la {side}, que este motor no se lleva',
+  'reason.sealed': 'bloqueado a la {side}: OneDrive no entrega su Almacén personal a ninguna aplicación, así que esta carpeta se queda fuera',
   'reason.recordFailed': 'no se pudo escribir el registro, queda para la siguiente ejecución: {error}',
   'reason.conflictGone': 'una de las dos versiones ya no está, así que no queda nada que decidir',
   'look.palette': 'Paleta de colores',

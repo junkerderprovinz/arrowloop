@@ -399,6 +399,7 @@ const ca: Translations = {
   'reason.heldOpenAdmin': 'un altre programa el manté obert a la banda {side}; ArrowLoop com a servei, amb drets d\'administrador, el copiaria d\'una còpia d\'ombra',
   'reason.snapshotFailed': 'un altre programa el manté obert a la banda {side}, i no s\'ha pogut crear cap còpia d\'ombra per llegir-lo: {error}',
   'reason.unsupported': '{kind} a la banda {side}, que aquest motor no s\'emporta',
+  'reason.sealed': 'bloquejat a la banda {side}: OneDrive no dona la seva Caixa forta personal a cap aplicació, així que aquesta carpeta queda fora',
   'reason.recordFailed': 'no s\'ha pogut escriure el registre, queda per a l\'execució següent: {error}',
   'reason.conflictGone': 'una de les dues versions ja no hi és, així que no queda res per decidir',
   'look.palette': 'Paleta de colors',

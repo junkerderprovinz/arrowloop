@@ -399,6 +399,7 @@ const gl: Translations = {
   'reason.heldOpenAdmin': 'outro programa tenno aberto na {side}; ArrowLoop como servizo, con dereitos de administrador, copiaríao desde unha copia sombra',
   'reason.snapshotFailed': 'outro programa tenno aberto na {side}, e non se puido crear unha copia sombra desde a que lelo: {error}',
   'reason.unsupported': '{kind} na {side}, que este motor non leva',
+  'reason.sealed': 'bloqueado na {side}: OneDrive non lle entrega a súa Caixa forte persoal a ningunha aplicación, así que este cartafol queda fóra',
   'reason.recordFailed': 'Non se puido escribir o rexistro, queda para a seguinte execución: {error}',
   'reason.conflictGone': 'unha das dúas versións xa non está, así que non queda nada que decidir',
   'look.palette': 'Paleta de cores',

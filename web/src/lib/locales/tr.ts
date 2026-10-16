@@ -399,6 +399,7 @@ const tr: Translations = {
   'reason.heldOpenAdmin': '{side} tarafta başka bir program onu açık tutuyor; yönetici haklarıyla hizmet olarak çalışan ArrowLoop onu bir gölge kopyadan kopyalardı',
   'reason.snapshotFailed': '{side} tarafta başka bir program onu açık tutuyor, ve okunabilecek bir gölge kopya alınamadı: {error}',
   'reason.unsupported': '{side} tarafta {kind}, bu motor bunu taşımıyor',
+  'reason.sealed': '{side} tarafta kilitli: OneDrive Kişisel Kasa\'sını hiçbir uygulamaya vermez, bu yüzden bu klasör dışarıda kalır',
   'reason.recordFailed': 'Kayıt yazılamadı, sonraki çalışmaya bırakıldı: {error}',
   'reason.conflictGone': 'iki sürümden biri kayboldu, karar verilecek bir şey kalmadı',
   'look.palette': 'Renk paleti',

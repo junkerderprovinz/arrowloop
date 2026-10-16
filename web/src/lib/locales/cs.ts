@@ -399,6 +399,7 @@ const cs: Translations = {
   'reason.heldOpenAdmin': 'jiný program to drží otevřené {side}; ArrowLoop jako služba s právy správce by to zkopíroval ze stínové kopie',
   'reason.snapshotFailed': 'jiný program to drží otevřené {side}, a nepodařilo se vytvořit stínovou kopii, ze které by se to dalo číst: {error}',
   'reason.unsupported': '{kind} {side}, což tento motor nebere',
+  'reason.sealed': 'zamčeno {side}: OneDrive nevydá svůj Osobní trezor žádné aplikaci, proto tato složka zůstává stranou',
   'reason.recordFailed': 'Záznam se nepodařilo zapsat, zůstává na příští běh: {error}',
   'reason.conflictGone': 'jedna z obou verzí zmizela, takže už není o čem rozhodovat',
   'look.palette': 'Barevná paleta',

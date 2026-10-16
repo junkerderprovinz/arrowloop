@@ -10,9 +10,11 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/rclone/rclone/backend/onedrive/api"
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
 	"github.com/rclone/rclone/fs/hash"
@@ -63,6 +65,10 @@ type Listing struct {
 	Dirs       map[string]string
 	Collisions []Collision
 	Excluded   int
+	// Sealed lists the folders the backend shows but never lets an app open,
+	// such as OneDrive's Personal Vault. What they hold is unknown, not
+	// absent.
+	Sealed []string
 }
 
 // Options controls how a side is read.
@@ -124,7 +130,8 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	defer dropStats(group)
 	ctx = accounting.WithStatsGroup(ctx, group)
 	stats := accounting.Stats(ctx)
-	err := walk.ListR(ctx, pruned{Fs: f, exclude: opt.Exclude}, "", true, -1, listType, func(entries fs.DirEntries) error {
+	side := pruned{Fs: f, exclude: opt.Exclude, mu: &sync.Mutex{}, sealed: &out.Sealed}
+	err := walk.ListR(ctx, side, "", true, -1, listType, func(entries fs.DirEntries) error {
 		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
 			if dir, isDir := entry.(fs.Directory); isDir {
@@ -194,6 +201,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		delete(out.Files, key)
 	}
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
+	sort.Strings(out.Sealed)
 	return out, nil
 }
 
@@ -211,17 +219,35 @@ func dropStats(group string) {
 // pruned lists a folder the job never looks into as empty, without opening it.
 // The local backend opens every folder the walk reaches, and a drive root holds
 // several, such as System Volume Information, that the process may not open;
-// each would fail the scan.
+// each would fail the scan. A sealed folder is listed as empty too, and noted.
 type pruned struct {
 	fs.Fs
 	exclude *filter.Set
+	mu      *sync.Mutex
+	sealed  *[]string
 }
 
 func (p pruned) List(ctx context.Context, dir string) (fs.DirEntries, error) {
 	if dir != "" && (IsReserved(dir) || p.exclude.ExcludesTree(dir)) {
 		return nil, nil
 	}
-	return p.Fs.List(ctx, dir)
+	entries, err := p.Fs.List(ctx, dir)
+	if err != nil && dir != "" && isSealed(err) {
+		p.mu.Lock()
+		*p.sealed = append(*p.sealed, dir)
+		p.mu.Unlock()
+		return nil, nil
+	}
+	return entries, err
+}
+
+// isSealed reports whether a folder failed to list because the backend keeps
+// it from apps by design. OneDrive answers this way for the Personal Vault,
+// whose name follows the account's language, so the error is the only
+// reliable sign.
+func isSealed(err error) bool {
+	var od *api.Error
+	return errors.As(err, &od) && od.ErrorInfo.InnerError.Code == "invalidResourceId"
 }
 
 // exists reports whether a side's root is there. Any answer other than "not

@@ -399,6 +399,7 @@ const ms: Translations = {
   'reason.heldOpenAdmin': 'program lain menahannya terbuka di sebelah {side}; ArrowLoop sebagai perkhidmatan dengan hak pentadbir akan menyalinnya daripada salinan bayang',
   'reason.snapshotFailed': 'program lain menahannya terbuka di sebelah {side}, dan tiada salinan bayang dapat dibuat untuk membacanya: {error}',
   'reason.unsupported': '{kind} di sebelah {side}, yang tidak dibawa oleh enjin ini',
+  'reason.sealed': 'berkunci di sebelah {side}: OneDrive tidak menyerahkan Peti Besi Peribadinya kepada mana-mana aplikasi, jadi folder ini ditinggalkan',
   'reason.recordFailed': 'Rekodnya tidak dapat ditulis, ditinggalkan untuk larian berikutnya: {error}',
   'reason.conflictGone': 'salah satu daripada dua versi sudah hilang, jadi tiada apa lagi untuk diputuskan',
   'look.palette': 'Palet warna',
