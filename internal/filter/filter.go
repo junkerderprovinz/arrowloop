@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 // InProgress are the names programs use while they are still writing a file.
@@ -51,8 +53,13 @@ type Set struct {
 // matched against the whole relative path. "**" spans directory separators,
 // "*" and "?" do not, and "**/" also matches no directory at all.
 func New(patterns []string) (*Set, error) {
-	s := &Set{patterns: append([]string(nil), patterns...)}
+	// Names are compared composed on both ends, since a Mac and the service
+	// it uploads to may spell the same accent differently.
+	s := &Set{}
 	for _, p := range patterns {
+		s.patterns = append(s.patterns, norm.NFC.String(p))
+	}
+	for _, p := range s.patterns {
 		re, err := compile(p)
 		if err != nil {
 			return nil, fmt.Errorf("exclude pattern %q: %w", p, err)
@@ -83,6 +90,7 @@ func (s *Set) Excluded(rel string) bool {
 	if s == nil || len(s.res) == 0 {
 		return false
 	}
+	rel = norm.NFC.String(rel)
 	base := rel
 	if i := strings.LastIndex(rel, "/"); i >= 0 {
 		base = rel[i+1:]
@@ -109,6 +117,7 @@ func (s *Set) ExcludesTree(dir string) bool {
 	if s == nil {
 		return false
 	}
+	dir = norm.NFC.String(dir)
 	for i, p := range s.patterns {
 		if dir == p || strings.HasPrefix(dir, p+"/") {
 			return true
@@ -122,7 +131,8 @@ func (s *Set) ExcludesTree(dir string) bool {
 
 // compile turns one glob into an anchored regular expression. path.Match has
 // no pattern that spans directory separators, so it cannot express "**".
-func compile(pattern string) (*regexp.Regexp, error) {
+func compile(glob string) (*regexp.Regexp, error) {
+	pattern := []rune(glob)
 	var b strings.Builder
 	b.WriteString("^")
 	for i := 0; i < len(pattern); i++ {

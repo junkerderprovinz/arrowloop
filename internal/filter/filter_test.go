@@ -133,3 +133,32 @@ func TestExcludesTree(t *testing.T) {
 		t.Error("a nil set excluded a folder")
 	}
 }
+
+// OneDrive names its Personal Vault in the account's language, and a pattern
+// typed on one system may be composed differently from the name another
+// system stores.
+func TestAPatternWithAccentsMatchesItsName(t *testing.T) {
+	composed := "Persönlicher Tresor"
+	decomposed := "Persönlicher Tresor"
+	for _, pattern := range []string{composed, decomposed} {
+		s, err := New([]string{pattern + "/**"})
+		if err != nil {
+			t.Fatalf("compile: %v", err)
+		}
+		for _, name := range []string{composed, decomposed} {
+			if !s.ExcludesTree(name) {
+				t.Errorf("%q does not keep the walk out of %q", pattern, name)
+			}
+			if !s.Excluded(name + "/pass.pdf") {
+				t.Errorf("%q does not exclude a file in %q", pattern, name)
+			}
+		}
+	}
+	s, err := New([]string{"*.été"})
+	if err != nil {
+		t.Fatalf("compile: %v", err)
+	}
+	if !s.Excluded("a/notes.été") {
+		t.Error("a name pattern with accents does not match")
+	}
+}
