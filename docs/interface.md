@@ -410,8 +410,8 @@ such as **What gets carried** to the card that carries it now.
 The last tile has three cards. **Version** lists ArrowLoop, GlimStone and
 rclone, each linked to its release notes. Under them stand **New** and **Check
 for updates**, which asks GitHub for a newer release. **New** opens the window
-with the release notes and the changes (see below); for a release that marks no
-changes it reads **Release notes** and opens the notes alone. **Help** leads to GitHub, to email and to this
+with the release notes and the changes (see below); while it lists no change it
+reads **Release notes** and opens the same window. **Help** leads to GitHub, to email and to this
 manual, and **Bug report** downloads one file with the versions, the settings
 and jobs without passwords or keys, the last 100 runs and the open anomalies.
 Nothing is sent: you attach the file to an issue yourself. Then comes
@@ -419,20 +419,25 @@ Nothing is sent: you attach the file to an issue yourself. Then comes
 
 ## What's new
 
-After an update a glowing green dot marks each change on its page, and a dot
-on a link says something behind it changed. A click on a dot hides it, and a
-link's dot goes once everything behind it has been seen. **New** in the
-Version card on the Info tile shows how many changes you have not seen yet. A
-browser that never had an older version open starts with every change seen.
+After an update a glowing green dot marks each change that came with a
+release newer than the one you had open before. It sits on the change's page,
+and a dot on a link says something behind it changed. A click on a dot hides it, and a link's dot goes once
+everything behind it has been seen. What you had already seen of older
+releases stays seen. **New** in the Version card on the Info tile shows how
+many changes you have not seen yet. A browser that never had an older version
+open starts with every change seen.
 
-The window it opens has two tabs. **Release notes** holds the notes of the
-version that is running, and **Changes** lists the changes of the last update,
-each with a way to it. **New** opens it on **Changes** while something is
-unseen and on **Release notes** after that. **Mark all as seen** at the top of the list hides every
+The window it opens is called **New since** the release you had before. It
+holds one card per release since then, newest first: the number on its badge,
+its release notes, and its changes grouped by page. A change no page shows,
+such as one in the phone app, stands first under **In the background** and
+counts as seen once the window closes. An older release keeps its card while
+one of its changes is unseen, and the running release always has one. **Go
+there** leads to a change's page. **Mark all as seen** at the top hides every
 dot. Once nothing is left, the same button reads **Show all again** and brings
-them back. **All releases** at the foot of the window opens the earlier notes
-on GitHub. After an update the window opens by itself on the release notes, in
-a browser that had the version before open.
+them back. **All releases** at the foot of the window opens the notes on
+GitHub. After an update the window opens by itself, in a browser that had the
+version before open.
 
 ## The look
 
