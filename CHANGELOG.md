@@ -8,6 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.2.4 - 2026-10-16
+
+## ✨ Added
+
+- **One card per release in What's new.** After an update the window lists every release since the one you had, newest first. Each card shows its release notes and the changes that release brought, each with Go there where a page shows it. A change that no page shows has its dot in the window only and counts as seen once you close it.
+
+## 🐛 Fixed
+
+- **2.2 had no dot.** Syncing a folder that another app offers in the phone app's file picker came without a dot. It has one now, and every new feature of a release gets one.
+
 ## 2.2.3 - 2026-10-16
 
 ## ⚡ Improved
