@@ -1,0 +1,1 @@
+Umlauts welcome. Exclusions like "Persönlicher Tresor" finally match, the Personal Vault stops nagging, and Files touched got its search back.
