@@ -45,6 +45,7 @@ const gl: Translations = {
   'preview.unchanged': 'Sen cambios: {count}',
   'preview.identical': 'Xa idénticos nos dous lados: {count}',
   'preview.skipped': 'Adiado para máis tarde',
+  'preview.passedOver': 'Excluído para sempre',
   'preview.explain': 'Non se move nada ata que premas o botón. Desactiva unha fila e quedará exactamente como está.',
   'kind.copy': 'copiar',
   'kind.move': 'mover',

@@ -195,6 +195,7 @@ export const en = {
   'preview.unchanged': 'Unchanged: {count}',
   'preview.identical': 'Already identical on both sides: {count}',
   'preview.skipped': 'Left for later',
+  'preview.passedOver': 'Left out for good',
   'preview.explain':
     'Nothing moves until you press the button. Untick a row to leave it exactly as it is.',
 
@@ -1468,6 +1469,7 @@ export const de: Translations = {
   'preview.unchanged': 'Unverändert: {count}',
   'preview.identical': 'Auf beiden Seiten bereits gleich: {count}',
   'preview.skipped': 'Für später zurückgestellt',
+  'preview.passedOver': 'Dauerhaft außen vor',
   'preview.explain':
     'Bis zum Knopfdruck bewegt sich nichts. Schalte eine Zeile ab, dann bleibt sie genau so, wie sie ist.',
 

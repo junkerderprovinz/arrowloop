@@ -45,6 +45,7 @@ const ar: Translations = {
   'preview.unchanged': 'دون تغيير: {count}',
   'preview.identical': 'متطابقة أصلاً على الجانبين: {count}',
   'preview.skipped': 'مؤجّل إلى لاحق',
+  'preview.passedOver': 'مستثنى دائمًا',
   'preview.explain': 'لا شيء يتحرك حتى تضغط الزر. أطفئ سطراً ليبقى كما هو تماماً.',
   'kind.copy': 'نسخ',
   'kind.move': 'نقل',

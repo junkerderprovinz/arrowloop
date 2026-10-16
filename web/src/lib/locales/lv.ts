@@ -45,6 +45,7 @@ const lv: Translations = {
   'preview.unchanged': 'Nemainīti: {count}',
   'preview.identical': 'Jau vienādi abās pusēs: {count}',
   'preview.skipped': 'Atlikts uz vēlāku laiku',
+  'preview.passedOver': 'Izlaists pavisam',
   'preview.explain': 'Nekas nekustas, kamēr nenospiežat pogu. Izslēdziet rindu, un tā paliks tieši tāda, kāda ir.',
   'kind.copy': 'kopēt',
   'kind.move': 'pārvietot',

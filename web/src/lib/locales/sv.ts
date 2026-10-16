@@ -45,6 +45,7 @@ const sv: Translations = {
   'preview.unchanged': 'Oförändrade: {count}',
   'preview.identical': 'Redan lika på båda sidor: {count}',
   'preview.skipped': 'Uppskjutet till senare',
+  'preview.passedOver': 'Utelämnat för gott',
   'preview.explain': 'Ingenting rör sig förrän du trycker på knappen. Slå av en rad så lämnas den precis som den är.',
   'kind.copy': 'kopiera',
   'kind.move': 'flytta',

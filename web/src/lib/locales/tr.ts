@@ -45,6 +45,7 @@ const tr: Translations = {
   'preview.unchanged': 'Değişmeyen: {count}',
   'preview.identical': 'İki tarafta da zaten aynı: {count}',
   'preview.skipped': 'Sonraya bırakıldı',
+  'preview.passedOver': 'Kalıcı olarak dışarıda',
   'preview.explain': 'Düğmeye basana kadar hiçbir şey kımıldamaz. Bir satırı kapatırsan tam olduğu gibi kalır.',
   'kind.copy': 'kopyala',
   'kind.move': 'taşı',

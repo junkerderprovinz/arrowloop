@@ -199,7 +199,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 
 	p.Skipped = append(p.Skipped, leftOdd...)
 	p.Skipped = append(p.Skipped, rightOdd...)
-	p.Skipped = append(p.Skipped, sealed...)
+	p.PassedOver = sealed
 
 	return p, compare, nil
 }

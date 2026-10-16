@@ -45,6 +45,7 @@ const th: Translations = {
   'preview.unchanged': 'ไม่เปลี่ยน: {count}',
   'preview.identical': 'เหมือนกันทั้งสองฝั่งอยู่แล้ว: {count}',
   'preview.skipped': 'เลื่อนไว้ก่อน',
+  'preview.passedOver': 'ข้ามไปถาวร',
   'preview.explain': 'จะยังไม่มีอะไรขยับจนกว่าคุณจะกดปุ่ม ปิดแถวใดไว้ แถวนั้นจะคงเดิมทุกประการ',
   'kind.copy': 'คัดลอก',
   'kind.move': 'ย้าย',

@@ -39,7 +39,7 @@ func TestASealedFolderIsPassedOverAndNamed(t *testing.T) {
 	write(t, j.left, "Personal Vault/passport.pdf", "p")
 	j.ends.Left = vaulted{Fs: j.ends.Left, dir: "Personal Vault"}
 
-	p, _ := j.sync(t)
+	p, res := j.sync(t)
 	got := tree(t, j.right)
 	if len(got) != 1 || got["Ausgaben.xlsx"] == "" {
 		t.Fatalf("right side holds %v, want only Ausgaben.xlsx", keys(got))
@@ -47,14 +47,12 @@ func TestASealedFolderIsPassedOverAndNamed(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(j.right, "Personal Vault")); err == nil {
 		t.Fatal("the sealed folder was created on the right side")
 	}
-	named := false
-	for _, s := range p.Skipped {
-		if s.Path == "Personal Vault" && s.Reason.Code == "sealed" {
-			named = true
-		}
+	if len(p.PassedOver) != 1 || p.PassedOver[0].Path != "Personal Vault" || p.PassedOver[0].Reason.Code != "sealed" {
+		t.Fatalf("passed over %v, want the sealed folder", p.PassedOver)
 	}
-	if !named {
-		t.Fatalf("the sealed folder is not among the skipped: %v", p.Skipped)
+	// No later run gets into the vault, so it is not work left for later.
+	if len(res.Skipped) != 0 {
+		t.Fatalf("the run left %v for later", res.Skipped)
 	}
 }
 

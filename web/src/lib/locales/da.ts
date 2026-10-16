@@ -45,6 +45,7 @@ const da: Translations = {
   'preview.unchanged': 'Uændrede: {count}',
   'preview.identical': 'Allerede ens på begge sider: {count}',
   'preview.skipped': 'Udskudt til senere',
+  'preview.passedOver': 'Udeladt for altid',
   'preview.explain': 'Intet flytter sig, før du trykker på knappen. Slå en række fra, så bliver den præcis som den er.',
   'kind.copy': 'kopier',
   'kind.move': 'flyt',

@@ -45,6 +45,7 @@ const pt: Translations = {
   'preview.unchanged': 'Inalterados: {count}',
   'preview.identical': 'Já idênticos dos dois lados: {count}',
   'preview.skipped': 'Adiado para depois',
+  'preview.passedOver': 'Deixado de fora de vez',
   'preview.explain': 'Nada se move até carregar no botão. Desligue uma linha para a deixar exatamente como está.',
   'kind.copy': 'copiar',
   'kind.move': 'mover',

@@ -193,6 +193,8 @@ export type Plan = {
   actions: Action[]
   dirs: Action[]
   skipped: Skip[]
+  /** Folders a side never lets the job open. No later run gets further, so they are not left for later. */
+  passedOver: Skip[]
   unchanged: number
   agreed: number
 }
@@ -741,12 +743,6 @@ export const api = {
   /** What one run did, path by path. Fetched when a run is opened, not with the list. */
   runEntries: (id: number) => request<RunEntry[]>(`/api/history/${id}/entries`),
 
-  /** What one job has done to individual files, newest first, across its runs. */
-  jobTouches: (job: string, limit = 50, q = '') =>
-    request<Touch[]>(
-      `/api/jobs/${encodeURIComponent(job)}/touches?limit=${limit}` +
-        (q ? `&q=${encodeURIComponent(q)}` : ''),
-    ),
 
   /**
    * The same log across every job. An empty argument does not narrow. The

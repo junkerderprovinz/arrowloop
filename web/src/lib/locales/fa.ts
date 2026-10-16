@@ -45,6 +45,7 @@ const fa: Translations = {
   'preview.unchanged': 'بدون تغییر: {count}',
   'preview.identical': 'از پیش در دو طرف یکسان: {count}',
   'preview.skipped': 'به بعد موکول شد',
+  'preview.passedOver': 'برای همیشه کنار گذاشته شده',
   'preview.explain': 'تا دکمه را نزنید هیچ چیز تکان نمی‌خورد. یک سطر را خاموش کنید تا دقیقاً همان‌طور بماند.',
   'kind.copy': 'رونوشت',
   'kind.move': 'جابه‌جایی',

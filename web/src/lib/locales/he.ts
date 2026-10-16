@@ -45,6 +45,7 @@ const he: Translations = {
   'preview.unchanged': 'ללא שינוי: {count}',
   'preview.identical': 'כבר זהים בשני הצדדים: {count}',
   'preview.skipped': 'נדחה למועד מאוחר',
+  'preview.passedOver': 'מחוץ לסנכרון לצמיתות',
   'preview.explain': 'שום דבר לא זז עד שתלחץ על הכפתור. כבה שורה והיא תישאר בדיוק כמו שהיא.',
   'kind.copy': 'העתקה',
   'kind.move': 'העברה',

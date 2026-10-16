@@ -45,6 +45,7 @@ const cs: Translations = {
   'preview.unchanged': 'Beze změny: {count}',
   'preview.identical': 'Už shodné na obou stranách: {count}',
   'preview.skipped': 'Odloženo na později',
+  'preview.passedOver': 'Trvale vynecháno',
   'preview.explain': 'Nic se nepohne, dokud nestisknete tlačítko. Vypněte řádek a zůstane přesně takový, jaký je.',
   'kind.copy': 'kopírovat',
   'kind.move': 'přesunout',

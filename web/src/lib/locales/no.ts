@@ -45,6 +45,7 @@ const no: Translations = {
   'preview.unchanged': 'Uendret: {count}',
   'preview.identical': 'Allerede like på begge sider: {count}',
   'preview.skipped': 'Utsatt til senere',
+  'preview.passedOver': 'Utelatt for godt',
   'preview.explain': 'Ingenting flytter seg før du trykker på knappen. Slå av en rad, så blir den nøyaktig som den er.',
   'kind.copy': 'kopier',
   'kind.move': 'flytt',

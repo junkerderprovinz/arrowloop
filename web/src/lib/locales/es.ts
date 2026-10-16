@@ -45,6 +45,7 @@ const es: Translations = {
   'preview.unchanged': 'Sin cambios: {count}',
   'preview.identical': 'Ya idénticos en ambos lados: {count}',
   'preview.skipped': 'Aplazado para después',
+  'preview.passedOver': 'Excluido para siempre',
   'preview.explain': 'No se mueve nada hasta que pulses el botón. Desactiva una fila para dejarla exactamente como está.',
   'kind.copy': 'copiar',
   'kind.move': 'mover',

@@ -45,6 +45,7 @@ const el: Translations = {
   'preview.unchanged': 'Αμετάβλητα: {count}',
   'preview.identical': 'Ήδη ίδια και στις δύο πλευρές: {count}',
   'preview.skipped': 'Αναβλήθηκε για αργότερα',
+  'preview.passedOver': 'Εκτός μόνιμα',
   'preview.explain': 'Τίποτα δεν κινείται μέχρι να πατήσετε το κουμπί. Απενεργοποιήστε μια γραμμή και θα μείνει ακριβώς όπως είναι.',
   'kind.copy': 'αντιγραφή',
   'kind.move': 'μετακίνηση',

@@ -45,6 +45,7 @@ const ja: Translations = {
   'preview.unchanged': '変更なし: {count}',
   'preview.identical': '両側ですでに同一: {count}',
   'preview.skipped': '後回しにしたもの',
+  'preview.passedOver': '常に対象外',
   'preview.explain': 'ボタンを押すまで何も動きません。行をオフにすれば、そのままの状態で残ります。',
   'kind.copy': 'コピー',
   'kind.move': '移動',

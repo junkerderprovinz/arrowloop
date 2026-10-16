@@ -45,6 +45,7 @@ const lt: Translations = {
   'preview.unchanged': 'Nepakitę: {count}',
   'preview.identical': 'Jau vienodi abiejose pusėse: {count}',
   'preview.skipped': 'Atidėta vėlesniam kartui',
+  'preview.passedOver': 'Praleista visam laikui',
   'preview.explain': 'Niekas nepajuda, kol nepaspausite mygtuko. Išjunkite eilutę ir ji liks lygiai tokia, kokia yra.',
   'kind.copy': 'kopijuoti',
   'kind.move': 'perkelti',

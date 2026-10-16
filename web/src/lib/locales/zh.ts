@@ -45,6 +45,7 @@ const zh: Translations = {
   'preview.unchanged': '未变动：{count}',
   'preview.identical': '两侧已相同：{count}',
   'preview.skipped': '留待稍后',
+  'preview.passedOver': '始终跳过',
   'preview.explain': '在按下按钮之前什么都不会动。关掉某一行，它就会原样保留。',
   'kind.copy': '复制',
   'kind.move': '移动',

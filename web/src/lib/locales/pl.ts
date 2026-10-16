@@ -45,6 +45,7 @@ const pl: Translations = {
   'preview.unchanged': 'Bez zmian: {count}',
   'preview.identical': 'Już identyczne po obu stronach: {count}',
   'preview.skipped': 'Odłożone na później',
+  'preview.passedOver': 'Pominięte na stałe',
   'preview.explain': 'Nic się nie ruszy, dopóki nie naciśniesz przycisku. Wyłącz wiersz, a zostanie dokładnie taki, jaki jest.',
   'kind.copy': 'kopiuj',
   'kind.move': 'przenieś',

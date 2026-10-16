@@ -249,6 +249,10 @@ type Plan struct {
 	// source deleted it.
 	Forget  []string
 	Skipped []Skip
+	// PassedOver lists folders a side never lets the job open, such as
+	// OneDrive's Personal Vault. Unlike a skip it is not postponed: no later
+	// run will get further, so a run does not count it as left for later.
+	PassedOver []Skip
 	// Dirs is empty unless the job syncs empty directories, which needs both
 	// sides to be able to hold one.
 	Dirs []DirAction

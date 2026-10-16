@@ -45,6 +45,7 @@ const sr: Translations = {
   'preview.unchanged': 'Непромењено: {count}',
   'preview.identical': 'Већ исто са обе стране: {count}',
   'preview.skipped': 'Одложено за касније',
+  'preview.passedOver': 'Трајно изостављено',
   'preview.explain': 'Ништа се не помера док не притиснете дугме. Искључите ред и остаће тачно онакав какав јесте.',
   'kind.copy': 'копирај',
   'kind.move': 'премести',

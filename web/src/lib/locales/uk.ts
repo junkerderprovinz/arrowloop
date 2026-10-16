@@ -45,6 +45,7 @@ const uk: Translations = {
   'preview.unchanged': 'Без змін: {count}',
   'preview.identical': 'Уже однакові з обох боків: {count}',
   'preview.skipped': 'Відкладено на потім',
+  'preview.passedOver': 'Пропускається завжди',
   'preview.explain': 'Ніщо не зрушить, доки ви не натиснете кнопку. Вимкніть рядок, і він лишиться саме таким, як є.',
   'kind.copy': 'копіювати',
   'kind.move': 'перемістити',

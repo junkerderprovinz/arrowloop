@@ -314,11 +314,12 @@ type actionView struct {
 }
 
 type planView struct {
-	Actions   []actionView `json:"actions"`
-	Dirs      []actionView `json:"dirs"`
-	Skipped   []skipView   `json:"skipped"`
-	Unchanged int          `json:"unchanged"`
-	Agreed    int          `json:"agreed"`
+	Actions    []actionView `json:"actions"`
+	Dirs       []actionView `json:"dirs"`
+	Skipped    []skipView   `json:"skipped"`
+	PassedOver []skipView   `json:"passedOver"`
+	Unchanged  int          `json:"unchanged"`
+	Agreed     int          `json:"agreed"`
 }
 
 // sideView is one side's version of a file: what it is called there, how big
@@ -353,11 +354,12 @@ func sideOf(e *scan.Entry) *sideView {
 
 func viewOf(p *plan.Plan) planView {
 	out := planView{
-		Actions:   make([]actionView, 0, len(p.Actions)),
-		Dirs:      make([]actionView, 0, len(p.Dirs)),
-		Skipped:   make([]skipView, 0, len(p.Skipped)),
-		Unchanged: p.Unchanged,
-		Agreed:    len(p.Agreed),
+		Actions:    make([]actionView, 0, len(p.Actions)),
+		Dirs:       make([]actionView, 0, len(p.Dirs)),
+		Skipped:    make([]skipView, 0, len(p.Skipped)),
+		PassedOver: make([]skipView, 0, len(p.PassedOver)),
+		Unchanged:  p.Unchanged,
+		Agreed:     len(p.Agreed),
 	}
 	for _, a := range p.Actions {
 		// The same description a run compares the ticked rows with.
@@ -375,6 +377,9 @@ func viewOf(p *plan.Plan) planView {
 	}
 	for _, sk := range p.Skipped {
 		out.Skipped = append(out.Skipped, skipView{Path: sk.Path, Reason: sk.Reason})
+	}
+	for _, sk := range p.PassedOver {
+		out.PassedOver = append(out.PassedOver, skipView{Path: sk.Path, Reason: sk.Reason})
 	}
 	return out
 }

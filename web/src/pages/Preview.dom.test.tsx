@@ -11,6 +11,7 @@ const plan: Plan = {
   ],
   dirs: [],
   skipped: [],
+  passedOver: [],
   unchanged: 0,
   agreed: 0,
 }
@@ -46,6 +47,18 @@ describe('the preview', () => {
       'report.docx': { kind: 'copy', from: 'left', to: 'right' },
       'old.txt': { kind: 'delete', to: 'right' },
     })
+  })
+
+  it('names a folder left out for good apart from the work left for later', async () => {
+    plan.passedOver = [{ path: 'Personal Vault', reason: { code: 'sealed', vars: { side: 'left' } } as never }]
+    try {
+      render(<Preview job="docs" onDone={() => undefined} />)
+      expect(await screen.findByRole('heading', { level: 3, name: 'Left out for good' })).toBeTruthy()
+      expect(screen.getByText('Personal Vault')).toBeTruthy()
+      expect(screen.queryByRole('heading', { level: 3, name: 'Left for later' })).toBeNull()
+    } finally {
+      plan.passedOver = []
+    }
   })
 })
 

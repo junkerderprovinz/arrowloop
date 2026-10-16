@@ -45,6 +45,7 @@ const ko: Translations = {
   'preview.unchanged': '변경 없음: {count}',
   'preview.identical': '양쪽에서 이미 동일: {count}',
   'preview.skipped': '나중으로 미룬 것',
+  'preview.passedOver': '계속 제외됨',
   'preview.explain': '버튼을 누르기 전에는 아무것도 움직이지 않습니다. 줄을 끄면 그대로 남습니다.',
   'kind.copy': '복사',
   'kind.move': '이동',

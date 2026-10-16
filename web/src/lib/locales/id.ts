@@ -45,6 +45,7 @@ const id: Translations = {
   'preview.unchanged': 'Tidak berubah: {count}',
   'preview.identical': 'Sudah sama di kedua sisi: {count}',
   'preview.skipped': 'Ditunda untuk nanti',
+  'preview.passedOver': 'Dilewati untuk seterusnya',
   'preview.explain': 'Tidak ada yang bergerak sampai Anda menekan tombolnya. Matikan sebuah baris dan baris itu akan dibiarkan persis seperti adanya.',
   'kind.copy': 'salin',
   'kind.move': 'pindahkan',

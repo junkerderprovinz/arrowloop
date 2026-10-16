@@ -45,6 +45,7 @@ const ms: Translations = {
   'preview.unchanged': 'Tidak berubah: {count}',
   'preview.identical': 'Sudah serupa di kedua-dua belah: {count}',
   'preview.skipped': 'Ditangguhkan ke kemudian',
+  'preview.passedOver': 'Ditinggalkan untuk seterusnya',
   'preview.explain': 'Tiada apa bergerak sehingga anda menekan butang. Matikan satu baris dan ia akan kekal tepat seperti sedia ada.',
   'kind.copy': 'salin',
   'kind.move': 'alih',

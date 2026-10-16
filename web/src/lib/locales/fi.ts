@@ -45,6 +45,7 @@ const fi: Translations = {
   'preview.unchanged': 'Muuttumattomia: {count}',
   'preview.identical': 'Jo samanlaisia molemmilla puolilla: {count}',
   'preview.skipped': 'Siirretty myöhemmäksi',
+  'preview.passedOver': 'Jätetty pysyvästi pois',
   'preview.explain': 'Mikään ei liiku ennen kuin painat painiketta. Kytke rivi pois, niin se jää täsmälleen sellaiseksi kuin on.',
   'kind.copy': 'kopioi',
   'kind.move': 'siirrä',

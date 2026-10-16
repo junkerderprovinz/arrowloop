@@ -45,6 +45,7 @@ const bg: Translations = {
   'preview.unchanged': 'Непроменени: {count}',
   'preview.identical': 'Вече еднакви от двете страни: {count}',
   'preview.skipped': 'Отложено за после',
+  'preview.passedOver': 'Изключено за постоянно',
   'preview.explain': 'Нищо не помръдва, докато не натиснете бутона. Изключете ред и той остава точно какъвто е.',
   'kind.copy': 'копиране',
   'kind.move': 'преместване',

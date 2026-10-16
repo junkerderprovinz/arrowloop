@@ -45,6 +45,7 @@ const hi: Translations = {
   'preview.unchanged': 'अपरिवर्तित: {count}',
   'preview.identical': 'दोनों ओर पहले से एक जैसे: {count}',
   'preview.skipped': 'बाद के लिए टाला गया',
+  'preview.passedOver': 'हमेशा के लिए छोड़ा गया',
   'preview.explain': 'जब तक आप बटन नहीं दबाते, कुछ नहीं हिलेगा। किसी पंक्ति को बंद कर दें तो वह ठीक वैसी ही रहेगी जैसी है।',
   'kind.copy': 'नकल',
   'kind.move': 'खिसकाना',

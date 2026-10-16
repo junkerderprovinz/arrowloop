@@ -45,6 +45,7 @@ const it: Translations = {
   'preview.unchanged': 'Invariati: {count}',
   'preview.identical': 'Già identici sui due lati: {count}',
   'preview.skipped': 'Rimandato a dopo',
+  'preview.passedOver': 'Escluso per sempre',
   'preview.explain': 'Nulla si muove finché non premi il pulsante. Disattiva una riga per lasciarla esattamente com\'è.',
   'kind.copy': 'copia',
   'kind.move': 'sposta',

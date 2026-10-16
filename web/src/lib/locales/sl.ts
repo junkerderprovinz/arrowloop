@@ -45,6 +45,7 @@ const sl: Translations = {
   'preview.unchanged': 'Nespremenjeno: {count}',
   'preview.identical': 'Že enako na obeh straneh: {count}',
   'preview.skipped': 'Preloženo na pozneje',
+  'preview.passedOver': 'Trajno izpuščeno',
   'preview.explain': 'Nič se ne premakne, dokler ne pritisnete gumba. Izklopite vrstico in ostala bo natanko taka, kot je.',
   'kind.copy': 'kopiranje',
   'kind.move': 'premik',

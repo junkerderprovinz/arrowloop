@@ -45,6 +45,7 @@ const ca: Translations = {
   'preview.unchanged': 'Sense canvis: {count}',
   'preview.identical': 'Ja idèntics a totes dues bandes: {count}',
   'preview.skipped': 'Ajornat per a més tard',
+  'preview.passedOver': 'Exclòs per sempre',
   'preview.explain': 'No es mou res fins que premeu el botó. Desactiveu una fila i quedarà exactament tal com és.',
   'kind.copy': 'copia',
   'kind.move': 'mou',

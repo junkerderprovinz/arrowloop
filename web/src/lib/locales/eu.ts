@@ -45,6 +45,7 @@ const eu: Translations = {
   'preview.unchanged': 'Aldatu gabe: {count}',
   'preview.identical': 'Bi aldeetan berdinak jada: {count}',
   'preview.skipped': 'Geroko utzita',
+  'preview.passedOver': 'Betiko kanpoan',
   'preview.explain': 'Ez da ezer mugitzen botoia sakatu arte. Itzali errenkada bat eta dagoen bezalaxe geldituko da.',
   'kind.copy': 'kopiatu',
   'kind.move': 'mugitu',

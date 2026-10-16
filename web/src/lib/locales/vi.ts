@@ -45,6 +45,7 @@ const vi: Translations = {
   'preview.unchanged': 'Không đổi: {count}',
   'preview.identical': 'Đã giống nhau ở cả hai bên: {count}',
   'preview.skipped': 'Để lại cho lần sau',
+  'preview.passedOver': 'Bỏ qua vĩnh viễn',
   'preview.explain': 'Không có gì dịch chuyển cho tới khi bạn bấm nút. Tắt một dòng thì dòng đó ở nguyên như vậy.',
   'kind.copy': 'sao chép',
   'kind.move': 'di chuyển',

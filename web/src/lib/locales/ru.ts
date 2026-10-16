@@ -45,6 +45,7 @@ const ru: Translations = {
   'preview.unchanged': 'Без изменений: {count}',
   'preview.identical': 'Уже одинаковы с обеих сторон: {count}',
   'preview.skipped': 'Отложено на потом',
+  'preview.passedOver': 'Пропускается всегда',
   'preview.explain': 'Ничего не сдвинется, пока вы не нажмёте кнопку. Отключите строку, и она останется ровно такой, какая есть.',
   'kind.copy': 'копировать',
   'kind.move': 'переместить',

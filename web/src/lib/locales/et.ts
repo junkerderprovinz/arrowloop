@@ -45,6 +45,7 @@ const et: Translations = {
   'preview.unchanged': 'Muutmata: {count}',
   'preview.identical': 'Juba mõlemal pool ühesugused: {count}',
   'preview.skipped': 'Lükatud edasi',
+  'preview.passedOver': 'Jääb alatiseks välja',
   'preview.explain': 'Miski ei liigu enne, kui vajutate nuppu. Lülitage rida välja ja see jääb täpselt selliseks, nagu on.',
   'kind.copy': 'kopeeri',
   'kind.move': 'teisalda',

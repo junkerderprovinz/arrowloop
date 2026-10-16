@@ -11,7 +11,7 @@ import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
 import { actionName } from '../lib/actionName'
 import { dayTime } from '../lib/dayTime'
-import { api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion } from '../lib/api'
+import { api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion, type Skip } from '../lib/api'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
 
 /** A job's plan as a page of its own, for a shell that opens it there. */
@@ -31,7 +31,6 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
  */
 export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }) {
   const { t } = useT()
-  const reason = useReason()
   const [plan, setPlan] = useState<Plan | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [unticked, setUnticked] = useState<Set<string>>(new Set())
@@ -181,20 +180,27 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
         {t('preview.unchanged', { count: plan.unchanged })}
         {plan.agreed > 0 && <> {' · '} {t('preview.identical', { count: plan.agreed })}</>}
       </p>
-      {plan.skipped.length > 0 && (
-        <section className="glim-well flex flex-col gap-2 rounded-card p-4">
-          <h3 className="glim-eyebrow">{t('preview.skipped')}</h3>
-          <ul className="flex flex-col gap-2">
-            {plan.skipped.map((s) => (
-              <li key={s.path} className="text-subline">
-                <span className="font-medium">{s.path}</span>
-                <span className="text-carbon-textMuted">, {reason(s.reason)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {plan.skipped.length > 0 && <Skips title={t('preview.skipped')} skips={plan.skipped} />}
+      {/* An older engine on another machine does not send the list. */}
+      {plan.passedOver?.length > 0 && <Skips title={t('preview.passedOver')} skips={plan.passedOver} />}
     </>,
+  )
+}
+
+function Skips({ title, skips }: { title: string; skips: Skip[] }) {
+  const reason = useReason()
+  return (
+    <section className="glim-well flex flex-col gap-2 rounded-card p-4">
+      <h3 className="glim-eyebrow">{title}</h3>
+      <ul className="flex flex-col gap-2">
+        {skips.map((s) => (
+          <li key={s.path} className="text-subline">
+            <span className="font-medium">{s.path}</span>
+            <span className="text-carbon-textMuted">, {reason(s.reason)}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 

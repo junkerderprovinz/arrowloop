@@ -45,6 +45,7 @@ const hu: Translations = {
   'preview.unchanged': 'Változatlan: {count}',
   'preview.identical': 'Mindkét oldalon már azonos: {count}',
   'preview.skipped': 'Későbbre halasztva',
+  'preview.passedOver': 'Végleg kimarad',
   'preview.explain': 'Semmi sem mozdul, amíg meg nem nyomja a gombot. Kapcsoljon ki egy sort, és pontosan úgy marad, ahogy van.',
   'kind.copy': 'másolás',
   'kind.move': 'áthelyezés',

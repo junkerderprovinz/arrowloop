@@ -45,6 +45,7 @@ const hr: Translations = {
   'preview.unchanged': 'Nepromijenjeno: {count}',
   'preview.identical': 'Već jednako na obje strane: {count}',
   'preview.skipped': 'Odgođeno za poslije',
+  'preview.passedOver': 'Trajno izostavljeno',
   'preview.explain': 'Ništa se ne miče dok ne pritisnete gumb. Isključite redak i ostat će točno onakav kakav jest.',
   'kind.copy': 'kopiraj',
   'kind.move': 'premjesti',

@@ -319,6 +319,11 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options, watcher Progress, verify Verify) (Result, error) {
 	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}, progress: watcher}
 	t.logger, _ = watcher.(Logger)
+	// The plan's own skips belong in the log, or the run counts them as left
+	// for later without naming a single path.
+	for _, s := range p.Skipped {
+		t.record(Entry{Kind: "skip", Path: s.Path, Note: s.Reason.String()})
+	}
 	t.total = countWork(p)
 	if watcher != nil {
 		watcher.Starting(t.total)

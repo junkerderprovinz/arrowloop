@@ -45,6 +45,7 @@ const ro: Translations = {
   'preview.unchanged': 'Neschimbate: {count}',
   'preview.identical': 'Deja identice pe ambele părți: {count}',
   'preview.skipped': 'Amânat pentru mai târziu',
+  'preview.passedOver': 'Lăsat deoparte definitiv',
   'preview.explain': 'Nimic nu se mișcă până nu apăsați butonul. Dezactivați un rând și rămâne exact așa cum este.',
   'kind.copy': 'copiere',
   'kind.move': 'mutare',

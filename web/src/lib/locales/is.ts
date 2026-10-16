@@ -45,6 +45,7 @@ const is: Translations = {
   'preview.unchanged': 'Óbreytt: {count}',
   'preview.identical': 'Þegar eins báðum megin: {count}',
   'preview.skipped': 'Frestað til síðar',
+  'preview.passedOver': 'Sleppt til frambúðar',
   'preview.explain': 'Ekkert hreyfist fyrr en þú ýtir á hnappinn. Slökktu á línu og hún helst nákvæmlega eins og hún er.',
   'kind.copy': 'afrita',
   'kind.move': 'færa',

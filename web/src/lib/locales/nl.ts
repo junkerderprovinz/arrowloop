@@ -45,6 +45,7 @@ const nl: Translations = {
   'preview.unchanged': 'Ongewijzigd: {count}',
   'preview.identical': 'Aan beide kanten al gelijk: {count}',
   'preview.skipped': 'Uitgesteld tot later',
+  'preview.passedOver': 'Blijvend buiten beschouwing',
   'preview.explain': 'Er beweegt niets tot je op de knop drukt. Zet een regel uit om die precies te laten zoals hij is.',
   'kind.copy': 'kopiëren',
   'kind.move': 'verplaatsen',
