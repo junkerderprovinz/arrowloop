@@ -213,6 +213,17 @@ func TestAFolderMadeAgainBetweenTwoTicksIsWatchedAgain(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 	}
 	mkdir(t, f.right)
+	// The old watch learns of its end from its own goroutine, which a real
+	// tick a minute later always finds done.
+	f.r.mu.Lock()
+	old := f.r.watchers["x"].w
+	f.r.mu.Unlock()
+	for !old.Lost() {
+		if time.Now().After(deadline) {
+			t.Fatal("the watch never noticed its folder went away")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
 	f.r.rewatch(ctx, ctx, now.Add(time.Minute))
 	arrives(t, f.right, f.left)
 }
