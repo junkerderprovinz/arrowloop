@@ -1,0 +1,22 @@
+# Built from the Unraid template in junkerderprovinz/unraid-apps by
+# .github/gen-compose.py. Change the template there, not this file.
+#
+# Folders are created next to this file on the first start. Point the ones
+# that hold your own files (downloads, storage and the like) at real folders
+# first, and fill in every value marked "required".
+
+services:
+  arrowloop:
+    image: junkerderprovinz/arrowloop:latest
+    container_name: arrowloop
+    restart: unless-stopped
+    hostname: arrowloop
+    ports:
+      - "8422:8422"
+    volumes:
+      - "./appdata:/config"
+      - "./data:/data"
+    environment:
+      TZ: Europe/Berlin
+      ARROWLOOP_ADDR: "0.0.0.0:8422"
+      ARROWLOOP_UMASK: "000"
