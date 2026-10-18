@@ -1,0 +1,1 @@
+Die App selbst bleibt, wie sie ist. Auf deinem Server zieht eine Google-Tabelle mitten im Sync nicht mehr die Notbremse.

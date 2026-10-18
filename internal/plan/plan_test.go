@@ -333,3 +333,26 @@ func TestBuildStopsWhenTheRunIsStopped(t *testing.T) {
 		t.Error("a stopped run went on comparing files")
 	}
 }
+
+func TestAnUnknownSizeIsComparedByTimeAlone(t *testing.T) {
+	window := time.Second
+	exported := Facts{Size: -1, Mod: base}
+	cases := []struct {
+		name  string
+		other Facts
+		want  bool
+	}{
+		{"same time", Facts{Size: 2727895, Mod: base}, true},
+		{"within the window", Facts{Size: 2727895, Mod: base.Add(time.Second)}, true},
+		{"edited later", Facts{Size: 2727895, Mod: base.Add(time.Minute)}, false},
+		{"any known size", Facts{Size: 10, Mod: base}, true},
+	}
+	for _, c := range cases {
+		if got := Same(exported, c.other, window); got != c.want {
+			t.Errorf("%s: Same = %v, want %v", c.name, got, c.want)
+		}
+	}
+	if Same(Facts{Size: 9, Mod: base}, Facts{Size: 10, Mod: base}, window) {
+		t.Error("two known sizes that differ must not be the same")
+	}
+}

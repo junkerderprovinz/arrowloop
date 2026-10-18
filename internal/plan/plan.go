@@ -421,7 +421,9 @@ func Same(a, b Facts, window time.Duration) bool {
 	if a.Hash != "" && b.Hash != "" {
 		return a.Size == b.Size && a.Hash == b.Hash
 	}
-	if a.Size != b.Size {
+	// Google Drive reports -1 for a native document it exports on the fly, so
+	// for that side the time is all there is to compare.
+	if a.Size != b.Size && a.Size >= 0 && b.Size >= 0 {
 		return false
 	}
 	diff := a.Mod.Sub(b.Mod)

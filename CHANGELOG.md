@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.2.5 - 2026-10-19
+
+## 🐛 Fixed
+
+- **Google Docs files no longer stop a sync.** Google Drive reports no size for a Docs, Sheets or Slides file it exports on the fly, so the check after copying one saw two different files and ended the whole run. Such a file is now compared by its modification time, and the rest of the job carries on.
+
 ## 2.2.4 - 2026-10-16
 
 ## ✨ Added
