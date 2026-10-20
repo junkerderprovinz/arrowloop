@@ -657,6 +657,8 @@ const is: Translations = {
   'history.noMatch': 'Engin keyrsla passar við þetta.',
   'edit.trash': 'Halda rusli hvorum megin',
   'edit.trashHint': 'Eyðing verður að færslu í falda möppu sem heitir .arrowloop inni í samstillta trénu, svo ekkert sem þetta verk gerir eyðir neinu fyrir fullt og allt, og skrá sem var eytt fyrir mistök er sótt aftur á ruslflipanum. Þá möppu sér hver sá sem notar sameignina, og einmitt þess vegna má slökkva á þessu: án rusls verður hún aldrei til, eyðing er endanleg, og svo er einnig um þá hlið sem tapar í árekstri. Skynsamlegt fyrir niðurhalsmöppu, slæm hugmynd fyrir skjalamöppu.',
+  'edit.newerWins': 'Í árekstri vinnur nýrri útgáfan',
+  'edit.newerWinsHint': 'Ef skrá breyttist báðum megin kemur útgáfan sem var vistuð síðast í stað hinnar, og hin fer í ruslið. ArrowLoop fer eftir klukkunum báðum megin. Ef slökkt er á þessu halda báðar útgáfur sér og ákvörðunin er tekin á síðunni Árekstrar.',
   'edit.openTrash': 'Opna rusl þessa verks',
   'edit.commands': 'Skipanir',
   'edit.commandsHint': 'Eru aðeins stilltar í arrowloop.json: skipun sem slegin væri inn hér myndi keyra á þessari vél með réttindum forritsins. Vistun hér lætur þær vera eins og þær eru.',

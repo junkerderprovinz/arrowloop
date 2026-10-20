@@ -657,6 +657,8 @@ const pt: Translations = {
   'history.noMatch': 'Nenhuma execução corresponde.',
   'edit.trash': 'Manter uma reciclagem de cada lado',
   'edit.trashHint': 'Uma eliminação passa a ser uma mudança para uma pasta escondida chamada .arrowloop dentro da árvore sincronizada, por isso nada do que esta tarefa faz destrói o que quer que seja de forma definitiva e um ficheiro apagado por engano recupera-se no separador da reciclagem. Essa pasta é visível para todos os que usam a partilha, e é essa a razão para desligar isto: sem reciclagem ela nunca é criada, uma eliminação é definitiva, e o lado perdedor de um conflito também. Razoável para uma pasta de transferências, má ideia para uma de documentos.',
+  'edit.newerWins': 'Num conflito, ganha a versão mais recente',
+  'edit.newerWinsHint': 'Se um ficheiro mudou nos dois lados, a versão guardada por último substitui a outra, e a outra vai para a reciclagem. O ArrowLoop baseia-se nos relógios dos dois lados. Desligado, ficam as duas versões e a decisão é tomada na página Conflitos.',
   'edit.openTrash': 'Abrir a reciclagem desta tarefa',
   'edit.commands': 'Comandos',
   'edit.commandsHint': 'Só se definem em arrowloop.json: um comando escrito aqui seria executado nesta máquina com as permissões do programa. Guardar aqui deixa-os como estão.',

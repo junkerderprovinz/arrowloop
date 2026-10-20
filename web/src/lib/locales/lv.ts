@@ -657,6 +657,8 @@ const lv: Translations = {
   'history.noMatch': 'Neviena izpilde tam neatbilst.',
   'edit.trash': 'Uzturēt miskasti katrā pusē',
   'edit.trashHint': 'Dzēšana kļūst par pārvietošanu uz slēptu mapi ar nosaukumu .arrowloop sinhronizētā koka iekšienē, tāpēc nekas, ko šis uzdevums dara, neiznīcina neko galīgi, un kļūdas pēc izdzēstu datni var atgūt miskastes cilnē. Šo mapi redz ikviens, kas izmanto koplietojumu, un tieši tāpēc šo ir vērts izslēgt: bez miskastes tā nekad netiek izveidota, dzēšana ir galīga, tāpat kā konflikta zaudētāja puse. Lejupielāžu mapei saprātīgi, dokumentu mapei slikta doma.',
+  'edit.newerWins': 'Konfliktā uzvar jaunākā versija',
+  'edit.newerWinsHint': 'Ja fails ir mainīts abās pusēs, pēdējā saglabātā versija aizstāj otru, un otra nonāk miskastē. ArrowLoop vadās pēc abu pušu pulksteņiem. Ja izslēgts, paliek abas versijas, un lēmums tiek pieņemts lapā Konflikti.',
   'edit.openTrash': 'Atvērt šī uzdevuma miskasti',
   'edit.commands': 'Komandas',
   'edit.commandsHint': 'Tiek iestatītas tikai failā arrowloop.json: šeit ievadīta komanda darbotos šajā datorā ar programmas tiesībām. Saglabāšana šeit atstāj tās nemainītas.',

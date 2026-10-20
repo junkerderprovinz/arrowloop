@@ -54,6 +54,7 @@ export interface JobConfig {
   keepVersions?: number;
   reportOnly?: boolean;
   noTrash?: boolean;
+  newerWins?: boolean;
   exclude?: string[];
   noDefaultExcludes?: boolean;
   excludeSets?: string[];

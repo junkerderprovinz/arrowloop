@@ -657,6 +657,8 @@ const sv: Translations = {
   'history.noMatch': 'Ingen körning stämmer med det här.',
   'edit.trash': 'Behåll en papperskorg på varje sida',
   'edit.trashHint': 'En radering blir en flytt till en dold mapp som heter .arrowloop inne i det synkade trädet, så inget det här jobbet gör förstör något slutgiltigt, och en fil som raderats av misstag hämtas tillbaka från papperskorgsfliken. Den mappen syns för alla som använder utdelningen, och det är just därför man stänger av det här: utan papperskorg skapas den aldrig, en radering är slutgiltig, och det är den förlorande sidan i en konflikt också. Rimligt för en nedladdningsmapp, en dålig idé för en dokumentmapp.',
+  'edit.newerWins': 'Vid konflikt vinner den nyare versionen',
+  'edit.newerWinsHint': 'Om en fil har ändrats på båda sidor ersätter den senast sparade versionen den andra, och den andra hamnar i papperskorgen. ArrowLoop går efter klockorna på båda sidor. Avstängt blir båda versionerna kvar och valet görs på sidan Konflikter.',
   'edit.openTrash': 'Öppna det här jobbets papperskorg',
   'edit.commands': 'Kommandon',
   'edit.commandsHint': 'Ställs bara in i arrowloop.json: ett kommando som skrivs in här skulle köras på den här datorn med programmets rättigheter. Sparar du här förblir de som de är.',

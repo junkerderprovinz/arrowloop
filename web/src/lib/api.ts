@@ -265,6 +265,8 @@ export type RawJob = {
    * negative, like the Go field, so a missing field keeps the trash.
    */
   noTrash?: boolean
+  /** Settles a conflict for the version changed last; the other goes to the trash. */
+  newerWins?: boolean
   exclude?: string[]
   /**
    * The job's own brakes. Left out, the job follows the global ones; zero

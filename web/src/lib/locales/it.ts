@@ -657,6 +657,8 @@ const it: Translations = {
   'history.noMatch': 'Nessuna esecuzione corrisponde.',
   'edit.trash': 'Tenere un cestino su ogni lato',
   'edit.trashHint': 'Una cancellazione diventa uno spostamento in una cartella nascosta chiamata .arrowloop dentro l\'albero sincronizzato, quindi nulla di ciò che fa questo lavoro distrugge qualcosa in modo definitivo e un file cancellato per errore si recupera dalla scheda del cestino. Quella cartella è visibile a chiunque usi la condivisione, ed è il motivo per disattivare questa opzione: senza cestino non viene mai creata, una cancellazione è definitiva, e lo è anche il lato perdente di un conflitto. Ragionevole per una cartella di download, una cattiva idea per una di documenti.',
+  'edit.newerWins': 'In un conflitto vince la versione più recente',
+  'edit.newerWinsHint': 'Se un file è cambiato su entrambi i lati, la versione salvata per ultima sostituisce l\'altra, e l\'altra finisce nel cestino. ArrowLoop si basa sugli orologi dei due lati. Da spento, restano entrambe le versioni e la scelta si fa nella pagina Conflitti.',
   'edit.openTrash': 'Apri il cestino di questo lavoro',
   'edit.commands': 'Comandi',
   'edit.commandsHint': 'Si impostano solo in arrowloop.json: un comando inserito qui verrebbe eseguito su questa macchina con i permessi del programma. Salvare qui li lascia come sono.',

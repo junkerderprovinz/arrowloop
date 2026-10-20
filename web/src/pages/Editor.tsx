@@ -352,6 +352,14 @@ export function JobForm({
             />
           </InheritedRow>
         )}
+        {direction === 'both' && (
+          <ToggleRow
+            label={t('edit.newerWins')}
+            checked={!!job.newerWins}
+            onChange={(v) => patch({ newerWins: v })}
+            hint={t('edit.newerWinsHint')}
+          />
+        )}
 
         <div data-new="schedule-sentence">
           <InheritedRow

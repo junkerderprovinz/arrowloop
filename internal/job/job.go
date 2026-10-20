@@ -418,6 +418,10 @@ type Job struct {
 	// losing side of a conflict are final.
 	NoTrash bool `json:"noTrash,omitempty"`
 
+	// NewerWins settles every conflict for the version changed last instead
+	// of keeping both, and sends the other version to the trash.
+	NewerWins bool `json:"newerWins,omitempty"`
+
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 
@@ -826,6 +830,7 @@ func (j Job) Options() (engine.Options, error) {
 	compare := plan.DefaultOptions()
 	compare.Direction = plan.ParseDirection(j.Direction)
 	compare.Mode = plan.ParseMode(j.Mode)
+	compare.NewerWins = j.NewerWins
 
 	if j.QuietPeriod != "" {
 		d, err := time.ParseDuration(j.QuietPeriod)

@@ -282,6 +282,12 @@ rewriting what the first run did, so it cannot overlap another run and lands in
 the history like any other. The version that loses goes to the trash, unless
 the job has `noTrash`, so a wrong click can be undone from there.
 
+A job with **Let the newer version win a conflict** switched on never asks. It
+keeps the version saved last, as if somebody had picked it here, and the other
+goes to the trash. That goes by the modification times both sides report, so a
+side whose clock runs wrong wins or loses for that reason. Two versions saved
+within a couple of seconds of each other still keep both.
+
 ## Trash
 
 **Trash** shows every job's trash in a card per job, both sides in it, puts

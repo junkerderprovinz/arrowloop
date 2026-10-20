@@ -657,6 +657,8 @@ const nl: Translations = {
   'history.noMatch': 'Geen uitvoering komt hiermee overeen.',
   'edit.trash': 'Aan beide kanten een prullenbak bijhouden',
   'edit.trashHint': 'Een verwijdering wordt een verplaatsing naar een verborgen map met de naam .arrowloop binnen de gesynchroniseerde boom, zodat niets wat deze taak doet iets onherroepelijk vernietigt en een per ongeluk verwijderd bestand terug te halen is via het prullenbaktabblad. Die map is zichtbaar voor iedereen die de share gebruikt, en dat is de reden om dit uit te zetten: zonder prullenbak wordt hij nooit aangemaakt, is een verwijdering definitief, en de verliezende kant van een conflict ook. Verstandig voor een downloadmap, een slecht idee voor een documentenmap.',
+  'edit.newerWins': 'Bij een conflict wint de nieuwere versie',
+  'edit.newerWinsHint': 'Is een bestand aan beide kanten veranderd, dan vervangt de laatst opgeslagen versie de andere en gaat de andere naar de prullenbak. ArrowLoop gaat daarbij uit van de klokken aan beide kanten. Uitgeschakeld blijven beide versies staan en valt de keuze op de pagina Conflicten.',
   'edit.openTrash': 'De prullenbak van deze taak openen',
   'edit.commands': 'Opdrachten',
   'edit.commandsHint': 'Worden alleen in arrowloop.json ingesteld: een opdracht die hier wordt ingevoerd, zou op deze machine draaien met de rechten van het programma. Opslaan hier laat ze zoals ze zijn.',

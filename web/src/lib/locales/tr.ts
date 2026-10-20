@@ -657,6 +657,8 @@ const tr: Translations = {
   'history.noMatch': 'Buna uyan çalışma yok.',
   'edit.trash': 'Her iki tarafta bir çöp kutusu tutulsun',
   'edit.trashHint': 'Silme, eşitlenen ağacın içinde .arrowloop adlı gizli bir klasöre taşımaya dönüşür; böylece bu işin yaptığı hiçbir şey kalıcı olarak bir şeyi yok etmez ve yanlışlıkla silinen bir dosya çöp kutusu sekmesinden geri alınır. O klasörü paylaşımı kullanan herkes görür ve bunu kapatmanın nedeni tam olarak budur: çöp kutusu olmadan klasör hiç oluşmaz, silme kesindir ve bir çakışmanın kaybeden tarafı da öyle. İndirme klasörü için makul, belge klasörü için kötü bir fikir.',
+  'edit.newerWins': 'Çakışmada daha yeni sürüm kazansın',
+  'edit.newerWinsHint': 'Bir dosya iki tarafta da değiştiyse son kaydedilen sürüm diğerinin yerini alır, diğeri çöp kutusuna gider. ArrowLoop bunun için iki taraftaki saatlere bakar. Kapalıyken iki sürüm de kalır ve karar Çakışmalar sayfasında verilir.',
   'edit.openTrash': 'Bu işin çöp kutusunu aç',
   'edit.commands': 'Komutlar',
   'edit.commandsHint': 'Yalnızca arrowloop.json içinde ayarlanır: buraya girilen bir komut bu makinede programın yetkileriyle çalışırdı. Burada kaydetmek onları olduğu gibi bırakır.',

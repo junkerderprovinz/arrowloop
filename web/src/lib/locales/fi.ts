@@ -657,6 +657,8 @@ const fi: Translations = {
   'history.noMatch': 'Yksikään ajo ei vastaa tätä.',
   'edit.trash': 'Pidä roskakori kummallakin puolella',
   'edit.trashHint': 'Poistosta tulee siirto piilotettuun kansioon nimeltä .arrowloop synkronoidun puun sisällä, joten mikään mitä tämä työ tekee ei tuhoa mitään lopullisesti, ja vahingossa poistettu tiedosto haetaan takaisin roskakorivälilehdeltä. Kansion näkee jokainen jakoa käyttävä, ja juuri siksi tämän voi kytkeä pois: ilman roskakoria sitä ei koskaan luoda, poisto on lopullinen, ja niin on ristiriidan hävinnyt puolikin. Latauskansiolle järkevää, asiakirjakansiolle huono ajatus.',
+  'edit.newerWins': 'Ristiriidassa uudempi versio voittaa',
+  'edit.newerWinsHint': 'Jos tiedosto on muuttunut kummallakin puolella, viimeksi tallennettu versio korvaa toisen ja toinen siirtyy roskakoriin. ArrowLoop luottaa tässä kummankin puolen kelloihin. Pois päältä molemmat versiot jäävät, ja asiasta päätetään Ristiriidat-sivulla.',
   'edit.openTrash': 'Avaa tämän työn roskakori',
   'edit.commands': 'Komennot',
   'edit.commandsHint': 'Asetetaan vain tiedostossa arrowloop.json: tähän kirjoitettu komento ajettaisiin tällä koneella ohjelman oikeuksin. Tallentaminen täällä jättää ne ennalleen.',

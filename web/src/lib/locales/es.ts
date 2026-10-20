@@ -657,6 +657,8 @@ const es: Translations = {
   'history.noMatch': 'Ninguna ejecución coincide.',
   'edit.trash': 'Mantener una papelera en cada lado',
   'edit.trashHint': 'Un borrado se convierte en un traslado a una carpeta oculta llamada .arrowloop dentro del árbol sincronizado, así que nada de lo que hace esta tarea destruye nada de forma definitiva y un archivo borrado por error se recupera desde la pestaña de la papelera. Esa carpeta la ve todo el que use el recurso compartido, y ese es el motivo para desactivar esto: sin papelera nunca se crea, un borrado es definitivo, y el lado perdedor de un conflicto también. Razonable para una carpeta de descargas, mala idea para una de documentos.',
+  'edit.newerWins': 'En un conflicto gana la versión más reciente',
+  'edit.newerWinsHint': 'Si un archivo cambió en ambos lados, la versión guardada en último lugar sustituye a la otra, y la otra va a la papelera. ArrowLoop se guía por los relojes de ambos lados. Desactivado, se conservan las dos versiones y la decisión se toma en la página Conflictos.',
   'edit.openTrash': 'Abrir la papelera de esta tarea',
   'edit.commands': 'Comandos',
   'edit.commandsHint': 'Solo se definen en arrowloop.json: un comando escrito aquí se ejecutaría en esta máquina con los permisos del programa. Guardar aquí los deja como están.',

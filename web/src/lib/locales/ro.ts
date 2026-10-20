@@ -657,6 +657,8 @@ const ro: Translations = {
   'history.noMatch': 'Nicio execuție nu corespunde.',
   'edit.trash': 'Păstrează un coș pe fiecare parte',
   'edit.trashHint': 'O ștergere devine o mutare într-un dosar ascuns numit .arrowloop din interiorul arborelui sincronizat, așa că nimic din ce face această sarcină nu distruge ceva definitiv, iar un fișier șters din greșeală se recuperează din fila coșului. Acel dosar este vizibil pentru toți cei care folosesc partajarea, și tocmai acesta este motivul de a dezactiva opțiunea: fără coș nu se creează niciodată, o ștergere este definitivă, la fel și partea care pierde într-un conflict. Rezonabil pentru un dosar de descărcări, o idee proastă pentru unul de documente.',
+  'edit.newerWins': 'La conflict câștigă versiunea mai nouă',
+  'edit.newerWinsHint': 'Dacă un fișier s-a schimbat pe ambele părți, versiunea salvată ultima o înlocuiește pe cealaltă, iar cealaltă ajunge în coș. ArrowLoop se ghidează după ceasurile celor două părți. Dezactivat, rămân ambele versiuni și decizia se ia pe pagina Conflicte.',
   'edit.openTrash': 'Deschide coșul acestei sarcini',
   'edit.commands': 'Comenzi',
   'edit.commandsHint': 'Se setează doar în arrowloop.json: o comandă introdusă aici ar rula pe acest calculator cu drepturile programului. Salvarea aici le lasă așa cum sunt.',

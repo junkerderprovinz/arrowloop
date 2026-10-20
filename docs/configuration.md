@@ -72,6 +72,7 @@ manager happened to start the process in.
 | `keepVersions` | `0` | Keep the last N contents of a file that gets overwritten; see [Keeping old versions](#keeping-old-versions). |
 | `foldCase` | ask the backends | `true` treats names that differ only in case as one file, `false` as two; see [Upper and lower case](#upper-and-lower-case). |
 | `noTrash` | `false` | Delete outright instead of moving into the side's own trash. See the note below before switching it on. |
+| `newerWins` | `false` | Settle a conflict for the version changed last and move the other into the trash, instead of keeping both. Two versions whose times lie within `modWindow` of each other still keep both. Only a job that writes both ways has conflicts. |
 | `reportOnly` | `false` | Compare on every automatic turn and apply nothing. A run somebody starts by hand still applies. |
 | `brakePercent` | `50` | Hold a run deleting more than this share of known files. `0` switches the brake off. |
 | `changePercent` | `50` | Hold a run overwriting more than this share of known files. `0` switches the brake off. |

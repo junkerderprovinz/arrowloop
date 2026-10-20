@@ -322,6 +322,14 @@ export function JobEdit() {
             { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
           ]}
         />
+        {way === "both" ? (
+          <Toggle
+            label={t("edit.newerWins")}
+            hint={t("edit.newerWinsHint")}
+            value={Boolean(job.newerWins)}
+            onChange={(newerWins) => set({ newerWins }, true)}
+          />
+        ) : null}
       </Section>
 
       {/* When the job runs and what it keeps. A watching job owns its

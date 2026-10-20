@@ -657,6 +657,8 @@ const eu: Translations = {
   'history.noMatch': 'Ez dago bat datorren exekuziorik.',
   'edit.trash': 'Zakarrontzi bat gorde alde bakoitzean',
   'edit.trashHint': 'Ezabatzea sinkronizatutako zuhaitzaren barruko .arrowloop izeneko karpeta ezkutu batera eramatea bihurtzen da, beraz lan honek egiten duen ezerk ez du ezer betiko suntsitzen, eta nahi gabe ezabatutako fitxategia zakarrontziaren fitxatik berreskuratzen da. Karpeta hori partekatzea erabiltzen duen orok ikusten du, eta hori da hain zuzen hau itzaltzeko arrazoia: zakarrontzirik gabe ez da inoiz sortzen, ezabatzea behin betikoa da, eta gatazka batean galtzen duen aldea ere bai. Zentzuzkoa deskargen karpeta baterako, ideia txarra dokumentuen karpeta baterako.',
+  'edit.newerWins': 'Gatazka batean bertsio berriena nagusitzen da',
+  'edit.newerWinsHint': 'Fitxategi bat bi aldeetan aldatu bada, azkena gordetako bertsioak bestea ordezten du, eta bestea zakarrontzira doa. ArrowLoop bi aldeetako erlojuetan oinarritzen da. Desaktibatuta, bi bertsioak geratzen dira eta erabakia Gatazkak orrian hartzen da.',
   'edit.openTrash': 'Ireki lan honen zakarrontzia',
   'edit.commands': 'Aginduak',
   'edit.commandsHint': 'arrowloop.json fitxategian bakarrik ezartzen dira: hemen idatzitako agindu bat makina honetan exekutatuko litzateke programaren baimenekin. Hemen gordetzeak dauden bezala uzten ditu.',

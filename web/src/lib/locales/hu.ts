@@ -657,6 +657,8 @@ const hu: Translations = {
   'history.noMatch': 'Egyetlen futás sem illik ehhez.',
   'edit.trash': 'Mindkét oldalon kukát vezetni',
   'edit.trashHint': 'A törlés áthelyezéssé válik egy .arrowloop nevű rejtett mappába a szinkronizált fán belül, így semmi, amit ez a feladat tesz, nem semmisít meg véglegesen semmit, a tévedésből törölt fájlt pedig a kuka fülön hozhatod vissza. Ezt a mappát mindenki látja, aki a megosztást használja, és éppen ez az oka a kikapcsolásnak: kuka nélkül soha nem jön létre, a törlés végleges, és az ütközés vesztes oldala is az. Letöltési mappához észszerű, dokumentumokhoz rossz ötlet.',
+  'edit.newerWins': 'Ütközésnél az újabb változat nyer',
+  'edit.newerWinsHint': 'Ha egy fájl mindkét oldalon megváltozott, az utoljára mentett változat lecseréli a másikat, a másik pedig a kukába kerül. Az ArrowLoop ehhez a két oldal óráját veszi alapul. Kikapcsolva mindkét változat megmarad, és a döntés az Ütközések oldalon születik.',
   'edit.openTrash': 'A feladat kukájának megnyitása',
   'edit.commands': 'Parancsok',
   'edit.commandsHint': 'Csak az arrowloop.json fájlban állíthatók be: egy itt megadott parancs a program jogaival futna ezen a gépen. Az itteni mentés változatlanul hagyja őket.',

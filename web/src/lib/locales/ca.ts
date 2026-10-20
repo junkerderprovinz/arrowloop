@@ -657,6 +657,8 @@ const ca: Translations = {
   'history.noMatch': 'Cap execució hi coincideix.',
   'edit.trash': 'Mantenir una paperera a cada costat',
   'edit.trashHint': 'Una supressió esdevé un trasllat a una carpeta amagada anomenada .arrowloop dins de l\'arbre sincronitzat, de manera que res del que fa aquesta tasca no destrueix res de manera definitiva, i un fitxer esborrat per error es recupera des de la pestanya de la paperera. Aquesta carpeta la veu tothom qui faci servir la compartició, i és justament el motiu per desactivar-ho: sense paperera no es crea mai, una supressió és definitiva, i el costat perdedor d\'un conflicte també. Raonable per a una carpeta de baixades, mala idea per a una de documents.',
+  'edit.newerWins': 'En un conflicte, guanya la versió més nova',
+  'edit.newerWinsHint': 'Si un fitxer ha canviat als dos costats, la versió desada en últim lloc substitueix l\'altra, i l\'altra va a la paperera. ArrowLoop es guia pels rellotges dels dos costats. Desactivat, es conserven les dues versions i la decisió es pren a la pàgina Conflictes.',
   'edit.openTrash': 'Obre la paperera d\'aquesta tasca',
   'edit.commands': 'Ordres',
   'edit.commandsHint': 'Només es defineixen a arrowloop.json: una ordre introduïda aquí s\'executaria en aquesta màquina amb els permisos del programa. Desar aquí les deixa tal com són.',

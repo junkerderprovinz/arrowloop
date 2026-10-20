@@ -657,6 +657,8 @@ const et: Translations = {
   'history.noMatch': 'Ükski käivitus ei sobi.',
   'edit.trash': 'Hoia prügikasti mõlemal poolel',
   'edit.trashHint': 'Kustutamisest saab teisaldamine sünkroonitava puu sees asuvasse peidetud kausta nimega .arrowloop, nii et miski, mida see töö teeb, ei hävita midagi lõplikult, ja kogemata kustutatud faili saab prügikasti kaardilt tagasi. Seda kausta näeb igaüks, kes jagamist kasutab, ja just see on põhjus, miks seda välja lülitada: ilma prügikastita ei looda seda kunagi, kustutamine on lõplik, samuti konflikti kaotanud pool. Allalaadimiskausta jaoks mõistlik, dokumendikausta jaoks halb mõte.',
+  'edit.newerWins': 'Vastuolu korral võidab uuem versioon',
+  'edit.newerWinsHint': 'Kui fail muutus mõlemal poolel, asendab viimati salvestatud versioon teise ja teine läheb prügikasti. ArrowLoop lähtub seejuures mõlema poole kelladest. Väljalülitatuna jäävad alles mõlemad versioonid ja otsus tehakse lehel Vastuolud.',
   'edit.openTrash': 'Ava selle töö prügikast',
   'edit.commands': 'Käsud',
   'edit.commandsHint': 'Seatakse ainult failis arrowloop.json: siia sisestatud käsk käivituks selles masinas programmi õigustega. Siin salvestamine jätab need samaks.',

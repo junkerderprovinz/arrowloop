@@ -657,6 +657,8 @@ const sl: Translations = {
   'history.noMatch': 'Noben zagon se ne ujema.',
   'edit.trash': 'Na vsaki strani voditi koš',
   'edit.trashHint': 'Brisanje postane premik v skrito mapo z imenom .arrowloop znotraj usklajenega drevesa, tako da nič, kar to opravilo počne, ničesar dokončno ne uniči, pomotoma izbrisano datoteko pa dobiš nazaj v zavihku koša. To mapo vidi vsak, ki uporablja skupno rabo, in prav to je razlog, da to izklopiš: brez koša nikoli ne nastane, brisanje je dokončno, prav tako pa tudi poražena stran spora. Smiselno za mapo s prenosi, slaba zamisel za mapo z dokumenti.',
+  'edit.newerWins': 'Pri sporu zmaga novejša različica',
+  'edit.newerWinsHint': 'Če se je datoteka spremenila na obeh straneh, nazadnje shranjena različica zamenja drugo, druga pa gre v koš. ArrowLoop se pri tem ravna po urah obeh strani. Ko je izklopljeno, ostaneta obe različici, odločitev pa pade na strani Spori.',
   'edit.openTrash': 'Odpri koš tega opravila',
   'edit.commands': 'Ukazi',
   'edit.commandsHint': 'Nastavijo se samo v arrowloop.json: ukaz, vnesen tukaj, bi se izvajal na tem računalniku s pravicami programa. Shranjevanje tukaj jih pusti takšne, kot so.',

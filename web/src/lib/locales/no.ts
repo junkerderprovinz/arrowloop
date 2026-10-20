@@ -657,6 +657,8 @@ const no: Translations = {
   'history.noMatch': 'Ingen kjøring passer til dette.',
   'edit.trash': 'Ha en papirkurv på hver side',
   'edit.trashHint': 'En sletting blir en flytting til en skjult mappe som heter .arrowloop inne i det synkroniserte treet, så ingenting denne jobben gjør ødelegger noe for godt, og en fil som ble slettet ved et uhell hentes tilbake fra papirkurvfanen. Den mappen ser alle som bruker delingen, og det er nettopp derfor man slår dette av: uten papirkurv blir den aldri opprettet, en sletting er endelig, og det er den tapende siden i en konflikt også. Fornuftig for en nedlastingsmappe, en dårlig idé for en dokumentmappe.',
+  'edit.newerWins': 'Ved konflikt vinner den nyeste versjonen',
+  'edit.newerWinsHint': 'Hvis en fil er endret på begge sider, erstatter versjonen som ble lagret sist den andre, og den andre havner i papirkurven. ArrowLoop går etter klokkene på begge sider. Slått av blir begge versjonene liggende, og valget tas på siden Konflikter.',
   'edit.openTrash': 'Åpne papirkurven til denne jobben',
   'edit.commands': 'Kommandoer',
   'edit.commandsHint': 'Settes bare i arrowloop.json: en kommando skrevet inn her ville kjørt på denne maskinen med programmets rettigheter. Lagrer du her, forblir de som de er.',

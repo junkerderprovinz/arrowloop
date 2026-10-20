@@ -657,6 +657,8 @@ const vi: Translations = {
   'history.noMatch': 'Không có lần chạy nào khớp.',
   'edit.trash': 'Giữ một thùng rác ở mỗi bên',
   'edit.trashHint': 'Việc xoá trở thành việc chuyển vào một thư mục ẩn tên .arrowloop bên trong cây đồng bộ, nên không điều gì công việc này làm huỷ hoại thứ gì vĩnh viễn, và tệp bị xoá nhầm được lấy lại ở thẻ thùng rác. Thư mục đó ai dùng chia sẻ cũng thấy, và đó chính là lý do để tắt tuỳ chọn này: không có thùng rác thì nó không bao giờ được tạo, việc xoá là dứt khoát, và bên thua trong một xung đột cũng vậy. Hợp lý cho thư mục tải về, ý tưởng tồi cho thư mục tài liệu.',
+  'edit.newerWins': 'Khi xung đột, bản mới hơn thắng',
+  'edit.newerWinsHint': 'Nếu một tệp đã thay đổi ở cả hai bên, bản được lưu sau cùng sẽ thay thế bản kia, và bản kia vào thùng rác. ArrowLoop dựa vào đồng hồ của cả hai bên. Khi tắt, cả hai bản đều được giữ và việc chọn diễn ra ở trang Xung đột.',
   'edit.openTrash': 'Mở thùng rác của công việc này',
   'edit.commands': 'Lệnh',
   'edit.commandsHint': 'Chỉ đặt trong arrowloop.json: một lệnh nhập ở đây sẽ chạy trên máy này với quyền của chương trình. Lưu ở đây giữ nguyên chúng.',

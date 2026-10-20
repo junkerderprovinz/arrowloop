@@ -657,6 +657,8 @@ const sk: Translations = {
   'history.noMatch': 'Žiadny beh tomu nezodpovedá.',
   'edit.trash': 'Viesť kôš na každej strane',
   'edit.trashHint': 'Z vymazania sa stane presun do skrytého priečinka s názvom .arrowloop vnútri synchronizovaného stromu, takže nič z toho, čo táto úloha robí, nezničí nič nadobro a omylom vymazaný súbor vytiahneš späť v záložke koša. Tento priečinok vidí každý, kto zdieľanie používa, a práve to je dôvod, prečo to vypnúť: bez koša nikdy nevznikne, vymazanie je konečné a porazená strana konfliktu tiež. Rozumné pre priečinok so stiahnutými súbormi, zlý nápad pre priečinok s dokumentmi.',
+  'edit.newerWins': 'Pri konflikte vyhráva novšia verzia',
+  'edit.newerWinsHint': 'Ak sa súbor zmenil na oboch stranách, naposledy uložená verzia nahradí tú druhú a tá druhá ide do koša. ArrowLoop sa pritom riadi hodinami oboch strán. Keď je vypnuté, zostanú obe verzie a rozhoduje sa na stránke Konflikty.',
   'edit.openTrash': 'Otvoriť kôš tejto úlohy',
   'edit.commands': 'Príkazy',
   'edit.commandsHint': 'Nastavujú sa len v arrowloop.json: príkaz zadaný tu by bežal na tomto počítači s právami programu. Uloženie tu ich ponechá bez zmeny.',

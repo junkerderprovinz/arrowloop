@@ -188,6 +188,35 @@ func TestDecisionTable(t *testing.T) {
 	}
 }
 
+func TestNewerWinsDecidesConflictsByTime(t *testing.T) {
+	opt := Options{ModWindow: 2 * time.Second, NewerWins: true}
+	prev := map[string]state.Entry{"edited.txt": agreed("edited.txt", 10, 10, 0, 0)}
+	left := scan.Side{
+		"edited.txt": live("edited.txt", 20, time.Minute),
+		"fresh.txt":  live("fresh.txt", 10, 0),
+		"close.txt":  live("close.txt", 10, time.Second),
+	}
+	right := scan.Side{
+		"edited.txt": live("edited.txt", 30, 0),
+		"fresh.txt":  live("fresh.txt", 99, time.Hour),
+		"close.txt":  live("close.txt", 99, 0),
+	}
+
+	got, err := Build(context.Background(), listing(left), listing(right), prev, opt)
+	if err != nil {
+		t.Fatalf("build: %v", err)
+	}
+	want := map[string]Resolution{"edited.txt": KeepLeft, "fresh.txt": KeepRight, "close.txt": KeepBoth}
+	if len(got.Actions) != len(want) {
+		t.Fatalf("got %d actions, want %d: %+v", len(got.Actions), len(want), got.Actions)
+	}
+	for _, a := range got.Actions {
+		if a.Kind != Conflict || a.Resolve != want[a.Path] {
+			t.Errorf("%s: got %v resolved as %v, want a conflict resolved as %v", a.Path, a.Kind, a.Resolve, want[a.Path])
+		}
+	}
+}
+
 // A disk that failed to mount lists nothing, which reads as everything
 // deleted.
 func TestEmptySideRefused(t *testing.T) {

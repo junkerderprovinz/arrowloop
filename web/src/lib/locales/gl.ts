@@ -657,6 +657,8 @@ const gl: Translations = {
   'history.noMatch': 'Ningunha execución coincide.',
   'edit.trash': 'Manter un lixo en cada lado',
   'edit.trashHint': 'Un borrado convértese nun traslado a un cartafol agochado chamado .arrowloop dentro da árbore sincronizada, así que nada do que fai esta tarefa destrúe nada de xeito definitivo, e un ficheiro borrado por erro recupérase na lapela do lixo. Ese cartafol véno todas as persoas que usen a compartición, e ese é xustamente o motivo para desactivalo: sen lixo non se crea nunca, un borrado é definitivo, e o lado perdedor dun conflito tamén. Razoable para un cartafol de descargas, mala idea para un de documentos.',
+  'edit.newerWins': 'Nun conflito gaña a versión máis nova',
+  'edit.newerWinsHint': 'Se un ficheiro cambiou nos dous lados, a versión gardada en último lugar substitúe a outra, e a outra vai ao lixo. ArrowLoop guíase polos reloxos dos dous lados. Desactivado, consérvanse as dúas versións e a decisión tómase na páxina Conflitos.',
   'edit.openTrash': 'Abrir o lixo desta tarefa',
   'edit.commands': 'Ordes',
   'edit.commandsHint': 'Só se definen en arrowloop.json: unha orde escrita aquí executaríase nesta máquina cos permisos do programa. Gardar aquí déixaas como están.',

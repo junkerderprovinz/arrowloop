@@ -657,6 +657,8 @@ const pl: Translations = {
   'history.noMatch': 'Żaden przebieg nie pasuje.',
   'edit.trash': 'Prowadzić kosz po każdej stronie',
   'edit.trashHint': 'Usunięcie staje się przeniesieniem do ukrytego folderu o nazwie .arrowloop wewnątrz synchronizowanego drzewa, więc nic, co robi to zadanie, nie niszczy niczego bezpowrotnie, a plik skasowany przez pomyłkę odzyskasz w zakładce kosza. Ten folder widzi każdy, kto korzysta z udziału, i właśnie dlatego warto to wyłączyć: bez kosza nigdy nie powstaje, usunięcie jest ostateczne, a przegrywająca strona konfliktu tak samo. Rozsądne dla folderu pobrań, zły pomysł dla folderu z dokumentami.',
+  'edit.newerWins': 'W konflikcie wygrywa nowsza wersja',
+  'edit.newerWinsHint': 'Jeśli plik zmienił się po obu stronach, wersja zapisana jako ostatnia zastępuje drugą, a druga trafia do kosza. ArrowLoop kieruje się przy tym zegarami obu stron. Po wyłączeniu zostają obie wersje, a decyzja zapada na stronie Konflikty.',
   'edit.openTrash': 'Otwórz kosz tego zadania',
   'edit.commands': 'Polecenia',
   'edit.commandsHint': 'Ustawia się je tylko w arrowloop.json: polecenie wpisane tutaj uruchomiłoby się na tym komputerze z uprawnieniami programu. Zapisanie tutaj zostawia je bez zmian.',

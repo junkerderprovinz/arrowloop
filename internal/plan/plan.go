@@ -177,7 +177,7 @@ type Action struct {
 	Prev     *state.Entry
 
 	// Resolve applies only to a conflict. Its zero value is KeepBoth, which is
-	// what an unattended run always does.
+	// what an unattended run does unless the job lets the newer version win.
 	Resolve Resolution
 
 	// Aside applies only to a Relocate: the destination's version is moved to
@@ -192,8 +192,8 @@ const (
 	// KeepBoth gives the newer version the plain name on both sides and keeps
 	// the older one beside it.
 	KeepBoth Resolution = iota
-	// KeepLeft and KeepRight are only set by a person. The losing version
-	// still goes to the trash.
+	// KeepLeft and KeepRight are set by a person or by NewerWins. The losing
+	// version still goes to the trash.
 	KeepLeft
 	KeepRight
 )
@@ -307,6 +307,11 @@ type Options struct {
 	// Unbraked plans past every brake, for the run that takes a refused
 	// change back. It destroys nothing, so there is nothing to brake.
 	Unbraked bool
+
+	// NewerWins decides a conflict for the version changed last, as if a
+	// person had picked it, so the other goes to the trash. Two times within
+	// ModWindow of each other cannot be told apart and keep both.
+	NewerWins bool
 }
 
 // DefaultOptions is what the command line uses when nothing is given.
@@ -537,7 +542,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 				act.Reason = because("appearedSame")
 				out.Agreed = append(out.Agreed, act)
 			} else {
-				out.Actions = append(out.Actions, conflictAction(base, because("appearedDiffer")))
+				out.Actions = append(out.Actions, conflictAction(base, because("appearedDiffer"), opt))
 			}
 
 		// One side edited, the other did not.
@@ -556,7 +561,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 				act.Reason = because("changedBothSame")
 				out.Agreed = append(out.Agreed, act)
 			} else {
-				out.Actions = append(out.Actions, conflictAction(base, because("changedBoth")))
+				out.Actions = append(out.Actions, conflictAction(base, because("changedBoth"), opt))
 			}
 
 		// One side deleted, the other left it alone.
@@ -714,10 +719,23 @@ func deleteAction(base Action, on Side, reason Reason) Action {
 	return base
 }
 
-func conflictAction(base Action, reason Reason) Action {
+func conflictAction(base Action, reason Reason, opt Options) Action {
 	base.Kind = Conflict
 	base.Reason = reason
+	if opt.NewerWins {
+		base.Resolve = newer(base.LeftNow, base.RightNow, opt.ModWindow)
+	}
 	return base
+}
+
+func newer(l, r *scan.Entry, window time.Duration) Resolution {
+	switch diff := l.Mod.Sub(r.Mod); {
+	case diff > window:
+		return KeepLeft
+	case -diff > window:
+		return KeepRight
+	}
+	return KeepBoth
 }
 
 // detectRenames folds a delete plus a copy of identical content into a single

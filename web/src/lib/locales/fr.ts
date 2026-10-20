@@ -657,6 +657,8 @@ const fr: Translations = {
   'history.noMatch': 'Aucune exécution ne correspond.',
   'edit.trash': 'Garder une corbeille de chaque côté',
   'edit.trashHint': 'Une suppression devient un déplacement vers un dossier caché nommé .arrowloop à l\'intérieur de l\'arborescence synchronisée : rien de ce que fait cette tâche ne détruit quoi que ce soit définitivement, et un fichier supprimé par erreur se récupère depuis l\'onglet corbeille. Ce dossier est visible par tous ceux qui utilisent le partage, et c\'est la raison de désactiver ceci : sans corbeille il n\'est jamais créé, une suppression est définitive, et le côté perdant d\'un conflit l\'est aussi. Raisonnable pour un dossier de téléchargements, une mauvaise idée pour un dossier de documents.',
+  'edit.newerWins': 'En cas de conflit, la version la plus récente l\'emporte',
+  'edit.newerWinsHint': 'Si un fichier a changé des deux côtés, la version enregistrée en dernier remplace l\'autre, et l\'autre part à la corbeille. ArrowLoop se fie aux horloges des deux côtés. Désactivé, les deux versions restent et le choix se fait sur la page Conflits.',
   'edit.openTrash': 'Ouvrir la corbeille de cette tâche',
   'edit.commands': 'Commandes',
   'edit.commandsHint': 'Se définissent uniquement dans arrowloop.json : une commande saisie ici s\'exécuterait sur cette machine avec les droits du programme. Enregistrer ici les laisse telles quelles.',

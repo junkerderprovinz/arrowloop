@@ -657,6 +657,8 @@ const ms: Translations = {
   'history.noMatch': 'Tiada larian yang sepadan.',
   'edit.trash': 'Simpan tong sampah di setiap sisi',
   'edit.trashHint': 'Pemadaman menjadi pemindahan ke folder tersembunyi bernama .arrowloop di dalam pokok yang disegerakkan, jadi tiada apa yang tugas ini lakukan memusnahkan sesuatu secara kekal, dan fail yang terpadam secara tersilap boleh diambil semula dari tab tong sampah. Folder itu dilihat oleh sesiapa sahaja yang menggunakan perkongsian tersebut, dan itulah sebabnya untuk mematikan pilihan ini: tanpa tong sampah ia tidak pernah dicipta, pemadaman adalah muktamad, begitu juga pihak yang kalah dalam sesuatu percanggahan. Munasabah untuk folder muat turun, idea buruk untuk folder dokumen.',
+  'edit.newerWins': 'Dalam percanggahan, versi yang lebih baharu menang',
+  'edit.newerWinsHint': 'Jika fail berubah di kedua-dua sisi, versi yang disimpan terakhir menggantikan yang satu lagi, dan yang satu lagi masuk ke tong sampah. ArrowLoop berpandukan jam di kedua-dua sisi. Jika dimatikan, kedua-dua versi kekal dan keputusan dibuat di halaman Percanggahan.',
   'edit.openTrash': 'Buka tong sampah tugas ini',
   'edit.commands': 'Arahan',
   'edit.commandsHint': 'Hanya ditetapkan dalam arrowloop.json: arahan yang dimasukkan di sini akan berjalan pada mesin ini dengan hak program. Menyimpan di sini mengekalkannya seperti sedia ada.',

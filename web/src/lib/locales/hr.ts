@@ -657,6 +657,8 @@ const hr: Translations = {
   'history.noMatch': 'Nijedno izvođenje ne odgovara.',
   'edit.trash': 'Držati smeće na svakoj strani',
   'edit.trashHint': 'Brisanje postaje premještanje u skrivenu mapu naziva .arrowloop unutar usklađenog stabla, pa ništa što ovaj zadatak radi ne uništava ništa nepovratno, a greškom obrisanu datoteku vraćaš u kartici smeća. Tu mapu vidi svatko tko koristi dijeljenje, i upravo je to razlog da ovo isključiš: bez smeća nikad ne nastaje, brisanje je konačno, a tako i poražena strana sukoba. Razumno za mapu s preuzimanjima, loša zamisao za mapu s dokumentima.',
+  'edit.newerWins': 'U sukobu pobjeđuje novija verzija',
+  'edit.newerWinsHint': 'Ako se datoteka promijenila na obje strane, zadnja spremljena verzija zamjenjuje drugu, a druga ide u smeće. ArrowLoop se pritom ravna po satovima obiju strana. Kad je isključeno, ostaju obje verzije i odluka se donosi na stranici Sukobi.',
   'edit.openTrash': 'Otvori smeće ovog zadatka',
   'edit.commands':'Naredbe',
   'edit.commandsHint': 'Postavljaju se samo u arrowloop.json: naredba upisana ovdje izvršila bi se na ovom računalu s pravima programa. Spremanje ovdje ostavlja ih kakve jesu.',
