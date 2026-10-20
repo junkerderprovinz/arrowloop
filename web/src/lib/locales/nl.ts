@@ -1234,6 +1234,7 @@ const nl: Translations = {
   'new.change.providerNames': '{connect} noemt elke soort opslag die rclone kent bij naam en zet hem in zijn groep, met logo waar er een is. Een zoekveld bovenaan vindt er een op naam of op de naam in rclone.',
   'new.change.targetRows': 'De knop {test} van een doel toont zelf {connected} of {notConnected}, met de reden op de regel onder de naam. Een opgeslagen wachtwoord of sleutel staat er als {saved}, en {change} opent het veld.',
   'new.change.releaseCards': 'Na een update toont dit venster een kaart voor elke release sinds de versie die je had, met de opmerkingen en de wijzigingen die erbij horen.',
+  'new.change.newerWins': '{option} in een taak die beide kanten op synchroniseert, beslist een conflict zonder te vragen: de laatst opgeslagen versie blijft aan beide kanten staan en de andere gaat naar de prullenbak.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 

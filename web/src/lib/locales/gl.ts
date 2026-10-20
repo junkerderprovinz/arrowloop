@@ -1234,6 +1234,7 @@ const gl: Translations = {
   'new.change.providerNames': '{connect} nomea cada tipo de almacenamento que coñece rclone e colócao no seu grupo, co seu logotipo se existe. Unha busca arriba atopa un polo seu nome ou polo seu nome en rclone.',
   'new.change.targetRows': 'O botón {test} de cada destino amosa el mesmo {connected} ou {notConnected}, co motivo na liña baixo o nome. Un contrasinal ou unha chave gardados aparecen como {saved}, e {change} abre o campo.',
   'new.change.releaseCards': 'Despois dunha actualización, esta xanela mostra unha tarxeta por cada versión desde a que tiñas, coas súas notas e os cambios que trouxo.',
+  'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

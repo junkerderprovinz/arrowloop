@@ -58,6 +58,19 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.2.5',
+    changes: [
+      {
+        id: 'newer-wins',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.newerWins',
+        names: { option: 'edit.newerWins' },
+      },
+    ],
+  },
+  {
     after: '2.2.3',
     changes: [{ id: 'release-cards', text: 'new.change.releaseCards' }],
   },

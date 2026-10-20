@@ -1234,6 +1234,7 @@ const is: Translations = {
   'new.change.providerNames': '{connect} nefnir hverja gerð geymslu sem rclone þekkir og setur hana í sinn hóp, með merki þar sem það er til. Leit efst finnur gerð eftir nafni hennar eða nafni hennar í rclone.',
   'new.change.targetRows': 'Hnappurinn {test} við hvert markmið sýnir sjálfur {connected} eða {notConnected}, og ástæðan er á línunni undir nafninu. Vistað lykilorð eða lykill birtist sem {saved}, og {change} opnar reitinn.',
   'new.change.releaseCards': 'Eftir uppfærslu sýnir þessi gluggi spjald fyrir hverja útgáfu síðan þá sem þú varst með, með athugasemdum hennar og breytingunum sem hún kom með.',
+  'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

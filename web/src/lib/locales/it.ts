@@ -1234,6 +1234,7 @@ const it: Translations = {
   'new.change.providerNames': '{connect} dà un nome a ogni tipo di archivio che rclone conosce e lo mette nel suo gruppo, con il logo dove esiste. Una ricerca in alto ne trova uno dal nome o dal nome in rclone.',
   'new.change.targetRows': 'Il pulsante {test} di ogni destinazione mostra da sé {connected} o {notConnected}, con il motivo sulla riga sotto il nome. Una password o una chiave salvata appare come {saved}, e {change} apre il campo.',
   'new.change.releaseCards': 'Dopo un aggiornamento questa finestra mostra una scheda per ogni release dalla tua versione in poi, con le sue note e le modifiche che ha portato.',
+  'new.change.newerWins': '{option} in un lavoro che sincronizza in entrambe le direzioni risolve un conflitto senza chiedere: la versione salvata per ultima resta su entrambi i lati e l\'altra finisce nel cestino.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
 }
 

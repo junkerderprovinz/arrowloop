@@ -1234,6 +1234,7 @@ const tr: Translations = {
   'new.change.providerNames': '{connect}, rclone’un bildiği her depolama türünü adlandırır ve logosu varsa logosuyla birlikte grubuna yerleştirir. Üstteki arama bir türü adıyla ya da rclone’daki adıyla bulur.',
   'new.change.targetRows': 'Her hedefin {test} düğmesi {connected} ya da {notConnected} durumunu kendisi gösterir, nedeni de adın altındaki satırda yazar. Kaydedilmiş bir parola ya da anahtar {saved} olarak görünür, {change} alanı açar.',
   'new.change.releaseCards': 'Güncellemeden sonra bu pencere, elindeki sürümden sonraki her sürüm için notlarıyla ve getirdiği değişikliklerle bir kart gösterir.',
+  'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

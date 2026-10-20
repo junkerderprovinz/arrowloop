@@ -1234,6 +1234,7 @@ const sl: Translations = {
   'new.change.providerNames': '{connect} poimenuje vsako vrsto shrambe, ki jo rclone pozna, in jo uvrsti v njeno skupino, z logotipom, če obstaja. Iskanje na vrhu najde vrsto po imenu ali imenu v rclone.',
   'new.change.targetRows': 'Gumb {test} pri vsakem cilju sam pokaže {connected} ali {notConnected}, razlog pa je v vrstici pod imenom. Shranjeno geslo ali ključ je prikazan kot {saved}, {change} pa odpre polje.',
   'new.change.releaseCards': 'Po posodobitvi to okno pokaže kartico za vsako izdajo od tiste, ki si jo imel, z opombami in spremembami, ki jih je prinesla.',
+  'new.change.newerWins': '{option} v opravilu, ki sinhronizira v obe smeri, razreši spor brez vprašanja: nazadnje shranjena različica ostane na obeh straneh, druga pa gre v koš.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
 }
 

@@ -1234,6 +1234,7 @@ const id: Translations = {
   'new.change.providerNames': '{connect} menamai setiap jenis penyimpanan yang dikenal rclone dan menaruhnya di kelompoknya, dengan logonya bila ada. Pencarian di atas menemukannya lewat namanya atau nama rclone-nya.',
   'new.change.targetRows': 'Tombol {test} pada setiap target menampilkan sendiri {connected} atau {notConnected}, dengan alasannya di baris bawah nama. Kata sandi atau kunci yang tersimpan tampil sebagai {saved}, dan {change} membuka kolomnya.',
   'new.change.releaseCards': 'Setelah pembaruan, jendela ini menampilkan satu kartu untuk setiap rilis sejak versi yang Anda miliki, lengkap dengan catatan dan perubahan yang dibawanya.',
+  'new.change.newerWins': '{option} pada tugas yang menyinkronkan dua arah menyelesaikan konflik tanpa bertanya: versi yang terakhir disimpan tetap ada di kedua sisi, dan yang lain masuk ke tempat sampah.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

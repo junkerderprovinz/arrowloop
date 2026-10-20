@@ -1234,6 +1234,7 @@ const da: Translations = {
   'new.change.providerNames': '{connect} navngiver hver lagertype, rclone kender, og placerer den i sin gruppe med logo, hvor der findes et. En søgning øverst finder en ud fra navnet eller navnet i rclone.',
   'new.change.targetRows': 'Knappen {test} ved et mål viser selv {connected} eller {notConnected}, med årsagen på linjen under navnet. En gemt adgangskode eller nøgle står som {saved}, og {change} åbner feltet.',
   'new.change.releaseCards': 'Efter en opdatering viser dette vindue et kort for hver udgivelse siden den, du havde, med dens noter og de ændringer, den bragte.',
+  'new.change.newerWins': '{option} i et job, der synkroniserer begge veje, afgør en konflikt uden at spørge: den senest gemte version bliver på begge sider, og den anden havner i papirkurven.',
   'new.change.appFolders': 'I telefonappen lader {add} under {settings}, {phone} ArrowLoop synkronisere en mappe, som en anden app tilbyder i Androids filvælger, uden root og uden Shizuku. Mapperne vises i et mål ved navn Apps.',
 }
 

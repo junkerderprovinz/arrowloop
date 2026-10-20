@@ -1234,6 +1234,7 @@ const et: Translations = {
   'new.change.providerNames': '{connect} nimetab iga salvestusliigi, mida rclone tunneb, ja paneb selle oma rühma, logoga, kui see on olemas. Otsing üleval leiab liigi nime või rclone nime järgi.',
   'new.change.targetRows': 'Sihtkoha nupp {test} näitab ise {connected} või {notConnected} ja põhjus on nime all oleval real. Salvestatud parool või võti on kirjas kui {saved} ning {change} avab välja.',
   'new.change.releaseCards': 'Pärast uuendust näitab see aken kaarti iga väljalaske kohta alates sellest, mis sul oli, koos selle märkmete ja muudatustega.',
+  'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

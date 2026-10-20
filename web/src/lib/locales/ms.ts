@@ -1234,6 +1234,7 @@ const ms: Translations = {
   'new.change.providerNames': '{connect} menamakan setiap jenis storan yang dikenali rclone dan meletakkannya dalam kumpulannya, dengan logo jika ada. Carian di atas menemuinya melalui namanya atau nama rclone-nya.',
   'new.change.targetRows': 'Butang {test} bagi setiap sasaran sendiri menunjukkan {connected} atau {notConnected}, dengan sebabnya pada baris di bawah nama. Kata laluan atau kunci yang disimpan dipaparkan sebagai {saved}, dan {change} membuka medan itu.',
   'new.change.releaseCards': 'Selepas kemas kini, tetingkap ini menunjukkan satu kad bagi setiap keluaran sejak versi yang anda ada, lengkap dengan nota dan perubahan yang dibawanya.',
+  'new.change.newerWins': '{option} dalam tugas yang menyegerak dua hala menyelesaikan percanggahan tanpa bertanya: versi yang disimpan terakhir kekal di kedua-dua sisi, dan yang satu lagi masuk ke tong sampah.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
 }
 

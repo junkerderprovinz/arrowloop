@@ -1234,6 +1234,7 @@ const zh: Translations = {
   'new.change.providerNames': '{connect}为 rclone 支持的每种存储命名并归入相应分组，有标志的会显示标志。顶部的搜索可按名称或 rclone 中的名称查找。',
   'new.change.targetRows': '每个目标的{test}按钮会自己显示{connected}或{notConnected}，原因写在名称下面一行。已保存的密码或密钥显示为{saved}，点{change}打开输入框。',
   'new.change.releaseCards': '更新后，这个窗口会为你之前版本之后的每个版本显示一张卡片，附上它的说明和带来的改动。',
+  'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

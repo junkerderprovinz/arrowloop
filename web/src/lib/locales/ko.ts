@@ -1234,6 +1234,7 @@ const ko: Translations = {
   'new.change.providerNames': '{connect}은 rclone이 아는 모든 종류의 저장소에 이름을 붙이고 그룹에 넣으며, 로고가 있으면 함께 보여 줍니다. 위쪽 검색으로 이름이나 rclone 이름을 써서 찾을 수 있습니다.',
   'new.change.targetRows': '각 대상의 {test} 버튼이 직접 {connected} 또는 {notConnected}을 보여 주고, 이유는 이름 아래 줄에 나옵니다. 저장된 비밀번호나 키는 {saved}로 표시되고, {change}을 누르면 입력란이 열립니다.',
   'new.change.releaseCards': '업데이트 후 이 창에는 이전에 쓰던 버전 이후의 릴리스마다 카드가 표시되며, 릴리스 노트와 달라진 내용이 담겨 있습니다.',
+  'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 
