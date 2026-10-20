@@ -8,6 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.2.6 - 2026-10-20
+
+## ✨ Added
+
+- **A job can let the newer version win a conflict.** When a file changed on both sides, or the two sides met with different files under one name, ArrowLoop keeps both versions and waits for a decision on the Conflicts page. With Let the newer version win a conflict switched on, the version saved last replaces the other on both sides, and the other goes to the trash. ArrowLoop goes by the modification times both sides report, so two versions saved within a couple of seconds of each other still keep both. The switch is on every job that syncs both ways, on the web and on the phone. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
+
 ## 2.2.5 - 2026-10-19
 
 ## 🐛 Fixed
