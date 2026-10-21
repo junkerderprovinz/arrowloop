@@ -41,6 +41,15 @@ func machineData() (string, error) {
 	return filepath.Join(base, product), nil
 }
 
+// installerChoices is the file the installer leaves its language in.
+func installerChoices() (string, error) {
+	dir, err := machineData()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, machineSettingsFile), nil
+}
+
 // updateInstalled is what the scheduled task runs as the system account, which
 // may write to Program Files: one update of the installed copy, without a
 // window, logged beside the switch it obeys.

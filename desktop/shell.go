@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/url"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -55,8 +56,8 @@ type trayItems struct {
 }
 
 // newShell builds the windows. With inTray the main window starts hidden, its
-// way back being the icon.
-func newShell(ctx context.Context, app *application.App, store *deskset.Store, icons *TraySet, inTray bool) *shell {
+// way back being the icon. lang is the installer's language, or "".
+func newShell(ctx context.Context, app *application.App, store *deskset.Store, icons *TraySet, inTray bool, lang string) *shell {
 	s := &shell{ctx: ctx, app: app, store: store, live: newTrayLive(icons)}
 
 	s.main = app.Window.NewWithOptions(application.WebviewWindowOptions{
@@ -64,7 +65,7 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 		Title:  "ArrowLoop",
 		Width:  1100,
 		Height: 760,
-		URL:    "/",
+		URL:    pageURL("", lang),
 		Hidden: inTray,
 	})
 	s.remember(inTray)
@@ -87,7 +88,7 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 		Height:       size.Height,
 		MinWidth:     300,
 		MinHeight:    360,
-		URL:          "/?view=activity",
+		URL:          pageURL("activity", lang),
 		Frameless:    true,
 		AlwaysOnTop:  true,
 		Hidden:       true,
@@ -149,6 +150,23 @@ func (s *shell) closing(e *application.WindowEvent) {
 		return
 	}
 	s.quit()
+}
+
+// pageURL is the address a window opens. The interface draws its compact view
+// for view=activity and starts in lang while nobody has picked a language in
+// it.
+func pageURL(view, lang string) string {
+	q := url.Values{}
+	if view != "" {
+		q.Set("view", view)
+	}
+	if lang != "" {
+		q.Set("lang", lang)
+	}
+	if len(q) == 0 {
+		return "/"
+	}
+	return "/?" + q.Encode()
 }
 
 // quit ends the program because somebody chose to.

@@ -120,6 +120,49 @@ func TestTheUpdateSwitchCanLiveInAFileOfItsOwn(t *testing.T) {
 	}
 }
 
+func TestTheUpdateSwitchKeepsTheInstallersLanguage(t *testing.T) {
+	dir := t.TempDir()
+	shared := filepath.Join(dir, "settings.json")
+	if err := os.WriteFile(shared, []byte(`{"autoUpdate":true,"language":"de"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	s := Open(filepath.Join(dir, "arrowloop.json"))
+	s.KeepAutoUpdateIn(shared)
+	if err := s.Set(Settings{Tray: true, AutoUpdate: false}); err != nil {
+		t.Fatalf("set: %v", err)
+	}
+	if ReadAutoUpdate(shared) {
+		t.Error("turning updates off did not reach the shared file")
+	}
+	if got := ReadLanguage(shared); got != "de" {
+		t.Errorf("the language after switching updates off is %q, want de", got)
+	}
+}
+
+func TestOnlyALanguageCodeIsReadFromTheInstallersFile(t *testing.T) {
+	dir := t.TempDir()
+	for body, want := range map[string]string{
+		`{"autoUpdate":true,"language":"fr"}`: "fr",
+		`{"language":""}`:                     "",
+		`{"language":"de-AT"}`:                "",
+		`{"language":"DE"}`:                   "",
+		`{"language":"d&"}`:                   "",
+		`{"autoUpdate":true}`:                 "",
+		`not json`:                            "",
+	} {
+		path := filepath.Join(dir, "install.json")
+		if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if got := ReadLanguage(path); got != want {
+			t.Errorf("%s reads as %q, want %q", body, got, want)
+		}
+	}
+	if got := ReadLanguage(filepath.Join(dir, "missing.json")); got != "" {
+		t.Errorf("a missing file reads as %q", got)
+	}
+}
+
 func TestASharedFileThatRefusesTheSwitchKeepsItsValue(t *testing.T) {
 	dir := t.TempDir()
 	s := Open(filepath.Join(dir, "arrowloop.json"))

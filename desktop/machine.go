@@ -1,10 +1,26 @@
 package main
 
-// product names the installation for all users: its entry under Apps and its
-// folder under ProgramData. It is INFO_PRODUCTNAME in
-// build/windows/nsis/project.nsi.
-var product = "ArrowLoop"
+import "github.com/junkerderprovinz/arrowloop/internal/deskset"
 
-// machineSettingsFile holds the installed copy's AutoUpdate switch in the
-// folder under ProgramData, which the installer opens to every user.
+// product names the installation for all users: its entry under Apps and its
+// folder under ProgramData. installID names the folder the Linux installer
+// puts the program in. Both are main.name and main.id in desktop/installer.
+var (
+	product   = "ArrowLoop"
+	installID = "com.junkerderprovinz.arrowloop"
+)
+
+// installerLanguage is the language the installer's welcome page chose, which
+// the interface starts in until somebody picks one inside it, or "".
+func installerLanguage() string {
+	path, err := installerChoices()
+	if err != nil {
+		return ""
+	}
+	return deskset.ReadLanguage(path)
+}
+
+// machineSettingsFile holds the installed copy's AutoUpdate switch and the
+// installer's language in the folder under ProgramData, which the installer
+// opens to every user.
 const machineSettingsFile = "settings.json"

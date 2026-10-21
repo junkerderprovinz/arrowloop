@@ -194,9 +194,11 @@ func (s *Store) KeepAutoUpdateIn(path string) {
 	s.now.AutoUpdate = ReadAutoUpdate(path)
 }
 
-// autoUpdateFile is the file KeepAutoUpdateIn names.
+// autoUpdateFile is the file KeepAutoUpdateIn names. The installer writes it
+// with the language its welcome page chose, which the switch must not wipe.
 type autoUpdateFile struct {
-	AutoUpdate bool `json:"autoUpdate"`
+	AutoUpdate bool   `json:"autoUpdate"`
+	Language   string `json:"language,omitempty"`
 }
 
 // ReadAutoUpdate reads the switch from a file KeepAutoUpdateIn named. A
@@ -213,11 +215,40 @@ func ReadAutoUpdate(path string) bool {
 	return f.AutoUpdate
 }
 
+// ReadLanguage reads the language an installer wrote into the file at path, or
+// "" when it names none. Only a code of two small letters passes, since the
+// window hands it on in the interface's address.
+func ReadLanguage(path string) string {
+	body, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	var f struct {
+		Language string `json:"language"`
+	}
+	if json.Unmarshal(body, &f) != nil || !isLanguageCode(f.Language) {
+		return ""
+	}
+	return f.Language
+}
+
+func isLanguageCode(code string) bool {
+	if len(code) != 2 {
+		return false
+	}
+	for _, r := range code {
+		if r < 'a' || r > 'z' {
+			return false
+		}
+	}
+	return true
+}
+
 // writeAutoUpdate rewrites the file in place. Its folder belongs to the
 // administrators and only the file itself is open to every user, so there is
 // no folder to put a temporary file in.
 func writeAutoUpdate(path string, on bool) error {
-	body, err := json.Marshal(autoUpdateFile{AutoUpdate: on})
+	body, err := json.Marshal(autoUpdateFile{AutoUpdate: on, Language: ReadLanguage(path)})
 	if err != nil {
 		return err
 	}

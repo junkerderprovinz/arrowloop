@@ -60,11 +60,31 @@ function resolveCode(raw: string | null): string {
   return DEFAULT_CODE
 }
 
+/**
+ * The language the desktop installer chose, which the window passes in its
+ * address as `lang`.
+ */
+function installerCode(): string | null {
+  const code = new URLSearchParams(window.location.search).get('lang')
+  return code && SUPPORTED.includes(code) ? code : null
+}
+
+/**
+ * The language somebody picked here, else the installer's, which is then kept
+ * as if picked here, else the browser's.
+ */
 function storedCode(): string {
   try {
-    return resolveCode(localStorage.getItem(STORAGE_KEY))
-  } catch {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored && SUPPORTED.includes(stored)) return stored
+    const installer = installerCode()
+    if (installer) {
+      localStorage.setItem(STORAGE_KEY, installer)
+      return installer
+    }
     return resolveCode(null)
+  } catch {
+    return resolveCode(installerCode())
   }
 }
 

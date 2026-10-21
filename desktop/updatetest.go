@@ -19,6 +19,7 @@ import (
 // the stand-in's address in the folder under ProgramData instead.
 func init() {
 	product = "ArrowLoop Test"
+	installID += ".test"
 	if api := os.Getenv("ARROWLOOP_UPDATE_API"); api != "" {
 		updateAPI = api
 	} else if dir, err := machineData(); err == nil {

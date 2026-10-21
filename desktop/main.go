@@ -116,7 +116,7 @@ func run() error {
 	}
 	// Without the icon a hidden window would have no way back.
 	inTray := window.Get().Tray && (*startInTray || window.InTray())
-	sh = newShell(ctx, app, window, trayIcons(), inTray)
+	sh = newShell(ctx, app, window, trayIcons(), inTray, installerLanguage())
 
 	configfile.Install()
 
