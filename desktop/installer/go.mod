@@ -2,7 +2,7 @@ module github.com/junkerderprovinz/arrowloop/desktop/installer
 
 go 1.27.1
 
-require github.com/junkerderprovinz/pommelporter v1.0.2
+require github.com/junkerderprovinz/pommelporter v1.0.3
 
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
