@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # The installer is what a release ships for Windows.
           - os: windows-latest
             slug: windows-amd64
             args: "--arch amd64 --installer"
@@ -30,12 +29,12 @@ jobs:
             args: ""
           - os: ubuntu-latest
             slug: linux-amd64
-            args: "--arch amd64"
+            args: "--arch amd64 --installer"
           # Native as well: WebKitGTK is linked through cgo, and Wails does not
           # cross-compile to Linux.
           - os: ubuntu-24.04-arm
             slug: linux-arm64
-            args: "--arch arm64"
+            args: "--arch arm64 --installer"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
@@ -58,16 +57,6 @@ jobs:
       - name: Install Linux system deps
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
-
-      # NSIS on the runner image is not guaranteed, and a missing makensis
-      # would only surface at the last step.
-      - name: Install NSIS
-        if: runner.os == 'Windows'
-        run: |
-          choco install nsis -y
-          # choco updates the machine PATH, and that change does not reach this
-          # already-running job process.
-          echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       # The CLI writes the build assets for the library, so its version is read
       # from desktop/go.mod, which Renovate keeps current. sed rather than
@@ -93,8 +82,8 @@ jobs:
         run: node scripts/stamp.mjs --github-env
 
       # Builds the interface, has Wails write the manifest, icons, version
-      # resource and Info.plist, and compiles; on Windows it also makes the
-      # installer.
+      # resource and Info.plist, and compiles; on Windows and Linux it also
+      # makes the installer.
       - name: Build
         run: node scripts/desktop.mjs ${{ matrix.args }}
 
@@ -131,4 +120,12 @@ jobs:
         with:
           name: arrowloop-${{ matrix.slug }}
           path: desktop/build/bin/*
+          if-no-files-found: error
+
+      # An artifact of its own, so the program's holds the program alone.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: runner.os != 'macOS'
+        with:
+          name: arrowloop-${{ matrix.slug }}-installer
+          path: desktop/build/installer/*
           if-no-files-found: error

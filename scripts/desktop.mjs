@@ -2,9 +2,10 @@
 //
 //     node scripts/desktop.mjs [--arch amd64|arm64] [--installer] [--updatetest]
 //
-// Windows gets ArrowLoop.exe and, with --installer, the NSIS installer. macOS
-// gets ArrowLoop.app holding one binary for both architectures. Linux gets the
-// bare binary. Everything lands in desktop/build/bin.
+// Windows gets ArrowLoop.exe, macOS ArrowLoop.app holding one binary for both
+// architectures, and Linux the bare binary, all in desktop/build/bin. With
+// --installer, Windows and Linux also get their installer in
+// desktop/build/installer, built from desktop/installer.
 //
 // --updatetest builds with the updatetest tag (desktop/updatetest.go). Its
 // installer puts "ArrowLoop Test" beside a real installation, so the updates
@@ -12,12 +13,12 @@
 //
 // The interface is built first and embedded from web/dist, like the server
 // build. Wails' generated files (manifest, version resource, Info.plist, the
-// installer's helper macros, the icons) are written into desktop/build on every
-// run and ignored by git, so a build leaves the tree as it found it.
+// icons) are written into desktop/build on every run and ignored by git, so a
+// build leaves the tree as it found it.
 
 import { spawnSync } from 'node:child_process'
 import { cpSync, mkdirSync, rmSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { installerVersion, version, writeWindowsVersion } from './stamp.mjs'
@@ -57,6 +58,26 @@ function goBuild(out, { goos, goarch, cgo, tags, ldflags = '', env = {} }) {
   ], { env: { GOOS: goos, GOARCH: goarch, CGO_ENABLED: cgo, ...env } })
 }
 
+// buildInstaller builds desktop/installer around the program at exe, into
+// desktop/build/installer so desktop/build/bin stays the program alone.
+function buildInstaller(exe, name, { goos, cgo, tags, ldflags = '' }) {
+  const payload = join(desktop, 'installer', 'payload')
+  rmSync(payload, { recursive: true, force: true })
+  mkdirSync(payload, { recursive: true })
+  cpSync(exe, join(payload, basename(exe)))
+  const vars = [`-X main.version=${installerVersion()}`]
+  if (updatetest) vars.push("-X 'main.name=ArrowLoop Test'", '-X main.id=com.junkerderprovinz.arrowloop.test')
+  try {
+    run('go', [
+      'build', '-tags', tags, '-trimpath', '-buildvcs=false',
+      '-ldflags', `-s -w ${ldflags} ${vars.join(' ')}`,
+      '-o', join(desktop, 'build', 'installer', name), '.',
+    ], { cwd: join(desktop, 'installer'), env: { GOOS: goos, GOARCH: arch, CGO_ENABLED: cgo } })
+  } finally {
+    rmSync(payload, { recursive: true, force: true })
+  }
+}
+
 console.log(`building ArrowLoop ${stamp}`)
 
 // One fixed string through a shell: Node refuses to spawn npm's .cmd without a
@@ -68,6 +89,7 @@ if (ui.status !== 0) {
 }
 
 rmSync(bin, { recursive: true, force: true })
+rmSync(join(desktop, 'build', 'installer'), { recursive: true, force: true })
 mkdirSync(bin, { recursive: true })
 
 run('wails3', [
@@ -99,16 +121,16 @@ if (process.platform === 'win32') {
   }
 
   if (installer) {
-    const nsis = join(desktop, 'build', 'windows', 'nsis')
-    run('wails3', ['generate', 'webview2bootstrapper', '-dir', nsis])
-    // Without the charset makensis reads a file with no byte order mark in the
-    // system code page, and the German shortcut names come out garbled.
-    run('makensis', [
-      '-INPUTCHARSET', 'UTF8',
-      ...(updatetest ? ['-DINFO_PRODUCTNAME=ArrowLoop Test', '-DINFO_PROJECTNAME=ArrowLoopTest'] : []),
-      `-DARG_WAILS_${arch.toUpperCase()}_BINARY=${exe}`,
-      join(nsis, 'project.nsi'),
+    const installerSyso = join(desktop, 'installer', `installer_windows_${arch}.syso`)
+    run('wails3', [
+      'generate', 'syso', '-arch', arch, '-icon', 'build/windows/icon.ico',
+      '-manifest', 'installer/installer.manifest', '-info', 'build/windows/info.json', '-out', installerSyso,
     ])
+    try {
+      buildInstaller(exe, `ArrowLoop-${arch}-installer.exe`, { goos: 'windows', cgo: '0', tags: '', ldflags: '-H windowsgui' })
+    } finally {
+      rmSync(installerSyso, { force: true })
+    }
   }
 } else if (process.platform === 'darwin') {
   // Both architectures in one binary, so one download serves every Mac. The
@@ -134,6 +156,9 @@ if (process.platform === 'win32') {
   // GTK 3 and WebKitGTK 4.1, which every current distribution ships and which
   // the builds before this one already needed.
   goBuild(join(bin, 'ArrowLoop'), { goos: 'linux', goarch: arch, cgo: '1', tags: tags(',gtk3') })
+  if (installer) {
+    buildInstaller(join(bin, 'ArrowLoop'), `ArrowLoop-${arch}-installer`, { goos: 'linux', cgo: '1', tags: 'gtk3' })
+  }
 }
 
 console.log(`done: ${stamp}`)

@@ -89,15 +89,17 @@ jobs:
         run: |
           set -eu
           mkdir -p dist
-          cp bundles/arrowloop-windows-amd64/*-installer.exe dist/arrowloop-windows-amd64-installer.exe
+          cp bundles/arrowloop-windows-amd64-installer/*-installer.exe dist/arrowloop-windows-amd64-installer.exe
           cp bundles/arrowloop-windows-amd64/ArrowLoop.exe dist/arrowloop-windows-amd64-portable.exe
-          cp bundles/arrowloop-windows-arm64/*-installer.exe dist/arrowloop-windows-arm64-installer.exe
+          cp bundles/arrowloop-windows-arm64-installer/*-installer.exe dist/arrowloop-windows-arm64-installer.exe
           cp bundles/arrowloop-windows-arm64/ArrowLoop.exe dist/arrowloop-windows-arm64-portable.exe
           cp bundles/arrowloop-macos-universal/ArrowLoop.dmg dist/arrowloop-macos-universal.dmg
           cp bundles/arrowloop-macos-universal/ArrowLoop.zip dist/arrowloop-macos-universal.zip
           cp bundles/arrowloop-linux-amd64/ArrowLoop dist/arrowloop-linux-amd64
           cp bundles/arrowloop-linux-arm64/ArrowLoop dist/arrowloop-linux-arm64
-          chmod +x dist/arrowloop-linux-amd64 dist/arrowloop-linux-arm64
+          cp bundles/arrowloop-linux-amd64-installer/*-installer dist/arrowloop-linux-amd64-installer
+          cp bundles/arrowloop-linux-arm64-installer/*-installer dist/arrowloop-linux-arm64-installer
+          chmod +x dist/arrowloop-linux-amd64 dist/arrowloop-linux-arm64 dist/arrowloop-linux-*-installer
           cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk dist/arrowloop-android-arm64.apk
           ls -lh dist
 

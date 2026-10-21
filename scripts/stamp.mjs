@@ -78,9 +78,10 @@ export function writeWindowsVersion() {
 }
 
 /**
- * The version the installer, Apps and features and the macOS bundle show. NSIS
- * and Info.plist take three numbers only, so an untagged build gets 0.0.0; the
- * executable inside still names the exact commit.
+ * The version the installer, Apps and features and the macOS bundle show.
+ * Info.plist takes three numbers only, and the installer matches it, so an
+ * untagged build gets 0.0.0; the executable inside still names the exact
+ * commit.
  */
 export function installerVersion() {
   const tag = (git('describe', '--tags', '--abbrev=0') || '').replace(/^v/, '')
