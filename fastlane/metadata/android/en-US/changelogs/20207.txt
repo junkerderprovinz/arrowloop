@@ -1,0 +1,1 @@
+Nothing new on your phone this time. On the computer, though, ArrowLoop moves in properly: with its own installer for Windows, and for the first time for Linux too.

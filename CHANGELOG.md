@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.2.7 - 2026-10-21
+
+## ✨ Added
+
+- **A new installer for Windows, and one for Linux.** On Windows it opens in ArrowLoop's own look and lets you pick the folder. On a drive where everyone may change the top folder, as on many second drives, the daily update then runs under your own account instead of the system account. On Linux it installs ArrowLoop for you alone, adds it to the application menu and offers to uninstall it from there. An earlier installation is taken over, and your jobs, settings and history stay where they are.
+
 ## 2.2.6 - 2026-10-20
 
 ## ✨ Added
