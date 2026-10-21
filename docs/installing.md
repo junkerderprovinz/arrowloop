@@ -165,12 +165,18 @@ reason that reads like a bug.
 
 Windows, Linux and macOS builds are on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases). Windows
-gets an **installer** that gives it an entry under Apps. It installs for all
-users under `C:\Program Files\ArrowLoop` and asks for an administrator once,
-while it installs; later updates ask nobody (see [Updates](#updates)). A page
-asks whether you want a Start menu entry and a desktop shortcut, both ticked at
-first, and both go to every user on the computer. The next install, silent or
-not, starts from your answer and removes a shortcut you left out.
+and Linux get an **installer**. On Windows it gives ArrowLoop an entry under
+Apps and installs it for all users under `C:\Program Files\ArrowLoop`, or in
+another folder you pick. It asks for an administrator once, while it installs;
+later updates ask nobody (see [Updates](#updates)). Two switches decide on a
+Start menu entry and a desktop shortcut, both on at first, and both go to every
+user on the computer. The next install, silent or not, starts from your answer
+and removes a shortcut you left out. `installer.exe /S` installs without a
+window, and `/D=<folder>` picks the folder for it.
+
+The installer's first page also asks for a language. ArrowLoop opens in that
+language the first time, for everyone on the computer, until somebody picks
+another one inside the app.
 
 The installer also cleans up after older versions. The copy 1.2.0 installed for
 you alone under `AppData\Local\Programs` goes, with its shortcuts and its entry
@@ -180,16 +186,22 @@ installation that you leave alone keeps updating itself where it is; running
 the new installer once moves it.
 
 The installer asks a running ArrowLoop to quit, as Quit in the tray menu would,
-so a sync under way stops cleanly. Once the new version is in place, it starts
-ArrowLoop again as the person signed in, back in the tray if that is where it
-was. Run as `installer.exe /S /relaunch`, it installs silently and starts
-ArrowLoop even if it was not running. A computer with an ARM processor, such as
-a Snapdragon laptop, takes the one named `windows-arm64`; the `amd64` installer
-would run there too, but through emulation and slower.
+so a sync under way stops cleanly. Its last page can start the new version as
+the person signed in, and a copy that sat in the tray comes back there. A
+computer with an ARM processor, such as a Snapdragon laptop, takes the one
+named `windows-arm64`; the `amd64` installer would run there too, but through
+emulation and slower. The `portable.exe` beside it is the same program, run
+from wherever you put it.
 
 Linux gets the program as a single file, `linux-amd64` for an Intel or AMD
-processor and `linux-arm64` for a 64-bit ARM one. It needs WebKitGTK 4.1
-(`libwebkit2gtk-4.1-0` on Debian and Ubuntu) for its window.
+processor and `linux-arm64` for a 64-bit ARM one, and an installer for each.
+It needs WebKitGTK 4.1 (`libwebkit2gtk-4.1-0` on Debian and Ubuntu) for its
+window. The installer is for you alone and asks for no password. It puts
+ArrowLoop in `~/.local/share/com.junkerderprovinz.arrowloop` and adds it to the
+application menu, with a desktop icon if you want one. Right-clicking the menu
+entry offers to uninstall it. That copy updates itself like the single file.
+Make the download executable first
+(`chmod +x arrowloop-linux-amd64-installer`).
 
 It is not a client talking to a server. The scheduler, the run log and the API
 all live in the same process, and the window is a webview pointed at them.
@@ -274,8 +286,8 @@ on from the start. The container and the phone do not show the switch: a
 container is updated the way it was deployed, and the phone through its store
 or a new APK.
 
-**The installed copy** under Program Files cannot replace itself, since no user
-may write there. A scheduled task named **ArrowLoop Update** does it instead,
+**The installed copy** on Windows cannot replace itself, since no user may
+write to its folder. A scheduled task named **ArrowLoop Update** does it instead,
 once a day and five minutes after the computer starts, whether ArrowLoop is
 open or not. It replaces `ArrowLoop.exe`, sets the version shown under Apps and
 writes what it did, or why it did not, to `%ProgramData%\ArrowLoop\update.log`.
@@ -299,16 +311,23 @@ Program Files belongs to the administrators. A program that replaces itself
 there without asking anyone needs an account that may write there, and a
 scheduled task under the system account is how Windows provides one; Firefox's
 maintenance service and Chrome's updater task work the same way. The task
-writes to three places and nowhere else: the installation folder,
+writes to three places and nowhere else: the installation folder, usually
 `C:\Program Files\ArrowLoop`; the entry under Apps, in
 `HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\ArrowLoop`; and
 `%ProgramData%\ArrowLoop`, for its log. It reads nothing from any user's
 profile. The folder under ProgramData belongs to the administrators, and only
 `settings.json` in it is open to other users. If the installer cannot set the
-folder up that way, it sets up no task and says so. The installer has no page
-for choosing another folder. Together that leaves no file a user could swap
-for one the system account would run or write to. It downloads only from GitHub
-over HTTPS and installs a file only when it matches `checksums.txt`.
+folder up that way, it sets up no task. The installer gives the installation
+folder the same rights as Program Files. Together that leaves no file a user
+could swap for one the system account would run or write to.
+
+You can install into another folder too. Many second drives let everyone
+rename what sits at their top, and whoever can rename a folder above the
+installation can swap it. On such a drive the task runs as the person who
+installed ArrowLoop, without administrator rights, and that person may change
+the installation folder. Updates arrive the same way; only the version under
+Apps stays at the one first installed. The task downloads only from GitHub over
+HTTPS and installs a file only when it matches `checksums.txt`.
 
 #### Uninstalling
 
