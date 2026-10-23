@@ -369,10 +369,8 @@ class EngineModule(private val context: ReactApplicationContext) :
     fun importSettings(path: String, promise: Promise) {
         try {
             val file = if (path.isBlank()) {
-                File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                    BACKUP_NAME,
-                )
+                val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                File(folder, BACKUP_NAME).takeIf { it.exists() } ?: File(folder, OLD_BACKUP_NAME)
             } else {
                 File(path)
             }
@@ -486,7 +484,10 @@ class EngineModule(private val context: ReactApplicationContext) :
     companion object {
         // Downloads is shared, so a test build next to the released app keeps
         // its own backup rather than overwriting the real one.
-        val BACKUP_NAME = if (BuildConfig.SIDE_BY_SIDE) "arrowloop-test-einstellungen.json" else "arrowloop-einstellungen.json"
+        val BACKUP_NAME = if (BuildConfig.SIDE_BY_SIDE) "arrowloop-test-settings.json" else "arrowloop-settings.json"
+
+        // Older backups carry the German name and still restore.
+        val OLD_BACKUP_NAME = if (BuildConfig.SIDE_BY_SIDE) "arrowloop-test-einstellungen.json" else "arrowloop-einstellungen.json"
         private const val UNLOCK_REQUEST = 8422
         private const val PICK_REQUEST = 8425
     }

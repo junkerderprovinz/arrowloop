@@ -12,10 +12,12 @@ Was es kann
 
 Damit keine Datei verloren geht
 • Nichts wird sofort gelöscht: Eine Löschung verschiebt die Datei in den Papierkorb auf ihrer Seite
-• Ein Lauf, der mehr als die Hälfte deiner Dateien löschen würde, hält an und sagt es dir
+• Ein Lauf, der mehr als die Hälfte deiner Dateien löschen würde, hält an und sagt es dir. Bis zu zehn Löschungen gehen immer durch, damit ein kleiner Ordner nicht an seiner eigenen Rechnung hängen bleibt; beide Zahlen lassen sich einstellen
 • Eine Seite, die plötzlich leer aussieht, etwa weil ein Laufwerk nicht eingehängt ist, gilt nie als „alles gelöscht“
 • Eine Datei, die sich nicht kopieren ließ, wird beim nächsten Lauf wieder versucht
 
 Kein Konto, keine Werbung, keine Statistik. Der Quellcode ist offen, und dieselbe Engine gibt es auch als Desktop-App für Windows, macOS und Linux und als Container für den Heimserver.
 
 ArrowLoop bittet um Zugriff auf alle Dateien, damit ein Auftrag jeden Ordner abgleichen kann, den du auswählst, etwa DCIM oder Dokumente. Es liest und schreibt nur die Ordner, die deine Aufträge nennen.
+
+Android/data, wo Apps ihre eigenen Dateien ablegen, bleibt diesem Zugriff verschlossen. Willst du es abgleichen, kommt ArrowLoop über Root oder Shizuku hin: Root liest und schreibt, Shizuku liest nur. Beides ist freiwillig und wird erst abgefragt, wenn du Android/data einschaltest.
