@@ -8,6 +8,17 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.2.8 - 2026-10-23
+
+## ⚡ Improved
+
+- **The store description says how the delete brake counts.** A run that would delete more than half of your files stops, but ten deletions or fewer always go through, so a small folder is not held up by its own arithmetic. Both numbers are settings, and the description now says so.
+- **The store description names root and Shizuku.** They are only used for Android/data, where apps keep their own files, and only asked for when you switch Android/data on: root reads and writes, Shizuku only reads.
+
+## 🐛 Fixed
+
+- **The settings backup had a German file name whatever the language.** Export settings on the phone wrote `arrowloop-einstellungen.json` to Downloads even with the app in English. It is `arrowloop-settings.json` now, and restoring without picking a file still finds a backup saved under the old name.
+
 ## 2.2.7 - 2026-10-21
 
 ## ✨ Added

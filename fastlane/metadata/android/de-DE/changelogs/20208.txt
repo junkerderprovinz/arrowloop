@@ -1,0 +1,1 @@
+Die Sicherung deiner Einstellungen heißt jetzt arrowloop-settings.json, eine alte wird trotzdem gefunden. Und die Store-Beschreibung verrät endlich, wie die Löschbremse zählt und wofür Root und Shizuku da sind.
