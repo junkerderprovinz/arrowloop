@@ -7,7 +7,7 @@
 
 services:
   arrowloop:
-    image: junkerderprovinz/arrowloop:latest
+    image: junkerderprovinz/arrowloop:latest@sha256:aaa37957e18d182c3e7260553a8fe898e49c67e0c75917b73d2cc13020332f6e
     container_name: arrowloop
     restart: unless-stopped
     hostname: arrowloop
