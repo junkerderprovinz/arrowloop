@@ -59,7 +59,7 @@ export function JobEditor({
       title={added ? t('job.new') : t('job.editTitle', { name: original?.name || t('edit.unnamed') })}
       onClose={cancel}
       closeOnBackdrop={false}
-      wide
+      width="widest"
       bar={
         <GlobalSwitch
           on={follows}

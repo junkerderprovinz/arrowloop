@@ -308,7 +308,7 @@ function AddTarget({
       title={t('targets.addStorage')}
       hint={t('targets.addStorageHint')}
       onClose={() => onDone(false)}
-      wide
+      width="wide"
       search={<PickerSearch value={query} onChange={setQuery} label={t('targets.search')} />}
     >
       <div ref={body} className="flex flex-col gap-6" style={{ minHeight: floor }}>

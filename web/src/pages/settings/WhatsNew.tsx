@@ -191,7 +191,7 @@ function WhatsNewWindow({ news, onClose }: { news: WhatsNew; onClose: () => void
       title={title}
       hint={t('new.hint')}
       onClose={close}
-      wide
+      width="wide"
       footer={
         <>
           <Button
