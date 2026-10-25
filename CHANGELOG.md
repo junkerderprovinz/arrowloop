@@ -25,6 +25,7 @@ The full notes for each release are in
 - **iCloud Drive asks for the sign-in Apple wants.** The form asked for an app password, which Apple refuses, and left out the trust token and cookies rclone needs. It takes your Apple ID password and both session values, and the bubble beside them says how to get them with rclone config on a computer and that Apple asks again after 30 days.
 - **Jottacloud takes the personal login token from its security page.** It used to want a ready OAuth token that only rclone's own setup can make. Testing or saving the target trades the login token for a lasting sign-in, once, as rclone config does.
 - **ShareFile and Zoho keep what rclone authorize prints with the token.** Pasting the output of rclone authorize given a config blob fills in ShareFile's address and Zoho's region, and the ShareFile form asks for the address when the token came without it.
+- **An AWS bucket outside us-east-1 works without a region typed in.** rclone signs for us-east-1 when it knows no region, and AWS refuses a bucket elsewhere. Testing or saving an AWS target that names its bucket asks AWS where the bucket is and saves that region, and the global endpoint s3.amazonaws.com is left out, so rclone can follow a bucket to its region by itself.
 
 ## 2.2.8 - 2026-10-23
 

@@ -1,8 +1,14 @@
 package remotes
 
 import (
+	"context"
+	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
+	"time"
+
+	"github.com/rclone/rclone/fs/fshttp"
 )
 
 // regionInHost reads the region out of the endpoints that name it.
@@ -49,4 +55,46 @@ func tidyS3(settings map[string]string) {
 			return
 		}
 	}
+}
+
+// awsGlobal is AWS's endpoint for every region, which answers a HEAD of any
+// bucket with the bucket's region, even when it refuses the request.
+var awsGlobal = "https://s3.amazonaws.com"
+
+// awsRegion gives an AWS target without a region the one its bucket sits in.
+// rclone signs for us-east-1 when it knows none, and AWS refuses a bucket
+// elsewhere. rclone follows a bucket's region by itself only without an
+// endpoint, so the global one, which rclone uses anyway, is dropped.
+func awsRegion(ctx context.Context, settings map[string]string) {
+	if settings["provider"] != "AWS" {
+		return
+	}
+	host := strings.TrimSuffix(strings.TrimPrefix(strings.TrimPrefix(settings["endpoint"], "https://"), "http://"), "/")
+	if strings.EqualFold(host, "s3.amazonaws.com") {
+		settings["endpoint"] = ""
+	}
+	bucket := strings.Trim(settings[BucketKey], "/")
+	if strings.TrimSpace(settings["region"]) != "" || bucket == "" || settings["endpoint"] != "" {
+		return
+	}
+	if region := bucketRegion(ctx, bucket); region != "" {
+		settings["region"] = region
+	}
+}
+
+// bucketRegion asks AWS where a bucket is, or returns "" when it cannot say.
+// rclone then still follows the bucket's region on its own.
+func bucketRegion(ctx context.Context, bucket string) string {
+	ctx, stop := context.WithTimeout(ctx, 10*time.Second)
+	defer stop()
+	req, err := http.NewRequestWithContext(ctx, http.MethodHead, awsGlobal+"/"+url.PathEscape(bucket), nil)
+	if err != nil {
+		return ""
+	}
+	resp, err := fshttp.NewClient(ctx).Do(req)
+	if err != nil {
+		return ""
+	}
+	_ = resp.Body.Close()
+	return resp.Header.Get("X-Amz-Bucket-Region")
 }

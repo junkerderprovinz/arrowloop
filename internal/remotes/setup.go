@@ -95,6 +95,7 @@ func Setup(ctx context.Context, backend string, settings map[string]string) (map
 	unpackAuthorize(out)
 	if backend == "s3" {
 		tidyS3(out)
+		awsRegion(ctx, out)
 	}
 
 	step, ok := setupSteps[backend]
