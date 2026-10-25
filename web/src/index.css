@@ -498,6 +498,27 @@ body {
   background-color: var(--carbon-surface3);
 }
 
+/* The job window's switch answers a click on a field it holds: it wiggles,
+   or, where nothing may move, rings for a moment instead. */
+@keyframes al-nudge-ring {
+  0%,
+  60% {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+.al-nudge {
+  border-radius: var(--radius-control);
+  animation: al-nudge-ring 1.2s ease-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion='off']) .al-nudge {
+    animation: glim-shake var(--motion-shake-dur) ease-in-out;
+  }
+}
+
 /* Where a settings search result landed, ringed for a moment so the eye finds
    it after the scroll. */
 @keyframes glim-search-hit {

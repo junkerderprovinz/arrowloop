@@ -8,6 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **A job's window reads the way the job runs.** Both sides stand next to each other with the direction between them, each with the logo of its target, its folder and a button to browse for another. Below them the settings sit in three cards, Schedule, Syncing and Exclusions, and the state file waits under Advanced. In a narrow window the sides stack and the arrow points down or up.
+
+## ⚡ Improved
+
+- **One switch decides whether a job follows the global settings.** Use the global settings at the top of the window replaces the Override button on every row. While it is on, the global values show greyed out, and clicking one makes the switch wiggle. Turned off, every field is the job's own, starting from the values that apply now.
+
 ## 2.2.8 - 2026-10-23
 
 ## ⚡ Improved

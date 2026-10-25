@@ -2,21 +2,21 @@ import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
 import { Field, FieldRow, Lines, Text } from '../components/Field'
-import { ToggleRow } from '../components/ToggleRow'
-import { api, type Direction, type Mode, type RawJob, type Settings } from '../lib/api'
-import { DirectionSwitch } from '../components/Direction'
-import { InheritButton, InheritedRow } from '../components/Inherited'
+import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
+import { SettingRow } from '../components/GlobalValues'
+import { JobWay } from '../components/JobWay'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
-import { FolderPicker, PickButton, type Known } from '../components/FolderPicker'
+import type { Known } from '../components/FolderPicker'
 import { ScheduleField } from '../components/Schedule'
 import { ScheduleButton } from '../components/ScheduleButton'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { Toggle } from '../lib/glimstone/Toggle'
-import { inForce, inheritPatch, owns, type Inherited } from '../lib/follows'
+import { JOB_WINDOW_SETTINGS, overrideAll } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useT } from '../lib/i18n'
+import { SubCard } from './settings/rows'
 
 /**
  * What a new job starts out ignoring: files the operating system or a tool
@@ -57,6 +57,7 @@ export function useJobConfig(onSaved: () => void) {
   const [saved, setSaved] = useState(false)
   const [busy, setBusy] = useState(false)
   const [known, setKnown] = useState<Known[]>([])
+  const [remotes, setRemotes] = useState<Remote[]>([])
   const [defaults, setDefaults] = useState<Settings['defaults']>(undefined)
 
   useEffect(() => {
@@ -85,6 +86,7 @@ export function useJobConfig(onSaved: () => void) {
         }
       }
       if (r.status === 'fulfilled') {
+        setRemotes(r.value.remotes)
         for (const remote of r.value.remotes) {
           offers.push({ value: `${remote.name}:`, label: `${t('edit.pickRemote')}: ${remote.name}`, browse: true })
         }
@@ -260,41 +262,41 @@ export function useJobConfig(onSaved: () => void) {
     [jobs, t],
   )
 
-  return { jobs, known, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, amend, duplicate }
+  return { jobs, known, remotes, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, amend, duplicate }
 }
 
-/** A path's box with its browse button, wide enough to read a path beside its name. */
+/** The state file's box, wide enough to read a path beside its name. */
 const PATH_W = 'w-[31rem]'
 
-/** One job's fields, with the direction between the two sides it relates. */
+/**
+ * One job's fields: the way it runs on top, then what it does in three cards.
+ * While it takes the global settings, every field that has a global value
+ * shows that value, held, and reaching for one calls `onHeld`.
+ */
 export function JobForm({
   job,
   known,
+  remotes,
   defaults,
   patch,
+  follows,
+  onHeld,
 }: {
   job: RawJob
   known: Known[]
-  /** The global sync settings, whose values the job shows until it overrides them. */
+  remotes: Remote[]
+  /** The global sync settings, whose values the job shows while it follows them. */
   defaults?: Settings['defaults']
   patch: (next: Partial<RawJob>) => void
+  follows: boolean
+  onHeld: () => void
 }) {
   const { t } = useT()
-  const own = (setting: Inherited) => owns(job, setting)
-  // What the job runs with: its own value, or the default's while it follows.
-  const shown = (setting: Inherited): RawJob => (own(setting) ? job : { ...job, ...(inForce(defaults, setting) as RawJob) })
-  const action = (setting: Inherited) => (
-    <InheritButton
-      setting={setting}
-      own={own(setting)}
-      defaults={defaults}
-      onOverride={() => patch(inForce(defaults, setting) as Partial<RawJob>)}
-      onInherit={() => patch(inheritPatch(setting) as Partial<RawJob>)}
-    />
-  )
-  const way = shown('direction')
-  const direction: Direction = way.direction ?? 'both'
-  const timing = shown('schedule')
+  const [advanced, setAdvanced] = useState(false)
+  // What the job runs with: the defaults' values while it follows them.
+  const shown: RawJob = follows ? { ...job, ...(overrideAll(defaults, JOB_WINDOW_SETTINGS) as RawJob) } : job
+  const direction: Direction = shown.direction ?? 'both'
+  const held = { held: follows, onHeld }
 
   // The state path follows the name while it still has the generated
   // `state/<name>.db` form; a path somebody typed is left alone.
@@ -306,73 +308,31 @@ export function JobForm({
   }
 
   return (
-    <>
-      <div className="flex flex-col gap-4">
-        <FieldRow label={t('edit.name')} hint={t('edit.nameHint')}>
-          <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} label={t('edit.name')} />
-        </FieldRow>
-        <Side
-          label={t('edit.left')}
-          hint={t('edit.sideHint')}
-          value={job.left ?? ''}
-          known={known}
-          onChange={(v) => patch({ left: v })}
-        />
-        <InheritedRow label={t('direction.label')} hint={t('direction.hint')} own={own('direction')} action={action('direction')}>
-          <DirectionSwitch
-            direction={direction}
-            // Mirror and move need a source side. A two-way job says sync
-            // rather than nothing, or it would take a default mirror.
-            onChange={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
-          />
-        </InheritedRow>
-        <Side
-          label={t('edit.right')}
-          hint={t('edit.sideHint')}
-          value={job.right ?? ''}
-          known={known}
-          onChange={(v) => patch({ right: v })}
-        />
-        <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
-          <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
-        </FieldRow>
+    <div className="flex flex-col gap-4 pb-2">
+      <FieldRow label={t('edit.name')} hint={t('edit.nameHint')}>
+        <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} label={t('edit.name')} />
+      </FieldRow>
 
-        {/* The mode exists only once one side is the source. It comes with the
-            direction, so its row has no button of its own. */}
-        {direction !== 'both' && (
-          <InheritedRow label={t('mode.label')} own={own('direction')}>
-            <Selector<Mode>
-              scale="small"
-              hug
-              label={t('mode.label')}
-              hueOffset={HUE_OFFSET.mode}
-              value={way.mode ?? 'sync'}
-              onChange={(v) => patch({ mode: v })}
-              options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
-            />
-          </InheritedRow>
-        )}
-        {direction === 'both' && (
-          <div data-new="newer-wins">
-            <ToggleRow
-              label={t('edit.newerWins')}
-              checked={!!job.newerWins}
-              onChange={(v) => patch({ newerWins: v })}
-              hint={t('edit.newerWinsHint')}
-            />
-          </div>
-        )}
+      <JobWay
+        left={job.left ?? ''}
+        right={job.right ?? ''}
+        direction={direction}
+        onLeft={(v) => patch({ left: v })}
+        onRight={(v) => patch({ right: v })}
+        // Mirror and move need a source side. A two-way job says sync
+        // rather than nothing, or it would take a default mirror.
+        onDirection={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
+        known={known}
+        remotes={remotes}
+        {...held}
+      />
 
+      <SubCard label={t('edit.schedule')}>
         <div data-new="schedule-sentence">
-          <InheritedRow
-            label={t('edit.schedule')}
-            hint={t('edit.scheduleHint')}
-            own={own('schedule')}
-            action={action('schedule')}
-          >
-            <ScheduleButton label={t('edit.schedule')} value={timing.schedule ?? ''} watch={!!job.watch}>
+          <SettingRow label={t('edit.when')} hint={t('edit.scheduleHint')} {...held}>
+            <ScheduleButton label={t('edit.schedule')} value={shown.schedule ?? ''} watch={!!shown.watch}>
               <ScheduleField
-                value={timing.schedule ?? ''}
+                value={shown.schedule ?? ''}
                 onChange={(v) => patch({ schedule: v })}
                 live={!!job.watch}
                 onLive={(v) => patch({ watch: v })}
@@ -380,141 +340,113 @@ export function JobForm({
                 onSettle={(v) => patch({ watchSettle: v })}
               />
             </ScheduleButton>
-          </InheritedRow>
+          </SettingRow>
         </div>
-
         {/* Zero is written as 0s, since an empty quiet period is one the job
             leaves to the defaults. */}
-        <InheritedRow
-          label={t('edit.quietPeriod')}
-          hint={t('edit.quietHint')}
-          own={own('quietPeriod')}
-          action={action('quietPeriod')}
-        >
-          <QuietPeriod
-            value={shown('quietPeriod').quietPeriod ?? ''}
-            onChange={(v) => patch({ quietPeriod: v || '0s' })}
-          />
-        </InheritedRow>
-      </div>
+        <SettingRow label={t('edit.quietPeriod')} hint={t('edit.quietHint')} {...held}>
+          <QuietPeriod value={shown.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v || '0s' })} />
+        </SettingRow>
+        <SettingRow label={t('edit.runAtStart')} hint={t('edit.runAtStartHint')}>
+          <Toggle checked={!!job.runAtStart} onChange={(v) => patch({ runAtStart: v })} label={t('edit.runAtStart')} hideLabel />
+        </SettingRow>
+      </SubCard>
 
-      <div className="mt-5">
-        <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')}>
-          <ExcludeSetPicker
-            chosen={job.excludeSets ?? []}
-            onChange={(v) => patch({ excludeSets: v })}
-          />
-        </Field>
-      </div>
-
-      <div className="mt-5">
-        <Field label={t('edit.exclude')} hint={t('edit.excludeHint')}>
-          <Lines
-            value={job.exclude ?? []}
-            onChange={(v) => patch({ exclude: v })}
-            placeholder={'*.tmp\n**/node_modules/**'}
-          />
-        </Field>
-      </div>
-
-      {/* Shown and never edited: the server keeps what the file says, since
-          a command set here would run with the rights of the process. */}
-      {(job.before || job.after) && (
-        <div className="mt-5">
-          <Field label={t('edit.commands')} hint={t('edit.commandsHint')}>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-body">
-              {(
-                [
-                  ['edit.before', job.before],
-                  ['edit.after', job.after],
-                ] as const
-              )
-                .filter(([, command]) => command)
-                .map(([key, command]) => (
-                  <Fragment key={key}>
-                    <dt className="text-carbon-textMuted">{t(key)}</dt>
-                    <dd className="min-w-0 break-all font-mono">{command}</dd>
-                  </Fragment>
-                ))}
-            </dl>
-          </Field>
-        </div>
-      )}
-
-      <div className="mt-5 flex flex-col gap-3">
-        <ToggleRow
-          label={t('edit.runAtStart')}
-          checked={!!job.runAtStart}
-          onChange={(v) => patch({ runAtStart: v })}
-          hint={t('edit.runAtStartHint')}
-        />
-        {(['emptyDirs', 'metadata'] as const).map((setting) => (
-          <InheritedRow
-            key={setting}
-            label={t(`edit.${setting}`)}
-            hint={t(`edit.${setting}Hint`)}
-            own={own(setting)}
-            action={action(setting)}
-          >
-            <Toggle
-              checked={!!shown(setting)[setting]}
-              onChange={(v) => patch({ [setting]: v })}
-              label={t(`edit.${setting}`)}
-              hideLabel
+      <SubCard label={t('edit.matching')}>
+        {/* The mode exists only once one side is the source, and a newer
+            version can only win where both sides change. */}
+        {direction !== 'both' && (
+          <SettingRow label={t('mode.label')} {...held}>
+            <Selector<Mode>
+              scale="small"
+              hug
+              label={t('mode.label')}
+              hueOffset={HUE_OFFSET.mode}
+              value={shown.mode ?? 'sync'}
+              onChange={(v) => patch({ mode: v })}
+              options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
             />
-          </InheritedRow>
+          </SettingRow>
+        )}
+        {direction === 'both' && (
+          <div data-new="newer-wins">
+            <SettingRow label={t('edit.newerWins')} hint={t('edit.newerWinsHint')}>
+              <Toggle checked={!!job.newerWins} onChange={(v) => patch({ newerWins: v })} label={t('edit.newerWins')} hideLabel />
+            </SettingRow>
+          </div>
+        )}
+        {(['emptyDirs', 'metadata'] as const).map((setting) => (
+          <SettingRow key={setting} label={t(`edit.${setting}`)} hint={t(`edit.${setting}Hint`)} {...held}>
+            <Toggle checked={!!shown[setting]} onChange={(v) => patch({ [setting]: v })} label={t(`edit.${setting}`)} hideLabel />
+          </SettingRow>
         ))}
         {/* Inverted from the stored `noTrash`, since a switch labelled with a
             negative gets flipped the wrong way, and here that deletes files. */}
-        <ToggleRow
-          label={t('edit.trash')}
-          checked={!job.noTrash}
-          onChange={(v) => patch({ noTrash: !v })}
-          hint={t('edit.trashHint')}
-        />
-      </div>
-    </>
-  )
-}
+        <SettingRow label={t('edit.trash')} hint={t('edit.trashHint')}>
+          <Toggle checked={!job.noTrash} onChange={(v) => patch({ noTrash: !v })} label={t('edit.trash')} hideLabel />
+        </SettingRow>
+      </SubCard>
 
-/**
- * One side of a job: a path field and a picker that walks this machine's
- * folders, the registered drives and the folders on every configured target.
- */
-function Side({
-  label,
-  hint,
-  value,
-  known,
-  onChange,
-}: {
-  label: string
-  hint: string
-  value: string
-  known: Known[]
-  onChange: (next: string) => void
-}) {
-  const [picking, setPicking] = useState(false)
-  return (
-    <>
-      <FieldRow label={label} hint={hint} width={PATH_W}>
-        <span className="flex w-full items-center gap-2">
-          <span className="min-w-0 flex-1">
-            <Text value={value} onChange={onChange} label={label} mono />
-          </span>
-          <PickButton onClick={() => setPicking(true)} />
-        </span>
-      </FieldRow>
-      <FolderPicker
-        open={picking}
-        known={known}
-        start={value}
-        onClose={() => setPicking(false)}
-        onPick={(path) => {
-          onChange(path)
-          setPicking(false)
-        }}
-      />
-    </>
+      <SubCard label={t('edit.exclude')}>
+        <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')}>
+          <ExcludeSetPicker chosen={job.excludeSets ?? []} onChange={(v) => patch({ excludeSets: v })} />
+        </Field>
+        <Field label={t('edit.ownExclude')} hint={t('edit.excludeHint')}>
+          <Lines value={job.exclude ?? []} onChange={(v) => patch({ exclude: v })} placeholder={'*.tmp\n**/node_modules/**'} />
+        </Field>
+      </SubCard>
+
+      <section className="flex flex-col gap-4">
+        <button
+          type="button"
+          aria-expanded={advanced}
+          onClick={() => setAdvanced((was) => !was)}
+          className="glim-eyebrow flex items-center gap-1.5 self-start font-semibold outline-none transition hover:text-carbon-text focus-visible:text-carbon-text"
+        >
+          <svg
+            aria-hidden
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            className={`transition-transform ${advanced ? '' : '-rotate-90 rtl:rotate-90'}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {t('edit.advanced')}
+        </button>
+        {advanced && (
+          <>
+            <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
+              <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
+            </FieldRow>
+            {/* Shown and never edited: the server keeps what the file says,
+                since a command set here would run with the rights of the
+                process. */}
+            {(job.before || job.after) && (
+              <Field label={t('edit.commands')} hint={t('edit.commandsHint')} plain>
+                <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-body">
+                  {(
+                    [
+                      ['edit.before', job.before],
+                      ['edit.after', job.after],
+                    ] as const
+                  )
+                    .filter(([, command]) => command)
+                    .map(([key, command]) => (
+                      <Fragment key={key}>
+                        <dt className="text-carbon-textMuted">{t(key)}</dt>
+                        <dd className="min-w-0 break-all font-mono">{command}</dd>
+                      </Fragment>
+                    ))}
+                </dl>
+              </Field>
+            )}
+          </>
+        )}
+      </section>
+    </div>
   )
 }
