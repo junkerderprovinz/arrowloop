@@ -1256,6 +1256,7 @@ const ro: Translations = {
   'new.change.targetSwitches': 'Setările unei destinații care sunt doar pornite sau oprite sunt comutatoare, iar o destinație FTP întreabă o singură dată ce {encryption} folosește.',
   'new.change.setupChoice': 'Când o autentificare deschide mai multe unități sau spații de lucru, testul unei destinații întreabă pe care să o folosească. Jottacloud primește tokenul personal de autentificare de pe pagina sa de securitate, iar un token ShareFile sau Zoho lipit din rclone authorize își aduce adresa sau regiunea.',
   'new.change.bucketField': 'O destinație S3 primește un bucket, așa că o cheie care poate deschide doar unul, cum e un token de obiecte Cloudflare R2, trece testul și deschide acel bucket la alegerea dosarului.',
+  'new.change.providerMarks': 'În {connect}, Synology C2 are propria pictogramă C2, iar Enterprise File Fabric arată simbolul de stocare în locul unei plăci goale.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

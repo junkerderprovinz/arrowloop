@@ -1256,6 +1256,7 @@ const fi: Translations = {
   'new.change.targetSwitches': 'Kohteen asetukset, jotka ovat vain päällä tai pois, ovat kytkimiä, ja FTP-kohde kysyy kerran, mitä {encryption} se käyttää.',
   'new.change.setupChoice': 'Kun kirjautuminen avaa useamman aseman tai työtilan, kohteen testi kysyy, mitä käytetään. Jottacloud ottaa henkilökohtaisen kirjautumistunnisteen suojaussivultaan, ja rclone authorizesta liitetty ShareFile- tai Zoho-tunniste tuo osoitteensa tai alueensa mukanaan.',
   'new.change.bucketField': 'S3-kohteelle voi antaa säilön, joten avain, joka saa avata vain yhden, kuten Cloudflare R2:n objektitunniste, läpäisee testin ja avaa sen säilön kansionvalitsimessa.',
+  'new.change.providerMarks': 'Kohdassa {connect} Synology C2:lla on oma C2-kuvakkeensa, ja Enterprise File Fabric näyttää tyhjän ruudun sijaan tallennustilan merkin.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

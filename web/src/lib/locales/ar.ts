@@ -1256,6 +1256,7 @@ const ar: Translations = {
   'new.change.targetSwitches': 'إعدادات الوجهة التي تكون إما مفعّلة أو معطّلة صارت مفاتيح، وتسأل وجهة FTP مرة واحدة عن {encryption} الذي تستخدمه.',
   'new.change.setupChoice': 'عندما يفتح تسجيل الدخول أكثر من محرك أو مساحة عمل، يسأل اختبار الوجهة أيها يُستخدم. ويقبل Jottacloud رمز الدخول الشخصي من صفحة الأمان، ورمز ShareFile أو Zoho الملصوق من rclone authorize يحمل معه عنوانه أو منطقته.',
   'new.change.bucketField': 'تقبل وجهة S3 اسم حاوية، فيجتاز المفتاح الذي يفتح حاوية واحدة فقط، مثل رمز كائنات Cloudflare R2، الاختبار ويفتح تلك الحاوية في منتقي المجلدات.',
+  'new.change.providerMarks': 'في {connect} يظهر Synology C2 برمز C2 الخاص به، ويعرض Enterprise File Fabric رمز التخزين بدل مربع فارغ.',
   'new.change.appFolders': 'في تطبيق الهاتف، يتيح {add} ضمن {settings}، {phone} لـ ArrowLoop مزامنة مجلد يعرضه تطبيق آخر في أداة اختيار الملفات في Android، دون الروت أو Shizuku. تظهر المجلدات في وجهة اسمها Apps.',
 }
 

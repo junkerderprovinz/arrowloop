@@ -1256,6 +1256,7 @@ const gl: Translations = {
   'new.change.targetSwitches': 'Os axustes dun destino que só están activados ou desactivados son interruptores, e un destino FTP pregunta unha soa vez que {encryption} usa.',
   'new.change.setupChoice': 'Cando un inicio de sesión abre máis dunha unidade ou espazo de traballo, a proba dun destino pregunta cal usar. Jottacloud acepta o token persoal da súa páxina de seguranza, e un token de ShareFile ou Zoho pegado desde rclone authorize trae o seu enderezo ou rexión.',
   'new.change.bucketField': 'Un destino S3 admite un bucket, así que unha clave que só pode abrir un, como un token de obxectos de Cloudflare R2, pasa a proba e abre ese bucket no selector de cartafoles.',
+  'new.change.providerMarks': 'En {connect}, Synology C2 leva a súa propia icona de C2 e Enterprise File Fabric mostra o glifo de almacenamento en vez dunha tella baleira.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

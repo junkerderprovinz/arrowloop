@@ -1256,6 +1256,7 @@ const no: Translations = {
   'new.change.targetSwitches': 'Innstillinger for et mål som bare er av eller på, er brytere, og et FTP-mål spør én gang hvilken {encryption} det bruker.',
   'new.change.setupChoice': 'Når en pålogging åpner mer enn én disk eller ett arbeidsområde, spør testen av et mål hvilken som skal brukes. Jottacloud tar det personlige påloggingstokenet fra sikkerhetssiden sin, og et ShareFile- eller Zoho-token limt inn fra rclone authorize har med seg adressen eller regionen.',
   'new.change.bucketField': 'Et S3-mål tar en bucket, så en nøkkel som bare kan åpne én, som et objekttoken fra Cloudflare R2, består testen og åpner den bucketen i mappevelgeren.',
+  'new.change.providerMarks': 'Under {connect} har Synology C2 sitt eget C2-ikon, og Enterprise File Fabric viser lagringssymbolet i stedet for en tom flis.',
   'new.change.appFolders': 'I telefonappen lar {add} under {settings}, {phone} ArrowLoop synkronisere en mappe som en annen app tilbyr i Androids filvelger, uten root og uten Shizuku. Mappene vises i et mål som heter Apps.',
 }
 

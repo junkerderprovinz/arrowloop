@@ -1256,6 +1256,7 @@ const cs: Translations = {
   'new.change.targetSwitches': 'Nastavení cíle, která jsou jen zapnutá nebo vypnutá, jsou přepínače a cíl FTP se jednou zeptá, jaké {encryption} používá.',
   'new.change.setupChoice': 'Když přihlášení otevírá víc disků nebo pracovních prostorů, test cíle se zeptá, který použít. Jottacloud bere osobní přihlašovací token ze své bezpečnostní stránky a token ShareFile nebo Zoho vložený z rclone authorize s sebou přinese adresu nebo oblast.',
   'new.change.bucketField': 'Cíl S3 přijímá bucket, takže klíč, který smí otevřít jen jeden, třeba objektový token Cloudflare R2, projde testem a otevře tento bucket ve výběru složky.',
+  'new.change.providerMarks': 'V {connect} má Synology C2 vlastní ikonu C2 a Enterprise File Fabric ukazuje symbol úložiště místo prázdné dlaždice.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

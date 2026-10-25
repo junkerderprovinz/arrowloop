@@ -1256,6 +1256,7 @@ const he: Translations = {
   'new.change.targetSwitches': 'הגדרות של יעד שהן רק פועל או כבוי הן מתגים, ויעד FTP שואל פעם אחת באיזו {encryption} הוא משתמש.',
   'new.change.setupChoice': 'כשכניסה פותחת יותר מכונן או סביבת עבודה אחת, בדיקת היעד שואלת באיזה להשתמש. Jottacloud מקבל את אסימון הכניסה האישי מדף האבטחה שלו, ואסימון ShareFile או Zoho שהודבק מ-rclone authorize מביא איתו את הכתובת או האזור שלו.',
   'new.change.bucketField': 'יעד S3 מקבל דלי, כך שמפתח שיכול לפתוח רק אחד, כמו אסימון אובייקטים של Cloudflare R2, עובר את הבדיקה ופותח את הדלי הזה בבוחר התיקיות.',
+  'new.change.providerMarks': 'ב-{connect} ל-Synology C2 יש סמל C2 משלו, ו-Enterprise File Fabric מציג את סמל האחסון במקום אריח ריק.',
   'new.change.appFolders': 'באפליקציה לטלפון, {add} תחת {settings}, {phone} מאפשר ל־ArrowLoop לסנכרן תיקייה שאפליקציה אחרת מציעה בבורר הקבצים של Android, בלי רוט ובלי Shizuku. התיקיות מופיעות ביעד בשם Apps.',
 }
 

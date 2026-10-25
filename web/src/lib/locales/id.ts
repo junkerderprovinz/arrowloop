@@ -1256,6 +1256,7 @@ const id: Translations = {
   'new.change.targetSwitches': 'Pengaturan tujuan yang hanya hidup atau mati menjadi sakelar, dan tujuan FTP menanyakan sekali {encryption} mana yang dipakai.',
   'new.change.setupChoice': 'Bila sebuah login membuka lebih dari satu drive atau ruang kerja, uji tujuan menanyakan mana yang dipakai. Jottacloud menerima token login pribadi dari halaman keamanannya, dan token ShareFile atau Zoho yang ditempel dari rclone authorize membawa alamat atau wilayahnya.',
   'new.change.bucketField': 'Tujuan S3 menerima bucket, jadi kunci yang hanya boleh membuka satu, seperti token objek Cloudflare R2, lolos uji dan membuka bucket itu di pemilih folder.',
+  'new.change.providerMarks': 'Di {connect}, Synology C2 memakai ikon C2 miliknya, dan Enterprise File Fabric menampilkan simbol penyimpanan alih-alih ubin kosong.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

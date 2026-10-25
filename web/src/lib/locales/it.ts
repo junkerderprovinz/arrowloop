@@ -1256,6 +1256,7 @@ const it: Translations = {
   'new.change.targetSwitches': 'Le impostazioni di una destinazione che sono solo attive o disattive sono interruttori, e una destinazione FTP chiede una volta sola quale {encryption} usa.',
   'new.change.setupChoice': 'Quando un accesso apre più unità o aree di lavoro, il test di una destinazione chiede quale usare. Jottacloud accetta il token di accesso personale dalla sua pagina di sicurezza, e un token ShareFile o Zoho incollato da rclone authorize porta con sé il suo indirizzo o la sua regione.',
   'new.change.bucketField': 'Una destinazione S3 accetta un bucket, così una chiave che può aprirne uno solo, come un token oggetti di Cloudflare R2, supera il test e apre quel bucket nella scelta della cartella.',
+  'new.change.providerMarks': 'In {connect}, Synology C2 ha la sua icona C2 ed Enterprise File Fabric mostra il simbolo dell\'archivio al posto di un riquadro vuoto.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
 }
 

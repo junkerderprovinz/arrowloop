@@ -1256,6 +1256,7 @@ const ca: Translations = {
   'new.change.targetSwitches': 'Els ajustos d\'una destinació que només poden estar activats o desactivats són interruptors, i una destinació FTP pregunta un sol cop quin {encryption} fa servir.',
   'new.change.setupChoice': 'Quan un inici de sessió obre més d\'una unitat o espai de treball, la prova d\'una destinació pregunta quin fer servir. Jottacloud accepta el testimoni personal de la seva pàgina de seguretat, i un testimoni de ShareFile o Zoho enganxat de rclone authorize porta la seva adreça o regió.',
   'new.change.bucketField': 'Una destinació S3 accepta un bucket, de manera que una clau que només en pot obrir un, com un testimoni d\'objectes de Cloudflare R2, passa la prova i obre aquest bucket al selector de carpetes.',
+  'new.change.providerMarks': 'A {connect}, Synology C2 porta la seva pròpia icona de C2 i Enterprise File Fabric mostra el glif d\'emmagatzematge en lloc d\'una rajola buida.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

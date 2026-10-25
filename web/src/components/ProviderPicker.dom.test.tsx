@@ -35,6 +35,24 @@ function pick() {
 }
 
 describe('the provider picker', () => {
+  it("points What's new at the rows whose mark changed", () => {
+    render(
+      <ProviderPicker
+        providers={[
+          ...providers,
+          { id: 'synologyc2', name: 'Synology C2', backend: 's3', group: 'storage', mark: 'IconSynology' },
+          { id: 'filefabric', name: 'Enterprise File Fabric', backend: 'filefabric', group: 'cloud', mark: 'IconTabStorage' },
+        ]}
+        unlisted={[]}
+        onPick={vi.fn()}
+      />,
+    )
+    const marked = Array.from(document.querySelectorAll('[data-new="provider-marks"]')).map((li) =>
+      li.querySelector('button')?.getAttribute('aria-label'),
+    )
+    expect(marked).toEqual(['Enterprise File Fabric', 'Synology C2'])
+  })
+
   it('shows one README button per provider, by name and in order', () => {
     pick()
     const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))

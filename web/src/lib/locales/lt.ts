@@ -1256,6 +1256,7 @@ const lt: Translations = {
   'new.change.targetSwitches': 'Paskirties nustatymai, kurie tik įjungti arba išjungti, yra jungikliai, o FTP paskirtis vieną kartą paklausia, kokį {encryption} ji naudoja.',
   'new.change.setupChoice': 'Kai prisijungimas atveria daugiau nei vieną diską ar darbo sritį, paskirties bandymas paklausia, kurį naudoti. Jottacloud priima asmeninį prisijungimo raktą iš savo saugos puslapio, o iš rclone authorize įklijuotas ShareFile ar Zoho raktas atsineša savo adresą ar regioną.',
   'new.change.bucketField': 'S3 paskirčiai galima nurodyti kibirą, tad raktas, galintis atidaryti tik vieną, pavyzdžiui, Cloudflare R2 objektų raktas, praeina bandymą ir aplanko parinkiklyje atidaro tą kibirą.',
+  'new.change.providerMarks': 'Skiltyje {connect} Synology C2 turi savo C2 piktogramą, o Enterprise File Fabric vietoj tuščios plytelės rodo saugyklos ženklą.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

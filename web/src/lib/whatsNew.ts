@@ -79,6 +79,13 @@ export const RELEASES: Release[] = [
         where: ['nav.targets'],
         text: 'new.change.bucketField',
       },
+      {
+        id: 'provider-marks',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.providerMarks',
+        names: { connect: 'targets.addStorage' },
+      },
     ],
   },
   {

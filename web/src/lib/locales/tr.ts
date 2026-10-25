@@ -1256,6 +1256,7 @@ const tr: Translations = {
   'new.change.targetSwitches': 'Bir hedefin yalnızca açık ya da kapalı olan ayarları anahtar oldu ve bir FTP hedefi hangi {encryption} yöntemini kullandığını bir kez sorar.',
   'new.change.setupChoice': 'Bir oturum açma birden fazla sürücü ya da çalışma alanı açtığında, hedefin testi hangisinin kullanılacağını sorar. Jottacloud güvenlik sayfasındaki kişisel oturum açma belirtecini alır; rclone authorize çıktısından yapıştırılan bir ShareFile ya da Zoho belirteci adresini veya bölgesini de getirir.',
   'new.change.bucketField': 'Bir S3 hedefi kova alır; böylece yalnızca birini açabilen bir anahtar, örneğin Cloudflare R2 nesne belirteci, testi geçer ve klasör seçicide o kovayı açar.',
+  'new.change.providerMarks': '{connect} bölümünde Synology C2 kendi C2 simgesini taşır, Enterprise File Fabric de boş bir kutu yerine depolama simgesini gösterir.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

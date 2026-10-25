@@ -1256,6 +1256,7 @@ const et: Translations = {
   'new.change.targetSwitches': 'Sihtkoha seaded, mis on ainult sees või väljas, on lülitid ja FTP-sihtkoht küsib ühe korra, millist {encryption} see kasutab.',
   'new.change.setupChoice': 'Kui sisselogimine avab mitu ketast või tööala, küsib sihtkoha test, millist kasutada. Jottacloud võtab isikliku sisselogimisloa oma turvalehelt ning rclone authorize\'ist kleebitud ShareFile\'i või Zoho luba toob kaasa oma aadressi või piirkonna.',
   'new.change.bucketField': 'S3-sihtkoht võtab ämbri, nii et võti, mis tohib avada ainult ühe, näiteks Cloudflare R2 objektiluba, läbib testi ja avab selle ämbri kaustavalijas.',
+  'new.change.providerMarks': 'Jaotises {connect} kannab Synology C2 oma C2 ikooni ja Enterprise File Fabric näitab tühja paani asemel hoidla märki.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

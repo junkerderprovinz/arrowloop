@@ -1256,6 +1256,7 @@ const is: Translations = {
   'new.change.targetSwitches': 'Stillingar áfangastaðar sem eru aðeins af eða á eru rofar, og FTP-áfangastaður spyr einu sinni hvaða {encryption} hann notar.',
   'new.change.setupChoice': 'Þegar innskráning opnar fleiri en eitt drif eða vinnusvæði spyr prófun áfangastaðar hvert eigi að nota. Jottacloud tekur persónulega innskráningarlykilinn af öryggissíðu sinni, og ShareFile- eða Zoho-lykill límdur úr rclone authorize tekur slóð sína eða svæði með sér.',
   'new.change.bucketField': 'S3-áfangastaður tekur fötu, svo lykill sem má aðeins opna eina, eins og hlutalykill Cloudflare R2, stenst prófið og opnar þá fötu í möppuvalinu.',
+  'new.change.providerMarks': 'Í {connect} ber Synology C2 sitt eigið C2-tákn og Enterprise File Fabric sýnir geymslutáknið í stað tómrar flísar.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

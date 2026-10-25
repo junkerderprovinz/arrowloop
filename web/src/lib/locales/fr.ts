@@ -1256,6 +1256,7 @@ const fr: Translations = {
   'new.change.targetSwitches': 'Les réglages d\'une cible qui ne sont qu\'activés ou désactivés sont des interrupteurs, et une cible FTP demande une seule fois quel {encryption} elle utilise.',
   'new.change.setupChoice': 'Quand une connexion ouvre plusieurs lecteurs ou espaces de travail, le test d\'une cible demande lequel utiliser. Jottacloud accepte le jeton de connexion personnel de sa page de sécurité, et un jeton ShareFile ou Zoho collé depuis rclone authorize apporte son adresse ou sa région.',
   'new.change.bucketField': 'Une cible S3 accepte un compartiment : une clé qui ne peut en ouvrir qu\'un, comme un jeton d\'objets Cloudflare R2, passe le test et ouvre ce compartiment dans le sélecteur de dossiers.',
+  'new.change.providerMarks': 'Dans {connect}, Synology C2 porte sa propre icône C2, et Enterprise File Fabric affiche le pictogramme de stockage au lieu d\'une tuile vide.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

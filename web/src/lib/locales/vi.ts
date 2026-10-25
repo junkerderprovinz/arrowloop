@@ -1256,6 +1256,7 @@ const vi: Translations = {
   'new.change.targetSwitches': 'Các thiết lập của đích chỉ có bật hoặc tắt nay là công tắc, và đích FTP hỏi một lần nó dùng {encryption} nào.',
   'new.change.setupChoice': 'Khi một lần đăng nhập mở được nhiều ổ đĩa hoặc không gian làm việc, phép thử đích sẽ hỏi dùng cái nào. Jottacloud nhận mã đăng nhập cá nhân từ trang bảo mật của nó, và mã ShareFile hoặc Zoho dán từ rclone authorize mang theo địa chỉ hoặc vùng của nó.',
   'new.change.bucketField': 'Đích S3 nhận một bucket, nên khóa chỉ được mở một bucket, như mã đối tượng của Cloudflare R2, vượt qua phép thử và mở đúng bucket đó trong bộ chọn thư mục.',
+  'new.change.providerMarks': 'Trong {connect}, Synology C2 mang biểu tượng C2 riêng, còn Enterprise File Fabric hiện ký hiệu lưu trữ thay cho một ô trống.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

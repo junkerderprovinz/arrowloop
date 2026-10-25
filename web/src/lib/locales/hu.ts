@@ -1256,6 +1256,7 @@ const hu: Translations = {
   'new.change.targetSwitches': 'A cél csak be- vagy kikapcsolható beállításai kapcsolók, egy FTP-cél pedig egyszer kérdezi meg, milyen {encryption} használ.',
   'new.change.setupChoice': 'Ha egy bejelentkezés több meghajtót vagy munkaterületet nyit meg, a cél tesztje megkérdezi, melyiket használja. A Jottacloud a biztonsági oldaláról vett személyes bejelentkezési tokent fogadja, az rclone authorize-ból beillesztett ShareFile- vagy Zoho-token pedig magával hozza a címét vagy a régióját.',
   'new.change.bucketField': 'Egy S3-cél tárolót is kaphat, így az a kulcs is, amely csak egyet nyithat meg, például egy Cloudflare R2 objektumtoken, átmegy a teszten, és a mappaválasztóban azt a tárolót nyitja meg.',
+  'new.change.providerMarks': 'A(z) {connect} alatt a Synology C2 a saját C2 ikonját viseli, az Enterprise File Fabric pedig üres csempe helyett a tárhely jelét mutatja.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

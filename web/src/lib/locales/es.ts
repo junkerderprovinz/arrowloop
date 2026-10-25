@@ -1256,6 +1256,7 @@ const es: Translations = {
   'new.change.targetSwitches': 'Los ajustes de un destino que solo están activados o desactivados son interruptores, y un destino FTP pregunta una sola vez qué {encryption} usa.',
   'new.change.setupChoice': 'Cuando un inicio de sesión abre más de una unidad o espacio de trabajo, la prueba de un destino pregunta cuál usar. Jottacloud acepta el token personal de su página de seguridad, y un token de ShareFile o Zoho pegado desde rclone authorize trae su dirección o región.',
   'new.change.bucketField': 'Un destino S3 admite un bucket, así que una clave que solo puede abrir uno, como un token de objetos de Cloudflare R2, pasa la prueba y abre ese bucket en el selector de carpetas.',
+  'new.change.providerMarks': 'En {connect}, Synology C2 lleva su propio icono de C2 y Enterprise File Fabric muestra el glifo de almacenamiento en vez de un mosaico vacío.',
   'new.change.appFolders': 'En la app del móvil, {add} en {settings}, {phone} permite a ArrowLoop sincronizar una carpeta que otra aplicación ofrece en el selector de archivos de Android, sin root ni Shizuku. Las carpetas aparecen en un destino llamado Apps.',
 }
 

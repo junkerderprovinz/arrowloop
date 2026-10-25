@@ -1256,6 +1256,7 @@ const lv: Translations = {
   'new.change.targetSwitches': 'Galamērķa iestatījumi, kas ir tikai ieslēgti vai izslēgti, ir slēdži, un FTP galamērķis vienreiz jautā, kādu {encryption} tas izmanto.',
   'new.change.setupChoice': 'Ja pierakstīšanās atver vairāk nekā vienu disku vai darbvietu, galamērķa pārbaude jautā, kuru izmantot. Jottacloud pieņem personīgo pierakstīšanās marķieri no savas drošības lapas, un no rclone authorize ielīmēts ShareFile vai Zoho marķieris atnes līdzi savu adresi vai reģionu.',
   'new.change.bucketField': 'S3 galamērķis pieņem spaini, tāpēc atslēga, kas drīkst atvērt tikai vienu, piemēram, Cloudflare R2 objektu marķieris, iztur pārbaudi un mapju izvēlē atver šo spaini.',
+  'new.change.providerMarks': 'Sadaļā {connect} Synology C2 ir sava C2 ikona, un Enterprise File Fabric tukšas flīzes vietā rāda krātuves zīmi.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 

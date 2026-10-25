@@ -1256,6 +1256,7 @@ const eu: Translations = {
   'new.change.targetSwitches': 'Helburu baten ezarpenak, aktibatuta edo desaktibatuta soilik daudenak, etengailuak dira, eta FTP helburu batek behin galdetzen du zein {encryption} erabiltzen duen.',
   'new.change.setupChoice': 'Saio batek unitate edo lan-eremu bat baino gehiago irekitzen dituenean, helburu baten probak zein erabili galdetzen du. Jottacloud-ek bere segurtasun-orriko token pertsonala onartzen du, eta rclone authorize-tik itsatsitako ShareFile edo Zoho token batek bere helbidea edo eskualdea dakar.',
   'new.change.bucketField': 'S3 helburu batek bucket bat onartzen du, beraz bakarra ireki dezakeen gako batek, Cloudflare R2 objektu-token batek adibidez, proba gainditzen du eta bucket hori irekitzen du karpeta-hautatzailean.',
+  'new.change.providerMarks': '{connect} atalean, Synology C2-k bere C2 ikonoa du, eta Enterprise File Fabric-ek biltegiaren glifoa erakusten du lauza huts baten ordez.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

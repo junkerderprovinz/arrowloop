@@ -1300,6 +1300,7 @@ export const en = {
   'new.change.targetSwitches': 'A target\'s settings that are only on or off are switches, and an FTP target asks once which {encryption} it uses.',
   'new.change.setupChoice': 'When a sign-in opens more than one drive or workspace, testing a target asks which one to use. Jottacloud takes the personal login token from its security page, and a ShareFile or Zoho token pasted from rclone authorize brings its address or region along.',
   'new.change.bucketField': 'An S3 target takes a bucket, so a key that may open only one, such as a Cloudflare R2 object token, passes the test and opens that bucket in the folder picker.',
+  'new.change.providerMarks': 'In {connect}, Synology C2 wears its own C2 icon, and Enterprise File Fabric shows the storage glyph instead of an empty tile.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -2591,6 +2592,7 @@ export const de: Translations = {
   'new.change.targetSwitches': 'Einstellungen eines Ziels, die nur an oder aus sein können, sind Schalter, und ein FTP-Ziel fragt einmal, welche {encryption} es nutzt.',
   'new.change.setupChoice': 'Öffnet eine Anmeldung mehrere Laufwerke oder Arbeitsbereiche, fragt der Test eines Ziels, welches davon genutzt wird. Jottacloud nimmt das persönliche Login-Token von seiner Sicherheitsseite, und ein ShareFile- oder Zoho-Token aus rclone authorize bringt seine Adresse oder Region gleich mit.',
   'new.change.bucketField': 'Ein S3-Ziel nimmt einen Bucket. So besteht auch ein Schlüssel, der nur einen Bucket öffnen darf, etwa ein Cloudflare-R2-Objekt-Token, den Test und öffnet diesen Bucket in der Ordnerauswahl.',
+  'new.change.providerMarks': 'Unter {connect} trägt Synology C2 sein eigenes C2-Symbol, und Enterprise File Fabric zeigt das Speicher-Symbol statt einer leeren Kachel.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

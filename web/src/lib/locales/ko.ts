@@ -1256,6 +1256,7 @@ const ko: Translations = {
   'new.change.targetSwitches': '켜거나 끄기만 하는 대상 설정은 스위치로 바뀌었고, FTP 대상은 어떤 {encryption}를 쓰는지 한 번만 묻습니다.',
   'new.change.setupChoice': '로그인으로 드라이브나 작업 공간이 여러 개 열리면 대상 테스트가 어떤 것을 쓸지 묻습니다. Jottacloud는 보안 페이지의 개인 로그인 토큰을 받고, rclone authorize에서 붙여 넣은 ShareFile이나 Zoho 토큰은 주소나 지역을 함께 가져옵니다.',
   'new.change.bucketField': 'S3 대상에 버킷을 지정할 수 있어서, Cloudflare R2 객체 토큰처럼 버킷 하나만 열 수 있는 키도 테스트를 통과하고 폴더 선택에서 그 버킷을 엽니다.',
+  'new.change.providerMarks': '{connect}에서 Synology C2는 자체 C2 아이콘을 쓰고, Enterprise File Fabric은 빈 타일 대신 저장소 기호를 보여 줍니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

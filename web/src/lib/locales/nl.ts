@@ -1256,6 +1256,7 @@ const nl: Translations = {
   'new.change.targetSwitches': 'Instellingen van een doel die alleen aan of uit kunnen zijn schakelaars, en een FTP-doel vraagt één keer welke {encryption} het gebruikt.',
   'new.change.setupChoice': 'Als een aanmelding meer dan één schijf of werkruimte opent, vraagt de test van een doel welke je gebruikt. Jottacloud neemt het persoonlijke inlogtoken van zijn beveiligingspagina aan, en een ShareFile- of Zoho-token uit rclone authorize brengt zijn adres of regio mee.',
   'new.change.bucketField': 'Een S3-doel neemt een bucket, zodat een sleutel die er maar één mag openen, zoals een objecttoken van Cloudflare R2, de test doorstaat en die bucket in de mapkiezer opent.',
+  'new.change.providerMarks': 'In {connect} draagt Synology C2 zijn eigen C2-pictogram, en Enterprise File Fabric toont het opslagsymbool in plaats van een lege tegel.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 

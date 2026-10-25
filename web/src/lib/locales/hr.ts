@@ -1256,6 +1256,7 @@ const hr: Translations = {
   'new.change.targetSwitches': 'Postavke odredišta koje su samo uključene ili isključene su prekidači, a FTP odredište jednom pita koje {encryption} koristi.',
   'new.change.setupChoice': 'Kad prijava otvara više pogona ili radnih prostora, test odredišta pita koji koristiti. Jottacloud prima osobni token za prijavu sa svoje sigurnosne stranice, a token ShareFilea ili Zoha zalijepljen iz rclone authorize donosi svoju adresu ili regiju.',
   'new.change.bucketField': 'S3 odredište prima spremnik, pa ključ koji smije otvoriti samo jedan, poput Cloudflare R2 tokena za objekte, prolazi test i otvara taj spremnik pri odabiru mape.',
+  'new.change.providerMarks': 'U {connect} Synology C2 nosi vlastitu ikonu C2, a Enterprise File Fabric prikazuje znak pohrane umjesto prazne pločice.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
 }
 
