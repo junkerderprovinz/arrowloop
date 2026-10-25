@@ -8,6 +8,7 @@ import (
 
 	"github.com/rclone/gofakes3"
 	"github.com/rclone/gofakes3/s3mem"
+	rclonefs "github.com/rclone/rclone/fs"
 
 	_ "github.com/rclone/rclone/backend/s3"
 )
@@ -78,5 +79,33 @@ func TestTheBucketStaysOutOfRclonesOwnSettings(t *testing.T) {
 	got := connectionString("s3", map[string]string{"provider": "Other", BucketKey: "backups"})
 	if got != ":s3,provider=Other:" {
 		t.Fatalf("connection string %s", got)
+	}
+}
+
+func TestANewAWSBucketGoesToTheRegionTheTargetNames(t *testing.T) {
+	ownConfig(t)
+	cases := []struct {
+		settings map[string]string
+		dir      string
+		want     string
+	}{
+		{map[string]string{"provider": "AWS", "region": "eu-central-1"}, "", "aws,location_constraint=eu-central-1:"},
+		{map[string]string{"provider": "AWS", "region": "eu-central-1"}, "photos", "aws:photos"},
+		{map[string]string{"provider": "AWS", "region": "us-east-1"}, "", "aws:"},
+		{map[string]string{"provider": "AWS", "region": "eu-central-1", "location_constraint": "EU"}, "", "aws:"},
+		{map[string]string{"provider": "Minio", "region": "eu-central-1"}, "", "aws:"},
+	}
+	for _, c := range cases {
+		if err := Save("aws", "s3", c.settings); err != nil {
+			t.Fatal(err)
+		}
+		got := makeAt("aws", c.dir)
+		if got != c.want {
+			t.Errorf("%v in %q: made at %s, want %s", c.settings, c.dir, got, c.want)
+		}
+		if _, err := rclonefs.NewFs(context.Background(), got); err != nil {
+			t.Errorf("rclone cannot open %s: %v", got, err)
+		}
+		_ = Delete("aws")
 	}
 }

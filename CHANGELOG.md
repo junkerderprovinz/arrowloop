@@ -26,6 +26,7 @@ The full notes for each release are in
 - **Jottacloud takes the personal login token from its security page.** It used to want a ready OAuth token that only rclone's own setup can make. Testing or saving the target trades the login token for a lasting sign-in, once, as rclone config does.
 - **ShareFile and Zoho keep what rclone authorize prints with the token.** Pasting the output of rclone authorize given a config blob fills in ShareFile's address and Zoho's region, and the ShareFile form asks for the address when the token came without it.
 - **An AWS bucket outside us-east-1 works without a region typed in.** rclone signs for us-east-1 when it knows no region, and AWS refuses a bucket elsewhere. Testing or saving an AWS target that names its bucket asks AWS where the bucket is and saves that region, and the global endpoint s3.amazonaws.com is left out, so rclone can follow a bucket to its region by itself.
+- **A bucket made in the folder picker lands in the target's region.** AWS puts a new bucket where its location constraint says, and with that left empty it asked for us-east-1, which a target set to any other region is refused. Making a folder at the top of an AWS target uses the target's region for the new bucket.
 
 ## 2.2.8 - 2026-10-23
 
