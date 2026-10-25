@@ -97,12 +97,14 @@ export function JobPage({ name }: { name: string }) {
               />
             )}
             {at !== -1 && (
-              <Button
-                label={t('job.edit')}
-                labelKey="job.edit"
-                glyph={<IconPencil />}
-                onClick={() => setEditing({ at, added: false })}
-              />
+              <span data-new-way="edit-job" className="flex">
+                <Button
+                  label={t('job.edit')}
+                  labelKey="job.edit"
+                  glyph={<IconPencil />}
+                  onClick={() => setEditing({ at, added: false })}
+                />
+              </span>
             )}
             {at !== -1 && (
               <Menu

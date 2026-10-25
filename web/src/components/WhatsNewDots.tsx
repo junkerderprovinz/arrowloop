@@ -3,7 +3,8 @@
 // corner. A change on another page puts a dot on every link that leads there.
 // The changes the open page does not draw at the moment, such as a card that
 // only appears when something waits, share one dot on the page's own corner,
-// since a row of dots there would point at nothing in particular.
+// since a row of dots there would point at nothing in particular. A change
+// drawn in a window waits on the control that opens it, when it names one.
 //
 // The dots live in one layer in <body> rather than inside the components, so
 // marking a change costs its component one attribute and no layout.
@@ -95,7 +96,9 @@ function collect(unseen: PlacedChange[], here: string, arrived: boolean): Target
       continue
     }
     if (isAt(change, here)) {
-      if (arrived && page) undrawn.push(change)
+      const opener = change.via && Array.from(document.querySelectorAll<HTMLElement>(`[data-new-way="${change.via}"]`)).find(drawn)
+      if (opener) lead(opener, change)
+      else if (arrived && page) undrawn.push(change)
       continue
     }
     let found = false

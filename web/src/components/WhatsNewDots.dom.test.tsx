@@ -38,6 +38,10 @@ function Page({ active = true }: { active?: boolean }) {
   )
 }
 
+function WhatsNewDotsPage() {
+  return <WhatsNewDots news={useWhatsNew()} active />
+}
+
 const dot = (id: string) => document.querySelector<HTMLButtonElement>(`[data-new-dot="${id}"]`)
 
 describe('the dots of what is new', () => {
@@ -88,6 +92,28 @@ describe('the dots of what is new', () => {
     act(() => page.click())
     await waitFor(() => expect(dot('page')).toBeNull())
     expect(JSON.parse(localStorage.getItem('arrowloop.whatsNew')!).seen).toEqual(expect.arrayContaining(['run-strip']))
+  })
+
+  it('wait on the control that opens the window a change is drawn in', async () => {
+    window.history.replaceState(null, '', '/settings/targets')
+    render(
+      <>
+        <main>
+          <span data-new-way="connect">Connect</span>
+        </main>
+        <WhatsNewDotsPage />
+      </>,
+    )
+    const way = await waitFor(
+      () => {
+        const found = dot('way')
+        expect(found).not.toBeNull()
+        return found!
+      },
+      { timeout: 3000 },
+    )
+    expect(way.getAttribute('aria-label')).toContain(en['new.change.bucketField'])
+    expect(dot('page')?.getAttribute('aria-label') ?? '').not.toContain(en['new.change.bucketField'])
   })
 
   it('draw nothing during the first start', async () => {

@@ -21,6 +21,11 @@ interface Placed {
   at: string[]
   /** Where "Go there" leads, for an address that names one entry. */
   go?: string
+  /**
+   * The data-new-way of the control that opens the window the change is drawn
+   * in, so the dot waits on that control while the window is closed.
+   */
+  via?: string
   /** The page's name in the list, outermost first. */
   where: TranslationKey[]
   text: TranslationKey
@@ -68,6 +73,7 @@ export const RELEASES: Release[] = [
       {
         id: 'job-window',
         at: ['/jobs/:name'],
+        via: 'edit-job',
         go: '/jobs',
         where: ['nav.jobs', 'new.where.jobPage'],
         text: 'new.change.jobWindow',
@@ -76,6 +82,7 @@ export const RELEASES: Release[] = [
       {
         id: 'use-global',
         at: ['/jobs/:name'],
+        via: 'edit-job',
         go: '/jobs',
         where: ['nav.jobs', 'new.where.jobPage'],
         text: 'new.change.useGlobal',
@@ -84,6 +91,7 @@ export const RELEASES: Release[] = [
       {
         id: 'target-switches',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.targetSwitches',
         names: { encryption: 'targets.ftpTls' },
@@ -91,18 +99,21 @@ export const RELEASES: Release[] = [
       {
         id: 'target-setup-choice',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.setupChoice',
       },
       {
         id: 'target-bucket',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.bucketField',
       },
       {
         id: 'provider-marks',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.providerMarks',
         names: { connect: 'targets.addStorage' },
@@ -110,6 +121,7 @@ export const RELEASES: Release[] = [
       {
         id: 'two-factor-once',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.twoFactorOnce',
         names: { code: 'opt.twoFactor', test: 'targets.check' },
@@ -124,6 +136,7 @@ export const RELEASES: Release[] = [
       {
         id: 'smb-share',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.smbShare',
         names: { share: 'opt.shareName', test: 'targets.check' },
@@ -131,6 +144,7 @@ export const RELEASES: Release[] = [
       {
         id: 'sftp-host-key',
         at: ['/targets', '/settings/targets'],
+        via: 'connect',
         where: ['nav.targets'],
         text: 'new.change.hostKey',
         names: { test: 'targets.check', key: 'targets.hostKey' },

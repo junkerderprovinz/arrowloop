@@ -161,7 +161,7 @@ export function Targets() {
           glyph={<IconAdd />}
           onClick={() => setRegistering(true)}
         />
-        <span data-new="provider-names" className="flex">
+        <span data-new="provider-names" data-new-way="connect" className="flex">
           <PageAction
             primary
             label={t('targets.addStorage')}
