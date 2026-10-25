@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **The desktop app closed as soon as it opened on Windows build 26300.** The window framework let go of a system library it still needed for dark mode, and the first window crashed. ArrowLoop keeps that library loaded now, so the window opens as usual.
+
 ## 2.2.8 - 2026-10-23
 
 ## ⚡ Improved
