@@ -119,6 +119,9 @@ const ja: Translations = {
   'failure.rateLimited': 'リクエストが多すぎたため、サービスから一時停止を求められました。次回の実行で再試行します。',
   'failure.rateLimited.left': 'リクエストが多すぎたため、左側のサービスから一時停止を求められました。次回の実行で再試行します。',
   'failure.rateLimited.right': 'リクエストが多すぎたため、右側のサービスから一時停止を求められました。次回の実行で再試行します。',
+  'failure.hostKeyChanged': 'サーバーが保存されている鍵とは別の鍵を示したため、信頼しませんでした。再インストールされたか新しい鍵になった場合は、接続先の設定の host_keys を空にして、もう一度テストしてください。',
+  'failure.hostKeyChanged.left': '左側のサーバーが保存されている鍵とは別の鍵を示したため、信頼しませんでした。再インストールされたか新しい鍵になった場合は、接続先の設定の host_keys を空にして、もう一度テストしてください。',
+  'failure.hostKeyChanged.right': '右側のサーバーが保存されている鍵とは別の鍵を示したため、信頼しませんでした。再インストールされたか新しい鍵になった場合は、接続先の設定の host_keys を空にして、もう一度テストしてください。',
   'failure.stopped': '実行は完了する前に停止されました。',
   'failure.beforeFailed': '実行前のコマンドが失敗したため、実行は開始されませんでした。',
   'failure.afterFailed': '実行後のコマンドが失敗しました。',
@@ -453,6 +456,8 @@ const ja: Translations = {
   'confirm.deleteRemote': 'この保存先を削除',
   'confirm.deleteRemoteStakes': '{name} の設定は rclone の構成から消えます。そこに置かれたパスワードや鍵も一緒です。事前にどこへも複製せず、元には戻せません。もう一度使うには資格情報を打ち直すことになります。',
   'targets.inUse': 'まだこの接続先を使うジョブがあります: {jobs}。別の接続先に向けるか削除してから、接続先を削除してください。',
+  'targets.hostKey': 'サーバーの鍵',
+  'targets.hostKeyHint': 'ArrowLoop は保存時にこの鍵を覚え、サーバーが別の鍵を示したら拒否します。プロバイダーが公開しているフィンガープリントと照らし合わせてください。',
   'confirm.delete': '削除する',
   'confirm.cancel': 'キャンセル',
   'about.title': 'ArrowLoop について',
@@ -1240,6 +1245,7 @@ const ja: Translations = {
   'new.change.twoFactorOnce': 'Mega はほかのサインイン項目と一緒に{code}を尋ねます。Mega と Proton Drive ではコードは一つで足ります。{test}、保存、その後の確認はコードが開いたセッションを共有します。',
   'new.change.targetInUse': 'ジョブがまだ使っている接続先は削除されません。代わりに{delete}がそのジョブを示すので、先に別の接続先へ向けられます。',
   'new.change.smbShare': '共有を一覧にしない SMB サーバーも、{share}を入れれば{test}に通ります。共有の一覧しかない SMB サーバーの最上位を指すジョブの側は、ジョブの保存時に拒否されます。',
+  'new.change.hostKey': 'SFTP サーバーでは{test}が{key}のフィンガープリントを示し、後で別の鍵を示したサーバーを ArrowLoop は拒否します。以前に保存した接続先は、次のテストで示した鍵に結び付けられます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

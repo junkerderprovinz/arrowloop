@@ -119,6 +119,9 @@ const ro: Translations = {
   'failure.rateLimited': 'Serviciul a cerut o pauză după prea multe cereri. Următoarea rulare încearcă din nou.',
   'failure.rateLimited.left': 'Serviciul din partea stângă a cerut o pauză după prea multe cereri. Următoarea rulare încearcă din nou.',
   'failure.rateLimited.right': 'Serviciul din partea dreaptă a cerut o pauză după prea multe cereri. Următoarea rulare încearcă din nou.',
+  'failure.hostKeyChanged': 'Serverul arată o altă cheie decât cea salvată pentru el, așa că nu a fost considerat de încredere. Dacă a fost reinstalat sau are o cheie nouă, golește host_keys în setările destinației și testează din nou.',
+  'failure.hostKeyChanged.left': 'Serverul părții stângi arată o altă cheie decât cea salvată pentru el, așa că nu a fost considerat de încredere. Dacă a fost reinstalat sau are o cheie nouă, golește host_keys în setările destinației și testează din nou.',
+  'failure.hostKeyChanged.right': 'Serverul părții drepte arată o altă cheie decât cea salvată pentru el, așa că nu a fost considerat de încredere. Dacă a fost reinstalat sau are o cheie nouă, golește host_keys în setările destinației și testează din nou.',
   'failure.stopped': 'Rularea a fost oprită înainte să se termine.',
   'failure.beforeFailed': 'Comanda dinaintea rulării a eșuat, așa că rularea nu a început.',
   'failure.afterFailed': 'Comanda de după rulare a eșuat.',
@@ -453,6 +456,8 @@ const ro: Translations = {
   'confirm.deleteRemote': 'Ștergerea acestei destinații de stocare',
   'confirm.deleteRemoteStakes': 'Setările pentru {name} sunt scoase din configurația rclone, împreună cu orice parolă și cheie care stau acolo. Înainte nu se copiază nimic nicăieri și nu există cale de întoarcere: a o configura din nou înseamnă a retasta datele.',
   'targets.inUse': 'Încă există sarcini care folosesc această destinație: {jobs}. Îndreaptă-le spre altă destinație sau șterge-le, apoi șterge destinația.',
+  'targets.hostKey': 'Cheia serverului',
+  'targets.hostKeyHint': 'ArrowLoop reține această cheie la salvare și refuză serverul dacă arată vreodată alta. Compar-o cu amprenta pe care o publică furnizorul tău.',
   'confirm.delete': 'Șterge',
   'confirm.cancel': 'Anulează',
   'about.title': 'Despre ArrowLoop',
@@ -1240,6 +1245,7 @@ const ro: Translations = {
   'new.change.twoFactorOnce': 'Mega cere {code} împreună cu celelalte câmpuri de conectare, iar pentru Mega și Proton Drive ajunge un singur cod: {test}, salvarea și verificarea de după folosesc sesiunea pe care o deschide codul.',
   'new.change.targetInUse': 'O destinație pe care o mai folosesc sarcini nu se șterge. {delete} numește în schimb acele sarcini, ca să le îndrepți întâi spre altă destinație.',
   'new.change.smbShare': 'Un server SMB care nu își afișează partajările trece {test} de îndată ce completezi {share}. O parte a unei sarcini chiar în vârful unui server SMB, unde e doar lista partajărilor, este refuzată la salvarea sarcinii.',
+  'new.change.hostKey': '{test} la un server SFTP arată amprenta {key}, iar ArrowLoop refuză serverul dacă mai târziu arată alta. O destinație salvată dinainte e legată de cheia pe care o arată la următorul test.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

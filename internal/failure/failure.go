@@ -30,6 +30,7 @@ const (
 	Stopped          = "stopped"
 	BeforeFailed     = "beforeFailed"
 	AfterFailed      = "afterFailed"
+	HostKeyChanged   = "hostKeyChanged"
 )
 
 // The sentences the engine composes itself, in internal/daemon,
@@ -56,6 +57,9 @@ type rule struct {
 // handshake that is refused is a credential problem, not a dead host.
 var rules = []rule{
 	{Stopped, []string{"context canceled"}},
+	// rclone's words for a server that shows another key than the pinned one
+	// go on to say it could not connect.
+	{HostKeyChanged, []string{"host key mismatch"}},
 	{SignInFailed, []string{
 		"unable to authenticate", "authentication failed", "auth failed", "invalid credentials",
 		"ssh-agent", "permission denied (publickey", "logon failure", "401 unauthorized",

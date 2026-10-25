@@ -119,6 +119,9 @@ const fi: Translations = {
   'failure.rateLimited': 'Palvelu pyysi taukoa liian monen pyynnön jälkeen. Seuraava ajo yrittää uudelleen.',
   'failure.rateLimited.left': 'Vasemman puolen palvelu pyysi taukoa liian monen pyynnön jälkeen. Seuraava ajo yrittää uudelleen.',
   'failure.rateLimited.right': 'Oikean puolen palvelu pyysi taukoa liian monen pyynnön jälkeen. Seuraava ajo yrittää uudelleen.',
+  'failure.hostKeyChanged': 'Palvelin näyttää eri avaimen kuin sille tallennettu, joten siihen ei luotettu. Jos se asennettiin uudelleen tai sai uuden avaimen, tyhjennä host_keys kohteen asetuksista ja testaa uudelleen.',
+  'failure.hostKeyChanged.left': 'Vasemman puolen palvelin näyttää eri avaimen kuin sille tallennettu, joten siihen ei luotettu. Jos se asennettiin uudelleen tai sai uuden avaimen, tyhjennä host_keys kohteen asetuksista ja testaa uudelleen.',
+  'failure.hostKeyChanged.right': 'Oikean puolen palvelin näyttää eri avaimen kuin sille tallennettu, joten siihen ei luotettu. Jos se asennettiin uudelleen tai sai uuden avaimen, tyhjennä host_keys kohteen asetuksista ja testaa uudelleen.',
   'failure.stopped': 'Ajo pysäytettiin ennen kuin se valmistui.',
   'failure.beforeFailed': 'Ajoa edeltävä komento epäonnistui, joten ajo ei alkanut.',
   'failure.afterFailed': 'Ajon jälkeinen komento epäonnistui.',
@@ -453,6 +456,8 @@ const fi: Translations = {
   'confirm.deleteRemote': 'Poista tämä tallennuskohde',
   'confirm.deleteRemoteStakes': 'Kohteen {name} asetukset poistetaan rclonen määrityksistä, mukaan lukien siellä oleva salasana tai avain. Mitään ei kopioida ensin minnekään eikä paluuta ole: uudelleen määrittäminen tarkoittaa tunnusten kirjoittamista uudestaan.',
   'targets.inUse': 'Työt käyttävät vielä tätä kohdetta: {jobs}. Ohjaa ne toiseen kohteeseen tai poista ne, ja poista sitten kohde.',
+  'targets.hostKey': 'Palvelimen avain',
+  'targets.hostKeyHint': 'ArrowLoop muistaa tämän avaimen tallennettaessa ja hylkää palvelimen, jos se joskus näyttää toisen. Vertaa sitä palveluntarjoajasi julkaisemaan sormenjälkeen.',
   'confirm.delete': 'Poista',
   'confirm.cancel': 'Peruuta',
   'about.title': 'Tietoja ArrowLoopista',
@@ -1240,6 +1245,7 @@ const fi: Translations = {
   'new.change.twoFactorOnce': 'Mega kysyy {code} muiden kirjautumiskenttien kanssa, ja Megassa ja Proton Drivessa yksi koodi riittää: {test}, tallennus ja sen jälkeinen tarkistus käyttävät samaa istuntoa, jonka koodi avaa.',
   'new.change.targetInUse': 'Kohdetta, jota työt vielä käyttävät, ei poisteta. {delete} nimeää sen sijaan nämä työt, jotta voit ensin ohjata ne toiseen kohteeseen.',
   'new.change.smbShare': 'SMB-palvelin, joka ei näytä jakojaan, läpäisee {test}, kun täytät {share}. Työn puoli SMB-palvelimen ylimmällä tasolla, jossa on vain jakojen luettelo, hylätään työtä tallennettaessa.',
+  'new.change.hostKey': '{test} SFTP-palvelimella näyttää sen {key} sormenjäljen, ja ArrowLoop hylkää palvelimen, jos se myöhemmin näyttää toisen. Aiemmin tallennettu kohde sidotaan avaimeen, jonka se näyttää seuraavassa testissä.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

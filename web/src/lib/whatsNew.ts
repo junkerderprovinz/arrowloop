@@ -81,6 +81,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.smbShare',
         names: { share: 'opt.shareName', test: 'targets.check' },
       },
+      {
+        id: 'sftp-host-key',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.hostKey',
+        names: { test: 'targets.check', key: 'targets.hostKey' },
+      },
     ],
   },
   {

@@ -119,6 +119,9 @@ const hu: Translations = {
   'failure.rateLimited': 'A szolgáltatás túl sok kérés után szünetet kért. A következő futás újra megpróbálja.',
   'failure.rateLimited.left': 'A bal oldali szolgáltatás túl sok kérés után szünetet kért. A következő futás újra megpróbálja.',
   'failure.rateLimited.right': 'A jobb oldali szolgáltatás túl sok kérés után szünetet kért. A következő futás újra megpróbálja.',
+  'failure.hostKeyChanged': 'A szerver más kulcsot mutat, mint ami hozzá el van mentve, ezért nem bízott meg benne. Ha újratelepítették, vagy új kulcsot kapott, ürítse ki a host_keys mezőt a cél beállításaiban, és tesztelje újra.',
+  'failure.hostKeyChanged.left': 'A bal oldal szervere más kulcsot mutat, mint ami hozzá el van mentve, ezért nem bízott meg benne. Ha újratelepítették, vagy új kulcsot kapott, ürítse ki a host_keys mezőt a cél beállításaiban, és tesztelje újra.',
+  'failure.hostKeyChanged.right': 'A jobb oldal szervere más kulcsot mutat, mint ami hozzá el van mentve, ezért nem bízott meg benne. Ha újratelepítették, vagy új kulcsot kapott, ürítse ki a host_keys mezőt a cél beállításaiban, és tesztelje újra.',
   'failure.stopped': 'A futást leállították, mielőtt befejeződött volna.',
   'failure.beforeFailed': 'A futás előtti parancs sikertelen volt, ezért a futás nem indult el.',
   'failure.afterFailed': 'A futás utáni parancs sikertelen volt.',
@@ -453,6 +456,8 @@ const hu: Translations = {
   'confirm.deleteRemote': 'Ennek a tárolócélnak a törlése',
   'confirm.deleteRemoteStakes': 'A(z) {name} beállításai kikerülnek az rclone konfigurációjából, benne minden ott tárolt jelszóval és kulccsal. Előtte semmit nem másol sehová, és nincs visszaút: újra beállítani annyit tesz, mint újra begépelni az adatokat.',
   'targets.inUse': 'Ezt a célt még feladatok használják: {jobs}. Irányítsa őket másik célra vagy törölje őket, aztán törölje a célt.',
+  'targets.hostKey': 'Szerverkulcs',
+  'targets.hostKeyHint': 'Az ArrowLoop mentéskor megjegyzi ezt a kulcsot, és elutasítja a szervert, ha valaha mást mutat. Vesse össze a szolgáltatója által közzétett ujjlenyomattal.',
   'confirm.delete': 'Törlés',
   'confirm.cancel': 'Mégse',
   'about.title': 'A ArrowLoopről',
@@ -1240,6 +1245,7 @@ const hu: Translations = {
   'new.change.twoFactorOnce': 'A Mega a többi bejelentkezési mezővel együtt kéri a {code} értékét, és Megánál és Proton Drive-nál egy kód elég: a {test}, a mentés és az utána következő ellenőrzés a kód által nyitott munkamenetet használja.',
   'new.change.targetInUse': 'Az a cél, amelyet feladatok még használnak, nem törlődik. A {delete} ehelyett megnevezi ezeket a feladatokat, hogy előbb másik célra irányíthassa őket.',
   'new.change.smbShare': 'A megosztásait fel nem soroló SMB-szerver átmegy a {test} lépésen, amint kitölti a {share} mezőt. Az SMB-szerver legfelső szintjén álló feladatoldalt, ahol csak a megosztások listája van, a feladat mentésekor elutasítja.',
+  'new.change.hostKey': 'SFTP-szervernél a {test} megmutatja a {key} ujjlenyomatát, és az ArrowLoop elutasítja a szervert, ha később mást mutat. A korábban mentett cél ahhoz a kulcshoz kötődik, amelyet a következő tesztnél mutat.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

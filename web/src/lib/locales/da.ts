@@ -119,6 +119,9 @@ const da: Translations = {
   'failure.rateLimited': 'Tjenesten bad om en pause efter for mange forespørgsler. Næste kørsel prøver igen.',
   'failure.rateLimited.left': 'Tjenesten på venstre side bad om en pause efter for mange forespørgsler. Næste kørsel prøver igen.',
   'failure.rateLimited.right': 'Tjenesten på højre side bad om en pause efter for mange forespørgsler. Næste kørsel prøver igen.',
+  'failure.hostKeyChanged': 'Serveren viser en anden nøgle end den, der er gemt for den, så den blev ikke betroet. Hvis den er geninstalleret eller har fået en ny nøgle, så tøm host_keys i målets indstillinger og test det igen.',
+  'failure.hostKeyChanged.left': 'Serveren på venstre side viser en anden nøgle end den, der er gemt for den, så den blev ikke betroet. Hvis den er geninstalleret eller har fået en ny nøgle, så tøm host_keys i målets indstillinger og test det igen.',
+  'failure.hostKeyChanged.right': 'Serveren på højre side viser en anden nøgle end den, der er gemt for den, så den blev ikke betroet. Hvis den er geninstalleret eller har fået en ny nøgle, så tøm host_keys i målets indstillinger og test det igen.',
   'failure.stopped': 'Kørslen blev stoppet, før den var færdig.',
   'failure.beforeFailed': 'Kommandoen før kørslen mislykkedes, så kørslen startede ikke.',
   'failure.afterFailed': 'Kommandoen efter kørslen mislykkedes.',
@@ -453,6 +456,8 @@ const da: Translations = {
   'confirm.deleteRemote': 'Slet dette lagermål',
   'confirm.deleteRemoteStakes': 'Indstillingerne for {name} fjernes fra rclones opsætning, inklusive enhver adgangskode og nøgle, der ligger der. Der kopieres ikke noget nogen steder først, og der er ingen vej tilbage: at sætte det op igen betyder at taste oplysningerne ind på ny.',
   'targets.inUse': 'Job bruger stadig dette mål: {jobs}. Peg dem mod et andet mål eller slet dem, og slet så målet.',
+  'targets.hostKey': 'Servernøgle',
+  'targets.hostKeyHint': 'ArrowLoop husker denne nøgle, når du gemmer, og afviser serveren, hvis den nogensinde viser en anden. Sammenlign den med det fingeraftryk, din udbyder offentliggør.',
   'confirm.delete': 'Slet',
   'confirm.cancel': 'Annuller',
   'about.title': 'Om ArrowLoop',
@@ -1240,6 +1245,7 @@ const da: Translations = {
   'new.change.twoFactorOnce': 'Mega beder om {code} sammen med de andre loginfelter, og til Mega og Proton Drive er én kode nok: {test}, gem og kontrollen bagefter deler den session, koden åbner.',
   'new.change.targetInUse': 'Et mål, som job stadig bruger, slettes ikke. {delete} nævner i stedet de job, så du først kan pege dem mod et andet mål.',
   'new.change.smbShare': 'En SMB-server, der ikke viser sine fildelinger, består {test}, når du udfylder {share}. En side af et job helt øverst på en SMB-server, hvor der kun er listen over fildelinger, afvises, når du gemmer jobbet.',
+  'new.change.hostKey': '{test} på en SFTP-server viser fingeraftrykket af dens {key}, og ArrowLoop afviser serveren, hvis den senere viser en anden. Et mål, der allerede er gemt, bindes til den nøgle, det viser ved næste test.',
   'new.change.appFolders': 'I telefonappen lader {add} under {settings}, {phone} ArrowLoop synkronisere en mappe, som en anden app tilbyder i Androids filvælger, uden root og uden Shizuku. Mapperne vises i et mål ved navn Apps.',
 }
 

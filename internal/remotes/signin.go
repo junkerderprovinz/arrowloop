@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"maps"
 	"slices"
+	"strings"
 	"sync"
 	"time"
 
@@ -20,7 +21,9 @@ import (
 // the session a two-factor code opened, cannot be had a second time: Box and
 // Jottacloud void the token a refresh used, and a code works once. So it goes
 // to the saved target the form edits, and the Save of the same form keeps it.
-func Try(ctx context.Context, name, backend string, form map[string]string) error {
+// An SFTP server's host key is pinned the same way, and returned so the
+// person can compare it with the one the provider publishes.
+func Try(ctx context.Context, name, backend string, form map[string]string) (*HostKey, error) {
 	key := formKey(backend, form)
 	settings := map[string]string{}
 	maps.Copy(settings, WithSavedSecrets(name, backend, form))
@@ -28,12 +31,57 @@ func Try(ctx context.Context, name, backend string, form map[string]string) erro
 		settings[k] = typedForm(backend, k, v)
 	}
 
-	learned, err := checkSettings(ctx, backend, settings)
+	var shown *HostKey
+	learned := map[string]string{}
+	if backend == "sftp" {
+		pinned, read, err := pinTry(ctx, name, settings)
+		if err != nil {
+			return nil, err
+		}
+		shown = pinned
+		if read {
+			learned[hostKeysKey] = pinned.Pin
+		}
+	}
+
+	wrote, err := checkSettings(ctx, backend, settings)
+	maps.Copy(learned, wrote)
 	if len(learned) > 0 {
 		tried.keep(key, learned)
 		carryBack(name, backend, form, learned)
 	}
-	return err
+	return shown, err
+}
+
+// pinTry pins sftp settings that do not say how to check the server to the
+// key it shows now, and returns the key the check will hold the server to.
+// read says the key was read rather than pinned already. A pin belongs to the
+// server it was read from, so a form that names another host or port than
+// the saved target is pinned afresh.
+func pinTry(ctx context.Context, name string, settings map[string]string) (key *HostKey, read bool, err error) {
+	data := config.LoadedData()
+	saved := func(k string) string { v, _ := data.GetValue(name, k); return v }
+	if name != "" && data.HasSection(name) && settings[hostKeysKey] == saved(hostKeysKey) &&
+		(settings["host"] != saved("host") || settings["port"] != saved("port")) {
+		delete(settings, hostKeysKey)
+	}
+
+	get := func(k string) string { return strings.TrimSpace(settings[k]) }
+	if pins := get(hostKeysKey); pins != "" {
+		if got, ok := pinnedKey(pins); ok {
+			return &got, false, nil
+		}
+		return nil, false, nil
+	}
+	if checksHostKey(get) || get("host") == "" {
+		return nil, false, nil
+	}
+	got, err := readHostKey(ctx, get("host"), get("port"))
+	if err != nil {
+		return nil, false, err
+	}
+	settings[hostKeysKey] = got.Pin
+	return &got, true, nil
 }
 
 // carryBack writes what a check learned into the saved target the form edits,

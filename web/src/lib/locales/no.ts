@@ -119,6 +119,9 @@ const no: Translations = {
   'failure.rateLimited': 'Tjenesten ba om en pause etter for mange forespørsler. Neste kjøring prøver igjen.',
   'failure.rateLimited.left': 'Tjenesten på venstre side ba om en pause etter for mange forespørsler. Neste kjøring prøver igjen.',
   'failure.rateLimited.right': 'Tjenesten på høyre side ba om en pause etter for mange forespørsler. Neste kjøring prøver igjen.',
+  'failure.hostKeyChanged': 'Serveren viser en annen nøkkel enn den som er lagret for den, så den ble ikke stolt på. Hvis den er installert på nytt eller har fått ny nøkkel, tøm host_keys i målets innstillinger og test igjen.',
+  'failure.hostKeyChanged.left': 'Serveren på venstre side viser en annen nøkkel enn den som er lagret for den, så den ble ikke stolt på. Hvis den er installert på nytt eller har fått ny nøkkel, tøm host_keys i målets innstillinger og test igjen.',
+  'failure.hostKeyChanged.right': 'Serveren på høyre side viser en annen nøkkel enn den som er lagret for den, så den ble ikke stolt på. Hvis den er installert på nytt eller har fått ny nøkkel, tøm host_keys i målets innstillinger og test igjen.',
   'failure.stopped': 'Kjøringen ble stoppet før den var ferdig.',
   'failure.beforeFailed': 'Kommandoen før kjøringen feilet, så kjøringen startet ikke.',
   'failure.afterFailed': 'Kommandoen etter kjøringen feilet.',
@@ -453,6 +456,8 @@ const no: Translations = {
   'confirm.deleteRemote': 'Slett dette lagringsmålet',
   'confirm.deleteRemoteStakes': 'Innstillingene for {name} fjernes fra rclones oppsett, inkludert alle passord og nøkler som ligger der. Ingenting kopieres noe sted først, og det finnes ingen vei tilbake: å sette det opp igjen betyr å taste inn opplysningene på nytt.',
   'targets.inUse': 'Jobber bruker fortsatt dette målet: {jobs}. Pek dem mot et annet mål eller slett dem, og slett så målet.',
+  'targets.hostKey': 'Servernøkkel',
+  'targets.hostKeyHint': 'ArrowLoop husker denne nøkkelen når du lagrer, og avviser serveren hvis den noen gang viser en annen. Sammenlign den med fingeravtrykket leverandøren din publiserer.',
   'confirm.delete': 'Slett',
   'confirm.cancel': 'Avbryt',
   'about.title': 'Om ArrowLoop',
@@ -1240,6 +1245,7 @@ const no: Translations = {
   'new.change.twoFactorOnce': 'Mega spør etter {code} sammen med de andre påloggingsfeltene, og for Mega og Proton Drive holder én kode: {test}, lagring og kontrollen etterpå deler økten koden åpner.',
   'new.change.targetInUse': 'Et mål som jobber fortsatt bruker, slettes ikke. {delete} nevner i stedet de jobbene, så du først kan peke dem mot et annet mål.',
   'new.change.smbShare': 'En SMB-server som ikke viser delingene sine, består {test} så snart du fyller inn {share}. En side av en jobb helt øverst på en SMB-server, der det bare er listen over delinger, avvises når du lagrer jobben.',
+  'new.change.hostKey': '{test} på en SFTP-server viser fingeravtrykket av {key}, og ArrowLoop avviser serveren hvis den senere viser en annen. Et mål som alt er lagret, bindes til nøkkelen det viser ved neste test.',
   'new.change.appFolders': 'I telefonappen lar {add} under {settings}, {phone} ArrowLoop synkronisere en mappe som en annen app tilbyr i Androids filvelger, uten root og uten Shizuku. Mappene vises i et mål som heter Apps.',
 }
 

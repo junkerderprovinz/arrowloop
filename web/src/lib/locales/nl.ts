@@ -119,6 +119,9 @@ const nl: Translations = {
   'failure.rateLimited': 'De dienst vroeg na te veel verzoeken om een pauze. De volgende run probeert het opnieuw.',
   'failure.rateLimited.left': 'De dienst aan de linkerkant vroeg na te veel verzoeken om een pauze. De volgende run probeert het opnieuw.',
   'failure.rateLimited.right': 'De dienst aan de rechterkant vroeg na te veel verzoeken om een pauze. De volgende run probeert het opnieuw.',
+  'failure.hostKeyChanged': 'De server toont een andere sleutel dan de opgeslagen, dus hij werd niet vertrouwd. Is hij opnieuw geïnstalleerd of heeft hij een nieuwe sleutel, maak host_keys dan leeg in de instellingen van het doel en test opnieuw.',
+  'failure.hostKeyChanged.left': 'De server van de linkerkant toont een andere sleutel dan de opgeslagen, dus hij werd niet vertrouwd. Is hij opnieuw geïnstalleerd of heeft hij een nieuwe sleutel, maak host_keys dan leeg in de instellingen van het doel en test opnieuw.',
+  'failure.hostKeyChanged.right': 'De server van de rechterkant toont een andere sleutel dan de opgeslagen, dus hij werd niet vertrouwd. Is hij opnieuw geïnstalleerd of heeft hij een nieuwe sleutel, maak host_keys dan leeg in de instellingen van het doel en test opnieuw.',
   'failure.stopped': 'De run werd gestopt voordat hij klaar was.',
   'failure.beforeFailed': 'De opdracht vóór de run is mislukt, dus de run is niet begonnen.',
   'failure.afterFailed': 'De opdracht na de run is mislukt.',
@@ -453,6 +456,8 @@ const nl: Translations = {
   'confirm.deleteRemote': 'Dit opslagdoel verwijderen',
   'confirm.deleteRemoteStakes': 'De instellingen van {name} worden uit de rclone-configuratie gehaald, inclusief elk wachtwoord en elke sleutel die daar ligt. Er wordt vooraf niets ergens heen gekopieerd en er is geen weg terug: opnieuw instellen betekent de gegevens opnieuw intypen.',
   'targets.inUse': 'Er zijn nog taken die dit doel gebruiken: {jobs}. Wijs ze naar een ander doel of verwijder ze, en verwijder dan het doel.',
+  'targets.hostKey': 'Serversleutel',
+  'targets.hostKeyHint': 'ArrowLoop onthoudt deze sleutel bij het opslaan en weigert de server als die ooit een andere toont. Vergelijk hem met de vingerafdruk die je provider publiceert.',
   'confirm.delete': 'Verwijderen',
   'confirm.cancel': 'Annuleren',
   'about.title': 'Over ArrowLoop',
@@ -1240,6 +1245,7 @@ const nl: Translations = {
   'new.change.twoFactorOnce': 'Mega vraagt de {code} samen met de andere inlogvelden, en voor Mega en Proton Drive is één code genoeg: {test}, opslaan en de controle daarna delen de sessie die de code opent.',
   'new.change.targetInUse': 'Een doel dat taken nog gebruiken wordt niet verwijderd. {delete} noemt in plaats daarvan die taken, zodat je ze eerst naar een ander doel kunt laten wijzen.',
   'new.change.smbShare': 'Een SMB-server die zijn shares niet toont, slaagt voor {test} zodra je {share} invult. Een kant van een taak helemaal bovenaan een SMB-server, waar alleen de lijst met shares staat, wordt geweigerd bij het opslaan van de taak.',
+  'new.change.hostKey': '{test} bij een SFTP-server toont de vingerafdruk van zijn {key}, en ArrowLoop weigert de server als die later een andere toont. Een eerder opgeslagen doel wordt gebonden aan de sleutel die het bij de volgende test toont.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 

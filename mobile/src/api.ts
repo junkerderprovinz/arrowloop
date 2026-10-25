@@ -465,8 +465,9 @@ export const api = {
    * (internal/remotes/trycheck.go). `remote` names the target being edited, so
    * the engine can fill in the secrets the form left empty.
    */
+  /** hostKey is the fingerprint of the key an SFTP server was held to. */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
-    call<{ ok: boolean; reason?: string; failure?: Failure }>("/api/remotes-check", {
+    call<{ ok: boolean; reason?: string; failure?: Failure; hostKey?: string }>("/api/remotes-check", {
       method: "POST",
       body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),

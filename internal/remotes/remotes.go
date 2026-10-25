@@ -242,6 +242,9 @@ func Check(ctx context.Context, name string) error {
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
+	if err := pinSaved(ctx, name); err != nil {
+		return err
+	}
 	f, err := rclonefs.NewFs(ctx, savedRoot(name))
 	if err != nil {
 		return checkErr(ctx, err)
@@ -280,6 +283,12 @@ const CheckWait = 30 * time.Second
 func checkErr(ctx context.Context, err error) error {
 	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
 		return fmt.Errorf("no answer within %s: %w", CheckWait, err)
+	}
+	// rclone's words for it name a command line flag.
+	if strings.Contains(err.Error(), "host key mismatch") {
+		return fmt.Errorf("the server shows another host key than the one saved for this target, so it was not trusted. "+
+			"If the server was reinstalled or its key renewed, empty host_keys in the target's settings and test it again; "+
+			"otherwise someone may be listening in between: %w", err)
 	}
 	return err
 }

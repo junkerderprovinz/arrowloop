@@ -119,6 +119,9 @@ const et: Translations = {
   'failure.rateLimited': 'Teenus palus liiga paljude päringute järel pausi. Järgmine käivitus proovib uuesti.',
   'failure.rateLimited.left': 'Vasaku poole teenus palus liiga paljude päringute järel pausi. Järgmine käivitus proovib uuesti.',
   'failure.rateLimited.right': 'Parema poole teenus palus liiga paljude päringute järel pausi. Järgmine käivitus proovib uuesti.',
+  'failure.hostKeyChanged': 'Server näitab teist võtit kui see, mis tema jaoks on salvestatud, seega teda ei usaldatud. Kui server paigaldati uuesti või sai uue võtme, tühjenda sihtkoha seadetes host_keys ja testi uuesti.',
+  'failure.hostKeyChanged.left': 'Vasaku poole server näitab teist võtit kui see, mis tema jaoks on salvestatud, seega teda ei usaldatud. Kui server paigaldati uuesti või sai uue võtme, tühjenda sihtkoha seadetes host_keys ja testi uuesti.',
+  'failure.hostKeyChanged.right': 'Parema poole server näitab teist võtit kui see, mis tema jaoks on salvestatud, seega teda ei usaldatud. Kui server paigaldati uuesti või sai uue võtme, tühjenda sihtkoha seadetes host_keys ja testi uuesti.',
   'failure.stopped': 'Käivitus peatati enne, kui see lõppes.',
   'failure.beforeFailed': 'Käivituse eelne käsk ebaõnnestus, seega käivitus ei alanud.',
   'failure.afterFailed': 'Käivituse järgne käsk ebaõnnestus.',
@@ -453,6 +456,8 @@ const et: Translations = {
   'confirm.deleteRemote': 'Kustuta see salvestuse sihtkoht',
   'confirm.deleteRemoteStakes': 'Sihtkoha {name} seaded eemaldatakse rclone\'i seadistusest koos iga seal oleva parooli ja võtmega. Enne seda ei kopeerita midagi kuhugi ja tagasiteed ei ole: uuesti seadistamine tähendab tunnuste uuesti sisestamist.',
   'targets.inUse': 'Seda sihtkohta kasutavad veel tööd: {jobs}. Suuna need teise sihtkohta või kustuta need, siis kustuta sihtkoht.',
+  'targets.hostKey': 'Serveri võti',
+  'targets.hostKeyHint': 'ArrowLoop jätab selle võtme salvestamisel meelde ja lükkab serveri tagasi, kui see kunagi teist võtit näitab. Võrdle seda sõrmejäljega, mille sinu teenusepakkuja avaldab.',
   'confirm.delete': 'Kustuta',
   'confirm.cancel': 'Loobu',
   'about.title': 'Teave ArrowLoopi kohta',
@@ -1240,6 +1245,7 @@ const et: Translations = {
   'new.change.twoFactorOnce': 'Mega küsib {code} koos teiste sisselogimisväljadega ning Mega ja Proton Drive\'i jaoks piisab ühest koodist: {test}, salvestamine ja sellele järgnev kontroll kasutavad sama seanssi, mille kood avab.',
   'new.change.targetInUse': 'Sihtkohta, mida tööd veel kasutavad, ei kustutata. {delete} nimetab hoopis need tööd, et saaksid need enne teise sihtkohta suunata.',
   'new.change.smbShare': 'SMB-server, mis oma jagatud kaustu ei näita, läbib {test}, kui täidad {share}. Töö pool SMB-serveri kõige ülemisel tasemel, kus on ainult jagatud kaustade loend, lükatakse töö salvestamisel tagasi.',
+  'new.change.hostKey': '{test} SFTP-serveril näitab tema {key} sõrmejälge ja ArrowLoop lükkab serveri tagasi, kui see hiljem teist näitab. Varem salvestatud sihtkoht seotakse võtmega, mida see järgmisel testil näitab.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

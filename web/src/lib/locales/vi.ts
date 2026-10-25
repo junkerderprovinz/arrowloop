@@ -119,6 +119,9 @@ const vi: Translations = {
   'failure.rateLimited': 'Dịch vụ xin tạm nghỉ sau quá nhiều yêu cầu. Lần chạy tiếp theo sẽ thử lại.',
   'failure.rateLimited.left': 'Dịch vụ ở bên trái xin tạm nghỉ sau quá nhiều yêu cầu. Lần chạy tiếp theo sẽ thử lại.',
   'failure.rateLimited.right': 'Dịch vụ ở bên phải xin tạm nghỉ sau quá nhiều yêu cầu. Lần chạy tiếp theo sẽ thử lại.',
+  'failure.hostKeyChanged': 'Máy chủ đưa ra một khóa khác với khóa đã lưu cho nó, nên không được tin cậy. Nếu máy chủ được cài lại hoặc có khóa mới, hãy xóa trống host_keys trong cài đặt của đích rồi kiểm tra lại.',
+  'failure.hostKeyChanged.left': 'Máy chủ của phía bên trái đưa ra một khóa khác với khóa đã lưu cho nó, nên không được tin cậy. Nếu máy chủ được cài lại hoặc có khóa mới, hãy xóa trống host_keys trong cài đặt của đích rồi kiểm tra lại.',
+  'failure.hostKeyChanged.right': 'Máy chủ của phía bên phải đưa ra một khóa khác với khóa đã lưu cho nó, nên không được tin cậy. Nếu máy chủ được cài lại hoặc có khóa mới, hãy xóa trống host_keys trong cài đặt của đích rồi kiểm tra lại.',
   'failure.stopped': 'Lần chạy đã bị dừng trước khi xong.',
   'failure.beforeFailed': 'Lệnh trước lần chạy đã thất bại, nên lần chạy không bắt đầu.',
   'failure.afterFailed': 'Lệnh sau lần chạy đã thất bại.',
@@ -453,6 +456,8 @@ const vi: Translations = {
   'confirm.deleteRemote': 'Xóa đích lưu trữ này',
   'confirm.deleteRemoteStakes': 'Thiết lập của {name} bị gỡ khỏi cấu hình rclone, kèm theo mọi mật khẩu và khóa nằm ở đó. Trước đó không có gì được sao đi đâu cả, và không có đường lui: dựng lại nghĩa là gõ lại thông tin đăng nhập.',
   'targets.inUse': 'Vẫn còn công việc dùng đích này: {jobs}. Hãy trỏ chúng sang đích khác hoặc xóa chúng, rồi xóa đích.',
+  'targets.hostKey': 'Khóa máy chủ',
+  'targets.hostKeyHint': 'ArrowLoop ghi nhớ khóa này khi bạn lưu và từ chối máy chủ nếu có lúc nó đưa ra khóa khác. Hãy so với dấu vân tay mà nhà cung cấp của bạn công bố.',
   'confirm.delete': 'Xóa',
   'confirm.cancel': 'Hủy',
   'about.title': 'Giới thiệu về ArrowLoop',
@@ -1240,6 +1245,7 @@ const vi: Translations = {
   'new.change.twoFactorOnce': 'Mega hỏi {code} cùng các ô đăng nhập khác, và với Mega và Proton Drive chỉ cần một mã: {test}, lưu và lần kiểm tra sau đó dùng chung phiên mà mã đã mở.',
   'new.change.targetInUse': 'Một đích mà công việc vẫn đang dùng sẽ không bị xóa. Thay vào đó {delete} nêu tên các công việc ấy, để bạn trỏ chúng sang đích khác trước.',
   'new.change.smbShare': 'Máy chủ SMB không liệt kê các thư mục chia sẻ sẽ qua được {test} khi bạn điền {share}. Một phía của công việc nằm ở trên cùng của máy chủ SMB, nơi chỉ có danh sách chia sẻ, sẽ bị từ chối khi lưu công việc.',
+  'new.change.hostKey': '{test} trên máy chủ SFTP hiển thị dấu vân tay của {key}, và ArrowLoop từ chối máy chủ nếu sau này nó đưa ra khóa khác. Một đích đã lưu từ trước sẽ gắn với khóa mà nó đưa ra ở lần kiểm tra tới.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

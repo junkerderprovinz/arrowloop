@@ -119,6 +119,9 @@ const sk: Translations = {
   'failure.rateLimited': 'Služba si po príliš mnohých požiadavkách vypýtala prestávku. Ďalší beh to skúsi znova.',
   'failure.rateLimited.left': 'Služba na ľavej strane si po príliš mnohých požiadavkách vypýtala prestávku. Ďalší beh to skúsi znova.',
   'failure.rateLimited.right': 'Služba na pravej strane si po príliš mnohých požiadavkách vypýtala prestávku. Ďalší beh to skúsi znova.',
+  'failure.hostKeyChanged': 'Server ukazuje iný kľúč, než aký je preň uložený, a preto mu nebolo dôverované. Ak bol preinštalovaný alebo dostal nový kľúč, vyprázdnite host_keys v nastaveniach cieľa a otestujte ho znova.',
+  'failure.hostKeyChanged.left': 'Server ľavej strany ukazuje iný kľúč, než aký je preň uložený, a preto mu nebolo dôverované. Ak bol preinštalovaný alebo dostal nový kľúč, vyprázdnite host_keys v nastaveniach cieľa a otestujte ho znova.',
+  'failure.hostKeyChanged.right': 'Server pravej strany ukazuje iný kľúč, než aký je preň uložený, a preto mu nebolo dôverované. Ak bol preinštalovaný alebo dostal nový kľúč, vyprázdnite host_keys v nastaveniach cieľa a otestujte ho znova.',
   'failure.stopped': 'Beh bol zastavený skôr, ako sa dokončil.',
   'failure.beforeFailed': 'Príkaz pred behom zlyhal, takže beh sa nezačal.',
   'failure.afterFailed': 'Príkaz po behu zlyhal.',
@@ -453,6 +456,8 @@ const sk: Translations = {
   'confirm.deleteRemote': 'Zmazať toto úložisko',
   'confirm.deleteRemoteStakes': 'Nastavenia {name} zmiznú z konfigurácie rclone, vrátane každého hesla a kľúča, ktorý tam leží. Predtým sa nič nikam nekopíruje a cesta späť nie je: nastaviť to znova znamená znova napísať prihlasovacie údaje.',
   'targets.inUse': 'Tento cieľ ešte používajú úlohy: {jobs}. Nasmerujte ich na iný cieľ alebo ich zmažte a potom zmažte cieľ.',
+  'targets.hostKey': 'Kľúč servera',
+  'targets.hostKeyHint': 'ArrowLoop si tento kľúč pri uložení zapamätá a server odmietne, ak niekedy ukáže iný. Porovnajte ho s odtlačkom, ktorý zverejňuje váš poskytovateľ.',
   'confirm.delete': 'Zmazať',
   'confirm.cancel': 'Zrušiť',
   'about.title': 'O ArrowLoopi',
@@ -1240,6 +1245,7 @@ const sk: Translations = {
   'new.change.twoFactorOnce': 'Mega sa pýta na {code} spolu s ostatnými prihlasovacími poľami a pri Mega a Proton Drive stačí jeden kód: {test}, uloženie aj následná kontrola zdieľajú reláciu, ktorú kód otvorí.',
   'new.change.targetInUse': 'Cieľ, ktorý ešte používajú úlohy, sa nezmaže. {delete} namiesto toho vymenuje tieto úlohy, aby ste ich mohli najprv nasmerovať na iný cieľ.',
   'new.change.smbShare': 'Server SMB, ktorý nevypisuje svoje zdieľania, prejde {test}, hneď ako vyplníte {share}. Strana úlohy úplne hore na serveri SMB, kde je len zoznam zdieľaní, sa pri uložení úlohy odmietne.',
+  'new.change.hostKey': '{test} pri serveri SFTP ukáže odtlačok jeho {key}, a ArrowLoop server odmietne, ak neskôr ukáže iný. Skôr uložený cieľ sa naviaže na kľúč, ktorý ukáže pri ďalšom teste.',
   'new.change.appFolders': 'V aplikácii pre telefón umožní {add} v {settings}, {phone} synchronizovať v ArrowLoop priečinok, ktorý iná aplikácia ponúka vo výbere súborov Androidu, bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps.',
 }
 

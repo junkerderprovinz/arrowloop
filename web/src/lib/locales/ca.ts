@@ -119,6 +119,9 @@ const ca: Translations = {
   'failure.rateLimited': 'El servei ha demanat una pausa després de massa peticions. La propera execució ho tornarà a provar.',
   'failure.rateLimited.left': 'El servei de la banda esquerra ha demanat una pausa després de massa peticions. La propera execució ho tornarà a provar.',
   'failure.rateLimited.right': 'El servei de la banda dreta ha demanat una pausa després de massa peticions. La propera execució ho tornarà a provar.',
+  'failure.hostKeyChanged': 'El servidor mostra una clau diferent de la que hi ha desada, així que no se n\'ha refiat. Si s\'ha reinstal·lat o té una clau nova, buida host_keys a la configuració de la destinació i torna-la a provar.',
+  'failure.hostKeyChanged.left': 'El servidor del costat esquerre mostra una clau diferent de la que hi ha desada, així que no se n\'ha refiat. Si s\'ha reinstal·lat o té una clau nova, buida host_keys a la configuració de la destinació i torna-la a provar.',
+  'failure.hostKeyChanged.right': 'El servidor del costat dret mostra una clau diferent de la que hi ha desada, així que no se n\'ha refiat. Si s\'ha reinstal·lat o té una clau nova, buida host_keys a la configuració de la destinació i torna-la a provar.',
   'failure.stopped': 'L\'execució s\'ha aturat abans d\'acabar.',
   'failure.beforeFailed': 'L\'ordre d\'abans de l\'execució ha fallat, així que l\'execució no ha començat.',
   'failure.afterFailed': 'L\'ordre de després de l\'execució ha fallat.',
@@ -453,6 +456,8 @@ const ca: Translations = {
   'confirm.deleteRemote': 'Esborrar aquesta destinació d\'emmagatzematge',
   'confirm.deleteRemoteStakes': 'Els paràmetres de {name} es treuen de la configuració del rclone, inclosa qualsevol contrasenya o clau que hi hagi. Abans no es copia res enlloc i no hi ha marxa enrere: tornar-lo a configurar vol dir reescriure les credencials.',
   'targets.inUse': 'Encara hi ha tasques que fan servir aquesta destinació: {jobs}. Apunta-les a una altra destinació o esborra-les, i després esborra la destinació.',
+  'targets.hostKey': 'Clau del servidor',
+  'targets.hostKeyHint': 'ArrowLoop recorda aquesta clau en desar i rebutja el servidor si mai en mostra una altra. Compara-la amb l\'empremta que publica el teu proveïdor.',
   'confirm.delete': 'Esborra',
   'confirm.cancel': 'Cancel·la',
   'about.title': 'Quant a ArrowLoop',
@@ -1240,6 +1245,7 @@ const ca: Translations = {
   'new.change.twoFactorOnce': 'Mega demana el {code} amb els altres camps d\'inici de sessió, i per a Mega i Proton Drive n\'hi ha prou amb un codi: {test}, desar i la comprovació posterior comparteixen la sessió que obre el codi.',
   'new.change.targetInUse': 'Una destinació que encara fan servir tasques no s\'esborra. {delete} indica quines són, perquè primer les puguis apuntar a una altra destinació.',
   'new.change.smbShare': 'Un servidor SMB que no mostra els seus recursos compartits passa {test} quan omples {share}. Un costat d\'una tasca a la part superior d\'un servidor SMB, on només hi ha la llista de recursos compartits, es rebutja en desar la tasca.',
+  'new.change.hostKey': '{test} en un servidor SFTP mostra l\'empremta de la {key}, i ArrowLoop rebutja el servidor si més endavant en mostra una altra. Una destinació desada abans queda lligada a la clau que mostri a la propera prova.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

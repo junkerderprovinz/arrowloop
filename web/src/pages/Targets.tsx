@@ -760,6 +760,17 @@ function RemoteForm({
           <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
         </FieldRow>
         {first.map(field)}
+        {/* Shown to compare with the fingerprint the provider publishes:
+            saving holds the target to this key. */}
+        {tried?.hostKey && (
+          <p data-new="sftp-host-key" className="flex flex-wrap items-center gap-x-2 text-subline text-carbon-textMuted">
+            <span className="flex items-center gap-1.5">
+              {t('targets.hostKey')}
+              <InfoBubble tip={t('targets.hostKeyHint')} />
+            </span>
+            <span className="font-mono text-carbon-text [overflow-wrap:anywhere]">{tried.hostKey}</span>
+          </p>
+        )}
         {rest.length > 0 && (
           <section className="glim-subcard flex flex-col gap-4 p-4">
             <h3 className="glim-eyebrow">{t('targets.moreSettings')}</h3>

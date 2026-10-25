@@ -119,6 +119,9 @@ const lv: Translations = {
   'failure.rateLimited': 'Pakalpojums pēc pārāk daudziem pieprasījumiem lūdza pauzi. Nākamā palaišana mēģinās vēlreiz.',
   'failure.rateLimited.left': 'Pakalpojums kreisajā pusē pēc pārāk daudziem pieprasījumiem lūdza pauzi. Nākamā palaišana mēģinās vēlreiz.',
   'failure.rateLimited.right': 'Pakalpojums labajā pusē pēc pārāk daudziem pieprasījumiem lūdza pauzi. Nākamā palaišana mēģinās vēlreiz.',
+  'failure.hostKeyChanged': 'Serveris rāda citu atslēgu, nevis tam saglabāto, tāpēc tam neuzticējās. Ja tas ir pārinstalēts vai ieguvis jaunu atslēgu, iztukšojiet host_keys galamērķa iestatījumos un pārbaudiet vēlreiz.',
+  'failure.hostKeyChanged.left': 'Kreisās puses serveris rāda citu atslēgu, nevis tam saglabāto, tāpēc tam neuzticējās. Ja tas ir pārinstalēts vai ieguvis jaunu atslēgu, iztukšojiet host_keys galamērķa iestatījumos un pārbaudiet vēlreiz.',
+  'failure.hostKeyChanged.right': 'Labās puses serveris rāda citu atslēgu, nevis tam saglabāto, tāpēc tam neuzticējās. Ja tas ir pārinstalēts vai ieguvis jaunu atslēgu, iztukšojiet host_keys galamērķa iestatījumos un pārbaudiet vēlreiz.',
   'failure.stopped': 'Palaišana tika apturēta, pirms tā bija pabeigta.',
   'failure.beforeFailed': 'Komanda pirms palaišanas neizdevās, tāpēc palaišana nesākās.',
   'failure.afterFailed': 'Komanda pēc palaišanas neizdevās.',
@@ -453,6 +456,8 @@ const lv: Translations = {
   'confirm.deleteRemote': 'Dzēst šo krātuvi',
   'confirm.deleteRemoteStakes': '{name} iestatījumi tiek noņemti no rclone konfigurācijas kopā ar katru tur esošo paroli un atslēgu. Iepriekš nekas nekur netiek kopēts, un ceļa atpakaļ nav: iestatīt to no jauna nozīmē no jauna ievadīt pieteikšanās datus.',
   'targets.inUse': 'Šo galamērķi vēl izmanto uzdevumi: {jobs}. Novirziet tos uz citu galamērķi vai izdzēsiet, tad izdzēsiet galamērķi.',
+  'targets.hostKey': 'Servera atslēga',
+  'targets.hostKeyHint': 'ArrowLoop saglabājot atceras šo atslēgu un noraida serveri, ja tas kādreiz parāda citu. Salīdziniet to ar pirkstu nospiedumu, ko publicē jūsu pakalpojumu sniedzējs.',
   'confirm.delete': 'Dzēst',
   'confirm.cancel': 'Atcelt',
   'about.title': 'Par ArrowLoop',
@@ -1240,6 +1245,7 @@ const lv: Translations = {
   'new.change.twoFactorOnce': 'Mega prasa {code} kopā ar citiem pieteikšanās laukiem, un Mega un Proton Drive pietiek ar vienu kodu: {test}, saglabāšana un pēc tam sekojošā pārbaude izmanto sesiju, ko kods atver.',
   'new.change.targetInUse': 'Galamērķis, ko vēl izmanto uzdevumi, netiek izdzēsts. {delete} tā vietā nosauc šos uzdevumus, lai vispirms varētu tos novirzīt uz citu galamērķi.',
   'new.change.smbShare': 'SMB serveris, kas nerāda savus koplietojumus, iztur {test}, tiklīdz aizpildāt {share}. Uzdevuma puse pašā SMB servera augšā, kur ir tikai koplietojumu saraksts, tiek noraidīta, saglabājot uzdevumu.',
+  'new.change.hostKey': '{test} SFTP serverim parāda tā {key} pirkstu nospiedumu, un ArrowLoop noraida serveri, ja tas vēlāk parāda citu. Agrāk saglabāts galamērķis tiek piesaistīts atslēgai, ko tas parāda nākamajā pārbaudē.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 

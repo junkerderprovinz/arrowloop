@@ -119,6 +119,9 @@ const it: Translations = {
   'failure.rateLimited': 'Il servizio ha chiesto una pausa dopo troppe richieste. La prossima esecuzione riprova.',
   'failure.rateLimited.left': 'Il servizio sul lato sinistro ha chiesto una pausa dopo troppe richieste. La prossima esecuzione riprova.',
   'failure.rateLimited.right': 'Il servizio sul lato destro ha chiesto una pausa dopo troppe richieste. La prossima esecuzione riprova.',
+  'failure.hostKeyChanged': 'Il server mostra una chiave diversa da quella salvata per lui, quindi non è stato ritenuto affidabile. Se è stato reinstallato o ha una nuova chiave, svuota host_keys nelle impostazioni della destinazione e provala di nuovo.',
+  'failure.hostKeyChanged.left': 'Il server del lato sinistro mostra una chiave diversa da quella salvata per lui, quindi non è stato ritenuto affidabile. Se è stato reinstallato o ha una nuova chiave, svuota host_keys nelle impostazioni della destinazione e provala di nuovo.',
+  'failure.hostKeyChanged.right': 'Il server del lato destro mostra una chiave diversa da quella salvata per lui, quindi non è stato ritenuto affidabile. Se è stato reinstallato o ha una nuova chiave, svuota host_keys nelle impostazioni della destinazione e provala di nuovo.',
   'failure.stopped': 'L\'esecuzione è stata fermata prima di finire.',
   'failure.beforeFailed': 'Il comando prima dell\'esecuzione non è riuscito, quindi l\'esecuzione non è partita.',
   'failure.afterFailed': 'Il comando dopo l\'esecuzione non è riuscito.',
@@ -453,6 +456,8 @@ const it: Translations = {
   'confirm.deleteRemote': 'Eliminare questa destinazione di archiviazione',
   'confirm.deleteRemoteStakes': 'Le impostazioni di {name} vengono tolte dalla configurazione di rclone, compresa ogni password o chiave conservata lì. Prima non viene copiato nulla da nessuna parte e non si torna indietro: riconfigurarla significa ridigitare le credenziali.',
   'targets.inUse': 'Ci sono ancora lavori che usano questa destinazione: {jobs}. Puntali su un\'altra destinazione o eliminali, poi elimina la destinazione.',
+  'targets.hostKey': 'Chiave del server',
+  'targets.hostKeyHint': 'ArrowLoop ricorda questa chiave al salvataggio e rifiuta il server se un giorno ne mostra un\'altra. Confrontala con l\'impronta pubblicata dal tuo fornitore.',
   'confirm.delete': 'Elimina',
   'confirm.cancel': 'Annulla',
   'about.title': 'Informazioni su ArrowLoop',
@@ -1240,6 +1245,7 @@ const it: Translations = {
   'new.change.twoFactorOnce': 'Mega chiede il {code} insieme agli altri campi di accesso, e per Mega e Proton Drive basta un codice: {test}, il salvataggio e il controllo successivo condividono la sessione che il codice apre.',
   'new.change.targetInUse': 'Una destinazione che dei lavori usano ancora non viene eliminata. {delete} indica invece quei lavori, così puoi prima puntarli su un\'altra destinazione.',
   'new.change.smbShare': 'Un server SMB che non elenca le sue condivisioni supera {test} appena compili {share}. Un lato di un lavoro in cima a un server SMB, dove c\'è solo l\'elenco delle condivisioni, viene rifiutato al salvataggio del lavoro.',
+  'new.change.hostKey': '{test} su un server SFTP mostra l\'impronta della sua {key}, e ArrowLoop rifiuta il server se in seguito ne mostra un\'altra. Una destinazione già salvata viene legata alla chiave che mostra alla prossima prova.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
 }
 

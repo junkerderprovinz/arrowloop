@@ -119,6 +119,9 @@ const tr: Translations = {
   'failure.rateLimited': 'Hizmet, çok fazla istekten sonra biraz ara verilmesini istedi. Sonraki çalıştırma yeniden dener.',
   'failure.rateLimited.left': 'Sol taraftaki hizmet, çok fazla istekten sonra biraz ara verilmesini istedi. Sonraki çalıştırma yeniden dener.',
   'failure.rateLimited.right': 'Sağ taraftaki hizmet, çok fazla istekten sonra biraz ara verilmesini istedi. Sonraki çalıştırma yeniden dener.',
+  'failure.hostKeyChanged': 'Sunucu, kendisi için kaydedilenden farklı bir anahtar gösteriyor, bu yüzden ona güvenilmedi. Yeniden kurulduysa ya da yeni bir anahtar aldıysa, hedefin ayarlarında host_keys alanını boşaltın ve yeniden test edin.',
+  'failure.hostKeyChanged.left': 'Sol taraftaki sunucu, kendisi için kaydedilenden farklı bir anahtar gösteriyor, bu yüzden ona güvenilmedi. Yeniden kurulduysa ya da yeni bir anahtar aldıysa, hedefin ayarlarında host_keys alanını boşaltın ve yeniden test edin.',
+  'failure.hostKeyChanged.right': 'Sağ taraftaki sunucu, kendisi için kaydedilenden farklı bir anahtar gösteriyor, bu yüzden ona güvenilmedi. Yeniden kurulduysa ya da yeni bir anahtar aldıysa, hedefin ayarlarında host_keys alanını boşaltın ve yeniden test edin.',
   'failure.stopped': 'Çalıştırma bitmeden durduruldu.',
   'failure.beforeFailed': 'Çalıştırmadan önceki komut başarısız oldu, bu yüzden çalıştırma başlamadı.',
   'failure.afterFailed': 'Çalıştırmadan sonraki komut başarısız oldu.',
@@ -453,6 +456,8 @@ const tr: Translations = {
   'confirm.deleteRemote': 'Bu depolama hedefini sil',
   'confirm.deleteRemoteStakes': '{name} ayarları rclone yapılandırmasından, orada duran her parola ve anahtarla birlikte kaldırılır. Öncesinde hiçbir şey hiçbir yere kopyalanmaz ve geri dönüş yoktur: yeniden kurmak, kimlik bilgilerini yeniden yazmak demektir.',
   'targets.inUse': 'Bu hedefi hâlâ kullanan işler var: {jobs}. Onları başka bir hedefe yönlendirin ya da silin, sonra hedefi silin.',
+  'targets.hostKey': 'Sunucu anahtarı',
+  'targets.hostKeyHint': 'ArrowLoop kaydettiğinizde bu anahtarı hatırlar ve sunucu bir gün başka bir anahtar gösterirse onu reddeder. Sağlayıcınızın yayımladığı parmak iziyle karşılaştırın.',
   'confirm.delete': 'Sil',
   'confirm.cancel': 'İptal',
   'about.title': 'ArrowLoop hakkında',
@@ -1240,6 +1245,7 @@ const tr: Translations = {
   'new.change.twoFactorOnce': 'Mega {code} bilgisini diğer oturum açma alanlarıyla birlikte sorar ve Mega ile Proton Drive için tek kod yeter: {test}, kaydetme ve ardından gelen kontrol, kodun açtığı oturumu paylaşır.',
   'new.change.targetInUse': 'İşlerin hâlâ kullandığı bir hedef silinmez. {delete} bunun yerine o işleri sayar, böylece önce onları başka bir hedefe yönlendirebilirsiniz.',
   'new.change.smbShare': 'Paylaşımlarını listelemeyen bir SMB sunucusu, {share} alanını doldurduğunuzda {test} adımını geçer. Bir işin, SMB sunucusunun en üstünde, yalnızca paylaşım listesinin bulunduğu yerdeki tarafı, iş kaydedilirken reddedilir.',
+  'new.change.hostKey': 'Bir SFTP sunucusunda {test}, {key} parmak izini gösterir ve sunucu sonradan başka bir anahtar gösterirse ArrowLoop onu reddeder. Daha önce kaydedilmiş bir hedef, bir sonraki testte gösterdiği anahtara bağlanır.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

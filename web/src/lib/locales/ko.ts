@@ -119,6 +119,9 @@ const ko: Translations = {
   'failure.rateLimited': '요청이 너무 많아 서비스가 잠시 쉬어 달라고 했습니다. 다음 실행에서 다시 시도합니다.',
   'failure.rateLimited.left': '요청이 너무 많아 왼쪽의 서비스가 잠시 쉬어 달라고 했습니다. 다음 실행에서 다시 시도합니다.',
   'failure.rateLimited.right': '요청이 너무 많아 오른쪽의 서비스가 잠시 쉬어 달라고 했습니다. 다음 실행에서 다시 시도합니다.',
+  'failure.hostKeyChanged': '서버가 저장된 키와 다른 키를 보여 주어 신뢰하지 않았습니다. 다시 설치되었거나 새 키를 받았다면 대상 설정에서 host_keys를 비우고 다시 테스트하세요.',
+  'failure.hostKeyChanged.left': '왼쪽의 서버가 저장된 키와 다른 키를 보여 주어 신뢰하지 않았습니다. 다시 설치되었거나 새 키를 받았다면 대상 설정에서 host_keys를 비우고 다시 테스트하세요.',
+  'failure.hostKeyChanged.right': '오른쪽의 서버가 저장된 키와 다른 키를 보여 주어 신뢰하지 않았습니다. 다시 설치되었거나 새 키를 받았다면 대상 설정에서 host_keys를 비우고 다시 테스트하세요.',
   'failure.stopped': '실행이 끝나기 전에 중지되었습니다.',
   'failure.beforeFailed': '실행 전 명령이 실패해 실행이 시작되지 않았습니다.',
   'failure.afterFailed': '실행 후 명령이 실패했습니다.',
@@ -453,6 +456,8 @@ const ko: Translations = {
   'confirm.deleteRemote': '이 저장 대상 삭제',
   'confirm.deleteRemoteStakes': '{name}의 설정이 rclone 구성에서 사라집니다. 거기에 담긴 암호와 키도 함께입니다. 미리 어디에도 복사하지 않으며 되돌릴 수 없습니다. 다시 쓰려면 자격 증명을 다시 입력해야 합니다.',
   'targets.inUse': '아직 이 대상을 쓰는 작업이 있습니다: {jobs}. 다른 대상으로 바꾸거나 삭제한 뒤 대상을 삭제하세요.',
+  'targets.hostKey': '서버 키',
+  'targets.hostKeyHint': 'ArrowLoop은 저장할 때 이 키를 기억하고, 서버가 언젠가 다른 키를 보이면 거부합니다. 제공업체가 공개한 지문과 비교해 보세요.',
   'confirm.delete': '삭제',
   'confirm.cancel': '취소',
   'about.title': 'ArrowLoop 정보',
@@ -1240,6 +1245,7 @@ const ko: Translations = {
   'new.change.twoFactorOnce': 'Mega는 다른 로그인 항목과 함께 {code}를 묻고, Mega와 Proton Drive는 코드 하나면 충분합니다. {test}, 저장, 그 뒤의 확인이 코드가 연 세션을 함께 씁니다.',
   'new.change.targetInUse': '작업이 아직 쓰는 대상은 삭제되지 않습니다. 대신 {delete}이 그 작업을 알려 주므로 먼저 다른 대상으로 바꿀 수 있습니다.',
   'new.change.smbShare': '공유 목록을 보여 주지 않는 SMB 서버도 {share}를 채우면 {test}를 통과합니다. 공유 목록만 있는 SMB 서버의 맨 위를 가리키는 작업의 한쪽은 작업을 저장할 때 거부됩니다.',
+  'new.change.hostKey': 'SFTP 서버에서 {test}가 {key}의 지문을 보여 주고, 서버가 나중에 다른 키를 보이면 ArrowLoop이 거부합니다. 이미 저장된 대상은 다음 테스트에서 보이는 키에 묶입니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

@@ -84,7 +84,8 @@ export type Duplicates = {
 }
 
 /** Whether a target answers, in rclone's words and as a kind the page can say itself. */
-export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure }
+/** A test's verdict. hostKey is the fingerprint of the key an SFTP server was held to. */
+export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure; hostKey?: string }
 
 /**
  * How full a target is. An absent figure means the target does not know, which

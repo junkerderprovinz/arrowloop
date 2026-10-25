@@ -119,6 +119,9 @@ const ms: Translations = {
   'failure.rateLimited': 'Perkhidmatan meminta rehat selepas terlalu banyak permintaan. Larian seterusnya akan mencuba lagi.',
   'failure.rateLimited.left': 'Perkhidmatan di sebelah kiri meminta rehat selepas terlalu banyak permintaan. Larian seterusnya akan mencuba lagi.',
   'failure.rateLimited.right': 'Perkhidmatan di sebelah kanan meminta rehat selepas terlalu banyak permintaan. Larian seterusnya akan mencuba lagi.',
+  'failure.hostKeyChanged': 'Pelayan menunjukkan kunci yang berbeza daripada yang disimpan untuknya, jadi ia tidak dipercayai. Jika ia dipasang semula atau mendapat kunci baharu, kosongkan host_keys dalam tetapan destinasi dan uji sekali lagi.',
+  'failure.hostKeyChanged.left': 'Pelayan sisi kiri menunjukkan kunci yang berbeza daripada yang disimpan untuknya, jadi ia tidak dipercayai. Jika ia dipasang semula atau mendapat kunci baharu, kosongkan host_keys dalam tetapan destinasi dan uji sekali lagi.',
+  'failure.hostKeyChanged.right': 'Pelayan sisi kanan menunjukkan kunci yang berbeza daripada yang disimpan untuknya, jadi ia tidak dipercayai. Jika ia dipasang semula atau mendapat kunci baharu, kosongkan host_keys dalam tetapan destinasi dan uji sekali lagi.',
   'failure.stopped': 'Larian dihentikan sebelum selesai.',
   'failure.beforeFailed': 'Arahan sebelum larian gagal, jadi larian tidak bermula.',
   'failure.afterFailed': 'Arahan selepas larian gagal.',
@@ -453,6 +456,8 @@ const ms: Translations = {
   'confirm.deleteRemote': 'Padam destinasi simpanan ini',
   'confirm.deleteRemoteStakes': 'Tetapan {name} dikeluarkan daripada konfigurasi rclone, termasuk setiap kata laluan dan kunci yang tersimpan di situ. Sebelum itu tiada apa disalin ke mana-mana dan tiada jalan balik: menyediakannya semula bermakna menaip semula butiran log masuk.',
   'targets.inUse': 'Masih ada tugas yang menggunakan destinasi ini: {jobs}. Halakan ke destinasi lain atau padamkannya, kemudian padam destinasi itu.',
+  'targets.hostKey': 'Kunci pelayan',
+  'targets.hostKeyHint': 'ArrowLoop mengingati kunci ini apabila anda menyimpan dan menolak pelayan jika ia pernah menunjukkan kunci lain. Bandingkan dengan cap jari yang diterbitkan oleh penyedia anda.',
   'confirm.delete': 'Padam',
   'confirm.cancel': 'Batal',
   'about.title': 'Perihal ArrowLoop',
@@ -1240,6 +1245,7 @@ const ms: Translations = {
   'new.change.twoFactorOnce': 'Mega meminta {code} bersama medan log masuk yang lain, dan untuk Mega dan Proton Drive satu kod sudah memadai: {test}, simpan dan semakan selepasnya berkongsi sesi yang dibuka oleh kod itu.',
   'new.change.targetInUse': 'Destinasi yang masih digunakan oleh tugas tidak dipadam. {delete} sebaliknya menamakan tugas itu, supaya anda boleh menghalakannya ke destinasi lain dahulu.',
   'new.change.smbShare': 'Pelayan SMB yang tidak menyenaraikan perkongsiannya lulus {test} sebaik sahaja anda mengisi {share}. Sisi tugas di bahagian paling atas pelayan SMB, tempat hanya ada senarai perkongsian, ditolak apabila tugas disimpan.',
+  'new.change.hostKey': '{test} pada pelayan SFTP menunjukkan cap jari {key}, dan ArrowLoop menolak pelayan jika kemudian ia menunjukkan kunci lain. Destinasi yang sudah disimpan sebelum ini diikat kepada kunci yang ditunjukkannya pada ujian seterusnya.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
 }
 

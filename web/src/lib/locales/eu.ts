@@ -119,6 +119,9 @@ const eu: Translations = {
   'failure.rateLimited': 'Zerbitzuak etenaldi bat eskatu du eskaera gehiegiren ondoren. Hurrengo exekuzioa berriro saiatuko da.',
   'failure.rateLimited.left': 'Ezkerreko aldeko zerbitzuak etenaldi bat eskatu du eskaera gehiegiren ondoren. Hurrengo exekuzioa berriro saiatuko da.',
   'failure.rateLimited.right': 'Eskuineko aldeko zerbitzuak etenaldi bat eskatu du eskaera gehiegiren ondoren. Hurrengo exekuzioa berriro saiatuko da.',
+  'failure.hostKeyChanged': 'Zerbitzariak gordetakoa ez den beste gako bat erakusten du, eta ez da fidatu. Berriro instalatu bada edo gako berria badu, hustu host_keys helburuaren ezarpenetan eta probatu berriro.',
+  'failure.hostKeyChanged.left': 'Ezkerreko aldeko zerbitzariak gordetakoa ez den beste gako bat erakusten du, eta ez da fidatu. Berriro instalatu bada edo gako berria badu, hustu host_keys helburuaren ezarpenetan eta probatu berriro.',
+  'failure.hostKeyChanged.right': 'Eskuineko aldeko zerbitzariak gordetakoa ez den beste gako bat erakusten du, eta ez da fidatu. Berriro instalatu bada edo gako berria badu, hustu host_keys helburuaren ezarpenetan eta probatu berriro.',
   'failure.stopped': 'Exekuzioa amaitu aurretik gelditu da.',
   'failure.beforeFailed': 'Exekuzioaren aurreko aginduak huts egin du, beraz exekuzioa ez da hasi.',
   'failure.afterFailed': 'Exekuzioaren ondorengo aginduak huts egin du.',
@@ -453,6 +456,8 @@ const eu: Translations = {
   'confirm.deleteRemote': 'Biltegi-helburu hau ezabatu',
   'confirm.deleteRemoteStakes': '{name} helburuaren ezarpenak rclone-ren konfiguraziotik kentzen dira, han gordetako pasahitz edo gako oro barne. Aurretik ez da ezer inora kopiatzen eta ez dago atzera bueltarik: berriz konfiguratzeak kredentzialak berriz idaztea esan nahi du.',
   'targets.inUse': 'Lan batzuek helburu hau erabiltzen dute oraindik: {jobs}. Bideratu beste helburu batera edo ezabatu, eta gero ezabatu helburua.',
+  'targets.hostKey': 'Zerbitzariaren gakoa',
+  'targets.hostKeyHint': 'ArrowLoopek gako hau gogoratzen du gordetzean, eta zerbitzaria baztertzen du inoiz beste bat erakusten badu. Konparatu zure hornitzaileak argitaratzen duen hatz-markarekin.',
   'confirm.delete': 'Ezabatu',
   'confirm.cancel': 'Utzi',
   'about.title': 'ArrowLoop-i buruz',
@@ -1240,6 +1245,7 @@ const eu: Translations = {
   'new.change.twoFactorOnce': 'Megak {code} eskatzen du saioa hasteko beste eremuekin batera, eta Mega eta Proton Driverako kode bakarra nahikoa da: {test}, gordetzeak eta ondorengo egiaztapenak kodeak irekitzen duen saioa partekatzen dute.',
   'new.change.targetInUse': 'Lanek oraindik erabiltzen duten helburua ez da ezabatzen. {delete} aukerak lan horiek izendatzen ditu, lehenik beste helburu batera bideratu ahal izateko.',
   'new.change.smbShare': 'Bere partekatzeak zerrendatzen ez dituen SMB zerbitzari batek {test} gainditzen du {share} betetzen duzunean. SMB zerbitzari baten goialdean dagoen lan-alde bat, partekatzeen zerrenda bakarrik dagoen tokian, baztertu egiten da lana gordetzean.',
+  'new.change.hostKey': 'SFTP zerbitzari batean {test} aukerak {key} hatz-marka erakusten du, eta ArrowLoopek zerbitzaria baztertzen du geroago beste bat erakusten badu. Lehendik gordetako helburua hurrengo proban erakusten duen gakora lotzen da.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

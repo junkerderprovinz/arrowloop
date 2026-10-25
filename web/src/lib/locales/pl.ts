@@ -119,6 +119,9 @@ const pl: Translations = {
   'failure.rateLimited': 'Usługa poprosiła o przerwę po zbyt wielu żądaniach. Następny przebieg spróbuje ponownie.',
   'failure.rateLimited.left': 'Usługa po lewej stronie poprosiła o przerwę po zbyt wielu żądaniach. Następny przebieg spróbuje ponownie.',
   'failure.rateLimited.right': 'Usługa po prawej stronie poprosiła o przerwę po zbyt wielu żądaniach. Następny przebieg spróbuje ponownie.',
+  'failure.hostKeyChanged': 'Serwer pokazuje inny klucz niż zapisany dla niego, więc nie został uznany za zaufany. Jeśli został przeinstalowany albo dostał nowy klucz, wyczyść host_keys w ustawieniach celu i przetestuj go ponownie.',
+  'failure.hostKeyChanged.left': 'Serwer lewej strony pokazuje inny klucz niż zapisany dla niego, więc nie został uznany za zaufany. Jeśli został przeinstalowany albo dostał nowy klucz, wyczyść host_keys w ustawieniach celu i przetestuj go ponownie.',
+  'failure.hostKeyChanged.right': 'Serwer prawej strony pokazuje inny klucz niż zapisany dla niego, więc nie został uznany za zaufany. Jeśli został przeinstalowany albo dostał nowy klucz, wyczyść host_keys w ustawieniach celu i przetestuj go ponownie.',
   'failure.stopped': 'Przebieg został zatrzymany, zanim się zakończył.',
   'failure.beforeFailed': 'Polecenie przed przebiegiem zakończyło się błędem, więc przebieg się nie rozpoczął.',
   'failure.afterFailed': 'Polecenie po przebiegu zakończyło się błędem.',
@@ -453,6 +456,8 @@ const pl: Translations = {
   'confirm.deleteRemote': 'Usunąć ten cel magazynowy',
   'confirm.deleteRemoteStakes': 'Ustawienia {name} znikają z konfiguracji rclone, razem z każdym hasłem i kluczem, który tam leży. Wcześniej nic nigdzie nie jest kopiowane i nie ma odwrotu: skonfigurowanie tego od nowa znaczy ponowne wpisanie danych.',
   'targets.inUse': 'Ten cel wciąż jest używany przez zadania: {jobs}. Skieruj je na inny cel albo je usuń, a potem usuń cel.',
+  'targets.hostKey': 'Klucz serwera',
+  'targets.hostKeyHint': 'ArrowLoop zapamiętuje ten klucz przy zapisie i odrzuca serwer, jeśli kiedyś pokaże inny. Porównaj go z odciskiem, który publikuje twój dostawca.',
   'confirm.delete': 'Usuń',
   'confirm.cancel': 'Anuluj',
   'about.title': 'O ArrowLoopze',
@@ -1240,6 +1245,7 @@ const pl: Translations = {
   'new.change.twoFactorOnce': 'Mega pyta o {code} razem z pozostałymi polami logowania, a w Mega i Proton Drive wystarczy jeden kod: {test}, zapis i sprawdzenie po nim korzystają z sesji, którą kod otwiera.',
   'new.change.targetInUse': 'Cel, którego wciąż używają zadania, nie zostaje usunięty. {delete} wymienia zamiast tego te zadania, żeby najpierw skierować je na inny cel.',
   'new.change.smbShare': 'Serwer SMB, który nie pokazuje swoich udziałów, przechodzi {test}, gdy tylko wypełnisz {share}. Strona zadania na samej górze serwera SMB, gdzie jest tylko lista udziałów, zostaje odrzucona przy zapisie zadania.',
+  'new.change.hostKey': '{test} na serwerze SFTP pokazuje odcisk jego {key}, a ArrowLoop odrzuca serwer, jeśli później pokaże inny. Cel zapisany wcześniej zostaje przypisany do klucza, który pokaże przy następnym teście.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
 }
 

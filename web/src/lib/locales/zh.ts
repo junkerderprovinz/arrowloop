@@ -119,6 +119,9 @@ const zh: Translations = {
   'failure.rateLimited': '服务因请求过多，要求暂停一下。下一次运行会再试。',
   'failure.rateLimited.left': '左侧的服务因请求过多，要求暂停一下。下一次运行会再试。',
   'failure.rateLimited.right': '右侧的服务因请求过多，要求暂停一下。下一次运行会再试。',
+  'failure.hostKeyChanged': '服务器出示的密钥与为它保存的不同，因此没有信任它。如果服务器重装过或换了新密钥，请清空目标设置里的 host_keys，然后再测试一次。',
+  'failure.hostKeyChanged.left': '左侧的服务器出示的密钥与为它保存的不同，因此没有信任它。如果服务器重装过或换了新密钥，请清空目标设置里的 host_keys，然后再测试一次。',
+  'failure.hostKeyChanged.right': '右侧的服务器出示的密钥与为它保存的不同，因此没有信任它。如果服务器重装过或换了新密钥，请清空目标设置里的 host_keys，然后再测试一次。',
   'failure.stopped': '运行在完成前被停止了。',
   'failure.beforeFailed': '运行前的命令失败了，因此运行没有开始。',
   'failure.afterFailed': '运行后的命令失败了。',
@@ -453,6 +456,8 @@ const zh: Translations = {
   'confirm.deleteRemote': '删除这个存储目标',
   'confirm.deleteRemoteStakes': '{name} 的设置会从 rclone 的配置里移除，连同存在那里的任何口令和密钥。事先不会往任何地方复制，也没有回头路：再次配置意味着重新输入凭据。',
   'targets.inUse': '仍有任务在使用这个目标：{jobs}。请先把它们改指到别的目标或删除，再删除这个目标。',
+  'targets.hostKey': '服务器密钥',
+  'targets.hostKeyHint': '保存时 ArrowLoop 会记住这个密钥，若服务器日后出示别的密钥就拒绝它。请把它与服务商公布的指纹对照。',
   'confirm.delete': '删除',
   'confirm.cancel': '取消',
   'about.title': '关于 ArrowLoop',
@@ -1240,6 +1245,7 @@ const zh: Translations = {
   'new.change.twoFactorOnce': 'Mega 会和其他登录字段一起询问{code}，而 Mega 和 Proton Drive 只需一个验证码：{test}、保存以及之后的检查共用验证码打开的会话。',
   'new.change.targetInUse': '仍有任务在用的目标不会被删除。{delete} 会改为列出这些任务，让你先把它们改指到别的目标。',
   'new.change.smbShare': '不列出共享的 SMB 服务器，只要填上{share}就能通过{test}。任务的一侧若指向 SMB 服务器的最顶层（那里只有共享列表），保存任务时会被拒绝。',
+  'new.change.hostKey': '对 SFTP 服务器，{test}会显示{key}的指纹，若服务器日后出示别的密钥，ArrowLoop 就拒绝它。之前保存的目标会绑定到它下次测试时出示的密钥。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

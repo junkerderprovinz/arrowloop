@@ -119,6 +119,9 @@ const sl: Translations = {
   'failure.rateLimited': 'Storitev je po preveč zahtevah prosila za premor. Naslednji zagon poskusi znova.',
   'failure.rateLimited.left': 'Storitev na levi strani je po preveč zahtevah prosila za premor. Naslednji zagon poskusi znova.',
   'failure.rateLimited.right': 'Storitev na desni strani je po preveč zahtevah prosila za premor. Naslednji zagon poskusi znova.',
+  'failure.hostKeyChanged': 'Strežnik kaže drug ključ kot tistega, ki je shranjen zanj, zato mu ni bilo zaupano. Če je bil znova nameščen ali je dobil nov ključ, izpraznite host_keys v nastavitvah cilja in ga preizkusite znova.',
+  'failure.hostKeyChanged.left': 'Strežnik leve strani kaže drug ključ kot tistega, ki je shranjen zanj, zato mu ni bilo zaupano. Če je bil znova nameščen ali je dobil nov ključ, izpraznite host_keys v nastavitvah cilja in ga preizkusite znova.',
+  'failure.hostKeyChanged.right': 'Strežnik desne strani kaže drug ključ kot tistega, ki je shranjen zanj, zato mu ni bilo zaupano. Če je bil znova nameščen ali je dobil nov ključ, izpraznite host_keys v nastavitvah cilja in ga preizkusite znova.',
   'failure.stopped': 'Zagon je bil ustavljen, preden se je končal.',
   'failure.beforeFailed': 'Ukaz pred zagonom ni uspel, zato se zagon ni začel.',
   'failure.afterFailed': 'Ukaz po zagonu ni uspel.',
@@ -453,6 +456,8 @@ const sl: Translations = {
   'confirm.deleteRemote': 'Izbrisati to shrambo',
   'confirm.deleteRemoteStakes': 'Nastavitve za {name} se odstranijo iz nastavitev rclone, skupaj z vsakim geslom in ključem, ki leži tam. Prej se nič nikamor ne prekopira in poti nazaj ni: znova nastaviti pomeni znova vtipkati poverilnice.',
   'targets.inUse': 'Ta cilj še uporabljajo opravila: {jobs}. Usmerite jih na drug cilj ali jih izbrišite, nato izbrišite cilj.',
+  'targets.hostKey': 'Ključ strežnika',
+  'targets.hostKeyHint': 'ArrowLoop si ob shranjevanju zapomni ta ključ in zavrne strežnik, če kdaj pokaže drugega. Primerjajte ga s prstnim odtisom, ki ga objavlja vaš ponudnik.',
   'confirm.delete': 'Izbriši',
   'confirm.cancel': 'Prekliči',
   'about.title': 'O ArrowLoopju',
@@ -1240,6 +1245,7 @@ const sl: Translations = {
   'new.change.twoFactorOnce': 'Mega vpraša za {code} skupaj z drugimi polji za prijavo, za Mego in Proton Drive pa zadošča ena koda: {test}, shranjevanje in preverjanje po njem si delijo sejo, ki jo koda odpre.',
   'new.change.targetInUse': 'Cilj, ki ga opravila še uporabljajo, se ne izbriše. {delete} namesto tega navede ta opravila, da jih najprej usmerite na drug cilj.',
   'new.change.smbShare': 'Strežnik SMB, ki ne prikaže svojih skupnih rab, prestane {test}, ko izpolnite {share}. Stran opravila čisto na vrhu strežnika SMB, kjer je samo seznam skupnih rab, se ob shranjevanju opravila zavrne.',
+  'new.change.hostKey': '{test} na strežniku SFTP pokaže prstni odtis njegovega {key}, ArrowLoop pa strežnik zavrne, če pozneje pokaže drugega. Že shranjen cilj se veže na ključ, ki ga pokaže ob naslednjem preizkusu.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
 }
 

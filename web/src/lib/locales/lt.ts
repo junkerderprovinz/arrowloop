@@ -119,6 +119,9 @@ const lt: Translations = {
   'failure.rateLimited': 'Paslauga po per daug užklausų paprašė pertraukos. Kitas paleidimas bandys dar kartą.',
   'failure.rateLimited.left': 'Paslauga kairėje pusėje po per daug užklausų paprašė pertraukos. Kitas paleidimas bandys dar kartą.',
   'failure.rateLimited.right': 'Paslauga dešinėje pusėje po per daug užklausų paprašė pertraukos. Kitas paleidimas bandys dar kartą.',
+  'failure.hostKeyChanged': 'Serveris rodo kitą raktą nei jam išsaugotas, todėl juo nepasitikėta. Jei serveris buvo įdiegtas iš naujo arba gavo naują raktą, išvalykite host_keys paskirties nustatymuose ir išbandykite dar kartą.',
+  'failure.hostKeyChanged.left': 'Kairės pusės serveris rodo kitą raktą nei jam išsaugotas, todėl juo nepasitikėta. Jei serveris buvo įdiegtas iš naujo arba gavo naują raktą, išvalykite host_keys paskirties nustatymuose ir išbandykite dar kartą.',
+  'failure.hostKeyChanged.right': 'Dešinės pusės serveris rodo kitą raktą nei jam išsaugotas, todėl juo nepasitikėta. Jei serveris buvo įdiegtas iš naujo arba gavo naują raktą, išvalykite host_keys paskirties nustatymuose ir išbandykite dar kartą.',
   'failure.stopped': 'Paleidimas buvo sustabdytas, kol dar nebuvo baigtas.',
   'failure.beforeFailed': 'Komanda prieš paleidimą nepavyko, todėl paleidimas neprasidėjo.',
   'failure.afterFailed': 'Komanda po paleidimo nepavyko.',
@@ -453,6 +456,8 @@ const lt: Translations = {
   'confirm.deleteRemote': 'Ištrinti šią saugyklą',
   'confirm.deleteRemoteStakes': '{name} nuostatos pašalinamos iš rclone konfigūracijos kartu su kiekvienu ten gulinčiu slaptažodžiu ir raktu. Prieš tai niekas niekur nekopijuojama ir kelio atgal nėra: nustatyti iš naujo reiškia iš naujo suvesti prisijungimo duomenis.',
   'targets.inUse': 'Šią paskirtį dar naudoja užduotys: {jobs}. Nukreipkite jas į kitą paskirtį arba ištrinkite, tada ištrinkite paskirtį.',
+  'targets.hostKey': 'Serverio raktas',
+  'targets.hostKeyHint': 'ArrowLoop išsaugodamas įsimena šį raktą ir atmeta serverį, jei šis kada nors parodo kitą. Palyginkite jį su piršto atspaudu, kurį skelbia jūsų paslaugų teikėjas.',
   'confirm.delete': 'Ištrinti',
   'confirm.cancel': 'Atšaukti',
   'about.title': 'Apie ArrowLoop',
@@ -1240,6 +1245,7 @@ const lt: Translations = {
   'new.change.twoFactorOnce': 'Mega prašo {code} kartu su kitais prisijungimo laukais, o Mega ir Proton Drive užtenka vieno kodo: {test}, išsaugojimas ir po jo einantis patikrinimas naudoja tą pačią kodo atvertą sesiją.',
   'new.change.targetInUse': 'Paskirtis, kurią dar naudoja užduotys, neištrinama. {delete} vietoj to įvardija tas užduotis, kad pirmiausia nukreiptumėte jas kitur.',
   'new.change.smbShare': 'SMB serveris, kuris nerodo savo bendrinamų aplankų, praeina {test}, kai užpildote {share}. Užduoties pusė pačiame SMB serverio viršuje, kur yra tik bendrinamų aplankų sąrašas, atmetama išsaugant užduotį.',
+  'new.change.hostKey': '{test} SFTP serveryje parodo jo {key} piršto atspaudą, o ArrowLoop atmeta serverį, jei vėliau šis parodo kitą. Anksčiau išsaugota paskirtis susiejama su raktu, kurį ji parodo kito bandymo metu.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

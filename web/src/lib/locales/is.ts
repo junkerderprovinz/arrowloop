@@ -119,6 +119,9 @@ const is: Translations = {
   'failure.rateLimited': 'Þjónustan bað um hlé eftir of margar beiðnir. Næsta keyrsla reynir aftur.',
   'failure.rateLimited.left': 'Þjónustan vinstra megin bað um hlé eftir of margar beiðnir. Næsta keyrsla reynir aftur.',
   'failure.rateLimited.right': 'Þjónustan hægra megin bað um hlé eftir of margar beiðnir. Næsta keyrsla reynir aftur.',
+  'failure.hostKeyChanged': 'Þjónninn sýnir annan lykil en þann sem er vistaður fyrir hann, svo honum var ekki treyst. Ef hann var settur upp aftur eða fékk nýjan lykil, tæmdu host_keys í stillingum áfangastaðarins og prófaðu aftur.',
+  'failure.hostKeyChanged.left': 'Þjónn vinstri hliðar sýnir annan lykil en þann sem er vistaður fyrir hann, svo honum var ekki treyst. Ef hann var settur upp aftur eða fékk nýjan lykil, tæmdu host_keys í stillingum áfangastaðarins og prófaðu aftur.',
+  'failure.hostKeyChanged.right': 'Þjónn hægri hliðar sýnir annan lykil en þann sem er vistaður fyrir hann, svo honum var ekki treyst. Ef hann var settur upp aftur eða fékk nýjan lykil, tæmdu host_keys í stillingum áfangastaðarins og prófaðu aftur.',
   'failure.stopped': 'Keyrslan var stöðvuð áður en henni lauk.',
   'failure.beforeFailed': 'Skipunin á undan keyrslunni mistókst, svo keyrslan hófst ekki.',
   'failure.afterFailed': 'Skipunin á eftir keyrslunni mistókst.',
@@ -453,6 +456,8 @@ const is: Translations = {
   'confirm.deleteRemote': 'Eyða þessum geymsluáfangastað',
   'confirm.deleteRemoteStakes': 'Stillingar fyrir {name} eru fjarlægðar úr uppsetningu rclone, þar með talið hvert lykilorð og lykill sem þar liggur. Ekkert er afritað neitt fyrst og engin leið er til baka: að setja það upp aftur þýðir að slá aðgangsupplýsingarnar inn á ný.',
   'targets.inUse': 'Verk nota enn þennan áfangastað: {jobs}. Beindu þeim á annan áfangastað eða eyddu þeim, og eyddu svo áfangastaðnum.',
+  'targets.hostKey': 'Lykill þjóns',
+  'targets.hostKeyHint': 'ArrowLoop man þennan lykil þegar þú vistar og hafnar þjóninum ef hann sýnir einhvern tíma annan. Berðu hann saman við fingrafarið sem þjónustuveitan þín birtir.',
   'confirm.delete': 'Eyða',
   'confirm.cancel': 'Hætta við',
   'about.title': 'Um ArrowLoop',
@@ -1240,6 +1245,7 @@ const is: Translations = {
   'new.change.twoFactorOnce': 'Mega biður um {code} með hinum innskráningarreitunum, og fyrir Mega og Proton Drive dugar einn kóði: {test}, vistun og athugunin á eftir nota sömu lotu og kóðinn opnar.',
   'new.change.targetInUse': 'Áfangastað sem verk nota enn er ekki eytt. {delete} nefnir þess í stað þau verk, svo þú getir fyrst beint þeim á annan áfangastað.',
   'new.change.smbShare': 'SMB-þjónn sem sýnir ekki sameignir sínar stenst {test} um leið og þú fyllir út {share}. Hlið verks efst á SMB-þjóni, þar sem aðeins er listinn yfir sameignir, er hafnað þegar verkið er vistað.',
+  'new.change.hostKey': '{test} á SFTP-þjóni sýnir fingrafar {key}, og ArrowLoop hafnar þjóninum ef hann sýnir síðar annan. Áfangastaður sem var vistaður áður er bundinn við lykilinn sem hann sýnir í næsta prófi.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

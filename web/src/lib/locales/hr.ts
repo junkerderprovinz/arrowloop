@@ -119,6 +119,9 @@ const hr: Translations = {
   'failure.rateLimited': 'Usluga je zatražila stanku nakon previše zahtjeva. Sljedeće izvođenje pokušat će ponovno.',
   'failure.rateLimited.left': 'Usluga na lijevoj strani zatražila je stanku nakon previše zahtjeva. Sljedeće izvođenje pokušat će ponovno.',
   'failure.rateLimited.right': 'Usluga na desnoj strani zatražila je stanku nakon previše zahtjeva. Sljedeće izvođenje pokušat će ponovno.',
+  'failure.hostKeyChanged': 'Poslužitelj pokazuje drugi ključ od onog spremljenog za njega, pa mu se nije vjerovalo. Ako je ponovno instaliran ili je dobio novi ključ, ispraznite host_keys u postavkama odredišta i ponovno ga testirajte.',
+  'failure.hostKeyChanged.left': 'Poslužitelj lijeve strane pokazuje drugi ključ od onog spremljenog za njega, pa mu se nije vjerovalo. Ako je ponovno instaliran ili je dobio novi ključ, ispraznite host_keys u postavkama odredišta i ponovno ga testirajte.',
+  'failure.hostKeyChanged.right': 'Poslužitelj desne strane pokazuje drugi ključ od onog spremljenog za njega, pa mu se nije vjerovalo. Ako je ponovno instaliran ili je dobio novi ključ, ispraznite host_keys u postavkama odredišta i ponovno ga testirajte.',
   'failure.stopped': 'Izvođenje je zaustavljeno prije nego što je završilo.',
   'failure.beforeFailed': 'Naredba prije izvođenja nije uspjela, pa izvođenje nije počelo.',
   'failure.afterFailed': 'Naredba nakon izvođenja nije uspjela.',
@@ -453,6 +456,8 @@ const hr: Translations = {
   'confirm.deleteRemote': 'Izbrisati ovu pohranu',
   'confirm.deleteRemoteStakes': 'Postavke za {name} uklanjaju se iz rcloneove konfiguracije, zajedno sa svakom lozinkom i ključem koji ondje leže. Prije toga ništa se nikamo ne kopira i povratka nema: ponovno postaviti znači ponovno utipkati podatke.',
   'targets.inUse': 'Zadaci još koriste ovo odredište: {jobs}. Usmjerite ih na drugo odredište ili ih izbrišite, a zatim izbrišite odredište.',
+  'targets.hostKey': 'Ključ poslužitelja',
+  'targets.hostKeyHint': 'ArrowLoop pri spremanju pamti ovaj ključ i odbija poslužitelj ako ikad pokaže drugi. Usporedite ga s otiskom koji objavljuje vaš pružatelj usluge.',
   'confirm.delete': 'Izbriši',
   'confirm.cancel': 'Odustani',
   'about.title': 'O ArrowLoopu',
@@ -1240,6 +1245,7 @@ const hr: Translations = {
   'new.change.twoFactorOnce': 'Mega traži {code} zajedno s ostalim poljima za prijavu, a za Megu i Proton Drive dovoljan je jedan kod: {test}, spremanje i provjera nakon toga dijele sesiju koju kod otvara.',
   'new.change.targetInUse': 'Odredište koje zadaci još koriste ne briše se. {delete} umjesto toga navodi te zadatke, da ih najprije usmjerite na drugo odredište.',
   'new.change.smbShare': 'SMB poslužitelj koji ne prikazuje svoje dijeljene resurse prolazi {test} čim ispunite {share}. Strana zadatka na samom vrhu SMB poslužitelja, gdje je samo popis dijeljenih resursa, odbija se pri spremanju zadatka.',
+  'new.change.hostKey': '{test} na SFTP poslužitelju pokazuje otisak njegova {key}, a ArrowLoop odbija poslužitelj ako kasnije pokaže drugi. Već spremljeno odredište veže se uz ključ koji pokaže pri sljedećem testu.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
 }
 

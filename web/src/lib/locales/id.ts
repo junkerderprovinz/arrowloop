@@ -119,6 +119,9 @@ const id: Translations = {
   'failure.rateLimited': 'Layanan meminta jeda setelah terlalu banyak permintaan. Proses berikutnya akan mencoba lagi.',
   'failure.rateLimited.left': 'Layanan di sisi kiri meminta jeda setelah terlalu banyak permintaan. Proses berikutnya akan mencoba lagi.',
   'failure.rateLimited.right': 'Layanan di sisi kanan meminta jeda setelah terlalu banyak permintaan. Proses berikutnya akan mencoba lagi.',
+  'failure.hostKeyChanged': 'Server menunjukkan kunci yang berbeda dari yang disimpan untuknya, jadi server itu tidak dipercaya. Jika server dipasang ulang atau mendapat kunci baru, kosongkan host_keys di pengaturan tujuan dan uji lagi.',
+  'failure.hostKeyChanged.left': 'Server sisi kiri menunjukkan kunci yang berbeda dari yang disimpan untuknya, jadi server itu tidak dipercaya. Jika server dipasang ulang atau mendapat kunci baru, kosongkan host_keys di pengaturan tujuan dan uji lagi.',
+  'failure.hostKeyChanged.right': 'Server sisi kanan menunjukkan kunci yang berbeda dari yang disimpan untuknya, jadi server itu tidak dipercaya. Jika server dipasang ulang atau mendapat kunci baru, kosongkan host_keys di pengaturan tujuan dan uji lagi.',
   'failure.stopped': 'Proses dihentikan sebelum selesai.',
   'failure.beforeFailed': 'Perintah sebelum proses gagal, jadi proses tidak dimulai.',
   'failure.afterFailed': 'Perintah sesudah proses gagal.',
@@ -453,6 +456,8 @@ const id: Translations = {
   'confirm.deleteRemote': 'Hapus tujuan penyimpanan ini',
   'confirm.deleteRemoteStakes': 'Pengaturan {name} dikeluarkan dari konfigurasi rclone, termasuk setiap kata sandi dan kunci yang tersimpan di sana. Sebelumnya tidak ada yang disalin ke mana pun dan tidak ada jalan kembali: menyiapkannya lagi berarti mengetik ulang kredensialnya.',
   'targets.inUse': 'Masih ada tugas yang memakai tujuan ini: {jobs}. Arahkan ke tujuan lain atau hapus, lalu hapus tujuannya.',
+  'targets.hostKey': 'Kunci server',
+  'targets.hostKeyHint': 'ArrowLoop mengingat kunci ini saat Anda menyimpan dan menolak server jika suatu saat menunjukkan kunci lain. Bandingkan dengan sidik jari yang diterbitkan penyedia Anda.',
   'confirm.delete': 'Hapus',
   'confirm.cancel': 'Batal',
   'about.title': 'Tentang ArrowLoop',
@@ -1240,6 +1245,7 @@ const id: Translations = {
   'new.change.twoFactorOnce': 'Mega meminta {code} bersama kolom masuk lainnya, dan untuk Mega serta Proton Drive satu kode sudah cukup: {test}, menyimpan, dan pemeriksaan sesudahnya memakai sesi yang dibuka kode itu.',
   'new.change.targetInUse': 'Tujuan yang masih dipakai tugas tidak dihapus. {delete} justru menyebut tugas-tugas itu, supaya Anda bisa mengarahkannya ke tujuan lain lebih dulu.',
   'new.change.smbShare': 'Server SMB yang tidak menampilkan berbaginya lolos {test} begitu Anda mengisi {share}. Sisi tugas di puncak server SMB, tempat yang hanya berisi daftar berbagi, ditolak saat tugas disimpan.',
+  'new.change.hostKey': '{test} pada server SFTP menunjukkan sidik jari {key}, dan ArrowLoop menolak server jika nanti menunjukkan kunci lain. Tujuan yang sudah disimpan sebelumnya diikat ke kunci yang ditunjukkannya pada uji berikutnya.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

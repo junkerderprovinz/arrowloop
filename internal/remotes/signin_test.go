@@ -43,7 +43,7 @@ func TestATestOfASavedTargetKeepsTheTokenItRefreshed(t *testing.T) {
 	refreshingBackend(t)
 	saved(t, "box", refreshing, map[string]string{"token": "first"})
 
-	if err := Try(context.Background(), "box", refreshing, map[string]string{"token": Placeholder}); err != nil {
+	if _, err := Try(context.Background(), "box", refreshing, map[string]string{"token": Placeholder}); err != nil {
 		t.Fatalf("try: %v", err)
 	}
 	if got, _ := config.LoadedData().GetValue("box", "token"); got != "first+1" {
@@ -56,7 +56,7 @@ func TestSavingATestedFormKeepsTheTokenTheTestRefreshed(t *testing.T) {
 	ownConfig(t)
 	form := map[string]string{"token": "pasted"}
 
-	if err := Try(context.Background(), "", refreshing, form); err != nil {
+	if _, err := Try(context.Background(), "", refreshing, form); err != nil {
 		t.Fatalf("try: %v", err)
 	}
 	if err := Save("box", refreshing, form); err != nil {
@@ -73,7 +73,7 @@ func TestATestOfATypedTokenLeavesTheSavedOneAlone(t *testing.T) {
 	refreshingBackend(t)
 	saved(t, "box", refreshing, map[string]string{"token": "first"})
 
-	if err := Try(context.Background(), "box", refreshing, map[string]string{"token": "other"}); err != nil {
+	if _, err := Try(context.Background(), "box", refreshing, map[string]string{"token": "other"}); err != nil {
 		t.Fatalf("try: %v", err)
 	}
 	if got, _ := config.LoadedData().GetValue("box", "token"); got != "first" {
@@ -116,7 +116,7 @@ func TestOneCodeServesTheTestTheSaveAndTheCheckAfter(t *testing.T) {
 	ownConfig(t)
 	form := map[string]string{"user": "someone", "pass": "letmein", oneTimeCode: "123456"}
 
-	if err := Try(context.Background(), "", coded, form); err != nil {
+	if _, err := Try(context.Background(), "", coded, form); err != nil {
 		t.Fatalf("try: %v", err)
 	}
 	if err := Save("cloud", coded, form); err != nil {

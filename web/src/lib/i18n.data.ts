@@ -283,6 +283,9 @@ export const en = {
   'failure.rateLimited': 'The service asked for a pause after too many requests. The next run tries again.',
   'failure.rateLimited.left': 'The service on the left side asked for a pause after too many requests. The next run tries again.',
   'failure.rateLimited.right': 'The service on the right side asked for a pause after too many requests. The next run tries again.',
+  'failure.hostKeyChanged': 'The server shows a different key than the one saved for it, so it was not trusted. If it was reinstalled or got a new key, empty host_keys in the target\'s settings and test it again.',
+  'failure.hostKeyChanged.left': 'The server of the left side shows a different key than the one saved for it, so it was not trusted. If it was reinstalled or got a new key, empty host_keys in the target\'s settings and test it again.',
+  'failure.hostKeyChanged.right': 'The server of the right side shows a different key than the one saved for it, so it was not trusted. If it was reinstalled or got a new key, empty host_keys in the target\'s settings and test it again.',
   'failure.stopped': 'The run was stopped before it finished.',
   'failure.beforeFailed': 'The command before the run failed, so the run did not start.',
   'failure.afterFailed': 'The command after the run failed.',
@@ -512,6 +515,8 @@ export const en = {
   'confirm.deleteRemoteStakes':
     'The settings for {name} are removed from the rclone configuration, including any password or key stored with them. Nothing is copied anywhere first, and there is no undo: setting it up again means typing the credentials again.',
   'targets.inUse': 'Jobs still use this target: {jobs}. Point them at another target or delete them, then delete the target.',
+  'targets.hostKey': 'Server key',
+  'targets.hostKeyHint': 'ArrowLoop remembers this key when you save and refuses the server if it ever shows a different one. Compare it with the fingerprint your provider publishes.',
   'confirm.delete': 'Delete it',
   'confirm.cancel': 'Cancel',
   'about.title': 'About ArrowLoop',
@@ -1284,6 +1289,7 @@ export const en = {
   'new.change.twoFactorOnce': 'Mega asks for its {code} with the other sign-in fields, and for Mega and Proton Drive one code is enough: {test}, saving and the check after it share the session the code opens.',
   'new.change.targetInUse': 'A target that jobs still use is not deleted. {delete} names those jobs instead, so you can point them at another target first.',
   'new.change.smbShare': 'An SMB server that does not list its shares passes {test} once you fill in {share}. A job side at the top of an SMB server, where there is only the list of shares, is refused when you save the job.',
+  'new.change.hostKey': '{test} on an SFTP server shows the fingerprint of its {key}, and ArrowLoop refuses the server if it later shows a different one. A target saved before is held to the key it shows at its next test.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -1566,6 +1572,9 @@ export const de: Translations = {
   'failure.rateLimited': 'Der Dienst hat nach zu vielen Anfragen um eine Pause gebeten. Der nächste Lauf versucht es wieder.',
   'failure.rateLimited.left': 'Der Dienst auf der linken Seite hat nach zu vielen Anfragen um eine Pause gebeten. Der nächste Lauf versucht es wieder.',
   'failure.rateLimited.right': 'Der Dienst auf der rechten Seite hat nach zu vielen Anfragen um eine Pause gebeten. Der nächste Lauf versucht es wieder.',
+  'failure.hostKeyChanged': 'Der Server zeigt einen anderen Schlüssel als den für ihn gespeicherten, deshalb wurde ihm nicht vertraut. Wurde er neu aufgesetzt oder hat er einen neuen Schlüssel, leere host_keys in den Einstellungen des Ziels und teste es noch einmal.',
+  'failure.hostKeyChanged.left': 'Der Server der linken Seite zeigt einen anderen Schlüssel als den für ihn gespeicherten, deshalb wurde ihm nicht vertraut. Wurde er neu aufgesetzt oder hat er einen neuen Schlüssel, leere host_keys in den Einstellungen des Ziels und teste es noch einmal.',
+  'failure.hostKeyChanged.right': 'Der Server der rechten Seite zeigt einen anderen Schlüssel als den für ihn gespeicherten, deshalb wurde ihm nicht vertraut. Wurde er neu aufgesetzt oder hat er einen neuen Schlüssel, leere host_keys in den Einstellungen des Ziels und teste es noch einmal.',
   'failure.stopped': 'Der Lauf wurde angehalten, bevor er fertig war.',
   'failure.beforeFailed': 'Der Befehl vor dem Lauf ist fehlgeschlagen, also hat der Lauf nicht begonnen.',
   'failure.afterFailed': 'Der Befehl nach dem Lauf ist fehlgeschlagen.',
@@ -1793,6 +1802,8 @@ export const de: Translations = {
   'confirm.deleteRemoteStakes':
     'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt jedem Kennwort und jedem Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen.',
   'targets.inUse': 'Aufträge verwenden dieses Ziel noch: {jobs}. Stell sie auf ein anderes Ziel um oder lösch sie, dann kannst du das Ziel löschen.',
+  'targets.hostKey': 'Serverschlüssel',
+  'targets.hostKeyHint': 'ArrowLoop merkt sich diesen Schlüssel beim Speichern und lehnt den Server ab, falls er einmal einen anderen zeigt. Vergleich ihn mit dem Fingerabdruck, den dein Anbieter veröffentlicht.',
   'confirm.delete': 'Löschen',
   'confirm.cancel': 'Abbrechen',
   'about.title': 'Über ArrowLoop',
@@ -2559,6 +2570,7 @@ export const de: Translations = {
   'new.change.twoFactorOnce': 'Mega fragt den {code} zusammen mit den anderen Anmeldefeldern ab, und bei Mega und Proton Drive reicht ein Code: {test}, Speichern und die Prüfung danach teilen sich die Sitzung, die der Code öffnet.',
   'new.change.targetInUse': 'Ein Ziel, das Aufträge noch verwenden, wird nicht gelöscht. {delete} nennt stattdessen diese Aufträge, damit du sie vorher auf ein anderes Ziel umstellen kannst.',
   'new.change.smbShare': 'Ein SMB-Server, der seine Freigaben nicht auflistet, besteht {test}, sobald du {share} ausfüllst. Eine Auftragsseite ganz oben auf einem SMB-Server, wo nur die Liste der Freigaben steht, wird beim Speichern des Auftrags abgelehnt.',
+  'new.change.hostKey': '{test} zeigt bei einem SFTP-Server den Fingerabdruck seines {key}s, und ArrowLoop lehnt den Server ab, wenn er später einen anderen zeigt. Ein schon gespeichertes Ziel wird an den Schlüssel gebunden, den es beim nächsten Test zeigt.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

@@ -119,6 +119,9 @@ const fr: Translations = {
   'failure.rateLimited': 'Le service a demandé une pause après trop de requêtes. La prochaine exécution réessaiera.',
   'failure.rateLimited.left': 'Le service du côté gauche a demandé une pause après trop de requêtes. La prochaine exécution réessaiera.',
   'failure.rateLimited.right': 'Le service du côté droit a demandé une pause après trop de requêtes. La prochaine exécution réessaiera.',
+  'failure.hostKeyChanged': 'Le serveur présente une clé différente de celle enregistrée pour lui, il n\'a donc pas été considéré comme fiable. S\'il a été réinstallé ou a reçu une nouvelle clé, videz host_keys dans les réglages de la cible et testez-la à nouveau.',
+  'failure.hostKeyChanged.left': 'Le serveur du côté gauche présente une clé différente de celle enregistrée pour lui, il n\'a donc pas été considéré comme fiable. S\'il a été réinstallé ou a reçu une nouvelle clé, videz host_keys dans les réglages de la cible et testez-la à nouveau.',
+  'failure.hostKeyChanged.right': 'Le serveur du côté droit présente une clé différente de celle enregistrée pour lui, il n\'a donc pas été considéré comme fiable. S\'il a été réinstallé ou a reçu une nouvelle clé, videz host_keys dans les réglages de la cible et testez-la à nouveau.',
   'failure.stopped': 'L\'exécution a été arrêtée avant la fin.',
   'failure.beforeFailed': 'La commande avant l\'exécution a échoué, l\'exécution n\'a donc pas démarré.',
   'failure.afterFailed': 'La commande après l\'exécution a échoué.',
@@ -453,6 +456,8 @@ const fr: Translations = {
   'confirm.deleteRemote': 'Supprimer cette cible de stockage',
   'confirm.deleteRemoteStakes': 'Les réglages de {name} sont retirés de la configuration rclone, y compris tout mot de passe ou clé qui s\'y trouve. Rien n\'est copié ailleurs au préalable et il n\'y a pas de retour en arrière : le reconfigurer veut dire retaper les identifiants.',
   'targets.inUse': 'Des tâches utilisent encore cette cible : {jobs}. Faites-les pointer vers une autre cible ou supprimez-les, puis supprimez la cible.',
+  'targets.hostKey': 'Clé du serveur',
+  'targets.hostKeyHint': 'ArrowLoop retient cette clé à l\'enregistrement et refuse le serveur s\'il en présente un jour une autre. Comparez-la avec l\'empreinte que publie votre fournisseur.',
   'confirm.delete': 'Supprimer',
   'confirm.cancel': 'Annuler',
   'about.title': 'À propos de ArrowLoop',
@@ -1240,6 +1245,7 @@ const fr: Translations = {
   'new.change.twoFactorOnce': 'Mega demande le {code} avec les autres champs de connexion, et pour Mega et Proton Drive un seul code suffit : {test}, l\'enregistrement et la vérification qui suit partagent la session que le code ouvre.',
   'new.change.targetInUse': 'Une cible que des tâches utilisent encore n\'est pas supprimée. {delete} nomme ces tâches à la place, pour que vous les fassiez d\'abord pointer vers une autre cible.',
   'new.change.smbShare': 'Un serveur SMB qui n\'affiche pas ses partages réussit {test} dès que vous remplissez {share}. Un côté de tâche tout en haut d\'un serveur SMB, où il n\'y a que la liste des partages, est refusé à l\'enregistrement de la tâche.',
+  'new.change.hostKey': '{test} sur un serveur SFTP affiche l\'empreinte de sa {key}, et ArrowLoop refuse le serveur s\'il en présente une autre plus tard. Une cible déjà enregistrée est liée à la clé qu\'elle présente à son prochain test.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

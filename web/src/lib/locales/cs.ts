@@ -119,6 +119,9 @@ const cs: Translations = {
   'failure.rateLimited': 'Služba si po příliš mnoha požadavcích vyžádala pauzu. Příští běh to zkusí znovu.',
   'failure.rateLimited.left': 'Služba na levé straně si po příliš mnoha požadavcích vyžádala pauzu. Příští běh to zkusí znovu.',
   'failure.rateLimited.right': 'Služba na pravé straně si po příliš mnoha požadavcích vyžádala pauzu. Příští běh to zkusí znovu.',
+  'failure.hostKeyChanged': 'Server ukazuje jiný klíč, než jaký je pro něj uložen, a proto mu nebylo důvěřováno. Pokud byl přeinstalován nebo dostal nový klíč, vyprázdněte host_keys v nastavení cíle a otestujte ho znovu.',
+  'failure.hostKeyChanged.left': 'Server levé strany ukazuje jiný klíč, než jaký je pro něj uložen, a proto mu nebylo důvěřováno. Pokud byl přeinstalován nebo dostal nový klíč, vyprázdněte host_keys v nastavení cíle a otestujte ho znovu.',
+  'failure.hostKeyChanged.right': 'Server pravé strany ukazuje jiný klíč, než jaký je pro něj uložen, a proto mu nebylo důvěřováno. Pokud byl přeinstalován nebo dostal nový klíč, vyprázdněte host_keys v nastavení cíle a otestujte ho znovu.',
   'failure.stopped': 'Běh byl zastaven dřív, než skončil.',
   'failure.beforeFailed': 'Příkaz před během selhal, takže běh nezačal.',
   'failure.afterFailed': 'Příkaz po běhu selhal.',
@@ -453,6 +456,8 @@ const cs: Translations = {
   'confirm.deleteRemote': 'Smazat toto úložiště',
   'confirm.deleteRemoteStakes': 'Nastavení {name} zmizí z konfigurace rclone, včetně každého hesla a klíče, který tam leží. Předtím se nic nikam nekopíruje a cesta zpět není: nastavit to znovu znamená znovu napsat přihlašovací údaje.',
   'targets.inUse': 'Tento cíl stále používají úlohy: {jobs}. Nasměrujte je na jiný cíl nebo je smažte a potom smažte cíl.',
+  'targets.hostKey': 'Klíč serveru',
+  'targets.hostKeyHint': 'ArrowLoop si tento klíč při uložení zapamatuje a server odmítne, pokud někdy ukáže jiný. Porovnejte ho s otiskem, který zveřejňuje váš poskytovatel.',
   'confirm.delete': 'Smazat',
   'confirm.cancel': 'Zrušit',
   'about.title': 'O ArrowLoopu',
@@ -1240,6 +1245,7 @@ const cs: Translations = {
   'new.change.twoFactorOnce': 'Mega se ptá na {code} spolu s ostatními přihlašovacími poli a u Mega a Proton Drive stačí jeden kód: {test}, uložení i následná kontrola sdílejí relaci, kterou kód otevře.',
   'new.change.targetInUse': 'Cíl, který ještě používají úlohy, se nesmaže. {delete} místo toho vyjmenuje tyto úlohy, abyste je mohli nejdřív nasměrovat na jiný cíl.',
   'new.change.smbShare': 'Server SMB, který nevypisuje své sdílené složky, projde {test}, jakmile vyplníte {share}. Strana úlohy na samém vrcholu serveru SMB, kde je jen seznam sdílených složek, se při uložení úlohy odmítne.',
+  'new.change.hostKey': '{test} u serveru SFTP ukáže otisk jeho {key}, a ArrowLoop server odmítne, pokud později ukáže jiný. Dříve uložený cíl se váže na klíč, který ukáže při dalším testu.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

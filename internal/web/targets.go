@@ -198,11 +198,16 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := remotes.Try(r.Context(), body.Name, body.Type, body.Settings); err != nil {
-		writeJSON(w, http.StatusOK, refused(err))
-		return
+	key, err := remotes.Try(r.Context(), body.Name, body.Type, body.Settings)
+	answer := map[string]any{"ok": true}
+	if err != nil {
+		answer = refused(err)
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+	// The key the server was held to, which the page shows to compare.
+	if key != nil {
+		answer["hostKey"] = key.Fingerprint
+	}
+	writeJSON(w, http.StatusOK, answer)
 }
 
 // aboutRemote reports how full a target is. It is its own route rather than a

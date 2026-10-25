@@ -119,6 +119,9 @@ const gl: Translations = {
   'failure.rateLimited': 'O servizo pediu unha pausa despois de demasiadas solicitudes. A seguinte execución tentarao de novo.',
   'failure.rateLimited.left': 'O servizo do lado esquerdo pediu unha pausa despois de demasiadas solicitudes. A seguinte execución tentarao de novo.',
   'failure.rateLimited.right': 'O servizo do lado dereito pediu unha pausa despois de demasiadas solicitudes. A seguinte execución tentarao de novo.',
+  'failure.hostKeyChanged': 'O servidor mostra unha chave distinta da gardada para el, así que non se confiou nel. Se se reinstalou ou ten unha chave nova, baleira host_keys nos axustes do destino e próbao de novo.',
+  'failure.hostKeyChanged.left': 'O servidor do lado esquerdo mostra unha chave distinta da gardada para el, así que non se confiou nel. Se se reinstalou ou ten unha chave nova, baleira host_keys nos axustes do destino e próbao de novo.',
+  'failure.hostKeyChanged.right': 'O servidor do lado dereito mostra unha chave distinta da gardada para el, así que non se confiou nel. Se se reinstalou ou ten unha chave nova, baleira host_keys nos axustes do destino e próbao de novo.',
   'failure.stopped': 'A execución detívose antes de rematar.',
   'failure.beforeFailed': 'A orde previa á execución fallou, polo que a execución non comezou.',
   'failure.afterFailed': 'A orde posterior á execución fallou.',
@@ -453,6 +456,8 @@ const gl: Translations = {
   'confirm.deleteRemote': 'Borrar este destino de almacenamento',
   'confirm.deleteRemoteStakes': 'Os axustes de {name} retíranse da configuración do rclone, incluído calquera contrasinal ou chave que estea aí. Antes non se copia nada a ningures e non hai volta atrás: configuralo de novo significa tecleares as credenciais outra vez.',
   'targets.inUse': 'Aínda hai tarefas que usan este destino: {jobs}. Apúntaas a outro destino ou bórraas, e despois borra o destino.',
+  'targets.hostKey': 'Chave do servidor',
+  'targets.hostKeyHint': 'ArrowLoop lembra esta chave ao gardar e rexeita o servidor se algunha vez mostra outra. Compárala coa pegada que publica o teu provedor.',
   'confirm.delete': 'Borrar',
   'confirm.cancel': 'Cancelar',
   'about.title': 'Sobre ArrowLoop',
@@ -1240,6 +1245,7 @@ const gl: Translations = {
   'new.change.twoFactorOnce': 'Mega pide o {code} xunto cos demais campos de inicio de sesión, e para Mega e Proton Drive abonda cun código: {test}, gardar e a comprobación posterior comparten a sesión que abre o código.',
   'new.change.targetInUse': 'Un destino que aínda usan tarefas non se borra. {delete} nomea esas tarefas, para que primeiro as apuntes a outro destino.',
   'new.change.smbShare': 'Un servidor SMB que non mostra os seus recursos compartidos pasa {test} en canto enches {share}. Un lado dunha tarefa no máis alto dun servidor SMB, onde só está a lista de recursos compartidos, rexéitase ao gardar a tarefa.',
+  'new.change.hostKey': '{test} nun servidor SFTP mostra a pegada da súa {key}, e ArrowLoop rexeita o servidor se máis adiante mostra outra. Un destino gardado antes queda ligado á chave que mostre na seguinte proba.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

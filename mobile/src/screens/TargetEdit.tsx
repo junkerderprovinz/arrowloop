@@ -92,7 +92,7 @@ export function TargetEdit() {
   // The connection test's state. These hooks have to stay above the early
   // return, or the hook count changes between renders.
   const [trying, setTrying] = useState(false);
-  const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure } | null>(null);
+  const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure; hostKey?: string } | null>(null);
   // A counter rather than a flag, so every failed attempt shakes the button.
   const [refused, setRefused] = useState(0);
 
@@ -100,7 +100,7 @@ export function TargetEdit() {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure }) => {
+  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure; hostKey?: string }) => {
     setTried(answer);
     if (!answer.ok) setRefused((n) => n + 1);
   };
@@ -188,6 +188,11 @@ export function TargetEdit() {
 
       {/* Only the reason: the button itself shows the verdict. */}
       {tried && !tried.ok && tried.reason ? <Body>{failureLine(tried.reason, tried.failure, t, lang)}</Body> : null}
+      {tried?.hostKey ? (
+        <Section title={t("targets.hostKey")} hint={t("targets.hostKeyHint")}>
+          <Body>{tried.hostKey}</Body>
+        </Section>
+      ) : null}
 
       {/* The test runs before anything is saved. The button's colour, word,
           glyph and shake all show the result of the last attempt, so colour is
