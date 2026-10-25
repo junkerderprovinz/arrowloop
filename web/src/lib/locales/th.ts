@@ -1176,6 +1176,11 @@ const th: Translations = {
   'trash.pruneQuestion': 'ลบทุกอย่างที่เก่ากว่านี้ออกจากถังขยะถาวรไหม',
   'targets.editTitle': 'แก้ไข {name}',
   'targets.moreSettings': 'การตั้งค่าอื่น',
+  'targets.ftpTls': 'การเข้ารหัส',
+  'targets.ftpTlsHint': 'เซิร์ฟเวอร์ที่เข้ารหัสส่วนใหญ่ใช้ TLS แบบชัดแจ้งบนพอร์ตปกติ 21 ส่วน TLS แบบโดยนัยเป็นวิธีเก่าและรอฟังที่พอร์ต 990',
+  'targets.ftpTls.none': 'ไม่มี',
+  'targets.ftpTls.explicit': 'TLS แบบชัดแจ้ง',
+  'targets.ftpTls.implicit': 'TLS แบบโดยนัยที่พอร์ต 990',
   'anomalies.all': 'ความผิดปกติทั้งหมด',
   'anomalies.openTab': 'ค้างอยู่',
   'anomalies.which': 'ค้างอยู่หรือปิดแล้ว',
@@ -1235,6 +1240,7 @@ const th: Translations = {
   'new.change.targetRows': 'ปุ่ม {test} ของแต่ละปลายทางแสดง {connected} หรือ {notConnected} ด้วยตัวเอง พร้อมเหตุผลในบรรทัดใต้ชื่อ รหัสผ่านหรือคีย์ที่บันทึกไว้จะแสดงเป็น {saved} และ {change} จะเปิดช่องให้กรอก',
   'new.change.releaseCards': 'หลังอัปเดต หน้าต่างนี้จะแสดงการ์ดของทุกรุ่นนับจากรุ่นที่คุณมี พร้อมบันทึกและการเปลี่ยนแปลงที่รุ่นนั้นนำมา',
   'new.change.newerWins': '{option} ในงานที่ซิงก์สองทางจะตัดสินความขัดแย้งโดยไม่ถาม เวอร์ชันที่บันทึกล่าสุดจะอยู่ทั้งสองฝั่ง และอีกเวอร์ชันจะไปอยู่ในถังขยะ',
+  'new.change.targetSwitches': 'การตั้งค่าของปลายทางที่มีแค่เปิดหรือปิดกลายเป็นสวิตช์ และปลายทาง FTP จะถามครั้งเดียวว่าใช้{encryption}แบบใด',
   'new.change.appFolders': 'ในแอปโทรศัพท์ {add} ใน {settings}, {phone} ช่วยให้ ArrowLoop ซิงค์โฟลเดอร์ที่แอปอื่นมีให้ในตัวเลือกไฟล์ของ Android ได้โดยไม่ต้องใช้รูทหรือ Shizuku โฟลเดอร์จะแสดงในปลายทางชื่อ Apps',
 }
 

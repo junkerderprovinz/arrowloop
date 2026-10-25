@@ -1176,6 +1176,11 @@ const eu: Translations = {
   'trash.pruneQuestion': 'Hau baino zaharragoa den guztia zakarrontzitik betiko ezabatu?',
   'targets.editTitle': 'Editatu {name}',
   'targets.moreSettings': 'Beste ezarpen batzuk',
+  'targets.ftpTls': 'Zifratzea',
+  'targets.ftpTlsHint': 'Zifratzen duten zerbitzari gehienek TLS esplizitua erabiltzen dute ohiko 21 atakan. TLS inplizitua modu zaharragoa da eta 990 atakan entzuten du.',
+  'targets.ftpTls.none': 'Bat ere ez',
+  'targets.ftpTls.explicit': 'TLS esplizitua',
+  'targets.ftpTls.implicit': 'TLS inplizitua 990 atakan',
   'anomalies.all': 'Anomalia guztiak',
   'anomalies.openTab': 'Irekiak',
   'anomalies.which': 'Irekiak edo itxiak',
@@ -1235,6 +1240,7 @@ const eu: Translations = {
   'new.change.targetRows': 'Helburu bakoitzaren {test} botoiak berak erakusten du {connected} edo {notConnected}, eta arrazoia izenaren azpiko lerroan dago. Gordetako pasahitz edo gako bat {saved} gisa agertzen da, eta {change} aukerak eremua irekitzen du.',
   'new.change.releaseCards': 'Eguneratze baten ondoren, leiho honek txartel bat erakusten du zuk zenuen bertsioaren ondorengo bertsio bakoitzeko, bere oharrekin eta ekarri zituen aldaketekin.',
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
+  'new.change.targetSwitches': 'Helburu baten ezarpenak, aktibatuta edo desaktibatuta soilik daudenak, etengailuak dira, eta FTP helburu batek behin galdetzen du zein {encryption} erabiltzen duen.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

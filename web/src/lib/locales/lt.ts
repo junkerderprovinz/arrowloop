@@ -1176,6 +1176,11 @@ const lt: Translations = {
   'trash.pruneQuestion': 'Visam laikui ištrinti iš šiukšlinės viską, kas senesnė už šią datą?',
   'targets.editTitle': 'Redaguoti: {name}',
   'targets.moreSettings': 'Kiti nustatymai',
+  'targets.ftpTls': 'Šifravimas',
+  'targets.ftpTlsHint': 'Dauguma šifruojančių serverių naudoja aiškųjį TLS įprastame 21 prievade. Numanomasis TLS yra senesnis būdas ir klauso 990 prievade.',
+  'targets.ftpTls.none': 'Nėra',
+  'targets.ftpTls.explicit': 'Aiškusis TLS',
+  'targets.ftpTls.implicit': 'Numanomasis TLS 990 prievade',
   'anomalies.all': 'Visi radiniai',
   'anomalies.openTab': 'Atviros',
   'anomalies.which': 'Atviros arba uždarytos',
@@ -1235,6 +1240,7 @@ const lt: Translations = {
   'new.change.targetRows': 'Kiekvienos paskirties mygtukas {test} pats parodo {connected} arba {notConnected}, o priežastis būna eilutėje po pavadinimu. Išsaugotas slaptažodis ar raktas rodomas kaip {saved}, o {change} atveria lauką.',
   'new.change.releaseCards': 'Po naujinimo šiame lange rodoma kortelė kiekvienam leidimui nuo jūsų turėtos versijos, su jo pastabomis ir pakeitimais.',
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
+  'new.change.targetSwitches': 'Paskirties nustatymai, kurie tik įjungti arba išjungti, yra jungikliai, o FTP paskirtis vieną kartą paklausia, kokį {encryption} ji naudoja.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

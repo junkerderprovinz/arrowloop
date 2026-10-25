@@ -1176,6 +1176,11 @@ const tr: Translations = {
   'trash.pruneQuestion': 'Bundan eski her şey çöp kutusundan kalıcı olarak silinsin mi?',
   'targets.editTitle': '{name} düzenle',
   'targets.moreSettings': 'Diğer ayarlar',
+  'targets.ftpTls': 'Şifreleme',
+  'targets.ftpTlsHint': 'Şifreleme yapan sunucuların çoğu olağan 21 numaralı portta açık TLS kullanır. Örtük TLS eski yöntemdir ve 990 numaralı portu dinler.',
+  'targets.ftpTls.none': 'Yok',
+  'targets.ftpTls.explicit': 'Açık TLS',
+  'targets.ftpTls.implicit': '990 numaralı portta örtük TLS',
   'anomalies.all': 'Tüm bulgular',
   'anomalies.openTab': 'Açık',
   'anomalies.which': 'Açık veya kapalı',
@@ -1235,6 +1240,7 @@ const tr: Translations = {
   'new.change.targetRows': 'Her hedefin {test} düğmesi {connected} ya da {notConnected} durumunu kendisi gösterir, nedeni de adın altındaki satırda yazar. Kaydedilmiş bir parola ya da anahtar {saved} olarak görünür, {change} alanı açar.',
   'new.change.releaseCards': 'Güncellemeden sonra bu pencere, elindeki sürümden sonraki her sürüm için notlarıyla ve getirdiği değişikliklerle bir kart gösterir.',
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
+  'new.change.targetSwitches': 'Bir hedefin yalnızca açık ya da kapalı olan ayarları anahtar oldu ve bir FTP hedefi hangi {encryption} yöntemini kullandığını bir kez sorar.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

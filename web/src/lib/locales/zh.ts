@@ -1176,6 +1176,11 @@ const zh: Translations = {
   'trash.pruneQuestion': '从回收站永久删除比这更早的所有内容？',
   'targets.editTitle': '编辑 {name}',
   'targets.moreSettings': '其他设置',
+  'targets.ftpTls': '加密',
+  'targets.ftpTlsHint': '大多数加密的服务器在常用端口 21 上使用显式 TLS。隐式 TLS 是较旧的方式，监听端口 990。',
+  'targets.ftpTls.none': '无',
+  'targets.ftpTls.explicit': '显式 TLS',
+  'targets.ftpTls.implicit': '端口 990 上的隐式 TLS',
   'anomalies.all': '全部异常',
   'anomalies.openTab': '未处理',
   'anomalies.which': '未处理或已关闭',
@@ -1235,6 +1240,7 @@ const zh: Translations = {
   'new.change.targetRows': '每个目标的{test}按钮会自己显示{connected}或{notConnected}，原因写在名称下面一行。已保存的密码或密钥显示为{saved}，点{change}打开输入框。',
   'new.change.releaseCards': '更新后，这个窗口会为你之前版本之后的每个版本显示一张卡片，附上它的说明和带来的改动。',
   'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
+  'new.change.targetSwitches': '目标中只有开和关两种状态的设置都变成了开关，FTP 目标只问一次它使用哪种{encryption}。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

@@ -8,9 +8,10 @@ import type { Nav, MoreStack } from "../nav";
 import { failureLine, type Failure } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { optionLabel } from "../../../web/src/lib/optionNames";
+import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
-import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
+import { Body, Button, Caption, Choice, Empty, Page, Row, Section, Title, Toggle } from "../ui";
 
 /**
  * The target form. Its fields are the options rclone marks required or
@@ -173,6 +174,33 @@ export function TargetEdit() {
 
       <Section title={t("targets.access")}>
         {options.map((option) => {
+          if (backendName === "ftp" && option.name === "explicit_tls") return null;
+          if (backendName === "ftp" && option.name === "tls") {
+            return (
+              <View key={option.name} style={styles.choice}>
+                <Row label={t("targets.ftpTls")} hint={t("targets.ftpTlsHint")} />
+                <Choice
+                  value={ftpTls(values)}
+                  onChange={(mode) => setValues((old) => withFtpTls(old, mode))}
+                  options={FTP_TLS.map((mode) => ({ value: mode, label: t(`targets.ftpTls.${mode}`) }))}
+                />
+              </View>
+            );
+          }
+          if (option.type === "bool") {
+            // Off is left unsaved where it is rclone's default.
+            return (
+              <Toggle
+                key={option.name}
+                label={optionLabel(option.name, t)}
+                hint={optionHint(option, t, provider)}
+                value={(values[option.name] || option.default) === "true"}
+                onChange={(on) =>
+                  setValues((old) => ({ ...old, [option.name]: String(on) === option.default ? "" : String(on) }))
+                }
+              />
+            );
+          }
           const props = {
             label: optionLabel(option.name, t),
             hint: optionHint(option, t, provider),
@@ -232,4 +260,5 @@ function prune(values: Record<string, string>): Record<string, string> {
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
+  choice: { gap: space.sm },
 });

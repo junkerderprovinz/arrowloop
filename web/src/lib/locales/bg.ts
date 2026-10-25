@@ -1176,6 +1176,11 @@ const bg: Translations = {
   'trash.pruneQuestion': 'Да се изтрие ли завинаги от кошчето всичко, по-старо от това?',
   'targets.editTitle': 'Редактиране на {name}',
   'targets.moreSettings': 'Други настройки',
+  'targets.ftpTls': 'Шифроване',
+  'targets.ftpTlsHint': 'Повечето сървъри с шифроване ползват явен TLS на обичайния порт 21. Неявният TLS е по-старият начин и слуша на порт 990.',
+  'targets.ftpTls.none': 'Без',
+  'targets.ftpTls.explicit': 'Явен TLS',
+  'targets.ftpTls.implicit': 'Неявен TLS на порт 990',
   'anomalies.all': 'Всички аномалии',
   'anomalies.openTab': 'Отворени',
   'anomalies.which': 'Отворени или затворени',
@@ -1235,6 +1240,7 @@ const bg: Translations = {
   'new.change.targetRows': 'Бутонът {test} на всяка цел сам показва {connected} или {notConnected}, а причината стои на реда под името. Запазена парола или ключ се показва като {saved}, а {change} отваря полето.',
   'new.change.releaseCards': 'След актуализация този прозорец показва карта за всяко издание след това, което сте имали, с бележките му и промените, които е донесло.',
   'new.change.newerWins': '{option} в задача, която синхронизира в двете посоки, решава конфликт, без да пита: последно записаната версия остава от двете страни, а другата отива в кошчето.',
+  'new.change.targetSwitches': 'Настройките на целта, които са само включено или изключено, са превключватели, а FTP целта пита веднъж какво {encryption} ползва.',
   'new.change.appFolders': 'В приложението за телефон {add} в {settings}, {phone} позволява на ArrowLoop да синхронизира папка, която друго приложение предлага в избора на файлове на Android, без root и без Shizuku. Папките се появяват в цел с име Apps.',
 }
 

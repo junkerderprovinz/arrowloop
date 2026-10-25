@@ -1176,6 +1176,11 @@ const vi: Translations = {
   'trash.pruneQuestion': 'Xóa vĩnh viễn mọi thứ cũ hơn mốc này khỏi thùng rác?',
   'targets.editTitle': 'Sửa {name}',
   'targets.moreSettings': 'Cài đặt khác',
+  'targets.ftpTls': 'Mã hóa',
+  'targets.ftpTlsHint': 'Phần lớn máy chủ có mã hóa dùng TLS tường minh trên cổng thông thường 21. TLS ngầm định là cách cũ hơn và lắng nghe ở cổng 990.',
+  'targets.ftpTls.none': 'Không',
+  'targets.ftpTls.explicit': 'TLS tường minh',
+  'targets.ftpTls.implicit': 'TLS ngầm định ở cổng 990',
   'anomalies.all': 'Tất cả bất thường',
   'anomalies.openTab': 'Đang mở',
   'anomalies.which': 'Đang mở hoặc đã đóng',
@@ -1235,6 +1240,7 @@ const vi: Translations = {
   'new.change.targetRows': 'Nút {test} của mỗi đích tự hiện {connected} hoặc {notConnected}, kèm lý do ở dòng dưới tên. Mật khẩu hoặc khóa đã lưu hiện là {saved}, và {change} mở ô nhập.',
   'new.change.releaseCards': 'Sau khi cập nhật, cửa sổ này hiện một thẻ cho mỗi bản phát hành kể từ bản bạn đang dùng, kèm ghi chú và những thay đổi nó mang lại.',
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
+  'new.change.targetSwitches': 'Các thiết lập của đích chỉ có bật hoặc tắt nay là công tắc, và đích FTP hỏi một lần nó dùng {encryption} nào.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

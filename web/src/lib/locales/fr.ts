@@ -1176,6 +1176,11 @@ const fr: Translations = {
   'trash.pruneQuestion': 'Supprimer définitivement de la corbeille tout ce qui est plus ancien ?',
   'targets.editTitle': 'Modifier {name}',
   'targets.moreSettings': 'Autres réglages',
+  'targets.ftpTls': 'Chiffrement',
+  'targets.ftpTlsHint': 'La plupart des serveurs qui chiffrent utilisent le TLS explicite sur le port habituel 21. Le TLS implicite est l\'ancienne méthode et écoute sur le port 990.',
+  'targets.ftpTls.none': 'Aucun',
+  'targets.ftpTls.explicit': 'TLS explicite',
+  'targets.ftpTls.implicit': 'TLS implicite sur le port 990',
   'anomalies.all': 'Toutes les anomalies',
   'anomalies.openTab': 'Ouvertes',
   'anomalies.which': 'Ouvertes ou fermées',
@@ -1235,6 +1240,7 @@ const fr: Translations = {
   'new.change.targetRows': 'Le bouton {test} de chaque cible affiche lui-même {connected} ou {notConnected}, avec la raison sur la ligne sous le nom. Un mot de passe ou une clé enregistrés apparaissent comme {saved}, et {change} ouvre le champ.',
   'new.change.releaseCards': 'Après une mise à jour, cette fenêtre affiche une carte pour chaque version depuis celle que vous aviez, avec ses notes et les changements qu\'elle a apportés.',
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
+  'new.change.targetSwitches': 'Les réglages d\'une cible qui ne sont qu\'activés ou désactivés sont des interrupteurs, et une cible FTP demande une seule fois quel {encryption} elle utilise.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

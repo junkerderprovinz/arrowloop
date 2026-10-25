@@ -1176,6 +1176,11 @@ const fi: Translations = {
   'trash.pruneQuestion': 'Poistetaanko kaikki tätä vanhempi roskakorista lopullisesti?',
   'targets.editTitle': 'Muokkaa: {name}',
   'targets.moreSettings': 'Muut asetukset',
+  'targets.ftpTls': 'Salaus',
+  'targets.ftpTlsHint': 'Useimmat salaavat palvelimet käyttävät eksplisiittistä TLS:ää tavallisessa portissa 21. Implisiittinen TLS on vanhempi tapa ja kuuntelee porttia 990.',
+  'targets.ftpTls.none': 'Ei salausta',
+  'targets.ftpTls.explicit': 'Eksplisiittinen TLS',
+  'targets.ftpTls.implicit': 'Implisiittinen TLS portissa 990',
   'anomalies.all': 'Kaikki poikkeamat',
   'anomalies.openTab': 'Avoimet',
   'anomalies.which': 'Avoimet tai suljetut',
@@ -1235,6 +1240,7 @@ const fi: Translations = {
   'new.change.targetRows': 'Kohteen {test}-painike näyttää itse {connected} tai {notConnected}, ja syy on nimen alla olevalla rivillä. Tallennettu salasana tai avain näkyy muodossa {saved}, ja {change} avaa kentän.',
   'new.change.releaseCards': 'Päivityksen jälkeen tämä ikkuna näyttää kortin jokaisesta julkaisusta sinulla olleen version jälkeen, mukana julkaisun muistiinpanot ja sen tuomat muutokset.',
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
+  'new.change.targetSwitches': 'Kohteen asetukset, jotka ovat vain päällä tai pois, ovat kytkimiä, ja FTP-kohde kysyy kerran, mitä {encryption} se käyttää.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

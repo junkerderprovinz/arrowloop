@@ -1176,6 +1176,11 @@ const pt: Translations = {
   'trash.pruneQuestion': 'Apagar definitivamente da reciclagem tudo o que for mais antigo do que isto?',
   'targets.editTitle': 'Editar {name}',
   'targets.moreSettings': 'Outras definições',
+  'targets.ftpTls': 'Encriptação',
+  'targets.ftpTlsHint': 'A maioria dos servidores que encriptam usa TLS explícito na porta habitual 21. O TLS implícito é a forma mais antiga e escuta na porta 990.',
+  'targets.ftpTls.none': 'Nenhuma',
+  'targets.ftpTls.explicit': 'TLS explícito',
+  'targets.ftpTls.implicit': 'TLS implícito na porta 990',
   'anomalies.all': 'Todas as anomalias',
   'anomalies.openTab': 'Em aberto',
   'anomalies.which': 'Em aberto ou fechadas',
@@ -1235,6 +1240,7 @@ const pt: Translations = {
   'new.change.targetRows': 'O botão {test} de cada destino mostra ele próprio {connected} ou {notConnected}, com o motivo na linha por baixo do nome. Uma palavra-passe ou chave guardada aparece como {saved}, e {change} abre o campo.',
   'new.change.releaseCards': 'Depois de uma atualização, esta janela mostra um cartão por cada versão desde a que tinhas, com as notas e as mudanças que trouxe.',
   'new.change.newerWins': '{option} numa tarefa que sincroniza nos dois sentidos resolve um conflito sem perguntar: a versão guardada por último fica nos dois lados e a outra vai para a reciclagem.',
+  'new.change.targetSwitches': 'As definições de um destino que só estão ligadas ou desligadas são interruptores, e um destino FTP pergunta uma só vez que {encryption} usa.',
   'new.change.appFolders': 'Na app do telemóvel, {add} em {settings}, {phone} deixa o ArrowLoop sincronizar uma pasta que outra aplicação oferece no seletor de ficheiros do Android, sem root nem Shizuku. As pastas aparecem num destino chamado Apps.',
 }
 

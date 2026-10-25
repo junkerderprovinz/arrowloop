@@ -3,6 +3,7 @@ package remotes
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -21,9 +22,12 @@ type Option struct {
 	// is prompted for with a default: s3 marks none of its options required and
 	// smb marks only host. Essential comes from a hand-kept list and only adds
 	// to what the form shows.
-	Essential bool      `json:"essential"`
-	Default   string    `json:"default"`
-	Examples  []Example `json:"examples,omitempty"`
+	Essential bool `json:"essential"`
+	// Type is rclone's name for the kind of value, such as bool, string,
+	// SizeSuffix or Duration, so a yes-or-no setting can be drawn as a switch.
+	Type     string    `json:"type"`
+	Default  string    `json:"default"`
+	Examples []Example `json:"examples,omitempty"`
 }
 
 // Example is one suggested value, with the reason it might be the right one.
@@ -100,7 +104,8 @@ var essential = map[string]map[string]bool{
 	"protondrive": {"username": true, "password": true, "2fa": true},
 	"seafile":     {"url": true, "user": true, "pass": true, "library": true},
 	"koofr":       {"provider": true, "user": true, "password": true},
-	"ftp":         {"host": true, "user": true, "pass": true, "port": true},
+	// A login over plain FTP travels readable, so the encryption is asked.
+	"ftp": {"host": true, "user": true, "pass": true, "port": true, "tls": true, "explicit_tls": true},
 
 	"b2":        {"account": true, "key": true},
 	"azureblob": {"account": true, "key": true},
@@ -188,6 +193,7 @@ func Backends() []Backend {
 				Secret:    secretOption(o),
 				Advanced:  o.Advanced,
 				Essential: essential[info.Name][o.Name],
+				Type:      o.Type(),
 				Default:   defaultText(o.Default),
 				Examples:  examples(o),
 			})
@@ -226,12 +232,17 @@ func firstLine(help string) string {
 	return strings.TrimSpace(line)
 }
 
+// defaultText is a default as a form shows it. A switch needs to know it is
+// off, while a zero would only stand in an empty field as a placeholder.
 func defaultText(value any) string {
-	if value == nil {
+	switch v := value.(type) {
+	case nil:
 		return ""
+	case bool:
+		return strconv.FormatBool(v)
 	}
 	text := fmt.Sprint(value)
-	if text == "<nil>" || text == "false" || text == "0" {
+	if text == "<nil>" || text == "0" {
 		return ""
 	}
 	return text

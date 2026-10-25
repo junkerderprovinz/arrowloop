@@ -1176,6 +1176,11 @@ const sl: Translations = {
   'trash.pruneQuestion': 'Za vedno izbrišem iz koša vse, kar je starejše od tega?',
   'targets.editTitle': 'Uredi {name}',
   'targets.moreSettings': 'Druge nastavitve',
+  'targets.ftpTls': 'Šifriranje',
+  'targets.ftpTlsHint': 'Večina strežnikov s šifriranjem uporablja eksplicitni TLS na običajnih vratih 21. Implicitni TLS je starejši način in posluša na vratih 990.',
+  'targets.ftpTls.none': 'Brez',
+  'targets.ftpTls.explicit': 'Eksplicitni TLS',
+  'targets.ftpTls.implicit': 'Implicitni TLS na vratih 990',
   'anomalies.all': 'Vse anomalije',
   'anomalies.openTab': 'Odprto',
   'anomalies.which': 'Odprto ali zaprto',
@@ -1235,6 +1240,7 @@ const sl: Translations = {
   'new.change.targetRows': 'Gumb {test} pri vsakem cilju sam pokaže {connected} ali {notConnected}, razlog pa je v vrstici pod imenom. Shranjeno geslo ali ključ je prikazan kot {saved}, {change} pa odpre polje.',
   'new.change.releaseCards': 'Po posodobitvi to okno pokaže kartico za vsako izdajo od tiste, ki si jo imel, z opombami in spremembami, ki jih je prinesla.',
   'new.change.newerWins': '{option} v opravilu, ki sinhronizira v obe smeri, razreši spor brez vprašanja: nazadnje shranjena različica ostane na obeh straneh, druga pa gre v koš.',
+  'new.change.targetSwitches': 'Nastavitve cilja, ki so le vklopljene ali izklopljene, so stikala, cilj FTP pa enkrat vpraša, katero {encryption} uporablja.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
 }
 

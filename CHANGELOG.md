@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ⚡ Improved
+
+- **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
+
 ## 2.2.8 - 2026-10-23
 
 ## ⚡ Improved

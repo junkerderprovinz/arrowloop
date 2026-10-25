@@ -1176,6 +1176,11 @@ const no: Translations = {
   'trash.pruneQuestion': 'Slette alt som er eldre enn dette fra papirkurven for godt?',
   'targets.editTitle': 'Rediger {name}',
   'targets.moreSettings': 'Andre innstillinger',
+  'targets.ftpTls': 'Kryptering',
+  'targets.ftpTlsHint': 'De fleste servere med kryptering bruker eksplisitt TLS på den vanlige porten 21. Implisitt TLS er den eldre måten og lytter på port 990.',
+  'targets.ftpTls.none': 'Ingen',
+  'targets.ftpTls.explicit': 'Eksplisitt TLS',
+  'targets.ftpTls.implicit': 'Implisitt TLS på port 990',
   'anomalies.all': 'Alle avvik',
   'anomalies.openTab': 'Åpne',
   'anomalies.which': 'Åpne eller lukkede',
@@ -1235,6 +1240,7 @@ const no: Translations = {
   'new.change.targetRows': 'Knappen {test} ved et mål viser selv {connected} eller {notConnected}, med årsaken på linjen under navnet. Et lagret passord eller en nøkkel står som {saved}, og {change} åpner feltet.',
   'new.change.releaseCards': 'Etter en oppdatering viser dette vinduet et kort for hver utgivelse siden versjonen du hadde, med merknadene og endringene den brakte.',
   'new.change.newerWins': '{option} i en jobb som synkroniserer begge veier, avgjør en konflikt uten å spørre: versjonen som ble lagret sist, blir på begge sider, og den andre havner i papirkurven.',
+  'new.change.targetSwitches': 'Innstillinger for et mål som bare er av eller på, er brytere, og et FTP-mål spør én gang hvilken {encryption} det bruker.',
   'new.change.appFolders': 'I telefonappen lar {add} under {settings}, {phone} ArrowLoop synkronisere en mappe som en annen app tilbyr i Androids filvelger, uten root og uten Shizuku. Mappene vises i et mål som heter Apps.',
 }
 

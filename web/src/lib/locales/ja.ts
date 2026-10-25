@@ -1176,6 +1176,11 @@ const ja: Translations = {
   'trash.pruneQuestion': 'これより古いものをすべてごみ箱から完全に削除しますか?',
   'targets.editTitle': '{name} を編集',
   'targets.moreSettings': 'その他の設定',
+  'targets.ftpTls': '暗号化',
+  'targets.ftpTlsHint': '暗号化するサーバーの多くは、通常のポート 21 で明示的 TLS を使います。暗黙的 TLS は古い方式で、ポート 990 で待ち受けます。',
+  'targets.ftpTls.none': 'なし',
+  'targets.ftpTls.explicit': '明示的 TLS',
+  'targets.ftpTls.implicit': 'ポート 990 の暗黙的 TLS',
   'anomalies.all': 'すべての検出',
   'anomalies.openTab': '未対応',
   'anomalies.which': '未対応または対応済み',
@@ -1235,6 +1240,7 @@ const ja: Translations = {
   'new.change.targetRows': '各保存先の {test} ボタンが、それ自体で {connected} か {notConnected} を表示し、理由は名前の下の行に出ます。保存済みのパスワードやキーは {saved} と表示され、{change} で入力欄が開きます。',
   'new.change.releaseCards': 'アップデート後は、これまで使っていたバージョン以降のリリースごとに、リリースノートと変更点を載せたカードがこのウィンドウに表示されます。',
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
+  'new.change.targetSwitches': 'オンかオフしかない接続先の設定はスイッチになり、FTP の接続先は使う{encryption}を一度だけ尋ねます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

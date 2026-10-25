@@ -1176,6 +1176,11 @@ const sr: Translations = {
   'trash.pruneQuestion': 'Трајно обрисати из корпе све што је старије од овога?',
   'targets.editTitle': 'Уреди {name}',
   'targets.moreSettings': 'Остала подешавања',
+  'targets.ftpTls': 'Шифровање',
+  'targets.ftpTlsHint': 'Већина сервера са шифровањем користи експлицитни TLS на уобичајеном порту 21. Имплицитни TLS је старији начин и слуша на порту 990.',
+  'targets.ftpTls.none': 'Без',
+  'targets.ftpTls.explicit': 'Експлицитни TLS',
+  'targets.ftpTls.implicit': 'Имплицитни TLS на порту 990',
   'anomalies.all': 'Све аномалије',
   'anomalies.openTab': 'Отворено',
   'anomalies.which': 'Отворено или затворено',
@@ -1235,6 +1240,7 @@ const sr: Translations = {
   'new.change.targetRows': 'Дугме {test} код сваког циља само приказује {connected} или {notConnected}, а разлог стоји у реду испод имена. Сачувана лозинка или кључ приказује се као {saved}, а {change} отвара поље.',
   'new.change.releaseCards': 'После ажурирања овај прозор приказује картицу за свако издање од оног које си имао, са његовим напоменама и променама које је донело.',
   'new.change.newerWins': '{option} у послу који синхронизује у оба смера решава сукоб без питања: последња сачувана верзија остаје на обе стране, а друга иде у корпу.',
+  'new.change.targetSwitches': 'Подешавања одредишта која су само укључена или искључена су прекидачи, а FTP одредиште једном пита које {encryption} користи.',
   'new.change.appFolders': 'У апликацији за телефон {add} под {settings}, {phone} омогућава да ArrowLoop синхронизује фасциклу коју друга апликација нуди у Android бирачу датотека, без root приступа и без Shizuku. Фасцикле се појављују у одредишту под именом Apps.',
 }
 

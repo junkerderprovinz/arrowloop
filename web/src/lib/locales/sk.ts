@@ -1176,6 +1176,11 @@ const sk: Translations = {
   'trash.pruneQuestion': 'Nadobro vymazať z koša všetko, čo je staršie ako toto?',
   'targets.editTitle': 'Upraviť {name}',
   'targets.moreSettings': 'Ďalšie nastavenia',
+  'targets.ftpTls': 'Šifrovanie',
+  'targets.ftpTlsHint': 'Väčšina serverov so šifrovaním používa explicitné TLS na obvyklom porte 21. Implicitné TLS je starší spôsob a počúva na porte 990.',
+  'targets.ftpTls.none': 'Žiadne',
+  'targets.ftpTls.explicit': 'Explicitné TLS',
+  'targets.ftpTls.implicit': 'Implicitné TLS na porte 990',
   'anomalies.all': 'Všetky anomálie',
   'anomalies.openTab': 'Otvorené',
   'anomalies.which': 'Otvorené alebo zatvorené',
@@ -1235,6 +1240,7 @@ const sk: Translations = {
   'new.change.targetRows': 'Tlačidlo {test} pri každom cieli samo ukáže {connected} alebo {notConnected} a dôvod je v riadku pod menom. Uložené heslo alebo kľúč sa zobrazuje ako {saved} a {change} otvorí pole.',
   'new.change.releaseCards': 'Po aktualizácii toto okno ukáže kartu pre každé vydanie od vašej verzie, s jeho poznámkami a zmenami, ktoré prinieslo.',
   'new.change.newerWins': '{option} v úlohe, ktorá synchronizuje oboma smermi, vyrieši konflikt bez pýtania: naposledy uložená verzia zostane na oboch stranách a tá druhá ide do koša.',
+  'new.change.targetSwitches': 'Nastavenia cieľa, ktoré sú len zapnuté alebo vypnuté, sú prepínače a cieľ FTP sa raz opýta, aké {encryption} používa.',
   'new.change.appFolders': 'V aplikácii pre telefón umožní {add} v {settings}, {phone} synchronizovať v ArrowLoop priečinok, ktorý iná aplikácia ponúka vo výbere súborov Androidu, bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps.',
 }
 

@@ -1176,6 +1176,11 @@ const is: Translations = {
   'trash.pruneQuestion': 'Eyða öllu sem er eldra en þetta úr ruslinu fyrir fullt og allt?',
   'targets.editTitle': 'Breyta {name}',
   'targets.moreSettings': 'Aðrar stillingar',
+  'targets.ftpTls': 'Dulkóðun',
+  'targets.ftpTlsHint': 'Flestir þjónar sem dulkóða nota beint TLS á venjulegu gátt 21. Óbeint TLS er eldri leiðin og hlustar á gátt 990.',
+  'targets.ftpTls.none': 'Engin',
+  'targets.ftpTls.explicit': 'Beint TLS',
+  'targets.ftpTls.implicit': 'Óbeint TLS á gátt 990',
   'anomalies.all': 'Öll frávik',
   'anomalies.openTab': 'Opin',
   'anomalies.which': 'Opin eða lokuð',
@@ -1235,6 +1240,7 @@ const is: Translations = {
   'new.change.targetRows': 'Hnappurinn {test} við hvert markmið sýnir sjálfur {connected} eða {notConnected}, og ástæðan er á línunni undir nafninu. Vistað lykilorð eða lykill birtist sem {saved}, og {change} opnar reitinn.',
   'new.change.releaseCards': 'Eftir uppfærslu sýnir þessi gluggi spjald fyrir hverja útgáfu síðan þá sem þú varst með, með athugasemdum hennar og breytingunum sem hún kom með.',
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
+  'new.change.targetSwitches': 'Stillingar áfangastaðar sem eru aðeins af eða á eru rofar, og FTP-áfangastaður spyr einu sinni hvaða {encryption} hann notar.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

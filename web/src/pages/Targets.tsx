@@ -51,6 +51,8 @@ import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
+import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
+import { ToggleRow } from '../components/ToggleRow'
 import { SecretRow } from './settings/rows'
 import { failureLine } from '../lib/failure'
 
@@ -643,7 +645,28 @@ function RemoteForm({
   // A stored secret arrives as the placeholder and goes back untouched unless
   // it is changed, which tells the engine to keep it (remotes.Save).
   const field = (o: Backend['options'][number]) =>
-    o.secret ? (
+    kind === 'ftp' && o.name === 'explicit_tls' ? null : kind === 'ftp' && o.name === 'tls' ? (
+      <FieldRow key={o.name} label={t('targets.ftpTls')} hint={t('targets.ftpTlsHint')}>
+        <span data-new="target-switches" className="flex w-full">
+          <Choice
+            value={ftpTls(values)}
+            onChange={(mode) => setValues((prev) => withFtpTls(prev, mode))}
+            label={t('targets.ftpTls')}
+            options={FTP_TLS.map((mode) => ({ value: mode, label: t(`targets.ftpTls.${mode}`) }))}
+          />
+        </span>
+      </FieldRow>
+    ) : o.type === 'bool' ? (
+      // Off is left unsaved where it is rclone's default, as an untouched
+      // field would be.
+      <ToggleRow
+        key={o.name}
+        label={optionLabel(o.name, t)}
+        hint={optionHint(o, t, provider)}
+        checked={(values[o.name] || o.default) === 'true'}
+        onChange={(on) => setValues((prev) => ({ ...prev, [o.name]: String(on) === o.default ? '' : String(on) }))}
+      />
+    ) : o.secret ? (
       <SecretRow
         key={o.name}
         label={optionLabel(o.name, t)}

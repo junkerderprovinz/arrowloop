@@ -1176,6 +1176,11 @@ const hi: Translations = {
   'trash.pruneQuestion': 'इससे पुरानी हर चीज़ रद्दी से हमेशा के लिए हटाएँ?',
   'targets.editTitle': '{name} संपादित करें',
   'targets.moreSettings': 'अन्य सेटिंग',
+  'targets.ftpTls': 'एन्क्रिप्शन',
+  'targets.ftpTlsHint': 'एन्क्रिप्शन वाले ज़्यादातर सर्वर सामान्य पोर्ट 21 पर एक्सप्लिसिट TLS लेते हैं। इम्प्लिसिट TLS पुराना तरीका है और पोर्ट 990 पर सुनता है।',
+  'targets.ftpTls.none': 'कोई नहीं',
+  'targets.ftpTls.explicit': 'एक्सप्लिसिट TLS',
+  'targets.ftpTls.implicit': 'पोर्ट 990 पर इम्प्लिसिट TLS',
   'anomalies.all': 'सभी विसंगतियाँ',
   'anomalies.openTab': 'खुली',
   'anomalies.which': 'खुली या बंद',
@@ -1235,6 +1240,7 @@ const hi: Translations = {
   'new.change.targetRows': 'हर लक्ष्य का {test} बटन खुद {connected} या {notConnected} दिखाता है, और कारण नाम के नीचे वाली पंक्ति में होता है। सहेजा गया पासवर्ड या कुंजी {saved} के रूप में दिखती है, और {change} फ़ील्ड खोलता है।',
   'new.change.releaseCards': 'अपडेट के बाद यह विंडो आपके पास रही रिलीज़ के बाद की हर रिलीज़ का एक कार्ड दिखाती है, उसके नोट्स और उसके लाए बदलावों के साथ।',
   'new.change.newerWins': 'दोनों दिशाओं में सिंक करने वाले काम में {option} बिना पूछे टकराव सुलझा देता है: सबसे बाद में सहेजा गया संस्करण दोनों तरफ़ रहता है, और दूसरा रद्दी में चला जाता है।',
+  'new.change.targetSwitches': 'गंतव्य की वे सेटिंग जो सिर्फ़ चालू या बंद होती हैं, अब स्विच हैं, और FTP गंतव्य एक बार पूछता है कि वह कौन-सा {encryption} लेता है।',
   'new.change.appFolders': 'फ़ोन ऐप में {settings}, {phone} के अंतर्गत {add} से ArrowLoop किसी दूसरे ऐप का वह फ़ोल्डर सिंक कर सकता है जो वह Android के फ़ाइल चयनकर्ता में देता है, रूट या Shizuku के बिना। ये फ़ोल्डर Apps नाम के गंतव्य में दिखते हैं।',
 }
 

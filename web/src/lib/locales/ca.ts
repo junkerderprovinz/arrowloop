@@ -1176,6 +1176,11 @@ const ca: Translations = {
   'trash.pruneQuestion': 'Vols suprimir definitivament de la paperera tot el que és més antic que això?',
   'targets.editTitle': 'Edita {name}',
   'targets.moreSettings': 'Altres opcions',
+  'targets.ftpTls': 'Xifratge',
+  'targets.ftpTlsHint': 'La majoria de servidors que xifren fan servir TLS explícit al port habitual 21. El TLS implícit és la manera antiga i escolta al port 990.',
+  'targets.ftpTls.none': 'Cap',
+  'targets.ftpTls.explicit': 'TLS explícit',
+  'targets.ftpTls.implicit': 'TLS implícit al port 990',
   'anomalies.all': 'Totes les anomalies',
   'anomalies.openTab': 'Obertes',
   'anomalies.which': 'Obertes o tancades',
@@ -1235,6 +1240,7 @@ const ca: Translations = {
   'new.change.targetRows': 'El botó {test} de cada destinació mostra ell mateix {connected} o {notConnected}, amb el motiu a la línia de sota del nom. Una contrasenya o una clau desada apareix com a {saved}, i {change} obre el camp.',
   'new.change.releaseCards': 'Després d\'una actualització, aquesta finestra mostra una targeta per cada versió des de la que tenies, amb les seves notes i els canvis que va portar.',
   'new.change.newerWins': '{option} en una tasca que sincronitza en els dos sentits resol un conflicte sense preguntar: la versió desada en últim lloc es queda als dos costats i l\'altra va a la paperera.',
+  'new.change.targetSwitches': 'Els ajustos d\'una destinació que només poden estar activats o desactivats són interruptors, i una destinació FTP pregunta un sol cop quin {encryption} fa servir.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

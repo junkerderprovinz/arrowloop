@@ -1176,6 +1176,11 @@ const pl: Translations = {
   'trash.pruneQuestion': 'Usunąć z kosza na stałe wszystko, co starsze niż to?',
   'targets.editTitle': 'Edytuj {name}',
   'targets.moreSettings': 'Inne ustawienia',
+  'targets.ftpTls': 'Szyfrowanie',
+  'targets.ftpTlsHint': 'Większość serwerów z szyfrowaniem używa jawnego TLS na zwykłym porcie 21. Niejawny TLS to starszy sposób i nasłuchuje na porcie 990.',
+  'targets.ftpTls.none': 'Brak',
+  'targets.ftpTls.explicit': 'Jawny TLS',
+  'targets.ftpTls.implicit': 'Niejawny TLS na porcie 990',
   'anomalies.all': 'Wszystkie anomalie',
   'anomalies.openTab': 'Otwarte',
   'anomalies.which': 'Otwarte czy zamknięte',
@@ -1235,6 +1240,7 @@ const pl: Translations = {
   'new.change.targetRows': 'Przycisk {test} przy każdym celu sam pokazuje {connected} albo {notConnected}, a powód stoi w wierszu pod nazwą. Zapisane hasło lub klucz widać jako {saved}, a {change} otwiera pole.',
   'new.change.releaseCards': 'Po aktualizacji to okno pokazuje kartę dla każdego wydania od poprzednio używanej wersji, z jego uwagami i zmianami.',
   'new.change.newerWins': '{option} w zadaniu synchronizującym w obie strony rozstrzyga konflikt bez pytania: wersja zapisana jako ostatnia zostaje po obu stronach, a druga trafia do kosza.',
+  'new.change.targetSwitches': 'Ustawienia celu, które są tylko włączone albo wyłączone, są przełącznikami, a cel FTP raz pyta, jakiego {encryption} używa.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
 }
 

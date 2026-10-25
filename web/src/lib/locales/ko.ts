@@ -1176,6 +1176,11 @@ const ko: Translations = {
   'trash.pruneQuestion': '이보다 오래된 항목을 모두 휴지통에서 완전히 삭제할까요?',
   'targets.editTitle': '{name} 편집',
   'targets.moreSettings': '다른 설정',
+  'targets.ftpTls': '암호화',
+  'targets.ftpTlsHint': '암호화하는 서버 대부분은 일반 포트 21에서 명시적 TLS를 씁니다. 암시적 TLS는 예전 방식이며 포트 990에서 기다립니다.',
+  'targets.ftpTls.none': '없음',
+  'targets.ftpTls.explicit': '명시적 TLS',
+  'targets.ftpTls.implicit': '포트 990의 암시적 TLS',
   'anomalies.all': '모든 발견 항목',
   'anomalies.openTab': '열림',
   'anomalies.which': '열림 또는 닫힘',
@@ -1235,6 +1240,7 @@ const ko: Translations = {
   'new.change.targetRows': '각 대상의 {test} 버튼이 직접 {connected} 또는 {notConnected}을 보여 주고, 이유는 이름 아래 줄에 나옵니다. 저장된 비밀번호나 키는 {saved}로 표시되고, {change}을 누르면 입력란이 열립니다.',
   'new.change.releaseCards': '업데이트 후 이 창에는 이전에 쓰던 버전 이후의 릴리스마다 카드가 표시되며, 릴리스 노트와 달라진 내용이 담겨 있습니다.',
   'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
+  'new.change.targetSwitches': '켜거나 끄기만 하는 대상 설정은 스위치로 바뀌었고, FTP 대상은 어떤 {encryption}를 쓰는지 한 번만 묻습니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

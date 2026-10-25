@@ -1176,6 +1176,11 @@ const hu: Translations = {
   'trash.pruneQuestion': 'Végleg törlöd a kukából az ennél régebbieket?',
   'targets.editTitle': '{name} szerkesztése',
   'targets.moreSettings': 'További beállítások',
+  'targets.ftpTls': 'Titkosítás',
+  'targets.ftpTlsHint': 'A titkosító szerverek többsége explicit TLS-t használ a szokásos 21-es porton. Az implicit TLS a régebbi mód, és a 990-es porton figyel.',
+  'targets.ftpTls.none': 'Nincs',
+  'targets.ftpTls.explicit': 'Explicit TLS',
+  'targets.ftpTls.implicit': 'Implicit TLS a 990-es porton',
   'anomalies.all': 'Minden rendellenesség',
   'anomalies.openTab': 'Nyitott',
   'anomalies.which': 'Nyitott vagy lezárt',
@@ -1235,6 +1240,7 @@ const hu: Translations = {
   'new.change.targetRows': 'Egy cél {test} gombja maga mutatja, hogy {connected} vagy {notConnected}, az okot pedig a név alatti sor adja meg. A mentett jelszó vagy kulcs {saved} felirattal látszik, és a {change} nyitja meg a mezőt.',
   'new.change.releaseCards': 'Egy frissítés után ez az ablak minden kiadásról mutat egy kártyát a nálad lévő verzió óta, a megjegyzéseivel és a változásokkal, amelyeket hozott.',
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
+  'new.change.targetSwitches': 'A cél csak be- vagy kikapcsolható beállításai kapcsolók, egy FTP-cél pedig egyszer kérdezi meg, milyen {encryption} használ.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

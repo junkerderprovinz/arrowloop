@@ -148,6 +148,8 @@ export type Backend = {
      */
     essential?: boolean
     advanced: boolean
+    /** rclone's name for the kind of value: bool for a yes or no, string, SizeSuffix and so on. */
+    type?: string
     default: string
     examples?: { value: string; help: string }[]
   }[]

@@ -1176,6 +1176,11 @@ const lv: Translations = {
   'trash.pruneQuestion': 'Neatgriezeniski izdzēst no miskastes visu, kas vecāks par šo?',
   'targets.editTitle': 'Rediģēt: {name}',
   'targets.moreSettings': 'Citi iestatījumi',
+  'targets.ftpTls': 'Šifrēšana',
+  'targets.ftpTlsHint': 'Lielākā daļa šifrējošo serveru izmanto tiešo TLS ierastajā portā 21. Netiešais TLS ir vecākais veids un klausās portā 990.',
+  'targets.ftpTls.none': 'Nav',
+  'targets.ftpTls.explicit': 'Tiešais TLS',
+  'targets.ftpTls.implicit': 'Netiešais TLS portā 990',
   'anomalies.all': 'Visi atradumi',
   'anomalies.openTab': 'Atvērtas',
   'anomalies.which': 'Atvērtas vai aizvērtas',
@@ -1235,6 +1240,7 @@ const lv: Translations = {
   'new.change.targetRows': 'Katra mērķa poga {test} pati rāda {connected} vai {notConnected}, un iemesls ir rindā zem nosaukuma. Saglabāta parole vai atslēga redzama kā {saved}, un {change} atver lauku.',
   'new.change.releaseCards': 'Pēc atjaunināšanas šajā logā redzama karte par katru izlaidumu kopš tavas iepriekšējās versijas, ar tā piezīmēm un izmaiņām.',
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
+  'new.change.targetSwitches': 'Galamērķa iestatījumi, kas ir tikai ieslēgti vai izslēgti, ir slēdži, un FTP galamērķis vienreiz jautā, kādu {encryption} tas izmanto.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 

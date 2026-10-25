@@ -1176,6 +1176,11 @@ const ms: Translations = {
   'trash.pruneQuestion': 'Padam semua yang lebih lama daripada ini dari tong sampah secara kekal?',
   'targets.editTitle': 'Sunting {name}',
   'targets.moreSettings': 'Tetapan lain',
+  'targets.ftpTls': 'Penyulitan',
+  'targets.ftpTlsHint': 'Kebanyakan pelayan yang menyulitkan menggunakan TLS eksplisit pada port biasa 21. TLS implisit ialah cara lama dan mendengar pada port 990.',
+  'targets.ftpTls.none': 'Tiada',
+  'targets.ftpTls.explicit': 'TLS eksplisit',
+  'targets.ftpTls.implicit': 'TLS implisit pada port 990',
   'anomalies.all': 'Semua anomali',
   'anomalies.openTab': 'Terbuka',
   'anomalies.which': 'Terbuka atau ditutup',
@@ -1235,6 +1240,7 @@ const ms: Translations = {
   'new.change.targetRows': 'Butang {test} bagi setiap sasaran sendiri menunjukkan {connected} atau {notConnected}, dengan sebabnya pada baris di bawah nama. Kata laluan atau kunci yang disimpan dipaparkan sebagai {saved}, dan {change} membuka medan itu.',
   'new.change.releaseCards': 'Selepas kemas kini, tetingkap ini menunjukkan satu kad bagi setiap keluaran sejak versi yang anda ada, lengkap dengan nota dan perubahan yang dibawanya.',
   'new.change.newerWins': '{option} dalam tugas yang menyegerak dua hala menyelesaikan percanggahan tanpa bertanya: versi yang disimpan terakhir kekal di kedua-dua sisi, dan yang satu lagi masuk ke tong sampah.',
+  'new.change.targetSwitches': 'Tetapan destinasi yang hanya hidup atau mati kini suis, dan destinasi FTP bertanya sekali {encryption} mana yang digunakan.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
 }
 

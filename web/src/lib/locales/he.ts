@@ -1176,6 +1176,11 @@ const he: Translations = {
   'trash.pruneQuestion': 'למחוק מסל האשפה לצמיתות כל מה שישן מזה?',
   'targets.editTitle': 'עריכת {name}',
   'targets.moreSettings': 'הגדרות נוספות',
+  'targets.ftpTls': 'הצפנה',
+  'targets.ftpTlsHint': 'רוב השרתים שמצפינים משתמשים ב-TLS מפורש בפורט הרגיל 21. TLS מרומז הוא הדרך הישנה יותר ומאזין בפורט 990.',
+  'targets.ftpTls.none': 'ללא',
+  'targets.ftpTls.explicit': 'TLS מפורש',
+  'targets.ftpTls.implicit': 'TLS מרומז בפורט 990',
   'anomalies.all': 'כל החריגות',
   'anomalies.openTab': 'פתוחות',
   'anomalies.which': 'פתוחות או סגורות',
@@ -1235,6 +1240,7 @@ const he: Translations = {
   'new.change.targetRows': 'הכפתור {test} של כל יעד מציג בעצמו {connected} או {notConnected}, והסיבה בשורה שמתחת לשם. סיסמה או מפתח שמורים מופיעים כ־{saved}, ו־{change} פותח את השדה.',
   'new.change.releaseCards': 'אחרי עדכון החלון הזה מציג כרטיס לכל גרסה מאז זו שהייתה לך, עם ההערות שלה והשינויים שהיא הביאה.',
   'new.change.newerWins': '{option} במשימה שמסנכרנת לשני הכיוונים מכריע בהתנגשות בלי לשאול: הגרסה שנשמרה אחרונה נשארת בשני הצדדים, והשנייה עוברת לסל האשפה.',
+  'new.change.targetSwitches': 'הגדרות של יעד שהן רק פועל או כבוי הן מתגים, ויעד FTP שואל פעם אחת באיזו {encryption} הוא משתמש.',
   'new.change.appFolders': 'באפליקציה לטלפון, {add} תחת {settings}, {phone} מאפשר ל־ArrowLoop לסנכרן תיקייה שאפליקציה אחרת מציעה בבורר הקבצים של Android, בלי רוט ובלי Shizuku. התיקיות מופיעות ביעד בשם Apps.',
 }
 

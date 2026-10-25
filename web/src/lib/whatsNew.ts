@@ -58,6 +58,18 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.2.8',
+    changes: [
+      {
+        id: 'target-switches',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetSwitches',
+        names: { encryption: 'targets.ftpTls' },
+      },
+    ],
+  },
+  {
     after: '2.2.5',
     changes: [
       {

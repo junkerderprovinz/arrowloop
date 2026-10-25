@@ -1176,6 +1176,11 @@ const gl: Translations = {
   'trash.pruneQuestion': 'Borrar definitivamente do lixo todo o que sexa máis antigo ca isto?',
   'targets.editTitle': 'Editar {name}',
   'targets.moreSettings': 'Outros axustes',
+  'targets.ftpTls': 'Cifrado',
+  'targets.ftpTlsHint': 'A maioría dos servidores que cifran usan TLS explícito no porto habitual 21. O TLS implícito é a forma antiga e escoita no porto 990.',
+  'targets.ftpTls.none': 'Ningún',
+  'targets.ftpTls.explicit': 'TLS explícito',
+  'targets.ftpTls.implicit': 'TLS implícito no porto 990',
   'anomalies.all': 'Todas as anomalías',
   'anomalies.openTab': 'Abertas',
   'anomalies.which': 'Abertas ou pechadas',
@@ -1235,6 +1240,7 @@ const gl: Translations = {
   'new.change.targetRows': 'O botón {test} de cada destino amosa el mesmo {connected} ou {notConnected}, co motivo na liña baixo o nome. Un contrasinal ou unha chave gardados aparecen como {saved}, e {change} abre o campo.',
   'new.change.releaseCards': 'Despois dunha actualización, esta xanela mostra unha tarxeta por cada versión desde a que tiñas, coas súas notas e os cambios que trouxo.',
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
+  'new.change.targetSwitches': 'Os axustes dun destino que só están activados ou desactivados son interruptores, e un destino FTP pregunta unha soa vez que {encryption} usa.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

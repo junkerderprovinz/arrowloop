@@ -1176,6 +1176,11 @@ const fa: Translations = {
   'trash.pruneQuestion': 'هر چه قدیمی‌تر از این است برای همیشه از سطل زباله حذف شود؟',
   'targets.editTitle': 'ویرایش {name}',
   'targets.moreSettings': 'تنظیمات دیگر',
+  'targets.ftpTls': 'رمزگذاری',
+  'targets.ftpTlsHint': 'بیشتر سرورهایی که رمزگذاری دارند از TLS صریح روی درگاه معمول ۲۱ استفاده می‌کنند. TLS ضمنی روش قدیمی‌تر است و روی درگاه ۹۹۰ گوش می‌دهد.',
+  'targets.ftpTls.none': 'هیچ',
+  'targets.ftpTls.explicit': 'TLS صریح',
+  'targets.ftpTls.implicit': 'TLS ضمنی روی درگاه ۹۹۰',
   'anomalies.all': 'همهٔ ناهنجاری‌ها',
   'anomalies.openTab': 'باز',
   'anomalies.which': 'باز یا بسته',
@@ -1235,6 +1240,7 @@ const fa: Translations = {
   'new.change.targetRows': 'دکمهٔ {test} هر مقصد خودش {connected} یا {notConnected} را نشان می‌دهد و دلیل در خط زیر نام می‌آید. گذرواژه یا کلید ذخیره‌شده به شکل {saved} دیده می‌شود و {change} فیلد را باز می‌کند.',
   'new.change.releaseCards': 'پس از یک به‌روزرسانی، این پنجره برای هر انتشار پس از نسخه‌ای که داشتید یک کارت نشان می‌دهد، با یادداشت‌ها و تغییرهایی که آورده است.',
   'new.change.newerWins': '{option} در کاری که در هر دو جهت همگام می‌کند، تعارض را بدون پرسیدن حل می‌کند: نسخه‌ای که آخر ذخیره شده در هر دو سمت می‌ماند و دیگری به سطل زباله می‌رود.',
+  'new.change.targetSwitches': 'تنظیمات یک مقصد که فقط روشن یا خاموش هستند کلید شده‌اند، و مقصد FTP یک بار می‌پرسد از کدام {encryption} استفاده می‌کند.',
   'new.change.appFolders': 'در برنامه گوشی، {add} در {settings}، {phone} به ArrowLoop امکان می‌دهد پوشه‌ای را که برنامهٔ دیگری در انتخابگر فایل Android ارائه می‌کند، بدون روت و بدون Shizuku همگام‌سازی کند. این پوشه‌ها در مقصدی به نام Apps نمایش داده می‌شوند.',
 }
 

@@ -1220,6 +1220,11 @@ export const en = {
   'trash.pruneQuestion': 'Delete everything older than this from the trash for good?',
   'targets.editTitle': 'Edit {name}',
   'targets.moreSettings': 'Other settings',
+  'targets.ftpTls': 'Encryption',
+  'targets.ftpTlsHint': 'Most servers that encrypt use explicit TLS on the usual port 21. Implicit TLS is the older way and listens on port 990.',
+  'targets.ftpTls.none': 'None',
+  'targets.ftpTls.explicit': 'Explicit TLS',
+  'targets.ftpTls.implicit': 'Implicit TLS on port 990',
   'anomalies.all': 'All findings',
   'anomalies.openTab': 'Open',
   'anomalies.which': 'Open or closed',
@@ -1279,6 +1284,7 @@ export const en = {
   'new.change.targetRows': 'A target\'s {test} button shows {connected} or {notConnected} itself, with the reason on the line under the name. A stored password or key shows as {saved}, and {change} opens the field.',
   'new.change.releaseCards': 'After an update this window shows a card for every release since the one you had, with its notes and the changes it brought.',
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
+  'new.change.targetSwitches': 'A target\'s settings that are only on or off are switches, and an FTP target asks once which {encryption} it uses.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -2490,6 +2496,11 @@ export const de: Translations = {
   'trash.pruneQuestion': 'Alles, was älter ist, endgültig aus dem Papierkorb löschen?',
   'targets.editTitle': '{name} bearbeiten',
   'targets.moreSettings': 'Weitere Einstellungen',
+  'targets.ftpTls': 'Verschlüsselung',
+  'targets.ftpTlsHint': 'Die meisten Server mit Verschlüsselung nehmen explizites TLS auf dem üblichen Port 21. Implizites TLS ist der ältere Weg und lauscht auf Port 990.',
+  'targets.ftpTls.none': 'Keine',
+  'targets.ftpTls.explicit': 'Explizites TLS',
+  'targets.ftpTls.implicit': 'Implizites TLS auf Port 990',
   'anomalies.all': 'Alle Funde',
   'anomalies.openTab': 'Offen',
   'anomalies.which': 'Offen oder geschlossen',
@@ -2549,6 +2560,7 @@ export const de: Translations = {
   'new.change.targetRows': 'Der Knopf {test} eines Ziels zeigt selbst {connected} oder {notConnected}, den Grund in der Zeile unter dem Namen. Ein gespeichertes Passwort oder ein Schlüssel steht als {saved} da, und {change} öffnet das Feld.',
   'new.change.releaseCards': 'Nach einem Update zeigt dieses Fenster eine Karte für jedes Release seit dem, das du hattest, mit seinen Release-Notes und den Änderungen, die es gebracht hat.',
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
+  'new.change.targetSwitches': 'Einstellungen eines Ziels, die nur an oder aus sein können, sind Schalter, und ein FTP-Ziel fragt einmal, welche {encryption} es nutzt.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

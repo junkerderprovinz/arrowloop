@@ -239,7 +239,16 @@ export interface Provider {
 export interface Backend {
   name: string;
   description?: string;
-  options?: { name: string; help?: string; required?: boolean; essential?: boolean; secret?: boolean }[];
+  options?: {
+    name: string;
+    help?: string;
+    required?: boolean;
+    essential?: boolean;
+    secret?: boolean;
+    /** rclone's kind of value; bool is a yes or no. */
+    type?: string;
+    default?: string;
+  }[];
   [key: string]: unknown;
 }
 
