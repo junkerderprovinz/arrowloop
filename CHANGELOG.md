@@ -24,7 +24,7 @@ The full notes for each release are in
 
 ## ⚡ Improved
 
-- **A job without a schedule is marked manual.** The job list, the job page and the exceptions said "on request" for such a job. They use the word the schedule offers, Manual.
+- **A job without a schedule runs manually.** The job list, the job page and the exceptions said "on request" for such a job. They say it runs manually, to match Manual in the schedule.
 - **One switch decides whether a job follows the global settings.** Use the global settings at the top of the window replaces the Override button on every row. While it is on, the global values show greyed out, and clicking one makes the switch wiggle. Turned off, every field is the job's own, starting from the values that apply now.
 - **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
 - **An S3 target reads its region and bucket from the address you paste.** An endpoint that names its region, as the addresses of AWS, Backblaze B2, Hetzner, Scaleway, OVHcloud and Wasabi do, fills in an empty region, and a bucket's address as Cloudflare's R2 dashboard shows it is split into the endpoint and the bucket. The Garage form shows garage as the region its server expects.
