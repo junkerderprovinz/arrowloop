@@ -720,6 +720,7 @@ const lv: Translations = {
   'opt.keyFileHelp': 'Ceļš uz privāto atslēgu datorā, kurā darbojas ArrowLoop, nevis šajā.',
   'help.authWhere': 'To izveido {url}',
   'help.authLogin': 'Tas pats lietotājvārds un parole kā citur. Nekas nav jāiegūst iepriekš.',
+  'help.serverDefault': 'Serveris sagaida {value}, ja vien tā iestatījumos nav norādīts cits.',
   'help.authOauth': 'Šis pakalpojums piesakās pārlūkprogrammā, tāpēc šeit nekas nav jāraksta.',
   'help.authApiKey': 'API atslēga, kas izveidota pakalpojuma iestatījumos.',
   'help.authAccessKey': 'Piekļuves atslēgu pāris no pakalpojuma konsoles. Atslēgas ID ir publisks; noslēpumu parasti rāda tikai vienreiz.',

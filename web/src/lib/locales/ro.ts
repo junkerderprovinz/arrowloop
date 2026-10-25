@@ -720,6 +720,7 @@ const ro: Translations = {
   'opt.keyFileHelp': 'Calea către cheia privată pe mașina pe care rulează ArrowLoop, nu pe aceasta.',
   'help.authWhere': 'O creezi la {url}',
   'help.authLogin': 'Același nume de utilizator și parolă ca în alte părți. Nu trebuie obținut nimic în prealabil.',
+  'help.serverDefault': 'Serverul așteaptă {value}, dacă setările lui nu numesc altceva.',
   'help.authOauth': 'Acest serviciu se autentifică prin browser, deci aici nu se scrie nimic.',
   'help.authApiKey': 'O cheie API creată în setările serviciului.',
   'help.authAccessKey': 'O pereche de chei de acces din consola serviciului. Identificatorul este public; secretul se afișează de obicei o singură dată.',

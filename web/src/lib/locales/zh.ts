@@ -720,6 +720,7 @@ const zh: Translations = {
   'opt.keyFileHelp': '私钥在运行 ArrowLoop 的机器上的路径，不是这台。',
   'help.authWhere': '在 {url} 创建。',
   'help.authLogin': '与你在别处登录时相同的用户名和密码。无需先获取任何东西。',
+  'help.serverDefault': '除非服务器自己的设置另有指定，否则它要求的是 {value}。',
   'help.authOauth': '该服务通过浏览器登录，因此这里无需填写。',
   'help.authApiKey': '在服务设置中创建的 API 密钥。',
   'help.authAccessKey': '来自服务控制台的访问密钥对。密钥 ID 是公开的，密钥本身通常只在创建时显示一次。',

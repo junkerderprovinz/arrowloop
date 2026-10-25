@@ -720,6 +720,7 @@ const ms: Translations = {
   'opt.keyFileHelp': 'Laluan ke kunci peribadi pada mesin tempat ArrowLoop berjalan, bukan mesin ini.',
   'help.authWhere': 'Anda menciptanya di {url}',
   'help.authLogin': 'Nama pengguna dan kata laluan yang sama seperti di tempat lain. Tiada apa perlu diperoleh dahulu.',
+  'help.serverDefault': 'Pelayan menjangkakan {value} melainkan tetapannya sendiri menyebut yang lain.',
   'help.authOauth': 'Perkhidmatan ini log masuk melalui pelayar, jadi tiada apa perlu ditaip di sini.',
   'help.authApiKey': 'Kunci API yang dicipta dalam tetapan perkhidmatan.',
   'help.authAccessKey': 'Sepasang kunci akses daripada konsol perkhidmatan. ID kunci bersifat awam; rahsianya lazimnya dipaparkan sekali sahaja.',

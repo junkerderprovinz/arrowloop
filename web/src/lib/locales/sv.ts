@@ -720,6 +720,7 @@ const sv: Translations = {
   'opt.keyFileHelp': 'Sökväg till den privata nyckeln på maskinen där ArrowLoop körs, inte på den här.',
   'help.authWhere': 'Du skapar den på {url}',
   'help.authLogin': 'Samma användarnamn och lösenord som på andra ställen. Inget behöver hämtas i förväg.',
+  'help.serverDefault': 'Servern förväntar sig {value} om inte dess egna inställningar anger något annat.',
   'help.authOauth': 'Den här tjänsten loggar in via webbläsaren, så här ska inget skrivas.',
   'help.authApiKey': 'En API-nyckel som skapas i tjänstens inställningar.',
   'help.authAccessKey': 'Ett par åtkomstnycklar från tjänstens egen konsol. Nyckel-id:t är offentligt; hemligheten visas oftast bara en gång.',

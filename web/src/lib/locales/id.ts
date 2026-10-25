@@ -720,6 +720,7 @@ const id: Translations = {
   'opt.keyFileHelp': 'Jalur ke kunci privat di mesin tempat ArrowLoop berjalan, bukan di mesin ini.',
   'help.authWhere': 'Kamu membuatnya di {url}',
   'help.authLogin': 'Nama pengguna dan sandi yang sama seperti di tempat lain. Tidak ada yang perlu diambil lebih dulu.',
+  'help.serverDefault': 'Server mengharapkan {value} kecuali pengaturannya sendiri menyebut yang lain.',
   'help.authOauth': 'Layanan ini masuk lewat peramban, jadi tidak ada yang perlu diketik di sini.',
   'help.authApiKey': 'Kunci API yang dibuat di pengaturan layanan.',
   'help.authAccessKey': 'Sepasang kunci akses dari konsol layanan. ID kunci bersifat publik; rahasianya biasanya hanya ditampilkan sekali, saat dibuat.',

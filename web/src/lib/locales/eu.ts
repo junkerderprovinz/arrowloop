@@ -720,6 +720,7 @@ const eu: Translations = {
   'opt.keyFileHelp': 'Gako pribatuaren bidea ArrowLoop exekutatzen den makinan, ez honetan.',
   'help.authWhere': 'Hemen sortzen duzu: {url}',
   'help.authLogin': 'Beste edonon erabiltzen duzun erabiltzaile-izena eta pasahitza bera. Ez dago ezer aurrez lortu beharrik.',
+  'help.serverDefault': 'Zerbitzariak {value} espero du, bere ezarpenek beste bat adierazten ez badute.',
   'help.authOauth': 'Zerbitzu honek nabigatzailean hasten du saioa, beraz hemen ez dago ezer idatzi beharrik.',
   'help.authApiKey': 'Zerbitzuaren ezarpenetan sortutako API gakoa.',
   'help.authAccessKey': 'Zerbitzuaren kontsolako sarbide-gako bikotea. Gakoaren IDa publikoa da; sekretua behin bakarrik erakusten da, sortzean.',

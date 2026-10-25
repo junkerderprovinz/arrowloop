@@ -18,6 +18,7 @@ The full notes for each release are in
 ## ⚡ Improved
 
 - **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
+- **An S3 target reads its region and bucket from the address you paste.** An endpoint that names its region, as the addresses of AWS, Backblaze B2, Hetzner, Scaleway, OVHcloud and Wasabi do, fills in an empty region, and a bucket's address as Cloudflare's R2 dashboard shows it is split into the endpoint and the bucket. The Garage form shows garage as the region its server expects.
 
 ## 🐛 Fixed
 

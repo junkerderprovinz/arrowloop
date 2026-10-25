@@ -720,6 +720,7 @@ const ja: Translations = {
   'opt.keyFileHelp': 'ArrowLoop が動いているマシン上の秘密鍵のパス。このマシンではありません。',
   'help.authWhere': '作成は {url} で行います',
   'help.authLogin': '他で使っているのと同じユーザー名とパスワードです。事前に取得するものはありません。',
+  'help.serverDefault': 'サーバー側の設定で別の値にしていない限り、サーバーは {value} を想定しています。',
   'help.authOauth': 'このサービスはブラウザーでサインインするため、ここに入力するものはありません。',
   'help.authApiKey': 'サービスの設定で作成する API キーです。',
   'help.authAccessKey': 'サービスのコンソールで作るアクセスキーの組です。キー ID は公開されるもので、シークレットは通常作成時に一度だけ表示されます。',

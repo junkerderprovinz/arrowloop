@@ -720,6 +720,7 @@ const tr: Translations = {
   'opt.keyFileHelp': 'Özel anahtarın ArrowLoop\'un çalıştığı makinedeki yolu, bu makinede değil.',
   'help.authWhere': 'Onu {url} adresinde oluşturursun',
   'help.authLogin': 'Başka yerlerde kullandığın kullanıcı adı ve parolanın aynısı. Önceden bir şey almana gerek yok.',
+  'help.serverDefault': 'Sunucu, kendi ayarları başka bir değer belirtmedikçe {value} bekler.',
   'help.authOauth': 'Bu servis tarayıcı üzerinden oturum açar, bu yüzden buraya bir şey yazılmaz.',
   'help.authApiKey': 'Servisin ayarlarında oluşturulan bir API anahtarı.',
   'help.authAccessKey': 'Servisin kendi konsolundan alınan bir erişim anahtarı çifti. Anahtar kimliği herkese açıktır; gizli anahtar genellikle yalnızca oluşturulurken bir kez gösterilir.',

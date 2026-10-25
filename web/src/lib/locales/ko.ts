@@ -720,6 +720,7 @@ const ko: Translations = {
   'opt.keyFileHelp': 'ArrowLoop 이 실행되는 컴퓨터의 개인 키 경로입니다.',
   'help.authWhere': '{url} 에서 만듭니다',
   'help.authLogin': '다른 곳에서 쓰는 것과 같은 사용자 이름과 비밀번호입니다. 미리 받아야 할 것은 없습니다.',
+  'help.serverDefault': '서버 설정에서 따로 정하지 않았다면 서버는 {value}를 기대합니다.',
   'help.authOauth': '이 서비스는 브라우저로 로그인하므로 여기에는 입력할 것이 없습니다.',
   'help.authApiKey': '서비스 설정에서 만든 API 키입니다.',
   'help.authAccessKey': '서비스 콘솔에서 만든 액세스 키 쌍입니다. 키 ID는 공개이며, 비밀 키는 보통 생성 시 한 번만 표시됩니다.',

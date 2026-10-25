@@ -706,7 +706,7 @@ function RemoteForm({
             <Text
               value={values[o.name] ?? ''}
               onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-              placeholder={o.default || o.examples?.[0]?.value}
+              placeholder={provider?.defaults?.[o.name] || o.default || o.examples?.[0]?.value}
               label={optionLabel(o.name, t)}
               mono
             />

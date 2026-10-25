@@ -720,6 +720,7 @@ const hu: Translations = {
   'opt.keyFileHelp': 'A privát kulcs útvonala azon a gépen, ahol az ArrowLoop fut, nem ezen.',
   'help.authWhere': 'Itt hozhatod létre: {url}',
   'help.authLogin': 'Ugyanaz a felhasználónév és jelszó, mint máshol. Előzetesen semmit nem kell beszerezni.',
+  'help.serverDefault': 'A szerver {value} értéket vár, hacsak a saját beállításai mást nem adnak meg.',
   'help.authOauth': 'Ez a szolgáltatás a böngészőben jelentkezik be, ide tehát nem kell semmit írni.',
   'help.authApiKey': 'A szolgáltatás beállításaiban létrehozott API-kulcs.',
   'help.authAccessKey': 'Hozzáférési kulcspár a szolgáltatás saját konzoljából. A kulcsazonosító nyilvános; a titkot rendszerint csak egyszer mutatják meg.',

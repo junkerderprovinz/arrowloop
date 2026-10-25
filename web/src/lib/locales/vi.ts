@@ -720,6 +720,7 @@ const vi: Translations = {
   'opt.keyFileHelp': 'Đường dẫn tới khóa riêng trên máy chạy ArrowLoop, không phải máy này.',
   'help.authWhere': 'Bạn tạo nó tại {url}',
   'help.authLogin': 'Cùng tên đăng nhập và mật khẩu bạn dùng ở nơi khác. Không cần lấy gì trước.',
+  'help.serverDefault': 'Máy chủ mong đợi {value} trừ khi thiết lập riêng của nó ghi giá trị khác.',
   'help.authOauth': 'Dịch vụ này đăng nhập qua trình duyệt, nên không cần nhập gì ở đây.',
   'help.authApiKey': 'Một khóa API được tạo trong phần cài đặt của dịch vụ.',
   'help.authAccessKey': 'Một cặp khóa truy cập từ bảng điều khiển của dịch vụ. Mã khóa là công khai; khóa bí mật thường chỉ hiện một lần khi tạo.',

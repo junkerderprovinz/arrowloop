@@ -720,6 +720,7 @@ const sl: Translations = {
   'opt.keyFileHelp': 'Pot do zasebnega ključa na računalniku, kjer teče ArrowLoop, ne na tem.',
   'help.authWhere': 'Ustvariš ga na {url}',
   'help.authLogin': 'Isto uporabniško ime in geslo kot drugod. Ničesar ni treba pridobiti vnaprej.',
+  'help.serverDefault': 'Strežnik pričakuje {value}, razen če njegove nastavitve navajajo drugo.',
   'help.authOauth': 'Ta storitev se prijavi prek brskalnika, zato tu ni ničesar za vpisati.',
   'help.authApiKey': 'Ključ API, ustvarjen v nastavitvah storitve.',
   'help.authAccessKey': 'Par dostopnih ključev iz konzole storitve. ID ključa je javen; skrivnost se navadno prikaže le enkrat, ob ustvarjanju.',

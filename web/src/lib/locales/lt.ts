@@ -720,6 +720,7 @@ const lt: Translations = {
   'opt.keyFileHelp': 'Kelias iki privataus rakto kompiuteryje, kuriame veikia ArrowLoop, ne šiame.',
   'help.authWhere': 'Jį sukursi adresu {url}',
   'help.authLogin': 'Tas pats naudotojo vardas ir slaptažodis kaip ir kitur. Nieko iš anksto gauti nereikia.',
+  'help.serverDefault': 'Serveris tikisi {value}, nebent jo paties nustatymuose nurodyta kitaip.',
   'help.authOauth': 'Ši paslauga prisijungia per naršyklę, todėl čia nieko rašyti nereikia.',
   'help.authApiKey': 'API raktas, sukurtas paslaugos nustatymuose.',
   'help.authAccessKey': 'Prieigos raktų pora iš paslaugos konsolės. Rakto ID yra viešas; paslaptis paprastai parodoma tik kartą, ją kuriant.',

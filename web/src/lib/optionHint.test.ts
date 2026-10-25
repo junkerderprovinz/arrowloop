@@ -40,4 +40,10 @@ describe('a field bubble', () => {
     )
     expect(optionHint({ name: 'cookies', help: 'Session cookies.' }, t, { backend: 'iclouddrive' })).toContain('opt.icloudCookiesHint')
   })
+
+  it('names the region a server such as Garage expects', () => {
+    expect(optionHint({ name: 'region' }, t, { backend: 's3', defaults: { region: 'garage' } })).toContain(
+      'help.serverDefault{"value":"garage"}',
+    )
+  })
 })

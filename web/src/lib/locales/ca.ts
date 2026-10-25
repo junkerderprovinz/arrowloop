@@ -720,6 +720,7 @@ const ca: Translations = {
   'opt.keyFileHelp': 'Camí a la clau privada a la màquina on s\'executa ArrowLoop, no en aquesta.',
   'help.authWhere': 'El crees a {url}',
   'help.authLogin': 'El mateix nom d\'usuari i contrasenya que fas servir a tot arreu. No cal obtenir res abans.',
+  'help.serverDefault': 'El servidor espera {value}, tret que la seva configuració n\'indiqui un altre.',
   'help.authOauth': 'Aquest servei inicia sessió al navegador, així que aquí no cal escriure res.',
   'help.authApiKey': 'Una clau API creada als ajustos del servei.',
   'help.authAccessKey': 'Un parell de claus d\'accés de la consola del servei. L\'identificador és públic; el secret només es mostra un cop, en crear-lo.',

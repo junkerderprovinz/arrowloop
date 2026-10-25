@@ -720,6 +720,7 @@ const nl: Translations = {
   'opt.keyFileHelp': 'Pad naar de privésleutel op de machine waar ArrowLoop draait, niet op deze.',
   'help.authWhere': 'Je maakt hem aan op {url}',
   'help.authLogin': 'Dezelfde gebruikersnaam en hetzelfde wachtwoord als elders. Er hoeft vooraf niets opgehaald te worden.',
+  'help.serverDefault': 'De server verwacht {value}, tenzij zijn eigen instellingen iets anders noemen.',
   'help.authOauth': 'Deze dienst logt in via de browser, hier hoeft dus niets ingevuld te worden.',
   'help.authApiKey': 'Een API-sleutel die je in de instellingen van de dienst aanmaakt.',
   'help.authAccessKey': 'Een paar toegangssleutels uit de console van de dienst. De sleutel-id is openbaar; het geheim wordt meestal maar één keer getoond, bij het aanmaken.',

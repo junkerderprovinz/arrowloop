@@ -720,6 +720,7 @@ const is: Translations = {
   'opt.keyFileHelp': 'Slóð að einkalyklinum á vélinni þar sem ArrowLoop keyrir, ekki á þessari.',
   'help.authWhere': 'Þú býrð hann til á {url}',
   'help.authLogin': 'Sama notandanafn og löann og annars staðar. Ekkert þarf að sækja fyrst.',
+  'help.serverDefault': 'Þjónninn býst við {value} nema eigin stillingar hans segi annað.',
   'help.authOauth': 'Þessi þjónusta skráir sig inn í vafra, svo hér þarf ekkert að skrifa.',
   'help.authApiKey': 'API-lykill sem búinn er til í stillingum þjónustunnar.',
   'help.authAccessKey': 'Aðgangslyklapar úr stjórnborði þjónustunnar. Lykilauðkennið er opinbert; leyndarmálið birtist yfirleitt aðeins einu sinni.',

@@ -720,6 +720,7 @@ const et: Translations = {
   'opt.keyFileHelp': 'Privaatvõtme tee masinas, kus ArrowLoop töötab, mitte selles.',
   'help.authWhere': 'Selle saab luua aadressil {url}',
   'help.authLogin': 'Sama kasutajanimi ja parool nagu mujal. Midagi ei pea enne hankima.',
+  'help.serverDefault': 'Server ootab väärtust {value}, kui tema enda seaded ei nimeta muud.',
   'help.authOauth': 'See teenus logib sisse brauseris, seega siia ei pea midagi kirjutama.',
   'help.authApiKey': 'API võti, mis luuakse teenuse seadetes.',
   'help.authAccessKey': 'Juurdepääsuvõtmete paar teenuse konsoolist. Võtme ID on avalik; saladust näidatakse tavaliselt vaid korra, loomisel.',

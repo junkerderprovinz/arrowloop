@@ -720,6 +720,7 @@ const da: Translations = {
   'opt.keyFileHelp': 'Sti til den private nøgle på maskinen, hvor ArrowLoop kører, ikke på denne.',
   'help.authWhere': 'Du opretter den på {url}',
   'help.authLogin': 'Samme brugernavn og adgangskode som andre steder. Der skal ikke hentes noget først.',
+  'help.serverDefault': 'Serveren forventer {value}, medmindre dens egne indstillinger angiver en anden.',
   'help.authOauth': 'Denne tjeneste logger ind via browseren, så her skal du ikke skrive noget.',
   'help.authApiKey': 'En API-nøgle oprettet i tjenestens indstillinger.',
   'help.authAccessKey': 'Et par adgangsnøgler fra tjenestens egen konsol. Nøgle-id\'et er offentligt; hemmeligheden vises normalt kun én gang, når den oprettes.',

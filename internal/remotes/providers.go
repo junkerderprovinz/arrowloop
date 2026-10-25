@@ -44,6 +44,10 @@ type Provider struct {
 	// AuthURL is the page where the credential is created, where there is a
 	// shared one to point at. Empty where the page is on somebody's own server.
 	AuthURL string `json:"authUrl,omitempty"`
+
+	// Defaults are the values this product's own server assumes for a field
+	// left empty here, shown in the field so nobody has to look them up.
+	Defaults map[string]string `json:"defaults,omitempty"`
 }
 
 // AuthStyle is how a product wants to be signed into. The set is closed,
@@ -229,8 +233,11 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph"},
 	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupStorage,
 		// rclone has no Garage preset, and Garage's own documentation
-		// configures it as a generic S3 service.
-		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage"},
+		// configures it as a generic S3 service. Garage refuses a request
+		// signed for any region but its s3_region, which is garage unless
+		// garage.toml names another.
+		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage",
+		Defaults: map[string]string{"region": "garage"}},
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol, Mark: "IconFolder"},
 	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol, Mark: "IconServer"},
 	{ID: "webdav", Name: "WebDAV", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,

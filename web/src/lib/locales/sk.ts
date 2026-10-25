@@ -720,6 +720,7 @@ const sk: Translations = {
   'opt.keyFileHelp': 'Cesta k súkromnému kľúču na stroji, kde beží ArrowLoop, nie na tomto.',
   'help.authWhere': 'Vytvoríš ho na {url}',
   'help.authLogin': 'Rovnaké používateľské meno a heslo ako inde. Nič netreba získať vopred.',
+  'help.serverDefault': 'Server očakáva {value}, ak jeho vlastné nastavenia neuvádzajú inú hodnotu.',
   'help.authOauth': 'Táto služba sa prihlasuje cez prehliadač, sem sa teda nič nepíše.',
   'help.authApiKey': 'API kľúč vytvorený v nastaveniach služby.',
   'help.authAccessKey': 'Dvojica prístupových kľúčov z konzoly služby. ID kľúča je verejné; tajomstvo sa zvyčajne zobrazí len raz.',

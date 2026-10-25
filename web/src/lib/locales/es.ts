@@ -720,6 +720,7 @@ const es: Translations = {
   'opt.keyFileHelp': 'Ruta a la clave privada en la máquina donde corre ArrowLoop, no en esta.',
   'help.authWhere': 'Lo creas en {url}',
   'help.authLogin': 'El mismo nombre de usuario y contraseña que usas en cualquier otro sitio. No hay que obtener nada antes.',
+  'help.serverDefault': 'El servidor espera {value}, salvo que su propia configuración indique otro.',
   'help.authOauth': 'Este servicio inicia sesión en el navegador, así que aquí no hay nada que escribir.',
   'help.authApiKey': 'Una clave de API creada en los ajustes del servicio.',
   'help.authAccessKey': 'Un par de claves de acceso de la consola del servicio. El identificador es público; el secreto suele mostrarse solo una vez, al crearlo.',

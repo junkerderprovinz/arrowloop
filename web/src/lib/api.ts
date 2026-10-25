@@ -132,9 +132,11 @@ export type Provider = {
    * How this product wants to be signed into. The screen writes one translated
    * sentence per style, and an unknown value is ignored rather than shown.
    */
-  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login'
+  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login' | 'logintoken'
   /** Where that credential is created, where there is one page to point at. */
   authUrl?: string
+  /** What the product's own server assumes for a field left empty, such as Garage's region. */
+  defaults?: Record<string, string>
 }
 
 export type Backend = {

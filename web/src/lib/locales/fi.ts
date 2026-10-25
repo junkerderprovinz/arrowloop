@@ -720,6 +720,7 @@ const fi: Translations = {
   'opt.keyFileHelp': 'Polku yksityiseen avaimeen koneella, jolla ArrowLoop toimii, ei tällä.',
   'help.authWhere': 'Luot sen osoitteessa {url}',
   'help.authLogin': 'Sama käyttäjätunnus ja salasana kuin muuallakin. Mitään ei tarvitse hakea etukäteen.',
+  'help.serverDefault': 'Palvelin odottaa arvoa {value}, ellei sen omissa asetuksissa mainita muuta.',
   'help.authOauth': 'Tämä palvelu kirjautuu selaimen kautta, joten tähän ei kirjoiteta mitään.',
   'help.authApiKey': 'API-avain, joka luodaan palvelun asetuksissa.',
   'help.authAccessKey': 'Avainpari palvelun omasta konsolista. Avaimen tunnus on julkinen; salaisuus näytetään yleensä vain kerran, luontihetkellä.',

@@ -720,6 +720,7 @@ const hr: Translations = {
   'opt.keyFileHelp': 'Putanja do privatnog ključa na računalu na kojem radi ArrowLoop, ne na ovom.',
   'help.authWhere': 'Stvaraš ga na {url}',
   'help.authLogin': 'Isto korisničko ime i lozinka kao i drugdje. Ništa se ne mora prethodno dohvatiti.',
+  'help.serverDefault': 'Poslužitelj očekuje {value}, osim ako njegove postavke ne navode drugo.',
   'help.authOauth': 'Ova usluga prijavljuje se putem preglednika, pa se ovdje ništa ne upisuje.',
   'help.authApiKey': 'API ključ stvoren u postavkama usluge.',
   'help.authAccessKey': 'Par pristupnih ključeva iz konzole usluge. ID ključa je javan; tajna se obično prikaže samo jednom, pri stvaranju.',

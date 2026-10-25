@@ -93,6 +93,9 @@ func Setup(ctx context.Context, backend string, settings map[string]string) (map
 		out[k] = v
 	}
 	unpackAuthorize(out)
+	if backend == "s3" {
+		tidyS3(out)
+	}
 
 	step, ok := setupSteps[backend]
 	if !ok || !step.due(out) {

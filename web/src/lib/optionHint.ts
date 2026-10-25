@@ -23,6 +23,7 @@ export type HintProvider = {
   auth?: string
   urlHint?: string
   authUrl?: string
+  defaults?: Record<string, string>
 }
 
 /**
@@ -166,6 +167,9 @@ export function optionHint(
   if (o.name === 'url' && provider?.urlHint) {
     about.push(t('help.addressShape', { shape: provider.urlHint }))
   }
+
+  const assumed = provider?.defaults?.[o.name]
+  if (assumed) about.push(t('help.serverDefault', { value: assumed }))
 
   if (SECRET_FIELDS.has(o.name) && provider?.auth) {
     const sentence: Record<string, TranslationKey> = {
