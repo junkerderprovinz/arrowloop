@@ -1040,6 +1040,7 @@ export const en = {
   'opt.satelliteHint': 'The satellite your Storj account lives on, as its console shows it. You only need it without an access grant.',
   'opt.passphraseHint': 'The passphrase the files are encrypted with. Without it nothing stored can be read again, so keep a copy somewhere else.',
   'opt.shareNameHint': 'The file share inside the storage account, as the Azure portal lists it.',
+  'opt.smbShareHint': 'Only needed when the server does not list its shares. The test then opens this share, and jobs can still use every share on the server.',
   'nav.more': 'More',
   'nav.label': 'Navigation',
   'settings.sync': 'Sync',
@@ -1282,6 +1283,7 @@ export const en = {
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
   'new.change.twoFactorOnce': 'Mega asks for its {code} with the other sign-in fields, and for Mega and Proton Drive one code is enough: {test}, saving and the check after it share the session the code opens.',
   'new.change.targetInUse': 'A target that jobs still use is not deleted. {delete} names those jobs instead, so you can point them at another target first.',
+  'new.change.smbShare': 'An SMB server that does not list its shares passes {test} once you fill in {share}. A job side at the top of an SMB server, where there is only the list of shares, is refused when you save the job.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -2316,6 +2318,7 @@ export const de: Translations = {
   'opt.satelliteHint': 'Der Satellit, auf dem dein Storj-Konto liegt, so wie die Konsole ihn zeigt. Du brauchst ihn nur ohne Zugriffsfreigabe.',
   'opt.passphraseHint': 'Die Passphrase, mit der die Dateien verschlüsselt werden. Ohne sie lässt sich nichts Gespeicherte wieder lesen, also bewahre eine Kopie woanders auf.',
   'opt.shareNameHint': 'Die Dateifreigabe im Speicherkonto, so wie das Azure-Portal sie auflistet.',
+  'opt.smbShareHint': 'Nur nötig, wenn der Server seine Freigaben nicht auflistet. Der Test öffnet dann diese Freigabe, und Aufträge können trotzdem jede Freigabe des Servers verwenden.',
   'nav.more': 'Mehr',
   'nav.label': 'Navigation',
   'settings.sync': 'Synchronisation',
@@ -2555,6 +2558,7 @@ export const de: Translations = {
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
   'new.change.twoFactorOnce': 'Mega fragt den {code} zusammen mit den anderen Anmeldefeldern ab, und bei Mega und Proton Drive reicht ein Code: {test}, Speichern und die Prüfung danach teilen sich die Sitzung, die der Code öffnet.',
   'new.change.targetInUse': 'Ein Ziel, das Aufträge noch verwenden, wird nicht gelöscht. {delete} nennt stattdessen diese Aufträge, damit du sie vorher auf ein anderes Ziel umstellen kannst.',
+  'new.change.smbShare': 'Ein SMB-Server, der seine Freigaben nicht auflistet, besteht {test}, sobald du {share} ausfüllst. Eine Auftragsseite ganz oben auf einem SMB-Server, wo nur die Liste der Freigaben steht, wird beim Speichern des Auftrags abgelehnt.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

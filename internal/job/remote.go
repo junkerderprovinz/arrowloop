@@ -230,3 +230,11 @@ func (a place) match(b place) (same, known bool) {
 	}
 	return a.path == b.path, true
 }
+
+// atShareList reports whether a side is the top of an SMB server, which is the
+// list of the server's shares. Only the server makes a share, so a job has
+// nothing to write there.
+func atShareList(side string) bool {
+	p, err := locate(side)
+	return err == nil && strings.HasPrefix(p.target, "smb ") && p.path == ""
+}

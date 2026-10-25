@@ -154,7 +154,7 @@ func checkSettings(ctx context.Context, backend string, settings map[string]stri
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings))
+	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings)+checkedShare(backend, settings[shareKey]))
 	if err == nil {
 		err = listRoot(ctx, f, backend)
 	} else {

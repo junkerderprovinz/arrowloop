@@ -999,6 +999,7 @@ const nl: Translations = {
   'opt.satelliteHint': 'De satelliet waarop je Storj-account staat, zoals de console hem toont. Je hebt hem alleen nodig zonder toegangsverlening.',
   'opt.passphraseHint': 'De wachtwoordzin waarmee de bestanden worden versleuteld. Zonder die zin is niets van wat is opgeslagen nog te lezen, dus bewaar ergens anders een kopie.',
   'opt.shareNameHint': 'De bestandsshare in het opslagaccount, zoals de Azure-portal hem toont.',
+  'opt.smbShareHint': 'Alleen nodig als de server zijn shares niet toont. De test opent dan deze share, en taken kunnen nog steeds elke share van de server gebruiken.',
   'nav.more': 'Meer',
   'nav.label': 'Navigatie',
   'settings.sync': 'Synchronisatie',
@@ -1238,6 +1239,7 @@ const nl: Translations = {
   'new.change.newerWins': '{option} in een taak die beide kanten op synchroniseert, beslist een conflict zonder te vragen: de laatst opgeslagen versie blijft aan beide kanten staan en de andere gaat naar de prullenbak.',
   'new.change.twoFactorOnce': 'Mega vraagt de {code} samen met de andere inlogvelden, en voor Mega en Proton Drive is één code genoeg: {test}, opslaan en de controle daarna delen de sessie die de code opent.',
   'new.change.targetInUse': 'Een doel dat taken nog gebruiken wordt niet verwijderd. {delete} noemt in plaats daarvan die taken, zodat je ze eerst naar een ander doel kunt laten wijzen.',
+  'new.change.smbShare': 'Een SMB-server die zijn shares niet toont, slaagt voor {test} zodra je {share} invult. Een kant van een taak helemaal bovenaan een SMB-server, waar alleen de lijst met shares staat, wordt geweigerd bij het opslaan van de taak.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 

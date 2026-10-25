@@ -999,6 +999,7 @@ const sv: Translations = {
   'opt.satelliteHint': 'Satelliten som ditt Storj-konto finns på, så som konsolen visar den. Du behöver den bara utan åtkomstmedgivande.',
   'opt.passphraseHint': 'Lösenfrasen som filerna krypteras med. Utan den går inget lagrat att läsa igen, så spara en kopia någon annanstans.',
   'opt.shareNameHint': 'Filutdelningen i lagringskontot, så som Azure-portalen listar den.',
+  'opt.smbShareHint': 'Behövs bara om servern inte visar sina utdelningar. Testet öppnar då den här utdelningen, och jobb kan fortfarande använda alla serverns utdelningar.',
   'nav.more': 'Mer',
   'nav.label': 'Navigering',
   'settings.sync': 'Synkronisering',
@@ -1238,6 +1239,7 @@ const sv: Translations = {
   'new.change.newerWins': '{option} i ett jobb som synkar åt båda hållen avgör en konflikt utan att fråga: den senast sparade versionen blir kvar på båda sidor, och den andra hamnar i papperskorgen.',
   'new.change.twoFactorOnce': 'Mega frågar efter {code} tillsammans med de andra inloggningsfälten, och för Mega och Proton Drive räcker en kod: {test}, sparandet och kontrollen efteråt delar sessionen som koden öppnar.',
   'new.change.targetInUse': 'Ett mål som jobb fortfarande använder tas inte bort. {delete} nämner i stället de jobben, så att du först kan peka dem mot ett annat mål.',
+  'new.change.smbShare': 'En SMB-server som inte visar sina utdelningar klarar {test} så snart du fyller i {share}. En sida av ett jobb högst upp på en SMB-server, där det bara finns listan över utdelningar, avvisas när du sparar jobbet.',
   'new.change.appFolders': 'I telefonappen låter {add} under {settings}, {phone} ArrowLoop synkronisera en mapp som en annan app erbjuder i Androids filväljare, utan root och utan Shizuku. Mapparna visas i ett mål som heter Apps.',
 }
 

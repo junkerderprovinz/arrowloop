@@ -999,6 +999,7 @@ const gl: Translations = {
   'opt.satelliteHint': 'O satélite onde está a túa conta de Storj, tal como o mostra a súa consola. Só o precisas se non tes unha concesión de acceso.',
   'opt.passphraseHint': 'A frase secreta coa que se cifran os ficheiros. Sen ela non se pode volver ler nada do gardado, así que garda unha copia noutro sitio.',
   'opt.shareNameHint': 'O recurso compartido de ficheiros dentro da conta de almacenamento, tal como o lista o portal de Azure.',
+  'opt.smbShareHint': 'Só fai falta se o servidor non mostra os seus recursos compartidos. A proba abre entón este, e as tarefas poden seguir usando calquera recurso compartido do servidor.',
   'nav.more': 'Máis',
   'nav.label': 'Navegación',
   'settings.sync': 'Sincronización',
@@ -1238,6 +1239,7 @@ const gl: Translations = {
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
   'new.change.twoFactorOnce': 'Mega pide o {code} xunto cos demais campos de inicio de sesión, e para Mega e Proton Drive abonda cun código: {test}, gardar e a comprobación posterior comparten a sesión que abre o código.',
   'new.change.targetInUse': 'Un destino que aínda usan tarefas non se borra. {delete} nomea esas tarefas, para que primeiro as apuntes a outro destino.',
+  'new.change.smbShare': 'Un servidor SMB que non mostra os seus recursos compartidos pasa {test} en canto enches {share}. Un lado dunha tarefa no máis alto dun servidor SMB, onde só está a lista de recursos compartidos, rexéitase ao gardar a tarefa.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

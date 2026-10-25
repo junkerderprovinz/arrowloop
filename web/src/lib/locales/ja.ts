@@ -999,6 +999,7 @@ const ja: Translations = {
   'opt.satelliteHint': 'Storj アカウントがあるサテライトです。コンソールの表示どおりに書きます。アクセス許可を使わない場合にだけ必要です。',
   'opt.passphraseHint': 'ファイルの暗号化に使うパスフレーズです。これがないと保存したものは二度と読めないので、別の場所に控えを保管してください。',
   'opt.shareNameHint': 'ストレージアカウント内のファイル共有です。Azure ポータルの表示どおりに書きます。',
+  'opt.smbShareHint': 'サーバーが共有を一覧にしない場合だけ必要です。テストはこの共有を開きます。ジョブはサーバーのどの共有でも使えます。',
   'nav.more': 'その他',
   'nav.label': 'ナビゲーション',
   'settings.sync': '同期',
@@ -1238,6 +1239,7 @@ const ja: Translations = {
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
   'new.change.twoFactorOnce': 'Mega はほかのサインイン項目と一緒に{code}を尋ねます。Mega と Proton Drive ではコードは一つで足ります。{test}、保存、その後の確認はコードが開いたセッションを共有します。',
   'new.change.targetInUse': 'ジョブがまだ使っている接続先は削除されません。代わりに{delete}がそのジョブを示すので、先に別の接続先へ向けられます。',
+  'new.change.smbShare': '共有を一覧にしない SMB サーバーも、{share}を入れれば{test}に通ります。共有の一覧しかない SMB サーバーの最上位を指すジョブの側は、ジョブの保存時に拒否されます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

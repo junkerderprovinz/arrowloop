@@ -999,6 +999,7 @@ const tr: Translations = {
   'opt.satelliteHint': 'Storj hesabının bulunduğu uydu, konsolun gösterdiği şekliyle. Yalnızca erişim izni olmadan gerekir.',
   'opt.passphraseHint': 'Dosyaların şifrelendiği parola. O olmadan saklanan hiçbir şey yeniden okunamaz, bu yüzden bir kopyasını başka bir yerde tut.',
   'opt.shareNameHint': 'Depolama hesabındaki dosya paylaşımı, Azure portalının listelediği şekliyle.',
+  'opt.smbShareHint': 'Yalnızca sunucu paylaşımlarını listelemiyorsa gerekir. Test o zaman bu paylaşımı açar ve işler yine de sunucudaki her paylaşımı kullanabilir.',
   'nav.more': 'Daha fazla',
   'nav.label': 'Gezinme',
   'settings.sync': 'Eşitleme',
@@ -1238,6 +1239,7 @@ const tr: Translations = {
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
   'new.change.twoFactorOnce': 'Mega {code} bilgisini diğer oturum açma alanlarıyla birlikte sorar ve Mega ile Proton Drive için tek kod yeter: {test}, kaydetme ve ardından gelen kontrol, kodun açtığı oturumu paylaşır.',
   'new.change.targetInUse': 'İşlerin hâlâ kullandığı bir hedef silinmez. {delete} bunun yerine o işleri sayar, böylece önce onları başka bir hedefe yönlendirebilirsiniz.',
+  'new.change.smbShare': 'Paylaşımlarını listelemeyen bir SMB sunucusu, {share} alanını doldurduğunuzda {test} adımını geçer. Bir işin, SMB sunucusunun en üstünde, yalnızca paylaşım listesinin bulunduğu yerdeki tarafı, iş kaydedilirken reddedilir.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

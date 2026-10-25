@@ -999,6 +999,7 @@ const pt: Translations = {
   'opt.satelliteHint': 'O satélite onde está a tua conta Storj, tal como a consola o mostra. Só precisas dele sem concessão de acesso.',
   'opt.passphraseHint': 'A frase-passe com que os ficheiros são encriptados. Sem ela nada do que está guardado pode voltar a ser lido, por isso guarda uma cópia noutro sítio.',
   'opt.shareNameHint': 'A partilha de ficheiros dentro da conta de armazenamento, tal como o portal do Azure a lista.',
+  'opt.smbShareHint': 'Só é preciso se o servidor não mostrar as suas partilhas. O teste abre então esta partilha, e as tarefas continuam a poder usar qualquer partilha do servidor.',
   'nav.more': 'Mais',
   'nav.label': 'Navegação',
   'settings.sync': 'Sincronização',
@@ -1238,6 +1239,7 @@ const pt: Translations = {
   'new.change.newerWins': '{option} numa tarefa que sincroniza nos dois sentidos resolve um conflito sem perguntar: a versão guardada por último fica nos dois lados e a outra vai para a reciclagem.',
   'new.change.twoFactorOnce': 'O Mega pede o {code} junto com os outros campos de início de sessão, e para Mega e Proton Drive basta um código: {test}, guardar e a verificação seguinte partilham a sessão que o código abre.',
   'new.change.targetInUse': 'Um destino que tarefas ainda usam não é eliminado. {delete} indica essas tarefas, para que primeiro as aponte para outro destino.',
+  'new.change.smbShare': 'Um servidor SMB que não mostra as suas partilhas passa {test} assim que preencher {share}. Um lado de uma tarefa no topo de um servidor SMB, onde só existe a lista de partilhas, é recusado ao guardar a tarefa.',
   'new.change.appFolders': 'Na app do telemóvel, {add} em {settings}, {phone} deixa o ArrowLoop sincronizar uma pasta que outra aplicação oferece no seletor de ficheiros do Android, sem root nem Shizuku. As pastas aparecem num destino chamado Apps.',
 }
 

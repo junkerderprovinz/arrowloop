@@ -999,6 +999,7 @@ const es: Translations = {
   'opt.satelliteHint': 'El satélite en el que está tu cuenta de Storj, tal como lo muestra su consola. Solo lo necesitas si no tienes una concesión de acceso.',
   'opt.passphraseHint': 'La frase con la que se cifran los archivos. Sin ella no se puede volver a leer nada de lo guardado, así que guarda una copia en otro sitio.',
   'opt.shareNameHint': 'El recurso compartido de archivos dentro de la cuenta de almacenamiento, tal como aparece en el portal de Azure.',
+  'opt.smbShareHint': 'Solo hace falta si el servidor no muestra sus recursos compartidos. La prueba abre entonces este, y las tareas pueden seguir usando cualquier recurso compartido del servidor.',
   'nav.more': 'Más',
   'nav.label': 'Navegación',
   'settings.sync': 'Sincronización',
@@ -1238,6 +1239,7 @@ const es: Translations = {
   'new.change.newerWins': '{option} en una tarea que sincroniza en ambos sentidos resuelve un conflicto sin preguntar: la versión guardada en último lugar se queda en ambos lados y la otra va a la papelera.',
   'new.change.twoFactorOnce': 'Mega pide el {code} junto con los demás campos de inicio de sesión, y para Mega y Proton Drive basta un código: {test}, guardar y la comprobación posterior comparten la sesión que abre el código.',
   'new.change.targetInUse': 'Un destino que todavía usan tareas no se borra. {delete} nombra esas tareas, para que primero las apuntes a otro destino.',
+  'new.change.smbShare': 'Un servidor SMB que no muestra sus recursos compartidos pasa {test} en cuanto rellenas {share}. Un lado de una tarea en lo más alto de un servidor SMB, donde solo está la lista de recursos compartidos, se rechaza al guardar la tarea.',
   'new.change.appFolders': 'En la app del móvil, {add} en {settings}, {phone} permite a ArrowLoop sincronizar una carpeta que otra aplicación ofrece en el selector de archivos de Android, sin root ni Shizuku. Las carpetas aparecen en un destino llamado Apps.',
 }
 

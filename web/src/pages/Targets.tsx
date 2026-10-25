@@ -683,14 +683,21 @@ function RemoteForm({
       </FieldRow>
     )
 
-  const field = (o: Backend['options'][number]) =>
-    o.name === '2fa' && (kind === 'mega' || kind === 'protondrive') ? (
-      <div key={o.name} data-new="two-factor-once">
+  const marked = (o: Backend['options'][number]) => {
+    if (o.name === '2fa' && (kind === 'mega' || kind === 'protondrive')) return 'two-factor-once'
+    if (o.name === 'share' && kind === 'smb') return 'smb-share'
+    return undefined
+  }
+  const field = (o: Backend['options'][number]) => {
+    const newId = marked(o)
+    return newId ? (
+      <div key={o.name} data-new={newId}>
         {plainField(o)}
       </div>
     ) : (
       plainField(o)
     )
+  }
 
   return (
     <Dialog

@@ -999,6 +999,7 @@ const sl: Translations = {
   'opt.satelliteHint': 'Satelit, na katerem je tvoj račun Storj, kot ga prikaže konzola. Potrebuješ ga samo brez dovoljenja za dostop.',
   'opt.passphraseHint': 'Geslo, s katerim so datoteke šifrirane. Brez njega shranjenega ni mogoče več prebrati, zato hrani kopijo drugje.',
   'opt.shareNameHint': 'Skupna raba datotek v računu za shrambo, kot jo navaja portal Azure.',
+  'opt.smbShareHint': 'Potrebno samo, če strežnik ne prikaže svojih skupnih rab. Preizkus takrat odpre to skupno rabo, opravila pa lahko še vedno uporabljajo vsako skupno rabo strežnika.',
   'nav.more': 'Več',
   'nav.label': 'Krmarjenje',
   'settings.sync': 'Sinhronizacija',
@@ -1238,6 +1239,7 @@ const sl: Translations = {
   'new.change.newerWins': '{option} v opravilu, ki sinhronizira v obe smeri, razreši spor brez vprašanja: nazadnje shranjena različica ostane na obeh straneh, druga pa gre v koš.',
   'new.change.twoFactorOnce': 'Mega vpraša za {code} skupaj z drugimi polji za prijavo, za Mego in Proton Drive pa zadošča ena koda: {test}, shranjevanje in preverjanje po njem si delijo sejo, ki jo koda odpre.',
   'new.change.targetInUse': 'Cilj, ki ga opravila še uporabljajo, se ne izbriše. {delete} namesto tega navede ta opravila, da jih najprej usmerite na drug cilj.',
+  'new.change.smbShare': 'Strežnik SMB, ki ne prikaže svojih skupnih rab, prestane {test}, ko izpolnite {share}. Stran opravila čisto na vrhu strežnika SMB, kjer je samo seznam skupnih rab, se ob shranjevanju opravila zavrne.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
 }
 

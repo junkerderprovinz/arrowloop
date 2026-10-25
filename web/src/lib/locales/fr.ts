@@ -999,6 +999,7 @@ const fr: Translations = {
   'opt.satelliteHint': 'Le satellite où se trouve votre compte Storj, tel que sa console l\'affiche. Il ne sert que sans autorisation d\'accès.',
   'opt.passphraseHint': 'La phrase secrète qui chiffre les fichiers. Sans elle, rien de ce qui est stocké ne peut être relu, alors gardez-en une copie ailleurs.',
   'opt.shareNameHint': 'Le partage de fichiers dans le compte de stockage, tel que le portail Azure l\'affiche.',
+  'opt.smbShareHint': 'Utile seulement si le serveur n\'affiche pas ses partages. Le test ouvre alors ce partage, et les tâches peuvent toujours utiliser tous les partages du serveur.',
   'nav.more': 'Plus',
   'nav.label': 'Navigation',
   'settings.sync': 'Synchronisation',
@@ -1238,6 +1239,7 @@ const fr: Translations = {
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
   'new.change.twoFactorOnce': 'Mega demande le {code} avec les autres champs de connexion, et pour Mega et Proton Drive un seul code suffit : {test}, l\'enregistrement et la vérification qui suit partagent la session que le code ouvre.',
   'new.change.targetInUse': 'Une cible que des tâches utilisent encore n\'est pas supprimée. {delete} nomme ces tâches à la place, pour que vous les fassiez d\'abord pointer vers une autre cible.',
+  'new.change.smbShare': 'Un serveur SMB qui n\'affiche pas ses partages réussit {test} dès que vous remplissez {share}. Un côté de tâche tout en haut d\'un serveur SMB, où il n\'y a que la liste des partages, est refusé à l\'enregistrement de la tâche.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

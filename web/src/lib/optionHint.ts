@@ -61,6 +61,7 @@ const GENERAL: Record<string, TranslationKey> = {
   satellite_address: 'opt.satelliteHint',
   passphrase: 'opt.passphraseHint',
   share_name: 'opt.shareNameHint',
+  share: 'opt.smbShareHint',
 }
 
 /** Where one backend writes a field differently from the others. */

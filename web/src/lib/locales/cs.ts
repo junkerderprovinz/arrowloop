@@ -999,6 +999,7 @@ const cs: Translations = {
   'opt.satelliteHint': 'Satelit, na kterém je tvůj účet Storj, jak ho ukazuje jeho konzole. Potřebuješ ho jen bez přístupového oprávnění.',
   'opt.passphraseHint': 'Fráze, kterou se soubory šifrují. Bez ní už nic uloženého nepřečteš, takže si její kopii schovej jinde.',
   'opt.shareNameHint': 'Sdílená složka v účtu úložiště, jak ji uvádí portál Azure.',
+  'opt.smbShareHint': 'Potřeba jen tehdy, když server své sdílené složky nevypisuje. Test pak otevře tuto sdílenou složku a úlohy mohou dál používat kteroukoli sdílenou složku serveru.',
   'nav.more': 'Více',
   'nav.label': 'Navigace',
   'settings.sync': 'Synchronizace',
@@ -1238,6 +1239,7 @@ const cs: Translations = {
   'new.change.newerWins': '{option} v úloze, která synchronizuje oběma směry, vyřeší konflikt bez ptaní: naposledy uložená verze zůstane na obou stranách a ta druhá jde do koše.',
   'new.change.twoFactorOnce': 'Mega se ptá na {code} spolu s ostatními přihlašovacími poli a u Mega a Proton Drive stačí jeden kód: {test}, uložení i následná kontrola sdílejí relaci, kterou kód otevře.',
   'new.change.targetInUse': 'Cíl, který ještě používají úlohy, se nesmaže. {delete} místo toho vyjmenuje tyto úlohy, abyste je mohli nejdřív nasměrovat na jiný cíl.',
+  'new.change.smbShare': 'Server SMB, který nevypisuje své sdílené složky, projde {test}, jakmile vyplníte {share}. Strana úlohy na samém vrcholu serveru SMB, kde je jen seznam sdílených složek, se při uložení úlohy odmítne.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

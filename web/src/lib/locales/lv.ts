@@ -999,6 +999,7 @@ const lv: Translations = {
   'opt.satelliteHint': 'Satelīts, kurā atrodas jūsu Storj konts, kā to rāda konsole. Tas vajadzīgs tikai bez piekļuves atļaujas.',
   'opt.passphraseHint': 'Paroles frāze, ar kuru faili tiek šifrēti. Bez tās neko saglabāto vairs nevar nolasīt, tāpēc glabājiet kopiju citur.',
   'opt.shareNameHint': 'Failu koplietojums krātuves kontā, kā to uzskaita Azure portāls.',
+  'opt.smbShareHint': 'Vajag tikai tad, ja serveris nerāda savus koplietojumus. Tests tad atver šo koplietojumu, un uzdevumi joprojām var izmantot jebkuru servera koplietojumu.',
   'nav.more': 'Vairāk',
   'nav.label': 'Navigācija',
   'settings.sync': 'Sinhronizācija',
@@ -1238,6 +1239,7 @@ const lv: Translations = {
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
   'new.change.twoFactorOnce': 'Mega prasa {code} kopā ar citiem pieteikšanās laukiem, un Mega un Proton Drive pietiek ar vienu kodu: {test}, saglabāšana un pēc tam sekojošā pārbaude izmanto sesiju, ko kods atver.',
   'new.change.targetInUse': 'Galamērķis, ko vēl izmanto uzdevumi, netiek izdzēsts. {delete} tā vietā nosauc šos uzdevumus, lai vispirms varētu tos novirzīt uz citu galamērķi.',
+  'new.change.smbShare': 'SMB serveris, kas nerāda savus koplietojumus, iztur {test}, tiklīdz aizpildāt {share}. Uzdevuma puse pašā SMB servera augšā, kur ir tikai koplietojumu saraksts, tiek noraidīta, saglabājot uzdevumu.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 

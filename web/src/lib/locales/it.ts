@@ -999,6 +999,7 @@ const it: Translations = {
   'opt.satelliteHint': 'Il satellite su cui si trova il tuo account Storj, come lo mostra la console. Serve solo senza concessione di accesso.',
   'opt.passphraseHint': 'La passphrase con cui vengono cifrati i file. Senza di essa nulla di ciò che è salvato si può più leggere, quindi tienine una copia altrove.',
   'opt.shareNameHint': 'La condivisione file all\'interno dell\'account di archiviazione, come la elenca il portale Azure.',
+  'opt.smbShareHint': 'Serve solo se il server non elenca le sue condivisioni. La prova apre allora questa condivisione, e i lavori possono comunque usare ogni condivisione del server.',
   'nav.more': 'Altro',
   'nav.label': 'Navigazione',
   'settings.sync': 'Sincronizzazione',
@@ -1238,6 +1239,7 @@ const it: Translations = {
   'new.change.newerWins': '{option} in un lavoro che sincronizza in entrambe le direzioni risolve un conflitto senza chiedere: la versione salvata per ultima resta su entrambi i lati e l\'altra finisce nel cestino.',
   'new.change.twoFactorOnce': 'Mega chiede il {code} insieme agli altri campi di accesso, e per Mega e Proton Drive basta un codice: {test}, il salvataggio e il controllo successivo condividono la sessione che il codice apre.',
   'new.change.targetInUse': 'Una destinazione che dei lavori usano ancora non viene eliminata. {delete} indica invece quei lavori, così puoi prima puntarli su un\'altra destinazione.',
+  'new.change.smbShare': 'Un server SMB che non elenca le sue condivisioni supera {test} appena compili {share}. Un lato di un lavoro in cima a un server SMB, dove c\'è solo l\'elenco delle condivisioni, viene rifiutato al salvataggio del lavoro.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
 }
 

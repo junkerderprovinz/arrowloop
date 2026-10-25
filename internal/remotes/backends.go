@@ -149,6 +149,13 @@ var essential = map[string]map[string]bool{
 	"google photos": {"token": true, "client_id": true, "client_secret": true, "read_only": true},
 }
 
+// formOnly are settings a form asks for that no option of the backend holds.
+// They are kept in the target's section beside rclone's own, which rclone
+// passes over.
+var formOnly = map[string][]Option{
+	"smb": {{Name: shareKey, Help: "The share the test opens, for a server that does not list its shares", Essential: true}},
+}
+
 // tokenBackends are the ones whose only way in is an OAuth token obtained
 // outside this program. They are named rather than detected, because some
 // backends with a token option also accept a password.
@@ -192,6 +199,7 @@ func Backends() []Backend {
 				Examples:  examples(o),
 			})
 		}
+		b.Options = append(b.Options, formOnly[info.Name]...)
 		sort.SliceStable(b.Options, func(i, j int) bool {
 			return optionRank(b.Options[i]) < optionRank(b.Options[j])
 		})

@@ -999,6 +999,7 @@ const fi: Translations = {
   'opt.satelliteHint': 'Satelliitti, jolla Storj-tilisi on, niin kuin sen konsoli sen näyttää. Tarvitset sitä vain ilman käyttöoikeutta.',
   'opt.passphraseHint': 'Tunnuslause, jolla tiedostot salataan. Ilman sitä mitään tallennettua ei voi lukea uudelleen, joten pidä kopio jossain muualla.',
   'opt.shareNameHint': 'Tiedostojako tallennustilin sisällä, niin kuin Azure-portaali sen listaa.',
+  'opt.smbShareHint': 'Tarvitaan vain, jos palvelin ei näytä jakojaan. Testi avaa silloin tämän jaon, ja työt voivat silti käyttää mitä tahansa palvelimen jakoa.',
   'nav.more': 'Lisää',
   'nav.label': 'Navigointi',
   'settings.sync': 'Synkronointi',
@@ -1238,6 +1239,7 @@ const fi: Translations = {
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
   'new.change.twoFactorOnce': 'Mega kysyy {code} muiden kirjautumiskenttien kanssa, ja Megassa ja Proton Drivessa yksi koodi riittää: {test}, tallennus ja sen jälkeinen tarkistus käyttävät samaa istuntoa, jonka koodi avaa.',
   'new.change.targetInUse': 'Kohdetta, jota työt vielä käyttävät, ei poisteta. {delete} nimeää sen sijaan nämä työt, jotta voit ensin ohjata ne toiseen kohteeseen.',
+  'new.change.smbShare': 'SMB-palvelin, joka ei näytä jakojaan, läpäisee {test}, kun täytät {share}. Työn puoli SMB-palvelimen ylimmällä tasolla, jossa on vain jakojen luettelo, hylätään työtä tallennettaessa.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

@@ -999,6 +999,7 @@ const ro: Translations = {
   'opt.satelliteHint': 'Satelitul pe care se află contul tău Storj, așa cum îl arată consola. Ai nevoie de el doar fără o permisiune de acces.',
   'opt.passphraseHint': 'Fraza cu care sunt criptate fișierele. Fără ea nimic din ce e stocat nu mai poate fi citit, așa că păstrează o copie în altă parte.',
   'opt.shareNameHint': 'Partajarea de fișiere din contul de stocare, așa cum o listează portalul Azure.',
+  'opt.smbShareHint': 'E nevoie doar dacă serverul nu își afișează partajările. Testul deschide atunci această partajare, iar sarcinile pot folosi în continuare orice partajare a serverului.',
   'nav.more': 'Mai mult',
   'nav.label': 'Navigare',
   'settings.sync': 'Sincronizare',
@@ -1238,6 +1239,7 @@ const ro: Translations = {
   'new.change.newerWins': '{option} într-o sarcină care sincronizează în ambele sensuri rezolvă un conflict fără să întrebe: versiunea salvată ultima rămâne pe ambele părți, iar cealaltă ajunge în coș.',
   'new.change.twoFactorOnce': 'Mega cere {code} împreună cu celelalte câmpuri de conectare, iar pentru Mega și Proton Drive ajunge un singur cod: {test}, salvarea și verificarea de după folosesc sesiunea pe care o deschide codul.',
   'new.change.targetInUse': 'O destinație pe care o mai folosesc sarcini nu se șterge. {delete} numește în schimb acele sarcini, ca să le îndrepți întâi spre altă destinație.',
+  'new.change.smbShare': 'Un server SMB care nu își afișează partajările trece {test} de îndată ce completezi {share}. O parte a unei sarcini chiar în vârful unui server SMB, unde e doar lista partajărilor, este refuzată la salvarea sarcinii.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

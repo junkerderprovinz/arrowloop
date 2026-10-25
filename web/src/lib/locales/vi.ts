@@ -999,6 +999,7 @@ const vi: Translations = {
   'opt.satelliteHint': 'Vệ tinh chứa tài khoản Storj của bạn, như bảng điều khiển hiển thị. Bạn chỉ cần nó khi không có cấp quyền truy cập.',
   'opt.passphraseHint': 'Cụm mật khẩu dùng để mã hoá các tệp. Thiếu nó thì không đọc lại được gì đã lưu, nên hãy giữ một bản sao ở nơi khác.',
   'opt.shareNameHint': 'Chia sẻ tệp trong tài khoản lưu trữ, như cổng Azure liệt kê.',
+  'opt.smbShareHint': 'Chỉ cần khi máy chủ không liệt kê các thư mục chia sẻ. Khi đó lần kiểm tra mở thư mục chia sẻ này, và công việc vẫn dùng được mọi thư mục chia sẻ trên máy chủ.',
   'nav.more': 'Thêm',
   'nav.label': 'Điều hướng',
   'settings.sync': 'Đồng bộ',
@@ -1238,6 +1239,7 @@ const vi: Translations = {
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
   'new.change.twoFactorOnce': 'Mega hỏi {code} cùng các ô đăng nhập khác, và với Mega và Proton Drive chỉ cần một mã: {test}, lưu và lần kiểm tra sau đó dùng chung phiên mà mã đã mở.',
   'new.change.targetInUse': 'Một đích mà công việc vẫn đang dùng sẽ không bị xóa. Thay vào đó {delete} nêu tên các công việc ấy, để bạn trỏ chúng sang đích khác trước.',
+  'new.change.smbShare': 'Máy chủ SMB không liệt kê các thư mục chia sẻ sẽ qua được {test} khi bạn điền {share}. Một phía của công việc nằm ở trên cùng của máy chủ SMB, nơi chỉ có danh sách chia sẻ, sẽ bị từ chối khi lưu công việc.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

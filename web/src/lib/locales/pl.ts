@@ -999,6 +999,7 @@ const pl: Translations = {
   'opt.satelliteHint': 'Satelita, na którym jest twoje konto Storj, tak jak pokazuje go konsola. Potrzebujesz go tylko bez zezwolenia dostępu.',
   'opt.passphraseHint': 'Fraza, którą szyfrowane są pliki. Bez niej niczego zapisanego nie da się już odczytać, więc trzymaj jej kopię w innym miejscu.',
   'opt.shareNameHint': 'Udział plików w koncie magazynu, tak jak wyświetla go portal Azure.',
+  'opt.smbShareHint': 'Potrzebne tylko wtedy, gdy serwer nie pokazuje swoich udziałów. Test otwiera wtedy ten udział, a zadania nadal mogą korzystać z każdego udziału na serwerze.',
   'nav.more': 'Więcej',
   'nav.label': 'Nawigacja',
   'settings.sync': 'Synchronizacja',
@@ -1238,6 +1239,7 @@ const pl: Translations = {
   'new.change.newerWins': '{option} w zadaniu synchronizującym w obie strony rozstrzyga konflikt bez pytania: wersja zapisana jako ostatnia zostaje po obu stronach, a druga trafia do kosza.',
   'new.change.twoFactorOnce': 'Mega pyta o {code} razem z pozostałymi polami logowania, a w Mega i Proton Drive wystarczy jeden kod: {test}, zapis i sprawdzenie po nim korzystają z sesji, którą kod otwiera.',
   'new.change.targetInUse': 'Cel, którego wciąż używają zadania, nie zostaje usunięty. {delete} wymienia zamiast tego te zadania, żeby najpierw skierować je na inny cel.',
+  'new.change.smbShare': 'Serwer SMB, który nie pokazuje swoich udziałów, przechodzi {test}, gdy tylko wypełnisz {share}. Strona zadania na samej górze serwera SMB, gdzie jest tylko lista udziałów, zostaje odrzucona przy zapisie zadania.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
 }
 

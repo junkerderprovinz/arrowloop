@@ -242,12 +242,33 @@ func Check(ctx context.Context, name string) error {
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, name+":")
+	f, err := rclonefs.NewFs(ctx, savedRoot(name))
 	if err != nil {
 		return checkErr(ctx, err)
 	}
 	backend, _ := config.LoadedData().GetValue(name, "type")
 	return listRoot(ctx, f, backend)
+}
+
+// savedRoot is where a check of a saved target looks.
+func savedRoot(name string) string {
+	data := config.LoadedData()
+	backend, _ := data.GetValue(name, "type")
+	share, _ := data.GetValue(name, shareKey)
+	return name + ":" + checkedShare(backend, share)
+}
+
+// shareKey is the setting of an SMB target that names a share to check. The
+// top of an SMB server lists its shares, and some servers refuse to.
+const shareKey = "share"
+
+// checkedShare is the folder a check of a target opens: the share an SMB
+// target names, or its top.
+func checkedShare(backend, share string) string {
+	if backend != "smb" {
+		return ""
+	}
+	return strings.Trim(strings.TrimSpace(share), "/")
 }
 
 // CheckWait is how long a target gets to answer before it counts as

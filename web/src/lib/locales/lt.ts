@@ -999,6 +999,7 @@ const lt: Translations = {
   'opt.satelliteHint': 'Palydovas, kuriame yra jūsų Storj paskyra, kaip jį rodo konsolė. Jo reikia tik be prieigos leidimo.',
   'opt.passphraseHint': 'Slaptafrazė, kuria šifruojami failai. Be jos nieko, kas išsaugota, nebebus galima perskaityti, todėl laikykite kopiją kitur.',
   'opt.shareNameHint': 'Failų bendrinimas saugyklos paskyroje, kaip jį rodo Azure portalas.',
+  'opt.smbShareHint': 'Reikia tik tada, kai serveris nerodo savo bendrinamų aplankų. Tuomet bandymas atveria šį aplanką, o užduotys vis tiek gali naudoti bet kurį serverio bendrinamą aplanką.',
   'nav.more': 'Daugiau',
   'nav.label': 'Naršymas',
   'settings.sync': 'Sinchronizavimas',
@@ -1238,6 +1239,7 @@ const lt: Translations = {
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
   'new.change.twoFactorOnce': 'Mega prašo {code} kartu su kitais prisijungimo laukais, o Mega ir Proton Drive užtenka vieno kodo: {test}, išsaugojimas ir po jo einantis patikrinimas naudoja tą pačią kodo atvertą sesiją.',
   'new.change.targetInUse': 'Paskirtis, kurią dar naudoja užduotys, neištrinama. {delete} vietoj to įvardija tas užduotis, kad pirmiausia nukreiptumėte jas kitur.',
+  'new.change.smbShare': 'SMB serveris, kuris nerodo savo bendrinamų aplankų, praeina {test}, kai užpildote {share}. Užduoties pusė pačiame SMB serverio viršuje, kur yra tik bendrinamų aplankų sąrašas, atmetama išsaugant užduotį.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

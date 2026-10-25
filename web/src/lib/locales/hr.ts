@@ -999,6 +999,7 @@ const hr: Translations = {
   'opt.satelliteHint': 'Satelit na kojem je tvoj Storj račun, onako kako ga prikazuje njegova konzola. Trebaš ga samo bez odobrenja pristupa.',
   'opt.passphraseHint': 'Fraza kojom se datoteke šifriraju. Bez nje se ništa spremljeno ne može ponovno pročitati, zato čuvaj kopiju negdje drugdje.',
   'opt.shareNameHint': 'Dijeljeni resurs datoteka unutar računa za pohranu, onako kako ga navodi portal Azure.',
+  'opt.smbShareHint': 'Potrebno samo kad poslužitelj ne prikazuje svoje dijeljene resurse. Test tada otvara ovaj, a zadaci i dalje mogu koristiti svaki dijeljeni resurs poslužitelja.',
   'nav.more': 'Više',
   'nav.label': 'Navigacija',
   'settings.sync': 'Sinkronizacija',
@@ -1238,6 +1239,7 @@ const hr: Translations = {
   'new.change.newerWins': '{option} u zadatku koji sinkronizira u oba smjera rješava sukob bez pitanja: zadnja spremljena verzija ostaje na obje strane, a druga ide u smeće.',
   'new.change.twoFactorOnce': 'Mega traži {code} zajedno s ostalim poljima za prijavu, a za Megu i Proton Drive dovoljan je jedan kod: {test}, spremanje i provjera nakon toga dijele sesiju koju kod otvara.',
   'new.change.targetInUse': 'Odredište koje zadaci još koriste ne briše se. {delete} umjesto toga navodi te zadatke, da ih najprije usmjerite na drugo odredište.',
+  'new.change.smbShare': 'SMB poslužitelj koji ne prikazuje svoje dijeljene resurse prolazi {test} čim ispunite {share}. Strana zadatka na samom vrhu SMB poslužitelja, gdje je samo popis dijeljenih resursa, odbija se pri spremanju zadatka.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
 }
 

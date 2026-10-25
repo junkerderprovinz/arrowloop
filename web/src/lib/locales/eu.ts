@@ -999,6 +999,7 @@ const eu: Translations = {
   'opt.satelliteHint': 'Zure Storj kontua dagoen satelitea, bere kontsolak erakusten duen bezala. Sarbide-baimenik ez baduzu bakarrik behar duzu.',
   'opt.passphraseHint': 'Fitxategiak zifratzeko pasaesaldia. Hura gabe ezin da gordetakoa berriro irakurri, beraz gorde kopia bat beste nonbait.',
   'opt.shareNameHint': 'Biltegiratze-kontuaren barruko fitxategi-partekatzea, Azure atariak zerrendatzen duen bezala.',
+  'opt.smbShareHint': 'Zerbitzariak bere partekatzeak zerrendatzen ez dituenean bakarrik behar da. Probak partekatze hau irekiko du orduan, eta lanek zerbitzariaren edozein partekatze erabil dezakete oraindik.',
   'nav.more': 'Gehiago',
   'nav.label': 'Nabigazioa',
   'settings.sync': 'Sinkronizazioa',
@@ -1238,6 +1239,7 @@ const eu: Translations = {
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
   'new.change.twoFactorOnce': 'Megak {code} eskatzen du saioa hasteko beste eremuekin batera, eta Mega eta Proton Driverako kode bakarra nahikoa da: {test}, gordetzeak eta ondorengo egiaztapenak kodeak irekitzen duen saioa partekatzen dute.',
   'new.change.targetInUse': 'Lanek oraindik erabiltzen duten helburua ez da ezabatzen. {delete} aukerak lan horiek izendatzen ditu, lehenik beste helburu batera bideratu ahal izateko.',
+  'new.change.smbShare': 'Bere partekatzeak zerrendatzen ez dituen SMB zerbitzari batek {test} gainditzen du {share} betetzen duzunean. SMB zerbitzari baten goialdean dagoen lan-alde bat, partekatzeen zerrenda bakarrik dagoen tokian, baztertu egiten da lana gordetzean.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

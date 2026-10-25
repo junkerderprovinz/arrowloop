@@ -999,6 +999,7 @@ const is: Translations = {
   'opt.satelliteHint': 'Gervihnötturinn sem Storj-aðgangurinn þinn er á, eins og stjórnborðið sýnir hann. Þú þarft hann bara án aðgangsheimildar.',
   'opt.passphraseHint': 'Lykilfrasinn sem skrárnar eru dulkóðaðar með. Án hans er ekkert af því sem er geymt hægt að lesa aftur, svo geymdu afrit annars staðar.',
   'opt.shareNameHint': 'Skráasameignin í geymslureikningnum, eins og Azure-gáttin sýnir hana.',
+  'opt.smbShareHint': 'Aðeins þörf ef þjónninn sýnir ekki sameignir sínar. Prófið opnar þá þessa sameign, og verk geta samt notað allar sameignir þjónsins.',
   'nav.more': 'Meira',
   'nav.label': 'Leiðsögn',
   'settings.sync': 'Samstilling',
@@ -1238,6 +1239,7 @@ const is: Translations = {
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
   'new.change.twoFactorOnce': 'Mega biður um {code} með hinum innskráningarreitunum, og fyrir Mega og Proton Drive dugar einn kóði: {test}, vistun og athugunin á eftir nota sömu lotu og kóðinn opnar.',
   'new.change.targetInUse': 'Áfangastað sem verk nota enn er ekki eytt. {delete} nefnir þess í stað þau verk, svo þú getir fyrst beint þeim á annan áfangastað.',
+  'new.change.smbShare': 'SMB-þjónn sem sýnir ekki sameignir sínar stenst {test} um leið og þú fyllir út {share}. Hlið verks efst á SMB-þjóni, þar sem aðeins er listinn yfir sameignir, er hafnað þegar verkið er vistað.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

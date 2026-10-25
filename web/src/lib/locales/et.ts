@@ -999,6 +999,7 @@ const et: Translations = {
   'opt.satelliteHint': 'Satelliit, millel su Storj-konto asub, nii nagu konsool seda näitab. Seda on vaja ainult ilma juurdepääsuloata.',
   'opt.passphraseHint': 'Paroolifraas, millega failid krüptitakse. Ilma selleta ei saa midagi salvestatut enam lugeda, nii et hoia koopiat kusagil mujal.',
   'opt.shareNameHint': 'Jagatud kaust salvestuskontos, nii nagu Azure\'i portaal seda näitab.',
+  'opt.smbShareHint': 'Vaja ainult siis, kui server oma jagatud kaustu ei näita. Test avab siis selle kausta ja tööd saavad ikka kasutada serveri iga jagatud kausta.',
   'nav.more': 'Veel',
   'nav.label': 'Navigeerimine',
   'settings.sync': 'Sünkroonimine',
@@ -1238,6 +1239,7 @@ const et: Translations = {
   'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
   'new.change.twoFactorOnce': 'Mega küsib {code} koos teiste sisselogimisväljadega ning Mega ja Proton Drive\'i jaoks piisab ühest koodist: {test}, salvestamine ja sellele järgnev kontroll kasutavad sama seanssi, mille kood avab.',
   'new.change.targetInUse': 'Sihtkohta, mida tööd veel kasutavad, ei kustutata. {delete} nimetab hoopis need tööd, et saaksid need enne teise sihtkohta suunata.',
+  'new.change.smbShare': 'SMB-server, mis oma jagatud kaustu ei näita, läbib {test}, kui täidad {share}. Töö pool SMB-serveri kõige ülemisel tasemel, kus on ainult jagatud kaustade loend, lükatakse töö salvestamisel tagasi.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

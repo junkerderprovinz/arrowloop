@@ -999,6 +999,7 @@ const ko: Translations = {
   'opt.satelliteHint': 'Storj 계정이 있는 위성으로, 콘솔에 표시된 대로 씁니다. 액세스 권한이 없을 때만 필요합니다.',
   'opt.passphraseHint': '파일을 암호화하는 암호 문구입니다. 이것이 없으면 저장된 것을 다시 읽을 수 없으니 다른 곳에 사본을 보관하세요.',
   'opt.shareNameHint': '스토리지 계정 안의 파일 공유로, Azure 포털에 표시된 대로 씁니다.',
+  'opt.smbShareHint': '서버가 공유 목록을 보여 주지 않을 때만 필요합니다. 그러면 테스트가 이 공유를 열고, 작업은 여전히 서버의 모든 공유를 쓸 수 있습니다.',
   'nav.more': '더 보기',
   'nav.label': '탐색',
   'settings.sync': '동기화',
@@ -1238,6 +1239,7 @@ const ko: Translations = {
   'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
   'new.change.twoFactorOnce': 'Mega는 다른 로그인 항목과 함께 {code}를 묻고, Mega와 Proton Drive는 코드 하나면 충분합니다. {test}, 저장, 그 뒤의 확인이 코드가 연 세션을 함께 씁니다.',
   'new.change.targetInUse': '작업이 아직 쓰는 대상은 삭제되지 않습니다. 대신 {delete}이 그 작업을 알려 주므로 먼저 다른 대상으로 바꿀 수 있습니다.',
+  'new.change.smbShare': '공유 목록을 보여 주지 않는 SMB 서버도 {share}를 채우면 {test}를 통과합니다. 공유 목록만 있는 SMB 서버의 맨 위를 가리키는 작업의 한쪽은 작업을 저장할 때 거부됩니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

@@ -999,6 +999,7 @@ const ms: Translations = {
   'opt.satelliteHint': 'Satelit tempat akaun Storj anda berada, seperti yang ditunjukkan oleh konsolnya. Anda hanya memerlukannya jika tiada kebenaran akses.',
   'opt.passphraseHint': 'Frasa laluan yang digunakan untuk menyulitkan fail. Tanpanya, tiada apa yang disimpan boleh dibaca semula, jadi simpan salinannya di tempat lain.',
   'opt.shareNameHint': 'Perkongsian fail di dalam akaun storan, seperti yang disenaraikan oleh portal Azure.',
+  'opt.smbShareHint': 'Hanya perlu jika pelayan tidak menyenaraikan perkongsiannya. Ujian kemudian membuka perkongsian ini, dan tugas masih boleh menggunakan setiap perkongsian pada pelayan.',
   'nav.more': 'Lagi',
   'nav.label': 'Navigasi',
   'settings.sync': 'Penyegerakan',
@@ -1238,6 +1239,7 @@ const ms: Translations = {
   'new.change.newerWins': '{option} dalam tugas yang menyegerak dua hala menyelesaikan percanggahan tanpa bertanya: versi yang disimpan terakhir kekal di kedua-dua sisi, dan yang satu lagi masuk ke tong sampah.',
   'new.change.twoFactorOnce': 'Mega meminta {code} bersama medan log masuk yang lain, dan untuk Mega dan Proton Drive satu kod sudah memadai: {test}, simpan dan semakan selepasnya berkongsi sesi yang dibuka oleh kod itu.',
   'new.change.targetInUse': 'Destinasi yang masih digunakan oleh tugas tidak dipadam. {delete} sebaliknya menamakan tugas itu, supaya anda boleh menghalakannya ke destinasi lain dahulu.',
+  'new.change.smbShare': 'Pelayan SMB yang tidak menyenaraikan perkongsiannya lulus {test} sebaik sahaja anda mengisi {share}. Sisi tugas di bahagian paling atas pelayan SMB, tempat hanya ada senarai perkongsian, ditolak apabila tugas disimpan.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
 }
 

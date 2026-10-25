@@ -999,6 +999,7 @@ const id: Translations = {
   'opt.satelliteHint': 'Satelit tempat akun Storj Anda berada, seperti yang ditampilkan konsolnya. Hanya diperlukan tanpa izin akses.',
   'opt.passphraseHint': 'Frasa sandi yang dipakai untuk mengenkripsi berkas. Tanpanya tidak ada yang tersimpan bisa dibaca lagi, jadi simpan salinannya di tempat lain.',
   'opt.shareNameHint': 'Berbagi berkas di dalam akun penyimpanan, seperti yang tercantum di portal Azure.',
+  'opt.smbShareHint': 'Hanya perlu jika server tidak menampilkan berbaginya. Uji lalu membuka berbagi ini, dan tugas tetap bisa memakai setiap berbagi di server.',
   'nav.more': 'Lainnya',
   'nav.label': 'Navigasi',
   'settings.sync': 'Sinkronisasi',
@@ -1238,6 +1239,7 @@ const id: Translations = {
   'new.change.newerWins': '{option} pada tugas yang menyinkronkan dua arah menyelesaikan konflik tanpa bertanya: versi yang terakhir disimpan tetap ada di kedua sisi, dan yang lain masuk ke tempat sampah.',
   'new.change.twoFactorOnce': 'Mega meminta {code} bersama kolom masuk lainnya, dan untuk Mega serta Proton Drive satu kode sudah cukup: {test}, menyimpan, dan pemeriksaan sesudahnya memakai sesi yang dibuka kode itu.',
   'new.change.targetInUse': 'Tujuan yang masih dipakai tugas tidak dihapus. {delete} justru menyebut tugas-tugas itu, supaya Anda bisa mengarahkannya ke tujuan lain lebih dulu.',
+  'new.change.smbShare': 'Server SMB yang tidak menampilkan berbaginya lolos {test} begitu Anda mengisi {share}. Sisi tugas di puncak server SMB, tempat yang hanya berisi daftar berbagi, ditolak saat tugas disimpan.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

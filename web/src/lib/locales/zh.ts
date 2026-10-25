@@ -999,6 +999,7 @@ const zh: Translations = {
   'opt.satelliteHint': '你的 Storj 账户所在的卫星，按控制台显示的填写。只有不用访问授权时才需要。',
   'opt.passphraseHint': '加密文件所用的口令。没有它，存储的内容都无法再读取，所以请在别处保留一份副本。',
   'opt.shareNameHint': '存储账户中的文件共享，按 Azure 门户列出的名称填写。',
+  'opt.smbShareHint': '只在服务器不列出共享时才需要。测试会直接打开这个共享，任务仍然可以使用服务器上的任何共享。',
   'nav.more': '更多',
   'nav.label': '导航',
   'settings.sync': '同步',
@@ -1238,6 +1239,7 @@ const zh: Translations = {
   'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
   'new.change.twoFactorOnce': 'Mega 会和其他登录字段一起询问{code}，而 Mega 和 Proton Drive 只需一个验证码：{test}、保存以及之后的检查共用验证码打开的会话。',
   'new.change.targetInUse': '仍有任务在用的目标不会被删除。{delete} 会改为列出这些任务，让你先把它们改指到别的目标。',
+  'new.change.smbShare': '不列出共享的 SMB 服务器，只要填上{share}就能通过{test}。任务的一侧若指向 SMB 服务器的最顶层（那里只有共享列表），保存任务时会被拒绝。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

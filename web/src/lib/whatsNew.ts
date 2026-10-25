@@ -74,6 +74,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.targetInUse',
         names: { delete: 'action.delete' },
       },
+      {
+        id: 'smb-share',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.smbShare',
+        names: { share: 'opt.shareName', test: 'targets.check' },
+      },
     ],
   },
   {

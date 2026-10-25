@@ -999,6 +999,7 @@ const ca: Translations = {
   'opt.satelliteHint': 'El satèl·lit on és el teu compte de Storj, tal com el mostra la seva consola. Només el necessites si no tens una concessió d\'accés.',
   'opt.passphraseHint': 'La frase amb què es xifren els fitxers. Sense ella no es pot tornar a llegir res del que s\'ha desat, així que guarda\'n una còpia en un altre lloc.',
   'opt.shareNameHint': 'El recurs compartit de fitxers dins del compte d\'emmagatzematge, tal com el mostra el portal d\'Azure.',
+  'opt.smbShareHint': 'Només cal si el servidor no mostra els seus recursos compartits. La prova obre llavors aquest recurs, i les tasques poden fer servir igualment qualsevol recurs compartit del servidor.',
   'nav.more': 'Més',
   'nav.label': 'Navegació',
   'settings.sync': 'Sincronització',
@@ -1238,6 +1239,7 @@ const ca: Translations = {
   'new.change.newerWins': '{option} en una tasca que sincronitza en els dos sentits resol un conflicte sense preguntar: la versió desada en últim lloc es queda als dos costats i l\'altra va a la paperera.',
   'new.change.twoFactorOnce': 'Mega demana el {code} amb els altres camps d\'inici de sessió, i per a Mega i Proton Drive n\'hi ha prou amb un codi: {test}, desar i la comprovació posterior comparteixen la sessió que obre el codi.',
   'new.change.targetInUse': 'Una destinació que encara fan servir tasques no s\'esborra. {delete} indica quines són, perquè primer les puguis apuntar a una altra destinació.',
+  'new.change.smbShare': 'Un servidor SMB que no mostra els seus recursos compartits passa {test} quan omples {share}. Un costat d\'una tasca a la part superior d\'un servidor SMB, on només hi ha la llista de recursos compartits, es rebutja en desar la tasca.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

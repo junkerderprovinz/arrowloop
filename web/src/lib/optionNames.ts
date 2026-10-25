@@ -37,6 +37,7 @@ const NAMES: Record<string, TranslationKey> = {
   '2fa': 'opt.twoFactor',
   namenode: 'opt.namenode',
   share_name: 'opt.shareName',
+  share: 'opt.shareName',
   upstreams: 'opt.upstreams',
   level: 'opt.level',
   doi: 'opt.doi',

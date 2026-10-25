@@ -999,6 +999,7 @@ const hu: Translations = {
   'opt.satelliteHint': 'A műhold, amelyen a Storj-fiókod van, ahogy a konzol mutatja. Csak hozzáférési engedély nélkül kell.',
   'opt.passphraseHint': 'A jelmondat, amellyel a fájlok titkosítva vannak. Nélküle semmi tárolt nem olvasható vissza, ezért tarts egy másolatot máshol is.',
   'opt.shareNameHint': 'A fájlmegosztás a tárfiókon belül, ahogy az Azure portál listázza.',
+  'opt.smbShareHint': 'Csak akkor kell, ha a szerver nem sorolja fel a megosztásait. A teszt ekkor ezt a megosztást nyitja meg, a feladatok pedig továbbra is használhatják a szerver bármelyik megosztását.',
   'nav.more': 'Továbbiak',
   'nav.label': 'Navigáció',
   'settings.sync': 'Szinkronizálás',
@@ -1238,6 +1239,7 @@ const hu: Translations = {
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
   'new.change.twoFactorOnce': 'A Mega a többi bejelentkezési mezővel együtt kéri a {code} értékét, és Megánál és Proton Drive-nál egy kód elég: a {test}, a mentés és az utána következő ellenőrzés a kód által nyitott munkamenetet használja.',
   'new.change.targetInUse': 'Az a cél, amelyet feladatok még használnak, nem törlődik. A {delete} ehelyett megnevezi ezeket a feladatokat, hogy előbb másik célra irányíthassa őket.',
+  'new.change.smbShare': 'A megosztásait fel nem soroló SMB-szerver átmegy a {test} lépésen, amint kitölti a {share} mezőt. Az SMB-szerver legfelső szintjén álló feladatoldalt, ahol csak a megosztások listája van, a feladat mentésekor elutasítja.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 
