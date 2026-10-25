@@ -851,6 +851,12 @@ const lt: Translations = {
   'defaults.off': 'Išjungta',
   'defaults.exceptions': 'Išimtys',
   'defaults.exceptionsHint': 'Užduotys su sava reikšme, kurią jos išlaiko, kai čia pasikeičia numatytoji. Visos kitos užduotys seka numatytąsias.',
+  'edit.useGlobal': 'Naudoti bendruosius nustatymus',
+  'edit.useGlobalHint': 'Kol tai įjungta, kiekviena reikšmė, pažymėta bendra, ateina iš bendrojo sinchronizavimo nustatymo ir keičiasi kartu su juo. Išjunkite, kad ši užduotis gautų savas reikšmes, kurios iš pradžių sutampa su bendrosiomis. Vėl įjungus jos dingsta.',
+  'edit.global': 'bendra',
+  'edit.cardSync': 'Sinchronizavimas',
+  'edit.excludeOwn': 'Savi šablonai',
+  'edit.folderPath': 'Aplankas',
   'side.target': 'Paskirtis',
   'settings.security': 'Sauga',
   'settings.app': 'Programėlė',
@@ -1236,6 +1242,7 @@ const lt: Translations = {
   'new.change.releaseCards': 'Po naujinimo šiame lange rodoma kortelė kiekvienam leidimui nuo jūsų turėtos versijos, su jo pastabomis ir pakeitimais.',
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
+  'new.change.phoneJobEditor': 'Telefono programėlėje užduotis rodo abi savo puses kaip korteles su kryptimi tarp jų, o savo nustatymus trijose kortelėse: {schedule}, {sync} ir {exclude}. Vienas jungiklis, {useGlobal}, nusprendžia, ar užduotis ima bendrąjį sinchronizavimo nustatymą, ar laiko savas reikšmes.',
 }
 
 export default lt

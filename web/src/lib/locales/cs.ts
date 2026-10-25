@@ -851,6 +851,12 @@ const cs: Translations = {
   'defaults.off': 'Vypnuto',
   'defaults.exceptions': 'Výjimky',
   'defaults.exceptionsHint': 'Úlohy s vlastní hodnotou, kterou si ponechají, když se zde výchozí hodnota změní. Všechny ostatní úlohy se řídí výchozími hodnotami.',
+  'edit.useGlobal': 'Použít globální nastavení',
+  'edit.useGlobalHint': 'Dokud je to zapnuté, každá hodnota označená globální pochází z globálního nastavení synchronizace a mění se s ním. Vypněte to a tato úloha dostane vlastní hodnoty, které začínají jako ty globální. Po opětovném zapnutí zmizí.',
+  'edit.global': 'globální',
+  'edit.cardSync': 'Synchronizace',
+  'edit.excludeOwn': 'Vlastní vzory',
+  'edit.folderPath': 'Složka',
   'side.target': 'Cíl',
   'settings.security': 'Zabezpečení',
   'settings.app': 'Aplikace',
@@ -1236,6 +1242,7 @@ const cs: Translations = {
   'new.change.releaseCards': 'Po aktualizaci toto okno ukáže kartu pro každé vydání od toho, které jste měli, s jeho poznámkami a změnami, které přineslo.',
   'new.change.newerWins': '{option} v úloze, která synchronizuje oběma směry, vyřeší konflikt bez ptaní: naposledy uložená verze zůstane na obou stranách a ta druhá jde do koše.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
+  'new.change.phoneJobEditor': 'V aplikaci pro telefon ukazuje úloha své dvě strany jako karty se směrem mezi nimi a svá nastavení ve třech kartách: {schedule}, {sync} a {exclude}. Jeden přepínač, {useGlobal}, rozhoduje, zda úloha přebírá globální nastavení synchronizace, nebo si drží vlastní hodnoty.',
 }
 
 export default cs

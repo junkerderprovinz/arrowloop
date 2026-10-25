@@ -851,6 +851,12 @@ const ro: Translations = {
   'defaults.off': 'Oprit',
   'defaults.exceptions': 'Excepții',
   'defaults.exceptionsHint': 'Sarcinile cu o valoare proprie, pe care o păstrează când aici se schimbă o valoare implicită. Toate celelalte sarcini urmează valorile implicite.',
+  'edit.useGlobal': 'Folosește setările globale',
+  'edit.useGlobalHint': 'Cât timp aceasta este activă, fiecare valoare marcată global vine din setarea globală de sincronizare și se schimbă odată cu ea. Dezactiveaz-o ca această sarcină să primească valori proprii, care pornesc de la cele globale. Dacă o activezi din nou, acestea se pierd.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sincronizare',
+  'edit.excludeOwn': 'Modele proprii',
+  'edit.folderPath': 'Dosar',
   'side.target': 'O țintă',
   'settings.security': 'Securitate',
   'settings.app': 'Aplicație',
@@ -1236,6 +1242,7 @@ const ro: Translations = {
   'new.change.releaseCards': 'După o actualizare, această fereastră arată câte un card pentru fiecare versiune de la cea pe care o aveai, cu notele și schimbările ei.',
   'new.change.newerWins': '{option} într-o sarcină care sincronizează în ambele sensuri rezolvă un conflict fără să întrebe: versiunea salvată ultima rămâne pe ambele părți, iar cealaltă ajunge în coș.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
+  'new.change.phoneJobEditor': 'În aplicația de telefon, o sarcină își arată cele două părți ca niște carduri cu direcția între ele, iar setările în trei carduri: {schedule}, {sync} și {exclude}. Un singur comutator, {useGlobal}, decide dacă sarcina preia setarea globală de sincronizare sau își păstrează valorile proprii.',
 }
 
 export default ro

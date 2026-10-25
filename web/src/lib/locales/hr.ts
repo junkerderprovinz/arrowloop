@@ -851,6 +851,12 @@ const hr: Translations = {
   'defaults.off': 'Isključeno',
   'defaults.exceptions': 'Iznimke',
   'defaults.exceptionsHint': 'Zadaci s vlastitom vrijednošću, koju zadržavaju kad se ovdje promijeni zadana vrijednost. Svi ostali zadaci slijede zadane vrijednosti.',
+  'edit.useGlobal': 'Koristi globalne postavke',
+  'edit.useGlobalHint': 'Dok je ovo uključeno, svaka vrijednost označena kao globalno dolazi iz globalne postavke sinkronizacije i mijenja se s njom. Isključi ga da ovaj zadatak dobije vlastite vrijednosti, koje počinju kao globalne. Kad ga ponovno uključiš, one nestaju.',
+  'edit.global': 'globalno',
+  'edit.cardSync': 'Sinkronizacija',
+  'edit.excludeOwn': 'Vlastiti uzorci',
+  'edit.folderPath': 'Mapa',
   'side.target': 'Odredište',
   'settings.security': 'Sigurnost',
   'settings.app': 'Aplikacija',
@@ -1236,6 +1242,7 @@ const hr: Translations = {
   'new.change.releaseCards': 'Nakon ažuriranja ovaj prozor prikazuje karticu za svako izdanje od onog koje si imao, s njegovim bilješkama i promjenama koje je donijelo.',
   'new.change.newerWins': '{option} u zadatku koji sinkronizira u oba smjera rješava sukob bez pitanja: zadnja spremljena verzija ostaje na obje strane, a druga ide u smeće.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
+  'new.change.phoneJobEditor': 'U aplikaciji za mobitel zadatak prikazuje svoje dvije strane kao kartice sa smjerom između njih, a svoje postavke u tri kartice: {schedule}, {sync} i {exclude}. Jedan prekidač, {useGlobal}, odlučuje uzima li zadatak globalnu postavku sinkronizacije ili zadržava vlastite vrijednosti.',
 }
 
 export default hr

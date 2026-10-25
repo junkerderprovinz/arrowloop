@@ -851,6 +851,12 @@ const gl: Translations = {
   'defaults.off': 'Desactivado',
   'defaults.exceptions': 'Excepcións',
   'defaults.exceptionsHint': 'As tarefas cun valor propio, que conservan cando aquí cambia un valor predeterminado. Todas as demais tarefas seguen os predeterminados.',
+  'edit.useGlobal': 'Usar a configuración global',
+  'edit.useGlobalHint': 'Mentres isto está activado, cada valor marcado como global vén da configuración global de sincronización e cambia con ela. Desactívao para darlle a esta tarefa valores propios, que comezan sendo os globais. Se o volves activar, pérdense.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sincronización',
+  'edit.excludeOwn': 'Patróns propios',
+  'edit.folderPath': 'Cartafol',
   'side.target': 'Un destino',
   'settings.security': 'Seguranza',
   'settings.app': 'App',
@@ -1236,6 +1242,7 @@ const gl: Translations = {
   'new.change.releaseCards': 'Despois dunha actualización, esta xanela mostra unha tarxeta por cada versión desde a que tiñas, coas súas notas e os cambios que trouxo.',
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
+  'new.change.phoneJobEditor': 'Na app do móbil, unha tarefa mostra os seus dous lados como tarxetas coa dirección entre elas, e a súa configuración en tres tarxetas: {schedule}, {sync} e {exclude}. Un só interruptor, {useGlobal}, decide se a tarefa toma a configuración global de sincronización ou conserva valores propios.',
 }
 
 export default gl

@@ -851,6 +851,12 @@ const zh: Translations = {
   'defaults.off': '关',
   'defaults.exceptions': '例外',
   'defaults.exceptionsHint': '拥有自己值的任务，在此处默认值改变时仍保留该值。其他所有任务都遵循默认值。',
+  'edit.useGlobal': '使用全局设置',
+  'edit.useGlobalHint': '开启时，每个标有全局的值都来自全局同步设置，并随之变化。关闭后，此任务会有自己的值，起初与全局值相同。再次开启时，这些值会被丢弃。',
+  'edit.global': '全局',
+  'edit.cardSync': '同步',
+  'edit.excludeOwn': '自有规则',
+  'edit.folderPath': '文件夹',
   'side.target': '一个目标',
   'settings.security': '安全',
   'settings.app': '应用',
@@ -1236,6 +1242,7 @@ const zh: Translations = {
   'new.change.releaseCards': '更新后，这个窗口会为你之前版本之后的每个版本显示一张卡片，附上它的说明和带来的改动。',
   'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
+  'new.change.phoneJobEditor': '在手机应用中，任务以卡片显示两侧，中间是方向，设置则分在三张卡片中：{schedule}、{sync} 和 {exclude}。一个开关 {useGlobal} 决定任务采用全局同步设置还是保留自己的值。',
 }
 
 export default zh

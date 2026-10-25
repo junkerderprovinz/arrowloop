@@ -851,6 +851,12 @@ const vi: Translations = {
   'defaults.off': 'Tắt',
   'defaults.exceptions': 'Ngoại lệ',
   'defaults.exceptionsHint': 'Các công việc có giá trị riêng và giữ nguyên khi một giá trị mặc định ở đây thay đổi. Mọi công việc khác theo mặc định.',
+  'edit.useGlobal': 'Dùng thiết lập toàn cục',
+  'edit.useGlobalHint': 'Khi mục này bật, mọi giá trị có nhãn toàn cục đều lấy từ thiết lập đồng bộ toàn cục và thay đổi theo nó. Tắt đi để công việc này có giá trị riêng, ban đầu giống giá trị toàn cục. Nếu bật lại, các giá trị đó sẽ mất.',
+  'edit.global': 'toàn cục',
+  'edit.cardSync': 'Đồng bộ',
+  'edit.excludeOwn': 'Mẫu riêng',
+  'edit.folderPath': 'Thư mục',
   'side.target': 'Một đích',
   'settings.security': 'Bảo mật',
   'settings.app': 'Ứng dụng',
@@ -1236,6 +1242,7 @@ const vi: Translations = {
   'new.change.releaseCards': 'Sau khi cập nhật, cửa sổ này hiện một thẻ cho mỗi bản phát hành kể từ bản bạn đang dùng, kèm ghi chú và những thay đổi nó mang lại.',
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
+  'new.change.phoneJobEditor': 'Trong ứng dụng điện thoại, một công việc hiển thị hai phía dưới dạng thẻ với hướng ở giữa, và thiết lập của nó trong ba thẻ: {schedule}, {sync} và {exclude}. Một công tắc, {useGlobal}, quyết định công việc dùng thiết lập đồng bộ toàn cục hay giữ giá trị riêng.',
 }
 
 export default vi

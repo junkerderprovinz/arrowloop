@@ -851,6 +851,12 @@ const ja: Translations = {
   'defaults.off': 'オフ',
   'defaults.exceptions': '例外',
   'defaults.exceptionsHint': '独自の値を持つジョブです。ここで既定値が変わってもその値を保ちます。ほかのジョブはすべて既定値に従います。',
+  'edit.useGlobal': '全体の設定を使う',
+  'edit.useGlobalHint': 'オンの間は、「全体」の印が付いた値はすべて全体の同期設定から取られ、その変更に従います。オフにすると、このジョブは独自の値を持ち、最初は全体の値と同じです。もう一度オンにすると、独自の値は消えます。',
+  'edit.global': '全体',
+  'edit.cardSync': '同期',
+  'edit.excludeOwn': '独自のパターン',
+  'edit.folderPath': 'フォルダー',
   'side.target': '保存先',
   'settings.security': 'セキュリティ',
   'settings.app': 'アプリ',
@@ -1236,6 +1242,7 @@ const ja: Translations = {
   'new.change.releaseCards': 'アップデート後は、これまで使っていたバージョン以降のリリースごとに、リリースノートと変更点を載せたカードがこのウィンドウに表示されます。',
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
+  'new.change.phoneJobEditor': 'スマホアプリでは、ジョブの両側が間に方向を挟んだカードとして表示され、設定は {schedule}、{sync}、{exclude} の 3 枚のカードに並びます。スイッチ {useGlobal} ひとつで、ジョブが全体の同期設定を使うか独自の値を持つかが決まります。',
 }
 
 export default ja

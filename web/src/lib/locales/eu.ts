@@ -851,6 +851,12 @@ const eu: Translations = {
   'defaults.off': 'Desaktibatuta',
   'defaults.exceptions': 'Salbuespenak',
   'defaults.exceptionsHint': 'Balio propioa duten lanak, hemen balio lehenetsi bat aldatzean gordetzen dutena. Beste lan guztiek lehenetsiak jarraitzen dituzte.',
+  'edit.useGlobal': 'Erabili ezarpen orokorrak',
+  'edit.useGlobalHint': 'Hau aktibatuta dagoen bitartean, orokorra marka duen balio bakoitza sinkronizazio ezarpen orokorretik dator eta harekin aldatzen da. Desaktibatu lan honi balio propioak emateko, orokorren berdinak izanik hasieran. Berriro aktibatzen baduzu, galdu egiten dira.',
+  'edit.global': 'orokorra',
+  'edit.cardSync': 'Sinkronizazioa',
+  'edit.excludeOwn': 'Eredu propioak',
+  'edit.folderPath': 'Karpeta',
   'side.target': 'Helburu bat',
   'settings.security': 'Segurtasuna',
   'settings.app': 'Aplikazioa',
@@ -1236,6 +1242,7 @@ const eu: Translations = {
   'new.change.releaseCards': 'Eguneratze baten ondoren, leiho honek txartel bat erakusten du zuk zenuen bertsioaren ondorengo bertsio bakoitzeko, bere oharrekin eta ekarri zituen aldaketekin.',
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
+  'new.change.phoneJobEditor': 'Mugikorreko aplikazioan, lan batek bere bi aldeak txartel gisa erakusten ditu, norabidea tartean dutela, eta bere ezarpenak hiru txarteletan: {schedule}, {sync} eta {exclude}. Etengailu bakar batek, {useGlobal}, erabakitzen du lanak sinkronizazio ezarpen orokorra hartzen duen ala balio propioak gordetzen dituen.',
 }
 
 export default eu

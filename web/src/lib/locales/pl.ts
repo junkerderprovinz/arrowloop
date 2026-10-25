@@ -851,6 +851,12 @@ const pl: Translations = {
   'defaults.off': 'Wyłączone',
   'defaults.exceptions': 'Wyjątki',
   'defaults.exceptionsHint': 'Zadania z własną wartością, którą zachowują, gdy zmienia się tu wartość domyślna. Wszystkie inne zadania podążają za domyślnymi.',
+  'edit.useGlobal': 'Używaj ustawień globalnych',
+  'edit.useGlobalHint': 'Dopóki to jest włączone, każda wartość oznaczona jako globalne pochodzi z globalnego ustawienia synchronizacji i zmienia się razem z nim. Wyłącz to, aby to zadanie dostało własne wartości, które na początku są takie jak globalne. Po ponownym włączeniu znikają.',
+  'edit.global': 'globalne',
+  'edit.cardSync': 'Synchronizacja',
+  'edit.excludeOwn': 'Własne wzorce',
+  'edit.folderPath': 'Folder',
   'side.target': 'Cel',
   'settings.security': 'Bezpieczeństwo',
   'settings.app': 'Aplikacja',
@@ -1236,6 +1242,7 @@ const pl: Translations = {
   'new.change.releaseCards': 'Po aktualizacji to okno pokazuje kartę dla każdego wydania od poprzednio używanej wersji, z jego uwagami i zmianami.',
   'new.change.newerWins': '{option} w zadaniu synchronizującym w obie strony rozstrzyga konflikt bez pytania: wersja zapisana jako ostatnia zostaje po obu stronach, a druga trafia do kosza.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
+  'new.change.phoneJobEditor': 'W aplikacji na telefon zadanie pokazuje swoje dwie strony jako karty z kierunkiem pomiędzy nimi, a swoje ustawienia w trzech kartach: {schedule}, {sync} i {exclude}. Jeden przełącznik, {useGlobal}, decyduje, czy zadanie bierze globalne ustawienie synchronizacji, czy zachowuje własne wartości.',
 }
 
 export default pl

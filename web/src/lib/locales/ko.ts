@@ -851,6 +851,12 @@ const ko: Translations = {
   'defaults.off': '꺼짐',
   'defaults.exceptions': '예외',
   'defaults.exceptionsHint': '자체 값이 있는 작업입니다. 여기서 기본값이 바뀌어도 그 값을 유지합니다. 다른 모든 작업은 기본값을 따릅니다.',
+  'edit.useGlobal': '전체 설정 사용',
+  'edit.useGlobalHint': '이 설정이 켜져 있는 동안 전체 표시가 있는 모든 값은 전체 동기화 설정에서 오고 그에 따라 바뀝니다. 끄면 이 작업이 자체 값을 갖게 되며, 처음에는 전체 값과 같습니다. 다시 켜면 자체 값은 사라집니다.',
+  'edit.global': '전체',
+  'edit.cardSync': '동기화',
+  'edit.excludeOwn': '자체 패턴',
+  'edit.folderPath': '폴더',
   'side.target': '대상',
   'settings.security': '보안',
   'settings.app': '앱',
@@ -1236,6 +1242,7 @@ const ko: Translations = {
   'new.change.releaseCards': '업데이트 후 이 창에는 이전에 쓰던 버전 이후의 릴리스마다 카드가 표시되며, 릴리스 노트와 달라진 내용이 담겨 있습니다.',
   'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
+  'new.change.phoneJobEditor': '휴대폰 앱에서 작업은 두 쪽을 카드로 보여 주고 그 사이에 방향을 표시하며, 설정은 {schedule}, {sync}, {exclude} 세 카드에 있습니다. 스위치 하나, {useGlobal}가 작업이 전체 동기화 설정을 따를지 자체 값을 유지할지 정합니다.',
 }
 
 export default ko

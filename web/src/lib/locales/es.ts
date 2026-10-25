@@ -851,6 +851,12 @@ const es: Translations = {
   'defaults.off': 'Desactivado',
   'defaults.exceptions': 'Excepciones',
   'defaults.exceptionsHint': 'Las tareas con un valor propio, que conservan cuando aquí cambia un valor predeterminado. Todas las demás tareas siguen los predeterminados.',
+  'edit.useGlobal': 'Usar los ajustes globales',
+  'edit.useGlobalHint': 'Mientras esto está activado, cada valor marcado como global viene del ajuste de sincronización global y cambia con él. Desactívalo para dar a esta tarea valores propios, que empiezan siendo los globales. Si lo vuelves a activar, se pierden.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sincronización',
+  'edit.excludeOwn': 'Patrones propios',
+  'edit.folderPath': 'Carpeta',
   'side.target': 'Un destino',
   'settings.security': 'Seguridad',
   'settings.app': 'App',
@@ -1236,6 +1242,7 @@ const es: Translations = {
   'new.change.releaseCards': 'Después de una actualización, esta ventana muestra una tarjeta por cada versión desde la que tenías, con sus notas y los cambios que trajo.',
   'new.change.newerWins': '{option} en una tarea que sincroniza en ambos sentidos resuelve un conflicto sin preguntar: la versión guardada en último lugar se queda en ambos lados y la otra va a la papelera.',
   'new.change.appFolders': 'En la app del móvil, {add} en {settings}, {phone} permite a ArrowLoop sincronizar una carpeta que otra aplicación ofrece en el selector de archivos de Android, sin root ni Shizuku. Las carpetas aparecen en un destino llamado Apps.',
+  'new.change.phoneJobEditor': 'En la app del móvil, una tarea muestra sus dos lados como tarjetas con la dirección entre ellas, y sus ajustes en tres tarjetas: {schedule}, {sync} y {exclude}. Un solo interruptor, {useGlobal}, decide si la tarea toma el ajuste de sincronización global o conserva valores propios.',
 }
 
 export default es

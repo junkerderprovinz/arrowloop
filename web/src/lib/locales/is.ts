@@ -851,6 +851,12 @@ const is: Translations = {
   'defaults.off': 'Slökkt',
   'defaults.exceptions': 'Undantekningar',
   'defaults.exceptionsHint': 'Verkin með eigið gildi, sem þau halda þegar sjálfgefið gildi breytist hér. Öll önnur verk fylgja sjálfgefnu gildunum.',
+  'edit.useGlobal': 'Nota almennar stillingar',
+  'edit.useGlobalHint': 'Á meðan þetta er virkt kemur hvert gildi merkt almennt úr almennu samstillingarstillingunni og breytist með henni. Slökktu á því til að gefa þessu verki eigin gildi, sem byrja eins og þau almennu. Ef þú kveikir aftur á því hverfa þau.',
+  'edit.global': 'almennt',
+  'edit.cardSync': 'Samstilling',
+  'edit.excludeOwn': 'Eigin mynstur',
+  'edit.folderPath': 'Mappa',
   'side.target': 'Áfangastaður',
   'settings.security': 'Öryggi',
   'settings.app': 'Forrit',
@@ -1236,6 +1242,7 @@ const is: Translations = {
   'new.change.releaseCards': 'Eftir uppfærslu sýnir þessi gluggi spjald fyrir hverja útgáfu síðan þá sem þú varst með, með athugasemdum hennar og breytingunum sem hún kom með.',
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
+  'new.change.phoneJobEditor': 'Í símaforritinu sýnir verk báðar hliðar sínar sem spjöld með stefnunni á milli og stillingar sínar á þremur spjöldum: {schedule}, {sync} og {exclude}. Einn rofi, {useGlobal}, ræður því hvort verkið tekur almennu samstillingarstillinguna eða heldur eigin gildum.',
 }
 
 export default is

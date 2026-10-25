@@ -851,6 +851,12 @@ const lv: Translations = {
   'defaults.off': 'Izslēgts',
   'defaults.exceptions': 'Izņēmumi',
   'defaults.exceptionsHint': 'Uzdevumi ar savu vērtību, ko tie patur, kad šeit mainās noklusējums. Visi pārējie uzdevumi seko noklusējumiem.',
+  'edit.useGlobal': 'Izmantot globālos iestatījumus',
+  'edit.useGlobalHint': 'Kamēr tas ir ieslēgts, katra vērtība ar atzīmi globāls nāk no globālā sinhronizācijas iestatījuma un mainās kopā ar to. Izslēdziet to, lai šim uzdevumam būtu savas vērtības, kas sākumā ir tādas pašas kā globālās. Ieslēdzot to atkal, tās pazūd.',
+  'edit.global': 'globāls',
+  'edit.cardSync': 'Sinhronizācija',
+  'edit.excludeOwn': 'Savi šabloni',
+  'edit.folderPath': 'Mape',
   'side.target': 'Mērķis',
   'settings.security': 'Drošība',
   'settings.app': 'Lietotne',
@@ -1236,6 +1242,7 @@ const lv: Translations = {
   'new.change.releaseCards': 'Pēc atjaunināšanas šajā logā redzama karte par katru izlaidumu kopš tavas iepriekšējās versijas, ar tā piezīmēm un izmaiņām.',
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
+  'new.change.phoneJobEditor': 'Tālruņa lietotnē uzdevums rāda savas divas puses kā kartītes ar virzienu starp tām un savus iestatījumus trīs kartītēs: {schedule}, {sync} un {exclude}. Viens slēdzis, {useGlobal}, nosaka, vai uzdevums ņem globālo sinhronizācijas iestatījumu vai patur savas vērtības.',
 }
 
 export default lv

@@ -851,6 +851,12 @@ const pt: Translations = {
   'defaults.off': 'Desligado',
   'defaults.exceptions': 'Exceções',
   'defaults.exceptionsHint': 'As tarefas com um valor próprio, que mantêm quando aqui muda um predefinido. Todas as outras tarefas seguem os predefinidos.',
+  'edit.useGlobal': 'Usar as definições globais',
+  'edit.useGlobalHint': 'Enquanto isto estiver ligado, cada valor marcado como global vem da definição global de sincronização e muda com ela. Desliga-o para dar a esta tarefa valores próprios, que começam iguais aos globais. Se o voltares a ligar, perdem-se.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sincronização',
+  'edit.excludeOwn': 'Padrões próprios',
+  'edit.folderPath': 'Pasta',
   'side.target': 'Um destino',
   'settings.security': 'Segurança',
   'settings.app': 'App',
@@ -1236,6 +1242,7 @@ const pt: Translations = {
   'new.change.releaseCards': 'Depois de uma atualização, esta janela mostra um cartão por cada versão desde a que tinhas, com as notas e as mudanças que trouxe.',
   'new.change.newerWins': '{option} numa tarefa que sincroniza nos dois sentidos resolve um conflito sem perguntar: a versão guardada por último fica nos dois lados e a outra vai para a reciclagem.',
   'new.change.appFolders': 'Na app do telemóvel, {add} em {settings}, {phone} deixa o ArrowLoop sincronizar uma pasta que outra aplicação oferece no seletor de ficheiros do Android, sem root nem Shizuku. As pastas aparecem num destino chamado Apps.',
+  'new.change.phoneJobEditor': 'Na app do telemóvel, uma tarefa mostra os seus dois lados como cartões com a direção entre eles, e as suas definições em três cartões: {schedule}, {sync} e {exclude}. Um só interruptor, {useGlobal}, decide se a tarefa usa a definição global de sincronização ou mantém valores próprios.',
 }
 
 export default pt
