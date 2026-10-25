@@ -66,6 +66,8 @@ const GENERAL: Record<string, TranslationKey> = {
 /** Where one backend writes a field differently from the others. */
 const BY_BACKEND: Record<string, TranslationKey> = {
   'combine.upstreams': 'opt.upstreamsCombineHint',
+  'iclouddrive.trust_token': 'opt.icloudTrustHint',
+  'iclouddrive.cookies': 'opt.icloudCookiesHint',
 }
 
 /**
@@ -93,6 +95,7 @@ const PROVIDER_HINTS: Record<string, TranslationKey> = {
   crypt: 'provider.cryptHint',
   s3: 'provider.s3Hint',
   hidrive: 'provider.hidriveHint',
+  icloud: 'provider.icloudHint',
   googlephotos: 'provider.googlephotosHint',
   minio: 'provider.selfHostedHint',
   seaweedfs: 'provider.selfHostedHint',

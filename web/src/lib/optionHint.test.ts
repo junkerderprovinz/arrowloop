@@ -33,4 +33,11 @@ describe('a field bubble', () => {
     expect(optionHint({ name: 'upstreams' }, t, { backend: 'combine' })).toContain('opt.upstreamsCombineHint')
     expect(optionHint({ name: 'upstreams' }, t, { backend: 'union' })).toContain('opt.upstreamsHint')
   })
+
+  it('says where the iCloud session comes from', () => {
+    expect(optionHint({ name: 'trust_token', help: 'Trust token for session authentication.' }, t, { backend: 'iclouddrive' })).toContain(
+      'opt.icloudTrustHint',
+    )
+    expect(optionHint({ name: 'cookies', help: 'Session cookies.' }, t, { backend: 'iclouddrive' })).toContain('opt.icloudCookiesHint')
+  })
 })

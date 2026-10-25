@@ -14,6 +14,10 @@ The full notes for each release are in
 
 - **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
 
+## 🐛 Fixed
+
+- **iCloud Drive asks for the sign-in Apple wants.** The form asked for an app password, which Apple refuses, and left out the trust token and cookies rclone needs. It takes your Apple ID password and both session values, and the bubble beside them says how to get them with rclone config on a computer and that Apple asks again after 30 days.
+
 ## 2.2.8 - 2026-10-23
 
 ## ⚡ Improved

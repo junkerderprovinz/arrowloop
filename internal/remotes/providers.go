@@ -125,7 +125,9 @@ var providers = []Provider{
 	{ID: "pcloud", Name: "pCloud", Backend: "pcloud", Group: GroupCloud, Mark: "IconPcloud"},
 	{ID: "box", Name: "Box", Backend: "box", Group: GroupCloud, Mark: "IconBox"},
 	{ID: "protondrive", Name: "Proton Drive", Backend: "protondrive", Group: GroupCloud, Mark: "IconProtonDrive"},
-	{ID: "icloud", Name: "iCloud Drive", Auth: AuthAppPassword, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
+	// Apple refuses app passwords here: the Apple ID password goes with a
+	// trust token from rclone config.
+	{ID: "icloud", Name: "iCloud Drive", Auth: AuthLogin, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
 
 	{ID: "jottacloud", Name: "Jottacloud", Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
 	// Koofr's fields look like an ordinary login, but rclone's own help says

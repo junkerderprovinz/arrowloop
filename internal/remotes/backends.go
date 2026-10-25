@@ -104,6 +104,9 @@ var essential = map[string]map[string]bool{
 	"protondrive": {"username": true, "password": true, "2fa": true},
 	"seafile":     {"url": true, "user": true, "pass": true, "library": true},
 	"koofr":       {"provider": true, "user": true, "password": true},
+	// Apple lets rclone in only with the session of a sign-in confirmed by a
+	// code, which rclone config makes and which ends after 30 days.
+	"iclouddrive": {"apple_id": true, "password": true, "trust_token": true, "cookies": true},
 	// A login over plain FTP travels readable, so the encryption is asked.
 	"ftp": {"host": true, "user": true, "pass": true, "port": true, "tls": true, "explicit_tls": true},
 
