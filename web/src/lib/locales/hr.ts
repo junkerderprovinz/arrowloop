@@ -451,7 +451,8 @@ const hr: Translations = {
   'update.autoHint': 'Jednom dnevno ArrowLoop traži novu verziju, preuzima je u pozadini i provjerava je kontrolnim zbrojevima objavljenima uz izdanje. Nova verzija preuzima pri sljedećem pokretanju ArrowLoopa, pa se sinkronizacija u tijeku ne prekida. Instalirana i prijenosna kopija ažuriraju se obje tamo gdje se nalaze.',
   'update.ready': 'ArrowLoop {version} je preuzet i radit će pri sljedećem pokretanju aplikacije.',
   'confirm.deleteRemote': 'Izbrisati ovu pohranu',
-  'confirm.deleteRemoteStakes': 'Postavke za {name} uklanjaju se iz rcloneove konfiguracije, zajedno sa svakom lozinkom i ključem koji ondje leže. Prije toga ništa se nikamo ne kopira i povratka nema: ponovno postaviti znači ponovno utipkati podatke. Zadaci koji pokazuju onamo pri sljedećem pokretanju neće uspjeti dok ne pokažu drugamo.',
+  'confirm.deleteRemoteStakes': 'Postavke za {name} uklanjaju se iz rcloneove konfiguracije, zajedno sa svakom lozinkom i ključem koji ondje leže. Prije toga ništa se nikamo ne kopira i povratka nema: ponovno postaviti znači ponovno utipkati podatke.',
+  'targets.inUse': 'Zadaci još koriste ovo odredište: {jobs}. Usmjerite ih na drugo odredište ili ih izbrišite, a zatim izbrišite odredište.',
   'confirm.delete': 'Izbriši',
   'confirm.cancel': 'Odustani',
   'about.title': 'O ArrowLoopu',
@@ -1236,6 +1237,7 @@ const hr: Translations = {
   'new.change.releaseCards': 'Nakon ažuriranja ovaj prozor prikazuje karticu za svako izdanje od onog koje si imao, s njegovim bilješkama i promjenama koje je donijelo.',
   'new.change.newerWins': '{option} u zadatku koji sinkronizira u oba smjera rješava sukob bez pitanja: zadnja spremljena verzija ostaje na obje strane, a druga ide u smeće.',
   'new.change.twoFactorOnce': 'Mega traži {code} zajedno s ostalim poljima za prijavu, a za Megu i Proton Drive dovoljan je jedan kod: {test}, spremanje i provjera nakon toga dijele sesiju koju kod otvara.',
+  'new.change.targetInUse': 'Odredište koje zadaci još koriste ne briše se. {delete} umjesto toga navodi te zadatke, da ih najprije usmjerite na drugo odredište.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
 }
 

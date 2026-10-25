@@ -451,7 +451,8 @@ const ja: Translations = {
   'update.autoHint': 'ArrowLoop は 1 日に 1 回新しいバージョンを探し、バックグラウンドでダウンロードして、リリースと一緒に公開されたチェックサムで確認します。新しいバージョンは次に ArrowLoop を起動したときから動くので、実行中の同期が途中で止まることはありません。インストールしたコピーもポータブル版のコピーも、置いてある場所でそのまま更新されます。',
   'update.ready': 'ArrowLoop {version} をダウンロードしました。次にアプリを起動したときから動きます。',
   'confirm.deleteRemote': 'この保存先を削除',
-  'confirm.deleteRemoteStakes': '{name} の設定は rclone の構成から消えます。そこに置かれたパスワードや鍵も一緒です。事前にどこへも複製せず、元には戻せません。もう一度使うには資格情報を打ち直すことになります。ここを指しているジョブは、別の場所を指すまで次回から失敗します。',
+  'confirm.deleteRemoteStakes': '{name} の設定は rclone の構成から消えます。そこに置かれたパスワードや鍵も一緒です。事前にどこへも複製せず、元には戻せません。もう一度使うには資格情報を打ち直すことになります。',
+  'targets.inUse': 'まだこの接続先を使うジョブがあります: {jobs}。別の接続先に向けるか削除してから、接続先を削除してください。',
   'confirm.delete': '削除する',
   'confirm.cancel': 'キャンセル',
   'about.title': 'ArrowLoop について',
@@ -1236,6 +1237,7 @@ const ja: Translations = {
   'new.change.releaseCards': 'アップデート後は、これまで使っていたバージョン以降のリリースごとに、リリースノートと変更点を載せたカードがこのウィンドウに表示されます。',
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
   'new.change.twoFactorOnce': 'Mega はほかのサインイン項目と一緒に{code}を尋ねます。Mega と Proton Drive ではコードは一つで足ります。{test}、保存、その後の確認はコードが開いたセッションを共有します。',
+  'new.change.targetInUse': 'ジョブがまだ使っている接続先は削除されません。代わりに{delete}がそのジョブを示すので、先に別の接続先へ向けられます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

@@ -451,7 +451,8 @@ const ko: Translations = {
   'update.autoHint': 'ArrowLoop는 하루에 한 번 새 버전을 찾아 백그라운드에서 내려받고, 릴리스와 함께 게시된 체크섬으로 확인합니다. 새 버전은 다음에 ArrowLoop를 시작할 때부터 실행되므로 진행 중인 동기화가 끊기지 않습니다. 설치된 사본과 포터블 사본 모두 있는 자리에서 업데이트됩니다.',
   'update.ready': 'ArrowLoop {version}을(를) 내려받았습니다. 다음에 앱을 시작할 때부터 실행됩니다.',
   'confirm.deleteRemote': '이 저장 대상 삭제',
-  'confirm.deleteRemoteStakes': '{name}의 설정이 rclone 구성에서 사라집니다. 거기에 담긴 암호와 키도 함께입니다. 미리 어디에도 복사하지 않으며 되돌릴 수 없습니다. 다시 쓰려면 자격 증명을 다시 입력해야 합니다. 이곳을 가리키는 작업은 다른 곳을 가리킬 때까지 다음 실행부터 실패합니다.',
+  'confirm.deleteRemoteStakes': '{name}의 설정이 rclone 구성에서 사라집니다. 거기에 담긴 암호와 키도 함께입니다. 미리 어디에도 복사하지 않으며 되돌릴 수 없습니다. 다시 쓰려면 자격 증명을 다시 입력해야 합니다.',
+  'targets.inUse': '아직 이 대상을 쓰는 작업이 있습니다: {jobs}. 다른 대상으로 바꾸거나 삭제한 뒤 대상을 삭제하세요.',
   'confirm.delete': '삭제',
   'confirm.cancel': '취소',
   'about.title': 'ArrowLoop 정보',
@@ -1236,6 +1237,7 @@ const ko: Translations = {
   'new.change.releaseCards': '업데이트 후 이 창에는 이전에 쓰던 버전 이후의 릴리스마다 카드가 표시되며, 릴리스 노트와 달라진 내용이 담겨 있습니다.',
   'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
   'new.change.twoFactorOnce': 'Mega는 다른 로그인 항목과 함께 {code}를 묻고, Mega와 Proton Drive는 코드 하나면 충분합니다. {test}, 저장, 그 뒤의 확인이 코드가 연 세션을 함께 씁니다.',
+  'new.change.targetInUse': '작업이 아직 쓰는 대상은 삭제되지 않습니다. 대신 {delete}이 그 작업을 알려 주므로 먼저 다른 대상으로 바꿀 수 있습니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

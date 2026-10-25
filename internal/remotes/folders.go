@@ -97,3 +97,21 @@ func MakeFolder(ctx context.Context, name, dir, child string) (string, error) {
 	}
 	return Join(name, path.Join(dir, child)), nil
 }
+
+// Reaches reports whether a side lands on the target called name, itself or
+// through a target that wraps it, such as an encrypted folder kept there.
+func Reaches(side, name string) bool {
+	// Eight wrappers deep is more than anybody stacks, and stops a target
+	// that wraps itself.
+	for range 8 {
+		target, _, ok := Split(side)
+		if !ok {
+			return false
+		}
+		if target == name {
+			return true
+		}
+		side, _ = config.LoadedData().GetValue(target, "remote")
+	}
+	return false
+}

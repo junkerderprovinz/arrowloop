@@ -451,7 +451,8 @@ const id: Translations = {
   'update.autoHint': 'Sekali sehari ArrowLoop mencari versi baru, mengunduhnya di latar belakang, dan memeriksanya dengan checksum yang diterbitkan bersama rilisnya. Versi baru mulai dipakai saat Anda menjalankan ArrowLoop berikutnya, jadi sinkronisasi yang sedang berjalan tidak terputus. Salinan terpasang dan salinan portabel sama-sama diperbarui di tempatnya.',
   'update.ready': 'ArrowLoop {version} sudah diunduh dan berjalan saat Anda menjalankan aplikasi berikutnya.',
   'confirm.deleteRemote': 'Hapus tujuan penyimpanan ini',
-  'confirm.deleteRemoteStakes': 'Pengaturan {name} dikeluarkan dari konfigurasi rclone, termasuk setiap kata sandi dan kunci yang tersimpan di sana. Sebelumnya tidak ada yang disalin ke mana pun dan tidak ada jalan kembali: menyiapkannya lagi berarti mengetik ulang kredensialnya. Tugas yang menunjuk ke sana akan gagal pada jalan berikutnya sampai menunjuk ke tempat lain.',
+  'confirm.deleteRemoteStakes': 'Pengaturan {name} dikeluarkan dari konfigurasi rclone, termasuk setiap kata sandi dan kunci yang tersimpan di sana. Sebelumnya tidak ada yang disalin ke mana pun dan tidak ada jalan kembali: menyiapkannya lagi berarti mengetik ulang kredensialnya.',
+  'targets.inUse': 'Masih ada tugas yang memakai tujuan ini: {jobs}. Arahkan ke tujuan lain atau hapus, lalu hapus tujuannya.',
   'confirm.delete': 'Hapus',
   'confirm.cancel': 'Batal',
   'about.title': 'Tentang ArrowLoop',
@@ -1236,6 +1237,7 @@ const id: Translations = {
   'new.change.releaseCards': 'Setelah pembaruan, jendela ini menampilkan satu kartu untuk setiap rilis sejak versi yang Anda miliki, lengkap dengan catatan dan perubahan yang dibawanya.',
   'new.change.newerWins': '{option} pada tugas yang menyinkronkan dua arah menyelesaikan konflik tanpa bertanya: versi yang terakhir disimpan tetap ada di kedua sisi, dan yang lain masuk ke tempat sampah.',
   'new.change.twoFactorOnce': 'Mega meminta {code} bersama kolom masuk lainnya, dan untuk Mega serta Proton Drive satu kode sudah cukup: {test}, menyimpan, dan pemeriksaan sesudahnya memakai sesi yang dibuka kode itu.',
+  'new.change.targetInUse': 'Tujuan yang masih dipakai tugas tidak dihapus. {delete} justru menyebut tugas-tugas itu, supaya Anda bisa mengarahkannya ke tujuan lain lebih dulu.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

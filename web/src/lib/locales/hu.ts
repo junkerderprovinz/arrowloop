@@ -451,7 +451,8 @@ const hu: Translations = {
   'update.autoHint': 'Az ArrowLoop naponta egyszer új verziót keres, a háttérben letölti, és a kiadással együtt közzétett ellenőrzőösszegekkel ellenőrzi. Az új verzió az ArrowLoop következő indításakor lép életbe, így a folyamatban lévő szinkronizálás nem szakad meg. A telepített és a hordozható példány egyaránt a helyén frissül.',
   'update.ready': 'Az ArrowLoop {version} letöltődött, és az alkalmazás következő indításakor fut.',
   'confirm.deleteRemote': 'Ennek a tárolócélnak a törlése',
-  'confirm.deleteRemoteStakes': 'A(z) {name} beállításai kikerülnek az rclone konfigurációjából, benne minden ott tárolt jelszóval és kulccsal. Előtte semmit nem másol sehová, és nincs visszaút: újra beállítani annyit tesz, mint újra begépelni az adatokat. Az arra mutató feladatok a következő futásnál elbuknak, amíg máshová nem mutatnak.',
+  'confirm.deleteRemoteStakes': 'A(z) {name} beállításai kikerülnek az rclone konfigurációjából, benne minden ott tárolt jelszóval és kulccsal. Előtte semmit nem másol sehová, és nincs visszaút: újra beállítani annyit tesz, mint újra begépelni az adatokat.',
+  'targets.inUse': 'Ezt a célt még feladatok használják: {jobs}. Irányítsa őket másik célra vagy törölje őket, aztán törölje a célt.',
   'confirm.delete': 'Törlés',
   'confirm.cancel': 'Mégse',
   'about.title': 'A ArrowLoopről',
@@ -1236,6 +1237,7 @@ const hu: Translations = {
   'new.change.releaseCards': 'Egy frissítés után ez az ablak minden kiadásról mutat egy kártyát a nálad lévő verzió óta, a megjegyzéseivel és a változásokkal, amelyeket hozott.',
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
   'new.change.twoFactorOnce': 'A Mega a többi bejelentkezési mezővel együtt kéri a {code} értékét, és Megánál és Proton Drive-nál egy kód elég: a {test}, a mentés és az utána következő ellenőrzés a kód által nyitott munkamenetet használja.',
+  'new.change.targetInUse': 'Az a cél, amelyet feladatok még használnak, nem törlődik. A {delete} ehelyett megnevezi ezeket a feladatokat, hogy előbb másik célra irányíthassa őket.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

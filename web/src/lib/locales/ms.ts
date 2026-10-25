@@ -451,7 +451,8 @@ const ms: Translations = {
   'update.autoHint': 'Sekali sehari ArrowLoop mencari versi baharu, memuat turunnya di latar belakang dan menyemaknya dengan checksum yang diterbitkan bersama keluarannya. Versi baharu mula digunakan apabila anda memulakan ArrowLoop seterusnya, jadi penyegerakan yang sedang berjalan tidak terputus. Salinan yang dipasang dan salinan mudah alih sama-sama dikemas kini di tempatnya.',
   'update.ready': 'ArrowLoop {version} sudah dimuat turun dan berjalan apabila anda memulakan aplikasi seterusnya.',
   'confirm.deleteRemote': 'Padam destinasi simpanan ini',
-  'confirm.deleteRemoteStakes': 'Tetapan {name} dikeluarkan daripada konfigurasi rclone, termasuk setiap kata laluan dan kunci yang tersimpan di situ. Sebelum itu tiada apa disalin ke mana-mana dan tiada jalan balik: menyediakannya semula bermakna menaip semula butiran log masuk. Tugas yang menunjuk ke situ akan gagal pada larian seterusnya sehingga ia menunjuk ke tempat lain.',
+  'confirm.deleteRemoteStakes': 'Tetapan {name} dikeluarkan daripada konfigurasi rclone, termasuk setiap kata laluan dan kunci yang tersimpan di situ. Sebelum itu tiada apa disalin ke mana-mana dan tiada jalan balik: menyediakannya semula bermakna menaip semula butiran log masuk.',
+  'targets.inUse': 'Masih ada tugas yang menggunakan destinasi ini: {jobs}. Halakan ke destinasi lain atau padamkannya, kemudian padam destinasi itu.',
   'confirm.delete': 'Padam',
   'confirm.cancel': 'Batal',
   'about.title': 'Perihal ArrowLoop',
@@ -1236,6 +1237,7 @@ const ms: Translations = {
   'new.change.releaseCards': 'Selepas kemas kini, tetingkap ini menunjukkan satu kad bagi setiap keluaran sejak versi yang anda ada, lengkap dengan nota dan perubahan yang dibawanya.',
   'new.change.newerWins': '{option} dalam tugas yang menyegerak dua hala menyelesaikan percanggahan tanpa bertanya: versi yang disimpan terakhir kekal di kedua-dua sisi, dan yang satu lagi masuk ke tong sampah.',
   'new.change.twoFactorOnce': 'Mega meminta {code} bersama medan log masuk yang lain, dan untuk Mega dan Proton Drive satu kod sudah memadai: {test}, simpan dan semakan selepasnya berkongsi sesi yang dibuka oleh kod itu.',
+  'new.change.targetInUse': 'Destinasi yang masih digunakan oleh tugas tidak dipadam. {delete} sebaliknya menamakan tugas itu, supaya anda boleh menghalakannya ke destinasi lain dahulu.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
 }
 

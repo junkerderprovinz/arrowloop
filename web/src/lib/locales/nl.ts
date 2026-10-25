@@ -451,7 +451,8 @@ const nl: Translations = {
   'update.autoHint': 'Eén keer per dag zoekt ArrowLoop naar een nieuwe versie, downloadt die op de achtergrond en controleert hem met de checksums die bij de release zijn gepubliceerd. De nieuwe versie neemt het over zodra je ArrowLoop weer start, dus een lopende synchronisatie wordt niet onderbroken. Een geïnstalleerde en een draagbare kopie worden allebei bijgewerkt waar ze staan.',
   'update.ready': 'ArrowLoop {version} is gedownload en draait zodra je de app weer start.',
   'confirm.deleteRemote': 'Dit opslagdoel verwijderen',
-  'confirm.deleteRemoteStakes': 'De instellingen van {name} worden uit de rclone-configuratie gehaald, inclusief elk wachtwoord en elke sleutel die daar ligt. Er wordt vooraf niets ergens heen gekopieerd en er is geen weg terug: opnieuw instellen betekent de gegevens opnieuw intypen. Taken die ernaar wijzen falen bij hun volgende run totdat ze ergens anders heen wijzen.',
+  'confirm.deleteRemoteStakes': 'De instellingen van {name} worden uit de rclone-configuratie gehaald, inclusief elk wachtwoord en elke sleutel die daar ligt. Er wordt vooraf niets ergens heen gekopieerd en er is geen weg terug: opnieuw instellen betekent de gegevens opnieuw intypen.',
+  'targets.inUse': 'Er zijn nog taken die dit doel gebruiken: {jobs}. Wijs ze naar een ander doel of verwijder ze, en verwijder dan het doel.',
   'confirm.delete': 'Verwijderen',
   'confirm.cancel': 'Annuleren',
   'about.title': 'Over ArrowLoop',
@@ -1236,6 +1237,7 @@ const nl: Translations = {
   'new.change.releaseCards': 'Na een update toont dit venster een kaart voor elke release sinds de versie die je had, met de opmerkingen en de wijzigingen die erbij horen.',
   'new.change.newerWins': '{option} in een taak die beide kanten op synchroniseert, beslist een conflict zonder te vragen: de laatst opgeslagen versie blijft aan beide kanten staan en de andere gaat naar de prullenbak.',
   'new.change.twoFactorOnce': 'Mega vraagt de {code} samen met de andere inlogvelden, en voor Mega en Proton Drive is één code genoeg: {test}, opslaan en de controle daarna delen de sessie die de code opent.',
+  'new.change.targetInUse': 'Een doel dat taken nog gebruiken wordt niet verwijderd. {delete} noemt in plaats daarvan die taken, zodat je ze eerst naar een ander doel kunt laten wijzen.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 

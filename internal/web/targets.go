@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
@@ -131,12 +132,39 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"saved": r.PathValue("name")})
 }
 
+// targetInUse is the code a refused delete answers with, so the page can name
+// the jobs in its own words.
+const targetInUse = "target-in-use"
+
 func (s *Server) deleteRemote(w http.ResponseWriter, r *http.Request) {
-	if err := remotes.Delete(r.PathValue("name")); err != nil {
+	name := r.PathValue("name")
+	// A job on a deleted target fails every run until somebody notices, and the
+	// credentials cannot be had back from here.
+	if jobs := s.jobsOn(name); len(jobs) > 0 {
+		list := strings.Join(jobs, ", ")
+		writeJSON(w, http.StatusConflict, map[string]any{
+			"error":  fmt.Sprintf("jobs still use %s: %s; point them at another target or delete them first", name, list),
+			"code":   targetInUse,
+			"values": map[string]string{"jobs": list},
+		})
+		return
+	}
+	if err := remotes.Delete(name); err != nil {
 		writeError(w, http.StatusNotFound, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"deleted": r.PathValue("name")})
+	writeJSON(w, http.StatusOK, map[string]any{"deleted": name})
+}
+
+// jobsOn names the jobs with a side on the target.
+func (s *Server) jobsOn(target string) []string {
+	var out []string
+	for _, j := range s.Runner.Config().Jobs {
+		if remotes.Reaches(j.Left, target) || remotes.Reaches(j.Right, target) {
+			out = append(out, j.Name)
+		}
+	}
+	return out
 }
 
 // checkRemote proves the settings work, which saving them does not.

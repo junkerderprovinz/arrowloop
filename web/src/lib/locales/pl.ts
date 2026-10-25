@@ -451,7 +451,8 @@ const pl: Translations = {
   'update.autoHint': 'Raz dziennie ArrowLoop szuka nowej wersji, pobiera ją w tle i sprawdza ją sumami kontrolnymi opublikowanymi razem z wydaniem. Nowa wersja zaczyna działać przy następnym uruchomieniu ArrowLoop, więc trwająca synchronizacja nie zostaje przerwana. Kopia zainstalowana i przenośna aktualizują się tam, gdzie leżą.',
   'update.ready': 'ArrowLoop {version} jest pobrany i zadziała przy następnym uruchomieniu aplikacji.',
   'confirm.deleteRemote': 'Usunąć ten cel magazynowy',
-  'confirm.deleteRemoteStakes': 'Ustawienia {name} znikają z konfiguracji rclone, razem z każdym hasłem i kluczem, który tam leży. Wcześniej nic nigdzie nie jest kopiowane i nie ma odwrotu: skonfigurowanie tego od nowa znaczy ponowne wpisanie danych. Zadania wskazujące tam zawiodą przy następnym uruchomieniu, dopóki nie wskażą gdzie indziej.',
+  'confirm.deleteRemoteStakes': 'Ustawienia {name} znikają z konfiguracji rclone, razem z każdym hasłem i kluczem, który tam leży. Wcześniej nic nigdzie nie jest kopiowane i nie ma odwrotu: skonfigurowanie tego od nowa znaczy ponowne wpisanie danych.',
+  'targets.inUse': 'Ten cel wciąż jest używany przez zadania: {jobs}. Skieruj je na inny cel albo je usuń, a potem usuń cel.',
   'confirm.delete': 'Usuń',
   'confirm.cancel': 'Anuluj',
   'about.title': 'O ArrowLoopze',
@@ -1236,6 +1237,7 @@ const pl: Translations = {
   'new.change.releaseCards': 'Po aktualizacji to okno pokazuje kartę dla każdego wydania od poprzednio używanej wersji, z jego uwagami i zmianami.',
   'new.change.newerWins': '{option} w zadaniu synchronizującym w obie strony rozstrzyga konflikt bez pytania: wersja zapisana jako ostatnia zostaje po obu stronach, a druga trafia do kosza.',
   'new.change.twoFactorOnce': 'Mega pyta o {code} razem z pozostałymi polami logowania, a w Mega i Proton Drive wystarczy jeden kod: {test}, zapis i sprawdzenie po nim korzystają z sesji, którą kod otwiera.',
+  'new.change.targetInUse': 'Cel, którego wciąż używają zadania, nie zostaje usunięty. {delete} wymienia zamiast tego te zadania, żeby najpierw skierować je na inny cel.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
 }
 

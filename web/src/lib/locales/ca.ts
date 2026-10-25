@@ -451,7 +451,8 @@ const ca: Translations = {
   'update.autoHint': 'Un cop al dia ArrowLoop cerca una versió nova, la baixa en segon pla i la comprova amb les sumes de verificació publicades amb la versió. La versió nova entra en funcionament la propera vegada que inicieu ArrowLoop, de manera que una sincronització en curs no s\'interromp. Una còpia instal·lada i una de portable s\'actualitzen totes dues allà on són.',
   'update.ready': 'ArrowLoop {version} s\'ha baixat i s\'executarà la propera vegada que inicieu l\'aplicació.',
   'confirm.deleteRemote': 'Esborrar aquesta destinació d\'emmagatzematge',
-  'confirm.deleteRemoteStakes': 'Els paràmetres de {name} es treuen de la configuració del rclone, inclosa qualsevol contrasenya o clau que hi hagi. Abans no es copia res enlloc i no hi ha marxa enrere: tornar-lo a configurar vol dir reescriure les credencials. Les tasques que hi apuntin fallaran a la següent execució fins que apuntin a un altre lloc.',
+  'confirm.deleteRemoteStakes': 'Els paràmetres de {name} es treuen de la configuració del rclone, inclosa qualsevol contrasenya o clau que hi hagi. Abans no es copia res enlloc i no hi ha marxa enrere: tornar-lo a configurar vol dir reescriure les credencials.',
+  'targets.inUse': 'Encara hi ha tasques que fan servir aquesta destinació: {jobs}. Apunta-les a una altra destinació o esborra-les, i després esborra la destinació.',
   'confirm.delete': 'Esborra',
   'confirm.cancel': 'Cancel·la',
   'about.title': 'Quant a ArrowLoop',
@@ -1236,6 +1237,7 @@ const ca: Translations = {
   'new.change.releaseCards': 'Després d\'una actualització, aquesta finestra mostra una targeta per cada versió des de la que tenies, amb les seves notes i els canvis que va portar.',
   'new.change.newerWins': '{option} en una tasca que sincronitza en els dos sentits resol un conflicte sense preguntar: la versió desada en últim lloc es queda als dos costats i l\'altra va a la paperera.',
   'new.change.twoFactorOnce': 'Mega demana el {code} amb els altres camps d\'inici de sessió, i per a Mega i Proton Drive n\'hi ha prou amb un codi: {test}, desar i la comprovació posterior comparteixen la sessió que obre el codi.',
+  'new.change.targetInUse': 'Una destinació que encara fan servir tasques no s\'esborra. {delete} indica quines són, perquè primer les puguis apuntar a una altra destinació.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

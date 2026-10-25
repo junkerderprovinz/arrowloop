@@ -14,6 +14,7 @@ The full notes for each release are in
 
 - **Testing a Box or Jottacloud target could sign it out.** These services hand out a new sign-in when the old one runs out and void the old one right away. The test in the form threw the new one away, so the target stopped working after the next restart. The new sign-in is now kept, for a saved target as soon as you test it and for a new one when you save it.
 - **Mega and Proton Drive asked for a second two-factor code.** Testing the connection used up the code, so saving and the check after it were refused. One code is now enough: the session it opens is kept with the target, and the used code is not saved. Mega asks for the code with the other sign-in fields, on the phone too, and a fresh code in the edit form works with the saved password.
+- **A target that jobs used could be deleted.** The jobs then failed on every run, and the target's password was gone with it. Deleting such a target is refused, on the web and on the phone, and the message names the jobs to point elsewhere or delete first. A target that only an encrypted folder or another target on top of it uses counts too.
 
 ## 2.2.8 - 2026-10-23
 

@@ -451,7 +451,8 @@ const gl: Translations = {
   'update.autoHint': 'Unha vez ao día ArrowLoop busca unha versión nova, descárgaa en segundo plano e compróbaa coas sumas de verificación publicadas coa versión. A versión nova entra en uso a próxima vez que inicies ArrowLoop, así que unha sincronización en curso non se interrompe. Unha copia instalada e unha portátil actualízanse as dúas onde están.',
   'update.ready': 'ArrowLoop {version} está descargado e usarase a próxima vez que inicies a aplicación.',
   'confirm.deleteRemote': 'Borrar este destino de almacenamento',
-  'confirm.deleteRemoteStakes': 'Os axustes de {name} retíranse da configuración do rclone, incluído calquera contrasinal ou chave que estea aí. Antes non se copia nada a ningures e non hai volta atrás: configuralo de novo significa tecleares as credenciais outra vez. As tarefas que apunten aí fallarán na seguinte execución ata que apunten a outro sitio.',
+  'confirm.deleteRemoteStakes': 'Os axustes de {name} retíranse da configuración do rclone, incluído calquera contrasinal ou chave que estea aí. Antes non se copia nada a ningures e non hai volta atrás: configuralo de novo significa tecleares as credenciais outra vez.',
+  'targets.inUse': 'Aínda hai tarefas que usan este destino: {jobs}. Apúntaas a outro destino ou bórraas, e despois borra o destino.',
   'confirm.delete': 'Borrar',
   'confirm.cancel': 'Cancelar',
   'about.title': 'Sobre ArrowLoop',
@@ -1236,6 +1237,7 @@ const gl: Translations = {
   'new.change.releaseCards': 'Despois dunha actualización, esta xanela mostra unha tarxeta por cada versión desde a que tiñas, coas súas notas e os cambios que trouxo.',
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
   'new.change.twoFactorOnce': 'Mega pide o {code} xunto cos demais campos de inicio de sesión, e para Mega e Proton Drive abonda cun código: {test}, gardar e a comprobación posterior comparten a sesión que abre o código.',
+  'new.change.targetInUse': 'Un destino que aínda usan tarefas non se borra. {delete} nomea esas tarefas, para que primeiro as apuntes a outro destino.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

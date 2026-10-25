@@ -510,7 +510,8 @@ export const en = {
   'targets.access': 'Access',
   'confirm.deleteRemote': 'Delete this storage target',
   'confirm.deleteRemoteStakes':
-    'The settings for {name} are removed from the rclone configuration, including any password or key stored with them. Nothing is copied anywhere first, and there is no undo: setting it up again means typing the credentials again. Jobs pointing at it will fail on their next run until they are pointed somewhere else.',
+    'The settings for {name} are removed from the rclone configuration, including any password or key stored with them. Nothing is copied anywhere first, and there is no undo: setting it up again means typing the credentials again.',
+  'targets.inUse': 'Jobs still use this target: {jobs}. Point them at another target or delete them, then delete the target.',
   'confirm.delete': 'Delete it',
   'confirm.cancel': 'Cancel',
   'about.title': 'About ArrowLoop',
@@ -1280,6 +1281,7 @@ export const en = {
   'new.change.releaseCards': 'After an update this window shows a card for every release since the one you had, with its notes and the changes it brought.',
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
   'new.change.twoFactorOnce': 'Mega asks for its {code} with the other sign-in fields, and for Mega and Proton Drive one code is enough: {test}, saving and the check after it share the session the code opens.',
+  'new.change.targetInUse': 'A target that jobs still use is not deleted. {delete} names those jobs instead, so you can point them at another target first.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -1787,7 +1789,8 @@ export const de: Translations = {
   'targets.access': 'Zugang',
   'confirm.deleteRemote': 'Dieses Speicherziel löschen',
   'confirm.deleteRemoteStakes':
-    'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt jedem Kennwort und jedem Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen. Aufträge, die darauf zeigen, scheitern beim nächsten Lauf, bis sie woandershin zeigen.',
+    'Die Einstellungen für {name} werden aus rclones Konfiguration entfernt, samt jedem Kennwort und jedem Schlüssel, der dort liegt. Vorher wird nichts irgendwohin kopiert, und es gibt kein Zurück: neu einrichten heißt, die Zugangsdaten neu zu tippen.',
+  'targets.inUse': 'Aufträge verwenden dieses Ziel noch: {jobs}. Stell sie auf ein anderes Ziel um oder lösch sie, dann kannst du das Ziel löschen.',
   'confirm.delete': 'Löschen',
   'confirm.cancel': 'Abbrechen',
   'about.title': 'Über ArrowLoop',
@@ -2551,6 +2554,7 @@ export const de: Translations = {
   'new.change.releaseCards': 'Nach einem Update zeigt dieses Fenster eine Karte für jedes Release seit dem, das du hattest, mit seinen Release-Notes und den Änderungen, die es gebracht hat.',
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
   'new.change.twoFactorOnce': 'Mega fragt den {code} zusammen mit den anderen Anmeldefeldern ab, und bei Mega und Proton Drive reicht ein Code: {test}, Speichern und die Prüfung danach teilen sich die Sitzung, die der Code öffnet.',
+  'new.change.targetInUse': 'Ein Ziel, das Aufträge noch verwenden, wird nicht gelöscht. {delete} nennt stattdessen diese Aufträge, damit du sie vorher auf ein anderes Ziel umstellen kannst.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

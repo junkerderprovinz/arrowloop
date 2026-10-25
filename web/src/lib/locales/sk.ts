@@ -451,7 +451,8 @@ const sk: Translations = {
   'update.autoHint': 'Raz denne ArrowLoop hľadá novú verziu, stiahne ju na pozadí a overí ju podľa kontrolných súčtov zverejnených s vydaním. Nová verzia sa ujme pri ďalšom spustení ArrowLoop, takže prebiehajúca synchronizácia sa nepreruší. Nainštalovaná aj prenosná kópia sa aktualizujú tam, kde sú.',
   'update.ready': 'ArrowLoop {version} je stiahnutý a pobeží pri ďalšom spustení aplikácie.',
   'confirm.deleteRemote': 'Zmazať toto úložisko',
-  'confirm.deleteRemoteStakes': 'Nastavenia {name} zmiznú z konfigurácie rclone, vrátane každého hesla a kľúča, ktorý tam leží. Predtým sa nič nikam nekopíruje a cesta späť nie je: nastaviť to znova znamená znova napísať prihlasovacie údaje. Úlohy, ktoré tam mieria, pri ďalšom behu zlyhajú, kým nezamieria inam.',
+  'confirm.deleteRemoteStakes': 'Nastavenia {name} zmiznú z konfigurácie rclone, vrátane každého hesla a kľúča, ktorý tam leží. Predtým sa nič nikam nekopíruje a cesta späť nie je: nastaviť to znova znamená znova napísať prihlasovacie údaje.',
+  'targets.inUse': 'Tento cieľ ešte používajú úlohy: {jobs}. Nasmerujte ich na iný cieľ alebo ich zmažte a potom zmažte cieľ.',
   'confirm.delete': 'Zmazať',
   'confirm.cancel': 'Zrušiť',
   'about.title': 'O ArrowLoopi',
@@ -1236,6 +1237,7 @@ const sk: Translations = {
   'new.change.releaseCards': 'Po aktualizácii toto okno ukáže kartu pre každé vydanie od vašej verzie, s jeho poznámkami a zmenami, ktoré prinieslo.',
   'new.change.newerWins': '{option} v úlohe, ktorá synchronizuje oboma smermi, vyrieši konflikt bez pýtania: naposledy uložená verzia zostane na oboch stranách a tá druhá ide do koša.',
   'new.change.twoFactorOnce': 'Mega sa pýta na {code} spolu s ostatnými prihlasovacími poľami a pri Mega a Proton Drive stačí jeden kód: {test}, uloženie aj následná kontrola zdieľajú reláciu, ktorú kód otvorí.',
+  'new.change.targetInUse': 'Cieľ, ktorý ešte používajú úlohy, sa nezmaže. {delete} namiesto toho vymenuje tieto úlohy, aby ste ich mohli najprv nasmerovať na iný cieľ.',
   'new.change.appFolders': 'V aplikácii pre telefón umožní {add} v {settings}, {phone} synchronizovať v ArrowLoop priečinok, ktorý iná aplikácia ponúka vo výbere súborov Androidu, bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps.',
 }
 

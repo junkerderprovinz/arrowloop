@@ -451,7 +451,8 @@ const cs: Translations = {
   'update.autoHint': 'Jednou denně ArrowLoop hledá novou verzi, stáhne ji na pozadí a ověří ji podle kontrolních součtů zveřejněných s vydáním. Nová verze se ujme při příštím spuštění ArrowLoop, takže běžící synchronizace se nepřeruší. Nainstalovaná i přenosná kopie se aktualizují tam, kde jsou.',
   'update.ready': 'ArrowLoop {version} je stažen a poběží při příštím spuštění aplikace.',
   'confirm.deleteRemote': 'Smazat toto úložiště',
-  'confirm.deleteRemoteStakes': 'Nastavení {name} zmizí z konfigurace rclone, včetně každého hesla a klíče, který tam leží. Předtím se nic nikam nekopíruje a cesta zpět není: nastavit to znovu znamená znovu napsat přihlašovací údaje. Úlohy, které tam míří, při dalším běhu selžou, dokud nezamíří jinam.',
+  'confirm.deleteRemoteStakes': 'Nastavení {name} zmizí z konfigurace rclone, včetně každého hesla a klíče, který tam leží. Předtím se nic nikam nekopíruje a cesta zpět není: nastavit to znovu znamená znovu napsat přihlašovací údaje.',
+  'targets.inUse': 'Tento cíl stále používají úlohy: {jobs}. Nasměrujte je na jiný cíl nebo je smažte a potom smažte cíl.',
   'confirm.delete': 'Smazat',
   'confirm.cancel': 'Zrušit',
   'about.title': 'O ArrowLoopu',
@@ -1236,6 +1237,7 @@ const cs: Translations = {
   'new.change.releaseCards': 'Po aktualizaci toto okno ukáže kartu pro každé vydání od toho, které jste měli, s jeho poznámkami a změnami, které přineslo.',
   'new.change.newerWins': '{option} v úloze, která synchronizuje oběma směry, vyřeší konflikt bez ptaní: naposledy uložená verze zůstane na obou stranách a ta druhá jde do koše.',
   'new.change.twoFactorOnce': 'Mega se ptá na {code} spolu s ostatními přihlašovacími poli a u Mega a Proton Drive stačí jeden kód: {test}, uložení i následná kontrola sdílejí relaci, kterou kód otevře.',
+  'new.change.targetInUse': 'Cíl, který ještě používají úlohy, se nesmaže. {delete} místo toho vyjmenuje tyto úlohy, abyste je mohli nejdřív nasměrovat na jiný cíl.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

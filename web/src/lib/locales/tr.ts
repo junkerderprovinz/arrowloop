@@ -451,7 +451,8 @@ const tr: Translations = {
   'update.autoHint': 'ArrowLoop günde bir kez yeni bir sürüm arar, onu arka planda indirir ve sürümle birlikte yayımlanan sağlama toplamlarıyla denetler. Yeni sürüm, ArrowLoop\'u bir sonraki başlatışınızda devreye girer, böylece süren bir eşitleme yarıda kesilmez. Kurulu kopya da taşınabilir kopya da bulundukları yerde güncellenir.',
   'update.ready': 'ArrowLoop {version} indirildi ve uygulamayı bir sonraki başlatışınızda çalışacak.',
   'confirm.deleteRemote': 'Bu depolama hedefini sil',
-  'confirm.deleteRemoteStakes': '{name} ayarları rclone yapılandırmasından, orada duran her parola ve anahtarla birlikte kaldırılır. Öncesinde hiçbir şey hiçbir yere kopyalanmaz ve geri dönüş yoktur: yeniden kurmak, kimlik bilgilerini yeniden yazmak demektir. Oraya işaret eden işler, başka bir yeri gösterene kadar bir sonraki çalışmada başarısız olur.',
+  'confirm.deleteRemoteStakes': '{name} ayarları rclone yapılandırmasından, orada duran her parola ve anahtarla birlikte kaldırılır. Öncesinde hiçbir şey hiçbir yere kopyalanmaz ve geri dönüş yoktur: yeniden kurmak, kimlik bilgilerini yeniden yazmak demektir.',
+  'targets.inUse': 'Bu hedefi hâlâ kullanan işler var: {jobs}. Onları başka bir hedefe yönlendirin ya da silin, sonra hedefi silin.',
   'confirm.delete': 'Sil',
   'confirm.cancel': 'İptal',
   'about.title': 'ArrowLoop hakkında',
@@ -1236,6 +1237,7 @@ const tr: Translations = {
   'new.change.releaseCards': 'Güncellemeden sonra bu pencere, elindeki sürümden sonraki her sürüm için notlarıyla ve getirdiği değişikliklerle bir kart gösterir.',
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
   'new.change.twoFactorOnce': 'Mega {code} bilgisini diğer oturum açma alanlarıyla birlikte sorar ve Mega ile Proton Drive için tek kod yeter: {test}, kaydetme ve ardından gelen kontrol, kodun açtığı oturumu paylaşır.',
+  'new.change.targetInUse': 'İşlerin hâlâ kullandığı bir hedef silinmez. {delete} bunun yerine o işleri sayar, böylece önce onları başka bir hedefe yönlendirebilirsiniz.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

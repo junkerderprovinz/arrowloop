@@ -451,7 +451,8 @@ const et: Translations = {
   'update.autoHint': 'Kord päevas otsib ArrowLoop uut versiooni, laadib selle taustal alla ja kontrollib seda väljalaskega avaldatud kontrollsummade järgi. Uus versioon hakkab tööle järgmisel korral, kui ArrowLoopi käivitad, nii et käimasolev sünkroonimine ei katke. Paigaldatud koopia ja kaasaskantav koopia uuenevad mõlemad seal, kus nad asuvad.',
   'update.ready': 'ArrowLoop {version} on alla laaditud ja töötab järgmisel käivitamisel.',
   'confirm.deleteRemote': 'Kustuta see salvestuse sihtkoht',
-  'confirm.deleteRemoteStakes': 'Sihtkoha {name} seaded eemaldatakse rclone\'i seadistusest koos iga seal oleva parooli ja võtmega. Enne seda ei kopeerita midagi kuhugi ja tagasiteed ei ole: uuesti seadistamine tähendab tunnuste uuesti sisestamist. Sinna osutavad tööd kukuvad järgmisel käivitusel läbi, kuni nad kuhugi mujale osutavad.',
+  'confirm.deleteRemoteStakes': 'Sihtkoha {name} seaded eemaldatakse rclone\'i seadistusest koos iga seal oleva parooli ja võtmega. Enne seda ei kopeerita midagi kuhugi ja tagasiteed ei ole: uuesti seadistamine tähendab tunnuste uuesti sisestamist.',
+  'targets.inUse': 'Seda sihtkohta kasutavad veel tööd: {jobs}. Suuna need teise sihtkohta või kustuta need, siis kustuta sihtkoht.',
   'confirm.delete': 'Kustuta',
   'confirm.cancel': 'Loobu',
   'about.title': 'Teave ArrowLoopi kohta',
@@ -1236,6 +1237,7 @@ const et: Translations = {
   'new.change.releaseCards': 'Pärast uuendust näitab see aken kaarti iga väljalaske kohta alates sellest, mis sul oli, koos selle märkmete ja muudatustega.',
   'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
   'new.change.twoFactorOnce': 'Mega küsib {code} koos teiste sisselogimisväljadega ning Mega ja Proton Drive\'i jaoks piisab ühest koodist: {test}, salvestamine ja sellele järgnev kontroll kasutavad sama seanssi, mille kood avab.',
+  'new.change.targetInUse': 'Sihtkohta, mida tööd veel kasutavad, ei kustutata. {delete} nimetab hoopis need tööd, et saaksid need enne teise sihtkohta suunata.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

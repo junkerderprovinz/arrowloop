@@ -451,7 +451,8 @@ const eu: Translations = {
   'update.autoHint': 'Egunean behin ArrowLoop-ek bertsio berri bat bilatzen du, atzeko planoan deskargatzen du eta bertsioarekin argitaratutako egiaztapen-baturekin egiaztatzen du. Bertsio berria ArrowLoop abiarazten duzun hurrengo aldian hasten da, beraz martxan dagoen sinkronizazio bat ez da eteten. Kopia instalatua eta kopia eramangarria dauden lekuan eguneratzen dira biak.',
   'update.ready': 'ArrowLoop {version} deskargatuta dago, eta aplikazioa abiarazten duzun hurrengo aldian ibiliko da.',
   'confirm.deleteRemote': 'Biltegi-helburu hau ezabatu',
-  'confirm.deleteRemoteStakes': '{name} helburuaren ezarpenak rclone-ren konfiguraziotik kentzen dira, han gordetako pasahitz edo gako oro barne. Aurretik ez da ezer inora kopiatzen eta ez dago atzera bueltarik: berriz konfiguratzeak kredentzialak berriz idaztea esan nahi du. Hara begiratzen duten lanek huts egingo dute hurrengo aldian, beste nonbaitera begiratu arte.',
+  'confirm.deleteRemoteStakes': '{name} helburuaren ezarpenak rclone-ren konfiguraziotik kentzen dira, han gordetako pasahitz edo gako oro barne. Aurretik ez da ezer inora kopiatzen eta ez dago atzera bueltarik: berriz konfiguratzeak kredentzialak berriz idaztea esan nahi du.',
+  'targets.inUse': 'Lan batzuek helburu hau erabiltzen dute oraindik: {jobs}. Bideratu beste helburu batera edo ezabatu, eta gero ezabatu helburua.',
   'confirm.delete': 'Ezabatu',
   'confirm.cancel': 'Utzi',
   'about.title': 'ArrowLoop-i buruz',
@@ -1236,6 +1237,7 @@ const eu: Translations = {
   'new.change.releaseCards': 'Eguneratze baten ondoren, leiho honek txartel bat erakusten du zuk zenuen bertsioaren ondorengo bertsio bakoitzeko, bere oharrekin eta ekarri zituen aldaketekin.',
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
   'new.change.twoFactorOnce': 'Megak {code} eskatzen du saioa hasteko beste eremuekin batera, eta Mega eta Proton Driverako kode bakarra nahikoa da: {test}, gordetzeak eta ondorengo egiaztapenak kodeak irekitzen duen saioa partekatzen dute.',
+  'new.change.targetInUse': 'Lanek oraindik erabiltzen duten helburua ez da ezabatzen. {delete} aukerak lan horiek izendatzen ditu, lehenik beste helburu batera bideratu ahal izateko.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

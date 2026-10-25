@@ -67,6 +67,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.twoFactorOnce',
         names: { code: 'opt.twoFactor', test: 'targets.check' },
       },
+      {
+        id: 'target-in-use',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetInUse',
+        names: { delete: 'action.delete' },
+      },
     ],
   },
   {

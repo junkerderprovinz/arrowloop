@@ -451,7 +451,8 @@ const ro: Translations = {
   'update.autoHint': 'O dată pe zi, ArrowLoop caută o versiune nouă, o descarcă în fundal și o verifică cu sumele de control publicate odată cu versiunea. Versiunea nouă intră în funcțiune data viitoare când pornești ArrowLoop, așa că o sincronizare în curs nu este întreruptă. O copie instalată și una portabilă se actualizează amândouă acolo unde se află.',
   'update.ready': 'ArrowLoop {version} este descărcat și rulează data viitoare când pornești aplicația.',
   'confirm.deleteRemote': 'Ștergerea acestei destinații de stocare',
-  'confirm.deleteRemoteStakes': 'Setările pentru {name} sunt scoase din configurația rclone, împreună cu orice parolă și cheie care stau acolo. Înainte nu se copiază nimic nicăieri și nu există cale de întoarcere: a o configura din nou înseamnă a retasta datele. Sarcinile care arată acolo vor eșua la următoarea rulare până când vor arăta în altă parte.',
+  'confirm.deleteRemoteStakes': 'Setările pentru {name} sunt scoase din configurația rclone, împreună cu orice parolă și cheie care stau acolo. Înainte nu se copiază nimic nicăieri și nu există cale de întoarcere: a o configura din nou înseamnă a retasta datele.',
+  'targets.inUse': 'Încă există sarcini care folosesc această destinație: {jobs}. Îndreaptă-le spre altă destinație sau șterge-le, apoi șterge destinația.',
   'confirm.delete': 'Șterge',
   'confirm.cancel': 'Anulează',
   'about.title': 'Despre ArrowLoop',
@@ -1236,6 +1237,7 @@ const ro: Translations = {
   'new.change.releaseCards': 'După o actualizare, această fereastră arată câte un card pentru fiecare versiune de la cea pe care o aveai, cu notele și schimbările ei.',
   'new.change.newerWins': '{option} într-o sarcină care sincronizează în ambele sensuri rezolvă un conflict fără să întrebe: versiunea salvată ultima rămâne pe ambele părți, iar cealaltă ajunge în coș.',
   'new.change.twoFactorOnce': 'Mega cere {code} împreună cu celelalte câmpuri de conectare, iar pentru Mega și Proton Drive ajunge un singur cod: {test}, salvarea și verificarea de după folosesc sesiunea pe care o deschide codul.',
+  'new.change.targetInUse': 'O destinație pe care o mai folosesc sarcini nu se șterge. {delete} numește în schimb acele sarcini, ca să le îndrepți întâi spre altă destinație.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

@@ -451,7 +451,8 @@ const fr: Translations = {
   'update.autoHint': 'Une fois par jour, ArrowLoop cherche une nouvelle version, la télécharge en arrière-plan et la vérifie avec les sommes de contrôle publiées avec la version. La nouvelle version prend le relais au prochain démarrage d\'ArrowLoop, donc une synchronisation en cours n\'est pas interrompue. Une copie installée et une copie portable se mettent toutes deux à jour là où elles se trouvent.',
   'update.ready': 'ArrowLoop {version} est téléchargé et fonctionnera la prochaine fois que vous lancerez l\'application.',
   'confirm.deleteRemote': 'Supprimer cette cible de stockage',
-  'confirm.deleteRemoteStakes': 'Les réglages de {name} sont retirés de la configuration rclone, y compris tout mot de passe ou clé qui s\'y trouve. Rien n\'est copié ailleurs au préalable et il n\'y a pas de retour en arrière : le reconfigurer veut dire retaper les identifiants. Les tâches qui pointent dessus échoueront à leur prochaine exécution jusqu\'à ce qu\'elles pointent ailleurs.',
+  'confirm.deleteRemoteStakes': 'Les réglages de {name} sont retirés de la configuration rclone, y compris tout mot de passe ou clé qui s\'y trouve. Rien n\'est copié ailleurs au préalable et il n\'y a pas de retour en arrière : le reconfigurer veut dire retaper les identifiants.',
+  'targets.inUse': 'Des tâches utilisent encore cette cible : {jobs}. Faites-les pointer vers une autre cible ou supprimez-les, puis supprimez la cible.',
   'confirm.delete': 'Supprimer',
   'confirm.cancel': 'Annuler',
   'about.title': 'À propos de ArrowLoop',
@@ -1236,6 +1237,7 @@ const fr: Translations = {
   'new.change.releaseCards': 'Après une mise à jour, cette fenêtre affiche une carte pour chaque version depuis celle que vous aviez, avec ses notes et les changements qu\'elle a apportés.',
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
   'new.change.twoFactorOnce': 'Mega demande le {code} avec les autres champs de connexion, et pour Mega et Proton Drive un seul code suffit : {test}, l\'enregistrement et la vérification qui suit partagent la session que le code ouvre.',
+  'new.change.targetInUse': 'Une cible que des tâches utilisent encore n\'est pas supprimée. {delete} nomme ces tâches à la place, pour que vous les fassiez d\'abord pointer vers une autre cible.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

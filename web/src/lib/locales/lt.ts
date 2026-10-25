@@ -451,7 +451,8 @@ const lt: Translations = {
   'update.autoHint': 'Kartą per dieną ArrowLoop ieško naujos versijos, atsisiunčia ją fone ir patikrina pagal kontrolines sumas, paskelbtas kartu su leidimu. Nauja versija pradeda veikti kitą kartą, kai paleisite ArrowLoop, todėl vykstantis sinchronizavimas nenutrūksta. Tiek įdiegta, tiek nešiojamoji kopija atsinaujina ten, kur yra.',
   'update.ready': 'ArrowLoop {version} atsisiųsta ir veiks kitą kartą, kai paleisite programą.',
   'confirm.deleteRemote': 'Ištrinti šią saugyklą',
-  'confirm.deleteRemoteStakes': '{name} nuostatos pašalinamos iš rclone konfigūracijos kartu su kiekvienu ten gulinčiu slaptažodžiu ir raktu. Prieš tai niekas niekur nekopijuojama ir kelio atgal nėra: nustatyti iš naujo reiškia iš naujo suvesti prisijungimo duomenis. Ten rodančios užduotys kitą kartą nepavyks, kol nerodys kitur.',
+  'confirm.deleteRemoteStakes': '{name} nuostatos pašalinamos iš rclone konfigūracijos kartu su kiekvienu ten gulinčiu slaptažodžiu ir raktu. Prieš tai niekas niekur nekopijuojama ir kelio atgal nėra: nustatyti iš naujo reiškia iš naujo suvesti prisijungimo duomenis.',
+  'targets.inUse': 'Šią paskirtį dar naudoja užduotys: {jobs}. Nukreipkite jas į kitą paskirtį arba ištrinkite, tada ištrinkite paskirtį.',
   'confirm.delete': 'Ištrinti',
   'confirm.cancel': 'Atšaukti',
   'about.title': 'Apie ArrowLoop',
@@ -1236,6 +1237,7 @@ const lt: Translations = {
   'new.change.releaseCards': 'Po naujinimo šiame lange rodoma kortelė kiekvienam leidimui nuo jūsų turėtos versijos, su jo pastabomis ir pakeitimais.',
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
   'new.change.twoFactorOnce': 'Mega prašo {code} kartu su kitais prisijungimo laukais, o Mega ir Proton Drive užtenka vieno kodo: {test}, išsaugojimas ir po jo einantis patikrinimas naudoja tą pačią kodo atvertą sesiją.',
+  'new.change.targetInUse': 'Paskirtis, kurią dar naudoja užduotys, neištrinama. {delete} vietoj to įvardija tas užduotis, kad pirmiausia nukreiptumėte jas kitur.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

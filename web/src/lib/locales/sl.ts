@@ -451,7 +451,8 @@ const sl: Translations = {
   'update.autoHint': 'Enkrat na dan ArrowLoop poišče novo različico, jo prenese v ozadju in jo preveri s kontrolnimi vsotami, objavljenimi z izdajo. Nova različica začne delovati ob naslednjem zagonu ArrowLoopa, zato se sinhronizacija, ki teče, ne prekine. Nameščena in prenosna kopija se obe posodobita tam, kjer sta.',
   'update.ready': 'ArrowLoop {version} je prenesen in bo tekel ob naslednjem zagonu aplikacije.',
   'confirm.deleteRemote': 'Izbrisati to shrambo',
-  'confirm.deleteRemoteStakes': 'Nastavitve za {name} se odstranijo iz nastavitev rclone, skupaj z vsakim geslom in ključem, ki leži tam. Prej se nič nikamor ne prekopira in poti nazaj ni: znova nastaviti pomeni znova vtipkati poverilnice. Opravila, ki kažejo tja, bodo ob naslednjem teku spodletela, dokler ne bodo kazala drugam.',
+  'confirm.deleteRemoteStakes': 'Nastavitve za {name} se odstranijo iz nastavitev rclone, skupaj z vsakim geslom in ključem, ki leži tam. Prej se nič nikamor ne prekopira in poti nazaj ni: znova nastaviti pomeni znova vtipkati poverilnice.',
+  'targets.inUse': 'Ta cilj še uporabljajo opravila: {jobs}. Usmerite jih na drug cilj ali jih izbrišite, nato izbrišite cilj.',
   'confirm.delete': 'Izbriši',
   'confirm.cancel': 'Prekliči',
   'about.title': 'O ArrowLoopju',
@@ -1236,6 +1237,7 @@ const sl: Translations = {
   'new.change.releaseCards': 'Po posodobitvi to okno pokaže kartico za vsako izdajo od tiste, ki si jo imel, z opombami in spremembami, ki jih je prinesla.',
   'new.change.newerWins': '{option} v opravilu, ki sinhronizira v obe smeri, razreši spor brez vprašanja: nazadnje shranjena različica ostane na obeh straneh, druga pa gre v koš.',
   'new.change.twoFactorOnce': 'Mega vpraša za {code} skupaj z drugimi polji za prijavo, za Mego in Proton Drive pa zadošča ena koda: {test}, shranjevanje in preverjanje po njem si delijo sejo, ki jo koda odpre.',
+  'new.change.targetInUse': 'Cilj, ki ga opravila še uporabljajo, se ne izbriše. {delete} namesto tega navede ta opravila, da jih najprej usmerite na drug cilj.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
 }
 

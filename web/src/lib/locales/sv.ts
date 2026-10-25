@@ -451,7 +451,8 @@ const sv: Translations = {
   'update.autoHint': 'En gång om dagen letar ArrowLoop efter en ny version, laddar ner den i bakgrunden och kontrollerar den mot kontrollsummorna som publicerats med utgåvan. Den nya versionen tar över nästa gång du startar ArrowLoop, så en synkronisering som pågår avbryts inte. En installerad kopia och en portabel kopia uppdateras båda där de ligger.',
   'update.ready': 'ArrowLoop {version} är nedladdad och körs nästa gång du startar appen.',
   'confirm.deleteRemote': 'Ta bort det här lagringsmålet',
-  'confirm.deleteRemoteStakes': 'Inställningarna för {name} tas bort ur rclones konfiguration, inklusive varje lösenord och nyckel som ligger där. Ingenting kopieras någonstans först och det finns ingen väg tillbaka: att sätta upp det igen betyder att skriva in uppgifterna på nytt. Jobb som pekar dit misslyckas vid nästa körning tills de pekar någon annanstans.',
+  'confirm.deleteRemoteStakes': 'Inställningarna för {name} tas bort ur rclones konfiguration, inklusive varje lösenord och nyckel som ligger där. Ingenting kopieras någonstans först och det finns ingen väg tillbaka: att sätta upp det igen betyder att skriva in uppgifterna på nytt.',
+  'targets.inUse': 'Jobb använder fortfarande det här målet: {jobs}. Peka dem mot ett annat mål eller ta bort dem, och ta sedan bort målet.',
   'confirm.delete': 'Ta bort',
   'confirm.cancel': 'Avbryt',
   'about.title': 'Om ArrowLoop',
@@ -1236,6 +1237,7 @@ const sv: Translations = {
   'new.change.releaseCards': 'Efter en uppdatering visar det här fönstret ett kort för varje utgåva sedan den du hade, med dess anteckningar och de ändringar den gav.',
   'new.change.newerWins': '{option} i ett jobb som synkar åt båda hållen avgör en konflikt utan att fråga: den senast sparade versionen blir kvar på båda sidor, och den andra hamnar i papperskorgen.',
   'new.change.twoFactorOnce': 'Mega frågar efter {code} tillsammans med de andra inloggningsfälten, och för Mega och Proton Drive räcker en kod: {test}, sparandet och kontrollen efteråt delar sessionen som koden öppnar.',
+  'new.change.targetInUse': 'Ett mål som jobb fortfarande använder tas inte bort. {delete} nämner i stället de jobben, så att du först kan peka dem mot ett annat mål.',
   'new.change.appFolders': 'I telefonappen låter {add} under {settings}, {phone} ArrowLoop synkronisera en mapp som en annan app erbjuder i Androids filväljare, utan root och utan Shizuku. Mapparna visas i ett mål som heter Apps.',
 }
 

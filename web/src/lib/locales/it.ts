@@ -451,7 +451,8 @@ const it: Translations = {
   'update.autoHint': 'Una volta al giorno ArrowLoop cerca una nuova versione, la scarica in background e la verifica con i checksum pubblicati insieme alla release. La nuova versione entra in funzione al prossimo avvio di ArrowLoop, quindi una sincronizzazione in corso non viene interrotta. Una copia installata e una portatile si aggiornano entrambe dove si trovano.',
   'update.ready': 'ArrowLoop {version} è scaricato e sarà in uso al prossimo avvio dell\'app.',
   'confirm.deleteRemote': 'Eliminare questa destinazione di archiviazione',
-  'confirm.deleteRemoteStakes': 'Le impostazioni di {name} vengono tolte dalla configurazione di rclone, compresa ogni password o chiave conservata lì. Prima non viene copiato nulla da nessuna parte e non si torna indietro: riconfigurarla significa ridigitare le credenziali. I lavori che puntano lì falliranno alla prossima esecuzione finché non puntano altrove.',
+  'confirm.deleteRemoteStakes': 'Le impostazioni di {name} vengono tolte dalla configurazione di rclone, compresa ogni password o chiave conservata lì. Prima non viene copiato nulla da nessuna parte e non si torna indietro: riconfigurarla significa ridigitare le credenziali.',
+  'targets.inUse': 'Ci sono ancora lavori che usano questa destinazione: {jobs}. Puntali su un\'altra destinazione o eliminali, poi elimina la destinazione.',
   'confirm.delete': 'Elimina',
   'confirm.cancel': 'Annulla',
   'about.title': 'Informazioni su ArrowLoop',
@@ -1236,6 +1237,7 @@ const it: Translations = {
   'new.change.releaseCards': 'Dopo un aggiornamento questa finestra mostra una scheda per ogni release dalla tua versione in poi, con le sue note e le modifiche che ha portato.',
   'new.change.newerWins': '{option} in un lavoro che sincronizza in entrambe le direzioni risolve un conflitto senza chiedere: la versione salvata per ultima resta su entrambi i lati e l\'altra finisce nel cestino.',
   'new.change.twoFactorOnce': 'Mega chiede il {code} insieme agli altri campi di accesso, e per Mega e Proton Drive basta un codice: {test}, il salvataggio e il controllo successivo condividono la sessione che il codice apre.',
+  'new.change.targetInUse': 'Una destinazione che dei lavori usano ancora non viene eliminata. {delete} indica invece quei lavori, così puoi prima puntarli su un\'altra destinazione.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
 }
 

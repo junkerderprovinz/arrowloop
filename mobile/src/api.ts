@@ -329,9 +329,14 @@ export function touched(run: Run): number {
 
 export class EngineError extends Error {
   readonly status: number;
-  constructor(status: number, message: string) {
+  /** A word the engine adds where the app should say it in its own words, and what that sentence fills in. */
+  readonly code?: string;
+  readonly values?: Record<string, string>;
+  constructor(status: number, message: string, code?: string, values?: Record<string, string>) {
     super(message);
     this.status = status;
+    this.code = code;
+    this.values = values;
   }
 }
 
@@ -349,13 +354,14 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok) {
     // The engine explains errors as {"error": "..."}.
     let detail = `HTTP ${response.status}`;
+    let body: { error?: string; code?: string; values?: Record<string, string> } | undefined;
     try {
-      const body = (await response.json()) as { error?: string };
+      body = await response.json();
       if (body?.error) detail = body.error;
     } catch {
       // Not JSON; the status is all there is.
     }
-    throw new EngineError(response.status, detail);
+    throw new EngineError(response.status, detail, body?.code, body?.values);
   }
   if (response.status === 204) return undefined as T;
   const text = await response.text();

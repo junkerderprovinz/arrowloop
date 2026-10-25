@@ -451,7 +451,8 @@ const fi: Translations = {
   'update.autoHint': 'Kerran päivässä ArrowLoop etsii uuden version, lataa sen taustalla ja tarkistaa sen julkaisun mukana julkaistuja tarkistussummia vasten. Uusi versio otetaan käyttöön, kun seuraavan kerran käynnistät ArrowLoopin, joten käynnissä oleva synkronointi ei keskeydy. Asennettu kopio ja siirrettävä kopio päivittyvät kumpikin paikallaan.',
   'update.ready': 'ArrowLoop {version} on ladattu ja on käytössä, kun seuraavan kerran käynnistät sovelluksen.',
   'confirm.deleteRemote': 'Poista tämä tallennuskohde',
-  'confirm.deleteRemoteStakes': 'Kohteen {name} asetukset poistetaan rclonen määrityksistä, mukaan lukien siellä oleva salasana tai avain. Mitään ei kopioida ensin minnekään eikä paluuta ole: uudelleen määrittäminen tarkoittaa tunnusten kirjoittamista uudestaan. Sinne osoittavat työt epäonnistuvat seuraavalla ajolla, kunnes ne osoittavat muualle.',
+  'confirm.deleteRemoteStakes': 'Kohteen {name} asetukset poistetaan rclonen määrityksistä, mukaan lukien siellä oleva salasana tai avain. Mitään ei kopioida ensin minnekään eikä paluuta ole: uudelleen määrittäminen tarkoittaa tunnusten kirjoittamista uudestaan.',
+  'targets.inUse': 'Työt käyttävät vielä tätä kohdetta: {jobs}. Ohjaa ne toiseen kohteeseen tai poista ne, ja poista sitten kohde.',
   'confirm.delete': 'Poista',
   'confirm.cancel': 'Peruuta',
   'about.title': 'Tietoja ArrowLoopista',
@@ -1236,6 +1237,7 @@ const fi: Translations = {
   'new.change.releaseCards': 'Päivityksen jälkeen tämä ikkuna näyttää kortin jokaisesta julkaisusta sinulla olleen version jälkeen, mukana julkaisun muistiinpanot ja sen tuomat muutokset.',
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
   'new.change.twoFactorOnce': 'Mega kysyy {code} muiden kirjautumiskenttien kanssa, ja Megassa ja Proton Drivessa yksi koodi riittää: {test}, tallennus ja sen jälkeinen tarkistus käyttävät samaa istuntoa, jonka koodi avaa.',
+  'new.change.targetInUse': 'Kohdetta, jota työt vielä käyttävät, ei poisteta. {delete} nimeää sen sijaan nämä työt, jotta voit ensin ohjata ne toiseen kohteeseen.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

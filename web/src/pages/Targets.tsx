@@ -422,7 +422,7 @@ function RemoteRow({
         </span>
         {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
         {notDeleted && (
-          <span className="text-subline text-statusFail [overflow-wrap:anywhere]" role="alert">
+          <span data-new="target-in-use" className="text-subline text-statusFail [overflow-wrap:anywhere]" role="alert">
             {notDeleted}
           </span>
         )}

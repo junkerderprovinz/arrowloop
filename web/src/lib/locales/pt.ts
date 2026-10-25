@@ -451,7 +451,8 @@ const pt: Translations = {
   'update.autoHint': 'Uma vez por dia, o ArrowLoop procura uma versão nova, transfere-a em segundo plano e verifica-a com as somas de verificação publicadas com a versão. A versão nova entra em funcionamento da próxima vez que iniciar o ArrowLoop, por isso uma sincronização em curso não é interrompida. Uma cópia instalada e uma cópia portátil atualizam-se ambas onde estão.',
   'update.ready': 'O ArrowLoop {version} foi transferido e corre da próxima vez que iniciar a aplicação.',
   'confirm.deleteRemote': 'Apagar este destino de armazenamento',
-  'confirm.deleteRemoteStakes': 'As definições de {name} são retiradas da configuração do rclone, incluindo qualquer palavra-passe ou chave ali guardada. Antes não se copia nada para lado nenhum e não há volta atrás: voltar a configurá-lo significa escrever de novo as credenciais. As tarefas que apontem para ali falharão na execução seguinte até apontarem para outro sítio.',
+  'confirm.deleteRemoteStakes': 'As definições de {name} são retiradas da configuração do rclone, incluindo qualquer palavra-passe ou chave ali guardada. Antes não se copia nada para lado nenhum e não há volta atrás: voltar a configurá-lo significa escrever de novo as credenciais.',
+  'targets.inUse': 'Ainda há tarefas que usam este destino: {jobs}. Aponte-as para outro destino ou elimine-as, e depois elimine o destino.',
   'confirm.delete': 'Apagar',
   'confirm.cancel': 'Cancelar',
   'about.title': 'Sobre o ArrowLoop',
@@ -1236,6 +1237,7 @@ const pt: Translations = {
   'new.change.releaseCards': 'Depois de uma atualização, esta janela mostra um cartão por cada versão desde a que tinhas, com as notas e as mudanças que trouxe.',
   'new.change.newerWins': '{option} numa tarefa que sincroniza nos dois sentidos resolve um conflito sem perguntar: a versão guardada por último fica nos dois lados e a outra vai para a reciclagem.',
   'new.change.twoFactorOnce': 'O Mega pede o {code} junto com os outros campos de início de sessão, e para Mega e Proton Drive basta um código: {test}, guardar e a verificação seguinte partilham a sessão que o código abre.',
+  'new.change.targetInUse': 'Um destino que tarefas ainda usam não é eliminado. {delete} indica essas tarefas, para que primeiro as aponte para outro destino.',
   'new.change.appFolders': 'Na app do telemóvel, {add} em {settings}, {phone} deixa o ArrowLoop sincronizar uma pasta que outra aplicação oferece no seletor de ficheiros do Android, sem root nem Shizuku. As pastas aparecem num destino chamado Apps.',
 }
 

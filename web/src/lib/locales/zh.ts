@@ -451,7 +451,8 @@ const zh: Translations = {
   'update.autoHint': 'ArrowLoop 每天查找一次新版本，在后台下载，并用随发布一起公布的校验和进行核对。新版本会在你下次启动 ArrowLoop 时生效，所以正在进行的同步不会被打断。安装版和便携版都会在原位置更新。',
   'update.ready': '已下载 ArrowLoop {version}，下次启动应用时生效。',
   'confirm.deleteRemote': '删除这个存储目标',
-  'confirm.deleteRemoteStakes': '{name} 的设置会从 rclone 的配置里移除，连同存在那里的任何口令和密钥。事先不会往任何地方复制，也没有回头路：再次配置意味着重新输入凭据。指向它的任务从下次运行起会失败，直到改指别处。',
+  'confirm.deleteRemoteStakes': '{name} 的设置会从 rclone 的配置里移除，连同存在那里的任何口令和密钥。事先不会往任何地方复制，也没有回头路：再次配置意味着重新输入凭据。',
+  'targets.inUse': '仍有任务在使用这个目标：{jobs}。请先把它们改指到别的目标或删除，再删除这个目标。',
   'confirm.delete': '删除',
   'confirm.cancel': '取消',
   'about.title': '关于 ArrowLoop',
@@ -1236,6 +1237,7 @@ const zh: Translations = {
   'new.change.releaseCards': '更新后，这个窗口会为你之前版本之后的每个版本显示一张卡片，附上它的说明和带来的改动。',
   'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
   'new.change.twoFactorOnce': 'Mega 会和其他登录字段一起询问{code}，而 Mega 和 Proton Drive 只需一个验证码：{test}、保存以及之后的检查共用验证码打开的会话。',
+  'new.change.targetInUse': '仍有任务在用的目标不会被删除。{delete} 会改为列出这些任务，让你先把它们改指到别的目标。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

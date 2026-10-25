@@ -451,7 +451,8 @@ const is: Translations = {
   'update.autoHint': 'Einu sinni á dag leitar ArrowLoop að nýrri útgáfu, sækir hana í bakgrunni og ber hana saman við gátsummurnar sem birtar eru með útgáfunni. Nýja útgáfan tekur við næst þegar þú ræsir ArrowLoop, svo samstilling sem er í gangi rofnar ekki. Uppsett eintak og færanlegt eintak uppfærast bæði þar sem þau eru.',
   'update.ready': 'ArrowLoop {version} hefur verið sótt og keyrir næst þegar þú ræsir forritið.',
   'confirm.deleteRemote': 'Eyða þessum geymsluáfangastað',
-  'confirm.deleteRemoteStakes': 'Stillingar fyrir {name} eru fjarlægðar úr uppsetningu rclone, þar með talið hvert lykilorð og lykill sem þar liggur. Ekkert er afritað neitt fyrst og engin leið er til baka: að setja það upp aftur þýðir að slá aðgangsupplýsingarnar inn á ný. Verk sem benda þangað bregðast í næstu keyrslu þar til þau benda annað.',
+  'confirm.deleteRemoteStakes': 'Stillingar fyrir {name} eru fjarlægðar úr uppsetningu rclone, þar með talið hvert lykilorð og lykill sem þar liggur. Ekkert er afritað neitt fyrst og engin leið er til baka: að setja það upp aftur þýðir að slá aðgangsupplýsingarnar inn á ný.',
+  'targets.inUse': 'Verk nota enn þennan áfangastað: {jobs}. Beindu þeim á annan áfangastað eða eyddu þeim, og eyddu svo áfangastaðnum.',
   'confirm.delete': 'Eyða',
   'confirm.cancel': 'Hætta við',
   'about.title': 'Um ArrowLoop',
@@ -1236,6 +1237,7 @@ const is: Translations = {
   'new.change.releaseCards': 'Eftir uppfærslu sýnir þessi gluggi spjald fyrir hverja útgáfu síðan þá sem þú varst með, með athugasemdum hennar og breytingunum sem hún kom með.',
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
   'new.change.twoFactorOnce': 'Mega biður um {code} með hinum innskráningarreitunum, og fyrir Mega og Proton Drive dugar einn kóði: {test}, vistun og athugunin á eftir nota sömu lotu og kóðinn opnar.',
+  'new.change.targetInUse': 'Áfangastað sem verk nota enn er ekki eytt. {delete} nefnir þess í stað þau verk, svo þú getir fyrst beint þeim á annan áfangastað.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

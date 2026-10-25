@@ -451,7 +451,8 @@ const vi: Translations = {
   'update.autoHint': 'Mỗi ngày một lần ArrowLoop tìm phiên bản mới, tải về ở chế độ nền và kiểm tra bằng mã tổng kiểm được công bố cùng bản phát hành. Phiên bản mới bắt đầu chạy vào lần tới bạn khởi động ArrowLoop, nên một lần đồng bộ đang chạy không bị ngắt. Bản đã cài đặt và bản di động đều được cập nhật ngay tại chỗ.',
   'update.ready': 'ArrowLoop {version} đã được tải về và sẽ chạy vào lần tới bạn khởi động ứng dụng.',
   'confirm.deleteRemote': 'Xóa đích lưu trữ này',
-  'confirm.deleteRemoteStakes': 'Thiết lập của {name} bị gỡ khỏi cấu hình rclone, kèm theo mọi mật khẩu và khóa nằm ở đó. Trước đó không có gì được sao đi đâu cả, và không có đường lui: dựng lại nghĩa là gõ lại thông tin đăng nhập. Những công việc trỏ tới đó sẽ hỏng từ lần chạy kế tiếp cho tới khi trỏ sang chỗ khác.',
+  'confirm.deleteRemoteStakes': 'Thiết lập của {name} bị gỡ khỏi cấu hình rclone, kèm theo mọi mật khẩu và khóa nằm ở đó. Trước đó không có gì được sao đi đâu cả, và không có đường lui: dựng lại nghĩa là gõ lại thông tin đăng nhập.',
+  'targets.inUse': 'Vẫn còn công việc dùng đích này: {jobs}. Hãy trỏ chúng sang đích khác hoặc xóa chúng, rồi xóa đích.',
   'confirm.delete': 'Xóa',
   'confirm.cancel': 'Hủy',
   'about.title': 'Giới thiệu về ArrowLoop',
@@ -1236,6 +1237,7 @@ const vi: Translations = {
   'new.change.releaseCards': 'Sau khi cập nhật, cửa sổ này hiện một thẻ cho mỗi bản phát hành kể từ bản bạn đang dùng, kèm ghi chú và những thay đổi nó mang lại.',
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
   'new.change.twoFactorOnce': 'Mega hỏi {code} cùng các ô đăng nhập khác, và với Mega và Proton Drive chỉ cần một mã: {test}, lưu và lần kiểm tra sau đó dùng chung phiên mà mã đã mở.',
+  'new.change.targetInUse': 'Một đích mà công việc vẫn đang dùng sẽ không bị xóa. Thay vào đó {delete} nêu tên các công việc ấy, để bạn trỏ chúng sang đích khác trước.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

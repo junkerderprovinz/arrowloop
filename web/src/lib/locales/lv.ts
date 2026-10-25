@@ -451,7 +451,8 @@ const lv: Translations = {
   'update.autoHint': 'Reizi dienā ArrowLoop meklē jaunu versiju, lejupielādē to fonā un pārbauda pēc kontrolsummām, kas publicētas kopā ar laidienu. Jaunā versija sāk darboties nākamajā reizē, kad palaižat ArrowLoop, tāpēc notiekoša sinhronizācija netiek pārtraukta. Instalēta un pārnēsājama kopija abas atjauninās tur, kur tās atrodas.',
   'update.ready': 'ArrowLoop {version} ir lejupielādēts un darbosies nākamajā reizē, kad palaidīsiet lietotni.',
   'confirm.deleteRemote': 'Dzēst šo krātuvi',
-  'confirm.deleteRemoteStakes': '{name} iestatījumi tiek noņemti no rclone konfigurācijas kopā ar katru tur esošo paroli un atslēgu. Iepriekš nekas nekur netiek kopēts, un ceļa atpakaļ nav: iestatīt to no jauna nozīmē no jauna ievadīt pieteikšanās datus. Uzdevumi, kas norāda turp, nākamajā reizē neizdosies, līdz tie norādīs citur.',
+  'confirm.deleteRemoteStakes': '{name} iestatījumi tiek noņemti no rclone konfigurācijas kopā ar katru tur esošo paroli un atslēgu. Iepriekš nekas nekur netiek kopēts, un ceļa atpakaļ nav: iestatīt to no jauna nozīmē no jauna ievadīt pieteikšanās datus.',
+  'targets.inUse': 'Šo galamērķi vēl izmanto uzdevumi: {jobs}. Novirziet tos uz citu galamērķi vai izdzēsiet, tad izdzēsiet galamērķi.',
   'confirm.delete': 'Dzēst',
   'confirm.cancel': 'Atcelt',
   'about.title': 'Par ArrowLoop',
@@ -1236,6 +1237,7 @@ const lv: Translations = {
   'new.change.releaseCards': 'Pēc atjaunināšanas šajā logā redzama karte par katru izlaidumu kopš tavas iepriekšējās versijas, ar tā piezīmēm un izmaiņām.',
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
   'new.change.twoFactorOnce': 'Mega prasa {code} kopā ar citiem pieteikšanās laukiem, un Mega un Proton Drive pietiek ar vienu kodu: {test}, saglabāšana un pēc tam sekojošā pārbaude izmanto sesiju, ko kods atver.',
+  'new.change.targetInUse': 'Galamērķis, ko vēl izmanto uzdevumi, netiek izdzēsts. {delete} tā vietā nosauc šos uzdevumus, lai vispirms varētu tos novirzīt uz citu galamērķi.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 
