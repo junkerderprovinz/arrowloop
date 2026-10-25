@@ -1235,6 +1235,7 @@ const gl: Translations = {
   'new.change.targetRows': 'O botón {test} de cada destino amosa el mesmo {connected} ou {notConnected}, co motivo na liña baixo o nome. Un contrasinal ou unha chave gardados aparecen como {saved}, e {change} abre o campo.',
   'new.change.releaseCards': 'Despois dunha actualización, esta xanela mostra unha tarxeta por cada versión desde a que tiñas, coas súas notas e os cambios que trouxo.',
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
+  'new.change.installer': 'Un instalador novo para Windows e Linux. En Windows escolles ti o cartafol, e en Linux ArrowLoop aparece no menú de aplicacións e pódese desinstalar desde alí.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

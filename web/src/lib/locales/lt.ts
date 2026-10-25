@@ -1235,6 +1235,7 @@ const lt: Translations = {
   'new.change.targetRows': 'Kiekvienos paskirties mygtukas {test} pats parodo {connected} arba {notConnected}, o priežastis būna eilutėje po pavadinimu. Išsaugotas slaptažodis ar raktas rodomas kaip {saved}, o {change} atveria lauką.',
   'new.change.releaseCards': 'Po naujinimo šiame lange rodoma kortelė kiekvienam leidimui nuo jūsų turėtos versijos, su jo pastabomis ir pakeitimais.',
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
+  'new.change.installer': 'Naujas diegimo vedlys Windows ir Linux. Windows sistemoje aplanką pasirenki pats, Linux sistemoje ArrowLoop atsiranda programų meniu ir iš ten jį galima pašalinti.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

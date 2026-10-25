@@ -1235,6 +1235,7 @@ const ja: Translations = {
   'new.change.targetRows': '各保存先の {test} ボタンが、それ自体で {connected} か {notConnected} を表示し、理由は名前の下の行に出ます。保存済みのパスワードやキーは {saved} と表示され、{change} で入力欄が開きます。',
   'new.change.releaseCards': 'アップデート後は、これまで使っていたバージョン以降のリリースごとに、リリースノートと変更点を載せたカードがこのウィンドウに表示されます。',
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
+  'new.change.installer': 'Windows と Linux 向けの新しいインストーラー。Windows ではフォルダーを自分で選べ、Linux では ArrowLoop がアプリケーションメニューに入り、そこからアンインストールもできます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

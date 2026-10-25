@@ -1235,6 +1235,7 @@ const eu: Translations = {
   'new.change.targetRows': 'Helburu bakoitzaren {test} botoiak berak erakusten du {connected} edo {notConnected}, eta arrazoia izenaren azpiko lerroan dago. Gordetako pasahitz edo gako bat {saved} gisa agertzen da, eta {change} aukerak eremua irekitzen du.',
   'new.change.releaseCards': 'Eguneratze baten ondoren, leiho honek txartel bat erakusten du zuk zenuen bertsioaren ondorengo bertsio bakoitzeko, bere oharrekin eta ekarri zituen aldaketekin.',
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
+  'new.change.installer': 'Instalatzaile berria Windows eta Linuxerako. Windowsen zuk aukeratzen duzu karpeta, eta Linuxen ArrowLoop aplikazioen menuan agertzen da eta handik desinstala daiteke.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

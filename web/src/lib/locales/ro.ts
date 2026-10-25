@@ -1235,6 +1235,7 @@ const ro: Translations = {
   'new.change.targetRows': 'Butonul {test} al fiecărei ținte arată singur {connected} sau {notConnected}, cu motivul pe rândul de sub nume. O parolă sau o cheie salvată apare ca {saved}, iar {change} deschide câmpul.',
   'new.change.releaseCards': 'După o actualizare, această fereastră arată câte un card pentru fiecare versiune de la cea pe care o aveai, cu notele și schimbările ei.',
   'new.change.newerWins': '{option} într-o sarcină care sincronizează în ambele sensuri rezolvă un conflict fără să întrebe: versiunea salvată ultima rămâne pe ambele părți, iar cealaltă ajunge în coș.',
+  'new.change.installer': 'Un program de instalare nou pentru Windows și Linux. Pe Windows alegi singur dosarul, pe Linux ArrowLoop apare în meniul de aplicații și se poate dezinstala de acolo.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

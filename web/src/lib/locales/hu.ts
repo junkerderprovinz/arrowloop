@@ -1235,6 +1235,7 @@ const hu: Translations = {
   'new.change.targetRows': 'Egy cél {test} gombja maga mutatja, hogy {connected} vagy {notConnected}, az okot pedig a név alatti sor adja meg. A mentett jelszó vagy kulcs {saved} felirattal látszik, és a {change} nyitja meg a mezőt.',
   'new.change.releaseCards': 'Egy frissítés után ez az ablak minden kiadásról mutat egy kártyát a nálad lévő verzió óta, a megjegyzéseivel és a változásokkal, amelyeket hozott.',
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
+  'new.change.installer': 'Új telepítő Windowsra és Linuxra. Windowson te választod ki a mappát, Linuxon az ArrowLoop bekerül az alkalmazásmenübe, és onnan el is távolítható.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

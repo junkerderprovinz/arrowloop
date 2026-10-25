@@ -1235,6 +1235,7 @@ const he: Translations = {
   'new.change.targetRows': 'הכפתור {test} של כל יעד מציג בעצמו {connected} או {notConnected}, והסיבה בשורה שמתחת לשם. סיסמה או מפתח שמורים מופיעים כ־{saved}, ו־{change} פותח את השדה.',
   'new.change.releaseCards': 'אחרי עדכון החלון הזה מציג כרטיס לכל גרסה מאז זו שהייתה לך, עם ההערות שלה והשינויים שהיא הביאה.',
   'new.change.newerWins': '{option} במשימה שמסנכרנת לשני הכיוונים מכריע בהתנגשות בלי לשאול: הגרסה שנשמרה אחרונה נשארת בשני הצדדים, והשנייה עוברת לסל האשפה.',
+  'new.change.installer': 'מתקין חדש ל-Windows ול-Linux. ב-Windows אתה בוחר את התיקייה בעצמך, וב-Linux ArrowLoop מופיע בתפריט היישומים ואפשר להסיר אותו משם.',
   'new.change.appFolders': 'באפליקציה לטלפון, {add} תחת {settings}, {phone} מאפשר ל־ArrowLoop לסנכרן תיקייה שאפליקציה אחרת מציעה בבורר הקבצים של Android, בלי רוט ובלי Shizuku. התיקיות מופיעות ביעד בשם Apps.',
 }
 

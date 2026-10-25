@@ -1235,6 +1235,7 @@ const sv: Translations = {
   'new.change.targetRows': 'Knappen {test} vid ett mål visar själv {connected} eller {notConnected}, med orsaken på raden under namnet. Ett sparat lösenord eller en nyckel visas som {saved}, och {change} öppnar fältet.',
   'new.change.releaseCards': 'Efter en uppdatering visar det här fönstret ett kort för varje utgåva sedan den du hade, med dess anteckningar och de ändringar den gav.',
   'new.change.newerWins': '{option} i ett jobb som synkar åt båda hållen avgör en konflikt utan att fråga: den senast sparade versionen blir kvar på båda sidor, och den andra hamnar i papperskorgen.',
+  'new.change.installer': 'Ett nytt installationsprogram för Windows och Linux. På Windows väljer du själv mappen, på Linux hamnar ArrowLoop i programmenyn och kan avinstalleras därifrån.',
   'new.change.appFolders': 'I telefonappen låter {add} under {settings}, {phone} ArrowLoop synkronisera en mapp som en annan app erbjuder i Androids filväljare, utan root och utan Shizuku. Mapparna visas i ett mål som heter Apps.',
 }
 

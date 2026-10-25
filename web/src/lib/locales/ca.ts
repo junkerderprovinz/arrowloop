@@ -1235,6 +1235,7 @@ const ca: Translations = {
   'new.change.targetRows': 'El botó {test} de cada destinació mostra ell mateix {connected} o {notConnected}, amb el motiu a la línia de sota del nom. Una contrasenya o una clau desada apareix com a {saved}, i {change} obre el camp.',
   'new.change.releaseCards': 'Després d\'una actualització, aquesta finestra mostra una targeta per cada versió des de la que tenies, amb les seves notes i els canvis que va portar.',
   'new.change.newerWins': '{option} en una tasca que sincronitza en els dos sentits resol un conflicte sense preguntar: la versió desada en últim lloc es queda als dos costats i l\'altra va a la paperera.',
+  'new.change.installer': 'Un instal·lador nou per a Windows i Linux. A Windows tries tu la carpeta, i a Linux ArrowLoop apareix al menú d\'aplicacions i s\'hi pot desinstal·lar.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

@@ -1235,6 +1235,7 @@ const et: Translations = {
   'new.change.targetRows': 'Sihtkoha nupp {test} näitab ise {connected} või {notConnected} ja põhjus on nime all oleval real. Salvestatud parool või võti on kirjas kui {saved} ning {change} avab välja.',
   'new.change.releaseCards': 'Pärast uuendust näitab see aken kaarti iga väljalaske kohta alates sellest, mis sul oli, koos selle märkmete ja muudatustega.',
   'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
+  'new.change.installer': 'Uus paigaldaja Windowsile ja Linuxile. Windowsis valid kausta ise, Linuxis jõuab ArrowLoop rakenduste menüüsse ja selle saab sealt ka eemaldada.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

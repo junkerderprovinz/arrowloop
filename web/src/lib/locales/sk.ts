@@ -1235,6 +1235,7 @@ const sk: Translations = {
   'new.change.targetRows': 'Tlačidlo {test} pri každom cieli samo ukáže {connected} alebo {notConnected} a dôvod je v riadku pod menom. Uložené heslo alebo kľúč sa zobrazuje ako {saved} a {change} otvorí pole.',
   'new.change.releaseCards': 'Po aktualizácii toto okno ukáže kartu pre každé vydanie od vašej verzie, s jeho poznámkami a zmenami, ktoré prinieslo.',
   'new.change.newerWins': '{option} v úlohe, ktorá synchronizuje oboma smermi, vyrieši konflikt bez pýtania: naposledy uložená verzia zostane na oboch stranách a tá druhá ide do koša.',
+  'new.change.installer': 'Nový inštalátor pre Windows a Linux. Vo Windows si priečinok vyberieš sám, v Linuxe sa ArrowLoop objaví v ponuke aplikácií a odtiaľ ho môžeš aj odinštalovať.',
   'new.change.appFolders': 'V aplikácii pre telefón umožní {add} v {settings}, {phone} synchronizovať v ArrowLoop priečinok, ktorý iná aplikácia ponúka vo výbere súborov Androidu, bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps.',
 }
 

@@ -1235,6 +1235,7 @@ const vi: Translations = {
   'new.change.targetRows': 'Nút {test} của mỗi đích tự hiện {connected} hoặc {notConnected}, kèm lý do ở dòng dưới tên. Mật khẩu hoặc khóa đã lưu hiện là {saved}, và {change} mở ô nhập.',
   'new.change.releaseCards': 'Sau khi cập nhật, cửa sổ này hiện một thẻ cho mỗi bản phát hành kể từ bản bạn đang dùng, kèm ghi chú và những thay đổi nó mang lại.',
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
+  'new.change.installer': 'Trình cài đặt mới cho Windows và Linux. Trên Windows bạn tự chọn thư mục, trên Linux ArrowLoop có mặt trong menu ứng dụng và có thể gỡ cài đặt từ đó.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

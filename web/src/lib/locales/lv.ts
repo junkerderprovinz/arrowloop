@@ -1235,6 +1235,7 @@ const lv: Translations = {
   'new.change.targetRows': 'Katra mērķa poga {test} pati rāda {connected} vai {notConnected}, un iemesls ir rindā zem nosaukuma. Saglabāta parole vai atslēga redzama kā {saved}, un {change} atver lauku.',
   'new.change.releaseCards': 'Pēc atjaunināšanas šajā logā redzama karte par katru izlaidumu kopš tavas iepriekšējās versijas, ar tā piezīmēm un izmaiņām.',
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
+  'new.change.installer': 'Jauns instalētājs Windows un Linux. Windows vidē mapi izvēlies pats, Linux vidē ArrowLoop nonāk lietotņu izvēlnē, un no turienes to var arī atinstalēt.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 
