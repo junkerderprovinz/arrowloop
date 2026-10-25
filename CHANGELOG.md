@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **Testing a Box or Jottacloud target could sign it out.** These services hand out a new sign-in when the old one runs out and void the old one right away. The test in the form threw the new one away, so the target stopped working after the next restart. The new sign-in is now kept, for a saved target as soon as you test it and for a new one when you save it.
+
 ## 2.2.8 - 2026-10-23
 
 ## ⚡ Improved

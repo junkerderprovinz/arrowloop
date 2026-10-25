@@ -1,12 +1,9 @@
 package remotes
 
 import (
-	"context"
-	"fmt"
 	"sort"
 	"strings"
 
-	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/obscure"
 )
@@ -90,27 +87,6 @@ func typedForm(backend, key, stored string) string {
 		return plain
 	}
 	return stored
-}
-
-// CheckSettings reports whether a target built from settings that have not
-// been saved answers. It goes through an inline connection string, so no
-// temporary remote holding real credentials is ever written.
-func CheckSettings(ctx context.Context, backend string, settings map[string]string) error {
-	if backend == "" {
-		return fmt.Errorf("a remote needs a type, for example s3 or sftp")
-	}
-	if _, err := rclonefs.Find(backend); err != nil {
-		return fmt.Errorf("this build does not include the %q backend: %w", backend, err)
-	}
-
-	ctx, stop := context.WithTimeout(ctx, CheckWait)
-	defer stop()
-
-	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings))
-	if err != nil {
-		return checkErr(ctx, err)
-	}
-	return listRoot(ctx, f, backend)
 }
 
 // connectionString renders settings as rclone's inline-remote syntax,

@@ -25,7 +25,7 @@ func nothingHere(t *testing.T) string {
 
 func TestAWebdavAddressWithNothingThereFailsTheCheck(t *testing.T) {
 	settings := map[string]string{"url": nothingHere(t), "user": "someone", "pass": "secret"}
-	if err := CheckSettings(context.Background(), "webdav", settings); err == nil {
+	if err := Try(context.Background(), "", "webdav", settings); err == nil {
 		t.Fatal("an address that answers 404 passed the check")
 	}
 }

@@ -193,6 +193,10 @@ func Save(name, backend string, settings map[string]string) error {
 		}
 		data.SetValue(name, key, value)
 	}
+	// What a test of this form learned outlasts what the form holds: the
+	// token typed into it may be spent by now.
+	key := formKey(backend, settings)
+	setRaw(data, name, tried.recall(key))
 
 	if err := data.Save(); err != nil {
 		if !existed {
@@ -200,6 +204,7 @@ func Save(name, backend string, settings map[string]string) error {
 		}
 		return fmt.Errorf("write rclone's configuration: %w", err)
 	}
+	tried.forget(key)
 	return nil
 }
 
