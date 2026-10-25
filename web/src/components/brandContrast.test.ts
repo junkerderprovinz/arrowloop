@@ -183,12 +183,12 @@ describe('brand contrast', () => {
     expect(body).toContain('height: 100%')
   })
 
-  // A spot check that the generator crops viewBoxes to their ink: Synology is a
+  // A spot check that the generator crops viewBoxes to their ink: Zoho is a
   // wordmark and its box must stay wide.
   it('crops a wordmark to its ink', () => {
-    const synology = glyphs.slice(glyphs.indexOf('export function IconSynology'))
-    const box = synology.match(/viewBox="([^"]+)"/)![1].split(/\s+/).map(Number)
-    expect(box[2] / box[3], 'Synology is a wordmark, not a square').toBeGreaterThan(2)
+    const zoho = glyphs.slice(glyphs.indexOf('export function IconZoho'))
+    const box = zoho.match(/viewBox="([^"]+)"/)![1].split(/\s+/).map(Number)
+    expect(box[2] / box[3], 'Zoho is a wordmark, not a square').toBeGreaterThan(2)
   })
 
   // Oracle Cloud is an outline with a 4-unit stroke on a path from 2 to 30, so

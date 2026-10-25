@@ -160,8 +160,8 @@ var providers = []Provider{
 	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconShade"},
 	// Storage Made Easy's product, which runs on the customer's own address.
 	// The product's own logo is gone and Nasuni's mark names its owner, not
-	// the product, so the row has none.
-	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud,
+	// the product, so the row wears the storage glyph.
+	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud, Mark: "IconTabStorage",
 		UrlHint: "https://yourfabric.smestorage.com"},
 
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},

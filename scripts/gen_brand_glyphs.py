@@ -69,7 +69,6 @@ MARKS = [
     ("IconScaleway", "scaleway", "Scaleway Object Storage"),
     ("IconHetzner", "hetzner", "Hetzner Object Storage"),
     ("IconOvh", "ovh", "OVHcloud Object Storage"),
-    ("IconSynology", "synology", "Synology C2"),
     ("IconMinio", "minio", "MinIO"),
 ]
 
@@ -476,6 +475,8 @@ LOCAL = [
     ("IconIdrive", "idrive", "IDrive e2", JDP, BRAND),
     ("IconSeaweedfs", "seaweedfs", "SeaweedFS", JDP, BRAND),
 
+    ("IconSynology", "synology", "Synology C2",
+     "the brand's own C2 icon, drawn as a vector from it", BRAND),
     ("IconCeph", "ceph", "Ceph", JDP, BRAND),
     ("IconGarage", "garage", "Garage",
      "the Garage project's own icon, via junkerderprovinz/garage", BRAND),
