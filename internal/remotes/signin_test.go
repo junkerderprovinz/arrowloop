@@ -2,6 +2,7 @@ package remotes
 
 import (
 	"context"
+	"errors"
 	"slices"
 	"testing"
 
@@ -77,5 +78,66 @@ func TestATestOfATypedTokenLeavesTheSavedOneAlone(t *testing.T) {
 	}
 	if got, _ := config.LoadedData().GetValue("box", "token"); got != "first" {
 		t.Fatalf("the saved token is %q, want first", got)
+	}
+}
+
+// coded is a backend that signs in with a two-factor code once and keeps the
+// session it opened, as Mega and Proton Drive do.
+const coded = "arrowloop-test-coded"
+
+func codedBackend(t *testing.T) {
+	used := map[string]bool{}
+	fakeBackend(t, &rclonefs.RegInfo{
+		Name: coded,
+		NewFs: func(ctx context.Context, name, root string, m configmap.Mapper) (rclonefs.Fs, error) {
+			if session, _ := m.Get("session_id"); session == "" {
+				code, _ := m.Get(oneTimeCode)
+				if code == "" || used[code] {
+					return nil, errors.New("the two-factor code was refused")
+				}
+				used[code] = true
+				m.Set("session_id", "opened-by-"+code)
+			}
+			return memory.NewFs(ctx, name, root, m)
+		},
+		Options: []rclonefs.Option{
+			{Name: "user"},
+			{Name: "pass", IsPassword: true},
+			{Name: oneTimeCode},
+			{Name: "session_id", Sensitive: true},
+		},
+	})
+	sessionKey[coded] = "session_id"
+	t.Cleanup(func() { delete(sessionKey, coded) })
+}
+
+func TestOneCodeServesTheTestTheSaveAndTheCheckAfter(t *testing.T) {
+	codedBackend(t)
+	ownConfig(t)
+	form := map[string]string{"user": "someone", "pass": "letmein", oneTimeCode: "123456"}
+
+	if err := Try(context.Background(), "", coded, form); err != nil {
+		t.Fatalf("try: %v", err)
+	}
+	if err := Save("cloud", coded, form); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	if err := Check(context.Background(), "cloud"); err != nil {
+		t.Fatalf("the check after saving asked for the code again: %v", err)
+	}
+	if code, _ := config.LoadedData().GetValue("cloud", oneTimeCode); code != "" {
+		t.Fatalf("the used code %q was saved", code)
+	}
+}
+
+// Signing in again after a session ran out takes a fresh code, and nothing
+// else about the target changes.
+func TestAFreshCodeInTheEditFormSignsInWithTheSavedPassword(t *testing.T) {
+	codedBackend(t)
+	saved(t, "cloud", coded, map[string]string{"user": "someone", "pass": "letmein"})
+
+	got := WithSavedSecrets("cloud", coded, map[string]string{"user": "someone", oneTimeCode: "654321"})
+	if got["pass"] != "letmein" {
+		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
 }

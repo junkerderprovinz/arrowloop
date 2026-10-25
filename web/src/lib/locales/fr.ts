@@ -1235,6 +1235,7 @@ const fr: Translations = {
   'new.change.targetRows': 'Le bouton {test} de chaque cible affiche lui-même {connected} ou {notConnected}, avec la raison sur la ligne sous le nom. Un mot de passe ou une clé enregistrés apparaissent comme {saved}, et {change} ouvre le champ.',
   'new.change.releaseCards': 'Après une mise à jour, cette fenêtre affiche une carte pour chaque version depuis celle que vous aviez, avec ses notes et les changements qu\'elle a apportés.',
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
+  'new.change.twoFactorOnce': 'Mega demande le {code} avec les autres champs de connexion, et pour Mega et Proton Drive un seul code suffit : {test}, l\'enregistrement et la vérification qui suit partagent la session que le code ouvre.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

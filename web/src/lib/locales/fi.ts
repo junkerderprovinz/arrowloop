@@ -1235,6 +1235,7 @@ const fi: Translations = {
   'new.change.targetRows': 'Kohteen {test}-painike näyttää itse {connected} tai {notConnected}, ja syy on nimen alla olevalla rivillä. Tallennettu salasana tai avain näkyy muodossa {saved}, ja {change} avaa kentän.',
   'new.change.releaseCards': 'Päivityksen jälkeen tämä ikkuna näyttää kortin jokaisesta julkaisusta sinulla olleen version jälkeen, mukana julkaisun muistiinpanot ja sen tuomat muutokset.',
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
+  'new.change.twoFactorOnce': 'Mega kysyy {code} muiden kirjautumiskenttien kanssa, ja Megassa ja Proton Drivessa yksi koodi riittää: {test}, tallennus ja sen jälkeinen tarkistus käyttävät samaa istuntoa, jonka koodi avaa.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

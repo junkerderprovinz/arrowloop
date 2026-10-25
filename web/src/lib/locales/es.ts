@@ -1235,6 +1235,7 @@ const es: Translations = {
   'new.change.targetRows': 'El botón {test} de cada destino muestra él mismo {connected} o {notConnected}, con el motivo en la línea bajo el nombre. Una contraseña o clave guardada aparece como {saved}, y {change} abre el campo.',
   'new.change.releaseCards': 'Después de una actualización, esta ventana muestra una tarjeta por cada versión desde la que tenías, con sus notas y los cambios que trajo.',
   'new.change.newerWins': '{option} en una tarea que sincroniza en ambos sentidos resuelve un conflicto sin preguntar: la versión guardada en último lugar se queda en ambos lados y la otra va a la papelera.',
+  'new.change.twoFactorOnce': 'Mega pide el {code} junto con los demás campos de inicio de sesión, y para Mega y Proton Drive basta un código: {test}, guardar y la comprobación posterior comparten la sesión que abre el código.',
   'new.change.appFolders': 'En la app del móvil, {add} en {settings}, {phone} permite a ArrowLoop sincronizar una carpeta que otra aplicación ofrece en el selector de archivos de Android, sin root ni Shizuku. Las carpetas aparecen en un destino llamado Apps.',
 }
 

@@ -1235,6 +1235,7 @@ const lt: Translations = {
   'new.change.targetRows': 'Kiekvienos paskirties mygtukas {test} pats parodo {connected} arba {notConnected}, o priežastis būna eilutėje po pavadinimu. Išsaugotas slaptažodis ar raktas rodomas kaip {saved}, o {change} atveria lauką.',
   'new.change.releaseCards': 'Po naujinimo šiame lange rodoma kortelė kiekvienam leidimui nuo jūsų turėtos versijos, su jo pastabomis ir pakeitimais.',
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
+  'new.change.twoFactorOnce': 'Mega prašo {code} kartu su kitais prisijungimo laukais, o Mega ir Proton Drive užtenka vieno kodo: {test}, išsaugojimas ir po jo einantis patikrinimas naudoja tą pačią kodo atvertą sesiją.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

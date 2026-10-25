@@ -1235,6 +1235,7 @@ const is: Translations = {
   'new.change.targetRows': 'Hnappurinn {test} við hvert markmið sýnir sjálfur {connected} eða {notConnected}, og ástæðan er á línunni undir nafninu. Vistað lykilorð eða lykill birtist sem {saved}, og {change} opnar reitinn.',
   'new.change.releaseCards': 'Eftir uppfærslu sýnir þessi gluggi spjald fyrir hverja útgáfu síðan þá sem þú varst með, með athugasemdum hennar og breytingunum sem hún kom með.',
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
+  'new.change.twoFactorOnce': 'Mega biður um {code} með hinum innskráningarreitunum, og fyrir Mega og Proton Drive dugar einn kóði: {test}, vistun og athugunin á eftir nota sömu lotu og kóðinn opnar.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

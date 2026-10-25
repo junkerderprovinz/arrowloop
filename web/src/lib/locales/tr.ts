@@ -1235,6 +1235,7 @@ const tr: Translations = {
   'new.change.targetRows': 'Her hedefin {test} düğmesi {connected} ya da {notConnected} durumunu kendisi gösterir, nedeni de adın altındaki satırda yazar. Kaydedilmiş bir parola ya da anahtar {saved} olarak görünür, {change} alanı açar.',
   'new.change.releaseCards': 'Güncellemeden sonra bu pencere, elindeki sürümden sonraki her sürüm için notlarıyla ve getirdiği değişikliklerle bir kart gösterir.',
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
+  'new.change.twoFactorOnce': 'Mega {code} bilgisini diğer oturum açma alanlarıyla birlikte sorar ve Mega ile Proton Drive için tek kod yeter: {test}, kaydetme ve ardından gelen kontrol, kodun açtığı oturumu paylaşır.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

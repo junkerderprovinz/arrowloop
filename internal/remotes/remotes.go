@@ -197,6 +197,7 @@ func Save(name, backend string, settings map[string]string) error {
 	// token typed into it may be spent by now.
 	key := formKey(backend, settings)
 	setRaw(data, name, tried.recall(key))
+	dropUsedCode(data, name, backend)
 
 	if err := data.Save(); err != nil {
 		if !existed {

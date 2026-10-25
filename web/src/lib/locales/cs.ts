@@ -1235,6 +1235,7 @@ const cs: Translations = {
   'new.change.targetRows': 'Tlačítko {test} u každého cíle samo ukáže {connected} nebo {notConnected} a důvod je na řádku pod jménem. Uložené heslo nebo klíč se ukazuje jako {saved} a {change} otevře pole.',
   'new.change.releaseCards': 'Po aktualizaci toto okno ukáže kartu pro každé vydání od toho, které jste měli, s jeho poznámkami a změnami, které přineslo.',
   'new.change.newerWins': '{option} v úloze, která synchronizuje oběma směry, vyřeší konflikt bez ptaní: naposledy uložená verze zůstane na obou stranách a ta druhá jde do koše.',
+  'new.change.twoFactorOnce': 'Mega se ptá na {code} spolu s ostatními přihlašovacími poli a u Mega a Proton Drive stačí jeden kód: {test}, uložení i následná kontrola sdílejí relaci, kterou kód otevře.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

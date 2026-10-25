@@ -642,7 +642,7 @@ function RemoteForm({
 
   // A stored secret arrives as the placeholder and goes back untouched unless
   // it is changed, which tells the engine to keep it (remotes.Save).
-  const field = (o: Backend['options'][number]) =>
+  const plainField = (o: Backend['options'][number]) =>
     o.secret ? (
       <SecretRow
         key={o.name}
@@ -681,6 +681,15 @@ function RemoteForm({
           />
         )}
       </FieldRow>
+    )
+
+  const field = (o: Backend['options'][number]) =>
+    o.name === '2fa' && (kind === 'mega' || kind === 'protondrive') ? (
+      <div key={o.name} data-new="two-factor-once">
+        {plainField(o)}
+      </div>
+    ) : (
+      plainField(o)
     )
 
   return (

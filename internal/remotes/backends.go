@@ -95,7 +95,7 @@ var essential = map[string]map[string]bool{
 	// connect.
 	"webdav": {"url": true, "vendor": true, "user": true, "pass": true},
 
-	"mega":        {"user": true, "pass": true},
+	"mega":        {"user": true, "pass": true, "2fa": true},
 	"opendrive":   {"username": true, "password": true},
 	"protondrive": {"username": true, "password": true, "2fa": true},
 	"seafile":     {"url": true, "user": true, "pass": true, "library": true},

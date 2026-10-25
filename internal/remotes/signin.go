@@ -53,6 +53,7 @@ func carryBack(name, backend string, form, learned map[string]string) {
 		}
 	}
 	setRaw(data, name, learned)
+	dropUsedCode(data, name, backend)
 	_ = data.Save()
 }
 
@@ -65,6 +66,25 @@ func setRaw(data config.Storage, name string, values map[string]string) {
 			continue
 		}
 		data.SetValue(name, k, v)
+	}
+}
+
+// oneTimeCode is the setting Mega and Proton Drive take a two-factor code in,
+// and sessionKey the one that holds the session the code opened. Seafile has
+// a setting of the same name that only says two-factor sign-in is on.
+const oneTimeCode = "2fa"
+
+var sessionKey = map[string]string{"mega": "session_id", "protondrive": "client_uid"}
+
+// dropUsedCode removes a two-factor code once the session it opened is kept:
+// it worked once, and a connection that sent it again would be refused.
+func dropUsedCode(data config.Storage, name, backend string) {
+	session, coded := sessionKey[backend]
+	if !coded {
+		return
+	}
+	if v, _ := data.GetValue(name, session); v != "" {
+		data.DeleteKey(name, oneTimeCode)
 	}
 }
 

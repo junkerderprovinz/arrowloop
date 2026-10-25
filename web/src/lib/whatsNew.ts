@@ -58,6 +58,18 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.2.8',
+    changes: [
+      {
+        id: 'two-factor-once',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.twoFactorOnce',
+        names: { code: 'opt.twoFactor', test: 'targets.check' },
+      },
+    ],
+  },
+  {
     after: '2.2.5',
     changes: [
       {

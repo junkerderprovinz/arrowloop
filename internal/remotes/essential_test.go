@@ -3,6 +3,8 @@ package remotes_test
 import (
 	"testing"
 
+	_ "github.com/rclone/rclone/backend/mega"
+	_ "github.com/rclone/rclone/backend/protondrive"
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"
 	_ "github.com/rclone/rclone/backend/smb"
@@ -86,6 +88,21 @@ func TestThePortIsOnTheFirstScreen(t *testing.T) {
 		}
 		if !found {
 			t.Errorf("the %s form hides the port behind the advanced switch", b.Name)
+		}
+	}
+}
+
+// A two-factor code among the further settings reads as optional, and
+// the phone shows only the first screen.
+func TestTheTwoFactorCodeIsOnTheFirstScreen(t *testing.T) {
+	for _, b := range remotes.Backends() {
+		if b.Name != "mega" && b.Name != "protondrive" {
+			continue
+		}
+		for _, o := range b.Options {
+			if o.Name == "2fa" && !o.Required && !o.Essential {
+				t.Errorf("the %s form leaves the two-factor code among the further settings", b.Name)
+			}
 		}
 	}
 }

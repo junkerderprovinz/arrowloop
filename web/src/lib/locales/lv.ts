@@ -1235,6 +1235,7 @@ const lv: Translations = {
   'new.change.targetRows': 'Katra mērķa poga {test} pati rāda {connected} vai {notConnected}, un iemesls ir rindā zem nosaukuma. Saglabāta parole vai atslēga redzama kā {saved}, un {change} atver lauku.',
   'new.change.releaseCards': 'Pēc atjaunināšanas šajā logā redzama karte par katru izlaidumu kopš tavas iepriekšējās versijas, ar tā piezīmēm un izmaiņām.',
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
+  'new.change.twoFactorOnce': 'Mega prasa {code} kopā ar citiem pieteikšanās laukiem, un Mega un Proton Drive pietiek ar vienu kodu: {test}, saglabāšana un pēc tam sekojošā pārbaude izmanto sesiju, ko kods atver.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 

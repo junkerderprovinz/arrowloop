@@ -1279,6 +1279,7 @@ export const en = {
   'new.change.targetRows': 'A target\'s {test} button shows {connected} or {notConnected} itself, with the reason on the line under the name. A stored password or key shows as {saved}, and {change} opens the field.',
   'new.change.releaseCards': 'After an update this window shows a card for every release since the one you had, with its notes and the changes it brought.',
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
+  'new.change.twoFactorOnce': 'Mega asks for its {code} with the other sign-in fields, and for Mega and Proton Drive one code is enough: {test}, saving and the check after it share the session the code opens.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -2549,6 +2550,7 @@ export const de: Translations = {
   'new.change.targetRows': 'Der Knopf {test} eines Ziels zeigt selbst {connected} oder {notConnected}, den Grund in der Zeile unter dem Namen. Ein gespeichertes Passwort oder ein Schlüssel steht als {saved} da, und {change} öffnet das Feld.',
   'new.change.releaseCards': 'Nach einem Update zeigt dieses Fenster eine Karte für jedes Release seit dem, das du hattest, mit seinen Release-Notes und den Änderungen, die es gebracht hat.',
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
+  'new.change.twoFactorOnce': 'Mega fragt den {code} zusammen mit den anderen Anmeldefeldern ab, und bei Mega und Proton Drive reicht ein Code: {test}, Speichern und die Prüfung danach teilen sich die Sitzung, die der Code öffnet.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 
