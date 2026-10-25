@@ -18,9 +18,10 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **A job's window reads the way the job runs.** The window is wide enough for two folder paths, and both sides stand next to each other with the direction between them, each with the logo of its target, its folder and a button to browse for another. Below them the settings sit in three cards, Schedule, Syncing and Exclusions, and the state file waits under Advanced. In a narrow window the sides stack and the arrow points down or up.
-- **The schedule is picked right in its card.** Manual, Every N, Every day, Weekdays, Real time and Cron stand in one bar, and below it only the fields of the chosen one: the interval, the time, the days, or the settle time and backstop of real time. The global sync settings and the phone app pick the schedule the same way, and the separate schedule panel is gone.
-- **Copy only, Mirror and Move stand in one bar.** In the Syncing card of a job the three modes share one bar of equal parts, on the web and on the phone.
+- **The schedule is picked right in its card.** Manual, Every N, Every day, Weekdays, Real time and Cron stand in one bar in the Runs row, and below it only the fields of the chosen one: the interval, the time, the days, or the settle time and backstop of real time. The global sync settings and the phone app pick the schedule the same way, and the separate schedule panel is gone.
+- **Copy only, Mirror and Move stand in one bar.** In the Syncing card of a job the three modes share one bar in the Mode row, on the web and on the phone.
 - **Fewer info bubbles in a job's window.** Name, the two sides, the direction, the schedule, Sync as soon as the program starts and Carry empty folders say what they do in their label, so their bubbles are gone. The trash bubble says what switching it off does, and One level up in the folder picker shows a back arrow.
+- **Both ways shows both one-way arrows.** The mark for a job that syncs both ways is the arrow of Only to the right above the arrow of Only to the left, in the job list, on the job page, in the job's window, in the settings and on the phone.
 
 ## ⚡ Improved
 

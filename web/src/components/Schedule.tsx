@@ -107,18 +107,14 @@ export function useSchedule({
 
 export type ScheduleEditor = ReturnType<typeof useSchedule>
 
-/**
- * The kinds as one bar. Across a card every segment is as wide as the widest;
- * at the end of a settings row it hugs its segments like the selectors beside
- * it.
- */
-export function ScheduleKinds({ editor, hug = false, hue }: { editor: ScheduleEditor; hug?: boolean; hue?: number }) {
+/** The kinds as one bar, as wide as its segments, for the end of a settings row. */
+export function ScheduleKinds({ editor, hue }: { editor: ScheduleEditor; hue?: number }) {
   const { t } = useT()
   return (
     <Selector<ScheduleMode>
-      scale={hug ? 'small' : 'big'}
+      scale="small"
       low
-      hug={hug}
+      hug
       hue={hue}
       label={t('edit.schedule')}
       value={editor.state.mode}

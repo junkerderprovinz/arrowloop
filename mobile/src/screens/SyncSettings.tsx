@@ -93,8 +93,7 @@ export function SyncSettings() {
             { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
           ]}
         />
-        <AxisLabel>{t("edit.schedule")}</AxisLabel>
-        <Schedule value={String(defaults.schedule ?? "")} onChange={({ schedule }) => saveDefaults({ schedule })} />
+        <Schedule label={t("edit.schedule")} value={String(defaults.schedule ?? "")} onChange={({ schedule }) => saveDefaults({ schedule })} />
       </Section>
 
       <Section title={t("settings.transfer")} hue={1}>

@@ -1,8 +1,9 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import { Alert, Dimensions, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
 import { api, type JobConfig, type Remote } from "../api";
 import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
+import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { Glyph, ProviderMark } from "../glyphs";
@@ -383,6 +384,7 @@ export function JobEdit() {
         <View ref={scheduleRef} collapsable={false} style={styles.stack}>
           <FromGlobal {...global("schedule")}>
             <Schedule
+              label={t("edit.when")}
               value={timing}
               watch={Boolean(shown("schedule").watch)}
               settle={job.watchSettle ?? ""}
@@ -416,7 +418,9 @@ export function JobEdit() {
         ) : (
           <FromGlobal {...global("direction")}>
             {/* Each mode explains itself in its segment. */}
-            <Choice
+            <ChoiceRow
+              label={t("mode.label")}
+              bar
               hue={1}
               value={shown("direction").mode ?? "sync"}
               onChange={(mode) => set({ mode }, true)}
@@ -703,18 +707,20 @@ function spotOf(message: string): Spot {
 export type SchedulePatch = { schedule: string; watch?: boolean; watchSettle?: string };
 
 /**
- * A schedule over the shared lib/schedule.data.ts model: its kinds as one bar,
- * then the fields of the chosen kind. An expression the fields cannot say
- * reads back as cron, so it stays editable. Real time belongs to a job, so a
- * default schedule leaves it out.
+ * A schedule over the shared lib/schedule.data.ts model: its kinds as one bar
+ * under `label`, then the fields of the chosen kind. An expression the fields
+ * cannot say reads back as cron, so it stays editable. Real time belongs to a
+ * job, so a default schedule leaves it out.
  */
 export function Schedule({
+  label,
   value,
   watch = false,
   settle = "",
   realTime = false,
   onChange,
 }: {
+  label: string;
   value: string;
   watch?: boolean;
   settle?: string;
@@ -723,7 +729,6 @@ export function Schedule({
 }) {
   const { t } = useT();
   const { intensity: motion } = useMotion();
-  const { width } = useWindowDimensions();
   const derived = parseSchedule(value);
 
   // The kind is kept in state rather than parsed from the stored value, which
@@ -751,8 +756,6 @@ export function Schedule({
   const set = (patch: Partial<ScheduleState>) => write({ schedule: buildSchedule({ ...state, ...patch }) });
 
   const kinds = realTime ? SCHEDULE_MODES : SCHEDULE_MODES.filter((m) => m !== "live");
-  // Six kinds do not fit one row on a phone, so they stand in two even ones.
-  const perRow = width < WIDE ? Math.ceil(kinds.length / 2) : undefined;
 
   const every = (label: string, hint?: string) => (
     <>
@@ -778,9 +781,10 @@ export function Schedule({
 
   return (
     <View style={styles.stack}>
-      <Choice<ScheduleMode>
+      <ChoiceRow<ScheduleMode>
+        label={label}
+        bar
         hue={2}
-        perRow={perRow}
         value={state.mode}
         // Each kind shows different rows, so the change is animated.
         onChange={(next) => {
@@ -859,9 +863,6 @@ export function Schedule({
     </View>
   );
 }
-
-/** The window width from which every kind fits one row. */
-const WIDE = 600;
 
 /** One weekday as a chip, since several days can be chosen at once. */
 function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {

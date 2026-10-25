@@ -36,9 +36,9 @@ export function GlobalSwitch({
 
 /**
  * A control showing the global value while the switch holds it: greyed, out
- * of reach, with "global" beside it. Reaching for it nudges the switch, since
- * that is where it is let go. The mouse press does not take focus, or one
- * click would nudge twice.
+ * of reach, with "global" beside it, or under it where the row is too narrow
+ * for both. Reaching for it nudges the switch, since that is where it is let
+ * go. The mouse press does not take focus, or one click would nudge twice.
  */
 export function Held({
   held,
@@ -67,7 +67,7 @@ export function Held({
       onMouseDown={(e) => e.preventDefault()}
       onClick={onHeld}
       onFocus={onHeld}
-      className={`flex min-w-0 max-w-full items-center justify-end gap-2 ${block ? 'w-full flex-wrap' : ''} outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)`}
+      className={`flex min-w-0 max-w-full flex-wrap items-center justify-end gap-2 ${block ? 'w-full' : ''} outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)`}
       style={{ borderRadius: 'var(--radius-control)' }}
     >
       <div inert className={`min-w-0 max-w-full opacity-50 grayscale ${block ? 'flex-[1_1_20rem]' : 'flex'}`}>

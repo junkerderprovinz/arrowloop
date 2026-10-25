@@ -13,7 +13,8 @@ import Svg, { Path } from "react-native-svg";
 
 import { Glyph } from "./glyphs";
 import { contrastOn, endEdge, space, text, TOUCH } from "./theme";
-import { Choice, InfoBubble, Press, Row, useTheme } from "./ui";
+import { AxisLabel, Choice, InfoBubble, Press, Row, useTheme } from "./ui";
+import { perRowFor } from "../../web/src/lib/segmentLayout";
 
 type Option<T extends string> = { value: T; label: string; hint?: string };
 
@@ -26,7 +27,9 @@ const BUBBLE = 18;
 /**
  * A choice beside its name. The segments stand at the row's end where they
  * fit there; otherwise the row holds a dropdown, since a strip under its name
- * would break the card's edge of controls (GlimStone rule 35).
+ * would break the card's edge of controls (GlimStone rule 35). A `bar` keeps
+ * its segments in sight instead: under its name, as wide as they need, in
+ * even rows where one row is too narrow.
  */
 export function ChoiceRow<T extends string>({
   label,
@@ -36,6 +39,7 @@ export function ChoiceRow<T extends string>({
   onChange,
   hue,
   disabled,
+  bar = false,
 }: {
   label: string;
   hint?: string;
@@ -44,6 +48,7 @@ export function ChoiceRow<T extends string>({
   onChange: (next: T) => void;
   hue?: number;
   disabled?: boolean;
+  bar?: boolean;
 }) {
   const [room, setRoom] = useState(0);
   const [name, setName] = useState(0);
@@ -54,6 +59,8 @@ export function ChoiceRow<T extends string>({
   const widest = Math.max(0, ...options.map((o) => widths[o.value] ?? 0));
   const strip = options.length * widest + (options.length - 1) * WELL_GAP + 2 * WELL_PAD;
   const fits = room > 0 && name > 0 && measured && name + space.md + strip <= room;
+  const perRow = room > 0 && measured ? perRowFor(options.length, room - 2 * WELL_PAD, widest, WELL_GAP) : options.length;
+  const wrapped = perRow * widest + (perRow - 1) * WELL_GAP + 2 * WELL_PAD;
 
   return (
     <View onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
@@ -82,17 +89,32 @@ export function ChoiceRow<T extends string>({
           </View>
         ))}
       </View>
-      <Row
-        label={label}
-        hint={hint}
-        control={
-          fits ? (
-            <Choice hue={hue} value={value} onChange={onChange} options={options} disabled={disabled} style={{ width: strip }} />
-          ) : (
-            <Dropdown label={label} hue={hue} value={value} onChange={onChange} options={options} disabled={disabled} />
-          )
-        }
-      />
+      {bar && !fits ? (
+        <View style={styles.bar}>
+          <AxisLabel hint={hint}>{label}</AxisLabel>
+          <Choice
+            hue={hue}
+            value={value}
+            onChange={onChange}
+            options={options}
+            disabled={disabled}
+            perRow={perRow < options.length ? perRow : undefined}
+            style={measured && room > 0 ? { width: Math.min(wrapped, room), alignSelf: "flex-start" } : null}
+          />
+        </View>
+      ) : (
+        <Row
+          label={label}
+          hint={hint}
+          control={
+            fits ? (
+              <Choice hue={hue} value={value} onChange={onChange} options={options} disabled={disabled} style={{ width: strip }} />
+            ) : (
+              <Dropdown label={label} hue={hue} value={value} onChange={onChange} options={options} disabled={disabled} />
+            )
+          }
+        />
+      )}
     </View>
   );
 }
@@ -237,6 +259,7 @@ const styles = StyleSheet.create({
   segmentText: { fontSize: text.meta, fontWeight: "500" },
   bubble: { width: BUBBLE, height: BUBBLE },
 
+  bar: { gap: space.xs },
   // Leaves the name room to be read beside a long option.
   slot: { flexShrink: 1, maxWidth: "60%" },
   button: {

@@ -190,7 +190,7 @@ function DefaultSchedule({ value, hue, onChange }: { value: string; hue: number;
     <>
       <SettingsRow label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
         <span data-new="schedule-hs" className="flex max-w-full">
-          <ScheduleKinds editor={editor} hug hue={hue} />
+          <ScheduleKinds editor={editor} hue={hue} />
         </span>
       </SettingsRow>
       <ScheduleDetails editor={editor} />

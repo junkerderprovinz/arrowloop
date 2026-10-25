@@ -3,7 +3,7 @@ import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
 import { Field, FieldRow, Lines, Text } from '../components/Field'
 import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
-import { Held, SettingRow } from '../components/GlobalValues'
+import { SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
@@ -336,11 +336,11 @@ export function JobForm({
       />
 
       <SubCard label={t('edit.schedule')}>
-        <Held block {...held}>
-          <div data-new="schedule-hs">
+        <SettingRow label={t('edit.when')} {...held}>
+          <span data-new="schedule-hs" className="flex max-w-full">
             <ScheduleKinds editor={schedule} />
-          </div>
-        </Held>
+          </span>
+        </SettingRow>
         <ScheduleDetails editor={schedule} {...held} />
         {/* Zero is written as 0s, since an empty quiet period is one the job
             leaves to the defaults. */}
@@ -356,18 +356,20 @@ export function JobForm({
         {/* The mode exists only once one side is the source, and a newer
             version can only win where both sides change. */}
         {direction !== 'both' && (
-          <Held block {...held}>
-            <div data-new="mode-hs">
+          <SettingRow label={t('mode.label')} {...held}>
+            <span data-new="mode-hs" className="flex max-w-full">
               <Selector<Mode>
+                scale="small"
                 low
+                hug
                 label={t('mode.label')}
                 hueOffset={HUE_OFFSET.mode}
                 value={shown.mode ?? 'sync'}
                 onChange={(v) => patch({ mode: v })}
                 options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
               />
-            </div>
-          </Held>
+            </span>
+          </SettingRow>
         )}
         {direction === 'both' && (
           <div data-new="newer-wins">
