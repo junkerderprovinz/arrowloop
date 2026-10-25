@@ -84,7 +84,14 @@ export type Duplicates = {
 }
 
 /** Whether a target answers, in rclone's words and as a kind the page can say itself. */
-export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure }
+export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion }
+
+/**
+ * A choice rclone's own setup leaves to the person adding a target, such as
+ * which of several drives a sign-in opens (internal/remotes/setup.go). The
+ * answer goes back as the setting `name`.
+ */
+export type SetupQuestion = { name: string; choices: { value: string; help: string }[] }
 
 /**
  * How full a target is. An absent figure means the target does not know, which

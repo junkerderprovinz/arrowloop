@@ -1179,6 +1179,13 @@ const ca: Translations = {
   'trash.pruneQuestion': 'Vols suprimir definitivament de la paperera tot el que és més antic que això?',
   'targets.editTitle': 'Edita {name}',
   'targets.moreSettings': 'Altres opcions',
+  'targets.question.hint': 'El vostre inici de sessió n\'obre més d\'un. Trieu el que voleu fer servir i torneu a provar.',
+  'targets.question.pick': 'Trieu-ne un',
+  'targets.question.drive': 'Unitat',
+  'targets.question.workspace': 'Espai de treball',
+  'targets.question.team': 'Equip',
+  'targets.question.other': 'Elecció',
+  'help.authLoginToken': 'Creeu un testimoni d\'inici de sessió personal a la pàgina de seguretat del compte i enganxeu-lo aquí. La prova de connexió el canvia per un inici de sessió durador. Un testimoni només serveix un cop; si cal tornar a configurar la connexió, creeu-ne un de nou.',
   'targets.ftpTls': 'Xifratge',
   'targets.ftpTlsHint': 'La majoria de servidors que xifren fan servir TLS explícit al port habitual 21. El TLS implícit és la manera antiga i escolta al port 990.',
   'targets.ftpTls.none': 'Cap',
@@ -1244,6 +1251,7 @@ const ca: Translations = {
   'new.change.releaseCards': 'Després d\'una actualització, aquesta finestra mostra una targeta per cada versió des de la que tenies, amb les seves notes i els canvis que va portar.',
   'new.change.newerWins': '{option} en una tasca que sincronitza en els dos sentits resol un conflicte sense preguntar: la versió desada en últim lloc es queda als dos costats i l\'altra va a la paperera.',
   'new.change.targetSwitches': 'Els ajustos d\'una destinació que només poden estar activats o desactivats són interruptors, i una destinació FTP pregunta un sol cop quin {encryption} fa servir.',
+  'new.change.setupChoice': 'Quan un inici de sessió obre més d\'una unitat o espai de treball, la prova d\'una destinació pregunta quin fer servir. Jottacloud accepta el testimoni personal de la seva pàgina de seguretat, i un testimoni de ShareFile o Zoho enganxat de rclone authorize porta la seva adreça o regió.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
 }
 

@@ -116,9 +116,10 @@ var essential = map[string]map[string]bool{
 
 	// rclone marks token advanced because its own setup fetches it through a
 	// browser. This interface has no such flow, so the field has to be shown.
-	"dropbox":    {"token": true},
-	"drive":      {"token": true, "scope": true},
-	"onedrive":   {"token": true, "drive_id": true, "drive_type": true},
+	"dropbox": {"token": true},
+	"drive":   {"token": true, "scope": true},
+	// The drive is looked up after the sign-in; see setup.go.
+	"onedrive":   {"token": true},
 	"pcloud":     {"token": true, "hostname": true},
 	"box":        {"token": true},
 	"jottacloud": {"token": true},
@@ -142,10 +143,12 @@ var essential = map[string]map[string]bool{
 
 	// OAuth backends with no plain credential: the client pair is what a person
 	// registers with the provider to obtain a token.
-	"hidrive":      {"token": true, "client_id": true, "client_secret": true},
-	"huaweidrive":  {"token": true, "client_id": true, "client_secret": true},
-	"putio":        {"token": true, "client_id": true, "client_secret": true},
-	"sharefile":    {"token": true, "client_id": true, "client_secret": true},
+	"hidrive":     {"token": true, "client_id": true, "client_secret": true},
+	"huaweidrive": {"token": true, "client_id": true, "client_secret": true},
+	"putio":       {"token": true, "client_id": true, "client_secret": true},
+	// A token from rclone authorize without a config blob leaves out the
+	// account's own address.
+	"sharefile":    {"token": true, "endpoint": true, "client_id": true, "client_secret": true},
 	"zoho":         {"token": true, "client_id": true, "client_secret": true, "region": true},
 	"premiumizeme": {"token": true, "api_key": true},
 
@@ -162,7 +165,7 @@ var essential = map[string]map[string]bool{
 // backends with a token option also accept a password.
 var tokenBackends = map[string]bool{
 	"dropbox": true, "drive": true, "onedrive": true, "pcloud": true,
-	"box": true, "jottacloud": true, "yandex": true,
+	"box": true, "yandex": true,
 }
 
 func rank(name string) int {

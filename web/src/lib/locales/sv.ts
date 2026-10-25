@@ -1179,6 +1179,13 @@ const sv: Translations = {
   'trash.pruneQuestion': 'Radera allt som är äldre än så här ur papperskorgen för gott?',
   'targets.editTitle': 'Redigera {name}',
   'targets.moreSettings': 'Andra inställningar',
+  'targets.question.hint': 'Din inloggning öppnar fler än en. Välj den som ska användas och testa igen.',
+  'targets.question.pick': 'Välj en',
+  'targets.question.drive': 'Enhet',
+  'targets.question.workspace': 'Arbetsyta',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Val',
+  'help.authLoginToken': 'Skapa en personlig inloggningstoken på kontots säkerhetssida och klistra in den här. Anslutningstestet byter den mot en bestående inloggning. En token fungerar bara en gång, så skapa en ny om anslutningen måste ställas in igen.',
   'targets.ftpTls': 'Kryptering',
   'targets.ftpTlsHint': 'De flesta servrar med kryptering använder explicit TLS på den vanliga porten 21. Implicit TLS är det äldre sättet och lyssnar på port 990.',
   'targets.ftpTls.none': 'Ingen',
@@ -1244,6 +1251,7 @@ const sv: Translations = {
   'new.change.releaseCards': 'Efter en uppdatering visar det här fönstret ett kort för varje utgåva sedan den du hade, med dess anteckningar och de ändringar den gav.',
   'new.change.newerWins': '{option} i ett jobb som synkar åt båda hållen avgör en konflikt utan att fråga: den senast sparade versionen blir kvar på båda sidor, och den andra hamnar i papperskorgen.',
   'new.change.targetSwitches': 'Ett måls inställningar som bara är av eller på är reglage, och ett FTP-mål frågar en gång vilken {encryption} det använder.',
+  'new.change.setupChoice': 'När en inloggning öppnar fler än en enhet eller arbetsyta frågar testet av ett mål vilken som ska användas. Jottacloud tar den personliga inloggningstoken från sin säkerhetssida, och en ShareFile- eller Zoho-token inklistrad från rclone authorize har med sig sin adress eller region.',
   'new.change.appFolders': 'I telefonappen låter {add} under {settings}, {phone} ArrowLoop synkronisera en mapp som en annan app erbjuder i Androids filväljare, utan root och utan Shizuku. Mapparna visas i ett mål som heter Apps.',
 }
 

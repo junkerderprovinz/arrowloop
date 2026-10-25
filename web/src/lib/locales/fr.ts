@@ -1179,6 +1179,13 @@ const fr: Translations = {
   'trash.pruneQuestion': 'Supprimer définitivement de la corbeille tout ce qui est plus ancien ?',
   'targets.editTitle': 'Modifier {name}',
   'targets.moreSettings': 'Autres réglages',
+  'targets.question.hint': 'Votre connexion en ouvre plusieurs. Choisissez celui à utiliser, puis testez à nouveau.',
+  'targets.question.pick': 'En choisir un',
+  'targets.question.drive': 'Lecteur',
+  'targets.question.workspace': 'Espace de travail',
+  'targets.question.team': 'Équipe',
+  'targets.question.other': 'Choix',
+  'help.authLoginToken': 'Créez un jeton de connexion personnel sur la page de sécurité du compte et collez-le ici. Le test de connexion l\'échange contre une connexion durable. Un jeton ne sert qu\'une fois : créez-en un nouveau s\'il faut configurer la connexion à nouveau.',
   'targets.ftpTls': 'Chiffrement',
   'targets.ftpTlsHint': 'La plupart des serveurs qui chiffrent utilisent le TLS explicite sur le port habituel 21. Le TLS implicite est l\'ancienne méthode et écoute sur le port 990.',
   'targets.ftpTls.none': 'Aucun',
@@ -1244,6 +1251,7 @@ const fr: Translations = {
   'new.change.releaseCards': 'Après une mise à jour, cette fenêtre affiche une carte pour chaque version depuis celle que vous aviez, avec ses notes et les changements qu\'elle a apportés.',
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
   'new.change.targetSwitches': 'Les réglages d\'une cible qui ne sont qu\'activés ou désactivés sont des interrupteurs, et une cible FTP demande une seule fois quel {encryption} elle utilise.',
+  'new.change.setupChoice': 'Quand une connexion ouvre plusieurs lecteurs ou espaces de travail, le test d\'une cible demande lequel utiliser. Jottacloud accepte le jeton de connexion personnel de sa page de sécurité, et un jeton ShareFile ou Zoho collé depuis rclone authorize apporte son adresse ou sa région.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

@@ -1179,6 +1179,13 @@ const pt: Translations = {
   'trash.pruneQuestion': 'Apagar definitivamente da reciclagem tudo o que for mais antigo do que isto?',
   'targets.editTitle': 'Editar {name}',
   'targets.moreSettings': 'Outras definições',
+  'targets.question.hint': 'O seu início de sessão abre mais do que um. Escolha o que quer usar e teste de novo.',
+  'targets.question.pick': 'Escolha um',
+  'targets.question.drive': 'Unidade',
+  'targets.question.workspace': 'Área de trabalho',
+  'targets.question.team': 'Equipa',
+  'targets.question.other': 'Escolha',
+  'help.authLoginToken': 'Crie um token de início de sessão pessoal na página de segurança da conta e cole-o aqui. O teste da ligação troca-o por um início de sessão duradouro. Um token só funciona uma vez; se for preciso configurar a ligação de novo, crie outro.',
   'targets.ftpTls': 'Encriptação',
   'targets.ftpTlsHint': 'A maioria dos servidores que encriptam usa TLS explícito na porta habitual 21. O TLS implícito é a forma mais antiga e escuta na porta 990.',
   'targets.ftpTls.none': 'Nenhuma',
@@ -1244,6 +1251,7 @@ const pt: Translations = {
   'new.change.releaseCards': 'Depois de uma atualização, esta janela mostra um cartão por cada versão desde a que tinhas, com as notas e as mudanças que trouxe.',
   'new.change.newerWins': '{option} numa tarefa que sincroniza nos dois sentidos resolve um conflito sem perguntar: a versão guardada por último fica nos dois lados e a outra vai para a reciclagem.',
   'new.change.targetSwitches': 'As definições de um destino que só estão ligadas ou desligadas são interruptores, e um destino FTP pergunta uma só vez que {encryption} usa.',
+  'new.change.setupChoice': 'Quando um início de sessão abre mais do que uma unidade ou área de trabalho, o teste de um destino pergunta qual usar. O Jottacloud aceita o token pessoal da sua página de segurança, e um token do ShareFile ou do Zoho colado a partir do rclone authorize traz o seu endereço ou região.',
   'new.change.appFolders': 'Na app do telemóvel, {add} em {settings}, {phone} deixa o ArrowLoop sincronizar uma pasta que outra aplicação oferece no seletor de ficheiros do Android, sem root nem Shizuku. As pastas aparecem num destino chamado Apps.',
 }
 

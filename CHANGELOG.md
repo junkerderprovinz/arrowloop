@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **A sign-in that opens several drives asks which one to use.** Testing a OneDrive target lists the drives its token opens and asks when there is more than one, so the drive ID no longer has to be looked up and typed. Zoho WorkDrive asks for its workspace the same way. With only one, it is taken without asking.
+
 ## ⚡ Improved
 
 - **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
@@ -17,6 +21,8 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **iCloud Drive asks for the sign-in Apple wants.** The form asked for an app password, which Apple refuses, and left out the trust token and cookies rclone needs. It takes your Apple ID password and both session values, and the bubble beside them says how to get them with rclone config on a computer and that Apple asks again after 30 days.
+- **Jottacloud takes the personal login token from its security page.** It used to want a ready OAuth token that only rclone's own setup can make. Testing or saving the target trades the login token for a lasting sign-in, once, as rclone config does.
+- **ShareFile and Zoho keep what rclone authorize prints with the token.** Pasting the output of rclone authorize given a config blob fills in ShareFile's address and Zoho's region, and the ShareFile form asks for the address when the token came without it.
 
 ## 2.2.8 - 2026-10-23
 

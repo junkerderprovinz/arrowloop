@@ -1179,6 +1179,13 @@ const no: Translations = {
   'trash.pruneQuestion': 'Slette alt som er eldre enn dette fra papirkurven for godt?',
   'targets.editTitle': 'Rediger {name}',
   'targets.moreSettings': 'Andre innstillinger',
+  'targets.question.hint': 'Påloggingen din åpner mer enn én. Velg den som skal brukes, og test på nytt.',
+  'targets.question.pick': 'Velg én',
+  'targets.question.drive': 'Disk',
+  'targets.question.workspace': 'Arbeidsområde',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Valg',
+  'help.authLoginToken': 'Lag et personlig påloggingstoken på kontoens sikkerhetsside og lim det inn her. Tilkoblingstesten bytter det mot en varig pålogging. Et token virker bare én gang, så lag et nytt hvis tilkoblingen må settes opp igjen.',
   'targets.ftpTls': 'Kryptering',
   'targets.ftpTlsHint': 'De fleste servere med kryptering bruker eksplisitt TLS på den vanlige porten 21. Implisitt TLS er den eldre måten og lytter på port 990.',
   'targets.ftpTls.none': 'Ingen',
@@ -1244,6 +1251,7 @@ const no: Translations = {
   'new.change.releaseCards': 'Etter en oppdatering viser dette vinduet et kort for hver utgivelse siden versjonen du hadde, med merknadene og endringene den brakte.',
   'new.change.newerWins': '{option} i en jobb som synkroniserer begge veier, avgjør en konflikt uten å spørre: versjonen som ble lagret sist, blir på begge sider, og den andre havner i papirkurven.',
   'new.change.targetSwitches': 'Innstillinger for et mål som bare er av eller på, er brytere, og et FTP-mål spør én gang hvilken {encryption} det bruker.',
+  'new.change.setupChoice': 'Når en pålogging åpner mer enn én disk eller ett arbeidsområde, spør testen av et mål hvilken som skal brukes. Jottacloud tar det personlige påloggingstokenet fra sikkerhetssiden sin, og et ShareFile- eller Zoho-token limt inn fra rclone authorize har med seg adressen eller regionen.',
   'new.change.appFolders': 'I telefonappen lar {add} under {settings}, {phone} ArrowLoop synkronisere en mappe som en annen app tilbyr i Androids filvelger, uten root og uten Shizuku. Mappene vises i et mål som heter Apps.',
 }
 

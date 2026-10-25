@@ -1179,6 +1179,13 @@ const tr: Translations = {
   'trash.pruneQuestion': 'Bundan eski her şey çöp kutusundan kalıcı olarak silinsin mi?',
   'targets.editTitle': '{name} düzenle',
   'targets.moreSettings': 'Diğer ayarlar',
+  'targets.question.hint': 'Oturum açmanız birden fazlasını açıyor. Kullanılacak olanı seçin ve yeniden test edin.',
+  'targets.question.pick': 'Birini seçin',
+  'targets.question.drive': 'Sürücü',
+  'targets.question.workspace': 'Çalışma alanı',
+  'targets.question.team': 'Ekip',
+  'targets.question.other': 'Seçim',
+  'help.authLoginToken': 'Hesabın güvenlik sayfasında kişisel bir oturum açma belirteci oluşturun ve buraya yapıştırın. Bağlantı testi onu kalıcı bir oturum açmayla değiştirir. Bir belirteç yalnızca bir kez çalışır; bağlantının yeniden kurulması gerekirse yenisini oluşturun.',
   'targets.ftpTls': 'Şifreleme',
   'targets.ftpTlsHint': 'Şifreleme yapan sunucuların çoğu olağan 21 numaralı portta açık TLS kullanır. Örtük TLS eski yöntemdir ve 990 numaralı portu dinler.',
   'targets.ftpTls.none': 'Yok',
@@ -1244,6 +1251,7 @@ const tr: Translations = {
   'new.change.releaseCards': 'Güncellemeden sonra bu pencere, elindeki sürümden sonraki her sürüm için notlarıyla ve getirdiği değişikliklerle bir kart gösterir.',
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
   'new.change.targetSwitches': 'Bir hedefin yalnızca açık ya da kapalı olan ayarları anahtar oldu ve bir FTP hedefi hangi {encryption} yöntemini kullandığını bir kez sorar.',
+  'new.change.setupChoice': 'Bir oturum açma birden fazla sürücü ya da çalışma alanı açtığında, hedefin testi hangisinin kullanılacağını sorar. Jottacloud güvenlik sayfasındaki kişisel oturum açma belirtecini alır; rclone authorize çıktısından yapıştırılan bir ShareFile ya da Zoho belirteci adresini veya bölgesini de getirir.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

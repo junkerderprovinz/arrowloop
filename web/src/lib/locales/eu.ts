@@ -1179,6 +1179,13 @@ const eu: Translations = {
   'trash.pruneQuestion': 'Hau baino zaharragoa den guztia zakarrontzitik betiko ezabatu?',
   'targets.editTitle': 'Editatu {name}',
   'targets.moreSettings': 'Beste ezarpen batzuk',
+  'targets.question.hint': 'Zure saioak bat baino gehiago irekitzen ditu. Aukeratu erabili beharrekoa eta probatu berriro.',
+  'targets.question.pick': 'Aukeratu bat',
+  'targets.question.drive': 'Unitatea',
+  'targets.question.workspace': 'Lan-eremua',
+  'targets.question.team': 'Taldea',
+  'targets.question.other': 'Aukera',
+  'help.authLoginToken': 'Sortu saio-hasierako token pertsonal bat kontuaren segurtasun-orrian eta itsatsi hemen. Konexio-probak saio iraunkor baten truke aldatzen du. Token batek behin bakarrik balio du; konexioa berriro konfiguratu behar bada, sortu beste bat.',
   'targets.ftpTls': 'Zifratzea',
   'targets.ftpTlsHint': 'Zifratzen duten zerbitzari gehienek TLS esplizitua erabiltzen dute ohiko 21 atakan. TLS inplizitua modu zaharragoa da eta 990 atakan entzuten du.',
   'targets.ftpTls.none': 'Bat ere ez',
@@ -1244,6 +1251,7 @@ const eu: Translations = {
   'new.change.releaseCards': 'Eguneratze baten ondoren, leiho honek txartel bat erakusten du zuk zenuen bertsioaren ondorengo bertsio bakoitzeko, bere oharrekin eta ekarri zituen aldaketekin.',
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
   'new.change.targetSwitches': 'Helburu baten ezarpenak, aktibatuta edo desaktibatuta soilik daudenak, etengailuak dira, eta FTP helburu batek behin galdetzen du zein {encryption} erabiltzen duen.',
+  'new.change.setupChoice': 'Saio batek unitate edo lan-eremu bat baino gehiago irekitzen dituenean, helburu baten probak zein erabili galdetzen du. Jottacloud-ek bere segurtasun-orriko token pertsonala onartzen du, eta rclone authorize-tik itsatsitako ShareFile edo Zoho token batek bere helbidea edo eskualdea dakar.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

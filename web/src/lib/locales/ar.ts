@@ -1179,6 +1179,13 @@ const ar: Translations = {
   'trash.pruneQuestion': 'أتحذف نهائيًا من سلة المهملات كل ما هو أقدم من هذا؟',
   'targets.editTitle': 'تعديل {name}',
   'targets.moreSettings': 'إعدادات أخرى',
+  'targets.question.hint': 'تسجيل دخولك يفتح أكثر من واحد. اختر الذي تريده ثم اختبر من جديد.',
+  'targets.question.pick': 'اختر واحدًا',
+  'targets.question.drive': 'محرك الأقراص',
+  'targets.question.workspace': 'مساحة العمل',
+  'targets.question.team': 'الفريق',
+  'targets.question.other': 'الاختيار',
+  'help.authLoginToken': 'أنشئ رمز دخول شخصيًا في صفحة الأمان بالحساب والصقه هنا. يستبدله اختبار الاتصال بتسجيل دخول دائم. يعمل الرمز مرة واحدة فقط، فأنشئ رمزًا جديدًا إن احتجت إلى إعداد الاتصال من جديد.',
   'targets.ftpTls': 'التشفير',
   'targets.ftpTlsHint': 'معظم الخوادم التي تشفّر تستخدم TLS الصريح على المنفذ المعتاد 21. أما TLS الضمني فهو الطريقة الأقدم ويستمع على المنفذ 990.',
   'targets.ftpTls.none': 'بلا',
@@ -1244,6 +1251,7 @@ const ar: Translations = {
   'new.change.releaseCards': 'بعد التحديث تعرض هذه النافذة بطاقة لكل إصدار منذ الإصدار الذي كان لديك، مع ملاحظاته والتغييرات التي جاء بها.',
   'new.change.newerWins': 'يحسم {option} في مهمة تعمل في الاتجاهين التعارضَ دون سؤال: تبقى النسخة المحفوظة أخيرًا على الجانبين، وتنتقل الأخرى إلى سلة المهملات.',
   'new.change.targetSwitches': 'إعدادات الوجهة التي تكون إما مفعّلة أو معطّلة صارت مفاتيح، وتسأل وجهة FTP مرة واحدة عن {encryption} الذي تستخدمه.',
+  'new.change.setupChoice': 'عندما يفتح تسجيل الدخول أكثر من محرك أو مساحة عمل، يسأل اختبار الوجهة أيها يُستخدم. ويقبل Jottacloud رمز الدخول الشخصي من صفحة الأمان، ورمز ShareFile أو Zoho الملصوق من rclone authorize يحمل معه عنوانه أو منطقته.',
   'new.change.appFolders': 'في تطبيق الهاتف، يتيح {add} ضمن {settings}، {phone} لـ ArrowLoop مزامنة مجلد يعرضه تطبيق آخر في أداة اختيار الملفات في Android، دون الروت أو Shizuku. تظهر المجلدات في وجهة اسمها Apps.',
 }
 

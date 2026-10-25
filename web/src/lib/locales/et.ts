@@ -1179,6 +1179,13 @@ const et: Translations = {
   'trash.pruneQuestion': 'Kas kustutada prügikastist jäädavalt kõik, mis on sellest vanem?',
   'targets.editTitle': 'Muuda: {name}',
   'targets.moreSettings': 'Muud seaded',
+  'targets.question.hint': 'Sinu sisselogimine avab rohkem kui ühe. Vali see, mida kasutada, ja testi uuesti.',
+  'targets.question.pick': 'Vali üks',
+  'targets.question.drive': 'Ketas',
+  'targets.question.workspace': 'Tööala',
+  'targets.question.team': 'Meeskond',
+  'targets.question.other': 'Valik',
+  'help.authLoginToken': 'Loo konto turvalehel isiklik sisselogimisluba ja kleebi see siia. Ühenduse test vahetab selle püsiva sisselogimise vastu. Luba töötab ainult üks kord, nii et kui ühendus tuleb uuesti seadistada, loo uus.',
   'targets.ftpTls': 'Krüpteerimine',
   'targets.ftpTlsHint': 'Enamik krüpteerivaid servereid kasutab tavalisel pordil 21 selgesõnalist TLS-i. Kaudne TLS on vanem viis ja kuulab porti 990.',
   'targets.ftpTls.none': 'Puudub',
@@ -1244,6 +1251,7 @@ const et: Translations = {
   'new.change.releaseCards': 'Pärast uuendust näitab see aken kaarti iga väljalaske kohta alates sellest, mis sul oli, koos selle märkmete ja muudatustega.',
   'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
   'new.change.targetSwitches': 'Sihtkoha seaded, mis on ainult sees või väljas, on lülitid ja FTP-sihtkoht küsib ühe korra, millist {encryption} see kasutab.',
+  'new.change.setupChoice': 'Kui sisselogimine avab mitu ketast või tööala, küsib sihtkoha test, millist kasutada. Jottacloud võtab isikliku sisselogimisloa oma turvalehelt ning rclone authorize\'ist kleebitud ShareFile\'i või Zoho luba toob kaasa oma aadressi või piirkonna.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

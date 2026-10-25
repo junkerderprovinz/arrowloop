@@ -1179,6 +1179,13 @@ const id: Translations = {
   'trash.pruneQuestion': 'Hapus permanen semua yang lebih lama dari ini dari tempat sampah?',
   'targets.editTitle': 'Ubah {name}',
   'targets.moreSettings': 'Pengaturan lain',
+  'targets.question.hint': 'Login Anda membuka lebih dari satu. Pilih yang akan dipakai, lalu uji lagi.',
+  'targets.question.pick': 'Pilih satu',
+  'targets.question.drive': 'Drive',
+  'targets.question.workspace': 'Ruang kerja',
+  'targets.question.team': 'Tim',
+  'targets.question.other': 'Pilihan',
+  'help.authLoginToken': 'Buat token login pribadi di halaman keamanan akun dan tempel di sini. Uji koneksi menukarnya dengan login yang bertahan. Token hanya berlaku sekali, jadi buat yang baru bila koneksi harus disiapkan lagi.',
   'targets.ftpTls': 'Enkripsi',
   'targets.ftpTlsHint': 'Sebagian besar server yang mengenkripsi memakai TLS eksplisit di port biasa 21. TLS implisit adalah cara lama dan mendengarkan di port 990.',
   'targets.ftpTls.none': 'Tidak ada',
@@ -1244,6 +1251,7 @@ const id: Translations = {
   'new.change.releaseCards': 'Setelah pembaruan, jendela ini menampilkan satu kartu untuk setiap rilis sejak versi yang Anda miliki, lengkap dengan catatan dan perubahan yang dibawanya.',
   'new.change.newerWins': '{option} pada tugas yang menyinkronkan dua arah menyelesaikan konflik tanpa bertanya: versi yang terakhir disimpan tetap ada di kedua sisi, dan yang lain masuk ke tempat sampah.',
   'new.change.targetSwitches': 'Pengaturan tujuan yang hanya hidup atau mati menjadi sakelar, dan tujuan FTP menanyakan sekali {encryption} mana yang dipakai.',
+  'new.change.setupChoice': 'Bila sebuah login membuka lebih dari satu drive atau ruang kerja, uji tujuan menanyakan mana yang dipakai. Jottacloud menerima token login pribadi dari halaman keamanannya, dan token ShareFile atau Zoho yang ditempel dari rclone authorize membawa alamat atau wilayahnya.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

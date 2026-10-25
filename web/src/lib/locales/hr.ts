@@ -1179,6 +1179,13 @@ const hr: Translations = {
   'trash.pruneQuestion': 'Trajno izbrisati sve starije od ovoga iz smeća?',
   'targets.editTitle': 'Uredi {name}',
   'targets.moreSettings': 'Ostale postavke',
+  'targets.question.hint': 'Vaša prijava otvara više od jednog. Odaberite onaj koji treba koristiti i ponovno testirajte.',
+  'targets.question.pick': 'Odaberite',
+  'targets.question.drive': 'Pogon',
+  'targets.question.workspace': 'Radni prostor',
+  'targets.question.team': 'Tim',
+  'targets.question.other': 'Izbor',
+  'help.authLoginToken': 'Na sigurnosnoj stranici računa stvorite osobni token za prijavu i zalijepite ga ovdje. Test veze zamjenjuje ga trajnom prijavom. Token vrijedi samo jednom, pa stvorite novi ako vezu treba ponovno postaviti.',
   'targets.ftpTls': 'Šifriranje',
   'targets.ftpTlsHint': 'Većina poslužitelja sa šifriranjem koristi eksplicitni TLS na uobičajenom priključku 21. Implicitni TLS stariji je način i sluša na priključku 990.',
   'targets.ftpTls.none': 'Bez',
@@ -1244,6 +1251,7 @@ const hr: Translations = {
   'new.change.releaseCards': 'Nakon ažuriranja ovaj prozor prikazuje karticu za svako izdanje od onog koje si imao, s njegovim bilješkama i promjenama koje je donijelo.',
   'new.change.newerWins': '{option} u zadatku koji sinkronizira u oba smjera rješava sukob bez pitanja: zadnja spremljena verzija ostaje na obje strane, a druga ide u smeće.',
   'new.change.targetSwitches': 'Postavke odredišta koje su samo uključene ili isključene su prekidači, a FTP odredište jednom pita koje {encryption} koristi.',
+  'new.change.setupChoice': 'Kad prijava otvara više pogona ili radnih prostora, test odredišta pita koji koristiti. Jottacloud prima osobni token za prijavu sa svoje sigurnosne stranice, a token ShareFilea ili Zoha zalijepljen iz rclone authorize donosi svoju adresu ili regiju.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
 }
 

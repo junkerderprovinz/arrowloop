@@ -1179,6 +1179,13 @@ const pl: Translations = {
   'trash.pruneQuestion': 'Usunąć z kosza na stałe wszystko, co starsze niż to?',
   'targets.editTitle': 'Edytuj {name}',
   'targets.moreSettings': 'Inne ustawienia',
+  'targets.question.hint': 'Twoje logowanie otwiera więcej niż jeden. Wybierz ten do użycia i przetestuj ponownie.',
+  'targets.question.pick': 'Wybierz',
+  'targets.question.drive': 'Dysk',
+  'targets.question.workspace': 'Obszar roboczy',
+  'targets.question.team': 'Zespół',
+  'targets.question.other': 'Wybór',
+  'help.authLoginToken': 'Utwórz osobisty token logowania na stronie bezpieczeństwa konta i wklej go tutaj. Test połączenia wymienia go na trwałe logowanie. Token działa tylko raz, więc utwórz nowy, jeśli połączenie trzeba skonfigurować ponownie.',
   'targets.ftpTls': 'Szyfrowanie',
   'targets.ftpTlsHint': 'Większość serwerów z szyfrowaniem używa jawnego TLS na zwykłym porcie 21. Niejawny TLS to starszy sposób i nasłuchuje na porcie 990.',
   'targets.ftpTls.none': 'Brak',
@@ -1244,6 +1251,7 @@ const pl: Translations = {
   'new.change.releaseCards': 'Po aktualizacji to okno pokazuje kartę dla każdego wydania od poprzednio używanej wersji, z jego uwagami i zmianami.',
   'new.change.newerWins': '{option} w zadaniu synchronizującym w obie strony rozstrzyga konflikt bez pytania: wersja zapisana jako ostatnia zostaje po obu stronach, a druga trafia do kosza.',
   'new.change.targetSwitches': 'Ustawienia celu, które są tylko włączone albo wyłączone, są przełącznikami, a cel FTP raz pyta, jakiego {encryption} używa.',
+  'new.change.setupChoice': 'Gdy logowanie otwiera więcej niż jeden dysk lub obszar roboczy, test celu pyta, którego użyć. Jottacloud przyjmuje osobisty token logowania ze swojej strony bezpieczeństwa, a token ShareFile lub Zoho wklejony z rclone authorize przynosi swój adres lub region.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
 }
 

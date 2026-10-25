@@ -173,6 +173,7 @@ export function optionHint(
       apikey: 'help.authApiKey',
       oauth: 'help.authOauth',
       login: 'help.authLogin',
+      logintoken: 'help.authLoginToken',
     }
     // The product's sentence replaces the general one, or the bubble says the
     // same thing twice. Except for an app password on WebDAV, where the general

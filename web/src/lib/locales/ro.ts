@@ -1179,6 +1179,13 @@ const ro: Translations = {
   'trash.pruneQuestion': 'Se șterge definitiv din coș tot ce este mai vechi decât atât?',
   'targets.editTitle': 'Editează {name}',
   'targets.moreSettings': 'Alte setări',
+  'targets.question.hint': 'Autentificarea ta deschide mai multe. Alege-l pe cel de folosit, apoi testează din nou.',
+  'targets.question.pick': 'Alege unul',
+  'targets.question.drive': 'Unitate',
+  'targets.question.workspace': 'Spațiu de lucru',
+  'targets.question.team': 'Echipă',
+  'targets.question.other': 'Alegere',
+  'help.authLoginToken': 'Creează un token personal de autentificare pe pagina de securitate a contului și lipește-l aici. Testul conexiunii îl schimbă pe o autentificare de durată. Un token merge o singură dată, așa că fă unul nou dacă trebuie configurată din nou conexiunea.',
   'targets.ftpTls': 'Criptare',
   'targets.ftpTlsHint': 'Majoritatea serverelor care criptează folosesc TLS explicit pe portul obișnuit 21. TLS implicit este varianta mai veche și ascultă pe portul 990.',
   'targets.ftpTls.none': 'Fără',
@@ -1244,6 +1251,7 @@ const ro: Translations = {
   'new.change.releaseCards': 'După o actualizare, această fereastră arată câte un card pentru fiecare versiune de la cea pe care o aveai, cu notele și schimbările ei.',
   'new.change.newerWins': '{option} într-o sarcină care sincronizează în ambele sensuri rezolvă un conflict fără să întrebe: versiunea salvată ultima rămâne pe ambele părți, iar cealaltă ajunge în coș.',
   'new.change.targetSwitches': 'Setările unei destinații care sunt doar pornite sau oprite sunt comutatoare, iar o destinație FTP întreabă o singură dată ce {encryption} folosește.',
+  'new.change.setupChoice': 'Când o autentificare deschide mai multe unități sau spații de lucru, testul unei destinații întreabă pe care să o folosească. Jottacloud primește tokenul personal de autentificare de pe pagina sa de securitate, iar un token ShareFile sau Zoho lipit din rclone authorize își aduce adresa sau regiunea.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

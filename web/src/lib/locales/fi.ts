@@ -1179,6 +1179,13 @@ const fi: Translations = {
   'trash.pruneQuestion': 'Poistetaanko kaikki tätä vanhempi roskakorista lopullisesti?',
   'targets.editTitle': 'Muokkaa: {name}',
   'targets.moreSettings': 'Muut asetukset',
+  'targets.question.hint': 'Kirjautumisesi avaa useamman kuin yhden. Valitse käytettävä ja testaa uudelleen.',
+  'targets.question.pick': 'Valitse yksi',
+  'targets.question.drive': 'Asema',
+  'targets.question.workspace': 'Työtila',
+  'targets.question.team': 'Tiimi',
+  'targets.question.other': 'Valinta',
+  'help.authLoginToken': 'Luo tilin suojaussivulla henkilökohtainen kirjautumistunniste ja liitä se tähän. Yhteyden testi vaihtaa sen pysyvään kirjautumiseen. Tunniste toimii vain kerran, joten luo uusi, jos yhteys pitää määrittää uudelleen.',
   'targets.ftpTls': 'Salaus',
   'targets.ftpTlsHint': 'Useimmat salaavat palvelimet käyttävät eksplisiittistä TLS:ää tavallisessa portissa 21. Implisiittinen TLS on vanhempi tapa ja kuuntelee porttia 990.',
   'targets.ftpTls.none': 'Ei salausta',
@@ -1244,6 +1251,7 @@ const fi: Translations = {
   'new.change.releaseCards': 'Päivityksen jälkeen tämä ikkuna näyttää kortin jokaisesta julkaisusta sinulla olleen version jälkeen, mukana julkaisun muistiinpanot ja sen tuomat muutokset.',
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
   'new.change.targetSwitches': 'Kohteen asetukset, jotka ovat vain päällä tai pois, ovat kytkimiä, ja FTP-kohde kysyy kerran, mitä {encryption} se käyttää.',
+  'new.change.setupChoice': 'Kun kirjautuminen avaa useamman aseman tai työtilan, kohteen testi kysyy, mitä käytetään. Jottacloud ottaa henkilökohtaisen kirjautumistunnisteen suojaussivultaan, ja rclone authorizesta liitetty ShareFile- tai Zoho-tunniste tuo osoitteensa tai alueensa mukanaan.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

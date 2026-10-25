@@ -1179,6 +1179,13 @@ const ja: Translations = {
   'trash.pruneQuestion': 'これより古いものをすべてごみ箱から完全に削除しますか?',
   'targets.editTitle': '{name} を編集',
   'targets.moreSettings': 'その他の設定',
+  'targets.question.hint': 'このサインインでは複数開けます。使うものを選んで、もう一度テストしてください。',
+  'targets.question.pick': '選択してください',
+  'targets.question.drive': 'ドライブ',
+  'targets.question.workspace': 'ワークスペース',
+  'targets.question.team': 'チーム',
+  'targets.question.other': '選択',
+  'help.authLoginToken': 'アカウントのセキュリティページで個人用ログイントークンを作成し、ここに貼り付けてください。接続テストで、長く使えるサインインに交換されます。トークンは一度しか使えないので、接続をやり直すときは新しく作ってください。',
   'targets.ftpTls': '暗号化',
   'targets.ftpTlsHint': '暗号化するサーバーの多くは、通常のポート 21 で明示的 TLS を使います。暗黙的 TLS は古い方式で、ポート 990 で待ち受けます。',
   'targets.ftpTls.none': 'なし',
@@ -1244,6 +1251,7 @@ const ja: Translations = {
   'new.change.releaseCards': 'アップデート後は、これまで使っていたバージョン以降のリリースごとに、リリースノートと変更点を載せたカードがこのウィンドウに表示されます。',
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
   'new.change.targetSwitches': 'オンかオフしかない接続先の設定はスイッチになり、FTP の接続先は使う{encryption}を一度だけ尋ねます。',
+  'new.change.setupChoice': 'サインインで複数のドライブやワークスペースが開けるときは、接続先のテストでどれを使うか尋ねます。Jottacloud はセキュリティページの個人用ログイントークンを受け付け、rclone authorize から貼り付けた ShareFile や Zoho のトークンはアドレスやリージョンも運びます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

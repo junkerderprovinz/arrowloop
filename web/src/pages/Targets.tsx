@@ -36,6 +36,7 @@ import {
   type DriveCandidate,
   type Provider,
   type Remote,
+  type SetupQuestion,
   type Share,
   type Usage,
   type Volume,
@@ -44,6 +45,7 @@ import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
+import type { TranslationKey } from '../lib/i18n.data'
 import { useToast } from '../lib/toast'
 import { optionHint, providerName } from '../lib/optionHint'
 import { matchesQuery } from '../lib/fold'
@@ -575,6 +577,8 @@ function RemoteForm({
   const [trying, setTrying] = useState(false)
   /** The result of a test run before saving. */
   const [tried, setTried] = useState<CheckAnswer | null>(null)
+  /** What rclone's setup left to choose at the last test. */
+  const [question, setQuestion] = useState<SetupQuestion | null>(null)
   // Count failed tests and saves, so each one remounts its button and shakes it again.
   const [refused, setRefused] = useState(0)
   const [unsaved, setUnsaved] = useState(0)
@@ -601,7 +605,8 @@ function RemoteForm({
       // The name lets the engine fill in the saved secrets this form never
       // received.
       const answer = await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name)
-      setTried(answer)
+      if (answer.question) setQuestion(answer.question)
+      setTried(answer.question ? { ok: false, reason: t('targets.question.hint') } : answer)
       if (!answer.ok) setRefused((n) => n + 1)
     } catch (e) {
       setTried({ ok: false, reason: (e as Error).message })
@@ -635,8 +640,10 @@ function RemoteForm({
       }
       onDone(true)
     } catch (e) {
-      push((e as Error).message, 'fail')
       setUnsaved((n) => n + 1)
+      // The test is where the form asks the question the save is waiting for.
+      if ((e as { code?: string }).code === 'setup-question') void tryIt()
+      else push((e as Error).message, 'fail')
     } finally {
       setBusy(false)
     }
@@ -767,6 +774,21 @@ function RemoteForm({
           <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
         </FieldRow>
         {first.map(field)}
+        {question && (
+          <FieldRow label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')} hint={t('targets.question.hint')}>
+            <span data-new="target-setup-choice" className="flex w-full">
+              <Choice
+                value={values[question.name] ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
+                label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')}
+                options={[
+                  { value: '', label: t('targets.question.pick') },
+                  ...question.choices.map((c) => ({ value: c.value, label: c.help || c.value })),
+                ]}
+              />
+            </span>
+          </FieldRow>
+        )}
         {rest.length > 0 && (
           <section className="glim-subcard flex flex-col gap-4 p-4">
             <h3 className="glim-eyebrow">{t('targets.moreSettings')}</h3>
@@ -776,6 +798,13 @@ function RemoteForm({
       </div>
     </Dialog>
   )
+}
+
+/** The questions rclone's setups ask, by the setting that answers them. */
+const QUESTION_LABELS: Record<string, TranslationKey> = {
+  config_driveid: 'targets.question.drive',
+  config_workspace: 'targets.question.workspace',
+  config_team_drive_id: 'targets.question.team',
 }
 
 /**

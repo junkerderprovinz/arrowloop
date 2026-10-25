@@ -1179,6 +1179,13 @@ const sk: Translations = {
   'trash.pruneQuestion': 'Nadobro vymazať z koša všetko, čo je staršie ako toto?',
   'targets.editTitle': 'Upraviť {name}',
   'targets.moreSettings': 'Ďalšie nastavenia',
+  'targets.question.hint': 'Vaše prihlásenie otvára viac než jeden. Vyberte ten, ktorý sa má použiť, a otestujte znova.',
+  'targets.question.pick': 'Vyberte',
+  'targets.question.drive': 'Disk',
+  'targets.question.workspace': 'Pracovný priestor',
+  'targets.question.team': 'Tím',
+  'targets.question.other': 'Voľba',
+  'help.authLoginToken': 'Vytvorte na bezpečnostnej stránke účtu osobný prihlasovací token a vložte ho sem. Test pripojenia ho vymení za trvalé prihlásenie. Token platí len raz, takže ak treba pripojenie nastaviť znova, vytvorte nový.',
   'targets.ftpTls': 'Šifrovanie',
   'targets.ftpTlsHint': 'Väčšina serverov so šifrovaním používa explicitné TLS na obvyklom porte 21. Implicitné TLS je starší spôsob a počúva na porte 990.',
   'targets.ftpTls.none': 'Žiadne',
@@ -1244,6 +1251,7 @@ const sk: Translations = {
   'new.change.releaseCards': 'Po aktualizácii toto okno ukáže kartu pre každé vydanie od vašej verzie, s jeho poznámkami a zmenami, ktoré prinieslo.',
   'new.change.newerWins': '{option} v úlohe, ktorá synchronizuje oboma smermi, vyrieši konflikt bez pýtania: naposledy uložená verzia zostane na oboch stranách a tá druhá ide do koša.',
   'new.change.targetSwitches': 'Nastavenia cieľa, ktoré sú len zapnuté alebo vypnuté, sú prepínače a cieľ FTP sa raz opýta, aké {encryption} používa.',
+  'new.change.setupChoice': 'Keď prihlásenie otvára viac diskov alebo pracovných priestorov, test cieľa sa opýta, ktorý použiť. Jottacloud berie osobný prihlasovací token zo svojej bezpečnostnej stránky a token ShareFile alebo Zoho vložený z rclone authorize so sebou prinesie adresu alebo oblasť.',
   'new.change.appFolders': 'V aplikácii pre telefón umožní {add} v {settings}, {phone} synchronizovať v ArrowLoop priečinok, ktorý iná aplikácia ponúka vo výbere súborov Androidu, bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps.',
 }
 

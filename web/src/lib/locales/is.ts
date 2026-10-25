@@ -1179,6 +1179,13 @@ const is: Translations = {
   'trash.pruneQuestion': 'Eyða öllu sem er eldra en þetta úr ruslinu fyrir fullt og allt?',
   'targets.editTitle': 'Breyta {name}',
   'targets.moreSettings': 'Aðrar stillingar',
+  'targets.question.hint': 'Innskráningin þín opnar fleiri en eitt. Veldu það sem á að nota og prófaðu aftur.',
+  'targets.question.pick': 'Veldu eitt',
+  'targets.question.drive': 'Drif',
+  'targets.question.workspace': 'Vinnusvæði',
+  'targets.question.team': 'Teymi',
+  'targets.question.other': 'Val',
+  'help.authLoginToken': 'Búðu til persónulegan innskráningarlykil á öryggissíðu reikningsins og límdu hann hér. Tengingarprófið skiptir honum út fyrir varanlega innskráningu. Lykill virkar aðeins einu sinni, svo búðu til nýjan ef setja þarf tenginguna upp aftur.',
   'targets.ftpTls': 'Dulkóðun',
   'targets.ftpTlsHint': 'Flestir þjónar sem dulkóða nota beint TLS á venjulegu gátt 21. Óbeint TLS er eldri leiðin og hlustar á gátt 990.',
   'targets.ftpTls.none': 'Engin',
@@ -1244,6 +1251,7 @@ const is: Translations = {
   'new.change.releaseCards': 'Eftir uppfærslu sýnir þessi gluggi spjald fyrir hverja útgáfu síðan þá sem þú varst með, með athugasemdum hennar og breytingunum sem hún kom með.',
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
   'new.change.targetSwitches': 'Stillingar áfangastaðar sem eru aðeins af eða á eru rofar, og FTP-áfangastaður spyr einu sinni hvaða {encryption} hann notar.',
+  'new.change.setupChoice': 'Þegar innskráning opnar fleiri en eitt drif eða vinnusvæði spyr prófun áfangastaðar hvert eigi að nota. Jottacloud tekur persónulega innskráningarlykilinn af öryggissíðu sinni, og ShareFile- eða Zoho-lykill límdur úr rclone authorize tekur slóð sína eða svæði með sér.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

@@ -70,6 +70,10 @@ const (
 	// AuthLogin is the ordinary user name and password, with nothing to fetch
 	// first.
 	AuthLogin AuthStyle = "login"
+
+	// AuthLoginToken is a personal login token made on the account's security
+	// page, which rclone's setup trades once for a lasting sign-in.
+	AuthLoginToken AuthStyle = "logintoken"
 )
 
 // Group is which of the three cards a provider belongs on.
@@ -129,7 +133,8 @@ var providers = []Provider{
 	// trust token from rclone config.
 	{ID: "icloud", Name: "iCloud Drive", Auth: AuthLogin, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
 
-	{ID: "jottacloud", Name: "Jottacloud", Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
+	{ID: "jottacloud", Name: "Jottacloud", Auth: AuthLoginToken, AuthURL: "https://www.jottacloud.com/web/secure",
+		Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
 	// Koofr's fields look like an ordinary login, but rclone's own help says
 	// the password is generated in the service's settings.
 	{ID: "koofr", Name: "Koofr", Auth: AuthAppPassword, Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},

@@ -1179,6 +1179,13 @@ const zh: Translations = {
   'trash.pruneQuestion': '从回收站永久删除比这更早的所有内容？',
   'targets.editTitle': '编辑 {name}',
   'targets.moreSettings': '其他设置',
+  'targets.question.hint': '你的登录可以打开不止一个。选好要用的那个，然后再测试一次。',
+  'targets.question.pick': '选择一个',
+  'targets.question.drive': '驱动器',
+  'targets.question.workspace': '工作区',
+  'targets.question.team': '团队',
+  'targets.question.other': '选择',
+  'help.authLoginToken': '在账户的安全页面创建一个个人登录令牌并粘贴到这里。测试连接时会把它换成长期有效的登录。令牌只能用一次，如果需要重新设置连接，请创建新的令牌。',
   'targets.ftpTls': '加密',
   'targets.ftpTlsHint': '大多数加密的服务器在常用端口 21 上使用显式 TLS。隐式 TLS 是较旧的方式，监听端口 990。',
   'targets.ftpTls.none': '无',
@@ -1244,6 +1251,7 @@ const zh: Translations = {
   'new.change.releaseCards': '更新后，这个窗口会为你之前版本之后的每个版本显示一张卡片，附上它的说明和带来的改动。',
   'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
   'new.change.targetSwitches': '目标中只有开和关两种状态的设置都变成了开关，FTP 目标只问一次它使用哪种{encryption}。',
+  'new.change.setupChoice': '当一次登录能打开多个驱动器或工作区时，测试目标会询问要用哪一个。Jottacloud 接受其安全页面上的个人登录令牌，从 rclone authorize 粘贴的 ShareFile 或 Zoho 令牌会带上自己的地址或区域。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

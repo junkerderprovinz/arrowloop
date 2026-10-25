@@ -1,7 +1,7 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useEffect, useMemo, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
-import { api, type Backend, type Provider, type Remote } from "../api";
+import { api, EngineError, type Backend, type Provider, type Remote, type SetupQuestion } from "../api";
 import { Field, SecretField } from "../fields";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
@@ -11,7 +11,8 @@ import { optionLabel } from "../../../web/src/lib/optionNames";
 import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
-import { Body, Button, Caption, Choice, Empty, Page, Row, Section, Title, Toggle } from "../ui";
+import { Body, Button, Caption, Choice, Empty, Page, PickRow, Row, Section, Title, Toggle } from "../ui";
+import type { TranslationKey } from "../../../web/src/lib/i18n.data";
 
 /**
  * The target form. Its fields are the options rclone marks required or
@@ -96,13 +97,16 @@ export function TargetEdit() {
   const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure } | null>(null);
   // A counter rather than a flag, so every failed attempt shakes the button.
   const [refused, setRefused] = useState(0);
+  // What rclone's setup left to choose at the last test.
+  const [question, setQuestion] = useState<SetupQuestion | null>(null);
 
   if (!backendName) {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure }) => {
-    setTried(answer);
+  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion }) => {
+    if (answer.question) setQuestion(answer.question);
+    setTried(answer.question ? { ok: false, reason: t("targets.question.hint") } : answer);
     if (!answer.ok) setRefused((n) => n + 1);
   };
 
@@ -138,7 +142,9 @@ export function TargetEdit() {
       });
       nav.popToTop();
     } catch (e) {
-      setError((e as Error).message);
+      // The test is where the form asks the question the save is waiting for.
+      if (e instanceof EngineError && e.status === 422) void tryIt();
+      else setError((e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -212,6 +218,20 @@ export function TargetEdit() {
         {options.length === 0 ? <Body>{t("phone.noSettings")}</Body> : null}
       </Section>
 
+      {question ? (
+        <Section title={t(QUESTION_LABELS[question.name] ?? "targets.question.other")} hint={t("targets.question.hint")}>
+          {question.choices.map((choice) => (
+            <PickRow
+              key={choice.value}
+              on={values[question.name] === choice.value}
+              onPress={() => setValues((old) => ({ ...old, [question.name]: choice.value }))}
+            >
+              <Body>{choice.help || choice.value}</Body>
+            </PickRow>
+          ))}
+        </Section>
+      ) : null}
+
       {error ? <Body>{error}</Body> : null}
 
       {/* Only the reason: the button itself shows the verdict. */}
@@ -248,6 +268,13 @@ export function TargetEdit() {
     </Page>
   );
 }
+
+/** The questions rclone's setups ask, by the setting that answers them. */
+const QUESTION_LABELS: Record<string, TranslationKey> = {
+  config_driveid: "targets.question.drive",
+  config_workspace: "targets.question.workspace",
+  config_team_drive_id: "targets.question.team",
+};
 
 /** Drops empty values, since a secret left empty while changing it means "keep the saved one". */
 function prune(values: Record<string, string>): Record<string, string> {

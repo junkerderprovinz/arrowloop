@@ -1179,6 +1179,13 @@ const hu: Translations = {
   'trash.pruneQuestion': 'Végleg törlöd a kukából az ennél régebbieket?',
   'targets.editTitle': '{name} szerkesztése',
   'targets.moreSettings': 'További beállítások',
+  'targets.question.hint': 'A bejelentkezésed egynél többet nyit meg. Válaszd ki, melyiket használja, majd teszteld újra.',
+  'targets.question.pick': 'Válassz egyet',
+  'targets.question.drive': 'Meghajtó',
+  'targets.question.workspace': 'Munkaterület',
+  'targets.question.team': 'Csapat',
+  'targets.question.other': 'Választás',
+  'help.authLoginToken': 'Hozz létre személyes bejelentkezési tokent a fiók biztonsági oldalán, és illeszd be ide. A kapcsolat tesztje tartós bejelentkezésre cseréli. Egy token csak egyszer használható, ezért készíts újat, ha a kapcsolatot újra be kell állítani.',
   'targets.ftpTls': 'Titkosítás',
   'targets.ftpTlsHint': 'A titkosító szerverek többsége explicit TLS-t használ a szokásos 21-es porton. Az implicit TLS a régebbi mód, és a 990-es porton figyel.',
   'targets.ftpTls.none': 'Nincs',
@@ -1244,6 +1251,7 @@ const hu: Translations = {
   'new.change.releaseCards': 'Egy frissítés után ez az ablak minden kiadásról mutat egy kártyát a nálad lévő verzió óta, a megjegyzéseivel és a változásokkal, amelyeket hozott.',
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
   'new.change.targetSwitches': 'A cél csak be- vagy kikapcsolható beállításai kapcsolók, egy FTP-cél pedig egyszer kérdezi meg, milyen {encryption} használ.',
+  'new.change.setupChoice': 'Ha egy bejelentkezés több meghajtót vagy munkaterületet nyit meg, a cél tesztje megkérdezi, melyiket használja. A Jottacloud a biztonsági oldaláról vett személyes bejelentkezési tokent fogadja, az rclone authorize-ból beillesztett ShareFile- vagy Zoho-token pedig magával hozza a címét vagy a régióját.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

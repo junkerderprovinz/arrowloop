@@ -1179,6 +1179,13 @@ const lv: Translations = {
   'trash.pruneQuestion': 'Neatgriezeniski izdzēst no miskastes visu, kas vecāks par šo?',
   'targets.editTitle': 'Rediģēt: {name}',
   'targets.moreSettings': 'Citi iestatījumi',
+  'targets.question.hint': 'Jūsu pierakstīšanās atver vairāk nekā vienu. Izvēlieties izmantojamo un pārbaudiet vēlreiz.',
+  'targets.question.pick': 'Izvēlieties',
+  'targets.question.drive': 'Disks',
+  'targets.question.workspace': 'Darbvieta',
+  'targets.question.team': 'Komanda',
+  'targets.question.other': 'Izvēle',
+  'help.authLoginToken': 'Konta drošības lapā izveidojiet personīgu pierakstīšanās marķieri un ielīmējiet to šeit. Savienojuma pārbaude to apmaina pret ilgstošu pierakstīšanos. Marķieris derīgs tikai vienreiz, tāpēc izveidojiet jaunu, ja savienojums jāiestata vēlreiz.',
   'targets.ftpTls': 'Šifrēšana',
   'targets.ftpTlsHint': 'Lielākā daļa šifrējošo serveru izmanto tiešo TLS ierastajā portā 21. Netiešais TLS ir vecākais veids un klausās portā 990.',
   'targets.ftpTls.none': 'Nav',
@@ -1244,6 +1251,7 @@ const lv: Translations = {
   'new.change.releaseCards': 'Pēc atjaunināšanas šajā logā redzama karte par katru izlaidumu kopš tavas iepriekšējās versijas, ar tā piezīmēm un izmaiņām.',
   'new.change.newerWins': '{option} uzdevumā, kas sinhronizē abos virzienos, atrisina konfliktu bez jautāšanas: pēdējā saglabātā versija paliek abās pusēs, un otra nonāk miskastē.',
   'new.change.targetSwitches': 'Galamērķa iestatījumi, kas ir tikai ieslēgti vai izslēgti, ir slēdži, un FTP galamērķis vienreiz jautā, kādu {encryption} tas izmanto.',
+  'new.change.setupChoice': 'Ja pierakstīšanās atver vairāk nekā vienu disku vai darbvietu, galamērķa pārbaude jautā, kuru izmantot. Jottacloud pieņem personīgo pierakstīšanās marķieri no savas drošības lapas, un no rclone authorize ielīmēts ShareFile vai Zoho marķieris atnes līdzi savu adresi vai reģionu.',
   'new.change.appFolders': 'Tālruņa lietotnē {add} sadaļā {settings}, {phone} ļauj ArrowLoop sinhronizēt mapi, ko cita lietotne piedāvā Android failu atlasītājā, bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps.',
 }
 

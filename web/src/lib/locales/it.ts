@@ -1179,6 +1179,13 @@ const it: Translations = {
   'trash.pruneQuestion': 'Eliminare definitivamente dal cestino tutto ciò che è più vecchio di questo?',
   'targets.editTitle': 'Modifica {name}',
   'targets.moreSettings': 'Altre impostazioni',
+  'targets.question.hint': 'Il tuo accesso ne apre più di uno. Scegli quello da usare, poi prova di nuovo.',
+  'targets.question.pick': 'Scegline uno',
+  'targets.question.drive': 'Unità',
+  'targets.question.workspace': 'Area di lavoro',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Scelta',
+  'help.authLoginToken': 'Crea un token di accesso personale nella pagina di sicurezza dell\'account e incollalo qui. Il test della connessione lo scambia con un accesso duraturo. Un token vale una sola volta, quindi creane uno nuovo se la connessione va configurata di nuovo.',
   'targets.ftpTls': 'Cifratura',
   'targets.ftpTlsHint': 'La maggior parte dei server che cifrano usa TLS esplicito sulla consueta porta 21. Il TLS implicito è il metodo più vecchio e ascolta sulla porta 990.',
   'targets.ftpTls.none': 'Nessuna',
@@ -1244,6 +1251,7 @@ const it: Translations = {
   'new.change.releaseCards': 'Dopo un aggiornamento questa finestra mostra una scheda per ogni release dalla tua versione in poi, con le sue note e le modifiche che ha portato.',
   'new.change.newerWins': '{option} in un lavoro che sincronizza in entrambe le direzioni risolve un conflitto senza chiedere: la versione salvata per ultima resta su entrambi i lati e l\'altra finisce nel cestino.',
   'new.change.targetSwitches': 'Le impostazioni di una destinazione che sono solo attive o disattive sono interruttori, e una destinazione FTP chiede una volta sola quale {encryption} usa.',
+  'new.change.setupChoice': 'Quando un accesso apre più unità o aree di lavoro, il test di una destinazione chiede quale usare. Jottacloud accetta il token di accesso personale dalla sua pagina di sicurezza, e un token ShareFile o Zoho incollato da rclone authorize porta con sé il suo indirizzo o la sua regione.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
 }
 

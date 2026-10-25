@@ -67,6 +67,12 @@ export const RELEASES: Release[] = [
         text: 'new.change.targetSwitches',
         names: { encryption: 'targets.ftpTls' },
       },
+      {
+        id: 'target-setup-choice',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.setupChoice',
+      },
     ],
   },
   {

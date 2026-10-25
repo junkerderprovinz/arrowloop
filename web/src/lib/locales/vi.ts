@@ -1179,6 +1179,13 @@ const vi: Translations = {
   'trash.pruneQuestion': 'Xóa vĩnh viễn mọi thứ cũ hơn mốc này khỏi thùng rác?',
   'targets.editTitle': 'Sửa {name}',
   'targets.moreSettings': 'Cài đặt khác',
+  'targets.question.hint': 'Lần đăng nhập của bạn mở được nhiều hơn một. Chọn cái cần dùng rồi thử lại.',
+  'targets.question.pick': 'Chọn một',
+  'targets.question.drive': 'Ổ đĩa',
+  'targets.question.workspace': 'Không gian làm việc',
+  'targets.question.team': 'Nhóm',
+  'targets.question.other': 'Lựa chọn',
+  'help.authLoginToken': 'Tạo một mã đăng nhập cá nhân trên trang bảo mật của tài khoản rồi dán vào đây. Phép thử kết nối sẽ đổi nó lấy một lần đăng nhập lâu dài. Mỗi mã chỉ dùng được một lần, nên hãy tạo mã mới nếu phải thiết lập lại kết nối.',
   'targets.ftpTls': 'Mã hóa',
   'targets.ftpTlsHint': 'Phần lớn máy chủ có mã hóa dùng TLS tường minh trên cổng thông thường 21. TLS ngầm định là cách cũ hơn và lắng nghe ở cổng 990.',
   'targets.ftpTls.none': 'Không',
@@ -1244,6 +1251,7 @@ const vi: Translations = {
   'new.change.releaseCards': 'Sau khi cập nhật, cửa sổ này hiện một thẻ cho mỗi bản phát hành kể từ bản bạn đang dùng, kèm ghi chú và những thay đổi nó mang lại.',
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
   'new.change.targetSwitches': 'Các thiết lập của đích chỉ có bật hoặc tắt nay là công tắc, và đích FTP hỏi một lần nó dùng {encryption} nào.',
+  'new.change.setupChoice': 'Khi một lần đăng nhập mở được nhiều ổ đĩa hoặc không gian làm việc, phép thử đích sẽ hỏi dùng cái nào. Jottacloud nhận mã đăng nhập cá nhân từ trang bảo mật của nó, và mã ShareFile hoặc Zoho dán từ rclone authorize mang theo địa chỉ hoặc vùng của nó.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

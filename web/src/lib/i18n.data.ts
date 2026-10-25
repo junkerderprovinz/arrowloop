@@ -1223,6 +1223,13 @@ export const en = {
   'trash.pruneQuestion': 'Delete everything older than this from the trash for good?',
   'targets.editTitle': 'Edit {name}',
   'targets.moreSettings': 'Other settings',
+  'targets.question.hint': 'Your sign-in opens more than one. Choose the one to use, then test again.',
+  'targets.question.pick': 'Choose one',
+  'targets.question.drive': 'Drive',
+  'targets.question.workspace': 'Workspace',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Choice',
+  'help.authLoginToken': 'Create a personal login token on the account\'s security page and paste it here. Testing the connection trades it for a lasting sign-in. A token works only once, so make a new one if the connection has to be set up again.',
   'targets.ftpTls': 'Encryption',
   'targets.ftpTlsHint': 'Most servers that encrypt use explicit TLS on the usual port 21. Implicit TLS is the older way and listens on port 990.',
   'targets.ftpTls.none': 'None',
@@ -1288,6 +1295,7 @@ export const en = {
   'new.change.releaseCards': 'After an update this window shows a card for every release since the one you had, with its notes and the changes it brought.',
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
   'new.change.targetSwitches': 'A target\'s settings that are only on or off are switches, and an FTP target asks once which {encryption} it uses.',
+  'new.change.setupChoice': 'When a sign-in opens more than one drive or workspace, testing a target asks which one to use. Jottacloud takes the personal login token from its security page, and a ShareFile or Zoho token pasted from rclone authorize brings its address or region along.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -2502,6 +2510,13 @@ export const de: Translations = {
   'trash.pruneQuestion': 'Alles, was älter ist, endgültig aus dem Papierkorb löschen?',
   'targets.editTitle': '{name} bearbeiten',
   'targets.moreSettings': 'Weitere Einstellungen',
+  'targets.question.hint': 'Deine Anmeldung öffnet mehr als eines. Wähl das passende aus und teste dann noch einmal.',
+  'targets.question.pick': 'Eines auswählen',
+  'targets.question.drive': 'Laufwerk',
+  'targets.question.workspace': 'Arbeitsbereich',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Auswahl',
+  'help.authLoginToken': 'Leg auf der Sicherheitsseite des Kontos ein persönliches Login-Token an und füg es hier ein. Der Verbindungstest tauscht es gegen eine dauerhafte Anmeldung. Ein Token gilt nur einmal. Musst du die Verbindung noch einmal einrichten, legst du ein neues an.',
   'targets.ftpTls': 'Verschlüsselung',
   'targets.ftpTlsHint': 'Die meisten Server mit Verschlüsselung nehmen explizites TLS auf dem üblichen Port 21. Implizites TLS ist der ältere Weg und lauscht auf Port 990.',
   'targets.ftpTls.none': 'Keine',
@@ -2567,6 +2582,7 @@ export const de: Translations = {
   'new.change.releaseCards': 'Nach einem Update zeigt dieses Fenster eine Karte für jedes Release seit dem, das du hattest, mit seinen Release-Notes und den Änderungen, die es gebracht hat.',
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
   'new.change.targetSwitches': 'Einstellungen eines Ziels, die nur an oder aus sein können, sind Schalter, und ein FTP-Ziel fragt einmal, welche {encryption} es nutzt.',
+  'new.change.setupChoice': 'Öffnet eine Anmeldung mehrere Laufwerke oder Arbeitsbereiche, fragt der Test eines Ziels, welches davon genutzt wird. Jottacloud nimmt das persönliche Login-Token von seiner Sicherheitsseite, und ein ShareFile- oder Zoho-Token aus rclone authorize bringt seine Adresse oder Region gleich mit.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

@@ -1179,6 +1179,13 @@ const da: Translations = {
   'trash.pruneQuestion': 'Slette alt, der er ældre end dette, fra papirkurven for altid?',
   'targets.editTitle': 'Rediger {name}',
   'targets.moreSettings': 'Andre indstillinger',
+  'targets.question.hint': 'Dit login åbner mere end én. Vælg den, der skal bruges, og test igen.',
+  'targets.question.pick': 'Vælg en',
+  'targets.question.drive': 'Drev',
+  'targets.question.workspace': 'Arbejdsområde',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Valg',
+  'help.authLoginToken': 'Opret en personlig logintoken på kontoens sikkerhedsside, og indsæt den her. Forbindelsestesten bytter den til et varigt login. En token virker kun én gang, så lav en ny, hvis forbindelsen skal sættes op igen.',
   'targets.ftpTls': 'Kryptering',
   'targets.ftpTlsHint': 'De fleste servere med kryptering bruger eksplicit TLS på den sædvanlige port 21. Implicit TLS er den ældre måde og lytter på port 990.',
   'targets.ftpTls.none': 'Ingen',
@@ -1244,6 +1251,7 @@ const da: Translations = {
   'new.change.releaseCards': 'Efter en opdatering viser dette vindue et kort for hver udgivelse siden den, du havde, med dens noter og de ændringer, den bragte.',
   'new.change.newerWins': '{option} i et job, der synkroniserer begge veje, afgør en konflikt uden at spørge: den senest gemte version bliver på begge sider, og den anden havner i papirkurven.',
   'new.change.targetSwitches': 'Et måls indstillinger, der kun kan være til eller fra, er kontakter, og et FTP-mål spørger én gang, hvilken {encryption} det bruger.',
+  'new.change.setupChoice': 'Når et login åbner mere end ét drev eller arbejdsområde, spørger testen af et mål, hvilket der skal bruges. Jottacloud tager den personlige logintoken fra sin sikkerhedsside, og en ShareFile- eller Zoho-token indsat fra rclone authorize har sin adresse eller region med.',
   'new.change.appFolders': 'I telefonappen lader {add} under {settings}, {phone} ArrowLoop synkronisere en mappe, som en anden app tilbyder i Androids filvælger, uden root og uden Shizuku. Mapperne vises i et mål ved navn Apps.',
 }
 

@@ -1179,6 +1179,13 @@ const lt: Translations = {
   'trash.pruneQuestion': 'Visam laikui ištrinti iš šiukšlinės viską, kas senesnė už šią datą?',
   'targets.editTitle': 'Redaguoti: {name}',
   'targets.moreSettings': 'Kiti nustatymai',
+  'targets.question.hint': 'Jūsų prisijungimas atveria daugiau nei vieną. Pasirinkite, kurį naudoti, ir išbandykite dar kartą.',
+  'targets.question.pick': 'Pasirinkite',
+  'targets.question.drive': 'Diskas',
+  'targets.question.workspace': 'Darbo sritis',
+  'targets.question.team': 'Komanda',
+  'targets.question.other': 'Pasirinkimas',
+  'help.authLoginToken': 'Paskyros saugos puslapyje sukurkite asmeninį prisijungimo raktą ir įklijuokite jį čia. Ryšio bandymas jį iškeičia į ilgalaikį prisijungimą. Raktas veikia tik kartą, tad jei ryšį reikia nustatyti iš naujo, sukurkite naują.',
   'targets.ftpTls': 'Šifravimas',
   'targets.ftpTlsHint': 'Dauguma šifruojančių serverių naudoja aiškųjį TLS įprastame 21 prievade. Numanomasis TLS yra senesnis būdas ir klauso 990 prievade.',
   'targets.ftpTls.none': 'Nėra',
@@ -1244,6 +1251,7 @@ const lt: Translations = {
   'new.change.releaseCards': 'Po naujinimo šiame lange rodoma kortelė kiekvienam leidimui nuo jūsų turėtos versijos, su jo pastabomis ir pakeitimais.',
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
   'new.change.targetSwitches': 'Paskirties nustatymai, kurie tik įjungti arba išjungti, yra jungikliai, o FTP paskirtis vieną kartą paklausia, kokį {encryption} ji naudoja.',
+  'new.change.setupChoice': 'Kai prisijungimas atveria daugiau nei vieną diską ar darbo sritį, paskirties bandymas paklausia, kurį naudoti. Jottacloud priima asmeninį prisijungimo raktą iš savo saugos puslapio, o iš rclone authorize įklijuotas ShareFile ar Zoho raktas atsineša savo adresą ar regioną.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

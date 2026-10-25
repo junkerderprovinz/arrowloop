@@ -36,13 +36,25 @@ const ftp: Backend = {
   ],
 }
 
-const providers: Provider[] = [{ id: 'ftp', name: 'FTP', backend: 'ftp', group: 'protocol', mark: 'IconTransfer' }]
+const onedrive: Backend = { name: 'onedrive', description: '', options: [option('token', { secret: true })] }
 
-const saveRemote = vi.fn((name: string, _type: string, _settings: Record<string, string>) => Promise.resolve({ saved: name }))
+const providers: Provider[] = [
+  { id: 'ftp', name: 'FTP', backend: 'ftp', group: 'protocol', mark: 'IconTransfer' },
+  { id: 'onedrive', name: 'OneDrive', backend: 'onedrive', group: 'cloud', mark: 'IconOnedrive' },
+]
+
+const saveRemote = vi.fn((name: string, _type: string, _settings: Record<string, string>): Promise<unknown> =>
+  Promise.resolve({ saved: name }),
+)
+const drives = { name: 'config_driveid', choices: [{ value: 'me', help: 'OneDrive (personal)' }, { value: 'team', help: 'Team files' }] }
+const tryRemote = vi.fn((_type: string, settings: Record<string, string>) =>
+  Promise.resolve(settings.config_driveid ? { ok: true } : { ok: false, reason: 'choose', question: drives }),
+)
 
 vi.mock('../lib/api', () => ({
   api: {
-    remotes: () => Promise.resolve({ remotes: [], backends: [ftp], providers, unlisted: [] }),
+    remotes: () => Promise.resolve({ remotes: [], backends: [ftp, onedrive], providers, unlisted: [] }),
+    tryRemote: (type: string, settings: Record<string, string>) => tryRemote(type, settings),
     volumes: () => Promise.resolve({ volumes: [] }),
     checkRemote: () => Promise.resolve({ ok: true }),
     aboutRemote: () => Promise.resolve({ supported: false }),
@@ -54,19 +66,23 @@ const { Targets } = await import('./Targets')
 
 afterEach(() => {
   cleanup()
-  saveRemote.mockClear()
+  saveRemote.mockReset()
+  saveRemote.mockImplementation((name: string) => Promise.resolve({ saved: name }))
+  tryRemote.mockClear()
 })
 
-async function addFtp() {
+async function add(name: string) {
   render(
     <ToastProvider>
       <Targets />
     </ToastProvider>,
   )
   fireEvent.click(await screen.findByRole('button', { name: 'Connect storage and clouds' }))
-  fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'FTP' }))
+  fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name }))
   return screen.findByRole('dialog')
 }
+
+const addFtp = () => add('FTP')
 
 async function saved(dialog: HTMLElement) {
   fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
@@ -96,5 +112,24 @@ describe('the target form', () => {
     const settings = await saved(dialog)
     expect(settings.explicit_tls).toBe('true')
     expect(settings.tls).toBeUndefined()
+  })
+})
+
+describe('a sign-in that opens more than one drive', () => {
+  it('asks which drive at the test and sends the one picked', async () => {
+    const dialog = await add('OneDrive')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Test connection' }))
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Drive' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Team files' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: /Test connection|Not connected/ }))
+    await waitFor(() => expect(tryRemote).toHaveBeenCalledTimes(2))
+    expect(tryRemote.mock.calls[1][1]).toMatchObject({ config_driveid: 'team' })
+  })
+
+  it('turns a save that waits for the choice into the test that asks it', async () => {
+    saveRemote.mockImplementation(() => Promise.reject(Object.assign(new Error('choose'), { code: 'setup-question' })))
+    const dialog = await add('OneDrive')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    expect(await within(dialog).findByRole('button', { name: 'Drive' })).toBeTruthy()
   })
 })

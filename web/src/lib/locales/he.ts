@@ -1179,6 +1179,13 @@ const he: Translations = {
   'trash.pruneQuestion': 'למחוק מסל האשפה לצמיתות כל מה שישן מזה?',
   'targets.editTitle': 'עריכת {name}',
   'targets.moreSettings': 'הגדרות נוספות',
+  'targets.question.hint': 'הכניסה שלך פותחת יותר מאחד. בחר את זה שיש להשתמש בו ובדוק שוב.',
+  'targets.question.pick': 'בחר אחד',
+  'targets.question.drive': 'כונן',
+  'targets.question.workspace': 'סביבת עבודה',
+  'targets.question.team': 'צוות',
+  'targets.question.other': 'בחירה',
+  'help.authLoginToken': 'צור אסימון כניסה אישי בדף האבטחה של החשבון והדבק אותו כאן. בדיקת החיבור מחליפה אותו בכניסה קבועה. אסימון עובד פעם אחת בלבד, אז צור חדש אם צריך להגדיר את החיבור שוב.',
   'targets.ftpTls': 'הצפנה',
   'targets.ftpTlsHint': 'רוב השרתים שמצפינים משתמשים ב-TLS מפורש בפורט הרגיל 21. TLS מרומז הוא הדרך הישנה יותר ומאזין בפורט 990.',
   'targets.ftpTls.none': 'ללא',
@@ -1244,6 +1251,7 @@ const he: Translations = {
   'new.change.releaseCards': 'אחרי עדכון החלון הזה מציג כרטיס לכל גרסה מאז זו שהייתה לך, עם ההערות שלה והשינויים שהיא הביאה.',
   'new.change.newerWins': '{option} במשימה שמסנכרנת לשני הכיוונים מכריע בהתנגשות בלי לשאול: הגרסה שנשמרה אחרונה נשארת בשני הצדדים, והשנייה עוברת לסל האשפה.',
   'new.change.targetSwitches': 'הגדרות של יעד שהן רק פועל או כבוי הן מתגים, ויעד FTP שואל פעם אחת באיזו {encryption} הוא משתמש.',
+  'new.change.setupChoice': 'כשכניסה פותחת יותר מכונן או סביבת עבודה אחת, בדיקת היעד שואלת באיזה להשתמש. Jottacloud מקבל את אסימון הכניסה האישי מדף האבטחה שלו, ואסימון ShareFile או Zoho שהודבק מ-rclone authorize מביא איתו את הכתובת או האזור שלו.',
   'new.change.appFolders': 'באפליקציה לטלפון, {add} תחת {settings}, {phone} מאפשר ל־ArrowLoop לסנכרן תיקייה שאפליקציה אחרת מציעה בבורר הקבצים של Android, בלי רוט ובלי Shizuku. התיקיות מופיעות ביעד בשם Apps.',
 }
 

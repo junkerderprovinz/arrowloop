@@ -1179,6 +1179,13 @@ const gl: Translations = {
   'trash.pruneQuestion': 'Borrar definitivamente do lixo todo o que sexa máis antigo ca isto?',
   'targets.editTitle': 'Editar {name}',
   'targets.moreSettings': 'Outros axustes',
+  'targets.question.hint': 'O teu inicio de sesión abre máis dun. Escolle o que queres usar e proba de novo.',
+  'targets.question.pick': 'Escolle un',
+  'targets.question.drive': 'Unidade',
+  'targets.question.workspace': 'Espazo de traballo',
+  'targets.question.team': 'Equipo',
+  'targets.question.other': 'Escolla',
+  'help.authLoginToken': 'Crea un token de inicio de sesión persoal na páxina de seguranza da conta e pégao aquí. A proba de conexión cámbiao por un inicio de sesión duradeiro. Un token só serve unha vez; se hai que configurar de novo a conexión, crea outro.',
   'targets.ftpTls': 'Cifrado',
   'targets.ftpTlsHint': 'A maioría dos servidores que cifran usan TLS explícito no porto habitual 21. O TLS implícito é a forma antiga e escoita no porto 990.',
   'targets.ftpTls.none': 'Ningún',
@@ -1244,6 +1251,7 @@ const gl: Translations = {
   'new.change.releaseCards': 'Despois dunha actualización, esta xanela mostra unha tarxeta por cada versión desde a que tiñas, coas súas notas e os cambios que trouxo.',
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
   'new.change.targetSwitches': 'Os axustes dun destino que só están activados ou desactivados son interruptores, e un destino FTP pregunta unha soa vez que {encryption} usa.',
+  'new.change.setupChoice': 'Cando un inicio de sesión abre máis dunha unidade ou espazo de traballo, a proba dun destino pregunta cal usar. Jottacloud acepta o token persoal da súa páxina de seguranza, e un token de ShareFile ou Zoho pegado desde rclone authorize trae o seu enderezo ou rexión.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

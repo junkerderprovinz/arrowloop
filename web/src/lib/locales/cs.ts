@@ -1179,6 +1179,13 @@ const cs: Translations = {
   'trash.pruneQuestion': 'Smazat z koše nadobro všechno starší než toto?',
   'targets.editTitle': 'Upravit {name}',
   'targets.moreSettings': 'Další nastavení',
+  'targets.question.hint': 'Vaše přihlášení otevírá víc než jeden. Vyberte ten, který se má použít, a otestujte znovu.',
+  'targets.question.pick': 'Vyberte',
+  'targets.question.drive': 'Disk',
+  'targets.question.workspace': 'Pracovní prostor',
+  'targets.question.team': 'Tým',
+  'targets.question.other': 'Volba',
+  'help.authLoginToken': 'Vytvořte na bezpečnostní stránce účtu osobní přihlašovací token a vložte ho sem. Test připojení ho vymění za trvalé přihlášení. Token platí jen jednou, takže pokud je třeba připojení nastavit znovu, vytvořte nový.',
   'targets.ftpTls': 'Šifrování',
   'targets.ftpTlsHint': 'Většina serverů se šifrováním používá explicitní TLS na obvyklém portu 21. Implicitní TLS je starší způsob a naslouchá na portu 990.',
   'targets.ftpTls.none': 'Žádné',
@@ -1244,6 +1251,7 @@ const cs: Translations = {
   'new.change.releaseCards': 'Po aktualizaci toto okno ukáže kartu pro každé vydání od toho, které jste měli, s jeho poznámkami a změnami, které přineslo.',
   'new.change.newerWins': '{option} v úloze, která synchronizuje oběma směry, vyřeší konflikt bez ptaní: naposledy uložená verze zůstane na obou stranách a ta druhá jde do koše.',
   'new.change.targetSwitches': 'Nastavení cíle, která jsou jen zapnutá nebo vypnutá, jsou přepínače a cíl FTP se jednou zeptá, jaké {encryption} používá.',
+  'new.change.setupChoice': 'Když přihlášení otevírá víc disků nebo pracovních prostorů, test cíle se zeptá, který použít. Jottacloud bere osobní přihlašovací token ze své bezpečnostní stránky a token ShareFile nebo Zoho vložený z rclone authorize s sebou přinese adresu nebo oblast.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

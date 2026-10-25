@@ -1179,6 +1179,13 @@ const ko: Translations = {
   'trash.pruneQuestion': '이보다 오래된 항목을 모두 휴지통에서 완전히 삭제할까요?',
   'targets.editTitle': '{name} 편집',
   'targets.moreSettings': '다른 설정',
+  'targets.question.hint': '로그인으로 여러 개가 열립니다. 사용할 것을 고른 뒤 다시 테스트하세요.',
+  'targets.question.pick': '하나 고르기',
+  'targets.question.drive': '드라이브',
+  'targets.question.workspace': '작업 공간',
+  'targets.question.team': '팀',
+  'targets.question.other': '선택',
+  'help.authLoginToken': '계정 보안 페이지에서 개인 로그인 토큰을 만들어 여기에 붙여 넣으세요. 연결 테스트가 이를 오래 유지되는 로그인으로 바꿉니다. 토큰은 한 번만 쓸 수 있으니 연결을 다시 설정해야 하면 새로 만드세요.',
   'targets.ftpTls': '암호화',
   'targets.ftpTlsHint': '암호화하는 서버 대부분은 일반 포트 21에서 명시적 TLS를 씁니다. 암시적 TLS는 예전 방식이며 포트 990에서 기다립니다.',
   'targets.ftpTls.none': '없음',
@@ -1244,6 +1251,7 @@ const ko: Translations = {
   'new.change.releaseCards': '업데이트 후 이 창에는 이전에 쓰던 버전 이후의 릴리스마다 카드가 표시되며, 릴리스 노트와 달라진 내용이 담겨 있습니다.',
   'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
   'new.change.targetSwitches': '켜거나 끄기만 하는 대상 설정은 스위치로 바뀌었고, FTP 대상은 어떤 {encryption}를 쓰는지 한 번만 묻습니다.',
+  'new.change.setupChoice': '로그인으로 드라이브나 작업 공간이 여러 개 열리면 대상 테스트가 어떤 것을 쓸지 묻습니다. Jottacloud는 보안 페이지의 개인 로그인 토큰을 받고, rclone authorize에서 붙여 넣은 ShareFile이나 Zoho 토큰은 주소나 지역을 함께 가져옵니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

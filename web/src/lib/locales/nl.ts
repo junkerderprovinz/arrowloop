@@ -1179,6 +1179,13 @@ const nl: Translations = {
   'trash.pruneQuestion': 'Alles wat ouder is dan dit definitief uit de prullenbak verwijderen?',
   'targets.editTitle': '{name} bewerken',
   'targets.moreSettings': 'Andere instellingen',
+  'targets.question.hint': 'Je aanmelding opent er meer dan één. Kies welke je wilt gebruiken en test opnieuw.',
+  'targets.question.pick': 'Kies er een',
+  'targets.question.drive': 'Schijf',
+  'targets.question.workspace': 'Werkruimte',
+  'targets.question.team': 'Team',
+  'targets.question.other': 'Keuze',
+  'help.authLoginToken': 'Maak op de beveiligingspagina van het account een persoonlijk inlogtoken aan en plak het hier. De verbindingstest ruilt het in voor een blijvende aanmelding. Een token werkt maar één keer, dus maak een nieuw als de verbinding opnieuw moet worden ingesteld.',
   'targets.ftpTls': 'Versleuteling',
   'targets.ftpTlsHint': 'De meeste servers die versleutelen gebruiken expliciete TLS op de gewone poort 21. Impliciete TLS is de oudere manier en luistert op poort 990.',
   'targets.ftpTls.none': 'Geen',
@@ -1244,6 +1251,7 @@ const nl: Translations = {
   'new.change.releaseCards': 'Na een update toont dit venster een kaart voor elke release sinds de versie die je had, met de opmerkingen en de wijzigingen die erbij horen.',
   'new.change.newerWins': '{option} in een taak die beide kanten op synchroniseert, beslist een conflict zonder te vragen: de laatst opgeslagen versie blijft aan beide kanten staan en de andere gaat naar de prullenbak.',
   'new.change.targetSwitches': 'Instellingen van een doel die alleen aan of uit kunnen zijn schakelaars, en een FTP-doel vraagt één keer welke {encryption} het gebruikt.',
+  'new.change.setupChoice': 'Als een aanmelding meer dan één schijf of werkruimte opent, vraagt de test van een doel welke je gebruikt. Jottacloud neemt het persoonlijke inlogtoken van zijn beveiligingspagina aan, en een ShareFile- of Zoho-token uit rclone authorize brengt zijn adres of regio mee.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 
