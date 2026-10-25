@@ -56,7 +56,7 @@ export function Held({ held, onHeld, children }: { held: boolean; onHeld: () => 
       className="flex min-w-0 max-w-full items-center justify-end gap-2 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
       style={{ borderRadius: 'var(--radius-control)' }}
     >
-      <div inert className="flex min-w-0 max-w-full opacity-45">
+      <div inert className="flex min-w-0 max-w-full opacity-50 grayscale">
         {children}
       </div>
       <span className="shrink-0 text-subline text-carbon-textMuted" data-tip={t('edit.globalTip')}>
@@ -83,9 +83,14 @@ export function SettingRow({
 }) {
   return (
     <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
-      <span data-glim-label={label} className="flex min-w-0 flex-[1_1_12.5rem] items-center gap-1.5 text-body text-carbon-text">
+      {/* Not a flex box, so a label that wraps keeps its (i) after its last word. */}
+      <span data-glim-label={label} className="min-w-0 flex-[1_1_12.5rem] text-body text-carbon-text">
         {label}
-        {hint && <InfoBubble tip={hint} />}
+        {hint && (
+          <span className="ms-1.5 inline-flex align-middle">
+            <InfoBubble tip={hint} />
+          </span>
+        )}
       </span>
       <Held held={held} onHeld={onHeld ?? (() => undefined)}>
         {children}

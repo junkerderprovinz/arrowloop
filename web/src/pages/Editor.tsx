@@ -12,7 +12,7 @@ import { ScheduleField } from '../components/Schedule'
 import { ScheduleButton } from '../components/ScheduleButton'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { Toggle } from '../lib/glimstone/Toggle'
-import { JOB_WINDOW_SETTINGS, overrideAll } from '../lib/follows'
+import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useT } from '../lib/i18n'
@@ -293,8 +293,10 @@ export function JobForm({
 }) {
   const { t } = useT()
   const [advanced, setAdvanced] = useState(false)
-  // What the job runs with: the defaults' values while it follows them.
-  const shown: RawJob = follows ? { ...job, ...(overrideAll(defaults, JOB_WINDOW_SETTINGS) as RawJob) } : job
+  // What the job runs with. A job written by hand can hold some settings and
+  // leave others to the defaults, and those show the default's value too.
+  const unset = JOB_WINDOW_SETTINGS.filter((s) => !owns(job, s))
+  const shown: RawJob = { ...job, ...(overrideAll(defaults, unset) as RawJob) }
   const direction: Direction = shown.direction ?? 'both'
   const held = { held: follows, onHeld }
 

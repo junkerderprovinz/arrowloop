@@ -135,7 +135,7 @@ function SideCard({
         <InfoBubble tip={t('edit.sideHint')} />
       </h3>
       <div className="flex min-w-0 items-center gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-carbon-surface3 text-[20px] text-accentGlyph">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-carbon-surface3 text-accentGlyph [&_svg]:h-5 [&_svg]:w-5">
           {face.mark}
         </span>
         <span className={`min-w-0 flex-1 text-body font-medium [overflow-wrap:anywhere] ${path ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>

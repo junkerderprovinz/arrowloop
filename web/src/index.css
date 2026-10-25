@@ -487,15 +487,19 @@ body {
 }
 
 /* A group of rows inside a card, one step up the surface ramp, where a fold
-   would otherwise hide it. Fields inside take the next step so they still
-   stand out. */
+   would otherwise hide it. Fields and the buttons that share their surface
+   take the next step inside, so they still stand out. */
 .glim-subcard {
   background-color: var(--carbon-surface2);
   border-radius: var(--radius-card);
 }
 .glim-subcard input,
-.glim-subcard textarea {
+.glim-subcard textarea,
+.glim-subcard button.bg-carbon-surface2 {
   background-color: var(--carbon-surface3);
+}
+.glim-subcard button.bg-carbon-surface2:hover {
+  background-color: var(--carbon-hover-raised);
 }
 
 /* The job window's switch answers a click on a field it holds: it wiggles,
