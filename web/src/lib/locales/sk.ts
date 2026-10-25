@@ -851,6 +851,12 @@ const sk: Translations = {
   'defaults.off': 'Vypnuté',
   'defaults.exceptions': 'Výnimky',
   'defaults.exceptionsHint': 'Úlohy s vlastnou hodnotou, ktorú si ponechajú, keď sa tu zmení predvolená hodnota. Všetky ostatné úlohy nasledujú predvolené hodnoty.',
+  'edit.useGlobal': 'Použiť globálne nastavenia',
+  'edit.useGlobalHint': 'Kým je to zapnuté, každá hodnota označená ako globálne pochádza z globálneho nastavenia synchronizácie a mení sa s ním. Vypnite to a táto úloha dostane vlastné hodnoty, ktoré začínajú ako globálne. Po opätovnom zapnutí zmiznú.',
+  'edit.global': 'globálne',
+  'edit.cardSync': 'Synchronizácia',
+  'edit.excludeOwn': 'Vlastné vzory',
+  'edit.folderPath': 'Priečinok',
   'side.target': 'Cieľ',
   'settings.security': 'Zabezpečenie',
   'settings.app': 'Aplikácia',
@@ -1237,6 +1243,7 @@ const sk: Translations = {
   'new.change.newerWins': '{option} v úlohe, ktorá synchronizuje oboma smermi, vyrieši konflikt bez pýtania: naposledy uložená verzia zostane na oboch stranách a tá druhá ide do koša.',
   'new.change.installer': 'Nový inštalátor pre Windows a Linux. Vo Windows si priečinok vyberieš sám, v Linuxe sa ArrowLoop objaví v ponuke aplikácií a odtiaľ ho môžeš aj odinštalovať.',
   'new.change.appFolders': 'V aplikácii pre telefón umožní {add} v {settings}, {phone} synchronizovať v ArrowLoop priečinok, ktorý iná aplikácia ponúka vo výbere súborov Androidu, bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps.',
+  'new.change.phoneJobEditor': 'V aplikácii pre telefón ukazuje úloha svoje dve strany ako karty so smerom medzi nimi a svoje nastavenia v troch kartách: {schedule}, {sync} a {exclude}. Jeden prepínač, {useGlobal}, rozhoduje, či úloha preberá globálne nastavenie synchronizácie, alebo si drží vlastné hodnoty.',
 }
 
 export default sk

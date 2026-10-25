@@ -851,6 +851,12 @@ const hu: Translations = {
   'defaults.off': 'Ki',
   'defaults.exceptions': 'Kivételek',
   'defaults.exceptionsHint': 'A saját értékkel rendelkező feladatok, amelyek megtartják azt, ha itt egy alapérték megváltozik. Minden más feladat az alapértékeket követi.',
+  'edit.useGlobal': 'Globális beállítások használata',
+  'edit.useGlobalHint': 'Amíg ez be van kapcsolva, minden globális jelölésű érték a globális szinkronizálási beállításból jön, és vele együtt változik. Kapcsold ki, hogy ez a feladat saját értékeket kapjon, amelyek a globálisakból indulnak. Ha újra bekapcsolod, ezek elvesznek.',
+  'edit.global': 'globális',
+  'edit.cardSync': 'Szinkronizálás',
+  'edit.excludeOwn': 'Saját minták',
+  'edit.folderPath': 'Mappa',
   'side.target': 'Egy cél',
   'settings.security': 'Biztonság',
   'settings.app': 'Alkalmazás',
@@ -1237,6 +1243,7 @@ const hu: Translations = {
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
   'new.change.installer': 'Új telepítő Windowsra és Linuxra. Windowson te választod ki a mappát, Linuxon az ArrowLoop bekerül az alkalmazásmenübe, és onnan el is távolítható.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
+  'new.change.phoneJobEditor': 'A telefonos alkalmazásban egy feladat a két oldalát kártyaként mutatja, köztük az iránnyal, a beállításait pedig három kártyán: {schedule}, {sync} és {exclude}. Egyetlen kapcsoló, a {useGlobal} dönti el, hogy a feladat a globális szinkronizálási beállítást veszi-e át, vagy megtartja a saját értékeit.',
 }
 
 export default hu

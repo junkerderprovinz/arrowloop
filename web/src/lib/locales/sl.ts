@@ -851,6 +851,12 @@ const sl: Translations = {
   'defaults.off': 'Izklopljeno',
   'defaults.exceptions': 'Izjeme',
   'defaults.exceptionsHint': 'Opravila z lastno vrednostjo, ki jo obdržijo, ko se tukaj spremeni privzeta vrednost. Vsa druga opravila sledijo privzetim vrednostim.',
+  'edit.useGlobal': 'Uporabi globalne nastavitve',
+  'edit.useGlobalHint': 'Dokler je to vklopljeno, vsaka vrednost z oznako globalno prihaja iz globalne nastavitve sinhronizacije in se spreminja z njo. Izklopite ga, da to opravilo dobi lastne vrednosti, ki se začnejo kot globalne. Ko ga znova vklopite, izginejo.',
+  'edit.global': 'globalno',
+  'edit.cardSync': 'Sinhronizacija',
+  'edit.excludeOwn': 'Lastni vzorci',
+  'edit.folderPath': 'Mapa',
   'side.target': 'Cilj',
   'settings.security': 'Varnost',
   'settings.app': 'Aplikacija',
@@ -1237,6 +1243,7 @@ const sl: Translations = {
   'new.change.newerWins': '{option} v opravilu, ki sinhronizira v obe smeri, razreši spor brez vprašanja: nazadnje shranjena različica ostane na obeh straneh, druga pa gre v koš.',
   'new.change.installer': 'Nov namestitveni program za Windows in Linux. V Windows mapo izbereš sam, v Linuxu se ArrowLoop pojavi v meniju aplikacij in ga lahko od tam tudi odstraniš.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
+  'new.change.phoneJobEditor': 'V aplikaciji za telefon opravilo prikaže svoji strani kot kartici s smerjo med njima, svoje nastavitve pa v treh karticah: {schedule}, {sync} in {exclude}. En stikalo, {useGlobal}, odloča, ali opravilo prevzame globalno nastavitev sinhronizacije ali obdrži lastne vrednosti.',
 }
 
 export default sl

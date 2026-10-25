@@ -851,6 +851,12 @@ const tr: Translations = {
   'defaults.off': 'Kapalı',
   'defaults.exceptions': 'İstisnalar',
   'defaults.exceptionsHint': 'Kendi değeri olan işler; burada bir varsayılan değiştiğinde değerlerini korurlar. Diğer bütün işler varsayılanları izler.',
+  'edit.useGlobal': 'Genel ayarları kullan',
+  'edit.useGlobalHint': 'Bu açık olduğu sürece genel işaretli her değer genel eşitleme ayarından gelir ve onunla birlikte değişir. Kapatırsan bu iş, başta genel değerlerle aynı olan kendi değerlerini alır. Yeniden açarsan bu değerler silinir.',
+  'edit.global': 'genel',
+  'edit.cardSync': 'Eşitleme',
+  'edit.excludeOwn': 'Kendi kalıpları',
+  'edit.folderPath': 'Klasör',
   'side.target': 'Bir hedef',
   'settings.security': 'Güvenlik',
   'settings.app': 'Uygulama',
@@ -1237,6 +1243,7 @@ const tr: Translations = {
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
   'new.change.installer': 'Windows ve Linux için yeni bir kurulum programı. Windows\'ta klasörü kendin seçersin, Linux\'ta ArrowLoop uygulama menüsüne eklenir ve oradan kaldırılabilir.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
+  'new.change.phoneJobEditor': 'Telefon uygulamasında bir iş iki tarafını aradaki yönle birlikte kartlar olarak, ayarlarını da üç kartta gösterir: {schedule}, {sync} ve {exclude}. Tek bir anahtar, {useGlobal}, işin genel eşitleme ayarını mı alacağına yoksa kendi değerlerini mi koruyacağına karar verir.',
 }
 
 export default tr

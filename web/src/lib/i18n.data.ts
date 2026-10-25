@@ -892,6 +892,12 @@ export const en = {
   'defaults.off': 'Off',
   'defaults.exceptions': 'Exceptions',
   'defaults.exceptionsHint': 'The jobs with a value of their own, which they keep when a default here changes. Every other job follows the defaults.',
+  'edit.useGlobal': 'Use global settings',
+  'edit.useGlobalHint': 'While this is on, every value marked global comes from the global sync settings and changes with them. Turn it off to give this job its own values, which start out as the global ones. Turning it back on drops them.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sync',
+  'edit.excludeOwn': 'Own patterns',
+  'edit.folderPath': 'Folder',
   'side.target': 'A target',
   'settings.security': 'Security',
   'settings.app': 'App',
@@ -1281,6 +1287,7 @@ export const en = {
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
   'new.change.installer': 'A new installer for Windows and Linux. On Windows you pick the folder yourself, on Linux ArrowLoop lands in the application menu and can be uninstalled from there.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
+  'new.change.phoneJobEditor': 'In the phone app, a job shows its two sides as cards with the direction between them, and its settings in three cards: {schedule}, {sync} and {exclude}. One switch, {useGlobal}, decides whether the job takes the global sync settings or keeps values of its own.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2166,6 +2173,12 @@ export const de: Translations = {
   'defaults.off': 'Aus',
   'defaults.exceptions': 'Ausnahmen',
   'defaults.exceptionsHint': 'Die Aufträge mit einem eigenen Wert, den sie behalten, wenn sich hier eine Vorgabe ändert. Jeder andere Auftrag folgt den Vorgaben.',
+  'edit.useGlobal': 'Globale Einstellungen verwenden',
+  'edit.useGlobalHint': 'Solange das an ist, kommt jeder Wert mit der Marke global aus den globalen Synceinstellungen und ändert sich mit ihnen. Schalte es aus, damit dieser Auftrag eigene Werte bekommt, die zuerst den globalen entsprechen. Schaltest du es wieder ein, fallen sie weg.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Abgleich',
+  'edit.excludeOwn': 'Eigene Muster',
+  'edit.folderPath': 'Ordner',
   'side.target': 'Ein Ziel',
   'settings.security': 'Sicherheit',
   'settings.app': 'App',
@@ -2552,6 +2565,7 @@ export const de: Translations = {
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
   'new.change.installer': 'Ein neuer Installer für Windows und Linux. Unter Windows wählst du den Ordner selbst, unter Linux landet ArrowLoop im Anwendungsmenü und lässt sich dort auch wieder entfernen.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
+  'new.change.phoneJobEditor': 'In der Handy-App zeigt ein Auftrag seine zwei Seiten als Karten mit der Richtung dazwischen und seine Einstellungen in drei Karten: {schedule}, {sync} und {exclude}. Ein Schalter, {useGlobal}, entscheidet, ob der Auftrag die globalen Synceinstellungen übernimmt oder eigene Werte behält.',
 }
 
 export interface Language {

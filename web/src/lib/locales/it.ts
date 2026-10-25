@@ -851,6 +851,12 @@ const it: Translations = {
   'defaults.off': 'Disattivo',
   'defaults.exceptions': 'Eccezioni',
   'defaults.exceptionsHint': 'I lavori con un valore proprio, che mantengono quando qui cambia un predefinito. Tutti gli altri lavori seguono i predefiniti.',
+  'edit.useGlobal': 'Usa le impostazioni globali',
+  'edit.useGlobalHint': 'Finché è attivo, ogni valore segnato come globale viene dall\'impostazione di sincronizzazione globale e cambia con essa. Disattivalo per dare a questo lavoro valori propri, che partono da quelli globali. Se lo riattivi, vanno persi.',
+  'edit.global': 'globale',
+  'edit.cardSync': 'Sincronizzazione',
+  'edit.excludeOwn': 'Modelli propri',
+  'edit.folderPath': 'Cartella',
   'side.target': 'Una destinazione',
   'settings.security': 'Sicurezza',
   'settings.app': 'App',
@@ -1237,6 +1243,7 @@ const it: Translations = {
   'new.change.newerWins': '{option} in un lavoro che sincronizza in entrambe le direzioni risolve un conflitto senza chiedere: la versione salvata per ultima resta su entrambi i lati e l\'altra finisce nel cestino.',
   'new.change.installer': 'Un nuovo programma di installazione per Windows e Linux. Su Windows scegli tu la cartella, su Linux ArrowLoop finisce nel menu delle applicazioni e si può disinstallare da lì.',
   'new.change.appFolders': 'Nell\'app per telefono, {add} in {settings}, {phone} permette ad ArrowLoop di sincronizzare una cartella che un\'altra app offre nel selettore di file di Android, senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps.',
+  'new.change.phoneJobEditor': 'Nell\'app per telefono, un lavoro mostra i suoi due lati come schede con la direzione in mezzo, e le sue impostazioni in tre schede: {schedule}, {sync} e {exclude}. Un solo interruttore, {useGlobal}, decide se il lavoro prende l\'impostazione di sincronizzazione globale o tiene valori propri.',
 }
 
 export default it

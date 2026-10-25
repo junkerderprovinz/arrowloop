@@ -851,6 +851,12 @@ const id: Translations = {
   'defaults.off': 'Mati',
   'defaults.exceptions': 'Pengecualian',
   'defaults.exceptionsHint': 'Tugas dengan nilai sendiri, yang tetap dipertahankan saat bawaan di sini berubah. Semua tugas lain mengikuti bawaan.',
+  'edit.useGlobal': 'Gunakan pengaturan global',
+  'edit.useGlobalHint': 'Selama ini aktif, setiap nilai bertanda global berasal dari pengaturan sinkronisasi global dan ikut berubah bersamanya. Matikan agar tugas ini punya nilai sendiri, yang awalnya sama dengan nilai global. Jika diaktifkan lagi, nilai itu hilang.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sinkronisasi',
+  'edit.excludeOwn': 'Pola sendiri',
+  'edit.folderPath': 'Folder',
   'side.target': 'Sebuah tujuan',
   'settings.security': 'Keamanan',
   'settings.app': 'Aplikasi',
@@ -1237,6 +1243,7 @@ const id: Translations = {
   'new.change.newerWins': '{option} pada tugas yang menyinkronkan dua arah menyelesaikan konflik tanpa bertanya: versi yang terakhir disimpan tetap ada di kedua sisi, dan yang lain masuk ke tempat sampah.',
   'new.change.installer': 'Penginstal baru untuk Windows dan Linux. Di Windows kamu memilih foldernya sendiri, di Linux ArrowLoop masuk ke menu aplikasi dan bisa dicopot dari sana.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
+  'new.change.phoneJobEditor': 'Di aplikasi ponsel, sebuah tugas menampilkan kedua sisinya sebagai kartu dengan arah di antaranya, dan pengaturannya dalam tiga kartu: {schedule}, {sync}, dan {exclude}. Satu sakelar, {useGlobal}, menentukan apakah tugas memakai pengaturan sinkronisasi global atau menyimpan nilainya sendiri.',
 }
 
 export default id

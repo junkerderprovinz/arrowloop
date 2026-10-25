@@ -851,6 +851,12 @@ const et: Translations = {
   'defaults.off': 'Väljas',
   'defaults.exceptions': 'Erandid',
   'defaults.exceptionsHint': 'Tööd, millel on oma väärtus, mille nad jätavad alles, kui siin muutub vaikeväärtus. Kõik teised tööd järgivad vaikeväärtusi.',
+  'edit.useGlobal': 'Kasuta üldisi sätteid',
+  'edit.useGlobalHint': 'Kuni see on sees, tuleb iga väärtus märgiga üldine üldisest sünkroonimise sättest ja muutub koos sellega. Lülita see välja, et anda sellele tööle oma väärtused, mis algavad üldistena. Kui lülitad selle uuesti sisse, kaovad need.',
+  'edit.global': 'üldine',
+  'edit.cardSync': 'Sünkroonimine',
+  'edit.excludeOwn': 'Oma mustrid',
+  'edit.folderPath': 'Kaust',
   'side.target': 'Sihtkoht',
   'settings.security': 'Turvalisus',
   'settings.app': 'Rakendus',
@@ -1237,6 +1243,7 @@ const et: Translations = {
   'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
   'new.change.installer': 'Uus paigaldaja Windowsile ja Linuxile. Windowsis valid kausta ise, Linuxis jõuab ArrowLoop rakenduste menüüsse ja selle saab sealt ka eemaldada.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
+  'new.change.phoneJobEditor': 'Telefonirakenduses näitab töö oma kaht poolt kaartidena, nende vahel suund, ja oma sätteid kolmel kaardil: {schedule}, {sync} ja {exclude}. Üks lüliti, {useGlobal}, otsustab, kas töö võtab üldise sünkroonimise sätte või hoiab oma väärtusi.',
 }
 
 export default et

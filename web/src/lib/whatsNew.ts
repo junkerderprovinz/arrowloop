@@ -58,6 +58,16 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.2.8',
+    changes: [
+      {
+        id: 'phone-job-editor',
+        text: 'new.change.phoneJobEditor',
+        names: { schedule: 'edit.schedule', sync: 'edit.cardSync', exclude: 'edit.exclude', useGlobal: 'edit.useGlobal' },
+      },
+    ],
+  },
+  {
     after: '2.2.6',
     changes: [{ id: 'installer', text: 'new.change.installer' }],
   },

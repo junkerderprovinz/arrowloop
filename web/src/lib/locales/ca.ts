@@ -851,6 +851,12 @@ const ca: Translations = {
   'defaults.off': 'Desactivat',
   'defaults.exceptions': 'Excepcions',
   'defaults.exceptionsHint': 'Les tasques amb un valor propi, que conserven quan aquí canvia un valor predeterminat. Totes les altres tasques segueixen els predeterminats.',
+  'edit.useGlobal': 'Fes servir la configuració global',
+  'edit.useGlobalHint': 'Mentre això està activat, cada valor marcat global ve de la configuració global de sincronització i canvia amb ella. Desactiva-ho per donar a aquesta tasca valors propis, que comencen sent els globals. Si el tornes a activar, es perden.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Sincronització',
+  'edit.excludeOwn': 'Patrons propis',
+  'edit.folderPath': 'Carpeta',
   'side.target': 'Una destinació',
   'settings.security': 'Seguretat',
   'settings.app': 'App',
@@ -1237,6 +1243,7 @@ const ca: Translations = {
   'new.change.newerWins': '{option} en una tasca que sincronitza en els dos sentits resol un conflicte sense preguntar: la versió desada en últim lloc es queda als dos costats i l\'altra va a la paperera.',
   'new.change.installer': 'Un instal·lador nou per a Windows i Linux. A Windows tries tu la carpeta, i a Linux ArrowLoop apareix al menú d\'aplicacions i s\'hi pot desinstal·lar.',
   'new.change.appFolders': 'A l\'app del mòbil, {add} a {settings}, {phone} permet a ArrowLoop sincronitzar una carpeta que una altra aplicació ofereix al selector de fitxers d\'Android, sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps.',
+  'new.change.phoneJobEditor': 'A l\'app del mòbil, una tasca mostra els seus dos costats com a targetes amb la direcció entre elles, i la seva configuració en tres targetes: {schedule}, {sync} i {exclude}. Un sol interruptor, {useGlobal}, decideix si la tasca pren la configuració global de sincronització o conserva valors propis.',
 }
 
 export default ca

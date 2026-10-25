@@ -851,6 +851,12 @@ const fr: Translations = {
   'defaults.off': 'Désactivé',
   'defaults.exceptions': 'Exceptions',
   'defaults.exceptionsHint': 'Les tâches qui ont une valeur propre, qu\'elles gardent quand une valeur par défaut change ici. Toutes les autres tâches suivent les valeurs par défaut.',
+  'edit.useGlobal': 'Utiliser les réglages globaux',
+  'edit.useGlobalHint': 'Tant que ceci est activé, chaque valeur marquée global vient du réglage de synchronisation global et change avec lui. Désactivez-le pour donner à cette tâche ses propres valeurs, qui partent des valeurs globales. Si vous le réactivez, elles sont perdues.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Synchronisation',
+  'edit.excludeOwn': 'Motifs propres',
+  'edit.folderPath': 'Dossier',
   'side.target': 'Une cible',
   'settings.security': 'Sécurité',
   'settings.app': 'App',
@@ -1237,6 +1243,7 @@ const fr: Translations = {
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
   'new.change.installer': 'Un nouvel installateur pour Windows et Linux. Sous Windows, tu choisis toi-même le dossier, sous Linux ArrowLoop arrive dans le menu des applications et se désinstalle depuis là.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
+  'new.change.phoneJobEditor': 'Dans l\'app mobile, une tâche montre ses deux côtés sous forme de cartes avec la direction entre elles, et ses réglages dans trois cartes : {schedule}, {sync} et {exclude}. Un seul interrupteur, {useGlobal}, décide si la tâche prend le réglage de synchronisation global ou garde ses propres valeurs.',
 }
 
 export default fr

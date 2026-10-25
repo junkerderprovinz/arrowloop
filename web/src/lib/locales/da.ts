@@ -851,6 +851,12 @@ const da: Translations = {
   'defaults.off': 'Fra',
   'defaults.exceptions': 'Undtagelser',
   'defaults.exceptionsHint': 'Jobbene med en egen værdi, som de beholder, når en standard her ændres. Alle andre job følger standarderne.',
+  'edit.useGlobal': 'Brug globale indstillinger',
+  'edit.useGlobalHint': 'Så længe dette er slået til, kommer hver værdi mærket global fra den globale synkroniseringsindstilling og ændrer sig med den. Slå det fra for at give jobbet sine egne værdier, som starter som de globale. Slår du det til igen, forsvinder de.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Synkronisering',
+  'edit.excludeOwn': 'Egne mønstre',
+  'edit.folderPath': 'Mappe',
   'side.target': 'Et mål',
   'settings.security': 'Sikkerhed',
   'settings.app': 'App',
@@ -1237,6 +1243,7 @@ const da: Translations = {
   'new.change.newerWins': '{option} i et job, der synkroniserer begge veje, afgør en konflikt uden at spørge: den senest gemte version bliver på begge sider, og den anden havner i papirkurven.',
   'new.change.installer': 'Et nyt installationsprogram til Windows og Linux. På Windows vælger du selv mappen, på Linux havner ArrowLoop i programmenuen og kan afinstalleres derfra.',
   'new.change.appFolders': 'I telefonappen lader {add} under {settings}, {phone} ArrowLoop synkronisere en mappe, som en anden app tilbyder i Androids filvælger, uden root og uden Shizuku. Mapperne vises i et mål ved navn Apps.',
+  'new.change.phoneJobEditor': 'I telefonappen viser et job sine to sider som kort med retningen imellem og sine indstillinger i tre kort: {schedule}, {sync} og {exclude}. Én kontakt, {useGlobal}, afgør, om jobbet bruger den globale synkroniseringsindstilling eller beholder sine egne værdier.',
 }
 
 export default da

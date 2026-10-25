@@ -851,6 +851,12 @@ const fi: Translations = {
   'defaults.off': 'Pois',
   'defaults.exceptions': 'Poikkeukset',
   'defaults.exceptionsHint': 'Työt, joilla on oma arvo, jonka ne säilyttävät, kun oletus tässä muuttuu. Kaikki muut työt seuraavat oletuksia.',
+  'edit.useGlobal': 'Käytä yleisiä asetuksia',
+  'edit.useGlobalHint': 'Kun tämä on päällä, jokainen yleinen-merkitty arvo tulee yleisestä synkronointiasetuksesta ja muuttuu sen mukana. Kytke se pois, niin tämä työ saa omat arvonsa, jotka ovat aluksi samat kuin yleiset. Kun kytket sen taas päälle, ne poistuvat.',
+  'edit.global': 'yleinen',
+  'edit.cardSync': 'Synkronointi',
+  'edit.excludeOwn': 'Omat mallit',
+  'edit.folderPath': 'Kansio',
   'side.target': 'Kohde',
   'settings.security': 'Suojaus',
   'settings.app': 'Sovellus',
@@ -1237,6 +1243,7 @@ const fi: Translations = {
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
   'new.change.installer': 'Uusi asennusohjelma Windowsille ja Linuxille. Windowsissa valitset kansion itse, Linuxissa ArrowLoop tulee sovellusvalikkoon ja sen voi poistaa sieltä.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
+  'new.change.phoneJobEditor': 'Puhelinsovelluksessa työ näyttää kaksi puoltaan kortteina, joiden välissä on suunta, ja asetuksensa kolmessa kortissa: {schedule}, {sync} ja {exclude}. Yksi kytkin, {useGlobal}, ratkaisee, ottaako työ yleisen synkronointiasetuksen vai pitääkö se omat arvonsa.',
 }
 
 export default fi

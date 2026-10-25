@@ -851,6 +851,12 @@ const ms: Translations = {
   'defaults.off': 'Mati',
   'defaults.exceptions': 'Pengecualian',
   'defaults.exceptionsHint': 'Tugas dengan nilai sendiri, yang dikekalkan apabila lalai di sini berubah. Semua tugas lain mengikut lalai.',
+  'edit.useGlobal': 'Guna tetapan global',
+  'edit.useGlobalHint': 'Selagi ini dihidupkan, setiap nilai bertanda global datang daripada tetapan penyegerakan global dan berubah bersamanya. Matikan untuk memberi tugas ini nilai sendiri, yang bermula sama dengan nilai global. Jika dihidupkan semula, nilai itu hilang.',
+  'edit.global': 'global',
+  'edit.cardSync': 'Penyegerakan',
+  'edit.excludeOwn': 'Corak sendiri',
+  'edit.folderPath': 'Folder',
   'side.target': 'Satu sasaran',
   'settings.security': 'Keselamatan',
   'settings.app': 'Aplikasi',
@@ -1237,6 +1243,7 @@ const ms: Translations = {
   'new.change.newerWins': '{option} dalam tugas yang menyegerak dua hala menyelesaikan percanggahan tanpa bertanya: versi yang disimpan terakhir kekal di kedua-dua sisi, dan yang satu lagi masuk ke tong sampah.',
   'new.change.installer': 'Pemasang baharu untuk Windows dan Linux. Di Windows anda memilih folder sendiri, di Linux ArrowLoop masuk ke menu aplikasi dan boleh dinyahpasang dari situ.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
+  'new.change.phoneJobEditor': 'Dalam aplikasi telefon, sesuatu tugas menunjukkan dua sisinya sebagai kad dengan arah di antaranya, dan tetapannya dalam tiga kad: {schedule}, {sync} dan {exclude}. Satu suis, {useGlobal}, menentukan sama ada tugas mengambil tetapan penyegerakan global atau menyimpan nilainya sendiri.',
 }
 
 export default ms

@@ -1,23 +1,35 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
-import { api, type JobConfig } from "../api";
+import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
+import { api, type JobConfig, type Remote } from "../api";
 import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
 import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
-import { Glyph } from "../glyphs";
+import { Glyph, ProviderMark } from "../glyphs";
 import { useT, type T } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
+import { DEVICE, sideMark } from "../sideRow";
 import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Body, Button, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
-import { WaySwitch } from "../way";
-import { Inherits, ScheduleSentence } from "../inherit";
+import { AxisLabel, Body, Button, Card, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
+import { WayButton } from "../way";
+import { FromGlobal, GlobalSwitch, ScheduleSentence } from "../inherit";
 import { amount, type JobLearning } from "../../../web/src/lib/anomalies";
-import { inForce, inheritPatch, owns, type Defaults, type Inherited } from "../../../web/src/lib/follows";
+import {
+  BRAKE_SETTINGS,
+  SETTING_LABEL,
+  SYNC_SETTINGS,
+  describeOwn,
+  describeValue,
+  inForce,
+  inheritAll,
+  owns,
+  type Defaults,
+  type Inherited,
+} from "../../../web/src/lib/follows";
 import {
   buildSchedule,
   EVERY_UNITS,
@@ -34,11 +46,22 @@ import {
 /** How long a field waits before it writes itself, so a typed path is one write. */
 const WRITE_AFTER = 700;
 
+/**
+ * Every setting a job can take from the global sync settings. The switch is
+ * on while the job holds none of them, including those only the desktop
+ * edits, so it never claims a job follows when it does not.
+ */
+const INHERITED: Inherited[] = [...SYNC_SETTINGS, ...BRAKE_SETTINGS];
+
+/** The inherited settings this screen shows, which turning the switch off fills in. */
+const SHOWN: Inherited[] = ["direction", "schedule", "quietPeriod", "emptyDirs", "metadata"];
+
 export function JobEdit() {
   // Opening and editing a job share this screen; see App.tsx.
   const route = useRoute<RouteProp<JobsStack, "JobEdit" | "JobDetail">>();
   const nav = useNavigation<Nav<JobsStack>>();
   const { t } = useT();
+  const { ms } = useMotion();
   const editing = route.params?.name;
 
   const [job, setJob] = useState<JobConfig | null>(null);
@@ -68,14 +91,15 @@ export function JobEdit() {
   // What a job runs with where it follows the global settings.
   const { settings: engineSettings } = useEngineSettings(true);
   const defaults = engineSettings?.defaults as Defaults | undefined;
+  const sets = Object.keys((engineSettings?.excludeSets as Record<string, string[]> | undefined) ?? {}).sort();
 
   const [picking, setPicking] = useState<"left" | "right" | null>(null);
-  const [targets, setTargets] = useState<string[]>([]);
+  const [remotes, setRemotes] = useState<Remote[]>([]);
   useEffect(() => {
     api.storage().then(
-      (list) => setTargets(list.remotes.map((r) => r.name)),
+      (list) => setRemotes(list.remotes),
       // Without targets the picker still browses the phone's folders.
-      () => setTargets([]),
+      () => setRemotes([]),
     );
   }, []);
 
@@ -162,17 +186,35 @@ export function JobEdit() {
   // which writes itself, says so at once, since nothing else would.
   const [tried, setTried] = useState(false);
   const scroll = usePageScroll();
+  const switchRef = useRef<View>(null);
   const nameRef = useRef<View>(null);
   const leftRef = useRef<View>(null);
   const rightRef = useRef<View>(null);
   const scheduleRef = useRef<View>(null);
+  const quietRef = useRef<View>(null);
   const excludeRef = useRef<View>(null);
   const refs: Record<Spot, RefObject<View | null>> = {
     name: nameRef,
     left: leftRef,
     right: rightRef,
     schedule: scheduleRef,
+    quiet: quietRef,
     exclude: excludeRef,
+  };
+
+  // A tap on a value the job takes from the global settings points at the
+  // switch, bringing it into view first when it has scrolled away.
+  const [nudged, setNudged] = useState(0);
+  const nudge = () => {
+    switchRef.current?.measureInWindow((_x, y, _w, h) => {
+      const away = y < 0 || y + h > Dimensions.get("window").height;
+      if (!away) {
+        setNudged((n) => n + 1);
+        return;
+      }
+      scroll.reveal(switchRef);
+      setTimeout(() => setNudged((n) => n + 1), ms.layout);
+    });
   };
 
   const remove = () => {
@@ -204,16 +246,45 @@ export function JobEdit() {
 
   const [upper, lower] = sidePair(job.left, job.right, t);
 
-  const own = (setting: Inherited) => owns(job, setting);
+  const follows = !INHERITED.some((setting) => owns(job, setting));
   // What the job runs with: its own value, or the default's while it follows.
-  const shown = (setting: Inherited): JobConfig => (own(setting) ? job : { ...job, ...inForce(defaults, setting) });
-  const inherits = (setting: Inherited) => ({
-    setting,
-    own: own(setting),
-    defaults,
-    onOverride: () => set(inForce(defaults, setting), true),
-    onInherit: () => set(inheritPatch(setting), true),
+  const shown = (setting: Inherited): JobConfig =>
+    owns(job, setting) ? job : { ...job, ...inForce(defaults, setting) };
+  const global = (setting: Inherited) => ({
+    follows,
+    label: describeOwn(shown(setting), setting, t),
+    onPress: nudge,
   });
+
+  // Off fills in what the screen shows with the global values, so nothing
+  // about the job changes until somebody edits it. On asks first when a value
+  // of the job's own would be lost.
+  const chooseGlobal = (on: boolean) => {
+    if (!on) {
+      const shows = editing ? [...SHOWN, "brakePercent" as const, "changePercent" as const] : SHOWN;
+      set(Object.assign({}, ...shows.map((setting) => inForce(defaults, setting))) as Partial<JobConfig>, true);
+      return;
+    }
+    const drop = () => set(inheritAll(INHERITED) as Partial<JobConfig>, true);
+    const lost = INHERITED.filter(
+      (setting) =>
+        owns(job, setting) &&
+        describeValue(job, setting, t) !== describeValue(inForce(defaults, setting), setting, t),
+    );
+    if (lost.length === 0) {
+      drop();
+      return;
+    }
+    Alert.alert(
+      t("defaults.askTitle"),
+      t("defaults.askAll", { name: job.name, list: lost.map((setting) => t(SETTING_LABEL[setting])).join(", ") }),
+      [
+        { text: t("confirm.cancel"), style: "cancel" },
+        { text: t("defaults.useDefault"), onPress: drop },
+      ],
+    );
+  };
+
   const way = shown("direction").direction ?? "both";
   const timing = shown("schedule").schedule ?? "";
 
@@ -249,10 +320,12 @@ export function JobEdit() {
     <Page scroll={scroll}>
       {editing ? <JobLive name={editing} /> : null}
 
-      {/* What the job is: its name, its two sides and the way files go
-          between them. Each side is labelled after what it is; see sideName.
-          The mode comes with the direction, so the two are overridden and
-          given back together. */}
+      {/* Before the settings it decides about. It waits for the global
+          values, since turning it off copies them into the job. */}
+      <View ref={switchRef} collapsable={false}>
+        <GlobalSwitch value={follows} onChange={chooseGlobal} disabled={!engineSettings} nudge={nudged} />
+      </View>
+
       <Section title={t("phone.job")} hue={0}>
         <View ref={nameRef} collapsable={false}>
           <Field
@@ -263,82 +336,52 @@ export function JobEdit() {
             error={reason("name")}
           />
         </View>
-        <View ref={leftRef} collapsable={false} style={styles.pickRow}>
-          <View style={styles.pickField}>
-            <Field
-              label={sideName(job.left, t)}
-              hint={t("edit.sideHint")}
-              value={job.left}
-              onChange={(left) => set({ left })}
-              placeholder="/storage/emulated/0/DCIM"
-              error={reason("left")}
-            />
-          </View>
-          <Button
-            label={t("pick.title")}
-            labelKey="pick.title"
-            mark={(ink) => <Glyph name="IconFolder" color={ink} />}
-            onPress={() => setPicking("left")}
-          />
-        </View>
-        <Inherits {...inherits("direction")} label={t("direction.label")} hint={t("direction.hint")}>
-          <WaySwitch
-            value={way}
-            upper={upper}
-            lower={lower}
-            onChange={(direction) => set({ direction, mode: direction === "both" ? "sync" : job.mode }, true)}
-          />
-        </Inherits>
-        <View ref={rightRef} collapsable={false} style={styles.pickRow}>
-          <View style={styles.pickField}>
-            <Field
-              label={sideName(job.right, t, "target")}
-              hint={t("edit.sideHint")}
-              value={job.right}
-              onChange={(right) => set({ right })}
-              placeholder="nextcloud:Photos"
-              error={reason("right")}
-            />
-          </View>
-          <Button
-            label={t("pick.title")}
-            labelKey="pick.title"
-            mark={(ink) => <Glyph name="IconFolder" color={ink} />}
-            onPress={() => setPicking("right")}
-          />
-        </View>
-        {/* Each mode explains itself in its segment. A both-ways job has only
-            one, so the name's bubble says why the choice stands still. */}
-        <ChoiceRow
-          label={t("mode.label")}
-          hint={way === "both" ? t("mode.onlyOneWay") : undefined}
-          hue={1}
-          value={way === "both" ? "sync" : (shown("direction").mode ?? "sync")}
-          disabled={!own("direction") || way === "both"}
-          onChange={(mode) => set({ mode }, true)}
-          options={[
-            { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
-            { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
-            { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
-          ]}
-        />
-        {way === "both" ? (
-          <Toggle
-            label={t("edit.newerWins")}
-            hint={t("edit.newerWinsHint")}
-            value={Boolean(job.newerWins)}
-            onChange={(newerWins) => set({ newerWins }, true)}
-          />
-        ) : null}
       </Section>
 
-      {/* When the job runs and what it keeps. A watching job owns its
-          schedule, so Live is locked with it while the job follows the
-          default. No "run at start" switch: the engine restarts with the app
-          and after every eviction, so it would run a job several times a day. */}
-      <Section title={t("history.runs")} hue={1}>
+      {/* The way files go: the two sides one above the other, and the
+          direction between them pointing from the one to the other. The mode
+          comes with the direction, so the two follow the global settings
+          together. */}
+      <View ref={leftRef} collapsable={false}>
+        <SideCard
+          side={job.left}
+          name={sideName(job.left, t)}
+          remotes={remotes}
+          placeholder="/storage/emulated/0/DCIM"
+          error={reason("left")}
+          onChange={(left) => set({ left })}
+          onPick={() => setPicking("left")}
+        />
+      </View>
+      <FromGlobal {...global("direction")}>
+        <WayButton
+          value={way}
+          upper={upper}
+          lower={lower}
+          onChange={(direction) =>
+            set({ direction, mode: direction === "both" ? "sync" : (shown("direction").mode ?? "sync") }, true)
+          }
+        />
+      </FromGlobal>
+      <View ref={rightRef} collapsable={false}>
+        <SideCard
+          side={job.right}
+          name={sideName(job.right, t, "target")}
+          remotes={remotes}
+          placeholder="nextcloud:Photos"
+          error={reason("right")}
+          onChange={(right) => set({ right })}
+          onPick={() => setPicking("right")}
+        />
+      </View>
+
+      {/* A watching job owns its schedule, so Live follows the global
+          settings with it. No "run at start" switch: the engine restarts with
+          the app and after every eviction, so it would run a job several
+          times a day. */}
+      <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")} hue={1}>
         <View ref={scheduleRef} collapsable={false} style={styles.stack}>
-          <Inherits {...inherits("schedule")} label={t("edit.schedule")} hint={t("edit.scheduleHint")}>
+          <FromGlobal {...global("schedule")}>
             <View style={styles.stack}>
               <ScheduleSentence label={t("edit.schedule")} value={timing} watch={Boolean(job.watch)}>
                 <Schedule value={timing} onChange={(schedule) => set({ schedule }, true)} />
@@ -350,9 +393,56 @@ export function JobEdit() {
                 onChange={(watch) => set({ watch }, true)}
               />
             </View>
-          </Inherits>
+          </FromGlobal>
           {reason("schedule") ? <Refusal text={reason("schedule") ?? ""} /> : null}
         </View>
+        <View ref={quietRef} collapsable={false}>
+          <FromGlobal {...global("quietPeriod")}>
+            <QuietField
+              value={shown("quietPeriod").quietPeriod ?? ""}
+              onChange={(quietPeriod) => set({ quietPeriod })}
+              error={reason("quiet")}
+            />
+          </FromGlobal>
+        </View>
+      </Section>
+
+      {/* How the two sides are brought together. A two-way job has only one
+          mode, so it shows the conflict rule instead. */}
+      <Section title={t("edit.cardSync")} hue={2}>
+        {way === "both" ? (
+          <Toggle
+            label={t("edit.newerWins")}
+            hint={t("edit.newerWinsHint")}
+            value={Boolean(job.newerWins)}
+            onChange={(newerWins) => set({ newerWins }, true)}
+          />
+        ) : (
+          <FromGlobal {...global("direction")}>
+            {/* Each mode explains itself in its segment. */}
+            <ChoiceRow
+              label={t("mode.label")}
+              hue={1}
+              value={shown("direction").mode ?? "sync"}
+              onChange={(mode) => set({ mode }, true)}
+              options={[
+                { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
+                { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
+                { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
+              ]}
+            />
+          </FromGlobal>
+        )}
+        {(["emptyDirs", "metadata"] as const).map((setting) => (
+          <FromGlobal key={setting} {...global(setting)}>
+            <Toggle
+              label={t(`edit.${setting}`)}
+              hint={t(`edit.${setting}Hint`)}
+              value={Boolean(shown(setting)[setting])}
+              onChange={(on) => set({ [setting]: on }, true)}
+            />
+          </FromGlobal>
+        ))}
         <Toggle
           label={t("edit.trash")}
           hint={t("edit.trashHint")}
@@ -374,13 +464,26 @@ export function JobEdit() {
         ) : null}
       </Section>
 
-      {/* What crosses over: what is left out, and whether empty folders and
-          permissions go along. The last two come from the global sync
-          settings until the job overrides them. */}
-      <Section title={t("settings.contents")} hue={2}>
+      {/* A shared list adds its patterns to the job's own. */}
+      <Section title={t("edit.exclude")} hue={3}>
+        <AxisLabel hint={t("edit.excludeSetsHint")}>{t("edit.excludeSets")}</AxisLabel>
+        {sets.length === 0 ? <Body muted>{t("sets.none")}</Body> : null}
+        {sets.map((name) => {
+          const chosen = job.excludeSets ?? [];
+          return (
+            <Toggle
+              key={name}
+              label={name}
+              value={chosen.includes(name)}
+              onChange={(on) =>
+                set({ excludeSets: on ? [...chosen, name] : chosen.filter((each) => each !== name) }, true)
+              }
+            />
+          );
+        })}
         <View ref={excludeRef} collapsable={false}>
           <LinesField
-            label={t("edit.exclude")}
+            label={t("edit.excludeOwn")}
             hint={t("edit.excludeHint")}
             value={job.exclude ?? []}
             onChange={(list) => set({ exclude: list })}
@@ -388,24 +491,14 @@ export function JobEdit() {
             error={reason("exclude")}
           />
         </View>
-        {(["emptyDirs", "metadata"] as const).map((setting) => (
-          <Inherits key={setting} {...inherits(setting)}>
-            <Toggle
-              label={t(`edit.${setting}`)}
-              hint={t(`edit.${setting}Hint`)}
-              value={Boolean(shown(setting)[setting])}
-              onChange={(on) => set({ [setting]: on }, true)}
-            />
-          </Inherits>
-        ))}
       </Section>
 
       {/* The brakes hold a run whether or not the anomaly notes are on, so
           they are the job's own setting rather than the Anomalies screen's. */}
       {editing ? (
-        <Section title={t("job.brakes")} hint={t("job.brakesHint")} hue={3}>
+        <Section title={t("job.brakes")} hint={t("job.brakesHint")} hue={4}>
           {BRAKES.map(({ setting, label, hint }) => (
-            <Inherits key={setting} {...inherits(setting)}>
+            <FromGlobal key={setting} {...global(setting)}>
               <NumberField
                 label={t(label)}
                 hint={t(hint)}
@@ -415,7 +508,7 @@ export function JobEdit() {
                   if (!Number.isNaN(value)) set({ [setting]: Math.min(100, value) });
                 }}
               />
-            </Inherits>
+            </FromGlobal>
           ))}
         </Section>
       ) : null}
@@ -443,7 +536,7 @@ export function JobEdit() {
       <FolderPicker
         visible={picking !== null}
         start={picking === "left" ? job.left : job.right}
-        targets={targets}
+        targets={remotes.map((r) => r.name)}
         onPick={(path) => {
           if (picking) set({ [picking]: path } as Partial<JobConfig>);
           setPicking(null);
@@ -454,7 +547,105 @@ export function JobEdit() {
   );
 }
 
-/** The job's own brakes, each the global value until it is overridden. */
+/**
+ * One side of a job as a card: what it is, with the phone's glyph or the
+ * target's logo as the target picker shows it, then its path and the folder
+ * picker. The path stays typed, for a target the picker cannot browse.
+ */
+function SideCard({
+  side,
+  name,
+  remotes,
+  placeholder,
+  error,
+  onChange,
+  onPick,
+}: {
+  side: string;
+  name: string;
+  remotes: Remote[];
+  placeholder: string;
+  error?: string;
+  onChange: (next: string) => void;
+  onPick: () => void;
+}) {
+  const { t } = useT();
+  const { p, scheme } = useTheme();
+  const mark = sideMark(side, remotes);
+  return (
+    <Card>
+      <View style={styles.sideHead}>
+        {mark === DEVICE ? (
+          <Glyph name="IconPhone" color={p.textSub} size={22} />
+        ) : mark ? (
+          <ProviderMark name={mark} width={MARK} height={MARK} color={p.textSub} scheme={scheme} />
+        ) : null}
+        <Text style={[styles.sideName, { color: p.text }]} numberOfLines={1}>
+          {name}
+        </Text>
+      </View>
+      <Field
+        label={t("edit.folderPath")}
+        hint={t("edit.sideHint")}
+        value={side}
+        onChange={onChange}
+        placeholder={placeholder}
+        error={error}
+      />
+      <Button
+        label={t("pick.title")}
+        labelKey="pick.title"
+        mark={(ink) => <Glyph name="IconFolder" color={ink} />}
+        onPress={onPick}
+      />
+    </Card>
+  );
+}
+
+/** The logo's box in a side card's head. */
+const MARK = 28;
+
+/**
+ * The quiet period as the engine spells it, "30s". The text is kept as typed,
+ * since an empty field gives the job back to the global value and would
+ * replace what is being typed with it; a job that waits for nothing says 0s.
+ */
+function QuietField({
+  value,
+  onChange,
+  error,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  error?: string;
+}) {
+  const { t } = useT();
+  const [typed, setTyped] = useState(value);
+  const seen = useRef(value);
+  useEffect(() => {
+    if (seen.current !== value) {
+      seen.current = value;
+      setTyped(value);
+    }
+  }, [value]);
+  return (
+    <Field
+      label={t("edit.quietPeriod")}
+      hint={t("edit.quietHint")}
+      value={typed}
+      onChange={(next) => {
+        setTyped(next);
+        const written = next.trim() || "0s";
+        seen.current = written;
+        onChange(written);
+      }}
+      placeholder="30s"
+      error={error}
+    />
+  );
+}
+
+/** The job's own brakes, each the global value while the job follows. */
 const BRAKES = [
   { setting: "brakePercent", label: "engine.brakePercent", hint: "engine.brakePercentHint" },
   { setting: "changePercent", label: "engine.changePercent", hint: "engine.changePercentHint" },
@@ -483,7 +674,7 @@ function UsualSection({ job }: { job: string }) {
 }
 
 /** The parts of the form a refusal can point at. */
-type Spot = "name" | "left" | "right" | "schedule" | "exclude";
+type Spot = "name" | "left" | "right" | "schedule" | "quiet" | "exclude";
 
 /** What the form itself refuses before anything is sent, and where it says so. */
 function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
@@ -502,6 +693,7 @@ function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
  */
 function spotOf(message: string): Spot {
   if (/schedule|watch/i.test(message)) return "schedule";
+  if (/quietPeriod/i.test(message)) return "quiet";
   if (/exclude/i.test(message)) return "exclude";
   if (/no name/i.test(message)) return "name";
   if (/\bleft\b/i.test(message)) return "left";
@@ -680,9 +872,8 @@ export function bothSidesOnePlace(left: string, right: string): boolean {
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
-  // The picker button sits under the field, so the path gets the full width.
-  pickRow: { gap: space.xs },
-  pickField: {},
+  sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },

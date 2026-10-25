@@ -851,6 +851,12 @@ const nl: Translations = {
   'defaults.off': 'Uit',
   'defaults.exceptions': 'Uitzonderingen',
   'defaults.exceptionsHint': 'De taken met een eigen waarde, die ze houden wanneer hier een standaard verandert. Alle andere taken volgen de standaarden.',
+  'edit.useGlobal': 'Globale instellingen gebruiken',
+  'edit.useGlobalHint': 'Zolang dit aan staat, komt elke waarde met het label globaal uit de globale synchronisatie-instelling en verandert mee. Zet het uit om deze taak eigen waarden te geven, die beginnen als de globale. Zet je het weer aan, dan vervallen ze.',
+  'edit.global': 'globaal',
+  'edit.cardSync': 'Synchronisatie',
+  'edit.excludeOwn': 'Eigen patronen',
+  'edit.folderPath': 'Map',
   'side.target': 'Een doel',
   'settings.security': 'Beveiliging',
   'settings.app': 'App',
@@ -1237,6 +1243,7 @@ const nl: Translations = {
   'new.change.newerWins': '{option} in een taak die beide kanten op synchroniseert, beslist een conflict zonder te vragen: de laatst opgeslagen versie blijft aan beide kanten staan en de andere gaat naar de prullenbak.',
   'new.change.installer': 'Een nieuw installatieprogramma voor Windows en Linux. Op Windows kies je zelf de map, op Linux komt ArrowLoop in het toepassingsmenu en is het daar ook te verwijderen.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
+  'new.change.phoneJobEditor': 'In de telefoonapp toont een taak zijn twee kanten als kaarten met de richting ertussen, en zijn instellingen in drie kaarten: {schedule}, {sync} en {exclude}. Eén schakelaar, {useGlobal}, bepaalt of de taak de globale synchronisatie-instelling volgt of eigen waarden houdt.',
 }
 
 export default nl

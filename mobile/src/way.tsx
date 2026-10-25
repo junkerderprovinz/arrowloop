@@ -4,7 +4,7 @@ import { Glyph, glyphParts, glyphSpan } from "./glyphs";
 import { useT } from "./i18n";
 import { useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { space } from "./theme";
-import { Caption, Choice, useTheme } from "./ui";
+import { Button, Caption, Choice, useTheme } from "./ui";
 
 // The phone stacks a job's two sides, so "to the right" names nothing on it.
 // The direction is drawn from the upper side to the lower one instead, with
@@ -24,6 +24,9 @@ export function wayOf(direction: string | undefined): Way {
 }
 
 const WAYS: Way[] = ["both", "leftToRight", "rightToLeft"];
+
+/** The answer a tap on WayButton moves on to, in the order of WAYS. */
+const NEXT: Record<Way, Way> = { both: "leftToRight", leftToRight: "rightToLeft", rightToLeft: "both" };
 
 const GLYPHS: Record<Way, string> = {
   both: "IconBothWays",
@@ -183,8 +186,43 @@ export function WaySwitch({
   );
 }
 
+/**
+ * The direction between a job's two side cards as one button, the web's
+ * DirectionSwitch: its arrow points the way files go and a tap moves on to
+ * the next of the three answers.
+ */
+export function WayButton({
+  value,
+  onChange,
+  upper,
+  lower,
+}: {
+  value: string | undefined;
+  onChange: (next: Way) => void;
+  upper: string;
+  lower: string;
+}) {
+  const { t } = useT();
+  const way = wayOf(value);
+  const name = wayLabel(way, upper, lower, t("direction.both"));
+  return (
+    <View style={styles.way}>
+      <Button
+        label={name}
+        tone="accent"
+        hue={0}
+        wide={false}
+        hint={t("direction.hint")}
+        mark={(ink) => <WayGlyph way={way} color={ink} />}
+        onPress={() => onChange(NEXT[way])}
+      />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   turned: { transform: [{ rotate: "90deg" }] },
+  way: { flexDirection: "row", justifyContent: "center" },
   stack: { gap: space.xs },
   line: {
     flexDirection: "row",

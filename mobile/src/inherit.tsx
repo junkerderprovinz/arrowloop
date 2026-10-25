@@ -1,89 +1,110 @@
-import { useState, type ReactNode } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
 
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
-import { space, text } from "./theme";
-import { AxisLabel, Button, InfoBubble, Press, Sheet, useTheme } from "./ui";
+import { useMotion } from "./motion";
+import { softOn, space, text } from "./theme";
+import { Press, Sheet, Toggle, useTheme } from "./ui";
 import { describeCadence, readCadence } from "../../web/src/lib/cadence";
-import {
-  SETTING_LABEL,
-  describeValue,
-  inForce,
-  type Defaults,
-  type Inherited,
-} from "../../web/src/lib/follows";
 
 /**
- * A setting the job may take from the global sync settings. While it does,
- * the control shows the value in force, dimmed and out of reach, beside a
- * lock and Override; once the job has its own value, Use the default gives it
- * back after asking, since the own value is lost (GlimStone, "Defaults and
- * exceptions"). A control without a label of its own, such as a selector,
- * passes `label`, and the lock and the button share that title row.
+ * The job's one switch between the global sync settings and values of its
+ * own. Every increment of `nudge` draws the eye to it: a wobble, or at the
+ * motion level off a brief wash of the accent, which moves nothing.
  */
-export function Inherits({
-  setting,
-  own,
-  defaults,
-  onOverride,
-  onInherit,
+export function GlobalSwitch({
+  value,
+  onChange,
+  disabled,
+  nudge,
+}: {
+  value: boolean;
+  onChange: (next: boolean) => void;
+  disabled?: boolean;
+  nudge: number;
+}) {
+  const { t } = useT();
+  const { p, corners, accent } = useTheme();
+  const { ms } = useMotion();
+  const wobble = useRef(new Animated.Value(0)).current;
+  const [lit, setLit] = useState(false);
+
+  useEffect(() => {
+    if (!nudge) return;
+    if (!ms.fade) {
+      setLit(true);
+      const off = setTimeout(() => setLit(false), LIT_FOR);
+      return () => clearTimeout(off);
+    }
+    const leg = Math.round(ms.fade / 2);
+    Animated.sequence(
+      [1, -1, 0.6, -0.6, 0].map((to) => Animated.timing(wobble, { toValue: to, duration: leg, useNativeDriver: true })),
+    ).start();
+  }, [nudge, ms.fade, wobble]);
+
+  return (
+    <Animated.View
+      style={[
+        styles.switch,
+        {
+          backgroundColor: lit ? softOn(accent, 0.28) : p.surface,
+          ...corners.card,
+          transform: [{ translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) }],
+        },
+      ]}
+    >
+      <Toggle
+        label={t("edit.useGlobal")}
+        hint={t("edit.useGlobalHint")}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    </Animated.View>
+  );
+}
+
+/** How long the wash stays when the switch cannot wobble, in ms. */
+const LIT_FOR = 900;
+
+/**
+ * A control showing a value the job takes from the global sync settings:
+ * dimmed, out of reach and marked global. A tap on it calls `onPress`, which
+ * points at the switch that gives the job its own values. `label` is what a
+ * screen reader says for it, the setting and its value.
+ */
+export function FromGlobal({
+  follows,
   label,
-  hint,
+  onPress,
   children,
 }: {
-  setting: Inherited;
-  own: boolean;
-  defaults: Defaults | undefined;
-  onOverride: () => void;
-  onInherit: () => void;
-  label?: string;
-  /** The label's "(i)". */
-  hint?: string;
-  /** The control, showing the value in force. */
+  follows: boolean;
+  label: string;
+  onPress: () => void;
   children: ReactNode;
 }) {
   const { t } = useT();
-  const { p } = useTheme();
-  const ask = () =>
-    Alert.alert(
-      t("defaults.askTitle"),
-      t("defaults.askOne", {
-        setting: t(SETTING_LABEL[setting]),
-        value: describeValue(inForce(defaults, setting), setting, t),
-      }),
-      [
-        { text: t("confirm.cancel"), style: "cancel" },
-        { text: t("defaults.useDefault"), onPress: onInherit },
-      ],
-    );
-  const control = (
-    <View pointerEvents={own ? "auto" : "none"} style={own ? null : styles.locked}>
-      {children}
-    </View>
-  );
-  const line = (
-    <View style={styles.line}>
-      {label ? <AxisLabel hint={hint}>{label}</AxisLabel> : null}
-      {own ? null : (
-        <>
-          <Glyph name="IconLock" color={p.textMuted} />
-          <InfoBubble tip={t("defaults.locked")} />
-        </>
-      )}
-      <View style={styles.fill} />
-      {own ? (
-        <Button label={t("defaults.useDefault")} labelKey="defaults.useDefault" wide={false} onPress={ask} />
-      ) : (
-        <Button label={t("defaults.override")} labelKey="defaults.override" wide={false} onPress={onOverride} />
-      )}
-    </View>
-  );
+  const { p, corners } = useTheme();
+  if (!follows) return <>{children}</>;
   return (
-    <View style={styles.stack}>
-      {label ? line : control}
-      {label ? control : line}
-    </View>
+    <Press
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${label}, ${t("edit.global")}`}
+      accessibilityHint={t("edit.useGlobalHint")}
+      style={styles.stack}
+    >
+      <View pointerEvents="none" importantForAccessibility="no-hide-descendants" style={styles.dimmed}>
+        {children}
+      </View>
+      <View style={styles.markRow}>
+        <Text style={[styles.mark, { color: p.textMuted, backgroundColor: p.surface2, ...corners.pill }]}>
+          {t("edit.global")}
+        </Text>
+      </View>
+    </Press>
   );
 }
 
@@ -130,10 +151,11 @@ export function ScheduleSentence({
 }
 
 const styles = StyleSheet.create({
+  switch: { paddingHorizontal: space.lg, paddingVertical: space.xs },
   stack: { gap: space.xs },
-  locked: { opacity: 0.4 },
-  line: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  fill: { flex: 1 },
+  dimmed: { opacity: 0.4 },
+  markRow: { flexDirection: "row", justifyContent: "flex-end" },
+  mark: { fontSize: text.meta, paddingHorizontal: space.sm, paddingVertical: 2, overflow: "hidden" },
   sentence: {
     flexDirection: "row",
     alignItems: "center",
