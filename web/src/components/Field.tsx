@@ -171,23 +171,28 @@ export function NumberField({
     return attachNumberSteppers(box.current)
   }, [])
 
+  // The steppers wrap the input in a span of their own. React keeps track of the
+  // outer span instead, so removing the field never asks for the input at a
+  // place it no longer is.
   return (
-    <input
-      ref={box}
-      type="number"
-      value={value}
-      min={min}
-      max={max}
-      aria-label={label}
-      onChange={(e) => {
-        const next = parseInt(e.target.value, 10)
-        // An empty box is a value being typed; passing NaN up would write a
-        // schedule of "@every NaNh".
-        if (Number.isFinite(next)) onChange(next)
-      }}
-      className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition focus:brightness-125`}
-      style={{ borderRadius: 'var(--radius-control)' }}
-    />
+    <span className="contents">
+      <input
+        ref={box}
+        type="number"
+        value={value}
+        min={min}
+        max={max}
+        aria-label={label}
+        onChange={(e) => {
+          const next = parseInt(e.target.value, 10)
+          // An empty box is a value being typed; passing NaN up would write a
+          // schedule of "@every NaNh".
+          if (Number.isFinite(next)) onChange(next)
+        }}
+        className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition focus:brightness-125`}
+        style={{ borderRadius: 'var(--radius-control)' }}
+      />
+    </span>
   )
 }
 
