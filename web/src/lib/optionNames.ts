@@ -20,6 +20,7 @@ const NAMES: Record<string, TranslationKey> = {
   provider: 'opt.provider',
   region: 'opt.region',
   endpoint: 'opt.endpoint',
+  bucket: 'opt.bucket',
   account: 'opt.account',
   key: 'opt.key',
   key_file: 'opt.keyFile',

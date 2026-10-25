@@ -91,12 +91,12 @@ func typedForm(backend, key, stored string) string {
 }
 
 // connectionString renders settings as rclone's inline-remote syntax,
-// :backend,k=v,k=v:, with the keys sorted. The share an SMB check opens is a
-// path after it rather than a setting.
+// :backend,k=v,k=v:, with the keys sorted. The bucket or share a check opens
+// is a path after it rather than a setting.
 func connectionString(backend string, settings map[string]string) string {
 	keys := make([]string, 0, len(settings))
 	for key := range settings {
-		if key == "type" || settings[key] == "" || (backend == "smb" && key == shareKey) {
+		if key == "type" || settings[key] == "" || ownOption(backend, key) {
 			continue
 		}
 		keys = append(keys, key)

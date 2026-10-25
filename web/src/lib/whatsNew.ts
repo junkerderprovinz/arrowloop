@@ -61,6 +61,53 @@ export const RELEASES: Release[] = [
     after: '2.2.8',
     changes: [
       {
+        id: 'phone-job-editor',
+        text: 'new.change.phoneJobEditor',
+        names: { schedule: 'edit.schedule', sync: 'edit.cardSync', exclude: 'edit.exclude', useGlobal: 'edit.useGlobal' },
+      },
+      {
+        id: 'job-window',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.jobWindow',
+        names: { schedule: 'edit.schedule', matching: 'edit.matching', exclude: 'edit.exclude' },
+      },
+      {
+        id: 'use-global',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.useGlobal',
+        names: { useGlobal: 'edit.useGlobal' },
+      },
+      {
+        id: 'target-switches',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetSwitches',
+        names: { encryption: 'targets.ftpTls' },
+      },
+      {
+        id: 'target-setup-choice',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.setupChoice',
+      },
+      {
+        id: 'target-bucket',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.bucketField',
+      },
+      {
+        id: 'provider-marks',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.providerMarks',
+        names: { connect: 'targets.addStorage' },
+      },
+      {
         id: 'two-factor-once',
         at: ['/targets', '/settings/targets'],
         where: ['nav.targets'],
@@ -89,6 +136,10 @@ export const RELEASES: Release[] = [
         names: { test: 'targets.check', key: 'targets.hostKey' },
       },
     ],
+  },
+  {
+    after: '2.2.6',
+    changes: [{ id: 'installer', text: 'new.change.installer' }],
   },
   {
     after: '2.2.5',

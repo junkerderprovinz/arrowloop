@@ -70,12 +70,12 @@ func TestATestShowsTheServersKeyAndTheSavePinsIt(t *testing.T) {
 	freshConfig(t)
 	form, fingerprint := sftpServer(t)
 
-	key, err := remotes.Try(context.Background(), "", "sftp", form)
+	got, err := remotes.Try(context.Background(), "", "sftp", form)
 	if err != nil {
 		t.Fatalf("try: %v", err)
 	}
-	if key == nil || key.Fingerprint != fingerprint {
-		t.Fatalf("the test showed %+v, want the server's %s", key, fingerprint)
+	if key := got.HostKey; key == nil || key.Fingerprint != fingerprint {
+		t.Fatalf("the test showed %+v, want the server's %s", got.HostKey, fingerprint)
 	}
 	if err := remotes.Save("box", "sftp", form); err != nil {
 		t.Fatal(err)

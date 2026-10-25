@@ -16,17 +16,23 @@ import (
 )
 
 // Try checks a target's form before it is saved: the settings as the form
-// holds them, with the secrets it withheld filled in from the saved target
-// called name. What rclone writes back while it connects, a refreshed token or
+// holds them after rclone's own setup, with the secrets it withheld filled in
+// from the saved target called name. What rclone writes back while it connects, a refreshed token or
 // the session a two-factor code opened, cannot be had a second time: Box and
 // Jottacloud void the token a refresh used, and a code works once. So it goes
 // to the saved target the form edits, and the Save of the same form keeps it.
 // An SFTP server's host key is pinned the same way, and returned so the
 // person can compare it with the one the provider publishes.
-func Try(ctx context.Context, name, backend string, form map[string]string) (*HostKey, error) {
-	key := formKey(backend, form)
+func Try(ctx context.Context, name, backend string, form map[string]string) (Tried, error) {
+	// Save receives the form after the same setup, which it remembers, so
+	// the two name the form alike.
+	set, question, err := Setup(ctx, backend, form)
+	if err != nil || question != nil {
+		return Tried{Question: question}, err
+	}
+	key := formKey(backend, set)
 	settings := map[string]string{}
-	maps.Copy(settings, WithSavedSecrets(name, backend, form))
+	maps.Copy(settings, WithSavedSecrets(name, backend, set))
 	for k, v := range tried.recall(key) {
 		settings[k] = typedForm(backend, k, v)
 	}
@@ -36,7 +42,7 @@ func Try(ctx context.Context, name, backend string, form map[string]string) (*Ho
 	if backend == "sftp" {
 		pinned, read, err := pinTry(ctx, name, settings)
 		if err != nil {
-			return nil, err
+			return Tried{}, err
 		}
 		shown = pinned
 		if read {
@@ -48,9 +54,18 @@ func Try(ctx context.Context, name, backend string, form map[string]string) (*Ho
 	maps.Copy(learned, wrote)
 	if len(learned) > 0 {
 		tried.keep(key, learned)
-		carryBack(name, backend, form, learned)
+		carryBack(name, backend, set, learned)
 	}
-	return shown, err
+	return Tried{HostKey: shown}, err
+}
+
+// Tried is what a test found besides whether the target answers.
+type Tried struct {
+	// HostKey is the key an SFTP server was held to.
+	HostKey *HostKey
+	// Question is a choice rclone's setup leaves open. The target is checked
+	// once it is answered.
+	Question *Question
 }
 
 // pinTry pins sftp settings that do not say how to check the server to the
@@ -202,9 +217,10 @@ func checkSettings(ctx context.Context, backend string, settings map[string]stri
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings)+checkedShare(backend, settings[shareKey]))
+	folder := checkedFolder(backend, func(key string) string { return settings[key] })
+	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings)+folder)
 	if err == nil {
-		err = listRoot(ctx, f, backend)
+		err = listRoot(ctx, f, backend, folder)
 	} else {
 		err = checkErr(ctx, err)
 	}

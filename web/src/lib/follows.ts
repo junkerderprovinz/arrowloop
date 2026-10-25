@@ -199,3 +199,19 @@ export function exceptionsOf(jobs: (InheritingJob & { name?: string })[], settin
 export function inheritAll(settings: Inherited[]): Partial<InheritingJob> {
   return Object.assign({}, ...settings.map(inheritPatch)) as Partial<InheritingJob>
 }
+
+/** The settings the job window shows, which its one switch hands to the defaults or takes back. */
+export const JOB_WINDOW_SETTINGS: Inherited[] = ['direction', 'schedule', 'quietPeriod', 'emptyDirs', 'metadata']
+
+/** Whether the job holds none of `settings` itself, so all of them come from the defaults. */
+export function followsAll(job: InheritingJob, settings: Inherited[]): boolean {
+  return !settings.some((s) => owns(job, s))
+}
+
+/**
+ * The change that writes the value in force for every one of `settings` as the
+ * job's own, so the fields stay as they were and can be edited from there.
+ */
+export function overrideAll(defaults: Defaults | undefined, settings: Inherited[]): Partial<InheritingJob> {
+  return Object.assign({}, ...settings.map((s) => inForce(defaults, s))) as Partial<InheritingJob>
+}

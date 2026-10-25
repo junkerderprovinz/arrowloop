@@ -62,16 +62,19 @@ export function nextDirection(current: Direction): Direction {
 }
 
 /**
- * The editable direction, between the rows of the two sides it relates. It
- * names the current answer in words beside the arrow, since an arrow alone is
- * easy to pass over. Clicking or an arrow key cycles through the three answers.
+ * The editable direction, between the two sides it relates. It names the
+ * current answer in words beside the arrow, since an arrow alone is easy to
+ * pass over. Clicking or an arrow key cycles through the three answers.
  */
 export function DirectionSwitch({
   direction,
   onChange,
+  vertical = false,
 }: {
   direction: Direction
   onChange: (next: Direction) => void
+  /** The sides stand above each other, left on top, so the arrow points down for left to right. */
+  vertical?: boolean
 }) {
   const { t } = useT()
   const name = t(directionKey[direction])
@@ -102,7 +105,7 @@ export function DirectionSwitch({
         ...(hueVars(0) as CSSProperties),
       }}
     >
-      <span className="glim-btn-glyph" aria-hidden>
+      <span className={`glim-btn-glyph${vertical ? ' rotate-90' : ''}`} data-turned={vertical || undefined} aria-hidden>
         {/* No size prop: `.glim-btn-key` sizes the mark in CSS, which a width
             attribute on the svg would lose to anyway. */}
         <DirectionGlyph direction={direction} />

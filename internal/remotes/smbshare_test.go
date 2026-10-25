@@ -6,16 +6,9 @@ import "testing"
 // the test opens the share the form names.
 func TestAnSMBTestOpensTheShareItNames(t *testing.T) {
 	settings := map[string]string{"host": "nas", "share": "/fotos/"}
-	got := connectionString("smb", settings) + checkedShare("smb", settings[shareKey])
+	got := connectionString("smb", settings) + checkedFolder("smb", func(key string) string { return settings[key] })
 	if got != ":smb,host=nas:fotos" {
 		t.Fatalf("the test opens %q, want the share fotos", got)
-	}
-}
-
-func TestASavedSMBTargetIsCheckedInItsShare(t *testing.T) {
-	saved(t, "nas", "smb", map[string]string{"host": "nas.invalid", "share": "fotos"})
-	if got := savedRoot("nas"); got != "nas:fotos" {
-		t.Fatalf("the check opens %q, want nas:fotos", got)
 	}
 }
 
