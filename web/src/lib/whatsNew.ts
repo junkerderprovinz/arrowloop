@@ -65,6 +65,22 @@ export const RELEASES: Release[] = [
         text: 'new.change.phoneJobEditor',
         names: { schedule: 'edit.schedule', sync: 'edit.cardSync', exclude: 'edit.exclude', useGlobal: 'edit.useGlobal' },
       },
+      {
+        id: 'job-window',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.jobWindow',
+        names: { schedule: 'edit.schedule', matching: 'edit.matching', exclude: 'edit.exclude' },
+      },
+      {
+        id: 'use-global',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.useGlobal',
+        names: { useGlobal: 'edit.useGlobal' },
+      },
     ],
   },
   {
