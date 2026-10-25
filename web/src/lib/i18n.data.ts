@@ -182,7 +182,7 @@ export const en = {
   'dupes.summary': '{sets} sets, {wasted} to reclaim, out of {scanned} files.',
   'dupes.none': 'No duplicates among {scanned} files.',
   'check.more': '{found} findings in total, showing the first {shown}.',
-  'jobs.schedule.manual': 'manual',
+  'jobs.schedule.manual': 'manually',
 
   // Written out, because abbreviations rarely carry over between languages.
   'preview.title': 'Preview',
@@ -1311,7 +1311,7 @@ export const en = {
   'new.change.useGlobal': '{useGlobal} at the top of a job\'s window decides for the whole job whether it follows the global sync settings. While it is on, their values show greyed out.',
   'new.change.scheduleKinds': 'A job\'s schedule is picked in one bar in its card: {off}, {every}, {daily}, {weekly}, {live} or {cron}. Below it stand only the fields that choice needs. The global sync settings and the phone app work the same way.',
   'new.change.modeKinds': '{sync}, {mirror} and {move} stand in one bar of equal parts at the top of {matching}, each with its own explanation.',
-  'new.change.manualName': 'A job without a schedule now says {manual} in the list and on its page, the same word the schedule uses.',
+  'new.change.manualName': 'A job without a schedule now says it runs {manual} in the list and on its page, in line with the schedule.',
   'new.change.targetSwitches': 'A target\'s settings that are only on or off are switches, and an FTP target asks once which {encryption} it uses.',
   'new.change.setupChoice': 'When a sign-in opens more than one drive or workspace, testing a target asks which one to use. Jottacloud takes the personal login token from its security page, and a ShareFile or Zoho token pasted from rclone authorize brings its address or region along.',
   'new.change.bucketField': 'An S3 target takes a bucket, so a key that may open only one, such as a Cloudflare R2 object token, passes the test and opens that bucket in the folder picker.',

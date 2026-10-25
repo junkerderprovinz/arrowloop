@@ -340,8 +340,8 @@ export function JobForm({
           <div data-new="schedule-hs">
             <ScheduleKinds editor={schedule} />
           </div>
-          <ScheduleDetails editor={schedule} />
         </Held>
+        <ScheduleDetails editor={schedule} {...held} />
         {/* Zero is written as 0s, since an empty quiet period is one the job
             leaves to the defaults. */}
         <SettingRow label={t('edit.quietPeriod')} hint={t('edit.quietHint')} {...held}>

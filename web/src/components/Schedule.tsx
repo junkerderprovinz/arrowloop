@@ -5,6 +5,7 @@ import { hueVars } from '../lib/appearance'
 
 import { Selector } from './Selector'
 import { Choice, NumberField, Text } from './Field'
+import { Held } from './GlobalValues'
 import { QuietPeriod } from './QuietPeriod'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { TimePicker } from './TimePicker'
@@ -127,8 +128,19 @@ export function ScheduleKinds({ editor, hug = false, hue }: { editor: ScheduleEd
   )
 }
 
-/** The fields of the chosen kind, one setting to a line. A schedule that never runs by itself has none. */
-export function ScheduleDetails({ editor }: { editor: ScheduleEditor }) {
+/**
+ * The fields of the chosen kind, one setting to a line, each held on its own
+ * like the rows beside it. A schedule that never runs by itself has none.
+ */
+export function ScheduleDetails({
+  editor,
+  held = false,
+  onHeld = () => undefined,
+}: {
+  editor: ScheduleEditor
+  held?: boolean
+  onHeld?: () => void
+}) {
   const { t } = useT()
   const { state } = editor
 
@@ -144,20 +156,20 @@ export function ScheduleDetails({ editor }: { editor: ScheduleEditor }) {
       return null
     case 'every':
       return (
-        <Row label={t('schedule.everyLabel')}>
+        <DetailRow held={held} onHeld={onHeld} label={t('schedule.everyLabel')}>
           <EveryPicker state={state} update={editor.update} />
-        </Row>
+        </DetailRow>
       )
     case 'daily':
       return (
-        <Row label={t('schedule.at')}>
+        <DetailRow held={held} onHeld={onHeld} label={t('schedule.at')}>
           <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => editor.update({ time })} />
-        </Row>
+        </DetailRow>
       )
     case 'weekly':
       return (
         <>
-          <Row label={t('schedule.days')}>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.days')}>
             <div className="glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]" style={{ borderRadius: 'var(--radius-pill)' }}>
               {/* Each day takes its own palette position, like every multi-part
                   control. */}
@@ -184,37 +196,55 @@ export function ScheduleDetails({ editor }: { editor: ScheduleEditor }) {
                 )
               })}
             </div>
-          </Row>
-          <Row label={t('schedule.at')}>
+          </DetailRow>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.at')}>
             <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => editor.update({ time })} />
-          </Row>
+          </DetailRow>
         </>
       )
     case 'live':
       return (
         <>
-          <Row label={t('schedule.settle')} hint={t('schedule.settleHint')}>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.settle')} hint={t('schedule.settleHint')}>
             <QuietPeriod value={editor.settle} onChange={editor.setSettle} />
-          </Row>
-          <Row label={t('schedule.backstop')} hint={t('schedule.backstopHint')}>
+          </DetailRow>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.backstop')} hint={t('schedule.backstopHint')}>
             <EveryPicker state={state} update={editor.update} />
-          </Row>
+          </DetailRow>
         </>
       )
     case 'cron':
-      return <Text value={editor.cron} onChange={editor.type} placeholder="0 */6 * * *" label={t('schedule.cron')} mono />
+      return (
+        <Held block held={held} onHeld={onHeld}>
+          <Text value={editor.cron} onChange={editor.type} placeholder="0 */6 * * *" label={t('schedule.cron')} mono />
+        </Held>
+      )
   }
 }
 
 /** One setting on a line, as in a settings card: its name at the start, its control at the end. */
-function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+function DetailRow({
+  label,
+  hint,
+  held,
+  onHeld,
+  children,
+}: {
+  label: string
+  hint?: string
+  held: boolean
+  onHeld: () => void
+  children: ReactNode
+}) {
   return (
     <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
       <span className="flex min-w-0 flex-[1_1_12.5rem] items-center gap-1.5 text-body text-carbon-text">
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      <div className="flex min-w-0 max-w-full flex-wrap items-center justify-end gap-2">{children}</div>
+      <Held held={held} onHeld={onHeld}>
+        <div className="flex min-w-0 max-w-full flex-wrap items-center justify-end gap-2">{children}</div>
+      </Held>
     </div>
   )
 }

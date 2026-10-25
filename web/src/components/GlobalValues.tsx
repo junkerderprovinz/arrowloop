@@ -48,12 +48,15 @@ export function Held({
 }: {
   held: boolean
   onHeld: () => void
-  /** Spans its card, with the mark under the control, for a bar rather than a control at a row's end. */
+  /**
+   * Spans its card, for a bar rather than a control at a row's end. In a
+   * narrow card the mark goes under the bar, so the bar keeps its rows.
+   */
   block?: boolean
   children: ReactNode
 }) {
   const { t } = useT()
-  if (!held) return <div className={block ? 'flex flex-col gap-4' : 'flex min-w-0 max-w-full'}>{children}</div>
+  if (!held) return <div className={block ? 'w-full' : 'flex min-w-0 max-w-full'}>{children}</div>
   return (
     <div
       role="group"
@@ -64,10 +67,10 @@ export function Held({
       onMouseDown={(e) => e.preventDefault()}
       onClick={onHeld}
       onFocus={onHeld}
-      className={`flex min-w-0 max-w-full ${block ? 'flex-col items-end' : 'items-center justify-end'} gap-2 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)`}
+      className={`flex min-w-0 max-w-full items-center justify-end gap-2 ${block ? 'w-full flex-wrap' : ''} outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)`}
       style={{ borderRadius: 'var(--radius-control)' }}
     >
-      <div inert className={`flex min-w-0 max-w-full opacity-50 grayscale ${block ? 'w-full flex-col gap-4' : ''}`}>
+      <div inert className={`min-w-0 max-w-full opacity-50 grayscale ${block ? 'flex-[1_1_20rem]' : 'flex'}`}>
         {children}
       </div>
       <span className="shrink-0 text-subline text-carbon-textMuted" data-tip={t('edit.globalTip')}>

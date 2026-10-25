@@ -215,7 +215,7 @@ describe('the exceptions', () => {
     jobs = [{ name: 'photos' }, { name: 'music', schedule: '', emptyDirs: true }]
     render(<SyncPage />)
     const row = (await screen.findByText('music')).closest('li') as HTMLElement
-    expect(row.textContent).toContain('Schedule: manual')
+    expect(row.textContent).toContain('Schedule: manually')
     expect(row.textContent).toContain('Carry empty folders: On')
     expect(screen.queryByText('photos')).toBeNull()
   })
