@@ -698,6 +698,8 @@ const fr: Translations = {
   'opt.vendor': 'Type de serveur',
   'opt.provider': 'Fournisseur',
   'opt.region': 'Région',
+  'opt.bucket': 'Compartiment',
+  'opt.bucketHint': 'Uniquement pour une clé qui peut ouvrir un compartiment sans lister les autres, comme un jeton d\'objets Cloudflare R2. Le test et le sélecteur de dossiers ouvrent alors directement ce compartiment. Laissez vide pour choisir dans la liste.',
   'opt.endpoint': 'Point de terminaison',
   'opt.account': 'Compte',
   'opt.key': 'Clé',
@@ -1252,6 +1254,7 @@ const fr: Translations = {
   'new.change.newerWins': '{option} dans une tâche qui synchronise dans les deux sens règle un conflit sans demander : la version enregistrée en dernier reste des deux côtés, et l\'autre part à la corbeille.',
   'new.change.targetSwitches': 'Les réglages d\'une cible qui ne sont qu\'activés ou désactivés sont des interrupteurs, et une cible FTP demande une seule fois quel {encryption} elle utilise.',
   'new.change.setupChoice': 'Quand une connexion ouvre plusieurs lecteurs ou espaces de travail, le test d\'une cible demande lequel utiliser. Jottacloud accepte le jeton de connexion personnel de sa page de sécurité, et un jeton ShareFile ou Zoho collé depuis rclone authorize apporte son adresse ou sa région.',
+  'new.change.bucketField': 'Une cible S3 accepte un compartiment : une clé qui ne peut en ouvrir qu\'un, comme un jeton d\'objets Cloudflare R2, passe le test et ouvre ce compartiment dans le sélecteur de dossiers.',
   'new.change.appFolders': 'Dans l\'app mobile, {add} dans {settings}, {phone} permet à ArrowLoop de synchroniser un dossier qu\'une autre application propose dans le sélecteur de fichiers d\'Android, sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps.',
 }
 

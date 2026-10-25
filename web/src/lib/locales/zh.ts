@@ -698,6 +698,8 @@ const zh: Translations = {
   'opt.vendor': '服务器类型',
   'opt.provider': '服务商',
   'opt.region': '区域',
+  'opt.bucket': '存储桶',
+  'opt.bucketHint': '仅用于只能打开一个存储桶、不能列出其他存储桶的密钥，例如 Cloudflare R2 对象令牌。这样测试和文件夹选择会直接打开这个存储桶。留空则从列表中选择。',
   'opt.endpoint': '端点',
   'opt.account': '账户',
   'opt.key': '密钥',
@@ -1252,6 +1254,7 @@ const zh: Translations = {
   'new.change.newerWins': '在双向同步的任务中，{option} 会直接解决冲突，无需询问：最后保存的版本留在两侧，另一个移入回收站。',
   'new.change.targetSwitches': '目标中只有开和关两种状态的设置都变成了开关，FTP 目标只问一次它使用哪种{encryption}。',
   'new.change.setupChoice': '当一次登录能打开多个驱动器或工作区时，测试目标会询问要用哪一个。Jottacloud 接受其安全页面上的个人登录令牌，从 rclone authorize 粘贴的 ShareFile 或 Zoho 令牌会带上自己的地址或区域。',
+  'new.change.bucketField': 'S3 目标可以指定存储桶，因此只能打开一个存储桶的密钥（例如 Cloudflare R2 对象令牌）也能通过测试，并在文件夹选择中打开那个存储桶。',
   'new.change.appFolders': '在手机应用中，{settings}、{phone} 下的 {add} 可让 ArrowLoop 同步其他应用在 Android 文件选择器中提供的文件夹，无需 root 或 Shizuku。这些文件夹会显示在名为 Apps 的目标中。',
 }
 

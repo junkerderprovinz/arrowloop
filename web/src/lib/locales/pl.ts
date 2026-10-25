@@ -698,6 +698,8 @@ const pl: Translations = {
   'opt.vendor': 'Typ serwera',
   'opt.provider': 'Dostawca',
   'opt.region': 'Region',
+  'opt.bucket': 'Zasobnik',
+  'opt.bucketHint': 'Tylko dla klucza, który może otworzyć jeden zasobnik, ale nie może wyświetlić pozostałych, jak token obiektów Cloudflare R2. Test i wybór folderu otwierają wtedy od razu ten zasobnik. Zostaw puste, aby wybrać z listy.',
   'opt.endpoint': 'Punkt końcowy',
   'opt.account': 'Konto',
   'opt.key': 'Klucz',
@@ -1252,6 +1254,7 @@ const pl: Translations = {
   'new.change.newerWins': '{option} w zadaniu synchronizującym w obie strony rozstrzyga konflikt bez pytania: wersja zapisana jako ostatnia zostaje po obu stronach, a druga trafia do kosza.',
   'new.change.targetSwitches': 'Ustawienia celu, które są tylko włączone albo wyłączone, są przełącznikami, a cel FTP raz pyta, jakiego {encryption} używa.',
   'new.change.setupChoice': 'Gdy logowanie otwiera więcej niż jeden dysk lub obszar roboczy, test celu pyta, którego użyć. Jottacloud przyjmuje osobisty token logowania ze swojej strony bezpieczeństwa, a token ShareFile lub Zoho wklejony z rclone authorize przynosi swój adres lub region.',
+  'new.change.bucketField': 'Cel S3 przyjmuje zasobnik, więc klucz, który może otworzyć tylko jeden, jak token obiektów Cloudflare R2, przechodzi test i otwiera ten zasobnik w wyborze folderu.',
   'new.change.appFolders': 'W aplikacji na telefon {add} w {settings}, {phone} pozwala ArrowLoop synchronizować folder, który inna aplikacja udostępnia w selektorze plików Androida, bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps.',
 }
 

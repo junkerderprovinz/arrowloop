@@ -42,9 +42,9 @@ func Join(name, dir string) string {
 }
 
 // Parent is the folder above dir on the same target, or empty at the target's
-// top, where the picker goes back to its list of roots.
+// root, where the picker goes back to its list of roots.
 func Parent(name, dir string) string {
-	if dir == "" {
+	if dir == "" || dir == Root(name) {
 		return ""
 	}
 	up := path.Dir(dir)

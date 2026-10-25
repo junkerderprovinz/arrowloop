@@ -698,6 +698,8 @@ const pt: Translations = {
   'opt.vendor': 'Tipo de servidor',
   'opt.provider': 'Fornecedor',
   'opt.region': 'Região',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Só para uma chave que pode abrir um bucket mas não listar os outros, como um token de objetos do Cloudflare R2. O teste e o seletor de pastas abrem então diretamente este bucket. Deixe vazio para escolher da lista.',
   'opt.endpoint': 'Ponto final',
   'opt.account': 'Conta',
   'opt.key': 'Chave',
@@ -1252,6 +1254,7 @@ const pt: Translations = {
   'new.change.newerWins': '{option} numa tarefa que sincroniza nos dois sentidos resolve um conflito sem perguntar: a versão guardada por último fica nos dois lados e a outra vai para a reciclagem.',
   'new.change.targetSwitches': 'As definições de um destino que só estão ligadas ou desligadas são interruptores, e um destino FTP pergunta uma só vez que {encryption} usa.',
   'new.change.setupChoice': 'Quando um início de sessão abre mais do que uma unidade ou área de trabalho, o teste de um destino pergunta qual usar. O Jottacloud aceita o token pessoal da sua página de segurança, e um token do ShareFile ou do Zoho colado a partir do rclone authorize traz o seu endereço ou região.',
+  'new.change.bucketField': 'Um destino S3 aceita um bucket, por isso uma chave que só pode abrir um, como um token de objetos do Cloudflare R2, passa no teste e abre esse bucket no seletor de pastas.',
   'new.change.appFolders': 'Na app do telemóvel, {add} em {settings}, {phone} deixa o ArrowLoop sincronizar uma pasta que outra aplicação oferece no seletor de ficheiros do Android, sem root nem Shizuku. As pastas aparecem num destino chamado Apps.',
 }
 

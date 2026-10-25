@@ -698,6 +698,8 @@ const tr: Translations = {
   'opt.vendor': 'Sunucu türü',
   'opt.provider': 'Sağlayıcı',
   'opt.region': 'Bölge',
+  'opt.bucket': 'Kova',
+  'opt.bucketHint': 'Yalnızca bir kovayı açabilen ama diğerlerini listeleyemeyen bir anahtar için, örneğin Cloudflare R2 nesne belirteci. Test ve klasör seçici o zaman doğrudan bu kovayı açar. Listeden seçmek için boş bırakın.',
   'opt.endpoint': 'Uç nokta',
   'opt.account': 'Hesap',
   'opt.key': 'Anahtar',
@@ -1252,6 +1254,7 @@ const tr: Translations = {
   'new.change.newerWins': '{option}, iki yönlü eşitleme yapan bir işte çakışmayı sormadan çözer: son kaydedilen sürüm iki tarafta da kalır, diğeri çöp kutusuna gider.',
   'new.change.targetSwitches': 'Bir hedefin yalnızca açık ya da kapalı olan ayarları anahtar oldu ve bir FTP hedefi hangi {encryption} yöntemini kullandığını bir kez sorar.',
   'new.change.setupChoice': 'Bir oturum açma birden fazla sürücü ya da çalışma alanı açtığında, hedefin testi hangisinin kullanılacağını sorar. Jottacloud güvenlik sayfasındaki kişisel oturum açma belirtecini alır; rclone authorize çıktısından yapıştırılan bir ShareFile ya da Zoho belirteci adresini veya bölgesini de getirir.',
+  'new.change.bucketField': 'Bir S3 hedefi kova alır; böylece yalnızca birini açabilen bir anahtar, örneğin Cloudflare R2 nesne belirteci, testi geçer ve klasör seçicide o kovayı açar.',
   'new.change.appFolders': 'Telefon uygulamasında {settings}, {phone} altındaki {add}, başka bir uygulamanın Android\'in dosya seçicisinde sunduğu bir klasörü ArrowLoop\'un root ve Shizuku olmadan eşitlemesini sağlar. Klasörler Apps adlı bir hedefte görünür.',
 }
 

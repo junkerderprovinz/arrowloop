@@ -698,6 +698,8 @@ const lt: Translations = {
   'opt.vendor': 'Serverio tipas',
   'opt.provider': 'Teikėjas',
   'opt.region': 'Regionas',
+  'opt.bucket': 'Kibiras',
+  'opt.bucketHint': 'Tik raktui, kuris gali atidaryti vieną kibirą, bet negali išvardyti kitų, pavyzdžiui, Cloudflare R2 objektų raktui. Tada bandymas ir aplanko parinkiklis iškart atidaro šį kibirą. Palikite tuščią, jei norite rinktis iš sąrašo.',
   'opt.endpoint': 'Galinis taškas',
   'opt.account': 'Paskyra',
   'opt.key': 'Raktas',
@@ -1252,6 +1254,7 @@ const lt: Translations = {
   'new.change.newerWins': '{option} abiem kryptimis sinchronizuojančioje užduotyje išsprendžia konfliktą neklausdamas: paskiausiai išsaugota versija lieka abiejose pusėse, o kita keliauja į šiukšlinę.',
   'new.change.targetSwitches': 'Paskirties nustatymai, kurie tik įjungti arba išjungti, yra jungikliai, o FTP paskirtis vieną kartą paklausia, kokį {encryption} ji naudoja.',
   'new.change.setupChoice': 'Kai prisijungimas atveria daugiau nei vieną diską ar darbo sritį, paskirties bandymas paklausia, kurį naudoti. Jottacloud priima asmeninį prisijungimo raktą iš savo saugos puslapio, o iš rclone authorize įklijuotas ShareFile ar Zoho raktas atsineša savo adresą ar regioną.',
+  'new.change.bucketField': 'S3 paskirčiai galima nurodyti kibirą, tad raktas, galintis atidaryti tik vieną, pavyzdžiui, Cloudflare R2 objektų raktas, praeina bandymą ir aplanko parinkiklyje atidaro tą kibirą.',
   'new.change.appFolders': 'Telefono programėlėje {add} skiltyje {settings}, {phone} leidžia ArrowLoop sinchronizuoti aplanką, kurį kita programa siūlo Android failų parinkiklyje, be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps.',
 }
 

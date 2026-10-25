@@ -698,6 +698,8 @@ const gl: Translations = {
   'opt.vendor': 'Tipo de servidor',
   'opt.provider': 'Provedor',
   'opt.region': 'Rexión',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Só para unha clave que pode abrir un bucket pero non listar os demais, como un token de obxectos de Cloudflare R2. A proba e o selector de cartafoles abren entón directamente este bucket. Déixao baleiro para escoller da lista.',
   'opt.endpoint': 'Punto final',
   'opt.account': 'Conta',
   'opt.key': 'Chave',
@@ -1252,6 +1254,7 @@ const gl: Translations = {
   'new.change.newerWins': '{option} nunha tarefa que sincroniza nos dous sentidos resolve un conflito sen preguntar: a versión gardada en último lugar queda nos dous lados e a outra vai ao lixo.',
   'new.change.targetSwitches': 'Os axustes dun destino que só están activados ou desactivados son interruptores, e un destino FTP pregunta unha soa vez que {encryption} usa.',
   'new.change.setupChoice': 'Cando un inicio de sesión abre máis dunha unidade ou espazo de traballo, a proba dun destino pregunta cal usar. Jottacloud acepta o token persoal da súa páxina de seguranza, e un token de ShareFile ou Zoho pegado desde rclone authorize trae o seu enderezo ou rexión.',
+  'new.change.bucketField': 'Un destino S3 admite un bucket, así que unha clave que só pode abrir un, como un token de obxectos de Cloudflare R2, pasa a proba e abre ese bucket no selector de cartafoles.',
   'new.change.appFolders': 'Na app do móbil, {add} en {settings}, {phone} permite que ArrowLoop sincronice un cartafol que outra aplicación ofrece no selector de ficheiros de Android, sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps.',
 }
 

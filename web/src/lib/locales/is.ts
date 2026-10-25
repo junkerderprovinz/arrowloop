@@ -698,6 +698,8 @@ const is: Translations = {
   'opt.vendor': 'Tegund netþjóns',
   'opt.provider': 'Þjónustuaðili',
   'opt.region': 'Svæði',
+  'opt.bucket': 'Fata',
+  'opt.bucketHint': 'Aðeins fyrir lykil sem má opna eina fötu en ekki telja upp hinar, eins og hlutalykil Cloudflare R2. Prófunin og möppuvalið opna þá þessa fötu beint. Skildu eftir autt til að velja af listanum.',
   'opt.endpoint': 'Endapunktur',
   'opt.account': 'Reikningur',
   'opt.key': 'Lykill',
@@ -1252,6 +1254,7 @@ const is: Translations = {
   'new.change.newerWins': '{option} í verki sem samstillir í báðar áttir leysir árekstur án þess að spyrja: útgáfan sem var vistuð síðast verður eftir báðum megin og hin fer í ruslið.',
   'new.change.targetSwitches': 'Stillingar áfangastaðar sem eru aðeins af eða á eru rofar, og FTP-áfangastaður spyr einu sinni hvaða {encryption} hann notar.',
   'new.change.setupChoice': 'Þegar innskráning opnar fleiri en eitt drif eða vinnusvæði spyr prófun áfangastaðar hvert eigi að nota. Jottacloud tekur persónulega innskráningarlykilinn af öryggissíðu sinni, og ShareFile- eða Zoho-lykill límdur úr rclone authorize tekur slóð sína eða svæði með sér.',
+  'new.change.bucketField': 'S3-áfangastaður tekur fötu, svo lykill sem má aðeins opna eina, eins og hlutalykill Cloudflare R2, stenst prófið og opnar þá fötu í möppuvalinu.',
   'new.change.appFolders': 'Í símaforritinu getur ArrowLoop með {add} undir {settings}, {phone} samstillt möppu sem annað forrit býður upp á í skráavali Android, án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps.',
 }
 

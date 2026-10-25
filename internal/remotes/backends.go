@@ -160,6 +160,23 @@ var essential = map[string]map[string]bool{
 	"google photos": {"token": true, "client_id": true, "client_secret": true, "read_only": true},
 }
 
+// ownOptions are settings this program keeps in a remote's section beside
+// rclone's own. rclone ignores them.
+var ownOptions = map[string][]Option{
+	// A key that may open only its own bucket, as an R2 object token or a
+	// scoped AWS key does, is refused the list of all buckets.
+	"s3": {{Name: BucketKey, Help: "The one bucket to open, for a key that may not list the others.", Essential: true, Type: "string"}},
+}
+
+func ownOption(backend, key string) bool {
+	for _, o := range ownOptions[backend] {
+		if o.Name == key {
+			return true
+		}
+	}
+	return false
+}
+
 // tokenBackends are the ones whose only way in is an OAuth token obtained
 // outside this program. They are named rather than detected, because some
 // backends with a token option also accept a password.
@@ -204,6 +221,7 @@ func Backends() []Backend {
 				Examples:  examples(o),
 			})
 		}
+		b.Options = append(b.Options, ownOptions[info.Name]...)
 		sort.SliceStable(b.Options, func(i, j int) bool {
 			return optionRank(b.Options[i]) < optionRank(b.Options[j])
 		})

@@ -698,6 +698,8 @@ const ro: Translations = {
   'opt.vendor': 'Tip de server',
   'opt.provider': 'Furnizor',
   'opt.region': 'Regiune',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Doar pentru o cheie care poate deschide un bucket, dar nu le poate lista pe celelalte, cum e un token de obiecte Cloudflare R2. Testul și alegerea dosarului deschid atunci direct acest bucket. Lasă gol ca să alegi din listă.',
   'opt.endpoint': 'Punct final',
   'opt.account': 'Cont',
   'opt.key': 'Cheie',
@@ -1252,6 +1254,7 @@ const ro: Translations = {
   'new.change.newerWins': '{option} într-o sarcină care sincronizează în ambele sensuri rezolvă un conflict fără să întrebe: versiunea salvată ultima rămâne pe ambele părți, iar cealaltă ajunge în coș.',
   'new.change.targetSwitches': 'Setările unei destinații care sunt doar pornite sau oprite sunt comutatoare, iar o destinație FTP întreabă o singură dată ce {encryption} folosește.',
   'new.change.setupChoice': 'Când o autentificare deschide mai multe unități sau spații de lucru, testul unei destinații întreabă pe care să o folosească. Jottacloud primește tokenul personal de autentificare de pe pagina sa de securitate, iar un token ShareFile sau Zoho lipit din rclone authorize își aduce adresa sau regiunea.',
+  'new.change.bucketField': 'O destinație S3 primește un bucket, așa că o cheie care poate deschide doar unul, cum e un token de obiecte Cloudflare R2, trece testul și deschide acel bucket la alegerea dosarului.',
   'new.change.appFolders': 'În aplicația de telefon, {add} din {settings}, {phone} îi permite lui ArrowLoop să sincronizeze un dosar pe care o altă aplicație îl oferă în selectorul de fișiere din Android, fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps.',
 }
 

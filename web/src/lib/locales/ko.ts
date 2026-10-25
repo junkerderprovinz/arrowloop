@@ -698,6 +698,8 @@ const ko: Translations = {
   'opt.vendor': '서버 종류',
   'opt.provider': '공급자',
   'opt.region': '지역',
+  'opt.bucket': '버킷',
+  'opt.bucketHint': '버킷 하나는 열 수 있지만 다른 버킷 목록은 볼 수 없는 키(Cloudflare R2 객체 토큰 등)에만 씁니다. 그러면 테스트와 폴더 선택이 이 버킷을 바로 엽니다. 목록에서 고르려면 비워 두세요.',
   'opt.endpoint': '엔드포인트',
   'opt.account': '계정',
   'opt.key': '키',
@@ -1252,6 +1254,7 @@ const ko: Translations = {
   'new.change.newerWins': '양방향으로 동기화하는 작업에서 {option}을 켜면 충돌을 묻지 않고 해결합니다. 마지막에 저장된 버전이 양쪽에 남고 다른 쪽은 휴지통으로 갑니다.',
   'new.change.targetSwitches': '켜거나 끄기만 하는 대상 설정은 스위치로 바뀌었고, FTP 대상은 어떤 {encryption}를 쓰는지 한 번만 묻습니다.',
   'new.change.setupChoice': '로그인으로 드라이브나 작업 공간이 여러 개 열리면 대상 테스트가 어떤 것을 쓸지 묻습니다. Jottacloud는 보안 페이지의 개인 로그인 토큰을 받고, rclone authorize에서 붙여 넣은 ShareFile이나 Zoho 토큰은 주소나 지역을 함께 가져옵니다.',
+  'new.change.bucketField': 'S3 대상에 버킷을 지정할 수 있어서, Cloudflare R2 객체 토큰처럼 버킷 하나만 열 수 있는 키도 테스트를 통과하고 폴더 선택에서 그 버킷을 엽니다.',
   'new.change.appFolders': '휴대폰 앱의 {settings}, {phone}에 있는 {add}를 사용하면 다른 앱이 Android 파일 선택기에서 제공하는 폴더를 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다.',
 }
 

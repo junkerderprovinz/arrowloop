@@ -698,6 +698,8 @@ const ja: Translations = {
   'opt.vendor': 'サーバーの種類',
   'opt.provider': 'プロバイダー',
   'opt.region': 'リージョン',
+  'opt.bucket': 'バケット',
+  'opt.bucketHint': '1 つのバケットは開けても他のバケットを一覧できないキー (Cloudflare R2 のオブジェクトトークンなど) のときだけ使います。テストとフォルダーの選択がこのバケットを直接開きます。一覧から選ぶときは空のままにしてください。',
   'opt.endpoint': 'エンドポイント',
   'opt.account': 'アカウント',
   'opt.key': 'キー',
@@ -1252,6 +1254,7 @@ const ja: Translations = {
   'new.change.newerWins': '双方向に同期するジョブで{option}をオンにすると、競合を確認なしで解決します。最後に保存された版が両側に残り、もう一方はごみ箱に移ります。',
   'new.change.targetSwitches': 'オンかオフしかない接続先の設定はスイッチになり、FTP の接続先は使う{encryption}を一度だけ尋ねます。',
   'new.change.setupChoice': 'サインインで複数のドライブやワークスペースが開けるときは、接続先のテストでどれを使うか尋ねます。Jottacloud はセキュリティページの個人用ログイントークンを受け付け、rclone authorize から貼り付けた ShareFile や Zoho のトークンはアドレスやリージョンも運びます。',
+  'new.change.bucketField': 'S3 の接続先にバケットを指定できるようになり、1 つしか開けないキー (Cloudflare R2 のオブジェクトトークンなど) でもテストに通り、フォルダーの選択でそのバケットが開きます。',
   'new.change.appFolders': 'スマホアプリでは、{settings}、{phone} の {add} で、別のアプリが Android のファイル選択画面で公開しているフォルダーを、root も Shizuku もなしで ArrowLoop が同期できます。フォルダーは Apps という接続先に表示されます。',
 }
 

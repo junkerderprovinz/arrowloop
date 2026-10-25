@@ -698,6 +698,8 @@ const et: Translations = {
   'opt.vendor': 'Serveri tüüp',
   'opt.provider': 'Teenusepakkuja',
   'opt.region': 'Piirkond',
+  'opt.bucket': 'Ämber',
+  'opt.bucketHint': 'Ainult võtmele, mis tohib avada ühe ämbri, kuid mitte loetleda teisi, näiteks Cloudflare R2 objektiloale. Test ja kaustavalija avavad siis otse selle ämbri. Jäta tühjaks, et valida loendist.',
   'opt.endpoint': 'Lõpp-punkt',
   'opt.account': 'Konto',
   'opt.key': 'Võti',
@@ -1252,6 +1254,7 @@ const et: Translations = {
   'new.change.newerWins': '{option} lahendab mõlemas suunas sünkroonivas töös vastuolu küsimata: viimati salvestatud versioon jääb mõlemale poolele ja teine läheb prügikasti.',
   'new.change.targetSwitches': 'Sihtkoha seaded, mis on ainult sees või väljas, on lülitid ja FTP-sihtkoht küsib ühe korra, millist {encryption} see kasutab.',
   'new.change.setupChoice': 'Kui sisselogimine avab mitu ketast või tööala, küsib sihtkoha test, millist kasutada. Jottacloud võtab isikliku sisselogimisloa oma turvalehelt ning rclone authorize\'ist kleebitud ShareFile\'i või Zoho luba toob kaasa oma aadressi või piirkonna.',
+  'new.change.bucketField': 'S3-sihtkoht võtab ämbri, nii et võti, mis tohib avada ainult ühe, näiteks Cloudflare R2 objektiluba, läbib testi ja avab selle ämbri kaustavalijas.',
   'new.change.appFolders': 'Telefonirakenduses laseb {add} jaotises {settings}, {phone} ArrowLoopil sünkroonida kausta, mida mõni teine rakendus Androidi failivalijas pakub, ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps.',
 }
 

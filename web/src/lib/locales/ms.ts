@@ -698,6 +698,8 @@ const ms: Translations = {
   'opt.vendor': 'Jenis pelayan',
   'opt.provider': 'Penyedia',
   'opt.region': 'Wilayah',
+  'opt.bucket': 'Baldi',
+  'opt.bucketHint': 'Hanya untuk kunci yang boleh membuka satu baldi tetapi tidak menyenaraikan yang lain, seperti token objek Cloudflare R2. Ujian dan pemilih folder kemudian terus membuka baldi ini. Biarkan kosong untuk memilih daripada senarai.',
   'opt.endpoint': 'Titik akhir',
   'opt.account': 'Akaun',
   'opt.key': 'Kunci',
@@ -1252,6 +1254,7 @@ const ms: Translations = {
   'new.change.newerWins': '{option} dalam tugas yang menyegerak dua hala menyelesaikan percanggahan tanpa bertanya: versi yang disimpan terakhir kekal di kedua-dua sisi, dan yang satu lagi masuk ke tong sampah.',
   'new.change.targetSwitches': 'Tetapan destinasi yang hanya hidup atau mati kini suis, dan destinasi FTP bertanya sekali {encryption} mana yang digunakan.',
   'new.change.setupChoice': 'Apabila log masuk membuka lebih daripada satu pemacu atau ruang kerja, ujian destinasi bertanya yang mana hendak digunakan. Jottacloud menerima token log masuk peribadi dari halaman keselamatannya, dan token ShareFile atau Zoho yang ditampal dari rclone authorize membawa alamat atau rantaunya.',
+  'new.change.bucketField': 'Destinasi S3 menerima baldi, jadi kunci yang hanya boleh membuka satu, seperti token objek Cloudflare R2, lulus ujian dan membuka baldi itu dalam pemilih folder.',
   'new.change.appFolders': 'Dalam aplikasi telefon, {add} di bawah {settings}, {phone} membolehkan ArrowLoop menyegerakkan folder yang ditawarkan oleh apl lain dalam pemilih fail Android, tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps.',
 }
 

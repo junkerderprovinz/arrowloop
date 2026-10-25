@@ -698,6 +698,8 @@ const sl: Translations = {
   'opt.vendor': 'Vrsta strežnika',
   'opt.provider': 'Ponudnik',
   'opt.region': 'Regija',
+  'opt.bucket': 'Vedro',
+  'opt.bucketHint': 'Le za ključ, ki sme odpreti eno vedro, ne sme pa našteti drugih, kot je žeton za predmete Cloudflare R2. Preizkus in izbirnik map nato neposredno odpreta to vedro. Pustite prazno, da izberete s seznama.',
   'opt.endpoint': 'Končna točka',
   'opt.account': 'Račun',
   'opt.key': 'Ključ',
@@ -1252,6 +1254,7 @@ const sl: Translations = {
   'new.change.newerWins': '{option} v opravilu, ki sinhronizira v obe smeri, razreši spor brez vprašanja: nazadnje shranjena različica ostane na obeh straneh, druga pa gre v koš.',
   'new.change.targetSwitches': 'Nastavitve cilja, ki so le vklopljene ali izklopljene, so stikala, cilj FTP pa enkrat vpraša, katero {encryption} uporablja.',
   'new.change.setupChoice': 'Ko prijava odpre več pogonov ali delovnih prostorov, preizkus cilja vpraša, katerega uporabiti. Jottacloud sprejme osebni žeton za prijavo s svoje varnostne strani, žeton ShareFile ali Zoho, prilepljen iz rclone authorize, pa s seboj prinese naslov ali regijo.',
+  'new.change.bucketField': 'Cilj S3 sprejme vedro, zato ključ, ki sme odpreti le eno, kot je žeton za predmete Cloudflare R2, opravi preizkus in v izbirniku map odpre to vedro.',
   'new.change.appFolders': 'V aplikaciji za telefon {add} pod {settings}, {phone} omogoči, da ArrowLoop sinhronizira mapo, ki jo druga aplikacija ponuja v izbirniku datotek v Androidu, brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps.',
 }
 

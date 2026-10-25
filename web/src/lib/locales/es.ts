@@ -698,6 +698,8 @@ const es: Translations = {
   'opt.vendor': 'Tipo de servidor',
   'opt.provider': 'Proveedor',
   'opt.region': 'Región',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Solo para una clave que puede abrir un bucket pero no listar los demás, como un token de objetos de Cloudflare R2. La prueba y el selector de carpetas abren entonces este bucket directamente. Déjalo vacío para elegir de la lista.',
   'opt.endpoint': 'Punto final',
   'opt.account': 'Cuenta',
   'opt.key': 'Clave',
@@ -1252,6 +1254,7 @@ const es: Translations = {
   'new.change.newerWins': '{option} en una tarea que sincroniza en ambos sentidos resuelve un conflicto sin preguntar: la versión guardada en último lugar se queda en ambos lados y la otra va a la papelera.',
   'new.change.targetSwitches': 'Los ajustes de un destino que solo están activados o desactivados son interruptores, y un destino FTP pregunta una sola vez qué {encryption} usa.',
   'new.change.setupChoice': 'Cuando un inicio de sesión abre más de una unidad o espacio de trabajo, la prueba de un destino pregunta cuál usar. Jottacloud acepta el token personal de su página de seguridad, y un token de ShareFile o Zoho pegado desde rclone authorize trae su dirección o región.',
+  'new.change.bucketField': 'Un destino S3 admite un bucket, así que una clave que solo puede abrir uno, como un token de objetos de Cloudflare R2, pasa la prueba y abre ese bucket en el selector de carpetas.',
   'new.change.appFolders': 'En la app del móvil, {add} en {settings}, {phone} permite a ArrowLoop sincronizar una carpeta que otra aplicación ofrece en el selector de archivos de Android, sin root ni Shizuku. Las carpetas aparecen en un destino llamado Apps.',
 }
 

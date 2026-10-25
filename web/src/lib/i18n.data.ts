@@ -748,6 +748,8 @@ export const en = {
   'opt.vendor': 'Server type',
   'opt.provider': 'Provider',
   'opt.region': 'Region',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Only for a key that may open one bucket but not list the others, such as a Cloudflare R2 object token. The test and the folder picker then open this bucket directly. Leave it empty to pick from the list.',
   'opt.endpoint': 'Endpoint',
   'opt.account': 'Account',
   'opt.key': 'Key',
@@ -1296,6 +1298,7 @@ export const en = {
   'new.change.newerWins': '{option} in a two-way job settles a conflict without asking: the version saved last stays on both sides, and the other goes to the trash.',
   'new.change.targetSwitches': 'A target\'s settings that are only on or off are switches, and an FTP target asks once which {encryption} it uses.',
   'new.change.setupChoice': 'When a sign-in opens more than one drive or workspace, testing a target asks which one to use. Jottacloud takes the personal login token from its security page, and a ShareFile or Zoho token pasted from rclone authorize brings its address or region along.',
+  'new.change.bucketField': 'An S3 target takes a bucket, so a key that may open only one, such as a Cloudflare R2 object token, passes the test and opens that bucket in the folder picker.',
   'new.change.appFolders': 'In the phone app, {add} under {settings}, {phone} lets ArrowLoop sync a folder that another app offers in Android\'s file picker, without root or Shizuku. The folders show up in a target called Apps.',
 } as const
 
@@ -2038,6 +2041,8 @@ export const de: Translations = {
   'opt.vendor': 'Servertyp',
   'opt.provider': 'Anbieter',
   'opt.region': 'Region',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Nur für einen Schlüssel, der einen Bucket öffnen, die anderen aber nicht auflisten darf, etwa ein Cloudflare-R2-Objekt-Token. Test und Ordnerauswahl öffnen dann gleich diesen Bucket. Lass das Feld leer, um aus der Liste zu wählen.',
   'opt.endpoint': 'Endpunkt',
   'opt.account': 'Konto',
   'opt.key': 'Schlüssel',
@@ -2583,6 +2588,7 @@ export const de: Translations = {
   'new.change.newerWins': '{option} entscheidet in einem Auftrag, der in beide Richtungen schreibt, einen Konflikt ohne Nachfrage: Die zuletzt gespeicherte Fassung bleibt auf beiden Seiten, die andere kommt in den Papierkorb.',
   'new.change.targetSwitches': 'Einstellungen eines Ziels, die nur an oder aus sein können, sind Schalter, und ein FTP-Ziel fragt einmal, welche {encryption} es nutzt.',
   'new.change.setupChoice': 'Öffnet eine Anmeldung mehrere Laufwerke oder Arbeitsbereiche, fragt der Test eines Ziels, welches davon genutzt wird. Jottacloud nimmt das persönliche Login-Token von seiner Sicherheitsseite, und ein ShareFile- oder Zoho-Token aus rclone authorize bringt seine Adresse oder Region gleich mit.',
+  'new.change.bucketField': 'Ein S3-Ziel nimmt einen Bucket. So besteht auch ein Schlüssel, der nur einen Bucket öffnen darf, etwa ein Cloudflare-R2-Objekt-Token, den Test und öffnet diesen Bucket in der Ordnerauswahl.',
   'new.change.appFolders': 'In der Handy-App kann ArrowLoop über {add} unter {settings}, {phone} einen Ordner synchronisieren, den eine andere App in der Dateiauswahl von Android anbietet, ohne Root und ohne Shizuku. Die Ordner erscheinen im Ziel namens Apps.',
 }
 

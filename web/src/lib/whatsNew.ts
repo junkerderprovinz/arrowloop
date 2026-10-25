@@ -73,6 +73,12 @@ export const RELEASES: Release[] = [
         where: ['nav.targets'],
         text: 'new.change.setupChoice',
       },
+      {
+        id: 'target-bucket',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.bucketField',
+      },
     ],
   },
   {

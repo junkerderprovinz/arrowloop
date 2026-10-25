@@ -698,6 +698,8 @@ const cs: Translations = {
   'opt.vendor': 'Typ serveru',
   'opt.provider': 'Poskytovatel',
   'opt.region': 'Oblast',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Jen pro klíč, který smí otevřít jeden bucket, ale nesmí vypsat ostatní, třeba objektový token Cloudflare R2. Test a výběr složky pak otevřou rovnou tento bucket. Nechte prázdné a vyberte ze seznamu.',
   'opt.endpoint': 'Koncový bod',
   'opt.account': 'Účet',
   'opt.key': 'Klíč',
@@ -1252,6 +1254,7 @@ const cs: Translations = {
   'new.change.newerWins': '{option} v úloze, která synchronizuje oběma směry, vyřeší konflikt bez ptaní: naposledy uložená verze zůstane na obou stranách a ta druhá jde do koše.',
   'new.change.targetSwitches': 'Nastavení cíle, která jsou jen zapnutá nebo vypnutá, jsou přepínače a cíl FTP se jednou zeptá, jaké {encryption} používá.',
   'new.change.setupChoice': 'Když přihlášení otevírá víc disků nebo pracovních prostorů, test cíle se zeptá, který použít. Jottacloud bere osobní přihlašovací token ze své bezpečnostní stránky a token ShareFile nebo Zoho vložený z rclone authorize s sebou přinese adresu nebo oblast.',
+  'new.change.bucketField': 'Cíl S3 přijímá bucket, takže klíč, který smí otevřít jen jeden, třeba objektový token Cloudflare R2, projde testem a otevře tento bucket ve výběru složky.',
   'new.change.appFolders': 'V aplikaci pro telefon umožní {add} v {settings}, {phone} synchronizovat v ArrowLoop složku, kterou jiná aplikace nabízí ve výběru souborů Androidu, bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps.',
 }
 

@@ -698,6 +698,8 @@ const vi: Translations = {
   'opt.vendor': 'Loại máy chủ',
   'opt.provider': 'Nhà cung cấp',
   'opt.region': 'Vùng',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Chỉ dành cho khóa được mở một bucket nhưng không được liệt kê các bucket khác, như mã đối tượng của Cloudflare R2. Khi đó phép thử và bộ chọn thư mục mở thẳng bucket này. Để trống để chọn từ danh sách.',
   'opt.endpoint': 'Điểm cuối',
   'opt.account': 'Tài khoản',
   'opt.key': 'Khoá',
@@ -1252,6 +1254,7 @@ const vi: Translations = {
   'new.change.newerWins': '{option} trong một công việc đồng bộ hai chiều sẽ giải quyết xung đột mà không hỏi: bản được lưu sau cùng ở lại cả hai bên, còn bản kia vào thùng rác.',
   'new.change.targetSwitches': 'Các thiết lập của đích chỉ có bật hoặc tắt nay là công tắc, và đích FTP hỏi một lần nó dùng {encryption} nào.',
   'new.change.setupChoice': 'Khi một lần đăng nhập mở được nhiều ổ đĩa hoặc không gian làm việc, phép thử đích sẽ hỏi dùng cái nào. Jottacloud nhận mã đăng nhập cá nhân từ trang bảo mật của nó, và mã ShareFile hoặc Zoho dán từ rclone authorize mang theo địa chỉ hoặc vùng của nó.',
+  'new.change.bucketField': 'Đích S3 nhận một bucket, nên khóa chỉ được mở một bucket, như mã đối tượng của Cloudflare R2, vượt qua phép thử và mở đúng bucket đó trong bộ chọn thư mục.',
   'new.change.appFolders': 'Trong ứng dụng điện thoại, {add} trong {settings}, {phone} cho phép ArrowLoop đồng bộ một thư mục mà ứng dụng khác cung cấp trong trình chọn tệp của Android, không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps.',
 }
 

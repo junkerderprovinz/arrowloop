@@ -698,6 +698,8 @@ const eu: Translations = {
   'opt.vendor': 'Zerbitzari mota',
   'opt.provider': 'Hornitzailea',
   'opt.region': 'Eskualdea',
+  'opt.bucket': 'Bucketa',
+  'opt.bucketHint': 'Bucket bat ireki dezakeen baina besteak zerrendatu ezin dituen gako baterako soilik, Cloudflare R2 objektu-token bat adibidez. Orduan probak eta karpeta-hautatzaileak zuzenean irekitzen dute bucket hau. Utzi hutsik zerrendatik aukeratzeko.',
   'opt.endpoint': 'Amaiera-puntua',
   'opt.account': 'Kontua',
   'opt.key': 'Gakoa',
@@ -1252,6 +1254,7 @@ const eu: Translations = {
   'new.change.newerWins': '{option} aukerak bi norabideetan sinkronizatzen duen lan batean gatazka bat galdetu gabe ebazten du: azkena gordetako bertsioa bi aldeetan geratzen da, eta bestea zakarrontzira doa.',
   'new.change.targetSwitches': 'Helburu baten ezarpenak, aktibatuta edo desaktibatuta soilik daudenak, etengailuak dira, eta FTP helburu batek behin galdetzen du zein {encryption} erabiltzen duen.',
   'new.change.setupChoice': 'Saio batek unitate edo lan-eremu bat baino gehiago irekitzen dituenean, helburu baten probak zein erabili galdetzen du. Jottacloud-ek bere segurtasun-orriko token pertsonala onartzen du, eta rclone authorize-tik itsatsitako ShareFile edo Zoho token batek bere helbidea edo eskualdea dakar.',
+  'new.change.bucketField': 'S3 helburu batek bucket bat onartzen du, beraz bakarra ireki dezakeen gako batek, Cloudflare R2 objektu-token batek adibidez, proba gainditzen du eta bucket hori irekitzen du karpeta-hautatzailean.',
   'new.change.appFolders': 'Mugikorreko aplikazioan, {settings}, {phone} ataleko {add} aukerarekin, ArrowLoopek beste aplikazio batek Androiden fitxategi-hautatzailean eskaintzen duen karpeta bat sinkroniza dezake, root-ik eta Shizukurik gabe. Karpetak Apps izeneko helburu batean agertzen dira.',
 }
 

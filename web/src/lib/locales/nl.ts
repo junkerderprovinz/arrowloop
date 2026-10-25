@@ -698,6 +698,8 @@ const nl: Translations = {
   'opt.vendor': 'Servertype',
   'opt.provider': 'Aanbieder',
   'opt.region': 'Regio',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Alleen voor een sleutel die één bucket mag openen maar de andere niet mag opsommen, zoals een objecttoken van Cloudflare R2. De test en de mapkiezer openen dan meteen deze bucket. Laat leeg om uit de lijst te kiezen.',
   'opt.endpoint': 'Eindpunt',
   'opt.account': 'Account',
   'opt.key': 'Sleutel',
@@ -1252,6 +1254,7 @@ const nl: Translations = {
   'new.change.newerWins': '{option} in een taak die beide kanten op synchroniseert, beslist een conflict zonder te vragen: de laatst opgeslagen versie blijft aan beide kanten staan en de andere gaat naar de prullenbak.',
   'new.change.targetSwitches': 'Instellingen van een doel die alleen aan of uit kunnen zijn schakelaars, en een FTP-doel vraagt één keer welke {encryption} het gebruikt.',
   'new.change.setupChoice': 'Als een aanmelding meer dan één schijf of werkruimte opent, vraagt de test van een doel welke je gebruikt. Jottacloud neemt het persoonlijke inlogtoken van zijn beveiligingspagina aan, en een ShareFile- of Zoho-token uit rclone authorize brengt zijn adres of regio mee.',
+  'new.change.bucketField': 'Een S3-doel neemt een bucket, zodat een sleutel die er maar één mag openen, zoals een objecttoken van Cloudflare R2, de test doorstaat en die bucket in de mapkiezer opent.',
   'new.change.appFolders': 'In de telefoonapp laat {add} onder {settings}, {phone} ArrowLoop een map synchroniseren die een andere app aanbiedt in de bestandskiezer van Android, zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps.',
 }
 

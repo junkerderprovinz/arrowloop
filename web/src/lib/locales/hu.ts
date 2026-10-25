@@ -698,6 +698,8 @@ const hu: Translations = {
   'opt.vendor': 'Kiszolgáló típusa',
   'opt.provider': 'Szolgáltató',
   'opt.region': 'Régió',
+  'opt.bucket': 'Tároló',
+  'opt.bucketHint': 'Csak olyan kulcshoz, amely egy tárolót megnyithat, de a többit nem listázhatja, például Cloudflare R2 objektumtokenhez. A teszt és a mappaválasztó ekkor közvetlenül ezt a tárolót nyitja meg. Hagyd üresen, ha a listából választanál.',
   'opt.endpoint': 'Végpont',
   'opt.account': 'Fiók',
   'opt.key': 'Kulcs',
@@ -1252,6 +1254,7 @@ const hu: Translations = {
   'new.change.newerWins': '{option} a mindkét irányba szinkronizáló feladatban kérdés nélkül eldönti az ütközést: az utoljára mentett változat mindkét oldalon megmarad, a másik a kukába kerül.',
   'new.change.targetSwitches': 'A cél csak be- vagy kikapcsolható beállításai kapcsolók, egy FTP-cél pedig egyszer kérdezi meg, milyen {encryption} használ.',
   'new.change.setupChoice': 'Ha egy bejelentkezés több meghajtót vagy munkaterületet nyit meg, a cél tesztje megkérdezi, melyiket használja. A Jottacloud a biztonsági oldaláról vett személyes bejelentkezési tokent fogadja, az rclone authorize-ból beillesztett ShareFile- vagy Zoho-token pedig magával hozza a címét vagy a régióját.',
+  'new.change.bucketField': 'Egy S3-cél tárolót is kaphat, így az a kulcs is, amely csak egyet nyithat meg, például egy Cloudflare R2 objektumtoken, átmegy a teszten, és a mappaválasztóban azt a tárolót nyitja meg.',
   'new.change.appFolders': 'A telefonos alkalmazásban a {settings}, {phone} alatti {add} lehetővé teszi, hogy az ArrowLoop szinkronizáljon egy mappát, amelyet egy másik alkalmazás az Android fájlválasztójában kínál, root és Shizuku nélkül. A mappák az Apps nevű célban jelennek meg.',
 }
 

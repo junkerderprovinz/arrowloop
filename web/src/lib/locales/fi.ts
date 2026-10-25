@@ -698,6 +698,8 @@ const fi: Translations = {
   'opt.vendor': 'Palvelimen tyyppi',
   'opt.provider': 'Palveluntarjoaja',
   'opt.region': 'Alue',
+  'opt.bucket': 'Säilö',
+  'opt.bucketHint': 'Vain avaimelle, joka saa avata yhden säilön muttei luetella muita, kuten Cloudflare R2:n objektitunnisteelle. Testi ja kansionvalitsin avaavat silloin suoraan tämän säilön. Jätä tyhjäksi, niin voit valita luettelosta.',
   'opt.endpoint': 'Päätepiste',
   'opt.account': 'Tili',
   'opt.key': 'Avain',
@@ -1252,6 +1254,7 @@ const fi: Translations = {
   'new.change.newerWins': '{option} ratkaisee kumpaankin suuntaan synkronoivassa työssä ristiriidan kysymättä: viimeksi tallennettu versio jää kummallekin puolelle ja toinen siirtyy roskakoriin.',
   'new.change.targetSwitches': 'Kohteen asetukset, jotka ovat vain päällä tai pois, ovat kytkimiä, ja FTP-kohde kysyy kerran, mitä {encryption} se käyttää.',
   'new.change.setupChoice': 'Kun kirjautuminen avaa useamman aseman tai työtilan, kohteen testi kysyy, mitä käytetään. Jottacloud ottaa henkilökohtaisen kirjautumistunnisteen suojaussivultaan, ja rclone authorizesta liitetty ShareFile- tai Zoho-tunniste tuo osoitteensa tai alueensa mukanaan.',
+  'new.change.bucketField': 'S3-kohteelle voi antaa säilön, joten avain, joka saa avata vain yhden, kuten Cloudflare R2:n objektitunniste, läpäisee testin ja avaa sen säilön kansionvalitsimessa.',
   'new.change.appFolders': 'Puhelinsovelluksessa {add} kohdassa {settings}, {phone} antaa ArrowLoopin synkronoida kansion, jota toinen sovellus tarjoaa Androidin tiedostovalitsimessa, ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps.',
 }
 

@@ -698,6 +698,8 @@ const id: Translations = {
   'opt.vendor': 'Jenis server',
   'opt.provider': 'Penyedia',
   'opt.region': 'Wilayah',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Hanya untuk kunci yang boleh membuka satu bucket tetapi tidak boleh mendaftar yang lain, seperti token objek Cloudflare R2. Uji dan pemilih folder lalu langsung membuka bucket ini. Biarkan kosong untuk memilih dari daftar.',
   'opt.endpoint': 'Titik akhir',
   'opt.account': 'Akun',
   'opt.key': 'Kunci',
@@ -1252,6 +1254,7 @@ const id: Translations = {
   'new.change.newerWins': '{option} pada tugas yang menyinkronkan dua arah menyelesaikan konflik tanpa bertanya: versi yang terakhir disimpan tetap ada di kedua sisi, dan yang lain masuk ke tempat sampah.',
   'new.change.targetSwitches': 'Pengaturan tujuan yang hanya hidup atau mati menjadi sakelar, dan tujuan FTP menanyakan sekali {encryption} mana yang dipakai.',
   'new.change.setupChoice': 'Bila sebuah login membuka lebih dari satu drive atau ruang kerja, uji tujuan menanyakan mana yang dipakai. Jottacloud menerima token login pribadi dari halaman keamanannya, dan token ShareFile atau Zoho yang ditempel dari rclone authorize membawa alamat atau wilayahnya.',
+  'new.change.bucketField': 'Tujuan S3 menerima bucket, jadi kunci yang hanya boleh membuka satu, seperti token objek Cloudflare R2, lolos uji dan membuka bucket itu di pemilih folder.',
   'new.change.appFolders': 'Di aplikasi ponsel, {add} di {settings}, {phone} memungkinkan ArrowLoop menyinkronkan folder yang ditawarkan aplikasi lain di pemilih file Android, tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps.',
 }
 

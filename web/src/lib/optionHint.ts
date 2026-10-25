@@ -49,6 +49,7 @@ const GENERAL: Record<string, TranslationKey> = {
   secret_access_key: 'opt.secretKeyHint',
   endpoint: 'opt.endpointHint',
   region: 'opt.regionHint',
+  bucket: 'opt.bucketHint',
   vendor: 'opt.vendorHelp',
   key_file: 'opt.keyFileHelp',
   namenode: 'opt.namenodeHint',

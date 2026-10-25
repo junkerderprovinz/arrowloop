@@ -698,6 +698,8 @@ const da: Translations = {
   'opt.vendor': 'Servertype',
   'opt.provider': 'Udbyder',
   'opt.region': 'Region',
+  'opt.bucket': 'Bucket',
+  'opt.bucketHint': 'Kun til en nøgle, der må åbne én bucket, men ikke vise de andre, som en Cloudflare R2-objekttoken. Testen og mappevælgeren åbner så denne bucket direkte. Lad feltet være tomt for at vælge fra listen.',
   'opt.endpoint': 'Slutpunkt',
   'opt.account': 'Konto',
   'opt.key': 'Nøgle',
@@ -1252,6 +1254,7 @@ const da: Translations = {
   'new.change.newerWins': '{option} i et job, der synkroniserer begge veje, afgør en konflikt uden at spørge: den senest gemte version bliver på begge sider, og den anden havner i papirkurven.',
   'new.change.targetSwitches': 'Et måls indstillinger, der kun kan være til eller fra, er kontakter, og et FTP-mål spørger én gang, hvilken {encryption} det bruger.',
   'new.change.setupChoice': 'Når et login åbner mere end ét drev eller arbejdsområde, spørger testen af et mål, hvilket der skal bruges. Jottacloud tager den personlige logintoken fra sin sikkerhedsside, og en ShareFile- eller Zoho-token indsat fra rclone authorize har sin adresse eller region med.',
+  'new.change.bucketField': 'Et S3-mål tager en bucket, så en nøgle, der kun må åbne én, som en Cloudflare R2-objekttoken, består testen og åbner den bucket i mappevælgeren.',
   'new.change.appFolders': 'I telefonappen lader {add} under {settings}, {phone} ArrowLoop synkronisere en mappe, som en anden app tilbyder i Androids filvælger, uden root og uden Shizuku. Mapperne vises i et mål ved navn Apps.',
 }
 

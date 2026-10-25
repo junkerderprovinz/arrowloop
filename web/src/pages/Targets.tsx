@@ -702,13 +702,15 @@ function RemoteForm({
             }
           />
         ) : (
-          <Text
-            value={values[o.name] ?? ''}
-            onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-            placeholder={o.default || o.examples?.[0]?.value}
-            label={optionLabel(o.name, t)}
-            mono
-          />
+          <span data-new={NEW_FIELDS[`${kind}.${o.name}`]} className="flex w-full">
+            <Text
+              value={values[o.name] ?? ''}
+              onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+              placeholder={o.default || o.examples?.[0]?.value}
+              label={optionLabel(o.name, t)}
+              mono
+            />
+          </span>
         )}
       </FieldRow>
     )
@@ -799,6 +801,9 @@ function RemoteForm({
     </Dialog>
   )
 }
+
+/** The fields a What's new entry points at, by backend and option. */
+const NEW_FIELDS: Record<string, string> = { 's3.bucket': 'target-bucket' }
 
 /** The questions rclone's setups ask, by the setting that answers them. */
 const QUESTION_LABELS: Record<string, TranslationKey> = {

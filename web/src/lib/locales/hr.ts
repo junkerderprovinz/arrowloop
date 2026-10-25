@@ -698,6 +698,8 @@ const hr: Translations = {
   'opt.vendor': 'Vrsta poslužitelja',
   'opt.provider': 'Pružatelj',
   'opt.region': 'Regija',
+  'opt.bucket': 'Spremnik',
+  'opt.bucketHint': 'Samo za ključ koji smije otvoriti jedan spremnik, ali ne i popisati ostale, poput Cloudflare R2 tokena za objekte. Test i odabir mape tada izravno otvaraju ovaj spremnik. Ostavite prazno za odabir s popisa.',
   'opt.endpoint': 'Krajnja točka',
   'opt.account': 'Račun',
   'opt.key': 'Ključ',
@@ -1252,6 +1254,7 @@ const hr: Translations = {
   'new.change.newerWins': '{option} u zadatku koji sinkronizira u oba smjera rješava sukob bez pitanja: zadnja spremljena verzija ostaje na obje strane, a druga ide u smeće.',
   'new.change.targetSwitches': 'Postavke odredišta koje su samo uključene ili isključene su prekidači, a FTP odredište jednom pita koje {encryption} koristi.',
   'new.change.setupChoice': 'Kad prijava otvara više pogona ili radnih prostora, test odredišta pita koji koristiti. Jottacloud prima osobni token za prijavu sa svoje sigurnosne stranice, a token ShareFilea ili Zoha zalijepljen iz rclone authorize donosi svoju adresu ili regiju.',
+  'new.change.bucketField': 'S3 odredište prima spremnik, pa ključ koji smije otvoriti samo jedan, poput Cloudflare R2 tokena za objekte, prolazi test i otvara taj spremnik pri odabiru mape.',
   'new.change.appFolders': 'U aplikaciji za mobitel {add} pod {settings}, {phone} omogućuje ArrowLoopu da sinkronizira mapu koju druga aplikacija nudi u Androidovu odabiru datoteka, bez roota i bez Shizukua. Mape se pojavljuju u odredištu imena Apps.',
 }
 

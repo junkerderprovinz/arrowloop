@@ -13,6 +13,7 @@ The full notes for each release are in
 ## ✨ Added
 
 - **A sign-in that opens several drives asks which one to use.** Testing a OneDrive target lists the drives its token opens and asks when there is more than one, so the drive ID no longer has to be looked up and typed. Zoho WorkDrive asks for its workspace the same way. With only one, it is taken without asking.
+- **An S3 target can name its bucket.** A key that may open one bucket but not list the others, such as a Cloudflare R2 object token or a scoped AWS key, failed the connection test, which asked for the list of all buckets. With the bucket filled in, the test and the folder picker open that bucket, and a bucket that does not exist fails the test.
 
 ## ⚡ Improved
 
