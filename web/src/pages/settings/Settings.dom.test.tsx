@@ -215,7 +215,7 @@ describe('the exceptions', () => {
     jobs = [{ name: 'photos' }, { name: 'music', schedule: '', emptyDirs: true }]
     render(<SyncPage />)
     const row = (await screen.findByText('music')).closest('li') as HTMLElement
-    expect(row.textContent).toContain('Schedule: on request')
+    expect(row.textContent).toContain('Schedule: manual')
     expect(row.textContent).toContain('Carry empty folders: On')
     expect(screen.queryByText('photos')).toBeNull()
   })
@@ -247,18 +247,17 @@ describe('the exceptions', () => {
 })
 
 describe('the default schedule', () => {
-  it('reads as a sentence and keeps a typed expression reachable', async () => {
+  it('shows the chosen kind with its fields and keeps a typed expression reachable', async () => {
     stored = { defaults: { schedule: '15 4 * * 1' } }
     render(<SyncPage />)
-    const sentence = await screen.findByRole('button', { name: /^Schedule:/ })
-    expect(sentence.textContent).toContain('Mon at 04:15')
-
-    fireEvent.click(sentence)
-    const panel = await screen.findByRole('dialog', { name: 'Schedule' })
+    const kinds = await screen.findByRole('tablist', { name: 'Schedule' })
+    expect(within(kinds).getByRole('tab', { name: 'Weekdays' }).getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByRole('button', { name: 'Mon' }).getAttribute('aria-pressed')).toBe('true')
     // Real time belongs to a job, so the default does not offer it.
-    expect(within(panel).queryByRole('tab', { name: 'Real time' })).toBeNull()
-    fireEvent.click(within(panel).getByRole('tab', { name: 'Cron' }))
-    const field = within(panel).getByDisplayValue('15 4 * * 1')
+    expect(within(kinds).queryByRole('tab', { name: 'Real time' })).toBeNull()
+
+    fireEvent.click(within(kinds).getByRole('tab', { name: 'Cron' }))
+    const field = screen.getByDisplayValue('15 4 * * 1')
     // Typed one key at a time, the space between two fields stays.
     fireEvent.change(field, { target: { value: '0 ' } })
     expect((field as HTMLInputElement).value).toBe('0 ')

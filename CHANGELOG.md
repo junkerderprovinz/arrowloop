@@ -17,10 +17,14 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **A job's window reads the way the job runs.** Both sides stand next to each other with the direction between them, each with the logo of its target, its folder and a button to browse for another. Below them the settings sit in three cards, Schedule, Syncing and Exclusions, and the state file waits under Advanced. In a narrow window the sides stack and the arrow points down or up.
+- **A job's window reads the way the job runs.** The window is wide enough for two folder paths, and both sides stand next to each other with the direction between them, each with the logo of its target, its folder and a button to browse for another. Below them the settings sit in three cards, Schedule, Syncing and Exclusions, and the state file waits under Advanced. In a narrow window the sides stack and the arrow points down or up.
+- **The schedule is picked right in its card.** Manual, Every N, Every day, Weekdays, Real time and Cron stand in one bar, and below it only the fields of the chosen one: the interval, the time, the days, or the settle time and backstop of real time. The global sync settings and the phone app pick the schedule the same way, and the separate schedule panel is gone.
+- **Copy only, Mirror and Move stand in one bar.** In the Syncing card of a job the three modes share one bar of equal parts, on the web and on the phone.
+- **Fewer info bubbles in a job's window.** Name, the two sides, the direction, the schedule, Sync as soon as the program starts and Carry empty folders say what they do in their label, so their bubbles are gone. The trash bubble says what switching it off does, and One level up in the folder picker shows a back arrow.
 
 ## ⚡ Improved
 
+- **A job without a schedule is marked manual.** The job list, the job page and the exceptions said "on request" for such a job. They use the word the schedule offers, Manual.
 - **One switch decides whether a job follows the global settings.** Use the global settings at the top of the window replaces the Override button on every row. While it is on, the global values show greyed out, and clicking one makes the switch wiggle. Turned off, every field is the job's own, starting from the values that apply now.
 - **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
 - **An S3 target reads its region and bucket from the address you paste.** An endpoint that names its region, as the addresses of AWS, Backblaze B2, Hetzner, Scaleway, OVHcloud and Wasabi do, fills in an empty region, and a bucket's address as Cloudflare's R2 dashboard shows it is split into the endpoint and the bucket. The Garage form shows garage as the region its server expects.

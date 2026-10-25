@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
 
-import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { useMotion } from "./motion";
 import { softOn, space, text } from "./theme";
-import { Press, Sheet, Toggle, useTheme } from "./ui";
-import { describeCadence, readCadence } from "../../web/src/lib/cadence";
+import { Press, Toggle, useTheme } from "./ui";
 
 /**
  * The job's one switch between the global sync settings and values of its
@@ -108,61 +106,10 @@ export function FromGlobal({
   );
 }
 
-/**
- * A schedule as its sentence on a button, which opens the schedule's editor
- * in a sheet, so nobody has to read a cron expression to learn when a job
- * runs. The editor keeps the cron field for one typed by hand.
- */
-export function ScheduleSentence({
-  label,
-  value,
-  watch = false,
-  children,
-}: {
-  label: string;
-  value: string;
-  /** Real time, which the expression cannot say. */
-  watch?: boolean;
-  /** The editor. */
-  children: ReactNode;
-}) {
-  const { t } = useT();
-  const { p, corners, accentInk } = useTheme();
-  const [open, setOpen] = useState(false);
-  const said = describeCadence(readCadence(value, watch), t);
-  const sentence = said.charAt(0).toLocaleUpperCase() + said.slice(1);
-  return (
-    <>
-      <Press
-        accessibilityRole="button"
-        accessibilityLabel={`${label}: ${sentence}`}
-        onPress={() => setOpen(true)}
-        android_ripple={{ color: p.hover }}
-        style={[styles.sentence, { backgroundColor: p.surface2, ...corners.control }]}
-      >
-        <Glyph name="IconSchedules" color={accentInk} />
-        <Text style={[styles.sentenceText, { color: p.text }]}>{sentence}</Text>
-      </Press>
-      <Sheet open={open} title={label} onClose={() => setOpen(false)}>
-        {children}
-      </Sheet>
-    </>
-  );
-}
-
 const styles = StyleSheet.create({
   switch: { paddingHorizontal: space.lg, paddingVertical: space.xs },
   stack: { gap: space.xs },
   dimmed: { opacity: 0.4 },
   markRow: { flexDirection: "row", justifyContent: "flex-end" },
   mark: { fontSize: text.meta, paddingHorizontal: space.sm, paddingVertical: 2, overflow: "hidden" },
-  sentence: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.sm,
-    minHeight: 48,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-  },
-  sentenceText: { flex: 1, fontSize: text.body },
 });

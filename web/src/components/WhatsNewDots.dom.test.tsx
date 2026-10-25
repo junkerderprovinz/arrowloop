@@ -68,7 +68,7 @@ describe('the dots of what is new', () => {
   it('take the dot off a link once everything behind it was seen', async () => {
     render(<Page />)
     await waitFor(() => expect(dot('way')).not.toBeNull())
-    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'tile-order', 'schedule-sentence', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks']))
+    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks']))
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 

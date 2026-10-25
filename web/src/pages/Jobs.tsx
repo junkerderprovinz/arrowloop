@@ -231,6 +231,7 @@ function JobCard({
   const { drives } = usePlaces()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
   const startStop = useStartStop(job, onAnswered)
+  const cadence = readCadence(job.schedule ?? '', !!job.watch)
 
   return (
     <li data-testid="job-row" data-new-way="/jobs/:name" onClick={() => open(job.name)} className="relative cursor-pointer">
@@ -252,7 +253,9 @@ function JobCard({
                 <span className="min-w-0 [overflow-wrap:anywhere]">{sideName(job.right, drives)}</span>
               </span>
               <span className="flex flex-wrap gap-x-4">
-                <span>{t('jobs.runs', { cadence: describeCadence(readCadence(job.schedule ?? '', !!job.watch), t) })}</span>
+                <span data-new={cadence.kind === 'none' ? 'manual-name' : undefined}>
+                  {t('jobs.runs', { cadence: describeCadence(cadence, t) })}
+                </span>
                 {job.nextRun && !job.disabled && (
                   <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })}</span>
                 )}

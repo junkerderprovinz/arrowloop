@@ -501,6 +501,11 @@ body {
 .glim-subcard button.bg-carbon-surface2:hover {
   background-color: var(--carbon-hover-raised);
 }
+/* Inside a subcard a groove takes the next surface, or it vanishes into the
+   subcard's own. */
+.glim-subcard .glim-well {
+  background-color: var(--carbon-surface3);
+}
 
 /* The job window's switch answers a click on a field it holds: it wiggles,
    or, where nothing may move, rings for a moment instead. */

@@ -212,7 +212,6 @@ export function WayButton({
         tone="accent"
         hue={0}
         wide={false}
-        hint={t("direction.hint")}
         mark={(ink) => <WayGlyph way={way} color={ink} />}
         onPress={() => onChange(NEXT[way])}
       />

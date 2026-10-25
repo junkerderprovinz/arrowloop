@@ -5,6 +5,27 @@
 
 export type ScheduleMode = 'off' | 'live' | 'every' | 'daily' | 'weekly' | 'cron'
 
+/**
+ * The kinds of schedule in the order the selector offers them, the plain
+ * cadences first. Real time is one of them: a watcher can miss an event, so it
+ * also writes an "every N" backstop, and the engine refuses a watching job
+ * without one.
+ */
+export const SCHEDULE_MODES: ScheduleMode[] = ['off', 'every', 'daily', 'weekly', 'live', 'cron']
+
+/**
+ * The backstop real time starts with. It only catches events the watcher
+ * missed, so an hour: shorter makes the watcher pointless, longer leaves a miss
+ * unnoticed for most of a day.
+ */
+export const BACKSTOP: { count: number; unit: EveryUnit } = { count: 1, unit: 'hour' }
+
+/**
+ * The settle time real time starts with. A folder copy produces one event per
+ * file, and five seconds lets a file manager finish writing.
+ */
+export const DEFAULT_SETTLE = '5s'
+
 /** The weekdays in display order, as cron's numbers (Sunday is 0). */
 export const WEEKDAYS: { day: number; key: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' }[] = [
   { day: 1, key: 'mon' },
@@ -134,4 +155,48 @@ export function parseSchedule(raw: string): ScheduleState {
   }
 
   return { ...DEFAULT_SCHEDULE, mode: 'cron', cron: s }
+}
+
+/**
+ * A job's schedule as the selector shows it. The expression cannot tell real
+ * time from "every N", since both write the backstop, so the watch flag decides.
+ */
+export function readSchedule(raw: string, watch: boolean): ScheduleState {
+  const state = parseSchedule(raw)
+  return watch ? { ...state, mode: 'live' } : state
+}
+
+/** What choosing a kind writes. `settle` is set only where real time needs one seeded. */
+export interface KindChoice {
+  state: ScheduleState
+  schedule: string
+  watch: boolean
+  settle?: string
+}
+
+/**
+ * Switches a schedule to another kind. Real time seeds a backstop when there
+ * was no cadence to keep and a settle time when none is set; cron starts from
+ * the schedule already set, written out, so the field is never blank.
+ */
+export function chooseKind(current: ScheduleState, raw: string, settle: string, next: ScheduleMode): KindChoice {
+  if (next === 'live') {
+    const seeded =
+      current.mode === 'off' || raw.trim() === '' ? { everyCount: BACKSTOP.count, everyUnit: BACKSTOP.unit } : {}
+    const state = { ...current, ...seeded, mode: next }
+    return {
+      state,
+      schedule: buildSchedule(state),
+      watch: true,
+      ...(settle.trim() === '' ? { settle: DEFAULT_SETTLE } : {}),
+    }
+  }
+  if (next === 'cron') {
+    const cron =
+      current.mode === 'off' || current.mode === 'live' ? buildSchedule({ ...current, mode: 'daily' }) : raw.trim()
+    const state = { ...current, mode: next, cron }
+    return { state, schedule: buildSchedule(state), watch: false }
+  }
+  const state = { ...current, mode: next }
+  return { state, schedule: buildSchedule(state), watch: false }
 }

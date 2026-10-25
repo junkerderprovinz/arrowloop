@@ -9,15 +9,13 @@ import { Held } from './GlobalValues'
 import type { Direction, Remote } from '../lib/api'
 import { placeOf } from '../lib/entryLabel'
 import { Button } from '../lib/glimstone/Button'
-import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useT } from '../lib/i18n'
 import { isLocalTarget } from '../lib/localTarget'
 import { usePlaces } from '../lib/places'
 
 /**
- * The row's width below which the two sides stand one above the other: a
- * window of about 720 pixels less its padding, where two cards beside the
- * direction would leave a path a handful of characters.
+ * The row's width below which the two sides stand one above the other, where
+ * two cards beside the direction would leave a path a handful of characters.
  */
 export const WAY_STACK_PX = 680
 
@@ -83,11 +81,10 @@ export function JobWay({
       className={`flex gap-3 ${stacked ? 'flex-col items-stretch' : 'items-stretch'}`}
     >
       <SideCard label={t('edit.left')} path={left} onChange={onLeft} known={known} remotes={remotes} />
-      <div className="flex shrink-0 flex-col items-center justify-center gap-1.5">
+      <div className="flex shrink-0 flex-col items-center justify-center">
         <Held held={held} onHeld={onHeld}>
           <DirectionSwitch direction={direction} onChange={onDirection} vertical={stacked} />
         </Held>
-        <InfoBubble tip={t('direction.hint')} />
       </div>
       <SideCard label={t('edit.right')} path={right} onChange={onRight} known={known} remotes={remotes} />
     </div>
@@ -132,7 +129,6 @@ function SideCard({
     <section className="glim-subcard flex min-w-0 flex-1 flex-col gap-3 px-4 pb-4 pt-3">
       <h3 data-glim-label={label} className="glim-eyebrow flex items-center gap-1.5 font-semibold">
         {label}
-        <InfoBubble tip={t('edit.sideHint')} />
       </h3>
       <div className="flex min-w-0 items-center gap-3">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-carbon-surface3 text-accentGlyph [&_svg]:h-5 [&_svg]:w-5">

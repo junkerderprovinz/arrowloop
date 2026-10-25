@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  type DimensionValue,
   type FlatListProps,
   type PressableProps,
   type NativeScrollEvent,
@@ -1136,6 +1137,7 @@ export function Choice<T extends string>({
   onChange,
   hue,
   disabled,
+  perRow,
   style,
 }: {
   /**
@@ -1159,16 +1161,24 @@ export function Choice<T extends string>({
   hue?: number;
   /** Dimmed and inert, but still showing the value in force. */
   disabled?: boolean;
+  /**
+   * How many segments share a row, for more than one row holds: they wrap
+   * into even rows, each segment as wide as the others in its row.
+   */
+  perRow?: number;
   style?: StyleProp<ViewStyle>;
 }) {
   const { p, corners, accent, hueAt } = useTheme();
   const mine = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  // A share of the row that leaves room for the gaps; growing fills the rest.
+  const basis: DimensionValue | undefined = perRow ? `${Math.floor(100 / perRow) - 4}%` : undefined;
   return (
     <View
       pointerEvents={disabled ? "none" : "auto"}
       style={[
         styles.well,
         { backgroundColor: p.surface2, ...corners.pill },
+        basis ? styles.wrapped : null,
         disabled ? styles.dimmed : null,
         style,
       ]}
@@ -1182,6 +1192,7 @@ export function Choice<T extends string>({
             option={option}
             on={on}
             fill={fill}
+            basis={basis}
             onPress={() => onChange(option.value)}
           />
         );
@@ -1195,11 +1206,13 @@ function Segment({
   option,
   on,
   fill,
+  basis,
   onPress,
 }: {
   option: { label: string; hint?: string; mark?: (ink: string) => ReactNode; glyph?: string; disabled?: boolean };
   on: boolean;
   fill: string;
+  basis?: DimensionValue;
   onPress: () => void;
 }) {
   const { p, corners, labels } = useTheme();
@@ -1220,6 +1233,7 @@ function Segment({
         styles.segment,
         option.hint || (glyph && word) ? styles.segmentRow : null,
         corners.pill,
+        basis ? { flexBasis: basis } : null,
         on ? { backgroundColor: fill } : null,
         { opacity: press.dim, transform: [{ scale: press.scale }] },
         option.disabled ? styles.dimmed : null,
@@ -1572,6 +1586,7 @@ const styles = StyleSheet.create({
   // The segments divide the card's width rather than sizing to their words,
   // so none runs off the edge.
   well: { flexDirection: "row", padding: 3, gap: 2, alignSelf: "stretch" },
+  wrapped: { flexWrap: "wrap" },
   // Centred for when the groove stretches to a neighbouring button's height.
   segment: {
     flex: 1,

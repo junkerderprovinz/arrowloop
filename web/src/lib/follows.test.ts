@@ -89,7 +89,7 @@ describe('the exceptions', () => {
 
   it('names each value in words', () => {
     expect(describeOwn({ schedule: '30 3 * * *' }, 'schedule', t)).toBe('Schedule: daily at 03:30')
-    expect(describeOwn({ schedule: '' }, 'schedule', t)).toBe('Schedule: on request')
+    expect(describeOwn({ schedule: '' }, 'schedule', t)).toBe('Schedule: manual')
     expect(describeOwn({ direction: 'leftToRight', mode: 'mirror' }, 'direction', t)).toBe(
       'Direction: Only to the right, Mirror',
     )

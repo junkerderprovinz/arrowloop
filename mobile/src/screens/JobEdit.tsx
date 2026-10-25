@@ -1,9 +1,8 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
+import { Alert, Dimensions, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { api, type JobConfig, type Remote } from "../api";
 import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
-import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { Glyph, ProviderMark } from "../glyphs";
@@ -16,7 +15,7 @@ import { sideName, sidePair } from "../sides";
 import { animateNext, useMotion } from "../motion";
 import { AxisLabel, Body, Button, Card, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
 import { WayButton } from "../way";
-import { FromGlobal, GlobalSwitch, ScheduleSentence } from "../inherit";
+import { FromGlobal, GlobalSwitch } from "../inherit";
 import { amount, type JobLearning } from "../../../web/src/lib/anomalies";
 import {
   BRAKE_SETTINGS,
@@ -32,8 +31,10 @@ import {
 } from "../../../web/src/lib/follows";
 import {
   buildSchedule,
+  chooseKind,
   EVERY_UNITS,
   parseSchedule,
+  SCHEDULE_MODES,
   WEEKDAYS,
   type EveryUnit,
   type ScheduleMode,
@@ -330,7 +331,6 @@ export function JobEdit() {
         <View ref={nameRef} collapsable={false}>
           <Field
             label={t("edit.name")}
-            hint={t("edit.nameHint")}
             value={job.name}
             onChange={(name) => set({ name })}
             error={reason("name")}
@@ -379,20 +379,16 @@ export function JobEdit() {
           settings with it. No "run at start" switch: the engine restarts with
           the app and after every eviction, so it would run a job several
           times a day. */}
-      <Section title={t("edit.schedule")} hint={t("edit.scheduleHint")} hue={1}>
+      <Section title={t("edit.schedule")} hue={1}>
         <View ref={scheduleRef} collapsable={false} style={styles.stack}>
           <FromGlobal {...global("schedule")}>
-            <View style={styles.stack}>
-              <ScheduleSentence label={t("edit.schedule")} value={timing} watch={Boolean(job.watch)}>
-                <Schedule value={timing} onChange={(schedule) => set({ schedule }, true)} />
-              </ScheduleSentence>
-              <Toggle
-                label={t("schedule.live")}
-                hint={t("schedule.liveHint")}
-                value={Boolean(job.watch)}
-                onChange={(watch) => set({ watch }, true)}
-              />
-            </View>
+            <Schedule
+              value={timing}
+              watch={Boolean(shown("schedule").watch)}
+              settle={job.watchSettle ?? ""}
+              realTime
+              onChange={(patch) => set(patch, true)}
+            />
           </FromGlobal>
           {reason("schedule") ? <Refusal text={reason("schedule") ?? ""} /> : null}
         </View>
@@ -420,8 +416,7 @@ export function JobEdit() {
         ) : (
           <FromGlobal {...global("direction")}>
             {/* Each mode explains itself in its segment. */}
-            <ChoiceRow
-              label={t("mode.label")}
+            <Choice
               hue={1}
               value={shown("direction").mode ?? "sync"}
               onChange={(mode) => set({ mode }, true)}
@@ -433,16 +428,21 @@ export function JobEdit() {
             />
           </FromGlobal>
         )}
-        {(["emptyDirs", "metadata"] as const).map((setting) => (
-          <FromGlobal key={setting} {...global(setting)}>
-            <Toggle
-              label={t(`edit.${setting}`)}
-              hint={t(`edit.${setting}Hint`)}
-              value={Boolean(shown(setting)[setting])}
-              onChange={(on) => set({ [setting]: on }, true)}
-            />
-          </FromGlobal>
-        ))}
+        <FromGlobal {...global("emptyDirs")}>
+          <Toggle
+            label={t("edit.emptyDirs")}
+            value={Boolean(shown("emptyDirs").emptyDirs)}
+            onChange={(emptyDirs) => set({ emptyDirs }, true)}
+          />
+        </FromGlobal>
+        <FromGlobal {...global("metadata")}>
+          <Toggle
+            label={t("edit.metadata")}
+            hint={t("edit.metadataHint")}
+            value={Boolean(shown("metadata").metadata)}
+            onChange={(metadata) => set({ metadata }, true)}
+          />
+        </FromGlobal>
         <Toggle
           label={t("edit.trash")}
           hint={t("edit.trashHint")}
@@ -586,7 +586,6 @@ function SideCard({
       </View>
       <Field
         label={t("edit.folderPath")}
-        hint={t("edit.sideHint")}
         value={side}
         onChange={onChange}
         placeholder={placeholder}
@@ -700,21 +699,38 @@ function spotOf(message: string): Spot {
   return "right";
 }
 
+/** The fields a schedule writes on a job. A default schedule writes only the expression. */
+export type SchedulePatch = { schedule: string; watch?: boolean; watchSettle?: string };
+
 /**
- * A schedule builder over the shared lib/schedule.data.ts model: off, every N
- * units, daily or on weekdays at a time, or a raw cron expression. An
- * expression the builder does not recognise reads back as cron, so it stays
- * editable.
+ * A schedule over the shared lib/schedule.data.ts model: its kinds as one bar,
+ * then the fields of the chosen kind. An expression the fields cannot say
+ * reads back as cron, so it stays editable. Real time belongs to a job, so a
+ * default schedule leaves it out.
  */
-export function Schedule({ value, onChange }: { value: string; onChange: (next: string) => void }) {
+export function Schedule({
+  value,
+  watch = false,
+  settle = "",
+  realTime = false,
+  onChange,
+}: {
+  value: string;
+  watch?: boolean;
+  settle?: string;
+  realTime?: boolean;
+  onChange: (next: SchedulePatch) => void;
+}) {
   const { t } = useT();
   const { intensity: motion } = useMotion();
+  const { width } = useWindowDimensions();
   const derived = parseSchedule(value);
 
-  // The mode is kept in state rather than parsed from the stored value, which
-  // cannot express every mode: an empty cron expression reads back as "off".
-  // It is re-seeded when the value changes from outside.
-  const [mode, setMode] = useState<ScheduleMode>(derived.mode);
+  // The kind is kept in state rather than parsed from the stored value, which
+  // cannot express every kind: an empty cron expression reads back as "off",
+  // and real time writes the same expression as "every N". It is re-seeded
+  // when the value changes from outside.
+  const [mode, setMode] = useState<ScheduleMode>(watch ? "live" : derived.mode);
   // The expression as typed, since the stored one is trimmed and a space
   // between two fields would vanish as it is typed.
   const [cron, setCron] = useState(value);
@@ -722,74 +738,68 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
   useEffect(() => {
     if (seen.current !== value) {
       seen.current = value;
-      setMode(parseSchedule(value).mode);
+      setMode(watch ? "live" : parseSchedule(value).mode);
       setCron(value);
     }
-  }, [value]);
+  }, [value, watch]);
 
   const state: ScheduleState = { ...derived, mode };
-  const set = (patch: Partial<ScheduleState>) => {
-    const next = { ...state, ...patch };
-    if (patch.mode !== undefined) setMode(patch.mode);
-    const built = buildSchedule(next);
-    seen.current = built;
-    onChange(built);
+  const write = (next: SchedulePatch) => {
+    seen.current = next.schedule;
+    onChange(next);
   };
+  const set = (patch: Partial<ScheduleState>) => write({ schedule: buildSchedule({ ...state, ...patch }) });
+
+  const kinds = realTime ? SCHEDULE_MODES : SCHEDULE_MODES.filter((m) => m !== "live");
+  // Six kinds do not fit one row on a phone, so they stand in two even ones.
+  const perRow = width < WIDE ? Math.ceil(kinds.length / 2) : undefined;
+
+  const every = (label: string, hint?: string) => (
+    <>
+      <Field
+        label={label}
+        hint={hint}
+        keyboard="numeric"
+        short
+        value={String(state.everyCount)}
+        onChange={(v) => set({ everyCount: Math.max(1, Math.round(Number(v) || 1)) })}
+      />
+      <Choice<EveryUnit>
+        hue={3}
+        value={state.everyUnit}
+        onChange={(everyUnit) => set({ everyUnit })}
+        options={EVERY_UNITS.map((unit) => ({
+          value: unit,
+          label: t(`schedule.unit.${unit}`),
+        }))}
+      />
+    </>
+  );
 
   return (
     <View style={styles.stack}>
-      <ChoiceRow<ScheduleMode>
-        label={t("edit.schedule")}
+      <Choice<ScheduleMode>
         hue={2}
+        perRow={perRow}
         value={state.mode}
-        // No `live` mode: watching is stored on the job, not in the expression.
-        // Each mode shows different rows, so the change is animated.
-        onChange={(mode) => {
+        // Each kind shows different rows, so the change is animated.
+        onChange={(next) => {
           animateNext(motion);
-          // The field starts from the schedule already set, written out.
-          if (mode === "cron") {
-            const text = state.mode === "off" ? buildSchedule({ ...state, mode: "daily" }) : value.trim();
-            setCron(text);
-            set({ mode, cron: text });
-            return;
-          }
-          set({ mode });
+          const choice = chooseKind(state, value, settle, next);
+          setMode(next);
+          if (next === "cron") setCron(choice.state.cron);
+          write({
+            schedule: choice.schedule,
+            ...(realTime ? { watch: choice.watch } : {}),
+            ...(choice.settle !== undefined ? { watchSettle: choice.settle } : {}),
+          });
         }}
-        options={[
-          { value: "off", label: t("schedule.off") },
-          { value: "every", label: t("schedule.every") },
-          { value: "daily", label: t("schedule.daily") },
-          { value: "weekly", label: t("schedule.weekly") },
-          { value: "cron", label: t("schedule.cron") },
-        ]}
+        options={kinds.map((kind) => ({ value: kind, label: t(`schedule.${kind}`) }))}
       />
 
       {/* The shared writer emits `@every`, which counts from the last run; a
           cron step in the hours column would keep to fixed clock hours. */}
-      {state.mode === "every" ? (
-        <>
-          <Field
-            label={t("schedule.everyLabel")}
-            keyboard="numeric"
-            short
-            value={String(state.everyCount)}
-            onChange={(v) => set({ everyCount: Math.max(1, Math.round(Number(v) || 1)) })}
-          />
-          <Choice<EveryUnit>
-            hue={3}
-            value={state.everyUnit}
-            onChange={(everyUnit) => set({ everyUnit })}
-            options={EVERY_UNITS.map((unit) => ({
-              value: unit,
-              label: t(`schedule.unit.${unit}`),
-            }))}
-          />
-        </>
-      ) : null}
-
-      {state.mode === "daily" || state.mode === "weekly" ? (
-        <TimeField label={t("schedule.at")} value={state.time} onChange={(time) => set({ time })} />
-      ) : null}
+      {state.mode === "every" ? every(t("schedule.everyLabel")) : null}
 
       {/* With no day ticked, the shared writer falls back to Monday rather than
           writing a daily expression. */}
@@ -816,7 +826,24 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
         </>
       ) : null}
 
-      {/* Its own mode, so typing an expression that matches a preset does not
+      {state.mode === "daily" || state.mode === "weekly" ? (
+        <TimeField label={t("schedule.at")} value={state.time} onChange={(time) => set({ time })} />
+      ) : null}
+
+      {state.mode === "live" ? (
+        <>
+          <Field
+            label={t("schedule.settle")}
+            hint={t("schedule.settleHint")}
+            value={settle}
+            onChange={(watchSettle) => write({ schedule: value, watchSettle })}
+            placeholder="5s"
+          />
+          {every(t("schedule.backstop"), t("schedule.backstopHint"))}
+        </>
+      ) : null}
+
+      {/* Its own kind, so typing an expression that matches a preset does not
           switch away from the field. */}
       {state.mode === "cron" ? (
         <Field
@@ -832,6 +859,9 @@ export function Schedule({ value, onChange }: { value: string; onChange: (next: 
     </View>
   );
 }
+
+/** The window width from which every kind fits one row. */
+const WIDE = 600;
 
 /** One weekday as a chip, since several days can be chosen at once. */
 function DayChip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {

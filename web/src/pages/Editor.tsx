@@ -3,13 +3,12 @@ import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 
 import { Field, FieldRow, Lines, Text } from '../components/Field'
 import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
-import { SettingRow } from '../components/GlobalValues'
+import { Held, SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
 import type { Known } from '../components/FolderPicker'
-import { ScheduleField } from '../components/Schedule'
-import { ScheduleButton } from '../components/ScheduleButton'
+import { ScheduleDetails, ScheduleKinds, useSchedule } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { Toggle } from '../lib/glimstone/Toggle'
 import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
@@ -299,6 +298,13 @@ export function JobForm({
   const shown: RawJob = { ...job, ...(overrideAll(defaults, unset) as RawJob) }
   const direction: Direction = shown.direction ?? 'both'
   const held = { held: follows, onHeld }
+  const schedule = useSchedule({
+    value: shown.schedule ?? '',
+    watch: !!shown.watch,
+    settle: shown.watchSettle ?? '',
+    realTime: true,
+    onChange: patch,
+  })
 
   // The state path follows the name while it still has the generated
   // `state/<name>.db` form; a path somebody typed is left alone.
@@ -311,7 +317,7 @@ export function JobForm({
 
   return (
     <div className="flex flex-col gap-4 pb-2">
-      <FieldRow label={t('edit.name')} hint={t('edit.nameHint')}>
+      <FieldRow label={t('edit.name')}>
         <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} label={t('edit.name')} />
       </FieldRow>
 
@@ -330,26 +336,18 @@ export function JobForm({
       />
 
       <SubCard label={t('edit.schedule')}>
-        <div data-new="schedule-sentence">
-          <SettingRow label={t('edit.when')} hint={t('edit.scheduleHint')} {...held}>
-            <ScheduleButton label={t('edit.schedule')} value={shown.schedule ?? ''} watch={!!shown.watch}>
-              <ScheduleField
-                value={shown.schedule ?? ''}
-                onChange={(v) => patch({ schedule: v })}
-                live={!!job.watch}
-                onLive={(v) => patch({ watch: v })}
-                settle={job.watchSettle ?? ''}
-                onSettle={(v) => patch({ watchSettle: v })}
-              />
-            </ScheduleButton>
-          </SettingRow>
-        </div>
+        <Held block {...held}>
+          <div data-new="schedule-hs">
+            <ScheduleKinds editor={schedule} />
+          </div>
+          <ScheduleDetails editor={schedule} />
+        </Held>
         {/* Zero is written as 0s, since an empty quiet period is one the job
             leaves to the defaults. */}
         <SettingRow label={t('edit.quietPeriod')} hint={t('edit.quietHint')} {...held}>
           <QuietPeriod value={shown.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v || '0s' })} />
         </SettingRow>
-        <SettingRow label={t('edit.runAtStart')} hint={t('edit.runAtStartHint')}>
+        <SettingRow label={t('edit.runAtStart')}>
           <Toggle checked={!!job.runAtStart} onChange={(v) => patch({ runAtStart: v })} label={t('edit.runAtStart')} hideLabel />
         </SettingRow>
       </SubCard>
@@ -358,17 +356,18 @@ export function JobForm({
         {/* The mode exists only once one side is the source, and a newer
             version can only win where both sides change. */}
         {direction !== 'both' && (
-          <SettingRow label={t('mode.label')} {...held}>
-            <Selector<Mode>
-              scale="small"
-              hug
-              label={t('mode.label')}
-              hueOffset={HUE_OFFSET.mode}
-              value={shown.mode ?? 'sync'}
-              onChange={(v) => patch({ mode: v })}
-              options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
-            />
-          </SettingRow>
+          <Held block {...held}>
+            <div data-new="mode-hs">
+              <Selector<Mode>
+                low
+                label={t('mode.label')}
+                hueOffset={HUE_OFFSET.mode}
+                value={shown.mode ?? 'sync'}
+                onChange={(v) => patch({ mode: v })}
+                options={MODES.map((m) => ({ value: m, label: t(`mode.${m}`), hint: t(`mode.${m}Hint`) }))}
+              />
+            </div>
+          </Held>
         )}
         {direction === 'both' && (
           <div data-new="newer-wins">
@@ -377,11 +376,12 @@ export function JobForm({
             </SettingRow>
           </div>
         )}
-        {(['emptyDirs', 'metadata'] as const).map((setting) => (
-          <SettingRow key={setting} label={t(`edit.${setting}`)} hint={t(`edit.${setting}Hint`)} {...held}>
-            <Toggle checked={!!shown[setting]} onChange={(v) => patch({ [setting]: v })} label={t(`edit.${setting}`)} hideLabel />
-          </SettingRow>
-        ))}
+        <SettingRow label={t('edit.emptyDirs')} {...held}>
+          <Toggle checked={!!shown.emptyDirs} onChange={(v) => patch({ emptyDirs: v })} label={t('edit.emptyDirs')} hideLabel />
+        </SettingRow>
+        <SettingRow label={t('edit.metadata')} hint={t('edit.metadataHint')} {...held}>
+          <Toggle checked={!!shown.metadata} onChange={(v) => patch({ metadata: v })} label={t('edit.metadata')} hideLabel />
+        </SettingRow>
         {/* Inverted from the stored `noTrash`, since a switch labelled with a
             negative gets flipped the wrong way, and here that deletes files. */}
         <SettingRow label={t('edit.trash')} hint={t('edit.trashHint')}>
