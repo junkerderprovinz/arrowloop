@@ -984,7 +984,6 @@ const eu: Translations = {
   'provider.union': 'Bateratutako helburuak',
   'provider.memory': 'Memorian',
   'provider.doiHint': 'Argitaratutako ikerketa-datu multzo bat irakurtzen du bere DOIaren bidez, Zenodo, Figshare edo Dataverse-tik.',
-  'provider.tardigradeHint': 'Storj bere aurreko izenarekin, garai hartan sortutako sarbide baterako.',
   'provider.aliasHint': 'Dagoeneko duzun helburu baten bigarren izena, edo bertako karpeta batena.',
   'provider.archiveHint': 'Beste helburu bateko zip eta squashfs fitxategien barrukoa irakurtzen du, deskonprimitu gabe.',
   'provider.cacheHint': 'Beste helburu batek duenaren kopia lokal bat gordetzen du. rclone-k ez du gehiago garatzen.',

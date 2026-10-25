@@ -984,7 +984,6 @@ const el: Translations = {
   'provider.union': 'Ενωμένοι προορισμοί',
   'provider.memory': 'Στη μνήμη',
   'provider.doiHint': 'Διαβάζει ένα δημοσιευμένο ερευνητικό σύνολο δεδομένων μέσω του DOI του, από το Zenodo, το Figshare ή το Dataverse.',
-  'provider.tardigradeHint': 'Το Storj με το παλιότερο όνομά του, για πρόσβαση που στήθηκε τότε.',
   'provider.aliasHint': 'Ένα δεύτερο όνομα για έναν προορισμό που ήδη έχεις, ή για έναν φάκελο μέσα του.',
   'provider.archiveHint': 'Διαβάζει το περιεχόμενο αρχείων zip και squashfs σε έναν άλλο προορισμό, χωρίς να τα αποσυμπιέζει.',
   'provider.cacheHint': 'Κρατά ένα τοπικό αντίγραφο όσων έχει ένας άλλος προορισμός. Το rclone δεν το αναπτύσσει πια.',

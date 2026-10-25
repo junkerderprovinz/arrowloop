@@ -984,7 +984,6 @@ const fr: Translations = {
   'provider.union': 'Cibles fusionnées',
   'provider.memory': 'En mémoire',
   'provider.doiHint': 'Lit un jeu de données de recherche publié à partir de son DOI, sur Zenodo, Figshare ou Dataverse.',
-  'provider.tardigradeHint': 'Storj sous son ancien nom, pour un accès créé à cette époque.',
   'provider.aliasHint': 'Un second nom pour une cible que vous avez déjà, ou pour un dossier qu\'elle contient.',
   'provider.archiveHint': 'Lit le contenu des fichiers zip et squashfs d\'une autre cible, sans les décompresser.',
   'provider.cacheHint': 'Garde une copie locale de ce que contient une autre cible. rclone ne le développe plus.',

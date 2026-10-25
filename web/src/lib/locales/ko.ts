@@ -984,7 +984,6 @@ const ko: Translations = {
   'provider.union': '병합된 대상',
   'provider.memory': '메모리 내',
   'provider.doiHint': '게시된 연구 데이터 세트를 DOI로 읽습니다. Zenodo, Figshare, Dataverse를 지원합니다.',
-  'provider.tardigradeHint': '예전 이름의 Storj로, 그때 설정한 접속용입니다.',
   'provider.aliasHint': '이미 있는 대상이나 그 안의 폴더에 붙이는 두 번째 이름입니다.',
   'provider.archiveHint': '다른 대상에 있는 zip 및 squashfs 파일의 내용을 압축을 풀지 않고 읽습니다.',
   'provider.cacheHint': '다른 대상의 내용을 로컬에 복사해 둡니다. rclone에서 더 이상 개발하지 않습니다.',

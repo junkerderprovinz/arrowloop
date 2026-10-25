@@ -984,7 +984,6 @@ const zh: Translations = {
   'provider.union': '合并目标',
   'provider.memory': '内存中',
   'provider.doiHint': '通过 DOI 读取已发布的研究数据集，来源可以是 Zenodo、Figshare 或 Dataverse。',
-  'provider.tardigradeHint': 'Storj 的旧名称，用于当时设置的访问。',
   'provider.aliasHint': '给你已有的目标或其中某个文件夹起的第二个名字。',
   'provider.archiveHint': '读取另一个目标中 zip 和 squashfs 文件的内容，无需解包。',
   'provider.cacheHint': '在本地保留另一个目标内容的副本。rclone 已不再开发它。',

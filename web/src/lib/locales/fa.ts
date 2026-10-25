@@ -984,7 +984,6 @@ const fa: Translations = {
   'provider.union': 'مقصدهای ادغام‌شده',
   'provider.memory': 'در حافظه',
   'provider.doiHint': 'یک مجموعه‌دادهٔ پژوهشی منتشرشده را با DOI آن از Zenodo، Figshare یا Dataverse می‌خواند.',
-  'provider.tardigradeHint': 'Storj با نام قبلی‌اش، برای دسترسی‌ای که آن زمان ساخته شده.',
   'provider.aliasHint': 'نام دومی برای مقصدی که از قبل داری، یا برای پوشه‌ای در آن.',
   'provider.archiveHint': 'درون فایل‌های zip و squashfs را در مقصدی دیگر می‌خواند، بی‌آنکه آن‌ها را باز کند.',
   'provider.cacheHint': 'یک نسخهٔ محلی از آنچه مقصد دیگری دارد نگه می‌دارد. rclone دیگر آن را توسعه نمی‌دهد.',

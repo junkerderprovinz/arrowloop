@@ -984,7 +984,6 @@ const ms: Translations = {
   'provider.union': 'Destinasi dicantumkan',
   'provider.memory': 'Dalam memori',
   'provider.doiHint': 'Membaca set data penyelidikan yang diterbitkan melalui DOI-nya, daripada Zenodo, Figshare atau Dataverse.',
-  'provider.tardigradeHint': 'Storj dengan nama lamanya, untuk akses yang disediakan pada masa itu.',
   'provider.aliasHint': 'Nama kedua untuk destinasi yang sudah anda ada, atau untuk folder di dalamnya.',
   'provider.archiveHint': 'Membaca isi fail zip dan squashfs dalam destinasi lain, tanpa mengekstraknya.',
   'provider.cacheHint': 'Menyimpan salinan setempat apa yang ada dalam destinasi lain. rclone tidak lagi membangunkannya.',

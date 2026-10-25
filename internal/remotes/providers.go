@@ -216,8 +216,6 @@ var providers = []Provider{
 		Mark: "IconInternetArchive"},
 	// The file shares of an Azure storage account, beside its blobs.
 	{ID: "azurefiles", Name: "Azure Files", Backend: "azurefiles", Group: GroupStorage, Mark: "IconAzure"},
-	// Storj before it took the company's name, for an access set up then.
-	{ID: "tardigrade", Name: "Tardigrade", Backend: "tardigrade", Group: GroupStorage, Mark: "IconStorj"},
 	{ID: "qingstor", Name: "QingStor", Backend: "qingstor", Group: GroupStorage, Mark: "IconQingcloud"},
 	{ID: "imagekit", Name: "ImageKit", Auth: AuthAPIKey, AuthURL: "https://imagekit.io/dashboard/developer/api-keys",
 		Backend: "imagekit", Group: GroupStorage, Mark: "IconImagekit"},
@@ -348,10 +346,17 @@ func derivedAuth(b Backend) AuthStyle {
 	return ""
 }
 
+// formerNames maps a backend rclone still reads under an earlier name to the
+// backend it became, whose row stands for both.
+var formerNames = map[string]string{"tardigrade": "storj"}
+
 // UnlistedBackends are the compiled-in backends no provider entry covers, so a
 // new rclone backend is reachable by its rclone name before anybody lists it.
 func UnlistedBackends() []Backend {
 	named := map[string]bool{}
+	for old := range formerNames {
+		named[old] = true
+	}
 	for _, p := range providers {
 		named[p.Backend] = true
 	}

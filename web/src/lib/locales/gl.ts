@@ -984,7 +984,6 @@ const gl: Translations = {
   'provider.union': 'Destinos fusionados',
   'provider.memory': 'En memoria',
   'provider.doiHint': 'Le un conxunto de datos de investigación publicado polo seu DOI, de Zenodo, Figshare ou Dataverse.',
-  'provider.tardigradeHint': 'Storj co seu nome anterior, para un acceso creado daquela.',
   'provider.aliasHint': 'Un segundo nome para un destino que xa tes, ou para un cartafol del.',
   'provider.archiveHint': 'Le o contido de ficheiros zip e squashfs noutro destino, sen desempaquetalos.',
   'provider.cacheHint': 'Garda unha copia local do que ten outro destino. rclone xa non o desenvolve.',

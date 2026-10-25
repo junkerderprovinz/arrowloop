@@ -984,7 +984,6 @@ const he: Translations = {
   'provider.union': 'יעדים ממוזגים',
   'provider.memory': 'בזיכרון',
   'provider.doiHint': 'קורא מערך נתוני מחקר שפורסם לפי ה-DOI שלו, מ-Zenodo, מ-Figshare או מ-Dataverse.',
-  'provider.tardigradeHint': 'Storj בשמו הקודם, לגישה שהוגדרה אז.',
   'provider.aliasHint': 'שם נוסף ליעד שכבר יש לך, או לתיקייה בתוכו.',
   'provider.archiveHint': 'קורא את התוכן של קובצי zip ו-squashfs ביעד אחר, בלי לחלץ אותם.',
   'provider.cacheHint': 'שומר עותק מקומי של מה שיש ביעד אחר. rclone כבר לא מפתח אותו.',

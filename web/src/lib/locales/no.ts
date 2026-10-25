@@ -984,7 +984,6 @@ const no: Translations = {
   'provider.union': 'Sammenslåtte mål',
   'provider.memory': 'I minnet',
   'provider.doiHint': 'Leser et publisert forskningsdatasett via DOI-en, fra Zenodo, Figshare eller Dataverse.',
-  'provider.tardigradeHint': 'Storj under det tidligere navnet, for en tilgang som ble satt opp den gang.',
   'provider.aliasHint': 'Et ekstra navn på et mål du allerede har, eller på en mappe i det.',
   'provider.archiveHint': 'Leser innholdet i zip- og squashfs-filer i et annet mål, uten å pakke dem ut.',
   'provider.cacheHint': 'Holder en lokal kopi av det et annet mål inneholder. rclone utvikler den ikke lenger.',

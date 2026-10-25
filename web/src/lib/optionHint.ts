@@ -105,7 +105,6 @@ const PROVIDER_HINTS: Record<string, TranslationKey> = {
   ceph: 'provider.selfHostedHint',
   garage: 'provider.selfHostedHint',
   doi: 'provider.doiHint',
-  tardigrade: 'provider.tardigradeHint',
   alias: 'provider.aliasHint',
   archive: 'provider.archiveHint',
   cache: 'provider.cacheHint',

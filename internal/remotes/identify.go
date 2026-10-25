@@ -9,6 +9,10 @@ package remotes
 // most preset keys wins, so a MinIO target is MinIO rather than plain S3. A tie,
 // which only a hand-edited file can produce, returns nothing.
 func ProviderFor(r Remote) string {
+	typ := r.Type
+	if now, ok := formerNames[typ]; ok {
+		typ = now
+	}
 	saved := make(map[string]string, len(r.Settings))
 	for _, s := range r.Settings {
 		// A secret arrives as a placeholder, and no preset carries one.
@@ -20,7 +24,7 @@ func ProviderFor(r Remote) string {
 
 	best, bestKeys, tied := "", -1, false
 	for _, p := range providers {
-		if p.Backend != r.Type {
+		if p.Backend != typ {
 			continue
 		}
 		if !presetHolds(p.Preset, saved) {

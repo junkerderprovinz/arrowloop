@@ -984,7 +984,6 @@ const sr: Translations = {
   'provider.union': 'Спојена одредишта',
   'provider.memory': 'У меморији',
   'provider.doiHint': 'Чита објављени истраживачки скуп података по његовом DOI, са Zenodo, Figshare или Dataverse.',
-  'provider.tardigradeHint': 'Storj под ранијим именом, за приступ подешен у то време.',
   'provider.aliasHint': 'Друго име за одредиште које већ имаш, или за фасциклу у њему.',
   'provider.archiveHint': 'Чита садржај zip и squashfs датотека у другом одредишту, без распакивања.',
   'provider.cacheHint': 'Чува локалну копију онога што друго одредиште садржи. rclone га више не развија.',

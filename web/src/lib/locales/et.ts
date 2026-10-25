@@ -984,7 +984,6 @@ const et: Translations = {
   'provider.union': 'Liidetud sihtkohad',
   'provider.memory': 'Mälus',
   'provider.doiHint': 'Loeb avaldatud teadusandmestikku selle DOI järgi, Zenodost, Figsharest või Dataversest.',
-  'provider.tardigradeHint': 'Storj oma varasema nime all, tollal loodud juurdepääsu jaoks.',
   'provider.aliasHint': 'Teine nimi sihtkohale, mis sul juba on, või selle sees olevale kaustale.',
   'provider.archiveHint': 'Loeb zip- ja squashfs-failide sisu teises sihtkohas neid lahti pakkimata.',
   'provider.cacheHint': 'Hoiab kohalikku koopiat sellest, mis teises sihtkohas on. rclone seda enam edasi ei arenda.',

@@ -984,7 +984,6 @@ const ja: Translations = {
   'provider.union': '統合した接続先',
   'provider.memory': 'メモリ内',
   'provider.doiHint': '公開済みの研究データセットを DOI で読み込みます。Zenodo、Figshare、Dataverse に対応しています。',
-  'provider.tardigradeHint': '以前の名前での Storj です。当時設定したアクセス用です。',
   'provider.aliasHint': 'すでにある接続先、またはその中のフォルダーに付ける別名です。',
   'provider.archiveHint': '別の接続先にある zip や squashfs ファイルの中身を、展開せずに読みます。',
   'provider.cacheHint': '別の接続先の中身をローカルにコピーして保持します。rclone ではもう開発されていません。',

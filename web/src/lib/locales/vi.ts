@@ -984,7 +984,6 @@ const vi: Translations = {
   'provider.union': 'Đích hợp nhất',
   'provider.memory': 'Trong bộ nhớ',
   'provider.doiHint': 'Đọc một bộ dữ liệu nghiên cứu đã công bố qua DOI của nó, từ Zenodo, Figshare hoặc Dataverse.',
-  'provider.tardigradeHint': 'Storj dưới tên cũ, cho một quyền truy cập thiết lập từ hồi đó.',
   'provider.aliasHint': 'Tên thứ hai cho một đích bạn đã có, hoặc cho một thư mục trong đó.',
   'provider.archiveHint': 'Đọc bên trong các tệp zip và squashfs ở một đích khác mà không cần giải nén.',
   'provider.cacheHint': 'Giữ một bản sao cục bộ của những gì đích khác chứa. rclone không còn phát triển nó nữa.',

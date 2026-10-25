@@ -984,7 +984,6 @@ const hi: Translations = {
   'provider.union': 'विलय किए गए गंतव्य',
   'provider.memory': 'मेमोरी में',
   'provider.doiHint': 'प्रकाशित शोध डेटासेट को उसके DOI से पढ़ता है, Zenodo, Figshare या Dataverse से।',
-  'provider.tardigradeHint': 'Storj अपने पुराने नाम से, उस समय बनाए गए एक्सेस के लिए।',
   'provider.aliasHint': 'किसी ऐसे गंतव्य का दूसरा नाम जो आपके पास पहले से है, या उसके किसी फ़ोल्डर का।',
   'provider.archiveHint': 'किसी दूसरे गंतव्य में रखी zip और squashfs फ़ाइलों के अंदर की चीज़ें पढ़ता है, उन्हें अनपैक किए बिना।',
   'provider.cacheHint': 'किसी दूसरे गंतव्य में जो है, उसकी एक स्थानीय प्रति रखता है। rclone अब इसे विकसित नहीं करता।',

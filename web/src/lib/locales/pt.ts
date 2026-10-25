@@ -984,7 +984,6 @@ const pt: Translations = {
   'provider.union': 'Destinos unidos',
   'provider.memory': 'Em memória',
   'provider.doiHint': 'Lê um conjunto de dados de investigação publicado através do seu DOI, do Zenodo, Figshare ou Dataverse.',
-  'provider.tardigradeHint': 'O Storj com o nome antigo, para um acesso configurado nessa altura.',
   'provider.aliasHint': 'Um segundo nome para um destino que já tens, ou para uma pasta dentro dele.',
   'provider.archiveHint': 'Lê o interior de ficheiros zip e squashfs noutro destino, sem os descompactar.',
   'provider.cacheHint': 'Mantém uma cópia local do que outro destino contém. O rclone já não o desenvolve.',

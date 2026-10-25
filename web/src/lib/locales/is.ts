@@ -984,7 +984,6 @@ const is: Translations = {
   'provider.union': 'Sameinaðir áfangastaðir',
   'provider.memory': 'Í minni',
   'provider.doiHint': 'Les útgefið rannsóknargagnasafn eftir DOI þess, frá Zenodo, Figshare eða Dataverse.',
-  'provider.tardigradeHint': 'Storj undir eldra nafni sínu, fyrir aðgang sem var settur upp þá.',
   'provider.aliasHint': 'Annað heiti fyrir áfangastað sem þú átt þegar, eða fyrir möppu í honum.',
   'provider.archiveHint': 'Les innihald zip- og squashfs-skráa í öðrum áfangastað án þess að pakka þeim upp.',
   'provider.cacheHint': 'Heldur staðbundnu afriti af því sem annar áfangastaður geymir. rclone er hætt að þróa það.',

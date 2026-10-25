@@ -984,7 +984,6 @@ const tr: Translations = {
   'provider.union': 'Kaynaştırılmış hedefler',
   'provider.memory': 'Bellekte',
   'provider.doiHint': 'Yayımlanmış bir araştırma veri kümesini DOI\'si ile okur, Zenodo, Figshare ya da Dataverse\'ten.',
-  'provider.tardigradeHint': 'Storj\'un eski adı, o zaman kurulmuş bir erişim için.',
   'provider.aliasHint': 'Zaten sahip olduğun bir hedef ya da içindeki bir klasör için ikinci bir ad.',
   'provider.archiveHint': 'Başka bir hedefteki zip ve squashfs dosyalarının içini, onları açmadan okur.',
   'provider.cacheHint': 'Başka bir hedefin içeriğinin yerel bir kopyasını tutar. rclone artık bunu geliştirmiyor.',

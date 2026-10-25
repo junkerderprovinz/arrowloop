@@ -984,7 +984,6 @@ const th: Translations = {
   'provider.union': 'ปลายทางที่ผสานกัน',
   'provider.memory': 'ในหน่วยความจำ',
   'provider.doiHint': 'อ่านชุดข้อมูลวิจัยที่เผยแพร่แล้วจาก DOI ของมัน จาก Zenodo, Figshare หรือ Dataverse',
-  'provider.tardigradeHint': 'Storj ภายใต้ชื่อเดิม สำหรับการเข้าถึงที่ตั้งไว้ในตอนนั้น',
   'provider.aliasHint': 'ชื่อที่สองของปลายทางที่คุณมีอยู่แล้ว หรือของโฟลเดอร์ในนั้น',
   'provider.archiveHint': 'อ่านข้างในไฟล์ zip และ squashfs ในปลายทางอื่น โดยไม่ต้องแตกไฟล์',
   'provider.cacheHint': 'เก็บสำเนาในเครื่องของสิ่งที่อยู่ในปลายทางอื่น rclone ไม่พัฒนาส่วนนี้ต่อแล้ว',

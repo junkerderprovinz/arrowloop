@@ -984,7 +984,6 @@ const id: Translations = {
   'provider.union': 'Tujuan yang disatukan',
   'provider.memory': 'Di memori',
   'provider.doiHint': 'Membaca dataset riset yang sudah terbit melalui DOI-nya, dari Zenodo, Figshare, atau Dataverse.',
-  'provider.tardigradeHint': 'Storj dengan nama lamanya, untuk akses yang disiapkan pada masa itu.',
   'provider.aliasHint': 'Nama kedua untuk tujuan yang sudah Anda miliki, atau untuk folder di dalamnya.',
   'provider.archiveHint': 'Membaca isi berkas zip dan squashfs di tujuan lain tanpa membongkarnya.',
   'provider.cacheHint': 'Menyimpan salinan lokal dari isi tujuan lain. rclone tidak lagi mengembangkannya.',

@@ -984,7 +984,6 @@ const hu: Translations = {
   'provider.union': 'Egyesített célok',
   'provider.memory': 'Memóriában',
   'provider.doiHint': 'Egy közzétett kutatási adatkészletet olvas a DOI-ja alapján, a Zenodóról, a Figshare-ről vagy a Dataverse-ről.',
-  'provider.tardigradeHint': 'A Storj a korábbi nevén, egy akkoriban beállított hozzáféréshez.',
   'provider.aliasHint': 'Egy második név egy már meglévő célhoz, vagy egy benne lévő mappához.',
   'provider.archiveHint': 'Egy másik célban lévő zip- és squashfs-fájlok tartalmát olvassa, kicsomagolás nélkül.',
   'provider.cacheHint': 'Helyi másolatot tart arról, ami egy másik célban van. Az rclone már nem fejleszti.',

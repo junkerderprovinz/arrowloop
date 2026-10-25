@@ -984,7 +984,6 @@ const lv: Translations = {
   'provider.union': 'Apvienoti galamērķi',
   'provider.memory': 'Atmiņā',
   'provider.doiHint': 'Nolasa publicētu pētniecības datu kopu pēc tās DOI no Zenodo, Figshare vai Dataverse.',
-  'provider.tardigradeHint': 'Storj ar tā agrāko nosaukumu, piekļuvei, kas iestatīta tolaik.',
   'provider.aliasHint': 'Otrs nosaukums galamērķim, kas jums jau ir, vai mapei tajā.',
   'provider.archiveHint': 'Nolasa zip un squashfs failu saturu citā galamērķī, tos neizpakojot.',
   'provider.cacheHint': 'Glabā lokālu kopiju tam, kas ir citā galamērķī. rclone to vairs neizstrādā.',

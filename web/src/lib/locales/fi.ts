@@ -984,7 +984,6 @@ const fi: Translations = {
   'provider.union': 'Sulautetut kohteet',
   'provider.memory': 'Muistissa',
   'provider.doiHint': 'Lukee julkaistun tutkimusaineiston sen DOI:n perusteella Zenodosta, Figsharesta tai Dataversesta.',
-  'provider.tardigradeHint': 'Storj aiemmalla nimellään, silloin luotua käyttöä varten.',
   'provider.aliasHint': 'Toinen nimi kohteelle, joka sinulla jo on, tai sen kansiolle.',
   'provider.archiveHint': 'Lukee toisessa kohteessa olevien zip- ja squashfs-tiedostojen sisällön purkamatta niitä.',
   'provider.cacheHint': 'Pitää paikallista kopiota siitä, mitä toisessa kohteessa on. rclone ei enää kehitä sitä.',

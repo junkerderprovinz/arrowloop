@@ -984,7 +984,6 @@ const sl: Translations = {
   'provider.union': 'Zliti cilji',
   'provider.memory': 'V pomnilniku',
   'provider.doiHint': 'Bere objavljen raziskovalni nabor podatkov po njegovem DOI, z Zenodo, Figshare ali Dataverse.',
-  'provider.tardigradeHint': 'Storj pod prejšnjim imenom, za dostop, nastavljen v tistem času.',
   'provider.aliasHint': 'Drugo ime za cilj, ki ga že imaš, ali za mapo v njem.',
   'provider.archiveHint': 'Bere vsebino datotek zip in squashfs v drugem cilju, ne da bi jih razpakiral.',
   'provider.cacheHint': 'Hrani krajevno kopijo tega, kar je v drugem cilju. rclone ga ne razvija več.',

@@ -984,7 +984,6 @@ const pl: Translations = {
   'provider.union': 'Scalone cele',
   'provider.memory': 'W pamięci',
   'provider.doiHint': 'Odczytuje opublikowany zbiór danych badawczych po jego DOI, z Zenodo, Figshare lub Dataverse.',
-  'provider.tardigradeHint': 'Storj pod dawną nazwą, dla dostępu skonfigurowanego w tamtym czasie.',
   'provider.aliasHint': 'Druga nazwa celu, który już masz, albo folderu w nim.',
   'provider.archiveHint': 'Odczytuje zawartość plików zip i squashfs w innym celu, bez rozpakowywania ich.',
   'provider.cacheHint': 'Trzyma lokalną kopię tego, co zawiera inny cel. rclone już go nie rozwija.',

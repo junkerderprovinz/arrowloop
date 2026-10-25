@@ -984,7 +984,6 @@ const lt: Translations = {
   'provider.union': 'Suliestos paskirtys',
   'provider.memory': 'Atmintyje',
   'provider.doiHint': 'Skaito paskelbtą mokslinių duomenų rinkinį pagal jo DOI iš Zenodo, Figshare arba Dataverse.',
-  'provider.tardigradeHint': 'Storj senuoju pavadinimu, prieigai, nustatytai tuo metu.',
   'provider.aliasHint': 'Antras pavadinimas paskirčiai, kurią jau turite, arba aplankui joje.',
   'provider.archiveHint': 'Skaito zip ir squashfs failų turinį kitoje paskirtyje jų neišpakuojant.',
   'provider.cacheHint': 'Laiko vietinę kopiją to, kas yra kitoje paskirtyje. rclone jo nebeplėtoja.',

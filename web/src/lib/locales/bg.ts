@@ -984,7 +984,6 @@ const bg: Translations = {
   'provider.union': 'Обединени цели',
   'provider.memory': 'В паметта',
   'provider.doiHint': 'Чете публикуван набор от изследователски данни по неговия DOI, от Zenodo, Figshare или Dataverse.',
-  'provider.tardigradeHint': 'Storj с предишното си име, за достъп, създаден тогава.',
   'provider.aliasHint': 'Второ име за цел, която вече имаш, или за папка в нея.',
   'provider.archiveHint': 'Чете съдържанието на zip и squashfs файлове в друга цел, без да ги разархивира.',
   'provider.cacheHint': 'Пази локално копие на това, което съдържа друга цел. rclone вече не го развива.',

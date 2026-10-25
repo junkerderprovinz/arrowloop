@@ -984,7 +984,6 @@ const ar: Translations = {
   'provider.union': 'وجهات مدموجة',
   'provider.memory': 'في الذاكرة',
   'provider.doiHint': 'يقرأ مجموعة بيانات بحثية منشورة عبر معرّف DOI الخاص بها، من Zenodo أو Figshare أو Dataverse.',
-  'provider.tardigradeHint': 'Storj باسمه السابق، لوصول أُعدّ في ذلك الوقت.',
   'provider.aliasHint': 'اسم ثانٍ لوجهة لديك بالفعل، أو لمجلد فيها.',
   'provider.archiveHint': 'يقرأ محتوى ملفات zip وsquashfs في وجهة أخرى دون فك ضغطها.',
   'provider.cacheHint': 'يحتفظ بنسخة محلية مما تحتويه وجهة أخرى. لم يعد rclone يطوّره.',

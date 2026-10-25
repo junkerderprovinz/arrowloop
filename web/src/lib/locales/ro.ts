@@ -984,7 +984,6 @@ const ro: Translations = {
   'provider.union': 'Destinații unite',
   'provider.memory': 'În memorie',
   'provider.doiHint': 'Citește un set de date de cercetare publicat după DOI-ul lui, de pe Zenodo, Figshare sau Dataverse.',
-  'provider.tardigradeHint': 'Storj sub numele lui vechi, pentru un acces configurat pe atunci.',
   'provider.aliasHint': 'Un al doilea nume pentru o destinație pe care o ai deja, sau pentru un dosar din ea.',
   'provider.archiveHint': 'Citește conținutul fișierelor zip și squashfs dintr-o altă destinație, fără să le dezarhiveze.',
   'provider.cacheHint': 'Păstrează o copie locală a ceea ce conține o altă destinație. rclone nu o mai dezvoltă.',

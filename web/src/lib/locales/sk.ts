@@ -984,7 +984,6 @@ const sk: Translations = {
   'provider.union': 'Zlúčené ciele',
   'provider.memory': 'V pamäti',
   'provider.doiHint': 'Číta zverejnenú výskumnú dátovú sadu podľa jej DOI, zo Zenodo, Figshare alebo Dataverse.',
-  'provider.tardigradeHint': 'Storj pod starším názvom, pre prístup nastavený v tom čase.',
   'provider.aliasHint': 'Druhý názov pre cieľ, ktorý už máš, alebo pre priečinok v ňom.',
   'provider.archiveHint': 'Číta obsah súborov zip a squashfs v inom cieli bez ich rozbalenia.',
   'provider.cacheHint': 'Uchováva lokálnu kópiu toho, čo obsahuje iný cieľ. rclone ho už ďalej nevyvíja.',

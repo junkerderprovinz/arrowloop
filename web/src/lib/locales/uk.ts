@@ -984,7 +984,6 @@ const uk: Translations = {
   'provider.union': 'Об\'єднані призначення',
   'provider.memory': 'У пам\'яті',
   'provider.doiHint': 'Читає опублікований дослідницький набір даних за його DOI, із Zenodo, Figshare або Dataverse.',
-  'provider.tardigradeHint': 'Storj під колишньою назвою, для доступу, налаштованого тоді.',
   'provider.aliasHint': 'Друга назва для призначення, яке у вас уже є, або для теки в ньому.',
   'provider.archiveHint': 'Читає вміст файлів zip і squashfs в іншому призначенні, не розпаковуючи їх.',
   'provider.cacheHint': 'Тримає локальну копію того, що є в іншому призначенні. rclone його більше не розвиває.',

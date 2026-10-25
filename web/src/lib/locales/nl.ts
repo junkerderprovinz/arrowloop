@@ -984,7 +984,6 @@ const nl: Translations = {
   'provider.union': 'Samengevoegde doelen',
   'provider.memory': 'In het geheugen',
   'provider.doiHint': 'Leest een gepubliceerde onderzoeksdataset via de DOI, van Zenodo, Figshare of Dataverse.',
-  'provider.tardigradeHint': 'Storj onder de vroegere naam, voor toegang die toen is ingesteld.',
   'provider.aliasHint': 'Een tweede naam voor een doel dat je al hebt, of voor een map daarin.',
   'provider.archiveHint': 'Leest de inhoud van zip- en squashfs-bestanden in een ander doel, zonder ze uit te pakken.',
   'provider.cacheHint': 'Houdt een lokale kopie bij van wat een ander doel bevat. rclone ontwikkelt het niet meer verder.',

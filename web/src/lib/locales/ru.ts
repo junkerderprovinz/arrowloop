@@ -984,7 +984,6 @@ const ru: Translations = {
   'provider.union': 'Объединённые назначения',
   'provider.memory': 'В памяти',
   'provider.doiHint': 'Читает опубликованный набор исследовательских данных по его DOI из Zenodo, Figshare или Dataverse.',
-  'provider.tardigradeHint': 'Storj под прежним названием, для доступа, настроенного в то время.',
   'provider.aliasHint': 'Второе имя для назначения, которое у вас уже есть, или для папки в нём.',
   'provider.archiveHint': 'Читает содержимое файлов zip и squashfs в другом назначении, не распаковывая их.',
   'provider.cacheHint': 'Хранит локальную копию того, что содержит другое назначение. rclone его больше не развивает.',

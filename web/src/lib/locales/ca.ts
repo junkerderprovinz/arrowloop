@@ -984,7 +984,6 @@ const ca: Translations = {
   'provider.union': 'Destinacions unides',
   'provider.memory': 'En memòria',
   'provider.doiHint': 'Llegeix un conjunt de dades de recerca publicat a partir del seu DOI, de Zenodo, Figshare o Dataverse.',
-  'provider.tardigradeHint': 'Storj amb el seu nom anterior, per a un accés creat en aquella època.',
   'provider.aliasHint': 'Un segon nom per a una destinació que ja tens, o per a una carpeta que hi ha a dins.',
   'provider.archiveHint': 'Llegeix l\'interior de fitxers zip i squashfs en una altra destinació, sense desempaquetar-los.',
   'provider.cacheHint': 'Manté una còpia local del que conté una altra destinació. rclone ja no la desenvolupa.',
