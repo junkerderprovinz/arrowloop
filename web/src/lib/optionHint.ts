@@ -23,6 +23,7 @@ export type HintProvider = {
   auth?: string
   urlHint?: string
   authUrl?: string
+  defaults?: Record<string, string>
 }
 
 /**
@@ -49,6 +50,7 @@ const GENERAL: Record<string, TranslationKey> = {
   secret_access_key: 'opt.secretKeyHint',
   endpoint: 'opt.endpointHint',
   region: 'opt.regionHint',
+  bucket: 'opt.bucketHint',
   vendor: 'opt.vendorHelp',
   key_file: 'opt.keyFileHelp',
   namenode: 'opt.namenodeHint',
@@ -66,6 +68,8 @@ const GENERAL: Record<string, TranslationKey> = {
 /** Where one backend writes a field differently from the others. */
 const BY_BACKEND: Record<string, TranslationKey> = {
   'combine.upstreams': 'opt.upstreamsCombineHint',
+  'iclouddrive.trust_token': 'opt.icloudTrustHint',
+  'iclouddrive.cookies': 'opt.icloudCookiesHint',
 }
 
 /**
@@ -93,6 +97,7 @@ const PROVIDER_HINTS: Record<string, TranslationKey> = {
   crypt: 'provider.cryptHint',
   s3: 'provider.s3Hint',
   hidrive: 'provider.hidriveHint',
+  icloud: 'provider.icloudHint',
   googlephotos: 'provider.googlephotosHint',
   minio: 'provider.selfHostedHint',
   seaweedfs: 'provider.selfHostedHint',
@@ -163,6 +168,9 @@ export function optionHint(
     about.push(t('help.addressShape', { shape: provider.urlHint }))
   }
 
+  const assumed = provider?.defaults?.[o.name]
+  if (assumed) about.push(t('help.serverDefault', { value: assumed }))
+
   if (SECRET_FIELDS.has(o.name) && provider?.auth) {
     const sentence: Record<string, TranslationKey> = {
       apppassword: 'help.authAppPassword',
@@ -170,6 +178,7 @@ export function optionHint(
       apikey: 'help.authApiKey',
       oauth: 'help.authOauth',
       login: 'help.authLogin',
+      logintoken: 'help.authLoginToken',
     }
     // The product's sentence replaces the general one, or the bubble says the
     // same thing twice. Except for an app password on WebDAV, where the general

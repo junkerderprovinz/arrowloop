@@ -84,7 +84,14 @@ export type Duplicates = {
 }
 
 /** Whether a target answers, in rclone's words and as a kind the page can say itself. */
-export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure }
+export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion }
+
+/**
+ * A choice rclone's own setup leaves to the person adding a target, such as
+ * which of several drives a sign-in opens (internal/remotes/setup.go). The
+ * answer goes back as the setting `name`.
+ */
+export type SetupQuestion = { name: string; choices: { value: string; help: string }[] }
 
 /**
  * How full a target is. An absent figure means the target does not know, which
@@ -125,9 +132,11 @@ export type Provider = {
    * How this product wants to be signed into. The screen writes one translated
    * sentence per style, and an unknown value is ignored rather than shown.
    */
-  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login'
+  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login' | 'logintoken'
   /** Where that credential is created, where there is one page to point at. */
   authUrl?: string
+  /** What the product's own server assumes for a field left empty, such as Garage's region. */
+  defaults?: Record<string, string>
 }
 
 export type Backend = {
@@ -148,6 +157,8 @@ export type Backend = {
      */
     essential?: boolean
     advanced: boolean
+    /** rclone's name for the kind of value: bool for a yes or no, string, SizeSuffix and so on. */
+    type?: string
     default: string
     examples?: { value: string; help: string }[]
   }[]

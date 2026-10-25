@@ -106,11 +106,15 @@ func CheckSettings(ctx context.Context, backend string, settings map[string]stri
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings))
+	bucket := ""
+	if backend == "s3" {
+		bucket = strings.Trim(settings[BucketKey], "/")
+	}
+	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings)+bucket)
 	if err != nil {
 		return checkErr(ctx, err)
 	}
-	return listRoot(ctx, f, backend)
+	return listRoot(ctx, f, backend, bucket)
 }
 
 // connectionString renders settings as rclone's inline-remote syntax,
@@ -118,7 +122,7 @@ func CheckSettings(ctx context.Context, backend string, settings map[string]stri
 func connectionString(backend string, settings map[string]string) string {
 	keys := make([]string, 0, len(settings))
 	for key := range settings {
-		if key == "type" || settings[key] == "" {
+		if key == "type" || settings[key] == "" || ownOption(backend, key) {
 			continue
 		}
 		keys = append(keys, key)

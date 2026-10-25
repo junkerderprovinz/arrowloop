@@ -6,6 +6,9 @@ import { useT } from '../lib/i18n'
 import { nameAndKind, providerHint, providerName } from '../lib/optionHint'
 import type { Backend, Provider } from '../lib/api'
 
+/** The rows whose mark a What's new entry points at, by provider id. */
+const NEW_MARKS: Record<string, string> = { synologyc2: 'provider-marks', filefabric: 'provider-marks' }
+
 /**
  * Picks what a target connects to by product name rather than by protocol, as
  * README buttons: the mark at the start, the name beside it. A provider with
@@ -46,6 +49,7 @@ export function ProviderPicker({
           return (
             <li
               key={p.id}
+              data-new={NEW_MARKS[p.id]}
               title={bubble ? undefined : hint}
               style={lit && ({ '--provider-tile': lit.tile, '--provider-ink': lit.ink } as CSSProperties)}
             >

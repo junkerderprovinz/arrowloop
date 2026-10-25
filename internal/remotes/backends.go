@@ -3,6 +3,7 @@ package remotes
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -21,9 +22,12 @@ type Option struct {
 	// is prompted for with a default: s3 marks none of its options required and
 	// smb marks only host. Essential comes from a hand-kept list and only adds
 	// to what the form shows.
-	Essential bool      `json:"essential"`
-	Default   string    `json:"default"`
-	Examples  []Example `json:"examples,omitempty"`
+	Essential bool `json:"essential"`
+	// Type is rclone's name for the kind of value, such as bool, string,
+	// SizeSuffix or Duration, so a yes-or-no setting can be drawn as a switch.
+	Type     string    `json:"type"`
+	Default  string    `json:"default"`
+	Examples []Example `json:"examples,omitempty"`
 }
 
 // Example is one suggested value, with the reason it might be the right one.
@@ -100,7 +104,11 @@ var essential = map[string]map[string]bool{
 	"protondrive": {"username": true, "password": true, "2fa": true},
 	"seafile":     {"url": true, "user": true, "pass": true, "library": true},
 	"koofr":       {"provider": true, "user": true, "password": true},
-	"ftp":         {"host": true, "user": true, "pass": true, "port": true},
+	// Apple lets rclone in only with the session of a sign-in confirmed by a
+	// code, which rclone config makes and which ends after 30 days.
+	"iclouddrive": {"apple_id": true, "password": true, "trust_token": true, "cookies": true},
+	// A login over plain FTP travels readable, so the encryption is asked.
+	"ftp": {"host": true, "user": true, "pass": true, "port": true, "tls": true, "explicit_tls": true},
 
 	"b2":        {"account": true, "key": true},
 	"azureblob": {"account": true, "key": true},
@@ -108,9 +116,10 @@ var essential = map[string]map[string]bool{
 
 	// rclone marks token advanced because its own setup fetches it through a
 	// browser. This interface has no such flow, so the field has to be shown.
-	"dropbox":    {"token": true},
-	"drive":      {"token": true, "scope": true},
-	"onedrive":   {"token": true, "drive_id": true, "drive_type": true},
+	"dropbox": {"token": true},
+	"drive":   {"token": true, "scope": true},
+	// The drive is looked up after the sign-in; see setup.go.
+	"onedrive":   {"token": true},
 	"pcloud":     {"token": true, "hostname": true},
 	"box":        {"token": true},
 	"jottacloud": {"token": true},
@@ -134,10 +143,12 @@ var essential = map[string]map[string]bool{
 
 	// OAuth backends with no plain credential: the client pair is what a person
 	// registers with the provider to obtain a token.
-	"hidrive":      {"token": true, "client_id": true, "client_secret": true},
-	"huaweidrive":  {"token": true, "client_id": true, "client_secret": true},
-	"putio":        {"token": true, "client_id": true, "client_secret": true},
-	"sharefile":    {"token": true, "client_id": true, "client_secret": true},
+	"hidrive":     {"token": true, "client_id": true, "client_secret": true},
+	"huaweidrive": {"token": true, "client_id": true, "client_secret": true},
+	"putio":       {"token": true, "client_id": true, "client_secret": true},
+	// A token from rclone authorize without a config blob leaves out the
+	// account's own address.
+	"sharefile":    {"token": true, "endpoint": true, "client_id": true, "client_secret": true},
 	"zoho":         {"token": true, "client_id": true, "client_secret": true, "region": true},
 	"premiumizeme": {"token": true, "api_key": true},
 
@@ -149,12 +160,29 @@ var essential = map[string]map[string]bool{
 	"google photos": {"token": true, "client_id": true, "client_secret": true, "read_only": true},
 }
 
+// ownOptions are settings this program keeps in a remote's section beside
+// rclone's own. rclone ignores them.
+var ownOptions = map[string][]Option{
+	// A key that may open only its own bucket, as an R2 object token or a
+	// scoped AWS key does, is refused the list of all buckets.
+	"s3": {{Name: BucketKey, Help: "The one bucket to open, for a key that may not list the others.", Essential: true, Type: "string"}},
+}
+
+func ownOption(backend, key string) bool {
+	for _, o := range ownOptions[backend] {
+		if o.Name == key {
+			return true
+		}
+	}
+	return false
+}
+
 // tokenBackends are the ones whose only way in is an OAuth token obtained
 // outside this program. They are named rather than detected, because some
 // backends with a token option also accept a password.
 var tokenBackends = map[string]bool{
 	"dropbox": true, "drive": true, "onedrive": true, "pcloud": true,
-	"box": true, "jottacloud": true, "yandex": true,
+	"box": true, "yandex": true,
 }
 
 func rank(name string) int {
@@ -188,10 +216,12 @@ func Backends() []Backend {
 				Secret:    secretOption(o),
 				Advanced:  o.Advanced,
 				Essential: essential[info.Name][o.Name],
+				Type:      o.Type(),
 				Default:   defaultText(o.Default),
 				Examples:  examples(o),
 			})
 		}
+		b.Options = append(b.Options, ownOptions[info.Name]...)
 		sort.SliceStable(b.Options, func(i, j int) bool {
 			return optionRank(b.Options[i]) < optionRank(b.Options[j])
 		})
@@ -226,12 +256,17 @@ func firstLine(help string) string {
 	return strings.TrimSpace(line)
 }
 
+// defaultText is a default as a form shows it. A switch needs to know it is
+// off, while a zero would only stand in an empty field as a placeholder.
 func defaultText(value any) string {
-	if value == nil {
+	switch v := value.(type) {
+	case nil:
 		return ""
+	case bool:
+		return strconv.FormatBool(v)
 	}
 	text := fmt.Sprint(value)
-	if text == "<nil>" || text == "false" || text == "0" {
+	if text == "<nil>" || text == "0" {
 		return ""
 	}
 	return text

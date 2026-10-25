@@ -236,10 +236,25 @@ export interface Provider {
   [key: string]: unknown;
 }
 
+/** A choice rclone's setup leaves open, answered as the setting `name` (internal/remotes/setup.go). */
+export interface SetupQuestion {
+  name: string;
+  choices: { value: string; help: string }[];
+}
+
 export interface Backend {
   name: string;
   description?: string;
-  options?: { name: string; help?: string; required?: boolean; essential?: boolean; secret?: boolean }[];
+  options?: {
+    name: string;
+    help?: string;
+    required?: boolean;
+    essential?: boolean;
+    secret?: boolean;
+    /** rclone's kind of value; bool is a yes or no. */
+    type?: string;
+    default?: string;
+  }[];
   [key: string]: unknown;
 }
 
@@ -460,7 +475,7 @@ export const api = {
    * the engine can fill in the secrets the form left empty.
    */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
-    call<{ ok: boolean; reason?: string; failure?: Failure }>("/api/remotes-check", {
+    call<{ ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion }>("/api/remotes-check", {
       method: "POST",
       body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),

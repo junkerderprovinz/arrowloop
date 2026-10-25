@@ -236,12 +236,28 @@ func Check(ctx context.Context, name string) error {
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, name+":")
+	bucket := Root(name)
+	f, err := rclonefs.NewFs(ctx, Join(name, bucket))
 	if err != nil {
 		return checkErr(ctx, err)
 	}
 	backend, _ := config.LoadedData().GetValue(name, "type")
-	return listRoot(ctx, f, backend)
+	return listRoot(ctx, f, backend, bucket)
+}
+
+// BucketKey is the setting that names the one bucket an S3 target opens. rclone
+// has no such option and ignores it; it is kept in the target's section so the
+// target stays whole in rclone.conf.
+const BucketKey = "bucket"
+
+// Root is the folder a target opens at: the bucket it names, or its top.
+func Root(name string) string {
+	data := config.LoadedData()
+	if backend, _ := data.GetValue(name, "type"); backend != "s3" {
+		return ""
+	}
+	bucket, _ := data.GetValue(name, BucketKey)
+	return strings.Trim(bucket, "/")
 }
 
 // CheckWait is how long a target gets to answer before it counts as
@@ -315,9 +331,12 @@ func isEmptyTarget(backend string, err error) bool {
 }
 
 // listRoot lists a remote's root once, which proves the credentials and the
-// address.
-func listRoot(ctx context.Context, f rclonefs.Fs, backend string) error {
+// address. A bucket the target names has to exist, unlike a folder.
+func listRoot(ctx context.Context, f rclonefs.Fs, backend, bucket string) error {
 	_, err := f.List(ctx, "")
+	if bucket != "" && errors.Is(err, rclonefs.ErrorDirNotFound) {
+		return fmt.Errorf("the login works, but there is no bucket %s: %w", bucket, err)
+	}
 	if err == nil || isEmptyTarget(backend, err) {
 		return nil
 	}

@@ -10,6 +10,11 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **A sign-in that opens several drives asks which one to use.** Testing a OneDrive target lists the drives its token opens and asks when there is more than one, so the drive ID no longer has to be looked up and typed. Zoho WorkDrive asks for its workspace the same way. With only one, it is taken without asking.
+- **An S3 target can name its bucket.** A key that may open one bucket but not list the others, such as a Cloudflare R2 object token or a scoped AWS key, failed the connection test, which asked for the list of all buckets. With the bucket filled in, the test and the folder picker open that bucket, and a bucket that does not exist fails the test.
+
 ## 🎨 Design
 
 - **A job's window reads the way the job runs.** Both sides stand next to each other with the direction between them, each with the logo of its target, its folder and a button to browse for another. Below them the settings sit in three cards, Schedule, Syncing and Exclusions, and the state file waits under Advanced. In a narrow window the sides stack and the arrow points down or up.
@@ -17,6 +22,17 @@ The full notes for each release are in
 ## ⚡ Improved
 
 - **One switch decides whether a job follows the global settings.** Use the global settings at the top of the window replaces the Override button on every row. While it is on, the global values show greyed out, and clicking one makes the switch wiggle. Turned off, every field is the job's own, starting from the values that apply now.
+- **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
+- **An S3 target reads its region and bucket from the address you paste.** An endpoint that names its region, as the addresses of AWS, Backblaze B2, Hetzner, Scaleway, OVHcloud and Wasabi do, fills in an empty region, and a bucket's address as Cloudflare's R2 dashboard shows it is split into the endpoint and the bucket. The Garage form shows garage as the region its server expects.
+- **Synology C2 and Enterprise File Fabric have marks of their own.** In the list of storage and clouds, Synology C2 shows its C2 icon instead of the general Synology logo, and Enterprise File Fabric the storage glyph instead of an empty tile. What's new points at both rows.
+
+## 🐛 Fixed
+
+- **iCloud Drive asks for the sign-in Apple wants.** The form asked for an app password, which Apple refuses, and left out the trust token and cookies rclone needs. It takes your Apple ID password and both session values, and the bubble beside them says how to get them with rclone config on a computer and that Apple asks again after 30 days.
+- **Jottacloud takes the personal login token from its security page.** It used to want a ready OAuth token that only rclone's own setup can make. Testing or saving the target trades the login token for a lasting sign-in, once, as rclone config does.
+- **ShareFile and Zoho keep what rclone authorize prints with the token.** Pasting the output of rclone authorize given a config blob fills in ShareFile's address and Zoho's region, and the ShareFile form asks for the address when the token came without it.
+- **An AWS bucket outside us-east-1 works without a region typed in.** rclone signs for us-east-1 when it knows no region, and AWS refuses a bucket elsewhere. Testing or saving an AWS target that names its bucket asks AWS where the bucket is and saves that region, and the global endpoint s3.amazonaws.com is left out, so rclone can follow a bucket to its region by itself.
+- **A bucket made in the folder picker lands in the target's region.** AWS puts a new bucket where its location constraint says, and with that left empty it asked for us-east-1, which a target set to any other region is refused. Making a folder at the top of an AWS target uses the target's region for the new bucket.
 
 ## 2.2.8 - 2026-10-23
 

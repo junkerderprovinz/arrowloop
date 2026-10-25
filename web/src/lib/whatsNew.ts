@@ -81,6 +81,32 @@ export const RELEASES: Release[] = [
         text: 'new.change.useGlobal',
         names: { useGlobal: 'edit.useGlobal' },
       },
+      {
+        id: 'target-switches',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetSwitches',
+        names: { encryption: 'targets.ftpTls' },
+      },
+      {
+        id: 'target-setup-choice',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.setupChoice',
+      },
+      {
+        id: 'target-bucket',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.bucketField',
+      },
+      {
+        id: 'provider-marks',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.providerMarks',
+        names: { connect: 'targets.addStorage' },
+      },
     ],
   },
   {

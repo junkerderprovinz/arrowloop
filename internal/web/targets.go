@@ -120,7 +120,19 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Has("new") {
 		save = remotes.Create
 	}
-	if err := save(r.PathValue("name"), body.Type, body.Settings); err != nil {
+	settings, question, err := remotes.Setup(r.Context(), body.Type, body.Settings)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	if question != nil {
+		// A test asks the same question, which is where the form shows it.
+		writeJSON(w, http.StatusUnprocessableEntity, map[string]any{
+			"error": "test the target first and choose which " + question.Name + " to use", "code": setupQuestion, "question": question,
+		})
+		return
+	}
+	if err := save(r.PathValue("name"), body.Type, settings); err != nil {
 		status := http.StatusBadRequest
 		if errors.Is(err, remotes.ErrExists) {
 			status = http.StatusConflict
@@ -138,6 +150,10 @@ func (s *Server) deleteRemote(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"deleted": r.PathValue("name")})
 }
+
+// setupQuestion is the code of a save that waits for a choice rclone's setup
+// leaves open, such as which of several drives to use.
+const setupQuestion = "setup-question"
 
 // checkRemote proves the settings work, which saving them does not.
 func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
@@ -170,7 +186,16 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := remotes.CheckSettings(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Type, body.Settings)); err != nil {
+	settings, question, err := remotes.Setup(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Type, body.Settings))
+	if err != nil {
+		writeJSON(w, http.StatusOK, refused(err))
+		return
+	}
+	if question != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": "choose which " + question.Name + " to use", "question": question})
+		return
+	}
+	if err := remotes.CheckSettings(r.Context(), body.Type, settings); err != nil {
 		writeJSON(w, http.StatusOK, refused(err))
 		return
 	}
