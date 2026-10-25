@@ -98,7 +98,7 @@ const RULES: Rule[] = [
   [/save|apply|choose|submit|confirm/i, 'IconSave'],
 
   [/edit|rename/i, 'IconPencil'],
-  [/\.up$|parent|levelUp/i, 'IconFolderUp'],
+  [/\.up$|parent|levelUp/i, 'IconBack'],
 
   // Below the app's own verbs, so `preview` keeps the eye.
   [/check|verify|test|probe/i, 'IconCheck'],

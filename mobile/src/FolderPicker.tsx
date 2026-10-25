@@ -110,7 +110,7 @@ export function FolderPicker({
           <Caption>{at || t("pick.roots")}</Caption>
 
           <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-            {at ? row(t("pick.up"), () => void go(parent), "IconFolderUp") : null}
+            {at ? row(t("pick.up"), () => void go(parent), "IconBack") : null}
             {/* Targets at the top level only, where they cannot pass for a subfolder. */}
             {!at
               ? targets.map((name) =>
