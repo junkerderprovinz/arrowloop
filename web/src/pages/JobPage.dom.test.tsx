@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Finding } from '../lib/anomalies'
 import type { Job, RawJob, Run } from '../lib/api'
 import { GoTo } from '../lib/goTo'
+import { en } from '../lib/i18n.data'
 import { LiveJobs } from '../lib/live'
 import type { JobLearning } from '../lib/anomalies'
 import { ToastProvider } from '../lib/toast'
@@ -219,7 +220,7 @@ describe('a job page', () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     const editor = await screen.findByRole('dialog')
-    const follow = within(editor).getByRole('switch', { name: 'Use the global settings' })
+    const follow = within(editor).getByRole('switch', { name: en['edit.useGlobal'] })
     expect(follow.getAttribute('aria-checked')).toBe('true')
     const sentence = within(editor).getByRole('button', { name: /^Schedule:/ })
     expect(sentence.textContent).toContain('on request')
@@ -241,7 +242,7 @@ describe('a job page', () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     const editor = await screen.findByRole('dialog')
-    fireEvent.click(within(editor).getByRole('switch', { name: 'Use the global settings' }))
+    fireEvent.click(within(editor).getByRole('switch', { name: en['edit.useGlobal'] }))
     fireEvent.click(within(editor).getByRole('button', { name: 'Save' }))
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())
     const written = saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')
@@ -253,7 +254,7 @@ describe('a job page', () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     const editor = await screen.findByRole('dialog')
-    expect(within(editor).getByRole('switch', { name: 'Use the global settings' }).getAttribute('aria-checked')).toBe('false')
+    expect(within(editor).getByRole('switch', { name: en['edit.useGlobal'] }).getAttribute('aria-checked')).toBe('false')
     expect(editor.querySelector('[data-held]')).toBeNull()
   })
 
@@ -264,7 +265,7 @@ describe('a job page', () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     const editor = await screen.findByRole('dialog')
-    fireEvent.click(within(editor).getByRole('switch', { name: 'Use the global settings' }))
+    fireEvent.click(within(editor).getByRole('switch', { name: en['edit.useGlobal'] }))
     expect(screen.getAllByRole('dialog')).toHaveLength(1)
     fireEvent.click(within(editor).getByRole('button', { name: 'Save' }))
     await waitFor(() => expect(saveConfig).toHaveBeenCalled())

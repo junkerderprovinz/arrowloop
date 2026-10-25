@@ -605,8 +605,13 @@ function RemoteForm({
       // The name lets the engine fill in the saved secrets this form never
       // received.
       const answer = await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name)
-      if (answer.question) setQuestion(answer.question)
-      setTried(answer.question ? { ok: false, reason: t('targets.question.hint') } : answer)
+      // A question is no verdict: the form shows the choice, its hint in the
+      // bubble beside it, and the next test sends the choice.
+      if (answer.question) {
+        setQuestion(answer.question)
+        return
+      }
+      setTried(answer)
       if (!answer.ok) setRefused((n) => n + 1)
     } catch (e) {
       setTried({ ok: false, reason: (e as Error).message })

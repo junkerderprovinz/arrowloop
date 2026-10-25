@@ -141,3 +141,30 @@ func TestAFreshCodeInTheEditFormSignsInWithTheSavedPassword(t *testing.T) {
 		t.Fatalf("pass = %q, want the saved password", got["pass"])
 	}
 }
+
+// rclone's setup turns the form into the settings Save receives, here by
+// unpacking what rclone authorize printed. The token the check refreshed has
+// to reach that Save all the same.
+func TestTheTokenRefreshedAfterTheSetupIsSaved(t *testing.T) {
+	refreshingBackend(t)
+	ownConfig(t)
+	blob, err := configmap.Simple{"token": "pasted"}.Encode()
+	if err != nil {
+		t.Fatal(err)
+	}
+	form := map[string]string{"token": blob}
+
+	if _, err := Try(context.Background(), "", refreshing, form); err != nil {
+		t.Fatalf("try: %v", err)
+	}
+	settings, _, err := Setup(context.Background(), refreshing, form)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := Save("box", refreshing, settings); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	if got, _ := config.LoadedData().GetValue("box", "token"); got != "pasted+1" {
+		t.Fatalf("the saved token is %q, want the refreshed pasted+1", got)
+	}
+}
