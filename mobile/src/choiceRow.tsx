@@ -29,7 +29,8 @@ const BUBBLE = 18;
  * fit there; otherwise the row holds a dropdown, since a strip under its name
  * would break the card's edge of controls (GlimStone rule 35). A `bar` keeps
  * its segments in sight instead: under its name, as wide as they need, in
- * even rows where one row is too narrow.
+ * even rows where one row is too narrow. A `full` bar always stands under its
+ * name and spans the card.
  */
 export function ChoiceRow<T extends string>({
   label,
@@ -40,6 +41,7 @@ export function ChoiceRow<T extends string>({
   hue,
   disabled,
   bar = false,
+  full = false,
 }: {
   label: string;
   hint?: string;
@@ -49,6 +51,7 @@ export function ChoiceRow<T extends string>({
   hue?: number;
   disabled?: boolean;
   bar?: boolean;
+  full?: boolean;
 }) {
   const [room, setRoom] = useState(0);
   const [name, setName] = useState(0);
@@ -89,7 +92,7 @@ export function ChoiceRow<T extends string>({
           </View>
         ))}
       </View>
-      {bar && !fits ? (
+      {full || (bar && !fits) ? (
         <View style={styles.bar}>
           <AxisLabel hint={hint}>{label}</AxisLabel>
           <Choice
@@ -99,7 +102,7 @@ export function ChoiceRow<T extends string>({
             options={options}
             disabled={disabled}
             perRow={perRow < options.length ? perRow : undefined}
-            style={measured && room > 0 ? { width: Math.min(wrapped, room), alignSelf: "flex-start" } : null}
+            style={full ? { alignSelf: "stretch" } : measured && room > 0 ? { width: Math.min(wrapped, room), alignSelf: "flex-start" } : null}
           />
         </View>
       ) : (

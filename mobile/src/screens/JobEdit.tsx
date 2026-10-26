@@ -783,7 +783,7 @@ export function Schedule({
     <View style={styles.stack}>
       <ChoiceRow<ScheduleMode>
         label={label}
-        bar
+        full
         hue={2}
         value={state.mode}
         // Each kind shows different rows, so the change is animated.

@@ -8,6 +8,13 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **The two sides of a new job are called Device folder and Target folder.** They read On the device and A target before.
+- **The schedule bar on the phone spans its card.** In a job and in the global sync settings, Manual, Every N, Every day, Weekdays, Real time and Cron stand under the Runs label across the whole card.
+
 ## 2.3.0 - 2026-10-26
 
 ## ✨ Added
