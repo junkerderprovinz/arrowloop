@@ -41,11 +41,11 @@ describe('what a browser remembers about the changes', () => {
   })
 
   it('keeps what was seen while the version stays', () => {
-    localStorage.setItem(KEY, JSON.stringify({ version: 'v2.2.3', from: '2.2.2', seen: before('2.2.3') }))
+    localStorage.setItem(KEY, JSON.stringify({ version: 'v2.2.0', from: '2.1.0', seen: before('2.2.0') }))
     startWhatsNew('dev')
-    markSeen([since('2.2.3')[0]])
+    markSeen([since('2.2.0')[0]])
     startWhatsNew('dev')
-    expect(stored().seen).toContain(since('2.2.3')[0])
+    expect(stored().seen).toContain(since('2.2.0')[0])
   })
 
   it('takes over the list of one release and counts everything it did not hold as seen', () => {

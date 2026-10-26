@@ -172,8 +172,8 @@ export function NumberField({
   }, [])
 
   // The steppers wrap the input in a span of their own. React keeps track of the
-  // outer span instead, so removing the field never asks for the input at a
-  // place it no longer is.
+  // outer span instead, so removing the field never looks for the input where
+  // the steppers took it from.
   return (
     <span className="contents">
       <input

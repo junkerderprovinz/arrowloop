@@ -63,7 +63,7 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
-    after: '2.2.8',
+    after: '2.2.0',
     changes: [
       {
         id: 'phone-job-editor',
@@ -184,12 +184,13 @@ export const RELEASES: Release[] = [
     ],
   },
   {
-    after: '2.2.6',
-    changes: [{ id: 'installer', text: 'new.change.installer' }],
-  },
-  {
-    after: '2.2.5',
+    after: '2.1.0',
     changes: [
+      {
+        id: 'app-folders',
+        text: 'new.change.appFolders',
+        names: { add: 'phone.sharedAdd', settings: 'nav.settings', phone: 'phone.thisPhone' },
+      },
       {
         id: 'newer-wins',
         at: ['/jobs/:name'],
@@ -198,20 +199,8 @@ export const RELEASES: Release[] = [
         text: 'new.change.newerWins',
         names: { option: 'edit.newerWins' },
       },
-    ],
-  },
-  {
-    after: '2.2.3',
-    changes: [{ id: 'release-cards', text: 'new.change.releaseCards' }],
-  },
-  {
-    after: '2.1.0',
-    changes: [
-      {
-        id: 'app-folders',
-        text: 'new.change.appFolders',
-        names: { add: 'phone.sharedAdd', settings: 'nav.settings', phone: 'phone.thisPhone' },
-      },
+      { id: 'release-cards', text: 'new.change.releaseCards' },
+      { id: 'installer', text: 'new.change.installer' },
     ],
   },
   {

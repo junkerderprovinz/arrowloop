@@ -1,0 +1,1 @@
+The job screen tidied up: both sides in their own cards, one switch for the global settings, and a schedule you pick with one tap instead of a sentence. The targets grew up too: OneDrive asks which drive, an S3 key for one bucket passes the test, SFTP checks who answers, and a two-factor code is no longer burned twice.
