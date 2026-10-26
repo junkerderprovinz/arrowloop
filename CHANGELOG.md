@@ -8,7 +8,7 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.3.1 - 2026-10-26
 
 ## 🎨 Design
 
