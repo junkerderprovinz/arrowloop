@@ -22,6 +22,9 @@ import (
 	// is registered, so a shorter list here would silently hide providers.
 	_ "github.com/rclone/rclone/backend/all"
 
+	// Holds uxtheme.dll across the initialisation of Wails; see the package.
+	_ "github.com/junkerderprovinz/arrowloop/desktop/uxtheme"
+
 	"github.com/rclone/rclone/fs/config/configfile"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autostart"

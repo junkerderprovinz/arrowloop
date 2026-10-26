@@ -43,6 +43,7 @@ The full notes for each release are in
 - **A target that jobs used could be deleted.** The jobs then failed on every run, and the target's password was gone with it. Deleting such a target is refused, on the web and on the phone, and the message names the jobs to point elsewhere or delete first. A target that only an encrypted folder or another target on top of it uses counts too.
 - **An SMB server that does not list its shares failed the test.** The test looked at the top of the server, which is the list of its shares. An SMB target has a share field now: fill it in and the test opens that share, while jobs can still use every share on the server. A job side at the top of an SMB server, where it could write nothing, is refused when you save the job, with a hint to add the share.
 - **SFTP targets did not check the server's key.** ArrowLoop connected to whichever server answered at the address. The connection test now shows the fingerprint of the server's key so you can compare it with the one your provider publishes, saving keeps that key, and a server that later shows a different one is refused with a message that says what to do if the change was expected. A target saved before is held to the key it shows at its next test.
+- **The desktop app closed as soon as it opened on Windows build 26300.** The window framework let go of a system library it still needed for dark mode, and the first window crashed. ArrowLoop keeps that library loaded now, so the window opens as usual.
 
 ## 2.2.8 - 2026-10-23
 
