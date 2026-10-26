@@ -236,10 +236,25 @@ export interface Provider {
   [key: string]: unknown;
 }
 
+/** A choice rclone's setup leaves open, answered as the setting `name` (internal/remotes/setup.go). */
+export interface SetupQuestion {
+  name: string;
+  choices: { value: string; help: string }[];
+}
+
 export interface Backend {
   name: string;
   description?: string;
-  options?: { name: string; help?: string; required?: boolean; essential?: boolean; secret?: boolean }[];
+  options?: {
+    name: string;
+    help?: string;
+    required?: boolean;
+    essential?: boolean;
+    secret?: boolean;
+    /** rclone's kind of value; bool is a yes or no. */
+    type?: string;
+    default?: string;
+  }[];
   [key: string]: unknown;
 }
 
@@ -329,9 +344,14 @@ export function touched(run: Run): number {
 
 export class EngineError extends Error {
   readonly status: number;
-  constructor(status: number, message: string) {
+  /** A word the engine adds where the app should say it in its own words, and what that sentence fills in. */
+  readonly code?: string;
+  readonly values?: Record<string, string>;
+  constructor(status: number, message: string, code?: string, values?: Record<string, string>) {
     super(message);
     this.status = status;
+    this.code = code;
+    this.values = values;
   }
 }
 
@@ -349,13 +369,14 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok) {
     // The engine explains errors as {"error": "..."}.
     let detail = `HTTP ${response.status}`;
+    let body: { error?: string; code?: string; values?: Record<string, string> } | undefined;
     try {
-      const body = (await response.json()) as { error?: string };
+      body = await response.json();
       if (body?.error) detail = body.error;
     } catch {
       // Not JSON; the status is all there is.
     }
-    throw new EngineError(response.status, detail);
+    throw new EngineError(response.status, detail, body?.code, body?.values);
   }
   if (response.status === 204) return undefined as T;
   const text = await response.text();
@@ -459,8 +480,9 @@ export const api = {
    * (internal/remotes/trycheck.go). `remote` names the target being edited, so
    * the engine can fill in the secrets the form left empty.
    */
+  /** hostKey is the fingerprint of the key an SFTP server was held to. */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
-    call<{ ok: boolean; reason?: string; failure?: Failure }>("/api/remotes-check", {
+    call<{ ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion; hostKey?: string }>("/api/remotes-check", {
       method: "POST",
       body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),

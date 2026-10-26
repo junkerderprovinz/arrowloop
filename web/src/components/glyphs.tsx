@@ -625,14 +625,14 @@ export function IconToLeft(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** A job that syncs both ways. Streamline interface-essential/arrow-up-1.svg, twice, scaled and turned. */
+/** A job that syncs both ways. Streamline interface-essential/arrow-up-1.svg, as IconToRight above IconToLeft. */
 export function IconBothWays(props: SVGProps<SVGSVGElement>) {
   return (
-    <G box="1.1 1.1 11.8 11.8" {...props}>
-      <g transform="rotate(90 7 7) translate(-0.7 2.8) scale(0.6)">
+    <G box="-1.5 0 17 17" {...props}>
+      <g transform="translate(0 -3) rotate(90 7 7)">
         <path fillRule="evenodd" clipRule="evenodd" d="M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z" />
       </g>
-      <g transform="rotate(-90 7 7) translate(-0.7 2.8) scale(0.6)">
+      <g transform="translate(0 6) rotate(-90 7 7)">
         <path fillRule="evenodd" clipRule="evenodd" d="M6.64645 0.146447c0.19526 -0.1952625 0.51184 -0.1952625 0.7071 0L10.8536 3.64645c0.143 0.143 0.1857 0.35805 0.1083 0.54489 -0.0774 0.18684 -0.2597 0.30866 -0.4619 0.30866H8V13c0 0.5523 -0.44772 1 -1 1 -0.55229 0 -1 -0.4477 -1 -1V4.5H3.5c-0.20223 0 -0.38455 -0.12182 -0.46194 -0.30866 -0.07739 -0.18684 -0.03461 -0.40189 0.10839 -0.54489l3.5 -3.500003Z" />
       </g>
     </G>

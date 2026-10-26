@@ -21,6 +21,11 @@ interface Placed {
   at: string[]
   /** Where "Go there" leads, for an address that names one entry. */
   go?: string
+  /**
+   * The data-new-way of the control that opens the window the change is drawn
+   * in, so the dot waits on that control while the window is closed.
+   */
+  via?: string
   /** The page's name in the list, outermost first. */
   where: TranslationKey[]
   text: TranslationKey
@@ -58,21 +63,125 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
-    after: '2.2.5',
+    after: '2.2.0',
     changes: [
       {
-        id: 'newer-wins',
+        id: 'phone-job-editor',
+        text: 'new.change.phoneJobEditor',
+        names: { schedule: 'edit.schedule', sync: 'edit.cardSync', exclude: 'edit.exclude', useGlobal: 'edit.useGlobal' },
+      },
+      {
+        id: 'job-window',
         at: ['/jobs/:name'],
+        via: 'edit-job',
         go: '/jobs',
         where: ['nav.jobs', 'new.where.jobPage'],
-        text: 'new.change.newerWins',
-        names: { option: 'edit.newerWins' },
+        text: 'new.change.jobWindow',
+        names: { schedule: 'edit.schedule', matching: 'edit.matching', exclude: 'edit.exclude' },
+      },
+      {
+        id: 'use-global',
+        at: ['/jobs/:name'],
+        via: 'edit-job',
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.useGlobal',
+        names: { useGlobal: 'edit.useGlobal' },
+      },
+      {
+        id: 'schedule-hs',
+        at: ['/jobs/:name', '/settings/sync'],
+        via: 'edit-job',
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.scheduleKinds',
+        names: {
+          off: 'schedule.off',
+          every: 'schedule.every',
+          daily: 'schedule.daily',
+          weekly: 'schedule.weekly',
+          live: 'schedule.live',
+          cron: 'schedule.cron',
+        },
+      },
+      {
+        id: 'mode-hs',
+        at: ['/jobs/:name'],
+        via: 'edit-job',
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.modeKinds',
+        names: { sync: 'mode.sync', mirror: 'mode.mirror', move: 'mode.move', matching: 'edit.matching' },
+      },
+      {
+        id: 'manual-name',
+        at: ['/jobs'],
+        where: JOBS,
+        text: 'new.change.manualName',
+        names: { manual: 'jobs.schedule.manual' },
+      },
+      {
+        id: 'target-switches',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.targetSwitches',
+        names: { encryption: 'targets.ftpTls' },
+      },
+      {
+        id: 'target-setup-choice',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.setupChoice',
+      },
+      {
+        id: 'target-bucket',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.bucketField',
+      },
+      {
+        id: 'provider-marks',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.providerMarks',
+        names: { connect: 'targets.addStorage' },
+      },
+      {
+        id: 'two-factor-once',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.twoFactorOnce',
+        names: { code: 'opt.twoFactor', test: 'targets.check' },
+      },
+      {
+        id: 'target-in-use',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetInUse',
+        names: { delete: 'action.delete' },
+      },
+      {
+        id: 'smb-share',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.smbShare',
+        names: { share: 'opt.shareName', test: 'targets.check' },
+      },
+      {
+        id: 'sftp-host-key',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.hostKey',
+        names: { test: 'targets.check', key: 'targets.hostKey' },
       },
     ],
-  },
-  {
-    after: '2.2.3',
-    changes: [{ id: 'release-cards', text: 'new.change.releaseCards' }],
   },
   {
     after: '2.1.0',
@@ -82,6 +191,16 @@ export const RELEASES: Release[] = [
         text: 'new.change.appFolders',
         names: { add: 'phone.sharedAdd', settings: 'nav.settings', phone: 'phone.thisPhone' },
       },
+      {
+        id: 'newer-wins',
+        at: ['/jobs/:name'],
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.newerWins',
+        names: { option: 'edit.newerWins' },
+      },
+      { id: 'release-cards', text: 'new.change.releaseCards' },
+      { id: 'installer', text: 'new.change.installer' },
     ],
   },
   {
@@ -165,13 +284,6 @@ export const RELEASES: Release[] = [
         where: ['nav.jobs', 'new.where.jobPage'],
         text: 'new.change.ownValues',
         names: { sync: 'settings.sync', override: 'defaults.override', useDefault: 'defaults.useDefault' },
-      },
-      {
-        id: 'schedule-sentence',
-        at: ['/settings/sync'],
-        where: ['nav.settings', 'settings.sync'],
-        text: 'new.change.scheduleSentence',
-        names: { cron: 'schedule.cron' },
       },
       {
         id: 'exceptions',

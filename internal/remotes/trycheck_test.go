@@ -103,7 +103,7 @@ func TestCheckingUnsavedSettingsWritesNothing(t *testing.T) {
 
 	// TEST-NET-1 (RFC 5737) is reserved for documentation, so nothing answers
 	// it.
-	_ = CheckSettings(context.Background(), "webdav", map[string]string{
+	_, _ = Try(context.Background(), "", "webdav", map[string]string{
 		"url":  "http://192.0.2.1:9999/",
 		"user": "nobody",
 		"pass": "nothing",
@@ -116,14 +116,14 @@ func TestCheckingUnsavedSettingsWritesNothing(t *testing.T) {
 }
 
 func TestAnUnknownBackendIsRefusedBeforeAnythingElse(t *testing.T) {
-	err := CheckSettings(context.Background(), "not-a-backend", nil)
+	_, err := Try(context.Background(), "", "not-a-backend", nil)
 	if err == nil || !strings.Contains(err.Error(), "does not include") {
 		t.Fatalf("err = %v, want it to name the missing backend", err)
 	}
 }
 
 func TestAMissingBackendIsRefused(t *testing.T) {
-	if err := CheckSettings(context.Background(), "", nil); err == nil {
+	if _, err := Try(context.Background(), "", "", nil); err == nil {
 		t.Fatal("a target with no type was accepted")
 	}
 }

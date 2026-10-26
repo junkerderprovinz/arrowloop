@@ -84,7 +84,15 @@ export type Duplicates = {
 }
 
 /** Whether a target answers, in rclone's words and as a kind the page can say itself. */
-export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure }
+/** A test's verdict. hostKey is the fingerprint of the key an SFTP server was held to. */
+export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion; hostKey?: string }
+
+/**
+ * A choice rclone's own setup leaves to the person adding a target, such as
+ * which of several drives a sign-in opens (internal/remotes/setup.go). The
+ * answer goes back as the setting `name`.
+ */
+export type SetupQuestion = { name: string; choices: { value: string; help: string }[] }
 
 /**
  * How full a target is. An absent figure means the target does not know, which
@@ -125,9 +133,11 @@ export type Provider = {
    * How this product wants to be signed into. The screen writes one translated
    * sentence per style, and an unknown value is ignored rather than shown.
    */
-  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login'
+  auth?: 'apppassword' | 'oauth' | 'apikey' | 'accesskey' | 'login' | 'logintoken'
   /** Where that credential is created, where there is one page to point at. */
   authUrl?: string
+  /** What the product's own server assumes for a field left empty, such as Garage's region. */
+  defaults?: Record<string, string>
 }
 
 export type Backend = {
@@ -148,6 +158,8 @@ export type Backend = {
      */
     essential?: boolean
     advanced: boolean
+    /** rclone's name for the kind of value: bool for a yes or no, string, SizeSuffix and so on. */
+    type?: string
     default: string
     examples?: { value: string; help: string }[]
   }[]
@@ -531,10 +543,13 @@ export class ApiError extends Error {
   status: number
   /** A word the server adds where the interface should say it in its own words. */
   code?: string
-  constructor(message: string, status: number, code?: string) {
+  /** What that sentence fills in, such as the jobs that hold on to a target. */
+  values?: Record<string, string>
+  constructor(message: string, status: number, code?: string, values?: Record<string, string>) {
     super(message)
     this.status = status
     this.code = code
+    this.values = values
   }
 }
 
@@ -578,7 +593,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 async function failure(res: Response): Promise<ApiError> {
   try {
     const body = await res.json()
-    if (body?.error) return new ApiError(body.error, res.status, body.code)
+    if (body?.error) return new ApiError(body.error, res.status, body.code, body.values)
   } catch {
     // The body was not the JSON error shape; the status line has to do.
   }

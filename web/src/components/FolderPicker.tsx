@@ -6,7 +6,7 @@ import { Text } from './Field'
 import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { IconCheck, IconClose, IconFolder, IconFolderAdd, IconFolderUp, IconTabStorage } from './glyphs'
+import { IconBack, IconCheck, IconClose, IconFolder, IconFolderAdd, IconTabStorage } from './glyphs'
 import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { useModal } from '../lib/modal'
@@ -159,7 +159,7 @@ export function FolderPicker({
                   className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
-                  <IconFolderUp />
+                  <IconBack />
                   {t('pick.up')}
                 </button>
               </li>

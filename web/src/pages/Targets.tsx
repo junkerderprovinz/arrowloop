@@ -36,6 +36,7 @@ import {
   type DriveCandidate,
   type Provider,
   type Remote,
+  type SetupQuestion,
   type Share,
   type Usage,
   type Volume,
@@ -44,6 +45,7 @@ import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
+import type { TranslationKey } from '../lib/i18n.data'
 import { useToast } from '../lib/toast'
 import { optionHint, providerName } from '../lib/optionHint'
 import { matchesQuery } from '../lib/fold'
@@ -51,6 +53,8 @@ import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
+import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
+import { ToggleRow } from '../components/ToggleRow'
 import { SecretRow } from './settings/rows'
 import { failureLine } from '../lib/failure'
 
@@ -157,7 +161,7 @@ export function Targets() {
           glyph={<IconAdd />}
           onClick={() => setRegistering(true)}
         />
-        <span data-new="provider-names" className="flex">
+        <span data-new="provider-names" data-new-way="connect" className="flex">
           <PageAction
             primary
             label={t('targets.addStorage')}
@@ -304,7 +308,7 @@ function AddTarget({
       title={t('targets.addStorage')}
       hint={t('targets.addStorageHint')}
       onClose={() => onDone(false)}
-      wide
+      width="wide"
       search={<PickerSearch value={query} onChange={setQuery} label={t('targets.search')} />}
     >
       <div ref={body} className="flex flex-col gap-6" style={{ minHeight: floor }}>
@@ -422,7 +426,7 @@ function RemoteRow({
         </span>
         {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
         {notDeleted && (
-          <span className="text-subline text-statusFail [overflow-wrap:anywhere]" role="alert">
+          <span data-new="target-in-use" className="text-subline text-statusFail [overflow-wrap:anywhere]" role="alert">
             {notDeleted}
           </span>
         )}
@@ -573,6 +577,8 @@ function RemoteForm({
   const [trying, setTrying] = useState(false)
   /** The result of a test run before saving. */
   const [tried, setTried] = useState<CheckAnswer | null>(null)
+  /** What rclone's setup left to choose at the last test. */
+  const [question, setQuestion] = useState<SetupQuestion | null>(null)
   // Count failed tests and saves, so each one remounts its button and shakes it again.
   const [refused, setRefused] = useState(0)
   const [unsaved, setUnsaved] = useState(0)
@@ -599,6 +605,12 @@ function RemoteForm({
       // The name lets the engine fill in the saved secrets this form never
       // received.
       const answer = await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name)
+      // A question is no verdict: the form shows the choice, its hint in the
+      // bubble beside it, and the next test sends the choice.
+      if (answer.question) {
+        setQuestion(answer.question)
+        return
+      }
       setTried(answer)
       if (!answer.ok) setRefused((n) => n + 1)
     } catch (e) {
@@ -633,8 +645,10 @@ function RemoteForm({
       }
       onDone(true)
     } catch (e) {
-      push((e as Error).message, 'fail')
       setUnsaved((n) => n + 1)
+      // The test is where the form asks the question the save is waiting for.
+      if ((e as { code?: string }).code === 'setup-question') void tryIt()
+      else push((e as Error).message, 'fail')
     } finally {
       setBusy(false)
     }
@@ -642,8 +656,29 @@ function RemoteForm({
 
   // A stored secret arrives as the placeholder and goes back untouched unless
   // it is changed, which tells the engine to keep it (remotes.Save).
-  const field = (o: Backend['options'][number]) =>
-    o.secret ? (
+  const plainField = (o: Backend['options'][number]) =>
+    kind === 'ftp' && o.name === 'explicit_tls' ? null : kind === 'ftp' && o.name === 'tls' ? (
+      <FieldRow key={o.name} label={t('targets.ftpTls')} hint={t('targets.ftpTlsHint')}>
+        <span data-new="target-switches" className="flex w-full">
+          <Choice
+            value={ftpTls(values)}
+            onChange={(mode) => setValues((prev) => withFtpTls(prev, mode))}
+            label={t('targets.ftpTls')}
+            options={FTP_TLS.map((mode) => ({ value: mode, label: t(`targets.ftpTls.${mode}`) }))}
+          />
+        </span>
+      </FieldRow>
+    ) : o.type === 'bool' ? (
+      // Off is left unsaved where it is rclone's default, as an untouched
+      // field would be.
+      <ToggleRow
+        key={o.name}
+        label={optionLabel(o.name, t)}
+        hint={optionHint(o, t, provider)}
+        checked={(values[o.name] || o.default) === 'true'}
+        onChange={(on) => setValues((prev) => ({ ...prev, [o.name]: String(on) === o.default ? '' : String(on) }))}
+      />
+    ) : o.secret ? (
       <SecretRow
         key={o.name}
         label={optionLabel(o.name, t)}
@@ -672,16 +707,34 @@ function RemoteForm({
             }
           />
         ) : (
-          <Text
-            value={values[o.name] ?? ''}
-            onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-            placeholder={o.default || o.examples?.[0]?.value}
-            label={optionLabel(o.name, t)}
-            mono
-          />
+          <span data-new={NEW_FIELDS[`${kind}.${o.name}`]} className="flex w-full">
+            <Text
+              value={values[o.name] ?? ''}
+              onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
+              placeholder={provider?.defaults?.[o.name] || o.default || o.examples?.[0]?.value}
+              label={optionLabel(o.name, t)}
+              mono
+            />
+          </span>
         )}
       </FieldRow>
     )
+
+  const marked = (o: Backend['options'][number]) => {
+    if (o.name === '2fa' && (kind === 'mega' || kind === 'protondrive')) return 'two-factor-once'
+    if (o.name === 'share' && kind === 'smb') return 'smb-share'
+    return undefined
+  }
+  const field = (o: Backend['options'][number]) => {
+    const newId = marked(o)
+    return newId ? (
+      <div key={o.name} data-new={newId}>
+        {plainField(o)}
+      </div>
+    ) : (
+      plainField(o)
+    )
+  }
 
   return (
     <Dialog
@@ -744,6 +797,32 @@ function RemoteForm({
           <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
         </FieldRow>
         {first.map(field)}
+        {question && (
+          <FieldRow label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')} hint={t('targets.question.hint')}>
+            <span data-new="target-setup-choice" className="flex w-full">
+              <Choice
+                value={values[question.name] ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
+                label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')}
+                options={[
+                  { value: '', label: t('targets.question.pick') },
+                  ...question.choices.map((c) => ({ value: c.value, label: c.help || c.value })),
+                ]}
+              />
+            </span>
+          </FieldRow>
+        )}
+        {/* Shown to compare with the fingerprint the provider publishes:
+            saving holds the target to this key. */}
+        {tried?.hostKey && (
+          <p data-new="sftp-host-key" className="flex flex-wrap items-center gap-x-2 text-subline text-carbon-textMuted">
+            <span className="flex items-center gap-1.5">
+              {t('targets.hostKey')}
+              <InfoBubble tip={t('targets.hostKeyHint')} />
+            </span>
+            <span className="font-mono text-carbon-text [overflow-wrap:anywhere]">{tried.hostKey}</span>
+          </p>
+        )}
         {rest.length > 0 && (
           <section className="glim-subcard flex flex-col gap-4 p-4">
             <h3 className="glim-eyebrow">{t('targets.moreSettings')}</h3>
@@ -753,6 +832,16 @@ function RemoteForm({
       </div>
     </Dialog>
   )
+}
+
+/** The fields a What's new entry points at, by backend and option. */
+const NEW_FIELDS: Record<string, string> = { 's3.bucket': 'target-bucket' }
+
+/** The questions rclone's setups ask, by the setting that answers them. */
+const QUESTION_LABELS: Record<string, TranslationKey> = {
+  config_driveid: 'targets.question.drive',
+  config_workspace: 'targets.question.workspace',
+  config_team_drive_id: 'targets.question.team',
 }
 
 /**

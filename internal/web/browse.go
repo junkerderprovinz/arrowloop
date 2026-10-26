@@ -50,6 +50,9 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if name, dir, ok := remotes.Split(at); ok {
+		if dir == "" {
+			dir = remotes.Root(name)
+		}
 		folders, err := remotes.Folders(r.Context(), name, dir)
 		if err != nil {
 			http.Error(w, "cannot read "+at+": "+err.Error(), http.StatusBadRequest)

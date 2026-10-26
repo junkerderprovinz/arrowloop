@@ -9,8 +9,8 @@ import { WhatsNewButton, WhatsNewHost } from './WhatsNew'
 
 const KEY = 'arrowloop.whatsNew'
 const RUNNING = 'v2.3.0'
-// 2.2.1 and 2.1.0 brought fixes only: the engine has their notes, the list no changes.
-const RELEASES = ['v2.3.0', 'v2.2.1', 'v2.2.0', 'v2.1.0', 'v2.0.0', 'v1.9.0']
+// 2.1.0 brought fixes only: the engine has its notes, the list no changes.
+const RELEASES = ['v2.3.0', 'v2.2.0', 'v2.1.0', 'v2.0.0', 'v1.9.0']
 const all = CHANGES.length
 const unplaced = CHANGES.filter((c) => !placed(c))
 
@@ -124,16 +124,17 @@ describe('the window', () => {
 describe('the cards', () => {
   it('show every release since the one the browser had, newest first, each with its own changes', async () => {
     await openWindow()
-    expect(cards()).toEqual(['2.3.0', '2.2.1', '2.2.0', '2.1.0', '2.0.0'])
-    expect(within(card('2.3.0')).queryByText(en['new.change.releaseCards'])).toBeTruthy()
+    expect(cards()).toEqual(['2.3.0', '2.2.0', '2.1.0', '2.0.0'])
+    expect(card('2.3.0').querySelector('[data-change="use-global"]')).not.toBeNull()
+    expect(within(card('2.2.0')).queryByText(en['new.change.releaseCards'])).toBeTruthy()
     expect(within(card('2.2.0')).queryAllByText(/Apps\.$/)).toHaveLength(1)
-    expect(card('2.2.1').querySelectorAll('[data-change]')).toHaveLength(0)
+    expect(card('2.1.0').querySelectorAll('[data-change]')).toHaveLength(0)
     expect(card('2.0.0').querySelector('[data-change="navigation"]')).not.toBeNull()
   })
 
   it('show the notes of every release under its number on the badge', async () => {
     await openWindow()
-    for (const name of ['2.3.0', '2.2.1']) {
+    for (const name of ['2.3.0', '2.2.0']) {
       expect(within(card(name)).getByRole('heading', { level: 3, name })).toBeTruthy()
       expect(within(card(name)).getByText(`Notes of v${name}.`)).toBeTruthy()
     }
@@ -143,10 +144,10 @@ describe('the cards', () => {
   it('show older releases only while they hold something unseen', async () => {
     updated('v2.2.0')
     await openWindow()
-    expect(cards()).toEqual(['2.3.0', '2.2.1'])
+    expect(cards()).toEqual(['2.3.0'])
     expect(screen.getByRole('dialog', { name: 'New since 2.2.0' })).toBeTruthy()
     act(() => markSeen(['navigation'], false))
-    expect(cards()).toEqual(['2.3.0', '2.2.1', '2.0.0'])
+    expect(cards()).toEqual(['2.3.0', '2.0.0'])
   })
 
   it('name each change under its page, and those no page draws first', async () => {
@@ -170,14 +171,14 @@ describe('the cards', () => {
   })
 
   it('give a build of what comes next its own card above the release it starts from', async () => {
-    engineAnswers(['v2.2.3', 'v2.2.2'].map(noteOf))
-    updated('v2.2.3', 'v2.2.3-4-gabcdef')
+    engineAnswers(['v2.2.0', 'v2.1.0'].map(noteOf))
+    updated('v2.2.0', 'v2.2.0-4-gabcdef')
     render(<Card />)
     act(() => openNewsWindow())
-    await screen.findByText('Notes of v2.2.3.')
-    expect(cards()).toEqual(['2.2.3-4-gabcdef', '2.2.3'])
-    expect(screen.getByRole('dialog', { name: 'New since 2.2.3' })).toBeTruthy()
-    expect(card('2.2.3-4-gabcdef').querySelector('[data-change="release-cards"]')).not.toBeNull()
+    await screen.findByText('Notes of v2.2.0.')
+    expect(cards()).toEqual(['2.2.0-4-gabcdef', '2.2.0'])
+    expect(screen.getByRole('dialog', { name: 'New since 2.2.0' })).toBeTruthy()
+    expect(card('2.2.0-4-gabcdef').querySelector('[data-change="job-window"]')).not.toBeNull()
   })
 })
 

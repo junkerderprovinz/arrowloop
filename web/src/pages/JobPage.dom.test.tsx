@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Finding } from '../lib/anomalies'
 import type { Job, RawJob, Run } from '../lib/api'
 import { GoTo } from '../lib/goTo'
+import { en } from '../lib/i18n.data'
 import { LiveJobs } from '../lib/live'
 import type { JobLearning } from '../lib/anomalies'
 import { ToastProvider } from '../lib/toast'
@@ -215,22 +216,105 @@ describe('a job page', () => {
     expect(saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')?.brakePercent).toBeUndefined()
   })
 
-  it('edits an overridden schedule from its sentence', async () => {
+  it('holds every setting with a global value while the switch is on, and lets go once it is off', async () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     const editor = await screen.findByRole('dialog')
-    const sentence = within(editor).getByRole('button', { name: /^Schedule:/ })
-    expect(sentence.textContent).toContain('on request')
-    expect(sentence.closest('[inert]')).not.toBeNull()
+    const follow = within(editor).getByRole('switch', { name: en['edit.useGlobal'] })
+    expect(follow.getAttribute('aria-checked')).toBe('true')
+    const kinds = within(editor).getByRole('tablist', { name: 'Schedule' })
+    expect(within(kinds).getByRole('tab', { name: 'Manual' }).getAttribute('aria-selected')).toBe('true')
+    expect(kinds.closest('[inert]')).not.toBeNull()
+    expect(within(kinds.closest('[data-held]') as HTMLElement).getByText('global')).toBeTruthy()
+    expect(within(editor).getByRole('switch', { name: 'Keep a trash on each side' }).closest('[inert]')).toBeNull()
 
-    const row = sentence.closest('[data-inherited]') as HTMLElement
-    fireEvent.click(within(row).getByRole('button', { name: 'Override' }))
-    const own = within(editor).getByRole('button', { name: /^Schedule:/ })
+    fireEvent.click(follow)
+    const own = within(editor).getByRole('tablist', { name: 'Schedule' })
     expect(own.closest('[inert]')).toBeNull()
-    fireEvent.click(own)
-    const panel = await screen.findByRole('dialog', { name: 'Schedule' })
-    fireEvent.click(within(panel).getByRole('tab', { name: 'Every day' }))
-    expect(within(editor).getByRole('button', { name: /^Schedule:/ }).textContent).toContain('daily at')
+    expect(editor.querySelector('[data-held]')).toBeNull()
+    fireEvent.click(within(own).getByRole('tab', { name: 'Every day' }))
+    expect(within(own).getByRole('tab', { name: 'Every day' }).getAttribute('aria-selected')).toBe('true')
+    expect(within(editor).getByRole('button', { name: /^At: / })).toBeTruthy()
+  })
+
+  it('writes the values in force as the job\'s own when the switch goes off', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const editor = await screen.findByRole('dialog')
+    fireEvent.click(within(editor).getByRole('switch', { name: en['edit.useGlobal'] }))
+    fireEvent.click(within(editor).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    const written = saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')
+    expect(written).toMatchObject({ direction: 'both', mode: 'sync', schedule: '', quietPeriod: '5s', emptyDirs: false, metadata: false })
+  })
+
+  it('opens with the switch off for a job that already has a value of its own', async () => {
+    config.mockImplementation(() => Promise.resolve({ jobs: [{ ...pair()[0]!, metadata: true }, pair()[1]!] }))
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const editor = await screen.findByRole('dialog')
+    expect(within(editor).getByRole('switch', { name: en['edit.useGlobal'] }).getAttribute('aria-checked')).toBe('false')
+    expect(editor.querySelector('[data-held]')).toBeNull()
+  })
+
+  it('drops the job\'s own values when the switch is turned on, without asking', async () => {
+    config.mockImplementation(() =>
+      Promise.resolve({ jobs: [{ ...pair()[0]!, schedule: '0 3 * * *', metadata: true, newerWins: true }, pair()[1]!] }),
+    )
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const editor = await screen.findByRole('dialog')
+    fireEvent.click(within(editor).getByRole('switch', { name: en['edit.useGlobal'] }))
+    expect(screen.getAllByRole('dialog')).toHaveLength(1)
+    fireEvent.click(within(editor).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    const written = saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')
+    expect(written?.schedule).toBeUndefined()
+    expect(written?.metadata).toBeUndefined()
+    expect(written?.newerWins).toBe(true)
+  })
+
+  it('wiggles the switch each time somebody reaches for a held field', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const editor = await screen.findByRole('dialog')
+    const nudged = () => editor.querySelector('[data-new="use-global"]')?.getAttribute('data-nudged')
+    expect(nudged()).toBeNull()
+    const [held] = editor.querySelectorAll<HTMLElement>('[data-held]')
+    fireEvent.click(held!)
+    expect(nudged()).toBe('1')
+    expect(editor.querySelector('[data-new="use-global"]')?.className).toContain('al-nudge')
+    fireEvent.focus(held!)
+    expect(nudged()).toBe('2')
+  })
+
+  it('stacks the two sides and turns the arrow once the window is narrow', async () => {
+    const real = globalThis.ResizeObserver
+    let width = 900
+    globalThis.ResizeObserver = class {
+      constructor(private report: ResizeObserverCallback) {}
+      observe() {
+        this.report([{ contentRect: { width } } as ResizeObserverEntry], this as unknown as ResizeObserver)
+      }
+      disconnect() {}
+      unobserve() {}
+    } as unknown as typeof ResizeObserver
+    try {
+      page()
+      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      let way = (await screen.findByRole('dialog')).querySelector('[data-new="job-window"]') as HTMLElement
+      expect(way.hasAttribute('data-stacked')).toBe(false)
+      expect(way.querySelector('[data-turned]')).toBeNull()
+      fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+      width = 500
+      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      way = (await screen.findByRole('dialog')).querySelector('[data-new="job-window"]') as HTMLElement
+      expect(way.hasAttribute('data-stacked')).toBe(true)
+      expect(way.querySelector('[data-turned]')).not.toBeNull()
+    } finally {
+      globalThis.ResizeObserver = real
+    }
   })
 
   it('answers a held run on the page while the anomaly notes are off', async () => {

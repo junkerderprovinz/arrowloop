@@ -1,12 +1,9 @@
 package remotes
 
 import (
-	"context"
-	"fmt"
 	"sort"
 	"strings"
 
-	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/obscure"
 )
@@ -56,13 +53,14 @@ func WithSavedSecrets(name, backend string, settings map[string]string) map[stri
 // aside, with nothing added or left out. Far more than the address decides
 // where a connection goes: an SFTP socks_proxy, a known_hosts_file of none, a
 // backend's own api_url. An empty value counts as no value, as Save stores it.
+// A fresh two-factor code changes nothing about where a connection goes.
 func sameTarget(data config.Storage, name, backend string, settings map[string]string) bool {
 	keys := data.GetKeyList(name)
 	for key := range settings {
 		keys = append(keys, key)
 	}
 	for _, key := range keys {
-		if key == "type" || (IsSecret(backend, key) && !addressKeys[key]) {
+		if key == "type" || (IsSecret(backend, key) && !addressKeys[key]) || (key == oneTimeCode && sessionKey[backend] != "") {
 			continue
 		}
 		if stored, _ := data.GetValue(name, key); settings[key] != stored {
@@ -92,33 +90,13 @@ func typedForm(backend, key, stored string) string {
 	return stored
 }
 
-// CheckSettings reports whether a target built from settings that have not
-// been saved answers. It goes through an inline connection string, so no
-// temporary remote holding real credentials is ever written.
-func CheckSettings(ctx context.Context, backend string, settings map[string]string) error {
-	if backend == "" {
-		return fmt.Errorf("a remote needs a type, for example s3 or sftp")
-	}
-	if _, err := rclonefs.Find(backend); err != nil {
-		return fmt.Errorf("this build does not include the %q backend: %w", backend, err)
-	}
-
-	ctx, stop := context.WithTimeout(ctx, CheckWait)
-	defer stop()
-
-	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings))
-	if err != nil {
-		return checkErr(ctx, err)
-	}
-	return listRoot(ctx, f, backend)
-}
-
 // connectionString renders settings as rclone's inline-remote syntax,
-// :backend,k=v,k=v:, with the keys sorted.
+// :backend,k=v,k=v:, with the keys sorted. The bucket or share a check opens
+// is a path after it rather than a setting.
 func connectionString(backend string, settings map[string]string) string {
 	keys := make([]string, 0, len(settings))
 	for key := range settings {
-		if key == "type" || settings[key] == "" {
+		if key == "type" || settings[key] == "" || ownOption(backend, key) {
 			continue
 		}
 		keys = append(keys, key)

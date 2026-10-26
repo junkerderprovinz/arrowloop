@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
@@ -120,7 +121,19 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Has("new") {
 		save = remotes.Create
 	}
-	if err := save(r.PathValue("name"), body.Type, body.Settings); err != nil {
+	settings, question, err := remotes.Setup(r.Context(), body.Type, body.Settings)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	if question != nil {
+		// A test asks the same question, which is where the form shows it.
+		writeJSON(w, http.StatusUnprocessableEntity, map[string]any{
+			"error": "test the target first and choose which " + question.Name + " to use", "code": setupQuestion, "question": question,
+		})
+		return
+	}
+	if err := save(r.PathValue("name"), body.Type, settings); err != nil {
 		status := http.StatusBadRequest
 		if errors.Is(err, remotes.ErrExists) {
 			status = http.StatusConflict
@@ -131,13 +144,44 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"saved": r.PathValue("name")})
 }
 
+// targetInUse is the code a refused delete answers with, so the page can name
+// the jobs in its own words.
+const targetInUse = "target-in-use"
+
 func (s *Server) deleteRemote(w http.ResponseWriter, r *http.Request) {
-	if err := remotes.Delete(r.PathValue("name")); err != nil {
+	name := r.PathValue("name")
+	// A job on a deleted target fails every run until somebody notices, and the
+	// credentials cannot be had back from here.
+	if jobs := s.jobsOn(name); len(jobs) > 0 {
+		list := strings.Join(jobs, ", ")
+		writeJSON(w, http.StatusConflict, map[string]any{
+			"error":  fmt.Sprintf("jobs still use %s: %s; point them at another target or delete them first", name, list),
+			"code":   targetInUse,
+			"values": map[string]string{"jobs": list},
+		})
+		return
+	}
+	if err := remotes.Delete(name); err != nil {
 		writeError(w, http.StatusNotFound, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"deleted": r.PathValue("name")})
+	writeJSON(w, http.StatusOK, map[string]any{"deleted": name})
 }
+
+// jobsOn names the jobs with a side on the target.
+func (s *Server) jobsOn(target string) []string {
+	var out []string
+	for _, j := range s.Runner.Config().Jobs {
+		if remotes.Reaches(j.Left, target) || remotes.Reaches(j.Right, target) {
+			out = append(out, j.Name)
+		}
+	}
+	return out
+}
+
+// setupQuestion is the code of a save that waits for a choice rclone's setup
+// leaves open, such as which of several drives to use.
+const setupQuestion = "setup-question"
 
 // checkRemote proves the settings work, which saving them does not.
 func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
@@ -170,11 +214,20 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := remotes.CheckSettings(r.Context(), body.Type, remotes.WithSavedSecrets(body.Name, body.Type, body.Settings)); err != nil {
-		writeJSON(w, http.StatusOK, refused(err))
+	got, err := remotes.Try(r.Context(), body.Name, body.Type, body.Settings)
+	if got.Question != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": "choose which " + got.Question.Name + " to use", "question": got.Question})
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+	answer := map[string]any{"ok": true}
+	if err != nil {
+		answer = refused(err)
+	}
+	// The key the server was held to, which the page shows to compare.
+	if got.HostKey != nil {
+		answer["hostKey"] = got.HostKey.Fingerprint
+	}
+	writeJSON(w, http.StatusOK, answer)
 }
 
 // aboutRemote reports how full a target is. It is its own route rather than a

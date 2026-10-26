@@ -2,12 +2,15 @@ import { describe, expect, it } from 'vitest'
 
 import {
   BRAKE_SETTINGS,
+  JOB_WINDOW_SETTINGS,
   SYNC_SETTINGS,
   describeOwn,
   exceptionsOf,
+  followsAll,
   inForce,
   inheritAll,
   inheritPatch,
+  overrideAll,
   owns,
 } from './follows'
 import { modesHint } from './modes'
@@ -86,13 +89,51 @@ describe('the exceptions', () => {
 
   it('names each value in words', () => {
     expect(describeOwn({ schedule: '30 3 * * *' }, 'schedule', t)).toBe('Schedule: daily at 03:30')
-    expect(describeOwn({ schedule: '' }, 'schedule', t)).toBe('Schedule: on request')
+    expect(describeOwn({ schedule: '' }, 'schedule', t)).toBe('Schedule: manually')
     expect(describeOwn({ direction: 'leftToRight', mode: 'mirror' }, 'direction', t)).toBe(
       'Direction: Only to the right, Mirror',
     )
     expect(describeOwn({ emptyDirs: true }, 'emptyDirs', t)).toBe(`${en['edit.emptyDirs']}: On`)
     expect(describeOwn({ quietPeriod: '30s' }, 'quietPeriod', t)).toBe('Quiet period: 30s')
     expect(describeOwn({ brakePercent: 20 }, 'brakePercent', t)).toBe(`${en['engine.brakePercent']}: 20 %`)
+  })
+})
+
+describe('the job window\'s one switch', () => {
+  const defaults = { direction: 'leftToRight', mode: 'mirror', schedule: '0 3 * * *', emptyDirs: true }
+
+  it('is on while the job holds none of the settings the window shows', () => {
+    expect(followsAll({}, JOB_WINDOW_SETTINGS)).toBe(true)
+  })
+
+  it('is off once any one of them is the job\'s own', () => {
+    expect(followsAll({ metadata: false }, JOB_WINDOW_SETTINGS)).toBe(false)
+    expect(followsAll({ schedule: '' }, JOB_WINDOW_SETTINGS)).toBe(false)
+    expect(followsAll({ direction: 'both', mode: 'sync' }, JOB_WINDOW_SETTINGS)).toBe(false)
+  })
+
+  it('ignores a setting the window does not show', () => {
+    expect(followsAll({ transfers: 8, brakePercent: 20 }, JOB_WINDOW_SETTINGS)).toBe(true)
+  })
+
+  it('turned off, gives the job every value in force as its own', () => {
+    const job = { ...overrideAll(defaults, JOB_WINDOW_SETTINGS) }
+    expect(job).toEqual({
+      direction: 'leftToRight',
+      mode: 'mirror',
+      schedule: '0 3 * * *',
+      quietPeriod: '5s',
+      emptyDirs: true,
+      metadata: false,
+    })
+    expect(followsAll(job, JOB_WINDOW_SETTINGS)).toBe(false)
+  })
+
+  it('turned on again, leaves nothing of the job\'s own behind', () => {
+    const own = { ...overrideAll(defaults, JOB_WINDOW_SETTINGS), watch: true, watchSettle: '10s' }
+    const back = { ...own, ...inheritAll(JOB_WINDOW_SETTINGS) }
+    expect(followsAll(back, JOB_WINDOW_SETTINGS)).toBe(true)
+    expect(Object.values(back).every((v) => v === undefined)).toBe(true)
   })
 })
 

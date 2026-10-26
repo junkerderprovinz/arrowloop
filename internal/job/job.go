@@ -728,6 +728,13 @@ func Load(path string) (*Config, error) {
 		if !j.Disabled && !draft && (j.Left == "" || j.Right == "") {
 			return nil, fmt.Errorf("job %q needs both a left and a right side", j.Name)
 		}
+		for _, s := range []string{j.Left, j.Right} {
+			if atShareList(s) {
+				j.refused = fmt.Errorf(
+					"job %q has the side %s at the top of an SMB server, which only lists the server's shares; add the share to the side, as in %s",
+					j.Name, s, strings.TrimSuffix(strings.TrimSpace(s), "/")+"share/folder")
+			}
+		}
 		// Both sides naming the same place would scan one tree as two, and a
 		// mirror or move job would act on its own source. Two folders on this
 		// machine are compared by what the disk says, so a symlink or a second

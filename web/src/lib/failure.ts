@@ -24,6 +24,11 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
   notFound: { either: 'failure.notFound', left: 'failure.notFound.left', right: 'failure.notFound.right' },
   quotaExceeded: { either: 'failure.quotaExceeded', left: 'failure.quotaExceeded.left', right: 'failure.quotaExceeded.right' },
   rateLimited: { either: 'failure.rateLimited', left: 'failure.rateLimited.left', right: 'failure.rateLimited.right' },
+  hostKeyChanged: {
+    either: 'failure.hostKeyChanged',
+    left: 'failure.hostKeyChanged.left',
+    right: 'failure.hostKeyChanged.right',
+  },
   stopped: { either: 'failure.stopped' },
   beforeFailed: { either: 'failure.beforeFailed' },
   afterFailed: { either: 'failure.afterFailed' },

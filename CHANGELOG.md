@@ -8,101 +8,72 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## 2.2.8 - 2026-10-23
+## 2.3.0 - 2026-10-26
+
+## ✨ Added
+
+- **A sign-in that opens several drives asks which one to use.** Testing a OneDrive target lists the drives its token opens and asks when there is more than one, so the drive ID no longer has to be looked up and typed. Zoho WorkDrive asks for its workspace the same way. With only one, it is taken without asking.
+- **An S3 target can name its bucket.** A key that may open one bucket but not list the others, such as a Cloudflare R2 object token or a scoped AWS key, failed the connection test, which asked for the list of all buckets. With the bucket filled in, the test and the folder picker open that bucket, and a bucket that does not exist fails the test.
+
+## 🎨 Design
+
+- **A job's window reads the way the job runs.** The window is wide enough for two folder paths, and both sides stand next to each other with the direction between them, each with the logo of its target, its folder and a button to browse for another. Below them the settings sit in three cards, Schedule, Syncing and Exclusions, and the state file waits under Advanced. In a narrow window the sides stack and the arrow points down or up.
+- **The schedule is picked right in its card.** Manual, Every N, Every day, Weekdays, Real time and Cron stand in one bar in the Runs row, and below it only the fields of the chosen one: the interval, the time, the days, or the settle time and backstop of real time. The global sync settings and the phone app pick the schedule the same way, and the separate schedule panel is gone.
+- **Copy only, Mirror and Move stand in one bar.** In the Syncing card of a job the three modes share one bar in the Mode row, on the web and on the phone.
+- **Fewer info bubbles in a job's window.** Name, the two sides, the direction, the schedule, Sync as soon as the program starts and Carry empty folders say what they do in their label, so their bubbles are gone. The trash bubble says what switching it off does, and One level up in the folder picker shows a back arrow.
+- **Both ways shows both one-way arrows.** The mark for a job that syncs both ways is the arrow of Only to the right above the arrow of Only to the left, in the job list, on the job page, in the job's window, in the settings and on the phone.
 
 ## ⚡ Improved
 
-- **The store description says how the delete brake counts.** A run that would delete more than half of your files stops, but ten deletions or fewer always go through, so a small folder is not held up by its own arithmetic. Both numbers are settings, and the description now says so.
-- **The store description names root and Shizuku.** They are only used for Android/data, where apps keep their own files, and only asked for when you switch Android/data on: root reads and writes, Shizuku only reads.
+- **A job without a schedule runs manually.** The job list, the job page and the exceptions said "on request" for such a job. They say it runs manually, to match Manual in the schedule.
+- **One switch decides whether a job follows the global settings.** Use the global settings at the top of the window replaces the Override button on every row. While it is on, the global values show greyed out, and clicking one makes the switch wiggle. Turned off, every field is the job's own, starting from the values that apply now.
+- **On-or-off settings of a target are switches.** Adding or editing a target used to show every setting as a text field, so a yes or no had to be typed as true or false. An FTP target asks once for its encryption, none, explicit TLS or implicit TLS on port 990, instead of two switches that rclone refuses to have both on.
+- **An S3 target reads its region and bucket from the address you paste.** An endpoint that names its region, as the addresses of AWS, Backblaze B2, Hetzner, Scaleway, OVHcloud and Wasabi do, fills in an empty region, and a bucket's address as Cloudflare's R2 dashboard shows it is split into the endpoint and the bucket. The Garage form shows garage as the region its server expects.
+- **Synology C2 and Enterprise File Fabric have marks of their own.** In the list of storage and clouds, Synology C2 shows its C2 icon instead of the general Synology logo, and Enterprise File Fabric the storage glyph instead of an empty tile. What's new points at both rows.
 
 ## 🐛 Fixed
 
-- **The settings backup had a German file name whatever the language.** Export settings on the phone wrote `arrowloop-einstellungen.json` to Downloads even with the app in English. It is `arrowloop-settings.json` now, and restoring without picking a file still finds a backup saved under the old name.
-
-## 2.2.7 - 2026-10-21
-
-## ✨ Added
-
-- **A new installer for Windows, and one for Linux.** On Windows it opens in ArrowLoop's own look and lets you pick the folder. On a drive where everyone may change the top folder, as on many second drives, the daily update then runs under your own account instead of the system account. On Linux it installs ArrowLoop for you alone, adds it to the application menu and offers to uninstall it from there. An earlier installation is taken over, and your jobs, settings and history stay where they are.
-
-## 2.2.6 - 2026-10-20
-
-## ✨ Added
-
-- **A job can let the newer version win a conflict.** When a file changed on both sides, or the two sides met with different files under one name, ArrowLoop keeps both versions and waits for a decision on the Conflicts page. With Let the newer version win a conflict switched on, the version saved last replaces the other on both sides, and the other goes to the trash. ArrowLoop goes by the modification times both sides report, so two versions saved within a couple of seconds of each other still keep both. The switch is on every job that syncs both ways, on the web and on the phone. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **iCloud Drive asks for the sign-in Apple wants.** The form asked for an app password, which Apple refuses, and left out the trust token and cookies rclone needs. It takes your Apple ID password and both session values, and the bubble beside them says how to get them with rclone config on a computer and that Apple asks again after 30 days.
+- **Jottacloud takes the personal login token from its security page.** It used to want a ready OAuth token that only rclone's own setup can make. Testing or saving the target trades the login token for a lasting sign-in, once, as rclone config does.
+- **ShareFile and Zoho keep what rclone authorize prints with the token.** Pasting the output of rclone authorize given a config blob fills in ShareFile's address and Zoho's region, and the ShareFile form asks for the address when the token came without it.
+- **An AWS bucket outside us-east-1 works without a region typed in.** rclone signs for us-east-1 when it knows no region, and AWS refuses a bucket elsewhere. Testing or saving an AWS target that names its bucket asks AWS where the bucket is and saves that region, and the global endpoint s3.amazonaws.com is left out, so rclone can follow a bucket to its region by itself.
+- **A bucket made in the folder picker lands in the target's region.** AWS puts a new bucket where its location constraint says, and with that left empty it asked for us-east-1, which a target set to any other region is refused. Making a folder at the top of an AWS target uses the target's region for the new bucket.
+- **Testing a Box or Jottacloud target could sign it out.** These services hand out a new sign-in when the old one runs out and void the old one right away. The test in the form threw the new one away, so the target stopped working after the next restart. The new sign-in is now kept, for a saved target as soon as you test it and for a new one when you save it.
+- **Mega and Proton Drive asked for a second two-factor code.** Testing the connection used up the code, so saving and the check after it were refused. One code is now enough: the session it opens is kept with the target, and the used code is not saved. Mega asks for the code with the other sign-in fields, on the phone too, and a fresh code in the edit form works with the saved password.
+- **A target that jobs used could be deleted.** The jobs then failed on every run, and the target's password was gone with it. Deleting such a target is refused, on the web and on the phone, and the message names the jobs to point elsewhere or delete first. A target that only an encrypted folder or another target on top of it uses counts too.
+- **An SMB server that does not list its shares failed the test.** The test looked at the top of the server, which is the list of its shares. An SMB target has a share field now: fill it in and the test opens that share, while jobs can still use every share on the server. A job side at the top of an SMB server, where it could write nothing, is refused when you save the job, with a hint to add the share.
+- **SFTP targets did not check the server's key.** ArrowLoop connected to whichever server answered at the address. The connection test now shows the fingerprint of the server's key so you can compare it with the one your provider publishes, saving keeps that key, and a server that later shows a different one is refused with a message that says what to do if the change was expected. A target saved before is held to the key it shows at its next test.
+- **The desktop app closed as soon as it opened on Windows build 26300.** The window framework let go of a system library it still needed for dark mode, and the first window crashed. ArrowLoop keeps that library loaded now, so the window opens as usual.
 
 ## 🌐 Translations
 
 - **Every new text is in all 42 languages.**
-
-## 2.2.5 - 2026-10-19
-
-## 🐛 Fixed
-
-- **Google Docs files no longer stop a sync.** Google Drive reports no size for a Docs, Sheets or Slides file it exports on the fly, so the check after copying one saw two different files and ended the whole run. Such a file is now compared by its modification time, and the rest of the job carries on.
-
-## 2.2.4 - 2026-10-16
-
-## ✨ Added
-
-- **One card per release in What's new.** After an update the window lists every release since the one you had, newest first. Each card shows its release notes and the changes that release brought, each with Go there where a page shows it. A change that no page shows has its dot in the window only and counts as seen once you close it.
-
-## 🐛 Fixed
-
-- **2.2 had no dot.** Syncing a folder that another app offers in the phone app's file picker came without a dot. It has one now, and every new feature of a release gets one.
-
-## 2.2.3 - 2026-10-16
-
-## ⚡ Improved
-
-- **Files touched on a job's page has a filter and a search.** The filter keeps only copied, removed or troubled files, and the search narrows the list by path, the same as on the History page. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
-- **The README links the ZimaOS and CasaOS store and the umbrelOS community app store** next to Unraid and the MOS Hub.
-
-## 🐛 Fixed
-
-- **OneDrive's Personal Vault no longer counts as left for later.** Every run counted the vault as work for the next run, so the job kept asking for a look. The preview lists it under Left out for good, and runs leave it out of their count. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
-- **A run names the files it left for later.** Files set aside while the run was planned, such as two names the other side cannot tell apart, were counted but not listed, so the run's window said it found nothing to do. They are in the run's list. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
-- **Exclusions with umlauts, accents or other non-Latin letters match.** A pattern such as `Persönlicher Tresor/**` never matched anything, because it was read byte by byte. Patterns and names are also compared in the same Unicode form, so a name typed on a Mac matches the one a service stores. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
-
-## 2.2.2 - 2026-10-16
-
-## 🎨 Design
-
-- **The Version card in the settings keeps its notes in info bubbles.** The rclone bubble says what rclone is and that every job runs through it.
-
-## ⚡ Improved
-
-- **A compose file for Docker hosts other than Unraid.** `compose.yaml` in the repository starts the container with the same ports, folders and settings as the Unraid template, and the README links it next to the MOS Hub.
-
-## 🐛 Fixed
-
-- **A job over a whole OneDrive gets past the Personal Vault.** OneDrive shows the Personal Vault as a folder but lets no app open it, so the preview stopped with "ObjectHandle is Invalid". ArrowLoop leaves the vault out on both sides and lists it under skipped, with the reason. If the record already holds files from a folder that stops opening this way, the run stops instead, so none of them reads as deleted. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
-
-## 2.2.1 - 2026-10-15
-
-## ⚡ Improved
-
-- **A job's left side can be a folder from Apps.** The folder picker on the phone offered targets only for the right side, so a folder another app shares could not be picked for the left one. Both sides offer them. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
-- **The phone asks for the port of an SMB share.** The port was only under More settings on the web, which the phone does not have, so a share behind a forwarded port could not be set up there. It is on the first screen now, on the web too. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
-
-## 🐛 Fixed
-
-- **Targets on the internet keep working on the phone after it leaves the Wi-Fi.** The app told the engine the phone's DNS servers once, when it started. After a switch to mobile data the engine kept asking the router at home, so every target reached by name ran out after 30 seconds. The engine asks the servers of the network the phone is on, and when one of them does not answer, it tries the next one. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
 
 ## 2.2.0 - 2026-10-14
 
 ## ✨ Added
 
 - **Folders that other apps share in Android's file picker can be synced, without root or Shizuku.** Some apps, the keyboard Fcitx5 for Android among them, keep their files in their own storage and offer them in the system file picker. That is how FolderSync reaches them, and ArrowLoop goes the same way. In Settings, This phone, Add a folder from an app opens the picker, and each folder you pick shows up in a target called Apps. The file picker cannot set a file's modification time, so ArrowLoop remembers the time it gave a file and reports it until the file changes. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **One card per release in What's new.** After an update the window lists every release since the one you had, newest first. Each card shows its release notes and the changes that release brought, each with Go there where a page shows it. A change that no page shows has its dot in the window only and counts as seen once you close it.
+- **A job can let the newer version win a conflict.** When a file changed on both sides, or the two sides met with different files under one name, ArrowLoop keeps both versions and waits for a decision on the Conflicts page. With Let the newer version win a conflict switched on, the version saved last replaces the other on both sides, and the other goes to the trash. ArrowLoop goes by the modification times both sides report, so two versions saved within a couple of seconds of each other still keep both. The switch is on every job that syncs both ways, on the web and on the phone. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **A new installer for Windows, and one for Linux.** On Windows it opens in ArrowLoop's own look and lets you pick the folder. On a drive where everyone may change the top folder, as on many second drives, the daily update then runs under your own account instead of the system account. On Linux it installs ArrowLoop for you alone, adds it to the application menu and offers to uninstall it from there. An earlier installation is taken over, and your jobs, settings and history stay where they are.
 
 ## 🎨 Design
 
 - **Page titles are larger, with ArrowLoop's mark before them on each tab's first page.** The first card sits closer under the title. The bottom bar names the tabs by glyph alone, so the title says where you are.
 - **The bottom bar shows only glyphs unless you choose otherwise.** The words come back under Settings, Look, Bottom bar.
+- **The Version card in the settings keeps its notes in info bubbles.** The rclone bubble says what rclone is and that every job runs through it.
 
 ## ⚡ Improved
 
 - **Pause stops a run that is going.** It only held the schedule, so the run kept copying while the button already said Resume. Pause stops the run and holds the job until you resume it, on the web and on the phone. Run now still works on a paused job. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
+- **A job's left side can be a folder from Apps.** The folder picker on the phone offered targets only for the right side, so a folder another app shares could not be picked for the left one. Both sides offer them. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **The phone asks for the port of an SMB share.** The port was only under More settings on the web, which the phone does not have, so a share behind a forwarded port could not be set up there. It is on the first screen now, on the web too. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **A compose file for Docker hosts other than Unraid.** `compose.yaml` in the repository starts the container with the same ports, folders and settings as the Unraid template, and the README links it next to the MOS Hub.
+- **Files touched on a job's page has a filter and a search.** The filter keeps only copied, removed or troubled files, and the search narrows the list by path, the same as on the History page. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
+- **The README links the ZimaOS and CasaOS store and the umbrelOS community app store** next to Unraid and the MOS Hub.
+- **The store description says how the delete brake counts.** A run that would delete more than half of your files stops, but ten deletions or fewer always go through, so a small folder is not held up by its own arithmetic. Both numbers are settings, and the description now says so.
+- **The store description names root and Shizuku.** They are only used for Android/data, where apps keep their own files, and only asked for when you switch Android/data on: root reads and writes, Shizuku only reads.
 
 ## 🐛 Fixed
 
@@ -113,6 +84,13 @@ The full notes for each release are in
 - **A target that could not be deleted says why on its row**, for example that a password has to be set first. The reason used to appear for a few seconds in a corner while the target stayed in the list. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
 - **Enter starts a new line in a job's exclusions, on the web and on the phone, and in a shared list.** The field dropped an empty line as soon as Enter made one, so the cursor stayed on the last pattern. ([#78](https://github.com/junkerderprovinz/arrowloop/issues/78))
 - **The Windows installer closes a running ArrowLoop and starts the new version.** It put the new program in place but left the old one running, so `/S /relaunch` only brought back the old window, and the update waited until somebody quit ArrowLoop by hand. The installer asks the running copy to quit, as Quit in the tray menu would, which lets a sync under way stop cleanly, and starts the new version once it is installed. A copy that sat in the tray comes back there, without opening its window. Coming from 2.1.0, the window opens this one time.
+- **Targets on the internet keep working on the phone after it leaves the Wi-Fi.** The app told the engine the phone's DNS servers once, when it started. After a switch to mobile data the engine kept asking the router at home, so every target reached by name ran out after 30 seconds. The engine asks the servers of the network the phone is on, and when one of them does not answer, it tries the next one. ([#66](https://github.com/junkerderprovinz/arrowloop/issues/66))
+- **A job over a whole OneDrive gets past the Personal Vault.** OneDrive shows the Personal Vault as a folder but lets no app open it, so the preview stopped with "ObjectHandle is Invalid". ArrowLoop leaves the vault out on both sides and lists it under skipped, with the reason. If the record already holds files from a folder that stops opening this way, the run stops instead, so none of them reads as deleted. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
+- **OneDrive's Personal Vault no longer counts as left for later.** Every run counted the vault as work for the next run, so the job kept asking for a look. The preview lists it under Left out for good, and runs leave it out of their count. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
+- **A run names the files it left for later.** Files set aside while the run was planned, such as two names the other side cannot tell apart, were counted but not listed, so the run's window said it found nothing to do. They are in the run's list. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
+- **Exclusions with umlauts, accents or other non-Latin letters match.** A pattern such as `Persönlicher Tresor/**` never matched anything, because it was read byte by byte. Patterns and names are also compared in the same Unicode form, so a name typed on a Mac matches the one a service stores. ([#86](https://github.com/junkerderprovinz/arrowloop/issues/86))
+- **Google Docs files no longer stop a sync.** Google Drive reports no size for a Docs, Sheets or Slides file it exports on the fly, so the check after copying one saw two different files and ended the whole run. Such a file is now compared by its modification time, and the rest of the job carries on.
+- **The settings backup had a German file name whatever the language.** Export settings on the phone wrote `arrowloop-einstellungen.json` to Downloads even with the app in English. It is `arrowloop-settings.json` now, and restoring without picking a file still finds a backup saved under the old name.
 
 ## 🌐 Translations
 

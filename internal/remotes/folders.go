@@ -42,9 +42,9 @@ func Join(name, dir string) string {
 }
 
 // Parent is the folder above dir on the same target, or empty at the target's
-// top, where the picker goes back to its list of roots.
+// root, where the picker goes back to its list of roots.
 func Parent(name, dir string) string {
-	if dir == "" {
+	if dir == "" || dir == Root(name) {
 		return ""
 	}
 	up := path.Dir(dir)
@@ -88,7 +88,7 @@ func MakeFolder(ctx context.Context, name, dir, child string) (string, error) {
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, Join(name, dir))
+	f, err := rclonefs.NewFs(ctx, makeAt(name, dir))
 	if err != nil {
 		return "", checkErr(ctx, err)
 	}
@@ -96,4 +96,39 @@ func MakeFolder(ctx context.Context, name, dir, child string) (string, error) {
 		return "", checkErr(ctx, err)
 	}
 	return Join(name, path.Join(dir, child)), nil
+}
+
+// makeAt is where MakeFolder opens a target to make a folder in dir. At the top
+// of an AWS target that folder is a bucket, which AWS puts where
+// location_constraint says rather than region; with that empty rclone asks for
+// us-east-1, which a target signing for any other region is refused.
+func makeAt(name, dir string) string {
+	data := config.LoadedData()
+	get := func(key string) string {
+		value, _ := data.GetValue(name, key)
+		return value
+	}
+	region := get("region")
+	if dir != "" || get("type") != "s3" || get("provider") != "AWS" || region == "" || region == "us-east-1" || get("location_constraint") != "" {
+		return Join(name, dir)
+	}
+	return name + ",location_constraint=" + quoteValue(region) + ":"
+}
+
+// Reaches reports whether a side lands on the target called name, itself or
+// through a target that wraps it, such as an encrypted folder kept there.
+func Reaches(side, name string) bool {
+	// Eight wrappers deep is more than anybody stacks, and stops a target
+	// that wraps itself.
+	for range 8 {
+		target, _, ok := Split(side)
+		if !ok {
+			return false
+		}
+		if target == name {
+			return true
+		}
+		side, _ = config.LoadedData().GetValue(target, "remote")
+	}
+	return false
 }

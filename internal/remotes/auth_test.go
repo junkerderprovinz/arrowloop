@@ -39,7 +39,7 @@ func TestTheShapeOfTheFieldsAnswersForMostProducts(t *testing.T) {
 // Nextcloud's fields look like an ordinary login, but with two-factor
 // authentication on the login password cannot work.
 func TestTheHandWrittenStyleBeatsTheShape(t *testing.T) {
-	for _, id := range []string{"nextcloud", "owncloud", "opencloud", "seafile", "koofr", "icloud"} {
+	for _, id := range []string{"nextcloud", "owncloud", "opencloud", "seafile", "koofr"} {
 		if got := styleOf(t, id); got != AuthAppPassword {
 			t.Errorf("%s: %q, wanted the hand-written %q", id, got, AuthAppPassword)
 		}

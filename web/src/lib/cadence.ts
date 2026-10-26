@@ -65,7 +65,7 @@ function stepped(expression: string): Cadence | null {
 export function describeCadence(c: Cadence, t: Translate): string {
   switch (c.kind) {
     case 'none':
-      return t('jobs.schedule.onRequest')
+      return t('jobs.schedule.manual')
     case 'live':
       return t('jobs.cadence.live')
     case 'every':

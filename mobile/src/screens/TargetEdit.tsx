@@ -1,16 +1,18 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useEffect, useMemo, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
-import { api, type Backend, type Provider, type Remote } from "../api";
+import { api, EngineError, type Backend, type Provider, type Remote, type SetupQuestion } from "../api";
 import { Field, SecretField } from "../fields";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
 import { failureLine, type Failure } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { optionLabel } from "../../../web/src/lib/optionNames";
+import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
-import { Body, Button, Caption, Empty, Page, Section, Title } from "../ui";
+import { Body, Button, Caption, Choice, Empty, Page, PickRow, Row, Section, Title, Toggle } from "../ui";
+import type { TranslationKey } from "../../../web/src/lib/i18n.data";
 
 /**
  * The target form. Its fields are the options rclone marks required or
@@ -92,16 +94,19 @@ export function TargetEdit() {
   // The connection test's state. These hooks have to stay above the early
   // return, or the hook count changes between renders.
   const [trying, setTrying] = useState(false);
-  const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure } | null>(null);
+  const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure; hostKey?: string } | null>(null);
   // A counter rather than a flag, so every failed attempt shakes the button.
   const [refused, setRefused] = useState(0);
+  // What rclone's setup left to choose at the last test.
+  const [question, setQuestion] = useState<SetupQuestion | null>(null);
 
   if (!backendName) {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure }) => {
-    setTried(answer);
+  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion; hostKey?: string }) => {
+    if (answer.question) setQuestion(answer.question);
+    setTried(answer.question ? { ok: false, reason: t("targets.question.hint") } : answer);
     if (!answer.ok) setRefused((n) => n + 1);
   };
 
@@ -137,7 +142,9 @@ export function TargetEdit() {
       });
       nav.popToTop();
     } catch (e) {
-      setError((e as Error).message);
+      // The test is where the form asks the question the save is waiting for.
+      if (e instanceof EngineError && e.status === 422) void tryIt();
+      else setError((e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -173,6 +180,33 @@ export function TargetEdit() {
 
       <Section title={t("targets.access")}>
         {options.map((option) => {
+          if (backendName === "ftp" && option.name === "explicit_tls") return null;
+          if (backendName === "ftp" && option.name === "tls") {
+            return (
+              <View key={option.name} style={styles.choice}>
+                <Row label={t("targets.ftpTls")} hint={t("targets.ftpTlsHint")} />
+                <Choice
+                  value={ftpTls(values)}
+                  onChange={(mode) => setValues((old) => withFtpTls(old, mode))}
+                  options={FTP_TLS.map((mode) => ({ value: mode, label: t(`targets.ftpTls.${mode}`) }))}
+                />
+              </View>
+            );
+          }
+          if (option.type === "bool") {
+            // Off is left unsaved where it is rclone's default.
+            return (
+              <Toggle
+                key={option.name}
+                label={optionLabel(option.name, t)}
+                hint={optionHint(option, t, provider)}
+                value={(values[option.name] || option.default) === "true"}
+                onChange={(on) =>
+                  setValues((old) => ({ ...old, [option.name]: String(on) === option.default ? "" : String(on) }))
+                }
+              />
+            );
+          }
           const props = {
             label: optionLabel(option.name, t),
             hint: optionHint(option, t, provider),
@@ -184,10 +218,29 @@ export function TargetEdit() {
         {options.length === 0 ? <Body>{t("phone.noSettings")}</Body> : null}
       </Section>
 
+      {question ? (
+        <Section title={t(QUESTION_LABELS[question.name] ?? "targets.question.other")} hint={t("targets.question.hint")}>
+          {question.choices.map((choice) => (
+            <PickRow
+              key={choice.value}
+              on={values[question.name] === choice.value}
+              onPress={() => setValues((old) => ({ ...old, [question.name]: choice.value }))}
+            >
+              <Body>{choice.help || choice.value}</Body>
+            </PickRow>
+          ))}
+        </Section>
+      ) : null}
+
       {error ? <Body>{error}</Body> : null}
 
       {/* Only the reason: the button itself shows the verdict. */}
       {tried && !tried.ok && tried.reason ? <Body>{failureLine(tried.reason, tried.failure, t, lang)}</Body> : null}
+      {tried?.hostKey ? (
+        <Section title={t("targets.hostKey")} hint={t("targets.hostKeyHint")}>
+          <Body>{tried.hostKey}</Body>
+        </Section>
+      ) : null}
 
       {/* The test runs before anything is saved. The button's colour, word,
           glyph and shake all show the result of the last attempt, so colour is
@@ -221,6 +274,13 @@ export function TargetEdit() {
   );
 }
 
+/** The questions rclone's setups ask, by the setting that answers them. */
+const QUESTION_LABELS: Record<string, TranslationKey> = {
+  config_driveid: "targets.question.drive",
+  config_workspace: "targets.question.workspace",
+  config_team_drive_id: "targets.question.team",
+};
+
 /** Drops empty values, since a secret left empty while changing it means "keep the saved one". */
 function prune(values: Record<string, string>): Record<string, string> {
   const out: Record<string, string> = {};
@@ -232,4 +292,5 @@ function prune(values: Record<string, string>): Record<string, string> {
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
+  choice: { gap: space.sm },
 });

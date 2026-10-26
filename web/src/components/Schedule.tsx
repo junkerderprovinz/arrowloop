@@ -5,14 +5,17 @@ import { hueVars } from '../lib/appearance'
 
 import { Selector } from './Selector'
 import { Choice, NumberField, Text } from './Field'
-import { DEFAULT_QUIET, QuietPeriod } from './QuietPeriod'
+import { Held } from './GlobalValues'
+import { QuietPeriod } from './QuietPeriod'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { TimePicker } from './TimePicker'
 // The parsing lives in lib because the phone reads schedules too.
 import {
   EVERY_UNITS,
+  SCHEDULE_MODES,
   WEEKDAYS,
   buildSchedule,
+  chooseKind,
   parseSchedule,
   type EveryUnit,
   type ScheduleMode,
@@ -20,65 +23,41 @@ import {
 } from '../lib/schedule.data'
 import { useT } from '../lib/i18n'
 
-/**
- * A schedule, built with pickers and stored as the cron expression the engine
- * reads. An expression the pickers cannot say opens in the cron mode verbatim
- * rather than being simplified.
- */
-export type { ScheduleMode, ScheduleState, EveryUnit } from '../lib/schedule.data'
-export {
-  DEFAULT_SCHEDULE,
-  EVERY_UNITS,
-  WEEKDAYS,
-  buildSchedule,
-  parseSchedule,
-} from '../lib/schedule.data'
+/** The fields a schedule writes on a job. A default schedule writes only the expression. */
+export type SchedulePatch = {
+  schedule: string
+  watch?: boolean
+  watchSettle?: string
+}
 
 /**
- * The schedule modes, with real time as one of them. A watcher can miss an
- * event, so real time also writes an "every N" backstop schedule, shown and
- * editable, and the engine refuses a watching job without one.
+ * A schedule, built with a selector of kinds and the fields of the chosen one,
+ * and stored as the expression the engine reads. An expression the fields
+ * cannot say opens as cron, verbatim, rather than being simplified.
+ *
+ * The kind is held rather than derived from the expression, which cannot tell
+ * cron from the daily schedule it was seeded with, "every 24h" from daily, or
+ * real time from "every N". It is seeded again whenever the value changes from
+ * outside, so another job never opens in the last one's kind.
  */
-export const SCHEDULE_MODES: ScheduleMode[] = ['off', 'live', 'every', 'daily', 'weekly', 'cron']
-
-/**
- * The backstop real time starts with. It only catches events the watcher
- * missed, so an hour: shorter makes the watcher pointless, longer leaves a miss
- * unnoticed for most of a day.
- */
-export const BACKSTOP: { count: number; unit: EveryUnit } = { count: 1, unit: 'hour' }
-
-/** The settle time real time starts with, for the same reason as DEFAULT_QUIET. */
-export const DEFAULT_SETTLE = DEFAULT_QUIET
-
-export function ScheduleField({
+export function useSchedule({
   value,
+  watch = false,
+  settle = '',
+  realTime = false,
   onChange,
-  live,
-  onLive,
-  settle,
-  onSettle,
 }: {
   value: string
-  onChange: (next: string) => void
-  /**
-   * Whether the job watches for changes, which is the `live` mode. The
-   * expression cannot say it, since real time and "every N" write the same one.
-   */
-  live?: boolean
-  onLive?: (next: boolean) => void
+  /** Whether the job watches for changes, which the expression cannot say. */
+  watch?: boolean
   /** How long the tree must go quiet before a change counts as finished. */
   settle?: string
-  onSettle?: (next: string) => void
+  /** Offers real time, which belongs to a job; a default schedule has nobody to watch for. */
+  realTime?: boolean
+  onChange: (next: SchedulePatch) => void
 }) {
-  const { t } = useT()
   const derived = parseSchedule(value)
-
-  // The mode is held rather than derived from the expression, which cannot
-  // tell cron from the daily schedule it was seeded with, "every 24h" from
-  // daily, or real time from "every N". It is re-seeded whenever the value
-  // changes from outside, so another job never opens in the last one's mode.
-  const [mode, setMode] = useState<ScheduleMode>(live ? 'live' : derived.mode)
+  const [mode, setMode] = useState<ScheduleMode>(watch ? 'live' : derived.mode)
   // The expression as typed, since the stored one is trimmed and a space
   // between two fields would vanish as it is typed.
   const [cron, setCron] = useState(value)
@@ -86,98 +65,108 @@ export function ScheduleField({
   useEffect(() => {
     if (seen.current !== value) {
       seen.current = value
-      setMode(live ? 'live' : parseSchedule(value).mode)
+      setMode(watch ? 'live' : parseSchedule(value).mode)
       setCron(value)
     }
-  }, [value, live])
+  }, [value, watch])
 
   const state: ScheduleState = { ...derived, mode }
 
-  function update(patch: Partial<ScheduleState>) {
-    const next = { ...state, ...patch }
-    if (patch.mode !== undefined) setMode(patch.mode)
-    const built = buildSchedule(next)
-    seen.current = built
-    onChange(built)
+  function write(next: SchedulePatch) {
+    seen.current = next.schedule
+    onChange(next)
   }
 
-  // Real time also sets the watch flag, so every other mode clears it.
-  function pick(next: ScheduleMode) {
-    if (next === 'live') {
-      onLive?.(true)
-      if (onSettle && (settle ?? '').trim() === '') onSettle(DEFAULT_SETTLE)
-      // The engine refuses a watching job with no schedule, so one is seeded;
-      // an existing cadence is kept.
-      const seeded =
-        state.mode === 'off' || value.trim() === ''
-          ? { everyCount: BACKSTOP.count, everyUnit: BACKSTOP.unit }
-          : {}
-      update({ mode: next, ...seeded })
-      return
-    }
-    onLive?.(false)
-    // The field starts from the schedule already set, written out.
-    if (next === 'cron') {
-      const text = state.mode === 'off' || state.mode === 'live' ? buildSchedule({ ...state, mode: 'daily' }) : value.trim()
+  return {
+    state,
+    cron,
+    settle,
+    kinds: realTime ? SCHEDULE_MODES : SCHEDULE_MODES.filter((m) => m !== 'live'),
+    update(patch: Partial<ScheduleState>) {
+      write({ schedule: buildSchedule({ ...state, ...patch }) })
+    },
+    pick(next: ScheduleMode) {
+      const choice = chooseKind(state, value, settle, next)
+      setMode(next)
+      if (next === 'cron') setCron(choice.state.cron)
+      write({
+        schedule: choice.schedule,
+        ...(realTime ? { watch: choice.watch } : {}),
+        ...(choice.settle !== undefined ? { watchSettle: choice.settle } : {}),
+      })
+    },
+    type(text: string) {
       setCron(text)
-      update({ mode: next, cron: text })
-      return
-    }
-    update({ mode: next })
+      write({ schedule: buildSchedule({ ...state, cron: text }) })
+    },
+    setSettle(next: string) {
+      write({ schedule: value, watchSettle: next })
+    },
   }
+}
+
+export type ScheduleEditor = ReturnType<typeof useSchedule>
+
+/** The kinds as one bar, as wide as its segments, for the end of a settings row. */
+export function ScheduleKinds({ editor, hue }: { editor: ScheduleEditor; hue?: number }) {
+  const { t } = useT()
+  return (
+    <Selector<ScheduleMode>
+      scale="small"
+      low
+      hug
+      hue={hue}
+      label={t('edit.schedule')}
+      value={editor.state.mode}
+      onChange={editor.pick}
+      options={editor.kinds.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
+    />
+  )
+}
+
+/**
+ * The fields of the chosen kind, one setting to a line, each held on its own
+ * like the rows beside it. A schedule that never runs by itself has none.
+ */
+export function ScheduleDetails({
+  editor,
+  held = false,
+  onHeld = () => undefined,
+}: {
+  editor: ScheduleEditor
+  held?: boolean
+  onHeld?: () => void
+}) {
+  const { t } = useT()
+  const { state } = editor
 
   function toggleDay(day: number) {
-    const next = state.days.includes(day)
-      ? state.days.filter((d) => d !== day)
-      : [...state.days, day]
+    const next = state.days.includes(day) ? state.days.filter((d) => d !== day) : [...state.days, day]
     // No days would silently mean daily.
     if (next.length === 0) return
-    update({ days: next })
+    editor.update({ days: next })
   }
 
-  // Real time belongs to a job; a default schedule has nobody to watch for.
-  const modes = onLive ? SCHEDULE_MODES : SCHEDULE_MODES.filter((m) => m !== 'live')
-
-  return (
-    <div className="flex flex-col gap-3 @container">
-      <Selector<ScheduleMode>
-        scale="small"
-        label={t('edit.schedule')}
-        value={state.mode}
-        onChange={pick}
-        options={modes.map((m) => ({ value: m, label: t(`schedule.${m}` as const) }))}
-      />
-
-      {/* Every labelled row shares one grid, its names at the start and its
-          boxes at the end, as in a settings card. A narrow panel puts each
-          box under its name, still at the end. */}
-      <div className="grid grid-cols-1 gap-x-4 gap-y-1.5 @md:grid-cols-[max-content_minmax(0,1fr)] @md:items-center @md:gap-y-3">
-        {state.mode === 'live' && onSettle && (
-          <Row label={t('schedule.settle')} hint={t('schedule.settleHint')}>
-            <QuietPeriod value={settle ?? ''} onChange={onSettle} />
-          </Row>
-        )}
-        {state.mode === 'live' && (
-          <Row label={t('schedule.backstop')} hint={t('schedule.backstopHint')}>
-            <EveryPicker state={state} update={update} />
-          </Row>
-        )}
-        {state.mode === 'every' && (
-          <Row label={t('schedule.everyLabel')}>
-            <EveryPicker state={state} update={update} />
-          </Row>
-        )}
-        {(state.mode === 'daily' || state.mode === 'weekly') && (
-          <Row label={t('schedule.at')}>
-            <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => update({ time })} />
-          </Row>
-        )}
-        {state.mode === 'weekly' && (
-          <Row label={t('schedule.days')}>
-            <div
-              className="glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]"
-              style={{ borderRadius: 'var(--radius-pill)' }}
-            >
+  switch (state.mode) {
+    case 'off':
+      return null
+    case 'every':
+      return (
+        <DetailRow held={held} onHeld={onHeld} label={t('schedule.everyLabel')}>
+          <EveryPicker state={state} update={editor.update} />
+        </DetailRow>
+      )
+    case 'daily':
+      return (
+        <DetailRow held={held} onHeld={onHeld} label={t('schedule.at')}>
+          <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => editor.update({ time })} />
+        </DetailRow>
+      )
+    case 'weekly':
+      return (
+        <>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.days')}>
+            <div className="glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]" style={{ borderRadius: 'var(--radius-pill)' }}>
               {/* Each day takes its own palette position, like every multi-part
                   control. */}
               {WEEKDAYS.map(({ day, key }, i) => {
@@ -203,35 +192,56 @@ export function ScheduleField({
                 )
               })}
             </div>
-          </Row>
-        )}
-      </div>
-
-      {state.mode === 'cron' && (
-        <Text
-          value={cron}
-          onChange={(text) => {
-            setCron(text)
-            update({ cron: text })
-          }}
-          placeholder="0 */6 * * *"
-          mono
-        />
-      )}
-    </div>
-  )
+          </DetailRow>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.at')}>
+            <TimePicker value={state.time} label={t('schedule.at')} onChange={(time) => editor.update({ time })} />
+          </DetailRow>
+        </>
+      )
+    case 'live':
+      return (
+        <>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.settle')} hint={t('schedule.settleHint')}>
+            <QuietPeriod value={editor.settle} onChange={editor.setSettle} />
+          </DetailRow>
+          <DetailRow held={held} onHeld={onHeld} label={t('schedule.backstop')} hint={t('schedule.backstopHint')}>
+            <EveryPicker state={state} update={editor.update} />
+          </DetailRow>
+        </>
+      )
+    case 'cron':
+      return (
+        <Held block held={held} onHeld={onHeld}>
+          <Text value={editor.cron} onChange={editor.type} placeholder="0 */6 * * *" label={t('schedule.cron')} mono />
+        </Held>
+      )
+  }
 }
 
-/** One labelled row of the schedule's grid: the label cell and the box cell. */
-function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+/** One setting on a line, as in a settings card: its name at the start, its control at the end. */
+function DetailRow({
+  label,
+  hint,
+  held,
+  onHeld,
+  children,
+}: {
+  label: string
+  hint?: string
+  held: boolean
+  onHeld: () => void
+  children: ReactNode
+}) {
   return (
-    <>
-      <span className="mt-1.5 flex items-center gap-1.5 text-meta uppercase tracking-wider text-carbon-textMuted first:mt-0 @md:mt-0">
+    <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+      <span className="flex min-w-0 flex-[1_1_12.5rem] items-center gap-1.5 text-body text-carbon-text">
         {label}
         {hint && <InfoBubble tip={hint} />}
       </span>
-      <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">{children}</div>
-    </>
+      <Held held={held} onHeld={onHeld}>
+        <div className="flex min-w-0 max-w-full flex-wrap items-center justify-end gap-2">{children}</div>
+      </Held>
+    </div>
   )
 }
 

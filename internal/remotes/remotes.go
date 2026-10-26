@@ -193,6 +193,11 @@ func Save(name, backend string, settings map[string]string) error {
 		}
 		data.SetValue(name, key, value)
 	}
+	// What a test of this form learned outlasts what the form holds: the
+	// token typed into it may be spent by now.
+	key := formKey(backend, settings)
+	setRaw(data, name, tried.recall(key))
+	dropUsedCode(data, name, backend)
 
 	if err := data.Save(); err != nil {
 		if !existed {
@@ -200,6 +205,7 @@ func Save(name, backend string, settings map[string]string) error {
 		}
 		return fmt.Errorf("write rclone's configuration: %w", err)
 	}
+	tried.forget(key)
 	return nil
 }
 
@@ -236,12 +242,48 @@ func Check(ctx context.Context, name string) error {
 	ctx, stop := context.WithTimeout(ctx, CheckWait)
 	defer stop()
 
-	f, err := rclonefs.NewFs(ctx, name+":")
+	if err := pinSaved(ctx, name); err != nil {
+		return err
+	}
+	data := config.LoadedData()
+	backend, _ := data.GetValue(name, "type")
+	folder := checkedFolder(backend, func(key string) string { v, _ := data.GetValue(name, key); return v })
+	f, err := rclonefs.NewFs(ctx, Join(name, folder))
 	if err != nil {
 		return checkErr(ctx, err)
 	}
-	backend, _ := config.LoadedData().GetValue(name, "type")
-	return listRoot(ctx, f, backend)
+	return listRoot(ctx, f, backend, folder)
+}
+
+// BucketKey is the setting that names the one bucket an S3 target opens. rclone
+// has no such option and ignores it; it is kept in the target's section so the
+// target stays whole in rclone.conf.
+const BucketKey = "bucket"
+
+// Root is the folder a target opens at: the bucket it names, or its top.
+func Root(name string) string {
+	data := config.LoadedData()
+	if backend, _ := data.GetValue(name, "type"); backend != "s3" {
+		return ""
+	}
+	bucket, _ := data.GetValue(name, BucketKey)
+	return strings.Trim(bucket, "/")
+}
+
+// shareKey is the setting of an SMB target that names a share to check. The
+// top of an SMB server lists its shares, and some servers refuse to.
+const shareKey = "share"
+
+// checkedFolder is the folder a check opens, from the settings get reads: the
+// bucket an S3 target names, the share an SMB target names, or the top.
+func checkedFolder(backend string, get func(string) string) string {
+	switch backend {
+	case "s3":
+		return strings.Trim(get(BucketKey), "/")
+	case "smb":
+		return strings.Trim(strings.TrimSpace(get(shareKey)), "/")
+	}
+	return ""
 }
 
 // CheckWait is how long a target gets to answer before it counts as
@@ -253,6 +295,12 @@ const CheckWait = 30 * time.Second
 func checkErr(ctx context.Context, err error) error {
 	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
 		return fmt.Errorf("no answer within %s: %w", CheckWait, err)
+	}
+	// rclone's words for it name a command line flag.
+	if strings.Contains(err.Error(), "host key mismatch") {
+		return fmt.Errorf("the server shows another host key than the one saved for this target, so it was not trusted. "+
+			"If the server was reinstalled or its key renewed, empty host_keys in the target's settings and test it again; "+
+			"otherwise someone may be listening in between: %w", err)
 	}
 	return err
 }
@@ -315,9 +363,16 @@ func isEmptyTarget(backend string, err error) bool {
 }
 
 // listRoot lists a remote's root once, which proves the credentials and the
-// address.
-func listRoot(ctx context.Context, f rclonefs.Fs, backend string) error {
+// address. A bucket or share the target names has to exist, unlike a folder.
+func listRoot(ctx context.Context, f rclonefs.Fs, backend, folder string) error {
 	_, err := f.List(ctx, "")
+	if folder != "" && errors.Is(err, rclonefs.ErrorDirNotFound) {
+		what := "bucket"
+		if backend == "smb" {
+			what = "share"
+		}
+		return fmt.Errorf("the login works, but there is no %s %s: %w", what, folder, err)
+	}
 	if err == nil || isEmptyTarget(backend, err) {
 		return nil
 	}

@@ -22,7 +22,7 @@ export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
     [t('history.fig.left'), run.Skipped],
   ]
   return (
-    <Dialog title={`${run.Job}, ${when}`} onClose={onClose} wide>
+    <Dialog title={`${run.Job}, ${when}`} onClose={onClose} width="wide">
       <div className="flex flex-col gap-3">
         <dl className="flex flex-wrap gap-x-5 gap-y-1 text-subline">
           {figures.map(([term, value]) => (

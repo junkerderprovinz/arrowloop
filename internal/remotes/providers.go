@@ -44,6 +44,10 @@ type Provider struct {
 	// AuthURL is the page where the credential is created, where there is a
 	// shared one to point at. Empty where the page is on somebody's own server.
 	AuthURL string `json:"authUrl,omitempty"`
+
+	// Defaults are the values this product's own server assumes for a field
+	// left empty here, shown in the field so nobody has to look them up.
+	Defaults map[string]string `json:"defaults,omitempty"`
 }
 
 // AuthStyle is how a product wants to be signed into. The set is closed,
@@ -70,6 +74,10 @@ const (
 	// AuthLogin is the ordinary user name and password, with nothing to fetch
 	// first.
 	AuthLogin AuthStyle = "login"
+
+	// AuthLoginToken is a personal login token made on the account's security
+	// page, which rclone's setup trades once for a lasting sign-in.
+	AuthLoginToken AuthStyle = "logintoken"
 )
 
 // Group is which of the three cards a provider belongs on.
@@ -125,9 +133,12 @@ var providers = []Provider{
 	{ID: "pcloud", Name: "pCloud", Backend: "pcloud", Group: GroupCloud, Mark: "IconPcloud"},
 	{ID: "box", Name: "Box", Backend: "box", Group: GroupCloud, Mark: "IconBox"},
 	{ID: "protondrive", Name: "Proton Drive", Backend: "protondrive", Group: GroupCloud, Mark: "IconProtonDrive"},
-	{ID: "icloud", Name: "iCloud Drive", Auth: AuthAppPassword, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
+	// Apple refuses app passwords here: the Apple ID password goes with a
+	// trust token from rclone config.
+	{ID: "icloud", Name: "iCloud Drive", Auth: AuthLogin, Backend: "iclouddrive", Group: GroupCloud, Mark: "IconICloud"},
 
-	{ID: "jottacloud", Name: "Jottacloud", Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
+	{ID: "jottacloud", Name: "Jottacloud", Auth: AuthLoginToken, AuthURL: "https://www.jottacloud.com/web/secure",
+		Backend: "jottacloud", Group: GroupCloud, Mark: "IconJottacloud"},
 	// Koofr's fields look like an ordinary login, but rclone's own help says
 	// the password is generated in the service's settings.
 	{ID: "koofr", Name: "Koofr", Auth: AuthAppPassword, Backend: "koofr", Group: GroupCloud, Mark: "IconKoofr"},
@@ -160,8 +171,8 @@ var providers = []Provider{
 	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconShade"},
 	// Storage Made Easy's product, which runs on the customer's own address.
 	// The product's own logo is gone and Nasuni's mark names its owner, not
-	// the product, so the row has none.
-	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud,
+	// the product, so the row wears the storage glyph.
+	{ID: "filefabric", Name: "Enterprise File Fabric", Backend: "filefabric", Group: GroupCloud, Mark: "IconTabStorage",
 		UrlHint: "https://yourfabric.smestorage.com"},
 
 	{ID: "b2", Name: "Backblaze B2", Backend: "b2", Group: GroupStorage, Mark: "IconBackblaze"},
@@ -205,8 +216,6 @@ var providers = []Provider{
 		Mark: "IconInternetArchive"},
 	// The file shares of an Azure storage account, beside its blobs.
 	{ID: "azurefiles", Name: "Azure Files", Backend: "azurefiles", Group: GroupStorage, Mark: "IconAzure"},
-	// Storj before it took the company's name, for an access set up then.
-	{ID: "tardigrade", Name: "Tardigrade", Backend: "tardigrade", Group: GroupStorage, Mark: "IconStorj"},
 	{ID: "qingstor", Name: "QingStor", Backend: "qingstor", Group: GroupStorage, Mark: "IconQingcloud"},
 	{ID: "imagekit", Name: "ImageKit", Auth: AuthAPIKey, AuthURL: "https://imagekit.io/dashboard/developer/api-keys",
 		Backend: "imagekit", Group: GroupStorage, Mark: "IconImagekit"},
@@ -222,8 +231,11 @@ var providers = []Provider{
 		Preset: map[string]string{"provider": "Ceph"}, Mark: "IconCeph"},
 	{ID: "garage", Name: "Garage", Backend: "s3", Group: GroupStorage,
 		// rclone has no Garage preset, and Garage's own documentation
-		// configures it as a generic S3 service.
-		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage"},
+		// configures it as a generic S3 service. Garage refuses a request
+		// signed for any region but its s3_region, which is garage unless
+		// garage.toml names another.
+		Preset: map[string]string{"provider": "Other"}, Mark: "IconGarage",
+		Defaults: map[string]string{"region": "garage"}},
 	{ID: "smb", Name: "SMB / Windows share", Backend: "smb", Group: GroupProtocol, Mark: "IconFolder"},
 	{ID: "sftp", Name: "SFTP", Backend: "sftp", Group: GroupProtocol, Mark: "IconServer"},
 	{ID: "webdav", Name: "WebDAV", Auth: AuthAppPassword, Backend: "webdav", Group: GroupProtocol,
@@ -334,10 +346,17 @@ func derivedAuth(b Backend) AuthStyle {
 	return ""
 }
 
+// formerNames maps a backend rclone still reads under an earlier name to the
+// backend it became, whose row stands for both.
+var formerNames = map[string]string{"tardigrade": "storj"}
+
 // UnlistedBackends are the compiled-in backends no provider entry covers, so a
 // new rclone backend is reachable by its rclone name before anybody lists it.
 func UnlistedBackends() []Backend {
 	named := map[string]bool{}
+	for old := range formerNames {
+		named[old] = true
+	}
 	for _, p := range providers {
 		named[p.Backend] = true
 	}

@@ -10,7 +10,6 @@ import { ChoiceRow } from "../choiceRow";
 import { Field, NumberField, Refusal } from "../fields";
 import { Schedule } from "./JobEdit";
 import { api, type JobConfig } from "../api";
-import { ScheduleSentence } from "../inherit";
 import { space } from "../theme";
 import { AxisLabel, Body, Button, Caption, Page, Section, Toggle } from "../ui";
 import { WaySwitch } from "../way";
@@ -94,10 +93,7 @@ export function SyncSettings() {
             { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
           ]}
         />
-        <AxisLabel>{t("edit.schedule")}</AxisLabel>
-        <ScheduleSentence label={t("edit.schedule")} value={String(defaults.schedule ?? "")}>
-          <Schedule value={String(defaults.schedule ?? "")} onChange={(schedule) => saveDefaults({ schedule })} />
-        </ScheduleSentence>
+        <Schedule label={t("edit.schedule")} value={String(defaults.schedule ?? "")} onChange={({ schedule }) => saveDefaults({ schedule })} />
       </Section>
 
       <Section title={t("settings.transfer")} hue={1}>

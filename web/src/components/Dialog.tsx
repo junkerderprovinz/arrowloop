@@ -19,6 +19,8 @@ import { useModal } from '../lib/modal'
  * Rendered into the body, so a transformed ancestor cannot become its
  * containing block. The keyboard stays inside while it is open (useModal).
  */
+const WIDTH = { normal: 'max-w-xl', wide: 'max-w-3xl', widest: 'max-w-5xl' } as const
+
 export function Dialog({
   title,
   hint,
@@ -28,7 +30,7 @@ export function Dialog({
   footer,
   search,
   bar,
-  wide = false,
+  width = 'normal',
   children,
 }: {
   title: string
@@ -54,8 +56,11 @@ export function Dialog({
   search?: ReactNode
   /** A selector between the window's views, under the heading, where it stays put while the body scrolls. */
   bar?: ReactNode
-  /** Room for a list or a form with two columns. */
-  wide?: boolean
+  /**
+   * `wide` has room for a list or a form with two columns; `widest` for two
+   * cards side by side with a folder path in each, as a job's window.
+   */
+  width?: 'normal' | 'wide' | 'widest'
   children: ReactNode
 }) {
   const { t } = useT()
@@ -81,7 +86,7 @@ export function Dialog({
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className={`glim-modal-card relative flex max-h-[85vh] w-full ${wide ? 'max-w-3xl' : 'max-w-xl'} flex-col rounded-card bg-carbon-surface shadow-2xl outline-none${
+        className={`glim-modal-card relative flex max-h-[85vh] w-full ${WIDTH[width]} flex-col rounded-card bg-carbon-surface shadow-2xl outline-none${
           hueIndex !== undefined ? ' glim-hue' : ''
         }`}
         style={hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : undefined}

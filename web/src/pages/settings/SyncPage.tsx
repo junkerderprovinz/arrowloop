@@ -2,8 +2,7 @@ import { ExceptionsCard, useExceptions } from '../../components/Exceptions'
 import { ExcludeSetEditor, type Sets } from '../../components/ExcludeSets'
 import { NumberField, Text } from '../../components/Field'
 import { QuietPeriod } from '../../components/QuietPeriod'
-import { ScheduleField } from '../../components/Schedule'
-import { ScheduleButton } from '../../components/ScheduleButton'
+import { ScheduleDetails, ScheduleKinds, useSchedule } from '../../components/Schedule'
 import { Selector } from '../../components/Selector'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
@@ -80,13 +79,7 @@ export function SyncPage() {
             ]}
           />
         </SettingsRow>
-        <div data-new="schedule-sentence">
-          <SettingsRow label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
-            <ScheduleButton label={t('edit.schedule')} value={defaults.schedule ?? ''}>
-              <ScheduleField value={defaults.schedule ?? ''} onChange={(schedule) => setDefault({ schedule })} />
-            </ScheduleButton>
-          </SettingsRow>
-        </div>
+        <DefaultSchedule value={defaults.schedule ?? ''} hue={selectorHue()} onChange={(schedule) => setDefault({ schedule })} />
       </Card>
 
       <Card title={t('settings.transfer')} hueIndex={cardHue()}>
@@ -183,5 +176,24 @@ export function SyncPage() {
         />
       </Card>
     </Stack>
+  )
+}
+
+/**
+ * The schedule every job starts from: its kinds at the end of the row like the
+ * selectors above it, and the fields of the chosen kind below.
+ */
+function DefaultSchedule({ value, hue, onChange }: { value: string; hue: number; onChange: (next: string) => void }) {
+  const { t } = useT()
+  const editor = useSchedule({ value, onChange: (next) => onChange(next.schedule) })
+  return (
+    <>
+      <SettingsRow label={t('edit.schedule')} hint={t('edit.scheduleHint')}>
+        <span data-new="schedule-hs" className="flex max-w-full">
+          <ScheduleKinds editor={editor} hue={hue} />
+        </span>
+      </SettingsRow>
+      <ScheduleDetails editor={editor} />
+    </>
   )
 }

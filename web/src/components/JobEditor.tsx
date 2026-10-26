@@ -5,7 +5,9 @@ import { IconClose, IconSave, IconTrash } from './glyphs'
 import { ToggleRow } from './ToggleRow'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmWindow } from './ConfirmWindow'
+import { GlobalSwitch, useNudge } from './GlobalValues'
 import type { RawJob } from '../lib/api'
+import { JOB_WINDOW_SETTINGS, followsAll, inheritAll, overrideAll } from '../lib/follows'
 import { useT } from '../lib/i18n'
 import { useToast } from '../lib/toast'
 import { JobForm, useJobConfig } from '../pages/Editor'
@@ -15,6 +17,11 @@ export type JobConfig = ReturnType<typeof useJobConfig>
 /**
  * A job's settings in a window, with Save as its main button. Cancel puts the
  * entry back as it was, and drops a job that was only just added.
+ *
+ * The switch at the top is not stored: it reads as on while the job holds none
+ * of the settings that have a global value, which is what the engine goes by.
+ * Turning it off writes the values in force as the job's own, so there is
+ * something to edit; turning it on clears them.
  */
 export function JobEditor({
   config,
@@ -36,6 +43,7 @@ export function JobEditor({
   const [original] = useState<RawJob | undefined>(() => config.jobs?.[at])
   // Counts refused saves, so each one remounts the button and shakes it again.
   const [refused, setRefused] = useState(0)
+  const [nudged, nudge] = useNudge()
   const job = config.jobs?.[at]
 
   function cancel() {
@@ -45,12 +53,22 @@ export function JobEditor({
   }
 
   if (!job) return null
+  const follows = followsAll(job, JOB_WINDOW_SETTINGS)
   return (
     <Dialog
       title={added ? t('job.new') : t('job.editTitle', { name: original?.name || t('edit.unnamed') })}
       onClose={cancel}
       closeOnBackdrop={false}
-      wide
+      width="widest"
+      bar={
+        <GlobalSwitch
+          on={follows}
+          nudged={nudged}
+          onChange={(on) =>
+            config.patch(at, (on ? inheritAll(JOB_WINDOW_SETTINGS) : overrideAll(config.defaults, JOB_WINDOW_SETTINGS)) as Partial<RawJob>)
+          }
+        />
+      }
       footer={
         <>
           <Button label={t('confirm.cancel')} labelKey="confirm.cancel" glyph={<IconClose />} onClick={cancel} />
@@ -78,7 +96,15 @@ export function JobEditor({
         </>
       }
     >
-      <JobForm job={job} known={config.known} defaults={config.defaults} patch={(next) => config.patch(at, next)} />
+      <JobForm
+        job={job}
+        known={config.known}
+        remotes={config.remotes}
+        defaults={config.defaults}
+        patch={(next) => config.patch(at, next)}
+        follows={follows}
+        onHeld={nudge}
+      />
     </Dialog>
   )
 }

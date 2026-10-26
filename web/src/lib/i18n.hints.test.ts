@@ -68,7 +68,7 @@ function usages(): { file: string; key: string; prop: string | null }[] {
   for (const file of screens(SRC)) {
     if (file.endsWith('.test.tsx')) continue
     const source = readFileSync(file, 'utf8')
-    // Keys named as explanations, such as `edit.quietHint` or `direction.hint`.
+    // Keys named as explanations, such as `edit.quietHint` or `retry.hint`.
     const pattern = /t\(\s*'([A-Za-z0-9.]*(?:Hint|\.hint))'/g
     for (let m = pattern.exec(source); m; m = pattern.exec(source)) {
       found.push({ file: file.slice(SRC.length + 1), key: m[1], prop: propAround(source, m.index) })

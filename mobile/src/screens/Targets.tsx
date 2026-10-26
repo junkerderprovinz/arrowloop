@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
-import { api, type Remote, type Usage } from "../api";
+import { api, EngineError, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
 import { account, isAccount, ReachBadge, Room, useReach, useRoom, type Room as Space } from "../space";
@@ -100,7 +100,11 @@ function TargetCard({
             await api.deleteRemote(remote.name);
             onGone();
           } catch (e) {
-            setDetail((e as Error).message);
+            setDetail(
+              e instanceof EngineError && e.code === "target-in-use"
+                ? t("targets.inUse", { jobs: e.values?.jobs ?? "" })
+                : (e as Error).message,
+            );
           }
         },
       },

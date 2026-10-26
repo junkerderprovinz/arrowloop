@@ -80,6 +80,7 @@ import {
   IconRefresh,
   IconServer,
   IconSync,
+  IconTabStorage,
   IconTransfer,
 } from './glyphs'
 
@@ -167,6 +168,7 @@ const MARKS: Record<string, () => ReactNode> = {
   IconRefresh: () => <IconRefresh />,
   IconServer: () => <IconServer />,
   IconSync: () => <IconSync />,
+  IconTabStorage: () => <IconTabStorage />,
   IconTransfer: () => <IconTransfer />,
 }
 

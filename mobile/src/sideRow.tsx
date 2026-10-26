@@ -30,7 +30,7 @@ export function SideRow({ path, mark }: { path: string; mark?: string }) {
 }
 
 /** The mark for a folder on this phone. */
-const DEVICE = "__device__";
+export const DEVICE = "__device__";
 
 /** The mark SideRow draws for a side: the phone, a provider, or none. */
 export function sideMark(side: string, remotes: Remote[]): string | undefined {

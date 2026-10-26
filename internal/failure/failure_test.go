@@ -68,6 +68,9 @@ func TestBackendErrorsAreNamedWithTheirSide(t *testing.T) {
 		"the drive the left side lives on is not attached: USB disk (label Photos)": {
 			Code: failure.VolumeMissing, Params: map[string]string{"side": "left"},
 		},
+		`left side "box:": couldn't connect SSH: ssh: handshake failed: sftp: host key mismatch for 127.0.0.1:2222: server offered ssh-ed25519 key with fingerprint SHA256:abc`: {
+			Code: failure.HostKeyChanged, Params: map[string]string{"side": "left"},
+		},
 		"429 Too Many Requests": {Code: failure.RateLimited},
 		"context canceled":      {Code: failure.Stopped},
 	}

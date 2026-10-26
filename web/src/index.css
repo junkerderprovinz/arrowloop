@@ -487,15 +487,45 @@ body {
 }
 
 /* A group of rows inside a card, one step up the surface ramp, where a fold
-   would otherwise hide it. Fields inside take the next step so they still
-   stand out. */
+   would otherwise hide it. Fields and the buttons that share their surface
+   take the next step inside, so they still stand out. */
 .glim-subcard {
   background-color: var(--carbon-surface2);
   border-radius: var(--radius-card);
 }
 .glim-subcard input,
-.glim-subcard textarea {
+.glim-subcard textarea,
+.glim-subcard button.bg-carbon-surface2 {
   background-color: var(--carbon-surface3);
+}
+.glim-subcard button.bg-carbon-surface2:hover {
+  background-color: var(--carbon-hover-raised);
+}
+/* Inside a subcard a groove takes the next surface, or it vanishes into the
+   subcard's own. */
+.glim-subcard .glim-well {
+  background-color: var(--carbon-surface3);
+}
+
+/* The job window's switch answers a click on a field it holds: it wiggles,
+   or, where nothing may move, rings for a moment instead. */
+@keyframes al-nudge-ring {
+  0%,
+  60% {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+.al-nudge {
+  border-radius: var(--radius-control);
+  animation: al-nudge-ring 1.2s ease-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion='off']) .al-nudge {
+    animation: glim-shake var(--motion-shake-dur) ease-in-out;
+  }
 }
 
 /* Where a settings search result landed, ringed for a moment so the eye finds

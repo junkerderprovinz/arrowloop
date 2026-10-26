@@ -16,6 +16,16 @@ func TestTheMostSpecificPresetWins(t *testing.T) {
 	}
 }
 
+func TestATargetSavedAsTardigradeIsStorj(t *testing.T) {
+	r := Remote{Type: "tardigrade", Settings: []Setting{{Key: "access_grant", Value: "x", Secret: true}}}
+	if got := ProviderFor(r); got != "storj" {
+		t.Fatalf("provider = %q, want storj", got)
+	}
+	if got := MarkFor(r); got != "IconStorj" {
+		t.Fatalf("mark = %q, want IconStorj", got)
+	}
+}
+
 func TestTheWebdavCloudsAreToldApart(t *testing.T) {
 	for vendor, want := range map[string]string{
 		"nextcloud": "nextcloud",
