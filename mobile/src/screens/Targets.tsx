@@ -102,7 +102,7 @@ function TargetCard({
           } catch (e) {
             setDetail(
               e instanceof EngineError && e.code === "target-in-use"
-                ? t("targets.inUse", e.values)
+                ? t("targets.inUse", { jobs: e.values?.jobs ?? "" })
                 : (e as Error).message,
             );
           }
