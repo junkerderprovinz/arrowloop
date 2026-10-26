@@ -17,7 +17,7 @@ replace github.com/junkerderprovinz/arrowloop => ../
 require (
 	github.com/junkerderprovinz/arrowloop v1.9.0
 	github.com/rclone/rclone v1.75.2
-	github.com/wailsapp/wails/v3 v3.0.0-beta.34
+	github.com/wailsapp/wails/v3 v3.0.0
 	golang.org/x/image v0.47.0
 	golang.org/x/sys v0.49.0
 )
@@ -240,7 +240,7 @@ require (
 	gopkg.in/validator.v2 v2.0.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.79.0 // indirect
+	modernc.org/libc v1.79.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
 	modernc.org/sqlite v1.61.0 // indirect
