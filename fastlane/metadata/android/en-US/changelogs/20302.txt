@@ -1,0 +1,1 @@
+Night shift sorted: jobs wait for the network instead of failing in the dark, OpenCloud's stubborn timestamps no longer stall a run, and Check this job finally says what it found.

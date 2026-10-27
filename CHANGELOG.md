@@ -8,6 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.3.2 - 2026-10-27
+
+## 🐛 Fixed
+
+- **A job that reaches a server waits while the phone has no network.** A battery saver that turns wifi off at night made a nightly job fail three times, then wait for the next night, which was offline again. The job now stays due and runs with the first wake-up that has a network. Jobs between two folders on the phone run as before.
+- **OpenCloud targets get past a file that differs only in its time.** OpenCloud accepts a new modification time and keeps the old one, so two files of the same size never matched and every run of the job stopped on them. ArrowLoop sends such a file again in full.
+- **Check this job on the phone shows what it found.** The button asked the engine and showed nothing. The findings are listed under the buttons, and Check this job in a job card's menu opens the job and checks it there.
+- **A preview that fails on the phone names the job and the reason.** It said the engine could not be reached even when the engine had answered.
+- **A side without a trash folder no longer fills the engine log with errors.** Every run logged a missing trash as an error, although a side that never lost a file has none.
+
 ## 2.3.1 - 2026-10-26
 
 ## 🎨 Design
