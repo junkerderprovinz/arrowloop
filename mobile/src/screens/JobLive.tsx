@@ -125,7 +125,10 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
         {/* Capped, since hundreds of rows stall the scroll. */}
         {found?.slice(0, 30).map((f) => (
           <View key={f.key} style={styles.finding}>
-            <Badge label={f.bad ? "!" : "?"} tone={f.bad ? "fail" : "warn"} />
+            {/* A fixed column, since "!" is narrower than "?" and would pull its text left. */}
+            <View style={styles.mark}>
+              <Badge label={f.bad ? "!" : "?"} tone={f.bad ? "fail" : "warn"} />
+            </View>
             <View style={styles.findingText}>
               <Caption>{f.text}</Caption>
             </View>
@@ -166,6 +169,7 @@ const styles = StyleSheet.create({
   },
   actions: { flexDirection: "row", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
+  mark: { width: 28, alignItems: "center" },
   findingText: { flex: 1 },
 });
 

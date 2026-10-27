@@ -2,7 +2,7 @@ import { useNavigation, useRoute, type RouteProp } from "@react-navigation/nativ
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { actionName } from "../../../web/src/lib/actionName";
-import { api, type Action, type Plan as PlanType } from "../api";
+import { api, EngineError, type Action, type Plan as PlanType } from "../api";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
@@ -21,13 +21,19 @@ export function Plan() {
 
   const [plan, setPlan] = useState<PlanType | null>(null);
   const [error, setError] = useState("");
+  // Only a request that got no answer means the engine is away; any other
+  // failure is the engine explaining why it could not plan.
+  const [away, setAway] = useState(false);
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    api.plan(job).then(setPlan, (e: Error) => setError(e.message));
+    api.plan(job).then(setPlan, (e: Error) => {
+      setAway(e instanceof EngineError && e.status === 0);
+      setError(e.message);
+    });
   }, [job]);
 
-  if (error) return <Empty title={t("error.unreachable")} detail={error} />;
+  if (error) return <Empty title={away ? t("error.unreachable") : t("preview.for", { job })} detail={error} />;
   if (!plan) return <Empty title={t("preview.working")} detail={t("preview.for", { job })} />;
 
   const actions = plan.actions ?? [];
