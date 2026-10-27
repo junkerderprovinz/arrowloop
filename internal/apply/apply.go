@@ -690,6 +690,30 @@ func copyFile(ctx context.Context, dst, src fs.Fs, dstPath, srcPath string) erro
 	return err
 }
 
+// sendFile copies a file onto a destination that held over when it was
+// scanned. Over a file of the same size rclone may only set the modification
+// time, which OpenCloud accepts and ignores, so the time is read back and the
+// content sent when it did not take.
+func sendFile(ctx context.Context, dst, src fs.Fs, dstPath, srcPath string, sent, over *scan.Entry) error {
+	if err := copyFile(ctx, dst, src, dstPath, srcPath); err != nil {
+		return err
+	}
+	if sent == nil || over == nil || sent.Size != over.Size {
+		return nil
+	}
+	obj, err := dst.NewObject(ctx, dstPath)
+	if err != nil {
+		return err
+	}
+	there := plan.Facts{Size: obj.Size(), Mod: obj.ModTime(ctx)}
+	if plan.Same(there, plan.Facts{Size: sent.Size, Mod: sent.Mod}, dst.Precision()) {
+		return nil
+	}
+	ctx, ci := fs.AddConfig(ctx)
+	ci.IgnoreTimes = true
+	return copyFile(ctx, dst, src, dstPath, srcPath)
+}
+
 func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID string, opt plan.Options, t *tally) error {
 	switch act.Kind {
 	case plan.Copy:
@@ -707,7 +731,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		if err := retrying(ctx, func() error {
-			return copyFile(ctx, dst, src, act.DstPath, act.SrcPath)
+			return sendFile(ctx, dst, src, act.DstPath, act.SrcPath, from, over)
 		}); err != nil {
 			return err
 		}
@@ -740,7 +764,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		if err := retrying(ctx, func() error {
-			return copyFile(ctx, dst, src, act.DstPath, act.SrcPath)
+			return sendFile(ctx, dst, src, act.DstPath, act.SrcPath, sent, over)
 		}); err != nil {
 			return err
 		}
