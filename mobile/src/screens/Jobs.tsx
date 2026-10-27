@@ -122,16 +122,6 @@ export function Jobs() {
     }
   };
 
-  /** Asks the engine to check a job, as the job screen's Check button does. */
-  const check = async (job: Job) => {
-    try {
-      await api.check(job.name);
-      await load();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
   /** Adds a copy of a job without asking, since deleting the copy undoes it. */
   const duplicate = async (job: Job) => {
     try {
@@ -230,7 +220,8 @@ export function Jobs() {
           onEdit={() => nav.navigate("JobEdit", { name: item.name })}
           onDuplicate={() => duplicate(item)}
           onPreview={() => nav.navigate("Plan", { name: item.name })}
-          onCheck={() => void check(item)}
+          // The findings need room, which the job's own screen has.
+          onCheck={() => nav.navigate("JobDetail", { name: item.name, check: true })}
           onTrash={(side, place) => nav.navigate("Trash", { name: item.name, side, place })}
           onRemove={() => remove(item)}
           // Either side can be the target; the right is the usual one.

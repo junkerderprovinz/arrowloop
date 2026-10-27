@@ -163,6 +163,20 @@ export interface Plan {
   agreed: number;
 }
 
+/** Whether a job can work at all; the engine's sentence travels beside the code. */
+export interface CheckReport {
+  ok: boolean;
+  findings: { code: string; text: string; fatal: boolean }[];
+}
+
+/** Where the two sides differ from what the record says about them. */
+export interface VerifyReport {
+  found: number;
+  returned: number;
+  truncated: boolean;
+  findings: { code: string; path: string; text: string; invisible: boolean }[];
+}
+
 /**
  * The configured remotes, the products on offer, their backends, and the
  * backends no product covers, all in one answer.
@@ -402,7 +416,8 @@ export const api = {
   stop: (job: string) => call<void>(`/api/jobs/${name(job)}/stop`, { method: "POST" }),
   /** A dry run: what would happen, without doing any of it. */
   plan: (job: string) => call<Plan>(`/api/jobs/${name(job)}/plan`),
-  check: (job: string) => call<unknown>(`/api/jobs/${name(job)}/check`, { method: "POST" }),
+  check: (job: string) => call<CheckReport>(`/api/jobs/${name(job)}/check`, { method: "POST" }),
+  verify: (job: string) => call<VerifyReport>(`/api/jobs/${name(job)}/verify`),
   forgetState: (job: string) => call<void>(`/api/jobs/${name(job)}/state`, { method: "DELETE" }),
 
   trash: (job: string, side: string) => call<Bin>(`/api/jobs/${name(job)}/trash/${side}`),

@@ -13,7 +13,8 @@ export type OverviewStack = {
 
 export type JobsStack = {
   JobList: undefined;
-  JobDetail: { name: string };
+  /** `check` runs the job's check as the screen opens. */
+  JobDetail: { name: string; check?: boolean };
   /** No name means a new job. */
   JobEdit: { name?: string };
   Plan: { name: string };

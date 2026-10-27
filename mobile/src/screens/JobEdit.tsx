@@ -320,7 +320,7 @@ export function JobEdit() {
 
   return (
     <Page scroll={scroll}>
-      {editing ? <JobLive name={editing} /> : null}
+      {editing ? <JobLive name={editing} check={route.params && "check" in route.params ? route.params.check : false} /> : null}
 
       {/* Before the settings it decides about. It waits for the global
           values, since turning it off copies them into the job. */}
