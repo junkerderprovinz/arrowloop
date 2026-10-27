@@ -16,7 +16,7 @@
 // Every page is rendered at twice the size and scaled down in a second page,
 // which keeps the text sharp through the phone's tilt.
 //
-// Deps (global): playwright-core with its Chromium installed.
+// Deps (global): playwright-core with its Chromium installed, qrcode-generator.
 // Run: node store/render.mjs [readme]
 
 import { execSync } from 'node:child_process'
@@ -29,7 +29,9 @@ import { fileURLToPath } from 'node:url'
 import { BRANDS, GLYPHS } from '../web/src/lib/glyphs.data.ts'
 
 const require = createRequire(import.meta.url)
-const { chromium } = require(`${execSync('npm root -g').toString().trim()}/playwright-core`)
+const globalRoot = execSync('npm root -g').toString().trim()
+const { chromium } = require(`${globalRoot}/playwright-core`)
+const qrcode = require(`${globalRoot}/qrcode-generator`)
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = dirname(here)
@@ -393,23 +395,49 @@ ${phone(middle, { x: 1040, y: 150, sw: 380, lift })}
 </body></html>`
 }
 
-/** The README's call for Android testers, two phones beside a button-shaped call. */
+const TESTER_GROUP = 'https://groups.google.com/g/arrowloop-testers'
+const TEST_PAGE = 'https://play.google.com/apps/testing/arrowloop.halleluja.design'
+
+/** `url` as a QR code, one SVG unit per module. */
+function qrSvg(url) {
+  const qr = qrcode(0, 'M')
+  qr.addData(url)
+  qr.make()
+  const n = qr.getModuleCount()
+  let d = ''
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.isDark(y, x)) d += `M${x} ${y}h1v1h-1z`
+  return `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${d}" fill="#141414"/></svg>`
+}
+
+/**
+ * The README's call for Android testers, two phones beside the two steps as
+ * QR codes, so a reader on a desktop can scan them with the phone.
+ */
 function testersShot(back, front) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${STYLE}
 body { width: 1920px; height: 640px; }
-.copy { position: absolute; left: 96px; top: 0; bottom: 0; width: 1060px; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+.copy { position: absolute; left: 96px; top: 0; bottom: 0; width: 1100px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
 .label { align-self: flex-start; padding: 8px 18px; border-radius: 8px; background: #FCC419; color: #141414; font: 700 22px/1 Lato, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
-h1 { font-size: 92px; line-height: 1.05; }
-.sub { font-size: 34px; line-height: 1.35; color: #c9bfa9; }
-.go { align-self: flex-start; margin-top: 8px; padding: 22px 40px; border-radius: 18px; background: #FCC419; color: #141414; font: 700 34px/1 Lato, sans-serif;
-  box-shadow: 0 0 0 6px rgba(252,196,25,.18), 0 18px 40px rgba(0,0,0,.5); }
+h1 { font-size: 84px; line-height: 1.05; }
+.sub { font-size: 30px; line-height: 1.35; color: #c9bfa9; }
+.steps { display: flex; gap: 44px; margin-top: 10px; }
+.step { display: flex; align-items: center; gap: 22px; }
+.qr { width: 196px; height: 196px; padding: 14px; border-radius: 16px; background: #fff;
+  box-shadow: 0 0 0 6px rgba(252,196,25,.22), 0 18px 40px rgba(0,0,0,.5); }
+.qr svg { display: block; width: 100%; height: 100%; }
+.what { display: flex; flex-direction: column; gap: 10px; color: #f4f4f4; font: 700 28px/1.2 Lato, sans-serif; }
+.what b { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #FCC419; color: #141414; font-size: 26px; }
+.what small { color: #9d9481; font: 400 22px/1.3 Lato, sans-serif; }
 </style></head><body>
 ${backdrop('40%', '58%', '-30%')}
 <div class="copy">
   <span class="label">Google Play closed test</span>
   <h1>Android testers <em>wanted</em></h1>
   <p class="sub">Keep ArrowLoop installed for 14 days and help it go public.</p>
-  <span class="go">Become a tester &rarr;</span>
+  <div class="steps">
+    <div class="step"><div class="qr">${qrSvg(TESTER_GROUP)}</div><div class="what"><b>1</b>Join the group<small>with your phone's<br>Google account</small></div></div>
+    <div class="step"><div class="qr">${qrSvg(TEST_PAGE)}</div><div class="what"><b>2</b>Become a tester<small>then install it<br>from Google Play</small></div></div>
+  </div>
 </div>
 ${phone(back, { x: 1290, y: 92, sw: 250 })}
 ${phone(front, { x: 1530, y: 58, sw: 282 })}
