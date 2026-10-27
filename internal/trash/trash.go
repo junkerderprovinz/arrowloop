@@ -113,6 +113,12 @@ func (e Entry) Known() bool { return !e.Filed.IsZero() }
 // List reads everything one store holds on one side, newest run first. A store
 // that does not exist is empty.
 func List(ctx context.Context, f fs.Fs, store Store) ([]Entry, error) {
+	// The walk logs a missing folder as an error before returning it, and a
+	// side that never lost a file has no trash, so every run would log one.
+	if _, err := f.List(ctx, store.dir); errors.Is(err, fs.ErrorDirNotFound) {
+		return nil, nil
+	}
+
 	var out []Entry
 	err := walk.ListR(ctx, f, store.dir, true, -1, walk.ListObjects, func(entries fs.DirEntries) error {
 		for _, entry := range entries {
