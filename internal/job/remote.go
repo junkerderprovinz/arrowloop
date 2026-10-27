@@ -70,6 +70,18 @@ type place struct {
 	unnamed bool
 }
 
+// OnNetwork reports whether a side of the job lies off this machine, so that
+// the job cannot run without a network. A side that cannot be placed counts as
+// off it.
+func (j Job) OnNetwork() bool {
+	for _, side := range []string{j.Left, j.Right} {
+		if p, err := locate(side); err != nil || p.local == "" {
+			return true
+		}
+	}
+	return false
+}
+
 // locate works out where a side points from rclone's configuration, without
 // connecting. A side whose target is not configured, is of a backend this
 // build lacks, or does not name its account cannot be placed.

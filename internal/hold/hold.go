@@ -29,6 +29,10 @@ type State struct {
 	// reporter's sentence for the log.
 	Reason string `json:"reason"`
 
+	// Offline is set when the device has no network at all. It holds only the
+	// jobs with a side off the device, so it is not part of Reason.
+	Offline bool `json:"offline"`
+
 	// At is when it was reported. Zero means nothing ever has been.
 	At time.Time `json:"at"`
 
@@ -40,9 +44,10 @@ type State struct {
 // Store is the last report. The HTTP handler and the runner use it from
 // different goroutines.
 type Store struct {
-	mu     sync.RWMutex
-	reason string
-	at     time.Time
+	mu      sync.RWMutex
+	reason  string
+	offline bool
+	at      time.Time
 
 	// now is the clock, swapped in tests. Nil means time.Now.
 	now func() time.Time
@@ -58,11 +63,13 @@ func (s *Store) clock() time.Time {
 	return time.Now()
 }
 
-// Report records a reason. An empty reason clears the hold.
-func (s *Store) Report(reason string) {
+// Report records a reason and whether the device is offline. An empty reason
+// on a device with a network clears the hold.
+func (s *Store) Report(reason string, offline bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.reason = reason
+	s.offline = offline
 	s.at = s.clock()
 }
 
@@ -70,7 +77,7 @@ func (s *Store) Report(reason string) {
 func (s *Store) State() State {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	return State{Reason: s.reason, At: s.at, Stale: s.stale()}
+	return State{Reason: s.reason, Offline: s.offline, At: s.at, Stale: s.stale()}
 }
 
 // stale reports whether the last report is too old to act on. The caller holds
@@ -84,13 +91,23 @@ func (s *Store) stale() bool {
 
 // Condition returns the check to hand the runner. It reads the store on every
 // call, so plugging in a charger lets the next scheduled run go ahead.
+//
+// Without a network a job that reaches a server would only fail, and a failure
+// uses up its retries, so a nightly job would wait for the next night. Held
+// instead, it stays due and runs with the first wake-up that has a network.
 func (s *Store) Condition() func(context.Context, job.Job) error {
-	return func(context.Context, job.Job) error {
+	return func(_ context.Context, j job.Job) error {
 		s.mu.RLock()
 		defer s.mu.RUnlock()
-		if s.reason == "" || s.stale() {
+		if s.stale() {
 			return nil
 		}
-		return errors.New(s.reason)
+		if s.reason != "" {
+			return errors.New(s.reason)
+		}
+		if s.offline && j.OnNetwork() {
+			return errors.New("there is no network")
+		}
+		return nil
 	}
 }

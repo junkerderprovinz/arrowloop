@@ -24,13 +24,14 @@ func (s *Server) readDevice(w http.ResponseWriter, r *http.Request) {
 // writeDevice records a report. An empty reason clears the hold.
 func (s *Server) writeDevice(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Reason string `json:"reason"`
+		Reason  string `json:"reason"`
+		Offline bool   `json:"offline"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	s.Hold.Report(body.Reason)
+	s.Hold.Report(body.Reason, body.Offline)
 	writeJSON(w, http.StatusOK, s.Hold.State())
 }
 

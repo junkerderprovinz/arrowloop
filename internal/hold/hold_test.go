@@ -24,7 +24,7 @@ func TestNothingReportedHoldsNothing(t *testing.T) {
 
 func TestAReportedReasonHoldsARun(t *testing.T) {
 	s, _ := at(time.Now())
-	s.Report("this phone is on battery")
+	s.Report("this phone is on battery", false)
 
 	err := s.Condition()(context.Background(), job.Job{})
 	if err == nil {
@@ -38,8 +38,8 @@ func TestAReportedReasonHoldsARun(t *testing.T) {
 
 func TestAnEmptyReportClearsTheHold(t *testing.T) {
 	s, _ := at(time.Now())
-	s.Report("this phone is on battery")
-	s.Report("")
+	s.Report("this phone is on battery", false)
+	s.Report("", false)
 
 	if err := s.Condition()(context.Background(), job.Job{}); err != nil {
 		t.Fatalf("the hold survived being cleared: %v", err)
@@ -49,7 +49,7 @@ func TestAnEmptyReportClearsTheHold(t *testing.T) {
 // A killed app stops reporting, so its last hold must expire.
 func TestAStaleReportStopsHolding(t *testing.T) {
 	s, now := at(time.Now())
-	s.Report("this phone is on battery")
+	s.Report("this phone is on battery", false)
 
 	*now = now.Add(Stale - time.Minute)
 	if err := s.Condition()(context.Background(), job.Job{}); err == nil {
@@ -64,7 +64,7 @@ func TestAStaleReportStopsHolding(t *testing.T) {
 
 func TestTheStateSaysWhatTheConditionDoes(t *testing.T) {
 	s, now := at(time.Now())
-	s.Report("this connection is metered")
+	s.Report("this connection is metered", false)
 
 	if got := s.State(); got.Reason != "this connection is metered" || got.Stale {
 		t.Fatalf("a fresh report read back wrong: %+v", got)
@@ -73,5 +73,25 @@ func TestTheStateSaysWhatTheConditionDoes(t *testing.T) {
 	*now = now.Add(Stale + time.Second)
 	if got := s.State(); !got.Stale {
 		t.Fatalf("a state a run would ignore did not say it was stale: %+v", got)
+	}
+}
+
+// A phone without a network holds the jobs that reach a server, and only them.
+func TestNoNetworkHoldsOnlyJobsThatNeedOne(t *testing.T) {
+	s, _ := at(time.Now())
+	s.Report("", true)
+
+	remote := job.Job{Left: t.TempDir(), Right: "cloud:photos"}
+	if err := s.Condition()(context.Background(), remote); err == nil {
+		t.Error("a job with a server side ran with no network, and its failure uses up a retry")
+	}
+	local := job.Job{Left: t.TempDir(), Right: t.TempDir()}
+	if err := s.Condition()(context.Background(), local); err != nil {
+		t.Errorf("a job between two folders on the phone was held for want of a network: %v", err)
+	}
+
+	s.Report("", false)
+	if err := s.Condition()(context.Background(), remote); err != nil {
+		t.Errorf("the network came back and the job was still held: %v", err)
 	}
 }

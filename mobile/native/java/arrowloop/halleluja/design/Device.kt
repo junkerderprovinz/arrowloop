@@ -171,6 +171,16 @@ object Device {
     }
 
     /**
+     * Reports whether the phone has no network at all, as when a battery saver
+     * turns wifi off for the night. It is sent beside the reason rather than as
+     * one, since only the jobs that reach a server need a network.
+     */
+    fun offline(context: Context): Boolean {
+        val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
+        return manager.activeNetwork == null
+    }
+
+    /**
      * Waits up to three seconds for Android to let the app onto the network. A
      * wake-up lifts the block as it starts, and the news can arrive a moment
      * after the run's first line.
@@ -224,23 +234,26 @@ object Device {
      */
     @Synchronized
     fun report(context: Context) {
-        val now = reason(context)
+        val why = reason(context)
+        val now = verdict(why, offline(context))
         if (now == sent || now == inFlight) return
         // Claimed before the thread starts, since a cable going in fires
         // several broadcasts a second.
         inFlight = now
-        android.util.Log.i("ArrowLoop", if (now.isEmpty()) "nothing holds automatic runs" else "holding automatic runs: $now")
+        android.util.Log.i("ArrowLoop", if (why.isEmpty()) "nothing holds automatic runs" else "holding automatic runs: $why")
         Thread { send(context, now) }.start()
     }
+
+    /** The body the engine gets, which is also what tells a new verdict from the last. */
+    private fun verdict(reason: String, offline: Boolean) = """{"reason":${quote(reason)},"offline":$offline}"""
 
     /**
      * Sends the verdict on the calling thread and reports whether the engine
      * took it, for a caller that must not go on before it has.
      */
-    fun reportNow(context: Context): Boolean = send(context, reason(context))
+    fun reportNow(context: Context): Boolean = send(context, verdict(reason(context), offline(context)))
 
     private fun send(context: Context, now: String): Boolean {
-        val body = """{"reason":${quote(now)}}"""
         return try {
             // The token goes only to a listener that proves it is our engine,
             // since another app can hold the port while ours is still starting.
@@ -250,7 +263,7 @@ object Device {
                 connectTimeout = 2000
                 readTimeout = 2000
                 setRequestProperty("Content-Type", "application/json")
-                outputStream.use { it.write(body.toByteArray()) }
+                outputStream.use { it.write(now.toByteArray()) }
                 val took = responseCode in 200..299
                 disconnect()
                 if (took) synchronized(Device) { sent = now }
