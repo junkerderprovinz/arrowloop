@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🔒 Security
+
+- **Dependency updates close five open advisories.** The web UI test tooling takes undici 8.12.3, the phone app takes zod 4.6.6 and node-forge 1.4.2, and the engine and the desktop app take chi 5.4.0.
+
 ## 2.3.2 - 2026-10-27
 
 ## 🐛 Fixed

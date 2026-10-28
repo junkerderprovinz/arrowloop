@@ -31,5 +31,8 @@
     "android": "expo run:android",
     "prebuild": "expo prebuild --platform android --clean"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "zod": "4.6.6"
+  }
 }
