@@ -19,7 +19,9 @@ import (
 // The folder picker lets a job's sides be picked rather than typed, since a
 // mistyped path is a valid string and fails quietly. It is not confined to a
 // root: a desktop build has to reach any folder its user can, and the API can
-// already start a job that deletes files, which is why it listens on loopback.
+// already start a job that deletes files, which is why the desktop build
+// listens on loopback and the container build listens on the network behind
+// Guard.
 
 type browseEntry struct {
 	Name string `json:"name"`
