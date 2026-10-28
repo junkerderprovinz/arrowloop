@@ -92,6 +92,45 @@ func TestMarkingADriveThroughTheScreen(t *testing.T) {
 	}
 }
 
+// The screen sends back a mount it was offered, spelled the way the browser
+// left it, and that still counts as the offered drive.
+func TestMarkingAcceptsAnOfferedDriveSpelledDifferently(t *testing.T) {
+	h := newHarness(t)
+	drive := t.TempDir()
+	realCandidates := volume.Candidates
+	volume.Candidates = func() []string { return []string{drive} }
+	t.Cleanup(func() { volume.Candidates = realCandidates })
+
+	resp := h.post(t, "/api/volumes", `{"mount":`+quote(drive+string(filepath.Separator))+`,"label":"Backup drive"}`)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("marking an offered drive: %s", resp.Status)
+	}
+	if _, err := os.Stat(filepath.Join(drive, ".arrowloop", "volume.json")); err != nil {
+		t.Errorf("the offered drive carries no marker: %v", err)
+	}
+}
+
+// A marker outside the places a drive is looked for would never be found
+// again, and writing it would let a request drop files into any folder.
+func TestMarkingRefusesAFolderThatIsNoDrive(t *testing.T) {
+	h := newHarness(t)
+	drive := t.TempDir()
+	elsewhere := t.TempDir()
+	realCandidates := volume.Candidates
+	volume.Candidates = func() []string { return []string{drive} }
+	t.Cleanup(func() { volume.Candidates = realCandidates })
+
+	resp := h.post(t, "/api/volumes", `{"mount":`+quote(elsewhere)+`,"label":"Not a drive"}`)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("marking a folder that is no drive answered %s", resp.Status)
+	}
+	if _, err := os.Stat(filepath.Join(elsewhere, ".arrowloop")); !os.IsNotExist(err) {
+		t.Errorf("a refused folder was written to: %v", err)
+	}
+}
+
 // A backend the binary does not carry would give a job that fails on its first
 // run with a misleading error.
 func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {

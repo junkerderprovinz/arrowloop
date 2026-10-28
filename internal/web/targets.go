@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
@@ -56,16 +57,35 @@ func (s *Server) markVolume(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	m, err := volume.Mark(body.Mount, body.Label)
+	// Only a place a drive is looked for can be marked: a marker anywhere else
+	// is never found again, and the request would write into any folder.
+	mount, ok := offeredMount(body.Mount)
+	if !ok {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("%s is not a drive ArrowLoop can see", body.Mount))
+		return
+	}
+
+	m, err := volume.Mark(mount, body.Label)
 	if err != nil {
 		// Marking writes a file, so this is where a read-only drive says so.
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, volumeView{
-		ID: m.ID, Label: m.Label, Mount: body.Mount, Attached: true,
+		ID: m.ID, Label: m.Label, Mount: mount, Attached: true,
 		Path: volume.Prefix + m.ID,
 	})
+}
+
+// offeredMount returns the candidate mount that path names.
+func offeredMount(path string) (string, bool) {
+	want := filepath.Clean(path)
+	for _, mount := range volume.Candidates() {
+		if filepath.Clean(mount) == want {
+			return mount, true
+		}
+	}
+	return "", false
 }
 
 // forgetVolume forgets that a drive was ever here. The marker on the drive is
