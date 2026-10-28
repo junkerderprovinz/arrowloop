@@ -12,7 +12,7 @@
 # rather than being emulated under QEMU for the arm64 target.
 ARG BUILDPLATFORM
 
-FROM --platform=$BUILDPLATFORM node:24-slim@sha256:be8204d4bd327363357f532187b752ff62759c31bedf98e9e18fc08c9cbd605c AS web
+FROM --platform=$BUILDPLATFORM node:26-slim@sha256:94816674c62774da0d099a947bf4613b9e1972a2733abd0d0cd80e795f8411d0 AS web
 WORKDIR /src
 COPY web/package.json web/package-lock.json ./web/
 RUN npm --prefix web ci --no-audit --no-fund
