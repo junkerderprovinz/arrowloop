@@ -1135,6 +1135,7 @@ const es: Translations = {
   'new.change.listBar': '{filter} y {search} están en la tarjeta {history}, en la fila de {files} y {runs}.',
   'new.change.settingsSearch': 'La búsqueda sobre las tarjetas encuentra cada ajuste, también por su nombre antiguo. Pulsa / o Ctrl+K.',
   'new.change.tileOrder': 'Los mosaicos de {settings} se pueden mover: mantén pulsado uno y arrástralo, o pulsa Alt y una flecha. {reset} en {look} los devuelve a su sitio.',
+  'new.change.labelGlyphs': 'Cada opción de {labels} muestra un símbolo delante del nombre.',
   'new.change.settingsTiles': '{settings} es una columna de mosaicos, y cada mosaico muestra todas sus tarjetas. Lo que había en {engine} está ahora en {general}, {sync} y {safety}.',
   'new.change.anomaliesModule': 'Un interruptor para {anomalies} en {safety} desactiva las notas y su página. Los frenos siguen reteniendo, y una ejecución retenida se responde entonces en su tarea.',
   'new.change.infoTile': '{info} enumera todas las versiones y comprueba si hay actualizaciones. La tarjeta {help} añade el manual y un informe de errores.',

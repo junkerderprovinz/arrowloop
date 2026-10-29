@@ -1135,6 +1135,7 @@ const et: Translations = {
   'new.change.listBar': '{filter} ja {search} on kaardil {history}, samal real kui {files} ja {runs}.',
   'new.change.settingsSearch': 'Kaartide kohal olev otsing leiab iga seade, ka vana nime järgi. Vajuta / või Ctrl+K.',
   'new.change.tileOrder': 'Jaotise {settings} paane saab liigutada: hoia ühte all ja lohista või vajuta Alt ja nooleklahvi. {reset} jaotises {look} paneb need tagasi.',
+  'new.change.labelGlyphs': 'Iga valik jaotises {labels} näitab nime ees sümbolit.',
   'new.change.settingsTiles': '{settings} on paanide veerg ja iga paan näitab kõiki oma kaarte. Mis oli jaotises {engine}, on nüüd jaotistes {general}, {sync} ja {safety}.',
   'new.change.anomaliesModule': 'Jaotises {safety} olev lüliti {anomalies} jaoks lülitab märkused ja nende lehe välja. Pidurid peatavad edasi ja peatatud käivitusele vastatakse siis selle töö juures.',
   'new.change.infoTile': '{info} loetleb kõik versioonid ja kontrollib neile uuendusi. Kaart {help} lisab käsiraamatu ja veaaruande.',

@@ -1135,6 +1135,7 @@ const sl: Translations = {
   'new.change.listBar': '{filter} in {search} sta na kartici {history}, v vrstici z {files} in {runs}.',
   'new.change.settingsSearch': 'Iskanje nad karticami najde vsako nastavitev, tudi po starem imenu. Pritisni / ali Ctrl+K.',
   'new.change.tileOrder': 'Ploščice v {settings} lahko premikaš: pridrži eno in jo povleci ali pritisni Alt in puščico. {reset} v {look} jih vrne na mesto.',
+  'new.change.labelGlyphs': 'Vsaka izbira pod {labels} pred imenom prikaže simbol.',
   'new.change.settingsTiles': '{settings} so stolpec ploščic in vsaka ploščica prikaže vse svoje kartice. Kar je bilo v {engine}, je zdaj v {general}, {sync} in {safety}.',
   'new.change.anomaliesModule': 'Stikalo za {anomalies} v {safety} izklopi opombe in njihovo stran. Zavore še naprej zadržujejo, na zadržani zagon pa takrat odgovoriš pri njegovem opravilu.',
   'new.change.infoTile': '{info} našteje vse različice in preveri, ali so na voljo posodobitve. Kartica {help} doda priročnik in poročilo o napaki.',

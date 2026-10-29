@@ -63,6 +63,18 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.3.3',
+    changes: [
+      {
+        id: 'label-glyphs',
+        at: ['/settings/look'],
+        where: ['nav.settings', 'settings.look'],
+        text: 'new.change.labelGlyphs',
+        names: { labels: 'look.labels' },
+      },
+    ],
+  },
+  {
     after: '2.2.0',
     changes: [
       {

@@ -1135,6 +1135,7 @@ const fr: Translations = {
   'new.change.listBar': '{filter} et {search} se trouvent dans la carte {history}, sur la ligne de {files} et {runs}.',
   'new.change.settingsSearch': 'La recherche au-dessus des cartes trouve chaque réglage, y compris par son ancien nom. Appuyez sur / ou Ctrl+K.',
   'new.change.tileOrder': 'Les tuiles de {settings} se déplacent : maintenez-en une et faites-la glisser, ou appuyez sur Alt et une flèche. {reset} dans {look} les remet en place.',
+  'new.change.labelGlyphs': 'Chaque choix de {labels} affiche un symbole devant son nom.',
   'new.change.settingsTiles': '{settings} est une colonne de tuiles, et chaque tuile montre toutes ses cartes. Ce que contenait {engine} se trouve désormais dans {general}, {sync} et {safety}.',
   'new.change.anomaliesModule': 'Un interrupteur pour {anomalies} dans {safety} désactive les remarques et leur page. Les freins continuent de retenir, et une exécution retenue se règle alors depuis sa tâche.',
   'new.change.infoTile': '{info} liste toutes les versions et cherche leurs mises à jour. La carte {help} ajoute le manuel et un rapport de bogue.',

@@ -1135,6 +1135,7 @@ const fa: Translations = {
   'new.change.listBar': '{filter} و {search} در کارت {history} هستند، در همان ردیف {files} و {runs}.',
   'new.change.settingsSearch': 'جستجوی بالای کارت‌ها هر تنظیمی را پیدا می‌کند، با نام قدیمی‌اش هم. / یا Ctrl+K را فشار دهید.',
   'new.change.tileOrder': 'کاشی‌های {settings} جابه‌جا می‌شوند: یکی را نگه دارید و بکشید، یا Alt و یک کلید جهت را فشار دهید. {reset} در {look} آن‌ها را به جای خود برمی‌گرداند.',
+  'new.change.labelGlyphs': 'هر گزینه در {labels} پیش از نامش یک نماد نشان می‌دهد.',
   'new.change.settingsTiles': '{settings} ستونی از کاشی‌هاست و هر کاشی همهٔ کارت‌هایش را نشان می‌دهد. آنچه در {engine} بود حالا زیر {general}، {sync} و {safety} است.',
   'new.change.anomaliesModule': 'کلیدی برای {anomalies} در {safety} یادداشت‌ها و صفحه‌شان را خاموش می‌کند. ترمزها همچنان نگه می‌دارند و آن‌وقت به اجرای نگه‌داشته در کار خودش پاسخ داده می‌شود.',
   'new.change.infoTile': '{info} همهٔ نسخه‌ها را فهرست می‌کند و به‌روزرسانی‌هایشان را بررسی می‌کند. کارت {help} راهنمای کاربر و گزارش خطا را اضافه می‌کند.',

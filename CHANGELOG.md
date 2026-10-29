@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **Every choice under Look, Labels shows a glyph before its name,** in the web interface, the desktop app and the phone app, as Design, Corners and Motion already do.
+
 ## 2.3.3 - 2026-10-29
 
 ## ⚡ Improved

@@ -1135,6 +1135,7 @@ const id: Translations = {
   'new.change.listBar': '{filter} dan {search} ada di kartu {history}, di baris yang sama dengan {files} dan {runs}.',
   'new.change.settingsSearch': 'Pencarian di atas kartu menemukan setiap pengaturan, termasuk lewat nama lamanya. Tekan / atau Ctrl+K.',
   'new.change.tileOrder': 'Petak di {settings} bisa dipindah: tahan satu lalu seret, atau tekan Alt dan tombol panah. {reset} di {look} mengembalikan urutannya.',
+  'new.change.labelGlyphs': 'Setiap pilihan di {labels} menampilkan simbol di depan namanya.',
   'new.change.settingsTiles': '{settings} berupa kolom petak, dan setiap petak menampilkan semua kartunya. Isi {engine} sekarang ada di {general}, {sync}, dan {safety}.',
   'new.change.anomaliesModule': 'Sakelar {anomalies} di {safety} mematikan catatan beserta halamannya. Rem tetap menahan, dan proses yang ditahan lalu dijawab di tugasnya.',
   'new.change.infoTile': '{info} mencantumkan setiap versi dan memeriksa pembaruannya. Kartu {help} menambahkan panduan dan laporan bug.',

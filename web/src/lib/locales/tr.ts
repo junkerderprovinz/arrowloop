@@ -1135,6 +1135,7 @@ const tr: Translations = {
   'new.change.listBar': '{filter} ve {search}, {history} kartında, {files} ve {runs} ile aynı satırda.',
   'new.change.settingsSearch': 'Kartların üstündeki arama her ayarı, eski adıyla da bulur. / veya Ctrl+K tuşuna basın.',
   'new.change.tileOrder': '{settings} altındaki karolar taşınabilir: birine basılı tutup sürükleyin ya da Alt ve bir ok tuşuna basın. {look} altındaki {reset} onları yerine koyar.',
+  'new.change.labelGlyphs': '{labels} altındaki her seçenek, adının önünde bir simge gösterir.',
   'new.change.settingsTiles': '{settings} bir karo sütunudur ve her karo tüm kartlarını gösterir. {engine} içinde olanlar artık {general}, {sync} ve {safety} altında.',
   'new.change.anomaliesModule': '{safety} altındaki {anomalies} anahtarı notları ve sayfalarını kapatır. Frenler tutmaya devam eder ve tutulan bir çalışmaya o zaman kendi işinde yanıt verilir.',
   'new.change.infoTile': '{info} tüm sürümleri listeler ve güncellemeleri denetler. {help} kartı kılavuzu ve hata raporunu ekler.',

@@ -1135,6 +1135,7 @@ const ko: Translations = {
   'new.change.listBar': '{filter}와 {search}는 {history} 카드 안, {files}와 {runs}가 있는 줄에 있습니다.',
   'new.change.settingsSearch': '카드 위의 검색은 예전 이름으로도 모든 설정을 찾아 줍니다. / 또는 Ctrl+K를 누르세요.',
   'new.change.tileOrder': '{settings}의 타일을 옮길 수 있습니다. 하나를 길게 눌러 끌거나 Alt와 화살표 키를 누르세요. {look}의 {reset}으로 원래 순서로 돌아갑니다.',
+  'new.change.labelGlyphs': '{labels}의 각 선택지는 이름 앞에 기호를 표시합니다.',
   'new.change.settingsTiles': '{settings}은(는) 타일이 세로로 늘어선 구성이며, 각 타일에 모든 카드가 표시됩니다. {engine}에 있던 항목은 이제 {general}, {sync}, {safety}에 있습니다.',
   'new.change.anomaliesModule': '{safety}의 {anomalies} 스위치로 참고와 그 페이지를 끌 수 있습니다. 브레이크는 계속 멈추고, 멈춘 실행에는 해당 작업에서 답합니다.',
   'new.change.infoTile': '{info}에는 모든 버전이 나열되고 업데이트 여부를 확인합니다. {help} 카드에는 설명서와 버그 보고서가 있습니다.',

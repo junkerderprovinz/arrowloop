@@ -1135,6 +1135,7 @@ const zh: Translations = {
   'new.change.listBar': '{filter}和{search}位于{history}卡片中，与{files}和{runs}在同一行。',
   'new.change.settingsSearch': '卡片上方的搜索能找到每一项设置，用旧名称也能找到。按 / 或 Ctrl+K。',
   'new.change.tileOrder': '{settings} 中的磁贴可以移动：按住一个并拖动，或按 Alt 和方向键。{look} 中的{reset}可恢复原顺序。',
+  'new.change.labelGlyphs': '{labels} 中的每个选项都会在名称前显示一个符号。',
   'new.change.settingsTiles': '{settings}是一列磁贴，每个磁贴都会显示它的全部卡片。原来在{engine}里的内容现在位于{general}、{sync}和{safety}。',
   'new.change.anomaliesModule': '{safety}中有一个{anomalies}开关，可关闭提示及其页面。制动仍会拦下运行，被拦下的运行随后在它的任务中处理。',
   'new.change.infoTile': '{info}列出所有版本并检查更新。{help}卡片还提供手册和错误报告。',

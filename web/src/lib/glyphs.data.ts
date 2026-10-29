@@ -519,6 +519,58 @@ export const GLYPHS: Record<string, GlyphData> = {
       }
     ]
   },
+  "IconLabelText": {
+    "box": "0 0 14 14",
+    "groups": [
+      {
+        "parts": [
+          {
+            "d": "M0 3.5A1 1 0 0 1 1 2.5H13A1 1 0 0 1 13 4.5H1A1 1 0 0 1 0 3.5ZM0 7A1 1 0 0 1 1 6H13A1 1 0 0 1 13 8H1A1 1 0 0 1 0 7ZM0 10.5A1 1 0 0 1 1 9.5H8A1 1 0 0 1 8 11.5H1A1 1 0 0 1 0 10.5Z",
+            "evenodd": true
+          }
+        ]
+      }
+    ]
+  },
+  "IconLabelTextGlyph": {
+    "box": "0 0 14 14",
+    "groups": [
+      {
+        "parts": [
+          {
+            "d": "M3 4A3 3 0 1 1 3 10 3 3 0 1 1 3 4ZM7 5A1 1 0 0 1 8 4H13A1 1 0 0 1 13 6H8A1 1 0 0 1 7 5ZM7 9A1 1 0 0 1 8 8H11A1 1 0 0 1 11 10H8A1 1 0 0 1 7 9Z",
+            "evenodd": true
+          }
+        ]
+      }
+    ]
+  },
+  "IconLabelGlyph": {
+    "box": "1.5 1.5 11 11",
+    "groups": [
+      {
+        "parts": [
+          {
+            "d": "M7 1.5A5.5 5.5 0 1 1 7 12.5 5.5 5.5 0 1 1 7 1.5Z",
+            "evenodd": true
+          }
+        ]
+      }
+    ]
+  },
+  "IconLabelReactive": {
+    "box": "0.25 0.5 14 14",
+    "groups": [
+      {
+        "parts": [
+          {
+            "d": "M4.5 0.5A4 4 0 1 1 4.5 8.5 4 4 0 1 1 4.5 0.5ZM8.8 8.8 14 11 11.7 11.7 13.2 13.9 12.2 14.5 10.8 12.3 9.2 13.9Z",
+            "evenodd": true
+          }
+        ]
+      }
+    ]
+  },
   "IconGear": {
     "box": "-0.001 0 14 14",
     "groups": [

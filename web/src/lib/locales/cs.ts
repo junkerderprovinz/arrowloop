@@ -1135,6 +1135,7 @@ const cs: Translations = {
   'new.change.listBar': '{filter} a {search} jsou na kartě {history}, na řádku s {files} a {runs}.',
   'new.change.settingsSearch': 'Hledání nad kartami najde každé nastavení, i podle starého názvu. Stiskni / nebo Ctrl+K.',
   'new.change.tileOrder': 'Dlaždice v části {settings} lze přesouvat: podrž jednu a přetáhni ji, nebo stiskni Alt a šipku. {reset} v části {look} je vrátí na místo.',
+  'new.change.labelGlyphs': 'Každá volba v části {labels} ukazuje před názvem symbol.',
   'new.change.settingsTiles': '{settings} jsou sloupec dlaždic a každá dlaždice ukazuje všechny své karty. Co bylo v části {engine}, je teď v {general}, {sync} a {safety}.',
   'new.change.anomaliesModule': 'Přepínač pro {anomalies} v části {safety} vypne poznámky i jejich stránku. Brzdy dál zadržují a zadržený běh se pak řeší u své úlohy.',
   'new.change.infoTile': '{info} uvádí všechny verze a kontroluje jejich aktualizace. Karta {help} přidává příručku a hlášení chyby.',

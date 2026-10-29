@@ -555,9 +555,9 @@ export function Settings() {
           value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
           options={[
-            { value: "text", label: t("look.labelText") },
-            { value: "textGlyph", label: t("look.labelTextGlyph") },
-            { value: "glyph", label: t("look.labelGlyph") },
+            { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
+            { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
+            { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
           ]}
         />
         <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
@@ -568,9 +568,9 @@ export function Settings() {
           value={barLabels}
           onChange={(barLabels) => setAppearance({ barLabels })}
           options={[
-            { value: "text", label: t("look.labelText") },
-            { value: "textGlyph", label: t("look.labelTextGlyph") },
-            { value: "glyph", label: t("look.labelGlyph") },
+            { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
+            { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
+            { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
           ]}
         />
 

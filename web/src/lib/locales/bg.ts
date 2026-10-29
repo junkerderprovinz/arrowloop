@@ -1135,6 +1135,7 @@ const bg: Translations = {
   'new.change.listBar': '{filter} и {search} са в картата {history}, на реда с {files} и {runs}.',
   'new.change.settingsSearch': 'Търсенето над картите намира всяка настройка, и по старото ѝ име. Натисни / или Ctrl+K.',
   'new.change.tileOrder': 'Плочките в {settings} могат да се местят: задръж една и я плъзни или натисни Alt и стрелка. {reset} в {look} ги връща по местата им.',
+  'new.change.labelGlyphs': 'Всеки избор в {labels} показва символ пред името си.',
   'new.change.settingsTiles': '{settings} са колона от плочки и всяка плочка показва всичките си карти. Това, което беше в {engine}, сега е в {general}, {sync} и {safety}.',
   'new.change.anomaliesModule': 'Превключвател за {anomalies} в {safety} изключва бележките и тяхната страница. Спирачките продължават да задържат, а задържаното изпълнение тогава се решава при неговата задача.',
   'new.change.infoTile': '{info} изброява всяка версия и проверява за актуализации. Картата {help} добавя ръководството и доклад за грешка.',

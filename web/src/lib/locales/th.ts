@@ -1135,6 +1135,7 @@ const th: Translations = {
   'new.change.listBar': '{filter} และ {search} อยู่ในการ์ด {history} ในแถวเดียวกับ {files} และ {runs}',
   'new.change.settingsSearch': 'การค้นหาเหนือการ์ดจะพบการตั้งค่าทุกอย่าง แม้จะใช้ชื่อเดิม กด / หรือ Ctrl+K',
   'new.change.tileOrder': 'ไทล์ใน {settings} ย้ายได้: กดค้างแล้วลาก หรือกด Alt กับปุ่มลูกศร {reset} ใน {look} จะเรียงกลับตามเดิม',
+  'new.change.labelGlyphs': 'ตัวเลือกแต่ละรายการใน {labels} แสดงสัญลักษณ์หน้าชื่อ',
   'new.change.settingsTiles': '{settings} เป็นคอลัมน์ของไทล์ และแต่ละไทล์แสดงการ์ดของตัวเองทั้งหมด สิ่งที่เคยอยู่ใน {engine} ตอนนี้อยู่ใน {general} {sync} และ {safety}',
   'new.change.anomaliesModule': 'สวิตช์ของ {anomalies} ใน {safety} ปิดบันทึกและหน้าของมัน เบรกยังคงหยุดการทำงานไว้ และการทำงานที่ถูกหยุดจะตอบได้ที่งานของมัน',
   'new.change.infoTile': '{info} แสดงทุกเวอร์ชันและตรวจสอบการอัปเดต การ์ด {help} เพิ่มคู่มือและรายงานข้อบกพร่อง',

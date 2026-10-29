@@ -75,7 +75,7 @@ STANDARD = [
     "IconTabRecovery",
     "IconTabSecurity",
     "IconTabStorage",
-    # The Look page's choices: design, corners and motion.
+    # The Look page's choices: design, corners, motion and labels.
     "IconMoon",
     "IconSun",
     "IconThemeSystem",
@@ -87,6 +87,10 @@ STANDARD = [
     "IconMotionSubtle",
     "IconMotionWild",
     "IconMotionStorm",
+    "IconLabelText",
+    "IconLabelTextGlyph",
+    "IconLabelGlyph",
+    "IconLabelReactive",
 ]
 
 # Meanings only ArrowLoop has. The Streamline drawings come from the free Core

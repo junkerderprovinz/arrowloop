@@ -1135,6 +1135,7 @@ const lv: Translations = {
   'new.change.listBar': '{filter} un {search} ir kartītē {history}, rindā ar {files} un {runs}.',
   'new.change.settingsSearch': 'Meklēšana virs kartītēm atrod katru iestatījumu, arī pēc vecā nosaukuma. Nospied / vai Ctrl+K.',
   'new.change.tileOrder': 'Sadaļas {settings} flīzes var pārvietot: turiet vienu nospiestu un velciet vai nospiediet Alt un bulttaustiņu. {reset} sadaļā {look} atliek tās vietā.',
+  'new.change.labelGlyphs': 'Katra izvēle sadaļā {labels} pirms nosaukuma rāda simbolu.',
   'new.change.settingsTiles': '{settings} ir flīžu kolonna, un katra flīze rāda visas savas kartītes. Tas, kas bija sadaļā {engine}, tagad ir sadaļās {general}, {sync} un {safety}.',
   'new.change.anomaliesModule': 'Slēdzis {anomalies} sadaļā {safety} izslēdz piezīmes un to lapu. Bremzes joprojām aiztur, un uz aizturēto palaišanu tad atbild pie tās uzdevuma.',
   'new.change.infoTile': '{info} uzskaita visas versijas un pārbauda, vai ir atjauninājumi. Kartīte {help} pievieno rokasgrāmatu un kļūdu pārskatu.',

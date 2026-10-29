@@ -1135,6 +1135,7 @@ const vi: Translations = {
   'new.change.listBar': '{filter} và {search} nằm trong thẻ {history}, trên cùng hàng với {files} và {runs}.',
   'new.change.settingsSearch': 'Ô tìm kiếm phía trên các thẻ tìm được mọi cài đặt, kể cả theo tên cũ. Nhấn / hoặc Ctrl+K.',
   'new.change.tileOrder': 'Có thể di chuyển các ô trong {settings}: nhấn giữ một ô rồi kéo, hoặc nhấn Alt và một phím mũi tên. {reset} trong {look} đưa chúng về chỗ cũ.',
+  'new.change.labelGlyphs': 'Mỗi lựa chọn trong {labels} hiển thị một biểu tượng trước tên.',
   'new.change.settingsTiles': '{settings} là một cột các ô, và mỗi ô hiện tất cả các thẻ của nó. Những gì trước đây ở {engine} nay nằm trong {general}, {sync} và {safety}.',
   'new.change.anomaliesModule': 'Một công tắc cho {anomalies} trong {safety} tắt các ghi chú và trang của chúng. Phanh vẫn tiếp tục giữ lại, và lần chạy bị giữ khi đó được trả lời ở tác vụ của nó.',
   'new.change.infoTile': '{info} liệt kê mọi phiên bản và kiểm tra bản cập nhật. Thẻ {help} thêm hướng dẫn và báo cáo lỗi.',

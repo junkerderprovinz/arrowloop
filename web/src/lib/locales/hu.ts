@@ -1135,6 +1135,7 @@ const hu: Translations = {
   'new.change.listBar': 'A {filter} és a {search} a {history} kártyán van, a {files} és {runs} sorában.',
   'new.change.settingsSearch': 'A kártyák feletti keresés minden beállítást megtalál, a régi nevén is. Nyomd meg a / vagy a Ctrl+K billentyűt.',
   'new.change.tileOrder': 'A(z) {settings} csempéi áthelyezhetők: tarts lenyomva egyet és húzd el, vagy nyomd meg az Altot és egy nyílbillentyűt. A(z) {look} alatti {reset} visszarendezi őket.',
+  'new.change.labelGlyphs': 'A(z) {labels} alatt minden választás neve előtt szimbólum látható.',
   'new.change.settingsTiles': 'A(z) {settings} csempék oszlopa, és minden csempe az összes kártyáját mutatja. Ami a(z) {engine} alatt volt, most a(z) {general}, {sync} és {safety} alatt van.',
   'new.change.anomaliesModule': 'A(z) {safety} alatti kapcsoló a(z) {anomalies} számára kikapcsolja a megjegyzéseket és az oldalukat. A fékek továbbra is visszatartanak, és a visszatartott futásról akkor a saját feladatánál lehet dönteni.',
   'new.change.infoTile': 'A(z) {info} felsorolja az összes verziót, és frissítéseket keres hozzájuk. A(z) {help} kártya a kézikönyvet és a hibajelentést adja hozzá.',

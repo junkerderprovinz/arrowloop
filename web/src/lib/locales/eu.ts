@@ -1135,6 +1135,7 @@ const eu: Translations = {
   'new.change.listBar': '{filter} eta {search} {history} txartelean daude, {files} eta {runs} dituen errenkadan.',
   'new.change.settingsSearch': 'Txartelen gaineko bilaketak ezarpen guztiak aurkitzen ditu, baita izen zaharraren bidez ere. Sakatu / edo Ctrl+K.',
   'new.change.tileOrder': '{settings} ataleko lauzak mugi daitezke: eduki bat sakatuta eta arrastatu, edo sakatu Alt eta gezi-tekla bat. {look} ataleko {reset} aukerak lehengo lekura itzultzen ditu.',
+  'new.change.labelGlyphs': '{labels} ataleko aukera bakoitzak ikur bat erakusten du izenaren aurrean.',
   'new.change.settingsTiles': '{settings} lauza-zutabe bat da, eta lauza bakoitzak bere txartel guztiak erakusten ditu. {engine} atalean zegoena orain {general}, {sync} eta {safety} ataletan dago.',
   'new.change.anomaliesModule': '{safety} ataleko {anomalies} etengailuak oharrak eta haien orria itzaltzen ditu. Balaztek geldiarazten jarraitzen dute, eta geldiarazitako exekuzioari bere lanean erantzuten zaio orduan.',
   'new.change.infoTile': '{info} atalak bertsio guztiak zerrendatzen ditu eta eguneratzeak bilatzen ditu. {help} txartelak eskuliburua eta akats-txostena gehitzen ditu.',

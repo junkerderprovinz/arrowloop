@@ -1135,6 +1135,7 @@ const ca: Translations = {
   'new.change.listBar': '{filter} i {search} són a la targeta {history}, a la fila de {files} i {runs}.',
   'new.change.settingsSearch': 'La cerca sobre les targetes troba cada ajust, també pel nom antic. Prem / o Ctrl+K.',
   'new.change.tileOrder': 'Les fitxes de {settings} es poden moure: mantén-ne premuda una i arrossega-la, o prem Alt i una tecla de fletxa. {reset} a {look} les torna al seu lloc.',
+  'new.change.labelGlyphs': 'Cada opció de {labels} mostra un símbol davant del nom.',
   'new.change.settingsTiles': '{settings} és una columna de fitxes, i cada fitxa mostra totes les seves targetes. El que hi havia a {engine} ara és a {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Un interruptor per a {anomalies} a {safety} desactiva les notes i la seva pàgina. Els frens continuen retenint, i aleshores una execució retinguda es respon a la seva tasca.',
   'new.change.infoTile': '{info} llista totes les versions i comprova si tenen actualitzacions. La targeta {help} afegeix el manual i un informe d\'error.',

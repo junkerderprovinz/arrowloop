@@ -1135,6 +1135,7 @@ const gl: Translations = {
   'new.change.listBar': '{filter} e {search} están na tarxeta {history}, na fila de {files} e {runs}.',
   'new.change.settingsSearch': 'A busca enriba das tarxetas atopa cada axuste, tamén polo seu nome antigo. Preme / ou Ctrl+K.',
   'new.change.tileOrder': 'Os mosaicos de {settings} pódense mover: mantén premido un e arrástrao, ou preme Alt e unha frecha. {reset} en {look} devólveos ao seu sitio.',
+  'new.change.labelGlyphs': 'Cada opción de {labels} mostra un símbolo diante do nome.',
   'new.change.settingsTiles': '{settings} é unha columna de mosaicos, e cada mosaico mostra todas as súas tarxetas. O que había en {engine} está agora en {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Un interruptor para {anomalies} en {safety} desactiva as notas e a súa páxina. Os freos seguen retendo, e unha execución retida respóndese entón na súa tarefa.',
   'new.change.infoTile': '{info} lista todas as versións e comproba se hai actualizacións. A tarxeta {help} engade o manual e un informe de erros.',

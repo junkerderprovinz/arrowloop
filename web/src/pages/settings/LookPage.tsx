@@ -6,6 +6,10 @@ import {
   IconCornerRound,
   IconCornerSoft,
   IconCornerSquare,
+  IconLabelGlyph,
+  IconLabelReactive,
+  IconLabelText,
+  IconLabelTextGlyph,
   IconMoon,
   IconMotionOff,
   IconMotionStorm,
@@ -248,24 +252,26 @@ export function LookPage({
       </Card>
 
       <Card title={t('look.labels')} hueIndex={1} hint={t('look.labelsHint')}>
-        {[...CONTROL_AXES, BOTTOM_BAR_AXIS].map((axis) => (
-          <SettingsRow
-            key={axis}
-            label={t(axisKey[axis])}
-            hint={axis === BOTTOM_BAR_AXIS ? t('look.barLabelsWeb') : undefined}
-          >
-            <Selector<LabelMode>
-              scale="small"
-              low
-              hug
+        <div data-new="label-glyphs" className="flex flex-col gap-4">
+          {[...CONTROL_AXES, BOTTOM_BAR_AXIS].map((axis) => (
+            <SettingsRow
+              key={axis}
               label={t(axisKey[axis])}
-              hue={selectorHue()}
-              value={labels[axis]}
-              onChange={(next) => onLabels(axis, next)}
-              options={LABEL_MODES.map((m) => ({ value: m, label: t(labelModeKey[m]) }))}
-            />
-          </SettingsRow>
-        ))}
+              hint={axis === BOTTOM_BAR_AXIS ? t('look.barLabelsWeb') : undefined}
+            >
+              <Selector<LabelMode>
+                scale="small"
+                low
+                hug
+                label={t(axisKey[axis])}
+                hue={selectorHue()}
+                value={labels[axis]}
+                onChange={(next) => onLabels(axis, next)}
+                options={LABEL_MODES.map((m) => ({ value: m, label: t(labelModeKey[m]), icon: labelModeGlyph[m] }))}
+              />
+            </SettingsRow>
+          ))}
+        </div>
       </Card>
 
       {/* Accent and rainbow share one card, last, as in BombVault: the accent
@@ -411,3 +417,10 @@ const labelModeKey = {
   glyph: 'look.labelGlyph',
   reactive: 'look.labelReactive',
 } as const
+
+const labelModeGlyph = {
+  text: <IconLabelText />,
+  textGlyph: <IconLabelTextGlyph />,
+  glyph: <IconLabelGlyph />,
+  reactive: <IconLabelReactive />,
+}

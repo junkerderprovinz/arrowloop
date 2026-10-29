@@ -1135,6 +1135,7 @@ const hi: Translations = {
   'new.change.listBar': '{filter} और {search} {history} कार्ड में हैं, {files} और {runs} वाली पंक्ति में।',
   'new.change.settingsSearch': 'कार्डों के ऊपर की खोज हर सेटिंग ढूँढ लेती है, पुराने नाम से भी। / या Ctrl+K दबाएँ।',
   'new.change.tileOrder': '{settings} की टाइलें हिलाई जा सकती हैं: किसी एक को दबाकर रखें और खींचें, या Alt और एक तीर कुंजी दबाएँ। {look} में {reset} उन्हें वापस क्रम में लाता है।',
+  'new.change.labelGlyphs': '{labels} के हर विकल्प के नाम से पहले एक प्रतीक दिखता है।',
   'new.change.settingsTiles': '{settings} टाइलों का एक कॉलम है, और हर टाइल अपने सभी कार्ड दिखाती है। जो {engine} में था, वह अब {general}, {sync} और {safety} में है।',
   'new.change.anomaliesModule': '{safety} में {anomalies} का एक स्विच टिप्पणियों और उनके पृष्ठ को बंद कर देता है। ब्रेक फिर भी रोकते रहते हैं, और तब रुके हुए रन का जवाब उसके काम पर दिया जाता है।',
   'new.change.infoTile': '{info} सारे संस्करण सूचीबद्ध करता है और उनके अपडेट जाँचता है। {help} कार्ड मैनुअल और बग रिपोर्ट जोड़ता है।',

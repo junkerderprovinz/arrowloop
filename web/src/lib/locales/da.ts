@@ -1135,6 +1135,7 @@ const da: Translations = {
   'new.change.listBar': '{filter} og {search} står i kortet {history} på rækken med {files} og {runs}.',
   'new.change.settingsSearch': 'Søgningen over kortene finder enhver indstilling, også på det gamle navn. Tryk på / eller Ctrl+K.',
   'new.change.tileOrder': 'Felterne under {settings} kan flyttes: hold et nede og træk det, eller tryk Alt og en piletast. {reset} under {look} sætter dem tilbage.',
+  'new.change.labelGlyphs': 'Hvert valg under {labels} viser et symbol foran navnet.',
   'new.change.settingsTiles': '{settings} er en kolonne af felter, og hvert felt viser alle sine kort. Det, der lå under {engine}, ligger nu under {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'En kontakt for {anomalies} under {safety} slår bemærkningerne og deres side fra. Bremserne holder stadig tilbage, og en tilbageholdt kørsel besvares så på sit job.',
   'new.change.infoTile': '{info} viser alle versioner og tjekker dem for opdateringer. Kortet {help} tilføjer manualen og en fejlrapport.',

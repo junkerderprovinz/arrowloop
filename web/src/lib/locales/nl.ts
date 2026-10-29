@@ -1135,6 +1135,7 @@ const nl: Translations = {
   'new.change.listBar': '{filter} en {search} staan in de kaart {history}, op de rij met {files} en {runs}.',
   'new.change.settingsSearch': 'De zoekbalk boven de kaarten vindt elke instelling, ook onder de oude naam. Druk op / of Ctrl+K.',
   'new.change.tileOrder': 'De tegels onder {settings} zijn te verplaatsen: houd er een vast en sleep hem, of druk op Alt en een pijltjestoets. {reset} onder {look} zet ze terug.',
+  'new.change.labelGlyphs': 'Elke keuze onder {labels} toont een symbool voor de naam.',
   'new.change.settingsTiles': '{settings} is een kolom met tegels, en elke tegel toont al zijn kaarten. Wat onder {engine} stond, staat nu onder {general}, {sync} en {safety}.',
   'new.change.anomaliesModule': 'Een schakelaar voor {anomalies} onder {safety} zet de opmerkingen en hun pagina uit. De remmen blijven tegenhouden, en een tegengehouden run beantwoord je dan bij zijn taak.',
   'new.change.infoTile': '{info} toont alle versies en controleert ze op updates. De kaart {help} voegt de handleiding en een foutrapport toe.',
