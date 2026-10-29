@@ -8,12 +8,16 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.3.3 - 2026-10-29
+
+## ⚡ Improved
+
+- **The engine and the desktop app are built with Go 1.27.2** and golang.org/x/net 0.62.0, which bring the latest fixes of the standard library and the network package.
 
 ## 🔒 Security
 
-- **Dependency updates close five open advisories.** The web UI test tooling takes undici 8.12.3, the phone app takes zod 4.6.6 and node-forge 1.4.2, and the engine and the desktop app take chi 5.4.0.
-- **Marking a drive accepts only a drive ArrowLoop offers.** The request could name any folder the engine can write to and left a marker file there, which no job would ever find again. A folder that is not one of the offered drives is now refused.
+- **Marking a drive accepts only a drive ArrowLoop offers.** The request could name any folder the engine can write to and left a marker file there, which no job would ever find. A folder that is not one of the offered drives is refused.
+- **Dependency updates close five open advisories.** The web interface's test tooling takes undici 8.12.3, the phone app takes zod 4.6.6 and node-forge 1.4.2, and the engine and the desktop app take chi 5.4.0.
 
 ## 2.3.2 - 2026-10-27
 
