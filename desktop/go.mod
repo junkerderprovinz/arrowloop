@@ -1,6 +1,6 @@
 module github.com/junkerderprovinz/arrowloop/desktop
 
-go 1.27.1
+go 1.27.2
 
 // Windows marks the folders of a cloud client that fetches files on demand
 // (OpenCloud, OneDrive, Nextcloud) as reparse points. Since Go 1.23 they read
