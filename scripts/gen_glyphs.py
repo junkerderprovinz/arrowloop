@@ -73,6 +73,7 @@ STANDARD = [
     "IconKeepRight",
     # Notifications, the update check, what is new and the tray.
     "IconSendTest",
+    "IconUpdate",
     "IconUpToDate",
     "IconUpdateAvailable",
     "IconWhatsNew",

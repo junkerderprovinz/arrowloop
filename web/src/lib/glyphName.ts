@@ -18,7 +18,8 @@ const RULES: Rule[] = [
   [/^about\.paypal$/i, 'IconLink'],
   [/^about\.mail$/i, 'IconMail'],
   [/^about\.releaseNotes$/i, 'IconInfo'],
-  // The update check's answers. After a failure the same button tries again.
+  // The update check and its answers. After a failure the same button tries again.
+  [/^about\.checkUpdates$/i, 'IconUpdate'],
   [/^about\.upToDate$/i, 'IconUpToDate'],
   [/^about\.updatesFound$/i, 'IconUpdateAvailable'],
   [/^about\.checkFailed$/i, 'IconRetry'],
