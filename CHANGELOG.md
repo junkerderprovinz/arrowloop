@@ -8,24 +8,29 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.4.0 - 2026-10-30
+
+## ✨ Added
+
+- **The desktop app draws its own title bar on Windows and Linux.** It takes the colours, corners and accent of the look you chose and holds only Minimise, Maximise and Close, since the sidebar shows the logo and the name. Drag it to move the window, double-click it to maximise and pull any edge to resize. It stays clear while a dialog is open, and Close still hides to the notification area or quits as before. macOS keeps its own title bar.
 
 ## 🎨 Design
 
-- **Every choice under Look, Labels shows a glyph before its name,** in the web interface, the desktop app and the phone app, as Design, Corners and Motion already do.
-- **Every button has a glyph of its own,** so the Symbol setting under Look, Labels leaves no word among the symbols. The answers to a conflict, the update check and its result, and the New button in the Version card have one now, on the phone too. Buttons that borrowed another meaning's glyph get the one GlimStone gives their meaning: importing and exporting the settings, logging in with a password or a passkey, Forgot password, Done, Use this folder, Send a test, putting a file back, emptying and clearing out the trash, stopping a run, setting and removing the password, and turning two-factor authentication on and off. Open in the tray shows the app's own mark.
-- **ArrowLoop follows GlimStone 3.8.0,** whose glyph set these buttons come from.
-- **The Labels selectors stand two to a row on a phone,** in the phone app and in a browser narrower than 600 pixels, so a choice with its symbol and a long name keeps its words instead of losing them.
-- **A running job's progress bar keeps its changes to itself,** so the rest of the page is not laid out again at every step.
-- **The desktop app draws its own title bar on Windows and Linux,** in the colours, corners and accent of the look you chose, with Minimise, Maximise and Close and nothing else, since the sidebar already shows the logo and the name. The bar stays clear while a window is open, so ArrowLoop can still be moved and closed. Drag it to move the window, double-click it to maximise, and pull any edge to resize. Close hides to the notification area or quits as it did before. macOS keeps its own title bar.
-- **The welcome page's three steps share the accent and play a small scene.** Each card shows its step as a picture, and a pointer walks through all three, as on BombVault's and KnightLoader's pairing pages: it adds a target, sets up a job and runs the first sync, which ends in a badge and a burst of confetti. The step numbers pop up one after another as the page opens, and a step done while the page is open draws a ring round its number before the number turns into a tick. Motion follows the Motion setting and the system's reduced motion.
-- **The trash wears the bin everywhere,** in the sidebar, in a job's menu and on the phone. It wore the lifebuoy, which stands for getting a backup back.
-- **The F-Droid button shows F-Droid's own logo in its colours,** as Android and Docker beside it do, and turns white on F-Droid's blue under the pointer.
-- **Version numbers are plain numbers,** 2.3.3 rather than v2.3.3: in the Version card for ArrowLoop, GlimStone and rclone, in the corner of the App tile's cards and in the messages about an update, on the web, in the desktop app and on the phone. Each number still opens its release.
+- **Every button has a symbol of its own,** so Settings › Look › Labels › Symbol leaves no word among the symbols. The answers to a conflict, Check for updates and its answer, and New in Settings › Info have one, on the phone too. Buttons that borrowed another meaning's symbol get their own: Import and Export, logging in with a password or a passkey, Forgot password, Done, Use this folder, Send a test, putting a file back, emptying and clearing out the trash, stopping a run, the password and two-factor authentication. Open in the tray menu shows the app's own mark.
+- **Every choice under Settings › Look › Labels shows a symbol before its name,** as Design, Corners and Motion do. On a phone, and in a browser narrower than 600 pixels, these choices stand two to a row, so their names keep their words.
+- **The welcome page shows the way to the first sync as a small scene.** Each step card has a picture, and a pointer walks through all three: it adds a target, sets up a job and runs the first sync, which ends in a badge and a burst of confetti. The three step numbers share the accent and pop in one after another, and a step done while the page is open draws a ring before its number turns into a tick. The scene follows the Motion setting and your system's reduced motion.
+- **The trash wears a bin,** in the sidebar, in a job's menu and on the phone.
+- **The F-Droid button in Settings › Apps shows F-Droid's own logo in its colours.**
+- **ArrowLoop follows GlimStone 3.8.0,** the design language these symbols come from.
 
-## 🐛 Fixed
+## ⚡ Improved
 
-- **ArrowLoop Test keeps its own data.** The test build installs beside a real installation but opened its jobs and history from `%APPDATA%\ArrowLoop`, shared the real copy's targets in rclone's own configuration, its window storage and its single-instance lock, and wrote its autostart entry under the real name. It now uses `%APPDATA%\ArrowLoop Test` and keeps its own rclone configuration and window storage there, with a lock and an autostart entry of its own. Release builds are unchanged.
+- **Version numbers have no v,** 2.4.0 rather than v2.4.0, in Settings › Info, on the cards in Settings › Apps and in the messages about an update. Each number still opens its release.
+- **A running job's progress bar costs the page less,** since nothing around it is laid out again at each step.
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
 
 ## 2.3.3 - 2026-10-29
 
