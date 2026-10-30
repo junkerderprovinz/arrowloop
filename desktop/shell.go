@@ -60,13 +60,18 @@ type trayItems struct {
 func newShell(ctx context.Context, app *application.App, store *deskset.Store, icons *TraySet, inTray bool, lang string) *shell {
 	s := &shell{ctx: ctx, app: app, store: store, live: newTrayLive(icons)}
 
+	// On Windows and Linux the page draws the title bar in the house style
+	// (web/src/components/WindowFrame.tsx) and does the dragging and the edge
+	// resizing. Windows keeps the frame's shadow, rounded corners and snapping.
+	// macOS keeps its own title bar and the traffic lights people expect.
 	s.main = app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Name:   "main",
-		Title:  "ArrowLoop",
-		Width:  1100,
-		Height: 760,
-		URL:    pageURL("", lang),
-		Hidden: inTray,
+		Name:      "main",
+		Title:     "ArrowLoop",
+		Width:     1100,
+		Height:    760,
+		URL:       pageURL("", lang),
+		Hidden:    inTray,
+		Frameless: runtime.GOOS != "darwin",
 	})
 	s.remember(inTray)
 	s.main.RegisterHook(events.Common.WindowClosing, s.closing)

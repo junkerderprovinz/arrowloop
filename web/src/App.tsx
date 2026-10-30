@@ -463,7 +463,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     // down through the gutter and pads its end by the same amount, so a page
     // that fills the window, or one scrolled to its end, stops on the rail's
     // bottom line with room for its cards' shadow.
-    <div className="flex h-screen flex-col overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row sm:gap-4">
+    <div className="glim-shell flex h-[calc(100dvh-var(--window-bar))] flex-col overflow-hidden bg-carbon-background p-[var(--page-gutter)] sm:flex-row sm:gap-4">
       {!small && <Sidebar extras={extras} counts={counts} pathname={pathname} mode={labels.sidebar} signOut={signOut} />}
 
       <Places.Provider value={places}>

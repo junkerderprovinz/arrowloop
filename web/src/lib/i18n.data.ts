@@ -637,6 +637,10 @@ export const en = {
   'reason.recordFailed': 'the record could not be written, leaving it for the next run: {error}',
   'reason.conflictGone': 'one of the two versions is gone, so there is nothing left to decide',
 
+  'frame.minimise': 'Minimise',
+  'frame.maximise': 'Maximise',
+  'frame.restore': 'Restore',
+  'frame.close': 'Close',
   'window.tray': 'Icon in the notification area',
   'window.trayHint':
     'Keeps ArrowLoop reachable while the window is away. Without it there is nowhere for the two settings below to send the window, so they turn off with it.',
@@ -1955,6 +1959,10 @@ export const de: Translations = {
   'reason.recordFailed': 'Der Vermerk ließ sich nicht schreiben, bleibt für den nächsten Lauf liegen: {error}',
   'reason.conflictGone': 'eine der beiden Fassungen ist weg, es gibt nichts mehr zu entscheiden',
 
+  'frame.minimise': 'Minimieren',
+  'frame.maximise': 'Maximieren',
+  'frame.restore': 'Wiederherstellen',
+  'frame.close': 'Schließen',
   'window.tray': 'Symbol im Infobereich',
   'window.trayHint':
     'Hält ArrowLoop erreichbar, während das Fenster weg ist. Ohne das Symbol hätten die beiden Einstellungen darunter kein Ziel, deshalb gehen sie mit aus.',

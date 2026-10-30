@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { Gate } from './App'
+import { WindowFrame } from './components/WindowFrame'
 import { armShapeTransitions } from './lib/animate'
 import { applyCachedAppearance } from './lib/appearance'
 import { applyStoredLabelModes, BOTTOM_BAR_AXIS } from './lib/controls'
@@ -40,6 +41,8 @@ if (root) {
   createRoot(root).render(
     <StrictMode>
       <I18nProvider>
+        {/* Outside the gate, so the window can be moved and closed from the login. */}
+        <WindowFrame />
         <Gate />
       </I18nProvider>
     </StrictMode>,

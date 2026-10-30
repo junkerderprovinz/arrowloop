@@ -103,6 +103,43 @@ export function onUpdateReady(callback: (version: string) => void): () => void {
   return listen(UPDATE_READY_EVENT, (data) => callback(String(data)))
 }
 
+/**
+ * Whether this page draws the window's title bar. The main window is frameless
+ * on Windows and Linux and keeps its own title bar on macOS, whose traffic
+ * lights people expect; see desktop/shell.go.
+ */
+export function drawsOwnFrame(): boolean {
+  return inDesktopWindow() && !isActivityView() && !/Macintosh/.test(navigator.userAgent)
+}
+
+// The runtime's window object and its methods, as @wailsio/runtime numbers them.
+const WINDOW = 6
+const WINDOW_CLOSE = 2
+const WINDOW_IS_MAXIMISED = 14
+const WINDOW_MINIMISE = 17
+const WINDOW_TOGGLE_MAXIMISE = 39
+
+/** Runs a method of the window the request comes from, which the webview names itself. */
+async function windowCall(method: number): Promise<unknown> {
+  const res = await fetch('/wails/runtime', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ object: WINDOW, method }),
+  })
+  if (!res.ok) throw new Error(res.statusText)
+  return res.headers.get('Content-Type')?.includes('application/json') ? res.json() : res.text()
+}
+
+export const frame = {
+  minimise: () => windowCall(WINDOW_MINIMISE).then(() => undefined),
+  toggleMaximise: () => windowCall(WINDOW_TOGGLE_MAXIMISE).then(() => undefined),
+  /** Asks the way the native close button does, so the shell still chooses between the tray and quitting. */
+  close: () => windowCall(WINDOW_CLOSE).then(() => undefined),
+  maximised: async () => (await windowCall(WINDOW_IS_MAXIMISED)) === true,
+  /** Hands a press that has started to move to the system, which moves the window from there. */
+  drag: () => (window as unknown as WailsHost)._wails?.invoke?.('wails:drag'),
+}
+
 /** How close to its edge, in CSS pixels, a press resizes the window. */
 const EDGE = 6
 

@@ -102,7 +102,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
 
   if (reset) {
     return (
-      <div className="flex h-screen items-center justify-center bg-carbon-background p-6">
+      <div className="flex h-[calc(100dvh-var(--window-bar))] items-center justify-center bg-carbon-background p-6">
         <div className="w-full max-w-sm">
           <PasswordReset minutes={reset.minutes} minLength={reset.minLength} onDone={onIn} onBack={() => setReset(null)} />
         </div>
@@ -111,7 +111,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-carbon-background p-6">
+    <div className="flex h-[calc(100dvh-var(--window-bar))] items-center justify-center bg-carbon-background p-6">
       <div className="w-full max-w-sm">
         <Card title={t('login.title')} hueIndex={0}>
           <form
