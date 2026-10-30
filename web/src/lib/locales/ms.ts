@@ -1146,7 +1146,7 @@ const ms: Translations = {
   'new.change.trashBin': 'Semua yang membawa ke {trash} memaparkan tong sampah, termasuk bar sisi dan menu tugas.',
   'new.change.labelPairs': 'Pada telefon, pilihan di bawah {labels} berdiri dua sebaris supaya namanya muat.',
   'new.change.passkeyKey': 'Log masuk dengan kunci laluan memaparkan kunci.',
-  'new.change.welcomeMotion': 'Pada pemasangan baharu, halaman alu-aluan memaparkan tiga langkahnya dalam warna aksen dan memunculkannya satu demi satu.',
+  'new.change.welcomeMotion': 'Pada pemasangan baharu, halaman alu-aluan memaparkan tiga langkahnya dalam warna aksen dan memainkannya sebagai babak kecil: penuding menambah sasaran, mencipta tugas dan menjalankan penyegerakan pertama.',
   'new.change.titleBar': 'Aplikasi desktop melukis bar tajuknya sendiri pada Windows dan Linux, dengan rupa yang anda pilih.',
   'new.change.settingsTiles': '{settings} ialah satu lajur jubin, dan setiap jubin memaparkan semua kadnya. Apa yang dahulu dalam {engine} kini di bawah {general}, {sync} dan {safety}.',
   'new.change.anomaliesModule': 'Suis untuk {anomalies} dalam {safety} mematikan nota dan halamannya. Brek terus menahan, dan larian yang ditahan kemudian dijawab pada tugasnya.',

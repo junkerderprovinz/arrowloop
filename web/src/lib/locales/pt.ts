@@ -1146,7 +1146,7 @@ const pt: Translations = {
   'new.change.trashBin': 'Tudo o que leva a {trash} mostra um caixote, incluindo a barra lateral e os menus das tarefas.',
   'new.change.labelPairs': 'No telemóvel, as opções em {labels} ficam duas por linha, para que os nomes caibam.',
   'new.change.passkeyKey': 'Iniciar sessão com uma chave de acesso mostra uma chave.',
-  'new.change.welcomeMotion': 'Numa instalação nova, a página de boas-vindas mostra os seus três passos na cor de destaque e fá-los aparecer um após o outro.',
+  'new.change.welcomeMotion': 'Numa instalação nova, a página de boas-vindas mostra os seus três passos na cor de destaque e representa-os como uma pequena cena: um ponteiro adiciona um destino, cria uma tarefa e faz a primeira sincronização.',
   'new.change.titleBar': 'A app de computador desenha a sua própria barra de título no Windows e no Linux, com o aspeto que escolheste.',
   'new.change.settingsTiles': '{settings} é uma coluna de mosaicos, e cada mosaico mostra todos os seus cartões. O que estava em {engine} está agora em {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Um interruptor para {anomalies} em {safety} desliga as notas e a sua página. Os travões continuam a reter, e uma execução retida responde-se então na sua tarefa.',

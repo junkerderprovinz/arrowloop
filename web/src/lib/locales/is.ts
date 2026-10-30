@@ -1146,7 +1146,7 @@ const is: Translations = {
   'new.change.trashBin': 'Allt sem leiðir að {trash} sýnir ruslafötu, líka hliðarstikan og valmyndir verka.',
   'new.change.labelPairs': 'Í síma standa valin undir {labels} tvö og tvö í röð, svo heitin komist fyrir.',
   'new.change.passkeyKey': 'Innskráning með aðgangslykli sýnir lykil.',
-  'new.change.welcomeMotion': 'Við nýja uppsetningu sýnir velkomnasíðan þrjú skref sín í áherslulitnum og lætur þau birtast hvert á eftir öðru.',
+  'new.change.welcomeMotion': 'Við nýja uppsetningu sýnir velkomnasíðan þrjú skref sín í áherslulitnum og leikur þau sem litla senu: bendill bætir við áfangastað, stofnar verk og keyrir fyrstu samstillinguna.',
   'new.change.titleBar': 'Skjáborðsforritið teiknar eigin titilstiku á Windows og Linux, í útlitinu sem þú valdir.',
   'new.change.settingsTiles': '{settings} eru dálkur af reitum og hver reitur sýnir öll sín spjöld. Það sem var í {engine} er nú undir {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'Rofi fyrir {anomalies} undir {safety} slekkur á athugasemdunum og síðunni þeirra. Bremsurnar halda áfram og keyrslu sem haldið er er þá svarað við verkið hennar.',

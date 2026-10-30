@@ -1146,7 +1146,7 @@ const ja: Translations = {
   'new.change.trashBin': '{trash} へ通じるものはすべてごみ箱を表示します。サイドバーとジョブのメニューも同じです。',
   'new.change.labelPairs': 'スマートフォンでは {labels} の選択肢が 1 行に 2 つずつ並び、名前が収まります。',
   'new.change.passkeyKey': 'パスキーでのサインインには鍵が表示されます。',
-  'new.change.welcomeMotion': '新しいインストールでは、ようこそページが 3 つのステップをアクセントカラーで表示し、順番に登場させます。',
+  'new.change.welcomeMotion': '新しいインストールでは、ようこそページが 3 つのステップをアクセントカラーで表示し、小さな場面として再生します。ポインターが接続先を追加し、ジョブを作り、最初の同期を実行します。',
   'new.change.titleBar': 'デスクトップアプリは Windows と Linux で、選んだ見た目のタイトルバーを自分で描画します。',
   'new.change.settingsTiles': '{settings}はタイルの列になり、各タイルにそのカードがすべて表示されます。{engine}にあった項目は{general}、{sync}、{safety}に移りました。',
   'new.change.anomaliesModule': '{safety}にある{anomalies}のスイッチで、注意とそのページをオフにできます。ブレーキは引き続き実行を止め、止められた実行にはそのジョブで答えます。',

@@ -1,7 +1,7 @@
 // The page a new install opens on: what ArrowLoop has found on this machine
 // and the three steps to the first sync.
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 
 import { IconCheck, IconSearch } from '../components/glyphs'
 import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
@@ -12,6 +12,7 @@ import { Button } from '../lib/glimstone/Button'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { Link, navigate } from '../lib/router'
 import { openSetting } from './settings/SettingsSearch'
+import { SCENE_STOPS, ScenePointer, StepPicture } from './welcomeArt'
 
 const STEP: Record<FirstStep, { title: TranslationKey; sub: TranslationKey; to?: string }> = {
   target: { title: 'welcome.target', sub: 'welcome.targetSub', to: '/targets' },
@@ -47,6 +48,49 @@ function StepMark({ n, state }: { n: number; state: StepState }) {
   )
 }
 
+/** Where an element lies inside an ancestor, by layout alone. A card that is
+ *  still sliding in would shift what its bounding box reports. */
+function placeWithin(el: HTMLElement, root: HTMLElement): [number, number] {
+  let x = 0
+  let y = 0
+  for (let at: HTMLElement | null = el; at && at !== root; at = at.offsetParent as HTMLElement | null) {
+    x += at.offsetLeft
+    y += at.offsetTop
+  }
+  return [x, y]
+}
+
+/**
+ * Measures the pointer's stops in the step grid's own pixels and hands them to
+ * the stylesheet as --at-*, again whenever the grid changes size.
+ */
+function useSceneStops() {
+  const grid = useRef<HTMLDivElement>(null)
+  const [stops, setStops] = useState<CSSProperties>({})
+  useLayoutEffect(() => {
+    const root = grid.current
+    if (!root) return
+    const measure = () => {
+      const frames = Array.from(root.querySelectorAll<HTMLElement>('[data-step-frame]'))
+      if (frames.length < 3) return
+      const next: Record<string, string> = {}
+      for (const [name, [card, x, y]] of Object.entries(SCENE_STOPS)) {
+        const frame = frames[card]!
+        const [left, top] = placeWithin(frame, root)
+        const scale = frame.offsetWidth / 240
+        next[`--at-${name}-x`] = `${(left + x * scale).toFixed(1)}px`
+        next[`--at-${name}-y`] = `${(top + y * scale).toFixed(1)}px`
+      }
+      setStops((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : (next as CSSProperties)))
+    }
+    measure()
+    const watch = new ResizeObserver(measure)
+    watch.observe(root)
+    return () => watch.disconnect()
+  }, [])
+  return { grid, stops }
+}
+
 /** What the machine already holds, read once; a question that fails names nothing. */
 function useFound(): { found: Found; hasTarget: boolean } {
   const [found, setFound] = useState<Found>({ targets: 0, drives: 0 })
@@ -77,6 +121,7 @@ export function Welcome({ fresh }: { fresh: boolean | null }) {
   const { found, hasTarget } = useFound()
   const states = stepStates(hasTarget)
   const line = foundLine(found, t)
+  const { grid, stops } = useSceneStops()
 
   useEffect(() => {
     if (fresh === false) navigate('/jobs', { replace: true })
@@ -96,40 +141,49 @@ export function Welcome({ fresh }: { fresh: boolean | null }) {
           <span>{line}</span>
         </p>
       )}
-      <ol className="grid w-full gap-4 text-start md:grid-cols-3">
-        {FIRST_STEPS.map((step, i) => {
-          const { title, sub, to } = STEP[step]
-          const state = states[step]
-          const name = (
-            <>
-              {t(title)}
-              {state === 'done' && <span className="sr-only">{` (${t('welcome.done')})`}</span>}
-            </>
-          )
-          return (
-            <li
-              key={step}
-              data-step={step}
-              data-state={state}
-              aria-current={state === 'next' ? 'step' : undefined}
-              style={hueVars(i) as CSSProperties}
-              className="glim-hue flex gap-3 rounded-card bg-carbon-surface p-[18px]"
-            >
-              <StepMark n={i + 1} state={state} />
-              <div className="flex min-w-0 flex-col gap-0.5">
-                {to && state !== 'done' ? (
-                  <Link to={to} className="text-body font-semibold text-carbon-text hover:underline">
-                    {name}
-                  </Link>
-                ) : (
-                  <span className="text-body font-semibold text-carbon-text">{name}</span>
-                )}
-                <span className="text-subline text-carbon-textMuted">{t(sub)}</span>
-              </div>
-            </li>
-          )
-        })}
-      </ol>
+      {/* The pictures play one scene, and one pointer walks through all three cards. */}
+      <div ref={grid} className="relative w-full">
+        <ol className="grid w-full gap-4 text-start md:grid-cols-3">
+          {FIRST_STEPS.map((step, i) => {
+            const { title, sub, to } = STEP[step]
+            const state = states[step]
+            const name = (
+              <>
+                {t(title)}
+                {state === 'done' && <span className="sr-only">{` (${t('welcome.done')})`}</span>}
+              </>
+            )
+            return (
+              <li
+                key={step}
+                data-step={step}
+                data-state={state}
+                aria-current={state === 'next' ? 'step' : undefined}
+                style={hueVars(i) as CSSProperties}
+                className="glim-hue flex flex-col gap-3 rounded-card bg-carbon-surface p-[18px]"
+              >
+                <div className="flex gap-3">
+                  <StepMark n={i + 1} state={state} />
+                  <div className="flex min-w-0 flex-col gap-0.5">
+                    {to && state !== 'done' ? (
+                      <Link to={to} className="text-body font-semibold text-carbon-text hover:underline">
+                        {name}
+                      </Link>
+                    ) : (
+                      <span className="text-body font-semibold text-carbon-text">{name}</span>
+                    )}
+                    <span className="text-subline text-carbon-textMuted">{t(sub)}</span>
+                  </div>
+                </div>
+                <div data-step-frame className="al-scene-frame mx-auto mt-auto max-w-[280px]">
+                  <StepPicture step={(i + 1) as 1 | 2 | 3} t={t} />
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+        <ScenePointer style={stops} />
+      </div>
       <div className="flex flex-wrap justify-center gap-3">
         <Button
           label={t('welcome.restore')}

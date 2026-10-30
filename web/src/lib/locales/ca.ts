@@ -1146,7 +1146,7 @@ const ca: Translations = {
   'new.change.trashBin': 'Tot el que porta a {trash} mostra una paperera, també la barra lateral i els menús de les tasques.',
   'new.change.labelPairs': 'Al mòbil, les opcions de {labels} van de dues en dues per fila perquè els noms hi càpiguen.',
   'new.change.passkeyKey': 'Iniciar la sessió amb una clau d’accés mostra una clau.',
-  'new.change.welcomeMotion': 'En una instal·lació nova, la pàgina de benvinguda mostra els tres passos amb el color d’accent i els fa aparèixer un rere l’altre.',
+  'new.change.welcomeMotion': 'En una instal·lació nova, la pàgina de benvinguda mostra els tres passos amb el color d’accent i els representa com una petita escena: un punter afegeix una destinació, crea una tasca i fa la primera sincronització.',
   'new.change.titleBar': 'L’app d’escriptori dibuixa la seva pròpia barra de títol a Windows i Linux, amb l’aspecte que has triat.',
   'new.change.settingsTiles': '{settings} és una columna de fitxes, i cada fitxa mostra totes les seves targetes. El que hi havia a {engine} ara és a {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Un interruptor per a {anomalies} a {safety} desactiva les notes i la seva pàgina. Els frens continuen retenint, i aleshores una execució retinguda es respon a la seva tasca.',

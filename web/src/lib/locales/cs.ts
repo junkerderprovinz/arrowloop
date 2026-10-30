@@ -1146,7 +1146,7 @@ const cs: Translations = {
   'new.change.trashBin': 'Každá cesta k položce {trash} ukazuje koš, i v postranním panelu a v nabídkách úloh.',
   'new.change.labelPairs': 'Na telefonu stojí volby v části {labels} po dvou v řadě, aby se jejich názvy vešly.',
   'new.change.passkeyKey': 'Přihlášení pomocí přístupového klíče ukazuje klíč.',
-  'new.change.welcomeMotion': 'Při nové instalaci ukazuje uvítací stránka své tři kroky v barvě zvýraznění a nechá je objevit jeden po druhém.',
+  'new.change.welcomeMotion': 'Při nové instalaci ukazuje uvítací stránka své tři kroky v barvě zvýraznění a přehraje je jako malou scénu: ukazatel přidá cíl, založí úlohu a spustí první synchronizaci.',
   'new.change.titleBar': 'Desktopová aplikace kreslí ve Windows a Linuxu vlastní záhlaví okna ve vzhledu, který sis vybral.',
   'new.change.settingsTiles': '{settings} jsou sloupec dlaždic a každá dlaždice ukazuje všechny své karty. Co bylo v části {engine}, je teď v {general}, {sync} a {safety}.',
   'new.change.anomaliesModule': 'Přepínač pro {anomalies} v části {safety} vypne poznámky i jejich stránku. Brzdy dál zadržují a zadržený běh se pak řeší u své úlohy.',

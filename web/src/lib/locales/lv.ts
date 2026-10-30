@@ -1146,7 +1146,7 @@ const lv: Translations = {
   'new.change.trashBin': 'Viss, kas ved uz {trash}, rāda atkritni, arī sānjosla un uzdevumu izvēlnes.',
   'new.change.labelPairs': 'Tālrunī izvēles sadaļā {labels} stāv pa divām rindā, lai to nosaukumi ietilptu.',
   'new.change.passkeyKey': 'Pierakstīšanās ar piekļuves atslēgu rāda atslēgu.',
-  'new.change.welcomeMotion': 'Jaunā instalācijā sveiciena lapa rāda savus trīs soļus akcenta krāsā un parāda tos vienu pēc otra.',
+  'new.change.welcomeMotion': 'Jaunā instalācijā sveiciena lapa rāda savus trīs soļus akcenta krāsā un izspēlē tos kā mazu ainu: rādītājs pievieno mērķi, izveido uzdevumu un palaiž pirmo sinhronizāciju.',
   'new.change.titleBar': 'Darbvirsmas lietotne operētājsistēmās Windows un Linux zīmē pati savu virsrakstjoslu tevis izvēlētajā izskatā.',
   'new.change.settingsTiles': '{settings} ir flīžu kolonna, un katra flīze rāda visas savas kartītes. Tas, kas bija sadaļā {engine}, tagad ir sadaļās {general}, {sync} un {safety}.',
   'new.change.anomaliesModule': 'Slēdzis {anomalies} sadaļā {safety} izslēdz piezīmes un to lapu. Bremzes joprojām aiztur, un uz aizturēto palaišanu tad atbild pie tās uzdevuma.',

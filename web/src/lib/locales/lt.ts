@@ -1146,7 +1146,7 @@ const lt: Translations = {
   'new.change.trashBin': 'Viskas, kas veda į {trash}, rodo šiukšlinę, taip pat šoninė juosta ir užduočių meniu.',
   'new.change.labelPairs': 'Telefone pasirinkimai skiltyje {labels} stovi po du eilutėje, kad tilptų jų pavadinimai.',
   'new.change.passkeyKey': 'Prisijungimas su prieigos raktu rodo raktą.',
-  'new.change.welcomeMotion': 'Naujai įdiegus, pasveikinimo puslapis rodo tris žingsnius akcento spalva ir parodo juos vieną po kito.',
+  'new.change.welcomeMotion': 'Naujai įdiegus, pasveikinimo puslapis rodo tris žingsnius akcento spalva ir suvaidina juos kaip mažą sceną: žymeklis prideda tikslą, sukuria užduotį ir paleidžia pirmąjį sinchronizavimą.',
   'new.change.titleBar': 'Darbalaukio programa sistemose Windows ir Linux pati piešia savo pavadinimo juostą tavo pasirinkta išvaizda.',
   'new.change.settingsTiles': '{settings} yra plytelių stulpelis, o kiekviena plytelė rodo visas savo korteles. Kas buvo skiltyje {engine}, dabar yra skiltyse {general}, {sync} ir {safety}.',
   'new.change.anomaliesModule': 'Jungiklis {anomalies} skiltyje {safety} išjungia pastabas ir jų puslapį. Stabdžiai toliau sulaiko, o į sulaikytą paleidimą tada atsakoma prie jo užduoties.',

@@ -1146,7 +1146,7 @@ const sk: Translations = {
   'new.change.trashBin': 'Každá cesta k položke {trash} ukazuje kôš, aj v bočnom paneli a v ponukách úloh.',
   'new.change.labelPairs': 'Na telefóne stoja voľby v časti {labels} po dve v rade, aby sa ich názvy zmestili.',
   'new.change.passkeyKey': 'Prihlásenie prístupovým kľúčom ukazuje kľúč.',
-  'new.change.welcomeMotion': 'Pri novej inštalácii ukazuje uvítacia stránka svoje tri kroky vo farbe zvýraznenia a nechá ich objaviť jeden po druhom.',
+  'new.change.welcomeMotion': 'Pri novej inštalácii ukazuje uvítacia stránka svoje tri kroky vo farbe zvýraznenia a prehrá ich ako malú scénu: ukazovateľ pridá cieľ, založí úlohu a spustí prvú synchronizáciu.',
   'new.change.titleBar': 'Desktopová aplikácia kreslí vo Windows a Linuxe vlastnú titulnú lištu vo vzhľade, ktorý si vybral.',
   'new.change.settingsTiles': '{settings} sú stĺpec dlaždíc a každá dlaždica ukazuje všetky svoje karty. Čo bolo v časti {engine}, je teraz v {general}, {sync} a {safety}.',
   'new.change.anomaliesModule': 'Prepínač pre {anomalies} v časti {safety} vypne poznámky aj ich stránku. Brzdy ďalej zadržiavajú a na zadržaný beh sa potom odpovedá pri jeho úlohe.',

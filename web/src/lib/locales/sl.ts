@@ -1146,7 +1146,7 @@ const sl: Translations = {
   'new.change.trashBin': 'Vse, kar vodi do {trash}, pokaže koš, tudi stranska vrstica in meniji opravil.',
   'new.change.labelPairs': 'Na telefonu stojijo izbire pod {labels} po dve v vrsti, da se njihova imena prilegajo.',
   'new.change.passkeyKey': 'Prijava s ključem za dostop pokaže ključ.',
-  'new.change.welcomeMotion': 'Ob novi namestitvi stran dobrodošlice pokaže svoje tri korake v poudarni barvi in jih prikaže enega za drugim.',
+  'new.change.welcomeMotion': 'Ob novi namestitvi stran dobrodošlice pokaže svoje tri korake v poudarni barvi in jih odigra kot majhen prizor: kazalec doda cilj, ustvari opravilo in zažene prvo usklajevanje.',
   'new.change.titleBar': 'Namizna aplikacija v Windows in Linuxu nariše lastno naslovno vrstico, v videzu, ki si ga izbral.',
   'new.change.settingsTiles': '{settings} so stolpec ploščic in vsaka ploščica prikaže vse svoje kartice. Kar je bilo v {engine}, je zdaj v {general}, {sync} in {safety}.',
   'new.change.anomaliesModule': 'Stikalo za {anomalies} v {safety} izklopi opombe in njihovo stran. Zavore še naprej zadržujejo, na zadržani zagon pa takrat odgovoriš pri njegovem opravilu.',
