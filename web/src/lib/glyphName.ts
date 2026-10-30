@@ -63,7 +63,7 @@ const RULES: Rule[] = [
   // A job's trash wears the trash page's own mark, not the pencil `edit.`
   // would give it. The duplicate search looks for something, so a menu that
   // also holds Duplicate does not show the copy mark twice.
-  [/openTrash/i, 'IconTabRecovery'],
+  [/openTrash/i, 'IconTrash'],
   [/^jobs\.dupes$/i, 'IconSearch'],
 
   // Above the preview rule, which would otherwise claim `preview.back`.

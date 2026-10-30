@@ -93,13 +93,12 @@ STANDARD = [
     "IconPhone",
     "IconSchedules",
     "IconSync",
-    # Settings tiles, and the rail entry that gets files back.
+    # Settings tiles.
     "IconDiagnostics",
     "IconNotifications",
     "IconTabApp",
     "IconTabGeneral",
     "IconTabLook",
-    "IconTabRecovery",
     "IconTabSecurity",
     "IconTabStorage",
     # The Look page's choices: design, corners, motion and labels.

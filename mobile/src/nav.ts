@@ -82,7 +82,7 @@ export const BAR: BarPlace[] = [
  */
 export const MORE: MorePlace[] = [
   { screen: "Anomalies", label: "nav.anomalies", glyph: "IconAnomalies" },
-  { screen: "TrashAll", label: "nav.trash", glyph: "IconTabRecovery" },
+  { screen: "TrashAll", label: "nav.trash", glyph: "IconTrash" },
   { screen: "TargetList", label: "nav.targets", glyph: "IconTabStorage" },
   { screen: "SettingsHome", label: "nav.settings", glyph: "IconGear" },
 ];

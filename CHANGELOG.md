@@ -18,6 +18,8 @@ The full notes for each release are in
 - **The Labels selectors stand two to a row on a phone,** in the phone app and in a browser narrower than 600 pixels, so a choice with its symbol and a long name keeps its words instead of losing them.
 - **A running job's progress bar keeps its changes to itself,** so the rest of the page is not laid out again at every step.
 - **The desktop app draws its own title bar on Windows and Linux,** in the colours, corners and accent of the look you chose, with Minimise, Maximise and Close and nothing else, since the sidebar already shows the logo and the name. The bar stays clear while a window is open, so ArrowLoop can still be moved and closed. Drag it to move the window, double-click it to maximise, and pull any edge to resize. Close hides to the notification area or quits as it did before. macOS keeps its own title bar.
+- **The trash wears the bin everywhere,** in the sidebar, in a job's menu and on the phone. It wore the lifebuoy, which stands for getting a backup back.
+- **The F-Droid button's logo is F-Droid's blue,** lighter on the dark theme so it stays visible, as the other marks on the App tile do.
 - **The Version card shows plain numbers,** 2.3.3 rather than v2.3.3, for ArrowLoop, GlimStone and rclone, on the web, in the desktop app and on the phone. Each number still opens its release.
 
 ## 🐛 Fixed
