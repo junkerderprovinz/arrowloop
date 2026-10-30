@@ -12,7 +12,7 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
-- **ArrowLoop Test keeps its own data.** The test build installs beside a real installation but opened its jobs, targets and history from `%APPDATA%\ArrowLoop`, shared the real copy's window storage and single-instance lock, and wrote its autostart entry under the real name. It now uses `%APPDATA%\ArrowLoop Test`, keeps its window storage there, and has a lock and an autostart entry of its own. Release builds are unchanged.
+- **ArrowLoop Test keeps its own data.** The test build installs beside a real installation but opened its jobs and history from `%APPDATA%\ArrowLoop`, shared the real copy's targets in rclone's own configuration, its window storage and its single-instance lock, and wrote its autostart entry under the real name. It now uses `%APPDATA%\ArrowLoop Test` and keeps its own rclone configuration and window storage there, with a lock and an autostart entry of its own. Release builds are unchanged.
 
 ## 2.3.3 - 2026-10-29
 

@@ -18,7 +18,7 @@ func TestTheTestBuildKeepsItsOwnNames(t *testing.T) {
 	if autostart.Name != "ArrowLoop Test" {
 		t.Errorf("autostart entry %q, want ArrowLoop Test", autostart.Name)
 	}
-	if !ownWebview {
+	if !ownData {
 		t.Error("the test build shares Wails' default window storage with a real installation")
 	}
 	path, err := configLocation("")
@@ -30,5 +30,8 @@ func TestTheTestBuildKeepsItsOwnNames(t *testing.T) {
 	}
 	if got := instanceID("", path); got != "com.junkerderprovinz.arrowloop.test" {
 		t.Errorf("single-instance lock %q", got)
+	}
+	if want := filepath.Join(base, "ArrowLoop Test", "rclone.conf"); rcloneConfig(path) != want {
+		t.Errorf("rclone configuration %q, want %q", rcloneConfig(path), want)
 	}
 }

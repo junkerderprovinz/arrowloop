@@ -16,15 +16,15 @@ import (
 // the environment can change where an update comes from.
 //
 // It also installs under a name of its own, the one `scripts/desktop.mjs
-// --updatetest` gives its installer, and keeps its configuration, window
-// storage, single-instance lock and autostart entry apart, so trying it leaves
-// a real installation alone. The scheduled task starts it with no environment
+// --updatetest` gives its installer, and keeps its configuration, rclone's
+// configuration, window storage, single-instance lock and autostart entry
+// apart, so trying it leaves a real installation alone. The scheduled task starts it with no environment
 // of ours, and finds the stand-in's address in the folder under ProgramData
 // instead.
 func init() {
 	product = "ArrowLoop Test"
 	installID += ".test"
-	ownWebview = true
+	ownData = true
 	autostart.Name = product
 	if api := os.Getenv("ARROWLOOP_UPDATE_API"); api != "" {
 		updateAPI = api

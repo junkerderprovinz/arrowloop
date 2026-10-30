@@ -25,6 +25,7 @@ import (
 	// Holds uxtheme.dll across the initialisation of Wails; see the package.
 	_ "github.com/junkerderprovinz/arrowloop/desktop/uxtheme"
 
+	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configfile"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autostart"
@@ -101,7 +102,7 @@ func run() error {
 	opts.Services = []application.Service{application.NewService(tell)}
 	// Another configuration is another profile, whose interface settings must
 	// not mix with the installed copy's.
-	if *custom != "" || ownWebview {
+	if *custom != "" || ownData {
 		opts.Windows.WebviewUserDataPath = filepath.Join(filepath.Dir(configPath), "webview")
 	}
 	app := application.New(opts)
@@ -121,6 +122,11 @@ func run() error {
 	inTray := window.Get().Tray && (*startInTray || window.InTray())
 	sh = newShell(ctx, app, window, trayIcons(), inTray, installerLanguage())
 
+	if path := rcloneConfig(configPath); path != "" {
+		if err := config.SetConfigPath(path); err != nil {
+			return err
+		}
+	}
 	configfile.Install()
 
 	if err := writeStarterConfig(configPath); err != nil {
@@ -244,6 +250,16 @@ func configLocation(custom string) (string, error) {
 		return "", fmt.Errorf("find the configuration directory: %w", err)
 	}
 	return filepath.Join(base, product, "arrowloop.json"), nil
+}
+
+// rcloneConfig is the rclone configuration to use in place of rclone's own
+// default, which a desktop shares with the rclone it may have used for years,
+// or "" to keep that default.
+func rcloneConfig(configPath string) string {
+	if !ownData {
+		return ""
+	}
+	return filepath.Join(filepath.Dir(configPath), "rclone.conf")
 }
 
 // instanceID names the single-instance lock. A copy started on another
