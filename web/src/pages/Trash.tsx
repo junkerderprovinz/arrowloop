@@ -126,29 +126,33 @@ export function Trash({
       <JobChip job={job} onClear={() => onJob('')} />
 
       {sides === null || (totals.entries === 0 && shown.every((s) => !s.error)) ? (
-        <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
-          <Empty>{sides === null ? t('history.working') : job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
-        </Card>
+        <div data-new="trash-bin">
+          <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
+            <Empty>{sides === null ? t('history.working') : job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
+          </Card>
+        </div>
       ) : (
         byJob(shown)
           .filter((group) => group.sides.some((s) => s.total > 0 || s.error))
           .map((group, i) => (
-            <Card key={group.job} title={group.job} hueIndex={i} hint={t('trash.hint')}>
-              <div className="glim-content-fade flex flex-col gap-6">
-                {group.sides
-                  .filter((s) => s.total > 0 || s.error)
-                  .map((s) => (
-                    <SideList
-                      key={s.side}
-                      side={s}
-                      busy={busy}
-                      onRestore={(entry) => restore(s, entry)}
-                      onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
-                      onEmpty={() => setPending({ kind: 'side', side: s })}
-                    />
-                  ))}
-              </div>
-            </Card>
+            <div key={group.job} data-new={i === 0 ? 'trash-bin' : undefined}>
+              <Card title={group.job} hueIndex={i} hint={t('trash.hint')}>
+                <div className="glim-content-fade flex flex-col gap-6">
+                  {group.sides
+                    .filter((s) => s.total > 0 || s.error)
+                    .map((s) => (
+                      <SideList
+                        key={s.side}
+                        side={s}
+                        busy={busy}
+                        onRestore={(entry) => restore(s, entry)}
+                        onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
+                        onEmpty={() => setPending({ kind: 'side', side: s })}
+                      />
+                    ))}
+                </div>
+              </Card>
+            </div>
           ))
       )}
 

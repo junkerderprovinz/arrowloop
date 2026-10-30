@@ -60,7 +60,7 @@ describe('the dots of what is new', () => {
       expect(found).not.toBeNull()
       return found!
     })
-    expect(way.getAttribute('aria-label')).toMatch(/^This way to 20 changes: /)
+    expect(way.getAttribute('aria-label')).toMatch(/^This way to 22 changes: /)
     fireEvent.click(way)
     expect(window.location.pathname).toBe('/settings')
   })
@@ -68,7 +68,7 @@ describe('the dots of what is new', () => {
   it('take the dot off a link once everything behind it was seen', async () => {
     render(<Page />)
     await waitFor(() => expect(dot('way')).not.toBeNull())
-    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks', 'label-glyphs']))
+    act(() => markSeen(['settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks', 'label-glyphs', 'version-card', 'fdroid-logo']))
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 

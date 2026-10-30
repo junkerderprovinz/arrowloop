@@ -611,7 +611,7 @@ body {
   border-radius: inherit;
   pointer-events: none;
   opacity: 0;
-  background: conic-gradient(var(--accent) var(--al-step-fill), transparent 0);
+  background: conic-gradient(var(--accent-glyph) var(--al-step-fill), transparent 0);
   mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
 }
 @keyframes al-step-pop {

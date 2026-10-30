@@ -74,6 +74,26 @@ export const RELEASES: Release[] = [
       },
       // Every page has such buttons, so the dot stands in the list only.
       { id: 'button-glyphs', text: 'new.change.buttonGlyphs', names: { labels: 'look.labels' } },
+      {
+        id: 'version-card',
+        at: ['/settings/info'],
+        where: ['nav.settings', 'settings.info'],
+        text: 'new.change.versionCard',
+        names: { check: 'info.check' },
+      },
+      {
+        id: 'fdroid-logo',
+        at: ['/settings/apps'],
+        where: ['nav.settings', 'settings.apps'],
+        text: 'new.change.fdroidLogo',
+      },
+      { id: 'trash-bin', at: ['/trash'], where: ['nav.trash'], text: 'new.change.trashBin', names: { trash: 'nav.trash' } },
+      // Below 600 pixels only, the phone app's case.
+      { id: 'label-pairs', text: 'new.change.labelPairs', names: { labels: 'look.labels' } },
+      // The sign-in page and a new install's welcome page come before the
+      // window that lists what is new.
+      { id: 'passkey-key', text: 'new.change.passkeyKey' },
+      { id: 'welcome-motion', text: 'new.change.welcomeMotion' },
     ],
   },
   {
