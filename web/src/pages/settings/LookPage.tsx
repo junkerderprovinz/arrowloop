@@ -263,6 +263,7 @@ export function LookPage({
                 scale="small"
                 low
                 hug
+                pairsOnPhone
                 label={t(axisKey[axis])}
                 hue={selectorHue()}
                 value={labels[axis]}

@@ -1242,10 +1242,11 @@ function Segment({
       {option.mark ? option.mark(ink) : glyph}
       {word ? (
         <Text
-          numberOfLines={1}
-          // Shrinks rather than truncates with an ellipsis, down to 0.7;
-          // below that the strip has too many segments.
-          adjustsFontSizeToFit
+          // In rows a label that does not fit its share takes a second line.
+          // On one row it shrinks rather than truncates, down to 0.7; below
+          // that the strip has too many segments.
+          numberOfLines={basis ? 2 : 1}
+          adjustsFontSizeToFit={!basis}
           minimumFontScale={0.7}
           style={[styles.segmentText, { color: ink }]}
         >

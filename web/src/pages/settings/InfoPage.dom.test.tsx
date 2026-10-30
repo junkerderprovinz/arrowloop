@@ -67,8 +67,8 @@ describe('the Info tile', () => {
       'https://github.com/junkerderprovinz/arrowloop/releases/tag/v1.8.0',
     )
     expect(screen.getByText('GlimStone')).toBeTruthy()
-    expect(screen.getByRole('link', { name: '3.7.1' }).getAttribute('href')).toBe(
-      'https://github.com/junkerderprovinz/glimstone/releases/tag/v3.7.1',
+    expect(screen.getByRole('link', { name: '3.8.0' }).getAttribute('href')).toBe(
+      'https://github.com/junkerderprovinz/glimstone/releases/tag/v3.8.0',
     )
   })
 

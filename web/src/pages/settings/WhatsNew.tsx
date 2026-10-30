@@ -240,8 +240,7 @@ export function WhatsNewHost() {
 
 /**
  * "New · 5" in the Version card, the number being what is still unseen. The
- * gift stands beside its dot, which turns grey once nothing is left, and the
- * number goes.
+ * dot in front of the gift turns grey once nothing is left, and the number goes.
  */
 export function WhatsNewButton() {
   const { t } = useT()
@@ -255,8 +254,8 @@ export function WhatsNewButton() {
       labelKey={null}
       glyph={
         <span className="flex items-center gap-1.5">
-          <IconWhatsNew />
           <i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />
+          <IconWhatsNew />
         </span>
       }
       keepLabel

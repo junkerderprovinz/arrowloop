@@ -4,4 +4,4 @@
  * unseen, so it is bumped in the change that lifts the phone. The number is a
  * link, so it has to name a published release.
  */
-export const GLIMSTONE_VERSION = "3.7.1";
+export const GLIMSTONE_VERSION = "3.8.0";

@@ -256,7 +256,7 @@ export function IconLink(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Credentials, key, set a password. Streamline interface-essential/key.svg. */
+/** Credentials, key, set a password, sign in with a passkey. Streamline interface-essential/key.svg. */
 export function IconKey(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -798,7 +798,7 @@ export function IconManualOpen(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Fetch an update, update now. Streamline programming/cloud-refresh.svg. */
+/** Fetch an update, check for one, update now. Streamline programming/cloud-refresh.svg. */
 export function IconUpdate(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0.013 0.013 13.974 13.974" {...props}>
