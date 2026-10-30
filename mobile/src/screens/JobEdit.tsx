@@ -458,12 +458,12 @@ export function JobEdit() {
           <View style={styles.stack}>
             <Button
               label={`${t("nav.trash")} · ${upper}`}
-              glyph="IconTabRecovery"
+              glyph="IconTrash"
               onPress={() => nav.navigate("Trash", { name: editing, side: "left", place: upper })}
             />
             <Button
               label={`${t("nav.trash")} · ${lower}`}
-              glyph="IconTabRecovery"
+              glyph="IconTrash"
               onPress={() => nav.navigate("Trash", { name: editing, side: "right", place: lower })}
             />
           </View>

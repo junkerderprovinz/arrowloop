@@ -320,8 +320,8 @@ function JobCard({
               { label: t("edit.duplicate"), glyph: "IconCopy", onPress: onDuplicate },
               { label: t("jobs.preview"), glyph: "IconPreview", onPress: onPreview },
               { label: t("jobs.check"), glyph: "IconCheck", onPress: onCheck },
-              { label: `${t("nav.trash")} · ${upper}`, glyph: "IconTabRecovery", onPress: () => onTrash("left", upper) },
-              { label: `${t("nav.trash")} · ${lower}`, glyph: "IconTabRecovery", onPress: () => onTrash("right", lower) },
+              { label: `${t("nav.trash")} · ${upper}`, glyph: "IconTrash", onPress: () => onTrash("left", upper) },
+              { label: `${t("nav.trash")} · ${lower}`, glyph: "IconTrash", onPress: () => onTrash("right", lower) },
               { label: t("action.delete"), glyph: "IconTrash", onPress: onRemove },
             ]}
           />

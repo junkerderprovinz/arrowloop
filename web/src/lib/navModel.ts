@@ -13,8 +13,8 @@ import {
   IconGear,
   IconHistory,
   IconSync,
-  IconTabRecovery,
   IconTabStorage,
+  IconTrash,
 } from '../components/glyphs'
 import type { TranslationKey } from './i18n.data'
 
@@ -51,7 +51,7 @@ export function destinations(extras: NavExtras): NavDestination[] {
       ? [{ to: '/anomalies', labelKey: 'nav.anomalies', icon: IconAnomalies, count: 'findings', sidebar: true, footer: false, bar: false } as const]
       : []),
     // Getting a file back is what Trash is for here, so it wears the lifebuoy.
-    { to: '/trash', labelKey: 'nav.trash', icon: IconTabRecovery, count: 'trash', sidebar: true, footer: false, bar: false },
+    { to: '/trash', labelKey: 'nav.trash', icon: IconTrash, count: 'trash', sidebar: true, footer: false, bar: false },
     { to: '/history', labelKey: 'nav.history', icon: IconHistory, sidebar: true, footer: false, bar: true },
     { to: '/targets', labelKey: 'nav.targets', icon: IconTabStorage, sidebar: extras.targets, footer: false, bar: false },
     { to: '/settings', labelKey: 'nav.settings', icon: IconGear, sidebar: true, footer: true, bar: true },
