@@ -1147,6 +1147,7 @@ const fi: Translations = {
   'new.change.labelPairs': 'Puhelimessa kohdan {labels} valinnat ovat kaksi rivillä, jotta niiden nimet mahtuvat.',
   'new.change.passkeyKey': 'Kirjautuminen pääsyavaimella näyttää avaimen.',
   'new.change.welcomeMotion': 'Uudessa asennuksessa tervetulosivu näyttää kolme vaihettaan korostusvärissä ja tuo ne esiin yksi kerrallaan.',
+  'new.change.titleBar': 'Työpöytäsovellus piirtää Windowsissa ja Linuxissa oman otsikkorivinsä valitsemallasi ulkoasulla.',
   'new.change.settingsTiles': 'Kohta {settings} on ruutujen sarake, ja jokainen ruutu näyttää kaikki korttinsa. Se, mikä oli kohdassa {engine}, on nyt kohdissa {general}, {sync} ja {safety}.',
   'new.change.anomaliesModule': 'Kohdan {safety} kytkin osiolle {anomalies} kytkee huomautukset ja niiden sivun pois. Jarrut pysäyttävät edelleen, ja pysäytettyyn ajoon vastataan silloin sen työn kohdalla.',
   'new.change.infoTile': '{info} listaa kaikki versiot ja tarkistaa niiden päivitykset. {help}-kortti lisää käyttöohjeen ja virheraportin.',

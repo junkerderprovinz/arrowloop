@@ -1147,6 +1147,7 @@ const da: Translations = {
   'new.change.labelPairs': 'På en telefon står valgene under {labels} to i hver række, så navnene kan være der.',
   'new.change.passkeyKey': 'Log ind med en adgangsnøgle viser en nøgle.',
   'new.change.welcomeMotion': 'Ved en ny installation viser velkomstsiden sine tre trin i accentfarven og lader dem komme frem et ad gangen.',
+  'new.change.titleBar': 'Skrivebordsappen tegner sin egen titellinje på Windows og Linux, i det udseende, du har valgt.',
   'new.change.settingsTiles': '{settings} er en kolonne af felter, og hvert felt viser alle sine kort. Det, der lå under {engine}, ligger nu under {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'En kontakt for {anomalies} under {safety} slår bemærkningerne og deres side fra. Bremserne holder stadig tilbage, og en tilbageholdt kørsel besvares så på sit job.',
   'new.change.infoTile': '{info} viser alle versioner og tjekker dem for opdateringer. Kortet {help} tilføjer manualen og en fejlrapport.',

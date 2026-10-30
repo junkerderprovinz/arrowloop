@@ -1147,6 +1147,7 @@ const lt: Translations = {
   'new.change.labelPairs': 'Telefone pasirinkimai skiltyje {labels} stovi po du eilutėje, kad tilptų jų pavadinimai.',
   'new.change.passkeyKey': 'Prisijungimas su prieigos raktu rodo raktą.',
   'new.change.welcomeMotion': 'Naujai įdiegus, pasveikinimo puslapis rodo tris žingsnius akcento spalva ir parodo juos vieną po kito.',
+  'new.change.titleBar': 'Darbalaukio programa sistemose Windows ir Linux pati piešia savo pavadinimo juostą tavo pasirinkta išvaizda.',
   'new.change.settingsTiles': '{settings} yra plytelių stulpelis, o kiekviena plytelė rodo visas savo korteles. Kas buvo skiltyje {engine}, dabar yra skiltyse {general}, {sync} ir {safety}.',
   'new.change.anomaliesModule': 'Jungiklis {anomalies} skiltyje {safety} išjungia pastabas ir jų puslapį. Stabdžiai toliau sulaiko, o į sulaikytą paleidimą tada atsakoma prie jo užduoties.',
   'new.change.infoTile': '{info} išvardija visas versijas ir tikrina, ar yra naujinių. Kortelė {help} prideda vadovą ir klaidos ataskaitą.',

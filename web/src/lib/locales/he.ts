@@ -1147,6 +1147,7 @@ const he: Translations = {
   'new.change.labelPairs': 'בטלפון האפשרויות ב{labels} עומדות שתיים בשורה, כדי שהשמות ייכנסו.',
   'new.change.passkeyKey': 'כניסה עם מפתח גישה מציגה מפתח.',
   'new.change.welcomeMotion': 'בהתקנה חדשה דף הפתיחה מציג את שלושת השלבים בצבע ההדגשה ומביא אותם בזה אחר זה.',
+  'new.change.titleBar': 'אפליקציית שולחן העבודה מציירת את שורת הכותרת שלה ב-Windows וב-Linux, במראה שבחרת.',
   'new.change.settingsTiles': '{settings} הוא טור של אריחים, וכל אריח מציג את כל הכרטיסים שלו. מה שהיה ב{engine} נמצא עכשיו תחת {general}, {sync} ו{safety}.',
   'new.change.anomaliesModule': 'מתג ל{anomalies} ב{safety} מכבה את ההערות ואת הדף שלהן. הבלמים ממשיכים לעצור, ועל הרצה שנעצרה עונים אז בדף המשימה שלה.',
   'new.change.infoTile': '{info} מפרט את כל הגרסאות ובודק אם יש להן עדכונים. הכרטיס {help} מוסיף את המדריך ודוח תקלה.',

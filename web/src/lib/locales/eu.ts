@@ -1147,6 +1147,7 @@ const eu: Translations = {
   'new.change.labelPairs': 'Telefonoan, {labels} ataleko aukerak bina daude errenkadako, izenak sar daitezen.',
   'new.change.passkeyKey': 'Sarbide-gako batekin saioa hastean giltza bat agertzen da.',
   'new.change.welcomeMotion': 'Instalazio berri batean, ongietorri-orriak bere hiru urratsak nabarmentze-kolorean erakusten ditu eta bata bestearen atzetik agerrarazten ditu.',
+  'new.change.titleBar': 'Mahaigaineko aplikazioak bere titulu-barra marrazten du Windowsen eta Linuxen, zuk aukeratutako itxurarekin.',
   'new.change.settingsTiles': '{settings} lauza-zutabe bat da, eta lauza bakoitzak bere txartel guztiak erakusten ditu. {engine} atalean zegoena orain {general}, {sync} eta {safety} ataletan dago.',
   'new.change.anomaliesModule': '{safety} ataleko {anomalies} etengailuak oharrak eta haien orria itzaltzen ditu. Balaztek geldiarazten jarraitzen dute, eta geldiarazitako exekuzioari bere lanean erantzuten zaio orduan.',
   'new.change.infoTile': '{info} atalak bertsio guztiak zerrendatzen ditu eta eguneratzeak bilatzen ditu. {help} txartelak eskuliburua eta akats-txostena gehitzen ditu.',

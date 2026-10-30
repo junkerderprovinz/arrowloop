@@ -1147,6 +1147,7 @@ const ro: Translations = {
   'new.change.labelPairs': 'Pe telefon, opțiunile din {labels} stau câte două pe rând, ca să le încapă numele.',
   'new.change.passkeyKey': 'Autentificarea cu o cheie de acces arată o cheie.',
   'new.change.welcomeMotion': 'La o instalare nouă, pagina de bun venit își arată cei trei pași în culoarea de accent și îi aduce unul după altul.',
+  'new.change.titleBar': 'Aplicația desktop își desenează propria bară de titlu pe Windows și Linux, cu aspectul pe care l-ai ales.',
   'new.change.settingsTiles': '{settings} este o coloană de dale, iar fiecare dală arată toate cardurile ei. Ce era în {engine} se află acum în {general}, {sync} și {safety}.',
   'new.change.anomaliesModule': 'Un comutator pentru {anomalies} în {safety} oprește notele și pagina lor. Frânele continuă să rețină, iar o rulare reținută primește atunci răspuns la lucrarea ei.',
   'new.change.infoTile': '{info} listează fiecare versiune și caută actualizări pentru ele. Cardul {help} adaugă manualul și un raport de eroare.',

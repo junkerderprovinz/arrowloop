@@ -1147,6 +1147,7 @@ const hu: Translations = {
   'new.change.labelPairs': 'Telefonon a(z) {labels} alatti választások kettesével állnak egy sorban, hogy elférjen a nevük.',
   'new.change.passkeyKey': 'A jelkulccsal való bejelentkezés kulcsot mutat.',
   'new.change.welcomeMotion': 'Új telepítésnél az üdvözlőoldal a három lépését a kiemelőszínben mutatja, és egymás után hozza be őket.',
+  'new.change.titleBar': 'Az asztali alkalmazás Windowson és Linuxon saját címsort rajzol, az általad választott megjelenéssel.',
   'new.change.settingsTiles': 'A(z) {settings} csempék oszlopa, és minden csempe az összes kártyáját mutatja. Ami a(z) {engine} alatt volt, most a(z) {general}, {sync} és {safety} alatt van.',
   'new.change.anomaliesModule': 'A(z) {safety} alatti kapcsoló a(z) {anomalies} számára kikapcsolja a megjegyzéseket és az oldalukat. A fékek továbbra is visszatartanak, és a visszatartott futásról akkor a saját feladatánál lehet dönteni.',
   'new.change.infoTile': 'A(z) {info} felsorolja az összes verziót, és frissítéseket keres hozzájuk. A(z) {help} kártya a kézikönyvet és a hibajelentést adja hozzá.',

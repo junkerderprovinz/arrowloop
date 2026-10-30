@@ -1147,6 +1147,7 @@ const ko: Translations = {
   'new.change.labelPairs': '휴대폰에서는 {labels}의 선택지가 한 줄에 두 개씩 놓여 이름이 들어갑니다.',
   'new.change.passkeyKey': '패스키로 로그인하면 열쇠가 표시됩니다.',
   'new.change.welcomeMotion': '새로 설치하면 환영 페이지가 세 단계를 강조 색으로 보여 주고 하나씩 차례로 나타나게 합니다.',
+  'new.change.titleBar': '데스크톱 앱은 Windows와 Linux에서 선택한 모양대로 자체 제목 표시줄을 그립니다.',
   'new.change.settingsTiles': '{settings}은(는) 타일이 세로로 늘어선 구성이며, 각 타일에 모든 카드가 표시됩니다. {engine}에 있던 항목은 이제 {general}, {sync}, {safety}에 있습니다.',
   'new.change.anomaliesModule': '{safety}의 {anomalies} 스위치로 참고와 그 페이지를 끌 수 있습니다. 브레이크는 계속 멈추고, 멈춘 실행에는 해당 작업에서 답합니다.',
   'new.change.infoTile': '{info}에는 모든 버전이 나열되고 업데이트 여부를 확인합니다. {help} 카드에는 설명서와 버그 보고서가 있습니다.',

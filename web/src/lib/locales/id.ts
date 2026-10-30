@@ -1147,6 +1147,7 @@ const id: Translations = {
   'new.change.labelPairs': 'Di ponsel, pilihan di {labels} berdiri dua per baris agar namanya muat.',
   'new.change.passkeyKey': 'Masuk dengan kunci sandi menampilkan kunci.',
   'new.change.welcomeMotion': 'Pada instalasi baru, halaman sambutan menampilkan tiga langkahnya dalam warna aksen dan memunculkannya satu per satu.',
+  'new.change.titleBar': 'Aplikasi desktop menggambar bilah judulnya sendiri di Windows dan Linux, dengan tampilan yang kamu pilih.',
   'new.change.settingsTiles': '{settings} berupa kolom petak, dan setiap petak menampilkan semua kartunya. Isi {engine} sekarang ada di {general}, {sync}, dan {safety}.',
   'new.change.anomaliesModule': 'Sakelar {anomalies} di {safety} mematikan catatan beserta halamannya. Rem tetap menahan, dan proses yang ditahan lalu dijawab di tugasnya.',
   'new.change.infoTile': '{info} mencantumkan setiap versi dan memeriksa pembaruannya. Kartu {help} menambahkan panduan dan laporan bug.',

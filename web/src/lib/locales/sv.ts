@@ -1147,6 +1147,7 @@ const sv: Translations = {
   'new.change.labelPairs': 'På en telefon står valen under {labels} två i varje rad, så att namnen får plats.',
   'new.change.passkeyKey': 'Inloggning med passkey visar en nyckel.',
   'new.change.welcomeMotion': 'Vid en ny installation visar välkomstsidan sina tre steg i accentfärgen och låter dem dyka upp ett i taget.',
+  'new.change.titleBar': 'Skrivbordsappen ritar sin egen namnlist i Windows och Linux, med det utseende du har valt.',
   'new.change.settingsTiles': '{settings} är en kolumn av rutor, och varje ruta visar alla sina kort. Det som låg under {engine} ligger nu under {general}, {sync} och {safety}.',
   'new.change.anomaliesModule': 'Ett reglage för {anomalies} under {safety} stänger av anteckningarna och deras sida. Bromsarna håller fortfarande kvar, och en kvarhållen körning besvaras då vid sitt jobb.',
   'new.change.infoTile': '{info} listar alla versioner och söker efter uppdateringar. Kortet {help} lägger till manualen och felrapporten.',

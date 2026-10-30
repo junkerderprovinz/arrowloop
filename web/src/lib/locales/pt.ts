@@ -1147,6 +1147,7 @@ const pt: Translations = {
   'new.change.labelPairs': 'No telemóvel, as opções em {labels} ficam duas por linha, para que os nomes caibam.',
   'new.change.passkeyKey': 'Iniciar sessão com uma chave de acesso mostra uma chave.',
   'new.change.welcomeMotion': 'Numa instalação nova, a página de boas-vindas mostra os seus três passos na cor de destaque e fá-los aparecer um após o outro.',
+  'new.change.titleBar': 'A app de computador desenha a sua própria barra de título no Windows e no Linux, com o aspeto que escolheste.',
   'new.change.settingsTiles': '{settings} é uma coluna de mosaicos, e cada mosaico mostra todos os seus cartões. O que estava em {engine} está agora em {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Um interruptor para {anomalies} em {safety} desliga as notas e a sua página. Os travões continuam a reter, e uma execução retida responde-se então na sua tarefa.',
   'new.change.infoTile': '{info} lista todas as versões e verifica se há atualizações. O cartão {help} acrescenta o manual e um relatório de erros.',

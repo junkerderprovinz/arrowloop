@@ -1147,6 +1147,7 @@ const nl: Translations = {
   'new.change.labelPairs': 'Op een telefoon staan de keuzes onder {labels} met twee op een rij, zodat hun namen passen.',
   'new.change.passkeyKey': 'Inloggen met een toegangssleutel toont een sleutel.',
   'new.change.welcomeMotion': 'Bij een nieuwe installatie toont de welkomstpagina haar drie stappen in de accentkleur en laat ze een voor een verschijnen.',
+  'new.change.titleBar': 'De desktopapp tekent op Windows en Linux een eigen titelbalk, in het uiterlijk dat je gekozen hebt.',
   'new.change.settingsTiles': '{settings} is een kolom met tegels, en elke tegel toont al zijn kaarten. Wat onder {engine} stond, staat nu onder {general}, {sync} en {safety}.',
   'new.change.anomaliesModule': 'Een schakelaar voor {anomalies} onder {safety} zet de opmerkingen en hun pagina uit. De remmen blijven tegenhouden, en een tegengehouden run beantwoord je dan bij zijn taak.',
   'new.change.infoTile': '{info} toont alle versies en controleert ze op updates. De kaart {help} voegt de handleiding en een foutrapport toe.',

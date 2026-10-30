@@ -94,6 +94,8 @@ export const RELEASES: Release[] = [
       // window that lists what is new.
       { id: 'passkey-key', text: 'new.change.passkeyKey' },
       { id: 'welcome-motion', text: 'new.change.welcomeMotion' },
+      // Drawn in the desktop app alone, which the list reaches from a browser too.
+      { id: 'title-bar', text: 'new.change.titleBar' },
     ],
   },
   {

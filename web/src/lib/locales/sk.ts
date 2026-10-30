@@ -1147,6 +1147,7 @@ const sk: Translations = {
   'new.change.labelPairs': 'Na telefóne stoja voľby v časti {labels} po dve v rade, aby sa ich názvy zmestili.',
   'new.change.passkeyKey': 'Prihlásenie prístupovým kľúčom ukazuje kľúč.',
   'new.change.welcomeMotion': 'Pri novej inštalácii ukazuje uvítacia stránka svoje tri kroky vo farbe zvýraznenia a nechá ich objaviť jeden po druhom.',
+  'new.change.titleBar': 'Desktopová aplikácia kreslí vo Windows a Linuxe vlastnú titulnú lištu vo vzhľade, ktorý si vybral.',
   'new.change.settingsTiles': '{settings} sú stĺpec dlaždíc a každá dlaždica ukazuje všetky svoje karty. Čo bolo v časti {engine}, je teraz v {general}, {sync} a {safety}.',
   'new.change.anomaliesModule': 'Prepínač pre {anomalies} v časti {safety} vypne poznámky aj ich stránku. Brzdy ďalej zadržiavajú a na zadržaný beh sa potom odpovedá pri jeho úlohe.',
   'new.change.infoTile': '{info} vypisuje každú verziu a kontroluje pre ne aktualizácie. Karta {help} pridáva príručku a hlásenie o chybe.',

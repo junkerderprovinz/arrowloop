@@ -1147,6 +1147,7 @@ const ar: Translations = {
   'new.change.labelPairs': 'على الهاتف تقف الخيارات في {labels} اثنين في كل صف، لتتسع أسماؤها.',
   'new.change.passkeyKey': 'يعرض تسجيل الدخول بمفتاح المرور مفتاحًا.',
   'new.change.welcomeMotion': 'في التثبيت الجديد تعرض صفحة الترحيب خطواتها الثلاث بلون التمييز وتظهرها واحدة تلو الأخرى.',
+  'new.change.titleBar': 'يرسم تطبيق سطح المكتب شريط عنوانه بنفسه على Windows وLinux، بالمظهر الذي اخترته.',
   'new.change.settingsTiles': 'صارت {settings} عمودًا من المربعات، ويعرض كل مربع جميع بطاقاته. وما كان في {engine} صار الآن تحت {general} و{sync} و{safety}.',
   'new.change.anomaliesModule': 'مفتاح لـ{anomalies} في {safety} يوقف الملاحظات وصفحتها. تبقى الكوابح توقف التشغيل، ويُجاب عندئذ عن التشغيل الموقوف من مهمته.',
   'new.change.infoTile': 'تعرض {info} كل الإصدارات وتفحص تحديثاتها. وتضيف بطاقة {help} الدليل وتقرير الخطأ.',

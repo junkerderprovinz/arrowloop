@@ -1147,6 +1147,7 @@ const hr: Translations = {
   'new.change.labelPairs': 'Na mobitelu izbori pod {labels} stoje po dva u redu, da im stanu nazivi.',
   'new.change.passkeyKey': 'Prijava pristupnim ključem pokazuje ključ.',
   'new.change.welcomeMotion': 'Pri novoj instalaciji stranica dobrodošlice pokazuje svoja tri koraka u boji naglaska i dovodi ih jedan za drugim.',
+  'new.change.titleBar': 'Aplikacija za računalo crta vlastitu naslovnu traku na Windowsu i Linuxu, u izgledu koji si odabrao.',
   'new.change.settingsTiles': '{settings} su stupac pločica i svaka pločica prikazuje sve svoje kartice. Ono što je bilo u {engine} sada je u {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Prekidač za {anomalies} u {safety} isključuje napomene i njihovu stranicu. Kočnice i dalje zadržavaju, a na zadržano izvođenje tada se odgovara na njegovom zadatku.',
   'new.change.infoTile': '{info} navodi sve verzije i provjerava njihova ažuriranja. Kartica {help} dodaje priručnik i izvješće o grešci.',

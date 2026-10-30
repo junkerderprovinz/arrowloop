@@ -1147,6 +1147,7 @@ const et: Translations = {
   'new.change.labelPairs': 'Telefonis on valikud jaotises {labels} kaks ühes reas, et nende nimed ära mahuksid.',
   'new.change.passkeyKey': 'Pääsuvõtmega sisselogimine näitab võtit.',
   'new.change.welcomeMotion': 'Uuel paigaldusel näitab tervitusleht oma kolme sammu rõhuvärvis ja toob need nähtavale üksteise järel.',
+  'new.change.titleBar': 'Töölauarakendus joonistab Windowsis ja Linuxis oma tiitliriba sinu valitud välimusega.',
   'new.change.settingsTiles': '{settings} on paanide veerg ja iga paan näitab kõiki oma kaarte. Mis oli jaotises {engine}, on nüüd jaotistes {general}, {sync} ja {safety}.',
   'new.change.anomaliesModule': 'Jaotises {safety} olev lüliti {anomalies} jaoks lülitab märkused ja nende lehe välja. Pidurid peatavad edasi ja peatatud käivitusele vastatakse siis selle töö juures.',
   'new.change.infoTile': '{info} loetleb kõik versioonid ja kontrollib neile uuendusi. Kaart {help} lisab käsiraamatu ja veaaruande.',
