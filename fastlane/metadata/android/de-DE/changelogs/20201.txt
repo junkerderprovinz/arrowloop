@@ -1,1 +1,0 @@
-Aus dem Haus und trotzdem verbunden. ArrowLoop folgt dem Handy vom WLAN ins Mobilnetz, statt weiter den Router daheim anzurufen. Ordner aus anderen Apps gehen auf beiden Seiten eines Auftrags, und SMB-Freigaben hinter einem anderen Port erreichst du jetzt auch vom Handy.

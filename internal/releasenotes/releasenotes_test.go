@@ -18,10 +18,10 @@ func versions(notes []Note) []string {
 }
 
 func TestAReleaseGetsItsOwnNotesAndTheOlderOnesNewestFirst(t *testing.T) {
-	got := versions(UpTo("v1.2.1"))
-	want := []string{"v1.2.1", "v1.2.0", "v1.1.0", "v1.0.0"}
+	got := versions(UpTo("v1.3.0"))
+	want := []string{"v1.3.0", "v1.2.0", "v1.1.0", "v1.0.0"}
 	if strings.Join(got, " ") != strings.Join(want, " ") {
-		t.Errorf("UpTo(v1.2.1) = %v, want %v", got, want)
+		t.Errorf("UpTo(v1.3.0) = %v, want %v", got, want)
 	}
 }
 

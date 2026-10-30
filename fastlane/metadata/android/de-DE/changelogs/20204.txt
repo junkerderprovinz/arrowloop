@@ -1,1 +1,0 @@
-Die App selbst bleibt, wie sie ist. Dein Server führt jetzt Tagebuch: Nach einem Update zeigt er eine Karte für jedes übersprungene Release, mit einem grünen Punkt auf allem, was neu ist.

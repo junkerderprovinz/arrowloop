@@ -479,6 +479,11 @@ The full notes for each release are in
 - **Each mode explains itself.** Copy only, Mirror and Move carry an (i) in their own segment, in the job editor, in the global sync settings and on the phone. Clicking it opens the explanation and leaves the mode as it is.
 - **"Transfer immediately" is called Real time**, in the schedule, on the job card and in the global sync settings.
 
+## ⚡ Improved
+
+- **The Windows installer puts ArrowLoop under Program Files for everyone on the computer** and asks for an administrator once, while it installs. It removes an installation under AppData\Local\Programs with its shortcuts and leaves your settings in `%APPDATA%\ArrowLoop` alone.
+- **The installed app updates in the background, open or not.** A scheduled task called ArrowLoop Update runs once a day and after each start of the computer, as the system account, since nobody else may write to Program Files. Update automatically under Settings, General still switches it off, its log is `%ProgramData%\ArrowLoop\update.log`, and uninstalling removes the task.
+
 ## 🐛 Fixed
 
 - **Deciding a conflict after the run changes the files.** The choices in an opened run in History started a new run, which found no conflict left, since the first run had already kept both versions, so nothing happened. The run now counts the conflicts it kept both versions of and links to Conflicts, where the choice takes effect.
@@ -487,13 +492,6 @@ The full notes for each release are in
 - **Both lists in the tray window scroll.** It asked for only the last 5 runs or 12 files, so there was nothing to scroll to. It now starts with 10 runs or 20 files and loads more as you scroll to the end, like the History tab.
 - **Check this job and Find duplicates can be opened.** Both sat in the same hidden part of the card. They are in the card's Options menu now and open under the card with a close button, like its history.
 - **A renamed file's line in the history shows its size.** The size was read under the new name on the side still waiting for the rename, where there was nothing yet, so it came out as nothing.
-
-## 1.2.1 - 2026-09-27
-
-## ⚡ Improved
-
-- **The Windows installer puts ArrowLoop under Program Files for everyone on the computer** and asks for an administrator once, while it installs. It removes an installation under AppData\Local\Programs with its shortcuts and leaves your settings in `%APPDATA%\ArrowLoop` alone.
-- **The installed app updates in the background, open or not.** A scheduled task called ArrowLoop Update runs once a day and after each start of the computer, as the system account, since nobody else may write to Program Files. Update automatically under Settings, General still switches it off, its log is `%ProgramData%\ArrowLoop\update.log`, and uninstalling removes the task.
 
 ## 1.2.0 - 2026-09-27
 

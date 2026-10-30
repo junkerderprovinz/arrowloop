@@ -1,1 +1,0 @@
-The app itself stays as it is. On your server, a Google Sheet no longer pulls the emergency brake halfway through a sync.

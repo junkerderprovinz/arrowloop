@@ -1,1 +1,0 @@
-Your settings backup finally speaks your language, or at least English: it is called arrowloop-settings.json now, and an old one is still found. The store text also owns up to how the delete brake counts and what root and Shizuku are for.

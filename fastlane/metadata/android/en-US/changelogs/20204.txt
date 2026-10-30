@@ -1,1 +1,0 @@
-The app itself stays as it is. Your server now keeps a diary: after an update it shows a card for every release you skipped, with a green dot on everything new.
