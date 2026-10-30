@@ -26,10 +26,10 @@ body {
    is the lively level, and every level answers every dial
    (motion.parity.test.ts). Outside the reduced-motion gate like GlimStone's
    storm block, since the storm's logo still plays there and reads its number. */
-:root { --motion-bar-dur: 1.4s; --motion-turn-dur: 2.2s; --motion-logo-dur: 2.9s; --motion-logo-shake: 7px; --motion-flow-dur: 1.8s; --motion-flow-dist: 2px; }
-:root[data-motion='subtle'] { --motion-bar-dur: 2.4s; --motion-turn-dur: 4s; --motion-logo-dur: 3.8s; --motion-logo-shake: 3px; --motion-flow-dur: 2.8s; --motion-flow-dist: 1.5px; }
-:root[data-motion='off'] { --motion-bar-dur: 0s; --motion-turn-dur: 0s; --motion-logo-dur: 12s; --motion-logo-shake: 0px; --motion-flow-dur: 12s; --motion-flow-dist: 0px; }
-:root[data-motion='storm'] { --motion-bar-dur: 1.1s; --motion-turn-dur: 1.6s; --motion-logo-dur: 2.5s; --motion-logo-shake: 11px; --motion-flow-dur: 1.2s; --motion-flow-dist: 3px; }
+:root { --motion-bar-dur: 1.4s; --motion-turn-dur: 2.2s; --motion-logo-dur: 2.9s; --motion-logo-shake: 7px; --motion-flow-dur: 1.8s; --motion-flow-dist: 2px; --motion-step-pop-dur: 420ms; --motion-step-pop-gap: 120ms; --motion-step-pop-scale: .5; --motion-step-ring-dur: 900ms; }
+:root[data-motion='subtle'] { --motion-bar-dur: 2.4s; --motion-turn-dur: 4s; --motion-logo-dur: 3.8s; --motion-logo-shake: 3px; --motion-flow-dur: 2.8s; --motion-flow-dist: 1.5px; --motion-step-pop-dur: 560ms; --motion-step-pop-gap: 160ms; --motion-step-pop-scale: .8; --motion-step-ring-dur: 1100ms; }
+:root[data-motion='off'] { --motion-bar-dur: 0s; --motion-turn-dur: 0s; --motion-logo-dur: 12s; --motion-logo-shake: 0px; --motion-flow-dur: 12s; --motion-flow-dist: 0px; --motion-step-pop-dur: 0s; --motion-step-pop-gap: 0s; --motion-step-pop-scale: 1; --motion-step-ring-dur: 0s; }
+:root[data-motion='storm'] { --motion-bar-dur: 1.1s; --motion-turn-dur: 1.6s; --motion-logo-dur: 2.5s; --motion-logo-shake: 11px; --motion-flow-dur: 1.2s; --motion-flow-dist: 3px; --motion-step-pop-dur: 340ms; --motion-step-pop-gap: 90ms; --motion-step-pop-scale: .3; --motion-step-ring-dur: 700ms; }
 
 /* The job mark's loop turns while the job is working. */
 @keyframes al-turn {
@@ -581,5 +581,85 @@ body {
   :root:not([data-motion='off']) .glim-ring-grow {
     animation: glim-ring-grow var(--motion-ring-dur, 500ms) ease-out backwards;
     animation-delay: calc(var(--ring-i, 0) * var(--motion-ring-step, 160ms));
+  }
+}
+
+/* The welcome page's step marks (pages/Welcome.tsx). Every mark wears the
+   accent, and the number gives way to a tick once the step is done. On the
+   way in the marks pop up one after another; a step done while the page is
+   open first runs a ring round its mark. */
+@property --al-step-fill {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.al-step-face {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+.al-step-tick,
+.al-step-mark[data-state='done'] .al-step-number {
+  opacity: 0;
+}
+.al-step-mark[data-state='done'] .al-step-tick {
+  opacity: 1;
+}
+.al-step-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(var(--accent) var(--al-step-fill), transparent 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+}
+@keyframes al-step-pop {
+  from {
+    opacity: 0;
+    transform: scale(var(--motion-step-pop-scale, 1));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes al-step-ring {
+  from {
+    --al-step-fill: 0deg;
+    opacity: 1;
+  }
+  80% {
+    --al-step-fill: 360deg;
+    opacity: 1;
+  }
+  to {
+    --al-step-fill: 360deg;
+    opacity: 0;
+  }
+}
+@keyframes al-step-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion='off']) .al-step-mark {
+    animation: al-step-pop var(--motion-step-pop-dur) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(var(--step, 0) * var(--motion-step-pop-gap));
+  }
+  :root:not([data-motion='off']) .al-step-fresh .al-step-ring {
+    animation: al-step-ring var(--motion-step-ring-dur) ease-in-out both;
+  }
+  :root:not([data-motion='off']) .al-step-fresh .al-step-number {
+    animation: al-step-out calc(var(--motion-step-ring-dur) * 0.25) ease-in both;
+    animation-delay: calc(var(--motion-step-ring-dur) * 0.7);
+  }
+  :root:not([data-motion='off']) .al-step-fresh .al-step-tick {
+    animation: al-step-pop calc(var(--motion-step-ring-dur) * 0.3) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(var(--motion-step-ring-dur) * 0.75);
   }
 }
