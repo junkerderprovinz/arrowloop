@@ -27,6 +27,8 @@ const RULES: Rule[] = [
   // The way in. These sit above the reset rule, which would claim the
   // password reset's link and its last button.
   [/^login\.submit$/i, 'IconSignIn'],
+  // A passkey is a key, whatever the label says it unlocks.
+  [/^login\.passkeyUnlock$/i, 'IconKey'],
   [/^reset\.link$/i, 'IconForgotPassword'],
   [/^reset\.done$|^twoFactor\.(confirm|recoverySaved)$/i, 'IconConfirm'],
   [/^password\.save(First|Change)$/i, 'IconKey'],
