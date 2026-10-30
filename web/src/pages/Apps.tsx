@@ -48,12 +48,14 @@ function PhoneCard({ version }: { version: string }) {
           soonLabel={t('apps.soon')}
           onLinkClick={followExternal}
         />
-        <ReadmeButton
-          brand="fdroid"
-          parts={[{ name: 'F-Droid', href: F_DROID }]}
-          mark={<BrandMark svg={FDROID_SVG} />}
-          onLinkClick={followExternal}
-        />
+        <span data-new="fdroid-logo" className="inline-flex">
+          <ReadmeButton
+            brand="fdroid"
+            parts={[{ name: 'F-Droid', href: F_DROID }]}
+            mark={<BrandMark svg={FDROID_SVG} />}
+            onLinkClick={followExternal}
+          />
+        </span>
         <ApkButton />
       </div>
     </Card>
