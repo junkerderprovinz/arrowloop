@@ -1142,7 +1142,7 @@ const fr: Translations = {
   'new.change.trashBin': 'Tout ce qui mène à {trash} montre une poubelle, y compris la barre latérale et les menus des tâches.',
   'new.change.labelPairs': 'Sur un téléphone, les choix de {labels} se placent deux par ligne pour que leurs noms tiennent.',
   'new.change.passkeyKey': 'La connexion avec une clé d’accès montre une clé.',
-  'new.change.welcomeMotion': 'Sur une nouvelle installation, la page d’accueil montre ses trois étapes dans la couleur d’accent et les fait apparaître l’une après l’autre.',
+  'new.change.welcomeMotion': 'Sur une nouvelle installation, la page d’accueil montre ses trois étapes dans la couleur d’accent et les joue comme une petite scène : un pointeur ajoute une cible, crée une tâche et lance la première synchronisation.',
   'new.change.settingsTiles': '{settings} est une colonne de tuiles, et chaque tuile montre toutes ses cartes. Ce que contenait {engine} se trouve désormais dans {general}, {sync} et {safety}.',
   'new.change.anomaliesModule': 'Un interrupteur pour {anomalies} dans {safety} désactive les remarques et leur page. Les freins continuent de retenir, et une exécution retenue se règle alors depuis sa tâche.',
   'new.change.infoTile': '{info} liste toutes les versions et cherche leurs mises à jour. La carte {help} ajoute le manuel et un rapport de bogue.',

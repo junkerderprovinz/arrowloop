@@ -15,6 +15,13 @@ vi.mock('../lib/api', async (actual) => ({
 
 const { Welcome } = await import('./Welcome')
 
+// jsdom has no ResizeObserver, which the step scene uses to place its pointer.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  disconnect() {}
+  unobserve() {}
+} as unknown as typeof ResizeObserver
+
 afterEach(() => {
   cleanup()
   targets = 0

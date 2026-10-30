@@ -1142,7 +1142,7 @@ const vi: Translations = {
   'new.change.trashBin': 'Mọi lối đến {trash} đều hiển thị thùng rác, kể cả thanh bên và menu của các tác vụ.',
   'new.change.labelPairs': 'Trên điện thoại, các lựa chọn trong {labels} xếp hai cái một hàng để tên vừa chỗ.',
   'new.change.passkeyKey': 'Đăng nhập bằng khóa truy cập hiển thị một chiếc chìa khóa.',
-  'new.change.welcomeMotion': 'Khi cài đặt mới, trang chào mừng hiển thị ba bước bằng màu nhấn và đưa chúng vào lần lượt từng bước.',
+  'new.change.welcomeMotion': 'Khi cài đặt mới, trang chào mừng hiển thị ba bước bằng màu nhấn và diễn lại chúng như một cảnh nhỏ: một con trỏ thêm đích, tạo tác vụ và chạy lần đồng bộ đầu tiên.',
   'new.change.settingsTiles': '{settings} là một cột các ô, và mỗi ô hiện tất cả các thẻ của nó. Những gì trước đây ở {engine} nay nằm trong {general}, {sync} và {safety}.',
   'new.change.anomaliesModule': 'Một công tắc cho {anomalies} trong {safety} tắt các ghi chú và trang của chúng. Phanh vẫn tiếp tục giữ lại, và lần chạy bị giữ khi đó được trả lời ở tác vụ của nó.',
   'new.change.infoTile': '{info} liệt kê mọi phiên bản và kiểm tra bản cập nhật. Thẻ {help} thêm hướng dẫn và báo cáo lỗi.',

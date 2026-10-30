@@ -1142,7 +1142,7 @@ const tr: Translations = {
   'new.change.trashBin': '{trash} öğesine giden her yol bir çöp kutusu gösterir, kenar çubuğu ve görev menüleri de.',
   'new.change.labelPairs': 'Telefonda {labels} altındaki seçenekler, adları sığsın diye her satırda iki tane durur.',
   'new.change.passkeyKey': 'Geçiş anahtarıyla oturum açma bir anahtar gösterir.',
-  'new.change.welcomeMotion': 'Yeni kurulumda karşılama sayfası üç adımını vurgu renginde gösterir ve onları birbiri ardına getirir.',
+  'new.change.welcomeMotion': 'Yeni kurulumda karşılama sayfası üç adımını vurgu renginde gösterir ve küçük bir sahne gibi oynatır: bir işaretçi hedef ekler, bir görev oluşturur ve ilk eşitlemeyi başlatır.',
   'new.change.settingsTiles': '{settings} bir karo sütunudur ve her karo tüm kartlarını gösterir. {engine} içinde olanlar artık {general}, {sync} ve {safety} altında.',
   'new.change.anomaliesModule': '{safety} altındaki {anomalies} anahtarı notları ve sayfalarını kapatır. Frenler tutmaya devam eder ve tutulan bir çalışmaya o zaman kendi işinde yanıt verilir.',
   'new.change.infoTile': '{info} tüm sürümleri listeler ve güncellemeleri denetler. {help} kartı kılavuzu ve hata raporunu ekler.',

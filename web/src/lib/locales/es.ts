@@ -1142,7 +1142,7 @@ const es: Translations = {
   'new.change.trashBin': 'Todo lo que lleva a {trash} muestra una papelera, también la barra lateral y los menús de las tareas.',
   'new.change.labelPairs': 'En el móvil, las opciones de {labels} van de dos en dos por fila para que quepan sus nombres.',
   'new.change.passkeyKey': 'Iniciar sesión con una llave de acceso muestra una llave.',
-  'new.change.welcomeMotion': 'En una instalación nueva, la página de bienvenida muestra sus tres pasos en el color de acento y los hace aparecer uno tras otro.',
+  'new.change.welcomeMotion': 'En una instalación nueva, la página de bienvenida muestra sus tres pasos en el color de acento y los representa como una pequeña escena: un puntero añade un destino, crea una tarea y hace la primera sincronización.',
   'new.change.settingsTiles': '{settings} es una columna de mosaicos, y cada mosaico muestra todas sus tarjetas. Lo que había en {engine} está ahora en {general}, {sync} y {safety}.',
   'new.change.anomaliesModule': 'Un interruptor para {anomalies} en {safety} desactiva las notas y su página. Los frenos siguen reteniendo, y una ejecución retenida se responde entonces en su tarea.',
   'new.change.infoTile': '{info} enumera todas las versiones y comprueba si hay actualizaciones. La tarjeta {help} añade el manual y un informe de errores.',

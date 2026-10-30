@@ -1142,7 +1142,7 @@ const pl: Translations = {
   'new.change.trashBin': 'Wszystko, co prowadzi do {trash}, pokazuje kosz, także pasek boczny i menu zadań.',
   'new.change.labelPairs': 'Na telefonie opcje w sekcji {labels} stoją po dwie w rzędzie, aby zmieściły się ich nazwy.',
   'new.change.passkeyKey': 'Logowanie kluczem dostępu pokazuje klucz.',
-  'new.change.welcomeMotion': 'Przy nowej instalacji strona powitalna pokazuje swoje trzy kroki w kolorze akcentu i wprowadza je jeden po drugim.',
+  'new.change.welcomeMotion': 'Przy nowej instalacji strona powitalna pokazuje swoje trzy kroki w kolorze akcentu i odgrywa je jako małą scenkę: wskaźnik dodaje miejsce docelowe, tworzy zadanie i uruchamia pierwszą synchronizację.',
   'new.change.settingsTiles': '{settings} to kolumna kafelków, a każdy kafelek pokazuje wszystkie swoje karty. To, co było w {engine}, jest teraz w {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Przełącznik dla {anomalies} w {safety} wyłącza uwagi i ich stronę. Hamulce nadal wstrzymują, a na wstrzymany przebieg odpowiada się wtedy przy jego zadaniu.',
   'new.change.infoTile': '{info} wylicza wszystkie wersje i sprawdza dla nich aktualizacje. Karta {help} dodaje podręcznik i raport o błędzie.',

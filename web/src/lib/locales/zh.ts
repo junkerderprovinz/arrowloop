@@ -1142,7 +1142,7 @@ const zh: Translations = {
   'new.change.trashBin': '所有通往 {trash} 的入口都显示垃圾桶，侧边栏和任务菜单也一样。',
   'new.change.labelPairs': '在手机上，{labels} 中的选项每行两个，名称都能放下。',
   'new.change.passkeyKey': '使用通行密钥登录时显示一把钥匙。',
-  'new.change.welcomeMotion': '新安装时，欢迎页以强调色显示三个步骤，并依次呈现。',
+  'new.change.welcomeMotion': '新安装时，欢迎页以强调色显示三个步骤，并像一段小场景那样演示：指针添加目标、创建任务并运行第一次同步。',
   'new.change.settingsTiles': '{settings}是一列磁贴，每个磁贴都会显示它的全部卡片。原来在{engine}里的内容现在位于{general}、{sync}和{safety}。',
   'new.change.anomaliesModule': '{safety}中有一个{anomalies}开关，可关闭提示及其页面。制动仍会拦下运行，被拦下的运行随后在它的任务中处理。',
   'new.change.infoTile': '{info}列出所有版本并检查更新。{help}卡片还提供手册和错误报告。',

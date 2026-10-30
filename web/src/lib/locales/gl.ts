@@ -1142,7 +1142,7 @@ const gl: Translations = {
   'new.change.trashBin': 'Todo o que leva a {trash} mostra unha papeleira, tamén a barra lateral e os menús das tarefas.',
   'new.change.labelPairs': 'No móbil, as opcións de {labels} van de dúas en dúas por fila para que caiban os seus nomes.',
   'new.change.passkeyKey': 'Iniciar sesión cunha chave de acceso mostra unha chave.',
-  'new.change.welcomeMotion': 'Nunha instalación nova, a páxina de benvida mostra os seus tres pasos na cor de acento e fainos aparecer un tras outro.',
+  'new.change.welcomeMotion': 'Nunha instalación nova, a páxina de benvida mostra os seus tres pasos na cor de acento e represéntaos como unha pequena escena: un punteiro engade un destino, crea unha tarefa e fai a primeira sincronización.',
   'new.change.settingsTiles': '{settings} é unha columna de mosaicos, e cada mosaico mostra todas as súas tarxetas. O que había en {engine} está agora en {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Un interruptor para {anomalies} en {safety} desactiva as notas e a súa páxina. Os freos seguen retendo, e unha execución retida respóndese entón na súa tarefa.',
   'new.change.infoTile': '{info} lista todas as versións e comproba se hai actualizacións. A tarxeta {help} engade o manual e un informe de erros.',

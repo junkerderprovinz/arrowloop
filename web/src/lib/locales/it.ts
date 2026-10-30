@@ -1142,7 +1142,7 @@ const it: Translations = {
   'new.change.trashBin': 'Tutto ciò che porta a {trash} mostra un cestino, anche la barra laterale e i menu delle attività.',
   'new.change.labelPairs': 'Sul telefono le scelte di {labels} stanno due per riga, così i loro nomi ci stanno.',
   'new.change.passkeyKey': 'L’accesso con una passkey mostra una chiave.',
-  'new.change.welcomeMotion': 'In una nuova installazione la pagina di benvenuto mostra i suoi tre passi nel colore d’accento e li fa comparire uno dopo l’altro.',
+  'new.change.welcomeMotion': 'In una nuova installazione la pagina di benvenuto mostra i suoi tre passi nel colore d’accento e li recita come una piccola scena: un puntatore aggiunge una destinazione, crea un’attività e avvia la prima sincronizzazione.',
   'new.change.settingsTiles': '{settings} è una colonna di riquadri, e ogni riquadro mostra tutte le sue schede. Ciò che stava in {engine} ora si trova in {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Un interruttore per {anomalies} in {safety} spegne le note e la loro pagina. I freni continuano a trattenere, e a un\'esecuzione trattenuta si risponde allora dal suo lavoro.',
   'new.change.infoTile': '{info} elenca tutte le versioni e controlla se ci sono aggiornamenti. La scheda {help} aggiunge il manuale e il report del bug.',

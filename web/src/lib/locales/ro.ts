@@ -1142,7 +1142,7 @@ const ro: Translations = {
   'new.change.trashBin': 'Tot ce duce la {trash} arată un coș, inclusiv bara laterală și meniurile sarcinilor.',
   'new.change.labelPairs': 'Pe telefon, opțiunile din {labels} stau câte două pe rând, ca să le încapă numele.',
   'new.change.passkeyKey': 'Autentificarea cu o cheie de acces arată o cheie.',
-  'new.change.welcomeMotion': 'La o instalare nouă, pagina de bun venit își arată cei trei pași în culoarea de accent și îi aduce unul după altul.',
+  'new.change.welcomeMotion': 'La o instalare nouă, pagina de bun venit își arată cei trei pași în culoarea de accent și îi joacă într-o mică scenă: un indicator adaugă o destinație, creează o sarcină și pornește prima sincronizare.',
   'new.change.settingsTiles': '{settings} este o coloană de dale, iar fiecare dală arată toate cardurile ei. Ce era în {engine} se află acum în {general}, {sync} și {safety}.',
   'new.change.anomaliesModule': 'Un comutator pentru {anomalies} în {safety} oprește notele și pagina lor. Frânele continuă să rețină, iar o rulare reținută primește atunci răspuns la lucrarea ei.',
   'new.change.infoTile': '{info} listează fiecare versiune și caută actualizări pentru ele. Cardul {help} adaugă manualul și un raport de eroare.',
