@@ -18,7 +18,7 @@ The full notes for each release are in
 - **The Labels selectors stand two to a row on a phone,** in the phone app and in a browser narrower than 600 pixels, so a choice with its symbol and a long name keeps its words instead of losing them.
 - **A running job's progress bar keeps its changes to itself,** so the rest of the page is not laid out again at every step.
 - **The trash wears the bin everywhere,** in the sidebar, in a job's menu and on the phone. It wore the lifebuoy, which stands for getting a backup back.
-- **The F-Droid button's logo is F-Droid's blue,** lighter on the dark theme so it stays visible, as the other marks on the App tile do.
+- **The F-Droid button shows F-Droid's own logo in its colours,** as Android and Docker beside it do, and turns white on F-Droid's blue under the pointer.
 - **Version numbers are plain numbers,** 2.3.3 rather than v2.3.3: in the Version card for ArrowLoop, GlimStone and rclone, in the corner of the App tile's cards and in the messages about an update, on the web, in the desktop app and on the phone. Each number still opens its release.
 
 ## 2.3.3 - 2026-10-29

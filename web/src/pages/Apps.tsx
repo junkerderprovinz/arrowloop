@@ -52,7 +52,6 @@ function PhoneCard({ version }: { version: string }) {
           brand="fdroid"
           parts={[{ name: 'F-Droid', href: F_DROID }]}
           mark={<BrandMark svg={FDROID_SVG} />}
-          markClass="glim-fdroid-mark"
           onLinkClick={followExternal}
         />
         <ApkButton />
