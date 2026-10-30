@@ -89,6 +89,21 @@ const RELOCATED = 'relocated'
 const BIN = 'bin'
 const SAID = new Set([REPLACED, RELOCATED, BIN, 'keep both', 'keep left', 'keep right'])
 
+/**
+ * The notes on a skip for a folder a side could not read, which the run left
+ * alone on both sides (internal/apply's NoteUnreadable and NoteVanished), and
+ * their labels.
+ */
+const UNREAD = new Map<string, { plain: TranslationKey; local: TranslationKey; in: TranslationKey }>([
+  ['unreadable', { plain: 'entry.unreadable', local: 'entry.unreadableLocal', in: 'entry.unreadableIn' }],
+  ['vanished', { plain: 'entry.vanished', local: 'entry.vanishedLocal', in: 'entry.vanishedIn' }],
+])
+
+/** Whether an entry is a folder the run left alone because a side could not read it. */
+export function unreadFolder(e: Entry): boolean {
+  return e.Kind === 'skip' && UNREAD.has(e.Note ?? '')
+}
+
 type T = (key: TranslationKey, vars?: Record<string, string | number>) => string
 
 /** A kind in its plain word, or null for one this build does not know. */
@@ -105,8 +120,9 @@ function folderOf(path: string): string {
 /**
  * What happened to one file, said the way somebody checking on a sync asks:
  * uploaded to which cloud, deleted where. The side on an entry is the one
- * written to. A skip with a side is a step that failed there; one without is
- * a file that was postponed or left alone, and keeps its plain word.
+ * written to. A skip with a side is a step that failed there, or a folder
+ * that side could not read; one without is a file that was postponed or left
+ * alone, and keeps its plain word.
  *
  * The note refines it where the engine wrote one: a copy over a file that was
  * there, a rename rather than a move, a file that left for the other side, a
@@ -126,7 +142,8 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
     }
     return t('entry.conflictBoth')
   }
-  if (!job || (e.Side !== 'left' && e.Side !== 'right')) return plain
+  const unread = e.Kind === 'skip' ? UNREAD.get(note) : undefined
+  if (!job || (e.Side !== 'left' && e.Side !== 'right')) return unread ? t(unread.plain) : plain
   const [left, right] = placesOf(job, drives)
   const [to, from] = e.Side === 'left' ? [left, right] : [right, left]
   // "Locally" only means something when the other side is somewhere else.
@@ -155,6 +172,7 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
     case 'rmdir':
       return here('entry.rmdirLocal', 'entry.rmdirIn')
     case 'skip':
+      if (unread) return here(unread.local, unread.in)
       if (to.kind === 'target' && from.kind !== 'target') return t('entry.uploadFailed')
       if (from.kind === 'target' && to.kind !== 'target') return t('entry.downloadFailed')
       return t('entry.failed')
@@ -214,6 +232,7 @@ export function entryAction(t: T, e: Entry, job: Job | undefined, drives: Drive[
 export function entryNote(t: T, e: Entry): string | null {
   const note = e.Note ?? ''
   if (!note || SAID.has(note)) return null
+  if (unreadFolder(e)) return t('entry.leftAlone')
   if (e.Kind === 'move') return t('entry.was', { path: note })
   return note
 }

@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	iofs "io/fs"
 	"path"
 	"sort"
 	"strings"
@@ -69,6 +70,20 @@ type Listing struct {
 	// such as OneDrive's Personal Vault. What they hold is unknown, not
 	// absent.
 	Sealed []string
+	// Unreadable lists the folders below the root that could not be read.
+	// What they hold is unknown, not absent, so a run leaves each one alone
+	// on both sides.
+	Unreadable []Unreadable
+}
+
+// Unreadable is a folder below the root that could not be listed.
+type Unreadable struct {
+	Path string
+	// Gone is true for a folder that disappeared between being seen in its
+	// parent and being opened, as a temporary folder does, and false for one
+	// the side refused to open.
+	Gone bool
+	Err  error
 }
 
 // Options controls how a side is read.
@@ -130,7 +145,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	defer dropStats(group)
 	ctx = accounting.WithStatsGroup(ctx, group)
 	stats := accounting.Stats(ctx)
-	side := pruned{Fs: f, exclude: opt.Exclude, mu: &sync.Mutex{}, sealed: &out.Sealed}
+	side := pruned{Fs: f, exclude: opt.Exclude, mu: &sync.Mutex{}, sealed: &out.Sealed, unreadable: &out.Unreadable}
 	err := walk.ListR(ctx, side, "", true, -1, listType, func(entries fs.DirEntries) error {
 		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
@@ -179,10 +194,16 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		}
 		return out, nil
 	}
-	// The local backend lists a folder it may not open as empty and only
-	// counts the error.
+	// Folders below the root are listed in groups of their own, so what
+	// counts here is the root.
 	if stats.GetErrors() > 0 {
 		return nil, fmt.Errorf("list %s: a folder could not be read: %w", f.Name(), stats.GetLastError())
+	}
+	// A drive pulled out or a share dropped during the walk makes every
+	// folder after it disappear, and a side that is gone is not one with a
+	// few folders missing.
+	if len(out.Unreadable) > 0 && !exists(ctx, f) {
+		return nil, fmt.Errorf("list %s: the side went away while it was being read: %w", f.Name(), fs.ErrorDirNotFound)
 	}
 
 	for key, paths := range clashes {
@@ -202,6 +223,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	}
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
 	sort.Strings(out.Sealed)
+	sort.Slice(out.Unreadable, func(i, j int) bool { return out.Unreadable[i].Path < out.Unreadable[j].Path })
 	return out, nil
 }
 
@@ -219,26 +241,57 @@ func dropStats(group string) {
 // pruned lists a folder the job never looks into as empty, without opening it.
 // The local backend opens every folder the walk reaches, and a drive root holds
 // several, such as System Volume Information, that the process may not open;
-// each would fail the scan. A sealed folder is listed as empty too, and noted.
+// each would fail the scan. A sealed or unreadable folder is listed as empty
+// too, and noted.
 type pruned struct {
 	fs.Fs
-	exclude *filter.Set
-	mu      *sync.Mutex
-	sealed  *[]string
+	exclude    *filter.Set
+	mu         *sync.Mutex
+	sealed     *[]string
+	unreadable *[]Unreadable
 }
 
 func (p pruned) List(ctx context.Context, dir string) (fs.DirEntries, error) {
-	if dir != "" && (IsReserved(dir) || p.exclude.ExcludesTree(dir)) {
+	if dir == "" {
+		return p.Fs.List(ctx, dir)
+	}
+	if IsReserved(dir) || p.exclude.ExcludesTree(dir) {
 		return nil, nil
 	}
-	entries, err := p.Fs.List(ctx, dir)
-	if err != nil && dir != "" && isSealed(err) {
-		p.mu.Lock()
+	entries, err := listCounted(ctx, p.Fs, dir)
+	if err == nil {
+		return entries, nil
+	}
+	gone := errors.Is(err, fs.ErrorDirNotFound)
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	switch {
+	case isSealed(err):
 		*p.sealed = append(*p.sealed, dir)
-		p.mu.Unlock()
-		return nil, nil
+	case gone || errors.Is(err, iofs.ErrPermission):
+		*p.unreadable = append(*p.unreadable, Unreadable{Path: dir, Gone: gone, Err: err})
+	default:
+		return nil, err
 	}
-	return entries, err
+	return nil, nil
+}
+
+// listCounted lists one folder and returns the error the backend counted
+// rather than returned. The local backend lists a folder it may not open as
+// empty and only counts the error, so a group per folder is what ties the
+// error to the folder.
+func listCounted(ctx context.Context, f fs.Fs, dir string) (fs.DirEntries, error) {
+	group := fmt.Sprintf("scan/%d", scans.Add(1))
+	defer dropStats(group)
+	ctx = accounting.WithStatsGroup(ctx, group)
+	entries, err := f.List(ctx, dir)
+	if err != nil {
+		return nil, err
+	}
+	if stats := accounting.StatsGroup(ctx, group); stats.GetErrors() > 0 {
+		return nil, stats.GetLastError()
+	}
+	return entries, nil
 }
 
 // isSealed reports whether a folder failed to list because the backend keeps

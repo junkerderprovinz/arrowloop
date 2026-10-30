@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **One folder that can't be read no longer fails the whole run.** A job stopped with "a folder could not be read" when a folder below its root refused access, and with "directory not found" when a temporary folder vanished while it was being read. Such a folder is now left alone on both sides: nothing under it is copied, moved or deleted, not even by a mirror, and a two-way job doesn't take its files for deleted. Everything else syncs as usual. The run names each of these folders and the reason in its details, on the phone too, and counts them as left for later. A side that disappears as a whole still stops the run.
+
 ## 2.4.0 - 2026-10-30
 
 ## ✨ Added

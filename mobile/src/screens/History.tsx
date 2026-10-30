@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { entryLabel, entryNote, plainKey } from "../../../web/src/lib/entryLabel";
+import { entryLabel, entryNote, plainKey, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
@@ -240,7 +240,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
                     configs.find((c) => c.name === item.Job),
                     drives,
                   )}
-                  tone={tone(item.Kind)}
+                  tone={tone(item)}
                 />
                 {item.Job ? <Caption>{item.Job}</Caption> : null}
                 <Caption>{clock(item.When, lang)}</Caption>
@@ -547,9 +547,21 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
       {[...groups.entries()].map(([kind, list]) => (
         <View key={kind} style={styles.group}>
           <AxisLabel>{`${entryWord(kind, t)} · ${list.length}`}</AxisLabel>
-          {list.slice(0, 50).map((entry, i) => (
-            <Mono key={`${entry.Path}-${i}`}>{entry.Path}</Mono>
-          ))}
+          {list.slice(0, 50).map((entry, i) => {
+            const labelled = { Kind: entry.Kind, Side: entry.Side ?? "", Note: entry.Note, Path: entry.Path };
+            return (
+              <View key={`${entry.Path}-${i}`}>
+                <Mono>{entry.Path}</Mono>
+                {/* Among the paths left alone, a folder nobody could read says why. */}
+                {unreadFolder(labelled) ? (
+                  <>
+                    <Caption>{entryLabel(t, labelled, undefined, [])}</Caption>
+                    <Caption>{entryNote(t, labelled)}</Caption>
+                  </>
+                ) : null}
+              </View>
+            );
+          })}
           {list.length > 50 ? <Caption>{t("trash.more", { total: list.length, shown: 50 })}</Caption> : null}
         </View>
       ))}
@@ -619,9 +631,11 @@ function useThrottledEvents(load: () => void) {
   });
 }
 
-function tone(kind: string): "ok" | "warn" | "fail" | "neutral" {
-  if (kind === "skip") return "fail";
-  if (kind === "conflict") return "warn";
+// A folder that could not be read is a warning: nothing in it was touched.
+function tone(item: Touch): "ok" | "warn" | "fail" | "neutral" {
+  if (unreadFolder({ Kind: item.Kind, Side: item.Side ?? "", Note: item.Note })) return "warn";
+  if (item.Kind === "skip") return "fail";
+  if (item.Kind === "conflict") return "warn";
   return "neutral";
 }
 
