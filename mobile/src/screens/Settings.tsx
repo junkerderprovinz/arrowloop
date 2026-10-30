@@ -1,6 +1,17 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, AppState, Keyboard, Linking, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  AppState,
+  Keyboard,
+  Linking,
+  PermissionsAndroid,
+  Platform,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
 import { engine, type AppData, type AppDataState, type AppDataWay, type SharedFolder } from "../engine";
@@ -70,6 +81,8 @@ export function Settings() {
   const { p, corners, scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const reduced = useSystemReduced();
+  // Below 600 the label selectors go two to a row, since their labels run long.
+  const labelRows = useWindowDimensions().width < 600 ? 2 : undefined;
   const waiting = useWaiting();
   const storm = useStormUnlock();
   const leaf = useLeafUnlock();
@@ -551,6 +564,7 @@ export function Settings() {
         <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
         <Choice<LabelMode>
           hue={3}
+          perRow={labelRows}
           // A stored `reactive` shows as symbols, which is how it rendered.
           value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
@@ -563,6 +577,7 @@ export function Settings() {
         <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
         <Choice<BarLabelMode>
           hue={4}
+          perRow={labelRows}
           // The resolved mode, so a stored "same" still lights a segment; see
           // barMode in ui.tsx.
           value={barLabels}

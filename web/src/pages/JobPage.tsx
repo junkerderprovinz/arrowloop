@@ -418,7 +418,7 @@ function Now({ event, speed }: { event?: RunEvent; speed?: number }) {
       )}
       <div className="flex items-center gap-2">
         <div
-          className="h-1 min-w-0 flex-1 overflow-hidden rounded-[var(--radius-pill)] bg-carbon-surface3"
+          className="glim-meter h-1 min-w-0 flex-1 overflow-hidden rounded-[var(--radius-pill)] bg-carbon-surface3"
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={known ? total : undefined}

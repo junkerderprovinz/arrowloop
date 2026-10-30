@@ -49,6 +49,21 @@ export const HUE_OFFSET = {
 const WELL_GAP = 3.2
 const CHIP_GAP = 4
 
+/** Below this width a selector with long labels sets its segments two to a row. */
+const PAIRS_QUERY = '(max-width: 599px)'
+
+function usePhoneWidth(): boolean {
+  const [phone, setPhone] = useState(() => window.matchMedia?.(PAIRS_QUERY).matches ?? false)
+  useLayoutEffect(() => {
+    const query = window.matchMedia?.(PAIRS_QUERY)
+    if (!query) return
+    const follow = () => setPhone(query.matches)
+    query.addEventListener('change', follow)
+    return () => query.removeEventListener('change', follow)
+  }, [])
+  return phone
+}
+
 export function Selector<T extends string>({
   options,
   value,
@@ -62,6 +77,7 @@ export function Selector<T extends string>({
   disabled = false,
   low = false,
   hug = false,
+  pairsOnPhone = false,
 }: {
   options: Option<T>[]
   value: T
@@ -101,8 +117,15 @@ export function Selector<T extends string>({
    * segments run out of room they wrap into even rows as wide as the widest.
    */
   hug?: boolean
+  /**
+   * Two segments to a row below 600px, for labels that run long, such as the
+   * Labels selector's: a label that does not fit its half wraps instead of
+   * being cut off.
+   */
+  pairsOnPhone?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
+  const pairs = usePhoneWidth() && pairsOnPhone
 
   // The stage comes from the labels rather than what is drawn, so the strip
   // keeps its width when the label engine hides the words.
@@ -210,7 +233,7 @@ export function Selector<T extends string>({
       aria-label={label}
       aria-labelledby={labelledBy}
       className={
-        `${hug ? 'w-fit max-w-full' : 'w-full'} ${
+        `${hug && !pairs ? 'w-fit max-w-full' : 'w-full'} ${pairs ? 'items-stretch ' : ''}${
           variant === 'well' ? 'glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]' : 'flex flex-wrap gap-1'
         }`
       }
@@ -238,7 +261,9 @@ export function Selector<T extends string>({
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
               borderRadius: 'var(--radius-pill)',
-              ...(pinned !== null
+              ...(pairs
+                ? { flex: '1 0 calc(50% - 0.25rem)', minWidth: 0 }
+                : pinned !== null
                 ? {
                     // The basis leaves one gap of slack so rounding cannot
                     // push a full row's last segment down; growth takes it
@@ -254,7 +279,10 @@ export function Selector<T extends string>({
               'glim-hue glim-hue-icon glim-tab inline-flex items-center justify-center gap-1.5 px-3',
               // A height token rather than padding, so every strip is exactly
               // the same height.
-              low
+              // A pair grows with a label that wraps instead of cutting it off.
+              pairs
+                ? 'min-h-[calc(var(--btn-h)-0.4rem)] py-1 text-center text-meta font-medium'
+                : low
                 ? variant === 'well'
                   ? 'h-[calc(var(--btn-h)-0.4rem)] text-meta font-medium'
                   : 'h-[var(--btn-h)] text-meta font-medium'
