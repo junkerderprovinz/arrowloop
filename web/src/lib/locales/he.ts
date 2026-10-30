@@ -1136,6 +1136,7 @@ const he: Translations = {
   'new.change.settingsSearch': 'החיפוש מעל הכרטיסים מוצא כל הגדרה, גם לפי שמה הישן. לחץ על / או על Ctrl+K.',
   'new.change.tileOrder': 'אפשר להזיז את האריחים ב{settings}: החזיקו אחד וגררו אותו, או לחצו Alt ומקש חץ. {reset} ב{look} מחזיר אותם למקומם.',
   'new.change.labelGlyphs': 'כל אפשרות ב{labels} מציגה סמל לפני שמה.',
+  'new.change.buttonGlyphs': 'לכל כפתור יש סמל משלו, כולל התשובות להתנגשות ובדיקת העדכונים, כך ש{labels} חל על כולם.',
   'new.change.settingsTiles': '{settings} הוא טור של אריחים, וכל אריח מציג את כל הכרטיסים שלו. מה שהיה ב{engine} נמצא עכשיו תחת {general}, {sync} ו{safety}.',
   'new.change.anomaliesModule': 'מתג ל{anomalies} ב{safety} מכבה את ההערות ואת הדף שלהן. הבלמים ממשיכים לעצור, ועל הרצה שנעצרה עונים אז בדף המשימה שלה.',
   'new.change.infoTile': '{info} מפרט את כל הגרסאות ובודק אם יש להן עדכונים. הכרטיס {help} מוסיף את המדריך ודוח תקלה.',

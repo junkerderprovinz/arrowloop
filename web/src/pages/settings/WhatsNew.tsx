@@ -2,7 +2,7 @@ import { useEffect, useId, useState, type CSSProperties } from 'react'
 
 import { IconGithub } from '../../components/brandGlyphs'
 import { Dialog } from '../../components/Dialog'
-import { IconCheck, IconClose, IconEye, IconLink } from '../../components/glyphs'
+import { IconCheck, IconClose, IconEye, IconLink, IconWhatsNew } from '../../components/glyphs'
 import { ReleaseNotes } from '../../components/ReleaseNotes'
 import { api } from '../../lib/api'
 import { hueVars } from '../../lib/appearance'
@@ -239,8 +239,9 @@ export function WhatsNewHost() {
 }
 
 /**
- * "New · 5" in the Version card, the number being what is still unseen. Its
- * dot turns grey and the number goes once nothing is left.
+ * "New · 5" in the Version card, the number being what is still unseen. The
+ * gift stands beside its dot, which turns grey once nothing is left, and the
+ * number goes.
  */
 export function WhatsNewButton() {
   const { t } = useT()
@@ -252,7 +253,12 @@ export function WhatsNewButton() {
     <Button
       label={left > 0 ? `${t('new.button')} · ${left}` : t('new.button')}
       labelKey={null}
-      glyph={<i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />}
+      glyph={
+        <span className="flex items-center gap-1.5">
+          <IconWhatsNew />
+          <i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />
+        </span>
+      }
       keepLabel
       onClick={openNewsWindow}
     />

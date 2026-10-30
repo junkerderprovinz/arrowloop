@@ -1136,6 +1136,7 @@ const fi: Translations = {
   'new.change.settingsSearch': 'Korttien yläpuolella oleva haku löytää jokaisen asetuksen, myös vanhalla nimellä. Paina / tai Ctrl+K.',
   'new.change.tileOrder': 'Kohdan {settings} ruutuja voi siirtää: pidä yhtä painettuna ja vedä, tai paina Alt ja nuolinäppäintä. {reset} kohdassa {look} palauttaa ne paikoilleen.',
   'new.change.labelGlyphs': 'Kohdan {labels} jokaisen valinnan nimen edessä näkyy symboli.',
+  'new.change.buttonGlyphs': 'Jokaisella painikkeella on oma symbolinsa, myös ristiriidan vastauksilla ja päivitysten tarkistuksella, joten {labels} koskee kaikkia.',
   'new.change.settingsTiles': 'Kohta {settings} on ruutujen sarake, ja jokainen ruutu näyttää kaikki korttinsa. Se, mikä oli kohdassa {engine}, on nyt kohdissa {general}, {sync} ja {safety}.',
   'new.change.anomaliesModule': 'Kohdan {safety} kytkin osiolle {anomalies} kytkee huomautukset ja niiden sivun pois. Jarrut pysäyttävät edelleen, ja pysäytettyyn ajoon vastataan silloin sen työn kohdalla.',
   'new.change.infoTile': '{info} listaa kaikki versiot ja tarkistaa niiden päivitykset. {help}-kortti lisää käyttöohjeen ja virheraportin.',

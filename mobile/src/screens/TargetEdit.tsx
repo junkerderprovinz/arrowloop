@@ -267,7 +267,7 @@ export function TargetEdit() {
 
       {/* The control that goes ahead sits on the right. */}
       <View style={styles.actions}>
-        <Button label={t("targets.cancel")} onPress={() => nav.goBack()} />
+        <Button label={t("targets.cancel")} labelKey="targets.cancel" onPress={() => nav.goBack()} />
         <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
       </View>
     </Page>

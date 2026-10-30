@@ -1136,6 +1136,7 @@ const it: Translations = {
   'new.change.settingsSearch': 'La ricerca sopra le schede trova ogni impostazione, anche con il vecchio nome. Premi / oppure Ctrl+K.',
   'new.change.tileOrder': 'I riquadri di {settings} si possono spostare: tienine premuto uno e trascinalo, oppure premi Alt e una freccia. {reset} in {look} li rimette in ordine.',
   'new.change.labelGlyphs': 'Ogni scelta in {labels} mostra un simbolo davanti al nome.',
+  'new.change.buttonGlyphs': 'Ogni pulsante ha il suo simbolo, anche le risposte a un conflitto e la ricerca di aggiornamenti, quindi {labels} vale per tutti.',
   'new.change.settingsTiles': '{settings} è una colonna di riquadri, e ogni riquadro mostra tutte le sue schede. Ciò che stava in {engine} ora si trova in {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Un interruttore per {anomalies} in {safety} spegne le note e la loro pagina. I freni continuano a trattenere, e a un\'esecuzione trattenuta si risponde allora dal suo lavoro.',
   'new.change.infoTile': '{info} elenca tutte le versioni e controlla se ci sono aggiornamenti. La scheda {help} aggiunge il manuale e il report del bug.',

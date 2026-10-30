@@ -1136,6 +1136,7 @@ const ar: Translations = {
   'new.change.settingsSearch': 'يجد البحث فوق البطاقات كل إعداد، وباسمه القديم أيضًا. اضغط / أو Ctrl+K.',
   'new.change.tileOrder': 'يمكن نقل المربعات في {settings}: اضغط على أحدها مطولًا واسحبه، أو اضغط Alt ومفتاح سهم. يعيدها {reset} في {look} إلى ترتيبها.',
   'new.change.labelGlyphs': 'يعرض كل خيار في {labels} رمزًا قبل اسمه.',
+  'new.change.buttonGlyphs': 'لكل زر رمزه الخاص، بما في ذلك أجوبة التعارض والبحث عن تحديثات، لذا ينطبق {labels} عليها كلها.',
   'new.change.settingsTiles': 'صارت {settings} عمودًا من المربعات، ويعرض كل مربع جميع بطاقاته. وما كان في {engine} صار الآن تحت {general} و{sync} و{safety}.',
   'new.change.anomaliesModule': 'مفتاح لـ{anomalies} في {safety} يوقف الملاحظات وصفحتها. تبقى الكوابح توقف التشغيل، ويُجاب عندئذ عن التشغيل الموقوف من مهمته.',
   'new.change.infoTile': 'تعرض {info} كل الإصدارات وتفحص تحديثاتها. وتضيف بطاقة {help} الدليل وتقرير الخطأ.',

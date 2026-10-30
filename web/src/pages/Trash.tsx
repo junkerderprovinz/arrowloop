@@ -6,7 +6,7 @@ import { IconAction } from '../components/IconAction'
 import { JobChip } from '../components/JobChip'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
-import { IconTrash } from '../components/glyphs'
+import { IconEmpty, IconPrune } from '../components/glyphs'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmWindow } from '../components/ConfirmWindow'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
@@ -158,7 +158,6 @@ export function Trash({
           message={stakes(pending, t)}
           confirmLabel={pending.kind === 'entry' ? t('confirm.delete') : t(TITLES[pending.kind])}
           confirmLabelKey={pending.kind === 'entry' ? 'confirm.delete' : TITLES[pending.kind]}
-          confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
           // The age belongs to this one action, so it is asked here.
           extra={
@@ -178,7 +177,7 @@ export function Trash({
           <PageAction
             label={t('trash.prune')}
             labelKey="trash.prune"
-            glyph={<IconTrash />}
+            glyph={<IconPrune />}
             title={t('trash.pruneHint')}
             disabled={busy || totals.entries === 0}
             onClick={() => setPending({ kind: 'prune', sides: full })}
@@ -188,7 +187,7 @@ export function Trash({
           primary
           label={t('trash.emptyAll')}
           labelKey="trash.emptyAll"
-          glyph={<IconTrash />}
+          glyph={<IconEmpty />}
           disabled={busy || totals.entries === 0}
           onClick={() => setPending({ kind: 'all', sides: full })}
         />

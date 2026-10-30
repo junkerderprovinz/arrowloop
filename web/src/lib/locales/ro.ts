@@ -1136,6 +1136,7 @@ const ro: Translations = {
   'new.change.settingsSearch': 'Căutarea de deasupra cardurilor găsește orice setare, și după numele vechi. Apasă / sau Ctrl+K.',
   'new.change.tileOrder': 'Dalele din {settings} pot fi mutate: ține una apăsată și trage-o sau apasă Alt și o tastă săgeată. {reset} din {look} le pune la loc.',
   'new.change.labelGlyphs': 'Fiecare opțiune din {labels} afișează un simbol înaintea numelui.',
+  'new.change.buttonGlyphs': 'Fiecare buton are propriul simbol, inclusiv răspunsurile la un conflict și căutarea actualizărilor, așa că {labels} se aplică tuturor.',
   'new.change.settingsTiles': '{settings} este o coloană de dale, iar fiecare dală arată toate cardurile ei. Ce era în {engine} se află acum în {general}, {sync} și {safety}.',
   'new.change.anomaliesModule': 'Un comutator pentru {anomalies} în {safety} oprește notele și pagina lor. Frânele continuă să rețină, iar o rulare reținută primește atunci răspuns la lucrarea ei.',
   'new.change.infoTile': '{info} listează fiecare versiune și caută actualizări pentru ele. Cardul {help} adaugă manualul și un raport de eroare.',

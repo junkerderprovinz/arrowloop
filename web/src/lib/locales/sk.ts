@@ -1136,6 +1136,7 @@ const sk: Translations = {
   'new.change.settingsSearch': 'Hľadanie nad kartami nájde každé nastavenie, aj podľa starého názvu. Stlač / alebo Ctrl+K.',
   'new.change.tileOrder': 'Dlaždice v časti {settings} sa dajú presúvať: podrž jednu a potiahni ju alebo stlač Alt a šípku. {reset} v časti {look} ich vráti na miesto.',
   'new.change.labelGlyphs': 'Každá voľba v časti {labels} ukazuje pred názvom symbol.',
+  'new.change.buttonGlyphs': 'Každé tlačidlo má vlastný symbol, aj odpovede na konflikt a kontrola aktualizácií, takže {labels} platí pre všetky.',
   'new.change.settingsTiles': '{settings} sú stĺpec dlaždíc a každá dlaždica ukazuje všetky svoje karty. Čo bolo v časti {engine}, je teraz v {general}, {sync} a {safety}.',
   'new.change.anomaliesModule': 'Prepínač pre {anomalies} v časti {safety} vypne poznámky aj ich stránku. Brzdy ďalej zadržiavajú a na zadržaný beh sa potom odpovedá pri jeho úlohe.',
   'new.change.infoTile': '{info} vypisuje každú verziu a kontroluje pre ne aktualizácie. Karta {help} pridáva príručku a hlásenie o chybe.',

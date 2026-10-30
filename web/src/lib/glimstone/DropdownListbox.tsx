@@ -46,6 +46,7 @@ export interface DropdownListboxProps {
   children: ReactNode;
 }
 
+/** @deprecated Use Select, which keeps focus on its trigger and adds typeahead. */
 export function DropdownListbox({
   open,
   onClose,

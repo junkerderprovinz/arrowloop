@@ -1136,6 +1136,7 @@ const hr: Translations = {
   'new.change.settingsSearch': 'Pretraga iznad kartica pronalazi svaku postavku, i po starom nazivu. Pritisni / ili Ctrl+K.',
   'new.change.tileOrder': 'Pločice u {settings} mogu se premještati: zadrži jednu i povuci je ili pritisni Alt i strelicu. {reset} u {look} vraća ih na mjesto.',
   'new.change.labelGlyphs': 'Svaki izbor pod {labels} prikazuje simbol ispred naziva.',
+  'new.change.buttonGlyphs': 'Svaki gumb ima vlastiti simbol, uključujući odgovore na sukob i provjeru ažuriranja, pa {labels} vrijedi za sve.',
   'new.change.settingsTiles': '{settings} su stupac pločica i svaka pločica prikazuje sve svoje kartice. Ono što je bilo u {engine} sada je u {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Prekidač za {anomalies} u {safety} isključuje napomene i njihovu stranicu. Kočnice i dalje zadržavaju, a na zadržano izvođenje tada se odgovara na njegovom zadatku.',
   'new.change.infoTile': '{info} navodi sve verzije i provjerava njihova ažuriranja. Kartica {help} dodaje priručnik i izvješće o grešci.',

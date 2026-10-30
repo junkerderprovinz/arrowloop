@@ -1136,6 +1136,7 @@ const pl: Translations = {
   'new.change.settingsSearch': 'Wyszukiwanie nad kartami znajduje każde ustawienie, także po starej nazwie. Naciśnij / lub Ctrl+K.',
   'new.change.tileOrder': 'Kafelki w {settings} można przesuwać: przytrzymaj jeden i przeciągnij go albo naciśnij Alt i strzałkę. {reset} w {look} przywraca kolejność.',
   'new.change.labelGlyphs': 'Każda opcja w sekcji {labels} pokazuje symbol przed nazwą.',
+  'new.change.buttonGlyphs': 'Każdy przycisk ma własny symbol, także odpowiedzi na konflikt i sprawdzanie aktualizacji, więc {labels} dotyczy wszystkich.',
   'new.change.settingsTiles': '{settings} to kolumna kafelków, a każdy kafelek pokazuje wszystkie swoje karty. To, co było w {engine}, jest teraz w {general}, {sync} i {safety}.',
   'new.change.anomaliesModule': 'Przełącznik dla {anomalies} w {safety} wyłącza uwagi i ich stronę. Hamulce nadal wstrzymują, a na wstrzymany przebieg odpowiada się wtedy przy jego zadaniu.',
   'new.change.infoTile': '{info} wylicza wszystkie wersje i sprawdza dla nich aktualizacje. Karta {help} dodaje podręcznik i raport o błędzie.',

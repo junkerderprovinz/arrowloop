@@ -53,13 +53,35 @@ function show(trigger: Element): void {
   el.style.setProperty('--glim-tip-ax', `${Math.max(10, Math.min(w - 10, cx - (x - w / 2)))}px`);
 }
 
+// Only a control's native title is turned into a bubble. A title on structure,
+// such as a table body or a card, can be data another script reads: Unraid
+// keys its Dashboard tiles by their tbody's title.
+const TITLED_CONTROL = [
+  'button',
+  'a',
+  'input',
+  'select',
+  'textarea',
+  'summary',
+  'img',
+  'svg',
+  'i',
+  '[role="button"]',
+  '[role="link"]',
+  '[role="tab"]',
+  '[role="switch"]',
+  '[tabindex]',
+]
+  .map((s) => `${s}[title]`)
+  .join(', ');
+
 let wired = false;
 
 /**
  * Wires the delegated listeners once for the whole document; later calls do
  * nothing. An element with `data-tip` shows the bubble on hover or focus, and a
- * native `title` is moved to `data-tip` on its first hover, so an app only has
- * to call this at boot.
+ * control's native `title` is moved to `data-tip` on its first hover, so an app
+ * only has to call this at boot.
  */
 export function wireTooltips(): void {
   if (wired) return;
@@ -69,7 +91,7 @@ export function wireTooltips(): void {
     if (event.type === 'focusin' && pointerWasLast) return;
     const target = event.target;
     if (!(target instanceof Element)) return;
-    const trigger = target.closest('[data-tip], [title]');
+    const trigger = target.closest(`[data-tip], ${TITLED_CONTROL}`);
     if (!trigger) return;
     if (!trigger.getAttribute('data-tip')) {
       const nativeTitle = trigger.getAttribute('title');

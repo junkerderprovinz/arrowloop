@@ -171,11 +171,10 @@ export function NumberField({
     return attachNumberSteppers(box.current)
   }, [])
 
-  // The steppers wrap the input in a span of their own. React keeps track of the
-  // outer span instead, so removing the field never looks for the input where
-  // the steppers took it from.
+  // The steppers hang off this span. React draws it, so the helper moves
+  // nothing and removing the field finds the input where React put it.
   return (
-    <span className="contents">
+    <span className="glim-num-wrap">
       <input
         ref={box}
         type="number"

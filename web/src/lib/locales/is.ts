@@ -1136,6 +1136,7 @@ const is: Translations = {
   'new.change.settingsSearch': 'Leitin fyrir ofan spjöldin finnur hverja stillingu, líka undir gamla heitinu. Ýttu á / eða Ctrl+K.',
   'new.change.tileOrder': 'Reitina undir {settings} má færa: haltu einum inni og dragðu hann, eða ýttu á Alt og örvalykil. {reset} undir {look} setur þá aftur á sinn stað.',
   'new.change.labelGlyphs': 'Hvert val undir {labels} sýnir tákn á undan heitinu.',
+  'new.change.buttonGlyphs': 'Hver hnappur hefur sitt eigið tákn, líka svörin við árekstri og leitin að uppfærslum, svo {labels} gildir um þá alla.',
   'new.change.settingsTiles': '{settings} eru dálkur af reitum og hver reitur sýnir öll sín spjöld. Það sem var í {engine} er nú undir {general}, {sync} og {safety}.',
   'new.change.anomaliesModule': 'Rofi fyrir {anomalies} undir {safety} slekkur á athugasemdunum og síðunni þeirra. Bremsurnar halda áfram og keyrslu sem haldið er er þá svarað við verkið hennar.',
   'new.change.infoTile': '{info} sýnir allar útgáfur og athugar hvort uppfærslur séu til. Spjaldið {help} bætir við handbókinni og villuskýrslu.',

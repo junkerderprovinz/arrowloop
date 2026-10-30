@@ -265,11 +265,13 @@ function VersionNumber({
 }) {
   const tag = releaseTag(row.version);
   const released = /^v\d+\.\d+\.\d+$/.test(tag);
+  // The card shows a number, and only the link keeps the tag's "v".
+  const shown = row.version.replace(/^v(?=\d)/, "");
   if (!released) {
-    return <span className="glim-num shrink-0 text-sm text-carbon-textSub">{unreleased(row.version)}</span>;
+    return <span className="glim-num shrink-0 text-sm text-carbon-textSub">{unreleased(shown)}</span>;
   }
   if (!row.repoUrl) {
-    return <span className="glim-num shrink-0 text-sm text-carbon-textSub">{row.version}</span>;
+    return <span className="glim-num shrink-0 text-sm text-carbon-textSub">{shown}</span>;
   }
   const href = `${row.repoUrl}/releases/tag/${encodeURIComponent(`${row.tagPrefix ?? ""}${tag}`)}`;
   return (
@@ -283,7 +285,7 @@ function VersionNumber({
       }}
       className="glim-num shrink-0 text-sm text-carbon-textSub no-underline hover:text-carbon-text"
     >
-      {row.version}
+      {shown}
     </a>
   );
 }

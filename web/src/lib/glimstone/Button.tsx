@@ -201,6 +201,7 @@ export function Button({
           onClick={onClick}
           disabled={disabled}
           autoFocus={autoFocus}
+          aria-busy={busy || undefined}
           aria-describedby={tooltip.describedBy}
           {...tooltip.handlers}
           style={Object.keys(hueStyle).length ? hueStyle : undefined}

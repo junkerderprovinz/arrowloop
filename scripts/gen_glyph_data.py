@@ -44,6 +44,8 @@ def drawn(markup: str) -> list[dict]:
     """Paths and rounded bars, loose or in a transformed group. Anything else
     raises rather than leaving a button with no mark."""
     groups: list[dict] = []
+    # A group without a transform changes nothing, as in IconWhatsNew.
+    markup = re.sub(r"<g>(.*?)</g>", r"\1", markup, flags=re.S)
     rest = markup
 
     for g in re.finditer(r'<g transform="([^"]*)">(.*?)</g>', markup, re.S):

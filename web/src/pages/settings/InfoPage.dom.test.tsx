@@ -61,21 +61,21 @@ async function click(name: string | RegExp, role = 'button') {
 describe('the Info tile', () => {
   it('lists every version the build is made of, each linked to its release', async () => {
     render(<InfoPage version="v1.8.0" />)
-    const rclone = await screen.findByRole('link', { name: 'v1.75.2' })
+    const rclone = await screen.findByRole('link', { name: '1.75.2' })
     expect(rclone.getAttribute('href')).toBe('https://github.com/rclone/rclone/releases/tag/v1.75.2')
-    expect(screen.getByRole('link', { name: 'v1.8.0' }).getAttribute('href')).toBe(
+    expect(screen.getByRole('link', { name: '1.8.0' }).getAttribute('href')).toBe(
       'https://github.com/junkerderprovinz/arrowloop/releases/tag/v1.8.0',
     )
     expect(screen.getByText('GlimStone')).toBeTruthy()
-    expect(screen.getByRole('link', { name: '3.5.1' }).getAttribute('href')).toBe(
-      'https://github.com/junkerderprovinz/glimstone/releases/tag/v3.5.1',
+    expect(screen.getByRole('link', { name: '3.7.1' }).getAttribute('href')).toBe(
+      'https://github.com/junkerderprovinz/glimstone/releases/tag/v3.7.1',
     )
   })
 
   it('has one button to the release notes and the changes, before the update check', async () => {
     localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'dev', from: '', seen: [] }))
     render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} />)
-    await screen.findByRole('link', { name: 'v1.75.2' })
+    await screen.findByRole('link', { name: '1.75.2' })
     const buttons = [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label') ?? b.textContent)
     expect(buttons.slice(0, 2)).toEqual(['New · 3', 'Check for updates'])
     expect(screen.queryByRole('button', { name: 'Release notes' })).toBeNull()
@@ -84,7 +84,7 @@ describe('the Info tile', () => {
   it('offers the release notes in its place while no change is listed', async () => {
     localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'dev', from: '', seen: CHANGES.map((c) => c.id) }))
     render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} />)
-    await screen.findByRole('link', { name: 'v1.75.2' })
+    await screen.findByRole('link', { name: '1.75.2' })
     expect(screen.getByRole('button', { name: 'Release notes' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'New · 3' })).toBeNull()
   })
@@ -121,7 +121,7 @@ describe('the Info tile', () => {
     await click('GitHub')
     await click('Email')
     await click(/Manual/)
-    await click('v1.8.0', 'link')
+    await click('1.8.0', 'link')
     expect(runtime.BrowserOpenURL.mock.calls.map((c) => c[0])).toEqual([
       'https://github.com/junkerderprovinz/arrowloop',
       'mailto:hello@halleluja.design?subject=ArrowLoop%20Feedback',

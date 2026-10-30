@@ -1136,6 +1136,7 @@ const pt: Translations = {
   'new.change.settingsSearch': 'A pesquisa acima dos cartões encontra cada definição, também pelo nome antigo. Prima / ou Ctrl+K.',
   'new.change.tileOrder': 'Os mosaicos de {settings} podem ser movidos: mantenha um premido e arraste-o, ou prima Alt e uma seta. {reset} em {look} repõe-nos no lugar.',
   'new.change.labelGlyphs': 'Cada opção em {labels} mostra um símbolo antes do nome.',
+  'new.change.buttonGlyphs': 'Cada botão tem o seu próprio símbolo, incluindo as respostas a um conflito e a procura de atualizações, por isso {labels} aplica-se a todos.',
   'new.change.settingsTiles': '{settings} é uma coluna de mosaicos, e cada mosaico mostra todos os seus cartões. O que estava em {engine} está agora em {general}, {sync} e {safety}.',
   'new.change.anomaliesModule': 'Um interruptor para {anomalies} em {safety} desliga as notas e a sua página. Os travões continuam a reter, e uma execução retida responde-se então na sua tarefa.',
   'new.change.infoTile': '{info} lista todas as versões e verifica se há atualizações. O cartão {help} acrescenta o manual e um relatório de erros.',

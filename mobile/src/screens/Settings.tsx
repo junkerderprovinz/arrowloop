@@ -959,7 +959,7 @@ export function Settings() {
         <View style={styles.afterControls}>
           <Caption>
             <Text onPress={() => Linking.openURL(releaseUrl(version))} style={[styles.link, { color: accentInk }]}>
-              {`ArrowLoop ${version ?? appVersion}`}
+              {`ArrowLoop ${(version ?? appVersion).replace(/^v/, "")}`}
             </Text>
             {"  ·  "}
             <Text

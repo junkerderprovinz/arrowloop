@@ -6,7 +6,10 @@
 // padding that the digits never run underneath the arrows.
 //
 // It attaches to a plain `<input type="number">` and returns a teardown, so a
-// React app calls it from a ref effect.
+// React app calls it from a ref effect. A React host renders the input inside
+// its own `<span class="glim-num-wrap">`: React removes a node from the parent
+// it put it in, so an input this helper moved into a new span would take the
+// whole page down the first time the field is hidden while its row stays.
 
 /** Everything the field needs from its host, all optional. */
 export interface NumberFieldOptions {
@@ -40,8 +43,10 @@ export function wouldStep(input: HTMLInputElement, direction: 1 | -1): boolean {
  * Give one `<input type="number">` a pair of in-field steppers and return a
  * teardown that unwraps it.
  *
- * The input is wrapped in a relatively positioned span so the arrows sit inside
- * the field's box without the host changing its layout. The buttons and the
+ * The arrows go into the relatively positioned `.glim-num-wrap` around the
+ * input, so they sit inside the field's box without the host changing its
+ * layout. When the host has not drawn that span, the input is wrapped in a new
+ * one and unwrapped again by the teardown. The buttons and the
  * wheel call `stepUp()`/`stepDown()`, so min, max and step stay in the markup,
  * then dispatch `input` and `change` by hand because `stepUp()` fires neither.
  */
@@ -51,10 +56,13 @@ export function attachNumberSteppers(
 ): () => void {
   const doc = input.ownerDocument;
 
-  const wrap = doc.createElement("span");
-  wrap.className = "glim-num-wrap";
-  input.parentNode?.insertBefore(wrap, input);
-  wrap.appendChild(input);
+  const own = input.parentElement?.classList.contains("glim-num-wrap") ? input.parentElement : null;
+  const wrap = own ?? doc.createElement("span");
+  if (!own) {
+    wrap.className = "glim-num-wrap";
+    input.parentNode?.insertBefore(wrap, input);
+    wrap.appendChild(input);
+  }
   input.classList.add("glim-num-input");
 
   const stack = doc.createElement("span");
@@ -128,7 +136,10 @@ export function attachNumberSteppers(
     input.removeEventListener("change", sync);
     input.removeEventListener("wheel", wheel);
     input.classList.remove("glim-num-input");
-    wrap.parentNode?.insertBefore(input, wrap);
-    wrap.remove();
+    stack.remove();
+    if (!own) {
+      wrap.parentNode?.insertBefore(input, wrap);
+      wrap.remove();
+    }
   };
 }

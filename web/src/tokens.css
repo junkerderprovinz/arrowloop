@@ -865,6 +865,12 @@ body {
     --motion-tab-travel: 18px;
     --motion-wiggle-dur: 280ms;
     --motion-wiggle-angle: .6deg;
+    /* A row in move mode: one beat of its wiggle, how far it tilts and how far
+       it lifts. A wide row turns far at its ends, so the tilt is a fraction of
+       the long-press wiggle's. */
+    --motion-row-wiggle-dur: 320ms;
+    --motion-row-wiggle-tilt: .16deg;
+    --motion-row-wiggle-lift: 1px;
     /* A fill level's slosh: one swing to each wall and back, how far the
        liquid tilts, how high a crest runs up the wall and the hump rises as
        multiples of their drawn height, how far a bar's end surges and leans,
@@ -915,6 +921,9 @@ body {
     --motion-tab-travel: 10px;
     --motion-wiggle-dur: 360ms;
     --motion-wiggle-angle: .3deg;
+    --motion-row-wiggle-dur: 440ms;
+    --motion-row-wiggle-tilt: .08deg;
+    --motion-row-wiggle-lift: .5px;
     --motion-slosh-dur: 5s;
     --motion-slosh-tilt: 3deg;
     --motion-slosh-run: 2.2;
@@ -957,6 +966,11 @@ body {
     /* A long period rather than none, with no angle, so nothing moves. */
     --motion-wiggle-dur: 400ms;
     --motion-wiggle-angle: 0deg;
+    /* Declared so this level does not inherit the lively numbers; the row
+       wiggle leaves this level out altogether. */
+    --motion-row-wiggle-dur: 0s;
+    --motion-row-wiggle-tilt: 0deg;
+    --motion-row-wiggle-lift: 0px;
     /* Long rather than 0, and stopped outright after the slosh's rules. */
     --motion-slosh-dur: 60s;
     --motion-slosh-tilt: 0deg;
@@ -1028,6 +1042,9 @@ body {
   --motion-tab-travel: 34px;
   --motion-wiggle-dur: 220ms;
   --motion-wiggle-angle: 1deg;
+  --motion-row-wiggle-dur: 260ms;
+  --motion-row-wiggle-tilt: .26deg;
+  --motion-row-wiggle-lift: 1.5px;
   --motion-slosh-dur: 2.6s;
   --motion-slosh-tilt: 7.5deg;
   --motion-slosh-run: 4.5;
@@ -1186,6 +1203,14 @@ body {
 @keyframes glim-wiggle {
   from { rotate: calc(var(--motion-wiggle-angle, .6deg) * -1); }
   to   { rotate: var(--motion-wiggle-angle, .6deg); }
+}
+
+/* A row of a list in move mode ("Move mode" in the design language). Each
+   beat starts and ends untransformed and swings to both sides in between. */
+@keyframes glim-row-wiggle {
+  0%, 100% { transform: none; }
+  25% { transform: rotate(calc(var(--motion-row-wiggle-tilt, 0deg) * -1)) translateY(calc(var(--motion-row-wiggle-lift, 0px) * -1)); }
+  75% { transform: rotate(var(--motion-row-wiggle-tilt, 0deg)) translateY(var(--motion-row-wiggle-lift, 0px)); }
 }
 
 /* A fill level sloshes ("Illustrations" in the design language). In a vessel
@@ -1501,6 +1526,18 @@ body {
   .glim-drag-armed > * {
     animation: glim-wiggle var(--motion-wiggle-dur) ease-in-out infinite alternate;
   }
+
+  /* The row under the pointer, the focused one and the one being carried hold
+     still: a transformed row is the containing block of a menu opened from it.
+     Neighbours start at different points of the beat, so the list never tilts
+     as one. Storm is not restored under reduced motion, since this never ends. */
+  :root:not([data-motion='off']) .glim-move-mode > :not(:hover, :focus-within, .glim-drag-lift, .glim-drag-settle) {
+    animation: glim-row-wiggle var(--motion-row-wiggle-dur) ease-in-out infinite;
+    transform-origin: 50% 50%;
+  }
+  :root:not([data-motion='off']) .glim-move-mode > :nth-child(2n) { animation-delay: calc(var(--motion-row-wiggle-dur) * -.5); }
+  :root:not([data-motion='off']) .glim-move-mode > :nth-child(3n) { animation-delay: calc(var(--motion-row-wiggle-dur) * -.25); }
+  :root:not([data-motion='off']) .glim-move-mode > :nth-child(5n) { animation-delay: calc(var(--motion-row-wiggle-dur) * -.75); }
 
   /* The slosh. Under reduced motion none of this is read, so the liquid rests
      level; storm is not restored there, because the slosh never ends. */
@@ -2281,6 +2318,80 @@ body {
   .glim-modal-card { animation: glim-modal-in var(--motion-modal-dur) cubic-bezier(.2, .6, .2, 1) both; }
 }
 
+/* The desktop window frame (reference/react/WindowBar.tsx): the title bar an
+   app draws where its window has no native one. It is fixed over the top of
+   the window. The page starts under it and a scrim leaves it clear, so the
+   window can still be moved and closed while a dialog is open. Without the bar
+   --window-bar is 0 and none of this moves anything. */
+:root {
+  --window-bar: 0px;
+}
+:root:has(.glim-window-bar) {
+  --window-bar: 2.5rem;
+}
+body {
+  padding-top: var(--window-bar);
+}
+/* The bar already holds the page off the window's top edge, so the frame that
+   holds the rail and the content drops its own gutter there. */
+:root:has(.glim-window-bar) .glim-shell {
+  padding-top: 0;
+}
+.glim-modal-backdrop {
+  top: var(--window-bar);
+}
+/* Above the page and the banners along its edges, below the windows, menus,
+   toasts and bubbles that may open over it. */
+.glim-window-bar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: var(--window-bar);
+  background-color: var(--carbon-bg);
+  user-select: none;
+}
+.glim-window-button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 100%;
+  padding: 0;
+}
+.glim-window-button:focus-visible {
+  outline: none;
+}
+/* A blank control on the ground, so it hovers to --carbon-hover (rule 21).
+   Close hovers like the other two: it hides or quits the way the native
+   button does, and nothing is lost that a red warning would guard. */
+.glim-window-square {
+  display: grid;
+  place-items: center;
+  width: var(--btn-h);
+  height: var(--btn-h);
+  border-radius: var(--radius-pill);
+  color: var(--carbon-text-sub);
+  transition: background-color 120ms, color 120ms;
+}
+.glim-window-square > svg {
+  width: 1rem;
+  height: 1rem;
+}
+.glim-window-button:hover .glim-window-square {
+  background-color: var(--carbon-hover);
+  color: var(--carbon-text);
+}
+.glim-window-button:focus-visible .glim-window-square {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .glim-window-button:active .glim-window-square { transform: scale(.97); }
+}
+
 /* The card-wide reveal in reactive rainbow mode. A heading notch that lit up
    only under the pointer would need hovering its ~22px badge, so
    `.glim-notch-card` makes the whole card the hover zone and `.glim-notch-hue`
@@ -2295,6 +2406,143 @@ body {
   --color-accent: var(--item-hue);
   --color-accentContrast: var(--item-hue-ink);
   --color-accentSoft: var(--item-hue-soft);
+}
+
+/* The parts of Select, Combobox and Slider. Their behaviour comes from Zag,
+   which marks state with data attributes (data-state, data-highlighted,
+   data-disabled); the look reads those and nothing else, so the same rules
+   serve the React components and a page that mounts the machine by hand. */
+.glim-field-label {
+  font-size: var(--text-subline);
+  color: var(--carbon-text-sub);
+}
+.glim-select-trigger,
+.glim-combobox-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  height: var(--btn-h);
+  padding: 0 0.75rem;
+  border: 1px solid var(--carbon-border);
+  border-radius: var(--radius-control);
+  background: var(--carbon-surface);
+  color: var(--carbon-text);
+  font: inherit;
+  font-size: var(--text-body);
+  text-align: start;
+  cursor: pointer;
+}
+.glim-combobox-control { padding-inline-end: 0.25rem; cursor: text; }
+.glim-select-trigger:hover { background: var(--carbon-hover); }
+.glim-select-trigger:focus-visible,
+.glim-combobox-control:focus-within {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+.glim-select-trigger[data-disabled] { opacity: 0.5; cursor: default; }
+.glim-combobox-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+.glim-combobox-input::placeholder { color: var(--carbon-text-muted); }
+.glim-combobox-toggle {
+  display: inline-flex;
+  padding: 0.375rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--carbon-text-sub);
+  cursor: pointer;
+}
+.glim-combobox-toggle:hover { background: var(--carbon-hover); }
+.glim-select-indicator {
+  display: inline-flex;
+  color: var(--carbon-text-sub);
+}
+.glim-select-indicator[data-state="open"] { rotate: 180deg; }
+
+/* The open list. It sits on the body, so no card or scroll box can clip it. */
+.glim-select-content {
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  max-height: 15rem;
+  overflow-y: auto;
+  border-radius: var(--radius-card);
+  background: var(--carbon-surface);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  outline: none;
+}
+.glim-select-content[hidden] { display: none; }
+.glim-select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-control);
+  color: var(--carbon-text);
+  font-size: var(--text-body);
+  cursor: pointer;
+}
+.glim-select-item[data-highlighted] { background: var(--carbon-hover); }
+.glim-select-item[data-state="checked"] { font-weight: 600; }
+.glim-select-item[data-disabled] { color: var(--carbon-text-muted); cursor: default; }
+.glim-select-check { display: inline-flex; color: var(--accent-ink); }
+.glim-select-check:not([data-state="checked"]) { visibility: hidden; }
+.glim-select-empty {
+  padding: 0.5rem 0.75rem;
+  color: var(--carbon-text-muted);
+  font-size: var(--text-subline);
+}
+
+.glim-slider-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 1.25rem;
+}
+.glim-slider-track {
+  flex: 1;
+  height: 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--carbon-surface3);
+}
+.glim-slider-range {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+/* The ring in the ground's colour lifts the thumb off the range it sits on. */
+.glim-slider-thumb {
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--carbon-bg);
+  cursor: grab;
+}
+.glim-slider-thumb:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.glim-slider-thumb[data-dragging] { cursor: grabbing; }
+.glim-slider-thumb[data-disabled] { opacity: 0.5; cursor: default; }
+.glim-slider-value {
+  color: var(--carbon-text);
+  font-size: var(--text-body);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glim-select-indicator { transition: rotate var(--motion-control-dur) ease; }
 }
 
 /* Local addition, not in GlimStone: the height of a selector segment, so every

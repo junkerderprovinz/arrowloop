@@ -176,7 +176,7 @@ export function Jobs() {
       ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void all(ready.map((j) => api.run(j.name))) }]
       : []),
     ...(running.length > 0
-      ? [{ label: t("phone.stopAll"), glyph: "IconClose", onPress: () => void all(running.map((j) => api.stop(j.name))) }]
+      ? [{ label: t("phone.stopAll"), glyph: "IconStop", onPress: () => void all(running.map((j) => api.stop(j.name))) }]
       : []),
   ];
 

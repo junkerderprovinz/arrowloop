@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Card } from '../lib/glimstone/Card'
 import { Button } from '../lib/glimstone/Button'
 import { CONTROL_H, Field, Secret } from './Field'
-import { IconCheck } from './glyphs'
+import { IconConfirm } from './glyphs'
 import { ApiError, api, type ResetRemoved } from '../lib/api'
 import { useT } from '../lib/i18n'
 
@@ -82,7 +82,7 @@ export function PasswordReset({
           <Button
             label={t('reset.done')}
             labelKey="reset.done"
-            glyph={<IconCheck />}
+            glyph={<IconConfirm />}
             tone="accent"
             className="w-full"
             onClick={onDone}

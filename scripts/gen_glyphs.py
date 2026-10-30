@@ -51,6 +51,32 @@ STANDARD = [
     "IconTrash",
     "IconUnlock",
     "IconUpload",
+    "IconApply",
+    "IconConfirm",
+    "IconEmpty",
+    "IconExport",
+    "IconImport",
+    "IconPrune",
+    "IconRestore",
+    "IconRetry",
+    "IconStop",
+    "IconUndo",
+    # The way in and the protections around it.
+    "IconForgotPassword",
+    "IconKey",
+    "IconKeyRevoke",
+    "IconShieldOff",
+    "IconSignIn",
+    # The answers to a conflict.
+    "IconKeepBoth",
+    "IconKeepLeft",
+    "IconKeepRight",
+    # Notifications, the update check, what is new and the tray.
+    "IconSendTest",
+    "IconUpToDate",
+    "IconUpdateAvailable",
+    "IconWhatsNew",
+    "IconApp",
     # The About card's buttons. IconCoffee is a brand mark and goes only on the
     # button that leads there.
     "IconCoffee",
@@ -250,7 +276,7 @@ APP = [
 
 # Glyphs that point along the reading direction, so a right-to-left layout
 # mirrors them.
-MIRRORED = {"IconBack", "IconSignOut"}
+MIRRORED = {"IconBack", "IconSignIn", "IconSignOut"}
 
 # Where a drawing comes from decides what the file owes its author. A source
 # matching neither these nor NO_LICENCE stops the run, so a glyph from a new set

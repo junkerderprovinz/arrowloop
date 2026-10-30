@@ -1136,6 +1136,7 @@ const sv: Translations = {
   'new.change.settingsSearch': 'Sökningen ovanför korten hittar varje inställning, även under det gamla namnet. Tryck på / eller Ctrl+K.',
   'new.change.tileOrder': 'Rutorna under {settings} går att flytta: håll in en och dra den, eller tryck Alt och en piltangent. {reset} under {look} lägger tillbaka dem.',
   'new.change.labelGlyphs': 'Varje val under {labels} visar en symbol framför namnet.',
+  'new.change.buttonGlyphs': 'Varje knapp har en egen symbol, även svaren på en konflikt och sökningen efter uppdateringar, så {labels} gäller för alla.',
   'new.change.settingsTiles': '{settings} är en kolumn av rutor, och varje ruta visar alla sina kort. Det som låg under {engine} ligger nu under {general}, {sync} och {safety}.',
   'new.change.anomaliesModule': 'Ett reglage för {anomalies} under {safety} stänger av anteckningarna och deras sida. Bromsarna håller fortfarande kvar, och en kvarhållen körning besvaras då vid sitt jobb.',
   'new.change.infoTile': '{info} listar alla versioner och söker efter uppdateringar. Kortet {help} lägger till manualen och felrapporten.',

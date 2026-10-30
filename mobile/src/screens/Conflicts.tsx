@@ -16,6 +16,9 @@ import { useWaiting } from "../waiting";
 /** The same three answers, in the same order, as the web's conflicts page. */
 const CHOICES: Keep[] = ["both", "left", "right"];
 
+/** The glyph of each answer, the same for one conflict and for all of them. */
+const GLYPH: Record<Keep, string> = { both: "IconKeepBoth", left: "IconKeepLeft", right: "IconKeepRight" };
+
 /** What the engine says caused a conflict, in a sentence, keyed by its reason code. */
 const WHY: Record<string, TranslationKey> = {
   changedBoth: "conflict.why.changedBoth",
@@ -119,7 +122,7 @@ export function Conflicts() {
             ))}
             <View style={styles.choices}>
               {CHOICES.map((keep) => (
-                <Button key={keep} label={keepLabel(keep, job, t)} disabled={busy} onPress={() => void decide([c], keep)} />
+                <Button key={keep} label={keepLabel(keep, job, t)} glyph={GLYPH[keep]} disabled={busy} onPress={() => void decide([c], keep)} />
               ))}
             </View>
           </Card>
@@ -141,6 +144,7 @@ export function Conflicts() {
                 <Button
                   key={keep}
                   label={label}
+                  glyph={GLYPH[keep]}
                   busy={busy}
                   onPress={() =>
                     Alert.alert(label, `${t("conflicts.allConfirm", { count: list.length })} ${t("conflicts.chooseHint")}`, [

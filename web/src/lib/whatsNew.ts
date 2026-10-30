@@ -72,6 +72,8 @@ export const RELEASES: Release[] = [
         text: 'new.change.labelGlyphs',
         names: { labels: 'look.labels' },
       },
+      // Every page has such buttons, so the dot stands in the list only.
+      { id: 'button-glyphs', text: 'new.change.buttonGlyphs', names: { labels: 'look.labels' } },
     ],
   },
   {

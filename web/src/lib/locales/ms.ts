@@ -1136,6 +1136,7 @@ const ms: Translations = {
   'new.change.settingsSearch': 'Carian di atas kad menemui setiap tetapan, termasuk melalui nama lamanya. Tekan / atau Ctrl+K.',
   'new.change.tileOrder': 'Jubin dalam {settings} boleh dialihkan: tahan satu dan seretnya, atau tekan Alt dan kekunci anak panah. {reset} dalam {look} meletakkannya semula.',
   'new.change.labelGlyphs': 'Setiap pilihan di bawah {labels} memaparkan simbol di hadapan namanya.',
+  'new.change.buttonGlyphs': 'Setiap butang mempunyai simbolnya sendiri, termasuk jawapan kepada percanggahan dan semakan kemas kini, jadi {labels} terpakai pada semuanya.',
   'new.change.settingsTiles': '{settings} ialah satu lajur jubin, dan setiap jubin memaparkan semua kadnya. Apa yang dahulu dalam {engine} kini di bawah {general}, {sync} dan {safety}.',
   'new.change.anomaliesModule': 'Suis untuk {anomalies} dalam {safety} mematikan nota dan halamannya. Brek terus menahan, dan larian yang ditahan kemudian dijawab pada tugasnya.',
   'new.change.infoTile': '{info} menyenaraikan setiap versi dan menyemaknya untuk kemas kini. Kad {help} menambah manual dan laporan pepijat.',

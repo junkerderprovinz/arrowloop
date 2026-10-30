@@ -1136,6 +1136,7 @@ const ja: Translations = {
   'new.change.settingsSearch': 'カードの上の検索で、旧名称でもすべての設定を探せます。/ または Ctrl+K を押してください。',
   'new.change.tileOrder': '{settings} のタイルは動かせます。長押ししてドラッグするか、Alt と矢印キーを押します。{look} の {reset} で元の順序に戻ります。',
   'new.change.labelGlyphs': '{labels} の各選択肢は、名前の前に記号を表示します。',
+  'new.change.buttonGlyphs': 'すべてのボタンに専用の記号があります。競合への回答と更新の確認も含まれるため、{labels} はすべてのボタンに適用されます。',
   'new.change.settingsTiles': '{settings}はタイルの列になり、各タイルにそのカードがすべて表示されます。{engine}にあった項目は{general}、{sync}、{safety}に移りました。',
   'new.change.anomaliesModule': '{safety}にある{anomalies}のスイッチで、注意とそのページをオフにできます。ブレーキは引き続き実行を止め、止められた実行にはそのジョブで答えます。',
   'new.change.infoTile': '{info}にはすべてのバージョンが並び、更新を確認できます。{help}カードにはマニュアルとバグレポートがあります。',

@@ -18,6 +18,26 @@ const RULES: Rule[] = [
   [/^about\.paypal$/i, 'IconLink'],
   [/^about\.mail$/i, 'IconMail'],
   [/^about\.releaseNotes$/i, 'IconInfo'],
+  // The update check's answers. After a failure the same button tries again.
+  [/^about\.upToDate$/i, 'IconUpToDate'],
+  [/^about\.updatesFound$/i, 'IconUpdateAvailable'],
+  [/^about\.checkFailed$/i, 'IconRetry'],
+
+  // The way in. These sit above the reset rule, which would claim the
+  // password reset's link and its last button.
+  [/^login\.submit$/i, 'IconSignIn'],
+  [/^reset\.link$/i, 'IconForgotPassword'],
+  [/^reset\.done$|^twoFactor\.(confirm|recoverySaved)$/i, 'IconConfirm'],
+  [/^password\.save(First|Change)$/i, 'IconKey'],
+  [/^(password|passkey)\.remove$/i, 'IconKeyRevoke'],
+  [/^twoFactor\.add$/i, 'IconShieldOn'],
+  [/^twoFactor\.remove$/i, 'IconShieldOff'],
+  [/^notify\.test$/i, 'IconSendTest'],
+
+  // The three answers to a conflict, for one or for all of them.
+  [/^conflicts?\.(answer|all|keep)Both$/i, 'IconKeepBoth'],
+  [/^conflicts?\.(answer|all|keep)Left$/i, 'IconKeepLeft'],
+  [/^conflicts?\.(answer|all|keep)Right$/i, 'IconKeepRight'],
 
   // A stored secret's two buttons, and the way from a settings tile to its page.
   [/^notify\.change$/i, 'IconPencil'],
@@ -53,20 +73,25 @@ const RULES: Rule[] = [
   [/^tray\.syncNow$/i, 'IconSync'],
   [/runNow|runAll|\.run$|start|resume/i, 'IconPlay'],
   // Cancelling a run throws its work away, which is not the same as pausing.
-  [/cancelRun|abort/i, 'IconClose'],
-
   // Above the generic rules, which gave `phone.engineStop` the settings gear.
-  [/pause|hold|stop/i, 'IconPause'],
+  [/cancelRun|stopAll|stopping|engineStop|abort/i, 'IconStop'],
+  [/pause|hold/i, 'IconPause'],
 
-  // Destructive and corrective.
-  [/\.(delete|remove|prune)$|\.empty(All|Side)$|removeJob|deleteDrive|discard/i, 'IconTrash'],
+  // Destructive and corrective. Emptying a trash clears a list, and restoring
+  // the settings from the welcome page reads a backup in.
+  [/\.empty(All|Side)$/i, 'IconEmpty'],
+  [/\.prune$/i, 'IconPrune'],
+  [/\.(delete|remove)$|removeJob|deleteDrive|discard/i, 'IconTrash'],
   [/forget/i, 'IconForget'],
-  [/restore|revert|undo|reset/i, 'IconRefresh'],
+  [/^welcome\.restore$/i, 'IconImport'],
+  [/restore|revert/i, 'IconRestore'],
+  [/undo/i, 'IconUndo'],
+  [/reset/i, 'IconRefresh'],
 
   // Creation and editing.
   [/newFolder|addSet|createFolder/i, 'IconFolderAdd'],
   // The desktop app's main window, which is no folder.
-  [/^tray\.open$/i, 'IconTabApp'],
+  [/^tray\.open$/i, 'IconApp'],
   // Above `\.add`, so an "open and add" key cannot be claimed by the wrong half.
   [/\.open$|openFolder/i, 'IconFolder'],
   // Registering a drive adds it to the list, like the control beside it.
@@ -76,26 +101,30 @@ const RULES: Rule[] = [
   // controls in one card the same mark.
   [/duplicate|dupes|copyPath|\.copy|copied/i, 'IconCopy'],
 
-  // Seen and closed, which is the tick and not the floppy `confirm` would give.
+  // Seen and closed, which is the tick and not the thumb `confirm` would give.
   [/acknowledge/i, 'IconCheck'],
 
   // Above `save`: exporting hands a copy to the person's disk rather than
-  // writing the program's own file.
+  // writing the program's own file. A run's list is written out the same way.
   [/^apps\.qr$/i, 'IconQr'],
-  [/export|download/i, 'IconDownload'],
+  [/export|^history\.download$/i, 'IconExport'],
+  [/download/i, 'IconDownload'],
   [/^history\.filter$|^list\.filter$/i, 'IconFilter'],
   [/^list\.sort$/i, 'IconSort'],
   [/^list\.search$/i, 'IconSearch'],
-  [/import|upload/i, 'IconUpload'],
+  [/import/i, 'IconImport'],
+  [/upload/i, 'IconUpload'],
 
-  // A key is namespace and verb, and the verb decides. Cancel sits above save
-  // so `confirm.cancel` does not wear the floppy, and save above edit so
-  // `edit.save` does not wear the pencil.
+  // A key is namespace and verb, and the verb decides. Cancel sits above the
+  // confirmation so `confirm.cancel` does not wear the thumb, and save above
+  // edit so `edit.save` does not wear the pencil.
   [/logout/i, 'IconSignOut'],
   // Showing every job again takes away the chip that narrowed the page.
   [/cancel|close|dismiss|everyJob/i, 'IconClose'],
 
-  [/save|apply|choose|submit|confirm/i, 'IconSave'],
+  [/save|submit/i, 'IconSave'],
+  [/apply|choose/i, 'IconApply'],
+  [/confirm$|\.done$|gotIt/i, 'IconConfirm'],
 
   [/edit|rename/i, 'IconPencil'],
   [/\.up$|parent|levelUp/i, 'IconBack'],

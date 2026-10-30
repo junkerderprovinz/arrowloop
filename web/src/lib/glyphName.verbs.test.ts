@@ -12,14 +12,17 @@ import { glyphNameFor } from './glyphName'
  * has to get that verb's glyph.
  */
 
-/** The verbs an area is plausibly named after. */
-const VERBS: Record<string, string> = {
-  save: 'IconSave',
-  edit: 'IconPencil',
-  copy: 'IconCopy',
-  cancel: 'IconClose',
-  remove: 'IconTrash',
-  delete: 'IconTrash',
+/**
+ * The verbs an area is plausibly named after. Removing a password or a passkey
+ * revokes a key, and removing two-factor authentication turns a protection off.
+ */
+const VERBS: Record<string, string[]> = {
+  save: ['IconSave'],
+  edit: ['IconPencil'],
+  copy: ['IconCopy'],
+  cancel: ['IconClose'],
+  remove: ['IconTrash', 'IconKeyRevoke', 'IconShieldOff'],
+  delete: ['IconTrash'],
 }
 
 describe('the glyph rule table', () => {
@@ -31,7 +34,7 @@ describe('the glyph rule table', () => {
       if (!want) continue
       const got = glyphNameFor(key)
       // No glyph is fine, since the label keeps its word; another verb's mark is not.
-      if (got && got !== want) wrong.push(`${key} -> ${got}, wanted ${want}`)
+      if (got && !want.includes(got)) wrong.push(`${key} -> ${got}, wanted ${want.join(' or ')}`)
     }
     expect(
       wrong,
@@ -43,5 +46,27 @@ describe('the glyph rule table', () => {
     // Keeps the check above from passing because no key matched a verb.
     expect(Object.keys(en)).toContain('edit.save')
     expect(glyphNameFor('edit.save')).toBe('IconSave')
+  })
+})
+
+describe('a meaning with a glyph of its own in GlimStone', () => {
+  it.each([
+    ['look.accentReset', 'IconRefresh'],
+    ['backup.import', 'IconImport'],
+    ['backup.export', 'IconExport'],
+    ['reset.done', 'IconConfirm'],
+    ['twoFactor.confirm', 'IconConfirm'],
+    ['pick.choose', 'IconApply'],
+    ['notify.test', 'IconSendTest'],
+    ['conflict.answerBoth', 'IconKeepBoth'],
+    ['conflicts.allLeft', 'IconKeepLeft'],
+    ['conflict.answerRight', 'IconKeepRight'],
+    ['login.submit', 'IconSignIn'],
+    ['reset.link', 'IconForgotPassword'],
+    ['about.upToDate', 'IconUpToDate'],
+    ['about.updatesFound', 'IconUpdateAvailable'],
+    ['tray.open', 'IconApp'],
+  ])('wears it on %s', (key, glyph) => {
+    expect(glyphNameFor(key)).toBe(glyph)
   })
 })

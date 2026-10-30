@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { ConfirmWindow } from '../../components/ConfirmWindow'
-import { IconDownload, IconUpload } from '../../components/glyphs'
+import { IconExport, IconImport } from '../../components/glyphs'
 import { replay } from '../../lib/animate'
 import { api } from '../../lib/api'
 import { download, pickTextFile } from '../../lib/download'
@@ -44,7 +44,7 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
         <Button
           label={t('backup.export')}
           labelKey="backup.export"
-          glyph={<IconDownload />}
+          glyph={<IconExport />}
           ref={exportButton}
           onClick={() => {
             void api
@@ -65,7 +65,7 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
         <Button
           label={t('backup.import')}
           labelKey="backup.import"
-          glyph={<IconUpload />}
+          glyph={<IconImport />}
           busy={restoring}
           disabled={restoring}
           onClick={() => {
@@ -88,7 +88,7 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
           message={t('backup.confirm', { file: picked.name })}
           confirmLabel={t('backup.import')}
           confirmLabelKey="backup.import"
-          confirmGlyph={<IconUpload />}
+          confirmGlyph={<IconImport />}
           cancelLabel={t('confirm.cancel')}
           onCancel={() => setPicked(null)}
           onConfirm={() => {

@@ -8,7 +8,7 @@ import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
 import { useT } from '../lib/i18n'
 import { Button } from '../lib/glimstone/Button'
-import { IconConflict, IconCopy } from './glyphs'
+import { IconConflict, IconExport } from './glyphs'
 import { download } from '../lib/download'
 
 /**
@@ -86,7 +86,7 @@ export function RunDetail({
         <Button
           label={t('history.download')}
           labelKey="history.download"
-          glyph={<IconCopy />}
+          glyph={<IconExport />}
           onClick={() => {
             const lines = entries.map((e) => [e.Kind, e.Side, e.Path, e.Note].join(TAB))
             download(`arrowloop-${job}-${run}.txt`, lines.join(NEWLINE) + NEWLINE)

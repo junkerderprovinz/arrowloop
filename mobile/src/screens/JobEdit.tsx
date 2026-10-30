@@ -458,10 +458,12 @@ export function JobEdit() {
           <View style={styles.stack}>
             <Button
               label={`${t("nav.trash")} · ${upper}`}
+              glyph="IconTabRecovery"
               onPress={() => nav.navigate("Trash", { name: editing, side: "left", place: upper })}
             />
             <Button
               label={`${t("nav.trash")} · ${lower}`}
+              glyph="IconTabRecovery"
               onPress={() => nav.navigate("Trash", { name: editing, side: "right", place: lower })}
             />
           </View>
@@ -526,7 +528,7 @@ export function JobEdit() {
       ) : (
         // The control that goes ahead sits on the right.
         <View style={styles.actions}>
-          <Button label={t("confirm.cancel")} onPress={() => nav.goBack()} />
+          <Button label={t("confirm.cancel")} labelKey="confirm.cancel" onPress={() => nav.goBack()} />
           <Button
             label={t("edit.save")}
             labelKey="edit.save"
