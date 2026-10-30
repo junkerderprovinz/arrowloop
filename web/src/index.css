@@ -544,30 +544,9 @@ body {
   animation: glim-search-hit 1.6s ease-out;
 }
 
-/* Local, not in GlimStone: the README's F-Droid button. At rest its mark takes
-   the brand blue, lifted on the dark theme to 3:1 against the button's ground
-   and kept as published on the light one (3.8:1); under the pointer the tile
-   fills with the published blue, which reads 4.6:1 with white. */
-:root,
-[data-theme="dark"] {
-  --brand-fdroid: #2284e5;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --brand-fdroid: #1976d2;
-  }
-}
-[data-theme="light"] {
-  --brand-fdroid: #1976d2;
-}
-.glim-fdroid-mark { color: var(--brand-fdroid); }
+/* Local, not in GlimStone: the tile of the README's F-Droid button, whose blue
+   reads 4.6:1 with white. */
 .glim-tile-fdroid { --tile: #1976d2; --tile-ink: #ffffff; }
-@media (hover: hover) {
-  .glim-brand-tile:hover,
-  .group:hover > .glim-brand-tile {
-    --brand-fdroid: var(--tile-ink);
-  }
-}
 
 /* For a button whose words are the only thing that tells it from its
    neighbours, as BombVault has it. Below 48rem the column can be narrower than
