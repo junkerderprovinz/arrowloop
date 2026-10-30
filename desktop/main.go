@@ -101,7 +101,7 @@ func run() error {
 	opts.Services = []application.Service{application.NewService(tell)}
 	// Another configuration is another profile, whose interface settings must
 	// not mix with the installed copy's.
-	if *custom != "" {
+	if *custom != "" || ownWebview {
 		opts.Windows.WebviewUserDataPath = filepath.Join(filepath.Dir(configPath), "webview")
 	}
 	app := application.New(opts)
@@ -243,18 +243,17 @@ func configLocation(custom string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("find the configuration directory: %w", err)
 	}
-	return filepath.Join(base, "ArrowLoop", "arrowloop.json"), nil
+	return filepath.Join(base, product, "arrowloop.json"), nil
 }
 
 // instanceID names the single-instance lock. A copy started on another
 // configuration is a separate program and may run beside the installed one.
 func instanceID(custom, configPath string) string {
-	const id = "com.junkerderprovinz.arrowloop"
 	if custom == "" {
-		return id
+		return installID
 	}
 	sum := sha256.Sum256([]byte(configPath))
-	return id + "." + hex.EncodeToString(sum[:4])
+	return installID + "." + hex.EncodeToString(sum[:4])
 }
 
 const starterConfig = `{

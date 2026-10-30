@@ -3,11 +3,15 @@ package main
 import "github.com/junkerderprovinz/arrowloop/internal/deskset"
 
 // product names the installation for all users: its entry under Apps and its
-// folder under ProgramData. installID names the folder the Linux installer
-// puts the program in. Both are main.name and main.id in desktop/installer.
+// folder under ProgramData, and the user's own folder for the configuration.
+// installID names the folder the Linux installer puts the program in and the
+// single-instance lock. Both are main.name and main.id in desktop/installer.
+// ownWebview keeps the window's storage in the configuration folder, as a copy
+// started on another configuration does.
 var (
-	product   = "ArrowLoop"
-	installID = "com.junkerderprovinz.arrowloop"
+	product    = "ArrowLoop"
+	installID  = "com.junkerderprovinz.arrowloop"
+	ownWebview = false
 )
 
 // installerLanguage is the language the installer's welcome page chose, which

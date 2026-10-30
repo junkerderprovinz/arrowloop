@@ -47,9 +47,10 @@ func main() {
 			Categories: []string{"Network", "FileTransfer"},
 			Payload:    files,
 			// The lock of a copy on its usual configuration, instanceID in
-			// desktop/main.go, and the value internal/autostart writes.
-			InstanceID: "com.junkerderprovinz.arrowloop",
-			Autostart:  "ArrowLoop",
+			// desktop/main.go, and the value internal/autostart writes. The
+			// test build names both after itself.
+			InstanceID: id,
+			Autostart:  name,
 			Legacy: pommelporter.Legacy{
 				// 1.1.0 and earlier, from Wails v2's script, which ran company
 				// and product together into one name.
