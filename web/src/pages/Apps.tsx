@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 
 import { QRCode } from '../components/QRCode'
 import { Stack } from '../components/Shell'
+import { shownVersion } from '../lib/glimstone/AboutCard'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, FDROID_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
@@ -246,7 +247,7 @@ function ServerCard({ version }: { version: string }) {
 function ReleaseVersion({ version }: { version: string }) {
   const plain = /^v\d+\.\d+\.\d+$/.test(version)
   const cls = 'glim-num absolute end-5 top-3 text-meta text-carbon-textMuted'
-  if (!plain) return <span className={cls}>{version}</span>
+  if (!plain) return <span className={cls}>{shownVersion(version)}</span>
   return (
     <a
       href={`${REPO}/releases/tag/${version}`}
@@ -255,7 +256,7 @@ function ReleaseVersion({ version }: { version: string }) {
       onClick={followExternal}
       className={`${cls} no-underline hover:text-carbon-text`}
     >
-      {version}
+      {shownVersion(version)}
     </a>
   )
 }

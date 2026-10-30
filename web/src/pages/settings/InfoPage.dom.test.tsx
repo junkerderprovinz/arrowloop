@@ -104,7 +104,7 @@ describe('the Info tile', () => {
     render(<InfoPage version="v1.8.0" />)
     await click('Check for updates')
     await waitFor(() => expect(screen.getByRole('button', { name: 'Update available' })).toBeTruthy())
-    expect(pushed[0]?.message).toBe('ArrowLoop v1.9.0 is out.')
+    expect(pushed[0]?.message).toBe('ArrowLoop 1.9.0 is out.')
   })
 
   it('hands the bug report to the browser as a file', async () => {
