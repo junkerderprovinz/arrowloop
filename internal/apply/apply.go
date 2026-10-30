@@ -82,7 +82,9 @@ type Entry struct {
 	// Note is an error's own words, or which way a conflict went. On a copy
 	// it is NoteReplaced when a file was overwritten, on a move the name the
 	// file had before, or NoteRelocated when it left for the other side, and
-	// on a trash NoteBin when it went into the bin. Empty otherwise.
+	// on a trash NoteBin when it went into the bin. A folder left alone
+	// because a side could not read it is a skip with that side and
+	// NoteUnreadable or NoteVanished. Empty otherwise.
 	Note string
 	// Size is how big the file was, in bytes. Zero for a folder, a skip and an
 	// error, where it does not apply.
@@ -94,6 +96,11 @@ const (
 	NoteReplaced  = "replaced"
 	NoteRelocated = "relocated"
 	NoteBin       = "bin"
+
+	// The codes of the reasons plan gives for these folders, so an
+	// interface can word the note in the reader's language.
+	NoteUnreadable = "unreadable"
+	NoteVanished   = "vanished"
 )
 
 // DisagreementError means an operation reported success and the two sides still
@@ -322,7 +329,11 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	// The plan's own skips belong in the log, or the run counts them as left
 	// for later without naming a single path.
 	for _, s := range p.Skipped {
-		t.record(Entry{Kind: "skip", Path: s.Path, Note: s.Reason.String()})
+		e := Entry{Kind: "skip", Path: s.Path, Note: s.Reason.String()}
+		if s.Reason.Code == NoteUnreadable || s.Reason.Code == NoteVanished {
+			e.Side, e.Note = s.Reason.Vars["side"], s.Reason.Code
+		}
+		t.record(e)
 	}
 	t.total = countWork(p)
 	if watcher != nil {

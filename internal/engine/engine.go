@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -172,6 +173,7 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	if err != nil {
 		return nil, compare, err
 	}
+	unread, within := leaveUnread(left, right, visible, compare.FoldCase)
 
 	if err := somethingToWorkWith(ctx, ends, left, right, visible); err != nil {
 		return nil, compare, err
@@ -192,13 +194,16 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 			if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) {
 				continue
 			}
+			if within(entry.LeftPath) || within(entry.RightPath) {
+				continue
+			}
 			visibleDirs[key] = entry
 		}
 		p.Dirs = plan.EnforceDirs(plan.BuildDirs(left, right, visibleDirs), compare.Direction, compare.Mode)
 	}
 
-	p.Skipped = append(p.Skipped, leftOdd...)
-	p.Skipped = append(p.Skipped, rightOdd...)
+	// The unread folders go first, since a report names only the first few.
+	p.Skipped = slices.Concat(unread, p.Skipped, leftOdd, rightOdd)
 	p.PassedOver = sealed
 
 	return p, compare, nil
@@ -239,6 +244,61 @@ func passOverSealed(left, right *scan.Listing, visible map[string]state.Entry, f
 		}
 	}
 	return skips, nil
+}
+
+// leaveUnread takes each folder a side could not read out of both listings and
+// out of the record, so the run neither copies into it nor removes anything
+// under it on either side. Its record rows stay for the next run that can read
+// it. within reports whether a path lies in one of those folders.
+func leaveUnread(left, right *scan.Listing, visible map[string]state.Entry, fold bool) (skips []plan.Skip, within func(string) bool) {
+	var trees []string
+	for _, side := range []plan.Side{plan.Left, plan.Right} {
+		listing := left
+		if side == plan.Right {
+			listing = right
+		}
+		for _, u := range listing.Unreadable {
+			trees = append(trees, pathid.Key(u.Path, fold))
+			code := "unreadable"
+			if u.Gone {
+				code = "vanished"
+			}
+			skips = append(skips, plan.Skip{Path: u.Path, Reason: plan.Because(code, "side", side.String())})
+		}
+	}
+	within = func(p string) bool {
+		key := pathid.Key(p, fold)
+		for _, tree := range trees {
+			if key == tree || strings.HasPrefix(key, tree+"/") {
+				return true
+			}
+		}
+		return false
+	}
+	if len(trees) == 0 {
+		return nil, within
+	}
+
+	for _, l := range []*scan.Listing{left, right} {
+		for k, e := range l.Files {
+			if within(e.Path) {
+				delete(l.Files, k)
+			}
+		}
+		for k, name := range l.Dirs {
+			if within(name) {
+				delete(l.Dirs, k)
+			}
+		}
+	}
+	// A file the record knows there and the listing leaves out would read as
+	// deleted, and the deletion would be carried to the other side.
+	for k, e := range visible {
+		if within(e.LeftPath) || within(e.RightPath) {
+			delete(visible, k)
+		}
+	}
+	return skips, within
 }
 
 // readSide lists one side and names what it holds that cannot be synced. A

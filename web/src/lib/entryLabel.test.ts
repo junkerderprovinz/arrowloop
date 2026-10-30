@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryAction, entryLabel, entryNote, placeOf, placesOf, sideName, transferLabel } from './entryLabel'
+import { entryAction, entryLabel, entryNote, placeOf, placesOf, sideName, transferLabel, unreadFolder } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -146,6 +146,33 @@ describe('what the note adds', () => {
     expect(entryNote(t, noted('conflict', '', 'keep both'))).toBeNull()
     expect(entryNote(t, noted('move', 'left', 'fotos/alt.jpg'))).toBe('vorher fotos/alt.jpg')
     expect(entryNote(t, noted('skip', '', 'the file was busy'))).toBe('the file was busy')
+  })
+})
+
+describe('a folder a side could not read', () => {
+  const folder = (Side: string, Note: string): RunEntry => ({ Kind: 'skip', Side, Path: 'claude/tmp/tmphqr9i89k', Note, Size: 0 })
+
+  it.each([
+    ['refused on a local side', job('V:\\', 'E:\\backup\\code'), folder('left', 'unreadable'), 'Ordner in V: nicht lesbar'],
+    ['gone from a local side', job('V:\\', 'E:\\backup\\code'), folder('left', 'vanished'), 'Ordner in V: beim Lesen verschwunden'],
+    ['refused here with a cloud on the other side', job('/data/fotos', 'OpenCloud-Test:Fotos'), folder('left', 'unreadable'), 'Ordner lokal nicht lesbar'],
+    ['refused by the cloud', job('/data/fotos', 'OpenCloud-Test:Fotos'), folder('right', 'unreadable'), 'Ordner in OpenCloud-Test nicht lesbar'],
+    ['without the job', undefined, folder('left', 'vanished'), 'Ordner beim Lesen verschwunden'],
+  ])('%s', (_, j, e, want) => {
+    expect(entryLabel(t, e, j, drives)).toBe(want)
+  })
+
+  it('says that nothing in it was touched rather than show the code', () => {
+    expect(entryNote(t, folder('left', 'unreadable'))).toBe(
+      'Darin wurde auf keiner Seite etwas kopiert oder gelöscht. Der nächste Lauf versucht es wieder.',
+    )
+  })
+
+  it('is told apart from a step that failed', () => {
+    expect(unreadFolder(folder('left', 'vanished'))).toBe(true)
+    expect(unreadFolder(folder('right', 'connection reset'))).toBe(false)
+    expect(unreadFolder({ Kind: 'error', Side: 'left', Note: 'unreadable' })).toBe(false)
+    expect(entryLabel(t, folder('right', 'connection reset'), job('/data', 'OpenCloud-Test:x'), drives)).toBe('Upload fehlgeschlagen')
   })
 })
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Badge } from '../lib/glimstone/Badge'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { api, type RunEntry } from '../lib/api'
-import { entryLabel, entryNote } from '../lib/entryLabel'
+import { entryLabel, entryNote, unreadFolder } from '../lib/entryLabel'
 import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
 import { useT } from '../lib/i18n'
@@ -27,10 +27,14 @@ const KEPT_BOTH = 'keep both'
 const TAB = String.fromCharCode(9)
 const NEWLINE = String.fromCharCode(10)
 
-/** Which kinds are a problem, so a failed run's own lines stand out in it. */
-function tone(kind: string): 'ok' | 'warn' | 'fail' | 'neutral' {
-  if (kind === 'skip') return 'fail'
-  if (kind === 'conflict') return 'warn'
+/**
+ * Which lines are a problem, so a failed run's own lines stand out in it. A
+ * folder that could not be read is a warning: nothing in it was touched.
+ */
+function tone(e: RunEntry): 'ok' | 'warn' | 'fail' | 'neutral' {
+  if (unreadFolder(e)) return 'warn'
+  if (e.Kind === 'skip') return 'fail'
+  if (e.Kind === 'conflict') return 'warn'
   return 'neutral'
 }
 
@@ -99,7 +103,7 @@ export function RunDetail({
           const note = entryNote(t, e)
           return (
             <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-subline">
-              <Badge tone={tone(e.Kind)}>{entryLabel(t, e, config, drives)}</Badge>
+              <Badge tone={tone(e)}>{entryLabel(t, e, config, drives)}</Badge>
               <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
                 {e.Path}
               </span>

@@ -71,6 +71,8 @@ var reasonText = map[string]string{
 	"changedDuring":   "changed on the {side} side while this run was going, leaving it for the next run",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"sealed":          "locked on the {side} side: OneDrive hands its Personal Vault to no app, so this folder is left out",
+	"unreadable":      "could not be read on the {side} side, so this run leaves the folder alone on both sides",
+	"vanished":        "disappeared from the {side} side while it was being read, so this run leaves the folder alone on both sides",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
 	"conflictGone":    "one of the two versions is gone, so there is nothing left to decide",

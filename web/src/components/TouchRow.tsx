@@ -3,7 +3,7 @@ import { IconToLeft, IconToRight } from './glyphs'
 import type { Touch } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { dayTime } from '../lib/dayTime'
-import { entryAction, entryNote } from '../lib/entryLabel'
+import { entryAction, entryNote, unreadFolder } from '../lib/entryLabel'
 import { translateSide, useT } from '../lib/i18n'
 import { usePlaces } from '../lib/places'
 
@@ -15,10 +15,14 @@ export function touchKey(e: Touch): string {
   return `${e.Job}\n${e.When}\n${e.Seq}`
 }
 
-/** Which kinds are a problem, so they stand out in a long list. */
-function touchTone(kind: string): 'warn' | 'fail' | 'neutral' {
-  if (kind === 'skip' || kind === 'error') return 'fail'
-  if (kind === 'conflict') return 'warn'
+/**
+ * Which lines are a problem, so they stand out in a long list. A folder that
+ * could not be read is a warning: nothing in it was touched.
+ */
+function touchTone(e: Touch): 'warn' | 'fail' | 'neutral' {
+  if (unreadFolder(e)) return 'warn'
+  if (e.Kind === 'skip' || e.Kind === 'error') return 'fail'
+  if (e.Kind === 'conflict') return 'warn'
   return 'neutral'
 }
 
@@ -39,7 +43,7 @@ export function TouchRow({ touch: e, withJob }: { touch: Touch; withJob?: boolea
       {/* Wide enough for a conflict's phrase in the longer languages; a longer
           one wraps inside its badge rather than being cut. */}
       <span className="flex w-64 shrink-0 max-md:w-48 max-sm:w-auto max-sm:max-w-full">
-        <Badge tone={touchTone(e.Kind)} wrap>
+        <Badge tone={touchTone(e)} wrap>
           {label}
         </Badge>
       </span>

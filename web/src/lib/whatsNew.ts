@@ -63,6 +63,13 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.4.0',
+    changes: [
+      // It shows only in the details of a run that met such a folder.
+      { id: 'unread-folders', text: 'new.change.unreadFolders' },
+    ],
+  },
+  {
     after: '2.3.0',
     changes: [
       {

@@ -3,6 +3,7 @@ package scan
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -49,27 +50,89 @@ func sideWithSubfolder(t *testing.T) fs.Fs {
 	return f
 }
 
-// The local backend answers a folder it cannot stat, such as one on a share
-// that dropped for a moment, with the error for a folder that is not there.
-// Taken as a missing side, the folder's files would read as deleted.
-func TestASubfolderThatFailsToListFailsTheScan(t *testing.T) {
-	f := failing{Fs: sideWithSubfolder(t), dir: "Projects", fail: func(context.Context) (fs.DirEntries, error) {
-		return nil, fs.ErrorDirNotFound
-	}}
-	if l, err := List(context.Background(), f, Options{}); err == nil {
-		t.Fatalf("the scan succeeded without the folder: %d files", len(l.Files))
+// denied answers the way the local backend answers for a folder the process
+// may not open: it lists it as empty and only counts the error.
+func denied(ctx context.Context) (fs.DirEntries, error) {
+	err := fmt.Errorf("failed to open directory %q: %w", "Projects", &os.PathError{Op: "open", Path: "Projects", Err: os.ErrPermission})
+	_ = accounting.Stats(ctx).Error(fserrors.NoRetryError(err))
+	return nil, nil
+}
+
+func TestAFolderThatMayNotBeOpenedIsNotedAndTheRestListed(t *testing.T) {
+	f := failing{Fs: sideWithSubfolder(t), dir: "Projects", fail: denied}
+	l, err := List(context.Background(), f, Options{})
+	if err != nil {
+		t.Fatalf("one unreadable folder failed the scan: %v", err)
+	}
+	if len(l.Files) != 1 || l.Files["top.txt"] == nil {
+		t.Fatalf("listed %v, want only top.txt", l.Files)
+	}
+	if len(l.Unreadable) != 1 || l.Unreadable[0].Path != "Projects" || l.Unreadable[0].Gone {
+		t.Fatalf("unreadable %+v, want Projects as refused", l.Unreadable)
 	}
 }
 
-// A folder the process may not open is listed as empty by the local backend,
-// which only counts the error.
-func TestAFolderThatMayNotBeOpenedFailsTheScan(t *testing.T) {
-	f := failing{Fs: sideWithSubfolder(t), dir: "Projects", fail: func(ctx context.Context) (fs.DirEntries, error) {
-		_ = accounting.Stats(ctx).Error(fserrors.NoRetryError(errors.New("permission denied")))
-		return nil, nil
+// A temporary folder is often deleted between its parent being listed and the
+// walk reaching it.
+func TestAFolderThatDisappearsDuringTheScanIsNotedAsGone(t *testing.T) {
+	side := sideWithSubfolder(t)
+	f := failing{Fs: side, dir: "Projects", fail: func(ctx context.Context) (fs.DirEntries, error) {
+		if err := os.RemoveAll(filepath.Join(side.Root(), "Projects")); err != nil {
+			t.Fatalf("remove: %v", err)
+		}
+		return side.List(ctx, "Projects")
+	}}
+	l, err := List(context.Background(), f, Options{})
+	if err != nil {
+		t.Fatalf("a vanished folder failed the scan: %v", err)
+	}
+	if len(l.Unreadable) != 1 || l.Unreadable[0].Path != "Projects" || !l.Unreadable[0].Gone {
+		t.Fatalf("unreadable %+v, want Projects as gone", l.Unreadable)
+	}
+}
+
+// When the whole side goes, every folder after that point disappears, and
+// passing over them would make a run out of the few files read before.
+func TestASideThatGoesAwayDuringTheScanFailsIt(t *testing.T) {
+	side := sideWithSubfolder(t)
+	f := failing{Fs: side, dir: "Projects", fail: func(ctx context.Context) (fs.DirEntries, error) {
+		if err := os.RemoveAll(side.Root()); err != nil {
+			t.Fatalf("remove: %v", err)
+		}
+		return side.List(ctx, "Projects")
 	}}
 	if l, err := List(context.Background(), f, Options{}); err == nil {
-		t.Fatalf("the scan succeeded without the folder: %d files", len(l.Files))
+		t.Fatalf("the scan succeeded on a side that went away: %d files", len(l.Files))
+	}
+}
+
+// Only a refusal or a folder that is gone says nothing about the rest of the
+// side. Any other failure may mean the side itself is in trouble.
+func TestAFolderThatFailsForAnotherReasonFailsTheScan(t *testing.T) {
+	failures := map[string]func(ctx context.Context) (fs.DirEntries, error){
+		"returned": func(context.Context) (fs.DirEntries, error) {
+			return nil, errors.New("connection reset by peer")
+		},
+		"counted": func(ctx context.Context) (fs.DirEntries, error) {
+			_ = accounting.Stats(ctx).Error(fserrors.NoRetryError(errors.New("input/output error")))
+			return nil, nil
+		},
+	}
+	for name, fail := range failures {
+		t.Run(name, func(t *testing.T) {
+			f := failing{Fs: sideWithSubfolder(t), dir: "Projects", fail: fail}
+			if l, err := List(context.Background(), f, Options{}); err == nil {
+				t.Fatalf("the scan succeeded without the folder: %d files", len(l.Files))
+			}
+		})
+	}
+}
+
+// The root is what the whole side hangs on, so it is never passed over.
+func TestARootThatMayNotBeOpenedFailsTheScan(t *testing.T) {
+	f := failing{Fs: sideWithSubfolder(t), dir: "", fail: denied}
+	if l, err := List(context.Background(), f, Options{}); err == nil {
+		t.Fatalf("the scan succeeded on an unreadable root: %d files", len(l.Files))
 	}
 }
 

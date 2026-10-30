@@ -26,6 +26,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/pathid"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
@@ -212,6 +213,23 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 	}
 	rep.Collisions = len(blocked)
 
+	// A folder a side could not read says nothing about what it holds, so
+	// its paths are left out as a run leaves them alone.
+	var unread []string
+	for _, side := range sides {
+		for _, u := range listings[side].Unreadable {
+			unread = append(unread, pathid.Key(u.Path, scanOpt.FoldCase))
+		}
+	}
+	inUnread := func(key string) bool {
+		for _, tree := range unread {
+			if key == tree || strings.HasPrefix(key, tree+"/") {
+				return true
+			}
+		}
+		return false
+	}
+
 	keys := make(map[string]struct{}, len(left.Files)+len(right.Files)+len(visible))
 	for _, side := range sides {
 		for k := range listings[side].Files {
@@ -225,7 +243,7 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 	// Sorted, so a bounded list holds the same findings on every check.
 	ordered := make([]string, 0, len(keys))
 	for k := range keys {
-		if blocked[k] {
+		if blocked[k] || inUnread(k) {
 			continue
 		}
 		ordered = append(ordered, k)
