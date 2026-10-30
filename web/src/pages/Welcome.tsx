@@ -1,7 +1,7 @@
 // The page a new install opens on: what ArrowLoop has found on this machine
 // and the three steps to the first sync.
 
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import { IconCheck, IconSearch } from '../components/glyphs'
 import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
@@ -19,20 +19,30 @@ const STEP: Record<FirstStep, { title: TranslationKey; sub: TranslationKey; to?:
   preview: { title: 'welcome.preview', sub: 'welcome.previewSub' },
 }
 
-const TONE: Record<StepState, string> = {
-  done: 'bg-statusOkBg text-statusOk',
-  next: 'bg-accent text-accentContrast',
-  open: 'bg-carbon-surface2 text-carbon-textSub',
-}
-
-/** The number in front of a step. A finished step shows a tick, and only the next one wears the accent. */
+/**
+ * The number in front of a step, in the accent for every step, and a tick once
+ * the step is done. A step that is done while the page is open runs a ring
+ * round its mark first (`.al-step-ring` in index.css).
+ */
 function StepMark({ n, state }: { n: number; state: StepState }) {
+  const was = useRef(state)
+  const [fresh, setFresh] = useState(false)
+  useEffect(() => {
+    if (state === 'done' && was.current !== 'done') setFresh(true)
+    was.current = state
+  }, [state])
   return (
     <span
       aria-hidden
-      className={`glim-num flex h-7 w-7 flex-none items-center justify-center rounded-[var(--radius-pill)] text-subline font-semibold [&_svg]:h-3.5 [&_svg]:w-3.5 ${TONE[state]}`}
+      data-state={state}
+      style={{ '--step': n - 1 } as CSSProperties}
+      className={`al-step-mark glim-num relative grid h-7 w-7 flex-none place-items-center rounded-[var(--radius-pill)] bg-accent text-subline font-semibold text-accentContrast [&_svg]:h-3.5 [&_svg]:w-3.5${fresh ? ' al-step-fresh' : ''}`}
     >
-      {state === 'done' ? <IconCheck /> : n}
+      <span className="al-step-ring" />
+      <span className="al-step-face al-step-number">{n}</span>
+      <span className="al-step-face al-step-tick">
+        <IconCheck />
+      </span>
     </span>
   )
 }
