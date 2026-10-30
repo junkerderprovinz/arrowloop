@@ -9,7 +9,7 @@ import { MAIL_SVG, MANUAL_SVG } from '../../lib/appMarks'
 import { download } from '../../lib/download'
 import { GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
 import { openExternal } from '../../lib/external'
-import { InfoVersionCard } from '../../lib/glimstone/AboutCard'
+import { InfoVersionCard, shownVersion } from '../../lib/glimstone/AboutCard'
 import { Card } from '../../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../../lib/glimstone/ReadmeButton'
 import { GLIMSTONE_VERSION } from '../../lib/glimstone/version'
@@ -52,7 +52,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
   const updateCheck = async (): Promise<number> => {
     try {
       const got = await api.updateCheck()
-      if (got.updateAvailable) push(t('info.available', { version: got.latest }))
+      if (got.updateAvailable) push(t('info.available', { version: shownVersion(got.latest) }))
       return got.updateAvailable ? 1 : 0
     } catch (e) {
       const code = e instanceof ApiError ? e.code : undefined

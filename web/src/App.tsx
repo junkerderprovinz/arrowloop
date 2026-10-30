@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'reac
 import { BottomBar } from './components/BottomBar'
 import { Sidebar } from './components/Sidebar'
 import { WhatsNewDots } from './components/WhatsNewDots'
+import { shownVersion } from './lib/glimstone/AboutCard'
 import { Card } from './lib/glimstone/Card'
 import { Login } from './pages/Login'
 import { Activity } from './pages/Activity'
@@ -534,7 +535,7 @@ function useUpdateReadyToast() {
   useEffect(
     () =>
       onUpdateReady((version) => {
-        const show = () => push(t('update.ready', { version }))
+        const show = () => push(t('update.ready', { version: shownVersion(version) }))
         if (!document.hidden) {
           show()
           return
