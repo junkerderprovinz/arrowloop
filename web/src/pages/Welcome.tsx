@@ -160,13 +160,17 @@ export function Welcome({ fresh }: { fresh: boolean | null }) {
                 data-state={state}
                 aria-current={state === 'next' ? 'step' : undefined}
                 style={hueVars(i) as CSSProperties}
-                className="glim-hue flex flex-col gap-3 rounded-card bg-carbon-surface p-[18px]"
+                className="glim-hue relative flex flex-col gap-3 rounded-card bg-carbon-surface p-[18px]"
               >
                 <div className="flex gap-3">
                   <StepMark n={i + 1} state={state} />
                   <div className="flex min-w-0 flex-col gap-0.5">
+                    {/* The link's box covers the whole card, so the picture and the line under the title lead there too. */}
                     {to && state !== 'done' ? (
-                      <Link to={to} className="text-body font-semibold text-carbon-text hover:underline">
+                      <Link
+                        to={to}
+                        className="text-body font-semibold text-carbon-text hover:underline after:absolute after:inset-0 after:rounded-card"
+                      >
                         {name}
                       </Link>
                     ) : (
