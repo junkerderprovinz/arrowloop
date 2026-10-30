@@ -8,12 +8,6 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
-
-## 🐛 Fixed
-
-- **One folder that can't be read no longer fails the whole run.** A job stopped with "a folder could not be read" when a folder below its root refused access, and with "directory not found" when a temporary folder vanished while it was being read. Such a folder is now left alone on both sides: nothing under it is copied, moved or deleted, not even by a mirror, and a two-way job doesn't take its files for deleted. Everything else syncs as usual. The run names each of these folders and the reason in its details, on the phone too, and counts them as left for later. A side that disappears as a whole still stops the run.
-
 ## 2.4.0 - 2026-10-30
 
 ## ✨ Added
@@ -26,7 +20,7 @@ The full notes for each release are in
 - **Every choice under Settings › Look › Labels shows a symbol before its name,** as Design, Corners and Motion do. On a phone, and in a browser narrower than 600 pixels, these choices stand two to a row, so their names keep their words.
 - **The welcome page shows the way to the first sync as a small scene.** Each step card has a picture, and a pointer walks through all three: it adds a target, sets up a job and runs the first sync, which ends in a badge and a burst of confetti. The three step numbers share the accent and pop in one after another, and a step done while the page is open draws a ring before its number turns into a tick. The whole card leads to its step, not only the title. The scene follows the Motion setting and your system's reduced motion.
 - **The trash wears a bin,** in the sidebar, in a job's menu and on the phone.
-- **The F-Droid button in Settings › Apps shows F-Droid's own logo in its colours.**
+- **The F-Droid button in Settings › Apps shows F-Droid's own logo in its colours,** with the eyes cut out so the button shows through them in every theme.
 - **The two sides of a new job are called Device folder and Target folder.** They read On the device and A target before.
 - **The schedule bar on the phone spans its card.** In a job and in the global sync settings, Manual, Every N, Every day, Weekdays, Real time and Cron stand under the Runs label across the whole card.
 - **ArrowLoop follows GlimStone 3.8.0,** the design language these symbols come from.
@@ -44,6 +38,7 @@ The full notes for each release are in
 - **Check this job on the phone shows what it found.** The button asked the engine and showed nothing. The findings are listed under the buttons, and Check this job in a job card's menu opens the job and checks it there.
 - **A preview that fails on the phone names the job and the reason.** It said the engine could not be reached even when the engine had answered.
 - **A side without a trash folder no longer fills the engine log with errors.** Every run logged a missing trash as an error, although a side that never lost a file has none.
+- **A folder that can't be read no longer stops the whole run.** A job failed with "a folder could not be read" when one folder below its root refused access, and with "directory not found" when a temporary folder vanished while it was being read. ArrowLoop leaves such a folder alone on both sides: nothing under it is copied, moved or deleted, not even by a mirror, and a two-way job doesn't take its files for deleted. The rest of the job syncs as usual. The run's details name each of these folders and the reason in an orange line, on the phone too. A side that disappears as a whole still stops the run.
 
 ## 🔒 Security
 
