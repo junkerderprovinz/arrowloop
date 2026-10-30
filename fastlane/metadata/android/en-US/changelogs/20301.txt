@@ -1,1 +1,0 @@
-Device folder and Target folder: the two sides of a job got clearer names, and the schedule bar fills the whole card.

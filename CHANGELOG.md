@@ -21,29 +21,15 @@ The full notes for each release are in
 - **The welcome page shows the way to the first sync as a small scene.** Each step card has a picture, and a pointer walks through all three: it adds a target, sets up a job and runs the first sync, which ends in a badge and a burst of confetti. The three step numbers share the accent and pop in one after another, and a step done while the page is open draws a ring before its number turns into a tick. The whole card leads to its step, not only the title. The scene follows the Motion setting and your system's reduced motion.
 - **The trash wears a bin,** in the sidebar, in a job's menu and on the phone.
 - **The F-Droid button in Settings › Apps shows F-Droid's own logo in its colours.**
+- **The two sides of a new job are called Device folder and Target folder.** They read On the device and A target before.
+- **The schedule bar on the phone spans its card.** In a job and in the global sync settings, Manual, Every N, Every day, Weekdays, Real time and Cron stand under the Runs label across the whole card.
 - **ArrowLoop follows GlimStone 3.8.0,** the design language these symbols come from.
 
 ## ⚡ Improved
 
 - **Version numbers have no v,** 2.4.0 rather than v2.4.0, in Settings › Info, on the cards in Settings › Apps and in the messages about an update. Each number still opens its release.
 - **A running job's progress bar costs the page less,** since nothing around it is laid out again at each step.
-
-## 🌐 Translations
-
-- **Every new text is in all 42 languages.**
-
-## 2.3.3 - 2026-10-29
-
-## ⚡ Improved
-
 - **The engine and the desktop app are built with Go 1.27.2** and golang.org/x/net 0.62.0, which bring the latest fixes of the standard library and the network package.
-
-## 🔒 Security
-
-- **Marking a drive accepts only a drive ArrowLoop offers.** The request could name any folder the engine can write to and left a marker file there, which no job would ever find. A folder that is not one of the offered drives is refused.
-- **Dependency updates close five open advisories.** The web interface's test tooling takes undici 8.12.3, the phone app takes zod 4.6.6 and node-forge 1.4.2, and the engine and the desktop app take chi 5.4.0.
-
-## 2.3.2 - 2026-10-27
 
 ## 🐛 Fixed
 
@@ -53,12 +39,14 @@ The full notes for each release are in
 - **A preview that fails on the phone names the job and the reason.** It said the engine could not be reached even when the engine had answered.
 - **A side without a trash folder no longer fills the engine log with errors.** Every run logged a missing trash as an error, although a side that never lost a file has none.
 
-## 2.3.1 - 2026-10-26
+## 🔒 Security
 
-## 🎨 Design
+- **Marking a drive accepts only a drive ArrowLoop offers.** The request could name any folder the engine can write to and left a marker file there, which no job would ever find. A folder that is not one of the offered drives is refused.
+- **Dependency updates close five open advisories.** The web interface's test tooling takes undici 8.12.3, the phone app takes zod 4.6.6 and node-forge 1.4.2, and the engine and the desktop app take chi 5.4.0.
 
-- **The two sides of a new job are called Device folder and Target folder.** They read On the device and A target before.
-- **The schedule bar on the phone spans its card.** In a job and in the global sync settings, Manual, Every N, Every day, Weekdays, Real time and Cron stand under the Runs label across the whole card.
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
 
 ## 2.3.0 - 2026-10-26
 

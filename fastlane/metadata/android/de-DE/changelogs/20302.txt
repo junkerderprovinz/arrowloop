@@ -1,1 +1,0 @@
-Nachtschicht repariert: Aufträge warten aufs Netz, statt im Dunkeln zu scheitern, sture OpenCloud-Zeitstempel bremsen keinen Lauf mehr, und Auftrag prüfen sagt endlich, was es gefunden hat.
