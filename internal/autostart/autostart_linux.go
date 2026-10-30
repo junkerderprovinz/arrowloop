@@ -94,7 +94,7 @@ func execLine(exe string) string { return `"` + exe + `" ` + arg }
 func entry(exe string) string {
 	return "[Desktop Entry]\n" +
 		"Type=Application\n" +
-		"Name=" + name + "\n" +
+		"Name=" + Name + "\n" +
 		"Comment=Two-way file synchronisation\n" +
 		"Exec=" + execLine(exe) + "\n" +
 		"Terminal=false\n" +

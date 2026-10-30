@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/autostart"
 )
 
 // A build with the updatetest tag takes its releases from a local stand-in for
@@ -14,12 +16,16 @@ import (
 // the environment can change where an update comes from.
 //
 // It also installs under a name of its own, the one `scripts/desktop.mjs
-// --updatetest` gives its installer, so trying it leaves a real installation
-// alone. The scheduled task starts it with no environment of ours, and finds
-// the stand-in's address in the folder under ProgramData instead.
+// --updatetest` gives its installer, and keeps its configuration, window
+// storage, single-instance lock and autostart entry apart, so trying it leaves
+// a real installation alone. The scheduled task starts it with no environment
+// of ours, and finds the stand-in's address in the folder under ProgramData
+// instead.
 func init() {
 	product = "ArrowLoop Test"
 	installID += ".test"
+	ownWebview = true
+	autostart.Name = product
 	if api := os.Getenv("ARROWLOOP_UPDATE_API"); api != "" {
 		updateAPI = api
 	} else if dir, err := machineData(); err == nil {

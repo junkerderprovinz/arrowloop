@@ -20,6 +20,10 @@ The full notes for each release are in
 - **The desktop app draws its own title bar on Windows and Linux,** in the colours, corners and accent of the look you chose, with Minimise, Maximise and Close and nothing else, since the sidebar already shows the logo and the name. The bar stays clear while a window is open, so ArrowLoop can still be moved and closed. Drag it to move the window, double-click it to maximise, and pull any edge to resize. Close hides to the notification area or quits as it did before. macOS keeps its own title bar.
 - **The Version card shows plain numbers,** 2.3.3 rather than v2.3.3, for ArrowLoop, GlimStone and rclone, on the web, in the desktop app and on the phone. Each number still opens its release.
 
+## 🐛 Fixed
+
+- **ArrowLoop Test keeps its own data.** The test build installs beside a real installation but opened its jobs, targets and history from `%APPDATA%\ArrowLoop`, shared the real copy's window storage and single-instance lock, and wrote its autostart entry under the real name. It now uses `%APPDATA%\ArrowLoop Test`, keeps its window storage there, and has a lock and an autostart entry of its own. Release builds are unchanged.
+
 ## 2.3.3 - 2026-10-29
 
 ## ⚡ Improved

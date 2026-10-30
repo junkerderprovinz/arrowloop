@@ -9,9 +9,11 @@ package autostart
 
 import "os"
 
-// name is the entry's name on every platform. Writing and looking up under the
-// same name keeps repeated toggles from piling up duplicates.
-const name = "ArrowLoop"
+// Name is the entry's name on every platform. Writing and looking up under the
+// same name keeps repeated toggles from piling up duplicates. The desktop app's
+// test build sets its own before anything reads it, so its entry never replaces
+// a real installation's.
+var Name = "ArrowLoop"
 
 // Flag names the option every entry starts the program with. Nobody is at the
 // screen waiting for a window when the session starts, so the desktop app

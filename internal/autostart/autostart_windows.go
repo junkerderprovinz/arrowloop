@@ -26,11 +26,11 @@ func enabled() (bool, error) {
 	}
 	defer k.Close()
 
-	if _, _, err := k.GetStringValue(name); err != nil {
+	if _, _, err := k.GetStringValue(Name); err != nil {
 		if errors.Is(err, registry.ErrNotExist) {
 			return false, nil
 		}
-		return false, fmt.Errorf("read %s: %w", name, err)
+		return false, fmt.Errorf("read %s: %w", Name, err)
 	}
 	return true, nil
 }
@@ -46,12 +46,12 @@ func pointsAt(exe string) (bool, error) {
 	}
 	defer k.Close()
 
-	got, _, err := k.GetStringValue(name)
+	got, _, err := k.GetStringValue(Name)
 	if err != nil {
 		if errors.Is(err, registry.ErrNotExist) {
 			return false, nil
 		}
-		return false, fmt.Errorf("read %s: %w", name, err)
+		return false, fmt.Errorf("read %s: %w", Name, err)
 	}
 	// Windows paths are case-insensitive; a lower-case drive letter would
 	// otherwise rewrite the value on every sign-in.
@@ -64,7 +64,7 @@ func enable(exe string) error {
 		return fmt.Errorf("open %s: %w", runKey, err)
 	}
 	defer k.Close()
-	return k.SetStringValue(name, command(exe))
+	return k.SetStringValue(Name, command(exe))
 }
 
 func disable() error {
@@ -76,8 +76,8 @@ func disable() error {
 		return fmt.Errorf("open %s: %w", runKey, err)
 	}
 	defer k.Close()
-	if err := k.DeleteValue(name); err != nil && !errors.Is(err, registry.ErrNotExist) {
-		return fmt.Errorf("remove %s: %w", name, err)
+	if err := k.DeleteValue(Name); err != nil && !errors.Is(err, registry.ErrNotExist) {
+		return fmt.Errorf("remove %s: %w", Name, err)
 	}
 	return nil
 }
