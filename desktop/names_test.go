@@ -21,7 +21,7 @@ func TestTheReleaseBuildKeepsTheRealNames(t *testing.T) {
 	if autostart.Name != "ArrowLoop" {
 		t.Errorf("autostart entry %q, want ArrowLoop", autostart.Name)
 	}
-	if ownWebview {
+	if ownData {
 		t.Error("the release build moves the window's storage off Wails' default folder")
 	}
 	path, err := configLocation("")
@@ -33,5 +33,8 @@ func TestTheReleaseBuildKeepsTheRealNames(t *testing.T) {
 	}
 	if got := instanceID("", path); got != "com.junkerderprovinz.arrowloop" {
 		t.Errorf("single-instance lock %q", got)
+	}
+	if got := rcloneConfig(path); got != "" {
+		t.Errorf("rclone configuration %q, want rclone's own default", got)
 	}
 }
