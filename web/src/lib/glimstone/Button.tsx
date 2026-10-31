@@ -53,10 +53,11 @@ export type ButtonVariant = "default" | "chip" | "icon";
 // controls with no fill, and on the dark ramp it is darker than surface2. The
 // accent and status fills have no ramp, so each steps toward the theme's text
 // colour; `opacity` would let the card show through and move the other way.
+// The two surface tones also take the accent tint of rule 40 from tokens.css.
 const TONE_CLASS: Record<ButtonTone, string> = {
   accent: "bg-accent text-accentContrast hover:bg-accentHover",
-  neutral: "bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
-  subtle: "bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
+  neutral: "glim-btn-neutral bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
+  subtle: "glim-btn-subtle bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
   ok: "bg-statusOkSolid text-carbon-background hover:bg-statusOkHover",
   danger: "bg-statusFailSolid text-carbon-background hover:bg-statusFailHover",
   warn: "bg-statusWarnSolid text-carbon-background hover:bg-statusWarnHover",

@@ -369,7 +369,7 @@ export function Secret({
         data-tip={eye}
         aria-label={eye}
         aria-pressed={shown}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-carbon-textMuted transition hover:text-carbon-text"
+        className="glim-btn-bare absolute right-2 top-1/2 -translate-y-1/2 text-carbon-textMuted transition"
       >
         {shown ? <IconEyeOff /> : <IconEye />}
       </button>

@@ -257,7 +257,7 @@ export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId })
               setQuery('')
               field.current?.focus()
             }}
-            className="flex h-8 w-8 items-center justify-center rounded-control text-carbon-textSub hover:bg-carbon-hover"
+            className="glim-btn-bare flex h-8 w-8 items-center justify-center rounded-control text-carbon-textSub"
           >
             <IconClose />
           </button>

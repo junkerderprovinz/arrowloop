@@ -60,7 +60,7 @@ export function PickerSearch({
             onChange('')
             field.current?.focus()
           }}
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control text-carbon-textSub transition-colors hover:bg-carbon-surface3"
+          className="glim-btn-bare flex h-7 w-7 shrink-0 items-center justify-center rounded-control text-carbon-textSub transition-colors"
         >
           <IconClose />
         </button>

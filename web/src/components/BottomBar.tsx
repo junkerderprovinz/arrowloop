@@ -198,7 +198,7 @@ function MoreSheet({
             type="button"
             onClick={onClose}
             aria-label={t('common.close')}
-            className="flex h-10 w-10 items-center justify-center rounded-control text-carbon-textSub hover:bg-carbon-hover"
+            className="glim-btn-bare flex h-10 w-10 items-center justify-center rounded-control text-carbon-textSub"
           >
             <IconClose />
           </button>

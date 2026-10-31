@@ -1823,6 +1823,30 @@ body {
 .glim-btn-md { min-width: var(--btn-w-md); }
 .glim-btn-lg { min-width: var(--btn-w-lg); }
 
+/* Rule 40. A surface-filled button's hovered ground takes 22% of the tint and
+   its glyph all of it; its words keep the text colour, which the accent on a
+   tinted ground would not be legible against. A bare glyph button has no
+   ground to tint. `--btn-tint` reads `--accent-glyph`, so a button inside a
+   hued element takes that element's hue. */
+.glim-btn-neutral,
+.glim-btn-subtle,
+.glim-btn-bare {
+  --btn-tint: var(--accent-glyph);
+}
+.glim-btn-subtle:not(:disabled):is(:hover, :focus-visible) {
+  background-color: color-mix(in srgb, var(--carbon-surface3), var(--btn-tint) 22%);
+}
+.glim-btn-neutral:not(:disabled):is(:hover, :focus-visible) {
+  background-color: color-mix(in srgb, var(--carbon-hover-raised), var(--btn-tint) 22%);
+}
+:is(.glim-btn-neutral, .glim-btn-subtle):not(:disabled):is(:hover, :focus-visible) > .glim-btn-glyph,
+.glim-btn-bare:not(:disabled):is(:hover, :focus-visible) {
+  color: var(--btn-tint);
+}
+.glim-btn-bare:is(:hover, :focus-visible) {
+  background-color: transparent;
+}
+
 /* The single-colour marks at rest. A published brand colour fails on one of
    the two grounds, so the Info tile's marks take the adjusted theme tokens,
    and the house mark follows the accent and, under rainbow, its position. */
@@ -1880,6 +1904,8 @@ body {
 .glim-tile-linux   { --tile: #fcc624; --tile-ink: #161616; } /* 11.4:1 */
 .glim-tile-android { --tile: #32de84; --tile-ink: #161616; } /* 10.3:1 */
 .glim-tile-play    { --tile: #01875f; --tile-ink: #ffffff; } /* 4.5:1 */
+/* F-Droid's blue from its README button. */
+.glim-tile-fdroid  { --tile: #1976d2; --tile-ink: #ffffff; } /* 4.6:1 */
 .glim-tile-docker  { --tile: #1d63ed; --tile-ink: #ffffff; } /* 5.2:1 */
 .glim-tile-unraid  { --tile: #f15a2c; --tile-ink: #ffffff; } /* 3.4:1 */
 .glim-tile-zip     { --tile: #4d5562; --tile-ink: #ffffff; } /* 7.5:1 */
@@ -2449,6 +2475,85 @@ body {
   outline-offset: 1px;
 }
 .glim-select-trigger[data-disabled] { opacity: 0.5; cursor: default; }
+/* Busy: the trigger keeps its focus and takes no input until the answer is back. */
+.glim-select-trigger[data-readonly] { opacity: 0.5; cursor: progress; }
+
+/* The select's box. `fill` is the plain grid and takes its line; the other
+   three widths stand inline and size to their trigger. */
+.glim-select {
+  display: grid;
+  gap: 0.375rem;
+  width: 100%;
+  min-width: 0;
+}
+.glim-select--steady,
+.glim-select--hug {
+  display: inline-grid;
+  width: auto;
+  flex-shrink: 0;
+}
+/* The floor is also what the trigger counts for when a table sizes its
+   columns, since a label that truncates counts for nothing. */
+.glim-select--squeeze {
+  display: inline-grid;
+  width: auto;
+  grid-template-columns: minmax(0, auto);
+  min-width: 4rem;
+  max-width: 100%;
+}
+.glim-select--squeeze .glim-select-trigger { min-width: 0; }
+/* Every label in one cell with only the chosen one visible, so a steady
+   trigger is as wide as its longest option. */
+.glim-select-value {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.glim-select-value > * {
+  grid-area: 1 / 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.glim-select-ghost { visibility: hidden; }
+.glim-select-glyph {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+.glim-select-glyph svg { width: 0.875rem; height: 0.875rem; }
+/* The two smaller sizes. A row keeps the field's height in small type; an
+   inset trigger sits inside another field, one step up from its fill. */
+.glim-select-trigger--row,
+.glim-select-trigger--inset {
+  gap: 0.25rem;
+  padding-inline: 0.5rem 0.375rem;
+  font-size: var(--text-dense);
+}
+.glim-select-trigger--inset {
+  height: 1.5rem;
+  border: 0;
+  background: color-mix(in srgb, var(--carbon-surface3) 70%, transparent);
+  color: var(--carbon-text-sub);
+}
+.glim-select-trigger--inset:hover {
+  background: var(--carbon-surface3);
+  color: var(--carbon-text);
+}
+.glim-select-trigger--row .glim-select-indicator svg,
+.glim-select-trigger--inset .glim-select-indicator svg { width: 0.75rem; height: 0.75rem; }
+/* A long value runs onto a second line, and the trigger grows with it. */
+.glim-select-trigger--wrap {
+  height: auto;
+  min-height: var(--btn-h);
+  padding-block: 0.375rem;
+}
+.glim-select-trigger--wrap .glim-select-value > * {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .glim-combobox-input {
   flex: 1;
   min-width: 0;
@@ -2475,12 +2580,16 @@ body {
 }
 .glim-select-indicator[data-state="open"] { rotate: 180deg; }
 
-/* The open list. It sits on the body, so no card or scroll box can clip it. */
+/* The open list. It sits on the body, so no card or scroll box can clip it.
+   It is at least as wide as its trigger and scrolls in a box about the size of
+   a native select's, never past the window. */
 .glim-select-content {
   margin: 0;
   padding: 0.25rem;
   list-style: none;
-  max-height: 15rem;
+  min-width: max(var(--reference-width, 0px), 13rem);
+  max-width: min(22rem, calc(100vw - 1rem));
+  max-height: min(24rem, var(--available-height, 24rem), calc(100dvh - 1rem));
   overflow-y: auto;
   border-radius: var(--radius-card);
   background: var(--carbon-surface);
@@ -2504,6 +2613,35 @@ body {
 .glim-select-item[data-disabled] { color: var(--carbon-text-muted); cursor: default; }
 .glim-select-check { display: inline-flex; color: var(--accent-ink); }
 .glim-select-check:not([data-state="checked"]) { visibility: hidden; }
+.glim-select-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The submenu mark: the expand chevron turned to point where the submenu
+   opens, which is the other way under a right-to-left language. */
+.glim-select-caret { display: inline-flex; color: var(--carbon-text-muted); }
+.glim-select-caret svg { rotate: -90deg; }
+.glim-select-caret:dir(rtl) svg { rotate: 90deg; }
+.glim-select-group + .glim-select-group {
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--carbon-border) 60%, transparent);
+}
+/* A group's name, in line with the labels below it. */
+.glim-select-heading {
+  padding: 0.375rem 0.75rem 0.25rem;
+  color: var(--carbon-text-muted);
+  font-size: var(--text-meta);
+  font-weight: 500;
+}
+.glim-select-content--glyphs .glim-select-heading { padding-inline-start: 2.5rem; }
+/* A finger needs a taller row than a pointer. */
+@media (pointer: coarse) {
+  .glim-select-item { min-height: 2.75rem; }
+}
 .glim-select-empty {
   padding: 0.5rem 0.75rem;
   color: var(--carbon-text-muted);

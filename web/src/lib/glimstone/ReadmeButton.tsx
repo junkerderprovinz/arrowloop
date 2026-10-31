@@ -16,6 +16,7 @@ const TILES = {
   linux: "glim-tile-linux",
   android: "glim-tile-android",
   play: "glim-tile-play",
+  fdroid: "glim-tile-fdroid",
   docker: "glim-tile-docker",
   unraid: "glim-tile-unraid",
   zip: "glim-tile-zip",
@@ -25,8 +26,6 @@ const TILES = {
   coffee: "glim-tile-coffee",
   house: "glim-tile-house",
   docs: "glim-tile-docs",
-  // Local, not in GlimStone: the README's F-Droid button.
-  fdroid: "glim-tile-fdroid",
 } as const;
 
 export interface ReadmePart {

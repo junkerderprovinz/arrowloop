@@ -80,15 +80,16 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
 
 // A badge that is a button or a link hovers by a colour step, like Button
 // (rule 21); `opacity` would let the card show through. A wash steps toward its
-// own ink, read where the badge sits, so a hued badge steps from its hue.
+// own ink, read where the badge sits, so a hued badge steps from its hue. The
+// neutral and muted badges take rule 40's accent tint like a Button.
 const HOVER_CLASSES: Record<BadgeTone, string> = {
   ok: "hover:bg-[color-mix(in_srgb,var(--status-ok-bg),var(--status-ok)_12%)]",
   fail: "hover:bg-[color-mix(in_srgb,var(--status-fail-bg),var(--status-fail)_12%)]",
   warn: "hover:bg-[color-mix(in_srgb,var(--status-warn-bg-strong),var(--status-warn)_12%)]",
   active: "hover:bg-[color-mix(in_srgb,var(--accent-soft),var(--accent)_12%)]",
-  neutral: "hover:bg-carbon-surface3",
+  neutral: "glim-btn-subtle hover:bg-carbon-surface3",
   heading: "hover:bg-accentHover",
-  muted: "hover:text-carbon-text",
+  muted: "glim-btn-bare",
 };
 
 const RADIUS_CLASSES: Record<BadgeShape, string> = {
