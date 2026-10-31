@@ -26,6 +26,7 @@ import { Glyph, glyphNameForKey, GLYPH, ProviderMark } from "./glyphs";
 import {
   contrastOn,
   inkFor,
+  mixHex,
   palettes,
   RAINBOW,
   cornersFor,
@@ -843,11 +844,24 @@ export function Button({
   /** The "(i)" at the end of the button, for what the name cannot say. */
   hint?: string;
 }) {
-  const { p, corners, labels, accent, hueAt } = useTheme();
+  const { p, corners, labels, accent, hueAt, scheme } = useTheme();
   const { ms } = useMotion();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
-  const ground =
-    tone === "accent" ? fill : tone === "ok" ? p.okSolid : tone === "fail" ? p.failSolid : p.surface2;
+  // GlimStone's rule 40: a grey button takes the accent while it is held, 22%
+  // of it in its ground and all of it in its glyph, and its words keep their
+  // colour. A finger is the only thing that reaches for a button here.
+  const [held, setHeld] = useState(false);
+  const tint = inkFor(fill, scheme);
+  const tinted = held && tone === "neutral" && !disabled && !busy;
+  const ground = tinted
+    ? mixHex(p.surface3, tint, 0.22)
+    : tone === "accent"
+      ? fill
+      : tone === "ok"
+        ? p.okSolid
+        : tone === "fail"
+          ? p.failSolid
+          : p.surface2;
   const ink =
     tone === "accent" || tone === "ok" || tone === "fail"
       ? contrastOn(ground)
@@ -874,15 +888,21 @@ export function Button({
   }, [shake, ms.fade, wobble]);
 
   const name = named ?? (labelKey ? glyphNameForKey(labelKey) : undefined);
-  const glyph = mark ? mark(ink) : name ? <Glyph name={name} color={ink} /> : null;
+  const glyph = mark ? mark(ink) : name ? <Glyph name={name} color={tinted ? tint : ink} /> : null;
   const showWord = labels === "text" || labels === "textGlyph" || !glyph;
   const showGlyph = Boolean(glyph) && labels !== "text";
 
   const button = (
     <AnimatedPressable
       onPress={onPress}
-      onPressIn={press.onPressIn}
-      onPressOut={press.onPressOut}
+      onPressIn={() => {
+        press.onPressIn();
+        setHeld(true);
+      }}
+      onPressOut={() => {
+        press.onPressOut();
+        setHeld(false);
+      }}
       disabled={disabled || busy}
       accessibilityRole="button"
       accessibilityLabel={label}

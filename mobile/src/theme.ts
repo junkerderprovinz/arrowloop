@@ -137,6 +137,21 @@ export function inkFor(hex: string, scheme: Scheme): string {
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0").toUpperCase()}`;
 }
 
+/**
+ * `color-mix(in srgb, base, over share)` for two #rrggbb colours, since React
+ * Native has no color-mix.
+ */
+export function mixHex(base: string, over: string, share: number): string {
+  const rgb = (hex: string) => {
+    const n = parseInt(/^#([0-9a-fA-F]{6})$/.exec(hex)?.[1] ?? "000000", 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const a = rgb(base);
+  const b = rgb(over);
+  const mixed = a.map((c, i) => Math.round(c + (b[i]! - c) * share));
+  return `#${((mixed[0]! << 16) | (mixed[1]! << 8) | mixed[2]!).toString(16).padStart(6, "0")}`;
+}
+
 /** A translucent wash of a colour, as rgba since React Native has no color-mix. */
 export function softOn(hex: string, alpha = 0.14): string {
   const m = /^#([0-9a-fA-F]{6})$/.exec(hex);
