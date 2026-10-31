@@ -706,6 +706,11 @@ func copyFile(ctx context.Context, dst, src fs.Fs, dstPath, srcPath string) erro
 // time, which OpenCloud accepts and ignores, so the time is read back and the
 // content sent when it did not take.
 func sendFile(ctx context.Context, dst, src fs.Fs, dstPath, srcPath string, sent, over *scan.Entry) error {
+	if over != nil {
+		if err := unlockForReplace(dst, dstPath); err != nil {
+			return err
+		}
+	}
 	if err := copyFile(ctx, dst, src, dstPath, srcPath); err != nil {
 		return err
 	}
