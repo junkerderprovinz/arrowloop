@@ -35,6 +35,8 @@ jobs:
         working-directory: web
       - run: npm run build
         working-directory: web
+      - run: node check-bare-buttons.mjs src
+        working-directory: web
       - run: npx vitest run
         working-directory: web
 

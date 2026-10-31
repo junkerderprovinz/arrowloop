@@ -405,14 +405,14 @@ export function JobForm({
           type="button"
           aria-expanded={advanced}
           onClick={() => setAdvanced((was) => !was)}
-          className="glim-eyebrow flex items-center gap-1.5 self-start font-semibold outline-none transition hover:text-carbon-text focus-visible:text-carbon-text"
+          className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
         >
           <svg
             aria-hidden
             width="10"
             height="10"
             viewBox="0 0 10 10"
-            className={`transition-transform ${advanced ? '' : '-rotate-90 rtl:rotate-90'}`}
+            className={`glim-btn-glyph transition-transform ${advanced ? '' : '-rotate-90 rtl:rotate-90'}`}
             fill="none"
             stroke="currentColor"
             strokeWidth="1.5"
