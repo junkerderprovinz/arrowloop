@@ -544,10 +544,6 @@ body {
   animation: glim-search-hit 1.6s ease-out;
 }
 
-/* Local, not in GlimStone: the tile of the README's F-Droid button, whose blue
-   reads 4.6:1 with white. */
-.glim-tile-fdroid { --tile: #1976d2; --tile-ink: #ffffff; }
-
 /* For a button whose words are the only thing that tells it from its
    neighbours, as BombVault has it. Below 48rem the column can be narrower than
    the label, so the label wraps onto a second line instead of ending in an

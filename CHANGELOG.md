@@ -14,6 +14,7 @@ The full notes for each release are in
 
 - **Every button takes the accent when the pointer or the keyboard reaches it.** A grey button mixes a little of the accent into its ground and turns its symbol to the accent, while its words keep their colour. A button that is a symbol alone turns the symbol.
 - **Advanced in a job's settings is a button with a ground of its own,** like every other button with words, so it no longer reads as a heading.
+- **The F-Droid button in Settings › Apps wears F-Droid's logo as GlimStone carries it,** flat in its own greens and blue, with the eyes still cut out.
 - **ArrowLoop follows GlimStone 3.8.2.**
 
 ## 2.4.0 - 2026-10-30
