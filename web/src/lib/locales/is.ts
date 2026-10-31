@@ -1310,6 +1310,7 @@ const is: Translations = {
   'list.sortDesc': 'Lækkandi',
   'list.filterBy': 'Sía eftir: {name}',
   'list.filtered': 'Síað',
+  'list.searched': '„{q}“',
   'list.showAll': 'Sýna allt',
   'list.head.when': 'Hvenær',
   'list.head.size': 'Stærð',

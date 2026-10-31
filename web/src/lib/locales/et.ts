@@ -1310,6 +1310,7 @@ const et: Translations = {
   'list.sortDesc': 'Kahanevalt',
   'list.filterBy': 'Filtreeri: {name}',
   'list.filtered': 'Filtreeritud',
+  'list.searched': '„{q}”',
   'list.showAll': 'Näita kõike',
   'list.head.when': 'Millal',
   'list.head.size': 'Suurus',

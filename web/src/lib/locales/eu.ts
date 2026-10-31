@@ -1310,6 +1310,7 @@ const eu: Translations = {
   'list.sortDesc': 'Beheranzko',
   'list.filterBy': 'Iragazi: {name}',
   'list.filtered': 'Iragazita',
+  'list.searched': '«{q}»',
   'list.showAll': 'Erakutsi dena',
   'list.head.when': 'Noiz',
   'list.head.size': 'Tamaina',

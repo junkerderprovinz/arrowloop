@@ -1310,6 +1310,7 @@ const he: Translations = {
   'list.sortDesc': 'סדר יורד',
   'list.filterBy': 'סינון לפי {name}',
   'list.filtered': 'מסונן',
+  'list.searched': '«{q}»',
   'list.showAll': 'הצג הכול',
   'list.head.when': 'מתי',
   'list.head.size': 'גודל',

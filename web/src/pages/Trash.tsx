@@ -178,7 +178,7 @@ export function Trash({
           <div data-new="trash-bin">
             <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
               <p className="glim-num text-body text-carbon-text">{t('trash.holding', { count: totals.entries, size: bytes(totals.bytes) })}</p>
-              <Narrowed what={searching ? [`“${query.trim()}”`] : []} onClear={() => setQuery('')} />
+              <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
             </Card>
           </div>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none" {...menu.on(pageItems)}>

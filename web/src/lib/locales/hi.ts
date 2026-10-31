@@ -1310,6 +1310,7 @@ const hi: Translations = {
   'list.sortDesc': 'अवरोही',
   'list.filterBy': '{name} के अनुसार फ़िल्टर करें',
   'list.filtered': 'फ़िल्टर लगा',
+  'list.searched': '«{q}»',
   'list.showAll': 'सब दिखाएँ',
   'list.head.when': 'कब',
   'list.head.size': 'आकार',

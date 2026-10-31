@@ -1310,6 +1310,7 @@ const es: Translations = {
   'list.sortDesc': 'Descendente',
   'list.filterBy': 'Filtrar por {name}',
   'list.filtered': 'Filtrado',
+  'list.searched': '«{q}»',
   'list.showAll': 'Mostrar todo',
   'list.head.when': 'Cuándo',
   'list.head.size': 'Tamaño',

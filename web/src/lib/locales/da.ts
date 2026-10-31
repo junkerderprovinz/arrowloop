@@ -1310,6 +1310,7 @@ const da: Translations = {
   'list.sortDesc': 'Faldende',
   'list.filterBy': 'Filtrér efter {name}',
   'list.filtered': 'Filtreret',
+  'list.searched': '„{q}“',
   'list.showAll': 'Vis alt',
   'list.head.when': 'Hvornår',
   'list.head.size': 'Størrelse',

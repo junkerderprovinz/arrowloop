@@ -113,7 +113,7 @@ export function Anomalies({
     el.scrollIntoView({ block: 'center' })
   }, [focusFinding, shown])
 
-  const narrowing = [...(closedView ? [t('anomaly.closed')] : []), ...(searching ? [`“${query.trim()}”`] : [])]
+  const narrowing = [...(closedView ? [t('anomaly.closed')] : []), ...(searching ? [t('list.searched', { q: query.trim() })] : [])]
   function showAll() {
     setClosedView(false)
     setQuery('')

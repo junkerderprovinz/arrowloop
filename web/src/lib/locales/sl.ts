@@ -1310,6 +1310,7 @@ const sl: Translations = {
   'list.sortDesc': 'Padajoče',
   'list.filterBy': 'Filtriraj po: {name}',
   'list.filtered': 'Filtrirano',
+  'list.searched': '„{q}“',
   'list.showAll': 'Pokaži vse',
   'list.head.when': 'Kdaj',
   'list.head.size': 'Velikost',

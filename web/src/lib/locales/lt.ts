@@ -1310,6 +1310,7 @@ const lt: Translations = {
   'list.sortDesc': 'Mažėjančiai',
   'list.filterBy': 'Filtruoti pagal: {name}',
   'list.filtered': 'Filtruota',
+  'list.searched': '„{q}“',
   'list.showAll': 'Rodyti viską',
   'list.head.when': 'Kada',
   'list.head.size': 'Dydis',

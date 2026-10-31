@@ -1310,6 +1310,7 @@ const ko: Translations = {
   'list.sortDesc': '내림차순',
   'list.filterBy': '{name} 기준으로 필터',
   'list.filtered': '필터 적용됨',
+  'list.searched': '‘{q}’',
   'list.showAll': '모두 보기',
   'list.head.when': '시각',
   'list.head.size': '크기',

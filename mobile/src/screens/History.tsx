@@ -165,7 +165,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
   const narrowing = [
     ...(show === "all" ? [] : [t(SHOW_LABEL[show])]),
     ...(job ? [t("list.onlyJob", { job })] : []),
-    ...(typed.trim() ? [`“${typed.trim()}”`] : []),
+    ...(typed.trim() ? [t("list.searched", { q: typed.trim() })] : []),
   ];
   const header = (
     <>
@@ -329,7 +329,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   const narrowing = [
     ...(show === "all" ? [] : [t(RUN_SHOW_LABEL[show])]),
     ...(job ? [t("list.onlyJob", { job })] : []),
-    ...(typed.trim() ? [`“${typed.trim()}”`] : []),
+    ...(typed.trim() ? [t("list.searched", { q: typed.trim() })] : []),
   ];
   const header = (
     <>

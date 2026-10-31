@@ -1310,6 +1310,7 @@ const hu: Translations = {
   'list.sortDesc': 'Csökkenő',
   'list.filterBy': 'Szűrés: {name}',
   'list.filtered': 'Szűrve',
+  'list.searched': '„{q}”',
   'list.showAll': 'Az összes mutatása',
   'list.head.when': 'Mikor',
   'list.head.size': 'Méret',

@@ -1310,6 +1310,7 @@ const fa: Translations = {
   'list.sortDesc': 'نزولی',
   'list.filterBy': 'فیلتر بر پایهٔ {name}',
   'list.filtered': 'فیلترشده',
+  'list.searched': '«{q}»',
   'list.showAll': 'نمایش همه',
   'list.head.when': 'زمان',
   'list.head.size': 'اندازه',

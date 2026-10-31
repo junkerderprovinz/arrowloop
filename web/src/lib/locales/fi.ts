@@ -1310,6 +1310,7 @@ const fi: Translations = {
   'list.sortDesc': 'Laskeva',
   'list.filterBy': 'Suodata: {name}',
   'list.filtered': 'Suodatettu',
+  'list.searched': '”{q}”',
   'list.showAll': 'Näytä kaikki',
   'list.head.when': 'Milloin',
   'list.head.size': 'Koko',

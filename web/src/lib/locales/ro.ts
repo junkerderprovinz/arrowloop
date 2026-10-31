@@ -1310,6 +1310,7 @@ const ro: Translations = {
   'list.sortDesc': 'Descrescător',
   'list.filterBy': 'Filtrează după {name}',
   'list.filtered': 'Filtrat',
+  'list.searched': '„{q}”',
   'list.showAll': 'Arată tot',
   'list.head.when': 'Când',
   'list.head.size': 'Mărime',

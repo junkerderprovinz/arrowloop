@@ -1310,6 +1310,7 @@ const ar: Translations = {
   'list.sortDesc': 'تنازلي',
   'list.filterBy': 'تصفية حسب {name}',
   'list.filtered': 'مُصفّاة',
+  'list.searched': '«{q}»',
   'list.showAll': 'عرض الكل',
   'list.head.when': 'متى',
   'list.head.size': 'الحجم',

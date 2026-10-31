@@ -1310,6 +1310,7 @@ const cs: Translations = {
   'list.sortDesc': 'Sestupně',
   'list.filterBy': 'Filtrovat podle: {name}',
   'list.filtered': 'Filtrováno',
+  'list.searched': '„{q}“',
   'list.showAll': 'Zobrazit vše',
   'list.head.when': 'Kdy',
   'list.head.size': 'Velikost',

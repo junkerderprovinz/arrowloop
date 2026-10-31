@@ -1310,6 +1310,7 @@ const th: Translations = {
   'list.sortDesc': 'มากไปน้อย',
   'list.filterBy': 'กรองตาม{name}',
   'list.filtered': 'กรองอยู่',
+  'list.searched': '“{q}”',
   'list.showAll': 'แสดงทั้งหมด',
   'list.head.when': 'เมื่อ',
   'list.head.size': 'ขนาด',

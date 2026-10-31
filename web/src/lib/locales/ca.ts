@@ -1310,6 +1310,7 @@ const ca: Translations = {
   'list.sortDesc': 'Descendent',
   'list.filterBy': 'Filtra per {name}',
   'list.filtered': 'Filtrat',
+  'list.searched': '«{q}»',
   'list.showAll': 'Mostra-ho tot',
   'list.head.when': 'Quan',
   'list.head.size': 'Mida',

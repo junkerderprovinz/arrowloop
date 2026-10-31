@@ -1310,6 +1310,7 @@ const uk: Translations = {
   'list.sortDesc': 'За спаданням',
   'list.filterBy': 'Фільтр: {name}',
   'list.filtered': 'Відфільтровано',
+  'list.searched': '«{q}»',
   'list.showAll': 'Показати все',
   'list.head.when': 'Коли',
   'list.head.size': 'Розмір',

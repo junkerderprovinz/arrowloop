@@ -1310,6 +1310,7 @@ const pl: Translations = {
   'list.sortDesc': 'Malejąco',
   'list.filterBy': 'Filtruj według: {name}',
   'list.filtered': 'Przefiltrowane',
+  'list.searched': '„{q}”',
   'list.showAll': 'Pokaż wszystko',
   'list.head.when': 'Kiedy',
   'list.head.size': 'Rozmiar',

@@ -1310,6 +1310,7 @@ const nl: Translations = {
   'list.sortDesc': 'Aflopend',
   'list.filterBy': 'Filteren op {name}',
   'list.filtered': 'Gefilterd',
+  'list.searched': '‚{q}’',
   'list.showAll': 'Alles tonen',
   'list.head.when': 'Wanneer',
   'list.head.size': 'Grootte',

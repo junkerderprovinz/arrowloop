@@ -1310,6 +1310,7 @@ const hr: Translations = {
   'list.sortDesc': 'Silazno',
   'list.filterBy': 'Filtriraj po: {name}',
   'list.filtered': 'Filtrirano',
+  'list.searched': '„{q}“',
   'list.showAll': 'Prikaži sve',
   'list.head.when': 'Kada',
   'list.head.size': 'Veličina',

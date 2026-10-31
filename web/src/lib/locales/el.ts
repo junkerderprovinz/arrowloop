@@ -1310,6 +1310,7 @@ const el: Translations = {
   'list.sortDesc': 'Φθίνουσα',
   'list.filterBy': 'Φιλτράρισμα κατά {name}',
   'list.filtered': 'Φιλτραρισμένο',
+  'list.searched': '«{q}»',
   'list.showAll': 'Εμφάνιση όλων',
   'list.head.when': 'Πότε',
   'list.head.size': 'Μέγεθος',

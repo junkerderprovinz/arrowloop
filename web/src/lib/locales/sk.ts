@@ -1310,6 +1310,7 @@ const sk: Translations = {
   'list.sortDesc': 'Zostupne',
   'list.filterBy': 'Filtrovať podľa: {name}',
   'list.filtered': 'Filtrované',
+  'list.searched': '„{q}“',
   'list.showAll': 'Zobraziť všetko',
   'list.head.when': 'Kedy',
   'list.head.size': 'Veľkosť',

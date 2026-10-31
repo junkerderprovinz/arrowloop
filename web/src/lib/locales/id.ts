@@ -1310,6 +1310,7 @@ const id: Translations = {
   'list.sortDesc': 'Turun',
   'list.filterBy': 'Saring menurut {name}',
   'list.filtered': 'Tersaring',
+  'list.searched': '”{q}”',
   'list.showAll': 'Tampilkan semua',
   'list.head.when': 'Kapan',
   'list.head.size': 'Ukuran',

@@ -1310,6 +1310,7 @@ const lv: Translations = {
   'list.sortDesc': 'Dilstošā secībā',
   'list.filterBy': 'Filtrēt pēc: {name}',
   'list.filtered': 'Filtrēts',
+  'list.searched': '„{q}“',
   'list.showAll': 'Rādīt visu',
   'list.head.when': 'Kad',
   'list.head.size': 'Izmērs',

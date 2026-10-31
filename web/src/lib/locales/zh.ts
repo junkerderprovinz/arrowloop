@@ -1310,6 +1310,7 @@ const zh: Translations = {
   'list.sortDesc': '降序',
   'list.filterBy': '按{name}筛选',
   'list.filtered': '已筛选',
+  'list.searched': '“{q}”',
   'list.showAll': '全部显示',
   'list.head.when': '时间',
   'list.head.size': '大小',

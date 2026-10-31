@@ -1310,6 +1310,7 @@ const gl: Translations = {
   'list.sortDesc': 'Descendente',
   'list.filterBy': 'Filtrar por {name}',
   'list.filtered': 'Filtrado',
+  'list.searched': '«{q}»',
   'list.showAll': 'Amosar todo',
   'list.head.when': 'Cando',
   'list.head.size': 'Tamaño',

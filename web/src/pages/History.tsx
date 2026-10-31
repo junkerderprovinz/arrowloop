@@ -85,7 +85,7 @@ export function History({
     ...(!files && show !== 'all' ? [t(SHOW_LABEL[show])] : []),
     ...(!files && since ? [`${t('history.since')} ${since}`] : []),
     ...(!files && until ? [`${t('history.until')} ${until}`] : []),
-    ...(typed.trim() ? [`“${typed.trim()}”`] : []),
+    ...(typed.trim() ? [t('list.searched', { q: typed.trim() })] : []),
   ]
   function showAll() {
     setJob('')

@@ -135,7 +135,7 @@ export function Conflicts({
         <>
           <Card title={t('nav.conflicts')} hueIndex={0} hint={t('conflicts.hint')}>
             <p className="glim-num text-body text-carbon-text">{t('conflicts.waiting', { count: waiting.length })}</p>
-            <Narrowed what={searching ? [`“${query.trim()}”`] : []} onClear={() => setQuery('')} />
+            <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
           </Card>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none" {...menu.on(pageItems)}>
             <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} open={openSearch} />

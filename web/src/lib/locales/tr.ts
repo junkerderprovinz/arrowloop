@@ -1310,6 +1310,7 @@ const tr: Translations = {
   'list.sortDesc': 'Azalan',
   'list.filterBy': 'Süz: {name}',
   'list.filtered': 'Süzüldü',
+  'list.searched': '“{q}”',
   'list.showAll': 'Tümünü göster',
   'list.head.when': 'Ne zaman',
   'list.head.size': 'Boyut',

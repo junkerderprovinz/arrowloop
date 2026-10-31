@@ -1310,6 +1310,7 @@ const vi: Translations = {
   'list.sortDesc': 'Giảm dần',
   'list.filterBy': 'Lọc theo {name}',
   'list.filtered': 'Đang lọc',
+  'list.searched': '“{q}”',
   'list.showAll': 'Hiện tất cả',
   'list.head.when': 'Khi nào',
   'list.head.size': 'Kích thước',

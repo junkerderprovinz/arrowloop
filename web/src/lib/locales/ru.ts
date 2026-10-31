@@ -1310,6 +1310,7 @@ const ru: Translations = {
   'list.sortDesc': 'По убыванию',
   'list.filterBy': 'Фильтр: {name}',
   'list.filtered': 'Отфильтровано',
+  'list.searched': '«{q}»',
   'list.showAll': 'Показать всё',
   'list.head.when': 'Когда',
   'list.head.size': 'Размер',

@@ -1310,6 +1310,7 @@ const sv: Translations = {
   'list.sortDesc': 'Fallande',
   'list.filterBy': 'Filtrera efter {name}',
   'list.filtered': 'Filtrerat',
+  'list.searched': '”{q}”',
   'list.showAll': 'Visa allt',
   'list.head.when': 'När',
   'list.head.size': 'Storlek',

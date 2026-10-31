@@ -1310,6 +1310,7 @@ const sr: Translations = {
   'list.sortDesc': 'Опадајуће',
   'list.filterBy': 'Филтрирај по: {name}',
   'list.filtered': 'Филтрирано',
+  'list.searched': '„{q}“',
   'list.showAll': 'Прикажи све',
   'list.head.when': 'Када',
   'list.head.size': 'Величина',

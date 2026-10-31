@@ -1310,6 +1310,7 @@ const ja: Translations = {
   'list.sortDesc': '降順',
   'list.filterBy': '{name}で絞り込む',
   'list.filtered': '絞り込み中',
+  'list.searched': '「{q}」',
   'list.showAll': 'すべて表示',
   'list.head.when': '日時',
   'list.head.size': 'サイズ',

@@ -1310,6 +1310,7 @@ const ms: Translations = {
   'list.sortDesc': 'Menurun',
   'list.filterBy': 'Tapis mengikut {name}',
   'list.filtered': 'Ditapis',
+  'list.searched': '“{q}”',
   'list.showAll': 'Tunjukkan semua',
   'list.head.when': 'Bila',
   'list.head.size': 'Saiz',

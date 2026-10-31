@@ -1310,6 +1310,7 @@ const bg: Translations = {
   'list.sortDesc': 'Низходящо',
   'list.filterBy': 'Филтриране по {name}',
   'list.filtered': 'Филтрирано',
+  'list.searched': '„{q}“',
   'list.showAll': 'Покажи всичко',
   'list.head.when': 'Кога',
   'list.head.size': 'Размер',
