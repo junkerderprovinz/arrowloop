@@ -114,11 +114,12 @@ describe('a job page', () => {
     expect(went).toHaveBeenCalledWith({ tab: 'jobs', job: '' })
   })
 
-  it('lists the files touched with a filter and a search of their own', async () => {
+  it('filters the files touched from the head of their list, with no buttons over it', async () => {
     page()
     expect(await screen.findByRole('heading', { level: 2, name: /^Files touched/ })).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Filter' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Search' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
   })
 
   it('starts the check when the address asks for its card, then forgets the ask', async () => {

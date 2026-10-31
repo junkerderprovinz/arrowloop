@@ -63,6 +63,20 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.4.0',
+    changes: [
+      {
+        id: 'list-heads',
+        at: ['/history'],
+        where: ['nav.history'],
+        text: 'new.change.listHeads',
+        names: { history: 'nav.history', trash: 'nav.trash', conflicts: 'nav.conflicts', anomalies: 'nav.anomalies' },
+      },
+      // Every page has buttons, so the dot stands in the list only.
+      { id: 'button-tint', text: 'new.change.buttonTint' },
+    ],
+  },
+  {
     after: '2.3.0',
     changes: [
       {

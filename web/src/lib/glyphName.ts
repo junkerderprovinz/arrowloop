@@ -113,8 +113,9 @@ const RULES: Rule[] = [
   [/export|^history\.download$/i, 'IconExport'],
   [/download/i, 'IconDownload'],
   [/^history\.filter$|^list\.filter$/i, 'IconFilter'],
-  [/^list\.sort$/i, 'IconSort'],
   [/^list\.search$/i, 'IconSearch'],
+  [/^list\.sortAsc$/i, 'IconMoveUp'],
+  [/^list\.sortDesc$/i, 'IconMoveDown'],
   [/import/i, 'IconImport'],
   [/upload/i, 'IconUpload'],
 
@@ -122,8 +123,8 @@ const RULES: Rule[] = [
   // confirmation so `confirm.cancel` does not wear the thumb, and save above
   // edit so `edit.save` does not wear the pencil.
   [/logout/i, 'IconSignOut'],
-  // Showing every job again takes away the chip that narrowed the page.
-  [/cancel|close|dismiss|everyJob/i, 'IconClose'],
+  // Showing every job, or everything, again takes away what narrowed the list.
+  [/cancel|close|dismiss|everyJob|^list\.showAll$/i, 'IconClose'],
 
   [/save|submit/i, 'IconSave'],
   [/apply|choose/i, 'IconApply'],

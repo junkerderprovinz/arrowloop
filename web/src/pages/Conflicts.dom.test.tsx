@@ -91,9 +91,10 @@ describe('the conflicts list', () => {
     expect(within(left).queryByText('newer')).toBeNull()
   })
 
-  it('gives every conflict shown one answer from the corner, once asked', async () => {
+  it('gives every conflict shown one answer from the right-click menu, once asked', async () => {
     page()
-    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
+    fireEvent.contextMenu(card('a.txt'))
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left for all' }))
     const ask = await screen.findByRole('dialog', { name: 'Keep left for all' })
     expect(ask.textContent).toContain('Conflicts: 4')
@@ -103,13 +104,36 @@ describe('the conflicts list', () => {
     expect(decide.mock.calls[0][1]).toHaveLength(4)
   })
 
-  it('offers no answer for all while one conflict waits', () => {
+  it('offers no answer for all while one conflict waits', async () => {
     render(
       <ToastProvider>
         <Conflicts listing={{ conflicts: [conflict('a.txt')], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
       </ToastProvider>,
     )
-    expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
+    fireEvent.contextMenu(card('a.txt'))
+    const menu = await screen.findByRole('menu')
+    expect(within(menu).getByRole('menuitem', { name: 'Keep both files' })).toBeTruthy()
+    expect(within(menu).queryByRole('menuitem', { name: 'Keep left for all' })).toBeNull()
+  })
+
+  it('sorts by file from its head', () => {
+    page()
+    const names = () => screen.getAllByText(/^[a-d]\.txt$/, { selector: 'span' }).map((s) => s.textContent)
+    expect(names()).toEqual(['a.txt', 'b.txt', 'c.txt', 'd.txt'])
+    fireEvent.click(screen.getByRole('button', { name: 'File' }))
+    expect(names()).toEqual(['d.txt', 'c.txt', 'b.txt', 'a.txt'])
+  })
+
+  it('searches the paths once somebody types in the list, and Escape shows them all again', () => {
+    page()
+    const list = card('a.txt').closest('[tabindex="-1"]') as HTMLElement
+    fireEvent.keyDown(list, { key: 'c' })
+    const field = screen.getByRole('searchbox') as HTMLInputElement
+    expect(field.value).toBe('c')
+    expect(screen.getAllByText(/^[a-d]\.txt$/, { selector: 'span' }).map((s) => s.textContent)).toEqual(['c.txt'])
+    fireEvent.keyDown(field, { key: 'Escape' })
+    expect(screen.queryByRole('searchbox')).toBeNull()
+    expect(screen.getAllByText(/^[a-d]\.txt$/, { selector: 'span' })).toHaveLength(4)
   })
 
   it('answers one conflict from its own card without opening anything', async () => {

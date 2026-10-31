@@ -2,18 +2,20 @@
 // which the list shows, every finding as a card of its own with its figures
 // and its answers, and below them how far each job's runs are learned. The
 // layout is BombVault's, so a finding reads the same in both apps.
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
 import { FindingCard } from '../components/FindingCard'
 import { IconAnomalies } from '../components/glyphs'
 import { JobChip } from '../components/JobChip'
 import { LearningRings } from '../components/LearningRings'
-import { Selector } from '../components/Selector'
+import { FilterChoice, ListHead, ListSearch, Narrowed, useListMenu, type Head, type ListSort } from '../components/ListHead'
+import type { MenuItem } from '../components/Menu'
 import { Empty, Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
-import { SEVERITIES, countBySeverity, type FindingListing, type JobLearning, type Severity } from '../lib/anomalies'
+import { SEVERITIES, countBySeverity, type Finding, type FindingListing, type JobLearning, type Severity } from '../lib/anomalies'
 import { api } from '../lib/api'
 import { hueVars } from '../lib/appearance'
+import { matchesQuery } from '../lib/fold'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { useOpenJob } from '../lib/openJob'
 import { useToast } from '../lib/toast'
@@ -25,6 +27,20 @@ const TILE_LABEL: Record<Severity, TranslationKey> = {
 }
 
 type Tile = 'all' | Severity
+
+/**
+ * The order a head asks for. Severity runs from critical down and breaks its
+ * ties by job; ascending time is the oldest first.
+ */
+function order(sort: ListSort): (a: Finding, b: Finding) => number {
+  const sign = sort.dir === 'asc' ? 1 : -1
+  const rank = (s: Severity) => SEVERITIES.indexOf(s)
+  return (a, b) => {
+    if (sort.by === 'job') return sign * a.job.localeCompare(b.job)
+    if (sort.by === 'since') return sign * (Date.parse(a.since) - Date.parse(b.since))
+    return sign * (rank(a.severity) - rank(b.severity)) || a.job.localeCompare(b.job)
+  }
+}
 
 export function Anomalies({
   listing,
@@ -50,6 +66,11 @@ export function Anomalies({
   const push = useToast()
   const [tile, setTile] = useState<Tile>('all')
   const [closedView, setClosedView] = useState(false)
+  const [sort, setSort] = useState<ListSort>({ by: 'severity', dir: 'asc' })
+  const [query, setQuery] = useState('')
+  const area = useRef<HTMLDivElement>(null)
+  const openSearch = useRef<(() => void) | null>(null)
+  const menu = useListMenu(t('nav.anomalies'))
   const [learning, setLearning] = useState<JobLearning[] | null>(null)
   const openJob = useOpenJob()
   // The jobs whose refused change was let run, with the refusals counted then.
@@ -76,10 +97,11 @@ export function Anomalies({
   const open = listing?.open ?? []
   const closed = listing?.closed ?? []
   const pool = (closedView ? closed : open).filter((f) => !job || f.job === job)
-  const rank = (s: Severity) => SEVERITIES.indexOf(s)
+  const searching = query.trim() !== ''
   const shown = pool
     .filter((f) => tile === 'all' || f.severity === tile)
-    .sort((a, b) => (closedView ? 0 : rank(a.severity) - rank(b.severity)) || a.job.localeCompare(b.job))
+    .filter((f) => !searching || matchesQuery(query, [f.job, f.detail ?? '', ...(f.paths ?? [])]))
+    .sort(order(sort))
 
   // A link names one finding, which is brought into view once it is listed.
   const focused = useRef<string | undefined>(undefined)
@@ -91,16 +113,23 @@ export function Anomalies({
     el.scrollIntoView({ block: 'center' })
   }, [focusFinding, shown])
 
-  return (
-    <Stack>
-      <JobChip job={job} onClear={() => onJob('')} />
-
-      <SeverityTiles counts={countBySeverity(open.filter((f) => !job || f.job === job))} chosen={tile} onChoose={setTile} />
-
-      <div className="flex md:justify-end">
-        <div className="w-full sm:w-auto sm:min-w-64">
-          <Selector<'open' | 'closed'>
-            scale="small"
+  const narrowing = [...(closedView ? [t('anomaly.closed')] : []), ...(searching ? [`“${query.trim()}”`] : [])]
+  function showAll() {
+    setClosedView(false)
+    setQuery('')
+  }
+  const heads: Head[] = [
+    { id: 'severity', label: t('list.head.severity'), sorts: true },
+    { id: 'job', label: t('history.filterJob'), sorts: true },
+    { id: 'since', label: t('anomaly.sinceLabel'), sorts: true },
+    {
+      id: 'state',
+      label: t('list.head.state'),
+      className: 'ms-auto',
+      filter: {
+        active: closedView,
+        panel: (
+          <FilterChoice<'open' | 'closed'>
             label={t('anomalies.which')}
             value={closedView ? 'closed' : 'open'}
             onChange={(next) => setClosedView(next === 'closed')}
@@ -109,30 +138,49 @@ export function Anomalies({
               { value: 'closed', label: t('anomaly.closed') },
             ]}
           />
-        </div>
-      </div>
+        ),
+      },
+    },
+  ]
+  const listItems = (): MenuItem[] => [
+    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
+    ...(narrowing.length > 0 ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: showAll }] : []),
+  ]
+
+  return (
+    <Stack>
+      <JobChip job={job} onClear={() => onJob('')} />
+
+      <SeverityTiles counts={countBySeverity(open.filter((f) => !job || f.job === job))} chosen={tile} onChoose={setTile}>
+        <Narrowed what={narrowing} onClear={showAll} />
+      </SeverityTiles>
 
       <div data-new="finding-cards">
         <Card title={closedView ? t('anomaly.closed') : tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
-          {listing === null ? (
-            <Empty>{t('history.working')}</Empty>
-          ) : shown.length === 0 ? (
-            <Empty>{closedView ? t('anomaly.noneClosed') : pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
-          ) : (
-            <ul className="flex flex-col gap-2.5">
-              {shown.map((f, i) => (
-                <FindingCard
-                  key={f.id}
-                  finding={f}
-                  lead={i === 0 && !closedView}
-                  onChanged={onChanged}
-                  onAllowed={(name) => allowed.current.set(name, refused[name] ?? 0)}
-                />
-              ))}
-            </ul>
-          )}
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2.5 outline-none" {...menu.on(listItems)}>
+            <ListSearch value={query} onChange={setQuery} placeholder={t('history.runSearch')} area={area} open={openSearch} />
+            <ListHead heads={heads} sort={sort} onSort={setSort} page="anomalies" onSearch={() => openSearch.current?.()} menu />
+            {listing === null ? (
+              <Empty>{t('history.working')}</Empty>
+            ) : shown.length === 0 ? (
+              <Empty>{closedView ? t('anomaly.noneClosed') : pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
+            ) : (
+              <ul className="flex flex-col gap-2.5">
+                {shown.map((f, i) => (
+                  <FindingCard
+                    key={f.id}
+                    finding={f}
+                    lead={i === 0 && !closedView}
+                    onChanged={onChanged}
+                    onAllowed={(name) => allowed.current.set(name, refused[name] ?? 0)}
+                  />
+                ))}
+              </ul>
+            )}
+          </div>
         </Card>
       </div>
+
 
       {!closedView && tile === 'all' && learning && learning.length > 0 && (
         <div data-new="learning">
@@ -141,6 +189,7 @@ export function Anomalies({
           </Card>
         </div>
       )}
+      {menu.element}
     </Stack>
   )
 }
@@ -153,10 +202,13 @@ function SeverityTiles({
   counts,
   chosen,
   onChoose,
+  children,
 }: {
   counts: Record<Severity, number>
   chosen: Tile
   onChoose: (tile: Tile) => void
+  /** What narrows the list, under the tiles. */
+  children?: ReactNode
 }) {
   const { t, lang } = useT()
   const format = new Intl.NumberFormat(lang)
@@ -196,6 +248,7 @@ function SeverityTiles({
           )
         })}
       </div>
+      <div className="mt-3 empty:hidden max-[600px]:mt-2">{children}</div>
     </div>
   )
 }

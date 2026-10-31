@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { JobChip } from '../components/JobChip'
-import { Menu } from '../components/Menu'
-import { PageActions } from '../components/PageActions'
+import { ListHead, ListSearch, Narrowed, useListMenu, type Head, type ListSort } from '../components/ListHead'
+import type { MenuItem } from '../components/Menu'
 import { Empty, Num, Stack } from '../components/Shell'
 import { Since } from '../components/Since'
 import { Badge } from '../lib/glimstone/Badge'
@@ -12,6 +12,7 @@ import { ConfirmWindow } from '../components/ConfirmWindow'
 import { ApiError, api, type ConflictListing, type Job, type OpenConflict, type Resolution, type SideVersion } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { conflictKey, decisionsByJob, newerSide } from '../lib/conflicts'
+import { matchesQuery } from '../lib/fold'
 import { sideName } from '../lib/entryLabel'
 import { failureLine } from '../lib/failure'
 import { useT, type TranslationKey } from '../lib/i18n'
@@ -37,8 +38,10 @@ const WHY: Record<string, TranslationKey> = {
  * card per job. Each conflict says which file it is, what went wrong and what
  * each side holds, with the three answers under it; a choice runs the job's
  * decision at once, and the version that loses goes to the trash, so a wrong
- * click is undone from there. From two conflicts up, one answer for all of
- * them waits in the corner and asks first, naming how many it decides.
+ * click is undone from there. From two conflicts up, the right-click menu
+ * of a card or of the space around them gives one answer to all of them, and
+ * asks first, naming how many it decides. The heads sort by file or by when
+ * the conflict was found, and typing searches the paths.
  */
 export function Conflicts({
   listing,
@@ -60,12 +63,22 @@ export function Conflicts({
   const live = useLive()
   const [busy, setBusy] = useState<Set<string>>(new Set())
   const [asking, setAsking] = useState<(typeof CHOICES)[number] | null>(null)
+  const [sort, setSort] = useState<ListSort>({ by: 'file', dir: 'asc' })
+  const [query, setQuery] = useState('')
+  const area = useRef<HTMLDivElement>(null)
+  const openSearch = useRef<(() => void) | null>(null)
+  const menu = useListMenu(t('nav.conflicts'))
 
-  const shown = (listing?.conflicts ?? []).filter((c) => !job || c.job === job)
+  const searching = query.trim() !== ''
+  const waiting = (listing?.conflicts ?? []).filter((c) => !job || c.job === job)
+  const shown = waiting.filter((c) => !searching || matchesQuery(query, [c.plain]))
+  const sign = sort.dir === 'asc' ? 1 : -1
   const groups = [...new Set(shown.map((c) => c.job))].map((name) => ({
     name,
     job: live.jobs.find((j) => j.name === name),
-    conflicts: shown.filter((c) => c.job === name),
+    conflicts: shown
+      .filter((c) => c.job === name)
+      .sort((a, b) => sign * (sort.by === 'found' ? Date.parse(a.at) - Date.parse(b.at) : a.plain.localeCompare(b.plain))),
   }))
   const unread = (listing?.unread ?? []).filter((u) => !job || u.job === job)
 
@@ -86,6 +99,26 @@ export function Conflicts({
     setBusy(new Set())
   }
 
+  const heads: Head[] = [
+    { id: 'file', label: t('list.head.file'), className: 'min-w-0 flex-1', sorts: true },
+    { id: 'found', label: t('conflict.metAt'), className: 'shrink-0', end: true, sorts: true },
+  ]
+  // The answers for every conflict shown, which only mean something from two up.
+  const forAll = (): MenuItem[] =>
+    shown.length > 1
+      ? CHOICES.map((choice) => ({
+          label: t(choice.all),
+          labelKey: choice.all,
+          disabled: busy.size > 0,
+          onSelect: () => setAsking(choice),
+        }))
+      : []
+  const pageItems = (): MenuItem[] => [
+    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
+    ...(searching ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: () => setQuery('') }] : []),
+    ...forAll(),
+  ]
+
   return (
     <Stack>
       <JobChip job={job} onClear={() => onJob('')} />
@@ -94,36 +127,67 @@ export function Conflicts({
         <Card title={t('nav.conflicts')} hueIndex={0}>
           <Empty>{t('history.working')}</Empty>
         </Card>
-      ) : groups.length === 0 && unread.length === 0 ? (
+      ) : waiting.length === 0 && unread.length === 0 ? (
         <Card title={t('nav.conflicts')} hueIndex={0} hint={t('conflicts.hint')}>
           <Empty>{job ? t('conflicts.noneInJob') : t('conflicts.none')}</Empty>
         </Card>
       ) : (
-        groups.map((g, i) => (
-          <div key={g.name} data-new={i === 0 ? 'conflict-cards' : undefined}>
-            <Card title={g.name} hueIndex={i} hint={t('conflicts.hint')}>
-              <ul className="flex flex-col gap-2.5">
-                {g.conflicts.map((c) => {
-                  const key = conflictKey(c)
-                  return (
-                    <ConflictCard
-                      key={key}
-                      conflict={c}
-                      job={g.job}
-                      busy={busy.has(key)}
-                      idle={busy.size === 0}
-                      onDecide={(keep) => void decide([c], keep)}
-                    />
-                  )
-                })}
-              </ul>
-            </Card>
+        <>
+          <Card title={t('nav.conflicts')} hueIndex={0} hint={t('conflicts.hint')}>
+            <p className="glim-num text-body text-carbon-text">{t('conflicts.waiting', { count: waiting.length })}</p>
+            <Narrowed what={searching ? [`“${query.trim()}”`] : []} onClear={() => setQuery('')} />
+          </Card>
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none" {...menu.on(pageItems)}>
+            <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} open={openSearch} />
+            {searching && groups.length === 0 && (
+              <Card hueIndex={1}>
+                <Empty>{t('jobs.historyNoMatch', { q: query.trim() })}</Empty>
+              </Card>
+            )}
+            {groups.map((g, i) => (
+              <div key={g.name} data-new={i === 0 ? 'conflict-cards' : undefined}>
+                <Card title={g.name} hueIndex={i + 1}>
+                  <ListHead
+                    heads={heads}
+                    sort={sort}
+                    onSort={setSort}
+                    page={i === 0 ? 'conflicts' : undefined}
+                    onSearch={() => openSearch.current?.()}
+                    menu
+                  />
+                  <ul className="flex flex-col gap-2.5">
+                    {g.conflicts.map((c) => {
+                      const key = conflictKey(c)
+                      return (
+                        <ConflictCard
+                          key={key}
+                          conflict={c}
+                          job={g.job}
+                          busy={busy.has(key)}
+                          idle={busy.size === 0}
+                          menu={menu.on(() => [
+                            ...CHOICES.map(({ keep, key: label }) => ({
+                              label: t(label),
+                              labelKey: label,
+                              disabled: busy.size > 0,
+                              onSelect: () => void decide([c], keep),
+                            })),
+                            ...forAll(),
+                          ])}
+                          onDecide={(keep) => void decide([c], keep)}
+                        />
+                      )
+                    })}
+                  </ul>
+                </Card>
+              </div>
+            ))}
           </div>
-        ))
+        </>
       )}
 
       {unread.map((u, i) => (
-        <Card key={u.job} title={u.job} hueIndex={groups.length + i}>
+        <Card key={u.job} title={u.job} hueIndex={groups.length + 1 + i}>
           <p className="text-subline text-statusFail [overflow-wrap:anywhere]">{t('conflicts.unread', { job: u.job, error: failureLine(u.error, u.failure, t, lang) })}</p>
         </Card>
       ))}
@@ -143,23 +207,7 @@ export function Conflicts({
         />
       )}
 
-      {/* One answer for every conflict on the page; for a single conflict the
-          card's own three say the same. */}
-      {shown.length > 1 && (
-        <PageActions>
-          <Menu
-            label={t('list.more')}
-            labelKey="list.more"
-            size="key"
-            items={CHOICES.map((choice) => ({
-              label: t(choice.all),
-              labelKey: choice.all,
-              disabled: busy.size > 0,
-              onSelect: () => setAsking(choice),
-            }))}
-          />
-        </PageActions>
-      )}
+      {menu.element}
     </Stack>
   )
 }
@@ -174,6 +222,7 @@ function ConflictCard({
   job,
   busy,
   idle,
+  menu,
   onDecide,
 }: {
   conflict: OpenConflict
@@ -181,13 +230,15 @@ function ConflictCard({
   busy: boolean
   /** False while any decision is under way, so two cannot race for one job. */
   idle: boolean
+  /** The handlers that open its right-click menu. */
+  menu: ReturnType<ReturnType<typeof useListMenu>['on']>
   onDecide: (keep: Resolution) => void
 }) {
   const { t } = useT()
   const { drives } = usePlaces()
   const newer = newerSide(c)
   return (
-    <li className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 max-sm:px-3">
+    <li {...menu} className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 max-sm:px-3">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span dir="ltr" className="min-w-0 flex-1 text-start font-mono text-title font-semibold text-carbon-text [overflow-wrap:anywhere]">
           {c.plain}

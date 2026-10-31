@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { CheckPanel } from '../components/CheckPanel'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
@@ -9,8 +9,8 @@ import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../compo
 import { BrakesCard } from '../components/JobBrakes'
 import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
-import { FilterButton, ListBar, SearchFold } from '../components/ListBar'
-import { Menu } from '../components/Menu'
+import { ListHead, ListSearch, useListMenu, type Head } from '../components/ListHead'
+import { Menu, type MenuItem } from '../components/Menu'
 import { Pace } from '../components/Pace'
 import { RunSheet } from '../components/RunSheet'
 import { Empty, Rows, Stack } from '../components/Shell'
@@ -439,7 +439,8 @@ function Now({ event, speed }: { event?: RunEvent; speed?: number }) {
 /**
  * What the job has done to individual files, newest first. While the job runs
  * it asks again every second, and the engine answers with the running run's
- * lines among the stored ones.
+ * lines among the stored ones. The head filters by kind and typing searches,
+ * as in History; the log's own order stands, so no head sorts.
  */
 function FilesCard({ job }: { job: Job }) {
   const { t } = useT()
@@ -455,6 +456,9 @@ function FilesCard({ job }: { job: Job }) {
     const timer = setTimeout(() => setQuery(typed.trim()), 250)
     return () => clearTimeout(timer)
   }, [typed])
+  const area = useRef<HTMLDivElement>(null)
+  const openSearch = useRef<(() => void) | null>(null)
+  const menu = useListMenu(t('job.files'))
 
   // A new question starts again at one screenful.
   useEffect(() => setLimit(60), [query, kind])
@@ -474,37 +478,65 @@ function FilesCard({ job }: { job: Job }) {
     }
   }, [job.name, kind, query, limit, tick])
 
+  const narrowed = kind !== 'all' || typed !== ''
+  const heads: Head[] = [
+    {
+      id: 'what',
+      label: t('history.filterKind'),
+      className: 'w-64 shrink-0 max-md:w-48 max-sm:w-auto',
+      filter: { active: kind !== 'all', panel: <TouchKindChoice value={kind} onChange={setKind} /> },
+    },
+    { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },
+    { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden', end: true },
+    { id: 'side', label: '', className: 'w-6 shrink-0 max-sm:hidden' },
+    { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1 max-sm:hidden' },
+  ]
+  const listItems = (): MenuItem[] => [
+    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
+    ...(narrowed
+      ? [
+          {
+            label: t('list.showAll'),
+            labelKey: 'list.showAll' as const,
+            onSelect: () => {
+              setKind('all')
+              setTyped('')
+            },
+          },
+        ]
+      : []),
+  ]
+
   return (
     <Card title={t('job.files')} hueIndex={1}>
-      <ListBar>
-        <FilterButton active={kind !== 'all'}>
-          <TouchKindChoice value={kind} onChange={setKind} />
-        </FilterButton>
-        <SearchFold value={typed} onChange={setTyped} placeholder={t('history.pathHint')} />
-      </ListBar>
-      {error ? (
-        <p className="text-subline text-statusFail">{error}</p>
-      ) : !touches ? (
-        <Empty>{t('jobs.historyLoading')}</Empty>
-      ) : touches.length === 0 ? (
-        <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
-      ) : (
-        // Loads more near the bottom; 40px rather than the exact end, which a
-        // trackpad stops a pixel or two short of.
-        <ul
-          className="flex max-h-96 flex-col overflow-y-auto"
-          onScroll={(e) => {
-            const el = e.currentTarget
-            if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-            // A list shorter than the limit is the whole list.
-            if (touches.length >= limit) setLimit((n) => n * 2)
-          }}
-        >
-          {touches.map((e) => (
-            <TouchRow key={touchKey(e)} touch={e} />
-          ))}
-        </ul>
-      )}
+      <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2 outline-none" {...menu.on(listItems)}>
+        <ListSearch value={typed} onChange={setTyped} placeholder={t('history.pathHint')} area={area} open={openSearch} />
+        <ListHead heads={heads} page="job-files" onSearch={() => openSearch.current?.()} menu />
+        {error ? (
+          <p className="text-subline text-statusFail">{error}</p>
+        ) : !touches ? (
+          <Empty>{t('jobs.historyLoading')}</Empty>
+        ) : touches.length === 0 ? (
+          <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
+        ) : (
+          // Loads more near the bottom; 40px rather than the exact end, which a
+          // trackpad stops a pixel or two short of.
+          <ul
+            className="flex max-h-96 flex-col overflow-y-auto"
+            onScroll={(e) => {
+              const el = e.currentTarget
+              if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
+              // A list shorter than the limit is the whole list.
+              if (touches.length >= limit) setLimit((n) => n * 2)
+            }}
+          >
+            {touches.map((e) => (
+              <TouchRow key={touchKey(e)} touch={e} />
+            ))}
+          </ul>
+        )}
+      </div>
+      {menu.element}
     </Card>
   )
 }

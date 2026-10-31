@@ -48,6 +48,10 @@ STANDARD = [
     "IconShieldOn",
     "IconSignOut",
     "IconSort",
+    # A list's head: the order it sorts in and the filter under its name.
+    "IconMoveUp",
+    "IconMoveDown",
+    "IconExpand",
     "IconTrash",
     "IconUnlock",
     "IconUpload",

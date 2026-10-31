@@ -106,13 +106,46 @@ describe('the trash', () => {
     expect(prune.className.split(' ')).not.toContain('bg-accent')
   })
 
-  it('has no search, and names the job a link narrowed it to in a chip that undoes it', () => {
+  it('has no Search button, and names the job a link narrowed it to in a chip that undoes it', () => {
     const onJob = vi.fn()
     wrap(<Trash sides={[side, music]} job="docs" onJob={onJob} onChanged={() => undefined} />)
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
     expect(screen.getByText('Only docs')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Show every job' }))
     expect(onJob).toHaveBeenCalledWith('')
+  })
+})
+
+describe('the trash list', () => {
+  const side: TrashSide = {
+    job: 'docs', side: 'left', store: '', dir: '', total: 2, bytes: 109, mark: 'm',
+    entries: [
+      { path: 'a.txt', runId: 'r1', remote: 'a.txt', size: 10, filed: '2027-03-01T03:00:00Z', modified: '' },
+      { path: 'b.txt', runId: 'r1', remote: 'b.txt', size: 99, filed: '2027-03-02T03:00:00Z', modified: '' },
+    ],
+  } as TrashSide
+  const paths = () => screen.getAllByText(/^[ab]\.txt$/).map((e) => e.textContent)
+
+  it('sorts its entries from the heads', () => {
+    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    expect(paths()).toEqual(['a.txt', 'b.txt'])
+    fireEvent.click(screen.getByRole('button', { name: 'Size' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Size' }))
+    expect(paths()).toEqual(['b.txt', 'a.txt'])
+    localStorage.clear()
+  })
+
+  it('offers the answers for an entry and for the page on a right-click', async () => {
+    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    fireEvent.contextMenu(screen.getByText('b.txt'))
+    const menu = await screen.findByRole('menu')
+    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual([
+      'Put this file back',
+      'Delete for good',
+      'Empty this side',
+      'Delete old entries',
+      'Empty the trash',
+    ])
   })
 })
 
@@ -202,6 +235,15 @@ describe('the history', () => {
   const run = (err: string): Run => ({
     ID: err ? 2 : 1, Job: 'docs', Started: '2027-03-01T03:00:00Z', Finished: '2027-03-01T03:00:00Z',
     Copied: 1, Moved: 0, Trashed: 0, Conflicts: 0, DirsMade: 0, DirsRemoved: 0, Unchanged: 0, Skipped: 0, Err: err,
+  })
+
+  it('has no buttons over its list, and filters from the heads', async () => {
+    wrap(<History runs={[]} jobs={[]} />)
+    expect(await screen.findByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Filter by Job' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+    localStorage.clear()
   })
 
   it('keeps a run that worked quiet and opens a run in a window', async () => {

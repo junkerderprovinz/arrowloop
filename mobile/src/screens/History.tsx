@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { entryLabel, entryNote, plainKey, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
-import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
-import { contrastOn, space, text, TOUCH } from "../theme";
+import { ListHead, ListSearch, Narrowed, type SortDir } from "../listHead";
+import { contrastOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import {
   AxisLabel,
   Badge,
   Body,
-  Button,
   Caption,
   Choice,
   Empty,
@@ -31,8 +30,9 @@ import { bytes } from "../space";
 /**
  * The history tab: a log of every file touched, and a list of runs behind a
  * selector. The runs stay because a run that fails before touching anything
- * writes no file lines. Filter, Sort and Search stand above the list, the list
- * is one card named after what it shows, and a row opens its run in a sheet.
+ * writes no file lines. The list is one card named after what it shows; its
+ * head sorts and filters, a long press on the head offers the search, and a
+ * row opens its run in a sheet.
  */
 export function History() {
   const [mode, setMode] = useState<Mode>("files");
@@ -41,23 +41,17 @@ export function History() {
 
 type Mode = "files" | "runs";
 
-type Order = "newest" | "oldest" | "az" | "za";
+type Sort = { by: string; dir: SortDir };
 
-const ORDERS: { value: Order; key: "phone.sortNewest" | "phone.sortOldest" | "phone.sortAz" | "phone.sortZa" }[] = [
-  { value: "newest", key: "phone.sortNewest" },
-  { value: "oldest", key: "phone.sortOldest" },
-  { value: "az", key: "phone.sortAz" },
-  { value: "za", key: "phone.sortZa" },
-];
-
-/** Orders rows by their time or their name, either way round. */
-function ordered<R>(rows: R[], order: Order, time: (r: R) => string, name: (r: R) => string): R[] {
-  const out = [...rows];
-  if (order === "az" || order === "za") out.sort((a, b) => name(a).localeCompare(name(b)));
-  else out.sort((a, b) => time(b).localeCompare(time(a)));
-  if (order === "oldest" || order === "za") out.reverse();
-  return out;
+/** Orders rows by their time or their name, either way round. Ascending time is the oldest first. */
+function ordered<R>(rows: R[], sort: Sort, time: (r: R) => string, name: (r: R) => string): R[] {
+  const sign = sort.dir === "asc" ? 1 : -1;
+  return [...rows].sort((a, b) =>
+    sort.by === "when" ? sign * time(a).localeCompare(time(b)) : sign * name(a).localeCompare(name(b)),
+  );
 }
+
+const NEWEST: Sort = { by: "when", dir: "desc" };
 
 /**
  * The entry kinds behind each choice of the files filter. A failure is a
@@ -105,7 +99,9 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
   const [drives, setDrives] = useState<{ id: string; label: string }[]>([]);
   const [job, setJob] = useState("");
   const [show, setShow] = useState<Show>("all");
-  const [order, setOrder] = useState<Order>("newest");
+  const [sort, setSort] = useState<Sort>(NEWEST);
+  const [filtering, setFiltering] = useState(false);
+  const [searching, setSearching] = useState(false);
   // The search is debounced, so the engine sees one query per pause rather
   // than one per keystroke.
   const [typed, setTyped] = useState("");
@@ -162,34 +158,52 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
   useThrottledEvents(load);
 
   const shown = useMemo(
-    () => ordered(rows ?? [], order, (r) => r.When, (r) => r.Path),
-    [rows, order],
+    () => ordered(rows ?? [], sort, (r) => r.When, (r) => r.Path),
+    [rows, sort],
   );
 
+  const narrowing = [
+    ...(show === "all" ? [] : [t(SHOW_LABEL[show])]),
+    ...(job ? [t("list.onlyJob", { job })] : []),
+    ...(typed.trim() ? [`“${typed.trim()}”`] : []),
+  ];
   const header = (
     <>
-      <ListBar
-        mode={mode}
-        onMode={onMode}
-        filters={(show === "all" ? 0 : 1) + (job ? 1 : 0)}
-        order={order}
-        onOrder={setOrder}
-        query={typed}
-        onQuery={setTyped}
-        filter={
-          <>
-            <AxisLabel>{t("history.files")}</AxisLabel>
-            <Choice<Show>
-              hue={1}
-              value={show}
-              onChange={setShow}
-              options={(Object.keys(SHOWS) as Show[]).map((value) => ({ value, label: t(SHOW_LABEL[value]) }))}
-            />
-            <JobChips names={names} job={job} onJob={setJob} />
-          </>
-        }
-      />
+      <Top mode={mode} onMode={onMode}>
+        <Narrowed
+          what={narrowing}
+          onClear={() => {
+            setShow("all");
+            setJob("");
+            setTyped("");
+          }}
+        />
+      </Top>
       <ListTop title={viewName(t("history.files"), t(SHOW_LABEL[show]), job)} hue={0} />
+      <ListPiece>
+        <ListSearch
+          open={searching}
+          value={typed}
+          onChange={setTyped}
+          onClose={() => setSearching(false)}
+          placeholder={t("history.pathHint")}
+        />
+        <ListHead
+          page="history-files"
+          sort={sort}
+          onSort={(by, dir) => setSort({ by, dir })}
+          onSearch={() => setSearching(true)}
+          heads={[
+            {
+              id: "what",
+              label: t("history.filterKind"),
+              filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
+            },
+            { id: "when", label: t("list.head.when"), orders: { asc: t("phone.sortOldest"), desc: t("phone.sortNewest") } },
+            { id: "path", label: t("list.head.path"), orders: { asc: t("phone.sortAz"), desc: t("phone.sortZa") } },
+          ]}
+        />
+      </ListPiece>
     </>
   );
 
@@ -252,6 +266,16 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
           </ListPiece>
         )}
       />
+      <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
+        <AxisLabel>{t("history.files")}</AxisLabel>
+        <Choice<Show>
+          hue={1}
+          value={show}
+          onChange={setShow}
+          options={(Object.keys(SHOWS) as Show[]).map((value) => ({ value, label: t(SHOW_LABEL[value]) }))}
+        />
+        <JobChips names={names} job={job} onJob={setJob} />
+      </Sheet>
       <RunSheet opened={opened} onClose={() => setOpened(null)} />
     </>
   );
@@ -268,7 +292,9 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [show, setShow] = useState<RunShow>("all");
   const [job, setJob] = useState("");
-  const [order, setOrder] = useState<Order>("newest");
+  const [sort, setSort] = useState<Sort>(NEWEST);
+  const [filtering, setFiltering] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [typed, setTyped] = useState("");
   const [error, setError] = useState("");
   const [opened, setOpened] = useState<Opened | null>(null);
@@ -297,36 +323,51 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
         (!job || r.Job === job) &&
         (!needle || r.Job.toLowerCase().includes(needle)),
     );
-    return ordered(kept, order, (r) => r.Started, (r) => r.Job);
-  }, [runs, show, job, typed, order]);
+    return ordered(kept, sort, (r) => r.Started, (r) => r.Job);
+  }, [runs, show, job, typed, sort]);
 
+  const narrowing = [
+    ...(show === "all" ? [] : [t(RUN_SHOW_LABEL[show])]),
+    ...(job ? [t("list.onlyJob", { job })] : []),
+    ...(typed.trim() ? [`“${typed.trim()}”`] : []),
+  ];
   const header = (
     <>
-      <ListBar
-        mode={mode}
-        onMode={onMode}
-        filters={(show === "all" ? 0 : 1) + (job ? 1 : 0)}
-        order={order}
-        onOrder={setOrder}
-        query={typed}
-        onQuery={setTyped}
-        filter={
-          <>
-            <AxisLabel>{t("history.runs")}</AxisLabel>
-            <Choice<RunShow>
-              hue={1}
-              value={show}
-              onChange={setShow}
-              options={(Object.keys(RUN_SHOW_LABEL) as RunShow[]).map((value) => ({
-                value,
-                label: t(RUN_SHOW_LABEL[value]),
-              }))}
-            />
-            <JobChips names={names} job={job} onJob={setJob} />
-          </>
-        }
-      />
+      <Top mode={mode} onMode={onMode}>
+        <Narrowed
+          what={narrowing}
+          onClear={() => {
+            setShow("all");
+            setJob("");
+            setTyped("");
+          }}
+        />
+      </Top>
       <ListTop title={viewName(t("history.runs"), t(RUN_SHOW_LABEL[show]), job)} hue={0} />
+      <ListPiece>
+        <ListSearch
+          open={searching}
+          value={typed}
+          onChange={setTyped}
+          onClose={() => setSearching(false)}
+          placeholder={t("history.runSearch")}
+        />
+        <ListHead
+          page="history-runs"
+          sort={sort}
+          onSort={(by, dir) => setSort({ by, dir })}
+          onSearch={() => setSearching(true)}
+          heads={[
+            {
+              id: "job",
+              label: t("history.filterJob"),
+              orders: { asc: t("phone.sortAz"), desc: t("phone.sortZa") },
+              filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
+            },
+            { id: "when", label: t("list.head.when"), orders: { asc: t("phone.sortOldest"), desc: t("phone.sortNewest") } },
+          ]}
+        />
+      </ListPiece>
     </>
   );
 
@@ -374,6 +415,19 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
           </ListPiece>
         )}
       />
+      <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
+        <AxisLabel>{t("history.runs")}</AxisLabel>
+        <Choice<RunShow>
+          hue={1}
+          value={show}
+          onChange={setShow}
+          options={(Object.keys(RUN_SHOW_LABEL) as RunShow[]).map((value) => ({
+            value,
+            label: t(RUN_SHOW_LABEL[value]),
+          }))}
+        />
+        <JobChips names={names} job={job} onJob={setJob} />
+      </Sheet>
       <RunSheet opened={opened} onClose={() => setOpened(null)} />
     </>
   );
@@ -384,37 +438,9 @@ function viewName(what: string, which: string, job: string): string {
   return [what, which, job].filter(Boolean).join(" · ");
 }
 
-/**
- * The selector between files and runs, and under it Filter, Sort and Search as
- * three buttons of equal weight. Filter and Sort open sheets; Search turns
- * into the field it stands for and back into a button when it is closed.
- */
-function ListBar({
-  mode,
-  onMode,
-  filters,
-  filter,
-  order,
-  onOrder,
-  query,
-  onQuery,
-}: {
-  mode: Mode;
-  onMode: (next: Mode) => void;
-  /** How many filters narrow the list, said on the button. */
-  filters: number;
-  /** The filter sheet's content. */
-  filter: ReactNode;
-  order: Order;
-  onOrder: (next: Order) => void;
-  query: string;
-  onQuery: (next: string) => void;
-}) {
+/** The selector between files and runs, over what narrows the list. */
+function Top({ mode, onMode, children }: { mode: Mode; onMode: (next: Mode) => void; children: ReactNode }) {
   const { t } = useT();
-  const { p, corners } = useTheme();
-  const [sheet, setSheet] = useState<"filter" | "sort" | null>(null);
-  const [searching, setSearching] = useState(query !== "");
-
   return (
     <View style={styles.bar}>
       <Choice<Mode>
@@ -426,68 +452,7 @@ function ListBar({
           { value: "runs", label: t("history.runs") },
         ]}
       />
-      {searching ? (
-        <View style={styles.tools}>
-          <TextInput
-            value={query}
-            onChangeText={onQuery}
-            autoFocus
-            placeholder={t("history.pathHint")}
-            placeholderTextColor={p.textMuted}
-            accessibilityLabel={t("phone.search")}
-            style={[styles.search, { backgroundColor: p.surface2, color: p.text, ...corners.control }]}
-          />
-          <Button
-            label={t("common.close")}
-            labelKey="common.close"
-            wide={false}
-            onPress={() => {
-              onQuery("");
-              setSearching(false);
-            }}
-          />
-        </View>
-      ) : (
-        <View style={styles.tools}>
-          <View style={styles.tool}>
-            <Button
-              label={filters > 0 ? `${t("history.filter")} (${filters})` : t("history.filter")}
-              labelKey="history.filter"
-              onPress={() => setSheet("filter")}
-            />
-          </View>
-          <View style={styles.tool}>
-            <Button label={t("phone.sort")} glyph="IconSort" onPress={() => setSheet("sort")} />
-          </View>
-          <View style={styles.tool}>
-            <Button label={t("phone.search")} glyph="IconSearch" onPress={() => setSearching(true)} />
-          </View>
-        </View>
-      )}
-
-      <Sheet open={sheet === "filter"} title={t("history.filter")} onClose={() => setSheet(null)}>
-        {filter}
-      </Sheet>
-      <Sheet open={sheet === "sort"} title={t("phone.sort")} onClose={() => setSheet(null)}>
-        {ORDERS.map((o) => (
-          <Press
-            key={o.value}
-            accessibilityRole="button"
-            accessibilityState={{ selected: order === o.value }}
-            onPress={() => {
-              onOrder(o.value);
-              setSheet(null);
-            }}
-            style={[
-              styles.option,
-              { backgroundColor: order === o.value ? p.surface2 : "transparent", ...corners.control },
-            ]}
-          >
-            <Text style={[styles.optionText, { color: p.text }]}>{t(o.key)}</Text>
-            {order === o.value ? <Glyph name="IconCheck" color={p.text} size={16} /> : null}
-          </Press>
-        ))}
-      </Sheet>
+      {children}
     </View>
   );
 }
@@ -670,12 +635,6 @@ const styles = StyleSheet.create({
   // No gap: the rows are pieces of one card.
   list: { padding: space.lg },
   bar: { gap: space.sm },
-  tools: { flexDirection: "row", alignItems: "stretch", gap: space.sm },
-  // Equal thirds, whatever the words.
-  tool: { flex: 1, minWidth: 0 },
-  search: { flex: 1, minHeight: TOUCH, paddingHorizontal: space.md, fontSize: text.body },
-  option: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: TOUCH, paddingHorizontal: space.md },
-  optionText: { flex: 1, fontSize: text.body },
   chips: { gap: space.sm, paddingVertical: space.xs },
   chip: { paddingHorizontal: space.md, paddingVertical: space.xs },
   chipText: { fontSize: text.meta, fontWeight: "600" },

@@ -3,26 +3,35 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Empty, Rows } from '../components/Shell'
 import { Day, Field } from '../components/Field'
 import { IconAction } from '../components/IconAction'
-import { FilterButton, FilterChoice, ListBar, SearchFold } from '../components/ListBar'
+import { FilterChoice, ListHead, ListSearch, Narrowed, useListMenu, type Head } from '../components/ListHead'
+import type { MenuItem } from '../components/Menu'
 import { RunSheet } from '../components/RunSheet'
 import { Stats } from '../components/Stats'
-import { TOUCH_KINDS, TouchKindChoice, type TouchKind } from '../components/TouchKinds'
+import { TOUCH_KINDS, TouchKindChoice, touchKindLabel, type TouchKind } from '../components/TouchKinds'
 import { TouchRow, touchKey } from '../components/TouchRow'
 import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
 import { Card } from '../lib/glimstone/Card'
 import { api, type HistoryShow, type Job, type Run, type Touch } from '../lib/api'
 import { dayTime } from '../lib/dayTime'
-import { useT } from '../lib/i18n'
+import { useT, type TranslationKey } from '../lib/i18n'
 import { useLiveTick } from '../lib/liveTick'
 import { useRemembered } from '../lib/remember'
 
 const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs'
 
+const SHOW_LABEL: Record<HistoryShow, TranslationKey> = {
+  all: 'history.showAll',
+  changed: 'history.showChanged',
+  failed: 'history.showFailed',
+}
+
 /**
  * The History page: what the engine did, as the files it touched or as its
- * runs, behind one selector in one card. The filter and the search stand above
- * the card, and a run opens in a window.
+ * runs. The totals card on top picks the view and says what narrows it; the
+ * list below filters and searches from its own head, and a run opens in a
+ * window. Both views keep the log's own order, newest first, which the engine
+ * hands out a screenful at a time, so no head sorts.
  *
  * It fetches its own runs rather than filtering the shell's copy, which stays
  * unfiltered for the job list. Filters go to the server, since a job watching
@@ -56,6 +65,9 @@ export function History({
     const timer = setTimeout(() => setQuery(typed.trim()), 250)
     return () => clearTimeout(timer)
   }, [typed])
+  const area = useRef<HTMLDivElement>(null)
+  const openSearch = useRef<(() => void) | null>(null)
+  const menu = useListMenu(t('history.title'))
 
   // Configuration and log joined: a renamed or deleted job still has runs, and
   // a job that never ran has none.
@@ -66,79 +78,138 @@ export function History({
     return [...seen].sort((a, b) => a.localeCompare(b))
   }, [jobs, runs])
 
-  const filtered = job !== '' || (view === 'files' ? kind !== 'all' : show !== 'all' || since !== '' || until !== '')
+  const files = view === 'files'
+  const narrowing = [
+    ...(job ? [t('list.onlyJob', { job })] : []),
+    ...(files && kind !== 'all' ? [touchKindLabel(t, kind)] : []),
+    ...(!files && show !== 'all' ? [t(SHOW_LABEL[show])] : []),
+    ...(!files && since ? [`${t('history.since')} ${since}`] : []),
+    ...(!files && until ? [`${t('history.until')} ${until}`] : []),
+    ...(typed.trim() ? [`“${typed.trim()}”`] : []),
+  ]
+  function showAll() {
+    setJob('')
+    setKind('all')
+    setShow('all')
+    setSince('')
+    setUntil('')
+    setTyped('')
+  }
+
+  const jobFilter = {
+    active: job !== '',
+    panel: (
+      <FilterChoice
+        label={t('history.filterJob')}
+        value={job}
+        onChange={setJob}
+        options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
+      />
+    ),
+  }
+  const heads: Head[] = files
+    ? [
+        {
+          id: 'what',
+          label: t('history.filterKind'),
+          className: 'w-64 shrink-0 max-md:w-48 max-sm:w-auto',
+          filter: { active: kind !== 'all', panel: <TouchKindChoice value={kind} onChange={setKind} /> },
+        },
+        { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },
+        { id: 'job', label: t('history.filterJob'), className: 'w-32 shrink-0 max-md:hidden', filter: jobFilter },
+        { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden', end: true },
+        { id: 'side', label: '', className: 'w-6 shrink-0 max-sm:hidden' },
+        { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1 max-sm:hidden' },
+      ]
+    : [
+        { id: 'job', label: t('history.filterJob'), className: 'min-w-0 flex-1', filter: jobFilter },
+        {
+          id: 'state',
+          label: t('list.head.state'),
+          className: 'shrink-0',
+          filter: {
+            active: show !== 'all',
+            panel: (
+              <FilterChoice<HistoryShow>
+                label={t('history.filterShow')}
+                value={show}
+                onChange={setShow}
+                options={(['all', 'changed', 'failed'] as const).map((value) => ({ value, label: t(SHOW_LABEL[value]) }))}
+              />
+            ),
+          },
+        },
+        {
+          id: 'when',
+          label: t('list.head.when'),
+          className: 'shrink-0',
+          end: true,
+          filter: {
+            active: since !== '' || until !== '',
+            panel: (
+              // Two free days rather than presets, since the day in question
+              // is usually the day it went wrong.
+              <div className="flex items-end gap-2">
+                <Field label={t('history.since')}>
+                  {/* A backwards range would look like an empty log. */}
+                  <Day value={since} onChange={setSince} label={t('history.since')} max={until || undefined} />
+                </Field>
+                <Field label={t('history.until')}>
+                  <Day value={until} onChange={setUntil} label={t('history.until')} />
+                </Field>
+                {(since || until) && (
+                  <IconAction
+                    title={t('history.rangeReset')}
+                    labelKey="history.rangeReset"
+                    onClick={() => {
+                      setSince('')
+                      setUntil('')
+                    }}
+                  />
+                )}
+              </div>
+            ),
+          },
+        },
+      ]
+
+  const listItems = (): MenuItem[] => [
+    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
+    ...(narrowing.length > 0 ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: showAll }] : []),
+  ]
 
   return (
-    // The card reaches the bottom of the window however short its list.
-    <div className="flex flex-1 flex-col *:flex-1">
+    <div className="flex flex-1 flex-col gap-10">
       <Card title={t('history.title')} hueIndex={0}>
-        {/* The view, its filter and its search act on the list below, so they
-            stand at its top. */}
-        <ListBar
-          newId="list-bar"
-          start={
-            <div className="min-w-0 flex-1 basis-48 sm:max-w-xs">
-              <ViewSwitch value={view} onChange={setView} />
-            </div>
-          }
-        >
-          <FilterButton active={filtered}>
-            <FilterChoice
-              label={t('history.filterJob')}
-              value={job}
-              onChange={setJob}
-              options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
-            />
-            {view === 'files' ? (
-              <TouchKindChoice value={kind} onChange={setKind} />
-            ) : (
-              <>
-                <FilterChoice<HistoryShow>
-                  label={t('history.filterShow')}
-                  value={show}
-                  onChange={setShow}
-                  options={[
-                    { value: 'all', label: t('history.showAll') },
-                    { value: 'changed', label: t('history.showChanged') },
-                    { value: 'failed', label: t('history.showFailed') },
-                  ]}
-                />
-                {/* Two free days rather than presets, since the day in question
-                    is usually the day it went wrong. */}
-                <div className="flex items-end gap-2">
-                  <Field label={t('history.since')}>
-                    {/* A backwards range would look like an empty log. */}
-                    <Day value={since} onChange={setSince} label={t('history.since')} max={until || undefined} />
-                  </Field>
-                  <Field label={t('history.until')}>
-                    <Day value={until} onChange={setUntil} label={t('history.until')} />
-                  </Field>
-                  {(since || until) && (
-                    <IconAction
-                      title={t('history.rangeReset')}
-                      labelKey="history.rangeReset"
-                      onClick={() => {
-                        setSince('')
-                        setUntil('')
-                      }}
-                    />
-                  )}
-                </div>
-              </>
-            )}
-          </FilterButton>
-          <SearchFold
-            value={typed}
-            onChange={setTyped}
-            placeholder={view === 'files' ? t('history.pathHint') : t('history.runSearch')}
-          />
-        </ListBar>
-        {view === 'files' ? (
-          <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} />
-        ) : (
-          <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
-        )}
+        <div data-new="list-heads" className="flex flex-col gap-4">
+          <div className="min-w-0 sm:max-w-xs">
+            <ViewSwitch value={view} onChange={setView} />
+          </div>
+          {!files && <Stats job={job || undefined} />}
+          <Narrowed what={narrowing} onClear={showAll} />
+        </div>
       </Card>
+      {/* The list's card reaches the bottom of the window however short its list. */}
+      <div className="flex flex-1 flex-col *:flex-1">
+        <Card title={t(files ? 'history.files' : 'history.runs')} hueIndex={1}>
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2 outline-none" {...menu.on(listItems)}>
+            <ListSearch
+              value={typed}
+              onChange={setTyped}
+              placeholder={files ? t('history.pathHint') : t('history.runSearch')}
+              area={area}
+              open={openSearch}
+            />
+            <ListHead heads={heads} page="history" onSearch={() => openSearch.current?.()} menu />
+            {files ? (
+              <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} />
+            ) : (
+              <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
+            )}
+          </div>
+        </Card>
+      </div>
+      {menu.element}
     </div>
   )
 }
@@ -267,7 +338,6 @@ function RunList({
 
   return (
     <>
-      <Stats job={job || undefined} />
       {list.length === 0 ? (
         <Empty>{loading ? t('history.working') : narrowed ? t('history.noMatch') : t('history.empty')}</Empty>
       ) : (

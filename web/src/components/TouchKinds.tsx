@@ -1,5 +1,5 @@
-import { FilterChoice } from './ListBar'
-import { useT } from '../lib/i18n'
+import { FilterChoice } from './ListHead'
+import { useT, type Translate, type TranslationKey } from '../lib/i18n'
 
 /**
  * The kinds behind each choice of the file log's filter, grouped by what
@@ -15,6 +15,17 @@ export const TOUCH_KINDS = {
 
 export type TouchKind = keyof typeof TOUCH_KINDS
 
+const LABEL: Record<TouchKind, TranslationKey> = {
+  all: 'history.everything',
+  copied: 'history.onlyCopied',
+  gone: 'history.onlyGone',
+  trouble: 'history.onlyTrouble',
+}
+
+export function touchKindLabel(t: Translate, kind: TouchKind): string {
+  return t(LABEL[kind])
+}
+
 export function TouchKindChoice({ value, onChange }: { value: TouchKind; onChange: (next: TouchKind) => void }) {
   const { t } = useT()
   return (
@@ -22,12 +33,7 @@ export function TouchKindChoice({ value, onChange }: { value: TouchKind; onChang
       label={t('history.filterKind')}
       value={value}
       onChange={onChange}
-      options={[
-        { value: 'all', label: t('history.everything') },
-        { value: 'copied', label: t('history.onlyCopied') },
-        { value: 'gone', label: t('history.onlyGone') },
-        { value: 'trouble', label: t('history.onlyTrouble') },
-      ]}
+      options={(Object.keys(LABEL) as TouchKind[]).map((kind) => ({ value: kind, label: t(LABEL[kind]) }))}
     />
   )
 }

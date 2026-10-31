@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Empty, Num, Rows, Stack } from '../components/Shell'
 import { Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
 import { JobChip } from '../components/JobChip'
+import { ListHead, ListSearch, Narrowed, useListMenu, type Head, type ListSort } from '../components/ListHead'
+import type { MenuItem } from '../components/Menu'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { IconEmpty, IconPrune } from '../components/glyphs'
@@ -11,6 +13,8 @@ import { Card } from '../lib/glimstone/Card'
 import { ConfirmWindow } from '../components/ConfirmWindow'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
 import { bytes } from '../lib/bytes'
+import { matchesQuery } from '../lib/fold'
+import { useRemembered } from '../lib/remember'
 import { byJob, trashTotals } from '../lib/trashView'
 import { translateSide, useT, type TranslationKey } from '../lib/i18n'
 import { useToast } from '../lib/toast'
@@ -24,12 +28,33 @@ type Pending =
   | { kind: 'all'; sides: TrashSide[] }
   | { kind: 'prune'; sides: TrashSide[] }
 
+const SORTS = ['path', 'size', 'age'] as const
+const isSort = (v: unknown): v is ListSort | null =>
+  v === null ||
+  (typeof v === 'object' &&
+    SORTS.includes((v as ListSort).by as (typeof SORTS)[number]) &&
+    ((v as ListSort).dir === 'asc' || (v as ListSort).dir === 'desc'))
+
+/** The entries in the order a head asked for. Ascending age is the newest first, as a day count reads. */
+function sorted(entries: TrashEntry[], sort: ListSort | null): TrashEntry[] {
+  if (!sort) return entries
+  const sign = sort.dir === 'asc' ? 1 : -1
+  const filed = (e: TrashEntry) => (e.filed ? Date.parse(e.filed) : 0)
+  return [...entries].sort((a, b) => {
+    if (sort.by === 'size') return sign * (a.size - b.size)
+    if (sort.by === 'age') return sign * (filed(b) - filed(a))
+    return sign * a.path.localeCompare(b.path)
+  })
+}
+
 /**
- * Every job's trash on both sides, in a card per job. Restoring is a click,
- * since it only moves a file back; removing anything for good asks first,
- * because the trash is the last copy there is. Emptying it is the corner's
- * filled action, with deleting only the old entries beside it; both act on
- * the jobs the page shows.
+ * Every job's trash on both sides, in a card per job under a card with the
+ * totals. Restoring is a click, since it only moves a file back; removing
+ * anything for good asks first, because the trash is the last copy there is.
+ * Emptying it is the corner's filled action, with deleting only the old
+ * entries beside it; both act on the jobs the page shows, and the right-click
+ * menu offers them too. The lists sort from their heads, and typing searches
+ * their paths.
  */
 export function Trash({
   sides,
@@ -51,6 +76,11 @@ export function Trash({
   const [days, setDays] = useState(30)
   const [pending, setPending] = useState<Pending | null>(null)
   const [busy, setBusy] = useState(false)
+  const [sort, setSort] = useRemembered<ListSort | null>('arrowloop.trash.sort', null, isSort)
+  const [query, setQuery] = useState('')
+  const area = useRef<HTMLDivElement>(null)
+  const openSearch = useRef<(() => void) | null>(null)
+  const menu = useListMenu(t('nav.trash'))
 
   const all = sides ?? []
   const shown = job ? all.filter((s) => s.job === job) : all
@@ -120,6 +150,18 @@ export function Trash({
   }
 
   const full = readable.filter((s) => s.total > 0)
+  const searching = query.trim() !== ''
+  const matching = (s: TrashSide) => (searching ? s.entries.filter((e) => matchesQuery(query, [e.path])) : s.entries)
+  const groups = byJob(shown)
+    .map((group) => ({ ...group, sides: group.sides.filter((s) => s.error || (s.total > 0 && matching(s).length > 0)) }))
+    .filter((group) => group.sides.length > 0)
+
+  const pageItems = (): MenuItem[] => [
+    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
+    ...(searching ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: () => setQuery('') }] : []),
+    { label: t('trash.prune'), labelKey: 'trash.prune', disabled: busy || totals.entries === 0, onSelect: () => setPending({ kind: 'prune', sides: full }) },
+    { label: t('trash.emptyAll'), labelKey: 'trash.emptyAll', disabled: busy || totals.entries === 0, onSelect: () => setPending({ kind: 'all', sides: full }) },
+  ]
 
   return (
     <Stack>
@@ -132,28 +174,60 @@ export function Trash({
           </Card>
         </div>
       ) : (
-        byJob(shown)
-          .filter((group) => group.sides.some((s) => s.total > 0 || s.error))
-          .map((group, i) => (
-            <div key={group.job} data-new={i === 0 ? 'trash-bin' : undefined}>
-              <Card title={group.job} hueIndex={i} hint={t('trash.hint')}>
+        <>
+          <div data-new="trash-bin">
+            <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
+              <p className="glim-num text-body text-carbon-text">{t('trash.holding', { count: totals.entries, size: bytes(totals.bytes) })}</p>
+              <Narrowed what={searching ? [`“${query.trim()}”`] : []} onClear={() => setQuery('')} />
+            </Card>
+          </div>
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none" {...menu.on(pageItems)}>
+            <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} open={openSearch} />
+            {searching && groups.length === 0 && (
+              <Card hueIndex={1}>
+                <Empty>{t('jobs.historyNoMatch', { q: query.trim() })}</Empty>
+              </Card>
+            )}
+            {groups.map((group, i) => (
+              <Card key={group.job} title={group.job} hueIndex={i + 1}>
                 <div className="glim-content-fade flex flex-col gap-6">
-                  {group.sides
-                    .filter((s) => s.total > 0 || s.error)
-                    .map((s) => (
-                      <SideList
-                        key={s.side}
-                        side={s}
-                        busy={busy}
-                        onRestore={(entry) => restore(s, entry)}
-                        onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
-                        onEmpty={() => setPending({ kind: 'side', side: s })}
-                      />
-                    ))}
+                  {group.sides.map((s, at) => (
+                    <SideList
+                      key={s.side}
+                      side={s}
+                      entries={sorted(matching(s), sort)}
+                      busy={busy}
+                      sort={sort ?? undefined}
+                      onSort={setSort}
+                      tip={i === 0 && at === 0}
+                      onSearch={() => openSearch.current?.()}
+                      rowMenu={(entry) =>
+                        menu.on(() => [
+                          ...(entry.runId
+                            ? [
+                                { label: t('trash.restore'), labelKey: 'trash.restore' as const, disabled: busy, onSelect: () => restore(s, entry) },
+                                {
+                                  label: t('trash.delete'),
+                                  labelKey: 'trash.delete' as const,
+                                  disabled: busy,
+                                  onSelect: () => setPending({ kind: 'entry', side: s, entry }),
+                                },
+                              ]
+                            : []),
+                          { label: t('trash.emptySide'), labelKey: 'trash.emptySide', disabled: busy, onSelect: () => setPending({ kind: 'side', side: s }) },
+                          ...pageItems().filter((item) => item.labelKey !== 'list.search'),
+                        ])
+                      }
+                      onRestore={(entry) => restore(s, entry)}
+                      onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
+                      onEmpty={() => setPending({ kind: 'side', side: s })}
+                    />
+                  ))}
                 </div>
               </Card>
-            </div>
-          ))
+            ))}
+          </div>
+        </>
       )}
 
       {pending && (
@@ -196,6 +270,7 @@ export function Trash({
           onClick={() => setPending({ kind: 'all', sides: full })}
         />
       </PageActions>
+      {menu.element}
     </Stack>
   )
 }
@@ -231,18 +306,37 @@ function stakes(p: Pending, t: ReturnType<typeof useT>['t']): string {
 
 function SideList({
   side,
+  entries,
   busy,
+  sort,
+  onSort,
+  tip,
+  onSearch,
+  rowMenu,
   onRestore,
   onDelete,
   onEmpty,
 }: {
   side: TrashSide
+  /** The side's entries the search leaves, in the order the heads ask for. */
+  entries: TrashEntry[]
   busy: boolean
+  sort?: ListSort
+  onSort: (next: ListSort) => void
+  /** Whether this list's head shows the page's first-visit hint. */
+  tip: boolean
+  onSearch: () => void
+  rowMenu: (entry: TrashEntry) => ReturnType<ReturnType<typeof useListMenu>['on']>
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
 }) {
   const { t, lang } = useT()
+  const heads: Head[] = [
+    { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1', sorts: true },
+    { id: 'size', label: t('list.head.size'), className: 'w-20 shrink-0 max-sm:hidden', end: true, sorts: true },
+    { id: 'age', label: t('list.head.age'), className: 'w-28 shrink-0', end: true, sorts: true },
+  ]
   return (
     <section className="flex flex-col gap-1">
       <div className="glim-row flex min-h-9 items-center gap-3">
@@ -262,39 +356,46 @@ function SideList({
       {side.error ? (
         <p className="text-subline text-statusFail">{t('trash.unread', { error: failureLine(side.error, side.failure, t, lang) })}</p>
       ) : (
-        <Rows className="-mx-2 flex flex-col">
-          {side.entries.map((e) => (
-            <li key={e.remote} className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-carbon-hover">
-              <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={e.remote}>
-                {e.path}
-              </span>
-              {/* A file somebody put there by hand has no run, and the engine
-                  names an entry by its run, so only emptying reaches it. */}
-              <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
-                <IconAction
-                  title={t('trash.delete')}
-                  labelKey="trash.delete"
-                  disabled={busy || !e.runId}
-                  onClick={() => onDelete(e)}
-                />
-                <IconAction
-                  title={t('trash.restore')}
-                  labelKey="trash.restore"
-                  disabled={busy || !e.runId}
-                  onClick={() => onRestore(e)}
-                />
-              </span>
-              <span className="shrink-0 text-carbon-textMuted max-sm:hidden">
-                <Num>{bytes(e.size)}</Num>
-              </span>
-              {/* No date when the run id cannot be read; such an entry is never
-                  pruned by age. */}
-              <span className="w-28 shrink-0 text-end text-carbon-textMuted">
-                {e.filed ? <Since when={e.filed} /> : t('trash.unknownAge')}
-              </span>
-            </li>
-          ))}
-        </Rows>
+        <>
+          <ListHead heads={heads} sort={sort} onSort={onSort} page={tip ? 'trash' : undefined} onSearch={onSearch} menu />
+          <Rows className="-mx-2 flex flex-col">
+            {entries.map((e) => (
+              <li
+                key={e.remote}
+                {...rowMenu(e)}
+                className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-carbon-hover"
+              >
+                <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={e.remote}>
+                  {e.path}
+                </span>
+                {/* A file somebody put there by hand has no run, and the engine
+                    names an entry by its run, so only emptying reaches it. */}
+                <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
+                  <IconAction
+                    title={t('trash.delete')}
+                    labelKey="trash.delete"
+                    disabled={busy || !e.runId}
+                    onClick={() => onDelete(e)}
+                  />
+                  <IconAction
+                    title={t('trash.restore')}
+                    labelKey="trash.restore"
+                    disabled={busy || !e.runId}
+                    onClick={() => onRestore(e)}
+                  />
+                </span>
+                <span className="w-20 shrink-0 text-end text-carbon-textMuted max-sm:hidden">
+                  <Num>{bytes(e.size)}</Num>
+                </span>
+                {/* No date when the run id cannot be read; such an entry is never
+                    pruned by age. */}
+                <span className="w-28 shrink-0 text-end text-carbon-textMuted">
+                  {e.filed ? <Since when={e.filed} /> : t('trash.unknownAge')}
+                </span>
+              </li>
+            ))}
+          </Rows>
+        </>
       )}
 
       {side.total > side.entries.length && (

@@ -64,17 +64,24 @@ A click anywhere else on the card opens the job's page.
 **Add a job** stands at the bottom right. **More** beside it has **Run all**
 and **Stop all**.
 
-## Filter, sort and search
+## Sort, filter and search
 
-History has two buttons in its card, at the right end of the row where you
-choose between **Files** and **Runs**. **Filter** narrows the log to one job, a
-kind of entry and a span of days, and the card's heading names the choice.
-**Search**, or Ctrl+F, opens a field in the same place and finds an entry by its
-path. Escape empties the field, and on an empty field turns it back into the
-button. Conflicts, Trash and Anomalies have none
-of them: with a handful of jobs a card per job says enough. A link from a job's
-page narrows them to that job, shown as a chip at the top, and the cross on the
-chip shows every job again.
+History, Trash, Conflicts, Anomalies and a job's **Files touched** keep these
+in the list itself, with no buttons over it. A click on a heading sorts by that
+column, and a second click turns the order round. History and Files touched
+stay newest first, since the engine hands out their log a screenful at a time.
+The ▾ beside a heading filters by that column. A filter that narrows the list
+marks its ▾ and shows in the card above the list, with **Show everything** to
+undo it. Typing while the list has the focus, or Ctrl+F, opens a search that
+floats over the top of the list and finds an entry by its path; Escape empties
+and closes it. A right-click on a row or on the list, or a long press on a
+touch screen, opens what acts on many entries at once, such as one answer for
+every conflict. A line under the headings says all this while the pointer is
+over them, and by itself on the first visit. On a touch screen a long press on
+a heading shows the line with that heading's choices.
+
+A link from a job's page narrows Trash, Conflicts and Anomalies to that job,
+shown as a chip at the top, and the cross on the chip shows every job again.
 
 ## A job's page
 
@@ -273,9 +280,10 @@ are, **Keep the left version, trash the right** and **Keep the right version,
 trash the left**. On the phone the sides go by what they are, so the answers
 read **Keep the version on this phone, trash the other** or name the target.
 
-From two conflicts up, **More** at the bottom right answers every conflict on
-the page at once: **Keep both for all**, **Keep left for all** and **Keep right
-for all**. It asks first and says how many conflicts the answer covers.
+From two conflicts up, the right-click menu of a conflict or of the space
+around them answers every conflict shown at once: **Keep both for all**, **Keep
+left for all** and **Keep right for all**. It asks first and says how many
+conflicts the answer covers. A card above the conflicts counts how many wait.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
@@ -290,8 +298,9 @@ within a couple of seconds of each other still keep both.
 
 ## Trash
 
-**Trash** shows every job's trash in a card per job, both sides in it, puts
-files back, and deletes them for good: one file, one side, everything older
+**Trash** counts what the trash holds in a card on top and shows every job's
+trash in a card per job below it, both sides in it, sorted by path, size or age
+from the headings. It puts files back, and deletes them for good: one file, one side, everything older
 than a number of days, or all of it. **Empty the trash** is the filled button at
 the bottom right, and **Delete old entries** stands beside it, with the
 number of days asked in the window that confirms it; everything newer stays. Putting a file back is one
@@ -316,7 +325,7 @@ The history lists only what a run did to files. A file both sides already had
 is counted as unchanged and gets no line, since on a first run over a full
 folder those would be nearly every line.
 
-A chart above the runs shows a month of them. The list answers what happened on
+A chart in the card above the runs shows a month of them. The list answers what happened on
 Tuesday; it cannot answer whether the thing is doing anything at all, which is
 the question somebody has after leaving it alone for three weeks. Days with no
 runs are drawn as empty columns rather than left out, because a chart that
@@ -328,8 +337,9 @@ closes its gaps turns "nothing happened" into "nothing to show".
 refused, a job that keeps failing, a schedule that is not kept, and a run far
 outside what the job usually does. Tiles at the top count the findings by
 severity, as tall as BombVault's, each with its name over how many are open,
-and a click on one shows only that severity. **Open or closed**
-switches to what was closed in the last thirty days, with how it ended.
+and a click on one shows only that severity. The ▾ beside **State** switches
+to what was closed in the last thirty days, with how it ended, and the
+headings sort the findings by severity, job or when they were first seen.
 
 Every finding is a card of its own, laid out as BombVault lays out its
 findings, and nothing opens over the page. Every card starts at the same
@@ -467,7 +477,11 @@ floating button on the Trash screen. The Conflicts screen shows every conflict
 as on the web, and from two conflicts up answers all of them at once from the
 card at its foot, after asking. The Anomalies screen shows every finding as a
 card with its answers, two lines high until **Show more** opens the rest, and
-the learning rings below them. A job's own brakes
+the learning rings below them. History sorts and filters from the headings of
+its list: a tap on a heading sorts, its ▾ opens the filter, and a long press on
+a heading offers both orders, the filter and the search. A phone has no keys to
+type into a list and no pointer to right-click with, so the long press stands
+in for both. A job's own brakes
 and what its runs usually do are on the job's screen. A More menu that would
 hold a single action is that action's button instead.
 
