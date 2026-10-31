@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **The F-Droid button in Settings › Apps draws F-Droid's official logo,** taken from F-Droid's own artwork, so it matches the other apps. The eyes are still cut out, and under the pointer the logo turns white with the ring and the F in the button's blue.
+
 ## 2.4.0 - 2026-10-30
 
 ## ✨ Added

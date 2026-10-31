@@ -25,9 +25,10 @@ used. Copyright 2024 Fonticons, Inc.
 Simple Icons does not carry Windows any more, so the platform marks all come from
 Font Awesome, drawn to one convention and at one weight.
 
-The shared set these files are copied from also has F-Droid's mark (CC0 1.0) and
-Vivaldi's, both from Simple Icons. ArrowLoop has no button for either, so they
-are not here.
+The shared set these files are copied from also has F-Droid's 2015 logo from
+gitlab.com/fdroid/artwork (CC BY-SA 3.0 or GPL-3.0-or-later) and Vivaldi's mark
+from Simple Icons (CC0 1.0). ArrowLoop has no button for either, so they are not
+here.
 
 **Each brand's own material**, collected by hand - everything else here. These
 are the real drawings rather than a one-colour silhouette of one, and several of
