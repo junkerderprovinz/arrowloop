@@ -155,7 +155,6 @@ const ms: Translations = {
   'anomaly.acknowledged': 'Diakui.',
   'anomaly.heldNow': '"{job}" ditahan: {what}',
   'anomaly.heldAgain': 'Lebih banyak telah berubah sejak itu. "{job}" ditahan semula, dengan angka baharu.',
-  'anomaly.closed': 'Ditutup dalam 30 hari lepas',
   'anomaly.noneClosed': 'Tiada yang ditutup dalam tempoh itu.',
   'anomaly.outcome.ran': 'Dijalankan juga',
   'anomaly.outcome.takenBack': 'Diambil semula',
@@ -1224,8 +1223,6 @@ const ms: Translations = {
   'targets.ftpTls.explicit': 'TLS eksplisit',
   'targets.ftpTls.implicit': 'TLS implisit pada port 990',
   'anomalies.all': 'Semua anomali',
-  'anomalies.openTab': 'Terbuka',
-  'anomalies.which': 'Terbuka atau ditutup',
   'dupes.findOnLeft': 'Pendua di sebelah kiri',
   'dupes.findOnRight': 'Pendua di sebelah kanan',
   'list.onlyJob': 'Hanya {job}',
@@ -1322,6 +1319,11 @@ const ms: Translations = {
   'conflicts.kind.other': 'Lain-lain',
   'list.noneShown': 'Tiada apa di sini yang sepadan dengan pilihan anda.',
   'new.change.tileRows': '{trash} dan {conflicts} mengira isinya dalam sebaris jubin, seperti {anomalies}: tong sampah mengikut sisi dan konflik mengikut jenis. Jubin hanya menunjukkan bahagiannya, dan ▾ di tajuk Tugas menyempitkan senarai kepada satu tugas.',
+  'list.tip.columns': 'Seret tajuk untuk mengalihkan lajurnya, dan tepi di sebelahnya untuk menukar lebarnya.',
+  'list.resize': 'Seret untuk menukar lebar; klik dua kali untuk lebar asal.',
+  'history.findings': 'Penemuan',
+  'anomalies.closedInHistory': 'Yang ditutup dalam Sejarah',
+  'new.change.closedFindings': 'Penemuan yang ditutup dalam tiga puluh hari lepas telah berpindah dari {anomalies} ke {history}, sebagai paparan ketiga di sebelah {runs} dan {files}, dengan tajuknya sendiri untuk mengisih dan menapis. {anomalies} hanya menunjukkan yang terbuka dan membawa ke sana.',
 }
 
 export default ms

@@ -155,7 +155,6 @@ const th: Translations = {
   'anomaly.acknowledged': 'รับทราบแล้ว',
   'anomaly.heldNow': '“{job}” ถูกพักไว้: {what}',
   'anomaly.heldAgain': 'หลังจากนั้นมีการเปลี่ยนแปลงเพิ่มขึ้น “{job}” จึงถูกพักไว้อีกครั้งพร้อมตัวเลขใหม่',
-  'anomaly.closed': 'ปิดไปใน 30 วันที่ผ่านมา',
   'anomaly.noneClosed': 'ไม่มีอะไรถูกปิดในช่วงเวลานั้น',
   'anomaly.outcome.ran': 'ทำต่อไปแล้ว',
   'anomaly.outcome.takenBack': 'เอากลับมาแล้ว',
@@ -1224,8 +1223,6 @@ const th: Translations = {
   'targets.ftpTls.explicit': 'TLS แบบชัดแจ้ง',
   'targets.ftpTls.implicit': 'TLS แบบโดยนัยที่พอร์ต 990',
   'anomalies.all': 'ความผิดปกติทั้งหมด',
-  'anomalies.openTab': 'ค้างอยู่',
-  'anomalies.which': 'ค้างอยู่หรือปิดแล้ว',
   'dupes.findOnLeft': 'ไฟล์ซ้ำฝั่งซ้าย',
   'dupes.findOnRight': 'ไฟล์ซ้ำฝั่งขวา',
   'list.onlyJob': 'เฉพาะ {job}',
@@ -1322,6 +1319,11 @@ const th: Translations = {
   'conflicts.kind.other': 'อื่น ๆ',
   'list.noneShown': 'ไม่มีรายการที่ตรงกับสิ่งที่คุณเลือก',
   'new.change.tileRows': '{trash} และ {conflicts} นับสิ่งที่มีอยู่ในแถวไทล์ เช่นเดียวกับ {anomalies} โดยถังขยะแยกตามฝั่ง และความขัดแย้งแยกตามประเภท ไทล์แต่ละอันแสดงเฉพาะส่วนของตัวเอง และ ▾ ที่หัวคอลัมน์งานจำกัดรายการให้เหลืองานเดียว',
+  'list.tip.columns': 'ลากหัวคอลัมน์เพื่อย้ายคอลัมน์ และลากขอบข้างหัวคอลัมน์เพื่อเปลี่ยนความกว้าง',
+  'list.resize': 'ลากเพื่อเปลี่ยนความกว้าง ดับเบิลคลิกเพื่อกลับเป็นความกว้างเดิม',
+  'history.findings': 'สิ่งที่พบ',
+  'anomalies.closedInHistory': 'ที่ปิดแล้วในประวัติ',
+  'new.change.closedFindings': 'สิ่งที่พบซึ่งปิดไปในสามสิบวันที่ผ่านมาย้ายจาก {anomalies} ไปที่ {history} เป็นมุมมองที่สามถัดจาก {runs} และ {files} พร้อมหัวคอลัมน์สำหรับเรียงและกรอง {anomalies} แสดงเฉพาะสิ่งที่ยังเปิดอยู่และพาไปที่นั่น',
 }
 
 export default th

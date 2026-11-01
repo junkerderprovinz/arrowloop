@@ -453,7 +453,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     // The log is the whole page, so its card reaches the bottom of the
     // window however few lines it has.
     <div className="flex flex-1 flex-col *:flex-1">
-      <History runs={runs} jobs={jobs} />
+      <History runs={runs} jobs={jobs} closed={anomaliesOn ? (findings?.closed ?? []) : null} onFindingChanged={() => void reloadFindings()} />
     </div>
   ) : null
 

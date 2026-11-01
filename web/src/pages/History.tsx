@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Empty, Rows } from '../components/Shell'
 import { Day, Field } from '../components/Field'
 import { IconAction } from '../components/IconAction'
-import { FilterChoice, ListHead, ListSearch, Narrowed, type Head } from '../components/ListHead'
+import { FilterChoice, ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
 import { RunSheet } from '../components/RunSheet'
 import { Stats } from '../components/Stats'
 import { TOUCH_KINDS, TouchKindChoice, touchKindLabel, type TouchKind } from '../components/TouchKinds'
@@ -16,8 +16,41 @@ import { dayTime } from '../lib/dayTime'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { useLiveTick } from '../lib/liveTick'
 import { useRemembered } from '../lib/remember'
+import { navigate } from '../lib/router'
+import { SEVERITIES, findingOrder, type Finding, type Severity } from '../lib/anomalies'
+import { matchesQuery } from '../lib/fold'
+import { FindingCard } from '../components/FindingCard'
+import { useColumns, type ColumnDef, type Columns } from '../lib/columns'
 
-const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs'
+const VIEW_KEY = 'arrowloop.history.view'
+const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs' || v === 'findings'
+
+/** Opens History on the findings closed in the last thirty days, for the way there from Anomalies. */
+export function openClosedFindings() {
+  try {
+    localStorage.setItem(VIEW_KEY, JSON.stringify('findings'))
+  } catch {
+    // Without storage History opens on its usual view.
+  }
+  navigate('/history')
+}
+
+const SEVERITY_LABEL: Record<Severity, TranslationKey> = {
+  critical: 'anomaly.severity.critical',
+  warning: 'anomaly.severity.warning',
+  info: 'anomaly.severity.info',
+}
+
+/** The file log's columns at their built-in widths; the path takes the rest. */
+export const FILE_COLUMNS: ColumnDef[] = [
+  { id: 'what', width: 256, min: 120 },
+  { id: 'when', width: 160, min: 96 },
+  { id: 'job', width: 128, min: 64 },
+  { id: 'size', width: 56, min: 48 },
+  { id: 'side', width: 24, fixed: true },
+  { id: 'path' },
+]
+const RUN_COLUMNS: ColumnDef[] = [{ id: 'job' }, { id: 'state', width: 240, min: 96 }, { id: 'when', width: 180, min: 120 }]
 
 const SHOW_LABEL: Record<HistoryShow, TranslationKey> = {
   all: 'history.showAll',
@@ -41,15 +74,23 @@ const SHOW_LABEL: Record<HistoryShow, TranslationKey> = {
 export function History({
   runs,
   jobs,
+  closed,
+  onFindingChanged,
 }: {
   /** The shell's own unfiltered copy, used until this page's first answer lands. */
   runs: Run[]
   /** The job names to offer, including jobs with no runs yet. */
   jobs: Job[]
+  /** The findings closed in the last thirty days, or null while Anomalies is switched off. */
+  closed: Finding[] | null
+  onFindingChanged: () => void
 }) {
   const { t } = useT()
   // Files first: where a file went is the usual question.
-  const [view, setView] = useRemembered<LogView>('arrowloop.history.view', 'files', isLogView)
+  const [stored, setView] = useRemembered<LogView>(VIEW_KEY, 'files', isLogView)
+  const view = stored === 'findings' && !closed ? 'files' : stored
+  const [level, setLevel] = useState<Severity | ''>('')
+  const [order, setOrder] = useState<ListSort>({ by: 'since', dir: 'desc' })
   const tick = useLiveTick(jobs.some((j) => j.running))
   const [job, setJob] = useState('')
   const [kind, setKind] = useState<TouchKind>('all')
@@ -65,6 +106,8 @@ export function History({
     return () => clearTimeout(timer)
   }, [typed])
   const area = useRef<HTMLDivElement>(null)
+  const fileColumns = useColumns('history-files', FILE_COLUMNS)
+  const runColumns = useColumns('history-runs', RUN_COLUMNS)
 
   // Configuration and log joined: a renamed or deleted job still has runs, and
   // a job that never ran has none.
@@ -76,12 +119,15 @@ export function History({
   }, [jobs, runs])
 
   const files = view === 'files'
+  const findings = view === 'findings'
+  const runsView = view === 'runs'
   const narrowing = [
     ...(job ? [t('list.onlyJob', { job })] : []),
     ...(files && kind !== 'all' ? [touchKindLabel(t, kind)] : []),
-    ...(!files && show !== 'all' ? [t(SHOW_LABEL[show])] : []),
-    ...(!files && since ? [`${t('history.since')} ${since}`] : []),
-    ...(!files && until ? [`${t('history.until')} ${until}`] : []),
+    ...(runsView && show !== 'all' ? [t(SHOW_LABEL[show])] : []),
+    ...(runsView && since ? [`${t('history.since')} ${since}`] : []),
+    ...(runsView && until ? [`${t('history.until')} ${until}`] : []),
+    ...(findings && level ? [t(SEVERITY_LABEL[level])] : []),
     ...(typed.trim() ? [t('list.searched', { q: typed.trim() })] : []),
   ]
   function showAll() {
@@ -90,6 +136,7 @@ export function History({
     setShow('all')
     setSince('')
     setUntil('')
+    setLevel('')
     setTyped('')
   }
 
@@ -104,7 +151,32 @@ export function History({
       />
     ),
   }
-  const heads: Head[] = files
+  const findingHeads: Head[] = [
+    {
+      id: 'severity',
+      label: t('list.head.severity'),
+      sorts: true,
+      filter: {
+        active: level !== '',
+        panel: (
+          <FilterChoice<Severity | ''>
+            label={t('list.head.severity')}
+            value={level}
+            onChange={setLevel}
+            options={[
+              { value: '', label: t('anomalies.all') },
+              ...SEVERITIES.map((sv) => ({ value: sv, label: t(SEVERITY_LABEL[sv]) })),
+            ]}
+          />
+        ),
+      },
+    },
+    { id: 'job', label: t('history.filterJob'), sorts: true, filter: jobFilter },
+    { id: 'since', label: t('anomaly.closedLabel'), sorts: true },
+  ]
+  const heads: Head[] = findings
+    ? findingHeads
+    : files
     ? [
         {
           id: 'what',
@@ -175,30 +247,66 @@ export function History({
     <div className="flex flex-1 flex-col *:flex-1">
       <Card title={t('history.title')} hueIndex={0}>
         <div data-new="list-bar" className="flex flex-wrap items-center gap-2">
-          <div className="min-w-0 flex-1 basis-48 sm:max-w-xs">
-            <ViewSwitch value={view} onChange={setView} />
+          <div data-new="closed-findings" className="min-w-0 flex-1 basis-48 sm:max-w-sm">
+            <ViewSwitch value={view} onChange={setView} findings={closed !== null} />
           </div>
           <div className="ms-auto">
             <Narrowed what={narrowing} onClear={showAll} />
           </div>
         </div>
-        {!files && <Stats job={job || undefined} />}
-        <div ref={area} tabIndex={-1} data-new="list-heads" className="relative flex flex-col gap-2 outline-none">
+        {runsView && <Stats job={job || undefined} />}
+        <div
+          ref={(el) => {
+            area.current = el
+            fileColumns.host.current = el
+            runColumns.host.current = el
+          }}
+          tabIndex={-1}
+          data-new="list-heads"
+          style={files ? fileColumns.style : runsView ? runColumns.style : undefined}
+          className="relative flex flex-col gap-2 outline-none"
+        >
           <ListSearch
             value={typed}
             onChange={setTyped}
             placeholder={files ? t('history.pathHint') : t('history.runSearch')}
             area={area}
           />
-          <ListHead heads={heads} page="history" search />
-          {files ? (
-            <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} />
+          {findings ? (
+            <ListHead heads={heads} sort={order} onSort={setOrder} page="history" search />
           ) : (
-            <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
+            <ListHead heads={heads} page="history" search columns={files ? fileColumns : runColumns} />
+          )}
+          {findings ? (
+            <ClosedFindings
+              findings={(closed ?? [])
+                .filter((f) => (!job || f.job === job) && (!level || f.severity === level))
+                .filter((f) => !query || matchesQuery(query, [f.job, f.detail ?? '', ...(f.paths ?? [])]))
+                .sort(findingOrder(order))}
+              narrowed={narrowing.length > 0}
+              onChanged={onFindingChanged}
+            />
+          ) : files ? (
+            <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} columns={fileColumns} />
+          ) : (
+            <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} columns={runColumns} />
           )}
         </div>
       </Card>
     </div>
+  )
+}
+
+/** The findings closed in the last thirty days, each as the card Anomalies draws, with how it ended. */
+function ClosedFindings({ findings, narrowed, onChanged }: { findings: Finding[]; narrowed: boolean; onChanged: () => void }) {
+  const { t } = useT()
+  if (findings.length === 0) return <Empty>{narrowed ? t('list.noneShown') : t('anomaly.noneClosed')}</Empty>
+  return (
+    <ul className="flex flex-col gap-2.5">
+      {findings.map((f) => (
+        <FindingCard key={f.id} finding={f} lead={false} onChanged={onChanged} onAllowed={() => undefined} />
+      ))}
+    </ul>
   )
 }
 
@@ -207,7 +315,19 @@ export function History({
  * the database, since the log runs to tens of thousands of rows and only a
  * screenful has arrived.
  */
-function Touches({ job, kinds, query, tick }: { job: string; kinds: string[]; query: string; tick: number }) {
+function Touches({
+  job,
+  kinds,
+  query,
+  tick,
+  columns,
+}: {
+  job: string
+  kinds: string[]
+  query: string
+  tick: number
+  columns: Columns
+}) {
   const { t } = useT()
   const [touches, setTouches] = useState<Touch[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -252,7 +372,7 @@ function Touches({ job, kinds, query, tick }: { job: string; kinds: string[]; qu
   return (
     <Rows className="flex flex-col">
       {touches.map((e) => (
-        <TouchRow key={touchKey(e)} touch={e} withJob={!job} />
+        <TouchRow key={touchKey(e)} touch={e} withJob={!job} columns={columns} />
       ))}
       {more && <li ref={end} aria-hidden className="h-px" />}
     </Rows>
@@ -270,6 +390,7 @@ function RunList({
   until,
   query,
   tick,
+  columns,
 }: {
   runs: Run[]
   job: string
@@ -278,6 +399,7 @@ function RunList({
   until: string
   query: string
   tick: number
+  columns: Columns
 }) {
   const { t } = useT()
   const [own, setOwn] = useState<Run[] | null>(null)
@@ -334,6 +456,7 @@ function RunList({
             <RunRow
               key={`${r.Job}\n${r.Started}`}
               run={r}
+              columns={columns}
               onOpen={() => setOpen({ at: { id: r.ID, job: r.Job, started: r.Started }, run: r })}
             />
           ))}
@@ -356,17 +479,31 @@ function RunList({
  * One run as one row: the job, a badge for anything that went otherwise than
  * planned, and its time. A run that worked carries only the green dot.
  */
-export function RunRow({ run: r, onOpen, withJob = true }: { run: Run; onOpen: () => void; withJob?: boolean }) {
+export function RunRow({
+  run: r,
+  onOpen,
+  withJob = true,
+  columns,
+}: {
+  run: Run
+  onOpen: () => void
+  withJob?: boolean
+  /** The list's column layout, which only History's runs have. */
+  columns?: Columns
+}) {
   const { t, lang } = useT()
   // Only a run with nothing to report wears the green dot; the others say what went otherwise.
   const fine = !r.Running && !r.Err && r.Conflicts === 0 && r.Skipped === 0
   return (
     <li
       onClick={onOpen}
-      className="glim-row flex min-h-11 cursor-pointer items-center gap-x-3 gap-y-1 rounded-control px-2 py-1.5 hover:bg-carbon-hover max-sm:flex-wrap"
+      className={`glim-row flex min-h-11 cursor-pointer items-center gap-x-3 gap-y-1 rounded-control px-2 py-1.5 hover:bg-carbon-hover max-sm:flex-wrap${
+        columns ? ' md:grid md:[grid-template-columns:var(--list-cols)]' : ''
+      }`}
     >
       <button
         type="button"
+        style={columns?.cell('job')}
         onClick={(e) => {
           e.stopPropagation()
           onOpen()
@@ -382,16 +519,22 @@ export function RunRow({ run: r, onOpen, withJob = true }: { run: Run; onOpen: (
           </span>
         )}
       </button>
-      {r.Running && (
-        <Badge tone="active" className="glim-live">
-          {t('status.running')}
-        </Badge>
-      )}
-      {r.Err && <Badge tone="fail">{t('status.failed')}</Badge>}
-      {r.Conflicts > 0 && <Badge tone="warn">{t('history.conflicts', { count: r.Conflicts })}</Badge>}
-      {r.Skipped > 0 && <Badge tone="warn">{t('history.left', { count: r.Skipped })}</Badge>}
+      {/* One cell for the badges where the row has columns, none of its own otherwise. */}
+      <span style={columns?.cell('state')} className={columns ? 'flex min-w-0 flex-wrap items-center gap-1.5' : 'contents'}>
+        {r.Running && (
+          <Badge tone="active" className="glim-live">
+            {t('status.running')}
+          </Badge>
+        )}
+        {r.Err && <Badge tone="fail">{t('status.failed')}</Badge>}
+        {r.Conflicts > 0 && <Badge tone="warn">{t('history.conflicts', { count: r.Conflicts })}</Badge>}
+        {r.Skipped > 0 && <Badge tone="warn">{t('history.left', { count: r.Skipped })}</Badge>}
+      </span>
       {withJob && (
-        <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub">
+        <span
+          style={columns?.cell('when')}
+          className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub${columns ? ' md:justify-end' : ''}`}
+        >
           {fine && <span aria-hidden className="h-[7px] w-[7px] rounded-full bg-statusOkSolid" />}
           <span className="glim-num">{dayTime(r.Started, lang, (p) => t('list.when', p))}</span>
         </span>

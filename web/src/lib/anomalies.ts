@@ -210,3 +210,17 @@ export function ownBrakes(
     changePercent: job.changePercent ?? global.changePercent,
   }
 }
+
+/**
+ * The order a list head asks for. Severity runs from critical down and breaks
+ * its ties by job; ascending time is the oldest first.
+ */
+export function findingOrder(sort: { by: string; dir: 'asc' | 'desc' }): (a: Finding, b: Finding) => number {
+  const sign = sort.dir === 'asc' ? 1 : -1
+  const rank = (s: Severity) => SEVERITIES.indexOf(s)
+  return (a, b) => {
+    if (sort.by === 'job') return sign * a.job.localeCompare(b.job)
+    if (sort.by === 'since') return sign * (Date.parse(a.closed ?? a.since) - Date.parse(b.closed ?? b.since))
+    return sign * (rank(a.severity) - rank(b.severity)) || a.job.localeCompare(b.job)
+  }
+}

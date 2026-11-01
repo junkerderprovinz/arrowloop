@@ -155,7 +155,6 @@ const es: Translations = {
   'anomaly.acknowledged': 'Confirmado.',
   'anomaly.heldNow': '«{job}» está detenida: {what}',
   'anomaly.heldAgain': 'Desde entonces ha cambiado algo más. «{job}» vuelve a estar detenida, con las cifras nuevas.',
-  'anomaly.closed': 'Cerradas en los últimos 30 días',
   'anomaly.noneClosed': 'En ese tiempo no se cerró nada.',
   'anomaly.outcome.ran': 'Ejecutada igualmente',
   'anomaly.outcome.takenBack': 'Recuperada',
@@ -1224,8 +1223,6 @@ const es: Translations = {
   'targets.ftpTls.explicit': 'TLS explícito',
   'targets.ftpTls.implicit': 'TLS implícito en el puerto 990',
   'anomalies.all': 'Todas las anomalías',
-  'anomalies.openTab': 'Abiertas',
-  'anomalies.which': 'Abiertas o cerradas',
   'dupes.findOnLeft': 'Duplicados en el lado izquierdo',
   'dupes.findOnRight': 'Duplicados en el lado derecho',
   'list.onlyJob': 'Solo {job}',
@@ -1322,6 +1319,11 @@ const es: Translations = {
   'conflicts.kind.other': 'Otros',
   'list.noneShown': 'Nada de aquí coincide con lo que elegiste.',
   'new.change.tileRows': '{trash} y {conflicts} cuentan lo que contienen en una fila de mosaicos, como hace {anomalies}: la papelera por lado y los conflictos por tipo. Un mosaico muestra solo su parte, y el ▾ del encabezado Tarea reduce la lista a una tarea.',
+  'list.tip.columns': 'Arrastra un encabezado para mover su columna, y el borde de al lado para cambiar su ancho.',
+  'list.resize': 'Arrastra para cambiar el ancho; un doble clic vuelve al original.',
+  'history.findings': 'Hallazgos',
+  'anomalies.closedInHistory': 'Los cerrados en el historial',
+  'new.change.closedFindings': 'Los hallazgos cerrados en los últimos treinta días han pasado de {anomalies} a {history}, como tercera vista junto a {runs} y {files}, con encabezados propios para ordenar y filtrar. {anomalies} muestra solo lo abierto y lleva hasta allí.',
 }
 
 export default es

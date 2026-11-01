@@ -155,7 +155,6 @@ const id: Translations = {
   'anomaly.acknowledged': 'Sudah ditandai.',
   'anomaly.heldNow': '“{job}” ditahan: {what}',
   'anomaly.heldAgain': 'Sejak itu lebih banyak yang berubah. “{job}” ditahan lagi, dengan angka yang baru.',
-  'anomaly.closed': 'Ditutup dalam 30 hari terakhir',
   'anomaly.noneClosed': 'Tidak ada yang ditutup dalam waktu itu.',
   'anomaly.outcome.ran': 'Dijalankan saja',
   'anomaly.outcome.takenBack': 'Diambil kembali',
@@ -1224,8 +1223,6 @@ const id: Translations = {
   'targets.ftpTls.explicit': 'TLS eksplisit',
   'targets.ftpTls.implicit': 'TLS implisit di port 990',
   'anomalies.all': 'Semua temuan',
-  'anomalies.openTab': 'Terbuka',
-  'anomalies.which': 'Terbuka atau selesai',
   'dupes.findOnLeft': 'Duplikat di sisi kiri',
   'dupes.findOnRight': 'Duplikat di sisi kanan',
   'list.onlyJob': 'Hanya {job}',
@@ -1322,6 +1319,11 @@ const id: Translations = {
   'conflicts.kind.other': 'Lainnya',
   'list.noneShown': 'Tidak ada yang cocok dengan pilihan Anda di sini.',
   'new.change.tileRows': '{trash} dan {conflicts} menghitung isinya dalam sederet ubin, seperti {anomalies}: tempat sampah menurut sisi dan konflik menurut jenis. Sebuah ubin hanya menampilkan bagiannya, dan ▾ di judul Tugas menyempitkan daftar ke satu tugas.',
+  'list.tip.columns': 'Seret judul kolom untuk memindahkan kolomnya, dan tepi di sampingnya untuk mengubah lebarnya.',
+  'list.resize': 'Seret untuk mengubah lebar; klik dua kali untuk lebar semula.',
+  'history.findings': 'Temuan',
+  'anomalies.closedInHistory': 'Yang ditutup di Riwayat',
+  'new.change.closedFindings': 'Temuan yang ditutup dalam tiga puluh hari terakhir pindah dari {anomalies} ke {history}, sebagai tampilan ketiga di samping {runs} dan {files}, dengan judul kolomnya sendiri untuk mengurutkan dan menyaring. {anomalies} hanya menampilkan yang terbuka dan menunjukkan jalannya.',
 }
 
 export default id

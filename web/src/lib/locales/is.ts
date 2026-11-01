@@ -155,7 +155,6 @@ const is: Translations = {
   'anomaly.acknowledged': 'Kvittað.',
   'anomaly.heldNow': '„{job}“ er stöðvað: {what}',
   'anomaly.heldAgain': 'Meira hefur breyst síðan. „{job}“ er stöðvað aftur, með nýju tölunum.',
-  'anomaly.closed': 'Lokað síðustu 30 daga',
   'anomaly.noneClosed': 'Engu var lokað á þeim tíma.',
   'anomaly.outcome.ran': 'Keyrt samt',
   'anomaly.outcome.takenBack': 'Tekið til baka',
@@ -1224,8 +1223,6 @@ const is: Translations = {
   'targets.ftpTls.explicit': 'Beint TLS',
   'targets.ftpTls.implicit': 'Óbeint TLS á gátt 990',
   'anomalies.all': 'Öll frávik',
-  'anomalies.openTab': 'Opin',
-  'anomalies.which': 'Opin eða lokuð',
   'dupes.findOnLeft': 'Tvítekningar vinstra megin',
   'dupes.findOnRight': 'Tvítekningar hægra megin',
   'list.onlyJob': 'Aðeins {job}',
@@ -1322,6 +1319,11 @@ const is: Translations = {
   'conflicts.kind.other': 'Annað',
   'list.noneShown': 'Ekkert hér passar við það sem þú valdir.',
   'new.change.tileRows': '{trash} og {conflicts} telja það sem þau geyma í röð af flísum, eins og {anomalies}: ruslið eftir hlið og árekstrana eftir tegund. Flís sýnir aðeins sinn hluta, og ▾ við fyrirsögnina Verk þrengir listann að einu verki.',
+  'list.tip.columns': 'Dragðu fyrirsögn til að færa dálkinn hennar, og brúnina við hliðina til að breyta breiddinni.',
+  'list.resize': 'Dragðu til að breyta breiddinni; tvísmellur gefur upprunalegu breiddina.',
+  'history.findings': 'Niðurstöður',
+  'anomalies.closedInHistory': 'Lokaðar í ferlinum',
+  'new.change.closedFindings': 'Niðurstöður sem var lokað síðustu þrjátíu daga hafa flust úr {anomalies} í {history}, sem þriðja sýn við hlið {runs} og {files}, með eigin fyrirsögnum til að raða og sía. {anomalies} sýnir aðeins það sem er opið og vísar þangað.',
 }
 
 export default is

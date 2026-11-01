@@ -155,7 +155,6 @@ const hr: Translations = {
   'anomaly.acknowledged': 'Potvrđeno.',
   'anomaly.heldNow': '„{job}“ je zadržan: {what}',
   'anomaly.heldAgain': 'Od tada se promijenilo još. „{job}“ je ponovno zadržan, s novim brojkama.',
-  'anomaly.closed': 'Zatvoreno u posljednjih 30 dana',
   'anomaly.noneClosed': 'U tom razdoblju ništa nije zatvoreno.',
   'anomaly.outcome.ran': 'Ipak pokrenuto',
   'anomaly.outcome.takenBack': 'Vraćeno',
@@ -1224,8 +1223,6 @@ const hr: Translations = {
   'targets.ftpTls.explicit': 'Eksplicitni TLS',
   'targets.ftpTls.implicit': 'Implicitni TLS na priključku 990',
   'anomalies.all': 'Sve anomalije',
-  'anomalies.openTab': 'Otvorene',
-  'anomalies.which': 'Otvorene ili zatvorene',
   'dupes.findOnLeft': 'Duplikati na lijevoj strani',
   'dupes.findOnRight': 'Duplikati na desnoj strani',
   'list.onlyJob': 'Samo {job}',
@@ -1322,6 +1319,11 @@ const hr: Translations = {
   'conflicts.kind.other': 'Ostalo',
   'list.noneShown': 'Ovdje ništa ne odgovara vašem odabiru.',
   'new.change.tileRows': '{trash} i {conflicts} broje što sadrže u nizu pločica, kao i {anomalies}: koš po strani, sukobe po vrsti. Pločica prikazuje samo svoj dio, a ▾ uz naslov Zadatak sužava popis na jedan zadatak.',
+  'list.tip.columns': 'Povucite naslov da biste premjestili njegov stupac, a rub pokraj njega da biste promijenili širinu.',
+  'list.resize': 'Povucite za promjenu širine; dvostruki klik vraća izvornu.',
+  'history.findings': 'Nalazi',
+  'anomalies.closedInHistory': 'Zatvoreni u povijesti',
+  'new.change.closedFindings': 'Nalazi zatvoreni u posljednjih trideset dana preselili su se iz {anomalies} u {history}, kao treći prikaz uz {runs} i {files}, s vlastitim naslovima za razvrstavanje i filtriranje. {anomalies} prikazuje samo otvoreno i vodi onamo.',
 }
 
 export default hr

@@ -155,7 +155,6 @@ const it: Translations = {
   'anomaly.acknowledged': 'Letta.',
   'anomaly.heldNow': '«{job}» è sospeso: {what}',
   'anomaly.heldAgain': 'Nel frattempo è cambiato altro. «{job}» è di nuovo sospeso, con i nuovi numeri.',
-  'anomaly.closed': 'Chiuse negli ultimi 30 giorni',
   'anomaly.noneClosed': 'In questo periodo non è stato chiuso nulla.',
   'anomaly.outcome.ran': 'Eseguito comunque',
   'anomaly.outcome.takenBack': 'Recuperato',
@@ -1224,8 +1223,6 @@ const it: Translations = {
   'targets.ftpTls.explicit': 'TLS esplicito',
   'targets.ftpTls.implicit': 'TLS implicito sulla porta 990',
   'anomalies.all': 'Tutte le anomalie',
-  'anomalies.openTab': 'Aperte',
-  'anomalies.which': 'Aperte o chiuse',
   'dupes.findOnLeft': 'Duplicati sul lato sinistro',
   'dupes.findOnRight': 'Duplicati sul lato destro',
   'list.onlyJob': 'Solo {job}',
@@ -1322,6 +1319,11 @@ const it: Translations = {
   'conflicts.kind.other': 'Altro',
   'list.noneShown': 'Qui niente corrisponde alla tua scelta.',
   'new.change.tileRows': '{trash} e {conflicts} contano ciò che contengono in una fila di riquadri, come fa {anomalies}: il cestino per lato e i conflitti per tipo. Un riquadro mostra solo la sua parte, e il ▾ dell\'intestazione Lavoro limita la lista a un lavoro.',
+  'list.tip.columns': 'Trascina un\'intestazione per spostarne la colonna, e il bordo accanto per cambiarne la larghezza.',
+  'list.resize': 'Trascina per cambiare la larghezza; un doppio clic torna a quella originale.',
+  'history.findings': 'Rilevamenti',
+  'anomalies.closedInHistory': 'Quelli chiusi nella cronologia',
+  'new.change.closedFindings': 'I rilevamenti chiusi negli ultimi trenta giorni sono passati da {anomalies} a {history}, come terza vista accanto a {runs} e {files}, con intestazioni proprie per ordinare e filtrare. {anomalies} mostra solo ciò che è aperto e porta lì.',
 }
 
 export default it

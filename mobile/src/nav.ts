@@ -29,7 +29,8 @@ export type ConflictsStack = {
 };
 
 export type HistoryStack = {
-  RunList: undefined;
+  /** `mode` opens a view other than the files, such as the closed findings from Anomalies. */
+  RunList: { mode?: "findings" } | undefined;
 };
 
 /** The settings and the pages they open, which live behind More. */

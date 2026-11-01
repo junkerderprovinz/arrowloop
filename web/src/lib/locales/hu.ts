@@ -155,7 +155,6 @@ const hu: Translations = {
   'anomaly.acknowledged': 'Tudomásul véve.',
   'anomaly.heldNow': 'A(z) „{job}” fel van függesztve: {what}',
   'anomaly.heldAgain': 'Azóta több változott. A(z) „{job}” az új számokkal újra fel van függesztve.',
-  'anomaly.closed': 'Lezárva az elmúlt 30 napban',
   'anomaly.noneClosed': 'Ez idő alatt semmi nem zárult le.',
   'anomaly.outcome.ran': 'Mégis lefuttatva',
   'anomaly.outcome.takenBack': 'Visszavéve',
@@ -1224,8 +1223,6 @@ const hu: Translations = {
   'targets.ftpTls.explicit': 'Explicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS a 990-es porton',
   'anomalies.all': 'Minden rendellenesség',
-  'anomalies.openTab': 'Nyitott',
-  'anomalies.which': 'Nyitott vagy lezárt',
   'dupes.findOnLeft': 'Duplikátumok a bal oldalon',
   'dupes.findOnRight': 'Duplikátumok a jobb oldalon',
   'list.onlyJob': 'Csak {job}',
@@ -1322,6 +1319,11 @@ const hu: Translations = {
   'conflicts.kind.other': 'Egyéb',
   'list.noneShown': 'Itt semmi sem felel meg a választásának.',
   'new.change.tileRows': 'A(z) {trash} és a(z) {conflicts} egy csempesorban számolja, mit tartalmaz, ahogy a(z) {anomalies}: a kukát oldalanként, az ütközéseket fajtánként. Egy csempe csak a saját részét mutatja, a Feladat fejléc ▾ jele pedig egy feladatra szűkíti a listát.',
+  'list.tip.columns': 'Húzzon egy fejlécet az oszlopa áthelyezéséhez, a mellette lévő szélt pedig a szélesség módosításához.',
+  'list.resize': 'Húzással módosíthatja a szélességet, dupla kattintással visszaállíthatja az eredetit.',
+  'history.findings': 'Észlelések',
+  'anomalies.closedInHistory': 'A lezártak az előzményekben',
+  'new.change.closedFindings': 'Az elmúlt harminc napban lezárt észlelések a(z) {anomalies} oldalról a(z) {history} oldalra költöztek, harmadik nézetként a(z) {runs} és a(z) {files} mellé, saját fejlécekkel a rendezéshez és szűréshez. A(z) {anomalies} csak a nyitottakat mutatja, és odavezet.',
 }
 
 export default hu

@@ -317,7 +317,6 @@ export const en = {
   'anomaly.acknowledged': 'Acknowledged.',
   'anomaly.heldNow': '"{job}" is held: {what}',
   'anomaly.heldAgain': 'More has changed since. "{job}" is held again, with the new figures.',
-  'anomaly.closed': 'Closed in the last 30 days',
   'anomaly.noneClosed': 'Nothing was closed in that time.',
   'anomaly.outcome.ran': 'Run anyway',
   'anomaly.outcome.takenBack': 'Taken back',
@@ -1266,8 +1265,6 @@ export const en = {
   'targets.ftpTls.explicit': 'Explicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS on port 990',
   'anomalies.all': 'All findings',
-  'anomalies.openTab': 'Open',
-  'anomalies.which': 'Open or closed',
   'dupes.findOnLeft': 'Duplicates on the left side',
   'dupes.findOnRight': 'Duplicates on the right side',
   'list.onlyJob': 'Only {job}',
@@ -1364,6 +1361,11 @@ export const en = {
   'conflicts.kind.other': 'Other',
   'list.noneShown': 'Nothing here matches what you picked.',
   'new.change.tileRows': '{trash} and {conflicts} count what they hold in a row of tiles, as {anomalies} does: the trash by side and the conflicts by kind. A tile shows its part alone, and the ▾ at the Job heading narrows the list to one job.',
+  'list.tip.columns': 'Drag a heading to move its column, and the edge beside it to change its width.',
+  'list.resize': 'Drag to change the width; double-click for the original width.',
+  'history.findings': 'Findings',
+  'anomalies.closedInHistory': 'Closed ones in History',
+  'new.change.closedFindings': 'Findings closed in the last thirty days have moved from {anomalies} to {history}, as a third view beside {runs} and {files}, with their own headings to sort and filter. {anomalies} shows only what is open and leads there.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1679,7 +1681,6 @@ export const de: Translations = {
   'anomaly.acknowledged': 'Quittiert.',
   'anomaly.heldNow': '„{job}“ ist angehalten: {what}',
   'anomaly.heldAgain': 'Seither hat sich mehr geändert. „{job}“ ist mit den neuen Zahlen wieder angehalten.',
-  'anomaly.closed': 'Geschlossen in den letzten 30 Tagen',
   'anomaly.noneClosed': 'In dieser Zeit wurde nichts geschlossen.',
   'anomaly.outcome.ran': 'Trotzdem ausgeführt',
   'anomaly.outcome.takenBack': 'Zurückgeholt',
@@ -2620,8 +2621,6 @@ export const de: Translations = {
   'targets.ftpTls.explicit': 'Explizites TLS',
   'targets.ftpTls.implicit': 'Implizites TLS auf Port 990',
   'anomalies.all': 'Alle Funde',
-  'anomalies.openTab': 'Offen',
-  'anomalies.which': 'Offen oder geschlossen',
   'dupes.findOnLeft': 'Doppelte auf der linken Seite',
   'dupes.findOnRight': 'Doppelte auf der rechten Seite',
   'list.onlyJob': 'Nur {job}',
@@ -2718,6 +2717,11 @@ export const de: Translations = {
   'conflicts.kind.other': 'Andere',
   'list.noneShown': 'Hier passt nichts zu deiner Auswahl.',
   'new.change.tileRows': '{trash} und {conflicts} zählen in einer Kachelreihe, was sie enthalten, wie {anomalies}: der Papierkorb nach Seite, die Konflikte nach Art. Eine Kachel zeigt nur ihren Teil, und das ▾ an der Überschrift Auftrag beschränkt die Liste auf einen Auftrag.',
+  'list.tip.columns': 'Zieh eine Überschrift, um ihre Spalte zu verschieben, und die Kante daneben, um die Breite zu ändern.',
+  'list.resize': 'Ziehen ändert die Breite, ein Doppelklick stellt die ursprüngliche wieder her.',
+  'history.findings': 'Funde',
+  'anomalies.closedInHistory': 'Geschlossene im Verlauf',
+  'new.change.closedFindings': 'Funde, die in den letzten dreißig Tagen geschlossen wurden, sind von {anomalies} in den {history} gezogen, als dritte Ansicht neben {runs} und {files}, mit eigenen Überschriften zum Sortieren und Filtern. {anomalies} zeigt nur noch Offenes und führt dorthin.',
 }
 
 export interface Language {

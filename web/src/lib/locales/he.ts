@@ -155,7 +155,6 @@ const he: Translations = {
   'anomaly.acknowledged': 'אושר.',
   'anomaly.heldNow': '"{job}" מוחזקת: {what}',
   'anomaly.heldAgain': 'מאז השתנה עוד. "{job}" מוחזקת שוב, עם המספרים החדשים.',
-  'anomaly.closed': 'נסגרו ב-30 הימים האחרונים',
   'anomaly.noneClosed': 'לא נסגר דבר בתקופה הזו.',
   'anomaly.outcome.ran': 'הורצה בכל זאת',
   'anomaly.outcome.takenBack': 'הוחזרה',
@@ -1224,8 +1223,6 @@ const he: Translations = {
   'targets.ftpTls.explicit': 'TLS מפורש',
   'targets.ftpTls.implicit': 'TLS מרומז בפורט 990',
   'anomalies.all': 'כל החריגות',
-  'anomalies.openTab': 'פתוחות',
-  'anomalies.which': 'פתוחות או סגורות',
   'dupes.findOnLeft': 'כפולים בצד שמאל',
   'dupes.findOnRight': 'כפולים בצד ימין',
   'list.onlyJob': 'רק {job}',
@@ -1322,6 +1319,11 @@ const he: Translations = {
   'conflicts.kind.other': 'אחר',
   'list.noneShown': 'שום דבר כאן לא תואם את הבחירה שלך.',
   'new.change.tileRows': '{trash} ו{conflicts} סופרים את מה שבהם בשורת אריחים, כמו {anomalies}: סל המחזור לפי צד וההתנגשויות לפי סוג. אריח מציג רק את החלק שלו, וה־▾ בכותרת משימה מצמצם את הרשימה למשימה אחת.',
+  'list.tip.columns': 'גררו כותרת כדי להזיז את העמודה שלה, ואת הקצה שלידה כדי לשנות את הרוחב.',
+  'list.resize': 'גררו כדי לשנות את הרוחב; לחיצה כפולה מחזירה את הרוחב המקורי.',
+  'history.findings': 'ממצאים',
+  'anomalies.closedInHistory': 'הסגורים בהיסטוריה',
+  'new.change.closedFindings': 'ממצאים שנסגרו בשלושים הימים האחרונים עברו מ{anomalies} ל{history}, כתצוגה שלישית לצד {runs} ו{files}, עם כותרות משלהם למיון ולסינון. {anomalies} מציג רק את הפתוח ומוביל לשם.',
 }
 
 export default he

@@ -155,7 +155,6 @@ const ru: Translations = {
   'anomaly.acknowledged': 'Подтверждено.',
   'anomaly.heldNow': '«{job}» приостановлено: {what}',
   'anomaly.heldAgain': 'С тех пор изменилось больше. «{job}» снова приостановлено, с новыми цифрами.',
-  'anomaly.closed': 'Закрыто за последние 30 дней',
   'anomaly.noneClosed': 'За это время ничего не закрыто.',
   'anomaly.outcome.ran': 'Запущено всё равно',
   'anomaly.outcome.takenBack': 'Возвращено',
@@ -1224,8 +1223,6 @@ const ru: Translations = {
   'targets.ftpTls.explicit': 'Явный TLS',
   'targets.ftpTls.implicit': 'Неявный TLS на порту 990',
   'anomalies.all': 'Все аномалии',
-  'anomalies.openTab': 'Открытые',
-  'anomalies.which': 'Открытые или закрытые',
   'dupes.findOnLeft': 'Дубликаты на левой стороне',
   'dupes.findOnRight': 'Дубликаты на правой стороне',
   'list.onlyJob': 'Только {job}',
@@ -1322,6 +1319,11 @@ const ru: Translations = {
   'conflicts.kind.other': 'Другие',
   'list.noneShown': 'Здесь нет ничего, что подходит под ваш выбор.',
   'new.change.tileRows': '{trash} и {conflicts} считают своё содержимое в ряду плиток, как {anomalies}: корзину по сторонам, конфликты по видам. Плитка показывает только свою часть, а ▾ у заголовка «Задание» сужает список до одного задания.',
+  'list.tip.columns': 'Перетащите заголовок, чтобы переместить столбец, а край рядом с ним, чтобы изменить ширину.',
+  'list.resize': 'Перетащите, чтобы изменить ширину; двойной щелчок возвращает исходную.',
+  'history.findings': 'Находки',
+  'anomalies.closedInHistory': 'Закрытые в журнале',
+  'new.change.closedFindings': 'Находки, закрытые за последние тридцать дней, переехали из {anomalies} в {history}, третьим видом рядом с {runs} и {files}, со своими заголовками для сортировки и фильтра. {anomalies} показывает только открытое и ведёт туда.',
 }
 
 export default ru

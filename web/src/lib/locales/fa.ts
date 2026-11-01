@@ -155,7 +155,6 @@ const fa: Translations = {
   'anomaly.acknowledged': 'تأیید شد.',
   'anomaly.heldNow': '«{job}» نگه داشته شد: {what}',
   'anomaly.heldAgain': 'از آن موقع بیشتر تغییر کرده است. «{job}» با عددهای جدید دوباره نگه داشته شد.',
-  'anomaly.closed': 'بسته‌شده در ۳۰ روز گذشته',
   'anomaly.noneClosed': 'در این مدت چیزی بسته نشد.',
   'anomaly.outcome.ran': 'با این حال اجرا شد',
   'anomaly.outcome.takenBack': 'بازگردانده شد',
@@ -1224,8 +1223,6 @@ const fa: Translations = {
   'targets.ftpTls.explicit': 'TLS صریح',
   'targets.ftpTls.implicit': 'TLS ضمنی روی درگاه ۹۹۰',
   'anomalies.all': 'همهٔ ناهنجاری‌ها',
-  'anomalies.openTab': 'باز',
-  'anomalies.which': 'باز یا بسته',
   'dupes.findOnLeft': 'تکراری‌ها در طرف چپ',
   'dupes.findOnRight': 'تکراری‌ها در طرف راست',
   'list.onlyJob': 'فقط {job}',
@@ -1322,6 +1319,11 @@ const fa: Translations = {
   'conflicts.kind.other': 'سایر',
   'list.noneShown': 'اینجا چیزی با انتخاب شما جور نیست.',
   'new.change.tileRows': '{trash} و {conflicts} مانند {anomalies} آنچه را دارند در ردیفی از کاشی‌ها می‌شمارند: سطل بازیافت بر پایهٔ سو و تعارض‌ها بر پایهٔ نوع. هر کاشی فقط بخش خودش را نشان می‌دهد و ▾ کنار سرستون کار فهرست را به یک کار محدود می‌کند.',
+  'list.tip.columns': 'سرستون را بکشید تا ستونش جابه‌جا شود، و لبهٔ کنارش را تا پهنایش عوض شود.',
+  'list.resize': 'برای تغییر پهنا بکشید؛ دوبار کلیک پهنای اصلی را برمی‌گرداند.',
+  'history.findings': 'یافته‌ها',
+  'anomalies.closedInHistory': 'بسته‌شده‌ها در سابقه',
+  'new.change.closedFindings': 'یافته‌هایی که در سی روز گذشته بسته شده‌اند از {anomalies} به {history} رفته‌اند، به‌عنوان نمای سوم کنار {runs} و {files}، با سرستون‌های خودشان برای مرتب‌سازی و فیلتر. {anomalies} فقط موارد باز را نشان می‌دهد و به آنجا راه می‌برد.',
 }
 
 export default fa

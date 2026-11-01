@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type DragEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 
 import { IconAction } from './IconAction'
@@ -7,6 +7,7 @@ import { IconClose, IconExpand, IconMoveDown, IconMoveUp, IconSearch } from './g
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { usePortalHue } from '../lib/glimstone/portalHue'
+import type { Columns } from '../lib/columns'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { firstVisit } from '../lib/listTips'
 import { BUBBLE_VIEWPORT_MARGIN } from '../lib/glimstone/bubblePosition'
@@ -60,10 +61,11 @@ const LONG_PRESS_MS = 500
 const PRESS_SLOP = 10
 
 /** The sentences of the hint line, for what this list can do. */
-function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean, touch: boolean): string {
+function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean, touch: boolean, columns: boolean): string {
   const parts: TranslationKey[] = []
   if (heads.some((h) => h.sorts)) parts.push('list.tip.sort')
   if (heads.some((h) => h.filter)) parts.push('list.tip.filter')
+  if (columns && !touch) parts.push('list.tip.columns')
   if (search) parts.push(touch ? 'list.tip.find' : 'list.tip.search')
   return parts.map((k) => t(k)).join(' ')
 }
@@ -76,6 +78,14 @@ function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean
  * after a long press on a touch screen, where nothing hovers. A touch-only
  * device has no key to type into the list, so a magnifier at the end of the
  * row opens its search there.
+ *
+ * With `columns`, a head can be dragged to another place and widened by the
+ * handle at its trailing edge, whose line shows while the pointer is over the
+ * row; a double click on the handle gives the column its width back, and Alt
+ * with an arrow key moves the focused head one place. The label is the drag
+ * source and the handle its sibling, so a resize never starts a move. Below
+ * the md width the row is a plain flex row, where the columns keep their
+ * order but not their widths.
  */
 export function ListHead({
   heads,
@@ -83,6 +93,7 @@ export function ListHead({
   onSort,
   page,
   search = false,
+  columns,
   className = '',
 }: {
   heads: Head[]
@@ -92,6 +103,7 @@ export function ListHead({
   page?: string
   /** Whether the list has a search, which the hint names and a touch-only device reaches by the magnifier. */
   search?: boolean
+  columns?: Columns
   className?: string
 }) {
   const { t } = useT()
@@ -102,7 +114,53 @@ export function ListHead({
   const press = useRef<{ timer: number; x: number; y: number } | null>(null)
   const held = useRef(false)
   const touch = useTouchOnly()
-  const tip = tipText(t, heads, search, touch)
+  const tip = tipText(t, heads, search, touch, !!columns)
+  const [dragged, setDragged] = useState<string | null>(null)
+  // The head a key press moved, which gets the focus back once drawn in its new place.
+  const [stepped, setStepped] = useState<string | null>(null)
+  const row = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!stepped) return
+    row.current?.querySelector<HTMLElement>(`[data-col="${stepped}"]`)?.focus()
+    setStepped(null)
+  }, [stepped, columns?.order])
+  const last = columns ? columns.order[columns.order.length - 1] : heads[heads.length - 1]?.id
+
+  function drop(e: DragEvent<HTMLDivElement>, target: string) {
+    e.preventDefault()
+    const from = dragged
+    setDragged(null)
+    if (!columns || !from || from === target) return
+    const box = e.currentTarget.getBoundingClientRect()
+    const middle = box.left + box.width / 2
+    const after = document.documentElement.dir === 'rtl' ? e.clientX < middle : e.clientX > middle
+    columns.move(from, target, after)
+    used()
+  }
+
+  // What a head's label carries so it can be dragged and stepped with the keyboard.
+  const grab = (id: string) =>
+    columns
+      ? {
+          draggable: true,
+          'data-col': id,
+          onDragStart: (e: DragEvent<HTMLElement>) => {
+            setDragged(id)
+            e.dataTransfer.effectAllowed = 'move'
+            // Firefox starts no drag at all without a payload.
+            e.dataTransfer.setData('text/plain', id)
+          },
+          onDragEnd: () => setDragged(null),
+          onKeyDown: (e: ReactKeyboardEvent<HTMLElement>) => {
+            if (!e.altKey || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return
+            e.preventDefault()
+            const rtl = document.documentElement.dir === 'rtl'
+            columns.step(id, (e.key === 'ArrowRight') !== rtl)
+            setStepped(id)
+            used()
+          },
+        }
+      : {}
 
   const endPress = () => {
     if (press.current) window.clearTimeout(press.current.timer)
@@ -147,7 +205,10 @@ export function ListHead({
           e.preventDefault()
           e.stopPropagation()
         }}
-        className="flex items-center gap-x-3 border-b border-carbon-border/60 pb-1.5"
+        ref={row}
+        className={`flex items-center gap-x-3 border-b border-carbon-border/60 pb-1.5 ${
+          columns ? 'select-none md:grid md:[grid-template-columns:var(--list-cols)]' : ''
+        }`}
       >
         {heads.map((head) => {
           const on = sort?.by === head.id
@@ -156,6 +217,7 @@ export function ListHead({
             head.sorts && onSort ? (
               <button
                 type="button"
+                {...grab(head.id)}
                 aria-sort={on ? (sort?.dir === 'asc' ? 'ascending' : 'descending') : undefined}
                 onClick={() => {
                   onSort(nextSort(sort, head.id))
@@ -169,7 +231,11 @@ export function ListHead({
                 {on && (sort?.dir === 'asc' ? <IconMoveUp width={11} height={11} /> : <IconMoveDown width={11} height={11} />)}
               </button>
             ) : (
-              <span className={`min-w-0 truncate text-meta font-medium ${active ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
+              <span
+                {...grab(head.id)}
+                tabIndex={columns ? 0 : undefined}
+                className={`min-w-0 truncate text-meta font-medium ${active ? 'text-carbon-text' : 'text-carbon-textMuted'}`}
+              >
                 {head.label}
               </span>
             )
@@ -177,7 +243,12 @@ export function ListHead({
             <div
               key={head.id}
               role="columnheader"
-              className={`flex min-w-0 items-center gap-0.5 ${head.end ? 'justify-end' : ''} ${head.className ?? ''}`}
+              style={columns?.cell(head.id)}
+              onDragOver={(e) => dragged && e.preventDefault()}
+              onDrop={(e) => drop(e, head.id)}
+              className={`relative flex min-w-0 items-center gap-0.5 ${head.end ? 'justify-end' : ''} ${head.className ?? ''} ${
+                columns ? 'md:w-auto' : ''
+              } ${dragged === head.id ? 'opacity-50' : ''}`}
             >
               {head.label && name}
               {head.filter && (
@@ -204,23 +275,31 @@ export function ListHead({
                   {active && <span aria-hidden className="absolute -end-0.5 -top-0.5 h-2 w-2 rounded-full bg-accent" />}
                 </button>
               )}
+              {/* In the last column's head, so it takes no column of its own. */}
+              {search && touch && head.id === last && (
+                <button
+                  type="button"
+                  aria-label={t('list.search')}
+                  data-tip={t('list.search')}
+                  onClick={(e) => {
+                    e.currentTarget.dispatchEvent(new CustomEvent(OPEN_SEARCH, { bubbles: true }))
+                    used()
+                  }}
+                  className="glim-btn-bare ms-auto grid h-8 w-8 shrink-0 place-items-center rounded-control text-carbon-textMuted"
+                >
+                  <IconSearch />
+                </button>
+              )}
+              {columns?.resizable(head.id) && (
+                <ResizeHandle
+                  hint={t('list.resize')}
+                  onResize={(phase, x, width) => columns.resize(head.id, phase, x, width)}
+                  onReset={() => columns.reset(head.id)}
+                />
+              )}
             </div>
           )
         })}
-        {search && touch && (
-          <button
-            type="button"
-            aria-label={t('list.search')}
-            data-tip={t('list.search')}
-            onClick={(e) => {
-              e.currentTarget.dispatchEvent(new CustomEvent(OPEN_SEARCH, { bubbles: true }))
-              used()
-            }}
-            className="glim-btn-bare ms-auto grid h-8 w-8 shrink-0 place-items-center rounded-control text-carbon-textMuted"
-          >
-            <IconSearch />
-          </button>
-        )}
       </div>
 
       {tipShown || pressed ? (
@@ -256,6 +335,46 @@ export function ListHead({
         </FilterPanel>
       )}
     </div>
+  )
+}
+
+/**
+ * The grab area at a head's trailing edge, 8px wide, with the line that shows
+ * it drawn inside rather than as a border, so the line is where to aim. The
+ * line stays clear until the pointer is over the row. A drag the browser takes
+ * away still ends, or the row would keep a width the next render undoes.
+ */
+function ResizeHandle({
+  hint,
+  onResize,
+  onReset,
+}: {
+  hint: string
+  onResize: (phase: 'start' | 'move' | 'end', x: number, width?: number) => void
+  onReset: () => void
+}) {
+  return (
+    <span
+      role="separator"
+      aria-orientation="vertical"
+      aria-label={hint}
+      data-tip={hint}
+      onPointerDown={(e) => {
+        e.preventDefault()
+        e.currentTarget.setPointerCapture?.(e.pointerId)
+        onResize('start', e.clientX, (e.currentTarget.parentElement as HTMLElement).offsetWidth)
+      }}
+      onPointerMove={(e) => onResize('move', e.clientX)}
+      onPointerUp={(e) => onResize('end', e.clientX)}
+      onPointerCancel={(e) => onResize('end', e.clientX)}
+      onDoubleClick={onReset}
+      className="absolute inset-y-0 -end-1.5 z-10 w-2 cursor-col-resize touch-none max-md:hidden"
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 end-[3px] w-px bg-transparent transition-colors group-hover/head:bg-carbon-border"
+      />
+    </span>
   )
 }
 

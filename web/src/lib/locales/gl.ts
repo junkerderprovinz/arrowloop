@@ -155,7 +155,6 @@ const gl: Translations = {
   'anomaly.acknowledged': 'Confirmada.',
   'anomaly.heldNow': '«{job}» está retida: {what}',
   'anomaly.heldAgain': 'Cambiou máis desde entón. «{job}» volve quedar retida, coas novas cifras.',
-  'anomaly.closed': 'Pechadas nos últimos 30 días',
   'anomaly.noneClosed': 'Non se pechou nada nese tempo.',
   'anomaly.outcome.ran': 'Executada igualmente',
   'anomaly.outcome.takenBack': 'Recuperada',
@@ -1224,8 +1223,6 @@ const gl: Translations = {
   'targets.ftpTls.explicit': 'TLS explícito',
   'targets.ftpTls.implicit': 'TLS implícito no porto 990',
   'anomalies.all': 'Todas as anomalías',
-  'anomalies.openTab': 'Abertas',
-  'anomalies.which': 'Abertas ou pechadas',
   'dupes.findOnLeft': 'Duplicados no lado esquerdo',
   'dupes.findOnRight': 'Duplicados no lado dereito',
   'list.onlyJob': 'Só {job}',
@@ -1322,6 +1319,11 @@ const gl: Translations = {
   'conflicts.kind.other': 'Outros',
   'list.noneShown': 'Nada de aquí coincide co que escolliches.',
   'new.change.tileRows': '{trash} e {conflicts} contan o que conteñen nunha fila de mosaicos, como fai {anomalies}: o lixo por lado e os conflitos por tipo. Un mosaico amosa só a súa parte, e o ▾ da cabeceira Tarefa reduce a lista a unha tarefa.',
+  'list.tip.columns': 'Arrastra unha cabeceira para mover a súa columna, e o bordo do lado para cambiar a súa largura.',
+  'list.resize': 'Arrastra para cambiar a largura; un dobre clic devolve a orixinal.',
+  'history.findings': 'Achados',
+  'anomalies.closedInHistory': 'Os pechados no historial',
+  'new.change.closedFindings': 'Os achados pechados nos últimos trinta días pasaron de {anomalies} a {history}, como terceira vista xunto a {runs} e {files}, con cabeceiras propias para ordenar e filtrar. {anomalies} só amosa o que está aberto e leva ata alí.',
 }
 
 export default gl

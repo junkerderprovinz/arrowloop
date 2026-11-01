@@ -155,7 +155,6 @@ const ko: Translations = {
   'anomaly.acknowledged': '확인했습니다.',
   'anomaly.heldNow': '“{job}” 작업이 보류되었습니다: {what}',
   'anomaly.heldAgain': '그 사이에 더 많은 변경이 있었습니다. “{job}” 작업이 새 수치로 다시 보류되었습니다.',
-  'anomaly.closed': '최근 30일간 닫힘',
   'anomaly.noneClosed': '그 기간에 닫힌 항목이 없습니다.',
   'anomaly.outcome.ran': '그래도 실행함',
   'anomaly.outcome.takenBack': '되돌림',
@@ -1224,8 +1223,6 @@ const ko: Translations = {
   'targets.ftpTls.explicit': '명시적 TLS',
   'targets.ftpTls.implicit': '포트 990의 암시적 TLS',
   'anomalies.all': '모든 발견 항목',
-  'anomalies.openTab': '열림',
-  'anomalies.which': '열림 또는 닫힘',
   'dupes.findOnLeft': '왼쪽의 중복',
   'dupes.findOnRight': '오른쪽의 중복',
   'list.onlyJob': '{job}만',
@@ -1322,6 +1319,11 @@ const ko: Translations = {
   'conflicts.kind.other': '기타',
   'list.noneShown': '선택한 조건에 맞는 항목이 없습니다.',
   'new.change.tileRows': '{trash}와 {conflicts}도 {anomalies}처럼 타일 한 줄로 담긴 것을 셉니다. 휴지통은 쪽별로, 충돌은 종류별로 셉니다. 타일은 자기 부분만 보여 주고, 작업 제목의 ▾ 로 목록을 한 작업으로 좁힐 수 있습니다.',
+  'list.tip.columns': '제목을 끌면 열이 옮겨지고, 옆의 가장자리를 끌면 너비가 바뀝니다.',
+  'list.resize': '끌어서 너비를 바꾸고, 두 번 누르면 원래 너비로 돌아갑니다.',
+  'history.findings': '발견',
+  'anomalies.closedInHistory': '닫힌 항목은 기록에서',
+  'new.change.closedFindings': '지난 30일 동안 닫힌 발견은 {anomalies}에서 {history}로 옮겨 {runs}, {files} 옆의 세 번째 보기가 되었고, 정렬하고 걸러 내는 제목도 있습니다. {anomalies}는 열린 것만 보여 주고 그리로 안내합니다.',
 }
 
 export default ko

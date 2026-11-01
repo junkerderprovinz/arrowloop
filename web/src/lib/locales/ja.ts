@@ -155,7 +155,6 @@ const ja: Translations = {
   'anomaly.acknowledged': '確認済みにしました。',
   'anomaly.heldNow': '「{job}」を保留しました: {what}',
   'anomaly.heldAgain': 'その後さらに変化がありました。「{job}」は新しい数値で再び保留されています。',
-  'anomaly.closed': '過去 30 日間に完了',
   'anomaly.noneClosed': 'この期間に完了したものはありません。',
   'anomaly.outcome.ran': 'そのまま実行',
   'anomaly.outcome.takenBack': '元に戻した',
@@ -1224,8 +1223,6 @@ const ja: Translations = {
   'targets.ftpTls.explicit': '明示的 TLS',
   'targets.ftpTls.implicit': 'ポート 990 の暗黙的 TLS',
   'anomalies.all': 'すべての検出',
-  'anomalies.openTab': '未対応',
-  'anomalies.which': '未対応または対応済み',
   'dupes.findOnLeft': '左側の重複',
   'dupes.findOnRight': '右側の重複',
   'list.onlyJob': '{job} のみ',
@@ -1322,6 +1319,11 @@ const ja: Translations = {
   'conflicts.kind.other': 'その他',
   'list.noneShown': '選んだ条件に合うものはありません。',
   'new.change.tileRows': '{trash}と{conflicts}も、{anomalies}と同じくタイルの列で中身を数えます。ごみ箱は側ごと、競合は種類ごとです。タイルはその部分だけを表示し、見出し「ジョブ」の ▾ でリストを一つのジョブに絞り込めます。',
+  'list.tip.columns': '見出しをドラッグすると列を移動でき、横の境目をドラッグすると幅を変えられます。',
+  'list.resize': 'ドラッグで幅を変え、ダブルクリックで元の幅に戻します。',
+  'history.findings': '検出',
+  'anomalies.closedInHistory': '閉じたものは履歴に',
+  'new.change.closedFindings': '過去30日に閉じた検出は{anomalies}から{history}に移り、{runs}と{files}に並ぶ3つ目の表示になりました。並べ替えと絞り込みの見出しもあります。{anomalies}は開いているものだけを表示し、そこへ案内します。',
 }
 
 export default ja

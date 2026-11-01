@@ -155,7 +155,6 @@ const vi: Translations = {
   'anomaly.acknowledged': 'Đã xác nhận.',
   'anomaly.heldNow': '“{job}” bị giữ lại: {what}',
   'anomaly.heldAgain': 'Từ đó đến nay có thêm thay đổi. “{job}” lại bị giữ lại, với số liệu mới.',
-  'anomaly.closed': 'Đã đóng trong 30 ngày qua',
   'anomaly.noneClosed': 'Không có gì được đóng trong thời gian đó.',
   'anomaly.outcome.ran': 'Đã vẫn chạy',
   'anomaly.outcome.takenBack': 'Đã lấy lại',
@@ -1224,8 +1223,6 @@ const vi: Translations = {
   'targets.ftpTls.explicit': 'TLS tường minh',
   'targets.ftpTls.implicit': 'TLS ngầm định ở cổng 990',
   'anomalies.all': 'Tất cả bất thường',
-  'anomalies.openTab': 'Đang mở',
-  'anomalies.which': 'Đang mở hoặc đã đóng',
   'dupes.findOnLeft': 'Bản trùng ở bên trái',
   'dupes.findOnRight': 'Bản trùng ở bên phải',
   'list.onlyJob': 'Chỉ {job}',
@@ -1322,6 +1319,11 @@ const vi: Translations = {
   'conflicts.kind.other': 'Khác',
   'list.noneShown': 'Không có gì ở đây khớp với lựa chọn của bạn.',
   'new.change.tileRows': '{trash} và {conflicts} đếm những gì chúng chứa trong một hàng ô, giống như {anomalies}: thùng rác theo bên và xung đột theo loại. Mỗi ô chỉ hiện phần của nó, còn dấu ▾ ở tiêu đề Công việc thu hẹp danh sách về một công việc.',
+  'list.tip.columns': 'Kéo tiêu đề để di chuyển cột, và kéo mép bên cạnh để đổi độ rộng.',
+  'list.resize': 'Kéo để đổi độ rộng; bấm đúp để trở lại độ rộng ban đầu.',
+  'history.findings': 'Phát hiện',
+  'anomalies.closedInHistory': 'Mục đã đóng trong Lịch sử',
+  'new.change.closedFindings': 'Các phát hiện đã đóng trong ba mươi ngày qua được chuyển từ {anomalies} sang {history}, thành chế độ xem thứ ba bên cạnh {runs} và {files}, với tiêu đề riêng để sắp xếp và lọc. {anomalies} chỉ hiện mục còn mở và dẫn tới đó.',
 }
 
 export default vi

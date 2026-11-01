@@ -155,7 +155,6 @@ const eu: Translations = {
   'anomaly.acknowledged': 'Berretsita.',
   'anomaly.heldNow': '«{job}» geldituta dago: {what}',
   'anomaly.heldAgain': 'Ordutik gehiago aldatu da. «{job}» berriro geldituta dago, zifra berriekin.',
-  'anomaly.closed': 'Azken 30 egunetan itxiak',
   'anomaly.noneClosed': 'Ez da ezer itxi denbora horretan.',
   'anomaly.outcome.ran': 'Hala ere exekutatua',
   'anomaly.outcome.takenBack': 'Berreskuratua',
@@ -1224,8 +1223,6 @@ const eu: Translations = {
   'targets.ftpTls.explicit': 'TLS esplizitua',
   'targets.ftpTls.implicit': 'TLS inplizitua 990 atakan',
   'anomalies.all': 'Anomalia guztiak',
-  'anomalies.openTab': 'Irekiak',
-  'anomalies.which': 'Irekiak edo itxiak',
   'dupes.findOnLeft': 'Bikoiztuak ezkerreko aldean',
   'dupes.findOnRight': 'Bikoiztuak eskuineko aldean',
   'list.onlyJob': '{job} soilik',
@@ -1322,6 +1319,11 @@ const eu: Translations = {
   'conflicts.kind.other': 'Besteak',
   'list.noneShown': 'Hemen ez dago aukeratu duzunarekin bat datorren ezer.',
   'new.change.tileRows': '{trash} eta {conflicts} orriek lauza-errenkada batean zenbatzen dute zer duten, {anomalies} orriak bezala: zakarrontzia aldeka eta gatazkak motaka. Lauza batek bere zatia bakarrik erakusten du, eta Lana goiburuko ▾ ikurrak zerrenda lan bakar batera mugatzen du.',
+  'list.tip.columns': 'Arrastatu goiburu bat haren zutabea mugitzeko, eta ondoko ertza zabalera aldatzeko.',
+  'list.resize': 'Arrastatu zabalera aldatzeko; klik bikoitzak jatorrizkoa itzultzen du.',
+  'history.findings': 'Aurkikuntzak',
+  'anomalies.closedInHistory': 'Itxitakoak historian',
+  'new.change.closedFindings': 'Azken hogeita hamar egunetan itxitako aurkikuntzak {anomalies} orritik {history} orrira pasatu dira, {runs} eta {files} ikuspegien ondoko hirugarren ikuspegi gisa, ordenatzeko eta iragazteko beren goiburuekin. {anomalies} orriak irekita dagoena bakarrik erakusten du eta hara eramaten du.',
 }
 
 export default eu

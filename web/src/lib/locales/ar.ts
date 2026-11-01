@@ -155,7 +155,6 @@ const ar: Translations = {
   'anomaly.acknowledged': 'تم تأكيد الاطلاع.',
   'anomaly.heldNow': '«{job}» موقوفة: {what}',
   'anomaly.heldAgain': 'تغيّر المزيد منذ ذلك الحين. «{job}» موقوفة مجددًا مع الأرقام الجديدة.',
-  'anomaly.closed': 'أُغلقت خلال آخر 30 يومًا',
   'anomaly.noneClosed': 'لم يُغلق شيء في هذه المدة.',
   'anomaly.outcome.ran': 'شُغّلت رغم ذلك',
   'anomaly.outcome.takenBack': 'استُرجعت',
@@ -1224,8 +1223,6 @@ const ar: Translations = {
   'targets.ftpTls.explicit': 'TLS صريح',
   'targets.ftpTls.implicit': 'TLS ضمني على المنفذ 990',
   'anomalies.all': 'كل الحالات الشاذة',
-  'anomalies.openTab': 'المفتوحة',
-  'anomalies.which': 'مفتوحة أو مغلقة',
   'dupes.findOnLeft': 'المكررة في الجانب الأيسر',
   'dupes.findOnRight': 'المكررة في الجانب الأيمن',
   'list.onlyJob': '{job} فقط',
@@ -1322,6 +1319,11 @@ const ar: Translations = {
   'conflicts.kind.other': 'أخرى',
   'list.noneShown': 'لا شيء هنا يطابق ما اخترته.',
   'new.change.tileRows': 'صار {trash} و{conflicts} يعدّان ما فيهما في صف من البلاطات، كما تفعل {anomalies}: سلة المهملات حسب الجانب والتعارضات حسب النوع. تعرض البلاطة جزأها وحده، والرمز ▾ عند عنوان المهمة يقصر القائمة على مهمة واحدة.',
+  'list.tip.columns': 'اسحب عنوانًا لنقل عموده، واسحب الحافة بجانبه لتغيير عرضه.',
+  'list.resize': 'اسحب لتغيير العرض، وانقر مرتين للعودة إلى العرض الأصلي.',
+  'history.findings': 'النتائج',
+  'anomalies.closedInHistory': 'المغلقة في السجل',
+  'new.change.closedFindings': 'انتقلت النتائج المغلقة خلال الثلاثين يومًا الماضية من {anomalies} إلى {history}، كعرض ثالث بجانب {runs} و{files}، ولها عناوين للفرز والتصفية. أما {anomalies} فتعرض المفتوح فقط وتقود إليها.',
 }
 
 export default ar

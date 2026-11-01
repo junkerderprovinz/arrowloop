@@ -155,7 +155,6 @@ const lv: Translations = {
   'anomaly.acknowledged': 'Apstiprināts.',
   'anomaly.heldNow': '„{job}“ ir apturēts: {what}',
   'anomaly.heldAgain': 'Kopš tā laika ir mainījies vairāk. „{job}“ ir atkal apturēts, ar jaunajiem skaitļiem.',
-  'anomaly.closed': 'Aizvērts pēdējo 30 dienu laikā',
   'anomaly.noneClosed': 'Šajā laikā nekas netika aizvērts.',
   'anomaly.outcome.ran': 'Tomēr palaists',
   'anomaly.outcome.takenBack': 'Atgūts',
@@ -1224,8 +1223,6 @@ const lv: Translations = {
   'targets.ftpTls.explicit': 'Tiešais TLS',
   'targets.ftpTls.implicit': 'Netiešais TLS portā 990',
   'anomalies.all': 'Visi atradumi',
-  'anomalies.openTab': 'Atvērtas',
-  'anomalies.which': 'Atvērtas vai aizvērtas',
   'dupes.findOnLeft': 'Dublikāti kreisajā pusē',
   'dupes.findOnRight': 'Dublikāti labajā pusē',
   'list.onlyJob': 'Tikai {job}',
@@ -1322,6 +1319,11 @@ const lv: Translations = {
   'conflicts.kind.other': 'Citi',
   'list.noneShown': 'Šeit nekas neatbilst jūsu izvēlei.',
   'new.change.tileRows': '{trash} un {conflicts} saskaita savu saturu flīžu rindā, tāpat kā {anomalies}: atkritni pa pusēm, konfliktus pa veidiem. Flīze rāda tikai savu daļu, bet ▾ pie virsraksta Uzdevums sašaurina sarakstu līdz vienam uzdevumam.',
+  'list.tip.columns': 'Velciet virsrakstu, lai pārvietotu tā kolonnu, un malu blakus, lai mainītu platumu.',
+  'list.resize': 'Velciet, lai mainītu platumu; dubultklikšķis atjauno sākotnējo.',
+  'history.findings': 'Atradumi',
+  'anomalies.closedInHistory': 'Slēgtie vēsturē',
+  'new.change.closedFindings': 'Pēdējās trīsdesmit dienās slēgtie atradumi ir pārcelti no {anomalies} uz {history} kā trešais skats blakus {runs} un {files}, ar saviem virsrakstiem kārtošanai un filtrēšanai. {anomalies} rāda tikai atvērto un ved uz turieni.',
 }
 
 export default lv

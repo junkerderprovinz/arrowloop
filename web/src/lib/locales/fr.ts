@@ -155,7 +155,6 @@ const fr: Translations = {
   'anomaly.acknowledged': 'Acquittée.',
   'anomaly.heldNow': '« {job} » est retenue : {what}',
   'anomaly.heldAgain': 'Il y a eu d\'autres changements depuis. « {job} » est de nouveau retenue, avec les nouveaux chiffres.',
-  'anomaly.closed': 'Fermées ces 30 derniers jours',
   'anomaly.noneClosed': 'Rien n\'a été fermé pendant cette période.',
   'anomaly.outcome.ran': 'Exécutée quand même',
   'anomaly.outcome.takenBack': 'Récupérée',
@@ -1224,8 +1223,6 @@ const fr: Translations = {
   'targets.ftpTls.explicit': 'TLS explicite',
   'targets.ftpTls.implicit': 'TLS implicite sur le port 990',
   'anomalies.all': 'Toutes les anomalies',
-  'anomalies.openTab': 'Ouvertes',
-  'anomalies.which': 'Ouvertes ou fermées',
   'dupes.findOnLeft': 'Doublons du côté gauche',
   'dupes.findOnRight': 'Doublons du côté droit',
   'list.onlyJob': 'Seulement {job}',
@@ -1322,6 +1319,11 @@ const fr: Translations = {
   'conflicts.kind.other': 'Autres',
   'list.noneShown': 'Rien ici ne correspond à votre choix.',
   'new.change.tileRows': '{trash} et {conflicts} comptent ce qu\'ils contiennent dans une rangée de tuiles, comme {anomalies} : la corbeille par côté et les conflits par type. Une tuile n\'affiche que sa part, et le ▾ de l\'en-tête Tâche restreint la liste à une tâche.',
+  'list.tip.columns': 'Faites glisser un en-tête pour déplacer sa colonne, et le bord à côté pour changer sa largeur.',
+  'list.resize': 'Faites glisser pour changer la largeur ; un double-clic rétablit l\'originale.',
+  'history.findings': 'Constats',
+  'anomalies.closedInHistory': 'Les clos dans l\'historique',
+  'new.change.closedFindings': 'Les constats clos ces trente derniers jours sont passés de {anomalies} à {history}, comme troisième vue à côté de {runs} et {files}, avec leurs propres en-têtes pour trier et filtrer. {anomalies} ne montre plus que ce qui est ouvert et y mène.',
 }
 
 export default fr

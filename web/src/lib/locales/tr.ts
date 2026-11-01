@@ -155,7 +155,6 @@ const tr: Translations = {
   'anomaly.acknowledged': 'Onaylandı.',
   'anomaly.heldNow': '“{job}” durduruldu: {what}',
   'anomaly.heldAgain': 'O zamandan beri daha fazlası değişti. “{job}” yeni sayılarla yeniden durduruldu.',
-  'anomaly.closed': 'Son 30 günde kapatılanlar',
   'anomaly.noneClosed': 'Bu sürede hiçbir şey kapatılmadı.',
   'anomaly.outcome.ran': 'Yine de çalıştırıldı',
   'anomaly.outcome.takenBack': 'Geri alındı',
@@ -1224,8 +1223,6 @@ const tr: Translations = {
   'targets.ftpTls.explicit': 'Açık TLS',
   'targets.ftpTls.implicit': '990 numaralı portta örtük TLS',
   'anomalies.all': 'Tüm bulgular',
-  'anomalies.openTab': 'Açık',
-  'anomalies.which': 'Açık veya kapalı',
   'dupes.findOnLeft': 'Sol taraftaki kopyalar',
   'dupes.findOnRight': 'Sağ taraftaki kopyalar',
   'list.onlyJob': 'Yalnızca {job}',
@@ -1322,6 +1319,11 @@ const tr: Translations = {
   'conflicts.kind.other': 'Diğer',
   'list.noneShown': 'Burada seçiminize uyan bir şey yok.',
   'new.change.tileRows': '{trash} ve {conflicts}, {anomalies} gibi içeriklerini bir kutucuk sırasında sayıyor: çöp kutusunu tarafa, çakışmaları türe göre. Bir kutucuk yalnızca kendi kısmını gösterir, İş başlığındaki ▾ de listeyi tek bir işe daraltır.',
+  'list.tip.columns': 'Sütununu taşımak için bir başlığı, genişliğini değiştirmek için yanındaki kenarı sürükleyin.',
+  'list.resize': 'Genişliği değiştirmek için sürükleyin; çift tıklama özgün genişliği geri getirir.',
+  'history.findings': 'Bulgular',
+  'anomalies.closedInHistory': 'Kapananlar geçmişte',
+  'new.change.closedFindings': 'Son otuz günde kapanan bulgular {anomalies} sayfasından {history} sayfasına taşındı; {runs} ve {files} yanında üçüncü bir görünüm olarak, sıralama ve süzme için kendi başlıklarıyla. {anomalies} yalnızca açık olanları gösterir ve oraya götürür.',
 }
 
 export default tr

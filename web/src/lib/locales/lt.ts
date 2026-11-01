@@ -155,7 +155,6 @@ const lt: Translations = {
   'anomaly.acknowledged': 'Patvirtinta.',
   'anomaly.heldNow': '„{job}“ sustabdyta: {what}',
   'anomaly.heldAgain': 'Nuo to laiko pasikeitė daugiau. „{job}“ vėl sustabdyta su naujais skaičiais.',
-  'anomaly.closed': 'Uždaryta per pastarąsias 30 dienų',
   'anomaly.noneClosed': 'Per tą laiką nieko neuždaryta.',
   'anomaly.outcome.ran': 'Vis tiek paleista',
   'anomaly.outcome.takenBack': 'Susigrąžinta',
@@ -1224,8 +1223,6 @@ const lt: Translations = {
   'targets.ftpTls.explicit': 'Aiškusis TLS',
   'targets.ftpTls.implicit': 'Numanomasis TLS 990 prievade',
   'anomalies.all': 'Visi radiniai',
-  'anomalies.openTab': 'Atviros',
-  'anomalies.which': 'Atviros arba uždarytos',
   'dupes.findOnLeft': 'Dublikatai kairėje pusėje',
   'dupes.findOnRight': 'Dublikatai dešinėje pusėje',
   'list.onlyJob': 'Tik {job}',
@@ -1322,6 +1319,11 @@ const lt: Translations = {
   'conflicts.kind.other': 'Kita',
   'list.noneShown': 'Čia niekas neatitinka jūsų pasirinkimo.',
   'new.change.tileRows': '{trash} ir {conflicts} skaičiuoja, ką turi, plytelių eilėje, kaip ir {anomalies}: šiukšlinę pagal pusę, konfliktus pagal rūšį. Plytelė rodo tik savo dalį, o ▾ prie antraštės Užduotis susiaurina sąrašą iki vienos užduoties.',
+  'list.tip.columns': 'Vilkite antraštę, kad perkeltumėte jos stulpelį, o kraštą šalia jos, kad pakeistumėte plotį.',
+  'list.resize': 'Vilkite, kad pakeistumėte plotį; dukart spustelėjus grąžinamas pradinis.',
+  'history.findings': 'Radiniai',
+  'anomalies.closedInHistory': 'Uždaryti istorijoje',
+  'new.change.closedFindings': 'Per pastarąsias trisdešimt dienų uždaryti radiniai persikėlė iš {anomalies} į {history}, kaip trečias rodinys šalia {runs} ir {files}, su savo antraštėmis rikiavimui ir filtravimui. {anomalies} rodo tik atvirus ir veda ten.',
 }
 
 export default lt

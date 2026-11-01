@@ -155,7 +155,6 @@ const ro: Translations = {
   'anomaly.acknowledged': 'Confirmat.',
   'anomaly.heldNow': '„{job}” este oprită: {what}',
   'anomaly.heldAgain': 'Între timp s-a schimbat mai mult. „{job}” este oprită din nou, cu cifrele noi.',
-  'anomaly.closed': 'Închise în ultimele 30 de zile',
   'anomaly.noneClosed': 'Nimic nu s-a închis în acest interval.',
   'anomaly.outcome.ran': 'Rulat oricum',
   'anomaly.outcome.takenBack': 'Recuperat',
@@ -1224,8 +1223,6 @@ const ro: Translations = {
   'targets.ftpTls.explicit': 'TLS explicit',
   'targets.ftpTls.implicit': 'TLS implicit pe portul 990',
   'anomalies.all': 'Toate anomaliile',
-  'anomalies.openTab': 'Deschise',
-  'anomalies.which': 'Deschise sau închise',
   'dupes.findOnLeft': 'Duplicate pe partea stângă',
   'dupes.findOnRight': 'Duplicate pe partea dreaptă',
   'list.onlyJob': 'Doar {job}',
@@ -1322,6 +1319,11 @@ const ro: Translations = {
   'conflicts.kind.other': 'Altele',
   'list.noneShown': 'Nimic de aici nu se potrivește cu alegerea dvs.',
   'new.change.tileRows': '{trash} și {conflicts} numără ce conțin într-un rând de dale, ca {anomalies}: coșul pe părți și conflictele pe tipuri. O dală arată doar partea ei, iar ▾ de la antetul Sarcină restrânge lista la o singură sarcină.',
+  'list.tip.columns': 'Trageți un antet ca să mutați coloana, iar marginea de lângă el ca să schimbați lățimea.',
+  'list.resize': 'Trageți ca să schimbați lățimea; dublu clic readuce lățimea inițială.',
+  'history.findings': 'Constatări',
+  'anomalies.closedInHistory': 'Cele închise în istoric',
+  'new.change.closedFindings': 'Constatările închise în ultimele treizeci de zile s-au mutat din {anomalies} în {history}, ca a treia vedere lângă {runs} și {files}, cu antete proprii pentru sortare și filtrare. {anomalies} arată doar ce e deschis și duce acolo.',
 }
 
 export default ro

@@ -188,20 +188,15 @@ export function Anomalies() {
         </Section>
       ) : null}
 
-      {/* What was closed is only read, so it stands as lines in one card. */}
-      <Section title={`${t("anomaly.closed")} · ${closed.length}`} hue={0}>
-        {closed.length === 0 ? <Body muted>{t("anomaly.noneClosed")}</Body> : null}
-        {closed.map((f) => (
-          <View key={f.id} style={styles.closed}>
-            <Caption>
-              {[f.job, f.outcome ? t(`anomaly.outcome.${f.outcome}`) : "", f.closed ? clock(f.closed, lang) : ""]
-                .filter(Boolean)
-                .join(" · ")}
-            </Caption>
-            <Body>{sentence(f, t, jobSides(jobs, f.job, t))}</Body>
-          </View>
-        ))}
-      </Section>
+      {/* What was closed lives in History, which logs what happened. */}
+      {closed.length > 0 ? (
+        <Button
+          label={t("anomalies.closedInHistory")}
+          labelKey="anomalies.closedInHistory"
+          glyph="IconHistory"
+          onPress={() => nav.getParent()?.navigate("HistoryTab", { screen: "RunList", params: { mode: "findings" } })}
+        />
+      ) : null}
     </Page>
   );
 }
@@ -378,9 +373,6 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   files: {
-    gap: 2,
-  },
-  closed: {
     gap: 2,
   },
   answers: {

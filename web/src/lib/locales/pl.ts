@@ -155,7 +155,6 @@ const pl: Translations = {
   'anomaly.acknowledged': 'Potwierdzono.',
   'anomaly.heldNow': '„{job}” jest wstrzymane: {what}',
   'anomaly.heldAgain': 'Od tamtej pory zmieniło się więcej. „{job}” jest znów wstrzymane, z nowymi liczbami.',
-  'anomaly.closed': 'Zamknięte w ostatnich 30 dniach',
   'anomaly.noneClosed': 'W tym czasie nic nie zamknięto.',
   'anomaly.outcome.ran': 'Uruchomiono mimo to',
   'anomaly.outcome.takenBack': 'Przywrócono',
@@ -1224,8 +1223,6 @@ const pl: Translations = {
   'targets.ftpTls.explicit': 'Jawny TLS',
   'targets.ftpTls.implicit': 'Niejawny TLS na porcie 990',
   'anomalies.all': 'Wszystkie anomalie',
-  'anomalies.openTab': 'Otwarte',
-  'anomalies.which': 'Otwarte czy zamknięte',
   'dupes.findOnLeft': 'Duplikaty po lewej stronie',
   'dupes.findOnRight': 'Duplikaty po prawej stronie',
   'list.onlyJob': 'Tylko {job}',
@@ -1322,6 +1319,11 @@ const pl: Translations = {
   'conflicts.kind.other': 'Inne',
   'list.noneShown': 'Nic tutaj nie pasuje do twojego wyboru.',
   'new.change.tileRows': '{trash} i {conflicts} liczą swoją zawartość w rzędzie kafelków, tak jak {anomalies}: kosz według strony, konflikty według rodzaju. Kafelek pokazuje tylko swoją część, a ▾ przy nagłówku Zadanie zawęża listę do jednego zadania.',
+  'list.tip.columns': 'Przeciągnij nagłówek, aby przenieść jego kolumnę, a krawędź obok, aby zmienić szerokość.',
+  'list.resize': 'Przeciągnij, aby zmienić szerokość; dwuklik przywraca pierwotną.',
+  'history.findings': 'Wykrycia',
+  'anomalies.closedInHistory': 'Zamknięte w historii',
+  'new.change.closedFindings': 'Wykrycia zamknięte w ciągu ostatnich trzydziestu dni przeniosły się z {anomalies} do {history}, jako trzeci widok obok {runs} i {files}, z własnymi nagłówkami do sortowania i filtrowania. {anomalies} pokazuje tylko otwarte i prowadzi tam.',
 }
 
 export default pl

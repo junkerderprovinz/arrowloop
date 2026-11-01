@@ -155,7 +155,6 @@ const uk: Translations = {
   'anomaly.acknowledged': 'Підтверджено.',
   'anomaly.heldNow': '«{job}» призупинено: {what}',
   'anomaly.heldAgain': 'Відтоді змінилося більше. «{job}» знову призупинено, з новими числами.',
-  'anomaly.closed': 'Закрито за останні 30 днів',
   'anomaly.noneClosed': 'За цей час нічого не закрито.',
   'anomaly.outcome.ran': 'Запущено попри все',
   'anomaly.outcome.takenBack': 'Повернено',
@@ -1224,8 +1223,6 @@ const uk: Translations = {
   'targets.ftpTls.explicit': 'Явний TLS',
   'targets.ftpTls.implicit': 'Неявний TLS на порту 990',
   'anomalies.all': 'Усі аномалії',
-  'anomalies.openTab': 'Відкриті',
-  'anomalies.which': 'Відкриті чи закриті',
   'dupes.findOnLeft': 'Дублікати з лівого боку',
   'dupes.findOnRight': 'Дублікати з правого боку',
   'list.onlyJob': 'Лише {job}',
@@ -1322,6 +1319,11 @@ const uk: Translations = {
   'conflicts.kind.other': 'Інші',
   'list.noneShown': 'Тут нічого не відповідає вашому вибору.',
   'new.change.tileRows': '{trash} і {conflicts} рахують свій вміст у ряду плиток, як і {anomalies}: кошик за боками, конфлікти за видами. Плитка показує лише свою частину, а ▾ біля заголовка «Завдання» звужує список до одного завдання.',
+  'list.tip.columns': 'Перетягніть заголовок, щоб перемістити стовпець, а край поруч, щоб змінити ширину.',
+  'list.resize': 'Перетягніть, щоб змінити ширину; подвійний клік повертає початкову.',
+  'history.findings': 'Знахідки',
+  'anomalies.closedInHistory': 'Закриті в журналі',
+  'new.change.closedFindings': 'Знахідки, закриті за останні тридцять днів, переїхали з {anomalies} до {history}, третім видом поруч із {runs} і {files}, зі своїми заголовками для сортування й фільтра. {anomalies} показує лише відкрите й веде туди.',
 }
 
 export default uk

@@ -9,11 +9,13 @@ import { IconAnomalies } from '../components/glyphs'
 import { JobChip } from '../components/JobChip'
 import { LearningRings } from '../components/LearningRings'
 import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
-import { Selector } from '../components/Selector'
+import { openClosedFindings } from './History'
+import { IconHistory } from '../components/glyphs'
+import { Button } from '../lib/glimstone/Button'
 import { Empty, Stack } from '../components/Shell'
 import { Tiles } from '../components/Tiles'
 import { Card } from '../lib/glimstone/Card'
-import { SEVERITIES, countBySeverity, type Finding, type FindingListing, type JobLearning, type Severity } from '../lib/anomalies'
+import { SEVERITIES, countBySeverity, findingOrder, type FindingListing, type JobLearning, type Severity } from '../lib/anomalies'
 import { api } from '../lib/api'
 import { matchesQuery } from '../lib/fold'
 import { useT, type TranslationKey } from '../lib/i18n'
@@ -28,19 +30,6 @@ const TILE_LABEL: Record<Severity, TranslationKey> = {
 
 type Tile = 'all' | Severity
 
-/**
- * The order a head asks for. Severity runs from critical down and breaks its
- * ties by job; ascending time is the oldest first.
- */
-function order(sort: ListSort): (a: Finding, b: Finding) => number {
-  const sign = sort.dir === 'asc' ? 1 : -1
-  const rank = (s: Severity) => SEVERITIES.indexOf(s)
-  return (a, b) => {
-    if (sort.by === 'job') return sign * a.job.localeCompare(b.job)
-    if (sort.by === 'since') return sign * (Date.parse(a.since) - Date.parse(b.since))
-    return sign * (rank(a.severity) - rank(b.severity)) || a.job.localeCompare(b.job)
-  }
-}
 
 export function Anomalies({
   listing,
@@ -65,7 +54,6 @@ export function Anomalies({
   const { t } = useT()
   const push = useToast()
   const [tile, setTile] = useState<Tile>('all')
-  const [closedView, setClosedView] = useState(false)
   const [sort, setSort] = useState<ListSort>({ by: 'severity', dir: 'asc' })
   const [query, setQuery] = useState('')
   const area = useRef<HTMLDivElement>(null)
@@ -94,12 +82,12 @@ export function Anomalies({
 
   const open = listing?.open ?? []
   const closed = listing?.closed ?? []
-  const pool = (closedView ? closed : open).filter((f) => !job || f.job === job)
+  const pool = open.filter((f) => !job || f.job === job)
   const searching = query.trim() !== ''
   const shown = pool
     .filter((f) => tile === 'all' || f.severity === tile)
     .filter((f) => !searching || matchesQuery(query, [f.job, f.detail ?? '', ...(f.paths ?? [])]))
-    .sort(order(sort))
+    .sort(findingOrder(sort))
 
   // A link names one finding, which is brought into view once it is listed.
   const focused = useRef<string | undefined>(undefined)
@@ -125,37 +113,22 @@ export function Anomalies({
         <Narrowed what={narrowing} onClear={() => setQuery('')} />
       </SeverityTiles>
 
-      <div className="flex md:justify-end">
-        <div className="w-full sm:w-auto sm:min-w-64">
-          <Selector<'open' | 'closed'>
-            scale="small"
-            label={t('anomalies.which')}
-            value={closedView ? 'closed' : 'open'}
-            onChange={(next) => setClosedView(next === 'closed')}
-            options={[
-              { value: 'open', label: t('anomalies.openTab') },
-              { value: 'closed', label: t('anomaly.closed') },
-            ]}
-          />
-        </div>
-      </div>
-
       <div data-new="finding-cards">
-        <Card title={closedView ? t('anomaly.closed') : tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
+        <Card title={tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2.5 outline-none">
             <ListSearch value={query} onChange={setQuery} placeholder={t('history.runSearch')} area={area} />
             <ListHead heads={heads} sort={sort} onSort={setSort} page="anomalies" search />
             {listing === null ? (
               <Empty>{t('history.working')}</Empty>
             ) : shown.length === 0 ? (
-              <Empty>{closedView ? t('anomaly.noneClosed') : pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
+              <Empty>{pool.length === 0 ? t('anomaly.none') : t('anomaly.noneShown')}</Empty>
             ) : (
               <ul className="flex flex-col gap-2.5">
                 {shown.map((f, i) => (
                   <FindingCard
                     key={f.id}
                     finding={f}
-                    lead={i === 0 && !closedView}
+                    lead={i === 0}
                     onChanged={onChanged}
                     onAllowed={(name) => allowed.current.set(name, refused[name] ?? 0)}
                   />
@@ -163,11 +136,23 @@ export function Anomalies({
               </ul>
             )}
           </div>
+          {/* What was closed lives in History, which logs what happened. */}
+          {closed.some((f) => !job || f.job === job) && (
+            <div className="flex justify-end">
+              <Button
+                label={t('anomalies.closedInHistory')}
+                labelKey="anomalies.closedInHistory"
+                glyph={<IconHistory />}
+                tone="subtle"
+                onClick={openClosedFindings}
+              />
+            </div>
+          )}
         </Card>
       </div>
 
 
-      {!closedView && tile === 'all' && learning && learning.length > 0 && (
+      {tile === 'all' && learning && learning.length > 0 && (
         <div data-new="learning">
           <Card title={t('anomaly.learn.title')} hint={t('anomaly.learn.hint')} hueIndex={1}>
             <LearningRings learning={learning.filter((l) => !job || l.job === job)} onOpen={openJob} />

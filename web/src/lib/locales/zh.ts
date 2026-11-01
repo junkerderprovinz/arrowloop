@@ -155,7 +155,6 @@ const zh: Translations = {
   'anomaly.acknowledged': '已确认。',
   'anomaly.heldNow': '“{job}”已暂扣：{what}',
   'anomaly.heldAgain': '之后又有更多变化。“{job}”已按新的数字再次暂扣。',
-  'anomaly.closed': '最近 30 天内已关闭',
   'anomaly.noneClosed': '这段时间内没有关闭任何内容。',
   'anomaly.outcome.ran': '已仍然运行',
   'anomaly.outcome.takenBack': '已取回',
@@ -1224,8 +1223,6 @@ const zh: Translations = {
   'targets.ftpTls.explicit': '显式 TLS',
   'targets.ftpTls.implicit': '端口 990 上的隐式 TLS',
   'anomalies.all': '全部异常',
-  'anomalies.openTab': '未处理',
-  'anomalies.which': '未处理或已关闭',
   'dupes.findOnLeft': '左侧的重复文件',
   'dupes.findOnRight': '右侧的重复文件',
   'list.onlyJob': '仅 {job}',
@@ -1322,6 +1319,11 @@ const zh: Translations = {
   'conflicts.kind.other': '其他',
   'list.noneShown': '这里没有符合你所选条件的内容。',
   'new.change.tileRows': '{trash}和{conflicts}也像{anomalies}一样用一排磁贴统计其中的内容：回收站按侧，冲突按类型。每个磁贴只显示自己的部分，“任务”标题旁的 ▾ 可把列表缩小到一个任务。',
+  'list.tip.columns': '拖动标题可移动该列，拖动旁边的边缘可改变宽度。',
+  'list.resize': '拖动可改变宽度，双击恢复原宽度。',
+  'history.findings': '发现',
+  'anomalies.closedInHistory': '已关闭的在历史中',
+  'new.change.closedFindings': '过去三十天内关闭的发现已从{anomalies}移到{history}，作为{runs}和{files}之外的第三个视图，并有自己的标题用于排序和筛选。{anomalies}只显示未关闭的发现，并提供前往的入口。',
 }
 
 export default zh

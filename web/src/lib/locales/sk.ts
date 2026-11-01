@@ -155,7 +155,6 @@ const sk: Translations = {
   'anomaly.acknowledged': 'Potvrdené.',
   'anomaly.heldNow': '„{job}“ je pozastavená: {what}',
   'anomaly.heldAgain': 'Odvtedy sa zmenilo viac. „{job}“ je znova pozastavená, s novými číslami.',
-  'anomaly.closed': 'Zatvorené za posledných 30 dní',
   'anomaly.noneClosed': 'Za ten čas sa nič nezatvorilo.',
   'anomaly.outcome.ran': 'Spustené aj tak',
   'anomaly.outcome.takenBack': 'Vrátené späť',
@@ -1224,8 +1223,6 @@ const sk: Translations = {
   'targets.ftpTls.explicit': 'Explicitné TLS',
   'targets.ftpTls.implicit': 'Implicitné TLS na porte 990',
   'anomalies.all': 'Všetky anomálie',
-  'anomalies.openTab': 'Otvorené',
-  'anomalies.which': 'Otvorené alebo zatvorené',
   'dupes.findOnLeft': 'Duplicity na ľavej strane',
   'dupes.findOnRight': 'Duplicity na pravej strane',
   'list.onlyJob': 'Len {job}',
@@ -1322,6 +1319,11 @@ const sk: Translations = {
   'conflicts.kind.other': 'Ostatné',
   'list.noneShown': 'Nič tu nezodpovedá vášmu výberu.',
   'new.change.tileRows': '{trash} a {conflicts} počítajú, čo obsahujú, v rade dlaždíc, rovnako ako {anomalies}: kôš podľa strany, konflikty podľa druhu. Dlaždica ukáže len svoju časť a ▾ pri záhlaví Úloha zúži zoznam na jednu úlohu.',
+  'list.tip.columns': 'Potiahnutím záhlavia presuniete jeho stĺpec, potiahnutím okraja vedľa neho zmeníte šírku.',
+  'list.resize': 'Potiahnutím zmeníte šírku, dvojklikom vrátite pôvodnú.',
+  'history.findings': 'Nálezy',
+  'anomalies.closedInHistory': 'Uzavreté v histórii',
+  'new.change.closedFindings': 'Nálezy uzavreté za posledných tridsať dní sa presunuli z {anomalies} do {history}, ako tretí pohľad vedľa {runs} a {files}, s vlastnými záhlaviami na zoraďovanie a filtrovanie. {anomalies} ukazuje len otvorené a vedie tam.',
 }
 
 export default sk

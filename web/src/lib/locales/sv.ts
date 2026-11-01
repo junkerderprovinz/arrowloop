@@ -155,7 +155,6 @@ const sv: Translations = {
   'anomaly.acknowledged': 'Kvitterat.',
   'anomaly.heldNow': '”{job}” är stoppat: {what}',
   'anomaly.heldAgain': 'Mer har ändrats sedan dess. ”{job}” är stoppat igen, med de nya siffrorna.',
-  'anomaly.closed': 'Stängt de senaste 30 dagarna',
   'anomaly.noneClosed': 'Inget stängdes under den tiden.',
   'anomaly.outcome.ran': 'Kördes ändå',
   'anomaly.outcome.takenBack': 'Hämtades tillbaka',
@@ -1224,8 +1223,6 @@ const sv: Translations = {
   'targets.ftpTls.explicit': 'Explicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS på port 990',
   'anomalies.all': 'Alla avvikelser',
-  'anomalies.openTab': 'Öppna',
-  'anomalies.which': 'Öppna eller stängda',
   'dupes.findOnLeft': 'Dubbletter på vänster sida',
   'dupes.findOnRight': 'Dubbletter på höger sida',
   'list.onlyJob': 'Bara {job}',
@@ -1322,6 +1319,11 @@ const sv: Translations = {
   'conflicts.kind.other': 'Övriga',
   'list.noneShown': 'Inget här passar det du valde.',
   'new.change.tileRows': '{trash} och {conflicts} räknar vad de innehåller i en rad rutor, som {anomalies} gör: papperskorgen per sida och konflikterna per slag. En ruta visar bara sin del, och ▾ vid rubriken Jobb begränsar listan till ett jobb.',
+  'list.tip.columns': 'Dra en rubrik för att flytta dess kolumn, och kanten bredvid för att ändra bredden.',
+  'list.resize': 'Dra för att ändra bredden; dubbelklicka för den ursprungliga.',
+  'history.findings': 'Fynd',
+  'anomalies.closedInHistory': 'Stängda i historiken',
+  'new.change.closedFindings': 'Fynd som stängts de senaste trettio dagarna har flyttat från {anomalies} till {history}, som en tredje vy bredvid {runs} och {files}, med egna rubriker att sortera och filtrera med. {anomalies} visar bara det som är öppet och leder dit.',
 }
 
 export default sv

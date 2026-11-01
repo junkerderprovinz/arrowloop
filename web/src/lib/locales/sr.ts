@@ -155,7 +155,6 @@ const sr: Translations = {
   'anomaly.acknowledged': 'Потврђено.',
   'anomaly.heldNow': '„{job}“ је заустављен: {what}',
   'anomaly.heldAgain': 'Од тада се променило још нешто. „{job}“ је поново заустављен, са новим бројевима.',
-  'anomaly.closed': 'Затворено у последњих 30 дана',
   'anomaly.noneClosed': 'У том периоду ништа није затворено.',
   'anomaly.outcome.ran': 'Ипак покренуто',
   'anomaly.outcome.takenBack': 'Враћено назад',
@@ -1224,8 +1223,6 @@ const sr: Translations = {
   'targets.ftpTls.explicit': 'Експлицитни TLS',
   'targets.ftpTls.implicit': 'Имплицитни TLS на порту 990',
   'anomalies.all': 'Све аномалије',
-  'anomalies.openTab': 'Отворено',
-  'anomalies.which': 'Отворено или затворено',
   'dupes.findOnLeft': 'Дупликати на левој страни',
   'dupes.findOnRight': 'Дупликати на десној страни',
   'list.onlyJob': 'Само {job}',
@@ -1322,6 +1319,11 @@ const sr: Translations = {
   'conflicts.kind.other': 'Остало',
   'list.noneShown': 'Овде ништа не одговара вашем избору.',
   'new.change.tileRows': '{trash} и {conflicts} броје шта садрже у низу плочица, као и {anomalies}: корпу по странама, сукобе по врсти. Плочица приказује само свој део, а ▾ код наслова Посао сужава списак на један посао.',
+  'list.tip.columns': 'Превуците наслов да померите његову колону, а ивицу поред њега да промените ширину.',
+  'list.resize': 'Превуците да промените ширину; двоструки клик враћа првобитну.',
+  'history.findings': 'Налази',
+  'anomalies.closedInHistory': 'Затворени у историји',
+  'new.change.closedFindings': 'Налази затворени у последњих тридесет дана преселили су се из {anomalies} у {history}, као трећи приказ поред {runs} и {files}, са сопственим насловима за сортирање и филтрирање. {anomalies} приказује само отворено и води онамо.',
 }
 
 export default sr

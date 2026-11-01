@@ -155,7 +155,6 @@ const no: Translations = {
   'anomaly.acknowledged': 'Kvittert.',
   'anomaly.heldNow': '«{job}» er holdt tilbake: {what}',
   'anomaly.heldAgain': 'Mer har endret seg siden. «{job}» er holdt tilbake igjen, med de nye tallene.',
-  'anomaly.closed': 'Lukket de siste 30 dagene',
   'anomaly.noneClosed': 'Ingenting ble lukket i den perioden.',
   'anomaly.outcome.ran': 'Kjørt likevel',
   'anomaly.outcome.takenBack': 'Hentet tilbake',
@@ -1224,8 +1223,6 @@ const no: Translations = {
   'targets.ftpTls.explicit': 'Eksplisitt TLS',
   'targets.ftpTls.implicit': 'Implisitt TLS på port 990',
   'anomalies.all': 'Alle avvik',
-  'anomalies.openTab': 'Åpne',
-  'anomalies.which': 'Åpne eller lukkede',
   'dupes.findOnLeft': 'Duplikater på venstre side',
   'dupes.findOnRight': 'Duplikater på høyre side',
   'list.onlyJob': 'Bare {job}',
@@ -1322,6 +1319,11 @@ const no: Translations = {
   'conflicts.kind.other': 'Andre',
   'list.noneShown': 'Ingenting her passer til valget ditt.',
   'new.change.tileRows': '{trash} og {conflicts} teller det de inneholder i en rad med fliser, slik {anomalies} gjør: papirkurven etter side og konfliktene etter type. En flis viser bare sin del, og ▾ ved overskriften Jobb snevrer listen inn til én jobb.',
+  'list.tip.columns': 'Dra en overskrift for å flytte kolonnen, og kanten ved siden av for å endre bredden.',
+  'list.resize': 'Dra for å endre bredden; dobbeltklikk gir den opprinnelige.',
+  'history.findings': 'Funn',
+  'anomalies.closedInHistory': 'Lukkede i historikken',
+  'new.change.closedFindings': 'Funn som er lukket de siste tretti dagene, har flyttet fra {anomalies} til {history} som en tredje visning ved siden av {runs} og {files}, med egne overskrifter for sortering og filtrering. {anomalies} viser bare det som er åpent, og leder dit.',
 }
 
 export default no

@@ -37,7 +37,11 @@ import { navigate, useLocation } from '../lib/router'
 import { useStartStop } from '../lib/startStop'
 import { useJobConfig } from './Editor'
 import { PreviewPlan } from './Preview'
-import { RunRow } from './History'
+import { FILE_COLUMNS, RunRow } from './History'
+import { useColumns } from '../lib/columns'
+
+/** A job's own file log has no job column. */
+const JOB_FILE_COLUMNS = FILE_COLUMNS.filter((c) => c.id !== 'job')
 
 /** How long a card a link asked for is kept in view while the page fills in. */
 const HOLD_CARD_MS = 1500
@@ -456,6 +460,7 @@ function FilesCard({ job }: { job: Job }) {
     return () => clearTimeout(timer)
   }, [typed])
   const area = useRef<HTMLDivElement>(null)
+  const columns = useColumns('job-files', JOB_FILE_COLUMNS)
 
   // A new question starts again at one screenful.
   useEffect(() => setLimit(60), [query, kind])
@@ -489,9 +494,17 @@ function FilesCard({ job }: { job: Job }) {
   ]
   return (
     <Card title={t('job.files')} hueIndex={1}>
-      <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2 outline-none">
+      <div
+        ref={(el) => {
+          area.current = el
+          columns.host.current = el
+        }}
+        tabIndex={-1}
+        style={columns.style}
+        className="relative flex flex-col gap-2 outline-none"
+      >
         <ListSearch value={typed} onChange={setTyped} placeholder={t('history.pathHint')} area={area} />
-        <ListHead heads={heads} page="job-files" search />
+        <ListHead heads={heads} page="job-files" search columns={columns} />
         {error ? (
           <p className="text-subline text-statusFail">{error}</p>
         ) : !touches ? (
@@ -511,7 +524,7 @@ function FilesCard({ job }: { job: Job }) {
             }}
           >
             {touches.map((e) => (
-              <TouchRow key={touchKey(e)} touch={e} />
+              <TouchRow key={touchKey(e)} touch={e} columns={columns} />
             ))}
           </ul>
         )}

@@ -76,7 +76,12 @@ each other where not. A filter that narrows the list marks its ▾ and shows
 above the list, in History at the end of the row with **Files** and **Runs**
 and elsewhere under the tiles on top, with **Show everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
 a search that floats over the top of the list and finds an entry by its path;
-Escape empties and closes it. A device with only a touch screen has no key to
+Escape empties and closes it. In History and a job's **Files touched** the
+columns can be moved and widened: drag a heading to another place, or drag the
+line at its edge, which shows while the pointer is over the headings, and a
+double click on that line gives the column its width back. Alt with an arrow
+key moves the focused heading. Each list keeps its own arrangement in the
+browser. A device with only a touch screen has no key to
 type with, so a magnifier at the end of the headings opens the search there. A
 line under the headings says all this while the pointer is over them, and by
 itself on the first visit. On a touch screen a long press on the headings
@@ -324,7 +329,9 @@ failed run uses.
 
 ## History
 
-**History** has two views, **Files** and **Runs**. A line keeps all of its
+**History** has three views, **Files**, **Runs** and, while Anomalies is on,
+**Findings**: what was closed in the last thirty days, each as its card with
+how it ended, filtered by severity and job from the headings. A line keeps all of its
 words: a long kind of entry or a long path wraps instead of being cut. A run says how many files it
 copied and how many were in conflict; a click opens it with the files, and for
 a conflict what was decided. The decision is the part worth having: a scheduled
@@ -347,9 +354,10 @@ closes its gaps turns "nothing happened" into "nothing to show".
 refused, a job that keeps failing, a schedule that is not kept, and a run far
 outside what the job usually does. Tiles at the top count the findings by
 severity, as tall as BombVault's, each with its name over how many are open,
-and a click on one shows only that severity. **Open or closed**
-switches to what was closed in the last thirty days, with how it ended, and
-the headings sort the findings by severity, job or when they were first seen.
+and a click on one shows only that severity. The page shows what is open; what
+was closed in the last thirty days is in History, and **Closed ones in
+History** at the foot of the list leads there. The headings sort the findings
+by severity, job or when they were first seen.
 
 Every finding is a card of its own, laid out as BombVault lays out its
 findings, and nothing opens over the page. Its badge says how bad it is; the

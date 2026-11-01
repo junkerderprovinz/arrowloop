@@ -155,7 +155,6 @@ const el: Translations = {
   'anomaly.acknowledged': 'Επιβεβαιώθηκε.',
   'anomaly.heldNow': 'Η εργασία «{job}» είναι σταματημένη: {what}',
   'anomaly.heldAgain': 'Έχουν αλλάξει περισσότερα από τότε. Η εργασία «{job}» σταμάτησε ξανά, με τους νέους αριθμούς.',
-  'anomaly.closed': 'Κλεισμένα τις τελευταίες 30 ημέρες',
   'anomaly.noneClosed': 'Τίποτα δεν έκλεισε εκείνο το διάστημα.',
   'anomaly.outcome.ran': 'Εκτελέστηκε παρ\' όλα αυτά',
   'anomaly.outcome.takenBack': 'Επαναφέρθηκε',
@@ -1224,8 +1223,6 @@ const el: Translations = {
   'targets.ftpTls.explicit': 'Ρητό TLS',
   'targets.ftpTls.implicit': 'Έμμεσο TLS στη θύρα 990',
   'anomalies.all': 'Όλες οι ανωμαλίες',
-  'anomalies.openTab': 'Ανοιχτές',
-  'anomalies.which': 'Ανοιχτές ή κλειστές',
   'dupes.findOnLeft': 'Διπλότυπα στην αριστερή πλευρά',
   'dupes.findOnRight': 'Διπλότυπα στη δεξιά πλευρά',
   'list.onlyJob': 'Μόνο {job}',
@@ -1322,6 +1319,11 @@ const el: Translations = {
   'conflicts.kind.other': 'Άλλα',
   'list.noneShown': 'Τίποτα εδώ δεν ταιριάζει με την επιλογή σας.',
   'new.change.tileRows': 'Τα {trash} και {conflicts} μετρούν ό,τι περιέχουν σε μια σειρά πλακιδίων, όπως το {anomalies}: τον κάδο ανά πλευρά και τις διενέξεις ανά είδος. Ένα πλακίδιο δείχνει μόνο το κομμάτι του, και το ▾ στην επικεφαλίδα Εργασία περιορίζει τη λίστα σε μία εργασία.',
+  'list.tip.columns': 'Σύρετε μια επικεφαλίδα για να μετακινήσετε τη στήλη της, και την άκρη δίπλα της για να αλλάξετε το πλάτος.',
+  'list.resize': 'Σύρετε για να αλλάξετε το πλάτος· διπλό κλικ επαναφέρει το αρχικό.',
+  'history.findings': 'Ευρήματα',
+  'anomalies.closedInHistory': 'Τα κλειστά στο ιστορικό',
+  'new.change.closedFindings': 'Τα ευρήματα που έκλεισαν τις τελευταίες τριάντα ημέρες μεταφέρθηκαν από το {anomalies} στο {history}, ως τρίτη προβολή δίπλα στα {runs} και {files}, με δικές τους επικεφαλίδες για ταξινόμηση και φιλτράρισμα. Το {anomalies} δείχνει μόνο τα ανοιχτά και οδηγεί εκεί.',
 }
 
 export default el

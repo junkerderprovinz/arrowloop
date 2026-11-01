@@ -155,7 +155,6 @@ const nl: Translations = {
   'anomaly.acknowledged': 'Bevestigd.',
   'anomaly.heldNow': '“{job}” is vastgehouden: {what}',
   'anomaly.heldAgain': 'Er is sindsdien meer veranderd. “{job}” is opnieuw vastgehouden, met de nieuwe cijfers.',
-  'anomaly.closed': 'Gesloten in de afgelopen 30 dagen',
   'anomaly.noneClosed': 'In die tijd is niets gesloten.',
   'anomaly.outcome.ran': 'Toch uitgevoerd',
   'anomaly.outcome.takenBack': 'Teruggehaald',
@@ -1224,8 +1223,6 @@ const nl: Translations = {
   'targets.ftpTls.explicit': 'Expliciete TLS',
   'targets.ftpTls.implicit': 'Impliciete TLS op poort 990',
   'anomalies.all': 'Alle afwijkingen',
-  'anomalies.openTab': 'Open',
-  'anomalies.which': 'Open of gesloten',
   'dupes.findOnLeft': 'Dubbele bestanden aan de linkerkant',
   'dupes.findOnRight': 'Dubbele bestanden aan de rechterkant',
   'list.onlyJob': 'Alleen {job}',
@@ -1322,6 +1319,11 @@ const nl: Translations = {
   'conflicts.kind.other': 'Overig',
   'list.noneShown': 'Niets hier past bij wat je koos.',
   'new.change.tileRows': '{trash} en {conflicts} tellen wat ze bevatten in een rij tegels, zoals {anomalies}: de prullenbak per kant en de conflicten per soort. Een tegel toont alleen zijn deel, en de ▾ bij de kop Taak beperkt de lijst tot één taak.',
+  'list.tip.columns': 'Sleep een kop om de kolom te verplaatsen, en de rand ernaast om de breedte te wijzigen.',
+  'list.resize': 'Sleep om de breedte te wijzigen; dubbelklik voor de oorspronkelijke breedte.',
+  'history.findings': 'Bevindingen',
+  'anomalies.closedInHistory': 'Gesloten in de geschiedenis',
+  'new.change.closedFindings': 'Bevindingen die de afgelopen dertig dagen zijn gesloten, staan niet meer in {anomalies} maar in {history}, als derde weergave naast {runs} en {files}, met eigen koppen om te sorteren en te filteren. {anomalies} toont alleen wat open is en wijst de weg.',
 }
 
 export default nl

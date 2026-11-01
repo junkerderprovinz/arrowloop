@@ -155,7 +155,6 @@ const da: Translations = {
   'anomaly.acknowledged': 'Kvitteret.',
   'anomaly.heldNow': '»{job}« er stoppet: {what}',
   'anomaly.heldAgain': 'Der er sket mere siden. »{job}« er stoppet igen, med de nye tal.',
-  'anomaly.closed': 'Lukket de seneste 30 dage',
   'anomaly.noneClosed': 'Der blev ikke lukket noget i den tid.',
   'anomaly.outcome.ran': 'Kørt alligevel',
   'anomaly.outcome.takenBack': 'Hentet tilbage',
@@ -1224,8 +1223,6 @@ const da: Translations = {
   'targets.ftpTls.explicit': 'Eksplicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS på port 990',
   'anomalies.all': 'Alle anomalier',
-  'anomalies.openTab': 'Åbne',
-  'anomalies.which': 'Åbne eller lukkede',
   'dupes.findOnLeft': 'Dubletter i venstre side',
   'dupes.findOnRight': 'Dubletter i højre side',
   'list.onlyJob': 'Kun {job}',
@@ -1322,6 +1319,11 @@ const da: Translations = {
   'conflicts.kind.other': 'Andre',
   'list.noneShown': 'Intet her passer til dit valg.',
   'new.change.tileRows': '{trash} og {conflicts} tæller, hvad de rummer, i en række fliser, som {anomalies} gør: papirkurven efter side og konflikterne efter slags. En flise viser kun sin del, og ▾ ved overskriften Job indsnævrer listen til ét job.',
+  'list.tip.columns': 'Træk en overskrift for at flytte dens kolonne og kanten ved siden af for at ændre bredden.',
+  'list.resize': 'Træk for at ændre bredden; dobbeltklik giver den oprindelige igen.',
+  'history.findings': 'Fund',
+  'anomalies.closedInHistory': 'Lukkede i historikken',
+  'new.change.closedFindings': 'Fund, der er lukket inden for de sidste tredive dage, er flyttet fra {anomalies} til {history} som en tredje visning ved siden af {runs} og {files}, med egne overskrifter til sortering og filtrering. {anomalies} viser kun det åbne og fører derhen.',
 }
 
 export default da

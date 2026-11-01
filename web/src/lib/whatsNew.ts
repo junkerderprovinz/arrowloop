@@ -79,6 +79,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.tileRows',
         names: { trash: 'nav.trash', conflicts: 'nav.conflicts', anomalies: 'nav.anomalies' },
       },
+      {
+        id: 'closed-findings',
+        at: ['/history'],
+        where: ['nav.history'],
+        text: 'new.change.closedFindings',
+        names: { anomalies: 'nav.anomalies', history: 'nav.history', runs: 'history.runs', files: 'history.files' },
+      },
       // Every page has buttons, so the dot stands in the list only.
       { id: 'button-tint', text: 'new.change.buttonTint' },
     ],

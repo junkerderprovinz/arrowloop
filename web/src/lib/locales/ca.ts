@@ -155,7 +155,6 @@ const ca: Translations = {
   'anomaly.acknowledged': 'Confirmat.',
   'anomaly.heldNow': '«{job}» està aturada: {what}',
   'anomaly.heldAgain': 'Des de llavors ha canviat alguna cosa més. «{job}» torna a estar aturada, amb les xifres noves.',
-  'anomaly.closed': 'Tancades en els últims 30 dies',
   'anomaly.noneClosed': 'En aquest temps no s\'ha tancat res.',
   'anomaly.outcome.ran': 'Executada igualment',
   'anomaly.outcome.takenBack': 'Recuperada',
@@ -1224,8 +1223,6 @@ const ca: Translations = {
   'targets.ftpTls.explicit': 'TLS explícit',
   'targets.ftpTls.implicit': 'TLS implícit al port 990',
   'anomalies.all': 'Totes les anomalies',
-  'anomalies.openTab': 'Obertes',
-  'anomalies.which': 'Obertes o tancades',
   'dupes.findOnLeft': 'Duplicats a la banda esquerra',
   'dupes.findOnRight': 'Duplicats a la banda dreta',
   'list.onlyJob': 'Només {job}',
@@ -1322,6 +1319,11 @@ const ca: Translations = {
   'conflicts.kind.other': 'Altres',
   'list.noneShown': 'Res d\'aquí no coincideix amb el que has triat.',
   'new.change.tileRows': '{trash} i {conflicts} compten el que contenen en una fila de rajoles, com fa {anomalies}: la paperera per costat i els conflictes per tipus. Una rajola mostra només la seva part, i el ▾ de la capçalera Tasca limita la llista a una tasca.',
+  'list.tip.columns': 'Arrossega una capçalera per moure\'n la columna, i la vora del costat per canviar-ne l\'amplada.',
+  'list.resize': 'Arrossega per canviar l\'amplada; un doble clic torna a l\'original.',
+  'history.findings': 'Troballes',
+  'anomalies.closedInHistory': 'Les tancades a l\'historial',
+  'new.change.closedFindings': 'Les troballes tancades els darrers trenta dies han passat de {anomalies} a {history}, com a tercera vista al costat de {runs} i {files}, amb capçaleres pròpies per ordenar i filtrar. {anomalies} només mostra el que és obert i hi porta.',
 }
 
 export default ca

@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { RefreshControl, StyleSheet, Text, View } from "react-native";
+import { useRoute, type RouteProp } from "@react-navigation/native";
+import { findingOrder, sentence, type Finding, type Severity, SEVERITIES } from "../../../web/src/lib/anomalies";
+import { matchesQuery } from "../../../web/src/lib/fold";
+import type { HistoryStack } from "../nav";
+import { jobSides } from "../sides";
+import { useWaiting } from "../waiting";
 import { entryLabel, entryNote, plainKey, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
@@ -36,11 +42,23 @@ import { bytes } from "../space";
  * row opens its run in a sheet.
  */
 export function History() {
+  const route = useRoute<RouteProp<HistoryStack, "RunList">>();
   const [mode, setMode] = useState<Mode>("files");
+  const asked = route.params?.mode;
+  useEffect(() => {
+    if (asked) setMode(asked);
+  }, [asked]);
+  if (mode === "findings") return <FindingLog mode={mode} onMode={setMode} />;
   return mode === "files" ? <FileLog mode={mode} onMode={setMode} /> : <RunLog mode={mode} onMode={setMode} />;
 }
 
-type Mode = "files" | "runs";
+type Mode = "files" | "runs" | "findings";
+
+const SEVERITY_LABEL = {
+  critical: "anomaly.severity.critical",
+  warning: "anomaly.severity.warning",
+  info: "anomaly.severity.info",
+} as const;
 
 type Sort = { by: string; dir: SortDir };
 
@@ -437,14 +455,150 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   );
 }
 
+/**
+ * The findings closed in the last thirty days, with how each ended, as lines
+ * in one card. Anomalies keeps only what is open.
+ */
+function FindingLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) {
+  const { t, lang } = useT();
+  const { p, accent } = useTheme();
+  const [closed, setClosed] = useState<Finding[] | null>(null);
+  const [known, setKnown] = useState<Job[]>([]);
+  const [level, setLevel] = useState<Severity | "">("");
+  const [job, setJob] = useState("");
+  const [sort, setSort] = useState<Sort>({ by: "since", dir: "desc" });
+  const [filtering, setFiltering] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [typed, setTyped] = useState("");
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    try {
+      const [found, jobs] = await Promise.all([api.anomalies(), api.jobs()]);
+      setClosed(found.closed);
+      setKnown(jobs);
+      setError("");
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }, []);
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const names = useMemo(() => [...new Set((closed ?? []).map((f) => f.job))].sort((a, b) => a.localeCompare(b)), [closed]);
+  const shown = (closed ?? [])
+    .filter((f) => (!job || f.job === job) && (!level || f.severity === level))
+    .filter((f) => !typed.trim() || matchesQuery(typed, [f.job, f.detail ?? "", ...(f.paths ?? [])]))
+    .sort(findingOrder(sort));
+
+  const narrowing = [
+    ...(level ? [t(SEVERITY_LABEL[level])] : []),
+    ...(job ? [t("list.onlyJob", { job })] : []),
+    ...(typed.trim() ? [t("list.searched", { q: typed.trim() })] : []),
+  ];
+  const header = (
+    <>
+      <Top mode={mode} onMode={onMode}>
+        <Narrowed
+          what={narrowing}
+          onClear={() => {
+            setLevel("");
+            setJob("");
+            setTyped("");
+          }}
+        />
+      </Top>
+      <ListTop title={t("history.findings")} hue={0} />
+      <ListPiece>
+        <ListSearch
+          open={searching}
+          value={typed}
+          onChange={setTyped}
+          onClose={() => setSearching(false)}
+          placeholder={t("history.runSearch")}
+        />
+        <ListHead
+          page="history-findings"
+          sort={sort}
+          onSort={(by, dir) => setSort({ by, dir })}
+          onSearch={() => setSearching(true)}
+          heads={[
+            {
+              id: "severity",
+              label: t("list.head.severity"),
+              sorts: true,
+              filter: { active: level !== "" || job !== "", open: () => setFiltering(true) },
+            },
+            { id: "job", label: t("history.filterJob"), sorts: true },
+            { id: "since", label: t("anomaly.closedLabel"), sorts: true },
+          ]}
+        />
+      </ListPiece>
+    </>
+  );
+
+  return (
+    <>
+      <MovingList
+        style={{ backgroundColor: p.background }}
+        data={shown}
+        keyExtractor={(f) => f.id}
+        contentContainerStyle={styles.list}
+        refreshControl={<RefreshControl refreshing={false} onRefresh={load} tintColor={accent} />}
+        ListHeaderComponent={header}
+        ListEmptyComponent={
+          <ListPiece>
+            <Empty
+              title={closed === null ? t("history.working") : narrowing.length > 0 ? t("list.noneShown") : t("anomaly.noneClosed")}
+              detail={error || undefined}
+            />
+          </ListPiece>
+        }
+        ItemSeparatorComponent={Separator}
+        ListFooterComponent={<ListEnd />}
+        renderItem={({ item: f }) => (
+          <ListPiece>
+            <View style={styles.row}>
+              <Caption>
+                {[t(SEVERITY_LABEL[f.severity]), f.job, f.outcome ? t(`anomaly.outcome.${f.outcome}`) : "", f.closed ? clock(f.closed, lang) : ""]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </Caption>
+              <Body>{sentence(f, t, jobSides(known, f.job, t))}</Body>
+            </View>
+          </ListPiece>
+        )}
+      />
+      <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
+        <AxisLabel>{t("list.head.severity")}</AxisLabel>
+        <Choice<Severity | "">
+          hue={1}
+          value={level}
+          onChange={setLevel}
+          options={[
+            { value: "", label: t("anomalies.all") },
+            ...SEVERITIES.map((sv) => ({ value: sv, label: t(SEVERITY_LABEL[sv]) })),
+          ]}
+        />
+        <JobChips names={names} job={job} onJob={setJob} />
+      </Sheet>
+    </>
+  );
+}
+
 /** The card's name: what the list holds, which of it, and the job it is narrowed to. */
 function viewName(what: string, which: string, job: string): string {
   return [what, which, job].filter(Boolean).join(" · ");
 }
 
-/** The selector between files and runs, over what narrows the list. */
+/**
+ * The selector between files, runs and, while Anomalies is on, the findings
+ * closed lately, over what narrows the list.
+ */
 function Top({ mode, onMode, children }: { mode: Mode; onMode: (next: Mode) => void; children: ReactNode }) {
   const { t } = useT();
+  const { anomaliesOn } = useWaiting();
   return (
     <View style={styles.bar}>
       <Choice<Mode>
@@ -454,6 +608,7 @@ function Top({ mode, onMode, children }: { mode: Mode; onMode: (next: Mode) => v
         options={[
           { value: "files", label: t("history.files") },
           { value: "runs", label: t("history.runs") },
+          ...(anomaliesOn !== false ? [{ value: "findings" as const, label: t("history.findings") }] : []),
         ]}
       />
       {children}

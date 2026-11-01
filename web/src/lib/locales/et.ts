@@ -155,7 +155,6 @@ const et: Translations = {
   'anomaly.acknowledged': 'Kinnitatud.',
   'anomaly.heldNow': '„{job}“ on peatatud: {what}',
   'anomaly.heldAgain': 'Vahepeal on muutunud veel midagi. „{job}“ on uute arvudega uuesti peatatud.',
-  'anomaly.closed': 'Suletud viimase 30 päeva jooksul',
   'anomaly.noneClosed': 'Selle aja jooksul ei suletud midagi.',
   'anomaly.outcome.ran': 'Käivitatud ikkagi',
   'anomaly.outcome.takenBack': 'Toodud tagasi',
@@ -1224,8 +1223,6 @@ const et: Translations = {
   'targets.ftpTls.explicit': 'Selgesõnaline TLS',
   'targets.ftpTls.implicit': 'Kaudne TLS pordil 990',
   'anomalies.all': 'Kõik anomaaliad',
-  'anomalies.openTab': 'Avatud',
-  'anomalies.which': 'Avatud või suletud',
   'dupes.findOnLeft': 'Duplikaadid vasakul poolel',
   'dupes.findOnRight': 'Duplikaadid paremal poolel',
   'list.onlyJob': 'Ainult {job}',
@@ -1322,6 +1319,11 @@ const et: Translations = {
   'conflicts.kind.other': 'Muud',
   'list.noneShown': 'Siin ei vasta miski sinu valikule.',
   'new.change.tileRows': '{trash} ja {conflicts} loendavad oma sisu paanireas, nagu {anomalies}: prügikasti poolte kaupa ja konfliktid liikide kaupa. Paan näitab ainult oma osa ning ▾ pealkirja Töö juures kitsendab loendi ühele tööle.',
+  'list.tip.columns': 'Lohista pealkirja, et selle veergu teisaldada, ja selle kõrval olevat serva, et laiust muuta.',
+  'list.resize': 'Lohista laiuse muutmiseks; topeltklõps taastab algse.',
+  'history.findings': 'Leiud',
+  'anomalies.closedInHistory': 'Suletud ajaloos',
+  'new.change.closedFindings': 'Viimase kolmekümne päeva jooksul suletud leiud on kolinud lehelt {anomalies} lehele {history}, kolmanda vaatena {runs} ja {files} kõrval, oma pealkirjadega sortimiseks ja filtreerimiseks. {anomalies} näitab ainult avatut ja juhatab sinna.',
 }
 
 export default et

@@ -210,6 +210,17 @@ describe('the anomalies', () => {
     expect(screen.queryByRole('button', { name: 'Show more' })).toBeNull()
   })
 
+  it('shows only what is open, and leads to the closed ones in History', () => {
+    const closed = { ...finding('x', 'warning'), open: false, closed: '2027-03-02T03:00:00Z', outcome: 'acknowledged' } as Finding
+    wrap(<Anomalies listing={{ open: [finding('c', 'critical')], closed: [closed] }} job="" refused={{}} onJob={() => undefined} onChanged={() => undefined} />)
+    expect(screen.queryByRole('tab', { name: 'Closed' })).toBeNull()
+    expect(document.getElementById('finding-x')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Closed ones in History' }))
+    expect(localStorage.getItem('arrowloop.history.view')).toBe('"findings"')
+    expect(window.location.pathname).toBe('/history')
+    localStorage.clear()
+  })
+
   it('lists no jobs that have nothing open', () => {
     page()
     expect(screen.queryByText('Nothing open')).toBeNull()
@@ -250,7 +261,7 @@ describe('the history', () => {
   })
 
   it('has no buttons over its list, and filters from the heads', async () => {
-    wrap(<History runs={[]} jobs={[]} />)
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     expect(await screen.findByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Filter by Job' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
@@ -258,10 +269,27 @@ describe('the history', () => {
     localStorage.clear()
   })
 
+  it('lists the findings closed lately as a third view', () => {
+    const closed: Finding = {
+      id: 'z', job: 'docs', kind: 'overdue', severity: 'warning', held: false, since: '2027-03-01T03:00:00Z', seen: '', open: false, closed: '2027-03-02T03:00:00Z',
+    }
+    wrap(<History runs={[]} jobs={[]} closed={[closed]} onFindingChanged={() => undefined} />)
+    fireEvent.click(screen.getByRole('tab', { name: 'Findings' }))
+    expect(document.getElementById('finding-z')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Filter by Severity' })).toBeTruthy()
+    localStorage.clear()
+  })
+
+  it('offers no findings view while Anomalies is switched off', () => {
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
+    expect(screen.queryByRole('tab', { name: 'Findings' })).toBeNull()
+    localStorage.clear()
+  })
+
   it('keeps a run that worked quiet and opens a run in a window', async () => {
     localStorage.setItem('arrowloop.history.view', JSON.stringify('runs'))
     history.mockImplementation(() => Promise.resolve([run(''), run('boom')]))
-    wrap(<History runs={[]} jobs={[]} />)
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     await screen.findAllByRole('button', { name: 'docs' })
     expect(screen.queryByText('Completed')).toBeNull()
     expect(screen.getAllByText('Failed')).toHaveLength(1)

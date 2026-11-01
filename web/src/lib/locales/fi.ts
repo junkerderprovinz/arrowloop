@@ -155,7 +155,6 @@ const fi: Translations = {
   'anomaly.acknowledged': 'Kuitattu.',
   'anomaly.heldNow': '"{job}" on pysäytetty: {what}',
   'anomaly.heldAgain': 'Sen jälkeen on muuttunut enemmän. "{job}" on pysäytetty uudelleen uusilla luvuilla.',
-  'anomaly.closed': 'Suljettu viimeisen 30 päivän aikana',
   'anomaly.noneClosed': 'Mitään ei suljettu tänä aikana.',
   'anomaly.outcome.ran': 'Suoritettu silti',
   'anomaly.outcome.takenBack': 'Palautettu',
@@ -1224,8 +1223,6 @@ const fi: Translations = {
   'targets.ftpTls.explicit': 'Eksplisiittinen TLS',
   'targets.ftpTls.implicit': 'Implisiittinen TLS portissa 990',
   'anomalies.all': 'Kaikki poikkeamat',
-  'anomalies.openTab': 'Avoimet',
-  'anomalies.which': 'Avoimet tai suljetut',
   'dupes.findOnLeft': 'Kaksoiskappaleet vasemmalla puolella',
   'dupes.findOnRight': 'Kaksoiskappaleet oikealla puolella',
   'list.onlyJob': 'Vain {job}',
@@ -1322,6 +1319,11 @@ const fi: Translations = {
   'conflicts.kind.other': 'Muut',
   'list.noneShown': 'Mikään tässä ei vastaa valintaasi.',
   'new.change.tileRows': '{trash} ja {conflicts} laskevat sisältönsä ruuturivissä, kuten {anomalies}: roskakorin puolittain ja ristiriidat lajeittain. Ruutu näyttää vain oman osansa, ja Työ-otsikon ▾ rajaa luettelon yhteen työhön.',
+  'list.tip.columns': 'Siirrä saraketta vetämällä sen otsikkoa ja muuta leveyttä vetämällä viereistä reunaa.',
+  'list.resize': 'Vedä muuttaaksesi leveyttä; kaksoisnapsautus palauttaa alkuperäisen.',
+  'history.findings': 'Havainnot',
+  'anomalies.closedInHistory': 'Suljetut historiassa',
+  'new.change.closedFindings': 'Viimeisen kolmenkymmenen päivän aikana suljetut havainnot ovat siirtyneet sivulta {anomalies} sivulle {history}, kolmanneksi näkymäksi näkymien {runs} ja {files} rinnalle, omine otsikoineen lajittelua ja suodatusta varten. {anomalies} näyttää vain avoimet ja ohjaa sinne.',
 }
 
 export default fi

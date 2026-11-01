@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { ListHead, ListSearch, nextSort, type Head, type ListSort } from './ListHead'
+import { useColumns } from '../lib/columns'
 
 afterEach(cleanup)
 beforeEach(() => localStorage.clear())
@@ -126,5 +127,62 @@ describe('the list search', () => {
     } finally {
       window.matchMedia = plain
     }
+  })
+})
+
+describe('a list with columns', () => {
+  const defs = [{ id: 'name', width: 200 }, { id: 'kind', width: 120 }, { id: 'path' }]
+
+  function Table() {
+    const columns = useColumns('test', defs)
+    const heads: Head[] = [
+      { id: 'name', label: 'Name' },
+      { id: 'kind', label: 'Kind' },
+      { id: 'path', label: 'Path' },
+    ]
+    return (
+      <div ref={(el) => void (columns.host.current = el)} style={columns.style} data-testid="host">
+        <ListHead heads={heads} columns={columns} />
+      </div>
+    )
+  }
+
+  const order = () => screen.getAllByRole('columnheader').sort((a, b) => Number(a.style.order) - Number(b.style.order)).map((h) => h.textContent)
+  const stored = () => JSON.parse(localStorage.getItem('arrowloop.columns.test') ?? '{}')
+
+  it('moves a column that is dragged onto another', () => {
+    render(<Table />)
+    const kind = screen.getByText('Kind')
+    const name = screen.getAllByRole('columnheader')[0]
+    name.getBoundingClientRect = () => ({ left: 0, width: 200 }) as DOMRect
+    fireEvent.dragStart(kind, { dataTransfer: { setData() {}, effectAllowed: '' } })
+    fireEvent.dragOver(name)
+    fireEvent.drop(name, { clientX: 20 })
+    expect(order()).toEqual(['Kind', 'Name', 'Path'])
+    expect(stored().order).toEqual(['kind', 'name', 'path'])
+  })
+
+  it('moves the focused head with Alt and an arrow key', () => {
+    render(<Table />)
+    fireEvent.keyDown(screen.getByText('Name'), { key: 'ArrowRight', altKey: true })
+    expect(order()).toEqual(['Kind', 'Name', 'Path'])
+  })
+
+  it('widens a column by its handle and gives the width back on a double click', () => {
+    render(<Table />)
+    const handle = screen.getAllByRole('separator')[0]
+    Object.defineProperty(handle.parentElement, 'offsetWidth', { value: 200 })
+    fireEvent.pointerDown(handle, { clientX: 200, pointerId: 1 })
+    fireEvent.pointerMove(handle, { clientX: 260, pointerId: 1 })
+    expect(screen.getByTestId('host').style.getPropertyValue('--list-cols')).toContain('260px')
+    fireEvent.pointerUp(handle, { clientX: 260, pointerId: 1 })
+    expect(stored().widths).toEqual({ name: 260 })
+    fireEvent.doubleClick(handle)
+    expect(stored().widths).toEqual({})
+  })
+
+  it('has no handle on the column that takes the rest', () => {
+    render(<Table />)
+    expect(screen.getAllByRole('separator')).toHaveLength(2)
   })
 })

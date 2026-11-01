@@ -155,7 +155,6 @@ const hi: Translations = {
   'anomaly.acknowledged': 'स्वीकार किया गया।',
   'anomaly.heldNow': '"{job}" रोका गया है: {what}',
   'anomaly.heldAgain': 'तब से और बदलाव हुए हैं। "{job}" नए आँकड़ों के साथ फिर रोका गया है।',
-  'anomaly.closed': 'पिछले 30 दिनों में बंद',
   'anomaly.noneClosed': 'उस दौरान कुछ बंद नहीं हुआ।',
   'anomaly.outcome.ran': 'फिर भी चलाया गया',
   'anomaly.outcome.takenBack': 'वापस लाया गया',
@@ -1224,8 +1223,6 @@ const hi: Translations = {
   'targets.ftpTls.explicit': 'एक्सप्लिसिट TLS',
   'targets.ftpTls.implicit': 'पोर्ट 990 पर इम्प्लिसिट TLS',
   'anomalies.all': 'सभी विसंगतियाँ',
-  'anomalies.openTab': 'खुली',
-  'anomalies.which': 'खुली या बंद',
   'dupes.findOnLeft': 'बाईं ओर दोहरे',
   'dupes.findOnRight': 'दाईं ओर दोहरे',
   'list.onlyJob': 'केवल {job}',
@@ -1322,6 +1319,11 @@ const hi: Translations = {
   'conflicts.kind.other': 'अन्य',
   'list.noneShown': 'यहाँ आपके चुनाव से कुछ मेल नहीं खाता।',
   'new.change.tileRows': '{trash} और {conflicts} अब {anomalies} की तरह टाइलों की एक पंक्ति में गिनते हैं कि उनमें क्या है: रद्दी को ओर के अनुसार और टकरावों को प्रकार के अनुसार। एक टाइल सिर्फ़ अपना हिस्सा दिखाती है, और काम शीर्षक का ▾ सूची को एक काम तक सीमित करता है।',
+  'list.tip.columns': 'किसी शीर्षक को खींचकर उसका स्तंभ हटाएँ, और उसके पास के किनारे को खींचकर चौड़ाई बदलें।',
+  'list.resize': 'चौड़ाई बदलने के लिए खींचें; दो बार क्लिक करने से मूल चौड़ाई लौट आती है।',
+  'history.findings': 'निष्कर्ष',
+  'anomalies.closedInHistory': 'बंद हुए इतिहास में',
+  'new.change.closedFindings': 'पिछले तीस दिनों में बंद हुए निष्कर्ष {anomalies} से {history} में चले गए हैं, {runs} और {files} के पास तीसरे दृश्य के रूप में, क्रम लगाने और छाँटने के अपने शीर्षकों के साथ। {anomalies} अब सिर्फ़ खुले निष्कर्ष दिखाता है और वहाँ तक ले जाता है।',
 }
 
 export default hi

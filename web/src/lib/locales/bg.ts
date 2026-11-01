@@ -155,7 +155,6 @@ const bg: Translations = {
   'anomaly.acknowledged': 'Потвърдено.',
   'anomaly.heldNow': '„{job}“ е спряна: {what}',
   'anomaly.heldAgain': 'Оттогава е променено още нещо. „{job}“ е спряна отново, с новите числа.',
-  'anomaly.closed': 'Затворени през последните 30 дни',
   'anomaly.noneClosed': 'През това време нищо не е затворено.',
   'anomaly.outcome.ran': 'Изпълнена въпреки това',
   'anomaly.outcome.takenBack': 'Върната назад',
@@ -1224,8 +1223,6 @@ const bg: Translations = {
   'targets.ftpTls.explicit': 'Явен TLS',
   'targets.ftpTls.implicit': 'Неявен TLS на порт 990',
   'anomalies.all': 'Всички аномалии',
-  'anomalies.openTab': 'Отворени',
-  'anomalies.which': 'Отворени или затворени',
   'dupes.findOnLeft': 'Дубликати от лявата страна',
   'dupes.findOnRight': 'Дубликати от дясната страна',
   'list.onlyJob': 'Само {job}',
@@ -1322,6 +1319,11 @@ const bg: Translations = {
   'conflicts.kind.other': 'Други',
   'list.noneShown': 'Нищо тук не отговаря на избора ви.',
   'new.change.tileRows': '{trash} и {conflicts} броят какво съдържат в редица плочки, както {anomalies}: кошчето по страна, конфликтите по вид. Плочката показва само своята част, а ▾ при заглавието Задача свежда списъка до една задача.',
+  'list.tip.columns': 'Плъзнете заглавие, за да преместите колоната му, и ръба до него, за да промените ширината.',
+  'list.resize': 'Плъзнете, за да промените ширината; двойно щракване връща първоначалната.',
+  'history.findings': 'Находки',
+  'anomalies.closedInHistory': 'Затворените в журнала',
+  'new.change.closedFindings': 'Находките, затворени през последните трийсет дни, се преместиха от {anomalies} в {history}, като трети изглед до {runs} и {files}, със собствени заглавия за сортиране и филтриране. {anomalies} показва само отвореното и води натам.',
 }
 
 export default bg
