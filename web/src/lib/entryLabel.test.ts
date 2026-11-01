@@ -54,6 +54,8 @@ describe('what happened to a file', () => {
     ['skip', 'right', 'Upload fehlgeschlagen'],
     ['skip', 'left', 'Download fehlgeschlagen'],
     ['mkdir', 'right', 'Ordner in OpenCloud-Test angelegt'],
+    ['vanished', 'left', 'Datei lokal vor dem Kopieren verschwunden'],
+    ['vanished', 'right', 'Datei in OpenCloud-Test vor dem Kopieren verschwunden'],
   ])('%s on the %s side reads "%s"', (kind, side, want) => {
     expect(entryLabel(t, entry(kind, side), cloud, drives)).toBe(want)
   })

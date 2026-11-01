@@ -1324,6 +1324,9 @@ const is: Translations = {
   'new.change.closedFindings': 'Niðurstöður sem var lokað síðustu þrjátíu daga hafa flust úr {anomalies} í {history}, sem þriðja sýn við hlið {runs} og {files}, með eigin fyrirsögnum til að raða og sía. {anomalies} sýnir aðeins það sem er opið og vísar þangað.',
   'dupes.findOnLeft': 'Finna tvítök vinstra megin',
   'dupes.findOnRight': 'Finna tvítök hægra megin',
+  'entry.fileVanished': 'Skráin hvarf áður en hún var afrituð',
+  'entry.fileVanishedLocal': 'Skráin hvarf hér áður en hún var afrituð',
+  'entry.fileVanishedIn': 'Skráin hvarf í {place} áður en hún var afrituð',
 }
 
 export default is

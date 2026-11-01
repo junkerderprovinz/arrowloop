@@ -1324,6 +1324,9 @@ const ms: Translations = {
   'new.change.closedFindings': 'Penemuan yang ditutup dalam tiga puluh hari lepas telah berpindah dari {anomalies} ke {history}, sebagai paparan ketiga di sebelah {runs} dan {files}, dengan tajuknya sendiri untuk mengisih dan menapis. {anomalies} hanya menunjukkan yang terbuka dan membawa ke sana.',
   'dupes.findOnLeft': 'Cari pendua di sisi kiri',
   'dupes.findOnRight': 'Cari pendua di sisi kanan',
+  'entry.fileVanished': 'Fail hilang sebelum disalin',
+  'entry.fileVanishedLocal': 'Fail hilang secara setempat sebelum disalin',
+  'entry.fileVanishedIn': 'Fail hilang dalam {place} sebelum disalin',
 }
 
 export default ms

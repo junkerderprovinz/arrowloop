@@ -1324,6 +1324,9 @@ const id: Translations = {
   'new.change.closedFindings': 'Temuan yang ditutup dalam tiga puluh hari terakhir pindah dari {anomalies} ke {history}, sebagai tampilan ketiga di samping {runs} dan {files}, dengan judul kolomnya sendiri untuk mengurutkan dan menyaring. {anomalies} hanya menampilkan yang terbuka dan menunjukkan jalannya.',
   'dupes.findOnLeft': 'Cari duplikat di sisi kiri',
   'dupes.findOnRight': 'Cari duplikat di sisi kanan',
+  'entry.fileVanished': 'Berkas hilang sebelum disalin',
+  'entry.fileVanishedLocal': 'Berkas hilang secara lokal sebelum disalin',
+  'entry.fileVanishedIn': 'Berkas hilang di {place} sebelum disalin',
 }
 
 export default id

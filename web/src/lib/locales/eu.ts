@@ -1324,6 +1324,9 @@ const eu: Translations = {
   'new.change.closedFindings': 'Azken hogeita hamar egunetan itxitako aurkikuntzak {anomalies} orritik {history} orrira pasatu dira, {runs} eta {files} ikuspegien ondoko hirugarren ikuspegi gisa, ordenatzeko eta iragazteko beren goiburuekin. {anomalies} orriak irekita dagoena bakarrik erakusten du eta hara eramaten du.',
   'dupes.findOnLeft': 'Bilatu bikoiztuak ezkerreko aldean',
   'dupes.findOnRight': 'Bilatu bikoiztuak eskuineko aldean',
+  'entry.fileVanished': 'Fitxategia kopiatu aurretik desagertu da',
+  'entry.fileVanishedLocal': 'Fitxategia lokalean desagertu da kopiatu aurretik',
+  'entry.fileVanishedIn': 'Fitxategia {place}(e)n desagertu da kopiatu aurretik',
 }
 
 export default eu

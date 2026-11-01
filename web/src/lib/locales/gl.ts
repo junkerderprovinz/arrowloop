@@ -1324,6 +1324,9 @@ const gl: Translations = {
   'new.change.closedFindings': 'Os achados pechados nos últimos trinta días pasaron de {anomalies} a {history}, como terceira vista xunto a {runs} e {files}, con cabeceiras propias para ordenar e filtrar. {anomalies} só amosa o que está aberto e leva ata alí.',
   'dupes.findOnLeft': 'Buscar duplicados no lado esquerdo',
   'dupes.findOnRight': 'Buscar duplicados no lado dereito',
+  'entry.fileVanished': 'O ficheiro desapareceu antes de copialo',
+  'entry.fileVanishedLocal': 'O ficheiro desapareceu en local antes de copialo',
+  'entry.fileVanishedIn': 'O ficheiro desapareceu en {place} antes de copialo',
 }
 
 export default gl

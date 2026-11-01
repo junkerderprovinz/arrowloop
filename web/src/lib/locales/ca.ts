@@ -1324,6 +1324,9 @@ const ca: Translations = {
   'new.change.closedFindings': 'Les troballes tancades els darrers trenta dies han passat de {anomalies} a {history}, com a tercera vista al costat de {runs} i {files}, amb capçaleres pròpies per ordenar i filtrar. {anomalies} només mostra el que és obert i hi porta.',
   'dupes.findOnLeft': 'Cerca duplicats al costat esquerre',
   'dupes.findOnRight': 'Cerca duplicats al costat dret',
+  'entry.fileVanished': 'El fitxer ha desaparegut abans de copiar-lo',
+  'entry.fileVanishedLocal': 'El fitxer ha desaparegut localment abans de copiar-lo',
+  'entry.fileVanishedIn': 'El fitxer ha desaparegut a {place} abans de copiar-lo',
 }
 
 export default ca

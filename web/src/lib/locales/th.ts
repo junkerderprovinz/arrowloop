@@ -1324,6 +1324,9 @@ const th: Translations = {
   'new.change.closedFindings': 'สิ่งที่พบซึ่งปิดไปในสามสิบวันที่ผ่านมาย้ายจาก {anomalies} ไปที่ {history} เป็นมุมมองที่สามถัดจาก {runs} และ {files} พร้อมหัวคอลัมน์สำหรับเรียงและกรอง {anomalies} แสดงเฉพาะสิ่งที่ยังเปิดอยู่และพาไปที่นั่น',
   'dupes.findOnLeft': 'ค้นหาไฟล์ซ้ำฝั่งซ้าย',
   'dupes.findOnRight': 'ค้นหาไฟล์ซ้ำฝั่งขวา',
+  'entry.fileVanished': 'ไฟล์หายไปก่อนจะคัดลอก',
+  'entry.fileVanishedLocal': 'ไฟล์ในเครื่องหายไปก่อนจะคัดลอก',
+  'entry.fileVanishedIn': 'ไฟล์ใน {place} หายไปก่อนจะคัดลอก',
 }
 
 export default th

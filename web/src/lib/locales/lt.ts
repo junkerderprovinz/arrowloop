@@ -1324,6 +1324,9 @@ const lt: Translations = {
   'new.change.closedFindings': 'Per pastarąsias trisdešimt dienų uždaryti radiniai persikėlė iš {anomalies} į {history}, kaip trečias rodinys šalia {runs} ir {files}, su savo antraštėmis rikiavimui ir filtravimui. {anomalies} rodo tik atvirus ir veda ten.',
   'dupes.findOnLeft': 'Ieškoti dublikatų kairėje pusėje',
   'dupes.findOnRight': 'Ieškoti dublikatų dešinėje pusėje',
+  'entry.fileVanished': 'Failas dingo prieš nukopijuojant',
+  'entry.fileVanishedLocal': 'Failas dingo vietoje prieš nukopijuojant',
+  'entry.fileVanishedIn': 'Failas dingo prieš nukopijuojant: {place}',
 }
 
 export default lt

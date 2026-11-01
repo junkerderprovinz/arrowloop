@@ -1324,6 +1324,9 @@ const hr: Translations = {
   'new.change.closedFindings': 'Nalazi zatvoreni u posljednjih trideset dana preselili su se iz {anomalies} u {history}, kao treći prikaz uz {runs} i {files}, s vlastitim naslovima za razvrstavanje i filtriranje. {anomalies} prikazuje samo otvoreno i vodi onamo.',
   'dupes.findOnLeft': 'Traži duplikate na lijevoj strani',
   'dupes.findOnRight': 'Traži duplikate na desnoj strani',
+  'entry.fileVanished': 'Datoteka je nestala prije kopiranja',
+  'entry.fileVanishedLocal': 'Datoteka je lokalno nestala prije kopiranja',
+  'entry.fileVanishedIn': 'Datoteka je nestala u {place} prije kopiranja',
 }
 
 export default hr

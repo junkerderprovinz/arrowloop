@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -84,7 +85,9 @@ type Entry struct {
 	// file had before, or NoteRelocated when it left for the other side, and
 	// on a trash NoteBin when it went into the bin. A folder left alone
 	// because a side could not read it is a skip with that side and
-	// NoteUnreadable or NoteVanished. Empty otherwise.
+	// NoteUnreadable or NoteVanished. A file the source lost before it could
+	// be copied is an entry of kind NoteVanished on the source side. Empty
+	// otherwise.
 	Note string
 	// Size is how big the file was, in bytes. Zero for a folder, a skip and an
 	// error, where it does not apply.
@@ -115,6 +118,41 @@ type DisagreementError struct {
 func (e *DisagreementError) Error() string {
 	return fmt.Sprintf("refusing to record %q as agreed: %s", e.Path, e.Details)
 }
+
+// vanishedError means the source lost a file between the scan and the copy,
+// as a rotated log or a Git branch deleted meanwhile. There is nothing left to
+// copy and nothing for the next run to find, so the run notes it and moves on
+// without counting it against the run.
+type vanishedError struct {
+	Path string
+	Side plan.Side
+}
+
+func (e *vanishedError) Error() string {
+	return fmt.Sprintf("%q disappeared from the %s side before it could be copied", e.Path, e.Side)
+}
+
+// inFluxError means a file was being written while it was copied: rclone saw
+// it change underneath the read, or it reads differently from the copy once
+// the copy is done. No row is written, so the next run compares again. It is
+// not a DisagreementError, whose unwrapping would stop the run: a file that
+// changed while it was sent says something about the file, not about the
+// engine's picture of the tree.
+type inFluxError struct {
+	Path    string
+	Details string
+	// Sent says the copy itself finished, so its step is already counted.
+	Sent bool
+}
+
+func (e *inFluxError) Error() string {
+	return fmt.Sprintf("%q changed while it was being copied: %s", e.Path, e.Details)
+}
+
+// fluxPatience is how many runs in a row may meet a file in flux before it is
+// reported. A log that grows during one run is settled by the next; one that
+// is written to on every run would otherwise never be heard of.
+const fluxPatience = 3
 
 // UnverifiedError means the two sides looked equal and the engine could not
 // prove it, on a job that asked for proof. It does not stop the run: the file
@@ -150,6 +188,7 @@ type tally struct {
 	mu    sync.Mutex
 	res   Result
 	fatal error
+	db    *state.DB
 
 	progress Progress
 	logger   Logger
@@ -324,7 +363,7 @@ func RunWatched(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt 
 // spelled out. It is not part of plan.Options because the planner never uses
 // it.
 func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt plan.Options, watcher Progress, verify Verify) (Result, error) {
-	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}, progress: watcher}
+	t := &tally{res: Result{Skipped: append([]plan.Skip(nil), p.Skipped...)}, progress: watcher, db: db}
 	t.logger, _ = watcher.(Logger)
 	// The plan's own skips belong in the log, or the run counts them as left
 	// for later without naming a single path.
@@ -474,6 +513,9 @@ func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, work
 					if ctx.Err() != nil {
 						continue
 					}
+					if t.leftForNext(ctx, act, err) {
+						continue
+					}
 					t.skip(act.Path, act.Dst.String(), whyFailed(ends, couldHaveLocked(act), act.Kind.String(), "stepFailed", err))
 				}
 			}
@@ -494,6 +536,35 @@ feed:
 		return err
 	}
 	return run.Err()
+}
+
+// leftForNext handles the two failures that belong to the file rather than to
+// the run, and reports whether err was one of them. A file the source lost is
+// noted and dropped. A file in flux stays quiet until it has been in flux for
+// fluxPatience runs in a row, and is reported from then on.
+func (t *tally) leftForNext(ctx context.Context, act plan.Action, err error) bool {
+	var gone *vanishedError
+	if errors.As(err, &gone) {
+		t.note(NoteVanished, spelled(act), gone.Side.String(), "")
+		return true
+	}
+	var flux *inFluxError
+	if !errors.As(err, &flux) {
+		return false
+	}
+	runs, dbErr := t.db.InFlux(ctx, act.Path)
+	if dbErr != nil {
+		t.skip(act.Path, "", whyFailed(Ends{}, nil, "record", "recordFailed", dbErr))
+		return true
+	}
+	if runs < fluxPatience {
+		if !flux.Sent {
+			t.passed(spelled(act))
+		}
+		return true
+	}
+	t.skip(act.Path, "", plan.Because("inFlux", "side", act.Src.String(), "runs", strconv.Itoa(runs)))
+	return true
 }
 
 func ofKind(acts []plan.Action, kinds ...plan.Kind) []plan.Action {
@@ -749,7 +820,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if err := retrying(ctx, func() error {
 			return sendFile(ctx, dst, src, act.DstPath, act.SrcPath, from, over)
 		}); err != nil {
-			return err
+			return sourceTrouble(ctx, src, act, err)
 		}
 		t.count(func(r *Result) { r.Copied++ })
 		// The source's size is what was just written.
@@ -782,7 +853,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		if err := retrying(ctx, func() error {
 			return sendFile(ctx, dst, src, act.DstPath, act.SrcPath, sent, over)
 		}); err != nil {
-			return err
+			return sourceTrouble(ctx, src, act, err)
 		}
 		t.count(func(r *Result) { r.Copied++ })
 		t.sized("copy", act.DstPath, act.Dst.String(), replacing(over), sizeOf(sent))
@@ -860,6 +931,20 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)
+}
+
+// sourceTrouble tells a copy that failed because of its source from one that
+// failed for any other reason. Only a source that is really gone counts as
+// vanished, so a destination that refused the file stays a failure.
+func sourceTrouble(ctx context.Context, src fs.Fs, act plan.Action, err error) error {
+	if _, statErr := src.NewObject(ctx, act.SrcPath); errors.Is(statErr, fs.ErrorObjectNotFound) {
+		return &vanishedError{Path: act.SrcPath, Side: act.Src}
+	}
+	// The local backend says so in words only; see local.go's Update.
+	if strings.Contains(err.Error(), "source file is being updated") {
+		return &inFluxError{Path: act.Path, Details: err.Error()}
+	}
+	return err
 }
 
 // changedError means a side no longer holds what the scan found there. Acting
@@ -1123,10 +1208,13 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 		// The checksums belong in the message: when they decide, the sizes and
 		// times match and would describe a disagreement that looks like
 		// agreement.
-		return &DisagreementError{
-			Path:    key,
-			Details: fmt.Sprintf("left %s, right %s", describeSide(leftPath, leftFacts), describeSide(rightPath, rightFacts)),
+		details := fmt.Sprintf("left %s, right %s", describeSide(leftPath, leftFacts), describeSide(rightPath, rightFacts))
+		// A file this step just sent that already reads differently was
+		// written to while it was copied. The row is withheld all the same.
+		if sent {
+			return &inFluxError{Path: key, Details: details, Sent: true}
 		}
+		return &DisagreementError{Path: key, Details: details}
 	}
 
 	// Same agreed either on checksums or on size and time alone.

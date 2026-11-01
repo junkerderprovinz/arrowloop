@@ -1324,6 +1324,9 @@ const no: Translations = {
   'new.change.closedFindings': 'Funn som er lukket de siste tretti dagene, har flyttet fra {anomalies} til {history} som en tredje visning ved siden av {runs} og {files}, med egne overskrifter for sortering og filtrering. {anomalies} viser bare det som er åpent, og leder dit.',
   'dupes.findOnLeft': 'Finn duplikater på venstre side',
   'dupes.findOnRight': 'Finn duplikater på høyre side',
+  'entry.fileVanished': 'Filen forsvant før kopieringen',
+  'entry.fileVanishedLocal': 'Filen forsvant lokalt før kopieringen',
+  'entry.fileVanishedIn': 'Filen forsvant i {place} før kopieringen',
 }
 
 export default no

@@ -1324,6 +1324,9 @@ const fa: Translations = {
   'new.change.closedFindings': 'یافته‌هایی که در سی روز گذشته بسته شده‌اند از {anomalies} به {history} رفته‌اند، به‌عنوان نمای سوم کنار {runs} و {files}، با سرستون‌های خودشان برای مرتب‌سازی و فیلتر. {anomalies} فقط موارد باز را نشان می‌دهد و به آنجا راه می‌برد.',
   'dupes.findOnLeft': 'یافتن تکراری‌ها در سمت چپ',
   'dupes.findOnRight': 'یافتن تکراری‌ها در سمت راست',
+  'entry.fileVanished': 'پرونده پیش از کپی ناپدید شد',
+  'entry.fileVanishedLocal': 'پرونده پیش از کپی به‌صورت محلی ناپدید شد',
+  'entry.fileVanishedIn': 'پرونده در {place} پیش از کپی ناپدید شد',
 }
 
 export default fa

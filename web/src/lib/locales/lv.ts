@@ -1324,6 +1324,9 @@ const lv: Translations = {
   'new.change.closedFindings': 'Pēdējās trīsdesmit dienās slēgtie atradumi ir pārcelti no {anomalies} uz {history} kā trešais skats blakus {runs} un {files}, ar saviem virsrakstiem kārtošanai un filtrēšanai. {anomalies} rāda tikai atvērto un ved uz turieni.',
   'dupes.findOnLeft': 'Meklēt dublikātus kreisajā pusē',
   'dupes.findOnRight': 'Meklēt dublikātus labajā pusē',
+  'entry.fileVanished': 'Fails pazuda pirms kopēšanas',
+  'entry.fileVanishedLocal': 'Fails lokāli pazuda pirms kopēšanas',
+  'entry.fileVanishedIn': 'Fails pazuda pirms kopēšanas: {place}',
 }
 
 export default lv

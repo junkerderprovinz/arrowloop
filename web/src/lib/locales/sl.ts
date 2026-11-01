@@ -1324,6 +1324,9 @@ const sl: Translations = {
   'new.change.closedFindings': 'Ugotovitve, zaprte v zadnjih tridesetih dneh, so se iz {anomalies} preselile v {history}, kot tretji pogled ob {runs} in {files}, z lastnimi naslovi za razvrščanje in filtriranje. {anomalies} kaže samo odprto in vodi tja.',
   'dupes.findOnLeft': 'Poišči dvojnike na levi strani',
   'dupes.findOnRight': 'Poišči dvojnike na desni strani',
+  'entry.fileVanished': 'Datoteka je izginila pred kopiranjem',
+  'entry.fileVanishedLocal': 'Datoteka je lokalno izginila pred kopiranjem',
+  'entry.fileVanishedIn': 'Datoteka je v {place} izginila pred kopiranjem',
 }
 
 export default sl

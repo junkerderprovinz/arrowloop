@@ -1324,6 +1324,9 @@ const tr: Translations = {
   'new.change.closedFindings': 'Son otuz günde kapanan bulgular {anomalies} sayfasından {history} sayfasına taşındı; {runs} ve {files} yanında üçüncü bir görünüm olarak, sıralama ve süzme için kendi başlıklarıyla. {anomalies} yalnızca açık olanları gösterir ve oraya götürür.',
   'dupes.findOnLeft': 'Sol tarafta kopyaları ara',
   'dupes.findOnRight': 'Sağ tarafta kopyaları ara',
+  'entry.fileVanished': 'Dosya kopyalanmadan önce kayboldu',
+  'entry.fileVanishedLocal': 'Dosya kopyalanmadan önce yerelde kayboldu',
+  'entry.fileVanishedIn': 'Dosya {place} içinde kopyalanmadan önce kayboldu',
 }
 
 export default tr

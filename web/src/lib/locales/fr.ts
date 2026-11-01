@@ -1324,6 +1324,9 @@ const fr: Translations = {
   'new.change.closedFindings': 'Les constats clos ces trente derniers jours sont passés de {anomalies} à {history}, comme troisième vue à côté de {runs} et {files}, avec leurs propres en-têtes pour trier et filtrer. {anomalies} ne montre plus que ce qui est ouvert et y mène.',
   'dupes.findOnLeft': 'Chercher les doublons du côté gauche',
   'dupes.findOnRight': 'Chercher les doublons du côté droit',
+  'entry.fileVanished': 'Fichier disparu avant la copie',
+  'entry.fileVanishedLocal': 'Fichier disparu en local avant la copie',
+  'entry.fileVanishedIn': 'Fichier disparu dans {place} avant la copie',
 }
 
 export default fr

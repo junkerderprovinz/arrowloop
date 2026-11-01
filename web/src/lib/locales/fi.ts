@@ -1324,6 +1324,9 @@ const fi: Translations = {
   'new.change.closedFindings': 'Viimeisen kolmenkymmenen päivän aikana suljetut havainnot ovat siirtyneet sivulta {anomalies} sivulle {history}, kolmanneksi näkymäksi näkymien {runs} ja {files} rinnalle, omine otsikoineen lajittelua ja suodatusta varten. {anomalies} näyttää vain avoimet ja ohjaa sinne.',
   'dupes.findOnLeft': 'Etsi kaksoiskappaleet vasemmalta puolelta',
   'dupes.findOnRight': 'Etsi kaksoiskappaleet oikealta puolelta',
+  'entry.fileVanished': 'Tiedosto katosi ennen kopiointia',
+  'entry.fileVanishedLocal': 'Tiedosto katosi paikallisesti ennen kopiointia',
+  'entry.fileVanishedIn': 'Tiedosto katosi ennen kopiointia: {place}',
 }
 
 export default fi

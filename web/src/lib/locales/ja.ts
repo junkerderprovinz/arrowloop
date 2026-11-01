@@ -1324,6 +1324,9 @@ const ja: Translations = {
   'new.change.closedFindings': '過去30日に閉じた検出は{anomalies}から{history}に移り、{runs}と{files}に並ぶ3つ目の表示になりました。並べ替えと絞り込みの見出しもあります。{anomalies}は開いているものだけを表示し、そこへ案内します。',
   'dupes.findOnLeft': '左側の重複を探す',
   'dupes.findOnRight': '右側の重複を探す',
+  'entry.fileVanished': 'コピーする前にファイルが消えました',
+  'entry.fileVanishedLocal': 'コピーする前にローカルでファイルが消えました',
+  'entry.fileVanishedIn': 'コピーする前に {place} でファイルが消えました',
 }
 
 export default ja

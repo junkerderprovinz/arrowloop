@@ -1324,6 +1324,9 @@ const hi: Translations = {
   'new.change.closedFindings': 'पिछले तीस दिनों में बंद हुए निष्कर्ष {anomalies} से {history} में चले गए हैं, {runs} और {files} के पास तीसरे दृश्य के रूप में, क्रम लगाने और छाँटने के अपने शीर्षकों के साथ। {anomalies} अब सिर्फ़ खुले निष्कर्ष दिखाता है और वहाँ तक ले जाता है।',
   'dupes.findOnLeft': 'बाईं ओर डुप्लिकेट खोजें',
   'dupes.findOnRight': 'दाईं ओर डुप्लिकेट खोजें',
+  'entry.fileVanished': 'कॉपी होने से पहले फ़ाइल गायब हो गई',
+  'entry.fileVanishedLocal': 'कॉपी होने से पहले फ़ाइल स्थानीय रूप से गायब हो गई',
+  'entry.fileVanishedIn': 'कॉपी होने से पहले फ़ाइल {place} में गायब हो गई',
 }
 
 export default hi

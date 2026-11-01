@@ -1324,6 +1324,9 @@ const sv: Translations = {
   'new.change.closedFindings': 'Fynd som stängts de senaste trettio dagarna har flyttat från {anomalies} till {history}, som en tredje vy bredvid {runs} och {files}, med egna rubriker att sortera och filtrera med. {anomalies} visar bara det som är öppet och leder dit.',
   'dupes.findOnLeft': 'Sök dubbletter på vänster sida',
   'dupes.findOnRight': 'Sök dubbletter på höger sida',
+  'entry.fileVanished': 'Filen försvann innan den kopierades',
+  'entry.fileVanishedLocal': 'Filen försvann lokalt innan den kopierades',
+  'entry.fileVanishedIn': 'Filen försvann i {place} innan den kopierades',
 }
 
 export default sv

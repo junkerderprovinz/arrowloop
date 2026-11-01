@@ -18,12 +18,12 @@ func TestEveryReasonThisPackageGivesIsWorded(t *testing.T) {
 	codes := []string{
 		// Given while a run is running.
 		"stepFailed", "removeDirFailed", "recordFailed",
-		"heldOpen", "heldOpenDuring", "unverified", "changedDuring",
+		"heldOpen", "heldOpenDuring", "unverified", "changedDuring", "inFlux",
 		// Given while a run is deciding.
 		"goneBoth", "appearedSame", "appearedDiffer",
 	}
 	for _, code := range codes {
-		r := plan.Because(code, "side", "left", "what", "copy", "error", "boom")
+		r := plan.Because(code, "side", "left", "what", "copy", "error", "boom", "runs", "3")
 		if r.Text == "" {
 			t.Errorf("%q has no sentence, so a run reporting it says nothing at all", code)
 		}

@@ -1324,6 +1324,9 @@ const nl: Translations = {
   'new.change.closedFindings': 'Bevindingen die de afgelopen dertig dagen zijn gesloten, staan niet meer in {anomalies} maar in {history}, als derde weergave naast {runs} en {files}, met eigen koppen om te sorteren en te filteren. {anomalies} toont alleen wat open is en wijst de weg.',
   'dupes.findOnLeft': 'Dubbele bestanden links zoeken',
   'dupes.findOnRight': 'Dubbele bestanden rechts zoeken',
+  'entry.fileVanished': 'Bestand verdween voor het kopiëren',
+  'entry.fileVanishedLocal': 'Bestand verdween lokaal voor het kopiëren',
+  'entry.fileVanishedIn': 'Bestand verdween in {place} voor het kopiëren',
 }
 
 export default nl

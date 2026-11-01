@@ -78,6 +78,8 @@ const PLAIN: Record<string, TranslationKey> = {
   record: 'entry.record',
   unverified: 'entry.unverified',
   error: 'entry.failed',
+  // A file the source lost between the scan and the copy (internal/apply's NoteVanished).
+  vanished: 'entry.fileVanished',
 }
 
 /**
@@ -171,6 +173,9 @@ export function entryLabel(t: T, e: Entry, job: Job | undefined, drives: Drive[]
       return here('entry.mkdirLocal', 'entry.mkdirIn')
     case 'rmdir':
       return here('entry.rmdirLocal', 'entry.rmdirIn')
+    case 'vanished':
+      // The side is where the file was, and where it disappeared.
+      return here('entry.fileVanishedLocal', 'entry.fileVanishedIn')
     case 'skip':
       if (unread) return here(unread.local, unread.in)
       if (to.kind === 'target' && from.kind !== 'target') return t('entry.uploadFailed')

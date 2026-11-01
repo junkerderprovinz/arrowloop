@@ -1366,6 +1366,9 @@ export const en = {
   'new.change.closedFindings': 'Findings closed in the last thirty days have moved from {anomalies} to {history}, as a third view beside {runs} and {files}, with their own headings to sort and filter. {anomalies} shows only what is open and leads there.',
   'dupes.findOnLeft': 'Find duplicates on the left side',
   'dupes.findOnRight': 'Find duplicates on the right side',
+  'entry.fileVanished': 'File disappeared before it was copied',
+  'entry.fileVanishedLocal': 'File disappeared locally before it was copied',
+  'entry.fileVanishedIn': 'File disappeared in {place} before it was copied',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2722,6 +2725,9 @@ export const de: Translations = {
   'new.change.closedFindings': 'Funde, die in den letzten dreißig Tagen geschlossen wurden, sind von {anomalies} in den {history} gezogen, als dritte Ansicht neben {runs} und {files}, mit eigenen Überschriften zum Sortieren und Filtern. {anomalies} zeigt nur noch Offenes und führt dorthin.',
   'dupes.findOnLeft': 'Duplikate auf linker Seite suchen',
   'dupes.findOnRight': 'Duplikate auf rechter Seite suchen',
+  'entry.fileVanished': 'Datei vor dem Kopieren verschwunden',
+  'entry.fileVanishedLocal': 'Datei lokal vor dem Kopieren verschwunden',
+  'entry.fileVanishedIn': 'Datei in {place} vor dem Kopieren verschwunden',
 }
 
 export interface Language {

@@ -90,10 +90,11 @@ func TestRequireChecksumWithholdsTheRowRatherThanTheFile(t *testing.T) {
 // message show what differs.
 func TestADisagreementNamesTheChecksums(t *testing.T) {
 	f := newFixture(t, nil)
+	f.rec.verify.RequireChecksum = true
 	// Same length and the same modification time.
 	writeAt(t, filepath.Join(f.right, "notes.txt"), "BBBB", f.stamp)
 
-	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", true)
+	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", false)
 	var dis *DisagreementError
 	if !errors.As(err, &dis) {
 		t.Fatalf("two different files of the same size and time were recorded as agreeing: %v", err)

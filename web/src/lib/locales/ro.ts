@@ -1324,6 +1324,9 @@ const ro: Translations = {
   'new.change.closedFindings': 'Constatările închise în ultimele treizeci de zile s-au mutat din {anomalies} în {history}, ca a treia vedere lângă {runs} și {files}, cu antete proprii pentru sortare și filtrare. {anomalies} arată doar ce e deschis și duce acolo.',
   'dupes.findOnLeft': 'Caută duplicate în partea stângă',
   'dupes.findOnRight': 'Caută duplicate în partea dreaptă',
+  'entry.fileVanished': 'Fișierul a dispărut înainte de copiere',
+  'entry.fileVanishedLocal': 'Fișierul a dispărut local înainte de copiere',
+  'entry.fileVanishedIn': 'Fișierul a dispărut în {place} înainte de copiere',
 }
 
 export default ro

@@ -1324,6 +1324,9 @@ const zh: Translations = {
   'new.change.closedFindings': '过去三十天内关闭的发现已从{anomalies}移到{history}，作为{runs}和{files}之外的第三个视图，并有自己的标题用于排序和筛选。{anomalies}只显示未关闭的发现，并提供前往的入口。',
   'dupes.findOnLeft': '查找左侧的重复文件',
   'dupes.findOnRight': '查找右侧的重复文件',
+  'entry.fileVanished': '文件在复制前消失',
+  'entry.fileVanishedLocal': '本地文件在复制前消失',
+  'entry.fileVanishedIn': '{place} 中的文件在复制前消失',
 }
 
 export default zh

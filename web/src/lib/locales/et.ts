@@ -1324,6 +1324,9 @@ const et: Translations = {
   'new.change.closedFindings': 'Viimase kolmekümne päeva jooksul suletud leiud on kolinud lehelt {anomalies} lehele {history}, kolmanda vaatena {runs} ja {files} kõrval, oma pealkirjadega sortimiseks ja filtreerimiseks. {anomalies} näitab ainult avatut ja juhatab sinna.',
   'dupes.findOnLeft': 'Otsi duplikaate vasakult poolelt',
   'dupes.findOnRight': 'Otsi duplikaate paremalt poolelt',
+  'entry.fileVanished': 'Fail kadus enne kopeerimist',
+  'entry.fileVanishedLocal': 'Fail kadus kohalikult enne kopeerimist',
+  'entry.fileVanishedIn': 'Fail kadus enne kopeerimist: {place}',
 }
 
 export default et

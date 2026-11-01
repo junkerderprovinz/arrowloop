@@ -1324,6 +1324,9 @@ const hu: Translations = {
   'new.change.closedFindings': 'Az elmúlt harminc napban lezárt észlelések a(z) {anomalies} oldalról a(z) {history} oldalra költöztek, harmadik nézetként a(z) {runs} és a(z) {files} mellé, saját fejlécekkel a rendezéshez és szűréshez. A(z) {anomalies} csak a nyitottakat mutatja, és odavezet.',
   'dupes.findOnLeft': 'Ismétlődések keresése a bal oldalon',
   'dupes.findOnRight': 'Ismétlődések keresése a jobb oldalon',
+  'entry.fileVanished': 'A fájl a másolás előtt eltűnt',
+  'entry.fileVanishedLocal': 'A fájl helyben eltűnt a másolás előtt',
+  'entry.fileVanishedIn': 'A fájl a másolás előtt eltűnt itt: {place}',
 }
 
 export default hu

@@ -71,6 +71,10 @@ CREATE TABLE IF NOT EXISTS asides (
 	path        TEXT PRIMARY KEY,
 	reason      TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS flux (
+	path        TEXT PRIMARY KEY,
+	runs        INTEGER NOT NULL
+);
 `
 
 // version is the state database's layout. It goes up when a newer layout
@@ -145,7 +149,24 @@ func (d *DB) Put(ctx context.Context, e Entry) error {
 	if err != nil {
 		return fmt.Errorf("put state %q: %w", e.Path, err)
 	}
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM flux WHERE path = ?`, e.Path); err != nil {
+		return fmt.Errorf("forget that %q was in flux: %w", e.Path, err)
+	}
 	return nil
+}
+
+// InFlux counts one more run that met this file while it was being written,
+// and returns how many runs in a row that makes. Put and Forget end the count.
+func (d *DB) InFlux(ctx context.Context, path string) (int, error) {
+	var runs int
+	err := d.sql.QueryRowContext(ctx,
+		`INSERT INTO flux (path, runs) VALUES (?, 1)
+		 ON CONFLICT(path) DO UPDATE SET runs = runs + 1
+		 RETURNING runs`, path).Scan(&runs)
+	if err != nil {
+		return 0, fmt.Errorf("count the runs %q was in flux: %w", path, err)
+	}
+	return runs, nil
 }
 
 // Forget drops a path, meaning both sides agree it is gone. A decision to keep
@@ -159,6 +180,9 @@ func (d *DB) Forget(ctx context.Context, path string) error {
 	}
 	if _, err := d.sql.ExecContext(ctx, `DELETE FROM asides WHERE path = ?`, path); err != nil {
 		return fmt.Errorf("forget why %q was set aside: %w", path, err)
+	}
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM flux WHERE path = ?`, path); err != nil {
+		return fmt.Errorf("forget that %q was in flux: %w", path, err)
 	}
 	return nil
 }

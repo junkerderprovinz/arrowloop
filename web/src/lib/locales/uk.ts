@@ -1324,6 +1324,9 @@ const uk: Translations = {
   'new.change.closedFindings': 'Знахідки, закриті за останні тридцять днів, переїхали з {anomalies} до {history}, третім видом поруч із {runs} і {files}, зі своїми заголовками для сортування й фільтра. {anomalies} показує лише відкрите й веде туди.',
   'dupes.findOnLeft': 'Знайти дублікати на лівому боці',
   'dupes.findOnRight': 'Знайти дублікати на правому боці',
+  'entry.fileVanished': 'Файл зник до копіювання',
+  'entry.fileVanishedLocal': 'Файл зник локально до копіювання',
+  'entry.fileVanishedIn': 'Файл зник у {place} до копіювання',
 }
 
 export default uk

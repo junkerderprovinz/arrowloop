@@ -1324,6 +1324,9 @@ const pt: Translations = {
   'new.change.closedFindings': 'As ocorrências fechadas nos últimos trinta dias passaram de {anomalies} para {history}, como terceira vista ao lado de {runs} e {files}, com cabeçalhos próprios para ordenar e filtrar. {anomalies} mostra só o que está aberto e leva até lá.',
   'dupes.findOnLeft': 'Procurar duplicados no lado esquerdo',
   'dupes.findOnRight': 'Procurar duplicados no lado direito',
+  'entry.fileVanished': 'O ficheiro desapareceu antes de ser copiado',
+  'entry.fileVanishedLocal': 'O ficheiro desapareceu localmente antes de ser copiado',
+  'entry.fileVanishedIn': 'O ficheiro desapareceu em {place} antes de ser copiado',
 }
 
 export default pt

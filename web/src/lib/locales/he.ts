@@ -1324,6 +1324,9 @@ const he: Translations = {
   'new.change.closedFindings': 'ממצאים שנסגרו בשלושים הימים האחרונים עברו מ{anomalies} ל{history}, כתצוגה שלישית לצד {runs} ו{files}, עם כותרות משלהם למיון ולסינון. {anomalies} מציג רק את הפתוח ומוביל לשם.',
   'dupes.findOnLeft': 'חיפוש כפילויות בצד השמאלי',
   'dupes.findOnRight': 'חיפוש כפילויות בצד הימני',
+  'entry.fileVanished': 'הקובץ נעלם לפני שהועתק',
+  'entry.fileVanishedLocal': 'הקובץ נעלם מקומית לפני שהועתק',
+  'entry.fileVanishedIn': 'הקובץ נעלם ב-{place} לפני שהועתק',
 }
 
 export default he

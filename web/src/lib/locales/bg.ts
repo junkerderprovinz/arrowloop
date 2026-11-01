@@ -1324,6 +1324,9 @@ const bg: Translations = {
   'new.change.closedFindings': 'Находките, затворени през последните трийсет дни, се преместиха от {anomalies} в {history}, като трети изглед до {runs} и {files}, със собствени заглавия за сортиране и филтриране. {anomalies} показва само отвореното и води натам.',
   'dupes.findOnLeft': 'Търси дубликати отляво',
   'dupes.findOnRight': 'Търси дубликати отдясно',
+  'entry.fileVanished': 'Файлът изчезна преди копирането',
+  'entry.fileVanishedLocal': 'Файлът изчезна локално преди копирането',
+  'entry.fileVanishedIn': 'Файлът изчезна в {place} преди копирането',
 }
 
 export default bg

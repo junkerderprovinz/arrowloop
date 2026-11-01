@@ -1324,6 +1324,9 @@ const ar: Translations = {
   'new.change.closedFindings': 'انتقلت النتائج المغلقة خلال الثلاثين يومًا الماضية من {anomalies} إلى {history}، كعرض ثالث بجانب {runs} و{files}، ولها عناوين للفرز والتصفية. أما {anomalies} فتعرض المفتوح فقط وتقود إليها.',
   'dupes.findOnLeft': 'ابحث عن التكرارات في الجانب الأيسر',
   'dupes.findOnRight': 'ابحث عن التكرارات في الجانب الأيمن',
+  'entry.fileVanished': 'اختفى الملف قبل نسخه',
+  'entry.fileVanishedLocal': 'اختفى الملف محليًا قبل نسخه',
+  'entry.fileVanishedIn': 'اختفى الملف في {place} قبل نسخه',
 }
 
 export default ar

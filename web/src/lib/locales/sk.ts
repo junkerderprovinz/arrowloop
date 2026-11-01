@@ -1324,6 +1324,9 @@ const sk: Translations = {
   'new.change.closedFindings': 'Nálezy uzavreté za posledných tridsať dní sa presunuli z {anomalies} do {history}, ako tretí pohľad vedľa {runs} a {files}, s vlastnými záhlaviami na zoraďovanie a filtrovanie. {anomalies} ukazuje len otvorené a vedie tam.',
   'dupes.findOnLeft': 'Hľadať duplikáty na ľavej strane',
   'dupes.findOnRight': 'Hľadať duplikáty na pravej strane',
+  'entry.fileVanished': 'Súbor zmizol pred skopírovaním',
+  'entry.fileVanishedLocal': 'Súbor zmizol lokálne pred skopírovaním',
+  'entry.fileVanishedIn': 'Súbor v {place} zmizol pred skopírovaním',
 }
 
 export default sk

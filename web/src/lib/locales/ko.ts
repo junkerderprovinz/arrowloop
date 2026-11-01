@@ -1324,6 +1324,9 @@ const ko: Translations = {
   'new.change.closedFindings': '지난 30일 동안 닫힌 발견은 {anomalies}에서 {history}로 옮겨 {runs}, {files} 옆의 세 번째 보기가 되었고, 정렬하고 걸러 내는 제목도 있습니다. {anomalies}는 열린 것만 보여 주고 그리로 안내합니다.',
   'dupes.findOnLeft': '왼쪽에서 중복 찾기',
   'dupes.findOnRight': '오른쪽에서 중복 찾기',
+  'entry.fileVanished': '복사하기 전에 파일이 사라짐',
+  'entry.fileVanishedLocal': '복사하기 전에 로컬에서 파일이 사라짐',
+  'entry.fileVanishedIn': '복사하기 전에 {place}에서 파일이 사라짐',
 }
 
 export default ko

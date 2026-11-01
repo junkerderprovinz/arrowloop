@@ -1324,6 +1324,9 @@ const ru: Translations = {
   'new.change.closedFindings': 'Находки, закрытые за последние тридцать дней, переехали из {anomalies} в {history}, третьим видом рядом с {runs} и {files}, со своими заголовками для сортировки и фильтра. {anomalies} показывает только открытое и ведёт туда.',
   'dupes.findOnLeft': 'Найти дубликаты на левой стороне',
   'dupes.findOnRight': 'Найти дубликаты на правой стороне',
+  'entry.fileVanished': 'Файл исчез до копирования',
+  'entry.fileVanishedLocal': 'Файл исчез локально до копирования',
+  'entry.fileVanishedIn': 'Файл исчез в {place} до копирования',
 }
 
 export default ru

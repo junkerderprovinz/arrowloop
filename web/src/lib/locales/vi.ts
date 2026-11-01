@@ -1324,6 +1324,9 @@ const vi: Translations = {
   'new.change.closedFindings': 'Các phát hiện đã đóng trong ba mươi ngày qua được chuyển từ {anomalies} sang {history}, thành chế độ xem thứ ba bên cạnh {runs} và {files}, với tiêu đề riêng để sắp xếp và lọc. {anomalies} chỉ hiện mục còn mở và dẫn tới đó.',
   'dupes.findOnLeft': 'Tìm tệp trùng ở bên trái',
   'dupes.findOnRight': 'Tìm tệp trùng ở bên phải',
+  'entry.fileVanished': 'Tệp biến mất trước khi được sao chép',
+  'entry.fileVanishedLocal': 'Tệp biến mất trên máy trước khi được sao chép',
+  'entry.fileVanishedIn': 'Tệp trong {place} biến mất trước khi được sao chép',
 }
 
 export default vi
