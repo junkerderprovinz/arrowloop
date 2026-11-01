@@ -21,15 +21,6 @@ const BADGE_TONE: Record<Severity, 'fail' | 'warn' | 'neutral'> = {
   info: 'neutral',
 }
 
-// The bar on the leading edge, which flips sides with the reading direction.
-const EDGE: Record<Severity, string> = {
-  critical:
-    'bg-carbon-surface2 shadow-[inset_3px_0_0_var(--status-fail-solid)] rtl:shadow-[inset_-3px_0_0_var(--status-fail-solid)]',
-  warning:
-    'bg-carbon-surface2 shadow-[inset_3px_0_0_var(--status-warn-solid)] rtl:shadow-[inset_-3px_0_0_var(--status-warn-solid)]',
-  info: 'bg-carbon-surface2 shadow-[inset_3px_0_0_var(--carbon-surface3)] rtl:shadow-[inset_-3px_0_0_var(--carbon-surface3)]',
-}
-
 /**
  * One finding with everything it has to say and its answers, as BombVault lays
  * a finding out: how bad it is, the job, what happened, the figures, the files
@@ -181,7 +172,7 @@ export function FindingCard({
   }
 
   return (
-    <li id={`finding-${f.id}`} className={`flex min-w-0 scroll-mt-10 flex-col gap-2 rounded-card px-4 pb-3.5 pt-3 max-sm:px-3 ${EDGE[f.severity]}`}>
+    <li id={`finding-${f.id}`} className="flex min-w-0 scroll-mt-10 flex-col gap-2 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 max-sm:px-3">
       <div className="flex flex-wrap items-center gap-2">
         {!f.open && f.outcome && <Badge tone="neutral">{t(`anomaly.outcome.${f.outcome}`)}</Badge>}
         <Badge tone={BADGE_TONE[f.severity]}>{t(`anomaly.severity.${f.severity}`)}</Badge>

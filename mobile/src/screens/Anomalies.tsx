@@ -254,8 +254,6 @@ function FindingCard({
   onOpenJob: () => void;
 }) {
   const { t, lang } = useT();
-  const { p } = useTheme();
-  const edge: Record<Severity, string> = { critical: p.failSolid, warning: p.warnSolid, info: p.surface3 };
   const paths = (f.paths ?? []).slice(0, SHOWN_FILES);
   const unnamed = (f.count ?? 0) - paths.length;
   const shown = figures(f, t);
@@ -288,7 +286,7 @@ function FindingCard({
   }
 
   return (
-    <Card style={[styles.finding, { borderStartColor: edge[f.severity] }]}>
+    <Card>
       <View style={styles.badges}>
         <Badge label={t(`anomaly.severity.${f.severity}`)} tone={BADGE_TONE[f.severity]} />
         {f.held ? (
@@ -367,9 +365,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     gap: space.sm,
-  },
-  finding: {
-    borderStartWidth: 3,
   },
   badges: {
     flexDirection: "row",

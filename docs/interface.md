@@ -348,7 +348,8 @@ switches to what was closed in the last thirty days, with how it ended, and
 the headings sort the findings by severity, job or when they were first seen.
 
 Every finding is a card of its own, laid out as BombVault lays out its
-findings, and nothing opens over the page. Every card starts at the same
+findings, and nothing opens over the page. Its badge says how bad it is; the
+card has no coloured edge. Every card starts at the same
 height: how bad it is, the job, since when it has been seen, what happened in
 one line and its answers. **Show more** opens the rest in place: the whole
 sentence, the figures, the engine's words for a failure, and for a brake the
@@ -431,7 +432,8 @@ such as **What gets carried** to the card that carries it now.
 
 The last tile has three cards. **Version** lists ArrowLoop, GlimStone and
 rclone, each linked to its release notes. Under them stand **New** and **Check
-for updates**, which asks GitHub for a newer release. **New** opens the window
+for updates**, which wears the sync symbol and asks GitHub for a newer
+release. **New** opens the window
 with the release notes and the changes (see below); while it lists no change it
 reads **Release notes** and opens the same window. **Help** leads to GitHub, to email and to this
 manual, and **Bug report** downloads one file with the versions, the settings
