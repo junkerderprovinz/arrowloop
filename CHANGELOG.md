@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ⚡ Improved
+
+- **The phone app is built with glob 14 and minimatch 11,** which close two advisories in the build tools. Nothing of them ships in the app.
+
 ## 2.4.4 - 2026-11-03
 
 ArrowLoop asks for file access when a job needs it, and each side of a job starts with where the folder is.
