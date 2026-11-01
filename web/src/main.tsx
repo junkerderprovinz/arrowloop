@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { Gate } from './App'
 import { WindowFrame } from './components/WindowFrame'
 import { armShapeTransitions } from './lib/animate'
-import { applyCachedAppearance } from './lib/appearance'
+import { applyCachedAppearance, takePageHue } from './lib/appearance'
 import { applyStoredLabelModes, BOTTOM_BAR_AXIS } from './lib/controls'
 import { applyDisco } from './lib/disco'
 import { getDisco } from './lib/discoSetting'
@@ -35,6 +35,15 @@ paintTheme(storedTheme())
 // Registered once rather than passed at every call site, so a button in
 // glyph-only mode has a mark to draw even where nobody handed it one.
 setGlyphResolver(glyphFor)
+
+// The glyph buttons ArrowLoop draws itself never pass through Button, so they
+// take their colour of the page here.
+for (const type of ['pointerover', 'focusin'] as const) {
+  document.addEventListener(type, (e) => {
+    const button = (e.target as Element | null)?.closest?.('.glim-btn-neutral, .glim-btn-subtle, .glim-btn-bare')
+    if (button instanceof HTMLElement) takePageHue(button)
+  })
+}
 
 const root = document.getElementById('root')
 if (root) {

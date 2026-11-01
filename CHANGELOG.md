@@ -10,6 +10,11 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🎨 Design
+
+- **Under rainbow every button lights up in a colour of its own** when the pointer or the keyboard reaches it. The buttons of a page count through the palette in the order they stand, so the buttons of one card no longer all light up alike.
+- **ArrowLoop follows GlimStone 3.8.5.**
+
 ## 🐛 Fixed
 
 - **A file that disappears from the source while a run is going no longer turns the run yellow.** A rotated log or a Git branch deleted meanwhile is gone by the next run anyway, so History lists it as disappeared before it was copied and the run carries on. A copy the destination refuses is still reported.
