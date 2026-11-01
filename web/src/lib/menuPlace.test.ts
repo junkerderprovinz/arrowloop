@@ -37,22 +37,34 @@ describe('a menu', () => {
 })
 
 describe('a list head filter', () => {
-  const area = { left: 260, right: 1000 }
+  const area = { left: 260, right: 1000, top: 0, bottom: 800 }
   const panel = { width: 340, height: 180 }
 
   it('opens under its head with the leading edges in line', () => {
-    const at = placeUnderHead({ left: 300, right: 380, top: 100, bottom: 120 }, { left: 360, right: 380, top: 100, bottom: 120 }, panel, area, viewport)
-    expect(at).toEqual({ left: 300, top: 124 })
+    const at = placeUnderHead({ left: 300, right: 380, top: 100, bottom: 120 }, { left: 360, right: 380, top: 100, bottom: 120 }, panel, area)
+    expect(at).toEqual({ left: 300, top: 124, maxHeight: 800 - 8 - 124 })
   })
 
   it('moves back from the end of the column rather than out of it', () => {
-    const at = placeUnderHead({ left: 900, right: 980, top: 100, bottom: 120 }, { left: 960, right: 980, top: 100, bottom: 120 }, panel, area, viewport)
+    const at = placeUnderHead({ left: 900, right: 980, top: 100, bottom: 120 }, { left: 960, right: 980, top: 100, bottom: 120 }, panel, area)
     expect(at.left).toBe(1000 - 8 - panel.width)
   })
 
   it('never covers the sidebar beside the column', () => {
     const wide = { width: 900, height: 180 }
-    const at = placeUnderHead({ left: 270, right: 300, top: 100, bottom: 120 }, { left: 290, right: 300, top: 100, bottom: 120 }, wide, area, viewport)
+    const at = placeUnderHead({ left: 270, right: 300, top: 100, bottom: 120 }, { left: 290, right: 300, top: 100, bottom: 120 }, wide, area)
     expect(at.left).toBe(268)
+  })
+
+  it('stays inside the page and scrolls a long list of choices', () => {
+    const tall = { width: 340, height: 1341 }
+    const at = placeUnderHead({ left: 300, right: 380, top: 240, bottom: 264 }, { left: 360, right: 380, top: 240, bottom: 264 }, tall, { ...area, bottom: 1000 })
+    expect(at.top).toBe(268)
+    expect(at.top + at.maxHeight).toBe(1000 - 8)
+  })
+
+  it('opens above a head near the bottom of the page', () => {
+    const at = placeUnderHead({ left: 300, right: 380, top: 700, bottom: 720 }, { left: 360, right: 380, top: 700, bottom: 720 }, panel, area)
+    expect(at.top).toBe(700 - 4 - panel.height)
   })
 })

@@ -126,15 +126,23 @@ export function ListHead({
   }, [stepped, columns?.order])
   const last = columns ? columns.order[columns.order.length - 1] : heads[heads.length - 1]?.id
 
-  function drop(e: DragEvent<HTMLDivElement>, target: string) {
+  // The columns take their new places while the head is carried over them, so
+  // the drop only keeps what is already on screen. Over its own new place the
+  // dragged head changes nothing, which keeps the preview from flickering.
+  function over(e: DragEvent<HTMLDivElement>, target: string) {
+    if (!columns || !dragged) return
     e.preventDefault()
-    const from = dragged
-    setDragged(null)
-    if (!columns || !from || from === target) return
+    if (dragged === target) return
     const box = e.currentTarget.getBoundingClientRect()
     const middle = box.left + box.width / 2
     const after = document.documentElement.dir === 'rtl' ? e.clientX < middle : e.clientX > middle
-    columns.move(from, target, after)
+    columns.preview(dragged, target, after)
+  }
+
+  function drop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    setDragged(null)
+    columns?.drop()
     used()
   }
 
@@ -150,7 +158,10 @@ export function ListHead({
             // Firefox starts no drag at all without a payload.
             e.dataTransfer.setData('text/plain', id)
           },
-          onDragEnd: () => setDragged(null),
+          onDragEnd: () => {
+            setDragged(null)
+            columns.cancel()
+          },
           onKeyDown: (e: ReactKeyboardEvent<HTMLElement>) => {
             if (!e.altKey || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return
             e.preventDefault()
@@ -244,8 +255,8 @@ export function ListHead({
               key={head.id}
               role="columnheader"
               style={columns?.cell(head.id)}
-              onDragOver={(e) => dragged && e.preventDefault()}
-              onDrop={(e) => drop(e, head.id)}
+              onDragOver={(e) => over(e, head.id)}
+              onDrop={drop}
               className={`relative flex min-w-0 items-center gap-0.5 ${head.end ? 'justify-end' : ''} ${head.className ?? ''} ${
                 columns ? 'md:w-auto' : ''
               } ${dragged === head.id ? 'opacity-50' : ''}`}
@@ -391,7 +402,7 @@ function FilterPanel({
   children: ReactNode
 }) {
   const panel = useRef<HTMLDivElement>(null)
-  const [at, setAt] = useState<{ left: number; top: number; room: number } | null>(null)
+  const [at, setAt] = useState<{ left: number; top: number; maxHeight: number; room: number } | null>(null)
   const hue = usePortalHue(true, anchor)
   const close = useRef(onClose)
   close.current = onClose
@@ -402,13 +413,12 @@ function FilterPanel({
     if (!trigger || !el) return
     const viewport = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight }
     const head = (trigger.closest('[role="columnheader"]') ?? trigger).getBoundingClientRect()
-    const column = trigger.closest('main')?.getBoundingClientRect() ?? { left: 0, right: viewport.width }
+    const column = trigger.closest('main')?.getBoundingClientRect() ?? { left: 0, right: viewport.width, top: 0, bottom: viewport.height }
     const place = placeUnderHead(
       head,
       trigger.getBoundingClientRect(),
-      { width: el.offsetWidth, height: el.offsetHeight },
-      column,
-      viewport,
+      { width: el.offsetWidth, height: el.scrollHeight },
+      { left: column.left, right: column.right, top: Math.max(0, column.top), bottom: Math.min(viewport.height, column.bottom) },
       document.documentElement.dir === 'rtl',
     )
     setAt({ ...place, room: column.right - column.left - 2 * BUBBLE_VIEWPORT_MARGIN })
@@ -445,7 +455,7 @@ function FilterPanel({
         ref={panel}
         role="dialog"
         aria-label={label}
-        className={`fixed z-50 flex w-max min-w-[16rem] max-w-[min(90vw,26rem)] flex-col gap-4 rounded-card bg-carbon-surface p-4 shadow-2xl glim-fade${
+        className={`fixed z-50 flex w-max min-w-[16rem] max-w-[min(90vw,26rem)] flex-col gap-4 overflow-y-auto rounded-card bg-carbon-surface p-4 shadow-2xl glim-fade${
           hue.className ? ` ${hue.className}` : ''
         }`}
         style={
@@ -453,6 +463,7 @@ function FilterPanel({
             left: at?.left ?? -9999,
             top: at?.top ?? -9999,
             maxWidth: at ? `min(26rem, ${at.room}px)` : undefined,
+            maxHeight: at?.maxHeight,
             ...(hue.style ?? {}),
           } as CSSProperties
         }
@@ -463,6 +474,9 @@ function FilterPanel({
     document.body,
   )
 }
+
+/** From this many options a filter's choice draws its segments lower, so a long list stays short. */
+const DENSE_FROM = 8
 
 /** One choice inside a filter: its caption and the options as chips, side by side where they fit and under each other where not. */
 export function FilterChoice<T extends string>({
@@ -479,7 +493,7 @@ export function FilterChoice<T extends string>({
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-meta text-carbon-textMuted">{label}</span>
-      <Selector<T> label={label} options={options} value={value} onChange={onChange} scale="small" variant="chip" hug stack />
+      <Selector<T> label={label} options={options} value={value} onChange={onChange} scale="small" variant="chip" hug stack dense={options.length > DENSE_FROM} />
     </div>
   )
 }

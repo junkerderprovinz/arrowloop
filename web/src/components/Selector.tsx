@@ -79,6 +79,7 @@ export function Selector<T extends string>({
   hug = false,
   pairsOnPhone = false,
   stack = false,
+  dense = false,
 }: {
   options: Option<T>[]
   value: T
@@ -130,6 +131,8 @@ export function Selector<T extends string>({
    * would break two and one.
    */
   stack?: boolean
+  /** Lower segments, for a long choice whose segments stand under each other. */
+  dense?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
   const pairs = usePhoneWidth() && pairsOnPhone
@@ -289,6 +292,8 @@ export function Selector<T extends string>({
               // A pair grows with a label that wraps instead of cutting it off.
               pairs
                 ? 'min-h-[calc(var(--btn-h)-0.4rem)] py-1 text-center text-meta font-medium'
+                : dense
+                ? 'h-7 text-meta font-medium'
                 : low
                 ? variant === 'well'
                   ? 'h-[calc(var(--btn-h)-0.4rem)] text-meta font-medium'

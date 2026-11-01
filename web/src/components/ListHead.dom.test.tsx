@@ -156,7 +156,7 @@ describe('a list with columns', () => {
     const name = screen.getAllByRole('columnheader')[0]
     name.getBoundingClientRect = () => ({ left: 0, width: 200 }) as DOMRect
     fireEvent.dragStart(kind, { dataTransfer: { setData() {}, effectAllowed: '' } })
-    fireEvent.dragOver(name)
+    fireEvent.dragOver(name, { clientX: 20 })
     fireEvent.drop(name, { clientX: 20 })
     expect(order()).toEqual(['Kind', 'Name', 'Path'])
     expect(stored().order).toEqual(['kind', 'name', 'path'])
@@ -181,8 +181,26 @@ describe('a list with columns', () => {
     expect(stored().widths).toEqual({})
   })
 
-  it('has no handle on the column that takes the rest', () => {
+  it('gives every column a handle, and the one taking the rest keeps a width it is given', () => {
     render(<Table />)
-    expect(screen.getAllByRole('separator')).toHaveLength(2)
+    const handles = screen.getAllByRole('separator')
+    expect(handles).toHaveLength(3)
+    Object.defineProperty(handles[2].parentElement, 'offsetWidth', { value: 400 })
+    fireEvent.pointerDown(handles[2], { clientX: 400, pointerId: 1 })
+    fireEvent.pointerUp(handles[2], { clientX: 300, pointerId: 1 })
+    expect(stored().widths).toEqual({ path: 300 })
+    expect(screen.getByTestId('host').style.getPropertyValue('--list-cols')).toBe('200px 120px 300px')
+  })
+
+  it('moves the columns while a head is carried over them, before the drop', () => {
+    render(<Table />)
+    const name = screen.getAllByRole('columnheader')[0]
+    name.getBoundingClientRect = () => ({ left: 0, width: 200 }) as DOMRect
+    fireEvent.dragStart(screen.getByText('Path'), { dataTransfer: { setData() {}, effectAllowed: '' } })
+    fireEvent.dragOver(name, { clientX: 20 })
+    expect(order()).toEqual(['Path', 'Name', 'Kind'])
+    expect(localStorage.getItem('arrowloop.columns.test')).toBeNull()
+    fireEvent.dragEnd(screen.getByText('Path'))
+    expect(order()).toEqual(['Name', 'Kind', 'Path'])
   })
 })

@@ -77,9 +77,11 @@ above the list, in History at the end of the row with **Files** and **Runs**
 and elsewhere under the tiles on top, with **Show everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
 a search that floats over the top of the list and finds an entry by its path;
 Escape empties and closes it. In History and a job's **Files touched** the
-columns can be moved and widened: drag a heading to another place, or drag the
-line at its edge, which shows while the pointer is over the headings, and a
-double click on that line gives the column its width back. Alt with an arrow
+columns can be moved and widened: drag a heading to another place, and the
+columns make room while it is carried, or drag the line at any column's edge,
+which shows while the pointer is over the headings; a double click on that
+line gives the column its width back. Every line keeps to its columns on one
+line, cut at the end, with the whole path in its bubble. Alt with an arrow
 key moves the focused heading. Each list keeps its own arrangement in the
 browser. A device with only a touch screen has no key to
 type with, so a magnifier at the end of the headings opens the search there. A

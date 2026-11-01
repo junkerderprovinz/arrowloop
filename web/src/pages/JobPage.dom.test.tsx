@@ -20,6 +20,7 @@ const forgetJobState = vi.fn((_name: string) => Promise.resolve({}))
 
 const learning = vi.fn(() => Promise.resolve([] as JobLearning[]))
 const checkJob = vi.fn((_name: string) => Promise.resolve({ ok: true, findings: [] }))
+const log = vi.fn(() => Promise.resolve([] as unknown[]))
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -30,7 +31,7 @@ vi.mock('../lib/api', () => ({
     volumes: () => Promise.resolve({ volumes: [] }),
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
     history: () => Promise.resolve([] as Run[]),
-    log: () => Promise.resolve([]),
+    log: () => log(),
     historyStats: () => Promise.reject(new Error('none')),
     forgetJobState: (name: string) => forgetJobState(name),
     checkJob: (name: string) => checkJob(name),
@@ -112,6 +113,17 @@ describe('a job page', () => {
     page()
     fireEvent.click(await screen.findByRole('button', { name: 'Back' }))
     expect(went).toHaveBeenCalledWith({ tab: 'jobs', job: '' })
+  })
+
+  it('lays every file line out on the columns of its head, with no job column of its own', async () => {
+    log.mockImplementation(() =>
+      Promise.resolve([{ Run: 1, Job: 'photos', When: '2027-03-01T03:00:00Z', Seq: 0, Kind: 'copy', Side: 'right', Path: 'a/b.jpg', Note: '', Size: 18000 }]),
+    )
+    page()
+    const row = (await screen.findByText('a/b.jpg')).closest('li') as HTMLElement
+    expect([...row.children].map((c) => (c as HTMLElement).style.order)).toEqual(['0', '1', '2', '3', '4'])
+    expect(row.textContent).not.toContain('photos')
+    log.mockImplementation(() => Promise.resolve([]))
   })
 
   it('filters the files touched from the head of their list, with no buttons over it', async () => {

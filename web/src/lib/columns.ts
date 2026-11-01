@@ -61,15 +61,19 @@ export function minWidth(def: ColumnDef): number {
   return def.min ?? (def.width === undefined ? FLEX_MIN : def.fixed ? def.width : MIN)
 }
 
-/** The track list for --list-cols. `drag` is a width still under the pointer, drawn as if it were stored. */
+/**
+ * The track list for --list-cols. `drag` is a width still under the pointer,
+ * drawn as if it were stored. The flexible column takes what the others leave
+ * until somebody gives it a width, which then stays like any other.
+ */
 export function gridTemplate(defs: ColumnDef[], layout: ColumnLayout, drag?: { id: string; width: number }): string {
   const byId = new Map(defs.map((d) => [d.id, d]))
   return mergeOrder(defs, layout.order)
     .map((id) => {
       const def = byId.get(id)!
-      if (def.width === undefined) return `minmax(${minWidth(def)}px, 1fr)`
-      const width = drag?.id === id ? drag.width : (layout.widths[id] ?? def.width)
-      return `${Math.max(minWidth(def), Math.round(width))}px`
+      const set = drag?.id === id ? drag.width : layout.widths[id]
+      if (def.width === undefined && set === undefined) return `minmax(${minWidth(def)}px, 1fr)`
+      return `${Math.max(minWidth(def), Math.round(set ?? def.width!))}px`
     })
     .join(' ')
 }
@@ -101,6 +105,9 @@ export function useColumns(list: string, defs: ColumnDef[]) {
   const key = `arrowloop.columns.${list}`
   const [layout, setLayout] = useState<ColumnLayout>(() => read(key))
   const host = useRef<HTMLElement | null>(null)
+  // The order while a head is dragged, so the columns move under the pointer
+  // before the drop stores it.
+  const [preview, setPreview] = useState<string[] | null>(null)
   const drag = useRef<{ id: string; startX: number; startWidth: number; width: number } | null>(null)
 
   const store = useCallback(
@@ -115,8 +122,10 @@ export function useColumns(list: string, defs: ColumnDef[]) {
     [key],
   )
 
-  const order = useMemo(() => mergeOrder(defs, layout.order), [defs, layout.order])
-  const template = gridTemplate(defs, layout)
+  const stored = useMemo(() => mergeOrder(defs, layout.order), [defs, layout.order])
+  const order = preview ?? stored
+  const shown = { ...layout, order }
+  const template = gridTemplate(defs, shown)
   const def = (id: string) => defs.find((d) => d.id === id)
 
   return {
@@ -126,9 +135,19 @@ export function useColumns(list: string, defs: ColumnDef[]) {
     cell: (id: string): CSSProperties => ({ order: order.indexOf(id) }),
     resizable: (id: string) => {
       const d = def(id)
-      return !!d && d.width !== undefined && !d.fixed
+      return !!d && !d.fixed
     },
-    move: (id: string, target: string, after: boolean) => store({ ...layout, order: moveColumn(order, id, target, after) }),
+    move: (id: string, target: string, after: boolean) => store({ ...layout, order: moveColumn(stored, id, target, after) }),
+    /** Shows `id` before or after `target` while it is dragged; `drop` keeps that order and `cancel` takes it back. */
+    preview: (id: string, target: string, after: boolean) => {
+      const next = moveColumn(stored, id, target, after)
+      setPreview((was) => (was?.join() === next.join() ? was : next))
+    },
+    drop: () => {
+      if (preview) store({ ...layout, order: preview })
+      setPreview(null)
+    },
+    cancel: () => setPreview(null),
     step: (id: string, towardsEnd: boolean) => store({ ...layout, order: stepColumn(order, id, towardsEnd) }),
     reset: (id: string) => {
       const widths = { ...layout.widths }
@@ -148,7 +167,7 @@ export function useColumns(list: string, defs: ColumnDef[]) {
       const rtl = document.documentElement.dir === 'rtl' ? -1 : 1
       now.width = Math.max(minWidth(d), Math.round(now.startWidth + (x - now.startX) * rtl))
       if (phase === 'move') {
-        host.current?.style.setProperty('--list-cols', gridTemplate(defs, layout, now))
+        host.current?.style.setProperty('--list-cols', gridTemplate(defs, shown, now))
         return
       }
       drag.current = null

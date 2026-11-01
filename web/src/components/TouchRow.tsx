@@ -38,9 +38,12 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
   // The path and the arrow beside it say where, so the badge only says what.
   const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
   const note = entryNote(t, e)
+  // In the column grid every cell keeps to one line and its column, cut at the
+  // end, so the rows read down their columns; the narrow flex row wraps instead.
+  const grid = columns ? ' md:w-auto md:overflow-hidden md:whitespace-nowrap' : ''
+  const jobColumn = columns ? columns.order.includes('job') : withJob
   // shrink-0: in a list of fixed height, min-h-9 would otherwise be all the
   // room a row keeps, and a path that wraps would run over the next one.
-  const grid = columns ? ' md:w-auto' : ''
   return (
     <li
       className={`flex min-h-9 shrink-0 items-center gap-x-3 gap-y-1 py-1 text-subline max-sm:flex-wrap${
@@ -48,21 +51,24 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
       }`}
     >
       {/* Wide enough for a conflict's phrase in the longer languages; a longer
-          one wraps inside its badge rather than being cut. */}
+          one wraps inside its badge rather than being cut, outside the grid. */}
       <span style={columns?.cell('what')} className={`flex w-64 min-w-0 shrink-0 max-md:w-48 max-sm:w-auto max-sm:max-w-full${grid}`}>
-        <Badge tone={touchTone(e)} wrap>
-          {label}
+        <Badge tone={touchTone(e)} wrap={!columns} className={columns ? 'min-w-0 max-w-full' : ''}>
+          {columns ? <span className="truncate">{label}</span> : label}
         </Badge>
       </span>
       <span style={columns?.cell('when')} className={`glim-num w-40 min-w-0 shrink-0 truncate whitespace-nowrap text-carbon-textMuted max-sm:hidden${grid}`}>
         {dayTime(e.When, lang, (p) => t('list.when', p))}
       </span>
-      {(withJob || columns) && (
-        <span style={columns?.cell('job')} className={`w-32 min-w-0 shrink-0 font-medium [overflow-wrap:anywhere] max-md:hidden${grid}`}>
+      {jobColumn && (
+        <span
+          style={columns?.cell('job')}
+          className={`w-32 min-w-0 shrink-0 font-medium [overflow-wrap:anywhere] max-md:hidden${grid}${columns ? ' md:truncate' : ''}`}
+        >
           {e.Job}
         </span>
       )}
-      <span style={columns?.cell('size')} className={`w-14 shrink-0 text-end tabular-nums text-carbon-textMuted max-sm:hidden${grid}`}>
+      <span style={columns?.cell('size')} className={`w-14 shrink-0 whitespace-nowrap text-end tabular-nums text-carbon-textMuted max-sm:hidden${grid}`}>
         {e.Size > 0 ? bytes(e.Size) : ''}
       </span>
       {/* The side written to, drawn as an arrow; the word stays in the title
@@ -75,11 +81,12 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
         {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
         {e.Side && <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>}
       </span>
-      {/* A long path wraps rather than losing its end, which is the file's name. */}
+      {/* A long path wraps rather than losing its end outside the grid; in it
+          the whole path is in the bubble. */}
       <span
         style={columns?.cell('path')}
-        className="min-w-0 flex-1 font-mono text-carbon-text [overflow-wrap:anywhere] max-sm:basis-full"
-        title={note || undefined}
+        className={`min-w-0 flex-1 font-mono text-carbon-text [overflow-wrap:anywhere] max-sm:basis-full${columns ? ' md:truncate' : ''}`}
+        title={[note, columns ? e.Path : ''].filter(Boolean).join('\n') || undefined}
       >
         {e.Path}
       </span>

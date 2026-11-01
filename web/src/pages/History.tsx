@@ -508,7 +508,7 @@ export function RunRow({
           e.stopPropagation()
           onOpen()
         }}
-        className="min-w-0 flex-1 text-start text-body text-carbon-text [overflow-wrap:anywhere]"
+        className={`min-w-0 flex-1 text-start text-body text-carbon-text [overflow-wrap:anywhere]${columns ? ' md:truncate' : ''}`}
       >
         {withJob ? (
           <span className="font-medium">{r.Job}</span>
@@ -520,7 +520,7 @@ export function RunRow({
         )}
       </button>
       {/* One cell for the badges where the row has columns, none of its own otherwise. */}
-      <span style={columns?.cell('state')} className={columns ? 'flex min-w-0 flex-wrap items-center gap-1.5' : 'contents'}>
+      <span style={columns?.cell('state')} className={columns ? 'flex min-w-0 flex-wrap items-center gap-1.5 md:flex-nowrap md:overflow-hidden' : 'contents'}>
         {r.Running && (
           <Badge tone="active" className="glim-live">
             {t('status.running')}
