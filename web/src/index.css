@@ -296,6 +296,16 @@ body {
 .glim-btn.glim-glyph-only .glim-btn-glyph {
   display: inline-flex;
 }
+/* Alone in its square the glyph takes half the box, as GlimStone's icon
+   button does in glyph mode. */
+.glim-btn.glim-glyph-only .glim-btn-glyph > svg {
+  width: 1rem;
+  height: 1rem;
+}
+.glim-btn.glim-btn-key.glim-glyph-only .glim-btn-glyph > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
 .glim-btn.glim-glyph-only .glim-btn-label {
   position: absolute;
   width: 1px;
