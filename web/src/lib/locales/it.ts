@@ -1315,7 +1315,13 @@ const it: Translations = {
   'new.change.buttonTint': 'Ogni pulsante prende il colore di accento quando il puntatore o la tastiera lo raggiungono, e nell\'app per telefono finché ci tieni sopra il dito.',
   'new.change.listHeads': 'Le liste di {history}, {trash}, {conflicts} e {anomalies} ordinano, filtrano e cercano dalle proprie intestazioni. Un clic su un\'intestazione ordina, il ▾ accanto filtra, e scrivere nella lista o premere Ctrl+F apre una ricerca che fluttua sopra di essa. I pulsanti Filtra e Cerca sopra la cronologia non ci sono più. Nella cronologia dell\'app per telefono un tocco su un\'intestazione ordina, il suo ▾ filtra e la lente in fondo alla riga cerca. Su uno schermo tattile il browser mostra la stessa lente.',
   'list.tip.find': 'La lente cerca nella lista.',
-  'new.change.tileRows': '{trash} e {conflicts} contano ciò che contengono in una fila di riquadri, come fa {anomalies}: uno per tutti i lavori e uno per ciascun lavoro. Un clic sul riquadro di un lavoro mostra solo quel lavoro.',
+  'trash.all': 'Tutte le voci',
+  'conflicts.all': 'Tutti i conflitti',
+  'conflicts.kind.changedBoth': 'Modificato su entrambi i lati',
+  'conflicts.kind.appearedDiffer': 'Nuovo su entrambi i lati',
+  'conflicts.kind.other': 'Altro',
+  'list.noneShown': 'Qui niente corrisponde alla tua scelta.',
+  'new.change.tileRows': '{trash} e {conflicts} contano ciò che contengono in una fila di riquadri, come fa {anomalies}: il cestino per lato e i conflitti per tipo. Un riquadro mostra solo la sua parte, e il ▾ dell\'intestazione Lavoro limita la lista a un lavoro.',
 }
 
 export default it

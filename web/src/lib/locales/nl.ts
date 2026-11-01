@@ -1315,7 +1315,13 @@ const nl: Translations = {
   'new.change.buttonTint': 'Elke knop neemt de accentkleur aan zodra de aanwijzer of het toetsenbord hem bereikt, en in de telefoonapp zolang je vinger erop ligt.',
   'new.change.listHeads': 'De lijsten in {history}, {trash}, {conflicts} en {anomalies} sorteren, filteren en zoeken vanuit hun eigen koppen. Een klik op een kop sorteert, de ▾ ernaast filtert, en typen in de lijst of Ctrl+F opent een zoekveld dat erboven zweeft. De knoppen Filter en Zoeken boven de geschiedenis zijn weg. In de geschiedenis van de telefoonapp sorteert een tik op een kop, filtert de ▾ ervan en zoekt het vergrootglas aan het eind van de rij. Op een aanraakscherm toont de browser hetzelfde vergrootglas.',
   'list.tip.find': 'Het vergrootglas doorzoekt de lijst.',
-  'new.change.tileRows': '{trash} en {conflicts} tellen wat ze bevatten in een rij tegels, zoals {anomalies}: één voor alle taken en één per taak. Een klik op de tegel van een taak toont alleen die taak.',
+  'trash.all': 'Alle items',
+  'conflicts.all': 'Alle conflicten',
+  'conflicts.kind.changedBoth': 'Aan beide kanten gewijzigd',
+  'conflicts.kind.appearedDiffer': 'Aan beide kanten nieuw',
+  'conflicts.kind.other': 'Overig',
+  'list.noneShown': 'Niets hier past bij wat je koos.',
+  'new.change.tileRows': '{trash} en {conflicts} tellen wat ze bevatten in een rij tegels, zoals {anomalies}: de prullenbak per kant en de conflicten per soort. Een tegel toont alleen zijn deel, en de ▾ bij de kop Taak beperkt de lijst tot één taak.',
 }
 
 export default nl

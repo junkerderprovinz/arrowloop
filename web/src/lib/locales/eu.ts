@@ -1315,7 +1315,13 @@ const eu: Translations = {
   'new.change.buttonTint': 'Botoi bakoitzak nabarmentze-kolorea hartzen du erakusleak edo teklatuak heltzen diotenean, eta telefono-aplikazioan hatza gainean duzun bitartean.',
   'new.change.listHeads': '{history}, {trash}, {conflicts} eta {anomalies} orrietako zerrendek beren goiburuetatik ordenatzen, iragazten eta bilatzen dute. Goiburu batean klik eginez ordenatzen da, ondoko ▾ ikurrak iragazten du, eta zerrendan idazteak edo Ctrl+F sakatzeak gainean flotatzen duen bilaketa irekitzen du. Historiaren gaineko iragazteko eta bilatzeko botoiak desagertu dira. Telefono-aplikazioko historian, goiburu bat ukitzeak ordenatzen du, haren ▾ ikurrak iragazten du eta lerroaren amaierako luparekin bilatzen da. Ukipen-pantailan, nabigatzaileak lupa bera erakusten du.',
   'list.tip.find': 'Luparekin zerrendan bilatzen da.',
-  'new.change.tileRows': '{trash} eta {conflicts} orriek lauza-errenkada batean zenbatzen dute zer duten, {anomalies} orriak bezala: bat lan guztientzat eta bat lan bakoitzeko. Lan baten lauzan klik eginez lan hori bakarrik erakusten da.',
+  'trash.all': 'Sarrera guztiak',
+  'conflicts.all': 'Gatazka guztiak',
+  'conflicts.kind.changedBoth': 'Bi aldeetan aldatua',
+  'conflicts.kind.appearedDiffer': 'Berria bi aldeetan',
+  'conflicts.kind.other': 'Besteak',
+  'list.noneShown': 'Hemen ez dago aukeratu duzunarekin bat datorren ezer.',
+  'new.change.tileRows': '{trash} eta {conflicts} orriek lauza-errenkada batean zenbatzen dute zer duten, {anomalies} orriak bezala: zakarrontzia aldeka eta gatazkak motaka. Lauza batek bere zatia bakarrik erakusten du, eta Lana goiburuko ▾ ikurrak zerrenda lan bakar batera mugatzen du.',
 }
 
 export default eu

@@ -135,13 +135,19 @@ describe('the trash list', () => {
     localStorage.clear()
   })
 
-  it('counts every job in a tile of its own that shows that job alone', () => {
-    const music = { ...side, job: 'music', entries: [{ ...side.entries[0], path: 'song.mp3', remote: 'song.mp3' }], total: 1 } as TrashSide
+  it('has three tiles that pick a side, and filters the job from the head', () => {
+    const music = { ...side, job: 'music', side: 'right', entries: [{ ...side.entries[0], path: 'song.mp3', remote: 'song.mp3' }], total: 1 } as TrashSide
     wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
-    expect(screen.getByRole('button', { name: /^All jobs/ }).getAttribute('aria-pressed')).toBe('true')
-    fireEvent.click(screen.getByRole('button', { name: /^music/ }))
+    const tiles = within(screen.getByRole('group', { name: 'Trash' })).getAllByRole('button')
+    expect(tiles.map((b) => b.textContent?.replace(/\d.*$/, '').trim())).toEqual(['All entries', 'Left side', 'Right side'])
+    fireEvent.click(screen.getByRole('button', { name: /^Right side/ }))
     expect(screen.queryByText('a.txt')).toBeNull()
     expect(screen.getByText('song.mp3')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: /^All entries/ }))
+    fireEvent.click(screen.getAllByRole('button', { name: 'Filter by Job' })[0])
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('tab', { name: 'docs' }))
+    expect(screen.queryByText('song.mp3')).toBeNull()
+    expect(screen.getByText('Only docs')).toBeTruthy()
   })
 
   it('keeps its answers on the rows and in the corner, with no menu on a right-click', () => {

@@ -1357,7 +1357,13 @@ export const en = {
   'new.change.buttonTint': 'Every button takes the accent when the pointer or the keyboard reaches it, and in the phone app while your finger is on it.',
   'new.change.listHeads': 'The lists in {history}, {trash}, {conflicts} and {anomalies} sort, filter and search from their own headings. A click on a heading sorts, the ▾ beside it filters, and typing in the list or pressing Ctrl+F opens a search that floats over it. The Filter and Search buttons over History are gone. In the phone app\'s History a tap on a heading sorts, its ▾ filters and the magnifier at the end of the row searches. On a touch screen the browser shows the same magnifier.',
   'list.tip.find': 'The magnifier searches the list.',
-  'new.change.tileRows': '{trash} and {conflicts} count what they hold in a row of tiles, as {anomalies} does: one for every job and one for each job. A click on a job\'s tile shows that job alone.',
+  'trash.all': 'All entries',
+  'conflicts.all': 'All conflicts',
+  'conflicts.kind.changedBoth': 'Changed on both sides',
+  'conflicts.kind.appearedDiffer': 'New on both sides',
+  'conflicts.kind.other': 'Other',
+  'list.noneShown': 'Nothing here matches what you picked.',
+  'new.change.tileRows': '{trash} and {conflicts} count what they hold in a row of tiles, as {anomalies} does: the trash by side and the conflicts by kind. A tile shows its part alone, and the ▾ at the Job heading narrows the list to one job.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2705,7 +2711,13 @@ export const de: Translations = {
   'new.change.buttonTint': 'Jeder Knopf nimmt die Akzentfarbe an, sobald Mauszeiger oder Tastatur ihn erreichen, und in der Handy-App, solange dein Finger darauf liegt.',
   'new.change.listHeads': 'Die Listen in {history}, {trash}, {conflicts} und {anomalies} sortieren, filtern und suchen über ihre eigenen Überschriften. Ein Klick auf eine Überschrift sortiert, das ▾ daneben filtert, und Tippen in der Liste oder Strg+F öffnet eine Suche, die über ihr schwebt. Die Knöpfe Filter und Suchen über dem Verlauf sind weg. Im Verlauf der Handy-App sortiert ein Tipp auf eine Überschrift, ihr ▾ filtert und die Lupe am Ende der Zeile sucht. Auf einem Touchscreen zeigt der Browser dieselbe Lupe.',
   'list.tip.find': 'Die Lupe durchsucht die Liste.',
-  'new.change.tileRows': '{trash} und {conflicts} zählen in einer Kachelreihe, was sie enthalten, wie {anomalies}: eine Kachel für alle Aufträge und eine je Auftrag. Ein Klick auf die Kachel eines Auftrags zeigt nur diesen.',
+  'trash.all': 'Alle Einträge',
+  'conflicts.all': 'Alle Konflikte',
+  'conflicts.kind.changedBoth': 'Beidseitig geändert',
+  'conflicts.kind.appearedDiffer': 'Beidseitig neu',
+  'conflicts.kind.other': 'Andere',
+  'list.noneShown': 'Hier passt nichts zu deiner Auswahl.',
+  'new.change.tileRows': '{trash} und {conflicts} zählen in einer Kachelreihe, was sie enthalten, wie {anomalies}: der Papierkorb nach Seite, die Konflikte nach Art. Eine Kachel zeigt nur ihren Teil, und das ▾ an der Überschrift Auftrag beschränkt die Liste auf einen Auftrag.',
 }
 
 export interface Language {

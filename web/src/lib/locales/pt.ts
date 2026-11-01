@@ -1315,7 +1315,13 @@ const pt: Translations = {
   'new.change.buttonTint': 'Cada botão ganha a cor de destaque quando o ponteiro ou o teclado lá chegam, e na app do telemóvel enquanto tem o dedo nele.',
   'new.change.listHeads': 'As listas de {history}, {trash}, {conflicts} e {anomalies} ordenam, filtram e pesquisam a partir dos seus cabeçalhos. Um clique num cabeçalho ordena, o ▾ ao lado filtra, e escrever na lista ou premir Ctrl+F abre uma pesquisa que flutua sobre ela. Os botões Filtrar e Pesquisar sobre o histórico desapareceram. No histórico da app do telemóvel, um toque num cabeçalho ordena, o seu ▾ filtra e a lupa no fim da linha pesquisa. Num ecrã tátil, o navegador mostra a mesma lupa.',
   'list.tip.find': 'A lupa pesquisa na lista.',
-  'new.change.tileRows': '{trash} e {conflicts} contam o que contêm numa fila de mosaicos, como {anomalies}: um para todas as tarefas e um para cada tarefa. Um clique no mosaico de uma tarefa mostra só essa tarefa.',
+  'trash.all': 'Todas as entradas',
+  'conflicts.all': 'Todos os conflitos',
+  'conflicts.kind.changedBoth': 'Alterado nos dois lados',
+  'conflicts.kind.appearedDiffer': 'Novo nos dois lados',
+  'conflicts.kind.other': 'Outros',
+  'list.noneShown': 'Nada aqui corresponde ao que escolheu.',
+  'new.change.tileRows': '{trash} e {conflicts} contam o que contêm numa fila de mosaicos, como {anomalies}: o lixo por lado e os conflitos por tipo. Um mosaico mostra só a sua parte, e o ▾ no cabeçalho Tarefa reduz a lista a uma tarefa.',
 }
 
 export default pt

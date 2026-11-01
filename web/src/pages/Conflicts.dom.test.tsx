@@ -112,15 +112,25 @@ describe('the conflicts list', () => {
     expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
   })
 
-  it('picks a job from its tile, and answers for all of that job only', async () => {
-    const both: ConflictListing = { conflicts: [conflict('a.txt'), conflict('b.txt'), conflict('c.txt', 'music'), conflict('d.txt', 'music')], unread: [] }
+  it('counts the conflicts by kind in fixed tiles, and answers for all of what they show', async () => {
+    const mixed: ConflictListing = {
+      conflicts: [{ ...conflict('a.txt'), why: 'changedBoth' }, { ...conflict('b.txt'), why: 'changedBoth' }, { ...conflict('c.txt'), why: 'appearedDiffer' }],
+      unread: [],
+    }
     render(
       <ToastProvider>
-        <Conflicts listing={both} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={mixed} job="" onJob={() => undefined} onChanged={() => undefined} />
       </ToastProvider>,
     )
-    fireEvent.click(screen.getByRole('button', { name: /^music/ }))
-    expect(screen.queryByText('a.txt', { selector: 'span' })).toBeNull()
+    const tiles = within(screen.getByRole('group', { name: 'Conflicts' })).getAllByRole('button')
+    expect(tiles.map((b) => b.textContent?.replace(/Waiting.*$/, '').replace(/\d+$/, '').trim())).toEqual([
+      'All conflicts',
+      'Changed on both sides',
+      'New on both sides',
+      'Other',
+    ])
+    fireEvent.click(screen.getByRole('button', { name: /^Changed on both sides/ }))
+    expect(screen.queryByText('c.txt', { selector: 'span' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'More' }))
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left for all' }))
     expect((await screen.findByRole('dialog', { name: 'Keep left for all' })).textContent).toContain('Conflicts: 2')

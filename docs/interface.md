@@ -284,10 +284,12 @@ read **Keep the version on this phone, trash the other** or name the target.
 
 From two conflicts up, **More** at the bottom right answers every conflict
 shown at once: **Keep left for all**, **Keep both for all** and **Keep right
-for all**. It asks first and says how many conflicts the answer covers. Tiles
-above the conflicts count how many wait, all of them and each job's, as the
-Anomalies tiles do, and a click on a job's tile shows only that job; the
-answers for all then cover that job alone.
+for all**. It asks first and says how many conflicts the answer covers. Four
+tiles above the conflicts count how many wait, as the Anomalies tiles do: all
+of them, those changed on both sides, those new on both sides, and the rest.
+A tile shows its kind alone, the ▾ at the **Job** heading narrows the list to
+one job, and the answers for all cover what is shown. A kind with nothing
+waiting keeps its tile at 0.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
@@ -302,9 +304,11 @@ within a couple of seconds of each other still keep both.
 
 ## Trash
 
-**Trash** counts what the trash holds in tiles on top, all of it and each
-job's, as the Anomalies tiles do; a click on a job's tile shows only that job,
-and the two buttons at the bottom right then act on it alone. Below them every
+**Trash** counts what the trash holds in three tiles on top, as the Anomalies
+tiles do: all of it, the left side and the right side, each with its size. A
+tile shows its side alone, the ▾ at the **Job** heading narrows the list to
+one job, and the two buttons at the bottom right act on what is shown. Below
+them every
 job's trash stands in a card per job, both sides in it, sorted by path, size or age
 from the headings. It puts files back, and deletes them for good: one file, one side, everything older
 than a number of days, or all of it. **Empty the trash** is the filled button at

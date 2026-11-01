@@ -55,3 +55,20 @@ export function stillListed(selected: Set<string>, listed: Named[]): Set<string>
   const out = new Set([...selected].filter((k) => live.has(k)))
   return out.size === selected.size ? selected : out
 }
+
+/**
+ * The kinds of conflict the tiles over the list count, in their fixed order:
+ * the engine's two reasons for one and other, which takes a conflict without a
+ * known reason, such as one an older build set aside.
+ */
+export const CONFLICT_KINDS = [
+  { kind: 'changedBoth', label: 'conflicts.kind.changedBoth' },
+  { kind: 'appearedDiffer', label: 'conflicts.kind.appearedDiffer' },
+  { kind: 'other', label: 'conflicts.kind.other' },
+] as const
+
+export type ConflictKind = (typeof CONFLICT_KINDS)[number]['kind']
+
+export function conflictKind(c: { why?: string }): ConflictKind {
+  return c.why === 'changedBoth' || c.why === 'appearedDiffer' ? c.why : 'other'
+}

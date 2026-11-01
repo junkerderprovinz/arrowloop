@@ -1315,7 +1315,13 @@ const hr: Translations = {
   'new.change.buttonTint': 'Svaki gumb poprima boju naglaska kad do njega dođu pokazivač ili tipkovnica, a u aplikaciji za telefon dok je prst na njemu.',
   'new.change.listHeads': 'Popisi u {history}, {trash}, {conflicts} i {anomalies} razvrstavaju, filtriraju i pretražuju preko vlastitih naslova. Klik na naslov razvrstava, ▾ pokraj njega filtrira, a tipkanje u popisu ili Ctrl+F otvara pretragu koja lebdi iznad njega. Gumbi za filtar i pretragu iznad povijesti su nestali. U povijesti aplikacije za telefon dodir naslova razvrstava, njegov ▾ filtrira, a povećalo na kraju retka pretražuje. Na zaslonu osjetljivom na dodir preglednik prikazuje isto povećalo.',
   'list.tip.find': 'Povećalo pretražuje popis.',
-  'new.change.tileRows': '{trash} i {conflicts} broje što sadrže u nizu pločica, kao i {anomalies}: jedna za sve zadatke i po jedna za svaki zadatak. Klik na pločicu zadatka prikazuje samo taj zadatak.',
+  'trash.all': 'Svi unosi',
+  'conflicts.all': 'Svi sukobi',
+  'conflicts.kind.changedBoth': 'Promijenjeno na obje strane',
+  'conflicts.kind.appearedDiffer': 'Novo na obje strane',
+  'conflicts.kind.other': 'Ostalo',
+  'list.noneShown': 'Ovdje ništa ne odgovara vašem odabiru.',
+  'new.change.tileRows': '{trash} i {conflicts} broje što sadrže u nizu pločica, kao i {anomalies}: koš po strani, sukobe po vrsti. Pločica prikazuje samo svoj dio, a ▾ uz naslov Zadatak sužava popis na jedan zadatak.',
 }
 
 export default hr

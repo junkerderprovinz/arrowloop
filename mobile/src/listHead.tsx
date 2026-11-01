@@ -45,11 +45,11 @@ function useFirstVisit(page: string): [boolean, () => void] {
   return [shown, () => setShown(false)];
 }
 
-function tipText(t: T, heads: Head[]): string {
+function tipText(t: T, heads: Head[], search: boolean): string {
   return [
     ...(heads.some((h) => h.sorts) ? [t("list.tip.sort")] : []),
     ...(heads.some((h) => h.filter) ? [t("list.tip.filter")] : []),
-    t("list.tip.find"),
+    ...(search ? [t("list.tip.find")] : []),
   ].join(" ");
 }
 
@@ -61,10 +61,11 @@ export function ListHead({
   onSearch,
 }: {
   heads: Head[];
-  sort: { by: string; dir: SortDir };
-  onSort: (by: string, dir: SortDir) => void;
+  sort?: { by: string; dir: SortDir };
+  onSort?: (by: string, dir: SortDir) => void;
   page: string;
-  onSearch: () => void;
+  /** Opens the list's search; a list without one has no magnifier. */
+  onSearch?: () => void;
 }) {
   const { t } = useT();
   const { p, accent } = useTheme();
@@ -79,7 +80,7 @@ export function ListHead({
     <View style={styles.wrap}>
       <View style={[styles.row, { borderBottomColor: p.border }]} accessibilityRole="header">
         {heads.map((head) => {
-          const on = sort.by === head.id;
+          const on = sort?.by === head.id;
           const active = !!head.filter?.active;
           return (
             <View key={head.id} style={styles.head}>
@@ -87,7 +88,7 @@ export function ListHead({
                 accessibilityRole="button"
                 accessibilityLabel={head.label}
                 onPress={() => {
-                  if (head.sorts) onSort(head.id, on && sort.dir === "asc" ? "desc" : "asc");
+                  if (head.sorts && onSort) onSort(head.id, on && sort?.dir === "asc" ? "desc" : "asc");
                   else head.filter?.open();
                   used();
                 }}
@@ -98,7 +99,7 @@ export function ListHead({
                   {head.label}
                 </Text>
                 {on && head.sorts ? (
-                  <Glyph name={sort.dir === "asc" ? "IconMoveUp" : "IconMoveDown"} color={p.text} size={11} />
+                  <Glyph name={sort?.dir === "asc" ? "IconMoveUp" : "IconMoveDown"} color={p.text} size={11} />
                 ) : null}
               </Press>
               {head.filter ? (
@@ -119,22 +120,24 @@ export function ListHead({
             </View>
           );
         })}
-        <Press
-          accessibilityRole="button"
-          accessibilityLabel={t("list.search")}
-          onPress={() => {
-            onSearch();
-            used();
-          }}
-          hitSlop={8}
-          style={styles.find}
-        >
-          <Glyph name="IconSearch" color={p.textMuted} size={16} />
-        </Press>
+        {onSearch ? (
+          <Press
+            accessibilityRole="button"
+            accessibilityLabel={t("list.search")}
+            onPress={() => {
+              onSearch();
+              used();
+            }}
+            hitSlop={8}
+            style={styles.find}
+          >
+            <Glyph name="IconSearch" color={p.textMuted} size={16} />
+          </Press>
+        ) : null}
       </View>
       {tip || held ? (
         <View style={styles.tip}>
-          <Text style={[styles.tipText, { color: p.textSub }]}>{tipText(t, heads)}</Text>
+          <Text style={[styles.tipText, { color: p.textSub }]}>{tipText(t, heads, !!onSearch)}</Text>
           <Press accessibilityRole="button" accessibilityLabel={t("common.close")} onPress={used} hitSlop={8}>
             <Glyph name="IconClose" color={p.textSub} size={12} />
           </Press>

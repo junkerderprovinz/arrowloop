@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { entryLabel, entryNote, plainKey, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { useT, type T } from "../i18n";
+import { JobChips } from "../jobChips";
 import { ListHead, ListSearch, Narrowed, type SortDir } from "../listHead";
-import { contrastOn, space, text } from "../theme";
+import { space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
 import {
   AxisLabel,
@@ -460,23 +461,6 @@ function Top({ mode, onMode, children }: { mode: Mode; onMode: (next: Mode) => v
   );
 }
 
-/** Job chips for the filter sheet; they scroll sideways, since any number of jobs can exist. */
-function JobChips({ names, job, onJob }: { names: string[]; job: string; onJob: (next: string) => void }) {
-  const { t } = useT();
-  if (names.length < 2) return null;
-  return (
-    <>
-      <AxisLabel>{t("nav.jobs")}</AxisLabel>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-        <Chip label={t("history.allJobs")} on={job === ""} onPress={() => onJob("")} />
-        {names.map((n) => (
-          <Chip key={n} label={n} on={job === n} onPress={() => onJob(n)} />
-        ))}
-      </ScrollView>
-    </>
-  );
-}
-
 /**
  * What one run did, path by path, in a sheet over the list. The entries are
  * fetched only when it opens, since the list needs nothing but the summaries.
@@ -544,25 +528,6 @@ function Separator() {
     <ListPiece>
       <View style={[styles.separator, { backgroundColor: p.border }]} />
     </ListPiece>
-  );
-}
-
-/**
- * A pressable filter pill. It has a Badge's shape but is its own component,
- * since badges only report.
- */
-function Chip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
-  const { p, corners, accent } = useTheme();
-  return (
-    <Press
-      onPress={onPress}
-      android_ripple={{ color: p.hover }}
-      style={[styles.chip, { backgroundColor: on ? accent : p.surface2, ...corners.pill }]}
-    >
-      <Text numberOfLines={1} style={[styles.chipText, { color: on ? contrastOn(accent) : p.textSub }]}>
-        {label}
-      </Text>
-    </Press>
   );
 }
 
@@ -638,9 +603,6 @@ const styles = StyleSheet.create({
   // No gap: the rows are pieces of one card.
   list: { padding: space.lg },
   bar: { gap: space.sm },
-  chips: { gap: space.sm, paddingVertical: space.xs },
-  chip: { paddingHorizontal: space.md, paddingVertical: space.xs },
-  chipText: { fontSize: text.meta, fontWeight: "600" },
   row: { paddingVertical: space.md, gap: space.xs },
   runRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   runName: { flex: 1, fontSize: text.body, fontWeight: "600" },

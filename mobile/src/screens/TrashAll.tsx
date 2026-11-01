@@ -8,8 +8,10 @@ import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { failureLine } from "../../../web/src/lib/failure";
 import { byJob, trashTotals } from "../../../web/src/lib/trashView";
+import { JobChips } from "../jobChips";
+import { ListHead } from "../listHead";
 import { Tiles } from "../tiles";
-import { Body, Button, Caption, Card, Empty, Fab, Floating, Mono, Page, PickRow, Title } from "../ui";
+import { Body, Button, Caption, Card, Empty, Fab, Floating, Mono, Page, PickRow, Sheet, Title } from "../ui";
 
 /** Names one trashed file across every job and side. */
 function itemKey(bin: TrashSide, item: TrashItem): string {
@@ -17,10 +19,11 @@ function itemKey(bin: TrashSide, item: TrashItem): string {
 }
 
 /**
- * Every job's trash on both sides, under a chip per job that shows that job
- * alone. Rows are tapped to choose them, as on a job's own trash screen;
- * putting back is one tap, removing for good asks. Emptying what the screen
- * shows is its floating button, as on the web's page.
+ * Every job's trash on both sides, under a chip per side that shows that side
+ * alone and a head whose filter picks the job. Rows are tapped to choose them,
+ * as on a job's own trash screen; putting back is one tap, removing for good
+ * asks. Emptying what the screen shows is its floating button, as on the web's
+ * page.
  */
 export function TrashAll() {
   const { t, lang } = useT();
@@ -29,7 +32,9 @@ export function TrashAll() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
-  const [job, setJob] = useState<string | null>(null);
+  const [side, setSide] = useState<"left" | "right" | null>(null);
+  const [job, setJob] = useState("");
+  const [filtering, setFiltering] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -71,25 +76,38 @@ export function TrashAll() {
 
   if (!bins) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  const held = byJob(bins.filter((b) => !b.error && b.total > 0));
-  const shownJob = held.some((g) => g.job === job) ? job : null;
-  const shown = bins.filter((b) => !shownJob || b.job === shownJob);
+  const names = byJob(bins.filter((b) => !b.error && b.total > 0)).map((g) => g.job);
+  const shownJob = names.includes(job) ? job : "";
+  const ofJob = bins.filter((b) => !shownJob || b.job === shownJob);
+  const shown = ofJob.filter((b) => !side || b.side === side);
   const readable = shown.filter((b) => !b.error);
+  const count = (which: "left" | "right") =>
+    trashTotals(ofJob.filter((b) => !b.error && b.side === which)).entries;
   const totals = trashTotals(readable);
   const picked = readable.flatMap((b) => b.entries.filter((e) => chosen.has(itemKey(b, e))).map((e) => ({ bin: b, item: e })));
 
-  if (held.length === 0 && bins.every((b) => !b.error)) return <Empty title={t("trash.nothing")} />;
+  if (names.length === 0 && bins.every((b) => !b.error)) return <Empty title={t("trash.nothing")} />;
 
   return (
     <Floating>
       <Page fab>
         <Tiles
           label={t("nav.trash")}
-          tiles={held.map((g) => ({ id: g.job, label: g.job, count: trashTotals(g.sides).entries }))}
-          picked={shownJob}
-          onPick={(name) => setJob((old) => (old === name ? null : name))}
+          tiles={[
+            { id: "left" as const, label: t("edit.left"), count: count("left") },
+            { id: "right" as const, label: t("edit.right"), count: count("right") },
+          ]}
+          picked={side}
+          onPick={(which) => setSide((old) => (old === which ? null : which))}
         />
         <Caption>{t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}</Caption>
+        {/* The job chips need two jobs to choose between. */}
+        {names.length > 1 ? (
+          <ListHead
+            page="trash"
+            heads={[{ id: "job", label: t("history.filterJob"), filter: { active: shownJob !== "", open: () => setFiltering(true) } }]}
+          />
+        ) : null}
 
         {shown
           .filter((b) => b.total > 0 || b.error)
@@ -184,6 +202,9 @@ export function TrashAll() {
           />
         </View>
       </Page>
+      <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
+        <JobChips names={names} job={shownJob} onJob={setJob} />
+      </Sheet>
       {totals.entries > 0 && !busy ? (
         <Fab
           label={t("trash.emptyAll")}

@@ -1315,7 +1315,13 @@ const lt: Translations = {
   'new.change.buttonTint': 'Kiekvienas mygtukas įgauna akcento spalvą, kai jį pasiekia žymeklis ar klaviatūra, o telefono programėlėje tol, kol ant jo laikote pirštą.',
   'new.change.listHeads': 'Sąrašai puslapiuose {history}, {trash}, {conflicts} ir {anomalies} rikiuoja, filtruoja ir ieško iš savo antraščių. Spustelėjus antraštę rikiuojama, ▾ šalia jos filtruoja, o rašymas sąraše ar Ctrl+F atveria paiešką, kuri plaukioja virš jo. Filtro ir paieškos mygtukų virš istorijos nebėra. Telefono programėlės istorijoje palietus antraštę rikiuojama, jos ▾ filtruoja, o didinamasis stiklas eilutės gale ieško. Jutikliniame ekrane naršyklė rodo tą patį didinamąjį stiklą.',
   'list.tip.find': 'Didinamasis stiklas ieško sąraše.',
-  'new.change.tileRows': '{trash} ir {conflicts} skaičiuoja, ką turi, plytelių eilėje, kaip ir {anomalies}: viena visoms užduotims ir po vieną kiekvienai užduočiai. Spustelėjus užduoties plytelę rodoma tik ta užduotis.',
+  'trash.all': 'Visi įrašai',
+  'conflicts.all': 'Visi konfliktai',
+  'conflicts.kind.changedBoth': 'Pakeista abiejose pusėse',
+  'conflicts.kind.appearedDiffer': 'Nauja abiejose pusėse',
+  'conflicts.kind.other': 'Kita',
+  'list.noneShown': 'Čia niekas neatitinka jūsų pasirinkimo.',
+  'new.change.tileRows': '{trash} ir {conflicts} skaičiuoja, ką turi, plytelių eilėje, kaip ir {anomalies}: šiukšlinę pagal pusę, konfliktus pagal rūšį. Plytelė rodo tik savo dalį, o ▾ prie antraštės Užduotis susiaurina sąrašą iki vienos užduoties.',
 }
 
 export default lt

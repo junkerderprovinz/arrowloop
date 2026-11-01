@@ -4,7 +4,7 @@ import { Empty, Num, Rows, Stack } from '../components/Shell'
 import { Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
 import { JobChip } from '../components/JobChip'
-import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
+import { FilterChoice, ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { IconEmpty, IconPrune, IconTrash } from '../components/glyphs'
@@ -49,11 +49,12 @@ function sorted(entries: TrashEntry[], sort: ListSort | null): TrashEntry[] {
 
 /**
  * Every job's trash on both sides, in a card per job under the tiles that
- * count it, which pick every job or one. Restoring is a click, since it only
- * moves a file back; removing anything for good asks first, because the trash
- * is the last copy there is. Emptying it is the corner's filled action, with
- * deleting only the old entries beside it; both act on the jobs the page
- * shows. The lists sort from their heads, and typing searches their paths.
+ * count it, which pick both sides or one; the heads pick the job. Restoring is
+ * a click, since it only moves a file back; removing anything for good asks
+ * first, because the trash is the last copy there is. Emptying it is the
+ * corner's filled action, with deleting only the old entries beside it; both
+ * act on the jobs the page shows. The lists sort from their heads, and typing
+ * searches their paths.
  */
 export function Trash({
   sides,
@@ -77,8 +78,10 @@ export function Trash({
   const [busy, setBusy] = useState(false)
   const [sort, setSort] = useRemembered<ListSort | null>('arrowloop.trash.sort', null, isSort)
   const [query, setQuery] = useState('')
-  // The job a tile picked, empty for every job.
-  const [tile, setTile] = useState('')
+  // The side a tile picked, empty for both.
+  const [tile, setTile] = useState<'' | 'left' | 'right'>('')
+  // The job the head's filter picked, empty for every job.
+  const [only, setOnly] = useState('')
   const area = useRef<HTMLDivElement>(null)
 
   const all = sides ?? []
@@ -150,18 +153,44 @@ export function Trash({
 
   const searching = query.trim() !== ''
   const matching = (s: TrashSide) => (searching ? s.entries.filter((e) => matchesQuery(query, [e.path])) : s.entries)
-  const held = byJob(readable).filter((group) => group.sides.some((s) => s.total > 0))
-  const picked = held.some((group) => group.job === tile) ? tile : ''
-  // The corner's two actions act on what the tiles show.
-  const full = readable.filter((s) => s.total > 0 && (!picked || s.job === picked))
+  const names = byJob(readable)
+    .filter((group) => group.sides.some((s) => s.total > 0))
+    .map((group) => group.job)
+  const picked = names.includes(only) ? only : ''
+  const ofJob = readable.filter((s) => !picked || s.job === picked)
+  // The corner's two actions act on what the tiles and the job filter show.
+  const full = ofJob.filter((s) => s.total > 0 && (!tile || s.side === tile))
   const groups = byJob(shown)
     .filter((group) => !picked || group.job === picked)
-    .map((group) => ({ ...group, sides: group.sides.filter((s) => s.error || (s.total > 0 && matching(s).length > 0)) }))
+    .map((group) => ({
+      ...group,
+      sides: group.sides.filter((s) => (!tile || s.side === tile) && (s.error || (s.total > 0 && matching(s).length > 0))),
+    }))
     .filter((group) => group.sides.length > 0)
   const holding = (sides: TrashSide[]) => {
     const { entries, bytes: size } = trashTotals(sides)
     return { count: entries, detail: t('trash.holding', { count: entries, size: bytes(size) }) }
   }
+  const jobHead: Head = {
+    id: 'job',
+    label: t('history.filterJob'),
+    className: 'shrink-0',
+    filter: {
+      active: picked !== '',
+      panel: (
+        <FilterChoice
+          label={t('history.filterJob')}
+          value={picked}
+          onChange={setOnly}
+          options={[{ value: '', label: t('history.allJobs') }, ...names.map((n) => ({ value: n, label: n }))]}
+        />
+      ),
+    },
+  }
+  const narrowing = [
+    ...(picked ? [t('list.onlyJob', { job: picked })] : []),
+    ...(searching ? [t('list.searched', { q: query.trim() })] : []),
+  ]
 
   return (
     <Stack>
@@ -181,21 +210,28 @@ export function Trash({
                 label={t('nav.trash')}
                 glyph={<IconTrash />}
                 tiles={[
-                  { id: '', label: t('history.allJobs'), ...holding(readable) },
-                  ...held.map((group) => ({ id: group.job, label: group.job, ...holding(group.sides) })),
+                  { id: '' as const, label: t('trash.all'), ...holding(ofJob) },
+                  { id: 'left' as const, label: t('edit.left'), ...holding(ofJob.filter((s) => s.side === 'left')) },
+                  { id: 'right' as const, label: t('edit.right'), ...holding(ofJob.filter((s) => s.side === 'right')) },
                 ]}
-                chosen={picked}
+                chosen={tile}
                 onChoose={setTile}
               >
-                <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
+                <Narrowed
+                  what={narrowing}
+                  onClear={() => {
+                    setOnly('')
+                    setQuery('')
+                  }}
+                />
               </Tiles>
             </div>
           </div>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none">
             <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} />
-            {searching && groups.length === 0 && (
+            {groups.length === 0 && (
               <Card hueIndex={1}>
-                <Empty>{t('jobs.historyNoMatch', { q: query.trim() })}</Empty>
+                <Empty>{searching ? t('jobs.historyNoMatch', { q: query.trim() }) : t('list.noneShown')}</Empty>
               </Card>
             )}
             {groups.map((group, i) => (
@@ -210,6 +246,7 @@ export function Trash({
                       sort={sort ?? undefined}
                       onSort={setSort}
                       tip={i === 0 && at === 0}
+                      jobHead={jobHead}
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
                       onEmpty={() => setPending({ kind: 'side', side: s })}
@@ -302,6 +339,7 @@ function SideList({
   sort,
   onSort,
   tip,
+  jobHead,
   onRestore,
   onDelete,
   onEmpty,
@@ -314,6 +352,8 @@ function SideList({
   onSort: (next: ListSort) => void
   /** Whether this list's head shows the page's first-visit hint. */
   tip: boolean
+  /** The head that filters the page by job, which every side's list carries. */
+  jobHead: Head
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
@@ -321,6 +361,7 @@ function SideList({
   const { t, lang } = useT()
   const heads: Head[] = [
     { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1', sorts: true },
+    jobHead,
     { id: 'size', label: t('list.head.size'), className: 'w-20 shrink-0 max-sm:hidden', end: true, sorts: true },
     { id: 'age', label: t('list.head.age'), className: 'w-28 shrink-0', end: true, sorts: true },
   ]

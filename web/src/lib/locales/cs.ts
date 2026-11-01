@@ -1315,7 +1315,13 @@ const cs: Translations = {
   'new.change.buttonTint': 'Každé tlačítko převezme barvu zvýraznění, když na něj najede ukazatel nebo klávesnice, a v aplikaci pro telefon, dokud na něm máte prst.',
   'new.change.listHeads': 'Seznamy v {history}, {trash}, {conflicts} a {anomalies} řadí, filtrují a hledají ze svých záhlaví. Kliknutí na záhlaví řadí, ▾ vedle něj filtruje a psaní v seznamu nebo Ctrl+F otevře hledání, které se vznáší nad ním. Tlačítka pro filtr a hledání nad historií zmizela. V historii aplikace pro telefon klepnutí na záhlaví řadí, jeho ▾ filtruje a lupa na konci řádku hledá. Na dotykové obrazovce ukazuje prohlížeč stejnou lupu.',
   'list.tip.find': 'Lupa prohledá seznam.',
-  'new.change.tileRows': '{trash} a {conflicts} počítají, co obsahují, v řadě dlaždic, stejně jako {anomalies}: jedna pro všechny úlohy a jedna pro každou úlohu. Kliknutí na dlaždici úlohy ukáže jen tu úlohu.',
+  'trash.all': 'Všechny položky',
+  'conflicts.all': 'Všechny konflikty',
+  'conflicts.kind.changedBoth': 'Změněno na obou stranách',
+  'conflicts.kind.appearedDiffer': 'Nové na obou stranách',
+  'conflicts.kind.other': 'Ostatní',
+  'list.noneShown': 'Nic tady neodpovídá vašemu výběru.',
+  'new.change.tileRows': '{trash} a {conflicts} počítají, co obsahují, v řadě dlaždic, stejně jako {anomalies}: koš podle strany, konflikty podle druhu. Dlaždice ukáže jen svou část a ▾ u záhlaví Úloha zúží seznam na jednu úlohu.',
 }
 
 export default cs

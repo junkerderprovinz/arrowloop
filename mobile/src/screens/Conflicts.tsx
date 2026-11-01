@@ -8,9 +8,12 @@ import { SideRow, sideMark } from "../sideRow";
 import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
-import { conflictKey, decisionsByJob, newerSide } from "../../../web/src/lib/conflicts";
+import { CONFLICT_KINDS, conflictKey, conflictKind, decisionsByJob, newerSide, type ConflictKind } from "../../../web/src/lib/conflicts";
 import { failureLine, type Failure } from "../../../web/src/lib/failure";
-import { AxisLabel, Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair } from "../ui";
+import { JobChips } from "../jobChips";
+import { ListHead } from "../listHead";
+import { Tiles } from "../tiles";
+import { AxisLabel, Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair, Sheet } from "../ui";
 import { useWaiting } from "../waiting";
 
 /** The same three answers as the web's conflicts page, in the order of the sides they keep. */
@@ -41,9 +44,10 @@ function keepLabel(keep: Keep, job: Job | undefined, t: T): string {
 
 /**
  * Every open conflict across the jobs, each saying which file it is, what went
- * wrong and what each side holds, with the three answers under it. From two
- * conflicts up, the same answers for all of them stand at the foot and ask
- * first.
+ * wrong and what each side holds, with the three answers under it. A chip per
+ * kind of conflict and the job filter in the head narrow the list, and from
+ * two conflicts shown up the same answers for all of them stand at the foot
+ * and ask first.
  */
 export function Conflicts() {
   const { t, lang } = useT();
@@ -52,6 +56,9 @@ export function Conflicts() {
   const [remotes, setRemotes] = useState<Remote[]>([]);
   const [unread, setUnread] = useState<{ job: string; error: string; failure?: Failure }[]>([]);
   const [busy, setBusy] = useState(false);
+  const [kind, setKind] = useState<ConflictKind | null>(null);
+  const [job, setJob] = useState("");
+  const [filtering, setFiltering] = useState(false);
   const [error, setError] = useState("");
   const waiting = useWaiting();
 
@@ -92,15 +99,41 @@ export function Conflicts() {
 
   if (!list) return <Empty title={t("history.working")} detail={error || undefined} />;
 
+  const names = [...new Set(list.map((c) => c.job))].sort((a, b) => a.localeCompare(b));
+  const shownJob = names.includes(job) ? job : "";
+  const ofJob = list.filter((c) => !shownJob || c.job === shownJob);
+  const shown = ofJob.filter((c) => !kind || conflictKind(c) === kind);
+
   // The answer for all of them names a side by position, which only reads
   // true when every conflict belongs to one job.
-  const single = new Set(list.map((c) => c.job)).size === 1 ? jobs.find((j) => j.name === list[0]?.job) : undefined;
+  const single = new Set(shown.map((c) => c.job)).size === 1 ? jobs.find((j) => j.name === shown[0]?.job) : undefined;
 
   return (
     <Page>
       {list.length === 0 ? <Empty title={t("conflicts.none")} /> : null}
+      {list.length > 0 ? (
+        <>
+          <Tiles
+            label={t("nav.conflicts")}
+            tiles={CONFLICT_KINDS.map(({ kind: id, label }) => ({
+              id,
+              label: t(label),
+              count: ofJob.filter((c) => conflictKind(c) === id).length,
+            }))}
+            picked={kind}
+            onPick={(id) => setKind((old) => (old === id ? null : id))}
+          />
+          {/* The job chips need two jobs to choose between. */}
+          {names.length > 1 ? (
+            <ListHead
+              page="conflicts"
+              heads={[{ id: "job", label: t("history.filterJob"), filter: { active: shownJob !== "", open: () => setFiltering(true) } }]}
+            />
+          ) : null}
+        </>
+      ) : null}
 
-      {list.map((c) => {
+      {shown.map((c) => {
         const job = jobs.find((j) => j.name === c.job);
         const newer = newerSide(c);
         return (
@@ -134,9 +167,9 @@ export function Conflicts() {
       ))}
       {error ? <Body>{error}</Body> : null}
 
-      {list.length > 1 ? (
+      {shown.length > 1 ? (
         <Card>
-          <Caption>{t("conflicts.allConfirm", { count: list.length })}</Caption>
+          <Caption>{t("conflicts.allConfirm", { count: shown.length })}</Caption>
           <View style={styles.choices}>
             {CHOICES.filter((keep) => keep === "both" || single).map((keep) => {
               const label = keep === "both" ? t("conflicts.allBoth") : keepLabel(keep, single, t);
@@ -147,9 +180,9 @@ export function Conflicts() {
                   glyph={GLYPH[keep]}
                   busy={busy}
                   onPress={() =>
-                    Alert.alert(label, `${t("conflicts.allConfirm", { count: list.length })} ${t("conflicts.chooseHint")}`, [
+                    Alert.alert(label, `${t("conflicts.allConfirm", { count: shown.length })} ${t("conflicts.chooseHint")}`, [
                       { text: t("confirm.cancel"), style: "cancel" },
-                      { text: label, onPress: () => void decide(list, keep) },
+                      { text: label, onPress: () => void decide(shown, keep) },
                     ])
                   }
                 />
@@ -158,6 +191,9 @@ export function Conflicts() {
           </View>
         </Card>
       ) : null}
+      <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
+        <JobChips names={names} job={shownJob} onJob={setJob} />
+      </Sheet>
     </Page>
   );
 }

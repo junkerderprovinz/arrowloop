@@ -1315,7 +1315,13 @@ const da: Translations = {
   'new.change.buttonTint': 'Hver knap tager accentfarven, når markøren eller tastaturet når den, og i telefonappen, så længe din finger er på den.',
   'new.change.listHeads': 'Listerne i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søger fra deres egne overskrifter. Et klik på en overskrift sorterer, ▾ ved siden af filtrerer, og at skrive i listen eller trykke Ctrl+F åbner en søgning, der svæver over den. Filter- og søgeknapperne over historikken er væk. I telefonappens historik sorterer et tryk på en overskrift, dens ▾ filtrerer, og luppen for enden af rækken søger. På en berøringsskærm viser browseren den samme lup.',
   'list.tip.find': 'Luppen søger i listen.',
-  'new.change.tileRows': '{trash} og {conflicts} tæller, hvad de rummer, i en række fliser, som {anomalies} gør: én for alle job og én for hvert job. Et klik på et jobs flise viser kun det job.',
+  'trash.all': 'Alle poster',
+  'conflicts.all': 'Alle konflikter',
+  'conflicts.kind.changedBoth': 'Ændret på begge sider',
+  'conflicts.kind.appearedDiffer': 'Ny på begge sider',
+  'conflicts.kind.other': 'Andre',
+  'list.noneShown': 'Intet her passer til dit valg.',
+  'new.change.tileRows': '{trash} og {conflicts} tæller, hvad de rummer, i en række fliser, som {anomalies} gør: papirkurven efter side og konflikterne efter slags. En flise viser kun sin del, og ▾ ved overskriften Job indsnævrer listen til ét job.',
 }
 
 export default da
