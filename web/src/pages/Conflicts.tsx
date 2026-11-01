@@ -119,6 +119,7 @@ export function Conflicts({
     setBusy(new Set())
   }
 
+  // The job filter stands once on the page, in the first card's head.
   const heads: Head[] = [
     { id: 'file', label: t('list.head.file'), className: 'min-w-0 flex-1', sorts: true },
     {
@@ -184,7 +185,7 @@ export function Conflicts({
               <div key={g.name} data-new={i === 0 ? 'conflict-cards' : undefined}>
                 <Card title={g.name} hueIndex={i + 1} hint={t('conflicts.hint')}>
                   <ListHead
-                    heads={heads}
+                    heads={i === 0 ? heads : heads.filter((h) => h.id !== 'job')}
                     sort={sort}
                     onSort={setSort}
                     page={i === 0 ? 'conflicts' : undefined}

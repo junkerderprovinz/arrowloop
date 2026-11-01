@@ -136,6 +136,20 @@ describe('the conflicts list', () => {
     expect((await screen.findByRole('dialog', { name: 'Keep left for all' })).textContent).toContain('Conflicts: 2')
   })
 
+  it('offers the job filter once on the page, and keeps it once a job is picked', () => {
+    const both: ConflictListing = { conflicts: [conflict('a.txt'), conflict('b.txt', 'music'), conflict('c.txt', 'photos')], unread: [] }
+    render(
+      <ToastProvider>
+        <Conflicts listing={both} job="" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    expect(screen.getAllByRole('button', { name: 'Filter by Job' })).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Filter by Job' }))
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('tab', { name: 'photos' }))
+    expect(screen.queryByText('a.txt', { selector: 'span' })).toBeNull()
+    expect(screen.getAllByRole('button', { name: 'Filter by Job' })).toHaveLength(1)
+  })
+
   it('opens no menu of its own on a right-click', () => {
     page()
     fireEvent.contextMenu(card('a.txt'))

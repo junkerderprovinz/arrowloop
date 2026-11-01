@@ -246,7 +246,7 @@ export function Trash({
                       sort={sort ?? undefined}
                       onSort={setSort}
                       tip={i === 0 && at === 0}
-                      jobHead={jobHead}
+                      jobHead={i === 0 && at === 0 ? jobHead : undefined}
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
                       onEmpty={() => setPending({ kind: 'side', side: s })}
@@ -352,8 +352,8 @@ function SideList({
   onSort: (next: ListSort) => void
   /** Whether this list's head shows the page's first-visit hint. */
   tip: boolean
-  /** The head that filters the page by job, which every side's list carries. */
-  jobHead: Head
+  /** The head that filters the page by job, which only the first list on the page carries. */
+  jobHead?: Head
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
@@ -361,7 +361,7 @@ function SideList({
   const { t, lang } = useT()
   const heads: Head[] = [
     { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1', sorts: true },
-    jobHead,
+    ...(jobHead ? [jobHead] : []),
     { id: 'size', label: t('list.head.size'), className: 'w-20 shrink-0 max-sm:hidden', end: true, sorts: true },
     { id: 'age', label: t('list.head.age'), className: 'w-28 shrink-0', end: true, sorts: true },
   ]
