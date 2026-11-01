@@ -8,7 +8,7 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.4.1 - 2026-11-01
 
 ## 🎨 Design
 
@@ -28,6 +28,14 @@ The full notes for each release are in
 - **Sizes stand at the start of their column,** with their heading, in History, a job's Files touched and the trash.
 - **The duplicate search's buttons say what they do:** Find duplicates on the left side and Find duplicates on the right side.
 - **ArrowLoop follows GlimStone 3.8.3.**
+
+## 🐛 Fixed
+
+- **A mirror to a Windows folder replaces read-only files again.** Git writes its objects and commit graphs read-only, and a job that carries file attributes copies that along. The next change to such a file failed on every run with access denied, because Windows refuses to rename a new copy over a read-only file, so a backup of a Git working copy ended every run with a warning.
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
 
 ## 2.4.0 - 2026-10-30
 
