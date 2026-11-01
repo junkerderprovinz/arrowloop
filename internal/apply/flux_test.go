@@ -212,6 +212,14 @@ func (refusing) Put(context.Context, io.Reader, rclonefs.ObjectInfo, ...rclonefs
 	return nil, errors.New("permission denied")
 }
 
+// Features drops the server-side copy, which the local backend has on macOS
+// (clonefile) and which would write the file without asking Put.
+func (f refusing) Features() *rclonefs.Features {
+	ft := *f.Fs.Features()
+	ft.Copy = nil
+	return &ft
+}
+
 // growing is a source whose files grow while they are read, which rclone's
 // local backend reports in these words.
 type growing struct{ rclonefs.Fs }
