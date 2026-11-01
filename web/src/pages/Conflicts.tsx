@@ -28,6 +28,13 @@ const CHOICES: { keep: Resolution; key: TranslationKey; all: TranslationKey }[] 
   { keep: 'right', key: 'conflict.answerRight', all: 'conflicts.allRight' },
 ]
 
+/** Each answer stands under the part of the card it keeps: the left edge, the middle, the right edge. */
+const PLACE: Record<Resolution, string> = {
+  left: 'sm:justify-self-start',
+  both: 'sm:justify-self-center',
+  right: 'sm:justify-self-end',
+}
+
 /** What the engine says caused a conflict, in a sentence, keyed by its reason code. */
 const WHY: Record<string, TranslationKey> = {
   changedBoth: 'conflict.why.changedBoth',
@@ -247,7 +254,7 @@ function ConflictCard({
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-2">
+      <div className="grid gap-2 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
         {CHOICES.map(({ keep, key }) => (
           <Button
             key={keep}
@@ -255,7 +262,7 @@ function ConflictCard({
             labelKey={key}
             busy={busy}
             disabled={!idle}
-            className="glim-btn-wrap"
+            className={`glim-btn-wrap ${PLACE[keep]}`}
             onClick={() => onDecide(keep)}
           />
         ))}
