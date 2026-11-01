@@ -42,8 +42,8 @@ export function stepColumn(order: string[], id: string, towardsEnd: boolean): st
 }
 
 /**
- * The order a stored layout asks for, with a column this build no longer has
- * dropped and one it added seated at its built-in place, so an update neither
+ * The order a stored layout asks for, with a column this build lacks dropped
+ * and one it adds seated at its built-in place, so an update neither
  * loses an arrangement nor leaves a hole in it.
  */
 export function mergeOrder(defs: ColumnDef[], stored: string[] | undefined): string[] {
