@@ -1315,6 +1315,7 @@ const sv: Translations = {
   'new.change.buttonTint': 'Varje knapp tar accentfärgen när pekaren eller tangentbordet når den, och i telefonappen så länge ditt finger ligger på den.',
   'new.change.listHeads': 'Listorna i {history}, {trash}, {conflicts} och {anomalies} sorterar, filtrerar och söker från sina egna rubriker. Ett klick på en rubrik sorterar, ▾ bredvid filtrerar, och att skriva i listan eller trycka Ctrl+F öppnar en sökning som svävar över den. Filter- och sökknapparna ovanför historiken är borta. I telefonappens historik sorterar ett tryck på en rubrik, dess ▾ filtrerar och förstoringsglaset längst ut i raden söker. På en pekskärm visar webbläsaren samma förstoringsglas.',
   'list.tip.find': 'Förstoringsglaset söker i listan.',
+  'new.change.tileRows': '{trash} och {conflicts} räknar vad de innehåller i en rad rutor, som {anomalies} gör: en för alla jobb och en för varje jobb. Ett klick på ett jobbs ruta visar bara det jobbet.',
 }
 
 export default sv

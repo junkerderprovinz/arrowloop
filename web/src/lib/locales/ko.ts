@@ -1315,6 +1315,7 @@ const ko: Translations = {
   'new.change.buttonTint': '모든 버튼은 포인터나 키보드가 닿으면 강조색을 띠고, 휴대폰 앱에서는 손가락이 닿아 있는 동안 그렇습니다.',
   'new.change.listHeads': '{history}, {trash}, {conflicts}, {anomalies} 목록은 각자의 제목에서 정렬, 필터, 검색을 합니다. 제목을 누르면 정렬하고, 옆의 ▾ 는 걸러 내며, 목록에서 입력하거나 Ctrl+F 를 누르면 목록 위에 뜨는 검색이 열립니다. 기록 위의 필터와 검색 버튼은 사라졌습니다. 휴대폰 앱의 기록에서는 제목을 탭하면 정렬하고, 그 ▾ 로 걸러 내며, 줄 끝의 돋보기로 검색합니다. 터치 화면에서는 브라우저에도 같은 돋보기가 나옵니다.',
   'list.tip.find': '돋보기로 목록을 검색합니다.',
+  'new.change.tileRows': '{trash}와 {conflicts}도 {anomalies}처럼 타일 한 줄로 담긴 것을 셉니다. 모든 작업 타일 하나와 작업마다 타일 하나가 있으며, 작업 타일을 누르면 그 작업만 보입니다.',
 }
 
 export default ko

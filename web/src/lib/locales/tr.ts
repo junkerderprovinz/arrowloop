@@ -1315,6 +1315,7 @@ const tr: Translations = {
   'new.change.buttonTint': 'Her düğme, işaretçi ya da klavye ona ulaştığında vurgu rengini alır; telefon uygulamasında da parmağınız üzerindeyken.',
   'new.change.listHeads': '{history}, {trash}, {conflicts} ve {anomalies} listeleri kendi başlıklarından sıralıyor, süzüyor ve arıyor. Bir başlığa tıklamak sıralar, yanındaki ▾ süzer, listede yazmak ya da Ctrl+F\'ye basmak da listenin üzerinde süzülen bir arama açar. Geçmişin üstündeki Filtre ve Ara düğmeleri kalktı. Telefon uygulamasının geçmişinde bir başlığa dokunmak sıralar, onun ▾ işareti süzer, satırın sonundaki büyüteç de arar. Dokunmatik ekranda tarayıcı da aynı büyüteci gösterir.',
   'list.tip.find': 'Büyüteç listede arar.',
+  'new.change.tileRows': '{trash} ve {conflicts}, {anomalies} gibi içeriklerini bir kutucuk sırasında sayıyor: tüm işler için bir kutucuk ve her iş için bir kutucuk. Bir işin kutucuğuna tıklamak yalnızca o işi gösterir.',
 }
 
 export default tr

@@ -1315,6 +1315,7 @@ const sk: Translations = {
   'new.change.buttonTint': 'Každé tlačidlo prevezme farbu zvýraznenia, keď naň príde ukazovateľ alebo klávesnica, a v aplikácii pre telefón, kým na ňom máte prst.',
   'new.change.listHeads': 'Zoznamy v {history}, {trash}, {conflicts} a {anomalies} zoraďujú, filtrujú a hľadajú zo svojich záhlaví. Kliknutie na záhlavie zoraďuje, ▾ vedľa neho filtruje a písanie v zozname alebo Ctrl+F otvorí hľadanie, ktoré sa vznáša nad ním. Tlačidlá filtra a hľadania nad históriou zmizli. V histórii aplikácie pre telefón ťuknutie na záhlavie zoraďuje, jeho ▾ filtruje a lupa na konci riadka hľadá. Na dotykovej obrazovke ukazuje prehliadač tú istú lupu.',
   'list.tip.find': 'Lupa prehľadá zoznam.',
+  'new.change.tileRows': '{trash} a {conflicts} počítajú, čo obsahujú, v rade dlaždíc, rovnako ako {anomalies}: jedna pre všetky úlohy a jedna pre každú úlohu. Kliknutie na dlaždicu úlohy ukáže len tú úlohu.',
 }
 
 export default sk

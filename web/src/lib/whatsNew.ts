@@ -72,6 +72,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.listHeads',
         names: { history: 'nav.history', trash: 'nav.trash', conflicts: 'nav.conflicts', anomalies: 'nav.anomalies' },
       },
+      {
+        id: 'tile-rows',
+        at: ['/trash', '/conflicts'],
+        where: ['nav.trash'],
+        text: 'new.change.tileRows',
+        names: { trash: 'nav.trash', conflicts: 'nav.conflicts', anomalies: 'nav.anomalies' },
+      },
       // Every page has buttons, so the dot stands in the list only.
       { id: 'button-tint', text: 'new.change.buttonTint' },
     ],

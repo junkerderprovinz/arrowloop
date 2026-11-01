@@ -1315,6 +1315,7 @@ const fr: Translations = {
   'new.change.buttonTint': 'Chaque bouton prend la couleur d\'accent quand le pointeur ou le clavier l\'atteint, et dans l\'app mobile tant que votre doigt est dessus.',
   'new.change.listHeads': 'Les listes de {history}, {trash}, {conflicts} et {anomalies} trient, filtrent et cherchent depuis leurs propres en-têtes. Un clic sur un en-tête trie, le ▾ à côté filtre, et taper dans la liste ou appuyer sur Ctrl+F ouvre une recherche qui flotte au-dessus. Les boutons Filtrer et Rechercher au-dessus de l\'historique ont disparu. Dans l\'historique de l\'app mobile, un appui sur un en-tête trie, son ▾ filtre et la loupe au bout de la ligne cherche. Sur un écran tactile, le navigateur affiche la même loupe.',
   'list.tip.find': 'La loupe cherche dans la liste.',
+  'new.change.tileRows': '{trash} et {conflicts} comptent ce qu\'ils contiennent dans une rangée de tuiles, comme {anomalies} : une pour toutes les tâches et une par tâche. Un clic sur la tuile d\'une tâche n\'affiche que cette tâche.',
 }
 
 export default fr

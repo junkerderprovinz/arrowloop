@@ -1315,6 +1315,7 @@ const zh: Translations = {
   'new.change.buttonTint': '每个按钮在指针或键盘到达时都会显示强调色，在手机应用中则是手指按住的时候。',
   'new.change.listHeads': '{history}、{trash}、{conflicts} 和 {anomalies} 的列表可以直接从各自的标题排序、筛选和搜索。点击标题即可排序，标题旁的 ▾ 用于筛选，在列表中输入或按 Ctrl+F 会打开浮在列表上方的搜索框。历史上方的筛选和搜索按钮已经去掉。在手机应用的历史中，点按标题即可排序，标题的 ▾ 用于筛选，行末的放大镜用于搜索。在触摸屏上，浏览器也会显示同样的放大镜。',
   'list.tip.find': '放大镜用于在列表中搜索。',
+  'new.change.tileRows': '{trash}和{conflicts}也像{anomalies}一样用一排磁贴统计其中的内容：一个代表全部任务，每个任务各一个。点击某个任务的磁贴即只显示该任务。',
 }
 
 export default zh

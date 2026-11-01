@@ -1315,6 +1315,7 @@ const sl: Translations = {
   'new.change.buttonTint': 'Vsak gumb prevzame barvo poudarka, ko do njega pride kazalec ali tipkovnica, v aplikaciji za telefon pa, dokler je na njem vaš prst.',
   'new.change.listHeads': 'Seznami v {history}, {trash}, {conflicts} in {anomalies} razvrščajo, filtrirajo in iščejo prek svojih naslovov. Klik na naslov razvrsti, ▾ ob njem filtrira, tipkanje v seznamu ali Ctrl+F pa odpre iskanje, ki lebdi nad njim. Gumba za filter in iskanje nad zgodovino ni več. V zgodovini aplikacije za telefon dotik naslova razvrsti, njegov ▾ filtrira, povečevalno steklo na koncu vrstice pa išče. Na zaslonu na dotik brskalnik pokaže isto povečevalno steklo.',
   'list.tip.find': 'Povečevalno steklo išče po seznamu.',
+  'new.change.tileRows': '{trash} in {conflicts} štejeta svojo vsebino v vrsti ploščic, kot {anomalies}: ena za vsa opravila in ena za vsako opravilo. Klik na ploščico opravila pokaže samo to opravilo.',
 }
 
 export default sl

@@ -1315,6 +1315,7 @@ const nl: Translations = {
   'new.change.buttonTint': 'Elke knop neemt de accentkleur aan zodra de aanwijzer of het toetsenbord hem bereikt, en in de telefoonapp zolang je vinger erop ligt.',
   'new.change.listHeads': 'De lijsten in {history}, {trash}, {conflicts} en {anomalies} sorteren, filteren en zoeken vanuit hun eigen koppen. Een klik op een kop sorteert, de ▾ ernaast filtert, en typen in de lijst of Ctrl+F opent een zoekveld dat erboven zweeft. De knoppen Filter en Zoeken boven de geschiedenis zijn weg. In de geschiedenis van de telefoonapp sorteert een tik op een kop, filtert de ▾ ervan en zoekt het vergrootglas aan het eind van de rij. Op een aanraakscherm toont de browser hetzelfde vergrootglas.',
   'list.tip.find': 'Het vergrootglas doorzoekt de lijst.',
+  'new.change.tileRows': '{trash} en {conflicts} tellen wat ze bevatten in een rij tegels, zoals {anomalies}: één voor alle taken en één per taak. Een klik op de tegel van een taak toont alleen die taak.',
 }
 
 export default nl

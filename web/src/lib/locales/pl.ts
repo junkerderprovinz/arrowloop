@@ -1315,6 +1315,7 @@ const pl: Translations = {
   'new.change.buttonTint': 'Każdy przycisk przybiera kolor akcentu, gdy dotrze do niego wskaźnik lub klawiatura, a w aplikacji na telefon, dopóki trzymasz na nim palec.',
   'new.change.listHeads': 'Listy w {history}, {trash}, {conflicts} i {anomalies} sortują, filtrują i wyszukują ze swoich nagłówków. Kliknięcie nagłówka sortuje, ▾ obok niego filtruje, a pisanie w liście lub Ctrl+F otwiera wyszukiwanie, które unosi się nad nią. Przyciski filtra i wyszukiwania nad historią zniknęły. W historii aplikacji na telefon dotknięcie nagłówka sortuje, jego ▾ filtruje, a lupa na końcu wiersza wyszukuje. Na ekranie dotykowym przeglądarka pokazuje tę samą lupę.',
   'list.tip.find': 'Lupa przeszukuje listę.',
+  'new.change.tileRows': '{trash} i {conflicts} liczą swoją zawartość w rzędzie kafelków, tak jak {anomalies}: jeden dla wszystkich zadań i po jednym dla każdego zadania. Kliknięcie kafelka zadania pokazuje tylko to zadanie.',
 }
 
 export default pl

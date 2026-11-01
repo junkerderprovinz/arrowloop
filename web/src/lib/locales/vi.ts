@@ -1315,6 +1315,7 @@ const vi: Translations = {
   'new.change.buttonTint': 'Mỗi nút đều mang màu nhấn khi con trỏ hoặc bàn phím chạm tới, và trong ứng dụng điện thoại khi ngón tay bạn đặt lên.',
   'new.change.listHeads': 'Các danh sách trong {history}, {trash}, {conflicts} và {anomalies} sắp xếp, lọc và tìm kiếm từ chính tiêu đề của chúng. Bấm vào tiêu đề để sắp xếp, dấu ▾ bên cạnh để lọc, còn gõ trong danh sách hoặc nhấn Ctrl+F sẽ mở ô tìm kiếm nổi phía trên danh sách. Các nút Lọc và Tìm kiếm phía trên Lịch sử đã bỏ. Trong Lịch sử của ứng dụng điện thoại, chạm vào tiêu đề để sắp xếp, dấu ▾ của nó để lọc, còn kính lúp ở cuối hàng để tìm. Trên màn hình cảm ứng, trình duyệt cũng hiện kính lúp đó.',
   'list.tip.find': 'Kính lúp tìm trong danh sách.',
+  'new.change.tileRows': '{trash} và {conflicts} đếm những gì chúng chứa trong một hàng ô, giống như {anomalies}: một ô cho mọi công việc và một ô cho từng công việc. Bấm vào ô của một công việc sẽ chỉ hiện công việc đó.',
 }
 
 export default vi

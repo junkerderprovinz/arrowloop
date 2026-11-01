@@ -1315,6 +1315,7 @@ const ms: Translations = {
   'new.change.buttonTint': 'Setiap butang mengambil warna aksen apabila penuding atau papan kekunci sampai kepadanya, dan dalam aplikasi telefon selagi jari anda berada di atasnya.',
   'new.change.listHeads': 'Senarai dalam {history}, {trash}, {conflicts} dan {anomalies} mengisih, menapis dan mencari daripada tajuknya sendiri. Klik tajuk untuk mengisih, ▾ di sebelahnya menapis, dan menaip dalam senarai atau menekan Ctrl+F membuka carian yang terapung di atasnya. Butang Tapis dan Cari di atas Sejarah sudah tiada. Dalam Sejarah aplikasi telefon, ketik tajuk untuk mengisih, ▾ miliknya menapis dan kanta pembesar di hujung baris mencari. Pada skrin sentuh, pelayar menunjukkan kanta pembesar yang sama.',
   'list.tip.find': 'Kanta pembesar mencari dalam senarai.',
+  'new.change.tileRows': '{trash} dan {conflicts} mengira isinya dalam sebaris jubin, seperti {anomalies}: satu untuk semua tugas dan satu untuk setiap tugas. Klik jubin sesuatu tugas untuk menunjukkan tugas itu sahaja.',
 }
 
 export default ms

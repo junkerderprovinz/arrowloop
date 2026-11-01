@@ -1315,6 +1315,7 @@ const hu: Translations = {
   'new.change.buttonTint': 'Minden gomb felveszi a kiemelőszínt, amikor a mutató vagy a billentyűzet eléri, a telefonos alkalmazásban pedig addig, amíg rajta van az ujja.',
   'new.change.listHeads': 'A(z) {history}, {trash}, {conflicts} és {anomalies} listái a saját fejlécükből rendeznek, szűrnek és keresnek. Egy fejlécre kattintva rendez, a mellette lévő ▾ szűr, a listába gépelés vagy a Ctrl+F pedig a lista fölött lebegő keresést nyit. Az előzmények fölötti szűrő- és keresőgomb eltűnt. A telefonos alkalmazás előzményeiben egy fejléc megérintése rendez, a ▾ szűr, a sor végén lévő nagyító pedig keres. Érintőképernyőn a böngésző ugyanezt a nagyítót mutatja.',
   'list.tip.find': 'A nagyító a listában keres.',
+  'new.change.tileRows': 'A(z) {trash} és a(z) {conflicts} egy csempesorban számolja, mit tartalmaz, ahogy a(z) {anomalies}: egy csempe az összes feladatnak és egy-egy minden feladatnak. Egy feladat csempéjére kattintva csak az a feladat látszik.',
 }
 
 export default hu

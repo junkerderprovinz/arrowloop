@@ -176,18 +176,20 @@ export function Trash({
       ) : (
         <>
           <div data-new="trash-bin">
-            <Tiles
-              label={t('nav.trash')}
-              glyph={<IconTrash />}
-              tiles={[
-                { id: '', label: t('history.allJobs'), ...holding(readable) },
-                ...held.map((group) => ({ id: group.job, label: group.job, ...holding(group.sides) })),
-              ]}
-              chosen={picked}
-              onChoose={setTile}
-            >
-              <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
-            </Tiles>
+            <div data-new="tile-rows">
+              <Tiles
+                label={t('nav.trash')}
+                glyph={<IconTrash />}
+                tiles={[
+                  { id: '', label: t('history.allJobs'), ...holding(readable) },
+                  ...held.map((group) => ({ id: group.job, label: group.job, ...holding(group.sides) })),
+                ]}
+                chosen={picked}
+                onChoose={setTile}
+              >
+                <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
+              </Tiles>
+            </div>
           </div>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none">
             <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} />

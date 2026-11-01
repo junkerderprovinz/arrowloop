@@ -1315,6 +1315,7 @@ const gl: Translations = {
   'new.change.buttonTint': 'Cada botón colle a cor de acento cando o punteiro ou o teclado chegan a el, e na app do móbil mentres tes o dedo enriba.',
   'new.change.listHeads': 'As listas de {history}, {trash}, {conflicts} e {anomalies} ordenan, filtran e buscan desde as súas propias cabeceiras. Un clic nunha cabeceira ordena, o ▾ do lado filtra, e escribir na lista ou premer Ctrl+F abre unha busca que flota enriba dela. Os botóns de filtrar e buscar sobre o historial desapareceron. No historial da app do móbil, tocar unha cabeceira ordena, o seu ▾ filtra e a lupa ao final da fila busca. Nunha pantalla táctil, o navegador amosa a mesma lupa.',
   'list.tip.find': 'A lupa busca na lista.',
+  'new.change.tileRows': '{trash} e {conflicts} contan o que conteñen nunha fila de mosaicos, como fai {anomalies}: un para todas as tarefas e un para cada tarefa. Un clic no mosaico dunha tarefa amosa só esa tarefa.',
 }
 
 export default gl
