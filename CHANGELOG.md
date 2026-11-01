@@ -8,6 +8,13 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **Under rainbow every button lights up in a colour of its own** when the pointer or the keyboard reaches it. The buttons of a page count through the palette in the order they stand, so the buttons of one card no longer all light up alike.
+- **ArrowLoop follows GlimStone 3.8.5.**
+
 ## 2.4.1 - 2026-11-01
 
 ## 🎨 Design
