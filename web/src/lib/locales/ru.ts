@@ -1223,8 +1223,6 @@ const ru: Translations = {
   'targets.ftpTls.explicit': 'Явный TLS',
   'targets.ftpTls.implicit': 'Неявный TLS на порту 990',
   'anomalies.all': 'Все аномалии',
-  'dupes.findOnLeft': 'Дубликаты на левой стороне',
-  'dupes.findOnRight': 'Дубликаты на правой стороне',
   'list.onlyJob': 'Только {job}',
   'list.everyJob': 'Показать все задания',
   'job.brakes': 'Тормоза',
@@ -1324,6 +1322,8 @@ const ru: Translations = {
   'history.findings': 'Находки',
   'anomalies.closedInHistory': 'Закрытые в журнале',
   'new.change.closedFindings': 'Находки, закрытые за последние тридцать дней, переехали из {anomalies} в {history}, третьим видом рядом с {runs} и {files}, со своими заголовками для сортировки и фильтра. {anomalies} показывает только открытое и ведёт туда.',
+  'dupes.findOnLeft': 'Найти дубликаты на левой стороне',
+  'dupes.findOnRight': 'Найти дубликаты на правой стороне',
 }
 
 export default ru

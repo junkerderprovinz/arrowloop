@@ -1223,8 +1223,6 @@ const zh: Translations = {
   'targets.ftpTls.explicit': '显式 TLS',
   'targets.ftpTls.implicit': '端口 990 上的隐式 TLS',
   'anomalies.all': '全部异常',
-  'dupes.findOnLeft': '左侧的重复文件',
-  'dupes.findOnRight': '右侧的重复文件',
   'list.onlyJob': '仅 {job}',
   'list.everyJob': '显示所有任务',
   'job.brakes': '制动',
@@ -1324,6 +1322,8 @@ const zh: Translations = {
   'history.findings': '发现',
   'anomalies.closedInHistory': '已关闭的在历史中',
   'new.change.closedFindings': '过去三十天内关闭的发现已从{anomalies}移到{history}，作为{runs}和{files}之外的第三个视图，并有自己的标题用于排序和筛选。{anomalies}只显示未关闭的发现，并提供前往的入口。',
+  'dupes.findOnLeft': '查找左侧的重复文件',
+  'dupes.findOnRight': '查找右侧的重复文件',
 }
 
 export default zh

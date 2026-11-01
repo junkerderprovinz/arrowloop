@@ -1223,8 +1223,6 @@ const fr: Translations = {
   'targets.ftpTls.explicit': 'TLS explicite',
   'targets.ftpTls.implicit': 'TLS implicite sur le port 990',
   'anomalies.all': 'Toutes les anomalies',
-  'dupes.findOnLeft': 'Doublons du côté gauche',
-  'dupes.findOnRight': 'Doublons du côté droit',
   'list.onlyJob': 'Seulement {job}',
   'list.everyJob': 'Afficher toutes les tâches',
   'job.brakes': 'Freins',
@@ -1324,6 +1322,8 @@ const fr: Translations = {
   'history.findings': 'Constats',
   'anomalies.closedInHistory': 'Les clos dans l\'historique',
   'new.change.closedFindings': 'Les constats clos ces trente derniers jours sont passés de {anomalies} à {history}, comme troisième vue à côté de {runs} et {files}, avec leurs propres en-têtes pour trier et filtrer. {anomalies} ne montre plus que ce qui est ouvert et y mène.',
+  'dupes.findOnLeft': 'Chercher les doublons du côté gauche',
+  'dupes.findOnRight': 'Chercher les doublons du côté droit',
 }
 
 export default fr

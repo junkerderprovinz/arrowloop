@@ -1223,8 +1223,6 @@ const sk: Translations = {
   'targets.ftpTls.explicit': 'Explicitné TLS',
   'targets.ftpTls.implicit': 'Implicitné TLS na porte 990',
   'anomalies.all': 'Všetky anomálie',
-  'dupes.findOnLeft': 'Duplicity na ľavej strane',
-  'dupes.findOnRight': 'Duplicity na pravej strane',
   'list.onlyJob': 'Len {job}',
   'list.everyJob': 'Zobraziť všetky úlohy',
   'job.brakes': 'Brzdy',
@@ -1324,6 +1322,8 @@ const sk: Translations = {
   'history.findings': 'Nálezy',
   'anomalies.closedInHistory': 'Uzavreté v histórii',
   'new.change.closedFindings': 'Nálezy uzavreté za posledných tridsať dní sa presunuli z {anomalies} do {history}, ako tretí pohľad vedľa {runs} a {files}, s vlastnými záhlaviami na zoraďovanie a filtrovanie. {anomalies} ukazuje len otvorené a vedie tam.',
+  'dupes.findOnLeft': 'Hľadať duplikáty na ľavej strane',
+  'dupes.findOnRight': 'Hľadať duplikáty na pravej strane',
 }
 
 export default sk

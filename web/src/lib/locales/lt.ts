@@ -1223,8 +1223,6 @@ const lt: Translations = {
   'targets.ftpTls.explicit': 'Aiškusis TLS',
   'targets.ftpTls.implicit': 'Numanomasis TLS 990 prievade',
   'anomalies.all': 'Visi radiniai',
-  'dupes.findOnLeft': 'Dublikatai kairėje pusėje',
-  'dupes.findOnRight': 'Dublikatai dešinėje pusėje',
   'list.onlyJob': 'Tik {job}',
   'list.everyJob': 'Rodyti visas užduotis',
   'job.brakes': 'Stabdžiai',
@@ -1324,6 +1322,8 @@ const lt: Translations = {
   'history.findings': 'Radiniai',
   'anomalies.closedInHistory': 'Uždaryti istorijoje',
   'new.change.closedFindings': 'Per pastarąsias trisdešimt dienų uždaryti radiniai persikėlė iš {anomalies} į {history}, kaip trečias rodinys šalia {runs} ir {files}, su savo antraštėmis rikiavimui ir filtravimui. {anomalies} rodo tik atvirus ir veda ten.',
+  'dupes.findOnLeft': 'Ieškoti dublikatų kairėje pusėje',
+  'dupes.findOnRight': 'Ieškoti dublikatų dešinėje pusėje',
 }
 
 export default lt

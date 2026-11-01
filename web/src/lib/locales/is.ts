@@ -1223,8 +1223,6 @@ const is: Translations = {
   'targets.ftpTls.explicit': 'Beint TLS',
   'targets.ftpTls.implicit': 'Óbeint TLS á gátt 990',
   'anomalies.all': 'Öll frávik',
-  'dupes.findOnLeft': 'Tvítekningar vinstra megin',
-  'dupes.findOnRight': 'Tvítekningar hægra megin',
   'list.onlyJob': 'Aðeins {job}',
   'list.everyJob': 'Sýna öll verk',
   'job.brakes': 'Hemlar',
@@ -1324,6 +1322,8 @@ const is: Translations = {
   'history.findings': 'Niðurstöður',
   'anomalies.closedInHistory': 'Lokaðar í ferlinum',
   'new.change.closedFindings': 'Niðurstöður sem var lokað síðustu þrjátíu daga hafa flust úr {anomalies} í {history}, sem þriðja sýn við hlið {runs} og {files}, með eigin fyrirsögnum til að raða og sía. {anomalies} sýnir aðeins það sem er opið og vísar þangað.',
+  'dupes.findOnLeft': 'Finna tvítök vinstra megin',
+  'dupes.findOnRight': 'Finna tvítök hægra megin',
 }
 
 export default is

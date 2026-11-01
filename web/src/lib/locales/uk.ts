@@ -1223,8 +1223,6 @@ const uk: Translations = {
   'targets.ftpTls.explicit': 'Явний TLS',
   'targets.ftpTls.implicit': 'Неявний TLS на порту 990',
   'anomalies.all': 'Усі аномалії',
-  'dupes.findOnLeft': 'Дублікати з лівого боку',
-  'dupes.findOnRight': 'Дублікати з правого боку',
   'list.onlyJob': 'Лише {job}',
   'list.everyJob': 'Показати всі завдання',
   'job.brakes': 'Гальма',
@@ -1324,6 +1322,8 @@ const uk: Translations = {
   'history.findings': 'Знахідки',
   'anomalies.closedInHistory': 'Закриті в журналі',
   'new.change.closedFindings': 'Знахідки, закриті за останні тридцять днів, переїхали з {anomalies} до {history}, третім видом поруч із {runs} і {files}, зі своїми заголовками для сортування й фільтра. {anomalies} показує лише відкрите й веде туди.',
+  'dupes.findOnLeft': 'Знайти дублікати на лівому боці',
+  'dupes.findOnRight': 'Знайти дублікати на правому боці',
 }
 
 export default uk

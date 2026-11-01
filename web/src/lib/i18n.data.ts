@@ -1265,8 +1265,6 @@ export const en = {
   'targets.ftpTls.explicit': 'Explicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS on port 990',
   'anomalies.all': 'All findings',
-  'dupes.findOnLeft': 'Duplicates on the left side',
-  'dupes.findOnRight': 'Duplicates on the right side',
   'list.onlyJob': 'Only {job}',
   'list.everyJob': 'Show every job',
   'job.brakes': 'Brakes',
@@ -1366,6 +1364,8 @@ export const en = {
   'history.findings': 'Findings',
   'anomalies.closedInHistory': 'Closed ones in History',
   'new.change.closedFindings': 'Findings closed in the last thirty days have moved from {anomalies} to {history}, as a third view beside {runs} and {files}, with their own headings to sort and filter. {anomalies} shows only what is open and leads there.',
+  'dupes.findOnLeft': 'Find duplicates on the left side',
+  'dupes.findOnRight': 'Find duplicates on the right side',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -1542,12 +1542,12 @@ export const de: Translations = {
   'jobs.pauseHint': 'Bricht einen laufenden Lauf ab und hält den Auftrag an, bis du ihn fortsetzt. Von Hand starten kannst du ihn trotzdem.',
   'jobs.runNowHint': 'Diesen Auftrag sofort starten, ohne Vorschau. Die Netze bleiben dieselben: nichts wird endgültig gelöscht, und ein Lauf, der mehr als die Hälfte aller bekannten Dateien entfernen würde, bricht ab und sagt es.',
   'jobs.check': 'Auftrag prüfen',
-  'jobs.dupes': 'Doppelte suchen',
+  'jobs.dupes': 'Duplikate suchen',
   'check.healthy': 'Nichts zu melden. Beide Seiten sind erreichbar, und der gespeicherte Zustand stimmt mit dem überein, was tatsächlich da ist.',
   'dupes.unhashable': 'Dateien ohne Prüfsumme, die deshalb nicht verglichen wurden: {count}.',
   'dupes.each': 'je {size}, {wasted} verschwendet',
   'dupes.summary': '{sets} Sätze, {wasted} zurückzuholen, aus {scanned} Dateien.',
-  'dupes.none': 'Keine Doppelten unter {scanned} Dateien.',
+  'dupes.none': 'Keine Duplikate unter {scanned} Dateien.',
   'check.more': 'Insgesamt {found} Funde, angezeigt werden die ersten {shown}.',
   'jobs.schedule.manual': 'manuell',
   'preview.title': 'Vorschau',
@@ -2621,8 +2621,6 @@ export const de: Translations = {
   'targets.ftpTls.explicit': 'Explizites TLS',
   'targets.ftpTls.implicit': 'Implizites TLS auf Port 990',
   'anomalies.all': 'Alle Funde',
-  'dupes.findOnLeft': 'Doppelte auf der linken Seite',
-  'dupes.findOnRight': 'Doppelte auf der rechten Seite',
   'list.onlyJob': 'Nur {job}',
   'list.everyJob': 'Alle Aufträge zeigen',
   'job.brakes': 'Bremsen',
@@ -2722,6 +2720,8 @@ export const de: Translations = {
   'history.findings': 'Funde',
   'anomalies.closedInHistory': 'Geschlossene im Verlauf',
   'new.change.closedFindings': 'Funde, die in den letzten dreißig Tagen geschlossen wurden, sind von {anomalies} in den {history} gezogen, als dritte Ansicht neben {runs} und {files}, mit eigenen Überschriften zum Sortieren und Filtern. {anomalies} zeigt nur noch Offenes und führt dorthin.',
+  'dupes.findOnLeft': 'Duplikate auf linker Seite suchen',
+  'dupes.findOnRight': 'Duplikate auf rechter Seite suchen',
 }
 
 export interface Language {

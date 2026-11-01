@@ -1223,8 +1223,6 @@ const ca: Translations = {
   'targets.ftpTls.explicit': 'TLS explícit',
   'targets.ftpTls.implicit': 'TLS implícit al port 990',
   'anomalies.all': 'Totes les anomalies',
-  'dupes.findOnLeft': 'Duplicats a la banda esquerra',
-  'dupes.findOnRight': 'Duplicats a la banda dreta',
   'list.onlyJob': 'Només {job}',
   'list.everyJob': 'Mostra totes les tasques',
   'job.brakes': 'Frens',
@@ -1324,6 +1322,8 @@ const ca: Translations = {
   'history.findings': 'Troballes',
   'anomalies.closedInHistory': 'Les tancades a l\'historial',
   'new.change.closedFindings': 'Les troballes tancades els darrers trenta dies han passat de {anomalies} a {history}, com a tercera vista al costat de {runs} i {files}, amb capçaleres pròpies per ordenar i filtrar. {anomalies} només mostra el que és obert i hi porta.',
+  'dupes.findOnLeft': 'Cerca duplicats al costat esquerre',
+  'dupes.findOnRight': 'Cerca duplicats al costat dret',
 }
 
 export default ca

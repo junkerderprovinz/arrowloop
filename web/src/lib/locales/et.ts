@@ -1223,8 +1223,6 @@ const et: Translations = {
   'targets.ftpTls.explicit': 'Selgesõnaline TLS',
   'targets.ftpTls.implicit': 'Kaudne TLS pordil 990',
   'anomalies.all': 'Kõik anomaaliad',
-  'dupes.findOnLeft': 'Duplikaadid vasakul poolel',
-  'dupes.findOnRight': 'Duplikaadid paremal poolel',
   'list.onlyJob': 'Ainult {job}',
   'list.everyJob': 'Näita kõiki töid',
   'job.brakes': 'Pidurid',
@@ -1324,6 +1322,8 @@ const et: Translations = {
   'history.findings': 'Leiud',
   'anomalies.closedInHistory': 'Suletud ajaloos',
   'new.change.closedFindings': 'Viimase kolmekümne päeva jooksul suletud leiud on kolinud lehelt {anomalies} lehele {history}, kolmanda vaatena {runs} ja {files} kõrval, oma pealkirjadega sortimiseks ja filtreerimiseks. {anomalies} näitab ainult avatut ja juhatab sinna.',
+  'dupes.findOnLeft': 'Otsi duplikaate vasakult poolelt',
+  'dupes.findOnRight': 'Otsi duplikaate paremalt poolelt',
 }
 
 export default et

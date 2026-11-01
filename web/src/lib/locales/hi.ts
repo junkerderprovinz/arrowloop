@@ -1223,8 +1223,6 @@ const hi: Translations = {
   'targets.ftpTls.explicit': 'एक्सप्लिसिट TLS',
   'targets.ftpTls.implicit': 'पोर्ट 990 पर इम्प्लिसिट TLS',
   'anomalies.all': 'सभी विसंगतियाँ',
-  'dupes.findOnLeft': 'बाईं ओर दोहरे',
-  'dupes.findOnRight': 'दाईं ओर दोहरे',
   'list.onlyJob': 'केवल {job}',
   'list.everyJob': 'सभी कार्य दिखाएँ',
   'job.brakes': 'ब्रेक',
@@ -1324,6 +1322,8 @@ const hi: Translations = {
   'history.findings': 'निष्कर्ष',
   'anomalies.closedInHistory': 'बंद हुए इतिहास में',
   'new.change.closedFindings': 'पिछले तीस दिनों में बंद हुए निष्कर्ष {anomalies} से {history} में चले गए हैं, {runs} और {files} के पास तीसरे दृश्य के रूप में, क्रम लगाने और छाँटने के अपने शीर्षकों के साथ। {anomalies} अब सिर्फ़ खुले निष्कर्ष दिखाता है और वहाँ तक ले जाता है।',
+  'dupes.findOnLeft': 'बाईं ओर डुप्लिकेट खोजें',
+  'dupes.findOnRight': 'दाईं ओर डुप्लिकेट खोजें',
 }
 
 export default hi

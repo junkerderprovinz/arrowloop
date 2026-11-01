@@ -1223,8 +1223,6 @@ const da: Translations = {
   'targets.ftpTls.explicit': 'Eksplicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS på port 990',
   'anomalies.all': 'Alle anomalier',
-  'dupes.findOnLeft': 'Dubletter i venstre side',
-  'dupes.findOnRight': 'Dubletter i højre side',
   'list.onlyJob': 'Kun {job}',
   'list.everyJob': 'Vis alle job',
   'job.brakes': 'Bremser',
@@ -1324,6 +1322,8 @@ const da: Translations = {
   'history.findings': 'Fund',
   'anomalies.closedInHistory': 'Lukkede i historikken',
   'new.change.closedFindings': 'Fund, der er lukket inden for de sidste tredive dage, er flyttet fra {anomalies} til {history} som en tredje visning ved siden af {runs} og {files}, med egne overskrifter til sortering og filtrering. {anomalies} viser kun det åbne og fører derhen.',
+  'dupes.findOnLeft': 'Find dubletter i venstre side',
+  'dupes.findOnRight': 'Find dubletter i højre side',
 }
 
 export default da

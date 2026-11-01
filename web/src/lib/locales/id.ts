@@ -1223,8 +1223,6 @@ const id: Translations = {
   'targets.ftpTls.explicit': 'TLS eksplisit',
   'targets.ftpTls.implicit': 'TLS implisit di port 990',
   'anomalies.all': 'Semua temuan',
-  'dupes.findOnLeft': 'Duplikat di sisi kiri',
-  'dupes.findOnRight': 'Duplikat di sisi kanan',
   'list.onlyJob': 'Hanya {job}',
   'list.everyJob': 'Tampilkan semua tugas',
   'job.brakes': 'Rem',
@@ -1324,6 +1322,8 @@ const id: Translations = {
   'history.findings': 'Temuan',
   'anomalies.closedInHistory': 'Yang ditutup di Riwayat',
   'new.change.closedFindings': 'Temuan yang ditutup dalam tiga puluh hari terakhir pindah dari {anomalies} ke {history}, sebagai tampilan ketiga di samping {runs} dan {files}, dengan judul kolomnya sendiri untuk mengurutkan dan menyaring. {anomalies} hanya menampilkan yang terbuka dan menunjukkan jalannya.',
+  'dupes.findOnLeft': 'Cari duplikat di sisi kiri',
+  'dupes.findOnRight': 'Cari duplikat di sisi kanan',
 }
 
 export default id

@@ -1223,8 +1223,6 @@ const eu: Translations = {
   'targets.ftpTls.explicit': 'TLS esplizitua',
   'targets.ftpTls.implicit': 'TLS inplizitua 990 atakan',
   'anomalies.all': 'Anomalia guztiak',
-  'dupes.findOnLeft': 'Bikoiztuak ezkerreko aldean',
-  'dupes.findOnRight': 'Bikoiztuak eskuineko aldean',
   'list.onlyJob': '{job} soilik',
   'list.everyJob': 'Erakutsi lan guztiak',
   'job.brakes': 'Balaztak',
@@ -1324,6 +1322,8 @@ const eu: Translations = {
   'history.findings': 'Aurkikuntzak',
   'anomalies.closedInHistory': 'Itxitakoak historian',
   'new.change.closedFindings': 'Azken hogeita hamar egunetan itxitako aurkikuntzak {anomalies} orritik {history} orrira pasatu dira, {runs} eta {files} ikuspegien ondoko hirugarren ikuspegi gisa, ordenatzeko eta iragazteko beren goiburuekin. {anomalies} orriak irekita dagoena bakarrik erakusten du eta hara eramaten du.',
+  'dupes.findOnLeft': 'Bilatu bikoiztuak ezkerreko aldean',
+  'dupes.findOnRight': 'Bilatu bikoiztuak eskuineko aldean',
 }
 
 export default eu

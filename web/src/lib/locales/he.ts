@@ -1223,8 +1223,6 @@ const he: Translations = {
   'targets.ftpTls.explicit': 'TLS מפורש',
   'targets.ftpTls.implicit': 'TLS מרומז בפורט 990',
   'anomalies.all': 'כל החריגות',
-  'dupes.findOnLeft': 'כפולים בצד שמאל',
-  'dupes.findOnRight': 'כפולים בצד ימין',
   'list.onlyJob': 'רק {job}',
   'list.everyJob': 'הצג את כל המשימות',
   'job.brakes': 'בלמים',
@@ -1324,6 +1322,8 @@ const he: Translations = {
   'history.findings': 'ממצאים',
   'anomalies.closedInHistory': 'הסגורים בהיסטוריה',
   'new.change.closedFindings': 'ממצאים שנסגרו בשלושים הימים האחרונים עברו מ{anomalies} ל{history}, כתצוגה שלישית לצד {runs} ו{files}, עם כותרות משלהם למיון ולסינון. {anomalies} מציג רק את הפתוח ומוביל לשם.',
+  'dupes.findOnLeft': 'חיפוש כפילויות בצד השמאלי',
+  'dupes.findOnRight': 'חיפוש כפילויות בצד הימני',
 }
 
 export default he

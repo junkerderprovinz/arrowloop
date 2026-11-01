@@ -1223,8 +1223,6 @@ const nl: Translations = {
   'targets.ftpTls.explicit': 'Expliciete TLS',
   'targets.ftpTls.implicit': 'Impliciete TLS op poort 990',
   'anomalies.all': 'Alle afwijkingen',
-  'dupes.findOnLeft': 'Dubbele bestanden aan de linkerkant',
-  'dupes.findOnRight': 'Dubbele bestanden aan de rechterkant',
   'list.onlyJob': 'Alleen {job}',
   'list.everyJob': 'Alle taken tonen',
   'job.brakes': 'Remmen',
@@ -1324,6 +1322,8 @@ const nl: Translations = {
   'history.findings': 'Bevindingen',
   'anomalies.closedInHistory': 'Gesloten in de geschiedenis',
   'new.change.closedFindings': 'Bevindingen die de afgelopen dertig dagen zijn gesloten, staan niet meer in {anomalies} maar in {history}, als derde weergave naast {runs} en {files}, met eigen koppen om te sorteren en te filteren. {anomalies} toont alleen wat open is en wijst de weg.',
+  'dupes.findOnLeft': 'Dubbele bestanden links zoeken',
+  'dupes.findOnRight': 'Dubbele bestanden rechts zoeken',
 }
 
 export default nl

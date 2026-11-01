@@ -1223,8 +1223,6 @@ const fi: Translations = {
   'targets.ftpTls.explicit': 'Eksplisiittinen TLS',
   'targets.ftpTls.implicit': 'Implisiittinen TLS portissa 990',
   'anomalies.all': 'Kaikki poikkeamat',
-  'dupes.findOnLeft': 'Kaksoiskappaleet vasemmalla puolella',
-  'dupes.findOnRight': 'Kaksoiskappaleet oikealla puolella',
   'list.onlyJob': 'Vain {job}',
   'list.everyJob': 'Näytä kaikki työt',
   'job.brakes': 'Jarrut',
@@ -1324,6 +1322,8 @@ const fi: Translations = {
   'history.findings': 'Havainnot',
   'anomalies.closedInHistory': 'Suljetut historiassa',
   'new.change.closedFindings': 'Viimeisen kolmenkymmenen päivän aikana suljetut havainnot ovat siirtyneet sivulta {anomalies} sivulle {history}, kolmanneksi näkymäksi näkymien {runs} ja {files} rinnalle, omine otsikoineen lajittelua ja suodatusta varten. {anomalies} näyttää vain avoimet ja ohjaa sinne.',
+  'dupes.findOnLeft': 'Etsi kaksoiskappaleet vasemmalta puolelta',
+  'dupes.findOnRight': 'Etsi kaksoiskappaleet oikealta puolelta',
 }
 
 export default fi

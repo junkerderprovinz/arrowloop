@@ -1223,8 +1223,6 @@ const ms: Translations = {
   'targets.ftpTls.explicit': 'TLS eksplisit',
   'targets.ftpTls.implicit': 'TLS implisit pada port 990',
   'anomalies.all': 'Semua anomali',
-  'dupes.findOnLeft': 'Pendua di sebelah kiri',
-  'dupes.findOnRight': 'Pendua di sebelah kanan',
   'list.onlyJob': 'Hanya {job}',
   'list.everyJob': 'Tunjukkan semua tugas',
   'job.brakes': 'Brek',
@@ -1324,6 +1322,8 @@ const ms: Translations = {
   'history.findings': 'Penemuan',
   'anomalies.closedInHistory': 'Yang ditutup dalam Sejarah',
   'new.change.closedFindings': 'Penemuan yang ditutup dalam tiga puluh hari lepas telah berpindah dari {anomalies} ke {history}, sebagai paparan ketiga di sebelah {runs} dan {files}, dengan tajuknya sendiri untuk mengisih dan menapis. {anomalies} hanya menunjukkan yang terbuka dan membawa ke sana.',
+  'dupes.findOnLeft': 'Cari pendua di sisi kiri',
+  'dupes.findOnRight': 'Cari pendua di sisi kanan',
 }
 
 export default ms

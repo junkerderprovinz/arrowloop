@@ -1223,8 +1223,6 @@ const gl: Translations = {
   'targets.ftpTls.explicit': 'TLS explícito',
   'targets.ftpTls.implicit': 'TLS implícito no porto 990',
   'anomalies.all': 'Todas as anomalías',
-  'dupes.findOnLeft': 'Duplicados no lado esquerdo',
-  'dupes.findOnRight': 'Duplicados no lado dereito',
   'list.onlyJob': 'Só {job}',
   'list.everyJob': 'Amosar todas as tarefas',
   'job.brakes': 'Freos',
@@ -1324,6 +1322,8 @@ const gl: Translations = {
   'history.findings': 'Achados',
   'anomalies.closedInHistory': 'Os pechados no historial',
   'new.change.closedFindings': 'Os achados pechados nos últimos trinta días pasaron de {anomalies} a {history}, como terceira vista xunto a {runs} e {files}, con cabeceiras propias para ordenar e filtrar. {anomalies} só amosa o que está aberto e leva ata alí.',
+  'dupes.findOnLeft': 'Buscar duplicados no lado esquerdo',
+  'dupes.findOnRight': 'Buscar duplicados no lado dereito',
 }
 
 export default gl

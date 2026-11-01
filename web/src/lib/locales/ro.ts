@@ -1223,8 +1223,6 @@ const ro: Translations = {
   'targets.ftpTls.explicit': 'TLS explicit',
   'targets.ftpTls.implicit': 'TLS implicit pe portul 990',
   'anomalies.all': 'Toate anomaliile',
-  'dupes.findOnLeft': 'Duplicate pe partea stângă',
-  'dupes.findOnRight': 'Duplicate pe partea dreaptă',
   'list.onlyJob': 'Doar {job}',
   'list.everyJob': 'Arată toate sarcinile',
   'job.brakes': 'Frâne',
@@ -1324,6 +1322,8 @@ const ro: Translations = {
   'history.findings': 'Constatări',
   'anomalies.closedInHistory': 'Cele închise în istoric',
   'new.change.closedFindings': 'Constatările închise în ultimele treizeci de zile s-au mutat din {anomalies} în {history}, ca a treia vedere lângă {runs} și {files}, cu antete proprii pentru sortare și filtrare. {anomalies} arată doar ce e deschis și duce acolo.',
+  'dupes.findOnLeft': 'Caută duplicate în partea stângă',
+  'dupes.findOnRight': 'Caută duplicate în partea dreaptă',
 }
 
 export default ro

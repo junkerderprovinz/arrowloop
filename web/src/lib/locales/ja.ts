@@ -1223,8 +1223,6 @@ const ja: Translations = {
   'targets.ftpTls.explicit': '明示的 TLS',
   'targets.ftpTls.implicit': 'ポート 990 の暗黙的 TLS',
   'anomalies.all': 'すべての検出',
-  'dupes.findOnLeft': '左側の重複',
-  'dupes.findOnRight': '右側の重複',
   'list.onlyJob': '{job} のみ',
   'list.everyJob': 'すべてのジョブを表示',
   'job.brakes': 'ブレーキ',
@@ -1324,6 +1322,8 @@ const ja: Translations = {
   'history.findings': '検出',
   'anomalies.closedInHistory': '閉じたものは履歴に',
   'new.change.closedFindings': '過去30日に閉じた検出は{anomalies}から{history}に移り、{runs}と{files}に並ぶ3つ目の表示になりました。並べ替えと絞り込みの見出しもあります。{anomalies}は開いているものだけを表示し、そこへ案内します。',
+  'dupes.findOnLeft': '左側の重複を探す',
+  'dupes.findOnRight': '右側の重複を探す',
 }
 
 export default ja

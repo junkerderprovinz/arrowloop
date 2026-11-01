@@ -1223,8 +1223,6 @@ const sv: Translations = {
   'targets.ftpTls.explicit': 'Explicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS på port 990',
   'anomalies.all': 'Alla avvikelser',
-  'dupes.findOnLeft': 'Dubbletter på vänster sida',
-  'dupes.findOnRight': 'Dubbletter på höger sida',
   'list.onlyJob': 'Bara {job}',
   'list.everyJob': 'Visa alla jobb',
   'job.brakes': 'Bromsar',
@@ -1324,6 +1322,8 @@ const sv: Translations = {
   'history.findings': 'Fynd',
   'anomalies.closedInHistory': 'Stängda i historiken',
   'new.change.closedFindings': 'Fynd som stängts de senaste trettio dagarna har flyttat från {anomalies} till {history}, som en tredje vy bredvid {runs} och {files}, med egna rubriker att sortera och filtrera med. {anomalies} visar bara det som är öppet och leder dit.',
+  'dupes.findOnLeft': 'Sök dubbletter på vänster sida',
+  'dupes.findOnRight': 'Sök dubbletter på höger sida',
 }
 
 export default sv

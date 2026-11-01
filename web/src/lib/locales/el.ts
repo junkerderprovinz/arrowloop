@@ -1223,8 +1223,6 @@ const el: Translations = {
   'targets.ftpTls.explicit': 'Ρητό TLS',
   'targets.ftpTls.implicit': 'Έμμεσο TLS στη θύρα 990',
   'anomalies.all': 'Όλες οι ανωμαλίες',
-  'dupes.findOnLeft': 'Διπλότυπα στην αριστερή πλευρά',
-  'dupes.findOnRight': 'Διπλότυπα στη δεξιά πλευρά',
   'list.onlyJob': 'Μόνο {job}',
   'list.everyJob': 'Εμφάνιση όλων των εργασιών',
   'job.brakes': 'Φρένα',
@@ -1324,6 +1322,8 @@ const el: Translations = {
   'history.findings': 'Ευρήματα',
   'anomalies.closedInHistory': 'Τα κλειστά στο ιστορικό',
   'new.change.closedFindings': 'Τα ευρήματα που έκλεισαν τις τελευταίες τριάντα ημέρες μεταφέρθηκαν από το {anomalies} στο {history}, ως τρίτη προβολή δίπλα στα {runs} και {files}, με δικές τους επικεφαλίδες για ταξινόμηση και φιλτράρισμα. Το {anomalies} δείχνει μόνο τα ανοιχτά και οδηγεί εκεί.',
+  'dupes.findOnLeft': 'Εύρεση διπλότυπων στην αριστερή πλευρά',
+  'dupes.findOnRight': 'Εύρεση διπλότυπων στη δεξιά πλευρά',
 }
 
 export default el

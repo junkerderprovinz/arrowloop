@@ -1223,8 +1223,6 @@ const fa: Translations = {
   'targets.ftpTls.explicit': 'TLS صریح',
   'targets.ftpTls.implicit': 'TLS ضمنی روی درگاه ۹۹۰',
   'anomalies.all': 'همهٔ ناهنجاری‌ها',
-  'dupes.findOnLeft': 'تکراری‌ها در طرف چپ',
-  'dupes.findOnRight': 'تکراری‌ها در طرف راست',
   'list.onlyJob': 'فقط {job}',
   'list.everyJob': 'نمایش همهٔ کارها',
   'job.brakes': 'ترمزها',
@@ -1324,6 +1322,8 @@ const fa: Translations = {
   'history.findings': 'یافته‌ها',
   'anomalies.closedInHistory': 'بسته‌شده‌ها در سابقه',
   'new.change.closedFindings': 'یافته‌هایی که در سی روز گذشته بسته شده‌اند از {anomalies} به {history} رفته‌اند، به‌عنوان نمای سوم کنار {runs} و {files}، با سرستون‌های خودشان برای مرتب‌سازی و فیلتر. {anomalies} فقط موارد باز را نشان می‌دهد و به آنجا راه می‌برد.',
+  'dupes.findOnLeft': 'یافتن تکراری‌ها در سمت چپ',
+  'dupes.findOnRight': 'یافتن تکراری‌ها در سمت راست',
 }
 
 export default fa

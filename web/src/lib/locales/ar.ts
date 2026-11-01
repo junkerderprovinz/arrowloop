@@ -1223,8 +1223,6 @@ const ar: Translations = {
   'targets.ftpTls.explicit': 'TLS صريح',
   'targets.ftpTls.implicit': 'TLS ضمني على المنفذ 990',
   'anomalies.all': 'كل الحالات الشاذة',
-  'dupes.findOnLeft': 'المكررة في الجانب الأيسر',
-  'dupes.findOnRight': 'المكررة في الجانب الأيمن',
   'list.onlyJob': '{job} فقط',
   'list.everyJob': 'عرض كل المهام',
   'job.brakes': 'المكابح',
@@ -1324,6 +1322,8 @@ const ar: Translations = {
   'history.findings': 'النتائج',
   'anomalies.closedInHistory': 'المغلقة في السجل',
   'new.change.closedFindings': 'انتقلت النتائج المغلقة خلال الثلاثين يومًا الماضية من {anomalies} إلى {history}، كعرض ثالث بجانب {runs} و{files}، ولها عناوين للفرز والتصفية. أما {anomalies} فتعرض المفتوح فقط وتقود إليها.',
+  'dupes.findOnLeft': 'ابحث عن التكرارات في الجانب الأيسر',
+  'dupes.findOnRight': 'ابحث عن التكرارات في الجانب الأيمن',
 }
 
 export default ar

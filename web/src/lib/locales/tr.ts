@@ -1223,8 +1223,6 @@ const tr: Translations = {
   'targets.ftpTls.explicit': 'Açık TLS',
   'targets.ftpTls.implicit': '990 numaralı portta örtük TLS',
   'anomalies.all': 'Tüm bulgular',
-  'dupes.findOnLeft': 'Sol taraftaki kopyalar',
-  'dupes.findOnRight': 'Sağ taraftaki kopyalar',
   'list.onlyJob': 'Yalnızca {job}',
   'list.everyJob': 'Tüm işleri göster',
   'job.brakes': 'Frenler',
@@ -1324,6 +1322,8 @@ const tr: Translations = {
   'history.findings': 'Bulgular',
   'anomalies.closedInHistory': 'Kapananlar geçmişte',
   'new.change.closedFindings': 'Son otuz günde kapanan bulgular {anomalies} sayfasından {history} sayfasına taşındı; {runs} ve {files} yanında üçüncü bir görünüm olarak, sıralama ve süzme için kendi başlıklarıyla. {anomalies} yalnızca açık olanları gösterir ve oraya götürür.',
+  'dupes.findOnLeft': 'Sol tarafta kopyaları ara',
+  'dupes.findOnRight': 'Sağ tarafta kopyaları ara',
 }
 
 export default tr

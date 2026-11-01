@@ -1223,8 +1223,6 @@ const sl: Translations = {
   'targets.ftpTls.explicit': 'Eksplicitni TLS',
   'targets.ftpTls.implicit': 'Implicitni TLS na vratih 990',
   'anomalies.all': 'Vse anomalije',
-  'dupes.findOnLeft': 'Podvojeno na levi strani',
-  'dupes.findOnRight': 'Podvojeno na desni strani',
   'list.onlyJob': 'Samo {job}',
   'list.everyJob': 'Pokaži vsa opravila',
   'job.brakes': 'Zavore',
@@ -1324,6 +1322,8 @@ const sl: Translations = {
   'history.findings': 'Ugotovitve',
   'anomalies.closedInHistory': 'Zaprte v zgodovini',
   'new.change.closedFindings': 'Ugotovitve, zaprte v zadnjih tridesetih dneh, so se iz {anomalies} preselile v {history}, kot tretji pogled ob {runs} in {files}, z lastnimi naslovi za razvrščanje in filtriranje. {anomalies} kaže samo odprto in vodi tja.',
+  'dupes.findOnLeft': 'Poišči dvojnike na levi strani',
+  'dupes.findOnRight': 'Poišči dvojnike na desni strani',
 }
 
 export default sl

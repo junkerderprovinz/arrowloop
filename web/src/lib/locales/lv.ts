@@ -1223,8 +1223,6 @@ const lv: Translations = {
   'targets.ftpTls.explicit': 'Tiešais TLS',
   'targets.ftpTls.implicit': 'Netiešais TLS portā 990',
   'anomalies.all': 'Visi atradumi',
-  'dupes.findOnLeft': 'Dublikāti kreisajā pusē',
-  'dupes.findOnRight': 'Dublikāti labajā pusē',
   'list.onlyJob': 'Tikai {job}',
   'list.everyJob': 'Rādīt visus darbus',
   'job.brakes': 'Bremzes',
@@ -1324,6 +1322,8 @@ const lv: Translations = {
   'history.findings': 'Atradumi',
   'anomalies.closedInHistory': 'Slēgtie vēsturē',
   'new.change.closedFindings': 'Pēdējās trīsdesmit dienās slēgtie atradumi ir pārcelti no {anomalies} uz {history} kā trešais skats blakus {runs} un {files}, ar saviem virsrakstiem kārtošanai un filtrēšanai. {anomalies} rāda tikai atvērto un ved uz turieni.',
+  'dupes.findOnLeft': 'Meklēt dublikātus kreisajā pusē',
+  'dupes.findOnRight': 'Meklēt dublikātus labajā pusē',
 }
 
 export default lv

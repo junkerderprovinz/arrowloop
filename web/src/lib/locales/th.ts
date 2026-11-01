@@ -1223,8 +1223,6 @@ const th: Translations = {
   'targets.ftpTls.explicit': 'TLS แบบชัดแจ้ง',
   'targets.ftpTls.implicit': 'TLS แบบโดยนัยที่พอร์ต 990',
   'anomalies.all': 'ความผิดปกติทั้งหมด',
-  'dupes.findOnLeft': 'ไฟล์ซ้ำฝั่งซ้าย',
-  'dupes.findOnRight': 'ไฟล์ซ้ำฝั่งขวา',
   'list.onlyJob': 'เฉพาะ {job}',
   'list.everyJob': 'แสดงงานทั้งหมด',
   'job.brakes': 'เบรก',
@@ -1324,6 +1322,8 @@ const th: Translations = {
   'history.findings': 'สิ่งที่พบ',
   'anomalies.closedInHistory': 'ที่ปิดแล้วในประวัติ',
   'new.change.closedFindings': 'สิ่งที่พบซึ่งปิดไปในสามสิบวันที่ผ่านมาย้ายจาก {anomalies} ไปที่ {history} เป็นมุมมองที่สามถัดจาก {runs} และ {files} พร้อมหัวคอลัมน์สำหรับเรียงและกรอง {anomalies} แสดงเฉพาะสิ่งที่ยังเปิดอยู่และพาไปที่นั่น',
+  'dupes.findOnLeft': 'ค้นหาไฟล์ซ้ำฝั่งซ้าย',
+  'dupes.findOnRight': 'ค้นหาไฟล์ซ้ำฝั่งขวา',
 }
 
 export default th

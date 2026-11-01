@@ -1223,8 +1223,6 @@ const ko: Translations = {
   'targets.ftpTls.explicit': '명시적 TLS',
   'targets.ftpTls.implicit': '포트 990의 암시적 TLS',
   'anomalies.all': '모든 발견 항목',
-  'dupes.findOnLeft': '왼쪽의 중복',
-  'dupes.findOnRight': '오른쪽의 중복',
   'list.onlyJob': '{job}만',
   'list.everyJob': '모든 작업 보기',
   'job.brakes': '브레이크',
@@ -1324,6 +1322,8 @@ const ko: Translations = {
   'history.findings': '발견',
   'anomalies.closedInHistory': '닫힌 항목은 기록에서',
   'new.change.closedFindings': '지난 30일 동안 닫힌 발견은 {anomalies}에서 {history}로 옮겨 {runs}, {files} 옆의 세 번째 보기가 되었고, 정렬하고 걸러 내는 제목도 있습니다. {anomalies}는 열린 것만 보여 주고 그리로 안내합니다.',
+  'dupes.findOnLeft': '왼쪽에서 중복 찾기',
+  'dupes.findOnRight': '오른쪽에서 중복 찾기',
 }
 
 export default ko

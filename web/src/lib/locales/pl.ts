@@ -1223,8 +1223,6 @@ const pl: Translations = {
   'targets.ftpTls.explicit': 'Jawny TLS',
   'targets.ftpTls.implicit': 'Niejawny TLS na porcie 990',
   'anomalies.all': 'Wszystkie anomalie',
-  'dupes.findOnLeft': 'Duplikaty po lewej stronie',
-  'dupes.findOnRight': 'Duplikaty po prawej stronie',
   'list.onlyJob': 'Tylko {job}',
   'list.everyJob': 'Pokaż wszystkie zadania',
   'job.brakes': 'Hamulce',
@@ -1324,6 +1322,8 @@ const pl: Translations = {
   'history.findings': 'Wykrycia',
   'anomalies.closedInHistory': 'Zamknięte w historii',
   'new.change.closedFindings': 'Wykrycia zamknięte w ciągu ostatnich trzydziestu dni przeniosły się z {anomalies} do {history}, jako trzeci widok obok {runs} i {files}, z własnymi nagłówkami do sortowania i filtrowania. {anomalies} pokazuje tylko otwarte i prowadzi tam.',
+  'dupes.findOnLeft': 'Szukaj duplikatów po lewej stronie',
+  'dupes.findOnRight': 'Szukaj duplikatów po prawej stronie',
 }
 
 export default pl

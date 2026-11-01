@@ -1223,8 +1223,6 @@ const hu: Translations = {
   'targets.ftpTls.explicit': 'Explicit TLS',
   'targets.ftpTls.implicit': 'Implicit TLS a 990-es porton',
   'anomalies.all': 'Minden rendellenesség',
-  'dupes.findOnLeft': 'Duplikátumok a bal oldalon',
-  'dupes.findOnRight': 'Duplikátumok a jobb oldalon',
   'list.onlyJob': 'Csak {job}',
   'list.everyJob': 'Minden feladat mutatása',
   'job.brakes': 'Fékek',
@@ -1324,6 +1322,8 @@ const hu: Translations = {
   'history.findings': 'Észlelések',
   'anomalies.closedInHistory': 'A lezártak az előzményekben',
   'new.change.closedFindings': 'Az elmúlt harminc napban lezárt észlelések a(z) {anomalies} oldalról a(z) {history} oldalra költöztek, harmadik nézetként a(z) {runs} és a(z) {files} mellé, saját fejlécekkel a rendezéshez és szűréshez. A(z) {anomalies} csak a nyitottakat mutatja, és odavezet.',
+  'dupes.findOnLeft': 'Ismétlődések keresése a bal oldalon',
+  'dupes.findOnRight': 'Ismétlődések keresése a jobb oldalon',
 }
 
 export default hu

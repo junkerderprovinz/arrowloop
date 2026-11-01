@@ -1223,8 +1223,6 @@ const vi: Translations = {
   'targets.ftpTls.explicit': 'TLS tường minh',
   'targets.ftpTls.implicit': 'TLS ngầm định ở cổng 990',
   'anomalies.all': 'Tất cả bất thường',
-  'dupes.findOnLeft': 'Bản trùng ở bên trái',
-  'dupes.findOnRight': 'Bản trùng ở bên phải',
   'list.onlyJob': 'Chỉ {job}',
   'list.everyJob': 'Hiện mọi tác vụ',
   'job.brakes': 'Phanh',
@@ -1324,6 +1322,8 @@ const vi: Translations = {
   'history.findings': 'Phát hiện',
   'anomalies.closedInHistory': 'Mục đã đóng trong Lịch sử',
   'new.change.closedFindings': 'Các phát hiện đã đóng trong ba mươi ngày qua được chuyển từ {anomalies} sang {history}, thành chế độ xem thứ ba bên cạnh {runs} và {files}, với tiêu đề riêng để sắp xếp và lọc. {anomalies} chỉ hiện mục còn mở và dẫn tới đó.',
+  'dupes.findOnLeft': 'Tìm tệp trùng ở bên trái',
+  'dupes.findOnRight': 'Tìm tệp trùng ở bên phải',
 }
 
 export default vi
