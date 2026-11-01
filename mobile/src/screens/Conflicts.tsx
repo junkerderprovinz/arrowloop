@@ -13,8 +13,8 @@ import { failureLine, type Failure } from "../../../web/src/lib/failure";
 import { AxisLabel, Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair } from "../ui";
 import { useWaiting } from "../waiting";
 
-/** The same three answers, in the same order, as the web's conflicts page. */
-const CHOICES: Keep[] = ["both", "left", "right"];
+/** The same three answers as the web's conflicts page, in the order of the sides they keep. */
+const CHOICES: Keep[] = ["left", "both", "right"];
 
 /** The glyph of each answer, the same for one conflict and for all of them. */
 const GLYPH: Record<Keep, string> = { both: "IconKeepBoth", left: "IconKeepLeft", right: "IconKeepRight" };
