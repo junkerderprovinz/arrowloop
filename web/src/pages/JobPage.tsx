@@ -488,7 +488,7 @@ function FilesCard({ job }: { job: Job }) {
       filter: { active: kind !== 'all', panel: <TouchKindChoice value={kind} onChange={setKind} /> },
     },
     { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },
-    { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden', end: true },
+    { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden' },
     { id: 'side', label: '', className: 'w-6 shrink-0 max-sm:hidden' },
     { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1 max-sm:hidden' },
   ]

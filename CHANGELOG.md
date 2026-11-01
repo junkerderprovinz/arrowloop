@@ -25,6 +25,8 @@ The full notes for each release are in
 - **The F-Droid button in Settings › Apps wears F-Droid's logo as GlimStone carries it,** flat in its own greens and blue, with the eyes still cut out.
 - **Check for updates in Settings › Info wears the sync symbol,** as in KnightLoader; the cloud stays with fetching an update.
 - **A finding on the Anomalies page has no coloured edge any more,** on the web and on the phone. Its badge says how bad it is.
+- **Sizes stand at the start of their column,** with their heading, in History, a job's Files touched and the trash.
+- **The duplicate search's buttons say what they do:** Find duplicates on the left side and Find duplicates on the right side.
 - **ArrowLoop follows GlimStone 3.8.2.**
 
 ## 2.4.0 - 2026-10-30

@@ -362,7 +362,7 @@ function SideList({
   const heads: Head[] = [
     { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1', sorts: true },
     ...(jobHead ? [jobHead] : []),
-    { id: 'size', label: t('list.head.size'), className: 'w-20 shrink-0 max-sm:hidden', end: true, sorts: true },
+    { id: 'size', label: t('list.head.size'), className: 'w-20 shrink-0 max-sm:hidden', sorts: true },
     { id: 'age', label: t('list.head.age'), className: 'w-28 shrink-0', end: true, sorts: true },
   ]
   return (
@@ -411,7 +411,7 @@ function SideList({
                     onClick={() => onRestore(e)}
                   />
                 </span>
-                <span className="w-20 shrink-0 text-end text-carbon-textMuted max-sm:hidden">
+                <span className="w-20 shrink-0 whitespace-nowrap text-carbon-textMuted max-sm:hidden">
                   <Num>{bytes(e.size)}</Num>
                 </span>
                 {/* No date when the run id cannot be read; such an entry is never

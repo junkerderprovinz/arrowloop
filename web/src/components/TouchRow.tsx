@@ -68,7 +68,7 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
           {e.Job}
         </span>
       )}
-      <span style={columns?.cell('size')} className={`w-14 shrink-0 whitespace-nowrap text-end tabular-nums text-carbon-textMuted max-sm:hidden${grid}`}>
+      <span style={columns?.cell('size')} className={`w-14 shrink-0 whitespace-nowrap tabular-nums text-carbon-textMuted max-sm:hidden${grid}`}>
         {e.Size > 0 ? bytes(e.Size) : ''}
       </span>
       {/* The side written to, drawn as an arrow; the word stays in the title

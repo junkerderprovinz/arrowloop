@@ -186,7 +186,7 @@ export function History({
         },
         { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },
         { id: 'job', label: t('history.filterJob'), className: 'w-32 shrink-0 max-md:hidden', filter: jobFilter },
-        { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden', end: true },
+        { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden' },
         { id: 'side', label: '', className: 'w-6 shrink-0 max-sm:hidden' },
         { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1 max-sm:hidden' },
       ]
