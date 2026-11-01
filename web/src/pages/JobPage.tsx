@@ -270,7 +270,6 @@ function Head({
         <IconAction
           title={t('preview.back')}
           labelKey="preview.back"
-          size="key"
           className="glim-glyph-only flex-none rounded-control"
           onClick={() => goTo({ tab: 'jobs', job: '' })}
         >
