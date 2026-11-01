@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { placeMenu } from './menuPlace'
+import { placeMenu, placeUnderHead } from './menuPlace'
 
 const viewport = { width: 1000, height: 800 }
 const menu = { width: 200, height: 180 }
@@ -33,5 +33,26 @@ describe('a menu', () => {
     const short = { width: 1000, height: 250 }
     const at = placeMenu({ left: 700, right: 740, top: 60, bottom: 92 }, menu, short)
     expect(at.top).toBe(96)
+  })
+})
+
+describe('a list head filter', () => {
+  const area = { left: 260, right: 1000 }
+  const panel = { width: 340, height: 180 }
+
+  it('opens under its head with the leading edges in line', () => {
+    const at = placeUnderHead({ left: 300, right: 380, top: 100, bottom: 120 }, { left: 360, right: 380, top: 100, bottom: 120 }, panel, area, viewport)
+    expect(at).toEqual({ left: 300, top: 124 })
+  })
+
+  it('moves back from the end of the column rather than out of it', () => {
+    const at = placeUnderHead({ left: 900, right: 980, top: 100, bottom: 120 }, { left: 960, right: 980, top: 100, bottom: 120 }, panel, area, viewport)
+    expect(at.left).toBe(1000 - 8 - panel.width)
+  })
+
+  it('never covers the sidebar beside the column', () => {
+    const wide = { width: 900, height: 180 }
+    const at = placeUnderHead({ left: 270, right: 300, top: 100, bottom: 120 }, { left: 290, right: 300, top: 100, bottom: 120 }, wide, area, viewport)
+    expect(at.left).toBe(268)
   })
 })

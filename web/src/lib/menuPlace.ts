@@ -26,3 +26,25 @@ export function placeMenu(
   const top = !fitsBelow && roomAbove > roomBelow ? Math.max(margin, trigger.top - GAP - menu.height) : below
   return { left, top }
 }
+
+/**
+ * Where a list head's filter opens: under the head, its leading edge in line
+ * with the head's, moved back towards the start where the end would run out
+ * of room, and never past `area`, the column the list stands in, so it does
+ * not cover the sidebar. It flips above like a menu.
+ */
+export function placeUnderHead(
+  head: BubbleTriggerRect,
+  trigger: BubbleTriggerRect,
+  panel: BubbleSize,
+  area: { left: number; right: number },
+  viewport: Viewport,
+  rtl = false,
+): { left: number; top: number } {
+  const margin = BUBBLE_VIEWPORT_MARGIN
+  const first = area.left + margin
+  const last = Math.max(first, area.right - margin - panel.width)
+  const wanted = rtl ? head.right - panel.width : head.left
+  const left = Math.max(first, Math.min(wanted, last))
+  return { left, top: placeMenu(trigger, panel, viewport, rtl).top }
+}

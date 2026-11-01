@@ -9,7 +9,8 @@ import { Button } from '../lib/glimstone/Button'
 import { usePortalHue } from '../lib/glimstone/portalHue'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { firstVisit } from '../lib/listTips'
-import { placeMenu } from '../lib/menuPlace'
+import { BUBBLE_VIEWPORT_MARGIN } from '../lib/glimstone/bubblePosition'
+import { placeUnderHead } from '../lib/menuPlace'
 
 // GlimStone's list: the cards on top and the list below, with sorting,
 // filtering and searching in the list itself. A head sorts on a click, its ▾
@@ -271,31 +272,35 @@ function FilterPanel({
   children: ReactNode
 }) {
   const panel = useRef<HTMLDivElement>(null)
-  const [at, setAt] = useState<{ left: number; top: number } | null>(null)
+  const [at, setAt] = useState<{ left: number; top: number; room: number } | null>(null)
   const hue = usePortalHue(true, anchor)
   const close = useRef(onClose)
   close.current = onClose
 
   useLayoutEffect(() => {
-    const box = anchor.current?.getBoundingClientRect()
+    const trigger = anchor.current
     const el = panel.current
-    if (!box || !el) return
-    setAt(
-      placeMenu(
-        box,
-        { width: el.offsetWidth, height: el.offsetHeight },
-        { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight },
-        document.documentElement.dir === 'rtl',
-      ),
+    if (!trigger || !el) return
+    const viewport = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight }
+    const head = (trigger.closest('[role="columnheader"]') ?? trigger).getBoundingClientRect()
+    const column = trigger.closest('main')?.getBoundingClientRect() ?? { left: 0, right: viewport.width }
+    const place = placeUnderHead(
+      head,
+      trigger.getBoundingClientRect(),
+      { width: el.offsetWidth, height: el.offsetHeight },
+      column,
+      viewport,
+      document.documentElement.dir === 'rtl',
     )
+    setAt({ ...place, room: column.right - column.left - 2 * BUBBLE_VIEWPORT_MARGIN })
   }, [anchor])
 
   useEffect(() => {
     const press = (e: MouseEvent) => {
       const target = e.target as Node
-      if (panel.current?.contains(target) || anchor.current?.contains(target)) return
+      if (panel.current?.contains(target)) return
       // A choice inside the panel may open a list of its own on the body.
-      if ((target as HTMLElement).closest?.('[role="listbox"], [role="dialog"]')) return
+      if ((target as HTMLElement).closest?.('[role="listbox"]')) return
       close.current()
     }
     const key = (e: KeyboardEvent) => {
@@ -311,23 +316,36 @@ function FilterPanel({
     }
   }, [anchor])
 
+  // The backdrop and the panel are siblings: a fixed panel inside the
+  // backdrop would be placed against the backdrop, whose blur makes it the
+  // containing block, rather than against the window.
   return createPortal(
-    <div
-      ref={panel}
-      role="dialog"
-      aria-label={label}
-      className={`fixed z-50 flex w-max min-w-[16rem] max-w-[min(90vw,26rem)] flex-col gap-4 rounded-card bg-carbon-surface p-4 shadow-xl glim-fade${
-        hue.className ? ` ${hue.className}` : ''
-      }`}
-      style={{ left: at?.left ?? -9999, top: at?.top ?? -9999, ...(hue.style ?? {}) } as CSSProperties}
-    >
-      {children}
-    </div>,
+    <>
+      <div aria-hidden className="glim-modal-backdrop fixed inset-0 z-50" />
+      <div
+        ref={panel}
+        role="dialog"
+        aria-label={label}
+        className={`fixed z-50 flex w-max min-w-[16rem] max-w-[min(90vw,26rem)] flex-col gap-4 rounded-card bg-carbon-surface p-4 shadow-2xl glim-fade${
+          hue.className ? ` ${hue.className}` : ''
+        }`}
+        style={
+          {
+            left: at?.left ?? -9999,
+            top: at?.top ?? -9999,
+            maxWidth: at ? `min(26rem, ${at.room}px)` : undefined,
+            ...(hue.style ?? {}),
+          } as CSSProperties
+        }
+      >
+        {children}
+      </div>
+    </>,
     document.body,
   )
 }
 
-/** One choice inside a filter: its caption and the options as chips. */
+/** One choice inside a filter: its caption and the options as chips, side by side where they fit and under each other where not. */
 export function FilterChoice<T extends string>({
   label,
   options,
@@ -342,7 +360,7 @@ export function FilterChoice<T extends string>({
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-meta text-carbon-textMuted">{label}</span>
-      <Selector<T> label={label} options={options} value={value} onChange={onChange} scale="small" variant="chip" />
+      <Selector<T> label={label} options={options} value={value} onChange={onChange} scale="small" variant="chip" hug stack />
     </div>
   )
 }

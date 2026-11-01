@@ -78,6 +78,7 @@ export function Selector<T extends string>({
   low = false,
   hug = false,
   pairsOnPhone = false,
+  stack = false,
 }: {
   options: Option<T>[]
   value: T
@@ -123,6 +124,12 @@ export function Selector<T extends string>({
    * being cut off.
    */
   pairsOnPhone?: boolean
+  /**
+   * With `hug`: once the segments do not fit side by side, all of them stand
+   * under each other, equally wide, instead of wrapping into rows, where three
+   * would break two and one.
+   */
+  stack?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
   const pairs = usePhoneWidth() && pairsOnPhone
@@ -217,7 +224,7 @@ export function Selector<T extends string>({
   // Once it wraps, the segments share each row evenly and grow to fill it, so
   // no row ends in an empty strip: six that fit four to a row go three and
   // three.
-  const perRow = pinned && inner > 0 ? perRowFor(n, inner, pinned, gap) : n
+  const perRow = crowded && stack ? 1 : pinned && inner > 0 ? perRowFor(n, inner, pinned, gap) : n
 
   // Every segment reads a rainbow position, so the strip repaints when the
   // mode changes.

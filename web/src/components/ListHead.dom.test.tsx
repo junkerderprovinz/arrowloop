@@ -58,6 +58,7 @@ describe('a list head', () => {
     const caret = screen.getByRole('button', { name: 'Filter by Kind' })
     expect(caret.querySelector('.bg-accent')).toBeNull()
     fireEvent.click(caret)
+    expect(document.querySelector('.glim-modal-backdrop')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Only pictures' }))
     expect(caret.querySelector('.bg-accent')).toBeTruthy()
   })
