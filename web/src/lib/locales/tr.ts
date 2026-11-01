@@ -1313,7 +1313,8 @@ const tr: Translations = {
   'list.head.file': 'Dosya',
   'conflicts.waiting': 'Sizi bekleyen: {count}',
   'new.change.buttonTint': 'Her düğme, işaretçi ya da klavye ona ulaştığında vurgu rengini alır; telefon uygulamasında da parmağınız üzerindeyken.',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} ve {anomalies} listeleri kendi başlıklarından sıralıyor, süzüyor ve arıyor. Bir başlığa tıklamak sıralar, yanındaki ▾ süzer, listede yazmak ya da Ctrl+F\'ye basmak da listenin üzerinde süzülen bir arama açar. Geçmişin üstündeki Filtre ve Ara düğmeleri kalktı. Telefon uygulamasının geçmişinde bir başlığa dokunmak sıralar, onun ▾ işareti süzer, satırın sonundaki büyüteç de arar.',
+  'new.change.listHeads': '{history}, {trash}, {conflicts} ve {anomalies} listeleri kendi başlıklarından sıralıyor, süzüyor ve arıyor. Bir başlığa tıklamak sıralar, yanındaki ▾ süzer, listede yazmak ya da Ctrl+F\'ye basmak da listenin üzerinde süzülen bir arama açar. Geçmişin üstündeki Filtre ve Ara düğmeleri kalktı. Telefon uygulamasının geçmişinde bir başlığa dokunmak sıralar, onun ▾ işareti süzer, satırın sonundaki büyüteç de arar. Dokunmatik ekranda tarayıcı da aynı büyüteci gösterir.',
+  'list.tip.find': 'Büyüteç listede arar.',
 }
 
 export default tr

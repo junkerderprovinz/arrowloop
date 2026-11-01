@@ -1313,7 +1313,8 @@ const is: Translations = {
   'list.head.file': 'Skrá',
   'conflicts.waiting': 'Bíða eftir þér: {count}',
   'new.change.buttonTint': 'Hver hnappur tekur á sig áherslulitinn þegar bendillinn eða lyklaborðið nær honum, og í símaforritinu meðan fingurinn er á honum.',
-  'new.change.listHeads': 'Listarnir í {history}, {trash}, {conflicts} og {anomalies} raða, sía og leita út frá eigin fyrirsögnum. Smellur á fyrirsögn raðar, ▾ við hliðina síar, og innsláttur í listann eða Ctrl+F opnar leit sem svífur yfir honum. Sía- og leitarhnapparnir yfir ferlinum eru horfnir. Í ferli símaforritsins raðar snerting á fyrirsögn, ▾ hennar síar og stækkunarglerið við enda raðarinnar leitar.',
+  'new.change.listHeads': 'Listarnir í {history}, {trash}, {conflicts} og {anomalies} raða, sía og leita út frá eigin fyrirsögnum. Smellur á fyrirsögn raðar, ▾ við hliðina síar, og innsláttur í listann eða Ctrl+F opnar leit sem svífur yfir honum. Sía- og leitarhnapparnir yfir ferlinum eru horfnir. Í ferli símaforritsins raðar snerting á fyrirsögn, ▾ hennar síar og stækkunarglerið við enda raðarinnar leitar. Á snertiskjá sýnir vafrinn sama stækkunarglerið.',
+  'list.tip.find': 'Stækkunarglerið leitar í listanum.',
 }
 
 export default is

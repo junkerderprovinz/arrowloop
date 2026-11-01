@@ -1355,7 +1355,8 @@ export const en = {
   'list.head.file': 'File',
   'conflicts.waiting': 'Waiting for you: {count}',
   'new.change.buttonTint': 'Every button takes the accent when the pointer or the keyboard reaches it, and in the phone app while your finger is on it.',
-  'new.change.listHeads': 'The lists in {history}, {trash}, {conflicts} and {anomalies} sort, filter and search from their own headings. A click on a heading sorts, the ▾ beside it filters, and typing in the list or pressing Ctrl+F opens a search that floats over it. The Filter and Search buttons over History are gone. In the phone app\'s History a tap on a heading sorts, its ▾ filters and the magnifier at the end of the row searches.',
+  'new.change.listHeads': 'The lists in {history}, {trash}, {conflicts} and {anomalies} sort, filter and search from their own headings. A click on a heading sorts, the ▾ beside it filters, and typing in the list or pressing Ctrl+F opens a search that floats over it. The Filter and Search buttons over History are gone. In the phone app\'s History a tap on a heading sorts, its ▾ filters and the magnifier at the end of the row searches. On a touch screen the browser shows the same magnifier.',
+  'list.tip.find': 'The magnifier searches the list.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2701,7 +2702,8 @@ export const de: Translations = {
   'list.head.file': 'Datei',
   'conflicts.waiting': 'Warten auf dich: {count}',
   'new.change.buttonTint': 'Jeder Knopf nimmt die Akzentfarbe an, sobald Mauszeiger oder Tastatur ihn erreichen, und in der Handy-App, solange dein Finger darauf liegt.',
-  'new.change.listHeads': 'Die Listen in {history}, {trash}, {conflicts} und {anomalies} sortieren, filtern und suchen über ihre eigenen Überschriften. Ein Klick auf eine Überschrift sortiert, das ▾ daneben filtert, und Tippen in der Liste oder Strg+F öffnet eine Suche, die über ihr schwebt. Die Knöpfe Filter und Suchen über dem Verlauf sind weg. Im Verlauf der Handy-App sortiert ein Tipp auf eine Überschrift, ihr ▾ filtert und die Lupe am Ende der Zeile sucht.',
+  'new.change.listHeads': 'Die Listen in {history}, {trash}, {conflicts} und {anomalies} sortieren, filtern und suchen über ihre eigenen Überschriften. Ein Klick auf eine Überschrift sortiert, das ▾ daneben filtert, und Tippen in der Liste oder Strg+F öffnet eine Suche, die über ihr schwebt. Die Knöpfe Filter und Suchen über dem Verlauf sind weg. Im Verlauf der Handy-App sortiert ein Tipp auf eine Überschrift, ihr ▾ filtert und die Lupe am Ende der Zeile sucht. Auf einem Touchscreen zeigt der Browser dieselbe Lupe.',
+  'list.tip.find': 'Die Lupe durchsucht die Liste.',
 }
 
 export interface Language {

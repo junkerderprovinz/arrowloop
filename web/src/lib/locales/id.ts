@@ -1313,7 +1313,8 @@ const id: Translations = {
   'list.head.file': 'Berkas',
   'conflicts.waiting': 'Menunggu Anda: {count}',
   'new.change.buttonTint': 'Setiap tombol mengambil warna aksen saat penunjuk atau papan ketik mencapainya, dan di aplikasi ponsel selama jari Anda ada di atasnya.',
-  'new.change.listHeads': 'Daftar di {history}, {trash}, {conflicts}, dan {anomalies} mengurutkan, menyaring, dan mencari dari judul kolomnya sendiri. Klik judul kolom untuk mengurutkan, ▾ di sampingnya menyaring, dan mengetik di daftar atau menekan Ctrl+F membuka pencarian yang melayang di atasnya. Tombol Filter dan Cari di atas Riwayat sudah tidak ada. Di Riwayat aplikasi ponsel, ketuk judul kolom untuk mengurutkan, ▾ miliknya menyaring, dan kaca pembesar di ujung baris mencari.',
+  'new.change.listHeads': 'Daftar di {history}, {trash}, {conflicts}, dan {anomalies} mengurutkan, menyaring, dan mencari dari judul kolomnya sendiri. Klik judul kolom untuk mengurutkan, ▾ di sampingnya menyaring, dan mengetik di daftar atau menekan Ctrl+F membuka pencarian yang melayang di atasnya. Tombol Filter dan Cari di atas Riwayat sudah tidak ada. Di Riwayat aplikasi ponsel, ketuk judul kolom untuk mengurutkan, ▾ miliknya menyaring, dan kaca pembesar di ujung baris mencari. Di layar sentuh, peramban menampilkan kaca pembesar yang sama.',
+  'list.tip.find': 'Kaca pembesar mencari di daftar.',
 }
 
 export default id

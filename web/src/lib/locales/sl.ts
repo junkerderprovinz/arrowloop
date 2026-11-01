@@ -1313,7 +1313,8 @@ const sl: Translations = {
   'list.head.file': 'Datoteka',
   'conflicts.waiting': 'Čaka vas: {count}',
   'new.change.buttonTint': 'Vsak gumb prevzame barvo poudarka, ko do njega pride kazalec ali tipkovnica, v aplikaciji za telefon pa, dokler je na njem vaš prst.',
-  'new.change.listHeads': 'Seznami v {history}, {trash}, {conflicts} in {anomalies} razvrščajo, filtrirajo in iščejo prek svojih naslovov. Klik na naslov razvrsti, ▾ ob njem filtrira, tipkanje v seznamu ali Ctrl+F pa odpre iskanje, ki lebdi nad njim. Gumba za filter in iskanje nad zgodovino ni več. V zgodovini aplikacije za telefon dotik naslova razvrsti, njegov ▾ filtrira, povečevalno steklo na koncu vrstice pa išče.',
+  'new.change.listHeads': 'Seznami v {history}, {trash}, {conflicts} in {anomalies} razvrščajo, filtrirajo in iščejo prek svojih naslovov. Klik na naslov razvrsti, ▾ ob njem filtrira, tipkanje v seznamu ali Ctrl+F pa odpre iskanje, ki lebdi nad njim. Gumba za filter in iskanje nad zgodovino ni več. V zgodovini aplikacije za telefon dotik naslova razvrsti, njegov ▾ filtrira, povečevalno steklo na koncu vrstice pa išče. Na zaslonu na dotik brskalnik pokaže isto povečevalno steklo.',
+  'list.tip.find': 'Povečevalno steklo išče po seznamu.',
 }
 
 export default sl

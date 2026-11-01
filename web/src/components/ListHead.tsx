@@ -36,17 +36,34 @@ export function nextSort(sort: ListSort | undefined, by: string): ListSort {
   return { by, dir: 'asc' }
 }
 
+/** What a touch-only device matches: no key to type into the list and no pointer to hover with. */
+const TOUCH_ONLY = '(hover: none) and (pointer: coarse)'
+
+/** The event the magnifier sends up to the list's search, which listens on the list. */
+const OPEN_SEARCH = 'list-search'
+
+function useTouchOnly(): boolean {
+  const [touch, setTouch] = useState(() => !!window.matchMedia?.(TOUCH_ONLY).matches)
+  useEffect(() => {
+    const query = window.matchMedia?.(TOUCH_ONLY)
+    if (!query) return
+    const follow = () => setTouch(query.matches)
+    query.addEventListener('change', follow)
+    return () => query.removeEventListener('change', follow)
+  }, [])
+  return touch
+}
+
 /** How long a finger rests on the heads before the hint line shows, and how far it may drift meanwhile. */
 const LONG_PRESS_MS = 500
 const PRESS_SLOP = 10
 
-/** The sentences of the hint line, for what this list can do. A touch screen has no keys to type into the list. */
-function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean): string {
-  const touch = typeof window !== 'undefined' && !!window.matchMedia?.('(hover: none)').matches
+/** The sentences of the hint line, for what this list can do. */
+function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean, touch: boolean): string {
   const parts: TranslationKey[] = []
   if (heads.some((h) => h.sorts)) parts.push('list.tip.sort')
   if (heads.some((h) => h.filter)) parts.push('list.tip.filter')
-  if (search && !touch) parts.push('list.tip.search')
+  if (search) parts.push(touch ? 'list.tip.find' : 'list.tip.search')
   return parts.map((k) => t(k)).join(' ')
 }
 
@@ -55,7 +72,9 @@ function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean
  * click and carries the arrow of the order it is in; a head with a filter has
  * a ▾ that opens it, marked while the filter narrows the list. A line under
  * the row says all this on hover, by itself on the page's first visit, and
- * after a long press on a touch screen, where nothing hovers.
+ * after a long press on a touch screen, where nothing hovers. A touch-only
+ * device has no key to type into the list, so a magnifier at the end of the
+ * row opens its search there.
  */
 export function ListHead({
   heads,
@@ -70,7 +89,7 @@ export function ListHead({
   onSort?: (next: ListSort) => void
   /** The page's name for the first visit's hint, or none where another list on the page shows it. */
   page?: string
-  /** Whether typing in the list searches it, so the hint can say so. */
+  /** Whether the list has a search, which the hint names and a touch-only device reaches by the magnifier. */
   search?: boolean
   className?: string
 }) {
@@ -81,7 +100,8 @@ export function ListHead({
   const anchors = useRef(new Map<string, HTMLButtonElement>())
   const press = useRef<{ timer: number; x: number; y: number } | null>(null)
   const held = useRef(false)
-  const tip = tipText(t, heads, search)
+  const touch = useTouchOnly()
+  const tip = tipText(t, heads, search, touch)
 
   const endPress = () => {
     if (press.current) window.clearTimeout(press.current.timer)
@@ -186,6 +206,20 @@ export function ListHead({
             </div>
           )
         })}
+        {search && touch && (
+          <button
+            type="button"
+            aria-label={t('list.search')}
+            data-tip={t('list.search')}
+            onClick={(e) => {
+              e.currentTarget.dispatchEvent(new CustomEvent(OPEN_SEARCH, { bubbles: true }))
+              used()
+            }}
+            className="glim-btn-bare ms-auto grid h-8 w-8 shrink-0 place-items-center rounded-control text-carbon-textMuted"
+          >
+            <IconSearch />
+          </button>
+        )}
       </div>
 
       {tipShown || pressed ? (
@@ -328,7 +362,7 @@ function startsTyping(e: KeyboardEvent): boolean {
  * stays, so a forgotten search cannot hide.
  *
  * `area` is the element whose key presses open it, a typed character starting
- * the search with that character.
+ * the search with that character, and where a head's magnifier asks for it.
  */
 export function ListSearch({
   value,
@@ -371,9 +405,11 @@ export function ListSearch({
       show()
     }
     el?.addEventListener('keydown', onType)
+    el?.addEventListener(OPEN_SEARCH, show)
     document.addEventListener('keydown', onFind)
     return () => {
       el?.removeEventListener('keydown', onType)
+      el?.removeEventListener(OPEN_SEARCH, show)
       document.removeEventListener('keydown', onFind)
     }
   }, [area])

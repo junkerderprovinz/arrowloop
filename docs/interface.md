@@ -75,9 +75,11 @@ marks its ▾ and shows above the list, in History at the end of the row with
 **Files** and **Runs** and elsewhere in the card on top, with **Show
 everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
 a search that floats over the top of the list and finds an entry by its path;
-Escape empties and closes it. A line under the headings says all this while
-the pointer is over them, and by itself on the first visit. On a touch screen
-a long press on the headings shows it.
+Escape empties and closes it. A device with only a touch screen has no key to
+type with, so a magnifier at the end of the headings opens the search there. A
+line under the headings says all this while the pointer is over them, and by
+itself on the first visit. On a touch screen a long press on the headings
+shows it.
 
 A link from a job's page narrows Trash, Conflicts and Anomalies to that job,
 shown as a chip at the top, and the cross on the chip shows every job again.

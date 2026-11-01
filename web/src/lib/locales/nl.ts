@@ -1313,7 +1313,8 @@ const nl: Translations = {
   'list.head.file': 'Bestand',
   'conflicts.waiting': 'Wachten op jou: {count}',
   'new.change.buttonTint': 'Elke knop neemt de accentkleur aan zodra de aanwijzer of het toetsenbord hem bereikt, en in de telefoonapp zolang je vinger erop ligt.',
-  'new.change.listHeads': 'De lijsten in {history}, {trash}, {conflicts} en {anomalies} sorteren, filteren en zoeken vanuit hun eigen koppen. Een klik op een kop sorteert, de ▾ ernaast filtert, en typen in de lijst of Ctrl+F opent een zoekveld dat erboven zweeft. De knoppen Filter en Zoeken boven de geschiedenis zijn weg. In de geschiedenis van de telefoonapp sorteert een tik op een kop, filtert de ▾ ervan en zoekt het vergrootglas aan het eind van de rij.',
+  'new.change.listHeads': 'De lijsten in {history}, {trash}, {conflicts} en {anomalies} sorteren, filteren en zoeken vanuit hun eigen koppen. Een klik op een kop sorteert, de ▾ ernaast filtert, en typen in de lijst of Ctrl+F opent een zoekveld dat erboven zweeft. De knoppen Filter en Zoeken boven de geschiedenis zijn weg. In de geschiedenis van de telefoonapp sorteert een tik op een kop, filtert de ▾ ervan en zoekt het vergrootglas aan het eind van de rij. Op een aanraakscherm toont de browser hetzelfde vergrootglas.',
+  'list.tip.find': 'Het vergrootglas doorzoekt de lijst.',
 }
 
 export default nl

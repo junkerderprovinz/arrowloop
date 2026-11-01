@@ -1313,7 +1313,8 @@ const no: Translations = {
   'list.head.file': 'Fil',
   'conflicts.waiting': 'Venter på deg: {count}',
   'new.change.buttonTint': 'Hver knapp tar aksentfargen når pekeren eller tastaturet når den, og i telefonappen så lenge fingeren din ligger på den.',
-  'new.change.listHeads': 'Listene i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søker fra sine egne overskrifter. Et klikk på en overskrift sorterer, ▾ ved siden av filtrerer, og å skrive i listen eller trykke Ctrl+F åpner et søk som svever over den. Filter- og søkeknappene over historikken er borte. I telefonappens historikk sorterer et trykk på en overskrift, dens ▾ filtrerer og forstørrelsesglasset ytterst i raden søker.',
+  'new.change.listHeads': 'Listene i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søker fra sine egne overskrifter. Et klikk på en overskrift sorterer, ▾ ved siden av filtrerer, og å skrive i listen eller trykke Ctrl+F åpner et søk som svever over den. Filter- og søkeknappene over historikken er borte. I telefonappens historikk sorterer et trykk på en overskrift, dens ▾ filtrerer og forstørrelsesglasset ytterst i raden søker. På en berøringsskjerm viser nettleseren det samme forstørrelsesglasset.',
+  'list.tip.find': 'Forstørrelsesglasset søker i listen.',
 }
 
 export default no

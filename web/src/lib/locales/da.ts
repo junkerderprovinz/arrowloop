@@ -1313,7 +1313,8 @@ const da: Translations = {
   'list.head.file': 'Fil',
   'conflicts.waiting': 'Venter på dig: {count}',
   'new.change.buttonTint': 'Hver knap tager accentfarven, når markøren eller tastaturet når den, og i telefonappen, så længe din finger er på den.',
-  'new.change.listHeads': 'Listerne i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søger fra deres egne overskrifter. Et klik på en overskrift sorterer, ▾ ved siden af filtrerer, og at skrive i listen eller trykke Ctrl+F åbner en søgning, der svæver over den. Filter- og søgeknapperne over historikken er væk. I telefonappens historik sorterer et tryk på en overskrift, dens ▾ filtrerer, og luppen for enden af rækken søger.',
+  'new.change.listHeads': 'Listerne i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søger fra deres egne overskrifter. Et klik på en overskrift sorterer, ▾ ved siden af filtrerer, og at skrive i listen eller trykke Ctrl+F åbner en søgning, der svæver over den. Filter- og søgeknapperne over historikken er væk. I telefonappens historik sorterer et tryk på en overskrift, dens ▾ filtrerer, og luppen for enden af rækken søger. På en berøringsskærm viser browseren den samme lup.',
+  'list.tip.find': 'Luppen søger i listen.',
 }
 
 export default da

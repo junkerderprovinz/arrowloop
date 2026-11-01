@@ -1313,7 +1313,8 @@ const lt: Translations = {
   'list.head.file': 'Failas',
   'conflicts.waiting': 'Laukia jūsų: {count}',
   'new.change.buttonTint': 'Kiekvienas mygtukas įgauna akcento spalvą, kai jį pasiekia žymeklis ar klaviatūra, o telefono programėlėje tol, kol ant jo laikote pirštą.',
-  'new.change.listHeads': 'Sąrašai puslapiuose {history}, {trash}, {conflicts} ir {anomalies} rikiuoja, filtruoja ir ieško iš savo antraščių. Spustelėjus antraštę rikiuojama, ▾ šalia jos filtruoja, o rašymas sąraše ar Ctrl+F atveria paiešką, kuri plaukioja virš jo. Filtro ir paieškos mygtukų virš istorijos nebėra. Telefono programėlės istorijoje palietus antraštę rikiuojama, jos ▾ filtruoja, o didinamasis stiklas eilutės gale ieško.',
+  'new.change.listHeads': 'Sąrašai puslapiuose {history}, {trash}, {conflicts} ir {anomalies} rikiuoja, filtruoja ir ieško iš savo antraščių. Spustelėjus antraštę rikiuojama, ▾ šalia jos filtruoja, o rašymas sąraše ar Ctrl+F atveria paiešką, kuri plaukioja virš jo. Filtro ir paieškos mygtukų virš istorijos nebėra. Telefono programėlės istorijoje palietus antraštę rikiuojama, jos ▾ filtruoja, o didinamasis stiklas eilutės gale ieško. Jutikliniame ekrane naršyklė rodo tą patį didinamąjį stiklą.',
+  'list.tip.find': 'Didinamasis stiklas ieško sąraše.',
 }
 
 export default lt

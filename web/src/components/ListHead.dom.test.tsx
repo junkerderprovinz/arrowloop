@@ -103,8 +103,27 @@ describe('the list search', () => {
     expect(document.activeElement).toBe(screen.getByTestId('area'))
   })
 
-  it('has no button of its own', () => {
+  it('has no button of its own under a mouse', () => {
     render(<List />)
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+  })
+
+  it('opens from a magnifier in the head on a touch-only device, which the hint names', () => {
+    const plain = window.matchMedia
+    window.matchMedia = ((query: string) => ({
+      matches: query === '(hover: none) and (pointer: coarse)',
+      addEventListener() {},
+      removeEventListener() {},
+    })) as unknown as typeof window.matchMedia
+    try {
+      render(<List page="touch" />)
+      const line = screen.queryAllByRole('note').find((n) => !n.className.includes('hidden'))
+      expect(line?.textContent).toContain('The magnifier searches the list.')
+      expect(line?.textContent).not.toContain('Ctrl+F')
+      fireEvent.click(screen.getByRole('button', { name: 'Search' }))
+      expect(document.activeElement).toBe(screen.getByRole('searchbox'))
+    } finally {
+      window.matchMedia = plain
+    }
   })
 })

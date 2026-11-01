@@ -1313,7 +1313,8 @@ const ca: Translations = {
   'list.head.file': 'Fitxer',
   'conflicts.waiting': 'Esperant-te: {count}',
   'new.change.buttonTint': 'Cada botó pren el color d\'accent quan el punter o el teclat hi arriben, i a l\'app mòbil mentre hi tens el dit a sobre.',
-  'new.change.listHeads': 'Les llistes de {history}, {trash}, {conflicts} i {anomalies} ordenen, filtren i cerquen des de les seves capçaleres. Un clic en una capçalera ordena, el ▾ del costat filtra, i escriure a la llista o prémer Ctrl+F obre una cerca que hi sura per sobre. Els botons de filtre i cerca damunt l\'historial han desaparegut. A l\'historial de l\'app mòbil, un toc en una capçalera ordena, el seu ▾ filtra i la lupa al final de la fila cerca.',
+  'new.change.listHeads': 'Les llistes de {history}, {trash}, {conflicts} i {anomalies} ordenen, filtren i cerquen des de les seves capçaleres. Un clic en una capçalera ordena, el ▾ del costat filtra, i escriure a la llista o prémer Ctrl+F obre una cerca que hi sura per sobre. Els botons de filtre i cerca damunt l\'historial han desaparegut. A l\'historial de l\'app mòbil, un toc en una capçalera ordena, el seu ▾ filtra i la lupa al final de la fila cerca. En una pantalla tàctil, el navegador mostra la mateixa lupa.',
+  'list.tip.find': 'La lupa cerca a la llista.',
 }
 
 export default ca

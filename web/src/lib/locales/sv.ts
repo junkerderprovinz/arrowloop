@@ -1313,7 +1313,8 @@ const sv: Translations = {
   'list.head.file': 'Fil',
   'conflicts.waiting': 'Väntar på dig: {count}',
   'new.change.buttonTint': 'Varje knapp tar accentfärgen när pekaren eller tangentbordet når den, och i telefonappen så länge ditt finger ligger på den.',
-  'new.change.listHeads': 'Listorna i {history}, {trash}, {conflicts} och {anomalies} sorterar, filtrerar och söker från sina egna rubriker. Ett klick på en rubrik sorterar, ▾ bredvid filtrerar, och att skriva i listan eller trycka Ctrl+F öppnar en sökning som svävar över den. Filter- och sökknapparna ovanför historiken är borta. I telefonappens historik sorterar ett tryck på en rubrik, dess ▾ filtrerar och förstoringsglaset längst ut i raden söker.',
+  'new.change.listHeads': 'Listorna i {history}, {trash}, {conflicts} och {anomalies} sorterar, filtrerar och söker från sina egna rubriker. Ett klick på en rubrik sorterar, ▾ bredvid filtrerar, och att skriva i listan eller trycka Ctrl+F öppnar en sökning som svävar över den. Filter- och sökknapparna ovanför historiken är borta. I telefonappens historik sorterar ett tryck på en rubrik, dess ▾ filtrerar och förstoringsglaset längst ut i raden söker. På en pekskärm visar webbläsaren samma förstoringsglas.',
+  'list.tip.find': 'Förstoringsglaset söker i listan.',
 }
 
 export default sv

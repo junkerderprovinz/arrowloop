@@ -1313,7 +1313,8 @@ const et: Translations = {
   'list.head.file': 'Fail',
   'conflicts.waiting': 'Ootavad sind: {count}',
   'new.change.buttonTint': 'Iga nupp võtab rõhuvärvi, kui kursor või klaviatuur selleni jõuab, ja telefonirakenduses seni, kuni su sõrm on sellel.',
-  'new.change.listHeads': 'Loendid lehtedel {history}, {trash}, {conflicts} ja {anomalies} sordivad, filtreerivad ja otsivad oma pealkirjadest. Klõps pealkirjal sordib, ▾ selle kõrval filtreerib ning loendisse tippimine või Ctrl+F avab otsingu, mis hõljub selle kohal. Filtri- ja otsingunupud ajaloo kohal on kadunud. Telefonirakenduse ajaloos sordib pealkirja puudutus, selle ▾ filtreerib ja rea lõpus olev luup otsib.',
+  'new.change.listHeads': 'Loendid lehtedel {history}, {trash}, {conflicts} ja {anomalies} sordivad, filtreerivad ja otsivad oma pealkirjadest. Klõps pealkirjal sordib, ▾ selle kõrval filtreerib ning loendisse tippimine või Ctrl+F avab otsingu, mis hõljub selle kohal. Filtri- ja otsingunupud ajaloo kohal on kadunud. Telefonirakenduse ajaloos sordib pealkirja puudutus, selle ▾ filtreerib ja rea lõpus olev luup otsib. Puuteekraanil näitab brauser sama luupi.',
+  'list.tip.find': 'Luup otsib loendist.',
 }
 
 export default et

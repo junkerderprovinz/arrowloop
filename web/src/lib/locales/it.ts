@@ -1313,7 +1313,8 @@ const it: Translations = {
   'list.head.file': 'File',
   'conflicts.waiting': 'In attesa di te: {count}',
   'new.change.buttonTint': 'Ogni pulsante prende il colore di accento quando il puntatore o la tastiera lo raggiungono, e nell\'app per telefono finché ci tieni sopra il dito.',
-  'new.change.listHeads': 'Le liste di {history}, {trash}, {conflicts} e {anomalies} ordinano, filtrano e cercano dalle proprie intestazioni. Un clic su un\'intestazione ordina, il ▾ accanto filtra, e scrivere nella lista o premere Ctrl+F apre una ricerca che fluttua sopra di essa. I pulsanti Filtra e Cerca sopra la cronologia non ci sono più. Nella cronologia dell\'app per telefono un tocco su un\'intestazione ordina, il suo ▾ filtra e la lente in fondo alla riga cerca.',
+  'new.change.listHeads': 'Le liste di {history}, {trash}, {conflicts} e {anomalies} ordinano, filtrano e cercano dalle proprie intestazioni. Un clic su un\'intestazione ordina, il ▾ accanto filtra, e scrivere nella lista o premere Ctrl+F apre una ricerca che fluttua sopra di essa. I pulsanti Filtra e Cerca sopra la cronologia non ci sono più. Nella cronologia dell\'app per telefono un tocco su un\'intestazione ordina, il suo ▾ filtra e la lente in fondo alla riga cerca. Su uno schermo tattile il browser mostra la stessa lente.',
+  'list.tip.find': 'La lente cerca nella lista.',
 }
 
 export default it

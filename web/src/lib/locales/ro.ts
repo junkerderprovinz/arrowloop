@@ -1313,7 +1313,8 @@ const ro: Translations = {
   'list.head.file': 'Fișier',
   'conflicts.waiting': 'Vă așteaptă: {count}',
   'new.change.buttonTint': 'Fiecare buton ia culoarea de accent când ajunge la el indicatorul sau tastatura, iar în aplicația de telefon cât timp țineți degetul pe el.',
-  'new.change.listHeads': 'Listele din {history}, {trash}, {conflicts} și {anomalies} sortează, filtrează și caută din propriile antete. Un clic pe un antet sortează, ▾ de lângă el filtrează, iar tastarea în listă sau Ctrl+F deschide o căutare care plutește deasupra ei. Butoanele de filtrare și căutare de deasupra istoricului au dispărut. În istoricul aplicației de telefon, o atingere pe un antet sortează, ▾ al lui filtrează, iar lupa de la capătul rândului caută.',
+  'new.change.listHeads': 'Listele din {history}, {trash}, {conflicts} și {anomalies} sortează, filtrează și caută din propriile antete. Un clic pe un antet sortează, ▾ de lângă el filtrează, iar tastarea în listă sau Ctrl+F deschide o căutare care plutește deasupra ei. Butoanele de filtrare și căutare de deasupra istoricului au dispărut. În istoricul aplicației de telefon, o atingere pe un antet sortează, ▾ al lui filtrează, iar lupa de la capătul rândului caută. Pe un ecran tactil, browserul arată aceeași lupă.',
+  'list.tip.find': 'Lupa caută în listă.',
 }
 
 export default ro

@@ -1313,7 +1313,8 @@ const es: Translations = {
   'list.head.file': 'Archivo',
   'conflicts.waiting': 'Esperándote: {count}',
   'new.change.buttonTint': 'Cada botón toma el color de acento cuando el puntero o el teclado llegan a él, y en la app del móvil mientras tienes el dedo encima.',
-  'new.change.listHeads': 'Las listas de {history}, {trash}, {conflicts} y {anomalies} ordenan, filtran y buscan desde sus propios encabezados. Un clic en un encabezado ordena, el ▾ de al lado filtra, y escribir en la lista o pulsar Ctrl+F abre una búsqueda que flota sobre ella. Los botones de filtrar y buscar sobre el historial ya no están. En el historial de la app del móvil, tocar un encabezado ordena, su ▾ filtra y la lupa al final de la fila busca.',
+  'new.change.listHeads': 'Las listas de {history}, {trash}, {conflicts} y {anomalies} ordenan, filtran y buscan desde sus propios encabezados. Un clic en un encabezado ordena, el ▾ de al lado filtra, y escribir en la lista o pulsar Ctrl+F abre una búsqueda que flota sobre ella. Los botones de filtrar y buscar sobre el historial ya no están. En el historial de la app del móvil, tocar un encabezado ordena, su ▾ filtra y la lupa al final de la fila busca. En una pantalla táctil, el navegador muestra la misma lupa.',
+  'list.tip.find': 'La lupa busca en la lista.',
 }
 
 export default es

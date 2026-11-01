@@ -49,6 +49,7 @@ function tipText(t: T, heads: Head[]): string {
   return [
     ...(heads.some((h) => h.sorts) ? [t("list.tip.sort")] : []),
     ...(heads.some((h) => h.filter) ? [t("list.tip.filter")] : []),
+    t("list.tip.find"),
   ].join(" ");
 }
 

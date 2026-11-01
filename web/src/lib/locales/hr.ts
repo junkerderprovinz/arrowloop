@@ -1313,7 +1313,8 @@ const hr: Translations = {
   'list.head.file': 'Datoteka',
   'conflicts.waiting': 'Čeka vas: {count}',
   'new.change.buttonTint': 'Svaki gumb poprima boju naglaska kad do njega dođu pokazivač ili tipkovnica, a u aplikaciji za telefon dok je prst na njemu.',
-  'new.change.listHeads': 'Popisi u {history}, {trash}, {conflicts} i {anomalies} razvrstavaju, filtriraju i pretražuju preko vlastitih naslova. Klik na naslov razvrstava, ▾ pokraj njega filtrira, a tipkanje u popisu ili Ctrl+F otvara pretragu koja lebdi iznad njega. Gumbi za filtar i pretragu iznad povijesti su nestali. U povijesti aplikacije za telefon dodir naslova razvrstava, njegov ▾ filtrira, a povećalo na kraju retka pretražuje.',
+  'new.change.listHeads': 'Popisi u {history}, {trash}, {conflicts} i {anomalies} razvrstavaju, filtriraju i pretražuju preko vlastitih naslova. Klik na naslov razvrstava, ▾ pokraj njega filtrira, a tipkanje u popisu ili Ctrl+F otvara pretragu koja lebdi iznad njega. Gumbi za filtar i pretragu iznad povijesti su nestali. U povijesti aplikacije za telefon dodir naslova razvrstava, njegov ▾ filtrira, a povećalo na kraju retka pretražuje. Na zaslonu osjetljivom na dodir preglednik prikazuje isto povećalo.',
+  'list.tip.find': 'Povećalo pretražuje popis.',
 }
 
 export default hr

@@ -1313,7 +1313,8 @@ const fi: Translations = {
   'list.head.file': 'Tiedosto',
   'conflicts.waiting': 'Odottaa sinua: {count}',
   'new.change.buttonTint': 'Jokainen painike saa korostusvärin, kun osoitin tai näppäimistö osuu siihen, ja puhelinsovelluksessa niin kauan kuin sormesi on sen päällä.',
-  'new.change.listHeads': 'Sivujen {history}, {trash}, {conflicts} ja {anomalies} luettelot lajittelevat, suodattavat ja hakevat omista otsikoistaan. Otsikon napsautus lajittelee, sen vieressä oleva ▾ suodattaa, ja luetteloon kirjoittaminen tai Ctrl+F avaa haun, joka leijuu luettelon päällä. Historian yläpuolella olleet suodatus- ja hakupainikkeet ovat poissa. Puhelinsovelluksen historiassa otsikon napautus lajittelee, sen ▾ suodattaa ja rivin lopussa oleva suurennuslasi hakee.',
+  'new.change.listHeads': 'Sivujen {history}, {trash}, {conflicts} ja {anomalies} luettelot lajittelevat, suodattavat ja hakevat omista otsikoistaan. Otsikon napsautus lajittelee, sen vieressä oleva ▾ suodattaa, ja luetteloon kirjoittaminen tai Ctrl+F avaa haun, joka leijuu luettelon päällä. Historian yläpuolella olleet suodatus- ja hakupainikkeet ovat poissa. Puhelinsovelluksen historiassa otsikon napautus lajittelee, sen ▾ suodattaa ja rivin lopussa oleva suurennuslasi hakee. Kosketusnäytöllä selain näyttää saman suurennuslasin.',
+  'list.tip.find': 'Suurennuslasi hakee luettelosta.',
 }
 
 export default fi

@@ -1313,7 +1313,8 @@ const lv: Translations = {
   'list.head.file': 'Fails',
   'conflicts.waiting': 'Gaida jūs: {count}',
   'new.change.buttonTint': 'Katra poga iegūst akcenta krāsu, kad to sasniedz rādītājs vai tastatūra, bet tālruņa lietotnē, kamēr uz tās ir jūsu pirksts.',
-  'new.change.listHeads': 'Saraksti lapās {history}, {trash}, {conflicts} un {anomalies} kārto, filtrē un meklē no saviem virsrakstiem. Klikšķis uz virsraksta kārto, ▾ blakus tam filtrē, bet rakstīšana sarakstā vai Ctrl+F atver meklēšanu, kas peld virs tā. Filtra un meklēšanas pogu virs vēstures vairs nav. Tālruņa lietotnes vēsturē pieskāriens virsrakstam kārto, tā ▾ filtrē, bet lupa rindas galā meklē.',
+  'new.change.listHeads': 'Saraksti lapās {history}, {trash}, {conflicts} un {anomalies} kārto, filtrē un meklē no saviem virsrakstiem. Klikšķis uz virsraksta kārto, ▾ blakus tam filtrē, bet rakstīšana sarakstā vai Ctrl+F atver meklēšanu, kas peld virs tā. Filtra un meklēšanas pogu virs vēstures vairs nav. Tālruņa lietotnes vēsturē pieskāriens virsrakstam kārto, tā ▾ filtrē, bet lupa rindas galā meklē. Skārienekrānā pārlūks rāda to pašu lupu.',
+  'list.tip.find': 'Lupa meklē sarakstā.',
 }
 
 export default lv

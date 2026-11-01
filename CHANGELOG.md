@@ -12,7 +12,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **The lists in History, Trash, Conflicts and Anomalies sort, filter and search from their own headings.** A click on a heading sorts, the ▾ beside it filters, and typing in the list, or Ctrl+F, opens a search that floats over the list until Escape closes it. A filter or a search that narrows a list says so above it, with Show everything to undo it. A line under the headings explains all this on hover, and once by itself on the first visit. The Filter and Search buttons over History are gone.
+- **The lists in History, Trash, Conflicts and Anomalies sort, filter and search from their own headings.** A click on a heading sorts, the ▾ beside it filters, and typing in the list, or Ctrl+F, opens a search that floats over the list until Escape closes it; on a touch screen a magnifier at the end of the headings opens it. A filter or a search that narrows a list says so above it, with Show everything to undo it. A line under the headings explains all this on hover, and once by itself on the first visit. The Filter and Search buttons over History are gone.
 - **A job's Files touched filters and searches from the head of its list too.**
 - **The three answers to a conflict stand in the order of the sides:** keep the left version, keep both, keep the right version, on the web and on the phone, and the answers for all of them under More follow the same order.
 - **The phone app's History sorts and filters from the headings of its list.** A tap on a heading sorts, its ▾ opens the filter, and the magnifier at the end of the row opens the search. The Filter, Sort and Search buttons above it are gone.
