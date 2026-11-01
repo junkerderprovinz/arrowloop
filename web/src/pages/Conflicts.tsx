@@ -4,6 +4,8 @@ import { JobChip } from '../components/JobChip'
 import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
 import { Menu } from '../components/Menu'
 import { PageActions } from '../components/PageActions'
+import { Tiles } from '../components/Tiles'
+import { IconConflict } from '../components/glyphs'
 import { Empty, Num, Stack } from '../components/Shell'
 import { Since } from '../components/Since'
 import { Badge } from '../lib/glimstone/Badge'
@@ -73,11 +75,16 @@ export function Conflicts({
   const [asking, setAsking] = useState<(typeof CHOICES)[number] | null>(null)
   const [sort, setSort] = useState<ListSort>({ by: 'file', dir: 'asc' })
   const [query, setQuery] = useState('')
+  // The job a tile picked, empty for every job.
+  const [tile, setTile] = useState('')
   const area = useRef<HTMLDivElement>(null)
 
   const searching = query.trim() !== ''
   const waiting = (listing?.conflicts ?? []).filter((c) => !job || c.job === job)
-  const shown = waiting.filter((c) => !searching || matchesQuery(query, [c.plain]))
+  const jobs = [...new Set(waiting.map((c) => c.job))]
+  const picked = jobs.includes(tile) ? tile : ''
+  const shown = waiting.filter((c) => (!picked || c.job === picked) && (!searching || matchesQuery(query, [c.plain])))
+  const counted = (count: number) => ({ count, detail: t('conflicts.waiting', { count }) })
   const sign = sort.dir === 'asc' ? 1 : -1
   const groups = [...new Set(shown.map((c) => c.job))].map((name) => ({
     name,
@@ -123,10 +130,18 @@ export function Conflicts({
         </Card>
       ) : (
         <>
-          <Card title={t('nav.conflicts')} hueIndex={0} hint={t('conflicts.hint')}>
-            <p className="glim-num text-body text-carbon-text">{t('conflicts.waiting', { count: waiting.length })}</p>
+          <Tiles
+            label={t('nav.conflicts')}
+            glyph={<IconConflict />}
+            tiles={[
+              { id: '', label: t('history.allJobs'), ...counted(waiting.length) },
+              ...jobs.map((name) => ({ id: name, label: name, ...counted(waiting.filter((c) => c.job === name).length) })),
+            ]}
+            chosen={picked}
+            onChoose={setTile}
+          >
             <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
-          </Card>
+          </Tiles>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none">
             <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} />
             {searching && groups.length === 0 && (
@@ -136,7 +151,7 @@ export function Conflicts({
             )}
             {groups.map((g, i) => (
               <div key={g.name} data-new={i === 0 ? 'conflict-cards' : undefined}>
-                <Card title={g.name} hueIndex={i + 1}>
+                <Card title={g.name} hueIndex={i + 1} hint={t('conflicts.hint')}>
                   <ListHead
                     heads={heads}
                     sort={sort}

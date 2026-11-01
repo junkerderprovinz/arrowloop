@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { api, type Job } from "../api";
 import { LearningRings } from "../learningRings";
+import { Tiles } from "../tiles";
 import { clock } from "../clock";
 import { useT } from "../i18n";
 import type { MoreStack } from "../nav";
 import { jobSides } from "../sides";
-import { contrastOn, space, text } from "../theme";
+import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import {
   SEVERITIES,
@@ -34,7 +35,6 @@ import {
   Mono,
   Page,
   Pair,
-  Press,
   Section,
   Title,
   useTheme,
@@ -156,7 +156,7 @@ export function Anomalies() {
         </View>
       ) : null}
 
-      <Tiles
+      <SeverityTiles
         counts={countBySeverity(open)}
         picked={picked}
         onPick={(severity) => setPicked((old) => (old === severity ? null : severity))}
@@ -206,12 +206,8 @@ export function Anomalies() {
   );
 }
 
-/**
- * The categories count the open findings by severity, as a row of chips, the
- * form tiles take on a phone. A tap picks the findings a chip stands for and a
- * second tap shows them all again; the rest of the page stays.
- */
-function Tiles({
+/** The open findings by severity, as the screen's tiles. */
+function SeverityTiles({
   counts,
   picked,
   onPick,
@@ -221,30 +217,15 @@ function Tiles({
   onPick: (severity: Severity) => void;
 }) {
   const { t } = useT();
-  const { p, corners, accent } = useTheme();
+  const { p } = useTheme();
   const tone: Record<Severity, string> = { critical: p.failInk, warning: p.warnInk, info: p.text };
   return (
-    <View style={styles.tiles} accessibilityLabel={t("anomaly.filter")}>
-      {SEVERITIES.map((severity) => {
-        const on = picked === severity;
-        const ink = on ? contrastOn(accent) : undefined;
-        return (
-          <Press
-            key={severity}
-            onPress={() => onPick(severity)}
-            accessibilityRole="button"
-            accessibilityState={{ selected: on }}
-            android_ripple={{ color: p.hover }}
-            style={[styles.tile, { backgroundColor: on ? accent : p.surface2, ...corners.pill }]}
-          >
-            <Text style={[styles.tileLabel, { color: ink ?? p.text }]} numberOfLines={1}>
-              {t(TILE_LABEL[severity])}
-            </Text>
-            <Text style={[styles.tileNumber, { color: ink ?? tone[severity] }]}>{counts[severity]}</Text>
-          </Press>
-        );
-      })}
-    </View>
+    <Tiles<Severity>
+      label={t("anomaly.filter")}
+      tiles={SEVERITIES.map((severity) => ({ id: severity, label: t(TILE_LABEL[severity]), count: counts[severity], tone: tone[severity] }))}
+      picked={picked}
+      onPick={onPick}
+    />
   );
 }
 
@@ -386,27 +367,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     gap: space.sm,
-  },
-  tiles: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: space.sm,
-  },
-  tile: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.sm,
-    minHeight: 36,
-    paddingHorizontal: space.md,
-  },
-  tileNumber: {
-    fontSize: text.body,
-    fontWeight: "600",
-    fontVariant: ["tabular-nums"],
-  },
-  tileLabel: {
-    fontSize: text.body,
   },
   finding: {
     borderStartWidth: 3,

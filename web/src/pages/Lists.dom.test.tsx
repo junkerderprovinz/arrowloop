@@ -135,6 +135,15 @@ describe('the trash list', () => {
     localStorage.clear()
   })
 
+  it('counts every job in a tile of its own that shows that job alone', () => {
+    const music = { ...side, job: 'music', entries: [{ ...side.entries[0], path: 'song.mp3', remote: 'song.mp3' }], total: 1 } as TrashSide
+    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    expect(screen.getByRole('button', { name: /^All jobs/ }).getAttribute('aria-pressed')).toBe('true')
+    fireEvent.click(screen.getByRole('button', { name: /^music/ }))
+    expect(screen.queryByText('a.txt')).toBeNull()
+    expect(screen.getByText('song.mp3')).toBeTruthy()
+  })
+
   it('keeps its answers on the rows and in the corner, with no menu on a right-click', () => {
     wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     fireEvent.contextMenu(screen.getByText('b.txt'))

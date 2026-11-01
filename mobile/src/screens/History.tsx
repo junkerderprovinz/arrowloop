@@ -417,8 +417,11 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
       />
       <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
         <AxisLabel>{t("history.runs")}</AxisLabel>
+        {/* The middle choice never fits beside the other two at a phone's width,
+            so the three stand under each other rather than two and one. */}
         <Choice<RunShow>
           hue={1}
+          perRow={1}
           value={show}
           onChange={setShow}
           options={(Object.keys(RUN_SHOW_LABEL) as RunShow[]).map((value) => ({

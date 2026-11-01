@@ -7,7 +7,8 @@ import { bytes } from "../space";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { failureLine } from "../../../web/src/lib/failure";
-import { trashTotals } from "../../../web/src/lib/trashView";
+import { byJob, trashTotals } from "../../../web/src/lib/trashView";
+import { Tiles } from "../tiles";
 import { Body, Button, Caption, Card, Empty, Fab, Floating, Mono, Page, PickRow, Title } from "../ui";
 
 /** Names one trashed file across every job and side. */
@@ -16,9 +17,10 @@ function itemKey(bin: TrashSide, item: TrashItem): string {
 }
 
 /**
- * Every job's trash on both sides. Rows are tapped to choose them, as on a
- * job's own trash screen; putting back is one tap, removing for good asks.
- * Emptying all of it is the screen's floating button, as on the web's page.
+ * Every job's trash on both sides, under a chip per job that shows that job
+ * alone. Rows are tapped to choose them, as on a job's own trash screen;
+ * putting back is one tap, removing for good asks. Emptying what the screen
+ * shows is its floating button, as on the web's page.
  */
 export function TrashAll() {
   const { t, lang } = useT();
@@ -27,6 +29,7 @@ export function TrashAll() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
+  const [job, setJob] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -68,21 +71,27 @@ export function TrashAll() {
 
   if (!bins) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  const readable = bins.filter((b) => !b.error);
+  const held = byJob(bins.filter((b) => !b.error && b.total > 0));
+  const shownJob = held.some((g) => g.job === job) ? job : null;
+  const shown = bins.filter((b) => !shownJob || b.job === shownJob);
+  const readable = shown.filter((b) => !b.error);
   const totals = trashTotals(readable);
   const picked = readable.flatMap((b) => b.entries.filter((e) => chosen.has(itemKey(b, e))).map((e) => ({ bin: b, item: e })));
 
-  if (totals.entries === 0 && bins.every((b) => !b.error)) return <Empty title={t("trash.nothing")} />;
+  if (held.length === 0 && bins.every((b) => !b.error)) return <Empty title={t("trash.nothing")} />;
 
   return (
     <Floating>
       <Page fab>
-        <Card>
-          <Title>{t("nav.trash")}</Title>
-          <Caption>{t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}</Caption>
-        </Card>
+        <Tiles
+          label={t("nav.trash")}
+          tiles={held.map((g) => ({ id: g.job, label: g.job, count: trashTotals(g.sides).entries }))}
+          picked={shownJob}
+          onPick={(name) => setJob((old) => (old === name ? null : name))}
+        />
+        <Caption>{t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}</Caption>
 
-        {bins
+        {shown
           .filter((b) => b.total > 0 || b.error)
           .map((bin) => {
             const place = jobSides(jobs, bin.job, t)[bin.side === "left" ? 0 : 1];

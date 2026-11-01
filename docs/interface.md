@@ -70,10 +70,11 @@ History, Trash, Conflicts, Anomalies and a job's **Files touched** keep these
 in the list itself, with no buttons over it. A click on a heading sorts by that
 column, and a second click turns the order round. History and Files touched
 stay newest first, since the engine hands out their log a screenful at a time.
-The ▾ beside a heading filters by that column. A filter that narrows the list
-marks its ▾ and shows above the list, in History at the end of the row with
-**Files** and **Runs** and elsewhere in the card on top, with **Show
-everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
+The ▾ beside a heading filters by that column, in a window under the heading
+over the dimmed page; its choices stand side by side where they fit and under
+each other where not. A filter that narrows the list marks its ▾ and shows
+above the list, in History at the end of the row with **Files** and **Runs**
+and elsewhere under the tiles on top, with **Show everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
 a search that floats over the top of the list and finds an entry by its path;
 Escape empties and closes it. A device with only a touch screen has no key to
 type with, so a magnifier at the end of the headings opens the search there. A
@@ -283,8 +284,10 @@ read **Keep the version on this phone, trash the other** or name the target.
 
 From two conflicts up, **More** at the bottom right answers every conflict
 shown at once: **Keep left for all**, **Keep both for all** and **Keep right
-for all**. It asks first and says how many conflicts the answer covers. A card
-above the conflicts counts how many wait.
+for all**. It asks first and says how many conflicts the answer covers. Tiles
+above the conflicts count how many wait, all of them and each job's, as the
+Anomalies tiles do, and a click on a job's tile shows only that job; the
+answers for all then cover that job alone.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
@@ -299,8 +302,10 @@ within a couple of seconds of each other still keep both.
 
 ## Trash
 
-**Trash** counts what the trash holds in a card on top and shows every job's
-trash in a card per job below it, both sides in it, sorted by path, size or age
+**Trash** counts what the trash holds in tiles on top, all of it and each
+job's, as the Anomalies tiles do; a click on a job's tile shows only that job,
+and the two buttons at the bottom right then act on it alone. Below them every
+job's trash stands in a card per job, both sides in it, sorted by path, size or age
 from the headings. It puts files back, and deletes them for good: one file, one side, everything older
 than a number of days, or all of it. **Empty the trash** is the filled button at
 the bottom right, and **Delete old entries** stands beside it, with the

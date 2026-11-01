@@ -112,6 +112,20 @@ describe('the conflicts list', () => {
     expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
   })
 
+  it('picks a job from its tile, and answers for all of that job only', async () => {
+    const both: ConflictListing = { conflicts: [conflict('a.txt'), conflict('b.txt'), conflict('c.txt', 'music'), conflict('d.txt', 'music')], unread: [] }
+    render(
+      <ToastProvider>
+        <Conflicts listing={both} job="" onJob={() => undefined} onChanged={() => undefined} />
+      </ToastProvider>,
+    )
+    fireEvent.click(screen.getByRole('button', { name: /^music/ }))
+    expect(screen.queryByText('a.txt', { selector: 'span' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left for all' }))
+    expect((await screen.findByRole('dialog', { name: 'Keep left for all' })).textContent).toContain('Conflicts: 2')
+  })
+
   it('opens no menu of its own on a right-click', () => {
     page()
     fireEvent.contextMenu(card('a.txt'))

@@ -7,7 +7,8 @@ import { JobChip } from '../components/JobChip'
 import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
-import { IconEmpty, IconPrune } from '../components/glyphs'
+import { IconEmpty, IconPrune, IconTrash } from '../components/glyphs'
+import { Tiles } from '../components/Tiles'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmWindow } from '../components/ConfirmWindow'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
@@ -47,12 +48,12 @@ function sorted(entries: TrashEntry[], sort: ListSort | null): TrashEntry[] {
 }
 
 /**
- * Every job's trash on both sides, in a card per job under a card with the
- * totals. Restoring is a click, since it only moves a file back; removing
- * anything for good asks first, because the trash is the last copy there is.
- * Emptying it is the corner's filled action, with deleting only the old
- * entries beside it; both act on the jobs the page shows. The lists sort from
- * their heads, and typing searches their paths.
+ * Every job's trash on both sides, in a card per job under the tiles that
+ * count it, which pick every job or one. Restoring is a click, since it only
+ * moves a file back; removing anything for good asks first, because the trash
+ * is the last copy there is. Emptying it is the corner's filled action, with
+ * deleting only the old entries beside it; both act on the jobs the page
+ * shows. The lists sort from their heads, and typing searches their paths.
  */
 export function Trash({
   sides,
@@ -76,6 +77,8 @@ export function Trash({
   const [busy, setBusy] = useState(false)
   const [sort, setSort] = useRemembered<ListSort | null>('arrowloop.trash.sort', null, isSort)
   const [query, setQuery] = useState('')
+  // The job a tile picked, empty for every job.
+  const [tile, setTile] = useState('')
   const area = useRef<HTMLDivElement>(null)
 
   const all = sides ?? []
@@ -145,12 +148,20 @@ export function Trash({
     )
   }
 
-  const full = readable.filter((s) => s.total > 0)
   const searching = query.trim() !== ''
   const matching = (s: TrashSide) => (searching ? s.entries.filter((e) => matchesQuery(query, [e.path])) : s.entries)
+  const held = byJob(readable).filter((group) => group.sides.some((s) => s.total > 0))
+  const picked = held.some((group) => group.job === tile) ? tile : ''
+  // The corner's two actions act on what the tiles show.
+  const full = readable.filter((s) => s.total > 0 && (!picked || s.job === picked))
   const groups = byJob(shown)
+    .filter((group) => !picked || group.job === picked)
     .map((group) => ({ ...group, sides: group.sides.filter((s) => s.error || (s.total > 0 && matching(s).length > 0)) }))
     .filter((group) => group.sides.length > 0)
+  const holding = (sides: TrashSide[]) => {
+    const { entries, bytes: size } = trashTotals(sides)
+    return { count: entries, detail: t('trash.holding', { count: entries, size: bytes(size) }) }
+  }
 
   return (
     <Stack>
@@ -165,10 +176,18 @@ export function Trash({
       ) : (
         <>
           <div data-new="trash-bin">
-            <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
-              <p className="glim-num text-body text-carbon-text">{t('trash.holding', { count: totals.entries, size: bytes(totals.bytes) })}</p>
+            <Tiles
+              label={t('nav.trash')}
+              glyph={<IconTrash />}
+              tiles={[
+                { id: '', label: t('history.allJobs'), ...holding(readable) },
+                ...held.map((group) => ({ id: group.job, label: group.job, ...holding(group.sides) })),
+              ]}
+              chosen={picked}
+              onChoose={setTile}
+            >
               <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
-            </Card>
+            </Tiles>
           </div>
           <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none">
             <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} />
@@ -178,7 +197,7 @@ export function Trash({
               </Card>
             )}
             {groups.map((group, i) => (
-              <Card key={group.job} title={group.job} hueIndex={i + 1}>
+              <Card key={group.job} title={group.job} hueIndex={i + 1} hint={t('trash.hint')}>
                 <div className="glim-content-fade flex flex-col gap-6">
                   {group.sides.map((s, at) => (
                     <SideList
