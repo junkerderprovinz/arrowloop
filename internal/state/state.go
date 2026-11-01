@@ -33,6 +33,9 @@ type Entry struct {
 	RightMod  time.Time
 	RightHash string
 	AgreedAt  time.Time
+	// InFlux marks a record SentInFlux made rather than one read from the
+	// table. It is never stored.
+	InFlux bool
 }
 
 // DB is the state store for a single sync job.
@@ -73,7 +76,13 @@ CREATE TABLE IF NOT EXISTS asides (
 );
 CREATE TABLE IF NOT EXISTS flux (
 	path        TEXT PRIMARY KEY,
-	runs        INTEGER NOT NULL
+	runs        INTEGER NOT NULL,
+	left_path   TEXT NOT NULL DEFAULT '',
+	right_path  TEXT NOT NULL DEFAULT '',
+	sent_size   INTEGER NOT NULL DEFAULT 0,
+	sent_mod    INTEGER NOT NULL DEFAULT 0,
+	sent_hash   TEXT NOT NULL DEFAULT '',
+	sent_side   TEXT NOT NULL DEFAULT ''
 );
 `
 
@@ -155,18 +164,80 @@ func (d *DB) Put(ctx context.Context, e Entry) error {
 	return nil
 }
 
+// Sent is what a copy left on its destination when the source changed while
+// it was sent: the file as the destination held it right after the copy, and
+// which side the destination is, "left" or "right".
+type Sent struct {
+	Side      string
+	LeftPath  string
+	RightPath string
+	Size      int64
+	Mod       time.Time
+	Hash      string
+}
+
 // InFlux counts one more run that met this file while it was being written,
 // and returns how many runs in a row that makes. Put and Forget end the count.
-func (d *DB) InFlux(ctx context.Context, path string) (int, error) {
+// sent is what the copy left on the destination, or nil when it left nothing;
+// what an earlier run left is kept until a later copy leaves something else.
+func (d *DB) InFlux(ctx context.Context, path string, sent *Sent) (int, error) {
 	var runs int
-	err := d.sql.QueryRowContext(ctx,
-		`INSERT INTO flux (path, runs) VALUES (?, 1)
-		 ON CONFLICT(path) DO UPDATE SET runs = runs + 1
-		 RETURNING runs`, path).Scan(&runs)
+	var err error
+	if sent == nil {
+		err = d.sql.QueryRowContext(ctx,
+			`INSERT INTO flux (path, runs) VALUES (?, 1)
+			 ON CONFLICT(path) DO UPDATE SET runs = runs + 1
+			 RETURNING runs`, path).Scan(&runs)
+	} else {
+		err = d.sql.QueryRowContext(ctx,
+			`INSERT INTO flux (path, runs, left_path, right_path, sent_size, sent_mod, sent_hash, sent_side) VALUES (?, 1, ?, ?, ?, ?, ?, ?)
+			 ON CONFLICT(path) DO UPDATE SET runs = runs + 1,
+			   left_path = excluded.left_path, right_path = excluded.right_path,
+			   sent_size = excluded.sent_size, sent_mod = excluded.sent_mod, sent_hash = excluded.sent_hash,
+			   sent_side = excluded.sent_side
+			 RETURNING runs`,
+			path, sent.LeftPath, sent.RightPath, sent.Size, sent.Mod.UnixNano(), sent.Hash, sent.Side).Scan(&runs)
+	}
 	if err != nil {
 		return 0, fmt.Errorf("count the runs %q was in flux: %w", path, err)
 	}
 	return runs, nil
+}
+
+// SentInFlux returns, for each file a copy left on its destination while the
+// source changed, a record to plan against in place of the real one. Its
+// destination side is what the copy left there, so the next run sees that
+// side unchanged while it still holds exactly that. Its source side matches
+// nothing, so the source counts as changed even where it kept its size and
+// time, and is sent again. A destination changed since is a conflict, as it
+// would be against the real record.
+func (d *DB) SentInFlux(ctx context.Context) (map[string]Entry, error) {
+	rows, err := d.sql.QueryContext(ctx,
+		`SELECT path, left_path, right_path, sent_size, sent_mod, sent_hash, sent_side FROM flux WHERE sent_side <> ''`)
+	if err != nil {
+		return nil, fmt.Errorf("read what was sent while in flux: %w", err)
+	}
+	defer rows.Close()
+
+	out := make(map[string]Entry)
+	for rows.Next() {
+		var e Entry
+		var size, mod int64
+		var hash, side string
+		if err := rows.Scan(&e.Path, &e.LeftPath, &e.RightPath, &size, &mod, &hash, &side); err != nil {
+			return nil, fmt.Errorf("scan flux row: %w", err)
+		}
+		// A size no file has.
+		e.LeftSize, e.RightSize = -1, -1
+		if side == "left" {
+			e.LeftSize, e.LeftMod, e.LeftHash = size, time.Unix(0, mod).UTC(), hash
+		} else {
+			e.RightSize, e.RightMod, e.RightHash = size, time.Unix(0, mod).UTC(), hash
+		}
+		e.InFlux = true
+		out[e.Path] = e
+	}
+	return out, rows.Err()
 }
 
 // Forget drops a path, meaning both sides agree it is gone. A decision to keep

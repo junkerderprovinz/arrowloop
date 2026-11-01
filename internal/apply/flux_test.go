@@ -123,14 +123,14 @@ func TestAFinishedCopyEndsTheCount(t *testing.T) {
 	}
 	defer db.Close()
 	for want := 1; want <= 2; want++ {
-		if got, err := db.InFlux(ctx, "app.log"); err != nil || got != want {
+		if got, err := db.InFlux(ctx, "app.log", nil); err != nil || got != want {
 			t.Fatalf("run %d counted %d (%v)", want, got, err)
 		}
 	}
 	if err := db.Put(ctx, state.Entry{Path: "app.log"}); err != nil {
 		t.Fatalf("put: %v", err)
 	}
-	if got, _ := db.InFlux(ctx, "app.log"); got != 1 {
+	if got, _ := db.InFlux(ctx, "app.log", nil); got != 1 {
 		t.Errorf("after a finished copy the count goes on at %d, wanted it to start again", got)
 	}
 }

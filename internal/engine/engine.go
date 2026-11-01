@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 	"sync"
@@ -143,6 +144,13 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	if err != nil {
 		return nil, compare, err
 	}
+	// A destination a copy left while its source changed is measured against
+	// what the copy left there, not against the agreement before it.
+	inFlux, err := db.SentInFlux(ctx)
+	if err != nil {
+		return nil, compare, err
+	}
+	maps.Copy(prev, inFlux)
 	// The record is filtered exactly as the sides are, or a newly excluded
 	// path would read as a deletion.
 	visible := make(map[string]state.Entry, len(prev))

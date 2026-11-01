@@ -13,7 +13,7 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **A file that disappears from the source while a run is going no longer turns the run yellow.** A rotated log or a Git branch deleted meanwhile is gone by the next run anyway, so History lists it as disappeared before it was copied and the run carries on. A copy the destination refuses is still reported.
-- **A file that is written to while it is copied no longer stops the run or warns about it.** A growing log, or a session file that gets a line while it is copied, is left for the next run without recording the pair. Only a file that is caught like this in three runs in a row is reported, so one that never settles still shows. A pair that disagrees without having been touched still stops the run.
+- **A file that is written to while it is copied no longer stops the run or warns about it.** A growing log, or a session file that gets a line while it is copied, is left for the next run without recording the pair, and the next run sends it again rather than taking the copy it left behind for a conflict; an edit made on the far side since is still one. Only a file that is caught like this in three runs in a row is reported, so one that never settles still shows. A pair that disagrees without having been touched still stops the run.
 
 ## 2.4.1 - 2026-11-01
 

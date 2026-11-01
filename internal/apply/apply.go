@@ -143,6 +143,9 @@ type inFluxError struct {
 	Details string
 	// Sent says the copy itself finished, so its step is already counted.
 	Sent bool
+	// Left and Right are both sides as read after the copy, the destination's
+	// being what the copy left there.
+	Left, Right state.Sent
 }
 
 func (e *inFluxError) Error() string {
@@ -552,7 +555,15 @@ func (t *tally) leftForNext(ctx context.Context, act plan.Action, err error) boo
 	if !errors.As(err, &flux) {
 		return false
 	}
-	runs, dbErr := t.db.InFlux(ctx, act.Path)
+	var sent *state.Sent
+	if flux.Sent {
+		sent = &flux.Left
+		if act.Dst == plan.Right {
+			sent = &flux.Right
+		}
+		sent.Side = act.Dst.String()
+	}
+	runs, dbErr := t.db.InFlux(ctx, act.Path, sent)
 	if dbErr != nil {
 		t.skip(act.Path, "", whyFailed(Ends{}, nil, "record", "recordFailed", dbErr))
 		return true
@@ -818,7 +829,7 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 			return err
 		}
 		if err := retrying(ctx, func() error {
-			return sendFile(ctx, dst, src, act.DstPath, act.SrcPath, from, over)
+			return sendFile(again(ctx, act), dst, src, act.DstPath, act.SrcPath, from, over)
 		}); err != nil {
 			return sourceTrouble(ctx, src, act, err)
 		}
@@ -931,6 +942,18 @@ func one(ctx context.Context, ends Ends, rec recorder, act plan.Action, runID st
 		return resolveConflict(ctx, ends, rec, act, runID, opt)
 	}
 	return fmt.Errorf("unknown action kind %v", act.Kind)
+}
+
+// again makes a copy send the content even where the destination holds a file
+// of the same size and time, for a file a copy left behind while its source
+// was written to: the two can match on both and still differ.
+func again(ctx context.Context, act plan.Action) context.Context {
+	if act.Prev == nil || !act.Prev.InFlux {
+		return ctx
+	}
+	ctx, ci := fs.AddConfig(ctx)
+	ci.IgnoreTimes = true
+	return ctx
 }
 
 // sourceTrouble tells a copy that failed because of its source from one that
@@ -1212,7 +1235,11 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 		// A file this step just sent that already reads differently was
 		// written to while it was copied. The row is withheld all the same.
 		if sent {
-			return &inFluxError{Path: key, Details: details, Sent: true}
+			return &inFluxError{
+				Path: key, Details: details, Sent: true,
+				Left:  state.Sent{LeftPath: leftPath, RightPath: rightPath, Size: leftFacts.Size, Mod: leftFacts.Mod, Hash: leftFacts.Hash},
+				Right: state.Sent{LeftPath: leftPath, RightPath: rightPath, Size: rightFacts.Size, Mod: rightFacts.Mod, Hash: rightFacts.Hash},
+			}
 		}
 		return &DisagreementError{Path: key, Details: details}
 	}
