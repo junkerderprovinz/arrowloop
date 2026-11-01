@@ -8,8 +8,8 @@ import { FindingCard } from '../components/FindingCard'
 import { IconAnomalies } from '../components/glyphs'
 import { JobChip } from '../components/JobChip'
 import { LearningRings } from '../components/LearningRings'
-import { FilterChoice, ListHead, ListSearch, Narrowed, useListMenu, type Head, type ListSort } from '../components/ListHead'
-import type { MenuItem } from '../components/Menu'
+import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
+import { Selector } from '../components/Selector'
 import { Empty, Stack } from '../components/Shell'
 import { Card } from '../lib/glimstone/Card'
 import { SEVERITIES, countBySeverity, type Finding, type FindingListing, type JobLearning, type Severity } from '../lib/anomalies'
@@ -69,8 +69,6 @@ export function Anomalies({
   const [sort, setSort] = useState<ListSort>({ by: 'severity', dir: 'asc' })
   const [query, setQuery] = useState('')
   const area = useRef<HTMLDivElement>(null)
-  const openSearch = useRef<(() => void) | null>(null)
-  const menu = useListMenu(t('nav.anomalies'))
   const [learning, setLearning] = useState<JobLearning[] | null>(null)
   const openJob = useOpenJob()
   // The jobs whose refused change was let run, with the refusals counted then.
@@ -113,23 +111,24 @@ export function Anomalies({
     el.scrollIntoView({ block: 'center' })
   }, [focusFinding, shown])
 
-  const narrowing = [...(closedView ? [t('anomaly.closed')] : []), ...(searching ? [t('list.searched', { q: query.trim() })] : [])]
-  function showAll() {
-    setClosedView(false)
-    setQuery('')
-  }
+  const narrowing = searching ? [t('list.searched', { q: query.trim() })] : []
   const heads: Head[] = [
     { id: 'severity', label: t('list.head.severity'), sorts: true },
     { id: 'job', label: t('history.filterJob'), sorts: true },
     { id: 'since', label: t('anomaly.sinceLabel'), sorts: true },
-    {
-      id: 'state',
-      label: t('list.head.state'),
-      className: 'ms-auto',
-      filter: {
-        active: closedView,
-        panel: (
-          <FilterChoice<'open' | 'closed'>
+  ]
+  return (
+    <Stack>
+      <JobChip job={job} onClear={() => onJob('')} />
+
+      <SeverityTiles counts={countBySeverity(open.filter((f) => !job || f.job === job))} chosen={tile} onChoose={setTile}>
+        <Narrowed what={narrowing} onClear={() => setQuery('')} />
+      </SeverityTiles>
+
+      <div className="flex md:justify-end">
+        <div className="w-full sm:w-auto sm:min-w-64">
+          <Selector<'open' | 'closed'>
+            scale="small"
             label={t('anomalies.which')}
             value={closedView ? 'closed' : 'open'}
             onChange={(next) => setClosedView(next === 'closed')}
@@ -138,28 +137,14 @@ export function Anomalies({
               { value: 'closed', label: t('anomaly.closed') },
             ]}
           />
-        ),
-      },
-    },
-  ]
-  const listItems = (): MenuItem[] => [
-    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
-    ...(narrowing.length > 0 ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: showAll }] : []),
-  ]
-
-  return (
-    <Stack>
-      <JobChip job={job} onClear={() => onJob('')} />
-
-      <SeverityTiles counts={countBySeverity(open.filter((f) => !job || f.job === job))} chosen={tile} onChoose={setTile}>
-        <Narrowed what={narrowing} onClear={showAll} />
-      </SeverityTiles>
+        </div>
+      </div>
 
       <div data-new="finding-cards">
         <Card title={closedView ? t('anomaly.closed') : tile === 'all' ? t('anomalies.all') : t(TILE_LABEL[tile])} hueIndex={0}>
-          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2.5 outline-none" {...menu.on(listItems)}>
-            <ListSearch value={query} onChange={setQuery} placeholder={t('history.runSearch')} area={area} open={openSearch} />
-            <ListHead heads={heads} sort={sort} onSort={setSort} page="anomalies" onSearch={() => openSearch.current?.()} menu />
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2.5 outline-none">
+            <ListSearch value={query} onChange={setQuery} placeholder={t('history.runSearch')} area={area} />
+            <ListHead heads={heads} sort={sort} onSort={setSort} page="anomalies" search />
             {listing === null ? (
               <Empty>{t('history.working')}</Empty>
             ) : shown.length === 0 ? (
@@ -189,7 +174,6 @@ export function Anomalies({
           </Card>
         </div>
       )}
-      {menu.element}
     </Stack>
   )
 }

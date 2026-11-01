@@ -71,14 +71,13 @@ in the list itself, with no buttons over it. A click on a heading sorts by that
 column, and a second click turns the order round. History and Files touched
 stay newest first, since the engine hands out their log a screenful at a time.
 The ▾ beside a heading filters by that column. A filter that narrows the list
-marks its ▾ and shows in the card above the list, with **Show everything** to
-undo it. Typing while the list has the focus, or Ctrl+F, opens a search that
-floats over the top of the list and finds an entry by its path; Escape empties
-and closes it. A right-click on a row or on the list, or a long press on a
-touch screen, opens what acts on many entries at once, such as one answer for
-every conflict. A line under the headings says all this while the pointer is
-over them, and by itself on the first visit. On a touch screen a long press on
-a heading shows the line with that heading's choices.
+marks its ▾ and shows above the list, in History at the end of the row with
+**Files** and **Runs** and elsewhere in the card on top, with **Show
+everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
+a search that floats over the top of the list and finds an entry by its path;
+Escape empties and closes it. A line under the headings says all this while
+the pointer is over them, and by itself on the first visit. On a touch screen
+a long press on the headings shows it.
 
 A link from a job's page narrows Trash, Conflicts and Anomalies to that job,
 shown as a chip at the top, and the cross on the chip shows every job again.
@@ -275,15 +274,15 @@ opening anything:
   or `name.conflict-right-...`, after the side it came from and the run that
   set it aside.
 
-Under that stand the three answers: **Keep both files** leaves both where they
-are, **Keep the left version, trash the right** and **Keep the right version,
-trash the left**. On the phone the sides go by what they are, so the answers
+Under that stand the three answers in the order of the sides: **Keep the left
+version, trash the right**, then **Keep both files**, which leaves both where
+they are, and **Keep the right version, trash the left**. On the phone the sides go by what they are, so the answers
 read **Keep the version on this phone, trash the other** or name the target.
 
-From two conflicts up, the right-click menu of a conflict or of the space
-around them answers every conflict shown at once: **Keep both for all**, **Keep
-left for all** and **Keep right for all**. It asks first and says how many
-conflicts the answer covers. A card above the conflicts counts how many wait.
+From two conflicts up, **More** at the bottom right answers every conflict
+shown at once: **Keep left for all**, **Keep both for all** and **Keep right
+for all**. It asks first and says how many conflicts the answer covers. A card
+above the conflicts counts how many wait.
 
 A choice made there is carried out by a fresh run of that job rather than by
 rewriting what the first run did, so it cannot overlap another run and lands in
@@ -325,7 +324,7 @@ The history lists only what a run did to files. A file both sides already had
 is counted as unchanged and gets no line, since on a first run over a full
 folder those would be nearly every line.
 
-A chart in the card above the runs shows a month of them. The list answers what happened on
+A chart above the runs shows a month of them. The list answers what happened on
 Tuesday; it cannot answer whether the thing is doing anything at all, which is
 the question somebody has after leaving it alone for three weeks. Days with no
 runs are drawn as empty columns rather than left out, because a chart that
@@ -337,9 +336,9 @@ closes its gaps turns "nothing happened" into "nothing to show".
 refused, a job that keeps failing, a schedule that is not kept, and a run far
 outside what the job usually does. Tiles at the top count the findings by
 severity, as tall as BombVault's, each with its name over how many are open,
-and a click on one shows only that severity. The ▾ beside **State** switches
-to what was closed in the last thirty days, with how it ended, and the
-headings sort the findings by severity, job or when they were first seen.
+and a click on one shows only that severity. **Open or closed**
+switches to what was closed in the last thirty days, with how it ended, and
+the headings sort the findings by severity, job or when they were first seen.
 
 Every finding is a card of its own, laid out as BombVault lays out its
 findings, and nothing opens over the page. Every card starts at the same
@@ -478,10 +477,9 @@ as on the web, and from two conflicts up answers all of them at once from the
 card at its foot, after asking. The Anomalies screen shows every finding as a
 card with its answers, two lines high until **Show more** opens the rest, and
 the learning rings below them. History sorts and filters from the headings of
-its list: a tap on a heading sorts, its ▾ opens the filter, and a long press on
-a heading offers both orders, the filter and the search. A phone has no keys to
-type into a list and no pointer to right-click with, so the long press stands
-in for both. A job's own brakes
+its list: a tap on a heading sorts, its ▾ opens the filter, and the magnifier at
+the end of the row opens the search, since a phone has no keys to type into a
+list. A long press on the headings shows the line that explains them. A job's own brakes
 and what its runs usually do are on the job's screen. A More menu that would
 hold a single action is that action's button instead.
 

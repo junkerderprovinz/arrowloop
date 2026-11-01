@@ -839,10 +839,6 @@ const et: Translations = {
   'danger.confirmButton': 'Eemalda kõik',
   'phone.runAll': 'Käivita kõik',
   'phone.stopAll': 'Peata kõik käivitused',
-  'phone.sortNewest': 'Uuemad enne',
-  'phone.sortOldest': 'Vanemad enne',
-  'phone.sortAz': 'A kuni Z',
-  'phone.sortZa': 'Z kuni A',
   'phone.job': 'Töö',
   'phone.needName': 'Pane tööle nimi.',
   'phone.needSide': 'Vali selle poole jaoks kaust või sihtkoht.',
@@ -1304,10 +1300,6 @@ const et: Translations = {
   'list.tip.sort': 'Klõpsa pealkirjal, et selle järgi sortida.',
   'list.tip.filter': '▾ pealkirja kõrval filtreerib selle järgi.',
   'list.tip.search': 'Otsimiseks hakka tippima või vajuta Ctrl+F.',
-  'list.tip.menu': 'Rohkem leiad paremklõpsuga.',
-  'list.tip.hold': 'Hoia pealkirja all, et näha selle valikuid.',
-  'list.sortAsc': 'Kasvavalt',
-  'list.sortDesc': 'Kahanevalt',
   'list.filterBy': 'Filtreeri: {name}',
   'list.filtered': 'Filtreeritud',
   'list.searched': '„{q}”',
@@ -1320,8 +1312,8 @@ const et: Translations = {
   'list.head.age': 'Vanus',
   'list.head.file': 'Fail',
   'conflicts.waiting': 'Ootavad sind: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} ja {anomalies} ei kanna enam nuppe oma loendite kohal. Klõps pealkirjal sordib, ▾ selle kõrval filtreerib, loendisse tippimine otsib ning paremklõps või pikk vajutus pakub ülejäänut, näiteks ühte vastust kõigile konfliktidele. Telefonirakenduse ajalugu sordib ja filtreerib nüüd samuti pealkirjadest.',
   'new.change.buttonTint': 'Iga nupp võtab rõhuvärvi, kui kursor või klaviatuur selleni jõuab, ja telefonirakenduses seni, kuni su sõrm on sellel.',
+  'new.change.listHeads': 'Loendid lehtedel {history}, {trash}, {conflicts} ja {anomalies} sordivad, filtreerivad ja otsivad oma pealkirjadest. Klõps pealkirjal sordib, ▾ selle kõrval filtreerib ning loendisse tippimine või Ctrl+F avab otsingu, mis hõljub selle kohal. Filtri- ja otsingunupud ajaloo kohal on kadunud. Telefonirakenduse ajaloos sordib pealkirja puudutus, selle ▾ filtreerib ja rea lõpus olev luup otsib.',
 }
 
 export default et

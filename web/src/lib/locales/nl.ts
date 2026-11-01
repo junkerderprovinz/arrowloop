@@ -839,10 +839,6 @@ const nl: Translations = {
   'danger.confirmButton': 'Alles verwijderen',
   'phone.runAll': 'Alles uitvoeren',
   'phone.stopAll': 'Alle runs stoppen',
-  'phone.sortNewest': 'Nieuwste eerst',
-  'phone.sortOldest': 'Oudste eerst',
-  'phone.sortAz': 'A tot Z',
-  'phone.sortZa': 'Z tot A',
   'phone.job': 'Taak',
   'phone.needName': 'Geef de taak een naam.',
   'phone.needSide': 'Kies een map of een doel voor deze kant.',
@@ -1304,10 +1300,6 @@ const nl: Translations = {
   'list.tip.sort': 'Klik op een kop om daarop te sorteren.',
   'list.tip.filter': 'De ▾ naast een kop filtert daarop.',
   'list.tip.search': 'Begin te typen of druk op Ctrl+F om te zoeken.',
-  'list.tip.menu': 'Klik met rechts voor meer.',
-  'list.tip.hold': 'Houd een kop ingedrukt voor de keuzes.',
-  'list.sortAsc': 'Oplopend',
-  'list.sortDesc': 'Aflopend',
   'list.filterBy': 'Filteren op {name}',
   'list.filtered': 'Gefilterd',
   'list.searched': '‚{q}’',
@@ -1320,8 +1312,8 @@ const nl: Translations = {
   'list.head.age': 'Leeftijd',
   'list.head.file': 'Bestand',
   'conflicts.waiting': 'Wachten op jou: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} en {anomalies} hebben geen knoppen meer boven hun lijsten. Een klik op een kop sorteert, de ▾ ernaast filtert, typen in de lijst zoekt, en een rechterklik of lang drukken biedt de rest, zoals één antwoord voor alle conflicten. De geschiedenis in de telefoonapp sorteert en filtert ook vanuit haar koppen.',
   'new.change.buttonTint': 'Elke knop neemt de accentkleur aan zodra de aanwijzer of het toetsenbord hem bereikt, en in de telefoonapp zolang je vinger erop ligt.',
+  'new.change.listHeads': 'De lijsten in {history}, {trash}, {conflicts} en {anomalies} sorteren, filteren en zoeken vanuit hun eigen koppen. Een klik op een kop sorteert, de ▾ ernaast filtert, en typen in de lijst of Ctrl+F opent een zoekveld dat erboven zweeft. De knoppen Filter en Zoeken boven de geschiedenis zijn weg. In de geschiedenis van de telefoonapp sorteert een tik op een kop, filtert de ▾ ervan en zoekt het vergrootglas aan het eind van de rij.',
 }
 
 export default nl

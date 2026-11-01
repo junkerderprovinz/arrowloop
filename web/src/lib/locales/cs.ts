@@ -839,10 +839,6 @@ const cs: Translations = {
   'danger.confirmButton': 'Odebrat vše',
   'phone.runAll': 'Spustit vše',
   'phone.stopAll': 'Zastavit všechny běhy',
-  'phone.sortNewest': 'Nejnovější první',
-  'phone.sortOldest': 'Nejstarší první',
-  'phone.sortAz': 'Od A do Z',
-  'phone.sortZa': 'Od Z do A',
   'phone.job': 'Úloha',
   'phone.needName': 'Pojmenuj úlohu.',
   'phone.needSide': 'Vyber složku nebo cíl pro tuto stranu.',
@@ -1304,10 +1300,6 @@ const cs: Translations = {
   'list.tip.sort': 'Kliknutím na záhlaví podle něj seřadíte.',
   'list.tip.filter': '▾ vedle záhlaví podle něj filtruje.',
   'list.tip.search': 'Pro hledání začněte psát nebo stiskněte Ctrl+F.',
-  'list.tip.menu': 'Pravým tlačítkem nabídnete další možnosti.',
-  'list.tip.hold': 'Podržením záhlaví zobrazíte jeho možnosti.',
-  'list.sortAsc': 'Vzestupně',
-  'list.sortDesc': 'Sestupně',
   'list.filterBy': 'Filtrovat podle: {name}',
   'list.filtered': 'Filtrováno',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const cs: Translations = {
   'list.head.age': 'Stáří',
   'list.head.file': 'Soubor',
   'conflicts.waiting': 'Čeká na vás: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} a {anomalies} už nad svými seznamy nemají tlačítka. Kliknutí na záhlaví řadí, ▾ vedle něj filtruje, psaní v seznamu hledá a pravé tlačítko nebo dlouhé podržení nabídne zbytek, třeba jednu odpověď pro všechny konflikty. Historie v aplikaci pro telefon teď také řadí a filtruje ze záhlaví.',
   'new.change.buttonTint': 'Každé tlačítko převezme barvu zvýraznění, když na něj najede ukazatel nebo klávesnice, a v aplikaci pro telefon, dokud na něm máte prst.',
+  'new.change.listHeads': 'Seznamy v {history}, {trash}, {conflicts} a {anomalies} řadí, filtrují a hledají ze svých záhlaví. Kliknutí na záhlaví řadí, ▾ vedle něj filtruje a psaní v seznamu nebo Ctrl+F otevře hledání, které se vznáší nad ním. Tlačítka pro filtr a hledání nad historií zmizela. V historii aplikace pro telefon klepnutí na záhlaví řadí, jeho ▾ filtruje a lupa na konci řádku hledá.',
 }
 
 export default cs

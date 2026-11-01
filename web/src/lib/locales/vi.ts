@@ -839,10 +839,6 @@ const vi: Translations = {
   'danger.confirmButton': 'Xoá tất cả',
   'phone.runAll': 'Chạy tất cả',
   'phone.stopAll': 'Dừng tất cả lần chạy',
-  'phone.sortNewest': 'Mới nhất trước',
-  'phone.sortOldest': 'Cũ nhất trước',
-  'phone.sortAz': 'A đến Z',
-  'phone.sortZa': 'Z đến A',
   'phone.job': 'Công việc',
   'phone.needName': 'Đặt tên cho công việc.',
   'phone.needSide': 'Chọn một thư mục hoặc một đích cho phía này.',
@@ -1304,10 +1300,6 @@ const vi: Translations = {
   'list.tip.sort': 'Bấm vào tiêu đề để sắp xếp theo cột đó.',
   'list.tip.filter': 'Dấu ▾ cạnh tiêu đề lọc theo cột đó.',
   'list.tip.search': 'Bắt đầu gõ hoặc nhấn Ctrl+F để tìm kiếm.',
-  'list.tip.menu': 'Bấm chuột phải để xem thêm.',
-  'list.tip.hold': 'Nhấn giữ tiêu đề để xem các lựa chọn.',
-  'list.sortAsc': 'Tăng dần',
-  'list.sortDesc': 'Giảm dần',
   'list.filterBy': 'Lọc theo {name}',
   'list.filtered': 'Đang lọc',
   'list.searched': '“{q}”',
@@ -1320,8 +1312,8 @@ const vi: Translations = {
   'list.head.age': 'Tuổi',
   'list.head.file': 'Tệp',
   'conflicts.waiting': 'Đang chờ bạn: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} và {anomalies} không còn nút phía trên danh sách nữa. Bấm vào tiêu đề để sắp xếp, dấu ▾ bên cạnh để lọc, gõ trong danh sách để tìm, còn bấm chuột phải hoặc nhấn giữ sẽ đưa ra phần còn lại, chẳng hạn một câu trả lời cho mọi xung đột. Lịch sử trong ứng dụng điện thoại cũng sắp xếp và lọc từ tiêu đề.',
   'new.change.buttonTint': 'Mỗi nút đều mang màu nhấn khi con trỏ hoặc bàn phím chạm tới, và trong ứng dụng điện thoại khi ngón tay bạn đặt lên.',
+  'new.change.listHeads': 'Các danh sách trong {history}, {trash}, {conflicts} và {anomalies} sắp xếp, lọc và tìm kiếm từ chính tiêu đề của chúng. Bấm vào tiêu đề để sắp xếp, dấu ▾ bên cạnh để lọc, còn gõ trong danh sách hoặc nhấn Ctrl+F sẽ mở ô tìm kiếm nổi phía trên danh sách. Các nút Lọc và Tìm kiếm phía trên Lịch sử đã bỏ. Trong Lịch sử của ứng dụng điện thoại, chạm vào tiêu đề để sắp xếp, dấu ▾ của nó để lọc, còn kính lúp ở cuối hàng để tìm.',
 }
 
 export default vi

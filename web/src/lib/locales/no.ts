@@ -839,10 +839,6 @@ const no: Translations = {
   'danger.confirmButton': 'Fjern alt',
   'phone.runAll': 'Kjør alle',
   'phone.stopAll': 'Stopp alle kjøringer',
-  'phone.sortNewest': 'Nyeste først',
-  'phone.sortOldest': 'Eldste først',
-  'phone.sortAz': 'A til Å',
-  'phone.sortZa': 'Å til A',
   'phone.job': 'Jobb',
   'phone.needName': 'Gi jobben et navn.',
   'phone.needSide': 'Velg en mappe eller et mål for denne siden.',
@@ -1304,10 +1300,6 @@ const no: Translations = {
   'list.tip.sort': 'Klikk på en overskrift for å sortere etter den.',
   'list.tip.filter': '▾ ved siden av en overskrift filtrerer etter den.',
   'list.tip.search': 'Begynn å skrive, eller trykk Ctrl+F, for å søke.',
-  'list.tip.menu': 'Høyreklikk for mer.',
-  'list.tip.hold': 'Hold inne en overskrift for valgene.',
-  'list.sortAsc': 'Stigende',
-  'list.sortDesc': 'Synkende',
   'list.filterBy': 'Filtrer etter {name}',
   'list.filtered': 'Filtrert',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const no: Translations = {
   'list.head.age': 'Alder',
   'list.head.file': 'Fil',
   'conflicts.waiting': 'Venter på deg: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} og {anomalies} har ikke lenger knapper over listene sine. Et klikk på en overskrift sorterer, ▾ ved siden av filtrerer, å skrive i listen søker, og et høyreklikk eller et langt trykk tilbyr resten, for eksempel ett svar for alle konflikter. Historikken i telefonappen sorterer og filtrerer også fra overskriftene sine.',
   'new.change.buttonTint': 'Hver knapp tar aksentfargen når pekeren eller tastaturet når den, og i telefonappen så lenge fingeren din ligger på den.',
+  'new.change.listHeads': 'Listene i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søker fra sine egne overskrifter. Et klikk på en overskrift sorterer, ▾ ved siden av filtrerer, og å skrive i listen eller trykke Ctrl+F åpner et søk som svever over den. Filter- og søkeknappene over historikken er borte. I telefonappens historikk sorterer et trykk på en overskrift, dens ▾ filtrerer og forstørrelsesglasset ytterst i raden søker.',
 }
 
 export default no

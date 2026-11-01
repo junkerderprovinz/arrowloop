@@ -839,10 +839,6 @@ const sl: Translations = {
   'danger.confirmButton': 'Odstrani vse',
   'phone.runAll': 'Zaženi vse',
   'phone.stopAll': 'Ustavi vse zagone',
-  'phone.sortNewest': 'Najnovejše najprej',
-  'phone.sortOldest': 'Najstarejše najprej',
-  'phone.sortAz': 'A do Ž',
-  'phone.sortZa': 'Ž do A',
   'phone.job': 'Opravilo',
   'phone.needName': 'Poimenuj opravilo.',
   'phone.needSide': 'Izberi mapo ali cilj za to stran.',
@@ -1304,10 +1300,6 @@ const sl: Translations = {
   'list.tip.sort': 'Kliknite naslov, da razvrstite po njem.',
   'list.tip.filter': '▾ ob naslovu filtrira po njem.',
   'list.tip.search': 'Za iskanje začnite tipkati ali pritisnite Ctrl+F.',
-  'list.tip.menu': 'Desni klik za več.',
-  'list.tip.hold': 'Za možnosti naslova ga pridržite.',
-  'list.sortAsc': 'Naraščajoče',
-  'list.sortDesc': 'Padajoče',
   'list.filterBy': 'Filtriraj po: {name}',
   'list.filtered': 'Filtrirano',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const sl: Translations = {
   'list.head.age': 'Starost',
   'list.head.file': 'Datoteka',
   'conflicts.waiting': 'Čaka vas: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} in {anomalies} nad seznami nimajo več gumbov. Klik na naslov razvrsti, ▾ ob njem filtrira, tipkanje v seznamu išče, desni klik ali dolg pritisk pa ponudi preostalo, na primer en odgovor za vse spore. Zgodovina v aplikaciji za telefon zdaj prav tako razvršča in filtrira prek svojih naslovov.',
   'new.change.buttonTint': 'Vsak gumb prevzame barvo poudarka, ko do njega pride kazalec ali tipkovnica, v aplikaciji za telefon pa, dokler je na njem vaš prst.',
+  'new.change.listHeads': 'Seznami v {history}, {trash}, {conflicts} in {anomalies} razvrščajo, filtrirajo in iščejo prek svojih naslovov. Klik na naslov razvrsti, ▾ ob njem filtrira, tipkanje v seznamu ali Ctrl+F pa odpre iskanje, ki lebdi nad njim. Gumba za filter in iskanje nad zgodovino ni več. V zgodovini aplikacije za telefon dotik naslova razvrsti, njegov ▾ filtrira, povečevalno steklo na koncu vrstice pa išče.',
 }
 
 export default sl

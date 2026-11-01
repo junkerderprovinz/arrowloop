@@ -839,10 +839,6 @@ const hr: Translations = {
   'danger.confirmButton': 'Ukloni sve',
   'phone.runAll': 'Pokreni sve',
   'phone.stopAll': 'Zaustavi sva pokretanja',
-  'phone.sortNewest': 'Najnovije prvo',
-  'phone.sortOldest': 'Najstarije prvo',
-  'phone.sortAz': 'A do Ž',
-  'phone.sortZa': 'Ž do A',
   'phone.job': 'Zadatak',
   'phone.needName': 'Daj zadatku naziv.',
   'phone.needSide': 'Odaberi mapu ili odredište za ovu stranu.',
@@ -1304,10 +1300,6 @@ const hr: Translations = {
   'list.tip.sort': 'Kliknite naslov za razvrstavanje po njemu.',
   'list.tip.filter': '▾ pokraj naslova filtrira po njemu.',
   'list.tip.search': 'Za pretraživanje počnite tipkati ili pritisnite Ctrl+F.',
-  'list.tip.menu': 'Desni klik za više.',
-  'list.tip.hold': 'Dugo pritisnite naslov za njegove mogućnosti.',
-  'list.sortAsc': 'Uzlazno',
-  'list.sortDesc': 'Silazno',
   'list.filterBy': 'Filtriraj po: {name}',
   'list.filtered': 'Filtrirano',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const hr: Translations = {
   'list.head.age': 'Starost',
   'list.head.file': 'Datoteka',
   'conflicts.waiting': 'Čeka vas: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} i {anomalies} više nemaju gumbe iznad svojih popisa. Klik na naslov razvrstava, ▾ pokraj njega filtrira, tipkanje u popisu pretražuje, a desni klik ili dugi pritisak nudi ostalo, primjerice jedan odgovor za sve sukobe. Povijest u aplikaciji za telefon također razvrstava i filtrira preko svojih naslova.',
   'new.change.buttonTint': 'Svaki gumb poprima boju naglaska kad do njega dođu pokazivač ili tipkovnica, a u aplikaciji za telefon dok je prst na njemu.',
+  'new.change.listHeads': 'Popisi u {history}, {trash}, {conflicts} i {anomalies} razvrstavaju, filtriraju i pretražuju preko vlastitih naslova. Klik na naslov razvrstava, ▾ pokraj njega filtrira, a tipkanje u popisu ili Ctrl+F otvara pretragu koja lebdi iznad njega. Gumbi za filtar i pretragu iznad povijesti su nestali. U povijesti aplikacije za telefon dodir naslova razvrstava, njegov ▾ filtrira, a povećalo na kraju retka pretražuje.',
 }
 
 export default hr

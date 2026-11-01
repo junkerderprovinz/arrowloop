@@ -135,17 +135,12 @@ describe('the trash list', () => {
     localStorage.clear()
   })
 
-  it('offers the answers for an entry and for the page on a right-click', async () => {
+  it('keeps its answers on the rows and in the corner, with no menu on a right-click', () => {
     wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     fireEvent.contextMenu(screen.getByText('b.txt'))
-    const menu = await screen.findByRole('menu')
-    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual([
-      'Put this file back',
-      'Delete for good',
-      'Empty this side',
-      'Delete old entries',
-      'Empty the trash',
-    ])
+    expect(screen.queryByRole('menu')).toBeNull()
+    expect(screen.getAllByRole('button', { name: 'Put this file back' })).toHaveLength(2)
+    expect(screen.getByRole('button', { name: 'Empty the trash' }).closest('[data-testid="page-actions"]')).toBeTruthy()
   })
 })
 

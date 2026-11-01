@@ -839,10 +839,6 @@ const fr: Translations = {
   'danger.confirmButton': 'Tout supprimer',
   'phone.runAll': 'Tout exécuter',
   'phone.stopAll': 'Arrêter toutes les exécutions',
-  'phone.sortNewest': 'Plus récents d\'abord',
-  'phone.sortOldest': 'Plus anciens d\'abord',
-  'phone.sortAz': 'De A à Z',
-  'phone.sortZa': 'De Z à A',
   'phone.job': 'Tâche',
   'phone.needName': 'Donnez un nom à la tâche.',
   'phone.needSide': 'Choisissez un dossier ou une cible pour ce côté.',
@@ -1304,10 +1300,6 @@ const fr: Translations = {
   'list.tip.sort': 'Cliquez sur un en-tête pour trier selon lui.',
   'list.tip.filter': 'Le ▾ à côté d\'un en-tête filtre selon lui.',
   'list.tip.search': 'Commencez à taper, ou appuyez sur Ctrl+F, pour rechercher.',
-  'list.tip.menu': 'Un clic droit en propose davantage.',
-  'list.tip.hold': 'Un appui long sur un en-tête affiche ses choix.',
-  'list.sortAsc': 'Croissant',
-  'list.sortDesc': 'Décroissant',
   'list.filterBy': 'Filtrer par {name}',
   'list.filtered': 'Filtré',
   'list.searched': '« {q} »',
@@ -1320,8 +1312,8 @@ const fr: Translations = {
   'list.head.age': 'Âge',
   'list.head.file': 'Fichier',
   'conflicts.waiting': 'En attente de vous : {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} et {anomalies} n\'ont plus de boutons au-dessus de leurs listes. Un clic sur un en-tête trie, le ▾ à côté filtre, taper dans la liste lance la recherche, et un clic droit ou un appui long propose le reste, comme une réponse pour tous les conflits. L\'historique de l\'app mobile trie et filtre lui aussi depuis ses en-têtes.',
   'new.change.buttonTint': 'Chaque bouton prend la couleur d\'accent quand le pointeur ou le clavier l\'atteint, et dans l\'app mobile tant que votre doigt est dessus.',
+  'new.change.listHeads': 'Les listes de {history}, {trash}, {conflicts} et {anomalies} trient, filtrent et cherchent depuis leurs propres en-têtes. Un clic sur un en-tête trie, le ▾ à côté filtre, et taper dans la liste ou appuyer sur Ctrl+F ouvre une recherche qui flotte au-dessus. Les boutons Filtrer et Rechercher au-dessus de l\'historique ont disparu. Dans l\'historique de l\'app mobile, un appui sur un en-tête trie, son ▾ filtre et la loupe au bout de la ligne cherche.',
 }
 
 export default fr

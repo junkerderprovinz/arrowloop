@@ -839,10 +839,6 @@ const id: Translations = {
   'danger.confirmButton': 'Hapus semua',
   'phone.runAll': 'Jalankan semua',
   'phone.stopAll': 'Hentikan semua jalan',
-  'phone.sortNewest': 'Terbaru dulu',
-  'phone.sortOldest': 'Terlama dulu',
-  'phone.sortAz': 'A ke Z',
-  'phone.sortZa': 'Z ke A',
   'phone.job': 'Tugas',
   'phone.needName': 'Beri nama pada tugas ini.',
   'phone.needSide': 'Pilih folder atau tujuan untuk sisi ini.',
@@ -1304,10 +1300,6 @@ const id: Translations = {
   'list.tip.sort': 'Klik judul kolom untuk mengurutkan menurutnya.',
   'list.tip.filter': '▾ di samping judul kolom menyaring menurutnya.',
   'list.tip.search': 'Mulai mengetik, atau tekan Ctrl+F, untuk mencari.',
-  'list.tip.menu': 'Klik kanan untuk pilihan lain.',
-  'list.tip.hold': 'Tekan lama judul kolom untuk melihat pilihannya.',
-  'list.sortAsc': 'Naik',
-  'list.sortDesc': 'Turun',
   'list.filterBy': 'Saring menurut {name}',
   'list.filtered': 'Tersaring',
   'list.searched': '”{q}”',
@@ -1320,8 +1312,8 @@ const id: Translations = {
   'list.head.age': 'Usia',
   'list.head.file': 'Berkas',
   'conflicts.waiting': 'Menunggu Anda: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts}, dan {anomalies} tidak lagi punya tombol di atas daftarnya. Klik judul kolom untuk mengurutkan, ▾ di sampingnya menyaring, mengetik di daftar mencari, dan klik kanan atau tekan lama menawarkan sisanya, misalnya satu jawaban untuk semua konflik. Riwayat di aplikasi ponsel kini juga mengurutkan dan menyaring dari judul kolomnya.',
   'new.change.buttonTint': 'Setiap tombol mengambil warna aksen saat penunjuk atau papan ketik mencapainya, dan di aplikasi ponsel selama jari Anda ada di atasnya.',
+  'new.change.listHeads': 'Daftar di {history}, {trash}, {conflicts}, dan {anomalies} mengurutkan, menyaring, dan mencari dari judul kolomnya sendiri. Klik judul kolom untuk mengurutkan, ▾ di sampingnya menyaring, dan mengetik di daftar atau menekan Ctrl+F membuka pencarian yang melayang di atasnya. Tombol Filter dan Cari di atas Riwayat sudah tidak ada. Di Riwayat aplikasi ponsel, ketuk judul kolom untuk mengurutkan, ▾ miliknya menyaring, dan kaca pembesar di ujung baris mencari.',
 }
 
 export default id

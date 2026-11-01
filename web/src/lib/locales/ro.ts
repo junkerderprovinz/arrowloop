@@ -839,10 +839,6 @@ const ro: Translations = {
   'danger.confirmButton': 'Elimină tot',
   'phone.runAll': 'Rulează toate',
   'phone.stopAll': 'Oprește toate rulările',
-  'phone.sortNewest': 'Cele mai noi primele',
-  'phone.sortOldest': 'Cele mai vechi primele',
-  'phone.sortAz': 'A la Z',
-  'phone.sortZa': 'Z la A',
   'phone.job': 'Sarcină',
   'phone.needName': 'Dă un nume sarcinii.',
   'phone.needSide': 'Alege un dosar sau o destinație pentru această parte.',
@@ -1304,10 +1300,6 @@ const ro: Translations = {
   'list.tip.sort': 'Apăsați pe un antet pentru a sorta după el.',
   'list.tip.filter': '▾ de lângă un antet filtrează după el.',
   'list.tip.search': 'Începeți să tastați sau apăsați Ctrl+F pentru a căuta.',
-  'list.tip.menu': 'Clic dreapta pentru mai multe.',
-  'list.tip.hold': 'Țineți apăsat un antet pentru opțiunile lui.',
-  'list.sortAsc': 'Crescător',
-  'list.sortDesc': 'Descrescător',
   'list.filterBy': 'Filtrează după {name}',
   'list.filtered': 'Filtrat',
   'list.searched': '„{q}”',
@@ -1320,8 +1312,8 @@ const ro: Translations = {
   'list.head.age': 'Vechime',
   'list.head.file': 'Fișier',
   'conflicts.waiting': 'Vă așteaptă: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} și {anomalies} nu mai au butoane deasupra listelor. Un clic pe un antet sortează, ▾ de lângă el filtrează, tastarea în listă caută, iar clicul dreapta sau apăsarea lungă oferă restul, de pildă un singur răspuns pentru toate conflictele. Istoricul din aplicația de telefon sortează și filtrează și el din antete.',
   'new.change.buttonTint': 'Fiecare buton ia culoarea de accent când ajunge la el indicatorul sau tastatura, iar în aplicația de telefon cât timp țineți degetul pe el.',
+  'new.change.listHeads': 'Listele din {history}, {trash}, {conflicts} și {anomalies} sortează, filtrează și caută din propriile antete. Un clic pe un antet sortează, ▾ de lângă el filtrează, iar tastarea în listă sau Ctrl+F deschide o căutare care plutește deasupra ei. Butoanele de filtrare și căutare de deasupra istoricului au dispărut. În istoricul aplicației de telefon, o atingere pe un antet sortează, ▾ al lui filtrează, iar lupa de la capătul rândului caută.',
 }
 
 export default ro

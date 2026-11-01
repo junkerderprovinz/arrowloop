@@ -839,10 +839,6 @@ const pt: Translations = {
   'danger.confirmButton': 'Remover tudo',
   'phone.runAll': 'Executar tudo',
   'phone.stopAll': 'Parar todas as execuções',
-  'phone.sortNewest': 'Mais recentes primeiro',
-  'phone.sortOldest': 'Mais antigos primeiro',
-  'phone.sortAz': 'A a Z',
-  'phone.sortZa': 'Z a A',
   'phone.job': 'Tarefa',
   'phone.needName': 'Dá um nome à tarefa.',
   'phone.needSide': 'Escolhe uma pasta ou um destino para este lado.',
@@ -1304,10 +1300,6 @@ const pt: Translations = {
   'list.tip.sort': 'Clique num cabeçalho para ordenar por ele.',
   'list.tip.filter': 'O ▾ ao lado de um cabeçalho filtra por ele.',
   'list.tip.search': 'Comece a escrever, ou prima Ctrl+F, para pesquisar.',
-  'list.tip.menu': 'Clique com o botão direito para mais.',
-  'list.tip.hold': 'Mantenha premido um cabeçalho para ver as suas opções.',
-  'list.sortAsc': 'Ascendente',
-  'list.sortDesc': 'Descendente',
   'list.filterBy': 'Filtrar por {name}',
   'list.filtered': 'Filtrado',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const pt: Translations = {
   'list.head.age': 'Idade',
   'list.head.file': 'Ficheiro',
   'conflicts.waiting': 'À sua espera: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} e {anomalies} deixaram de ter botões sobre as listas. Um clique num cabeçalho ordena, o ▾ ao lado filtra, escrever na lista pesquisa, e um clique direito ou um toque longo oferece o resto, como uma resposta para todos os conflitos. O histórico da app do telemóvel também ordena e filtra a partir dos cabeçalhos.',
   'new.change.buttonTint': 'Cada botão ganha a cor de destaque quando o ponteiro ou o teclado lá chegam, e na app do telemóvel enquanto tem o dedo nele.',
+  'new.change.listHeads': 'As listas de {history}, {trash}, {conflicts} e {anomalies} ordenam, filtram e pesquisam a partir dos seus cabeçalhos. Um clique num cabeçalho ordena, o ▾ ao lado filtra, e escrever na lista ou premir Ctrl+F abre uma pesquisa que flutua sobre ela. Os botões Filtrar e Pesquisar sobre o histórico desapareceram. No histórico da app do telemóvel, um toque num cabeçalho ordena, o seu ▾ filtra e a lupa no fim da linha pesquisa.',
 }
 
 export default pt

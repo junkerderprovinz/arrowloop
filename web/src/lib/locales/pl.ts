@@ -839,10 +839,6 @@ const pl: Translations = {
   'danger.confirmButton': 'Usuń wszystko',
   'phone.runAll': 'Uruchom wszystkie',
   'phone.stopAll': 'Zatrzymaj wszystkie przebiegi',
-  'phone.sortNewest': 'Najnowsze najpierw',
-  'phone.sortOldest': 'Najstarsze najpierw',
-  'phone.sortAz': 'A do Z',
-  'phone.sortZa': 'Z do A',
   'phone.job': 'Zadanie',
   'phone.needName': 'Nadaj zadaniu nazwę.',
   'phone.needSide': 'Wybierz folder lub cel dla tej strony.',
@@ -1304,10 +1300,6 @@ const pl: Translations = {
   'list.tip.sort': 'Kliknij nagłówek, aby według niego posortować.',
   'list.tip.filter': '▾ obok nagłówka filtruje według niego.',
   'list.tip.search': 'Aby wyszukać, zacznij pisać lub naciśnij Ctrl+F.',
-  'list.tip.menu': 'Kliknij prawym przyciskiem, aby zobaczyć więcej.',
-  'list.tip.hold': 'Przytrzymaj nagłówek, aby zobaczyć jego opcje.',
-  'list.sortAsc': 'Rosnąco',
-  'list.sortDesc': 'Malejąco',
   'list.filterBy': 'Filtruj według: {name}',
   'list.filtered': 'Przefiltrowane',
   'list.searched': '„{q}”',
@@ -1320,8 +1312,8 @@ const pl: Translations = {
   'list.head.age': 'Wiek',
   'list.head.file': 'Plik',
   'conflicts.waiting': 'Czeka na ciebie: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} i {anomalies} nie mają już przycisków nad listami. Kliknięcie nagłówka sortuje, ▾ obok niego filtruje, pisanie w liście wyszukuje, a prawy przycisk lub długie przytrzymanie oferuje resztę, na przykład jedną odpowiedź dla wszystkich konfliktów. Historia w aplikacji na telefon też sortuje i filtruje z nagłówków.',
   'new.change.buttonTint': 'Każdy przycisk przybiera kolor akcentu, gdy dotrze do niego wskaźnik lub klawiatura, a w aplikacji na telefon, dopóki trzymasz na nim palec.',
+  'new.change.listHeads': 'Listy w {history}, {trash}, {conflicts} i {anomalies} sortują, filtrują i wyszukują ze swoich nagłówków. Kliknięcie nagłówka sortuje, ▾ obok niego filtruje, a pisanie w liście lub Ctrl+F otwiera wyszukiwanie, które unosi się nad nią. Przyciski filtra i wyszukiwania nad historią zniknęły. W historii aplikacji na telefon dotknięcie nagłówka sortuje, jego ▾ filtruje, a lupa na końcu wiersza wyszukuje.',
 }
 
 export default pl

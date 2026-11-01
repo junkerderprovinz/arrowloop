@@ -839,10 +839,6 @@ const is: Translations = {
   'danger.confirmButton': 'Fjarlægja allt',
   'phone.runAll': 'Keyra allt',
   'phone.stopAll': 'Stöðva allar keyrslur',
-  'phone.sortNewest': 'Nýjast fyrst',
-  'phone.sortOldest': 'Elst fyrst',
-  'phone.sortAz': 'A til Ö',
-  'phone.sortZa': 'Ö til A',
   'phone.job': 'Verk',
   'phone.needName': 'Gefðu verkinu nafn.',
   'phone.needSide': 'Veldu möppu eða áfangastað fyrir þessa hlið.',
@@ -1304,10 +1300,6 @@ const is: Translations = {
   'list.tip.sort': 'Smelltu á fyrirsögn til að raða eftir henni.',
   'list.tip.filter': '▾ við hlið fyrirsagnar síar eftir henni.',
   'list.tip.search': 'Byrjaðu að skrifa, eða ýttu á Ctrl+F, til að leita.',
-  'list.tip.menu': 'Hægrismelltu fyrir meira.',
-  'list.tip.hold': 'Haltu fingri á fyrirsögn til að sjá valkosti hennar.',
-  'list.sortAsc': 'Hækkandi',
-  'list.sortDesc': 'Lækkandi',
   'list.filterBy': 'Sía eftir: {name}',
   'list.filtered': 'Síað',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const is: Translations = {
   'list.head.age': 'Aldur',
   'list.head.file': 'Skrá',
   'conflicts.waiting': 'Bíða eftir þér: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} og {anomalies} hafa ekki lengur hnappa yfir listunum. Smellur á fyrirsögn raðar, ▾ við hliðina síar, innsláttur í listann leitar, og hægrismellur eða langt þrýst býður upp á restina, til dæmis eitt svar fyrir alla árekstra. Ferillinn í símaforritinu raðar og síar líka út frá fyrirsögnum sínum.',
   'new.change.buttonTint': 'Hver hnappur tekur á sig áherslulitinn þegar bendillinn eða lyklaborðið nær honum, og í símaforritinu meðan fingurinn er á honum.',
+  'new.change.listHeads': 'Listarnir í {history}, {trash}, {conflicts} og {anomalies} raða, sía og leita út frá eigin fyrirsögnum. Smellur á fyrirsögn raðar, ▾ við hliðina síar, og innsláttur í listann eða Ctrl+F opnar leit sem svífur yfir honum. Sía- og leitarhnapparnir yfir ferlinum eru horfnir. Í ferli símaforritsins raðar snerting á fyrirsögn, ▾ hennar síar og stækkunarglerið við enda raðarinnar leitar.',
 }
 
 export default is

@@ -31,7 +31,7 @@ function List({ page = 'test' }: { page?: string }) {
   return (
     <div ref={area} tabIndex={-1} data-testid="area">
       <ListSearch value={query} onChange={setQuery} placeholder="Name" area={area} />
-      <ListHead heads={heads} sort={sort} onSort={setSort} page={page} menu />
+      <ListHead heads={heads} sort={sort} onSort={setSort} page={page} search />
       <output data-testid="sort">{`${sort.by} ${sort.dir}`}</output>
     </div>
   )
@@ -66,7 +66,8 @@ describe('a list head', () => {
     const { unmount } = render(<List />)
     const line = () => screen.queryAllByRole('note').find((n) => !n.className.includes('hidden'))
     expect(line()?.textContent).toContain('Click a heading to sort by it.')
-    expect(line()?.textContent).toContain('Right-click for more.')
+    expect(line()?.textContent).toContain('Start typing, or press Ctrl+F, to search.')
+    expect(line()?.textContent).not.toContain('Right-click')
     unmount()
     render(<List />)
     expect(line()).toBeUndefined()

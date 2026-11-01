@@ -839,10 +839,6 @@ const tr: Translations = {
   'danger.confirmButton': 'Hepsini kaldır',
   'phone.runAll': 'Hepsini çalıştır',
   'phone.stopAll': 'Tüm çalışmaları durdur',
-  'phone.sortNewest': 'Önce en yeni',
-  'phone.sortOldest': 'Önce en eski',
-  'phone.sortAz': 'A\'dan Z\'ye',
-  'phone.sortZa': 'Z\'den A\'ya',
   'phone.job': 'İş',
   'phone.needName': 'İşe bir ad ver.',
   'phone.needSide': 'Bu taraf için bir klasör ya da hedef seç.',
@@ -1304,10 +1300,6 @@ const tr: Translations = {
   'list.tip.sort': 'Bir başlığa tıklayınca ona göre sıralanır.',
   'list.tip.filter': 'Başlığın yanındaki ▾ ona göre süzer.',
   'list.tip.search': 'Aramak için yazmaya başlayın ya da Ctrl+F\'ye basın.',
-  'list.tip.menu': 'Daha fazlası için sağ tıklayın.',
-  'list.tip.hold': 'Seçenekleri için bir başlığa basılı tutun.',
-  'list.sortAsc': 'Artan',
-  'list.sortDesc': 'Azalan',
   'list.filterBy': 'Süz: {name}',
   'list.filtered': 'Süzüldü',
   'list.searched': '“{q}”',
@@ -1320,8 +1312,8 @@ const tr: Translations = {
   'list.head.age': 'Yaş',
   'list.head.file': 'Dosya',
   'conflicts.waiting': 'Sizi bekleyen: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} ve {anomalies} listelerinin üstünde artık düğme yok. Bir başlığa tıklamak sıralar, yanındaki ▾ süzer, listede yazmak arar, sağ tık ya da uzun basma da gerisini sunar, örneğin tüm çakışmalar için tek bir yanıt. Telefon uygulamasındaki geçmiş de başlıklarından sıralayıp süzüyor.',
   'new.change.buttonTint': 'Her düğme, işaretçi ya da klavye ona ulaştığında vurgu rengini alır; telefon uygulamasında da parmağınız üzerindeyken.',
+  'new.change.listHeads': '{history}, {trash}, {conflicts} ve {anomalies} listeleri kendi başlıklarından sıralıyor, süzüyor ve arıyor. Bir başlığa tıklamak sıralar, yanındaki ▾ süzer, listede yazmak ya da Ctrl+F\'ye basmak da listenin üzerinde süzülen bir arama açar. Geçmişin üstündeki Filtre ve Ara düğmeleri kalktı. Telefon uygulamasının geçmişinde bir başlığa dokunmak sıralar, onun ▾ işareti süzer, satırın sonundaki büyüteç de arar.',
 }
 
 export default tr

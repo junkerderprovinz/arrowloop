@@ -839,10 +839,6 @@ const ms: Translations = {
   'danger.confirmButton': 'Buang semua',
   'phone.runAll': 'Jalankan semua',
   'phone.stopAll': 'Henti semua larian',
-  'phone.sortNewest': 'Terbaharu dahulu',
-  'phone.sortOldest': 'Terlama dahulu',
-  'phone.sortAz': 'A hingga Z',
-  'phone.sortZa': 'Z hingga A',
   'phone.job': 'Tugas',
   'phone.needName': 'Beri nama kepada tugas ini.',
   'phone.needSide': 'Pilih folder atau destinasi untuk bahagian ini.',
@@ -1304,10 +1300,6 @@ const ms: Translations = {
   'list.tip.sort': 'Klik tajuk untuk mengisih mengikutnya.',
   'list.tip.filter': '▾ di sebelah tajuk menapis mengikutnya.',
   'list.tip.search': 'Mula menaip, atau tekan Ctrl+F, untuk mencari.',
-  'list.tip.menu': 'Klik kanan untuk lagi.',
-  'list.tip.hold': 'Tekan lama tajuk untuk pilihannya.',
-  'list.sortAsc': 'Menaik',
-  'list.sortDesc': 'Menurun',
   'list.filterBy': 'Tapis mengikut {name}',
   'list.filtered': 'Ditapis',
   'list.searched': '“{q}”',
@@ -1320,8 +1312,8 @@ const ms: Translations = {
   'list.head.age': 'Usia',
   'list.head.file': 'Fail',
   'conflicts.waiting': 'Menunggu anda: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} dan {anomalies} tidak lagi mempunyai butang di atas senarainya. Klik tajuk untuk mengisih, ▾ di sebelahnya menapis, menaip dalam senarai mencari, dan klik kanan atau tekan lama menawarkan selebihnya, seperti satu jawapan untuk semua konflik. Sejarah dalam aplikasi telefon juga mengisih dan menapis daripada tajuknya.',
   'new.change.buttonTint': 'Setiap butang mengambil warna aksen apabila penuding atau papan kekunci sampai kepadanya, dan dalam aplikasi telefon selagi jari anda berada di atasnya.',
+  'new.change.listHeads': 'Senarai dalam {history}, {trash}, {conflicts} dan {anomalies} mengisih, menapis dan mencari daripada tajuknya sendiri. Klik tajuk untuk mengisih, ▾ di sebelahnya menapis, dan menaip dalam senarai atau menekan Ctrl+F membuka carian yang terapung di atasnya. Butang Tapis dan Cari di atas Sejarah sudah tiada. Dalam Sejarah aplikasi telefon, ketik tajuk untuk mengisih, ▾ miliknya menapis dan kanta pembesar di hujung baris mencari.',
 }
 
 export default ms

@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 
 import { JobChip } from '../components/JobChip'
-import { ListHead, ListSearch, Narrowed, useListMenu, type Head, type ListSort } from '../components/ListHead'
-import type { MenuItem } from '../components/Menu'
+import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
+import { Menu } from '../components/Menu'
+import { PageActions } from '../components/PageActions'
 import { Empty, Num, Stack } from '../components/Shell'
 import { Since } from '../components/Since'
 import { Badge } from '../lib/glimstone/Badge'
@@ -20,10 +21,10 @@ import { useLive } from '../lib/live'
 import { usePlaces } from '../lib/places'
 import { useToast } from '../lib/toast'
 
-/** The three answers in the order they stand everywhere: holding back first, then the two that pick. */
+/** The three answers in the order of the sides they keep, so the left one stands on the left. */
 const CHOICES: { keep: Resolution; key: TranslationKey; all: TranslationKey }[] = [
-  { keep: 'both', key: 'conflict.answerBoth', all: 'conflicts.allBoth' },
   { keep: 'left', key: 'conflict.answerLeft', all: 'conflicts.allLeft' },
+  { keep: 'both', key: 'conflict.answerBoth', all: 'conflicts.allBoth' },
   { keep: 'right', key: 'conflict.answerRight', all: 'conflicts.allRight' },
 ]
 
@@ -38,10 +39,10 @@ const WHY: Record<string, TranslationKey> = {
  * card per job. Each conflict says which file it is, what went wrong and what
  * each side holds, with the three answers under it; a choice runs the job's
  * decision at once, and the version that loses goes to the trash, so a wrong
- * click is undone from there. From two conflicts up, the right-click menu
- * of a card or of the space around them gives one answer to all of them, and
- * asks first, naming how many it decides. The heads sort by file or by when
- * the conflict was found, and typing searches the paths.
+ * click is undone from there. From two conflicts up, one answer for all of
+ * them waits in the corner and asks first, naming how many it decides. The
+ * heads sort by file or by when the conflict was found, and typing searches
+ * the paths.
  */
 export function Conflicts({
   listing,
@@ -66,8 +67,6 @@ export function Conflicts({
   const [sort, setSort] = useState<ListSort>({ by: 'file', dir: 'asc' })
   const [query, setQuery] = useState('')
   const area = useRef<HTMLDivElement>(null)
-  const openSearch = useRef<(() => void) | null>(null)
-  const menu = useListMenu(t('nav.conflicts'))
 
   const searching = query.trim() !== ''
   const waiting = (listing?.conflicts ?? []).filter((c) => !job || c.job === job)
@@ -103,22 +102,6 @@ export function Conflicts({
     { id: 'file', label: t('list.head.file'), className: 'min-w-0 flex-1', sorts: true },
     { id: 'found', label: t('conflict.metAt'), className: 'shrink-0', end: true, sorts: true },
   ]
-  // The answers for every conflict shown, which only mean something from two up.
-  const forAll = (): MenuItem[] =>
-    shown.length > 1
-      ? CHOICES.map((choice) => ({
-          label: t(choice.all),
-          labelKey: choice.all,
-          disabled: busy.size > 0,
-          onSelect: () => setAsking(choice),
-        }))
-      : []
-  const pageItems = (): MenuItem[] => [
-    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
-    ...(searching ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: () => setQuery('') }] : []),
-    ...forAll(),
-  ]
-
   return (
     <Stack>
       <JobChip job={job} onClear={() => onJob('')} />
@@ -137,8 +120,8 @@ export function Conflicts({
             <p className="glim-num text-body text-carbon-text">{t('conflicts.waiting', { count: waiting.length })}</p>
             <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
           </Card>
-          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none" {...menu.on(pageItems)}>
-            <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} open={openSearch} />
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none">
+            <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} />
             {searching && groups.length === 0 && (
               <Card hueIndex={1}>
                 <Empty>{t('jobs.historyNoMatch', { q: query.trim() })}</Empty>
@@ -152,8 +135,7 @@ export function Conflicts({
                     sort={sort}
                     onSort={setSort}
                     page={i === 0 ? 'conflicts' : undefined}
-                    onSearch={() => openSearch.current?.()}
-                    menu
+                    search
                   />
                   <ul className="flex flex-col gap-2.5">
                     {g.conflicts.map((c) => {
@@ -165,15 +147,6 @@ export function Conflicts({
                           job={g.job}
                           busy={busy.has(key)}
                           idle={busy.size === 0}
-                          menu={menu.on(() => [
-                            ...CHOICES.map(({ keep, key: label }) => ({
-                              label: t(label),
-                              labelKey: label,
-                              disabled: busy.size > 0,
-                              onSelect: () => void decide([c], keep),
-                            })),
-                            ...forAll(),
-                          ])}
                           onDecide={(keep) => void decide([c], keep)}
                         />
                       )
@@ -207,7 +180,23 @@ export function Conflicts({
         />
       )}
 
-      {menu.element}
+      {/* One answer for every conflict shown; for a single conflict the card's
+          own three say the same. */}
+      {shown.length > 1 && (
+        <PageActions>
+          <Menu
+            label={t('list.more')}
+            labelKey="list.more"
+            size="key"
+            items={CHOICES.map((choice) => ({
+              label: t(choice.all),
+              labelKey: choice.all,
+              disabled: busy.size > 0,
+              onSelect: () => setAsking(choice),
+            }))}
+          />
+        </PageActions>
+      )}
     </Stack>
   )
 }
@@ -222,7 +211,6 @@ function ConflictCard({
   job,
   busy,
   idle,
-  menu,
   onDecide,
 }: {
   conflict: OpenConflict
@@ -230,15 +218,13 @@ function ConflictCard({
   busy: boolean
   /** False while any decision is under way, so two cannot race for one job. */
   idle: boolean
-  /** The handlers that open its right-click menu. */
-  menu: ReturnType<ReturnType<typeof useListMenu>['on']>
   onDecide: (keep: Resolution) => void
 }) {
   const { t } = useT()
   const { drives } = usePlaces()
   const newer = newerSide(c)
   return (
-    <li {...menu} className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 max-sm:px-3">
+    <li className="flex min-w-0 flex-col gap-3 rounded-card bg-carbon-surface2 px-4 pb-3.5 pt-3 max-sm:px-3">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span dir="ltr" className="min-w-0 flex-1 text-start font-mono text-title font-semibold text-carbon-text [overflow-wrap:anywhere]">
           {c.plain}

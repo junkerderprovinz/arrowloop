@@ -4,21 +4,20 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Glyph } from "./glyphs";
 import { useT, type T } from "./i18n";
 import { space, text, TOUCH } from "./theme";
-import { Badge, Button, Press, Sheet, useTheme } from "./ui";
+import { Badge, Button, Press, useTheme } from "./ui";
 
 // GlimStone's list on the phone. The web's head sorts on a click, filters
 // through its ▾ and searches when somebody types; a phone has no keys to type
 // into a list and no pointer to hover, so a tap on a head sorts, its ▾ opens
-// the filter, and a long press on a head offers both orders, the filter and
-// the search, with the line that says so.
+// the filter, the magnifier at the end of the row opens the search, and a
+// long press on the row shows the line that says so.
 
 export type SortDir = "asc" | "desc";
 
 export interface Head {
   id: string;
   label: string;
-  /** The two orders a long press offers, named the way this column reads. */
-  orders?: { asc: string; desc: string };
+  sorts?: boolean;
   /** Opens the filter sheet, and whether the filter narrows the list now. */
   filter?: { active: boolean; open: () => void };
 }
@@ -48,9 +47,8 @@ function useFirstVisit(page: string): [boolean, () => void] {
 
 function tipText(t: T, heads: Head[]): string {
   return [
-    ...(heads.some((h) => h.orders) ? [t("list.tip.sort")] : []),
+    ...(heads.some((h) => h.sorts) ? [t("list.tip.sort")] : []),
     ...(heads.some((h) => h.filter) ? [t("list.tip.filter")] : []),
-    t("list.tip.hold"),
   ].join(" ");
 }
 
@@ -70,12 +68,10 @@ export function ListHead({
   const { t } = useT();
   const { p, accent } = useTheme();
   const [tip, closeTip] = useFirstVisit(page);
-  const [held, setHeld] = useState<Head | null>(null);
-
-  const sortBy = (head: Head, dir?: SortDir) => {
-    if (!head.orders) return;
-    onSort(head.id, dir ?? (sort.by === head.id && sort.dir === "asc" ? "desc" : "asc"));
+  const [held, setHeld] = useState(false);
+  const used = () => {
     closeTip();
+    setHeld(false);
   };
 
   return (
@@ -89,14 +85,18 @@ export function ListHead({
               <Press
                 accessibilityRole="button"
                 accessibilityLabel={head.label}
-                onPress={() => (head.orders ? sortBy(head) : head.filter?.open())}
-                onLongPress={() => setHeld(head)}
+                onPress={() => {
+                  if (head.sorts) onSort(head.id, on && sort.dir === "asc" ? "desc" : "asc");
+                  else head.filter?.open();
+                  used();
+                }}
+                onLongPress={() => setHeld(true)}
                 style={styles.name}
               >
                 <Text numberOfLines={1} style={[styles.label, { color: on || active ? p.text : p.textMuted }]}>
                   {head.label}
                 </Text>
-                {on && head.orders ? (
+                {on && head.sorts ? (
                   <Glyph name={sort.dir === "asc" ? "IconMoveUp" : "IconMoveDown"} color={p.text} size={11} />
                 ) : null}
               </Press>
@@ -106,7 +106,7 @@ export function ListHead({
                   accessibilityLabel={t("list.filterBy", { name: head.label })}
                   onPress={() => {
                     head.filter?.open();
-                    closeTip();
+                    used();
                   }}
                   hitSlop={8}
                   style={styles.caret}
@@ -118,75 +118,33 @@ export function ListHead({
             </View>
           );
         })}
+        <Press
+          accessibilityRole="button"
+          accessibilityLabel={t("list.search")}
+          onPress={() => {
+            onSearch();
+            used();
+          }}
+          hitSlop={8}
+          style={styles.find}
+        >
+          <Glyph name="IconSearch" color={p.textMuted} size={16} />
+        </Press>
       </View>
       {tip || held ? (
         <View style={styles.tip}>
           <Text style={[styles.tipText, { color: p.textSub }]}>{tipText(t, heads)}</Text>
-          {tip ? (
-            <Press accessibilityRole="button" accessibilityLabel={t("common.close")} onPress={closeTip} hitSlop={8}>
-              <Glyph name="IconClose" color={p.textSub} size={12} />
-            </Press>
-          ) : null}
+          <Press accessibilityRole="button" accessibilityLabel={t("common.close")} onPress={used} hitSlop={8}>
+            <Glyph name="IconClose" color={p.textSub} size={12} />
+          </Press>
         </View>
       ) : null}
-
-      <Sheet open={held !== null} title={held?.label ?? ""} onClose={() => setHeld(null)}>
-        {held?.orders
-          ? (["asc", "desc"] as const).map((dir) => (
-              <Option
-                key={dir}
-                label={held.orders![dir]}
-                glyph={dir === "asc" ? "IconMoveUp" : "IconMoveDown"}
-                on={sort.by === held.id && sort.dir === dir}
-                onPress={() => {
-                  sortBy(held, dir);
-                  setHeld(null);
-                }}
-              />
-            ))
-          : null}
-        {held?.filter ? (
-          <Option
-            label={t("list.filter")}
-            glyph="IconFilter"
-            onPress={() => {
-              held.filter?.open();
-              setHeld(null);
-            }}
-          />
-        ) : null}
-        <Option
-          label={t("list.search")}
-          glyph="IconSearch"
-          onPress={() => {
-            onSearch();
-            setHeld(null);
-          }}
-        />
-      </Sheet>
     </View>
   );
 }
 
-/** One choice in the sheet a long press opens. */
-function Option({ label, glyph, on, onPress }: { label: string; glyph: string; on?: boolean; onPress: () => void }) {
-  const { p, corners } = useTheme();
-  return (
-    <Press
-      accessibilityRole="button"
-      accessibilityState={{ selected: !!on }}
-      onPress={onPress}
-      style={[styles.option, { backgroundColor: on ? p.surface2 : "transparent", ...corners.control }]}
-    >
-      <Glyph name={glyph} color={p.textSub} size={16} />
-      <Text style={[styles.optionText, { color: p.text }]}>{label}</Text>
-      {on ? <Glyph name="IconCheck" color={p.text} size={16} /> : null}
-    </Press>
-  );
-}
-
 /**
- * The list's search, at the top of its card once the long press asked for it.
+ * The list's search, at the top of its card once the magnifier asked for it.
  * Its cross empties and closes it; a field that holds text stays.
  */
 export function ListSearch({
@@ -256,11 +214,10 @@ const styles = StyleSheet.create({
   name: { flexDirection: "row", alignItems: "center", gap: 4, minHeight: TOUCH, flexShrink: 1 },
   label: { fontSize: text.meta, fontWeight: "600" },
   caret: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },
+  find: { marginLeft: "auto", minWidth: TOUCH, minHeight: TOUCH, alignItems: "center", justifyContent: "center" },
   dot: { position: "absolute", top: 0, right: 0, width: 7, height: 7, borderRadius: 4 },
   tip: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingVertical: space.xs },
   tipText: { flex: 1, fontSize: text.meta },
-  option: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: TOUCH, paddingHorizontal: space.md },
-  optionText: { flex: 1, fontSize: text.body },
   search: { flexDirection: "row", alignItems: "stretch", gap: space.sm, paddingTop: space.sm },
   field: { flex: 1, minHeight: TOUCH, paddingHorizontal: space.md, fontSize: text.body },
   narrowed: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: space.sm },

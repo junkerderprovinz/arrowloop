@@ -839,10 +839,6 @@ const gl: Translations = {
   'danger.confirmButton': 'Eliminar todo',
   'phone.runAll': 'Executar todo',
   'phone.stopAll': 'Deter todas as execucións',
-  'phone.sortNewest': 'Máis recentes primeiro',
-  'phone.sortOldest': 'Máis antigos primeiro',
-  'phone.sortAz': 'De A a Z',
-  'phone.sortZa': 'De Z a A',
   'phone.job': 'Tarefa',
   'phone.needName': 'Ponlle un nome á tarefa.',
   'phone.needSide': 'Escolle un cartafol ou un destino para este lado.',
@@ -1304,10 +1300,6 @@ const gl: Translations = {
   'list.tip.sort': 'Fai clic nunha cabeceira para ordenar por ela.',
   'list.tip.filter': 'O ▾ xunto a unha cabeceira filtra por ela.',
   'list.tip.search': 'Comeza a escribir ou preme Ctrl+F para buscar.',
-  'list.tip.menu': 'Fai clic co botón dereito para máis.',
-  'list.tip.hold': 'Mantén premida unha cabeceira para ver as súas opcións.',
-  'list.sortAsc': 'Ascendente',
-  'list.sortDesc': 'Descendente',
   'list.filterBy': 'Filtrar por {name}',
   'list.filtered': 'Filtrado',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const gl: Translations = {
   'list.head.age': 'Antigüidade',
   'list.head.file': 'Ficheiro',
   'conflicts.waiting': 'Agardando por ti: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} e {anomalies} xa non teñen botóns enriba das súas listas. Un clic nunha cabeceira ordena, o ▾ do lado filtra, escribir na lista busca, e un clic dereito ou unha pulsación longa ofrece o resto, como unha resposta para todos os conflitos. O historial da app do móbil tamén ordena e filtra desde as súas cabeceiras.',
   'new.change.buttonTint': 'Cada botón colle a cor de acento cando o punteiro ou o teclado chegan a el, e na app do móbil mentres tes o dedo enriba.',
+  'new.change.listHeads': 'As listas de {history}, {trash}, {conflicts} e {anomalies} ordenan, filtran e buscan desde as súas propias cabeceiras. Un clic nunha cabeceira ordena, o ▾ do lado filtra, e escribir na lista ou premer Ctrl+F abre unha busca que flota enriba dela. Os botóns de filtrar e buscar sobre o historial desapareceron. No historial da app do móbil, tocar unha cabeceira ordena, o seu ▾ filtra e a lupa ao final da fila busca.',
 }
 
 export default gl

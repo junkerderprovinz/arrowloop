@@ -839,10 +839,6 @@ const ko: Translations = {
   'danger.confirmButton': '모두 삭제',
   'phone.runAll': '모두 실행',
   'phone.stopAll': '모든 실행 중지',
-  'phone.sortNewest': '최신순',
-  'phone.sortOldest': '오래된 순',
-  'phone.sortAz': '가나다순',
-  'phone.sortZa': '가나다 역순',
   'phone.job': '작업',
   'phone.needName': '작업에 이름을 지정하세요.',
   'phone.needSide': '이 쪽에 쓸 폴더나 대상을 선택하세요.',
@@ -1304,10 +1300,6 @@ const ko: Translations = {
   'list.tip.sort': '제목을 누르면 그 기준으로 정렬합니다.',
   'list.tip.filter': '제목 옆의 ▾ 로 그 기준을 걸러 냅니다.',
   'list.tip.search': '입력을 시작하거나 Ctrl+F 를 누르면 검색합니다.',
-  'list.tip.menu': '오른쪽 클릭으로 더 볼 수 있습니다.',
-  'list.tip.hold': '제목을 길게 누르면 선택지가 나옵니다.',
-  'list.sortAsc': '오름차순',
-  'list.sortDesc': '내림차순',
   'list.filterBy': '{name} 기준으로 필터',
   'list.filtered': '필터 적용됨',
   'list.searched': '‘{q}’',
@@ -1320,8 +1312,8 @@ const ko: Translations = {
   'list.head.age': '경과',
   'list.head.file': '파일',
   'conflicts.waiting': '결정을 기다림: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts}, {anomalies} 목록 위의 버튼이 사라졌습니다. 제목을 누르면 정렬하고, 옆의 ▾ 는 걸러 내고, 목록에서 입력하면 검색하며, 오른쪽 클릭이나 길게 누르기로 나머지를 고릅니다. 예를 들어 모든 충돌에 한 번에 답할 수 있습니다. 휴대폰 앱의 기록도 제목에서 정렬하고 걸러 냅니다.',
   'new.change.buttonTint': '모든 버튼은 포인터나 키보드가 닿으면 강조색을 띠고, 휴대폰 앱에서는 손가락이 닿아 있는 동안 그렇습니다.',
+  'new.change.listHeads': '{history}, {trash}, {conflicts}, {anomalies} 목록은 각자의 제목에서 정렬, 필터, 검색을 합니다. 제목을 누르면 정렬하고, 옆의 ▾ 는 걸러 내며, 목록에서 입력하거나 Ctrl+F 를 누르면 목록 위에 뜨는 검색이 열립니다. 기록 위의 필터와 검색 버튼은 사라졌습니다. 휴대폰 앱의 기록에서는 제목을 탭하면 정렬하고, 그 ▾ 로 걸러 내며, 줄 끝의 돋보기로 검색합니다.',
 }
 
 export default ko

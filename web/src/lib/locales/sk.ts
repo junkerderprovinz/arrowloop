@@ -839,10 +839,6 @@ const sk: Translations = {
   'danger.confirmButton': 'Odstrániť všetko',
   'phone.runAll': 'Spustiť všetko',
   'phone.stopAll': 'Zastaviť všetky behy',
-  'phone.sortNewest': 'Najnovšie ako prvé',
-  'phone.sortOldest': 'Najstaršie ako prvé',
-  'phone.sortAz': 'A až Z',
-  'phone.sortZa': 'Z až A',
   'phone.job': 'Úloha',
   'phone.needName': 'Pomenuj úlohu.',
   'phone.needSide': 'Vyber priečinok alebo cieľ pre túto stranu.',
@@ -1304,10 +1300,6 @@ const sk: Translations = {
   'list.tip.sort': 'Kliknutím na záhlavie podľa neho zoradíte.',
   'list.tip.filter': '▾ vedľa záhlavia podľa neho filtruje.',
   'list.tip.search': 'Na hľadanie začnite písať alebo stlačte Ctrl+F.',
-  'list.tip.menu': 'Pravým tlačidlom ponúknete ďalšie možnosti.',
-  'list.tip.hold': 'Podržaním záhlavia zobrazíte jeho možnosti.',
-  'list.sortAsc': 'Vzostupne',
-  'list.sortDesc': 'Zostupne',
   'list.filterBy': 'Filtrovať podľa: {name}',
   'list.filtered': 'Filtrované',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const sk: Translations = {
   'list.head.age': 'Vek',
   'list.head.file': 'Súbor',
   'conflicts.waiting': 'Čaká na vás: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} a {anomalies} už nad svojimi zoznamami nemajú tlačidlá. Kliknutie na záhlavie zoraďuje, ▾ vedľa neho filtruje, písanie v zozname hľadá a pravé tlačidlo alebo dlhé podržanie ponúkne zvyšok, napríklad jednu odpoveď pre všetky konflikty. História v aplikácii pre telefón teraz tiež zoraďuje a filtruje zo záhlaví.',
   'new.change.buttonTint': 'Každé tlačidlo prevezme farbu zvýraznenia, keď naň príde ukazovateľ alebo klávesnica, a v aplikácii pre telefón, kým na ňom máte prst.',
+  'new.change.listHeads': 'Zoznamy v {history}, {trash}, {conflicts} a {anomalies} zoraďujú, filtrujú a hľadajú zo svojich záhlaví. Kliknutie na záhlavie zoraďuje, ▾ vedľa neho filtruje a písanie v zozname alebo Ctrl+F otvorí hľadanie, ktoré sa vznáša nad ním. Tlačidlá filtra a hľadania nad históriou zmizli. V histórii aplikácie pre telefón ťuknutie na záhlavie zoraďuje, jeho ▾ filtruje a lupa na konci riadka hľadá.',
 }
 
 export default sk

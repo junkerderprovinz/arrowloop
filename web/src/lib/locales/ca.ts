@@ -839,10 +839,6 @@ const ca: Translations = {
   'danger.confirmButton': 'Elimina-ho tot',
   'phone.runAll': 'Executa-ho tot',
   'phone.stopAll': 'Atura totes les execucions',
-  'phone.sortNewest': 'Més recents primer',
-  'phone.sortOldest': 'Més antics primer',
-  'phone.sortAz': 'De la A a la Z',
-  'phone.sortZa': 'De la Z a la A',
   'phone.job': 'Tasca',
   'phone.needName': 'Posa un nom a la tasca.',
   'phone.needSide': 'Tria una carpeta o una destinació per a aquest costat.',
@@ -1304,10 +1300,6 @@ const ca: Translations = {
   'list.tip.sort': 'Fes clic en una capçalera per ordenar-hi.',
   'list.tip.filter': 'El ▾ al costat d\'una capçalera hi filtra.',
   'list.tip.search': 'Comença a escriure o prem Ctrl+F per cercar.',
-  'list.tip.menu': 'Fes clic amb el botó dret per a més.',
-  'list.tip.hold': 'Mantén premuda una capçalera per veure\'n les opcions.',
-  'list.sortAsc': 'Ascendent',
-  'list.sortDesc': 'Descendent',
   'list.filterBy': 'Filtra per {name}',
   'list.filtered': 'Filtrat',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const ca: Translations = {
   'list.head.age': 'Antiguitat',
   'list.head.file': 'Fitxer',
   'conflicts.waiting': 'Esperant-te: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} i {anomalies} ja no tenen botons damunt de les llistes. Un clic en una capçalera ordena, el ▾ del costat filtra, escriure a la llista cerca, i un clic dret o una pulsació llarga ofereix la resta, com ara una resposta per a tots els conflictes. L\'historial de l\'app mòbil també ordena i filtra des de les capçaleres.',
   'new.change.buttonTint': 'Cada botó pren el color d\'accent quan el punter o el teclat hi arriben, i a l\'app mòbil mentre hi tens el dit a sobre.',
+  'new.change.listHeads': 'Les llistes de {history}, {trash}, {conflicts} i {anomalies} ordenen, filtren i cerquen des de les seves capçaleres. Un clic en una capçalera ordena, el ▾ del costat filtra, i escriure a la llista o prémer Ctrl+F obre una cerca que hi sura per sobre. Els botons de filtre i cerca damunt l\'historial han desaparegut. A l\'historial de l\'app mòbil, un toc en una capçalera ordena, el seu ▾ filtra i la lupa al final de la fila cerca.',
 }
 
 export default ca

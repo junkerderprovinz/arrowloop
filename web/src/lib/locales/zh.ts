@@ -839,10 +839,6 @@ const zh: Translations = {
   'danger.confirmButton': '全部移除',
   'phone.runAll': '全部运行',
   'phone.stopAll': '停止所有运行',
-  'phone.sortNewest': '最新优先',
-  'phone.sortOldest': '最早优先',
-  'phone.sortAz': 'A 到 Z',
-  'phone.sortZa': 'Z 到 A',
   'phone.job': '任务',
   'phone.needName': '给任务起个名字。',
   'phone.needSide': '为这一侧选择一个文件夹或目标。',
@@ -1304,10 +1300,6 @@ const zh: Translations = {
   'list.tip.sort': '点击标题即可按该列排序。',
   'list.tip.filter': '标题旁的 ▾ 可按该列筛选。',
   'list.tip.search': '直接输入或按 Ctrl+F 即可搜索。',
-  'list.tip.menu': '右键点击可查看更多。',
-  'list.tip.hold': '长按标题可查看选项。',
-  'list.sortAsc': '升序',
-  'list.sortDesc': '降序',
   'list.filterBy': '按{name}筛选',
   'list.filtered': '已筛选',
   'list.searched': '“{q}”',
@@ -1320,8 +1312,8 @@ const zh: Translations = {
   'list.head.age': '时长',
   'list.head.file': '文件',
   'conflicts.waiting': '等待你处理：{count}',
-  'new.change.listHeads': '{history}、{trash}、{conflicts} 和 {anomalies} 的列表上方不再有按钮。点击标题即可排序，标题旁的 ▾ 用于筛选，在列表中直接输入即可搜索，右键或长按则提供其余操作，例如一次答复所有冲突。手机应用的历史也能从标题排序和筛选。',
   'new.change.buttonTint': '每个按钮在指针或键盘到达时都会显示强调色，在手机应用中则是手指按住的时候。',
+  'new.change.listHeads': '{history}、{trash}、{conflicts} 和 {anomalies} 的列表可以直接从各自的标题排序、筛选和搜索。点击标题即可排序，标题旁的 ▾ 用于筛选，在列表中输入或按 Ctrl+F 会打开浮在列表上方的搜索框。历史上方的筛选和搜索按钮已经去掉。在手机应用的历史中，点按标题即可排序，标题的 ▾ 用于筛选，行末的放大镜用于搜索。',
 }
 
 export default zh

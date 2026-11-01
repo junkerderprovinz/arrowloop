@@ -3,8 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Empty, Rows } from '../components/Shell'
 import { Day, Field } from '../components/Field'
 import { IconAction } from '../components/IconAction'
-import { FilterChoice, ListHead, ListSearch, Narrowed, useListMenu, type Head } from '../components/ListHead'
-import type { MenuItem } from '../components/Menu'
+import { FilterChoice, ListHead, ListSearch, Narrowed, type Head } from '../components/ListHead'
 import { RunSheet } from '../components/RunSheet'
 import { Stats } from '../components/Stats'
 import { TOUCH_KINDS, TouchKindChoice, touchKindLabel, type TouchKind } from '../components/TouchKinds'
@@ -28,10 +27,10 @@ const SHOW_LABEL: Record<HistoryShow, TranslationKey> = {
 
 /**
  * The History page: what the engine did, as the files it touched or as its
- * runs. The totals card on top picks the view and says what narrows it; the
- * list below filters and searches from its own head, and a run opens in a
- * window. Both views keep the log's own order, newest first, which the engine
- * hands out a screenful at a time, so no head sorts.
+ * runs, behind one selector in one card. What narrows the list stands at the
+ * end of the selector's row; the list filters and searches from its own head,
+ * and a run opens in a window. Both views keep the log's own order, newest
+ * first, which the engine hands out a screenful at a time, so no head sorts.
  *
  * It fetches its own runs rather than filtering the shell's copy, which stays
  * unfiltered for the job list. Filters go to the server, since a job watching
@@ -66,8 +65,6 @@ export function History({
     return () => clearTimeout(timer)
   }, [typed])
   const area = useRef<HTMLDivElement>(null)
-  const openSearch = useRef<(() => void) | null>(null)
-  const menu = useListMenu(t('history.title'))
 
   // Configuration and log joined: a renamed or deleted job still has runs, and
   // a job that never ran has none.
@@ -173,43 +170,34 @@ export function History({
         },
       ]
 
-  const listItems = (): MenuItem[] => [
-    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
-    ...(narrowing.length > 0 ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: showAll }] : []),
-  ]
-
   return (
-    <div className="flex flex-1 flex-col gap-10">
+    // The card reaches the bottom of the window however short its list.
+    <div className="flex flex-1 flex-col *:flex-1">
       <Card title={t('history.title')} hueIndex={0}>
-        <div data-new="list-heads" className="flex flex-col gap-4">
-          <div className="min-w-0 sm:max-w-xs">
+        <div data-new="list-bar" className="flex flex-wrap items-center gap-2">
+          <div className="min-w-0 flex-1 basis-48 sm:max-w-xs">
             <ViewSwitch value={view} onChange={setView} />
           </div>
-          {!files && <Stats job={job || undefined} />}
-          <Narrowed what={narrowing} onClear={showAll} />
+          <div className="ms-auto">
+            <Narrowed what={narrowing} onClear={showAll} />
+          </div>
+        </div>
+        {!files && <Stats job={job || undefined} />}
+        <div ref={area} tabIndex={-1} data-new="list-heads" className="relative flex flex-col gap-2 outline-none">
+          <ListSearch
+            value={typed}
+            onChange={setTyped}
+            placeholder={files ? t('history.pathHint') : t('history.runSearch')}
+            area={area}
+          />
+          <ListHead heads={heads} page="history" search />
+          {files ? (
+            <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} />
+          ) : (
+            <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
+          )}
         </div>
       </Card>
-      {/* The list's card reaches the bottom of the window however short its list. */}
-      <div className="flex flex-1 flex-col *:flex-1">
-        <Card title={t(files ? 'history.files' : 'history.runs')} hueIndex={1}>
-          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2 outline-none" {...menu.on(listItems)}>
-            <ListSearch
-              value={typed}
-              onChange={setTyped}
-              placeholder={files ? t('history.pathHint') : t('history.runSearch')}
-              area={area}
-              open={openSearch}
-            />
-            <ListHead heads={heads} page="history" onSearch={() => openSearch.current?.()} menu />
-            {files ? (
-              <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} />
-            ) : (
-              <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} />
-            )}
-          </div>
-        </Card>
-      </div>
-      {menu.element}
     </div>
   )
 }

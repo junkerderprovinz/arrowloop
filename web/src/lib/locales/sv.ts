@@ -839,10 +839,6 @@ const sv: Translations = {
   'danger.confirmButton': 'Ta bort allt',
   'phone.runAll': 'Kör alla',
   'phone.stopAll': 'Stoppa alla körningar',
-  'phone.sortNewest': 'Nyast först',
-  'phone.sortOldest': 'Äldst först',
-  'phone.sortAz': 'A till Ö',
-  'phone.sortZa': 'Ö till A',
   'phone.job': 'Jobb',
   'phone.needName': 'Ge jobbet ett namn.',
   'phone.needSide': 'Välj en mapp eller ett mål för den här sidan.',
@@ -1304,10 +1300,6 @@ const sv: Translations = {
   'list.tip.sort': 'Klicka på en rubrik för att sortera efter den.',
   'list.tip.filter': '▾ bredvid en rubrik filtrerar efter den.',
   'list.tip.search': 'Börja skriva, eller tryck Ctrl+F, för att söka.',
-  'list.tip.menu': 'Högerklicka för mer.',
-  'list.tip.hold': 'Håll in en rubrik för dess val.',
-  'list.sortAsc': 'Stigande',
-  'list.sortDesc': 'Fallande',
   'list.filterBy': 'Filtrera efter {name}',
   'list.filtered': 'Filtrerat',
   'list.searched': '”{q}”',
@@ -1320,8 +1312,8 @@ const sv: Translations = {
   'list.head.age': 'Ålder',
   'list.head.file': 'Fil',
   'conflicts.waiting': 'Väntar på dig: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} och {anomalies} har inte längre knappar ovanför sina listor. Ett klick på en rubrik sorterar, ▾ bredvid filtrerar, att skriva i listan söker, och ett högerklick eller ett långt tryck erbjuder resten, till exempel ett svar för alla konflikter. Historiken i telefonappen sorterar och filtrerar också från sina rubriker.',
   'new.change.buttonTint': 'Varje knapp tar accentfärgen när pekaren eller tangentbordet når den, och i telefonappen så länge ditt finger ligger på den.',
+  'new.change.listHeads': 'Listorna i {history}, {trash}, {conflicts} och {anomalies} sorterar, filtrerar och söker från sina egna rubriker. Ett klick på en rubrik sorterar, ▾ bredvid filtrerar, och att skriva i listan eller trycka Ctrl+F öppnar en sökning som svävar över den. Filter- och sökknapparna ovanför historiken är borta. I telefonappens historik sorterar ett tryck på en rubrik, dess ▾ filtrerar och förstoringsglaset längst ut i raden söker.',
 }
 
 export default sv

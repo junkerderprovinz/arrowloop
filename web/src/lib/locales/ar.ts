@@ -839,10 +839,6 @@ const ar: Translations = {
   'danger.confirmButton': 'إزالة الكل',
   'phone.runAll': 'شغّل الكل',
   'phone.stopAll': 'أوقف كل العمليات',
-  'phone.sortNewest': 'الأحدث أولاً',
-  'phone.sortOldest': 'الأقدم أولاً',
-  'phone.sortAz': 'من أ إلى ي',
-  'phone.sortZa': 'من ي إلى أ',
   'phone.job': 'مهمة',
   'phone.needName': 'أعطِ المهمة اسمًا.',
   'phone.needSide': 'اختر مجلدًا أو وجهة لهذا الجانب.',
@@ -1304,10 +1300,6 @@ const ar: Translations = {
   'list.tip.sort': 'انقر على عنوان للفرز حسبه.',
   'list.tip.filter': 'الرمز ▾ بجانب العنوان يصفّي حسبه.',
   'list.tip.search': 'ابدأ الكتابة أو اضغط Ctrl+F للبحث.',
-  'list.tip.menu': 'انقر بالزر الأيمن لمزيد من الخيارات.',
-  'list.tip.hold': 'اضغط مطولًا على عنوان لعرض خياراته.',
-  'list.sortAsc': 'تصاعدي',
-  'list.sortDesc': 'تنازلي',
   'list.filterBy': 'تصفية حسب {name}',
   'list.filtered': 'مُصفّاة',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const ar: Translations = {
   'list.head.age': 'العمر',
   'list.head.file': 'الملف',
   'conflicts.waiting': 'بانتظارك: {count}',
-  'new.change.listHeads': 'لم تعد فوق قوائم {history} و{trash} و{conflicts} و{anomalies} أي أزرار. النقر على عنوان يفرز، والرمز ▾ بجانبه يصفّي، والكتابة داخل القائمة تبحث، والنقر بالزر الأيمن أو الضغط المطوّل يعرض الباقي، مثل إجابة واحدة لكل التعارضات. وصار السجل في تطبيق الهاتف يفرز ويصفّي من عناوينه أيضًا.',
   'new.change.buttonTint': 'يأخذ كل زر لون التمييز عندما يصل إليه المؤشر أو لوحة المفاتيح، وفي تطبيق الهاتف ما دام إصبعك عليه.',
+  'new.change.listHeads': 'صارت القوائم في {history} و{trash} و{conflicts} و{anomalies} تفرز وتصفّي وتبحث من عناوينها. النقر على عنوان يفرز، والرمز ▾ بجانبه يصفّي، والكتابة داخل القائمة أو الضغط على Ctrl+F يفتح بحثًا يطفو فوقها. اختفى زرّا التصفية والبحث فوق السجل. وفي سجل تطبيق الهاتف يفرز النقر على العنوان، ويصفّي رمزه ▾، وتبحث العدسة في آخر السطر.',
 }
 
 export default ar

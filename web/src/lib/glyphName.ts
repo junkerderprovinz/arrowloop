@@ -114,8 +114,6 @@ const RULES: Rule[] = [
   [/download/i, 'IconDownload'],
   [/^history\.filter$|^list\.filter$/i, 'IconFilter'],
   [/^list\.search$/i, 'IconSearch'],
-  [/^list\.sortAsc$/i, 'IconMoveUp'],
-  [/^list\.sortDesc$/i, 'IconMoveDown'],
   [/import/i, 'IconImport'],
   [/upload/i, 'IconUpload'],
 

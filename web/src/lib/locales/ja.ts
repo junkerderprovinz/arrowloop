@@ -839,10 +839,6 @@ const ja: Translations = {
   'danger.confirmButton': 'すべて削除',
   'phone.runAll': 'すべて実行',
   'phone.stopAll': 'すべての実行を停止',
-  'phone.sortNewest': '新しい順',
-  'phone.sortOldest': '古い順',
-  'phone.sortAz': 'A から Z',
-  'phone.sortZa': 'Z から A',
   'phone.job': 'ジョブ',
   'phone.needName': 'ジョブに名前を付けてください。',
   'phone.needSide': 'この側のフォルダーまたは接続先を選んでください。',
@@ -1304,10 +1300,6 @@ const ja: Translations = {
   'list.tip.sort': '見出しをクリックするとその順に並べ替えます。',
   'list.tip.filter': '見出しの横の ▾ で絞り込めます。',
   'list.tip.search': '入力を始めるか Ctrl+F で検索します。',
-  'list.tip.menu': '右クリックでその他の操作が出ます。',
-  'list.tip.hold': '見出しを長押しすると選択肢が出ます。',
-  'list.sortAsc': '昇順',
-  'list.sortDesc': '降順',
   'list.filterBy': '{name}で絞り込む',
   'list.filtered': '絞り込み中',
   'list.searched': '「{q}」',
@@ -1320,8 +1312,8 @@ const ja: Translations = {
   'list.head.age': '経過',
   'list.head.file': 'ファイル',
   'conflicts.waiting': 'あなたの判断待ち: {count}',
-  'new.change.listHeads': '{history}、{trash}、{conflicts}、{anomalies} のリストの上からボタンがなくなりました。見出しをクリックすると並べ替え、横の ▾ で絞り込み、リストで入力すると検索し、右クリックか長押しで残りの操作が出ます。たとえばすべての競合へのまとめての回答です。スマホアプリの履歴も見出しから並べ替えと絞り込みができます。',
   'new.change.buttonTint': 'どのボタンも、ポインターかキーボードが届くとアクセント色になり、スマホアプリでは指を置いている間そうなります。',
+  'new.change.listHeads': '{history}、{trash}、{conflicts}、{anomalies} のリストは、それぞれの見出しから並べ替え、絞り込み、検索ができます。見出しをクリックすると並べ替え、横の ▾ で絞り込み、リストで入力するか Ctrl+F を押すとリストの上に浮かぶ検索が開きます。履歴の上にあった絞り込みと検索のボタンはなくなりました。スマホアプリの履歴では、見出しをタップすると並べ替え、その ▾ で絞り込み、行の端の虫めがねで検索します。',
 }
 
 export default ja

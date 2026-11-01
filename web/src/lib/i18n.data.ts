@@ -881,10 +881,6 @@ export const en = {
   'danger.confirmButton': 'Remove all',
   'phone.runAll': 'Run all',
   'phone.stopAll': 'Stop all runs',
-  'phone.sortNewest': 'Newest first',
-  'phone.sortOldest': 'Oldest first',
-  'phone.sortAz': 'A to Z',
-  'phone.sortZa': 'Z to A',
   'phone.job': 'Job',
   'phone.needName': 'Give the job a name.',
   'phone.needSide': 'Pick a folder or a target for this side.',
@@ -1346,10 +1342,6 @@ export const en = {
   'list.tip.sort': 'Click a heading to sort by it.',
   'list.tip.filter': 'The ▾ beside a heading filters by it.',
   'list.tip.search': 'Start typing, or press Ctrl+F, to search.',
-  'list.tip.menu': 'Right-click for more.',
-  'list.tip.hold': 'Press and hold a heading for its choices.',
-  'list.sortAsc': 'Ascending',
-  'list.sortDesc': 'Descending',
   'list.filterBy': 'Filter by {name}',
   'list.filtered': 'Filtered',
   'list.searched': '“{q}”',
@@ -1362,8 +1354,8 @@ export const en = {
   'list.head.age': 'Age',
   'list.head.file': 'File',
   'conflicts.waiting': 'Waiting for you: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} and {anomalies} have no buttons over their lists any more. A click on a heading sorts, the ▾ beside it filters, typing in the list searches, and a right-click or a long press offers the rest, such as one answer for every conflict. The phone app\'s History sorts and filters from its headings too.',
   'new.change.buttonTint': 'Every button takes the accent when the pointer or the keyboard reaches it, and in the phone app while your finger is on it.',
+  'new.change.listHeads': 'The lists in {history}, {trash}, {conflicts} and {anomalies} sort, filter and search from their own headings. A click on a heading sorts, the ▾ beside it filters, and typing in the list or pressing Ctrl+F opens a search that floats over it. The Filter and Search buttons over History are gone. In the phone app\'s History a tap on a heading sorts, its ▾ filters and the magnifier at the end of the row searches.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2238,10 +2230,6 @@ export const de: Translations = {
   'danger.confirmButton': 'Alle entfernen',
   'phone.runAll': 'Alle starten',
   'phone.stopAll': 'Alle Läufe stoppen',
-  'phone.sortNewest': 'Neueste zuerst',
-  'phone.sortOldest': 'Älteste zuerst',
-  'phone.sortAz': 'A bis Z',
-  'phone.sortZa': 'Z bis A',
   'phone.job': 'Auftrag',
   'phone.needName': 'Gib dem Auftrag einen Namen.',
   'phone.needSide': 'Wähle für diese Seite einen Ordner oder ein Ziel.',
@@ -2700,10 +2688,6 @@ export const de: Translations = {
   'list.tip.sort': 'Ein Klick auf eine Überschrift sortiert danach.',
   'list.tip.filter': 'Das ▾ neben einer Überschrift filtert danach.',
   'list.tip.search': 'Zum Suchen einfach lostippen oder Strg+F drücken.',
-  'list.tip.menu': 'Ein Rechtsklick bietet mehr.',
-  'list.tip.hold': 'Langes Drücken auf eine Überschrift zeigt ihre Möglichkeiten.',
-  'list.sortAsc': 'Aufsteigend',
-  'list.sortDesc': 'Absteigend',
   'list.filterBy': 'Nach {name} filtern',
   'list.filtered': 'Gefiltert',
   'list.searched': '„{q}“',
@@ -2716,8 +2700,8 @@ export const de: Translations = {
   'list.head.age': 'Alter',
   'list.head.file': 'Datei',
   'conflicts.waiting': 'Warten auf dich: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} und {anomalies} haben keine Knöpfe mehr über ihren Listen. Ein Klick auf eine Überschrift sortiert, das ▾ daneben filtert, Tippen in der Liste sucht, und ein Rechtsklick oder langes Drücken bietet den Rest an, etwa eine Antwort für alle Konflikte. Auch der Verlauf in der Handy-App sortiert und filtert über seine Überschriften.',
   'new.change.buttonTint': 'Jeder Knopf nimmt die Akzentfarbe an, sobald Mauszeiger oder Tastatur ihn erreichen, und in der Handy-App, solange dein Finger darauf liegt.',
+  'new.change.listHeads': 'Die Listen in {history}, {trash}, {conflicts} und {anomalies} sortieren, filtern und suchen über ihre eigenen Überschriften. Ein Klick auf eine Überschrift sortiert, das ▾ daneben filtert, und Tippen in der Liste oder Strg+F öffnet eine Suche, die über ihr schwebt. Die Knöpfe Filter und Suchen über dem Verlauf sind weg. Im Verlauf der Handy-App sortiert ein Tipp auf eine Überschrift, ihr ▾ filtert und die Lupe am Ende der Zeile sucht.',
 }
 
 export interface Language {

@@ -839,10 +839,6 @@ const es: Translations = {
   'danger.confirmButton': 'Quitar todo',
   'phone.runAll': 'Ejecutar todo',
   'phone.stopAll': 'Detener todas las ejecuciones',
-  'phone.sortNewest': 'Más recientes primero',
-  'phone.sortOldest': 'Más antiguos primero',
-  'phone.sortAz': 'De A a Z',
-  'phone.sortZa': 'De Z a A',
   'phone.job': 'Tarea',
   'phone.needName': 'Ponle un nombre a la tarea.',
   'phone.needSide': 'Elige una carpeta o un destino para este lado.',
@@ -1304,10 +1300,6 @@ const es: Translations = {
   'list.tip.sort': 'Haz clic en un encabezado para ordenar por él.',
   'list.tip.filter': 'El ▾ junto a un encabezado filtra por él.',
   'list.tip.search': 'Empieza a escribir o pulsa Ctrl+F para buscar.',
-  'list.tip.menu': 'Haz clic con el botón derecho para más.',
-  'list.tip.hold': 'Mantén pulsado un encabezado para ver sus opciones.',
-  'list.sortAsc': 'Ascendente',
-  'list.sortDesc': 'Descendente',
   'list.filterBy': 'Filtrar por {name}',
   'list.filtered': 'Filtrado',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const es: Translations = {
   'list.head.age': 'Antigüedad',
   'list.head.file': 'Archivo',
   'conflicts.waiting': 'Esperándote: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} y {anomalies} ya no tienen botones sobre sus listas. Un clic en un encabezado ordena, el ▾ de al lado filtra, escribir en la lista busca, y un clic derecho o una pulsación larga ofrece el resto, como una respuesta para todos los conflictos. El historial de la app del móvil también ordena y filtra desde sus encabezados.',
   'new.change.buttonTint': 'Cada botón toma el color de acento cuando el puntero o el teclado llegan a él, y en la app del móvil mientras tienes el dedo encima.',
+  'new.change.listHeads': 'Las listas de {history}, {trash}, {conflicts} y {anomalies} ordenan, filtran y buscan desde sus propios encabezados. Un clic en un encabezado ordena, el ▾ de al lado filtra, y escribir en la lista o pulsar Ctrl+F abre una búsqueda que flota sobre ella. Los botones de filtrar y buscar sobre el historial ya no están. En el historial de la app del móvil, tocar un encabezado ordena, su ▾ filtra y la lupa al final de la fila busca.',
 }
 
 export default es

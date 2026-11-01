@@ -66,8 +66,8 @@ describe('the conflicts list', () => {
     const a = card('a.txt')
     expect(within(a).getByText(/Both sides changed this file since the last sync/)).toBeTruthy()
     expect(within(a).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual([
-      'Keep both files',
       'Keep the left version, trash the right',
+      'Keep both files',
       'Keep the right version, trash the left',
     ])
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
@@ -91,10 +91,9 @@ describe('the conflicts list', () => {
     expect(within(left).queryByText('newer')).toBeNull()
   })
 
-  it('gives every conflict shown one answer from the right-click menu, once asked', async () => {
+  it('gives every conflict shown one answer from the corner, once asked', async () => {
     page()
-    expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
-    fireEvent.contextMenu(card('a.txt'))
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
     fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Keep left for all' }))
     const ask = await screen.findByRole('dialog', { name: 'Keep left for all' })
     expect(ask.textContent).toContain('Conflicts: 4')
@@ -104,16 +103,19 @@ describe('the conflicts list', () => {
     expect(decide.mock.calls[0][1]).toHaveLength(4)
   })
 
-  it('offers no answer for all while one conflict waits', async () => {
+  it('offers no answer for all while one conflict waits', () => {
     render(
       <ToastProvider>
         <Conflicts listing={{ conflicts: [conflict('a.txt')], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
       </ToastProvider>,
     )
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
+  })
+
+  it('opens no menu of its own on a right-click', () => {
+    page()
     fireEvent.contextMenu(card('a.txt'))
-    const menu = await screen.findByRole('menu')
-    expect(within(menu).getByRole('menuitem', { name: 'Keep both files' })).toBeTruthy()
-    expect(within(menu).queryByRole('menuitem', { name: 'Keep left for all' })).toBeNull()
+    expect(screen.queryByRole('menu')).toBeNull()
   })
 
   it('sorts by file from its head', () => {

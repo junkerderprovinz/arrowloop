@@ -839,10 +839,6 @@ const da: Translations = {
   'danger.confirmButton': 'Fjern alle',
   'phone.runAll': 'Kør alle',
   'phone.stopAll': 'Stop alle kørsler',
-  'phone.sortNewest': 'Nyeste først',
-  'phone.sortOldest': 'Ældste først',
-  'phone.sortAz': 'A til Å',
-  'phone.sortZa': 'Å til A',
   'phone.job': 'Job',
   'phone.needName': 'Giv jobbet et navn.',
   'phone.needSide': 'Vælg en mappe eller et mål til denne side.',
@@ -1304,10 +1300,6 @@ const da: Translations = {
   'list.tip.sort': 'Klik på en overskrift for at sortere efter den.',
   'list.tip.filter': '▾ ved siden af en overskrift filtrerer efter den.',
   'list.tip.search': 'Begynd at skrive, eller tryk Ctrl+F, for at søge.',
-  'list.tip.menu': 'Højreklik for mere.',
-  'list.tip.hold': 'Hold en overskrift nede for at se dens valg.',
-  'list.sortAsc': 'Stigende',
-  'list.sortDesc': 'Faldende',
   'list.filterBy': 'Filtrér efter {name}',
   'list.filtered': 'Filtreret',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const da: Translations = {
   'list.head.age': 'Alder',
   'list.head.file': 'Fil',
   'conflicts.waiting': 'Venter på dig: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} og {anomalies} har ikke længere knapper over deres lister. Et klik på en overskrift sorterer, ▾ ved siden af filtrerer, at skrive i listen søger, og et højreklik eller et langt tryk tilbyder resten, fx ét svar på alle konflikter. Historikken i telefonappen sorterer og filtrerer også fra sine overskrifter.',
   'new.change.buttonTint': 'Hver knap tager accentfarven, når markøren eller tastaturet når den, og i telefonappen, så længe din finger er på den.',
+  'new.change.listHeads': 'Listerne i {history}, {trash}, {conflicts} og {anomalies} sorterer, filtrerer og søger fra deres egne overskrifter. Et klik på en overskrift sorterer, ▾ ved siden af filtrerer, og at skrive i listen eller trykke Ctrl+F åbner en søgning, der svæver over den. Filter- og søgeknapperne over historikken er væk. I telefonappens historik sorterer et tryk på en overskrift, dens ▾ filtrerer, og luppen for enden af rækken søger.',
 }
 
 export default da

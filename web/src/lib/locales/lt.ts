@@ -839,10 +839,6 @@ const lt: Translations = {
   'danger.confirmButton': 'Pašalinti viską',
   'phone.runAll': 'Paleisti viską',
   'phone.stopAll': 'Sustabdyti visus paleidimus',
-  'phone.sortNewest': 'Naujausi pirmi',
-  'phone.sortOldest': 'Seniausi pirmi',
-  'phone.sortAz': 'Nuo A iki Ž',
-  'phone.sortZa': 'Nuo Ž iki A',
   'phone.job': 'Užduotis',
   'phone.needName': 'Suteik užduočiai pavadinimą.',
   'phone.needSide': 'Pasirink šios pusės aplanką arba paskirtį.',
@@ -1304,10 +1300,6 @@ const lt: Translations = {
   'list.tip.sort': 'Spustelėkite antraštę, kad rikiuotumėte pagal ją.',
   'list.tip.filter': '▾ šalia antraštės filtruoja pagal ją.',
   'list.tip.search': 'Norėdami ieškoti, pradėkite rašyti arba paspauskite Ctrl+F.',
-  'list.tip.menu': 'Spustelėkite dešiniuoju mygtuku, kad matytumėte daugiau.',
-  'list.tip.hold': 'Ilgai palaikykite antraštę, kad pamatytumėte jos pasirinkimus.',
-  'list.sortAsc': 'Didėjančiai',
-  'list.sortDesc': 'Mažėjančiai',
   'list.filterBy': 'Filtruoti pagal: {name}',
   'list.filtered': 'Filtruota',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const lt: Translations = {
   'list.head.age': 'Amžius',
   'list.head.file': 'Failas',
   'conflicts.waiting': 'Laukia jūsų: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} ir {anomalies} nebeturi mygtukų virš savo sąrašų. Spustelėjus antraštę rikiuojama, ▾ šalia jos filtruoja, rašymas sąraše ieško, o dešinysis spustelėjimas ar ilgas paspaudimas pasiūlo likusius veiksmus, pavyzdžiui, vieną atsakymą visiems konfliktams. Telefono programėlės istorija taip pat rikiuoja ir filtruoja iš savo antraščių.',
   'new.change.buttonTint': 'Kiekvienas mygtukas įgauna akcento spalvą, kai jį pasiekia žymeklis ar klaviatūra, o telefono programėlėje tol, kol ant jo laikote pirštą.',
+  'new.change.listHeads': 'Sąrašai puslapiuose {history}, {trash}, {conflicts} ir {anomalies} rikiuoja, filtruoja ir ieško iš savo antraščių. Spustelėjus antraštę rikiuojama, ▾ šalia jos filtruoja, o rašymas sąraše ar Ctrl+F atveria paiešką, kuri plaukioja virš jo. Filtro ir paieškos mygtukų virš istorijos nebėra. Telefono programėlės istorijoje palietus antraštę rikiuojama, jos ▾ filtruoja, o didinamasis stiklas eilutės gale ieško.',
 }
 
 export default lt

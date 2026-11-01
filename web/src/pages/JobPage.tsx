@@ -9,8 +9,8 @@ import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../compo
 import { BrakesCard } from '../components/JobBrakes'
 import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
-import { ListHead, ListSearch, useListMenu, type Head } from '../components/ListHead'
-import { Menu, type MenuItem } from '../components/Menu'
+import { ListHead, ListSearch, type Head } from '../components/ListHead'
+import { Menu } from '../components/Menu'
 import { Pace } from '../components/Pace'
 import { RunSheet } from '../components/RunSheet'
 import { Empty, Rows, Stack } from '../components/Shell'
@@ -457,8 +457,6 @@ function FilesCard({ job }: { job: Job }) {
     return () => clearTimeout(timer)
   }, [typed])
   const area = useRef<HTMLDivElement>(null)
-  const openSearch = useRef<(() => void) | null>(null)
-  const menu = useListMenu(t('job.files'))
 
   // A new question starts again at one screenful.
   useEffect(() => setLimit(60), [query, kind])
@@ -478,7 +476,6 @@ function FilesCard({ job }: { job: Job }) {
     }
   }, [job.name, kind, query, limit, tick])
 
-  const narrowed = kind !== 'all' || typed !== ''
   const heads: Head[] = [
     {
       id: 'what',
@@ -491,27 +488,11 @@ function FilesCard({ job }: { job: Job }) {
     { id: 'side', label: '', className: 'w-6 shrink-0 max-sm:hidden' },
     { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1 max-sm:hidden' },
   ]
-  const listItems = (): MenuItem[] => [
-    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
-    ...(narrowed
-      ? [
-          {
-            label: t('list.showAll'),
-            labelKey: 'list.showAll' as const,
-            onSelect: () => {
-              setKind('all')
-              setTyped('')
-            },
-          },
-        ]
-      : []),
-  ]
-
   return (
     <Card title={t('job.files')} hueIndex={1}>
-      <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2 outline-none" {...menu.on(listItems)}>
-        <ListSearch value={typed} onChange={setTyped} placeholder={t('history.pathHint')} area={area} open={openSearch} />
-        <ListHead heads={heads} page="job-files" onSearch={() => openSearch.current?.()} menu />
+      <div ref={area} tabIndex={-1} className="relative flex flex-col gap-2 outline-none">
+        <ListSearch value={typed} onChange={setTyped} placeholder={t('history.pathHint')} area={area} />
+        <ListHead heads={heads} page="job-files" search />
         {error ? (
           <p className="text-subline text-statusFail">{error}</p>
         ) : !touches ? (
@@ -536,7 +517,6 @@ function FilesCard({ job }: { job: Job }) {
           </ul>
         )}
       </div>
-      {menu.element}
     </Card>
   )
 }

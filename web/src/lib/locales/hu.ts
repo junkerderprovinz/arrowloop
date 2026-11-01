@@ -839,10 +839,6 @@ const hu: Translations = {
   'danger.confirmButton': 'Mindet eltávolítom',
   'phone.runAll': 'Összes futtatása',
   'phone.stopAll': 'Minden futás leállítása',
-  'phone.sortNewest': 'Legújabb elöl',
-  'phone.sortOldest': 'Legrégebbi elöl',
-  'phone.sortAz': 'A-tól Zs-ig',
-  'phone.sortZa': 'Zs-től A-ig',
   'phone.job': 'Feladat',
   'phone.needName': 'Adj nevet a feladatnak.',
   'phone.needSide': 'Válassz mappát vagy célt ehhez az oldalhoz.',
@@ -1304,10 +1300,6 @@ const hu: Translations = {
   'list.tip.sort': 'Egy fejlécre kattintva aszerint rendez.',
   'list.tip.filter': 'A fejléc melletti ▾ aszerint szűr.',
   'list.tip.search': 'Kereséshez kezdjen gépelni, vagy nyomja meg a Ctrl+F-et.',
-  'list.tip.menu': 'Jobb kattintással továbbiak.',
-  'list.tip.hold': 'Egy fejlécet hosszan nyomva megjelennek a lehetőségei.',
-  'list.sortAsc': 'Növekvő',
-  'list.sortDesc': 'Csökkenő',
   'list.filterBy': 'Szűrés: {name}',
   'list.filtered': 'Szűrve',
   'list.searched': '„{q}”',
@@ -1320,8 +1312,8 @@ const hu: Translations = {
   'list.head.age': 'Kor',
   'list.head.file': 'Fájl',
   'conflicts.waiting': 'Önre vár: {count}',
-  'new.change.listHeads': 'A(z) {history}, {trash}, {conflicts} és {anomalies} oldalakon már nincsenek gombok a listák fölött. Egy fejlécre kattintva rendez, a mellette lévő ▾ szűr, a listába gépelés keres, a jobb kattintás vagy a hosszú nyomás pedig felkínálja a többit, például egyetlen választ minden ütközésre. A telefonos alkalmazás előzményei is a fejlécekből rendeznek és szűrnek.',
   'new.change.buttonTint': 'Minden gomb felveszi a kiemelőszínt, amikor a mutató vagy a billentyűzet eléri, a telefonos alkalmazásban pedig addig, amíg rajta van az ujja.',
+  'new.change.listHeads': 'A(z) {history}, {trash}, {conflicts} és {anomalies} listái a saját fejlécükből rendeznek, szűrnek és keresnek. Egy fejlécre kattintva rendez, a mellette lévő ▾ szűr, a listába gépelés vagy a Ctrl+F pedig a lista fölött lebegő keresést nyit. Az előzmények fölötti szűrő- és keresőgomb eltűnt. A telefonos alkalmazás előzményeiben egy fejléc megérintése rendez, a ▾ szűr, a sor végén lévő nagyító pedig keres.',
 }
 
 export default hu

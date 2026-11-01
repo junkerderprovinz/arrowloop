@@ -839,10 +839,6 @@ const lv: Translations = {
   'danger.confirmButton': 'Noņemt visu',
   'phone.runAll': 'Palaist visu',
   'phone.stopAll': 'Apturēt visas palaišanas',
-  'phone.sortNewest': 'Jaunākie pirmie',
-  'phone.sortOldest': 'Vecākie pirmie',
-  'phone.sortAz': 'No A līdz Ž',
-  'phone.sortZa': 'No Ž līdz A',
   'phone.job': 'Uzdevums',
   'phone.needName': 'Dod uzdevumam nosaukumu.',
   'phone.needSide': 'Izvēlies šai pusei mapi vai galamērķi.',
@@ -1304,10 +1300,6 @@ const lv: Translations = {
   'list.tip.sort': 'Noklikšķiniet uz virsraksta, lai kārtotu pēc tā.',
   'list.tip.filter': '▾ blakus virsrakstam filtrē pēc tā.',
   'list.tip.search': 'Lai meklētu, sāciet rakstīt vai nospiediet Ctrl+F.',
-  'list.tip.menu': 'Ar labo klikšķi atverat vairāk.',
-  'list.tip.hold': 'Ilgi turiet virsrakstu, lai redzētu tā iespējas.',
-  'list.sortAsc': 'Augošā secībā',
-  'list.sortDesc': 'Dilstošā secībā',
   'list.filterBy': 'Filtrēt pēc: {name}',
   'list.filtered': 'Filtrēts',
   'list.searched': '„{q}“',
@@ -1320,8 +1312,8 @@ const lv: Translations = {
   'list.head.age': 'Vecums',
   'list.head.file': 'Fails',
   'conflicts.waiting': 'Gaida jūs: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} un {anomalies} vairs nav pogu virs sarakstiem. Klikšķis uz virsraksta kārto, ▾ blakus tam filtrē, rakstīšana sarakstā meklē, bet labais klikšķis vai ilgs spiediens piedāvā pārējo, piemēram, vienu atbildi visiem konfliktiem. Arī tālruņa lietotnes vēsture kārto un filtrē no saviem virsrakstiem.',
   'new.change.buttonTint': 'Katra poga iegūst akcenta krāsu, kad to sasniedz rādītājs vai tastatūra, bet tālruņa lietotnē, kamēr uz tās ir jūsu pirksts.',
+  'new.change.listHeads': 'Saraksti lapās {history}, {trash}, {conflicts} un {anomalies} kārto, filtrē un meklē no saviem virsrakstiem. Klikšķis uz virsraksta kārto, ▾ blakus tam filtrē, bet rakstīšana sarakstā vai Ctrl+F atver meklēšanu, kas peld virs tā. Filtra un meklēšanas pogu virs vēstures vairs nav. Tālruņa lietotnes vēsturē pieskāriens virsrakstam kārto, tā ▾ filtrē, bet lupa rindas galā meklē.',
 }
 
 export default lv

@@ -839,10 +839,6 @@ const fi: Translations = {
   'danger.confirmButton': 'Poista kaikki',
   'phone.runAll': 'Suorita kaikki',
   'phone.stopAll': 'Pysäytä kaikki ajot',
-  'phone.sortNewest': 'Uusimmat ensin',
-  'phone.sortOldest': 'Vanhimmat ensin',
-  'phone.sortAz': 'A:sta Ö:hön',
-  'phone.sortZa': 'Ö:stä A:han',
   'phone.job': 'Työ',
   'phone.needName': 'Anna työlle nimi.',
   'phone.needSide': 'Valitse tälle puolelle kansio tai kohde.',
@@ -1304,10 +1300,6 @@ const fi: Translations = {
   'list.tip.sort': 'Lajittele otsikon mukaan napsauttamalla sitä.',
   'list.tip.filter': 'Otsikon vieressä oleva ▾ suodattaa sen mukaan.',
   'list.tip.search': 'Hae aloittamalla kirjoittaminen tai painamalla Ctrl+F.',
-  'list.tip.menu': 'Lisää vaihtoehtoja saat hiiren oikealla painikkeella.',
-  'list.tip.hold': 'Pidä otsikkoa painettuna nähdäksesi sen vaihtoehdot.',
-  'list.sortAsc': 'Nouseva',
-  'list.sortDesc': 'Laskeva',
   'list.filterBy': 'Suodata: {name}',
   'list.filtered': 'Suodatettu',
   'list.searched': '”{q}”',
@@ -1320,8 +1312,8 @@ const fi: Translations = {
   'list.head.age': 'Ikä',
   'list.head.file': 'Tiedosto',
   'conflicts.waiting': 'Odottaa sinua: {count}',
-  'new.change.listHeads': 'Sivuilla {history}, {trash}, {conflicts} ja {anomalies} ei ole enää painikkeita luettelon yläpuolella. Otsikon napsautus lajittelee, sen vieressä oleva ▾ suodattaa, luetteloon kirjoittaminen hakee, ja oikea napsautus tai pitkä painallus tarjoaa loput, kuten yhden vastauksen kaikkiin ristiriitoihin. Puhelinsovelluksen historia lajittelee ja suodattaa nyt myös otsikoistaan.',
   'new.change.buttonTint': 'Jokainen painike saa korostusvärin, kun osoitin tai näppäimistö osuu siihen, ja puhelinsovelluksessa niin kauan kuin sormesi on sen päällä.',
+  'new.change.listHeads': 'Sivujen {history}, {trash}, {conflicts} ja {anomalies} luettelot lajittelevat, suodattavat ja hakevat omista otsikoistaan. Otsikon napsautus lajittelee, sen vieressä oleva ▾ suodattaa, ja luetteloon kirjoittaminen tai Ctrl+F avaa haun, joka leijuu luettelon päällä. Historian yläpuolella olleet suodatus- ja hakupainikkeet ovat poissa. Puhelinsovelluksen historiassa otsikon napautus lajittelee, sen ▾ suodattaa ja rivin lopussa oleva suurennuslasi hakee.',
 }
 
 export default fi

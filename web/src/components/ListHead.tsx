@@ -1,18 +1,7 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type MouseEvent as ReactMouseEvent,
-  type PointerEvent as ReactPointerEvent,
-  type ReactNode,
-  type RefObject,
-} from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 
 import { IconAction } from './IconAction'
-import { ContextMenu, type MenuItem } from './Menu'
 import { Selector, type Option } from './Selector'
 import { IconClose, IconExpand, IconMoveDown, IconMoveUp, IconSearch } from './glyphs'
 import { Badge } from '../lib/glimstone/Badge'
@@ -23,9 +12,8 @@ import { firstVisit } from '../lib/listTips'
 import { placeMenu } from '../lib/menuPlace'
 
 // GlimStone's list: the cards on top and the list below, with sorting,
-// filtering, searching and the actions on many rows in the list itself. A
-// head sorts on a click, its ▾ filters, typing in the list opens the search,
-// and a right-click or a long press opens the menu.
+// filtering and searching in the list itself. A head sorts on a click, its ▾
+// filters, and typing in the list opens the search.
 
 export type SortDir = 'asc' | 'desc'
 export type ListSort = { by: string; dir: SortDir }
@@ -48,86 +36,17 @@ export function nextSort(sort: ListSort | undefined, by: string): ListSort {
   return { by, dir: 'asc' }
 }
 
-/** How long a finger rests before its menu opens, and how far it may drift meanwhile. */
+/** How long a finger rests on the heads before the hint line shows, and how far it may drift meanwhile. */
 const LONG_PRESS_MS = 500
 const PRESS_SLOP = 10
 
-/**
- * The right-click menu of a list's rows and of its empty space, which a long
- * press opens on a touch screen. `on` gives the handlers to spread on an
- * element; a row's handlers win over the list's around it.
- */
-export function useListMenu(label: string) {
-  const [shown, setShown] = useState<{ at: { x: number; y: number }; items: MenuItem[] } | null>(null)
-  const press = useRef<{ timer: number; x: number; y: number } | null>(null)
-  const held = useRef(false)
-  const touch = useRef(false)
-
-  const endPress = () => {
-    if (press.current) window.clearTimeout(press.current.timer)
-    press.current = null
-  }
-  useEffect(() => endPress, [])
-
-  function on(items: () => MenuItem[]) {
-    return {
-      onContextMenu: (e: ReactMouseEvent<HTMLElement>) => {
-        // A field keeps the browser's own menu, for paste.
-        if ((e.target as HTMLElement).closest('input, textarea')) return
-        e.preventDefault()
-        e.stopPropagation()
-        // A finger's long press is handled below.
-        if (touch.current) return
-        const list = items()
-        if (list.length > 0) setShown({ at: { x: e.clientX, y: e.clientY }, items: list })
-      },
-      onPointerDown: (e: ReactPointerEvent<HTMLElement>) => {
-        touch.current = e.pointerType === 'touch'
-        if (!touch.current || press.current) return
-        held.current = false
-        const at = { x: e.clientX, y: e.clientY }
-        press.current = {
-          ...at,
-          timer: window.setTimeout(() => {
-            press.current = null
-            const list = items()
-            if (list.length === 0) return
-            held.current = true
-            setShown({ at, items: list })
-          }, LONG_PRESS_MS),
-        }
-      },
-      onPointerMove: (e: ReactPointerEvent<HTMLElement>) => {
-        const p = press.current
-        if (p && Math.hypot(e.clientX - p.x, e.clientY - p.y) > PRESS_SLOP) endPress()
-      },
-      onPointerUp: endPress,
-      onPointerCancel: endPress,
-      // The press that opened the menu ends in a click, which must not also open the row.
-      onClickCapture: (e: ReactMouseEvent<HTMLElement>) => {
-        if (!held.current) return
-        held.current = false
-        e.preventDefault()
-        e.stopPropagation()
-      },
-    }
-  }
-
-  const element = shown ? <ContextMenu label={label} items={shown.items} at={shown.at} onClose={() => setShown(null)} /> : null
-  return { on, element }
-}
-
-/** The sentences of the hint line, for what this list can do. */
-function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean, menu: boolean): string {
+/** The sentences of the hint line, for what this list can do. A touch screen has no keys to type into the list. */
+function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean): string {
   const touch = typeof window !== 'undefined' && !!window.matchMedia?.('(hover: none)').matches
   const parts: TranslationKey[] = []
   if (heads.some((h) => h.sorts)) parts.push('list.tip.sort')
   if (heads.some((h) => h.filter)) parts.push('list.tip.filter')
-  if (touch) parts.push('list.tip.hold')
-  else {
-    if (search) parts.push('list.tip.search')
-    if (menu) parts.push('list.tip.menu')
-  }
+  if (search && !touch) parts.push('list.tip.search')
   return parts.map((k) => t(k)).join(' ')
 }
 
@@ -136,16 +55,14 @@ function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean
  * click and carries the arrow of the order it is in; a head with a filter has
  * a ▾ that opens it, marked while the filter narrows the list. A line under
  * the row says all this on hover, by itself on the page's first visit, and
- * after a long press on a touch screen, where the press also opens the head's
- * choices.
+ * after a long press on a touch screen, where nothing hovers.
  */
 export function ListHead({
   heads,
   sort,
   onSort,
   page,
-  onSearch,
-  menu = false,
+  search = false,
   className = '',
 }: {
   heads: Head[]
@@ -153,20 +70,18 @@ export function ListHead({
   onSort?: (next: ListSort) => void
   /** The page's name for the first visit's hint, or none where another list on the page shows it. */
   page?: string
-  /** Opens the list's search, which a long press offers on a touch screen. */
-  onSearch?: () => void
-  /** Whether a right-click on the list opens a menu, so the hint can say so. */
-  menu?: boolean
+  /** Whether typing in the list searches it, so the hint can say so. */
+  search?: boolean
   className?: string
 }) {
   const { t } = useT()
   const [tipShown, setTipShown] = useState(() => (page ? firstVisit(page) : false))
-  const [pressed, setPressed] = useState<{ head: Head; at: { x: number; y: number } } | null>(null)
+  const [pressed, setPressed] = useState(false)
   const [filterOpen, setFilterOpen] = useState<string | null>(null)
   const anchors = useRef(new Map<string, HTMLButtonElement>())
   const press = useRef<{ timer: number; x: number; y: number } | null>(null)
   const held = useRef(false)
-  const tip = tipText(t, heads, !!onSearch, menu)
+  const tip = tipText(t, heads, search)
 
   const endPress = () => {
     if (press.current) window.clearTimeout(press.current.timer)
@@ -174,87 +89,69 @@ export function ListHead({
   }
   useEffect(() => endPress, [])
 
-  const used = () => setTipShown(false)
-
-  function sortBy(head: Head, dir?: SortDir) {
-    if (!head.sorts || !onSort) return
-    onSort(dir ? { by: head.id, dir } : nextSort(sort, head.id))
-    used()
+  const used = () => {
+    setTipShown(false)
+    setPressed(false)
   }
-
-  const pressedItems = (head: Head): MenuItem[] => [
-    ...(head.sorts && onSort
-      ? [
-          { label: t('list.sortAsc'), labelKey: 'list.sortAsc' as const, onSelect: () => sortBy(head, 'asc') },
-          { label: t('list.sortDesc'), labelKey: 'list.sortDesc' as const, onSelect: () => sortBy(head, 'desc') },
-        ]
-      : []),
-    ...(head.filter ? [{ label: t('list.filter'), labelKey: 'list.filter' as const, onSelect: () => setFilterOpen(head.id) }] : []),
-    ...(onSearch ? [{ label: t('list.search'), labelKey: 'list.search' as const, onSelect: onSearch }] : []),
-  ]
 
   const openHead = filterOpen ? heads.find((h) => h.id === filterOpen) : undefined
 
   return (
     <div className={`group/head relative ${className}`}>
-      <div role="row" className="flex items-center gap-x-3 border-b border-carbon-border/60 pb-1.5">
+      <div
+        role="row"
+        onPointerDown={(e) => {
+          if (e.pointerType !== 'touch') return
+          held.current = false
+          press.current = {
+            x: e.clientX,
+            y: e.clientY,
+            timer: window.setTimeout(() => {
+              held.current = true
+              press.current = null
+              setPressed(true)
+            }, LONG_PRESS_MS),
+          }
+        }}
+        onPointerMove={(e) => {
+          const p = press.current
+          if (p && Math.hypot(e.clientX - p.x, e.clientY - p.y) > PRESS_SLOP) endPress()
+        }}
+        onPointerUp={endPress}
+        onPointerCancel={endPress}
+        // The press that showed the line ends in a click, which must not also sort.
+        onClickCapture={(e) => {
+          if (!held.current) return
+          held.current = false
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+        className="flex items-center gap-x-3 border-b border-carbon-border/60 pb-1.5"
+      >
         {heads.map((head) => {
           const on = sort?.by === head.id
           const active = !!head.filter?.active
-          const name = head.sorts ? (
-            <button
-              type="button"
-              aria-sort={on ? (sort?.dir === 'asc' ? 'ascending' : 'descending') : undefined}
-              onPointerDown={(e) => {
-                if (e.pointerType !== 'touch') return
-                held.current = false
-                const at = { x: e.clientX, y: e.clientY }
-                press.current = {
-                  ...at,
-                  timer: window.setTimeout(() => {
-                    held.current = true
-                    press.current = null
-                    setPressed({ head, at })
-                  }, LONG_PRESS_MS),
-                }
-              }}
-              onPointerMove={(e) => {
-                const p = press.current
-                if (p && Math.hypot(e.clientX - p.x, e.clientY - p.y) > PRESS_SLOP) endPress()
-              }}
-              onPointerUp={endPress}
-              onPointerCancel={endPress}
-              onContextMenu={(e) => {
-                if (held.current) e.preventDefault()
-              }}
-              onClick={() => {
-                if (held.current) {
-                  held.current = false
-                  return
-                }
-                sortBy(head)
-              }}
-              className={`glim-btn-bare flex min-w-0 items-center gap-1 truncate text-meta font-medium transition-colors ${
-                on || active ? 'text-carbon-text' : 'text-carbon-textMuted'
-              }`}
-            >
-              <span className="truncate">{head.label}</span>
-              {on && (sort?.dir === 'asc' ? <IconMoveUp width={11} height={11} /> : <IconMoveDown width={11} height={11} />)}
-            </button>
-          ) : (
-            <span
-              onPointerDown={(e) => {
-                if (e.pointerType !== 'touch' || (!head.filter && !onSearch)) return
-                const at = { x: e.clientX, y: e.clientY }
-                press.current = { ...at, timer: window.setTimeout(() => setPressed({ head, at }), LONG_PRESS_MS) }
-              }}
-              onPointerUp={endPress}
-              onPointerCancel={endPress}
-              className={`min-w-0 truncate text-meta font-medium ${active ? 'text-carbon-text' : 'text-carbon-textMuted'}`}
-            >
-              {head.label}
-            </span>
-          )
+          const name =
+            head.sorts && onSort ? (
+              <button
+                type="button"
+                aria-sort={on ? (sort?.dir === 'asc' ? 'ascending' : 'descending') : undefined}
+                onClick={() => {
+                  onSort(nextSort(sort, head.id))
+                  used()
+                }}
+                className={`glim-btn-bare flex min-w-0 items-center gap-1 truncate text-meta font-medium transition-colors ${
+                  on || active ? 'text-carbon-text' : 'text-carbon-textMuted'
+                }`}
+              >
+                <span className="truncate">{head.label}</span>
+                {on && (sort?.dir === 'asc' ? <IconMoveUp width={11} height={11} /> : <IconMoveDown width={11} height={11} />)}
+              </button>
+            ) : (
+              <span className={`min-w-0 truncate text-meta font-medium ${active ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
+                {head.label}
+              </span>
+            )
           return (
             <div
               key={head.id}
@@ -294,17 +191,15 @@ export function ListHead({
       {tipShown || pressed ? (
         <div role="note" className="flex items-center gap-2 py-1.5 text-meta text-carbon-textSub">
           <span className="min-w-0 flex-1">{tip}</span>
-          {tipShown && (
-            <button
-              type="button"
-              aria-label={t('common.close')}
-              data-tip={t('common.close')}
-              onClick={used}
-              className="glim-btn-bare grid h-5 w-5 shrink-0 place-items-center rounded-control"
-            >
-              <IconClose width={10} height={10} />
-            </button>
-          )}
+          <button
+            type="button"
+            aria-label={t('common.close')}
+            data-tip={t('common.close')}
+            onClick={used}
+            className="glim-btn-bare grid h-5 w-5 shrink-0 place-items-center rounded-control"
+          >
+            <IconClose width={10} height={10} />
+          </button>
         </div>
       ) : (
         // Under the pointer only; a touch screen has the long press instead.
@@ -324,10 +219,6 @@ export function ListHead({
         >
           {openHead.filter.panel}
         </FilterPanel>
-      )}
-
-      {pressed && pressedItems(pressed.head).length > 0 && (
-        <ContextMenu label={pressed.head.label} items={pressedItems(pressed.head)} at={pressed.at} onClose={() => setPressed(null)} />
       )}
     </div>
   )
@@ -437,21 +328,18 @@ function startsTyping(e: KeyboardEvent): boolean {
  * stays, so a forgotten search cannot hide.
  *
  * `area` is the element whose key presses open it, a typed character starting
- * the search with that character. `open` is set to a function that opens it,
- * for a menu that offers the search.
+ * the search with that character.
  */
 export function ListSearch({
   value,
   onChange,
   placeholder,
   area,
-  open: opener,
 }: {
   value: string
   onChange: (next: string) => void
   placeholder: string
   area: RefObject<HTMLElement | null>
-  open?: RefObject<(() => void) | null>
 }) {
   const { t } = useT()
   const [opened, setOpened] = useState(false)
@@ -468,7 +356,6 @@ export function ListSearch({
       setOpened(true)
       setAsked((n) => n + 1)
     }
-    if (opener) opener.current = show
     const el = area.current
     const onType = (e: KeyboardEvent) => {
       if (!startsTyping(e)) return
@@ -488,9 +375,8 @@ export function ListSearch({
     return () => {
       el?.removeEventListener('keydown', onType)
       document.removeEventListener('keydown', onFind)
-      if (opener) opener.current = null
     }
-  }, [area, opener])
+  }, [area])
 
   useEffect(() => {
     if (asked > 0) field.current?.focus()

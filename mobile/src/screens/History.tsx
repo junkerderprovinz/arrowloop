@@ -31,7 +31,7 @@ import { bytes } from "../space";
  * The history tab: a log of every file touched, and a list of runs behind a
  * selector. The runs stay because a run that fails before touching anything
  * writes no file lines. The list is one card named after what it shows; its
- * head sorts and filters, a long press on the head offers the search, and a
+ * head sorts and filters, the magnifier at its end opens the search, and a
  * row opens its run in a sheet.
  */
 export function History() {
@@ -199,8 +199,8 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
               label: t("history.filterKind"),
               filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
             },
-            { id: "when", label: t("list.head.when"), orders: { asc: t("phone.sortOldest"), desc: t("phone.sortNewest") } },
-            { id: "path", label: t("list.head.path"), orders: { asc: t("phone.sortAz"), desc: t("phone.sortZa") } },
+            { id: "when", label: t("list.head.when"), sorts: true },
+            { id: "path", label: t("list.head.path"), sorts: true },
           ]}
         />
       </ListPiece>
@@ -361,10 +361,10 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
             {
               id: "job",
               label: t("history.filterJob"),
-              orders: { asc: t("phone.sortAz"), desc: t("phone.sortZa") },
+              sorts: true,
               filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
             },
-            { id: "when", label: t("list.head.when"), orders: { asc: t("phone.sortOldest"), desc: t("phone.sortNewest") } },
+            { id: "when", label: t("list.head.when"), sorts: true },
           ]}
         />
       </ListPiece>

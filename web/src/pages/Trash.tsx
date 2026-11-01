@@ -4,8 +4,7 @@ import { Empty, Num, Rows, Stack } from '../components/Shell'
 import { Field, NumberField } from '../components/Field'
 import { IconAction } from '../components/IconAction'
 import { JobChip } from '../components/JobChip'
-import { ListHead, ListSearch, Narrowed, useListMenu, type Head, type ListSort } from '../components/ListHead'
-import type { MenuItem } from '../components/Menu'
+import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
 import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { IconEmpty, IconPrune } from '../components/glyphs'
@@ -52,9 +51,8 @@ function sorted(entries: TrashEntry[], sort: ListSort | null): TrashEntry[] {
  * totals. Restoring is a click, since it only moves a file back; removing
  * anything for good asks first, because the trash is the last copy there is.
  * Emptying it is the corner's filled action, with deleting only the old
- * entries beside it; both act on the jobs the page shows, and the right-click
- * menu offers them too. The lists sort from their heads, and typing searches
- * their paths.
+ * entries beside it; both act on the jobs the page shows. The lists sort from
+ * their heads, and typing searches their paths.
  */
 export function Trash({
   sides,
@@ -79,8 +77,6 @@ export function Trash({
   const [sort, setSort] = useRemembered<ListSort | null>('arrowloop.trash.sort', null, isSort)
   const [query, setQuery] = useState('')
   const area = useRef<HTMLDivElement>(null)
-  const openSearch = useRef<(() => void) | null>(null)
-  const menu = useListMenu(t('nav.trash'))
 
   const all = sides ?? []
   const shown = job ? all.filter((s) => s.job === job) : all
@@ -156,13 +152,6 @@ export function Trash({
     .map((group) => ({ ...group, sides: group.sides.filter((s) => s.error || (s.total > 0 && matching(s).length > 0)) }))
     .filter((group) => group.sides.length > 0)
 
-  const pageItems = (): MenuItem[] => [
-    { label: t('list.search'), labelKey: 'list.search', onSelect: () => openSearch.current?.() },
-    ...(searching ? [{ label: t('list.showAll'), labelKey: 'list.showAll' as const, onSelect: () => setQuery('') }] : []),
-    { label: t('trash.prune'), labelKey: 'trash.prune', disabled: busy || totals.entries === 0, onSelect: () => setPending({ kind: 'prune', sides: full }) },
-    { label: t('trash.emptyAll'), labelKey: 'trash.emptyAll', disabled: busy || totals.entries === 0, onSelect: () => setPending({ kind: 'all', sides: full }) },
-  ]
-
   return (
     <Stack>
       <JobChip job={job} onClear={() => onJob('')} />
@@ -181,8 +170,8 @@ export function Trash({
               <Narrowed what={searching ? [t('list.searched', { q: query.trim() })] : []} onClear={() => setQuery('')} />
             </Card>
           </div>
-          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none" {...menu.on(pageItems)}>
-            <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} open={openSearch} />
+          <div ref={area} tabIndex={-1} className="relative flex flex-col gap-10 outline-none">
+            <ListSearch value={query} onChange={setQuery} placeholder={t('history.pathHint')} area={area} />
             {searching && groups.length === 0 && (
               <Card hueIndex={1}>
                 <Empty>{t('jobs.historyNoMatch', { q: query.trim() })}</Empty>
@@ -200,24 +189,6 @@ export function Trash({
                       sort={sort ?? undefined}
                       onSort={setSort}
                       tip={i === 0 && at === 0}
-                      onSearch={() => openSearch.current?.()}
-                      rowMenu={(entry) =>
-                        menu.on(() => [
-                          ...(entry.runId
-                            ? [
-                                { label: t('trash.restore'), labelKey: 'trash.restore' as const, disabled: busy, onSelect: () => restore(s, entry) },
-                                {
-                                  label: t('trash.delete'),
-                                  labelKey: 'trash.delete' as const,
-                                  disabled: busy,
-                                  onSelect: () => setPending({ kind: 'entry', side: s, entry }),
-                                },
-                              ]
-                            : []),
-                          { label: t('trash.emptySide'), labelKey: 'trash.emptySide', disabled: busy, onSelect: () => setPending({ kind: 'side', side: s }) },
-                          ...pageItems().filter((item) => item.labelKey !== 'list.search'),
-                        ])
-                      }
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
                       onEmpty={() => setPending({ kind: 'side', side: s })}
@@ -270,7 +241,6 @@ export function Trash({
           onClick={() => setPending({ kind: 'all', sides: full })}
         />
       </PageActions>
-      {menu.element}
     </Stack>
   )
 }
@@ -311,8 +281,6 @@ function SideList({
   sort,
   onSort,
   tip,
-  onSearch,
-  rowMenu,
   onRestore,
   onDelete,
   onEmpty,
@@ -325,8 +293,6 @@ function SideList({
   onSort: (next: ListSort) => void
   /** Whether this list's head shows the page's first-visit hint. */
   tip: boolean
-  onSearch: () => void
-  rowMenu: (entry: TrashEntry) => ReturnType<ReturnType<typeof useListMenu>['on']>
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
@@ -357,12 +323,11 @@ function SideList({
         <p className="text-subline text-statusFail">{t('trash.unread', { error: failureLine(side.error, side.failure, t, lang) })}</p>
       ) : (
         <>
-          <ListHead heads={heads} sort={sort} onSort={onSort} page={tip ? 'trash' : undefined} onSearch={onSearch} menu />
+          <ListHead heads={heads} sort={sort} onSort={onSort} page={tip ? 'trash' : undefined} search />
           <Rows className="-mx-2 flex flex-col">
             {entries.map((e) => (
               <li
                 key={e.remote}
-                {...rowMenu(e)}
                 className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-carbon-hover"
               >
                 <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={e.remote}>

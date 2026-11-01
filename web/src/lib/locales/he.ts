@@ -839,10 +839,6 @@ const he: Translations = {
   'danger.confirmButton': 'הסרת הכול',
   'phone.runAll': 'הרצת הכול',
   'phone.stopAll': 'עצירת כל ההרצות',
-  'phone.sortNewest': 'החדש ביותר קודם',
-  'phone.sortOldest': 'הישן ביותר קודם',
-  'phone.sortAz': 'א עד ת',
-  'phone.sortZa': 'ת עד א',
   'phone.job': 'משימה',
   'phone.needName': 'תן שם למשימה.',
   'phone.needSide': 'בחר תיקייה או יעד לצד הזה.',
@@ -1304,10 +1300,6 @@ const he: Translations = {
   'list.tip.sort': 'לחיצה על כותרת ממיינת לפיה.',
   'list.tip.filter': 'הסימן ▾ ליד כותרת מסנן לפיה.',
   'list.tip.search': 'כדי לחפש, התחילו להקליד או הקישו Ctrl+F.',
-  'list.tip.menu': 'לחיצה ימנית לאפשרויות נוספות.',
-  'list.tip.hold': 'לחיצה ארוכה על כותרת מציגה את האפשרויות שלה.',
-  'list.sortAsc': 'סדר עולה',
-  'list.sortDesc': 'סדר יורד',
   'list.filterBy': 'סינון לפי {name}',
   'list.filtered': 'מסונן',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const he: Translations = {
   'list.head.age': 'גיל',
   'list.head.file': 'קובץ',
   'conflicts.waiting': 'ממתינים לך: {count}',
-  'new.change.listHeads': 'ב{history}, ב{trash}, ב{conflicts} וב{anomalies} אין עוד כפתורים מעל הרשימות. לחיצה על כותרת ממיינת, הסימן ▾ לידה מסנן, הקלדה ברשימה מחפשת, ולחיצה ימנית או לחיצה ארוכה מציעה את השאר, כמו תשובה אחת לכל ההתנגשויות. גם ההיסטוריה באפליקציית הטלפון ממיינת ומסננת מהכותרות שלה.',
   'new.change.buttonTint': 'כל כפתור מקבל את צבע ההדגשה כשהסמן או המקלדת מגיעים אליו, ובאפליקציית הטלפון כל עוד האצבע עליו.',
+  'new.change.listHeads': 'הרשימות ב{history}, ב{trash}, ב{conflicts} וב{anomalies} ממיינות, מסננות ומחפשות מהכותרות שלהן. לחיצה על כותרת ממיינת, הסימן ▾ לידה מסנן, והקלדה ברשימה או Ctrl+F פותחות חיפוש שמרחף מעליה. כפתורי הסינון והחיפוש מעל ההיסטוריה נעלמו. בהיסטוריה של אפליקציית הטלפון נגיעה בכותרת ממיינת, ה־▾ שלה מסנן וזכוכית המגדלת בסוף השורה מחפשת.',
 }
 
 export default he

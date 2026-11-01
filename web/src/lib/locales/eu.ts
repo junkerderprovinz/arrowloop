@@ -839,10 +839,6 @@ const eu: Translations = {
   'danger.confirmButton': 'Kendu guztia',
   'phone.runAll': 'Exekutatu guztiak',
   'phone.stopAll': 'Gelditu exekuzio guztiak',
-  'phone.sortNewest': 'Berrienak lehenengo',
-  'phone.sortOldest': 'Zaharrenak lehenengo',
-  'phone.sortAz': 'A-tik Z-ra',
-  'phone.sortZa': 'Z-tik A-ra',
   'phone.job': 'Lana',
   'phone.needName': 'Eman izena lanari.',
   'phone.needSide': 'Aukeratu karpeta bat edo helburu bat alde honetarako.',
@@ -1304,10 +1300,6 @@ const eu: Translations = {
   'list.tip.sort': 'Egin klik goiburu batean haren arabera ordenatzeko.',
   'list.tip.filter': 'Goiburuaren ondoko ▾ haren arabera iragazten du.',
   'list.tip.search': 'Bilatzeko, hasi idazten edo sakatu Ctrl+F.',
-  'list.tip.menu': 'Egin eskuineko klik gehiagorako.',
-  'list.tip.hold': 'Eutsi sakatuta goiburu bat haren aukerak ikusteko.',
-  'list.sortAsc': 'Goranzko',
-  'list.sortDesc': 'Beheranzko',
   'list.filterBy': 'Iragazi: {name}',
   'list.filtered': 'Iragazita',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const eu: Translations = {
   'list.head.age': 'Adina',
   'list.head.file': 'Fitxategia',
   'conflicts.waiting': 'Zure zain: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} eta {anomalies} orriek ez dute botoirik zerrenden gainean. Goiburu batean klik eginez ordenatzen da, ondoko ▾ ikurrak iragazten du, zerrendan idazteak bilatzen du, eta eskuineko klikak edo sakatze luzeak gainerakoa eskaintzen du, adibidez gatazka guztientzako erantzun bakarra. Telefono-aplikazioko historiak ere goiburuetatik ordenatzen eta iragazten du.',
   'new.change.buttonTint': 'Botoi bakoitzak nabarmentze-kolorea hartzen du erakusleak edo teklatuak heltzen diotenean, eta telefono-aplikazioan hatza gainean duzun bitartean.',
+  'new.change.listHeads': '{history}, {trash}, {conflicts} eta {anomalies} orrietako zerrendek beren goiburuetatik ordenatzen, iragazten eta bilatzen dute. Goiburu batean klik eginez ordenatzen da, ondoko ▾ ikurrak iragazten du, eta zerrendan idazteak edo Ctrl+F sakatzeak gainean flotatzen duen bilaketa irekitzen du. Historiaren gaineko iragazteko eta bilatzeko botoiak desagertu dira. Telefono-aplikazioko historian, goiburu bat ukitzeak ordenatzen du, haren ▾ ikurrak iragazten du eta lerroaren amaierako luparekin bilatzen da.',
 }
 
 export default eu

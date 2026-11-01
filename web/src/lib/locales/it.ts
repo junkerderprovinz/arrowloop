@@ -839,10 +839,6 @@ const it: Translations = {
   'danger.confirmButton': 'Rimuovi tutto',
   'phone.runAll': 'Esegui tutto',
   'phone.stopAll': 'Interrompi tutte le esecuzioni',
-  'phone.sortNewest': 'Più recenti prima',
-  'phone.sortOldest': 'Più vecchi prima',
-  'phone.sortAz': 'Da A a Z',
-  'phone.sortZa': 'Da Z ad A',
   'phone.job': 'Lavoro',
   'phone.needName': 'Dai un nome al lavoro.',
   'phone.needSide': 'Scegli una cartella o una destinazione per questo lato.',
@@ -1304,10 +1300,6 @@ const it: Translations = {
   'list.tip.sort': 'Fai clic su un\'intestazione per ordinare in base a essa.',
   'list.tip.filter': 'Il ▾ accanto a un\'intestazione filtra in base a essa.',
   'list.tip.search': 'Inizia a scrivere, o premi Ctrl+F, per cercare.',
-  'list.tip.menu': 'Fai clic destro per altro.',
-  'list.tip.hold': 'Tieni premuta un\'intestazione per le sue scelte.',
-  'list.sortAsc': 'Crescente',
-  'list.sortDesc': 'Decrescente',
   'list.filterBy': 'Filtra per {name}',
   'list.filtered': 'Filtrato',
   'list.searched': '«{q}»',
@@ -1320,8 +1312,8 @@ const it: Translations = {
   'list.head.age': 'Età',
   'list.head.file': 'File',
   'conflicts.waiting': 'In attesa di te: {count}',
-  'new.change.listHeads': '{history}, {trash}, {conflicts} e {anomalies} non hanno più pulsanti sopra le loro liste. Un clic su un\'intestazione ordina, il ▾ accanto filtra, scrivere nella lista cerca, e un clic destro o una pressione prolungata offre il resto, come un\'unica risposta per tutti i conflitti. Anche la cronologia dell\'app per telefono ordina e filtra dalle sue intestazioni.',
   'new.change.buttonTint': 'Ogni pulsante prende il colore di accento quando il puntatore o la tastiera lo raggiungono, e nell\'app per telefono finché ci tieni sopra il dito.',
+  'new.change.listHeads': 'Le liste di {history}, {trash}, {conflicts} e {anomalies} ordinano, filtrano e cercano dalle proprie intestazioni. Un clic su un\'intestazione ordina, il ▾ accanto filtra, e scrivere nella lista o premere Ctrl+F apre una ricerca che fluttua sopra di essa. I pulsanti Filtra e Cerca sopra la cronologia non ci sono più. Nella cronologia dell\'app per telefono un tocco su un\'intestazione ordina, il suo ▾ filtra e la lente in fondo alla riga cerca.',
 }
 
 export default it
