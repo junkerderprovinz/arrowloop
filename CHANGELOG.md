@@ -27,7 +27,7 @@ The full notes for each release are in
 - **A finding on the Anomalies page has no coloured edge any more,** on the web and on the phone. Its badge says how bad it is.
 - **Sizes stand at the start of their column,** with their heading, in History, a job's Files touched and the trash.
 - **The duplicate search's buttons say what they do:** Find duplicates on the left side and Find duplicates on the right side.
-- **ArrowLoop follows GlimStone 3.8.2.**
+- **ArrowLoop follows GlimStone 3.8.3.**
 
 ## 2.4.0 - 2026-10-30
 
