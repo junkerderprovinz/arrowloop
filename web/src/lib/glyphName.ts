@@ -19,7 +19,7 @@ const RULES: Rule[] = [
   [/^about\.mail$/i, 'IconMail'],
   [/^about\.releaseNotes$/i, 'IconInfo'],
   // The update check and its answers. After a failure the same button tries again.
-  [/^about\.checkUpdates$/i, 'IconUpdate'],
+  [/^about\.checkUpdates$/i, 'IconSync'],
   [/^about\.upToDate$/i, 'IconUpToDate'],
   [/^about\.updatesFound$/i, 'IconUpdateAvailable'],
   [/^about\.checkFailed$/i, 'IconRetry'],

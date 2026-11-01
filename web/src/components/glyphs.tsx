@@ -666,7 +666,7 @@ export function IconRestore(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Replicate, synchronise. Streamline interface-essential/arrow-reload-horizontal-2.svg. */
+/** Replicate, synchronise, check for updates. Streamline interface-essential/arrow-reload-horizontal-2.svg. */
 export function IconSync(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -818,7 +818,7 @@ export function IconManualOpen(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Fetch an update, check for one, update now. Streamline programming/cloud-refresh.svg. */
+/** Fetch an update, update now. Streamline programming/cloud-refresh.svg. */
 export function IconUpdate(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0.013 0.013 13.974 13.974" {...props}>

@@ -64,7 +64,7 @@ describe('a meaning with a glyph of its own in GlimStone', () => {
     ['login.submit', 'IconSignIn'],
     ['login.passkeyUnlock', 'IconKey'],
     ['reset.link', 'IconForgotPassword'],
-    ['about.checkUpdates', 'IconUpdate'],
+    ['about.checkUpdates', 'IconSync'],
     ['about.upToDate', 'IconUpToDate'],
     ['about.updatesFound', 'IconUpdateAvailable'],
     ['tray.open', 'IconApp'],
