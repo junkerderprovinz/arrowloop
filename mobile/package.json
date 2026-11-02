@@ -33,6 +33,6 @@
   },
   "private": true,
   "overrides": {
-    "zod": "4.6.6"
+    "zod": "4.6.7"
   }
 }
