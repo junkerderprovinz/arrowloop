@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🔁 Changed
+
+- **The Info tile names GlimStone 4.0.0.** GlimStone folded its 3.8 patches into 3.9.0, so the link to 3.8.5 led to a page that is gone.
+
 ## 2.4.2 - 2026-11-01
 
 ## 🎨 Design
