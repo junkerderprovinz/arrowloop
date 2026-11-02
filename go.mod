@@ -13,15 +13,15 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/pkg/sftp v1.13.12
-	github.com/rclone/gofakes3 v0.0.11
+	github.com/rclone/gofakes3 v0.0.12
 	github.com/rclone/rclone v1.75.2
 	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/crypto v0.58.0
 	golang.org/x/sys v0.49.0
 	golang.org/x/term v0.47.0
 	golang.org/x/text v0.43.0
-	modernc.org/libc v1.79.1
-	modernc.org/sqlite v1.61.0
+	modernc.org/libc v1.80.0
+	modernc.org/sqlite v1.61.1
 )
 
 require (
