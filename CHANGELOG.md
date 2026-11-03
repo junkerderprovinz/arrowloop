@@ -8,6 +8,24 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.4.4 - 2026-11-03
+
+ArrowLoop asks for file access when a job needs it, and each side of a job starts with where the folder is.
+
+## 🐛 Fixed
+
+- **A job on the phone's folders asks for file access before it runs.** Without all-files access, Android shows ArrowLoop the phone's folders with every other app's files hidden, so a run found nothing to copy and still said it was done. Saving or starting such a job now explains this and opens the settings page. A run that can't read its folders, scheduled ones included, ends as an error that says why.
+- **The phone app keeps the language you chose.** The engine refused to store it, so every start fell back to the phone's language. The app also waits for the stored language before it draws its screens, which stops a crash on some cold starts.
+- **The hint that no cloud or server is connected shows again** when only Apps or Android/data are set up, since both live on the phone itself.
+
+## 🎨 Design
+
+- **Each side of a job starts with where the folder is:** this phone or one of your targets, as buttons. Then you type or pick the folder inside it, and the folder picker stays within that target. Jobs are saved the same way as before.
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
+
 ## 2.4.3 - 2026-11-03
 
 The GlimStone version on the Info tile links to a release again.

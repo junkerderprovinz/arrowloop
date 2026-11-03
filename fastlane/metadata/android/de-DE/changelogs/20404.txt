@@ -1,0 +1,1 @@
+ArrowLoop fragt jetzt nach dem Dateizugriff, wenn ein Auftrag ihn braucht, statt einfach gar nichts zu synchronisieren. Und jede Seite eines Auftrags beginnt mit der Wahl: dieses Telefon oder eines deiner Ziele.

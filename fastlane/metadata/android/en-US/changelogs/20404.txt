@@ -1,0 +1,1 @@
+ArrowLoop now asks for file access when a job needs it instead of quietly syncing nothing, and each side of a job starts with a choice: this phone or one of your targets.
