@@ -53,6 +53,11 @@ type Config struct {
 	// ExcludeSets are reusable pattern lists that a job asks for by name.
 	ExcludeSets map[string][]string `json:"excludeSets,omitempty"`
 
+	// Language is the interface language the phone app was set to. It lives
+	// here because the app reads it from the engine at start, and a settings
+	// backup carries this file. Empty means the phone's own.
+	Language string `json:"language,omitempty"`
+
 	// dir is where the file was read from, so relative paths inside it are
 	// relative to the file.
 	dir string

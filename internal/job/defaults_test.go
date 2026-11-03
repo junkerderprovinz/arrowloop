@@ -299,3 +299,18 @@ func TestASetNobodyDefinedIsRefused(t *testing.T) {
 		t.Errorf("the refusal does not name the set that is missing: %v", err)
 	}
 }
+
+func TestThePhonesLanguageIsKeptWithTheSettings(t *testing.T) {
+	cfg := write(t, `{"jobs": [{"name":"a",`+sides+`}]}`)
+	next, err := cfg.SaveSettings(map[string]any{"language": "fr"})
+	if err != nil {
+		t.Fatalf("save the language: %v", err)
+	}
+	if next.Language != "fr" {
+		t.Errorf("language = %q, want fr", next.Language)
+	}
+	settings, err := next.SettingsAsMap()
+	if err != nil || settings["language"] != "fr" {
+		t.Errorf("the settings read back as %v (%v), want language fr", settings, err)
+	}
+}
