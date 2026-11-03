@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import * as Localization from "expo-localization";
 import { I18nManager } from "react-native";
@@ -30,6 +30,10 @@ interface I18n {
   lang: string;
   setLang: (code: string) => void;
   rtl: boolean;
+  /** Whether the stored language has been asked for, so the screens can wait for it. */
+  settled: boolean;
+  /** Asks the engine for the stored language, once it answers. */
+  load: () => Promise<void>;
 }
 
 const Ctx = createContext<I18n | null>(null);
@@ -44,30 +48,22 @@ function fromDevice(): string {
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState(fromDevice);
-  // A language picked before the engine answered must not be overwritten by
-  // the stored one arriving late.
-  const picked = useRef(false);
+  const [settled, setSettled] = useState(false);
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    // On a cold start the engine can take seconds to answer, so the read is
-    // repeated until it does.
-    const read = (wait: number) => {
-      settings.read().then(
-        (s) => {
-          if (!picked.current && s.language && SUPPORTED.includes(s.language)) setLangState(s.language);
-        },
-        () => {
-          timer = setTimeout(() => read(Math.min(wait * 2, 8000)), wait);
-        },
-      );
-    };
-    read(500);
-    return () => clearTimeout(timer);
+  // The screens wait for this: a language arriving once the native headers are
+  // drawn makes react-native-screens add a header view that already has a
+  // parent, and the app crashes. A failed read keeps the phone's language
+  // rather than holding the app on its start screen.
+  const load = useCallback(async () => {
+    try {
+      const stored = (await settings.read()).language;
+      if (stored && SUPPORTED.includes(stored)) setLangState(stored);
+    } finally {
+      setSettled(true);
+    }
   }, []);
 
   const setLang = useCallback((code: string) => {
-    picked.current = true;
     setLangState(code);
     void settings.write({ language: code }).catch(() => {});
   }, []);
@@ -101,7 +97,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     [table],
   );
 
-  return <Ctx.Provider value={{ t, lang, setLang, rtl }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ t, lang, setLang, rtl, settled, load }}>{children}</Ctx.Provider>;
 }
 
 export function useT(): I18n {

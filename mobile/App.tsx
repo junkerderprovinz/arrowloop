@@ -84,8 +84,12 @@ export default function App() {
 
 function Shell() {
   const { p, scheme, accent } = useTheme();
-  const { t } = useT();
+  const { t, settled, load } = useT();
   const { state, log, retry } = useEngine(t);
+
+  useEffect(() => {
+    if (state === "ready" && !settled) void load().catch(() => {});
+  }, [state, settled, load]);
   const look = useAppearance();
   useDiscoWalk();
 
@@ -167,7 +171,7 @@ function Shell() {
 
   if (locked) return <Locked onUnlock={unlock} />;
 
-  if (state !== "ready") return <Waiting state={state} log={log} onRetry={retry} />;
+  if (state !== "ready" || !settled) return <Waiting state={state} log={log} onRetry={retry} />;
 
   return (
     <WaitingProvider>
