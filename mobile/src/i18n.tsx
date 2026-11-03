@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import * as Localization from "expo-localization";
 import { I18nManager } from "react-native";
@@ -44,20 +44,30 @@ function fromDevice(): string {
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState(fromDevice);
+  // A language picked before the engine answered must not be overwritten by
+  // the stored one arriving late.
+  const picked = useRef(false);
 
   useEffect(() => {
-    settings
-      .read()
-      .then((s) => {
-        if (s.language && SUPPORTED.includes(s.language)) setLangState(s.language);
-      })
-      .catch(() => {
-        // On a cold start the engine may not answer yet; the device's
-        // language stays until the next read.
-      });
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    // On a cold start the engine can take seconds to answer, so the read is
+    // repeated until it does.
+    const read = (wait: number) => {
+      settings.read().then(
+        (s) => {
+          if (!picked.current && s.language && SUPPORTED.includes(s.language)) setLangState(s.language);
+        },
+        () => {
+          timer = setTimeout(() => read(Math.min(wait * 2, 8000)), wait);
+        },
+      );
+    };
+    read(500);
+    return () => clearTimeout(timer);
   }, []);
 
   const setLang = useCallback((code: string) => {
+    picked.current = true;
     setLangState(code);
     void settings.write({ language: code }).catch(() => {});
   }, []);
