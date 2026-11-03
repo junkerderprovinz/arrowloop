@@ -110,6 +110,7 @@ const fi: Translations = {
   'failure.permissionDenied': 'Pääsy estettiin: tilillä ei ole oikeutta lukea tai kirjoittaa siellä.',
   'failure.permissionDenied.left': 'Pääsy vasemmalle puolelle estettiin: tilillä ei ole oikeutta lukea tai kirjoittaa siellä.',
   'failure.permissionDenied.right': 'Pääsy oikealle puolelle estettiin: tilillä ei ole oikeutta lukea tai kirjoittaa siellä.',
+  'failure.noFileAccess': 'ArrowLoop ei saa lukea tämän puhelimen kansioita. Ota "Tiedostojen käyttöoikeus" käyttöön kohdassa Asetukset.',
   'failure.notFound': 'Työn tarvitsemaa kansiota ei ole olemassa.',
   'failure.notFound.left': 'Vasemman puolen kansiota ei ole olemassa.',
   'failure.notFound.right': 'Oikean puolen kansiota ei ole olemassa.',
@@ -841,6 +842,10 @@ const fi: Translations = {
   'phone.job': 'Työ',
   'phone.needName': 'Anna työlle nimi.',
   'phone.needSide': 'Valitse tälle puolelle kansio tai kohde.',
+  'access.askTitle': 'Salli tiedostojen käyttö',
+  'access.askRun': 'Tämä työ käyttää tämän puhelimen kansioita, mutta Android ei ole vielä antanut ArrowLoopille pääsyä niihin. Ilman sitä kansiot näyttävät tyhjiltä, eikä mitään synkronoida. Salli pääsy seuraavalla sivulla ja käynnistä työ sitten uudelleen.',
+  'access.askSaved': 'Työ on tallennettu. Se käyttää tämän puhelimen kansioita, mutta Android ei ole vielä antanut ArrowLoopille pääsyä niihin, joten se ei voi synkronoida niitä. Salli pääsy seuraavalla sivulla.',
+  'access.notNow': 'Ei nyt',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

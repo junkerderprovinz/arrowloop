@@ -7,6 +7,7 @@ import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { Glyph, ProviderMark } from "../glyphs";
+import { tellAfterSaving } from "../fileAccess";
 import { useT, type T } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
@@ -304,6 +305,7 @@ export function JobEdit() {
     const written = await persist(job);
     setSaving(false);
     if (written) {
+      await tellAfterSaving([job.left, job.right], t);
       nav.goBack();
       return;
     }

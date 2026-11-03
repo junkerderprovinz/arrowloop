@@ -77,6 +77,9 @@ func cmdWeb(ctx context.Context, args []string) error {
 	// container never gets one, which costs nothing.
 	held := hold.New()
 	runner.SetCondition(held.Condition())
+	if file := os.Getenv(accessVar); file != "" {
+		runner.SetAccess(fileAccess(file))
+	}
 
 	server := &web.Server{
 		History:     hist,

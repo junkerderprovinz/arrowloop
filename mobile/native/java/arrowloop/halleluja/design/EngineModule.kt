@@ -211,7 +211,7 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun storageGranted(promise: Promise) = promise.resolve(Storage.granted(context))
+    fun storageGranted(promise: Promise) = promise.resolve(Storage.check(context))
 
     @ReactMethod
     fun storagePossible(promise: Promise) = promise.resolve(Storage.possible)

@@ -110,6 +110,7 @@ const nl: Translations = {
   'failure.permissionDenied': 'De toegang werd geweigerd: het account mag daar niet lezen of schrijven.',
   'failure.permissionDenied.left': 'De toegang tot de linkerkant werd geweigerd: het account mag daar niet lezen of schrijven.',
   'failure.permissionDenied.right': 'De toegang tot de rechterkant werd geweigerd: het account mag daar niet lezen of schrijven.',
+  'failure.noFileAccess': 'ArrowLoop mag de mappen op deze telefoon niet lezen. Zet "Bestandstoegang" aan in Instellingen.',
   'failure.notFound': 'Een map die de taak nodig heeft, bestaat niet.',
   'failure.notFound.left': 'De map aan de linkerkant bestaat niet.',
   'failure.notFound.right': 'De map aan de rechterkant bestaat niet.',
@@ -841,6 +842,10 @@ const nl: Translations = {
   'phone.job': 'Taak',
   'phone.needName': 'Geef de taak een naam.',
   'phone.needSide': 'Kies een map of een doel voor deze kant.',
+  'access.askTitle': 'Bestandstoegang toestaan',
+  'access.askRun': 'Deze taak gebruikt mappen op deze telefoon, maar Android heeft ArrowLoop nog geen toegang tot die mappen gegeven. Zonder toegang lijken de mappen leeg en wordt er niets gesynchroniseerd. Sta de toegang toe op de volgende pagina en start de taak daarna opnieuw.',
+  'access.askSaved': 'De taak is opgeslagen. Hij gebruikt mappen op deze telefoon, maar Android heeft ArrowLoop nog geen toegang tot die mappen gegeven, dus hij kan ze niet synchroniseren. Sta de toegang toe op de volgende pagina.',
+  'access.notNow': 'Niet nu',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

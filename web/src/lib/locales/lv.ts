@@ -110,6 +110,7 @@ const lv: Translations = {
   'failure.permissionDenied': 'Piekļuve liegta: kontam nav atļauts tur lasīt vai rakstīt.',
   'failure.permissionDenied.left': 'Piekļuve kreisajai pusei liegta: kontam nav atļauts tur lasīt vai rakstīt.',
   'failure.permissionDenied.right': 'Piekļuve labajai pusei liegta: kontam nav atļauts tur lasīt vai rakstīt.',
+  'failure.noFileAccess': 'ArrowLoop nedrīkst lasīt šī tālruņa mapes. Ieslēdz “Piekļuve failiem” sadaļā Iestatījumi.',
   'failure.notFound': 'Mape, kas vajadzīga uzdevumam, nepastāv.',
   'failure.notFound.left': 'Mape kreisajā pusē nepastāv.',
   'failure.notFound.right': 'Mape labajā pusē nepastāv.',
@@ -841,6 +842,10 @@ const lv: Translations = {
   'phone.job': 'Uzdevums',
   'phone.needName': 'Dod uzdevumam nosaukumu.',
   'phone.needSide': 'Izvēlies šai pusei mapi vai galamērķi.',
+  'access.askTitle': 'Atļaut piekļuvi failiem',
+  'access.askRun': 'Šis uzdevums izmanto šī tālruņa mapes, bet Android vēl nav devis ArrowLoop piekļuvi tām. Bez tās mapes izskatās tukšas, un nekas netiek sinhronizēts. Atļauj piekļuvi nākamajā lapā un tad palaid uzdevumu vēlreiz.',
+  'access.askSaved': 'Uzdevums ir saglabāts. Tas izmanto šī tālruņa mapes, bet Android vēl nav devis ArrowLoop piekļuvi tām, tāpēc tas nevar tās sinhronizēt. Atļauj piekļuvi nākamajā lapā.',
+  'access.notNow': 'Ne tagad',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

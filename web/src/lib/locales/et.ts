@@ -110,6 +110,7 @@ const et: Translations = {
   'failure.permissionDenied': 'Juurdepääs keelati: kontol pole lubatud seal lugeda ega kirjutada.',
   'failure.permissionDenied.left': 'Juurdepääs vasakule poolele keelati: kontol pole lubatud seal lugeda ega kirjutada.',
   'failure.permissionDenied.right': 'Juurdepääs paremale poolele keelati: kontol pole lubatud seal lugeda ega kirjutada.',
+  'failure.noFileAccess': 'ArrowLoop ei tohi selle telefoni kaustu lugeda. Lülita sisse „Juurdepääs failidele“ jaotises Seaded.',
   'failure.notFound': 'Kausta, mida töö vajab, pole olemas.',
   'failure.notFound.left': 'Vasaku poole kausta pole olemas.',
   'failure.notFound.right': 'Parema poole kausta pole olemas.',
@@ -841,6 +842,10 @@ const et: Translations = {
   'phone.job': 'Töö',
   'phone.needName': 'Pane tööle nimi.',
   'phone.needSide': 'Vali selle poole jaoks kaust või sihtkoht.',
+  'access.askTitle': 'Luba juurdepääs failidele',
+  'access.askRun': 'See töö kasutab selle telefoni kaustu, aga Android pole ArrowLoopile neile veel juurdepääsu andnud. Ilma selleta paistavad kaustad tühjad ja midagi ei sünkroonita. Luba juurdepääs järgmisel lehel ja käivita töö siis uuesti.',
+  'access.askSaved': 'Töö on salvestatud. See kasutab selle telefoni kaustu, aga Android pole ArrowLoopile neile veel juurdepääsu andnud, nii et ta ei saa neid sünkroonida. Luba juurdepääs järgmisel lehel.',
+  'access.notNow': 'Mitte praegu',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

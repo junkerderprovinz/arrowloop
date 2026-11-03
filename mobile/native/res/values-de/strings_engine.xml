@@ -41,6 +41,7 @@
     <string name="failure_unreachable">Der Server war nicht erreichbar.</string>
     <string name="failure_sign_in">Die Anmeldung ist fehlgeschlagen. Prüfe Benutzername, Passwort oder Schlüssel.</string>
     <string name="failure_permission">Der Zugriff wurde verweigert: das Konto darf dort nicht lesen oder schreiben.</string>
+    <string name="failure_no_file_access">ArrowLoop darf die Ordner auf diesem Telefon nicht lesen. Schalte in den Einstellungen den Dateizugriff ein.</string>
     <string name="failure_not_found">Ein Ordner, den der Auftrag braucht, existiert nicht.</string>
     <string name="failure_quota">Der Speicher ist voll: sein Kontingent ist aufgebraucht.</string>
     <string name="failure_rate_limited">Der Dienst hat nach zu vielen Anfragen um eine Pause gebeten. Der nächste Lauf versucht es wieder.</string>

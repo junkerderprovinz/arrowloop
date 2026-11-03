@@ -110,6 +110,7 @@ const ru: Translations = {
   'failure.permissionDenied': 'Доступ запрещён: у учётной записи нет права читать или записывать там.',
   'failure.permissionDenied.left': 'Доступ к левой стороне запрещён: у учётной записи нет права читать или записывать там.',
   'failure.permissionDenied.right': 'Доступ к правой стороне запрещён: у учётной записи нет права читать или записывать там.',
+  'failure.noFileAccess': 'ArrowLoop не может читать папки на этом телефоне. Включите «Доступ к файлам» в разделе Настройки.',
   'failure.notFound': 'Папки, которая нужна заданию, не существует.',
   'failure.notFound.left': 'Папки на левой стороне не существует.',
   'failure.notFound.right': 'Папки на правой стороне не существует.',
@@ -841,6 +842,10 @@ const ru: Translations = {
   'phone.job': 'Задание',
   'phone.needName': 'Дай заданию имя.',
   'phone.needSide': 'Выбери папку или назначение для этой стороны.',
+  'access.askTitle': 'Разрешить доступ к файлам',
+  'access.askRun': 'Это задание использует папки на этом телефоне, но Android пока не дал ArrowLoop доступ к ним. Без доступа папки выглядят пустыми, и ничего не синхронизируется. Разрешите доступ на следующей странице, а затем запустите задание снова.',
+  'access.askSaved': 'Задание сохранено. Оно использует папки на этом телефоне, но Android пока не дал ArrowLoop доступ к ним, поэтому синхронизировать их нельзя. Разрешите доступ на следующей странице.',
+  'access.notNow': 'Не сейчас',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

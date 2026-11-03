@@ -110,6 +110,7 @@ const ro: Translations = {
   'failure.permissionDenied': 'Accesul a fost refuzat: contul nu are voie să citească sau să scrie acolo.',
   'failure.permissionDenied.left': 'Accesul la partea stângă a fost refuzat: contul nu are voie să citească sau să scrie acolo.',
   'failure.permissionDenied.right': 'Accesul la partea dreaptă a fost refuzat: contul nu are voie să citească sau să scrie acolo.',
+  'failure.noFileAccess': 'ArrowLoop nu are voie să citească dosarele de pe acest telefon. Activează „Acces la fișiere” în Setări.',
   'failure.notFound': 'Un dosar de care sarcina are nevoie nu există.',
   'failure.notFound.left': 'Dosarul din partea stângă nu există.',
   'failure.notFound.right': 'Dosarul din partea dreaptă nu există.',
@@ -841,6 +842,10 @@ const ro: Translations = {
   'phone.job': 'Sarcină',
   'phone.needName': 'Dă un nume sarcinii.',
   'phone.needSide': 'Alege un dosar sau o destinație pentru această parte.',
+  'access.askTitle': 'Permite accesul la fișiere',
+  'access.askRun': 'Această sarcină folosește dosare de pe acest telefon, dar Android încă nu i-a dat lui ArrowLoop acces la ele. Fără acces, dosarele par goale și nu se sincronizează nimic. Permite accesul pe pagina următoare, apoi pornește din nou sarcina.',
+  'access.askSaved': 'Sarcina a fost salvată. Folosește dosare de pe acest telefon, dar Android încă nu i-a dat lui ArrowLoop acces la ele, așa că nu le poate sincroniza. Permite accesul pe pagina următoare.',
+  'access.notNow': 'Nu acum',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

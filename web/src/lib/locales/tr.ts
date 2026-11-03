@@ -110,6 +110,7 @@ const tr: Translations = {
   'failure.permissionDenied': 'Erişim reddedildi: hesabın orada okuma ya da yazma izni yok.',
   'failure.permissionDenied.left': 'Sol tarafa erişim reddedildi: hesabın orada okuma ya da yazma izni yok.',
   'failure.permissionDenied.right': 'Sağ tarafa erişim reddedildi: hesabın orada okuma ya da yazma izni yok.',
+  'failure.noFileAccess': 'ArrowLoop\'un bu telefondaki klasörleri okuma izni yok. Ayarlar bölümünde "Dosya erişimi" seçeneğini aç.',
   'failure.notFound': 'İşin ihtiyaç duyduğu bir klasör mevcut değil.',
   'failure.notFound.left': 'Sol taraftaki klasör mevcut değil.',
   'failure.notFound.right': 'Sağ taraftaki klasör mevcut değil.',
@@ -841,6 +842,10 @@ const tr: Translations = {
   'phone.job': 'İş',
   'phone.needName': 'İşe bir ad ver.',
   'phone.needSide': 'Bu taraf için bir klasör ya da hedef seç.',
+  'access.askTitle': 'Dosya erişimine izin ver',
+  'access.askRun': 'Bu iş bu telefondaki klasörleri kullanıyor, ama Android henüz ArrowLoop\'a bu klasörlere erişim vermedi. Erişim olmadan klasörler boş görünür ve hiçbir şey eşitlenmez. Sonraki sayfada erişime izin ver, sonra işi yeniden başlat.',
+  'access.askSaved': 'İş kaydedildi. Bu telefondaki klasörleri kullanıyor, ama Android henüz ArrowLoop\'a bu klasörlere erişim vermedi, bu yüzden onları eşitleyemiyor. Sonraki sayfada erişime izin ver.',
+  'access.notNow': 'Şimdi değil',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

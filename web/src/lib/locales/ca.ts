@@ -110,6 +110,7 @@ const ca: Translations = {
   'failure.permissionDenied': 'S\'ha denegat l\'accés: el compte no hi pot llegir ni escriure.',
   'failure.permissionDenied.left': 'S\'ha denegat l\'accés a la banda esquerra: el compte no hi pot llegir ni escriure.',
   'failure.permissionDenied.right': 'S\'ha denegat l\'accés a la banda dreta: el compte no hi pot llegir ni escriure.',
+  'failure.noFileAccess': 'ArrowLoop no té permís per llegir les carpetes d\'aquest telèfon. Activa «Accés als fitxers» a Configuració.',
   'failure.notFound': 'No existeix una carpeta que la tasca necessita.',
   'failure.notFound.left': 'La carpeta de la banda esquerra no existeix.',
   'failure.notFound.right': 'La carpeta de la banda dreta no existeix.',
@@ -841,6 +842,10 @@ const ca: Translations = {
   'phone.job': 'Tasca',
   'phone.needName': 'Posa un nom a la tasca.',
   'phone.needSide': 'Tria una carpeta o una destinació per a aquest costat.',
+  'access.askTitle': 'Permet l\'accés als fitxers',
+  'access.askRun': 'Aquesta tasca fa servir carpetes d\'aquest telèfon, però Android encara no ha donat accés a ArrowLoop. Sense aquest accés les carpetes semblen buides i no es sincronitza res. Permet l\'accés a la pàgina següent i torna a executar la tasca.',
+  'access.askSaved': 'La tasca s\'ha desat. Fa servir carpetes d\'aquest telèfon, però Android encara no ha donat accés a ArrowLoop, així que no les pot sincronitzar. Permet l\'accés a la pàgina següent.',
+  'access.notNow': 'Ara no',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

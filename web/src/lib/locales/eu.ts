@@ -110,6 +110,7 @@ const eu: Translations = {
   'failure.permissionDenied': 'Sarbidea ukatu da: kontuak ezin du han irakurri edo idatzi.',
   'failure.permissionDenied.left': 'Ezkerreko alderako sarbidea ukatu da: kontuak ezin du han irakurri edo idatzi.',
   'failure.permissionDenied.right': 'Eskuineko alderako sarbidea ukatu da: kontuak ezin du han irakurri edo idatzi.',
+  'failure.noFileAccess': 'ArrowLoopek ezin ditu telefono honetako karpetak irakurri. Aktibatu «Fitxategietarako sarbidea» Ezarpenak atalean.',
   'failure.notFound': 'Lanak behar duen karpeta bat ez dago.',
   'failure.notFound.left': 'Ezkerreko aldeko karpeta ez dago.',
   'failure.notFound.right': 'Eskuineko aldeko karpeta ez dago.',
@@ -841,6 +842,10 @@ const eu: Translations = {
   'phone.job': 'Lana',
   'phone.needName': 'Eman izena lanari.',
   'phone.needSide': 'Aukeratu karpeta bat edo helburu bat alde honetarako.',
+  'access.askTitle': 'Baimendu fitxategietarako sarbidea',
+  'access.askRun': 'Lan honek telefono honetako karpetak erabiltzen ditu, baina Androidek oraindik ez dio ArrowLoopi haietarako sarbiderik eman. Sarbiderik gabe karpetak hutsik daudela dirudi, eta ez da ezer sinkronizatzen. Baimendu sarbidea hurrengo orrian, eta exekutatu lana berriro.',
+  'access.askSaved': 'Lana gorde da. Telefono honetako karpetak erabiltzen ditu, baina Androidek oraindik ez dio ArrowLoopi haietarako sarbiderik eman, beraz ezin ditu sinkronizatu. Baimendu sarbidea hurrengo orrian.',
+  'access.notNow': 'Orain ez',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

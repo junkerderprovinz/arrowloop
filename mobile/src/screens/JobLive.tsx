@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { api, failed, touched, type Job, type Run } from "../api";
 import { describeCadence, readCadence } from "../../../web/src/lib/cadence";
 import { failureLine } from "../../../web/src/lib/failure";
+import { mayRun } from "../fileAccess";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
@@ -104,7 +105,10 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
             busy={busy === "run"}
             disabled={job.disabled}
             onPress={() =>
-              act("run", () => (job.running ? api.stop(job.name) : api.run(job.name)))
+              act("run", async () => {
+                if (job.running) await api.stop(job.name);
+                else if (await mayRun([job.left, job.right], t)) await api.run(job.name);
+              })
             }
           />
         </View>

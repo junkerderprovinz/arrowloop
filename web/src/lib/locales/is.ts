@@ -110,6 +110,7 @@ const is: Translations = {
   'failure.permissionDenied': 'Aðgangi var hafnað: reikningurinn má ekki lesa eða skrifa þar.',
   'failure.permissionDenied.left': 'Aðgangi að vinstri hliðinni var hafnað: reikningurinn má ekki lesa eða skrifa þar.',
   'failure.permissionDenied.right': 'Aðgangi að hægri hliðinni var hafnað: reikningurinn má ekki lesa eða skrifa þar.',
+  'failure.noFileAccess': 'ArrowLoop má ekki lesa möppurnar í þessum síma. Kveiktu á „Aðgangur að skrám“ í Stillingar.',
   'failure.notFound': 'Mappa sem verkið þarf er ekki til.',
   'failure.notFound.left': 'Mappan vinstra megin er ekki til.',
   'failure.notFound.right': 'Mappan hægra megin er ekki til.',
@@ -841,6 +842,10 @@ const is: Translations = {
   'phone.job': 'Verk',
   'phone.needName': 'Gefðu verkinu nafn.',
   'phone.needSide': 'Veldu möppu eða áfangastað fyrir þessa hlið.',
+  'access.askTitle': 'Leyfa aðgang að skrám',
+  'access.askRun': 'Þetta verk notar möppur í þessum síma, en Android hefur ekki enn gefið ArrowLoop aðgang að þeim. Án hans virðast möppurnar tómar og ekkert er samstillt. Leyfðu aðganginn á næstu síðu og keyrðu verkið svo aftur.',
+  'access.askSaved': 'Verkið er vistað. Það notar möppur í þessum síma, en Android hefur ekki enn gefið ArrowLoop aðgang að þeim, svo það getur ekki samstillt þær. Leyfðu aðganginn á næstu síðu.',
+  'access.notNow': 'Ekki núna',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

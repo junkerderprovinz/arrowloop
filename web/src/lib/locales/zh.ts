@@ -110,6 +110,7 @@ const zh: Translations = {
   'failure.permissionDenied': '访问被拒绝：该账户无权在那里读取或写入。',
   'failure.permissionDenied.left': '对左侧的访问被拒绝：该账户无权在那里读取或写入。',
   'failure.permissionDenied.right': '对右侧的访问被拒绝：该账户无权在那里读取或写入。',
+  'failure.noFileAccess': 'ArrowLoop 无权读取这台手机上的文件夹。请在设置中打开“文件访问”。',
   'failure.notFound': '任务需要的一个文件夹不存在。',
   'failure.notFound.left': '左侧的文件夹不存在。',
   'failure.notFound.right': '右侧的文件夹不存在。',
@@ -841,6 +842,10 @@ const zh: Translations = {
   'phone.job': '任务',
   'phone.needName': '给任务起个名字。',
   'phone.needSide': '为这一侧选择一个文件夹或目标。',
+  'access.askTitle': '允许访问文件',
+  'access.askRun': '这个任务使用这台手机上的文件夹，但 Android 还没有允许 ArrowLoop 访问它们。没有权限时，这些文件夹看起来是空的，什么都不会同步。请在下一页允许访问，然后再次运行任务。',
+  'access.askSaved': '任务已保存。它使用这台手机上的文件夹，但 Android 还没有允许 ArrowLoop 访问它们，所以无法同步。请在下一页允许访问。',
+  'access.notNow': '以后再说',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

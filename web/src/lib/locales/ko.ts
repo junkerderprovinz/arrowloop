@@ -110,6 +110,7 @@ const ko: Translations = {
   'failure.permissionDenied': '접근이 거부되었습니다. 이 계정은 그곳에서 읽거나 쓸 권한이 없습니다.',
   'failure.permissionDenied.left': '왼쪽에 대한 접근이 거부되었습니다. 이 계정은 그곳에서 읽거나 쓸 권한이 없습니다.',
   'failure.permissionDenied.right': '오른쪽에 대한 접근이 거부되었습니다. 이 계정은 그곳에서 읽거나 쓸 권한이 없습니다.',
+  'failure.noFileAccess': 'ArrowLoop에 이 휴대폰의 폴더를 읽을 권한이 없습니다. 설정에서 "파일 접근"을 켜세요.',
   'failure.notFound': '작업에 필요한 폴더가 없습니다.',
   'failure.notFound.left': '왼쪽의 폴더가 없습니다.',
   'failure.notFound.right': '오른쪽의 폴더가 없습니다.',
@@ -841,6 +842,10 @@ const ko: Translations = {
   'phone.job': '작업',
   'phone.needName': '작업에 이름을 지정하세요.',
   'phone.needSide': '이 쪽에 쓸 폴더나 대상을 선택하세요.',
+  'access.askTitle': '파일 접근 허용',
+  'access.askRun': '이 작업은 이 휴대폰의 폴더를 사용하지만, Android가 아직 ArrowLoop에 접근을 허용하지 않았습니다. 허용하지 않으면 폴더가 비어 보이고 아무것도 동기화되지 않습니다. 다음 화면에서 접근을 허용한 뒤 작업을 다시 실행하세요.',
+  'access.askSaved': '작업을 저장했습니다. 이 작업은 이 휴대폰의 폴더를 사용하지만, Android가 아직 ArrowLoop에 접근을 허용하지 않아서 동기화할 수 없습니다. 다음 화면에서 접근을 허용하세요.',
+  'access.notNow': '나중에',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

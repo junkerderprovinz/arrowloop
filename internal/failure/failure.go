@@ -24,6 +24,7 @@ const (
 	Unreachable      = "unreachable"
 	SignInFailed     = "signInFailed"
 	PermissionDenied = "permissionDenied"
+	NoFileAccess     = "noFileAccess"
 	NotFound         = "notFound"
 	QuotaExceeded    = "quotaExceeded"
 	RateLimited      = "rateLimited"
@@ -72,6 +73,8 @@ var rules = []rule{
 		"host is unreachable", "no route to host", "i/o timeout", "connection timed out",
 		"connection reset", "did not properly respond", "couldn't connect", "could not connect",
 	}},
+	// daemon.ErrNoFileAccess, which is about the app rather than an account.
+	{NoFileAccess, []string{"may not read the files on this phone"}},
 	{PermissionDenied, []string{"permission denied", "access is denied", "operation not permitted", "403 forbidden", "accessdenied"}},
 	{NotFound, []string{
 		"directory not found", "no such file or directory", "cannot find the path",

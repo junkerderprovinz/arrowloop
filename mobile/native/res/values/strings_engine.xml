@@ -82,6 +82,7 @@
     <string name="failure_unreachable">The server could not be reached.</string>
     <string name="failure_sign_in">Signing in failed. Check the user name, the password or the key.</string>
     <string name="failure_permission">Access was denied: the account may not read or write there.</string>
+    <string name="failure_no_file_access">ArrowLoop is not allowed to read the folders on this phone. Turn on File access in Settings.</string>
     <string name="failure_not_found">A folder the job needs does not exist.</string>
     <string name="failure_quota">The storage is full: its quota is used up.</string>
     <string name="failure_rate_limited">The service asked for a pause after too many requests. The next run tries again.</string>

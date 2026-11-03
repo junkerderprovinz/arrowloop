@@ -110,6 +110,7 @@ const es: Translations = {
   'failure.permissionDenied': 'Se denegó el acceso: la cuenta no puede leer ni escribir ahí.',
   'failure.permissionDenied.left': 'Se denegó el acceso al lado izquierdo: la cuenta no puede leer ni escribir ahí.',
   'failure.permissionDenied.right': 'Se denegó el acceso al lado derecho: la cuenta no puede leer ni escribir ahí.',
+  'failure.noFileAccess': 'ArrowLoop no tiene permiso para leer las carpetas de este teléfono. Activa «Acceso a los archivos» en Ajustes.',
   'failure.notFound': 'No existe una carpeta que la tarea necesita.',
   'failure.notFound.left': 'La carpeta del lado izquierdo no existe.',
   'failure.notFound.right': 'La carpeta del lado derecho no existe.',
@@ -841,6 +842,10 @@ const es: Translations = {
   'phone.job': 'Tarea',
   'phone.needName': 'Ponle un nombre a la tarea.',
   'phone.needSide': 'Elige una carpeta o un destino para este lado.',
+  'access.askTitle': 'Permitir el acceso a los archivos',
+  'access.askRun': 'Esta tarea usa carpetas de este teléfono, pero Android todavía no le ha dado acceso a ArrowLoop. Sin él, las carpetas parecen vacías y no se sincroniza nada. Permite el acceso en la página siguiente y vuelve a ejecutar la tarea.',
+  'access.askSaved': 'La tarea se ha guardado. Usa carpetas de este teléfono, pero Android todavía no le ha dado acceso a ArrowLoop, así que no puede sincronizarlas. Permite el acceso en la página siguiente.',
+  'access.notNow': 'Ahora no',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -110,6 +110,7 @@ const sv: Translations = {
   'failure.permissionDenied': 'Åtkomst nekades: kontot får inte läsa eller skriva där.',
   'failure.permissionDenied.left': 'Åtkomst till vänster sida nekades: kontot får inte läsa eller skriva där.',
   'failure.permissionDenied.right': 'Åtkomst till höger sida nekades: kontot får inte läsa eller skriva där.',
+  'failure.noFileAccess': 'ArrowLoop får inte läsa mapparna på den här telefonen. Slå på ”Filåtkomst” under Inställningar.',
   'failure.notFound': 'En mapp som jobbet behöver finns inte.',
   'failure.notFound.left': 'Mappen på vänster sida finns inte.',
   'failure.notFound.right': 'Mappen på höger sida finns inte.',
@@ -841,6 +842,10 @@ const sv: Translations = {
   'phone.job': 'Jobb',
   'phone.needName': 'Ge jobbet ett namn.',
   'phone.needSide': 'Välj en mapp eller ett mål för den här sidan.',
+  'access.askTitle': 'Tillåt filåtkomst',
+  'access.askRun': 'Det här jobbet använder mappar på den här telefonen, men Android har inte gett ArrowLoop åtkomst till dem än. Utan åtkomst ser mapparna tomma ut och ingenting synkroniseras. Tillåt åtkomst på nästa sida och starta sedan jobbet igen.',
+  'access.askSaved': 'Jobbet är sparat. Det använder mappar på den här telefonen, men Android har inte gett ArrowLoop åtkomst till dem än, så det kan inte synkronisera dem. Tillåt åtkomst på nästa sida.',
+  'access.notNow': 'Inte nu',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

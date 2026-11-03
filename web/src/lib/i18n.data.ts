@@ -272,6 +272,7 @@ export const en = {
   'failure.permissionDenied': 'Access was denied: the account may not read or write there.',
   'failure.permissionDenied.left': 'Access to the left side was denied: the account may not read or write there.',
   'failure.permissionDenied.right': 'Access to the right side was denied: the account may not read or write there.',
+  'failure.noFileAccess': 'ArrowLoop is not allowed to read the folders on this phone. Turn on File access in Settings.',
   'failure.notFound': 'A folder the job needs does not exist.',
   'failure.notFound.left': 'The folder on the left side does not exist.',
   'failure.notFound.right': 'The folder on the right side does not exist.',
@@ -883,6 +884,10 @@ export const en = {
   'phone.job': 'Job',
   'phone.needName': 'Give the job a name.',
   'phone.needSide': 'Pick a folder or a target for this side.',
+  'access.askTitle': 'Allow file access',
+  'access.askRun': 'This job uses folders on this phone, but Android hasn\'t given ArrowLoop access to them yet. Without it the folders look empty and nothing gets synced. Allow access on the next page, then start the job again.',
+  'access.askSaved': 'The job is saved. It uses folders on this phone, but Android hasn\'t given ArrowLoop access to them yet, so it can\'t sync them. Allow access on the next page.',
+  'access.notNow': 'Not now',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.
@@ -1639,6 +1644,7 @@ export const de: Translations = {
   'failure.permissionDenied': 'Der Zugriff wurde verweigert: das Konto darf dort nicht lesen oder schreiben.',
   'failure.permissionDenied.left': 'Der Zugriff auf die linke Seite wurde verweigert: das Konto darf dort nicht lesen oder schreiben.',
   'failure.permissionDenied.right': 'Der Zugriff auf die rechte Seite wurde verweigert: das Konto darf dort nicht lesen oder schreiben.',
+  'failure.noFileAccess': 'ArrowLoop darf die Ordner auf diesem Telefon nicht lesen. Schalte in den Einstellungen den Dateizugriff ein.',
   'failure.notFound': 'Ein Ordner, den der Auftrag braucht, existiert nicht.',
   'failure.notFound.left': 'Der Ordner auf der linken Seite existiert nicht.',
   'failure.notFound.right': 'Der Ordner auf der rechten Seite existiert nicht.',
@@ -2245,6 +2251,10 @@ export const de: Translations = {
   'phone.job': 'Auftrag',
   'phone.needName': 'Gib dem Auftrag einen Namen.',
   'phone.needSide': 'Wähle für diese Seite einen Ordner oder ein Ziel.',
+  'access.askTitle': 'Dateizugriff erlauben',
+  'access.askRun': 'Dieser Auftrag nutzt Ordner auf diesem Telefon, aber Android hat ArrowLoop noch keinen Zugriff darauf gegeben. Ohne ihn sehen die Ordner leer aus, und nichts wird synchronisiert. Erlaube den Zugriff auf der nächsten Seite und starte den Auftrag dann noch einmal.',
+  'access.askSaved': 'Der Auftrag ist gespeichert. Er nutzt Ordner auf diesem Telefon, aber Android hat ArrowLoop noch keinen Zugriff darauf gegeben, deshalb kann er sie nicht synchronisieren. Erlaube den Zugriff auf der nächsten Seite.',
+  'access.notNow': 'Jetzt nicht',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.

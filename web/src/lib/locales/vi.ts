@@ -110,6 +110,7 @@ const vi: Translations = {
   'failure.permissionDenied': 'Truy cập bị từ chối: tài khoản không được đọc hoặc ghi ở đó.',
   'failure.permissionDenied.left': 'Truy cập vào bên trái bị từ chối: tài khoản không được đọc hoặc ghi ở đó.',
   'failure.permissionDenied.right': 'Truy cập vào bên phải bị từ chối: tài khoản không được đọc hoặc ghi ở đó.',
+  'failure.noFileAccess': 'ArrowLoop không được phép đọc các thư mục trên máy này. Hãy bật "Quyền truy cập tệp" trong Cài đặt.',
   'failure.notFound': 'Một thư mục mà công việc cần không tồn tại.',
   'failure.notFound.left': 'Thư mục ở bên trái không tồn tại.',
   'failure.notFound.right': 'Thư mục ở bên phải không tồn tại.',
@@ -841,6 +842,10 @@ const vi: Translations = {
   'phone.job': 'Công việc',
   'phone.needName': 'Đặt tên cho công việc.',
   'phone.needSide': 'Chọn một thư mục hoặc một đích cho phía này.',
+  'access.askTitle': 'Cho phép truy cập tệp',
+  'access.askRun': 'Công việc này dùng các thư mục trên máy này, nhưng Android chưa cho ArrowLoop quyền truy cập chúng. Không có quyền này, các thư mục trông như trống và không có gì được đồng bộ. Hãy cho phép truy cập ở trang tiếp theo, rồi chạy lại công việc.',
+  'access.askSaved': 'Đã lưu công việc. Công việc này dùng các thư mục trên máy này, nhưng Android chưa cho ArrowLoop quyền truy cập chúng, nên chưa thể đồng bộ. Hãy cho phép truy cập ở trang tiếp theo.',
+  'access.notNow': 'Để sau',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

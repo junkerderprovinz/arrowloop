@@ -110,6 +110,7 @@ const sk: Translations = {
   'failure.permissionDenied': 'Prístup bol zamietnutý: účet tam nesmie čítať ani zapisovať.',
   'failure.permissionDenied.left': 'Prístup na ľavú stranu bol zamietnutý: účet tam nesmie čítať ani zapisovať.',
   'failure.permissionDenied.right': 'Prístup na pravú stranu bol zamietnutý: účet tam nesmie čítať ani zapisovať.',
+  'failure.noFileAccess': 'ArrowLoop nesmie čítať priečinky v tomto telefóne. Zapnite „Prístup k súborom“ v časti Nastavenia.',
   'failure.notFound': 'Priečinok, ktorý úloha potrebuje, neexistuje.',
   'failure.notFound.left': 'Priečinok na ľavej strane neexistuje.',
   'failure.notFound.right': 'Priečinok na pravej strane neexistuje.',
@@ -841,6 +842,10 @@ const sk: Translations = {
   'phone.job': 'Úloha',
   'phone.needName': 'Pomenuj úlohu.',
   'phone.needSide': 'Vyber priečinok alebo cieľ pre túto stranu.',
+  'access.askTitle': 'Povoliť prístup k súborom',
+  'access.askRun': 'Táto úloha používa priečinky v tomto telefóne, ale Android zatiaľ nedal ArrowLoopu prístup k nim. Bez neho vyzerajú priečinky prázdne a nič sa nesynchronizuje. Povoľte prístup na ďalšej stránke a potom úlohu spustite znova.',
+  'access.askSaved': 'Úloha je uložená. Používa priečinky v tomto telefóne, ale Android zatiaľ nedal ArrowLoopu prístup k nim, takže ich nemôže synchronizovať. Povoľte prístup na ďalšej stránke.',
+  'access.notNow': 'Teraz nie',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

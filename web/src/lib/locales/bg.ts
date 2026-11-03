@@ -110,6 +110,7 @@ const bg: Translations = {
   'failure.permissionDenied': 'Достъпът беше отказан: акаунтът няма право да чете или пише там.',
   'failure.permissionDenied.left': 'Достъпът до лявата страна беше отказан: акаунтът няма право да чете или пише там.',
   'failure.permissionDenied.right': 'Достъпът до дясната страна беше отказан: акаунтът няма право да чете или пише там.',
+  'failure.noFileAccess': 'ArrowLoop няма право да чете папките на този телефон. Включете „Достъп до файловете“ в Настройки.',
   'failure.notFound': 'Папка, която задачата използва, не съществува.',
   'failure.notFound.left': 'Папката от лявата страна не съществува.',
   'failure.notFound.right': 'Папката от дясната страна не съществува.',
@@ -841,6 +842,10 @@ const bg: Translations = {
   'phone.job': 'Задача',
   'phone.needName': 'Дай име на задачата.',
   'phone.needSide': 'Избери папка или цел за тази страна.',
+  'access.askTitle': 'Разрешаване на достъп до файловете',
+  'access.askRun': 'Тази задача използва папки на този телефон, но Android още не е дал на ArrowLoop достъп до тях. Без него папките изглеждат празни и нищо не се синхронизира. Разрешете достъпа на следващата страница и после пуснете задачата отново.',
+  'access.askSaved': 'Задачата е запазена. Тя използва папки на този телефон, но Android още не е дал на ArrowLoop достъп до тях, затова не може да ги синхронизира. Разрешете достъпа на следващата страница.',
+  'access.notNow': 'Не сега',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

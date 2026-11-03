@@ -29,6 +29,10 @@ func TestTheEnginesOwnSentencesCarryTheirFigures(t *testing.T) {
 			failure.Failure{Code: failure.VolumeMissing, Params: map[string]string{"side": "left"}},
 		},
 		{
+			fmt.Errorf("right side %q: %w", "/storage/emulated/0/DCIM", daemon.ErrNoFileAccess).Error(),
+			failure.Failure{Code: failure.NoFileAccess, Params: map[string]string{"side": "right"}},
+		},
+		{
 			fmt.Sprintf("%s: exit status 2: mount: no medium", hook.BeforeFailed),
 			failure.Failure{Code: failure.BeforeFailed, Params: map[string]string{"output": "exit status 2: mount: no medium"}},
 		},

@@ -110,6 +110,7 @@ const fr: Translations = {
   'failure.permissionDenied': 'L\'accès a été refusé : le compte n\'a pas le droit d\'y lire ou d\'y écrire.',
   'failure.permissionDenied.left': 'L\'accès au côté gauche a été refusé : le compte n\'a pas le droit d\'y lire ou d\'y écrire.',
   'failure.permissionDenied.right': 'L\'accès au côté droit a été refusé : le compte n\'a pas le droit d\'y lire ou d\'y écrire.',
+  'failure.noFileAccess': 'ArrowLoop n\'a pas le droit de lire les dossiers de ce téléphone. Activez « Accès aux fichiers » dans Réglages.',
   'failure.notFound': 'Un dossier dont la tâche a besoin n\'existe pas.',
   'failure.notFound.left': 'Le dossier du côté gauche n\'existe pas.',
   'failure.notFound.right': 'Le dossier du côté droit n\'existe pas.',
@@ -841,6 +842,10 @@ const fr: Translations = {
   'phone.job': 'Tâche',
   'phone.needName': 'Donnez un nom à la tâche.',
   'phone.needSide': 'Choisissez un dossier ou une cible pour ce côté.',
+  'access.askTitle': 'Autoriser l\'accès aux fichiers',
+  'access.askRun': 'Cette tâche utilise des dossiers de ce téléphone, mais Android n\'a pas encore donné à ArrowLoop l\'accès à ces dossiers. Sans cet accès, ils paraissent vides et rien n\'est synchronisé. Autorisez l\'accès sur la page suivante, puis relancez la tâche.',
+  'access.askSaved': 'La tâche est enregistrée. Elle utilise des dossiers de ce téléphone, mais Android n\'a pas encore donné à ArrowLoop l\'accès à ces dossiers, elle ne peut donc pas les synchroniser. Autorisez l\'accès sur la page suivante.',
+  'access.notNow': 'Pas maintenant',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

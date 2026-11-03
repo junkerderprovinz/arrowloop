@@ -110,6 +110,7 @@ const lt: Translations = {
   'failure.permissionDenied': 'Prieiga atmesta: paskyra neturi teisės ten skaityti ar rašyti.',
   'failure.permissionDenied.left': 'Prieiga prie kairiosios pusės atmesta: paskyra neturi teisės ten skaityti ar rašyti.',
   'failure.permissionDenied.right': 'Prieiga prie dešiniosios pusės atmesta: paskyra neturi teisės ten skaityti ar rašyti.',
+  'failure.noFileAccess': 'ArrowLoop negali skaityti šio telefono aplankų. Įjunkite „Prieiga prie failų“ skiltyje Nustatymai.',
   'failure.notFound': 'Aplanko, kurio reikia užduočiai, nėra.',
   'failure.notFound.left': 'Aplanko kairėje pusėje nėra.',
   'failure.notFound.right': 'Aplanko dešinėje pusėje nėra.',
@@ -841,6 +842,10 @@ const lt: Translations = {
   'phone.job': 'Užduotis',
   'phone.needName': 'Suteik užduočiai pavadinimą.',
   'phone.needSide': 'Pasirink šios pusės aplanką arba paskirtį.',
+  'access.askTitle': 'Leisti prieigą prie failų',
+  'access.askRun': 'Ši užduotis naudoja šio telefono aplankus, bet Android dar nesuteikė ArrowLoop prieigos prie jų. Be jos aplankai atrodo tušti ir niekas nesinchronizuojama. Leiskite prieigą kitame puslapyje, tada vėl paleiskite užduotį.',
+  'access.askSaved': 'Užduotis išsaugota. Ji naudoja šio telefono aplankus, bet Android dar nesuteikė ArrowLoop prieigos prie jų, todėl jų sinchronizuoti negali. Leiskite prieigą kitame puslapyje.',
+  'access.notNow': 'Ne dabar',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

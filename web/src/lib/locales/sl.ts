@@ -110,6 +110,7 @@ const sl: Translations = {
   'failure.permissionDenied': 'Dostop je bil zavrnjen: račun tam ne sme brati ali pisati.',
   'failure.permissionDenied.left': 'Dostop do leve strani je bil zavrnjen: račun tam ne sme brati ali pisati.',
   'failure.permissionDenied.right': 'Dostop do desne strani je bil zavrnjen: račun tam ne sme brati ali pisati.',
+  'failure.noFileAccess': 'ArrowLoop ne sme brati map v tem telefonu. Vklopi »Dostop do datotek« v Nastavitve.',
   'failure.notFound': 'Mapa, ki jo opravilo potrebuje, ne obstaja.',
   'failure.notFound.left': 'Mapa na levi strani ne obstaja.',
   'failure.notFound.right': 'Mapa na desni strani ne obstaja.',
@@ -841,6 +842,10 @@ const sl: Translations = {
   'phone.job': 'Opravilo',
   'phone.needName': 'Poimenuj opravilo.',
   'phone.needSide': 'Izberi mapo ali cilj za to stran.',
+  'access.askTitle': 'Dovoli dostop do datotek',
+  'access.askRun': 'To opravilo uporablja mape v tem telefonu, vendar Android ArrowLoopu še ni dal dostopa do njih. Brez njega so mape videti prazne in nič se ne sinhronizira. Dovoli dostop na naslednji strani in nato znova zaženi opravilo.',
+  'access.askSaved': 'Opravilo je shranjeno. Uporablja mape v tem telefonu, vendar Android ArrowLoopu še ni dal dostopa do njih, zato jih ne more sinhronizirati. Dovoli dostop na naslednji strani.',
+  'access.notNow': 'Ne zdaj',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

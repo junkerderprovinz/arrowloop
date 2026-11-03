@@ -110,6 +110,7 @@ const ja: Translations = {
   'failure.permissionDenied': 'アクセスが拒否されました。このアカウントには、そこで読み書きする権限がありません。',
   'failure.permissionDenied.left': '左側へのアクセスが拒否されました。このアカウントには、そこで読み書きする権限がありません。',
   'failure.permissionDenied.right': '右側へのアクセスが拒否されました。このアカウントには、そこで読み書きする権限がありません。',
+  'failure.noFileAccess': 'ArrowLoop はこの端末のフォルダーを読み取れません。設定で「ファイルへのアクセス」をオンにしてください。',
   'failure.notFound': 'ジョブに必要なフォルダーが存在しません。',
   'failure.notFound.left': '左側のフォルダーが存在しません。',
   'failure.notFound.right': '右側のフォルダーが存在しません。',
@@ -841,6 +842,10 @@ const ja: Translations = {
   'phone.job': 'ジョブ',
   'phone.needName': 'ジョブに名前を付けてください。',
   'phone.needSide': 'この側のフォルダーまたは接続先を選んでください。',
+  'access.askTitle': 'ファイルへのアクセスを許可',
+  'access.askRun': 'このジョブはこの端末のフォルダーを使いますが、Android はまだ ArrowLoop にアクセスを許可していません。許可がないとフォルダーは空に見え、何も同期されません。次の画面でアクセスを許可してから、もう一度ジョブを実行してください。',
+  'access.askSaved': 'ジョブを保存しました。このジョブはこの端末のフォルダーを使いますが、Android はまだ ArrowLoop にアクセスを許可していないため、同期できません。次の画面でアクセスを許可してください。',
+  'access.notNow': '後で',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

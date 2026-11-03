@@ -110,6 +110,7 @@ const pt: Translations = {
   'failure.permissionDenied': 'O acesso foi recusado: a conta não pode ler nem escrever ali.',
   'failure.permissionDenied.left': 'O acesso ao lado esquerdo foi recusado: a conta não pode ler nem escrever ali.',
   'failure.permissionDenied.right': 'O acesso ao lado direito foi recusado: a conta não pode ler nem escrever ali.',
+  'failure.noFileAccess': 'O ArrowLoop não tem permissão para ler as pastas deste telemóvel. Ativa «Acesso aos ficheiros» em Definições.',
   'failure.notFound': 'Uma pasta de que a tarefa precisa não existe.',
   'failure.notFound.left': 'A pasta do lado esquerdo não existe.',
   'failure.notFound.right': 'A pasta do lado direito não existe.',
@@ -841,6 +842,10 @@ const pt: Translations = {
   'phone.job': 'Tarefa',
   'phone.needName': 'Dá um nome à tarefa.',
   'phone.needSide': 'Escolhe uma pasta ou um destino para este lado.',
+  'access.askTitle': 'Permitir o acesso aos ficheiros',
+  'access.askRun': 'Esta tarefa usa pastas deste telemóvel, mas o Android ainda não deu acesso ao ArrowLoop. Sem ele, as pastas parecem vazias e nada é sincronizado. Permite o acesso na página seguinte e volta a executar a tarefa.',
+  'access.askSaved': 'A tarefa foi guardada. Usa pastas deste telemóvel, mas o Android ainda não deu acesso ao ArrowLoop, por isso não as consegue sincronizar. Permite o acesso na página seguinte.',
+  'access.notNow': 'Agora não',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

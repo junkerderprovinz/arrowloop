@@ -110,6 +110,7 @@ const it: Translations = {
   'failure.permissionDenied': 'Accesso negato: l\'account non ha il permesso di leggere o scrivere lì.',
   'failure.permissionDenied.left': 'Accesso al lato sinistro negato: l\'account non ha il permesso di leggere o scrivere lì.',
   'failure.permissionDenied.right': 'Accesso al lato destro negato: l\'account non ha il permesso di leggere o scrivere lì.',
+  'failure.noFileAccess': 'ArrowLoop non può leggere le cartelle di questo telefono. Attiva «Accesso ai file» in Impostazioni.',
   'failure.notFound': 'Una cartella che serve al lavoro non esiste.',
   'failure.notFound.left': 'La cartella sul lato sinistro non esiste.',
   'failure.notFound.right': 'La cartella sul lato destro non esiste.',
@@ -841,6 +842,10 @@ const it: Translations = {
   'phone.job': 'Lavoro',
   'phone.needName': 'Dai un nome al lavoro.',
   'phone.needSide': 'Scegli una cartella o una destinazione per questo lato.',
+  'access.askTitle': 'Consenti l\'accesso ai file',
+  'access.askRun': 'Questo lavoro usa cartelle di questo telefono, ma Android non ha ancora dato ad ArrowLoop l\'accesso. Senza, le cartelle sembrano vuote e non viene sincronizzato niente. Consenti l\'accesso nella pagina successiva, poi avvia di nuovo il lavoro.',
+  'access.askSaved': 'Il lavoro è salvato. Usa cartelle di questo telefono, ma Android non ha ancora dato ad ArrowLoop l\'accesso, quindi non può sincronizzarle. Consenti l\'accesso nella pagina successiva.',
+  'access.notNow': 'Non ora',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

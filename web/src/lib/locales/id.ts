@@ -110,6 +110,7 @@ const id: Translations = {
   'failure.permissionDenied': 'Akses ditolak: akun ini tidak boleh membaca atau menulis di sana.',
   'failure.permissionDenied.left': 'Akses ke sisi kiri ditolak: akun ini tidak boleh membaca atau menulis di sana.',
   'failure.permissionDenied.right': 'Akses ke sisi kanan ditolak: akun ini tidak boleh membaca atau menulis di sana.',
+  'failure.noFileAccess': 'ArrowLoop tidak diizinkan membaca folder di ponsel ini. Aktifkan "Akses berkas" di Pengaturan.',
   'failure.notFound': 'Sebuah folder yang dibutuhkan tugas ini tidak ada.',
   'failure.notFound.left': 'Folder di sisi kiri tidak ada.',
   'failure.notFound.right': 'Folder di sisi kanan tidak ada.',
@@ -841,6 +842,10 @@ const id: Translations = {
   'phone.job': 'Tugas',
   'phone.needName': 'Beri nama pada tugas ini.',
   'phone.needSide': 'Pilih folder atau tujuan untuk sisi ini.',
+  'access.askTitle': 'Izinkan akses berkas',
+  'access.askRun': 'Tugas ini memakai folder di ponsel ini, tetapi Android belum memberi ArrowLoop akses ke folder itu. Tanpa akses, folder terlihat kosong dan tidak ada yang disinkronkan. Izinkan akses di halaman berikutnya, lalu jalankan tugas lagi.',
+  'access.askSaved': 'Tugas sudah disimpan. Tugas ini memakai folder di ponsel ini, tetapi Android belum memberi ArrowLoop akses ke folder itu, jadi tugas ini belum bisa menyinkronkannya. Izinkan akses di halaman berikutnya.',
+  'access.notNow': 'Nanti saja',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

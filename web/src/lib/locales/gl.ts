@@ -110,6 +110,7 @@ const gl: Translations = {
   'failure.permissionDenied': 'Denegouse o acceso: a conta non pode ler nin escribir alí.',
   'failure.permissionDenied.left': 'Denegouse o acceso ao lado esquerdo: a conta non pode ler nin escribir alí.',
   'failure.permissionDenied.right': 'Denegouse o acceso ao lado dereito: a conta non pode ler nin escribir alí.',
+  'failure.noFileAccess': 'ArrowLoop non ten permiso para ler os cartafoles deste teléfono. Activa «Acceso aos ficheiros» en Axustes.',
   'failure.notFound': 'Non existe un cartafol que a tarefa necesita.',
   'failure.notFound.left': 'O cartafol do lado esquerdo non existe.',
   'failure.notFound.right': 'O cartafol do lado dereito non existe.',
@@ -841,6 +842,10 @@ const gl: Translations = {
   'phone.job': 'Tarefa',
   'phone.needName': 'Ponlle un nome á tarefa.',
   'phone.needSide': 'Escolle un cartafol ou un destino para este lado.',
+  'access.askTitle': 'Permitir o acceso aos ficheiros',
+  'access.askRun': 'Esta tarefa usa cartafoles deste teléfono, pero Android aínda non lle deu acceso a ArrowLoop. Sen el, os cartafoles parecen baleiros e non se sincroniza nada. Permite o acceso na páxina seguinte e volve executar a tarefa.',
+  'access.askSaved': 'A tarefa gardouse. Usa cartafoles deste teléfono, pero Android aínda non lle deu acceso a ArrowLoop, así que non os pode sincronizar. Permite o acceso na páxina seguinte.',
+  'access.notNow': 'Agora non',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

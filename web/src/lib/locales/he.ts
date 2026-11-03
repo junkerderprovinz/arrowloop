@@ -110,6 +110,7 @@ const he: Translations = {
   'failure.permissionDenied': 'הגישה נדחתה: לחשבון אין הרשאה לקרוא או לכתוב שם.',
   'failure.permissionDenied.left': 'הגישה לצד שמאל נדחתה: לחשבון אין הרשאה לקרוא או לכתוב שם.',
   'failure.permissionDenied.right': 'הגישה לצד ימין נדחתה: לחשבון אין הרשאה לקרוא או לכתוב שם.',
+  'failure.noFileAccess': 'ל־ArrowLoop אין הרשאה לקרוא את התיקיות בטלפון הזה. הפעל את "גישה לקבצים" בהגדרות.',
   'failure.notFound': 'תיקייה שהמשימה צריכה לא קיימת.',
   'failure.notFound.left': 'התיקייה בצד שמאל לא קיימת.',
   'failure.notFound.right': 'התיקייה בצד ימין לא קיימת.',
@@ -841,6 +842,10 @@ const he: Translations = {
   'phone.job': 'משימה',
   'phone.needName': 'תן שם למשימה.',
   'phone.needSide': 'בחר תיקייה או יעד לצד הזה.',
+  'access.askTitle': 'מתן גישה לקבצים',
+  'access.askRun': 'המשימה הזו משתמשת בתיקיות בטלפון הזה, אבל Android עוד לא נתן ל־ArrowLoop גישה אליהן. בלי הגישה התיקיות נראות ריקות ושום דבר לא מסונכרן. אשר את הגישה בעמוד הבא, ואז הפעל את המשימה שוב.',
+  'access.askSaved': 'המשימה נשמרה. היא משתמשת בתיקיות בטלפון הזה, אבל Android עוד לא נתן ל־ArrowLoop גישה אליהן, ולכן היא לא יכולה לסנכרן אותן. אשר את הגישה בעמוד הבא.',
+  'access.notNow': 'לא עכשיו',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

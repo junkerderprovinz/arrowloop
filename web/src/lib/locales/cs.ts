@@ -110,6 +110,7 @@ const cs: Translations = {
   'failure.permissionDenied': 'Přístup byl odepřen: účet tam nesmí číst ani zapisovat.',
   'failure.permissionDenied.left': 'Přístup k levé straně byl odepřen: účet tam nesmí číst ani zapisovat.',
   'failure.permissionDenied.right': 'Přístup k pravé straně byl odepřen: účet tam nesmí číst ani zapisovat.',
+  'failure.noFileAccess': 'ArrowLoop nesmí číst složky v tomto telefonu. Zapněte „Přístup k souborům“ v části Nastavení.',
   'failure.notFound': 'Složka, kterou úloha potřebuje, neexistuje.',
   'failure.notFound.left': 'Složka na levé straně neexistuje.',
   'failure.notFound.right': 'Složka na pravé straně neexistuje.',
@@ -841,6 +842,10 @@ const cs: Translations = {
   'phone.job': 'Úloha',
   'phone.needName': 'Pojmenuj úlohu.',
   'phone.needSide': 'Vyber složku nebo cíl pro tuto stranu.',
+  'access.askTitle': 'Povolit přístup k souborům',
+  'access.askRun': 'Tato úloha používá složky v tomto telefonu, ale Android zatím ArrowLoopu nedal přístup k nim. Bez něj vypadají složky prázdné a nic se nesynchronizuje. Povolte přístup na další stránce a pak úlohu spusťte znovu.',
+  'access.askSaved': 'Úloha je uložená. Používá složky v tomto telefonu, ale Android zatím ArrowLoopu nedal přístup k nim, takže je nemůže synchronizovat. Povolte přístup na další stránce.',
+  'access.notNow': 'Teď ne',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

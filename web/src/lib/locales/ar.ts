@@ -110,6 +110,7 @@ const ar: Translations = {
   'failure.permissionDenied': 'رُفض الوصول: لا يحق للحساب القراءة أو الكتابة هناك.',
   'failure.permissionDenied.left': 'رُفض الوصول إلى الجانب الأيسر: لا يحق للحساب القراءة أو الكتابة هناك.',
   'failure.permissionDenied.right': 'رُفض الوصول إلى الجانب الأيمن: لا يحق للحساب القراءة أو الكتابة هناك.',
+  'failure.noFileAccess': 'لا يُسمح لـ ArrowLoop بقراءة المجلدات على هذا الهاتف. فعّل «الوصول إلى الملفات» في الإعدادات.',
   'failure.notFound': 'مجلد تحتاجه المهمة غير موجود.',
   'failure.notFound.left': 'المجلد على الجانب الأيسر غير موجود.',
   'failure.notFound.right': 'المجلد على الجانب الأيمن غير موجود.',
@@ -841,6 +842,10 @@ const ar: Translations = {
   'phone.job': 'مهمة',
   'phone.needName': 'أعطِ المهمة اسمًا.',
   'phone.needSide': 'اختر مجلدًا أو وجهة لهذا الجانب.',
+  'access.askTitle': 'السماح بالوصول إلى الملفات',
+  'access.askRun': 'تستخدم هذه المهمة مجلدات على هذا الهاتف، لكن Android لم يمنح ArrowLoop الوصول إليها بعد. وبدونه تبدو المجلدات فارغة ولا تتم مزامنة أي شيء. اسمح بالوصول في الصفحة التالية، ثم شغّل المهمة مرة أخرى.',
+  'access.askSaved': 'تم حفظ المهمة. إنها تستخدم مجلدات على هذا الهاتف، لكن Android لم يمنح ArrowLoop الوصول إليها بعد، لذلك لا يمكنها مزامنتها. اسمح بالوصول في الصفحة التالية.',
+  'access.notNow': 'ليس الآن',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

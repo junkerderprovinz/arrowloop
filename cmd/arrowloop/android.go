@@ -10,6 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+
 	// Android has no /usr/share/zoneinfo in a form Go reads, so without the
 	// embedded database every named zone falls back to UTC and cron schedules
 	// fire hours off. It adds about 450 KB.
@@ -128,4 +130,37 @@ func applyAndroidEnvironment() {
 		useNameservers(file)
 	}
 	useSystemCertificates()
+}
+
+// accessVar names the file in which the app says whether Android lets it read
+// the phone's shared folders, "granted" or "denied". The permission is given
+// and taken away on a settings page, so the file is read before every run.
+const accessVar = "ARROWLOOP_FILE_ACCESS"
+
+// fileAccess turns the app's word into the runner's check. Only the shared
+// folders need the permission; anything that cannot be read as a refusal lets
+// the run go ahead as it always has.
+func fileAccess(file string) daemon.Access {
+	return func(path string) error {
+		if !sharedStorage(path) {
+			return nil
+		}
+		said, err := os.ReadFile(file)
+		if err != nil || strings.TrimSpace(string(said)) != "denied" {
+			return nil
+		}
+		return daemon.ErrNoFileAccess
+	}
+}
+
+// sharedStorage reports whether a path is in the storage all apps share,
+// internal or on a card, where Android hides what other apps wrote from an app
+// without all-files access.
+func sharedStorage(path string) bool {
+	for _, root := range []string{"/storage", "/sdcard"} {
+		if path == root || strings.HasPrefix(path, root+"/") {
+			return true
+		}
+	}
+	return false
 }

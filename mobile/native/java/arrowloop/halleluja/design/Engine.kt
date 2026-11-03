@@ -205,8 +205,9 @@ object Engine {
     @Synchronized
     fun start(context: Context): Boolean {
         // Before the checks below, since an engine an earlier process of this
-        // app left running reads the same file.
+        // app left running reads the same files.
         followNameservers(context)
+        Storage.check(context)
         // The process handle is checked first: the two callers arrive
         // milliseconds apart, and a freshly spawned engine has not bound its
         // port yet, so the HTTP probe alone would start a second engine. The
@@ -258,6 +259,7 @@ object Engine {
         // cmd/arrowloop/android.go.
         builder.environment()["TZ"] = TimeZone.getDefault().id
         builder.environment()["ARROWLOOP_DNS_FILE"] = nameserverFile(context).absolutePath
+        builder.environment()["ARROWLOOP_FILE_ACCESS"] = Storage.accessFile(context).absolutePath
         // The phone reports runs through Android's notifications alone, so the
         // engine skips the message channels and Healthchecks checks its
         // configuration may hold. See internal/daemon/notify.go.

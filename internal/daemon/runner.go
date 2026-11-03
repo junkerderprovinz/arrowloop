@@ -56,6 +56,10 @@ type Runner struct {
 	// metered connections.
 	condMu sync.Mutex
 	cond   Condition
+	// access is asked about the folders on this machine before a job opens
+	// them. The phone build sets it, since only the app can tell whether
+	// Android lets the engine read them.
+	access Access
 
 	// waiting remembers the jobs whose drive was not attached, so the interface
 	// can say "waiting for a drive".
@@ -376,6 +380,9 @@ func hookEnv(j job.Job, rec *history.Run) map[string]string {
 func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, error) {
 	leftPath, rightPath, err := resolve(j)
 	if err != nil {
+		return apply.Ends{}, nil, err
+	}
+	if err := r.readable(leftPath, rightPath); err != nil {
 		return apply.Ends{}, nil, err
 	}
 

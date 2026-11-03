@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import androidx.core.content.ContextCompat
+import java.io.File
 
 /**
  * Whether the engine can reach the phone's files, and how to ask for it.
@@ -37,6 +39,30 @@ object Storage {
         else -> ContextCompat.checkSelfPermission(
             context, Manifest.permission.WRITE_EXTERNAL_STORAGE,
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    /**
+     * The file in which the engine reads whether it may use the shared
+     * folders. Without the permission Android shows them to the engine with
+     * every other app's files left out rather than refusing them, so the
+     * engine cannot tell for itself. See cmd/arrowloop/android.go.
+     */
+    fun accessFile(context: Context): File = File(Engine.home(context), "file-access")
+
+    /**
+     * Reads the permission and passes it on to the engine. It is given on a
+     * settings page that reports back to nobody, so the app passes it on
+     * whenever it looks, and before every wake-up.
+     */
+    fun check(context: Context): Boolean {
+        val granted = granted(context)
+        try {
+            accessFile(context).writeText(if (granted) "granted" else "denied")
+        } catch (e: Exception) {
+            // The engine then runs as it did before it was told anything.
+            Log.w("ArrowLoop", "could not pass on the file access: ${e.javaClass.simpleName}")
+        }
+        return granted
     }
 
     /**

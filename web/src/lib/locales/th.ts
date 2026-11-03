@@ -110,6 +110,7 @@ const th: Translations = {
   'failure.permissionDenied': 'การเข้าถึงถูกปฏิเสธ: บัญชีนี้ไม่มีสิทธิ์อ่านหรือเขียนที่นั่น',
   'failure.permissionDenied.left': 'การเข้าถึงฝั่งซ้ายถูกปฏิเสธ: บัญชีนี้ไม่มีสิทธิ์อ่านหรือเขียนที่นั่น',
   'failure.permissionDenied.right': 'การเข้าถึงฝั่งขวาถูกปฏิเสธ: บัญชีนี้ไม่มีสิทธิ์อ่านหรือเขียนที่นั่น',
+  'failure.noFileAccess': 'ArrowLoop ไม่ได้รับอนุญาตให้อ่านโฟลเดอร์ในเครื่องนี้ เปิด "การเข้าถึงไฟล์" ในตั้งค่า',
   'failure.notFound': 'ไม่มีโฟลเดอร์ที่งานนี้ต้องใช้',
   'failure.notFound.left': 'ไม่มีโฟลเดอร์ที่ฝั่งซ้าย',
   'failure.notFound.right': 'ไม่มีโฟลเดอร์ที่ฝั่งขวา',
@@ -841,6 +842,10 @@ const th: Translations = {
   'phone.job': 'งาน',
   'phone.needName': 'ตั้งชื่องานนี้',
   'phone.needSide': 'เลือกโฟลเดอร์หรือปลายทางสำหรับฝั่งนี้',
+  'access.askTitle': 'อนุญาตการเข้าถึงไฟล์',
+  'access.askRun': 'งานนี้ใช้โฟลเดอร์ในเครื่องนี้ แต่ Android ยังไม่ได้ให้ ArrowLoop เข้าถึงโฟลเดอร์เหล่านั้น ถ้าไม่มีสิทธิ์นี้ โฟลเดอร์จะดูว่างเปล่าและจะไม่มีอะไรถูกซิงค์ อนุญาตการเข้าถึงในหน้าถัดไป แล้วเรียกใช้งานอีกครั้ง',
+  'access.askSaved': 'บันทึกงานแล้ว งานนี้ใช้โฟลเดอร์ในเครื่องนี้ แต่ Android ยังไม่ได้ให้ ArrowLoop เข้าถึงโฟลเดอร์เหล่านั้น จึงยังซิงค์ไม่ได้ อนุญาตการเข้าถึงในหน้าถัดไป',
+  'access.notNow': 'ไว้ทีหลัง',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

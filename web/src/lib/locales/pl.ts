@@ -110,6 +110,7 @@ const pl: Translations = {
   'failure.permissionDenied': 'Odmowa dostępu: konto nie może tam czytać ani zapisywać.',
   'failure.permissionDenied.left': 'Odmowa dostępu do lewej strony: konto nie może tam czytać ani zapisywać.',
   'failure.permissionDenied.right': 'Odmowa dostępu do prawej strony: konto nie może tam czytać ani zapisywać.',
+  'failure.noFileAccess': 'ArrowLoop nie może czytać folderów na tym telefonie. Włącz „Dostęp do plików” w sekcji Ustawienia.',
   'failure.notFound': 'Folder, którego potrzebuje zadanie, nie istnieje.',
   'failure.notFound.left': 'Folder po lewej stronie nie istnieje.',
   'failure.notFound.right': 'Folder po prawej stronie nie istnieje.',
@@ -841,6 +842,10 @@ const pl: Translations = {
   'phone.job': 'Zadanie',
   'phone.needName': 'Nadaj zadaniu nazwę.',
   'phone.needSide': 'Wybierz folder lub cel dla tej strony.',
+  'access.askTitle': 'Zezwól na dostęp do plików',
+  'access.askRun': 'To zadanie używa folderów na tym telefonie, ale Android nie dał jeszcze ArrowLoop dostępu do nich. Bez niego foldery wyglądają na puste i nic się nie synchronizuje. Zezwól na dostęp na następnej stronie, a potem uruchom zadanie jeszcze raz.',
+  'access.askSaved': 'Zadanie zostało zapisane. Używa folderów na tym telefonie, ale Android nie dał jeszcze ArrowLoop dostępu do nich, więc nie może ich synchronizować. Zezwól na dostęp na następnej stronie.',
+  'access.notNow': 'Nie teraz',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

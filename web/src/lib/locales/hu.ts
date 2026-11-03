@@ -110,6 +110,7 @@ const hu: Translations = {
   'failure.permissionDenied': 'A hozzáférés megtagadva: a fióknak nincs joga ott olvasni vagy írni.',
   'failure.permissionDenied.left': 'A bal oldalhoz való hozzáférés megtagadva: a fióknak nincs joga ott olvasni vagy írni.',
   'failure.permissionDenied.right': 'A jobb oldalhoz való hozzáférés megtagadva: a fióknak nincs joga ott olvasni vagy írni.',
+  'failure.noFileAccess': 'Az ArrowLoop nem olvashatja a telefon mappáit. Kapcsold be a „Fájlhozzáférés” lehetőséget itt: Beállítások.',
   'failure.notFound': 'Egy mappa, amelyre a feladatnak szüksége van, nem létezik.',
   'failure.notFound.left': 'A bal oldali mappa nem létezik.',
   'failure.notFound.right': 'A jobb oldali mappa nem létezik.',
@@ -841,6 +842,10 @@ const hu: Translations = {
   'phone.job': 'Feladat',
   'phone.needName': 'Adj nevet a feladatnak.',
   'phone.needSide': 'Válassz mappát vagy célt ehhez az oldalhoz.',
+  'access.askTitle': 'Fájlhozzáférés engedélyezése',
+  'access.askRun': 'Ez a feladat a telefon mappáit használja, de az Android még nem adott hozzáférést az ArrowLoopnak. Enélkül a mappák üresnek látszanak, és semmi sem szinkronizálódik. Engedélyezd a hozzáférést a következő oldalon, aztán indítsd újra a feladatot.',
+  'access.askSaved': 'A feladat elmentve. A telefon mappáit használja, de az Android még nem adott hozzáférést az ArrowLoopnak, így nem tudja szinkronizálni őket. Engedélyezd a hozzáférést a következő oldalon.',
+  'access.notNow': 'Most nem',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

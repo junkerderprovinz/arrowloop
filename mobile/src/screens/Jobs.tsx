@@ -9,6 +9,7 @@ import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
+import { mayRun, mayRunAll } from "../fileAccess";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
@@ -92,7 +93,8 @@ export function Jobs() {
   const act = async (job: Job) => {
     setBusy(job.name);
     try {
-      await (job.running ? api.stop(job.name) : api.run(job.name));
+      if (job.running) await api.stop(job.name);
+      else if (await mayRun([job.left, job.right], t)) await api.run(job.name);
       await load();
     } catch (e) {
       setError((e as Error).message);
@@ -171,9 +173,10 @@ export function Jobs() {
     await Promise.allSettled(work);
     await load();
   };
+  const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
   const more = [
     ...(ready.length > 0
-      ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void all(ready.map((j) => api.run(j.name))) }]
+      ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void runAll() }]
       : []),
     ...(running.length > 0
       ? [{ label: t("phone.stopAll"), glyph: "IconStop", onPress: () => void all(running.map((j) => api.stop(j.name))) }]

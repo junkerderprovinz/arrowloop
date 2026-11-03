@@ -1,11 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { AppState, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { entryLabel } from "../../../web/src/lib/entryLabel";
 import { Activity } from "../activity";
 import { api, failed, type Job, type Remote, type Run, type Tally } from "../api";
 import { clock } from "../clock";
-import { engine } from "../engine";
+import { AccessNotice, mayRunAll, useFileAccess } from "../fileAccess";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
@@ -13,7 +13,7 @@ import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
 import { bytes, isAccount, ReachBadge, Room, useReach, useRoom } from "../space";
-import { softOn, space, text } from "../theme";
+import { space, text } from "../theme";
 import { useEngineEvents, useEngineStream } from "../useEngine";
 import { useWaiting } from "../waiting";
 import { WayGlyph, wayLabel, wayOf } from "../way";
@@ -101,6 +101,8 @@ export function Overview() {
     await load();
   };
 
+  const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
+
   const toTab = (tab: string) => nav.getParent()?.navigate(tab);
   // The job's own screen sits in the jobs tab.
   const openJob = (name: string) => nav.getParent()?.navigate("JobsTab", { screen: "JobDetail", params: { name } });
@@ -177,7 +179,7 @@ export function Overview() {
           onPress={() => void all(running.map((j) => api.stop(j.name)))}
         />
       ) : ready.length > 0 ? (
-        <Fab label={t("phone.runAll")} labelKey="phone.runAll" onPress={() => void all(ready.map((j) => api.run(j.name)))} />
+        <Fab label={t("phone.runAll")} labelKey="phone.runAll" onPress={() => void runAll()} />
       ) : null}
     </Floating>
   );
@@ -213,50 +215,6 @@ function useRecentRuns() {
   });
 
   return { newest, tally, reload };
-}
-
-/**
- * Whether Android lets the app read the phone's folders. It is granted on a
- * settings page rather than in a dialog, so it is read again whenever the app
- * comes back to the front. Null until known, and true where Android has no
- * such permission.
- */
-function useFileAccess(): boolean | null {
-  const [access, setAccess] = useState<boolean | null>(null);
-  useEffect(() => {
-    const read = () =>
-      Promise.all([engine.storageGranted(), engine.storagePossible()]).then(
-        ([granted, possible]) => setAccess(granted || !possible),
-        () => {},
-      );
-    void read();
-    const sub = AppState.addEventListener("change", (s) => s === "active" && read());
-    return () => sub.remove();
-  }, []);
-  return access;
-}
-
-/**
- * Without file access no job on the phone's folders can run, so this is the
- * one thing that stands above the counts. Android grants it on a settings
- * page, not in a dialog.
- */
-function AccessNotice() {
-  const { t } = useT();
-  const { p, corners } = useTheme();
-  return (
-    <View style={[styles.notice, { backgroundColor: softOn(p.warnInk, 0.15), ...corners.card }]}>
-      <Text style={[styles.noticeText, { color: p.warnInk }]}>
-        {`${t("phone.access")} · ${t("phone.permissionDenied")}`}
-      </Text>
-      <Button
-        label={t("phone.openSettings")}
-        labelKey="phone.openSettings"
-        wide={false}
-        onPress={() => void engine.openStorageSettings().catch(() => {})}
-      />
-    </View>
-  );
 }
 
 /**
@@ -476,8 +434,6 @@ function Account({
 }
 
 const styles = StyleSheet.create({
-  notice: { flexDirection: "row", alignItems: "center", gap: space.sm, padding: space.sm, paddingStart: space.md },
-  noticeText: { flex: 1, fontSize: text.body, fontWeight: "600" },
   // A sub-card: a flat inset group one step above the card, without a shadow.
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },

@@ -21,6 +21,7 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
     left: 'failure.permissionDenied.left',
     right: 'failure.permissionDenied.right',
   },
+  noFileAccess: { either: 'failure.noFileAccess' },
   notFound: { either: 'failure.notFound', left: 'failure.notFound.left', right: 'failure.notFound.right' },
   quotaExceeded: { either: 'failure.quotaExceeded', left: 'failure.quotaExceeded.left', right: 'failure.quotaExceeded.right' },
   rateLimited: { either: 'failure.rateLimited', left: 'failure.rateLimited.left', right: 'failure.rateLimited.right' },

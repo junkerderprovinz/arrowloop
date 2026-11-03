@@ -110,6 +110,7 @@ const sr: Translations = {
   'failure.permissionDenied': 'Приступ је одбијен: налог тамо не сме да чита ни да пише.',
   'failure.permissionDenied.left': 'Приступ левој страни је одбијен: налог тамо не сме да чита ни да пише.',
   'failure.permissionDenied.right': 'Приступ десној страни је одбијен: налог тамо не сме да чита ни да пише.',
+  'failure.noFileAccess': 'ArrowLoop не сме да чита фасцикле на овом телефону. Укључи „Приступ датотекама” у одељку Подешавања.',
   'failure.notFound': 'Фасцикла која је потребна послу не постоји.',
   'failure.notFound.left': 'Фасцикла на левој страни не постоји.',
   'failure.notFound.right': 'Фасцикла на десној страни не постоји.',
@@ -841,6 +842,10 @@ const sr: Translations = {
   'phone.job': 'Посао',
   'phone.needName': 'Дај послу назив.',
   'phone.needSide': 'Изабери фасциклу или одредиште за ову страну.',
+  'access.askTitle': 'Дозволи приступ датотекама',
+  'access.askRun': 'Овај посао користи фасцикле на овом телефону, али Android још није дао ArrowLoop-у приступ њима. Без тога фасцикле изгледају празно и ништа се не синхронизује. Дозволи приступ на следећој страници, а затим поново покрени посао.',
+  'access.askSaved': 'Посао је сачуван. Користи фасцикле на овом телефону, али Android још није дао ArrowLoop-у приступ њима, па не може да их синхронизује. Дозволи приступ на следећој страници.',
+  'access.notNow': 'Не сада',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

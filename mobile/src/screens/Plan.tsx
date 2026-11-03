@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { actionName } from "../../../web/src/lib/actionName";
 import { api, EngineError, type Action, type Plan as PlanType } from "../api";
+import { mayRunJob } from "../fileAccess";
 import { useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
@@ -97,6 +98,7 @@ export function Plan() {
         onPress={async () => {
           setRunning(true);
           try {
+            if (!(await mayRunJob(job, t))) return;
             await api.run(job);
             nav.goBack();
           } catch (e) {

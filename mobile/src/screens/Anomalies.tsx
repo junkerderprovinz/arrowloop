@@ -5,6 +5,7 @@ import { api, type Job } from "../api";
 import { LearningRings } from "../learningRings";
 import { Tiles } from "../tiles";
 import { clock } from "../clock";
+import { mayRunJob } from "../fileAccess";
 import { useT } from "../i18n";
 import type { MoreStack } from "../nav";
 import { jobSides } from "../sides";
@@ -130,7 +131,11 @@ export function Anomalies() {
   };
 
   const runNow = (name: string) => {
-    api.run(name).catch((e: Error) => setError(e.message));
+    mayRunJob(name, t)
+      .then(async (may) => {
+        if (may) await api.run(name);
+      })
+      .catch((e: Error) => setError(e.message));
   };
 
   // The job's own screen sits in the jobs tab, which this screen may not be in.

@@ -110,6 +110,7 @@ const hi: Translations = {
   'failure.permissionDenied': 'पहुँच नहीं मिली: इस खाते को वहाँ पढ़ने या लिखने की अनुमति नहीं है।',
   'failure.permissionDenied.left': 'बाईं ओर पहुँच नहीं मिली: इस खाते को वहाँ पढ़ने या लिखने की अनुमति नहीं है।',
   'failure.permissionDenied.right': 'दाईं ओर पहुँच नहीं मिली: इस खाते को वहाँ पढ़ने या लिखने की अनुमति नहीं है।',
+  'failure.noFileAccess': 'ArrowLoop को इस फ़ोन के फ़ोल्डर पढ़ने की अनुमति नहीं है। सेटिंग्स में "फ़ाइल पहुँच" चालू करें।',
   'failure.notFound': 'काम को जिस फ़ोल्डर की ज़रूरत है, वह मौजूद नहीं है।',
   'failure.notFound.left': 'बाईं ओर का फ़ोल्डर मौजूद नहीं है।',
   'failure.notFound.right': 'दाईं ओर का फ़ोल्डर मौजूद नहीं है।',
@@ -841,6 +842,10 @@ const hi: Translations = {
   'phone.job': 'काम',
   'phone.needName': 'काम को एक नाम दें।',
   'phone.needSide': 'इस ओर के लिए कोई फ़ोल्डर या गंतव्य चुनें।',
+  'access.askTitle': 'फ़ाइल पहुँच की अनुमति दें',
+  'access.askRun': 'यह काम इस फ़ोन के फ़ोल्डर इस्तेमाल करता है, लेकिन Android ने अभी तक ArrowLoop को उन तक पहुँच नहीं दी है। इसके बिना फ़ोल्डर खाली दिखते हैं और कुछ भी सिंक नहीं होता। अगले पेज पर पहुँच की अनुमति दें, फिर काम को दोबारा चलाएँ।',
+  'access.askSaved': 'काम सहेज लिया गया है। यह इस फ़ोन के फ़ोल्डर इस्तेमाल करता है, लेकिन Android ने अभी तक ArrowLoop को उन तक पहुँच नहीं दी है, इसलिए यह उन्हें सिंक नहीं कर सकता। अगले पेज पर पहुँच की अनुमति दें।',
+  'access.notNow': 'अभी नहीं',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

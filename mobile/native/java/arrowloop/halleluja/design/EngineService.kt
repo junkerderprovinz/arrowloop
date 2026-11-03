@@ -339,6 +339,7 @@ class EngineService : Service() {
             "unreachable" -> getString(R.string.failure_unreachable)
             "signInFailed" -> getString(R.string.failure_sign_in)
             "permissionDenied" -> getString(R.string.failure_permission)
+            "noFileAccess" -> getString(R.string.failure_no_file_access)
             "notFound" -> getString(R.string.failure_not_found)
             "quotaExceeded" -> getString(R.string.failure_quota)
             "rateLimited" -> getString(R.string.failure_rate_limited)

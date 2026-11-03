@@ -110,6 +110,7 @@ const da: Translations = {
   'failure.permissionDenied': 'Adgang blev nægtet: kontoen må ikke læse eller skrive der.',
   'failure.permissionDenied.left': 'Adgang til venstre side blev nægtet: kontoen må ikke læse eller skrive der.',
   'failure.permissionDenied.right': 'Adgang til højre side blev nægtet: kontoen må ikke læse eller skrive der.',
+  'failure.noFileAccess': 'ArrowLoop må ikke læse mapperne på denne telefon. Slå "Filadgang" til under Indstillinger.',
   'failure.notFound': 'En mappe, som jobbet skal bruge, findes ikke.',
   'failure.notFound.left': 'Mappen på venstre side findes ikke.',
   'failure.notFound.right': 'Mappen på højre side findes ikke.',
@@ -841,6 +842,10 @@ const da: Translations = {
   'phone.job': 'Job',
   'phone.needName': 'Giv jobbet et navn.',
   'phone.needSide': 'Vælg en mappe eller et mål til denne side.',
+  'access.askTitle': 'Tillad filadgang',
+  'access.askRun': 'Dette job bruger mapper på denne telefon, men Android har endnu ikke givet ArrowLoop adgang til dem. Uden den ser mapperne tomme ud, og intet bliver synkroniseret. Tillad adgangen på næste side, og start så jobbet igen.',
+  'access.askSaved': 'Jobbet er gemt. Det bruger mapper på denne telefon, men Android har endnu ikke givet ArrowLoop adgang til dem, så det kan ikke synkronisere dem. Tillad adgangen på næste side.',
+  'access.notNow': 'Ikke nu',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

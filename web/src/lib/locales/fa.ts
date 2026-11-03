@@ -110,6 +110,7 @@ const fa: Translations = {
   'failure.permissionDenied': 'دسترسی رد شد: این حساب اجازه ندارد آنجا بخواند یا بنویسد.',
   'failure.permissionDenied.left': 'دسترسی به طرف چپ رد شد: این حساب اجازه ندارد آنجا بخواند یا بنویسد.',
   'failure.permissionDenied.right': 'دسترسی به طرف راست رد شد: این حساب اجازه ندارد آنجا بخواند یا بنویسد.',
+  'failure.noFileAccess': 'ArrowLoop اجازه ندارد پوشه‌های این گوشی را بخواند. «دسترسی به فایل‌ها» را در تنظیمات روشن کنید.',
   'failure.notFound': 'پوشه‌ای که کار به آن نیاز دارد وجود ندارد.',
   'failure.notFound.left': 'پوشهٔ طرف چپ وجود ندارد.',
   'failure.notFound.right': 'پوشهٔ طرف راست وجود ندارد.',
@@ -841,6 +842,10 @@ const fa: Translations = {
   'phone.job': 'کار',
   'phone.needName': 'برای کار یک نام بگذار.',
   'phone.needSide': 'برای این سمت یک پوشه یا مقصد انتخاب کن.',
+  'access.askTitle': 'اجازه دسترسی به فایل‌ها',
+  'access.askRun': 'این کار از پوشه‌های این گوشی استفاده می‌کند، اما Android هنوز به ArrowLoop اجازه دسترسی به آن‌ها را نداده است. بدون آن، پوشه‌ها خالی به نظر می‌رسند و چیزی همگام‌سازی نمی‌شود. در صفحه بعد دسترسی را بدهید و سپس کار را دوباره اجرا کنید.',
+  'access.askSaved': 'کار ذخیره شد. از پوشه‌های این گوشی استفاده می‌کند، اما Android هنوز به ArrowLoop اجازه دسترسی به آن‌ها را نداده است، پس نمی‌تواند آن‌ها را همگام‌سازی کند. در صفحه بعد دسترسی را بدهید.',
+  'access.notNow': 'الان نه',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

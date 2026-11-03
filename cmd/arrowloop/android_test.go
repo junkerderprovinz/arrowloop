@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"net"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 )
 
 func TestTheNameserverListIsReadTheWayAndroidWritesIt(t *testing.T) {
@@ -233,5 +236,31 @@ func TestAnEmptyDirectoryIsNotAStore(t *testing.T) {
 	androidCertDirs = []string{t.TempDir()}
 	if got := useSystemCertificates(); got != "" {
 		t.Errorf("claimed an empty directory: %q", got)
+	}
+}
+
+func TestTheAppsWordOnFileAccessHoldsForTheSharedFoldersOnly(t *testing.T) {
+	file := filepath.Join(t.TempDir(), "file-access")
+	check := fileAccess(file)
+
+	if err := check("/storage/emulated/0/DCIM"); err != nil {
+		t.Errorf("without a word from the app the run was refused: %v", err)
+	}
+	if err := os.WriteFile(file, []byte("denied"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range []string{"/storage/emulated/0/DCIM", "/storage/1234-ABCD/Music", "/sdcard/Download"} {
+		if err := check(path); !errors.Is(err, daemon.ErrNoFileAccess) {
+			t.Errorf("%s: %v, want the missing file access", path, err)
+		}
+	}
+	if err := check("/data/user/0/arrowloop.halleluja.design/files/sync"); err != nil {
+		t.Errorf("the app's own folder needs no permission, but was refused: %v", err)
+	}
+	if err := os.WriteFile(file, []byte("granted\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := check("/storage/emulated/0/DCIM"); err != nil {
+		t.Errorf("a granted permission still refused the run: %v", err)
 	}
 }
