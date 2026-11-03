@@ -846,6 +846,10 @@ const pt: Translations = {
   'access.askRun': 'Esta tarefa usa pastas deste telemóvel, mas o Android ainda não deu acesso ao ArrowLoop. Sem ele, as pastas parecem vazias e nada é sincronizado. Permite o acesso na página seguinte e volta a executar a tarefa.',
   'access.askSaved': 'A tarefa foi guardada. Usa pastas deste telemóvel, mas o Android ainda não deu acesso ao ArrowLoop, por isso não as consegue sincronizar. Permite o acesso na página seguinte.',
   'access.notNow': 'Agora não',
+  'side.where': 'Onde está a pasta',
+  'side.whereHint': 'Escolhe este telemóvel ou um dos teus destinos, e depois a pasta. As pastas que adicionas em Definições com «Adicionar uma pasta de uma aplicação» estão no destino Apps e funcionam sem «Acesso aos ficheiros».',
+  'side.noTargets': 'Ainda não há nenhuma nuvem nem servidor ligado. Podes ligar um em Mais, Destinos.',
+  'side.inTarget': 'Pasta em {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

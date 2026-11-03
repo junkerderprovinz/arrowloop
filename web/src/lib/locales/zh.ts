@@ -846,6 +846,10 @@ const zh: Translations = {
   'access.askRun': '这个任务使用这台手机上的文件夹，但 Android 还没有允许 ArrowLoop 访问它们。没有权限时，这些文件夹看起来是空的，什么都不会同步。请在下一页允许访问，然后再次运行任务。',
   'access.askSaved': '任务已保存。它使用这台手机上的文件夹，但 Android 还没有允许 ArrowLoop 访问它们，所以无法同步。请在下一页允许访问。',
   'access.notNow': '以后再说',
+  'side.where': '文件夹位置',
+  'side.whereHint': '先选这台手机或你的某个目标，再选其中的文件夹。在设置中通过“添加应用中的文件夹”添加的文件夹位于目标 Apps 中，即使没有“文件访问”也能使用。',
+  'side.noTargets': '还没有连接任何云或服务器。你可以在更多 > 目标中连接。',
+  'side.inTarget': '{name} 中的文件夹',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

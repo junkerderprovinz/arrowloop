@@ -846,6 +846,10 @@ const vi: Translations = {
   'access.askRun': 'Công việc này dùng các thư mục trên máy này, nhưng Android chưa cho ArrowLoop quyền truy cập chúng. Không có quyền này, các thư mục trông như trống và không có gì được đồng bộ. Hãy cho phép truy cập ở trang tiếp theo, rồi chạy lại công việc.',
   'access.askSaved': 'Đã lưu công việc. Công việc này dùng các thư mục trên máy này, nhưng Android chưa cho ArrowLoop quyền truy cập chúng, nên chưa thể đồng bộ. Hãy cho phép truy cập ở trang tiếp theo.',
   'access.notNow': 'Để sau',
+  'side.where': 'Vị trí thư mục',
+  'side.whereHint': 'Chọn máy này hoặc một đích của bạn, rồi chọn thư mục bên trong. Các thư mục bạn thêm trong Cài đặt bằng "Thêm thư mục từ ứng dụng" nằm trong đích Apps và vẫn chạy khi không có "Quyền truy cập tệp".',
+  'side.noTargets': 'Chưa có đám mây hay máy chủ nào được kết nối. Bạn có thể kết nối ở Thêm, Đích.',
+  'side.inTarget': 'Thư mục trong {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

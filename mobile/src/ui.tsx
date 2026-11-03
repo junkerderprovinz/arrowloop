@@ -981,6 +981,7 @@ export function ReadmeButton({
   onPress,
   soon,
   confirm,
+  chosen = false,
 }: {
   label: string;
   /** A second, smaller line under the name. */
@@ -999,6 +1000,8 @@ export function ReadmeButton({
   soon?: string;
   /** Increment to swell once, when what the button did has landed. */
   confirm?: number;
+  /** Stays lit, for the option of a choice that is picked. */
+  chosen?: boolean;
 }) {
   const { p, corners } = useTheme();
   const width = useContext(ReadmeWidth) ?? README_W;
@@ -1007,7 +1010,8 @@ export function ReadmeButton({
   useEffect(() => {
     if (confirm) swell.confirm();
   }, [confirm, swell.confirm]);
-  const [lit, setLit] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const lit = pressed || chosen;
   const shut = !onPress;
   const ink = lit ? tile.ink : shut ? p.textSub : p.text;
   const button = (
@@ -1015,16 +1019,16 @@ export function ReadmeButton({
       onPress={onPress}
       disabled={shut}
       onPressIn={() => {
-        setLit(true);
+        setPressed(true);
         press.onPressIn();
       }}
       onPressOut={() => {
-        setLit(false);
+        setPressed(false);
         press.onPressOut();
       }}
       accessibilityRole="button"
       accessibilityLabel={shut && soon ? `${label}, ${soon}` : label}
-      accessibilityState={{ disabled: shut }}
+      accessibilityState={{ disabled: shut, selected: chosen }}
       style={[
         styles.readme,
         art ? styles.readmeArt : null,

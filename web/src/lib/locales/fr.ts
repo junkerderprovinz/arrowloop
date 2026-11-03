@@ -846,6 +846,10 @@ const fr: Translations = {
   'access.askRun': 'Cette tâche utilise des dossiers de ce téléphone, mais Android n\'a pas encore donné à ArrowLoop l\'accès à ces dossiers. Sans cet accès, ils paraissent vides et rien n\'est synchronisé. Autorisez l\'accès sur la page suivante, puis relancez la tâche.',
   'access.askSaved': 'La tâche est enregistrée. Elle utilise des dossiers de ce téléphone, mais Android n\'a pas encore donné à ArrowLoop l\'accès à ces dossiers, elle ne peut donc pas les synchroniser. Autorisez l\'accès sur la page suivante.',
   'access.notNow': 'Pas maintenant',
+  'side.where': 'Où se trouve le dossier',
+  'side.whereHint': 'Choisissez ce téléphone ou l\'une de vos cibles, puis le dossier qu\'il contient. Les dossiers ajoutés dans Réglages avec « Ajouter un dossier d\'une application » se trouvent dans la cible Apps et fonctionnent sans « Accès aux fichiers ».',
+  'side.noTargets': 'Aucun cloud ni serveur n\'est encore connecté. Vous pouvez en connecter un dans Plus, Cibles.',
+  'side.inTarget': 'Dossier dans {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

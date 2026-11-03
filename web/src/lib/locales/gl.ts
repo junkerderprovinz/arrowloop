@@ -846,6 +846,10 @@ const gl: Translations = {
   'access.askRun': 'Esta tarefa usa cartafoles deste teléfono, pero Android aínda non lle deu acceso a ArrowLoop. Sen el, os cartafoles parecen baleiros e non se sincroniza nada. Permite o acceso na páxina seguinte e volve executar a tarefa.',
   'access.askSaved': 'A tarefa gardouse. Usa cartafoles deste teléfono, pero Android aínda non lle deu acceso a ArrowLoop, así que non os pode sincronizar. Permite o acceso na páxina seguinte.',
   'access.notNow': 'Agora non',
+  'side.where': 'Onde está o cartafol',
+  'side.whereHint': 'Escolle este teléfono ou un dos teus destinos, e despois o cartafol. Os cartafoles que engades en Axustes con «Engadir un cartafol dunha aplicación» están no destino Apps e funcionan sen «Acceso aos ficheiros».',
+  'side.noTargets': 'Aínda non hai ningunha nube nin servidor conectado. Podes conectar un en Máis, Destinos.',
+  'side.inTarget': 'Cartafol en {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

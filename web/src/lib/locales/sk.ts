@@ -846,6 +846,10 @@ const sk: Translations = {
   'access.askRun': 'Táto úloha používa priečinky v tomto telefóne, ale Android zatiaľ nedal ArrowLoopu prístup k nim. Bez neho vyzerajú priečinky prázdne a nič sa nesynchronizuje. Povoľte prístup na ďalšej stránke a potom úlohu spustite znova.',
   'access.askSaved': 'Úloha je uložená. Používa priečinky v tomto telefóne, ale Android zatiaľ nedal ArrowLoopu prístup k nim, takže ich nemôže synchronizovať. Povoľte prístup na ďalšej stránke.',
   'access.notNow': 'Teraz nie',
+  'side.where': 'Kde je priečinok',
+  'side.whereHint': 'Vyberte tento telefón alebo jeden zo svojich cieľov a potom priečinok v ňom. Priečinky pridané v časti Nastavenia cez „Pridať priečinok z aplikácie“ sú v cieli Apps a fungujú aj bez „Prístup k súborom“.',
+  'side.noTargets': 'Zatiaľ nie je pripojený žiadny cloud ani server. Pripojiť ho môžete v časti Viac, Ciele.',
+  'side.inTarget': 'Priečinok v {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

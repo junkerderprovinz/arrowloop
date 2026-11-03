@@ -846,6 +846,10 @@ const ca: Translations = {
   'access.askRun': 'Aquesta tasca fa servir carpetes d\'aquest telèfon, però Android encara no ha donat accés a ArrowLoop. Sense aquest accés les carpetes semblen buides i no es sincronitza res. Permet l\'accés a la pàgina següent i torna a executar la tasca.',
   'access.askSaved': 'La tasca s\'ha desat. Fa servir carpetes d\'aquest telèfon, però Android encara no ha donat accés a ArrowLoop, així que no les pot sincronitzar. Permet l\'accés a la pàgina següent.',
   'access.notNow': 'Ara no',
+  'side.where': 'On és la carpeta',
+  'side.whereHint': 'Tria aquest telèfon o una de les teves destinacions, i després la carpeta. Les carpetes que afegeixes a Configuració amb «Afegeix una carpeta d\'una aplicació» són a la destinació Apps i funcionen sense «Accés als fitxers».',
+  'side.noTargets': 'Encara no hi ha cap núvol ni servidor connectat. En pots connectar un a Més, Destinacions.',
+  'side.inTarget': 'Carpeta a {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

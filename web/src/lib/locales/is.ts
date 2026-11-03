@@ -846,6 +846,10 @@ const is: Translations = {
   'access.askRun': 'Þetta verk notar möppur í þessum síma, en Android hefur ekki enn gefið ArrowLoop aðgang að þeim. Án hans virðast möppurnar tómar og ekkert er samstillt. Leyfðu aðganginn á næstu síðu og keyrðu verkið svo aftur.',
   'access.askSaved': 'Verkið er vistað. Það notar möppur í þessum síma, en Android hefur ekki enn gefið ArrowLoop aðgang að þeim, svo það getur ekki samstillt þær. Leyfðu aðganginn á næstu síðu.',
   'access.notNow': 'Ekki núna',
+  'side.where': 'Hvar mappan er',
+  'side.whereHint': 'Veldu þennan síma eða einn af áfangastöðunum þínum og síðan möppuna þar. Möppur sem þú bætir við í Stillingar með „Bæta við möppu úr forriti“ eru í áfangastaðnum Apps og virka líka án „Aðgangur að skrám“.',
+  'side.noTargets': 'Ekkert ský eða netþjónn er tengdur enn. Þú getur tengt einn undir Meira, Áfangastaðir.',
+  'side.inTarget': 'Mappa í {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

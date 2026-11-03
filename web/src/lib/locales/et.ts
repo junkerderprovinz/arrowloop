@@ -846,6 +846,10 @@ const et: Translations = {
   'access.askRun': 'See töö kasutab selle telefoni kaustu, aga Android pole ArrowLoopile neile veel juurdepääsu andnud. Ilma selleta paistavad kaustad tühjad ja midagi ei sünkroonita. Luba juurdepääs järgmisel lehel ja käivita töö siis uuesti.',
   'access.askSaved': 'Töö on salvestatud. See kasutab selle telefoni kaustu, aga Android pole ArrowLoopile neile veel juurdepääsu andnud, nii et ta ei saa neid sünkroonida. Luba juurdepääs järgmisel lehel.',
   'access.notNow': 'Mitte praegu',
+  'side.where': 'Kus kaust asub',
+  'side.whereHint': 'Vali see telefon või mõni oma sihtkohtadest ja siis kaust selle sees. Kaustad, mille lisad jaotises Seaded valikuga „Lisa kaust rakendusest“, on sihtkohas Apps ja töötavad ka ilma valikuta „Juurdepääs failidele“.',
+  'side.noTargets': 'Ühtegi pilve ega serverit pole veel ühendatud. Saad selle ühendada jaotises Veel, Sihtkohad.',
+  'side.inTarget': 'Kaust kohas {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -846,6 +846,10 @@ const ja: Translations = {
   'access.askRun': 'このジョブはこの端末のフォルダーを使いますが、Android はまだ ArrowLoop にアクセスを許可していません。許可がないとフォルダーは空に見え、何も同期されません。次の画面でアクセスを許可してから、もう一度ジョブを実行してください。',
   'access.askSaved': 'ジョブを保存しました。このジョブはこの端末のフォルダーを使いますが、Android はまだ ArrowLoop にアクセスを許可していないため、同期できません。次の画面でアクセスを許可してください。',
   'access.notNow': '後で',
+  'side.where': 'フォルダーの場所',
+  'side.whereHint': 'この端末か接続先のどれかを選び、その中のフォルダーを選んでください。設定の「アプリのフォルダーを追加」で追加したフォルダーは接続先 Apps にあり、「ファイルへのアクセス」がなくても使えます。',
+  'side.noTargets': 'クラウドやサーバーはまだ接続されていません。その他 > 接続先 から接続できます。',
+  'side.inTarget': '{name} のフォルダー',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

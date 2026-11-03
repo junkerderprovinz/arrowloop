@@ -6,16 +6,32 @@ import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
 import { ChoiceRow } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
-import { Glyph, ProviderMark } from "../glyphs";
-import { tellAfterSaving } from "../fileAccess";
+import { brandTile, Glyph, ProviderMark } from "../glyphs";
+import { AccessNotice, tellAfterSaving, useFileAccess } from "../fileAccess";
 import { useT, type T } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
 import { DEVICE, sideMark } from "../sideRow";
-import { sideName, sidePair } from "../sides";
+import { remoteOf, sideName, sidePair } from "../sides";
+import { isAccount } from "../space";
 import { animateNext, useMotion } from "../motion";
-import { AxisLabel, Body, Button, Card, Choice, Empty, Page, Press, Section, Toggle, usePageScroll, useTheme } from "../ui";
+import {
+  AxisLabel,
+  Body,
+  Button,
+  Card,
+  Choice,
+  Empty,
+  Page,
+  Press,
+  ReadmeButton,
+  ReadmeRow,
+  Section,
+  Toggle,
+  usePageScroll,
+  useTheme,
+} from "../ui";
 import { WayButton } from "../way";
 import { FromGlobal, GlobalSwitch } from "../inherit";
 import { amount, type JobLearning } from "../../../web/src/lib/anomalies";
@@ -96,12 +112,11 @@ export function JobEdit() {
   const defaults = engineSettings?.defaults as Defaults | undefined;
   const sets = Object.keys((engineSettings?.excludeSets as Record<string, string[]> | undefined) ?? {}).sort();
 
-  const [picking, setPicking] = useState<"left" | "right" | null>(null);
   const [remotes, setRemotes] = useState<Remote[]>([]);
   useEffect(() => {
     api.storage().then(
       (list) => setRemotes(list.remotes),
-      // Without targets the picker still browses the phone's folders.
+      // Without targets a side can still be a folder on the phone.
       () => setRemotes([]),
     );
   }, []);
@@ -350,10 +365,9 @@ export function JobEdit() {
           side={job.left}
           name={sideName(job.left, t)}
           remotes={remotes}
-          placeholder="/storage/emulated/0/DCIM"
+          startOnPhone
           error={reason("left")}
           onChange={(left) => set({ left })}
-          onPick={() => setPicking("left")}
         />
       </View>
       <FromGlobal {...global("direction")}>
@@ -371,10 +385,9 @@ export function JobEdit() {
           side={job.right}
           name={sideName(job.right, t, "target")}
           remotes={remotes}
-          placeholder="nextcloud:Photos"
+          startOnPhone={false}
           error={reason("right")}
           onChange={(right) => set({ right })}
-          onPick={() => setPicking("right")}
         />
       </View>
 
@@ -541,45 +554,101 @@ export function JobEdit() {
           />
         </View>
       )}
-      <FolderPicker
-        visible={picking !== null}
-        start={picking === "left" ? job.left : job.right}
-        targets={remotes.map((r) => r.name)}
-        onPick={(path) => {
-          if (picking) set({ [picking]: path } as Partial<JobConfig>);
-          setPicking(null);
-        }}
-        onClose={() => setPicking(null)}
-      />
     </Page>
   );
 }
 
 /**
  * One side of a job as a card: what it is, with the phone's glyph or the
- * target's logo as the target picker shows it, then its path and the folder
- * picker. The path stays typed, for a target the picker cannot browse.
+ * target's logo as the target picker shows it, then where it lives, on this
+ * phone or on a target, and the folder there. The folder stays typed, for a
+ * target the picker cannot browse. The job keeps the side as the desktop
+ * writes it, a path on the phone or `target:path`.
  */
 function SideCard({
   side,
   name,
   remotes,
-  placeholder,
+  startOnPhone,
   error,
   onChange,
-  onPick,
 }: {
   side: string;
   name: string;
   remotes: Remote[];
-  placeholder: string;
+  /** Where an empty side starts out, rather than with nothing chosen. */
+  startOnPhone: boolean;
   error?: string;
   onChange: (next: string) => void;
-  onPick: () => void;
 }) {
   const { t } = useT();
-  const { p, scheme } = useTheme();
+  const { p, scheme, accent, accentContrast } = useTheme();
   const mark = sideMark(side, remotes);
+  const access = useFileAccess();
+  const [picking, setPicking] = useState(false);
+
+  // Kept apart from the side itself, since a side on the phone with no folder
+  // yet is as empty as one that is nowhere.
+  const [where, setWhere] = useState<string | null>(() => placeOf(side) ?? (startOnPhone ? PHONE : null));
+  useEffect(() => {
+    const place = placeOf(side);
+    if (place !== undefined) setWhere(place);
+  }, [side]);
+
+  const inTarget = where !== null && where !== PHONE;
+  const folder = inTarget ? side.slice(where.length + 1) : side;
+  const choose = (next: string) => {
+    if (next === where) return;
+    setWhere(next);
+    onChange(next === PHONE ? "" : `${next}:`);
+  };
+
+  // A target the configuration names but the engine no longer has is still
+  // shown, so the side does not read as nowhere.
+  const places = remotes.map((r) => r.name);
+  if (inTarget && !places.includes(where)) places.push(where);
+
+  const phoneTile = { color: accent, ink: accentContrast };
+  const option = (place: string) => {
+    if (place === PHONE) {
+      return (
+        <ReadmeButton
+          key="phone"
+          label={t("phone.thisPhone")}
+          tile={phoneTile}
+          chosen={where === PHONE}
+          mark={(lit, ink) => <Glyph name="IconPhone" color={lit ? ink : p.textSub} size={22} />}
+          onPress={() => choose(PHONE)}
+        />
+      );
+    }
+    const logo = remotes.find((r) => r.name === place)?.mark;
+    const tile = brandTile(logo) ?? phoneTile;
+    return (
+      <ReadmeButton
+        key={place}
+        label={place}
+        tile={tile}
+        chosen={where === place}
+        mark={(lit, ink) =>
+          logo ? (
+            <ProviderMark
+              name={logo}
+              width={MARK_W}
+              height={MARK_H}
+              color={lit ? ink : p.textSub}
+              scheme={scheme}
+              lit={lit ? { ink, cut: tile.color } : undefined}
+            />
+          ) : (
+            <Glyph name="IconTabStorage" color={lit ? ink : p.textSub} size={22} />
+          )
+        }
+        onPress={() => choose(place)}
+      />
+    );
+  };
+
   return (
     <Card>
       <View style={styles.sideHead}>
@@ -592,22 +661,55 @@ function SideCard({
           {name}
         </Text>
       </View>
-      <Field
-        label={t("edit.folderPath")}
-        value={side}
-        onChange={onChange}
-        placeholder={placeholder}
-        error={error}
-      />
-      <Button
-        label={t("pick.title")}
-        labelKey="pick.title"
-        mark={(ink) => <Glyph name="IconFolder" color={ink} />}
-        onPress={onPick}
+      <AxisLabel hint={t("side.whereHint")}>{t("side.where")}</AxisLabel>
+      <ReadmeRow>{[PHONE, ...places].map(option)}</ReadmeRow>
+      {remotes.filter(isAccount).length === 0 && !startOnPhone ? <Body muted>{t("side.noTargets")}</Body> : null}
+      {where === null ? (
+        error ? <Refusal text={error} /> : null
+      ) : (
+        <>
+          {where === PHONE && access === false ? <AccessNotice /> : null}
+          <Field
+            label={inTarget ? t("side.inTarget", { name: where }) : t("edit.folderPath")}
+            value={folder}
+            onChange={(typed) => onChange(inTarget ? `${where}:${typed}` : typed)}
+            placeholder={inTarget ? "Photos" : "/storage/emulated/0/DCIM"}
+            error={error}
+          />
+          <Button
+            label={t("pick.title")}
+            labelKey="pick.title"
+            mark={(ink) => <Glyph name="IconFolder" color={ink} />}
+            onPress={() => setPicking(true)}
+          />
+        </>
+      )}
+      <FolderPicker
+        visible={picking}
+        start={side}
+        within={inTarget ? `${where}:` : ""}
+        onPick={(path) => {
+          onChange(path);
+          setPicking(false);
+        }}
+        onClose={() => setPicking(false)}
       />
     </Card>
   );
 }
+
+/** The phone among the places a side can live, beside the targets by their names. */
+const PHONE = "";
+
+/** Where a side lives: the phone, a target's name, or undefined for an empty side. */
+function placeOf(side: string): string | undefined {
+  if (!side) return undefined;
+  return remoteOf(side) ?? PHONE;
+}
+
+/** The README's mark box, as the target picker draws it. */
+const MARK_W = 32;
+const MARK_H = 25;
 
 /** The logo's box in a side card's head. */
 const MARK = 28;

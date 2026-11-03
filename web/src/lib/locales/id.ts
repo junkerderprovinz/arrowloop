@@ -846,6 +846,10 @@ const id: Translations = {
   'access.askRun': 'Tugas ini memakai folder di ponsel ini, tetapi Android belum memberi ArrowLoop akses ke folder itu. Tanpa akses, folder terlihat kosong dan tidak ada yang disinkronkan. Izinkan akses di halaman berikutnya, lalu jalankan tugas lagi.',
   'access.askSaved': 'Tugas sudah disimpan. Tugas ini memakai folder di ponsel ini, tetapi Android belum memberi ArrowLoop akses ke folder itu, jadi tugas ini belum bisa menyinkronkannya. Izinkan akses di halaman berikutnya.',
   'access.notNow': 'Nanti saja',
+  'side.where': 'Lokasi folder',
+  'side.whereHint': 'Pilih ponsel ini atau salah satu tujuanmu, lalu folder di dalamnya. Folder yang kamu tambahkan di Pengaturan lewat "Tambah folder dari aplikasi" ada di tujuan Apps dan tetap jalan tanpa "Akses berkas".',
+  'side.noTargets': 'Belum ada awan atau server yang terhubung. Kamu bisa menghubungkannya di Lainnya, Tujuan.',
+  'side.inTarget': 'Folder di {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

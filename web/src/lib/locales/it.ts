@@ -846,6 +846,10 @@ const it: Translations = {
   'access.askRun': 'Questo lavoro usa cartelle di questo telefono, ma Android non ha ancora dato ad ArrowLoop l\'accesso. Senza, le cartelle sembrano vuote e non viene sincronizzato niente. Consenti l\'accesso nella pagina successiva, poi avvia di nuovo il lavoro.',
   'access.askSaved': 'Il lavoro è salvato. Usa cartelle di questo telefono, ma Android non ha ancora dato ad ArrowLoop l\'accesso, quindi non può sincronizzarle. Consenti l\'accesso nella pagina successiva.',
   'access.notNow': 'Non ora',
+  'side.where': 'Dove si trova la cartella',
+  'side.whereHint': 'Scegli questo telefono o una delle tue destinazioni, poi la cartella al suo interno. Le cartelle che aggiungi in Impostazioni con «Aggiungi una cartella da un\'app» si trovano nella destinazione Apps e funzionano anche senza «Accesso ai file».',
+  'side.noTargets': 'Non è ancora collegato nessun cloud né server. Puoi collegarne uno in Altro, Destinazioni.',
+  'side.inTarget': 'Cartella in {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

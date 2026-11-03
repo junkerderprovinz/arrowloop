@@ -846,6 +846,10 @@ const nl: Translations = {
   'access.askRun': 'Deze taak gebruikt mappen op deze telefoon, maar Android heeft ArrowLoop nog geen toegang tot die mappen gegeven. Zonder toegang lijken de mappen leeg en wordt er niets gesynchroniseerd. Sta de toegang toe op de volgende pagina en start de taak daarna opnieuw.',
   'access.askSaved': 'De taak is opgeslagen. Hij gebruikt mappen op deze telefoon, maar Android heeft ArrowLoop nog geen toegang tot die mappen gegeven, dus hij kan ze niet synchroniseren. Sta de toegang toe op de volgende pagina.',
   'access.notNow': 'Niet nu',
+  'side.where': 'Waar de map staat',
+  'side.whereHint': 'Kies deze telefoon of een van je doelen, en daarna de map daarin. Mappen die je in Instellingen toevoegt met "Map uit een app toevoegen" staan in het doel Apps en werken ook zonder "Bestandstoegang".',
+  'side.noTargets': 'Er is nog geen cloud of server verbonden. Je kunt er een verbinden onder Meer, Doelen.',
+  'side.inTarget': 'Map in {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

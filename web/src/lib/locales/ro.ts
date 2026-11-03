@@ -846,6 +846,10 @@ const ro: Translations = {
   'access.askRun': 'Această sarcină folosește dosare de pe acest telefon, dar Android încă nu i-a dat lui ArrowLoop acces la ele. Fără acces, dosarele par goale și nu se sincronizează nimic. Permite accesul pe pagina următoare, apoi pornește din nou sarcina.',
   'access.askSaved': 'Sarcina a fost salvată. Folosește dosare de pe acest telefon, dar Android încă nu i-a dat lui ArrowLoop acces la ele, așa că nu le poate sincroniza. Permite accesul pe pagina următoare.',
   'access.notNow': 'Nu acum',
+  'side.where': 'Unde este dosarul',
+  'side.whereHint': 'Alege acest telefon sau una dintre destinațiile tale, apoi dosarul din ea. Dosarele adăugate în Setări cu „Adaugă un dosar dintr-o aplicație” se află în destinația Apps și merg și fără „Acces la fișiere”.',
+  'side.noTargets': 'Încă nu este conectat niciun cloud sau server. Poți conecta unul din Mai mult, Destinații.',
+  'side.inTarget': 'Dosar în {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

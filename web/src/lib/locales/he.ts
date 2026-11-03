@@ -846,6 +846,10 @@ const he: Translations = {
   'access.askRun': 'המשימה הזו משתמשת בתיקיות בטלפון הזה, אבל Android עוד לא נתן ל־ArrowLoop גישה אליהן. בלי הגישה התיקיות נראות ריקות ושום דבר לא מסונכרן. אשר את הגישה בעמוד הבא, ואז הפעל את המשימה שוב.',
   'access.askSaved': 'המשימה נשמרה. היא משתמשת בתיקיות בטלפון הזה, אבל Android עוד לא נתן ל־ArrowLoop גישה אליהן, ולכן היא לא יכולה לסנכרן אותן. אשר את הגישה בעמוד הבא.',
   'access.notNow': 'לא עכשיו',
+  'side.where': 'איפה התיקייה',
+  'side.whereHint': 'בחר את הטלפון הזה או אחד מהיעדים שלך, ואז את התיקייה שבו. תיקיות שאתה מוסיף בהגדרות דרך "הוספת תיקייה מאפליקציה" נמצאות ביעד Apps ועובדות גם בלי "גישה לקבצים".',
+  'side.noTargets': 'עדיין לא מחובר שום ענן או שרת. אפשר לחבר אחד בעוד, יעדים.',
+  'side.inTarget': 'תיקייה ב־{name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -846,6 +846,10 @@ const lt: Translations = {
   'access.askRun': 'Ši užduotis naudoja šio telefono aplankus, bet Android dar nesuteikė ArrowLoop prieigos prie jų. Be jos aplankai atrodo tušti ir niekas nesinchronizuojama. Leiskite prieigą kitame puslapyje, tada vėl paleiskite užduotį.',
   'access.askSaved': 'Užduotis išsaugota. Ji naudoja šio telefono aplankus, bet Android dar nesuteikė ArrowLoop prieigos prie jų, todėl jų sinchronizuoti negali. Leiskite prieigą kitame puslapyje.',
   'access.notNow': 'Ne dabar',
+  'side.where': 'Kur yra aplankas',
+  'side.whereHint': 'Pasirinkite šį telefoną arba vieną iš savo paskirčių, tada aplanką joje. Aplankai, kuriuos pridedate skiltyje Nustatymai per „Pridėti aplanką iš programos“, yra paskirtyje Apps ir veikia ir be „Prieiga prie failų“.',
+  'side.noTargets': 'Dar neprijungtas joks debesis ar serveris. Prijungti galite skiltyje Daugiau, Paskirtys.',
+  'side.inTarget': 'Aplankas paskirtyje {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

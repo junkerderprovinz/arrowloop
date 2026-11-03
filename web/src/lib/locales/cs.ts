@@ -846,6 +846,10 @@ const cs: Translations = {
   'access.askRun': 'Tato úloha používá složky v tomto telefonu, ale Android zatím ArrowLoopu nedal přístup k nim. Bez něj vypadají složky prázdné a nic se nesynchronizuje. Povolte přístup na další stránce a pak úlohu spusťte znovu.',
   'access.askSaved': 'Úloha je uložená. Používá složky v tomto telefonu, ale Android zatím ArrowLoopu nedal přístup k nim, takže je nemůže synchronizovat. Povolte přístup na další stránce.',
   'access.notNow': 'Teď ne',
+  'side.where': 'Kde je složka',
+  'side.whereHint': 'Vyberte tento telefon nebo jeden ze svých cílů a pak složku v něm. Složky přidané v části Nastavení přes „Přidat složku z aplikace“ jsou v cíli Apps a fungují i bez „Přístup k souborům“.',
+  'side.noTargets': 'Zatím není připojený žádný cloud ani server. Připojit ho můžete v části Více, Cíle.',
+  'side.inTarget': 'Složka v {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

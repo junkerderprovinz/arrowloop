@@ -846,6 +846,10 @@ const tr: Translations = {
   'access.askRun': 'Bu iş bu telefondaki klasörleri kullanıyor, ama Android henüz ArrowLoop\'a bu klasörlere erişim vermedi. Erişim olmadan klasörler boş görünür ve hiçbir şey eşitlenmez. Sonraki sayfada erişime izin ver, sonra işi yeniden başlat.',
   'access.askSaved': 'İş kaydedildi. Bu telefondaki klasörleri kullanıyor, ama Android henüz ArrowLoop\'a bu klasörlere erişim vermedi, bu yüzden onları eşitleyemiyor. Sonraki sayfada erişime izin ver.',
   'access.notNow': 'Şimdi değil',
+  'side.where': 'Klasörün yeri',
+  'side.whereHint': 'Bu telefonu ya da hedeflerinden birini seç, sonra içindeki klasörü. Ayarlar bölümünde "Uygulamadan klasör ekle" ile eklediğin klasörler Apps hedefindedir ve "Dosya erişimi" olmadan da çalışır.',
+  'side.noTargets': 'Henüz bağlı bir bulut ya da sunucu yok. Daha fazla, Hedefler altından bir tane bağlayabilirsin.',
+  'side.inTarget': '{name} içindeki klasör',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

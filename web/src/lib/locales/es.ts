@@ -846,6 +846,10 @@ const es: Translations = {
   'access.askRun': 'Esta tarea usa carpetas de este teléfono, pero Android todavía no le ha dado acceso a ArrowLoop. Sin él, las carpetas parecen vacías y no se sincroniza nada. Permite el acceso en la página siguiente y vuelve a ejecutar la tarea.',
   'access.askSaved': 'La tarea se ha guardado. Usa carpetas de este teléfono, pero Android todavía no le ha dado acceso a ArrowLoop, así que no puede sincronizarlas. Permite el acceso en la página siguiente.',
   'access.notNow': 'Ahora no',
+  'side.where': 'Dónde está la carpeta',
+  'side.whereHint': 'Elige este teléfono o uno de tus destinos, y luego la carpeta. Las carpetas que añades en Ajustes con «Añadir una carpeta de una aplicación» están en el destino Apps y funcionan sin «Acceso a los archivos».',
+  'side.noTargets': 'Todavía no hay ninguna nube ni servidor conectado. Puedes conectar uno en Más, Destinos.',
+  'side.inTarget': 'Carpeta en {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

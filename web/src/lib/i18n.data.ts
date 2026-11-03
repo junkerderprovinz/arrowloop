@@ -888,6 +888,10 @@ export const en = {
   'access.askRun': 'This job uses folders on this phone, but Android hasn\'t given ArrowLoop access to them yet. Without it the folders look empty and nothing gets synced. Allow access on the next page, then start the job again.',
   'access.askSaved': 'The job is saved. It uses folders on this phone, but Android hasn\'t given ArrowLoop access to them yet, so it can\'t sync them. Allow access on the next page.',
   'access.notNow': 'Not now',
+  'side.where': 'Where the folder is',
+  'side.whereHint': 'Pick this phone or one of your targets, then the folder in it. Folders you add in Settings with "Add a folder from an app" are in the Apps target and work without File access.',
+  'side.noTargets': 'No cloud or server is connected yet. You can connect one under More, Targets.',
+  'side.inTarget': 'Folder in {name}',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.
@@ -2255,6 +2259,10 @@ export const de: Translations = {
   'access.askRun': 'Dieser Auftrag nutzt Ordner auf diesem Telefon, aber Android hat ArrowLoop noch keinen Zugriff darauf gegeben. Ohne ihn sehen die Ordner leer aus, und nichts wird synchronisiert. Erlaube den Zugriff auf der nächsten Seite und starte den Auftrag dann noch einmal.',
   'access.askSaved': 'Der Auftrag ist gespeichert. Er nutzt Ordner auf diesem Telefon, aber Android hat ArrowLoop noch keinen Zugriff darauf gegeben, deshalb kann er sie nicht synchronisieren. Erlaube den Zugriff auf der nächsten Seite.',
   'access.notNow': 'Jetzt nicht',
+  'side.where': 'Wo der Ordner liegt',
+  'side.whereHint': 'Wähl dieses Telefon oder eines deiner Ziele, dann den Ordner darin. Ordner, die du in den Einstellungen mit „Ordner aus einer App hinzufügen“ hinzufügst, liegen im Ziel Apps und gehen auch ohne Dateizugriff.',
+  'side.noTargets': 'Noch ist keine Cloud und kein Server verbunden. Verbinden kannst du einen unter Mehr, Ziele.',
+  'side.inTarget': 'Ordner in {name}',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.

@@ -846,6 +846,10 @@ const ms: Translations = {
   'access.askRun': 'Tugas ini menggunakan folder dalam telefon ini, tetapi Android belum memberi ArrowLoop akses kepadanya. Tanpa akses itu, folder kelihatan kosong dan tiada apa yang disegerakkan. Benarkan akses pada halaman seterusnya, kemudian jalankan tugas itu semula.',
   'access.askSaved': 'Tugas telah disimpan. Ia menggunakan folder dalam telefon ini, tetapi Android belum memberi ArrowLoop akses kepadanya, jadi ia tidak dapat menyegerakkannya. Benarkan akses pada halaman seterusnya.',
   'access.notNow': 'Bukan sekarang',
+  'side.where': 'Lokasi folder',
+  'side.whereHint': 'Pilih telefon ini atau salah satu destinasi anda, kemudian folder di dalamnya. Folder yang anda tambah dalam Tetapan melalui "Tambah folder daripada apl" berada dalam destinasi Apps dan berfungsi tanpa "Akses fail".',
+  'side.noTargets': 'Belum ada awan atau pelayan yang disambungkan. Anda boleh menyambungkannya di Lagi, Destinasi.',
+  'side.inTarget': 'Folder dalam {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

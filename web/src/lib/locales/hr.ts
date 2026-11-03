@@ -846,6 +846,10 @@ const hr: Translations = {
   'access.askRun': 'Ovaj zadatak koristi mape na ovom telefonu, ali Android još nije dao ArrowLoopu pristup njima. Bez toga mape izgledaju prazno i ništa se ne sinkronizira. Dopusti pristup na sljedećoj stranici, a zatim ponovno pokreni zadatak.',
   'access.askSaved': 'Zadatak je spremljen. Koristi mape na ovom telefonu, ali Android još nije dao ArrowLoopu pristup njima, pa ih ne može sinkronizirati. Dopusti pristup na sljedećoj stranici.',
   'access.notNow': 'Ne sada',
+  'side.where': 'Gdje je mapa',
+  'side.whereHint': 'Odaberi ovaj telefon ili jedno od svojih odredišta, a zatim mapu u njemu. Mape koje dodaš u Postavke preko „Dodaj mapu iz aplikacije” nalaze se u odredištu Apps i rade i bez „Pristup datotekama”.',
+  'side.noTargets': 'Još nije povezan nijedan oblak ni poslužitelj. Možeš ga povezati pod Više, Odredišta.',
+  'side.inTarget': 'Mapa u {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

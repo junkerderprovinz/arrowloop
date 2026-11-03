@@ -846,6 +846,10 @@ const sl: Translations = {
   'access.askRun': 'To opravilo uporablja mape v tem telefonu, vendar Android ArrowLoopu še ni dal dostopa do njih. Brez njega so mape videti prazne in nič se ne sinhronizira. Dovoli dostop na naslednji strani in nato znova zaženi opravilo.',
   'access.askSaved': 'Opravilo je shranjeno. Uporablja mape v tem telefonu, vendar Android ArrowLoopu še ni dal dostopa do njih, zato jih ne more sinhronizirati. Dovoli dostop na naslednji strani.',
   'access.notNow': 'Ne zdaj',
+  'side.where': 'Kje je mapa',
+  'side.whereHint': 'Izberi ta telefon ali enega od svojih ciljev in nato mapo v njem. Mape, ki jih dodaš v Nastavitve z »Dodaj mapo iz aplikacije«, so v cilju Apps in delujejo tudi brez »Dostop do datotek«.',
+  'side.noTargets': 'Povezan še ni noben oblak ali strežnik. Povežeš ga lahko pod Več, Cilji.',
+  'side.inTarget': 'Mapa v {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

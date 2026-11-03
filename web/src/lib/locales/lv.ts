@@ -846,6 +846,10 @@ const lv: Translations = {
   'access.askRun': 'Šis uzdevums izmanto šī tālruņa mapes, bet Android vēl nav devis ArrowLoop piekļuvi tām. Bez tās mapes izskatās tukšas, un nekas netiek sinhronizēts. Atļauj piekļuvi nākamajā lapā un tad palaid uzdevumu vēlreiz.',
   'access.askSaved': 'Uzdevums ir saglabāts. Tas izmanto šī tālruņa mapes, bet Android vēl nav devis ArrowLoop piekļuvi tām, tāpēc tas nevar tās sinhronizēt. Atļauj piekļuvi nākamajā lapā.',
   'access.notNow': 'Ne tagad',
+  'side.where': 'Kur atrodas mape',
+  'side.whereHint': 'Izvēlies šo tālruni vai kādu no saviem galamērķiem, tad mapi tajā. Mapes, ko pievieno sadaļā Iestatījumi ar “Pievienot mapi no lietotnes”, ir galamērķī Apps un darbojas arī bez “Piekļuve failiem”.',
+  'side.noTargets': 'Vēl nav pievienots neviens mākonis vai serveris. To vari pievienot sadaļā Vairāk, Galamērķi.',
+  'side.inTarget': 'Mape galamērķī {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

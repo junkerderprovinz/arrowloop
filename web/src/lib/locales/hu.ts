@@ -846,6 +846,10 @@ const hu: Translations = {
   'access.askRun': 'Ez a feladat a telefon mappáit használja, de az Android még nem adott hozzáférést az ArrowLoopnak. Enélkül a mappák üresnek látszanak, és semmi sem szinkronizálódik. Engedélyezd a hozzáférést a következő oldalon, aztán indítsd újra a feladatot.',
   'access.askSaved': 'A feladat elmentve. A telefon mappáit használja, de az Android még nem adott hozzáférést az ArrowLoopnak, így nem tudja szinkronizálni őket. Engedélyezd a hozzáférést a következő oldalon.',
   'access.notNow': 'Most nem',
+  'side.where': 'Hol van a mappa',
+  'side.whereHint': 'Válaszd ezt a telefont vagy az egyik célodat, aztán a benne lévő mappát. A Beállítások alatt a „Mappa hozzáadása egy alkalmazásból” gombbal hozzáadott mappák az Apps célban vannak, és „Fájlhozzáférés” nélkül is működnek.',
+  'side.noTargets': 'Még nincs összekapcsolt felhő vagy szerver. Itt kapcsolhatsz össze egyet: Továbbiak, Célok.',
+  'side.inTarget': 'Mappa itt: {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

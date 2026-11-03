@@ -16,6 +16,7 @@ export function FolderPicker({
   visible,
   start,
   targets = [],
+  within = "",
   onPick,
   onClose,
 }: {
@@ -24,6 +25,8 @@ export function FolderPicker({
   start?: string;
   /** Configured targets, offered above the folders at the top level. */
   targets?: string[];
+  /** Where the picker stays: a target's top as `name:`, or empty for the phone and every target. */
+  within?: string;
   onPick: (path: string) => void;
   onClose: () => void;
 }) {
@@ -75,14 +78,14 @@ export function FolderPicker({
   };
 
   // Every open starts from the field's own value, on the phone or on a target,
-  // and at the top when that cannot be read.
+  // and at the top of where it may go when that cannot be read.
   useEffect(() => {
     if (!visible) return;
     setNaming(null);
-    void go(start ?? "").then((read) => {
-      if (!read && start) void go("");
+    void go(start || within).then((read) => {
+      if (!read && start && start !== within) void go(within);
     });
-  }, [visible, start, go]);
+  }, [visible, start, within, go]);
 
   const row = (label: string, onPress: () => void, glyph: string) => (
     <Press
@@ -110,7 +113,7 @@ export function FolderPicker({
           <Caption>{at || t("pick.roots")}</Caption>
 
           <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-            {at ? row(t("pick.up"), () => void go(parent), "IconBack") : null}
+            {at && at !== within ? row(t("pick.up"), () => void go(parent), "IconBack") : null}
             {/* Targets at the top level only, where they cannot pass for a subfolder. */}
             {!at
               ? targets.map((name) =>

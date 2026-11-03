@@ -846,6 +846,10 @@ const eu: Translations = {
   'access.askRun': 'Lan honek telefono honetako karpetak erabiltzen ditu, baina Androidek oraindik ez dio ArrowLoopi haietarako sarbiderik eman. Sarbiderik gabe karpetak hutsik daudela dirudi, eta ez da ezer sinkronizatzen. Baimendu sarbidea hurrengo orrian, eta exekutatu lana berriro.',
   'access.askSaved': 'Lana gorde da. Telefono honetako karpetak erabiltzen ditu, baina Androidek oraindik ez dio ArrowLoopi haietarako sarbiderik eman, beraz ezin ditu sinkronizatu. Baimendu sarbidea hurrengo orrian.',
   'access.notNow': 'Orain ez',
+  'side.where': 'Non dagoen karpeta',
+  'side.whereHint': 'Aukeratu telefono hau edo zure helburuetako bat, eta gero haren barruko karpeta. Ezarpenak atalean «Gehitu aplikazio bateko karpeta» bidez gehitzen dituzun karpetak Apps helburuan daude, eta «Fitxategietarako sarbidea» gabe ere badabiltza.',
+  'side.noTargets': 'Oraindik ez dago hodei edo zerbitzaririk konektatuta. Gehiago, Helburuak atalean konekta dezakezu bat.',
+  'side.inTarget': 'Karpeta hemen: {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

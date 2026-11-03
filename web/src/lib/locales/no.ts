@@ -846,6 +846,10 @@ const no: Translations = {
   'access.askRun': 'Denne jobben bruker mapper på denne telefonen, men Android har ennå ikke gitt ArrowLoop tilgang til dem. Uten tilgang ser mappene tomme ut, og ingenting blir synkronisert. Tillat tilgang på neste side, og start jobben på nytt.',
   'access.askSaved': 'Jobben er lagret. Den bruker mapper på denne telefonen, men Android har ennå ikke gitt ArrowLoop tilgang til dem, så den kan ikke synkronisere dem. Tillat tilgang på neste side.',
   'access.notNow': 'Ikke nå',
+  'side.where': 'Hvor mappen ligger',
+  'side.whereHint': 'Velg denne telefonen eller et av målene dine, og deretter mappen i det. Mapper du legger til under Innstillinger med «Legg til en mappe fra en app», ligger i målet Apps og virker også uten «Filtilgang».',
+  'side.noTargets': 'Ingen sky eller server er koblet til ennå. Du kan koble til en under Mer, Mål.',
+  'side.inTarget': 'Mappe i {name}',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each
