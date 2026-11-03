@@ -663,7 +663,7 @@ function SideCard({
       </View>
       <AxisLabel hint={t("side.whereHint")}>{t("side.where")}</AxisLabel>
       <ReadmeRow>{[PHONE, ...places].map(option)}</ReadmeRow>
-      {remotes.filter(isAccount).length === 0 && !startOnPhone ? <Body muted>{t("side.noTargets")}</Body> : null}
+      {!startOnPhone && !remotes.some(offPhone) ? <Body muted>{t("side.noTargets")}</Body> : null}
       {where === null ? (
         error ? <Refusal text={error} /> : null
       ) : (
@@ -705,6 +705,11 @@ const PHONE = "";
 function placeOf(side: string): string | undefined {
   if (!side) return undefined;
   return remoteOf(side) ?? PHONE;
+}
+
+/** Whether a target leads off the phone. Apps and Android/data are served on the phone's own loopback. */
+function offPhone(remote: Remote): boolean {
+  return isAccount(remote) && remote.settings.find((s) => s.key === "host")?.value !== "127.0.0.1";
 }
 
 /** The README's mark box, as the target picker draws it. */
