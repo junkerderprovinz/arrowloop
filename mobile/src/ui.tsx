@@ -5,17 +5,19 @@ import {
   Animated,
   Easing,
   FlatList,
-  KeyboardAvoidingView,
+  Keyboard,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useColorScheme,
   View,
   type DimensionValue,
   type FlatListProps,
+  type LayoutChangeEvent,
   type PressableProps,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
@@ -1395,26 +1397,96 @@ export function Page({
 }) {
   const { p } = useTheme();
   const motion = useScrollMotion();
+  const own = usePageScroll();
+  const { scroller, inner } = scroll ?? own;
+  const keyboard = useKeyboardCover(scroller, inner);
   return (
-    <Animated.View style={motion.style}>
-      {/* An app targeting API 35 or later is drawn edge to edge, so the
-          window no longer shrinks for the keyboard and the page has to. A
-          shorter scroll view makes Android scroll the focused field back into
-          view. */}
-      <KeyboardAvoidingView behavior="padding" style={styles.fill}>
-        <ScrollView
-          ref={scroll?.scroller}
-          innerViewRef={scroll?.inner as RefObject<View> | undefined}
-          {...motion.scroll}
-          style={{ backgroundColor: p.background }}
-          contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
-        </ScrollView>
-      </KeyboardAvoidingView>
+    <Animated.View ref={keyboard.frame} style={[motion.style, { paddingBottom: keyboard.covered }]}>
+      <ScrollView
+        ref={scroller}
+        innerViewRef={inner as RefObject<View>}
+        onLayout={keyboard.onLayout}
+        {...motion.scroll}
+        style={{ backgroundColor: p.background }}
+        contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
+      </ScrollView>
     </Animated.View>
   );
+}
+
+/**
+ * Gives up the part of a page the keyboard covers and scrolls the focused
+ * field into what is left. An app targeting API 35 or later is drawn edge to
+ * edge, so Android no longer shrinks the window for the keyboard. Only the
+ * page on screen answers, since a tab keeps its pages mounted.
+ */
+function useKeyboardCover(scroller: RefObject<ScrollView | null>, inner: RefObject<View | null>) {
+  const nav = useContext(NavigationContext);
+  const { ms } = useMotion();
+  const frame = useRef<View>(null);
+  const [covered, setCovered] = useState(0);
+  const now = useRef(0);
+  const top = useRef(0);
+  // A new cover is scrolled to once the shorter scroll view is laid out,
+  // since before that it cannot scroll far enough for a field near the end.
+  const pending = useRef(false);
+
+  /** Scrolls the focused field up into the visible height, and leaves one already in sight. */
+  const reveal = useCallback(
+    (visible: number) => {
+      const field = TextInput.State.currentlyFocusedInput();
+      if (!field || !inner.current) return;
+      field.measureLayout(
+        inner.current,
+        (_x, y, _w, h) =>
+          field.measureInWindow((_wx, onScreen) => {
+            const offset = top.current + y - onScreen;
+            const bottom = y + h + space.xl;
+            if (bottom > offset + visible) {
+              scroller.current?.scrollTo({ y: bottom - visible, animated: ms.layout > 0 });
+            }
+          }),
+        () => {},
+      );
+    },
+    [scroller, inner, ms.layout],
+  );
+
+  useEffect(() => {
+    const shown = Keyboard.addListener("keyboardDidShow", (e) => {
+      if (nav && !nav.isFocused()) return;
+      frame.current?.measureInWindow((_x, y, _w, height) => {
+        top.current = y;
+        const next = Math.max(0, y + height - e.endCoordinates.screenY);
+        if (next === now.current) {
+          reveal(height - next);
+          return;
+        }
+        now.current = next;
+        pending.current = true;
+        setCovered(next);
+      });
+    });
+    const hidden = Keyboard.addListener("keyboardDidHide", () => {
+      now.current = 0;
+      setCovered(0);
+    });
+    return () => {
+      shown.remove();
+      hidden.remove();
+    };
+  }, [nav, reveal]);
+
+  const onLayout = (e: LayoutChangeEvent) => {
+    if (!pending.current) return;
+    pending.current = false;
+    reveal(e.nativeEvent.layout.height);
+  };
+
+  return { frame, covered, onLayout };
 }
 
 export type PageScroll = ReturnType<typeof usePageScroll>;
@@ -1509,7 +1581,6 @@ export function Floating({ children }: { children: ReactNode }) {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   // Every page sits under a title bar, which already leaves room above.
-  fill: { flex: 1 },
   page: { padding: space.lg, paddingTop: space.xs, gap: space.md },
   card: { padding: space.lg, gap: space.sm, overflow: "hidden" },
   edge: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4 },
