@@ -1331,6 +1331,8 @@ const da: Translations = {
   'history.findings': 'Fund',
   'anomalies.closedInHistory': 'Lukkede i historikken',
   'new.change.closedFindings': 'Fund, der er lukket inden for de sidste tredive dage, er flyttet fra {anomalies} til {history} som en tredje visning ved siden af {runs} og {files}, med egne overskrifter til sortering og filtrering. {anomalies} viser kun det åbne og fører derhen.',
+  'new.change.apiJob': 'Et andet program på dit netværk, for eksempel CastleCommander, kan tilføje et job med et token, du angiver i ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Et job, som et andet program tilføjer, kører efter sin tidsplan som alle andre, og en spejling sletter på destinationen, så pas lige så godt på tokenet som på adgangskoden.',
   'dupes.findOnLeft': 'Find dubletter i venstre side',
   'dupes.findOnRight': 'Find dubletter i højre side',
   'entry.fileVanished': 'Filen forsvandt før kopieringen',

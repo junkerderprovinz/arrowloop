@@ -26,6 +26,10 @@ Fields low on a page stay above the keyboard on the phone, and another program o
 - **The keyboard doesn't cover the field you're typing in anymore.** ArrowLoop targets Android 16, so it's drawn edge to edge, and Android stopped shrinking the window for the keyboard. A field near the end of a page, like a new target's password, stayed hidden behind it. Every page now makes room for the keyboard and scrolls the field you tapped into view.
 - **Two changes to the settings at the same moment both stick.** Each save reads the file, edits it and writes it back, so two at once could lose one of them. They wait for each other now.
 
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
+
 ## 2.4.4 - 2026-11-03
 
 ArrowLoop asks for file access when a job needs it, and each side of a job starts with where the folder is.

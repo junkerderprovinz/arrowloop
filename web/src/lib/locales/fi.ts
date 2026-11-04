@@ -1331,6 +1331,8 @@ const fi: Translations = {
   'history.findings': 'Havainnot',
   'anomalies.closedInHistory': 'Suljetut historiassa',
   'new.change.closedFindings': 'Viimeisen kolmenkymmenen päivän aikana suljetut havainnot ovat siirtyneet sivulta {anomalies} sivulle {history}, kolmanneksi näkymäksi näkymien {runs} ja {files} rinnalle, omine otsikoineen lajittelua ja suodatusta varten. {anomalies} näyttää vain avoimet ja ohjaa sinne.',
+  'new.change.apiJob': 'Toinen verkossasi oleva ohjelma, kuten CastleCommander, voi lisätä työn tunnisteella, jonka asetat muuttujaan ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Toisen ohjelman lisäämä työ ajetaan aikataulunsa mukaan kuten mikä tahansa muu, ja peilaus poistaa kohteesta, joten pidä tunniste yhtä hyvässä tallessa kuin salasana.',
   'dupes.findOnLeft': 'Etsi kaksoiskappaleet vasemmalta puolelta',
   'dupes.findOnRight': 'Etsi kaksoiskappaleet oikealta puolelta',
   'entry.fileVanished': 'Tiedosto katosi ennen kopiointia',

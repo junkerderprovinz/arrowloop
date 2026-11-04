@@ -1331,6 +1331,8 @@ const gl: Translations = {
   'history.findings': 'Achados',
   'anomalies.closedInHistory': 'Os pechados no historial',
   'new.change.closedFindings': 'Os achados pechados nos últimos trinta días pasaron de {anomalies} a {history}, como terceira vista xunto a {runs} e {files}, con cabeceiras propias para ordenar e filtrar. {anomalies} só amosa o que está aberto e leva ata alí.',
+  'new.change.apiJob': 'Outro programa da túa rede, como CastleCommander, pode engadir unha tarefa cun token que defines en ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Unha tarefa engadida por outro programa execútase segundo a súa programación coma calquera outra, e un espello borra no destino, así que garda o token co mesmo coidado que o contrasinal.',
   'dupes.findOnLeft': 'Buscar duplicados no lado esquerdo',
   'dupes.findOnRight': 'Buscar duplicados no lado dereito',
   'entry.fileVanished': 'O ficheiro desapareceu antes de copialo',

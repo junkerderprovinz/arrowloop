@@ -1331,6 +1331,8 @@ const hu: Translations = {
   'history.findings': 'Észlelések',
   'anomalies.closedInHistory': 'A lezártak az előzményekben',
   'new.change.closedFindings': 'Az elmúlt harminc napban lezárt észlelések a(z) {anomalies} oldalról a(z) {history} oldalra költöztek, harmadik nézetként a(z) {runs} és a(z) {files} mellé, saját fejlécekkel a rendezéshez és szűréshez. A(z) {anomalies} csak a nyitottakat mutatja, és odavezet.',
+  'new.change.apiJob': 'A hálózatod egy másik programja, például a CastleCommander, feladatot adhat hozzá a ARROWLOOP_API_TOKEN változóban megadott tokennel.',
+  'new.change.apiJobCare': 'A másik program által hozzáadott feladat a saját ütemezése szerint fut, mint bármelyik másik, és a tükrözés töröl a célhelyen, ezért a tokent ugyanúgy őrizd, mint a jelszót.',
   'dupes.findOnLeft': 'Ismétlődések keresése a bal oldalon',
   'dupes.findOnRight': 'Ismétlődések keresése a jobb oldalon',
   'entry.fileVanished': 'A fájl a másolás előtt eltűnt',

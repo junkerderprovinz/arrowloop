@@ -1331,6 +1331,8 @@ const hi: Translations = {
   'history.findings': 'निष्कर्ष',
   'anomalies.closedInHistory': 'बंद हुए इतिहास में',
   'new.change.closedFindings': 'पिछले तीस दिनों में बंद हुए निष्कर्ष {anomalies} से {history} में चले गए हैं, {runs} और {files} के पास तीसरे दृश्य के रूप में, क्रम लगाने और छाँटने के अपने शीर्षकों के साथ। {anomalies} अब सिर्फ़ खुले निष्कर्ष दिखाता है और वहाँ तक ले जाता है।',
+  'new.change.apiJob': 'आपके नेटवर्क का कोई दूसरा प्रोग्राम, जैसे CastleCommander, ARROWLOOP_API_TOKEN में सेट किए गए टोकन से काम जोड़ सकता है।',
+  'new.change.apiJobCare': 'दूसरे प्रोग्राम का जोड़ा हुआ काम बाकी कामों की तरह अपने समय पर चलता है, और मिरर गंतव्य पर हटाता है, इसलिए टोकन को पासवर्ड जितना सुरक्षित रखें।',
   'dupes.findOnLeft': 'बाईं ओर डुप्लिकेट खोजें',
   'dupes.findOnRight': 'दाईं ओर डुप्लिकेट खोजें',
   'entry.fileVanished': 'कॉपी होने से पहले फ़ाइल गायब हो गई',

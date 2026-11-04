@@ -1331,6 +1331,8 @@ const id: Translations = {
   'history.findings': 'Temuan',
   'anomalies.closedInHistory': 'Yang ditutup di Riwayat',
   'new.change.closedFindings': 'Temuan yang ditutup dalam tiga puluh hari terakhir pindah dari {anomalies} ke {history}, sebagai tampilan ketiga di samping {runs} dan {files}, dengan judul kolomnya sendiri untuk mengurutkan dan menyaring. {anomalies} hanya menampilkan yang terbuka dan menunjukkan jalannya.',
+  'new.change.apiJob': 'Program lain di jaringan Anda, seperti CastleCommander, dapat menambahkan tugas dengan token yang Anda atur di ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Tugas yang ditambahkan program lain berjalan sesuai jadwalnya seperti tugas lain, dan cermin menghapus di tujuan, jadi jaga token seaman kata sandi.',
   'dupes.findOnLeft': 'Cari duplikat di sisi kiri',
   'dupes.findOnRight': 'Cari duplikat di sisi kanan',
   'entry.fileVanished': 'Berkas hilang sebelum disalin',

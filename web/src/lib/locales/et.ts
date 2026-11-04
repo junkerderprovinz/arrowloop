@@ -1331,6 +1331,8 @@ const et: Translations = {
   'history.findings': 'Leiud',
   'anomalies.closedInHistory': 'Suletud ajaloos',
   'new.change.closedFindings': 'Viimase kolmekümne päeva jooksul suletud leiud on kolinud lehelt {anomalies} lehele {history}, kolmanda vaatena {runs} ja {files} kõrval, oma pealkirjadega sortimiseks ja filtreerimiseks. {anomalies} näitab ainult avatut ja juhatab sinna.',
+  'new.change.apiJob': 'Teine programm sinu võrgus, näiteks CastleCommander, saab lisada töö tokeniga, mille määrad muutujas ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Teise programmi lisatud töö käivitub oma ajakava järgi nagu iga teinegi ja peegeldamine kustutab sihtkohas, seega hoia tokenit sama hoolikalt kui parooli.',
   'dupes.findOnLeft': 'Otsi duplikaate vasakult poolelt',
   'dupes.findOnRight': 'Otsi duplikaate paremalt poolelt',
   'entry.fileVanished': 'Fail kadus enne kopeerimist',

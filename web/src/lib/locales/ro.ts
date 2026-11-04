@@ -1331,6 +1331,8 @@ const ro: Translations = {
   'history.findings': 'Constatări',
   'anomalies.closedInHistory': 'Cele închise în istoric',
   'new.change.closedFindings': 'Constatările închise în ultimele treizeci de zile s-au mutat din {anomalies} în {history}, ca a treia vedere lângă {runs} și {files}, cu antete proprii pentru sortare și filtrare. {anomalies} arată doar ce e deschis și duce acolo.',
+  'new.change.apiJob': 'Un alt program din rețeaua ta, cum ar fi CastleCommander, poate adăuga o sarcină cu un token pe care îl setezi în ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'O sarcină adăugată de alt program rulează după programul ei ca oricare alta, iar oglindirea șterge la destinație, așa că păstrează tokenul la fel de bine ca parola.',
   'dupes.findOnLeft': 'Caută duplicate în partea stângă',
   'dupes.findOnRight': 'Caută duplicate în partea dreaptă',
   'entry.fileVanished': 'Fișierul a dispărut înainte de copiere',

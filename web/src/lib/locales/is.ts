@@ -1331,6 +1331,8 @@ const is: Translations = {
   'history.findings': 'Niðurstöður',
   'anomalies.closedInHistory': 'Lokaðar í ferlinum',
   'new.change.closedFindings': 'Niðurstöður sem var lokað síðustu þrjátíu daga hafa flust úr {anomalies} í {history}, sem þriðja sýn við hlið {runs} og {files}, með eigin fyrirsögnum til að raða og sía. {anomalies} sýnir aðeins það sem er opið og vísar þangað.',
+  'new.change.apiJob': 'Annað forrit á netinu þínu, til dæmis CastleCommander, getur bætt við verki með tóka sem þú stillir í ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Verk sem annað forrit bætir við keyrir samkvæmt áætlun sinni eins og hvert annað, og speglun eyðir á áfangastað, svo gættu tókans jafn vel og lykilorðsins.',
   'dupes.findOnLeft': 'Finna tvítök vinstra megin',
   'dupes.findOnRight': 'Finna tvítök hægra megin',
   'entry.fileVanished': 'Skráin hvarf áður en hún var afrituð',

@@ -1331,6 +1331,8 @@ const pt: Translations = {
   'history.findings': 'Ocorrências',
   'anomalies.closedInHistory': 'Os fechados no histórico',
   'new.change.closedFindings': 'As ocorrências fechadas nos últimos trinta dias passaram de {anomalies} para {history}, como terceira vista ao lado de {runs} e {files}, com cabeçalhos próprios para ordenar e filtrar. {anomalies} mostra só o que está aberto e leva até lá.',
+  'new.change.apiJob': 'Outro programa na sua rede, como o CastleCommander, pode adicionar uma tarefa com um token que define em ARROWLOOP_API_TOKEN.',
+  'new.change.apiJobCare': 'Uma tarefa adicionada por outro programa é executada segundo o seu agendamento como qualquer outra, e um espelho apaga no destino, por isso guarde o token com o mesmo cuidado que a palavra-passe.',
   'dupes.findOnLeft': 'Procurar duplicados no lado esquerdo',
   'dupes.findOnRight': 'Procurar duplicados no lado direito',
   'entry.fileVanished': 'O ficheiro desapareceu antes de ser copiado',
