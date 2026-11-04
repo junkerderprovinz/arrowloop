@@ -145,6 +145,28 @@ second factor and the passkeys together. A damaged `security.json` stops the
 container from starting rather than letting it come up without a password; the
 log names the file, and deleting it has the same effect.
 
+### Jobs from other programs
+
+A file manager such as CastleCommander can hand a pair of folders over as a new
+job. Give the container a long random token in `ARROWLOOP_API_TOKEN`, for
+example what `openssl rand -hex 32` prints, and enter the same token in the
+other program. It sends the token in the `X-ArrowLoop-Token` header and adds a
+job with `POST /api/jobs`:
+
+```bash
+curl -X POST http://tower:8422/api/jobs \
+  -H 'Content-Type: application/json' \
+  -H 'X-ArrowLoop-Token: <token>' \
+  -d '{"name":"Filme nach Backup","left":"/data/Filme","right":"/data/Backup/Filme","direction":"leftToRight","mode":"mirror","schedule":"0 3 * * *"}'
+```
+
+The job takes the same fields as one in `arrowloop.json`. Without a `state`, it
+gets `state/<name>.db`. A request with a name that is taken gets a 409, and
+the job of that name stays as it is. `before` and `after` are dropped, as with
+every save from the interface. The token opens only the job list and this one
+route, never the settings or the trash, and a request with a wrong token is
+refused even on an install without a password.
+
 ### On Unraid
 
 ArrowLoop is in [Community Applications](https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1):

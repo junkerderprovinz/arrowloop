@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
@@ -81,6 +82,10 @@ type Server struct {
 	// checked runs once a sign-in's credentials have held and before its
 	// session is handed out, which is where a test lands a reset.
 	checked func()
+
+	// saving keeps two writes to the configuration apart. Each one reads the
+	// file, edits it and writes it back, so two at once would lose one edit.
+	saving sync.Mutex
 }
 
 // logf is Log with the nil check in one place.
@@ -94,6 +99,7 @@ func (s *Server) logf(format string, args ...any) {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/jobs", s.listJobs)
+	mux.HandleFunc("POST /api/jobs", s.createJob)
 	mux.HandleFunc("GET /api/jobs/{name}/plan", s.previewJob)
 	mux.HandleFunc("POST /api/jobs/{name}/run", s.runJob)
 	mux.HandleFunc("POST /api/jobs/{name}/stop", s.stopJob)
@@ -780,6 +786,8 @@ func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
+	s.saving.Lock()
+	defer s.saving.Unlock()
 	next, err := s.Runner.Config().Replace(doc)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -999,6 +1007,8 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	s.saving.Lock()
+	defer s.saving.Unlock()
 	current := s.Runner.Config()
 	if err := keepSecrets(body, current); err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -1035,6 +1045,8 @@ func (s *Server) writeConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	s.saving.Lock()
+	defer s.saving.Unlock()
 	next, err := s.Runner.Config().SaveJobs(body.Jobs)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)

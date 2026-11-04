@@ -270,8 +270,19 @@ var openRoutes = map[string]bool{
 
 // Protect wraps a handler so the API needs a session once a password is set.
 // With no password it passes every request straight through.
+// A request with the token from APITokenEnv gets to the routes tokenRoute
+// opens without a session, and one with a wrong token gets nowhere.
 func (s *Server) Protect(next http.Handler) http.Handler {
+	apiToken := os.Getenv(APITokenEnv)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if sent := r.Header.Get(tokenHeader); apiToken != "" && sent != "" {
+			if subtle.ConstantTimeCompare([]byte(sent), []byte(apiToken)) != 1 || !tokenRoute(r.Method, r.URL.Path) {
+				writeError(w, http.StatusUnauthorized, errors.New("this token does not open this address"))
+				return
+			}
+			next.ServeHTTP(w, r)
+			return
+		}
 		if len(s.passwordHash()) == 0 {
 			next.ServeHTTP(w, r)
 			return
@@ -288,6 +299,20 @@ func (s *Server) Protect(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+// APITokenEnv names the environment variable holding a token for other
+// programs on the network, such as a file manager that plans a job here. It
+// is sent in the same header as the phone app's token and opens only reading
+// the job list and adding a job, so a leaked token cannot read the saved
+// settings or delete anything.
+const APITokenEnv = "ARROWLOOP_API_TOKEN"
+
+// tokenRoute reports whether the API token opens a request. The path is
+// cleaned as in needsSession.
+func tokenRoute(method, rawPath string) bool {
+	p := path.Clean("/" + rawPath)
+	return p == "/api/jobs" && (method == http.MethodGet || method == http.MethodPost)
 }
 
 // cookieToken pulls the session token out of a request, or an empty string.

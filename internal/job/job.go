@@ -919,6 +919,21 @@ func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) { doc["jobs"] = jobs })
 }
 
+// AddJob appends one job to the file and leaves the others as they are. It
+// goes through the same validation as SaveJobs.
+func (c *Config) AddJob(j map[string]any) (*Config, error) {
+	return c.save(func(doc map[string]any) {
+		key := "jobs"
+		for k := range doc {
+			if strings.EqualFold(k, "jobs") {
+				key = k
+			}
+		}
+		jobs, _ := doc[key].([]any)
+		doc[key] = append(jobs, j)
+	})
+}
+
 // SaveSettings writes the top-level keys other than the job list, such as the
 // bandwidth limit, parallelism, history and notifications. A key whose value
 // arrives empty is deleted rather than written as "", so it cannot override a
