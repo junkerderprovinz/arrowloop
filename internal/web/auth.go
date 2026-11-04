@@ -305,7 +305,8 @@ func (s *Server) Protect(next http.Handler) http.Handler {
 // programs on the network, such as a file manager that plans a job here. It
 // is sent in the same header as the phone app's token and opens only reading
 // the job list and adding a job, so a leaked token cannot read the saved
-// settings or delete anything.
+// settings or empty the trash. A job it adds runs on its schedule like any
+// other, and a mirror deletes at its destination.
 const APITokenEnv = "ARROWLOOP_API_TOKEN"
 
 // tokenRoute reports whether the API token opens a request. The path is

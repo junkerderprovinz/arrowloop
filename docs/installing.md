@@ -165,7 +165,9 @@ gets `state/<name>.db`. A request with a name that is taken gets a 409, and
 the job of that name stays as it is. `before` and `after` are dropped, as with
 every save from the interface. The token opens only the job list and this one
 route, never the settings or the trash, and a request with a wrong token is
-refused even on an install without a password.
+refused even on an install without a password. A job added this way runs on its
+schedule like any other, and a mirror deletes at its destination, so keep the
+token as safe as the password.
 
 ### On Unraid
 
