@@ -5,6 +5,7 @@ import {
   Animated,
   Easing,
   FlatList,
+  KeyboardAvoidingView,
   Modal,
   Pressable,
   ScrollView,
@@ -1396,16 +1397,22 @@ export function Page({
   const motion = useScrollMotion();
   return (
     <Animated.View style={motion.style}>
-      <ScrollView
-        ref={scroll?.scroller}
-        innerViewRef={scroll?.inner as RefObject<View> | undefined}
-        {...motion.scroll}
-        style={{ backgroundColor: p.background }}
-        contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
-      </ScrollView>
+      {/* An app targeting API 35 or later is drawn edge to edge, so the
+          window no longer shrinks for the keyboard and the page has to. A
+          shorter scroll view makes Android scroll the focused field back into
+          view. */}
+      <KeyboardAvoidingView behavior="padding" style={styles.fill}>
+        <ScrollView
+          ref={scroll?.scroller}
+          innerViewRef={scroll?.inner as RefObject<View> | undefined}
+          {...motion.scroll}
+          style={{ backgroundColor: p.background }}
+          contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Animated.View>
   );
 }
@@ -1502,6 +1509,7 @@ export function Floating({ children }: { children: ReactNode }) {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   // Every page sits under a title bar, which already leaves room above.
+  fill: { flex: 1 },
   page: { padding: space.lg, paddingTop: space.xs, gap: space.md },
   card: { padding: space.lg, gap: space.sm, overflow: "hidden" },
   edge: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4 },
