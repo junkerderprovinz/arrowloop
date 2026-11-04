@@ -1,0 +1,1 @@
+The keyboard doesn't cover the field you're typing in anymore, for example the password of a new target.

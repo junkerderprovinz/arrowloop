@@ -1,0 +1,1 @@
+Die Tastatur verdeckt das Feld, in das du gerade tippst, nicht mehr, zum Beispiel das Passwort eines neuen Ziels.
