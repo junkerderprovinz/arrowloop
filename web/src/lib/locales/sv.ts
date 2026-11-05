@@ -1331,7 +1331,7 @@ const sv: Translations = {
   'history.findings': 'Fynd',
   'anomalies.closedInHistory': 'Stängda i historiken',
   'new.change.closedFindings': 'Fynd som stängts de senaste trettio dagarna har flyttat från {anomalies} till {history}, som en tredje vy bredvid {runs} och {files}, med egna rubriker att sortera och filtrera med. {anomalies} visar bara det som är öppet och leder dit.',
-  'new.change.apiJob': 'Ett annat program i ditt nätverk, till exempel CastleCommander, kan lägga till ett jobb med en token som du anger i ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Ett annat program i ditt nätverk, till exempel CannonCommander, kan lägga till ett jobb med en token som du anger i ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Ett jobb som ett annat program lägger till körs enligt sitt schema som alla andra, och en spegling raderar på målet, så förvara token lika väl som lösenordet.',
   'dupes.findOnLeft': 'Sök dubbletter på vänster sida',
   'dupes.findOnRight': 'Sök dubbletter på höger sida',

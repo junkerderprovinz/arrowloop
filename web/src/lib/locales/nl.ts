@@ -1331,7 +1331,7 @@ const nl: Translations = {
   'history.findings': 'Bevindingen',
   'anomalies.closedInHistory': 'Gesloten in de geschiedenis',
   'new.change.closedFindings': 'Bevindingen die de afgelopen dertig dagen zijn gesloten, staan niet meer in {anomalies} maar in {history}, als derde weergave naast {runs} en {files}, met eigen koppen om te sorteren en te filteren. {anomalies} toont alleen wat open is en wijst de weg.',
-  'new.change.apiJob': 'Een ander programma op je netwerk, zoals CastleCommander, kan een taak toevoegen met een token dat je instelt in ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Een ander programma op je netwerk, zoals CannonCommander, kan een taak toevoegen met een token dat je instelt in ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Een taak die een ander programma toevoegt, draait volgens zijn schema zoals elke andere, en een spiegeling verwijdert op de bestemming, dus bewaar het token even zorgvuldig als het wachtwoord.',
   'dupes.findOnLeft': 'Dubbele bestanden links zoeken',
   'dupes.findOnRight': 'Dubbele bestanden rechts zoeken',

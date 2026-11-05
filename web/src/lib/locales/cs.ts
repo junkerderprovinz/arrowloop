@@ -1331,7 +1331,7 @@ const cs: Translations = {
   'history.findings': 'Nálezy',
   'anomalies.closedInHistory': 'Uzavřené v historii',
   'new.change.closedFindings': 'Nálezy uzavřené za posledních třicet dní se přesunuly z {anomalies} do {history}, jako třetí pohled vedle {runs} a {files}, s vlastními záhlavími pro řazení a filtrování. {anomalies} ukazuje jen otevřené a vede tam.',
-  'new.change.apiJob': 'Jiný program ve vaší síti, například CastleCommander, může přidat úlohu pomocí tokenu nastaveného v ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Jiný program ve vaší síti, například CannonCommander, může přidat úlohu pomocí tokenu nastaveného v ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Úloha přidaná jiným programem běží podle svého plánu jako každá jiná a zrcadlení maže v cíli, proto token chraňte stejně jako heslo.',
   'dupes.findOnLeft': 'Hledat duplikáty na levé straně',
   'dupes.findOnRight': 'Hledat duplikáty na pravé straně',

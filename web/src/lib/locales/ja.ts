@@ -1331,7 +1331,7 @@ const ja: Translations = {
   'history.findings': '検出',
   'anomalies.closedInHistory': '閉じたものは履歴に',
   'new.change.closedFindings': '過去30日に閉じた検出は{anomalies}から{history}に移り、{runs}と{files}に並ぶ3つ目の表示になりました。並べ替えと絞り込みの見出しもあります。{anomalies}は開いているものだけを表示し、そこへ案内します。',
-  'new.change.apiJob': 'CastleCommander など、ネットワーク上の別のプログラムが、ARROWLOOP_API_TOKEN に設定したトークンを使ってジョブを追加できます。',
+  'new.change.apiJob': 'CannonCommander など、ネットワーク上の別のプログラムが、ARROWLOOP_API_TOKEN に設定したトークンを使ってジョブを追加できます。',
   'new.change.apiJobCare': '別のプログラムが追加したジョブも他のジョブと同じくスケジュールどおりに実行され、ミラーは同期先で削除を行います。トークンはパスワードと同じように大切に保管してください。',
   'dupes.findOnLeft': '左側の重複を探す',
   'dupes.findOnRight': '右側の重複を探す',

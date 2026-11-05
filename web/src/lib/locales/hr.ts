@@ -1331,7 +1331,7 @@ const hr: Translations = {
   'history.findings': 'Nalazi',
   'anomalies.closedInHistory': 'Zatvoreni u povijesti',
   'new.change.closedFindings': 'Nalazi zatvoreni u posljednjih trideset dana preselili su se iz {anomalies} u {history}, kao treći prikaz uz {runs} i {files}, s vlastitim naslovima za razvrstavanje i filtriranje. {anomalies} prikazuje samo otvoreno i vodi onamo.',
-  'new.change.apiJob': 'Drugi program u vašoj mreži, primjerice CastleCommander, može dodati zadatak pomoću tokena koji postavite u ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Drugi program u vašoj mreži, primjerice CannonCommander, može dodati zadatak pomoću tokena koji postavite u ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Zadatak koji doda drugi program pokreće se prema svom rasporedu kao i svaki drugi, a zrcaljenje briše na odredištu, stoga čuvajte token jednako pažljivo kao i lozinku.',
   'dupes.findOnLeft': 'Traži duplikate na lijevoj strani',
   'dupes.findOnRight': 'Traži duplikate na desnoj strani',

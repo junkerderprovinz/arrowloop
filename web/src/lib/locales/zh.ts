@@ -1331,7 +1331,7 @@ const zh: Translations = {
   'history.findings': '发现',
   'anomalies.closedInHistory': '已关闭的在历史中',
   'new.change.closedFindings': '过去三十天内关闭的发现已从{anomalies}移到{history}，作为{runs}和{files}之外的第三个视图，并有自己的标题用于排序和筛选。{anomalies}只显示未关闭的发现，并提供前往的入口。',
-  'new.change.apiJob': '网络中的其他程序（例如 CastleCommander）可以使用你在 ARROWLOOP_API_TOKEN 中设置的令牌添加任务。',
+  'new.change.apiJob': '网络中的其他程序（例如 CannonCommander）可以使用你在 ARROWLOOP_API_TOKEN 中设置的令牌添加任务。',
   'new.change.apiJobCare': '其他程序添加的任务会像其他任务一样按计划运行，而镜像会在目标位置删除文件，因此请像保管密码一样保管令牌。',
   'dupes.findOnLeft': '查找左侧的重复文件',
   'dupes.findOnRight': '查找右侧的重复文件',

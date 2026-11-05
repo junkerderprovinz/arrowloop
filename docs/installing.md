@@ -147,7 +147,7 @@ log names the file, and deleting it has the same effect.
 
 ### Jobs from other programs
 
-A file manager such as CastleCommander can hand a pair of folders over as a new
+A file manager such as CannonCommander can hand a pair of folders over as a new
 job. Give the container a long random token in `ARROWLOOP_API_TOKEN`, for
 example what `openssl rand -hex 32` prints, and enter the same token in the
 other program. It sends the token in the `X-ArrowLoop-Token` header and adds a

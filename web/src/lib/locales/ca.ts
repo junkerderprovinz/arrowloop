@@ -1331,7 +1331,7 @@ const ca: Translations = {
   'history.findings': 'Troballes',
   'anomalies.closedInHistory': 'Les tancades a l\'historial',
   'new.change.closedFindings': 'Les troballes tancades els darrers trenta dies han passat de {anomalies} a {history}, com a tercera vista al costat de {runs} i {files}, amb capçaleres pròpies per ordenar i filtrar. {anomalies} només mostra el que és obert i hi porta.',
-  'new.change.apiJob': 'Un altre programa de la xarxa, com ara CastleCommander, pot afegir una tasca amb un testimoni que definiu a ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Un altre programa de la xarxa, com ara CannonCommander, pot afegir una tasca amb un testimoni que definiu a ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Una tasca afegida per un altre programa s\'executa segons la seva planificació com qualsevol altra, i un mirall esborra a la destinació, així que guardeu el testimoni amb la mateixa cura que la contrasenya.',
   'dupes.findOnLeft': 'Cerca duplicats al costat esquerre',
   'dupes.findOnRight': 'Cerca duplicats al costat dret',

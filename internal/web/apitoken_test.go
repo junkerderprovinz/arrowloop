@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-const testAPIToken = "a-long-random-token-for-castlecommander"
+const testAPIToken = "a-long-random-token-for-cannoncommander"
 
 // tokenServer stands a server behind Protect with stand-ins for the job list,
 // adding a job and the settings backup.

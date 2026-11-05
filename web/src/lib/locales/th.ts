@@ -1331,7 +1331,7 @@ const th: Translations = {
   'history.findings': 'สิ่งที่พบ',
   'anomalies.closedInHistory': 'ที่ปิดแล้วในประวัติ',
   'new.change.closedFindings': 'สิ่งที่พบซึ่งปิดไปในสามสิบวันที่ผ่านมาย้ายจาก {anomalies} ไปที่ {history} เป็นมุมมองที่สามถัดจาก {runs} และ {files} พร้อมหัวคอลัมน์สำหรับเรียงและกรอง {anomalies} แสดงเฉพาะสิ่งที่ยังเปิดอยู่และพาไปที่นั่น',
-  'new.change.apiJob': 'โปรแกรมอื่นในเครือข่ายของคุณ เช่น CastleCommander สามารถเพิ่มงานได้ด้วยโทเค็นที่คุณตั้งไว้ใน ARROWLOOP_API_TOKEN',
+  'new.change.apiJob': 'โปรแกรมอื่นในเครือข่ายของคุณ เช่น CannonCommander สามารถเพิ่มงานได้ด้วยโทเค็นที่คุณตั้งไว้ใน ARROWLOOP_API_TOKEN',
   'new.change.apiJobCare': 'งานที่โปรแกรมอื่นเพิ่มจะทำงานตามกำหนดเวลาเหมือนงานอื่น และการมิเรอร์จะลบที่ปลายทาง จึงควรเก็บโทเค็นให้ปลอดภัยเท่ากับรหัสผ่าน',
   'dupes.findOnLeft': 'ค้นหาไฟล์ซ้ำฝั่งซ้าย',
   'dupes.findOnRight': 'ค้นหาไฟล์ซ้ำฝั่งขวา',

@@ -1331,7 +1331,7 @@ const bg: Translations = {
   'history.findings': 'Находки',
   'anomalies.closedInHistory': 'Затворените в журнала',
   'new.change.closedFindings': 'Находките, затворени през последните трийсет дни, се преместиха от {anomalies} в {history}, като трети изглед до {runs} и {files}, със собствени заглавия за сортиране и филтриране. {anomalies} показва само отвореното и води натам.',
-  'new.change.apiJob': 'Друга програма във вашата мрежа, например CastleCommander, може да добави задача с токен, зададен в ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Друга програма във вашата мрежа, например CannonCommander, може да добави задача с токен, зададен в ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Задача, добавена от друга програма, се изпълнява по графика си като всяка друга, а огледалото изтрива в целта, затова пазете токена толкова добре, колкото и паролата.',
   'dupes.findOnLeft': 'Търси дубликати отляво',
   'dupes.findOnRight': 'Търси дубликати отдясно',

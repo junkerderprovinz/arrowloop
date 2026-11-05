@@ -1331,7 +1331,7 @@ const fr: Translations = {
   'history.findings': 'Constats',
   'anomalies.closedInHistory': 'Les clos dans l\'historique',
   'new.change.closedFindings': 'Les constats clos ces trente derniers jours sont passés de {anomalies} à {history}, comme troisième vue à côté de {runs} et {files}, avec leurs propres en-têtes pour trier et filtrer. {anomalies} ne montre plus que ce qui est ouvert et y mène.',
-  'new.change.apiJob': 'Un autre programme de votre réseau, comme CastleCommander, peut ajouter une tâche avec un jeton que vous définissez dans ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Un autre programme de votre réseau, comme CannonCommander, peut ajouter une tâche avec un jeton que vous définissez dans ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Une tâche ajoutée par un autre programme s\'exécute selon sa planification comme les autres, et un miroir supprime à la destination : gardez donc le jeton aussi précieusement que le mot de passe.',
   'dupes.findOnLeft': 'Chercher les doublons du côté gauche',
   'dupes.findOnRight': 'Chercher les doublons du côté droit',

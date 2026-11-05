@@ -1331,7 +1331,7 @@ const no: Translations = {
   'history.findings': 'Funn',
   'anomalies.closedInHistory': 'Lukkede i historikken',
   'new.change.closedFindings': 'Funn som er lukket de siste tretti dagene, har flyttet fra {anomalies} til {history} som en tredje visning ved siden av {runs} og {files}, med egne overskrifter for sortering og filtrering. {anomalies} viser bare det som er åpent, og leder dit.',
-  'new.change.apiJob': 'Et annet program på nettverket ditt, for eksempel CastleCommander, kan legge til en jobb med et token du angir i ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Et annet program på nettverket ditt, for eksempel CannonCommander, kan legge til en jobb med et token du angir i ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'En jobb som et annet program legger til, kjører etter tidsplanen sin som alle andre, og en speiling sletter på målet, så ta like godt vare på tokenet som på passordet.',
   'dupes.findOnLeft': 'Finn duplikater på venstre side',
   'dupes.findOnRight': 'Finn duplikater på høyre side',
