@@ -8,6 +8,21 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.4.6 - 2026-11-06
+
+Desktop and phone builds move to Go 1.27.3, and the engine picks up a fix in its compression library.
+
+## ⚡ Improved
+
+- **The README compares ArrowLoop with FolderSync and luckyBackup as well.** The same table is in `docs/comparison.md`.
+- **The README's download buttons sit under Server, Desktop and Android titles,** and a new F-Droid button leads to ArrowLoop's listing there.
+- **The web interface and the phone app are built with the latest minor releases of their dependencies.**
+
+## 🐛 Fixed
+
+- **Desktop and phone builds use Go 1.27.3, which fixes a crypto/x509 flaw (GO-2026-6809).**
+- **The engine uses klauspost/compress 1.20.2, which fixes a crash on some two-block compressed frames (GO-2026-6865).**
+
 ## 2.4.5 - 2026-11-04
 
 Fields low on a page stay above the keyboard on the phone, and another program on your network can hand ArrowLoop a new job.
