@@ -27,9 +27,7 @@ BUTTONS = {
     # No listing yet, so the button is drawn without a link, as the App tab
     # marks the listing "soon". The listing's address goes here once it exists.
     "google-play": None,
-    # The recipe is merged, but F-Droid lists the app only after its next
-    # build round. The listing's address goes here once the page is up.
-    "f-droid": None,
+    "f-droid": "https://f-droid.org/packages/arrowloop.halleluja.design/",
     # arm64 only; the x86_64 APK is for emulators and stays on the release page.
     "apk": RELEASE + "arrowloop-android-arm64.apk",
 }
