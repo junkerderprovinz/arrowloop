@@ -423,6 +423,15 @@ export function IconFilter(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Drag to reorder. Drawn for TowerTorch, commit 25aab69. */
+export function IconGrip(props: SVGProps<SVGSVGElement>) {
+  return (
+    <G box="1 1 12 12" {...props}>
+      <path d="M4.5 1a1.5 1.5 0 1 1 0 3a1.5 1.5 0 1 1 0 -3ZM9.5 1a1.5 1.5 0 1 1 0 3a1.5 1.5 0 1 1 0 -3ZM4.5 5.5a1.5 1.5 0 1 1 0 3a1.5 1.5 0 1 1 0 -3ZM9.5 5.5a1.5 1.5 0 1 1 0 3a1.5 1.5 0 1 1 0 -3ZM4.5 10a1.5 1.5 0 1 1 0 3a1.5 1.5 0 1 1 0 -3ZM9.5 10a1.5 1.5 0 1 1 0 3a1.5 1.5 0 1 1 0 -3Z" />
+    </G>
+  )
+}
+
 /** Write to us. Streamline mail/mail-send-envelope.svg. */
 export function IconMail(props: SVGProps<SVGSVGElement>) {
   return (

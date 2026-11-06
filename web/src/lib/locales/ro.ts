@@ -1338,6 +1338,13 @@ const ro: Translations = {
   'entry.fileVanished': 'Fișierul a dispărut înainte de copiere',
   'entry.fileVanishedLocal': 'Fișierul a dispărut local înainte de copiere',
   'entry.fileVanishedIn': 'Fișierul a dispărut în {place} înainte de copiere',
+  'jobs.view.cards': 'Carduri',
+  'jobs.view.compact': 'Compact',
+  'jobs.move': 'Mută {job}',
+  'jobs.moveHint': 'Trage-o în alt loc sau apasă Alt și o tastă săgeată.',
+  'jobs.moved': '{job} mutată pe poziția {place}',
+  'new.change.jobOrder': 'Poți pune sarcinile în ordinea ta: trage o sarcină de mâner sau apasă pe ea Alt și o tastă săgeată. Pe telefon, ține apăsată o sarcină și trage-o. {history}, {trash} și {conflicts} arată sarcinile în aceeași ordine.',
+  'new.change.jobsCompact': '{compact}, sus în lista de sarcini, arată fiecare sarcină pe un rând: starea, ultima rulare, {runNow} și {more}. Acest dispozitiv ține minte alegerea ta.',
 }
 
 export default ro

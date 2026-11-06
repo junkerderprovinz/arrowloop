@@ -1119,6 +1119,14 @@ export const api = {
       body: JSON.stringify({ jobs }),
     }),
 
+  /** Puts the jobs in this order and keeps it, for a job somebody moved in a list. */
+  orderJobs: (names: string[]) =>
+    request<{ jobs: number }>('/api/jobs/order', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobs: names }),
+    }),
+
   /**
    * Deletes a job's state database. The server resolves the file from the job's
    * entry, so this has to be called while the job is still configured.

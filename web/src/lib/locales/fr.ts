@@ -1338,6 +1338,13 @@ const fr: Translations = {
   'entry.fileVanished': 'Fichier disparu avant la copie',
   'entry.fileVanishedLocal': 'Fichier disparu en local avant la copie',
   'entry.fileVanishedIn': 'Fichier disparu dans {place} avant la copie',
+  'jobs.view.cards': 'Cartes',
+  'jobs.view.compact': 'Compact',
+  'jobs.move': 'Déplacer {job}',
+  'jobs.moveHint': 'Faites-la glisser ailleurs, ou appuyez sur Alt et une flèche.',
+  'jobs.moved': '{job} déplacée à la position {place}',
+  'new.change.jobOrder': 'Vous pouvez ranger les tâches dans votre propre ordre : faites glisser une tâche par sa poignée, ou appuyez sur Alt et une flèche dessus. Sur le téléphone, maintenez une tâche et faites-la glisser. {history}, {trash} et {conflicts} affichent les tâches dans le même ordre.',
+  'new.change.jobsCompact': '{compact}, en haut de la liste des tâches, affiche chaque tâche sur une ligne, avec son état, sa dernière exécution, {runNow} et {more}. Cet appareil retient votre choix.',
 }
 
 export default fr

@@ -1338,6 +1338,13 @@ const bg: Translations = {
   'entry.fileVanished': 'Файлът изчезна преди копирането',
   'entry.fileVanishedLocal': 'Файлът изчезна локално преди копирането',
   'entry.fileVanishedIn': 'Файлът изчезна в {place} преди копирането',
+  'jobs.view.cards': 'Карти',
+  'jobs.view.compact': 'Компактно',
+  'jobs.move': 'Премести {job}',
+  'jobs.moveHint': 'Плъзни я на друго място или натисни Alt и стрелка.',
+  'jobs.moved': '{job} е преместена на място {place}',
+  'new.change.jobOrder': 'Можеш да подредиш задачите по свой ред: плъзни задача за дръжката ѝ или натисни Alt и стрелка върху нея. На телефона задръж задача и я плъзни. {history}, {trash} и {conflicts} показват задачите в същия ред.',
+  'new.change.jobsCompact': '{compact} в горната част на списъка със задачи показва всяка задача на един ред, със състоянието ѝ, последното ѝ изпълнение, {runNow} и {more}. Това устройство помни избора ти.',
 }
 
 export default bg

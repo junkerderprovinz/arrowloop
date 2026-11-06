@@ -1338,6 +1338,13 @@ const fi: Translations = {
   'entry.fileVanished': 'Tiedosto katosi ennen kopiointia',
   'entry.fileVanishedLocal': 'Tiedosto katosi paikallisesti ennen kopiointia',
   'entry.fileVanishedIn': 'Tiedosto katosi ennen kopiointia: {place}',
+  'jobs.view.cards': 'Kortit',
+  'jobs.view.compact': 'Tiivis',
+  'jobs.move': 'Siirrä työtä {job}',
+  'jobs.moveHint': 'Vedä se toiseen paikkaan tai paina Alt ja nuolinäppäintä.',
+  'jobs.moved': '{job} siirretty paikalle {place}',
+  'new.change.jobOrder': 'Voit järjestää työt omaan järjestykseesi: vedä työtä sen kahvasta tai paina sen kohdalla Alt ja nuolinäppäintä. Puhelimessa pidä työtä painettuna ja vedä sitä. {history}, {trash} ja {conflicts} näyttävät työt samassa järjestyksessä.',
+  'new.change.jobsCompact': '{compact} työluettelon yläosassa näyttää jokaisen työn yhdellä rivillä: tila, viimeisin ajo, {runNow} ja {more}. Tämä laite muistaa valintasi.',
 }
 
 export default fi

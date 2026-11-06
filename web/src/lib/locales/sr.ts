@@ -1338,6 +1338,13 @@ const sr: Translations = {
   'entry.fileVanished': 'Датотека је нестала пре копирања',
   'entry.fileVanishedLocal': 'Датотека је локално нестала пре копирања',
   'entry.fileVanishedIn': 'Датотека је нестала у {place} пре копирања',
+  'jobs.view.cards': 'Картице',
+  'jobs.view.compact': 'Сажето',
+  'jobs.move': 'Премести {job}',
+  'jobs.moveHint': 'Превуци га на друго место или притисни Alt и стрелицу.',
+  'jobs.moved': '{job} премештен на место {place}',
+  'new.change.jobOrder': 'Послове можеш да поређаш по свом редоследу: превуци посао за ручицу или на њему притисни Alt и стрелицу. На телефону задржи посао и превуци га. {history}, {trash} и {conflicts} приказују послове истим редоследом.',
+  'new.change.jobsCompact': '{compact} на врху списка послова приказује сваки посао у једном реду: стање, последње покретање, {runNow} и {more}. Овај уређај памти твој избор.',
 }
 
 export default sr

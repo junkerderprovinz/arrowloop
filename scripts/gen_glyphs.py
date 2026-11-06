@@ -51,6 +51,8 @@ STANDARD = [
     # A list's head: the order it sorts in and the filter under its name.
     "IconMoveUp",
     "IconMoveDown",
+    # The handle a job is moved by.
+    "IconGrip",
     "IconExpand",
     "IconTrash",
     "IconUnlock",

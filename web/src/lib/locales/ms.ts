@@ -1338,6 +1338,13 @@ const ms: Translations = {
   'entry.fileVanished': 'Fail hilang sebelum disalin',
   'entry.fileVanishedLocal': 'Fail hilang secara setempat sebelum disalin',
   'entry.fileVanishedIn': 'Fail hilang dalam {place} sebelum disalin',
+  'jobs.view.cards': 'Kad',
+  'jobs.view.compact': 'Padat',
+  'jobs.move': 'Alihkan {job}',
+  'jobs.moveHint': 'Seret ke tempat lain, atau tekan Alt dan kekunci anak panah.',
+  'jobs.moved': '{job} dialihkan ke kedudukan {place}',
+  'new.change.jobOrder': 'Anda boleh menyusun tugas mengikut susunan sendiri: seret tugas melalui pemegangnya, atau tekan Alt dan kekunci anak panah padanya. Pada telefon, tahan tugas lalu seret. {history}, {trash} dan {conflicts} memaparkan tugas dalam susunan yang sama.',
+  'new.change.jobsCompact': '{compact} di atas senarai tugas memaparkan setiap tugas dalam satu baris: status, larian terakhir, {runNow} dan {more}. Peranti ini mengingati pilihan anda.',
 }
 
 export default ms

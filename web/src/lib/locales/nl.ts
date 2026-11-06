@@ -1338,6 +1338,13 @@ const nl: Translations = {
   'entry.fileVanished': 'Bestand verdween voor het kopiëren',
   'entry.fileVanishedLocal': 'Bestand verdween lokaal voor het kopiëren',
   'entry.fileVanishedIn': 'Bestand verdween in {place} voor het kopiëren',
+  'jobs.view.cards': 'Kaarten',
+  'jobs.view.compact': 'Compact',
+  'jobs.move': '{job} verplaatsen',
+  'jobs.moveHint': 'Sleep hem naar een andere plek, of druk op Alt en een pijltjestoets.',
+  'jobs.moved': '{job} verplaatst naar plek {place}',
+  'new.change.jobOrder': 'Je kunt de taken in je eigen volgorde zetten: sleep een taak aan zijn greep, of druk erop op Alt en een pijltjestoets. Op de telefoon houd je een taak vast en sleep je hem. {history}, {trash} en {conflicts} tonen de taken in dezelfde volgorde.',
+  'new.change.jobsCompact': '{compact} boven de takenlijst toont elke taak op één regel: status, laatste run, {runNow} en {more}. Dit apparaat onthoudt je keuze.',
 }
 
 export default nl

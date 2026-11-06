@@ -1338,6 +1338,13 @@ const is: Translations = {
   'entry.fileVanished': 'Skráin hvarf áður en hún var afrituð',
   'entry.fileVanishedLocal': 'Skráin hvarf hér áður en hún var afrituð',
   'entry.fileVanishedIn': 'Skráin hvarf í {place} áður en hún var afrituð',
+  'jobs.view.cards': 'Spjöld',
+  'jobs.view.compact': 'Þétt',
+  'jobs.move': 'Færa {job}',
+  'jobs.moveHint': 'Dragðu það á annan stað, eða ýttu á Alt og örvalykil.',
+  'jobs.moved': '{job} fært í sæti {place}',
+  'new.change.jobOrder': 'Þú getur raðað verkunum eins og þú vilt: dragðu verk í handfangið eða ýttu á Alt og örvalykil á því. Í símanum heldurðu verki inni og dregur það. {history}, {trash} og {conflicts} sýna verkin í sömu röð.',
+  'new.change.jobsCompact': '{compact} efst í verkalistanum sýnir hvert verk í einni línu: stöðu, síðustu keyrslu, {runNow} og {more}. Þetta tæki man valið þitt.',
 }
 
 export default is

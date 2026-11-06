@@ -1338,6 +1338,13 @@ const cs: Translations = {
   'entry.fileVanished': 'Soubor zmizel před zkopírováním',
   'entry.fileVanishedLocal': 'Soubor zmizel místně před zkopírováním',
   'entry.fileVanishedIn': 'Soubor v {place} zmizel před zkopírováním',
+  'jobs.view.cards': 'Karty',
+  'jobs.view.compact': 'Kompaktně',
+  'jobs.move': 'Přesunout {job}',
+  'jobs.moveHint': 'Přetáhni ji jinam, nebo stiskni Alt a šipku.',
+  'jobs.moved': '{job} přesunuta na místo {place}',
+  'new.change.jobOrder': 'Úlohy si můžeš seřadit po svém: přetáhni úlohu za úchyt, nebo na ní stiskni Alt a šipku. V telefonu úlohu podrž a přetáhni. {history}, {trash} a {conflicts} ukazují úlohy ve stejném pořadí.',
+  'new.change.jobsCompact': '{compact} nahoře v seznamu úloh ukáže každou úlohu na jednom řádku, s jejím stavem, posledním během, {runNow} a {more}. Tohle zařízení si tvou volbu pamatuje.',
 }
 
 export default cs

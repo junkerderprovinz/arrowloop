@@ -1338,6 +1338,13 @@ const es: Translations = {
   'entry.fileVanished': 'El archivo desapareció antes de copiarse',
   'entry.fileVanishedLocal': 'El archivo desapareció en local antes de copiarse',
   'entry.fileVanishedIn': 'El archivo desapareció en {place} antes de copiarse',
+  'jobs.view.cards': 'Tarjetas',
+  'jobs.view.compact': 'Compacta',
+  'jobs.move': 'Mover {job}',
+  'jobs.moveHint': 'Arrástrala a otro sitio o pulsa Alt y una flecha.',
+  'jobs.moved': '{job} movida a la posición {place}',
+  'new.change.jobOrder': 'Puedes poner las tareas en tu propio orden: arrastra una por su asa o pulsa Alt y una flecha sobre ella. En el teléfono, mantén pulsada una tarea y arrástrala. {history}, {trash} y {conflicts} muestran las tareas en el mismo orden.',
+  'new.change.jobsCompact': '{compact}, arriba en la lista de tareas, muestra cada tarea en una fila, con su estado, su última ejecución, {runNow} y {more}. Este dispositivo recuerda tu elección.',
 }
 
 export default es

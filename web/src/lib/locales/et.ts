@@ -1338,6 +1338,13 @@ const et: Translations = {
   'entry.fileVanished': 'Fail kadus enne kopeerimist',
   'entry.fileVanishedLocal': 'Fail kadus kohalikult enne kopeerimist',
   'entry.fileVanishedIn': 'Fail kadus enne kopeerimist: {place}',
+  'jobs.view.cards': 'Kaardid',
+  'jobs.view.compact': 'Kompaktne',
+  'jobs.move': 'Liiguta tööd {job}',
+  'jobs.moveHint': 'Lohista see teise kohta või vajuta Alt ja nooleklahvi.',
+  'jobs.moved': 'Töö {job} viidi kohale {place}',
+  'new.change.jobOrder': 'Võid tööd oma järjekorda panna: lohista tööd selle pidemest või vajuta sellel Alt ja nooleklahvi. Telefonis hoia tööd all ja lohista seda. {history}, {trash} ja {conflicts} näitavad töid samas järjekorras.',
+  'new.change.jobsCompact': '{compact} tööde loendi ülaosas näitab iga tööd ühel real: olek, viimane käivitus, {runNow} ja {more}. See seade jätab sinu valiku meelde.',
 }
 
 export default et

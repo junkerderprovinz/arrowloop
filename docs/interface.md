@@ -40,8 +40,19 @@ settings** brings back every job from a backup file; **Start** goes to Jobs.
 
 ## Jobs
 
-Every job is a card of its own, in the order of their names, with the job's
-name on the card's edge. On the left the card shows the tile of the job's
+Every job is a card of its own, with the job's name on the card's edge. The
+jobs stand in the order of their names until you move one. Drag a job by the
+handle at its left, and the others make room while it is carried. On a touch
+screen, hold the handle first. Alt and an arrow key move the job that has the
+focus. The first move keeps that order in the configuration file, a new job
+goes to the end, and History, Trash and Conflicts offer the jobs in the same
+order in their Job filter.
+
+**Cards** and **Compact** at the top of the list switch the view, and each
+browser keeps its choice. Compact shows a job on one row: its colour, its
+name, its status, its last run, **More** and **Run now**, with **Pause** moved
+into More. A click on the row opens the job, and the handle moves it as on the
+cards. On the left the card shows the tile of the job's
 direction, its two sides, the schedule and the next run. On the right the last
 fourteen runs stand as a strip with the job's one status right after it, and
 under them **More**, **Pause** and **Run now**. Both halves are centred on each
@@ -494,7 +505,10 @@ The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
 Targets; Anomalies goes from there while its notes are switched off. Every job
 card shows the same single status as on the web, and its **More** menu holds
 Open, Edit, Duplicate, Preview, Check this job, the trash of either side and
-Delete. **Empty the trash** is the
+Delete. A long press lifts a job and the finger carries it to its new place,
+in the order the web shows as well. TalkBack offers Move up and Move down
+instead. **Cards** and **Compact** above the jobs switch the view, and the
+phone keeps its choice. **Empty the trash** is the
 floating button on the Trash screen. The Conflicts screen shows every conflict
 as on the web, and from two conflicts up answers all of them at once from the
 card at its foot, after asking. The Anomalies screen shows every finding as a

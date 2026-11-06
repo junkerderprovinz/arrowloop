@@ -1338,6 +1338,13 @@ const fa: Translations = {
   'entry.fileVanished': 'پرونده پیش از کپی ناپدید شد',
   'entry.fileVanishedLocal': 'پرونده پیش از کپی به‌صورت محلی ناپدید شد',
   'entry.fileVanishedIn': 'پرونده در {place} پیش از کپی ناپدید شد',
+  'jobs.view.cards': 'کارت‌ها',
+  'jobs.view.compact': 'فشرده',
+  'jobs.move': 'جابه‌جایی {job}',
+  'jobs.moveHint': 'آن را به جای دیگری بکشید، یا Alt و یک کلید جهت را فشار دهید.',
+  'jobs.moved': '{job} به جایگاه {place} رفت',
+  'new.change.jobOrder': 'می‌توانید کارها را به ترتیب دلخواه خود بچینید: یک کار را از دستگیره‌اش بکشید، یا روی آن Alt و یک کلید جهت را فشار دهید. در گوشی، یک کار را نگه دارید و بکشید. {history}، {trash} و {conflicts} کارها را به همین ترتیب نشان می‌دهند.',
+  'new.change.jobsCompact': '{compact} در بالای فهرست کارها هر کار را در یک سطر نشان می‌دهد: وضعیت، آخرین اجرا، {runNow} و {more}. این دستگاه انتخاب شما را به خاطر می‌سپارد.',
 }
 
 export default fa
