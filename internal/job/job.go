@@ -945,9 +945,9 @@ func (c *Config) AddJob(j map[string]any) (*Config, error) {
 	})
 }
 
-// SaveOrder puts the jobs in the file in the order of names and keeps that
-// order from then on. A job names leaves out stays, after the ones it orders,
-// since the list it came from may be older than the file.
+// SaveOrder writes the jobs in the order names gives and keeps that order from
+// then on. A job missing from names stays, after the ordered ones, since the
+// list names came from may be older than the file.
 func (c *Config) SaveOrder(names []string) (*Config, error) {
 	return c.save(func(doc map[string]any) {
 		key := jobsKey(doc)
