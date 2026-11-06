@@ -20,7 +20,7 @@ require (
 	golang.org/x/sys v0.49.0
 	golang.org/x/term v0.47.0
 	golang.org/x/text v0.43.0
-	modernc.org/libc v1.80.0
+	modernc.org/libc v1.80.1
 	modernc.org/sqlite v1.61.1
 )
 
