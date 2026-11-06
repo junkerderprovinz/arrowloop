@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/robfig/cron/v3"
+	"golang.org/x/text/collate"
+	"golang.org/x/text/language"
 
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
@@ -57,6 +59,10 @@ type Config struct {
 	// here because the app reads it from the engine at start, and a settings
 	// backup carries this file. Empty means the phone's own.
 	Language string `json:"language,omitempty"`
+
+	// KeepJobOrder lists the jobs in the order the file holds them rather than
+	// by name. The interface sets it when somebody first moves a job.
+	KeepJobOrder bool `json:"keepJobOrder,omitempty"`
 
 	// dir is where the file was read from, so relative paths inside it are
 	// relative to the file.
@@ -773,7 +779,17 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("job %q watches but has no schedule; watching can miss an event and never know it did, so it needs a schedule behind it", j.Name)
 		}
 	}
-	sort.SliceStable(cfg.Jobs, func(a, b int) bool { return cfg.Jobs[a].Name < cfg.Jobs[b].Name })
+	if !cfg.KeepJobOrder {
+		// As a person reads names rather than by bytes, so case and accents
+		// do not split the alphabet. A collator is not safe for concurrent use.
+		alphabet := collate.New(language.Und)
+		sort.SliceStable(cfg.Jobs, func(a, b int) bool {
+			if c := alphabet.CompareString(cfg.Jobs[a].Name, cfg.Jobs[b].Name); c != 0 {
+				return c < 0
+			}
+			return cfg.Jobs[a].Name < cfg.Jobs[b].Name
+		})
+	}
 	return &cfg, nil
 }
 
@@ -923,15 +939,45 @@ func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
 // goes through the same validation as SaveJobs.
 func (c *Config) AddJob(j map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) {
-		key := "jobs"
-		for k := range doc {
-			if strings.EqualFold(k, "jobs") {
-				key = k
-			}
-		}
+		key := jobsKey(doc)
 		jobs, _ := doc[key].([]any)
 		doc[key] = append(jobs, j)
 	})
+}
+
+// SaveOrder puts the jobs in the file in the order of names and keeps that
+// order from then on. A job names leaves out stays, after the ones it orders,
+// since the list it came from may be older than the file.
+func (c *Config) SaveOrder(names []string) (*Config, error) {
+	return c.save(func(doc map[string]any) {
+		key := jobsKey(doc)
+		jobs, _ := doc[key].([]any)
+		place := make(map[string]int, len(names))
+		for i, name := range names {
+			place[name] = i
+		}
+		at := func(j any) int {
+			name, _ := j.(map[string]any)["name"].(string)
+			if i, ok := place[name]; ok {
+				return i
+			}
+			return len(names)
+		}
+		sort.SliceStable(jobs, func(a, b int) bool { return at(jobs[a]) < at(jobs[b]) })
+		doc[key] = jobs
+		doc["keepJobOrder"] = true
+	})
+}
+
+// jobsKey is the job list's key as the file spells it, since Load reads it in
+// any case.
+func jobsKey(doc map[string]any) string {
+	for k := range doc {
+		if strings.EqualFold(k, "jobs") {
+			return k
+		}
+	}
+	return "jobs"
 }
 
 // SaveSettings writes the top-level keys other than the job list, such as the
