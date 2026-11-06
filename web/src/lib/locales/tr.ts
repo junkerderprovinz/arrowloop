@@ -1343,6 +1343,9 @@ const tr: Translations = {
   'jobs.move': 'Taşı: {job}',
   'jobs.moveHint': 'Başka bir yere sürükleyin ya da Alt ve bir ok tuşuna basın.',
   'jobs.moved': '{job} şu sıraya taşındı: {place}',
+  'jobs.holdToMove': 'Basılı tutup başka bir yere sürükleyin.',
+  'jobs.moveUp': 'Yukarı taşı',
+  'jobs.moveDown': 'Aşağı taşı',
   'new.change.jobOrder': 'İşleri kendi sıranıza koyabilirsiniz: bir işi tutamacından sürükleyin ya da üzerinde Alt ve bir ok tuşuna basın. Telefonda bir işe basılı tutup sürükleyin. {history}, {trash} ve {conflicts} işleri aynı sırayla gösterir.',
   'new.change.jobsCompact': 'İş listesinin üstündeki {compact}, her işi tek satırda gösterir: durum, son çalıştırma, {runNow} ve {more}. Bu cihaz seçiminizi hatırlar.',
 }

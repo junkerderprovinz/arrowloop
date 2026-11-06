@@ -1,19 +1,32 @@
 import { useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
-import { Alert, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  AccessibilityInfo,
+  Alert,
+  Animated,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+  type AccessibilityActionEvent,
+  type GestureResponderEvent,
+} from "react-native";
 import { api, type Job, type Remote } from "../api";
-import { CardMenu } from "../CardMenu";
+import { CardMenu, type CardAction } from "../CardMenu";
 import { clock } from "../clock";
 import { Glyph } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
+import { byJobOrder, stepJob } from "../../../web/src/lib/jobOrder";
 import { mayRun, mayRunAll } from "../fileAccess";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
+import { MoveScope, MovingCell, useHoldToMove } from "../reorder";
+import { setAppearance, useAppearance, type JobView } from "../settings";
 import { sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
 import { space, text, TOUCH } from "../theme";
@@ -27,6 +40,7 @@ import {
   Caption,
   Card,
   CardHead,
+  Choice,
   Empty,
   FAB_ROOM,
   Fab,
@@ -39,7 +53,8 @@ import {
 
 /**
  * The job list: one card per job with its sides, its one status and the two
- * buttons a phone needs most.
+ * buttons a phone needs most, or one row per job in the compact view. A long
+ * press lifts a job and the finger carries it to its new place.
  */
 export function Jobs() {
   const nav = useNavigation<Nav<JobsStack>>();
@@ -61,6 +76,10 @@ export function Jobs() {
 
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
+  const { jobView } = useAppearance();
+  // A moved job keeps its new place until the engine has the order and the
+  // list has been read again.
+  const [order, setOrder] = useState<string[] | null>(null);
   const [holding, setHolding] = useState<string | null>(null);
   const { refresh } = waiting;
 
@@ -160,7 +179,65 @@ export function Jobs() {
     ]);
   };
 
+  const shown = useMemo(() => {
+    if (!jobs || !order) return jobs ?? [];
+    const rank = byJobOrder(order);
+    return [...jobs].sort((a, b) => rank(a.name, b.name));
+  }, [jobs, order]);
+  const names = shown.map((j) => j.name);
+
+  const place = async (next: string[]) => {
+    setOrder(next);
+    try {
+      await api.orderJobs(next);
+      await load();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+    setOrder(null);
+  };
+  const drag = useHoldToMove(names, (next) => void place(next));
+
+  // TalkBack cannot carry a card, so it moves one place at a time.
+  const step = (name: string, e: AccessibilityActionEvent) => {
+    const next = stepJob(names, name, e.nativeEvent.actionName === "moveUp" ? -1 : 1);
+    if (next.join("\n") === names.join("\n")) return;
+    void place(next);
+    AccessibilityInfo.announceForAccessibility(t("jobs.moved", { job: name, place: next.indexOf(name) + 1 }));
+  };
+  const moving = (name: string): Moving => ({
+    onLongPress: (e) => drag.lift(name, e),
+    onRelease: drag.release,
+    accessibilityHint: t("jobs.holdToMove"),
+    accessibilityActions: [
+      { name: "moveUp", label: t("jobs.moveUp") },
+      { name: "moveDown", label: t("jobs.moveDown") },
+    ],
+    onAccessibilityAction: (e) => step(name, e),
+  });
+
   if (jobs === null) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
+
+  /** Everything the job screen offers besides Run now and the hold, so nothing needs the job opened first. */
+  const menuFor = (job: Job): CardAction[] => {
+    const [upper, lower] = sidePair(job.left, job.right, t);
+    const trash = (side: "left" | "right", place: string) => nav.navigate("Trash", { name: job.name, side, place });
+    return [
+      // Open is listed although tapping the card does the same, so it can be found.
+      { label: t("action.open"), glyph: "IconSync", onPress: () => nav.navigate("JobDetail", { name: job.name }) },
+      // Opening and editing reach the same screen but stay two rows, so
+      // somebody looking for "edit" finds it.
+      { label: t("action.edit"), glyph: "IconPencil", onPress: () => nav.navigate("JobEdit", { name: job.name }) },
+      // The copy starts held; see jobCopy.data.ts.
+      { label: t("edit.duplicate"), glyph: "IconCopy", onPress: () => void duplicate(job) },
+      { label: t("jobs.preview"), glyph: "IconPreview", onPress: () => nav.navigate("Plan", { name: job.name }) },
+      // The findings need room, which the job's own screen has.
+      { label: t("jobs.check"), glyph: "IconCheck", onPress: () => nav.navigate("JobDetail", { name: job.name, check: true }) },
+      { label: `${t("nav.trash")} · ${upper}`, glyph: "IconTrash", onPress: () => trash("left", upper) },
+      { label: `${t("nav.trash")} · ${lower}`, glyph: "IconTrash", onPress: () => trash("right", lower) },
+      { label: t("action.delete"), glyph: "IconTrash", onPress: () => remove(job) },
+    ];
+  };
 
   const findings = waiting.findings ?? [];
   const conflicted = waiting.conflicted ?? [];
@@ -183,57 +260,99 @@ export function Jobs() {
       : []),
   ];
 
+  const compact = jobView === "compact";
+
+  const renderJob = ({ item, index }: { item: Job; index: number }) => {
+    const waits = {
+      held: findings.some((f) => f.held && f.job === item.name),
+      noted: findings.some((f) => !f.held && f.job === item.name),
+      conflict: conflicted.includes(item.name),
+      onConflict: () => nav.getParent()?.navigate("ConflictsTab"),
+    };
+    const common = {
+      job: item,
+      index,
+      busy: busy === item.name,
+      progress: progress[item.name],
+      onOpen: () => nav.navigate("JobDetail", { name: item.name }),
+      onAct: () => act(item),
+      moving: moving(item.name),
+      ...waits,
+    };
+    return (
+      <Animated.View style={drag.style(item.name)}>
+        {compact ? (
+          <JobRow
+            {...common}
+            onNote={() => nav.navigate("Anomalies", { job: item.name })}
+            menu={[
+              {
+                label: item.disabled ? t("jobs.resume") : t("jobs.pause"),
+                glyph: item.disabled ? "IconPlay" : "IconPause",
+                onPress: () => void hold(item),
+              },
+              ...menuFor(item),
+            ]}
+          />
+        ) : (
+          <JobCard
+            {...common}
+            finding={groupFindings(findings.filter((f) => f.job === item.name))[0]?.findings[0]}
+            onFinding={() => nav.navigate("Anomalies", { job: item.name })}
+            holding={holding === item.name}
+            onHold={() => hold(item)}
+            menu={menuFor(item)}
+            // Either side can be the target; the right is the usual one.
+            mark={markForSide(item.right, remotes) ?? markForSide(item.left, remotes)}
+            leftMark={sideMark(item.left, remotes)}
+            rightMark={sideMark(item.right, remotes)}
+          />
+        )}
+      </Animated.View>
+    );
+  };
+
   return (
     <Floating>
-      <MovingList
-      style={{ backgroundColor: p.background }}
-      data={jobs}
-      keyExtractor={(j) => j.name}
-      contentContainerStyle={styles.list}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={() => {
-            void load();
-            refresh();
-          }}
-          tintColor={accent}
-        />
-      }
-      ListEmptyComponent={<Empty title={t("jobs.none")} />}
-      ListFooterComponent={error ? <Caption>{error}</Caption> : null}
-      renderItem={({ item, index }) => (
-        <JobCard
-          job={item}
-          index={index}
-          busy={busy === item.name}
-          progress={progress[item.name]}
-          finding={groupFindings(findings.filter((f) => f.job === item.name))[0]?.findings[0]}
-          onFinding={() => nav.navigate("Anomalies", { job: item.name })}
-          held={findings.some((f) => f.held && f.job === item.name)}
-          noted={findings.some((f) => !f.held && f.job === item.name)}
-          conflict={conflicted.includes(item.name)}
-          onConflict={() => nav.getParent()?.navigate("ConflictsTab")}
-          onOpen={() => nav.navigate("JobDetail", { name: item.name })}
-          onAct={() => act(item)}
-          holding={holding === item.name}
-          onHold={() => hold(item)}
-          // Opening and editing reach the same screen but stay two menu rows,
-          // so somebody looking for "edit" finds it.
-          onEdit={() => nav.navigate("JobEdit", { name: item.name })}
-          onDuplicate={() => duplicate(item)}
-          onPreview={() => nav.navigate("Plan", { name: item.name })}
-          // The findings need room, which the job's own screen has.
-          onCheck={() => nav.navigate("JobDetail", { name: item.name, check: true })}
-          onTrash={(side, place) => nav.navigate("Trash", { name: item.name, side, place })}
-          onRemove={() => remove(item)}
-          // Either side can be the target; the right is the usual one.
-          mark={markForSide(item.right, remotes) ?? markForSide(item.left, remotes)}
-          leftMark={sideMark(item.left, remotes)}
-          rightMark={sideMark(item.right, remotes)}
-        />
-      )}
-      />
+      {/* Takes the finger over from a card once it is lifted. */}
+      <View style={styles.fill} {...drag.catcher}>
+        <MoveScope cells={drag.cells}>
+          <MovingList
+            style={{ backgroundColor: p.background }}
+            data={shown}
+            keyExtractor={(j) => j.name}
+            CellRendererComponent={MovingCell}
+            scrollEnabled={drag.held === null}
+            contentContainerStyle={[styles.list, compact && styles.compactList]}
+            ListHeaderComponent={
+              jobs.length > 0 ? (
+                <Choice<JobView>
+                  hue={0}
+                  value={jobView}
+                  onChange={(next) => setAppearance({ jobView: next })}
+                  options={[
+                    { value: "cards", label: t("jobs.view.cards") },
+                    { value: "compact", label: t("jobs.view.compact") },
+                  ]}
+                />
+              ) : null
+            }
+            refreshControl={
+              <RefreshControl
+                refreshing={false}
+                onRefresh={() => {
+                  void load();
+                  refresh();
+                }}
+                tintColor={accent}
+              />
+            }
+            ListEmptyComponent={<Empty title={t("jobs.none")} />}
+            ListFooterComponent={error ? <Caption>{error}</Caption> : null}
+            renderItem={renderJob}
+          />
+        </MoveScope>
+      </View>
       {/* The screen's rarer actions, quiet beside the one accent. */}
       {more.length > 0 ? (
         <View style={styles.moreSlot}>
@@ -260,15 +379,11 @@ function JobCard({
   onAct,
   holding,
   onHold,
-  onEdit,
-  onDuplicate,
-  onPreview,
-  onCheck,
-  onTrash,
-  onRemove,
+  menu,
   mark,
   leftMark,
   rightMark,
+  moving,
 }: {
   job: Job;
   index: number;
@@ -290,44 +405,22 @@ function JobCard({
   /** Whether the hold is being written right now. */
   holding: boolean;
   onHold: () => void;
-  onEdit: () => void;
-  onDuplicate: () => void;
-  onPreview: () => void;
-  onCheck: () => void;
-  /** Opens one side's trash; `place` is the side's name, for the title. */
-  onTrash: (side: "left" | "right", place: string) => void;
-  onRemove: () => void;
+  menu: CardAction[];
   /** The target's logo, if the engine could name its product. */
   mark?: string;
   /** The mark in front of each side; see sideMark. */
   leftMark?: string;
   rightMark?: string;
+  moving: Moving;
 }) {
   const { t } = useT();
   const hue = useHue(index);
   const { p } = useTheme();
-  const [upper, lower] = sidePair(job.left, job.right, t);
   return (
-    <Card onPress={onOpen} hue={hue}>
+    <Card onPress={onOpen} hue={hue} {...moving}>
       <CardHead mark={mark} title={job.name}>
         <View style={styles.menuSlot}>
-          {/* Everything the job screen offers besides Run now and the hold,
-              so nothing needs the job opened first. */}
-          <CardMenu
-            items={[
-              // Open is listed although tapping the card does the same, so it
-              // can be found.
-              { label: t("action.open"), glyph: "IconSync", onPress: onOpen },
-              { label: t("action.edit"), glyph: "IconPencil", onPress: onEdit },
-              // The copy starts held; see jobCopy.data.ts.
-              { label: t("edit.duplicate"), glyph: "IconCopy", onPress: onDuplicate },
-              { label: t("jobs.preview"), glyph: "IconPreview", onPress: onPreview },
-              { label: t("jobs.check"), glyph: "IconCheck", onPress: onCheck },
-              { label: `${t("nav.trash")} · ${upper}`, glyph: "IconTrash", onPress: () => onTrash("left", upper) },
-              { label: `${t("nav.trash")} · ${lower}`, glyph: "IconTrash", onPress: () => onTrash("right", lower) },
-              { label: t("action.delete"), glyph: "IconTrash", onPress: onRemove },
-            ]}
-          />
+          <CardMenu items={menu} />
         </View>
       </CardHead>
 
@@ -384,6 +477,87 @@ function JobCard({
           onPress={onAct}
         />
       </View>
+    </Card>
+  );
+}
+
+/** What lets a card or a row be lifted and carried, or moved by TalkBack. */
+type Moving = {
+  onLongPress: (e: GestureResponderEvent) => void;
+  onRelease: () => void;
+  accessibilityHint: string;
+  accessibilityActions: { name: string; label: string }[];
+  onAccessibilityAction: (e: AccessibilityActionEvent) => void;
+};
+
+/**
+ * One job on one row: its colour, its name over its status and last run, and
+ * More beside Run now. The hold moves into More. A tap opens the job, as on
+ * the card.
+ */
+function JobRow({
+  job,
+  index,
+  progress,
+  held,
+  noted,
+  conflict,
+  onConflict,
+  onNote,
+  busy,
+  onOpen,
+  onAct,
+  menu,
+  moving,
+}: {
+  job: Job;
+  index: number;
+  progress?: Progress;
+  held: boolean;
+  noted: boolean;
+  conflict: boolean;
+  onConflict: () => void;
+  onNote: () => void;
+  busy: boolean;
+  onOpen: () => void;
+  onAct: () => void;
+  menu: CardAction[];
+  moving: Moving;
+}) {
+  const { t, lang } = useT();
+  const { p } = useTheme();
+  const hue = useHue(index);
+  const last = job.recent[0];
+  // The status of a job that ran fine is already the time of that run.
+  const quiet = jobStatus(job, { held, conflict, notes: noted }) === "last";
+  return (
+    <Card onPress={onOpen} hue={hue} style={styles.row} {...moving}>
+      <View style={[styles.mark, { backgroundColor: hue }]} />
+      <View style={styles.rowText}>
+        <Text style={[styles.rowName, { color: p.text }]} numberOfLines={1}>
+          {job.name}
+        </Text>
+        <View style={styles.rowStatus}>
+          <JobStatus
+            job={job}
+            held={held}
+            noted={noted}
+            conflict={conflict}
+            onConflict={onConflict}
+            onNote={onNote}
+            progress={progress}
+            hue={hue}
+          />
+          {last && !quiet ? <Caption>{t("jobs.lastRun", { when: clock(last.Finished, lang) })}</Caption> : null}
+        </View>
+      </View>
+      <CardMenu items={menu} />
+      <Button
+        label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
+        labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
+        busy={busy}
+        onPress={onAct}
+      />
     </Card>
   );
 }
@@ -463,7 +637,14 @@ export function arrow(direction: string): string {
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   menuSlot: { marginStart: "auto" },
+  compactList: { gap: space.sm },
+  row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
+  mark: { width: 6, alignSelf: "stretch", minHeight: 24, borderRadius: 3 },
+  rowText: { flex: 1, minWidth: 0, gap: space.xs },
+  rowName: { fontSize: text.body, fontWeight: "600" },
+  rowStatus: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
   findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },

@@ -1343,6 +1343,9 @@ const ar: Translations = {
   'jobs.move': 'نقل {job}',
   'jobs.moveHint': 'اسحبها إلى مكان آخر، أو اضغط Alt ومفتاح سهم.',
   'jobs.moved': 'نُقلت {job} إلى الموضع {place}',
+  'jobs.holdToMove': 'اضغط عليها مطولًا واسحبها إلى مكان آخر.',
+  'jobs.moveUp': 'نقل لأعلى',
+  'jobs.moveDown': 'نقل لأسفل',
   'new.change.jobOrder': 'يمكنك ترتيب المهام كما تريد: اسحب مهمة من مقبضها، أو اضغط Alt ومفتاح سهم عليها. على الهاتف اضغط مطولًا على مهمة واسحبها. تعرض {history} و{trash} و{conflicts} المهام بالترتيب نفسه.',
   'new.change.jobsCompact': 'يعرض {compact} في أعلى قائمة المهام كل مهمة في سطر واحد، مع حالتها وآخر تشغيل لها و{runNow} و{more}. يتذكر هذا الجهاز اختيارك.',
 }

@@ -1343,6 +1343,9 @@ const ko: Translations = {
   'jobs.move': '{job} 옮기기',
   'jobs.moveHint': '다른 곳으로 끌거나 Alt와 화살표 키를 누르세요.',
   'jobs.moved': '{job}을(를) {place}번째 자리로 옮겼습니다',
+  'jobs.holdToMove': '길게 누른 채 다른 곳으로 끄세요.',
+  'jobs.moveUp': '위로 이동',
+  'jobs.moveDown': '아래로 이동',
   'new.change.jobOrder': '작업을 원하는 순서로 놓을 수 있습니다. 손잡이를 잡고 작업을 끌거나, 작업에서 Alt와 화살표 키를 누르세요. 휴대폰에서는 작업을 길게 누른 채 끄세요. {history}, {trash}, {conflicts}도 같은 순서로 작업을 보여 줍니다.',
   'new.change.jobsCompact': '작업 목록 위의 {compact}은(는) 작업마다 한 줄로 상태, 마지막 실행, {runNow}, {more}를 보여 줍니다. 이 기기가 선택을 기억합니다.',
 }

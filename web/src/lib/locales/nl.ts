@@ -1343,6 +1343,9 @@ const nl: Translations = {
   'jobs.move': '{job} verplaatsen',
   'jobs.moveHint': 'Sleep hem naar een andere plek, of druk op Alt en een pijltjestoets.',
   'jobs.moved': '{job} verplaatst naar plek {place}',
+  'jobs.holdToMove': 'Houd hem vast en sleep hem naar een andere plek.',
+  'jobs.moveUp': 'Omhoog',
+  'jobs.moveDown': 'Omlaag',
   'new.change.jobOrder': 'Je kunt de taken in je eigen volgorde zetten: sleep een taak aan zijn greep, of druk erop op Alt en een pijltjestoets. Op de telefoon houd je een taak vast en sleep je hem. {history}, {trash} en {conflicts} tonen de taken in dezelfde volgorde.',
   'new.change.jobsCompact': '{compact} boven de takenlijst toont elke taak op één regel: status, laatste run, {runNow} en {more}. Dit apparaat onthoudt je keuze.',
 }

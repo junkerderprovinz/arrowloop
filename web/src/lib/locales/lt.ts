@@ -1343,6 +1343,9 @@ const lt: Translations = {
   'jobs.move': 'Perkelti {job}',
   'jobs.moveHint': 'Nuvilkite ją į kitą vietą arba paspauskite Alt ir rodyklės klavišą.',
   'jobs.moved': '{job} perkelta į vietą {place}',
+  'jobs.holdToMove': 'Palaikykite ją ir nuvilkite į kitą vietą.',
+  'jobs.moveUp': 'Perkelti aukštyn',
+  'jobs.moveDown': 'Perkelti žemyn',
   'new.change.jobOrder': 'Užduotis galite išdėstyti savo tvarka: vilkite užduotį už rankenėlės arba ant jos paspauskite Alt ir rodyklės klavišą. Telefone palaikykite užduotį ir vilkite. {history}, {trash} ir {conflicts} rodo užduotis ta pačia tvarka.',
   'new.change.jobsCompact': '{compact} užduočių sąrašo viršuje rodo kiekvieną užduotį vienoje eilutėje: būseną, paskutinį paleidimą, {runNow} ir {more}. Šis įrenginys įsimena jūsų pasirinkimą.',
 }

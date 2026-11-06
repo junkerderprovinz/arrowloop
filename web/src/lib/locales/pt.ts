@@ -1343,6 +1343,9 @@ const pt: Translations = {
   'jobs.move': 'Mover {job}',
   'jobs.moveHint': 'Arraste-a para outro sítio, ou prima Alt e uma seta.',
   'jobs.moved': '{job} movida para a posição {place}',
+  'jobs.holdToMove': 'Mantenha-a premida e arraste-a para outro sítio.',
+  'jobs.moveUp': 'Subir',
+  'jobs.moveDown': 'Descer',
   'new.change.jobOrder': 'Pode pôr as tarefas pela sua própria ordem: arraste uma tarefa pela pega, ou prima Alt e uma seta sobre ela. No telemóvel, mantenha uma tarefa premida e arraste-a. {history}, {trash} e {conflicts} mostram as tarefas pela mesma ordem.',
   'new.change.jobsCompact': '{compact}, no topo da lista de tarefas, mostra cada tarefa numa linha, com o estado, a última execução, {runNow} e {more}. Este dispositivo lembra-se da sua escolha.',
 }

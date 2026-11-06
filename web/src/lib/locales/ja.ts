@@ -1343,6 +1343,9 @@ const ja: Translations = {
   'jobs.move': '{job} を移動',
   'jobs.moveHint': '別の場所へドラッグするか、Alt と矢印キーを押します。',
   'jobs.moved': '{job} を位置 {place} に移動しました',
+  'jobs.holdToMove': '長押しして別の場所へドラッグします。',
+  'jobs.moveUp': '上へ移動',
+  'jobs.moveDown': '下へ移動',
   'new.change.jobOrder': 'ジョブを好きな順序に並べられます。ハンドルをつかんでドラッグするか、ジョブ上で Alt と矢印キーを押します。スマートフォンではジョブを長押ししてドラッグします。{history}、{trash}、{conflicts} も同じ順序でジョブを表示します。',
   'new.change.jobsCompact': 'ジョブ一覧の上にある {compact} では、各ジョブを 1 行で表示します。状態、最後の実行、{runNow}、{more} が並びます。選択はこのデバイスが覚えます。',
 }

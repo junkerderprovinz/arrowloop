@@ -1343,6 +1343,9 @@ const id: Translations = {
   'jobs.move': 'Pindahkan {job}',
   'jobs.moveHint': 'Seret ke tempat lain, atau tekan Alt dan tombol panah.',
   'jobs.moved': '{job} dipindah ke posisi {place}',
+  'jobs.holdToMove': 'Tahan lalu seret ke tempat lain.',
+  'jobs.moveUp': 'Pindah ke atas',
+  'jobs.moveDown': 'Pindah ke bawah',
   'new.change.jobOrder': 'Anda bisa menyusun tugas dalam urutan sendiri: seret tugas lewat pegangannya, atau tekan Alt dan tombol panah padanya. Di ponsel, tahan tugas lalu seret. {history}, {trash}, dan {conflicts} menampilkan tugas dalam urutan yang sama.',
   'new.change.jobsCompact': '{compact} di atas daftar tugas menampilkan setiap tugas dalam satu baris: status, eksekusi terakhir, {runNow}, dan {more}. Perangkat ini mengingat pilihan Anda.',
 }

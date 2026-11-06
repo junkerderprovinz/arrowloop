@@ -488,6 +488,9 @@ export const api = {
   config: () => call<Config>("/api/config"),
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
+  /** Puts the jobs in this order and keeps it, for a job somebody moved. */
+  orderJobs: (names: string[]) =>
+    call<{ jobs: number }>("/api/jobs/order", { method: "PUT", body: JSON.stringify({ jobs: names }) }),
 
   storage: () => call<Storage>("/api/remotes"),
   /**

@@ -1343,6 +1343,9 @@ const ms: Translations = {
   'jobs.move': 'Alihkan {job}',
   'jobs.moveHint': 'Seret ke tempat lain, atau tekan Alt dan kekunci anak panah.',
   'jobs.moved': '{job} dialihkan ke kedudukan {place}',
+  'jobs.holdToMove': 'Tahan, kemudian seret ke tempat lain.',
+  'jobs.moveUp': 'Alih ke atas',
+  'jobs.moveDown': 'Alih ke bawah',
   'new.change.jobOrder': 'Anda boleh menyusun tugas mengikut susunan sendiri: seret tugas melalui pemegangnya, atau tekan Alt dan kekunci anak panah padanya. Pada telefon, tahan tugas lalu seret. {history}, {trash} dan {conflicts} memaparkan tugas dalam susunan yang sama.',
   'new.change.jobsCompact': '{compact} di atas senarai tugas memaparkan setiap tugas dalam satu baris: status, larian terakhir, {runNow} dan {more}. Peranti ini mengingati pilihan anda.',
 }

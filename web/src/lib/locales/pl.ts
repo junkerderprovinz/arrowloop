@@ -1343,6 +1343,9 @@ const pl: Translations = {
   'jobs.move': 'Przenieś {job}',
   'jobs.moveHint': 'Przeciągnij je w inne miejsce albo naciśnij Alt i strzałkę.',
   'jobs.moved': '{job} przeniesiono na miejsce {place}',
+  'jobs.holdToMove': 'Przytrzymaj je i przeciągnij w inne miejsce.',
+  'jobs.moveUp': 'Przenieś wyżej',
+  'jobs.moveDown': 'Przenieś niżej',
   'new.change.jobOrder': 'Możesz ułożyć zadania we własnej kolejności: przeciągnij zadanie za uchwyt albo naciśnij na nim Alt i strzałkę. Na telefonie przytrzymaj zadanie i przeciągnij je. {history}, {trash} i {conflicts} pokazują zadania w tej samej kolejności.',
   'new.change.jobsCompact': '{compact} u góry listy zadań pokazuje każde zadanie w jednym wierszu: stan, ostatnie uruchomienie, {runNow} i {more}. To urządzenie zapamiętuje twój wybór.',
 }

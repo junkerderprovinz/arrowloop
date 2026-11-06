@@ -1343,6 +1343,9 @@ const eu: Translations = {
   'jobs.move': 'Mugitu {job}',
   'jobs.moveHint': 'Arrastatu beste leku batera, edo sakatu Alt eta gezi-tekla bat.',
   'jobs.moved': '{job} lekuz aldatu da, toki honetara: {place}',
+  'jobs.holdToMove': 'Eduki sakatuta eta arrastatu beste leku batera.',
+  'jobs.moveUp': 'Igo',
+  'jobs.moveDown': 'Jaitsi',
   'new.change.jobOrder': 'Lanak zure ordenan jar ditzakezu: arrastatu lan bat bere heldulekutik, edo sakatu Alt eta gezi-tekla bat haren gainean. Telefonoan, eduki sakatuta lan bat eta arrastatu. {history}, {trash} eta {conflicts} atalek ordena berean erakusten dituzte lanak.',
   'new.change.jobsCompact': 'Lanen zerrendaren goiko {compact} aukerak lan bakoitza errenkada batean erakusten du: egoera, azken exekuzioa, {runNow} eta {more}. Gailu honek zure aukera gogoratzen du.',
 }

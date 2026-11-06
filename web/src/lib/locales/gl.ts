@@ -1343,6 +1343,9 @@ const gl: Translations = {
   'jobs.move': 'Mover {job}',
   'jobs.moveHint': 'Arrástraa a outro sitio, ou preme Alt e unha frecha.',
   'jobs.moved': '{job} movida á posición {place}',
+  'jobs.holdToMove': 'Mantena premida e arrástraa a outro sitio.',
+  'jobs.moveUp': 'Subir',
+  'jobs.moveDown': 'Baixar',
   'new.change.jobOrder': 'Podes poñer as tarefas na túa propia orde: arrastra unha pola súa asa, ou preme Alt e unha frecha sobre ela. No teléfono, mantén premida unha tarefa e arrástraa. {history}, {trash} e {conflicts} mostran as tarefas na mesma orde.',
   'new.change.jobsCompact': '{compact}, arriba na lista de tarefas, mostra cada tarefa nunha fila, co seu estado, a última execución, {runNow} e {more}. Este dispositivo lembra a túa escolla.',
 }

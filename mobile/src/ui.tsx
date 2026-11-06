@@ -17,6 +17,7 @@ import {
   View,
   type DimensionValue,
   type FlatListProps,
+  type GestureResponderEvent,
   type LayoutChangeEvent,
   type PressableProps,
   type NativeScrollEvent,
@@ -296,14 +297,21 @@ export function Screen({ children }: { children: ReactNode }) {
 export function Card({
   children,
   onPress,
+  onLongPress,
+  onRelease,
   style,
   hue,
+  ...a11y
 }: {
   children: ReactNode;
   onPress?: () => void;
+  /** A long press, which lifts a card that can be moved, never a menu. */
+  onLongPress?: (e: GestureResponderEvent) => void;
+  /** The finger leaving the card, whatever the press turned out to be. */
+  onRelease?: () => void;
   style?: StyleProp<ViewStyle>;
   hue?: string;
-}) {
+} & Pick<PressableProps, "accessibilityHint" | "accessibilityActions" | "onAccessibilityAction">) {
   const { p, corners } = useTheme();
   const arrival = useArrival();
   const press = usePress();
@@ -324,9 +332,21 @@ export function Card({
       ]}
     >
       <Pressable
+        {...a11y}
         onPress={onPress}
         onPressIn={press.onPressIn}
-        onPressOut={press.onPressOut}
+        onPressOut={() => {
+          press.onPressOut();
+          onRelease?.();
+        }}
+        // A lifted card is carried, not pressed, so it stops looking held.
+        onLongPress={
+          onLongPress &&
+          ((e) => {
+            press.onPressOut();
+            onLongPress(e);
+          })
+        }
         android_ripple={{ color: p.hover }}
         style={corners.card}
       >
