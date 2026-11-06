@@ -10,41 +10,45 @@ run or schedule, and are desktop programs first.
 devices in real time, with nothing to review before it happens.
 [Unison](https://github.com/bcpierce00/unison) and
 [rclone bisync](https://rclone.org/bisync/) are two-way sync for the command
-line. ArrowLoop takes GoodSync's way of working and rclone's reach, runs as a
-container or a desktop app, and keeps a record of what both sides last agreed
-on.
+line. [FolderSync](https://foldersync.io) is a sync app for Android that also
+comes as a desktop program, and
+[luckyBackup](https://luckybackup.sourceforge.net) is an rsync front end for
+backups on Linux. ArrowLoop takes GoodSync's way of working and rclone's reach,
+runs as a container or a desktop app, and keeps a record of what both sides
+last agreed on.
 
-| | **ArrowLoop** | GoodSync | FreeFileSync | Syncthing | Resilio | bisync | Unison | Syncovery | SyncBack |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Every change shown before the run, single ones can be dropped | ✅ | ✅ | ✅ | ❌ | ❓ | ❌ | ✅ | ✅ | ✅ |
-| Brake on a run that deletes too much | ✅ | ⚠️ | ⚠️ | ❌ | ❓ | ✅ | ⚠️ | ✅ | ⚠️ |
-| An empty or unmounted side is refused | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ |
-| Deletions go to a trash by default | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ |
-| An edit on both sides keeps both versions by itself | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ❌ |
-| Cloud and server targets without a mount | ✅ | ✅ | ⚠️ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ✅ |
-| Encryption at the destination | ✅ | ⚠️ | ❌ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ✅ |
-| Sends only the changed part of a file | ❌ | ⚠️ | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ |
-| Copies files another program holds open | ⚠️ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Built-in schedule | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ |
-| Real-time watching | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ |
-| Scripts before and after a run | ✅ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ |
-| Notification when a run fails | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | ❌ | ❌ | ✅ | ✅ |
-| Device to device over the internet, no port forwarding | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Official container image | ✅ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ❌ | ❌ | ❌ |
-| Web interface | ✅ | ⚠️ | ❌ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ | ❌ |
-| Desktop app | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ✅ |
-| Windows, macOS and Linux | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| Android | ✅ | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ |
-| iOS | ❌ | ✅ | ❌ | ⚠️ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| No account and no vendor relay | ✅ | ❌ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ |
-| Open source | ✅ | ❌ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| Free, with every feature | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ⚠️ |
-| Past 1.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| | **ArrowLoop** | GoodSync | FreeFileSync | Syncthing | Resilio | bisync | Unison | Syncovery | SyncBack | FolderSync | luckyBackup |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Every change shown before the run, single ones can be dropped | ✅ | ✅ | ✅ | ❌ | ❓ | ❌ | ✅ | ✅ | ✅ | ⚠️ | ❌ |
+| Brake on a run that deletes too much | ✅ | ⚠️ | ⚠️ | ❌ | ❓ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ❌ |
+| An empty or unmounted side is refused | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
+| Deletions go to a trash by default | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| An edit on both sides keeps both versions by itself | ✅ | ⚠️ | ⚠️ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ❌ | ❌ | ❌ |
+| Cloud and server targets without a mount | ✅ | ✅ | ⚠️ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ⚠️ |
+| Encryption at the destination | ✅ | ⚠️ | ❌ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ | ❌ |
+| Sends only the changed part of a file | ❌ | ⚠️ | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ | ❓ | ✅ |
+| Copies files another program holds open | ⚠️ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❓ |
+| Built-in schedule | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ | ⚠️ | ✅ |
+| Real-time watching | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ | ⚠️ | ❌ |
+| Scripts before and after a run | ✅ | ✅ | ⚠️ | ❌ | ❓ | ❌ | ❌ | ✅ | ✅ | ⚠️ | ✅ |
+| Notification when a run fails | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Device to device over the internet, no port forwarding | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Official container image | ✅ | ❌ | ❌ | ✅ | ⚠️ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Web interface | ✅ | ⚠️ | ❌ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ | ❌ | ❌ | ❌ |
+| Desktop app | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Windows, macOS and Linux | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ⚠️ |
+| Android | ✅ | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ❌ | ❌ | ⚠️ | ✅ | ❌ |
+| iOS | ❌ | ✅ | ❌ | ⚠️ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| No account and no vendor relay | ✅ | ❌ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Open source | ✅ | ❌ | ⚠️ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| Free, with every feature | ✅ | ❌ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ❌ | ⚠️ | ⚠️ | ✅ |
+| Past 1.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 
 ✅ yes · ⚠️ with a catch: off by default, a paid edition, one platform only or a
 community build · ❌ no · ❓ undocumented.
 
-Checked against each project's own documentation in September 2026.
+Checked against each project's own documentation in September 2026,
+FolderSync and luckyBackup in November 2026.
 
 ArrowLoop has no relay of its own. To sync between two places over the
 internet, put both machines in one private network, as
