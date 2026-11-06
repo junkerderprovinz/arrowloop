@@ -1338,6 +1338,13 @@ const ca: Translations = {
   'entry.fileVanished': 'El fitxer ha desaparegut abans de copiar-lo',
   'entry.fileVanishedLocal': 'El fitxer ha desaparegut localment abans de copiar-lo',
   'entry.fileVanishedIn': 'El fitxer ha desaparegut a {place} abans de copiar-lo',
+  'jobs.view.cards': 'Targetes',
+  'jobs.view.compact': 'Compacta',
+  'jobs.move': 'Mou {job}',
+  'jobs.moveHint': 'Arrossega-la a un altre lloc, o prem Alt i una tecla de fletxa.',
+  'jobs.moved': '{job} s\'ha mogut a la posició {place}',
+  'new.change.jobOrder': 'Pots posar les tasques en el teu propi ordre: arrossega\'n una per la nansa, o prem Alt i una tecla de fletxa a sobre. Al telèfon, mantén premuda una tasca i arrossega-la. {history}, {trash} i {conflicts} mostren les tasques en el mateix ordre.',
+  'new.change.jobsCompact': '{compact}, a dalt de la llista de tasques, mostra cada tasca en una fila, amb el seu estat, l\'última execució, {runNow} i {more}. Aquest dispositiu recorda la teva tria.',
 }
 
 export default ca

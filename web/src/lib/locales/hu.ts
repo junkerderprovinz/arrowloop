@@ -1338,6 +1338,13 @@ const hu: Translations = {
   'entry.fileVanished': 'A fájl a másolás előtt eltűnt',
   'entry.fileVanishedLocal': 'A fájl helyben eltűnt a másolás előtt',
   'entry.fileVanishedIn': 'A fájl a másolás előtt eltűnt itt: {place}',
+  'jobs.view.cards': 'Kártyák',
+  'jobs.view.compact': 'Tömör',
+  'jobs.move': '{job} áthelyezése',
+  'jobs.moveHint': 'Húzd máshová, vagy nyomd meg az Altot és egy nyílbillentyűt.',
+  'jobs.moved': '{job} áthelyezve, új helye: {place}',
+  'new.change.jobOrder': 'A feladatokat saját sorrendbe rakhatod: húzz egy feladatot a fogantyújánál, vagy nyomd meg rajta az Altot és egy nyílbillentyűt. A telefonon tarts lenyomva egy feladatot, és húzd el. A(z) {history}, {trash} és {conflicts} ugyanebben a sorrendben mutatja a feladatokat.',
+  'new.change.jobsCompact': 'A feladatlista tetején a(z) {compact} nézet minden feladatot egy sorban mutat: állapot, utolsó futás, {runNow} és {more}. Ez az eszköz megjegyzi a választásodat.',
 }
 
 export default hu

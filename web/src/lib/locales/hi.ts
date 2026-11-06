@@ -1338,6 +1338,13 @@ const hi: Translations = {
   'entry.fileVanished': 'कॉपी होने से पहले फ़ाइल गायब हो गई',
   'entry.fileVanishedLocal': 'कॉपी होने से पहले फ़ाइल स्थानीय रूप से गायब हो गई',
   'entry.fileVanishedIn': 'कॉपी होने से पहले फ़ाइल {place} में गायब हो गई',
+  'jobs.view.cards': 'कार्ड',
+  'jobs.view.compact': 'संक्षिप्त',
+  'jobs.move': '{job} को खिसकाएँ',
+  'jobs.moveHint': 'इसे किसी दूसरी जगह खींचें, या Alt और एक तीर कुंजी दबाएँ।',
+  'jobs.moved': '{job} को स्थान {place} पर ले जाया गया',
+  'new.change.jobOrder': 'आप कामों को अपने क्रम में रख सकते हैं: किसी काम को उसके हैंडल से खींचें, या उस पर Alt और एक तीर कुंजी दबाएँ। फ़ोन पर किसी काम को दबाकर रखें और खींचें। {history}, {trash} और {conflicts} कामों को इसी क्रम में दिखाते हैं।',
+  'new.change.jobsCompact': 'कामों की सूची के ऊपर {compact} हर काम को एक पंक्ति में दिखाता है: स्थिति, आखिरी रन, {runNow} और {more}। यह डिवाइस आपकी पसंद याद रखता है।',
 }
 
 export default hi

@@ -1338,6 +1338,13 @@ const pl: Translations = {
   'entry.fileVanished': 'Plik zniknął przed skopiowaniem',
   'entry.fileVanishedLocal': 'Plik zniknął lokalnie przed skopiowaniem',
   'entry.fileVanishedIn': 'Plik zniknął w {place} przed skopiowaniem',
+  'jobs.view.cards': 'Karty',
+  'jobs.view.compact': 'Zwięźle',
+  'jobs.move': 'Przenieś {job}',
+  'jobs.moveHint': 'Przeciągnij je w inne miejsce albo naciśnij Alt i strzałkę.',
+  'jobs.moved': '{job} przeniesiono na miejsce {place}',
+  'new.change.jobOrder': 'Możesz ułożyć zadania we własnej kolejności: przeciągnij zadanie za uchwyt albo naciśnij na nim Alt i strzałkę. Na telefonie przytrzymaj zadanie i przeciągnij je. {history}, {trash} i {conflicts} pokazują zadania w tej samej kolejności.',
+  'new.change.jobsCompact': '{compact} u góry listy zadań pokazuje każde zadanie w jednym wierszu: stan, ostatnie uruchomienie, {runNow} i {more}. To urządzenie zapamiętuje twój wybór.',
 }
 
 export default pl

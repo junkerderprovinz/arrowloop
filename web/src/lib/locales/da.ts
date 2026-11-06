@@ -1338,6 +1338,13 @@ const da: Translations = {
   'entry.fileVanished': 'Filen forsvandt før kopieringen',
   'entry.fileVanishedLocal': 'Filen forsvandt lokalt før kopieringen',
   'entry.fileVanishedIn': 'Filen forsvandt i {place} før kopieringen',
+  'jobs.view.cards': 'Kort',
+  'jobs.view.compact': 'Kompakt',
+  'jobs.move': 'Flyt {job}',
+  'jobs.moveHint': 'Træk det til et andet sted, eller tryk Alt og en piletast.',
+  'jobs.moved': '{job} flyttet til plads {place}',
+  'new.change.jobOrder': 'Du kan sætte dine job i din egen rækkefølge: træk et job i dets håndtag, eller tryk Alt og en piletast på det. På telefonen holder du et job nede og trækker det. {history}, {trash} og {conflicts} viser jobbene i samme rækkefølge.',
+  'new.change.jobsCompact': '{compact} øverst i joblisten viser hvert job på én linje, med status, seneste kørsel, {runNow} og {more}. Denne enhed husker dit valg.',
 }
 
 export default da

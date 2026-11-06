@@ -1338,6 +1338,13 @@ const vi: Translations = {
   'entry.fileVanished': 'Tệp biến mất trước khi được sao chép',
   'entry.fileVanishedLocal': 'Tệp biến mất trên máy trước khi được sao chép',
   'entry.fileVanishedIn': 'Tệp trong {place} biến mất trước khi được sao chép',
+  'jobs.view.cards': 'Thẻ',
+  'jobs.view.compact': 'Gọn',
+  'jobs.move': 'Di chuyển {job}',
+  'jobs.moveHint': 'Kéo sang chỗ khác, hoặc nhấn Alt và một phím mũi tên.',
+  'jobs.moved': 'Đã chuyển {job} đến vị trí {place}',
+  'new.change.jobOrder': 'Bạn có thể sắp xếp công việc theo thứ tự của mình: kéo một công việc bằng tay nắm của nó, hoặc nhấn Alt và một phím mũi tên trên đó. Trên điện thoại, nhấn giữ một công việc rồi kéo. {history}, {trash} và {conflicts} hiển thị công việc theo cùng thứ tự.',
+  'new.change.jobsCompact': '{compact} ở đầu danh sách công việc hiển thị mỗi công việc trên một dòng: trạng thái, lần chạy gần nhất, {runNow} và {more}. Thiết bị này ghi nhớ lựa chọn của bạn.',
 }
 
 export default vi

@@ -1338,6 +1338,13 @@ const lv: Translations = {
   'entry.fileVanished': 'Fails pazuda pirms kopēšanas',
   'entry.fileVanishedLocal': 'Fails lokāli pazuda pirms kopēšanas',
   'entry.fileVanishedIn': 'Fails pazuda pirms kopēšanas: {place}',
+  'jobs.view.cards': 'Kartītes',
+  'jobs.view.compact': 'Kompakti',
+  'jobs.move': 'Pārvietot {job}',
+  'jobs.moveHint': 'Velciet to uz citu vietu vai nospiediet Alt un bulttaustiņu.',
+  'jobs.moved': '{job} pārvietots uz vietu {place}',
+  'new.change.jobOrder': 'Uzdevumus varat sakārtot savā secībā: velciet uzdevumu aiz tā roktura vai uz tā nospiediet Alt un bulttaustiņu. Tālrunī turiet uzdevumu nospiestu un velciet. {history}, {trash} un {conflicts} rāda uzdevumus tādā pašā secībā.',
+  'new.change.jobsCompact': '{compact} uzdevumu saraksta augšā rāda katru uzdevumu vienā rindā: stāvokli, pēdējo palaišanu, {runNow} un {more}. Šī ierīce atceras jūsu izvēli.',
 }
 
 export default lv

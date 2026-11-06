@@ -1338,6 +1338,13 @@ const sl: Translations = {
   'entry.fileVanished': 'Datoteka je izginila pred kopiranjem',
   'entry.fileVanishedLocal': 'Datoteka je lokalno izginila pred kopiranjem',
   'entry.fileVanishedIn': 'Datoteka je v {place} izginila pred kopiranjem',
+  'jobs.view.cards': 'Kartice',
+  'jobs.view.compact': 'Strnjeno',
+  'jobs.move': 'Premakni {job}',
+  'jobs.moveHint': 'Povleci ga drugam ali pritisni Alt in puščico.',
+  'jobs.moved': '{job} premaknjeno na mesto {place}',
+  'new.change.jobOrder': 'Opravila lahko razvrstiš po svoje: povleci opravilo za ročaj ali na njem pritisni Alt in puščico. Na telefonu opravilo pridrži in ga povleci. {history}, {trash} in {conflicts} prikazujejo opravila v enakem vrstnem redu.',
+  'new.change.jobsCompact': '{compact} na vrhu seznama opravil prikaže vsako opravilo v eni vrstici: stanje, zadnji zagon, {runNow} in {more}. Ta naprava si zapomni tvojo izbiro.',
 }
 
 export default sl

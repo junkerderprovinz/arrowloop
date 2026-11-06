@@ -1338,6 +1338,13 @@ const hr: Translations = {
   'entry.fileVanished': 'Datoteka je nestala prije kopiranja',
   'entry.fileVanishedLocal': 'Datoteka je lokalno nestala prije kopiranja',
   'entry.fileVanishedIn': 'Datoteka je nestala u {place} prije kopiranja',
+  'jobs.view.cards': 'Kartice',
+  'jobs.view.compact': 'Sažeto',
+  'jobs.move': 'Premjesti {job}',
+  'jobs.moveHint': 'Povuci ga na drugo mjesto ili pritisni Alt i strelicu.',
+  'jobs.moved': '{job} premješten na mjesto {place}',
+  'new.change.jobOrder': 'Zadatke možeš složiti po svom redu: povuci zadatak za njegovu ručku ili na njemu pritisni Alt i strelicu. Na telefonu zadrži zadatak i povuci ga. {history}, {trash} i {conflicts} prikazuju zadatke istim redom.',
+  'new.change.jobsCompact': '{compact} na vrhu popisa zadataka prikazuje svaki zadatak u jednom retku: stanje, zadnje pokretanje, {runNow} i {more}. Ovaj uređaj pamti tvoj izbor.',
 }
 
 export default hr

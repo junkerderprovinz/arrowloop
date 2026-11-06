@@ -1338,6 +1338,13 @@ const he: Translations = {
   'entry.fileVanished': 'הקובץ נעלם לפני שהועתק',
   'entry.fileVanishedLocal': 'הקובץ נעלם מקומית לפני שהועתק',
   'entry.fileVanishedIn': 'הקובץ נעלם ב-{place} לפני שהועתק',
+  'jobs.view.cards': 'כרטיסים',
+  'jobs.view.compact': 'מצומצם',
+  'jobs.move': 'העברת {job}',
+  'jobs.moveHint': 'גררו אותה למקום אחר, או לחצו Alt ומקש חץ.',
+  'jobs.moved': '{job} הועברה למקום {place}',
+  'new.change.jobOrder': 'אפשר לסדר את המשימות בסדר שלכם: גררו משימה בידית שלה, או לחצו עליה Alt ומקש חץ. בטלפון, החזיקו משימה וגררו אותה. {history}, {trash} ו{conflicts} מציגים את המשימות באותו סדר.',
+  'new.change.jobsCompact': '{compact} בראש רשימת המשימות מציג כל משימה בשורה אחת: מצב, הריצה האחרונה, {runNow} ו{more}. המכשיר הזה זוכר את הבחירה שלכם.',
 }
 
 export default he

@@ -1338,6 +1338,13 @@ const ar: Translations = {
   'entry.fileVanished': 'اختفى الملف قبل نسخه',
   'entry.fileVanishedLocal': 'اختفى الملف محليًا قبل نسخه',
   'entry.fileVanishedIn': 'اختفى الملف في {place} قبل نسخه',
+  'jobs.view.cards': 'بطاقات',
+  'jobs.view.compact': 'مضغوط',
+  'jobs.move': 'نقل {job}',
+  'jobs.moveHint': 'اسحبها إلى مكان آخر، أو اضغط Alt ومفتاح سهم.',
+  'jobs.moved': 'نُقلت {job} إلى الموضع {place}',
+  'new.change.jobOrder': 'يمكنك ترتيب المهام كما تريد: اسحب مهمة من مقبضها، أو اضغط Alt ومفتاح سهم عليها. على الهاتف اضغط مطولًا على مهمة واسحبها. تعرض {history} و{trash} و{conflicts} المهام بالترتيب نفسه.',
+  'new.change.jobsCompact': 'يعرض {compact} في أعلى قائمة المهام كل مهمة في سطر واحد، مع حالتها وآخر تشغيل لها و{runNow} و{more}. يتذكر هذا الجهاز اختيارك.',
 }
 
 export default ar

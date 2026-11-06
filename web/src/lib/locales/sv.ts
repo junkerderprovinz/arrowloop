@@ -1338,6 +1338,13 @@ const sv: Translations = {
   'entry.fileVanished': 'Filen försvann innan den kopierades',
   'entry.fileVanishedLocal': 'Filen försvann lokalt innan den kopierades',
   'entry.fileVanishedIn': 'Filen försvann i {place} innan den kopierades',
+  'jobs.view.cards': 'Kort',
+  'jobs.view.compact': 'Kompakt',
+  'jobs.move': 'Flytta {job}',
+  'jobs.moveHint': 'Dra det till ett annat ställe, eller tryck Alt och en piltangent.',
+  'jobs.moved': '{job} flyttat till plats {place}',
+  'new.change.jobOrder': 'Du kan ordna jobben i din egen ordning: dra ett jobb i dess handtag, eller tryck Alt och en piltangent på det. På telefonen håller du in ett jobb och drar det. {history}, {trash} och {conflicts} visar jobben i samma ordning.',
+  'new.change.jobsCompact': '{compact} överst i jobblistan visar varje jobb på en rad: status, senaste körning, {runNow} och {more}. Den här enheten kommer ihåg ditt val.',
 }
 
 export default sv

@@ -20,6 +20,7 @@ const config = vi.fn(() => Promise.resolve({ jobs: pair() }))
 const saveConfig = vi.fn((jobs: RawJob[]) => Promise.resolve({ jobs }))
 const run = vi.fn((name: string) => Promise.resolve({ job: name, status: 'started' }))
 const stopJob = vi.fn((_name: string) => Promise.resolve({ stopped: true }))
+const orderJobs = vi.fn((names: string[]) => Promise.resolve({ jobs: names.length }))
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -30,6 +31,7 @@ vi.mock('../lib/api', () => ({
     remotes: () => Promise.resolve({ remotes: [], backends: [] }),
     run: (name: string) => run(name),
     stopJob: (name: string) => stopJob(name),
+    orderJobs: (names: string[]) => orderJobs(names),
   },
 }))
 
@@ -96,6 +98,7 @@ beforeEach(() => {
   saveConfig.mockReset()
   saveConfig.mockImplementation((jobs: RawJob[]) => Promise.resolve({ jobs }))
   run.mockClear()
+  orderJobs.mockClear()
   opened.mockClear()
   went.mockClear()
 })
@@ -114,11 +117,95 @@ describe('the jobs page', () => {
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
   })
 
-  it('gives every job a card of its own, in name order', async () => {
+  it('gives every job a card of its own, in the order the engine lists them', async () => {
     page()
     const rows = await screen.findAllByTestId('job-row')
     expect(rows.map((r) => r.querySelectorAll('.glim-notch-card').length)).toEqual([1, 1])
-    expect(rows.map((r) => r.querySelector('h2')?.textContent)).toEqual(['music', 'photos'])
+    expect(rows.map((r) => r.querySelector('h2')?.textContent)).toEqual(['photos', 'music'])
+  })
+})
+
+const shownOrder = () => screen.getAllByTestId('job-row').map((r) => r.getAttribute('data-job'))
+
+describe('moving a job', () => {
+  it('takes Alt and an arrow key on its handle, says where it went and writes the whole order', async () => {
+    page()
+    const handle = await screen.findByRole('button', { name: 'Move music' })
+    fireEvent.keyDown(handle, { key: 'ArrowUp', altKey: true })
+    expect(shownOrder()).toEqual(['music', 'photos'])
+    expect(screen.getByText('Moved music to place 1')).toBeTruthy()
+    await waitFor(() => expect(orderJobs).toHaveBeenCalledWith(['music', 'photos']))
+    await waitFor(() => expect(saved).toHaveBeenCalled())
+  })
+
+  it('takes the same keys on the card itself', async () => {
+    page()
+    await screen.findAllByRole('button', { name: 'Pause' })
+    fireEvent.keyDown(screen.getByRole('button', { name: 'photos' }), { key: 'ArrowDown', altKey: true })
+    expect(shownOrder()).toEqual(['music', 'photos'])
+  })
+
+  it('writes nothing for a move past either end', async () => {
+    page()
+    fireEvent.keyDown(await screen.findByRole('button', { name: 'Move photos' }), { key: 'ArrowUp', altKey: true })
+    expect(orderJobs).not.toHaveBeenCalled()
+    expect(shownOrder()).toEqual(['photos', 'music'])
+  })
+
+  it('puts the jobs back when the engine refuses the order', async () => {
+    orderJobs.mockImplementationOnce(() => Promise.reject(new Error('the file is read-only')))
+    page()
+    fireEvent.keyDown(await screen.findByRole('button', { name: 'Move music' }), { key: 'ArrowUp', altKey: true })
+    await waitFor(() => expect(shownOrder()).toEqual(['photos', 'music']))
+  })
+
+  it('does not open the job from its handle', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Move music' }))
+    expect(opened).not.toHaveBeenCalled()
+  })
+})
+
+describe('the compact view', () => {
+  const compact = async () => {
+    page()
+    fireEvent.click(await screen.findByRole('tab', { name: 'Compact' }))
+  }
+
+  it('shows one row per job with its status, Run now and More, and no card', async () => {
+    await compact()
+    const rows = screen.getAllByTestId('job-row')
+    expect(rows).toHaveLength(2)
+    expect(document.querySelectorAll('[data-testid="job-row"] .glim-notch-card')).toHaveLength(0)
+    const actions = within(row('photos')).getByTestId('job-actions')
+    expect(within(actions).getAllByRole('button').map((b) => b.textContent?.trim())).toEqual(['More', 'Run now'])
+    expect(within(row('photos')).getByTestId('job-status')).toBeTruthy()
+  })
+
+  it('opens the job from its row', async () => {
+    await compact()
+    fireEvent.click(row('music'))
+    expect(opened).toHaveBeenCalledWith('music')
+  })
+
+  it('keeps Pause in More', async () => {
+    await compact()
+    fireEvent.click(within(row('photos')).getByRole('button', { name: 'More' }))
+    expect(await screen.findByRole('menuitem', { name: 'Pause' })).toBeTruthy()
+  })
+
+  it('moves a job with the keyboard as the cards do', async () => {
+    await compact()
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Move music' }), { key: 'ArrowUp', altKey: true })
+    expect(shownOrder()).toEqual(['music', 'photos'])
+  })
+
+  it('is remembered by this browser', async () => {
+    await compact()
+    cleanup()
+    page()
+    expect(await screen.findByRole('tab', { name: 'Compact', selected: true })).toBeTruthy()
+    expect(document.querySelectorAll('[data-testid="job-row"] .glim-notch-card')).toHaveLength(0)
   })
 })
 
@@ -371,15 +458,16 @@ describe('the More menu beside Add a job', () => {
 })
 
 describe('the first job card', () => {
-  it('gets the room its badge needs above it', () => {
+  it('stands under the view switch, whose gap is the room its badge needs, and adds no margin of its own', () => {
     const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'index.css'), 'utf8')
     const rule = css.match(/([^{}]*\.glim-notch-card[^{}]*)\{\s*margin-top: 11px;/)
     expect(rule).toBeTruthy()
     const selectors = rule![1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map((s) => s.trim())
     page()
-    const [first, second] = [...document.querySelectorAll('li > .glim-notch-card')] as HTMLElement[]
-    expect(selectors.some((s) => first.matches(s))).toBe(true)
-    expect(selectors.some((s) => second.matches(s))).toBe(false)
+    const cards = [...document.querySelectorAll('li > .glim-notch-card')] as HTMLElement[]
+    const viewSwitch = document.querySelector('[data-new="jobs-view"]')!
+    expect(viewSwitch.compareDocumentPosition(cards[0]!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(cards.filter((card) => selectors.some((s) => card.matches(s)))).toEqual([])
   })
 })
 
@@ -389,7 +477,7 @@ describe('Run now on the Jobs page', () => {
     await screen.findByText('photos')
     saved.mockClear()
     fireEvent.click(screen.getAllByRole('button', { name: 'Run now' })[0])
-    await waitFor(() => expect(run).toHaveBeenCalledWith('music'))
+    await waitFor(() => expect(run).toHaveBeenCalledWith('photos'))
     await waitFor(() => expect(saved).toHaveBeenCalled())
   })
 

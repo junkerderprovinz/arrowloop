@@ -1338,6 +1338,13 @@ const th: Translations = {
   'entry.fileVanished': 'ไฟล์หายไปก่อนจะคัดลอก',
   'entry.fileVanishedLocal': 'ไฟล์ในเครื่องหายไปก่อนจะคัดลอก',
   'entry.fileVanishedIn': 'ไฟล์ใน {place} หายไปก่อนจะคัดลอก',
+  'jobs.view.cards': 'การ์ด',
+  'jobs.view.compact': 'กะทัดรัด',
+  'jobs.move': 'ย้าย {job}',
+  'jobs.moveHint': 'ลากไปที่อื่น หรือกด Alt กับปุ่มลูกศร',
+  'jobs.moved': 'ย้าย {job} ไปที่ตำแหน่ง {place}',
+  'new.change.jobOrder': 'คุณจัดลำดับงานเองได้ ลากงานที่จุดจับ หรือกด Alt กับปุ่มลูกศรบนงานนั้น บนโทรศัพท์ให้กดค้างที่งานแล้วลาก {history} {trash} และ {conflicts} แสดงงานตามลำดับเดียวกัน',
+  'new.change.jobsCompact': '{compact} ที่ด้านบนของรายการงานจะแสดงงานละหนึ่งแถว พร้อมสถานะ การทำงานครั้งล่าสุด {runNow} และ {more} อุปกรณ์นี้จะจำตัวเลือกของคุณไว้',
 }
 
 export default th

@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
+import { byJobOrder } from '../lib/jobOrder'
 
 import { Field, FieldRow, Lines, Text } from '../components/Field'
 import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
@@ -235,6 +236,27 @@ export function useJobConfig(onSaved: () => void) {
   )
 
   /**
+   * Writes the order somebody gave the jobs. This tab's list follows it, or
+   * its next save would put the jobs back where they were.
+   */
+  const reorder = useCallback(
+    async (names: string[]) => {
+      setError(null)
+      try {
+        await api.orderJobs(names)
+        const rank = byJobOrder(names)
+        setJobs((prev) => prev && [...prev].sort((a, b) => rank(a.name ?? '', b.name ?? '')))
+        onSaved()
+        return true
+      } catch (e) {
+        setError((e as Error).message)
+        return false
+      }
+    },
+    [onSaved],
+  )
+
+  /**
    * Copies a job as a draft in the form, not yet written, and returns its
    * index. The copy's name, own state database and held state come from
    * jobCopy, shared with the phone.
@@ -261,7 +283,7 @@ export function useJobConfig(onSaved: () => void) {
     [jobs, t],
   )
 
-  return { jobs, known, remotes, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, amend, duplicate }
+  return { jobs, known, remotes, defaults, error, saved, busy, patch, replace, save, add, remove, setDisabled, amend, duplicate, reorder }
 }
 
 /** The state file's box, wide enough to read a path beside its name. */

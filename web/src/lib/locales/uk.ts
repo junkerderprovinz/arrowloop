@@ -1338,6 +1338,13 @@ const uk: Translations = {
   'entry.fileVanished': 'Файл зник до копіювання',
   'entry.fileVanishedLocal': 'Файл зник локально до копіювання',
   'entry.fileVanishedIn': 'Файл зник у {place} до копіювання',
+  'jobs.view.cards': 'Картки',
+  'jobs.view.compact': 'Компактно',
+  'jobs.move': 'Перемістити {job}',
+  'jobs.moveHint': 'Перетягніть його в інше місце або натисніть Alt і стрілку.',
+  'jobs.moved': '{job} переміщено на місце {place}',
+  'new.change.jobOrder': 'Завдання можна розставити у власному порядку: перетягніть завдання за ручку або натисніть на ньому Alt і стрілку. На телефоні утримуйте завдання й перетягніть його. {history}, {trash} і {conflicts} показують завдання в тому самому порядку.',
+  'new.change.jobsCompact': '{compact} угорі списку завдань показує кожне завдання одним рядком: стан, останній запуск, {runNow} і {more}. Цей пристрій запам\'ятовує ваш вибір.',
 }
 
 export default uk

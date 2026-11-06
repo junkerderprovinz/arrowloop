@@ -1338,6 +1338,13 @@ const gl: Translations = {
   'entry.fileVanished': 'O ficheiro desapareceu antes de copialo',
   'entry.fileVanishedLocal': 'O ficheiro desapareceu en local antes de copialo',
   'entry.fileVanishedIn': 'O ficheiro desapareceu en {place} antes de copialo',
+  'jobs.view.cards': 'Tarxetas',
+  'jobs.view.compact': 'Compacta',
+  'jobs.move': 'Mover {job}',
+  'jobs.moveHint': 'Arrástraa a outro sitio, ou preme Alt e unha frecha.',
+  'jobs.moved': '{job} movida á posición {place}',
+  'new.change.jobOrder': 'Podes poñer as tarefas na túa propia orde: arrastra unha pola súa asa, ou preme Alt e unha frecha sobre ela. No teléfono, mantén premida unha tarefa e arrástraa. {history}, {trash} e {conflicts} mostran as tarefas na mesma orde.',
+  'new.change.jobsCompact': '{compact}, arriba na lista de tarefas, mostra cada tarefa nunha fila, co seu estado, a última execución, {runNow} e {more}. Este dispositivo lembra a túa escolla.',
 }
 
 export default gl

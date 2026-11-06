@@ -1338,6 +1338,13 @@ const tr: Translations = {
   'entry.fileVanished': 'Dosya kopyalanmadan önce kayboldu',
   'entry.fileVanishedLocal': 'Dosya kopyalanmadan önce yerelde kayboldu',
   'entry.fileVanishedIn': 'Dosya {place} içinde kopyalanmadan önce kayboldu',
+  'jobs.view.cards': 'Kartlar',
+  'jobs.view.compact': 'Kompakt',
+  'jobs.move': 'Taşı: {job}',
+  'jobs.moveHint': 'Başka bir yere sürükleyin ya da Alt ve bir ok tuşuna basın.',
+  'jobs.moved': '{job} şu sıraya taşındı: {place}',
+  'new.change.jobOrder': 'İşleri kendi sıranıza koyabilirsiniz: bir işi tutamacından sürükleyin ya da üzerinde Alt ve bir ok tuşuna basın. Telefonda bir işe basılı tutup sürükleyin. {history}, {trash} ve {conflicts} işleri aynı sırayla gösterir.',
+  'new.change.jobsCompact': 'İş listesinin üstündeki {compact}, her işi tek satırda gösterir: durum, son çalıştırma, {runNow} ve {more}. Bu cihaz seçiminizi hatırlar.',
 }
 
 export default tr

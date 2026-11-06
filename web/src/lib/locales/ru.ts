@@ -1338,6 +1338,13 @@ const ru: Translations = {
   'entry.fileVanished': 'Файл исчез до копирования',
   'entry.fileVanishedLocal': 'Файл исчез локально до копирования',
   'entry.fileVanishedIn': 'Файл исчез в {place} до копирования',
+  'jobs.view.cards': 'Карточки',
+  'jobs.view.compact': 'Компактно',
+  'jobs.move': 'Переместить {job}',
+  'jobs.moveHint': 'Перетащите его в другое место или нажмите Alt и стрелку.',
+  'jobs.moved': '{job} перемещено на место {place}',
+  'new.change.jobOrder': 'Задания можно расставить в своём порядке: перетащите задание за ручку или нажмите на нём Alt и стрелку. На телефоне удерживайте задание и перетащите его. {history}, {trash} и {conflicts} показывают задания в том же порядке.',
+  'new.change.jobsCompact': '{compact} вверху списка заданий показывает каждое задание одной строкой: состояние, последний запуск, {runNow} и {more}. Это устройство запоминает ваш выбор.',
 }
 
 export default ru

@@ -1338,6 +1338,13 @@ const it: Translations = {
   'entry.fileVanished': 'File sparito prima della copia',
   'entry.fileVanishedLocal': 'File sparito in locale prima della copia',
   'entry.fileVanishedIn': 'File sparito in {place} prima della copia',
+  'jobs.view.cards': 'Schede',
+  'jobs.view.compact': 'Compatta',
+  'jobs.move': 'Sposta {job}',
+  'jobs.moveHint': 'Trascinalo in un altro punto, oppure premi Alt e una freccia.',
+  'jobs.moved': '{job} spostato alla posizione {place}',
+  'new.change.jobOrder': 'Puoi mettere i lavori nel tuo ordine: trascina un lavoro dalla sua maniglia, oppure premi Alt e una freccia su di esso. Sul telefono tieni premuto un lavoro e trascinalo. {history}, {trash} e {conflicts} mostrano i lavori nello stesso ordine.',
+  'new.change.jobsCompact': '{compact}, in cima all\'elenco dei lavori, mostra ogni lavoro su una riga, con il suo stato, l\'ultima esecuzione, {runNow} e {more}. Questo dispositivo ricorda la tua scelta.',
 }
 
 export default it

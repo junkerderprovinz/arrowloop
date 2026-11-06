@@ -1338,6 +1338,13 @@ const eu: Translations = {
   'entry.fileVanished': 'Fitxategia kopiatu aurretik desagertu da',
   'entry.fileVanishedLocal': 'Fitxategia lokalean desagertu da kopiatu aurretik',
   'entry.fileVanishedIn': 'Fitxategia {place}(e)n desagertu da kopiatu aurretik',
+  'jobs.view.cards': 'Txartelak',
+  'jobs.view.compact': 'Trinkoa',
+  'jobs.move': 'Mugitu {job}',
+  'jobs.moveHint': 'Arrastatu beste leku batera, edo sakatu Alt eta gezi-tekla bat.',
+  'jobs.moved': '{job} lekuz aldatu da, toki honetara: {place}',
+  'new.change.jobOrder': 'Lanak zure ordenan jar ditzakezu: arrastatu lan bat bere heldulekutik, edo sakatu Alt eta gezi-tekla bat haren gainean. Telefonoan, eduki sakatuta lan bat eta arrastatu. {history}, {trash} eta {conflicts} atalek ordena berean erakusten dituzte lanak.',
+  'new.change.jobsCompact': 'Lanen zerrendaren goiko {compact} aukerak lan bakoitza errenkada batean erakusten du: egoera, azken exekuzioa, {runNow} eta {more}. Gailu honek zure aukera gogoratzen du.',
 }
 
 export default eu
