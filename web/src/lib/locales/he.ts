@@ -1343,6 +1343,9 @@ const he: Translations = {
   'jobs.move': 'העברת {job}',
   'jobs.moveHint': 'גררו אותה למקום אחר, או לחצו Alt ומקש חץ.',
   'jobs.moved': '{job} הועברה למקום {place}',
+  'jobs.holdToMove': 'החזיקו אותה וגררו למקום אחר.',
+  'jobs.moveUp': 'העברה למעלה',
+  'jobs.moveDown': 'העברה למטה',
   'new.change.jobOrder': 'אפשר לסדר את המשימות בסדר שלכם: גררו משימה בידית שלה, או לחצו עליה Alt ומקש חץ. בטלפון, החזיקו משימה וגררו אותה. {history}, {trash} ו{conflicts} מציגים את המשימות באותו סדר.',
   'new.change.jobsCompact': '{compact} בראש רשימת המשימות מציג כל משימה בשורה אחת: מצב, הריצה האחרונה, {runNow} ו{more}. המכשיר הזה זוכר את הבחירה שלכם.',
 }

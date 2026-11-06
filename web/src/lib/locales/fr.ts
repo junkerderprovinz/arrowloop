@@ -1343,6 +1343,9 @@ const fr: Translations = {
   'jobs.move': 'Déplacer {job}',
   'jobs.moveHint': 'Faites-la glisser ailleurs, ou appuyez sur Alt et une flèche.',
   'jobs.moved': '{job} déplacée à la position {place}',
+  'jobs.holdToMove': 'Maintenez-la et faites-la glisser ailleurs.',
+  'jobs.moveUp': 'Monter',
+  'jobs.moveDown': 'Descendre',
   'new.change.jobOrder': 'Vous pouvez ranger les tâches dans votre propre ordre : faites glisser une tâche par sa poignée, ou appuyez sur Alt et une flèche dessus. Sur le téléphone, maintenez une tâche et faites-la glisser. {history}, {trash} et {conflicts} affichent les tâches dans le même ordre.',
   'new.change.jobsCompact': '{compact}, en haut de la liste des tâches, affiche chaque tâche sur une ligne, avec son état, sa dernière exécution, {runNow} et {more}. Cet appareil retient votre choix.',
 }

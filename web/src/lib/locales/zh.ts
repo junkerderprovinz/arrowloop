@@ -1343,6 +1343,9 @@ const zh: Translations = {
   'jobs.move': '移动 {job}',
   'jobs.moveHint': '拖到别处，或按 Alt 和方向键。',
   'jobs.moved': '已将 {job} 移到第 {place} 位',
+  'jobs.holdToMove': '按住并拖到别处。',
+  'jobs.moveUp': '上移',
+  'jobs.moveDown': '下移',
   'new.change.jobOrder': '你可以按自己的顺序排列任务：拖动任务的手柄，或在任务上按 Alt 和方向键。在手机上，按住任务并拖动。{history}、{trash} 和 {conflicts} 也按同样的顺序列出任务。',
   'new.change.jobsCompact': '任务列表顶部的 {compact} 会把每个任务显示为一行：状态、上次运行、{runNow} 和 {more}。此设备会记住你的选择。',
 }

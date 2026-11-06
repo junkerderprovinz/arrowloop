@@ -1343,6 +1343,9 @@ const it: Translations = {
   'jobs.move': 'Sposta {job}',
   'jobs.moveHint': 'Trascinalo in un altro punto, oppure premi Alt e una freccia.',
   'jobs.moved': '{job} spostato alla posizione {place}',
+  'jobs.holdToMove': 'Tienilo premuto e trascinalo in un altro punto.',
+  'jobs.moveUp': 'Sposta su',
+  'jobs.moveDown': 'Sposta giù',
   'new.change.jobOrder': 'Puoi mettere i lavori nel tuo ordine: trascina un lavoro dalla sua maniglia, oppure premi Alt e una freccia su di esso. Sul telefono tieni premuto un lavoro e trascinalo. {history}, {trash} e {conflicts} mostrano i lavori nello stesso ordine.',
   'new.change.jobsCompact': '{compact}, in cima all\'elenco dei lavori, mostra ogni lavoro su una riga, con il suo stato, l\'ultima esecuzione, {runNow} e {more}. Questo dispositivo ricorda la tua scelta.',
 }

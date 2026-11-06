@@ -10,6 +10,7 @@ import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { CONFLICT_KINDS, conflictKey, conflictKind, decisionsByJob, newerSide, type ConflictKind } from "../../../web/src/lib/conflicts";
 import { failureLine, type Failure } from "../../../web/src/lib/failure";
+import { jobNamesInOrder } from "../../../web/src/lib/jobOrder";
 import { JobChips } from "../jobChips";
 import { ListHead } from "../listHead";
 import { Tiles } from "../tiles";
@@ -99,7 +100,10 @@ export function Conflicts() {
 
   if (!list) return <Empty title={t("history.working")} detail={error || undefined} />;
 
-  const names = [...new Set(list.map((c) => c.job))].sort((a, b) => a.localeCompare(b));
+  const names = jobNamesInOrder(
+    list.map((c) => c.job),
+    jobs.map((j) => j.name),
+  );
   const shownJob = names.includes(job) ? job : "";
   const ofJob = list.filter((c) => !shownJob || c.job === shownJob);
   const shown = ofJob.filter((c) => !kind || conflictKind(c) === kind);

@@ -1343,6 +1343,9 @@ const fi: Translations = {
   'jobs.move': 'Siirrä työtä {job}',
   'jobs.moveHint': 'Vedä se toiseen paikkaan tai paina Alt ja nuolinäppäintä.',
   'jobs.moved': '{job} siirretty paikalle {place}',
+  'jobs.holdToMove': 'Pidä sitä painettuna ja vedä toiseen paikkaan.',
+  'jobs.moveUp': 'Siirrä ylös',
+  'jobs.moveDown': 'Siirrä alas',
   'new.change.jobOrder': 'Voit järjestää työt omaan järjestykseesi: vedä työtä sen kahvasta tai paina sen kohdalla Alt ja nuolinäppäintä. Puhelimessa pidä työtä painettuna ja vedä sitä. {history}, {trash} ja {conflicts} näyttävät työt samassa järjestyksessä.',
   'new.change.jobsCompact': '{compact} työluettelon yläosassa näyttää jokaisen työn yhdellä rivillä: tila, viimeisin ajo, {runNow} ja {more}. Tämä laite muistaa valintasi.',
 }

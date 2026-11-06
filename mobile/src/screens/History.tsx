@@ -8,6 +8,7 @@ import { jobSides } from "../sides";
 import { useWaiting } from "../waiting";
 import { entryLabel, entryNote, plainKey, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
+import { jobNamesInOrder } from "../../../web/src/lib/jobOrder";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { useT, type T } from "../i18n";
@@ -167,12 +168,10 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
       () => {},
     );
   }, []);
-  const names = useMemo(() => {
-    const seen = new Set(jobs);
-    for (const r of rows ?? []) seen.add(r.Job);
-    seen.delete("");
-    return [...seen].sort((a, b) => a.localeCompare(b));
-  }, [jobs, rows]);
+  const names = useMemo(
+    () => jobNamesInOrder([...jobs, ...(rows ?? []).map((r) => r.Job)], jobs).filter((name) => name !== ""),
+    [jobs, rows],
+  );
 
   useThrottledEvents(load);
 
@@ -317,10 +316,14 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   const [typed, setTyped] = useState("");
   const [error, setError] = useState("");
   const [opened, setOpened] = useState<Opened | null>(null);
+  // The job list's order, which the filter offers the jobs in.
+  const [order, setOrder] = useState<string[]>([]);
 
   const load = useCallback(async () => {
     try {
-      setRuns(await api.history(100));
+      const [got, jobs] = await Promise.all([api.history(100), api.jobs()]);
+      setRuns(got);
+      setOrder(jobs.map((j) => j.name));
       setError("");
     } catch (e) {
       setError((e as Error).message);
@@ -332,7 +335,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   }, [load]);
   useThrottledEvents(load);
 
-  const names = useMemo(() => [...new Set((runs ?? []).map((r) => r.Job))].sort((a, b) => a.localeCompare(b)), [runs]);
+  const names = useMemo(() => jobNamesInOrder((runs ?? []).map((r) => r.Job), order), [runs, order]);
 
   const shown = useMemo(() => {
     const needle = typed.trim().toLowerCase();
@@ -486,7 +489,10 @@ function FindingLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void
     void load();
   }, [load]);
 
-  const names = useMemo(() => [...new Set((closed ?? []).map((f) => f.job))].sort((a, b) => a.localeCompare(b)), [closed]);
+  const names = useMemo(
+    () => jobNamesInOrder((closed ?? []).map((f) => f.job), known.map((j) => j.name)),
+    [closed, known],
+  );
   const shown = (closed ?? [])
     .filter((f) => (!job || f.job === job) && (!level || f.severity === level))
     .filter((f) => !typed.trim() || matchesQuery(typed, [f.job, f.detail ?? "", ...(f.paths ?? [])]))

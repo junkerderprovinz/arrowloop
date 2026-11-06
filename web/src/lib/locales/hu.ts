@@ -1343,6 +1343,9 @@ const hu: Translations = {
   'jobs.move': '{job} áthelyezése',
   'jobs.moveHint': 'Húzd máshová, vagy nyomd meg az Altot és egy nyílbillentyűt.',
   'jobs.moved': '{job} áthelyezve, új helye: {place}',
+  'jobs.holdToMove': 'Tartsd lenyomva, és húzd máshová.',
+  'jobs.moveUp': 'Feljebb',
+  'jobs.moveDown': 'Lejjebb',
   'new.change.jobOrder': 'A feladatokat saját sorrendbe rakhatod: húzz egy feladatot a fogantyújánál, vagy nyomd meg rajta az Altot és egy nyílbillentyűt. A telefonon tarts lenyomva egy feladatot, és húzd el. A(z) {history}, {trash} és {conflicts} ugyanebben a sorrendben mutatja a feladatokat.',
   'new.change.jobsCompact': 'A feladatlista tetején a(z) {compact} nézet minden feladatot egy sorban mutat: állapot, utolsó futás, {runNow} és {more}. Ez az eszköz megjegyzi a választásodat.',
 }

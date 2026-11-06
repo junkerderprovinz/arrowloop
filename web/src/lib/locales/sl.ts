@@ -1343,6 +1343,9 @@ const sl: Translations = {
   'jobs.move': 'Premakni {job}',
   'jobs.moveHint': 'Povleci ga drugam ali pritisni Alt in puščico.',
   'jobs.moved': '{job} premaknjeno na mesto {place}',
+  'jobs.holdToMove': 'Pridrži ga in povleci drugam.',
+  'jobs.moveUp': 'Premakni gor',
+  'jobs.moveDown': 'Premakni dol',
   'new.change.jobOrder': 'Opravila lahko razvrstiš po svoje: povleci opravilo za ročaj ali na njem pritisni Alt in puščico. Na telefonu opravilo pridrži in ga povleci. {history}, {trash} in {conflicts} prikazujejo opravila v enakem vrstnem redu.',
   'new.change.jobsCompact': '{compact} na vrhu seznama opravil prikaže vsako opravilo v eni vrstici: stanje, zadnji zagon, {runNow} in {more}. Ta naprava si zapomni tvojo izbiro.',
 }

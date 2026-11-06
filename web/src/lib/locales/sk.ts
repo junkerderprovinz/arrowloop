@@ -1343,6 +1343,9 @@ const sk: Translations = {
   'jobs.move': 'Presunúť {job}',
   'jobs.moveHint': 'Potiahni ju inam alebo stlač Alt a šípku.',
   'jobs.moved': '{job} presunutá na miesto {place}',
+  'jobs.holdToMove': 'Podrž ju a potiahni inam.',
+  'jobs.moveUp': 'Posunúť vyššie',
+  'jobs.moveDown': 'Posunúť nižšie',
   'new.change.jobOrder': 'Úlohy si môžeš zoradiť po svojom: potiahni úlohu za úchyt alebo na nej stlač Alt a šípku. V telefóne úlohu podrž a potiahni. {history}, {trash} a {conflicts} ukazujú úlohy v rovnakom poradí.',
   'new.change.jobsCompact': '{compact} hore v zozname úloh ukáže každú úlohu na jednom riadku: stav, posledný beh, {runNow} a {more}. Toto zariadenie si tvoju voľbu pamätá.',
 }

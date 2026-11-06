@@ -59,7 +59,11 @@ export interface Appearance {
    * with the appearance so a settings backup does not switch it on elsewhere.
    */
   lock: boolean;
+  /** The job list as cards or as one row per job. */
+  jobView: JobView;
 }
+
+export type JobView = "cards" | "compact";
 
 export const DEFAULT_APPEARANCE: Appearance = {
   theme: "system",
@@ -74,6 +78,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   barLabels: "glyph",
   motion: "subtle",
   lock: false,
+  jobView: "cards",
 };
 
 const KEY = "arrowloop.appearance";

@@ -1343,6 +1343,9 @@ const hr: Translations = {
   'jobs.move': 'Premjesti {job}',
   'jobs.moveHint': 'Povuci ga na drugo mjesto ili pritisni Alt i strelicu.',
   'jobs.moved': '{job} premješten na mjesto {place}',
+  'jobs.holdToMove': 'Zadrži ga i povuci na drugo mjesto.',
+  'jobs.moveUp': 'Pomakni gore',
+  'jobs.moveDown': 'Pomakni dolje',
   'new.change.jobOrder': 'Zadatke možeš složiti po svom redu: povuci zadatak za njegovu ručku ili na njemu pritisni Alt i strelicu. Na telefonu zadrži zadatak i povuci ga. {history}, {trash} i {conflicts} prikazuju zadatke istim redom.',
   'new.change.jobsCompact': '{compact} na vrhu popisa zadataka prikazuje svaki zadatak u jednom retku: stanje, zadnje pokretanje, {runNow} i {more}. Ovaj uređaj pamti tvoj izbor.',
 }

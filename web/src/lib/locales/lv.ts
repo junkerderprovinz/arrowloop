@@ -1343,6 +1343,9 @@ const lv: Translations = {
   'jobs.move': 'Pārvietot {job}',
   'jobs.moveHint': 'Velciet to uz citu vietu vai nospiediet Alt un bulttaustiņu.',
   'jobs.moved': '{job} pārvietots uz vietu {place}',
+  'jobs.holdToMove': 'Turiet to nospiestu un velciet uz citu vietu.',
+  'jobs.moveUp': 'Pārvietot augšup',
+  'jobs.moveDown': 'Pārvietot lejup',
   'new.change.jobOrder': 'Uzdevumus varat sakārtot savā secībā: velciet uzdevumu aiz tā roktura vai uz tā nospiediet Alt un bulttaustiņu. Tālrunī turiet uzdevumu nospiestu un velciet. {history}, {trash} un {conflicts} rāda uzdevumus tādā pašā secībā.',
   'new.change.jobsCompact': '{compact} uzdevumu saraksta augšā rāda katru uzdevumu vienā rindā: stāvokli, pēdējo palaišanu, {runNow} un {more}. Šī ierīce atceras jūsu izvēli.',
 }
