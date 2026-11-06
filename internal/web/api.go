@@ -130,6 +130,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
+	mux.HandleFunc("PUT /api/jobs/order", s.writeJobOrder)
 	mux.HandleFunc("GET /api/settings", s.readSettings)
 	mux.HandleFunc("PUT /api/settings", s.writeSettings)
 	mux.HandleFunc("POST /api/notify/test", s.testNotify)
@@ -1032,6 +1033,29 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, withheld(settings))
+}
+
+// writeJobOrder puts the jobs in the order a list shows after somebody moved
+// one, and keeps it. Only the names travel, so a move cannot carry stale
+// settings of a job edited in another window.
+func (s *Server) writeJobOrder(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Jobs []string `json:"jobs"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+
+	s.saving.Lock()
+	defer s.saving.Unlock()
+	next, err := s.Runner.Config().SaveOrder(body.Jobs)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	s.Runner.Reload(next)
+	writeJSON(w, http.StatusOK, map[string]any{"jobs": len(next.Jobs)})
 }
 
 // writeConfig replaces the job list and reloads the schedules. The whole list

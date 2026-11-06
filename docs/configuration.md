@@ -422,6 +422,7 @@ same value unless its `-keep-history` flag gives another.
 | `anomalies.notifyNotes` | `false` | Report the notes there as well. |
 | `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tiles). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
+| `keepJobOrder` | `false` | List the jobs in the order they stand in `jobs` rather than by name. The interface sets it the first time a job is moved, and a new job goes to the end. |
 
 !!! note "The bandwidth limit is not per job"
     rclone's token bucket is process-wide, so a per-job limit would be a promise

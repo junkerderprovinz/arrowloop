@@ -526,3 +526,38 @@ func doJSON(t *testing.T, srv *httptest.Server, method, path, body string) (*htt
 // testKey stands in for the install's key, which peppers a password hash: a
 // hash made for a test server has to be made under that server's key.
 var testKey = []byte("0123456789abcdef0123456789abcdef")
+
+// The jobs page sends the whole order it shows after a move, and every list
+// the engine hands out follows it from then on.
+func TestMovingAJobOrdersTheJobList(t *testing.T) {
+	h := engineFor(t, `{"jobs":[
+		{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db"},
+		{"name":"Music","left":"%[1]s/left/m","right":"%[1]s/right/m","state":"%[1]s/music.db"}]}`)
+	listed := func() []string {
+		var jobs []struct{ Name string }
+		h.get(t, "/api/jobs", &jobs)
+		var out []string
+		for _, j := range jobs {
+			out = append(out, j.Name)
+		}
+		return out
+	}
+	if got := strings.Join(listed(), ","); got != "Music,photos" {
+		t.Fatalf("before any move the jobs are listed as %s, want them by name", got)
+	}
+
+	resp, text := h.put(t, "/api/jobs/order", `{"jobs":["photos","Music"]}`)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("the order was refused: %s %s", resp.Status, text)
+	}
+	if got := strings.Join(listed(), ","); got != "photos,Music" {
+		t.Errorf("after the move the jobs are listed as %s", got)
+	}
+	raw, err := os.ReadFile(h.configPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(raw), `"keepJobOrder": true`) {
+		t.Errorf("the file does not keep the order:\n%s", raw)
+	}
+}
