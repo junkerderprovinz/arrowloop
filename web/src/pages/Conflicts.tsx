@@ -19,6 +19,7 @@ import { matchesQuery } from '../lib/fold'
 import { sideName } from '../lib/entryLabel'
 import { failureLine } from '../lib/failure'
 import { useT, type TranslationKey } from '../lib/i18n'
+import { jobNamesInOrder } from '../lib/jobOrder'
 import { useLive } from '../lib/live'
 import { usePlaces } from '../lib/places'
 import { useToast } from '../lib/toast'
@@ -83,7 +84,10 @@ export function Conflicts({
 
   const searching = query.trim() !== ''
   const waiting = (listing?.conflicts ?? []).filter((c) => !job || c.job === job)
-  const jobs = [...new Set(waiting.map((c) => c.job))].sort((a, b) => a.localeCompare(b))
+  const jobs = jobNamesInOrder(
+    waiting.map((c) => c.job),
+    live.jobs.map((j) => j.name),
+  )
   const picked = jobs.includes(only) ? only : ''
   const ofJob = waiting.filter((c) => !picked || c.job === picked)
   const shown = ofJob.filter((c) => (!tile || conflictKind(c) === tile) && (!searching || matchesQuery(query, [c.plain])))

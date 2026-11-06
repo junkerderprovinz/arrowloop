@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { Finding, FindingListing } from '../lib/anomalies'
-import type { Run, TrashSide } from '../lib/api'
+import type { Job, Run, TrashSide } from '../lib/api'
 import type { JobLearning } from '../lib/anomalies'
 import { ToastProvider } from '../lib/toast'
 
@@ -266,6 +266,15 @@ describe('the history', () => {
     expect(screen.getByRole('button', { name: 'Filter by Job' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+    localStorage.clear()
+  })
+
+  it('offers the jobs in the order of the job list, and one only the log knows after them', async () => {
+    const listed = ['photos', 'music'].map((name) => ({ name }) as Job)
+    wrap(<History runs={[{ ...run(''), Job: 'archive' }]} jobs={listed} closed={null} onFindingChanged={() => undefined} />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Filter by Job' }))
+    const choices = screen.getAllByRole('tab').map((tab) => tab.textContent)
+    expect(choices.slice(choices.indexOf('All jobs'))).toEqual(['All jobs', 'photos', 'music', 'archive'])
     localStorage.clear()
   })
 

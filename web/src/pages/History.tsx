@@ -21,6 +21,7 @@ import { SEVERITIES, findingOrder, type Finding, type Severity } from '../lib/an
 import { matchesQuery } from '../lib/fold'
 import { FindingCard } from '../components/FindingCard'
 import { useColumns, type ColumnDef, type Columns } from '../lib/columns'
+import { jobNamesInOrder } from '../lib/jobOrder'
 
 const VIEW_KEY = 'arrowloop.history.view'
 const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs' || v === 'findings'
@@ -112,10 +113,8 @@ export function History({
   // Configuration and log joined: a renamed or deleted job still has runs, and
   // a job that never ran has none.
   const names = useMemo(() => {
-    const seen = new Set<string>()
-    for (const j of jobs) seen.add(j.name)
-    for (const r of runs) seen.add(r.Job)
-    return [...seen].sort((a, b) => a.localeCompare(b))
+    const order = jobs.map((j) => j.name)
+    return jobNamesInOrder([...order, ...runs.map((r) => r.Job)], order)
   }, [jobs, runs])
 
   const files = view === 'files'

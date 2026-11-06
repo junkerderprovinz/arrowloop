@@ -1,3 +1,5 @@
+import { byJobOrder } from './jobOrder'
+
 // Shaped by what the helpers read rather than by the API types, so the phone,
 // whose api.ts declares its own, can share them.
 type Side = { job: string; side: string; total: number; bytes: number }
@@ -23,11 +25,8 @@ export function mergeTrash<S extends Side>(held: S[] | null, job: string, fresh:
  * longer configured goes last rather than vanishing, until the next full answer.
  */
 export function inJobOrder<S extends Side>(sides: S[], order: string[]): S[] {
-  const rank = (name: string) => {
-    const at = order.indexOf(name)
-    return at === -1 ? order.length : at
-  }
-  return [...sides].sort((a, b) => rank(a.job) - rank(b.job) || a.job.localeCompare(b.job) || a.side.localeCompare(b.side))
+  const rank = byJobOrder(order)
+  return [...sides].sort((a, b) => rank(a.job, b.job) || a.side.localeCompare(b.side))
 }
 
 /** The sides grouped by job, each job once, for sides already in job order. */
