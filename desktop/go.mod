@@ -2,6 +2,8 @@ module github.com/junkerderprovinz/arrowloop/desktop
 
 go 1.27.2
 
+toolchain go1.27.3
+
 // Windows marks the folders of a cloud client that fetches files on demand
 // (OpenCloud, OneDrive, Nextcloud) as reparse points. Since Go 1.23 they read
 // as irregular, which rclone takes for a junction and leaves out of the
