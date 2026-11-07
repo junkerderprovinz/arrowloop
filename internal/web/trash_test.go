@@ -9,8 +9,6 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/rclone/rclone/backend/webdav"
-
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
@@ -131,7 +129,8 @@ func TestASideThatNeverAnswersGivesUpWhileTheOtherIsListed(t *testing.T) {
 	web.ShortenTrashWait(t, time.Second)
 	addr, hangUp := silentServer(t)
 	h := engineFor(t, `{"jobs":[{"name":"cloud","left":"%[1]s/left",`+
-		`"right":":webdav,url='http://`+addr+`/':x","state":"%[1]s/cloud.db"}]}`)
+		`"right":":s3,provider=Other,endpoint='http://`+addr+`',access_key_id=k,secret_access_key=s:bucket",`+
+		`"state":"%[1]s/cloud.db"}]}`)
 	// Before the server's cleanup, which waits for the request to finish.
 	defer hangUp()
 	binned(t, h.left, "20260901-080000", "a.txt", "aaaa")
