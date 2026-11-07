@@ -1370,6 +1370,8 @@ const nl: Translations = {
   'autoBackup.on': 'Automatisch een back-up maken',
   'autoBackup.everyDays': 'Dagen tussen back-ups',
   'autoBackup.everyDaysHint': 'ArrowLoop kijkt eens in zoveel dagen en maakt een kopie als er sinds de vorige iets veranderd is.',
+  'autoBackup.at': 'Tijdstip',
+  'autoBackup.atHint': 'De kopie wordt op dit tijdstip gemaakt, volgens de klok van de computer of telefoon waarop ArrowLoop draait. Staat die dan uit of slaapt hij, dan wordt de kopie gemaakt zodra hij terug is.',
   'autoBackup.keep': 'Aantal back-ups',
   'autoBackup.keepHint': 'Zijn het er meer, dan wordt de oudste verwijderd. Bestanden die je zelf in de map zet, blijven onaangeroerd.',
   'autoBackup.folder': 'Back-upmap',

@@ -1370,6 +1370,8 @@ const et: Translations = {
   'autoBackup.on': 'Tee varukoopiaid automaatselt',
   'autoBackup.everyDays': 'Päevi varukoopiate vahel',
   'autoBackup.everyDaysHint': 'ArrowLoop vaatab kord nii mitme päeva tagant järele ja teeb koopia, kui midagi on pärast eelmist muutunud.',
+  'autoBackup.at': 'Kellaaeg',
+  'autoBackup.atHint': 'Koopia tehakse sel kellaajal selle arvuti või telefoni kella järgi, kus ArrowLoop töötab. Kui see on siis välja lülitatud või unes, tehakse koopia kohe, kui see tagasi on.',
   'autoBackup.keep': 'Mitu koopiat alles hoida',
   'autoBackup.keepHint': 'Kui neid on rohkem, eemaldatakse vanim. Faile, mille ise kausta paned, ei puututa kunagi.',
   'autoBackup.folder': 'Varukoopiate kaust',

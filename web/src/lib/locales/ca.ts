@@ -1370,6 +1370,8 @@ const ca: Translations = {
   'autoBackup.on': 'Fes còpies automàticament',
   'autoBackup.everyDays': 'Dies entre còpies',
   'autoBackup.everyDaysHint': 'ArrowLoop hi mira cada tants dies i fa una còpia si alguna cosa ha canviat des de l\'última.',
+  'autoBackup.at': 'Hora',
+  'autoBackup.atHint': 'La còpia es fa a aquesta hora, segons el rellotge de l\'ordinador o el telèfon on funciona ArrowLoop. Si llavors està apagat o en repòs, es fa tan bon punt torna.',
   'autoBackup.keep': 'Còpies que es conserven',
   'autoBackup.keepHint': 'Si n\'hi ha més, s\'esborra la més antiga. Els fitxers que hi posis tu a la carpeta no es toquen mai.',
   'autoBackup.folder': 'Carpeta de còpies',

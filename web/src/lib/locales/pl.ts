@@ -1370,6 +1370,8 @@ const pl: Translations = {
   'autoBackup.on': 'Twórz kopie automatycznie',
   'autoBackup.everyDays': 'Dni między kopiami',
   'autoBackup.everyDaysHint': 'ArrowLoop sprawdza raz na tyle dni i robi kopię, jeśli od ostatniej coś się zmieniło.',
+  'autoBackup.at': 'Godzina',
+  'autoBackup.atHint': 'Kopia powstaje o tej godzinie, według zegara komputera lub telefonu, na którym działa ArrowLoop. Jeśli jest wtedy wyłączony lub uśpiony, powstaje, gdy tylko wróci.',
   'autoBackup.keep': 'Liczba kopii',
   'autoBackup.keepHint': 'Gdy jest ich więcej, najstarsza zostaje usunięta. Pliki włożone do folderu ręcznie zostają nietknięte.',
   'autoBackup.folder': 'Folder kopii',

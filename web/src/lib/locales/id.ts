@@ -1370,6 +1370,8 @@ const id: Translations = {
   'autoBackup.on': 'Cadangkan otomatis',
   'autoBackup.everyDays': 'Hari di antara cadangan',
   'autoBackup.everyDaysHint': 'ArrowLoop memeriksa sekali dalam sekian hari ini dan membuat salinan kalau ada yang berubah sejak salinan terakhir.',
+  'autoBackup.at': 'Jam',
+  'autoBackup.atHint': 'Salinan dibuat pada jam ini, menurut jam komputer atau ponsel tempat ArrowLoop berjalan. Kalau saat itu perangkatnya mati atau tidur, salinan dibuat begitu perangkatnya menyala lagi.',
   'autoBackup.keep': 'Cadangan yang disimpan',
   'autoBackup.keepHint': 'Kalau lebih dari itu, yang paling lama dihapus. Berkas yang kamu taruh sendiri di folder tidak pernah disentuh.',
   'autoBackup.folder': 'Folder cadangan',

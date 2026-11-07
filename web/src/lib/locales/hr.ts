@@ -1370,6 +1370,8 @@ const hr: Translations = {
   'autoBackup.on': 'Automatski izrađuj kopije',
   'autoBackup.everyDays': 'Dana između kopija',
   'autoBackup.everyDaysHint': 'ArrowLoop provjerava jednom u toliko dana i izrađuje kopiju ako se od prošle nešto promijenilo.',
+  'autoBackup.at': 'Vrijeme',
+  'autoBackup.atHint': 'Kopija se izrađuje u ovo vrijeme, po satu računala ili telefona na kojem ArrowLoop radi. Ako je tada isključen ili u stanju mirovanja, izrađuje se čim se vrati.',
   'autoBackup.keep': 'Koliko kopija čuvati',
   'autoBackup.keepHint': 'Kad ih je više, najstarija se uklanja. Datoteke koje sam staviš u mapu nikad se ne diraju.',
   'autoBackup.folder': 'Mapa za kopije',

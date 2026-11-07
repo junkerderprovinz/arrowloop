@@ -1370,6 +1370,8 @@ const is: Translations = {
   'autoBackup.on': 'Taka afrit sjálfkrafa',
   'autoBackup.everyDays': 'Dagar milli afrita',
   'autoBackup.everyDaysHint': 'ArrowLoop athugar einu sinni á þessum dagafjölda og tekur afrit ef eitthvað hefur breyst frá því síðasta.',
+  'autoBackup.at': 'Tími dags',
+  'autoBackup.atHint': 'Afritið er tekið á þessum tíma, eftir klukku tækisins sem ArrowLoop keyrir á. Ef slökkt er á tækinu eða það í hvíld þá, er afritið tekið um leið og það kemur aftur.',
   'autoBackup.keep': 'Afrit sem á að geyma',
   'autoBackup.keepHint': 'Þegar þau eru fleiri er því elsta eytt. ArrowLoop lætur alltaf í friði skrár sem þú setur sjálfur í möppuna.',
   'autoBackup.folder': 'Mappa fyrir afrit',

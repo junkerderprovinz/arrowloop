@@ -1370,6 +1370,8 @@ const lv: Translations = {
   'autoBackup.on': 'Dublēt automātiski',
   'autoBackup.everyDays': 'Dienas starp dublējumiem',
   'autoBackup.everyDaysHint': 'ArrowLoop pārbauda reizi tik dienās un izveido kopiju, ja kopš pēdējās kaut kas ir mainījies.',
+  'autoBackup.at': 'Laiks',
+  'autoBackup.atHint': 'Kopija tiek veidota šajā laikā pēc tā datora vai tālruņa pulksteņa, kurā darbojas ArrowLoop. Ja tad tas ir izslēgts vai miega režīmā, kopija tiek izveidota, tiklīdz tas atkal darbojas.',
   'autoBackup.keep': 'Cik dublējumu glabāt',
   'autoBackup.keepHint': 'Ja to ir vairāk, vecākais tiek noņemts. Faili, ko pats ieliec mapē, paliek neskarti.',
   'autoBackup.folder': 'Dublējumu mape',

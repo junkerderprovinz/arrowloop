@@ -1370,6 +1370,8 @@ const ko: Translations = {
   'autoBackup.on': '자동으로 백업',
   'autoBackup.everyDays': '백업 간격(일)',
   'autoBackup.everyDaysHint': 'ArrowLoop이 이 일수마다 한 번 확인하고, 지난 사본 이후 바뀐 것이 있으면 사본을 만듭니다.',
+  'autoBackup.at': '시각',
+  'autoBackup.atHint': 'ArrowLoop를 실행하는 컴퓨터나 휴대폰의 시계를 기준으로 이 시각에 사본을 만듭니다. 그때 꺼져 있거나 절전 중이면 다시 켜지는 대로 만듭니다.',
   'autoBackup.keep': '보관할 백업 수',
   'autoBackup.keepHint': '이보다 많아지면 가장 오래된 것이 지워집니다. 직접 폴더에 넣은 파일은 건드리지 않습니다.',
   'autoBackup.folder': '백업 폴더',

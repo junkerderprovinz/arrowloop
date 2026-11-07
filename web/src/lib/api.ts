@@ -374,11 +374,14 @@ export type Settings = {
   }
   /**
    * The copies of this file the engine keeps on its own. Undefined fields keep
-   * the engine's own values: on, every day, seven kept, beside the file.
+   * the engine's own values: on, every day at 03:00, seven kept, beside the
+   * file.
    */
   autoBackup?: {
     off?: boolean
     everyDays?: number
+    /** HH:MM on the engine's clock. */
+    at?: string
     keep?: number
     /** Empty means the backups folder beside the configuration file. */
     folder?: string

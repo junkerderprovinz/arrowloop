@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 import { api, type AutoBackups } from "./api";
-import { Field, NumberField } from "./fields";
+import { Field, NumberField, TimeField } from "./fields";
 import { useT } from "./i18n";
 import { useEngineSettings } from "./settings";
 import { Body, Button, Pair, Section, Toggle } from "./ui";
@@ -11,6 +11,8 @@ import { Body, Button, Pair, Section, Toggle } from "./ui";
 interface AutoBackup {
   off?: boolean;
   everyDays?: number;
+  /** HH:MM on the engine's clock. */
+  at?: string;
   keep?: number;
   folder?: string;
 }
@@ -81,6 +83,12 @@ export function AutoBackupSection({ hue }: { hue: number }) {
             hint={t("autoBackup.everyDaysHint")}
             value={String(auto.everyDays ?? 1)}
             onChange={(v) => set({ everyDays: Number(v) || undefined })}
+          />
+          <TimeField
+            label={t("autoBackup.at")}
+            hint={t("autoBackup.atHint")}
+            value={auto.at ?? "03:00"}
+            onChange={(at) => set({ at })}
           />
           <NumberField
             label={t("autoBackup.keep")}

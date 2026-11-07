@@ -1370,6 +1370,8 @@ const sk: Translations = {
   'autoBackup.on': 'Zálohovať automaticky',
   'autoBackup.everyDays': 'Dni medzi zálohami',
   'autoBackup.everyDaysHint': 'ArrowLoop sa raz za toľko dní pozrie a urobí kópiu, ak sa od poslednej niečo zmenilo.',
+  'autoBackup.at': 'Čas',
+  'autoBackup.atHint': 'Kópia vznikne v tento čas podľa hodín počítača alebo telefónu, na ktorom ArrowLoop beží. Ak je vtedy vypnutý alebo uspaný, vznikne hneď, ako sa znova prebudí.',
   'autoBackup.keep': 'Koľko záloh nechať',
   'autoBackup.keepHint': 'Keď ich je viac, najstaršia sa odstráni. Súbory, ktoré do priečinka dáš ty, zostanú nedotknuté.',
   'autoBackup.folder': 'Priečinok záloh',

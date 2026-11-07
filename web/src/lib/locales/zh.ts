@@ -1370,6 +1370,8 @@ const zh: Translations = {
   'autoBackup.on': '开启自动备份',
   'autoBackup.everyDays': '备份间隔天数',
   'autoBackup.everyDaysHint': 'ArrowLoop 每隔这么多天检查一次，如果自上一份以来有变化，就生成一份副本。',
+  'autoBackup.at': '时间',
+  'autoBackup.atHint': '副本在这个时间生成，以运行 ArrowLoop 的电脑或手机的时钟为准。如果那时设备关机或休眠，会在它恢复后立即补上。',
   'autoBackup.keep': '保留份数',
   'autoBackup.keepHint': '超出时会删除最旧的一份。你自己放进文件夹的文件不会被动到。',
   'autoBackup.folder': '备份文件夹',

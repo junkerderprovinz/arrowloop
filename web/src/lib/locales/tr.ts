@@ -1370,6 +1370,8 @@ const tr: Translations = {
   'autoBackup.on': 'Otomatik yedekle',
   'autoBackup.everyDays': 'Yedekler arası gün',
   'autoBackup.everyDaysHint': 'ArrowLoop bu kadar günde bir bakar ve sonuncusundan beri bir şey değiştiyse bir kopya alır.',
+  'autoBackup.at': 'Saat',
+  'autoBackup.atHint': 'Kopya, ArrowLoop\'un çalıştığı bilgisayarın ya da telefonun saatine göre bu saatte alınır. O sırada kapalıysa ya da uykudaysa, geri gelir gelmez alınır.',
   'autoBackup.keep': 'Saklanacak yedek sayısı',
   'autoBackup.keepHint': 'Daha fazla olunca en eskisi silinir. Klasöre kendin koyduğun dosyalara hiç dokunulmaz.',
   'autoBackup.folder': 'Yedek klasörü',

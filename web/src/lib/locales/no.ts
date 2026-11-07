@@ -1370,6 +1370,8 @@ const no: Translations = {
   'autoBackup.on': 'Ta sikkerhetskopi automatisk',
   'autoBackup.everyDays': 'Dager mellom sikkerhetskopier',
   'autoBackup.everyDaysHint': 'ArrowLoop ser etter én gang hver så mange dager og lager en kopi hvis noe er endret siden forrige.',
+  'autoBackup.at': 'Klokkeslett',
+  'autoBackup.atHint': 'Kopien lages på dette tidspunktet etter klokka på datamaskinen eller telefonen ArrowLoop kjører på. Er den slått av eller i dvale da, lages kopien så snart den er tilbake.',
   'autoBackup.keep': 'Kopier å beholde',
   'autoBackup.keepHint': 'Blir det flere, fjernes den eldste. Filer du selv legger i mappen, blir aldri rørt.',
   'autoBackup.folder': 'Mappe for sikkerhetskopier',

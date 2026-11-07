@@ -1370,6 +1370,8 @@ const lt: Translations = {
   'autoBackup.on': 'Kurti kopijas automatiškai',
   'autoBackup.everyDays': 'Dienos tarp kopijų',
   'autoBackup.everyDaysHint': 'ArrowLoop patikrina kartą per tiek dienų ir padaro kopiją, jei nuo paskutinės kas nors pasikeitė.',
+  'autoBackup.at': 'Laikas',
+  'autoBackup.atHint': 'Kopija daroma šiuo laiku pagal kompiuterio ar telefono, kuriame veikia ArrowLoop, laikrodį. Jei tuo metu jis išjungtas ar užmigęs, kopija padaroma vos jam grįžus.',
   'autoBackup.keep': 'Kiek kopijų laikyti',
   'autoBackup.keepHint': 'Kai jų daugiau, seniausia pašalinama. Failai, kuriuos į aplanką įdedi pats, lieka nepaliesti.',
   'autoBackup.folder': 'Kopijų aplankas',

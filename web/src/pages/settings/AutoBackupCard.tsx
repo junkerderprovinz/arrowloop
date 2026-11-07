@@ -4,6 +4,7 @@ import { ConfirmWindow } from '../../components/ConfirmWindow'
 import { FieldRow, NumberField, Text } from '../../components/Field'
 import { IconImport } from '../../components/glyphs'
 import { Since } from '../../components/Since'
+import { TimePicker } from '../../components/TimePicker'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api, type AutoBackups, type Settings } from '../../lib/api'
 import { errorText } from '../../lib/errorText'
@@ -66,6 +67,9 @@ export function AutoBackupCard({ hueIndex }: { hueIndex: number }) {
                 label={t('autoBackup.everyDays')}
                 onChange={(everyDays) => set({ everyDays })}
               />
+            </SettingsRow>
+            <SettingsRow label={t('autoBackup.at')} hint={t('autoBackup.atHint')}>
+              <TimePicker value={auto.at ?? '03:00'} label={t('autoBackup.at')} onChange={(at) => set({ at })} />
             </SettingsRow>
             <SettingsRow label={t('autoBackup.keep')} hint={t('autoBackup.keepHint')}>
               <NumberField

@@ -1370,6 +1370,8 @@ const vi: Translations = {
   'autoBackup.on': 'Tự động sao lưu',
   'autoBackup.everyDays': 'Số ngày giữa các lần sao lưu',
   'autoBackup.everyDaysHint': 'ArrowLoop kiểm tra mỗi chừng ấy ngày một lần và tạo bản sao nếu có gì thay đổi kể từ bản trước.',
+  'autoBackup.at': 'Giờ',
+  'autoBackup.atHint': 'Bản sao được tạo vào giờ này, theo đồng hồ của máy tính hoặc điện thoại chạy ArrowLoop. Nếu lúc đó máy tắt hoặc đang ngủ, bản sao sẽ được tạo ngay khi máy hoạt động lại.',
   'autoBackup.keep': 'Số bản sao lưu giữ lại',
   'autoBackup.keepHint': 'Khi nhiều hơn, bản cũ nhất sẽ bị xóa. Các tệp bạn tự đặt vào thư mục sẽ không bao giờ bị động đến.',
   'autoBackup.folder': 'Thư mục sao lưu',

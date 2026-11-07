@@ -1370,6 +1370,8 @@ const fi: Translations = {
   'autoBackup.on': 'Varmuuskopioi automaattisesti',
   'autoBackup.everyDays': 'Päiviä varmuuskopioiden välillä',
   'autoBackup.everyDaysHint': 'ArrowLoop tarkistaa näin monen päivän välein ja tekee kopion, jos jokin on muuttunut edellisen jälkeen.',
+  'autoBackup.at': 'Kellonaika',
+  'autoBackup.atHint': 'Kopio tehdään tähän aikaan sen tietokoneen tai puhelimen kellon mukaan, jolla ArrowLoop toimii. Jos laite on silloin pois päältä tai lepotilassa, kopio tehdään heti, kun se on taas käytössä.',
   'autoBackup.keep': 'Säilytettävät varmuuskopiot',
   'autoBackup.keepHint': 'Kun niitä on enemmän, vanhin poistetaan. Tiedostoihin, jotka laitat kansioon itse, ei kosketa.',
   'autoBackup.folder': 'Varmuuskopiokansio',

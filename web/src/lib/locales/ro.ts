@@ -1370,6 +1370,8 @@ const ro: Translations = {
   'autoBackup.on': 'Fă copii automat',
   'autoBackup.everyDays': 'Zile între copii',
   'autoBackup.everyDaysHint': 'ArrowLoop verifică o dată la atâtea zile și face o copie dacă s-a schimbat ceva de la ultima.',
+  'autoBackup.at': 'Ora',
+  'autoBackup.atHint': 'Copia se face la această oră, după ceasul calculatorului sau al telefonului pe care rulează ArrowLoop. Dacă atunci este oprit sau în repaus, copia se face imediat ce revine.',
   'autoBackup.keep': 'Câte copii păstrezi',
   'autoBackup.keepHint': 'Când sunt mai multe, cea mai veche e ștearsă. Fișierele pe care le pui tu în dosar nu sunt atinse niciodată.',
   'autoBackup.folder': 'Dosarul copiilor',

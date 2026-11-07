@@ -44,6 +44,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
       rows: [
         { key: 'autoBackup.on' },
         { key: 'autoBackup.everyDays', hint: 'autoBackup.everyDaysHint' },
+        { key: 'autoBackup.at', hint: 'autoBackup.atHint' },
         { key: 'autoBackup.keep', hint: 'autoBackup.keepHint' },
         { key: 'autoBackup.folder', hint: 'autoBackup.folderHint' },
         { key: 'autoBackup.latest' },

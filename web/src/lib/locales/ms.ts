@@ -1370,6 +1370,8 @@ const ms: Translations = {
   'autoBackup.on': 'Sandarkan secara automatik',
   'autoBackup.everyDays': 'Hari antara sandaran',
   'autoBackup.everyDaysHint': 'ArrowLoop menyemak sekali setiap sekian hari dan membuat salinan jika ada yang berubah sejak salinan terakhir.',
+  'autoBackup.at': 'Masa',
+  'autoBackup.atHint': 'Salinan dibuat pada masa ini, mengikut jam komputer atau telefon tempat ArrowLoop berjalan. Jika ia dimatikan atau tidur pada masa itu, salinan dibuat sebaik sahaja ia kembali.',
   'autoBackup.keep': 'Bilangan sandaran disimpan',
   'autoBackup.keepHint': 'Apabila ada lebih, yang paling lama dibuang. Fail yang anda letakkan sendiri dalam folder itu tidak akan diusik.',
   'autoBackup.folder': 'Folder sandaran',

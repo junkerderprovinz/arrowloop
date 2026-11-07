@@ -1370,6 +1370,8 @@ const es: Translations = {
   'autoBackup.on': 'Hacer copias automáticamente',
   'autoBackup.everyDays': 'Días entre copias',
   'autoBackup.everyDaysHint': 'ArrowLoop mira cada tantos días y hace una copia si algo ha cambiado desde la última.',
+  'autoBackup.at': 'Hora',
+  'autoBackup.atHint': 'La copia se hace a esta hora, según el reloj del ordenador o el teléfono donde funciona ArrowLoop. Si en ese momento está apagado o en reposo, se hace en cuanto vuelva.',
   'autoBackup.keep': 'Copias que conservar',
   'autoBackup.keepHint': 'Si hay más, se quita la más antigua. Los archivos que pongas tú en la carpeta no se tocan nunca.',
   'autoBackup.folder': 'Carpeta de copias',

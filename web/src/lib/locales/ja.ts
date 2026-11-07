@@ -1370,6 +1370,8 @@ const ja: Translations = {
   'autoBackup.on': '自動でバックアップする',
   'autoBackup.everyDays': 'バックアップの間隔（日）',
   'autoBackup.everyDaysHint': 'ArrowLoop はこの日数ごとに確認し、前回から何か変わっていればコピーを作ります。',
+  'autoBackup.at': '時刻',
+  'autoBackup.atHint': 'コピーはこの時刻に、ArrowLoop が動いているパソコンやスマートフォンの時計で作られます。その時刻に電源が切れていたりスリープ中だったりしたら、戻りしだい作られます。',
   'autoBackup.keep': '残すバックアップの数',
   'autoBackup.keepHint': 'それより多くなると、一番古いものが削除されます。ご自分でフォルダーに入れたファイルには手を触れません。',
   'autoBackup.folder': 'バックアップ先のフォルダー',

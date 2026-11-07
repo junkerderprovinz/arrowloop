@@ -1370,6 +1370,8 @@ const he: Translations = {
   'autoBackup.on': 'גיבוי אוטומטי',
   'autoBackup.everyDays': 'ימים בין גיבויים',
   'autoBackup.everyDaysHint': 'ArrowLoop בודק פעם במספר הימים הזה ויוצר עותק אם משהו השתנה מאז העותק הקודם.',
+  'autoBackup.at': 'שעה',
+  'autoBackup.atHint': 'העותק נוצר בשעה הזו, לפי השעון של המחשב או הטלפון שעליו ArrowLoop פועל. אם הוא כבוי או במצב שינה באותו זמן, העותק נוצר מיד כשהוא חוזר.',
   'autoBackup.keep': 'גיבויים לשמירה',
   'autoBackup.keepHint': 'כשיש יותר, הישן ביותר נמחק. ArrowLoop לא נוגע אף פעם בקבצים ששמת בתיקייה בעצמך.',
   'autoBackup.folder': 'תיקיית גיבויים',

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { AutoBackups, Settings } from '../../lib/api'
@@ -41,6 +41,7 @@ describe('the automatic backups card', () => {
     expect(toggle.getAttribute('aria-checked')).toBe('true')
     expect((screen.getByRole('spinbutton', { name: 'Days between backups' }) as HTMLInputElement).value).toBe('1')
     expect((screen.getByRole('spinbutton', { name: 'Backups to keep' }) as HTMLInputElement).value).toBe('7')
+    expect(screen.getByRole('button', { name: 'Time of day: 03:00' })).toBeTruthy()
     expect((screen.getByRole('textbox', { name: 'Backup folder' }) as HTMLInputElement).placeholder).toBe(
       '/config/backups',
     )
@@ -54,6 +55,26 @@ describe('the automatic backups card', () => {
     })
     await waitFor(() => expect(saveSettings).toHaveBeenCalledWith({ autoBackup: { off: true } }), { timeout: 2000 })
     expect(screen.queryByRole('spinbutton', { name: 'Backups to keep' })).toBeNull()
+  })
+
+  it('saves the time of day picked', async () => {
+    settings = { autoBackup: { at: '22:30' } }
+    render(<AutoBackupCard hueIndex={0} />)
+    await act(async () => {
+      fireEvent.click(await screen.findByRole('button', { name: 'Time of day: 22:30' }))
+    })
+    const [hours] = screen.getAllByRole('listbox', { name: 'Time of day' })
+    await act(async () => {
+      fireEvent.click(within(hours).getByRole('option', { name: '05' }))
+    })
+    await waitFor(() => expect(saveSettings).toHaveBeenCalledWith({ autoBackup: { at: '05:30' } }), { timeout: 2000 })
+  })
+
+  it('hides the time of day while the backups are off', async () => {
+    settings = { autoBackup: { off: true } }
+    render(<AutoBackupCard hueIndex={0} />)
+    await screen.findByRole('switch', { name: 'Back up automatically' })
+    expect(screen.queryByRole('button', { name: /^Time of day/ })).toBeNull()
   })
 
   it('shows when the latest backup was made', async () => {

@@ -1370,6 +1370,8 @@ const eu: Translations = {
   'autoBackup.on': 'Egin babeskopiak automatikoki',
   'autoBackup.everyDays': 'Babeskopien arteko egunak',
   'autoBackup.everyDaysHint': 'ArrowLoop-ek hainbeste egunean behin begiratzen du, eta kopia bat egiten du azkenetik zerbait aldatu bada.',
+  'autoBackup.at': 'Ordua',
+  'autoBackup.atHint': 'Kopia ordu honetan egiten da, ArrowLoop exekutatzen den ordenagailuaren edo telefonoaren erlojuaren arabera. Orduan itzalita edo lo badago, itzuli bezain laster egiten da.',
   'autoBackup.keep': 'Zenbat babeskopia gorde',
   'autoBackup.keepHint': 'Gehiago daudenean, zaharrena kentzen da. Zuk karpetan jarritako fitxategiak ez dira inoiz ukitzen.',
   'autoBackup.folder': 'Babeskopien karpeta',

@@ -1370,6 +1370,8 @@ const hu: Translations = {
   'autoBackup.on': 'Automatikus mentés',
   'autoBackup.everyDays': 'Napok két mentés között',
   'autoBackup.everyDaysHint': 'Az ArrowLoop ennyi naponta egyszer megnézi, és másolatot készít, ha az előző óta valami változott.',
+  'autoBackup.at': 'Időpont',
+  'autoBackup.atHint': 'A másolat ebben az időpontban készül, annak a számítógépnek vagy telefonnak az órája szerint, amelyen az ArrowLoop fut. Ha akkor ki van kapcsolva vagy alszik, a másolat rögtön elkészül, amint újra fut.',
   'autoBackup.keep': 'Megtartott mentések',
   'autoBackup.keepHint': 'Ha több van, a legrégebbi törlődik. A mappába saját kezűleg tett fájlokhoz sosem nyúl.',
   'autoBackup.folder': 'Mentések mappája',
