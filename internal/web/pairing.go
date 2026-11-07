@@ -550,12 +550,17 @@ func (s *Server) applyRelay() {
 		Trusts: s.Group.TrustsAnswer,
 		Serve:  s.Group.Guard(s.serveGroupCall),
 		// A member that leaves keeps its card here, written while it was
-		// still there.
+		// still there. One that arrives is greeted at once, so each owner
+		// finds the other waiting for approval without this instance's
+		// Pairing tile having to be open.
 		OnChange: func() {
 			go func() {
 				if _, err := s.Group.AwayMembers(time.Now()); err != nil {
 					s.logf("pairing: could not record the instances of the group: %v", err)
 				}
+				ctx, cancel := context.WithTimeout(context.Background(), 2*relayTimeout)
+				defer cancel()
+				s.Group.Greet(ctx, time.Now())
 			}()
 		},
 	})

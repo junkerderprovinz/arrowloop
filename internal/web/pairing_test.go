@@ -139,7 +139,8 @@ func pair(t *testing.T, a, b *node) (string, string) {
 	// Each waits for approval on the other once they met, whichever entered
 	// the words.
 	eventually(t, "both instances waiting for approval on the other", func() bool {
-		return len(a.connect(t).Pending) == 1 && len(b.connect(t).Pending) == 1
+		pendingA, pendingB := a.connect(t).Pending, b.connect(t).Pending
+		return len(pendingA) == 1 && len(pendingB) == 1
 	})
 	aID, bID := b.connect(t).Pending[0].ID, a.connect(t).Pending[0].ID
 	for _, step := range []struct {
@@ -202,7 +203,8 @@ func TestAnInstanceIsServedOnlyOnceApproved(t *testing.T) {
 	b.send(t, http.MethodPost, "/api/connect/join", `{"phrase":"`+made.Phrase+`"}`)
 
 	eventually(t, "a waiting for approval on b", func() bool {
-		return len(a.connect(t).Pending) == 1 && len(b.connect(t).Pending) == 1
+		pendingA, pendingB := a.connect(t).Pending, b.connect(t).Pending
+		return len(pendingA) == 1 && len(pendingB) == 1
 	})
 	rows := a.instances(t)
 	if len(rows) != 1 || rows[0].State != "approve" || len(rows[0].Jobs) != 0 {
@@ -218,6 +220,20 @@ func TestAnInstanceIsServedOnlyOnceApproved(t *testing.T) {
 	eventually(t, "a seeing that it waits on b", func() bool {
 		rows := a.instances(t)
 		return len(rows) == 1 && rows[0].State == "waiting"
+	})
+}
+
+// Two instances meet as soon as both are on the relay, so a server nobody has
+// the Pairing tile open on still lists the newcomer for approval.
+func TestInstancesMeetWithoutTheirPairingTileOpen(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	_, body := a.send(t, http.MethodPost, "/api/connect/activate", "{}")
+	var made struct{ Phrase string }
+	_ = json.Unmarshal(body, &made)
+	b.send(t, http.MethodPost, "/api/connect/join", `{"phrase":"`+made.Phrase+`"}`)
+	eventually(t, "each instance pinning the other", func() bool {
+		return len(a.server.Group.PendingMembers()) == 1 && len(b.server.Group.PendingMembers()) == 1
 	})
 }
 
