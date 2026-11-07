@@ -1442,7 +1442,7 @@ const fr: Translations = {
   'pairing.searchingLead': 'Phrase saisie. Cette instance recherche maintenant les autres.',
   'pairing.pairedLead': 'Vous avez besoin des douze mots pour chaque nouvelle instance.',
   'pairing.aloneLead': 'Aucune autre instance ne s\'est manifestée depuis plus d\'une minute. Vérifiez que l\'autre a saisi ces mots et utilise le même relais.',
-  'pairing.noPasswordHint': 'Cette instance n\'a pas de mot de passe. Toute personne qui peut ouvrir cette page peut lire les douze mots et, avec eux, atteindre chaque instance du groupe.',
+  'pairing.noPassword': 'Cette instance n\'a pas de mot de passe. Toute personne qui peut ouvrir cette page peut lire les douze mots et, avec eux, atteindre chaque instance du groupe.',
   'pairing.nameLabel': 'Nom dans le groupe',
   'pairing.nameHint': 'Le nom sous lequel les autres instances voient celle-ci. Laissé vide, c\'est le nom de l\'ordinateur.',
   'pairing.nameSave': 'Enregistrer le nom',

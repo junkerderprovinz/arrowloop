@@ -1442,7 +1442,7 @@ const da: Translations = {
   'pairing.searchingLead': 'Sætningen er indtastet. Denne instans leder nu efter de andre.',
   'pairing.pairedLead': 'Du skal bruge de tolv ord til hver ny instans.',
   'pairing.aloneLead': 'Ingen anden instans har meldt sig i over et minut. Tjek, at den anden har indtastet disse ord og bruger samme videresender.',
-  'pairing.noPasswordHint': 'Denne instans har ingen adgangskode. Alle, der kan åbne denne side, kan læse de tolv ord og med dem nå alle instanser i gruppen.',
+  'pairing.noPassword': 'Denne instans har ingen adgangskode. Alle, der kan åbne denne side, kan læse de tolv ord og med dem nå alle instanser i gruppen.',
   'pairing.nameLabel': 'Navn i gruppen',
   'pairing.nameHint': 'Det, de andre instanser kalder denne. Står feltet tomt, bruges computerens navn.',
   'pairing.nameSave': 'Gem navn',

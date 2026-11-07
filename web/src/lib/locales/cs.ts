@@ -1442,7 +1442,7 @@ const cs: Translations = {
   'pairing.searchingLead': 'Fráze zadána. Tato instance teď hledá ostatní.',
   'pairing.pairedLead': 'Dvanáct slov potřebuješ pro každou další instanci.',
   'pairing.aloneLead': 'Žádná další instance se přes minutu neozvala. Zkontroluj, že ta druhá zadala tato slova a používá stejný přeposílač.',
-  'pairing.noPasswordHint': 'Tato instance nemá heslo. Kdokoli, kdo může otevřít tuto stránku, může přečíst dvanáct slov a s nimi se dostat ke každé instanci ve skupině.',
+  'pairing.noPassword': 'Tato instance nemá heslo. Kdokoli, kdo může otevřít tuto stránku, může přečíst dvanáct slov a s nimi se dostat ke každé instanci ve skupině.',
   'pairing.nameLabel': 'Název ve skupině',
   'pairing.nameHint': 'Jak tuto instanci nazývají ostatní. Když pole necháš prázdné, platí název počítače.',
   'pairing.nameSave': 'Uložit název',

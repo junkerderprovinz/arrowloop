@@ -45,6 +45,7 @@ describe('the settings strip', () => {
       '/settings/safety',
       '/settings/targets',
       '/settings/security',
+      '/settings/pairing',
       '/settings/apps',
       '/settings/info',
     ])
@@ -96,6 +97,7 @@ describe('the settings tiles', () => {
       '/settings/safety',
       '/settings/targets',
       '/settings/security',
+      '/settings/pairing',
       '/settings/apps',
       '/settings/info',
     ])
@@ -166,11 +168,18 @@ describe('the settings tiles', () => {
 })
 
 describe('the tile order', () => {
-  const ids = (saved: string[], security = true) => orderTiles(settingsTiles(security), saved).map((x) => x.id)
+  const ids = (saved: string[], security = true, pairing = false) =>
+    orderTiles(settingsTiles(security, pairing), saved).map((x) => x.id)
 
   it('puts a tile the stored order does not know after the one before it in the app', () => {
     expect(ids(['info', 'general', 'look', 'sync', 'safety', 'targets', 'apps'])).toEqual([
       'info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'apps',
+    ])
+  })
+
+  it('puts Pairing after Security for an order stored before it existed', () => {
+    expect(ids(['info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'apps'], true, true)).toEqual([
+      'info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'pairing', 'apps',
     ])
   })
 

@@ -2,6 +2,7 @@ import { useMemo, useSyncExternalStore, type ComponentType } from 'react'
 
 import {
   IconInfo,
+  IconLink,
   IconShieldOn,
   IconSync,
   IconTabApp,
@@ -26,17 +27,21 @@ const TILES: Record<TileId, Tile> = {
   safety: { id: 'safety', labelKey: 'settings.safetyNet', icon: IconShieldOn },
   targets: { id: 'targets', labelKey: 'nav.targets', icon: IconTabStorage },
   security: { id: 'security', labelKey: 'settings.security', icon: IconTabSecurity },
+  pairing: { id: 'pairing', labelKey: 'settings.pairing', icon: IconLink },
   apps: { id: 'apps', labelKey: 'settings.apps', icon: IconTabApp },
   info: { id: 'info', labelKey: 'settings.info', icon: IconInfo },
 }
 
 /**
  * The tiles this build offers. Security is left out where the interface cannot
- * keep a password of its own, the desktop window; `security` is null while
- * nobody has asked yet, which keeps the tile so its address does not bounce.
+ * keep a password of its own, the desktop window, and Pairing where the engine
+ * cannot be paired; either is null while nobody has asked yet, which keeps the
+ * tile so its address does not bounce.
  */
-export function settingsTiles(security: boolean | null): Tile[] {
-  return TILE_IDS.filter((id) => id !== 'security' || security !== false).map((id) => TILES[id])
+export function settingsTiles(security: boolean | null, pairing: boolean | null = null): Tile[] {
+  return TILE_IDS.filter((id) => (id !== 'security' || security !== false) && (id !== 'pairing' || pairing !== false)).map(
+    (id) => TILES[id],
+  )
 }
 
 /** A name the settings carried in an earlier version, and the tile that holds it. */

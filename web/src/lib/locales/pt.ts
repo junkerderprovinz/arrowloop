@@ -1442,7 +1442,7 @@ const pt: Translations = {
   'pairing.searchingLead': 'Frase introduzida. Esta instância está agora à procura das outras.',
   'pairing.pairedLead': 'Precisas das doze palavras para cada instância seguinte.',
   'pairing.aloneLead': 'Há mais de um minuto que nenhuma outra instância aparece. Verifica se a outra introduziu estas palavras e usa o mesmo relay.',
-  'pairing.noPasswordHint': 'Esta instância não tem palavra-passe. Quem conseguir abrir esta página pode ler as doze palavras e, com elas, chegar a todas as instâncias do grupo.',
+  'pairing.noPassword': 'Esta instância não tem palavra-passe. Quem conseguir abrir esta página pode ler as doze palavras e, com elas, chegar a todas as instâncias do grupo.',
   'pairing.nameLabel': 'Nome no grupo',
   'pairing.nameHint': 'O nome que as outras instâncias dão a esta. Se ficar vazio, vale o nome do computador.',
   'pairing.nameSave': 'Guardar nome',

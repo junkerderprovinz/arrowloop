@@ -1442,7 +1442,7 @@ const it: Translations = {
   'pairing.searchingLead': 'Frase inserita. Questa istanza ora cerca le altre.',
   'pairing.pairedLead': 'Le dodici parole ti servono per ogni nuova istanza.',
   'pairing.aloneLead': 'Nessun\'altra istanza si è fatta viva da più di un minuto. Controlla che l\'altra abbia inserito queste parole e usi lo stesso relay.',
-  'pairing.noPasswordHint': 'Questa istanza non ha una password. Chiunque possa aprire questa pagina può leggere le dodici parole e con esse raggiungere ogni istanza del gruppo.',
+  'pairing.noPassword': 'Questa istanza non ha una password. Chiunque possa aprire questa pagina può leggere le dodici parole e con esse raggiungere ogni istanza del gruppo.',
   'pairing.nameLabel': 'Nome nel gruppo',
   'pairing.nameHint': 'Come le altre istanze chiamano questa. Se resta vuoto, vale il nome del computer.',
   'pairing.nameSave': 'Salva nome',

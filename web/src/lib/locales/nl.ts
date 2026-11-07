@@ -1442,7 +1442,7 @@ const nl: Translations = {
   'pairing.searchingLead': 'Frase ingevoerd. Deze instantie zoekt nu naar de andere.',
   'pairing.pairedLead': 'De twaalf woorden heb je nodig voor elke volgende instantie.',
   'pairing.aloneLead': 'Al meer dan een minuut meldt zich geen andere instantie. Kijk of de andere deze woorden heeft ingevoerd en dezelfde relay gebruikt.',
-  'pairing.noPasswordHint': 'Deze instantie heeft geen wachtwoord. Wie deze pagina kan openen, kan de twaalf woorden lezen en daarmee elke instantie van de groep bereiken.',
+  'pairing.noPassword': 'Deze instantie heeft geen wachtwoord. Wie deze pagina kan openen, kan de twaalf woorden lezen en daarmee elke instantie van de groep bereiken.',
   'pairing.nameLabel': 'Naam in de groep',
   'pairing.nameHint': 'Zo noemen de andere instanties deze. Blijft het veld leeg, dan geldt de naam van de computer.',
   'pairing.nameSave': 'Naam opslaan',

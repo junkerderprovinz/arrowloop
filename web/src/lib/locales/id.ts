@@ -1442,7 +1442,7 @@ const id: Translations = {
   'pairing.searchingLead': 'Frasa sudah dimasukkan. Instance ini sekarang mencari instance lainnya.',
   'pairing.pairedLead': 'Anda memerlukan dua belas kata itu untuk setiap instance berikutnya.',
   'pairing.aloneLead': 'Tidak ada instance lain yang muncul selama lebih dari satu menit. Periksa apakah instance lain sudah memasukkan kata-kata ini dan memakai relay yang sama.',
-  'pairing.noPasswordHint': 'Instance ini tidak punya kata sandi. Siapa pun yang bisa membuka halaman ini bisa membaca dua belas kata itu dan dengannya menjangkau setiap instance di grup.',
+  'pairing.noPassword': 'Instance ini tidak punya kata sandi. Siapa pun yang bisa membuka halaman ini bisa membaca dua belas kata itu dan dengannya menjangkau setiap instance di grup.',
   'pairing.nameLabel': 'Nama di grup',
   'pairing.nameHint': 'Nama yang dipakai instance lain untuk instance ini. Jika dibiarkan kosong, nama komputer yang dipakai.',
   'pairing.nameSave': 'Simpan nama',

@@ -1442,7 +1442,7 @@ const et: Translations = {
   'pairing.searchingLead': 'Fraas on sisestatud. See eksemplar otsib nüüd teisi.',
   'pairing.pairedLead': 'Kahtteist sõna on sul vaja iga järgmise eksemplari jaoks.',
   'pairing.aloneLead': 'Ükski teine eksemplar pole rohkem kui minuti jooksul ilmunud. Kontrolli, et teine on need sõnad sisestanud ja kasutab sama edastajat.',
-  'pairing.noPasswordHint': 'Sellel eksemplaril pole parooli. Igaüks, kes saab selle lehe avada, saab lugeda kahtteist sõna ja nendega jõuda grupi iga eksemplarini.',
+  'pairing.noPassword': 'Sellel eksemplaril pole parooli. Igaüks, kes saab selle lehe avada, saab lugeda kahtteist sõna ja nendega jõuda grupi iga eksemplarini.',
   'pairing.nameLabel': 'Nimi grupis',
   'pairing.nameHint': 'Mis nime all teised eksemplarid seda tunnevad. Kui väli jääb tühjaks, kehtib arvuti nimi.',
   'pairing.nameSave': 'Salvesta nimi',

@@ -1442,7 +1442,7 @@ const gl: Translations = {
   'pairing.searchingLead': 'Frase introducida. Esta instancia busca agora as demais.',
   'pairing.pairedLead': 'Precisas as doce palabras para cada instancia nova.',
   'pairing.aloneLead': 'Ningunha outra instancia apareceu en máis dun minuto. Comproba que a outra introduciu estas palabras e usa o mesmo relé.',
-  'pairing.noPasswordHint': 'Esta instancia non ten contrasinal. Calquera que poida abrir esta páxina pode ler as doce palabras e, con elas, chegar a todas as instancias do grupo.',
+  'pairing.noPassword': 'Esta instancia non ten contrasinal. Calquera que poida abrir esta páxina pode ler as doce palabras e, con elas, chegar a todas as instancias do grupo.',
   'pairing.nameLabel': 'Nome no grupo',
   'pairing.nameHint': 'Como chaman as outras instancias a esta. Se o deixas baleiro, usa o nome do ordenador.',
   'pairing.nameSave': 'Gardar nome',

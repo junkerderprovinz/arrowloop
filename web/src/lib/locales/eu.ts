@@ -1442,7 +1442,7 @@ const eu: Translations = {
   'pairing.searchingLead': 'Esaldia sartu da. Instantzia hau besteak bilatzen ari da orain.',
   'pairing.pairedLead': 'Hamabi hitzak behar dituzu instantzia berri bakoitzerako.',
   'pairing.aloneLead': 'Minutu bat baino gehiago da beste instantziarik agertu ez dela. Egiaztatu besteak hitz hauek sartu dituela eta bitartekari bera erabiltzen duela.',
-  'pairing.noPasswordHint': 'Instantzia honek ez du pasahitzik. Orri hau ireki dezakeen edonork hamabi hitzak irakur ditzake, eta haiekin taldeko instantzia guztietara iritsi.',
+  'pairing.noPassword': 'Instantzia honek ez du pasahitzik. Orri hau ireki dezakeen edonork hamabi hitzak irakur ditzake, eta haiekin taldeko instantzia guztietara iritsi.',
   'pairing.nameLabel': 'Izena taldean',
   'pairing.nameHint': 'Beste instantziek honi ematen dioten izena. Hutsik utziz gero, ordenagailuaren izena erabiltzen da.',
   'pairing.nameSave': 'Gorde izena',

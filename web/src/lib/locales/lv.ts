@@ -1442,7 +1442,7 @@ const lv: Translations = {
   'pairing.searchingLead': 'Frāze ievadīta. Šī instance tagad meklē pārējās.',
   'pairing.pairedLead': 'Divpadsmit vārdi tev vajadzīgi katrai nākamajai instancei.',
   'pairing.aloneLead': 'Jau vairāk nekā minūti nav parādījusies neviena cita instance. Pārbaudi, vai otrā instancē ievadīti šie vārdi un vai tā izmanto to pašu releju.',
-  'pairing.noPasswordHint': 'Šai instancei nav paroles. Ikviens, kas var atvērt šo lapu, var izlasīt divpadsmit vārdus un ar tiem piekļūt katrai grupas instancei.',
+  'pairing.noPassword': 'Šai instancei nav paroles. Ikviens, kas var atvērt šo lapu, var izlasīt divpadsmit vārdus un ar tiem piekļūt katrai grupas instancei.',
   'pairing.nameLabel': 'Nosaukums grupā',
   'pairing.nameHint': 'Tā šo instanci sauc pārējās. Ja lauks paliek tukšs, tiek izmantots datora nosaukums.',
   'pairing.nameSave': 'Saglabāt nosaukumu',

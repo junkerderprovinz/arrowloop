@@ -37,6 +37,17 @@ const RULES: Rule[] = [
   [/^twoFactor\.remove$/i, 'IconShieldOff'],
   [/^notify\.test$/i, 'IconSendTest'],
 
+  // Pairing: the words shown, entered and pasted, and the answers to an
+  // instance that waits for approval.
+  [/^pairing\.show$/i, 'IconEye'],
+  [/^pairing\.paste$/i, 'IconImport'],
+  [/^pairing\.join$/i, 'IconLink'],
+  [/^pairing\.leave$/i, 'IconSignOut'],
+  [/^pairing\.approve$/i, 'IconConfirm'],
+  [/^pairing\.refuse$/i, 'IconClose'],
+  [/^pairing\.remove$/i, 'IconKeyRevoke'],
+  [/^(pairing\.name|relay\.)save$/i, 'IconSave'],
+
   // The three answers to a conflict, for one or for all of them.
   [/^conflicts?\.(answer|all|keep)Both$/i, 'IconKeepBoth'],
   [/^conflicts?\.(answer|all|keep)Left$/i, 'IconKeepLeft'],

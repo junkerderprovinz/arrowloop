@@ -1442,7 +1442,7 @@ const lt: Translations = {
   'pairing.searchingLead': 'Frazė įvesta. Šis egzempliorius dabar ieško kitų.',
   'pairing.pairedLead': 'Dvylikos žodžių reikės kiekvienam kitam egzemplioriui.',
   'pairing.aloneLead': 'Jau daugiau nei minutę nepasirodė joks kitas egzempliorius. Patikrink, ar kitame įvesti šie žodžiai ir ar jis naudoja tą pačią relę.',
-  'pairing.noPasswordHint': 'Šis egzempliorius neturi slaptažodžio. Kiekvienas, galintis atidaryti šį puslapį, gali perskaityti dvylika žodžių ir su jais pasiekti kiekvieną grupės egzempliorių.',
+  'pairing.noPassword': 'Šis egzempliorius neturi slaptažodžio. Kiekvienas, galintis atidaryti šį puslapį, gali perskaityti dvylika žodžių ir su jais pasiekti kiekvieną grupės egzempliorių.',
   'pairing.nameLabel': 'Vardas grupėje',
   'pairing.nameHint': 'Taip šį egzempliorių vadina kiti. Palikus lauką tuščią, naudojamas kompiuterio vardas.',
   'pairing.nameSave': 'Išsaugoti vardą',

@@ -1442,7 +1442,7 @@ const tr: Translations = {
   'pairing.searchingLead': 'İfade girildi. Bu örnek şimdi diğerlerini arıyor.',
   'pairing.pairedLead': 'Sonraki her örnek için on iki kelimeye ihtiyacın var.',
   'pairing.aloneLead': 'Bir dakikadan uzun süredir başka bir örnek görünmedi. Diğerinin bu kelimeleri girip girmediğini ve aynı röleyi kullanıp kullanmadığını kontrol et.',
-  'pairing.noPasswordHint': 'Bu örneğin parolası yok. Bu sayfayı açabilen herkes on iki kelimeyi okuyabilir ve onlarla gruptaki her örneğe ulaşabilir.',
+  'pairing.noPassword': 'Bu örneğin parolası yok. Bu sayfayı açabilen herkes on iki kelimeyi okuyabilir ve onlarla gruptaki her örneğe ulaşabilir.',
   'pairing.nameLabel': 'Gruptaki ad',
   'pairing.nameHint': 'Diğer örneklerin bu örneğe verdiği ad. Boş bırakılırsa bilgisayarın adı kullanılır.',
   'pairing.nameSave': 'Adı kaydet',

@@ -66,6 +66,13 @@ export const RELEASES: Release[] = [
     after: '2.5.0',
     changes: [
       {
+        id: 'pairing',
+        at: ['/settings/pairing'],
+        where: ['nav.settings', 'settings.pairing'],
+        text: 'new.change.pairing',
+        names: { pairing: 'settings.pairing', settings: 'nav.settings', instances: 'nav.instances' },
+      },
+      {
         id: 'import-others',
         at: ['/settings/general'],
         where: ['nav.settings', 'settings.general'],

@@ -1442,7 +1442,7 @@ const no: Translations = {
   'pairing.searchingLead': 'Frasen er skrevet inn. Denne instansen leter nå etter de andre.',
   'pairing.pairedLead': 'Du trenger de tolv ordene for hver ny instans.',
   'pairing.aloneLead': 'Ingen annen instans har dukket opp på over ett minutt. Sjekk at den andre har skrevet inn disse ordene og bruker samme relé.',
-  'pairing.noPasswordHint': 'Denne instansen har ikke noe passord. Alle som kan åpne denne siden, kan lese de tolv ordene og med dem nå alle instansene i gruppen.',
+  'pairing.noPassword': 'Denne instansen har ikke noe passord. Alle som kan åpne denne siden, kan lese de tolv ordene og med dem nå alle instansene i gruppen.',
   'pairing.nameLabel': 'Navn i gruppen',
   'pairing.nameHint': 'Det de andre instansene kaller denne. Står feltet tomt, brukes navnet på datamaskinen.',
   'pairing.nameSave': 'Lagre navn',

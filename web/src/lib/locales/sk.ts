@@ -1442,7 +1442,7 @@ const sk: Translations = {
   'pairing.searchingLead': 'Fráza zadaná. Táto inštancia teraz hľadá ostatné.',
   'pairing.pairedLead': 'Dvanásť slov potrebuješ pre každú ďalšiu inštanciu.',
   'pairing.aloneLead': 'Už viac ako minútu sa neozvala žiadna iná inštancia. Skontroluj, či druhá zadala tieto slová a používa to isté relé.',
-  'pairing.noPasswordHint': 'Táto inštancia nemá heslo. Ktokoľvek, kto otvorí túto stránku, môže prečítať dvanásť slov a s nimi sa dostať ku každej inštancii v skupine.',
+  'pairing.noPassword': 'Táto inštancia nemá heslo. Ktokoľvek, kto otvorí túto stránku, môže prečítať dvanásť slov a s nimi sa dostať ku každej inštancii v skupine.',
   'pairing.nameLabel': 'Názov v skupine',
   'pairing.nameHint': 'Takto túto inštanciu volajú ostatné. Ak pole ostane prázdne, platí názov počítača.',
   'pairing.nameSave': 'Uložiť názov',

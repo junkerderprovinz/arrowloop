@@ -1442,7 +1442,7 @@ const ro: Translations = {
   'pairing.searchingLead': 'Fraza a fost introdusă. Această instanță le caută acum pe celelalte.',
   'pairing.pairedLead': 'Ai nevoie de cele douăsprezece cuvinte pentru fiecare instanță nouă.',
   'pairing.aloneLead': 'De peste un minut nu a apărut nicio altă instanță. Verifică dacă cealaltă a introdus aceste cuvinte și folosește același releu.',
-  'pairing.noPasswordHint': 'Această instanță nu are parolă. Oricine poate deschide această pagină poate citi cele douăsprezece cuvinte și, cu ele, poate ajunge la fiecare instanță din grup.',
+  'pairing.noPassword': 'Această instanță nu are parolă. Oricine poate deschide această pagină poate citi cele douăsprezece cuvinte și, cu ele, poate ajunge la fiecare instanță din grup.',
   'pairing.nameLabel': 'Nume în grup',
   'pairing.nameHint': 'Numele sub care o cunosc celelalte instanțe. Dacă rămâne gol, se folosește numele calculatorului.',
   'pairing.nameSave': 'Salvează numele',

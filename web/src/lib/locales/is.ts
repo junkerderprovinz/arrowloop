@@ -1442,7 +1442,7 @@ const is: Translations = {
   'pairing.searchingLead': 'Setningin er komin inn. Þetta tilvik leitar nú að hinum.',
   'pairing.pairedLead': 'Þú þarft orðin tólf fyrir hvert nýtt tilvik.',
   'pairing.aloneLead': 'Ekkert annað tilvik hefur birst í meira en mínútu. Athugaðu hvort hitt hafi slegið inn þessi orð og noti sama relay.',
-  'pairing.noPasswordHint': 'Þetta tilvik er ekki með lykilorð. Hver sem getur opnað þessa síðu getur lesið orðin tólf og með þeim náð í öll tilvik í hópnum.',
+  'pairing.noPassword': 'Þetta tilvik er ekki með lykilorð. Hver sem getur opnað þessa síðu getur lesið orðin tólf og með þeim náð í öll tilvik í hópnum.',
   'pairing.nameLabel': 'Nafn í hópnum',
   'pairing.nameHint': 'Það sem hin tilvikin kalla þetta. Sé reiturinn tómur gildir nafn tölvunnar.',
   'pairing.nameSave': 'Vista nafn',

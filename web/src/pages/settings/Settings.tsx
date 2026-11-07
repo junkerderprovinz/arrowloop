@@ -7,6 +7,7 @@ import { Security } from '../Security'
 import { GeneralPage } from './GeneralPage'
 import { InfoPage } from './InfoPage'
 import { LookPage, type LookProps } from './LookPage'
+import { PairingPage } from './PairingPage'
 import { SafetyPage } from './SafetyPage'
 import { ACROSS, SettingsRail, useMatch } from './SettingsRail'
 import { jumpTarget, markHit, onJump, SettingsSearch, takeJump } from './SettingsSearch'
@@ -128,6 +129,8 @@ function TilePage({ tile, look, version, window, onWindow, targets, whatsNew }: 
       return <TargetsTile page={targets} />
     case 'security':
       return <Security />
+    case 'pairing':
+      return <PairingPage />
     case 'apps':
       return <Apps version={version} desktop={window !== null} />
     case 'info':

@@ -1442,7 +1442,7 @@ const vi: Translations = {
   'pairing.searchingLead': 'Đã nhập cụm từ. Phiên bản này đang tìm các phiên bản khác.',
   'pairing.pairedLead': 'Bạn cần mười hai từ này cho mỗi phiên bản tiếp theo.',
   'pairing.aloneLead': 'Đã hơn một phút mà không có phiên bản nào khác xuất hiện. Hãy kiểm tra xem phiên bản kia đã nhập các từ này và dùng cùng relay chưa.',
-  'pairing.noPasswordHint': 'Phiên bản này không có mật khẩu. Bất kỳ ai mở được trang này đều đọc được mười hai từ và dùng chúng để tới mọi phiên bản trong nhóm.',
+  'pairing.noPassword': 'Phiên bản này không có mật khẩu. Bất kỳ ai mở được trang này đều đọc được mười hai từ và dùng chúng để tới mọi phiên bản trong nhóm.',
   'pairing.nameLabel': 'Tên trong nhóm',
   'pairing.nameHint': 'Tên mà các phiên bản khác gọi phiên bản này. Nếu để trống, tên máy tính sẽ được dùng.',
   'pairing.nameSave': 'Lưu tên',

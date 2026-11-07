@@ -1442,7 +1442,7 @@ const hu: Translations = {
   'pairing.searchingLead': 'A jelmondat megadva. Ez a példány most keresi a többit.',
   'pairing.pairedLead': 'A tizenkét szóra minden további példánynál szükséged van.',
   'pairing.aloneLead': 'Több mint egy perce nem jelentkezett másik példány. Nézd meg, hogy a másik megadta-e ezeket a szavakat, és ugyanazt a relayt használja-e.',
-  'pairing.noPasswordHint': 'Ennek a példánynak nincs jelszava. Bárki, aki meg tudja nyitni ezt az oldalt, elolvashatja a tizenkét szót, és velük a csoport minden példányát elérheti.',
+  'pairing.noPassword': 'Ennek a példánynak nincs jelszava. Bárki, aki meg tudja nyitni ezt az oldalt, elolvashatja a tizenkét szót, és velük a csoport minden példányát elérheti.',
   'pairing.nameLabel': 'Név a csoportban',
   'pairing.nameHint': 'Ahogy a többi példány ezt nevezi. Ha üresen hagyod, a számítógép neve érvényes.',
   'pairing.nameSave': 'Név mentése',

@@ -1442,7 +1442,7 @@ const ca: Translations = {
   'pairing.searchingLead': 'Frase introduïda. Aquesta instància ara cerca les altres.',
   'pairing.pairedLead': 'Necessites les dotze paraules per a cada instància nova.',
   'pairing.aloneLead': 'Cap altra instància no ha aparegut en més d\'un minut. Comprova que l\'altra hagi introduït aquestes paraules i faci servir el mateix repetidor.',
-  'pairing.noPasswordHint': 'Aquesta instància no té contrasenya. Qualsevol que pugui obrir aquesta pàgina pot llegir les dotze paraules i, amb elles, arribar a totes les instàncies del grup.',
+  'pairing.noPassword': 'Aquesta instància no té contrasenya. Qualsevol que pugui obrir aquesta pàgina pot llegir les dotze paraules i, amb elles, arribar a totes les instàncies del grup.',
   'pairing.nameLabel': 'Nom al grup',
   'pairing.nameHint': 'Com anomenen aquesta les altres instàncies. Si el deixes buit, s\'hi usa el nom de l\'ordinador.',
   'pairing.nameSave': 'Desa el nom',

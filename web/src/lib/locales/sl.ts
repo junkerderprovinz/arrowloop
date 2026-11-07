@@ -1442,7 +1442,7 @@ const sl: Translations = {
   'pairing.searchingLead': 'Fraza je vnesena. Ta instanca zdaj išče ostale.',
   'pairing.pairedLead': 'Dvanajst besed potrebuješ za vsako nadaljnjo instanco.',
   'pairing.aloneLead': 'Že več kot minuto se ni oglasila nobena druga instanca. Preveri, ali je druga vnesla te besede in uporablja isti rele.',
-  'pairing.noPasswordHint': 'Ta instanca nima gesla. Kdor lahko odpre to stran, lahko prebere dvanajst besed in z njimi doseže vsako instanco v skupini.',
+  'pairing.noPassword': 'Ta instanca nima gesla. Kdor lahko odpre to stran, lahko prebere dvanajst besed in z njimi doseže vsako instanco v skupini.',
   'pairing.nameLabel': 'Ime v skupini',
   'pairing.nameHint': 'Tako to instanco kličejo ostale. Če polje ostane prazno, velja ime računalnika.',
   'pairing.nameSave': 'Shrani ime',

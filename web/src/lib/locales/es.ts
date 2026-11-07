@@ -1442,7 +1442,7 @@ const es: Translations = {
   'pairing.searchingLead': 'Frase introducida. Esta instancia busca ahora a las demás.',
   'pairing.pairedLead': 'Necesitas las doce palabras para cada instancia nueva.',
   'pairing.aloneLead': 'Ninguna otra instancia ha aparecido en más de un minuto. Comprueba que la otra haya introducido estas palabras y use el mismo repetidor.',
-  'pairing.noPasswordHint': 'Esta instancia no tiene contraseña. Cualquiera que pueda abrir esta página puede leer las doce palabras y, con ellas, llegar a todas las instancias del grupo.',
+  'pairing.noPassword': 'Esta instancia no tiene contraseña. Cualquiera que pueda abrir esta página puede leer las doce palabras y, con ellas, llegar a todas las instancias del grupo.',
   'pairing.nameLabel': 'Nombre en el grupo',
   'pairing.nameHint': 'Cómo llaman las demás instancias a esta. Si lo dejas vacío, usa el nombre del ordenador.',
   'pairing.nameSave': 'Guardar nombre',

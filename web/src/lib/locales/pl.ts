@@ -1442,7 +1442,7 @@ const pl: Translations = {
   'pairing.searchingLead': 'Fraza wpisana. Ta instancja szuka teraz pozostałych.',
   'pairing.pairedLead': 'Dwanaście słów będzie ci potrzebne dla każdej kolejnej instancji.',
   'pairing.aloneLead': 'Od ponad minuty nie pojawiła się żadna inna instancja. Sprawdź, czy na drugiej wpisano te słowa i czy używa tego samego przekaźnika.',
-  'pairing.noPasswordHint': 'Ta instancja nie ma hasła. Każdy, kto może otworzyć tę stronę, może odczytać dwanaście słów i dzięki nim dotrzeć do każdej instancji w grupie.',
+  'pairing.noPassword': 'Ta instancja nie ma hasła. Każdy, kto może otworzyć tę stronę, może odczytać dwanaście słów i dzięki nim dotrzeć do każdej instancji w grupie.',
   'pairing.nameLabel': 'Nazwa w grupie',
   'pairing.nameHint': 'Tak nazywają tę instancję pozostałe. Jeśli pole zostanie puste, używana jest nazwa komputera.',
   'pairing.nameSave': 'Zapisz nazwę',

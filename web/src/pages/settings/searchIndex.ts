@@ -170,6 +170,13 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
     { title: 'twoFactor.title', hint: 'twoFactor.hint', rows: [] },
     { title: 'passkey.title', hint: 'passkey.hint', rows: [] },
   ],
+  pairing: [
+    { title: 'pairing.howTitle', rows: [], body: ['pairing.step1Body', 'pairing.step3Body'] },
+    { title: 'pairing.phraseTitle', hint: 'pairing.phraseHint', rows: [{ key: 'pairing.create' }, { key: 'pairing.enter' }, { key: 'pairing.show' }, { key: 'pairing.nameLabel', hint: 'pairing.nameHint' }] },
+    { title: 'pairing.groupTitle', hint: 'pairing.groupHint', rows: [{ key: 'pairing.pendingTitle', hint: 'pairing.pendingTip' }] },
+    { title: 'nav.instances', hint: 'instances.hint', rows: [SIDEBAR_ROW] },
+    { title: 'relay.title', hint: 'relay.hint', rows: [{ key: 'relay.project' }, { key: 'relay.own' }, { key: 'relay.off' }] },
+  ],
   apps: [
     { title: 'apps.serverTitle', hint: 'apps.serverHint', rows: [] },
     { title: 'apps.desktopTitle', hint: 'apps.desktopHint', rows: [] },

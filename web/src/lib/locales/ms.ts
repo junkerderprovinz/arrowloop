@@ -1442,7 +1442,7 @@ const ms: Translations = {
   'pairing.searchingLead': 'Frasa dimasukkan. Instans ini sedang mencari instans lain.',
   'pairing.pairedLead': 'Anda memerlukan dua belas perkataan ini untuk setiap instans seterusnya.',
   'pairing.aloneLead': 'Tiada instans lain muncul selama lebih daripada seminit. Semak sama ada instans yang lain telah memasukkan perkataan ini dan menggunakan relay yang sama.',
-  'pairing.noPasswordHint': 'Instans ini tiada kata laluan. Sesiapa yang boleh membuka halaman ini boleh membaca dua belas perkataan itu dan dengannya mencapai setiap instans dalam kumpulan.',
+  'pairing.noPassword': 'Instans ini tiada kata laluan. Sesiapa yang boleh membuka halaman ini boleh membaca dua belas perkataan itu dan dengannya mencapai setiap instans dalam kumpulan.',
   'pairing.nameLabel': 'Nama dalam kumpulan',
   'pairing.nameHint': 'Nama yang digunakan oleh instans lain untuk instans ini. Jika dibiarkan kosong, nama komputer digunakan.',
   'pairing.nameSave': 'Simpan nama',

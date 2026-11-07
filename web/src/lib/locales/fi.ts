@@ -1442,7 +1442,7 @@ const fi: Translations = {
   'pairing.searchingLead': 'Lause on syötetty. Tämä instanssi etsii nyt muita.',
   'pairing.pairedLead': 'Tarvitset kaksitoista sanaa jokaista uutta instanssia varten.',
   'pairing.aloneLead': 'Yksikään toinen instanssi ei ole ilmoittautunut yli minuuttiin. Tarkista, että toinen on syöttänyt nämä sanat ja käyttää samaa relettä.',
-  'pairing.noPasswordHint': 'Tällä instanssilla ei ole salasanaa. Kuka tahansa, joka voi avata tämän sivun, voi lukea kaksitoista sanaa ja päästä niillä ryhmän jokaiseen instanssiin.',
+  'pairing.noPassword': 'Tällä instanssilla ei ole salasanaa. Kuka tahansa, joka voi avata tämän sivun, voi lukea kaksitoista sanaa ja päästä niillä ryhmän jokaiseen instanssiin.',
   'pairing.nameLabel': 'Nimi ryhmässä',
   'pairing.nameHint': 'Nimi, jolla muut instanssit kutsuvat tätä. Jos kenttä jää tyhjäksi, käytetään tietokoneen nimeä.',
   'pairing.nameSave': 'Tallenna nimi',

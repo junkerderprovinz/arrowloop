@@ -1442,7 +1442,7 @@ const zh: Translations = {
   'pairing.searchingLead': '口令已输入。此实例正在寻找其他实例。',
   'pairing.pairedLead': '每添加一个实例，都需要这十二个单词。',
   'pairing.aloneLead': '已经超过一分钟没有其他实例出现。请检查另一个实例是否输入了这些单词，并使用同一个中继。',
-  'pairing.noPasswordHint': '此实例没有密码。任何能打开这个页面的人都能读取这十二个单词，并借此访问组内的每个实例。',
+  'pairing.noPassword': '此实例没有密码。任何能打开这个页面的人都能读取这十二个单词，并借此访问组内的每个实例。',
   'pairing.nameLabel': '在组中的名称',
   'pairing.nameHint': '其他实例对这个实例的称呼。留空时使用计算机的名称。',
   'pairing.nameSave': '保存名称',
