@@ -30,6 +30,7 @@ export function Menu({
   hueIndex,
   glyph,
   size,
+  glyphOnly,
 }: {
   label: string
   labelKey: TranslationKey
@@ -38,6 +39,8 @@ export function Menu({
   glyph?: ReactNode
   /** The key height, for a menu standing among the page actions. */
   size?: 'default' | 'key'
+  /** The glyph without its word, where a row has no room for words. */
+  glyphOnly?: boolean
 }) {
   const trigger = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
@@ -53,7 +56,7 @@ export function Menu({
 
   return (
     <>
-      <IconAction ref={trigger} title={label} labelKey={labelKey} hueIndex={hueIndex} size={size} className={size === 'key' && narrow ? 'glim-glyph-only' : ''} onClick={() => setOpen((was) => !was)}>
+      <IconAction ref={trigger} title={label} labelKey={labelKey} hueIndex={hueIndex} size={size} className={(size === 'key' && narrow) || glyphOnly ? 'glim-glyph-only' : ''} onClick={() => setOpen((was) => !was)}>
         {glyph}
       </IconAction>
       {open && <MenuPanel label={label} items={items} anchor={trigger} onClose={() => setOpen(false)} />}
