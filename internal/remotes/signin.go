@@ -221,6 +221,7 @@ func checkSettings(ctx context.Context, backend string, settings map[string]stri
 	f, err := rclonefs.NewFs(ctx, connectionString(backend, settings)+folder)
 	if err == nil {
 		err = listRoot(ctx, f, backend, folder)
+		release(ctx, f)
 	} else {
 		err = checkErr(ctx, err)
 	}
