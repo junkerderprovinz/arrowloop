@@ -1062,6 +1062,8 @@ const tr: Translations = {
   'look.appearance': 'Görünüm',
   'look.design': 'Tema',
   'look.system': 'Sistem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Koyu görünümü OLED ve AMOLED ekranlar için gerçek siyaha çevirir.',
   'look.barLabelsWeb': 'Dar bir pencerede kenar çubuğunun yerini alan çubuk. Yalnızca dar pencerelerde etkilidir.',
   'workload.retries': 'Yeniden denemeler',
   'safety.brakes': 'Frenler',
@@ -1348,6 +1350,7 @@ const tr: Translations = {
   'jobs.moveDown': 'Aşağı taşı',
   'new.change.jobOrder': 'İşleri kendi sıranıza koyabilirsiniz: bir işi tutamacından sürükleyin ya da üzerinde Alt ve bir ok tuşuna basın. Telefonda bir işe basılı tutup sürükleyin. {history}, {trash} ve {conflicts} işleri aynı sırayla gösterir.',
   'new.change.jobsCompact': 'İş listesinin üstündeki {compact}, her işi tek satırda gösterir: durum, son çalıştırma, {runNow} ve {more}. Bu cihaz seçiminizi hatırlar.',
+  'new.change.oled': '{design} altındaki {oled}, OLED ve AMOLED ekranlar için koyu görünümü gerçek siyaha çevirir. Koyu görünüm göründüğü her an geçerlidir, sistemi izlediğinde de, ve her cihaz kendi seçimini hatırlar.',
 }
 
 export default tr

@@ -1062,6 +1062,8 @@ const sl: Translations = {
   'look.appearance': 'Videz',
   'look.design': 'Zasnova',
   'look.system': 'Sistem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Temni videz preklopi na pravo črno za zaslone OLED in AMOLED.',
   'look.barLabelsWeb': 'Vrstica, ki v ozkem oknu zavzame mesto stranske vrstice. Velja samo v ozkih oknih.',
   'workload.retries': 'Ponovni poskusi',
   'safety.brakes': 'Zavore',
@@ -1348,6 +1350,7 @@ const sl: Translations = {
   'jobs.moveDown': 'Premakni dol',
   'new.change.jobOrder': 'Opravila lahko razvrstiš po svoje: povleci opravilo za ročaj ali na njem pritisni Alt in puščico. Na telefonu opravilo pridrži in ga povleci. {history}, {trash} in {conflicts} prikazujejo opravila v enakem vrstnem redu.',
   'new.change.jobsCompact': '{compact} na vrhu seznama opravil prikaže vsako opravilo v eni vrstici: stanje, zadnji zagon, {runNow} in {more}. Ta naprava si zapomni tvojo izbiro.',
+  'new.change.oled': '{oled} pod {design} preklopi temni videz na pravo črno za zaslone OLED in AMOLED. Velja vedno, ko je temni videz viden, tudi ko sledi sistemu, in vsaka naprava si zapomni svojo izbiro.',
 }
 
 export default sl

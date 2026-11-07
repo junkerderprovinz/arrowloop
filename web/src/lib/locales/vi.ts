@@ -1062,6 +1062,8 @@ const vi: Translations = {
   'look.appearance': 'Diện mạo',
   'look.design': 'Chủ đề',
   'look.system': 'Hệ thống',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Chuyển giao diện tối sang màu đen tuyệt đối, cho màn hình OLED và AMOLED.',
   'look.barLabelsWeb': 'Thanh thay chỗ thanh bên trong cửa sổ hẹp. Chỉ có tác dụng với cửa sổ hẹp.',
   'workload.retries': 'Thử lại',
   'safety.brakes': 'Phanh',
@@ -1348,6 +1350,7 @@ const vi: Translations = {
   'jobs.moveDown': 'Chuyển xuống',
   'new.change.jobOrder': 'Bạn có thể sắp xếp công việc theo thứ tự của mình: kéo một công việc bằng tay nắm của nó, hoặc nhấn Alt và một phím mũi tên trên đó. Trên điện thoại, nhấn giữ một công việc rồi kéo. {history}, {trash} và {conflicts} hiển thị công việc theo cùng thứ tự.',
   'new.change.jobsCompact': '{compact} ở đầu danh sách công việc hiển thị mỗi công việc trên một dòng: trạng thái, lần chạy gần nhất, {runNow} và {more}. Thiết bị này ghi nhớ lựa chọn của bạn.',
+  'new.change.oled': '{oled} dưới {design} chuyển giao diện tối sang màu đen tuyệt đối cho màn hình OLED và AMOLED. Tùy chọn áp dụng mỗi khi giao diện tối hiển thị, cả khi theo hệ thống, và mỗi thiết bị nhớ lựa chọn của riêng mình.',
 }
 
 export default vi

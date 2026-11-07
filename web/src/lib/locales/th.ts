@@ -1062,6 +1062,8 @@ const th: Translations = {
   'look.appearance': 'ลักษณะที่ปรากฏ',
   'look.design': 'ธีม',
   'look.system': 'ตามระบบ',
+  'look.oled': 'OLED',
+  'look.oledHint': 'เปลี่ยนรูปแบบมืดเป็นสีดำสนิท สำหรับหน้าจอ OLED และ AMOLED',
   'look.barLabelsWeb': 'แถบที่มาแทนแถบด้านข้างในหน้าต่างแคบ มีผลเฉพาะหน้าต่างแคบ',
   'workload.retries': 'การลองใหม่',
   'safety.brakes': 'เบรก',
@@ -1348,6 +1350,7 @@ const th: Translations = {
   'jobs.moveDown': 'เลื่อนลง',
   'new.change.jobOrder': 'คุณจัดลำดับงานเองได้ ลากงานที่จุดจับ หรือกด Alt กับปุ่มลูกศรบนงานนั้น บนโทรศัพท์ให้กดค้างที่งานแล้วลาก {history} {trash} และ {conflicts} แสดงงานตามลำดับเดียวกัน',
   'new.change.jobsCompact': '{compact} ที่ด้านบนของรายการงานจะแสดงงานละหนึ่งแถว พร้อมสถานะ การทำงานครั้งล่าสุด {runNow} และ {more} อุปกรณ์นี้จะจำตัวเลือกของคุณไว้',
+  'new.change.oled': '{oled} ใต้ {design} เปลี่ยนรูปแบบมืดเป็นสีดำสนิทสำหรับหน้าจอ OLED และ AMOLED ใช้ทุกครั้งที่รูปแบบมืดแสดงอยู่ รวมถึงตอนที่ตามระบบ และแต่ละอุปกรณ์จำตัวเลือกของตัวเอง',
 }
 
 export default th

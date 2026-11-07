@@ -1062,6 +1062,8 @@ const es: Translations = {
   'look.appearance': 'Apariencia',
   'look.design': 'Diseño',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Pone el aspecto oscuro en negro puro, para pantallas OLED y AMOLED.',
   'look.barLabelsWeb': 'La barra que ocupa el lugar de la barra lateral en una ventana estrecha. Solo afecta a las ventanas estrechas.',
   'workload.retries': 'Reintentos',
   'safety.brakes': 'Frenos',
@@ -1348,6 +1350,7 @@ const es: Translations = {
   'jobs.moveDown': 'Bajar',
   'new.change.jobOrder': 'Puedes poner las tareas en tu propio orden: arrastra una por su asa o pulsa Alt y una flecha sobre ella. En el teléfono, mantén pulsada una tarea y arrástrala. {history}, {trash} y {conflicts} muestran las tareas en el mismo orden.',
   'new.change.jobsCompact': '{compact}, arriba en la lista de tareas, muestra cada tarea en una fila, con su estado, su última ejecución, {runNow} y {more}. Este dispositivo recuerda tu elección.',
+  'new.change.oled': '{oled}, bajo {design}, pone el aspecto oscuro en negro puro para pantallas OLED y AMOLED. Vale siempre que se ve el aspecto oscuro, también cuando sigue al sistema, y cada dispositivo recuerda su propia elección.',
 }
 
 export default es

@@ -1062,6 +1062,8 @@ const ar: Translations = {
   'look.appearance': 'مظهر الواجهة',
   'look.design': 'السمة',
   'look.system': 'النظام',
+  'look.oled': 'OLED',
+  'look.oledHint': 'يجعل المظهر الداكن أسود حقيقيًا لشاشات OLED وAMOLED.',
   'look.barLabelsWeb': 'الشريط الذي يحلّ محل الشريط الجانبي في النافذة الضيقة. يؤثر في النوافذ الضيقة فقط.',
   'workload.retries': 'إعادة المحاولة',
   'safety.brakes': 'المكابح',
@@ -1348,6 +1350,7 @@ const ar: Translations = {
   'jobs.moveDown': 'نقل لأسفل',
   'new.change.jobOrder': 'يمكنك ترتيب المهام كما تريد: اسحب مهمة من مقبضها، أو اضغط Alt ومفتاح سهم عليها. على الهاتف اضغط مطولًا على مهمة واسحبها. تعرض {history} و{trash} و{conflicts} المهام بالترتيب نفسه.',
   'new.change.jobsCompact': 'يعرض {compact} في أعلى قائمة المهام كل مهمة في سطر واحد، مع حالتها وآخر تشغيل لها و{runNow} و{more}. يتذكر هذا الجهاز اختيارك.',
+  'new.change.oled': '{oled} تحت {design} يجعل المظهر الداكن أسود حقيقيًا لشاشات OLED وAMOLED. يعمل كلما ظهر المظهر الداكن، حتى عندما يتبع النظام، ويحتفظ كل جهاز باختياره.',
 }
 
 export default ar

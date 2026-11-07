@@ -1062,6 +1062,8 @@ const ja: Translations = {
   'look.appearance': '表示',
   'look.design': 'デザイン',
   'look.system': 'システム',
+  'look.oled': 'OLED',
+  'look.oledHint': 'OLED と AMOLED の画面向けに、暗いデザインを真っ黒にします。',
   'look.barLabelsWeb': '幅の狭いウィンドウで、サイドバーの代わりに表示されるバーです。狭いウィンドウでのみ有効です。',
   'workload.retries': '再試行',
   'safety.brakes': 'ブレーキ',
@@ -1348,6 +1350,7 @@ const ja: Translations = {
   'jobs.moveDown': '下へ移動',
   'new.change.jobOrder': 'ジョブを好きな順序に並べられます。ハンドルをつかんでドラッグするか、ジョブ上で Alt と矢印キーを押します。スマートフォンではジョブを長押ししてドラッグします。{history}、{trash}、{conflicts} も同じ順序でジョブを表示します。',
   'new.change.jobsCompact': 'ジョブ一覧の上にある {compact} では、各ジョブを 1 行で表示します。状態、最後の実行、{runNow}、{more} が並びます。選択はこのデバイスが覚えます。',
+  'new.change.oled': '{design} の下にある {oled} は、OLED と AMOLED の画面向けに暗いデザインを真っ黒にします。システムに合わせているときも含め、暗いデザインが表示されているあいだ有効で、選択はデバイスごとに覚えます。',
 }
 
 export default ja

@@ -1062,6 +1062,8 @@ const sv: Translations = {
   'look.appearance': 'Utseende',
   'look.design': 'Design',
   'look.system': 'System',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Ger det mörka utseendet äkta svart, för OLED- och AMOLED-skärmar.',
   'look.barLabelsWeb': 'Raden som tar sidofältets plats i ett smalt fönster. Gäller bara smala fönster.',
   'workload.retries': 'Nya försök',
   'safety.brakes': 'Bromsar',
@@ -1348,6 +1350,7 @@ const sv: Translations = {
   'jobs.moveDown': 'Flytta ned',
   'new.change.jobOrder': 'Du kan ordna jobben i din egen ordning: dra ett jobb i dess handtag, eller tryck Alt och en piltangent på det. På telefonen håller du in ett jobb och drar det. {history}, {trash} och {conflicts} visar jobben i samma ordning.',
   'new.change.jobsCompact': '{compact} överst i jobblistan visar varje jobb på en rad: status, senaste körning, {runNow} och {more}. Den här enheten kommer ihåg ditt val.',
+  'new.change.oled': '{oled} under {design} ger det mörka utseendet äkta svart för OLED- och AMOLED-skärmar. Det gäller när det mörka utseendet syns, även när det följer systemet, och varje enhet minns sitt eget val.',
 }
 
 export default sv

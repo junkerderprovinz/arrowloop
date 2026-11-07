@@ -1062,6 +1062,8 @@ const nl: Translations = {
   'look.appearance': 'Weergave',
   'look.design': 'Design',
   'look.system': 'Systeem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Zet het donkere uiterlijk op echt zwart, voor OLED- en AMOLED-schermen.',
   'look.barLabelsWeb': 'De balk die in een smal venster de plaats van de zijbalk inneemt. Werkt alleen in smalle vensters.',
   'workload.retries': 'Nieuwe pogingen',
   'safety.brakes': 'Remmen',
@@ -1348,6 +1350,7 @@ const nl: Translations = {
   'jobs.moveDown': 'Omlaag',
   'new.change.jobOrder': 'Je kunt de taken in je eigen volgorde zetten: sleep een taak aan zijn greep, of druk erop op Alt en een pijltjestoets. Op de telefoon houd je een taak vast en sleep je hem. {history}, {trash} en {conflicts} tonen de taken in dezelfde volgorde.',
   'new.change.jobsCompact': '{compact} boven de takenlijst toont elke taak op één regel: status, laatste run, {runNow} en {more}. Dit apparaat onthoudt je keuze.',
+  'new.change.oled': '{oled} onder {design} zet het donkere uiterlijk op echt zwart voor OLED- en AMOLED-schermen. Het geldt zodra het donkere uiterlijk te zien is, ook als dat het systeem volgt, en elk apparaat onthoudt zijn eigen keuze.',
 }
 
 export default nl

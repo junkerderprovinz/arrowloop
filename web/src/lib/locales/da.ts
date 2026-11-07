@@ -1062,6 +1062,8 @@ const da: Translations = {
   'look.appearance': 'Udseende',
   'look.design': 'Tema',
   'look.system': 'System',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Giver det mørke udseende ægte sort til OLED- og AMOLED-skærme.',
   'look.barLabelsWeb': 'Linjen, der træder i sidepanelets sted i et smalt vindue. Virker kun i smalle vinduer.',
   'workload.retries': 'Nye forsøg',
   'safety.brakes': 'Bremser',
@@ -1348,6 +1350,7 @@ const da: Translations = {
   'jobs.moveDown': 'Flyt ned',
   'new.change.jobOrder': 'Du kan sætte dine job i din egen rækkefølge: træk et job i dets håndtag, eller tryk Alt og en piletast på det. På telefonen holder du et job nede og trækker det. {history}, {trash} og {conflicts} viser jobbene i samme rækkefølge.',
   'new.change.jobsCompact': '{compact} øverst i joblisten viser hvert job på én linje, med status, seneste kørsel, {runNow} og {more}. Denne enhed husker dit valg.',
+  'new.change.oled': '{oled} under {design} giver det mørke udseende ægte sort til OLED- og AMOLED-skærme. Det gælder, når det mørke udseende vises, også når det følger systemet, og hver enhed husker sit eget valg.',
 }
 
 export default da

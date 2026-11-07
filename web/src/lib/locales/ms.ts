@@ -1062,6 +1062,8 @@ const ms: Translations = {
   'look.appearance': 'Penampilan',
   'look.design': 'Reka bentuk',
   'look.system': 'Sistem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Menjadikan rupa gelap hitam sebenar, untuk skrin OLED dan AMOLED.',
   'look.barLabelsWeb': 'Bar yang menggantikan tempat bar sisi dalam tetingkap sempit. Hanya berkesan pada tetingkap sempit.',
   'workload.retries': 'Cuba semula',
   'safety.brakes': 'Brek',
@@ -1348,6 +1350,7 @@ const ms: Translations = {
   'jobs.moveDown': 'Alih ke bawah',
   'new.change.jobOrder': 'Anda boleh menyusun tugas mengikut susunan sendiri: seret tugas melalui pemegangnya, atau tekan Alt dan kekunci anak panah padanya. Pada telefon, tahan tugas lalu seret. {history}, {trash} dan {conflicts} memaparkan tugas dalam susunan yang sama.',
   'new.change.jobsCompact': '{compact} di atas senarai tugas memaparkan setiap tugas dalam satu baris: status, larian terakhir, {runNow} dan {more}. Peranti ini mengingati pilihan anda.',
+  'new.change.oled': '{oled} di bawah {design} menjadikan rupa gelap hitam sebenar untuk skrin OLED dan AMOLED. Ia terpakai setiap kali rupa gelap kelihatan, juga apabila ia mengikut sistem, dan setiap peranti mengingati pilihannya sendiri.',
 }
 
 export default ms

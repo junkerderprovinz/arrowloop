@@ -1062,6 +1062,8 @@ const is: Translations = {
   'look.appearance': 'Útlit',
   'look.design': 'Hönnun',
   'look.system': 'Kerfi',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Setur dökka útlitið á hreinan svartan lit fyrir OLED- og AMOLED-skjái.',
   'look.barLabelsWeb': 'Stikan sem tekur sæti hliðarstikunnar í þröngum glugga. Gildir aðeins í þröngum gluggum.',
   'workload.retries': 'Endurtilraunir',
   'safety.brakes': 'Hemlar',
@@ -1348,6 +1350,7 @@ const is: Translations = {
   'jobs.moveDown': 'Færa niður',
   'new.change.jobOrder': 'Þú getur raðað verkunum eins og þú vilt: dragðu verk í handfangið eða ýttu á Alt og örvalykil á því. Í símanum heldurðu verki inni og dregur það. {history}, {trash} og {conflicts} sýna verkin í sömu röð.',
   'new.change.jobsCompact': '{compact} efst í verkalistanum sýnir hvert verk í einni línu: stöðu, síðustu keyrslu, {runNow} og {more}. Þetta tæki man valið þitt.',
+  'new.change.oled': '{oled} undir {design} setur dökka útlitið á hreinan svartan lit fyrir OLED- og AMOLED-skjái. Það gildir alltaf þegar dökka útlitið sést, líka þegar það fylgir kerfinu, og hvert tæki man sitt eigið val.',
 }
 
 export default is

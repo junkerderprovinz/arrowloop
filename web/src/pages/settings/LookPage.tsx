@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useSyncExternalStore } from 'react'
 
 import { Choice } from '../../components/Field'
 import {
@@ -32,6 +32,7 @@ import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
 import { MOTION_INTENSITIES, type MotionIntensity } from '../../lib/motion'
+import { applyOled, darkShowing, storedOled, watchDarkShowing } from '../../lib/theme'
 import type { ThemeChoice } from '../../lib/themeSetting'
 import { counter, SettingsRow } from './rows'
 import { isOwnOrder, setTileOrder, useTileOrder } from './tiles'
@@ -198,6 +199,7 @@ export function LookPage({
             ]}
           />
         </SettingsRow>
+        <OledRow />
 
         <SettingsRow label={t('look.corners')} hint={t('look.cornersHint')}>
           <Selector<Shape>
@@ -361,6 +363,31 @@ export function LookPage({
         )}
       </Card>
     </Stack>
+  )
+}
+
+/**
+ * OLED belongs to this screen rather than to the person, so it stays in the
+ * browser and never goes into the settings the engine keeps. It counts only
+ * while the dark look shows, and steps back meanwhile without letting go.
+ */
+function OledRow() {
+  const { t } = useT()
+  const [on, setOn] = useState(storedOled)
+  const dark = useSyncExternalStore(watchDarkShowing, darkShowing)
+  return (
+    <div data-new="oled">
+      <ToggleRow
+        checked={on}
+        onChange={(next) => {
+          applyOled(next)
+          setOn(next)
+        }}
+        label={t('look.oled')}
+        hint={t('look.oledHint')}
+        resting={!dark}
+      />
+    </div>
   )
 }
 

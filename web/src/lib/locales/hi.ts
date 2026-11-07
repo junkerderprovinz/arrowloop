@@ -1062,6 +1062,8 @@ const hi: Translations = {
   'look.appearance': 'रूप-रंग',
   'look.design': 'रूपसज्जा',
   'look.system': 'सिस्टम',
+  'look.oled': 'OLED',
+  'look.oledHint': 'गहरे रूप को OLED और AMOLED स्क्रीन के लिए असली काले रंग पर ले जाता है।',
   'look.barLabelsWeb': 'वह पट्टी जो संकरी विंडो में साइडबार की जगह लेती है। सिर्फ़ संकरी विंडो पर असर डालती है।',
   'workload.retries': 'पुनः प्रयास',
   'safety.brakes': 'ब्रेक',
@@ -1348,6 +1350,7 @@ const hi: Translations = {
   'jobs.moveDown': 'नीचे ले जाएँ',
   'new.change.jobOrder': 'आप कामों को अपने क्रम में रख सकते हैं: किसी काम को उसके हैंडल से खींचें, या उस पर Alt और एक तीर कुंजी दबाएँ। फ़ोन पर किसी काम को दबाकर रखें और खींचें। {history}, {trash} और {conflicts} कामों को इसी क्रम में दिखाते हैं।',
   'new.change.jobsCompact': 'कामों की सूची के ऊपर {compact} हर काम को एक पंक्ति में दिखाता है: स्थिति, आखिरी रन, {runNow} और {more}। यह डिवाइस आपकी पसंद याद रखता है।',
+  'new.change.oled': '{design} के नीचे {oled} गहरे रूप को OLED और AMOLED स्क्रीन के लिए असली काले रंग पर ले जाता है। यह तब भी लागू होता है जब गहरा रूप सिस्टम के साथ चलता है, और हर डिवाइस अपना चुनाव याद रखता है।',
 }
 
 export default hi

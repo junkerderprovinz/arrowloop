@@ -1062,6 +1062,8 @@ const lv: Translations = {
   'look.appearance': 'Izskats',
   'look.design': 'Dizains',
   'look.system': 'Sistēma',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Pārslēdz tumšo izskatu uz īstu melnu OLED un AMOLED ekrāniem.',
   'look.barLabelsWeb': 'Josla, kas šaurā logā ieņem sānjoslas vietu. Darbojas tikai šaurajos logos.',
   'workload.retries': 'Atkārtojumi',
   'safety.brakes': 'Bremzes',
@@ -1348,6 +1350,7 @@ const lv: Translations = {
   'jobs.moveDown': 'Pārvietot lejup',
   'new.change.jobOrder': 'Uzdevumus varat sakārtot savā secībā: velciet uzdevumu aiz tā roktura vai uz tā nospiediet Alt un bulttaustiņu. Tālrunī turiet uzdevumu nospiestu un velciet. {history}, {trash} un {conflicts} rāda uzdevumus tādā pašā secībā.',
   'new.change.jobsCompact': '{compact} uzdevumu saraksta augšā rāda katru uzdevumu vienā rindā: stāvokli, pēdējo palaišanu, {runNow} un {more}. Šī ierīce atceras jūsu izvēli.',
+  'new.change.oled': '{oled} zem {design} pārslēdz tumšo izskatu uz īstu melnu OLED un AMOLED ekrāniem. Tas darbojas vienmēr, kad redzams tumšais izskats, arī tad, ja tas seko sistēmai, un katra ierīce atceras savu izvēli.',
 }
 
 export default lv

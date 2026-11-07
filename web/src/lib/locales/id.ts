@@ -1062,6 +1062,8 @@ const id: Translations = {
   'look.appearance': 'Tampilan',
   'look.design': 'Desain',
   'look.system': 'Sistem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Membuat tampilan gelap menjadi hitam pekat, untuk layar OLED dan AMOLED.',
   'look.barLabelsWeb': 'Bilah yang menggantikan bilah sisi di jendela sempit. Hanya berlaku di jendela sempit.',
   'workload.retries': 'Percobaan ulang',
   'safety.brakes': 'Rem',
@@ -1348,6 +1350,7 @@ const id: Translations = {
   'jobs.moveDown': 'Pindah ke bawah',
   'new.change.jobOrder': 'Anda bisa menyusun tugas dalam urutan sendiri: seret tugas lewat pegangannya, atau tekan Alt dan tombol panah padanya. Di ponsel, tahan tugas lalu seret. {history}, {trash}, dan {conflicts} menampilkan tugas dalam urutan yang sama.',
   'new.change.jobsCompact': '{compact} di atas daftar tugas menampilkan setiap tugas dalam satu baris: status, eksekusi terakhir, {runNow}, dan {more}. Perangkat ini mengingat pilihan Anda.',
+  'new.change.oled': '{oled} di bawah {design} membuat tampilan gelap menjadi hitam pekat untuk layar OLED dan AMOLED. Ini berlaku setiap kali tampilan gelap muncul, juga saat mengikuti sistem, dan setiap perangkat mengingat pilihannya sendiri.',
 }
 
 export default id

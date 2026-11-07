@@ -1062,6 +1062,8 @@ const hr: Translations = {
   'look.appearance': 'Izgled',
   'look.design': 'Dizajn',
   'look.system': 'Sustav',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Prebacuje tamni izgled na pravu crnu, za OLED i AMOLED zaslone.',
   'look.barLabelsWeb': 'Traka koja u uskom prozoru preuzima mjesto bočne trake. Djeluje samo u uskim prozorima.',
   'workload.retries': 'Ponovni pokušaji',
   'safety.brakes': 'Kočnice',
@@ -1348,6 +1350,7 @@ const hr: Translations = {
   'jobs.moveDown': 'Pomakni dolje',
   'new.change.jobOrder': 'Zadatke možeš složiti po svom redu: povuci zadatak za njegovu ručku ili na njemu pritisni Alt i strelicu. Na telefonu zadrži zadatak i povuci ga. {history}, {trash} i {conflicts} prikazuju zadatke istim redom.',
   'new.change.jobsCompact': '{compact} na vrhu popisa zadataka prikazuje svaki zadatak u jednom retku: stanje, zadnje pokretanje, {runNow} i {more}. Ovaj uređaj pamti tvoj izbor.',
+  'new.change.oled': '{oled} ispod {design} prebacuje tamni izgled na pravu crnu za OLED i AMOLED zaslone. Vrijedi kad god se vidi tamni izgled, i kad prati sustav, a svaki uređaj pamti svoj izbor.',
 }
 
 export default hr

@@ -1062,6 +1062,8 @@ const fi: Translations = {
   'look.appearance': 'Ulkoasu',
   'look.design': 'Teema',
   'look.system': 'Järjestelmä',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Vaihtaa tumman ulkoasun aidoksi mustaksi OLED- ja AMOLED-näytöille.',
   'look.barLabelsWeb': 'Palkki, joka korvaa sivupalkin kapeassa ikkunassa. Vaikuttaa vain kapeisiin ikkunoihin.',
   'workload.retries': 'Uudelleenyritykset',
   'safety.brakes': 'Jarrut',
@@ -1348,6 +1350,7 @@ const fi: Translations = {
   'jobs.moveDown': 'Siirrä alas',
   'new.change.jobOrder': 'Voit järjestää työt omaan järjestykseesi: vedä työtä sen kahvasta tai paina sen kohdalla Alt ja nuolinäppäintä. Puhelimessa pidä työtä painettuna ja vedä sitä. {history}, {trash} ja {conflicts} näyttävät työt samassa järjestyksessä.',
   'new.change.jobsCompact': '{compact} työluettelon yläosassa näyttää jokaisen työn yhdellä rivillä: tila, viimeisin ajo, {runNow} ja {more}. Tämä laite muistaa valintasi.',
+  'new.change.oled': '{design}-kohdan alla oleva {oled} vaihtaa tumman ulkoasun aidoksi mustaksi OLED- ja AMOLED-näytöillä. Se on käytössä aina, kun tumma ulkoasu näkyy, myös kun se seuraa järjestelmää, ja jokainen laite muistaa oman valintansa.',
 }
 
 export default fi
