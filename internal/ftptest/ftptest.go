@@ -1,11 +1,12 @@
 // Package ftptest serves a folder over FTP for tests, with a cap on the logins
 // it takes at once like the one the FTP server apps on phones have. It speaks
-// just enough of the protocol for rclone to list the folder.
+// just enough of the protocol for rclone to list the folder and read its files.
 package ftptest
 
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"path"
@@ -184,6 +185,8 @@ func (s *Server) serve(conn net.Conn) {
 			c.list(arg)
 		case "MLST":
 			c.stat(arg)
+		case "RETR":
+			c.retrieve(arg)
 		default:
 			c.reply("502 not implemented")
 		}
@@ -220,13 +223,23 @@ func facts(info os.FileInfo) string {
 	return fmt.Sprintf("type=%s;size=%d;modify=%s;", kind, info.Size(), info.ModTime().UTC().Format("20060102150405"))
 }
 
-func (c *session) list(dir string) {
+// takeData hands over the connection a listing or a file goes over, which
+// serves one of them.
+func (c *session) takeData() (net.Listener, bool) {
 	if c.data == nil {
 		c.reply("425 use EPSV first")
-		return
+		return nil, false
 	}
 	listener := c.data
 	c.data = nil
+	return listener, true
+}
+
+func (c *session) list(dir string) {
+	listener, ok := c.takeData()
+	if !ok {
+		return
+	}
 	defer listener.Close()
 
 	entries, err := os.ReadDir(c.local(dir))
@@ -249,6 +262,34 @@ func (c *session) list(dir string) {
 		fmt.Fprintf(conn, "%s %s\r\n", facts(info), e.Name())
 	}
 	conn.Close()
+	c.reply("226 done")
+}
+
+func (c *session) retrieve(name string) {
+	listener, ok := c.takeData()
+	if !ok {
+		return
+	}
+	defer listener.Close()
+
+	f, err := os.Open(c.local(name))
+	if err != nil {
+		c.reply("550 no such file")
+		return
+	}
+	defer f.Close()
+	c.reply("150 here it comes")
+	conn, err := listener.Accept()
+	if err != nil {
+		c.reply("425 no data connection")
+		return
+	}
+	_, err = io.Copy(conn, f)
+	conn.Close()
+	if err != nil {
+		c.reply("426 the file was cut short")
+		return
+	}
 	c.reply("226 done")
 }
 
