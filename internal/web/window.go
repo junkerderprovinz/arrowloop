@@ -123,6 +123,11 @@ func (s *Server) writeWords(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, s.Window.Words())
 }
 
+// readAccent answers the desktop's accent colour, empty where it has none.
+func (s *Server) readAccent(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"accent": s.SystemAccent()})
+}
+
 // openWindow brings the main window forward, for the tray window's button.
 func (s *Server) openWindow(w http.ResponseWriter, r *http.Request) {
 	s.OpenWindow()
