@@ -21,6 +21,10 @@ The full notes for each release are in
 
 - **ArrowLoop follows GlimStone 4.2.0.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too.
 
+## 🐛 Fixed
+
+- **A preview or run against an FTP server on a phone no longer fails with "Maximum login limit has been reached".** ArrowLoop opens at most 4 connections to an FTP target unless its concurrency setting says otherwise, keeps a job's transfers below that, logs out after a test, a preview or a run, and says in plain words when a server is out of logins. Thanks to antrixsamay for the report in #130.
+
 ## 🌐 Translations
 
 - **Every new text is in all 42 languages.**
