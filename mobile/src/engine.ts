@@ -41,6 +41,8 @@ interface EngineNativeModule {
   batteryExempt(): Promise<boolean>;
   /** Copies to the clipboard; React Native's own Clipboard is deprecated. */
   copy(value: string): Promise<void>;
+  /** Material You's primary for each look, or null below Android 12. */
+  systemAccent(): Promise<AccentTones | null>;
 
   /** How Android/data stands, after starting its server if it is switched on. */
   appData(): Promise<AppData>;
@@ -61,6 +63,12 @@ interface EngineNativeModule {
   addSharedFolder(): Promise<SharedFolder[]>;
   /** Gives a folder back and starts the engine over. */
   removeSharedFolder(uri: string): Promise<SharedFolder[]>;
+}
+
+/** Material 3's primary for the light and the dark look, as ARGB ints. */
+export interface AccentTones {
+  light: number;
+  dark: number;
 }
 
 /** A folder another app shares, as it shows up in the Apps target. */
@@ -190,6 +198,7 @@ export const engine = {
     native ? native.setDevicePolicy(policy) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
   copy: (value: string) => (native ? native.copy(value) : missing()),
+  systemAccent: (): Promise<AccentTones | null> => (native ? native.systemAccent() : Promise.resolve(null)),
   appData: (): Promise<AppData> => (native ? native.appData() : Promise.resolve(NO_APP_DATA)),
   setAppData: (on: boolean) => (native ? native.setAppData(on) : missing()),
   setAppDataWay: (way: AppDataWay) => (native ? native.setAppDataWay(way) : missing()),

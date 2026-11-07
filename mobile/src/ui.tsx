@@ -29,11 +29,13 @@ import {
 import { Glyph, glyphNameForKey, GLYPH, ProviderMark } from "./glyphs";
 import {
   contrastOn,
+  DEFAULT_ACCENT,
   inkFor,
   mixHex,
   palettes,
   RAINBOW,
   raised,
+  resolveAccent,
   cornersFor,
   softOn,
   space,
@@ -46,6 +48,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useT } from "./i18n";
 import { useAppearance, type BarLabelMode, type LabelMode } from "./settings";
+import { useSystemAccent } from "./systemAccent";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
@@ -80,6 +83,8 @@ export function useTheme(): Theme {
   // OLED counts whenever dark shows, chosen or from the phone, and waits
   // through light without being switched off.
   const base = palettes[scheme === "dark" && a.oled ? "oled" : scheme];
+  // A system accent on a phone without Material You shows the default.
+  const accent = resolveAccent(a.accent, useSystemAccent(scheme)) ?? DEFAULT_ACCENT;
   return {
     scheme,
     p: base,
@@ -88,9 +93,9 @@ export function useTheme(): Theme {
     labels: a.labels === "reactive" ? "glyph" : a.labels,
     barLabels: barMode(a.barLabels, a.labels),
     rainbow: a.rainbow,
-    accent: a.accent,
-    accentContrast: contrastOn(a.accent),
-    accentInk: inkFor(a.accent, scheme),
+    accent,
+    accentContrast: contrastOn(accent),
+    accentInk: inkFor(accent, scheme),
     hueAt: (index: number) => {
       if (!a.rainbow) return undefined;
       // Disco's colours already carry the rotation.

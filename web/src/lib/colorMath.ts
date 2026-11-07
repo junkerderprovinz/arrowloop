@@ -70,6 +70,14 @@ export function normalizeHex(value: string): string | null {
 }
 
 /**
+ * The "#RRGGBB" of a colour Android hands over as an ARGB int. Kotlin's Int is
+ * signed, so an opaque colour arrives negative.
+ */
+export function argbToHex(argb: number): string {
+  return `#${((argb >>> 0) & 0xffffff).toString(16).padStart(6, '0').toUpperCase()}`;
+}
+
+/**
  * Which preset a live colour belongs to, by squared distance in RGB. The
  * presets are far apart, so a perceptual space would add nothing. Answers -1
  * for an empty list.
