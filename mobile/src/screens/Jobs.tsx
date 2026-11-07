@@ -492,8 +492,8 @@ type Moving = {
 
 /**
  * One job on one row: its colour, its name over its status and last run, and
- * More beside Run now. The hold moves into More. A tap opens the job, as on
- * the card.
+ * More beside Run now as glyphs, so the name keeps the room. The hold moves
+ * into More. A tap opens the job, as on the card.
  */
 function JobRow({
   job,
@@ -551,10 +551,12 @@ function JobRow({
           {last && !quiet ? <Caption>{t("jobs.lastRun", { when: clock(last.Finished, lang) })}</Caption> : null}
         </View>
       </View>
-      <CardMenu items={menu} />
+      <CardMenu items={menu} glyphOnly />
       <Button
         label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
         labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
+        glyphOnly
+        wide={false}
         busy={busy}
         onPress={onAct}
       />
