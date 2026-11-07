@@ -39,6 +39,17 @@ const Ctx = createContext<Waiting>({
   refresh: () => {},
 });
 
+// The conflicts and the trash are read from every side, so a target that hangs
+// keeps each question out for as long as the engine waits, and every question
+// out holds one of the connections that the screens' own requests then queue
+// behind. One of each at a time, then, shared by every mount of the provider,
+// which mounts again whenever the app waits for the engine. The last counts
+// stay meanwhile.
+let showConflicts: (got: Awaited<ReturnType<typeof api.conflicts>>) => void = () => {};
+let showTrash: (got: Awaited<ReturnType<typeof api.trashAll>>) => void = () => {};
+const askConflicts = coalesce(() => api.conflicts().then((got) => showConflicts(got)), 0);
+const askTrash = coalesce(() => api.trashAll().then((got) => showTrash(got)), 0);
+
 export function WaitingProvider({ children }: { children: ReactNode }) {
   const [running, setRunning] = useState<number | null>(null);
   const [conflicts, setConflicts] = useState<number | null>(null);
@@ -48,35 +59,17 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   const [trashBytes, setTrashBytes] = useState<number | null>(null);
   const [anomaliesOn, setAnomaliesOn] = useState<boolean | null>(null);
 
-  // The conflicts and the trash are read from every side, so a target that
-  // hangs keeps each question out for as long as the engine waits. One of each
-  // at a time, since every question out holds a connection that the screens'
-  // own requests then queue behind. The last counts stay meanwhile.
-  const askConflicts = useMemo(
-    () =>
-      coalesce(
-        () =>
-          api.conflicts().then((got) => {
-            setConflicts(got.conflicts.length);
-            setConflicted([...new Set(got.conflicts.map((c) => c.job))]);
-          }),
-        0,
-      ),
-    [],
-  );
-  const askTrash = useMemo(
-    () =>
-      coalesce(
-        () =>
-          api.trashAll().then((got) => {
-            const totals = trashTotals(got.sides.filter((s) => !s.error));
-            setTrash(totals.entries);
-            setTrashBytes(totals.bytes);
-          }),
-        0,
-      ),
-    [],
-  );
+  useEffect(() => {
+    showConflicts = (got) => {
+      setConflicts(got.conflicts.length);
+      setConflicted([...new Set(got.conflicts.map((c) => c.job))]);
+    };
+    showTrash = (got) => {
+      const totals = trashTotals(got.sides.filter((s) => !s.error));
+      setTrash(totals.entries);
+      setTrashBytes(totals.bytes);
+    };
+  }, []);
 
   // Each count lands on its own, so a slow trash listing holds up nothing.
   const refresh = useCallback(() => {
@@ -88,7 +81,7 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
       (got) => setAnomaliesOn((got.anomalies as { off?: boolean } | undefined)?.off !== true),
       () => {},
     );
-  }, [askConflicts, askTrash]);
+  }, []);
 
   // Asked again whenever the stream connects, the first time included, and
   // whenever the app comes back to the front: the engine works on while the
