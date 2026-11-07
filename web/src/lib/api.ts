@@ -545,11 +545,14 @@ export class ApiError extends Error {
   code?: string
   /** What that sentence fills in, such as the jobs that hold on to a target. */
   values?: Record<string, string>
-  constructor(message: string, status: number, code?: string, values?: Record<string, string>) {
+  /** The kind of failure the engine named in its message (internal/failure). */
+  failure?: Failure
+  constructor(message: string, status: number, code?: string, values?: Record<string, string>, failure?: Failure) {
     super(message)
     this.status = status
     this.code = code
     this.values = values
+    this.failure = failure
   }
 }
 
@@ -593,7 +596,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 async function failure(res: Response): Promise<ApiError> {
   try {
     const body = await res.json()
-    if (body?.error) return new ApiError(body.error, res.status, body.code, body.values)
+    if (body?.error) return new ApiError(body.error, res.status, body.code, body.values, body.failure ?? undefined)
   } catch {
     // The body was not the JSON error shape; the status line has to do.
   }

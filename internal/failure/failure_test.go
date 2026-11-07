@@ -86,6 +86,34 @@ func TestBackendErrorsAreNamedWithTheirSide(t *testing.T) {
 	}
 }
 
+// Each FTP server words its cap on logins its own way: Apache FtpServer, which
+// many phone apps are built on, vsftpd, pure-ftpd, ProFTPD and FileZilla.
+func TestAnFTPServerOutOfLoginsIsNamed(t *testing.T) {
+	cases := map[string]failure.Failure{
+		`list FTP: list: failed to make FTP connection to "192.168.1.5:2221": 421 "Maximum login limit has been reached."`: {
+			Code: failure.TooManyLogins,
+		},
+		`left side "FTP:SICS": NewFs: failed to make FTP connection to "192.168.1.5:21": 421 "There are too many connected users, please try later."`: {
+			Code: failure.TooManyLogins, Params: map[string]string{"side": "left"},
+		},
+		`failed to make FTP connection to "nas:21": 421 "Too many connections (8) from this IP"`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 530 "Sorry, the maximum number of clients (3) for this user are already connected."`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "pc:21": 421 "Too many users are connected, please try again later."`: {
+			Code: failure.TooManyLogins,
+		},
+	}
+	for text, want := range cases {
+		got := failure.Of(text)
+		if got == nil || !reflect.DeepEqual(*got, want) {
+			t.Errorf("Of(%q) = %+v, want %+v", text, got, want)
+		}
+	}
+}
+
 func TestAFailureAfterAJobsNameIsStillNamed(t *testing.T) {
 	text := "photos: " + fmt.Errorf("%w: %s", daemon.ErrNotEnoughSpace, tooFull).Error()
 	if got := failure.Of(text); got == nil || got.Code != failure.NotEnoughSpace {

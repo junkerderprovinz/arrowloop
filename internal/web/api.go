@@ -18,6 +18,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -344,7 +345,7 @@ type skipView struct {
 func (s *Server) previewJob(w http.ResponseWriter, r *http.Request) {
 	p, err := s.Runner.Preview(r.Context(), r.PathValue("name"))
 	if err != nil {
-		writeError(w, http.StatusBadRequest, err)
+		writeJSON(w, http.StatusBadRequest, map[string]any{"error": err.Error(), "failure": failure.Of(err.Error())})
 		return
 	}
 	writeJSON(w, http.StatusOK, viewOf(p))

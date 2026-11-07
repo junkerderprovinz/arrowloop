@@ -2,6 +2,7 @@ import { useNavigation, useRoute, type RouteProp } from "@react-navigation/nativ
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { actionName } from "../../../web/src/lib/actionName";
+import { failureLine } from "../../../web/src/lib/failure";
 import { api, EngineError, type Action, type Plan as PlanType } from "../api";
 import { mayRunJob } from "../fileAccess";
 import { useT } from "../i18n";
@@ -17,7 +18,7 @@ import { Badge, Body, Button, Caption, Card, Empty, InfoBubble, Mono, Page, Titl
 export function Plan() {
   const route = useRoute<RouteProp<JobsStack, "Plan">>();
   const nav = useNavigation<Nav<JobsStack>>();
-  const { t } = useT();
+  const { t, lang } = useT();
   const job = route.params.name;
 
   const [plan, setPlan] = useState<PlanType | null>(null);
@@ -30,7 +31,7 @@ export function Plan() {
   useEffect(() => {
     api.plan(job).then(setPlan, (e: Error) => {
       setAway(e instanceof EngineError && e.status === 0);
-      setError(e.message);
+      setError(failureLine(e.message, e instanceof EngineError ? e.failure : undefined, t, lang));
     });
   }, [job]);
 

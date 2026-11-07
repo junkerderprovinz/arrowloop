@@ -17,8 +17,10 @@ import (
 	_ "github.com/rclone/rclone/backend/local"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -267,6 +269,31 @@ func TestAnUnknownJobIsRefused(t *testing.T) {
 	json.NewDecoder(resp.Body).Decode(&body)
 	if !strings.Contains(body.Error, "nosuchjob") {
 		t.Errorf("the error does not name the job that was asked for: %q", body.Error)
+	}
+}
+
+// A preview that fails says what kind of failure it was, as a failed run does,
+// so the interface can say it in the reader's language.
+func TestAFailedPreviewNamesItsFailure(t *testing.T) {
+	real := volume.Candidates
+	volume.Candidates = func() []string { return nil }
+	t.Cleanup(func() { volume.Candidates = real })
+	h := engineFor(t, `{"jobs":[{"name":"stick","left":"%[1]s/left","right":"volume:0123456789abcdef01234567/photos","state":"%[1]s/stick.db"}]}`)
+
+	resp, err := h.srv.Client().Get(h.srv.URL + "/api/jobs/stick/plan")
+	if err != nil {
+		t.Fatalf("get: %v", err)
+	}
+	defer resp.Body.Close()
+	var body struct {
+		Error   string
+		Failure *failure.Failure
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if body.Failure == nil || body.Failure.Code != failure.VolumeMissing || body.Failure.Params["side"] != "right" {
+		t.Errorf("the failed preview says %+v about %q, want the missing drive on the right", body.Failure, body.Error)
 	}
 }
 

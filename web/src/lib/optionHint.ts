@@ -71,6 +71,7 @@ const BY_BACKEND: Record<string, TranslationKey> = {
   'combine.upstreams': 'opt.upstreamsCombineHint',
   'iclouddrive.trust_token': 'opt.icloudTrustHint',
   'iclouddrive.cookies': 'opt.icloudCookiesHint',
+  'ftp.concurrency': 'opt.ftpConcurrencyHint',
 }
 
 /**
