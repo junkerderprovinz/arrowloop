@@ -157,6 +157,7 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 		}
 		opened[side] = f
 	}
+	defer apply.Ends{Left: opened[plan.Left], Right: opened[plan.Right]}.Close(context.WithoutCancel(ctx))
 
 	db, known := rep.record(ctx, j.State)
 	if db != nil {

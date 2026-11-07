@@ -24,6 +24,7 @@ import (
 
 	rclonefs "github.com/rclone/rclone/fs"
 
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/pathid"
@@ -153,6 +154,9 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 	// Both sides are resolved before either is opened, as the runner does, so
 	// a drive letter now given to another disk is not compared.
 	ends := map[plan.Side]rclonefs.Fs{}
+	defer func() {
+		apply.Ends{Left: ends[plan.Left], Right: ends[plan.Right]}.Close(context.WithoutCancel(ctx))
+	}()
 	for _, side := range sides {
 		resolved, err := volume.Resolve(sideOf(j, side))
 		if err != nil {
