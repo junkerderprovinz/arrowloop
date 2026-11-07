@@ -607,6 +607,51 @@ same import, after asking. The phone app has the same card under **Settings**.
 On the phone the copies stay inside the app unless you choose a folder in
 Download or Documents, which needs access to all files.
 
+### Moving over from FolderSync or luckyBackup
+
+The same **Import settings** button takes two files from other programs and
+tells them apart by what is in them:
+
+- **FolderSync**: the JSON file that **Export configuration** under
+  Settings › Advanced writes into FolderSync's backup folder. FolderSync's
+  documentation lists it for the Business edition. Its **Backup database** file
+  is a database rather than a configuration and cannot be read.
+- **luckyBackup**: a `.profile` file from `~/.luckyBackup/profiles/`. A profile
+  from before luckyBackup 0.4.2 is binary; open it in a newer luckyBackup and
+  save it once.
+
+Nothing is replaced. Before anything is saved, a window lists the jobs and
+targets that would be added, what still has to be filled in, and every setting
+that stays behind because ArrowLoop has nothing like it, quoted as the file
+spells it so it can be found there. A name that is already taken gets a number.
+
+| From | Becomes |
+|---|---|
+| FolderSync folder pair, luckyBackup task | a job; one-way or two-way as before |
+| FolderSync account | a target: SFTP, FTP, SMB, WebDAV (Nextcloud, ownCloud), S3, Dropbox, Google Drive, OneDrive, pCloud, Box, Yandex, HiDrive, Koofr, MEGA, Proton Drive, Google Cloud Storage; the phone's own storage stays a folder |
+| luckyBackup SSH destination or source | an SFTP target with the host, user, port and key file |
+| FolderSync sync interval, or a schedule in standard cron | the job's schedule |
+| FolderSync instant sync, folder monitoring | watching, with an hourly schedule behind it |
+| FolderSync "delete after sync", move mode | mode `move` |
+| FolderSync deletions on a one-way pair, luckyBackup "delete files on the destination" | mode `mirror` |
+| FolderSync "overwrite oldest" on a conflict | `newerWins` |
+| FolderSync name and folder filters, luckyBackup excludes and its exclude check boxes | `exclude` patterns |
+| luckyBackup snapshots | `keepVersions`, one fewer than the snapshots |
+
+No password, key passphrase, secret key or token is carried over, even where
+the file holds one. Each target that needs one is named in the window, and is
+filled in or signed in again on **Targets**. Every imported job arrives paused,
+since its folders come from another machine; look over each one and resume it.
+luckyBackup keeps its schedule in cron, outside the profile, so its jobs follow
+the default schedule.
+
+What stays behind includes FolderSync's webhooks, notifications, network and
+charging conditions, time-stamped backup folders, include filters and filters
+by size, age or regular expression, and luckyBackup's commands before and after
+a task, include lists, extra rsync options and rsync daemon modules. The
+commands stay behind because ArrowLoop runs a command only when it is written
+into `arrowloop.json` by hand.
+
 ## Services that sign in through a browser
 
 Every backend rclone ships is compiled in. The services that only sign in
