@@ -9,8 +9,8 @@ import {
   type RefObject,
 } from "react";
 import { createPortal } from "react-dom";
-import { computeBubblePosition } from "./bubblePosition";
-import { usePortalHue } from "./portalHue";
+import { computeBubblePosition } from "../bubblePosition.ts";
+import { usePortalHue } from "./portalHue.ts";
 
 // The `role="listbox"` panel a button-opens-a-list picker drops open. It is
 // portalled to document.body, because a card with `overflow: hidden` clips an
@@ -215,9 +215,7 @@ export function DropdownListbox({
       }}
       aria-multiselectable={multiselectable ? "true" : undefined}
       aria-label={label}
-      className={`fixed z-50 max-h-60 overflow-y-auto rounded-card bg-carbon-surface shadow-xl glim-fade${
-        hue.className ? ` ${hue.className}` : ""
-      }`}
+      className={`glim-listbox glim-fade${hue.className ? ` ${hue.className}` : ""}`}
       style={{
         // Parked off-screen until measured, since the panel needs to be in the
         // DOM at its real width to have a height.
@@ -225,7 +223,6 @@ export function DropdownListbox({
         top: pos?.top ?? -9999,
         width: pos?.width,
         transform: "translateX(-50%)",
-        scrollbarColor: "var(--carbon-border) transparent",
         ...(hue.style ?? {}),
       } as CSSProperties}
     >

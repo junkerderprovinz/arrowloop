@@ -8,9 +8,9 @@
 // because Escape and the trap must work after focus has left this subtree.
 // `ref` (a plain prop in React 19) is the card the hook traps focus in.
 import type { ReactNode, Ref } from "react";
-import { Badge } from "./Badge";
-import { Button } from "./Button";
-import { IconCancel, IconClose } from "./glyphs";
+import { Badge } from "./Badge.tsx";
+import { Button } from "./Button.tsx";
+import { IconCancel, IconClose } from "./glyphs.tsx";
 
 export interface ConfirmDialogProps {
   /** A generic title such as "Confirm"; the call site's own text is `message`. */
@@ -54,7 +54,7 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <div
-      className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="glim-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onCancel();
       }}
@@ -65,13 +65,13 @@ export function ConfirmDialog({
         aria-modal="true"
         aria-labelledby="confirmdialog-title"
         aria-describedby="confirmdialog-message"
-        className="glim-modal-card relative flex max-h-[85vh] w-full max-w-md flex-col rounded-card bg-carbon-surface shadow-2xl"
+        className="glim-modal-card"
       >
-        <div className="flex items-start justify-between gap-4 px-5 py-4">
+        <div className="glim-modal-head">
           {/* Rule 15: the title is a heading badge. It straddles the card's top
               edge against the `relative` outer box, which does not scroll and
               so does not clip it. */}
-          <h2 id="confirmdialog-title" className="flex items-center">
+          <h2 id="confirmdialog-title" className="glim-modal-title">
             <Badge tone="heading" size="heading" wrap>{title}</Badge>
           </h2>
           {/* A Button, so the close control follows the label mode. */}
@@ -82,19 +82,19 @@ export function ConfirmDialog({
               glyph={<IconClose />}
               tone="neutral"
               onClick={onCancel}
-              className="shrink-0"
+              className="glim-modal-close"
             />
           )}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
-          <p id="confirmdialog-message" className="text-sm leading-relaxed text-carbon-textSub wrap-break-word">
+        <div className="glim-modal-body">
+          <p id="confirmdialog-message" className="glim-modal-text">
             {message}
           </p>
-          {extra !== undefined && <div className="mt-4 flex flex-col gap-3">{extra}</div>}
+          {extra !== undefined && <div className="glim-modal-extra">{extra}</div>}
         </div>
 
-        <div className="flex items-center justify-end gap-3 px-5 py-4">
+        <div className="glim-modal-foot">
           <Button
             label={cancelLabel}
             labelKey="common.cancel"

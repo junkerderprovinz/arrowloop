@@ -14,7 +14,7 @@ import {
   type ToastEngagementKind,
   type ToastEntry,
   type ToastSeverity,
-} from './glimstone/toastEngine'
+} from './toastEngine'
 import { useT } from './i18n'
 
 // The live half of GlimStone's toasts: the timers, the portal and the hover

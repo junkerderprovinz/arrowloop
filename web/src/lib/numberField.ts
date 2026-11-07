@@ -40,6 +40,20 @@ export function wouldStep(input: HTMLInputElement, direction: 1 | -1): boolean {
 }
 
 /**
+ * Greys out whichever arrow has nothing left to do. The steppers keep
+ * themselves in step with typing and stepping; a host that sets the value,
+ * the range or `disabled` from script fires no event, so it calls this after.
+ */
+export function syncNumberSteppers(input: HTMLInputElement): void {
+  const [up, down] = Array.from(
+    input.parentElement?.querySelectorAll<HTMLButtonElement>(":scope > .glim-num-steppers > .glim-num-step") ?? [],
+  );
+  if (!up || !down) return;
+  up.disabled = input.disabled || input.readOnly || !wouldStep(input, 1);
+  down.disabled = input.disabled || input.readOnly || !wouldStep(input, -1);
+}
+
+/**
  * Give one `<input type="number">` a pair of in-field steppers and return a
  * teardown that unwraps it.
  *
@@ -100,11 +114,7 @@ export function attachNumberSteppers(
   stack.append(up, down);
   wrap.appendChild(stack);
 
-  /** Grey out whichever arrow has nothing left to do. */
-  function sync() {
-    up.disabled = input.disabled || input.readOnly || !wouldStep(input, 1);
-    down.disabled = input.disabled || input.readOnly || !wouldStep(input, -1);
-  }
+  const sync = () => syncNumberSteppers(input);
 
   /**
    * The wheel steps the value only while the field has focus, so scrolling past

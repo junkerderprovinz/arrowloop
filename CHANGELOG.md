@@ -15,6 +15,10 @@ The full notes for each release are in
 - **You can put the jobs in your own order.** Each job has a small handle: drag it with the mouse and the other jobs make room, or press Alt and an arrow key on the job. On the phone, hold a job and drag it. The order is saved in `arrowloop.json`, new jobs go to the end, and the overview, the job list and the Job filter in History, Trash and Conflicts all follow it. Until you move a job, the jobs stay in alphabetical order and the file isn't touched. Thanks to leonp5 for asking in #122.
 - **The job list has a compact view.** Switch between Cards and Compact at the top of the list. Compact shows one row per job with its colour, name, status, last run, Run now and More, and a click on the row opens the job. Each device remembers its choice, and moving jobs works in both views.
 
+## 🎨 Design
+
+- **ArrowLoop follows GlimStone 4.2.0.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too.
+
 ## 🌐 Translations
 
 - **Every new text is in all 42 languages.**

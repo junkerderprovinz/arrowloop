@@ -10,7 +10,7 @@ import { usePortalHue } from '../lib/glimstone/portalHue'
 import type { Columns } from '../lib/columns'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { firstVisit } from '../lib/listTips'
-import { BUBBLE_VIEWPORT_MARGIN } from '../lib/glimstone/bubblePosition'
+import { BUBBLE_VIEWPORT_MARGIN } from '../lib/bubblePosition'
 import { placeUnderHead } from '../lib/menuPlace'
 
 // GlimStone's list: the cards on top and the list below, with sorting,

@@ -1,4 +1,4 @@
-import { useTipBubble } from "./useTipBubble";
+import { useTipBubble } from "./useTipBubble.tsx";
 
 // A neutral (i) icon beside a label that reveals a short help text on hover and
 // keyboard focus. Explanations live here rather than as a permanent grey
@@ -24,9 +24,7 @@ export function InfoBubble({ tip, onAccent = false }: { tip: string; onAccent?: 
         // not stop the native forwarding; preventDefault does, and the span
         // keeps the focus it took on mousedown.
         onClick={(e) => e.preventDefault()}
-        className={`inline-flex h-[15px] w-[15px] flex-none cursor-help items-center justify-center rounded-pill focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring) ${
-          onAccent ? "text-current" : "text-carbon-textMuted opacity-80 hover:opacity-100 focus:opacity-100"
-        }`}
+        className={onAccent ? "glim-info-icon glim-info-icon--on-accent" : "glim-info-icon"}
       >
         <svg viewBox="0 0 16 16" width="15" height="15" fill="none" aria-hidden="true">
           <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.3" />

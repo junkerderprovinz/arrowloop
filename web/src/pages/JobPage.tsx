@@ -193,7 +193,7 @@ function StartStop({ job }: { job: Job }) {
       labelKey={startStop.labelKey}
       title={startStop.hint}
       tone="accent"
-      className="glim-btn-key"
+      size="key"
       disabled={startStop.disabled}
       onClick={startStop.press}
     />

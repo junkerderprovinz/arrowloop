@@ -6,8 +6,8 @@
 // BMAC offers there, card and wallet payments included. Mount the window only
 // while it is open, so nothing from BMAC loads before somebody asks for it.
 import type { Ref } from "react";
-import { Badge } from "./Badge";
-import { Button } from "./Button";
+import { Badge } from "./Badge.tsx";
+import { Button } from "./Button.tsx";
 
 export interface CoffeeDialogProps {
   /** `https://buymeacoffee.com/widget/page/<handle>` with its query. */
@@ -28,7 +28,7 @@ export interface CoffeeDialogProps {
 export function CoffeeDialog({ widgetUrl, text, onClose, ref }: CoffeeDialogProps) {
   return (
     <div
-      className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="glim-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -41,32 +41,30 @@ export function CoffeeDialog({ widgetUrl, text, onClose, ref }: CoffeeDialogProp
         role="dialog"
         aria-modal="true"
         aria-labelledby="coffee-title"
-        className="glim-modal-card relative flex h-[calc(100vh-7rem)] w-full max-w-lg flex-col rounded-card bg-carbon-surface shadow-2xl"
+        className="glim-modal-card glim-modal-card--wide glim-modal-card--tall"
       >
-        <div className="flex items-start justify-between gap-4 px-5 py-4">
-          <h2 id="coffee-title" className="flex items-center">
+        <div className="glim-modal-head">
+          <h2 id="coffee-title" className="glim-modal-title">
             <Badge tone="heading" size="heading" wrap>
               {text.title}
             </Badge>
           </h2>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-4 px-5 pb-5">
-          <p className="text-sm text-carbon-text">{text.appeal}</p>
-          <p className="text-sm text-carbon-textSub">{text.intro}</p>
-          <div className="flex min-h-0 flex-1 rounded-card bg-carbon-surface2 p-2">
-            {/* White behind the frame so the first paint is not a dark hole
-                on the dark theme; BMAC's page is light either way. */}
+        <div className="glim-give-body">
+          <p className="glim-give-appeal">{text.appeal}</p>
+          <p className="glim-give-intro">{text.intro}</p>
+          <div className="glim-give-frame">
             <iframe
               src={widgetUrl}
               title={text.title}
               allow="payment"
-              className="min-h-0 w-full flex-1 rounded-control border-0 bg-white"
+              className="glim-give-iframe"
             />
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 px-5 pb-5">
+        <div className="glim-give-foot">
           <Button label={text.closeLabel} labelKey="common.close" tone="neutral" onClick={onClose} />
         </div>
       </div>

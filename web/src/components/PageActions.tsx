@@ -94,7 +94,8 @@ export function PageAction({
       disabled={disabled}
       busy={busy}
       title={title}
-      className={`glim-btn-key${narrow ? ' glim-glyph-only' : ''}`}
+      size="key"
+      className={narrow ? 'glim-glyph-only' : undefined}
     />
   )
 }

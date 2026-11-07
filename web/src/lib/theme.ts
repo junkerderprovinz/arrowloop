@@ -1,44 +1,69 @@
-// The Design setting: dark, light, or whatever the device says. The theme
-// attribute is always written, from the device's setting under System, so the
-// stylesheet has one source rather than an attribute and a media query that
-// disagree.
+// Which ramp is showing, and the OLED variant of the dark one. The theme
+// itself is `data-theme` on <html>, `light`, `dark` or unset for the system.
+// OLED is `data-oled` on <html>, present or absent; tokens.css applies it only
+// while the dark ramp shows, so it can stay on through a switch to light.
+//
+// OLED belongs to the screen, not the person, so it is kept on the device and
+// never with settings a server syncs: the same account may sign in on an LCD
+// laptop.
 
-export type ThemeChoice = 'dark' | 'light' | 'system'
+import { storageKey } from './storage.ts';
 
-const KEY = 'arrowloop.theme'
+const SYSTEM_DARK = '(prefers-color-scheme: dark)';
 
-const deviceQuery = () => window.matchMedia?.('(prefers-color-scheme: light)')
+/** Whether the dark ramp shows for a `data-theme` value and the system's preference. */
+export function resolvesDark(theme: string | null | undefined, systemDark: boolean): boolean {
+  if (theme === 'dark') return true;
+  if (theme === 'light') return false;
+  return systemDark;
+}
 
-/** Nothing stored means System, which is also where a new install starts. */
-export function storedTheme(): ThemeChoice {
+/** Whether the dark ramp is showing now, by choice or because the system is dark. */
+export function darkShowing(): boolean {
+  return resolvesDark(document.documentElement.getAttribute('data-theme'), matchMedia(SYSTEM_DARK).matches);
+}
+
+/**
+ * Calls `fn` whenever the dark ramp starts or stops showing, through a theme
+ * choice or the system, so a settings page can say whether OLED is in effect.
+ * Returns the function that stops watching.
+ */
+export function watchDarkShowing(fn: (dark: boolean) => void): () => void {
+  let last = darkShowing();
+  const check = () => {
+    const next = darkShowing();
+    if (next === last) return;
+    last = next;
+    fn(next);
+  };
+  const media = matchMedia(SYSTEM_DARK);
+  media.addEventListener('change', check);
+  const observer = new MutationObserver(check);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  return () => {
+    media.removeEventListener('change', check);
+    observer.disconnect();
+  };
+}
+
+/** Turns OLED on or off and remembers it on this device. */
+export function applyOled(on: boolean): void {
+  const root = document.documentElement;
+  if (on) root.setAttribute('data-oled', '');
+  else root.removeAttribute('data-oled');
   try {
-    const stored = localStorage.getItem(KEY)
-    if (stored === 'dark' || stored === 'light') return stored
+    if (on) localStorage.setItem(storageKey('oled'), '1');
+    else localStorage.removeItem(storageKey('oled'));
   } catch {
-    // Storage turned off. The device setting still answers.
+    // The switch still holds until the page closes.
   }
-  return 'system'
 }
 
-export function paintTheme(choice: ThemeChoice) {
-  const theme = choice === 'system' ? (deviceQuery()?.matches ? 'light' : 'dark') : choice
-  document.documentElement.setAttribute('data-theme', theme)
-}
-
-export function storeTheme(choice: ThemeChoice) {
+/** Whether OLED is on for this device. */
+export function storedOled(): boolean {
   try {
-    if (choice === 'system') localStorage.removeItem(KEY)
-    else localStorage.setItem(KEY, choice)
+    return localStorage.getItem(storageKey('oled')) === '1';
   } catch {
-    // A browser with storage disabled forgets the choice on reload.
+    return false;
   }
-}
-
-/** Repaints when the device switches while System is chosen. */
-export function followDevice(choice: ThemeChoice): () => void {
-  const media = deviceQuery()
-  if (!media || choice !== 'system') return () => {}
-  const follow = () => paintTheme('system')
-  media.addEventListener('change', follow)
-  return () => media.removeEventListener('change', follow)
 }

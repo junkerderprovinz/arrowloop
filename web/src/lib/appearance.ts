@@ -3,8 +3,14 @@
 // a palette handed out by position. All of it is applied to the document root,
 // so every component picks it up through the tokens it already reads.
 //
-// The file has no framework dependency, since an adopting app copies it whole;
-// a React app wraps it in a small hook.
+// It has no framework dependency; the React and Vue packages wrap it.
+
+import { accentInks, contrastOn, validHex as valid } from './contrast.ts';
+import { storageKey } from './storage.ts';
+import { applyOled, storedOled } from './theme.ts';
+
+// Also reachable through the @glimstone/core/appearance subpath.
+export { contrastOn };
 
 /**
  * The corner shapes. Like the motion levels these strings are a wire format:
@@ -189,26 +195,92 @@ export function stormTap(state: { taps: number }, tapped: string, current: strin
  */
 
 /**
- * Overrides the accent tokens, or clears the override so the theme's gold comes
- * back. The contrast colour is computed, so a light accent never gets white
- * text.
- *
- * `--accent-ink`, `--accent-glyph` and `--accent-hover` are not set here:
- * tokens.css derives them from --accent with color-mix, so they also follow a
- * later light or dark switch.
+ * The accent mode that takes its colour from the device: Material You on
+ * Android, the desktop's accent colour, or the browser's `AccentColor`. It is
+ * stored as this word, never as the colour, so a synced setting does not carry
+ * one device's wallpaper to the next.
  */
-export function applyAccent(hex: string | undefined): void {
+export const SYSTEM_ACCENT = 'system';
+
+/**
+ * The colour an accent setting stands for: a hex as it is, the system mode as
+ * the colour the source reported, and undefined for the default, which is also
+ * what the system mode gives on a device without a source.
+ */
+export function resolveAccent(accent: string | undefined, system: string | undefined): string | undefined {
+  if (accent === SYSTEM_ACCENT) return valid(system) ? system : undefined;
+  return valid(accent) ? accent : undefined;
+}
+
+let accentSetting: string | undefined;
+let systemColour: string | undefined;
+const systemListeners = new Set<() => void>();
+
+/**
+ * Overrides the accent tokens with a hex or SYSTEM_ACCENT, or clears the
+ * override so the theme's gold comes back. The ink on the fill is computed, so
+ * a light accent never gets white text.
+ *
+ * `--accent-ink`, `--accent-glyph` and `--accent-hover` are derived in
+ * tokens.css with color-mix, so they also follow a later light or dark switch.
+ * Where that mix would fall short of 4.5:1 on a ramp, the ramp's ink is set
+ * here instead, as `--accent-ink-light` or `--accent-ink-dark`.
+ */
+export function applyAccent(accent: string | undefined): void {
+  accentSetting = accent;
+  paintAccent(resolveAccent(accent, systemColour));
+}
+
+function paintAccent(hex: string | undefined): void {
   const root = document.documentElement.style;
+  const inks = valid(hex) ? accentInks(hex) : { light: undefined, dark: undefined };
+  for (const [ramp, ink] of Object.entries(inks)) {
+    if (ink) root.setProperty(`--accent-ink-${ramp}`, ink);
+    else root.removeProperty(`--accent-ink-${ramp}`);
+  }
   if (!valid(hex)) {
     root.removeProperty('--accent');
     root.removeProperty('--accent-contrast');
     root.removeProperty('--accent-soft');
     return;
   }
-  const { r, g, b } = parse(hex);
+  const n = parseInt(hex.slice(1), 16);
   root.setProperty('--accent', hex);
   root.setProperty('--accent-contrast', contrastOn(hex));
-  root.setProperty('--accent-soft', `rgba(${r}, ${g}, ${b}, 0.14)`);
+  root.setProperty('--accent-soft', `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, 0.14)`);
+}
+
+/**
+ * Feeds the colour the device reports, or undefined where it has none, and
+ * repaints when the accent is in the system mode. Call it again whenever the
+ * source changes; `watchBrowserAccent(setSystemAccent)` does that for the
+ * browser.
+ *
+ * The colour is remembered on this device alone, so the first frame after a
+ * reload is already in it.
+ */
+export function setSystemAccent(hex: string | undefined): void {
+  const next = valid(hex) ? hex : undefined;
+  if (next === systemColour) return;
+  systemColour = next;
+  try {
+    if (next) localStorage.setItem(storageKey('system-accent'), next);
+    else localStorage.removeItem(storageKey('system-accent'));
+  } catch {
+    // Without storage the default shows until the source answers.
+  }
+  if (accentSetting === SYSTEM_ACCENT) paintAccent(next);
+  for (const fn of systemListeners) fn();
+}
+
+/** The device's colour, or undefined where there is none, so the wand swatch stays hidden. */
+export function systemAccent(): string | undefined {
+  return systemColour;
+}
+
+export function subscribeSystemAccent(fn: () => void): () => void {
+  systemListeners.add(fn);
+  return () => systemListeners.delete(fn);
 }
 
 // The rainbow state belongs to the document, not a component: the sidebar and a
@@ -350,39 +422,8 @@ function usablePalette(p: string[] | undefined): string[] {
   return p;
 }
 
-/** Black or white, whichever is readable on the given colour. */
-export function contrastOn(hex: string): string {
-  if (!valid(hex)) return '#FFFFFF';
-  const { r, g, b } = parse(hex);
-  // Carbon's own ink: on a yellow accent a brown-tinted black reads as a smudge.
-  return luminance(r, g, b) > 0.55 ? '#161616' : '#FFFFFF';
-}
-
-function valid(hex: string | undefined): hex is string {
-  return !!hex && /^#[0-9a-fA-F]{6}$/.test(hex);
-}
-
-function parse(hex: string): { r: number; g: number; b: number } {
-  const n = parseInt(hex.slice(1), 16);
-  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
-}
-
-/**
- * Relative luminance, used to pick black or white on top. The channels are
- * linearised first because raw sRGB overstates blue and understates green.
- */
-function luminance(r: number, g: number, b: number): number {
-  const lin = (c: number) => {
-    const v = c / 255;
-    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-  };
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-}
-
 // Appearance is mirrored into localStorage only so the first paint after a
-// reload is right; wherever settings live stays the source of truth. Each app
-// should use its own key.
-const CACHE = 'glim-appearance';
+// reload is right; wherever settings live stays the source of truth.
 
 interface Cached {
   shape?: string;
@@ -390,12 +431,13 @@ interface Cached {
   rainbow?: RainbowState;
 }
 
+/** `accent` is the setting, so the system mode is cached as SYSTEM_ACCENT. */
 export function cacheAppearance(shape: string, accent: string, rainbow?: RainbowState): void {
   try {
     // The conditional spread omits the key under exactOptionalPropertyTypes
     // instead of storing it as undefined.
     const payload: Cached = { shape, accent, ...(rainbow !== undefined ? { rainbow } : {}) };
-    localStorage.setItem(CACHE, JSON.stringify(payload));
+    localStorage.setItem(storageKey('appearance'), JSON.stringify(payload));
   } catch {
     // With storage disabled the default look flashes once per load.
   }
@@ -403,8 +445,11 @@ export function cacheAppearance(shape: string, accent: string, rainbow?: Rainbow
 
 /** Applied at boot, before the app renders anything. */
 export function applyCachedAppearance(): void {
+  applyOled(storedOled());
   try {
-    const raw = localStorage.getItem(CACHE);
+    const system = localStorage.getItem(storageKey('system-accent')) ?? undefined;
+    if (valid(system)) systemColour = system;
+    const raw = localStorage.getItem(storageKey('appearance'));
     if (!raw) {
       applyShape(DEFAULT_SHAPE);
       applyRainbow(undefined);

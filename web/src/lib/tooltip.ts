@@ -2,12 +2,10 @@
 // bubble"): one floating bubble, placed from the trigger's bounding box, shared
 // by every hover tooltip and every "(i)" info icon.
 
+import { pointerWasLast, trackInputModality } from './inputModality.ts';
+
 const BUBBLE_ID = 'glim-bubble';
 let currentTrigger: Element | null = null;
-// Whether the last input was a pointer rather than a key. Focus that follows a
-// press is a side effect (the click itself, or a dialog handing focus back to
-// its opener), so it must not open the bubble; see react/useTipBubble.tsx.
-let pointerWasLast = false;
 
 function bubbleEl(): HTMLDivElement {
   let el = document.getElementById(BUBBLE_ID) as HTMLDivElement | null;
@@ -88,7 +86,7 @@ export function wireTooltips(): void {
   wired = true;
 
   function over(event: Event): void {
-    if (event.type === 'focusin' && pointerWasLast) return;
+    if (event.type === 'focusin' && pointerWasLast()) return;
     const target = event.target;
     if (!(target instanceof Element)) return;
     const trigger = target.closest(`[data-tip], ${TITLED_CONTROL}`);
@@ -118,16 +116,9 @@ export function wireTooltips(): void {
   document.addEventListener('mouseout', out);
   document.addEventListener('focusin', over);
   document.addEventListener('focusout', out);
+  trackInputModality();
   // A press means the person is acting, not reading.
-  document.addEventListener(
-    'pointerdown',
-    () => {
-      pointerWasLast = true;
-      hide();
-    },
-    true,
-  );
-  document.addEventListener('keydown', () => (pointerWasLast = false), true);
+  document.addEventListener('pointerdown', hide, true);
   // Any scroll leaves the fixed bubble behind; capture catches inner scroll
   // containers too.
   window.addEventListener('scroll', hide, true);

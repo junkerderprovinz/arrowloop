@@ -491,7 +491,7 @@ version before open.
 ## The look
 
 The interface uses [GlimStone](https://github.com/junkerderprovinz/glimstone)
-4.0.0, with its reference tokens and appearance engine copied in verbatim rather
+4.2.0, with its reference tokens and appearance engine copied in verbatim rather
 than reimplemented. Design, corner shape and accent are the viewer's to set on
 the **Look** tile.
 

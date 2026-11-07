@@ -1,4 +1,4 @@
-import { BUBBLE_VIEWPORT_MARGIN, type BubbleSize, type BubbleTriggerRect, type Viewport } from './glimstone/bubblePosition'
+import { BUBBLE_VIEWPORT_MARGIN, type BubbleSize, type BubbleTriggerRect, type Viewport } from './bubblePosition'
 
 /** The gap between the button and the menu it opens, as the listbox keeps. */
 const GAP = 4
