@@ -267,6 +267,11 @@ object Engine {
         // Without these the engine takes the Android target away again.
         builder.environment().putAll(AppData.environment(context))
         builder.environment().putAll(Docs.environment(context))
+        val authorities = Authorities.environment(context)
+        if (authorities.isNotEmpty()) {
+            note(context, "trusting the certificate authorities installed in Android's settings")
+        }
+        builder.environment().putAll(authorities)
         builder.redirectErrorStream(true)
         builder.redirectOutput(ProcessBuilder.Redirect.appendTo(log))
 

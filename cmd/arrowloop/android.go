@@ -97,7 +97,10 @@ var androidCertDirs = []string{
 
 // useSystemCertificates sets SSL_CERT_DIR to the Android certificate
 // directories that exist and are not empty, and returns what it set. It leaves
-// a value somebody already set alone.
+// a value somebody already set alone. The authorities a user installed in
+// Android's settings live where only the system can read them, so the app
+// writes them out and names the file in SSL_CERT_FILE, which Go reads beside
+// these directories.
 func useSystemCertificates() string {
 	if os.Getenv("SSL_CERT_DIR") != "" {
 		return ""

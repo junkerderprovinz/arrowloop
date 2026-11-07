@@ -60,7 +60,12 @@ class EngineModule(private val context: ReactApplicationContext) :
         Thread { EngineService.leave(context) }.start()
     }
 
-    override fun onHostResume() = EngineService.back(context)
+    override fun onHostResume() {
+        EngineService.back(context)
+        // A certificate authority is installed in Android's settings, so coming
+        // back from there is when the engine has to learn about it.
+        Thread { if (Authorities.changed(context)) Engine.restart(context) }.start()
+    }
 
     override fun onHostDestroy() {}
 
