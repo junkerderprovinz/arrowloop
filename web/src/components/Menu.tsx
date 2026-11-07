@@ -5,6 +5,7 @@ import { IconAction } from './IconAction'
 import { glyphFor } from '../lib/glyphFor'
 import { BUBBLE_VIEWPORT_MARGIN } from '../lib/bubblePosition'
 import { usePortalHue } from '../lib/glimstone/portalHue'
+import { focusFirstMenuRow } from '../lib/menu'
 import { useNarrow } from '../lib/narrow'
 import { placeMenu } from '../lib/menuPlace'
 import type { TranslationKey } from '../lib/i18n'
@@ -123,7 +124,7 @@ function MenuPanel({
   // Focus moves in once the list stands where it belongs; focusing it while
   // parked off screen would scroll the page, and a scroll closes it.
   useLayoutEffect(() => {
-    if (at) panel.current?.querySelector<HTMLElement>('[role="menuitem"]:not(:disabled)')?.focus()
+    if (at && panel.current) focusFirstMenuRow(panel.current)
   }, [at])
 
   useEffect(() => {
