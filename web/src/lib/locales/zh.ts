@@ -1071,6 +1071,7 @@ const zh: Translations = {
   'look.system': '跟随系统',
   'look.oled': 'OLED',
   'look.oledHint': '让深色外观使用纯黑，适合 OLED 和 AMOLED 屏幕。',
+  'look.oledLight': '仅在“{dark}”或“{system}”下可用。上方选择的是“{light}”。',
   'look.barLabelsWeb': '在窄窗口中代替侧边栏的栏。只对窄窗口有效。',
   'workload.retries': '重试',
   'safety.brakes': '刹车',

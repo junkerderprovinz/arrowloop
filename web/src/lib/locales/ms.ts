@@ -1071,6 +1071,7 @@ const ms: Translations = {
   'look.system': 'Sistem',
   'look.oled': 'OLED',
   'look.oledHint': 'Menjadikan rupa gelap hitam sebenar, untuk skrin OLED dan AMOLED.',
+  'look.oledLight': 'Hanya dengan “{dark}” atau “{system}”. Di atas, “{light}” dipilih.',
   'look.barLabelsWeb': 'Bar yang menggantikan tempat bar sisi dalam tetingkap sempit. Hanya berkesan pada tetingkap sempit.',
   'workload.retries': 'Cuba semula',
   'safety.brakes': 'Brek',

@@ -1071,6 +1071,7 @@ const sl: Translations = {
   'look.system': 'Sistem',
   'look.oled': 'OLED',
   'look.oledHint': 'Temni videz preklopi na pravo črno za zaslone OLED in AMOLED.',
+  'look.oledLight': 'Samo z „{dark}“ ali „{system}“. Zgoraj je izbrano „{light}“.',
   'look.barLabelsWeb': 'Vrstica, ki v ozkem oknu zavzame mesto stranske vrstice. Velja samo v ozkih oknih.',
   'workload.retries': 'Ponovni poskusi',
   'safety.brakes': 'Zavore',

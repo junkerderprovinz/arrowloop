@@ -1071,6 +1071,7 @@ const fa: Translations = {
   'look.system': 'سیستم',
   'look.oled': 'OLED',
   'look.oledHint': 'ظاهر تیره را برای صفحه‌های OLED و AMOLED به سیاه واقعی می‌برد.',
+  'look.oledLight': 'فقط با «{dark}» یا «{system}». در بالا «{light}» انتخاب شده است.',
   'look.barLabelsWeb': 'نواری که در پنجرهٔ باریک جای نوار کناری را می‌گیرد. فقط روی پنجره‌های باریک اثر دارد.',
   'workload.retries': 'تلاش مجدد',
   'safety.brakes': 'ترمزها',

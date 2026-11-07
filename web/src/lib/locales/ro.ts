@@ -1071,6 +1071,7 @@ const ro: Translations = {
   'look.system': 'Sistem',
   'look.oled': 'OLED',
   'look.oledHint': 'Trece aspectul întunecat pe negru adevărat, pentru ecranele OLED și AMOLED.',
+  'look.oledLight': 'Doar cu „{dark}” sau „{system}”. Mai sus este ales „{light}”.',
   'look.barLabelsWeb': 'Bara care preia locul barei laterale într-o fereastră îngustă. Are efect doar în ferestrele înguste.',
   'workload.retries': 'Reîncercări',
   'safety.brakes': 'Frâne',

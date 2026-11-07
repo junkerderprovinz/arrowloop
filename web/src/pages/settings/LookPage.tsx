@@ -32,7 +32,7 @@ import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
 import { MOTION_INTENSITIES, type MotionIntensity } from '../../lib/motion'
-import { applyOled, darkShowing, storedOled, watchDarkShowing } from '../../lib/theme'
+import { applyOled, darkShowing, oledRefusal, storedOled, watchDarkShowing } from '../../lib/theme'
 import type { ThemeChoice } from '../../lib/themeSetting'
 import { counter, SettingsRow } from './rows'
 import { isOwnOrder, setTileOrder, useTileOrder } from './tiles'
@@ -200,7 +200,7 @@ export function LookPage({
             ]}
           />
         </SettingsRow>
-        <OledRow />
+        <OledRow theme={theme} />
 
         <SettingsRow label={t('look.corners')} hint={t('look.cornersHint')}>
           <Selector<Shape>
@@ -372,8 +372,9 @@ export function LookPage({
  * OLED belongs to this screen rather than to the person, so it stays in the
  * browser and never goes into the settings the engine keeps. It counts only
  * while the dark look shows, and steps back meanwhile without letting go.
+ * Under Light it refuses, since there is no dark look to put on black.
  */
-function OledRow() {
+function OledRow({ theme }: { theme: ThemeChoice }) {
   const { t } = useT()
   const [on, setOn] = useState(storedOled)
   const dark = useSyncExternalStore(watchDarkShowing, darkShowing)
@@ -388,6 +389,12 @@ function OledRow() {
         label={t('look.oled')}
         hint={t('look.oledHint')}
         resting={!dark}
+        refused={oledRefusal(theme, {
+          sentence: t('look.oledLight'),
+          dark: t('look.dark'),
+          system: t('look.system'),
+          light: t('look.light'),
+        })}
       />
     </div>
   )

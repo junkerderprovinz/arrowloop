@@ -1071,6 +1071,7 @@ const eu: Translations = {
   'look.system': 'Sistema',
   'look.oled': 'OLED',
   'look.oledHint': 'Itxura iluna benetako beltz bihurtzen du, OLED eta AMOLED pantailentzat.',
+  'look.oledLight': '«{dark}» edo «{system}» aukerarekin bakarrik. Goian «{light}» dago aukeratuta.',
   'look.barLabelsWeb': 'Leiho estu batean alboko barraren lekua hartzen duen barra. Leiho estuei soilik eragiten die.',
   'workload.retries': 'Saiakera berriak',
   'safety.brakes': 'Balaztak',

@@ -1071,6 +1071,7 @@ const et: Translations = {
   'look.system': 'Süsteem',
   'look.oled': 'OLED',
   'look.oledHint': 'Muudab tumeda välimuse päris mustaks OLED- ja AMOLED-ekraanide jaoks.',
+  'look.oledLight': 'Ainult koos „{dark}“ või „{system}“ valikuga. Üleval on valitud „{light}“.',
   'look.barLabelsWeb': 'Riba, mis kitsas aknas asendab külgriba. Mõjub ainult kitsastele akendele.',
   'workload.retries': 'Kordusproovid',
   'safety.brakes': 'Piduriid',

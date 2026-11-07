@@ -1071,6 +1071,7 @@ const hi: Translations = {
   'look.system': 'सिस्टम',
   'look.oled': 'OLED',
   'look.oledHint': 'गहरे रूप को OLED और AMOLED स्क्रीन के लिए असली काले रंग पर ले जाता है।',
+  'look.oledLight': 'केवल “{dark}” या “{system}” के साथ। ऊपर “{light}” चुना गया है।',
   'look.barLabelsWeb': 'वह पट्टी जो संकरी विंडो में साइडबार की जगह लेती है। सिर्फ़ संकरी विंडो पर असर डालती है।',
   'workload.retries': 'पुनः प्रयास',
   'safety.brakes': 'ब्रेक',

@@ -1071,6 +1071,7 @@ const ru: Translations = {
   'look.system': 'Как в системе',
   'look.oled': 'OLED',
   'look.oledHint': 'Делает тёмное оформление по-настоящему чёрным для экранов OLED и AMOLED.',
+  'look.oledLight': 'Только с «{dark}» или «{system}». Выше выбрано «{light}».',
   'look.barLabelsWeb': 'Панель, которая в узком окне занимает место боковой. Действует только в узких окнах.',
   'workload.retries': 'Повторные попытки',
   'safety.brakes': 'Тормоза',

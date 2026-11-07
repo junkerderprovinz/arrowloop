@@ -1071,6 +1071,7 @@ const hr: Translations = {
   'look.system': 'Sustav',
   'look.oled': 'OLED',
   'look.oledHint': 'Prebacuje tamni izgled na pravu crnu, za OLED i AMOLED zaslone.',
+  'look.oledLight': 'Samo uz „{dark}“ ili „{system}“. Gore je odabrano „{light}“.',
   'look.barLabelsWeb': 'Traka koja u uskom prozoru preuzima mjesto bočne trake. Djeluje samo u uskim prozorima.',
   'workload.retries': 'Ponovni pokušaji',
   'safety.brakes': 'Kočnice',

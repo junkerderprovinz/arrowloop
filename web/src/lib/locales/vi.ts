@@ -1071,6 +1071,7 @@ const vi: Translations = {
   'look.system': 'Hệ thống',
   'look.oled': 'OLED',
   'look.oledHint': 'Chuyển giao diện tối sang màu đen tuyệt đối, cho màn hình OLED và AMOLED.',
+  'look.oledLight': 'Chỉ dùng được với “{dark}” hoặc “{system}”. Phía trên đang chọn “{light}”.',
   'look.barLabelsWeb': 'Thanh thay chỗ thanh bên trong cửa sổ hẹp. Chỉ có tác dụng với cửa sổ hẹp.',
   'workload.retries': 'Thử lại',
   'safety.brakes': 'Phanh',

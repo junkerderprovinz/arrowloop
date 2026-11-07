@@ -1071,6 +1071,7 @@ const ar: Translations = {
   'look.system': 'النظام',
   'look.oled': 'OLED',
   'look.oledHint': 'يجعل المظهر الداكن أسود حقيقيًا لشاشات OLED وAMOLED.',
+  'look.oledLight': 'فقط مع «{dark}» أو «{system}». تم اختيار «{light}» في الأعلى.',
   'look.barLabelsWeb': 'الشريط الذي يحلّ محل الشريط الجانبي في النافذة الضيقة. يؤثر في النوافذ الضيقة فقط.',
   'workload.retries': 'إعادة المحاولة',
   'safety.brakes': 'المكابح',

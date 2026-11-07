@@ -1071,6 +1071,7 @@ const lv: Translations = {
   'look.system': 'Sistēma',
   'look.oled': 'OLED',
   'look.oledHint': 'Pārslēdz tumšo izskatu uz īstu melnu OLED un AMOLED ekrāniem.',
+  'look.oledLight': 'Tikai ar „{dark}“ vai „{system}“. Augšā ir izvēlēts „{light}“.',
   'look.barLabelsWeb': 'Josla, kas šaurā logā ieņem sānjoslas vietu. Darbojas tikai šaurajos logos.',
   'workload.retries': 'Atkārtojumi',
   'safety.brakes': 'Bremzes',

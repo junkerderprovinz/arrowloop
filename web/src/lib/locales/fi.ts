@@ -1071,6 +1071,7 @@ const fi: Translations = {
   'look.system': 'Järjestelmä',
   'look.oled': 'OLED',
   'look.oledHint': 'Vaihtaa tumman ulkoasun aidoksi mustaksi OLED- ja AMOLED-näytöille.',
+  'look.oledLight': 'Vain asetuksella ”{dark}” tai ”{system}”. Ylhäällä on valittu ”{light}”.',
   'look.barLabelsWeb': 'Palkki, joka korvaa sivupalkin kapeassa ikkunassa. Vaikuttaa vain kapeisiin ikkunoihin.',
   'workload.retries': 'Uudelleenyritykset',
   'safety.brakes': 'Jarrut',

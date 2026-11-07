@@ -1071,6 +1071,7 @@ const hu: Translations = {
   'look.system': 'Rendszer',
   'look.oled': 'OLED',
   'look.oledHint': 'A sötét megjelenést valódi feketére állítja OLED és AMOLED kijelzőkhöz.',
+  'look.oledLight': 'Csak „{dark}” vagy „{system}” mellett. Fent a „{light}” van kiválasztva.',
   'look.barLabelsWeb': 'A sáv, amely keskeny ablakban az oldalsáv helyére lép. Csak keskeny ablakban hat.',
   'workload.retries': 'Újrapróbálkozások',
   'safety.brakes': 'Fékek',

@@ -1071,6 +1071,7 @@ const th: Translations = {
   'look.system': 'ตามระบบ',
   'look.oled': 'OLED',
   'look.oledHint': 'เปลี่ยนรูปแบบมืดเป็นสีดำสนิท สำหรับหน้าจอ OLED และ AMOLED',
+  'look.oledLight': 'ใช้ได้เฉพาะกับ “{dark}” หรือ “{system}” ด้านบนเลือก “{light}” ไว้',
   'look.barLabelsWeb': 'แถบที่มาแทนแถบด้านข้างในหน้าต่างแคบ มีผลเฉพาะหน้าต่างแคบ',
   'workload.retries': 'การลองใหม่',
   'safety.brakes': 'เบรก',

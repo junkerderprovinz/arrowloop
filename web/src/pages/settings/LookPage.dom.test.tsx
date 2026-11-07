@@ -91,4 +91,25 @@ describe('the OLED switch', () => {
     expect(name().className).toContain('opacity-50')
     expect((screen.getByRole('switch', { name: 'OLED' }) as HTMLButtonElement).disabled).toBe(false)
   })
+
+  it('refuses while Light is chosen, keeps its state and says why', () => {
+    localStorage.setItem('glim-oled', '1')
+    render(<LookPage {...props({ theme: 'light' })} />)
+    const oled = screen.getByRole('switch', { name: 'OLED' })
+    expect(oled.getAttribute('aria-disabled')).toBe('true')
+
+    fireEvent.click(oled)
+    expect(oled.getAttribute('aria-checked')).toBe('true')
+    expect(localStorage.getItem('glim-oled')).toBe('1')
+    const reason = document.getElementById(oled.getAttribute('aria-describedby')!)
+    expect(reason?.textContent).toBe('Only with Dark or System. Light is chosen above.')
+  })
+
+  it('flips under System, where the device may turn dark', () => {
+    render(<LookPage {...props({ theme: 'system' })} />)
+    const oled = screen.getByRole('switch', { name: 'OLED' })
+    expect(oled.hasAttribute('aria-disabled')).toBe(false)
+    fireEvent.click(oled)
+    expect(oled.getAttribute('aria-checked')).toBe('true')
+  })
 })

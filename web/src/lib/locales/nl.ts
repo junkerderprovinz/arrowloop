@@ -1071,6 +1071,7 @@ const nl: Translations = {
   'look.system': 'Systeem',
   'look.oled': 'OLED',
   'look.oledHint': 'Zet het donkere uiterlijk op echt zwart, voor OLED- en AMOLED-schermen.',
+  'look.oledLight': 'Alleen met „{dark}” of „{system}”. Hierboven is „{light}” gekozen.',
   'look.barLabelsWeb': 'De balk die in een smal venster de plaats van de zijbalk inneemt. Werkt alleen in smalle vensters.',
   'workload.retries': 'Nieuwe pogingen',
   'safety.brakes': 'Remmen',

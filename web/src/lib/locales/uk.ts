@@ -1071,6 +1071,7 @@ const uk: Translations = {
   'look.system': 'Системна',
   'look.oled': 'OLED',
   'look.oledHint': 'Робить темне оформлення справді чорним для екранів OLED і AMOLED.',
+  'look.oledLight': 'Лише з «{dark}» або «{system}». Вище вибрано «{light}».',
   'look.barLabelsWeb': 'Панель, що замінює бічну панель у вузькому вікні. Діє лише у вузьких вікнах.',
   'workload.retries': 'Повторні спроби',
   'safety.brakes': 'Гальма',

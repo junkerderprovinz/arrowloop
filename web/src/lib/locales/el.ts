@@ -1071,6 +1071,7 @@ const el: Translations = {
   'look.system': 'Σύστημα',
   'look.oled': 'OLED',
   'look.oledHint': 'Κάνει το σκούρο θέμα πραγματικά μαύρο, για οθόνες OLED και AMOLED.',
+  'look.oledLight': 'Μόνο με «{dark}» ή «{system}». Επάνω είναι επιλεγμένο το «{light}».',
   'look.barLabelsWeb': 'Η μπάρα που παίρνει τη θέση της πλαϊνής μπάρας σε στενό παράθυρο. Επηρεάζει μόνο τα στενά παράθυρα.',
   'workload.retries': 'Επαναλήψεις',
   'safety.brakes': 'Φρένα',

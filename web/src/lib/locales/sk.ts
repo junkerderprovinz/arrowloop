@@ -1071,6 +1071,7 @@ const sk: Translations = {
   'look.system': 'Systém',
   'look.oled': 'OLED',
   'look.oledHint': 'Prepne tmavý vzhľad na skutočnú čiernu pre displeje OLED a AMOLED.',
+  'look.oledLight': 'Len s „{dark}“ alebo „{system}“. Hore je zvolené „{light}“.',
   'look.barLabelsWeb': 'Lišta, ktorá v úzkom okne nahrádza bočný panel. Platí iba v úzkych oknách.',
   'workload.retries': 'Opakovania',
   'safety.brakes': 'Brzdy',

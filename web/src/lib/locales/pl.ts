@@ -1071,6 +1071,7 @@ const pl: Translations = {
   'look.system': 'Systemowy',
   'look.oled': 'OLED',
   'look.oledHint': 'Zmienia ciemny wygląd na prawdziwą czerń dla ekranów OLED i AMOLED.',
+  'look.oledLight': 'Tylko przy „{dark}” lub „{system}”. Powyżej wybrano „{light}”.',
   'look.barLabelsWeb': 'Pasek, który w wąskim oknie zastępuje panel boczny. Działa tylko w wąskich oknach.',
   'workload.retries': 'Ponowne próby',
   'safety.brakes': 'Hamulce',

@@ -1071,6 +1071,7 @@ const lt: Translations = {
   'look.system': 'Sistema',
   'look.oled': 'OLED',
   'look.oledHint': 'Tamsią išvaizdą paverčia tikra juoda OLED ir AMOLED ekranams.',
+  'look.oledLight': 'Tik su „{dark}“ arba „{system}“. Viršuje pasirinkta „{light}“.',
   'look.barLabelsWeb': 'Juosta, kuri siaurame lange užima šoninės juostos vietą. Veikia tik siauruose languose.',
   'workload.retries': 'Kartojimai',
   'safety.brakes': 'Stabdžiai',

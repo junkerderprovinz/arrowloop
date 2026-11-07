@@ -35,6 +35,7 @@ import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { describeValue, inForce, type Defaults } from "../../../web/src/lib/follows";
+import { oledRefusal } from "../../../web/src/lib/theme";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
@@ -168,6 +169,12 @@ export function Settings() {
   }, [look.accent]);
 
   const palette = look.palette.length ? look.palette : RAINBOW;
+  const oledRefused = oledRefusal(look.theme, {
+    sentence: t("look.oledLight"),
+    dark: t("look.dark"),
+    system: t("phone.system"),
+    light: t("look.light"),
+  });
 
   /**
    * Backs up the engine's settings and the jobs. The appearance and the lock
@@ -547,13 +554,15 @@ export function Settings() {
           ]}
         />
         {/* Stepped back while light shows, since it waits for the dark look
-            rather than being off. */}
-        <View style={scheme === "dark" ? null : styles.dimmed}>
+            rather than being off. Under Light it refuses instead, and the
+            reason has to stay readable. */}
+        <View style={scheme === "dark" || oledRefused ? null : styles.dimmed}>
           <Toggle
             label={t("look.oled")}
             hint={t("look.oledHint")}
             value={look.oled}
             onChange={(oled) => setAppearance({ oled })}
+            refused={oledRefused}
           />
         </View>
 

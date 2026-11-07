@@ -1071,6 +1071,7 @@ const he: Translations = {
   'look.system': 'מערכת',
   'look.oled': 'OLED',
   'look.oledHint': 'מעביר את המראה הכהה לשחור אמיתי, למסכי OLED ו-AMOLED.',
+  'look.oledLight': 'רק עם „{dark}“ או „{system}“. למעלה נבחר „{light}“.',
   'look.barLabelsWeb': 'הסרגל שתופס את מקום סרגל הצד בחלון צר. משפיע רק על חלונות צרים.',
   'workload.retries': 'ניסיונות חוזרים',
   'safety.brakes': 'בלמים',

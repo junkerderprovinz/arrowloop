@@ -1071,6 +1071,7 @@ const da: Translations = {
   'look.system': 'System',
   'look.oled': 'OLED',
   'look.oledHint': 'Giver det mørke udseende ægte sort til OLED- og AMOLED-skærme.',
+  'look.oledLight': 'Kun med „{dark}“ eller „{system}“. Ovenfor er „{light}“ valgt.',
   'look.barLabelsWeb': 'Linjen, der træder i sidepanelets sted i et smalt vindue. Virker kun i smalle vinduer.',
   'workload.retries': 'Nye forsøg',
   'safety.brakes': 'Bremser',

@@ -1071,6 +1071,7 @@ const id: Translations = {
   'look.system': 'Sistem',
   'look.oled': 'OLED',
   'look.oledHint': 'Membuat tampilan gelap menjadi hitam pekat, untuk layar OLED dan AMOLED.',
+  'look.oledLight': 'Hanya dengan “{dark}” atau “{system}”. Di atas dipilih “{light}”.',
   'look.barLabelsWeb': 'Bilah yang menggantikan bilah sisi di jendela sempit. Hanya berlaku di jendela sempit.',
   'workload.retries': 'Percobaan ulang',
   'safety.brakes': 'Rem',

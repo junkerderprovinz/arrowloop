@@ -1071,6 +1071,7 @@ const gl: Translations = {
   'look.system': 'Sistema',
   'look.oled': 'OLED',
   'look.oledHint': 'Pon o aspecto escuro en negro puro, para pantallas OLED e AMOLED.',
+  'look.oledLight': 'Só con «{dark}» ou «{system}». Arriba está escollido «{light}».',
   'look.barLabelsWeb': 'A barra que ocupa o lugar da barra lateral nunha xanela estreita. Só afecta ás xanelas estreitas.',
   'workload.retries': 'Reintentos',
   'safety.brakes': 'Freos',

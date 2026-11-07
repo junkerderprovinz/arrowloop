@@ -1071,6 +1071,7 @@ const ja: Translations = {
   'look.system': 'システム',
   'look.oled': 'OLED',
   'look.oledHint': 'OLED と AMOLED の画面向けに、暗いデザインを真っ黒にします。',
+  'look.oledLight': '「{dark}」または「{system}」のときだけ使えます。上で「{light}」が選ばれています。',
   'look.barLabelsWeb': '幅の狭いウィンドウで、サイドバーの代わりに表示されるバーです。狭いウィンドウでのみ有効です。',
   'workload.retries': '再試行',
   'safety.brakes': 'ブレーキ',

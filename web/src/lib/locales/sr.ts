@@ -1071,6 +1071,7 @@ const sr: Translations = {
   'look.system': 'Систем',
   'look.oled': 'OLED',
   'look.oledHint': 'Пребацује тамни изглед на праву црну, за OLED и AMOLED екране.',
+  'look.oledLight': 'Само уз „{dark}“ или „{system}“. Горе је изабрано „{light}“.',
   'look.barLabelsWeb': 'Трака која у уском прозору заузима место бочне траке. Важи само у уским прозорима.',
   'workload.retries': 'Поновни покушаји',
   'safety.brakes': 'Кочнице',

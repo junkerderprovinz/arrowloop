@@ -1071,6 +1071,7 @@ const sv: Translations = {
   'look.system': 'System',
   'look.oled': 'OLED',
   'look.oledHint': 'Ger det mörka utseendet äkta svart, för OLED- och AMOLED-skärmar.',
+  'look.oledLight': 'Bara med ”{dark}” eller ”{system}”. Ovanför är ”{light}” valt.',
   'look.barLabelsWeb': 'Raden som tar sidofältets plats i ett smalt fönster. Gäller bara smala fönster.',
   'workload.retries': 'Nya försök',
   'safety.brakes': 'Bromsar',

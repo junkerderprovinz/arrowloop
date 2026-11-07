@@ -1071,6 +1071,7 @@ const is: Translations = {
   'look.system': 'Kerfi',
   'look.oled': 'OLED',
   'look.oledHint': 'Setur dökka útlitið á hreinan svartan lit fyrir OLED- og AMOLED-skjái.',
+  'look.oledLight': 'Aðeins með „{dark}“ eða „{system}“. Hér fyrir ofan er „{light}“ valið.',
   'look.barLabelsWeb': 'Stikan sem tekur sæti hliðarstikunnar í þröngum glugga. Gildir aðeins í þröngum gluggum.',
   'workload.retries': 'Endurtilraunir',
   'safety.brakes': 'Hemlar',

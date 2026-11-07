@@ -912,13 +912,7 @@ export function Button({
     if (confirm) swell.confirm();
   }, [confirm, swell.confirm]);
   useEffect(() => {
-    if (!shake) return;
-    const leg = Math.max(1, Math.round(ms.fade / 2));
-    Animated.sequence(
-      [1, -1, 0.6, -0.6, 0].map((to) =>
-        Animated.timing(wobble, { toValue: to, duration: leg, useNativeDriver: true }),
-      ),
-    ).start();
+    if (shake) wobbleOnce(wobble, ms.fade);
   }, [shake, ms.fade, wobble]);
 
   const name = named ?? (labelKey ? glyphNameForKey(labelKey) : undefined);
@@ -949,7 +943,7 @@ export function Button({
           opacity: disabled || busy ? 0.45 : press.dim,
           flexGrow: wide === false ? 0 : 1,
           transform: [
-            { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] }) },
+            { translateX: wobbleShift(wobble) },
             { scale: press.scale },
             { scale: swell.scale },
           ],
@@ -1110,6 +1104,17 @@ export function ReadmeButton({
 // render and remount the button mid-animation.
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
+function wobbleOnce(wobble: Animated.Value, fade: number) {
+  const leg = Math.max(1, Math.round(fade / 2));
+  Animated.sequence(
+    [1, -1, 0.6, -0.6, 0].map((to) => Animated.timing(wobble, { toValue: to, duration: leg, useNativeDriver: true })),
+  ).start();
+}
+
+function wobbleShift(wobble: Animated.Value) {
+  return wobble.interpolate({ inputRange: [-1, 1], outputRange: [-8, 8] });
+}
+
 /**
  * The web app's switch: a track filled when on, with a knob. Drawn by hand
  * rather than with the platform Switch, so it follows the shape setting.
@@ -1119,34 +1124,52 @@ export function Switcher({
   onChange,
   hue,
   disabled,
+  refused,
 }: {
   value: boolean;
   onChange: (next: boolean) => void;
   hue?: number;
   disabled?: boolean;
+  /**
+   * Why the switch cannot be flipped right now, as OLED while Light is chosen.
+   * It keeps its state, its track dims, and a press wobbles it instead.
+   */
+  refused?: string;
 }) {
   const { p, corners, accent, hueAt } = useTheme();
+  const { ms } = useMotion();
+  const wobble = useRef(new Animated.Value(0)).current;
   const on = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
+  const fill = value ? on : p.surface3;
   return (
-    <TouchableOpacity
-      activeOpacity={HELD}
-      accessibilityRole="switch"
-      accessibilityState={{ checked: value, disabled: !!disabled }}
-      disabled={disabled}
-      onPress={() => onChange(!value)}
-      style={[
-        styles.track,
-        { ...corners.pill, backgroundColor: value ? on : p.surface3, opacity: disabled ? 0.45 : 1 },
-      ]}
-    >
-      {/* The knob takes the page's ground colour rather than a fixed white. */}
-      <View
+    <Animated.View style={{ transform: [{ translateX: wobbleShift(wobble) }] }}>
+      <TouchableOpacity
+        activeOpacity={HELD}
+        accessibilityRole="switch"
+        accessibilityState={{ checked: value, disabled: !!disabled || !!refused }}
+        accessibilityHint={refused}
+        disabled={disabled}
+        onPress={() => (refused ? wobbleOnce(wobble, ms.fade) : onChange(!value))}
         style={[
-          styles.knob,
-          { ...corners.pill, backgroundColor: p.background, alignSelf: value ? "flex-end" : "flex-start" },
+          styles.track,
+          {
+            ...corners.pill,
+            // The fill dims rather than the whole switch, so the knob still
+            // shows which way it stands.
+            backgroundColor: refused ? mixHex(p.surface, fill, 0.5) : fill,
+            opacity: disabled ? 0.45 : 1,
+          },
         ]}
-      />
-    </TouchableOpacity>
+      >
+        {/* The knob takes the page's ground colour rather than a fixed white. */}
+        <View
+          style={[
+            styles.knob,
+            { ...corners.pill, backgroundColor: p.background, alignSelf: value ? "flex-end" : "flex-start" },
+          ]}
+        />
+      </TouchableOpacity>
+    </Animated.View>
   );
 }
 
@@ -1163,6 +1186,7 @@ export function Toggle({
   value,
   onChange,
   disabled,
+  refused,
   hue,
 }: {
   label: string;
@@ -1172,14 +1196,26 @@ export function Toggle({
   value: boolean;
   onChange: (next: boolean) => void;
   disabled?: boolean;
+  /** Why the switch cannot be flipped right now; see Switcher. */
+  refused?: string;
   hue?: number;
 }) {
-  return (
+  const { p } = useTheme();
+  const row = (
     <Row
       label={off !== undefined && !value ? off : label}
       hint={hint}
-      control={<Switcher value={value} onChange={onChange} disabled={disabled} hue={hue} />}
+      control={<Switcher value={value} onChange={onChange} disabled={disabled} refused={refused} hue={hue} />}
     />
+  );
+  if (!refused) return row;
+  // A finger has no hover to find a bubble with, so the reason stands under
+  // the row, as on a touch screen on the web.
+  return (
+    <View>
+      {row}
+      <Text style={[styles.refusal, { color: p.textSub }]}>{refused}</Text>
+    </View>
   );
 }
 
@@ -1717,6 +1753,7 @@ const styles = StyleSheet.create({
 
   track: { width: 36, height: 20, padding: 2, justifyContent: "center" },
   knob: { width: 16, height: 16 },
+  refusal: { fontSize: text.meta, paddingBottom: space.sm },
 
   // The segments divide the card's width rather than sizing to their words,
   // so none runs off the edge.

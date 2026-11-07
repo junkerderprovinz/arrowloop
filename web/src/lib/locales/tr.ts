@@ -1071,6 +1071,7 @@ const tr: Translations = {
   'look.system': 'Sistem',
   'look.oled': 'OLED',
   'look.oledHint': 'Koyu görünümü OLED ve AMOLED ekranlar için gerçek siyaha çevirir.',
+  'look.oledLight': 'Yalnızca "{dark}" veya "{system}" ile. Yukarıda "{light}" seçili.',
   'look.barLabelsWeb': 'Dar bir pencerede kenar çubuğunun yerini alan çubuk. Yalnızca dar pencerelerde etkilidir.',
   'workload.retries': 'Yeniden denemeler',
   'safety.brakes': 'Frenler',

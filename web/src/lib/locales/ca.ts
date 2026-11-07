@@ -1071,6 +1071,7 @@ const ca: Translations = {
   'look.system': 'Sistema',
   'look.oled': 'OLED',
   'look.oledHint': 'Posa l\'aspecte fosc en negre pur, per a pantalles OLED i AMOLED.',
+  'look.oledLight': 'Només amb «{dark}» o «{system}». A dalt hi ha triat «{light}».',
   'look.barLabelsWeb': 'La barra que ocupa el lloc de la barra lateral en una finestra estreta. Només afecta les finestres estretes.',
   'workload.retries': 'Reintents',
   'safety.brakes': 'Frens',

@@ -1071,6 +1071,7 @@ const bg: Translations = {
   'look.system': 'Системна',
   'look.oled': 'OLED',
   'look.oledHint': 'Прави тъмния вид истински черен за OLED и AMOLED екрани.',
+  'look.oledLight': 'Само с „{dark}“ или „{system}“. Горе е избрано „{light}“.',
   'look.barLabelsWeb': 'Лентата, която заема мястото на страничната лента в тесен прозорец. Действа само в тесни прозорци.',
   'workload.retries': 'Повторни опити',
   'safety.brakes': 'Спирачки',

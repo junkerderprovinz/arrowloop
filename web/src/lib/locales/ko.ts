@@ -1071,6 +1071,7 @@ const ko: Translations = {
   'look.system': '시스템',
   'look.oled': 'OLED',
   'look.oledHint': 'OLED와 AMOLED 화면을 위해 어두운 모양을 완전한 검정으로 바꿉니다.',
+  'look.oledLight': '‘{dark}’ 또는 ‘{system}’에서만 됩니다. 위에서 ‘{light}’가 선택되어 있습니다.',
   'look.barLabelsWeb': '좁은 창에서 사이드바 대신 나타나는 바입니다. 좁은 창에서만 적용됩니다.',
   'workload.retries': '재시도',
   'safety.brakes': '제동',
