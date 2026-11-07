@@ -52,6 +52,19 @@ type Ends struct {
 	Right fs.Fs
 }
 
+// Close logs out of both sides. A pooled login to an FTP server stays open for
+// a minute otherwise, and counts against the few the server allows.
+func (e Ends) Close(ctx context.Context) {
+	for _, f := range []fs.Fs{e.Left, e.Right} {
+		if f == nil {
+			continue
+		}
+		if shut := f.Features().Shutdown; shut != nil {
+			_ = shut(ctx)
+		}
+	}
+}
+
 func (e Ends) side(s plan.Side) fs.Fs {
 	if s == plan.Left {
 		return e.Left

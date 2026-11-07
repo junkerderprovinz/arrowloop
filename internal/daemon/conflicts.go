@@ -75,6 +75,7 @@ func (r *Runner) conflictsOf(ctx context.Context, j job.Job) ([]apply.Open, erro
 	if err != nil {
 		return nil, err
 	}
+	defer ends.Close(context.WithoutCancel(ctx))
 	defer db.Close()
 	return engine.Conflicts(ctx, ends, db, opt)
 }
@@ -102,6 +103,7 @@ func (r *Runner) decide(ctx context.Context, j job.Job, decisions []apply.Decisi
 	if err != nil {
 		return apply.Result{}, err
 	}
+	defer ends.Close(context.WithoutCancel(ctx))
 	defer db.Close()
 	r.log("%s: deciding %d conflicts as chosen", j.Name, len(decisions))
 	return engine.Decide(ctx, ends, db, decisions, opt, progressFor{runner: r, job: j.Name, live: live})
