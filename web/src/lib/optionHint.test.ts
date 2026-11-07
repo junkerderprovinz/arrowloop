@@ -19,6 +19,15 @@ describe('a provider name on two lines', () => {
 describe('a field bubble', () => {
   const t = (key: string, vars?: Record<string, string | number>) => (vars ? `${key}${JSON.stringify(vars)}` : key)
 
+  it("puts the app's own words over rclone's for the connections an FTP target opens", () => {
+    expect(optionHint({ name: 'concurrency', help: 'Maximum number of FTP simultaneous connections, 0 for unlimited.' }, t, { backend: 'ftp' })).toBe(
+      'opt.ftpConcurrencyHint',
+    )
+    expect(optionHint({ name: 'concurrency', help: 'The maximum number of outstanding requests for one file' }, t, { backend: 'sftp' })).toBe(
+      'The maximum number of outstanding requests for one file',
+    )
+  })
+
   it("ends a named field's bubble with rclone's name for it", () => {
     expect(optionHint({ name: 'share_name', help: 'Azure Files Share Name.' }, t)).toBe(
       'opt.shareNameHint help.rcloneName{"name":"share_name"}',

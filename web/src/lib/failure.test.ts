@@ -29,6 +29,11 @@ describe('a failed run in words', () => {
     )
   })
 
+  it('tells what to do about an FTP server out of logins', () => {
+    const failure = { code: 'tooManyLogins' }
+    expect(sayFailure('421 "Maximum login limit has been reached."', failure, tIn(en), 'en').said).toContain('lower concurrency')
+  })
+
   it('keeps what a command printed under its sentence', () => {
     const failure = { code: 'beforeFailed', params: { output: 'exit status 2' } }
     expect(failureLine('the command before the run failed, so the run did not start: exit status 2', failure, tIn(en), 'en')).toBe(

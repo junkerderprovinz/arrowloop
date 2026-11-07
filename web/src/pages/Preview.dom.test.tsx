@@ -19,9 +19,20 @@ const run = vi.fn((_job: string, _only?: string[], _resolve?: Record<string, Res
   Promise.resolve({ job: 'docs', status: 'started' }),
 )
 
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public failure?: { code: string },
+  ) {
+    super(message)
+  }
+}
+let planned = () => Promise.resolve(plan)
+
 vi.mock('../lib/api', () => ({
+  ApiError,
   api: {
-    plan: () => Promise.resolve(plan),
+    plan: () => planned(),
     run: (job: string, only?: string[], resolve?: Record<string, Resolution>, shown?: unknown) =>
       run(job, only, resolve, shown),
   },
@@ -47,6 +58,16 @@ describe('the preview', () => {
       'report.docx': { kind: 'copy', from: 'left', to: 'right' },
       'old.txt': { kind: 'delete', to: 'right' },
     })
+  })
+
+  it('says in words why it could not plan, where the engine named the failure', async () => {
+    planned = () => Promise.reject(new ApiError('list FTP: 421 "Maximum login limit has been reached."', { code: 'tooManyLogins' }))
+    try {
+      render(<Preview job="docs" onDone={() => undefined} />)
+      expect(await screen.findByText(/turned down another login/)).toBeTruthy()
+    } finally {
+      planned = () => Promise.resolve(plan)
+    }
   })
 
   it('names a folder left out for good apart from the work left for later', async () => {
