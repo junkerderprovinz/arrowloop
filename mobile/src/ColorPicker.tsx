@@ -3,7 +3,7 @@ import { Modal, PanResponder, Pressable, StyleSheet, TextInput, View } from "rea
 
 import { hexToHsv, hsvToHex, normalizeHex } from "../../web/src/lib/colorMath";
 import { useT } from "./i18n";
-import { space, text } from "./theme";
+import { contrastOn, space, text } from "./theme";
 import { Glyph } from "./glyphs";
 import { Button, Press, useTheme } from "./ui";
 
@@ -205,11 +205,17 @@ export function ColorPicker({
 export function EditableSwatch({
   hex,
   label,
+  hint,
+  glyph,
   selected,
   onPress,
 }: {
   hex: string;
   label: string;
+  /** What choosing it does, read out after the name. */
+  hint?: string;
+  /** A glyph on the fill, such as the wand on the system colour. */
+  glyph?: string;
   selected: boolean;
   onPress: () => void;
 }) {
@@ -217,7 +223,9 @@ export function EditableSwatch({
   return (
     <Press
       accessibilityLabel={label}
+      accessibilityHint={hint}
       accessibilityRole="button"
+      accessibilityState={{ selected }}
       onPress={onPress}
       style={[
         styles.ring,
@@ -232,7 +240,9 @@ export function EditableSwatch({
       >
         {/* The first press selects the colour; a press on the selected one
             opens the picker. */}
-        <View style={[styles.fill, { ...corners.pill, backgroundColor: hex }]} />
+        <View style={[styles.fill, { ...corners.pill, backgroundColor: hex }]}>
+          {glyph ? <Glyph name={glyph} color={contrastOn(hex)} size={14} /> : null}
+        </View>
       </View>
     </Press>
   );

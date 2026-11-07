@@ -17,7 +17,7 @@ import { api } from "../api";
 import { engine, type AppData, type AppDataState, type AppDataWay, type SharedFolder } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, text, TILE, TOUCH } from "../theme";
+import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, SYSTEM_ACCENT, text, TILE, TOUCH } from "../theme";
 import {
   setAppearance,
   settings as settingsApi,
@@ -44,6 +44,7 @@ import { DropButton } from "../choiceRow";
 import { wayLabel, wayOf } from "../way";
 import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
+import { useSystemAccent } from "../systemAccent";
 import { AppMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
 import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
@@ -154,7 +155,10 @@ export function Settings() {
   // The preset slot that holds the live accent. It is kept in state rather than
   // recomputed, or dragging in the picker could hop the colour to another slot;
   // the nearest preset is used only when the accent changes from elsewhere.
+  // The system mode belongs to no preset, even where the phone has no colour
+  // and the default shows; nearestPreset finds none for it.
   const [accentSlot, setAccentSlot] = useState(() => nearestPreset(ACCENTS.map((a) => a.hex), look.accent));
+  const system = useSystemAccent(scheme);
   const seenAccent = useRef(look.accent);
   useEffect(() => {
     if (seenAccent.current !== look.accent) {
@@ -609,6 +613,20 @@ export function Settings() {
           <View style={styles.axisRowInner}>
             <Body>{t("look.accent")}</Body>
             <View style={styles.swatches}>
+              {system ? (
+                <EditableSwatch
+                  hex={system}
+                  label={t("look.systemAccent")}
+                  hint={t("look.systemAccentTip")}
+                  glyph="IconAccentSystem"
+                  selected={look.accent === SYSTEM_ACCENT}
+                  onPress={() => {
+                    setAccentSlot(-1);
+                    setArmed(null);
+                    setAppearance({ accent: SYSTEM_ACCENT });
+                  }}
+                />
+              ) : null}
               {ACCENTS.map((a, i) => {
                 // The slot holding the live accent shows it, edited or not, so
                 // the applied colour always has a circle to reopen.

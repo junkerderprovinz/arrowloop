@@ -5,7 +5,9 @@ import android.app.KeyguardManager
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentCallbacks
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -19,6 +21,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import java.io.File
 
 /**
@@ -30,10 +33,21 @@ import java.io.File
 class EngineModule(private val context: ReactApplicationContext) :
     ReactContextBaseJavaModule(context), ActivityEventListener, LifecycleEventListener {
 
+    // A new wallpaper brings a new palette as a configuration change, which can
+    // arrive while the app is in front.
+    private val paletteWatch = object : ComponentCallbacks {
+        override fun onConfigurationChanged(newConfig: Configuration) {
+            if (context.hasActiveReactInstance()) context.emitDeviceEvent(ACCENT_EVENT, accentTones())
+        }
+
+        override fun onLowMemory() {}
+    }
+
     init {
         // confirmDeviceLock gets its answer through onActivityResult.
         context.addActivityEventListener(this)
         context.addLifecycleEventListener(this)
+        context.registerComponentCallbacks(paletteWatch)
     }
 
     override fun getName() = "ArrowLoopEngine"
@@ -456,6 +470,22 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
     }
 
+    /**
+     * Material You's primary as Material 3 takes it for the light look and for
+     * the dark one, as ARGB ints, or null below Android 12, which has no
+     * palette to read.
+     */
+    private fun accentTones(): WritableMap? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
+        return Arguments.createMap().apply {
+            putInt("light", context.getColor(android.R.color.system_accent1_600))
+            putInt("dark", context.getColor(android.R.color.system_accent1_200))
+        }
+    }
+
+    @ReactMethod
+    fun systemAccent(promise: Promise) = promise.resolve(accentTones())
+
     // Non-null parameters, as React Native's interface declares them; nullable
     // ones would override nothing.
     override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
@@ -488,6 +518,8 @@ class EngineModule(private val context: ReactApplicationContext) :
 
         // Older backups carry the German name and still restore.
         val OLD_BACKUP_NAME = if (BuildConfig.SIDE_BY_SIDE) "arrowloop-test-einstellungen.json" else "arrowloop-einstellungen.json"
+        /** The event src/systemAccent.ts listens to for a new palette. */
+        const val ACCENT_EVENT = "systemAccentChanged"
         private const val UNLOCK_REQUEST = 8422
         private const val PICK_REQUEST = 8425
     }

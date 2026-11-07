@@ -5,8 +5,9 @@
 import { I18nManager, type ViewStyle } from "react-native";
 
 import { DEFAULT_SHAPE, type Shape } from "../../web/src/lib/appearance";
+import { accentInks } from "../../web/src/lib/contrast";
 
-export { ACCENTS, DEFAULT_ACCENT, RAINBOW, contrastOn, rainbowAt } from "../../web/src/lib/appearance";
+export { ACCENTS, DEFAULT_ACCENT, RAINBOW, SYSTEM_ACCENT, contrastOn, rainbowAt, resolveAccent } from "../../web/src/lib/appearance";
 
 export type Scheme = "dark" | "light";
 
@@ -145,11 +146,15 @@ export const PLATFORM: Record<Scheme, { windows: string; docker: string }> = {
 };
 
 /**
- * Darkens the accent for use as text on the light theme. The 55% is
- * tokens.css's `--ink-mix`, applied as `color-mix(in srgb, accent 55%, black)`,
- * so both apps produce the same colour.
+ * The accent as text on a theme. The light theme darkens it by tokens.css's
+ * `--ink-mix`, applied as `color-mix(in srgb, accent 55%, black)`, so both
+ * apps produce the same colour. Where that or the plain accent would fall
+ * short of 4.5:1, as a picked or a system colour can, GlimStone's contrast
+ * engine pushes it on until it reads.
  */
 export function inkFor(hex: string, scheme: Scheme): string {
+  const pushed = accentInks(hex)[scheme];
+  if (pushed) return pushed;
   if (scheme === "dark") return hex;
   const m = /^#([0-9a-fA-F]{6})$/.exec(hex);
   if (!m) return hex;
