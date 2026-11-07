@@ -39,7 +39,7 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusConflict, fmt.Errorf("there is a job called %q already", name))
 		return
 	}
-	next, err := current.AddJob(j)
+	next, err := current.AddJobs(j)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return

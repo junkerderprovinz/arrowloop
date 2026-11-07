@@ -122,7 +122,7 @@ func TestANewJobGoesToTheEndOfAnOwnOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("save the order: %v", err)
 	}
-	added, err := ordered.AddJob(map[string]any{"name": "alpha", "left": "/g", "right": "/h", "state": "g.db"})
+	added, err := ordered.AddJobs(map[string]any{"name": "alpha", "left": "/g", "right": "/h", "state": "g.db"})
 	if err != nil {
 		t.Fatalf("add: %v", err)
 	}

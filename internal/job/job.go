@@ -1026,13 +1026,16 @@ func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) { doc["jobs"] = jobs })
 }
 
-// AddJob appends one job to the file and leaves the others as they are. It
-// goes through the same validation as SaveJobs.
-func (c *Config) AddJob(j map[string]any) (*Config, error) {
+// AddJobs appends jobs to the file and leaves the others as they are. It goes
+// through the same validation as SaveJobs, so either all of them land or none.
+func (c *Config) AddJobs(add ...map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) {
 		key := jobsKey(doc)
 		jobs, _ := doc[key].([]any)
-		doc[key] = append(jobs, j)
+		for _, j := range add {
+			jobs = append(jobs, j)
+		}
+		doc[key] = jobs
 	})
 }
 
