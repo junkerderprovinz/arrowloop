@@ -66,6 +66,13 @@ export const RELEASES: Release[] = [
     after: '2.5.0',
     changes: [
       {
+        id: 'import-others',
+        at: ['/settings/general'],
+        where: ['nav.settings', 'settings.general'],
+        text: 'new.change.importOthers',
+        names: { import: 'backup.import' },
+      },
+      {
         id: 'auto-backup',
         at: ['/settings/general'],
         where: ['nav.settings', 'settings.general'],

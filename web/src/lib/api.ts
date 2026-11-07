@@ -4,6 +4,7 @@
 /** Which way a job is allowed to write. */
 import type { FindingListing, JobLearning } from './anomalies'
 import type { Failure } from './failure'
+import type { ImportPlan } from './importPlan'
 import type { Channel, Notify } from './notify'
 
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
@@ -963,6 +964,12 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: doc,
     }),
+
+  /** What a file from FolderSync or luckyBackup would add, or which kind of file it is. Saves nothing. */
+  checkImport: (file: string) => post<ImportPlan>('/api/import/check', { file }),
+
+  /** Adds what checkImport showed. The engine reads the file again rather than trusting a plan. */
+  applyImport: (file: string) => post<ImportPlan>('/api/import', { file }),
 
   /** Save the settings. The server merges, so a key this build does not send stays. */
   saveSettings: (settings: Settings) =>

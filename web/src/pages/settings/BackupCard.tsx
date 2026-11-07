@@ -9,30 +9,72 @@ import { api } from '../../lib/api'
 import { download, pickTextFile } from '../../lib/download'
 import { errorText } from '../../lib/errorText'
 import { useT } from '../../lib/i18n'
+import { importSections, type ImportPlan, type ImportSection } from '../../lib/importPlan'
 import { SettingsRow } from './rows'
 
-/** Exports the whole setup, every job and setting, to a file and imports it back. */
+type Picked = { name: string; text: string }
+
+/**
+ * Exports the whole setup, every job and setting, to a file and imports it
+ * back. The same Import takes a FolderSync export or a luckyBackup profile and
+ * adds their jobs beside the ones already here.
+ */
 export function BackupCard({ hueIndex }: { hueIndex: number }) {
   const { t } = useT()
   const [restoring, setRestoring] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  /** The picked file, waiting for confirmation. */
-  const [picked, setPicked] = useState<{ name: string; text: string } | null>(null)
+  /** What a file from another program left out when it brought nothing to add. */
+  const [leftOut, setLeftOut] = useState<ImportSection[]>([])
+  /** Our own backup, waiting for confirmation. */
+  const [picked, setPicked] = useState<Picked | null>(null)
+  /** Another program's file and what it adds, waiting for confirmation. */
+  const [preview, setPreview] = useState<(Picked & { plan: ImportPlan }) | null>(null)
   const exportButton = useRef<HTMLButtonElement>(null)
   // Keys the error, so each refused import remounts it and shakes again.
   const [refused, setRefused] = useState(0)
 
-  function replace(file: { name: string; text: string }) {
+  function fail(message: string, sections: ImportSection[] = []) {
+    setError(message)
+    setLeftOut(sections)
+    setRefused((n) => n + 1)
+  }
+
+  // Everything the page holds was read from the configuration that changed.
+  const landed = () => window.location.reload()
+
+  function replace(file: Picked) {
     setRestoring(true)
     setError(null)
     api
       .replaceConfig(file.text)
-      // Everything the page holds was read from the replaced configuration.
-      .then(() => window.location.reload())
-      .catch((e: Error) => {
-        setError(errorText(t, e))
-        setRefused((n) => n + 1)
+      .then(landed)
+      .catch((e: Error) => fail(errorText(t, e)))
+      .finally(() => setRestoring(false))
+  }
+
+  function add(file: Picked) {
+    setRestoring(true)
+    setError(null)
+    api
+      .applyImport(file.text)
+      .then(landed)
+      .catch((e: Error) => fail(errorText(t, e)))
+      .finally(() => setRestoring(false))
+  }
+
+  // The engine tells the files apart by what is in them, not by their names.
+  function look(file: Picked) {
+    setRestoring(true)
+    setError(null)
+    setLeftOut([])
+    api
+      .checkImport(file.text)
+      .then((plan) => {
+        if (plan.source === 'ArrowLoop') setPicked(file)
+        else if (plan.jobs.length === 0 && plan.targets.length === 0) fail(t('import.nothing'), importSections(plan, t))
+        else setPreview({ ...file, plan })
       })
+      .catch((e: Error) => fail(errorText(t, e)))
       .finally(() => setRestoring(false))
   }
 
@@ -54,32 +96,32 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
                 download(`arrowloop-${day}.json`, doc, 'application/json')
                 replay(exportButton.current, 'glim-confirm')
               })
-              .catch((e: Error) => {
-                setError(errorText(t, e))
-                setRefused((n) => n + 1)
+              .catch((e: Error) => fail(errorText(t, e)))
+          }}
+        />
+      </SettingsRow>
+      <div data-new="import-others">
+        <SettingsRow label={t('settings.backupImportRow')}>
+          <Button
+            label={t('backup.import')}
+            labelKey="backup.import"
+            glyph={<IconImport />}
+            busy={restoring}
+            disabled={restoring}
+            onClick={() => {
+              void pickTextFile('.json,.profile,application/json,text/plain').then((file) => {
+                if (file) look(file)
               })
-          }}
-        />
-      </SettingsRow>
-      <SettingsRow label={t('settings.backupImportRow')}>
-        <Button
-          label={t('backup.import')}
-          labelKey="backup.import"
-          glyph={<IconImport />}
-          busy={restoring}
-          disabled={restoring}
-          onClick={() => {
-            void pickTextFile('application/json,.json').then((file) => {
-              if (!file) return
-              setPicked(file)
-            })
-          }}
-        />
-      </SettingsRow>
+            }}
+          />
+        </SettingsRow>
+        <p className="text-subline text-carbon-textSub">{t('backup.importOthers')}</p>
+      </div>
       {error && (
-        <p key={refused} className="glim-shake text-subline text-statusFail">
-          {error}
-        </p>
+        <div key={refused} className="glim-shake text-subline">
+          <p className="text-statusFail">{error}</p>
+          <Sections sections={leftOut} />
+        </div>
       )}
 
       {picked && (
@@ -98,6 +140,37 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
           }}
         />
       )}
+
+      {preview && (
+        <ConfirmWindow
+          title={t('import.title', { source: preview.plan.source })}
+          message={t('import.confirm', { file: preview.name })}
+          confirmLabel={t('import.add')}
+          confirmLabelKey="import.add"
+          confirmGlyph={<IconImport />}
+          cancelLabel={t('confirm.cancel')}
+          extra={<Sections sections={importSections(preview.plan, t)} />}
+          onCancel={() => setPreview(null)}
+          onConfirm={() => {
+            const file = preview
+            setPreview(null)
+            add(file)
+          }}
+        />
+      )}
     </Card>
   )
+}
+
+function Sections({ sections }: { sections: ImportSection[] }) {
+  return sections.map((s) => (
+    <section key={s.heading} className="mt-3 text-subline">
+      <h3 className="font-semibold">{s.heading}</h3>
+      <ul className="list-disc ps-5 break-words">
+        {s.lines.map((line, i) => (
+          <li key={i}>{line}</li>
+        ))}
+      </ul>
+    </section>
+  ))
 }
