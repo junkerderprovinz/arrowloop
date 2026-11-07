@@ -64,7 +64,12 @@ var rules = []rule{
 	{HostKeyChanged, []string{"host key mismatch"}},
 	// An FTP server's cap on logins at once, which ProFTPD answers with the
 	// code of a wrong password.
-	{TooManyLogins, []string{"login limit", "too many connect", "too many users", "maximum number of clients"}},
+	{TooManyLogins, []string{
+		"login limit", "too many connect", "too many users", "too many sessions",
+		"connections as the same user", "(the maximum) are already logged in",
+		"maximum number of clients", "maximum number of allowed clients",
+		"maximum number of hosts", "maximum number of connections",
+	}},
 	{SignInFailed, []string{
 		"unable to authenticate", "authentication failed", "auth failed", "invalid credentials",
 		"ssh-agent", "permission denied (publickey", "logon failure", "401 unauthorized",

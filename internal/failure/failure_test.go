@@ -87,7 +87,7 @@ func TestBackendErrorsAreNamedWithTheirSide(t *testing.T) {
 }
 
 // Each FTP server words its cap on logins its own way: Apache FtpServer, which
-// many phone apps are built on, vsftpd, pure-ftpd, ProFTPD and FileZilla.
+// many phone apps are built on, vsftpd, pure-ftpd, ProFTPD, FileZilla and IIS.
 func TestAnFTPServerOutOfLoginsIsNamed(t *testing.T) {
 	cases := map[string]failure.Failure{
 		`list FTP: list: failed to make FTP connection to "192.168.1.5:2221": 421 "Maximum login limit has been reached."`: {
@@ -105,11 +105,52 @@ func TestAnFTPServerOutOfLoginsIsNamed(t *testing.T) {
 		`failed to make FTP connection to "pc:21": 421 "Too many users are connected, please try again later."`: {
 			Code: failure.TooManyLogins,
 		},
+		`failed to make FTP connection to "phone:2121": 421 "I can't accept more than 2 connections as the same user"`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 421 "10 users (the maximum) are already logged in, sorry"`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 421 "There are too many connections from your internet address."`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 421 "Sorry, the maximum number of allowed clients (5) are already connected."`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 421 "Sorry, the maximum number of hosts (1) for this user are already connected."`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 530 "Sorry, the maximum number of connections (2) for your host are already connected."`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 421 "Maximum IP login limit has been reached."`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "nas:21": 421 "Too many sessions"`: {
+			Code: failure.TooManyLogins,
+		},
+		`failed to make FTP connection to "pc:21": 421 "Too many users, try later."`: {
+			Code: failure.TooManyLogins,
+		},
 	}
 	for text, want := range cases {
 		got := failure.Of(text)
 		if got == nil || !reflect.DeepEqual(*got, want) {
 			t.Errorf("Of(%q) = %+v, want %+v", text, got, want)
+		}
+	}
+}
+
+// pure-ftpd refuses a plain login with the same code as a full server, and a
+// server busy with requests is not out of logins.
+func TestOtherRefusalsAreNotTakenForTooManyLogins(t *testing.T) {
+	for _, text := range []string{
+		`failed to make FTP connection to "nas:21": 421 "Sorry, cleartext sessions and weak ciphers are not accepted on this server."`,
+		"429 Too Many Requests",
+		`failed to make FTP connection to "nas:21": 530 "Login authentication failed"`,
+	} {
+		if got := failure.Of(text); got != nil && got.Code == failure.TooManyLogins {
+			t.Errorf("Of(%q) = %+v, want another failure", text, got)
 		}
 	}
 }
