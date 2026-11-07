@@ -8,7 +8,6 @@ const sl: Translations = {
   'nav.targets': 'Cilji',
   'nav.history': 'Zgodovina',
   'error.unreachable': 'Do pogona ni mogoče priti',
-  'login.title': 'Ta vmesnik je zaščiten',
   'login.password': 'Geslo',
   'login.submit': 'Prijava',
   'login.wrong': 'To geslo ni pravilno.',
@@ -265,10 +264,10 @@ const sl: Translations = {
   'entry.leftAlone': 'V njej ni bilo nič kopirano ali izbrisano na nobeni strani. Naslednji zagon bo poskusil znova.',
   'error.passwordNotSet': 'Najprej nastavi geslo v Nastavitvah, Varnost. Brez njega bi lahko vsak, ki pride do tega naslova, bral shranjene nastavitve ali trajno brisal.',
   'reset.link': 'Pozabljeno geslo?',
-  'reset.title': 'Ponastavi geslo',
   'reset.code': 'Koda iz dnevnika vsebnika',
   'reset.codeTip': 'ArrowLoop je kodo zapisal v dnevnik svojega vsebnika. Na Unraidu: zavihek Docker, ikona ArrowLoop, Logs; drugje docker logs arrowloop. Koda velja {minutes} minut. Geslo lahko ponastavi vsak, ki lahko bere ta dnevnik, tudi prek pregledovalnika dnevnikov, kot je Dozzle. Ponastavitev izklopi tudi dvostopenjsko preverjanje, odstrani vse dostopne ključe in konča vse druge seje.',
   'reset.invalid': 'Koda je napačna ali je potekla. Če je potekla, dnevnik zdaj kaže novo.',
+  'reset.saving': 'Shranjevanje…',
   'reset.doneTitle': 'Novo geslo je nastavljeno',
   'reset.doneIntro': 'Ponastavitev je odstranila tudi vse druge poti za vstop:',
   'reset.doneSessions': 'Vse druge seje so končane',
@@ -973,6 +972,8 @@ const sl: Translations = {
   'login.codeHint': 'Šest števk iz aplikacije za preverjanje ali ena od tvojih obnovitvenih kod.',
   'login.passkeyUnlock': 'Prijava s ključem za dostop',
   'login.passkeyFailed': 'Ta ključ za dostop ni bil sprejet',
+  'login.busy': 'Prijavljanje…',
+  'login.failed': 'Ni uspelo. Poskusite znova.',
   'pick.loading': 'Branje map…',
   'provider.smb': 'SMB / skupna raba Windows',
   'provider.s3': 'Združljivo s S3',
@@ -1358,6 +1359,7 @@ const sl: Translations = {
   'new.change.jobsCompact': '{compact} na vrhu seznama opravil prikaže vsako opravilo v eni vrstici: stanje, zadnji zagon, {runNow} in {more}. Ta naprava si zapomni tvojo izbiro.',
   'new.change.oled': '{oled} pod {design} preklopi temni videz na pravo črno za zaslone OLED in AMOLED. Velja vedno, ko je temni videz viden, tudi ko sledi sistemu, in vsaka naprava si zapomni svojo izbiro.',
   'new.change.systemAccent': 'Vzorec s čarobno paličico na začetku {accent} prevzame barvo vašega sistema: Material You od Androida 12, poudarjeno barvo sistemov Windows, macOS ali Linux v namizni aplikaciji in sistemsko barvo v Firefoxu in Safariju. Kjer sistem barve nima, vzorca ni.',
+  'new.change.signInCard': 'Stran za prijavo ima nov videz, z logotipom in imenom ArrowLoop na vrhu in vsakim gumbom tako širokim kot kartica. Kazalec je že v polju za geslo, gumb za prijavo počaka, da kaj vnesete, ob napačnem geslu ali kodi pa se rahlo strese.',
 }
 
 export default sl

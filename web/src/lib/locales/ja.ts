@@ -8,7 +8,6 @@ const ja: Translations = {
   'nav.targets': '接続先',
   'nav.history': '履歴',
   'error.unreachable': 'エンジンに接続できません',
-  'login.title': 'この画面はパスワードで保護されています',
   'login.password': 'パスワード',
   'login.submit': 'ログイン',
   'login.wrong': 'パスワードが違います。',
@@ -265,10 +264,10 @@ const ja: Translations = {
   'entry.leftAlone': 'どちらの側でも、この中のものはコピーも削除もされていません。次の実行で再試行します。',
   'error.passwordNotSet': '先に「設定」の「セキュリティ」でパスワードを設定してください。パスワードがないと、このアドレスに届く誰もが保存済みの設定を読んだり、完全に削除したりできます。',
   'reset.link': 'パスワードを忘れた場合',
-  'reset.title': 'パスワードのリセット',
   'reset.code': 'コンテナのログのコード',
   'reset.codeTip': 'ArrowLoop はコンテナのログにコードを書き込みました。Unraid では Docker タブで ArrowLoop のアイコンを選び、Logs を開きます。ほかの環境では docker logs arrowloop で確認できます。コードの有効期間は {minutes} 分です。このログを読める人は誰でもパスワードをリセットできます。Dozzle などのログビューアー経由でも同じです。リセットすると、二段階認証がオフになり、すべてのパスキーが削除され、ほかのすべてのセッションが終了します。',
   'reset.invalid': 'このコードは正しくないか、期限が切れています。期限切れの場合は、ログに新しいコードが表示されています。',
+  'reset.saving': '保存しています…',
   'reset.doneTitle': '新しいパスワードを設定しました',
   'reset.doneIntro': 'リセットにより、ほかのログイン手段もすべて削除されました:',
   'reset.doneSessions': 'ほかのすべてのセッションを終了しました',
@@ -973,6 +972,8 @@ const ja: Translations = {
   'login.codeHint': '認証アプリの6桁の数字、またはリカバリーコードのいずれかです。',
   'login.passkeyUnlock': 'パスキーでサインイン',
   'login.passkeyFailed': 'そのパスキーは受け付けられませんでした',
+  'login.busy': 'ログインしています…',
+  'login.failed': 'うまくいきませんでした。もう一度お試しください。',
   'pick.loading': 'フォルダーを読み込んでいます…',
   'provider.smb': 'SMB / Windows 共有',
   'provider.s3': 'S3 互換',
@@ -1358,6 +1359,7 @@ const ja: Translations = {
   'new.change.jobsCompact': 'ジョブ一覧の上にある {compact} では、各ジョブを 1 行で表示します。状態、最後の実行、{runNow}、{more} が並びます。選択はこのデバイスが覚えます。',
   'new.change.oled': '{design} の下にある {oled} は、OLED と AMOLED の画面向けに暗いデザインを真っ黒にします。システムに合わせているときも含め、暗いデザインが表示されているあいだ有効で、選択はデバイスごとに覚えます。',
   'new.change.systemAccent': '{accent} の先頭にある魔法の杖の見本は、システムの色を使います。Android 12 以降では Material You、デスクトップ版では Windows、macOS、Linux のアクセントカラー、Firefox と Safari ではシステムの色です。システムに色がない場合、この見本は表示されません。',
+  'new.change.signInCard': 'サインインページが新しくなりました。上に ArrowLoop のロゴと名前があり、どのボタンもカードと同じ幅です。カーソルは最初からパスワード欄にあり、ログインボタンは何か入力するまで待ち、パスワードやコードが違うときは小さく揺れます。',
 }
 
 export default ja

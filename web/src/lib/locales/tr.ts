@@ -8,7 +8,6 @@ const tr: Translations = {
   'nav.targets': 'Hedefler',
   'nav.history': 'Geçmiş',
   'error.unreachable': 'Motora ulaşılamıyor',
-  'login.title': 'Bu arayüz korumalı',
   'login.password': 'Parola',
   'login.submit': 'Giriş yap',
   'login.wrong': 'Bu parola doğru değil.',
@@ -265,10 +264,10 @@ const tr: Translations = {
   'entry.leftAlone': 'İçinde hiçbir tarafta bir şey kopyalanmadı ya da silinmedi. Sonraki çalışma yeniden deneyecek.',
   'error.passwordNotSet': 'Önce Ayarlar, Güvenlik altında bir parola belirle. Parola olmadan bu adrese ulaşan herkes kayıtlı ayarları okuyabilir ya da kalıcı olarak silebilir.',
   'reset.link': 'Parolayı mı unuttun?',
-  'reset.title': 'Parolayı sıfırla',
   'reset.code': 'Kapsayıcı günlüğündeki kod',
   'reset.codeTip': 'ArrowLoop kapsayıcısının günlüğüne bir kod yazdı. Unraid\'de: Docker sekmesi, ArrowLoop simgesi, Logs; başka yerlerde docker logs arrowloop. Kod {minutes} dakika geçerlidir. Bu günlüğü okuyabilen herkes parolayı sıfırlayabilir, Dozzle gibi bir günlük görüntüleyici üzerinden de. Sıfırlama ayrıca iki adımlı doğrulamayı kapatır, tüm geçiş anahtarlarını siler ve diğer tüm oturumları sonlandırır.',
   'reset.invalid': 'Kod yanlış ya da süresi dolmuş. Süresi dolduysa günlükte şimdi yeni bir kod görünür.',
+  'reset.saving': 'Kaydediliyor…',
   'reset.doneTitle': 'Yeni parolan belirlendi',
   'reset.doneIntro': 'Sıfırlama, diğer tüm giriş yollarını da kaldırdı:',
   'reset.doneSessions': 'Diğer tüm oturumlar sonlandırıldı',
@@ -973,6 +972,8 @@ const tr: Translations = {
   'login.codeHint': 'Kimlik doğrulama uygulamandaki altı hane ya da kurtarma kodlarından biri.',
   'login.passkeyUnlock': 'Geçiş anahtarıyla oturum aç',
   'login.passkeyFailed': 'Bu geçiş anahtarı kabul edilmedi',
+  'login.busy': 'Giriş yapılıyor…',
+  'login.failed': 'Olmadı. Lütfen tekrar deneyin.',
   'pick.loading': 'Klasörler okunuyor…',
   'provider.smb': 'SMB / Windows paylaşımı',
   'provider.s3': 'S3 uyumlu',
@@ -1358,6 +1359,7 @@ const tr: Translations = {
   'new.change.jobsCompact': 'İş listesinin üstündeki {compact}, her işi tek satırda gösterir: durum, son çalıştırma, {runNow} ve {more}. Bu cihaz seçiminizi hatırlar.',
   'new.change.oled': '{design} altındaki {oled}, OLED ve AMOLED ekranlar için koyu görünümü gerçek siyaha çevirir. Koyu görünüm göründüğü her an geçerlidir, sistemi izlediğinde de, ve her cihaz kendi seçimini hatırlar.',
   'new.change.systemAccent': '{accent} satırının başındaki sihirli değnekli örnek, sisteminin rengini alır: Android 12 ve sonrasında Material You, masaüstü uygulamasında Windows, macOS veya Linux vurgu rengi, Firefox ve Safari\'de sistem rengi. Sistemin böyle bir rengi yoksa örnek görünmez.',
+  'new.change.signInCard': 'Giriş sayfası yeni bir görünüme kavuştu, üstte ArrowLoop logosu ve adı var ve her düğme kart kadar geniş. İmleç zaten parola alanında duruyor, giriş düğmesi bir şey yazana kadar bekliyor ve yanlış parola ya da kodda hafifçe sallanıyor.',
 }
 
 export default tr

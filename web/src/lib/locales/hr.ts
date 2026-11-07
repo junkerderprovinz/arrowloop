@@ -8,7 +8,6 @@ const hr: Translations = {
   'nav.targets': 'Odredišta',
   'nav.history': 'Povijest',
   'error.unreachable': 'Do pogona se ne može doći',
-  'login.title': 'Ovo sučelje je zaštićeno',
   'login.password': 'Lozinka',
   'login.submit': 'Prijava',
   'login.wrong': 'Ta lozinka nije točna.',
@@ -265,10 +264,10 @@ const hr: Translations = {
   'entry.leftAlone': 'Ništa u njoj nije kopirano ni izbrisano ni na jednoj strani. Sljedeće pokretanje pokušat će ponovno.',
   'error.passwordNotSet': 'Najprije postavi lozinku u Postavkama, Sigurnost. Bez nje bi svatko tko dođe do ove adrese mogao čitati spremljene postavke ili trajno brisati.',
   'reset.link': 'Zaboravljena lozinka?',
-  'reset.title': 'Ponovno postavi lozinku',
   'reset.code': 'Kod iz zapisnika spremnika',
   'reset.codeTip': 'ArrowLoop je upisao kod u zapisnik svojeg spremnika. Na Unraidu: kartica Docker, ikona ArrowLoop, Logs; drugdje docker logs arrowloop. Kod vrijedi {minutes} minuta. Tko god može čitati ovaj zapisnik može ponovno postaviti lozinku, i preko preglednika zapisnika poput Dozzlea. Ponovno postavljanje isključuje i dvofaktorsku autentifikaciju, uklanja sve pristupne ključeve i prekida sve ostale sesije.',
   'reset.invalid': 'Taj kod nije točan ili je istekao. Ako je istekao, zapisnik sada prikazuje novi.',
+  'reset.saving': 'Spremanje…',
   'reset.doneTitle': 'Tvoja nova lozinka je postavljena',
   'reset.doneIntro': 'Ponovno postavljanje uklonilo je i sve ostale načine prijave:',
   'reset.doneSessions': 'Sve ostale sesije su završene',
@@ -973,6 +972,8 @@ const hr: Translations = {
   'login.codeHint': 'Šest znamenki iz tvoje aplikacije za provjeru ili jedan od tvojih kodova za oporavak.',
   'login.passkeyUnlock': 'Prijava pristupnim ključem',
   'login.passkeyFailed': 'Taj pristupni ključ nije prihvaćen',
+  'login.busy': 'Prijava u tijeku…',
+  'login.failed': 'Nije uspjelo. Pokušajte ponovno.',
   'pick.loading': 'Čitanje mapa…',
   'provider.smb': 'SMB / Windows dijeljenje',
   'provider.s3': 'Kompatibilno s S3',
@@ -1358,6 +1359,7 @@ const hr: Translations = {
   'new.change.jobsCompact': '{compact} na vrhu popisa zadataka prikazuje svaki zadatak u jednom retku: stanje, zadnje pokretanje, {runNow} i {more}. Ovaj uređaj pamti tvoj izbor.',
   'new.change.oled': '{oled} ispod {design} prebacuje tamni izgled na pravu crnu za OLED i AMOLED zaslone. Vrijedi kad god se vidi tamni izgled, i kad prati sustav, a svaki uređaj pamti svoj izbor.',
   'new.change.systemAccent': 'Uzorak sa štapićem na početku {accent} preuzima boju vašeg sustava: Material You od Androida 12, naglasnu boju sustava Windows, macOS ili Linux u aplikaciji za računalo te boju sustava u Firefoxu i Safariju. Gdje sustav nema boju, uzorka nema.',
+  'new.change.signInCard': 'Stranica za prijavu ima novi izgled, s logotipom i imenom ArrowLoopa na vrhu i svakim gumbom širokim kao kartica. Pokazivač je već u polju za lozinku, gumb za prijavu čeka dok nešto ne upišete, a kod pogrešne lozinke ili koda kratko se zatrese.',
 }
 
 export default hr

@@ -8,7 +8,6 @@ const ro: Translations = {
   'nav.targets': 'Destinații',
   'nav.history': 'Istoric',
   'error.unreachable': 'Motorul nu poate fi contactat',
-  'login.title': 'Această interfață este protejată',
   'login.password': 'Parolă',
   'login.submit': 'Autentificare',
   'login.wrong': 'Parola nu este corectă.',
@@ -265,10 +264,10 @@ const ro: Translations = {
   'entry.leftAlone': 'Nimic din el nu a fost copiat sau șters pe nicio parte. Următoarea rulare va încerca din nou.',
   'error.passwordNotSet': 'Setează mai întâi o parolă în Setări, Securitate. Fără ea, oricine ajunge la această adresă ar putea citi setările salvate sau șterge definitiv.',
   'reset.link': 'Ai uitat parola?',
-  'reset.title': 'Resetează parola',
   'reset.code': 'Codul din jurnalul containerului',
   'reset.codeTip': 'ArrowLoop a scris un cod în jurnalul containerului său. Pe Unraid: fila Docker, pictograma ArrowLoop, Logs; în rest docker logs arrowloop. Un cod este valabil {minutes} minute. Oricine poate citi acest jurnal poate reseta parola, inclusiv printr-un vizualizator de jurnale precum Dozzle. Resetarea dezactivează și autentificarea în doi pași, elimină toate cheile de acces și încheie toate celelalte sesiuni.',
   'reset.invalid': 'Codul este greșit sau a expirat. Dacă a expirat, jurnalul arată acum unul nou.',
+  'reset.saving': 'Se salvează…',
   'reset.doneTitle': 'Parola nouă este setată',
   'reset.doneIntro': 'Resetarea a eliminat și toate celelalte căi de acces:',
   'reset.doneSessions': 'Toate celelalte sesiuni au fost încheiate',
@@ -973,6 +972,8 @@ const ro: Translations = {
   'login.codeHint': 'Șase cifre din aplicația ta de autentificare sau unul dintre codurile tale de recuperare.',
   'login.passkeyUnlock': 'Conectare cu o cheie de acces',
   'login.passkeyFailed': 'Acea cheie de acces nu a fost acceptată',
+  'login.busy': 'Se face autentificarea…',
+  'login.failed': 'Nu a mers. Încearcă din nou.',
   'pick.loading': 'Se citesc dosarele…',
   'provider.smb': 'SMB / partajare Windows',
   'provider.s3': 'Compatibil S3',
@@ -1358,6 +1359,7 @@ const ro: Translations = {
   'new.change.jobsCompact': '{compact}, sus în lista de sarcini, arată fiecare sarcină pe un rând: starea, ultima rulare, {runNow} și {more}. Acest dispozitiv ține minte alegerea ta.',
   'new.change.oled': '{oled}, sub {design}, trece aspectul întunecat pe negru adevărat pentru ecranele OLED și AMOLED. Se aplică oricând se vede aspectul întunecat, și când urmează sistemul, iar fiecare dispozitiv își ține minte alegerea.',
   'new.change.systemAccent': 'Mostra cu bagheta de la începutul {accent} preia culoarea sistemului tău: Material You de la Android 12, culoarea de accent din Windows, macOS sau Linux în aplicația desktop și culoarea sistemului în Firefox și Safari. Unde sistemul nu are una, mostra lipsește.',
+  'new.change.signInCard': 'Pagina de autentificare are un aspect nou, cu sigla și numele ArrowLoop sus și fiecare buton la fel de lat ca fișa. Cursorul este deja în câmpul parolei, butonul de autentificare așteaptă până scrii ceva, iar la o parolă sau un cod greșit tremură puțin.',
 }
 
 export default ro

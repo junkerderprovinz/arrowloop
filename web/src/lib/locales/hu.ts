@@ -8,7 +8,6 @@ const hu: Translations = {
   'nav.targets': 'Célok',
   'nav.history': 'Előzmények',
   'error.unreachable': 'A motor nem érhető el',
-  'login.title': 'Ez a felület védett',
   'login.password': 'Jelszó',
   'login.submit': 'Belépés',
   'login.wrong': 'Ez a jelszó nem jó.',
@@ -265,10 +264,10 @@ const hu: Translations = {
   'entry.leftAlone': 'Benne egyik oldalon sem lett semmi másolva vagy törölve. A következő futás újra megpróbálja.',
   'error.passwordNotSet': 'Előbb állíts be jelszót a Beállítások, Biztonság alatt. Nélküle bárki, aki eléri ezt a címet, elolvashatná a mentett beállításokat vagy végleg törölhetne.',
   'reset.link': 'Elfelejtetted a jelszót?',
-  'reset.title': 'Jelszó visszaállítása',
   'reset.code': 'Kód a konténer naplójából',
   'reset.codeTip': 'Az ArrowLoop kódot írt a konténere naplójába. Unraidon: Docker fül, ArrowLoop ikon, Logs; máshol docker logs arrowloop. A kód {minutes} percig érvényes. Aki ezt a naplót olvasni tudja, vissza tudja állítani a jelszót, naplómegjelenítőn, például a Dozzlén keresztül is. A visszaállítás a kétlépcsős azonosítást is kikapcsolja, minden hozzáférési kulcsot eltávolít, és minden más munkamenetet lezár.',
   'reset.invalid': 'A kód hibás vagy lejárt. Ha lejárt, a napló most újat mutat.',
+  'reset.saving': 'Mentés…',
   'reset.doneTitle': 'Az új jelszavad be van állítva',
   'reset.doneIntro': 'A visszaállítás minden más belépési módot is eltávolított:',
   'reset.doneSessions': 'Minden más munkamenet lezárult',
@@ -973,6 +972,8 @@ const hu: Translations = {
   'login.codeHint': 'Hat számjegy a hitelesítő alkalmazásodból, vagy az egyik helyreállítási kódod.',
   'login.passkeyUnlock': 'Belépés hozzáférési kulccsal',
   'login.passkeyFailed': 'Ezt a hozzáférési kulcsot nem fogadta el a rendszer',
+  'login.busy': 'Belépés…',
+  'login.failed': 'Ez nem sikerült. Próbálja újra.',
   'pick.loading': 'Mappák beolvasása…',
   'provider.smb': 'SMB / Windows-megosztás',
   'provider.s3': 'S3-kompatibilis',
@@ -1358,6 +1359,7 @@ const hu: Translations = {
   'new.change.jobsCompact': 'A feladatlista tetején a(z) {compact} nézet minden feladatot egy sorban mutat: állapot, utolsó futás, {runNow} és {more}. Ez az eszköz megjegyzi a választásodat.',
   'new.change.oled': 'A {design} alatti {oled} valódi feketére állítja a sötét megjelenést OLED és AMOLED kijelzőkön. Mindig érvényes, amikor a sötét megjelenés látszik, akkor is, ha a rendszert követi, és minden eszköz a saját választását jegyzi meg.',
   'new.change.systemAccent': 'A {accent} elején álló varázspálcás színminta a rendszer színét veszi át: Android 12-től a Material You, az asztali alkalmazásban a Windows, a macOS vagy a Linux kiemelőszíne, Firefoxban és Safariban pedig a rendszerszín. Ahol a rendszernek nincs ilyen, a minta nem jelenik meg.',
+  'new.change.signInCard': 'A bejelentkezési oldal új külsőt kapott, felül az ArrowLoop logójával és nevével, és minden gomb olyan széles, mint a kártya. A kurzor már a jelszómezőben áll, a belépés gomb megvárja, amíg beír valamit, és hibás jelszónál vagy kódnál kicsit megrázkódik.',
 }
 
 export default hu

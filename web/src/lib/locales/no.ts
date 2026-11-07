@@ -8,7 +8,6 @@ const no: Translations = {
   'nav.targets': 'Mål',
   'nav.history': 'Historikk',
   'error.unreachable': 'Motoren kan ikke nås',
-  'login.title': 'Dette grensesnittet er beskyttet',
   'login.password': 'Passord',
   'login.submit': 'Logg inn',
   'login.wrong': 'Det passordet er ikke riktig.',
@@ -265,10 +264,10 @@ const no: Translations = {
   'entry.leftAlone': 'Ingenting i den ble kopiert eller slettet på noen av sidene. Neste kjøring prøver igjen.',
   'error.passwordNotSet': 'Angi først et passord under Innstillinger, Sikkerhet. Uten det kan alle som når denne adressen lese de lagrede innstillingene eller slette for godt.',
   'reset.link': 'Glemt passordet?',
-  'reset.title': 'Tilbakestill passordet',
   'reset.code': 'Kode fra containerloggen',
   'reset.codeTip': 'ArrowLoop har skrevet en kode i containerloggen sin. På Unraid: fanen Docker, ArrowLoop-ikonet, Logs; ellers docker logs arrowloop. En kode gjelder i {minutes} minutter. Alle som kan lese denne loggen, kan tilbakestille passordet, også gjennom en loggviser som Dozzle. Tilbakestillingen slår også av tofaktorautentisering, fjerner alle passnøkler og avslutter alle andre økter.',
   'reset.invalid': 'Koden er feil eller utløpt. Hvis den er utløpt, viser loggen nå en ny.',
+  'reset.saving': 'Lagrer…',
   'reset.doneTitle': 'Det nye passordet er satt',
   'reset.doneIntro': 'Tilbakestillingen fjernet også alle andre veier inn:',
   'reset.doneSessions': 'Alle andre økter er avsluttet',
@@ -973,6 +972,8 @@ const no: Translations = {
   'login.codeHint': 'Seks sifre fra autentiseringsappen din, eller en av gjenopprettingskodene dine.',
   'login.passkeyUnlock': 'Logg inn med passnøkkel',
   'login.passkeyFailed': 'Den passnøkkelen ble ikke godtatt',
+  'login.busy': 'Logger inn…',
+  'login.failed': 'Det gikk ikke. Prøv igjen.',
   'pick.loading': 'Leser mappene…',
   'provider.smb': 'SMB / Windows-deling',
   'provider.s3': 'S3-kompatibel',
@@ -1358,6 +1359,7 @@ const no: Translations = {
   'new.change.jobsCompact': '{compact} øverst i jobblisten viser hver jobb på én linje: status, siste kjøring, {runNow} og {more}. Denne enheten husker valget ditt.',
   'new.change.oled': '{oled} under {design} gir det mørke utseendet ekte svart for OLED- og AMOLED-skjermer. Det gjelder når det mørke utseendet vises, også når det følger systemet, og hver enhet husker sitt eget valg.',
   'new.change.systemAccent': 'Fargeprøven med tryllestaven først i {accent} bruker systemets farge: Material You fra Android 12, aksentfargen i Windows, macOS eller Linux i skrivebordsappen og systemfargen i Firefox og Safari. Der systemet ikke har noen, er prøven ikke der.',
+  'new.change.signInCard': 'Innloggingssiden har fått et nytt utseende, med ArrowLoops logo og navn øverst og hver knapp like bred som kortet. Markøren står allerede i passordfeltet, innloggingsknappen venter til du skriver noe, og ved feil passord eller kode rister den litt.',
 }
 
 export default no

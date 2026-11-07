@@ -8,7 +8,6 @@ const pl: Translations = {
   'nav.targets': 'Cele',
   'nav.history': 'Historia',
   'error.unreachable': 'Nie można połączyć się z silnikiem',
-  'login.title': 'Ten interfejs jest chroniony',
   'login.password': 'Hasło',
   'login.submit': 'Zaloguj się',
   'login.wrong': 'To hasło jest nieprawidłowe.',
@@ -265,10 +264,10 @@ const pl: Translations = {
   'entry.leftAlone': 'Nic w nim nie zostało skopiowane ani usunięte po żadnej stronie. Następny przebieg spróbuje ponownie.',
   'error.passwordNotSet': 'Najpierw ustaw hasło w Ustawieniach, Bezpieczeństwo. Bez niego każdy, kto dotrze do tego adresu, mógłby czytać zapisane ustawienia albo usuwać na zawsze.',
   'reset.link': 'Nie pamiętasz hasła?',
-  'reset.title': 'Zresetuj hasło',
   'reset.code': 'Kod z dziennika kontenera',
   'reset.codeTip': 'ArrowLoop zapisał kod w dzienniku kontenera. W Unraid: zakładka Docker, ikona ArrowLoop, Logs; gdzie indziej docker logs arrowloop. Kod jest ważny przez {minutes} minut. Każdy, kto może czytać ten dziennik, może zresetować hasło, także przez przeglądarkę logów, taką jak Dozzle. Reset wyłącza też uwierzytelnianie dwuskładnikowe, usuwa wszystkie klucze dostępu i kończy wszystkie inne sesje.',
   'reset.invalid': 'Ten kod jest nieprawidłowy albo wygasł. Jeśli wygasł, w dzienniku jest teraz nowy.',
+  'reset.saving': 'Zapisywanie…',
   'reset.doneTitle': 'Nowe hasło jest ustawione',
   'reset.doneIntro': 'Reset usunął też wszystkie inne sposoby logowania:',
   'reset.doneSessions': 'Wszystkie inne sesje zostały zakończone',
@@ -973,6 +972,8 @@ const pl: Translations = {
   'login.codeHint': 'Sześć cyfr z aplikacji uwierzytelniającej albo jeden z kodów zapasowych.',
   'login.passkeyUnlock': 'Zaloguj się kluczem dostępu',
   'login.passkeyFailed': 'Ten klucz dostępu nie został przyjęty',
+  'login.busy': 'Logowanie…',
+  'login.failed': 'Nie udało się. Spróbuj ponownie.',
   'pick.loading': 'Odczyt folderów…',
   'provider.smb': 'SMB / udział Windows',
   'provider.s3': 'Zgodny z S3',
@@ -1358,6 +1359,7 @@ const pl: Translations = {
   'new.change.jobsCompact': '{compact} u góry listy zadań pokazuje każde zadanie w jednym wierszu: stan, ostatnie uruchomienie, {runNow} i {more}. To urządzenie zapamiętuje twój wybór.',
   'new.change.oled': '{oled} pod {design} zmienia ciemny wygląd na prawdziwą czerń dla ekranów OLED i AMOLED. Działa zawsze, gdy widać ciemny wygląd, także gdy podąża za systemem, a każde urządzenie pamięta własny wybór.',
   'new.change.systemAccent': 'Próbka z różdżką na początku {accent} przejmuje kolor systemu: Material You od Androida 12, kolor akcentu Windows, macOS lub Linuksa w aplikacji na komputer i kolor systemu w Firefoksie i Safari. Gdzie system go nie ma, próbki nie ma.',
+  'new.change.signInCard': 'Strona logowania ma nowy wygląd, na górze jest logo i nazwa ArrowLoop, a każdy przycisk jest tak szeroki jak karta. Kursor stoi już w polu hasła, przycisk logowania czeka, aż coś wpiszesz, a przy błędnym haśle lub kodzie lekko się trzęsie.',
 }
 
 export default pl

@@ -8,7 +8,6 @@ const pt: Translations = {
   'nav.targets': 'Destinos',
   'nav.history': 'Histórico',
   'error.unreachable': 'Não é possível alcançar o motor',
-  'login.title': 'Esta interface está protegida',
   'login.password': 'Palavra-passe',
   'login.submit': 'Entrar',
   'login.wrong': 'Essa palavra-passe não está certa.',
@@ -265,10 +264,10 @@ const pt: Translations = {
   'entry.leftAlone': 'Nada lá dentro foi copiado nem apagado em nenhum dos lados. A próxima execução volta a tentar.',
   'error.passwordNotSet': 'Define primeiro uma palavra-passe em Definições, Segurança. Sem ela, qualquer pessoa que chegue a este endereço poderia ler as definições guardadas ou apagar de vez.',
   'reset.link': 'Esqueceste a palavra-passe?',
-  'reset.title': 'Repor a palavra-passe',
   'reset.code': 'Código do registo do contentor',
   'reset.codeTip': 'O ArrowLoop escreveu um código no registo do seu contentor. No Unraid: separador Docker, ícone do ArrowLoop, Logs; noutros sítios docker logs arrowloop. Um código é válido durante {minutes} minutos. Quem conseguir ler este registo pode repor a palavra-passe, incluindo através de um visualizador de registos como o Dozzle. A reposição também desativa a autenticação de dois fatores, remove todas as chaves de acesso e termina todas as outras sessões.',
   'reset.invalid': 'Esse código está errado ou expirou. Se expirou, o registo mostra agora um novo.',
+  'reset.saving': 'A guardar…',
   'reset.doneTitle': 'A tua nova palavra-passe está definida',
   'reset.doneIntro': 'A reposição também removeu todas as outras formas de entrar:',
   'reset.doneSessions': 'Todas as outras sessões terminaram',
@@ -973,6 +972,8 @@ const pt: Translations = {
   'login.codeHint': 'Seis dígitos da tua aplicação de autenticação, ou um dos teus códigos de recuperação.',
   'login.passkeyUnlock': 'Iniciar sessão com uma chave de acesso',
   'login.passkeyFailed': 'Essa chave de acesso não foi aceite',
+  'login.busy': 'A entrar…',
+  'login.failed': 'Não funcionou. Tenta de novo.',
   'pick.loading': 'A ler as pastas…',
   'provider.smb': 'SMB / partilha do Windows',
   'provider.s3': 'Compatível com S3',
@@ -1358,6 +1359,7 @@ const pt: Translations = {
   'new.change.jobsCompact': '{compact}, no topo da lista de tarefas, mostra cada tarefa numa linha, com o estado, a última execução, {runNow} e {more}. Este dispositivo lembra-se da sua escolha.',
   'new.change.oled': '{oled}, em {design}, leva o aspeto escuro ao preto puro para ecrãs OLED e AMOLED. Vale sempre que o aspeto escuro está à vista, também quando segue o sistema, e cada dispositivo guarda a sua escolha.',
   'new.change.systemAccent': 'A amostra com a varinha no início de {accent} usa a cor do seu sistema: Material You a partir do Android 12, a cor de destaque do Windows, macOS ou Linux na aplicação de computador e a cor do sistema no Firefox e no Safari. Onde o sistema não tem uma, a amostra não aparece.',
+  'new.change.signInCard': 'A página de início de sessão tem um aspeto novo, com o logótipo e o nome do ArrowLoop em cima e cada botão tão largo como o cartão. O cursor já está no campo da palavra-passe, o botão de entrada espera até escreveres alguma coisa, e com uma palavra-passe ou um código errados dá um pequeno abanão.',
 }
 
 export default pt

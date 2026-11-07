@@ -175,7 +175,7 @@ describe('the app', () => {
     jobs.mockImplementation(() => real.api.jobs())
     render(<Gate />)
 
-    expect(await screen.findByText('This interface is protected')).toBeTruthy()
+    expect(await screen.findByRole('heading', { level: 1, name: 'ArrowLoop' })).toBeTruthy()
   })
 })
 

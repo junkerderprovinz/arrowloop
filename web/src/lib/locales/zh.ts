@@ -8,7 +8,6 @@ const zh: Translations = {
   'nav.targets': '目标',
   'nav.history': '历史',
   'error.unreachable': '无法连接到引擎',
-  'login.title': '此界面受密码保护',
   'login.password': '密码',
   'login.submit': '登录',
   'login.wrong': '密码不正确。',
@@ -265,10 +264,10 @@ const zh: Translations = {
   'entry.leftAlone': '两侧都没有复制或删除其中的任何内容。下次运行会再试。',
   'error.passwordNotSet': '请先在“设置”的“安全”中设置密码。没有密码时，任何能访问这个地址的人都可以读取已保存的设置或永久删除内容。',
   'reset.link': '忘记密码？',
-  'reset.title': '重置密码',
   'reset.code': '容器日志中的代码',
   'reset.codeTip': 'ArrowLoop 已把代码写入其容器日志。在 Unraid 上：Docker 标签页，ArrowLoop 图标，Logs；其他环境用 docker logs arrowloop。代码有效期 {minutes} 分钟。任何能读取该日志的人都可以重置密码，包括通过 Dozzle 这类日志查看器。重置还会关闭两步验证，删除所有通行密钥，并结束所有其他会话。',
   'reset.invalid': '代码有误或已过期。如果已过期，日志中现在会显示新的代码。',
+  'reset.saving': '正在保存…',
   'reset.doneTitle': '新密码已设置',
   'reset.doneIntro': '重置还移除了其他所有登录方式：',
   'reset.doneSessions': '其他所有会话已结束',
@@ -973,6 +972,8 @@ const zh: Translations = {
   'login.codeHint': '身份验证应用中的六位数字，或者你的一个恢复码。',
   'login.passkeyUnlock': '用通行密钥登录',
   'login.passkeyFailed': '该通行密钥未被接受',
+  'login.busy': '正在登录…',
+  'login.failed': '没有成功。请重试。',
   'pick.loading': '正在读取文件夹…',
   'provider.smb': 'SMB / Windows 共享',
   'provider.s3': '兼容 S3',
@@ -1358,6 +1359,7 @@ const zh: Translations = {
   'new.change.jobsCompact': '任务列表顶部的 {compact} 会把每个任务显示为一行：状态、上次运行、{runNow} 和 {more}。此设备会记住你的选择。',
   'new.change.oled': '{design} 下的 {oled} 让深色外观使用纯黑，适合 OLED 和 AMOLED 屏幕。只要显示深色外观就会生效，跟随系统时也一样，每台设备各自记住自己的选择。',
   'new.change.systemAccent': '{accent} 开头带魔杖的色块会使用系统的颜色：Android 12 及以上用 Material You，桌面应用用 Windows、macOS 或 Linux 的强调色，Firefox 和 Safari 用系统颜色。系统没有这种颜色时，就没有这个色块。',
+  'new.change.signInCard': '登录页面换了新样子，顶部是 ArrowLoop 的标志和名称，每个按钮都和卡片一样宽。光标一开始就在密码框里，登录按钮会等你输入内容后才可用，密码或验证码错误时按钮会轻轻晃一下。',
 }
 
 export default zh

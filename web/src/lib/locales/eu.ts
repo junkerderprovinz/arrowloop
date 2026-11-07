@@ -8,7 +8,6 @@ const eu: Translations = {
   'nav.targets': 'Helburuak',
   'nav.history': 'Historia',
   'error.unreachable': 'Ezin da motorrera iritsi',
-  'login.title': 'Interfaze hau babestuta dago',
   'login.password': 'Pasahitza',
   'login.submit': 'Hasi saioa',
   'login.wrong': 'Pasahitz hori ez da zuzena.',
@@ -265,10 +264,10 @@ const eu: Translations = {
   'entry.leftAlone': 'Ez da ezer kopiatu edo ezabatu bertan, ez alde batean ez bestean. Hurrengo exekuzioak berriro saiatuko da.',
   'error.passwordNotSet': 'Ezarri lehenik pasahitz bat Ezarpenak, Segurtasuna atalean. Hura gabe, helbide honetara iristen den edonork ezarpen gordeak irakurri edo betiko ezabatu lezake.',
   'reset.link': 'Pasahitza ahaztu duzu?',
-  'reset.title': 'Berrezarri pasahitza',
   'reset.code': 'Edukiontziaren egunkariko kodea',
   'reset.codeTip': 'ArrowLoopek kode bat idatzi du bere edukiontziaren egunkarian. Unraiden: Docker fitxa, ArrowLoop ikonoa, Logs, beste nonbait docker logs arrowloop. Kodeak {minutes} minutuz balio du. Egunkari hau irakur dezakeen edonork berrezar dezake pasahitza, baita Dozzle bezalako egunkari-ikustaile baten bidez ere. Berrezarpenak bi faktoreko autentifikazioa ere desaktibatzen du, sarbide-gako guztiak kentzen ditu eta beste saio guztiak amaitzen ditu.',
   'reset.invalid': 'Kode hori ez da zuzena edo iraungi da. Iraungi bada, egunkariak kode berri bat erakusten du orain.',
+  'reset.saving': 'Gordetzen…',
   'reset.doneTitle': 'Zure pasahitz berria ezarrita dago',
   'reset.doneIntro': 'Berrezarpenak sartzeko gainerako bide guztiak ere kendu ditu:',
   'reset.doneSessions': 'Beste saio guztiak amaitu dira',
@@ -973,6 +972,8 @@ const eu: Translations = {
   'login.codeHint': 'Zure autentifikazio-aplikazioko sei zenbaki, edo zure berreskuratze-kodeetako bat.',
   'login.passkeyUnlock': 'Hasi saioa sarbide-gako batekin',
   'login.passkeyFailed': 'Sarbide-gako hori ez da onartu',
+  'login.busy': 'Saioa hasten…',
+  'login.failed': 'Ez du funtzionatu. Saiatu berriro.',
   'pick.loading': 'Karpetak irakurtzen…',
   'provider.smb': 'SMB / Windows partekatzea',
   'provider.s3': 'S3rekin bateragarria',
@@ -1358,6 +1359,7 @@ const eu: Translations = {
   'new.change.jobsCompact': 'Lanen zerrendaren goiko {compact} aukerak lan bakoitza errenkada batean erakusten du: egoera, azken exekuzioa, {runNow} eta {more}. Gailu honek zure aukera gogoratzen du.',
   'new.change.oled': '{design} azpiko {oled} aukerak itxura iluna benetako beltz bihurtzen du OLED eta AMOLED pantailetan. Itxura iluna ikusten den bakoitzean balio du, sistemari jarraitzen dionean ere, eta gailu bakoitzak bere aukera gogoratzen du.',
   'new.change.systemAccent': '{accent} hasierako makila magikodun laginak sistemaren kolorea hartzen du: Material You Android 12tik aurrera, Windows, macOS edo Linuxen azentu-kolorea mahaigaineko aplikazioan, eta sistemaren kolorea Firefox eta Safarin. Sistemak koloririk ez duenean, lagina ez da agertzen.',
+  'new.change.signInCard': 'Saioa hasteko orriak itxura berria du, ArrowLoopen logoa eta izena goian eta botoi bakoitza txartela bezain zabala. Kurtsorea pasahitzaren eremuan dago jada, saioa hasteko botoiak zerbait idatzi arte itxaroten du, eta pasahitz edo kode okerrarekin pixka bat astintzen da.',
 }
 
 export default eu

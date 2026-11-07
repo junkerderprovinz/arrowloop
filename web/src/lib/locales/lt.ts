@@ -8,7 +8,6 @@ const lt: Translations = {
   'nav.targets': 'Paskirtys',
   'nav.history': 'Istorija',
   'error.unreachable': 'Variklio nepavyksta pasiekti',
-  'login.title': 'Ši sąsaja yra apsaugota',
   'login.password': 'Slaptažodis',
   'login.submit': 'Prisijungti',
   'login.wrong': 'Slaptažodis neteisingas.',
@@ -265,10 +264,10 @@ const lt: Translations = {
   'entry.leftAlone': 'Jame niekas nebuvo nukopijuota ar ištrinta nė vienoje pusėje. Kitas paleidimas bandys dar kartą.',
   'error.passwordNotSet': 'Pirmiausia nustatyk slaptažodį skiltyje Nustatymai, Saugumas. Be jo bet kas, pasiekęs šį adresą, galėtų skaityti išsaugotus nustatymus arba ištrinti visam laikui.',
   'reset.link': 'Pamiršai slaptažodį?',
-  'reset.title': 'Atkurti slaptažodį',
   'reset.code': 'Kodas iš konteinerio žurnalo',
   'reset.codeTip': 'ArrowLoop įrašė kodą į savo konteinerio žurnalą. Unraid: skirtukas Docker, ArrowLoop piktograma, Logs; kitur docker logs arrowloop. Kodas galioja {minutes} min. Kiekvienas, galintis skaityti šį žurnalą, gali atkurti slaptažodį, taip pat per žurnalų peržiūros programą, pavyzdžiui, Dozzle. Atkūrus išjungiamas dviejų veiksnių autentifikavimas, pašalinami visi prieigos raktai ir baigiami visi kiti seansai.',
   'reset.invalid': 'Šis kodas neteisingas arba nebegalioja. Jei nebegalioja, žurnale dabar matyti naujas.',
+  'reset.saving': 'Įrašoma…',
   'reset.doneTitle': 'Naujas slaptažodis nustatytas',
   'reset.doneIntro': 'Atkūrimas pašalino ir visus kitus būdus prisijungti:',
   'reset.doneSessions': 'Visi kiti seansai baigti',
@@ -973,6 +972,8 @@ const lt: Translations = {
   'login.codeHint': 'Šeši skaitmenys iš tavo tapatybės nustatymo programėlės arba vienas iš atkūrimo kodų.',
   'login.passkeyUnlock': 'Prisijungti prieigos raktu',
   'login.passkeyFailed': 'Šis prieigos raktas nebuvo priimtas',
+  'login.busy': 'Jungiamasi…',
+  'login.failed': 'Nepavyko. Bandykite dar kartą.',
   'pick.loading': 'Skaitomi aplankai…',
   'provider.smb': 'SMB / Windows bendrinimas',
   'provider.s3': 'Suderinama su S3',
@@ -1358,6 +1359,7 @@ const lt: Translations = {
   'new.change.jobsCompact': '{compact} užduočių sąrašo viršuje rodo kiekvieną užduotį vienoje eilutėje: būseną, paskutinį paleidimą, {runNow} ir {more}. Šis įrenginys įsimena jūsų pasirinkimą.',
   'new.change.oled': '{oled} po {design} paverčia tamsią išvaizdą tikra juoda OLED ir AMOLED ekranams. Tai galioja visada, kai rodoma tamsi išvaizda, ir kai ji seka sistemą, o kiekvienas įrenginys įsimena savo pasirinkimą.',
   'new.change.systemAccent': 'Pavyzdys su burtų lazdele {accent} pradžioje naudoja jūsų sistemos spalvą: Material You nuo Android 12, Windows, macOS arba Linux akcentinę spalvą darbalaukio programėlėje ir sistemos spalvą Firefox ir Safari naršyklėse. Kur sistema jos neturi, pavyzdžio nėra.',
+  'new.change.signInCard': 'Prisijungimo puslapis atrodo naujai, viršuje yra ArrowLoop logotipas ir pavadinimas, o kiekvienas mygtukas toks pat platus kaip kortelė. Žymeklis jau stovi slaptažodžio lauke, prisijungimo mygtukas laukia, kol ką nors įvesite, o įvedus neteisingą slaptažodį ar kodą jis trumpai sujuda.',
 }
 
 export default lt

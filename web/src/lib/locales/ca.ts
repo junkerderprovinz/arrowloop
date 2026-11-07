@@ -8,7 +8,6 @@ const ca: Translations = {
   'nav.targets': 'Destinacions',
   'nav.history': 'Historial',
   'error.unreachable': 'No es pot arribar al motor',
-  'login.title': 'Aquesta interfície està protegida',
   'login.password': 'Contrasenya',
   'login.submit': 'Inicia la sessió',
   'login.wrong': 'Aquesta contrasenya no és correcta.',
@@ -265,10 +264,10 @@ const ca: Translations = {
   'entry.leftAlone': 'No s\'hi ha copiat ni esborrat res a cap banda. La propera execució ho tornarà a provar.',
   'error.passwordNotSet': 'Primer posa una contrasenya a Configuració, Seguretat. Sense, qualsevol que arribi a aquesta adreça podria llegir la configuració desada o esborrar per sempre.',
   'reset.link': 'Has oblidat la contrasenya?',
-  'reset.title': 'Restableix la contrasenya',
   'reset.code': 'Codi del registre del contenidor',
   'reset.codeTip': 'ArrowLoop ha escrit un codi al registre del seu contenidor. A Unraid: pestanya Docker, icona d\'ArrowLoop, Logs; en altres llocs docker logs arrowloop. Un codi és vàlid durant {minutes} minuts. Qualsevol que pugui llegir aquest registre pot restablir la contrasenya, també amb un visor de registres com Dozzle. A més, el restabliment desactiva l\'autenticació de doble factor, elimina totes les claus d\'accés i tanca totes les altres sessions.',
   'reset.invalid': 'Aquest codi no és correcte o ha caducat. Si ha caducat, el registre ja en mostra un de nou.',
+  'reset.saving': 'S\'està desant…',
   'reset.doneTitle': 'La contrasenya nova ja està posada',
   'reset.doneIntro': 'El restabliment també ha eliminat tots els altres accessos:',
   'reset.doneSessions': 'S\'han tancat totes les altres sessions',
@@ -973,6 +972,8 @@ const ca: Translations = {
   'login.codeHint': 'Sis xifres de la teva aplicació d\'autenticació, o un dels teus codis de recuperació.',
   'login.passkeyUnlock': 'Inicia la sessió amb una clau d\'accés',
   'login.passkeyFailed': 'Aquesta clau d\'accés no s\'ha acceptat',
+  'login.busy': 'S\'està iniciant la sessió…',
+  'login.failed': 'No ha funcionat. Torna-ho a provar.',
   'pick.loading': 'S\'estan llegint les carpetes…',
   'provider.smb': 'SMB / compartició de Windows',
   'provider.s3': 'Compatible amb S3',
@@ -1358,6 +1359,7 @@ const ca: Translations = {
   'new.change.jobsCompact': '{compact}, a dalt de la llista de tasques, mostra cada tasca en una fila, amb el seu estat, l\'última execució, {runNow} i {more}. Aquest dispositiu recorda la teva tria.',
   'new.change.oled': '{oled}, sota {design}, posa l\'aspecte fosc en negre pur per a pantalles OLED i AMOLED. Val sempre que es veu l\'aspecte fosc, també quan segueix el sistema, i cada dispositiu recorda la seva tria.',
   'new.change.systemAccent': 'La mostra amb la vareta al començament de {accent} agafa el color del sistema: Material You a partir d\'Android 12, el color d\'accent de Windows, macOS o Linux a l\'aplicació d\'escriptori i el color del sistema a Firefox i Safari. On el sistema no en té, la mostra no hi és.',
+  'new.change.signInCard': 'La pàgina d\'inici de sessió té un aspecte nou, amb el logotip i el nom d\'ArrowLoop a dalt i cada botó tan ample com la targeta. El cursor ja és al camp de la contrasenya, el botó d\'inici de sessió espera que escriguis alguna cosa, i amb una contrasenya o un codi incorrectes fa una petita sacsejada.',
 }
 
 export default ca

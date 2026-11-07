@@ -8,7 +8,6 @@ const ko: Translations = {
   'nav.targets': '대상',
   'nav.history': '기록',
   'error.unreachable': '엔진에 연결할 수 없습니다',
-  'login.title': '이 화면은 보호되어 있습니다',
   'login.password': '비밀번호',
   'login.submit': '로그인',
   'login.wrong': '비밀번호가 올바르지 않습니다.',
@@ -265,10 +264,10 @@ const ko: Translations = {
   'entry.leftAlone': '양쪽 어디에서도 이 안의 항목은 복사되거나 삭제되지 않았습니다. 다음 실행에서 다시 시도합니다.',
   'error.passwordNotSet': '먼저 설정, 보안에서 비밀번호를 정하세요. 비밀번호가 없으면 이 주소에 닿는 누구나 저장된 설정을 읽거나 영구히 삭제할 수 있습니다.',
   'reset.link': '비밀번호를 잊으셨나요?',
-  'reset.title': '비밀번호 재설정',
   'reset.code': '컨테이너 로그의 코드',
   'reset.codeTip': 'ArrowLoop이 컨테이너 로그에 코드를 기록했습니다. Unraid에서는 Docker 탭에서 ArrowLoop 아이콘을 눌러 Logs를 여세요. 그 밖의 환경에서는 docker logs arrowloop로 볼 수 있습니다. 코드는 {minutes}분 동안 유효합니다. 이 로그를 읽을 수 있는 사람은 누구나 비밀번호를 재설정할 수 있으며, Dozzle 같은 로그 뷰어를 통해서도 마찬가지입니다. 재설정하면 2단계 인증이 꺼지고, 모든 패스키가 삭제되며, 다른 모든 세션이 종료됩니다.',
   'reset.invalid': '코드가 올바르지 않거나 만료되었습니다. 만료된 경우 로그에 새 코드가 표시되어 있습니다.',
+  'reset.saving': '저장하는 중…',
   'reset.doneTitle': '새 비밀번호를 정했습니다',
   'reset.doneIntro': '재설정으로 다른 접속 수단도 모두 없어졌습니다:',
   'reset.doneSessions': '다른 모든 세션이 종료되었습니다',
@@ -973,6 +972,8 @@ const ko: Translations = {
   'login.codeHint': '인증 앱의 여섯 자리 숫자 또는 복구 코드 중 하나입니다.',
   'login.passkeyUnlock': '패스키로 로그인',
   'login.passkeyFailed': '그 패스키는 받아들여지지 않았습니다',
+  'login.busy': '로그인하는 중…',
+  'login.failed': '잘 되지 않았습니다. 다시 시도하세요.',
   'pick.loading': '폴더를 읽는 중…',
   'provider.smb': 'SMB / Windows 공유',
   'provider.s3': 'S3 호환',
@@ -1358,6 +1359,7 @@ const ko: Translations = {
   'new.change.jobsCompact': '작업 목록 위의 {compact}은(는) 작업마다 한 줄로 상태, 마지막 실행, {runNow}, {more}를 보여 줍니다. 이 기기가 선택을 기억합니다.',
   'new.change.oled': '{design} 아래의 {oled}은 OLED와 AMOLED 화면을 위해 어두운 모양을 완전한 검정으로 바꿉니다. 시스템을 따를 때를 포함해 어두운 모양이 보일 때마다 적용되며, 기기마다 자신의 선택을 기억합니다.',
   'new.change.systemAccent': '{accent} 맨 앞의 마법 지팡이 견본은 시스템 색상을 따릅니다. Android 12 이상에서는 Material You, 데스크톱 앱에서는 Windows, macOS, Linux의 강조 색상, Firefox와 Safari에서는 시스템 색상입니다. 시스템에 색상이 없으면 이 견본은 나타나지 않습니다.',
+  'new.change.signInCard': '로그인 화면이 새로워졌습니다. 위쪽에 ArrowLoop 로고와 이름이 있고 모든 버튼이 카드만큼 넓습니다. 커서는 처음부터 비밀번호 칸에 있고, 로그인 버튼은 무언가 입력할 때까지 기다리며, 비밀번호나 코드가 틀리면 살짝 흔들립니다.',
 }
 
 export default ko

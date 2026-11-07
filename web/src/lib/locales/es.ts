@@ -8,7 +8,6 @@ const es: Translations = {
   'nav.targets': 'Destinos',
   'nav.history': 'Historial',
   'error.unreachable': 'No se puede alcanzar el motor',
-  'login.title': 'Esta interfaz está protegida',
   'login.password': 'Contraseña',
   'login.submit': 'Iniciar sesión',
   'login.wrong': 'Esa contraseña no es correcta.',
@@ -265,10 +264,10 @@ const es: Translations = {
   'entry.leftAlone': 'No se copió ni se borró nada en ella en ninguno de los lados. La próxima ejecución lo volverá a intentar.',
   'error.passwordNotSet': 'Primero pon una contraseña en Ajustes, Seguridad. Sin ella, cualquiera que llegue a esta dirección podría leer los ajustes guardados o borrar para siempre.',
   'reset.link': '¿Olvidaste la contraseña?',
-  'reset.title': 'Restablecer la contraseña',
   'reset.code': 'Código del registro del contenedor',
   'reset.codeTip': 'ArrowLoop ha escrito un código en el registro de su contenedor. En Unraid: pestaña Docker, icono de ArrowLoop, Logs; en otros sitios docker logs arrowloop. Un código vale {minutes} minutos. Cualquiera que pueda leer este registro puede restablecer la contraseña, también con un visor de registros como Dozzle. Además, el restablecimiento desactiva la verificación en dos pasos, elimina todas las claves de acceso y cierra todas las demás sesiones.',
   'reset.invalid': 'Ese código no es correcto o ha caducado. Si ha caducado, el registro muestra ahora uno nuevo.',
+  'reset.saving': 'Guardando…',
   'reset.doneTitle': 'Tu contraseña nueva está puesta',
   'reset.doneIntro': 'El restablecimiento también ha eliminado cualquier otra forma de entrar:',
   'reset.doneSessions': 'Se han cerrado todas las demás sesiones',
@@ -973,6 +972,8 @@ const es: Translations = {
   'login.codeHint': 'Seis dígitos de tu aplicación de autenticación, o uno de tus códigos de recuperación.',
   'login.passkeyUnlock': 'Iniciar sesión con una clave de acceso',
   'login.passkeyFailed': 'Esa clave de acceso no fue aceptada',
+  'login.busy': 'Iniciando sesión…',
+  'login.failed': 'No ha funcionado. Vuelve a intentarlo.',
   'pick.loading': 'Leyendo las carpetas…',
   'provider.smb': 'SMB / recurso compartido de Windows',
   'provider.s3': 'Compatible con S3',
@@ -1358,6 +1359,7 @@ const es: Translations = {
   'new.change.jobsCompact': '{compact}, arriba en la lista de tareas, muestra cada tarea en una fila, con su estado, su última ejecución, {runNow} y {more}. Este dispositivo recuerda tu elección.',
   'new.change.oled': '{oled}, bajo {design}, pone el aspecto oscuro en negro puro para pantallas OLED y AMOLED. Vale siempre que se ve el aspecto oscuro, también cuando sigue al sistema, y cada dispositivo recuerda su propia elección.',
   'new.change.systemAccent': 'La muestra con la varita al principio de {accent} toma el color de tu sistema: Material You desde Android 12, el color de acento de Windows, macOS o Linux en la aplicación de escritorio y el color del sistema en Firefox y Safari. Donde el sistema no tiene uno, la muestra no aparece.',
+  'new.change.signInCard': 'La página de inicio de sesión tiene un aspecto nuevo, con el logotipo y el nombre de ArrowLoop arriba y cada botón tan ancho como la tarjeta. El cursor ya está en el campo de la contraseña, el botón de inicio de sesión espera a que escribas algo, y con una contraseña o un código incorrectos da una pequeña sacudida.',
 }
 
 export default es

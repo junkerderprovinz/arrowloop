@@ -28,8 +28,9 @@ function screens(dir: string): string[] {
 /**
  * The props an explanation may arrive in. `hint` and `tip` are the bubbles,
  * `message` is a dialog's body and `title` the second line in a button's bubble.
+ * `codeHint` is the one line GlimStone's sign-in card sets under its code field.
  */
-const CARRIERS = new Set(['hint', 'tip', 'title', 'message', 'label', 'placeholder'])
+const CARRIERS = new Set(['hint', 'tip', 'title', 'message', 'label', 'placeholder', 'codeHint'])
 
 /**
  * Which prop, if any, this expression is the value of.

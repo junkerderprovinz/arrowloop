@@ -8,7 +8,6 @@ const vi: Translations = {
   'nav.targets': 'Đích',
   'nav.history': 'Lịch sử',
   'error.unreachable': 'Không liên lạc được với bộ máy',
-  'login.title': 'Giao diện này được bảo vệ',
   'login.password': 'Mật khẩu',
   'login.submit': 'Đăng nhập',
   'login.wrong': 'Mật khẩu không đúng.',
@@ -265,10 +264,10 @@ const vi: Translations = {
   'entry.leftAlone': 'Không có gì bên trong được sao chép hay xóa ở bên nào. Lần chạy sau sẽ thử lại.',
   'error.passwordNotSet': 'Hãy đặt mật khẩu trước trong Cài đặt, Bảo mật. Không có mật khẩu, bất kỳ ai tới được địa chỉ này đều có thể đọc cài đặt đã lưu hoặc xóa vĩnh viễn.',
   'reset.link': 'Quên mật khẩu?',
-  'reset.title': 'Đặt lại mật khẩu',
   'reset.code': 'Mã từ nhật ký của container',
   'reset.codeTip': 'ArrowLoop đã ghi một mã vào nhật ký container của mình. Trên Unraid: tab Docker, biểu tượng ArrowLoop, Logs; nơi khác dùng docker logs arrowloop. Mã có hiệu lực {minutes} phút. Ai đọc được nhật ký này đều có thể đặt lại mật khẩu, kể cả qua công cụ xem nhật ký như Dozzle. Việc đặt lại cũng tắt xác thực hai yếu tố, xóa mọi khóa truy cập và kết thúc mọi phiên khác.',
   'reset.invalid': 'Mã này không đúng hoặc đã hết hạn. Nếu đã hết hạn, nhật ký hiện đang hiển thị mã mới.',
+  'reset.saving': 'Đang lưu…',
   'reset.doneTitle': 'Đã đặt mật khẩu mới',
   'reset.doneIntro': 'Việc đặt lại cũng đã xóa mọi cách đăng nhập khác:',
   'reset.doneSessions': 'Mọi phiên khác đã kết thúc',
@@ -973,6 +972,8 @@ const vi: Translations = {
   'login.codeHint': 'Sáu chữ số từ ứng dụng xác thực của bạn, hoặc một trong các mã khôi phục.',
   'login.passkeyUnlock': 'Đăng nhập bằng khóa truy cập',
   'login.passkeyFailed': 'Khóa truy cập đó không được chấp nhận',
+  'login.busy': 'Đang đăng nhập…',
+  'login.failed': 'Không thành công. Vui lòng thử lại.',
   'pick.loading': 'Đang đọc thư mục…',
   'provider.smb': 'SMB / chia sẻ Windows',
   'provider.s3': 'Tương thích S3',
@@ -1358,6 +1359,7 @@ const vi: Translations = {
   'new.change.jobsCompact': '{compact} ở đầu danh sách công việc hiển thị mỗi công việc trên một dòng: trạng thái, lần chạy gần nhất, {runNow} và {more}. Thiết bị này ghi nhớ lựa chọn của bạn.',
   'new.change.oled': '{oled} dưới {design} chuyển giao diện tối sang màu đen tuyệt đối cho màn hình OLED và AMOLED. Tùy chọn áp dụng mỗi khi giao diện tối hiển thị, cả khi theo hệ thống, và mỗi thiết bị nhớ lựa chọn của riêng mình.',
   'new.change.systemAccent': 'Mẫu màu có cây đũa phép ở đầu {accent} lấy màu của hệ thống bạn: Material You từ Android 12, màu nhấn của Windows, macOS hoặc Linux trong ứng dụng máy tính, và màu hệ thống trong Firefox và Safari. Nếu hệ thống không có màu này, mẫu sẽ không xuất hiện.',
+  'new.change.signInCard': 'Trang đăng nhập có diện mạo mới, với logo và tên ArrowLoop ở trên cùng và mỗi nút rộng bằng thẻ. Con trỏ đã nằm sẵn trong ô mật khẩu, nút đăng nhập chờ đến khi bạn nhập gì đó, và khi mật khẩu hoặc mã sai thì nút rung nhẹ.',
 }
 
 export default vi

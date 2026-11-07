@@ -8,7 +8,6 @@ const fi: Translations = {
   'nav.targets': 'Kohteet',
   'nav.history': 'Historia',
   'error.unreachable': 'Moottoriin ei saada yhteyttä',
-  'login.title': 'Tämä käyttöliittymä on suojattu',
   'login.password': 'Salasana',
   'login.submit': 'Kirjaudu sisään',
   'login.wrong': 'Salasana ei ole oikein.',
@@ -265,10 +264,10 @@ const fi: Translations = {
   'entry.leftAlone': 'Sen sisältä ei kopioitu eikä poistettu mitään kummallakaan puolella. Seuraava ajo yrittää uudelleen.',
   'error.passwordNotSet': 'Aseta ensin salasana kohdassa Asetukset, Turvallisuus. Ilman sitä kuka tahansa tähän osoitteeseen pääsevä voisi lukea tallennetut asetukset tai poistaa pysyvästi.',
   'reset.link': 'Unohditko salasanan?',
-  'reset.title': 'Nollaa salasana',
   'reset.code': 'Koodi kontin lokista',
   'reset.codeTip': 'ArrowLoop on kirjoittanut koodin kontin lokiin. Unraidissa: Docker-välilehti, ArrowLoop-kuvake, Logs; muualla docker logs arrowloop. Koodi on voimassa {minutes} minuuttia. Jokainen, joka voi lukea tätä lokia, voi nollata salasanan, myös lokinkatselimen kuten Dozzlen kautta. Nollaus poistaa myös kaksivaiheisen tunnistautumisen ja kaikki pääsyavaimet sekä päättää kaikki muut istunnot.',
   'reset.invalid': 'Koodi on väärä tai vanhentunut. Jos se vanhentui, lokissa näkyy nyt uusi.',
+  'reset.saving': 'Tallennetaan…',
   'reset.doneTitle': 'Uusi salasanasi on asetettu',
   'reset.doneIntro': 'Nollaus poisti myös kaikki muut tavat päästä sisään:',
   'reset.doneSessions': 'Kaikki muut istunnot on päätetty',
@@ -973,6 +972,8 @@ const fi: Translations = {
   'login.codeHint': 'Kuusi numeroa todennussovelluksestasi tai yksi palautuskoodeistasi.',
   'login.passkeyUnlock': 'Kirjaudu pääsyavaimella',
   'login.passkeyFailed': 'Pääsyavainta ei hyväksytty',
+  'login.busy': 'Kirjaudutaan…',
+  'login.failed': 'Se ei onnistunut. Yritä uudelleen.',
   'pick.loading': 'Luetaan kansioita…',
   'provider.smb': 'SMB / Windows-jako',
   'provider.s3': 'S3-yhteensopiva',
@@ -1358,6 +1359,7 @@ const fi: Translations = {
   'new.change.jobsCompact': '{compact} työluettelon yläosassa näyttää jokaisen työn yhdellä rivillä: tila, viimeisin ajo, {runNow} ja {more}. Tämä laite muistaa valintasi.',
   'new.change.oled': '{design}-kohdan alla oleva {oled} vaihtaa tumman ulkoasun aidoksi mustaksi OLED- ja AMOLED-näytöillä. Se on käytössä aina, kun tumma ulkoasu näkyy, myös kun se seuraa järjestelmää, ja jokainen laite muistaa oman valintansa.',
   'new.change.systemAccent': 'Taikasauvalla merkitty värinäyte kohdan {accent} alussa käyttää järjestelmän väriä: Material You Android 12:sta alkaen, Windowsin, macOSin tai Linuxin korostusväri työpöytäsovelluksessa ja järjestelmän väri Firefoxissa ja Safarissa. Jos järjestelmällä ei ole väriä, näytettä ei ole.',
+  'new.change.signInCard': 'Kirjautumissivu on uudistunut, ylhäällä on ArrowLoopin logo ja nimi ja jokainen painike on kortin levyinen. Kohdistin on valmiiksi salasanakentässä, kirjautumispainike odottaa, kunnes kirjoitat jotain, ja väärästä salasanasta tai koodista se heilahtaa hieman.',
 }
 
 export default fi

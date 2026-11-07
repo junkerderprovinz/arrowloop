@@ -8,7 +8,6 @@ const gl: Translations = {
   'nav.targets': 'Destinos',
   'nav.history': 'Historial',
   'error.unreachable': 'Non se pode chegar ao motor',
-  'login.title': 'Esta interface está protexida',
   'login.password': 'Contrasinal',
   'login.submit': 'Iniciar sesión',
   'login.wrong': 'Ese contrasinal non é correcto.',
@@ -265,10 +264,10 @@ const gl: Translations = {
   'entry.leftAlone': 'Non se copiou nin se borrou nada nel en ningún dos lados. A próxima execución tentarao de novo.',
   'error.passwordNotSet': 'Primeiro pon un contrasinal en Axustes, Seguranza. Sen el, calquera que chegue a este enderezo podería ler os axustes gardados ou borrar para sempre.',
   'reset.link': 'Esqueciches o contrasinal?',
-  'reset.title': 'Restablecer o contrasinal',
   'reset.code': 'Código do rexistro do contedor',
   'reset.codeTip': 'ArrowLoop escribiu un código no rexistro do seu contedor. En Unraid: pestana Docker, icona de ArrowLoop, Logs; noutros sitios, docker logs arrowloop. Un código vale {minutes} minutos. Quen poida ler este rexistro pode restablecer o contrasinal, tamén a través dun visor de rexistros como Dozzle. O restablecemento tamén desactiva a autenticación en dous pasos, elimina todas as chaves de acceso e pecha todas as outras sesións.',
   'reset.invalid': 'Ese código non é correcto ou caducou. Se caducou, o rexistro mostra agora un novo.',
+  'reset.saving': 'Gardando…',
   'reset.doneTitle': 'O teu contrasinal novo está posto',
   'reset.doneIntro': 'O restablecemento tamén eliminou todas as outras vías de acceso:',
   'reset.doneSessions': 'Todas as outras sesións rematáronse',
@@ -973,6 +972,8 @@ const gl: Translations = {
   'login.codeHint': 'Seis díxitos da túa aplicación de autenticación, ou un dos teus códigos de recuperación.',
   'login.passkeyUnlock': 'Iniciar sesión cunha chave de acceso',
   'login.passkeyFailed': 'Esa chave de acceso non foi aceptada',
+  'login.busy': 'Iniciando sesión…',
+  'login.failed': 'Non funcionou. Téntao de novo.',
   'pick.loading': 'Lendo os cartafoles…',
   'provider.smb': 'SMB / compartición de Windows',
   'provider.s3': 'Compatible con S3',
@@ -1358,6 +1359,7 @@ const gl: Translations = {
   'new.change.jobsCompact': '{compact}, arriba na lista de tarefas, mostra cada tarefa nunha fila, co seu estado, a última execución, {runNow} e {more}. Este dispositivo lembra a túa escolla.',
   'new.change.oled': '{oled}, baixo {design}, pon o aspecto escuro en negro puro para pantallas OLED e AMOLED. Vale sempre que se ve o aspecto escuro, tamén cando segue o sistema, e cada dispositivo lembra a súa escolla.',
   'new.change.systemAccent': 'A mostra coa variña ao comezo de {accent} colle a cor do teu sistema: Material You desde Android 12, a cor de acento de Windows, macOS ou Linux na aplicación de escritorio e a cor do sistema en Firefox e Safari. Onde o sistema non ten ningunha, a mostra non aparece.',
+  'new.change.signInCard': 'A páxina de inicio de sesión ten un aspecto novo, co logotipo e o nome de ArrowLoop arriba e cada botón tan ancho coma a tarxeta. O cursor xa está no campo do contrasinal, o botón de inicio de sesión agarda a que escribas algo, e cun contrasinal ou un código incorrectos dá unha pequena sacudida.',
 }
 
 export default gl

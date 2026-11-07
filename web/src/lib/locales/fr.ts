@@ -8,7 +8,6 @@ const fr: Translations = {
   'nav.targets': 'Cibles',
   'nav.history': 'Historique',
   'error.unreachable': 'Le moteur est injoignable',
-  'login.title': 'Cette interface est protégée',
   'login.password': 'Mot de passe',
   'login.submit': 'Se connecter',
   'login.wrong': 'Ce mot de passe n\'est pas le bon.',
@@ -265,10 +264,10 @@ const fr: Translations = {
   'entry.leftAlone': 'Rien n\'y a été copié ni supprimé, d\'aucun côté. La prochaine exécution réessaiera.',
   'error.passwordNotSet': 'Définis d’abord un mot de passe dans Réglages, Sécurité. Sans lui, quiconque atteint cette adresse pourrait lire les réglages enregistrés ou supprimer définitivement.',
   'reset.link': 'Mot de passe oublié ?',
-  'reset.title': 'Réinitialiser le mot de passe',
   'reset.code': 'Code du journal du conteneur',
   'reset.codeTip': 'ArrowLoop a écrit un code dans le journal de son conteneur. Sur Unraid : onglet Docker, icône ArrowLoop, Logs ; ailleurs, docker logs arrowloop. Un code est valable {minutes} minutes. Quiconque peut lire ce journal peut réinitialiser le mot de passe, y compris via un lecteur de journaux comme Dozzle. La réinitialisation désactive aussi l\'authentification à deux facteurs, supprime toutes les clés d\'accès et met fin à toutes les autres sessions.',
   'reset.invalid': 'Ce code est incorrect ou a expiré. S\'il a expiré, le journal en affiche maintenant un nouveau.',
+  'reset.saving': 'Enregistrement…',
   'reset.doneTitle': 'Votre nouveau mot de passe est défini',
   'reset.doneIntro': 'La réinitialisation a aussi supprimé tous les autres accès :',
   'reset.doneSessions': 'Toutes les autres sessions sont terminées',
@@ -973,6 +972,8 @@ const fr: Translations = {
   'login.codeHint': 'Six chiffres depuis votre application d\'authentification, ou l\'un de vos codes de secours.',
   'login.passkeyUnlock': 'Se connecter avec une clé d\'accès',
   'login.passkeyFailed': 'Cette clé d\'accès a été refusée',
+  'login.busy': 'Connexion…',
+  'login.failed': 'Cela n\'a pas fonctionné. Veuillez réessayer.',
   'pick.loading': 'Lecture des dossiers…',
   'provider.smb': 'SMB / partage Windows',
   'provider.s3': 'Compatible S3',
@@ -1358,6 +1359,7 @@ const fr: Translations = {
   'new.change.jobsCompact': '{compact}, en haut de la liste des tâches, affiche chaque tâche sur une ligne, avec son état, sa dernière exécution, {runNow} et {more}. Cet appareil retient votre choix.',
   'new.change.oled': '{oled}, sous {design}, passe l\'apparence sombre au noir pur pour les écrans OLED et AMOLED. Il compte dès que l\'apparence sombre s\'affiche, même quand elle suit le système, et chaque appareil retient son propre choix.',
   'new.change.systemAccent': 'La pastille à la baguette magique au début de {accent} reprend la couleur de votre système : Material You à partir d\'Android 12, la couleur d\'accentuation de Windows, macOS ou Linux dans l\'application de bureau, et la couleur du système dans Firefox et Safari. Là où le système n\'en a pas, la pastille n\'apparaît pas.',
+  'new.change.signInCard': 'La page de connexion a un nouvel aspect, avec le logo et le nom d\'ArrowLoop en haut et chaque bouton aussi large que la carte. Le curseur est déjà dans le champ du mot de passe, le bouton de connexion attend que vous saisissiez quelque chose, et un mot de passe ou un code erroné le fait trembler un instant.',
 }
 
 export default fr

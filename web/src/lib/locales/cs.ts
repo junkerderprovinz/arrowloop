@@ -8,7 +8,6 @@ const cs: Translations = {
   'nav.targets': 'Cíle',
   'nav.history': 'Historie',
   'error.unreachable': 'Motor není dostupný',
-  'login.title': 'Toto rozhraní je chráněné',
   'login.password': 'Heslo',
   'login.submit': 'Přihlásit se',
   'login.wrong': 'Toto heslo není správné.',
@@ -265,10 +264,10 @@ const cs: Translations = {
   'entry.leftAlone': 'Na žádné straně se v ní nic nezkopírovalo ani nesmazalo. Příští běh to zkusí znovu.',
   'error.passwordNotSet': 'Nejdřív nastav heslo v Nastavení, Zabezpečení. Bez něj by kdokoli, kdo se dostane na tuto adresu, mohl číst uložená nastavení nebo natrvalo mazat.',
   'reset.link': 'Zapomenuté heslo?',
-  'reset.title': 'Obnovit heslo',
   'reset.code': 'Kód z logu kontejneru',
   'reset.codeTip': 'ArrowLoop zapsal kód do logu svého kontejneru. V Unraidu: karta Docker, ikona ArrowLoop, Logs; jinde docker logs arrowloop. Kód platí {minutes} minut. Kdokoli, kdo ten log umí číst, může heslo obnovit, i přes prohlížeč logů jako Dozzle. Obnovení také vypne dvoufaktorové ověření, odstraní všechny přístupové klíče a ukončí všechny ostatní relace.',
   'reset.invalid': 'Ten kód není správný, nebo vypršel. Pokud vypršel, log teď ukazuje nový.',
+  'reset.saving': 'Ukládání…',
   'reset.doneTitle': 'Nové heslo je nastavené',
   'reset.doneIntro': 'Obnovení odstranilo také všechny ostatní způsoby přihlášení:',
   'reset.doneSessions': 'Všechny ostatní relace jsou ukončené',
@@ -973,6 +972,8 @@ const cs: Translations = {
   'login.codeHint': 'Šest číslic z ověřovací aplikace nebo jeden z tvých záložních kódů.',
   'login.passkeyUnlock': 'Přihlásit se přístupovým klíčem',
   'login.passkeyFailed': 'Tento přístupový klíč nebyl přijat',
+  'login.busy': 'Přihlašování…',
+  'login.failed': 'Nepovedlo se. Zkuste to prosím znovu.',
   'pick.loading': 'Načítají se složky…',
   'provider.smb': 'SMB / sdílení Windows',
   'provider.s3': 'Kompatibilní s S3',
@@ -1358,6 +1359,7 @@ const cs: Translations = {
   'new.change.jobsCompact': '{compact} nahoře v seznamu úloh ukáže každou úlohu na jednom řádku, s jejím stavem, posledním během, {runNow} a {more}. Tohle zařízení si tvou volbu pamatuje.',
   'new.change.oled': '{oled} pod {design} přepne tmavý vzhled na skutečnou černou pro displeje OLED a AMOLED. Platí vždy, když je tmavý vzhled vidět, i když se řídí systémem, a každé zařízení si pamatuje vlastní volbu.',
   'new.change.systemAccent': 'Vzorek s kouzelnou hůlkou na začátku {accent} převezme barvu systému: Material You od Androidu 12, barvu zvýraznění Windows, macOS nebo Linuxu v desktopové aplikaci a systémovou barvu ve Firefoxu a Safari. Kde systém žádnou nemá, vzorek chybí.',
+  'new.change.signInCard': 'Přihlašovací stránka má nový vzhled, nahoře s logem a názvem ArrowLoop a s každým tlačítkem širokým jako karta. Kurzor už stojí v poli pro heslo, tlačítko pro přihlášení čeká, dokud něco nezadáte, a při špatném hesle nebo kódu se krátce zatřese.',
 }
 
 export default cs

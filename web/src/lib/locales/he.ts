@@ -8,7 +8,6 @@ const he: Translations = {
   'nav.targets': 'יעדים',
   'nav.history': 'היסטוריה',
   'error.unreachable': 'אין קשר עם המנוע',
-  'login.title': 'הממשק הזה מוגן',
   'login.password': 'סיסמה',
   'login.submit': 'התחברות',
   'login.wrong': 'הסיסמה אינה נכונה.',
@@ -265,10 +264,10 @@ const he: Translations = {
   'entry.leftAlone': 'שום דבר בתוכה לא הועתק ולא נמחק באף צד. ההרצה הבאה תנסה שוב.',
   'error.passwordNotSet': 'קודם הגדר סיסמה בהגדרות, אבטחה. בלעדיה כל מי שמגיע לכתובת הזו יכול לקרוא את ההגדרות השמורות או למחוק לצמיתות.',
   'reset.link': 'שכחת את הסיסמה?',
-  'reset.title': 'איפוס הסיסמה',
   'reset.code': 'קוד מיומן הקונטיינר',
   'reset.codeTip': 'ArrowLoop כתב קוד ליומן הקונטיינר שלו. ב־Unraid: לשונית Docker, סמל ArrowLoop, Logs; במקומות אחרים docker logs arrowloop. הקוד תקף {minutes} דקות. כל מי שיכול לקרוא את היומן הזה יכול לאפס את הסיסמה, גם דרך מציג יומנים כמו Dozzle. האיפוס גם מכבה את האימות הדו-שלבי, מסיר את כל מפתחות הגישה ומסיים את כל ההתחברויות האחרות.',
   'reset.invalid': 'הקוד שגוי או שפג תוקפו. אם פג תוקפו, ביומן מופיע עכשיו קוד חדש.',
+  'reset.saving': 'שומר…',
   'reset.doneTitle': 'הסיסמה החדשה שלך הוגדרה',
   'reset.doneIntro': 'האיפוס הסיר גם כל דרך כניסה אחרת:',
   'reset.doneSessions': 'כל ההתחברויות האחרות הסתיימו',
@@ -973,6 +972,8 @@ const he: Translations = {
   'login.codeHint': 'שש ספרות מאפליקציית האימות שלך, או אחד מקודי השחזור שלך.',
   'login.passkeyUnlock': 'כניסה עם מפתח גישה',
   'login.passkeyFailed': 'מפתח הגישה הזה לא התקבל',
+  'login.busy': 'מתחבר…',
+  'login.failed': 'זה לא הצליח. נסה שוב.',
   'pick.loading': 'קורא את התיקיות…',
   'provider.smb': 'SMB / שיתוף Windows',
   'provider.s3': 'תואם S3',
@@ -1358,6 +1359,7 @@ const he: Translations = {
   'new.change.jobsCompact': '{compact} בראש רשימת המשימות מציג כל משימה בשורה אחת: מצב, הריצה האחרונה, {runNow} ו{more}. המכשיר הזה זוכר את הבחירה שלכם.',
   'new.change.oled': '{oled} תחת {design} מעביר את המראה הכהה לשחור אמיתי במסכי OLED ו-AMOLED. הוא חל בכל פעם שהמראה הכהה מוצג, גם כשהוא עוקב אחרי המערכת, וכל מכשיר זוכר את הבחירה שלו.',
   'new.change.systemAccent': 'דוגמית שרביט הקסמים בתחילת {accent} לוקחת את צבע המערכת שלך: Material You מ-Android 12 ואילך, צבע ההדגשה של Windows, macOS או Linux באפליקציית שולחן העבודה, וצבע המערכת ב-Firefox וב-Safari. כשאין למערכת צבע כזה, הדוגמית לא מופיעה.',
+  'new.change.signInCard': 'לדף הכניסה יש מראה חדש, עם הלוגו והשם של ArrowLoop למעלה וכל כפתור ברוחב הכרטיס. הסמן כבר נמצא בשדה הסיסמה, כפתור הכניסה ממתין עד שתקליד משהו, ובסיסמה או קוד שגויים הוא רועד קצת.',
 }
 
 export default he

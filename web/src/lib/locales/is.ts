@@ -8,7 +8,6 @@ const is: Translations = {
   'nav.targets': 'Áfangastaðir',
   'nav.history': 'Saga',
   'error.unreachable': 'Ekki næst í vélina',
-  'login.title': 'Þetta viðmót er varið',
   'login.password': 'Lykilorð',
   'login.submit': 'Skrá inn',
   'login.wrong': 'Þetta lykilorð er ekki rétt.',
@@ -265,10 +264,10 @@ const is: Translations = {
   'entry.leftAlone': 'Ekkert í henni var afritað eða eytt á hvorugri hliðinni. Næsta keyrsla reynir aftur.',
   'error.passwordNotSet': 'Settu fyrst lykilorð undir Stillingar, Öryggi. Án þess gæti hver sem nær þessu vistfangi lesið vistaðar stillingar eða eytt fyrir fullt og allt.',
   'reset.link': 'Gleymt lykilorð?',
-  'reset.title': 'Endurstilla lykilorð',
   'reset.code': 'Kóði úr annál gámsins',
   'reset.codeTip': 'ArrowLoop hefur skrifað kóða í annál gámsins síns. Á Unraid: Docker flipinn, ArrowLoop táknið, Logs; annars docker logs arrowloop. Kóði gildir í {minutes} mínútur. Hver sem getur lesið þennan annál getur endurstillt lykilorðið, líka í gegnum annálaskoðara eins og Dozzle. Endurstillingin slekkur líka á tveggja þátta auðkenningu, fjarlægir alla aðgangslykla og lýkur öllum öðrum setum.',
   'reset.invalid': 'Þessi kóði er rangur eða útrunninn. Ef hann er útrunninn sýnir annállinn nú nýjan.',
+  'reset.saving': 'Vistar…',
   'reset.doneTitle': 'Nýja lykilorðið þitt er sett',
   'reset.doneIntro': 'Endurstillingin fjarlægði líka allar aðrar leiðir inn:',
   'reset.doneSessions': 'Öllum öðrum setum er lokið',
@@ -973,6 +972,8 @@ const is: Translations = {
   'login.codeHint': 'Sex tölustafir úr auðkennisforritinu þínu, eða einn af endurheimtukóðunum þínum.',
   'login.passkeyUnlock': 'Skrá inn með aðgangslykli',
   'login.passkeyFailed': 'Þessi aðgangslykill var ekki samþykktur',
+  'login.busy': 'Skrái inn…',
+  'login.failed': 'Þetta tókst ekki. Reyndu aftur.',
   'pick.loading': 'Les möppurnar…',
   'provider.smb': 'SMB / Windows-sameign',
   'provider.s3': 'Samhæft við S3',
@@ -1358,6 +1359,7 @@ const is: Translations = {
   'new.change.jobsCompact': '{compact} efst í verkalistanum sýnir hvert verk í einni línu: stöðu, síðustu keyrslu, {runNow} og {more}. Þetta tæki man valið þitt.',
   'new.change.oled': '{oled} undir {design} setur dökka útlitið á hreinan svartan lit fyrir OLED- og AMOLED-skjái. Það gildir alltaf þegar dökka útlitið sést, líka þegar það fylgir kerfinu, og hvert tæki man sitt eigið val.',
   'new.change.systemAccent': 'Litaprufan með töfrasprotanum fremst í {accent} notar lit kerfisins: Material You frá Android 12, áherslulit Windows, macOS eða Linux í skjáborðsforritinu og kerfislitinn í Firefox og Safari. Þar sem kerfið hefur engan er prufan ekki til staðar.',
+  'new.change.signInCard': 'Innskráningarsíðan hefur fengið nýtt útlit, með merki og nafni ArrowLoop efst og hvern hnapp jafnbreiðan spjaldinu. Bendillinn er þegar í lykilorðsreitnum, innskráningarhnappurinn bíður þar til þú slærð eitthvað inn og við rangt lykilorð eða kóða hristist hann aðeins.',
 }
 
 export default is

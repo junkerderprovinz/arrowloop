@@ -8,7 +8,6 @@ const id: Translations = {
   'nav.targets': 'Tujuan',
   'nav.history': 'Riwayat',
   'error.unreachable': 'Mesin tidak dapat dihubungi',
-  'login.title': 'Antarmuka ini dilindungi',
   'login.password': 'Kata sandi',
   'login.submit': 'Masuk',
   'login.wrong': 'Kata sandi itu salah.',
@@ -265,10 +264,10 @@ const id: Translations = {
   'entry.leftAlone': 'Tidak ada isinya yang disalin atau dihapus di sisi mana pun. Sinkronisasi berikutnya akan mencoba lagi.',
   'error.passwordNotSet': 'Atur dulu kata sandi di Pengaturan, Keamanan. Tanpa itu, siapa pun yang mencapai alamat ini bisa membaca pengaturan yang tersimpan atau menghapus untuk selamanya.',
   'reset.link': 'Lupa kata sandi?',
-  'reset.title': 'Atur ulang kata sandi',
   'reset.code': 'Kode dari log kontainer',
   'reset.codeTip': 'ArrowLoop telah menulis kode ke log kontainernya. Di Unraid: tab Docker, ikon ArrowLoop, Logs; di tempat lain docker logs arrowloop. Kode berlaku selama {minutes} menit. Siapa pun yang bisa membaca log ini bisa mengatur ulang kata sandi, termasuk lewat penampil log seperti Dozzle. Pengaturan ulang juga menonaktifkan autentikasi dua faktor, menghapus semua kunci sandi, dan mengakhiri semua sesi lain.',
   'reset.invalid': 'Kode itu salah atau sudah kedaluwarsa. Jika sudah kedaluwarsa, log kini menampilkan kode baru.',
+  'reset.saving': 'Menyimpan…',
   'reset.doneTitle': 'Kata sandi barumu sudah terpasang',
   'reset.doneIntro': 'Pengaturan ulang juga menghapus semua jalan masuk lainnya:',
   'reset.doneSessions': 'Semua sesi lain telah berakhir',
@@ -973,6 +972,8 @@ const id: Translations = {
   'login.codeHint': 'Enam digit dari aplikasi autentikator kamu, atau salah satu kode pemulihanmu.',
   'login.passkeyUnlock': 'Masuk dengan kunci sandi',
   'login.passkeyFailed': 'Kunci sandi itu tidak diterima',
+  'login.busy': 'Sedang masuk…',
+  'login.failed': 'Tidak berhasil. Silakan coba lagi.',
   'pick.loading': 'Membaca folder…',
   'provider.smb': 'SMB / berbagi pakai Windows',
   'provider.s3': 'Kompatibel S3',
@@ -1358,6 +1359,7 @@ const id: Translations = {
   'new.change.jobsCompact': '{compact} di atas daftar tugas menampilkan setiap tugas dalam satu baris: status, eksekusi terakhir, {runNow}, dan {more}. Perangkat ini mengingat pilihan Anda.',
   'new.change.oled': '{oled} di bawah {design} membuat tampilan gelap menjadi hitam pekat untuk layar OLED dan AMOLED. Ini berlaku setiap kali tampilan gelap muncul, juga saat mengikuti sistem, dan setiap perangkat mengingat pilihannya sendiri.',
   'new.change.systemAccent': 'Contoh warna bertongkat sihir di awal {accent} mengikuti warna sistem Anda: Material You di Android 12 ke atas, warna aksen Windows, macOS, atau Linux di aplikasi desktop, dan warna sistem di Firefox dan Safari. Jika sistem tidak punya warna, contoh itu tidak muncul.',
+  'new.change.signInCard': 'Halaman masuk punya tampilan baru, dengan logo dan nama ArrowLoop di atas dan setiap tombol selebar kartu. Kursor sudah ada di kolom kata sandi, tombol masuk menunggu sampai Anda mengetik sesuatu, dan saat kata sandi atau kode salah tombol itu bergoyang sedikit.',
 }
 
 export default id

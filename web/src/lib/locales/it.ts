@@ -8,7 +8,6 @@ const it: Translations = {
   'nav.targets': 'Destinazioni',
   'nav.history': 'Cronologia',
   'error.unreachable': 'Il motore non è raggiungibile',
-  'login.title': 'Questa interfaccia è protetta',
   'login.password': 'Password',
   'login.submit': 'Accedi',
   'login.wrong': 'Questa password non è corretta.',
@@ -265,10 +264,10 @@ const it: Translations = {
   'entry.leftAlone': 'Non è stato copiato né eliminato nulla al suo interno, su nessuno dei due lati. La prossima esecuzione riproverà.',
   'error.passwordNotSet': 'Imposta prima una password in Impostazioni, Sicurezza. Senza, chiunque raggiunga questo indirizzo potrebbe leggere le impostazioni salvate o eliminare per sempre.',
   'reset.link': 'Password dimenticata?',
-  'reset.title': 'Reimposta la password',
   'reset.code': 'Codice dal log del container',
   'reset.codeTip': 'ArrowLoop ha scritto un codice nel log del suo container. Su Unraid: scheda Docker, icona ArrowLoop, Logs; altrove docker logs arrowloop. Un codice vale {minutes} minuti. Chiunque possa leggere questo log può reimpostare la password, anche tramite un visualizzatore di log come Dozzle. La reimpostazione disattiva anche l\'autenticazione a due fattori, rimuove tutte le passkey e termina tutte le altre sessioni.',
   'reset.invalid': 'Il codice è sbagliato o è scaduto. Se è scaduto, il log ora ne mostra uno nuovo.',
+  'reset.saving': 'Salvataggio…',
   'reset.doneTitle': 'La tua nuova password è impostata',
   'reset.doneIntro': 'La reimpostazione ha rimosso anche ogni altro modo di accedere:',
   'reset.doneSessions': 'Tutte le altre sessioni sono terminate',
@@ -973,6 +972,8 @@ const it: Translations = {
   'login.codeHint': 'Sei cifre dalla tua app di autenticazione, oppure uno dei tuoi codici di recupero.',
   'login.passkeyUnlock': 'Accedi con una passkey',
   'login.passkeyFailed': 'Quella passkey non è stata accettata',
+  'login.busy': 'Accesso in corso…',
+  'login.failed': 'Non ha funzionato. Riprova.',
   'pick.loading': 'Lettura delle cartelle…',
   'provider.smb': 'SMB / condivisione Windows',
   'provider.s3': 'Compatibile S3',
@@ -1358,6 +1359,7 @@ const it: Translations = {
   'new.change.jobsCompact': '{compact}, in cima all\'elenco dei lavori, mostra ogni lavoro su una riga, con il suo stato, l\'ultima esecuzione, {runNow} e {more}. Questo dispositivo ricorda la tua scelta.',
   'new.change.oled': '{oled}, sotto {design}, porta l\'aspetto scuro al nero puro per gli schermi OLED e AMOLED. Vale ogni volta che si vede l\'aspetto scuro, anche quando segue il sistema, e ogni dispositivo ricorda la propria scelta.',
   'new.change.systemAccent': 'Il campione con la bacchetta all\'inizio di {accent} prende il colore del tuo sistema: Material You da Android 12, il colore di accento di Windows, macOS o Linux nell\'app desktop e il colore di sistema in Firefox e Safari. Dove il sistema non ne ha uno, il campione non c\'è.',
+  'new.change.signInCard': 'La pagina di accesso ha un aspetto nuovo, con il logo e il nome di ArrowLoop in alto e ogni pulsante largo quanto la scheda. Il cursore è già nel campo della password, il pulsante di accesso aspetta che tu scriva qualcosa e con una password o un codice sbagliati fa una piccola scossa.',
 }
 
 export default it

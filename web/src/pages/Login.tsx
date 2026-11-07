@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Card } from '../lib/glimstone/Card'
 import { Button } from '../lib/glimstone/Button'
-import { Field, Secret, Text } from '../components/Field'
-import { IconSignIn } from '../components/glyphs'
-import { ApiError, api, passkeysAvailableInBrowser } from '../lib/api'
+import { SignInCard, type ResetAnswer, type SignInAnswer, type SignInText } from '../lib/glimstone/SignInCard'
+import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
+import { IconConfirm } from '../components/glyphs'
+import { ApiError, api, passkeysAvailableInBrowser, type ResetRemoved } from '../lib/api'
 import { useT } from '../lib/i18n'
-import { PasswordReset } from '../components/PasswordReset'
+import { followDevice, storedTheme } from '../lib/themeSetting'
 
 /**
  * The password box, drawn only when the server's open probe route says one is
@@ -20,17 +20,14 @@ import { PasswordReset } from '../components/PasswordReset'
 export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?: boolean }) {
   const { t } = useT()
   const [reset, setReset] = useState<{ minutes: number; minLength: number } | null>(null)
-  const [resetBusy, setResetBusy] = useState(false)
-  const [password, setPassword] = useState('')
-  const [code, setCode] = useState('')
-  const [needCode, setNeedCode] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [removed, setRemoved] = useState<ResetRemoved | null>(null)
+
+  // App repaints on a switch of the system's look, and it is not mounted yet.
+  useEffect(() => followDevice(storedTheme()), [])
 
   // A prompt that cannot succeed is worse than no button, so the passkey is
   // offered only where the browser, the address and a registered key allow it.
   const [passkeyOffer, setPasskeyOffer] = useState(false)
-  const [passkeyBusy, setPasskeyBusy] = useState(false)
   useEffect(() => {
     if (!passkeysAvailableInBrowser()) return
     let live = true
@@ -45,135 +42,123 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
     }
   }, [])
 
-  async function submit() {
-    setBusy(true)
-    setError(null)
+  const locked = (e: unknown) => e instanceof ApiError && e.status === 429
+
+  async function signIn({ password, code }: { password: string; code?: string }): Promise<SignInAnswer> {
     try {
-      const res = await api.login(password, needCode ? code : undefined)
-      if (res.needCode) {
-        setNeedCode(true)
-        setCode('')
-        return
-      }
-      // Dropped once spent, so it cannot end up in a crash report.
-      setPassword('')
-      setCode('')
+      const res = await api.login(password, code)
+      if (res.needCode) return { needCode: true }
       onIn()
+      return { ok: true }
     } catch (e) {
       // A 429 means wait rather than type it again.
-      if (e instanceof ApiError && e.status === 429) setError(t('login.locked'))
-      else setError(needCode ? t('twoFactor.codeInvalid') : t('login.wrong'))
-      if (needCode) setCode('')
-    } finally {
-      setBusy(false)
+      if (locked(e)) return { needCode: code !== undefined, error: t('login.locked') }
+      return code !== undefined ? { needCode: true } : { error: t('login.wrong') }
     }
   }
 
-  async function withPasskey() {
-    setPasskeyBusy(true)
-    setError(null)
+  async function withPasskey(): Promise<SignInAnswer> {
     try {
       await api.loginWithPasskey()
       onIn()
+      return { ok: true }
     } catch (e) {
-      if (e instanceof ApiError && e.status === 429) setError(t('login.locked'))
-      else if (e instanceof ApiError) setError(t('login.passkeyFailed'))
+      if (locked(e)) return { error: t('login.locked') }
+      if (e instanceof ApiError) return { error: t('login.passkeyFailed') }
       // A cancelled prompt lands here too, and its own words say more.
-      else setError(e instanceof Error && e.message ? e.message : t('login.passkeyFailed'))
-    } finally {
-      setPasskeyBusy(false)
+      return { error: e instanceof Error && e.message ? e.message : t('login.passkeyFailed') }
     }
   }
 
   // The form appears only once the code is in the log, so it never asks for
   // a code that does not exist.
-  async function forgot() {
-    setResetBusy(true)
-    setError(null)
+  async function askCode(): Promise<ResetAnswer> {
     try {
       const res = await api.resetBegin()
       setReset({ minutes: res.minutes, minLength: res.minPasswordLen })
+      return { ok: true }
     } catch (e) {
-      setError(e instanceof ApiError && e.status === 429 ? t('login.locked') : (e as Error).message)
-    } finally {
-      setResetBusy(false)
+      return { error: locked(e) ? t('login.locked') : (e as Error).message || undefined }
     }
   }
 
-  if (reset) {
-    return (
-      <div className="flex h-[calc(100dvh-var(--window-bar))] items-center justify-center bg-carbon-background p-6">
-        <div className="w-full max-w-sm">
-          <PasswordReset minutes={reset.minutes} minLength={reset.minLength} onDone={onIn} onBack={() => setReset(null)} />
-        </div>
-      </div>
-    )
+  async function setPassword({ code, password }: { code: string; password: string }): Promise<ResetAnswer> {
+    try {
+      const res = await api.resetFinish(code, password)
+      setRemoved(res.removed)
+      return { ok: true }
+    } catch (e) {
+      return locked(e) ? { error: t('login.locked') } : { rejected: true }
+    }
+  }
+
+  const minLength = reset?.minLength ?? 12
+  const text: SignInText = {
+    password: t('login.password'),
+    signIn: t('login.submit'),
+    signingIn: t('login.busy'),
+    passkey: t('login.passkeyUnlock'),
+    forgot: t('reset.link'),
+    code: t('login.code'),
+    codeHint: t('login.codeHint'),
+    codeInvalid: t('twoFactor.codeInvalid'),
+    back: t('preview.back'),
+    resetCode: t('reset.code'),
+    resetCodeTip: t('reset.codeTip', { minutes: reset?.minutes ?? 10 }),
+    newPassword: t('password.new'),
+    confirmPassword: t('password.repeat'),
+    setPassword: t('password.saveFirst'),
+    saving: t('reset.saving'),
+    mismatch: t('password.mismatch'),
+    tooShort: t('password.minLength', { count: minLength }),
+    resetRejected: t('reset.invalid'),
+    failed: t('login.failed'),
+    show: t('secret.show'),
+    hide: t('secret.hide'),
   }
 
   return (
-    <div className="flex h-[calc(100dvh-var(--window-bar))] items-center justify-center bg-carbon-background p-6">
-      <div className="w-full max-w-sm">
-        <Card title={t('login.title')} hueIndex={0}>
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault()
-              void submit()
-            }}
-          >
-            <Field label={t('login.password')}>
-              <Secret value={password} onChange={setPassword} autoComplete="current-password" />
-            </Field>
-            {needCode && (
-              <Field label={t('login.code')} hint={t('login.codeHint')}>
-                <Text value={code} onChange={setCode} placeholder="000000" code mono />
-              </Field>
-            )}
-            {/* Cleared at every attempt, so each refusal mounts it and shakes. */}
-            {error && (
-              <p className="glim-shake text-subline text-statusFail" role="alert">
-                {error}
-              </p>
-            )}
-            <Button
-              label={t('login.submit')}
-              labelKey="login.submit"
-              glyph={<IconSignIn />}
-              tone="accent"
-              type="submit"
-              className="w-full"
-              busy={busy}
-              disabled={busy || password === '' || (needCode && code.trim() === '')}
-            />
-            {/* Under the password, which always works. Hidden rather than
-                disabled where it cannot work: a disabled control on a login
-                screen reads as being locked out. */}
-            {passkeyOffer && !needCode && (
-              <Button
-                label={t('login.passkeyUnlock')}
-                labelKey="login.passkeyUnlock"
-                className="w-full"
-                busy={passkeyBusy}
-                disabled={busy || passkeyBusy}
-                onClick={() => void withPasskey()}
-              />
-            )}
-            {/* Only for a password set in the interface: one from the
-                environment is changed where the container is set up. */}
-            {canReset && (
-              <Button
-                label={t('reset.link')}
-                labelKey="reset.link"
-                tone="subtle"
-                className="w-full"
-                busy={resetBusy}
-                disabled={busy || resetBusy}
-                onClick={() => void forgot()}
-              />
-            )}
-          </form>
-        </Card>
+    <SignInCard
+      logo={<LogoMark size={64} style={{ color: LOGO_GOLD }} />}
+      appName="ArrowLoop"
+      text={text}
+      passkey={passkeyOffer}
+      reset={canReset}
+      minPassword={minLength}
+      idPrefix="login"
+      labelKeys={{
+        signIn: 'login.submit',
+        passkey: 'login.passkeyUnlock',
+        forgot: 'reset.link',
+        back: 'preview.back',
+        setPassword: 'password.saveFirst',
+      }}
+      className="min-h-[calc(100dvh-var(--window-bar))]"
+      onSignIn={signIn}
+      onPasskey={passkeyOffer ? withPasskey : undefined}
+      onAskCode={canReset ? askCode : undefined}
+      onSetPassword={canReset ? setPassword : undefined}
+      step={removed && <ResetDone removed={removed} onDone={onIn} />}
+    />
+  )
+}
+
+/** Without this page the next sign-in looks for a passkey that is gone. */
+function ResetDone({ removed, onDone }: { removed: ResetRemoved; onDone: () => void }) {
+  const { t } = useT()
+  return (
+    <div className="glim-signin-form" role="status">
+      <h2 className="text-body font-semibold text-carbon-text">{t('reset.doneTitle')}</h2>
+      <div className="flex flex-col gap-1.5 text-body text-carbon-text">
+        <p>{t('reset.doneIntro')}</p>
+        <ul className="flex list-disc flex-col gap-1 ps-5">
+          <li>{t('reset.doneSessions')}</li>
+          {removed.secondFactor && <li>{t('reset.doneFactor')}</li>}
+          {removed.passkeys > 0 && <li>{t('reset.donePasskeys', { count: removed.passkeys })}</li>}
+        </ul>
       </div>
+      {removed.passkeys > 0 && <p className="text-subline text-carbon-textSub">{t('reset.doneAddPasskeys')}</p>}
+      <Button label={t('reset.done')} labelKey="reset.done" glyph={<IconConfirm />} tone="accent" onClick={onDone} />
     </div>
   )
 }

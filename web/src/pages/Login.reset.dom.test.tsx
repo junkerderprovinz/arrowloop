@@ -51,14 +51,13 @@ describe('Login, a forgotten password', () => {
     expect(screen.queryByRole('button', { name: /forgot password/i })).toBeNull()
   })
 
-  it('puts a quiet full-width Forgot password? at the foot of the form', () => {
+  it('puts a quiet Forgot password? last in the form', () => {
     render(<Login onIn={vi.fn()} canReset />)
-    const buttons = [...document.querySelectorAll('form button:not([aria-pressed])')]
+    const buttons = [...document.querySelectorAll('form [data-signin]')]
     const forgot = screen.getByRole('button', { name: /forgot password/i })
     expect(buttons[buttons.length - 1]).toBe(forgot)
-    expect(forgot.className).toContain('w-full')
+    expect(forgot.getAttribute('data-signin')).toBe('forgot')
     expect(forgot.className).not.toContain('glim-btn--accent')
-    expect(screen.getByRole('button', { name: /log in/i }).className).toContain('w-full')
   })
 
   it('shows the form only once the code is in the log', async () => {
@@ -84,7 +83,7 @@ describe('Login, a forgotten password', () => {
     expect(box.placeholder).toBe('XXXX-XXXX-XXXX')
     expect(box.getAttribute('spellcheck')).toBe('false')
     expect(box.getAttribute('autocapitalize')).toBe('characters')
-    expect(box.className).toContain('uppercase')
+    expect(box.className).toContain('glim-signin-log-code')
     expect(screen.getByText('Code from the container log')).toBeTruthy()
   })
 
@@ -162,7 +161,7 @@ describe('Login, a forgotten password', () => {
 
   it('goes back to the sign-in form', async () => {
     await openReset()
-    await click(/back/i)
+    await click(/^back$/i)
     expect(codeBox()).toBeNull()
     expect(screen.getByRole('button', { name: /log in/i })).toBeTruthy()
   })

@@ -8,7 +8,6 @@ const et: Translations = {
   'nav.targets': 'Sihtkohad',
   'nav.history': 'Ajalugu',
   'error.unreachable': 'Mootorit ei õnnestu tabada',
-  'login.title': 'See liides on kaitstud',
   'login.password': 'Parool',
   'login.submit': 'Logi sisse',
   'login.wrong': 'See parool ei ole õige.',
@@ -265,10 +264,10 @@ const et: Translations = {
   'entry.leftAlone': 'Selles ei kopeeritud ega kustutatud kummalgi poolel midagi. Järgmine käivitus proovib uuesti.',
   'error.passwordNotSet': 'Määra kõigepealt parool jaotises Seaded, Turvalisus. Ilma selleta võiks igaüks, kes selle aadressini jõuab, salvestatud seadeid lugeda või jäädavalt kustutada.',
   'reset.link': 'Unustasid parooli?',
-  'reset.title': 'Parooli lähtestamine',
   'reset.code': 'Kood konteineri logist',
   'reset.codeTip': 'ArrowLoop kirjutas koodi oma konteineri logisse. Unraidis: Dockeri vaheleht, ArrowLoopi ikoon, Logs, mujal docker logs arrowloop. Kood kehtib {minutes} minutit. Igaüks, kes seda logi lugeda saab, saab parooli lähtestada, ka logivaaturi kaudu nagu Dozzle. Lähtestamine lülitab ka kaheastmelise autentimise välja, eemaldab kõik pääsuvõtmed ja lõpetab kõik muud seansid.',
   'reset.invalid': 'See kood ei ole õige või on aegunud. Kui see aegus, on logis nüüd uus.',
+  'reset.saving': 'Salvestamine…',
   'reset.doneTitle': 'Sinu uus parool on määratud',
   'reset.doneIntro': 'Lähtestamine eemaldas ka kõik muud sisenemisviisid:',
   'reset.doneSessions': 'Kõik muud seansid on lõpetatud',
@@ -973,6 +972,8 @@ const et: Translations = {
   'login.codeHint': 'Kuus numbrit sinu autentimisrakendusest või üks sinu taastekoodidest.',
   'login.passkeyUnlock': 'Logi sisse pääsuvõtmega',
   'login.passkeyFailed': 'Seda pääsuvõtit ei võetud vastu',
+  'login.busy': 'Sisselogimine…',
+  'login.failed': 'See ei õnnestunud. Palun proovi uuesti.',
   'pick.loading': 'Kaustade lugemine…',
   'provider.smb': 'SMB / Windowsi jagamine',
   'provider.s3': 'S3-ga ühilduv',
@@ -1358,6 +1359,7 @@ const et: Translations = {
   'new.change.jobsCompact': '{compact} tööde loendi ülaosas näitab iga tööd ühel real: olek, viimane käivitus, {runNow} ja {more}. See seade jätab sinu valiku meelde.',
   'new.change.oled': '{oled} jaotise {design} all muudab tumeda välimuse OLED- ja AMOLED-ekraanidel päris mustaks. See kehtib alati, kui tume välimus on nähtaval, ka siis, kui see järgib süsteemi, ja iga seade jätab oma valiku meelde.',
   'new.change.systemAccent': 'Võlukepiga värvinäidis rea {accent} alguses võtab süsteemi värvi: Material You alates Android 12-st, Windowsi, macOS-i või Linuxi rõhuvärvi töölauarakenduses ja süsteemi värvi Firefoxis ja Safaris. Kus süsteemil seda pole, näidist ei ole.',
+  'new.change.signInCard': 'Sisselogimise leht on uue ilmega, üleval on ArrowLoopi logo ja nimi ning iga nupp on sama lai kui kaart. Kursor on juba paroolilahtris, sisselogimise nupp ootab, kuni midagi sisestad, ja vale parooli või koodi korral väriseb see korraks.',
 }
 
 export default et

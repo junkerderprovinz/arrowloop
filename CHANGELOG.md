@@ -19,6 +19,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
+- **The sign-in page has a new look.** The ArrowLoop logo and name sit at the top of the card, the labels stand above their fields, and every button is as wide as the card, Forgot password? included. The cursor is already in the password field, Log in waits until you've typed something, and a wrong password, two-factor code or reset code gives its button one little shake. With motion off or reduced, only the message shows. The page follows your system's light or dark look before you sign in, along with the accent, shape and motion this browser remembers.
 - **ArrowLoop follows GlimStone 4.2.2.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too.
 
 ## 🐛 Fixed

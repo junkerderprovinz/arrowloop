@@ -8,7 +8,6 @@ const ms: Translations = {
   'nav.targets': 'Destinasi',
   'nav.history': 'Sejarah',
   'error.unreachable': 'Enjin tidak dapat dihubungi',
-  'login.title': 'Antara muka ini dilindungi',
   'login.password': 'Kata laluan',
   'login.submit': 'Log masuk',
   'login.wrong': 'Kata laluan itu salah.',
@@ -265,10 +264,10 @@ const ms: Translations = {
   'entry.leftAlone': 'Tiada apa-apa di dalamnya disalin atau dipadam di mana-mana sebelah. Larian seterusnya akan mencuba lagi.',
   'error.passwordNotSet': 'Tetapkan kata laluan dahulu di Tetapan, Keselamatan. Tanpanya, sesiapa yang sampai ke alamat ini boleh membaca tetapan yang disimpan atau memadam untuk selamanya.',
   'reset.link': 'Terlupa kata laluan?',
-  'reset.title': 'Set semula kata laluan',
   'reset.code': 'Kod daripada log kontener',
   'reset.codeTip': 'ArrowLoop telah menulis kod ke dalam log kontenernya. Di Unraid: tab Docker, ikon ArrowLoop, Logs; di tempat lain docker logs arrowloop. Kod sah selama {minutes} minit. Sesiapa yang boleh membaca log ini boleh menetapkan semula kata laluan, termasuk melalui pemapar log seperti Dozzle. Penetapan semula juga mematikan pengesahan dua faktor, membuang setiap kunci laluan dan menamatkan setiap sesi lain.',
   'reset.invalid': 'Kod itu salah atau sudah tamat tempoh. Jika sudah tamat tempoh, log kini menunjukkan kod baharu.',
+  'reset.saving': 'Menyimpan…',
   'reset.doneTitle': 'Kata laluan baharu anda sudah ditetapkan',
   'reset.doneIntro': 'Penetapan semula juga membuang setiap cara masuk yang lain:',
   'reset.doneSessions': 'Setiap sesi lain telah ditamatkan',
@@ -973,6 +972,8 @@ const ms: Translations = {
   'login.codeHint': 'Enam digit daripada aplikasi pengesah anda, atau salah satu kod pemulihan anda.',
   'login.passkeyUnlock': 'Log masuk dengan kunci laluan',
   'login.passkeyFailed': 'Kunci laluan itu tidak diterima',
+  'login.busy': 'Sedang log masuk…',
+  'login.failed': 'Tidak berjaya. Sila cuba lagi.',
   'pick.loading': 'Membaca folder…',
   'provider.smb': 'SMB / perkongsian Windows',
   'provider.s3': 'Serasi S3',
@@ -1358,6 +1359,7 @@ const ms: Translations = {
   'new.change.jobsCompact': '{compact} di atas senarai tugas memaparkan setiap tugas dalam satu baris: status, larian terakhir, {runNow} dan {more}. Peranti ini mengingati pilihan anda.',
   'new.change.oled': '{oled} di bawah {design} menjadikan rupa gelap hitam sebenar untuk skrin OLED dan AMOLED. Ia terpakai setiap kali rupa gelap kelihatan, juga apabila ia mengikut sistem, dan setiap peranti mengingati pilihannya sendiri.',
   'new.change.systemAccent': 'Sampel bertongkat sakti di awal {accent} mengikut warna sistem anda: Material You pada Android 12 dan lebih baharu, warna aksen Windows, macOS atau Linux dalam apl desktop, dan warna sistem dalam Firefox dan Safari. Jika sistem tiada warna, sampel itu tidak muncul.',
+  'new.change.signInCard': 'Halaman log masuk mempunyai rupa baharu, dengan logo dan nama ArrowLoop di atas dan setiap butang selebar kad. Kursor sudah berada dalam medan kata laluan, butang log masuk menunggu sehingga anda menaip sesuatu, dan jika kata laluan atau kod salah butang itu bergegar sedikit.',
 }
 
 export default ms

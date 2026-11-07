@@ -8,7 +8,6 @@ const lv: Translations = {
   'nav.targets': 'Galamērķi',
   'nav.history': 'Vēsture',
   'error.unreachable': 'Dzinēju nevar sasniegt',
-  'login.title': 'Šī saskarne ir aizsargāta',
   'login.password': 'Parole',
   'login.submit': 'Pieteikties',
   'login.wrong': 'Parole nav pareiza.',
@@ -265,10 +264,10 @@ const lv: Translations = {
   'entry.leftAlone': 'Nevienā pusē tajā nekas netika kopēts vai dzēsts. Nākamā palaišana mēģinās vēlreiz.',
   'error.passwordNotSet': 'Vispirms iestati paroli sadaļā Iestatījumi, Drošība. Bez tās jebkurš, kas sasniedz šo adresi, varētu lasīt saglabātos iestatījumus vai dzēst uz visiem laikiem.',
   'reset.link': 'Aizmirsi paroli?',
-  'reset.title': 'Atiestatīt paroli',
   'reset.code': 'Kods no konteinera žurnāla',
   'reset.codeTip': 'ArrowLoop ir ierakstījis kodu sava konteinera žurnālā. Unraid: cilne Docker, ArrowLoop ikona, Logs; citur docker logs arrowloop. Kods ir derīgs {minutes} minūtes. Ikviens, kas var lasīt šo žurnālu, var atiestatīt paroli, arī ar žurnālu skatītāju, piemēram, Dozzle. Atiestatīšana izslēdz divfaktoru autentifikāciju, noņem visas piekļuves atslēgas un beidz visas citas sesijas.',
   'reset.invalid': 'Šis kods nav pareizs vai ir beidzies. Ja tas ir beidzies, žurnālā tagad ir redzams jauns.',
+  'reset.saving': 'Saglabā…',
   'reset.doneTitle': 'Jaunā parole ir iestatīta',
   'reset.doneIntro': 'Atiestatīšana noņēma arī visus citus ieejas veidus:',
   'reset.doneSessions': 'Visas citas sesijas ir beigušās',
@@ -973,6 +972,8 @@ const lv: Translations = {
   'login.codeHint': 'Seši cipari no tavas autentifikācijas lietotnes vai viens no taviem atkopšanas kodiem.',
   'login.passkeyUnlock': 'Pieteikties ar piekļuves atslēgu',
   'login.passkeyFailed': 'Šī piekļuves atslēga netika pieņemta',
+  'login.busy': 'Notiek pieteikšanās…',
+  'login.failed': 'Neizdevās. Lūdzu, mēģiniet vēlreiz.',
   'pick.loading': 'Tiek lasītas mapes…',
   'provider.smb': 'SMB / Windows koplietojums',
   'provider.s3': 'Saderīgs ar S3',
@@ -1358,6 +1359,7 @@ const lv: Translations = {
   'new.change.jobsCompact': '{compact} uzdevumu saraksta augšā rāda katru uzdevumu vienā rindā: stāvokli, pēdējo palaišanu, {runNow} un {more}. Šī ierīce atceras jūsu izvēli.',
   'new.change.oled': '{oled} zem {design} pārslēdz tumšo izskatu uz īstu melnu OLED un AMOLED ekrāniem. Tas darbojas vienmēr, kad redzams tumšais izskats, arī tad, ja tas seko sistēmai, un katra ierīce atceras savu izvēli.',
   'new.change.systemAccent': 'Paraugs ar burvju nūjiņu {accent} sākumā izmanto jūsu sistēmas krāsu: Material You no Android 12, Windows, macOS vai Linux akcenta krāsu darbvirsmas lietotnē un sistēmas krāsu Firefox un Safari. Kur sistēmai tādas nav, parauga nav.',
+  'new.change.signInCard': 'Pieteikšanās lapai ir jauns izskats, augšā ir ArrowLoop logotips un nosaukums, un katra poga ir tikpat plata kā kartīte. Kursors jau ir paroles laukā, pieteikšanās poga gaida, līdz kaut ko ierakstāt, un pie nepareizas paroles vai koda tā nedaudz sakustas.',
 }
 
 export default lv

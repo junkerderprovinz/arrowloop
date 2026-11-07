@@ -8,7 +8,6 @@ const nl: Translations = {
   'nav.targets': 'Doelen',
   'nav.history': 'Geschiedenis',
   'error.unreachable': 'De motor is niet bereikbaar',
-  'login.title': 'Deze interface is beveiligd',
   'login.password': 'Wachtwoord',
   'login.submit': 'Inloggen',
   'login.wrong': 'Dat wachtwoord klopt niet.',
@@ -265,10 +264,10 @@ const nl: Translations = {
   'entry.leftAlone': 'Er is aan geen van beide kanten iets in gekopieerd of verwijderd. De volgende run probeert het opnieuw.',
   'error.passwordNotSet': 'Stel eerst een wachtwoord in onder Instellingen, Beveiliging. Zonder kan iedereen die dit adres bereikt de opgeslagen instellingen lezen of voorgoed verwijderen.',
   'reset.link': 'Wachtwoord vergeten?',
-  'reset.title': 'Wachtwoord opnieuw instellen',
   'reset.code': 'Code uit het containerlog',
   'reset.codeTip': 'ArrowLoop heeft een code in het containerlog geschreven. Op Unraid: tabblad Docker, ArrowLoop-pictogram, Logs; elders docker logs arrowloop. Een code is {minutes} minuten geldig. Iedereen die dit log kan lezen, kan het wachtwoord opnieuw instellen, ook via een logviewer zoals Dozzle. Bij het opnieuw instellen gaat tweefactorauthenticatie uit, worden alle passkeys verwijderd en eindigen alle andere sessies.',
   'reset.invalid': 'Die code klopt niet of is verlopen. Is hij verlopen, dan staat er nu een nieuwe in het log.',
+  'reset.saving': 'Opslaan…',
   'reset.doneTitle': 'Je nieuwe wachtwoord is ingesteld',
   'reset.doneIntro': 'Bij het opnieuw instellen zijn ook alle andere manieren om in te loggen verwijderd:',
   'reset.doneSessions': 'Alle andere sessies zijn beëindigd',
@@ -973,6 +972,8 @@ const nl: Translations = {
   'login.codeHint': 'Zes cijfers uit je authenticator-app, of een van je herstelcodes.',
   'login.passkeyUnlock': 'Aanmelden met een passkey',
   'login.passkeyFailed': 'Die passkey is niet geaccepteerd',
+  'login.busy': 'Bezig met inloggen…',
+  'login.failed': 'Dat is niet gelukt. Probeer het opnieuw.',
   'pick.loading': 'Mappen worden gelezen…',
   'provider.smb': 'SMB / Windows-share',
   'provider.s3': 'S3-compatibel',
@@ -1358,6 +1359,7 @@ const nl: Translations = {
   'new.change.jobsCompact': '{compact} boven de takenlijst toont elke taak op één regel: status, laatste run, {runNow} en {more}. Dit apparaat onthoudt je keuze.',
   'new.change.oled': '{oled} onder {design} zet het donkere uiterlijk op echt zwart voor OLED- en AMOLED-schermen. Het geldt zodra het donkere uiterlijk te zien is, ook als dat het systeem volgt, en elk apparaat onthoudt zijn eigen keuze.',
   'new.change.systemAccent': 'Het staal met de toverstaf vooraan bij {accent} neemt de kleur van je systeem over: Material You vanaf Android 12, de accentkleur van Windows, macOS of Linux in de desktop-app en de systeemkleur in Firefox en Safari. Waar het systeem er geen heeft, is het staal er niet.',
+  'new.change.signInCard': 'De inlogpagina heeft een nieuw uiterlijk, met het logo en de naam van ArrowLoop bovenaan en elke knop even breed als de kaart. De cursor staat al in het wachtwoordveld, de inlogknop wacht tot je iets typt, en bij een verkeerd wachtwoord of een verkeerde code schudt hij even.',
 }
 
 export default nl

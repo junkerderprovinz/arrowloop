@@ -93,6 +93,8 @@ export const RELEASES: Release[] = [
         text: 'new.change.systemAccent',
         names: { accent: 'look.accent' },
       },
+      // The sign-in page comes before the window that lists what is new.
+      { id: 'sign-in-card', text: 'new.change.signInCard' },
     ],
   },
   {
