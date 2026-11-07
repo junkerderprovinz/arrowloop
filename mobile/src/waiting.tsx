@@ -39,12 +39,8 @@ const Ctx = createContext<Waiting>({
   refresh: () => {},
 });
 
-// The conflicts and the trash are read from every side, so a target that hangs
-// keeps each question out for as long as the engine waits, and every question
-// out holds one of the connections that the screens' own requests then queue
-// behind. One of each at a time, then, shared by every mount of the provider,
-// which mounts again whenever the app waits for the engine. The last counts
-// stay meanwhile.
+// Both listings reach every side and can wait on a hanging target, so only one
+// of each is out at a time, across every mount of the provider.
 let showConflicts: (got: Awaited<ReturnType<typeof api.conflicts>>) => void = () => {};
 let showTrash: (got: Awaited<ReturnType<typeof api.trashAll>>) => void = () => {};
 const askConflicts = coalesce(() => api.conflicts().then((got) => showConflicts(got)), 0);

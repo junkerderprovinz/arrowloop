@@ -32,10 +32,8 @@ type Unread struct {
 	Err error
 }
 
-// conflictWait bounds how long reading one job's conflicts may take. Opening
-// a side on a server that accepts the connection and never answers would
-// otherwise hold the list for as long as rclone's own timeouts, which run to
-// minutes.
+// conflictWait bounds reading one job's conflicts, since rclone waits minutes
+// on a server that accepts the connection and never answers.
 var conflictWait = time.Minute
 
 // Conflicts lists the open conflicts of every job that writes both ways, or of
