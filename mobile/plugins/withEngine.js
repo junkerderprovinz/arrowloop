@@ -148,6 +148,24 @@ function withPackageRegistered(config) {
   });
 }
 
+/** Gives the app the HTTP client from EngineHttp, before anything builds one. */
+function withEngineHttp(config) {
+  return withMainApplication(config, (cfg) => {
+    const marker = "setOkHttpClientFactory(EngineHttp)";
+    if (cfg.modResults.contents.includes(marker)) return cfg;
+    cfg.modResults.contents = cfg.modResults.contents.replace(
+      /(override fun onCreate\(\)\s*\{\s*super\.onCreate\(\))/,
+      `$1\n    com.facebook.react.modules.network.OkHttpClientProvider.${marker}`,
+    );
+    if (!cfg.modResults.contents.includes(marker)) {
+      throw new Error(
+        "withEngine: could not find onCreate in MainApplication; the Expo template changed shape, and without the client the app runs five requests to the engine at a time",
+      );
+    }
+    return cfg;
+  });
+}
+
 /**
  * Adds the services, the boot receiver and Shizuku's provider, and allows
  * cleartext to loopback only.
@@ -541,6 +559,7 @@ module.exports = function withEngine(config) {
   config = withKeptAppDir(config);
   config = withNativeSources(config);
   config = withPackageRegistered(config);
+  config = withEngineHttp(config);
   config = withEngineManifest(config);
   config = withNetworkConfig(config);
   config = withEngineGradle(config);
