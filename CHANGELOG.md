@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **A preview or run against an FTP server on a phone no longer fails with "Maximum login limit has been reached".** ArrowLoop opens at most 4 connections to an FTP target unless its concurrency setting says otherwise, keeps a job's transfers below that, logs out after a test, a preview or a run, and says in plain words when a server is out of logins.
+
 ## 2.4.6 - 2026-11-06
 
 Desktop and phone builds move to Go 1.27.3, and the engine picks up a fix in its compression library.
