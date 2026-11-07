@@ -423,6 +423,10 @@ same value unless its `-keep-history` flag gives another.
 | `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tiles). |
 | `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
 | `keepJobOrder` | `false` | List the jobs in the order they stand in `jobs` rather than by name. The interface sets it the first time a job is moved, and a new job goes to the end. |
+| `autoBackup.off` | `false` | Switch the automatic backups off; see [Automatic backups](#automatic-backups). |
+| `autoBackup.everyDays` | `1` | How many days pass between two automatic backups, up to 365. |
+| `autoBackup.keep` | `7` | How many automatic backups stay in the folder, up to 1000. |
+| `autoBackup.folder` | `backups` beside the file | Where the automatic backups go. A relative path is relative to the file. |
 
 !!! note "The bandwidth limit is not per job"
     rclone's token bucket is process-wide, so a per-job limit would be a promise
@@ -569,6 +573,33 @@ program would refuse leaves the old setup in place. Like every save from the
 interface, it keeps the `before` and `after` commands the file on disk has for a
 job of the same name and gives every other job none. The password, the second
 factor and the passkeys live in `security.json` and are not part of the backup.
+
+### Automatic backups
+
+**Automatic backups**, the card below, keeps copies of `arrowloop.json` without
+anybody having to think of it. It is on from the start: once a day the engine
+looks at the file and, if it changed since the newest copy, writes a new one
+into the `backups` folder beside it, named after the moment it was made, such as
+`arrowloop-auto-20261107-031500.json`. A file that has not changed is not copied
+again, so the copies reach back as far as the edits do. Right before an import
+replaces everything, the engine keeps the setup it replaces the same way,
+whatever the day's copy did.
+
+**Days between backups**, **Backups to keep** and **Backup folder** set how
+often, how many and where. Once there are more copies than you keep, the oldest
+goes. Only files named like the engine's own copies are ever removed, so an
+export you save in the same folder stays. A folder the engine cannot write to is
+refused when you enter it, and a backup that fails later is shown on the card
+and tried again an hour after.
+
+Each copy is the file byte for byte, the same thing **Back up all jobs and all
+settings** downloads, so it carries the notification secrets as the export does
+and is written readable by the account running ArrowLoop alone. The password and
+the targets' own settings in `rclone.conf` are not part of it. **Latest backup**
+shows when the newest one was made, and **Restore** puts it back through the
+same import, after asking. The phone app has the same card under **Settings**.
+On the phone the copies stay inside the app unless you choose a folder in
+Download or Documents, which needs access to all files.
 
 ## Services that sign in through a browser
 

@@ -47,7 +47,7 @@ change not sent as JSON, which is what a page elsewhere could send without the
 browser asking first.
 
 Without a password, the interface also refuses to download or restore the
-settings backup, to delete from the trash for good, to forget a job's state and
+settings backup or hand out an automatic one, to delete from the trash for good, to forget a job's state and
 to delete a target, since anybody who reaches the port could otherwise do it.
 The settings never hand out the Matrix token or the webhook address, with or
 without a password. The phone app and the desktop window, which nobody else
