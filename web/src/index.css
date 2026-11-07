@@ -315,6 +315,14 @@ body {
   white-space: nowrap;
 }
 
+/* A menu the pointer opened keeps its first row unlit until a key is pressed
+   in it (GlimStone's rule 42). focusFirstMenuRow sets data-pointer. */
+[role='menu'][data-pointer] > [role='menuitem']:focus-visible:not(:hover) {
+  outline: none;
+  background-color: transparent;
+  color: var(--carbon-text-sub);
+}
+
 /* A list row (GlimStone, "Lists"): one height, the whole row opens its
    object, and a picked row is filled, never edged. */
 .glim-row[data-picked] {
