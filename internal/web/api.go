@@ -146,6 +146,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("PUT /api/config/raw", s.replaceConfig)
 	mux.HandleFunc("GET /api/config/backups", s.listBackups)
 	mux.HandleFunc("GET /api/config/backups/{name}", s.readBackup)
+	mux.HandleFunc("POST /api/import/check", s.checkImport)
+	mux.HandleFunc("POST /api/import", s.applyImport)
 	mux.HandleFunc("DELETE /api/jobs/{name}/state", s.forgetJobState)
 
 	mux.HandleFunc("GET /api/volumes", s.listVolumes)
