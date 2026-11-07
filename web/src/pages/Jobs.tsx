@@ -10,7 +10,6 @@ import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEd
 import { PageAction, PageActions } from '../components/PageActions'
 import { JobStatusLine } from '../components/JobStatusLine'
 import { RunStrip } from '../components/RunStrip'
-import { Selector } from '../components/Selector'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { useJobConfig } from './Editor'
@@ -26,16 +25,12 @@ import { useT } from '../lib/i18n'
 import { jobCardPlace, type JobPageCard } from '../lib/jobCards'
 import { jobStatus } from '../lib/jobList'
 import { byJobOrder, stepJob } from '../lib/jobOrder'
+import { useJobView } from '../lib/jobView'
 import { useOpenJob } from '../lib/openJob'
 import { usePlaces } from '../lib/places'
-import { useRemembered } from '../lib/remember'
 import { navigate } from '../lib/router'
 import { useStartStop } from '../lib/startStop'
 import { useToast } from '../lib/toast'
-
-type JobView = 'cards' | 'compact'
-
-const isJobView = (v: unknown): v is JobView => v === 'cards' || v === 'compact'
 
 /**
  * The jobs page: every job as a card of its own that opens its page, with its
@@ -70,7 +65,7 @@ export function Jobs({
   const [editing, setEditing] = useState<{ at: number; added: boolean } | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
   const conflicted = useMemo(() => new Set(conflicts.map((c) => c.job)), [conflicts])
-  const [view, setView] = useRemembered<JobView>('arrowloop.jobs.view', 'cards', isJobView)
+  const [view] = useJobView()
 
   // A moved job keeps its new place while the engine writes the order, and
   // until the job list it then sends has it there too.
@@ -177,19 +172,7 @@ export function Jobs({
           <Empty>{t('jobs.none')}</Empty>
         </Card>
       ) : (
-        <div className="flex flex-col gap-5">
-          <div data-new="jobs-view" className="w-full sm:max-w-xs">
-            <Selector<JobView>
-              scale="small"
-              label={t('history.filterShow')}
-              value={view}
-              onChange={setView}
-              options={[
-                { value: 'cards', label: t('jobs.view.cards') },
-                { value: 'compact', label: t('jobs.view.compact') },
-              ]}
-            />
-          </div>
+        <>
           {/* The list is the cards' offsetParent, which a drag measures in. */}
           <ul ref={list} className={`relative flex flex-col ${view === 'compact' ? 'gap-2' : 'gap-10'}`}>
             {drawn.map((j, i) => {
@@ -224,7 +207,7 @@ export function Jobs({
           <span className="sr-only" aria-live="polite">
             {moved}
           </span>
-        </div>
+        </>
       )}
 
       {editing && config.jobs?.[editing.at] && (

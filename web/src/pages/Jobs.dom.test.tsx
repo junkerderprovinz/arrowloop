@@ -167,9 +167,11 @@ describe('moving a job', () => {
 })
 
 describe('the compact view', () => {
+  // Chosen under Settings, Look, which keeps it in this browser.
   const compact = async () => {
+    localStorage.setItem('arrowloop.jobs.view', JSON.stringify('compact'))
     page()
-    fireEvent.click(await screen.findByRole('tab', { name: 'Compact' }))
+    await screen.findAllByTestId('job-row')
   }
 
   it('shows one row per job with its status, Run now and More, and no card', async () => {
@@ -200,12 +202,11 @@ describe('the compact view', () => {
     expect(shownOrder()).toEqual(['music', 'photos'])
   })
 
-  it('is remembered by this browser', async () => {
-    await compact()
-    cleanup()
+  it('leaves the switch to Settings, Look', async () => {
     page()
-    expect(await screen.findByRole('tab', { name: 'Compact', selected: true })).toBeTruthy()
-    expect(document.querySelectorAll('[data-testid="job-row"] .glim-notch-card')).toHaveLength(0)
+    await screen.findAllByTestId('job-row')
+    expect(screen.queryByRole('tab', { name: 'Compact' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Cards' })).toBeNull()
   })
 })
 
@@ -458,16 +459,15 @@ describe('the More menu beside Add a job', () => {
 })
 
 describe('the first job card', () => {
-  it('stands under the view switch, whose gap is the room its badge needs, and adds no margin of its own', () => {
+  it('gets the room its badge needs above it', () => {
     const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'index.css'), 'utf8')
     const rule = css.match(/([^{}]*\.glim-notch-card[^{}]*)\{\s*margin-top: 11px;/)
     expect(rule).toBeTruthy()
     const selectors = rule![1].replace(/\/\*[\s\S]*?\*\//g, '').split(',').map((s) => s.trim())
     page()
-    const cards = [...document.querySelectorAll('li > .glim-notch-card')] as HTMLElement[]
-    const viewSwitch = document.querySelector('[data-new="jobs-view"]')!
-    expect(viewSwitch.compareDocumentPosition(cards[0]!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    expect(cards.filter((card) => selectors.some((s) => card.matches(s)))).toEqual([])
+    const [first, second] = [...document.querySelectorAll('li > .glim-notch-card')] as HTMLElement[]
+    expect(selectors.some((s) => first!.matches(s))).toBe(true)
+    expect(selectors.some((s) => second!.matches(s))).toBe(false)
   })
 })
 

@@ -113,3 +113,33 @@ describe('the OLED switch', () => {
     expect(oled.getAttribute('aria-checked')).toBe('true')
   })
 })
+
+describe('the job list choice', () => {
+  it('stands on the Look card between Motion and Tile order', () => {
+    render(<LookPage {...props()} />)
+    const labels = [...document.querySelectorAll('[data-glim-label]')].map((el) => el.getAttribute('data-glim-label'))
+    expect(labels.indexOf('Job list')).toBe(labels.indexOf('Motion') + 1)
+    expect(labels.indexOf('Tile order')).toBe(labels.indexOf('Job list') + 1)
+  })
+
+  it('shows cards until something else is chosen', () => {
+    render(<LookPage {...props()} />)
+    expect(screen.getByRole('tab', { name: 'Cards' }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('switches the job list to Compact and keeps that in this browser, where the Jobs page reads it', () => {
+    render(<LookPage {...props()} />)
+    fireEvent.click(screen.getByRole('tab', { name: 'Compact' }))
+    expect(screen.getByRole('tab', { name: 'Compact' }).getAttribute('aria-selected')).toBe('true')
+    expect(localStorage.getItem('arrowloop.jobs.view')).toBe('"compact"')
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Cards' }))
+    expect(localStorage.getItem('arrowloop.jobs.view')).toBe('"cards"')
+  })
+
+  it('starts from a choice this browser made before', () => {
+    localStorage.setItem('arrowloop.jobs.view', '"compact"')
+    render(<LookPage {...props()} />)
+    expect(screen.getByRole('tab', { name: 'Compact' }).getAttribute('aria-selected')).toBe('true')
+  })
+})

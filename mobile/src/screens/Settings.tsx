@@ -24,6 +24,7 @@ import {
   useAppearance,
   type BarLabelMode,
   type EngineSettings,
+  type JobView,
   type LabelMode,
   type Shape,
   type ThemeChoice,
@@ -536,7 +537,7 @@ export function Settings() {
 
       {/* The selectors on this page count through the palette in the order
           they stand: the Android/data way, Design, Corners, the two label
-          rows, then Motion. */}
+          rows, the job list, then Motion. */}
       <Section title={t("phone.appearance")} hue={1}>
         <AxisLabel>{t("phone.design")}</AxisLabel>
         <Choice<ThemeChoice>
@@ -605,6 +606,17 @@ export function Settings() {
             { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
             { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
             { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
+          ]}
+        />
+
+        <AxisLabel hint={t("look.jobViewHint")}>{t("look.jobView")}</AxisLabel>
+        <Choice<JobView>
+          hue={5}
+          value={look.jobView}
+          onChange={(jobView) => setAppearance({ jobView })}
+          options={[
+            { value: "cards", label: t("jobs.view.cards") },
+            { value: "compact", label: t("jobs.view.compact") },
           ]}
         />
 
@@ -751,7 +763,7 @@ export function Settings() {
         hue={5}
       >
         <Choice<MotionIntensity>
-          hue={5}
+          hue={6}
           value={look.motion}
           onChange={(motion) => {
             // Animated at the new level, as a preview of it.

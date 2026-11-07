@@ -31,6 +31,7 @@ import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
+import { useJobView, type JobView } from '../../lib/jobView'
 import { MOTION_INTENSITIES, type MotionIntensity } from '../../lib/motion'
 import { applyOled, darkShowing, oledRefusal, storedOled, watchDarkShowing } from '../../lib/theme'
 import type { ThemeChoice } from '../../lib/themeSetting'
@@ -158,6 +159,7 @@ export function LookPage({
   const storm = useStormUnlock(motion, onMotion)
   const leaf = useLeafUnlock(shape, onShape)
   const discoUnlock = useDiscoUnlock(disco, onDisco)
+  const [jobView, setJobView] = useJobView()
   const selectorHue = counter()
   const tileOrder = useTileOrder()
   const system = useSyncExternalStore(subscribeSystemAccent, systemAccent)
@@ -241,6 +243,24 @@ export function LookPage({
             ]}
           />
         </SettingsRow>
+
+        <div data-new="jobs-view">
+          <SettingsRow label={t('look.jobView')} hint={t('look.jobViewHint')}>
+            <Selector<JobView>
+              scale="small"
+              low
+              hug
+              label={t('look.jobView')}
+              hue={selectorHue()}
+              value={jobView}
+              onChange={setJobView}
+              options={[
+                { value: 'cards', label: t('jobs.view.cards') },
+                { value: 'compact', label: t('jobs.view.compact') },
+              ]}
+            />
+          </SettingsRow>
+        </div>
 
         <SettingsRow label={t('look.tileOrder')} hint={t('look.tileOrderHint')}>
           <span data-new="tile-order" className="flex">

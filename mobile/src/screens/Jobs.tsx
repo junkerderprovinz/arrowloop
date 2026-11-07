@@ -26,7 +26,7 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { MoveScope, MovingCell, useHoldToMove } from "../reorder";
-import { setAppearance, useAppearance, type JobView } from "../settings";
+import { useAppearance } from "../settings";
 import { sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
 import { space, text, TOUCH } from "../theme";
@@ -40,7 +40,6 @@ import {
   Caption,
   Card,
   CardHead,
-  Choice,
   Empty,
   FAB_ROOM,
   Fab,
@@ -324,19 +323,6 @@ export function Jobs() {
             CellRendererComponent={MovingCell}
             scrollEnabled={drag.held === null}
             contentContainerStyle={[styles.list, compact && styles.compactList]}
-            ListHeaderComponent={
-              jobs.length > 0 ? (
-                <Choice<JobView>
-                  hue={0}
-                  value={jobView}
-                  onChange={(next) => setAppearance({ jobView: next })}
-                  options={[
-                    { value: "cards", label: t("jobs.view.cards") },
-                    { value: "compact", label: t("jobs.view.compact") },
-                  ]}
-                />
-              ) : null
-            }
             refreshControl={
               <RefreshControl
                 refreshing={false}

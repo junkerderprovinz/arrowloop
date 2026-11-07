@@ -74,10 +74,17 @@ export const RELEASES: Release[] = [
       },
       {
         id: 'jobs-view',
-        at: ['/jobs'],
-        where: JOBS,
+        at: ['/settings/look'],
+        where: ['nav.settings', 'settings.look'],
         text: 'new.change.jobsCompact',
-        names: { compact: 'jobs.view.compact', runNow: 'jobs.runNow', more: 'list.more' },
+        names: {
+          compact: 'jobs.view.compact',
+          jobView: 'look.jobView',
+          settings: 'nav.settings',
+          look: 'settings.look',
+          runNow: 'jobs.runNow',
+          more: 'list.more',
+        },
       },
       {
         id: 'oled',

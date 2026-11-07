@@ -48,8 +48,8 @@ focus. The first move keeps that order in the configuration file, a new job
 goes to the end, and History, Trash and Conflicts offer the jobs in the same
 order in their Job filter.
 
-**Cards** and **Compact** at the top of the list switch the view, and each
-browser keeps its choice. Compact shows a job on one row: its colour, its
+**Cards** and **Compact** under **Job list** on the **Look** tile switch the
+view, and each browser keeps its choice. Compact shows a job on one row: its colour, its
 name, its status, its last run, **More** and **Run now**, with **Pause** moved
 into More. A click on the row opens the job, and the handle moves it as on the
 cards. On the left the card shows the tile of the job's
@@ -430,7 +430,8 @@ row on **Look** brings back the original one.
   once and the run log file), and in the desktop app this computer: the
   window, starting with the system and automatic updates.
 - **Look**: language, design (Dark, Light or System) with the **OLED** switch,
-  corners, motion, the tile order, labels and colours.
+  corners, motion, the job list (Cards or Compact), the tile order, labels and
+  colours.
 - **Sync**: the global sync settings every job starts from, transfer,
   contents, **Exceptions**, retries and the shared exclude lists.
   **Exceptions** lists only the jobs with a value of their own, each with those
@@ -521,8 +522,8 @@ card shows the same single status as on the web, and its **More** menu holds
 Open, Edit, Duplicate, Preview, Check this job, the trash of either side and
 Delete. A long press lifts a job and the finger carries it to its new place,
 in the order the web shows as well. TalkBack offers Move up and Move down
-instead. **Cards** and **Compact** above the jobs switch the view, and the
-phone keeps its choice. **Empty the trash** is the
+instead. **Cards** and **Compact** under Job list in Settings, Appearance
+switch the view, and the phone keeps its choice. **Empty the trash** is the
 floating button on the Trash screen. The Conflicts screen shows every conflict
 as on the web, and from two conflicts up answers all of them at once from the
 card at its foot, after asking. The Anomalies screen shows every finding as a
