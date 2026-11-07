@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from 'react'
 
-import { CENTRE, FLIGHT, PIECES, RELEASE, TIP, frame, turnHalf, type Frame, type Point, type Pose } from '../lib/logoFlight'
+import { CENTRE, FLIGHT, PIECES, RELEASE, TIP, frame, tangents, turnHalf, type Frame, type Point, type Pose } from '../lib/logoFlight'
 
 /**
  * The logo's easter egg, painted frame by frame from logoFlight.ts. Drawn
@@ -120,21 +120,33 @@ function arrow(parent: Element): Arrow {
   return { shaft, shine, tail, head, streaks }
 }
 
-const xy = ([x, y]: Point) => `${x.toFixed(1)},${y.toFixed(1)}`
-const deg = (r: number) => ((r * 180) / Math.PI).toFixed(2)
+const xy = ([x, y]: Point) => `${x.toFixed(2)},${y.toFixed(2)}`
+const deg = (r: number) => ((r * 180) / Math.PI).toFixed(3)
+
+/** One curve through the points, leaving each along its tangent, so the rod's joints never show. */
+function curve(points: Point[], along: number[]) {
+  let d = 'M' + xy(points[0])
+  for (let k = 1; k < points.length; k++) {
+    const [a, b] = [points[k - 1], points[k]]
+    const reach = Math.hypot(b[0] - a[0], b[1] - a[1]) / 3
+    const out: Point = [a[0] + Math.cos(along[k - 1]) * reach, a[1] + Math.sin(along[k - 1]) * reach]
+    const into: Point = [b[0] - Math.cos(along[k]) * reach, b[1] - Math.sin(along[k]) * reach]
+    d += `C${xy(out)} ${xy(into)} ${xy(b)}`
+  }
+  return d
+}
 
 function draw(a: Arrow, pose: Pose) {
-  const { points, headings } = pose
-  a.shaft.setAttribute('d', 'M' + points.map(xy).join(' L'))
+  const { points } = pose
+  const along = tangents(pose.headings)
+  a.shaft.setAttribute('d', curve(points, along))
   // The highlight runs along one side of the shaft, whichever way it turns.
-  const shine = points.slice(0, PIECES - 3).map(([x, y], k): Point => {
-    const h = headings[Math.min(k, PIECES - 1)]
-    return [x - Math.sin(h) * 4.2, y + Math.cos(h) * 4.2]
-  })
-  a.shine.setAttribute('d', 'M' + shine.map(xy).join(' L'))
-  a.tail.setAttribute('transform', `translate(${xy(points[0])}) rotate(${deg(headings[0])})`)
+  const end = PIECES - 3
+  const shine = points.slice(0, end).map(([x, y], k): Point => [x - Math.sin(along[k]) * 4.2, y + Math.cos(along[k]) * 4.2])
+  a.shine.setAttribute('d', curve(shine, along.slice(0, end)))
+  a.tail.setAttribute('transform', `translate(${xy(points[0])}) rotate(${deg(along[0])})`)
   a.tail.style.opacity = String(pose.fletch)
-  a.head.setAttribute('transform', `translate(${xy(points[PIECES])}) rotate(${deg(headings[PIECES - 1])})`)
+  a.head.setAttribute('transform', `translate(${xy(points[PIECES])}) rotate(${deg(along[PIECES])})`)
 }
 
 function painter(g: SVGGElement, id: string) {
@@ -149,7 +161,7 @@ function painter(g: SVGGElement, id: string) {
   el(spin, 'use', { href: `#${id}` })
   const fly = el(g, 'g')
   const flyers = [arrow(fly), arrow(fly)]
-  const turnAbout = (d: number) => `rotate(${d.toFixed(2)} ${CENTRE} ${CENTRE})`
+  const turnAbout = (d: number) => `rotate(${d.toFixed(3)} ${CENTRE} ${CENTRE})`
 
   return (f: Frame) => {
     draw(ringArrows[0], f.ring)
@@ -172,7 +184,7 @@ function painter(g: SVGGElement, id: string) {
       })
     }
     f.waves.forEach((w, i) => {
-      waves[i].setAttribute('r', w.r.toFixed(1))
+      waves[i].setAttribute('r', w.r.toFixed(2))
       waves[i].setAttribute('stroke-width', w.width.toFixed(2))
       waves[i].setAttribute('opacity', w.opacity.toFixed(3))
     })
