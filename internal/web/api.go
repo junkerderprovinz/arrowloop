@@ -49,6 +49,11 @@ type Server struct {
 	// it, for the small window at the tray icon.
 	OpenWindow func()
 
+	// SystemAccent reads the desktop's accent colour as "#RRGGBB", or "" where
+	// the system names none. Only the desktop shell sets it, and the window's
+	// page asks again whenever the window comes to the front.
+	SystemAccent func() string
+
 	// Hold carries a reason, reported by the device the engine runs on, to stop
 	// automatic runs. Only the phone sets it, knowing whether it is charging
 	// and whether the connection is metered. A nil store leaves the routes
@@ -184,6 +189,9 @@ func (s *Server) Handler() http.Handler {
 	}
 	if s.OpenWindow != nil {
 		mux.HandleFunc("POST /api/window/open", s.openWindow)
+	}
+	if s.SystemAccent != nil {
+		mux.HandleFunc("GET /api/window/accent", s.readAccent)
 	}
 
 	if s.Hold != nil {

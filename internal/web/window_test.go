@@ -174,6 +174,40 @@ func TestTheOpenButtonReachesTheShell(t *testing.T) {
 	}
 }
 
+func TestTheWindowAsksTheDesktopForItsAccentEachTime(t *testing.T) {
+	h := newHarness(t)
+	colour := "#0078D7"
+	srv := newServer(t, &web.Server{
+		History: h.history, Runner: h.runner,
+		SystemAccent: func() string { return colour },
+	})
+	var got struct {
+		Accent string `json:"accent"`
+	}
+	getJSON(t, srv, "/api/window/accent", &got)
+	if got.Accent != "#0078D7" {
+		t.Errorf("accent = %q, want #0078D7", got.Accent)
+	}
+
+	colour = ""
+	getJSON(t, srv, "/api/window/accent", &got)
+	if got.Accent != "" {
+		t.Errorf("a desktop without an accent answered %q", got.Accent)
+	}
+}
+
+func TestAContainerHasNoSystemAccent(t *testing.T) {
+	h := newHarness(t)
+	resp, err := h.srv.Client().Get(h.srv.URL + "/api/window/accent")
+	if err != nil {
+		t.Fatalf("GET: %v", err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode == http.StatusOK {
+		t.Error("a build without a desktop answered for one")
+	}
+}
+
 // The interface's fallback is right for a reloaded page and wrong under /api,
 // where it would tell a client probing for a feature that it exists.
 func TestAnUnknownApiAddressIsNotThePage(t *testing.T) {

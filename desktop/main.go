@@ -28,6 +28,7 @@ import (
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configfile"
 
+	"github.com/junkerderprovinz/arrowloop/desktop/accent"
 	"github.com/junkerderprovinz/arrowloop/internal/autostart"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
@@ -162,11 +163,12 @@ func run() error {
 	}
 	api = (&web.Server{
 		History: hist, Runner: runner, UI: ui,
-		Placeholder: webui.Placeholder,
-		Window:      window,
-		OpenWindow:  sh.showMain,
-		Key:         key,
-		Log:         desktopLog,
+		Placeholder:  webui.Placeholder,
+		Window:       window,
+		OpenWindow:   sh.showMain,
+		SystemAccent: accent.Read,
+		Key:          key,
+		Log:          desktopLog,
 	}).Handler()
 
 	// An autostart entry records a path, which goes stale when the program
