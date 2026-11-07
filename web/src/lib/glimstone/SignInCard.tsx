@@ -29,7 +29,7 @@ const LABEL_KEYS: SignInLabelKeys = {
 };
 
 export interface SignInCardProps extends SignInHandlers {
-  /** The app's logo, as an address or as markup. It stands large above the name. */
+  /** The app's logo, as an address or as an inline `<svg>` with a viewBox. It stands 7.5rem tall above the name, as wide as its shape asks. */
   logo?: string | ReactNode;
   /** The page's heading. */
   appName: string;
