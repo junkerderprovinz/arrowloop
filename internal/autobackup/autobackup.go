@@ -93,13 +93,22 @@ func Read(dir, name string) ([]byte, error) {
 	return os.ReadFile(filepath.Join(dir, name))
 }
 
-// Next is when the next backup is due: one period of every after the newest
-// of files, or after checked when a later look found the file unchanged. The
-// zero time is due at once.
+// Schedule is when backups are due: at Hour:Minute on the day EveryDays days
+// after the last one.
+type Schedule struct {
+	EveryDays    int
+	Hour, Minute int
+}
+
+// Next is when the next backup is due after the newest of files, or after
+// checked when a later look found the file unchanged. The zero time is due at
+// once. Days are counted on the calendar in loc, so the time holds when the
+// clocks change.
 //
 // It is read off the files rather than kept anywhere, so an engine that
-// restarts every night neither backs up on every start nor never.
-func Next(files []File, checked time.Time, every time.Duration) time.Time {
+// restarts every night neither backs up on every start nor never, and days
+// missed while it was off add up to one backup, not several.
+func Next(files []File, checked time.Time, s Schedule, loc *time.Location) time.Time {
 	var last time.Time
 	if len(files) > 0 {
 		last = files[0].Made
@@ -110,7 +119,8 @@ func Next(files []File, checked time.Time, every time.Duration) time.Time {
 	if last.IsZero() {
 		return last
 	}
-	return last.Add(every)
+	day := last.In(loc)
+	return time.Date(day.Year(), day.Month(), day.Day()+s.EveryDays, s.Hour, s.Minute, 0, 0, loc)
 }
 
 // Save writes doc into dir as the backup made at now, unless the newest backup

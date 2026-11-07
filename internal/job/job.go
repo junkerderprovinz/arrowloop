@@ -14,6 +14,7 @@ import (
 	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
 
+	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
@@ -216,15 +217,19 @@ func (a Anomalies) Tells(held bool) bool {
 	return !a.Off && a.NotifyNotes != nil && *a.NotifyNotes
 }
 
-// AutoBackup says how often the engine copies this file into a backup folder
-// and how many copies it keeps. It is on unless switched off, since nobody
-// thinks of a backup until they need one.
+// AutoBackup says how often and at what time the engine copies this file into
+// a backup folder, and how many copies it keeps. It is on unless switched off,
+// since nobody thinks of a backup until they need one.
 type AutoBackup struct {
 	Off bool `json:"off,omitempty"`
 
 	// EveryDays is how many days pass between two backups. Zero means the
 	// default.
 	EveryDays int `json:"everyDays,omitempty"`
+
+	// At is the time of day the backup is due, as HH:MM on the engine's own
+	// clock. Empty means DefaultBackupAt.
+	At string `json:"at,omitempty"`
 
 	// Keep is how many backups stay in the folder. Zero means the default.
 	Keep int `json:"keep,omitempty"`
@@ -238,6 +243,7 @@ type AutoBackup struct {
 // leaving the schedule on while nothing is ever written, or from filling a disk.
 const (
 	DefaultBackupEveryDays = 1
+	DefaultBackupAt        = "03:00"
 	DefaultBackupKeep      = 7
 	DefaultBackupDir       = "backups"
 	maxBackupEveryDays     = 365
@@ -247,13 +253,34 @@ const (
 // On reports whether automatic backups are made.
 func (b AutoBackup) On() bool { return !b.Off }
 
-// Every is EveryDays as a duration, with the default for anything below one.
-func (b AutoBackup) Every() time.Duration {
+// Schedule is when the backups are due, with the defaults for what is left
+// out.
+func (b AutoBackup) Schedule() autobackup.Schedule {
 	days := b.EveryDays
 	if days < 1 {
 		days = DefaultBackupEveryDays
 	}
-	return time.Duration(min(days, maxBackupEveryDays)) * 24 * time.Hour
+	at := b.At
+	if at == "" {
+		at = DefaultBackupAt
+	}
+	// Load refused any other time, so this only ever reads a valid one.
+	clock, _ := parseClock(at)
+	return autobackup.Schedule{EveryDays: min(days, maxBackupEveryDays), Hour: clock.Hour(), Minute: clock.Minute()}
+}
+
+func (b AutoBackup) check() error {
+	if b.At == "" {
+		return nil
+	}
+	if _, err := parseClock(b.At); err != nil {
+		return fmt.Errorf("autoBackup says at %q; it has to be a time of day from 00:00 to 23:59, such as %s", b.At, DefaultBackupAt)
+	}
+	return nil
+}
+
+func parseClock(s string) (time.Time, error) {
+	return time.Parse("15:04", s)
 }
 
 // KeepCount is Keep with the default for anything below one, since keeping
@@ -747,6 +774,9 @@ func Load(path string) (*Config, error) {
 		cfg.ParallelJobs = 1
 	}
 	if err := cfg.Notify.check(); err != nil {
+		return nil, err
+	}
+	if err := cfg.AutoBackup.check(); err != nil {
 		return nil, err
 	}
 

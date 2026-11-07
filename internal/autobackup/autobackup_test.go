@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"testing"
 	"time"
+	_ "time/tzdata"
 )
 
 var noon = time.Date(2026, 11, 7, 12, 0, 0, 0, time.UTC)
@@ -168,24 +169,55 @@ func TestOnlyABackupsOwnNameIsRead(t *testing.T) {
 	}
 }
 
-func TestTheNextBackupIsDueAfterTheNewestOrTheLastLook(t *testing.T) {
-	day := 24 * time.Hour
-	files := []File{{Made: noon}}
+func vienna(t *testing.T) *time.Location {
+	t.Helper()
+	loc, err := time.LoadLocation("Europe/Vienna")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return loc
+}
+
+func TestTheNextBackupIsDueAtItsTimeOnTheDayItsDaysComeRound(t *testing.T) {
+	loc := vienna(t)
+	at := func(month time.Month, day, hour, minute int) time.Time {
+		return time.Date(2026, month, day, hour, minute, 0, 0, loc)
+	}
+	made := func(t time.Time) []File { return []File{{Made: t.UTC()}} }
+	daily := Schedule{EveryDays: 1, Hour: 3}
 	cases := []struct {
-		name    string
-		files   []File
-		checked time.Time
-		want    time.Time
+		name     string
+		files    []File
+		checked  time.Time
+		schedule Schedule
+		want     time.Time
 	}{
-		{"none yet is due at once", nil, time.Time{}, time.Time{}},
-		{"a day after the newest", files, time.Time{}, noon.Add(day)},
-		{"a day after a look that found nothing new", files, noon.Add(30 * time.Hour), noon.Add(54 * time.Hour)},
-		{"an older look changes nothing", files, noon.Add(-time.Hour), noon.Add(day)},
+		{"none yet is due at once", nil, time.Time{}, daily, time.Time{}},
+		{"the next morning", made(at(11, 7, 3, 0)), time.Time{}, daily, at(11, 8, 3, 0)},
+		{"the next morning after one made later in the day", made(at(11, 7, 10, 15)), time.Time{}, daily, at(11, 8, 3, 0)},
+		{"the next morning after one made before the time", made(at(11, 7, 1, 0)), time.Time{}, daily, at(11, 8, 3, 0)},
+		{"three days on", made(at(11, 7, 3, 0)), time.Time{}, Schedule{EveryDays: 3, Hour: 3}, at(11, 10, 3, 0)},
+		{"at its own time", made(at(11, 7, 3, 0)), time.Time{}, Schedule{EveryDays: 1, Hour: 22, Minute: 30}, at(11, 8, 22, 30)},
+		{"a day after a look that found nothing new", made(at(11, 7, 3, 0)), at(11, 8, 3, 0), daily, at(11, 9, 3, 0)},
+		{"an older look changes nothing", made(at(11, 7, 3, 0)), at(11, 6, 3, 0), daily, at(11, 8, 3, 0)},
+		{"by the clock on the day the clocks go forward", made(at(3, 28, 3, 0)), time.Time{}, daily, at(3, 29, 3, 0)},
+		{"by the clock on the day the clocks go back", made(at(10, 24, 3, 0)), time.Time{}, daily, at(10, 25, 3, 0)},
 	}
 	for _, c := range cases {
-		if got := Next(c.files, c.checked, day); !got.Equal(c.want) {
-			t.Errorf("%s: got %v, want %v", c.name, got, c.want)
+		if got := Next(c.files, c.checked, c.schedule, loc); !got.Equal(c.want) {
+			t.Errorf("%s: got %v, want %v", c.name, got.In(loc), c.want)
 		}
+	}
+}
+
+// The hour the clocks skip has no 02:30, and that day's backup is made all
+// the same rather than left for the next.
+func TestATimeTheClocksSkipStillGetsItsBackupThatDay(t *testing.T) {
+	loc := vienna(t)
+	last := time.Date(2026, 3, 28, 2, 30, 0, 0, loc)
+	got := Next([]File{{Made: last.UTC()}}, time.Time{}, Schedule{EveryDays: 1, Hour: 2, Minute: 30}, loc).In(loc)
+	if got.Day() != 29 || got.Sub(last) > 24*time.Hour {
+		t.Errorf("due at %v, want on the 29th", got)
 	}
 }
 

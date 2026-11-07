@@ -3,10 +3,14 @@ package daemon
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
+	"sync/atomic"
 	"testing"
 	"time"
+	_ "time/tzdata"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -69,38 +73,129 @@ func TestTheFirstLookMakesABackupOfTheFile(t *testing.T) {
 	}
 }
 
-func TestTheNextBackupWaitsForItsDay(t *testing.T) {
-	r, _ := configured(t, `{"jobs":[]}`)
-	now := time.Now()
-	r.backUpIfDue(now)
-	edit(t, r, map[string]any{"bwlimit": "1M"})
-
-	r.backUpIfDue(now.Add(time.Hour))
-	if n := len(backups(t, r)); n != 1 {
-		t.Errorf("%d backups an hour later; the next one is due tomorrow", n)
+// in is a moment in Vienna, whose clocks change for summer.
+func in(t *testing.T, month time.Month, day, hour, minute int) time.Time {
+	t.Helper()
+	loc, err := time.LoadLocation("Europe/Vienna")
+	if err != nil {
+		t.Fatal(err)
 	}
-	r.backUpIfDue(now.Add(25 * time.Hour))
-	if n := len(backups(t, r)); n != 2 {
-		t.Errorf("%d backups a day later, want 2", n)
+	return time.Date(2026, month, day, hour, minute, 0, 0, loc)
+}
+
+var edits atomic.Int64
+
+// changedAt edits the file and then looks whether a backup is due at now,
+// and reports whether that look wrote one.
+func changedAt(t *testing.T, r *Runner, now time.Time) bool {
+	t.Helper()
+	newest := func() string {
+		if files := backups(t, r); len(files) > 0 {
+			return files[0].Name
+		}
+		return ""
+	}
+	before := newest()
+	edit(t, r, map[string]any{"bwlimit": fmt.Sprintf("%dk", edits.Add(1))})
+	r.backUpIfDue(now)
+	return newest() != before
+}
+
+func TestTheNextBackupWaitsForItsTimeOfDay(t *testing.T) {
+	r, _ := configured(t, `{"jobs":[]}`)
+	r.backUpIfDue(in(t, 11, 7, 10, 0))
+	if n := len(backups(t, r)); n != 1 {
+		t.Fatalf("%d backups after the first look; the first one is due at once", n)
+	}
+	if changedAt(t, r, in(t, 11, 7, 23, 0)) {
+		t.Error("a second backup the same day")
+	}
+	if changedAt(t, r, in(t, 11, 8, 2, 59)) {
+		t.Error("a backup the next day before 03:00")
+	}
+	if !changedAt(t, r, in(t, 11, 8, 3, 0)) {
+		t.Error("no backup the next day at 03:00")
 	}
 }
 
 func TestBackupsFollowTheirSettings(t *testing.T) {
-	r, _ := configured(t, `{"jobs":[],"autoBackup":{"everyDays":2,"keep":2,"folder":"elsewhere"}}`)
-	now := time.Now()
-	for day := range 8 {
-		edit(t, r, map[string]any{"parallelJobs": day + 1})
-		r.backUpIfDue(now.AddDate(0, 0, day))
+	r, _ := configured(t, `{"jobs":[],"autoBackup":{"everyDays":3,"at":"22:30","keep":2,"folder":"elsewhere"}}`)
+	r.backUpIfDue(in(t, 11, 1, 22, 30))
+	var made []int
+	for day := 2; day <= 10; day++ {
+		if changedAt(t, r, in(t, 11, day, 22, 29)) {
+			t.Errorf("a backup on the %dth before 22:30", day)
+		}
+		if changedAt(t, r, in(t, 11, day, 22, 30)) {
+			made = append(made, day)
+		}
 	}
-	files := backups(t, r)
-	if len(files) != 2 {
-		t.Fatalf("%d backups kept, want 2", len(files))
+	if !slices.Equal(made, []int{4, 7, 10}) {
+		t.Errorf("backups on the %v, want the 4th, 7th and 10th", made)
 	}
-	if gap := files[0].Made.Sub(files[1].Made); gap < 47*time.Hour {
-		t.Errorf("two backups only %v apart, want two days", gap)
+	if n := len(backups(t, r)); n != 2 {
+		t.Errorf("%d backups kept, want 2", n)
 	}
 	if want := filepath.Join(r.Config().Dir(), "elsewhere"); r.Backups().Folder != want {
 		t.Errorf("the folder reads %s, want %s", r.Backups().Folder, want)
+	}
+}
+
+// An engine that was off or asleep at the time makes the backup when it is
+// back, once, and the one after it at the time again.
+func TestAMissedBackupIsCaughtUpOnce(t *testing.T) {
+	r, _ := configured(t, `{"jobs":[]}`)
+	r.backUpIfDue(in(t, 11, 7, 3, 0))
+
+	if !changedAt(t, r, in(t, 11, 12, 9, 40)) {
+		t.Fatal("no backup when the engine was back after five days")
+	}
+	for _, later := range []time.Time{in(t, 11, 12, 9, 41), in(t, 11, 12, 13, 0), in(t, 11, 13, 2, 59)} {
+		if changedAt(t, r, later) {
+			t.Errorf("caught up again at %v", later)
+		}
+	}
+	if !changedAt(t, r, in(t, 11, 13, 3, 0)) {
+		t.Error("no backup at 03:00 the day after the catch-up")
+	}
+}
+
+// The night the clocks go forward is an hour short, and the backup keeps to
+// the clock rather than to 24 hours.
+func TestTheBackupKeepsItsTimeWhenTheClocksChange(t *testing.T) {
+	r, _ := configured(t, `{"jobs":[]}`)
+	r.backUpIfDue(in(t, 3, 28, 3, 0))
+	if !changedAt(t, r, in(t, 3, 29, 3, 0)) {
+		t.Error("no backup at 03:00 on the day the clocks go forward")
+	}
+	if !changedAt(t, r, in(t, 10, 24, 3, 0)) {
+		t.Fatal("no backup in October")
+	}
+	if !changedAt(t, r, in(t, 10, 25, 3, 0)) {
+		t.Error("no backup at 03:00 on the day the clocks go back")
+	}
+	if changedAt(t, r, in(t, 10, 25, 4, 0)) {
+		t.Error("a second backup on the day the clocks go back")
+	}
+}
+
+// A look that finds the file as the newest backup has it writes nothing and
+// counts as that day's backup.
+func TestAnUnchangedFileWaitsForTheNextTime(t *testing.T) {
+	r, _ := configured(t, `{"jobs":[]}`)
+	r.backUpIfDue(in(t, 11, 7, 3, 0))
+	r.backUpIfDue(in(t, 11, 8, 3, 0))
+	if n := len(backups(t, r)); n != 1 {
+		t.Fatalf("%d backups of a file that did not change", n)
+	}
+	if last := r.Backups().Last; last == nil || !last.Unchanged {
+		t.Errorf("the last run reads %+v, want unchanged", last)
+	}
+	if changedAt(t, r, in(t, 11, 8, 18, 0)) {
+		t.Error("a backup the same day as the look that found nothing new")
+	}
+	if !changedAt(t, r, in(t, 11, 9, 3, 0)) {
+		t.Error("no backup the morning after")
 	}
 }
 

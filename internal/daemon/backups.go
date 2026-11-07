@@ -56,7 +56,9 @@ func (r *Runner) backUpIfDue(now time.Time) {
 		return
 	}
 	files, err := autobackup.List(cfg.BackupDir())
-	if err == nil && now.Before(autobackup.Next(files, b.checked, cfg.AutoBackup.Every())) {
+	// now is on the machine's clock, which the jobs' cron schedules follow
+	// too.
+	if err == nil && now.Before(autobackup.Next(files, b.checked, cfg.AutoBackup.Schedule(), now.Location())) {
 		return
 	}
 	r.backUp(cfg, now)
