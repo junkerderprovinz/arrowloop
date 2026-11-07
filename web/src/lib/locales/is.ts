@@ -360,6 +360,8 @@ const is: Translations = {
   'look.square': 'Bein',
   'look.leaf': 'Lauf',
   'look.accent': 'Áherslulitur',
+  'look.systemAccent': 'Kerfislitur',
+  'look.systemAccentTip': 'Notar lit kerfisins.',
   'look.colors': 'Litir',
   'look.rainbowOn': 'Regnbogahamur',
   'look.rainbowReactive': 'Viðbragðshamur',
@@ -1351,6 +1353,7 @@ const is: Translations = {
   'new.change.jobOrder': 'Þú getur raðað verkunum eins og þú vilt: dragðu verk í handfangið eða ýttu á Alt og örvalykil á því. Í símanum heldurðu verki inni og dregur það. {history}, {trash} og {conflicts} sýna verkin í sömu röð.',
   'new.change.jobsCompact': '{compact} efst í verkalistanum sýnir hvert verk í einni línu: stöðu, síðustu keyrslu, {runNow} og {more}. Þetta tæki man valið þitt.',
   'new.change.oled': '{oled} undir {design} setur dökka útlitið á hreinan svartan lit fyrir OLED- og AMOLED-skjái. Það gildir alltaf þegar dökka útlitið sést, líka þegar það fylgir kerfinu, og hvert tæki man sitt eigið val.',
+  'new.change.systemAccent': 'Litaprufan með töfrasprotanum fremst í {accent} notar lit kerfisins: Material You frá Android 12, áherslulit Windows, macOS eða Linux í skjáborðsforritinu og kerfislitinn í Firefox og Safari. Þar sem kerfið hefur engan er prufan ekki til staðar.',
 }
 
 export default is

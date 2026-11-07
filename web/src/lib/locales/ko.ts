@@ -360,6 +360,8 @@ const ko: Translations = {
   'look.square': '각지게',
   'look.leaf': '잎',
   'look.accent': '강조 색상',
+  'look.systemAccent': '시스템 색상',
+  'look.systemAccentTip': '시스템 색상을 따릅니다.',
   'look.colors': '색상',
   'look.rainbowOn': '무지개 모드',
   'look.rainbowReactive': '반응형 모드',
@@ -1351,6 +1353,7 @@ const ko: Translations = {
   'new.change.jobOrder': '작업을 원하는 순서로 놓을 수 있습니다. 손잡이를 잡고 작업을 끌거나, 작업에서 Alt와 화살표 키를 누르세요. 휴대폰에서는 작업을 길게 누른 채 끄세요. {history}, {trash}, {conflicts}도 같은 순서로 작업을 보여 줍니다.',
   'new.change.jobsCompact': '작업 목록 위의 {compact}은(는) 작업마다 한 줄로 상태, 마지막 실행, {runNow}, {more}를 보여 줍니다. 이 기기가 선택을 기억합니다.',
   'new.change.oled': '{design} 아래의 {oled}은 OLED와 AMOLED 화면을 위해 어두운 모양을 완전한 검정으로 바꿉니다. 시스템을 따를 때를 포함해 어두운 모양이 보일 때마다 적용되며, 기기마다 자신의 선택을 기억합니다.',
+  'new.change.systemAccent': '{accent} 맨 앞의 마법 지팡이 견본은 시스템 색상을 따릅니다. Android 12 이상에서는 Material You, 데스크톱 앱에서는 Windows, macOS, Linux의 강조 색상, Firefox와 Safari에서는 시스템 색상입니다. 시스템에 색상이 없으면 이 견본은 나타나지 않습니다.',
 }
 
 export default ko

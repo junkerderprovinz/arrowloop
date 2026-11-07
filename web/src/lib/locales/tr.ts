@@ -360,6 +360,8 @@ const tr: Translations = {
   'look.square': 'Düz',
   'look.leaf': 'Yaprak',
   'look.accent': 'Vurgu rengi',
+  'look.systemAccent': 'Sistem rengi',
+  'look.systemAccentTip': 'Sistemin rengini alır.',
   'look.colors': 'Renkler',
   'look.rainbowOn': 'Gökkuşağı modu',
   'look.rainbowReactive': 'Reaktif mod',
@@ -1351,6 +1353,7 @@ const tr: Translations = {
   'new.change.jobOrder': 'İşleri kendi sıranıza koyabilirsiniz: bir işi tutamacından sürükleyin ya da üzerinde Alt ve bir ok tuşuna basın. Telefonda bir işe basılı tutup sürükleyin. {history}, {trash} ve {conflicts} işleri aynı sırayla gösterir.',
   'new.change.jobsCompact': 'İş listesinin üstündeki {compact}, her işi tek satırda gösterir: durum, son çalıştırma, {runNow} ve {more}. Bu cihaz seçiminizi hatırlar.',
   'new.change.oled': '{design} altındaki {oled}, OLED ve AMOLED ekranlar için koyu görünümü gerçek siyaha çevirir. Koyu görünüm göründüğü her an geçerlidir, sistemi izlediğinde de, ve her cihaz kendi seçimini hatırlar.',
+  'new.change.systemAccent': '{accent} satırının başındaki sihirli değnekli örnek, sisteminin rengini alır: Android 12 ve sonrasında Material You, masaüstü uygulamasında Windows, macOS veya Linux vurgu rengi, Firefox ve Safari\'de sistem rengi. Sistemin böyle bir rengi yoksa örnek görünmez.',
 }
 
 export default tr

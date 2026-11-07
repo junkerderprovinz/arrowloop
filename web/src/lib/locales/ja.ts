@@ -360,6 +360,8 @@ const ja: Translations = {
   'look.square': '四角い',
   'look.leaf': '葉',
   'look.accent': 'アクセントカラー',
+  'look.systemAccent': 'システムの色',
+  'look.systemAccentTip': 'システムの色を使います。',
   'look.colors': '色',
   'look.rainbowOn': 'レインボーモード',
   'look.rainbowReactive': 'リアクティブモード',
@@ -1351,6 +1353,7 @@ const ja: Translations = {
   'new.change.jobOrder': 'ジョブを好きな順序に並べられます。ハンドルをつかんでドラッグするか、ジョブ上で Alt と矢印キーを押します。スマートフォンではジョブを長押ししてドラッグします。{history}、{trash}、{conflicts} も同じ順序でジョブを表示します。',
   'new.change.jobsCompact': 'ジョブ一覧の上にある {compact} では、各ジョブを 1 行で表示します。状態、最後の実行、{runNow}、{more} が並びます。選択はこのデバイスが覚えます。',
   'new.change.oled': '{design} の下にある {oled} は、OLED と AMOLED の画面向けに暗いデザインを真っ黒にします。システムに合わせているときも含め、暗いデザインが表示されているあいだ有効で、選択はデバイスごとに覚えます。',
+  'new.change.systemAccent': '{accent} の先頭にある魔法の杖の見本は、システムの色を使います。Android 12 以降では Material You、デスクトップ版では Windows、macOS、Linux のアクセントカラー、Firefox と Safari ではシステムの色です。システムに色がない場合、この見本は表示されません。',
 }
 
 export default ja

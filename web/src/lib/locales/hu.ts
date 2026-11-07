@@ -360,6 +360,8 @@ const hu: Translations = {
   'look.square': 'Szögletes',
   'look.leaf': 'Levél',
   'look.accent': 'Kiemelőszín',
+  'look.systemAccent': 'Rendszerszín',
+  'look.systemAccentTip': 'A rendszer színét veszi át.',
   'look.colors': 'Színek',
   'look.rainbowOn': 'Szivárvány mód',
   'look.rainbowReactive': 'Reaktív mód',
@@ -1351,6 +1353,7 @@ const hu: Translations = {
   'new.change.jobOrder': 'A feladatokat saját sorrendbe rakhatod: húzz egy feladatot a fogantyújánál, vagy nyomd meg rajta az Altot és egy nyílbillentyűt. A telefonon tarts lenyomva egy feladatot, és húzd el. A(z) {history}, {trash} és {conflicts} ugyanebben a sorrendben mutatja a feladatokat.',
   'new.change.jobsCompact': 'A feladatlista tetején a(z) {compact} nézet minden feladatot egy sorban mutat: állapot, utolsó futás, {runNow} és {more}. Ez az eszköz megjegyzi a választásodat.',
   'new.change.oled': 'A {design} alatti {oled} valódi feketére állítja a sötét megjelenést OLED és AMOLED kijelzőkön. Mindig érvényes, amikor a sötét megjelenés látszik, akkor is, ha a rendszert követi, és minden eszköz a saját választását jegyzi meg.',
+  'new.change.systemAccent': 'A {accent} elején álló varázspálcás színminta a rendszer színét veszi át: Android 12-től a Material You, az asztali alkalmazásban a Windows, a macOS vagy a Linux kiemelőszíne, Firefoxban és Safariban pedig a rendszerszín. Ahol a rendszernek nincs ilyen, a minta nem jelenik meg.',
 }
 
 export default hu

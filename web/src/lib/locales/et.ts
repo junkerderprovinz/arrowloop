@@ -360,6 +360,8 @@ const et: Translations = {
   'look.square': 'Sirged',
   'look.leaf': 'Leht',
   'look.accent': 'Aktsendivärv',
+  'look.systemAccent': 'Süsteemi värv',
+  'look.systemAccentTip': 'Võtab süsteemi värvi.',
   'look.colors': 'Värvid',
   'look.rainbowOn': 'Vikerkaarerežiim',
   'look.rainbowReactive': 'Reaktiivne režiim',
@@ -1351,6 +1353,7 @@ const et: Translations = {
   'new.change.jobOrder': 'Võid tööd oma järjekorda panna: lohista tööd selle pidemest või vajuta sellel Alt ja nooleklahvi. Telefonis hoia tööd all ja lohista seda. {history}, {trash} ja {conflicts} näitavad töid samas järjekorras.',
   'new.change.jobsCompact': '{compact} tööde loendi ülaosas näitab iga tööd ühel real: olek, viimane käivitus, {runNow} ja {more}. See seade jätab sinu valiku meelde.',
   'new.change.oled': '{oled} jaotise {design} all muudab tumeda välimuse OLED- ja AMOLED-ekraanidel päris mustaks. See kehtib alati, kui tume välimus on nähtaval, ka siis, kui see järgib süsteemi, ja iga seade jätab oma valiku meelde.',
+  'new.change.systemAccent': 'Võlukepiga värvinäidis rea {accent} alguses võtab süsteemi värvi: Material You alates Android 12-st, Windowsi, macOS-i või Linuxi rõhuvärvi töölauarakenduses ja süsteemi värvi Firefoxis ja Safaris. Kus süsteemil seda pole, näidist ei ole.',
 }
 
 export default et

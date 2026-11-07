@@ -360,6 +360,8 @@ const pl: Translations = {
   'look.square': 'Proste',
   'look.leaf': 'Liść',
   'look.accent': 'Kolor akcentu',
+  'look.systemAccent': 'Kolor systemu',
+  'look.systemAccentTip': 'Przejmuje kolor systemu.',
   'look.colors': 'Kolory',
   'look.rainbowOn': 'Tryb tęczowy',
   'look.rainbowReactive': 'Tryb reaktywny',
@@ -1351,6 +1353,7 @@ const pl: Translations = {
   'new.change.jobOrder': 'Możesz ułożyć zadania we własnej kolejności: przeciągnij zadanie za uchwyt albo naciśnij na nim Alt i strzałkę. Na telefonie przytrzymaj zadanie i przeciągnij je. {history}, {trash} i {conflicts} pokazują zadania w tej samej kolejności.',
   'new.change.jobsCompact': '{compact} u góry listy zadań pokazuje każde zadanie w jednym wierszu: stan, ostatnie uruchomienie, {runNow} i {more}. To urządzenie zapamiętuje twój wybór.',
   'new.change.oled': '{oled} pod {design} zmienia ciemny wygląd na prawdziwą czerń dla ekranów OLED i AMOLED. Działa zawsze, gdy widać ciemny wygląd, także gdy podąża za systemem, a każde urządzenie pamięta własny wybór.',
+  'new.change.systemAccent': 'Próbka z różdżką na początku {accent} przejmuje kolor systemu: Material You od Androida 12, kolor akcentu Windows, macOS lub Linuksa w aplikacji na komputer i kolor systemu w Firefoksie i Safari. Gdzie system go nie ma, próbki nie ma.',
 }
 
 export default pl

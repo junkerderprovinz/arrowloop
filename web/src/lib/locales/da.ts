@@ -360,6 +360,8 @@ const da: Translations = {
   'look.square': 'Lige',
   'look.leaf': 'Blad',
   'look.accent': 'Accentfarve',
+  'look.systemAccent': 'Systemfarve',
+  'look.systemAccentTip': 'Bruger systemets farve.',
   'look.colors': 'Farver',
   'look.rainbowOn': 'Regnbuetilstand',
   'look.rainbowReactive': 'Reaktiv tilstand',
@@ -1351,6 +1353,7 @@ const da: Translations = {
   'new.change.jobOrder': 'Du kan sætte dine job i din egen rækkefølge: træk et job i dets håndtag, eller tryk Alt og en piletast på det. På telefonen holder du et job nede og trækker det. {history}, {trash} og {conflicts} viser jobbene i samme rækkefølge.',
   'new.change.jobsCompact': '{compact} øverst i joblisten viser hvert job på én linje, med status, seneste kørsel, {runNow} og {more}. Denne enhed husker dit valg.',
   'new.change.oled': '{oled} under {design} giver det mørke udseende ægte sort til OLED- og AMOLED-skærme. Det gælder, når det mørke udseende vises, også når det følger systemet, og hver enhed husker sit eget valg.',
+  'new.change.systemAccent': 'Farvefeltet med tryllestaven først i {accent} bruger systemets farve: Material You fra Android 12, accentfarven i Windows, macOS eller Linux i skrivebordsappen og systemfarven i Firefox og Safari. Hvor systemet ikke har nogen, er feltet der ikke.',
 }
 
 export default da

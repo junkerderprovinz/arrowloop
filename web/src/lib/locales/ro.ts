@@ -360,6 +360,8 @@ const ro: Translations = {
   'look.square': 'Drepte',
   'look.leaf': 'Frunză',
   'look.accent': 'Culoare de accent',
+  'look.systemAccent': 'Culoarea sistemului',
+  'look.systemAccentTip': 'Preia culoarea sistemului.',
   'look.colors': 'Culori',
   'look.rainbowOn': 'Mod curcubeu',
   'look.rainbowReactive': 'Mod reactiv',
@@ -1351,6 +1353,7 @@ const ro: Translations = {
   'new.change.jobOrder': 'Poți pune sarcinile în ordinea ta: trage o sarcină de mâner sau apasă pe ea Alt și o tastă săgeată. Pe telefon, ține apăsată o sarcină și trage-o. {history}, {trash} și {conflicts} arată sarcinile în aceeași ordine.',
   'new.change.jobsCompact': '{compact}, sus în lista de sarcini, arată fiecare sarcină pe un rând: starea, ultima rulare, {runNow} și {more}. Acest dispozitiv ține minte alegerea ta.',
   'new.change.oled': '{oled}, sub {design}, trece aspectul întunecat pe negru adevărat pentru ecranele OLED și AMOLED. Se aplică oricând se vede aspectul întunecat, și când urmează sistemul, iar fiecare dispozitiv își ține minte alegerea.',
+  'new.change.systemAccent': 'Mostra cu bagheta de la începutul {accent} preia culoarea sistemului tău: Material You de la Android 12, culoarea de accent din Windows, macOS sau Linux în aplicația desktop și culoarea sistemului în Firefox și Safari. Unde sistemul nu are una, mostra lipsește.',
 }
 
 export default ro

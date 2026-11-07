@@ -360,6 +360,8 @@ const sr: Translations = {
   'look.square': 'Прави',
   'look.leaf': 'Лист',
   'look.accent': 'Истакнута боја',
+  'look.systemAccent': 'Боја система',
+  'look.systemAccentTip': 'Преузима боју система.',
   'look.colors': 'Боје',
   'look.rainbowOn': 'Дугин режим',
   'look.rainbowReactive': 'Реактивни режим',
@@ -1351,6 +1353,7 @@ const sr: Translations = {
   'new.change.jobOrder': 'Послове можеш да поређаш по свом редоследу: превуци посао за ручицу или на њему притисни Alt и стрелицу. На телефону задржи посао и превуци га. {history}, {trash} и {conflicts} приказују послове истим редоследом.',
   'new.change.jobsCompact': '{compact} на врху списка послова приказује сваки посао у једном реду: стање, последње покретање, {runNow} и {more}. Овај уређај памти твој избор.',
   'new.change.oled': '{oled} испод {design} пребацује тамни изглед на праву црну за OLED и AMOLED екране. Важи кад год се види тамни изглед, и кад прати систем, а сваки уређај памти свој избор.',
+  'new.change.systemAccent': 'Узорак са чаробним штапићем на почетку {accent} преузима боју вашег система: Material You од Android 12, истакнуту боју система Windows, macOS или Linux у апликацији за рачунар и системску боју у Firefox и Safari. Где систем нема боју, узорка нема.',
 }
 
 export default sr

@@ -360,6 +360,8 @@ const no: Translations = {
   'look.square': 'Rette',
   'look.leaf': 'Blad',
   'look.accent': 'Aksentfarge',
+  'look.systemAccent': 'Systemfarge',
+  'look.systemAccentTip': 'Bruker systemets farge.',
   'look.colors': 'Farger',
   'look.rainbowOn': 'Regnbuemodus',
   'look.rainbowReactive': 'Reaktiv modus',
@@ -1351,6 +1353,7 @@ const no: Translations = {
   'new.change.jobOrder': 'Du kan sette jobbene i din egen rekkefølge: dra en jobb i håndtaket, eller trykk Alt og en piltast på den. På telefonen holder du en jobb inne og drar den. {history}, {trash} og {conflicts} viser jobbene i samme rekkefølge.',
   'new.change.jobsCompact': '{compact} øverst i jobblisten viser hver jobb på én linje: status, siste kjøring, {runNow} og {more}. Denne enheten husker valget ditt.',
   'new.change.oled': '{oled} under {design} gir det mørke utseendet ekte svart for OLED- og AMOLED-skjermer. Det gjelder når det mørke utseendet vises, også når det følger systemet, og hver enhet husker sitt eget valg.',
+  'new.change.systemAccent': 'Fargeprøven med tryllestaven først i {accent} bruker systemets farge: Material You fra Android 12, aksentfargen i Windows, macOS eller Linux i skrivebordsappen og systemfargen i Firefox og Safari. Der systemet ikke har noen, er prøven ikke der.',
 }
 
 export default no

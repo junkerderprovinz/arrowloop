@@ -360,6 +360,8 @@ const es: Translations = {
   'look.square': 'Rectas',
   'look.leaf': 'Hoja',
   'look.accent': 'Color de acento',
+  'look.systemAccent': 'Color del sistema',
+  'look.systemAccentTip': 'Toma el color del sistema.',
   'look.colors': 'Colores',
   'look.rainbowOn': 'Modo arcoíris',
   'look.rainbowReactive': 'Modo reactivo',
@@ -1351,6 +1353,7 @@ const es: Translations = {
   'new.change.jobOrder': 'Puedes poner las tareas en tu propio orden: arrastra una por su asa o pulsa Alt y una flecha sobre ella. En el teléfono, mantén pulsada una tarea y arrástrala. {history}, {trash} y {conflicts} muestran las tareas en el mismo orden.',
   'new.change.jobsCompact': '{compact}, arriba en la lista de tareas, muestra cada tarea en una fila, con su estado, su última ejecución, {runNow} y {more}. Este dispositivo recuerda tu elección.',
   'new.change.oled': '{oled}, bajo {design}, pone el aspecto oscuro en negro puro para pantallas OLED y AMOLED. Vale siempre que se ve el aspecto oscuro, también cuando sigue al sistema, y cada dispositivo recuerda su propia elección.',
+  'new.change.systemAccent': 'La muestra con la varita al principio de {accent} toma el color de tu sistema: Material You desde Android 12, el color de acento de Windows, macOS o Linux en la aplicación de escritorio y el color del sistema en Firefox y Safari. Donde el sistema no tiene uno, la muestra no aparece.',
 }
 
 export default es

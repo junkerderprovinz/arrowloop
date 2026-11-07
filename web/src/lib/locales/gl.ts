@@ -360,6 +360,8 @@ const gl: Translations = {
   'look.square': 'Rectos',
   'look.leaf': 'Folla',
   'look.accent': 'Cor de acento',
+  'look.systemAccent': 'Cor do sistema',
+  'look.systemAccentTip': 'Colle a cor do sistema.',
   'look.colors': 'Cores',
   'look.rainbowOn': 'Modo arco da vella',
   'look.rainbowReactive': 'Modo reactivo',
@@ -1351,6 +1353,7 @@ const gl: Translations = {
   'new.change.jobOrder': 'Podes poñer as tarefas na túa propia orde: arrastra unha pola súa asa, ou preme Alt e unha frecha sobre ela. No teléfono, mantén premida unha tarefa e arrástraa. {history}, {trash} e {conflicts} mostran as tarefas na mesma orde.',
   'new.change.jobsCompact': '{compact}, arriba na lista de tarefas, mostra cada tarefa nunha fila, co seu estado, a última execución, {runNow} e {more}. Este dispositivo lembra a túa escolla.',
   'new.change.oled': '{oled}, baixo {design}, pon o aspecto escuro en negro puro para pantallas OLED e AMOLED. Vale sempre que se ve o aspecto escuro, tamén cando segue o sistema, e cada dispositivo lembra a súa escolla.',
+  'new.change.systemAccent': 'A mostra coa variña ao comezo de {accent} colle a cor do teu sistema: Material You desde Android 12, a cor de acento de Windows, macOS ou Linux na aplicación de escritorio e a cor do sistema en Firefox e Safari. Onde o sistema non ten ningunha, a mostra non aparece.',
 }
 
 export default gl

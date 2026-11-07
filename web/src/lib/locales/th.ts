@@ -360,6 +360,8 @@ const th: Translations = {
   'look.square': 'เหลี่ยม',
   'look.leaf': 'ใบไม้',
   'look.accent': 'สีเน้น',
+  'look.systemAccent': 'สีของระบบ',
+  'look.systemAccentTip': 'ใช้สีของระบบ',
   'look.colors': 'สี',
   'look.rainbowOn': 'โหมดสายรุ้ง',
   'look.rainbowReactive': 'โหมดตอบสนอง',
@@ -1351,6 +1353,7 @@ const th: Translations = {
   'new.change.jobOrder': 'คุณจัดลำดับงานเองได้ ลากงานที่จุดจับ หรือกด Alt กับปุ่มลูกศรบนงานนั้น บนโทรศัพท์ให้กดค้างที่งานแล้วลาก {history} {trash} และ {conflicts} แสดงงานตามลำดับเดียวกัน',
   'new.change.jobsCompact': '{compact} ที่ด้านบนของรายการงานจะแสดงงานละหนึ่งแถว พร้อมสถานะ การทำงานครั้งล่าสุด {runNow} และ {more} อุปกรณ์นี้จะจำตัวเลือกของคุณไว้',
   'new.change.oled': '{oled} ใต้ {design} เปลี่ยนรูปแบบมืดเป็นสีดำสนิทสำหรับหน้าจอ OLED และ AMOLED ใช้ทุกครั้งที่รูปแบบมืดแสดงอยู่ รวมถึงตอนที่ตามระบบ และแต่ละอุปกรณ์จำตัวเลือกของตัวเอง',
+  'new.change.systemAccent': 'ตัวอย่างสีรูปไม้กายสิทธิ์ที่ต้น {accent} ใช้สีของระบบคุณ: Material You ใน Android 12 ขึ้นไป สีเน้นของ Windows, macOS หรือ Linux ในแอปเดสก์ท็อป และสีของระบบใน Firefox และ Safari ถ้าระบบไม่มีสีแบบนี้ ตัวอย่างนี้จะไม่แสดง',
 }
 
 export default th

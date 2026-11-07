@@ -360,6 +360,8 @@ const ca: Translations = {
   'look.square': 'Rectes',
   'look.leaf': 'Fulla',
   'look.accent': 'Color d\'accent',
+  'look.systemAccent': 'Color del sistema',
+  'look.systemAccentTip': 'Agafa el color del sistema.',
   'look.colors': 'Colors',
   'look.rainbowOn': 'Mode arc de Sant Martí',
   'look.rainbowReactive': 'Mode reactiu',
@@ -1351,6 +1353,7 @@ const ca: Translations = {
   'new.change.jobOrder': 'Pots posar les tasques en el teu propi ordre: arrossega\'n una per la nansa, o prem Alt i una tecla de fletxa a sobre. Al telèfon, mantén premuda una tasca i arrossega-la. {history}, {trash} i {conflicts} mostren les tasques en el mateix ordre.',
   'new.change.jobsCompact': '{compact}, a dalt de la llista de tasques, mostra cada tasca en una fila, amb el seu estat, l\'última execució, {runNow} i {more}. Aquest dispositiu recorda la teva tria.',
   'new.change.oled': '{oled}, sota {design}, posa l\'aspecte fosc en negre pur per a pantalles OLED i AMOLED. Val sempre que es veu l\'aspecte fosc, també quan segueix el sistema, i cada dispositiu recorda la seva tria.',
+  'new.change.systemAccent': 'La mostra amb la vareta al començament de {accent} agafa el color del sistema: Material You a partir d\'Android 12, el color d\'accent de Windows, macOS o Linux a l\'aplicació d\'escriptori i el color del sistema a Firefox i Safari. On el sistema no en té, la mostra no hi és.',
 }
 
 export default ca

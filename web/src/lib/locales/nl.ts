@@ -360,6 +360,8 @@ const nl: Translations = {
   'look.square': 'Recht',
   'look.leaf': 'Blad',
   'look.accent': 'Accentkleur',
+  'look.systemAccent': 'Systeemkleur',
+  'look.systemAccentTip': 'Neemt de kleur van het systeem over.',
   'look.colors': 'Kleuren',
   'look.rainbowOn': 'Regenboogmodus',
   'look.rainbowReactive': 'Reactieve modus',
@@ -1351,6 +1353,7 @@ const nl: Translations = {
   'new.change.jobOrder': 'Je kunt de taken in je eigen volgorde zetten: sleep een taak aan zijn greep, of druk erop op Alt en een pijltjestoets. Op de telefoon houd je een taak vast en sleep je hem. {history}, {trash} en {conflicts} tonen de taken in dezelfde volgorde.',
   'new.change.jobsCompact': '{compact} boven de takenlijst toont elke taak op één regel: status, laatste run, {runNow} en {more}. Dit apparaat onthoudt je keuze.',
   'new.change.oled': '{oled} onder {design} zet het donkere uiterlijk op echt zwart voor OLED- en AMOLED-schermen. Het geldt zodra het donkere uiterlijk te zien is, ook als dat het systeem volgt, en elk apparaat onthoudt zijn eigen keuze.',
+  'new.change.systemAccent': 'Het staal met de toverstaf vooraan bij {accent} neemt de kleur van je systeem over: Material You vanaf Android 12, de accentkleur van Windows, macOS of Linux in de desktop-app en de systeemkleur in Firefox en Safari. Waar het systeem er geen heeft, is het staal er niet.',
 }
 
 export default nl

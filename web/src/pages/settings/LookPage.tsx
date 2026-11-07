@@ -24,7 +24,7 @@ import { Stack } from '../../components/Shell'
 import { AccentSwatches, PaletteSwatches } from '../../components/Swatches'
 import { ToggleRow } from '../../components/ToggleRow'
 import { wipeColours } from '../../lib/animate'
-import { ACCENTS, leafTap, RAINBOW, type RainbowState, type Shape } from '../../lib/appearance'
+import { ACCENTS, leafTap, RAINBOW, subscribeSystemAccent, systemAccent, type RainbowState, type Shape } from '../../lib/appearance'
 import { BOTTOM_BAR_AXIS, CONTROL_AXES, LABEL_MODES, type LabelAxis, type LabelMode } from '../../lib/controls'
 import { discoTap } from '../../lib/disco'
 import { Button } from '../../lib/glimstone/Button'
@@ -160,6 +160,7 @@ export function LookPage({
   const discoUnlock = useDiscoUnlock(disco, onDisco)
   const selectorHue = counter()
   const tileOrder = useTileOrder()
+  const system = useSyncExternalStore(subscribeSystemAccent, systemAccent)
   // A switch that changes the rainbow wipes across the page. A colour dragged
   // in the picker does not, since it has to follow the pointer.
   const switchRainbow = (next: RainbowState) => {
@@ -286,12 +287,13 @@ export function LookPage({
           <span data-glim-label={t('look.accent')} className={`text-body text-carbon-text${rainbow.on ? ' opacity-50' : ''}`}>
             {t('look.accent')}
           </span>
-          <div className="ms-auto flex flex-wrap items-center gap-2">
+          <div data-new="system-accent" className="ms-auto flex flex-wrap items-center gap-2">
             {/* Inert while the rainbow hands out the colours. */}
             <AccentSwatches
               presets={ACCENTS}
               slots={slots}
               value={accent}
+              system={system ? { hex: system, name: t('look.systemAccent'), tip: t('look.systemAccentTip') } : undefined}
               onChange={onAccent}
               onSlots={onSlots}
               disabled={rainbow.on}

@@ -360,6 +360,8 @@ const it: Translations = {
   'look.square': 'Squadrati',
   'look.leaf': 'Foglia',
   'look.accent': 'Colore di accento',
+  'look.systemAccent': 'Colore di sistema',
+  'look.systemAccentTip': 'Prende il colore del sistema.',
   'look.colors': 'Colori',
   'look.rainbowOn': 'Modalità arcobaleno',
   'look.rainbowReactive': 'Modalità reattiva',
@@ -1351,6 +1353,7 @@ const it: Translations = {
   'new.change.jobOrder': 'Puoi mettere i lavori nel tuo ordine: trascina un lavoro dalla sua maniglia, oppure premi Alt e una freccia su di esso. Sul telefono tieni premuto un lavoro e trascinalo. {history}, {trash} e {conflicts} mostrano i lavori nello stesso ordine.',
   'new.change.jobsCompact': '{compact}, in cima all\'elenco dei lavori, mostra ogni lavoro su una riga, con il suo stato, l\'ultima esecuzione, {runNow} e {more}. Questo dispositivo ricorda la tua scelta.',
   'new.change.oled': '{oled}, sotto {design}, porta l\'aspetto scuro al nero puro per gli schermi OLED e AMOLED. Vale ogni volta che si vede l\'aspetto scuro, anche quando segue il sistema, e ogni dispositivo ricorda la propria scelta.',
+  'new.change.systemAccent': 'Il campione con la bacchetta all\'inizio di {accent} prende il colore del tuo sistema: Material You da Android 12, il colore di accento di Windows, macOS o Linux nell\'app desktop e il colore di sistema in Firefox e Safari. Dove il sistema non ne ha uno, il campione non c\'è.',
 }
 
 export default it

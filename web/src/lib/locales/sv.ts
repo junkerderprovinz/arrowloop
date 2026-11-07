@@ -360,6 +360,8 @@ const sv: Translations = {
   'look.square': 'Raka',
   'look.leaf': 'Blad',
   'look.accent': 'Accentfärg',
+  'look.systemAccent': 'Systemfärg',
+  'look.systemAccentTip': 'Tar systemets färg.',
   'look.colors': 'Färger',
   'look.rainbowOn': 'Regnbågsläge',
   'look.rainbowReactive': 'Reaktivt läge',
@@ -1351,6 +1353,7 @@ const sv: Translations = {
   'new.change.jobOrder': 'Du kan ordna jobben i din egen ordning: dra ett jobb i dess handtag, eller tryck Alt och en piltangent på det. På telefonen håller du in ett jobb och drar det. {history}, {trash} och {conflicts} visar jobben i samma ordning.',
   'new.change.jobsCompact': '{compact} överst i jobblistan visar varje jobb på en rad: status, senaste körning, {runNow} och {more}. Den här enheten kommer ihåg ditt val.',
   'new.change.oled': '{oled} under {design} ger det mörka utseendet äkta svart för OLED- och AMOLED-skärmar. Det gäller när det mörka utseendet syns, även när det följer systemet, och varje enhet minns sitt eget val.',
+  'new.change.systemAccent': 'Färgprovet med trollstaven först i {accent} tar ditt systems färg: Material You från Android 12, accentfärgen i Windows, macOS eller Linux i skrivbordsappen och systemfärgen i Firefox och Safari. Där systemet saknar en finns provet inte.',
 }
 
 export default sv

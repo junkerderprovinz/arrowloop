@@ -360,6 +360,8 @@ const ms: Translations = {
   'look.square': 'Lurus',
   'look.leaf': 'Daun',
   'look.accent': 'Warna aksen',
+  'look.systemAccent': 'Warna sistem',
+  'look.systemAccentTip': 'Mengikut warna sistem.',
   'look.colors': 'Warna',
   'look.rainbowOn': 'Mod Pelangi',
   'look.rainbowReactive': 'Mod reaktif',
@@ -1351,6 +1353,7 @@ const ms: Translations = {
   'new.change.jobOrder': 'Anda boleh menyusun tugas mengikut susunan sendiri: seret tugas melalui pemegangnya, atau tekan Alt dan kekunci anak panah padanya. Pada telefon, tahan tugas lalu seret. {history}, {trash} dan {conflicts} memaparkan tugas dalam susunan yang sama.',
   'new.change.jobsCompact': '{compact} di atas senarai tugas memaparkan setiap tugas dalam satu baris: status, larian terakhir, {runNow} dan {more}. Peranti ini mengingati pilihan anda.',
   'new.change.oled': '{oled} di bawah {design} menjadikan rupa gelap hitam sebenar untuk skrin OLED dan AMOLED. Ia terpakai setiap kali rupa gelap kelihatan, juga apabila ia mengikut sistem, dan setiap peranti mengingati pilihannya sendiri.',
+  'new.change.systemAccent': 'Sampel bertongkat sakti di awal {accent} mengikut warna sistem anda: Material You pada Android 12 dan lebih baharu, warna aksen Windows, macOS atau Linux dalam apl desktop, dan warna sistem dalam Firefox dan Safari. Jika sistem tiada warna, sampel itu tidak muncul.',
 }
 
 export default ms

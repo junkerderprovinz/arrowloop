@@ -86,6 +86,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.oled',
         names: { oled: 'look.oled', design: 'look.design' },
       },
+      {
+        id: 'system-accent',
+        at: ['/settings/look'],
+        where: ['nav.settings', 'settings.look'],
+        text: 'new.change.systemAccent',
+        names: { accent: 'look.accent' },
+      },
     ],
   },
   {
