@@ -14,6 +14,7 @@ godebug winsymlink=0
 require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-webauthn/webauthn v0.18.2
+	github.com/godbus/dbus/v5 v5.2.2
 	github.com/pkg/sftp v1.13.12
 	github.com/rclone/gofakes3 v0.0.12
 	github.com/rclone/rclone v1.75.2

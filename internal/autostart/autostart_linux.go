@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
 )
 
 const supported = true
@@ -13,8 +15,18 @@ const supported = true
 var errUnsupported = errors.New("autostart is not supported on this system")
 
 // entryPath is the file freedesktop session managers read on login, under
-// XDG_CONFIG_HOME when the session sets it.
+// XDG_CONFIG_HOME when the session sets it. Inside a Flatpak it is the file
+// the Background portal writes under the app's ID. The sandbox points
+// XDG_CONFIG_HOME into ~/.var/app, which the session never reads, so that path
+// starts from the home directory.
 func entryPath() (string, error) {
+	if id := flatpak.ID(); id != "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(home, ".config", "autostart", id+".desktop"), nil
+	}
 	dir := os.Getenv("XDG_CONFIG_HOME")
 	if dir == "" {
 		home, err := os.UserHomeDir()
@@ -44,7 +56,11 @@ func enabled() (bool, error) {
 }
 
 // pointsAt reports whether the existing entry already names this executable.
+// The portal's entry starts the app through `flatpak run`, which always does.
 func pointsAt(exe string) (bool, error) {
+	if flatpak.ID() != "" {
+		return true, nil
+	}
 	path, err := entryPath()
 	if err != nil {
 		return false, err
@@ -65,6 +81,16 @@ func pointsAt(exe string) (bool, error) {
 }
 
 func enable(exe string) error {
+	if flatpak.ID() != "" {
+		granted, err := background(true, []string{filepath.Base(exe), arg})
+		if err != nil {
+			return err
+		}
+		if !granted {
+			return errors.New("the desktop did not allow ArrowLoop to start when you sign in")
+		}
+		return nil
+	}
 	path, err := entryPath()
 	if err != nil {
 		return err
@@ -76,6 +102,10 @@ func enable(exe string) error {
 }
 
 func disable() error {
+	if flatpak.ID() != "" {
+		_, err := background(false, nil)
+		return err
+	}
 	path, err := entryPath()
 	if err != nil {
 		return err
