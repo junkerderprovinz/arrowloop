@@ -988,7 +988,7 @@ const ca: Translations = {
   'provider.icloudHint': 'Inicia la sessió amb la contrasenya de l\'Apple ID i un testimoni de confiança de rclone config, que Apple torna a demanar al cap de 30 dies.',
   'opt.icloudTrustHint': 'Apple només deixa entrar rclone amb el testimoni de confiança d\'un inici de sessió que hàgiu confirmat amb el codi enviat als vostres dispositius. En un ordinador, afegiu un remote d\'iCloud Drive amb rclone config i copieu trust_token i cookies de la seva secció de rclone.conf a aquests camps. Al cap de 30 dies Apple torna a preguntar: executeu-hi rclone config reconnect i torneu a enganxar tots dos.',
   'opt.icloudCookiesHint': 'Les galetes de sessió de la mateixa secció de rclone.conf que el testimoni de confiança. Enganxeu tots dos del mateix inici de sessió.',
-  'opt.ftpConcurrencyHint': 'Quantes connexions obre ArrowLoop alhora amb aquest servidor. Una aplicació de servidor FTP en un mòbil sovint només admet uns quants inicis de sessió, així que abaixa aquest valor si el servidor diu que ha arribat al límit. 0 vol dir sense límit.',
+  'opt.ftpConcurrencyHint': 'Quantes connexions obre ArrowLoop alhora amb aquest servidor. Si el servidor rebutja inicis de sessió, ArrowLoop torna a provar sol amb menys i recorda el nombre. Posa-hi un valor només si el vols fixar. 0 vol dir sense límit.',
   'provider.googlephotosHint': 'Només fotos, i sobretot per llegir.',
   'provider.selfHostedHint': 'Emmagatzematge d\'objectes que gestiones tu mateix. Necessita l\'adreça del seu punt final.',
   'provider.alias': 'Àlies',

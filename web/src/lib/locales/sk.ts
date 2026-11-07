@@ -988,7 +988,7 @@ const sk: Translations = {
   'provider.icloudHint': 'Prihlasuje sa heslom k Apple ID a tokenom dôvery z rclone config, o ktorý Apple po 30 dňoch požiada znova.',
   'opt.icloudTrustHint': 'Apple pustí rclone dnu len s tokenom dôvery z prihlásenia, ktoré ste potvrdili kódom poslaným do svojich zariadení. Na počítači pridajte cez rclone config remote iCloud Drive a skopírujte trust_token a cookies z jeho sekcie v rclone.conf do týchto polí. Po 30 dňoch sa Apple opýta znova: spustite tam rclone config reconnect a vložte oboje znova.',
   'opt.icloudCookiesHint': 'Súbory cookie relácie z rovnakej sekcie rclone.conf ako token dôvery. Vložte oboje z toho istého prihlásenia.',
-  'opt.ftpConcurrencyHint': 'Koľko spojení ArrowLoop k tomuto serveru otvára naraz. Aplikácia s FTP serverom v telefóne často povolí len niekoľko prihlásení, takže hodnotu zníž, ak server hlási, že limit prihlásení je dosiahnutý. 0 znamená bez obmedzenia.',
+  'opt.ftpConcurrencyHint': 'Koľko spojení ArrowLoop k tomuto serveru otvára naraz. Keď server odmietne prihlásenie, ArrowLoop to sám skúsi znova s menším počtom a zapamätá si ho. Hodnotu sem zadajte, len ak ju chcete pevne nastaviť. 0 znamená bez obmedzenia.',
   'provider.googlephotosHint': 'Len fotky, a hlavne na čítanie.',
   'provider.selfHostedHint': 'Objektové úložisko, ktoré prevádzkujete sami. Potrebuje adresu svojho koncového bodu.',
   'provider.alias': 'Alias',

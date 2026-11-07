@@ -988,7 +988,7 @@ const fr: Translations = {
   'provider.icloudHint': 'Se connecte avec le mot de passe de votre identifiant Apple et un jeton de confiance obtenu avec rclone config, qu\'Apple redemande au bout de 30 jours.',
   'opt.icloudTrustHint': 'Apple ne laisse entrer rclone qu\'avec le jeton de confiance d\'une connexion confirmée par le code envoyé à vos appareils. Sur un ordinateur, ajoutez un remote iCloud Drive avec rclone config, puis copiez trust_token et cookies depuis sa section de rclone.conf dans ces champs. Au bout de 30 jours, Apple redemande : lancez-y rclone config reconnect et recollez les deux.',
   'opt.icloudCookiesHint': 'Les cookies de session, dans la même section de rclone.conf que le jeton de confiance. Collez les deux depuis la même connexion.',
-  'opt.ftpConcurrencyHint': 'Le nombre de connexions qu\'ArrowLoop ouvre en même temps vers ce serveur. Une application de serveur FTP sur un téléphone n\'accepte souvent que quelques connexions, alors baissez cette valeur si le serveur dit que sa limite de connexions est atteinte. 0 signifie sans limite.',
+  'opt.ftpConcurrencyHint': 'Le nombre de connexions qu\'ArrowLoop ouvre en même temps vers ce serveur. Si le serveur refuse des connexions, ArrowLoop réessaie de lui-même avec moins et retient ce nombre. N\'indiquez une valeur ici que si vous voulez la fixer. 0 signifie sans limite.',
   'provider.googlephotosHint': 'Photos uniquement, et surtout en lecture.',
   'provider.selfHostedHint': 'Un stockage objet que vous hébergez vous-même. Il lui faut l\'adresse de son point de terminaison.',
   'provider.alias': 'Alias',

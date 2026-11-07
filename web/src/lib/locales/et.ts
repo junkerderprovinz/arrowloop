@@ -988,7 +988,7 @@ const et: Translations = {
   'provider.icloudHint': 'Logib sisse Apple ID parooli ja rclone config\'ist saadud usaldusloaga, mida Apple 30 päeva pärast uuesti küsib.',
   'opt.icloudTrustHint': 'Apple laseb rclone\'i sisse ainult sellise sisselogimise usaldusloaga, mille kinnitasid seadmetele saadetud koodiga. Lisa arvutis rclone config\'iga iCloud Drive\'i remote ja kopeeri trust_token ja cookies selle jaotisest failis rclone.conf nendesse väljadesse. 30 päeva pärast küsib Apple uuesti: käivita seal rclone config reconnect ja kleebi mõlemad uuesti.',
   'opt.icloudCookiesHint': 'Seansi küpsised failist rclone.conf samast jaotisest, kus on usaldusluba. Kleebi mõlemad samast sisselogimisest.',
-  'opt.ftpConcurrencyHint': 'Mitu ühendust ArrowLoop selle serveriga korraga avab. Telefoni FTP-serveri rakendus lubab sageli vaid mõnda sisselogimist, nii et vähenda seda, kui server ütleb, et sisselogimiste piir on täis. 0 tähendab piiranguta.',
+  'opt.ftpConcurrencyHint': 'Mitu ühendust ArrowLoop selle serveriga korraga avab. Kui server sisselogimisi tagasi lükkab, proovib ArrowLoop ise vähematega uuesti ja jätab arvu meelde. Sisesta siia väärtus ainult siis, kui tahad selle kindlaks määrata. 0 tähendab piiranguta.',
   'provider.googlephotosHint': 'Ainult fotod, ja peamiselt lugemiseks.',
   'provider.selfHostedHint': 'Objektisalvestus, mida käitad ise. Selleks on vaja selle lõpp-punkti aadressi.',
   'provider.alias': 'Alias',

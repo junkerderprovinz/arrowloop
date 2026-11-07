@@ -988,7 +988,7 @@ const he: Translations = {
   'provider.icloudHint': 'מתחבר עם הסיסמה של Apple ID ואסימון אמון מ-rclone config, ש-Apple מבקשת שוב אחרי 30 יום.',
   'opt.icloudTrustHint': 'Apple מכניסה את rclone רק עם אסימון האמון של כניסה שאישרת בקוד שנשלח למכשירים שלך. במחשב, הוסף remote של iCloud Drive עם rclone config והעתק את trust_token ואת cookies מהמקטע שלו ב-rclone.conf לשדות האלה. אחרי 30 יום Apple שואלת שוב: הרץ שם rclone config reconnect והדבק את שניהם מחדש.',
   'opt.icloudCookiesHint': 'עוגיות ההפעלה מאותו מקטע ב-rclone.conf שבו נמצא אסימון האמון. הדבק את שניהם מאותה כניסה.',
-  'opt.ftpConcurrencyHint': 'כמה חיבורים ArrowLoop פותח לשרת הזה בו-זמנית. אפליקציית שרת FTP בטלפון מאפשרת לעיתים קרובות רק מעט התחברויות, לכן הורד את הערך אם השרת אומר שמגבלת ההתחברויות הושגה. 0 פירושו ללא מגבלה.',
+  'opt.ftpConcurrencyHint': 'כמה חיבורים ArrowLoop פותח לשרת הזה בבת אחת. אם השרת דוחה התחברויות, ArrowLoop מנסה שוב בעצמו עם פחות וזוכר את המספר. הזינו כאן ערך רק אם אתם רוצים לקבע אותו. 0 פירושו ללא הגבלה.',
   'provider.googlephotosHint': 'תמונות בלבד, ובעיקר לקריאה.',
   'provider.selfHostedHint': 'אחסון אובייקטים שאתם מפעילים בעצמכם. הוא צריך את הכתובת של נקודת הקצה שלו.',
   'provider.alias': 'כינוי',

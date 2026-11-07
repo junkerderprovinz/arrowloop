@@ -988,7 +988,7 @@ const vi: Translations = {
   'provider.icloudHint': 'Đăng nhập bằng mật khẩu Apple ID và mã tin cậy từ rclone config, Apple sẽ đòi lại sau 30 ngày.',
   'opt.icloudTrustHint': 'Apple chỉ cho rclone vào bằng mã tin cậy của một lần đăng nhập bạn đã xác nhận bằng mã gửi tới thiết bị của bạn. Trên một máy tính, thêm một remote iCloud Drive bằng rclone config, rồi chép trust_token và cookies từ phần của nó trong rclone.conf vào các ô này. Sau 30 ngày Apple hỏi lại: chạy rclone config reconnect ở đó và dán lại cả hai.',
   'opt.icloudCookiesHint': 'Cookie của phiên từ cùng phần trong rclone.conf với mã tin cậy. Dán cả hai từ cùng một lần đăng nhập.',
-  'opt.ftpConcurrencyHint': 'Số kết nối ArrowLoop mở cùng lúc tới máy chủ này. Ứng dụng máy chủ FTP trên điện thoại thường chỉ cho phép vài lần đăng nhập, nên hãy giảm giá trị này nếu máy chủ báo đã đạt giới hạn đăng nhập. 0 nghĩa là không giới hạn.',
+  'opt.ftpConcurrencyHint': 'Số kết nối ArrowLoop mở cùng lúc tới máy chủ này. Nếu máy chủ từ chối đăng nhập, ArrowLoop tự thử lại với ít kết nối hơn và ghi nhớ con số đó. Chỉ nhập giá trị ở đây nếu bạn muốn cố định nó. 0 nghĩa là không giới hạn.',
   'provider.googlephotosHint': 'Chỉ ảnh, và chủ yếu để đọc.',
   'provider.selfHostedHint': 'Lưu trữ đối tượng do bạn tự vận hành. Nó cần địa chỉ điểm cuối của mình.',
   'provider.alias': 'Bí danh',

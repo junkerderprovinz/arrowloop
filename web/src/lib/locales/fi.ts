@@ -988,7 +988,7 @@ const fi: Translations = {
   'provider.icloudHint': 'Kirjautuu Apple ID:n salasanalla ja rclone configista saadulla luottamustunnisteella, jota Apple pyytää uudelleen 30 päivän kuluttua.',
   'opt.icloudTrustHint': 'Apple päästää rclonen sisään vain sellaisen kirjautumisen luottamustunnisteella, jonka vahvistit laitteillesi lähetetyllä koodilla. Lisää tietokoneella iCloud Drive -remote rclone configilla ja kopioi trust_token ja cookies sen osiosta rclone.conf-tiedostossa näihin kenttiin. 30 päivän kuluttua Apple kysyy uudelleen: aja siellä rclone config reconnect ja liitä molemmat uudestaan.',
   'opt.icloudCookiesHint': 'Istunnon evästeet samasta rclone.conf-osiosta kuin luottamustunniste. Liitä molemmat samasta kirjautumisesta.',
-  'opt.ftpConcurrencyHint': 'Kuinka monta yhteyttä ArrowLoop avaa tähän palvelimeen kerrallaan. Puhelimen FTP-palvelinsovellus sallii usein vain muutaman kirjautumisen, joten pienennä arvoa, jos palvelin sanoo kirjautumisrajan täyttyneen. 0 tarkoittaa, ettei rajaa ole.',
+  'opt.ftpConcurrencyHint': 'Kuinka monta yhteyttä ArrowLoop avaa tähän palvelimeen kerralla. Jos palvelin torjuu kirjautumisia, ArrowLoop yrittää itse uudelleen pienemmällä määrällä ja muistaa luvun. Anna arvo tähän vain, jos haluat lukita sen. 0 tarkoittaa ei rajaa.',
   'provider.googlephotosHint': 'Vain kuvia, ja lähinnä lukemiseen.',
   'provider.selfHostedHint': 'Objektitallennus, jota ylläpidät itse. Se tarvitsee päätepisteensä osoitteen.',
   'provider.alias': 'Alias',

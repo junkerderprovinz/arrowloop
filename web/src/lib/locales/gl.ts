@@ -988,7 +988,7 @@ const gl: Translations = {
   'provider.icloudHint': 'Inicia sesión co contrasinal do teu Apple ID e un token de confianza de rclone config, que Apple volve pedir aos 30 días.',
   'opt.icloudTrustHint': 'Apple só deixa entrar a rclone co token de confianza dun inicio de sesión que confirmaches co código enviado aos teus dispositivos. Nun ordenador, engade un remote de iCloud Drive con rclone config e copia trust_token e cookies da súa sección en rclone.conf a estes campos. Aos 30 días Apple volve preguntar: executa alí rclone config reconnect e pega os dous de novo.',
   'opt.icloudCookiesHint': 'As cookies de sesión da mesma sección de rclone.conf que o token de confianza. Pega os dous do mesmo inicio de sesión.',
-  'opt.ftpConcurrencyHint': 'Cantas conexións abre ArrowLoop á vez con este servidor. Unha aplicación de servidor FTP nun móbil adoita admitir só uns poucos inicios de sesión, así que baixa este valor se o servidor di que chegou ao seu límite. 0 significa sen límite.',
+  'opt.ftpConcurrencyHint': 'Cantas conexións abre ArrowLoop á vez con este servidor. Se o servidor rexeita inicios de sesión, ArrowLoop volve tentalo por si mesmo con menos e lembra o número. Pon un valor aquí só se queres fixalo. 0 significa sen límite.',
   'provider.googlephotosHint': 'Só fotos, e sobre todo para ler.',
   'provider.selfHostedHint': 'Almacenamento de obxectos que xestionas ti. Precisa o enderezo do seu punto final.',
   'provider.alias': 'Alias',

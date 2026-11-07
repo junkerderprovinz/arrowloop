@@ -988,7 +988,7 @@ const ko: Translations = {
   'provider.icloudHint': 'Apple ID 암호와 rclone config로 받은 신뢰 토큰으로 로그인하며, Apple은 30일 뒤 다시 요구합니다.',
   'opt.icloudTrustHint': 'Apple은 기기로 받은 코드로 확인한 로그인의 신뢰 토큰이 있어야만 rclone을 들여보냅니다. 컴퓨터에서 rclone config로 iCloud Drive remote를 추가한 다음 rclone.conf의 해당 항목에서 trust_token과 cookies를 이 칸에 복사하세요. 30일 뒤 Apple이 다시 요구하면 그곳에서 rclone config reconnect를 실행하고 둘 다 다시 붙여 넣으세요.',
   'opt.icloudCookiesHint': '신뢰 토큰과 같은 rclone.conf 항목에 있는 세션 쿠키입니다. 둘 다 같은 로그인에서 붙여 넣으세요.',
-  'opt.ftpConcurrencyHint': 'ArrowLoop이 이 서버에 동시에 여는 연결 수입니다. 휴대폰의 FTP 서버 앱은 로그인을 몇 개만 허용하는 경우가 많으니, 서버가 로그인 한도에 도달했다고 하면 이 값을 낮추세요. 0은 제한 없음입니다.',
+  'opt.ftpConcurrencyHint': 'ArrowLoop가 이 서버에 동시에 여는 연결 수입니다. 서버가 로그인을 거부하면 ArrowLoop가 스스로 더 적은 수로 다시 시도하고 그 수를 기억합니다. 값을 고정하고 싶을 때만 여기에 입력하세요. 0은 제한 없음입니다.',
   'provider.googlephotosHint': '사진만 다루며 주로 읽기용입니다.',
   'provider.selfHostedHint': '직접 운영하는 오브젝트 스토리지입니다. 엔드포인트 주소가 필요합니다.',
   'provider.alias': '별칭',

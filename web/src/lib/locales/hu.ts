@@ -988,7 +988,7 @@ const hu: Translations = {
   'provider.icloudHint': 'Az Apple ID jelszavával és az rclone configból kapott bizalmi tokennel jelentkezik be, amelyet az Apple 30 nap után újra kér.',
   'opt.icloudTrustHint': 'Az Apple csak egy olyan bejelentkezés bizalmi tokenjével engedi be az rclone-t, amelyet az eszközeidre küldött kóddal erősítettél meg. Egy számítógépen adj hozzá rclone configgal egy iCloud Drive remote-ot, majd másold a trust_token és cookies értékét a rclone.conf megfelelő szakaszából ezekbe a mezőkbe. 30 nap után az Apple újra kérdez: futtasd ott az rclone config reconnect parancsot, és illeszd be mindkettőt újra.',
   'opt.icloudCookiesHint': 'A munkamenet sütijei a rclone.conf ugyanazon szakaszából, ahol a bizalmi token van. Mindkettőt ugyanabból a bejelentkezésből illeszd be.',
-  'opt.ftpConcurrencyHint': 'Hány kapcsolatot nyit egyszerre az ArrowLoop ehhez a szerverhez. Egy telefonos FTP-szerveralkalmazás gyakran csak néhány bejelentkezést enged, ezért csökkentsd az értéket, ha a szerver azt jelzi, hogy elérte a bejelentkezési korlátot. A 0 azt jelenti, hogy nincs korlát.',
+  'opt.ftpConcurrencyHint': 'Hány kapcsolatot nyit egyszerre az ArrowLoop ehhez a szerverhez. Ha a szerver elutasítja a bejelentkezéseket, az ArrowLoop magától újrapróbálja kevesebbel, és megjegyzi a számot. Csak akkor adj meg itt értéket, ha rögzíteni szeretnéd. A 0 azt jelenti, nincs korlát.',
   'provider.googlephotosHint': 'Csak fotók, és főleg olvasásra.',
   'provider.selfHostedHint': 'Saját magad által üzemeltetett objektumtár. Szüksége van a végpontja címére.',
   'provider.alias': 'Alias',

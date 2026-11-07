@@ -988,7 +988,7 @@ const id: Translations = {
   'provider.icloudHint': 'Masuk dengan kata sandi Apple ID dan token kepercayaan dari rclone config, yang diminta Apple lagi setelah 30 hari.',
   'opt.icloudTrustHint': 'Apple hanya mengizinkan rclone masuk dengan token kepercayaan dari login yang Anda konfirmasi dengan kode yang dikirim ke perangkat Anda. Di komputer, tambahkan remote iCloud Drive dengan rclone config, lalu salin trust_token dan cookies dari bagiannya di rclone.conf ke kolom ini. Setelah 30 hari Apple bertanya lagi: jalankan rclone config reconnect di sana dan tempel keduanya lagi.',
   'opt.icloudCookiesHint': 'Cookie sesi dari bagian rclone.conf yang sama dengan token kepercayaan. Tempel keduanya dari login yang sama.',
-  'opt.ftpConcurrencyHint': 'Berapa banyak koneksi yang dibuka ArrowLoop ke server ini sekaligus. Aplikasi server FTP di ponsel sering hanya mengizinkan beberapa login, jadi turunkan nilai ini jika server bilang batas loginnya tercapai. 0 berarti tanpa batas.',
+  'opt.ftpConcurrencyHint': 'Berapa banyak koneksi yang dibuka ArrowLoop ke server ini sekaligus. Jika server menolak login, ArrowLoop mencoba lagi sendiri dengan lebih sedikit dan mengingat angkanya. Isi nilai di sini hanya jika Anda ingin menetapkannya. 0 berarti tanpa batas.',
   'provider.googlephotosHint': 'Hanya foto, dan sebagian besar untuk dibaca.',
   'provider.selfHostedHint': 'Penyimpanan objek yang Anda jalankan sendiri. Perlu alamat titik akhirnya.',
   'provider.alias': 'Alias',

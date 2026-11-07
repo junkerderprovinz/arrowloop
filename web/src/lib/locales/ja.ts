@@ -988,7 +988,7 @@ const ja: Translations = {
   'provider.icloudHint': 'Apple ID のパスワードと rclone config で得た信頼トークンでサインインします。Apple は 30 日後に再び求めます。',
   'opt.icloudTrustHint': 'Apple は、デバイスに届いたコードで確認したサインインの信頼トークンがあるときだけ rclone を入れます。パソコンで rclone config を使って iCloud Drive の remote を追加し、rclone.conf のその項目から trust_token と cookies をこの欄にコピーしてください。30 日後に Apple が再び求めたら、そこで rclone config reconnect を実行して両方を貼り直します。',
   'opt.icloudCookiesHint': '信頼トークンと同じ rclone.conf の項目にあるセッションの Cookie です。両方を同じサインインから貼り付けてください。',
-  'opt.ftpConcurrencyHint': 'ArrowLoop がこのサーバーに同時に開く接続の数です。スマートフォンの FTP サーバーアプリは少しのログインしか受け付けないことが多いので、ログインの上限に達したとサーバーが言う場合は下げてください。0 は上限なしです。',
+  'opt.ftpConcurrencyHint': 'ArrowLoop がこのサーバーに同時に開く接続の数です。サーバーがログインを断ると、ArrowLoop は自動で少ない数で再試行し、その数を覚えます。数を固定したいときだけここに入力してください。0 は上限なしです。',
   'provider.googlephotosHint': '写真のみで、主に読み取り用です。',
   'provider.selfHostedHint': '自分で運用するオブジェクトストレージ。エンドポイントのアドレスが必要です。',
   'provider.alias': 'エイリアス',

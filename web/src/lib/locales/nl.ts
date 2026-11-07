@@ -988,7 +988,7 @@ const nl: Translations = {
   'provider.icloudHint': 'Meldt zich aan met je Apple ID-wachtwoord en een vertrouwenstoken uit rclone config, waar Apple na 30 dagen opnieuw om vraagt.',
   'opt.icloudTrustHint': 'Apple laat rclone alleen binnen met het vertrouwenstoken van een aanmelding die je hebt bevestigd met de code die naar je apparaten is gestuurd. Voeg op een computer met rclone config een iCloud Drive-remote toe en kopieer trust_token en cookies uit de sectie in rclone.conf naar deze velden. Na 30 dagen vraagt Apple opnieuw: voer daar rclone config reconnect uit en plak beide opnieuw.',
   'opt.icloudCookiesHint': 'De sessiecookies uit dezelfde sectie van rclone.conf als het vertrouwenstoken. Plak beide uit dezelfde aanmelding.',
-  'opt.ftpConcurrencyHint': 'Hoeveel verbindingen ArrowLoop tegelijk met deze server opent. Een FTP-server-app op een telefoon laat vaak maar een paar aanmeldingen toe, dus verlaag dit als de server zegt dat de limiet voor aanmeldingen bereikt is. 0 betekent geen limiet.',
+  'opt.ftpConcurrencyHint': 'Hoeveel verbindingen ArrowLoop tegelijk met deze server opent. Als de server aanmeldingen weigert, probeert ArrowLoop het zelf opnieuw met minder en onthoudt het aantal. Vul hier alleen een waarde in als je die wilt vastleggen. 0 betekent geen limiet.',
   'provider.googlephotosHint': 'Alleen foto\'s, en vooral om te lezen.',
   'provider.selfHostedHint': 'Objectopslag die je zelf draait. Er is het adres van het eindpunt voor nodig.',
   'provider.alias': 'Alias',

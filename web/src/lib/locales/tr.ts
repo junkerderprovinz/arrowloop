@@ -988,7 +988,7 @@ const tr: Translations = {
   'provider.icloudHint': 'Apple Kimliği parolası ve rclone config ile alınan bir güven belirteciyle oturum açar; Apple bunu 30 gün sonra yeniden ister.',
   'opt.icloudTrustHint': 'Apple, rclone\'u yalnızca cihazlarınıza gönderilen kodla onayladığınız bir oturum açmanın güven belirteciyle içeri alır. Bir bilgisayarda rclone config ile bir iCloud Drive remote\'u ekleyin, sonra trust_token ve cookies değerlerini rclone.conf içindeki bölümünden bu alanlara kopyalayın. 30 gün sonra Apple yeniden sorar: orada rclone config reconnect çalıştırın ve ikisini de yeniden yapıştırın.',
   'opt.icloudCookiesHint': 'Güven belirteciyle aynı rclone.conf bölümündeki oturum çerezleri. İkisini de aynı oturum açmadan yapıştırın.',
-  'opt.ftpConcurrencyHint': 'ArrowLoop\'un bu sunucuya aynı anda kaç bağlantı açtığı. Telefondaki bir FTP sunucu uygulaması çoğu zaman yalnızca birkaç oturuma izin verir, bu yüzden sunucu oturum sınırına ulaşıldığını söylerse bu değeri düşür. 0 sınır yok demektir.',
+  'opt.ftpConcurrencyHint': 'ArrowLoop\'un bu sunucuya aynı anda kaç bağlantı açtığı. Sunucu oturum açmaları reddederse ArrowLoop kendiliğinden daha azıyla yeniden dener ve sayıyı hatırlar. Buraya yalnızca sabitlemek istiyorsanız bir değer girin. 0 sınırsız demektir.',
   'provider.googlephotosHint': 'Yalnızca fotoğraflar, ve çoğunlukla okumak için.',
   'provider.selfHostedHint': 'Kendin çalıştırdığın nesne depolama. Uç noktasının adresine ihtiyaç duyar.',
   'provider.alias': 'Takma ad',

@@ -988,7 +988,7 @@ const hr: Translations = {
   'provider.icloudHint': 'Prijavljuje se lozinkom za Apple ID i tokenom povjerenja iz rclone config, koji Apple ponovno traži nakon 30 dana.',
   'opt.icloudTrustHint': 'Apple pušta rclone unutra samo s tokenom povjerenja prijave koju ste potvrdili kodom poslanim na svoje uređaje. Na računalu dodajte iCloud Drive remote pomoću rclone config i kopirajte trust_token i cookies iz njegova odjeljka u rclone.conf u ova polja. Nakon 30 dana Apple ponovno pita: ondje pokrenite rclone config reconnect i ponovno zalijepite oboje.',
   'opt.icloudCookiesHint': 'Kolačići sesije iz istog odjeljka rclone.conf kao i token povjerenja. Zalijepite oboje iz iste prijave.',
-  'opt.ftpConcurrencyHint': 'Koliko veza ArrowLoop istodobno otvara prema ovom poslužitelju. Aplikacija FTP poslužitelja na mobitelu često dopušta samo nekoliko prijava, pa smanji vrijednost ako poslužitelj javi da je dosegnuto ograničenje prijava. 0 znači bez ograničenja.',
+  'opt.ftpConcurrencyHint': 'Koliko veza ArrowLoop istodobno otvara prema ovom poslužitelju. Ako poslužitelj odbije prijave, ArrowLoop sam pokuša ponovno s manje veza i zapamti broj. Ovdje unesite vrijednost samo ako je želite fiksirati. 0 znači bez ograničenja.',
   'provider.googlephotosHint': 'Samo fotografije, i uglavnom za čitanje.',
   'provider.selfHostedHint': 'Objektna pohrana koju sami vodite. Treba adresu svoje krajnje točke.',
   'provider.alias': 'Alias',

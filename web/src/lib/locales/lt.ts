@@ -988,7 +988,7 @@ const lt: Translations = {
   'provider.icloudHint': 'Prisijungia su Apple ID slaptažodžiu ir pasitikėjimo raktu iš rclone config, kurio Apple vėl paprašo po 30 dienų.',
   'opt.icloudTrustHint': 'Apple įleidžia rclone tik su prisijungimo, kurį patvirtinote į įrenginius atsiųstu kodu, pasitikėjimo raktu. Kompiuteryje su rclone config pridėkite iCloud Drive remote ir nukopijuokite trust_token bei cookies iš jo skyriaus rclone.conf faile į šiuos laukus. Po 30 dienų Apple paklausia vėl: ten paleiskite rclone config reconnect ir įklijuokite abu iš naujo.',
   'opt.icloudCookiesHint': 'Seanso slapukai iš to paties rclone.conf skyriaus kaip ir pasitikėjimo raktas. Įklijuokite abu iš to paties prisijungimo.',
-  'opt.ftpConcurrencyHint': 'Kiek ryšių ArrowLoop vienu metu atidaro su šiuo serveriu. FTP serverio programa telefone dažnai leidžia tik kelis prisijungimus, tad sumažink reikšmę, jei serveris praneša, kad prisijungimų riba pasiekta. 0 reiškia be ribos.',
+  'opt.ftpConcurrencyHint': 'Kiek jungčių ArrowLoop vienu metu atidaro su šiuo serveriu. Jei serveris atmeta prisijungimus, ArrowLoop pats bando iš naujo su mažiau ir įsimena skaičių. Įveskite reikšmę čia tik tada, jei norite ją nustatyti pastoviai. 0 reiškia be ribos.',
   'provider.googlephotosHint': 'Tik nuotraukos, ir daugiausia skaitymui.',
   'provider.selfHostedHint': 'Objektų saugykla, kurią prižiūrite patys. Jai reikia jos galinio taško adreso.',
   'provider.alias': 'Slapyvardis',

@@ -988,7 +988,7 @@ const no: Translations = {
   'provider.icloudHint': 'Logger inn med Apple ID-passordet og et tillitstoken fra rclone config, som Apple ber om igjen etter 30 dager.',
   'opt.icloudTrustHint': 'Apple slipper bare inn rclone med tillitstokenet fra en pålogging du bekreftet med koden som ble sendt til enhetene dine. Legg til et iCloud Drive-remote med rclone config på en datamaskin, og kopier trust_token og cookies fra delen i rclone.conf inn i disse feltene. Etter 30 dager spør Apple igjen: kjør rclone config reconnect der og lim inn begge på nytt.',
   'opt.icloudCookiesHint': 'Øktens informasjonskapsler fra samme del av rclone.conf som tillitstokenet. Lim inn begge fra samme pålogging.',
-  'opt.ftpConcurrencyHint': 'Hvor mange tilkoblinger ArrowLoop åpner mot denne serveren om gangen. En FTP-server-app på en telefon tillater ofte bare noen få innlogginger, så senk tallet hvis serveren sier at grensen for innlogginger er nådd. 0 betyr ingen grense.',
+  'opt.ftpConcurrencyHint': 'Hvor mange tilkoblinger ArrowLoop åpner mot denne serveren samtidig. Hvis serveren avviser innlogginger, prøver ArrowLoop selv igjen med færre og husker tallet. Sett bare inn en verdi her hvis du vil låse den. 0 betyr ingen grense.',
   'provider.googlephotosHint': 'Bare bilder, og mest for lesing.',
   'provider.selfHostedHint': 'Objektlagring du drifter selv. Den trenger adressen til endepunktet sitt.',
   'provider.alias': 'Alias',

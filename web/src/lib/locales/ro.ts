@@ -988,7 +988,7 @@ const ro: Translations = {
   'provider.icloudHint': 'Se conectează cu parola Apple ID și un token de încredere din rclone config, pe care Apple îl cere din nou după 30 de zile.',
   'opt.icloudTrustHint': 'Apple lasă rclone să intre doar cu tokenul de încredere al unei autentificări confirmate cu codul trimis pe dispozitivele tale. Pe un computer, adaugă un remote iCloud Drive cu rclone config, apoi copiază trust_token și cookies din secțiunea lui din rclone.conf în aceste câmpuri. După 30 de zile Apple întreabă din nou: rulează acolo rclone config reconnect și lipește-le pe amândouă din nou.',
   'opt.icloudCookiesHint': 'Cookie-urile sesiunii din aceeași secțiune a rclone.conf ca tokenul de încredere. Lipește-le pe amândouă din aceeași autentificare.',
-  'opt.ftpConcurrencyHint': 'Câte conexiuni deschide ArrowLoop deodată către acest server. O aplicație de server FTP pe telefon permite adesea doar câteva autentificări, așa că scade valoarea dacă serverul spune că limita de autentificări a fost atinsă. 0 înseamnă fără limită.',
+  'opt.ftpConcurrencyHint': 'Câte conexiuni deschide ArrowLoop simultan către acest server. Dacă serverul refuză autentificări, ArrowLoop reîncearcă singur cu mai puține și reține numărul. Introdu o valoare aici doar dacă vrei să o fixezi. 0 înseamnă fără limită.',
   'provider.googlephotosHint': 'Doar fotografii, și mai ales pentru citire.',
   'provider.selfHostedHint': 'Stocare de obiecte pe care o administrezi singur. Are nevoie de adresa punctului său final.',
   'provider.alias': 'Alias',

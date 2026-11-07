@@ -988,7 +988,7 @@ const sl: Translations = {
   'provider.icloudHint': 'Prijavi se z geslom za Apple ID in žetonom zaupanja iz rclone config, ki ga Apple po 30 dneh zahteva znova.',
   'opt.icloudTrustHint': 'Apple spusti rclone noter le z žetonom zaupanja prijave, ki ste jo potrdili s kodo, poslano na vaše naprave. Na računalniku z rclone config dodajte remote iCloud Drive in kopirajte trust_token in cookies iz njegovega razdelka v rclone.conf v ta polja. Po 30 dneh Apple vpraša znova: tam zaženite rclone config reconnect in znova prilepite oboje.',
   'opt.icloudCookiesHint': 'Piškotki seje iz istega razdelka rclone.conf kot žeton zaupanja. Prilepite oboje iz iste prijave.',
-  'opt.ftpConcurrencyHint': 'Koliko povezav ArrowLoop hkrati odpre do tega strežnika. Aplikacija strežnika FTP na telefonu pogosto dovoli le nekaj prijav, zato vrednost zmanjšaj, če strežnik sporoči, da je dosežena omejitev prijav. 0 pomeni brez omejitve.',
+  'opt.ftpConcurrencyHint': 'Koliko povezav ArrowLoop hkrati odpre do tega strežnika. Če strežnik zavrne prijave, ArrowLoop sam poskusi znova z manj povezavami in si število zapomni. Vrednost vnesite tukaj le, če jo želite določiti. 0 pomeni brez omejitve.',
   'provider.googlephotosHint': 'Samo fotografije, in predvsem za branje.',
   'provider.selfHostedHint': 'Objektna shramba, ki jo upravljate sami. Potrebuje naslov svoje končne točke.',
   'provider.alias': 'Vzdevek',

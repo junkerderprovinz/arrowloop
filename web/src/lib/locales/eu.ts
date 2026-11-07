@@ -988,7 +988,7 @@ const eu: Translations = {
   'provider.icloudHint': 'Apple ID-aren pasahitzarekin eta rclone config-eko konfiantza-token batekin hasten du saioa; Applek berriro eskatzen du 30 egunen buruan.',
   'opt.icloudTrustHint': 'Applek gailuetara bidalitako kodearekin berretsi duzun saio baten konfiantza-tokenarekin bakarrik uzten dio rclone-ri sartzen. Ordenagailu batean, gehitu iCloud Drive remote bat rclone config-ekin eta kopiatu trust_token eta cookies rclone.conf-eko bere ataletik eremu hauetara. 30 egunen buruan Applek berriro galdetzen du: exekutatu han rclone config reconnect eta itsatsi biak berriro.',
   'opt.icloudCookiesHint': 'Saioaren cookieak, konfiantza-tokena dagoen rclone.conf-eko atal beretik. Itsatsi biak saio beretik.',
-  'opt.ftpConcurrencyHint': 'ArrowLoop-ek zerbitzari honekin aldi berean irekitzen dituen konexioak. Telefono bateko FTP zerbitzari aplikazio batek saio-hasiera gutxi batzuk baino ez ditu onartzen askotan, beraz jaitsi balio hau zerbitzariak saio-hasieren muga gainditu dela esaten badu. 0 mugarik gabe esan nahi du.',
+  'opt.ftpConcurrencyHint': 'Zenbat konexio irekitzen dituen ArrowLoop-ek aldi berean zerbitzari honekin. Zerbitzariak saio-hasierak baztertzen baditu, ArrowLoop-ek berak gutxiagorekin saiatzen da berriro eta kopurua gogoratzen du. Jarri balio bat hemen finkatu nahi baduzu bakarrik. 0 mugarik gabe esan nahi du.',
   'provider.googlephotosHint': 'Argazkiak soilik, eta batez ere irakurtzeko.',
   'provider.selfHostedHint': 'Zuk zeuk kudeatzen duzun objektu-biltegia. Bere amaiera-puntuaren helbidea behar du.',
   'provider.alias': 'Aliasa',

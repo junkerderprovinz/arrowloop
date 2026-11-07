@@ -988,7 +988,7 @@ const lv: Translations = {
   'provider.icloudHint': 'Pierakstās ar Apple ID paroli un uzticamības marķieri no rclone config, ko Apple pēc 30 dienām pieprasa atkal.',
   'opt.icloudTrustHint': 'Apple ielaiž rclone tikai ar tādas pierakstīšanās uzticamības marķieri, ko apstiprinājāt ar ierīcēm nosūtīto kodu. Datorā ar rclone config pievienojiet iCloud Drive remote un iekopējiet trust_token un cookies no tā sadaļas rclone.conf šajos laukos. Pēc 30 dienām Apple jautā atkal: palaidiet tur rclone config reconnect un ielīmējiet abus no jauna.',
   'opt.icloudCookiesHint': 'Sesijas sīkfaili no tās pašas rclone.conf sadaļas, kur ir uzticamības marķieris. Ielīmējiet abus no vienas pierakstīšanās.',
-  'opt.ftpConcurrencyHint': 'Cik savienojumu ArrowLoop vienlaikus atver ar šo serveri. FTP servera lietotne tālrunī bieži atļauj tikai dažas pieteikšanās, tāpēc samazini vērtību, ja serveris saka, ka pieteikšanās limits ir sasniegts. 0 nozīmē bez limita.',
+  'opt.ftpConcurrencyHint': 'Cik savienojumu ArrowLoop vienlaikus atver ar šo serveri. Ja serveris noraida pieteikšanos, ArrowLoop pats mēģina vēlreiz ar mazāk un atceras skaitu. Ievadiet vērtību šeit tikai tad, ja vēlaties to nofiksēt. 0 nozīmē bez ierobežojuma.',
   'provider.googlephotosHint': 'Tikai fotoattēli, un galvenokārt lasīšanai.',
   'provider.selfHostedHint': 'Objektu krātuve, ko uzturat paši. Tai vajag sava galapunkta adresi.',
   'provider.alias': 'Aizstājvārds',

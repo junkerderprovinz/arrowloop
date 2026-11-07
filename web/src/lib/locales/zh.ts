@@ -988,7 +988,7 @@ const zh: Translations = {
   'provider.icloudHint': '使用 Apple ID 密码和通过 rclone config 获得的信任令牌登录，Apple 会在 30 天后再次要求。',
   'opt.icloudTrustHint': 'Apple 只接受这样的 rclone 登录：带有你用发送到设备上的验证码确认过的信任令牌。在一台电脑上用 rclone config 添加一个 iCloud Drive remote，然后把 rclone.conf 中该部分的 trust_token 和 cookies 复制到这两个字段。30 天后 Apple 会再次要求：在那里运行 rclone config reconnect，再把两者重新粘贴进来。',
   'opt.icloudCookiesHint': '与信任令牌位于 rclone.conf 同一部分的会话 cookie。两者要来自同一次登录。',
-  'opt.ftpConcurrencyHint': 'ArrowLoop 同时向这台服务器打开的连接数。手机上的 FTP 服务器应用往往只允许少数几个登录，如果服务器说已达到登录上限，请调低这个值。0 表示不限制。',
+  'opt.ftpConcurrencyHint': 'ArrowLoop 同时向此服务器打开的连接数。如果服务器拒绝登录，ArrowLoop 会自动用更少的连接重试并记住这个数字。只有想固定这个数字时才在这里填写。0 表示不限制。',
   'provider.googlephotosHint': '仅限照片，而且主要用于读取。',
   'provider.selfHostedHint': '你自己运行的对象存储。需要它的端点地址。',
   'provider.alias': '别名',

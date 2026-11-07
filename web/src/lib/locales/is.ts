@@ -988,7 +988,7 @@ const is: Translations = {
   'provider.icloudHint': 'Skráir inn með lykilorði Apple ID og traustlykli úr rclone config, sem Apple biður aftur um eftir 30 daga.',
   'opt.icloudTrustHint': 'Apple hleypir rclone aðeins inn með traustlykli innskráningar sem þú staðfestir með kóðanum sem var sendur í tækin þín. Bættu við iCloud Drive remote með rclone config á tölvu og afritaðu trust_token og cookies úr hluta þess í rclone.conf í þessa reiti. Eftir 30 daga spyr Apple aftur: keyrðu þar rclone config reconnect og límdu hvort tveggja inn á ný.',
   'opt.icloudCookiesHint': 'Vafrakökur lotunnar úr sama hluta rclone.conf og traustlykillinn. Límdu hvort tveggja inn úr sömu innskráningu.',
-  'opt.ftpConcurrencyHint': 'Hve margar tengingar ArrowLoop opnar við þennan þjón í einu. FTP-þjónsforrit í síma leyfir oft aðeins fáar innskráningar, svo lækkaðu gildið ef þjónninn segir að hámarki innskráninga sé náð. 0 þýðir ekkert hámark.',
+  'opt.ftpConcurrencyHint': 'Hversu margar tengingar ArrowLoop opnar við þennan þjón í einu. Ef þjónninn hafnar innskráningum reynir ArrowLoop sjálft aftur með færri og man töluna. Settu aðeins gildi hér ef þú vilt festa það. 0 þýðir engin takmörk.',
   'provider.googlephotosHint': 'Aðeins myndir, og mest til lestrar.',
   'provider.selfHostedHint': 'Hlutageymsla sem þú rekur sjálf(ur). Hún þarf heimilisfang endapunktsins.',
   'provider.alias': 'Samnefni',
