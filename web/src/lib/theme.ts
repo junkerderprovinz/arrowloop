@@ -59,6 +59,42 @@ export function applyOled(on: boolean): void {
   }
 }
 
+/**
+ * Whether the OLED switch may be flipped under a theme choice: `dark`,
+ * `light`, or `system` and null for following the device. Under System it may,
+ * for the device's dark.
+ */
+export function oledSwitchable(theme: string | null | undefined): boolean {
+  return theme !== 'light';
+}
+
+/** The words of the OLED switch's refusal, translated by the app. */
+export interface OledRefusalText {
+  /** The sentence, with `{dark}`, `{system}` and `{light}` for the theme names. */
+  sentence: string;
+  /** The theme names as the Design picker shows them. */
+  dark: string;
+  system: string;
+  light: string;
+}
+
+/** English words, for an app in English and for the demos. */
+export const oledRefusalEn: OledRefusalText = {
+  sentence: 'Only with {dark} or {system}. {light} is chosen above.',
+  dark: 'Dark',
+  system: 'System',
+  light: 'Light',
+};
+
+/**
+ * Why the OLED switch refuses under a theme choice, or undefined while it may
+ * be flipped. Hand it to the switch's `refused`.
+ */
+export function oledRefusal(theme: string | null | undefined, text: OledRefusalText = oledRefusalEn): string | undefined {
+  if (oledSwitchable(theme)) return undefined;
+  return text.sentence.replace(/\{(dark|system|light)\}/g, (_, name: 'dark' | 'system' | 'light') => text[name]);
+}
+
 /** Whether OLED is on for this device. */
 export function storedOled(): boolean {
   try {
