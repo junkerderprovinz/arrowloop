@@ -877,6 +877,7 @@ func (j Job) Options() (engine.Options, error) {
 	if j.Transfers > 0 {
 		compare.Transfers = j.Transfers
 	}
+	compare.Transfers = j.fitTransfers(compare.Transfers)
 	if j.BrakePercent != nil {
 		compare.BrakePercent = *j.BrakePercent
 	}

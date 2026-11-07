@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"path"
 	"slices"
+	"strconv"
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -68,6 +69,10 @@ type place struct {
 	fromHome bool
 	// unnamed is set for a target whose account only its credentials know.
 	unnamed bool
+	// connections is how many connections rclone opens to the server at
+	// once, 0 for no limit. Only FTP's concurrency counts connections: SFTP's
+	// counts the requests within one.
+	connections int
 }
 
 // OnNetwork reports whether a side of the job lies off this machine, so that
@@ -163,6 +168,10 @@ func identify(name, backend, at string, get func(string) string) (place, error) 
 	}
 	p.account = b.String()
 	p.unnamed = id.signIn && !slices.ContainsFunc(id.account, func(k string) bool { return get(k) != "" })
+
+	if backend == "ftp" {
+		p.connections, _ = strconv.Atoi(get("concurrency"))
+	}
 
 	p.fromHome = id.home && !strings.HasPrefix(p.path, "/")
 	p.path = strings.Trim(path.Clean("/"+strings.ReplaceAll(p.path, `\`, "/")), "/")
