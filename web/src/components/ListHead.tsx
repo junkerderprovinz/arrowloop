@@ -7,6 +7,7 @@ import { IconClose, IconExpand, IconMoveDown, IconMoveUp, IconSearch } from './g
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { usePortalHue } from '../lib/glimstone/portalHue'
+import { useDragArmed } from '../lib/glimstone/useDragArmed'
 import type { Columns } from '../lib/columns'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { firstVisit } from '../lib/listTips'
@@ -79,10 +80,11 @@ function tipText(t: ReturnType<typeof useT>['t'], heads: Head[], search: boolean
  * device has no key to type into the list, so a magnifier at the end of the
  * row opens its search there.
  *
- * With `columns`, a head can be dragged to another place and widened by the
- * handle at its trailing edge, whose line shows while the pointer is over the
- * row; a double click on the handle gives the column its width back, and Alt
- * with an arrow key moves the focused head one place. The label is the drag
+ * With `columns`, a head can be dragged to another place, the others
+ * trembling meanwhile, and widened by the handle at its trailing edge, whose
+ * line shows while the pointer is over the row; a double click on the handle
+ * gives the column its width back, and Alt with an arrow key moves the
+ * focused head one place. The label is the drag
  * source and the handle its sibling, so a resize never starts a move. Below
  * the md width the row is a plain flex row, where the columns keep their
  * order but not their widths.
@@ -119,6 +121,7 @@ export function ListHead({
   // The head a key press moved, which gets the focus back once drawn in its new place.
   const [stepped, setStepped] = useState<string | null>(null)
   const row = useRef<HTMLDivElement>(null)
+  useDragArmed(row, dragged !== null)
   useEffect(() => {
     if (!stepped) return
     row.current?.querySelector<HTMLElement>(`[data-col="${stepped}"]`)?.focus()
@@ -254,7 +257,8 @@ export function ListHead({
             <div
               key={head.id}
               role="columnheader"
-              style={columns?.cell(head.id)}
+              // The browser draws the carried head; the one left in its place holds still.
+              style={dragged === head.id ? { ...columns?.cell(head.id), animation: 'none' } : columns?.cell(head.id)}
               onDragOver={(e) => over(e, head.id)}
               onDrop={drop}
               className={`relative flex min-w-0 items-center gap-0.5 ${head.end ? 'justify-end' : ''} ${head.className ?? ''} ${

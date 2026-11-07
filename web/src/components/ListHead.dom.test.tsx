@@ -162,6 +162,16 @@ describe('a list with columns', () => {
     expect(stored().order).toEqual(['kind', 'name', 'path'])
   })
 
+  it('sets the other heads trembling while one is carried, and the carried one still', () => {
+    render(<Table />)
+    const row = screen.getByRole('row')
+    fireEvent.dragStart(screen.getByText('Kind'), { dataTransfer: { setData() {}, effectAllowed: '' } })
+    expect(row.classList.contains('glim-drag-armed')).toBe(true)
+    expect((screen.getByText('Kind').closest('[role="columnheader"]') as HTMLElement).style.animation).toBe('none')
+    fireEvent.dragEnd(screen.getByText('Kind'))
+    expect(row.classList.contains('glim-drag-armed')).toBe(false)
+  })
+
   it('moves the focused head with Alt and an arrow key', () => {
     render(<Table />)
     fireEvent.keyDown(screen.getByText('Name'), { key: 'ArrowRight', altKey: true })

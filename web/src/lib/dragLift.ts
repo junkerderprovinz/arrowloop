@@ -1,12 +1,14 @@
 // Reordering a column by dragging, as GlimStone's "Reordering by dragging"
 // describes it and BombVault's lib/dragLift.ts does it: the carried item lifts
-// and follows the pointer, the others slide aside while it passes, and on
-// release it slides into its gap. Escape or a cancelled pointer slides
-// everything back and writes nothing. tokens.css draws the three states from
-// the --drag-* tokens; the code here sets only each item's `translate` and
-// switches the classes.
+// and follows the pointer, the others tremble and slide aside while it passes,
+// and on release it slides into its gap. Escape or a cancelled pointer
+// slides everything back and writes nothing. tokens.css draws the three states
+// from the --drag-* tokens; the code here sets only each item's `translate`
+// and switches the classes.
 import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from 'react'
 import { flushSync } from 'react-dom'
+
+import { useDragArmed } from './glimstone/useDragArmed'
 
 const LIFT = 'glim-drag-lift'
 const SHIFT = 'glim-drag-shift'
@@ -109,6 +111,8 @@ export function useReorder(
   idsRef.current = ids
   const onReorderRef = useRef(onReorder)
   onReorderRef.current = onReorder
+
+  useDragArmed(container, held !== null)
 
   const nodes = (): HTMLElement[] => Array.from(container.current?.querySelectorAll<HTMLElement>(`[${attr}]`) ?? [])
   const nodeOf = (id: string) => nodes().find((node) => node.getAttribute(attr) === id)

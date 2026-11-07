@@ -57,7 +57,7 @@ export function stripPerRow(count: number, room: number, named: number, glyph: n
  * is a history entry.
  *
  * The order is the person's: a long press on a touch screen, or a drag with
- * the mouse, lifts a tile and the column wiggles while it is carried. Alt and
+ * the mouse, lifts a tile and the others tremble while it is carried. Alt and
  * an arrow key move the focused tile for somebody without a pointer, in the
  * strip as well, which follows the same order.
  */
@@ -151,9 +151,7 @@ export function SettingsRail({ tiles, active, across = false }: { tiles: Tile[];
         // sidebar. The 4px at the start are what the focus ring and a lifted
         // tile's shadow reach into. The column is the tiles' offsetParent, the
         // layout a drag measures in.
-        className={`relative flex h-full shrink-0 flex-col gap-1 overflow-y-auto ps-1 pe-2 ${mode === 'glyph' ? 'w-13' : 'w-51'}${
-          drag.held !== null ? ' glim-drag-armed' : ''
-        }`}
+        className={`relative flex h-full shrink-0 flex-col gap-1 overflow-y-auto ps-1 pe-2 ${mode === 'glyph' ? 'w-13' : 'w-51'}`}
       >
         {shown.map((tile, i) => {
           const selected = tile.id === active

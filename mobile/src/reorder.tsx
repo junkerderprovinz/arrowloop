@@ -1,16 +1,34 @@
-import { createContext, useContext, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Animated, View, type CellRendererProps, type GestureResponderEvent, type LayoutChangeEvent, type ViewProps } from "react-native";
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Animated, Easing, View, type CellRendererProps, type GestureResponderEvent, type LayoutChangeEvent, type ViewProps } from "react-native";
 
-import { useMotion } from "./motion";
+import { useMotion, useSystemReduced } from "./motion";
 
 // A list's items put in a new order by a long press and a drag, the phone's
 // side of the web's lib/dragLift.ts: the held item lifts and follows the
 // finger, the others slide aside as it passes, and on release it settles into
-// its gap. React Native's own responder and Animated do it, so the app needs
-// no gesture library.
+// its gap, while the others tremble. React Native's own responder and Animated
+// do it, so the app needs no gesture library.
 
 /** How much the held item grows, per motion level, as the web's --drag-lift-scale. */
 const LIFT = { off: 1, subtle: 1.015, wild: 1.03, storm: 1.06 } as const;
+
+/**
+ * How far the other items turn to each side while one is held, in degrees,
+ * and one beat of it in ms, as the web's --motion-wiggle-angle and
+ * --motion-wiggle-dur.
+ */
+const WIGGLE = {
+  off: { angle: 0, beat: 400 },
+  subtle: { angle: 1.4, beat: 140 },
+  wild: { angle: 2, beat: 120 },
+  storm: { angle: 2.8, beat: 100 },
+} as const;
+
+/** How many beats early every second and every third item starts, so neighbours tremble out of step. */
+const PHASES = [0, 0.5, 0.33] as const;
+
+/** Samples of one turn there and back, enough for the interpolation to read as a curve. */
+const STEPS = 16;
 
 interface Slot {
   y: number;
@@ -51,6 +69,8 @@ export interface Reorder {
  */
 export function useHoldToMove(ids: readonly string[], onReorder: (ids: string[]) => void): Reorder {
   const { intensity, ms } = useMotion();
+  // Unlike the lift, the tremble yields to Android's setting at storm too.
+  const reduced = useSystemReduced();
   const [held, setHeld] = useState<string | null>(null);
   const slots = useRef(new Map<string, Slot>());
   const shifts = useRef(new Map<string, Animated.Value>());
@@ -198,9 +218,35 @@ export function useHoldToMove(ids: readonly string[], onReorder: (ids: string[])
     if (drag.current && !drag.current.taken) drop();
   }
 
+  // One clock runs the tremble of every item, a turn there and back per cycle.
+  const cycle = useRef(new Animated.Value(0)).current;
+  const { angle, beat } = WIGGLE[reduced ? "off" : intensity];
+  const trembling = held !== null && angle > 0;
+  useEffect(() => {
+    if (!trembling) return;
+    cycle.setValue(0);
+    const loop = Animated.loop(
+      Animated.timing(cycle, { toValue: 1, duration: 2 * beat, easing: Easing.linear, useNativeDriver: true }),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [trembling, beat, cycle]);
+  const turns = useMemo(
+    () =>
+      PHASES.map((early) => {
+        const inputRange = Array.from({ length: STEPS + 1 }, (_, at) => at / STEPS);
+        const outputRange = inputRange.map((u) => `${-angle * Math.cos(2 * Math.PI * (u + early / 2))}deg`);
+        return cycle.interpolate({ inputRange, outputRange });
+      }),
+    [angle, cycle],
+  );
+
   function style(id: string) {
     if (id === held) return { transform: [{ translateY: follow }, { scale: grow }] };
-    return { transform: [{ translateY: shift(id) }] };
+    if (!trembling) return { transform: [{ translateY: shift(id) }] };
+    const place = idsRef.current.indexOf(id) + 1;
+    const turn = turns[place % 3 === 0 ? 2 : place % 2 === 0 ? 1 : 0];
+    return { transform: [{ translateY: shift(id) }, { rotate: turn }] };
   }
 
   // A transform does not move the layout, so a shifted cell still reports

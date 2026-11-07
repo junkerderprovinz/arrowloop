@@ -1006,8 +1006,8 @@ body {
     --motion-content-dur: 220ms;
     --motion-tab-dur: 220ms;
     --motion-tab-travel: 18px;
-    --motion-wiggle-dur: 280ms;
-    --motion-wiggle-angle: .6deg;
+    --motion-wiggle-dur: 120ms;
+    --motion-wiggle-angle: 2deg;
     /* A row in move mode: one beat of its wiggle, how far it tilts and how far
        it lifts. A wide row turns far at its ends, so the tilt is a fraction of
        the long-press wiggle's. */
@@ -1066,8 +1066,8 @@ body {
     --motion-content-dur: 120ms;
     --motion-tab-dur: 130ms;
     --motion-tab-travel: 10px;
-    --motion-wiggle-dur: 360ms;
-    --motion-wiggle-angle: .3deg;
+    --motion-wiggle-dur: 140ms;
+    --motion-wiggle-angle: 1.4deg;
     --motion-row-wiggle-dur: 440ms;
     --motion-row-wiggle-tilt: .08deg;
     --motion-row-wiggle-lift: .5px;
@@ -1209,8 +1209,8 @@ body {
   --motion-content-dur: 380ms;
   --motion-tab-dur: 380ms;
   --motion-tab-travel: 34px;
-  --motion-wiggle-dur: 220ms;
-  --motion-wiggle-angle: 1deg;
+  --motion-wiggle-dur: 100ms;
+  --motion-wiggle-angle: 2.8deg;
   --motion-row-wiggle-dur: 260ms;
   --motion-row-wiggle-tilt: .26deg;
   --motion-row-wiggle-lift: 1.5px;
@@ -1368,12 +1368,12 @@ body {
   to   { transform: none; }
 }
 
-/* Every item of a list that is being reordered wiggles, a mode sign for the
-   whole list. It uses `rotate`, which composes with the drag's `translate`
-   and `scale`. */
+/* While one item of a list is held the others tremble, so it is plain at once
+   that they can be moved. It uses `rotate`, which composes with the drag's
+   `translate` and `scale`. */
 @keyframes glim-wiggle {
-  from { rotate: calc(var(--motion-wiggle-angle, .6deg) * -1); }
-  to   { rotate: var(--motion-wiggle-angle, .6deg); }
+  from { rotate: calc(var(--motion-wiggle-angle, 2deg) * -1); }
+  to   { rotate: var(--motion-wiggle-angle, 2deg); }
 }
 
 /* A row of a list in move mode ("Move mode" in the design language). Each
@@ -1694,9 +1694,14 @@ body {
       glim-fade-in var(--motion-tab-dur) ease-out both;
   }
 
-  .glim-drag-armed > * {
+  /* The held item floats under the pointer instead. */
+  .glim-drag-armed > :not(.glim-drag-lift) {
     animation: glim-wiggle var(--motion-wiggle-dur) ease-in-out infinite alternate;
   }
+  /* Neighbours tremble out of step, so the list reads as loose items rather
+     than one tilting block. */
+  .glim-drag-armed > :nth-child(2n) { animation-delay: calc(var(--motion-wiggle-dur) * -.5); }
+  .glim-drag-armed > :nth-child(3n) { animation-delay: calc(var(--motion-wiggle-dur) * -.33); }
 
   /* The row under the pointer, the focused one and the one being carried hold
      still: a transformed row is the containing block of a menu opened from it.

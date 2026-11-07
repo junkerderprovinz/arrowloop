@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { SettingsRail, stripPerRow } from './SettingsRail'
 import { isOwnOrder, orderTiles, settingsTiles } from './tiles'
@@ -139,6 +139,22 @@ describe('the settings tiles', () => {
     const sync = screen.getByRole('tab', { name: 'Sync' })
     fireEvent.pointerDown(sync, { button: 0, pointerType: 'touch', pointerId: 1 })
     expect(fireEvent.contextMenu(sync)).toBe(false)
+  })
+
+  it('set the other tiles trembling while one is held, until Escape puts it back', () => {
+    vi.useFakeTimers()
+    try {
+      render(<SettingsRail tiles={settingsTiles(true)} active="look" />)
+      const column = screen.getByRole('tablist', { name: 'Settings pages' })
+      fireEvent.pointerDown(screen.getByRole('tab', { name: 'Sync' }), { button: 0, pointerType: 'touch', pointerId: 1 })
+      expect(column.classList.contains('glim-drag-armed')).toBe(false)
+      act(() => vi.advanceTimersByTime(300))
+      expect(column.classList.contains('glim-drag-armed')).toBe(true)
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(column.classList.contains('glim-drag-armed')).toBe(false)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('take no step past either end of the column', () => {
