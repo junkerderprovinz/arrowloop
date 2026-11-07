@@ -159,6 +159,7 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer ends.Close(context.WithoutCancel(ctx))
 	defer db.Close()
 
 	p, _, err := engine.Prepare(ctx, ends, db, opt)
@@ -392,13 +393,16 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 	}
 	right, err := rclonefs.NewFs(ctx, rightPath)
 	if err != nil {
+		apply.Ends{Left: left}.Close(ctx)
 		return apply.Ends{}, nil, fmt.Errorf("right side %q: %w", rightPath, err)
 	}
+	ends := apply.Ends{Left: left, Right: right}
 	db, err := state.Open(ctx, j.State)
 	if err != nil {
+		ends.Close(ctx)
 		return apply.Ends{}, nil, err
 	}
-	return apply.Ends{Left: left, Right: right}, db, nil
+	return ends, db, nil
 }
 
 // hideMeta hides ArrowLoop's own folder on each side that is a folder this
@@ -475,6 +479,7 @@ func (r *Runner) executeAs(ctx context.Context, j job.Job, only []string, shown 
 	if err != nil {
 		return apply.Result{}, nil, err
 	}
+	defer ends.Close(context.WithoutCancel(ctx))
 	defer db.Close()
 	// Afterwards, because the run may be what creates the folder.
 	defer hideMeta(ends)
