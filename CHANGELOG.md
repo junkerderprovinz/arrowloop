@@ -19,7 +19,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **ArrowLoop follows GlimStone 4.2.1.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too.
+- **ArrowLoop follows GlimStone 4.2.2.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too.
 
 ## 🐛 Fixed
 

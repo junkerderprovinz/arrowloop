@@ -966,10 +966,13 @@ body {
       glim-page-in var(--motion-page-dur) var(--motion-page-ease) both,
       glim-fade-in var(--motion-page-dur) ease-out both;
   }
+  /* Backwards, not both: a held end is an identity matrix rather than none,
+     and any transform makes the card the containing block of a fixed element
+     inside it. */
   .glim-toast {
     animation:
-      glim-toast-in var(--motion-toast-dur) var(--motion-toast-ease, var(--motion-page-ease)) both,
-      glim-fade-in var(--motion-toast-dur) ease-out both;
+      glim-toast-in var(--motion-toast-dur) var(--motion-toast-ease, var(--motion-page-ease)) backwards,
+      glim-fade-in var(--motion-toast-dur) ease-out backwards;
   }
   .glim-live { animation: glim-pulse var(--motion-pulse-dur) ease-in-out infinite; }
   /* Short, because the pointer is already waiting for the bubble. */
@@ -1241,7 +1244,7 @@ body {
    state is hidden. */
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-motion='storm']) .glim-page-enter { animation: glim-fade-in 180ms ease both; }
-  :root:not([data-motion='storm']) .glim-toast { animation: glim-fade-in 160ms ease both; }
+  :root:not([data-motion='storm']) .glim-toast { animation: glim-fade-in 160ms ease backwards; }
   /* An infinite animation stops outright, fully opaque, so "this is live"
      reads from colour and position. Storm is not exempt here: wanting more
      movement is not wanting something that never stops. */
@@ -1256,8 +1259,8 @@ body {
   }
   :root[data-motion='storm'] .glim-toast {
     animation:
-      glim-toast-in var(--motion-toast-dur) var(--motion-toast-ease, var(--motion-page-ease)) both,
-      glim-fade-in var(--motion-toast-dur) ease-out both;
+      glim-toast-in var(--motion-toast-dur) var(--motion-toast-ease, var(--motion-page-ease)) backwards,
+      glim-fade-in var(--motion-toast-dur) ease-out backwards;
   }
   :root[data-motion='storm'] .glim-shake { animation: glim-shake var(--motion-shake-dur) ease-in-out; }
 }
@@ -3234,6 +3237,96 @@ body {
     font-weight: inherit;
   }
 
+  /* The sign-in page (SignInCard): one card in the middle of the screen, the
+     same width in every app, and the full width less the gutter on a phone. */
+  .glim-signin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 1rem;
+    background-color: var(--carbon-bg);
+    color: var(--carbon-text);
+  }
+  .glim-signin-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: min(24rem, 100%);
+    padding: 2rem;
+  }
+  .glim-signin-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .glim-signin-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+  }
+  .glim-signin-logo > :is(img, svg) {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .glim-signin-name {
+    margin: 0;
+    font-size: var(--text-status);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .glim-signin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+  }
+  /* Every button as wide as the fields, also one a bubble wraps while disabled. */
+  .glim-signin-form > :is(.glim-btn, .glim-tip-wrap),
+  .glim-signin-form > .glim-tip-wrap > .glim-btn { width: 100%; }
+  .glim-signin-form p { margin: 0; }
+  .glim-signin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  .glim-signin-field[hidden] { display: none; }
+  .glim-signin-label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-meta);
+    font-weight: 500;
+  }
+  .glim-signin-hint {
+    color: var(--carbon-text-sub);
+    font-size: var(--text-meta);
+  }
+  .glim-signin-error {
+    color: var(--status-fail-text);
+    font-size: var(--text-meta);
+  }
+  .glim-signin-note {
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface2);
+    font-size: var(--text-subline);
+  }
+  .glim-signin-code { letter-spacing: 0.35em; }
+  .glim-signin-log-code,
+  .glim-signin-log-code::placeholder {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
   /* What stands in place of a control the environment forbids
      (UnavailableNotice). A paragraph, because there is no control to hang an
      info bubble off. */
@@ -3490,7 +3583,9 @@ body {
     margin: 0;
     text-wrap: pretty;
     font-size: 0.875rem;
-    line-height: 1.375;
+    /* Whole pixels per line, or every toast stacked beside this one lands on a
+       fraction and Chromium rounds its edges differently from paint to paint. */
+    line-height: 1.25rem;
     overflow-wrap: break-word;
   }
   /* A phone keeps the window in view: the newest two across its width. */
