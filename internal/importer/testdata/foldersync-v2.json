@@ -1,0 +1,129 @@
+{
+  "revision": 7,
+  "config": {
+    "description": "Phone setup",
+    "updateType": "UpdateExisting"
+  },
+  "accounts": [
+    {
+      "name": "Device",
+      "accountType": "LocalStorage",
+      "importKey": "acc-device",
+      "port": 0,
+      "properties": {},
+      "folderPairs": []
+    },
+    {
+      "name": "Cloud",
+      "accountType": "Nextcloud",
+      "importKey": "acc-cloud",
+      "loginName": "reeve",
+      "serverAddress": "https://cloud.example.org/remote.php/dav/files/reeve",
+      "port": 0,
+      "properties": {},
+      "folderPairs": []
+    },
+    {
+      "name": "Archive",
+      "accountType": "AmazonS3",
+      "importKey": "acc-archive",
+      "loginName": "AKIAEXAMPLEKEY",
+      "region": "EUFrankfurt",
+      "port": 0,
+      "properties": {},
+      "folderPairs": []
+    }
+  ],
+  "folderPairsV2": [
+    {
+      "accountLeftKey": "acc-device",
+      "accountRightKey": "acc-cloud",
+      "name": "Notes",
+      "importKey": "fp2-notes",
+      "leftFolderId": "/storage/emulated/0/Notes",
+      "leftFolderDisplayPath": "/storage/emulated/0/Notes",
+      "rightFolderId": "/Notes/",
+      "rightFolderDisplayPath": "/Notes/",
+      "groupName": "",
+      "isEnabled": true,
+      "isExcludedFromSyncAll": false,
+      "syncDirection": "TwoWay",
+      "syncDeletionEnabled": true,
+      "syncUseRecycleBin": true,
+      "syncHasPendingChanges": false,
+      "syncCreateDeviceFolderIfMissing": false,
+      "syncReplaceFileRule": "IfNewer",
+      "syncConflictRule": "OverwriteOldest",
+      "syncDoNotCreateEmptyFolders": false,
+      "syncDisableChecksumCalculation": false,
+      "syncModeChangedFilesOnly": false,
+      "syncModeMoveFiles": false,
+      "syncModeBackup": false,
+      "syncMonitorDeviceFolder": true,
+      "syncAllowDeletionNonSyncedFiles": false,
+      "syncUseTempFileTransfer": true,
+      "syncUseCaseSensitiveFileComparison": true,
+      "syncDisableFileSizeCheck": false,
+      "syncDisableFreeDiskSpaceCheck": false,
+      "remoteChangesCheckEnabled": false,
+      "syncDoDeletionsAfterTransfers": false,
+      "syncTransferPriority": "Default",
+      "syncIgnoreTimeDifferenceInHours": 0,
+      "filters": [
+        {
+          "syncRule": "FolderNameEquals",
+          "stringValue": ".cache",
+          "longValue": 0,
+          "includeRule": false
+        }
+      ],
+      "schedules": [
+        {
+          "name": "Every hour",
+          "cronString": "0 * * * *",
+          "enabled": true,
+          "requireCharging": false
+        }
+      ],
+      "webhooks": []
+    },
+    {
+      "accountLeftKey": "acc-device",
+      "accountRightKey": "acc-archive",
+      "name": "Photos to S3",
+      "importKey": "fp2-photos",
+      "leftFolderId": "/storage/emulated/0/DCIM",
+      "leftFolderDisplayPath": "/storage/emulated/0/DCIM",
+      "rightFolderId": "/phone-archive/dcim",
+      "rightFolderDisplayPath": "/phone-archive/dcim",
+      "isEnabled": true,
+      "syncDirection": "ToRightFolder",
+      "syncDeletionEnabled": true,
+      "syncConflictRule": "Skip",
+      "syncModeMoveFiles": false,
+      "syncModeBackup": false,
+      "syncMonitorDeviceFolder": false,
+      "filters": [],
+      "schedules": [
+        {
+          "name": "Night",
+          "cronString": "0 0 3 ? * * *",
+          "enabled": true,
+          "requireCharging": true
+        }
+      ],
+      "webhooks": []
+    },
+    {
+      "accountLeftKey": "acc-device",
+      "accountRightKey": "acc-gone",
+      "name": "Orphan",
+      "leftFolderId": "/storage/emulated/0/Orphan",
+      "rightFolderId": "/Orphan",
+      "syncDirection": "ToLeftFolder",
+      "filters": [],
+      "schedules": [],
+      "webhooks": []
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "revision": 3,
+  "config": {
+    "description": "",
+    "updateType": "UpdateExisting"
+  },
+  "accounts": [
+    {
+      "name": "Home NAS",
+      "accountType": "SFTP",
+      "importKey": "acc-nas",
+      "loginName": "reeve",
+      "loginValidated": true,
+      "serverAddress": "sftp://nas.example.lan",
+      "initialFolder": "",
+      "keyFileUrl": "",
+      "charset": "UTF8",
+      "allowSelfSigned": false,
+      "port": 2222,
+      "disableCompression": false,
+      "activeMode": false,
+      "anonymous": false,
+      "isLegacy": false,
+      "useExpectContinue": false,
+      "properties": {},
+      "folderPairs": [
+        {
+          "name": "Camera",
+          "importKey": "fp-camera",
+          "sdFolder": "/storage/emulated/0/DCIM/Camera",
+          "sdFolderReadable": "/storage/emulated/0/DCIM/Camera",
+          "remoteFolder": "/srv/photos/phone/",
+          "remoteFolderReadable": "/srv/photos/phone/",
+          "createDeviceFolderIfMissing": false,
+          "syncType": "ToRemoteFolder",
+          "syncInterval": "Daily",
+          "syncSubFolders": true,
+          "useWifi": true,
+          "ignoreNetworkState": false,
+          "use3G": false,
+          "use2G": false,
+          "useRoaming": false,
+          "useEthernet": false,
+          "useOtherInternet": false,
+          "onlySyncWhileCharging": false,
+          "deleteFilesAfterSync": false,
+          "syncRuleReplaceFile": "IfNewer",
+          "syncRuleConflict": "Skip",
+          "preserveTargetFolder": false,
+          "syncHiddenFiles": true,
+          "active": true,
+          "notifyOnSync": false,
+          "notifyOnError": true,
+          "notifyOnSuccess": false,
+          "notifyOnChanges": false,
+          "useMd5Checksum": false,
+          "instantSync": true,
+          "turnOnWifi": false,
+          "rescanMediaLibrary": false,
+          "excludeSyncAll": false,
+          "useMultiThreadedSync": false,
+          "useTempFiles": true,
+          "disableFileSizeCheck": false,
+          "useBackupScheme": false,
+          "retrySyncOnFail": true,
+          "onlySyncChanged": false,
+          "syncRules": [
+            {
+              "syncRule": "FileType",
+              "stringValue": "tmp",
+              "longValue": 0,
+              "includeRule": false
+            },
+            {
+              "syncRule": "FileSizeLargerThan",
+              "stringValue": "",
+              "longValue": 104857600,
+              "includeRule": false
+            }
+          ],
+          "webhooks": [],
+          "warningThresholdHours": 0
+        }
+      ]
+    },
+    {
+      "name": "Dropbox",
+      "accountType": "Dropbox",
+      "importKey": "acc-dropbox",
+      "loginValidated": true,
+      "allowSelfSigned": false,
+      "port": 0,
+      "disableCompression": false,
+      "activeMode": false,
+      "anonymous": false,
+      "isLegacy": false,
+      "useExpectContinue": false,
+      "properties": {},
+      "folderPairs": [
+        {
+          "name": "Documents",
+          "importKey": "fp-docs",
+          "sdFolder": "content://com.android.externalstorage.documents/tree/primary%3ADocuments",
+          "sdFolderReadable": "/storage/emulated/0/Documents",
+          "remoteFolder": "id:a4ayc_80_OEAAAAAAAAAXw",
+          "remoteFolderReadable": "/Documents",
+          "syncType": "TwoWay",
+          "syncInterval": "Every15Minutes",
+          "syncSubFolders": true,
+          "syncRuleReplaceFile": "IfNewer",
+          "syncRuleConflict": "OverwriteOldest",
+          "syncHiddenFiles": true,
+          "active": true,
+          "instantSync": false,
+          "useBackupScheme": false,
+          "syncRules": [],
+          "webhooks": [
+            {
+              "name": "Tell the server",
+              "webhookUrl": "https://hooks.example.org/sync",
+              "httpMethod": "POST",
+              "bodyType": "JSON",
+              "triggerStatus": "SyncOK",
+              "properties": []
+            }
+          ],
+          "warningThresholdHours": 0
+        }
+      ]
+    },
+    {
+      "name": "Old cloud",
+      "accountType": "Hubic",
+      "importKey": "acc-hubic",
+      "loginName": "reeve@example.org",
+      "port": 0,
+      "properties": {},
+      "folderPairs": [
+        {
+          "name": "Music",
+          "sdFolder": "/storage/emulated/0/Music",
+          "remoteFolder": "/Music",
+          "syncType": "ToRemoteFolder",
+          "syncInterval": "Weekly",
+          "syncSubFolders": true,
+          "syncHiddenFiles": true,
+          "active": true,
+          "syncRules": [],
+          "webhooks": []
+        }
+      ]
+    },
+    {
+      "name": "Office",
+      "accountType": "SMB2",
+      "importKey": "acc-office",
+      "loginName": "reeve",
+      "password": "not-a-real-password",
+      "serverAddress": "smb://fileserver/team",
+      "domain": "WORK",
+      "port": 0,
+      "anonymous": false,
+      "properties": {
+        "enableDFS": "false"
+      },
+      "folderPairs": [
+        {
+          "name": "Scans",
+          "sdFolder": "/storage/emulated/0/Scans",
+          "remoteFolder": "/scans",
+          "syncType": "ToSdCard",
+          "syncInterval": "Advanced",
+          "syncSubFolders": true,
+          "deleteFilesAfterSync": true,
+          "syncHiddenFiles": true,
+          "active": false,
+          "syncRules": [],
+          "webhooks": []
+        }
+      ]
+    }
+  ],
+  "folderPairsV2": []
+}
