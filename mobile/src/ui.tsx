@@ -841,6 +841,7 @@ export function Button({
   shake,
   confirm,
   glyph: named,
+  glyphOnly,
   hint,
 }: {
   label: string;
@@ -848,6 +849,8 @@ export function Button({
   labelKey?: string;
   /** A glyph name overriding the one `labelKey` would pick. */
   glyph?: string;
+  /** The glyph without its word whatever the label setting, where a row has no room for words. */
+  glyphOnly?: boolean;
   /**
    * An explicit mark, such as a brand logo, drawn from the ink this button
    * computes.
@@ -912,8 +915,8 @@ export function Button({
 
   const name = named ?? (labelKey ? glyphNameForKey(labelKey) : undefined);
   const glyph = mark ? mark(ink) : name ? <Glyph name={name} color={tinted ? tint : ink} /> : null;
-  const showWord = labels === "text" || labels === "textGlyph" || !glyph;
-  const showGlyph = Boolean(glyph) && labels !== "text";
+  const showWord = !glyph || (!glyphOnly && (labels === "text" || labels === "textGlyph"));
+  const showGlyph = Boolean(glyph) && (glyphOnly || labels !== "text");
 
   const button = (
     <AnimatedPressable

@@ -25,10 +25,13 @@ export interface CardAction {
 export function CardMenu({
   items,
   floating,
+  glyphOnly,
 }: {
   items: CardAction[];
   /** Beside a screen's floating button, where it shows its glyph alone. */
   floating?: boolean;
+  /** An ordinary button showing its glyph alone, where a row has no room for words. */
+  glyphOnly?: boolean;
 }) {
   const { t } = useT();
   const { p, corners } = useTheme();
@@ -64,7 +67,7 @@ export function CardMenu({
         <Glyph name={only.glyph} color={p.text} size={22} />
       </Press>
     ) : (
-      <Button label={only.label} glyph={only.glyph} wide={false} onPress={only.onPress} />
+      <Button label={only.label} glyph={only.glyph} glyphOnly={glyphOnly} wide={false} onPress={only.onPress} />
     );
   }
 
@@ -83,7 +86,7 @@ export function CardMenu({
             <Glyph name="IconMore" color={p.text} size={22} />
           </Press>
         ) : (
-          <Button label={t("more.title")} glyph="IconMore" wide={false} onPress={open} />
+          <Button label={t("more.title")} glyph="IconMore" glyphOnly={glyphOnly} wide={false} onPress={open} />
         )}
       </View>
       <Modal
