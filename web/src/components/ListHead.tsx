@@ -6,6 +6,7 @@ import { Selector, type Option } from './Selector'
 import { IconClose, IconExpand, IconMoveDown, IconMoveUp, IconSearch } from './glyphs'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
+import { aheadOf } from '../lib/dragLift'
 import { usePortalHue } from '../lib/glimstone/portalHue'
 import { useDragArmed } from '../lib/glimstone/useDragArmed'
 import type { Columns } from '../lib/columns'
@@ -120,6 +121,8 @@ export function ListHead({
   const [dragged, setDragged] = useState<string | null>(null)
   // The head a key press moved, which gets the focus back once drawn in its new place.
   const [stepped, setStepped] = useState<string | null>(null)
+  // Where the pointer took the carried head, from its leading side.
+  const grabbed = useRef(0)
   const row = useRef<HTMLDivElement>(null)
   useDragArmed(row, dragged !== null)
   useEffect(() => {
@@ -130,16 +133,24 @@ export function ListHead({
   const last = columns ? columns.order[columns.order.length - 1] : heads[heads.length - 1]?.id
 
   // The columns take their new places while the head is carried over them, so
-  // the drop only keeps what is already on screen. Over its own new place the
-  // dragged head changes nothing, which keeps the preview from flickering.
-  function over(e: DragEvent<HTMLDivElement>, target: string) {
+  // the drop only keeps what is already on screen. The carried column is as
+  // wide as its head and placed by its leading edge, so a wide one can pass a
+  // narrow one at either end of the row.
+  function over(e: DragEvent<HTMLDivElement>) {
     if (!columns || !dragged) return
     e.preventDefault()
-    if (dragged === target) return
-    const box = e.currentTarget.getBoundingClientRect()
-    const middle = box.left + box.width / 2
-    const after = document.documentElement.dir === 'rtl' ? e.clientX < middle : e.clientX > middle
-    columns.preview(dragged, target, after)
+    const rtl = document.documentElement.dir === 'rtl'
+    const cells = [...e.currentTarget.querySelectorAll<HTMLElement>('[data-head]')].map((cell) => {
+      const box = cell.getBoundingClientRect()
+      return { id: cell.dataset.head!, start: rtl ? -box.right : box.left, size: box.width }
+    })
+    const held = cells.find((c) => c.id === dragged)!
+    const others = cells.filter((c) => c !== held).sort((a, b) => a.start - b.start)
+    if (others.length === 0) return
+    const at = (rtl ? -e.clientX : e.clientX) - grabbed.current
+    const ahead = aheadOf(others, at, held.size, held.start)
+    if (ahead === 0) columns.preview(dragged, others[0].id, false)
+    else columns.preview(dragged, others[ahead - 1].id, true)
   }
 
   function drop(e: DragEvent<HTMLDivElement>) {
@@ -156,6 +167,8 @@ export function ListHead({
           draggable: true,
           'data-col': id,
           onDragStart: (e: DragEvent<HTMLElement>) => {
+            const box = e.currentTarget.closest('[data-head]')!.getBoundingClientRect()
+            grabbed.current = document.documentElement.dir === 'rtl' ? box.right - e.clientX : e.clientX - box.left
             setDragged(id)
             e.dataTransfer.effectAllowed = 'move'
             // Firefox starts no drag at all without a payload.
@@ -213,6 +226,8 @@ export function ListHead({
         onPointerUp={endPress}
         onPointerCancel={endPress}
         // The press that showed the line ends in a click, which must not also sort.
+        onDragOver={over}
+        onDrop={drop}
         onClickCapture={(e) => {
           if (!held.current) return
           held.current = false
@@ -257,10 +272,10 @@ export function ListHead({
             <div
               key={head.id}
               role="columnheader"
-              // The browser draws the carried head; the one left in its place holds still.
-              style={dragged === head.id ? { ...columns?.cell(head.id), animation: 'none' } : columns?.cell(head.id)}
-              onDragOver={(e) => over(e, head.id)}
-              onDrop={drop}
+              data-head={head.id}
+              // The browser draws the carried head, and the one left in its place holds still.
+              data-held={dragged === head.id ? 'true' : undefined}
+              style={columns?.cell(head.id)}
               className={`relative flex min-w-0 items-center gap-0.5 ${head.end ? 'justify-end' : ''} ${head.className ?? ''} ${
                 columns ? 'md:w-auto' : ''
               } ${dragged === head.id ? 'opacity-50' : ''}`}

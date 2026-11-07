@@ -173,8 +173,9 @@ export function Jobs({
         </Card>
       ) : (
         <>
-          {/* The list is the cards' offsetParent, which a drag measures in. */}
-          <ul ref={list} className={`relative flex flex-col ${view === 'compact' ? 'gap-2' : 'gap-10'}`}>
+          {/* The list is the cards' offsetParent, which a drag measures in. Cards
+              and rows alike are as wide as the list, so they tremble as rows. */}
+          <ul ref={list} className={`glim-drag-rows relative flex flex-col ${view === 'compact' ? 'gap-2' : 'gap-10'}`}>
             {drawn.map((j, i) => {
               const props: JobItemProps = {
                 job: j,

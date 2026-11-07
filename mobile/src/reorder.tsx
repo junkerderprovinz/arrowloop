@@ -13,21 +13,23 @@ import { useMotion, useSystemReduced } from "./motion";
 const LIFT = { off: 1, subtle: 1.015, wild: 1.03, storm: 1.06 } as const;
 
 /**
- * How far the other items turn to each side while one is held, in degrees,
- * and one beat of it in ms, as the web's --motion-wiggle-angle and
- * --motion-wiggle-dur.
+ * How far the other items tilt, in degrees, and rise, in px, while one is
+ * held, and one beat of it in ms, as the web's --motion-row-tremble-tilt,
+ * --motion-row-tremble-lift and --motion-wiggle-dur. The phone's lists are one
+ * column of rows as wide as the screen, whose ends a tile's turn would swing
+ * far.
  */
-const WIGGLE = {
-  off: { angle: 0, beat: 400 },
-  subtle: { angle: 1.4, beat: 140 },
-  wild: { angle: 2, beat: 120 },
-  storm: { angle: 2.8, beat: 100 },
+const TREMBLE = {
+  off: { tilt: 0, rise: 0, beat: 400 },
+  subtle: { tilt: 0.1, rise: 1, beat: 140 },
+  wild: { tilt: 0.15, rise: 1.5, beat: 120 },
+  storm: { tilt: 0.2, rise: 2, beat: 100 },
 } as const;
 
 /** How many beats early every second and every third item starts, so neighbours tremble out of step. */
 const PHASES = [0, 0.5, 0.33] as const;
 
-/** Samples of one turn there and back, enough for the interpolation to read as a curve. */
+/** Samples of one swing there and back, enough for the interpolation to read as a curve. */
 const STEPS = 16;
 
 interface Slot {
@@ -112,18 +114,18 @@ export function useHoldToMove(ids: readonly string[], onReorder: (ids: string[])
   }, [ids]);
 
   /**
-   * The order the held item's centre asks for: every other item whose centre
-   * it has passed comes before it. Measured slots, so a taller card is aimed
-   * at correctly.
+   * The order the held item asks for: every other item whose middle its
+   * leading edge has passed comes before it, its top on the way up and its
+   * bottom on the way down, so a tall card still reaches the top.
    */
   function aim(id: string, dy: number): string[] {
     const own = slots.current.get(id);
     if (!own) return [...idsRef.current];
-    const centre = own.y + dy + own.height / 2;
+    const edge = own.y + dy + (dy < 0 ? 0 : own.height);
     const rest = idsRef.current.filter((other) => other !== id);
     const ahead = rest.filter((other) => {
       const s = slots.current.get(other);
-      return s !== undefined && s.y + s.height / 2 < centre;
+      return s !== undefined && s.y + s.height / 2 < edge;
     }).length;
     return [...rest.slice(0, ahead), id, ...rest.slice(ahead)];
   }
@@ -218,10 +220,10 @@ export function useHoldToMove(ids: readonly string[], onReorder: (ids: string[])
     if (drag.current && !drag.current.taken) drop();
   }
 
-  // One clock runs the tremble of every item, a turn there and back per cycle.
+  // One clock runs the tremble of every item, a swing there and back per cycle.
   const cycle = useRef(new Animated.Value(0)).current;
-  const { angle, beat } = WIGGLE[reduced ? "off" : intensity];
-  const trembling = held !== null && angle > 0;
+  const { tilt, rise, beat } = TREMBLE[reduced ? "off" : intensity];
+  const trembling = held !== null && rise > 0;
   useEffect(() => {
     if (!trembling) return;
     cycle.setValue(0);
@@ -231,22 +233,27 @@ export function useHoldToMove(ids: readonly string[], onReorder: (ids: string[])
     loop.start();
     return () => loop.stop();
   }, [trembling, beat, cycle]);
-  const turns = useMemo(
+  // As the web's glim-row-wiggle: up and turned one way a quarter in, down
+  // and turned the other three quarters in.
+  const swings = useMemo(
     () =>
       PHASES.map((early) => {
         const inputRange = Array.from({ length: STEPS + 1 }, (_, at) => at / STEPS);
-        const outputRange = inputRange.map((u) => `${-angle * Math.cos(2 * Math.PI * (u + early / 2))}deg`);
-        return cycle.interpolate({ inputRange, outputRange });
+        const wave = inputRange.map((u) => -Math.sin(2 * Math.PI * (u + early / 2)));
+        return {
+          rotate: cycle.interpolate({ inputRange, outputRange: wave.map((w) => `${w * tilt}deg`) }),
+          translateY: cycle.interpolate({ inputRange, outputRange: wave.map((w) => w * rise) }),
+        };
       }),
-    [angle, cycle],
+    [tilt, rise, cycle],
   );
 
   function style(id: string) {
     if (id === held) return { transform: [{ translateY: follow }, { scale: grow }] };
     if (!trembling) return { transform: [{ translateY: shift(id) }] };
     const place = idsRef.current.indexOf(id) + 1;
-    const turn = turns[place % 3 === 0 ? 2 : place % 2 === 0 ? 1 : 0];
-    return { transform: [{ translateY: shift(id) }, { rotate: turn }] };
+    const swing = swings[place % 3 === 0 ? 2 : place % 2 === 0 ? 1 : 0]!;
+    return { transform: [{ translateY: shift(id) }, { rotate: swing.rotate }, { translateY: swing.translateY }] };
   }
 
   // A transform does not move the layout, so a shifted cell still reports

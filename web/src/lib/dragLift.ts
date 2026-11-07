@@ -38,6 +38,22 @@ function shiftOf(node: HTMLElement): number {
   return t === 'none' ? 0 : parseFloat(t.split(' ')[1] ?? '0') || 0
 }
 
+/** An item along the list's axis, in reading order: where it starts and how long it is. */
+export interface Span {
+  start: number
+  size: number
+}
+
+/**
+ * aheadOf counts the items of `others` that go before an item of `size` held
+ * at `at`, whose slot starts at `slot`. It passes a neighbour once its leading
+ * edge crosses the neighbour's middle, so a large item still reaches both ends.
+ */
+export function aheadOf(others: readonly Span[], at: number, size: number, slot: number): number {
+  const edge = at < slot ? at : at + size
+  return others.filter((o) => o.start + o.size / 2 < edge).length
+}
+
 function sameOrder(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((id, at) => id === b[at])
 }
@@ -184,21 +200,24 @@ export function useReorder(
   }
 
   /**
-   * The order the held item's position asks for. An item counts as before it
-   * once the held item's centre passes the item's centre. Measured boxes, so
-   * a tile taller than its neighbours is aimed at correctly.
+   * The order the held item's position asks for. Measured boxes, so a tile
+   * taller than its neighbours is aimed at correctly.
    */
   function aim(h: Lifted): string[] {
-    const centre = heldAt(h, false) + h.height / 2
     const rest: string[] = []
-    let ahead = 0
+    const spans: Span[] = []
+    let slot = h.top
     for (const node of nodes()) {
       const id = node.getAttribute(attr)
-      if (!id || id === h.id) continue
-      if (node.offsetTop + node.offsetHeight / 2 < centre) ahead++
+      if (!id) continue
+      if (id === h.id) {
+        slot = node.offsetTop
+        continue
+      }
       rest.push(id)
+      spans.push({ start: node.offsetTop, size: node.offsetHeight })
     }
-    rest.splice(ahead, 0, h.id)
+    rest.splice(aheadOf(spans, heldAt(h, false), h.height, slot), 0, h.id)
     return rest
   }
 

@@ -9,6 +9,9 @@ import { useColumns } from '../lib/columns'
 afterEach(cleanup)
 beforeEach(() => localStorage.clear())
 
+// jsdom has no DragEvent, and a plain Event drops the pointer's position.
+if (!('DragEvent' in window)) Object.assign(window, { DragEvent: class extends MouseEvent {} })
+
 function List({ page = 'test' }: { page?: string }) {
   const [sort, setSort] = useState<ListSort>({ by: 'name', dir: 'asc' })
   const [narrow, setNarrow] = useState(false)
@@ -147,15 +150,29 @@ describe('a list with columns', () => {
     )
   }
 
-  const order = () => screen.getAllByRole('columnheader').sort((a, b) => Number(a.style.order) - Number(b.style.order)).map((h) => h.textContent)
+  const drawn = () => screen.getAllByRole('columnheader').sort((a, b) => Number(a.style.order) - Number(b.style.order))
+  const order = () => drawn().map((h) => h.textContent)
+
+  // jsdom lays nothing out, so each head gets its box from these widths in the order drawn.
+  function layOut(widths: Record<string, number>) {
+    for (const head of screen.getAllByRole('columnheader')) {
+      head.getBoundingClientRect = () => {
+        const before = drawn().slice(0, drawn().indexOf(head))
+        const left = before.reduce((sum, h) => sum + widths[h.dataset.head!], 0)
+        const width = widths[head.dataset.head!]
+        return { left, right: left + width, width } as DOMRect
+      }
+    }
+  }
+  const carry = (label: string, clientX: number) =>
+    fireEvent.dragStart(screen.getByText(label), { clientX, dataTransfer: { setData() {}, effectAllowed: '' } })
   const stored = () => JSON.parse(localStorage.getItem('arrowloop.columns.test') ?? '{}')
 
   it('moves a column that is dragged onto another', () => {
     render(<Table />)
-    const kind = screen.getByText('Kind')
+    layOut({ name: 200, kind: 120, path: 300 })
     const name = screen.getAllByRole('columnheader')[0]
-    name.getBoundingClientRect = () => ({ left: 0, width: 200 }) as DOMRect
-    fireEvent.dragStart(kind, { dataTransfer: { setData() {}, effectAllowed: '' } })
+    carry('Kind', 210)
     fireEvent.dragOver(name, { clientX: 20 })
     fireEvent.drop(name, { clientX: 20 })
     expect(order()).toEqual(['Kind', 'Name', 'Path'])
@@ -167,7 +184,8 @@ describe('a list with columns', () => {
     const row = screen.getByRole('row')
     fireEvent.dragStart(screen.getByText('Kind'), { dataTransfer: { setData() {}, effectAllowed: '' } })
     expect(row.classList.contains('glim-drag-armed')).toBe(true)
-    expect((screen.getByText('Kind').closest('[role="columnheader"]') as HTMLElement).style.animation).toBe('none')
+    expect(screen.getByText('Kind').closest('[role="columnheader"]')?.getAttribute('data-held')).toBe('true')
+    expect(screen.getByText('Name').closest('[role="columnheader"]')?.hasAttribute('data-held')).toBe(false)
     fireEvent.dragEnd(screen.getByText('Kind'))
     expect(row.classList.contains('glim-drag-armed')).toBe(false)
   })
@@ -204,13 +222,30 @@ describe('a list with columns', () => {
 
   it('moves the columns while a head is carried over them, before the drop', () => {
     render(<Table />)
+    layOut({ name: 200, kind: 120, path: 300 })
     const name = screen.getAllByRole('columnheader')[0]
-    name.getBoundingClientRect = () => ({ left: 0, width: 200 }) as DOMRect
-    fireEvent.dragStart(screen.getByText('Path'), { dataTransfer: { setData() {}, effectAllowed: '' } })
+    carry('Path', 330)
     fireEvent.dragOver(name, { clientX: 20 })
     expect(order()).toEqual(['Path', 'Name', 'Kind'])
     expect(localStorage.getItem('arrowloop.columns.test')).toBeNull()
     fireEvent.dragEnd(screen.getByText('Path'))
     expect(order()).toEqual(['Name', 'Kind', 'Path'])
+  })
+
+  it('lands a wide column first by its leading edge, and back again past a narrow first one', () => {
+    render(<Table />)
+    layOut({ name: 60, kind: 300, path: 100 })
+    const [name, kind] = screen.getAllByRole('columnheader')
+    carry('Kind', 70)
+    // Held against the row's start, the wide column's centre is still past the narrow one's middle.
+    fireEvent.dragOver(kind, { clientX: 15 })
+    expect(order()).toEqual(['Kind', 'Name', 'Path'])
+    // On the way back its trailing edge leads, and it passes once that crosses the narrow one's middle.
+    fireEvent.dragOver(kind, { clientX: 40 })
+    expect(order()).toEqual(['Kind', 'Name', 'Path'])
+    fireEvent.dragOver(name, { clientX: 45 })
+    expect(order()).toEqual(['Name', 'Kind', 'Path'])
+    fireEvent.drop(name, { clientX: 45 })
+    expect(stored().order).toEqual(['name', 'kind', 'path'])
   })
 })
