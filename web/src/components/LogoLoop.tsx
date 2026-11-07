@@ -35,11 +35,17 @@ export function LogoLoop({ onRelease }: { onRelease?: () => void }) {
     const down = svg.querySelector<SVGGElement>('.al-logo-down')
     const paint = painter(g, ring)
 
-    const start = performance.now()
+    // The flight starts on the first frame it is painted in, and a frame that
+    // comes late moves it on by no more than a few frames' worth, so a busy
+    // page slows the flight down rather than skipping part of it.
+    let last = 0
+    let elapsed = 0
     let shook = false
     let raf = 0
     const tick = (now: number) => {
-      const t = Math.min((now - start) / 1000 / pace, FLIGHT)
+      if (last) elapsed += Math.min(now - last, LONGEST_FRAME)
+      last = now
+      const t = Math.min(elapsed / 1000 / pace, FLIGHT)
       const f = frame(t)
       paint(f)
       place(rings, f.rings.scale === 1 && !f.rings.dx && !f.rings.dy ? null : ringTransform(f.rings))
@@ -69,6 +75,9 @@ export function LogoLoop({ onRelease }: { onRelease?: () => void }) {
 
   return <g ref={root} className="al-logo-loop" />
 }
+
+/** The most one frame moves the flight on, in milliseconds. */
+const LONGEST_FRAME = 50
 
 function place(el: SVGElement | null, transform: string | null) {
   if (!el) return
