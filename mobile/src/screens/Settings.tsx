@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { api } from "../api";
+import { AutoBackupSection } from "../autoBackup";
 import { engine, type AppData, type AppDataState, type AppDataWay, type SharedFolder } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
@@ -838,6 +839,8 @@ export function Settings() {
         />
         {backupSaid ? <Body>{backupSaid}</Body> : null}
       </Section>
+
+      <AutoBackupSection hue={11} />
 
       {/* The forms of ArrowLoop a phone is not, in the README's order: the
           server first, then the desktop app. Every download is the newest

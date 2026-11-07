@@ -40,6 +40,16 @@ export interface Job {
   recent: Run[];
 }
 
+/** The automatic backups as the engine lists them (internal/daemon/backups.go). */
+export interface AutoBackups {
+  on: boolean;
+  folder: string;
+  /** Newest first. */
+  files: { name: string; bytes: number; made: string }[];
+  /** How the last try in this run of the engine went, null before the first. */
+  last: { at: string; file?: string; unchanged?: boolean; error?: string } | null;
+}
+
 /** A job as the configuration file holds it. */
 export interface JobConfig {
   name: string;
@@ -491,6 +501,22 @@ export const api = {
   config: () => call<Config>("/api/config"),
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
+  /** Where the automatic backups go, which are there and how the last one went. */
+  autoBackups: () => call<AutoBackups>("/api/config/backups"),
+  /**
+   * Puts an automatic backup back through the engine's import. The file goes
+   * back as the text it is, so keys this build does not know survive.
+   */
+  restoreAutoBackup: async (backup: string) => {
+    let response: Response;
+    try {
+      response = await fetch(`${ORIGIN}/api/config/backups/${name(backup)}`, { headers: await engineHeaders() });
+    } catch (cause) {
+      throw new EngineError(0, String(cause));
+    }
+    if (!response.ok) throw new EngineError(response.status, `HTTP ${response.status}`);
+    await call<{ jobs: number }>("/api/config/raw", { method: "PUT", body: await response.text() });
+  },
   /** Puts the jobs in this order and keeps it, for a job somebody moved. */
   orderJobs: (names: string[]) =>
     call<{ jobs: number }>("/api/jobs/order", { method: "PUT", body: JSON.stringify({ jobs: names }) }),
