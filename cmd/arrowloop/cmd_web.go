@@ -10,13 +10,16 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"syscall"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
+	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
@@ -81,6 +84,15 @@ func cmdWeb(ctx context.Context, args []string) error {
 		runner.SetAccess(fileAccess(file))
 	}
 
+	paired, err := pairing.Open(filepath.Dir(*configPath), key)
+	if err != nil {
+		return err
+	}
+	group, err := federation.Load(filepath.Dir(*configPath))
+	if err != nil {
+		return err
+	}
+
 	server := &web.Server{
 		History:     hist,
 		Runner:      runner,
@@ -90,6 +102,9 @@ func cmdWeb(ctx context.Context, args []string) error {
 		Security:    secured,
 		Key:         key,
 		Log:         logf,
+		Pairing:     paired,
+		Group:       group,
+		Deployment:  deployment(),
 	}
 
 	listener, err := net.Listen("tcp", *addr)
@@ -119,6 +134,9 @@ func cmdWeb(ctx context.Context, args []string) error {
 			}
 		}()
 	}
+
+	server.StartPairing()
+	defer server.StopPairing()
 
 	boot.Ready(fmt.Sprintf("http://%s", listener.Addr()))
 
@@ -169,4 +187,17 @@ func writeStarterConfig(path string) error {
 	}
 	logf("no configuration found, wrote a starter one to %s", path)
 	return nil
+}
+
+// deployment is what this instance tells the others of its group it is. The
+// phone app starts this same command, and a container has Docker's marker
+// file at its root.
+func deployment() string {
+	if runtime.GOOS == "android" {
+		return "phone"
+	}
+	if _, err := os.Stat("/.dockerenv"); err == nil {
+		return "container"
+	}
+	return "server"
 }

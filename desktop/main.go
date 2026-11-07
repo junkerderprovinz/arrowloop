@@ -33,9 +33,11 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
@@ -162,7 +164,15 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	api = (&web.Server{
+	paired, err := pairing.Open(filepath.Dir(configPath), key)
+	if err != nil {
+		return err
+	}
+	group, err := federation.Load(filepath.Dir(configPath))
+	if err != nil {
+		return err
+	}
+	server := &web.Server{
 		History: hist, Runner: runner, UI: ui,
 		Placeholder:  webui.Placeholder,
 		Window:       window,
@@ -170,7 +180,13 @@ func run() error {
 		SystemAccent: accent.Read,
 		Key:          key,
 		Log:          desktopLog,
-	}).Handler()
+		Pairing:      paired,
+		Group:        group,
+		Deployment:   "desktop",
+	}
+	api = server.Handler()
+	server.StartPairing()
+	defer server.StopPairing()
 
 	// An autostart entry records a path, which goes stale when the program
 	// moves. A failure only warns: opening the window matters more.
