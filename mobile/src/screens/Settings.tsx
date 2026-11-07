@@ -542,6 +542,16 @@ export function Settings() {
             { value: "system", label: t("phone.system"), glyph: "IconThemeSystem" },
           ]}
         />
+        {/* Stepped back while light shows, since it waits for the dark look
+            rather than being off. */}
+        <View style={scheme === "dark" ? null : styles.dimmed}>
+          <Toggle
+            label={t("look.oled")}
+            hint={t("look.oledHint")}
+            value={look.oled}
+            onChange={(oled) => setAppearance({ oled })}
+          />
+        </View>
 
         <AxisLabel hint={t("look.cornersHint")}>{t("look.corners")}</AxisLabel>
         <Choice<Shape>

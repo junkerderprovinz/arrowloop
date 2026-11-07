@@ -33,6 +33,7 @@ import {
   mixHex,
   palettes,
   RAINBOW,
+  raised,
   cornersFor,
   softOn,
   space,
@@ -76,7 +77,9 @@ export function useTheme(): Theme {
   const a = useAppearance();
   const walked = useWalkedPalette();
   const scheme = a.theme === "system" ? system : a.theme;
-  const base = palettes[scheme];
+  // OLED counts whenever dark shows, chosen or from the phone, and waits
+  // through light without being switched off.
+  const base = palettes[scheme === "dark" && a.oled ? "oled" : scheme];
   return {
     scheme,
     p: base,
@@ -478,7 +481,7 @@ export function Sheet({
     <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
       <View style={[styles.sheetGround, { paddingBottom: Math.max(inset.bottom, space.sm) }]}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
-        <View style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }]}>
+        <View style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
           <View style={styles.sheetHead}>
             <View style={[styles.sheetTitle, { backgroundColor: accent, ...corners.pill }]}>
               <Text style={[styles.notchText, { color: contrastOn(accent) }]} numberOfLines={2}>

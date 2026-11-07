@@ -12,7 +12,7 @@ import {
 import Svg, { Path } from "react-native-svg";
 
 import { Glyph } from "./glyphs";
-import { contrastOn, endEdge, space, text, TOUCH } from "./theme";
+import { contrastOn, endEdge, raised, space, text, TOUCH } from "./theme";
 import { AxisLabel, Choice, InfoBubble, Press, Row, useTheme } from "./ui";
 import { perRowFor } from "../../web/src/lib/segmentLayout";
 
@@ -182,6 +182,7 @@ function Dropdown<T extends string>({
             style={[
               styles.list,
               { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge, minWidth: Math.max(200, at?.width ?? 0) },
+              raised(p),
             ]}
             onPress={() => {}}
           >

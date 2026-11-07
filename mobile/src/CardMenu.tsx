@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "r
 
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
-import { endEdge, space, text, TOUCH } from "./theme";
+import { endEdge, raised, space, text, TOUCH } from "./theme";
 import { Button, Press, useTheme } from "./ui";
 
 /**
@@ -100,6 +100,7 @@ export function CardMenu({
             style={[
               styles.sheet,
               { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge },
+              raised(p),
             ]}
             onPress={() => {}}
           >
