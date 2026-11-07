@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"path"
 	"slices"
-	"strconv"
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -73,6 +72,8 @@ type place struct {
 	// once, 0 for no limit. Only FTP's concurrency counts connections: SFTP's
 	// counts the requests within one.
 	connections int
+	// ownConnections is set where the target's settings name that number.
+	ownConnections bool
 }
 
 // OnNetwork reports whether a side of the job lies off this machine, so that
@@ -120,7 +121,11 @@ func locate(side string) (place, error) {
 			}
 			side = fspath.JoinRootPath(target, at)
 		default:
-			return identify(parsed.Name, info.Name, at, get)
+			p, err := identify(parsed.Name, info.Name, at, get)
+			if err == nil && info.Name == "ftp" {
+				p.connections, p.ownConnections = connections(p, cfg)
+			}
+			return p, err
 		}
 	}
 	return place{}, errors.New("the aliases lead round in a circle")
@@ -168,10 +173,6 @@ func identify(name, backend, at string, get func(string) string) (place, error) 
 	}
 	p.account = b.String()
 	p.unnamed = id.signIn && !slices.ContainsFunc(id.account, func(k string) bool { return get(k) != "" })
-
-	if backend == "ftp" {
-		p.connections, _ = strconv.Atoi(get("concurrency"))
-	}
 
 	p.fromHome = id.home && !strings.HasPrefix(p.path, "/")
 	p.path = strings.Trim(path.Clean("/"+strings.ReplaceAll(p.path, `\`, "/")), "/")
