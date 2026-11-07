@@ -1,5 +1,5 @@
 // Placement maths for the shared `.glim-bubble` (design-language.md, "The
-// tooltip and info bubble"), ported from reference/tooltip.ts with the same 8px
+// tooltip and info bubble"), ported from packages/core/src/tooltip.ts with the same 8px
 // margin and the same clamp-then-flip order. It takes plain numbers, so callers
 // do the one DOM read and tests need no DOM.
 
@@ -28,7 +28,7 @@ export interface BubblePosition {
   above: boolean;
 }
 
-/** The gap kept between a bubble and the viewport edge, as in reference/tooltip.ts. */
+/** The gap kept between a bubble and the viewport edge, as in packages/core/src/tooltip.ts. */
 export const BUBBLE_VIEWPORT_MARGIN = 8;
 
 /**

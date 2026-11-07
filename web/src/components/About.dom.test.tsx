@@ -165,11 +165,11 @@ describe('the PayPal window', () => {
 
     await type('12,5')
     expect(amountTabs().every((t) => t.getAttribute('aria-selected') === 'false')).toBe(true)
-    expect(otherAmount().className).toContain('border-accent')
+    expect(otherAmount().className).toContain('glim-give-amount--valid')
 
     await type('')
     expect(amountTabs().map((t) => t.getAttribute('aria-selected'))).toEqual(['false', 'true', 'false'])
-    expect(otherAmount().className).not.toContain('border-accent')
+    expect(otherAmount().className).not.toContain('glim-give-amount--valid')
   })
 
   it('refuses an amount below one or with three decimals', async () => {

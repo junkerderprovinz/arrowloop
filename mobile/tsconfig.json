@@ -3,6 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    // GlimStone's files in ../web/src/lib import each other with the
+    // extension, as the web app's tsconfig allows. Metro finds them as written.
+    "allowImportingTsExtensions": true,
     // A package imported from a file in `../web/src`, resolved out of THIS
     // project's tree.
     //

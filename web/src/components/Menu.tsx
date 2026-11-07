@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 
 import { IconAction } from './IconAction'
 import { glyphFor } from '../lib/glyphFor'
-import { BUBBLE_VIEWPORT_MARGIN } from '../lib/glimstone/bubblePosition'
+import { BUBBLE_VIEWPORT_MARGIN } from '../lib/bubblePosition'
 import { usePortalHue } from '../lib/glimstone/portalHue'
 import { useNarrow } from '../lib/narrow'
 import { placeMenu } from '../lib/menuPlace'

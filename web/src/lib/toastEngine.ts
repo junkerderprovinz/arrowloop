@@ -17,10 +17,17 @@ export const TOAST_DURATION_MS = 4000;
  *  its cards still block clicks on the page. */
 export const MAX_VISIBLE_TOASTS = 4;
 
+/** A button on a toast, such as Undo. A press runs it and dismisses the toast. */
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 export interface ToastEntry {
   id: string;
   message: string;
   severity: ToastSeverity;
+  action?: ToastAction;
   /** What is left of the duration, authoritative only while paused
    *  (expiresAt === null). */
   remainingMs: number;
@@ -37,7 +44,7 @@ export interface ToastEntry {
  *  ones are left to drop, and drops the oldest paused one only after that. */
 export function addToast(
   list: ToastEntry[],
-  toast: { id: string; message: string; severity: ToastSeverity },
+  toast: { id: string; message: string; severity: ToastSeverity; action?: ToastAction },
   now: number,
   durationMs: number = TOAST_DURATION_MS,
   maxVisible: number = MAX_VISIBLE_TOASTS
@@ -46,6 +53,7 @@ export function addToast(
     id: toast.id,
     message: toast.message,
     severity: toast.severity,
+    action: toast.action,
     remainingMs: durationMs,
     expiresAt: now + durationMs,
   };
@@ -111,6 +119,14 @@ export function applyEngagement(
 ): { next: ToastEngagement; engaged: boolean } {
   const next = { ...prev, [kind]: active };
   return { next, engaged: next.hover || next.focus };
+}
+
+/**
+ * A message cut after each slash, for a <wbr> between the parts, so a path breaks
+ * at a folder rather than inside a name.
+ */
+export function softBreaks(message: string): string[] {
+  return message.split(/(?<=[/\\])/);
 }
 
 /** Quiet mode filters by severity: it hides routine successes, never warnings

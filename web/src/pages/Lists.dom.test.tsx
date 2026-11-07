@@ -95,7 +95,7 @@ describe('the trash', () => {
     wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
     const empty = screen.getByRole('button', { name: 'Empty the trash' })
     expect(empty.closest('[data-testid="page-actions"]')).toBeTruthy()
-    expect(empty.className.split(' ')).toContain('bg-accent')
+    expect(empty.className.split(' ')).toContain('glim-btn--accent')
   })
 
   it('puts its two actions side by side rather than one in a menu', () => {
@@ -103,7 +103,7 @@ describe('the trash', () => {
     expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
     const prune = screen.getByRole('button', { name: 'Delete old entries' })
     expect(prune.closest('[data-testid="page-actions"]')).toBeTruthy()
-    expect(prune.className.split(' ')).not.toContain('bg-accent')
+    expect(prune.className.split(' ')).not.toContain('glim-btn--accent')
   })
 
   it('has no Search button, and names the job a link narrowed it to in a chip that undoes it', () => {

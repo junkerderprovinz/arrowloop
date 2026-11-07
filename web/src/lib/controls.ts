@@ -2,8 +2,9 @@
 // glyph, or both. Like the shape and motion engines it turns one setting into
 // attributes on the document root, and components pick the answer up from CSS.
 //
-// The file has no framework dependency, since an adopting app copies it whole;
-// a React app wraps it in a small hook.
+// It has no framework dependency; the React and Vue packages wrap it.
+
+import { storageKey } from './storage.ts';
 
 /**
  * The four modes.
@@ -63,14 +64,6 @@ export const CONTROL_AXES: ControlAxis[] = ['buttons', 'sidebar', 'tabs'];
  */
 export const BOTTOM_BAR_AXIS: BarAxis = 'bottombar';
 
-/** Per-axis storage keys. Prefix them per app the way `bv-shape` is prefixed. */
-const STORAGE_KEY: Record<LabelAxis, string> = {
-  buttons: 'glim-labels-buttons',
-  sidebar: 'glim-labels-sidebar',
-  tabs: 'glim-labels-tabs',
-  bottombar: 'glim-labels-bottombar',
-};
-
 const ATTRIBUTE: Record<LabelAxis, string> = {
   buttons: 'data-labels-buttons',
   sidebar: 'data-labels-sidebar',
@@ -89,7 +82,7 @@ function isLabelMode(v: unknown): v is LabelMode {
 export function getLabelMode(axis: LabelAxis): LabelMode {
   let stored: string | null = null;
   try {
-    stored = localStorage.getItem(STORAGE_KEY[axis]);
+    stored = localStorage.getItem(storageKey(`labels-${axis}`));
   } catch {
     // Private windows and blocked site data throw here instead of returning null.
   }
@@ -110,7 +103,7 @@ export function applyLabelMode(axis: LabelAxis, mode: LabelMode | string | undef
 /** Persists the choice and applies it at once. */
 export function setLabelMode(axis: LabelAxis, mode: LabelMode): void {
   try {
-    localStorage.setItem(STORAGE_KEY[axis], mode);
+    localStorage.setItem(storageKey(`labels-${axis}`), mode);
   } catch {
     // The choice still applies for this session.
   }
@@ -124,6 +117,28 @@ export function setLabelMode(axis: LabelAxis, mode: LabelMode): void {
  */
 export function applyStoredLabelModes(extraAxes: LabelAxis[] = []): void {
   for (const axis of [...CONTROL_AXES, ...extraAxes]) applyLabelMode(axis, getLabelMode(axis));
+}
+
+const LABEL_MODE_CHANGED = 'bv:label-mode-changed';
+
+/** Announce that a label mode changed, so every mounted control re-reads it. */
+export function labelModeChanged(): void {
+  window.dispatchEvent(new Event(LABEL_MODE_CHANGED));
+}
+
+/**
+ * Calls `fn` whenever a label mode may have changed, here or in another tab of
+ * the same app, and returns the unsubscribe. The mode is set in one place and
+ * read by every button, nav row and tab strip at once, so an event keeps them
+ * in step without a reload; two tabs with different chrome would read as a bug.
+ */
+export function subscribeLabelMode(fn: () => void): () => void {
+  window.addEventListener(LABEL_MODE_CHANGED, fn);
+  window.addEventListener('storage', fn);
+  return () => {
+    window.removeEventListener(LABEL_MODE_CHANGED, fn);
+    window.removeEventListener('storage', fn);
+  };
 }
 
 // Width stages. A control keeps the same width in all four modes so switching
@@ -172,9 +187,14 @@ export function labelWidth(label: string): number {
   return total;
 }
 
-/** The stage a label belongs to. */
-export function widthStage(label: string): WidthStage {
-  const w = labelWidth(label);
+// A glyph and its gap take about five units beside the words. A control that
+// can show a glyph counts them in every mode, so turning the glyph on or off
+// never moves it.
+const GLYPH_CHROME = '     ';
+
+/** The stage a label belongs to, with room for a glyph where the control has one. */
+export function widthStage(label: string, glyph = false): WidthStage {
+  const w = labelWidth(glyph ? label + GLYPH_CHROME : label);
   for (const [stage, max] of STAGE_MAX) {
     if (w <= max) return stage;
   }

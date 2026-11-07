@@ -10,8 +10,9 @@
 // hidden mode somebody found on purpose is not a default anybody inherited.
 // The glide itself follows the motion engine: with reduced motion, or at the
 // "off" level, disco steps one colour at a time instead.
-import { applyRainbow, contrastOn, rainbowState, RAINBOW } from './appearance';
-import { buildLoop, colourAt, type Loop } from './discoLoop';
+import { applyRainbow, rainbowState, RAINBOW } from './appearance.ts';
+import { contrastOn } from './contrast.ts';
+import { buildLoop, colourAt, type Loop } from './discoLoop.ts';
 
 /** The walk covers one palette colour's worth of loop every 2.4 seconds, so a
  *  full turn of eight colours takes 19.2 seconds. Stepping, it moves one

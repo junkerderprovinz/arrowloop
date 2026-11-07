@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 
 import { QRCode } from '../components/QRCode'
 import { Stack } from '../components/Shell'
-import { shownVersion } from '../lib/glimstone/AboutCard'
+import { shownVersion } from '../lib/infoTile'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
 import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, FDROID_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'

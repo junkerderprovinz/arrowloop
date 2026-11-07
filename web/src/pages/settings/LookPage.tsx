@@ -32,7 +32,7 @@ import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
 import { MOTION_INTENSITIES, type MotionIntensity } from '../../lib/motion'
-import type { ThemeChoice } from '../../lib/theme'
+import type { ThemeChoice } from '../../lib/themeSetting'
 import { counter, SettingsRow } from './rows'
 import { isOwnOrder, setTileOrder, useTileOrder } from './tiles'
 

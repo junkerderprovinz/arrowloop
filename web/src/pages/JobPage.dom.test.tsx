@@ -90,7 +90,7 @@ describe('a job page', () => {
     page()
     expect(await screen.findByRole('heading', { level: 1, name: 'photos' })).toBeTruthy()
     await screen.findByRole('button', { name: 'Edit' })
-    const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
+    const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('glim-btn--accent'))
     expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
   })
 
@@ -337,7 +337,7 @@ describe('a job page', () => {
     const card = (await screen.findByText('This run would delete 0 of 0 files (0 %, limit 0 %).')).closest('li') as HTMLElement
     expect(within(card).getByRole('button', { name: 'Take back' })).toBeTruthy()
     expect(within(card).queryByRole('button', { name: 'Open job' })).toBeNull()
-    const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('bg-accent'))
+    const filled = screen.getAllByRole('button').filter((b) => b.className.split(' ').includes('glim-btn--accent'))
     expect(filled.map((b) => b.textContent?.trim())).toEqual(['Run now'])
     followSettings({})
   })

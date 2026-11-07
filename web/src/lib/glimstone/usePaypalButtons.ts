@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { donationHandlers, loadPaypal, type GiveFrequency, type PaypalConfig } from "../paypal";
+import { donationHandlers, loadPaypal, type GiveFrequency, type PaypalConfig } from "../paypal.ts";
 
 /**
  * Renders PayPal's two buttons into the returned ref, and again whenever the

@@ -1,193 +1,24 @@
-// The shared status chip. Badge paints a fixed-size, fixed-shape chip in a
-// tone; mapping a domain status to a tone stays with the call site.
-//
-// Each size stage pins height, horizontal padding and font size together, so
-// no call site repeats its own literals:
-//   small   18px tall, 12px text (--text-meta)
-//   medium  20px tall, 12px text, the usual status chip
-//   large   24px tall, 12px text, a count badge or a button-weight badge
-//   heading 22px, the section heading notch
-//   icon    32px, every square icon-only badge
-//
-// Square icon badges have one size. Sizes chosen per role end up side by side
-// in one card, where a user sees only that they differ. 32px is the height of
-// the usual text field (`text-sm px-3 py-1.5`), so a badge beside a field
-// aligns with it.
+// The shared status chip; sizes, tones and the heading notch are described in
+// badgeClassName() in the core.
 //
 // `as="button"` and `as="a"` resolve to the same box as a span at the same
-// stage: `appearance-none` strips native button chrome, `box-border` keeps
-// padding out of the height, and `min-h-0` stops a stretching flex or grid
-// parent from growing the box. `as="a"` is a real anchor, so copying the link
-// and opening it in a new tab work.
-//
-// `wrap` makes the stage height a floor with vertical padding, so a second
-// line grows the box instead of spilling out of it. The box loses its definite
-// height, so a wrap badge beside a taller flex sibling stretches unless it has
-// `self-start`.
-//
-// `tone="heading"` with `size="heading"` is the card heading notch: a solid
-// accent fill with the computed contrast ink, straddling the card's top edge.
-// It takes none of the four state hues, which would claim a status the heading
-// does not have, and its 22px stage keeps it apart from status chips. Only the
-// outermost heading of a card or dialog is a badge; nested sub-labels, a page's
-// <h1> and a heading on a filled status callout stay plain text.
-//
-// A numbered heading is two badges, never one split pill. `inFlow` keeps the
-// notch's look but drops its positioning, so the caller positions its <h2> with
-// `absolute top-0 -translate-y-1/2` and lays the badges out with flexbox.
+// stage. `as="a"` is a real anchor, so copying the link and opening it in a new
+// tab work. A numbered heading is two badges, never one split pill: `inFlow`
+// keeps the notch's look but drops its positioning, so the caller positions
+// its <h2> and lays the badges out side by side.
 
 import type { CSSProperties, ReactNode } from "react";
-import { hueVars } from "../appearance";
-import { IconTipButton } from "./IconTipButton";
+import { badgeClassName, type BadgeShape, type BadgeSize, type BadgeTone, type NotchInset } from "../badge.ts";
+import { hueVars } from "../appearance.ts";
+import { IconTipButton } from "./IconTipButton.tsx";
 
-export type BadgeTone = "ok" | "fail" | "warn" | "active" | "neutral" | "heading" | "muted";
-export type BadgeSize = "small" | "medium" | "large" | "heading" | "icon";
-// pill: for standalone chips and counts. rounded: the default. square: a
-// square-aspect icon tile. circle: the width locked to the height. All four
-// read --radius-pill, so in round every badge is a true pill or circle. The
-// plain length token, because a percentage radius resolves per axis into an
-// ellipse.
-export type BadgeShape = "pill" | "rounded" | "square" | "circle";
-
-// An explicit start offset for the heading notch. Without it the notch sits at
-// its static position, which follows the card's content padding only when its
-// <h2> is a normal-flow child of the padded box. Pass the card's padding step
-// when the positioned ancestor and the padded box are different elements, or
-// when centred content collapses the <h2> to a zero-width box. Tailwind needs
-// literal class names, hence the closed table.
-export type NotchInset = 4 | 5 | 6;
-const INSET_START_CLASSES: Record<NotchInset, string> = {
-  4: "start-4",
-  5: "start-5",
-  6: "start-6",
-};
-
-// warn uses the strong wash, which is meant for small chips; the plain one is
-// for panels that hold paragraphs. active is the accent-soft wash, not a solid
-// fill, because several running rows can show at once; its ink is accent-ink
-// because the flat accent measures 1.5:1 on that wash in the light theme.
-const TONE_CLASSES: Record<BadgeTone, string> = {
-  ok: "bg-statusOkBg text-statusOk",
-  fail: "bg-statusFailBg text-statusFail",
-  warn: "bg-statusWarnBgStrong text-statusWarn",
-  active: "bg-accentSoft text-accentInk",
-  neutral: "bg-carbon-surface2 text-carbon-textSub",
-  // A solid fill: any translucent accent wash reads as dimmed.
-  heading: "bg-accent text-accentContrast",
-  // No background at all, for a quiet caption such as a version link.
-  muted: "text-carbon-textMuted",
-};
-
-// A badge that is a button or a link hovers by a colour step, like Button
-// (rule 21); `opacity` would let the card show through. A wash steps toward its
-// own ink, read where the badge sits, so a hued badge steps from its hue. The
-// neutral and muted badges take rule 40's accent tint like a Button.
-const HOVER_CLASSES: Record<BadgeTone, string> = {
-  ok: "hover:bg-[color-mix(in_srgb,var(--status-ok-bg),var(--status-ok)_12%)]",
-  fail: "hover:bg-[color-mix(in_srgb,var(--status-fail-bg),var(--status-fail)_12%)]",
-  warn: "hover:bg-[color-mix(in_srgb,var(--status-warn-bg-strong),var(--status-warn)_12%)]",
-  active: "hover:bg-[color-mix(in_srgb,var(--accent-soft),var(--accent)_12%)]",
-  neutral: "glim-btn-subtle hover:bg-carbon-surface3",
-  heading: "hover:bg-accentHover",
-  muted: "glim-btn-bare",
-};
-
-const RADIUS_CLASSES: Record<BadgeShape, string> = {
-  pill: "rounded-pill",
-  square: "rounded-pill",
-  rounded: "rounded-pill",
-  circle: "rounded-pill",
-};
-
-// Padding is separate so the icon-only shapes can replace it rather than emit
-// two conflicting px-* utilities, whose winner would depend on stylesheet
-// order. minHeight replaces height in wrap mode for the same reason.
-const SIZE_TOKENS: Record<BadgeSize, { height: string; minHeight: string; text: string; padding: string }> = {
-  small: { height: "h-[18px]", minHeight: "min-h-[18px]", text: "text-meta", padding: "px-1.5" },
-  medium: { height: "h-5", minHeight: "min-h-5", text: "text-meta", padding: "px-2" },
-  large: { height: "h-6", minHeight: "min-h-6", text: "text-meta", padding: "px-2.5" },
-  heading: { height: "h-[22px]", minHeight: "min-h-[22px]", text: "text-meta uppercase tracking-widest", padding: "px-3" },
-  // text and padding are unused, since an icon-only badge has no text.
-  icon: { height: "h-8", minHeight: "min-h-8", text: "text-meta", padding: "px-2" },
-};
-
-interface BadgeStyleOptions {
-  tone?: BadgeTone;
-  size?: BadgeSize;
-  shape?: BadgeShape;
-  wrap?: boolean;
-  className?: string;
-  /** Zero horizontal padding and a 1:1 aspect ratio, as for `shape="circle"`.
-   *  Badge sets it whenever `tip` is set. */
-  iconOnly?: boolean;
-  inFlow?: boolean;
-  insetStart?: NotchInset;
-}
-
-/** The class list a Badge resolves to, shared by the span, button and link. */
-function badgeClassName({
-  tone = "neutral",
-  size = "medium",
-  shape = "rounded",
-  wrap,
-  className,
-  iconOnly,
-  inFlow,
-  insetStart,
-}: BadgeStyleOptions = {}): string {
-  const { height, minHeight, text, padding } = SIZE_TOKENS[size];
-  const isIconOnly = shape === "circle" || iconOnly === true;
-  const sizing = wrap
-    ? `${minHeight} py-0.5 leading-tight wrap-break-word`
-    : `${height} min-h-0 leading-none`;
-
-  // The notch centres on the card's top edge at any height: `translate-y`
-  // percentages resolve against the badge's own height, where a fixed -11px
-  // would bury the card's first line once a heading wraps. With no start offset
-  // it sits at its static position, which is direction-aware. z-10 only has to
-  // clear its own card's content. The radius stays a pill in every shape
-  // setting, since a notch is window chrome rather than a control, and it takes
-  // the elevation shadow without the hairline, which belongs to a surface's own
-  // edge.
-  const isHeadingNotch = tone === "heading" && size === "heading";
-  // The lift stays with an `inFlow` notch; only the positioning goes.
-  const notchChrome = isHeadingNotch ? "shadow-[var(--elevation)]" : "";
-  const notchPositioning =
-    isHeadingNotch && !inFlow
-      ? [
-          "absolute top-0 -translate-y-1/2 z-10",
-          insetStart !== undefined ? INSET_START_CLASSES[insetStart] : "",
-        ]
-          .filter(Boolean)
-          .join(" ")
-      : "";
-
-  // An icon-only active badge takes the solid accent with contrast ink: with no
-  // text left, the translucent wash only makes the tile look dimmed, and a
-  // neutral ink fails contrast on several rainbow hues.
-  const toneClasses =
-    isIconOnly && tone === "active" ? "bg-accent text-accentContrast" : TONE_CLASSES[tone];
-
-  return [
-    "inline-flex box-border items-center justify-center gap-1 font-medium",
-    sizing,
-    text,
-    isIconOnly ? "px-0 aspect-square" : padding,
-    isHeadingNotch ? "rounded-pill" : RADIUS_CLASSES[shape],
-    toneClasses,
-    notchChrome,
-    notchPositioning,
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
+export type { BadgeShape, BadgeSize, BadgeTone, NotchInset } from "../badge.ts";
 
 export interface BadgeProps {
   children: ReactNode;
   /** Status colour. Defaults to the neutral chip. */
   tone?: BadgeTone;
-  /** Size stage; see the file header. A square icon-only badge is always
+  /** Size stage; see badgeClassName in the core. A square icon-only badge is always
    *  `"icon"`. */
   size?: BadgeSize;
   shape?: BadgeShape;
@@ -216,9 +47,9 @@ export interface BadgeProps {
    *  button, rendered through IconTipButton; it also makes the badge
    *  icon-only for sizing, and replaces `title` and `ariaLabel`. */
   tip?: string;
-  /** Heading notch only: the Tailwind spacing step of the card's content
-   *  padding (`insetStart={5}` for `p-5`), for the two cases NotchInset
-   *  describes. Omit it where the static position already lands right. */
+  /** Heading notch only: the card's content padding in quarter-rem steps
+   *  (`insetStart={5}` for 1.25rem), for the two cases NotchInset describes.
+   *  Omit it where the static position already lands right. */
   insetStart?: NotchInset;
   /** Heading notch only: keep the notch's look without positioning it, for
    *  several heading badges that straddle one card edge together inside a
@@ -258,17 +89,20 @@ export function Badge({
   // `.glim-notch-hue` drives the card-wide reactive hover in tokens.css, so it
   // is only set on a heading-sized badge.
   const isNotchHue = hueOn && size === "heading";
-  const shared = badgeClassName({ tone, size, shape, wrap, className, iconOnly: tip !== undefined, inFlow, insetStart });
-  const merged = hueOn ? `glim-hue ${isNotchHue ? "glim-notch-hue " : ""}${shared}` : shared;
+  const classes = [
+    hueOn && "glim-hue",
+    isNotchHue && "glim-notch-hue",
+    badgeClassName({ tone, size, shape, wrap, iconOnly: tip !== undefined, inFlow, insetStart, action: as !== "span" }),
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
   const hueStyle = hueOn ? (hueVars(hueIndex) as CSSProperties) : undefined;
-  // The icon-only active badge is the solid accent, so it steps like a heading.
-  const hover = tip !== undefined && tone === "active" ? HOVER_CLASSES.heading : HOVER_CLASSES[tone];
 
   if (as === "button") {
-    const buttonClassName = `appearance-none transition-colors ${hover} disabled:pointer-events-none disabled:opacity-50 ${merged}`;
     if (tip !== undefined) {
       return (
-        <IconTipButton tip={tip} onClick={onClick} disabled={disabled} style={hueStyle} className={buttonClassName}>
+        <IconTipButton tip={tip} onClick={onClick} disabled={disabled} style={hueStyle} className={classes}>
           {children}
         </IconTipButton>
       );
@@ -281,7 +115,7 @@ export function Badge({
         title={title}
         aria-label={ariaLabel}
         style={hueStyle}
-        className={buttonClassName}
+        className={classes}
       >
         {children}
       </button>
@@ -290,14 +124,14 @@ export function Badge({
 
   if (as === "a") {
     return (
-      <a href={href} target={target} rel={rel} title={title} aria-label={ariaLabel} style={hueStyle} className={`transition-colors ${hover} ${merged}`}>
+      <a href={href} target={target} rel={rel} title={title} aria-label={ariaLabel} style={hueStyle} className={classes}>
         {children}
       </a>
     );
   }
 
   return (
-    <span title={title} aria-label={ariaLabel} style={hueStyle} className={merged}>
+    <span title={title} aria-label={ariaLabel} style={hueStyle} className={classes}>
       {children}
     </span>
   );

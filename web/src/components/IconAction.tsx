@@ -70,7 +70,8 @@ export function IconAction({
       title={hint}
       tone={tone}
       hueIndex={hueIndex}
-      className={`${size === 'key' ? 'glim-btn-key' : ''} ${className}`.trim()}
+      size={size === 'key' ? 'key' : 'normal'}
+      className={className}
       disabled={disabled}
       busy={busy}
       onClick={onClick}

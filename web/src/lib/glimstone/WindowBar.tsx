@@ -1,6 +1,6 @@
 import { useRef, type MouseEvent, type ReactNode } from "react";
-import { IconClose, IconWindowMaximise, IconWindowMinimise, IconWindowRestore } from "./glyphs";
-import { IconTipButton } from "./IconTipButton";
+import { IconClose, IconWindowMaximise, IconWindowMinimise, IconWindowRestore } from "./glyphs.tsx";
+import { IconTipButton } from "./IconTipButton.tsx";
 
 // The title bar a desktop app draws where its window has no native one
 // (design-language.md, "The desktop window frame"): a strip to drag and the

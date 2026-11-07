@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
-import { hueVars } from "../appearance";
-import { Badge } from "./Badge";
-import { InfoBubble } from "./InfoBubble";
+import { hueVars } from "../appearance.ts";
+import { Badge } from "./Badge.tsx";
+import { InfoBubble } from "./InfoBubble.tsx";
 
 /**
  * The surface everything else sits on, and the one place a section heading is
@@ -18,6 +18,7 @@ import { InfoBubble } from "./InfoBubble";
  */
 export function Card({
   title,
+  drawn,
   hint,
   children,
   hueIndex,
@@ -26,6 +27,8 @@ export function Card({
   /** The section name. Omit it where a control inside already carries the same
    *  name; the badge still renders to keep the card's hue notch. */
   title?: string;
+  /** Takes the title's place in the notch with markup, such as an unsaved dot. */
+  drawn?: ReactNode;
   /** One line saying what this whole card does, drawn as an "(i)" beside the
    *  title. */
   hint?: string;
@@ -39,15 +42,15 @@ export function Card({
 }) {
   return (
     <div
-      className={`relative glim-notch-card flex flex-col gap-4 ${
-        nested ? "pt-5" : "bg-carbon-surface rounded-card p-5"
+      className={`glim-panel glim-notch-card${
+        nested ? " glim-panel--nested" : ""
       }${hueIndex !== undefined ? " glim-hue" : ""}`}
       style={hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : undefined}
     >
-      {(title || hint) && (
-        <h2 className="flex items-center">
+      {(title || drawn || hint) && (
+        <h2 className="glim-panel-heading">
           <Badge tone="heading" size="heading" wrap hueIndex={hueIndex}>
-            {title}
+            {drawn ?? title}
             {hint && <InfoBubble tip={hint} onAccent />}
           </Badge>
         </h2>

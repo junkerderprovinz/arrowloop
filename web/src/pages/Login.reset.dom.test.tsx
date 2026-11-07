@@ -57,7 +57,7 @@ describe('Login, a forgotten password', () => {
     const forgot = screen.getByRole('button', { name: /forgot password/i })
     expect(buttons[buttons.length - 1]).toBe(forgot)
     expect(forgot.className).toContain('w-full')
-    expect(forgot.className).not.toContain('bg-accent')
+    expect(forgot.className).not.toContain('glim-btn--accent')
     expect(screen.getByRole('button', { name: /log in/i }).className).toContain('w-full')
   })
 

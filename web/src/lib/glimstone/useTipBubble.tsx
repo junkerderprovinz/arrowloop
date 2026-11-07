@@ -1,19 +1,13 @@
-import {
-  useEffect,
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { computeBubblePosition } from "./bubblePosition";
+import { dismissBubbleOn, placeBubble } from "../tipBubble.ts";
+import { pointerWasLast, trackInputModality } from "../inputModality.ts";
 
 // The one hover and focus tooltip, as a hook. The "(i)" of InfoBubble, a
 // bare IconTipButton, a SelectorTab segment and a Button whose text the label
 // engine hides are all triggers of this same bubble (design-language.md, "The
 // tooltip and info bubble"). A trigger owns its element, its classes and when
-// it has something to say; the positioning lives here once.
+// it has something to say; placing and dismissing live in the core.
 //
 // The native `title=` attribute never shows on keyboard focus and cannot be
 // styled, which is why this hook exists.
@@ -78,51 +72,16 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
   function hide() {
     setOpen(false);
   }
-  // Focus opens the bubble only when the keyboard was used last. Opening on
-  // focus is for Tab users. A mouse user gets focus as a side effect, from a
-  // click or from a dialog handing it back to its opener (useConfirm), and a
-  // bubble opened then stays where the pointer no longer is.
   useEffect(trackInputModality, []);
   function showOnFocus() {
-    if (!pointerWasLast) show();
+    if (!pointerWasLast()) show();
   }
 
-  // The bubble is measured after it mounts, because its wrapped height depends
-  // on the tip's length, and placed before paint so it never visibly jumps.
   useLayoutEffect(() => {
-    if (!shown) return;
-    const trigger = triggerRef.current;
-    const bubble = bubbleRef.current;
-    if (!trigger || !bubble) return;
-    const r = trigger.getBoundingClientRect();
-    const viewport = {
-      width: document.documentElement.clientWidth || window.innerWidth,
-      height: document.documentElement.clientHeight || window.innerHeight,
-    };
-    const { left, top } = computeBubblePosition(
-      r,
-      { width: bubble.offsetWidth, height: bubble.offsetHeight },
-      viewport,
-    );
-    bubble.style.left = `${left}px`;
-    bubble.style.top = `${top}px`;
+    if (shown && triggerRef.current && bubbleRef.current) placeBubble(triggerRef.current, bubbleRef.current);
   }, [shown]);
 
-  // Scrolling would leave the bubble behind its trigger, and Escape has to
-  // dismiss it without a pointer move.
-  useEffect(() => {
-    if (!shown) return;
-    const onScroll = () => hide();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") hide();
-    };
-    window.addEventListener("scroll", onScroll, true);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [shown]);
+  useEffect(() => (shown ? dismissBubbleOn(hide) : undefined), [shown]);
 
   return {
     ref: (el: HTMLElement | null) => {
@@ -150,7 +109,7 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
       : null,
     wrap: (node: ReactNode) =>
       disabled && tip ? (
-        <span className="inline-flex" onMouseEnter={show} onMouseLeave={hide}>
+        <span className="glim-tip-wrap" onMouseEnter={show} onMouseLeave={hide}>
           {node}
         </span>
       ) : (
@@ -159,20 +118,4 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
     show,
     hide,
   };
-}
-
-// Whether the last input was a pointer rather than a key. It is tracked for the
-// whole page because focus often lands on one element after the user acted on
-// another, such as a dialog handing focus back to its opener.
-//
-// Not `:focus-visible`: jsdom evaluates it after React's focus handler runs, so
-// inside the handler it reads false for keyboard focus too.
-let pointerWasLast = false;
-let tracking = false;
-
-function trackInputModality() {
-  if (tracking || typeof document === "undefined") return;
-  tracking = true;
-  document.addEventListener("pointerdown", () => (pointerWasLast = true), true);
-  document.addEventListener("keydown", () => (pointerWasLast = false), true);
 }

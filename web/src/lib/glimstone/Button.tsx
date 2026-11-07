@@ -1,86 +1,19 @@
-import type { CSSProperties, FocusEvent, MouseEvent, ReactNode, Ref } from "react";
-import { hueVars, takePageHue } from "../appearance";
-import { hidesLabel, labelWidth, widthStage, type WidthStage } from "../controls";
-import { useLabelMode } from "./useLabelMode";
-import { useTipBubble } from "./useTipBubble";
-import { glyphFor } from "./glyphs";
-import { IconClose } from "./glyphs";
+import type { ButtonHTMLAttributes, FocusEvent, MouseEvent, ReactNode, Ref } from "react";
+import { useSyncExternalStore } from "react";
+import { buttonView, type ButtonSize, type ButtonTone, type ButtonVariant } from "../button.ts";
+import { mediaMatches, narrowerThan, subscribeMedia } from "../media.ts";
+import { takePageHue } from "../appearance.ts";
+import type { WidthStage } from "../controls.ts";
+import { useLabelMode } from "./useLabelMode.ts";
+import { useTipBubble } from "./useTipBubble.tsx";
+import { glyphFor, IconClose } from "./glyphs.tsx";
 
-// The one clickable control. Something you can click is a button and
-// something you only read is a badge, since only a real <button> is reachable
-// by keyboard.
-//
-// The component owns what a call site should not repeat: what is shown, from
-// the shared "buttons" label axis; the width stage derived from the label; the
-// label as accessible name and, in glyph mode, as the `.glim-bubble` tooltip
-// rather than a native `title=`; and the colour engine position through
-// `hueIndex`. A button without a glyph shows its text in every mode, since a
-// row of blank squares cannot be identified.
+export type { ButtonSize, ButtonTone, ButtonVariant } from "../button.ts";
 
-const STAGE_CLASS: Record<WidthStage, string> = {
-  xs: "glim-btn-xs",
-  sm: "glim-btn-sm",
-  md: "glim-btn-md",
-  lg: "glim-btn-lg",
-};
+// The one clickable control; what it shows and how wide it is come from
+// buttonView() in the core. The other props of a <button> go to the element.
 
-/**
- * The fills a button can take. A background written in `className` beside a
- * tone wins or loses by stylesheet order, so a control that needs a surface
- * the table lacks gets a new tone here instead.
- */
-export type ButtonTone = "accent" | "neutral" | "subtle" | "ok" | "danger" | "warn";
-
-/**
- * "default" the ordinary action button.
- * "chip"    the small remove control inside a pill, such as a selected path or
- *           an exclusion line. It shows its glyph in every mode and takes no
- *           width stage, which would burst the pill; its label stays the
- *           accessible name and the hover text.
- * "icon"    a single-purpose action in a row of siblings: copy, reset, undo,
- *           edit, delete. It follows the label mode like any button and only
- *           changes shape: where the mode hides words it is a square at the
- *           button height instead of hugging its glyph. Reactive stays an
- *           ordinary reactive button, because it grows on hover.
- */
-export type ButtonVariant = "default" | "chip" | "icon";
-
-// `ok`, `danger` and `warn` put the solid status tokens under `carbon-background`
-// ink: in both themes the solid values sit at the opposite lightness to the
-// background, so one ink reads on both.
-//
-// Filled tones hover up their own ramp (rule 21). `--carbon-hover` is for
-// controls with no fill, and on the dark ramp it is darker than surface2. The
-// accent and status fills have no ramp, so each steps toward the theme's text
-// colour; `opacity` would let the card show through and move the other way.
-// The two surface tones also take the accent tint of rule 40 from tokens.css.
-const TONE_CLASS: Record<ButtonTone, string> = {
-  accent: "bg-accent text-accentContrast hover:bg-accentHover",
-  neutral: "glim-btn-neutral bg-carbon-surface3 text-carbon-text hover:bg-carbon-hoverRaised",
-  subtle: "glim-btn-subtle bg-carbon-surface2 text-carbon-text hover:bg-carbon-surface3",
-  ok: "bg-statusOkSolid text-carbon-background hover:bg-statusOkHover",
-  danger: "bg-statusFailSolid text-carbon-background hover:bg-statusFailHover",
-  warn: "bg-statusWarnSolid text-carbon-background hover:bg-statusWarnHover",
-};
-
-export function Button({
-  label,
-  labelKey,
-  glyph,
-  onClick,
-  tone = "neutral",
-  variant = "default",
-  disabled = false,
-  type = "button",
-  className = "",
-  title,
-  hueIndex,
-  busy = false,
-  autoFocus = false,
-  stage: stageOverride,
-  keepLabel = false,
-  ref,
-}: {
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children" | "className" | "disabled" | "onClick" | "title" | "type" | "autoFocus"> {
   /** The button's words, present in every mode: visible, or hidden but
    *  announced and shown as the tooltip. Keep it stable, since a label that
    *  changes while the button works would resize it; put changing state in
@@ -102,8 +35,13 @@ export function Button({
   /** "chip" inside a pill, "icon" for a row action; see ButtonVariant. */
   variant?: ButtonVariant;
   disabled?: boolean;
+  /** Makes it a link with the button's look. A disabled one stays a disabled button. */
+  href?: string;
+  /** What stands before the glyph, such as a count. */
+  before?: ReactNode;
+  /** What stands after the words, such as a key cap. */
+  after?: ReactNode;
   type?: "button" | "submit";
-  className?: string;
   /** Extra explanation, and the place for anything that changes: the running
    *  state, or why the button is unavailable. It shows in the hover and focus
    *  bubble, joined with the label where the label is hidden, and still
@@ -126,65 +64,72 @@ export function Button({
    *  `groupStage([labelA, labelB])` to both. Use it only for such a pair.
    *  Ignored in glyph and reactive mode, which take no stage. */
   stage?: WidthStage;
+  /** Its glyph alone in a square in every label mode, where the words have no
+   *  room. The label stays the name and the bubble. */
+  compact?: boolean;
+  /** Turns compact while the window is narrower than this many pixels. */
+  compactBelow?: number;
+  size?: ButtonSize;
   /** Keeps the label visible in every mode, for a button whose label is
    *  content rather than a verb, such as a directory row in a folder browser.
    *  The glyph still shows beside it. */
   keepLabel?: boolean;
-}) {
+  className?: string;
+}
+
+export function Button({
+  label,
+  labelKey,
+  glyph,
+  onClick,
+  tone = "neutral",
+  variant = "default",
+  disabled = false,
+  type = "button",
+  className = "",
+  title,
+  hueIndex,
+  busy = false,
+  autoFocus = false,
+  stage: stageOverride,
+  keepLabel = false,
+  compact = false,
+  compactBelow,
+  size,
+  href,
+  before,
+  after,
+  ref,
+  ...rest
+}: ButtonProps) {
   const mode = useLabelMode("buttons");
-  const chip = variant === "chip";
-  const iconOnly = variant === "icon";
+  const query = compactBelow === undefined ? null : narrowerThan(compactBelow);
+  const narrow = useSyncExternalStore(
+    (fn) => (query ? subscribeMedia(query, fn) : () => {}),
+    () => (query ? mediaMatches(query) : false),
+    () => false,
+  );
   // A chip always closes, so it has a glyph even when no call site passes one.
-  const resolved = glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (chip ? <IconClose /> : undefined);
-  const hasGlyph = !!resolved || busy;
-  // A glyphless button shows its text in both hiding modes, and keepLabel
-  // keeps the glyph beside the text when there is one.
-  const effective = chip
-    ? "glyph"
-    : keepLabel
-      ? hasGlyph
-        ? "textGlyph"
-        : "text"
-      : hidesLabel(mode) && !hasGlyph
-        ? "text"
-        : mode;
-  const reactive = effective === "reactive";
-  // Reactive words arrive on hover, a CSS state, so this render treats reactive
-  // as a hiding mode.
-  const showText = effective !== "glyph" && !reactive;
-  const showGlyph = effective !== "text" && hasGlyph;
-
-  // Text and text-with-glyph take the stage from the label in the current
-  // language, so switching between them never reflows. In the hiding modes a
-  // button hugs its glyph, and a reactive one grows as its words arrive. A chip
-  // is sized by its glyph to fit its pill, and the icon variant is a square
-  // only in glyph mode.
-  const stage = chip
-    ? "glim-btn-chip"
-    : effective === "glyph"
-      ? iconOnly
-        ? "glim-btn-icon"
-        : ""
-      : reactive
-        ? ""
-        : STAGE_CLASS[stageOverride ?? widthStage(label)];
-
-  // In glyph mode the tooltip carries the label joined with the title, once if
-  // they are the same words. Reactive counts as showing text, since hovering
-  // reveals the words and a bubble would repeat them.
-  const tip =
-    (showText || reactive
-      ? title
-      : [...new Set([label, title].filter(Boolean))].join(" · ")) || undefined;
-  // A disabled reactive button takes no hover, so its words never reveal and
-  // the bubble is what explains it.
-  const tooltip = useTipBubble(reactive && !disabled ? undefined : tip, disabled);
-
-  const hueOn = hueIndex !== undefined;
-  // The surface tones carry rule 40's tint; a button with its own palette
-  // position keeps that colour.
-  const pageHue = !hueOn && !chip && (tone === "neutral" || tone === "subtle");
-  const handlers = pageHue
+  const resolved =
+    glyph ?? (labelKey ? glyphFor(labelKey) : undefined) ?? (variant === "chip" ? <IconClose /> : undefined);
+  const view = buttonView({
+    mode,
+    label,
+    hasGlyph: !!resolved || busy,
+    tone,
+    variant,
+    disabled,
+    keepLabel,
+    compact: compact || narrow,
+    size,
+    title,
+    hueIndex,
+    stage: stageOverride,
+  });
+  const tooltip = useTipBubble(view.tip, disabled);
+  const Element = (href && !disabled ? "a" : "button") as "button";
+  const own = href && !disabled ? { href } : { type, disabled, autoFocus };
+  const handlers = view.pageHue
     ? {
         ...tooltip.handlers,
         onMouseEnter: (e: MouseEvent<HTMLElement>) => {
@@ -197,51 +142,32 @@ export function Button({
         },
       }
     : tooltip.handlers;
-  // The reveal's ceiling in the label's visual units (see `.glim-label-reactive`
-  // in reference/tokens.css).
-  const hueStyle = {
-    ...(hueOn ? (hueVars(hueIndex) as CSSProperties) : {}),
-    ...(reactive ? ({ "--reactive-chars": labelWidth(label) } as CSSProperties) : {}),
-    // An explicit stage promises that two buttons match, so it is an exact
-    // width; a derived stage stays a floor a long label may overhang.
-    ...(stageOverride && stage ? ({ width: `var(--btn-w-${stageOverride})` } as CSSProperties) : {}),
-  };
 
   return (
     <>
       {/* `wrap` boxes only a disabled button with a tip, since a disabled
           <button> emits no mouse events. */}
       {tooltip.wrap(
-        <button
+        <Element
+          {...rest}
+          {...own}
           ref={mergeRefs(ref, tooltip.ref)}
-          type={type}
           onClick={onClick}
-          disabled={disabled}
-          autoFocus={autoFocus}
           aria-busy={busy || undefined}
           aria-describedby={tooltip.describedBy}
           {...handlers}
-          style={Object.keys(hueStyle).length ? hueStyle : undefined}
-          className={`glim-btn ${stage} ${chip ? "" : TONE_CLASS[tone]}${hueOn ? " glim-hue" : ""}${reactive ? " glim-reactive" : ""} ${className}`.trim()}
+          style={view.style}
+          className={`${view.className} ${className}`.trim()}
         >
-          {showGlyph && (
+          {before}
+          {view.showGlyph && (
             <span className="glim-btn-glyph">
-              {busy ? (
-                <span
-                  className="h-3.5 w-3.5 rounded-full border-2 border-t-transparent animate-spin inline-block"
-                  style={{ borderColor: "currentColor", borderTopColor: "transparent" }}
-                />
-              ) : (
-                resolved
-              )}
+              {busy ? <span className="glim-spinner" /> : resolved}
             </span>
           )}
-          {/* Hidden, never removed, so the button keeps its accessible name.
-              Reactive collapses the label's box until hover opens it. */}
-          <span className={showText ? "glim-btn-label" : reactive ? "glim-label-reactive" : "sr-only"}>
-            {label}
-          </span>
-        </button>,
+          <span className={view.labelClass}>{label}</span>
+          {after}
+        </Element>,
       )}
       {tooltip.bubble}
     </>

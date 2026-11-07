@@ -92,8 +92,8 @@ describe('Targets', () => {
 
     const ok = (await screen.findByText('Connected')).closest('button')!
     const fail = (await screen.findByText('Not connected')).closest('button')!
-    expect(ok.className).toContain('bg-statusOkSolid')
-    expect(fail.className).toContain('bg-statusFailSolid')
+    expect(ok.className).toContain('glim-btn--ok')
+    expect(fail.className).toContain('glim-btn--danger')
     expect(screen.queryByText('dial tcp', { exact: false })).toBeNull()
     expect(screen.getByText('The server could not be reached.')).toBeTruthy()
   })

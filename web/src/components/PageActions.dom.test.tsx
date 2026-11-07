@@ -58,8 +58,8 @@ describe('PageActions', () => {
 
   it('fills only the action the page exists for', () => {
     corner()
-    expect(screen.getByRole('button', { name: 'Add' }).className).toContain('bg-accent')
-    expect(screen.getByRole('button', { name: 'Register a drive' }).className).not.toContain('bg-accent')
+    expect(screen.getByRole('button', { name: 'Add' }).className).toContain('glim-btn--accent')
+    expect(screen.getByRole('button', { name: 'Register a drive' }).className).not.toContain('glim-btn--accent')
   })
 
   it('runs the action', () => {

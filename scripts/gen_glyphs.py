@@ -26,6 +26,7 @@ ASSORTMENT = {e["name"]: e for e in json.loads((ROOT / "scripts" / "glyphs.json"
 # The assortment covers every app that speaks GlimStone; these are the meanings
 # ArrowLoop has, some of them for pages that are still being built.
 STANDARD = [
+    "IconAccentSystem",
     "IconAdd",
     "IconBack",
     "IconCheck",

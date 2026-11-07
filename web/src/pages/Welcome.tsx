@@ -192,14 +192,14 @@ export function Welcome({ fresh }: { fresh: boolean | null }) {
         <Button
           label={t('welcome.restore')}
           labelKey="welcome.restore"
-          className="glim-btn-key"
+          size="key"
           onClick={() => openSetting('general', { card: t('backup.title') })}
         />
         <Button
           label={t('welcome.start')}
           labelKey="welcome.start"
           tone="accent"
-          className="glim-btn-key"
+          size="key"
           onClick={() => navigate('/jobs')}
         />
       </div>
