@@ -33,6 +33,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
@@ -92,7 +93,7 @@ func run() error {
 		// The tray window outlives the main one, so the main window's close
 		// button decides alone whether the program ends.
 		Windows: application.WindowsOptions{DisableQuitOnLastWindowClosed: true},
-		Linux:   application.LinuxOptions{DisableQuitOnLastWindowClosed: true, ProgramName: "ArrowLoop"},
+		Linux:   linuxOptions(),
 		// The API is the whole asset server, the interface included, so
 		// nothing listens on the network.
 		Assets: application.AssetOptions{
@@ -266,13 +267,30 @@ func rcloneConfig(configPath string) string {
 
 // instanceID names the single-instance lock. A copy started on another
 // configuration is a separate program and may run beside the installed one.
+// A Flatpak may own bus names under its own ID alone.
 func instanceID(custom, configPath string) string {
+	base := installID
+	if id := flatpak.ID(); id != "" {
+		base = id
+	}
 	if custom == "" {
-		return installID
+		return base
 	}
 	// The letter keeps the element a valid bus name, which may not start with a digit.
 	sum := sha256.Sum256([]byte(configPath))
-	return installID + ".c" + hex.EncodeToString(sum[:4])
+	return base + ".c" + hex.EncodeToString(sum[:4])
+}
+
+// linuxOptions names the program to GTK. Inside a Flatpak the name is the
+// app's ID, the only one the sandbox lets it own on the bus and the one the
+// desktop matches a window to the app's launcher by.
+func linuxOptions() application.LinuxOptions {
+	opts := application.LinuxOptions{DisableQuitOnLastWindowClosed: true, ProgramName: "ArrowLoop"}
+	if id := flatpak.ID(); id != "" {
+		opts.ApplicationID = id
+		opts.ProgramName = id
+	}
+	return opts
 }
 
 const starterConfig = `{

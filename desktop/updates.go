@@ -13,6 +13,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/desktop/update"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
+	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
 )
 
 // The first check waits for the window and the schedules to settle; one a day
@@ -82,8 +83,13 @@ func openUpdateLog(path string) *log.Logger {
 }
 
 // run removes what the last update left and then checks for updates until ctx
-// ends. A build that does not know which release it is never checks.
+// ends. A build that does not know which release it is never checks, and a
+// Flatpak leaves updates to the software centre, which owns its files.
 func (up *updater) run(ctx context.Context) {
+	if flatpak.ID() != "" {
+		up.log.Printf("update: the software centre keeps this Flatpak current")
+		return
+	}
 	up.u.Cleanup()
 	if !update.IsRelease(boot.Version) {
 		up.log.Printf("update: %s is not a release build, so it does not update itself", boot.Version)
