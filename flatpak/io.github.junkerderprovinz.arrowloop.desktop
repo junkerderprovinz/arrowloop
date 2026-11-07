@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=ArrowLoop
+GenericName=File Synchronisation
+Comment=Two-way sync that shows you the plan before it moves anything
+Exec=arrowloop
+Icon=io.github.junkerderprovinz.arrowloop
+Terminal=false
+Categories=Network;FileTransfer;
+Keywords=sync;synchronisation;backup;rclone;cloud;sftp;smb;webdav;nextcloud;s3;
+StartupNotify=true
+StartupWMClass=io.github.junkerderprovinz.arrowloop
+SingleMainWindow=true

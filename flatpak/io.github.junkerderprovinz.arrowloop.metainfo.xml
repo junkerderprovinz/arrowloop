@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.junkerderprovinz.arrowloop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-only</project_license>
+
+  <name>ArrowLoop</name>
+  <summary>Two-way sync with a preview</summary>
+  <developer id="io.github.junkerderprovinz">
+    <name>junkerderprovinz</name>
+  </developer>
+
+  <description>
+    <p>
+      ArrowLoop keeps two folders in step, in both directions. One can be on this
+      computer, the other on your own server, a NAS, a phone or one of the many
+      cloud services rclone supports. Before a run moves anything, it shows you
+      the plan: every copy, every deletion and every conflict, one row each.
+      Untick a row and that file stays exactly as it is.
+    </p>
+    <p>What it does:</p>
+    <ul>
+      <li>Syncs in both directions, or one way if you prefer</li>
+      <li>Remembers what both sides last agreed on, so a deleted file never comes back and a new one never disappears</li>
+      <li>Reaches SFTP, SMB, WebDAV, Nextcloud, S3, OneDrive, Google Drive and over 60 other services</li>
+      <li>Runs on a schedule or as soon as files change, and waits in the tray in between</li>
+      <li>Keeps both versions when a file was changed on both sides</li>
+      <li>Writes every run into a history: what was copied, deleted or left for next time, and why</li>
+    </ul>
+    <p>So that no file gets lost:</p>
+    <ul>
+      <li>A deletion moves the file into a trash on that side rather than removing it for good</li>
+      <li>A run that would delete more than half of your files stops and asks first</li>
+      <li>A side that suddenly looks empty, such as a drive that did not mount, is never taken as everything deleted</li>
+    </ul>
+    <p>
+      There is no account, no server of ours in between and no analytics. The
+      Flatpak can reach your home folder and the drives and shares under /media,
+      /run/media and /mnt. A folder anywhere else needs a filesystem override
+      before a job can sync it.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.junkerderprovinz.arrowloop.desktop</launchable>
+  <provides>
+    <binary>arrowloop</binary>
+  </provides>
+
+  <url type="homepage">https://github.com/junkerderprovinz/arrowloop</url>
+  <url type="bugtracker">https://github.com/junkerderprovinz/arrowloop/issues</url>
+  <url type="help">https://junkerderprovinz.github.io/arrowloop/</url>
+  <url type="vcs-browser">https://github.com/junkerderprovinz/arrowloop</url>
+  <url type="contribute">https://github.com/junkerderprovinz/arrowloop/issues</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>The jobs, each with its schedule and its last runs</caption>
+      <image>https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/store/captures/web/jobs.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The plan of a run, with a conflict to decide</caption>
+      <image>https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/store/captures/web/plan.png</image>
+    </screenshot>
+  </screenshots>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#f9d68f</color>
+    <color type="primary" scheme_preference="dark">#4d5054</color>
+  </branding>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="2.5.0" date="2026-11-08">
+      <description>
+        <p>Put the jobs in your own order and see them in a compact list, go true black on OLED screens and let the accent take your system's colour.</p>
+        <ul>
+          <li>Drag a job by its handle, or press Alt and an arrow key, to put the jobs in your own order</li>
+          <li>The job list has a compact view with one row per job</li>
+          <li>OLED puts the dark look on true black</li>
+          <li>The accent can take your system's colour</li>
+          <li>The lists sort, filter and search from their own headings</li>
+          <li>The sign-in page has a new look</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.5.0</url>
+    </release>
+    <release version="2.4.6" date="2026-11-06">
+      <description>
+        <p>Builds move to Go 1.27.3, and the engine picks up a fix in its compression library.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.4.6</url>
+    </release>
+  </releases>
+</component>
