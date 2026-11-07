@@ -1365,6 +1365,22 @@ const sv: Translations = {
   'new.change.oxicloud': 'OxiCloud har en egen ruta under Moln. Den visar adressen som OxiCloud väntar sig och var applösenordet skapas.',
   'new.change.userCas': 'Telefonappen litar på certifikatutfärdarna som är installerade i Androids inställningar, så även en server med eget certifikat ansluter.',
   'new.change.signInCard': 'Inloggningssidan har fått ett nytt utseende, med ArrowLoops logga och namn överst och varje knapp lika bred som kortet. Markören står redan i lösenordsfältet, inloggningsknappen väntar tills du skriver något, och vid fel lösenord eller kod skakar den till lite.',
+  'autoBackup.title': 'Automatiska säkerhetskopior',
+  'autoBackup.hint': 'ArrowLoop sparar kopior av alla jobb och inställningar åt dig: enligt schema och precis innan en import ersätter dem. En ny kopia görs bara när något har ändrats, och den äldsta försvinner när det blir fler än du sparar.',
+  'autoBackup.on': 'Säkerhetskopiera automatiskt',
+  'autoBackup.everyDays': 'Dagar mellan kopior',
+  'autoBackup.everyDaysHint': 'ArrowLoop tittar efter en gång på så många dagar och gör en kopia om något har ändrats sedan den förra.',
+  'autoBackup.keep': 'Kopior att spara',
+  'autoBackup.keepHint': 'Blir det fler tas den äldsta bort. Filer som du själv lägger i mappen rörs aldrig.',
+  'autoBackup.folder': 'Mapp för kopior',
+  'autoBackup.folderHint': 'Lämna tomt för mappen backups bredvid ArrowLoops inställningar. Varje kopia innehåller dina lösenord för aviseringar, precis som en export, så välj en plats som bara du kan öppna.',
+  'autoBackup.folderPhoneHint': 'Lämna tomt så stannar kopiorna i appen. Vill du ha kvar dem även om appen tas bort, välj en mapp i Download eller Documents. Då behöver ArrowLoop åtkomst till alla filer.',
+  'autoBackup.latest': 'Senaste kopian',
+  'autoBackup.none': 'Inga än',
+  'autoBackup.restore': 'Återställ',
+  'autoBackup.confirm': 'Ersätta alla jobb och alla inställningar med kopian från {when}? Det du har nu sparas först som en egen kopia, så du kan alltid gå tillbaka.',
+  'autoBackup.failed': 'Den senaste kopian kunde inte skrivas: {error}. ArrowLoop försöker igen om en timme.',
+  'new.change.autoBackup': 'ArrowLoop sparar en kopia av alla jobb och inställningar åt dig, en gång om dagen och precis innan en import ersätter dem. Under {title} ser du den senaste och kan lägga tillbaka den, och du väljer hur många som sparas och var de hamnar.',
 }
 
 export default sv

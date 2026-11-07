@@ -1365,6 +1365,22 @@ const ms: Translations = {
   'new.change.oxicloud': 'OxiCloud ada jubin sendiri di bawah Awan. Ia menunjukkan alamat yang dijangka oleh OxiCloud dan tempat kata laluan aplikasi dicipta.',
   'new.change.userCas': 'Aplikasi telefon mempercayai pihak berkuasa sijil yang dipasang dalam tetapan Android, jadi pelayan dengan sijilnya sendiri juga dapat bersambung.',
   'new.change.signInCard': 'Halaman log masuk mempunyai rupa baharu, dengan logo dan nama ArrowLoop di atas dan setiap butang selebar kad. Kursor sudah berada dalam medan kata laluan, butang log masuk menunggu sehingga anda menaip sesuatu, dan jika kata laluan atau kod salah butang itu bergegar sedikit.',
+  'autoBackup.title': 'Sandaran automatik',
+  'autoBackup.hint': 'ArrowLoop menyimpan salinan semua tugas dan tetapan untuk anda: mengikut jadual, dan sejurus sebelum import menggantikannya. Salinan baharu hanya dibuat apabila ada yang berubah, dan yang paling lama dibuang apabila jumlahnya melebihi bilangan yang anda simpan.',
+  'autoBackup.on': 'Sandarkan secara automatik',
+  'autoBackup.everyDays': 'Hari antara sandaran',
+  'autoBackup.everyDaysHint': 'ArrowLoop menyemak sekali setiap sekian hari dan membuat salinan jika ada yang berubah sejak salinan terakhir.',
+  'autoBackup.keep': 'Bilangan sandaran disimpan',
+  'autoBackup.keepHint': 'Apabila ada lebih, yang paling lama dibuang. Fail yang anda letakkan sendiri dalam folder itu tidak akan diusik.',
+  'autoBackup.folder': 'Folder sandaran',
+  'autoBackup.folderHint': 'Biarkan kosong untuk menggunakan folder backups di sebelah tetapan ArrowLoop. Setiap salinan mengandungi kata laluan pemberitahuan anda, sama seperti eksport, jadi pilih tempat yang hanya anda boleh buka.',
+  'autoBackup.folderPhoneHint': 'Biarkan kosong untuk menyimpan salinan di dalam apl. Untuk mengekalkannya walaupun apl dibuang, pilih folder dalam Download atau Documents. Untuk itu ArrowLoop memerlukan akses kepada semua fail.',
+  'autoBackup.latest': 'Sandaran terkini',
+  'autoBackup.none': 'Belum ada',
+  'autoBackup.restore': 'Pulihkan',
+  'autoBackup.confirm': 'Gantikan semua tugas dan semua tetapan dengan sandaran dari {when}? Apa yang anda ada sekarang akan disimpan dahulu sebagai sandaran tersendiri, jadi anda sentiasa boleh kembali.',
+  'autoBackup.failed': 'Sandaran terakhir tidak dapat ditulis: {error}. ArrowLoop akan cuba lagi dalam masa sejam.',
+  'new.change.autoBackup': 'ArrowLoop menyimpan salinan semua tugas dan tetapan untuk anda, sekali sehari dan sejurus sebelum import menggantikannya. Di {title} anda boleh melihat yang terkini dan memulihkannya, serta memilih berapa banyak yang disimpan dan di mana.',
 }
 
 export default ms

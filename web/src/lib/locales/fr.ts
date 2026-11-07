@@ -1365,6 +1365,22 @@ const fr: Translations = {
   'new.change.oxicloud': 'OxiCloud a sa propre tuile sous Clouds. Elle montre l\'adresse attendue par OxiCloud et l\'endroit où créer le mot de passe d\'application.',
   'new.change.userCas': 'L\'application du téléphone fait confiance aux autorités de certification installées dans les réglages d\'Android, si bien qu\'un serveur doté de son propre certificat se connecte lui aussi.',
   'new.change.signInCard': 'La page de connexion a un nouvel aspect, avec le logo et le nom d\'ArrowLoop en haut et chaque bouton aussi large que la carte. Le curseur est déjà dans le champ du mot de passe, le bouton de connexion attend que vous saisissiez quelque chose, et un mot de passe ou un code erroné le fait trembler un instant.',
+  'autoBackup.title': 'Sauvegardes automatiques',
+  'autoBackup.hint': 'ArrowLoop garde pour vous des copies de toutes les tâches et de tous les réglages : selon un calendrier, et juste avant qu\'une importation ne les remplace. Une nouvelle copie n\'est créée que si quelque chose a changé, et la plus ancienne disparaît dès qu\'il y en a plus que vous n\'en gardez.',
+  'autoBackup.on': 'Sauvegarder automatiquement',
+  'autoBackup.everyDays': 'Jours entre deux sauvegardes',
+  'autoBackup.everyDaysHint': 'ArrowLoop vérifie une fois tous les tant de jours et fait une copie si quelque chose a changé depuis la dernière.',
+  'autoBackup.keep': 'Sauvegardes à conserver',
+  'autoBackup.keepHint': 'Au-delà, la plus ancienne est supprimée. Les fichiers que vous placez vous-même dans le dossier ne sont jamais touchés.',
+  'autoBackup.folder': 'Dossier des sauvegardes',
+  'autoBackup.folderHint': 'Laissez vide pour utiliser le dossier backups à côté des réglages d\'ArrowLoop. Chaque copie contient vos mots de passe de notification, comme une exportation, alors choisissez un endroit auquel vous seul avez accès.',
+  'autoBackup.folderPhoneHint': 'Laissez vide pour garder les copies dans l\'application. Pour les conserver même si l\'application est supprimée, choisissez un dossier dans Download ou Documents. ArrowLoop a alors besoin d\'accéder à tous les fichiers.',
+  'autoBackup.latest': 'Dernière sauvegarde',
+  'autoBackup.none': 'Aucune pour l\'instant',
+  'autoBackup.restore': 'Restaurer',
+  'autoBackup.confirm': 'Remplacer toutes les tâches et tous les réglages par la sauvegarde du {when} ? Ce que vous avez maintenant est d\'abord gardé comme une sauvegarde à part, vous pouvez donc toujours revenir en arrière.',
+  'autoBackup.failed': 'La dernière sauvegarde n\'a pas pu être écrite : {error}. ArrowLoop réessaie dans une heure.',
+  'new.change.autoBackup': 'ArrowLoop fait pour vous une copie de toutes les tâches et de tous les réglages, une fois par jour et juste avant qu\'une importation ne les remplace. Sous {title}, vous voyez la plus récente et pouvez la restaurer, et vous choisissez combien en garder et où les ranger.',
 }
 
 export default fr

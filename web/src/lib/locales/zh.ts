@@ -1365,6 +1365,22 @@ const zh: Translations = {
   'new.change.oxicloud': 'OxiCloud 在云服务下有自己的磁贴，显示 OxiCloud 需要的地址以及创建应用密码的位置。',
   'new.change.userCas': '手机应用信任安装在 Android 设置中的证书颁发机构，因此使用自有证书的服务器也能连接。',
   'new.change.signInCard': '登录页面换了新样子，顶部是 ArrowLoop 的标志和名称，每个按钮都和卡片一样宽。光标一开始就在密码框里，登录按钮会等你输入内容后才可用，密码或验证码错误时按钮会轻轻晃一下。',
+  'autoBackup.title': '自动备份',
+  'autoBackup.hint': 'ArrowLoop 会替你保存全部任务和设置的副本：按计划保存，导入替换它们之前也会先存一份。只有内容有变化时才会生成新副本，份数超过你要保留的数量时，最旧的一份会被删除。',
+  'autoBackup.on': '开启自动备份',
+  'autoBackup.everyDays': '备份间隔天数',
+  'autoBackup.everyDaysHint': 'ArrowLoop 每隔这么多天检查一次，如果自上一份以来有变化，就生成一份副本。',
+  'autoBackup.keep': '保留份数',
+  'autoBackup.keepHint': '超出时会删除最旧的一份。你自己放进文件夹的文件不会被动到。',
+  'autoBackup.folder': '备份文件夹',
+  'autoBackup.folderHint': '留空则使用 ArrowLoop 设置旁边的 backups 文件夹。和导出一样，每份副本都含有你的通知密码，所以请选一个只有你能打开的位置。',
+  'autoBackup.folderPhoneHint': '留空则把副本保存在应用内。如果想在卸载应用后仍保留它们，请选择 Download 或 Documents 中的文件夹。为此 ArrowLoop 需要访问所有文件的权限。',
+  'autoBackup.latest': '最近一次备份',
+  'autoBackup.none': '暂无',
+  'autoBackup.restore': '恢复',
+  'autoBackup.confirm': '用 {when} 的备份替换全部任务和全部设置吗？当前的内容会先单独存为一份备份，所以你随时都能回退。',
+  'autoBackup.failed': '上一次备份未能写入：{error}。ArrowLoop 会在一小时后重试。',
+  'new.change.autoBackup': 'ArrowLoop 会替你保存全部任务和设置的副本，每天一次，导入替换它们之前也会先存一份。在{title}里可以看到最近一份并将其恢复，还能选择保留多少份、存放在哪里。',
 }
 
 export default zh

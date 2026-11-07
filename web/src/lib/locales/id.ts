@@ -1365,6 +1365,22 @@ const id: Translations = {
   'new.change.oxicloud': 'OxiCloud punya ubin sendiri di bawah Awan. Ubin itu menampilkan alamat yang diharapkan OxiCloud dan tempat kata sandi aplikasi dibuat.',
   'new.change.userCas': 'Aplikasi ponsel memercayai otoritas sertifikat yang dipasang di pengaturan Android, jadi server dengan sertifikatnya sendiri juga bisa tersambung.',
   'new.change.signInCard': 'Halaman masuk punya tampilan baru, dengan logo dan nama ArrowLoop di atas dan setiap tombol selebar kartu. Kursor sudah ada di kolom kata sandi, tombol masuk menunggu sampai Anda mengetik sesuatu, dan saat kata sandi atau kode salah tombol itu bergoyang sedikit.',
+  'autoBackup.title': 'Cadangan otomatis',
+  'autoBackup.hint': 'ArrowLoop menyimpan salinan semua tugas dan pengaturan untukmu: sesuai jadwal, dan tepat sebelum impor menggantinya. Salinan baru hanya dibuat kalau ada yang berubah, dan yang paling lama dihapus begitu jumlahnya melebihi yang kamu simpan.',
+  'autoBackup.on': 'Cadangkan otomatis',
+  'autoBackup.everyDays': 'Hari di antara cadangan',
+  'autoBackup.everyDaysHint': 'ArrowLoop memeriksa sekali dalam sekian hari ini dan membuat salinan kalau ada yang berubah sejak salinan terakhir.',
+  'autoBackup.keep': 'Cadangan yang disimpan',
+  'autoBackup.keepHint': 'Kalau lebih dari itu, yang paling lama dihapus. Berkas yang kamu taruh sendiri di folder tidak pernah disentuh.',
+  'autoBackup.folder': 'Folder cadangan',
+  'autoBackup.folderHint': 'Biarkan kosong untuk memakai folder backups di samping pengaturan ArrowLoop. Setiap salinan berisi kata sandi notifikasimu, sama seperti ekspor, jadi pilih tempat yang hanya bisa kamu buka.',
+  'autoBackup.folderPhoneHint': 'Biarkan kosong untuk menyimpan salinan di dalam aplikasi. Agar salinan tetap ada meski aplikasi dihapus, pilih folder di Download atau Documents. Untuk itu ArrowLoop perlu akses ke semua berkas.',
+  'autoBackup.latest': 'Cadangan terbaru',
+  'autoBackup.none': 'Belum ada',
+  'autoBackup.restore': 'Pulihkan',
+  'autoBackup.confirm': 'Ganti semua tugas dan semua pengaturan dengan cadangan dari {when}? Yang kamu punya sekarang disimpan dulu sebagai cadangan tersendiri, jadi kamu selalu bisa kembali.',
+  'autoBackup.failed': 'Cadangan terakhir tidak bisa ditulis: {error}. ArrowLoop mencoba lagi dalam satu jam.',
+  'new.change.autoBackup': 'ArrowLoop membuat salinan semua tugas dan pengaturan untukmu, sekali sehari dan tepat sebelum impor menggantinya. Di {title} kamu bisa melihat yang terbaru dan memulihkannya, dan di sana juga kamu memilih berapa banyak yang disimpan dan ke mana salinan itu disimpan.',
 }
 
 export default id

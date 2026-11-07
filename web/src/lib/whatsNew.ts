@@ -65,6 +65,13 @@ export const RELEASES: Release[] = [
   {
     after: '2.5.0',
     changes: [
+      {
+        id: 'auto-backup',
+        at: ['/settings/general'],
+        where: ['nav.settings', 'settings.general'],
+        text: 'new.change.autoBackup',
+        names: { title: 'autoBackup.title' },
+      },
       // The tile stands in the provider picker, a window no address opens.
       { id: 'oxicloud', text: 'new.change.oxicloud' },
       // Only the phone app reads the authorities installed on the phone.

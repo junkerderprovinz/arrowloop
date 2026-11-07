@@ -1365,6 +1365,22 @@ const et: Translations = {
   'new.change.oxicloud': 'OxiCloudil on oma paan jaotises Pilved. See näitab aadressi, mida OxiCloud ootab, ja kus rakenduse parool luuakse.',
   'new.change.userCas': 'Telefonirakendus usaldab Androidi seadetesse paigaldatud sertifitseerimiskeskusi, nii et ühendub ka oma sertifikaadiga server.',
   'new.change.signInCard': 'Sisselogimise leht on uue ilmega, üleval on ArrowLoopi logo ja nimi ning iga nupp on sama lai kui kaart. Kursor on juba paroolilahtris, sisselogimise nupp ootab, kuni midagi sisestad, ja vale parooli või koodi korral väriseb see korraks.',
+  'autoBackup.title': 'Automaatsed varukoopiad',
+  'autoBackup.hint': 'ArrowLoop hoiab sinu eest koopiaid kõigist töödest ja seadetest: ajakava järgi ja vahetult enne, kui import need asendab. Uus koopia tehakse ainult siis, kui midagi on muutunud, ja vanim kaob, kui neid on rohkem, kui sa alles hoiad.',
+  'autoBackup.on': 'Tee varukoopiaid automaatselt',
+  'autoBackup.everyDays': 'Päevi varukoopiate vahel',
+  'autoBackup.everyDaysHint': 'ArrowLoop vaatab kord nii mitme päeva tagant järele ja teeb koopia, kui midagi on pärast eelmist muutunud.',
+  'autoBackup.keep': 'Mitu koopiat alles hoida',
+  'autoBackup.keepHint': 'Kui neid on rohkem, eemaldatakse vanim. Faile, mille ise kausta paned, ei puututa kunagi.',
+  'autoBackup.folder': 'Varukoopiate kaust',
+  'autoBackup.folderHint': 'Jäta tühjaks, et kasutada kausta backups ArrowLoopi seadete kõrval. Iga koopia sisaldab sinu teavituste paroole, täpselt nagu eksport, nii et vali koht, mida saad avada ainult sina.',
+  'autoBackup.folderPhoneHint': 'Jäta tühjaks, et hoida koopiaid rakenduse sees. Et need jääksid alles ka siis, kui rakendus eemaldatakse, vali kaust Download või Documents sees. Selleks vajab ArrowLoop juurdepääsu kõigile failidele.',
+  'autoBackup.latest': 'Viimane varukoopia',
+  'autoBackup.none': 'Veel pole',
+  'autoBackup.restore': 'Taasta',
+  'autoBackup.confirm': 'Kas asendada kõik tööd ja kõik seaded varukoopiaga, mis on tehtud {when}? See, mis sul praegu on, salvestatakse enne eraldi varukoopiana, nii et saad alati tagasi minna.',
+  'autoBackup.failed': 'Viimast varukoopiat ei õnnestunud kirjutada: {error}. ArrowLoop proovib tunni aja pärast uuesti.',
+  'new.change.autoBackup': 'ArrowLoop hoiab sinu eest koopiat kõigist töödest ja seadetest, kord päevas ja vahetult enne, kui import need asendab. Jaotises {title} näed viimast ja saad selle taastada ning valid ise, mitu alles hoida ja kuhu need lähevad.',
 }
 
 export default et

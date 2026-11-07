@@ -1365,6 +1365,22 @@ const is: Translations = {
   'new.change.oxicloud': 'OxiCloud er með eigin reit undir Skýin. Hann sýnir vistfangið sem OxiCloud býst við og hvar forritslykilorðið er búið til.',
   'new.change.userCas': 'Símaforritið treystir vottunaraðilum sem eru settir upp í stillingum Android, svo netþjónn með eigið skilríki tengist líka.',
   'new.change.signInCard': 'Innskráningarsíðan hefur fengið nýtt útlit, með merki og nafni ArrowLoop efst og hvern hnapp jafnbreiðan spjaldinu. Bendillinn er þegar í lykilorðsreitnum, innskráningarhnappurinn bíður þar til þú slærð eitthvað inn og við rangt lykilorð eða kóða hristist hann aðeins.',
+  'autoBackup.title': 'Sjálfvirk afrit',
+  'autoBackup.hint': 'ArrowLoop geymir afrit af öllum verkum og stillingum fyrir þig: samkvæmt áætlun og rétt áður en innflutningur kemur í stað þeirra. Nýtt afrit verður aðeins til ef eitthvað hefur breyst, og það elsta fer þegar þau eru orðin fleiri en þú geymir.',
+  'autoBackup.on': 'Taka afrit sjálfkrafa',
+  'autoBackup.everyDays': 'Dagar milli afrita',
+  'autoBackup.everyDaysHint': 'ArrowLoop athugar einu sinni á þessum dagafjölda og tekur afrit ef eitthvað hefur breyst frá því síðasta.',
+  'autoBackup.keep': 'Afrit sem á að geyma',
+  'autoBackup.keepHint': 'Þegar þau eru fleiri er því elsta eytt. ArrowLoop lætur alltaf í friði skrár sem þú setur sjálfur í möppuna.',
+  'autoBackup.folder': 'Mappa fyrir afrit',
+  'autoBackup.folderHint': 'Skildu eftir autt til að nota möppuna backups við hliðina á stillingum ArrowLoop. Hvert afrit geymir lykilorðin þín fyrir tilkynningar, rétt eins og útflutningur, svo veldu stað sem aðeins þú getur opnað.',
+  'autoBackup.folderPhoneHint': 'Skildu eftir autt til að geyma afritin inni í forritinu. Til að halda þeim þótt forritið sé fjarlægt skaltu velja möppu í Download eða Documents. Til þess þarf ArrowLoop aðgang að öllum skrám.',
+  'autoBackup.latest': 'Nýjasta afrit',
+  'autoBackup.none': 'Ekkert enn',
+  'autoBackup.restore': 'Endurheimta',
+  'autoBackup.confirm': 'Skipta öllum verkum og öllum stillingum út fyrir afritið frá {when}? Það sem þú ert með núna er fyrst geymt sem sérstakt afrit, svo þú getur alltaf farið til baka.',
+  'autoBackup.failed': 'Ekki tókst að skrifa síðasta afrit: {error}. ArrowLoop reynir aftur eftir klukkustund.',
+  'new.change.autoBackup': 'ArrowLoop tekur afrit af öllum verkum og stillingum fyrir þig einu sinni á dag og rétt áður en innflutningur kemur í stað þeirra. Undir {title} sérðu það nýjasta og getur sett það aftur inn, og þar velurðu líka hve mörg eru geymd og hvert þau fara.',
 }
 
 export default is

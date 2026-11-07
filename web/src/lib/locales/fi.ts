@@ -1365,6 +1365,22 @@ const fi: Translations = {
   'new.change.oxicloud': 'OxiCloudilla on oma ruutunsa kohdassa Pilvet. Se näyttää osoitteen, jota OxiCloud odottaa, ja missä sovellussalasana luodaan.',
   'new.change.userCas': 'Puhelinsovellus luottaa Androidin asetuksiin asennettuihin varmenteiden myöntäjiin, joten myös palvelin, jolla on oma varmenne, saa yhteyden.',
   'new.change.signInCard': 'Kirjautumissivu on uudistunut, ylhäällä on ArrowLoopin logo ja nimi ja jokainen painike on kortin levyinen. Kohdistin on valmiiksi salasanakentässä, kirjautumispainike odottaa, kunnes kirjoitat jotain, ja väärästä salasanasta tai koodista se heilahtaa hieman.',
+  'autoBackup.title': 'Automaattiset varmuuskopiot',
+  'autoBackup.hint': 'ArrowLoop tekee puolestasi kopiot kaikista töistä ja asetuksista: aikataulun mukaan ja juuri ennen kuin tuonti korvaa ne. Uusi kopio syntyy vain, kun jokin on muuttunut, ja vanhin poistuu, kun kopioita on enemmän kuin säilytät.',
+  'autoBackup.on': 'Varmuuskopioi automaattisesti',
+  'autoBackup.everyDays': 'Päiviä varmuuskopioiden välillä',
+  'autoBackup.everyDaysHint': 'ArrowLoop tarkistaa näin monen päivän välein ja tekee kopion, jos jokin on muuttunut edellisen jälkeen.',
+  'autoBackup.keep': 'Säilytettävät varmuuskopiot',
+  'autoBackup.keepHint': 'Kun niitä on enemmän, vanhin poistetaan. Tiedostoihin, jotka laitat kansioon itse, ei kosketa.',
+  'autoBackup.folder': 'Varmuuskopiokansio',
+  'autoBackup.folderHint': 'Jätä tyhjäksi, niin käytetään backups-kansiota ArrowLoopin asetusten vieressä. Jokainen kopio sisältää ilmoitusten salasanat aivan kuten vienti, joten valitse paikka, jonka vain sinä voit avata.',
+  'autoBackup.folderPhoneHint': 'Jätä tyhjäksi, niin kopiot pysyvät sovelluksen sisällä. Jos haluat niiden säilyvän silloinkin, kun sovellus poistetaan, valitse kansio Download- tai Documents-kansiosta. Siihen ArrowLoop tarvitsee pääsyn kaikkiin tiedostoihin.',
+  'autoBackup.latest': 'Uusin varmuuskopio',
+  'autoBackup.none': 'Ei vielä yhtään',
+  'autoBackup.restore': 'Palauta',
+  'autoBackup.confirm': 'Korvataanko kaikki työt ja kaikki asetukset varmuuskopiolla, joka on tehty {when}? Nykyinen tilanne tallennetaan ensin omaksi varmuuskopiokseen, joten pääset aina takaisin.',
+  'autoBackup.failed': 'Viimeisintä varmuuskopiota ei voitu kirjoittaa: {error}. ArrowLoop yrittää uudelleen tunnin kuluttua.',
+  'new.change.autoBackup': 'ArrowLoop ottaa puolestasi kopion kaikista töistä ja asetuksista kerran päivässä ja juuri ennen kuin tuonti korvaa ne. Kohdassa {title} näet uusimman ja voit palauttaa sen, ja siellä valitset myös, kuinka monta säilytetään ja minne ne menevät.',
 }
 
 export default fi

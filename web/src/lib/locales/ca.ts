@@ -1365,6 +1365,22 @@ const ca: Translations = {
   'new.change.oxicloud': 'OxiCloud té la seva pròpia rajola a Núvols. Mostra l\'adreça que espera OxiCloud i on es crea la contrasenya d\'aplicació.',
   'new.change.userCas': 'L\'aplicació del telèfon confia en les autoritats de certificació instal·lades a la configuració d\'Android, així que també s\'hi connecta un servidor amb un certificat propi.',
   'new.change.signInCard': 'La pàgina d\'inici de sessió té un aspecte nou, amb el logotip i el nom d\'ArrowLoop a dalt i cada botó tan ample com la targeta. El cursor ja és al camp de la contrasenya, el botó d\'inici de sessió espera que escriguis alguna cosa, i amb una contrasenya o un codi incorrectes fa una petita sacsejada.',
+  'autoBackup.title': 'Còpies automàtiques',
+  'autoBackup.hint': 'ArrowLoop desa per tu còpies de totes les tasques i tots els paràmetres: segons una programació i just abans que una importació els substitueixi. Només es fa una còpia nova si alguna cosa ha canviat, i la més antiga se\'n va quan n\'hi ha més de les que conserves.',
+  'autoBackup.on': 'Fes còpies automàticament',
+  'autoBackup.everyDays': 'Dies entre còpies',
+  'autoBackup.everyDaysHint': 'ArrowLoop hi mira cada tants dies i fa una còpia si alguna cosa ha canviat des de l\'última.',
+  'autoBackup.keep': 'Còpies que es conserven',
+  'autoBackup.keepHint': 'Si n\'hi ha més, s\'esborra la més antiga. Els fitxers que hi posis tu a la carpeta no es toquen mai.',
+  'autoBackup.folder': 'Carpeta de còpies',
+  'autoBackup.folderHint': 'Deixa-ho buit per fer servir la carpeta backups al costat de la configuració d\'ArrowLoop. Cada còpia conté les teves contrasenyes de les notificacions, igual que una exportació, així que tria un lloc que només puguis obrir tu.',
+  'autoBackup.folderPhoneHint': 'Deixa-ho buit per guardar les còpies dins de l\'aplicació. Per conservar-les encara que es desinstal·li l\'aplicació, tria una carpeta a Download o Documents. Per això ArrowLoop necessita accés a tots els fitxers.',
+  'autoBackup.latest': 'Última còpia',
+  'autoBackup.none': 'Encara cap',
+  'autoBackup.restore': 'Restaura',
+  'autoBackup.confirm': 'Vols substituir totes les tasques i tots els paràmetres per la còpia del {when}? El que tens ara es desa abans com una còpia més, així que sempre hi pots tornar.',
+  'autoBackup.failed': 'No s\'ha pogut escriure l\'última còpia: {error}. ArrowLoop ho tornarà a provar d\'aquí a una hora.',
+  'new.change.autoBackup': 'ArrowLoop desa per tu una còpia de totes les tasques i tots els paràmetres, un cop al dia i just abans que una importació els substitueixi. A {title} veus la més recent i la pots recuperar, i tries quantes se\'n conserven i on es desen.',
 }
 
 export default ca

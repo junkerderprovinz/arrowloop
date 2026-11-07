@@ -1365,6 +1365,22 @@ const nl: Translations = {
   'new.change.oxicloud': 'OxiCloud heeft een eigen tegel onder Clouds. Die toont het adres dat OxiCloud verwacht en waar het app-wachtwoord wordt gemaakt.',
   'new.change.userCas': 'De telefoonapp vertrouwt de certificeringsinstanties die in de instellingen van Android zijn geïnstalleerd, zodat ook een server met een eigen certificaat verbinding krijgt.',
   'new.change.signInCard': 'De inlogpagina heeft een nieuw uiterlijk, met het logo en de naam van ArrowLoop bovenaan en elke knop even breed als de kaart. De cursor staat al in het wachtwoordveld, de inlogknop wacht tot je iets typt, en bij een verkeerd wachtwoord of een verkeerde code schudt hij even.',
+  'autoBackup.title': 'Automatische back-ups',
+  'autoBackup.hint': 'ArrowLoop bewaart voor je kopieën van alle taken en instellingen: volgens een schema, en vlak voordat een import ze vervangt. Er komt alleen een nieuwe kopie als er iets veranderd is, en de oudste verdwijnt zodra er meer zijn dan je bewaart.',
+  'autoBackup.on': 'Automatisch een back-up maken',
+  'autoBackup.everyDays': 'Dagen tussen back-ups',
+  'autoBackup.everyDaysHint': 'ArrowLoop kijkt eens in zoveel dagen en maakt een kopie als er sinds de vorige iets veranderd is.',
+  'autoBackup.keep': 'Aantal back-ups',
+  'autoBackup.keepHint': 'Zijn het er meer, dan wordt de oudste verwijderd. Bestanden die je zelf in de map zet, blijven onaangeroerd.',
+  'autoBackup.folder': 'Back-upmap',
+  'autoBackup.folderHint': 'Laat leeg voor de map backups naast de instellingen van ArrowLoop. Elke kopie bevat je wachtwoorden voor meldingen, net als een export, dus kies een plek die alleen jij kunt openen.',
+  'autoBackup.folderPhoneHint': 'Laat leeg om de kopieën in de app te bewaren. Wil je ze houden, ook als de app verwijderd wordt, kies dan een map in Download of Documents. Daarvoor heeft ArrowLoop toegang tot alle bestanden nodig.',
+  'autoBackup.latest': 'Laatste back-up',
+  'autoBackup.none': 'Nog geen',
+  'autoBackup.restore': 'Herstellen',
+  'autoBackup.confirm': 'Alle taken en alle instellingen vervangen door de back-up van {when}? Wat je nu hebt, wordt eerst zelf als back-up bewaard, dus je kunt altijd terug.',
+  'autoBackup.failed': 'De laatste back-up kon niet worden geschreven: {error}. ArrowLoop probeert het over een uur opnieuw.',
+  'new.change.autoBackup': 'ArrowLoop bewaart voor je een kopie van alle taken en instellingen, eens per dag en vlak voordat een import ze vervangt. Onder {title} zie je de laatste en kun je die terugzetten, en daar kies je ook hoeveel er blijven en waar ze komen.',
 }
 
 export default nl

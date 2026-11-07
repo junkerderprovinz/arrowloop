@@ -39,6 +39,17 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
       rows: [{ key: 'settings.backupExportRow' }, { key: 'settings.backupImportRow' }],
     },
     {
+      title: 'autoBackup.title',
+      hint: 'autoBackup.hint',
+      rows: [
+        { key: 'autoBackup.on' },
+        { key: 'autoBackup.everyDays', hint: 'autoBackup.everyDaysHint' },
+        { key: 'autoBackup.keep', hint: 'autoBackup.keepHint' },
+        { key: 'autoBackup.folder', hint: 'autoBackup.folderHint' },
+        { key: 'autoBackup.latest' },
+      ],
+    },
+    {
       title: 'settings.workload',
       rows: [
         { key: 'engine.bwlimit', hint: 'engine.bwlimitHint' },

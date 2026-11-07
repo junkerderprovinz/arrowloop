@@ -1365,6 +1365,22 @@ const ko: Translations = {
   'new.change.oxicloud': 'OxiCloud는 클라우드 아래에 전용 타일이 있습니다. OxiCloud가 기대하는 주소와 앱 비밀번호를 만드는 곳을 보여 줍니다.',
   'new.change.userCas': '휴대폰 앱은 Android 설정에 설치된 인증 기관을 신뢰하므로, 자체 인증서를 쓰는 서버에도 연결됩니다.',
   'new.change.signInCard': '로그인 화면이 새로워졌습니다. 위쪽에 ArrowLoop 로고와 이름이 있고 모든 버튼이 카드만큼 넓습니다. 커서는 처음부터 비밀번호 칸에 있고, 로그인 버튼은 무언가 입력할 때까지 기다리며, 비밀번호나 코드가 틀리면 살짝 흔들립니다.',
+  'autoBackup.title': '자동 백업',
+  'autoBackup.hint': 'ArrowLoop이 모든 작업과 설정의 사본을 알아서 남겨 둡니다. 정해진 주기마다, 그리고 가져오기로 모두 바뀌기 직전에 만듭니다. 새 사본은 무언가 바뀌었을 때만 만들어지고, 보관할 개수를 넘으면 가장 오래된 것부터 지워집니다.',
+  'autoBackup.on': '자동으로 백업',
+  'autoBackup.everyDays': '백업 간격(일)',
+  'autoBackup.everyDaysHint': 'ArrowLoop이 이 일수마다 한 번 확인하고, 지난 사본 이후 바뀐 것이 있으면 사본을 만듭니다.',
+  'autoBackup.keep': '보관할 백업 수',
+  'autoBackup.keepHint': '이보다 많아지면 가장 오래된 것이 지워집니다. 직접 폴더에 넣은 파일은 건드리지 않습니다.',
+  'autoBackup.folder': '백업 폴더',
+  'autoBackup.folderHint': '비워 두면 ArrowLoop 설정 옆의 backups 폴더를 씁니다. 각 사본에는 내보내기 파일처럼 알림용 비밀번호가 들어 있으니, 본인만 열 수 있는 곳을 고르세요.',
+  'autoBackup.folderPhoneHint': '비워 두면 사본이 앱 안에 보관됩니다. 앱을 지워도 남겨 두려면 Download나 Documents 안의 폴더를 고르세요. 그러려면 ArrowLoop에 모든 파일 접근 권한이 필요합니다.',
+  'autoBackup.latest': '최근 백업',
+  'autoBackup.none': '아직 없음',
+  'autoBackup.restore': '복원',
+  'autoBackup.confirm': '모든 작업과 모든 설정을 {when}의 백업으로 바꿀까요? 지금 상태는 먼저 별도의 백업으로 남겨 두므로 언제든 되돌릴 수 있습니다.',
+  'autoBackup.failed': '마지막 백업을 쓰지 못했습니다: {error}. ArrowLoop이 한 시간 뒤에 다시 시도합니다.',
+  'new.change.autoBackup': 'ArrowLoop이 하루에 한 번, 그리고 가져오기로 모두 바뀌기 직전에 모든 작업과 설정의 사본을 남겨 둡니다. {title}에서 최근 사본을 보고 되돌릴 수 있으며, 몇 개를 보관할지와 어디에 둘지도 고를 수 있습니다.',
 }
 
 export default ko

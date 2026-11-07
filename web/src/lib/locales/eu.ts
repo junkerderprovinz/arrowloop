@@ -1365,6 +1365,22 @@ const eu: Translations = {
   'new.change.oxicloud': 'OxiCloud-ek bere lauza du Hodeiak atalean. OxiCloud-ek espero duen helbidea eta aplikazio-pasahitza non sortzen den erakusten ditu.',
   'new.change.userCas': 'Telefonoko aplikazioa Androiden ezarpenetan instalatutako ziurtagiri-emaileez fidatzen da, beraz bere ziurtagiria duen zerbitzari bat ere konektatzen da.',
   'new.change.signInCard': 'Saioa hasteko orriak itxura berria du, ArrowLoopen logoa eta izena goian eta botoi bakoitza txartela bezain zabala. Kurtsorea pasahitzaren eremuan dago jada, saioa hasteko botoiak zerbait idatzi arte itxaroten du, eta pasahitz edo kode okerrarekin pixka bat astintzen da.',
+  'autoBackup.title': 'Babeskopia automatikoak',
+  'autoBackup.hint': 'ArrowLoop-ek lan eta ezarpen guztien kopiak gordetzen ditu zuretzat: programazio baten arabera, eta inportazio batek ordeztu baino lehen. Kopia berria zerbait aldatu denean bakarrik egiten da, eta zaharrena kentzen da gordetzen dituzunak baino gehiago daudenean.',
+  'autoBackup.on': 'Egin babeskopiak automatikoki',
+  'autoBackup.everyDays': 'Babeskopien arteko egunak',
+  'autoBackup.everyDaysHint': 'ArrowLoop-ek hainbeste egunean behin begiratzen du, eta kopia bat egiten du azkenetik zerbait aldatu bada.',
+  'autoBackup.keep': 'Zenbat babeskopia gorde',
+  'autoBackup.keepHint': 'Gehiago daudenean, zaharrena kentzen da. Zuk karpetan jarritako fitxategiak ez dira inoiz ukitzen.',
+  'autoBackup.folder': 'Babeskopien karpeta',
+  'autoBackup.folderHint': 'Utzi hutsik ArrowLoop-en ezarpenen ondoko backups karpeta erabiltzeko. Kopia bakoitzak zure jakinarazpenen pasahitzak ditu, esportazio batek bezala, beraz aukeratu zuk bakarrik ireki dezakezun leku bat.',
+  'autoBackup.folderPhoneHint': 'Utzi hutsik kopiak aplikazioaren barruan gordetzeko. Aplikazioa kentzen bada ere gorde daitezen, aukeratu karpeta bat Download edo Documents barruan. Horretarako, ArrowLoop-ek fitxategi guztietarako sarbidea behar du.',
+  'autoBackup.latest': 'Azken babeskopia',
+  'autoBackup.none': 'Bat ere ez oraindik',
+  'autoBackup.restore': 'Leheneratu',
+  'autoBackup.confirm': 'Lan guztiak eta ezarpen guztiak {when} datako babeskopiarekin ordeztu? Orain duzuna babeskopia gisa gordeko da lehenik, beraz beti itzul zaitezke atzera.',
+  'autoBackup.failed': 'Ezin izan da azken babeskopia idatzi: {error}. ArrowLoop-ek ordubete barru saiatuko da berriro.',
+  'new.change.autoBackup': 'ArrowLoop-ek lan eta ezarpen guztien kopia bat gordetzen du zuretzat, egunean behin eta inportazio batek ordeztu baino lehen. {title} atalean azkena ikusten duzu eta leheneratu dezakezu, eta zuk aukeratzen duzu zenbat gorde eta non.',
 }
 
 export default eu

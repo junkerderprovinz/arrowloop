@@ -1365,6 +1365,22 @@ const lt: Translations = {
   'new.change.oxicloud': 'OxiCloud turi savo plytelę skiltyje Debesys. Ji rodo adresą, kurio tikisi OxiCloud, ir kur sukuriamas programėlės slaptažodis.',
   'new.change.userCas': 'Telefono programėlė pasitiki sertifikavimo centrais, įdiegtais Android nustatymuose, todėl prisijungia ir serveris su savo sertifikatu.',
   'new.change.signInCard': 'Prisijungimo puslapis atrodo naujai, viršuje yra ArrowLoop logotipas ir pavadinimas, o kiekvienas mygtukas toks pat platus kaip kortelė. Žymeklis jau stovi slaptažodžio lauke, prisijungimo mygtukas laukia, kol ką nors įvesite, o įvedus neteisingą slaptažodį ar kodą jis trumpai sujuda.',
+  'autoBackup.title': 'Automatinės atsarginės kopijos',
+  'autoBackup.hint': 'ArrowLoop pats saugo visų užduočių ir nustatymų kopijas: pagal grafiką ir prieš pat importą, kuris juos pakeičia. Nauja kopija daroma tik tada, kai kas nors pasikeitė, o seniausia dingsta, kai jų tampa daugiau, nei laikai.',
+  'autoBackup.on': 'Kurti kopijas automatiškai',
+  'autoBackup.everyDays': 'Dienos tarp kopijų',
+  'autoBackup.everyDaysHint': 'ArrowLoop patikrina kartą per tiek dienų ir padaro kopiją, jei nuo paskutinės kas nors pasikeitė.',
+  'autoBackup.keep': 'Kiek kopijų laikyti',
+  'autoBackup.keepHint': 'Kai jų daugiau, seniausia pašalinama. Failai, kuriuos į aplanką įdedi pats, lieka nepaliesti.',
+  'autoBackup.folder': 'Kopijų aplankas',
+  'autoBackup.folderHint': 'Palik tuščią, ir bus naudojamas aplankas backups šalia ArrowLoop nustatymų. Kiekvienoje kopijoje, kaip ir eksporte, yra tavo pranešimų slaptažodžiai, tad rinkis vietą, kurią gali atidaryti tik tu.',
+  'autoBackup.folderPhoneHint': 'Palik tuščią, ir kopijos liks programėlėje. Kad jos išliktų net pašalinus programėlę, pasirink aplanką, esantį Download arba Documents. Tam ArrowLoop reikia prieigos prie visų failų.',
+  'autoBackup.latest': 'Naujausia kopija',
+  'autoBackup.none': 'Kol kas nėra',
+  'autoBackup.restore': 'Atkurti',
+  'autoBackup.confirm': 'Pakeisti visas užduotis ir visus nustatymus kopija iš {when}? Tai, ką turi dabar, pirma išsaugoma kaip atskira kopija, tad visada galėsi grįžti.',
+  'autoBackup.failed': 'Paskutinės kopijos nepavyko įrašyti: {error}. ArrowLoop bandys dar kartą po valandos.',
+  'new.change.autoBackup': 'ArrowLoop pats saugo visų užduočių ir nustatymų kopiją kartą per dieną ir prieš pat importą, kuris juos pakeičia. Skiltyje {title} matai naujausią ir gali ją atkurti, o ten pat renkiesi, kiek kopijų laikyti ir kur jas dėti.',
 }
 
 export default lt

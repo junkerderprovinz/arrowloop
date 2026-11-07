@@ -1365,6 +1365,22 @@ const lv: Translations = {
   'new.change.oxicloud': 'OxiCloud ir sava flīze sadaļā Mākoņi. Tā rāda adresi, ko OxiCloud gaida, un kur izveido lietotnes paroli.',
   'new.change.userCas': 'Tālruņa lietotne uzticas sertificēšanas iestādēm, kas instalētas Android iestatījumos, tāpēc savienojas arī serveris ar savu sertifikātu.',
   'new.change.signInCard': 'Pieteikšanās lapai ir jauns izskats, augšā ir ArrowLoop logotips un nosaukums, un katra poga ir tikpat plata kā kartīte. Kursors jau ir paroles laukā, pieteikšanās poga gaida, līdz kaut ko ierakstāt, un pie nepareizas paroles vai koda tā nedaudz sakustas.',
+  'autoBackup.title': 'Automātiskie dublējumi',
+  'autoBackup.hint': 'ArrowLoop pats saglabā visu uzdevumu un iestatījumu kopijas: pēc grafika un tieši pirms importēšana tos aizstāj. Jauna kopija tiek veidota tikai tad, ja kaut kas ir mainījies, un vecākā pazūd, kad to ir vairāk, nekā tu glabā.',
+  'autoBackup.on': 'Dublēt automātiski',
+  'autoBackup.everyDays': 'Dienas starp dublējumiem',
+  'autoBackup.everyDaysHint': 'ArrowLoop pārbauda reizi tik dienās un izveido kopiju, ja kopš pēdējās kaut kas ir mainījies.',
+  'autoBackup.keep': 'Cik dublējumu glabāt',
+  'autoBackup.keepHint': 'Ja to ir vairāk, vecākais tiek noņemts. Faili, ko pats ieliec mapē, paliek neskarti.',
+  'autoBackup.folder': 'Dublējumu mape',
+  'autoBackup.folderHint': 'Atstāj tukšu, lai izmantotu mapi backups blakus ArrowLoop iestatījumiem. Katrā kopijā, tāpat kā eksportā, ir tavas paziņojumu paroles, tāpēc izvēlies vietu, ko vari atvērt tikai tu.',
+  'autoBackup.folderPhoneHint': 'Atstāj tukšu, un kopijas paliks lietotnē. Lai tās saglabātos arī pēc lietotnes noņemšanas, izvēlies mapi, kas atrodas Download vai Documents. Tam ArrowLoop vajag piekļuvi visiem failiem.',
+  'autoBackup.latest': 'Jaunākais dublējums',
+  'autoBackup.none': 'Vēl nav',
+  'autoBackup.restore': 'Atjaunot',
+  'autoBackup.confirm': 'Aizstāt visus uzdevumus un visus iestatījumus ar dublējumu no {when}? Tas, kas tev ir tagad, vispirms tiek saglabāts kā atsevišķs dublējums, tāpēc vienmēr vari atgriezties.',
+  'autoBackup.failed': 'Pēdējo dublējumu neizdevās ierakstīt: {error}. ArrowLoop mēģinās vēlreiz pēc stundas.',
+  'new.change.autoBackup': 'ArrowLoop pats saglabā visu uzdevumu un iestatījumu kopiju reizi dienā un tieši pirms importēšana tos aizstāj. Sadaļā {title} redzi jaunāko un vari to atjaunot, un tur arī izvēlies, cik daudz glabāt un kur tās likt.',
 }
 
 export default lv

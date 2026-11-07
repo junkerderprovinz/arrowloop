@@ -4,13 +4,14 @@ import { ToggleRow } from '../../components/ToggleRow'
 import type { WindowSettings } from '../../lib/api'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
+import { AutoBackupCard } from './AutoBackupCard'
 import { BackupCard } from './BackupCard'
 import { Reading, useEngineSettings } from './engineSettings'
 import { SettingsRow } from './rows'
 
 /**
  * What concerns the app as a whole: this computer's window, start and updates
- * where there is a desktop app, the settings backup, and how hard the engine
+ * where there is a desktop app, the settings backups, and how hard the engine
  * may work on this machine.
  */
 export function GeneralPage({
@@ -68,7 +69,8 @@ export function GeneralPage({
       )}
 
       <BackupCard hueIndex={windowSettings ? 1 : 0} />
-      <WorkloadCard hueIndex={windowSettings ? 2 : 1} />
+      <AutoBackupCard hueIndex={windowSettings ? 2 : 1} />
+      <WorkloadCard hueIndex={windowSettings ? 3 : 2} />
     </Stack>
   )
 }

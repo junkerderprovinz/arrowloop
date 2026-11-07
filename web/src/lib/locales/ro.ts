@@ -1365,6 +1365,22 @@ const ro: Translations = {
   'new.change.oxicloud': 'OxiCloud are propria dală la Nori. Arată adresa pe care o așteaptă OxiCloud și unde se creează parola de aplicație.',
   'new.change.userCas': 'Aplicația de pe telefon are încredere în autoritățile de certificare instalate în setările Android, așa că se conectează și un server cu propriul certificat.',
   'new.change.signInCard': 'Pagina de autentificare are un aspect nou, cu sigla și numele ArrowLoop sus și fiecare buton la fel de lat ca fișa. Cursorul este deja în câmpul parolei, butonul de autentificare așteaptă până scrii ceva, iar la o parolă sau un cod greșit tremură puțin.',
+  'autoBackup.title': 'Copii automate',
+  'autoBackup.hint': 'ArrowLoop păstrează pentru tine copii ale tuturor sarcinilor și setărilor: după un program și chiar înainte ca un import să le înlocuiască. O copie nouă se face doar când s-a schimbat ceva, iar cea mai veche pleacă de îndată ce sunt mai multe decât păstrezi.',
+  'autoBackup.on': 'Fă copii automat',
+  'autoBackup.everyDays': 'Zile între copii',
+  'autoBackup.everyDaysHint': 'ArrowLoop verifică o dată la atâtea zile și face o copie dacă s-a schimbat ceva de la ultima.',
+  'autoBackup.keep': 'Câte copii păstrezi',
+  'autoBackup.keepHint': 'Când sunt mai multe, cea mai veche e ștearsă. Fișierele pe care le pui tu în dosar nu sunt atinse niciodată.',
+  'autoBackup.folder': 'Dosarul copiilor',
+  'autoBackup.folderHint': 'Lasă gol pentru dosarul backups de lângă setările ArrowLoop. Fiecare copie conține parolele tale pentru notificări, la fel ca un export, așa că alege un loc pe care doar tu îl poți deschide.',
+  'autoBackup.folderPhoneHint': 'Lasă gol ca să păstrezi copiile în aplicație. Ca să rămână chiar dacă aplicația e ștearsă, alege un dosar din Download sau Documents. Pentru asta, ArrowLoop are nevoie de acces la toate fișierele.',
+  'autoBackup.latest': 'Ultima copie',
+  'autoBackup.none': 'Încă niciuna',
+  'autoBackup.restore': 'Restaurează',
+  'autoBackup.confirm': 'Înlocuiești toate sarcinile și toate setările cu copia din {when}? Ce ai acum e păstrat mai întâi ca o copie separată, așa că poți reveni oricând.',
+  'autoBackup.failed': 'Ultima copie nu a putut fi scrisă: {error}. ArrowLoop încearcă din nou peste o oră.',
+  'new.change.autoBackup': 'ArrowLoop păstrează pentru tine o copie a tuturor sarcinilor și setărilor, o dată pe zi și chiar înainte ca un import să le înlocuiască. În {title} vezi cea mai recentă și o poți readuce, iar tot acolo alegi câte păstrezi și unde ajung.',
 }
 
 export default ro

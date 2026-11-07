@@ -1365,6 +1365,22 @@ const pl: Translations = {
   'new.change.oxicloud': 'OxiCloud ma własny kafelek w sekcji Chmury. Pokazuje adres, którego oczekuje OxiCloud, i miejsce, w którym tworzy się hasło aplikacji.',
   'new.change.userCas': 'Aplikacja na telefonie ufa urzędom certyfikacji zainstalowanym w ustawieniach Androida, więc łączy się też serwer z własnym certyfikatem.',
   'new.change.signInCard': 'Strona logowania ma nowy wygląd, na górze jest logo i nazwa ArrowLoop, a każdy przycisk jest tak szeroki jak karta. Kursor stoi już w polu hasła, przycisk logowania czeka, aż coś wpiszesz, a przy błędnym haśle lub kodzie lekko się trzęsie.',
+  'autoBackup.title': 'Automatyczne kopie',
+  'autoBackup.hint': 'ArrowLoop sam robi kopie wszystkich zadań i ustawień: według harmonogramu i tuż przed tym, jak import je zastąpi. Nowa kopia powstaje tylko wtedy, gdy coś się zmieniło, a najstarsza znika, gdy jest ich więcej, niż zachowujesz.',
+  'autoBackup.on': 'Twórz kopie automatycznie',
+  'autoBackup.everyDays': 'Dni między kopiami',
+  'autoBackup.everyDaysHint': 'ArrowLoop sprawdza raz na tyle dni i robi kopię, jeśli od ostatniej coś się zmieniło.',
+  'autoBackup.keep': 'Liczba kopii',
+  'autoBackup.keepHint': 'Gdy jest ich więcej, najstarsza zostaje usunięta. Pliki włożone do folderu ręcznie zostają nietknięte.',
+  'autoBackup.folder': 'Folder kopii',
+  'autoBackup.folderHint': 'Zostaw puste, aby użyć folderu backups obok ustawień ArrowLoop. Każda kopia zawiera, tak jak eksport, twoje hasła do powiadomień, więc wybierz miejsce, które tylko ty możesz otworzyć.',
+  'autoBackup.folderPhoneHint': 'Zostaw puste, a kopie zostaną w aplikacji. Żeby przetrwały nawet usunięcie aplikacji, wybierz folder w Download lub Documents. ArrowLoop potrzebuje do tego dostępu do wszystkich plików.',
+  'autoBackup.latest': 'Ostatnia kopia',
+  'autoBackup.none': 'Jeszcze brak',
+  'autoBackup.restore': 'Przywróć',
+  'autoBackup.confirm': 'Zastąpić wszystkie zadania i wszystkie ustawienia kopią z {when}? To, co masz teraz, zostanie najpierw zapisane jako osobna kopia, więc zawsze możesz wrócić.',
+  'autoBackup.failed': 'Nie udało się zapisać ostatniej kopii: {error}. ArrowLoop spróbuje ponownie za godzinę.',
+  'new.change.autoBackup': 'ArrowLoop sam robi kopię wszystkich zadań i ustawień raz dziennie i tuż przed tym, jak import je zastąpi. W sekcji {title} widzisz ostatnią i możesz ją przywrócić, a także wybierasz, ile kopii zachować i gdzie je trzymać.',
 }
 
 export default pl

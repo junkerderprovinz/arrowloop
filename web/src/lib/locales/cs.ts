@@ -1365,6 +1365,22 @@ const cs: Translations = {
   'new.change.oxicloud': 'OxiCloud má vlastní dlaždici v části Cloudy. Ukazuje adresu, kterou OxiCloud očekává, a kde se vytváří heslo aplikace.',
   'new.change.userCas': 'Aplikace v telefonu důvěřuje certifikačním autoritám nainstalovaným v nastavení Androidu, takže se připojí i server s vlastním certifikátem.',
   'new.change.signInCard': 'Přihlašovací stránka má nový vzhled, nahoře s logem a názvem ArrowLoop a s každým tlačítkem širokým jako karta. Kurzor už stojí v poli pro heslo, tlačítko pro přihlášení čeká, dokud něco nezadáte, a při špatném hesle nebo kódu se krátce zatřese.',
+  'autoBackup.title': 'Automatické zálohy',
+  'autoBackup.hint': 'ArrowLoop za tebe uchovává kopie všech úloh a nastavení: podle plánu a těsně předtím, než je nahradí import. Nová kopie vznikne jen tehdy, když se něco změnilo, a nejstarší odchází, jakmile jich je víc, než si necháváš.',
+  'autoBackup.on': 'Zálohovat automaticky',
+  'autoBackup.everyDays': 'Dní mezi zálohami',
+  'autoBackup.everyDaysHint': 'ArrowLoop se jednou za tolik dní podívá a vytvoří kopii, pokud se od té poslední něco změnilo.',
+  'autoBackup.keep': 'Počet záloh',
+  'autoBackup.keepHint': 'Když jich je víc, nejstarší se odstraní. Soubory, které do složky vložíš sám, zůstanou vždy nedotčené.',
+  'autoBackup.folder': 'Složka pro zálohy',
+  'autoBackup.folderHint': 'Nech prázdné a použije se složka backups vedle nastavení ArrowLoop. Každá kopie obsahuje tvá hesla k oznámením, stejně jako export, tak vyber místo, které otevřeš jen ty.',
+  'autoBackup.folderPhoneHint': 'Nech prázdné a kopie zůstanou uvnitř aplikace. Aby zůstaly i po odinstalování aplikace, vyber složku v Download nebo Documents. ArrowLoop k tomu potřebuje přístup ke všem souborům.',
+  'autoBackup.latest': 'Poslední záloha',
+  'autoBackup.none': 'Zatím žádná',
+  'autoBackup.restore': 'Obnovit',
+  'autoBackup.confirm': 'Nahradit všechny úlohy a všechna nastavení zálohou z {when}? To, co máš teď, se nejdřív uloží jako samostatná záloha, takže se můžeš kdykoli vrátit.',
+  'autoBackup.failed': 'Poslední zálohu se nepodařilo zapsat: {error}. ArrowLoop to zkusí znovu za hodinu.',
+  'new.change.autoBackup': 'ArrowLoop za tebe uchovává kopii všech úloh a nastavení, jednou denně a těsně předtím, než je nahradí import. V části {title} vidíš tu nejnovější a můžeš ji obnovit, a sám si vybereš, kolik jich ponechat a kam se ukládají.',
 }
 
 export default cs

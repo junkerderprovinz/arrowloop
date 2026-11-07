@@ -81,12 +81,12 @@ const RULES: Rule[] = [
   [/pause|hold/i, 'IconPause'],
 
   // Destructive and corrective. Emptying a trash clears a list, and restoring
-  // the settings from the welcome page reads a backup in.
+  // the settings from the welcome page or an automatic backup reads a backup in.
   [/\.empty(All|Side)$/i, 'IconEmpty'],
   [/\.prune$/i, 'IconPrune'],
   [/\.(delete|remove)$|removeJob|deleteDrive|discard/i, 'IconTrash'],
   [/forget/i, 'IconForget'],
-  [/^welcome\.restore$/i, 'IconImport'],
+  [/^(welcome|autoBackup)\.restore$/i, 'IconImport'],
   [/restore|revert/i, 'IconRestore'],
   [/undo/i, 'IconUndo'],
   [/reset/i, 'IconRefresh'],

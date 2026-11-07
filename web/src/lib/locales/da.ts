@@ -1365,6 +1365,22 @@ const da: Translations = {
   'new.change.oxicloud': 'OxiCloud har sin egen flise under Skyer. Den viser den adresse, OxiCloud forventer, og hvor app-adgangskoden oprettes.',
   'new.change.userCas': 'Telefonappen stoler på de certifikatudstedere, der er installeret i Androids indstillinger, så også en server med sit eget certifikat får forbindelse.',
   'new.change.signInCard': 'Login-siden har fået et nyt udseende med ArrowLoops logo og navn øverst og hver knap lige så bred som kortet. Markøren står allerede i adgangskodefeltet, login-knappen venter, til du skriver noget, og ved en forkert adgangskode eller kode ryster den kort.',
+  'autoBackup.title': 'Automatiske sikkerhedskopier',
+  'autoBackup.hint': 'ArrowLoop gemmer kopier af alle job og indstillinger for dig: efter en plan og lige før en import erstatter dem. Der laves kun en ny kopi, når noget har ændret sig, og den ældste ryger, når der er flere, end du beholder.',
+  'autoBackup.on': 'Tag sikkerhedskopier automatisk',
+  'autoBackup.everyDays': 'Dage mellem kopier',
+  'autoBackup.everyDaysHint': 'ArrowLoop kigger forbi med så mange dages mellemrum og laver en kopi, hvis noget har ændret sig siden den sidste.',
+  'autoBackup.keep': 'Kopier at beholde',
+  'autoBackup.keepHint': 'Når der er flere, fjernes den ældste. Filer, du selv lægger i mappen, bliver aldrig rørt.',
+  'autoBackup.folder': 'Mappe til sikkerhedskopier',
+  'autoBackup.folderHint': 'Lad feltet være tomt for at bruge mappen backups ved siden af indstillingerne for ArrowLoop. Hver kopi indeholder dine adgangskoder til notifikationer, ligesom en eksport, så vælg et sted, som kun du kan åbne.',
+  'autoBackup.folderPhoneHint': 'Lad feltet være tomt for at gemme kopierne inde i appen. Vil du beholde dem, selv hvis appen fjernes, så vælg en mappe i Download eller Documents. Det kræver, at ArrowLoop får adgang til alle filer.',
+  'autoBackup.latest': 'Seneste kopi',
+  'autoBackup.none': 'Ingen endnu',
+  'autoBackup.restore': 'Gendan',
+  'autoBackup.confirm': 'Erstat alle job og alle indstillinger med kopien fra {when}? Det, du har nu, gemmes først som en kopi for sig, så du altid kan gå tilbage.',
+  'autoBackup.failed': 'Den seneste sikkerhedskopi kunne ikke skrives: {error}. ArrowLoop prøver igen om en time.',
+  'new.change.autoBackup': 'ArrowLoop gemmer en kopi af alle job og indstillinger for dig, én gang om dagen og lige før en import erstatter dem. Under {title} ser du den seneste og kan hente den tilbage, og du vælger selv, hvor mange der gemmes, og hvor de ligger.',
 }
 
 export default da

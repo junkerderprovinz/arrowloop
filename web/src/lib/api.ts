@@ -372,6 +372,17 @@ export type Settings = {
     /** Whether a run far outside its job's usual range makes a note; undefined means it does. */
     unusual?: boolean
   }
+  /**
+   * The copies of this file the engine keeps on its own. Undefined fields keep
+   * the engine's own values: on, every day, seven kept, beside the file.
+   */
+  autoBackup?: {
+    off?: boolean
+    everyDays?: number
+    keep?: number
+    /** Empty means the backups folder beside the configuration file. */
+    folder?: string
+  }
   /** Reusable pattern lists, by name. A job asks for them by name. */
   excludeSets?: Record<string, string[]>
   notify?: Notify
@@ -539,6 +550,17 @@ export type RunEvent = {
 
 /** A refusal from the engine. The status tells a wrong password from a lockout
  *  without reading the English message. */
+/** The automatic backups as GET /api/config/backups lists them (internal/daemon/backups.go). */
+export interface AutoBackups {
+  on: boolean
+  /** Where they go, resolved to a full path. */
+  folder: string
+  /** Newest first. */
+  files: { name: string; bytes: number; made: string }[]
+  /** How the last try in this run of the engine went, null before the first. */
+  last: { at: string; file?: string; unchanged?: boolean; error?: string } | null
+}
+
 export class ApiError extends Error {
   status: number
   /** A word the server adds where the interface should say it in its own words. */
@@ -917,6 +939,16 @@ export const api = {
   /** The configuration file as text, so a backup keeps keys this build does not know. */
   rawConfig: async (): Promise<string> => {
     const res = await fetch('/api/config/raw')
+    if (!res.ok) throw await failure(res)
+    return res.text()
+  },
+
+  /** Where the automatic backups go, which are there and how the last one went. */
+  autoBackups: () => request<AutoBackups>('/api/config/backups'),
+
+  /** One automatic backup as text, the same thing rawConfig hands out, for replaceConfig. */
+  autoBackup: async (name: string): Promise<string> => {
+    const res = await fetch(`/api/config/backups/${encodeURIComponent(name)}`)
     if (!res.ok) throw await failure(res)
     return res.text()
   },

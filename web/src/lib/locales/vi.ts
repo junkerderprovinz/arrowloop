@@ -1365,6 +1365,22 @@ const vi: Translations = {
   'new.change.oxicloud': 'OxiCloud có ô riêng trong mục Đám mây. Ô này cho thấy địa chỉ OxiCloud cần và nơi tạo mật khẩu ứng dụng.',
   'new.change.userCas': 'Ứng dụng trên điện thoại tin cậy các tổ chức cấp chứng chỉ được cài trong phần cài đặt của Android, nên máy chủ có chứng chỉ riêng cũng kết nối được.',
   'new.change.signInCard': 'Trang đăng nhập có diện mạo mới, với logo và tên ArrowLoop ở trên cùng và mỗi nút rộng bằng thẻ. Con trỏ đã nằm sẵn trong ô mật khẩu, nút đăng nhập chờ đến khi bạn nhập gì đó, và khi mật khẩu hoặc mã sai thì nút rung nhẹ.',
+  'autoBackup.title': 'Sao lưu tự động',
+  'autoBackup.hint': 'ArrowLoop tự giữ các bản sao của mọi công việc và cài đặt cho bạn: theo lịch, và ngay trước khi một lần nhập thay thế chúng. Bản sao mới chỉ được tạo khi có gì đó thay đổi, và bản cũ nhất sẽ bị xóa khi số bản vượt quá số bạn giữ.',
+  'autoBackup.on': 'Tự động sao lưu',
+  'autoBackup.everyDays': 'Số ngày giữa các lần sao lưu',
+  'autoBackup.everyDaysHint': 'ArrowLoop kiểm tra mỗi chừng ấy ngày một lần và tạo bản sao nếu có gì thay đổi kể từ bản trước.',
+  'autoBackup.keep': 'Số bản sao lưu giữ lại',
+  'autoBackup.keepHint': 'Khi nhiều hơn, bản cũ nhất sẽ bị xóa. Các tệp bạn tự đặt vào thư mục sẽ không bao giờ bị động đến.',
+  'autoBackup.folder': 'Thư mục sao lưu',
+  'autoBackup.folderHint': 'Để trống để dùng thư mục backups nằm cạnh phần cài đặt của ArrowLoop. Mỗi bản sao chứa mật khẩu thông báo của bạn, giống như một bản xuất, nên hãy chọn nơi chỉ bạn mới mở được.',
+  'autoBackup.folderPhoneHint': 'Để trống để giữ các bản sao trong ứng dụng. Muốn giữ chúng cả khi gỡ ứng dụng, hãy chọn một thư mục trong Download hoặc Documents. Khi đó ArrowLoop cần quyền truy cập mọi tệp.',
+  'autoBackup.latest': 'Bản sao lưu gần nhất',
+  'autoBackup.none': 'Chưa có',
+  'autoBackup.restore': 'Khôi phục',
+  'autoBackup.confirm': 'Thay toàn bộ công việc và cài đặt bằng bản sao lưu lúc {when}? Những gì bạn đang có sẽ được lưu thành một bản sao lưu riêng trước, nên bạn luôn có thể quay lại.',
+  'autoBackup.failed': 'Không ghi được bản sao lưu gần nhất: {error}. ArrowLoop sẽ thử lại sau một giờ.',
+  'new.change.autoBackup': 'ArrowLoop tự giữ một bản sao của mọi công việc và cài đặt cho bạn, mỗi ngày một lần và ngay trước khi một lần nhập thay thế chúng. Trong {title} bạn thấy bản gần nhất và có thể khôi phục nó, đồng thời chọn giữ bao nhiêu bản và lưu ở đâu.',
 }
 
 export default vi

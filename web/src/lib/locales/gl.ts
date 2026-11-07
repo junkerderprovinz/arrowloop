@@ -1365,6 +1365,22 @@ const gl: Translations = {
   'new.change.oxicloud': 'OxiCloud ten a súa propia tella en Nubes. Mostra o enderezo que espera OxiCloud e onde se crea o contrasinal de aplicación.',
   'new.change.userCas': 'A aplicación do teléfono confía nas autoridades de certificación instaladas na configuración de Android, así que tamén se conecta un servidor cun certificado propio.',
   'new.change.signInCard': 'A páxina de inicio de sesión ten un aspecto novo, co logotipo e o nome de ArrowLoop arriba e cada botón tan ancho coma a tarxeta. O cursor xa está no campo do contrasinal, o botón de inicio de sesión agarda a que escribas algo, e cun contrasinal ou un código incorrectos dá unha pequena sacudida.',
+  'autoBackup.title': 'Copias de seguranza automáticas',
+  'autoBackup.hint': 'ArrowLoop garda por ti copias de todas as tarefas e axustes: segundo un calendario e xusto antes de que unha importación os substitúa. Só se fai unha copia nova cando cambiou algo, e a máis antiga vaise en canto hai máis das que gardas.',
+  'autoBackup.on': 'Facer copias automaticamente',
+  'autoBackup.everyDays': 'Días entre copias',
+  'autoBackup.everyDaysHint': 'ArrowLoop mira unha vez cada tantos días e fai unha copia se algo cambiou desde a última.',
+  'autoBackup.keep': 'Copias que gardar',
+  'autoBackup.keepHint': 'Cando hai máis, bórrase a máis antiga. Os ficheiros que poñas ti no cartafol nunca se tocan.',
+  'autoBackup.folder': 'Cartafol das copias',
+  'autoBackup.folderHint': 'Déixao baleiro para usar o cartafol backups xunto aos axustes de ArrowLoop. Cada copia contén os teus contrasinais das notificacións, igual ca unha exportación, así que escolle un sitio que só poidas abrir ti.',
+  'autoBackup.folderPhoneHint': 'Déixao baleiro para gardar as copias dentro da aplicación. Para que se conserven aínda que quites a aplicación, escolle un cartafol en Download ou Documents. Para iso ArrowLoop necesita acceso a todos os ficheiros.',
+  'autoBackup.latest': 'Última copia',
+  'autoBackup.none': 'Aínda ningunha',
+  'autoBackup.restore': 'Restaurar',
+  'autoBackup.confirm': 'Substituír todas as tarefas e todos os axustes pola copia do {when}? O que tes agora gárdase antes como copia propia, así que sempre podes volver atrás.',
+  'autoBackup.failed': 'Non se puido escribir a última copia: {error}. ArrowLoop téntao de novo nunha hora.',
+  'new.change.autoBackup': 'ArrowLoop garda por ti unha copia de todas as tarefas e axustes unha vez ao día e xusto antes de que unha importación os substitúa. En {title} ves a máis recente e podes recuperala, e alí tamén escolles cantas gardar e onde van.',
 }
 
 export default gl

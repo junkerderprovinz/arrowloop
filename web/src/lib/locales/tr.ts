@@ -1365,6 +1365,22 @@ const tr: Translations = {
   'new.change.oxicloud': 'OxiCloud, Bulutlar altında kendi kutucuğuna sahip. Kutucuk, OxiCloud\'un beklediği adresi ve uygulama parolasının nerede oluşturulduğunu gösterir.',
   'new.change.userCas': 'Telefon uygulaması, Android ayarlarında yüklü sertifika yetkililerine güvenir, böylece kendi sertifikası olan bir sunucu da bağlanır.',
   'new.change.signInCard': 'Giriş sayfası yeni bir görünüme kavuştu, üstte ArrowLoop logosu ve adı var ve her düğme kart kadar geniş. İmleç zaten parola alanında duruyor, giriş düğmesi bir şey yazana kadar bekliyor ve yanlış parola ya da kodda hafifçe sallanıyor.',
+  'autoBackup.title': 'Otomatik yedekler',
+  'autoBackup.hint': 'ArrowLoop bütün işlerin ve ayarların kopyalarını senin için tutar: bir plana göre ve bir içe aktarma onları değiştirmeden hemen önce. Yeni bir kopya yalnızca bir şey değiştiğinde alınır, sayı tuttuğun miktarı aşınca da en eskisi silinir.',
+  'autoBackup.on': 'Otomatik yedekle',
+  'autoBackup.everyDays': 'Yedekler arası gün',
+  'autoBackup.everyDaysHint': 'ArrowLoop bu kadar günde bir bakar ve sonuncusundan beri bir şey değiştiyse bir kopya alır.',
+  'autoBackup.keep': 'Saklanacak yedek sayısı',
+  'autoBackup.keepHint': 'Daha fazla olunca en eskisi silinir. Klasöre kendin koyduğun dosyalara hiç dokunulmaz.',
+  'autoBackup.folder': 'Yedek klasörü',
+  'autoBackup.folderHint': 'ArrowLoop ayarlarının yanındaki backups klasörü için boş bırak. Her kopya, tıpkı bir dışa aktarma gibi, bildirim parolalarını içerir, o yüzden yalnızca senin açabileceğin bir yer seç.',
+  'autoBackup.folderPhoneHint': 'Boş bırakırsan kopyalar uygulamanın içinde kalır. Uygulama kaldırılsa bile kalsınlar istiyorsan Download ya da Documents içinde bir klasör seç. ArrowLoop\'un bunun için tüm dosyalara erişmesi gerekir.',
+  'autoBackup.latest': 'Son yedek',
+  'autoBackup.none': 'Henüz yok',
+  'autoBackup.restore': 'Geri yükle',
+  'autoBackup.confirm': 'Bütün işler ve bütün ayarlar {when} tarihli yedekle değiştirilsin mi? Şu an elindeki her şey önce ayrı bir yedek olarak saklanır, yani her zaman geri dönebilirsin.',
+  'autoBackup.failed': 'Son yedek yazılamadı: {error}. ArrowLoop bir saat sonra yeniden dener.',
+  'new.change.autoBackup': 'ArrowLoop bütün işlerin ve ayarların bir kopyasını senin için tutar, günde bir kez ve bir içe aktarma onları değiştirmeden hemen önce. {title} altında en yenisini görür ve geri yükleyebilirsin, kaç tane tutulacağını ve nereye gideceklerini de sen seçersin.',
 }
 
 export default tr

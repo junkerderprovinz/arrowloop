@@ -1365,6 +1365,22 @@ const hr: Translations = {
   'new.change.oxicloud': 'OxiCloud ima vlastitu pločicu pod Oblaci. Pokazuje adresu koju OxiCloud očekuje i gdje se stvara lozinka aplikacije.',
   'new.change.userCas': 'Aplikacija na telefonu vjeruje izdavateljima certifikata instaliranima u postavkama Androida, pa se povezuje i poslužitelj s vlastitim certifikatom.',
   'new.change.signInCard': 'Stranica za prijavu ima novi izgled, s logotipom i imenom ArrowLoopa na vrhu i svakim gumbom širokim kao kartica. Pokazivač je već u polju za lozinku, gumb za prijavu čeka dok nešto ne upišete, a kod pogrešne lozinke ili koda kratko se zatrese.',
+  'autoBackup.title': 'Automatske sigurnosne kopije',
+  'autoBackup.hint': 'ArrowLoop za tebe čuva kopije svih zadataka i postavki: po rasporedu i neposredno prije nego što ih uvoz zamijeni. Nova kopija nastaje samo kad se nešto promijenilo, a najstarija odlazi čim ih je više nego što čuvaš.',
+  'autoBackup.on': 'Automatski izrađuj kopije',
+  'autoBackup.everyDays': 'Dana između kopija',
+  'autoBackup.everyDaysHint': 'ArrowLoop provjerava jednom u toliko dana i izrađuje kopiju ako se od prošle nešto promijenilo.',
+  'autoBackup.keep': 'Koliko kopija čuvati',
+  'autoBackup.keepHint': 'Kad ih je više, najstarija se uklanja. Datoteke koje sam staviš u mapu nikad se ne diraju.',
+  'autoBackup.folder': 'Mapa za kopije',
+  'autoBackup.folderHint': 'Ostavi prazno za mapu backups pokraj postavki ArrowLoopa. Svaka kopija sadrži tvoje lozinke za obavijesti, baš kao izvoz, zato odaberi mjesto koje samo ti možeš otvoriti.',
+  'autoBackup.folderPhoneHint': 'Ostavi prazno i kopije ostaju unutar aplikacije. Da ostanu i kad se aplikacija ukloni, odaberi mapu u Download ili Documents. Za to ArrowLoop treba pristup svim datotekama.',
+  'autoBackup.latest': 'Najnovija kopija',
+  'autoBackup.none': 'Još nijedna',
+  'autoBackup.restore': 'Vrati',
+  'autoBackup.confirm': 'Zamijeniti sve zadatke i sve postavke kopijom od {when}? Ono što sada imaš najprije se sprema kao zasebna kopija, pa se uvijek možeš vratiti.',
+  'autoBackup.failed': 'Zadnju kopiju nije bilo moguće zapisati: {error}. ArrowLoop pokušava ponovno za sat vremena.',
+  'new.change.autoBackup': 'ArrowLoop za tebe jednom dnevno izrađuje kopiju svih zadataka i postavki, i neposredno prije nego što ih uvoz zamijeni. Pod {title} vidiš najnoviju i možeš je vratiti, a tamo biraš i koliko ih čuvati i kamo idu.',
 }
 
 export default hr

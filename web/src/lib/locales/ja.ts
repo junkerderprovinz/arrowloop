@@ -1365,6 +1365,22 @@ const ja: Translations = {
   'new.change.oxicloud': 'OxiCloud にはクラウドの下に専用のタイルがあります。OxiCloud が求めるアドレスと、アプリパスワードを作成する場所が表示されます。',
   'new.change.userCas': 'スマートフォンのアプリは Android の設定にインストールされた認証局を信頼するため、独自の証明書を持つサーバーにも接続できます。',
   'new.change.signInCard': 'サインインページが新しくなりました。上に ArrowLoop のロゴと名前があり、どのボタンもカードと同じ幅です。カーソルは最初からパスワード欄にあり、ログインボタンは何か入力するまで待ち、パスワードやコードが違うときは小さく揺れます。',
+  'autoBackup.title': '自動バックアップ',
+  'autoBackup.hint': 'ArrowLoop がすべてのジョブと設定のコピーを自動で残します。決まった間隔で、そしてインポートで置き換わる直前にも作ります。新しいコピーは何か変わったときだけ作られ、残す数を超えると一番古いものから消えます。',
+  'autoBackup.on': '自動でバックアップする',
+  'autoBackup.everyDays': 'バックアップの間隔（日）',
+  'autoBackup.everyDaysHint': 'ArrowLoop はこの日数ごとに確認し、前回から何か変わっていればコピーを作ります。',
+  'autoBackup.keep': '残すバックアップの数',
+  'autoBackup.keepHint': 'それより多くなると、一番古いものが削除されます。ご自分でフォルダーに入れたファイルには手を触れません。',
+  'autoBackup.folder': 'バックアップ先のフォルダー',
+  'autoBackup.folderHint': '空のままにすると、ArrowLoop の設定と同じ場所にある backups フォルダーを使います。どのコピーにもエクスポートと同じく通知用のパスワードが入っているので、ご自分だけが開ける場所を選んでください。',
+  'autoBackup.folderPhoneHint': '空のままにすると、コピーはアプリの中に保存されます。アプリを削除しても残しておきたい場合は、Download か Documents の中のフォルダーを選んでください。そのためには ArrowLoop にすべてのファイルへのアクセスが必要です。',
+  'autoBackup.latest': '最新のバックアップ',
+  'autoBackup.none': 'まだありません',
+  'autoBackup.restore': '復元',
+  'autoBackup.confirm': 'すべてのジョブとすべての設定を {when} のバックアップで置き換えますか。今の状態は先にバックアップとして残るので、いつでも元に戻せます。',
+  'autoBackup.failed': '前回のバックアップを書き込めませんでした: {error}。ArrowLoop は 1 時間後にもう一度試します。',
+  'new.change.autoBackup': 'ArrowLoop が 1 日 1 回、そしてインポートで置き換わる直前に、すべてのジョブと設定のコピーを自動で残します。{title} で最新のコピーを確認して元に戻せます。残す数や保存先もそこで選べます。',
 }
 
 export default ja

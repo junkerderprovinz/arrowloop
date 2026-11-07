@@ -1365,6 +1365,22 @@ const hu: Translations = {
   'new.change.oxicloud': 'Az OxiCloudnak saját csempéje van a Felhők alatt. Megmutatja, milyen címet vár az OxiCloud, és hol készül az alkalmazásjelszó.',
   'new.change.userCas': 'A telefonos alkalmazás megbízik az Android beállításaiban telepített hitelesítésszolgáltatókban, így a saját tanúsítvánnyal rendelkező kiszolgáló is csatlakozik.',
   'new.change.signInCard': 'A bejelentkezési oldal új külsőt kapott, felül az ArrowLoop logójával és nevével, és minden gomb olyan széles, mint a kártya. A kurzor már a jelszómezőben áll, a belépés gomb megvárja, amíg beír valamit, és hibás jelszónál vagy kódnál kicsit megrázkódik.',
+  'autoBackup.title': 'Automatikus mentések',
+  'autoBackup.hint': 'Az ArrowLoop másolatot készít neked minden feladatról és beállításról: ütemezve, és közvetlenül azelőtt, hogy egy importálás lecserélné őket. Új másolat csak akkor készül, ha valami változott, és a legrégebbi törlődik, amint több van belőlük, mint amennyit megtartasz.',
+  'autoBackup.on': 'Automatikus mentés',
+  'autoBackup.everyDays': 'Napok két mentés között',
+  'autoBackup.everyDaysHint': 'Az ArrowLoop ennyi naponta egyszer megnézi, és másolatot készít, ha az előző óta valami változott.',
+  'autoBackup.keep': 'Megtartott mentések',
+  'autoBackup.keepHint': 'Ha több van, a legrégebbi törlődik. A mappába saját kezűleg tett fájlokhoz sosem nyúl.',
+  'autoBackup.folder': 'Mentések mappája',
+  'autoBackup.folderHint': 'Hagyd üresen, ha az ArrowLoop beállításai melletti backups mappát használnád. Minden másolat tartalmazza az értesítések jelszavait, akárcsak egy export, ezért olyan helyet válassz, amelyet csak te nyithatsz meg.',
+  'autoBackup.folderPhoneHint': 'Hagyd üresen, és a másolatok az alkalmazáson belül maradnak. Ha azt szeretnéd, hogy az alkalmazás eltávolítása után is megmaradjanak, válassz egy mappát a Download vagy a Documents alatt. Ehhez az ArrowLoopnak hozzáférés kell az összes fájlhoz.',
+  'autoBackup.latest': 'Legutóbbi mentés',
+  'autoBackup.none': 'Még nincs',
+  'autoBackup.restore': 'Visszaállítás',
+  'autoBackup.confirm': 'Lecseréled az összes feladatot és az összes beállítást arra a mentésre, amely ekkor készült: {when}? Ami most megvan, előbb külön mentésként eltárolódik, így bármikor visszatérhetsz.',
+  'autoBackup.failed': 'A legutóbbi mentést nem sikerült kiírni: {error}. Az ArrowLoop egy óra múlva újra megpróbálja.',
+  'new.change.autoBackup': 'Az ArrowLoop naponta egyszer, és közvetlenül azelőtt, hogy egy importálás lecserélné őket, másolatot készít neked minden feladatról és beállításról. A beállítások {title} részében látod a legutóbbit, és vissza is állíthatod, ott választod ki azt is, hány maradjon meg és hová kerüljenek.',
 }
 
 export default hu
