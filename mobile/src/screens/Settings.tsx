@@ -169,12 +169,8 @@ export function Settings() {
   }, [look.accent]);
 
   const palette = look.palette.length ? look.palette : RAINBOW;
-  const oledRefused = oledRefusal(look.theme, {
-    sentence: t("look.oledLight"),
-    dark: t("look.dark"),
-    system: t("phone.system"),
-    light: t("look.light"),
-  });
+  const themeNames = { dark: t("look.dark"), system: t("phone.system"), light: t("look.light") };
+  const oledRefused = oledRefusal(look.theme, { sentence: t("look.oledLight", { ...themeNames }),...themeNames });
 
   /**
    * Backs up the engine's settings and the jobs. The appearance and the lock
