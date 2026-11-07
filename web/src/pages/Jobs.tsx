@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type Keyboard
 import { Empty, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
 import { Menu, type MenuItem } from '../components/Menu'
+import { useNarrow } from '../lib/narrow'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { IconAdd, IconGrip, IconPause, IconPlay } from '../components/glyphs'
 import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
@@ -412,7 +413,9 @@ function JobCard({
 /**
  * One job on one line: its colour, its name, its status, its last run, and More
  * beside Run now. Pause moves into More, as the row has no room for a third
- * button. A click anywhere else opens the job, as on the card.
+ * button. On a phone the status goes under the name and the buttons show their
+ * glyphs, so the name keeps its room. A click anywhere else opens the job, as on
+ * the card.
  */
 function JobRow({
   job,
@@ -433,6 +436,7 @@ function JobRow({
 }: JobItemProps) {
   const { t, lang } = useT()
   const open = useOpenJob()
+  const narrow = useNarrow()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
   const startStop = useStartStop(job, onAnswered)
   const items: MenuItem[] = canPause
@@ -462,9 +466,11 @@ function JobRow({
       <CardName name={job.name} />
       <Grip name={job.name} onGrab={onGrab} />
       <span aria-hidden className="h-6 w-1.5 shrink-0 rounded-[var(--radius-pill)] bg-accent" />
-      <span className="min-w-0 flex-1 truncate text-body font-medium">{job.name}</span>
-      <span data-testid="job-status" className="flex shrink-0 justify-end">
-        <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
+        <span className="min-w-0 truncate text-body font-medium sm:flex-1">{job.name}</span>
+        <span data-testid="job-status" className="flex shrink-0 sm:justify-end">
+          <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
+        </span>
       </span>
       {last && (
         <span className="glim-num hidden shrink-0 whitespace-nowrap text-subline text-carbon-textSub sm:inline">
@@ -472,12 +478,13 @@ function JobRow({
         </span>
       )}
       <span data-testid="job-actions" className="flex shrink-0 items-center gap-1.5" onClick={keepInCard}>
-        <Menu label={t('list.more')} labelKey="list.more" items={items} />
+        <Menu label={t('list.more')} labelKey="list.more" items={items} glyphOnly={narrow} />
         <IconAction
           title={startStop.label}
           labelKey={startStop.labelKey}
           hint={startStop.hint}
           disabled={startStop.disabled}
+          className={narrow ? 'glim-glyph-only' : ''}
           onClick={startStop.press}
         />
       </span>
