@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { CENTRE, FLIGHT, PIECES, RELEASE, frame, shudder } from './logoFlight'
+import { CENTRE, FLIGHT, PIECES, RELEASE, frame, shudder, tangents, type Point } from './logoFlight'
 
 const times = (from: number, to: number, step: number) =>
   Array.from({ length: Math.floor((to - from) / step) + 1 }, (_, i) => from + i * step)
@@ -65,11 +65,105 @@ describe("the logo's flight", () => {
 
   it("starts from the logo's own arrow", () => {
     // Where the drawn head and fletching land exactly on the drawing's.
-    const { points } = frame(0).ring
+    const { points, headings } = frame(0).ring
+    const along = tangents(headings)
     expect(points[0][0]).toBeCloseTo(365.81, 1)
     expect(points[0][1]).toBeCloseTo(33.15, 1)
     expect(points[PIECES][0]).toBeCloseTo(156.9, 1)
     expect(points[PIECES][1]).toBeCloseTo(202.12, 1)
+    expect(Math.abs(angle(along[0]) - 135)).toBeLessThan(1.5)
+    expect(Math.abs(angle(along[PIECES]) - 70.07)).toBeLessThan(1.5)
+  })
+})
+
+describe("the logo's flight, frame by frame", () => {
+  // At 60 Hz and the pace of the fastest level, which plays the flight in 2.5 s.
+  const step = FLIGHT / 2.5 / 60
+  const frames = times(0, FLIGHT, step).concat(FLIGHT)
+  const gap = (a: Point, b: Point) => Math.hypot(a[0] - b[0], a[1] - b[1])
+
+  /** The upper arrow as it is seen: the ring turned by its spin, or the flyer. */
+  function seen(t: number): Point[] {
+    const f = frame(t)
+    if (f.flyer) return f.flyer.pose.points
+    const a = (f.spin * Math.PI) / 180
+    return f.ring.points.map(([x, y]): Point => [
+      CENTRE + (x - CENTRE) * Math.cos(a) - (y - CENTRE) * Math.sin(a),
+      CENTRE + (x - CENTRE) * Math.sin(a) + (y - CENTRE) * Math.cos(a),
+    ])
+  }
+
+  it('keeps the drawn arrows still until they cover the real ones', () => {
+    const rest = frame(0).ring.points
+    for (const t of times(0, 0.2, 0.002)) {
+      const f = frame(t)
+      // The drawn arrows lie on top, so the real ones show only through them.
+      expect(f.drawn + f.real.opacity * (1 - f.drawn), `at ${t.toFixed(3)}s`).toBeGreaterThan(0.999)
+      if (f.drawn < 1) expect(Math.max(...f.ring.points.map((p, k) => gap(p, rest[k])))).toBeLessThan(0.01)
+    }
+  })
+
+  it('bends the arrows into the ring without a jolt', () => {
+    // A change of speed between two frames, which is what an easing that only
+    // meets its neighbour in value looks like.
+    const moved = (from: Point, to: Point): Point => [to[0] - from[0], to[1] - from[1]]
+    const bending = frames.filter((t) => t < RELEASE)
+    for (let i = 2; i < bending.length; i++) {
+      const [a, b, c] = [frame(bending[i - 2]), frame(bending[i - 1]), frame(bending[i])]
+      const jolt = Math.max(...c.ring.points.map((p, k) => gap(moved(b.ring.points[k], p), moved(a.ring.points[k], b.ring.points[k]))))
+      expect(jolt, `at ${bending[i].toFixed(3)}s`).toBeLessThan(3.5)
+      expect(Math.abs(c.spin - 2 * b.spin + a.spin), `at ${bending[i].toFixed(3)}s`).toBeLessThan(2.5)
+    }
+  })
+
+  it('throws each arrow from where the ring held it, at the speed it had', () => {
+    const h = 1e-5
+    const before = seen(RELEASE - h)
+    const after = seen(RELEASE)
+    expect(Math.max(...before.map((p, k) => gap(p, after[k])))).toBeLessThan(0.5)
+    const speedIn = seen(RELEASE - 2 * h).map((p, k): Point => [(before[k][0] - p[0]) / h, (before[k][1] - p[1]) / h])
+    const later = seen(RELEASE + h)
+    const speedOut = after.map((p, k): Point => [(later[k][0] - p[0]) / h, (later[k][1] - p[1]) / h])
+    const head = Math.hypot(...speedIn[PIECES])
+    expect(Math.max(...speedIn.map((v, k) => gap(v, speedOut[k])))).toBeLessThan(head * 0.03)
+  })
+
+  it('fades everything in and out over several frames', () => {
+    const shown = (t: number) => {
+      const f = frame(t)
+      return {
+        arrow: t >= RELEASE ? (f.flyer?.opacity ?? 0) : f.drawn,
+        real: f.real.opacity * (1 - f.drawn),
+        fletch: f.ring.fletch,
+        ghost: Math.max(...f.ghosts.map((g) => g.opacity)),
+        wave: Math.max(...f.waves.map((w) => w.opacity)),
+      }
+    }
+    for (let i = 1; i < frames.length; i++) {
+      const [a, b] = [shown(frames[i - 1]), shown(frames[i])]
+      for (const key of Object.keys(a) as (keyof typeof a)[]) {
+        expect(Math.abs(b[key] - a[key]), `${key} at ${frames[i].toFixed(3)}s`).toBeLessThan(0.5)
+      }
+    }
+  })
+
+  it('swells the rings and grows the streaks instead of popping them', () => {
+    for (let i = 1; i < frames.length; i++) {
+      const [a, b] = [frame(frames[i - 1]), frame(frames[i])]
+      expect(Math.abs(b.rings.scale - a.rings.scale), `at ${frames[i].toFixed(3)}s`).toBeLessThan(0.12)
+      const streak = (f: typeof a) => (f.flyer ? gap(...f.flyer.streaks[1]) : 0)
+      expect(Math.abs(streak(b) - streak(a)), `at ${frames[i].toFixed(3)}s`).toBeLessThan(100)
+    }
+  })
+
+  it('comes to rest exactly, with no last twitch', () => {
+    const last = frame(FLIGHT)
+    expect(last.rings.scale).toBe(1)
+    expect(Math.abs(last.rings.dx) + Math.abs(last.rings.dy)).toBe(0)
+    expect(last.real).toEqual({ opacity: 1, offset: 0, quiver: 0 })
+    const before = frame(FLIGHT - step)
+    expect(Math.abs(before.rings.scale - 1)).toBeLessThan(1e-3)
+    expect(Math.abs(before.real.quiver)).toBeLessThan(0.05)
   })
 })
 
