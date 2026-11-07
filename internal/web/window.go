@@ -23,7 +23,9 @@ func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 		// Whether the interface can set a password, a second factor and
 		// passkeys here. The desktop window cannot, since nobody else reaches it.
 		"security": s.Security != nil,
-		"version":  boot.Version,
+		// Whether this instance can be paired with others.
+		"pairing": s.Pairing != nil && s.Group != nil,
+		"version": boot.Version,
 	})
 }
 

@@ -21,10 +21,12 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
+	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
+	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
@@ -86,6 +88,24 @@ type Server struct {
 	// Releases is the GitHub API the update check asks for the newest
 	// release. Empty means api.github.com.
 	Releases string
+
+	// Pairing keeps the phrase's secret, this instance's member key and the
+	// relay it dials, and Group the other instances paired with it. Without
+	// both the pairing routes are unregistered.
+	Pairing *pairing.Store
+	Group   *federation.Manager
+
+	// Deployment is what this instance tells the others of its group it is:
+	// "container", "server", "desktop" or "phone".
+	Deployment string
+
+	// relayMu keeps two rebuilds of the relay client apart, memberMu two
+	// mints of a member key, and groupOnce builds group, what another member
+	// may call here.
+	relayMu   sync.Mutex
+	memberMu  sync.Mutex
+	groupOnce sync.Once
+	group     http.Handler
 
 	// checked runs once a sign-in's credentials have held and before its
 	// session is handed out, which is where a test lands a reset.
@@ -208,6 +228,10 @@ func (s *Server) Handler() http.Handler {
 
 	// A phone's wake-up runs whatever the schedule says is due.
 	mux.HandleFunc("POST /api/run-due", s.runDue)
+
+	if s.Pairing != nil && s.Group != nil {
+		s.pairingRoutes(mux)
+	}
 
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
