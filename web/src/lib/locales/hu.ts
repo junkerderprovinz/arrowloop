@@ -466,6 +466,8 @@ const hu: Translations = {
   'update.auto': 'Automatikus frissítés',
   'update.autoHint': 'Az ArrowLoop naponta egyszer új verziót keres, a háttérben letölti, és a kiadással együtt közzétett ellenőrzőösszegekkel ellenőrzi. Az új verzió az ArrowLoop következő indításakor lép életbe, így a folyamatban lévő szinkronizálás nem szakad meg. A telepített és a hordozható példány egyaránt a helyén frissül.',
   'update.ready': 'Az ArrowLoop {version} letöltődött, és az alkalmazás következő indításakor fut.',
+  'update.fromStore': 'A frissítések a szoftverközponton át érkeznek',
+  'update.fromStoreHint': 'Az ArrowLoop ezen példánya Flatpak, és nem cseréli le önmagát. Flathubról telepítve minden új verziót a szoftverközpontodon át kap meg. Letöltött .flatpak fájlból telepítve akkor frissül, amikor ugyanígy megnyitod a következő kiadás fájlját.',
   'confirm.deleteRemote': 'Ennek a tárolócélnak a törlése',
   'confirm.deleteRemoteStakes': 'A(z) {name} beállításai kikerülnek az rclone konfigurációjából, benne minden ott tárolt jelszóval és kulccsal. Előtte semmit nem másol sehová, és nincs visszaút: újra beállítani annyit tesz, mint újra begépelni az adatokat.',
   'targets.inUse': 'Ezt a célt még feladatok használják: {jobs}. Irányítsa őket másik célra vagy törölje őket, aztán törölje a célt.',

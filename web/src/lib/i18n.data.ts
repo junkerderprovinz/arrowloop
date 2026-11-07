@@ -722,6 +722,8 @@ export const en = {
   'update.auto': 'Update automatically',
   'update.autoHint': 'Once a day ArrowLoop looks for a new version, downloads it in the background and checks it against the checksums published with the release. The new version takes over the next time you start ArrowLoop, so a running sync is not interrupted. An installed copy and a portable copy both update in place.',
   'update.ready': 'ArrowLoop {version} is downloaded and runs the next time you start the app.',
+  'update.fromStore': 'Updates come through your software centre',
+  'update.fromStoreHint': 'This copy of ArrowLoop is a Flatpak and does not replace itself. Installed from Flathub, it gets each new version through your software centre. Installed from a downloaded .flatpak file, it updates when you open the next release\'s file the same way.',
 
   'progress.of': '{done} of {total}',
   'progress.starting': 'Starting',
@@ -2157,6 +2159,8 @@ export const de: Translations = {
   'update.auto': 'Automatisch aktualisieren',
   'update.autoHint': 'Einmal am Tag sucht ArrowLoop nach einer neuen Version, lädt sie im Hintergrund herunter und prüft sie mit den Prüfsummen, die zum Release gehören. Die neue Version läuft ab dem nächsten Start von ArrowLoop, ein laufender Sync wird also nicht unterbrochen. Eine installierte und eine portable Kopie aktualisieren sich jeweils dort, wo sie liegen.',
   'update.ready': 'ArrowLoop {version} ist heruntergeladen und läuft ab dem nächsten Start.',
+  'update.fromStore': 'Updates kommen über deine Softwareverwaltung',
+  'update.fromStoreHint': 'Diese Kopie von ArrowLoop ist ein Flatpak und ersetzt sich nicht selbst. Aus Flathub installiert, bekommt sie jede neue Version über deine Softwareverwaltung. Aus einer heruntergeladenen .flatpak-Datei installiert, aktualisierst du sie, indem du die Datei des nächsten Releases genauso öffnest.',
 
   'progress.of': '{done} von {total}',
   'progress.starting': 'Startet',

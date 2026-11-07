@@ -239,3 +239,28 @@ func TestAnUnknownApiAddressIsNotThePage(t *testing.T) {
 		}
 	}
 }
+
+// A Flatpak is updated by the software centre, so the interface says so in
+// place of the switch that would have the app replace itself.
+func TestAFlatpakLeavesUpdatesToTheSoftwareCenter(t *testing.T) {
+	h := newHarness(t)
+	store := deskset.Open(filepath.Join(t.TempDir(), "arrowloop.json"))
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Window: store})
+
+	var view struct {
+		UpdatesFromStore *bool `json:"updatesFromStore"`
+	}
+	t.Setenv("FLATPAK_ID", "")
+	getJSON(t, srv, "/api/window", &view)
+	if view.UpdatesFromStore == nil || *view.UpdatesFromStore {
+		t.Errorf("outside a Flatpak updatesFromStore is %v", view.UpdatesFromStore)
+	}
+
+	t.Setenv("FLATPAK_ID", "io.github.junkerderprovinz.arrowloop")
+	t.Setenv("HOME", t.TempDir())
+	view.UpdatesFromStore = nil
+	getJSON(t, srv, "/api/window", &view)
+	if view.UpdatesFromStore == nil || !*view.UpdatesFromStore {
+		t.Errorf("inside a Flatpak updatesFromStore is %v", view.UpdatesFromStore)
+	}
+}

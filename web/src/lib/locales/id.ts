@@ -466,6 +466,8 @@ const id: Translations = {
   'update.auto': 'Perbarui otomatis',
   'update.autoHint': 'Sekali sehari ArrowLoop mencari versi baru, mengunduhnya di latar belakang, dan memeriksanya dengan checksum yang diterbitkan bersama rilisnya. Versi baru mulai dipakai saat Anda menjalankan ArrowLoop berikutnya, jadi sinkronisasi yang sedang berjalan tidak terputus. Salinan terpasang dan salinan portabel sama-sama diperbarui di tempatnya.',
   'update.ready': 'ArrowLoop {version} sudah diunduh dan berjalan saat Anda menjalankan aplikasi berikutnya.',
+  'update.fromStore': 'Pembaruan datang lewat pusat perangkat lunak',
+  'update.fromStoreHint': 'Salinan ArrowLoop ini adalah Flatpak dan tidak mengganti dirinya sendiri. Jika dipasang dari Flathub, setiap versi baru datang lewat pusat perangkat lunak Anda. Jika dipasang dari berkas .flatpak yang diunduh, salinan ini diperbarui saat Anda membuka berkas rilis berikutnya dengan cara yang sama.',
   'confirm.deleteRemote': 'Hapus tujuan penyimpanan ini',
   'confirm.deleteRemoteStakes': 'Pengaturan {name} dikeluarkan dari konfigurasi rclone, termasuk setiap kata sandi dan kunci yang tersimpan di sana. Sebelumnya tidak ada yang disalin ke mana pun dan tidak ada jalan kembali: menyiapkannya lagi berarti mengetik ulang kredensialnya.',
   'targets.inUse': 'Masih ada tugas yang memakai tujuan ini: {jobs}. Arahkan ke tujuan lain atau hapus, lalu hapus tujuannya.',

@@ -466,6 +466,8 @@ const sv: Translations = {
   'update.auto': 'Uppdatera automatiskt',
   'update.autoHint': 'En gång om dagen letar ArrowLoop efter en ny version, laddar ner den i bakgrunden och kontrollerar den mot kontrollsummorna som publicerats med utgåvan. Den nya versionen tar över nästa gång du startar ArrowLoop, så en synkronisering som pågår avbryts inte. En installerad kopia och en portabel kopia uppdateras båda där de ligger.',
   'update.ready': 'ArrowLoop {version} är nedladdad och körs nästa gång du startar appen.',
+  'update.fromStore': 'Uppdateringar kommer via ditt programcenter',
+  'update.fromStoreHint': 'Den här kopian av ArrowLoop är en Flatpak och byter inte ut sig själv. Installerad från Flathub får den varje ny version via ditt programcenter. Installerad från en nedladdad .flatpak-fil uppdateras den när du öppnar filen från nästa utgåva på samma sätt.',
   'confirm.deleteRemote': 'Ta bort det här lagringsmålet',
   'confirm.deleteRemoteStakes': 'Inställningarna för {name} tas bort ur rclones konfiguration, inklusive varje lösenord och nyckel som ligger där. Ingenting kopieras någonstans först och det finns ingen väg tillbaka: att sätta upp det igen betyder att skriva in uppgifterna på nytt.',
   'targets.inUse': 'Jobb använder fortfarande det här målet: {jobs}. Peka dem mot ett annat mål eller ta bort dem, och ta sedan bort målet.',

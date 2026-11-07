@@ -466,6 +466,8 @@ const hr: Translations = {
   'update.auto': 'Ažuriraj automatski',
   'update.autoHint': 'Jednom dnevno ArrowLoop traži novu verziju, preuzima je u pozadini i provjerava je kontrolnim zbrojevima objavljenima uz izdanje. Nova verzija preuzima pri sljedećem pokretanju ArrowLoopa, pa se sinkronizacija u tijeku ne prekida. Instalirana i prijenosna kopija ažuriraju se obje tamo gdje se nalaze.',
   'update.ready': 'ArrowLoop {version} je preuzet i radit će pri sljedećem pokretanju aplikacije.',
+  'update.fromStore': 'Ažuriranja stižu kroz centar za softver',
+  'update.fromStoreHint': 'Ova kopija ArrowLoopa je Flatpak i ne zamjenjuje samu sebe. Instalirana s Flathuba, svaku novu verziju dobiva kroz vaš centar za softver. Instalirana iz preuzete datoteke .flatpak, ažurira se kada na isti način otvorite datoteku sljedećeg izdanja.',
   'confirm.deleteRemote': 'Izbrisati ovu pohranu',
   'confirm.deleteRemoteStakes': 'Postavke za {name} uklanjaju se iz rcloneove konfiguracije, zajedno sa svakom lozinkom i ključem koji ondje leže. Prije toga ništa se nikamo ne kopira i povratka nema: ponovno postaviti znači ponovno utipkati podatke.',
   'targets.inUse': 'Zadaci još koriste ovo odredište: {jobs}. Usmjerite ih na drugo odredište ili ih izbrišite, a zatim izbrišite odredište.',

@@ -466,6 +466,8 @@ const fi: Translations = {
   'update.auto': 'Päivitä automaattisesti',
   'update.autoHint': 'Kerran päivässä ArrowLoop etsii uuden version, lataa sen taustalla ja tarkistaa sen julkaisun mukana julkaistuja tarkistussummia vasten. Uusi versio otetaan käyttöön, kun seuraavan kerran käynnistät ArrowLoopin, joten käynnissä oleva synkronointi ei keskeydy. Asennettu kopio ja siirrettävä kopio päivittyvät kumpikin paikallaan.',
   'update.ready': 'ArrowLoop {version} on ladattu ja on käytössä, kun seuraavan kerran käynnistät sovelluksen.',
+  'update.fromStore': 'Päivitykset tulevat sovelluskeskuksen kautta',
+  'update.fromStoreHint': 'Tämä ArrowLoopin kopio on Flatpak eikä korvaa itseään. Flathubista asennettuna se saa jokaisen uuden version sovelluskeskuksesi kautta. Ladatusta .flatpak-tiedostosta asennettuna se päivittyy, kun avaat seuraavan julkaisun tiedoston samalla tavalla.',
   'confirm.deleteRemote': 'Poista tämä tallennuskohde',
   'confirm.deleteRemoteStakes': 'Kohteen {name} asetukset poistetaan rclonen määrityksistä, mukaan lukien siellä oleva salasana tai avain. Mitään ei kopioida ensin minnekään eikä paluuta ole: uudelleen määrittäminen tarkoittaa tunnusten kirjoittamista uudestaan.',
   'targets.inUse': 'Työt käyttävät vielä tätä kohdetta: {jobs}. Ohjaa ne toiseen kohteeseen tai poista ne, ja poista sitten kohde.',

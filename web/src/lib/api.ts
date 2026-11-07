@@ -185,6 +185,10 @@ export type WindowSettings = {
 
   /** Whether the app downloads a newer release in the background and starts it next time. */
   autoUpdate: boolean
+
+  /** Whether the software centre keeps this copy current, as it does a Flatpak.
+   *  The app then never replaces itself, and autoUpdate has nothing to do. */
+  updatesFromStore: boolean
 }
 
 /** One registered drive, attached or not. */

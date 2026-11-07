@@ -466,6 +466,8 @@ const nl: Translations = {
   'update.auto': 'Automatisch bijwerken',
   'update.autoHint': 'Eén keer per dag zoekt ArrowLoop naar een nieuwe versie, downloadt die op de achtergrond en controleert hem met de checksums die bij de release zijn gepubliceerd. De nieuwe versie neemt het over zodra je ArrowLoop weer start, dus een lopende synchronisatie wordt niet onderbroken. Een geïnstalleerde en een draagbare kopie worden allebei bijgewerkt waar ze staan.',
   'update.ready': 'ArrowLoop {version} is gedownload en draait zodra je de app weer start.',
+  'update.fromStore': 'Updates komen via je softwarecentrum',
+  'update.fromStoreHint': 'Deze kopie van ArrowLoop is een Flatpak en vervangt zichzelf niet. Geïnstalleerd via Flathub krijgt ze elke nieuwe versie via je softwarecentrum. Geïnstalleerd vanuit een gedownload .flatpak-bestand wordt ze bijgewerkt als je het bestand van de volgende release op dezelfde manier opent.',
   'confirm.deleteRemote': 'Dit opslagdoel verwijderen',
   'confirm.deleteRemoteStakes': 'De instellingen van {name} worden uit de rclone-configuratie gehaald, inclusief elk wachtwoord en elke sleutel die daar ligt. Er wordt vooraf niets ergens heen gekopieerd en er is geen weg terug: opnieuw instellen betekent de gegevens opnieuw intypen.',
   'targets.inUse': 'Er zijn nog taken die dit doel gebruiken: {jobs}. Wijs ze naar een ander doel of verwijder ze, en verwijder dan het doel.',

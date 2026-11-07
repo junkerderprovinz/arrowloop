@@ -466,6 +466,8 @@ const is: Translations = {
   'update.auto': 'Uppfæra sjálfkrafa',
   'update.autoHint': 'Einu sinni á dag leitar ArrowLoop að nýrri útgáfu, sækir hana í bakgrunni og ber hana saman við gátsummurnar sem birtar eru með útgáfunni. Nýja útgáfan tekur við næst þegar þú ræsir ArrowLoop, svo samstilling sem er í gangi rofnar ekki. Uppsett eintak og færanlegt eintak uppfærast bæði þar sem þau eru.',
   'update.ready': 'ArrowLoop {version} hefur verið sótt og keyrir næst þegar þú ræsir forritið.',
+  'update.fromStore': 'Uppfærslur koma í gegnum hugbúnaðarmiðstöðina',
+  'update.fromStoreHint': 'Þetta eintak af ArrowLoop er Flatpak og skiptir sér ekki út sjálft. Sett upp af Flathub fær það hverja nýja útgáfu í gegnum hugbúnaðarmiðstöðina þína. Sett upp af niðurhalaðri .flatpak-skrá uppfærist það þegar þú opnar skrá næstu útgáfu á sama hátt.',
   'confirm.deleteRemote': 'Eyða þessum geymsluáfangastað',
   'confirm.deleteRemoteStakes': 'Stillingar fyrir {name} eru fjarlægðar úr uppsetningu rclone, þar með talið hvert lykilorð og lykill sem þar liggur. Ekkert er afritað neitt fyrst og engin leið er til baka: að setja það upp aftur þýðir að slá aðgangsupplýsingarnar inn á ný.',
   'targets.inUse': 'Verk nota enn þennan áfangastað: {jobs}. Beindu þeim á annan áfangastað eða eyddu þeim, og eyddu svo áfangastaðnum.',

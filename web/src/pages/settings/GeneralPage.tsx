@@ -58,13 +58,19 @@ export function GeneralPage({
             />
           )}
           {/* Only the desktop app replaces itself. A container is updated the
-              way it was deployed, and the phone through its store. */}
-          <ToggleRow
-            label={t('update.auto')}
-            hint={t('update.autoHint')}
-            checked={windowSettings.autoUpdate}
-            onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
-          />
+              way it was deployed, the phone and a Flatpak through their store. */}
+          {windowSettings.updatesFromStore ? (
+            <SettingsRow label={t('update.fromStore')} hint={t('update.fromStoreHint')}>
+              {null}
+            </SettingsRow>
+          ) : (
+            <ToggleRow
+              label={t('update.auto')}
+              hint={t('update.autoHint')}
+              checked={windowSettings.autoUpdate}
+              onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
+            />
+          )}
         </Card>
       )}
 

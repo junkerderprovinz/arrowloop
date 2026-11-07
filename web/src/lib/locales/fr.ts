@@ -466,6 +466,8 @@ const fr: Translations = {
   'update.auto': 'Mettre à jour automatiquement',
   'update.autoHint': 'Une fois par jour, ArrowLoop cherche une nouvelle version, la télécharge en arrière-plan et la vérifie avec les sommes de contrôle publiées avec la version. La nouvelle version prend le relais au prochain démarrage d\'ArrowLoop, donc une synchronisation en cours n\'est pas interrompue. Une copie installée et une copie portable se mettent toutes deux à jour là où elles se trouvent.',
   'update.ready': 'ArrowLoop {version} est téléchargé et fonctionnera la prochaine fois que vous lancerez l\'application.',
+  'update.fromStore': 'Les mises à jour arrivent par votre logithèque',
+  'update.fromStoreHint': 'Cette copie d\'ArrowLoop est un Flatpak et ne se remplace pas elle-même. Installée depuis Flathub, elle reçoit chaque nouvelle version par votre logithèque. Installée depuis un fichier .flatpak téléchargé, elle se met à jour quand vous ouvrez de la même façon le fichier de la version suivante.',
   'confirm.deleteRemote': 'Supprimer cette cible de stockage',
   'confirm.deleteRemoteStakes': 'Les réglages de {name} sont retirés de la configuration rclone, y compris tout mot de passe ou clé qui s\'y trouve. Rien n\'est copié ailleurs au préalable et il n\'y a pas de retour en arrière : le reconfigurer veut dire retaper les identifiants.',
   'targets.inUse': 'Des tâches utilisent encore cette cible : {jobs}. Faites-les pointer vers une autre cible ou supprimez-les, puis supprimez la cible.',

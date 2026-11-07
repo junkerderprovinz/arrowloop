@@ -17,6 +17,7 @@ const settled: WindowSettings = {
   startWithSystem: false,
   canStartWithSystem: false,
   autoUpdate: false,
+  updatesFromStore: false,
 }
 const session = vi.fn(() => Promise.resolve({ required: false, authenticated: false }))
 const saveWindow = vi.fn((_next: WindowSettings) => Promise.resolve(settled))

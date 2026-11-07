@@ -8,6 +8,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/autostart"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
+	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
 )
 
 // capabilities says what this build can do, so the interface can leave out
@@ -36,6 +37,10 @@ type windowView struct {
 	// CanStartWithSystem says whether this system has an autostart mechanism
 	// at all.
 	CanStartWithSystem bool `json:"canStartWithSystem"`
+
+	// UpdatesFromStore says the software centre keeps this copy current, as it
+	// does a Flatpak, so the app leaves updating to it.
+	UpdatesFromStore bool `json:"updatesFromStore"`
 }
 
 func (s *Server) view() (windowView, error) {
@@ -47,6 +52,7 @@ func (s *Server) view() (windowView, error) {
 		Settings:           s.Window.Get(),
 		StartWithSystem:    on,
 		CanStartWithSystem: autostart.Supported(),
+		UpdatesFromStore:   flatpak.ID() != "",
 	}, nil
 }
 

@@ -466,6 +466,8 @@ const ca: Translations = {
   'update.auto': 'Actualitza automàticament',
   'update.autoHint': 'Un cop al dia ArrowLoop cerca una versió nova, la baixa en segon pla i la comprova amb les sumes de verificació publicades amb la versió. La versió nova entra en funcionament la propera vegada que inicieu ArrowLoop, de manera que una sincronització en curs no s\'interromp. Una còpia instal·lada i una de portable s\'actualitzen totes dues allà on són.',
   'update.ready': 'ArrowLoop {version} s\'ha baixat i s\'executarà la propera vegada que inicieu l\'aplicació.',
+  'update.fromStore': 'Les actualitzacions arriben pel centre de programari',
+  'update.fromStoreHint': 'Aquesta còpia d\'ArrowLoop és un Flatpak i no es reemplaça a si mateixa. Instal·lada des de Flathub, rep cada versió nova pel vostre centre de programari. Instal·lada des d\'un fitxer .flatpak baixat, s\'actualitza quan obriu de la mateixa manera el fitxer de la versió següent.',
   'confirm.deleteRemote': 'Esborrar aquesta destinació d\'emmagatzematge',
   'confirm.deleteRemoteStakes': 'Els paràmetres de {name} es treuen de la configuració del rclone, inclosa qualsevol contrasenya o clau que hi hagi. Abans no es copia res enlloc i no hi ha marxa enrere: tornar-lo a configurar vol dir reescriure les credencials.',
   'targets.inUse': 'Encara hi ha tasques que fan servir aquesta destinació: {jobs}. Apunta-les a una altra destinació o esborra-les, i després esborra la destinació.',

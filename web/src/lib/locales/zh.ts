@@ -466,6 +466,8 @@ const zh: Translations = {
   'update.auto': '自动更新',
   'update.autoHint': 'ArrowLoop 每天查找一次新版本，在后台下载，并用随发布一起公布的校验和进行核对。新版本会在你下次启动 ArrowLoop 时生效，所以正在进行的同步不会被打断。安装版和便携版都会在原位置更新。',
   'update.ready': '已下载 ArrowLoop {version}，下次启动应用时生效。',
+  'update.fromStore': '更新通过软件中心送达',
+  'update.fromStoreHint': '这份 ArrowLoop 是 Flatpak，不会自行替换。从 Flathub 安装时，每个新版本都会通过软件中心送达。从下载的 .flatpak 文件安装时，用同样的方式打开下一个版本的文件即可更新。',
   'confirm.deleteRemote': '删除这个存储目标',
   'confirm.deleteRemoteStakes': '{name} 的设置会从 rclone 的配置里移除，连同存在那里的任何口令和密钥。事先不会往任何地方复制，也没有回头路：再次配置意味着重新输入凭据。',
   'targets.inUse': '仍有任务在使用这个目标：{jobs}。请先把它们改指到别的目标或删除，再删除这个目标。',

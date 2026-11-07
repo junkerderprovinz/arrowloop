@@ -466,6 +466,8 @@ const tr: Translations = {
   'update.auto': 'Otomatik güncelle',
   'update.autoHint': 'ArrowLoop günde bir kez yeni bir sürüm arar, onu arka planda indirir ve sürümle birlikte yayımlanan sağlama toplamlarıyla denetler. Yeni sürüm, ArrowLoop\'u bir sonraki başlatışınızda devreye girer, böylece süren bir eşitleme yarıda kesilmez. Kurulu kopya da taşınabilir kopya da bulundukları yerde güncellenir.',
   'update.ready': 'ArrowLoop {version} indirildi ve uygulamayı bir sonraki başlatışınızda çalışacak.',
+  'update.fromStore': 'Güncellemeler yazılım merkezinden gelir',
+  'update.fromStoreHint': 'ArrowLoop\'un bu kopyası bir Flatpak ve kendini değiştirmez. Flathub\'dan kurulduysa her yeni sürüm yazılım merkeziniz üzerinden gelir. İndirilmiş bir .flatpak dosyasından kurulduysa, sonraki sürümün dosyasını aynı şekilde açtığınızda güncellenir.',
   'confirm.deleteRemote': 'Bu depolama hedefini sil',
   'confirm.deleteRemoteStakes': '{name} ayarları rclone yapılandırmasından, orada duran her parola ve anahtarla birlikte kaldırılır. Öncesinde hiçbir şey hiçbir yere kopyalanmaz ve geri dönüş yoktur: yeniden kurmak, kimlik bilgilerini yeniden yazmak demektir.',
   'targets.inUse': 'Bu hedefi hâlâ kullanan işler var: {jobs}. Onları başka bir hedefe yönlendirin ya da silin, sonra hedefi silin.',

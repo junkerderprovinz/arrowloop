@@ -466,6 +466,8 @@ const ro: Translations = {
   'update.auto': 'Actualizează automat',
   'update.autoHint': 'O dată pe zi, ArrowLoop caută o versiune nouă, o descarcă în fundal și o verifică cu sumele de control publicate odată cu versiunea. Versiunea nouă intră în funcțiune data viitoare când pornești ArrowLoop, așa că o sincronizare în curs nu este întreruptă. O copie instalată și una portabilă se actualizează amândouă acolo unde se află.',
   'update.ready': 'ArrowLoop {version} este descărcat și rulează data viitoare când pornești aplicația.',
+  'update.fromStore': 'Actualizările vin prin centrul de software',
+  'update.fromStoreHint': 'Această copie ArrowLoop este un Flatpak și nu se înlocuiește singură. Instalată din Flathub, primește fiecare versiune nouă prin centrul tău de software. Instalată dintr-un fișier .flatpak descărcat, se actualizează când deschizi la fel fișierul versiunii următoare.',
   'confirm.deleteRemote': 'Ștergerea acestei destinații de stocare',
   'confirm.deleteRemoteStakes': 'Setările pentru {name} sunt scoase din configurația rclone, împreună cu orice parolă și cheie care stau acolo. Înainte nu se copiază nimic nicăieri și nu există cale de întoarcere: a o configura din nou înseamnă a retasta datele.',
   'targets.inUse': 'Încă există sarcini care folosesc această destinație: {jobs}. Îndreaptă-le spre altă destinație sau șterge-le, apoi șterge destinația.',

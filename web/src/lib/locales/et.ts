@@ -466,6 +466,8 @@ const et: Translations = {
   'update.auto': 'Uuenda automaatselt',
   'update.autoHint': 'Kord päevas otsib ArrowLoop uut versiooni, laadib selle taustal alla ja kontrollib seda väljalaskega avaldatud kontrollsummade järgi. Uus versioon hakkab tööle järgmisel korral, kui ArrowLoopi käivitad, nii et käimasolev sünkroonimine ei katke. Paigaldatud koopia ja kaasaskantav koopia uuenevad mõlemad seal, kus nad asuvad.',
   'update.ready': 'ArrowLoop {version} on alla laaditud ja töötab järgmisel käivitamisel.',
+  'update.fromStore': 'Uuendused tulevad tarkvarakeskuse kaudu',
+  'update.fromStoreHint': 'See ArrowLoopi koopia on Flatpak ega asenda ennast ise. Flathubist paigaldatuna saab see iga uue versiooni sinu tarkvarakeskuse kaudu. Allalaaditud .flatpak-failist paigaldatuna uueneb see, kui avad samamoodi järgmise väljalaske faili.',
   'confirm.deleteRemote': 'Kustuta see salvestuse sihtkoht',
   'confirm.deleteRemoteStakes': 'Sihtkoha {name} seaded eemaldatakse rclone\'i seadistusest koos iga seal oleva parooli ja võtmega. Enne seda ei kopeerita midagi kuhugi ja tagasiteed ei ole: uuesti seadistamine tähendab tunnuste uuesti sisestamist.',
   'targets.inUse': 'Seda sihtkohta kasutavad veel tööd: {jobs}. Suuna need teise sihtkohta või kustuta need, siis kustuta sihtkoht.',

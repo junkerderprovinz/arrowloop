@@ -466,6 +466,8 @@ const vi: Translations = {
   'update.auto': 'Tự động cập nhật',
   'update.autoHint': 'Mỗi ngày một lần ArrowLoop tìm phiên bản mới, tải về ở chế độ nền và kiểm tra bằng mã tổng kiểm được công bố cùng bản phát hành. Phiên bản mới bắt đầu chạy vào lần tới bạn khởi động ArrowLoop, nên một lần đồng bộ đang chạy không bị ngắt. Bản đã cài đặt và bản di động đều được cập nhật ngay tại chỗ.',
   'update.ready': 'ArrowLoop {version} đã được tải về và sẽ chạy vào lần tới bạn khởi động ứng dụng.',
+  'update.fromStore': 'Bản cập nhật đến qua trung tâm phần mềm',
+  'update.fromStoreHint': 'Bản ArrowLoop này là Flatpak và không tự thay thế chính nó. Nếu cài từ Flathub, mỗi phiên bản mới sẽ đến qua trung tâm phần mềm của bạn. Nếu cài từ tệp .flatpak đã tải về, nó được cập nhật khi bạn mở tệp của bản phát hành tiếp theo theo cùng cách.',
   'confirm.deleteRemote': 'Xóa đích lưu trữ này',
   'confirm.deleteRemoteStakes': 'Thiết lập của {name} bị gỡ khỏi cấu hình rclone, kèm theo mọi mật khẩu và khóa nằm ở đó. Trước đó không có gì được sao đi đâu cả, và không có đường lui: dựng lại nghĩa là gõ lại thông tin đăng nhập.',
   'targets.inUse': 'Vẫn còn công việc dùng đích này: {jobs}. Hãy trỏ chúng sang đích khác hoặc xóa chúng, rồi xóa đích.',

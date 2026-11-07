@@ -466,6 +466,8 @@ const lv: Translations = {
   'update.auto': 'Atjaunināt automātiski',
   'update.autoHint': 'Reizi dienā ArrowLoop meklē jaunu versiju, lejupielādē to fonā un pārbauda pēc kontrolsummām, kas publicētas kopā ar laidienu. Jaunā versija sāk darboties nākamajā reizē, kad palaižat ArrowLoop, tāpēc notiekoša sinhronizācija netiek pārtraukta. Instalēta un pārnēsājama kopija abas atjauninās tur, kur tās atrodas.',
   'update.ready': 'ArrowLoop {version} ir lejupielādēts un darbosies nākamajā reizē, kad palaidīsiet lietotni.',
+  'update.fromStore': 'Atjauninājumi nāk caur programmatūras centru',
+  'update.fromStoreHint': 'Šī ArrowLoop kopija ir Flatpak un pati sevi neaizstāj. Ja tā instalēta no Flathub, katru jauno versiju tā saņem caur jūsu programmatūras centru. Ja tā instalēta no lejupielādēta .flatpak faila, tā atjaunojas, kad tādā pašā veidā atverat nākamā laidiena failu.',
   'confirm.deleteRemote': 'Dzēst šo krātuvi',
   'confirm.deleteRemoteStakes': '{name} iestatījumi tiek noņemti no rclone konfigurācijas kopā ar katru tur esošo paroli un atslēgu. Iepriekš nekas nekur netiek kopēts, un ceļa atpakaļ nav: iestatīt to no jauna nozīmē no jauna ievadīt pieteikšanās datus.',
   'targets.inUse': 'Šo galamērķi vēl izmanto uzdevumi: {jobs}. Novirziet tos uz citu galamērķi vai izdzēsiet, tad izdzēsiet galamērķi.',

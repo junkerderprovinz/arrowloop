@@ -466,6 +466,8 @@ const eu: Translations = {
   'update.auto': 'Eguneratu automatikoki',
   'update.autoHint': 'Egunean behin ArrowLoop-ek bertsio berri bat bilatzen du, atzeko planoan deskargatzen du eta bertsioarekin argitaratutako egiaztapen-baturekin egiaztatzen du. Bertsio berria ArrowLoop abiarazten duzun hurrengo aldian hasten da, beraz martxan dagoen sinkronizazio bat ez da eteten. Kopia instalatua eta kopia eramangarria dauden lekuan eguneratzen dira biak.',
   'update.ready': 'ArrowLoop {version} deskargatuta dago, eta aplikazioa abiarazten duzun hurrengo aldian ibiliko da.',
+  'update.fromStore': 'Eguneraketak software-zentroaren bidez datoz',
+  'update.fromStoreHint': 'ArrowLoop-en kopia hau Flatpak bat da eta ez du bere burua ordezkatzen. Flathub-etik instalatuta, software-zentroaren bidez jasotzen du bertsio berri bakoitza. Deskargatutako .flatpak fitxategi batetik instalatuta, hurrengo bertsioaren fitxategia modu berean irekitzean eguneratzen da.',
   'confirm.deleteRemote': 'Biltegi-helburu hau ezabatu',
   'confirm.deleteRemoteStakes': '{name} helburuaren ezarpenak rclone-ren konfiguraziotik kentzen dira, han gordetako pasahitz edo gako oro barne. Aurretik ez da ezer inora kopiatzen eta ez dago atzera bueltarik: berriz konfiguratzeak kredentzialak berriz idaztea esan nahi du.',
   'targets.inUse': 'Lan batzuek helburu hau erabiltzen dute oraindik: {jobs}. Bideratu beste helburu batera edo ezabatu, eta gero ezabatu helburua.',
