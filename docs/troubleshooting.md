@@ -6,7 +6,8 @@ The interface says why a run failed in the language it shows, with its figures
 written that way: a destination too full for what the run would write, a drive
 that is not plugged in, a server that does not answer, a sign-in that was
 refused, access that was denied, a folder that does not exist, a full quota,
-a service asking for a pause, a run that was stopped, and a command before or
+a service asking for a pause, an FTP server out of logins, a run that was
+stopped, and a command before or
 after the run that failed, with what it printed below. The engine records every
 failure in English, so a run from an older version is said the same way. A
 failure it has no words for shows the engine's own English under **The engine
@@ -31,6 +32,25 @@ what you wanted.
 
 **A naming collision** means one side holds two files whose names differ only in
 case, and the other side cannot tell them apart. Rename one of them.
+
+## An FTP server says its login limit is reached
+
+FTP server apps on a phone, and some small servers, let only a few logins in
+at once and turn the next one away with a message such as **"Maximum login
+limit has been reached"** or **"Too many users"**. The connection test opens
+one login, so it works, while a preview or a run reads several folders side by
+side and opens more.
+
+ArrowLoop opens at most 4 connections to an FTP target and moves at most 3
+files at once on a job with an FTP side, whatever the job's transfers say. It
+logs out once a test, a preview or a run is over. If the server still refuses,
+it allows fewer than that:
+
+- Close other apps that are connected to the server, such as a file manager on
+  your computer.
+- Lower **concurrency** under **Other settings** of the target, to 2 for
+  example. 0 means no limit.
+- Raise the server app's own limit, if it has one.
 
 ## The destination does not exist yet
 
