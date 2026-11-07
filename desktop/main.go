@@ -270,8 +270,9 @@ func instanceID(custom, configPath string) string {
 	if custom == "" {
 		return installID
 	}
+	// The letter keeps the element a valid bus name, which may not start with a digit.
 	sum := sha256.Sum256([]byte(configPath))
-	return installID + "." + hex.EncodeToString(sum[:4])
+	return installID + ".c" + hex.EncodeToString(sum[:4])
 }
 
 const starterConfig = `{

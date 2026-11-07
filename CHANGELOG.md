@@ -26,6 +26,7 @@ The full notes for each release are in
 
 - **A preview or run against an FTP server on a phone no longer fails with "Maximum login limit has been reached".** ArrowLoop opens at most 4 connections to an FTP target unless its concurrency setting says otherwise, keeps a job's transfers below that and logs out after a test, a preview or a run. If the server still turns a login away, ArrowLoop tries again with half as many connections, down to one, and keeps the number that worked for that server. When even one connection is too many, it says so in plain words, whether the server is a phone app, pure-ftpd, vsftpd, ProFTPD, FileZilla or IIS. Thanks to antrixsamay for the report in #130.
 - **Tabs no longer wait for a target that does not answer.** The trash and conflict counts give up on such a target after a minute and read every job's conflicts side by side, and the phone app runs more requests to the engine at once, so switching tabs stays quick.
+- **A second desktop copy started with its own `--config` opens on Linux every time.** Its single-instance name could start a part with a digit, which the session bus refuses, so about two starts in three failed.
 
 ## 🌐 Translations
 

@@ -5,6 +5,8 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autostart"
@@ -36,5 +38,18 @@ func TestTheReleaseBuildKeepsTheRealNames(t *testing.T) {
 	}
 	if got := rcloneConfig(path); got != "" {
 		t.Errorf("rclone configuration %q, want rclone's own default", got)
+	}
+}
+
+// D-Bus refuses a bus name whose element starts with a digit, and Wails takes
+// the single-instance name as one on Linux.
+func TestAnInstanceNameForAnyConfigurationIsAValidBusName(t *testing.T) {
+	for i := range 64 {
+		name := instanceID("x", filepath.Join("configs", strconv.Itoa(i), "arrowloop.json"))
+		for _, part := range strings.Split(name, ".") {
+			if part == "" || part[0] >= '0' && part[0] <= '9' {
+				t.Fatalf("%q has the element %q", name, part)
+			}
+		}
 	}
 }
