@@ -429,8 +429,8 @@ row on **Look** brings back the original one.
 - **General**: the settings backup and the workload (bandwidth limit, jobs at
   once and the run log file), and in the desktop app this computer: the
   window, starting with the system and automatic updates.
-- **Look**: language, design (Dark, Light or System), corners, motion, the
-  tile order, labels and colours.
+- **Look**: language, design (Dark, Light or System) with the **OLED** switch,
+  corners, motion, the tile order, labels and colours.
 - **Sync**: the global sync settings every job starts from, transfer,
   contents, **Exceptions**, retries and the shared exclude lists.
   **Exceptions** lists only the jobs with a value of their own, each with those
@@ -498,6 +498,20 @@ the **Look** tile.
 The accent marks activity and the one action a page is for, such as **Add a
 job**. Every other button is grey.
 
+**OLED** under Design puts the dark look on true black for OLED and AMOLED
+screens. It counts whenever the dark look shows, also when Design follows the
+system, and keeps its state while the light look shows, where its row steps
+back. The browser keeps the switch, never the engine's settings, since the
+same interface may open on an LCD screen elsewhere.
+
+Where the system has an accent colour of its own, a swatch with a wand stands
+first in the accent row and takes it: the accent of Windows, macOS or Linux
+(through the settings portal) in the desktop app, and the system colour in
+Firefox and Safari. Chrome and the browsers built on it report a fixed colour
+instead, so there is no such swatch there. The choice is kept as the word
+`system`, so each device paints its own colour, and the colour is read again
+when the window comes back to the front.
+
 ## On the phone
 
 The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
@@ -523,7 +537,9 @@ hold a single action is that action's button instead.
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
 engine, Settings backup, On a server, Desktop app, Problems?,
-About this app and Danger zone.
+About this app and Danger zone. Appearance has the **OLED** switch under
+Design, and from Android 12 on the accent row starts with the wand swatch,
+which takes Material You's colour from the wallpaper.
 
 ## Who can reach it
 

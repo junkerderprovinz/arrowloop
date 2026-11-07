@@ -156,7 +156,7 @@ export function Settings() {
   // recomputed, or dragging in the picker could hop the colour to another slot;
   // the nearest preset is used only when the accent changes from elsewhere.
   // The system mode belongs to no preset, even where the phone has no colour
-  // and the default shows; nearestPreset finds none for it.
+  // and the default shows. nearestPreset finds none for it.
   const [accentSlot, setAccentSlot] = useState(() => nearestPreset(ACCENTS.map((a) => a.hex), look.accent));
   const system = useSystemAccent(scheme);
   const seenAccent = useRef(look.accent);
