@@ -360,6 +360,8 @@ const fr: Translations = {
   'look.square': 'Carrés',
   'look.leaf': 'Feuille',
   'look.accent': 'Couleur d\'accentuation',
+  'look.systemAccent': 'Couleur du système',
+  'look.systemAccentTip': 'Reprend la couleur du système.',
   'look.colors': 'Couleurs',
   'look.rainbowOn': 'Mode arc-en-ciel',
   'look.rainbowReactive': 'Mode réactif',
@@ -1351,6 +1353,7 @@ const fr: Translations = {
   'new.change.jobOrder': 'Vous pouvez ranger les tâches dans votre propre ordre : faites glisser une tâche par sa poignée, ou appuyez sur Alt et une flèche dessus. Sur le téléphone, maintenez une tâche et faites-la glisser. {history}, {trash} et {conflicts} affichent les tâches dans le même ordre.',
   'new.change.jobsCompact': '{compact}, en haut de la liste des tâches, affiche chaque tâche sur une ligne, avec son état, sa dernière exécution, {runNow} et {more}. Cet appareil retient votre choix.',
   'new.change.oled': '{oled}, sous {design}, passe l\'apparence sombre au noir pur pour les écrans OLED et AMOLED. Il compte dès que l\'apparence sombre s\'affiche, même quand elle suit le système, et chaque appareil retient son propre choix.',
+  'new.change.systemAccent': 'La pastille à la baguette magique au début de {accent} reprend la couleur de votre système : Material You à partir d\'Android 12, la couleur d\'accentuation de Windows, macOS ou Linux dans l\'application de bureau, et la couleur du système dans Firefox et Safari. Là où le système n\'en a pas, la pastille n\'apparaît pas.',
 }
 
 export default fr

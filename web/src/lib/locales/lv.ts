@@ -360,6 +360,8 @@ const lv: Translations = {
   'look.square': 'Taisni',
   'look.leaf': 'Lapa',
   'look.accent': 'Akcenta krāsa',
+  'look.systemAccent': 'Sistēmas krāsa',
+  'look.systemAccentTip': 'Izmanto sistēmas krāsu.',
   'look.colors': 'Krāsas',
   'look.rainbowOn': 'Varavīksnes režīms',
   'look.rainbowReactive': 'Reaktīvais režīms',
@@ -1351,6 +1353,7 @@ const lv: Translations = {
   'new.change.jobOrder': 'Uzdevumus varat sakārtot savā secībā: velciet uzdevumu aiz tā roktura vai uz tā nospiediet Alt un bulttaustiņu. Tālrunī turiet uzdevumu nospiestu un velciet. {history}, {trash} un {conflicts} rāda uzdevumus tādā pašā secībā.',
   'new.change.jobsCompact': '{compact} uzdevumu saraksta augšā rāda katru uzdevumu vienā rindā: stāvokli, pēdējo palaišanu, {runNow} un {more}. Šī ierīce atceras jūsu izvēli.',
   'new.change.oled': '{oled} zem {design} pārslēdz tumšo izskatu uz īstu melnu OLED un AMOLED ekrāniem. Tas darbojas vienmēr, kad redzams tumšais izskats, arī tad, ja tas seko sistēmai, un katra ierīce atceras savu izvēli.',
+  'new.change.systemAccent': 'Paraugs ar burvju nūjiņu {accent} sākumā izmanto jūsu sistēmas krāsu: Material You no Android 12, Windows, macOS vai Linux akcenta krāsu darbvirsmas lietotnē un sistēmas krāsu Firefox un Safari. Kur sistēmai tādas nav, parauga nav.',
 }
 
 export default lv

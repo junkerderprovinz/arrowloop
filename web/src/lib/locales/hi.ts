@@ -360,6 +360,8 @@ const hi: Translations = {
   'look.square': 'सीधे',
   'look.leaf': 'पत्ता',
   'look.accent': 'एक्सेंट रंग',
+  'look.systemAccent': 'सिस्टम का रंग',
+  'look.systemAccentTip': 'सिस्टम का रंग अपनाता है।',
   'look.colors': 'रंग',
   'look.rainbowOn': 'रेनबो मोड',
   'look.rainbowReactive': 'रिएक्टिव मोड',
@@ -1351,6 +1353,7 @@ const hi: Translations = {
   'new.change.jobOrder': 'आप कामों को अपने क्रम में रख सकते हैं: किसी काम को उसके हैंडल से खींचें, या उस पर Alt और एक तीर कुंजी दबाएँ। फ़ोन पर किसी काम को दबाकर रखें और खींचें। {history}, {trash} और {conflicts} कामों को इसी क्रम में दिखाते हैं।',
   'new.change.jobsCompact': 'कामों की सूची के ऊपर {compact} हर काम को एक पंक्ति में दिखाता है: स्थिति, आखिरी रन, {runNow} और {more}। यह डिवाइस आपकी पसंद याद रखता है।',
   'new.change.oled': '{design} के नीचे {oled} गहरे रूप को OLED और AMOLED स्क्रीन के लिए असली काले रंग पर ले जाता है। यह तब भी लागू होता है जब गहरा रूप सिस्टम के साथ चलता है, और हर डिवाइस अपना चुनाव याद रखता है।',
+  'new.change.systemAccent': '{accent} की शुरुआत में जादू की छड़ी वाला नमूना आपके सिस्टम का रंग लेता है: Android 12 और नए पर Material You, डेस्कटॉप ऐप में Windows, macOS या Linux का एक्सेंट रंग, और Firefox व Safari में सिस्टम का रंग। जहाँ सिस्टम का कोई रंग नहीं है, वहाँ यह नमूना नहीं दिखता।',
 }
 
 export default hi

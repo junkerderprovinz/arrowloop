@@ -360,6 +360,8 @@ const he: Translations = {
   'look.square': 'ישרות',
   'look.leaf': 'עלה',
   'look.accent': 'צבע הדגשה',
+  'look.systemAccent': 'צבע המערכת',
+  'look.systemAccentTip': 'לוקח את צבע המערכת.',
   'look.colors': 'צבעים',
   'look.rainbowOn': 'מצב קשת',
   'look.rainbowReactive': 'מצב תגובתי',
@@ -1351,6 +1353,7 @@ const he: Translations = {
   'new.change.jobOrder': 'אפשר לסדר את המשימות בסדר שלכם: גררו משימה בידית שלה, או לחצו עליה Alt ומקש חץ. בטלפון, החזיקו משימה וגררו אותה. {history}, {trash} ו{conflicts} מציגים את המשימות באותו סדר.',
   'new.change.jobsCompact': '{compact} בראש רשימת המשימות מציג כל משימה בשורה אחת: מצב, הריצה האחרונה, {runNow} ו{more}. המכשיר הזה זוכר את הבחירה שלכם.',
   'new.change.oled': '{oled} תחת {design} מעביר את המראה הכהה לשחור אמיתי במסכי OLED ו-AMOLED. הוא חל בכל פעם שהמראה הכהה מוצג, גם כשהוא עוקב אחרי המערכת, וכל מכשיר זוכר את הבחירה שלו.',
+  'new.change.systemAccent': 'דוגמית שרביט הקסמים בתחילת {accent} לוקחת את צבע המערכת שלך: Material You מ-Android 12 ואילך, צבע ההדגשה של Windows, macOS או Linux באפליקציית שולחן העבודה, וצבע המערכת ב-Firefox וב-Safari. כשאין למערכת צבע כזה, הדוגמית לא מופיעה.',
 }
 
 export default he

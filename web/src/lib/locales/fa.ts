@@ -360,6 +360,8 @@ const fa: Translations = {
   'look.square': 'راست',
   'look.leaf': 'برگ',
   'look.accent': 'رنگ تأکیدی',
+  'look.systemAccent': 'رنگ سیستم',
+  'look.systemAccentTip': 'رنگ سیستم را می‌گیرد.',
   'look.colors': 'رنگ‌ها',
   'look.rainbowOn': 'حالت رنگین‌کمان',
   'look.rainbowReactive': 'حالت واکنشی',
@@ -1351,6 +1353,7 @@ const fa: Translations = {
   'new.change.jobOrder': 'می‌توانید کارها را به ترتیب دلخواه خود بچینید: یک کار را از دستگیره‌اش بکشید، یا روی آن Alt و یک کلید جهت را فشار دهید. در گوشی، یک کار را نگه دارید و بکشید. {history}، {trash} و {conflicts} کارها را به همین ترتیب نشان می‌دهند.',
   'new.change.jobsCompact': '{compact} در بالای فهرست کارها هر کار را در یک سطر نشان می‌دهد: وضعیت، آخرین اجرا، {runNow} و {more}. این دستگاه انتخاب شما را به خاطر می‌سپارد.',
   'new.change.oled': '{oled} زیر {design} ظاهر تیره را برای صفحه‌های OLED و AMOLED به سیاه واقعی می‌برد. هر بار که ظاهر تیره دیده شود اعمال می‌شود، حتی وقتی از سیستم پیروی می‌کند، و هر دستگاه انتخاب خودش را به خاطر می‌سپارد.',
+  'new.change.systemAccent': 'نمونه‌ی رنگ با چوب جادو در ابتدای {accent} رنگ سیستم شما را می‌گیرد: Material You در Android 12 و بالاتر، رنگ تأکیدی Windows، macOS یا Linux در برنامه‌ی دسکتاپ، و رنگ سیستم در Firefox و Safari. جایی که سیستم رنگی ندارد، این نمونه نیست.',
 }
 
 export default fa

@@ -360,6 +360,8 @@ const sk: Translations = {
   'look.square': 'Rovné',
   'look.leaf': 'List',
   'look.accent': 'Zvýrazňujúca farba',
+  'look.systemAccent': 'Farba systému',
+  'look.systemAccentTip': 'Prevezme farbu systému.',
   'look.colors': 'Farby',
   'look.rainbowOn': 'Dúhový režim',
   'look.rainbowReactive': 'Reaktívny režim',
@@ -1351,6 +1353,7 @@ const sk: Translations = {
   'new.change.jobOrder': 'Úlohy si môžeš zoradiť po svojom: potiahni úlohu za úchyt alebo na nej stlač Alt a šípku. V telefóne úlohu podrž a potiahni. {history}, {trash} a {conflicts} ukazujú úlohy v rovnakom poradí.',
   'new.change.jobsCompact': '{compact} hore v zozname úloh ukáže každú úlohu na jednom riadku: stav, posledný beh, {runNow} a {more}. Toto zariadenie si tvoju voľbu pamätá.',
   'new.change.oled': '{oled} pod {design} prepne tmavý vzhľad na skutočnú čiernu pre displeje OLED a AMOLED. Platí vždy, keď je tmavý vzhľad vidieť, aj keď sa riadi systémom, a každé zariadenie si pamätá vlastnú voľbu.',
+  'new.change.systemAccent': 'Vzorka s čarovným prútikom na začiatku {accent} prevezme farbu systému: Material You od Androidu 12, zvýrazňujúcu farbu Windows, macOS alebo Linuxu v desktopovej aplikácii a systémovú farbu vo Firefoxe a Safari. Kde systém žiadnu nemá, vzorka chýba.',
 }
 
 export default sk

@@ -360,6 +360,8 @@ const zh: Translations = {
   'look.square': '方',
   'look.leaf': '叶',
   'look.accent': '强调色',
+  'look.systemAccent': '系统颜色',
+  'look.systemAccentTip': '使用系统的颜色。',
   'look.colors': '颜色',
   'look.rainbowOn': '彩虹模式',
   'look.rainbowReactive': '响应模式',
@@ -1351,6 +1353,7 @@ const zh: Translations = {
   'new.change.jobOrder': '你可以按自己的顺序排列任务：拖动任务的手柄，或在任务上按 Alt 和方向键。在手机上，按住任务并拖动。{history}、{trash} 和 {conflicts} 也按同样的顺序列出任务。',
   'new.change.jobsCompact': '任务列表顶部的 {compact} 会把每个任务显示为一行：状态、上次运行、{runNow} 和 {more}。此设备会记住你的选择。',
   'new.change.oled': '{design} 下的 {oled} 让深色外观使用纯黑，适合 OLED 和 AMOLED 屏幕。只要显示深色外观就会生效，跟随系统时也一样，每台设备各自记住自己的选择。',
+  'new.change.systemAccent': '{accent} 开头带魔杖的色块会使用系统的颜色：Android 12 及以上用 Material You，桌面应用用 Windows、macOS 或 Linux 的强调色，Firefox 和 Safari 用系统颜色。系统没有这种颜色时，就没有这个色块。',
 }
 
 export default zh

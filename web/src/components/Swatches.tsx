@@ -1,6 +1,9 @@
 import { useRef } from 'react'
 
+import { SYSTEM_ACCENT } from '../lib/appearance'
 import { openColorPickerPopover } from '../lib/colorPicker'
+import { contrastOn } from '../lib/contrast'
+import { IconAccentSystem } from './glyphs'
 
 /**
  * One colour disc: a bordered wrapper around a smaller disc, so selecting it
@@ -47,6 +50,47 @@ function Disc({
 }
 
 /**
+ * The device's own colour, wearing the wand (GlimStone's rule 44). It holds
+ * nothing to edit, so a click only selects it.
+ */
+function SystemDisc({
+  hex,
+  name,
+  tip,
+  active,
+  onSelect,
+}: {
+  hex: string
+  name: string
+  tip: string
+  active: boolean
+  onSelect: () => void
+}) {
+  return (
+    <span
+      className="inline-flex transition-transform hover:scale-110"
+      style={{
+        borderRadius: 'var(--radius-pill)',
+        border: '2px solid',
+        borderColor: active ? 'var(--carbon-text)' : 'var(--carbon-border)',
+      }}
+      onClick={onSelect}
+    >
+      <button
+        type="button"
+        data-tip={tip}
+        aria-label={name}
+        aria-pressed={active}
+        className="inline-flex h-7 w-7 items-center justify-center"
+        style={{ background: hex, color: contrastOn(hex), borderRadius: 'var(--radius-pill)' }}
+      >
+        <IconAccentSystem />
+      </button>
+    </span>
+  )
+}
+
+/**
  * The accent row. One click selects a swatch and opens the picker on it: the
  * inner button opens the picker and the click bubbles to the wrapper, which
  * selects. Each swatch holds its own colour, so an edited one keeps it after
@@ -56,6 +100,7 @@ export function AccentSwatches({
   presets,
   slots,
   value,
+  system,
   onChange,
   onSlots,
   disabled,
@@ -63,21 +108,35 @@ export function AccentSwatches({
   presets: { name: string; hex: string }[]
   /** The colour each swatch holds, edited or not. */
   slots: string[]
+  /** A hex, or SYSTEM_ACCENT while the device's colour is chosen. */
   value: string
+  /** The device's colour, where it has one, which puts the wand swatch first. */
+  system?: { hex: string; name: string; tip: string }
   onChange: (hex: string) => void
   onSlots: (next: string[]) => void
   /** Set while the rainbow is on, when the palette decides the colours. */
   disabled?: boolean
 }) {
   // A value no swatch holds came from outside (an older setting), and belongs
-  // to the swatch nearest to it.
+  // to the swatch nearest to it. The system mode belongs to no preset, even
+  // where the device has none and the default shows.
+  const systemChosen = value === SYSTEM_ACCENT
   const same = slots.findIndex((hex) => hex.toUpperCase() === value.toUpperCase())
-  const owner = same >= 0 ? same : nearest(slots, value)
+  const owner = systemChosen ? -1 : same >= 0 ? same : nearest(slots, value)
 
   return (
     <div
       className={`flex flex-wrap items-center gap-2 ${disabled ? 'pointer-events-none opacity-50' : ''}`}
     >
+      {system && (
+        <SystemDisc
+          hex={system.hex}
+          name={system.name}
+          tip={system.tip}
+          active={systemChosen}
+          onSelect={() => onChange(SYSTEM_ACCENT)}
+        />
+      )}
       {slots.map((hex, i) => (
         <Disc
           key={i}

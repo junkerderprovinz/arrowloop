@@ -360,6 +360,8 @@ const ar: Translations = {
   'look.square': 'قائمة',
   'look.leaf': 'ورقة',
   'look.accent': 'لون التمييز',
+  'look.systemAccent': 'لون النظام',
+  'look.systemAccentTip': 'يأخذ لون النظام.',
   'look.colors': 'الألوان',
   'look.rainbowOn': 'وضع قوس قزح',
   'look.rainbowReactive': 'الوضع التفاعلي',
@@ -1351,6 +1353,7 @@ const ar: Translations = {
   'new.change.jobOrder': 'يمكنك ترتيب المهام كما تريد: اسحب مهمة من مقبضها، أو اضغط Alt ومفتاح سهم عليها. على الهاتف اضغط مطولًا على مهمة واسحبها. تعرض {history} و{trash} و{conflicts} المهام بالترتيب نفسه.',
   'new.change.jobsCompact': 'يعرض {compact} في أعلى قائمة المهام كل مهمة في سطر واحد، مع حالتها وآخر تشغيل لها و{runNow} و{more}. يتذكر هذا الجهاز اختيارك.',
   'new.change.oled': '{oled} تحت {design} يجعل المظهر الداكن أسود حقيقيًا لشاشات OLED وAMOLED. يعمل كلما ظهر المظهر الداكن، حتى عندما يتبع النظام، ويحتفظ كل جهاز باختياره.',
+  'new.change.systemAccent': 'عينة العصا السحرية في بداية {accent} تأخذ لون نظامك: Material You في Android 12 وما بعده، ولون التمييز في Windows أو macOS أو Linux في تطبيق سطح المكتب، ولون النظام في Firefox وSafari. حيث لا يوجد لون للنظام لا تظهر العينة.',
 }
 
 export default ar

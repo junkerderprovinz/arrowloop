@@ -45,6 +45,60 @@ describe('the accent swatches', () => {
   })
 })
 
+describe('the system colour swatch', () => {
+  const system = { hex: '#1E9AF0', name: 'System colour', tip: 'Takes the colour of your system.' }
+
+  it('stands first and stores the word, never the colour', () => {
+    const onChange = vi.fn()
+    render(
+      <AccentSwatches
+        presets={presets}
+        slots={presets.map((p) => p.hex)}
+        value="#FCC419"
+        system={system}
+        onChange={onChange}
+        onSlots={vi.fn()}
+      />,
+    )
+    const swatch = screen.getByRole('button', { name: 'System colour' })
+    expect(screen.getAllByRole('button')[0]).toBe(swatch)
+    expect(swatch.getAttribute('data-tip')).toBe('Takes the colour of your system.')
+    expect(swatch.style.background).toBe('rgb(30, 154, 240)')
+
+    fireEvent.click(swatch.parentElement as HTMLElement)
+    expect(onChange).toHaveBeenLastCalledWith('system')
+  })
+
+  it('is the only one marked while it is chosen, even beside a preset of nearly its colour', () => {
+    render(
+      <AccentSwatches
+        presets={presets}
+        slots={presets.map((p) => p.hex)}
+        value="system"
+        system={system}
+        onChange={vi.fn()}
+        onSlots={vi.fn()}
+      />,
+    )
+    expect(screen.getByRole('button', { name: 'System colour' }).getAttribute('aria-pressed')).toBe('true')
+    for (const p of presets) expect(screen.getByRole('button', { name: p.name }).getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('is left out where the device has no colour of its own', () => {
+    render(
+      <AccentSwatches
+        presets={presets}
+        slots={presets.map((p) => p.hex)}
+        value="system"
+        onChange={vi.fn()}
+        onSlots={vi.fn()}
+      />,
+    )
+    expect(screen.queryByRole('button', { name: 'System colour' })).toBeNull()
+    for (const p of presets) expect(screen.getByRole('button', { name: p.name }).getAttribute('aria-pressed')).toBe('false')
+  })
+})
+
 describe('the stored look', () => {
   it('survives a reload', () => {
     localStorage.setItem('glim-appearance', JSON.stringify({ shape: 'square', accent: '#123456' }))

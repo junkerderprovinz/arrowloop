@@ -360,6 +360,8 @@ const vi: Translations = {
   'look.square': 'Vuông',
   'look.leaf': 'Lá',
   'look.accent': 'Màu nhấn',
+  'look.systemAccent': 'Màu hệ thống',
+  'look.systemAccentTip': 'Lấy màu của hệ thống.',
   'look.colors': 'Màu sắc',
   'look.rainbowOn': 'Chế độ cầu vồng',
   'look.rainbowReactive': 'Chế độ phản ứng',
@@ -1351,6 +1353,7 @@ const vi: Translations = {
   'new.change.jobOrder': 'Bạn có thể sắp xếp công việc theo thứ tự của mình: kéo một công việc bằng tay nắm của nó, hoặc nhấn Alt và một phím mũi tên trên đó. Trên điện thoại, nhấn giữ một công việc rồi kéo. {history}, {trash} và {conflicts} hiển thị công việc theo cùng thứ tự.',
   'new.change.jobsCompact': '{compact} ở đầu danh sách công việc hiển thị mỗi công việc trên một dòng: trạng thái, lần chạy gần nhất, {runNow} và {more}. Thiết bị này ghi nhớ lựa chọn của bạn.',
   'new.change.oled': '{oled} dưới {design} chuyển giao diện tối sang màu đen tuyệt đối cho màn hình OLED và AMOLED. Tùy chọn áp dụng mỗi khi giao diện tối hiển thị, cả khi theo hệ thống, và mỗi thiết bị nhớ lựa chọn của riêng mình.',
+  'new.change.systemAccent': 'Mẫu màu có cây đũa phép ở đầu {accent} lấy màu của hệ thống bạn: Material You từ Android 12, màu nhấn của Windows, macOS hoặc Linux trong ứng dụng máy tính, và màu hệ thống trong Firefox và Safari. Nếu hệ thống không có màu này, mẫu sẽ không xuất hiện.',
 }
 
 export default vi

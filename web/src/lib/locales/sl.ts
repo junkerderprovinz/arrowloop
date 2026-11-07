@@ -360,6 +360,8 @@ const sl: Translations = {
   'look.square': 'Ravni',
   'look.leaf': 'List',
   'look.accent': 'Poudarjena barva',
+  'look.systemAccent': 'Barva sistema',
+  'look.systemAccentTip': 'Prevzame barvo sistema.',
   'look.colors': 'Barve',
   'look.rainbowOn': 'Mavrični način',
   'look.rainbowReactive': 'Odzivni način',
@@ -1351,6 +1353,7 @@ const sl: Translations = {
   'new.change.jobOrder': 'Opravila lahko razvrstiš po svoje: povleci opravilo za ročaj ali na njem pritisni Alt in puščico. Na telefonu opravilo pridrži in ga povleci. {history}, {trash} in {conflicts} prikazujejo opravila v enakem vrstnem redu.',
   'new.change.jobsCompact': '{compact} na vrhu seznama opravil prikaže vsako opravilo v eni vrstici: stanje, zadnji zagon, {runNow} in {more}. Ta naprava si zapomni tvojo izbiro.',
   'new.change.oled': '{oled} pod {design} preklopi temni videz na pravo črno za zaslone OLED in AMOLED. Velja vedno, ko je temni videz viden, tudi ko sledi sistemu, in vsaka naprava si zapomni svojo izbiro.',
+  'new.change.systemAccent': 'Vzorec s čarobno paličico na začetku {accent} prevzame barvo vašega sistema: Material You od Androida 12, poudarjeno barvo sistemov Windows, macOS ali Linux v namizni aplikaciji in sistemsko barvo v Firefoxu in Safariju. Kjer sistem barve nima, vzorca ni.',
 }
 
 export default sl

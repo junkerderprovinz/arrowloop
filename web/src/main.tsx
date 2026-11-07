@@ -12,6 +12,7 @@ import { setGlyphResolver } from './lib/glimstone/glyphs'
 import { glyphFor } from './lib/glyphFor'
 import { applyStoredLanguage, I18nProvider } from './lib/i18n'
 import { applyStoredMotion } from './lib/motion'
+import { watchSystemAccent } from './lib/systemAccent'
 import { paintTheme, storedTheme } from './lib/themeSetting'
 import '@fontsource-variable/noto-sans'
 import '@fontsource-variable/noto-sans-arabic'
@@ -31,6 +32,9 @@ applyStoredLanguage()
 applyStoredMotion()
 applyStoredLabelModes([BOTTOM_BAR_AXIS])
 paintTheme(storedTheme())
+// For the wand swatch and for an accent set to the system's colour. The core
+// remembers the last colour, so the first frame does not wait for this.
+watchSystemAccent()
 
 // Registered once rather than passed at every call site, so a button in
 // glyph-only mode has a mark to draw even where nobody handed it one.

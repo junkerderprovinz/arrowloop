@@ -360,6 +360,8 @@ const fi: Translations = {
   'look.square': 'Suorat',
   'look.leaf': 'Lehti',
   'look.accent': 'Korostusväri',
+  'look.systemAccent': 'Järjestelmän väri',
+  'look.systemAccentTip': 'Käyttää järjestelmän väriä.',
   'look.colors': 'Värit',
   'look.rainbowOn': 'Sateenkaaritila',
   'look.rainbowReactive': 'Reaktiivinen tila',
@@ -1351,6 +1353,7 @@ const fi: Translations = {
   'new.change.jobOrder': 'Voit järjestää työt omaan järjestykseesi: vedä työtä sen kahvasta tai paina sen kohdalla Alt ja nuolinäppäintä. Puhelimessa pidä työtä painettuna ja vedä sitä. {history}, {trash} ja {conflicts} näyttävät työt samassa järjestyksessä.',
   'new.change.jobsCompact': '{compact} työluettelon yläosassa näyttää jokaisen työn yhdellä rivillä: tila, viimeisin ajo, {runNow} ja {more}. Tämä laite muistaa valintasi.',
   'new.change.oled': '{design}-kohdan alla oleva {oled} vaihtaa tumman ulkoasun aidoksi mustaksi OLED- ja AMOLED-näytöillä. Se on käytössä aina, kun tumma ulkoasu näkyy, myös kun se seuraa järjestelmää, ja jokainen laite muistaa oman valintansa.',
+  'new.change.systemAccent': 'Taikasauvalla merkitty värinäyte kohdan {accent} alussa käyttää järjestelmän väriä: Material You Android 12:sta alkaen, Windowsin, macOSin tai Linuxin korostusväri työpöytäsovelluksessa ja järjestelmän väri Firefoxissa ja Safarissa. Jos järjestelmällä ei ole väriä, näytettä ei ole.',
 }
 
 export default fi

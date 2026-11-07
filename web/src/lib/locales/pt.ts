@@ -360,6 +360,8 @@ const pt: Translations = {
   'look.square': 'Retos',
   'look.leaf': 'Folha',
   'look.accent': 'Cor de destaque',
+  'look.systemAccent': 'Cor do sistema',
+  'look.systemAccentTip': 'Usa a cor do sistema.',
   'look.colors': 'Cores',
   'look.rainbowOn': 'Modo arco-íris',
   'look.rainbowReactive': 'Modo reativo',
@@ -1351,6 +1353,7 @@ const pt: Translations = {
   'new.change.jobOrder': 'Pode pôr as tarefas pela sua própria ordem: arraste uma tarefa pela pega, ou prima Alt e uma seta sobre ela. No telemóvel, mantenha uma tarefa premida e arraste-a. {history}, {trash} e {conflicts} mostram as tarefas pela mesma ordem.',
   'new.change.jobsCompact': '{compact}, no topo da lista de tarefas, mostra cada tarefa numa linha, com o estado, a última execução, {runNow} e {more}. Este dispositivo lembra-se da sua escolha.',
   'new.change.oled': '{oled}, em {design}, leva o aspeto escuro ao preto puro para ecrãs OLED e AMOLED. Vale sempre que o aspeto escuro está à vista, também quando segue o sistema, e cada dispositivo guarda a sua escolha.',
+  'new.change.systemAccent': 'A amostra com a varinha no início de {accent} usa a cor do seu sistema: Material You a partir do Android 12, a cor de destaque do Windows, macOS ou Linux na aplicação de computador e a cor do sistema no Firefox e no Safari. Onde o sistema não tem uma, a amostra não aparece.',
 }
 
 export default pt

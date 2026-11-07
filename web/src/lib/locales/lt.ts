@@ -360,6 +360,8 @@ const lt: Translations = {
   'look.square': 'Tiesūs',
   'look.leaf': 'Lapas',
   'look.accent': 'Akcentinė spalva',
+  'look.systemAccent': 'Sistemos spalva',
+  'look.systemAccentTip': 'Naudoja sistemos spalvą.',
   'look.colors': 'Spalvos',
   'look.rainbowOn': 'Vaivorykštės režimas',
   'look.rainbowReactive': 'Reaktyvus režimas',
@@ -1351,6 +1353,7 @@ const lt: Translations = {
   'new.change.jobOrder': 'Užduotis galite išdėstyti savo tvarka: vilkite užduotį už rankenėlės arba ant jos paspauskite Alt ir rodyklės klavišą. Telefone palaikykite užduotį ir vilkite. {history}, {trash} ir {conflicts} rodo užduotis ta pačia tvarka.',
   'new.change.jobsCompact': '{compact} užduočių sąrašo viršuje rodo kiekvieną užduotį vienoje eilutėje: būseną, paskutinį paleidimą, {runNow} ir {more}. Šis įrenginys įsimena jūsų pasirinkimą.',
   'new.change.oled': '{oled} po {design} paverčia tamsią išvaizdą tikra juoda OLED ir AMOLED ekranams. Tai galioja visada, kai rodoma tamsi išvaizda, ir kai ji seka sistemą, o kiekvienas įrenginys įsimena savo pasirinkimą.',
+  'new.change.systemAccent': 'Pavyzdys su burtų lazdele {accent} pradžioje naudoja jūsų sistemos spalvą: Material You nuo Android 12, Windows, macOS arba Linux akcentinę spalvą darbalaukio programėlėje ir sistemos spalvą Firefox ir Safari naršyklėse. Kur sistema jos neturi, pavyzdžio nėra.',
 }
 
 export default lt

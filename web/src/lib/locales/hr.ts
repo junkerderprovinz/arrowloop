@@ -360,6 +360,8 @@ const hr: Translations = {
   'look.square': 'Ravni',
   'look.leaf': 'List',
   'look.accent': 'Naglasna boja',
+  'look.systemAccent': 'Boja sustava',
+  'look.systemAccentTip': 'Preuzima boju sustava.',
   'look.colors': 'Boje',
   'look.rainbowOn': 'Rainbow način',
   'look.rainbowReactive': 'Reaktivni način',
@@ -1351,6 +1353,7 @@ const hr: Translations = {
   'new.change.jobOrder': 'Zadatke možeš složiti po svom redu: povuci zadatak za njegovu ručku ili na njemu pritisni Alt i strelicu. Na telefonu zadrži zadatak i povuci ga. {history}, {trash} i {conflicts} prikazuju zadatke istim redom.',
   'new.change.jobsCompact': '{compact} na vrhu popisa zadataka prikazuje svaki zadatak u jednom retku: stanje, zadnje pokretanje, {runNow} i {more}. Ovaj uređaj pamti tvoj izbor.',
   'new.change.oled': '{oled} ispod {design} prebacuje tamni izgled na pravu crnu za OLED i AMOLED zaslone. Vrijedi kad god se vidi tamni izgled, i kad prati sustav, a svaki uređaj pamti svoj izbor.',
+  'new.change.systemAccent': 'Uzorak sa štapićem na početku {accent} preuzima boju vašeg sustava: Material You od Androida 12, naglasnu boju sustava Windows, macOS ili Linux u aplikaciji za računalo te boju sustava u Firefoxu i Safariju. Gdje sustav nema boju, uzorka nema.',
 }
 
 export default hr
