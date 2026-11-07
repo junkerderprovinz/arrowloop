@@ -252,7 +252,17 @@ func Check(ctx context.Context, name string) error {
 	if err != nil {
 		return checkErr(ctx, err)
 	}
+	defer release(ctx, f)
 	return listRoot(ctx, f, backend, folder)
+}
+
+// release logs out of a target opened for one look. rclone keeps a login to an
+// FTP server for a minute in case it is wanted again, and the server counts it
+// against the few it allows.
+func release(ctx context.Context, f rclonefs.Fs) {
+	if shut := f.Features().Shutdown; shut != nil {
+		_ = shut(ctx)
+	}
 }
 
 // BucketKey is the setting that names the one bucket an S3 target opens. rclone
@@ -331,6 +341,7 @@ func About(ctx context.Context, name string) (Usage, error) {
 	if err != nil {
 		return Usage{}, err
 	}
+	defer release(ctx, f)
 	ask := f.Features().About
 	if ask == nil {
 		return Usage{}, nil

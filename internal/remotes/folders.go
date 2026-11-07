@@ -64,6 +64,10 @@ func Folders(ctx context.Context, name, dir string) ([]string, error) {
 	defer stop()
 
 	f, err := rclonefs.NewFs(ctx, Join(name, dir))
+	// A file comes back with its folder opened.
+	if f != nil {
+		defer release(ctx, f)
+	}
 	if errors.Is(err, rclonefs.ErrorIsFile) {
 		return nil, fmt.Errorf("%s is a file, not a folder", Join(name, dir))
 	}
@@ -92,6 +96,7 @@ func MakeFolder(ctx context.Context, name, dir, child string) (string, error) {
 	if err != nil {
 		return "", checkErr(ctx, err)
 	}
+	defer release(ctx, f)
 	if err := f.Mkdir(ctx, child); err != nil {
 		return "", checkErr(ctx, err)
 	}
