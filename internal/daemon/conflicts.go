@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"sync"
+	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
@@ -30,12 +32,18 @@ type Unread struct {
 	Err error
 }
 
+// conflictWait bounds how long reading one job's conflicts may take. Opening
+// a side on a server that accepts the connection and never answers would
+// otherwise hold the list for as long as rclone's own timeouts, which run to
+// minutes.
+var conflictWait = time.Minute
+
 // Conflicts lists the open conflicts of every job that writes both ways, or of
 // the one job named, oldest first, then by job and path. A job whose sides
 // cannot be opened right now is reported rather than failing the whole list.
+// The jobs are read at once, since each can wait on a remote.
 func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unread) {
-	var out []Conflict
-	var unread []Unread
+	var jobs []job.Job
 	for _, j := range r.config().Jobs {
 		if only != "" && j.Name != only {
 			continue
@@ -43,12 +51,32 @@ func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unre
 		if j.Left == "" || j.Right == "" || plan.ParseDirection(j.Direction) != plan.Both {
 			continue
 		}
-		open, err := r.conflictsOf(ctx, j)
-		if err != nil {
-			unread = append(unread, Unread{Job: j.Name, Err: err})
+		jobs = append(jobs, j)
+	}
+
+	opens := make([][]apply.Open, len(jobs))
+	errs := make([]error, len(jobs))
+	var wg sync.WaitGroup
+	for i, j := range jobs {
+		wg.Go(func() {
+			ctx, cancel := context.WithTimeout(ctx, conflictWait)
+			defer cancel()
+			opens[i], errs[i] = r.conflictsOf(ctx, j)
+			if errs[i] != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				errs[i] = fmt.Errorf("no answer within %s: %w", conflictWait, errs[i])
+			}
+		})
+	}
+	wg.Wait()
+
+	var out []Conflict
+	var unread []Unread
+	for i, j := range jobs {
+		if errs[i] != nil {
+			unread = append(unread, Unread{Job: j.Name, Err: errs[i]})
 			continue
 		}
-		for _, o := range open {
+		for _, o := range opens[i] {
 			out = append(out, Conflict{Job: j.Name, Open: o})
 		}
 	}

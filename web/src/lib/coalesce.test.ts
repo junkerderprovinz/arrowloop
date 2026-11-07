@@ -47,14 +47,17 @@ describe('coalesce', () => {
     expect(asked).toBe(2)
   })
 
-  // Read from the source, since no renderer here reaches the phone. A target
-  // that hangs keeps its listing out for as long as the engine waits on it,
-  // and every listing out takes one of the few connections the app's HTTP
-  // client opens to the engine.
-  it('is how the phone app asks for its trash count, so tab changes cannot pile listings up', () => {
-    const source = readFileSync(new URL('../../../mobile/src/waiting.tsx', import.meta.url), 'utf8')
-    expect(source).toContain('from "../../web/src/lib/coalesce"')
-    expect(source.match(/api\s*\.trashAll\(/g)).toHaveLength(1)
-    expect(source).toMatch(/coalesce\(\s*\(\)\s*=>\s*api\s*\.trashAll\(\)/)
-  })
+  // Read from the source, since no renderer here reaches the phone. Both read
+  // every side, so a target that hangs keeps them out for as long as the
+  // engine waits, and every question out takes one of the few connections the
+  // app's HTTP client opens to the engine.
+  it.each(['conflicts', 'trashAll'])(
+    'is how the phone app asks for its %s count, so tab changes cannot pile questions up',
+    (call) => {
+      const source = readFileSync(new URL('../../../mobile/src/waiting.tsx', import.meta.url), 'utf8')
+      expect(source).toContain('from "../../web/src/lib/coalesce"')
+      expect(source.match(new RegExp(String.raw`api\s*\.${call}\(`, 'g'))).toHaveLength(1)
+      expect(source).toMatch(new RegExp(String.raw`coalesce\(\s*\(\)\s*=>\s*api\s*\.${call}\(\)`))
+    },
+  )
 })
