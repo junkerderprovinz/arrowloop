@@ -633,6 +633,17 @@ async function failure(res: Response): Promise<ApiError> {
   return new ApiError(res.statusText, res.status)
 }
 
+/** A change answered with nothing, 204, which request would fail to read. */
+async function send(path: string, method: string, body?: unknown): Promise<void> {
+  const res = await fetch(path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  })
+  if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
+  if (!res.ok) throw await failure(res)
+}
+
 /** A JSON POST, the shape every security route takes. */
 function post<T>(path: string, body: unknown = {}): Promise<T> {
   return request<T>(path, {
@@ -641,6 +652,72 @@ function post<T>(path: string, body: unknown = {}): Promise<T> {
     body: JSON.stringify(body),
   })
 }
+
+/** What an instance tells the others of its group it is. */
+export type Deployment = 'container' | 'server' | 'desktop' | 'phone'
+
+/** Another instance of the group, reachable now. */
+export type GroupMember = { id: string; name: string; deployment: Deployment; address?: string; approved: boolean }
+
+/** An instance approved in the group that the relay does not see now. */
+export type AwayMember = { id: string; name: string; deployment: Deployment; address?: string; lastSeen: number }
+
+/**
+ * Where this instance stands in its group (internal/web/pairing.go). It never
+ * carries the phrase, which only revealPhrase hands out.
+ */
+export type ConnectInfo = {
+  active: boolean
+  connected: boolean
+  passwordSet: boolean
+  relayMode: RelayMode
+  /** The relay dialled now, empty when none is. */
+  relayUrl: string
+  projectRelayUrl: string
+  name: string
+  deployment: Deployment
+  members: GroupMember[]
+  away: AwayMember[]
+  /** Seconds since this instance made or entered its phrase. */
+  joinedAgo: number
+  /** Whether another instance has been here since. */
+  memberSeen: boolean
+  /** Instances whose key waits for approval here. */
+  pending: { id: string; name: string; fingerprint: string }[]
+  /** Whether another instance said lately that this one waits for approval there. */
+  awaiting: boolean
+  /** This instance's own key, as the others list it. */
+  fingerprint: string
+}
+
+export type RelayMode = 'project' | 'own' | 'off'
+
+export type RelayConfig = { mode: RelayMode; relayUrl: string; projectRelayUrl: string; connected: boolean }
+
+/** The words and the text for the QR code beside them. */
+export type Phrase = { phrase: string; code: string }
+
+/**
+ * Another instance as the overview shows it: its jobs once both sides
+ * approved each other, or why there are none.
+ */
+export type OtherInstance = {
+  id: string
+  name: string
+  deployment: Deployment
+  address?: string
+  state: 'ok' | 'approve' | 'waiting' | 'away' | 'error'
+  jobs?: Job[]
+  /** Unix seconds, for one that is away. */
+  lastSeen?: number
+  error?: string
+}
+
+/**
+ * Which way a refused phrase went wrong, from internal/seedphrase, with the
+ * word and its place for an unknown one.
+ */
+export type PhraseProblem = 'word_count' | 'unknown_word' | 'checksum'
 
 /** What the security settings draw from. Never a hash, a secret or a code. */
 export type SecurityStatus = {
@@ -1080,7 +1157,7 @@ export const api = {
 
   /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () =>
-    request<{ window: boolean; security?: boolean; version: string }>('/api/capabilities'),
+    request<{ window: boolean; security?: boolean; pairing?: boolean; version: string }>('/api/capabilities'),
 
   /** The versions this build is made of, for the Info tile. */
   versions: () => request<{ arrowloop: string; rclone: string; go: string }>('/api/versions'),
@@ -1167,6 +1244,53 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jobs }),
     }),
+
+  /** Where this instance stands in its group. Asking also greets the others, which is how two instances meet. */
+  connect: () => request<ConnectInfo>('/api/connect'),
+
+  /** Starts a group with a new phrase. The only answer that carries the words without a password. */
+  makePhrase: () => post<Phrase & { info: ConnectInfo }>('/api/connect/activate'),
+
+  /** Joins the group of another instance's words, or of the text its QR code holds. */
+  joinGroup: (phrase: string) => post<ConnectInfo>('/api/connect/join', { phrase }),
+
+  /** Shows the phrase again, which asks for the password where one is set. */
+  revealPhrase: (password = '') => post<Phrase>('/api/connect/reveal', { password }),
+
+  leaveGroup: () => send('/api/connect', 'DELETE'),
+
+  /** What the others call this instance; empty for the computer's name. */
+  renameInstance: (name: string) =>
+    request<ConnectInfo>('/api/connect', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    }),
+
+  approveMember: (id: string) => send(`/api/connect/devices/${encodeURIComponent(id)}/approve`, 'POST', {}),
+
+  refuseMember: (id: string) => send(`/api/connect/devices/${encodeURIComponent(id)}/refuse`, 'POST', {}),
+
+  /** Takes another instance out of the group on every instance of it. */
+  removeMember: (id: string) => send(`/api/connect/members/${encodeURIComponent(id)}`, 'DELETE'),
+
+  relay: () => request<RelayConfig>('/api/relay/config'),
+
+  saveRelay: (change: { mode?: RelayMode; relayUrl?: string }) =>
+    request<RelayConfig>('/api/relay/config', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(change),
+    }),
+
+  /** The other instances of the group with their jobs, asked side by side. */
+  instances: () => request<OtherInstance[]>('/api/instances'),
+
+  runOnInstance: (id: string, job: string) =>
+    post<{ job: string; status: string }>(`/api/instances/${encodeURIComponent(id)}/jobs/${encodeURIComponent(job)}/run`),
+
+  stopOnInstance: (id: string, job: string) =>
+    post<{ stopped: boolean }>(`/api/instances/${encodeURIComponent(id)}/jobs/${encodeURIComponent(job)}/stop`),
 
   /** Puts the jobs in this order and keeps it, for a job somebody moved in a list. */
   orderJobs: (names: string[]) =>

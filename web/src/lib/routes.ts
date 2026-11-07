@@ -3,7 +3,7 @@
 import type { NavPins } from './navPins'
 
 /** The settings tiles in their column's order, Info last. */
-export const TILE_IDS = ['general', 'look', 'sync', 'safety', 'targets', 'security', 'apps', 'info'] as const
+export const TILE_IDS = ['general', 'look', 'sync', 'safety', 'targets', 'security', 'pairing', 'apps', 'info'] as const
 
 export type TileId = (typeof TILE_IDS)[number]
 
@@ -18,7 +18,7 @@ export const FORMER_TILES: Record<string, TileId> = {
 }
 
 export type View =
-  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' | 'anomalies' | 'targets' }
+  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' | 'anomalies' | 'targets' | 'instances' }
   | { page: 'job'; name: string }
   | { page: 'settings'; tile: TileId }
 
@@ -77,6 +77,9 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
       // An unpinned page lives on its tile, so its own address leads there.
       if (parts.length > 1) return { redirect: '/targets' }
       return ctx.pins.targets ? { view: { page: 'targets' } } : { redirect: `/settings/targets${query}` }
+    case 'instances':
+      if (parts.length > 1) return { redirect: '/instances' }
+      return ctx.pins.instances ? { view: { page: 'instances' } } : { redirect: `/settings/pairing${query}` }
   }
   return { redirect: '/jobs' }
 }

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { Sidebar } from './Sidebar'
 
 const counts = { running: 2, conflicts: 0, trash: 5, findings: 1 }
-const extras = { targets: false, anomalies: true }
+const extras = { targets: false, instances: false, anomalies: true }
 
 afterEach(cleanup)
 
@@ -46,7 +46,7 @@ describe('the rail', () => {
   })
 
   it('leaves Anomalies out while its notes are off', () => {
-    render(<Sidebar extras={{ targets: false, anomalies: false }} counts={counts} pathname="/jobs" mode="textGlyph" signOut={false} />)
+    render(<Sidebar extras={{ targets: false, instances: false, anomalies: false }} counts={counts} pathname="/jobs" mode="textGlyph" signOut={false} />)
     expect(screen.queryByRole('link', { name: /Anomalies/ })).toBeNull()
   })
 })

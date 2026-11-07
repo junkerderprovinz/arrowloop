@@ -1,9 +1,9 @@
-// Whether Targets also stands in the sidebar. The choice belongs to the person
+// Whether Targets and Instances also stand in the sidebar. The choice belongs to the person
 // at this browser, like the remembered settings tile.
 
 import { useMemo, useSyncExternalStore } from 'react'
 
-export type NavPins = { targets: boolean }
+export type NavPins = { targets: boolean; instances: boolean }
 
 const KEY = 'arrowloop.navPins'
 
@@ -15,9 +15,9 @@ function readRaw(): string {
   }
 }
 
-/** Targets starts on its tile only, until somebody pins it. */
+/** Each page starts on its tile only, until somebody pins it. */
 export function parsePins(raw: string): NavPins {
-  const pins: NavPins = { targets: false }
+  const pins: NavPins = { targets: false, instances: false }
   try {
     const stored: unknown = raw ? JSON.parse(raw) : null
     if (stored && typeof stored === 'object') {

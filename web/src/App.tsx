@@ -12,6 +12,7 @@ import { Conflicts } from './pages/Conflicts'
 import { History } from './pages/History'
 import { JobPage } from './pages/JobPage'
 import { Jobs } from './pages/Jobs'
+import { Instances } from './pages/Instances'
 import { Targets } from './pages/Targets'
 import { Trash } from './pages/Trash'
 import { Welcome } from './pages/Welcome'
@@ -155,6 +156,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   // Null until the engine has said, so the Security tile's address does not
   // bounce to the first tile while the question is out.
   const [canSecure, setCanSecure] = useState<boolean | null>(null)
+  const [canPair, setCanPair] = useState<boolean | null>(null)
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
   const push = useToast()
@@ -187,9 +189,13 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         setVersion(can.version || 'dev')
         setRunning(can.version || 'dev')
         setCanSecure(can.security === true)
+        setCanPair(can.pairing === true)
         if (can.window) void api.window().then(setWindow)
       })
-      .catch(() => setCanSecure(false))
+      .catch(() => {
+        setCanSecure(false)
+        setCanPair(false)
+      })
     api
       .settings()
       .then(followSettings)
@@ -353,7 +359,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     if (running !== null) startWhatsNew(running)
   }, [running])
 
-  const tiles = useMemo(() => settingsTiles(canSecure), [canSecure])
+  const tiles = useMemo(() => settingsTiles(canSecure, canPair), [canSecure, canPair])
   const resolved = useMemo(
     () =>
       resolveRoute(pathname, search, {
@@ -365,7 +371,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       }),
     [pathname, search, pins, anomaliesOn, tiles, fresh],
   )
-  const extras = { targets: pins.targets, anomalies: anomaliesOn === true }
+  const extras = { targets: pins.targets, instances: pins.instances, anomalies: anomaliesOn === true }
   useLayoutEffect(() => {
     if ('redirect' in resolved) navigate(resolved.redirect, { replace: true })
   }, [resolved])
@@ -435,6 +441,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     <JobPage name={view.name} />
   ) : view.page === 'targets' ? (
     <Targets />
+  ) : view.page === 'instances' ? (
+    <Instances />
   ) : view.page === 'conflicts' ? (
     <Conflicts listing={conflicts} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
   ) : view.page === 'anomalies' ? (

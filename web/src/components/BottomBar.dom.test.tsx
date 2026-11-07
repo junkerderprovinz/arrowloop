@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { BottomBar } from './BottomBar'
 
 const counts = { running: 0, conflicts: 3, trash: 0, findings: 0 }
-const extras = { targets: false, anomalies: true }
+const extras = { targets: false, instances: false, anomalies: true }
 
 afterEach(() => {
   cleanup()
