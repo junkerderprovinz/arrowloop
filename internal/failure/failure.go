@@ -81,6 +81,7 @@ var rules = []rule{
 		"connection refused", "actively refused", "no such host", "network is unreachable",
 		"host is unreachable", "no route to host", "i/o timeout", "connection timed out",
 		"connection reset", "did not properly respond", "couldn't connect", "could not connect",
+		"no answer within",
 	}},
 	// daemon.ErrNoFileAccess, which is about the app rather than an account.
 	{NoFileAccess, []string{"may not read the files on this phone"}},

@@ -2,10 +2,16 @@ package web_test
 
 import (
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
+
+	_ "github.com/rclone/rclone/backend/webdav"
+
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 type trashList struct {
@@ -91,6 +97,75 @@ func TestASideThatCannotBeOpenedStillListsNoEntries(t *testing.T) {
 				t.Errorf("the unreachable side named no kind of failure on the right side: %v", s)
 			}
 		}
+	}
+}
+
+// silentServer accepts connections and never answers on them, like a server
+// whose backend has gone away behind a proxy, until hangUp closes it all.
+func silentServer(t *testing.T) (addr string, hangUp func()) {
+	t.Helper()
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	held := make(chan net.Conn, 64)
+	go func() {
+		for {
+			c, err := ln.Accept()
+			if err != nil {
+				close(held)
+				return
+			}
+			held <- c
+		}
+	}()
+	return ln.Addr().String(), func() {
+		ln.Close()
+		for c := range held {
+			c.Close()
+		}
+	}
+}
+
+func TestASideThatNeverAnswersGivesUpWhileTheOtherIsListed(t *testing.T) {
+	web.ShortenTrashWait(t, time.Second)
+	addr, hangUp := silentServer(t)
+	h := engineFor(t, `{"jobs":[{"name":"cloud","left":"%[1]s/left",`+
+		`"right":":webdav,url='http://`+addr+`/':x","state":"%[1]s/cloud.db"}]}`)
+	// Before the server's cleanup, which waits for the request to finish.
+	defer hangUp()
+	binned(t, h.left, "20260901-080000", "a.txt", "aaaa")
+
+	type side struct {
+		Side, Error string
+		Total       int
+		Failure     *struct{ Code string }
+	}
+	got := make(chan []side, 1)
+	go func() {
+		var list struct{ Sides []side }
+		h.get(t, "/api/trash", &list)
+		got <- list.Sides
+	}()
+
+	select {
+	case sides := <-got:
+		for _, s := range sides {
+			switch s.Side {
+			case "left":
+				if s.Error != "" || s.Total != 1 {
+					t.Errorf("the left side read %d entries, error %q", s.Total, s.Error)
+				}
+			case "right":
+				if s.Error == "" {
+					t.Errorf("the silent side answered without an error: %+v", s)
+				} else if s.Failure == nil || s.Failure.Code != "unreachable" {
+					t.Errorf("the silent side did not count as unreachable: %+v", s)
+				}
+			}
+		}
+	case <-time.After(15 * time.Second):
+		t.Fatal("the listing is still waiting on a side that never answers")
 	}
 }
 

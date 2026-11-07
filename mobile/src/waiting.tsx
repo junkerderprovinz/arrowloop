@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { AppState } from "react-native";
 import type { Finding } from "../../web/src/lib/anomalies";
+import { coalesce } from "../../web/src/lib/coalesce";
 import { trashTotals } from "../../web/src/lib/trashView";
 import { api } from "./api";
 import { settings } from "./settings";
@@ -47,6 +48,24 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
   const [trashBytes, setTrashBytes] = useState<number | null>(null);
   const [anomaliesOn, setAnomaliesOn] = useState<boolean | null>(null);
 
+  // One listing at a time: it reaches every side, so a target that hangs
+  // keeps it out for as long as the engine waits, and each one out holds a
+  // connection that the screens' own requests then queue behind. The last
+  // count stays meanwhile.
+  const askTrash = useMemo(
+    () =>
+      coalesce(
+        () =>
+          api.trashAll().then((got) => {
+            const totals = trashTotals(got.sides.filter((s) => !s.error));
+            setTrash(totals.entries);
+            setTrashBytes(totals.bytes);
+          }),
+        0,
+      ),
+    [],
+  );
+
   // Each count lands on its own, so a slow trash listing holds up nothing.
   const refresh = useCallback(() => {
     api.jobs().then((jobs) => setRunning(jobs.filter((j) => j.running).length), () => {});
@@ -58,19 +77,12 @@ export function WaitingProvider({ children }: { children: ReactNode }) {
       () => {},
     );
     api.anomalies().then((got) => setFindings(got.open), () => {});
-    api.trashAll().then(
-      (got) => {
-        const totals = trashTotals(got.sides.filter((s) => !s.error));
-        setTrash(totals.entries);
-        setTrashBytes(totals.bytes);
-      },
-      () => {},
-    );
+    askTrash();
     settings.read().then(
       (got) => setAnomaliesOn((got.anomalies as { off?: boolean } | undefined)?.off !== true),
       () => {},
     );
-  }, []);
+  }, [askTrash]);
 
   // Asked again whenever the stream connects, the first time included, and
   // whenever the app comes back to the front: the engine works on while the

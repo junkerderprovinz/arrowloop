@@ -126,6 +126,12 @@ type sideTrash struct {
 	Failure *failure.Failure `json:"failure,omitempty"`
 }
 
+// trashWait bounds how long one side's part of the listing across every job
+// may take. A server that accepts the connection and never answers would
+// otherwise hold the whole listing for as long as rclone's own timeouts, which
+// run to minutes, and the counts on every screen with it.
+var trashWait = time.Minute
+
 // listAllTrash reads the trash of every job's two sides, or of the one job
 // asked for. The sides are read at once, since each can be a remote that takes
 // its time to list.
@@ -148,12 +154,16 @@ func (s *Server) listAllTrash(w http.ResponseWriter, r *http.Request) {
 		wg.Add(1)
 		go func(at *sideTrash) {
 			defer wg.Done()
-			f, _, err := s.sideOf(r.Context(), at.Job, at.Side)
-			if err != nil {
-				at.Error, at.Failure = err.Error(), failure.Of(err.Error())
-				return
+			ctx, cancel := context.WithTimeout(r.Context(), trashWait)
+			defer cancel()
+			f, _, err := s.sideOf(ctx, at.Job, at.Side)
+			var entries []trash.Entry
+			if err == nil {
+				entries, err = trash.List(ctx, f, trash.Trash)
 			}
-			entries, err := trash.List(r.Context(), f, trash.Trash)
+			if err != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				err = fmt.Errorf("no answer within %s: %w", trashWait, err)
+			}
 			if err != nil {
 				at.Error, at.Failure = err.Error(), failure.Of(err.Error())
 				return

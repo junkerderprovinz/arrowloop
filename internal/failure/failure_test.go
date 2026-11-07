@@ -75,6 +75,9 @@ func TestBackendErrorsAreNamedWithTheirSide(t *testing.T) {
 		`left side "box:": couldn't connect SSH: ssh: handshake failed: sftp: host key mismatch for 127.0.0.1:2222: server offered ssh-ed25519 key with fingerprint SHA256:abc`: {
 			Code: failure.HostKeyChanged, Params: map[string]string{"side": "left"},
 		},
+		"no answer within 1m0s: the right side could not be opened: read metadata failed: context deadline exceeded": {
+			Code: failure.Unreachable, Params: map[string]string{"side": "right"},
+		},
 		"429 Too Many Requests": {Code: failure.RateLimited},
 		"context canceled":      {Code: failure.Stopped},
 	}
