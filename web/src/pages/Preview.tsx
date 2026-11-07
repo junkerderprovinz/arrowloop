@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 
+import { FailureText } from '../components/FailureText'
 import { Empty, Num, Rows, Rule } from '../components/Shell'
 import { SelectionMark } from '../components/SelectionMark'
 import { IconPlay } from '../components/glyphs'
@@ -11,8 +12,14 @@ import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Selector } from '../components/Selector'
 import { actionName } from '../lib/actionName'
 import { dayTime } from '../lib/dayTime'
-import { api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion, type Skip } from '../lib/api'
+import { ApiError, api, type Action, type ActionKind, type Plan, type Resolution, type Shown, type SideVersion, type Skip } from '../lib/api'
+import type { Failure } from '../lib/failure'
 import { translateSide, useReason, useT, type TranslationKey } from '../lib/i18n'
+
+/** What the engine said, with the kind of failure where it named one. */
+function failed(e: Error): { raw: string; failure?: Failure } {
+  return { raw: e.message, failure: e instanceof ApiError ? e.failure : undefined }
+}
 
 /** A job's plan as a page of its own, for a shell that opens it there. */
 export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
@@ -32,7 +39,7 @@ export function Preview({ job, onDone }: { job: string; onDone: () => void }) {
 export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }) {
   const { t } = useT()
   const [plan, setPlan] = useState<Plan | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<{ raw: string; failure?: Failure } | null>(null)
   const [unticked, setUnticked] = useState<Set<string>>(new Set())
   const [resolutions, setResolutions] = useState<Record<string, Resolution>>({})
   const [busy, setBusy] = useState(false)
@@ -67,7 +74,7 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
     api
       .plan(job)
       .then((p) => live && setPlan(p))
-      .catch((e: Error) => live && setError(e.message))
+      .catch((e: Error) => live && setError(failed(e)))
     return () => {
       live = false
     }
@@ -98,7 +105,7 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
       await api.run(job, chosen, resolutions, shown)
       onDone()
     } catch (e) {
-      setError((e as Error).message)
+      setError(failed(e as Error))
     } finally {
       setBusy(false)
     }
@@ -121,7 +128,7 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
     return wrap(
       <>
         {back}
-        <p className="text-subline text-statusFail">{error}</p>
+        <FailureText raw={error.raw} failure={error.failure} className="text-statusFail" />
       </>,
     )
   }

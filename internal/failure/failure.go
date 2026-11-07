@@ -32,6 +32,7 @@ const (
 	BeforeFailed     = "beforeFailed"
 	AfterFailed      = "afterFailed"
 	HostKeyChanged   = "hostKeyChanged"
+	TooManyLogins    = "tooManyLogins"
 )
 
 // The sentences the engine composes itself, in internal/daemon,
@@ -61,6 +62,9 @@ var rules = []rule{
 	// rclone's words for a server that shows another key than the pinned one
 	// go on to say it could not connect.
 	{HostKeyChanged, []string{"host key mismatch"}},
+	// An FTP server's cap on logins at once, which ProFTPD answers with the
+	// code of a wrong password.
+	{TooManyLogins, []string{"login limit", "too many connect", "too many users", "maximum number of clients"}},
 	{SignInFailed, []string{
 		"unable to authenticate", "authentication failed", "auth failed", "invalid credentials",
 		"ssh-agent", "permission denied (publickey", "logon failure", "401 unauthorized",

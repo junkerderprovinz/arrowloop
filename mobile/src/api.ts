@@ -361,11 +361,14 @@ export class EngineError extends Error {
   /** A word the engine adds where the app should say it in its own words, and what that sentence fills in. */
   readonly code?: string;
   readonly values?: Record<string, string>;
-  constructor(status: number, message: string, code?: string, values?: Record<string, string>) {
+  /** The kind of failure the engine named in its message (internal/failure). */
+  readonly failure?: Failure;
+  constructor(status: number, message: string, code?: string, values?: Record<string, string>, failure?: Failure) {
     super(message);
     this.status = status;
     this.code = code;
     this.values = values;
+    this.failure = failure;
   }
 }
 
@@ -383,14 +386,14 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok) {
     // The engine explains errors as {"error": "..."}.
     let detail = `HTTP ${response.status}`;
-    let body: { error?: string; code?: string; values?: Record<string, string> } | undefined;
+    let body: { error?: string; code?: string; values?: Record<string, string>; failure?: Failure } | undefined;
     try {
       body = await response.json();
       if (body?.error) detail = body.error;
     } catch {
       // Not JSON; the status is all there is.
     }
-    throw new EngineError(response.status, detail, body?.code, body?.values);
+    throw new EngineError(response.status, detail, body?.code, body?.values, body?.failure ?? undefined);
   }
   if (response.status === 204) return undefined as T;
   const text = await response.text();

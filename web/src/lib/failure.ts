@@ -30,6 +30,11 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
     left: 'failure.hostKeyChanged.left',
     right: 'failure.hostKeyChanged.right',
   },
+  tooManyLogins: {
+    either: 'failure.tooManyLogins',
+    left: 'failure.tooManyLogins.left',
+    right: 'failure.tooManyLogins.right',
+  },
   stopped: { either: 'failure.stopped' },
   beforeFailed: { either: 'failure.beforeFailed' },
   afterFailed: { either: 'failure.afterFailed' },
