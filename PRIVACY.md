@@ -1,14 +1,15 @@
 # Privacy policy: ArrowLoop
 
-Last updated: 25 September 2026. Applies to the ArrowLoop Android app, the
+Last updated: 7 November 2026. Applies to the ArrowLoop Android app, the
 desktop app and the container, from version 1.1.0, until this date changes.
 
 ## The short version
 
 ArrowLoop copies your files between the places you set up, and only there. It
 has no analytics, no advertising, no accounts, no crash reporting and no
-tracking. Nothing about you or your files is sent to us, and we run no server
-that it talks to.
+tracking. Nothing about you or your files is sent to us. The one server we run
+that it can talk to is the relay that pairs your instances, and only once you
+pair them.
 
 ## What is stored on your device
 
@@ -28,6 +29,9 @@ Android's cloud backup. Uninstalling the app removes all of it.
 - Settings: language, appearance, notifications and the phone conditions a job
   waits for (Wi-Fi, no roaming, an unmetered network, charging, battery level).
 - An interface password, if you set one, kept only as a hash.
+- If you pair your instances: the secret behind the twelve words and this
+  instance's own key, both encrypted, and the instances approved in the group
+  with when they were last seen.
 
 A settings backup you export yourself is written to the Downloads folder. It
 holds your jobs and settings, but neither the targets' access details nor the
@@ -44,6 +48,14 @@ Only what you set up, and only to where you point it:
   run goes to that address. It holds the job's name, whether it succeeded, how
   many files were copied, moved or deleted, an error message if there was one,
   and the paths of up to five files left for the next run.
+- **Pairing**, if you pair your instances: they reach each other through a
+  relay, ParleyPort, which we run at parleyport.halleluja.design unless you
+  choose a relay of your own or none. What your instances send each other (the
+  job list, and the request to start or stop a job) is encrypted end to end
+  with a key made from your twelve words, which never leave your instances.
+  The relay sees which instance a message is for, how big it is, when it
+  arrives and the IP addresses of your instances, keeps none of it, and stores
+  nothing.
 - **Links you tap**, such as the source code or a donation page, open in your
   browser, which then connects to that site.
 

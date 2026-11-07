@@ -26,9 +26,13 @@ with the switch, how many targets and drives are saved and **Open**, so the
 page is set up in one place. An old link to `/targets` leads to the tile while
 the page is not in the sidebar.
 
+**Instances** works the same way on the **Pairing** tile: its switch puts the
+page in the sidebar after Targets, and `/instances` leads to the tile until
+then. It is hidden at first.
+
 In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
 **Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
-Anomalies, Trash and Targets.
+Anomalies, Trash and Targets, and Instances once it is pinned.
 
 ## The first start
 
@@ -410,7 +414,8 @@ and **Take back**.
 ## Settings
 
 Settings is a column of tiles beside the page: **General**, **Look**,
-**Sync**, **Safety net**, **Targets**, **Security**, **Apps** and **Info**. A
+**Sync**, **Safety net**, **Targets**, **Security**, **Pairing**, **Apps** and
+**Info**. A
 tile shows all its cards, one under the other, and only the cards scroll, so
 the column stays in place. In a window narrower than 1024 pixels the tiles
 show their glyphs alone. Below 768 pixels, and on a phone's browser, they move
@@ -447,6 +452,8 @@ row on **Look** brings back the original one.
 - **Targets**: the storage targets and drives; see [Drives](#drives).
 - **Security**: password, two-factor authentication and passkeys. The desktop
   app has no such tile, since nobody else reaches its window.
+- **Pairing**: the twelve words that pair this instance with your others, who
+  is in the group, and the relay; see [Pairing](#pairing).
 - **Apps**: the other ways to run ArrowLoop, each with its version, and the
   phone app from Google Play, F-Droid or as an APK.
 
@@ -455,6 +462,44 @@ at the top of a page, or press `/` or Ctrl+K. It finds a setting by its name or
 by a word from its explanation, and it knows the old names too: **Engine**
 leads to the tiles that took its cards, **App** to Apps, and a card's old title
 such as **What gets carried** to the card that carries it now.
+
+## Pairing
+
+Pairing puts your ArrowLoop instances in one group, as BombVault and
+KnightLoader do: a server, the desktop app and the phone app alike. Once two
+instances approved each other, **Instances** on each one shows the jobs of the
+others, a card per instance with their last runs and their status, and **Run
+now** or **Cancel the run** works on them from there. Instances stands on the
+Pairing tile, or in the sidebar once **Also show in the sidebar** is on. Everything else, from a
+job's settings to its trash, you change on the instance itself.
+
+1. On the first instance, open **Settings**, **Pairing** and choose **Make a
+   phrase**. Twelve words appear, with a QR code beside them.
+2. On every other instance, choose **Enter phrase** and paste the words. A
+   word that is not on the list is named with its place before anything is
+   sent. On the phone the same screen is under Settings, Pairing; scan the QR
+   code with the phone's camera and paste the words there.
+3. Each instance then lists the other under **Waiting for approval**, with the
+   start of its key. Compare it with the key the other instance shows as
+   **This instance's key**, and choose **Approve** on both. Your decision is
+   passed on to every other instance of the group.
+
+**Show phrase** shows the words again, and asks for the password where one is
+set. **Remove** takes an instance out of the group on every instance: its key
+stops working for good, and it forgets the words. Entering them there again
+makes it a new instance that waits for approval. **Leave group** does the same
+from the instance itself. The name the others see is set under **Name in the
+group**, and it is the computer's name until you give one.
+
+The instances reach each other through a relay. **Project relay** is
+ParleyPort, which the project runs at `parleyport.halleluja.design`, free of
+charge. **Own relay** takes the address of one you run yourself, from the
+Unraid Community Apps or with Docker. **No relay** keeps the instance to
+itself. Every call between your instances is sealed with a key made from the
+twelve words and signed with a key each instance makes for itself, so the
+relay cannot read or change any of it. It sees which instance a message is
+for, how big it is, when it arrives and the IP addresses of your instances.
+The words themselves never leave an instance.
 
 ## Info
 
@@ -539,8 +584,9 @@ hold a single action is that action's button instead.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
-engine, Settings backup, On a server, Desktop app, Problems?,
-About this app and Danger zone. Appearance has the **OLED** switch under
+engine, Pairing, Settings backup, On a server, Desktop app, Problems?,
+About this app and Danger zone. Pairing opens the same steps as on the web,
+and its **Also show under More** switch adds Instances to the More sheet. Appearance has the **OLED** switch under
 Design, and from Android 12 on the accent row starts with the wand swatch,
 which takes Material You's colour from the wallpaper.
 
@@ -554,3 +600,9 @@ it. A password, a second factor and passkeys are set on the **Security** tile;
 
 Over plain HTTP the session cookie crosses the wire in clear, so a machine
 reachable from outside wants TLS in front of it, with a password or without.
+
+A paired instance reaches this one only through the relay, and only for the
+job list, **Run now** and **Cancel the run**. It has to be approved here first,
+and it never sees the settings, the targets, the trash or the twelve words.
+Without a password anybody who opens this interface can read the words, which
+the Pairing tile says.
