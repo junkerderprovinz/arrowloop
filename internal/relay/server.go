@@ -1,7 +1,10 @@
-// The relay server as ParleyPort runs it, kept here for the tests only, so the
-// client is held to the relay it really meets. It routes messages between instances
-// that present the same relay key, so two instances behind NAT can reach each
-// other by both dialling out to one place.
+package relay
+
+// The relay server as ParleyPort runs it. ArrowLoop never serves it; it is here
+// so the tests of this package and of the web interface pair instances through
+// the relay they really meet. It routes messages between instances that
+// present the same relay key, so two instances behind NAT can reach each other
+// by both dialling out to one place.
 //
 // Possession of the key is the whole authorization model: the relay has no
 // account list and no database, it only groups connections that present the
@@ -13,7 +16,6 @@
 // in, every limit in this file (queue depth, connection
 // counts, in-flight requests, key length) caps what one connection can cost
 // the relay or its siblings. They are a floor, not a complete defence.
-package relay
 
 import (
 	"context"
