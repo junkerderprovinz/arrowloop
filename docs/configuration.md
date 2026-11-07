@@ -425,6 +425,7 @@ same value unless its `-keep-history` flag gives another.
 | `keepJobOrder` | `false` | List the jobs in the order they stand in `jobs` rather than by name. The interface sets it the first time a job is moved, and a new job goes to the end. |
 | `autoBackup.off` | `false` | Switch the automatic backups off; see [Automatic backups](#automatic-backups). |
 | `autoBackup.everyDays` | `1` | How many days pass between two automatic backups, up to 365. |
+| `autoBackup.at` | `03:00` | The time of day an automatic backup is due, as `HH:MM` on the engine's clock. |
 | `autoBackup.keep` | `7` | How many automatic backups stay in the folder, up to 1000. |
 | `autoBackup.folder` | `backups` beside the file | Where the automatic backups go. A relative path is relative to the file. |
 
@@ -577,16 +578,21 @@ factor and the passkeys live in `security.json` and are not part of the backup.
 ### Automatic backups
 
 **Automatic backups**, the card below, keeps copies of `arrowloop.json` without
-anybody having to think of it. It is on from the start: once a day the engine
-looks at the file and, if it changed since the newest copy, writes a new one
-into the `backups` folder beside it, named after the moment it was made, such as
-`arrowloop-auto-20261107-031500.json`. A file that has not changed is not copied
-again, so the copies reach back as far as the edits do. Right before an import
+anybody having to think of it. It is on from the start: every night at 03:00
+the engine looks at the file and, if it changed since the newest copy, writes a
+new one into the `backups` folder beside it, named after the moment it was
+made, such as `arrowloop-auto-20261107-031500.json`. A file that has not
+changed is not copied again, so the copies reach back as far as the edits do. Right before an import
 replaces everything, the engine keeps the setup it replaces the same way,
 whatever the day's copy did.
 
-**Days between backups**, **Backups to keep** and **Backup folder** set how
-often, how many and where. Once there are more copies than you keep, the oldest
+**Days between backups**, **Time of day**, **Backups to keep** and **Backup
+folder** set how often, when, how many and where. The days are counted on the
+calendar and the time is read off the clock of the machine the engine runs on,
+the same way the jobs' schedules read it, so a backup stays at its time when
+the clocks change for summer. A computer or phone that is off or asleep at that
+time makes the backup as soon as it is back, once, and the next one comes at
+the usual time again. Once there are more copies than you keep, the oldest
 goes. Only files named like the engine's own copies are ever removed, so an
 export you save in the same folder stays. A folder the engine cannot write to is
 refused when you enter it, and a backup that fails later is shown on the card
