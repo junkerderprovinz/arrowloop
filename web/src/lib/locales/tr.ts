@@ -708,7 +708,7 @@ const tr: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const tr: Translations = {
   'provider.crypt': 'Şifreli',
   'provider.smbHint': 'Bir NAS ya da Windows bilgisayardaki paylaşılan klasör.',
   'provider.sftpHint': 'SSH ile erişilen bir sunucu.',
-  'provider.webdavHint': 'Herhangi bir WebDAV sunucusu. Nextcloud, ownCloud ve OpenCloud, Bulutlar altında kendi kutucuklarına sahip.',
+  'provider.webdavHint': 'Herhangi bir WebDAV sunucusu. Nextcloud, ownCloud, OpenCloud ve OxiCloud, Bulutlar altında kendi kutucuklarına sahip.',
   'provider.httpHint': 'Salt okunur, sıradan bir web sunucusundan.',
   'provider.cryptHint': 'Başka bir hedefi sarar ve içine gideni şifreler.',
   'provider.s3Hint': 'Amazon S3 ve onun protokolünü konuşan birçok hizmet.',
@@ -1362,6 +1362,8 @@ const tr: Translations = {
   'new.change.jobsCompact': '{settings}, {look} içindeki {jobView} altında bulunan {compact}, her işi tek satırda gösterir: durum, son çalıştırma, {runNow} ve {more}. Bu cihaz seçiminizi hatırlar.',
   'new.change.oled': '{design} altındaki {oled}, OLED ve AMOLED ekranlar için koyu görünümü gerçek siyaha çevirir. Koyu görünüm göründüğü her an geçerlidir, sistemi izlediğinde de, ve her cihaz kendi seçimini hatırlar.',
   'new.change.systemAccent': '{accent} satırının başındaki sihirli değnekli örnek, sisteminin rengini alır: Android 12 ve sonrasında Material You, masaüstü uygulamasında Windows, macOS veya Linux vurgu rengi, Firefox ve Safari\'de sistem rengi. Sistemin böyle bir rengi yoksa örnek görünmez.',
+  'new.change.oxicloud': 'OxiCloud, Bulutlar altında kendi kutucuğuna sahip. Kutucuk, OxiCloud\'un beklediği adresi ve uygulama parolasının nerede oluşturulduğunu gösterir.',
+  'new.change.userCas': 'Telefon uygulaması, Android ayarlarında yüklü sertifika yetkililerine güvenir, böylece kendi sertifikası olan bir sunucu da bağlanır.',
   'new.change.signInCard': 'Giriş sayfası yeni bir görünüme kavuştu, üstte ArrowLoop logosu ve adı var ve her düğme kart kadar geniş. İmleç zaten parola alanında duruyor, giriş düğmesi bir şey yazana kadar bekliyor ve yanlış parola ya da kodda hafifçe sallanıyor.',
 }
 

@@ -708,7 +708,7 @@ const bg: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const bg: Translations = {
   'provider.crypt': 'Шифровано',
   'provider.smbHint': 'Споделена папка на NAS или компютър с Windows.',
   'provider.sftpHint': 'Сървър, достъпен през SSH.',
-  'provider.webdavHint': 'Всеки WebDAV сървър. Nextcloud, ownCloud и OpenCloud имат свои плочки под Облаци.',
+  'provider.webdavHint': 'Всеки WebDAV сървър. Nextcloud, ownCloud, OpenCloud и OxiCloud имат свои плочки под Облаци.',
   'provider.httpHint': 'Само за четене, от обикновен уеб сървър.',
   'provider.cryptHint': 'Обвива друга цел и шифрова това, което влиза в нея.',
   'provider.s3Hint': 'Amazon S3 и многото услуги, които говорят неговия протокол.',
@@ -1362,6 +1362,8 @@ const bg: Translations = {
   'new.change.jobsCompact': '{compact} под {jobView} в {settings}, {look} показва всяка задача на един ред, със състоянието ѝ, последното ѝ изпълнение, {runNow} и {more}. Това устройство помни избора ти.',
   'new.change.oled': '{oled} под {design} прави тъмния вид истински черен за OLED и AMOLED екрани. Важи винаги, когато тъмният вид е показан, и когато следва системата, а всяко устройство помни своя избор.',
   'new.change.systemAccent': 'Полето с магическата пръчка в началото на {accent} взима цвета на системата: Material You от Android 12 нататък, акцентния цвят на Windows, macOS или Linux в настолното приложение и системния цвят във Firefox и Safari. Където системата няма такъв, полето не се показва.',
+  'new.change.oxicloud': 'OxiCloud има своя плочка под Облаци. Тя показва адреса, който OxiCloud очаква, и къде се създава паролата за приложението.',
+  'new.change.userCas': 'Приложението за телефона се доверява на сертифициращите органи, инсталирани в настройките на Android, така че се свързва и сървър със собствен сертификат.',
   'new.change.signInCard': 'Страницата за вход има нов вид, с логото и името на ArrowLoop горе и всеки бутон, широк колкото картата. Курсорът вече е в полето за парола, бутонът за вход изчаква, докато въведете нещо, а при грешна парола или код леко се разклаща.',
 }
 

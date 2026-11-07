@@ -708,7 +708,7 @@ const zh: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const zh: Translations = {
   'provider.crypt': '加密',
   'provider.smbHint': 'NAS 或 Windows 电脑上的共享文件夹。',
   'provider.sftpHint': '通过 SSH 访问的服务器。',
-  'provider.webdavHint': '任意 WebDAV 服务器。Nextcloud、ownCloud 和 OpenCloud 在云服务下有各自的磁贴。',
+  'provider.webdavHint': '任意 WebDAV 服务器。Nextcloud、ownCloud、OpenCloud 和 OxiCloud 在云服务下有各自的磁贴。',
   'provider.httpHint': '只读，来自普通的 Web 服务器。',
   'provider.cryptHint': '包裹另一个目标，并加密写入其中的内容。',
   'provider.s3Hint': 'Amazon S3 以及使用其协议的众多服务。',
@@ -1362,6 +1362,8 @@ const zh: Translations = {
   'new.change.jobsCompact': '{settings}、{look} 中 {jobView} 下的 {compact} 会把每个任务显示为一行：状态、上次运行、{runNow} 和 {more}。此设备会记住你的选择。',
   'new.change.oled': '{design} 下的 {oled} 让深色外观使用纯黑，适合 OLED 和 AMOLED 屏幕。只要显示深色外观就会生效，跟随系统时也一样，每台设备各自记住自己的选择。',
   'new.change.systemAccent': '{accent} 开头带魔杖的色块会使用系统的颜色：Android 12 及以上用 Material You，桌面应用用 Windows、macOS 或 Linux 的强调色，Firefox 和 Safari 用系统颜色。系统没有这种颜色时，就没有这个色块。',
+  'new.change.oxicloud': 'OxiCloud 在云服务下有自己的磁贴，显示 OxiCloud 需要的地址以及创建应用密码的位置。',
+  'new.change.userCas': '手机应用信任安装在 Android 设置中的证书颁发机构，因此使用自有证书的服务器也能连接。',
   'new.change.signInCard': '登录页面换了新样子，顶部是 ArrowLoop 的标志和名称，每个按钮都和卡片一样宽。光标一开始就在密码框里，登录按钮会等你输入内容后才可用，密码或验证码错误时按钮会轻轻晃一下。',
 }
 

@@ -708,7 +708,7 @@ const ko: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const ko: Translations = {
   'provider.crypt': '암호화됨',
   'provider.smbHint': 'NAS나 Windows 컴퓨터의 공유 폴더입니다.',
   'provider.sftpHint': 'SSH로 접속하는 서버입니다.',
-  'provider.webdavHint': '모든 WebDAV 서버. Nextcloud, ownCloud, OpenCloud는 클라우드 아래에 전용 타일이 있습니다.',
+  'provider.webdavHint': '모든 WebDAV 서버. Nextcloud, ownCloud, OpenCloud, OxiCloud는 클라우드 아래에 전용 타일이 있습니다.',
   'provider.httpHint': '읽기 전용이며 일반 웹 서버에서 가져옵니다.',
   'provider.cryptHint': '다른 대상을 감싸고 그 안에 들어가는 것을 암호화합니다.',
   'provider.s3Hint': 'Amazon S3와 그 프로토콜을 쓰는 많은 서비스.',
@@ -1362,6 +1362,8 @@ const ko: Translations = {
   'new.change.jobsCompact': '{settings}, {look}의 {jobView}에 있는 {compact}은(는) 작업마다 한 줄로 상태, 마지막 실행, {runNow}, {more}를 보여 줍니다. 이 기기가 선택을 기억합니다.',
   'new.change.oled': '{design} 아래의 {oled}은 OLED와 AMOLED 화면을 위해 어두운 모양을 완전한 검정으로 바꿉니다. 시스템을 따를 때를 포함해 어두운 모양이 보일 때마다 적용되며, 기기마다 자신의 선택을 기억합니다.',
   'new.change.systemAccent': '{accent} 맨 앞의 마법 지팡이 견본은 시스템 색상을 따릅니다. Android 12 이상에서는 Material You, 데스크톱 앱에서는 Windows, macOS, Linux의 강조 색상, Firefox와 Safari에서는 시스템 색상입니다. 시스템에 색상이 없으면 이 견본은 나타나지 않습니다.',
+  'new.change.oxicloud': 'OxiCloud는 클라우드 아래에 전용 타일이 있습니다. OxiCloud가 기대하는 주소와 앱 비밀번호를 만드는 곳을 보여 줍니다.',
+  'new.change.userCas': '휴대폰 앱은 Android 설정에 설치된 인증 기관을 신뢰하므로, 자체 인증서를 쓰는 서버에도 연결됩니다.',
   'new.change.signInCard': '로그인 화면이 새로워졌습니다. 위쪽에 ArrowLoop 로고와 이름이 있고 모든 버튼이 카드만큼 넓습니다. 커서는 처음부터 비밀번호 칸에 있고, 로그인 버튼은 무언가 입력할 때까지 기다리며, 비밀번호나 코드가 틀리면 살짝 흔들립니다.',
 }
 

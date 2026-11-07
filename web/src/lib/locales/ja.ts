@@ -708,7 +708,7 @@ const ja: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const ja: Translations = {
   'provider.crypt': '暗号化',
   'provider.smbHint': 'NAS や Windows パソコン上の共有フォルダー。',
   'provider.sftpHint': 'SSH で接続するサーバー。',
-  'provider.webdavHint': '任意の WebDAV サーバー。Nextcloud、ownCloud、OpenCloud はクラウドの下に専用のタイルがあります。',
+  'provider.webdavHint': '任意の WebDAV サーバー。Nextcloud、ownCloud、OpenCloud、OxiCloud はクラウドの下に専用のタイルがあります。',
   'provider.httpHint': '読み取り専用。普通の Web サーバーから取得します。',
   'provider.cryptHint': '別の接続先を包み、そこに入るものを暗号化します。',
   'provider.s3Hint': 'Amazon S3 と、そのプロトコルを話す多くのサービス。',
@@ -1362,6 +1362,8 @@ const ja: Translations = {
   'new.change.jobsCompact': '{settings}、{look} の {jobView} にある {compact} では、各ジョブを 1 行で表示します。状態、最後の実行、{runNow}、{more} が並びます。選択はこのデバイスが覚えます。',
   'new.change.oled': '{design} の下にある {oled} は、OLED と AMOLED の画面向けに暗いデザインを真っ黒にします。システムに合わせているときも含め、暗いデザインが表示されているあいだ有効で、選択はデバイスごとに覚えます。',
   'new.change.systemAccent': '{accent} の先頭にある魔法の杖の見本は、システムの色を使います。Android 12 以降では Material You、デスクトップ版では Windows、macOS、Linux のアクセントカラー、Firefox と Safari ではシステムの色です。システムに色がない場合、この見本は表示されません。',
+  'new.change.oxicloud': 'OxiCloud にはクラウドの下に専用のタイルがあります。OxiCloud が求めるアドレスと、アプリパスワードを作成する場所が表示されます。',
+  'new.change.userCas': 'スマートフォンのアプリは Android の設定にインストールされた認証局を信頼するため、独自の証明書を持つサーバーにも接続できます。',
   'new.change.signInCard': 'サインインページが新しくなりました。上に ArrowLoop のロゴと名前があり、どのボタンもカードと同じ幅です。カーソルは最初からパスワード欄にあり、ログインボタンは何か入力するまで待ち、パスワードやコードが違うときは小さく揺れます。',
 }
 

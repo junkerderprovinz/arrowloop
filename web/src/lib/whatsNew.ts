@@ -63,6 +63,15 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.5.0',
+    changes: [
+      // The tile stands in the provider picker, a window no address opens.
+      { id: 'oxicloud', text: 'new.change.oxicloud' },
+      // Only the phone app reads the authorities installed on the phone.
+      { id: 'user-cas', text: 'new.change.userCas' },
+    ],
+  },
+  {
     after: '2.4.0',
     changes: [
       {

@@ -708,7 +708,7 @@ const ms: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const ms: Translations = {
   'provider.crypt': 'Disulitkan',
   'provider.smbHint': 'Folder dikongsi pada NAS atau komputer Windows.',
   'provider.sftpHint': 'Pelayan yang dicapai melalui SSH.',
-  'provider.webdavHint': 'Mana-mana pelayan WebDAV. Nextcloud, ownCloud dan OpenCloud ada jubin sendiri di bawah Awan.',
+  'provider.webdavHint': 'Mana-mana pelayan WebDAV. Nextcloud, ownCloud, OpenCloud dan OxiCloud ada jubin sendiri di bawah Awan.',
   'provider.httpHint': 'Baca sahaja, daripada pelayan web biasa.',
   'provider.cryptHint': 'Membalut destinasi lain dan menyulitkan apa yang masuk ke dalamnya.',
   'provider.s3Hint': 'Amazon S3 dan banyak perkhidmatan yang menggunakan protokolnya.',
@@ -1362,6 +1362,8 @@ const ms: Translations = {
   'new.change.jobsCompact': '{compact} di bawah {jobView} dalam {settings}, {look} memaparkan setiap tugas dalam satu baris: status, larian terakhir, {runNow} dan {more}. Peranti ini mengingati pilihan anda.',
   'new.change.oled': '{oled} di bawah {design} menjadikan rupa gelap hitam sebenar untuk skrin OLED dan AMOLED. Ia terpakai setiap kali rupa gelap kelihatan, juga apabila ia mengikut sistem, dan setiap peranti mengingati pilihannya sendiri.',
   'new.change.systemAccent': 'Sampel bertongkat sakti di awal {accent} mengikut warna sistem anda: Material You pada Android 12 dan lebih baharu, warna aksen Windows, macOS atau Linux dalam apl desktop, dan warna sistem dalam Firefox dan Safari. Jika sistem tiada warna, sampel itu tidak muncul.',
+  'new.change.oxicloud': 'OxiCloud ada jubin sendiri di bawah Awan. Ia menunjukkan alamat yang dijangka oleh OxiCloud dan tempat kata laluan aplikasi dicipta.',
+  'new.change.userCas': 'Aplikasi telefon mempercayai pihak berkuasa sijil yang dipasang dalam tetapan Android, jadi pelayan dengan sijilnya sendiri juga dapat bersambung.',
   'new.change.signInCard': 'Halaman log masuk mempunyai rupa baharu, dengan logo dan nama ArrowLoop di atas dan setiap butang selebar kad. Kursor sudah berada dalam medan kata laluan, butang log masuk menunggu sehingga anda menaip sesuatu, dan jika kata laluan atau kod salah butang itu bergegar sedikit.',
 }
 

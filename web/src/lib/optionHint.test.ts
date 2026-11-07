@@ -1,6 +1,10 @@
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-import { nameAndKind, optionHint } from './optionHint'
+import { en, type TranslationKey } from './i18n.data'
+import { nameAndKind, optionHint, providerHint } from './optionHint'
 
 describe('a provider name on two lines', () => {
   it('puts what the provider is under its name', () => {
@@ -54,5 +58,31 @@ describe('a field bubble', () => {
     expect(optionHint({ name: 'region' }, t, { backend: 's3', defaults: { region: 'garage' } })).toContain(
       'help.serverDefault{"value":"garage"}',
     )
+  })
+})
+
+describe('the OxiCloud tile', () => {
+  const english = (key: TranslationKey, vars: Record<string, string | number> = {}) =>
+    en[key].replace(/\{(\w+)\}/g, (_, name: string) => String(vars[name] ?? `{${name}}`))
+
+  // The entry travels from the Go table, so the test reads it there.
+  const providersGo = readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'internal', 'remotes', 'providers.go'),
+    'utf8',
+  )
+  const entry = providersGo.match(/\{ID: "oxicloud",[\s\S]*?UrlHint: "([^"]+)"\}/)
+  const oxicloud = { backend: 'webdav', auth: 'apppassword', urlHint: entry?.[1] }
+
+  it('shows the address OxiCloud documents for the personal drive', () => {
+    expect(entry, 'no oxicloud entry in providers.go').not.toBeNull()
+    expect(optionHint({ name: 'url' }, english, oxicloud)).toContain('https://cloud.example.com/webdav/')
+  })
+
+  it('says where OxiCloud makes the app password', () => {
+    expect(optionHint({ name: 'pass' }, english, oxicloud)).toContain('OxiCloud: Profile, App Passwords')
+  })
+
+  it('is named on the WebDAV tile among the clouds with a tile of their own', () => {
+    expect(providerHint('webdav', english)).toContain('OxiCloud')
   })
 })

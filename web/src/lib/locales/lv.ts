@@ -708,7 +708,7 @@ const lv: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const lv: Translations = {
   'provider.crypt': 'Šifrēts',
   'provider.smbHint': 'Koplietota mape NAS vai Windows datorā.',
   'provider.sftpHint': 'Serveris, kas sasniedzams caur SSH.',
-  'provider.webdavHint': 'Jebkurš WebDAV serveris. Nextcloud, ownCloud un OpenCloud ir sava flīze sadaļā Mākoņi.',
+  'provider.webdavHint': 'Jebkurš WebDAV serveris. Nextcloud, ownCloud, OpenCloud un OxiCloud ir sava flīze sadaļā Mākoņi.',
   'provider.httpHint': 'Tikai lasīšanai, no vienkārša tīmekļa servera.',
   'provider.cryptHint': 'Ietin citu galamērķi un šifrē to, kas tajā nonāk.',
   'provider.s3Hint': 'Amazon S3 un daudzie pakalpojumi, kas runā tā protokolā.',
@@ -1362,6 +1362,8 @@ const lv: Translations = {
   'new.change.jobsCompact': '{compact} zem {jobView} sadaļā {settings}, {look} rāda katru uzdevumu vienā rindā: stāvokli, pēdējo palaišanu, {runNow} un {more}. Šī ierīce atceras jūsu izvēli.',
   'new.change.oled': '{oled} zem {design} pārslēdz tumšo izskatu uz īstu melnu OLED un AMOLED ekrāniem. Tas darbojas vienmēr, kad redzams tumšais izskats, arī tad, ja tas seko sistēmai, un katra ierīce atceras savu izvēli.',
   'new.change.systemAccent': 'Paraugs ar burvju nūjiņu {accent} sākumā izmanto jūsu sistēmas krāsu: Material You no Android 12, Windows, macOS vai Linux akcenta krāsu darbvirsmas lietotnē un sistēmas krāsu Firefox un Safari. Kur sistēmai tādas nav, parauga nav.',
+  'new.change.oxicloud': 'OxiCloud ir sava flīze sadaļā Mākoņi. Tā rāda adresi, ko OxiCloud gaida, un kur izveido lietotnes paroli.',
+  'new.change.userCas': 'Tālruņa lietotne uzticas sertificēšanas iestādēm, kas instalētas Android iestatījumos, tāpēc savienojas arī serveris ar savu sertifikātu.',
   'new.change.signInCard': 'Pieteikšanās lapai ir jauns izskats, augšā ir ArrowLoop logotips un nosaukums, un katra poga ir tikpat plata kā kartīte. Kursors jau ir paroles laukā, pieteikšanās poga gaida, līdz kaut ko ierakstāt, un pie nepareizas paroles vai koda tā nedaudz sakustas.',
 }
 

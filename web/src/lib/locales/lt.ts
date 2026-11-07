@@ -708,7 +708,7 @@ const lt: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const lt: Translations = {
   'provider.crypt': 'Šifruota',
   'provider.smbHint': 'Bendrinamas aplankas NAS arba Windows kompiuteryje.',
   'provider.sftpHint': 'Serveris, pasiekiamas per SSH.',
-  'provider.webdavHint': 'Bet kuris WebDAV serveris. Nextcloud, ownCloud ir OpenCloud turi savo plyteles skiltyje Debesys.',
+  'provider.webdavHint': 'Bet kuris WebDAV serveris. Nextcloud, ownCloud, OpenCloud ir OxiCloud turi savo plyteles skiltyje Debesys.',
   'provider.httpHint': 'Tik skaitymui, iš paprasto žiniatinklio serverio.',
   'provider.cryptHint': 'Apgaubia kitą paskirtį ir šifruoja tai, kas į ją patenka.',
   'provider.s3Hint': 'Amazon S3 ir daugybė paslaugų, kalbančių jo protokolu.',
@@ -1362,6 +1362,8 @@ const lt: Translations = {
   'new.change.jobsCompact': '{compact} po {jobView} skiltyje {settings}, {look} rodo kiekvieną užduotį vienoje eilutėje: būseną, paskutinį paleidimą, {runNow} ir {more}. Šis įrenginys įsimena jūsų pasirinkimą.',
   'new.change.oled': '{oled} po {design} paverčia tamsią išvaizdą tikra juoda OLED ir AMOLED ekranams. Tai galioja visada, kai rodoma tamsi išvaizda, ir kai ji seka sistemą, o kiekvienas įrenginys įsimena savo pasirinkimą.',
   'new.change.systemAccent': 'Pavyzdys su burtų lazdele {accent} pradžioje naudoja jūsų sistemos spalvą: Material You nuo Android 12, Windows, macOS arba Linux akcentinę spalvą darbalaukio programėlėje ir sistemos spalvą Firefox ir Safari naršyklėse. Kur sistema jos neturi, pavyzdžio nėra.',
+  'new.change.oxicloud': 'OxiCloud turi savo plytelę skiltyje Debesys. Ji rodo adresą, kurio tikisi OxiCloud, ir kur sukuriamas programėlės slaptažodis.',
+  'new.change.userCas': 'Telefono programėlė pasitiki sertifikavimo centrais, įdiegtais Android nustatymuose, todėl prisijungia ir serveris su savo sertifikatu.',
   'new.change.signInCard': 'Prisijungimo puslapis atrodo naujai, viršuje yra ArrowLoop logotipas ir pavadinimas, o kiekvienas mygtukas toks pat platus kaip kortelė. Žymeklis jau stovi slaptažodžio lauke, prisijungimo mygtukas laukia, kol ką nors įvesite, o įvedus neteisingą slaptažodį ar kodą jis trumpai sujuda.',
 }
 

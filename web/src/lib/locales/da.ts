@@ -708,7 +708,7 @@ const da: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const da: Translations = {
   'provider.crypt': 'Krypteret',
   'provider.smbHint': 'En delt mappe på en NAS eller en Windows-computer.',
   'provider.sftpHint': 'En server, der nås over SSH.',
-  'provider.webdavHint': 'Enhver WebDAV-server. Nextcloud, ownCloud og OpenCloud har deres egen flise under Skyer.',
+  'provider.webdavHint': 'Enhver WebDAV-server. Nextcloud, ownCloud, OpenCloud og OxiCloud har deres egen flise under Skyer.',
   'provider.httpHint': 'Kun læsning, fra en almindelig webserver.',
   'provider.cryptHint': 'Lægger sig om et andet mål og krypterer det, der kommer ind.',
   'provider.s3Hint': 'Amazon S3 og de mange tjenester, der taler dens protokol.',
@@ -1362,6 +1362,8 @@ const da: Translations = {
   'new.change.jobsCompact': '{compact} under {jobView} i {settings}, {look} viser hvert job på én linje, med status, seneste kørsel, {runNow} og {more}. Denne enhed husker dit valg.',
   'new.change.oled': '{oled} under {design} giver det mørke udseende ægte sort til OLED- og AMOLED-skærme. Det gælder, når det mørke udseende vises, også når det følger systemet, og hver enhed husker sit eget valg.',
   'new.change.systemAccent': 'Farvefeltet med tryllestaven først i {accent} bruger systemets farve: Material You fra Android 12, accentfarven i Windows, macOS eller Linux i skrivebordsappen og systemfarven i Firefox og Safari. Hvor systemet ikke har nogen, er feltet der ikke.',
+  'new.change.oxicloud': 'OxiCloud har sin egen flise under Skyer. Den viser den adresse, OxiCloud forventer, og hvor app-adgangskoden oprettes.',
+  'new.change.userCas': 'Telefonappen stoler på de certifikatudstedere, der er installeret i Androids indstillinger, så også en server med sit eget certifikat får forbindelse.',
   'new.change.signInCard': 'Login-siden har fået et nyt udseende med ArrowLoops logo og navn øverst og hver knap lige så bred som kortet. Markøren står allerede i adgangskodefeltet, login-knappen venter, til du skriver noget, og ved en forkert adgangskode eller kode ryster den kort.',
 }
 

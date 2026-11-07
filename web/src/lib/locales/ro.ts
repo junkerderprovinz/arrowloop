@@ -708,7 +708,7 @@ const ro: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const ro: Translations = {
   'provider.crypt': 'Criptat',
   'provider.smbHint': 'Un dosar partajat pe un NAS sau pe un calculator cu Windows.',
   'provider.sftpHint': 'Un server accesat prin SSH.',
-  'provider.webdavHint': 'Orice server WebDAV. Nextcloud, ownCloud și OpenCloud au propria dală la Nori.',
+  'provider.webdavHint': 'Orice server WebDAV. Nextcloud, ownCloud, OpenCloud și OxiCloud au propria dală la Nori.',
   'provider.httpHint': 'Doar citire, de pe un server web simplu.',
   'provider.cryptHint': 'Învelește o altă destinație și criptează ce intră în ea.',
   'provider.s3Hint': 'Amazon S3 și numeroasele servicii care îi vorbesc protocolul.',
@@ -1362,6 +1362,8 @@ const ro: Translations = {
   'new.change.jobsCompact': '{compact}, sub {jobView} în {settings}, {look}, arată fiecare sarcină pe un rând: starea, ultima rulare, {runNow} și {more}. Acest dispozitiv ține minte alegerea ta.',
   'new.change.oled': '{oled}, sub {design}, trece aspectul întunecat pe negru adevărat pentru ecranele OLED și AMOLED. Se aplică oricând se vede aspectul întunecat, și când urmează sistemul, iar fiecare dispozitiv își ține minte alegerea.',
   'new.change.systemAccent': 'Mostra cu bagheta de la începutul {accent} preia culoarea sistemului tău: Material You de la Android 12, culoarea de accent din Windows, macOS sau Linux în aplicația desktop și culoarea sistemului în Firefox și Safari. Unde sistemul nu are una, mostra lipsește.',
+  'new.change.oxicloud': 'OxiCloud are propria dală la Nori. Arată adresa pe care o așteaptă OxiCloud și unde se creează parola de aplicație.',
+  'new.change.userCas': 'Aplicația de pe telefon are încredere în autoritățile de certificare instalate în setările Android, așa că se conectează și un server cu propriul certificat.',
   'new.change.signInCard': 'Pagina de autentificare are un aspect nou, cu sigla și numele ArrowLoop sus și fiecare buton la fel de lat ca fișa. Cursorul este deja în câmpul parolei, butonul de autentificare așteaptă până scrii ceva, iar la o parolă sau un cod greșit tremură puțin.',
 }
 

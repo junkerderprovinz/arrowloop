@@ -708,7 +708,7 @@ const hu: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const hu: Translations = {
   'provider.crypt': 'Titkosított',
   'provider.smbHint': 'Megosztott mappa egy NAS-on vagy Windowsos számítógépen.',
   'provider.sftpHint': 'SSH-n keresztül elérhető kiszolgáló.',
-  'provider.webdavHint': 'Bármilyen WebDAV-kiszolgáló. A Nextcloudnak, az ownCloudnak és az OpenCloudnak saját csempéje van a Felhők alatt.',
+  'provider.webdavHint': 'Bármilyen WebDAV-kiszolgáló. A Nextcloudnak, az ownCloudnak, az OpenCloudnak és az OxiCloudnak saját csempéje van a Felhők alatt.',
   'provider.httpHint': 'Csak olvasható, egy egyszerű webkiszolgálóról.',
   'provider.cryptHint': 'Körbeöleli egy másik célt, és titkosítja, ami bele kerül.',
   'provider.s3Hint': 'Az Amazon S3 és a sok szolgáltatás, amely a protokollját beszéli.',
@@ -1362,6 +1362,8 @@ const hu: Translations = {
   'new.change.jobsCompact': 'A(z) {compact} nézet ({settings}, {look}, {jobView}) minden feladatot egy sorban mutat: állapot, utolsó futás, {runNow} és {more}. Ez az eszköz megjegyzi a választásodat.',
   'new.change.oled': 'A {design} alatti {oled} valódi feketére állítja a sötét megjelenést OLED és AMOLED kijelzőkön. Mindig érvényes, amikor a sötét megjelenés látszik, akkor is, ha a rendszert követi, és minden eszköz a saját választását jegyzi meg.',
   'new.change.systemAccent': 'A {accent} elején álló varázspálcás színminta a rendszer színét veszi át: Android 12-től a Material You, az asztali alkalmazásban a Windows, a macOS vagy a Linux kiemelőszíne, Firefoxban és Safariban pedig a rendszerszín. Ahol a rendszernek nincs ilyen, a minta nem jelenik meg.',
+  'new.change.oxicloud': 'Az OxiCloudnak saját csempéje van a Felhők alatt. Megmutatja, milyen címet vár az OxiCloud, és hol készül az alkalmazásjelszó.',
+  'new.change.userCas': 'A telefonos alkalmazás megbízik az Android beállításaiban telepített hitelesítésszolgáltatókban, így a saját tanúsítvánnyal rendelkező kiszolgáló is csatlakozik.',
   'new.change.signInCard': 'A bejelentkezési oldal új külsőt kapott, felül az ArrowLoop logójával és nevével, és minden gomb olyan széles, mint a kártya. A kurzor már a jelszómezőben áll, a belépés gomb megvárja, amíg beír valamit, és hibás jelszónál vagy kódnál kicsit megrázkódik.',
 }
 

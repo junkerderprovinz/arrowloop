@@ -125,6 +125,15 @@ var providers = []Provider{
 		// Infinite Scale's address for the personal space, as rclone documents
 		// it. Other spaces have their own address in their details panel.
 		UrlHint: "https://cloud.example.com/remote.php/webdav"},
+	{ID: "oxicloud", Name: "OxiCloud", Auth: AuthAppPassword, Backend: "webdav", Group: GroupCloud,
+		// rclone has no OxiCloud vendor and OxiCloud's documentation sets it up
+		// as a plain WebDAV server, so the description is what tells its
+		// targets from any other. Neither GlimStone nor Simple Icons has its
+		// mark, so it wears the storage glyph.
+		Preset: map[string]string{"vendor": "other", "description": "OxiCloud"},
+		Mark:   "IconTabStorage",
+		// The personal drive, as OxiCloud documents it.
+		UrlHint: "https://cloud.example.com/webdav/"},
 
 	{ID: "dropbox", Name: "Dropbox", Backend: "dropbox", Group: GroupCloud, Mark: "IconDropbox"},
 	{ID: "gdrive", Name: "Google Drive", Backend: "drive", Group: GroupCloud, Mark: "IconGoogleDrive"},

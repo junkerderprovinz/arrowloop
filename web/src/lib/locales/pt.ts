@@ -708,7 +708,7 @@ const pt: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const pt: Translations = {
   'provider.crypt': 'Encriptado',
   'provider.smbHint': 'Uma pasta partilhada num NAS ou num computador Windows.',
   'provider.sftpHint': 'Um servidor acedido por SSH.',
-  'provider.webdavHint': 'Qualquer servidor WebDAV. Nextcloud, ownCloud e OpenCloud têm mosaico próprio em Nuvens.',
+  'provider.webdavHint': 'Qualquer servidor WebDAV. Nextcloud, ownCloud, OpenCloud e OxiCloud têm mosaico próprio em Nuvens.',
   'provider.httpHint': 'Só leitura, a partir de um servidor web simples.',
   'provider.cryptHint': 'Envolve outro destino e encripta o que entra nele.',
   'provider.s3Hint': 'Amazon S3 e os muitos serviços que falam o seu protocolo.',
@@ -1362,6 +1362,8 @@ const pt: Translations = {
   'new.change.jobsCompact': '{compact}, sob {jobView} em {settings}, {look}, mostra cada tarefa numa linha, com o estado, a última execução, {runNow} e {more}. Este dispositivo lembra-se da sua escolha.',
   'new.change.oled': '{oled}, em {design}, leva o aspeto escuro ao preto puro para ecrãs OLED e AMOLED. Vale sempre que o aspeto escuro está à vista, também quando segue o sistema, e cada dispositivo guarda a sua escolha.',
   'new.change.systemAccent': 'A amostra com a varinha no início de {accent} usa a cor do seu sistema: Material You a partir do Android 12, a cor de destaque do Windows, macOS ou Linux na aplicação de computador e a cor do sistema no Firefox e no Safari. Onde o sistema não tem uma, a amostra não aparece.',
+  'new.change.oxicloud': 'O OxiCloud tem mosaico próprio em Nuvens. Mostra o endereço que o OxiCloud espera e onde se cria a palavra-passe da aplicação.',
+  'new.change.userCas': 'A aplicação do telefone confia nas autoridades de certificação instaladas nas definições do Android, por isso também se liga um servidor com certificado próprio.',
   'new.change.signInCard': 'A página de início de sessão tem um aspeto novo, com o logótipo e o nome do ArrowLoop em cima e cada botão tão largo como o cartão. O cursor já está no campo da palavra-passe, o botão de entrada espera até escreveres alguma coisa, e com uma palavra-passe ou um código errados dá um pequeno abanão.',
 }
 

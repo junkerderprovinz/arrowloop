@@ -708,7 +708,7 @@ const is: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const is: Translations = {
   'provider.crypt': 'Dulkóðað',
   'provider.smbHint': 'Samnýtt mappa á NAS eða Windows-tölvu.',
   'provider.sftpHint': 'Netþjónn sem næst í gegnum SSH.',
-  'provider.webdavHint': 'Hvaða WebDAV-netþjónn sem er. Nextcloud, ownCloud og OpenCloud eru með eigin reit undir Skýin.',
+  'provider.webdavHint': 'Hvaða WebDAV-netþjónn sem er. Nextcloud, ownCloud, OpenCloud og OxiCloud eru með eigin reit undir Skýin.',
   'provider.httpHint': 'Aðeins lestur, frá venjulegum vefþjóni.',
   'provider.cryptHint': 'Leggst utan um annan áfangastað og dulkóðar það sem fer inn.',
   'provider.s3Hint': 'Amazon S3 og þær mörgu þjónustur sem tala samskiptareglu þess.',
@@ -1362,6 +1362,8 @@ const is: Translations = {
   'new.change.jobsCompact': '{compact} undir {jobView} í {settings}, {look} sýnir hvert verk í einni línu: stöðu, síðustu keyrslu, {runNow} og {more}. Þetta tæki man valið þitt.',
   'new.change.oled': '{oled} undir {design} setur dökka útlitið á hreinan svartan lit fyrir OLED- og AMOLED-skjái. Það gildir alltaf þegar dökka útlitið sést, líka þegar það fylgir kerfinu, og hvert tæki man sitt eigið val.',
   'new.change.systemAccent': 'Litaprufan með töfrasprotanum fremst í {accent} notar lit kerfisins: Material You frá Android 12, áherslulit Windows, macOS eða Linux í skjáborðsforritinu og kerfislitinn í Firefox og Safari. Þar sem kerfið hefur engan er prufan ekki til staðar.',
+  'new.change.oxicloud': 'OxiCloud er með eigin reit undir Skýin. Hann sýnir vistfangið sem OxiCloud býst við og hvar forritslykilorðið er búið til.',
+  'new.change.userCas': 'Símaforritið treystir vottunaraðilum sem eru settir upp í stillingum Android, svo netþjónn með eigið skilríki tengist líka.',
   'new.change.signInCard': 'Innskráningarsíðan hefur fengið nýtt útlit, með merki og nafni ArrowLoop efst og hvern hnapp jafnbreiðan spjaldinu. Bendillinn er þegar í lykilorðsreitnum, innskráningarhnappurinn bíður þar til þú slærð eitthvað inn og við rangt lykilorð eða kóða hristist hann aðeins.',
 }
 

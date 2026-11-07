@@ -38,6 +38,26 @@ func TestTheWebdavCloudsAreToldApart(t *testing.T) {
 	}
 }
 
+// rclone has no OxiCloud vendor, so its target speaks plain WebDAV like any
+// other server and only the description tells it apart.
+func TestAnOxiCloudTargetIsToldApartFromPlainWebdav(t *testing.T) {
+	oxi := Remote{Type: "webdav", Settings: []Setting{
+		{Key: "url", Value: "https://cloud.example.com/webdav/"},
+		{Key: "vendor", Value: "other"},
+		{Key: "description", Value: "OxiCloud"},
+	}}
+	if got := ProviderFor(oxi); got != "oxicloud" {
+		t.Errorf("provider = %q, want oxicloud", got)
+	}
+	plain := Remote{Type: "webdav", Settings: []Setting{
+		{Key: "url", Value: "https://nas.example.com/webdav/"},
+		{Key: "vendor", Value: "other"},
+	}}
+	if got := ProviderFor(plain); got != "webdav" {
+		t.Errorf("a plain WebDAV server became %q", got)
+	}
+}
+
 // A bare S3 target with no provider key is Amazon's own, which is what rclone
 // itself means by an s3 remote without a provider.
 func TestABareBackendFallsToTheGenericProvider(t *testing.T) {

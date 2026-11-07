@@ -708,7 +708,7 @@ const vi: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const vi: Translations = {
   'provider.crypt': 'Đã mã hoá',
   'provider.smbHint': 'Một thư mục chia sẻ trên NAS hoặc máy tính Windows.',
   'provider.sftpHint': 'Một máy chủ truy cập qua SSH.',
-  'provider.webdavHint': 'Bất kỳ máy chủ WebDAV nào. Nextcloud, ownCloud và OpenCloud có ô riêng trong mục Đám mây.',
+  'provider.webdavHint': 'Bất kỳ máy chủ WebDAV nào. Nextcloud, ownCloud, OpenCloud và OxiCloud có ô riêng trong mục Đám mây.',
   'provider.httpHint': 'Chỉ đọc, từ một máy chủ web thông thường.',
   'provider.cryptHint': 'Bọc quanh một đích khác và mã hoá những gì đi vào đó.',
   'provider.s3Hint': 'Amazon S3 và nhiều dịch vụ dùng giao thức của nó.',
@@ -1362,6 +1362,8 @@ const vi: Translations = {
   'new.change.jobsCompact': '{compact} dưới {jobView} trong {settings}, {look} hiển thị mỗi công việc trên một dòng: trạng thái, lần chạy gần nhất, {runNow} và {more}. Thiết bị này ghi nhớ lựa chọn của bạn.',
   'new.change.oled': '{oled} dưới {design} chuyển giao diện tối sang màu đen tuyệt đối cho màn hình OLED và AMOLED. Tùy chọn áp dụng mỗi khi giao diện tối hiển thị, cả khi theo hệ thống, và mỗi thiết bị nhớ lựa chọn của riêng mình.',
   'new.change.systemAccent': 'Mẫu màu có cây đũa phép ở đầu {accent} lấy màu của hệ thống bạn: Material You từ Android 12, màu nhấn của Windows, macOS hoặc Linux trong ứng dụng máy tính, và màu hệ thống trong Firefox và Safari. Nếu hệ thống không có màu này, mẫu sẽ không xuất hiện.',
+  'new.change.oxicloud': 'OxiCloud có ô riêng trong mục Đám mây. Ô này cho thấy địa chỉ OxiCloud cần và nơi tạo mật khẩu ứng dụng.',
+  'new.change.userCas': 'Ứng dụng trên điện thoại tin cậy các tổ chức cấp chứng chỉ được cài trong phần cài đặt của Android, nên máy chủ có chứng chỉ riêng cũng kết nối được.',
   'new.change.signInCard': 'Trang đăng nhập có diện mạo mới, với logo và tên ArrowLoop ở trên cùng và mỗi nút rộng bằng thẻ. Con trỏ đã nằm sẵn trong ô mật khẩu, nút đăng nhập chờ đến khi bạn nhập gì đó, và khi mật khẩu hoặc mã sai thì nút rung nhẹ.',
 }
 

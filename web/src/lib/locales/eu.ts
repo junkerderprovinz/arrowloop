@@ -708,7 +708,7 @@ const eu: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const eu: Translations = {
   'provider.crypt': 'Zifratua',
   'provider.smbHint': 'NAS batean edo Windows ordenagailu batean partekatutako karpeta.',
   'provider.sftpHint': 'SSH bidez iristen den zerbitzaria.',
-  'provider.webdavHint': 'Edozein WebDAV zerbitzari. Nextcloud, ownCloud eta OpenCloud-ek beren lauza dute Hodeiak atalean.',
+  'provider.webdavHint': 'Edozein WebDAV zerbitzari. Nextcloud, ownCloud, OpenCloud eta OxiCloud-ek beren lauza dute Hodeiak atalean.',
   'provider.httpHint': 'Irakurtzeko soilik, web zerbitzari arrunt batetik.',
   'provider.cryptHint': 'Beste helburu bat biltzen du eta bertan sartzen dena zifratzen du.',
   'provider.s3Hint': 'Amazon S3 eta haren protokoloa hitz egiten duten zerbitzu ugariak.',
@@ -1362,6 +1362,8 @@ const eu: Translations = {
   'new.change.jobsCompact': '{settings}, {look} ataleko {jobView} azpiko {compact} aukerak lan bakoitza errenkada batean erakusten du: egoera, azken exekuzioa, {runNow} eta {more}. Gailu honek zure aukera gogoratzen du.',
   'new.change.oled': '{design} azpiko {oled} aukerak itxura iluna benetako beltz bihurtzen du OLED eta AMOLED pantailetan. Itxura iluna ikusten den bakoitzean balio du, sistemari jarraitzen dionean ere, eta gailu bakoitzak bere aukera gogoratzen du.',
   'new.change.systemAccent': '{accent} hasierako makila magikodun laginak sistemaren kolorea hartzen du: Material You Android 12tik aurrera, Windows, macOS edo Linuxen azentu-kolorea mahaigaineko aplikazioan, eta sistemaren kolorea Firefox eta Safarin. Sistemak koloririk ez duenean, lagina ez da agertzen.',
+  'new.change.oxicloud': 'OxiCloud-ek bere lauza du Hodeiak atalean. OxiCloud-ek espero duen helbidea eta aplikazio-pasahitza non sortzen den erakusten ditu.',
+  'new.change.userCas': 'Telefonoko aplikazioa Androiden ezarpenetan instalatutako ziurtagiri-emaileez fidatzen da, beraz bere ziurtagiria duen zerbitzari bat ere konektatzen da.',
   'new.change.signInCard': 'Saioa hasteko orriak itxura berria du, ArrowLoopen logoa eta izena goian eta botoi bakoitza txartela bezain zabala. Kurtsorea pasahitzaren eremuan dago jada, saioa hasteko botoiak zerbait idatzi arte itxaroten du, eta pasahitz edo kode okerrarekin pixka bat astintzen da.',
 }
 

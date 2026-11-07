@@ -708,7 +708,7 @@ const cs: Translations = {
   'opt.urlHint': 'The FULL address of the storage, not just the name of the server: the path behind it belongs to it. A cloud prints that path in its own settings, under WebDAV.',
   'opt.userHint': 'The name you sign in with, not the display name and not the email. An app token is used with that same name.',
   'opt.passHint': 'The password of this account. Where the service offers app passwords, one of those is safer: it can be withdrawn on its own, without changing the password you use everywhere else.',
-  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
+  'opt.passCloudHint': 'An app token belongs here, NOT your sign-in password. Create one in the cloud (Nextcloud: Settings, Security, Create app password. OpenCloud: Account, App tokens. OxiCloud: Profile, App Passwords), copy it whole and mind a trailing space. OpenCloud refuses the sign-in password outright, and a token can be withdrawn on its own if this phone is ever lost.',
   'opt.hostHint': 'The name or the IP of the machine, without http:// and without a path, so fileserver or 192.168.1.20. The share or the folder is not part of it.',
   'opt.portHint': 'Only when the service does not listen on its usual port. Left empty it takes the standard one: 22 for SFTP, 445 for a share, 21 for FTP.',
   'opt.tokenHint': 'The token the service issued for this app. It is shown once, when it is created, so copy it whole and mind a trailing space.',
@@ -980,7 +980,7 @@ const cs: Translations = {
   'provider.crypt': 'Šifrované',
   'provider.smbHint': 'Sdílená složka na NAS nebo počítači s Windows.',
   'provider.sftpHint': 'Server dostupný přes SSH.',
-  'provider.webdavHint': 'Libovolný server WebDAV. Nextcloud, ownCloud a OpenCloud mají vlastní dlaždici v části Cloudy.',
+  'provider.webdavHint': 'Libovolný server WebDAV. Nextcloud, ownCloud, OpenCloud a OxiCloud mají vlastní dlaždici v části Cloudy.',
   'provider.httpHint': 'Jen pro čtení, z obyčejného webového serveru.',
   'provider.cryptHint': 'Obalí jiný cíl a šifruje, co do něj jde.',
   'provider.s3Hint': 'Amazon S3 a mnoho služeb, které mluví jeho protokolem.',
@@ -1362,6 +1362,8 @@ const cs: Translations = {
   'new.change.jobsCompact': '{compact} pod {jobView} v {settings}, {look} ukáže každou úlohu na jednom řádku, s jejím stavem, posledním během, {runNow} a {more}. Tohle zařízení si tvou volbu pamatuje.',
   'new.change.oled': '{oled} pod {design} přepne tmavý vzhled na skutečnou černou pro displeje OLED a AMOLED. Platí vždy, když je tmavý vzhled vidět, i když se řídí systémem, a každé zařízení si pamatuje vlastní volbu.',
   'new.change.systemAccent': 'Vzorek s kouzelnou hůlkou na začátku {accent} převezme barvu systému: Material You od Androidu 12, barvu zvýraznění Windows, macOS nebo Linuxu v desktopové aplikaci a systémovou barvu ve Firefoxu a Safari. Kde systém žádnou nemá, vzorek chybí.',
+  'new.change.oxicloud': 'OxiCloud má vlastní dlaždici v části Cloudy. Ukazuje adresu, kterou OxiCloud očekává, a kde se vytváří heslo aplikace.',
+  'new.change.userCas': 'Aplikace v telefonu důvěřuje certifikačním autoritám nainstalovaným v nastavení Androidu, takže se připojí i server s vlastním certifikátem.',
   'new.change.signInCard': 'Přihlašovací stránka má nový vzhled, nahoře s logem a názvem ArrowLoop a s každým tlačítkem širokým jako karta. Kurzor už stojí v poli pro heslo, tlačítko pro přihlášení čeká, dokud něco nezadáte, a při špatném hesle nebo kódu se krátce zatřese.',
 }
 
