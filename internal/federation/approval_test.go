@@ -3,6 +3,7 @@ package federation
 import (
 	"context"
 	"crypto/ed25519"
+	"errors"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -173,6 +174,42 @@ func TestAnInstanceEnteringTheWordsApprovesTheInstancesAlreadyThere(t *testing.T
 	}
 	if _, r := m.admit(callAs(office, relay.KindInstance), "", joined.Add(2*time.Second)); r != nil {
 		t.Errorf("the office once its owner approved it here = %s, want it served", r.body)
+	}
+}
+
+// TestAGreetingThatNeverArrivedIsSentAgain: an instance that has only just
+// reached the relay may not be there yet for the first call, or may fail to
+// record the key. Waiting out greetEvery after that would leave both owners
+// without anything to approve for half a minute.
+func TestAGreetingThatNeverArrivedIsSentAgain(t *testing.T) {
+	m := newManager(t)
+	rt := &fakeRelay{sibs: []relay.Announce{{InstanceID: nasID, Name: "NAS"}}, err: errors.New("relay: nobody is there"), status: http.StatusBadGateway}
+	m.SetRelay(rt)
+	now := time.Now()
+	m.Greet(context.Background(), now)
+	if rt.path != HelloPath {
+		t.Fatalf("greeted with %q, want %s", rt.path, HelloPath)
+	}
+	rt.path = ""
+	m.Greet(context.Background(), now.Add(time.Second))
+	if rt.path != HelloPath {
+		t.Fatal("a greeting that never arrived was not sent again")
+	}
+
+	rt.err, rt.status, rt.resp, rt.path = nil, http.StatusInternalServerError, relay.RefusalBody("memberNotPinned", "no"), ""
+	m.Greet(context.Background(), now.Add(2*time.Second))
+	rt.path = ""
+	m.Greet(context.Background(), now.Add(3*time.Second))
+	if rt.path != HelloPath {
+		t.Fatal("a greeting the member could not pin was not sent again")
+	}
+
+	rt.status, rt.resp, rt.path = http.StatusOK, nil, ""
+	m.Greet(context.Background(), now.Add(4*time.Second))
+	rt.path = ""
+	m.Greet(context.Background(), now.Add(5*time.Second))
+	if rt.path != "" {
+		t.Error("a member that answered was greeted again")
 	}
 }
 

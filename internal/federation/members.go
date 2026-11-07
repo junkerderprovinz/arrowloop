@@ -242,6 +242,13 @@ func (m *Manager) ApprovedInstance(c Caller) bool {
 	return ok && pin.Approved && pin.Kind == relay.KindInstance && relay.ValidInstanceID(c.ID) && bytes.Equal(pin.Key, c.Key)
 }
 
+// Approved reports whether instance id was let into the group here.
+func (m *Manager) Approved(id string) bool {
+	m.group.mu.Lock()
+	defer m.group.mu.Unlock()
+	return approvedInstanceLocked(&m.group.state, id)
+}
+
 // TrustsAnswer reports whether an answer signed by key may count as instance
 // target's: target is approved here under that key. It is what the relay
 // client asks before it hands an answer on, a "removed" included.

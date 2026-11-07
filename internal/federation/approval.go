@@ -160,7 +160,19 @@ func (m *Manager) Greet(ctx context.Context, now time.Time) {
 	var wg sync.WaitGroup
 	for _, id := range due {
 		wg.Go(func() {
-			_, _, _ = m.Proxy(ctx, id, http.MethodGet, HelloPath, nil)
+			body, status, err := m.Proxy(ctx, id, http.MethodGet, HelloPath, nil)
+			var untrusted *relay.UntrustedAnswer
+			if errors.As(err, &untrusted) {
+				body, status, err = untrusted.Body, untrusted.Status, nil
+			}
+			if err != nil || (status >= 300 && !waitsForApproval(status, body)) {
+				// Nothing was pinned there, because the call never arrived or
+				// the member could not take it, so the next look tries again
+				// rather than waiting out greetEvery.
+				m.mu.Lock()
+				delete(m.greeted, id)
+				m.mu.Unlock()
+			}
 		})
 	}
 	wg.Wait()
