@@ -37,19 +37,29 @@ case, and the other side cannot tell them apart. Rename one of them.
 
 FTP server apps on a phone, and some small servers, let only a few logins in
 at once and turn the next one away with a message such as **"Maximum login
-limit has been reached"** or **"Too many users"**. The connection test opens
-one login, so it works, while a preview or a run reads several folders side by
-side and opens more.
+limit has been reached"**, **"Too many users"** or **"I can't accept more than
+2 connections as the same user"**. The connection test opens one login, so it
+works, while a preview or a run reads several folders side by side and opens
+more.
 
 ArrowLoop opens at most 4 connections to an FTP target and moves at most 3
 files at once on a job with an FTP side, whatever the job's transfers say. It
-logs out once a test, a preview or a run is over. If the server still refuses,
-it allows fewer than that:
+logs out once a test, a preview or a run is over. If the server still turns a
+login away before anything was changed, ArrowLoop tries again with 2
+connections and then with 1, and notes each step in its log. It keeps the
+number that worked for that server and account until ArrowLoop restarts, so
+the next preview or run starts with it.
+
+ArrowLoop leaves the number alone when you have set **concurrency** for the
+target yourself. If the message still comes:
 
 - Close other apps that are connected to the server, such as a file manager on
-  your computer.
-- Lower **concurrency** under **Other settings** of the target, to 2 for
-  example. 0 means no limit.
+  your computer. With them holding logins, even one more may be too many.
+- If you set **concurrency** under **Other settings** of the target, lower it,
+  to 2 for example, or clear it to let ArrowLoop find the number. 0 means no
+  limit.
+- Setting **concurrency** by hand also spares the refused logins each time
+  ArrowLoop restarts and has to find the number again.
 - Raise the server app's own limit, if it has one.
 
 ## The destination does not exist yet

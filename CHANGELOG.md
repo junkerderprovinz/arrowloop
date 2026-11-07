@@ -23,7 +23,7 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
-- **A preview or run against an FTP server on a phone no longer fails with "Maximum login limit has been reached".** ArrowLoop opens at most 4 connections to an FTP target unless its concurrency setting says otherwise, keeps a job's transfers below that, logs out after a test, a preview or a run, and says in plain words when a server is out of logins. Thanks to antrixsamay for the report in #130.
+- **A preview or run against an FTP server on a phone no longer fails with "Maximum login limit has been reached".** ArrowLoop opens at most 4 connections to an FTP target unless its concurrency setting says otherwise, keeps a job's transfers below that and logs out after a test, a preview or a run. If the server still turns a login away, ArrowLoop tries again with half as many connections, down to one, and keeps the number that worked for that server. When even one connection is too many, it says so in plain words, whether the server is a phone app, pure-ftpd, vsftpd, ProFTPD, FileZilla or IIS. Thanks to antrixsamay for the report in #130.
 
 ## 🌐 Translations
 
