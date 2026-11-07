@@ -236,13 +236,43 @@ The schedules run for as long as the window is open. For a machine that should
 sync while nobody is looking, use `arrowloop daemon` and `arrowloop service`
 instead; see [the command line](cli.md).
 
+### As a Flatpak
+
+Each release also carries `arrowloop-linux-amd64.flatpak` and
+`arrowloop-linux-arm64.flatpak`. Open the file with your software centre, or
+install it in a terminal:
+
+```sh
+flatpak install --user arrowloop-linux-amd64.flatpak
+```
+
+The Flatpak brings its own WebKitGTK and pulls the GNOME runtime from Flathub,
+so nothing else needs installing. It never replaces itself, and the General tile
+says so where the other copies show **Update automatically**. A copy from the
+file updates when you install the next release's file the same way. Its
+settings and jobs live in
+`~/.var/app/io.github.junkerderprovinz.arrowloop/config/ArrowLoop`.
+
+The sandbox lets ArrowLoop reach your home folder, `/media`, `/run/media` and
+`/mnt`, which covers your own files and most drives and network shares. A folder
+anywhere else needs one command before a job can sync it:
+
+```sh
+flatpak override --user --filesystem=/srv/data io.github.junkerderprovinz.arrowloop
+```
+
+[Commands before and after a run](configuration.md#commands-before-and-after-a-run)
+run inside the sandbox too, so they find the tools the Flatpak ships rather than
+the ones on your system.
+
 ### Starting with the system
 
 **Start with the system**, on the **General** tile under Settings, registers
 ArrowLoop to start when you sign in. It is a **per-user** entry (a value under `HKCU` on Windows, a
 `.desktop` file under `~/.config/autostart` on Linux, a LaunchAgent in your own
 Library on macOS), so it needs no administrator rights and affects nobody else on
-the machine.
+the machine. The Flatpak asks the desktop for it through the Background portal,
+which writes the entry for it, and GNOME may ask you once to allow it.
 
 Started this way, ArrowLoop stays in the notification area, because nobody is
 waiting for a window when the session starts. It also comes back there after
@@ -306,9 +336,10 @@ release's `checksums.txt`. The new version starts the next time you start
 ArrowLoop, so a sync that is running is never cut off, and a note in the corner
 of the window says when it is ready. Pre-releases are never installed.
 **Update automatically**, on the General tile under Settings, turns this off; it is
-on from the start. The container and the phone do not show the switch: a
-container is updated the way it was deployed, and the phone through its store
-or a new APK.
+on from the start. The container, the phone and the Flatpak do not show the
+switch: a container is updated the way it was deployed, the phone through its
+store or a new APK, and the Flatpak through Flatpak (see
+[As a Flatpak](#as-a-flatpak)).
 
 **The installed copy** on Windows cannot replace itself, since no user may
 write to its folder. A scheduled task named **ArrowLoop Update** does it instead,

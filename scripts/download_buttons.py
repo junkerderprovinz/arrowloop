@@ -14,6 +14,7 @@ BUTTONS = {
     "macos": RELEASE + "arrowloop-macos-universal.dmg",
     "linux": RELEASE + "arrowloop-linux-amd64",
     "linux-arm": RELEASE + "arrowloop-linux-arm64",
+    "linux-flatpak": RELEASE + "arrowloop-linux-amd64.flatpak",
     "unraid": "https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1",
     "mos": "https://mos-official.net/apps.html?search=ArrowLoop",
     "zimaos": "https://github.com/junkerderprovinz/zimaos-apps#install",
