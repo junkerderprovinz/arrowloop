@@ -166,6 +166,7 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 	// A phone's engine has no clock ticking between wake-ups, so the look at
 	// the schedules happens here.
 	r.overdue(ctx, time.Now())
+	r.backUpIfDue(time.Now())
 	due := r.Due(ctx, time.Now())
 	if len(due) == 0 {
 		r.log("nothing is due")

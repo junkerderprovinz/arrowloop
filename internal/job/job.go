@@ -64,6 +64,9 @@ type Config struct {
 	// by name. The interface sets it when somebody first moves a job.
 	KeepJobOrder bool `json:"keepJobOrder,omitempty"`
 
+	// AutoBackup is the copy of this file the engine keeps on its own.
+	AutoBackup AutoBackup `json:"autoBackup,omitempty"`
+
 	// dir is where the file was read from, so relative paths inside it are
 	// relative to the file.
 	dir string
@@ -211,6 +214,63 @@ func (a Anomalies) Tells(held bool) bool {
 		return a.NotifyHeld == nil || *a.NotifyHeld
 	}
 	return !a.Off && a.NotifyNotes != nil && *a.NotifyNotes
+}
+
+// AutoBackup says how often the engine copies this file into a backup folder
+// and how many copies it keeps. It is on unless switched off, since nobody
+// thinks of a backup until they need one.
+type AutoBackup struct {
+	Off bool `json:"off,omitempty"`
+
+	// EveryDays is how many days pass between two backups. Zero means the
+	// default.
+	EveryDays int `json:"everyDays,omitempty"`
+
+	// Keep is how many backups stay in the folder. Zero means the default.
+	Keep int `json:"keep,omitempty"`
+
+	// Folder is where the backups go. Empty means DefaultBackupDir beside
+	// this file, and a relative path is relative to the file.
+	Folder string `json:"folder,omitempty"`
+}
+
+// The backup defaults are a week of daily copies. The limits stop a typo from
+// leaving the schedule on while nothing is ever written, or from filling a disk.
+const (
+	DefaultBackupEveryDays = 1
+	DefaultBackupKeep      = 7
+	DefaultBackupDir       = "backups"
+	maxBackupEveryDays     = 365
+	maxBackupKeep          = 1000
+)
+
+// On reports whether automatic backups are made.
+func (b AutoBackup) On() bool { return !b.Off }
+
+// Every is EveryDays as a duration, with the default for anything below one.
+func (b AutoBackup) Every() time.Duration {
+	days := b.EveryDays
+	if days < 1 {
+		days = DefaultBackupEveryDays
+	}
+	return time.Duration(min(days, maxBackupEveryDays)) * 24 * time.Hour
+}
+
+// KeepCount is Keep with the default for anything below one, since keeping
+// none would delete the backup just written.
+func (b AutoBackup) KeepCount() int {
+	if b.Keep < 1 {
+		return DefaultBackupKeep
+	}
+	return min(b.Keep, maxBackupKeep)
+}
+
+// BackupDir is the folder automatic backups go to.
+func (c *Config) BackupDir() string {
+	if c.AutoBackup.Folder == "" {
+		return filepath.Join(c.dir, DefaultBackupDir)
+	}
+	return c.resolve(c.AutoBackup.Folder)
 }
 
 // KeepHistoryFor is HistoryKeep as a duration, with the default applied. The

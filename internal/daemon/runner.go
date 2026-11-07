@@ -81,6 +81,8 @@ type Runner struct {
 
 	slots slots
 
+	backups backupState
+
 	// reload carries one pending rebuild. Buffered by one and dropped when
 	// full: two edits in quick succession need one rebuild, not two.
 	reload chan struct{}
@@ -766,6 +768,7 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 		// After the retries, so a retry that found the drive back has
 		// already ended the job's wait.
 		r.catchUp(ctx, time.Now())
+		r.backUpIfDue(time.Now())
 	}))
 
 	// Pruned daily, since a container stays up for months while a watching
