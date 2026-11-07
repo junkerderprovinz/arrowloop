@@ -10,6 +10,11 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **The phone app trusts the certificate authorities you install on Android.** A server with a certificate from your own authority, such as a self-hosted cloud at home, connects once that authority is installed under Security in Android's settings. ArrowLoop reads the installed authorities each time its engine starts and again when you come back to the app, so a new one counts right away. Certificate checks always stay on. `docs/troubleshooting.md` shows how to install one. Thanks to t4nki for asking in #129.
+- **OxiCloud has a tile of its own under Clouds.** Its address field shows the WebDAV address OxiCloud documents, `https://your-server/webdav/`, and the password field says where OxiCloud makes the app password: Profile › App Passwords. Thanks to t4nki for asking in #129.
+
 ## 2.5.0 - 2026-11-08
 
 Put your jobs in your own order and see them in a compact list, go true black on OLED screens and let the accent take your system's colour. The sign-in page has a new look, the lists sort, filter and search from their own headings, a backup of a folder people keep working in stays green, and previews against an FTP server on a phone work again.

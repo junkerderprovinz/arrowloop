@@ -72,6 +72,46 @@ against the record: a side that reports nothing while the record says it held
 files is still refused, whether it reports nothing by listing zero objects or by
 not being there at all.
 
+## A server with its own certificate is refused
+
+A self-hosted cloud often has a certificate signed by an authority you made
+yourself. Until the machine ArrowLoop runs on trusts that authority, the
+connection test ends with **"x509: certificate signed by unknown authority"**.
+ArrowLoop has no switch that turns the check off, since that would let anyone
+between you and the server read your files. Install the authority instead, and
+the check passes as it should.
+
+Install the authority's own certificate, the one that signed the server's, not
+the server's certificate itself. It usually comes as a `.crt` or `.pem` file.
+
+**On the phone:**
+
+1. Copy the certificate to the phone.
+2. In Android's settings, open **Security**, then **Encryption and
+   credentials**, **Install a certificate** and **CA certificate**. The path
+   differs a little between phone makers, and searching the settings for "CA
+   certificate" finds it.
+3. Confirm the warning and pick the file.
+4. Go back to ArrowLoop and test the target again.
+
+ArrowLoop reads the installed authorities each time its engine starts and
+again whenever you come back to the app, so the new one counts straight away.
+The engine log on the trouble screen then says **trusting the certificate
+authorities installed in Android's settings**. To take an authority away
+again, open **Trusted credentials** under **Encryption and credentials**,
+switch to **User** and remove it there.
+
+**In the container:** put the certificate in a folder, mount it and name the
+folder in `SSL_CERT_DIR`, for example `-v /mnt/user/appdata/certs:/certs:ro`
+and `-e SSL_CERT_DIR=/certs`. The image's own authorities stay trusted beside
+it. Restart the container afterwards.
+
+**On a computer:** install the authority in the system's own store. On Windows
+that is **Trusted Root Certification Authorities** in the certificate manager,
+on macOS the System keychain in Keychain Access with **Always Trust**, and on
+Debian or Ubuntu a copy ending in `.crt` in `/usr/local/share/ca-certificates/`
+followed by `sudo update-ca-certificates`. Then start ArrowLoop again.
+
 ## Files keep copying back and forth
 
 Two sides that never settle usually means the two are spelling one name
