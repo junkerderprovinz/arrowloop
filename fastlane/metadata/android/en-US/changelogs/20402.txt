@@ -1,1 +1,0 @@
-Files that vanish mid-run or are still being written no longer spoil the run: the first is noted and let go, the second waits politely for the next one. So a backup of a busy folder finally stays green. And under rainbow every button lights up in a colour of its own when you reach for it.

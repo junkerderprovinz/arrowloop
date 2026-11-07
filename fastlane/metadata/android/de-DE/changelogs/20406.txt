@@ -1,1 +1,0 @@
-Gebaut mit Go 1.27.3, das eine Lücke in crypto/x509 schließt, dazu eine neuere Kompressionsbibliothek, die einen Absturz behebt.

@@ -1,1 +1,0 @@
-Dateien, die mitten im Lauf verschwinden oder gerade noch geschrieben werden, verderben ihn nicht mehr: die einen werden vermerkt und losgelassen, die anderen warten höflich auf den nächsten Lauf. So bleibt auch das Backup eines vollen Arbeitsordners endlich grün. Und im Regenbogen-Modus leuchtet jeder Knopf in seiner eigenen Farbe, sobald du ihn ansteuerst.

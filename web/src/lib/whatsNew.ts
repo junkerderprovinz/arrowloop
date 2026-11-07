@@ -63,7 +63,7 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
-    after: '2.4.5',
+    after: '2.4.0',
     changes: [
       {
         id: 'job-order',
@@ -102,18 +102,8 @@ export const RELEASES: Release[] = [
       },
       // The sign-in page comes before the window that lists what is new.
       { id: 'sign-in-card', text: 'new.change.signInCard' },
-    ],
-  },
-  {
-    after: '2.4.4',
-    changes: [
       { id: 'api-job', text: 'new.change.apiJob' },
       { id: 'api-job-care', text: 'new.change.apiJobCare' },
-    ],
-  },
-  {
-    after: '2.4.0',
-    changes: [
       {
         id: 'list-heads',
         at: ['/history'],

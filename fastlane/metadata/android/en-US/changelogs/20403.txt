@@ -1,1 +1,0 @@
-A small tidy-up: the GlimStone link on the Info tile leads to a page that actually exists again.

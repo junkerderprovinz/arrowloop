@@ -1,1 +1,0 @@
-Built with Go 1.27.3, which fixes a crypto/x509 flaw, and a newer compression library that fixes a crash.

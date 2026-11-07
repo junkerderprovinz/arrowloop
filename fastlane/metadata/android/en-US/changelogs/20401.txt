@@ -1,1 +1,0 @@
-The lists grew proper headings: tap one to sort, open its ▾ to filter, and the magnifier finds the rest. Closed findings moved into History, the trash and the conflicts count themselves in tiles, and the three answers to a conflict finally stand in the order of the sides. Grey buttons blush in the accent while your finger is on them, and Check for updates wears the sync arrows.
