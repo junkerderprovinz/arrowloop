@@ -19,12 +19,13 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **The sign-in page has a new look.** The ArrowLoop logo and name sit at the top of the card, the labels stand above their fields, and every button is as wide as the card, Forgot password? included. The cursor is already in the password field, Log in waits until you've typed something, and a wrong password, two-factor code or reset code gives its button one little shake. With motion off or reduced, only the message shows. The page follows your system's light or dark look before you sign in, along with the accent, shape and motion this browser remembers.
-- **ArrowLoop follows GlimStone 4.2.3.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too.
+- **The sign-in page has a new look.** The ArrowLoop logo and name sit at the top of the card, the labels stand above their fields, and every button is as wide as the card, Forgot password? included. The cursor is already in the password field, Sign in waits until you've typed something, and a wrong password, two-factor code or reset code gives its button one little shake. With motion off or reduced, only the message shows. The button says Sign in, and its partner in the menu Sign out, as in the other apps. The page follows your system's light or dark look before you sign in, along with the accent, shape and motion this browser remembers.
+- **ArrowLoop follows GlimStone 4.2.3.** Blue, Red, Purple, Orange and Magenta now carry dark text and glyphs instead of white, which was hard to read on them, in the accent and in the rainbow alike. A colour you mix yourself gets text that stays readable on every card too. Under OLED the cards stand on black without a ring around them, and the OLED switch says why it waits while Light is chosen.
 
 ## 🐛 Fixed
 
 - **A preview or run against an FTP server on a phone no longer fails with "Maximum login limit has been reached".** ArrowLoop opens at most 4 connections to an FTP target unless its concurrency setting says otherwise, keeps a job's transfers below that and logs out after a test, a preview or a run. If the server still turns a login away, ArrowLoop tries again with half as many connections, down to one, and keeps the number that worked for that server. When even one connection is too many, it says so in plain words, whether the server is a phone app, pure-ftpd, vsftpd, ProFTPD, FileZilla or IIS. Thanks to antrixsamay for the report in #130.
+- **Tabs no longer wait for a target that does not answer.** The trash and conflict counts give up on such a target after a minute and read every job's conflicts side by side, and the phone app runs more requests to the engine at once, so switching tabs stays quick.
 
 ## 🌐 Translations
 
