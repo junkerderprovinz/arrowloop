@@ -62,6 +62,15 @@ describe("the logo's flight", () => {
     expect(Math.max(...arriving)).toBeGreaterThan(400)
     expect(arriving[arriving.length - 1]).toBe(0)
   })
+
+  it("starts from the logo's own arrow", () => {
+    // Where the drawn head and fletching land exactly on the drawing's.
+    const { points } = frame(0).ring
+    expect(points[0][0]).toBeCloseTo(365.81, 1)
+    expect(points[0][1]).toBeCloseTo(33.15, 1)
+    expect(points[PIECES][0]).toBeCloseTo(156.9, 1)
+    expect(points[PIECES][1]).toBeCloseTo(202.12, 1)
+  })
 })
 
 describe("the rail's shudder", () => {

@@ -18,7 +18,7 @@ export const CENTRE = 205.87
 export const PIECES = 64
 
 /** Where the upper arrow's shaft runs in the drawing, tail first. */
-const SHAFT = 'M352,58 C314,98 288,120 254,127 C220,134 196,146 186,168 C176,188 175,206 179,224'
+const SHAFT = 'M365.81,33.15 C342.0,57.0 298.9,118.0 265.7,123.6 C242.7,127.4 221.2,121.2 193.4,131.5 C173.9,138.6 149.0,180.4 156.9,202.1'
 
 /** The upper arrow's point, where the new arrow quivers once it has struck. */
 export const TIP: Point = [181.68, 251.07]
