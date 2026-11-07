@@ -94,6 +94,7 @@ var guardedWithoutPassword = []struct {
 }{
 	{http.MethodGet, regexp.MustCompile(`^/api/config/raw$`)},
 	{http.MethodPut, regexp.MustCompile(`^/api/config/raw$`)},
+	{http.MethodGet, regexp.MustCompile(`^/api/config/backups/[^/]+$`)},
 	{http.MethodPost, regexp.MustCompile(`^/api/notify/test$`)},
 	{http.MethodDelete, regexp.MustCompile(`^/api/jobs/[^/]+/state$`)},
 	{http.MethodDelete, regexp.MustCompile(`^/api/remotes/[^/]+$`)},

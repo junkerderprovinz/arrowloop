@@ -10,11 +10,13 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
@@ -142,6 +144,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/notify/test", s.testNotify)
 	mux.HandleFunc("GET /api/config/raw", s.readRawConfig)
 	mux.HandleFunc("PUT /api/config/raw", s.replaceConfig)
+	mux.HandleFunc("GET /api/config/backups", s.listBackups)
+	mux.HandleFunc("GET /api/config/backups/{name}", s.readBackup)
 	mux.HandleFunc("DELETE /api/jobs/{name}/state", s.forgetJobState)
 
 	mux.HandleFunc("GET /api/volumes", s.listVolumes)
@@ -798,6 +802,9 @@ func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	s.saving.Lock()
 	defer s.saving.Unlock()
+	// A failed backup is logged by the runner and does not stop the import:
+	// a broken backup folder must not stand between somebody and a restore.
+	_ = s.Runner.BackUp(time.Now())
 	next, err := s.Runner.Config().Replace(doc)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -805,6 +812,40 @@ func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	s.Runner.Reload(next)
 	writeJSON(w, http.StatusOK, map[string]any{"jobs": len(next.Jobs)})
+}
+
+// listBackups says where the automatic backups go, which are there and how
+// the last one went.
+func (s *Server) listBackups(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, s.Runner.Backups())
+}
+
+// readBackup hands back one automatic backup byte for byte, as readRawConfig
+// does the file, for the import to put back.
+func (s *Server) readBackup(w http.ResponseWriter, r *http.Request) {
+	doc, err := autobackup.Read(s.Runner.Config().BackupDir(), r.PathValue("name"))
+	if err != nil {
+		writeError(w, http.StatusNotFound, fmt.Errorf("there is no automatic backup called %s", r.PathValue("name")))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(doc)
+}
+
+// checkBackupFolder refuses a backup folder the engine cannot write to, so the
+// mistake shows where it is made rather than as a failed backup a day later.
+func checkBackupFolder(update map[string]any, current *job.Config) error {
+	settings, _ := update["autoBackup"].(map[string]any)
+	folder, _ := settings["folder"].(string)
+	if folder == "" || folder == current.AutoBackup.Folder {
+		return nil
+	}
+	if !filepath.IsAbs(folder) {
+		folder = filepath.Join(current.Dir(), folder)
+	}
+	return autobackup.Writable(folder)
 }
 
 // readSettings hands back the file's top-level keys apart from the jobs, as a
@@ -1021,6 +1062,10 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 	defer s.saving.Unlock()
 	current := s.Runner.Config()
 	if err := keepSecrets(body, current); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	if err := checkBackupFolder(body, current); err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
