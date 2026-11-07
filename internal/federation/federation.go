@@ -1,8 +1,7 @@
 // Package federation lets one ArrowLoop show and run the jobs of the others a
 // person paired with it. Instances that share a pairing phrase meet on the
 // relay, and each one calls the others' REST API through it, sealed end to end
-// and signed with a key of its own. It follows KnightLoader's package of the
-// same name.
+// and signed with a key of its own.
 package federation
 
 import (

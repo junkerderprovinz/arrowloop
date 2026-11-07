@@ -155,8 +155,7 @@ func (e *DecodeError) Error() string {
 	}
 }
 
-// Unwrap keeps errors.Is(err, ErrChecksum) working, which is how the checksum
-// case was matched before this type existed.
+// Unwrap lets errors.Is(err, ErrChecksum) match the checksum case.
 func (e *DecodeError) Unwrap() error {
 	if e.Reason == ReasonChecksum {
 		return ErrChecksum

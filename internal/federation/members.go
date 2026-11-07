@@ -63,8 +63,8 @@ func refuse(status int, code, text string) *refusal {
 	return &refusal{status: status, body: relay.RefusalBody(code, text)}
 }
 
-// removedRefusal stays plain text, as in KnightLoader, whose members read
-// exactly this body as "this device was taken out of the group".
+// removedRefusal answers a key that was taken out of the group, in the plain
+// body the protocol's other members read it by.
 var removedRefusal = &refusal{status: http.StatusGone, body: []byte("removed")}
 
 // dropped is a call that gets no answer at all: one that is old, or one whose
