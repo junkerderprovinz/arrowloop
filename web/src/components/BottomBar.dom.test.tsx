@@ -34,7 +34,7 @@ describe('the bottom bar', () => {
       '/trash',
       '/targets',
     ])
-    expect(within(sheet).getByRole('button', { name: 'Log out' })).toBeTruthy()
+    expect(within(sheet).getByRole('button', { name: 'Sign out' })).toBeTruthy()
   })
 
   it('leaves the focus where it is in the sheet when the bar draws again, and Escape takes it back to More', () => {

@@ -163,6 +163,6 @@ describe('Login, a forgotten password', () => {
     await openReset()
     await click(/^back$/i)
     expect(codeBox()).toBeNull()
-    expect(screen.getByRole('button', { name: /log in/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeTruthy()
   })
 })

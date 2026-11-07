@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 // The sign-in page as GlimStone's sign-in card draws it: the logo and the name
-// in the head, the focus in the first field, Log in waiting for a password, a
+// in the head, the focus in the first field, Sign in waiting for a password, a
 // refusal that shakes the button that sent it, and the system's look followed
 // before anybody has signed in.
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
@@ -36,7 +36,7 @@ afterEach(() => {
 
 const passwordBox = () => document.querySelector<HTMLInputElement>('input[autocomplete="current-password"]')!
 const codeBox = () => document.querySelector<HTMLInputElement>('input[autocomplete="one-time-code"]')
-const signIn = () => screen.getByRole('button', { name: /log in/i }) as HTMLButtonElement
+const signIn = () => screen.getByRole('button', { name: /sign in/i }) as HTMLButtonElement
 
 async function click(button: HTMLElement) {
   await act(async () => {
@@ -62,14 +62,14 @@ describe('Login, the card', () => {
     expect(document.activeElement).toBe(passwordBox())
   })
 
-  it('waits for a password before Log in can be pressed', () => {
+  it('waits for a password before Sign in can be pressed', () => {
     render(<Login onIn={vi.fn()} />)
     expect(signIn().disabled).toBe(true)
     fireEvent.change(passwordBox(), { target: { value: 'x' } })
     expect(signIn().disabled).toBe(false)
   })
 
-  it('shakes Log in once and selects the password after a wrong one', async () => {
+  it('shakes Sign in once and selects the password after a wrong one', async () => {
     login.mockRejectedValue(new ApiError('wrong password', 401))
     render(<Login onIn={vi.fn()} />)
     fireEvent.change(passwordBox(), { target: { value: 'wrongwrongwrong' } })
@@ -88,7 +88,7 @@ describe('Login, the card', () => {
     await waitFor(() => expect(document.activeElement).toBe(codeBox()))
   })
 
-  it('shakes Log in and empties the code after a wrong code', async () => {
+  it('shakes Sign in and empties the code after a wrong code', async () => {
     login.mockResolvedValueOnce({ authenticated: false, needCode: true })
     login.mockRejectedValueOnce(new ApiError('wrong code', 401))
     render(<Login onIn={vi.fn()} />)

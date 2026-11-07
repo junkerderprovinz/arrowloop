@@ -39,7 +39,7 @@ function typePassword(value: string) {
 
 async function submit() {
   await act(async () => {
-    fireEvent.click(screen.getByRole('button', { name: /log in/i }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
   })
 }
 
@@ -102,7 +102,7 @@ describe('Login, the second factor', () => {
     await submit()
     await waitFor(() => expect(codeBox()).not.toBeNull())
 
-    const button = screen.getByRole('button', { name: /log in/i }) as HTMLButtonElement
+    const button = screen.getByRole('button', { name: /sign in/i }) as HTMLButtonElement
     expect(button.disabled).toBe(true)
     fireEvent.change(codeBox()!, { target: { value: '123456' } })
     await waitFor(() => expect(button.disabled).toBe(false))

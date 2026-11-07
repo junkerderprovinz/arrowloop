@@ -16,11 +16,11 @@ function show(signOut: boolean, pathname = '/jobs') {
 describe('the rail', () => {
   it('offers to sign out only where a password is set, just above Settings', () => {
     show(false)
-    expect(screen.queryByRole('button', { name: 'Log out' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Sign out' })).toBeNull()
     cleanup()
 
     show(true)
-    const out = screen.getByRole('button', { name: 'Log out' })
+    const out = screen.getByRole('button', { name: 'Sign out' })
     const settings = screen.getByRole('link', { name: 'Settings' })
     expect(out.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(out.parentElement).toBe(settings.parentElement)
