@@ -38,6 +38,8 @@ import { stopEvery } from "../../../web/src/lib/stopEvery";
 import { flagEmoji } from "../../../web/src/lib/flagEmoji";
 import { describeValue, inForce, type Defaults } from "../../../web/src/lib/follows";
 import { oledRefusal } from "../../../web/src/lib/theme";
+import { errorText } from "../../../web/src/lib/errorText";
+import { importSections } from "../../../web/src/lib/importPlan";
 import { useClosingLoop, useDiscoUnlock, useLeafUnlock, useStormUnlock } from "../eggs";
 import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "../motion";
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
@@ -196,28 +198,67 @@ export function Settings() {
     }
   };
 
-  // Restoring replaces every job, so it asks first, with the web's sentence.
-  const confirmImport = () =>
-    Alert.alert(t("backup.import"), t("backup.confirm", { file: backupFile }), [
-      { text: t("confirm.cancel"), style: "cancel" },
-      { text: t("backup.import"), onPress: () => void importSettings() },
-    ]);
-
-  const importSettings = async () => {
+  /**
+   * Reads the file before asking anything. Our own backup replaces every job,
+   * so it asks with the web's sentence; a FolderSync export or a luckyBackup
+   * profile shows what it would add beside the jobs already here.
+   */
+  const confirmImport = async () => {
     setBackupBusy(true);
     setBackupSaid("");
     try {
       const text = await engine.importSettings(backupFile);
-      const backup = JSON.parse(text) as {
-        kind?: string;
-        settings?: unknown;
-        config?: { jobs?: unknown[] };
-      };
-      // Any parseable JSON file would otherwise overwrite the jobs.
-      if (backup.kind !== "arrowloop-settings" || !backup.settings || !backup.config) {
-        setBackupSaid(t("settings.importNotOurs"));
+      const backup = ownBackup(text);
+      if (backup) {
+        Alert.alert(t("backup.import"), t("backup.confirm", { file: backupFile }), [
+          { text: t("confirm.cancel"), style: "cancel" },
+          { text: t("backup.import"), onPress: () => void importSettings(backup) },
+        ]);
         return;
       }
+      const plan = await api.checkImport(text);
+      const sections = importSections(plan, t)
+        .map((s) => `${s.heading}\n${s.lines.map((line) => `• ${line}`).join("\n")}`)
+        .join("\n\n");
+      if (plan.source === "ArrowLoop") {
+        // A backup of the container's whole file, without the phone's settings.
+        setBackupSaid(t("settings.importNotOurs"));
+      } else if (plan.jobs.length === 0 && plan.targets.length === 0) {
+        setBackupSaid([t("import.nothing"), sections].filter(Boolean).join("\n\n"));
+      } else {
+        Alert.alert(
+          t("import.title", { source: plan.source }),
+          `${t("import.confirm", { file: backupFile })}\n\n${sections}`,
+          [
+            { text: t("confirm.cancel"), style: "cancel" },
+            { text: t("import.add"), onPress: () => void addImported(text) },
+          ],
+        );
+      }
+    } catch (e) {
+      setBackupSaid(errorText(t, e));
+    } finally {
+      setBackupBusy(false);
+    }
+  };
+
+  const addImported = async (text: string) => {
+    setBackupBusy(true);
+    try {
+      await api.applyImport(text);
+      setBackupSaid(t("import.added"));
+      setImported((n) => n + 1);
+    } catch (e) {
+      setBackupSaid(errorText(t, e));
+    } finally {
+      setBackupBusy(false);
+    }
+  };
+
+  const importSettings = async (backup: OwnBackup) => {
+    setBackupBusy(true);
+    setBackupSaid("");
+    try {
       await settingsApi.write(backup.settings as EngineSettings);
       await api.writeConfig(backup.config as never);
       setBackupSaid(t("settings.imported"));
@@ -837,6 +878,7 @@ export function Settings() {
             />
           }
         />
+        <Caption>{t("backup.importOthers")}</Caption>
         {backupSaid ? <Body>{backupSaid}</Body> : null}
       </Section>
 
@@ -1198,6 +1240,24 @@ function langName(code: string): string {
   // Required lazily; LANGUAGES is all this needs from the module.
   const { LANGUAGES } = require("../i18n") as typeof import("../i18n");
   return LANGUAGES.find((l) => l.code === code)?.label ?? code;
+}
+
+/** A backup this app exported, which carries the engine's settings beside the jobs. */
+interface OwnBackup {
+  settings: unknown;
+  config: unknown;
+}
+
+/** The backup in text, or null for any other file. */
+function ownBackup(text: string): OwnBackup | null {
+  try {
+    const backup = JSON.parse(text) as { kind?: string; settings?: unknown; config?: unknown };
+    return backup.kind === "arrowloop-settings" && backup.settings && backup.config
+      ? { settings: backup.settings, config: backup.config }
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 /** The flag's country code for a language, empty for one the app does not list. */

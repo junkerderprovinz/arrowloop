@@ -7,6 +7,7 @@ import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
 import type { Failure } from "../../web/src/lib/failure";
+import type { ImportPlan } from "../../web/src/lib/importPlan";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
 export const ORIGIN = `http://127.0.0.1:${Constants.expoConfig?.extra?.enginePort}`;
@@ -517,6 +518,12 @@ export const api = {
     if (!response.ok) throw new EngineError(response.status, `HTTP ${response.status}`);
     await call<{ jobs: number }>("/api/config/raw", { method: "PUT", body: await response.text() });
   },
+  /** What a FolderSync export or a luckyBackup profile would add, or which kind of file it is. Saves nothing. */
+  checkImport: (file: string) =>
+    call<ImportPlan>("/api/import/check", { method: "POST", body: JSON.stringify({ file }) }),
+  /** Adds what checkImport showed; the engine reads the file again. */
+  applyImport: (file: string) =>
+    call<ImportPlan>("/api/import", { method: "POST", body: JSON.stringify({ file }) }),
   /** Puts the jobs in this order and keeps it, for a job somebody moved. */
   orderJobs: (names: string[]) =>
     call<{ jobs: number }>("/api/jobs/order", { method: "PUT", body: JSON.stringify({ jobs: names }) }),
