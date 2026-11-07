@@ -1062,6 +1062,8 @@ const ko: Translations = {
   'look.appearance': '화면 표시',
   'look.design': '디자인',
   'look.system': '시스템',
+  'look.oled': 'OLED',
+  'look.oledHint': 'OLED와 AMOLED 화면을 위해 어두운 모양을 완전한 검정으로 바꿉니다.',
   'look.barLabelsWeb': '좁은 창에서 사이드바 대신 나타나는 바입니다. 좁은 창에서만 적용됩니다.',
   'workload.retries': '재시도',
   'safety.brakes': '제동',
@@ -1348,6 +1350,7 @@ const ko: Translations = {
   'jobs.moveDown': '아래로 이동',
   'new.change.jobOrder': '작업을 원하는 순서로 놓을 수 있습니다. 손잡이를 잡고 작업을 끌거나, 작업에서 Alt와 화살표 키를 누르세요. 휴대폰에서는 작업을 길게 누른 채 끄세요. {history}, {trash}, {conflicts}도 같은 순서로 작업을 보여 줍니다.',
   'new.change.jobsCompact': '작업 목록 위의 {compact}은(는) 작업마다 한 줄로 상태, 마지막 실행, {runNow}, {more}를 보여 줍니다. 이 기기가 선택을 기억합니다.',
+  'new.change.oled': '{design} 아래의 {oled}은 OLED와 AMOLED 화면을 위해 어두운 모양을 완전한 검정으로 바꿉니다. 시스템을 따를 때를 포함해 어두운 모양이 보일 때마다 적용되며, 기기마다 자신의 선택을 기억합니다.',
 }
 
 export default ko

@@ -1062,6 +1062,8 @@ const ro: Translations = {
   'look.appearance': 'Aspect general',
   'look.design': 'Design',
   'look.system': 'Sistem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Trece aspectul întunecat pe negru adevărat, pentru ecranele OLED și AMOLED.',
   'look.barLabelsWeb': 'Bara care preia locul barei laterale într-o fereastră îngustă. Are efect doar în ferestrele înguste.',
   'workload.retries': 'Reîncercări',
   'safety.brakes': 'Frâne',
@@ -1348,6 +1350,7 @@ const ro: Translations = {
   'jobs.moveDown': 'Mută în jos',
   'new.change.jobOrder': 'Poți pune sarcinile în ordinea ta: trage o sarcină de mâner sau apasă pe ea Alt și o tastă săgeată. Pe telefon, ține apăsată o sarcină și trage-o. {history}, {trash} și {conflicts} arată sarcinile în aceeași ordine.',
   'new.change.jobsCompact': '{compact}, sus în lista de sarcini, arată fiecare sarcină pe un rând: starea, ultima rulare, {runNow} și {more}. Acest dispozitiv ține minte alegerea ta.',
+  'new.change.oled': '{oled}, sub {design}, trece aspectul întunecat pe negru adevărat pentru ecranele OLED și AMOLED. Se aplică oricând se vede aspectul întunecat, și când urmează sistemul, iar fiecare dispozitiv își ține minte alegerea.',
 }
 
 export default ro

@@ -1062,6 +1062,8 @@ const he: Translations = {
   'look.appearance': 'מראה',
   'look.design': 'ערכת נושא',
   'look.system': 'מערכת',
+  'look.oled': 'OLED',
+  'look.oledHint': 'מעביר את המראה הכהה לשחור אמיתי, למסכי OLED ו-AMOLED.',
   'look.barLabelsWeb': 'הסרגל שתופס את מקום סרגל הצד בחלון צר. משפיע רק על חלונות צרים.',
   'workload.retries': 'ניסיונות חוזרים',
   'safety.brakes': 'בלמים',
@@ -1348,6 +1350,7 @@ const he: Translations = {
   'jobs.moveDown': 'העברה למטה',
   'new.change.jobOrder': 'אפשר לסדר את המשימות בסדר שלכם: גררו משימה בידית שלה, או לחצו עליה Alt ומקש חץ. בטלפון, החזיקו משימה וגררו אותה. {history}, {trash} ו{conflicts} מציגים את המשימות באותו סדר.',
   'new.change.jobsCompact': '{compact} בראש רשימת המשימות מציג כל משימה בשורה אחת: מצב, הריצה האחרונה, {runNow} ו{more}. המכשיר הזה זוכר את הבחירה שלכם.',
+  'new.change.oled': '{oled} תחת {design} מעביר את המראה הכהה לשחור אמיתי במסכי OLED ו-AMOLED. הוא חל בכל פעם שהמראה הכהה מוצג, גם כשהוא עוקב אחרי המערכת, וכל מכשיר זוכר את הבחירה שלו.',
 }
 
 export default he

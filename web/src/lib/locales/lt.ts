@@ -1062,6 +1062,8 @@ const lt: Translations = {
   'look.appearance': 'Vaizdas',
   'look.design': 'Dizainas',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Tamsią išvaizdą paverčia tikra juoda OLED ir AMOLED ekranams.',
   'look.barLabelsWeb': 'Juosta, kuri siaurame lange užima šoninės juostos vietą. Veikia tik siauruose languose.',
   'workload.retries': 'Kartojimai',
   'safety.brakes': 'Stabdžiai',
@@ -1348,6 +1350,7 @@ const lt: Translations = {
   'jobs.moveDown': 'Perkelti žemyn',
   'new.change.jobOrder': 'Užduotis galite išdėstyti savo tvarka: vilkite užduotį už rankenėlės arba ant jos paspauskite Alt ir rodyklės klavišą. Telefone palaikykite užduotį ir vilkite. {history}, {trash} ir {conflicts} rodo užduotis ta pačia tvarka.',
   'new.change.jobsCompact': '{compact} užduočių sąrašo viršuje rodo kiekvieną užduotį vienoje eilutėje: būseną, paskutinį paleidimą, {runNow} ir {more}. Šis įrenginys įsimena jūsų pasirinkimą.',
+  'new.change.oled': '{oled} po {design} paverčia tamsią išvaizdą tikra juoda OLED ir AMOLED ekranams. Tai galioja visada, kai rodoma tamsi išvaizda, ir kai ji seka sistemą, o kiekvienas įrenginys įsimena savo pasirinkimą.',
 }
 
 export default lt

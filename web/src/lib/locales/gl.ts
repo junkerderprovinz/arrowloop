@@ -1062,6 +1062,8 @@ const gl: Translations = {
   'look.appearance': 'Aparencia',
   'look.design': 'Tema',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Pon o aspecto escuro en negro puro, para pantallas OLED e AMOLED.',
   'look.barLabelsWeb': 'A barra que ocupa o lugar da barra lateral nunha xanela estreita. Só afecta ás xanelas estreitas.',
   'workload.retries': 'Reintentos',
   'safety.brakes': 'Freos',
@@ -1348,6 +1350,7 @@ const gl: Translations = {
   'jobs.moveDown': 'Baixar',
   'new.change.jobOrder': 'Podes poñer as tarefas na túa propia orde: arrastra unha pola súa asa, ou preme Alt e unha frecha sobre ela. No teléfono, mantén premida unha tarefa e arrástraa. {history}, {trash} e {conflicts} mostran as tarefas na mesma orde.',
   'new.change.jobsCompact': '{compact}, arriba na lista de tarefas, mostra cada tarefa nunha fila, co seu estado, a última execución, {runNow} e {more}. Este dispositivo lembra a túa escolla.',
+  'new.change.oled': '{oled}, baixo {design}, pon o aspecto escuro en negro puro para pantallas OLED e AMOLED. Vale sempre que se ve o aspecto escuro, tamén cando segue o sistema, e cada dispositivo lembra a súa escolla.',
 }
 
 export default gl

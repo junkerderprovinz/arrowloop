@@ -1062,6 +1062,8 @@ const pl: Translations = {
   'look.appearance': 'Wygląd',
   'look.design': 'Motyw',
   'look.system': 'Systemowy',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Zmienia ciemny wygląd na prawdziwą czerń dla ekranów OLED i AMOLED.',
   'look.barLabelsWeb': 'Pasek, który w wąskim oknie zastępuje panel boczny. Działa tylko w wąskich oknach.',
   'workload.retries': 'Ponowne próby',
   'safety.brakes': 'Hamulce',
@@ -1348,6 +1350,7 @@ const pl: Translations = {
   'jobs.moveDown': 'Przenieś niżej',
   'new.change.jobOrder': 'Możesz ułożyć zadania we własnej kolejności: przeciągnij zadanie za uchwyt albo naciśnij na nim Alt i strzałkę. Na telefonie przytrzymaj zadanie i przeciągnij je. {history}, {trash} i {conflicts} pokazują zadania w tej samej kolejności.',
   'new.change.jobsCompact': '{compact} u góry listy zadań pokazuje każde zadanie w jednym wierszu: stan, ostatnie uruchomienie, {runNow} i {more}. To urządzenie zapamiętuje twój wybór.',
+  'new.change.oled': '{oled} pod {design} zmienia ciemny wygląd na prawdziwą czerń dla ekranów OLED i AMOLED. Działa zawsze, gdy widać ciemny wygląd, także gdy podąża za systemem, a każde urządzenie pamięta własny wybór.',
 }
 
 export default pl

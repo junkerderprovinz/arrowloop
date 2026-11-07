@@ -1062,6 +1062,8 @@ const zh: Translations = {
   'look.appearance': '外观设置',
   'look.design': '主题',
   'look.system': '跟随系统',
+  'look.oled': 'OLED',
+  'look.oledHint': '让深色外观使用纯黑，适合 OLED 和 AMOLED 屏幕。',
   'look.barLabelsWeb': '在窄窗口中代替侧边栏的栏。只对窄窗口有效。',
   'workload.retries': '重试',
   'safety.brakes': '刹车',
@@ -1348,6 +1350,7 @@ const zh: Translations = {
   'jobs.moveDown': '下移',
   'new.change.jobOrder': '你可以按自己的顺序排列任务：拖动任务的手柄，或在任务上按 Alt 和方向键。在手机上，按住任务并拖动。{history}、{trash} 和 {conflicts} 也按同样的顺序列出任务。',
   'new.change.jobsCompact': '任务列表顶部的 {compact} 会把每个任务显示为一行：状态、上次运行、{runNow} 和 {more}。此设备会记住你的选择。',
+  'new.change.oled': '{design} 下的 {oled} 让深色外观使用纯黑，适合 OLED 和 AMOLED 屏幕。只要显示深色外观就会生效，跟随系统时也一样，每台设备各自记住自己的选择。',
 }
 
 export default zh

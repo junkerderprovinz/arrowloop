@@ -1062,6 +1062,8 @@ const pt: Translations = {
   'look.appearance': 'Aparência',
   'look.design': 'Design',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Leva o aspeto escuro ao preto puro, para ecrãs OLED e AMOLED.',
   'look.barLabelsWeb': 'A barra que ocupa o lugar da barra lateral numa janela estreita. Só afeta janelas estreitas.',
   'workload.retries': 'Novas tentativas',
   'safety.brakes': 'Travões',
@@ -1348,6 +1350,7 @@ const pt: Translations = {
   'jobs.moveDown': 'Descer',
   'new.change.jobOrder': 'Pode pôr as tarefas pela sua própria ordem: arraste uma tarefa pela pega, ou prima Alt e uma seta sobre ela. No telemóvel, mantenha uma tarefa premida e arraste-a. {history}, {trash} e {conflicts} mostram as tarefas pela mesma ordem.',
   'new.change.jobsCompact': '{compact}, no topo da lista de tarefas, mostra cada tarefa numa linha, com o estado, a última execução, {runNow} e {more}. Este dispositivo lembra-se da sua escolha.',
+  'new.change.oled': '{oled}, em {design}, leva o aspeto escuro ao preto puro para ecrãs OLED e AMOLED. Vale sempre que o aspeto escuro está à vista, também quando segue o sistema, e cada dispositivo guarda a sua escolha.',
 }
 
 export default pt

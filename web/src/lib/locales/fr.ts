@@ -1062,6 +1062,8 @@ const fr: Translations = {
   'look.appearance': 'Apparence',
   'look.design': 'Thème',
   'look.system': 'Système',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Passe l\'apparence sombre au noir pur, pour les écrans OLED et AMOLED.',
   'look.barLabelsWeb': 'La barre qui remplace la barre latérale dans une fenêtre étroite. N\'agit que dans les fenêtres étroites.',
   'workload.retries': 'Nouvelles tentatives',
   'safety.brakes': 'Freins',
@@ -1348,6 +1350,7 @@ const fr: Translations = {
   'jobs.moveDown': 'Descendre',
   'new.change.jobOrder': 'Vous pouvez ranger les tâches dans votre propre ordre : faites glisser une tâche par sa poignée, ou appuyez sur Alt et une flèche dessus. Sur le téléphone, maintenez une tâche et faites-la glisser. {history}, {trash} et {conflicts} affichent les tâches dans le même ordre.',
   'new.change.jobsCompact': '{compact}, en haut de la liste des tâches, affiche chaque tâche sur une ligne, avec son état, sa dernière exécution, {runNow} et {more}. Cet appareil retient votre choix.',
+  'new.change.oled': '{oled}, sous {design}, passe l\'apparence sombre au noir pur pour les écrans OLED et AMOLED. Il compte dès que l\'apparence sombre s\'affiche, même quand elle suit le système, et chaque appareil retient son propre choix.',
 }
 
 export default fr

@@ -1062,6 +1062,8 @@ const eu: Translations = {
   'look.appearance': 'Itxura',
   'look.design': 'Diseinua',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Itxura iluna benetako beltz bihurtzen du, OLED eta AMOLED pantailentzat.',
   'look.barLabelsWeb': 'Leiho estu batean alboko barraren lekua hartzen duen barra. Leiho estuei soilik eragiten die.',
   'workload.retries': 'Saiakera berriak',
   'safety.brakes': 'Balaztak',
@@ -1348,6 +1350,7 @@ const eu: Translations = {
   'jobs.moveDown': 'Jaitsi',
   'new.change.jobOrder': 'Lanak zure ordenan jar ditzakezu: arrastatu lan bat bere heldulekutik, edo sakatu Alt eta gezi-tekla bat haren gainean. Telefonoan, eduki sakatuta lan bat eta arrastatu. {history}, {trash} eta {conflicts} atalek ordena berean erakusten dituzte lanak.',
   'new.change.jobsCompact': 'Lanen zerrendaren goiko {compact} aukerak lan bakoitza errenkada batean erakusten du: egoera, azken exekuzioa, {runNow} eta {more}. Gailu honek zure aukera gogoratzen du.',
+  'new.change.oled': '{design} azpiko {oled} aukerak itxura iluna benetako beltz bihurtzen du OLED eta AMOLED pantailetan. Itxura iluna ikusten den bakoitzean balio du, sistemari jarraitzen dionean ere, eta gailu bakoitzak bere aukera gogoratzen du.',
 }
 
 export default eu

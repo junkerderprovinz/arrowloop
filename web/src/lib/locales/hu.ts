@@ -1062,6 +1062,8 @@ const hu: Translations = {
   'look.appearance': 'Megjelenés',
   'look.design': 'Dizájn',
   'look.system': 'Rendszer',
+  'look.oled': 'OLED',
+  'look.oledHint': 'A sötét megjelenést valódi feketére állítja OLED és AMOLED kijelzőkhöz.',
   'look.barLabelsWeb': 'A sáv, amely keskeny ablakban az oldalsáv helyére lép. Csak keskeny ablakban hat.',
   'workload.retries': 'Újrapróbálkozások',
   'safety.brakes': 'Fékek',
@@ -1348,6 +1350,7 @@ const hu: Translations = {
   'jobs.moveDown': 'Lejjebb',
   'new.change.jobOrder': 'A feladatokat saját sorrendbe rakhatod: húzz egy feladatot a fogantyújánál, vagy nyomd meg rajta az Altot és egy nyílbillentyűt. A telefonon tarts lenyomva egy feladatot, és húzd el. A(z) {history}, {trash} és {conflicts} ugyanebben a sorrendben mutatja a feladatokat.',
   'new.change.jobsCompact': 'A feladatlista tetején a(z) {compact} nézet minden feladatot egy sorban mutat: állapot, utolsó futás, {runNow} és {more}. Ez az eszköz megjegyzi a választásodat.',
+  'new.change.oled': 'A {design} alatti {oled} valódi feketére állítja a sötét megjelenést OLED és AMOLED kijelzőkön. Mindig érvényes, amikor a sötét megjelenés látszik, akkor is, ha a rendszert követi, és minden eszköz a saját választását jegyzi meg.',
 }
 
 export default hu

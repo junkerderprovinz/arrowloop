@@ -1062,6 +1062,8 @@ const it: Translations = {
   'look.appearance': 'Aspetto',
   'look.design': 'Design',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Porta l\'aspetto scuro al nero puro, per gli schermi OLED e AMOLED.',
   'look.barLabelsWeb': 'La barra che prende il posto della barra laterale in una finestra stretta. Vale solo per le finestre strette.',
   'workload.retries': 'Nuovi tentativi',
   'safety.brakes': 'Freni',
@@ -1348,6 +1350,7 @@ const it: Translations = {
   'jobs.moveDown': 'Sposta giù',
   'new.change.jobOrder': 'Puoi mettere i lavori nel tuo ordine: trascina un lavoro dalla sua maniglia, oppure premi Alt e una freccia su di esso. Sul telefono tieni premuto un lavoro e trascinalo. {history}, {trash} e {conflicts} mostrano i lavori nello stesso ordine.',
   'new.change.jobsCompact': '{compact}, in cima all\'elenco dei lavori, mostra ogni lavoro su una riga, con il suo stato, l\'ultima esecuzione, {runNow} e {more}. Questo dispositivo ricorda la tua scelta.',
+  'new.change.oled': '{oled}, sotto {design}, porta l\'aspetto scuro al nero puro per gli schermi OLED e AMOLED. Vale ogni volta che si vede l\'aspetto scuro, anche quando segue il sistema, e ogni dispositivo ricorda la propria scelta.',
 }
 
 export default it

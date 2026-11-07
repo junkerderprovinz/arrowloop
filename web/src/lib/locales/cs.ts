@@ -1062,6 +1062,8 @@ const cs: Translations = {
   'look.appearance': 'Vzhled',
   'look.design': 'Motiv',
   'look.system': 'Systém',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Přepne tmavý vzhled na skutečnou černou pro displeje OLED a AMOLED.',
   'look.barLabelsWeb': 'Lišta, která v úzkém okně nahrazuje postranní panel. Působí jen v úzkých oknech.',
   'workload.retries': 'Opakování',
   'safety.brakes': 'Brzdy',
@@ -1348,6 +1350,7 @@ const cs: Translations = {
   'jobs.moveDown': 'Posunout dolů',
   'new.change.jobOrder': 'Úlohy si můžeš seřadit po svém: přetáhni úlohu za úchyt, nebo na ní stiskni Alt a šipku. V telefonu úlohu podrž a přetáhni. {history}, {trash} a {conflicts} ukazují úlohy ve stejném pořadí.',
   'new.change.jobsCompact': '{compact} nahoře v seznamu úloh ukáže každou úlohu na jednom řádku, s jejím stavem, posledním během, {runNow} a {more}. Tohle zařízení si tvou volbu pamatuje.',
+  'new.change.oled': '{oled} pod {design} přepne tmavý vzhled na skutečnou černou pro displeje OLED a AMOLED. Platí vždy, když je tmavý vzhled vidět, i když se řídí systémem, a každé zařízení si pamatuje vlastní volbu.',
 }
 
 export default cs

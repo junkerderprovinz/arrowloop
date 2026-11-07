@@ -1062,6 +1062,8 @@ const et: Translations = {
   'look.appearance': 'Välimus',
   'look.design': 'Kujundus',
   'look.system': 'Süsteem',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Muudab tumeda välimuse päris mustaks OLED- ja AMOLED-ekraanide jaoks.',
   'look.barLabelsWeb': 'Riba, mis kitsas aknas asendab külgriba. Mõjub ainult kitsastele akendele.',
   'workload.retries': 'Kordusproovid',
   'safety.brakes': 'Piduriid',
@@ -1348,6 +1350,7 @@ const et: Translations = {
   'jobs.moveDown': 'Liiguta alla',
   'new.change.jobOrder': 'Võid tööd oma järjekorda panna: lohista tööd selle pidemest või vajuta sellel Alt ja nooleklahvi. Telefonis hoia tööd all ja lohista seda. {history}, {trash} ja {conflicts} näitavad töid samas järjekorras.',
   'new.change.jobsCompact': '{compact} tööde loendi ülaosas näitab iga tööd ühel real: olek, viimane käivitus, {runNow} ja {more}. See seade jätab sinu valiku meelde.',
+  'new.change.oled': '{oled} jaotise {design} all muudab tumeda välimuse OLED- ja AMOLED-ekraanidel päris mustaks. See kehtib alati, kui tume välimus on nähtaval, ka siis, kui see järgib süsteemi, ja iga seade jätab oma valiku meelde.',
 }
 
 export default et

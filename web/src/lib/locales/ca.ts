@@ -1062,6 +1062,8 @@ const ca: Translations = {
   'look.appearance': 'Aparença',
   'look.design': 'Tema',
   'look.system': 'Sistema',
+  'look.oled': 'OLED',
+  'look.oledHint': 'Posa l\'aspecte fosc en negre pur, per a pantalles OLED i AMOLED.',
   'look.barLabelsWeb': 'La barra que ocupa el lloc de la barra lateral en una finestra estreta. Només afecta les finestres estretes.',
   'workload.retries': 'Reintents',
   'safety.brakes': 'Frens',
@@ -1348,6 +1350,7 @@ const ca: Translations = {
   'jobs.moveDown': 'Baixa',
   'new.change.jobOrder': 'Pots posar les tasques en el teu propi ordre: arrossega\'n una per la nansa, o prem Alt i una tecla de fletxa a sobre. Al telèfon, mantén premuda una tasca i arrossega-la. {history}, {trash} i {conflicts} mostren les tasques en el mateix ordre.',
   'new.change.jobsCompact': '{compact}, a dalt de la llista de tasques, mostra cada tasca en una fila, amb el seu estat, l\'última execució, {runNow} i {more}. Aquest dispositiu recorda la teva tria.',
+  'new.change.oled': '{oled}, sota {design}, posa l\'aspecte fosc en negre pur per a pantalles OLED i AMOLED. Val sempre que es veu l\'aspecte fosc, també quan segueix el sistema, i cada dispositiu recorda la seva tria.',
 }
 
 export default ca

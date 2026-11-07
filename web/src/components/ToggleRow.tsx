@@ -16,6 +16,7 @@ export function ToggleRow({
   checked,
   onChange,
   disabled,
+  resting,
   hueIndex,
 }: {
   label: string
@@ -25,6 +26,8 @@ export function ToggleRow({
   onChange: (next: boolean) => void
   /** For a switch whose effect depends on another one being on. */
   disabled?: boolean
+  /** For a switch that has no effect right now but keeps its state for when it does. */
+  resting?: boolean
   /**
    * The row's own palette position. It sits on the row because `.glim-hue`
    * rebinds the accent for the fill and the focus ring together.
@@ -42,7 +45,7 @@ export function ToggleRow({
       <span
         data-glim-label={label}
         className={`flex items-center gap-1.5 text-body text-carbon-text${
-          disabled ? ' opacity-50' : ''
+          disabled || resting ? ' opacity-50' : ''
         }`}
       >
         {label}
