@@ -196,10 +196,10 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
 }
 
 /**
- * The address as a QR code, black on white in every theme: many scanners
- * cannot read an inverted code.
+ * A QR code, black on white in every theme: many scanners cannot read an
+ * inverted code.
  */
-function QR({ value, size }: { value: string; size: number }) {
+export function QR({ value, size }: { value: string; size: number }) {
   const { path, extent } = useMemo(() => buildQR(value), [value]);
   return (
     <Svg width={size} height={size} viewBox={`0 0 ${extent} ${extent}`}>

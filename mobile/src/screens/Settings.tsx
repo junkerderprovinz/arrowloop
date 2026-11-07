@@ -121,6 +121,7 @@ export function Settings() {
   const suTyped = useRef<string | null>(null);
   const [running, setRunning] = useState<boolean | null>(null);
   const [version, setVersion] = useState<string | null>(null);
+  const [pairable, setPairable] = useState(false);
   // Null until read, so the card never shows the built-in values for a moment.
   const [defaults, setDefaults] = useState<Defaults | null>(null);
   const [lockable, setLockable] = useState(false);
@@ -293,7 +294,13 @@ export function Settings() {
       () => {},
     );
     setNotify(await notificationsGranted());
-    api.capabilities().then((c) => setVersion(c.version), () => setVersion(null));
+    api.capabilities().then(
+      (c) => {
+        setVersion(c.version);
+        setPairable(c.pairing === true);
+      },
+      () => setVersion(null),
+    );
   }, []);
 
   useEffect(() => {
@@ -429,6 +436,13 @@ export function Settings() {
         />
         <Button label={t("engine.defaults")} glyph="IconSync" onPress={() => nav.navigate("Sync")} />
       </Section>
+
+      {/* An engine built without pairing has no such page. */}
+      {pairable ? (
+        <Section title={t("settings.pairing")} hint={t("pairing.phraseHint")} hue={5}>
+          <Button label={t("settings.pairing")} glyph="IconLink" onPress={() => nav.navigate("Pairing")} />
+        </Section>
+      ) : null}
 
       {/* Each switch reads Android's state; a tap opens the request dialog or
           the settings page, and the switch follows what Android reports when

@@ -63,6 +63,8 @@ export interface Appearance {
   lock: boolean;
   /** The job list as cards or as one row per job. */
   jobView: JobView;
+  /** Whether Instances stands in the More sheet, pinned on the Pairing screen. */
+  instancesInMore: boolean;
 }
 
 export type JobView = "cards" | "compact";
@@ -82,6 +84,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   motion: "subtle",
   lock: false,
   jobView: "cards",
+  instancesInMore: false,
 };
 
 const KEY = "arrowloop.appearance";

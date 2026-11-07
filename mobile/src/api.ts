@@ -51,6 +51,85 @@ export interface AutoBackups {
   last: { at: string; file?: string; unchanged?: boolean; error?: string } | null;
 }
 
+/**
+ * What an instance tells the others of its group it is. The pairing shapes
+ * follow web/src/lib/api.ts, which cannot be imported here, since it reaches
+ * the web's i18n.ts and Vite's import.meta.glob.
+ */
+export type Deployment = "container" | "server" | "desktop" | "phone";
+
+/** Another instance of the group, reachable now. */
+export interface GroupMember {
+  id: string;
+  name: string;
+  deployment: Deployment;
+  address?: string;
+  approved: boolean;
+}
+
+/** An instance approved in the group that the relay does not see now. */
+export interface AwayMember {
+  id: string;
+  name: string;
+  deployment: Deployment;
+  address?: string;
+  /** Unix seconds. */
+  lastSeen: number;
+}
+
+/** Where this engine stands in its group (internal/web/pairing.go). It never carries the phrase. */
+export interface ConnectInfo {
+  active: boolean;
+  connected: boolean;
+  passwordSet: boolean;
+  relayMode: RelayMode;
+  /** The relay dialled now, empty when none is. */
+  relayUrl: string;
+  projectRelayUrl: string;
+  name: string;
+  deployment: Deployment;
+  members: GroupMember[];
+  away: AwayMember[];
+  /** Seconds since this engine made or entered its phrase. */
+  joinedAgo: number;
+  /** Whether another instance has been here since. */
+  memberSeen: boolean;
+  /** Instances whose key waits for approval here. */
+  pending: { id: string; name: string; fingerprint: string }[];
+  /** Whether another instance said lately that this one waits for approval there. */
+  awaiting: boolean;
+  /** This engine's own key, as the others list it. */
+  fingerprint: string;
+}
+
+export type RelayMode = "project" | "own" | "off";
+
+export interface RelayConfig {
+  mode: RelayMode;
+  relayUrl: string;
+  projectRelayUrl: string;
+  connected: boolean;
+}
+
+/** The words and the text for the QR code beside them. */
+export interface Phrase {
+  phrase: string;
+  code: string;
+}
+
+/** Another instance as the overview shows it: its jobs once both sides approved each other, or why there are none. */
+export interface OtherInstance {
+  id: string;
+  name: string;
+  deployment: Deployment;
+  address?: string;
+  state: "ok" | "approve" | "waiting" | "away" | "error";
+  jobs?: Job[];
+  /** Unix seconds, for one that is away. */
+  lastSeen?: number;
+  error?: string;
+}
+
 /** A job as the configuration file holds it. */
 export interface JobConfig {
   name: string;
@@ -549,8 +628,34 @@ export const api = {
     call<{ ok: boolean; reason?: string; failure?: Failure }>(`/api/remotes/${name(remote)}/check`, { method: "POST" }),
   aboutRemote: (remote: string) => call<Usage>(`/api/remotes/${name(remote)}/about`),
 
-  /** The engine build's version and whether it has a window. */
-  capabilities: () => call<{ version: string; window: boolean }>("/api/capabilities"),
+  /** The engine build's version, whether it has a window and whether it can pair. */
+  capabilities: () => call<{ version: string; window: boolean; pairing?: boolean }>("/api/capabilities"),
+
+  /** Where this engine stands in its group. Asking also greets the others, which is how two instances meet. */
+  connect: () => call<ConnectInfo>("/api/connect"),
+  /** Starts a group with a new phrase. The only answer that carries the words unasked. */
+  makePhrase: () => call<Phrase & { info: ConnectInfo }>("/api/connect/activate", { method: "POST", body: "{}" }),
+  joinGroup: (phrase: string) =>
+    call<ConnectInfo>("/api/connect/join", { method: "POST", body: JSON.stringify({ phrase }) }),
+  /** The phone's engine has no password, so the words come back without one. */
+  revealPhrase: () => call<Phrase>("/api/connect/reveal", { method: "POST", body: "{}" }),
+  leaveGroup: () => call<void>("/api/connect", { method: "DELETE" }),
+  /** What the others call this phone; empty for the engine's host name. */
+  renameInstance: (instance: string) =>
+    call<ConnectInfo>("/api/connect", { method: "PUT", body: JSON.stringify({ name: instance }) }),
+  approveMember: (id: string) => call<void>(`/api/connect/devices/${name(id)}/approve`, { method: "POST", body: "{}" }),
+  refuseMember: (id: string) => call<void>(`/api/connect/devices/${name(id)}/refuse`, { method: "POST", body: "{}" }),
+  /** Takes another instance out of the group on every instance of it. */
+  removeMember: (id: string) => call<void>(`/api/connect/members/${name(id)}`, { method: "DELETE" }),
+  relay: () => call<RelayConfig>("/api/relay/config"),
+  saveRelay: (change: { mode?: RelayMode; relayUrl?: string }) =>
+    call<RelayConfig>("/api/relay/config", { method: "PUT", body: JSON.stringify(change) }),
+  /** The other instances of the group with their jobs. */
+  instances: () => call<OtherInstance[]>("/api/instances"),
+  runOnInstance: (id: string, job: string) =>
+    call<void>(`/api/instances/${name(id)}/jobs/${name(job)}/run`, { method: "POST" }),
+  stopOnInstance: (id: string, job: string) =>
+    call<void>(`/api/instances/${name(id)}/jobs/${name(job)}/stop`, { method: "POST" }),
 
   /** Lists the folders inside a folder; no path lists the roots. */
   browse: (path?: string) =>

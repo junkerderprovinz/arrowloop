@@ -28,10 +28,12 @@ import {
   type OverviewStack,
 } from "./src/nav";
 import { History } from "./src/screens/History";
+import { Instances } from "./src/screens/Instances";
 import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
 import { Overview } from "./src/screens/Overview";
+import { Pairing } from "./src/screens/Pairing";
 import { Plan } from "./src/screens/Plan";
 import { Settings } from "./src/screens/Settings";
 import { SyncSettings } from "./src/screens/SyncSettings";
@@ -253,10 +255,12 @@ function Shell() {
                 <MoreNav.Screen name="TargetList" component={Targets} options={{ title: t("targets.title") }} />
                 <MoreNav.Screen name="TargetPick" component={TargetPick} options={{ title: t("targets.addStorage") }} />
                 <MoreNav.Screen name="TargetEdit" component={TargetEdit} options={{ title: t("action.edit") }} />
+                <MoreNav.Screen name="Instances" component={Instances} options={{ title: t("nav.instances") }} />
                 <MoreNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
                 <MoreNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
                 <MoreNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
                 <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("settings.sync") }} />
+                <MoreNav.Screen name="Pairing" component={Pairing} options={{ title: t("settings.pairing") }} />
               </MoreNav.Navigator>
             )}
           </Tabs.Screen>
@@ -448,9 +452,11 @@ function MoreSheet({
   const { t } = useT();
   const { ms } = useMotion();
   const { findings, trash, anomaliesOn } = useWaiting();
+  const { instancesInMore } = useAppearance();
   const counts: Record<MorePlace["screen"], number | null> = {
     TrashAll: trash,
     TargetList: null,
+    Instances: null,
     Anomalies: findings?.length ?? null,
     SettingsHome: null,
   };
@@ -461,7 +467,11 @@ function MoreSheet({
       <Pressable style={[styles.ground, { backgroundColor: p.scrim, paddingBottom: above }]} onPress={onClose}>
         {/* Swallows presses, so a tap between the rows does not close it. */}
         <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
-          {MORE.filter((place) => place.screen !== "Anomalies" || anomaliesOn !== false).map((place) => {
+          {MORE.filter(
+            (place) =>
+              (place.screen !== "Anomalies" || anomaliesOn !== false) &&
+              (place.screen !== "Instances" || instancesInMore),
+          ).map((place) => {
             const count = counts[place.screen];
             return (
               <Press

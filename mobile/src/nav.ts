@@ -39,12 +39,14 @@ export type SettingsStack = {
   Language: undefined;
   /** The defaults every job starts from, visited while setting the app up. */
   Sync: undefined;
+  Pairing: undefined;
 };
 
 /** The places behind More. The one picked last is the tab's first screen. */
 export type MoreStack = SettingsStack & {
   TrashAll: undefined;
   TargetList: undefined;
+  Instances: undefined;
   TargetPick: undefined;
   TargetEdit: { name?: string; provider?: string };
   Anomalies: { job?: string } | undefined;
@@ -61,7 +63,7 @@ export interface BarPlace {
 
 /** A place behind More, by the first screen it opens on. */
 export interface MorePlace {
-  screen: "TrashAll" | "TargetList" | "Anomalies" | "SettingsHome";
+  screen: "TrashAll" | "TargetList" | "Instances" | "Anomalies" | "SettingsHome";
   label: TranslationKey;
   glyph: string;
 }
@@ -78,12 +80,13 @@ export const BAR: BarPlace[] = [
 ];
 
 /**
- * In the web rail's order, Settings last as the rail has it; Anomalies goes
- * while its notes are switched off.
+ * In the web rail's order, Settings last as the rail has it. Anomalies goes
+ * while its notes are switched off, and Instances stands only while pinned.
  */
 export const MORE: MorePlace[] = [
   { screen: "Anomalies", label: "nav.anomalies", glyph: "IconAnomalies" },
   { screen: "TrashAll", label: "nav.trash", glyph: "IconTrash" },
   { screen: "TargetList", label: "nav.targets", glyph: "IconTabStorage" },
+  { screen: "Instances", label: "nav.instances", glyph: "IconServer" },
   { screen: "SettingsHome", label: "nav.settings", glyph: "IconGear" },
 ];

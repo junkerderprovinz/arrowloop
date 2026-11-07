@@ -41,6 +41,9 @@ CHECKS = [
     ("TrashItem", "/api/jobs/{job}/trash/left", ["entries", "[]"]),
     # A target answering `supported: false` rightly sends none of the numbers.
     ("Usage", "/api/remotes/{remote}/about", [], ("supported", True)),
+    ("ConnectInfo", "/api/connect", []),
+    ("RelayConfig", "/api/relay/config", []),
+    ("OtherInstance", "/api/instances", ["[]"]),
 ]
 
 # Shapes that fail the check when they cannot be reached. They only exist when
@@ -51,7 +54,12 @@ REQUIRED = {"Action", "Reason", "TrashItem"}
 # Optional fields the engine leaves out until something calls for them. A
 # healthy history has no failed run, so `Run.Failure` is rightly absent from
 # every object, and the check must not read that as a field the engine lacks.
-SOMETIMES = {"Run": {"Failure"}}
+SOMETIMES = {
+    "Run": {"Failure"},
+    # An instance that answered has jobs and no error. Only one that is away
+    # carries lastSeen, and an address only where its announce named one.
+    "OtherInstance": {"address", "jobs", "lastSeen", "error"},
+}
 
 # Every entry is (interface, path, into) with an optional fourth element: a
 # (key, value) the answer must carry for the check to mean anything.
