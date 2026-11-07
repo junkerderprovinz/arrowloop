@@ -43,6 +43,10 @@ jobs:
     needs: notes
     uses: ./.github/workflows/desktop.yml
 
+  flatpak:
+    needs: notes
+    uses: ./.github/workflows/flatpak.yml
+
   mobile:
     needs: notes
     uses: ./.github/workflows/mobile.yml
@@ -62,7 +66,7 @@ jobs:
 
   # The README offers the image too, so a release waits for it as well.
   publish:
-    needs: [desktop, mobile, container]
+    needs: [desktop, flatpak, mobile, container]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -99,6 +103,8 @@ jobs:
           cp bundles/arrowloop-linux-arm64/ArrowLoop dist/arrowloop-linux-arm64
           cp bundles/arrowloop-linux-amd64-installer/*-installer dist/arrowloop-linux-amd64-installer
           cp bundles/arrowloop-linux-arm64-installer/*-installer dist/arrowloop-linux-arm64-installer
+          cp bundles/arrowloop-linux-amd64-flatpak/arrowloop-linux-amd64.flatpak dist/arrowloop-linux-amd64.flatpak
+          cp bundles/arrowloop-linux-arm64-flatpak/arrowloop-linux-arm64.flatpak dist/arrowloop-linux-arm64.flatpak
           chmod +x dist/arrowloop-linux-amd64 dist/arrowloop-linux-arm64 dist/arrowloop-linux-*-installer
           cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk dist/arrowloop-android-arm64.apk
           ls -lh dist
