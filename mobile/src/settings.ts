@@ -34,6 +34,8 @@ export type ThemeChoice = "system" | "dark" | "light";
 
 export interface Appearance {
   theme: ThemeChoice;
+  /** True black under the dark look, for OLED and AMOLED screens. */
+  oled: boolean;
   accent: string;
   rainbow: boolean;
   /**
@@ -67,6 +69,7 @@ export type JobView = "cards" | "compact";
 
 export const DEFAULT_APPEARANCE: Appearance = {
   theme: "system",
+  oled: false,
   accent: "#FCC419",
   rainbow: false,
   palette: [],

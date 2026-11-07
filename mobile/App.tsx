@@ -46,7 +46,7 @@ import { askNotifications, notificationsGranted } from "./src/screens/Settings";
 import { useDiscoWalk } from "./src/disco";
 import { useMotion } from "./src/motion";
 import { loadAppearance, useAppearance } from "./src/settings";
-import { contrastOn, space, text } from "./src/theme";
+import { contrastOn, raised, space, text } from "./src/theme";
 import { Glyph } from "./src/glyphs";
 import { Badge, Body, Button, Heading, Press, Screen, usePress, useTheme } from "./src/ui";
 import { engine } from "./src/engine";
@@ -458,7 +458,7 @@ function MoreSheet({
     <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
       <Pressable style={[styles.ground, { backgroundColor: p.scrim, paddingBottom: above }]} onPress={onClose}>
         {/* Swallows presses, so a tap between the rows does not close it. */}
-        <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }]}>
+        <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
           {MORE.filter((place) => place.screen !== "Anomalies" || anomaliesOn !== false).map((place) => {
             const count = counts[place.screen];
             return (

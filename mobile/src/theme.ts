@@ -2,7 +2,7 @@
 // web/src/tokens.css, which are CSS custom properties; the accent presets and
 // the rainbow are plain data and imported directly.
 
-import { I18nManager } from "react-native";
+import { I18nManager, type ViewStyle } from "react-native";
 
 import { DEFAULT_SHAPE, type Shape } from "../../web/src/lib/appearance";
 
@@ -33,6 +33,8 @@ export interface Palette {
   /** The dimming behind a floating window, GlimStone's `--glim-scrim`. A phone
    *  has no backdrop blur, so this carries the whole separation. */
   scrim: string;
+  /** The line around a raised surface where its shadow would vanish, as on black. */
+  ring?: string;
 }
 
 const dark: Palette = {
@@ -79,7 +81,29 @@ const light: Palette = {
   scrim: "rgba(0, 0, 0, 0.62)",
 };
 
-export const palettes: Record<Scheme, Palette> = { dark, light };
+/**
+ * The dark ramp on true black for OLED and AMOLED screens (GlimStone's rule
+ * 43): every surface one Carbon step down, the hover kept between the card and
+ * surface2, and a ring where a shadow would be. The text and state colours
+ * stay as dark has them.
+ */
+const oled: Palette = {
+  ...dark,
+  background: "#000000",
+  surface: "#161616",
+  surface2: "#262626",
+  surface3: "#393939",
+  hover: "#232323",
+  border: "#262626",
+  ring: "#262626",
+};
+
+export const palettes: Record<Scheme | "oled", Palette> = { dark, light, oled };
+
+/** The ring a floating surface draws in place of a shadow, on a palette that has one. */
+export function raised(p: Palette): ViewStyle | null {
+  return p.ring ? { borderWidth: 1, borderColor: p.ring } : null;
+}
 
 /**
  * The About card's brand marks per theme, adjusted from the published brand
