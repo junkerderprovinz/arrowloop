@@ -20,6 +20,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
+	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/hidden"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
@@ -149,6 +150,15 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	if err := j.Refused(); err != nil {
 		return nil, err
 	}
+	for {
+		p, err := r.preview(ctx, j)
+		if !r.fewerLogins(j, err) {
+			return p, err
+		}
+	}
+}
+
+func (r *Runner) preview(ctx context.Context, j job.Job) (*plan.Plan, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return nil, err
@@ -164,6 +174,36 @@ func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 
 	p, _, err := engine.Prepare(ctx, ends, db, opt)
 	return p, err
+}
+
+// fewerLogins steps down the connections to an FTP server that turned a login
+// away for the ones already open, and reports whether that leaves anything to
+// try again. A failure that names its side steps down that side alone.
+func (r *Runner) fewerLogins(j job.Job, err error) bool {
+	if err == nil {
+		return false
+	}
+	f := failure.Of(err.Error())
+	if f == nil || f.Code != failure.TooManyLogins {
+		return false
+	}
+	stepped := false
+	for _, s := range []struct{ name, side string }{{"left", j.Left}, {"right", j.Right}} {
+		if named := f.Params["side"]; named != "" && named != s.name {
+			continue
+		}
+		n, ok := job.StepDown(s.side)
+		if !ok {
+			continue
+		}
+		fewer := fmt.Sprintf("%d connections", n)
+		if n == 1 {
+			fewer = "one connection"
+		}
+		r.log("%s: the FTP server on the %s side turned a login away, trying again with %s", j.Name, s.name, fewer)
+		stepped = true
+	}
+	return stepped
 }
 
 // Run executes one job by name and returns what it did. The record is written
@@ -387,11 +427,11 @@ func (r *Runner) open(ctx context.Context, j job.Job) (apply.Ends, *state.DB, er
 		return apply.Ends{}, nil, err
 	}
 
-	left, err := rclonefs.NewFs(ctx, leftPath)
+	left, err := rclonefs.NewFs(ctx, job.Narrow(leftPath))
 	if err != nil {
 		return apply.Ends{}, nil, fmt.Errorf("left side %q: %w", leftPath, err)
 	}
-	right, err := rclonefs.NewFs(ctx, rightPath)
+	right, err := rclonefs.NewFs(ctx, job.Narrow(rightPath))
 	if err != nil {
 		apply.Ends{Left: left}.Close(ctx)
 		return apply.Ends{}, nil, fmt.Errorf("right side %q: %w", rightPath, err)
@@ -446,8 +486,19 @@ type decided struct {
 	keepOne bool
 }
 
-// executeAs is execute for a run that answers a finding.
+// executeAs is execute for a run that answers a finding. A run that failed
+// before it had a plan changed nothing, so it starts over when an FTP server
+// turned a login away and fewer connections are left to try.
 func (r *Runner) executeAs(ctx context.Context, j job.Job, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution, how decided, live *history.Live) (apply.Result, *plan.Plan, error) {
+	for {
+		res, p, err := r.executeOnce(ctx, j, only, shown, resolve, how, live)
+		if p != nil || !r.fewerLogins(j, err) {
+			return res, p, err
+		}
+	}
+}
+
+func (r *Runner) executeOnce(ctx context.Context, j job.Job, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution, how decided, live *history.Live) (apply.Result, *plan.Plan, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return apply.Result{}, nil, err

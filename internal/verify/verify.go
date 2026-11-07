@@ -162,7 +162,7 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 		if err != nil {
 			return rep, fmt.Errorf("the drive the %s side lives on is not attached: %s", side, volume.Describe(sideOf(j, side)))
 		}
-		f, err := rclonefs.NewFs(ctx, resolved)
+		f, err := rclonefs.NewFs(ctx, job.Narrow(resolved))
 		if err != nil {
 			return rep, fmt.Errorf("the %s side could not be opened: %w", side, err)
 		}

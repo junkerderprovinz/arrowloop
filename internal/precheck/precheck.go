@@ -150,7 +150,7 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 
 	opened := map[plan.Side]rclonefs.Fs{}
 	for _, side := range sides {
-		f, err := rclonefs.NewFs(ctx, paths[side])
+		f, err := rclonefs.NewFs(ctx, job.Narrow(paths[side]))
 		if err != nil {
 			rep.noteSide("sideUnreachable", side, true, "error", err.Error())
 			continue

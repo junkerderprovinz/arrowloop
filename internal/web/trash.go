@@ -430,7 +430,7 @@ func (s *Server) sideOf(ctx context.Context, name, side string) (rclonefs.Fs, in
 	if err != nil {
 		return nil, http.StatusServiceUnavailable, fmt.Errorf("the drive the %s side lives on is not attached: %s", side, volume.Describe(spec))
 	}
-	f, err := rclonefs.NewFs(ctx, resolved)
+	f, err := rclonefs.NewFs(ctx, job.Narrow(resolved))
 	if err != nil {
 		return nil, http.StatusBadGateway, fmt.Errorf("the %s side could not be opened: %w", side, err)
 	}
