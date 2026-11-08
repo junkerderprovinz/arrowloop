@@ -44,6 +44,7 @@ vi.mock('./lib/api', async (actual) => ({
     config: () => Promise.resolve({ jobs: [] }),
     settings: () => settings(),
     remotes: () => Promise.resolve({ remotes: [], backends: [], providers: [], unlisted: [] }),
+    instances: () => Promise.resolve([]),
     watch: (on: (ev: RunEvent) => void) => {
       emit = on
       return () => undefined
@@ -139,13 +140,21 @@ describe('the app', () => {
   it('gives every page an address, and Back returns to the one before', async () => {
     jobs.mockImplementation(() => Promise.resolve([{ name: 'photos', left: 'a', right: 'b', direction: 'both', recent: [] as Run[] } as Job]))
     show()
-    await waitFor(() => expect(window.location.pathname).toBe('/jobs'))
+    await waitFor(() => expect(window.location.pathname).toBe('/dashboard'))
     fireEvent.click(screen.getByRole('link', { name: 'Conflicts' }))
     await waitFor(() => expect(window.location.pathname).toBe('/conflicts'))
     act(() => {
       window.history.back()
     })
+    await waitFor(() => expect(window.location.pathname).toBe('/dashboard'))
+  })
+
+  it('opens on the jobs once the Overview is hidden', async () => {
+    localStorage.setItem('arrowloop.navPins', JSON.stringify({ dashboard: false }))
+    jobs.mockImplementation(() => Promise.resolve([{ name: 'photos', left: 'a', right: 'b', direction: 'both', recent: [] as Run[] } as Job]))
+    show()
     await waitFor(() => expect(window.location.pathname).toBe('/jobs'))
+    expect(screen.queryByRole('link', { name: 'Overview' })).toBeNull()
   })
 
   it('opens a page that is not in the sidebar on its settings tile', async () => {

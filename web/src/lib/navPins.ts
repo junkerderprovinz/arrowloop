@@ -1,9 +1,9 @@
-// Whether Targets and Instances also stand in the sidebar. The choice belongs to the person
+// Which of the pages that can leave the sidebar stand in it. The choice belongs to the person
 // at this browser, like the remembered settings tile.
 
 import { useMemo, useSyncExternalStore } from 'react'
 
-export type NavPins = { targets: boolean; instances: boolean }
+export type NavPins = { dashboard: boolean; targets: boolean; instances: boolean }
 
 const KEY = 'arrowloop.navPins'
 
@@ -15,9 +15,9 @@ function readRaw(): string {
   }
 }
 
-/** Each page starts on its tile only, until somebody pins it. */
+/** The Overview starts in the sidebar; Targets and Instances start on their tiles, until somebody pins them. */
 export function parsePins(raw: string): NavPins {
-  const pins: NavPins = { targets: false, instances: false }
+  const pins: NavPins = { dashboard: true, targets: false, instances: false }
   try {
     const stored: unknown = raw ? JSON.parse(raw) : null
     if (stored && typeof stored === 'object') {

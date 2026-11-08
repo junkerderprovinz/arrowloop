@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { BottomBar } from './BottomBar'
 
 const counts = { running: 0, conflicts: 3, trash: 0, findings: 0 }
-const extras = { targets: false, instances: false, anomalies: true }
+const extras = { dashboard: false, targets: false, instances: false, anomalies: true }
 
 afterEach(() => {
   cleanup()
@@ -23,6 +23,19 @@ describe('the bottom bar', () => {
       '/settings',
     ])
     expect(within(bar).getByRole('button', { name: 'More' })).toBeTruthy()
+  })
+
+  it('gives the Overview the first place and moves Settings into the sheet while it is pinned', () => {
+    render(<BottomBar extras={{ ...extras, dashboard: true }} counts={counts} pathname="/dashboard" signOut={false} />)
+    const bar = screen.getByRole('navigation')
+    expect(within(bar).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual([
+      '/dashboard',
+      '/jobs',
+      '/conflicts',
+      '/history',
+    ])
+    fireEvent.click(within(bar).getByRole('button', { name: 'More' }))
+    expect(within(screen.getByRole('dialog', { name: 'More' })).getByRole('link', { name: 'Settings' })).toBeTruthy()
   })
 
   it('opens the rest in a sheet, sign out last where a password is set', () => {

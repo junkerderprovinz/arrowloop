@@ -12,6 +12,7 @@ import { Conflicts } from './pages/Conflicts'
 import { History } from './pages/History'
 import { JobPage } from './pages/JobPage'
 import { Jobs } from './pages/Jobs'
+import { Overview } from './pages/Overview'
 import { Instances } from './pages/Instances'
 import { Targets } from './pages/Targets'
 import { Trash } from './pages/Trash'
@@ -371,7 +372,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       }),
     [pathname, search, pins, anomaliesOn, tiles, fresh],
   )
-  const extras = { targets: pins.targets, instances: pins.instances, anomalies: anomaliesOn === true }
+  const extras = { dashboard: pins.dashboard, targets: pins.targets, instances: pins.instances, anomalies: anomaliesOn === true }
   useLayoutEffect(() => {
     if ('redirect' in resolved) navigate(resolved.redirect, { replace: true })
   }, [resolved])
@@ -435,6 +436,17 @@ export function App({ signOut = false }: { signOut?: boolean }) {
 
   const page = !view ? null : view.page === 'welcome' ? (
     <Welcome fresh={fresh} />
+  ) : view.page === 'dashboard' ? (
+    <Overview
+      jobs={jobs}
+      runs={runs}
+      findings={findings?.open ?? []}
+      conflicts={conflicts?.conflicts}
+      counts={counts}
+      anomalies={anomaliesOn === true}
+      progress={progress}
+      onSaved={saved}
+    />
   ) : view.page === 'jobs' ? (
     <Jobs jobs={jobs} findings={findings?.open ?? []} progress={progress} conflicts={conflicts?.conflicts} onSaved={saved} />
   ) : view.page === 'job' ? (

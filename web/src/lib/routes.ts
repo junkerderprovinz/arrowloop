@@ -18,7 +18,7 @@ export const FORMER_TILES: Record<string, TileId> = {
 }
 
 export type View =
-  | { page: 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' | 'anomalies' | 'targets' | 'instances' }
+  | { page: 'dashboard' | 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' | 'anomalies' | 'targets' | 'instances' }
   | { page: 'job'; name: string }
   | { page: 'settings'; tile: TileId }
 
@@ -46,6 +46,11 @@ function decode(part: string): string {
   }
 }
 
+/** Where the app opens and where an address that leads nowhere lands: the Overview while it is pinned, else Jobs. */
+export function home(pins: NavPins): string {
+  return pins.dashboard ? '/dashboard' : '/jobs'
+}
+
 export function resolveRoute(pathname: string, search: URLSearchParams, ctx: RouteContext): Resolved {
   const query = search.toString() ? `?${search}` : ''
   const parts = pathname.split('/').filter(Boolean).map(decode)
@@ -54,7 +59,10 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
   switch (first) {
     case undefined:
       if (ctx.fresh === null) return { wait: true }
-      return { redirect: ctx.fresh ? '/welcome' : '/jobs' }
+      return { redirect: ctx.fresh ? '/welcome' : home(ctx.pins) }
+    case 'dashboard':
+      if (!ctx.pins.dashboard) return { redirect: '/jobs' }
+      return parts.length === 1 ? { view: { page: 'dashboard' } } : { redirect: '/dashboard' }
     case 'welcome':
       return parts.length === 1 ? { view: { page: 'welcome' } } : { redirect: '/welcome' }
     case 'jobs':
@@ -81,7 +89,7 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
       if (parts.length > 1) return { redirect: '/instances' }
       return ctx.pins.instances ? { view: { page: 'instances' } } : { redirect: `/settings/pairing${query}` }
   }
-  return { redirect: '/jobs' }
+  return { redirect: home(ctx.pins) }
 }
 
 function settings(tile: string | undefined, depth: number, query: string, ctx: RouteContext): Resolved {

@@ -10,6 +10,7 @@ import type { ComponentType } from 'react'
 import {
   IconAnomalies,
   IconConflict,
+  IconDashboard,
   IconGear,
   IconHistory,
   IconServer,
@@ -39,18 +40,30 @@ export interface NavDestination {
 }
 
 /**
- * The places that are not always in the rail: Targets and Instances while
- * pinned, Anomalies while switched on.
+ * The places that are not always in the rail: the Overview, Targets and
+ * Instances while pinned, Anomalies while switched on.
  */
-export type NavExtras = { targets: boolean; instances: boolean; anomalies: boolean }
+export type NavExtras = { dashboard: boolean; targets: boolean; instances: boolean; anomalies: boolean }
 
 /**
  * The whole navigation in sidebar order. A pin flips a flag and never removes
  * an entry, so the order between any two entries is the same everywhere.
  * Anomalies stands beside Conflicts, since both list what waits for an answer.
+ *
+ * The bar holds four places. The Overview takes the first one while it is
+ * pinned and Settings moves into the More sheet for it, as on the phone app.
  */
 export function destinations(extras: NavExtras): NavDestination[] {
   return [
+    {
+      to: '/dashboard',
+      labelKey: 'nav.overview',
+      icon: IconDashboard,
+      sidebar: extras.dashboard,
+      footer: false,
+      bar: extras.dashboard,
+      phone: extras.dashboard,
+    },
     { to: '/jobs', labelKey: 'nav.jobs', icon: IconSync, count: 'running', sidebar: true, footer: false, bar: true, phone: true },
     {
       to: '/conflicts',
@@ -90,7 +103,7 @@ export function destinations(extras: NavExtras): NavDestination[] {
       bar: false,
       phone: extras.instances,
     },
-    { to: '/settings', labelKey: 'nav.settings', icon: IconGear, sidebar: true, footer: true, bar: true, phone: true },
+    { to: '/settings', labelKey: 'nav.settings', icon: IconGear, sidebar: true, footer: true, bar: !extras.dashboard, phone: true },
   ]
 }
 

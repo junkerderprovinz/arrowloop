@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { jobPlace, resolveRoute, TILE_IDS, type RouteContext } from './routes'
 
 const ctx = (over: Partial<RouteContext> = {}): RouteContext => ({
-  pins: { targets: false, instances: false },
+  pins: { dashboard: false, targets: false, instances: false },
   anomalies: true,
   tiles: TILE_IDS,
   remembered: null,
@@ -20,7 +20,20 @@ describe('the addresses', () => {
     expect(go('/')).toEqual({ redirect: '/jobs' })
   })
 
+  it('open on the Overview while it is pinned', () => {
+    const pins = { dashboard: true, targets: false, instances: false }
+    expect(go('/', { pins })).toEqual({ redirect: '/dashboard' })
+    expect(go('/dashboard', { pins })).toEqual({ view: { page: 'dashboard' } })
+    expect(go('/dashboard/x', { pins })).toEqual({ redirect: '/dashboard' })
+    expect(go('/nowhere', { pins })).toEqual({ redirect: '/dashboard' })
+  })
+
+  it('lead the Overview to the jobs while it is hidden', () => {
+    expect(go('/dashboard')).toEqual({ redirect: '/jobs' })
+  })
+
   it('open on the welcome page while there is no job yet', () => {
+    expect(go('/', { fresh: true, pins: { dashboard: true, targets: false, instances: false } })).toEqual({ redirect: '/welcome' })
     expect(go('/', { fresh: true })).toEqual({ redirect: '/welcome' })
     expect(go('/welcome', { fresh: true })).toEqual({ view: { page: 'welcome' } })
   })
@@ -57,13 +70,13 @@ describe('the addresses', () => {
   })
 
   it('serve a pinned page at its own address', () => {
-    expect(go('/targets', { pins: { targets: true, instances: false } })).toEqual({ view: { page: 'targets' } })
-    expect(go('/instances', { pins: { targets: false, instances: true } })).toEqual({ view: { page: 'instances' } })
+    expect(go('/targets', { pins: { dashboard: false, targets: true, instances: false } })).toEqual({ view: { page: 'targets' } })
+    expect(go('/instances', { pins: { dashboard: false, targets: false, instances: true } })).toEqual({ view: { page: 'instances' } })
   })
 
   it('lead an unpinned Instances page to the Pairing tile that holds it', () => {
     expect(go('/instances')).toEqual({ redirect: '/settings/pairing' })
-    expect(go('/instances/x', { pins: { targets: false, instances: true } })).toEqual({ redirect: '/instances' })
+    expect(go('/instances/x', { pins: { dashboard: false, targets: false, instances: true } })).toEqual({ redirect: '/instances' })
   })
 
   it('open Settings on the tile that was open last', () => {

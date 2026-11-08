@@ -66,6 +66,19 @@ export const RELEASES: Release[] = [
     after: '2.5.0',
     changes: [
       {
+        id: 'overview',
+        at: ['/dashboard'],
+        where: ['nav.overview'],
+        text: 'new.change.overview',
+        names: {
+          overview: 'nav.overview',
+          sidebar: 'look.labelsSidebar',
+          settings: 'nav.settings',
+          look: 'settings.look',
+          appearance: 'phone.appearance',
+        },
+      },
+      {
         id: 'pairing',
         at: ['/settings/pairing'],
         where: ['nav.settings', 'settings.pairing'],
