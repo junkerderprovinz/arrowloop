@@ -1,24 +1,28 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState, type ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { jobStatus } from "../../web/src/lib/jobList";
-import { api, type Job, type OtherInstance } from "./api";
+import { jobStatus, latestRuns } from "../../web/src/lib/jobList";
+import { api, failed, type Job, type OtherInstance, type Run } from "./api";
 import { clock } from "./clock";
 import { Refusal } from "./fields";
 import { useT } from "./i18n";
 import { kindName, seenAt } from "./pairing";
 import { space, text } from "./theme";
-import { Badge, Body, Button, Caption, Section, useTheme } from "./ui";
+import { AxisLabel, Badge, Body, Button, Caption, Section, useTheme } from "./ui";
 
 // How often the overview asks the other instances again. Their runs reach the
 // phone only by asking.
 const REFRESH_MS = 15_000;
 
+/** How many of an instance's latest runs its card lists. */
+const RECENT = 3;
+
 /**
- * The jobs of every instance paired with this phone, a card per instance. A
- * job there can be started or stopped from here, and everything else is
- * changed on the instance itself. Outside a group, or with an engine that
- * cannot pair, it draws `empty`, once the engine has answered.
+ * The jobs and latest runs of every instance paired with this phone, a card
+ * per instance. A job there can be started or stopped from here, and
+ * everything else is changed on the instance itself. Outside a group, or
+ * with an engine that cannot pair, it draws `empty`, once the engine has
+ * answered.
  */
 export function OtherInstances({ firstHue, empty = null }: { firstHue: number; empty?: ReactNode }) {
   const { t, lang } = useT();
@@ -64,6 +68,7 @@ export function OtherInstances({ firstHue, empty = null }: { firstHue: number; e
             {other.state === "ok"
               ? jobs.map((job) => <OtherJob key={job.name} instance={other} job={job} onChanged={load} />)
               : null}
+            {other.state === "ok" && jobs.length > 0 ? <LatestRuns runs={latestRuns(jobs, RECENT)} /> : null}
           </Section>
         );
       })}
@@ -150,6 +155,34 @@ function Status({ job }: { job: Job }) {
   }
 }
 
+/**
+ * The instance's newest runs across its jobs: which job, whether it worked and
+ * when it ended. The history itself is read on the instance.
+ */
+function LatestRuns({ runs }: { runs: Run[] }) {
+  const { t, lang } = useT();
+  const { p, corners } = useTheme();
+  return (
+    <View style={[styles.well, { backgroundColor: p.surface2, ...corners.card }]}>
+      <AxisLabel>{t("activity.recent")}</AxisLabel>
+      {runs.length === 0 ? <Caption>{t("history.empty")}</Caption> : null}
+      {runs.map((run) => (
+        <View key={run.ID} style={styles.run}>
+          <Text style={[styles.runName, { color: p.text }]} numberOfLines={1}>
+            {run.Job}
+          </Text>
+          {failed(run) ? (
+            <Badge label={t("history.failed")} tone="fail" />
+          ) : (
+            <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
+          )}
+          <Caption>{clock(run.Finished || run.Started, lang)}</Caption>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   well: { padding: space.md, gap: space.sm },
   row: { flexDirection: "row", alignItems: "center", gap: space.md },
@@ -157,4 +190,6 @@ const styles = StyleSheet.create({
   name: { fontSize: text.body, fontWeight: "600" },
   quiet: { flexDirection: "row", alignItems: "center", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
+  run: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 28 },
+  runName: { flex: 1, minWidth: 0, fontSize: text.body },
 });
