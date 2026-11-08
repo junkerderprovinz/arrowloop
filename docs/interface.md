@@ -13,8 +13,8 @@ where nobody is looking; see [the command line](cli.md#web-and-daemon).
 
 ## Finding your way
 
-The sidebar holds five places: **Jobs**, **Conflicts**, **Anomalies**,
-**Trash** and **History**. Anomalies stands beside Conflicts, since both list
+The sidebar holds six places: **Overview**, **Jobs**, **Conflicts**,
+**Anomalies**, **Trash** and **History**. Anomalies stands beside Conflicts, since both list
 what waits for an answer, and it is there for as long as the anomaly notes are
 switched on (see [Anomalies](#anomalies)). A number beside an entry counts what
 is there: running jobs, open conflicts, findings, files in the trash. **Sign
@@ -30,9 +30,35 @@ the page is not in the sidebar.
 page in the sidebar after Targets, and `/instances` leads to the tile until
 then. It is hidden at first.
 
-In a narrow window the sidebar becomes a bar along the bottom: **Jobs**,
-**Conflicts**, **History**, **Settings** and **More**. More opens a sheet with
-Anomalies, Trash and Targets, and Instances once it is pinned.
+The **Sidebar** card on the **Look** tile holds all three switches in one
+place: Overview, Targets and Instances. The Overview is shown at first and
+ArrowLoop opens on it. Switched off, it leaves the sidebar, ArrowLoop opens on
+Jobs and `/dashboard` leads there too. The browser keeps the switches.
+
+In a narrow window the sidebar becomes a bar along the bottom with four places
+and **More**: **Overview**, **Jobs**, **Conflicts** and **History**, or **Jobs**,
+**Conflicts**, **History** and **Settings** while the Overview is switched off.
+More opens a sheet with Anomalies, Trash and Targets, Instances once it is
+pinned, and Settings whenever the Overview has its place on the bar.
+
+## The Overview
+
+`/dashboard` shows how everything stands at a glance. At the top one sentence
+sums it up beside the ArrowLoop mark in its colour: **All is well**, **All is
+well, with a few notes** while a finding only notes something, **Running now**
+while a job runs, or **Waiting for you** with a count when a last run failed, a
+conflict waits or a finding holds a job. A warning always wins over a run in
+progress. Under it stand the time of the last run and of the next one.
+
+**In numbers** counts the running, paused and failed jobs, the open conflicts
+and findings and what lies in the trash, and each number opens the page that
+lists it. **Jobs** lists every job in your own order with its status, its last
+and next run and **Run now**, and a click on a line opens the job. **Last
+runs** shows the five newest runs with what they moved, and **Every run** opens
+History. Once instances are paired, each one follows with its jobs, as on the
+Instances page. In the corner, **Run all** starts every job that is ready, or
+**Stop all runs** while something runs. Without a job yet, the page says how
+to start and **Add a job** opens the editor right there.
 
 ## The first start
 
@@ -562,9 +588,13 @@ when the window comes back to the front.
 
 ## On the phone
 
-The Android app shows the same places. Its bar holds **Jobs**, **Conflicts**,
-**History**, **Settings** and **More**, which opens Anomalies, Trash and
-Targets; Anomalies goes from there while its notes are switched off. Every job
+The Android app shows the same places. Its bar holds **Overview**, **Jobs**,
+**Conflicts**, **History** and **More**, which opens Anomalies, Trash, Targets
+and Settings; Anomalies goes from there while its notes are switched off. The
+Overview opens with the same sentence as on the web and lists the paired
+instances at its end. **Overview on the bar** under Appearance in Settings
+takes it off the bar: the app then opens on Jobs, and Settings moves from More
+to the fourth place. Every job
 card shows the same single status as on the web, and its **More** menu holds
 Open, Edit, Duplicate, Preview, Check this job, the trash of either side and
 Delete. A long press lifts a job and the finger carries it to its new place,
@@ -586,7 +616,7 @@ Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
 engine, Pairing, Settings backup, On a server, Desktop app, Problems?,
 About this app and Danger zone. Pairing opens the same steps as on the web,
-and its **Also show under More** switch adds Instances to the More sheet. Appearance has the **OLED** switch under
+and its **Also show under More** switch adds Instances to the More sheet. Appearance has the **Overview on the bar** switch and the **OLED** switch under
 Design, and from Android 12 on the accent row starts with the wand swatch,
 which takes Material You's colour from the wallpaper.
 
