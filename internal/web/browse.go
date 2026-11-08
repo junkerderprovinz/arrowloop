@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -45,29 +46,6 @@ type browseAnswer struct {
 // configured target. Files are left out, since a job's side is always a folder.
 func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	at := r.URL.Query().Get("path")
-
-	if strings.HasPrefix(at, volume.Prefix) {
-		browseVolume(w, at)
-		return
-	}
-
-	if name, dir, ok := remotes.Split(at); ok {
-		if dir == "" {
-			dir = remotes.Root(name)
-		}
-		folders, err := remotes.Folders(r.Context(), name, dir)
-		if err != nil {
-			http.Error(w, "cannot read "+at+": "+err.Error(), http.StatusBadRequest)
-			return
-		}
-		out := make([]browseEntry, 0, len(folders))
-		for _, f := range folders {
-			out = append(out, browseEntry{Name: f, Path: remotes.Join(name, path.Join(dir, f))})
-		}
-		writeJSON(w, http.StatusOK, browseAnswer{Path: remotes.Join(name, dir), Parent: remotes.Parent(name, dir), Entries: out})
-		return
-	}
-
 	if at == "" {
 		roots, err := browseRoots()
 		if err != nil {
@@ -77,6 +55,35 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, browseAnswer{Entries: roots})
 		return
 	}
+	answer, err := folderListing(r.Context(), at)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	writeJSON(w, http.StatusOK, answer)
+}
+
+// folderListing lists the folders in at, a folder on this machine, on a
+// marked drive or on a target.
+func folderListing(ctx context.Context, at string) (browseAnswer, error) {
+	if strings.HasPrefix(at, volume.Prefix) {
+		return volumeListing(at)
+	}
+
+	if name, dir, ok := remotes.Split(at); ok {
+		if dir == "" {
+			dir = remotes.Root(name)
+		}
+		folders, err := remotes.Folders(ctx, name, dir)
+		if err != nil {
+			return browseAnswer{}, fmt.Errorf("cannot read %s: %w", at, err)
+		}
+		out := make([]browseEntry, 0, len(folders))
+		for _, f := range folders {
+			out = append(out, browseEntry{Name: f, Path: remotes.Join(name, path.Join(dir, f))})
+		}
+		return browseAnswer{Path: remotes.Join(name, dir), Parent: remotes.Parent(name, dir), Entries: out}, nil
+	}
 
 	// Cleaned, so a stray "..\" cannot make the path mean something other
 	// than it reads.
@@ -84,29 +91,26 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 
 	names, err := subfolders(at)
 	if err != nil {
-		http.Error(w, "cannot read "+at+": "+err.Error(), http.StatusBadRequest)
-		return
+		return browseAnswer{}, fmt.Errorf("cannot read %s: %w", at, err)
 	}
 	out := make([]browseEntry, 0, len(names))
 	for _, name := range names {
 		out = append(out, browseEntry{Name: name, Path: filepath.Join(at, name)})
 	}
-	writeJSON(w, http.StatusOK, browseAnswer{Path: at, Parent: parentOf(at), Entries: out})
+	return browseAnswer{Path: at, Parent: parentOf(at), Entries: out}, nil
 }
 
-// browseVolume lists a folder on a marked drive and answers in drive paths, so
-// a job keeps finding the folder after the drive has changed its letter.
-func browseVolume(w http.ResponseWriter, at string) {
+// volumeListing lists a folder on a marked drive and answers in drive paths,
+// so a job keeps finding the folder after the drive has changed its letter.
+func volumeListing(at string) (browseAnswer, error) {
 	id, sub := splitVolume(at)
 	dir, err := volume.Resolve(volume.Prefix + id + "/" + sub)
 	if err != nil {
-		http.Error(w, "cannot read "+volume.Describe(at)+": "+err.Error(), http.StatusBadRequest)
-		return
+		return browseAnswer{}, fmt.Errorf("cannot read %s: %w", volume.Describe(at), err)
 	}
 	names, err := subfolders(dir)
 	if err != nil {
-		http.Error(w, "cannot read "+volume.Describe(at)+": "+err.Error(), http.StatusBadRequest)
-		return
+		return browseAnswer{}, fmt.Errorf("cannot read %s: %w", volume.Describe(at), err)
 	}
 	here := volume.Prefix + id + "/" + sub
 	out := make([]browseEntry, 0, len(names))
@@ -118,7 +122,7 @@ func browseVolume(w http.ResponseWriter, at string) {
 	if sub != "" {
 		parent = volume.Prefix + id + "/" + strings.TrimPrefix(path.Dir("/"+sub), "/")
 	}
-	writeJSON(w, http.StatusOK, browseAnswer{Path: here, Parent: parent, Entries: out, Shown: volume.Describe(here)})
+	return browseAnswer{Path: here, Parent: parent, Entries: out, Shown: volume.Describe(here)}, nil
 }
 
 // splitVolume parts a drive path into the drive's identity and a folder on

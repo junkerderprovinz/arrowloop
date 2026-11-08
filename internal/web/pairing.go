@@ -722,13 +722,10 @@ type groupRoute struct {
 	handle  func(s *Server, w http.ResponseWriter, r *http.Request)
 }
 
-// groupRoutes is everything another member of the group may ask: the job
-// list, starting and stopping a job, opening and saving one, the folders here
-// and the names of the targets to pick its sides from, and the decisions about
-// members an approved instance passes on. Settings, the targets themselves,
-// adding or removing a job, the trash, restoring and the phrase stay with the
-// owner at this instance. Only these routes exist for the group, however the
-// main router grows.
+// groupRoutes is everything another member of the group may ask. Settings,
+// the targets themselves, adding or removing a job, the trash and the phrase
+// stay with the owner, and a route the main router gains stays out of reach
+// until it is listed here.
 func groupRoutes() []groupRoute {
 	return []groupRoute{
 		{"GET " + federation.HelloPath, (*Server).groupHello},
@@ -738,7 +735,7 @@ func groupRoutes() []groupRoute {
 		{"GET /api/jobs/{name}/config", (*Server).groupReadJob},
 		{"PUT /api/jobs/{name}/config", (*Server).groupSaveJob},
 		{"GET /api/places", (*Server).groupPlaces},
-		{"GET /api/browse", (*Server).browse},
+		{"GET /api/browse", (*Server).groupBrowse},
 		{"DELETE /api/connect/members/{id}", (*Server).groupRemoveMember},
 		{"POST /api/connect/devices/{id}/approve", (*Server).groupApproveMember},
 		{"POST /api/connect/devices/{id}/refuse", (*Server).groupRefuseMember},

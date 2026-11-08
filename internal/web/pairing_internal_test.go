@@ -37,10 +37,6 @@ func TestTheGroupRoutesAreTheAllowlist(t *testing.T) {
 	}
 }
 
-// Another member of the group reads and edits the jobs, starts and stops one
-// and looks at the folders and the target names. What would change this
-// instance's settings or targets, add or remove a job, empty its trash or hand
-// out its phrase stays with the owner at it.
 func TestTheGroupReachesNothingElse(t *testing.T) {
 	dir := t.TempDir()
 	store, err := pairing.Open(dir, bytes.Repeat([]byte{3}, 32))
