@@ -26,9 +26,10 @@ with the switch, how many targets and drives are saved and **Open**, so the
 page is set up in one place. An old link to `/targets` leads to the tile while
 the page is not in the sidebar.
 
-**Instances** works the same way on the **Pairing** tile: its switch puts the
-page in the sidebar after Targets, and `/instances` leads to the tile until
-then. It is hidden at first.
+**Instances** is switched on in the **Sidebar** card on **Look**, as in
+BombVault, and then stands in the sidebar after Targets. Until then its cards
+follow the others on the **Pairing** tile, and `/instances` leads there. It is
+hidden at first.
 
 The **Sidebar** card on the **Look** tile holds all three switches in one
 place: Overview, Targets and Instances. The Overview is shown at first and
@@ -496,13 +497,20 @@ Pairing puts your ArrowLoop instances in one group, as BombVault and
 KnightLoader do: a server, the desktop app and the phone app alike. Once two
 instances approved each other, **Instances** on each one shows the jobs of the
 others, a card per instance with their last runs and their status, and **Run
-now** or **Cancel the run** works on them from there. Instances stands on the
-Pairing tile, or in the sidebar once **Also show in the sidebar** is on. Everything else, from a
-job's settings to its trash, you change on the instance itself.
+now** or **Cancel the run** works on them from there. Instances stands at the
+end of the Pairing tile, or in the sidebar once it is switched on in the
+**Sidebar** card on **Look**. Everything else, from a job's settings to its
+trash, you change on the instance itself.
+
+The tile is built as BombVault's and KnightLoader's: three numbered cards whose
+pictures play the steps below, then **Phrase**, **Instances** with who is in
+the group and where this instance stands, **This instance** with its name and
+key, and **Relay**.
 
 1. On the first instance, open **Settings**, **Pairing** and choose **Make a
-   phrase**. Twelve words appear, with a QR code beside them.
-2. On every other instance, choose **Enter phrase** and paste the words. A
+   phrase**. A window shows twelve words, with a QR code beside them.
+2. On every other instance, choose **Enter phrase** and paste the words into
+   the window that opens. A
    word that is not on the list is named with its place before anything is
    sent. On the phone the same screen is under Settings, Pairing; scan the QR
    code with the phone's camera and paste the words there.
@@ -516,13 +524,17 @@ set. **Remove** takes an instance out of the group on every instance: its key
 stops working for good, and it forgets the words. Entering them there again
 makes it a new instance that waits for approval. **Leave group** does the same
 from the instance itself. The name the others see is set under **Name in the
-group**, and it is the computer's name until you give one.
+group** on **This instance**, saved as you type, and it is the computer's name
+until you give one.
 
 The instances reach each other through a relay. **Project relay** is
 ParleyPort, which the project runs at `parleyport.halleluja.design`, free of
 charge. **Own relay** takes the address of one you run yourself, from the
 Unraid Community Apps or with Docker. **No relay** keeps the instance to
-itself. Every call between your instances is sealed with a key made from the
+itself. Each route says what it needs beside a picture of a message on its
+way, and **What the relay sees** opens the rest. While the relay cannot be
+reached, the card lists what to check. Every call between your instances is
+sealed with a key made from the
 twelve words and signed with a key each instance makes for itself, so the
 relay cannot read or change any of it. It sees which instance a message is
 for, how big it is, when it arrives and the IP addresses of your instances.

@@ -305,8 +305,8 @@ export function LookPage({
       </Card>
 
       {/* Every page that can leave the sidebar, in the sidebar's order, as
-          KnightLoader gathers them. Targets and Instances keep the same switch
-          on their own tiles. */}
+          KnightLoader gathers them. Targets keeps the same switch on its own
+          tile, and Instances has it only here, as in BombVault. */}
       <Card title={t('look.labelsSidebar')} hint={t('look.sidebarHint')} hueIndex={2}>
         <div data-new="sidebar-pins" className="flex flex-col gap-4">
           <ToggleRow

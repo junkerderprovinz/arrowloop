@@ -1,20 +1,20 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
+import Svg, { Path } from "react-native-svg";
 import Constants from "expo-constants";
 import { api, type ConnectInfo, type RelayConfig, type RelayMode } from "../api";
 import { QR } from "../donate";
 import { engine } from "../engine";
 import { Field, Refusal } from "../fields";
 import { Glyph } from "../glyphs";
-import { useT } from "../i18n";
-import type { MoreStack, Nav } from "../nav";
+import { useT, type TranslationKey } from "../i18n";
 import { OtherInstances } from "../otherInstances";
-import { kindName, pairStage, refusalText, seenAt } from "../pairing";
+import { kindName, pairStage, refusalText, seenAt, type PairStage } from "../pairing";
 import { checkPhrase, PHRASE_WORDS } from "../phraseWords";
-import { setAppearance, useAppearance } from "../settings";
+import { useAppearance } from "../settings";
 import { contrastOn, softOn, space, text, TOUCH } from "../theme";
-import { AxisLabel, Body, Button, Caption, Choice, InfoBubble, Page, Press, Section, Toggle, useTheme } from "../ui";
+import { AxisLabel, Badge, Body, Button, Caption, Choice, InfoBubble, Page, Press, Section, useTheme, type Tone } from "../ui";
 
 // How often the screen asks again who is there. Members come and go with the
 // relay connection, which nothing pushes here, and asking is also what lets
@@ -24,16 +24,22 @@ const REFRESH_MS = 10_000;
 // What the engine lets an announce carry.
 const MAX_NAME = 64;
 
+/** How long typing has to pause before a name or an address is saved. */
+const SETTLE_MS = 800;
+
 /**
- * Pairing, as on the web's tile: three steps that explain it, the twelve
- * words, who came with them, and the relay that carries the rest. The phone's
- * own engine does the pairing, and this screen only asks it.
+ * Pairing, as on the web's tile and in BombVault and KnightLoader: three
+ * numbered steps, the twelve words, who came with them, this phone, and the
+ * relay that carries the rest. While Instances is not under More, its cards
+ * follow. The phone's own engine does the pairing, and this screen only asks it.
  */
 export function Pairing() {
   const { t } = useT();
   const [group, setGroup] = useState<ConnectInfo | null>(null);
   const [relay, setRelay] = useState<RelayConfig | null>(null);
   const [error, setError] = useState(false);
+  const [createdHere, setCreatedHere] = useState(false);
+  const inMore = useAppearance().instancesInMore;
   // Counts the reads and the answers the cards hand up, so a read that was out
   // while a newer answer came back cannot put back the state from before.
   const asked = useRef(0);
@@ -64,27 +70,36 @@ export function Pairing() {
     }, [load]),
   );
 
+  const stage = group ? pairStage(group, createdHere) : "unpaired";
+
   return (
     <Page>
       <Steps />
       {error ? (
-        <Section title={t("settings.pairing")} hue={1}>
+        <Section title={t("settings.pairing")} hue={3}>
           <Refusal text={t("pairing.loadError")} />
         </Section>
       ) : null}
-      {group ? <PhraseCard group={group} onGroup={takeGroup} onRefresh={load} /> : null}
-      {group?.active ? <GroupCard group={group} onGroup={takeGroup} onRefresh={load} /> : null}
-      <InstancesCard />
-      {group && relay ? (
-        <RelayCard
-          group={group}
-          relay={relay}
-          onRelay={(r) => {
-            setRelay(r);
-            load();
-          }}
-        />
+      {group ? (
+        <>
+          <PhraseCard group={group} stage={stage} onCreatedHere={setCreatedHere} onGroup={takeGroup} onRefresh={load} />
+          <GroupCard group={group} stage={stage} onRefresh={load} />
+          <InstanceCard group={group} onGroup={takeGroup} />
+          {relay ? (
+            <RelayCard
+              group={group}
+              relay={relay}
+              stage={stage}
+              onRelay={(r) => {
+                setRelay(r);
+                load();
+              }}
+              onRefresh={load}
+            />
+          ) : null}
+        </>
       ) : null}
+      {inMore ? null : <OtherInstances firstHue={7} />}
     </Page>
   );
 }
@@ -103,62 +118,28 @@ async function nameOnce(info: ConnectInfo): Promise<ConnectInfo> {
   }
 }
 
-/**
- * The Instances page on this screen, as on the web's tile: the switch that
- * puts it in the More sheet, and under it the page whole while it is not there.
- */
-function InstancesCard() {
-  const { t } = useT();
-  const nav = useNavigation<Nav<MoreStack>>();
-  const pinned = useAppearance().instancesInMore;
-  return (
-    <>
-      <Section title={t("nav.instances")} hint={t("instances.hint")} hue={3}>
-        <Toggle
-          label={t("settings.showInMore")}
-          hint={t("settings.showInMoreHint")}
-          value={pinned}
-          onChange={(on) => setAppearance({ instancesInMore: on })}
-        />
-        {pinned ? (
-          <View style={styles.actions}>
-            <Button label={t("settings.open")} labelKey="settings.open" onPress={() => nav.navigate("Instances")} />
-          </View>
-        ) : null}
-      </Section>
-      {pinned ? null : <OtherInstances firstHue={4} />}
-    </>
-  );
-}
-
-/** Three numbered steps before any button does anything. */
+/** Three numbered cards before any button does anything. */
 function Steps() {
   const { t } = useT();
-  const { p, corners, accent } = useTheme();
+  const { p } = useTheme();
   const steps: { title: string; body: ReactNode }[] = [
     { title: t("pairing.step1Title"), body: t("pairing.step1Body") },
     { title: t("pairing.step2Title"), body: emphasize(t("pairing.step2Body", { button: MARK }), t("pairing.enter"), p.text) },
     { title: t("pairing.step3Title"), body: t("pairing.step3Body") },
   ];
   return (
-    <Section title={t("pairing.howTitle")} hue={0}>
+    <>
       {steps.map((s, i) => (
-        <View key={i} style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
-          <View style={styles.line}>
-            <View style={[styles.number, { backgroundColor: accent, ...corners.pill }]}>
-              <Text style={[styles.numberText, { color: contrastOn(accent) }]}>{i + 1}</Text>
-            </View>
-            <Text style={[styles.strong, { color: p.text }]}>{s.title}</Text>
-          </View>
+        <Section key={i} step={i + 1} title={s.title} hue={i}>
           <Body>{s.body}</Body>
-        </View>
+        </Section>
       ))}
-    </Section>
+    </>
   );
 }
 
 // Stands where a sentence names a button, so the name can go in bold.
-const MARK = "\u2063";
+const MARK = "⁣";
 
 /** The sentence with its MARK replaced by a bold `what`. */
 function emphasize(said: string, what: string, ink: string): ReactNode {
@@ -179,16 +160,19 @@ function emphasize(said: string, what: string, ink: string): ReactNode {
  */
 function PhraseCard({
   group,
+  stage,
+  onCreatedHere,
   onGroup,
   onRefresh,
 }: {
   group: ConnectInfo;
+  stage: PairStage;
+  onCreatedHere: (made: boolean) => void;
   onGroup: (g: ConnectInfo) => void;
   onRefresh: () => void;
 }) {
   const { t } = useT();
   const [shown, setShown] = useState<{ phrase: string; code: string } | null>(null);
-  const [createdHere, setCreatedHere] = useState(false);
   const [entering, setEntering] = useState(false);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -200,13 +184,11 @@ function PhraseCard({
   useEffect(() => {
     if (wasActive.current && !group.active) {
       setShown(null);
-      setCreatedHere(false);
+      onCreatedHere(false);
       setSaid(null);
     }
     wasActive.current = group.active;
-  }, [group.active]);
-
-  const stage = pairStage(group, createdHere);
+  }, [group.active, onCreatedHere]);
 
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -225,7 +207,7 @@ function PhraseCard({
       const made = await api.makePhrase();
       setShown({ phrase: made.phrase, code: made.code });
       setCopied(false);
-      setCreatedHere(true);
+      onCreatedHere(true);
       onGroup(await nameOnce(made.info));
     });
 
@@ -235,19 +217,19 @@ function PhraseCard({
       setCopied(false);
     });
 
+  const quit = (then: () => void = () => {}) =>
+    run(async () => {
+      await api.leaveGroup();
+      setShown(null);
+      onCreatedHere(false);
+      then();
+      onRefresh();
+    });
+
   const leave = () =>
     Alert.alert(t("pairing.leaveTitle"), t("pairing.leaveStakes"), [
       { text: t("confirm.cancel"), style: "cancel" },
-      {
-        text: t("pairing.leave"),
-        onPress: () =>
-          void run(async () => {
-            await api.leaveGroup();
-            setShown(null);
-            setCreatedHere(false);
-            onRefresh();
-          }),
-      },
+      { text: t("pairing.leave"), onPress: () => void quit() },
     ]);
 
   const copy = (phrase: string) =>
@@ -257,6 +239,7 @@ function PhraseCard({
     );
 
   let body: ReactNode;
+  let foot: ReactNode = null;
   if (entering) {
     body = (
       <PhraseEntry
@@ -271,61 +254,69 @@ function PhraseCard({
   } else if (stage === "unpaired") {
     body = (
       <>
-        <Way
-          glyph="IconAdd"
-          title={t("pairing.create")}
-          sub={t("pairing.createSub")}
-          disabled={busy}
-          onPress={() => void create()}
-        />
+        <Way glyph="IconAdd" title={t("pairing.create")} sub={t("pairing.createSub")} disabled={busy} onPress={() => void create()} />
         <Way glyph="IconPencil" title={t("pairing.enter")} sub={t("pairing.enterSub")} onPress={() => setEntering(true)} />
       </>
     );
   } else if (shown) {
     body = (
       <>
-        <WordSlots words={shown.phrase.split(/\s+/)} code={shown.code} />
         <View style={styles.line}>
           <View style={styles.grow}>
-            <Caption>{t("pairing.qrCaption")}</Caption>
+            <AxisLabel>{t("pairing.wordsLabel")}</AxisLabel>
           </View>
           <InfoBubble tip={t("pairing.wordsTip")} />
         </View>
-        <NextStep />
-        <View style={styles.actions}>
-          <Button label={t("common.close")} labelKey="common.close" glyph="IconClose" onPress={() => setShown(null)} />
-          <Button
-            label={copied ? t("common.copied") : t("common.copy")}
-            labelKey={copied ? "common.copied" : "common.copy"}
-            glyph={copied ? "IconCheck" : "IconCopy"}
-            onPress={() => copy(shown.phrase)}
-          />
-        </View>
+        <WordSlots words={shown.phrase.split(/\s+/)} code={shown.code} />
+        <Caption>{t("pairing.qrCaption")}</Caption>
+        {stage === "new" ? <NextStep /> : null}
+      </>
+    );
+    foot = (
+      <>
+        <Button label={t("common.close")} labelKey="common.close" glyph="IconClose" onPress={() => setShown(null)} />
+        <Button
+          label={copied ? t("common.copied") : t("common.copy")}
+          labelKey={copied ? "common.copied" : "common.copy"}
+          glyph={copied ? "IconCheck" : "IconCopy"}
+          onPress={() => copy(shown.phrase)}
+        />
       </>
     );
   } else {
-    const lead =
-      stage === "alone"
-        ? t("pairing.aloneLead")
-        : stage === "searching" || stage === "new"
-          ? t("pairing.searchingLead")
-          : t("pairing.pairedLead");
-    body = (
+    const lead: TranslationKey = stage === "alone" ? "pairing.aloneLead" : stage === "paired" ? "pairing.pairedLead" : "pairing.searchingLead";
+    body =
+      stage === "new" ? (
+        <>
+          <View style={[styles.line, styles.end]}>
+            <Caption>{t("pairing.notFirst")}</Caption>
+            <Button
+              label={t("pairing.enter")}
+              labelKey="pairing.enter"
+              glyph="IconPencil"
+              disabled={busy}
+              onPress={() => void quit(() => setEntering(true))}
+            />
+          </View>
+          <NextStep />
+        </>
+      ) : (
+        <Body>{t(lead)}</Body>
+      );
+    foot = (
       <>
-        <Body>{lead}</Body>
-        <View style={styles.actions}>
-          <Button label={t("pairing.show")} labelKey="pairing.show" glyph="IconEye" disabled={busy} onPress={() => void reveal()} />
-          <Button label={t("pairing.leave")} labelKey="pairing.leave" glyph="IconSignOut" disabled={busy} onPress={leave} />
-        </View>
+        <Button label={t("pairing.show")} labelKey="pairing.show" glyph="IconEye" disabled={busy} onPress={() => void reveal()} />
+        <Button label={t("pairing.leave")} labelKey="pairing.leave" glyph="IconSignOut" disabled={busy} onPress={leave} />
       </>
     );
   }
 
   return (
-    <Section title={t("pairing.phraseTitle")} hint={t("pairing.phraseHint")} hue={1}>
+    <Section title={t("pairing.phraseTitle")} hint={t("pairing.phraseHint")} hue={3}>
       {said && said.ok ? <Said>{said.text}</Said> : null}
       {body}
       {said && !said.ok ? <Refusal text={said.text} /> : null}
+      {foot ? <View style={[styles.actions, styles.end]}>{foot}</View> : null}
     </Section>
   );
 }
@@ -375,23 +366,24 @@ function Way({
   );
 }
 
-/** The way to the button to press on the other instance. */
+/** The button to press on the other instance, along the path to it, on the accent's faint wash. */
 function NextStep() {
   const { t } = useT();
-  const { p, corners } = useTheme();
+  const { p, corners, accent } = useTheme();
   const path = [t("nav.settings"), t("settings.pairing"), t("pairing.enter")];
   return (
-    <View style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
-      <Text style={[styles.strong, { color: p.text }]}>{t("pairing.nextTitle")}</Text>
-      <Body>
-        {path.map((step, i) => (
-          <Text key={i}>
-            {i > 0 ? " › " : ""}
-            <Text style={i === path.length - 1 ? [styles.strong, { color: p.text }] : null}>{step}</Text>
-          </Text>
-        ))}{" "}
-        {t("pairing.nextTail")}
-      </Body>
+    <View style={[styles.next, { backgroundColor: softOn(accent), ...corners.control }]}>
+      <View style={[styles.nextMark, { backgroundColor: accent }]}>
+        <Svg width={14} height={14} viewBox="0 0 20 20" fill="none" stroke={contrastOn(accent)} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+          <Path d="M3.8 10h11.9M11.3 5.6 15.7 10l-4.4 4.4" />
+        </Svg>
+      </View>
+      <View style={styles.grow}>
+        <Text style={[styles.strong, { color: p.text }]}>{t("pairing.nextTitle")}</Text>
+        <Body>
+          <Text style={[styles.strong, { color: p.text }]}>{path.join(" › ")}</Text> {t("pairing.nextTail")}
+        </Body>
+      </View>
     </View>
   );
 }
@@ -480,7 +472,7 @@ function PhraseEntry({ onBack, onPaired }: { onBack: () => void; onPaired: (g: C
       </Text>
       <WordSlots words={words} unknown={unknown} />
       {problem ? <Refusal text={problem} /> : null}
-      <View style={styles.actions}>
+      <View style={[styles.actions, styles.end]}>
         <Button label={t("preview.back")} labelKey="preview.back" onPress={onBack} />
         <Button
           label={t("pairing.join")}
@@ -496,33 +488,26 @@ function PhraseEntry({ onBack, onPaired }: { onBack: () => void; onPaired: (g: C
   );
 }
 
+/** The badge each stage shows on this phone's row once there is a group. */
+const STAGE_BADGE: Record<Exclude<PairStage, "unpaired" | "paired">, { tone: Tone; key: TranslationKey }> = {
+  new: { tone: "accent", key: "pairing.stateNew" },
+  searching: { tone: "neutral", key: "pairing.stateSearching" },
+  gone: { tone: "neutral", key: "pairing.stateSearching" },
+  alone: { tone: "warn", key: "pairing.stateAlone" },
+};
+
+const GLYPH: Record<string, string> = { phone: "IconPhone", desktop: "IconApp" };
+
 /**
  * Who is in the group: the instances that wait for approval, this phone with
- * its name and key, the others that are there and the approved ones that are
+ * where it stands, the others that are there and the approved ones that are
  * away, each with the button that takes it out.
  */
-function GroupCard({
-  group,
-  onGroup,
-  onRefresh,
-}: {
-  group: ConnectInfo;
-  onGroup: (g: ConnectInfo) => void;
-  onRefresh: () => void;
-}) {
+function GroupCard({ group, stage, onRefresh }: { group: ConnectInfo; stage: PairStage; onRefresh: () => void }) {
   const { t, lang } = useT();
   const { p, corners } = useTheme();
-  const [name, setName] = useState(group.name);
   const [busy, setBusy] = useState(false);
   const [refusal, setRefusal] = useState<string | null>(null);
-
-  // A field nobody has touched follows the name the engine reports, which
-  // changes once the phone has named itself after joining.
-  const known = useRef(group.name);
-  useEffect(() => {
-    setName((typed) => (typed === known.current ? group.name : typed));
-    known.current = group.name;
-  }, [group.name]);
 
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -553,25 +538,24 @@ function GroupCard({
   };
 
   const shownName = (n: string) => n || t("pairing.thisInstance");
-  const nobody = group.members.length === 0 && group.away.length === 0 && group.pending.length === 0;
-  const kind = kindName(t, group.deployment);
+  const remove = (id: string, who: string) => (
+    <Button label={t("pairing.remove")} labelKey="pairing.remove" glyph="IconKeyRevoke" disabled={busy} onPress={() => ask("remove", id, who)} />
+  );
+  const badge = stage !== "unpaired" && stage !== "paired" ? STAGE_BADGE[stage] : null;
 
   return (
-    <Section title={t("pairing.groupTitle")} hint={t("pairing.groupHint")} hue={2}>
+    <Section title={t("nav.instances")} hint={t("pairing.groupHint")} hue={4}>
       {group.awaiting ? (
-        <View
-          accessibilityRole="alert"
-          style={[styles.note, { backgroundColor: softOn(p.warnInk), ...corners.control }]}
-        >
+        <View accessibilityRole="alert" style={[styles.note, { backgroundColor: softOn(p.warnInk), ...corners.control }]}>
           <Text style={[styles.noteText, { color: p.text }]}>{t("pairing.awaiting")}</Text>
         </View>
       ) : null}
 
       {group.pending.length > 0 ? (
-        <>
+        <View style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
           <AxisLabel hint={t("pairing.pendingTip")}>{t("pairing.pendingTitle")}</AxisLabel>
           {group.pending.map((m) => (
-            <Member key={m.id} name={shownName(m.name)} facts={[t("pairing.fingerprint", { fingerprint: m.fingerprint })]}>
+            <Member key={m.id} glyph="IconServer" name={shownName(m.name)} note={t("pairing.fingerprint", { fingerprint: m.fingerprint })}>
               <Button
                 label={t("pairing.refuse")}
                 labelKey="pairing.refuse"
@@ -589,195 +573,297 @@ function GroupCard({
               />
             </Member>
           ))}
-        </>
+        </View>
       ) : null}
 
-      <View style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
-        <View style={styles.line}>
-          <Text style={[styles.strong, { color: p.text }]}>{t("pairing.thisInstance")}</Text>
-          {kind ? <Caption>{kind}</Caption> : null}
-        </View>
-        {group.fingerprint ? (
-          <View style={styles.line}>
-            <View style={styles.grow}>
-              <Caption>{t("pairing.ownKey", { fingerprint: group.fingerprint })}</Caption>
-            </View>
-            <InfoBubble tip={t("pairing.ownKeyTip")} />
-          </View>
-        ) : null}
-        <Field label={t("pairing.nameLabel")} hint={t("pairing.nameHint")} value={name} onChange={setName} />
-        <View style={styles.actions}>
-          <Button
-            label={t("pairing.nameSave")}
-            labelKey="pairing.nameSave"
-            glyph="IconSave"
-            disabled={busy || name === group.name}
-            onPress={() => void run(async () => onGroup(await api.renameInstance(name)))}
-          />
-        </View>
-      </View>
-
+      <Member glyph={GLYPH[group.deployment] ?? "IconServer"} name={shownName(group.name)} mark={t("pairing.thisInstance")}>
+        {stage === "paired" ? <Approved label={t("pairing.paired")} /> : null}
+        {badge ? <Badge label={t(badge.key)} tone={badge.tone} /> : null}
+      </Member>
       {group.members.map((m) => (
-        <Member
-          key={m.id}
-          name={m.name}
-          live
-          facts={[kindName(t, m.deployment), t("pairing.online"), m.approved ? t("pairing.approved") : ""]}
-        >
-          <Button
-            label={t("pairing.remove")}
-            labelKey="pairing.remove"
-            glyph="IconKeyRevoke"
-            disabled={busy}
-            onPress={() => ask("remove", m.id, m.name)}
-          />
+        <Member key={m.id} glyph={GLYPH[m.deployment] ?? "IconServer"} name={m.name || m.id} mark={kindName(t, m.deployment)}>
+          {m.approved ? <Approved label={t("pairing.approved")} /> : <Badge label={t("pairing.pendingTitle")} tone="warn" />}
+          {remove(m.id, m.name)}
         </Member>
       ))}
       {group.away.map((m) => (
         <Member
           key={m.id}
-          name={m.name}
-          facts={[kindName(t, m.deployment), t("pairing.lastSeen", { time: seenAt(lang, m.lastSeen) })]}
+          glyph={GLYPH[m.deployment] ?? "IconServer"}
+          name={m.name || m.id}
+          mark={kindName(t, m.deployment)}
+          note={m.lastSeen > 0 ? t("pairing.lastSeen", { time: seenAt(lang, m.lastSeen) }) : undefined}
         >
-          <Button
-            label={t("pairing.remove")}
-            labelKey="pairing.remove"
-            glyph="IconKeyRevoke"
-            disabled={busy}
-            onPress={() => ask("remove", m.id, m.name)}
-          />
+          <Badge label={t("pairing.inactive")} />
+          {remove(m.id, m.name)}
         </Member>
       ))}
-      {nobody ? <Body muted>{t("pairing.nobodyYet")}</Body> : null}
+      {stage === "new" ? <WaitRow text={t("pairing.waitNext")} /> : null}
+      {stage === "searching" || stage === "alone" || stage === "gone" ? <WaitRow text={t("pairing.searching")} /> : null}
       {refusal ? <Refusal text={refusal} /> : null}
     </Section>
   );
 }
 
-/** One instance of the group: its name, what it is and how it stands, and what can be done about it. */
+/** Approved is a state and nothing to press, so it is a dot and a word. */
+function Approved({ label }: { label: string }) {
+  const { p } = useTheme();
+  return (
+    <View style={styles.line}>
+      <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
+      <Caption>{label}</Caption>
+    </View>
+  );
+}
+
+/** One instance of the group: a glyph, its name and kind, how it stands, and what can be done about it. */
 function Member({
+  glyph,
   name,
-  facts,
-  live = false,
+  mark,
+  note,
   children,
 }: {
+  glyph: string;
   name: string;
-  facts: string[];
-  live?: boolean;
-  children: ReactNode;
+  mark?: string;
+  note?: string;
+  children?: ReactNode;
 }) {
-  const { p, corners } = useTheme();
+  const { p, accentInk } = useTheme();
   return (
-    <View style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
+    <View style={[styles.member, { borderTopColor: p.border }]}>
       <View style={styles.line}>
-        <View style={[styles.dot, { backgroundColor: live ? p.okSolid : p.textMuted }]} />
+        <Glyph name={glyph} color={accentInk} size={18} />
         <Text style={[styles.strong, styles.grow, { color: p.text }]}>{name}</Text>
+        {mark ? <Text style={[styles.mark, { color: p.textSub }]}>{mark}</Text> : null}
       </View>
-      <Caption>{facts.filter(Boolean).join(" · ")}</Caption>
-      <View style={styles.actions}>{children}</View>
+      {note ? <Caption>{note}</Caption> : null}
+      {children ? <View style={[styles.actions, styles.end]}>{children}</View> : null}
+    </View>
+  );
+}
+
+/** A line under the group that says it is still waiting. */
+function WaitRow({ text: said }: { text: string }) {
+  const { p, accentInk } = useTheme();
+  return (
+    <View style={[styles.line, styles.member, { borderTopColor: p.border }]}>
+      <View style={styles.line}>
+        {[0, 1, 2].map((i) => (
+          <View key={i} style={[styles.waitDot, { backgroundColor: accentInk }]} />
+        ))}
+      </View>
+      <Caption>{said}</Caption>
     </View>
   );
 }
 
 /**
+ * This phone as the others see it: the name it goes by, saved on its own once
+ * typing pauses, and the key to compare when it waits for approval.
+ */
+function InstanceCard({ group, onGroup }: { group: ConnectInfo; onGroup: (g: ConnectInfo) => void }) {
+  const { t } = useT();
+  const [name, setName] = useState(group.name);
+  const [refusal, setRefusal] = useState<string | null>(null);
+  const typing = useRef(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // The screen reads the group every few seconds, which must not undo what is being typed.
+  useEffect(() => {
+    if (!typing.current) setName(group.name);
+  }, [group.name]);
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  function type(next: string) {
+    typing.current = true;
+    setName(next);
+    setRefusal(null);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      api
+        .renameInstance(next)
+        .then(onGroup, (e: unknown) => setRefusal(refusalText(t, e)))
+        .finally(() => {
+          typing.current = false;
+        });
+    }, SETTLE_MS);
+  }
+
+  return (
+    <Section title={t("pairing.thisInstance")} hue={5}>
+      <Field label={t("pairing.nameLabel")} hint={t("pairing.nameHint")} value={name} onChange={type} />
+      {refusal ? <Refusal text={refusal} /> : null}
+      {group.fingerprint ? (
+        <View style={styles.line}>
+          <View style={styles.grow}>
+            <Caption>{t("pairing.ownKey", { fingerprint: group.fingerprint })}</Caption>
+          </View>
+          <InfoBubble tip={t("pairing.ownKeyTip")} />
+        </View>
+      ) : null}
+    </Section>
+  );
+}
+
+const CLOUD = "M5.4 16.5h9.2a3.9 3.9 0 0 0 .6-7.8A5.4 5.4 0 0 0 4.9 7.3a4.6 4.6 0 0 0 .5 9.2z";
+
+/** A relay route as a filled glyph, as the web's selector draws it. */
+function RouteMark({ mode, ink }: { mode: RelayMode; ink: string }) {
+  if (mode === "own") {
+    return (
+      <Svg width={18} height={18} viewBox="0 0 20 20" fill={ink}>
+        <Path d="M10 2.4 2.3 9.2c-.5.4-.2 1.2.5 1.2h1.6V17a1 1 0 0 0 1 1h3.1v-4.6h3V18h3.1a1 1 0 0 0 1-1v-6.6h1.6c.7 0 1-.8.5-1.2z" />
+      </Svg>
+    );
+  }
+  return (
+    <Svg width={18} height={18} viewBox="0 0 20 20" fill={ink}>
+      <Path d={CLOUD} opacity={mode === "off" ? 0.55 : 1} />
+      {mode === "off" ? <Path d="M3.2 3.2l13.6 13.6" stroke={ink} strokeWidth={1.8} strokeLinecap="round" /> : null}
+    </Svg>
+  );
+}
+
+const COPY: Record<RelayMode, { name: TranslationKey; sentence: TranslationKey; need: TranslationKey }> = {
+  project: { name: "relay.project", sentence: "relay.projectSentence", need: "relay.projectNeed" },
+  own: { name: "relay.own", sentence: "relay.ownSentence", need: "relay.ownNeed" },
+  off: { name: "relay.off", sentence: "relay.offSentence", need: "relay.offNeed" },
+};
+
+/**
  * Which relay carries the group: the project's, one of the owner's own, or
- * none, with what each one sees.
+ * none. Each route says in one sentence what it is and what it needs. Every
+ * control saves on its own.
  */
 function RelayCard({
   group,
   relay,
+  stage,
   onRelay,
+  onRefresh,
 }: {
   group: ConnectInfo;
   relay: RelayConfig;
+  stage: PairStage;
   onRelay: (r: RelayConfig) => void;
+  onRefresh: () => void;
 }) {
   const { t } = useT();
   const { p } = useTheme();
+  const [mode, setMode] = useState<RelayMode>(relay.mode);
   const [address, setAddress] = useState(relay.relayUrl);
-  const [busy, setBusy] = useState(false);
   const [refusal, setRefusal] = useState<string | null>(null);
+  const typing = useRef(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  async function save(change: { mode?: RelayMode; relayUrl?: string }) {
-    setBusy(true);
+  // The screen reads the relay every few seconds, which must not undo what is being typed or picked.
+  useEffect(() => {
+    if (!typing.current) setAddress(relay.relayUrl);
+  }, [relay.relayUrl]);
+  useEffect(() => setMode(relay.mode), [relay.mode]);
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  function pick(next: RelayMode) {
+    if (next === mode) return;
+    const before = mode;
+    setMode(next);
     setRefusal(null);
-    try {
-      onRelay(await api.saveRelay(change));
-    } catch (e) {
+    api.saveRelay({ mode: next }).then(onRelay, (e: unknown) => {
+      setMode(before);
       setRefusal(refusalText(t, e));
-    } finally {
-      setBusy(false);
-    }
+    });
+  }
+
+  function type(next: string) {
+    typing.current = true;
+    setAddress(next);
+    setRefusal(null);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      api
+        .saveRelay({ relayUrl: next })
+        .then(onRelay, (e: unknown) => setRefusal(refusalText(t, e)))
+        .finally(() => {
+          typing.current = false;
+        });
+    }, SETTLE_MS);
   }
 
   // React Native's URL has no `host`, so the scheme and the path are cut off by hand.
   const host = relay.projectRelayUrl.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "").split("/")[0] ?? "";
-  const sentence =
-    relay.mode === "project"
-      ? t("relay.projectSentence", { host })
-      : relay.mode === "own"
-        ? t("relay.ownSentence")
-        : t("relay.offSentence");
+  const copy = COPY[mode];
+  const state: { label: string; tone: Tone } =
+    mode === "off"
+      ? { label: t("relay.off"), tone: "neutral" }
+      : !group.active
+        ? { label: t("relay.noGroup"), tone: "neutral" }
+        : relay.connected
+          ? { label: t("relay.connected"), tone: "ok" }
+          : { label: t("relay.notConnected"), tone: "warn" };
+
+  const sees = () =>
+    Alert.alert(t("relay.seesTitle"), `${t("relay.seesLabel")} ${t("relay.sees")}\n\n${t("relay.notSeesLabel")} ${t("relay.notSees")}`);
 
   return (
-    <Section title={t("relay.title")} hint={t("relay.hint")} hue={5}>
+    <Section title={t("relay.title")} hint={t("relay.hint")} hue={6}>
       <Choice<RelayMode>
         hue={0}
-        options={[
-          { value: "project", label: t("relay.project") },
-          { value: "own", label: t("relay.own") },
-          { value: "off", label: t("relay.off") },
-        ]}
-        value={relay.mode}
-        disabled={busy}
-        onChange={(mode) => {
-          if (mode !== relay.mode) void save({ mode });
-        }}
+        options={(["project", "own", "off"] as const).map((m) => ({
+          value: m,
+          label: t(COPY[m].name),
+          mark: (ink: string) => <RouteMark mode={m} ink={ink} />,
+        }))}
+        value={mode}
+        onChange={pick}
       />
-      <Body>{sentence}</Body>
-      {relay.mode === "own" ? (
-        <>
-          <Field
-            label={t("relay.address")}
-            value={address}
-            onChange={setAddress}
-            placeholder="wss://relay.example.org"
-          />
-          <View style={styles.actions}>
-            <Button
-              label={t("relay.save")}
-              labelKey="relay.save"
-              glyph="IconSave"
-              disabled={busy || address === relay.relayUrl}
-              onPress={() => void save({ relayUrl: address })}
-            />
+      <View style={[styles.line, styles.end]}>
+        <Badge label={state.label} tone={state.tone} />
+      </View>
+      <Body>{mode === "project" ? t(copy.sentence, { host }) : t(copy.sentence)}</Body>
+      <Body>
+        <Text style={[styles.strong, { color: p.text }]}>{t("relay.needLabel")} </Text>
+        {t(copy.need)}
+      </Body>
+      {mode === "own" ? <Field label={t("relay.address")} value={address} onChange={type} placeholder="wss://relay.example.org" /> : null}
+      {mode !== "off" ? (
+        <View style={styles.line}>
+          <View style={styles.grow}>
+            <Body>{t("relay.e2e")}</Body>
           </View>
-        </>
+          <InfoBubble tip={t("relay.e2eTip")} />
+        </View>
       ) : null}
-      {relay.mode !== "off" ? (
-        group.active ? (
-          <View style={styles.line}>
-            <View style={[styles.dot, { backgroundColor: relay.connected ? p.okSolid : p.failSolid }]} />
-            <Body>{relay.connected ? t("relay.connected") : t("relay.notConnected")}</Body>
-          </View>
-        ) : (
-          <Body muted>{t("relay.noGroup")}</Body>
-        )
-      ) : null}
-      {relay.mode !== "off" ? (
-        <>
-          <View>
-            <Text style={[styles.strong, { color: p.text }]}>{t("relay.seesLabel")}</Text>
-            <Body>{t("relay.sees")}</Body>
-          </View>
-          <View>
-            <Text style={[styles.strong, { color: p.text }]}>{t("relay.notSeesLabel")}</Text>
-            <Body>{t("relay.notSees")}</Body>
-          </View>
-        </>
+      {stage !== "unpaired" && mode !== "off" && !relay.connected ? (
+        <RelayCheck mode={mode} host={host} onRefresh={onRefresh} />
       ) : null}
       {refusal ? <Refusal text={refusal} /> : null}
+      {mode !== "off" ? (
+        <View style={[styles.actions, styles.end]}>
+          <Button label={t("relay.seesTitle")} labelKey="relay.seesTitle" glyph="IconEye" onPress={sees} />
+        </View>
+      ) : null}
     </Section>
+  );
+}
+
+/** What to look at on this phone while the relay cannot be reached. */
+function RelayCheck({ mode, host, onRefresh }: { mode: RelayMode; host: string; onRefresh: () => void }) {
+  const { t } = useT();
+  const { p, corners } = useTheme();
+  const items = [mode === "project" ? t("pairing.relayCheckProject", { host }) : t("pairing.relayCheckOwn"), t("pairing.relayCheckFilter")];
+  return (
+    <View style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
+      <AxisLabel>{t("pairing.relayCheckOpen")}</AxisLabel>
+      <Body>{t("pairing.relayCheckLead")}</Body>
+      {items.map((item) => (
+        <Body key={item}>{`• ${item}`}</Body>
+      ))}
+      <View style={[styles.actions, styles.end]}>
+        <Button label={t("pairing.checkAgain")} labelKey="pairing.checkAgain" glyph="IconRetry" onPress={onRefresh} />
+      </View>
+    </View>
   );
 }
 
@@ -786,16 +872,19 @@ const styles = StyleSheet.create({
   well: { padding: space.md, gap: space.sm },
   line: { flexDirection: "row", alignItems: "center", gap: space.sm, flexWrap: "wrap" },
   grow: { flex: 1, minWidth: 0 },
+  end: { justifyContent: "flex-end" },
   // Wraps, or two long labels clip on a narrow phone.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   strong: { fontSize: text.body, fontWeight: "600" },
-  number: { width: 22, height: 22, alignItems: "center", justifyContent: "center" },
-  numberText: { fontSize: text.meta, fontWeight: "600" },
+  mark: { fontSize: text.meta, textTransform: "uppercase", letterSpacing: 1.4 },
   way: { flexDirection: "row", alignItems: "center", gap: space.md, padding: space.lg, minHeight: TOUCH },
   wayMark: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
+  next: { flexDirection: "row", alignItems: "flex-start", gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.md },
+  nextMark: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   dimmed: { opacity: 0.45 },
   note: { paddingHorizontal: space.md, paddingVertical: space.sm + 2 },
   noteText: { fontSize: text.subline, lineHeight: 18 },
+  member: { gap: space.xs, paddingTop: space.sm, borderTopWidth: StyleSheet.hairlineWidth },
   // Two words to a row: the longest on the list still fits beside its number.
   slots: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   slot: {
@@ -811,5 +900,6 @@ const styles = StyleSheet.create({
   slotWord: { flex: 1, fontFamily: "monospace", fontSize: text.subline },
   qr: { alignItems: "center", paddingTop: space.sm },
   count: { fontSize: text.meta, alignSelf: "flex-end" },
-  dot: { width: 8, height: 8, borderRadius: 4 },
+  dot: { width: 7, height: 7, borderRadius: 4 },
+  waitDot: { width: 6, height: 6, borderRadius: 3 },
 });

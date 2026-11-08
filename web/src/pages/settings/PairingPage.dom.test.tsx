@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // The Pairing tile walks one instance through making the twelve words and
 // another through entering them, then lists who waits for approval.
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ConnectInfo, RelayConfig } from '../../lib/api'
@@ -31,6 +31,7 @@ vi.mock('../../lib/api', async (original) => ({
 }))
 
 import { ApiError } from '../../lib/api'
+import { en } from '../../lib/i18n'
 import { PairingPage } from './PairingPage'
 
 // jsdom has no ResizeObserver, which the relay selector measures its room with.
@@ -97,7 +98,7 @@ describe('the Pairing tile', () => {
     render(<PairingPage />)
     fireEvent.click(await screen.findByRole('button', { name: /enter phrase/i }))
 
-    const field = screen.getByRole('textbox')
+    const field = screen.getByRole('textbox', { name: en['pairing.enterLabel'] })
     fireEvent.change(field, { target: { value: 'orbit wagon lemmon ' } })
     expect(screen.getByRole('alert').textContent).toContain('Word 3 ("lemmon")')
     expect((screen.getByRole('button', { name: 'Pair' }) as HTMLButtonElement).disabled).toBe(true)
@@ -114,7 +115,7 @@ describe('the Pairing tile', () => {
     joinGroup.mockRejectedValue(new ApiError('seedphrase: checksum', 400, 'checksum'))
     render(<PairingPage />)
     fireEvent.click(await screen.findByRole('button', { name: /enter phrase/i }))
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: WORDS } })
+    fireEvent.change(screen.getByRole('textbox', { name: en['pairing.enterLabel'] }), { target: { value: WORDS } })
     fireEvent.click(screen.getByRole('button', { name: 'Pair' }))
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/don't fit together/))
   })
@@ -126,8 +127,9 @@ describe('the Pairing tile', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Show phrase' }))
     expect(revealPhrase).not.toHaveBeenCalled()
 
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'secret' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Show phrase' }))
+    const dialog = screen.getByRole('dialog')
+    fireEvent.change(within(dialog).getByLabelText('Password'), { target: { value: 'secret' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Show phrase' }))
     await waitFor(() => expect(revealPhrase).toHaveBeenCalledWith('secret'))
     expect(await screen.findByRole('list', { name: 'The twelve words' })).toBeTruthy()
   })
@@ -145,5 +147,32 @@ describe('the Pairing tile', () => {
     expect(await screen.findByText('Key 1a2b 3c4d 5e6f 7a8b')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Approve' }))
     await waitFor(() => expect(approveMember).toHaveBeenCalledWith('b'.repeat(40)))
+  })
+  it('draws the three steps as numbered cards, each with its picture', async () => {
+    connect.mockResolvedValue(outside)
+    const { container } = render(<PairingPage />)
+    const steps = await screen.findByRole('region', { name: en['pairing.howTitle'] })
+    expect(within(steps).getAllByRole('heading').map((h) => h.textContent)).toEqual([
+      `1${en['pairing.step1Title']}`,
+      `2${en['pairing.step2Title']}`,
+      `3${en['pairing.step3Title']}`,
+    ])
+    expect(container.querySelectorAll('svg.al-scene-pic')).toHaveLength(3)
+  })
+
+  it('leaves the sidebar switch for Instances to the Look tile', async () => {
+    connect.mockResolvedValue(outside)
+    render(<PairingPage />)
+    await screen.findByRole('button', { name: /make a phrase/i })
+    expect(screen.queryByText(en['settings.showInSidebar'])).toBeNull()
+    expect(screen.queryByRole('switch')).toBeNull()
+  })
+
+  it('draws the relay route the owner picked, with its picture', async () => {
+    connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
+    relay.mockResolvedValue({ ...relayConfig, connected: true })
+    render(<PairingPage />)
+    expect(await screen.findByRole('img', { name: en['relay.pic.relay'] })).toBeTruthy()
+    expect(screen.getByTestId('relay-state').textContent).toBe(en['relay.connected'])
   })
 })

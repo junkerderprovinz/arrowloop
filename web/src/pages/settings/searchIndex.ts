@@ -182,10 +182,10 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
   ],
   pairing: [
     { title: 'pairing.howTitle', rows: [], body: ['pairing.step1Body', 'pairing.step3Body'] },
-    { title: 'pairing.phraseTitle', hint: 'pairing.phraseHint', rows: [{ key: 'pairing.create' }, { key: 'pairing.enter' }, { key: 'pairing.show' }, { key: 'pairing.nameLabel', hint: 'pairing.nameHint' }] },
-    { title: 'pairing.groupTitle', hint: 'pairing.groupHint', rows: [{ key: 'pairing.pendingTitle', hint: 'pairing.pendingTip' }] },
-    { title: 'nav.instances', hint: 'instances.hint', rows: [SIDEBAR_ROW] },
-    { title: 'relay.title', hint: 'relay.hint', rows: [{ key: 'relay.project' }, { key: 'relay.own' }, { key: 'relay.off' }] },
+    { title: 'pairing.phraseTitle', hint: 'pairing.phraseHint', rows: [{ key: 'pairing.create' }, { key: 'pairing.enter' }, { key: 'pairing.show' }] },
+    { title: 'nav.instances', hint: 'pairing.groupHint', rows: [{ key: 'pairing.pendingTitle', hint: 'pairing.pendingTip' }] },
+    { title: 'pairing.thisInstance', rows: [{ key: 'pairing.nameLabel', hint: 'pairing.nameHint' }] },
+    { title: 'relay.title', hint: 'relay.hint', rows: [{ key: 'relay.project' }, { key: 'relay.own' }, { key: 'relay.off' }, { key: 'relay.address' }] },
   ],
   apps: [
     { title: 'apps.serverTitle', hint: 'apps.serverHint', rows: [] },

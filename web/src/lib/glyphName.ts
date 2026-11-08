@@ -46,7 +46,9 @@ const RULES: Rule[] = [
   [/^pairing\.approve$/i, 'IconConfirm'],
   [/^pairing\.refuse$/i, 'IconClose'],
   [/^pairing\.remove$/i, 'IconKeyRevoke'],
-  [/^(pairing\.name|relay\.)save$/i, 'IconSave'],
+  [/^pairing\.enter$/i, 'IconPencil'],
+  [/^pairing\.checkAgain$/i, 'IconRetry'],
+  [/^relay\.seesTitle$/i, 'IconEye'],
 
   // The three answers to a conflict, for one or for all of them.
   [/^conflicts?\.(answer|all|keep)Both$/i, 'IconKeepBoth'],

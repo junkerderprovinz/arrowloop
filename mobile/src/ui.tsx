@@ -372,6 +372,7 @@ export function Section({
   title,
   hint,
   hue,
+  step,
   onTitlePress,
   children,
 }: {
@@ -379,6 +380,8 @@ export function Section({
   hint?: string;
   /** This card's position among the page's cards, 0-based. */
   hue?: number;
+  /** A numbered step's number, drawn as a badge of its own before the title. */
+  step?: number;
   /** A tap on the title, which looks the same whether or not this is set. */
   onTitlePress?: () => void;
   children: ReactNode;
@@ -392,7 +395,12 @@ export function Section({
       <View style={[styles.notchCard, { backgroundColor: p.surface, ...corners.card }]}>
         {children}
       </View>
-      <View style={[styles.notch, { backgroundColor: fill, ...corners.pill }]}>
+      {step !== undefined ? (
+        <View style={[styles.notch, { backgroundColor: fill, ...corners.pill }]}>
+          <Text style={[styles.notchText, styles.notchNumber, { color: ink }]}>{step}</Text>
+        </View>
+      ) : null}
+      <View style={[styles.notch, step !== undefined ? styles.notchAfterStep : null, { backgroundColor: fill, ...corners.pill }]}>
         <Text
           style={[styles.notchText, { color: ink }]}
           numberOfLines={1}
@@ -1674,6 +1682,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
   },
   notchText: { fontSize: text.meta, fontWeight: "500", textTransform: "uppercase", letterSpacing: 1.2 },
+  // Letter spacing follows the last character and would push a lone digit off centre.
+  notchNumber: { letterSpacing: 0, fontVariant: ["tabular-nums"] },
+  // The title badge stands after the number badge, a small gap apart.
+  notchAfterStep: { left: space.lg + 37, maxWidth: "76%" },
 
   row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   rowText: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.sm },
