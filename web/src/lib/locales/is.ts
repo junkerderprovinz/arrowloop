@@ -1500,7 +1500,7 @@ const is: Translations = {
   'relay.notConnected': 'Relay ekki aðgengilegt',
   'relay.noGroup': 'Relayið tengist um leið og þetta tilvik hefur setningu.',
   'instances.title': 'Önnur tilvik',
-  'instances.hint': 'Verk hvers tilviks sem er parað við þetta. Hér geturðu ræst eða stöðvað verk. Öllu öðru breytirðu á tilvikinu sjálfu.',
+  'instances.hint': 'Verk og síðustu keyrslur hvers tilviks sem er parað við þetta. Hér geturðu ræst eða stöðvað verk. Öllu öðru breytirðu á tilvikinu sjálfu.',
   'instances.approve': 'Það bíður samþykkis þíns undir Stillingar, Pörun.',
   'instances.waiting': 'Það hefur ekki samþykkt þetta tilvik enn.',
   'instances.away': 'Ekki aðgengilegt, síðast séð {time}',

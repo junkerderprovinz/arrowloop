@@ -1500,7 +1500,7 @@ const it: Translations = {
   'relay.notConnected': 'Relay non raggiungibile',
   'relay.noGroup': 'Il relay si connette appena questa istanza ha una frase.',
   'instances.title': 'Altre istanze',
-  'instances.hint': 'I lavori di ogni istanza associata a questa. Qui puoi avviare o fermare un lavoro. Tutto il resto lo cambi sull\'istanza stessa.',
+  'instances.hint': 'I lavori e le ultime esecuzioni di ogni istanza associata a questa. Qui puoi avviare o fermare un lavoro. Tutto il resto lo cambi sull\'istanza stessa.',
   'instances.approve': 'Attende la tua approvazione in Impostazioni, Associazione.',
   'instances.waiting': 'Non ha ancora approvato questa istanza.',
   'instances.away': 'Non raggiungibile, vista l\'ultima volta: {time}',

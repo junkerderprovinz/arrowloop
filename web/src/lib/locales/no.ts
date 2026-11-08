@@ -1500,7 +1500,7 @@ const no: Translations = {
   'relay.notConnected': 'Reléet kan ikke nås',
   'relay.noGroup': 'Reléet kobler til så snart denne instansen har en frase.',
   'instances.title': 'Andre instanser',
-  'instances.hint': 'Jobbene til hver instans som er paret med denne. Her kan du starte eller stoppe en jobb. Alt annet endrer du på selve instansen.',
+  'instances.hint': 'Jobbene og de siste kjøringene til hver instans som er paret med denne. Her kan du starte eller stoppe en jobb. Alt annet endrer du på selve instansen.',
   'instances.approve': 'Den venter på godkjenningen din under Innstillinger, Paring.',
   'instances.waiting': 'Den har ikke godkjent denne instansen ennå.',
   'instances.away': 'Kan ikke nås, sist sett {time}',

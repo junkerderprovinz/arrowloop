@@ -1500,7 +1500,7 @@ const pl: Translations = {
   'relay.notConnected': 'Przekaźnik nieosiągalny',
   'relay.noGroup': 'Przekaźnik łączy się, gdy tylko ta instancja ma frazę.',
   'instances.title': 'Inne instancje',
-  'instances.hint': 'Zadania każdej instancji sparowanej z tą. Tutaj możesz uruchomić lub zatrzymać zadanie. Wszystko inne zmieniasz na samej instancji.',
+  'instances.hint': 'Zadania i ostatnie przebiegi każdej instancji sparowanej z tą. Tutaj możesz uruchomić lub zatrzymać zadanie. Wszystko inne zmieniasz na samej instancji.',
   'instances.approve': 'Czeka na twoje zatwierdzenie w Ustawieniach, Parowanie.',
   'instances.waiting': 'Nie zatwierdziła jeszcze tej instancji.',
   'instances.away': 'Nieosiągalna, ostatnio widziana {time}',

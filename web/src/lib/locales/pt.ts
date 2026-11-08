@@ -1500,7 +1500,7 @@ const pt: Translations = {
   'relay.notConnected': 'Relay não acessível',
   'relay.noGroup': 'O relay liga-se assim que esta instância tiver uma frase.',
   'instances.title': 'Outras instâncias',
-  'instances.hint': 'As tarefas de cada instância emparelhada com esta. Aqui podes iniciar ou parar uma tarefa. Tudo o resto alteras na própria instância.',
+  'instances.hint': 'As tarefas e as últimas execuções de cada instância emparelhada com esta. Aqui podes iniciar ou parar uma tarefa. Tudo o resto alteras na própria instância.',
   'instances.approve': 'Está à espera da tua aprovação em Definições, Emparelhamento.',
   'instances.waiting': 'Ainda não aprovou esta instância.',
   'instances.away': 'Inacessível, vista pela última vez {time}',

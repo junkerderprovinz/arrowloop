@@ -1500,7 +1500,7 @@ const sk: Translations = {
   'relay.notConnected': 'Relé nie je dostupné',
   'relay.noGroup': 'Relé sa pripojí, hneď ako bude mať táto inštancia frázu.',
   'instances.title': 'Ďalšie inštancie',
-  'instances.hint': 'Úlohy každej inštancie spárovanej s touto. Tu môžeš úlohu spustiť alebo zastaviť. Všetko ostatné meníš priamo na danej inštancii.',
+  'instances.hint': 'Úlohy a posledné behy každej inštancie spárovanej s touto. Tu môžeš úlohu spustiť alebo zastaviť. Všetko ostatné meníš priamo na danej inštancii.',
   'instances.approve': 'Čaká na tvoje schválenie v Nastaveniach, Párovanie.',
   'instances.waiting': 'Túto inštanciu ešte neschválila.',
   'instances.away': 'Nedostupná, naposledy videná {time}',

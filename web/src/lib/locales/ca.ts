@@ -1500,7 +1500,7 @@ const ca: Translations = {
   'relay.notConnected': 'Repetidor no accessible',
   'relay.noGroup': 'El repetidor es connecta tan bon punt aquesta instància té una frase.',
   'instances.title': 'Altres instàncies',
-  'instances.hint': 'Les tasques de cada instància aparellada amb aquesta. Aquí pots engegar o aturar una tasca. Tota la resta la canvies a la mateixa instància.',
+  'instances.hint': 'Les tasques i les últimes execucions de cada instància aparellada amb aquesta. Aquí pots engegar o aturar una tasca. Tota la resta la canvies a la mateixa instància.',
   'instances.approve': 'Espera la teva aprovació a Configuració, Aparellament.',
   'instances.waiting': 'Encara no ha aprovat aquesta instància.',
   'instances.away': 'No accessible, vista per última vegada: {time}',

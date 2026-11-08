@@ -1500,7 +1500,7 @@ const gl: Translations = {
   'relay.notConnected': 'Relé non accesible',
   'relay.noGroup': 'O relé conéctase en canto esta instancia ten unha frase.',
   'instances.title': 'Outras instancias',
-  'instances.hint': 'As tarefas de cada instancia emparellada con esta. Aquí podes iniciar ou deter unha tarefa. Todo o demais cámbiase na propia instancia.',
+  'instances.hint': 'As tarefas e as últimas execucións de cada instancia emparellada con esta. Aquí podes iniciar ou deter unha tarefa. Todo o demais cámbiase na propia instancia.',
   'instances.approve': 'Agarda a túa aprobación en Axustes, Emparellamento.',
   'instances.waiting': 'Aínda non aprobou esta instancia.',
   'instances.away': 'Non accesible, vista por última vez: {time}',

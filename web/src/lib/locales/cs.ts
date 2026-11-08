@@ -1500,7 +1500,7 @@ const cs: Translations = {
   'relay.notConnected': 'Přeposílač nedostupný',
   'relay.noGroup': 'Přeposílač se připojí, jakmile tato instance bude mít frázi.',
   'instances.title': 'Další instance',
-  'instances.hint': 'Úlohy každé instance spárované s touto. Tady můžeš úlohu spustit nebo zastavit. Vše ostatní měníš přímo na dané instanci.',
+  'instances.hint': 'Úlohy a poslední běhy každé instance spárované s touto. Tady můžeš úlohu spustit nebo zastavit. Vše ostatní měníš přímo na dané instanci.',
   'instances.approve': 'Čeká na tvoje schválení v Nastavení, Párování.',
   'instances.waiting': 'Tuto instanci zatím neschválila.',
   'instances.away': 'Nedostupná, naposledy viděna {time}',

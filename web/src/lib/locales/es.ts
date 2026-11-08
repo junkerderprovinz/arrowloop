@@ -1500,7 +1500,7 @@ const es: Translations = {
   'relay.notConnected': 'Repetidor no accesible',
   'relay.noGroup': 'El repetidor se conecta en cuanto esta instancia tiene una frase.',
   'instances.title': 'Otras instancias',
-  'instances.hint': 'Las tareas de cada instancia emparejada con esta. Aquí puedes iniciar o detener una tarea. Todo lo demás se cambia en la propia instancia.',
+  'instances.hint': 'Las tareas y las últimas ejecuciones de cada instancia emparejada con esta. Aquí puedes iniciar o detener una tarea. Todo lo demás se cambia en la propia instancia.',
   'instances.approve': 'Espera tu aprobación en Ajustes, Emparejamiento.',
   'instances.waiting': 'Todavía no ha aprobado esta instancia.',
   'instances.away': 'No accesible, vista por última vez: {time}',

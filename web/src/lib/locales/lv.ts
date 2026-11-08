@@ -1500,7 +1500,7 @@ const lv: Translations = {
   'relay.notConnected': 'Relejs nav sasniedzams',
   'relay.noGroup': 'Relejs pieslēdzas, tiklīdz šai instancei ir frāze.',
   'instances.title': 'Citas instances',
-  'instances.hint': 'Katras ar šo sapārotās instances uzdevumi. Šeit vari palaist vai apturēt uzdevumu. Visu pārējo maini pašā instancē.',
+  'instances.hint': 'Katras ar šo sapārotās instances uzdevumi un pēdējās palaišanas. Šeit vari palaist vai apturēt uzdevumu. Visu pārējo maini pašā instancē.',
   'instances.approve': 'Tā gaida tavu apstiprinājumu sadaļā Iestatījumi, Pārošana.',
   'instances.waiting': 'Tā vēl nav apstiprinājusi šo instanci.',
   'instances.away': 'Nav sasniedzama, pēdējoreiz redzēta {time}',

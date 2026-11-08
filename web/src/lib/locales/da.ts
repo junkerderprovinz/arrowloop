@@ -1500,7 +1500,7 @@ const da: Translations = {
   'relay.notConnected': 'Videresenderen er ikke tilgængelig',
   'relay.noGroup': 'Videresenderen forbinder, så snart denne instans har en sætning.',
   'instances.title': 'Andre instanser',
-  'instances.hint': 'Jobbene fra hver instans, der er parret med denne. Her kan du starte eller stoppe et job. Alt andet ændrer du på selve instansen.',
+  'instances.hint': 'Jobbene og de seneste kørsler fra hver instans, der er parret med denne. Her kan du starte eller stoppe et job. Alt andet ændrer du på selve instansen.',
   'instances.approve': 'Den venter på din godkendelse under Indstillinger, Parring.',
   'instances.waiting': 'Den har ikke godkendt denne instans endnu.',
   'instances.away': 'Ikke tilgængelig, sidst set {time}',

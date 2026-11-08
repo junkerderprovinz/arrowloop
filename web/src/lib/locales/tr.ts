@@ -1500,7 +1500,7 @@ const tr: Translations = {
   'relay.notConnected': 'Röleye ulaşılamıyor',
   'relay.noGroup': 'Bu örneğin bir ifadesi olur olmaz röle bağlanır.',
   'instances.title': 'Diğer örnekler',
-  'instances.hint': 'Bu örnekle eşleştirilmiş her örneğin işleri. Burada bir işi başlatabilir ya da durdurabilirsin. Geri kalan her şeyi örneğin kendisinde değiştirirsin.',
+  'instances.hint': 'Bu örnekle eşleştirilmiş her örneğin işleri ve son çalışmaları. Burada bir işi başlatabilir ya da durdurabilirsin. Geri kalan her şeyi örneğin kendisinde değiştirirsin.',
   'instances.approve': 'Ayarlar, Eşleştirme altında onayını bekliyor.',
   'instances.waiting': 'Bu örneği henüz onaylamadı.',
   'instances.away': 'Ulaşılamıyor, son görülme {time}',

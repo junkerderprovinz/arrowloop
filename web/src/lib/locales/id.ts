@@ -1500,7 +1500,7 @@ const id: Translations = {
   'relay.notConnected': 'Relay tidak dapat dijangkau',
   'relay.noGroup': 'Relay tersambung begitu instance ini punya frasa.',
   'instances.title': 'Instance lain',
-  'instances.hint': 'Tugas dari setiap instance yang dipasangkan dengan instance ini. Di sini Anda bisa menjalankan atau menghentikan tugas. Hal lainnya Anda ubah di instance itu sendiri.',
+  'instances.hint': 'Tugas dan proses terakhir dari setiap instance yang dipasangkan dengan instance ini. Di sini Anda bisa menjalankan atau menghentikan tugas. Hal lainnya Anda ubah di instance itu sendiri.',
   'instances.approve': 'Ia menunggu persetujuan Anda di Pengaturan, Pemasangan.',
   'instances.waiting': 'Ia belum menyetujui instance ini.',
   'instances.away': 'Tidak dapat dijangkau, terakhir terlihat {time}',

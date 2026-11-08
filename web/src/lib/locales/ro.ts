@@ -1500,7 +1500,7 @@ const ro: Translations = {
   'relay.notConnected': 'Releu inaccesibil',
   'relay.noGroup': 'Releul se conectează imediat ce această instanță are o frază.',
   'instances.title': 'Alte instanțe',
-  'instances.hint': 'Sarcinile fiecărei instanțe împerecheate cu aceasta. Aici poți porni sau opri o sarcină. Restul îl schimbi pe instanța respectivă.',
+  'instances.hint': 'Sarcinile și ultimele rulări ale fiecărei instanțe împerecheate cu aceasta. Aici poți porni sau opri o sarcină. Restul îl schimbi pe instanța respectivă.',
   'instances.approve': 'Așteaptă aprobarea ta în Setări, Împerechere.',
   'instances.waiting': 'Nu a aprobat încă această instanță.',
   'instances.away': 'Inaccesibilă, văzută ultima dată {time}',

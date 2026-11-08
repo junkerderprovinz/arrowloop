@@ -1500,7 +1500,7 @@ const ms: Translations = {
   'relay.notConnected': 'Relay tidak dapat dicapai',
   'relay.noGroup': 'Relay bersambung sebaik sahaja instans ini mempunyai frasa.',
   'instances.title': 'Instans lain',
-  'instances.hint': 'Tugas setiap instans yang digandingkan dengan instans ini. Anda boleh memulakan atau menghentikan tugas di sini. Selebihnya anda ubah pada instans itu sendiri.',
+  'instances.hint': 'Tugas dan larian terakhir setiap instans yang digandingkan dengan instans ini. Anda boleh memulakan atau menghentikan tugas di sini. Selebihnya anda ubah pada instans itu sendiri.',
   'instances.approve': 'Ia menunggu kelulusan anda di Tetapan, Gandingan.',
   'instances.waiting': 'Ia belum meluluskan instans ini.',
   'instances.away': 'Tidak dapat dicapai, kali terakhir dilihat {time}',

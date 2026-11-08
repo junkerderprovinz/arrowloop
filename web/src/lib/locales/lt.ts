@@ -1500,7 +1500,7 @@ const lt: Translations = {
   'relay.notConnected': 'Relė nepasiekiama',
   'relay.noGroup': 'Relė prisijungia, kai tik šis egzempliorius turi frazę.',
   'instances.title': 'Kiti egzemplioriai',
-  'instances.hint': 'Kiekvieno su šiuo susieto egzemplioriaus užduotys. Čia gali paleisti arba sustabdyti užduotį. Visa kita keisk pačiame egzemplioriuje.',
+  'instances.hint': 'Kiekvieno su šiuo susieto egzemplioriaus užduotys ir paskutiniai paleidimai. Čia gali paleisti arba sustabdyti užduotį. Visa kita keisk pačiame egzemplioriuje.',
   'instances.approve': 'Jis laukia tavo patvirtinimo skiltyje Nustatymai, Susiejimas.',
   'instances.waiting': 'Jis dar nepatvirtino šio egzemplioriaus.',
   'instances.away': 'Nepasiekiamas, paskutinį kartą matytas {time}',

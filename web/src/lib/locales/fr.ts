@@ -1500,7 +1500,7 @@ const fr: Translations = {
   'relay.notConnected': 'Relais injoignable',
   'relay.noGroup': 'Le relais se connecte dès que cette instance a une phrase.',
   'instances.title': 'Autres instances',
-  'instances.hint': 'Les tâches de chaque instance appairée avec celle-ci. Vous pouvez lancer ou arrêter une tâche ici. Tout le reste se modifie sur l\'instance elle-même.',
+  'instances.hint': 'Les tâches et les dernières exécutions de chaque instance appairée avec celle-ci. Vous pouvez lancer ou arrêter une tâche ici. Tout le reste se modifie sur l\'instance elle-même.',
   'instances.approve': 'Elle attend votre approbation dans Réglages, Appairage.',
   'instances.waiting': 'Elle n\'a pas encore approuvé cette instance.',
   'instances.away': 'Injoignable, vue pour la dernière fois : {time}',

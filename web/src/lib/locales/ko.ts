@@ -1500,7 +1500,7 @@ const ko: Translations = {
   'relay.notConnected': '릴레이에 연결할 수 없음',
   'relay.noGroup': '이 인스턴스에 문구가 생기면 바로 릴레이가 연결됩니다.',
   'instances.title': '다른 인스턴스',
-  'instances.hint': '이 인스턴스와 페어링된 모든 인스턴스의 작업입니다. 여기서 작업을 시작하거나 멈출 수 있습니다. 그 밖의 변경은 해당 인스턴스에서 하세요.',
+  'instances.hint': '이 인스턴스와 페어링된 모든 인스턴스의 작업과 최근 실행입니다. 여기서 작업을 시작하거나 멈출 수 있습니다. 그 밖의 변경은 해당 인스턴스에서 하세요.',
   'instances.approve': '설정, 페어링에서 승인을 기다리고 있습니다.',
   'instances.waiting': '아직 이 인스턴스를 승인하지 않았습니다.',
   'instances.away': '연결할 수 없음, 마지막 확인 {time}',

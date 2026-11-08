@@ -1500,7 +1500,7 @@ const sv: Translations = {
   'relay.notConnected': 'Reläet går inte att nå',
   'relay.noGroup': 'Reläet ansluter så snart den här instansen har en fras.',
   'instances.title': 'Andra instanser',
-  'instances.hint': 'Jobben från varje instans som är parkopplad med den här. Du kan starta eller stoppa ett jobb här. Allt annat ändrar du på själva instansen.',
+  'instances.hint': 'Jobben och de senaste körningarna från varje instans som är parkopplad med den här. Du kan starta eller stoppa ett jobb här. Allt annat ändrar du på själva instansen.',
   'instances.approve': 'Den väntar på ditt godkännande under Inställningar, Parkoppling.',
   'instances.waiting': 'Den har inte godkänt den här instansen än.',
   'instances.away': 'Går inte att nå, senast sedd {time}',

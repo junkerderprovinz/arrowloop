@@ -1500,7 +1500,7 @@ const fi: Translations = {
   'relay.notConnected': 'Rele ei ole tavoitettavissa',
   'relay.noGroup': 'Rele muodostaa yhteyden heti, kun tällä instanssilla on lause.',
   'instances.title': 'Muut instanssit',
-  'instances.hint': 'Jokaisen tähän pariutetun instanssin työt. Täällä voit käynnistää tai pysäyttää työn. Kaiken muun muutat itse instanssissa.',
+  'instances.hint': 'Jokaisen tähän pariutetun instanssin työt ja viimeisimmät ajot. Täällä voit käynnistää tai pysäyttää työn. Kaiken muun muutat itse instanssissa.',
   'instances.approve': 'Se odottaa hyväksyntääsi kohdassa Asetukset, Pariliitos.',
   'instances.waiting': 'Se ei ole vielä hyväksynyt tätä instanssia.',
   'instances.away': 'Ei tavoitettavissa, nähty viimeksi {time}',

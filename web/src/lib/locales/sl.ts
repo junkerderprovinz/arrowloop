@@ -1500,7 +1500,7 @@ const sl: Translations = {
   'relay.notConnected': 'Rele ni dosegljiv',
   'relay.noGroup': 'Rele se poveže, takoj ko ima ta instanca frazo.',
   'instances.title': 'Druge instance',
-  'instances.hint': 'Opravila vsake instance, ki je seznanjena s to. Tukaj lahko opravilo zaženeš ali ustaviš. Vse drugo spremeniš na sami instanci.',
+  'instances.hint': 'Opravila in zadnji zagoni vsake instance, ki je seznanjena s to. Tukaj lahko opravilo zaženeš ali ustaviš. Vse drugo spremeniš na sami instanci.',
   'instances.approve': 'Čaka na tvojo odobritev v Nastavitvah, Seznanjanje.',
   'instances.waiting': 'Te instance še ni odobrila.',
   'instances.away': 'Ni dosegljiva, zadnjič videna {time}',

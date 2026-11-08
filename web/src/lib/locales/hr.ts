@@ -1500,7 +1500,7 @@ const hr: Translations = {
   'relay.notConnected': 'Relej nije dostupan',
   'relay.noGroup': 'Relej se spaja čim ova instanca ima frazu.',
   'instances.title': 'Ostale instance',
-  'instances.hint': 'Zadaci svake instance uparene s ovom. Ovdje možeš pokrenuti ili zaustaviti zadatak. Sve ostalo mijenjaš na samoj instanci.',
+  'instances.hint': 'Zadaci i zadnja pokretanja svake instance uparene s ovom. Ovdje možeš pokrenuti ili zaustaviti zadatak. Sve ostalo mijenjaš na samoj instanci.',
   'instances.approve': 'Čeka tvoje odobrenje u Postavkama, Uparivanje.',
   'instances.waiting': 'Još nije odobrila ovu instancu.',
   'instances.away': 'Nije dostupna, zadnji put viđena {time}',

@@ -1500,7 +1500,7 @@ const zh: Translations = {
   'relay.notConnected': '无法连接中继',
   'relay.noGroup': '这个实例一有口令，中继就会连接。',
   'instances.title': '其他实例',
-  'instances.hint': '与此实例配对的每个实例的任务。你可以在这里启动或停止任务，其他所有设置请在该实例上更改。',
+  'instances.hint': '与此实例配对的每个实例的任务和最近运行。你可以在这里启动或停止任务，其他所有设置请在该实例上更改。',
   'instances.approve': '它正在“设置”的“配对”中等待你的批准。',
   'instances.waiting': '它还没有批准此实例。',
   'instances.away': '无法访问，最后在线 {time}',

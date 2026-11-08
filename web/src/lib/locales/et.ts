@@ -1500,7 +1500,7 @@ const et: Translations = {
   'relay.notConnected': 'Edastaja ei ole kättesaadav',
   'relay.noGroup': 'Edastaja ühendub kohe, kui sellel eksemplaril on fraas.',
   'instances.title': 'Teised eksemplarid',
-  'instances.hint': 'Iga sellega seotud eksemplari tööd. Siin saad töö käivitada või peatada. Kõike muud muudad eksemplaris endas.',
+  'instances.hint': 'Iga sellega seotud eksemplari tööd ja viimased käivitused. Siin saad töö käivitada või peatada. Kõike muud muudad eksemplaris endas.',
   'instances.approve': 'See ootab sinu kinnitust jaotises Seaded, Sidumine.',
   'instances.waiting': 'See pole seda eksemplari veel kinnitanud.',
   'instances.away': 'Pole kättesaadav, viimati nähtud {time}',

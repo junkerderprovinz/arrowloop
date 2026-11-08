@@ -1500,7 +1500,7 @@ const eu: Translations = {
   'relay.notConnected': 'Bitartekaria ez dago eskuragarri',
   'relay.noGroup': 'Bitartekaria instantzia honek esaldi bat duen bezain laster konektatzen da.',
   'instances.title': 'Beste instantziak',
-  'instances.hint': 'Honekin parekatutako instantzia bakoitzaren lanak. Hemen lan bat abiarazi edo geldi dezakezu. Gainerako guztia instantzian bertan aldatzen da.',
+  'instances.hint': 'Honekin parekatutako instantzia bakoitzaren lanak eta azken exekuzioak. Hemen lan bat abiarazi edo geldi dezakezu. Gainerako guztia instantzian bertan aldatzen da.',
   'instances.approve': 'Zure onarpenaren zain dago, Ezarpenak, Parekatzea atalean.',
   'instances.waiting': 'Oraindik ez du instantzia hau onartu.',
   'instances.away': 'Ez dago eskuragarri, azken aldiz ikusia: {time}',

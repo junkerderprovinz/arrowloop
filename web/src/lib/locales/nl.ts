@@ -1500,7 +1500,7 @@ const nl: Translations = {
   'relay.notConnected': 'Relay niet bereikbaar',
   'relay.noGroup': 'De relay maakt verbinding zodra deze instantie een frase heeft.',
   'instances.title': 'Andere instanties',
-  'instances.hint': 'De taken van elke instantie die met deze gekoppeld is. Starten of stoppen kun je een taak hier, al het andere wijzig je op de instantie zelf.',
+  'instances.hint': 'De taken en laatste runs van elke instantie die met deze gekoppeld is. Starten of stoppen kun je een taak hier, al het andere wijzig je op de instantie zelf.',
   'instances.approve': 'Ze wacht onder Instellingen, Koppeling op je goedkeuring.',
   'instances.waiting': 'Ze heeft deze instantie nog niet goedgekeurd.',
   'instances.away': 'Niet bereikbaar, laatst gezien {time}',

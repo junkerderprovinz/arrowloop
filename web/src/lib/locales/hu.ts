@@ -1500,7 +1500,7 @@ const hu: Translations = {
   'relay.notConnected': 'A relay nem érhető el',
   'relay.noGroup': 'A relay azonnal csatlakozik, amint ennek a példánynak van jelmondata.',
   'instances.title': 'Más példányok',
-  'instances.hint': 'Minden ezzel párosított példány feladatai. Itt elindíthatsz vagy leállíthatsz egy feladatot. Minden mást magán a példányon módosítasz.',
+  'instances.hint': 'Minden ezzel párosított példány feladatai és legutóbbi futásai. Itt elindíthatsz vagy leállíthatsz egy feladatot. Minden mást magán a példányon módosítasz.',
   'instances.approve': 'A jóváhagyásodra vár a Beállítások, Párosítás alatt.',
   'instances.waiting': 'Még nem hagyta jóvá ezt a példányt.',
   'instances.away': 'Nem érhető el, utoljára látva: {time}',

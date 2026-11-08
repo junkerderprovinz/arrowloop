@@ -1500,7 +1500,7 @@ const vi: Translations = {
   'relay.notConnected': 'Không thể truy cập relay',
   'relay.noGroup': 'Relay sẽ kết nối ngay khi phiên bản này có cụm từ.',
   'instances.title': 'Các phiên bản khác',
-  'instances.hint': 'Công việc của mọi phiên bản đã ghép nối với phiên bản này. Bạn có thể khởi động hoặc dừng một công việc ở đây. Mọi thứ khác bạn thay đổi trên chính phiên bản đó.',
+  'instances.hint': 'Công việc và các lần chạy gần đây của mọi phiên bản đã ghép nối với phiên bản này. Bạn có thể khởi động hoặc dừng một công việc ở đây. Mọi thứ khác bạn thay đổi trên chính phiên bản đó.',
   'instances.approve': 'Nó đang chờ bạn duyệt trong Cài đặt, Ghép nối.',
   'instances.waiting': 'Nó chưa duyệt phiên bản này.',
   'instances.away': 'Không truy cập được, hoạt động lần cuối {time}',
