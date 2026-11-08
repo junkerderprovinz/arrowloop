@@ -467,7 +467,7 @@ const pt: Translations = {
   'update.autoHint': 'Uma vez por dia, o ArrowLoop procura uma versão nova, transfere-a em segundo plano e verifica-a com as somas de verificação publicadas com a versão. A versão nova entra em funcionamento da próxima vez que iniciar o ArrowLoop, por isso uma sincronização em curso não é interrompida. Uma cópia instalada e uma cópia portátil atualizam-se ambas onde estão.',
   'update.ready': 'O ArrowLoop {version} foi transferido e corre da próxima vez que iniciar a aplicação.',
   'update.fromStore': 'As atualizações chegam pelo centro de software',
-  'update.fromStoreHint': 'Esta cópia do ArrowLoop é um Flatpak e não se substitui a si própria. Instalada a partir do Flathub, recebe cada nova versão pelo seu centro de software. Instalada a partir de um ficheiro .flatpak transferido, atualiza-se quando abrir da mesma forma o ficheiro da versão seguinte.',
+  'update.fromStoreHint': 'Esta cópia do ArrowLoop é um Flatpak e não se substitui a si própria. Instalada a partir do Flathub, recebe cada nova versão pelo teu centro de software. Instalada a partir de um ficheiro .flatpak transferido, atualiza-se quando abrires da mesma forma o ficheiro da versão seguinte.',
   'confirm.deleteRemote': 'Apagar este destino de armazenamento',
   'confirm.deleteRemoteStakes': 'As definições de {name} são retiradas da configuração do rclone, incluindo qualquer palavra-passe ou chave ali guardada. Antes não se copia nada para lado nenhum e não há volta atrás: voltar a configurá-lo significa escrever de novo as credenciais.',
   'targets.inUse': 'Ainda há tarefas que usam este destino: {jobs}. Aponte-as para outro destino ou elimine-as, e depois elimine o destino.',

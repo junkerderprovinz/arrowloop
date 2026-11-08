@@ -467,7 +467,7 @@ const sl: Translations = {
   'update.autoHint': 'Enkrat na dan ArrowLoop poišče novo različico, jo prenese v ozadju in jo preveri s kontrolnimi vsotami, objavljenimi z izdajo. Nova različica začne delovati ob naslednjem zagonu ArrowLoopa, zato se sinhronizacija, ki teče, ne prekine. Nameščena in prenosna kopija se obe posodobita tam, kjer sta.',
   'update.ready': 'ArrowLoop {version} je prenesen in bo tekel ob naslednjem zagonu aplikacije.',
   'update.fromStore': 'Posodobitve prihajajo prek središča programske opreme',
-  'update.fromStoreHint': 'Ta kopija ArrowLoopa je Flatpak in se ne zamenja sama. Če je nameščena s Flathuba, vsako novo različico dobi prek vašega središča programske opreme. Če je nameščena iz prenesene datoteke .flatpak, se posodobi, ko na enak način odprete datoteko naslednje izdaje.',
+  'update.fromStoreHint': 'Ta kopija ArrowLoopa je Flatpak in se ne zamenja sama. Če je nameščena s Flathuba, vsako novo različico dobi prek tvojega središča programske opreme. Če je nameščena iz prenesene datoteke .flatpak, se posodobi, ko na enak način odpreš datoteko naslednje izdaje.',
   'confirm.deleteRemote': 'Izbrisati to shrambo',
   'confirm.deleteRemoteStakes': 'Nastavitve za {name} se odstranijo iz nastavitev rclone, skupaj z vsakim geslom in ključem, ki leži tam. Prej se nič nikamor ne prekopira in poti nazaj ni: znova nastaviti pomeni znova vtipkati poverilnice.',
   'targets.inUse': 'Ta cilj še uporabljajo opravila: {jobs}. Usmerite jih na drug cilj ali jih izbrišite, nato izbrišite cilj.',

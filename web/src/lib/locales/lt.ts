@@ -467,7 +467,7 @@ const lt: Translations = {
   'update.autoHint': 'Kartą per dieną ArrowLoop ieško naujos versijos, atsisiunčia ją fone ir patikrina pagal kontrolines sumas, paskelbtas kartu su leidimu. Nauja versija pradeda veikti kitą kartą, kai paleisite ArrowLoop, todėl vykstantis sinchronizavimas nenutrūksta. Tiek įdiegta, tiek nešiojamoji kopija atsinaujina ten, kur yra.',
   'update.ready': 'ArrowLoop {version} atsisiųsta ir veiks kitą kartą, kai paleisite programą.',
   'update.fromStore': 'Atnaujinimai ateina per programinės įrangos centrą',
-  'update.fromStoreHint': 'Ši ArrowLoop kopija yra Flatpak ir pati savęs nekeičia. Įdiegta iš Flathub, kiekvieną naują versiją ji gauna per jūsų programinės įrangos centrą. Įdiegta iš atsisiųsto .flatpak failo, ji atnaujinama, kai tokiu pat būdu atveriate kitos laidos failą.',
+  'update.fromStoreHint': 'Ši ArrowLoop kopija yra Flatpak ir pati savęs nekeičia. Įdiegta iš Flathub, kiekvieną naują versiją ji gauna per tavo programinės įrangos centrą. Įdiegta iš atsisiųsto .flatpak failo, ji atnaujinama, kai tokiu pat būdu atveri kitos laidos failą.',
   'confirm.deleteRemote': 'Ištrinti šią saugyklą',
   'confirm.deleteRemoteStakes': '{name} nuostatos pašalinamos iš rclone konfigūracijos kartu su kiekvienu ten gulinčiu slaptažodžiu ir raktu. Prieš tai niekas niekur nekopijuojama ir kelio atgal nėra: nustatyti iš naujo reiškia iš naujo suvesti prisijungimo duomenis.',
   'targets.inUse': 'Šią paskirtį dar naudoja užduotys: {jobs}. Nukreipkite jas į kitą paskirtį arba ištrinkite, tada ištrinkite paskirtį.',

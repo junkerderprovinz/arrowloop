@@ -467,7 +467,7 @@ const cs: Translations = {
   'update.autoHint': 'Jednou denně ArrowLoop hledá novou verzi, stáhne ji na pozadí a ověří ji podle kontrolních součtů zveřejněných s vydáním. Nová verze se ujme při příštím spuštění ArrowLoop, takže běžící synchronizace se nepřeruší. Nainstalovaná i přenosná kopie se aktualizují tam, kde jsou.',
   'update.ready': 'ArrowLoop {version} je stažen a poběží při příštím spuštění aplikace.',
   'update.fromStore': 'Aktualizace přicházejí přes správce softwaru',
-  'update.fromStoreHint': 'Tato kopie ArrowLoop je Flatpak a sama se nenahrazuje. Když je nainstalovaná z Flathubu, každou novou verzi přinese váš správce softwaru. Když je nainstalovaná ze staženého souboru .flatpak, aktualizujete ji tak, že stejně otevřete soubor dalšího vydání.',
+  'update.fromStoreHint': 'Tato kopie ArrowLoop je Flatpak a sama se nenahrazuje. Když je nainstalovaná z Flathubu, každou novou verzi přinese tvůj správce softwaru. Když je nainstalovaná ze staženého souboru .flatpak, aktualizuješ ji tak, že stejně otevřeš soubor dalšího vydání.',
   'confirm.deleteRemote': 'Smazat toto úložiště',
   'confirm.deleteRemoteStakes': 'Nastavení {name} zmizí z konfigurace rclone, včetně každého hesla a klíče, který tam leží. Předtím se nic nikam nekopíruje a cesta zpět není: nastavit to znovu znamená znovu napsat přihlašovací údaje.',
   'targets.inUse': 'Tento cíl stále používají úlohy: {jobs}. Nasměrujte je na jiný cíl nebo je smažte a potom smažte cíl.',
