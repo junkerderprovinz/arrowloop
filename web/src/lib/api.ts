@@ -692,7 +692,18 @@ export type ConnectInfo = {
 
 export type RelayMode = 'project' | 'own' | 'off'
 
-export type RelayConfig = { mode: RelayMode; relayUrl: string; projectRelayUrl: string; connected: boolean }
+export type RelayConfig = {
+  mode: RelayMode
+  relayUrl: string
+  projectRelayUrl: string
+  connected: boolean
+  /** Whether this instance runs the relay of its group at /relay/connect on its own address. */
+  serve: boolean
+  /** How many instances are on that relay at the moment, this one included when it dials its own. */
+  serveClients: number
+  /** False on a phone and in the desktop app, which nobody else reaches. */
+  canServe: boolean
+}
 
 /** The words and the text for the QR code beside them. */
 export type Phrase = { phrase: string; code: string }
@@ -1276,7 +1287,7 @@ export const api = {
 
   relay: () => request<RelayConfig>('/api/relay/config'),
 
-  saveRelay: (change: { mode?: RelayMode; relayUrl?: string }) =>
+  saveRelay: (change: { mode?: RelayMode; relayUrl?: string; serve?: boolean }) =>
     request<RelayConfig>('/api/relay/config', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

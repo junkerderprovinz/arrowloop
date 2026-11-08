@@ -7,9 +7,9 @@ import { useId, type CSSProperties, type ReactNode } from 'react'
 
 import { IconCheck, IconCopy } from '../../../components/glyphs'
 import { LOGO_GOLD, LogoMark } from '../../../components/LogoMark'
-import type { RelayMode } from '../../../lib/api'
 import type { Translate } from '../../../lib/i18n'
 import type { SceneStops } from '../../../lib/sceneStops'
+import type { RelayForm } from './relayForm'
 import parleyport from '../../../assets/parleyport.svg'
 
 /** The relay's name, which no language changes. */
@@ -99,15 +99,42 @@ function Pill({ x, y, width, label }: { x: number; y: number; width: number; lab
   )
 }
 
+const ROUTE_ALT = {
+  project: 'relay.pic.relay',
+  own: 'relay.pic.relay',
+  instance: 'relay.pic.instance',
+  off: 'relay.pic.off',
+} as const
+
 /**
  * How a message travels on one relay route. Without a relay it stops at the
- * cross, since every instance reaches the others only through one.
+ * cross, since every instance reaches the others only through one. An
+ * ArrowLoop that is the relay takes the letter itself and passes it on.
  */
-export function RouteDiagram({ mode, t }: { mode: RelayMode; t: Translate }) {
+export function RouteDiagram({ form, t }: { form: RelayForm; t: Translate }) {
   const here = t('relay.diagramYourNetwork')
   const there = t('relay.diagramOtherNetwork')
   let body: ReactNode
-  if (mode === 'off') {
+  if (form === 'instance') {
+    body = (
+      <>
+        <Area x={8} width={104} label={here} />
+        <Area x={248} width={104} label={there} />
+        <path className="al-route-flow" d="M90 70 Q180 46 270 70" />
+        <At x={60} y={70}>
+          <circle className="al-route-ring al-relay-ring al-relay-home" r="34" />
+        </At>
+        <g className="al-relay-hop al-relay-home">
+          <Instance x={32} y={42} size={56} />
+        </g>
+        <Pill x={60} y={114} width={44} label={t('relay.diagramRelay')} />
+        <Instance x={272} y={42} size={56} />
+        <Travel path="M90 70 Q180 46 270 70" leg="arc" />
+        <Travel path="M270 70 Q180 46 90 70" leg="arc" back />
+        <Parked x={180} y={58} />
+      </>
+    )
+  } else if (form === 'off') {
     body = (
       <>
         <Area x={8} width={104} label={here} />
@@ -141,7 +168,7 @@ export function RouteDiagram({ mode, t }: { mode: RelayMode; t: Translate }) {
         <text className="al-route-name" x="180" y="138" fontSize={12} textAnchor="middle">
           {RELAY_NAME}
         </text>
-        {mode === 'own' && <Pill x={180} y={155} width={84} label={t('relay.pic.selfHosted')} />}
+        {form === 'own' && <Pill x={180} y={155} width={84} label={t('relay.pic.selfHosted')} />}
         <Instance x={32} y={42} size={56} />
         <Instance x={272} y={42} size={56} />
         <Travel path="M90 70 Q120 58 150 70 L180 70" leg="in" />
@@ -154,8 +181,8 @@ export function RouteDiagram({ mode, t }: { mode: RelayMode; t: Translate }) {
     )
   }
   return (
-    <div className="al-scene-frame al-route" data-mode={mode}>
-      <svg viewBox="0 0 360 166" role="img" aria-label={t(mode === 'off' ? 'relay.pic.off' : 'relay.pic.relay')}>
+    <div className="al-scene-frame al-route" data-form={form}>
+      <svg viewBox="0 0 360 166" role="img" aria-label={t(ROUTE_ALT[form])}>
         {body}
       </svg>
     </div>
@@ -334,11 +361,22 @@ export function StepPicture({ step, t }: { step: 1 | 2 | 3; t: Translate }) {
 
 const CLOUD = 'M5.4 16.5h9.2a3.9 3.9 0 0 0 .6-7.8A5.4 5.4 0 0 0 4.9 7.3a4.6 4.6 0 0 0 .5 9.2z'
 
-/** A relay route as a filled glyph, the way the selector's other glyphs are drawn. */
-export function RouteGlyph({ kind }: { kind: RelayMode | 'relay' }) {
+/**
+ * A relay route as a filled glyph, the way the selector's other glyphs are
+ * drawn. An instance and the relay itself keep line glyphs, as in BombVault.
+ */
+export function RouteGlyph({ kind }: { kind: RelayForm | 'relay' }) {
   // useId has colons, which a url(#...) reference does not take in every browser.
   const cut = `route-cut${useId().replace(/[^\w-]/g, '')}`
   const box = { viewBox: '0 0 20 20', width: 20, height: 20, 'aria-hidden': true as const }
+  const line = {
+    ...box,
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.7,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  }
   switch (kind) {
     case 'project':
       return (
@@ -364,9 +402,17 @@ export function RouteGlyph({ kind }: { kind: RelayMode | 'relay' }) {
           <path d="M3.2 3.2l13.6 13.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       )
+    case 'instance':
+      return (
+        <svg {...line}>
+          <rect x="3.5" y="9" width="13" height="8" rx="1.8" />
+          <path d="M6.5 13h.01" />
+          <path d="M7 5.8a4.4 4.4 0 0 1 6 0M4.8 3.6a7.6 7.6 0 0 1 10.4 0" />
+        </svg>
+      )
     case 'relay':
       return (
-        <svg {...box} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+        <svg {...line}>
           <path d="M3.5 7h12M12.5 4l3 3-3 3M16.5 13h-12M7.5 10l-3 3 3 3" />
         </svg>
       )
@@ -374,7 +420,7 @@ export function RouteGlyph({ kind }: { kind: RelayMode | 'relay' }) {
 }
 
 /** The glyph at the start of a fact line on the relay card. */
-export function FactGlyph({ kind }: { kind: 'need' | 'sees' | 'hidden' | 'lock' }) {
+export function FactGlyph({ kind }: { kind: 'need' | 'sees' | 'hidden' | 'lock' | 'shield' }) {
   const common = {
     viewBox: '0 0 16 16',
     width: 16,
@@ -408,6 +454,13 @@ export function FactGlyph({ kind }: { kind: 'need' | 'sees' | 'hidden' | 'lock' 
           <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" />
           <circle cx="8" cy="8" r="2.1" />
           <path d="M2.6 2.6l10.8 10.8" />
+        </svg>
+      )
+    case 'shield':
+      return (
+        <svg {...common}>
+          <path d="M8 1.6 13.2 3.7v4c0 3.1-2.2 5.4-5.2 6.7-3-1.3-5.2-3.6-5.2-6.7v-4z" />
+          <path d="M5.8 8.1 7.4 9.7 10.4 6.4" />
         </svg>
       )
     case 'lock':

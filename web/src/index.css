@@ -1096,6 +1096,14 @@ body {
   46% { offset-distance: 100%; opacity: 1; }
   49%, 100% { offset-distance: 100%; opacity: 0; }
 }
+/* The arc to an instance that is the relay itself is twice as long, so the
+   letter takes two fifths of a pass on it. */
+@keyframes al-letter-arc {
+  0%, 4% { offset-distance: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  44% { offset-distance: 100%; opacity: 1; }
+  47%, 100% { offset-distance: 100%; opacity: 0; }
+}
 @keyframes al-letter-shrink {
   0%, 19.5% { transform: none; }
   22%, 99.9% { transform: scale(0.3); }
@@ -1146,6 +1154,9 @@ body {
   :root:not([data-motion='off']) .al-letter-out {
     animation-name: al-letter-out;
   }
+  :root:not([data-motion='off']) .al-letter-arc {
+    animation-name: al-letter-arc;
+  }
   :root:not([data-motion='off']) .al-letter-in .al-letter-size {
     animation: al-letter-shrink var(--motion-scene-dur) linear infinite backwards;
   }
@@ -1168,5 +1179,11 @@ body {
   }
   :root:not([data-motion='off']) .al-relay-hop {
     animation: al-relay-hop calc(var(--motion-scene-dur) / 2) linear infinite backwards;
+  }
+  /* An instance that is the relay takes one letter per pass, the one that
+     comes back. */
+  :root:not([data-motion='off']) .al-relay-home {
+    animation-duration: var(--motion-scene-dur);
+    animation-delay: calc(var(--motion-scene-dur) / 2);
   }
 }

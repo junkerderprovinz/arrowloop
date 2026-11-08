@@ -66,6 +66,9 @@ const relayConfig: RelayConfig = {
   relayUrl: '',
   projectRelayUrl: 'wss://parleyport.halleluja.design/relay/connect',
   connected: false,
+  serve: false,
+  serveClients: 0,
+  canServe: true,
 }
 
 beforeEach(() => {
