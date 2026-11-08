@@ -93,3 +93,71 @@ describe('a selector at the end of a settings row', () => {
     expect(segment.style.flex).toContain('0.5*(100% - 6.4px)')
   })
 })
+
+describe('a selector that keeps to one row', () => {
+  const four = ['project', 'own', 'instance', 'off'].map((value) => ({
+    value,
+    label: `${value} relay`,
+    icon: <svg aria-hidden="true" />,
+  }))
+  const clientWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth')!
+
+  // jsdom lays nothing out, so each segment is 150 pixels with its label and
+  // 44 with its glyph alone.
+  function layout(room: number) {
+    Object.defineProperty(Element.prototype, 'clientWidth', {
+      configurable: true,
+      get(this: HTMLElement) {
+        return this.dataset.room ? Number(this.dataset.room) : 0
+      },
+    })
+    const real = window.getComputedStyle
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((el, pseudo) => {
+      const style = real(el, pseudo)
+      if (!el.hasAttribute('data-segment')) return style
+      const label = el.querySelector<HTMLElement>('.glim-tab-label')
+      return new Proxy(style, {
+        get: (target, key) => {
+          if (key === 'width') return label?.style.display === 'none' ? '44px' : '150px'
+          const value: unknown = Reflect.get(target, key)
+          return typeof value === 'function' ? value.bind(target) : value
+        },
+      })
+    })
+    render(
+      <div data-room={room}>
+        <Selector hug oneRow value="instance" options={four} onChange={() => {}} label="Relay" />
+      </div>,
+    )
+  }
+
+  function shown(name: string) {
+    const label = screen.getByRole('tab', { name }).querySelector('.glim-tab-label')!
+    return !label.classList.contains('sr-only')
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    Object.defineProperty(Element.prototype, 'clientWidth', clientWidth)
+  })
+
+  it('hugs four equal segments while the row has room for them', () => {
+    layout(1200)
+    expect(screen.getByRole('tablist').className.split(' ')).toEqual(expect.arrayContaining(['w-fit', 'flex-nowrap']))
+    expect(screen.getByRole('tab', { name: 'own relay' }).style.width).toBe('200px')
+    expect(four.every((o) => shown(o.label))).toBe(true)
+  })
+
+  it('keeps the label of the chosen route and shows the others as glyphs on a narrow screen', () => {
+    layout(300)
+    expect(screen.getByRole('tablist').className).not.toContain('flex-wrap')
+    expect(shown('instance relay')).toBe(true)
+    expect(shown('own relay')).toBe(false)
+    expect(screen.getByRole('tab', { name: 'own relay' }).dataset.tip).toBe('own relay')
+  })
+
+  it('shows every route as a glyph where even the chosen label does not fit', () => {
+    layout(200)
+    expect(four.some((o) => shown(o.label))).toBe(false)
+  })
+})

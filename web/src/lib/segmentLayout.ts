@@ -56,3 +56,26 @@ export function segmentLayout(room: number, pinned: number, segments: SegmentWid
   if (wraps && inline <= room + ROUNDING) return { byContent: true, perRow: count };
   return { byContent: false, perRow: perRowFor(count, room, pinned, gap) };
 }
+
+/**
+ * OneRowFit is how a selector that keeps to one row holds its labels: every
+ * segment as wide as the widest (`even`), each as wide as its label
+ * (`content`), the chosen one with its label and the rest as glyphs
+ * (`chosen`), or every one a glyph (`glyphs`).
+ */
+export type OneRowFit = 'even' | 'content' | 'chosen' | 'glyphs';
+
+/**
+ * oneRowFit picks the first way the segments fit `room` side by side, from
+ * their widths with the label on one line and with the glyph alone. `chosen`
+ * is the index of the chosen segment, -1 for none. Past the last step a
+ * selector without glyphs truncates its labels.
+ */
+export function oneRowFit(room: number, gap: number, oneLine: number[], glyph: number[], chosen: number): OneRowFit {
+  const free = room - gap * (oneLine.length - 1) + ROUNDING;
+  if (Math.max(...oneLine) * oneLine.length <= free) return 'even';
+  if (oneLine.reduce((sum, w) => sum + w, 0) <= free) return 'content';
+  const glyphs = glyph.reduce((sum, w) => sum + w, 0);
+  if (chosen >= 0 && glyphs - glyph[chosen]! + oneLine[chosen]! <= free) return 'chosen';
+  return 'glyphs';
+}

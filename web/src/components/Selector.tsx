@@ -5,7 +5,7 @@ import { hueVars } from '../lib/appearance'
 import { groupStage } from '../lib/controls'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
-import { perRowFor } from '../lib/segmentLayout'
+import { oneRowFit, perRowFor } from '../lib/segmentLayout'
 import { useRainbow } from './Shell'
 
 /**
@@ -16,7 +16,8 @@ import { useRainbow } from './Shell'
  * pinning, for strips that repeat down a page or sit in a narrow panel. At
  * both scales the strip spans the width of its box and the segments share it,
  * since a strip that stops short leaves a ragged edge down a card of them. A
- * strip at the end of a settings row hugs its segments instead (`hug`).
+ * strip at the end of a settings row hugs its segments instead (`hug`), and a
+ * route picker that must never wrap keeps to one row (`oneRow`).
  */
 export type Option<T extends string> = {
   value: T
@@ -80,6 +81,7 @@ export function Selector<T extends string>({
   pairsOnPhone = false,
   stack = false,
   dense = false,
+  oneRow = false,
 }: {
   options: Option<T>[]
   value: T
@@ -133,6 +135,13 @@ export function Selector<T extends string>({
   stack?: boolean
   /** Lower segments, for a long choice whose segments stand under each other. */
   dense?: boolean
+  /**
+   * Never more than one row, as BombVault's `fit`. With `hug` the segments
+   * are as wide as the widest while that fits. Short of room they size to
+   * their labels, then only the chosen one keeps its label, then every one
+   * shows its glyph alone, the label staying its name and its bubble.
+   */
+  oneRow?: boolean
 }) {
   const track = useRef<HTMLDivElement>(null)
   const pairs = usePhoneWidth() && pairsOnPhone
@@ -191,6 +200,32 @@ export function Selector<T extends string>({
     void document.fonts?.ready.then(measure)
   }, [hug, labelKey, mode])
 
+  // A one-row strip reads each segment with its label on one line and with its
+  // glyph alone, a label it has hidden put back on screen for the reading.
+  const [rowWidths, setRowWidths] = useState<{ oneLine: number[]; glyph: number[] } | null>(null)
+  useLayoutEffect(() => {
+    const el = track.current
+    if (!oneRow || !el) return
+    const measure = () => {
+      const segs = [...el.querySelectorAll<HTMLElement>('[data-segment]')]
+      const labels = segs.map((s) => s.querySelector<HTMLElement>('.glim-tab-label'))
+      const own = segs.map((s) => s.style.cssText)
+      const hidden = labels.filter((l) => l?.classList.contains('sr-only'))
+      for (const l of hidden) l!.classList.remove('sr-only')
+      for (const s of segs) Object.assign(s.style, { flex: 'none', width: 'max-content', minWidth: '0', maxWidth: 'none' })
+      const width = () => segs.map((s) => parseFloat(getComputedStyle(s).width))
+      const oneLine = width()
+      for (const l of labels) if (l) l.style.display = 'none'
+      const glyph = segs.map((s, i) => (s.querySelector('.glim-tab-glyph') ? width()[i]! : oneLine[i]!))
+      for (const l of labels) if (l) l.style.display = ''
+      for (const l of hidden) l!.classList.add('sr-only')
+      segs.forEach((s, i) => (s.style.cssText = own[i] ?? ''))
+      setRowWidths((was) => (was && was.oneLine.join() === oneLine.join() && was.glyph.join() === glyph.join() ? was : { oneLine, glyph }))
+    }
+    measure()
+    void document.fonts?.ready.then(measure)
+  }, [oneRow, labelKey, mode])
+
   // How many segments share a row depends on the room, so it follows the
   // parent's size and not only the labels.
   useLayoutEffect(() => {
@@ -215,11 +250,11 @@ export function Selector<T extends string>({
   // A hugging strip's box is as wide as the strip until the row runs out, so
   // the room only falls short of the segments once they no longer fit.
   const crowded =
-    hug && natural !== null && inner > 0 && natural.reduce((sum, w) => sum + w, 0) + gap * (n - 1) > inner + 1
+    hug && !oneRow && natural !== null && inner > 0 && natural.reduce((sum, w) => sum + w, 0) + gap * (n - 1) > inner + 1
       ? natural
       : null
   const pinned =
-    scale === 'big' && widest !== null
+    !oneRow && scale === 'big' && widest !== null
       ? Math.min(Math.max(widest, MIN_SEGMENT), Math.max(widest, share))
       : crowded
         ? Math.min(Math.max(...crowded), inner)
@@ -228,6 +263,17 @@ export function Selector<T extends string>({
   // no row ends in an empty strip: six that fit four to a row go three and
   // three.
   const perRow = crowded && stack ? 1 : pinned && inner > 0 ? perRowFor(n, inner, pinned, gap) : n
+
+  // Without glyphs on screen a label cannot give way to one, so a strip of
+  // words that runs out of room truncates them instead.
+  const chosenIndex = options.findIndex((o) => o.value === value)
+  const glyphsShown = mode !== 'text' && options.every((o) => !!o.icon)
+  const fit = oneRow && rowWidths && inner > 0 ? oneRowFit(inner, gap, rowWidths.oneLine, rowWidths.glyph, chosenIndex) : 'even'
+  const rowFit = !glyphsShown && (fit === 'chosen' || fit === 'glyphs') ? 'content' : fit
+  // Even shares hug at the widest label, raised to the app-wide floor where
+  // the row holds that many.
+  const evenWidth =
+    oneRow && rowWidths && inner > 0 ? Math.min(Math.max(Math.max(...rowWidths.oneLine), MIN_SEGMENT), share) : null
 
   // Every segment reads a rainbow position, so the strip repaints when the
   // mode changes.
@@ -243,9 +289,9 @@ export function Selector<T extends string>({
       aria-label={label}
       aria-labelledby={labelledBy}
       className={
-        `${hug && !pairs ? 'w-fit max-w-full' : 'w-full'} ${pairs ? 'items-stretch ' : ''}${
-          variant === 'well' ? 'glim-well flex flex-wrap gap-[0.2rem] p-[0.2rem]' : 'flex flex-wrap gap-1'
-        }`
+        `${hug && !pairs && (!oneRow || rowFit === 'even') ? 'w-fit max-w-full' : 'w-full'} ${pairs ? 'items-stretch ' : ''}${
+          variant === 'well' ? 'glim-well flex gap-[0.2rem] p-[0.2rem]' : 'flex gap-1'
+        } ${oneRow ? 'flex-nowrap' : 'flex-wrap'}`
       }
       style={{
         borderRadius: variant === 'well' ? 'var(--radius-pill)' : undefined,
@@ -255,13 +301,14 @@ export function Selector<T extends string>({
     >
       {options.map((o, i) => {
         const active = o.value === value
+        const squeezed = oneRow && !!o.icon && glyphsShown && (rowFit === 'glyphs' || (rowFit === 'chosen' && !active))
         return (
           <button
             key={o.value}
             data-segment
             role="tab"
             aria-selected={active}
-            data-tip={glyphOnly && o.icon ? o.label : undefined}
+            data-tip={(glyphOnly && o.icon) || squeezed ? o.label : undefined}
             onClick={() => onChange(o.value)}
             style={{
               // Each segment takes its own palette position. It sits on the
@@ -271,7 +318,13 @@ export function Selector<T extends string>({
               // The full control radius, as BombVault uses; subtracting the
               // well's padding left the strip looking square at the Soft stage.
               borderRadius: 'var(--radius-pill)',
-              ...(pairs
+              ...(oneRow
+                ? rowFit === 'even'
+                  ? { flex: 'none', width: evenWidth ?? undefined }
+                  : rowFit === 'chosen' && active
+                    ? { flex: 'none' }
+                    : { flex: rowFit === 'content' ? '1 1 auto' : '1 1 0', minWidth: 0 }
+                : pairs
                 ? { flex: '1 0 calc(50% - 0.25rem)', minWidth: 0 }
                 : pinned !== null
                 ? {
@@ -313,7 +366,7 @@ export function Selector<T extends string>({
                 {o.icon}
               </span>
             )}
-            <span className="glim-tab-label">{o.label}</span>
+            <span className={`glim-tab-label${squeezed ? ' sr-only' : oneRow ? ' truncate' : ''}`}>{o.label}</span>
             {o.hint && (
               // Reading the explanation must not choose the option, by pointer
               // or by key.
