@@ -55,3 +55,19 @@ export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (job.recent.length === 0) return 'never'
   return 'last'
 }
+
+type DatedRun = { ID: number; Started: string; Finished: string }
+
+/**
+ * The newest `limit` runs across the jobs, newest first, from each job's own
+ * recent runs. Another instance tells its runs only this way, so its latest
+ * runs are gathered from its job list rather than asked for apart.
+ */
+export function latestRuns<R extends DatedRun>(jobs: { recent: R[] }[], limit: number): R[] {
+  // Parsed, since a zone offset that changed with the season breaks a text order.
+  const at = (r: R) => Date.parse(r.Finished || r.Started)
+  return jobs
+    .flatMap((j) => j.recent)
+    .sort((a, b) => at(b) - at(a) || b.ID - a.ID)
+    .slice(0, limit)
+}

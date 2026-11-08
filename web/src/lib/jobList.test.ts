@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { STRIP_LENGTH, jobStatus, runStrip } from './jobList'
+import { STRIP_LENGTH, jobStatus, latestRuns, runStrip } from './jobList'
 
 const ok = { Err: '', Conflicts: 0, Skipped: 0, Started: '2027-03-01T10:00:00Z' }
 const failed = { ...ok, Err: 'boom' }
@@ -68,5 +68,20 @@ describe('jobStatus', () => {
 
   it('forgets a failure once a later run worked', () => {
     expect(jobStatus(job('a', { recent: [ok, failed] }), quiet)).toBe('last')
+  })
+})
+
+describe('latestRuns', () => {
+  const run = (ID: number, Finished: string) => ({ ID, Started: Finished, Finished })
+
+  it('gathers the newest runs of all jobs, newest first', () => {
+    const a = { recent: [run(4, '2027-03-01T12:00:00Z'), run(1, '2027-03-01T08:00:00Z')] }
+    const b = { recent: [run(3, '2027-03-01T13:00:00+02:00'), run(2, '2027-03-01T09:00:00Z')] }
+    expect(latestRuns([a, b], 3).map((r) => r.ID)).toEqual([4, 3, 2])
+  })
+
+  it('reads a run still going by its start', () => {
+    const going = { ID: 9, Started: '2027-03-02T10:00:00Z', Finished: '' }
+    expect(latestRuns([{ recent: [run(1, '2027-03-01T10:00:00Z'), going] }], 1)[0].ID).toBe(9)
   })
 })
