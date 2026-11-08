@@ -88,6 +88,13 @@ func (j Job) OnNetwork() bool {
 	return false
 }
 
+// LocalFolder is the folder on this machine a side lands in, directly or
+// through a local target or an alias of a folder, and whether it lands in one.
+func LocalFolder(side string) (string, bool) {
+	p, err := locate(side)
+	return p.local, err == nil && p.local != ""
+}
+
 // locate works out where a side points from rclone's configuration, without
 // connecting. A side whose target is not configured, is of a backend this
 // build lacks, or does not name its account cannot be placed.

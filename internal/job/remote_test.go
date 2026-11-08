@@ -232,3 +232,25 @@ func TestAJobWithBothSidesOnOneServerUnderTwoNamesIsRefused(t *testing.T) {
 		t.Errorf("a job with a target this machine cannot look up was refused: %v", err)
 	}
 }
+
+func TestALocalFolderIsFoundThroughTheTargetsThatReachIt(t *testing.T) {
+	dir := t.TempDir()
+	targets(t,
+		"nas: type=sftp host=nas.example user=bob",
+		"disk: type=local",
+		"here: type=alias remote="+filepath.ToSlash(dir),
+	)
+	for side, want := range map[string]string{
+		dir:                 dir,
+		"disk:" + dir:       dir,
+		"here:photos":       filepath.ToSlash(dir) + "/photos",
+		"nas:photos":        "",
+		"nosuch:photos":     "",
+		"volume:abc/photos": "",
+	} {
+		got, ok := LocalFolder(side)
+		if ok != (want != "") || filepath.ToSlash(got) != filepath.ToSlash(want) {
+			t.Errorf("LocalFolder(%q) = %q, %v, want %q", side, got, ok, want)
+		}
+	}
+}
