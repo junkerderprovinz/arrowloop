@@ -135,7 +135,7 @@ export function Welcome({ fresh }: { fresh: boolean | null }) {
       <p className="text-body text-carbon-textSub">{t('welcome.lead')}</p>
       {line && (
         <p data-testid="welcome-found" className="flex items-center gap-2 text-subline text-carbon-textSub">
-          <span className="flex flex-none text-accentText [&_svg]:h-4 [&_svg]:w-4">
+          <span className="flex flex-none text-accentGlyph [&_svg]:h-4 [&_svg]:w-4">
             <IconSearch />
           </span>
           <span>{line}</span>
