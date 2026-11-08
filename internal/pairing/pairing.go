@@ -46,6 +46,10 @@ type State struct {
 	RelayMode string
 	// RelayURL is the owner's own relay, used only in ModeOwn.
 	RelayURL string
+	// RelayServe is whether this instance runs a relay for its group at
+	// /relay/connect on its own address. It is kept apart from the mode: the
+	// instance that serves dials its own relay like any other member.
+	RelayServe bool
 	// Name is what the other instances see, "" for the hostname.
 	Name string
 }
@@ -60,11 +64,12 @@ func (s State) Mode() string {
 
 // onDisk is the file's shape, with the secret and the key sealed.
 type onDisk struct {
-	Secret    string `json:"secret,omitempty"`
-	Member    string `json:"member,omitempty"`
-	RelayMode string `json:"relayMode,omitempty"`
-	RelayURL  string `json:"relayUrl,omitempty"`
-	Name      string `json:"name,omitempty"`
+	Secret     string `json:"secret,omitempty"`
+	Member     string `json:"member,omitempty"`
+	RelayMode  string `json:"relayMode,omitempty"`
+	RelayURL   string `json:"relayUrl,omitempty"`
+	RelayServe bool   `json:"relayServe,omitempty"`
+	Name       string `json:"name,omitempty"`
 }
 
 // Store reads and writes the file.
@@ -91,7 +96,7 @@ func Open(dir string, key []byte) (*Store, error) {
 	if err := json.Unmarshal(body, &d); err != nil {
 		return nil, fmt.Errorf("%s is damaged (%v); delete it to leave the group and pair again", s.path, err)
 	}
-	st := State{RelayMode: d.RelayMode, RelayURL: d.RelayURL, Name: d.Name}
+	st := State{RelayMode: d.RelayMode, RelayURL: d.RelayURL, RelayServe: d.RelayServe, Name: d.Name}
 	if st.Secret, err = s.open(d.Secret); err != nil {
 		return nil, err
 	}
@@ -147,7 +152,7 @@ func (s *Store) Update(fn func(*State) error) error {
 }
 
 func (s *Store) write(st State) error {
-	d := onDisk{RelayMode: st.RelayMode, RelayURL: st.RelayURL, Name: st.Name}
+	d := onDisk{RelayMode: st.RelayMode, RelayURL: st.RelayURL, RelayServe: st.RelayServe, Name: st.Name}
 	var err error
 	if d.Secret, err = s.seal(st.Secret); err != nil {
 		return err

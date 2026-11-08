@@ -28,6 +28,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/relay"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
@@ -106,6 +107,11 @@ type Server struct {
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler
+
+	// servedOnce builds served, the relay this instance runs for its group
+	// while the owner has it switched on.
+	servedOnce sync.Once
+	served     *relay.Server
 
 	// checked runs once a sign-in's credentials have held and before its
 	// session is handed out, which is where a test lands a reset.

@@ -99,6 +99,30 @@ func TestTheRelayModeFollowsWhatWasChosen(t *testing.T) {
 	}
 }
 
+func TestServingTheRelaySurvivesARestart(t *testing.T) {
+	dir := t.TempDir()
+	s, err := Open(dir, key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.Get().RelayServe {
+		t.Fatal("a new install serves a relay")
+	}
+	if err := s.Update(func(st *State) error {
+		st.RelayMode, st.RelayURL, st.RelayServe = ModeOwn, "https://cellar.example.org", true
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+	again, err := Open(dir, key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if st := again.Get(); !st.RelayServe || st.Mode() != ModeOwn || st.RelayURL != "https://cellar.example.org" {
+		t.Fatalf("after a restart = %+v, want it still serving its relay at its own address", st)
+	}
+}
+
 func TestADamagedFileStopsTheStart(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, FileName), []byte(`{"secret":`), 0o600); err != nil {

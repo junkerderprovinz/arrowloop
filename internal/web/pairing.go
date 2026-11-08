@@ -14,6 +14,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/ed25519"
+	"crypto/hmac"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -46,6 +47,9 @@ func (s *Server) pairingRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/connect/devices/{id}/refuse", s.refuseMember)
 	mux.HandleFunc("GET /api/relay/config", s.readRelay)
 	mux.HandleFunc("PUT /api/relay/config", s.writeRelay)
+	// Open like a relay of its own: the relay key in the first frame is the
+	// credential, and nothing but this group's key gets in.
+	mux.HandleFunc("GET "+servedRelayPath, s.serveRelay)
 	mux.HandleFunc("GET /api/instances", s.listInstances)
 	mux.HandleFunc("POST /api/instances/{id}/jobs/{name}/{action}", s.instanceJob)
 }
@@ -448,11 +452,27 @@ type relayView struct {
 	RelayURL        string `json:"relayUrl"`
 	ProjectRelayURL string `json:"projectRelayUrl"`
 	Connected       bool   `json:"connected"`
+	// Serve is whether this instance runs the relay of its group, and
+	// ServeClients how many instances are on it at the moment, this one
+	// included when it dials its own. CanServe is false where nobody else
+	// reaches the instance: on a phone and in the desktop app.
+	Serve        bool `json:"serve"`
+	ServeClients int  `json:"serveClients"`
+	CanServe     bool `json:"canServe"`
 }
 
 func (s *Server) relayView() relayView {
 	st := s.Pairing.Get()
-	return relayView{Mode: st.Mode(), RelayURL: st.RelayURL, ProjectRelayURL: relay.DefaultRelayURL, Connected: s.Group.RelayConnected()}
+	v := relayView{
+		Mode: st.Mode(), RelayURL: st.RelayURL, ProjectRelayURL: relay.DefaultRelayURL, Connected: s.Group.RelayConnected(),
+		Serve: st.RelayServe, CanServe: s.canServe(),
+	}
+	// Sockets admitted before the switch went off are dropped by applyRelay,
+	// so the count only means something while it is on.
+	if s.serving(st) {
+		v.ServeClients = s.servedRelay().Len()
+	}
+	return v
 }
 
 func (s *Server) readRelay(w http.ResponseWriter, _ *http.Request) {
@@ -464,12 +484,17 @@ func (s *Server) writeRelay(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Mode     *string `json:"mode"`
 		RelayURL *string `json:"relayUrl"`
+		Serve    *bool   `json:"serve"`
 	}
 	if !readBody(w, r, &req) {
 		return
 	}
 	if req.Mode != nil && !pairing.ValidMode(*req.Mode) {
 		writeError(w, http.StatusBadRequest, errors.New("the relay mode is project, own or off"))
+		return
+	}
+	if req.Serve != nil && *req.Serve && !s.canServe() {
+		writeError(w, http.StatusBadRequest, errors.New("only an instance the others can reach serves a relay, and a phone or the desktop app is not one"))
 		return
 	}
 	if req.RelayURL != nil && strings.TrimSpace(*req.RelayURL) != "" {
@@ -484,6 +509,9 @@ func (s *Server) writeRelay(w http.ResponseWriter, r *http.Request) {
 		}
 		if req.RelayURL != nil {
 			st.RelayURL = strings.TrimSpace(*req.RelayURL)
+		}
+		if req.Serve != nil {
+			st.RelayServe = *req.Serve
 		}
 		return nil
 	}); err != nil {
@@ -520,12 +548,60 @@ func relayTarget(st pairing.State) string {
 	return relay.DefaultRelayURL
 }
 
+// servedRelayPath is where an instance that serves the relay of its group
+// answers, on the address it already has. The relay client puts it behind an
+// address that has no path, so members may enter the bare address.
+const servedRelayPath = "/relay/connect"
+
+// canServe reports whether the others can reach this instance at all. The
+// phone's engine answers only the app that started it, and the desktop app's
+// only its own window.
+func (s *Server) canServe() bool {
+	return s.Deployment != "phone" && s.Deployment != "desktop"
+}
+
+// serving reports whether this instance runs the relay of its group: the
+// switch is on and there is a group whose key could get in.
+func (s *Server) serving(st pairing.State) bool {
+	return st.RelayServe && st.Secret != nil && s.canServe()
+}
+
+// servedRelay is the relay this instance serves. It lives as long as the
+// process and reads the switch and the key on every connection, so saving
+// an unrelated setting does not drop the members on it.
+func (s *Server) servedRelay() *relay.Server {
+	s.servedOnce.Do(func() {
+		srv := relay.New()
+		srv.Admit = func(key string) bool {
+			st := s.Pairing.Get()
+			// Constant time, because the caller controls the guess.
+			return s.serving(st) && hmac.Equal([]byte(key), []byte(relay.DeriveKey(st.Secret)))
+		}
+		srv.TrustedProxies = s.trustedProxies
+		s.served = srv
+	})
+	return s.served
+}
+
+// serveRelay is the relay socket while this instance serves one. With the
+// switch off it answers like a version without the feature.
+func (s *Server) serveRelay(w http.ResponseWriter, r *http.Request) {
+	if !s.serving(s.Pairing.Get()) {
+		writeError(w, http.StatusNotFound, fmt.Errorf("no such address: %s", r.URL.Path))
+		return
+	}
+	s.servedRelay().ServeHTTP(w, r)
+}
+
 // applyRelay rebuilds the relay client from what is stored and installs it on
 // the group, which closes the previous one. A relay that cannot be reached is
 // no error here; the client keeps retrying in the background.
 func (s *Server) applyRelay() {
 	s.relayMu.Lock()
 	defer s.relayMu.Unlock()
+	// Members admitted under a group this instance left, or before the switch
+	// went off, would otherwise stay on until they drop.
+	s.servedRelay().Revoke()
 	st := s.Pairing.Get()
 	target := relayTarget(st)
 	if st.Secret == nil || target == "" {

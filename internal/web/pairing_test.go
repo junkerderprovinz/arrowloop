@@ -25,6 +25,12 @@ type node struct {
 
 func newNode(t *testing.T, relayURL string) *node {
 	t.Helper()
+	return newNodeAs(t, relayURL, "server")
+}
+
+// newNodeAs is newNode for an instance that tells the group it is deployment.
+func newNodeAs(t *testing.T, relayURL, deployment string) *node {
+	t.Helper()
 	h := newHarness(t)
 	store, err := pairing.Open(h.dir, bytes.Repeat([]byte{3}, 32))
 	if err != nil {
@@ -40,7 +46,7 @@ func newNode(t *testing.T, relayURL string) *node {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, Group: group, Deployment: "server"}
+	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, Group: group, Deployment: deployment}
 	h.srv = httptest.NewServer(s.Handler())
 	s.StartPairing()
 	t.Cleanup(func() {

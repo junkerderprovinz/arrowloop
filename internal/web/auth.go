@@ -396,6 +396,11 @@ func (g *authGate) forgetAll() {
 
 // lockoutKey is the source address a failed login from r is counted against.
 func (s *Server) lockoutKey(r *http.Request) string {
+	return clientKey(r, s.trustedProxies())
+}
+
+// trustedProxies is TrustedProxiesEnv read apart, once.
+func (s *Server) trustedProxies() []netip.Prefix {
 	g := s.gate()
 	g.proxiesOnce.Do(func() {
 		var bad []string
@@ -404,7 +409,7 @@ func (s *Server) lockoutKey(r *http.Request) string {
 			s.logf("%s: %q is neither an address nor a range, so it is ignored", TrustedProxiesEnv, entry)
 		}
 	})
-	return clientKey(r, g.proxies)
+	return g.proxies
 }
 
 // clientKey is the socket's peer address, unless the peer is one of the

@@ -1,10 +1,9 @@
 package relay
 
-// The relay server as ParleyPort runs it. ArrowLoop never serves it; it is here
-// so the tests of this package and of the web interface pair instances through
-// the relay they really meet. It routes messages between instances that
-// present the same relay key, so two instances behind NAT can reach each other
-// by both dialling out to one place.
+// The relay server as ParleyPort runs it, which an instance also serves for
+// its own group when the owner switches that on (see internal/web). It routes
+// messages between instances that present the same relay key, so two
+// instances behind NAT can reach each other by both dialling out to one place.
 //
 // Possession of the key is the whole authorization model: the relay has no
 // account list and no database, it only groups connections that present the
@@ -196,6 +195,23 @@ func (s *Server) Len() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return len(s.clients)
+}
+
+// Revoke closes every connection that Admit would turn away if it connected
+// again. An instance serving a relay calls it when its group or its switch
+// changes, since Admit is only asked on connect.
+func (s *Server) Revoke() {
+	s.mu.Lock()
+	var gone []Conn
+	for c, cl := range s.clients {
+		if !s.admits(cl.key) {
+			gone = append(gone, c)
+		}
+	}
+	s.mu.Unlock()
+	for _, c := range gone {
+		s.Leave(c)
+	}
 }
 
 // Join registers a connection under its relay key and introduces it to the
