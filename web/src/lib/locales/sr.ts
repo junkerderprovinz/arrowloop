@@ -878,6 +878,7 @@ const sr: Translations = {
   'side.whereHint': 'Изабери овај телефон или једно од својих одредишта, а затим фасциклу у њему. Фасцикле које додаш у одељку Подешавања преко „Додај фасциклу из апликације” налазе се у одредишту Apps и раде и без „Приступ датотекама”.',
   'side.noTargets': 'Још није повезан ниједан облак ни сервер. Можеш да га повежеш у одељку Још, Одредишта.',
   'side.inTarget': 'Фасцикла у {name}',
+  'side.noSuchTarget': 'Не постоји одредиште са именом {name}. Фасцикле на овом телефону почињу знаком /, на пример /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

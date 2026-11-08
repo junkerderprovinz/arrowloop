@@ -878,6 +878,7 @@ const pt: Translations = {
   'side.whereHint': 'Escolhe este telemóvel ou um dos teus destinos, e depois a pasta. As pastas que adicionas em Definições com «Adicionar uma pasta de uma aplicação» estão no destino Apps e funcionam sem «Acesso aos ficheiros».',
   'side.noTargets': 'Ainda não há nenhuma nuvem nem servidor ligado. Podes ligar um em Mais, Destinos.',
   'side.inTarget': 'Pasta em {name}',
+  'side.noSuchTarget': 'Não há nenhum destino chamado {name}. As pastas deste telemóvel começam por /, como /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

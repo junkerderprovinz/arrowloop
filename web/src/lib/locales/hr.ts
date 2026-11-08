@@ -878,6 +878,7 @@ const hr: Translations = {
   'side.whereHint': 'Odaberi ovaj telefon ili jedno od svojih odredišta, a zatim mapu u njemu. Mape koje dodaš u Postavke preko „Dodaj mapu iz aplikacije” nalaze se u odredištu Apps i rade i bez „Pristup datotekama”.',
   'side.noTargets': 'Još nije povezan nijedan oblak ni poslužitelj. Možeš ga povezati pod Više, Odredišta.',
   'side.inTarget': 'Mapa u {name}',
+  'side.noSuchTarget': 'Ne postoji odredište s imenom {name}. Mape na ovom telefonu počinju znakom /, na primjer /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -878,6 +878,7 @@ const vi: Translations = {
   'side.whereHint': 'Chọn máy này hoặc một đích của bạn, rồi chọn thư mục bên trong. Các thư mục bạn thêm trong Cài đặt bằng "Thêm thư mục từ ứng dụng" nằm trong đích Apps và vẫn chạy khi không có "Quyền truy cập tệp".',
   'side.noTargets': 'Chưa có đám mây hay máy chủ nào được kết nối. Bạn có thể kết nối ở Thêm, Đích.',
   'side.inTarget': 'Thư mục trong {name}',
+  'side.noSuchTarget': 'Không có đích nào tên {name}. Thư mục trên máy này bắt đầu bằng /, ví dụ /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

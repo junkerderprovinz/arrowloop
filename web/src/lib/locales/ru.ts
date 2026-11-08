@@ -878,6 +878,7 @@ const ru: Translations = {
   'side.whereHint': 'Выберите этот телефон или одно из своих назначений, а затем папку в нём. Папки, добавленные в разделе Настройки через «Добавить папку из приложения», лежат в назначении Apps и работают и без «Доступ к файлам».',
   'side.noTargets': 'Пока не подключено ни одного облака или сервера. Подключить его можно в разделе Ещё, Назначения.',
   'side.inTarget': 'Папка в {name}',
+  'side.noSuchTarget': 'Назначения с именем {name} нет. Папки на этом телефоне начинаются с /, например /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

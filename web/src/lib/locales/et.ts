@@ -878,6 +878,7 @@ const et: Translations = {
   'side.whereHint': 'Vali see telefon või mõni oma sihtkohtadest ja siis kaust selle sees. Kaustad, mille lisad jaotises Seaded valikuga „Lisa kaust rakendusest“, on sihtkohas Apps ja töötavad ka ilma valikuta „Juurdepääs failidele“.',
   'side.noTargets': 'Ühtegi pilve ega serverit pole veel ühendatud. Saad selle ühendada jaotises Veel, Sihtkohad.',
   'side.inTarget': 'Kaust kohas {name}',
+  'side.noSuchTarget': 'Sihtkohta nimega {name} ei ole. Selle telefoni kaustad algavad märgiga /, näiteks /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

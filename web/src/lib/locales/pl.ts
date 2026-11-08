@@ -878,6 +878,7 @@ const pl: Translations = {
   'side.whereHint': 'Wybierz ten telefon albo jeden ze swoich celów, a potem folder w nim. Foldery dodane w sekcji Ustawienia przez „Dodaj folder z aplikacji” są w celu Apps i działają także bez „Dostęp do plików”.',
   'side.noTargets': 'Nie połączono jeszcze żadnej chmury ani serwera. Możesz to zrobić w sekcji Więcej, Cele.',
   'side.inTarget': 'Folder w {name}',
+  'side.noSuchTarget': 'Nie ma celu o nazwie {name}. Foldery w tym telefonie zaczynają się od /, na przykład /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

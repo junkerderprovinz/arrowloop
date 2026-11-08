@@ -878,6 +878,7 @@ const ro: Translations = {
   'side.whereHint': 'Alege acest telefon sau una dintre destinațiile tale, apoi dosarul din ea. Dosarele adăugate în Setări cu „Adaugă un dosar dintr-o aplicație” se află în destinația Apps și merg și fără „Acces la fișiere”.',
   'side.noTargets': 'Încă nu este conectat niciun cloud sau server. Poți conecta unul din Mai mult, Destinații.',
   'side.inTarget': 'Dosar în {name}',
+  'side.noSuchTarget': 'Nu există nicio destinație numită {name}. Dosarele de pe acest telefon încep cu /, de exemplu /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

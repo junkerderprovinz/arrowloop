@@ -878,6 +878,7 @@ const lv: Translations = {
   'side.whereHint': 'Izvēlies šo tālruni vai kādu no saviem galamērķiem, tad mapi tajā. Mapes, ko pievieno sadaļā Iestatījumi ar “Pievienot mapi no lietotnes”, ir galamērķī Apps un darbojas arī bez “Piekļuve failiem”.',
   'side.noTargets': 'Vēl nav pievienots neviens mākonis vai serveris. To vari pievienot sadaļā Vairāk, Galamērķi.',
   'side.inTarget': 'Mape galamērķī {name}',
+  'side.noSuchTarget': 'Galamērķa ar nosaukumu {name} nav. Šī tālruņa mapes sākas ar /, piemēram, /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

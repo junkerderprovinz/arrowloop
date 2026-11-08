@@ -878,6 +878,7 @@ const hu: Translations = {
   'side.whereHint': 'Válaszd ezt a telefont vagy az egyik célodat, aztán a benne lévő mappát. A Beállítások alatt a „Mappa hozzáadása egy alkalmazásból” gombbal hozzáadott mappák az Apps célban vannak, és „Fájlhozzáférés” nélkül is működnek.',
   'side.noTargets': 'Még nincs összekapcsolt felhő vagy szerver. Itt kapcsolhatsz össze egyet: Továbbiak, Célok.',
   'side.inTarget': 'Mappa itt: {name}',
+  'side.noSuchTarget': 'Nincs {name} nevű cél. A telefon mappái / jellel kezdődnek, például /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

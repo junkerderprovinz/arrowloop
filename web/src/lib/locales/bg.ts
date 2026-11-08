@@ -878,6 +878,7 @@ const bg: Translations = {
   'side.whereHint': 'Изберете този телефон или някоя от целите си, а после папката в нея. Папките, добавени в Настройки чрез „Добавяне на папка от приложение“, са в целта Apps и работят и без „Достъп до файловете“.',
   'side.noTargets': 'Все още няма свързан облак или сървър. Можете да свържете от Още, Цели.',
   'side.inTarget': 'Папка в {name}',
+  'side.noSuchTarget': 'Няма цел с име {name}. Папките на този телефон започват с /, например /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

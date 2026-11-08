@@ -58,6 +58,7 @@ import {
   type ScheduleMode,
   type ScheduleState,
 } from "../../../web/src/lib/schedule.data";
+import { phoneFolder } from "../../../web/src/lib/side.data";
 
 // Creates and edits a job. It edits the configuration file's own fields and
 // writes the whole file back through /api/config, as the desktop editor does.
@@ -586,6 +587,9 @@ function SideCard({
   const mark = sideMark(side, remotes);
   const access = useFileAccess();
   const [picking, setPicking] = useState(false);
+  // A folder typed on the phone that names no target, kept to be shown with
+  // the reason rather than written as a side that would point at one.
+  const [stray, setStray] = useState<{ typed: string; name: string } | null>(null);
 
   // Kept apart from the side itself, since a side on the phone with no folder
   // yet is as empty as one that is nowhere.
@@ -599,6 +603,7 @@ function SideCard({
   const folder = inTarget ? side.slice(where.length + 1) : side;
   const choose = (next: string) => {
     if (next === where) return;
+    setStray(null);
     setWhere(next);
     onChange(next === PHONE ? "" : `${next}:`);
   };
@@ -671,10 +676,15 @@ function SideCard({
           {where === PHONE && access === false ? <AccessNotice /> : null}
           <Field
             label={inTarget ? t("side.inTarget", { name: where }) : t("edit.folderPath")}
-            value={folder}
-            onChange={(typed) => onChange(inTarget ? `${where}:${typed}` : typed)}
+            value={stray?.typed ?? folder}
+            onChange={(typed) => {
+              if (inTarget) return onChange(`${where}:${typed}`);
+              const read = phoneFolder(typed, places);
+              setStray("stray" in read ? { typed, name: read.stray } : null);
+              onChange("stray" in read ? "" : read.side);
+            }}
             placeholder={inTarget ? "Photos" : "/storage/emulated/0/DCIM"}
-            error={error}
+            error={stray ? t("side.noSuchTarget", { name: stray.name }) : error}
           />
           <Button
             label={t("pick.title")}
@@ -689,6 +699,7 @@ function SideCard({
         start={side}
         within={inTarget ? `${where}:` : ""}
         onPick={(path) => {
+          setStray(null);
           onChange(path);
           setPicking(false);
         }}

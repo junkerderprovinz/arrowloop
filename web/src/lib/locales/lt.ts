@@ -878,6 +878,7 @@ const lt: Translations = {
   'side.whereHint': 'Pasirinkite šį telefoną arba vieną iš savo paskirčių, tada aplanką joje. Aplankai, kuriuos pridedate skiltyje Nustatymai per „Pridėti aplanką iš programos“, yra paskirtyje Apps ir veikia ir be „Prieiga prie failų“.',
   'side.noTargets': 'Dar neprijungtas joks debesis ar serveris. Prijungti galite skiltyje Daugiau, Paskirtys.',
   'side.inTarget': 'Aplankas paskirtyje {name}',
+  'side.noSuchTarget': 'Paskirties pavadinimu {name} nėra. Šio telefono aplankai prasideda simboliu /, pavyzdžiui, /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -878,6 +878,7 @@ const fr: Translations = {
   'side.whereHint': 'Choisissez ce téléphone ou l\'une de vos cibles, puis le dossier qu\'il contient. Les dossiers ajoutés dans Réglages avec « Ajouter un dossier d\'une application » se trouvent dans la cible Apps et fonctionnent sans « Accès aux fichiers ».',
   'side.noTargets': 'Aucun cloud ni serveur n\'est encore connecté. Vous pouvez en connecter un dans Plus, Cibles.',
   'side.inTarget': 'Dossier dans {name}',
+  'side.noSuchTarget': 'Aucune cible ne s\'appelle {name}. Les dossiers de ce téléphone commencent par /, par exemple /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

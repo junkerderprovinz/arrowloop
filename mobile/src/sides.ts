@@ -1,4 +1,7 @@
+import { remoteOf } from "../../web/src/lib/side.data";
 import type { T } from "./i18n";
+
+export { remoteOf };
 
 /**
  * Names a side after what it is: a plain path is on the device, `target:path`
@@ -51,17 +54,4 @@ function folders(side: string | undefined): string[] {
   const remote = remoteOf(side);
   const path = (side ?? "").slice(remote ? remote.length + 1 : 0);
   return path.split(/[/\\]/).filter(Boolean);
-}
-
-/**
- * Returns the target's name in `name:path`, or undefined for a plain path. The
- * colon has to come before any slash, which is rclone's own rule.
- */
-export function remoteOf(side: string | undefined): string | undefined {
-  if (!side) return undefined;
-  const colon = side.indexOf(":");
-  if (colon <= 0) return undefined;
-  const slash = side.search(/[/\\]/);
-  if (slash !== -1 && slash < colon) return undefined;
-  return side.slice(0, colon);
 }

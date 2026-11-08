@@ -878,6 +878,7 @@ const id: Translations = {
   'side.whereHint': 'Pilih ponsel ini atau salah satu tujuanmu, lalu folder di dalamnya. Folder yang kamu tambahkan di Pengaturan lewat "Tambah folder dari aplikasi" ada di tujuan Apps dan tetap jalan tanpa "Akses berkas".',
   'side.noTargets': 'Belum ada awan atau server yang terhubung. Kamu bisa menghubungkannya di Lainnya, Tujuan.',
   'side.inTarget': 'Folder di {name}',
+  'side.noSuchTarget': 'Tidak ada tujuan bernama {name}. Folder di ponsel ini diawali dengan /, misalnya /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

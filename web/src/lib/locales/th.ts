@@ -878,6 +878,7 @@ const th: Translations = {
   'side.whereHint': 'เลือกเครื่องนี้หรือปลายทางของคุณ แล้วเลือกโฟลเดอร์ข้างใน โฟลเดอร์ที่เพิ่มในตั้งค่าด้วย "เพิ่มโฟลเดอร์จากแอป" จะอยู่ในปลายทาง Apps และใช้ได้แม้ไม่มี "การเข้าถึงไฟล์"',
   'side.noTargets': 'ยังไม่ได้เชื่อมต่อคลาวด์หรือเซิร์ฟเวอร์ใดเลย เชื่อมต่อได้ที่ เพิ่มเติม > ปลายทาง',
   'side.inTarget': 'โฟลเดอร์ใน {name}',
+  'side.noSuchTarget': 'ไม่มีปลายทางชื่อ {name} โฟลเดอร์ในเครื่องนี้ขึ้นต้นด้วย / เช่น /storage/emulated/0/DCIM',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

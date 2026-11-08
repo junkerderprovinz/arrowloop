@@ -878,6 +878,7 @@ const sv: Translations = {
   'side.whereHint': 'Välj den här telefonen eller ett av dina mål, och sedan mappen i det. Mappar du lägger till under Inställningar med ”Lägg till en mapp från en app” ligger i målet Apps och fungerar även utan ”Filåtkomst”.',
   'side.noTargets': 'Inget moln eller ingen server är ansluten än. Du kan ansluta en under Mer, Mål.',
   'side.inTarget': 'Mapp i {name}',
+  'side.noSuchTarget': 'Det finns inget mål som heter {name}. Mappar på den här telefonen börjar med /, till exempel /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -878,6 +878,7 @@ const hi: Translations = {
   'side.whereHint': 'यह फ़ोन या अपना कोई गंतव्य चुनें, फिर उसमें फ़ोल्डर। सेटिंग्स में "किसी ऐप का फ़ोल्डर जोड़ें" से जोड़े गए फ़ोल्डर Apps गंतव्य में होते हैं और "फ़ाइल पहुँच" के बिना भी चलते हैं।',
   'side.noTargets': 'अभी कोई क्लाउड या सर्वर जुड़ा नहीं है। आप और, गंतव्य में एक जोड़ सकते हैं।',
   'side.inTarget': '{name} में फ़ोल्डर',
+  'side.noSuchTarget': '{name} नाम का कोई गंतव्य नहीं है। इस फ़ोन पर फ़ोल्डर / से शुरू होते हैं, जैसे /storage/emulated/0/DCIM।',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

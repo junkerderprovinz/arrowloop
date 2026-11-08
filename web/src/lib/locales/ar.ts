@@ -878,6 +878,7 @@ const ar: Translations = {
   'side.whereHint': 'اختر هذا الهاتف أو إحدى وجهاتك، ثم المجلد داخلها. المجلدات التي تضيفها في الإعدادات عبر «إضافة مجلد من تطبيق» موجودة في الوجهة Apps وتعمل دون «الوصول إلى الملفات».',
   'side.noTargets': 'لا توجد سحابة أو خادم متصل بعد. يمكنك ربط واحد من المزيد، الوجهات.',
   'side.inTarget': 'المجلد في {name}',
+  'side.noSuchTarget': 'لا توجد وجهة باسم {name}. تبدأ المجلدات على هذا الهاتف بـ /، مثل /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

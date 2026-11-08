@@ -878,6 +878,7 @@ const fi: Translations = {
   'side.whereHint': 'Valitse tämä puhelin tai jokin kohteistasi ja sitten kansio sen sisältä. Kansiot, jotka lisäät kohdassa Asetukset toiminnolla "Lisää kansio sovelluksesta", ovat kohteessa Apps ja toimivat myös ilman asetusta "Tiedostojen käyttöoikeus".',
   'side.noTargets': 'Yhtään pilveä tai palvelinta ei ole vielä yhdistetty. Voit yhdistää sellaisen kohdassa Lisää, Kohteet.',
   'side.inTarget': 'Kansio kohteessa {name}',
+  'side.noSuchTarget': 'Kohdetta nimeltä {name} ei ole. Tämän puhelimen kansiot alkavat merkillä /, esimerkiksi /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

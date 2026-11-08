@@ -878,6 +878,7 @@ const sk: Translations = {
   'side.whereHint': 'Vyberte tento telefón alebo jeden zo svojich cieľov a potom priečinok v ňom. Priečinky pridané v časti Nastavenia cez „Pridať priečinok z aplikácie“ sú v cieli Apps a fungujú aj bez „Prístup k súborom“.',
   'side.noTargets': 'Zatiaľ nie je pripojený žiadny cloud ani server. Pripojiť ho môžete v časti Viac, Ciele.',
   'side.inTarget': 'Priečinok v {name}',
+  'side.noSuchTarget': 'Cieľ s názvom {name} neexistuje. Priečinky v tomto telefóne sa začínajú znakom /, napríklad /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

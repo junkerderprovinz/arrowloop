@@ -878,6 +878,7 @@ const is: Translations = {
   'side.whereHint': 'Veldu þennan síma eða einn af áfangastöðunum þínum og síðan möppuna þar. Möppur sem þú bætir við í Stillingar með „Bæta við möppu úr forriti“ eru í áfangastaðnum Apps og virka líka án „Aðgangur að skrám“.',
   'side.noTargets': 'Ekkert ský eða netþjónn er tengdur enn. Þú getur tengt einn undir Meira, Áfangastaðir.',
   'side.inTarget': 'Mappa í {name}',
+  'side.noSuchTarget': 'Enginn áfangastaður heitir {name}. Möppur í þessum síma byrja á /, til dæmis /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

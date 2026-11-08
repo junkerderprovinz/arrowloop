@@ -878,6 +878,7 @@ const gl: Translations = {
   'side.whereHint': 'Escolle este teléfono ou un dos teus destinos, e despois o cartafol. Os cartafoles que engades en Axustes con «Engadir un cartafol dunha aplicación» están no destino Apps e funcionan sen «Acceso aos ficheiros».',
   'side.noTargets': 'Aínda non hai ningunha nube nin servidor conectado. Podes conectar un en Máis, Destinos.',
   'side.inTarget': 'Cartafol en {name}',
+  'side.noSuchTarget': 'Non hai ningún destino chamado {name}. Os cartafoles deste teléfono comezan por /, como /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

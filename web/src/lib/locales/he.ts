@@ -878,6 +878,7 @@ const he: Translations = {
   'side.whereHint': 'בחר את הטלפון הזה או אחד מהיעדים שלך, ואז את התיקייה שבו. תיקיות שאתה מוסיף בהגדרות דרך "הוספת תיקייה מאפליקציה" נמצאות ביעד Apps ועובדות גם בלי "גישה לקבצים".',
   'side.noTargets': 'עדיין לא מחובר שום ענן או שרת. אפשר לחבר אחד בעוד, יעדים.',
   'side.inTarget': 'תיקייה ב־{name}',
+  'side.noSuchTarget': 'אין יעד בשם {name}. תיקיות בטלפון הזה מתחילות ב־/, למשל /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

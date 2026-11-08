@@ -878,6 +878,7 @@ const it: Translations = {
   'side.whereHint': 'Scegli questo telefono o una delle tue destinazioni, poi la cartella al suo interno. Le cartelle che aggiungi in Impostazioni con «Aggiungi una cartella da un\'app» si trovano nella destinazione Apps e funzionano anche senza «Accesso ai file».',
   'side.noTargets': 'Non è ancora collegato nessun cloud né server. Puoi collegarne uno in Altro, Destinazioni.',
   'side.inTarget': 'Cartella in {name}',
+  'side.noSuchTarget': 'Non esiste nessuna destinazione chiamata {name}. Le cartelle di questo telefono iniziano con /, ad esempio /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

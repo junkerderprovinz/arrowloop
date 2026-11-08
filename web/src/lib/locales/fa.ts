@@ -878,6 +878,7 @@ const fa: Translations = {
   'side.whereHint': 'این گوشی یا یکی از مقصدهایتان را انتخاب کنید، سپس پوشه داخل آن را. پوشه‌هایی که در تنظیمات با «افزودن پوشه از یک برنامه» اضافه می‌کنید در مقصد Apps هستند و بدون «دسترسی به فایل‌ها» هم کار می‌کنند.',
   'side.noTargets': 'هنوز هیچ ابر یا سروری وصل نشده است. می‌توانید از بیشتر، مقصدها یکی را وصل کنید.',
   'side.inTarget': 'پوشه در {name}',
+  'side.noSuchTarget': 'مقصدی با نام {name} وجود ندارد. پوشه‌های این گوشی با / شروع می‌شوند، مثل /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

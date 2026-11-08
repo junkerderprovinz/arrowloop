@@ -878,6 +878,7 @@ const el: Translations = {
   'side.whereHint': 'Διάλεξε αυτό το τηλέφωνο ή έναν από τους προορισμούς σου και μετά τον φάκελο μέσα του. Οι φάκελοι που προσθέτεις στις Ρυθμίσεις με την «Προσθήκη φακέλου από εφαρμογή» βρίσκονται στον προορισμό Apps και λειτουργούν και χωρίς «Πρόσβαση στα αρχεία».',
   'side.noTargets': 'Δεν έχει συνδεθεί ακόμα κανένα cloud ή διακομιστής. Μπορείς να συνδέσεις έναν από Περισσότερα, Προορισμοί.',
   'side.inTarget': 'Φάκελος στο {name}',
+  'side.noSuchTarget': 'Δεν υπάρχει προορισμός με το όνομα {name}. Οι φάκελοι σε αυτό το τηλέφωνο ξεκινούν με /, όπως /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

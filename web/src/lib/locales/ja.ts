@@ -878,6 +878,7 @@ const ja: Translations = {
   'side.whereHint': 'この端末か接続先のどれかを選び、その中のフォルダーを選んでください。設定の「アプリのフォルダーを追加」で追加したフォルダーは接続先 Apps にあり、「ファイルへのアクセス」がなくても使えます。',
   'side.noTargets': 'クラウドやサーバーはまだ接続されていません。その他 > 接続先 から接続できます。',
   'side.inTarget': '{name} のフォルダー',
+  'side.noSuchTarget': '{name} という接続先はありません。この端末のフォルダーは / で始まります（例: /storage/emulated/0/DCIM）。',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

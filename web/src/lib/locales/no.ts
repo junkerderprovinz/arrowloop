@@ -878,6 +878,7 @@ const no: Translations = {
   'side.whereHint': 'Velg denne telefonen eller et av målene dine, og deretter mappen i det. Mapper du legger til under Innstillinger med «Legg til en mappe fra en app», ligger i målet Apps og virker også uten «Filtilgang».',
   'side.noTargets': 'Ingen sky eller server er koblet til ennå. Du kan koble til en under Mer, Mål.',
   'side.inTarget': 'Mappe i {name}',
+  'side.noSuchTarget': 'Det finnes ikke noe mål som heter {name}. Mapper på denne telefonen starter med /, for eksempel /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

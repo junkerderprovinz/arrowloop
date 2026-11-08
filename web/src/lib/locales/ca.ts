@@ -878,6 +878,7 @@ const ca: Translations = {
   'side.whereHint': 'Tria aquest telèfon o una de les teves destinacions, i després la carpeta. Les carpetes que afegeixes a Configuració amb «Afegeix una carpeta d\'una aplicació» són a la destinació Apps i funcionen sense «Accés als fitxers».',
   'side.noTargets': 'Encara no hi ha cap núvol ni servidor connectat. En pots connectar un a Més, Destinacions.',
   'side.inTarget': 'Carpeta a {name}',
+  'side.noSuchTarget': 'No hi ha cap destinació anomenada {name}. Les carpetes d\'aquest telèfon comencen per /, com ara /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each
