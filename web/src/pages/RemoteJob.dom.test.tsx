@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Job, OtherInstance, RawJob } from '../lib/api'
+import { ApiError, type Job, type OtherInstance, type RawJob } from '../lib/api'
 import { ToastProvider } from '../lib/toast'
 
 const CELLAR = 'c'.repeat(40)
@@ -102,6 +102,25 @@ describe('a job of another instance', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
     expect(await screen.findByText(/expected exactly 5 fields/)).toBeTruthy()
     expect(screen.getByRole('dialog', { name: 'Edit Photos on Cellar' })).toBeTruthy()
+  })
+
+  it('says in the reader\'s words why the instance refused a side', async () => {
+    saveInstanceJob.mockRejectedValue(new ApiError('refused', 400, 'group-side-share', { side: '\\\\nas\\photos', name: 'Cellar' }))
+    const dialog = await openEditor()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    expect(await screen.findByText('Network shares are chosen on Cellar itself, so \\\\nas\\photos cannot be set from here.')).toBeTruthy()
+  })
+
+  it('says why the name and sides of a job with commands stay as they are', async () => {
+    saveInstanceJob.mockRejectedValue(new ApiError('refused', 400, 'group-commands', { side: '', name: 'Cellar' }))
+    const dialog = await openEditor()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    expect(await screen.findByText(/runs commands before or after its runs on Cellar/)).toBeTruthy()
+  })
+
+  it('leaves the trash to the instance the job belongs to', async () => {
+    const dialog = await openEditor()
+    expect(within(dialog).queryByText('Keep a trash on each side')).toBeNull()
   })
 
   it('picks a folder among the folders of the instance it belongs to', async () => {

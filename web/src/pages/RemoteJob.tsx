@@ -10,6 +10,7 @@ import { api, type InstancePlaces, type Job, type OtherInstance, type RawJob, ty
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
+import { errorText } from '../lib/errorText'
 import { HostContext, otherHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 import { jobStatus } from '../lib/jobList'
@@ -253,13 +254,13 @@ function useInstanceJob(id: string, name: string, onSaved: (name: string) => voi
         onSaved(saved.job.name ?? name)
         return true
       } catch (e) {
-        setError((e as Error).message)
+        setError(errorText(t, e))
         return false
       } finally {
         setBusy(false)
       }
     },
-    [id, name, onSaved],
+    [id, name, onSaved, t],
   )
 
   const save = useCallback(async () => (jobs?.[0] ? write(jobs[0]) : false), [jobs, write])

@@ -400,10 +400,13 @@ export function JobForm({
           <Toggle checked={!!shown.metadata} onChange={(v) => patch({ metadata: v })} label={t('edit.metadata')} hideLabel />
         </SettingRow>
         {/* Inverted from the stored `noTrash`, since a switch labelled with a
-            negative gets flipped the wrong way, and here that deletes files. */}
-        <SettingRow label={t('edit.trash')} hint={t('edit.trashHint')}>
-          <Toggle checked={!job.noTrash} onChange={(v) => patch({ noTrash: !v })} label={t('edit.trash')} hideLabel />
-        </SettingRow>
+            negative gets flipped the wrong way, and here that deletes files.
+            Another instance keeps its trash as its owner set it. */}
+        {!host.name && (
+          <SettingRow label={t('edit.trash')} hint={t('edit.trashHint')}>
+            <Toggle checked={!job.noTrash} onChange={(v) => patch({ noTrash: !v })} label={t('edit.trash')} hideLabel />
+          </SettingRow>
+        )}
       </SubCard>
 
       <SubCard label={t('edit.exclude')}>

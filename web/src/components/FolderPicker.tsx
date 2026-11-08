@@ -7,6 +7,7 @@ import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { IconAdd, IconApply, IconBack, IconClose, IconFolder, IconFolderAdd, IconTabStorage } from './glyphs'
+import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
 import { useT, type Translate } from '../lib/i18n'
 import { useModal } from '../lib/modal'
@@ -98,7 +99,7 @@ export function FolderPicker({
         setBusy(false)
         return go('', false)
       }
-      setError((e as Error).message)
+      setError(errorText(t, e))
     } finally {
       setBusy(false)
     }
@@ -114,7 +115,7 @@ export function FolderPicker({
       setNaming(null)
       await go(made.path, false)
     } catch (e) {
-      setError((e as Error).message)
+      setError(errorText(t, e))
     } finally {
       setBusy(false)
     }
