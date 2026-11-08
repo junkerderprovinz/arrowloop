@@ -6,7 +6,7 @@ import { Selector, type Option } from './Selector'
 import { IconClose, IconExpand, IconMoveDown, IconMoveUp, IconSearch } from './glyphs'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
-import { aheadOf } from '../lib/dragLift'
+import { dropIndex } from '../lib/glimstone/dropIndex'
 import { usePortalHue } from '../lib/glimstone/portalHue'
 import { useDragArmed } from '../lib/glimstone/useDragArmed'
 import type { Columns } from '../lib/columns'
@@ -140,15 +140,17 @@ export function ListHead({
     if (!columns || !dragged) return
     e.preventDefault()
     const rtl = document.documentElement.dir === 'rtl'
+    // Plain boxes, since a DOMRect's sides are getters that a spread leaves behind.
     const cells = [...e.currentTarget.querySelectorAll<HTMLElement>('[data-head]')].map((cell) => {
-      const box = cell.getBoundingClientRect()
-      return { id: cell.dataset.head!, start: rtl ? -box.right : box.left, size: box.width }
+      const { left, top, width, height } = cell.getBoundingClientRect()
+      return { id: cell.dataset.head!, box: { left, top, width, height } }
     })
+    const reading = (c: (typeof cells)[number]) => (rtl ? -c.box.left - c.box.width : c.box.left)
     const held = cells.find((c) => c.id === dragged)!
-    const others = cells.filter((c) => c !== held).sort((a, b) => a.start - b.start)
+    const others = cells.filter((c) => c !== held).sort((a, b) => reading(a) - reading(b))
     if (others.length === 0) return
-    const at = (rtl ? -e.clientX : e.clientX) - grabbed.current
-    const ahead = aheadOf(others, at, held.size, held.start)
+    const left = rtl ? e.clientX + grabbed.current - held.box.width : e.clientX - grabbed.current
+    const ahead = dropIndex({ ...held.box, left }, held.box, others.map((c) => c.box), { axis: 'x', rtl })
     if (ahead === 0) columns.preview(dragged, others[0].id, false)
     else columns.preview(dragged, others[ahead - 1].id, true)
   }

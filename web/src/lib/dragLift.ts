@@ -8,6 +8,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from 'react'
 import { flushSync } from 'react-dom'
 
+import { dropIndex, type DropRect } from './glimstone/dropIndex'
 import { useDragArmed } from './glimstone/useDragArmed'
 
 const LIFT = 'glim-drag-lift'
@@ -38,20 +39,8 @@ function shiftOf(node: HTMLElement): number {
   return t === 'none' ? 0 : parseFloat(t.split(' ')[1] ?? '0') || 0
 }
 
-/** An item along the list's axis, in reading order: where it starts and how long it is. */
-export interface Span {
-  start: number
-  size: number
-}
-
-/**
- * aheadOf counts the items of `others` that go before an item of `size` held
- * at `at`, whose slot starts at `slot`. It passes a neighbour once its leading
- * edge crosses the neighbour's middle, so a large item still reaches both ends.
- */
-export function aheadOf(others: readonly Span[], at: number, size: number, slot: number): number {
-  const edge = at < slot ? at : at + size
-  return others.filter((o) => o.start + o.size / 2 < edge).length
+function boxOf(node: HTMLElement): DropRect {
+  return { left: node.offsetLeft, top: node.offsetTop, width: node.offsetWidth, height: node.offsetHeight }
 }
 
 function sameOrder(a: readonly string[], b: readonly string[]): boolean {
@@ -205,19 +194,19 @@ export function useReorder(
    */
   function aim(h: Lifted): string[] {
     const rest: string[] = []
-    const spans: Span[] = []
-    let slot = h.top
+    const others: DropRect[] = []
+    let slot: DropRect = { left: 0, top: h.top, width: 0, height: h.height }
     for (const node of nodes()) {
       const id = node.getAttribute(attr)
       if (!id) continue
       if (id === h.id) {
-        slot = node.offsetTop
+        slot = boxOf(node)
         continue
       }
       rest.push(id)
-      spans.push({ start: node.offsetTop, size: node.offsetHeight })
+      others.push(boxOf(node))
     }
-    rest.splice(aheadOf(spans, heldAt(h, false), h.height, slot), 0, h.id)
+    rest.splice(dropIndex({ ...slot, top: heldAt(h, false) }, slot, others), 0, h.id)
     return rest
   }
 
