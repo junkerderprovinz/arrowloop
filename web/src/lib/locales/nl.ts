@@ -955,7 +955,7 @@ const nl: Translations = {
   'password.removeStakes': 'Iedereen die dit adres bereikt, kan ArrowLoop dan weer gebruiken, ook om taken te starten die bestanden verwijderen. Tweefactorauthenticatie en de passkeys verdwijnen samen met het wachtwoord.',
   'password.removed': 'Verificatie uitgeschakeld',
   'twoFactor.title': 'Tweefactorauthenticatie',
-  'twoFactor.hint': 'Een code van je telefoon boven op het wachtwoord. De moeite waard als deze installatie van buiten je netwerk bereikbaar is.',
+  'twoFactor.hint': 'Een code van je telefoon boven op het wachtwoord. De moeite waard als deze instantie van buiten je netwerk bereikbaar is.',
   'twoFactor.on': 'Aan. Naast het wachtwoord is een code nodig.',
   'twoFactor.off': 'Uit. Het wachtwoord alleen is genoeg om in te loggen.',
   'twoFactor.needsPassword': 'Stel eerst een inlogwachtwoord in.',

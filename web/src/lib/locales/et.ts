@@ -955,7 +955,7 @@ const et: Translations = {
   'password.removeStakes': 'Siis saab igaüks, kes selle aadressini jõuab, jälle ArrowLoopi kasutada, ka käivitada töid, mis kustutavad faile. Kaheastmeline autentimine ja pääsuvõtmed kaovad koos parooliga.',
   'password.removed': 'Autentimine keelatud',
   'twoFactor.title': 'Kaheastmeline autentimine',
-  'twoFactor.hint': 'Kood telefonist lisaks paroolile. Tasub sisse lülitada, kui see paigaldus on ligipääsetav väljastpoolt sinu võrku.',
+  'twoFactor.hint': 'Kood telefonist lisaks paroolile. Tasub sisse lülitada, kui see eksemplar on ligipääsetav väljastpoolt sinu võrku.',
   'twoFactor.on': 'Sees. Lisaks paroolile on vaja koodi.',
   'twoFactor.off': 'Väljas. Sisselogimiseks piisab paroolist.',
   'twoFactor.needsPassword': 'Määra kõigepealt sisselogimisparool.',

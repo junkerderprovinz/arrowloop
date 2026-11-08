@@ -955,7 +955,7 @@ const id: Translations = {
   'password.removeStakes': 'Siapa pun yang bisa menjangkau alamat ini dapat memakai ArrowLoop lagi, termasuk menjalankan tugas yang menghapus berkas. Autentikasi dua faktor dan kunci sandi ikut hilang bersama kata sandi.',
   'password.removed': 'Autentikasi dinonaktifkan',
   'twoFactor.title': 'Autentikasi dua faktor',
-  'twoFactor.hint': 'Kode dari ponsel selain kata sandi. Layak dinyalakan jika instansi ini dapat dijangkau dari luar jaringanmu.',
+  'twoFactor.hint': 'Kode dari ponsel selain kata sandi. Layak dinyalakan jika instance ini dapat dijangkau dari luar jaringanmu.',
   'twoFactor.on': 'Aktif. Selain kata sandi diperlukan sebuah kode.',
   'twoFactor.off': 'Nonaktif. Kata sandi saja sudah cukup untuk masuk.',
   'twoFactor.needsPassword': 'Atur kata sandi masuk terlebih dahulu.',

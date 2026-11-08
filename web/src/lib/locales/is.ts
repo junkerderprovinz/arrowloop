@@ -955,7 +955,7 @@ const is: Translations = {
   'password.removeStakes': 'Hver sem nær í þetta vistfang getur þá aftur notað ArrowLoop, þar á meðal ræst verk sem eyða skrám. Tveggja þátta auðkenning og aðgangslyklarnir fara með lykilorðinu.',
   'password.removed': 'Auðkenning óvirkjuð',
   'twoFactor.title': 'Tveggja þátta auðkenning',
-  'twoFactor.hint': 'Kóði úr símanum til viðbótar við lykilorðið. Þess virði ef þetta eintak næst utan netsins þíns.',
+  'twoFactor.hint': 'Kóði úr símanum til viðbótar við lykilorðið. Þess virði ef þetta tilvik næst utan netsins þíns.',
   'twoFactor.on': 'Kveikt. Kóða þarf til viðbótar við lykilorðið.',
   'twoFactor.off': 'Slökkt. Lykilorðið eitt og sér skráir inn.',
   'twoFactor.needsPassword': 'Settu fyrst innskráningarlykilorð.',

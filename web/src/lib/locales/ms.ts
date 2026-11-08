@@ -955,7 +955,7 @@ const ms: Translations = {
   'password.removeStakes': 'Sesiapa yang dapat mencapai alamat ini boleh menggunakan ArrowLoop semula, termasuk memulakan tugas yang memadam fail. Pengesahan dua faktor dan kunci laluan turut hilang bersama kata laluan.',
   'password.removed': 'Pengesahan dinyahaktifkan',
   'twoFactor.title': 'Pengesahan dua faktor',
-  'twoFactor.hint': 'Kod daripada telefon selain kata laluan. Berbaloi dihidupkan jika kejadian ini boleh dicapai dari luar rangkaian anda.',
+  'twoFactor.hint': 'Kod daripada telefon selain kata laluan. Berbaloi dihidupkan jika instans ini boleh dicapai dari luar rangkaian anda.',
   'twoFactor.on': 'Hidup. Selain kata laluan, satu kod diperlukan.',
   'twoFactor.off': 'Mati. Kata laluan sahaja sudah memadai untuk log masuk.',
   'twoFactor.needsPassword': 'Tetapkan kata laluan log masuk dahulu.',
