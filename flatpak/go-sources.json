@@ -841,6 +841,20 @@
     },
     {
         "type": "file",
+        "url": "https://proxy.golang.org/github.com/coder/websocket/@v/v1.8.15.mod",
+        "sha256": "0cab443e389cef98e63828bd7ce82224bf192732a18795581314766eb14ea275",
+        "dest": "gomod/github.com/coder/websocket/@v",
+        "dest-filename": "v1.8.15.mod"
+    },
+    {
+        "type": "file",
+        "url": "https://proxy.golang.org/github.com/coder/websocket/@v/v1.8.15.zip",
+        "sha256": "4f1d890bc5131f335737bbb6241e3958758c8774b3e6d1c905f713f604af6209",
+        "dest": "gomod/github.com/coder/websocket/@v",
+        "dest-filename": "v1.8.15.zip"
+    },
+    {
+        "type": "file",
         "url": "https://proxy.golang.org/github.com/colinmarc/hdfs/v2/@v/v2.4.0.mod",
         "sha256": "f5f58ae41dff2f08e001e0fedee93c03e94aa67afb4ecd7af2284256e210b373",
         "dest": "gomod/github.com/colinmarc/hdfs/v2/@v",
