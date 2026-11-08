@@ -506,9 +506,14 @@ instance it belongs to. **Edit** opens the usual editor for its sides,
 schedule, mode, exclusions and the other settings, and **Pause** holds it.
 **Browse targets** walks the folders of that instance and opens its targets by
 name. **Save** sends the job to its instance, which checks it by its own rules,
-just as a save there would, and a refusal shows in the editor. A side can name
-only a target that instance has, by its name. The state database and the
-commands before and after a run stay as that instance has them. Each save, and
+just as a save there would, and a refusal shows in the editor. From another
+instance a side can be one of that instance's targets by its name, one of its
+marked drives, or a folder at or below one its jobs already use. A network
+share by its address and the folders that hold ArrowLoop's and the targets'
+settings are refused. The picker offers exactly these places. The state
+database, the trash switch, the brakes and the commands before and after a run
+stay as that instance has them, and a job with such commands keeps its name
+and its sides. Each save, and
 each run started or stopped from here, is written to that instance's log with
 the name and id of the instance it came from. Adding or removing a job, its
 files, preview and checks, the targets themselves, the settings and the trash

@@ -12,7 +12,7 @@ The full notes for each release are in
 
 ## ✨ Added
 
-- **Open and edit the jobs of a paired instance.** A job's name on an instance's card opens its page, marked with the instance it belongs to, and Edit opens the usual editor: sides, schedule, mode, exclusions and the rest. The folder picker walks that instance's folders and offers its targets by name. Save goes to the instance the job belongs to, which checks it by its own rules and logs which instance made the change. Its targets, settings, trash and the twelve words stay where they are, and adding or removing a job is still done on the instance itself. The phone app starts and stops those jobs as before.
+- **Open and edit the jobs of a paired instance.** A job's name on an instance's card opens its page, marked with the instance it belongs to, and Edit opens the usual editor: sides, schedule, mode, exclusions and the rest. A side can be one of that instance's targets by its name, one of its drives, or a folder at or below one its jobs already use, and the folder picker offers exactly these. Save goes to the instance the job belongs to, which checks it by its own rules and logs which instance made the change. A network share by its address and the folders that hold its settings are refused, and its trash switch, its brakes and the name and sides of a job that runs commands stay as that instance has them. Its targets, settings, trash and the twelve words stay where they are, and adding or removing a job is still done on the instance itself. The phone app starts and stops those jobs as before.
 
 ## 2.6.0 - 2026-11-08
 
