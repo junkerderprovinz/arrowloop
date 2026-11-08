@@ -58,42 +58,43 @@ ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone an
   <picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/sections/group-server-dark.svg"><img src=".github/assets/sections/group-server.svg" alt="Server" width="100%"></picture>
 </p>
 <p align="center">
-  <a href="https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(0,0,841.9,245.3))" alt="Install from Unraid&#x27;s Community Applications" width="160" height="46.618"></a>
+  <a href="https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(0,0,841.9,245.3))" alt="Install from Unraid&#x27;s Community Applications" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://mos-official.net/apps.html?search=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(866,0,841.9,245.3))" alt="Install from the MOS Hub" width="160" height="46.618"></a>
+  <a href="https://mos-official.net/apps.html?search=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(866,0,841.9,245.3))" alt="Install from the MOS Hub" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/zimaos-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(1732,0,841.9,245.3))" alt="Install from the ZimaOS and CasaOS store" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/zimaos-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(1732,0,841.9,245.3))" alt="Install from the ZimaOS and CasaOS store" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/umbrel-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(2598,0,841.9,245.3))" alt="Install from the umbrelOS community app store" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/umbrel-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(2598,0,841.9,245.3))" alt="Install from the umbrelOS community app store" width="160" height="46.618"></a>
 </p>
 <p align="center">
-  <a href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(3464,0,841.9,245.3))" alt="Download the docker-compose file" width="160" height="46.618"></a>
+  <a href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(3464,0,841.9,245.3))" alt="Download the docker-compose file" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(4330,0,841.9,245.3))" alt="Download the source archive" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(4330,0,841.9,245.3))" alt="Download the source archive" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/arrowloop/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(5196,0,841.9,245.3))" alt="Read the documentation" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/arrowloop/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(5196,0,841.9,245.3))" alt="Read the documentation" width="160" height="46.618"></a>
 </p>
 <br>
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/sections/group-desktop-dark.svg"><img src=".github/assets/sections/group-desktop.svg" alt="Desktop" width="100%"></picture>
 </p>
 <p align="center">
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(6062,0,841.9,245.3))" alt="Download for Windows" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(6928,0,457.783,245.3))" alt="Download for Windows on ARM" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(6062,0,841.9,245.3))" alt="Download for Windows" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(6928,0,457.783,245.3))" alt="Download for Windows on ARM" width="87" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(7410,0,841.9,245.3))" alt="Download for macOS" width="160" height="46.618"></a>
-  &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(8276,0,841.9,245.3))" alt="Download for Linux" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(9142,0,457.783,245.3))" alt="Download for Linux on ARM" width="87" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(9624,0,457.783,245.3))" alt="Download the Linux Flatpak" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(7410,0,841.9,245.3))" alt="Download for macOS" width="160" height="46.618"></a>
+</p>
+<p align="center">
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(8276,0,841.9,245.3))" alt="Download for Linux" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(9142,0,457.783,245.3))" alt="Download for Linux on ARM" width="87" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(9624,0,457.783,245.3))" alt="Download the Linux Flatpak" width="87" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(10106,0,457.783,245.3))" alt="Download the Linux Flatpak for ARM" width="87" height="46.618"></a>
 </p>
 <br>
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/sections/group-android-dark.svg"><img src=".github/assets/sections/group-android.svg" alt="Android" width="100%"></picture>
 </p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(10106,0,841.9,245.3))" alt="On Google Play soon" width="160" height="46.618">
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(10588,0,841.9,245.3))" alt="On Google Play soon" width="160" height="46.618">
   &nbsp;
-  <a href="https://f-droid.org/packages/arrowloop.halleluja.design/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(10972,0,841.9,245.3))" alt="Get it on F-Droid" width="160" height="46.618"></a>
+  <a href="https://f-droid.org/packages/arrowloop.halleluja.design/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(11454,0,841.9,245.3))" alt="Get it on F-Droid" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(11838,0,841.9,245.3))" alt="Download the Android app" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(12320,0,841.9,245.3))" alt="Download the Android app" width="160" height="46.618"></a>
 </p>
 <!-- /download-buttons -->
 
@@ -111,11 +112,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(12704,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(13186,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(13570,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(14052,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=79c2915890ef#svgView(viewBox(14436,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=24799058481e#svgView(viewBox(14918,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
 
