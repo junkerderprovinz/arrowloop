@@ -3,10 +3,12 @@ package web_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -21,6 +23,26 @@ import (
 type node struct {
 	*harness
 	server *web.Server
+	log    *lockedLog
+}
+
+// lockedLog keeps what a server logs, written from the goroutines that serve
+// the group and read by the test.
+type lockedLog struct {
+	mu    sync.Mutex
+	lines []string
+}
+
+func (l *lockedLog) printf(format string, args ...any) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.lines = append(l.lines, fmt.Sprintf(format, args...))
+}
+
+func (l *lockedLog) String() string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return strings.Join(l.lines, "\n")
 }
 
 func newNode(t *testing.T, relayURL string) *node {
@@ -31,7 +53,12 @@ func newNode(t *testing.T, relayURL string) *node {
 // newNodeAs is newNode for an instance that tells the group it is deployment.
 func newNodeAs(t *testing.T, relayURL, deployment string) *node {
 	t.Helper()
-	h := newHarness(t)
+	return nodeOn(t, relayURL, deployment, newHarness(t))
+}
+
+// nodeOn makes an instance of the group out of an engine the test stood up.
+func nodeOn(t *testing.T, relayURL, deployment string, h *harness) *node {
+	t.Helper()
 	store, err := pairing.Open(h.dir, bytes.Repeat([]byte{3}, 32))
 	if err != nil {
 		t.Fatal(err)
@@ -46,14 +73,15 @@ func newNodeAs(t *testing.T, relayURL, deployment string) *node {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, Group: group, Deployment: deployment}
+	log := &lockedLog{}
+	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, Group: group, Deployment: deployment, Log: log.printf}
 	h.srv = httptest.NewServer(s.Handler())
 	s.StartPairing()
 	t.Cleanup(func() {
 		s.StopPairing()
 		h.srv.Close()
 	})
-	return &node{harness: h, server: s}
+	return &node{harness: h, server: s, log: log}
 }
 
 func testRelay(t *testing.T) string {
@@ -179,7 +207,7 @@ func (n *node) instances(t *testing.T) []instanceRow {
 func TestPairedInstancesSeeAndRunEachOthersJobs(t *testing.T) {
 	url := testRelay(t)
 	a, b := newNode(t, url), newNode(t, url)
-	_, bID := pair(t, a, b)
+	aID, bID := pair(t, a, b)
 
 	eventually(t, "the other instance's jobs on the overview", func() bool {
 		rows := a.instances(t)
@@ -191,6 +219,9 @@ func TestPairedInstancesSeeAndRunEachOthersJobs(t *testing.T) {
 		t.Fatalf("run on the other instance = %d %s", status, body)
 	}
 	waitForRun(t, b.harness, 1)
+	if logged := b.log.String(); !strings.Contains(logged, "photos") || !strings.Contains(logged, aID) {
+		t.Errorf("the owner's log = %q, want the job and the instance that started it", logged)
+	}
 
 	if status, _ := a.send(t, http.MethodPost, "/api/instances/"+bID+"/jobs/photos/delete", ""); status != http.StatusNotFound {
 		t.Errorf("another action than run or stop = %d, want 404", status)

@@ -1,0 +1,215 @@
+package web_test
+
+import (
+	"encoding/json"
+	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+)
+
+// openedJob is what a paired instance hands over for one of its jobs.
+type openedJob struct {
+	Job      map[string]any `json:"job"`
+	Defaults map[string]any `json:"defaults"`
+}
+
+// withCommands is an engine whose one job runs a command after each run and
+// follows a default that switches metadata on.
+const withCommands = `{"defaults":{"metadata":true},"jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","quietPeriod":"0s","after":"curl https://example.invalid/?token=secret"}]}`
+
+// pairedPair stands up two instances of one group, a named Attic, and returns
+// them with the id each goes by.
+func pairedPair(t *testing.T, bConfig string) (a, b *node, aID, bID string) {
+	t.Helper()
+	url := testRelay(t)
+	a = newNode(t, url)
+	if bConfig == "" {
+		b = newNode(t, url)
+	} else {
+		b = nodeOn(t, url, "server", engineFor(t, bConfig))
+	}
+	if status, body := a.send(t, http.MethodPut, "/api/connect", `{"name":"Attic"}`); status != http.StatusOK {
+		t.Fatalf("rename = %d %s", status, body)
+	}
+	aID, bID = pair(t, a, b)
+	return a, b, aID, bID
+}
+
+// openOn reads job name of instance id through a, once the relay carries it.
+func openOn(t *testing.T, a *node, id, name string) openedJob {
+	t.Helper()
+	var got openedJob
+	eventually(t, "the job of the other instance opening", func() bool {
+		status, body := a.send(t, http.MethodGet, "/api/instances/"+id+"/jobs/"+url.PathEscape(name)+"/config", "")
+		return status == http.StatusOK && json.Unmarshal(body, &got) == nil
+	})
+	return got
+}
+
+// saveOn sends job as the new state of job name on instance id.
+func saveOn(t *testing.T, a *node, id, name string, job map[string]any) (int, string) {
+	t.Helper()
+	body, err := json.Marshal(job)
+	if err != nil {
+		t.Fatal(err)
+	}
+	status, out := a.send(t, http.MethodPut, "/api/instances/"+id+"/jobs/"+url.PathEscape(name)+"/config", string(body))
+	return status, string(out)
+}
+
+func readFile(t *testing.T, path string) string {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+func TestAPairedInstanceOpensAJobWithoutItsCommands(t *testing.T) {
+	a, b, _, bID := pairedPair(t, withCommands)
+
+	got := openOn(t, a, bID, "photos")
+	if got.Job["name"] != "photos" || got.Job["left"] != filepath.ToSlash(b.dir)+"/left" {
+		t.Errorf("the job as opened = %v, want photos with the left side it has there", got.Job)
+	}
+	for key := range got.Job {
+		if strings.EqualFold(key, "after") || strings.EqualFold(key, "before") {
+			t.Errorf("the job carries its command %q to the other instance", key)
+		}
+	}
+	if got.Defaults["metadata"] != true {
+		t.Errorf("the defaults the job follows there = %v, want metadata on", got.Defaults)
+	}
+
+	if status, _ := a.send(t, http.MethodGet, "/api/instances/"+bID+"/jobs/nothing/config", ""); status != http.StatusNotFound {
+		t.Errorf("a job the other instance does not have = %d, want 404", status)
+	}
+}
+
+func TestAPairedInstanceSavesAJobThere(t *testing.T) {
+	a, b, aID, bID := pairedPair(t, withCommands)
+	got := openOn(t, a, bID, "photos")
+
+	moved := filepath.ToSlash(filepath.Join(b.dir, "moved"))
+	if err := os.MkdirAll(moved, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	got.Job["schedule"] = "0 5 * * *"
+	got.Job["left"] = moved
+	if status, body := saveOn(t, a, bID, "photos", got.Job); status != http.StatusOK {
+		t.Fatalf("saving the job on the other instance = %d %s", status, body)
+	}
+
+	file := readFile(t, b.configPath)
+	if !strings.Contains(file, `"0 5 * * *"`) || !strings.Contains(file, moved) {
+		t.Errorf("the owner's file after the save:\n%s\nwant the new schedule and left side", file)
+	}
+	if !strings.Contains(file, "curl https://example.invalid") {
+		t.Errorf("the save dropped the command the owner's file holds:\n%s", file)
+	}
+	var jobs []struct{ Name, Schedule, Left string }
+	b.get(t, "/api/jobs", &jobs)
+	if len(jobs) != 1 || jobs[0].Schedule != "0 5 * * *" || jobs[0].Left != moved {
+		t.Errorf("the owner runs %+v, want the saved job", jobs)
+	}
+
+	logged := b.log.String()
+	if !strings.Contains(logged, aID) || !strings.Contains(logged, "Attic") || !strings.Contains(logged, "photos") {
+		t.Errorf("the owner's log = %q, want the job and the instance that saved it, by name and id", logged)
+	}
+}
+
+func TestASaveFromAPairedInstanceMeetsTheOwnersRules(t *testing.T) {
+	a, b, aID, bID := pairedPair(t, "")
+	got := openOn(t, a, bID, "photos")
+	before := readFile(t, b.configPath)
+
+	got.Job["schedule"] = "every other tuesday"
+	status, body := saveOn(t, a, bID, "photos", got.Job)
+	if status != http.StatusBadRequest || !strings.Contains(body, "schedule") {
+		t.Errorf("a schedule the owner cannot read = %d %s, want 400 naming the schedule", status, body)
+	}
+	if after := readFile(t, b.configPath); after != before {
+		t.Errorf("a refused save changed the owner's file:\n%s", after)
+	}
+	if logged := b.log.String(); !strings.Contains(logged, aID) {
+		t.Errorf("the owner's log = %q, want the refused save with the instance that sent it", logged)
+	}
+}
+
+func TestAJobFromAPairedInstanceNamesOnlyTargetsOfTheOwner(t *testing.T) {
+	withRcloneConfig(t)
+	a, b, _, bID := pairedPair(t, "")
+	if resp, said := b.put(t, "/api/remotes/vault", `{"type":"local","settings":{}}`); resp.StatusCode != http.StatusOK {
+		t.Fatalf("making a target on the owner: %s %s", resp.Status, said)
+	}
+	got := openOn(t, a, bID, "photos")
+
+	for _, side := range []string{
+		"nosuch:folder",
+		":local:" + filepath.ToSlash(b.dir),
+		"vault,copy_links=true:folder",
+	} {
+		got.Job["right"] = side
+		if status, body := saveOn(t, a, bID, "photos", got.Job); status != http.StatusBadRequest {
+			t.Errorf("the side %q = %d %s, want 400", side, status, body)
+		}
+	}
+
+	got.Job["right"] = "vault:" + filepath.ToSlash(b.dir) + "/right"
+	if status, body := saveOn(t, a, bID, "photos", got.Job); status != http.StatusOK {
+		t.Errorf("a side on a target the owner has = %d %s, want 200", status, body)
+	}
+}
+
+func TestTheStateDatabaseStaysWhereTheOwnerKeepsIt(t *testing.T) {
+	a, b, _, bID := pairedPair(t, "")
+	got := openOn(t, a, bID, "photos")
+	kept := got.Job["state"]
+
+	got.Job["state"] = filepath.ToSlash(filepath.Join(b.dir, "somewhere", "else.db"))
+	if status, body := saveOn(t, a, bID, "photos", got.Job); status != http.StatusOK {
+		t.Fatalf("save = %d %s", status, body)
+	}
+	if again := openOn(t, a, bID, "photos"); again.Job["state"] != kept {
+		t.Errorf("the state database after a save from the group = %v, want %v as the owner had it", again.Job["state"], kept)
+	}
+}
+
+func TestAPairedInstanceListsFoldersAndTargetsByNameOnly(t *testing.T) {
+	withRcloneConfig(t)
+	a, b, _, bID := pairedPair(t, "")
+	body := `{"type":"sftp","settings":{"host":"backup.example","user":"reeve","pass":"the-real-password"}}`
+	if resp, said := b.put(t, "/api/remotes/vault", body); resp.StatusCode != http.StatusOK {
+		t.Fatalf("making a target on the owner: %s %s", resp.Status, said)
+	}
+	openOn(t, a, bID, "photos")
+
+	status, places := a.send(t, http.MethodGet, "/api/instances/"+bID+"/places", "")
+	if status != http.StatusOK {
+		t.Fatalf("places = %d %s", status, places)
+	}
+	var got struct {
+		Targets []map[string]any `json:"targets"`
+	}
+	if err := json.Unmarshal(places, &got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Targets) != 1 || got.Targets[0]["name"] != "vault" || got.Targets[0]["type"] != "sftp" {
+		t.Errorf("the targets of the other instance = %v, want vault by name and type", got.Targets)
+	}
+	for _, secret := range []string{"backup.example", "reeve", "the-real-password", "settings"} {
+		if strings.Contains(string(places), secret) {
+			t.Errorf("the places of the other instance carry %q: %s", secret, places)
+		}
+	}
+
+	status, listing := a.send(t, http.MethodGet, "/api/instances/"+bID+"/browse?path="+url.QueryEscape(b.dir), "")
+	if status != http.StatusOK || !strings.Contains(string(listing), `"left"`) || !strings.Contains(string(listing), `"right"`) {
+		t.Errorf("the folders of the other instance = %d %s, want left and right", status, listing)
+	}
+}

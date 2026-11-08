@@ -52,6 +52,10 @@ func (s *Server) pairingRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET "+servedRelayPath, s.serveRelay)
 	mux.HandleFunc("GET /api/instances", s.listInstances)
 	mux.HandleFunc("POST /api/instances/{id}/jobs/{name}/{action}", s.instanceJob)
+	mux.HandleFunc("GET /api/instances/{id}/jobs/{name}/config", s.instanceJobConfig)
+	mux.HandleFunc("PUT /api/instances/{id}/jobs/{name}/config", s.instanceJobConfig)
+	mux.HandleFunc("GET /api/instances/{id}/places", s.instancePlaces)
+	mux.HandleFunc("GET /api/instances/{id}/browse", s.instanceBrowse)
 }
 
 // StartPairing dials the relay when this instance is in a group. Call it once
@@ -712,28 +716,53 @@ func (s *Server) serveGroupCall(ctx context.Context, call relay.ProxyCall) (int,
 	return rec.status, rec.body.Bytes()
 }
 
-// groupHandler is everything another member of the group may ask: the job
-// list, starting and stopping a job, and the decisions about members an
-// approved instance passes on. Settings, targets, the trash, restoring and the
-// phrase stay with the owner at this instance.
+// groupRoute is one call another member of the group may make here.
+type groupRoute struct {
+	pattern string
+	handle  func(s *Server, w http.ResponseWriter, r *http.Request)
+}
+
+// groupRoutes is everything another member of the group may ask: the job
+// list, starting and stopping a job, opening and saving one, the folders here
+// and the names of the targets to pick its sides from, and the decisions about
+// members an approved instance passes on. Settings, the targets themselves,
+// adding or removing a job, the trash, restoring and the phrase stay with the
+// owner at this instance. Only these routes exist for the group, however the
+// main router grows.
+func groupRoutes() []groupRoute {
+	return []groupRoute{
+		{"GET " + federation.HelloPath, (*Server).groupHello},
+		{"GET /api/jobs", (*Server).listJobs},
+		{"POST /api/jobs/{name}/run", (*Server).groupRunJob},
+		{"POST /api/jobs/{name}/stop", (*Server).groupStopJob},
+		{"GET /api/jobs/{name}/config", (*Server).groupReadJob},
+		{"PUT /api/jobs/{name}/config", (*Server).groupSaveJob},
+		{"GET /api/places", (*Server).groupPlaces},
+		{"GET /api/browse", (*Server).browse},
+		{"DELETE /api/connect/members/{id}", (*Server).groupRemoveMember},
+		{"POST /api/connect/devices/{id}/approve", (*Server).groupApproveMember},
+		{"POST /api/connect/devices/{id}/refuse", (*Server).groupRefuseMember},
+	}
+}
+
+// groupHandler serves groupRoutes and answers 404 to everything else.
 func (s *Server) groupHandler() http.Handler {
 	s.groupOnce.Do(func() {
 		mux := http.NewServeMux()
-		mux.HandleFunc("GET "+federation.HelloPath, func(w http.ResponseWriter, _ *http.Request) {
-			writeJSON(w, http.StatusOK, map[string]string{"name": s.instanceName(s.Pairing.Get())})
-		})
-		mux.HandleFunc("GET /api/jobs", s.listJobs)
-		mux.HandleFunc("POST /api/jobs/{name}/run", s.groupRunJob)
-		mux.HandleFunc("POST /api/jobs/{name}/stop", s.stopJob)
-		mux.HandleFunc("DELETE /api/connect/members/{id}", s.groupRemoveMember)
-		mux.HandleFunc("POST /api/connect/devices/{id}/approve", s.groupApproveMember)
-		mux.HandleFunc("POST /api/connect/devices/{id}/refuse", s.groupRefuseMember)
+		for _, route := range groupRoutes() {
+			handle := route.handle
+			mux.HandleFunc(route.pattern, func(w http.ResponseWriter, r *http.Request) { handle(s, w, r) })
+		}
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			writeError(w, http.StatusNotFound, fmt.Errorf("no such address for the group: %s %s", r.Method, r.URL.Path))
 		})
 		s.group = mux
 	})
 	return s.group
+}
+
+func (s *Server) groupHello(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"name": s.instanceName(s.Pairing.Get())})
 }
 
 // groupRunJob starts a whole run, as Run now does. A selection or a choice in
@@ -744,10 +773,22 @@ func (s *Server) groupRunJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, fmt.Errorf("no job called %q", name))
 		return
 	}
+	s.logf("pairing: %s started the job %q here", s.callerName(r), name)
 	go func() {
 		_, _ = s.Runner.RunChosen(context.Background(), name, nil, nil, nil)
 	}()
 	writeJSON(w, http.StatusAccepted, map[string]string{"job": name, "status": "started"})
+}
+
+// groupStopJob cancels a run, as Cancel the run does here.
+func (s *Server) groupStopJob(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	if s.Runner.Cancel(name) {
+		s.logf("pairing: %s stopped the run of the job %q here", s.callerName(r), name)
+		writeJSON(w, http.StatusOK, map[string]any{"stopped": true})
+		return
+	}
+	s.stopJob(w, r)
 }
 
 // fromApprovedInstance reports whether a call from the group came from an
@@ -931,19 +972,5 @@ func (s *Server) instanceJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, fmt.Errorf("a job on another instance can be run or stopped, not %q", action))
 		return
 	}
-	ctx, cancel := context.WithTimeout(r.Context(), relayTimeout)
-	defer cancel()
-	path := "/api/jobs/" + url.PathEscape(r.PathValue("name")) + "/" + action
-	body, status, err := s.Group.Proxy(ctx, r.PathValue("id"), http.MethodPost, path, nil)
-	if err != nil {
-		code := http.StatusBadGateway
-		if errors.Is(err, federation.ErrUnknownInstance) {
-			code = http.StatusNotFound
-		}
-		writeError(w, code, err)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(status)
-	_, _ = w.Write(body)
+	s.toInstance(w, r, "/api/jobs/"+url.PathEscape(r.PathValue("name"))+"/"+action)
 }

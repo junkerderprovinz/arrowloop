@@ -1233,7 +1233,7 @@ func keepCommands(onDisk []byte, doc map[string]any) {
 		for _, j := range jobMaps(list) {
 			name, _ := j["name"].(string)
 			for key := range j {
-				if isCommandKey(key) {
+				if IsCommandKey(key) {
 					delete(j, key)
 				}
 			}
@@ -1264,7 +1264,9 @@ func jobMaps(list any) []map[string]any {
 	return nil
 }
 
-func isCommandKey(key string) bool {
+// IsCommandKey reports whether key names one of a job's commands, in any
+// case, as Load reads it.
+func IsCommandKey(key string) bool {
 	for _, k := range commandKeys {
 		if strings.EqualFold(key, k) {
 			return true

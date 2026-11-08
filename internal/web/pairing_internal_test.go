@@ -4,16 +4,44 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 )
 
-// Another member of the group reads the jobs and starts or stops one. What
-// would change this instance's settings, empty its trash or hand out its
-// phrase stays with the owner at it.
-func TestTheGroupReachesOnlyTheJobs(t *testing.T) {
+// The routes another member of the group reaches, all of them. A route added
+// to the group has to be added here too, so nobody widens it by accident.
+var groupAllowlist = []string{
+	"GET " + federation.HelloPath,
+	"GET /api/jobs",
+	"POST /api/jobs/{name}/run",
+	"POST /api/jobs/{name}/stop",
+	"GET /api/jobs/{name}/config",
+	"PUT /api/jobs/{name}/config",
+	"GET /api/places",
+	"GET /api/browse",
+	"DELETE /api/connect/members/{id}",
+	"POST /api/connect/devices/{id}/approve",
+	"POST /api/connect/devices/{id}/refuse",
+}
+
+func TestTheGroupRoutesAreTheAllowlist(t *testing.T) {
+	var got []string
+	for _, r := range groupRoutes() {
+		got = append(got, r.pattern)
+	}
+	if !slices.Equal(got, groupAllowlist) {
+		t.Errorf("the group reaches %q, want exactly %q", got, groupAllowlist)
+	}
+}
+
+// Another member of the group reads and edits the jobs, starts and stops one
+// and looks at the folders and the target names. What would change this
+// instance's settings or targets, add or remove a job, empty its trash or hand
+// out its phrase stays with the owner at it.
+func TestTheGroupReachesNothingElse(t *testing.T) {
 	dir := t.TempDir()
 	store, err := pairing.Open(dir, bytes.Repeat([]byte{3}, 32))
 	if err != nil {
@@ -31,11 +59,30 @@ func TestTheGroupReachesOnlyTheJobs(t *testing.T) {
 		{http.MethodGet, federation.HelloPath, http.StatusOK},
 		{http.MethodGet, "/api/config", http.StatusNotFound},
 		{http.MethodPut, "/api/config", http.StatusNotFound},
+		{http.MethodGet, "/api/config/raw", http.StatusNotFound},
+		{http.MethodPut, "/api/config/raw", http.StatusNotFound},
 		{http.MethodGet, "/api/settings", http.StatusNotFound},
+		{http.MethodPut, "/api/settings", http.StatusNotFound},
 		{http.MethodGet, "/api/remotes", http.StatusNotFound},
+		{http.MethodPut, "/api/remotes/vault", http.StatusNotFound},
+		{http.MethodDelete, "/api/remotes/vault", http.StatusNotFound},
+		{http.MethodPost, "/api/remotes/vault/check", http.StatusNotFound},
+		{http.MethodPost, "/api/jobs", http.StatusNotFound},
+		{http.MethodDelete, "/api/jobs/photos/config", http.StatusNotFound},
+		{http.MethodPost, "/api/jobs/photos/config", http.StatusNotFound},
+		{http.MethodDelete, "/api/jobs/photos/state", http.StatusNotFound},
+		{http.MethodPut, "/api/jobs/order", http.StatusNotFound},
+		{http.MethodPost, "/api/browse/mkdir", http.StatusNotFound},
+		{http.MethodGet, "/api/trash", http.StatusNotFound},
+		{http.MethodGet, "/api/jobs/photos/trash/left", http.StatusNotFound},
 		{http.MethodPost, "/api/jobs/photos/trash/left/empty", http.StatusNotFound},
+		{http.MethodPost, "/api/import", http.StatusNotFound},
+		{http.MethodGet, "/api/diagnostics", http.StatusNotFound},
+		{http.MethodGet, "/api/connect", http.StatusNotFound},
 		{http.MethodPost, "/api/connect/reveal", http.StatusNotFound},
+		{http.MethodPut, "/api/relay/config", http.StatusNotFound},
 		{http.MethodPost, "/api/security/password/remove", http.StatusNotFound},
+		{http.MethodPost, "/api/volumes", http.StatusNotFound},
 		{http.MethodDelete, "/api/connect/members/" + string(bytes.Repeat([]byte("a"), 40)), http.StatusForbidden},
 		{http.MethodPost, "/api/connect/devices/x/approve", http.StatusForbidden},
 	} {
