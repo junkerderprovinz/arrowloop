@@ -56,7 +56,8 @@ import { engine } from "./src/engine";
 import { useEngine } from "./src/useEngine";
 import { useWaiting, WaitingProvider } from "./src/waiting";
 
-// Four places on the bar and More for the rest, the overview first. Each tab has its own stack, so
+// Four places on the bar and More for the rest, the overview first while it is
+// switched on and Settings in its place otherwise. Each tab has its own stack, so
 // back returns within the tab. The tabs use the material top tab navigator
 // with its bar at the bottom, because the bottom tab navigator has no pager to
 // swipe between pages; swiping is off once a tab has left its root screen,
@@ -195,15 +196,18 @@ function Shell() {
           })}
           tabBar={(props) => <TabBar {...props} />}
         >
-          <Tabs.Screen name="OverviewTab" options={{ title: t("nav.overview") }}>
-            {() => (
-              <OverviewNav.Navigator screenOptions={header}>
-                <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: t("nav.overview") }} />
-                <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
-                <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
-              </OverviewNav.Navigator>
-            )}
-          </Tabs.Screen>
+          {/* The first tab is where the app opens, so without the overview it opens on the jobs. */}
+          {look.overviewOnBar ? (
+            <Tabs.Screen name="OverviewTab" options={{ title: t("nav.overview") }}>
+              {() => (
+                <OverviewNav.Navigator screenOptions={header}>
+                  <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: t("nav.overview") }} />
+                  <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+                  <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
+                </OverviewNav.Navigator>
+              )}
+            </Tabs.Screen>
+          ) : null}
 
           <Tabs.Screen name="JobsTab" options={{ title: t("nav.jobs") }}>
             {() => (
@@ -277,15 +281,22 @@ const BAR_H = 48;
  * The bottom bar, drawn by hand because react-navigation's bar cannot follow
  * the label setting, fill the current tab, or centre a glyph when no label is
  * drawn. It is a well, GlimStone's horizontal selector, with four equal places
- * and More, which opens the rest as a sheet.
+ * and More, which opens the rest as a sheet. Without the overview, Settings
+ * leaves the sheet for the fourth place, as on the web.
  */
 function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   const { p, corners } = useTheme();
   const { t } = useT();
   const { running, conflicts } = useWaiting();
+  const { overviewOnBar } = useAppearance();
   const inset = useSafeAreaInsets();
   const [sheet, setSheet] = useState(false);
   const current = state.routes[state.index]?.name;
+  const places = BAR.filter((place) => place.tab !== "OverviewTab" || overviewOnBar);
+  const settingsOnBar = !overviewOnBar;
+  const moreTab = state.routes.find((r) => r.name === "MoreTab");
+  const moreFirst = (moreTab?.state as { routes?: { name: string }[] } | undefined)?.routes?.[0]?.name;
+  const onSettings = current === "MoreTab" && moreFirst === "SettingsHome";
   const counts: Record<BarPlace["tab"], number | null> = {
     OverviewTab: null,
     JobsTab: running,
@@ -302,6 +313,23 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
     if (!event.defaultPrevented) navigation.navigate(name);
   };
 
+  // The picked place replaces whatever More held, rather than piling up on it.
+  const openMore = (screen: MorePlace["screen"]) => {
+    setSheet(false);
+    const at = state.routes.findIndex((r) => r.name === "MoreTab");
+    // Handed over as a partial state, so the router fills in the rest.
+    const partial = {
+      index: at,
+      routes: state.routes.map((r, i) => ({
+        key: r.key,
+        name: r.name,
+        params: r.params,
+        state: i === at ? { routes: [{ name: screen }] } : r.state,
+      })),
+    };
+    navigation.dispatch(CommonActions.reset(partial as Parameters<typeof CommonActions.reset>[0]));
+  };
+
   return (
     <View>
       {/* The app's ground under the bar, or Android's near-white window
@@ -309,7 +337,7 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
       <View style={[StyleSheet.absoluteFill, { backgroundColor: p.background }]} />
       <View style={[styles.bar, { backgroundColor: p.surface2, ...corners.pill, marginBottom: below }]}>
         <View style={styles.well}>
-          {BAR.map((place, index) => (
+          {places.map((place, index) => (
             <BarSegment
               key={place.tab}
               label={t(place.label)}
@@ -320,12 +348,21 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
               onPress={() => go(place.tab)}
             />
           ))}
+          {settingsOnBar ? (
+            <BarSegment
+              label={t("nav.settings")}
+              glyph="IconGear"
+              index={places.length}
+              on={!sheet && onSettings}
+              onPress={() => openMore("SettingsHome")}
+            />
+          ) : null}
           {/* Filled while its sheet is open, since that is where the person is. */}
           <BarSegment
             label={t("more.title")}
             glyph="IconMore"
-            index={BAR.length}
-            on={sheet || current === "MoreTab"}
+            index={places.length + (settingsOnBar ? 1 : 0)}
+            on={sheet || (current === "MoreTab" && !(settingsOnBar && onSettings))}
             onPress={() => setSheet(true)}
           />
         </View>
@@ -333,24 +370,9 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
       <MoreSheet
         open={sheet}
         above={below + BAR_H + 6}
+        settingsOnBar={settingsOnBar}
         onClose={() => setSheet(false)}
-        onPick={(screen) => {
-          setSheet(false);
-          // The picked place replaces whatever More held, rather than piling
-          // up on it.
-          const at = state.routes.findIndex((r) => r.name === "MoreTab");
-          // Handed over as a partial state, so the router fills in the rest.
-          const partial = {
-            index: at,
-            routes: state.routes.map((r, i) => ({
-              key: r.key,
-              name: r.name,
-              params: r.params,
-              state: i === at ? { routes: [{ name: screen }] } : r.state,
-            })),
-          };
-          navigation.dispatch(CommonActions.reset(partial as Parameters<typeof CommonActions.reset>[0]));
-        }}
+        onPick={openMore}
       />
     </View>
   );
@@ -439,12 +461,15 @@ function BarSegment({
 function MoreSheet({
   open,
   above,
+  settingsOnBar,
   onClose,
   onPick,
 }: {
   open: boolean;
   /** How far the bar reaches up from the bottom edge. */
   above: number;
+  /** Whether Settings has a place on the bar, which takes it out of the sheet. */
+  settingsOnBar: boolean;
   onClose: () => void;
   onPick: (screen: MorePlace["screen"]) => void;
 }) {
@@ -470,7 +495,8 @@ function MoreSheet({
           {MORE.filter(
             (place) =>
               (place.screen !== "Anomalies" || anomaliesOn !== false) &&
-              (place.screen !== "Instances" || instancesInMore),
+              (place.screen !== "Instances" || instancesInMore) &&
+              (place.screen !== "SettingsHome" || !settingsOnBar),
           ).map((place) => {
             const count = counts[place.screen];
             return (

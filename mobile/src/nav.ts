@@ -70,7 +70,8 @@ export interface MorePlace {
 
 /**
  * The phone's navigation in one table: four places on the bar and the rest in
- * the More sheet, so the bar and the sheet cannot disagree about either.
+ * the More sheet, so the bar and the sheet cannot disagree about either. While
+ * the overview is switched off, Settings moves from the sheet to its place.
  */
 export const BAR: BarPlace[] = [
   { tab: "OverviewTab", label: "nav.overview", glyph: "IconDashboard" },

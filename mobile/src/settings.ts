@@ -65,6 +65,8 @@ export interface Appearance {
   jobView: JobView;
   /** Whether Instances stands in the More sheet, pinned on the Pairing screen. */
   instancesInMore: boolean;
+  /** Whether the Overview holds the bar's first place, where the app opens. */
+  overviewOnBar: boolean;
 }
 
 export type JobView = "cards" | "compact";
@@ -85,6 +87,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   lock: false,
   jobView: "cards",
   instancesInMore: false,
+  overviewOnBar: true,
 };
 
 const KEY = "arrowloop.appearance";

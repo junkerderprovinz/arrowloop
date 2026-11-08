@@ -9,6 +9,7 @@ import { AccessNotice, mayRunAll, useFileAccess } from "../fileAccess";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
+import { OtherInstances } from "../otherInstances";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
@@ -17,6 +18,7 @@ import { space, text } from "../theme";
 import { useEngineEvents, useEngineStream } from "../useEngine";
 import { useWaiting } from "../waiting";
 import { WayGlyph, wayLabel, wayOf } from "../way";
+import { headOf, lastAndNext, type Headline } from "../../../web/src/lib/overviewHead";
 import {
   AxisLabel,
   Badge,
@@ -27,6 +29,7 @@ import {
   Empty,
   Fab,
   Floating,
+  Heading,
   Page,
   Pair,
   Press,
@@ -40,9 +43,10 @@ import {
 const NEXT_SHOWN = 3;
 
 /**
- * The start screen: the counts of what waits, what runs and runs next with
- * the files at work, the last run and how full each target is. Every line
- * that counts something leads to it.
+ * The start screen: one sentence on how everything stands, the counts of what
+ * waits, what runs and runs next with the files at work, the last run, how
+ * full each target is and the jobs of the paired instances. Every line that
+ * counts something leads to it.
  */
 export function Overview() {
   const nav = useNavigation<Nav<OverviewStack>>();
@@ -114,7 +118,9 @@ export function Overview() {
       <Page fab>
         {access === false ? <AccessNotice /> : null}
 
-        <Section title={t("overview.numbers")} hue={0}>
+        <Head jobs={jobs} />
+
+        <Section title={t("overview.numbers")} hint={t("overview.numbersHint")} hue={0}>
           <View style={styles.tiles}>
             <Tile value={waiting.conflicts} label={t("nav.conflicts")} onPress={() => toTab("ConflictsTab")} />
             {waiting.anomaliesOn !== false ? (
@@ -168,6 +174,8 @@ export function Overview() {
           </Section>
         ) : null}
 
+        <OtherInstances firstHue={4} />
+
         {error ? <Caption>{error}</Caption> : null}
       </Page>
 
@@ -182,6 +190,50 @@ export function Overview() {
         <Fab label={t("phone.runAll")} labelKey="phone.runAll" onPress={() => void runAll()} />
       ) : null}
     </Floating>
+  );
+}
+
+/**
+ * The sentence on how everything stands, as the web's Overview opens with,
+ * beside a dot in its colour, and under it when the last run ended and the
+ * next one starts.
+ */
+function Head({ jobs }: { jobs: Job[] }) {
+  const { t, lang } = useT();
+  const { p, accent } = useTheme();
+  const waiting = useWaiting();
+  const findings = waiting.anomaliesOn === false ? [] : (waiting.findings ?? []);
+  const held = findings.filter((f) => f.held).length;
+  const { headline, needs } = headOf({ jobs, conflicts: waiting.conflicts ?? 0, held, notes: findings.length - held });
+  const { last, next } = lastAndNext(jobs);
+  const line = [
+    last ? t("jobs.lastRun", { when: clock(last, lang) }) : "",
+    next ? t("jobs.fact.next", { when: clock(next, lang) }) : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const ink: Record<Headline, string> = {
+    empty: p.textMuted,
+    needs: p.warnSolid,
+    running: accent,
+    notes: p.okSolid,
+    allGood: p.okSolid,
+  };
+  const said: Record<Headline, string> = {
+    empty: t("overview.head.empty"),
+    needs: t("overview.head.needs", { count: needs }),
+    running: t("overview.running"),
+    notes: t("overview.head.notes"),
+    allGood: t("overview.head.allGood"),
+  };
+  return (
+    <View style={styles.head} accessible accessibilityRole="header">
+      <View style={styles.headLine}>
+        <View style={[styles.headDot, { backgroundColor: ink[headline] }]} />
+        <Heading>{said[headline]}</Heading>
+      </View>
+      {line ? <Caption>{line}</Caption> : null}
+    </View>
   );
 }
 
@@ -434,6 +486,9 @@ function Account({
 }
 
 const styles = StyleSheet.create({
+  head: { gap: space.xs, paddingHorizontal: space.xs },
+  headLine: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  headDot: { width: 12, height: 12, borderRadius: 6 },
   // A sub-card: a flat inset group one step above the card, without a shadow.
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },

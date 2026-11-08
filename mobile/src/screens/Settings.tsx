@@ -664,6 +664,12 @@ export function Settings() {
             { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
           ]}
         />
+        <Toggle
+          label={t("look.overviewOnBar")}
+          hint={t("look.overviewHint")}
+          value={look.overviewOnBar}
+          onChange={(overviewOnBar) => setAppearance({ overviewOnBar })}
+        />
 
         <AxisLabel hint={t("look.jobViewHint")}>{t("look.jobView")}</AxisLabel>
         <Choice<JobView>
