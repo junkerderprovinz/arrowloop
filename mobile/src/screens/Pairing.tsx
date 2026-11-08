@@ -10,7 +10,7 @@ import { Field, Refusal } from "../fields";
 import { Glyph } from "../glyphs";
 import { useT, type TranslationKey } from "../i18n";
 import { OtherInstances } from "../otherInstances";
-import { kindName, pairStage, refusalText, seenAt, type PairStage } from "../pairing";
+import { FORMS, kindName, modeOf, pairStage, refusalText, relayForm, seenAt, type PairStage, type RelayForm } from "../pairing";
 import { checkPhrase, PHRASE_WORDS } from "../phraseWords";
 import { useAppearance } from "../settings";
 import { contrastOn, softOn, space, text, TOUCH } from "../theme";
@@ -709,8 +709,16 @@ function InstanceCard({ group, onGroup }: { group: ConnectInfo; onGroup: (g: Con
 
 const CLOUD = "M5.4 16.5h9.2a3.9 3.9 0 0 0 .6-7.8A5.4 5.4 0 0 0 4.9 7.3a4.6 4.6 0 0 0 .5 9.2z";
 
-/** A relay route as a filled glyph, as the web's selector draws it. */
-function RouteMark({ mode, ink }: { mode: RelayMode; ink: string }) {
+/** A relay route as a filled glyph, as the web's selector draws it; an instance keeps its line glyph. */
+function RouteMark({ mode, ink }: { mode: RelayForm; ink: string }) {
+  if (mode === "instance") {
+    return (
+      <Svg width={18} height={18} viewBox="0 0 20 20" fill="none" stroke={ink} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+        <Path d="M5.3 9h9.4a1.8 1.8 0 0 1 1.8 1.8v4.4a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8v-4.4A1.8 1.8 0 0 1 5.3 9z" />
+        <Path d="M6.5 13h.01M7 5.8a4.4 4.4 0 0 1 6 0M4.8 3.6a7.6 7.6 0 0 1 10.4 0" />
+      </Svg>
+    );
+  }
   if (mode === "own") {
     return (
       <Svg width={18} height={18} viewBox="0 0 20 20" fill={ink}>
@@ -726,15 +734,26 @@ function RouteMark({ mode, ink }: { mode: RelayMode; ink: string }) {
   );
 }
 
-const COPY: Record<RelayMode, { name: TranslationKey; sentence: TranslationKey; need: TranslationKey }> = {
+const COPY: Record<RelayForm, { name: TranslationKey; sentence: TranslationKey; need: TranslationKey }> = {
   project: { name: "relay.project", sentence: "relay.projectSentence", need: "relay.projectNeed" },
   own: { name: "relay.own", sentence: "relay.ownSentence", need: "relay.ownNeed" },
+  instance: { name: "relay.instanceName", sentence: "relay.instanceSub", need: "relay.instanceNeed" },
   off: { name: "relay.off", sentence: "relay.offSentence", need: "relay.offNeed" },
 };
 
+const EXAMPLE: Partial<Record<RelayForm, string>> = {
+  own: "wss://relay.example.org",
+  instance: "https://arrowloop.example.org/relay/connect",
+};
+
+// The relay key of an address without TLS crosses the network in the clear.
+const PLAINTEXT_RELAY = /^(ws|http):\/\//i;
+
 /**
- * Which relay carries the group: the project's, one of the owner's own, or
- * none. Each route says in one sentence what it is and what it needs. Every
+ * Which relay carries the group: the project's, one of the owner's own, an
+ * ArrowLoop of the group that serves one, or none. A phone is reached by
+ * nobody, so it never serves the relay itself; it dials the instance that
+ * does. Each route says in one sentence what it is and what it needs. Every
  * control saves on its own.
  */
 function RelayCard({
@@ -751,8 +770,10 @@ function RelayCard({
   onRefresh: () => void;
 }) {
   const { t } = useT();
-  const { p } = useTheme();
+  const { p, corners } = useTheme();
   const [mode, setMode] = useState<RelayMode>(relay.mode);
+  // Which of the two own routes was picked here; the engine stores one mode for both.
+  const [picked, setPicked] = useState<"own" | "instance" | null>(null);
   const [address, setAddress] = useState(relay.relayUrl);
   const [refusal, setRefusal] = useState<string | null>(null);
   const typing = useRef(false);
@@ -765,12 +786,16 @@ function RelayCard({
   useEffect(() => setMode(relay.mode), [relay.mode]);
   useEffect(() => () => clearTimeout(timer.current), []);
 
-  function pick(next: RelayMode) {
-    if (next === mode) return;
+  const form: RelayForm = mode !== "own" ? mode : (picked ?? relayForm({ ...relay, mode, relayUrl: address }));
+
+  function pick(next: RelayForm) {
+    setPicked(next === "own" || next === "instance" ? next : null);
+    const stored = modeOf(next);
+    if (stored === mode) return;
     const before = mode;
-    setMode(next);
+    setMode(stored);
     setRefusal(null);
-    api.saveRelay({ mode: next }).then(onRelay, (e: unknown) => {
+    api.saveRelay({ mode: stored }).then(onRelay, (e: unknown) => {
       setMode(before);
       setRefusal(refusalText(t, e));
     });
@@ -793,7 +818,7 @@ function RelayCard({
 
   // React Native's URL has no `host`, so the scheme and the path are cut off by hand.
   const host = relay.projectRelayUrl.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "").split("/")[0] ?? "";
-  const copy = COPY[mode];
+  const copy = COPY[form];
   const state: { label: string; tone: Tone } =
     mode === "off"
       ? { label: t("relay.off"), tone: "neutral" }
@@ -808,14 +833,14 @@ function RelayCard({
 
   return (
     <Section title={t("relay.title")} hint={t("relay.hint")} hue={6}>
-      <Choice<RelayMode>
+      <Choice<RelayForm>
         hue={0}
-        options={(["project", "own", "off"] as const).map((m) => ({
+        options={FORMS.map((m) => ({
           value: m,
           label: t(COPY[m].name),
           mark: (ink: string) => <RouteMark mode={m} ink={ink} />,
         }))}
-        value={mode}
+        value={form}
         onChange={pick}
       />
       <View style={[styles.line, styles.end]}>
@@ -826,7 +851,14 @@ function RelayCard({
         <Text style={[styles.strong, { color: p.text }]}>{t("relay.needLabel")} </Text>
         {t(copy.need)}
       </Body>
-      {mode === "own" ? <Field label={t("relay.address")} value={address} onChange={type} placeholder="wss://relay.example.org" /> : null}
+      {form === "own" || form === "instance" ? (
+        <Field label={t("relay.address")} value={address} onChange={type} placeholder={EXAMPLE[form]} />
+      ) : null}
+      {PLAINTEXT_RELAY.test(address.trim()) && mode === "own" ? (
+        <View accessibilityRole="alert" style={[styles.note, { backgroundColor: softOn(p.warnInk), ...corners.control }]}>
+          <Text style={[styles.noteText, { color: p.text }]}>{t("relay.plaintextWarning")}</Text>
+        </View>
+      ) : null}
       {mode !== "off" ? (
         <View style={styles.line}>
           <View style={styles.grow}>

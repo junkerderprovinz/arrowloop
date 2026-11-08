@@ -1,7 +1,7 @@
 // Where the phone stands in its group and how a refusal reads, by the web's
 // lib/pairing.ts rules. That file reads the browser's ApiError, so the phone
 // keeps its own copy over EngineError.
-import { EngineError, type ConnectInfo } from "./api";
+import { EngineError, type ConnectInfo, type RelayConfig, type RelayMode } from "./api";
 import { clock } from "./clock";
 import type { T, TranslationKey } from "./i18n";
 
@@ -58,4 +58,26 @@ export function refusalText(t: T, e: unknown): string {
  */
 export function seenAt(lang: string, unixSeconds: number): string {
   return clock(new Date(unixSeconds * 1000).toISOString(), lang);
+}
+
+/** The routes the relay card offers, as on the web: "instance" is an own relay that a paired ArrowLoop serves. */
+export type RelayForm = RelayMode | "instance";
+
+export const FORMS: RelayForm[] = ["project", "own", "instance", "off"];
+
+/**
+ * relayForm tells the two kinds of own relay apart by the web's rule: an
+ * address at the path an instance serves its relay under means an ArrowLoop
+ * is the relay. React Native's URL has no `pathname`, so the path is cut out
+ * by hand.
+ */
+export function relayForm(relay: Pick<RelayConfig, "mode" | "relayUrl" | "serve">): RelayForm {
+  if (relay.mode !== "own") return relay.mode;
+  const path = /^[a-z][a-z0-9+.-]*:\/\/[^/?#]+([^?#]*)/i.exec(relay.relayUrl.trim())?.[1] ?? "";
+  return relay.serve || path.replace(/\/+$/, "") === "/relay/connect" ? "instance" : "own";
+}
+
+/** The mode the engine stores for a route. */
+export function modeOf(form: RelayForm): RelayMode {
+  return form === "instance" ? "own" : form;
 }

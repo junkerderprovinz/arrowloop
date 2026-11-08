@@ -109,6 +109,10 @@ export interface RelayConfig {
   relayUrl: string;
   projectRelayUrl: string;
   connected: boolean;
+  /** Whether this engine runs the relay of its group, which a phone never does. */
+  serve: boolean;
+  serveClients: number;
+  canServe: boolean;
 }
 
 /** The words and the text for the QR code beside them. */
