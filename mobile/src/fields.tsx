@@ -5,7 +5,7 @@ import { entries } from "../../web/src/lib/lines";
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { radiusFor, space, text, TOUCH } from "./theme";
-import { Body, Button, InfoBubble, Press, Row, useTheme } from "./ui";
+import { Body, Button, InfoBubble, Press, useTheme } from "./ui";
 
 export function Field({
   label,
@@ -136,20 +136,23 @@ export function SecretField({
   placeholder?: string;
 }) {
   const { t } = useT();
+  const { p } = useTheme();
   const [changing, setChanging] = useState(false);
   const stored = value === WITHHELD;
   if (stored && !changing) {
+    // Laid out as a Field, name above, since a Row hands its growing button
+    // the whole width and squeezes the name to nothing.
     return (
-      <Row
-        label={label}
-        hint={hint}
-        control={
-          <View style={styles.saved}>
-            <Body muted>{t("notify.saved")}</Body>
-            <Button label={t("notify.change")} labelKey="notify.change" onPress={() => setChanging(true)} />
-          </View>
-        }
-      />
+      <View style={styles.field}>
+        <View style={styles.labelRow}>
+          <Text style={[styles.label, { color: p.text, flexShrink: 1 }]}>{label}</Text>
+          {hint ? <InfoBubble tip={hint} /> : null}
+        </View>
+        <View style={styles.saved}>
+          <Body muted>{t("notify.saved")}</Body>
+          <Button label={t("notify.change")} labelKey="notify.change" onPress={() => setChanging(true)} />
+        </View>
+      </View>
     );
   }
   return (
