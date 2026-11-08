@@ -163,6 +163,19 @@ describe('the overview', () => {
     await waitFor(() => expect(screen.getAllByRole('button', { name: 'Add a job' })[0]!.hasAttribute('disabled')).toBe(false))
   })
 
+  it('lets the tiles fill the card, two to a row on a phone and all in one once there is room', () => {
+    page()
+    const tiles = screen.getByTestId('overview-tiles')
+    expect(tiles.parentElement!.classList.contains('@container')).toBe(true)
+    expect(tiles.classList.contains('flex-wrap')).toBe(true)
+    for (const a of tiles.querySelectorAll('a')) {
+      expect(a.classList.contains('grow')).toBe(true)
+      expect(a.className).toContain('basis-[calc((100%-0.75rem)/2)]')
+      expect(a.className).toContain('@lg:basis-[calc((100%-1.5rem)/3)]')
+      expect(a.className).toContain('@4xl:basis-0')
+    }
+  })
+
   it('shows the paired instances only once there are any', async () => {
     instances.mockImplementation(() =>
       Promise.resolve([{ id: 'n1', name: 'Attic NAS', deployment: 'server', state: 'ok', jobs: [job('backup')] } as OtherInstance]),

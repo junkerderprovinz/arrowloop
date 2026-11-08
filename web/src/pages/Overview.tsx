@@ -111,13 +111,18 @@ export function Overview({
 
       {!empty && (
         <Card title={t('overview.numbers')} hint={t('overview.numbersHint')} hueIndex={0}>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3">
-            <Tile to="/jobs" label={t('status.running')} value={counts.running} tone={counts.running > 0 ? 'run' : undefined} />
-            <Tile to="/jobs" label={t('status.paused')} value={jobs.filter((j) => j.disabled).length} />
-            <Tile to="/jobs" label={t('status.failed')} value={jobs.filter(failing).length} tone="fail" />
-            <Tile to="/conflicts" label={t('nav.conflicts')} value={counts.conflicts} tone="warn" />
-            {anomalies && <Tile to="/anomalies" label={t('nav.anomalies')} value={counts.findings} tone={held.length > 0 ? 'warn' : undefined} />}
-            <Tile to="/trash" label={t('nav.trash')} value={counts.trash} />
+          {/* The tiles go by the card's width rather than the window's, which the
+              sidebar takes its part of, and a short last row stretches too, so
+              they always fill the card. */}
+          <div className="@container">
+            <div data-testid="overview-tiles" className="flex flex-wrap gap-3">
+              <Tile to="/jobs" label={t('status.running')} value={counts.running} tone={counts.running > 0 ? 'run' : undefined} />
+              <Tile to="/jobs" label={t('status.paused')} value={jobs.filter((j) => j.disabled).length} />
+              <Tile to="/jobs" label={t('status.failed')} value={jobs.filter(failing).length} tone="fail" />
+              <Tile to="/conflicts" label={t('nav.conflicts')} value={counts.conflicts} tone="warn" />
+              {anomalies && <Tile to="/anomalies" label={t('nav.anomalies')} value={counts.findings} tone={held.length > 0 ? 'warn' : undefined} />}
+              <Tile to="/trash" label={t('nav.trash')} value={counts.trash} />
+            </div>
           </div>
         </Card>
       )}
@@ -236,7 +241,7 @@ function Tile({ to, label, value, tone }: { to: string; label: string; value: nu
   return (
     <Link
       to={to}
-      className="glim-row flex min-w-0 flex-col gap-1 rounded-control bg-carbon-surface2 px-4 py-3 transition-colors hover:bg-carbon-surface3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
+      className="glim-row flex min-w-0 grow basis-[calc((100%-0.75rem)/2)] flex-col gap-1 rounded-control bg-carbon-surface2 px-4 py-3 @lg:basis-[calc((100%-1.5rem)/3)] @4xl:basis-0 transition-colors hover:bg-carbon-surface3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
     >
       <span className={`glim-num text-status font-bold leading-tight ${tone && value > 0 ? TONE[tone] : 'text-carbon-text'}`}>
         {new Intl.NumberFormat(lang).format(value)}
