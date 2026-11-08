@@ -1392,6 +1392,7 @@ const cs: Translations = {
   'new.change.importOthers': '{import} přijme i export z FolderSync nebo profil z luckyBackup. Než cokoli uloží, ukáže, které úlohy a cíle přibudou a co zůstane stranou.',
   'new.change.systemAccent': 'Vzorek s kouzelnou hůlkou na začátku {accent} převezme barvu systému: Material You od Androidu 12, barvu zvýraznění Windows, macOS nebo Linuxu v desktopové aplikaci a systémovou barvu ve Firefoxu a Safari. Kde systém žádnou nemá, vzorek chybí.',
   'new.change.oxicloud': 'OxiCloud má vlastní dlaždici v části Cloudy. Ukazuje adresu, kterou OxiCloud očekává, a kde se vytváří heslo aplikace.',
+  'new.change.flatpak': 'ArrowLoop je pro Linux k dispozici i jako Flatpak. Má vlastní WebKitGTK a aktualizace dostává z tvého centra softwaru.',
   'new.change.userCas': 'Aplikace v telefonu důvěřuje certifikačním autoritám nainstalovaným v nastavení Androidu, takže se připojí i server s vlastním certifikátem.',
   'new.change.signInCard': 'Přihlašovací stránka má nový vzhled, nahoře s logem a názvem ArrowLoop a s každým tlačítkem širokým jako karta. Kurzor už stojí v poli pro heslo, tlačítko pro přihlášení čeká, dokud něco nezadáte, a při špatném hesle nebo kódu se krátce zatřese.',
   'autoBackup.title': 'Automatické zálohy',

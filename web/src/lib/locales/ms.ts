@@ -1392,6 +1392,7 @@ const ms: Translations = {
   'new.change.importOthers': '{import} juga menerima eksport FolderSync atau profil luckyBackup. Sebelum apa-apa disimpan, ia menunjukkan tugas dan destinasi yang ikut serta dan apa yang ditinggalkan.',
   'new.change.systemAccent': 'Sampel bertongkat sakti di awal {accent} mengikut warna sistem anda: Material You pada Android 12 dan lebih baharu, warna aksen Windows, macOS atau Linux dalam apl desktop, dan warna sistem dalam Firefox dan Safari. Jika sistem tiada warna, sampel itu tidak muncul.',
   'new.change.oxicloud': 'OxiCloud ada jubin sendiri di bawah Awan. Ia menunjukkan alamat yang dijangka oleh OxiCloud dan tempat kata laluan aplikasi dicipta.',
+  'new.change.flatpak': 'ArrowLoop juga tersedia sebagai Flatpak untuk Linux. Ia membawa WebKitGTK sendiri dan menerima kemas kini daripada pusat perisian anda.',
   'new.change.userCas': 'Aplikasi telefon mempercayai pihak berkuasa sijil yang dipasang dalam tetapan Android, jadi pelayan dengan sijilnya sendiri juga dapat bersambung.',
   'new.change.signInCard': 'Halaman log masuk mempunyai rupa baharu, dengan logo dan nama ArrowLoop di atas dan setiap butang selebar kad. Kursor sudah berada dalam medan kata laluan, butang log masuk menunggu sehingga anda menaip sesuatu, dan jika kata laluan atau kod salah butang itu bergegar sedikit.',
   'autoBackup.title': 'Sandaran automatik',

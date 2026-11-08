@@ -1392,6 +1392,7 @@ const nl: Translations = {
   'new.change.importOthers': '{import} neemt ook een export van FolderSync of een profiel van luckyBackup aan. Voordat er iets wordt opgeslagen, laat het zien welke taken en doelen erbij komen en wat erbuiten blijft.',
   'new.change.systemAccent': 'Het staal met de toverstaf vooraan bij {accent} neemt de kleur van je systeem over: Material You vanaf Android 12, de accentkleur van Windows, macOS of Linux in de desktop-app en de systeemkleur in Firefox en Safari. Waar het systeem er geen heeft, is het staal er niet.',
   'new.change.oxicloud': 'OxiCloud heeft een eigen tegel onder Clouds. Die toont het adres dat OxiCloud verwacht en waar het app-wachtwoord wordt gemaakt.',
+  'new.change.flatpak': 'ArrowLoop is er ook als Flatpak voor Linux. Het brengt zijn eigen WebKitGTK mee en krijgt updates via je softwarecentrum.',
   'new.change.userCas': 'De telefoonapp vertrouwt de certificeringsinstanties die in de instellingen van Android zijn geïnstalleerd, zodat ook een server met een eigen certificaat verbinding krijgt.',
   'new.change.signInCard': 'De inlogpagina heeft een nieuw uiterlijk, met het logo en de naam van ArrowLoop bovenaan en elke knop even breed als de kaart. De cursor staat al in het wachtwoordveld, de inlogknop wacht tot je iets typt, en bij een verkeerd wachtwoord of een verkeerde code schudt hij even.',
   'autoBackup.title': 'Automatische back-ups',

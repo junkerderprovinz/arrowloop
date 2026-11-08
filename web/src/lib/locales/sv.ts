@@ -1392,6 +1392,7 @@ const sv: Translations = {
   'new.change.importOthers': '{import} tar även emot en export från FolderSync eller en profil från luckyBackup. Innan något sparas visar den vilka jobb och mål som följer med och vad som blir kvar utanför.',
   'new.change.systemAccent': 'Färgprovet med trollstaven först i {accent} tar ditt systems färg: Material You från Android 12, accentfärgen i Windows, macOS eller Linux i skrivbordsappen och systemfärgen i Firefox och Safari. Där systemet saknar en finns provet inte.',
   'new.change.oxicloud': 'OxiCloud har en egen ruta under Moln. Den visar adressen som OxiCloud väntar sig och var applösenordet skapas.',
+  'new.change.flatpak': 'ArrowLoop finns också som Flatpak för Linux. Den har med sig sin egen WebKitGTK och får uppdateringar från ditt programcenter.',
   'new.change.userCas': 'Telefonappen litar på certifikatutfärdarna som är installerade i Androids inställningar, så även en server med eget certifikat ansluter.',
   'new.change.signInCard': 'Inloggningssidan har fått ett nytt utseende, med ArrowLoops logga och namn överst och varje knapp lika bred som kortet. Markören står redan i lösenordsfältet, inloggningsknappen väntar tills du skriver något, och vid fel lösenord eller kod skakar den till lite.',
   'autoBackup.title': 'Automatiska säkerhetskopior',

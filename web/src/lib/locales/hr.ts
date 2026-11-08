@@ -1392,6 +1392,7 @@ const hr: Translations = {
   'new.change.importOthers': '{import} prima i izvoz iz FolderSynca ili profil iz luckyBackupa. Prije nego što išta spremi, pokazuje koji zadaci i odredišta dolaze i što ostaje izvan.',
   'new.change.systemAccent': 'Uzorak sa štapićem na početku {accent} preuzima boju vašeg sustava: Material You od Androida 12, naglasnu boju sustava Windows, macOS ili Linux u aplikaciji za računalo te boju sustava u Firefoxu i Safariju. Gdje sustav nema boju, uzorka nema.',
   'new.change.oxicloud': 'OxiCloud ima vlastitu pločicu pod Oblaci. Pokazuje adresu koju OxiCloud očekuje i gdje se stvara lozinka aplikacije.',
+  'new.change.flatpak': 'ArrowLoop postoji i kao Flatpak za Linux. Donosi vlastiti WebKitGTK i ažuriranja dobiva iz tvog centra za softver.',
   'new.change.userCas': 'Aplikacija na telefonu vjeruje izdavateljima certifikata instaliranima u postavkama Androida, pa se povezuje i poslužitelj s vlastitim certifikatom.',
   'new.change.signInCard': 'Stranica za prijavu ima novi izgled, s logotipom i imenom ArrowLoopa na vrhu i svakim gumbom širokim kao kartica. Pokazivač je već u polju za lozinku, gumb za prijavu čeka dok nešto ne upišete, a kod pogrešne lozinke ili koda kratko se zatrese.',
   'autoBackup.title': 'Automatske sigurnosne kopije',

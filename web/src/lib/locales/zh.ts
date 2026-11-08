@@ -1392,6 +1392,7 @@ const zh: Translations = {
   'new.change.importOthers': '{import} 也接收 FolderSync 的导出或 luckyBackup 的配置文件。保存之前，它会显示将加入哪些任务和目标，以及哪些会被略过。',
   'new.change.systemAccent': '{accent} 开头带魔杖的色块会使用系统的颜色：Android 12 及以上用 Material You，桌面应用用 Windows、macOS 或 Linux 的强调色，Firefox 和 Safari 用系统颜色。系统没有这种颜色时，就没有这个色块。',
   'new.change.oxicloud': 'OxiCloud 在云服务下有自己的磁贴，显示 OxiCloud 需要的地址以及创建应用密码的位置。',
+  'new.change.flatpak': 'ArrowLoop 也提供 Linux 版 Flatpak。它自带 WebKitGTK，并通过你的软件中心获取更新。',
   'new.change.userCas': '手机应用信任安装在 Android 设置中的证书颁发机构，因此使用自有证书的服务器也能连接。',
   'new.change.signInCard': '登录页面换了新样子，顶部是 ArrowLoop 的标志和名称，每个按钮都和卡片一样宽。光标一开始就在密码框里，登录按钮会等你输入内容后才可用，密码或验证码错误时按钮会轻轻晃一下。',
   'autoBackup.title': '自动备份',

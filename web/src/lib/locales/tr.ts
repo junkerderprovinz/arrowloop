@@ -1392,6 +1392,7 @@ const tr: Translations = {
   'new.change.importOthers': '{import} bir FolderSync dışa aktarımını ya da bir luckyBackup profilini de alır. Bir şey kaydetmeden önce hangi işlerin ve hedeflerin geleceğini, neyin dışarıda kalacağını gösterir.',
   'new.change.systemAccent': '{accent} satırının başındaki sihirli değnekli örnek, sisteminin rengini alır: Android 12 ve sonrasında Material You, masaüstü uygulamasında Windows, macOS veya Linux vurgu rengi, Firefox ve Safari\'de sistem rengi. Sistemin böyle bir rengi yoksa örnek görünmez.',
   'new.change.oxicloud': 'OxiCloud, Bulutlar altında kendi kutucuğuna sahip. Kutucuk, OxiCloud\'un beklediği adresi ve uygulama parolasının nerede oluşturulduğunu gösterir.',
+  'new.change.flatpak': 'ArrowLoop, Linux için Flatpak olarak da sunuluyor. Kendi WebKitGTK\'sini getirir ve güncellemelerini yazılım merkezinden alır.',
   'new.change.userCas': 'Telefon uygulaması, Android ayarlarında yüklü sertifika yetkililerine güvenir, böylece kendi sertifikası olan bir sunucu da bağlanır.',
   'new.change.signInCard': 'Giriş sayfası yeni bir görünüme kavuştu, üstte ArrowLoop logosu ve adı var ve her düğme kart kadar geniş. İmleç zaten parola alanında duruyor, giriş düğmesi bir şey yazana kadar bekliyor ve yanlış parola ya da kodda hafifçe sallanıyor.',
   'autoBackup.title': 'Otomatik yedekler',

@@ -1392,6 +1392,7 @@ const lv: Translations = {
   'new.change.importOthers': '{import} pieņem arī FolderSync eksportu vai luckyBackup profilu. Pirms kaut ko saglabāt, tas parāda, kuri uzdevumi un galamērķi nāks klāt un kas paliks ārpusē.',
   'new.change.systemAccent': 'Paraugs ar burvju nūjiņu {accent} sākumā izmanto jūsu sistēmas krāsu: Material You no Android 12, Windows, macOS vai Linux akcenta krāsu darbvirsmas lietotnē un sistēmas krāsu Firefox un Safari. Kur sistēmai tādas nav, parauga nav.',
   'new.change.oxicloud': 'OxiCloud ir sava flīze sadaļā Mākoņi. Tā rāda adresi, ko OxiCloud gaida, un kur izveido lietotnes paroli.',
+  'new.change.flatpak': 'ArrowLoop ir pieejams arī kā Flatpak Linux sistēmai. Tam ir savs WebKitGTK, un atjauninājumus tas saņem no tava programmatūras centra.',
   'new.change.userCas': 'Tālruņa lietotne uzticas sertificēšanas iestādēm, kas instalētas Android iestatījumos, tāpēc savienojas arī serveris ar savu sertifikātu.',
   'new.change.signInCard': 'Pieteikšanās lapai ir jauns izskats, augšā ir ArrowLoop logotips un nosaukums, un katra poga ir tikpat plata kā kartīte. Kursors jau ir paroles laukā, pieteikšanās poga gaida, līdz kaut ko ierakstāt, un pie nepareizas paroles vai koda tā nedaudz sakustas.',
   'autoBackup.title': 'Automātiskie dublējumi',

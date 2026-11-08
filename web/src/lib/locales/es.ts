@@ -1392,6 +1392,7 @@ const es: Translations = {
   'new.change.importOthers': '{import} también acepta una exportación de FolderSync o un perfil de luckyBackup. Antes de guardar nada, muestra qué tareas y destinos se añaden y qué se queda fuera.',
   'new.change.systemAccent': 'La muestra con la varita al principio de {accent} toma el color de tu sistema: Material You desde Android 12, el color de acento de Windows, macOS o Linux en la aplicación de escritorio y el color del sistema en Firefox y Safari. Donde el sistema no tiene uno, la muestra no aparece.',
   'new.change.oxicloud': 'OxiCloud tiene su propio mosaico en Nubes. Muestra la dirección que espera OxiCloud y dónde se crea la contraseña de aplicación.',
+  'new.change.flatpak': 'ArrowLoop también está disponible como Flatpak para Linux. Trae su propio WebKitGTK y recibe las actualizaciones desde tu centro de software.',
   'new.change.userCas': 'La aplicación del teléfono confía en las autoridades de certificación instaladas en los ajustes de Android, así que también se conecta un servidor con un certificado propio.',
   'new.change.signInCard': 'La página de inicio de sesión tiene un aspecto nuevo, con el logotipo y el nombre de ArrowLoop arriba y cada botón tan ancho como la tarjeta. El cursor ya está en el campo de la contraseña, el botón de inicio de sesión espera a que escribas algo, y con una contraseña o un código incorrectos da una pequeña sacudida.',
   'autoBackup.title': 'Copias automáticas',

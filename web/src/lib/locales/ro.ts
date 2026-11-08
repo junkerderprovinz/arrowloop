@@ -1392,6 +1392,7 @@ const ro: Translations = {
   'new.change.importOthers': '{import} primește și un export din FolderSync sau un profil din luckyBackup. Înainte să salveze ceva, arată ce sarcini și destinații vin și ce rămâne pe dinafară.',
   'new.change.systemAccent': 'Mostra cu bagheta de la începutul {accent} preia culoarea sistemului tău: Material You de la Android 12, culoarea de accent din Windows, macOS sau Linux în aplicația desktop și culoarea sistemului în Firefox și Safari. Unde sistemul nu are una, mostra lipsește.',
   'new.change.oxicloud': 'OxiCloud are propria dală la Nori. Arată adresa pe care o așteaptă OxiCloud și unde se creează parola de aplicație.',
+  'new.change.flatpak': 'ArrowLoop există și ca Flatpak pentru Linux. Vine cu propriul WebKitGTK și primește actualizările din centrul tău de software.',
   'new.change.userCas': 'Aplicația de pe telefon are încredere în autoritățile de certificare instalate în setările Android, așa că se conectează și un server cu propriul certificat.',
   'new.change.signInCard': 'Pagina de autentificare are un aspect nou, cu sigla și numele ArrowLoop sus și fiecare buton la fel de lat ca fișa. Cursorul este deja în câmpul parolei, butonul de autentificare așteaptă până scrii ceva, iar la o parolă sau un cod greșit tremură puțin.',
   'autoBackup.title': 'Copii automate',

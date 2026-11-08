@@ -1392,6 +1392,7 @@ const is: Translations = {
   'new.change.importOthers': '{import} tekur líka við útflutningi úr FolderSync eða sniði úr luckyBackup. Áður en nokkuð er vistað sýnir það hvaða verk og áfangastaðir koma með og hvað verður eftir.',
   'new.change.systemAccent': 'Litaprufan með töfrasprotanum fremst í {accent} notar lit kerfisins: Material You frá Android 12, áherslulit Windows, macOS eða Linux í skjáborðsforritinu og kerfislitinn í Firefox og Safari. Þar sem kerfið hefur engan er prufan ekki til staðar.',
   'new.change.oxicloud': 'OxiCloud er með eigin reit undir Skýin. Hann sýnir vistfangið sem OxiCloud býst við og hvar forritslykilorðið er búið til.',
+  'new.change.flatpak': 'ArrowLoop fæst líka sem Flatpak fyrir Linux. Það kemur með eigið WebKitGTK og fær uppfærslur úr hugbúnaðarmiðstöðinni þinni.',
   'new.change.userCas': 'Símaforritið treystir vottunaraðilum sem eru settir upp í stillingum Android, svo netþjónn með eigið skilríki tengist líka.',
   'new.change.signInCard': 'Innskráningarsíðan hefur fengið nýtt útlit, með merki og nafni ArrowLoop efst og hvern hnapp jafnbreiðan spjaldinu. Bendillinn er þegar í lykilorðsreitnum, innskráningarhnappurinn bíður þar til þú slærð eitthvað inn og við rangt lykilorð eða kóða hristist hann aðeins.',
   'autoBackup.title': 'Sjálfvirk afrit',

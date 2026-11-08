@@ -1392,6 +1392,7 @@ const eu: Translations = {
   'new.change.importOthers': '{import} aukerak FolderSync-en esportazio bat edo luckyBackup-en profil bat ere onartzen ditu. Ezer gorde aurretik, zein lan eta helburu gehitzen diren eta zer geratzen den kanpoan erakusten du.',
   'new.change.systemAccent': '{accent} hasierako makila magikodun laginak sistemaren kolorea hartzen du: Material You Android 12tik aurrera, Windows, macOS edo Linuxen azentu-kolorea mahaigaineko aplikazioan, eta sistemaren kolorea Firefox eta Safarin. Sistemak koloririk ez duenean, lagina ez da agertzen.',
   'new.change.oxicloud': 'OxiCloud-ek bere lauza du Hodeiak atalean. OxiCloud-ek espero duen helbidea eta aplikazio-pasahitza non sortzen den erakusten ditu.',
+  'new.change.flatpak': 'ArrowLoop Flatpak gisa ere badago Linuxerako. Bere WebKitGTK propioa dakar eta eguneratzeak zure software zentrotik jasotzen ditu.',
   'new.change.userCas': 'Telefonoko aplikazioa Androiden ezarpenetan instalatutako ziurtagiri-emaileez fidatzen da, beraz bere ziurtagiria duen zerbitzari bat ere konektatzen da.',
   'new.change.signInCard': 'Saioa hasteko orriak itxura berria du, ArrowLoopen logoa eta izena goian eta botoi bakoitza txartela bezain zabala. Kurtsorea pasahitzaren eremuan dago jada, saioa hasteko botoiak zerbait idatzi arte itxaroten du, eta pasahitz edo kode okerrarekin pixka bat astintzen da.',
   'autoBackup.title': 'Babeskopia automatikoak',

@@ -101,6 +101,7 @@ export const RELEASES: Release[] = [
       },
       // The tile stands in the provider picker, a window no address opens.
       { id: 'oxicloud', text: 'new.change.oxicloud' },
+      { id: 'flatpak', text: 'new.change.flatpak' },
       // Only the phone app reads the authorities installed on the phone.
       { id: 'user-cas', text: 'new.change.userCas' },
     ],

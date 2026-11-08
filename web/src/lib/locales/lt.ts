@@ -1392,6 +1392,7 @@ const lt: Translations = {
   'new.change.importOthers': '{import} priima ir FolderSync eksportą arba luckyBackup profilį. Prieš ką nors išsaugodamas, parodo, kurios užduotys ir paskirtys atsiras ir kas liks nuošalyje.',
   'new.change.systemAccent': 'Pavyzdys su burtų lazdele {accent} pradžioje naudoja jūsų sistemos spalvą: Material You nuo Android 12, Windows, macOS arba Linux akcentinę spalvą darbalaukio programėlėje ir sistemos spalvą Firefox ir Safari naršyklėse. Kur sistema jos neturi, pavyzdžio nėra.',
   'new.change.oxicloud': 'OxiCloud turi savo plytelę skiltyje Debesys. Ji rodo adresą, kurio tikisi OxiCloud, ir kur sukuriamas programėlės slaptažodis.',
+  'new.change.flatpak': 'ArrowLoop taip pat yra kaip Flatpak paketas Linux sistemai. Jis turi savo WebKitGTK ir naujinimus gauna iš tavo programinės įrangos centro.',
   'new.change.userCas': 'Telefono programėlė pasitiki sertifikavimo centrais, įdiegtais Android nustatymuose, todėl prisijungia ir serveris su savo sertifikatu.',
   'new.change.signInCard': 'Prisijungimo puslapis atrodo naujai, viršuje yra ArrowLoop logotipas ir pavadinimas, o kiekvienas mygtukas toks pat platus kaip kortelė. Žymeklis jau stovi slaptažodžio lauke, prisijungimo mygtukas laukia, kol ką nors įvesite, o įvedus neteisingą slaptažodį ar kodą jis trumpai sujuda.',
   'autoBackup.title': 'Automatinės atsarginės kopijos',
