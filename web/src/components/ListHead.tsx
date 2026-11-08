@@ -140,17 +140,17 @@ export function ListHead({
     if (!columns || !dragged) return
     e.preventDefault()
     const rtl = document.documentElement.dir === 'rtl'
-    // Plain boxes, since a DOMRect's sides are getters that a spread leaves behind.
-    const cells = [...e.currentTarget.querySelectorAll<HTMLElement>('[data-head]')].map((cell) => {
-      const { left, top, width, height } = cell.getBoundingClientRect()
-      return { id: cell.dataset.head!, box: { left, top, width, height } }
-    })
+    const cells = [...e.currentTarget.querySelectorAll<HTMLElement>('[data-head]')].map((cell) => ({
+      id: cell.dataset.head!,
+      box: cell.getBoundingClientRect(),
+    }))
     const reading = (c: (typeof cells)[number]) => (rtl ? -c.box.left - c.box.width : c.box.left)
     const held = cells.find((c) => c.id === dragged)!
     const others = cells.filter((c) => c !== held).sort((a, b) => reading(a) - reading(b))
     if (others.length === 0) return
-    const left = rtl ? e.clientX + grabbed.current - held.box.width : e.clientX - grabbed.current
-    const ahead = dropIndex({ ...held.box, left }, held.box, others.map((c) => c.box), { axis: 'x', rtl })
+    const { top, width, height } = held.box
+    const left = rtl ? e.clientX + grabbed.current - width : e.clientX - grabbed.current
+    const ahead = dropIndex({ left, top, width, height }, held.box, others.map((c) => c.box), { axis: 'x', rtl })
     if (ahead === 0) columns.preview(dragged, others[0].id, false)
     else columns.preview(dragged, others[ahead - 1].id, true)
   }

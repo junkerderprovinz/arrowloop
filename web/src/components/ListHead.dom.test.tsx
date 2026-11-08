@@ -153,14 +153,31 @@ describe('a list with columns', () => {
   const drawn = () => screen.getAllByRole('columnheader').sort((a, b) => Number(a.style.order) - Number(b.style.order))
   const order = () => drawn().map((h) => h.textContent)
 
-  // jsdom lays nothing out, so each head gets its box from these widths in the order drawn.
-  function layOut(widths: Record<string, number>) {
+  // A box with its sides as getters, as a DOMRect keeps them, so a spread copy of it is empty.
+  class Measured {
+    #left: number
+    #width: number
+    constructor(left: number, width: number) {
+      this.#left = left
+      this.#width = width
+    }
+    get left() { return this.#left }
+    get right() { return this.#left + this.#width }
+    get top() { return 0 }
+    get width() { return this.#width }
+    get height() { return 32 }
+  }
+
+  // jsdom lays nothing out, so each head gets its box from these widths in the
+  // order drawn, from the right in a right to left row.
+  function layOut(widths: Record<string, number>, rtl = false) {
+    const row = Object.values(widths).reduce((sum, w) => sum + w, 0)
     for (const head of screen.getAllByRole('columnheader')) {
       head.getBoundingClientRect = () => {
         const before = drawn().slice(0, drawn().indexOf(head))
-        const left = before.reduce((sum, h) => sum + widths[h.dataset.head!], 0)
+        const start = before.reduce((sum, h) => sum + widths[h.dataset.head!], 0)
         const width = widths[head.dataset.head!]
-        return { left, right: left + width, width } as DOMRect
+        return new Measured(rtl ? row - start - width : start, width) as unknown as DOMRect
       }
     }
   }
@@ -247,5 +264,23 @@ describe('a list with columns', () => {
     expect(order()).toEqual(['Name', 'Kind', 'Path'])
     fireEvent.drop(name, { clientX: 45 })
     expect(stored().order).toEqual(['name', 'kind', 'path'])
+  })
+
+  it('lands a wide column first by its leading edge in a right to left row', () => {
+    document.documentElement.dir = 'rtl'
+    try {
+      render(<Table />)
+      layOut({ name: 60, kind: 300, path: 100 }, true)
+      const [name, kind] = screen.getAllByRole('columnheader')
+      carry('Kind', 390)
+      fireEvent.dragOver(kind, { clientX: 445 })
+      expect(order()).toEqual(['Kind', 'Name', 'Path'])
+      fireEvent.dragOver(kind, { clientX: 420 })
+      expect(order()).toEqual(['Kind', 'Name', 'Path'])
+      fireEvent.dragOver(name, { clientX: 415 })
+      expect(order()).toEqual(['Name', 'Kind', 'Path'])
+    } finally {
+      document.documentElement.dir = ''
+    }
   })
 })

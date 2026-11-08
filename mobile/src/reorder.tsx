@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Animated, Easing, View, type CellRendererProps, type GestureResponderEvent, type LayoutChangeEvent, type ViewProps } from "react-native";
 
+import { dropIndex, type DropRect } from "../../web/src/lib/glimstone/dropIndex";
 import { useMotion, useSystemReduced } from "./motion";
 
 // A list's items put in a new order by a long press and a drag, the phone's
@@ -36,6 +37,8 @@ interface Slot {
   y: number;
   height: number;
 }
+
+const box = (s: Slot): DropRect => ({ left: 0, top: s.y, width: 0, height: s.height });
 
 /** What the list's cells need: which one is held, and where each one is. */
 interface Cells {
@@ -114,19 +117,18 @@ export function useHoldToMove(ids: readonly string[], onReorder: (ids: string[])
   }, [ids]);
 
   /**
-   * The order the held item asks for: every other item whose middle its
-   * leading edge has passed comes before it, its top on the way up and its
-   * bottom on the way down, so a tall card still reaches the top.
+   * The order the held item asks for, placed by its leading edge as the web's
+   * lists place theirs, so a tall card still reaches the top.
    */
   function aim(id: string, dy: number): string[] {
     const own = slots.current.get(id);
     if (!own) return [...idsRef.current];
-    const edge = own.y + dy + (dy < 0 ? 0 : own.height);
     const rest = idsRef.current.filter((other) => other !== id);
-    const ahead = rest.filter((other) => {
+    const others = rest.flatMap((other) => {
       const s = slots.current.get(other);
-      return s !== undefined && s.y + s.height / 2 < edge;
-    }).length;
+      return s ? [box(s)] : [];
+    });
+    const ahead = dropIndex(box({ ...own, y: own.y + dy }), box(own), others, { axis: "y" });
     return [...rest.slice(0, ahead), id, ...rest.slice(ahead)];
   }
 

@@ -21,7 +21,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **ArrowLoop follows GlimStone 4.2.7.** Moving a job, a settings tile or a column works as before, and the part that decides where it lands is the same one the other apps use.
+- **ArrowLoop follows GlimStone 4.2.8.** Moving a job, a settings tile or a column works as before, and the part that decides where it lands is the same one the other apps use. The phone app places a moved job with it too.
 
 ## 🐛 Fixed
 
