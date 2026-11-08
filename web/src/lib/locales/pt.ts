@@ -1072,8 +1072,6 @@ const pt: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Páginas de definições',
   'settings.thisComputer': 'Este computador',
-  'settings.backupExportRow': 'Salvaguardar todas as tarefas e todas as definições',
-  'settings.backupImportRow': 'Restaurar todas as tarefas e todas as definições',
   'settings.showInSidebar': 'Mostrar também na barra lateral',
   'settings.showInSidebarHint': 'Põe a página também na barra lateral. Também fica neste mosaico.',
   'targets.pageCard': 'Página',

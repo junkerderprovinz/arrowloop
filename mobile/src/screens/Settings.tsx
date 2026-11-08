@@ -865,41 +865,32 @@ export function Settings() {
 
       {/* One file with a fixed name in Downloads; the path can be edited to
           import a file moved elsewhere. */}
-      <Section title={t("settings.backup")} hint={t("settings.backupHint")} hue={10}>
+      <Section title={t("settings.backup")} hint={`${t("settings.backupHint")} ${t("backup.importOthers")}`} hue={10}>
         <Field
           label={t("settings.backupFile")}
           value={backupFile}
           onChange={setBackupFile}
           placeholder="/storage/emulated/0/Download"
         />
-        {/* The rows say what each button does to everything, as on the web. */}
-        <Row
-          label={t("settings.backupExportRow")}
-          control={
-            <Button
-              label={t("settings.export")}
-              labelKey="settings.export"
-              wide={false}
-              busy={backupBusy}
-              confirm={exported}
-              onPress={exportSettings}
-            />
-          }
-        />
-        <Row
-          label={t("settings.backupImportRow")}
-          control={
-            <Button
-              label={t("settings.import")}
-              labelKey="settings.import"
-              wide={false}
-              busy={backupBusy}
-              confirm={imported}
-              onPress={confirmImport}
-            />
-          }
-        />
-        <Caption>{t("backup.importOthers")}</Caption>
+        {/* Both side by side in one row, as on the web, and what they cover in the card's (i). */}
+        <View style={styles.backupButtons}>
+          <Button
+            label={t("settings.export")}
+            labelKey="settings.export"
+            wide={false}
+            busy={backupBusy}
+            confirm={exported}
+            onPress={exportSettings}
+          />
+          <Button
+            label={t("settings.import")}
+            labelKey="settings.import"
+            wide={false}
+            busy={backupBusy}
+            confirm={imported}
+            onPress={confirmImport}
+          />
+        </View>
         {backupSaid ? <Body>{backupSaid}</Body> : null}
       </Section>
 
@@ -1290,6 +1281,7 @@ function langFlag(code: string): string {
 const styles = StyleSheet.create({
   // Wraps, or a row of three buttons clips the last one on a narrow phone.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
+  backupButtons: { flexDirection: "row", flexWrap: "wrap", justifyContent: "flex-end", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },

@@ -1072,8 +1072,6 @@ const th: Translations = {
   'settings.info': 'ข้อมูล',
   'settings.tiles': 'หน้าการตั้งค่า',
   'settings.thisComputer': 'คอมพิวเตอร์เครื่องนี้',
-  'settings.backupExportRow': 'สำรองงานทั้งหมดและการตั้งค่าทั้งหมด',
-  'settings.backupImportRow': 'กู้คืนงานทั้งหมดและการตั้งค่าทั้งหมด',
   'settings.showInSidebar': 'แสดงในแถบด้านข้างด้วย',
   'settings.showInSidebarHint': 'ใส่หน้านี้ในแถบด้านข้างด้วย และยังอยู่ในไทล์นี้เหมือนเดิม',
   'targets.pageCard': 'หน้า',

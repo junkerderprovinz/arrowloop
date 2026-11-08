@@ -1072,8 +1072,6 @@ const et: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Seadete lehed',
   'settings.thisComputer': 'See arvuti',
-  'settings.backupExportRow': 'Varunda kõik tööd ja kõik seaded',
-  'settings.backupImportRow': 'Taasta kõik tööd ja kõik seaded',
   'settings.showInSidebar': 'Näita ka külgribal',
   'settings.showInSidebarHint': 'Paneb lehe ka külgribale. See jääb ka sellele paanile.',
   'targets.pageCard': 'Leht',

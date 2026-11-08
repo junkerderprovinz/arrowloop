@@ -1072,8 +1072,6 @@ const ca: Translations = {
   'settings.info': 'Informació',
   'settings.tiles': 'Pàgines de configuració',
   'settings.thisComputer': 'Aquest ordinador',
-  'settings.backupExportRow': 'Desa una còpia de totes les tasques i tots els ajustos',
-  'settings.backupImportRow': 'Restaura totes les tasques i tots els ajustos',
   'settings.showInSidebar': 'Mostra també a la barra lateral',
   'settings.showInSidebarHint': 'Posa la pàgina també a la barra lateral. També es queda en aquesta fitxa.',
   'targets.pageCard': 'Pàgina',

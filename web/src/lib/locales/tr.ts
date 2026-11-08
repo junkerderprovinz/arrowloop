@@ -1072,8 +1072,6 @@ const tr: Translations = {
   'settings.info': 'Bilgi',
   'settings.tiles': 'Ayar sayfaları',
   'settings.thisComputer': 'Bu bilgisayar',
-  'settings.backupExportRow': 'Tüm işleri ve tüm ayarları yedekle',
-  'settings.backupImportRow': 'Tüm işleri ve tüm ayarları geri yükle',
   'settings.showInSidebar': 'Kenar çubuğunda da göster',
   'settings.showInSidebarHint': 'Sayfayı kenar çubuğuna da koyar. Bu karoda da kalır.',
   'targets.pageCard': 'Sayfa',

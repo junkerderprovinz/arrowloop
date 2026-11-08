@@ -1072,8 +1072,6 @@ const ro: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Pagini de setări',
   'settings.thisComputer': 'Acest computer',
-  'settings.backupExportRow': 'Salvează toate sarcinile și toate setările',
-  'settings.backupImportRow': 'Restaurează toate sarcinile și toate setările',
   'settings.showInSidebar': 'Afișează și în bara laterală',
   'settings.showInSidebarHint': 'Pune pagina și în bara laterală. Rămâne și în această dală.',
   'targets.pageCard': 'Pagină',

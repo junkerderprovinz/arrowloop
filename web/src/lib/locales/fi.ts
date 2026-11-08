@@ -1072,8 +1072,6 @@ const fi: Translations = {
   'settings.info': 'Tiedot',
   'settings.tiles': 'Asetussivut',
   'settings.thisComputer': 'Tämä tietokone',
-  'settings.backupExportRow': 'Varmuuskopioi kaikki työt ja kaikki asetukset',
-  'settings.backupImportRow': 'Palauta kaikki työt ja kaikki asetukset',
   'settings.showInSidebar': 'Näytä myös sivupalkissa',
   'settings.showInSidebarHint': 'Lisää sivun myös sivupalkkiin. Se pysyy myös tässä ruudussa.',
   'targets.pageCard': 'Sivu',

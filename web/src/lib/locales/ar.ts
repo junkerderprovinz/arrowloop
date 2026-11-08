@@ -1072,8 +1072,6 @@ const ar: Translations = {
   'settings.info': 'معلومات',
   'settings.tiles': 'صفحات الإعدادات',
   'settings.thisComputer': 'هذا الحاسوب',
-  'settings.backupExportRow': 'نسخ احتياطي لكل المهام وكل الإعدادات',
-  'settings.backupImportRow': 'استعادة كل المهام وكل الإعدادات',
   'settings.showInSidebar': 'أظهرها في الشريط الجانبي أيضًا',
   'settings.showInSidebarHint': 'تضع الصفحة في الشريط الجانبي أيضًا، وتبقى في هذا المربع كذلك.',
   'targets.pageCard': 'صفحة',

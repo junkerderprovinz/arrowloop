@@ -1072,8 +1072,6 @@ const hi: Translations = {
   'settings.info': 'जानकारी',
   'settings.tiles': 'सेटिंग्स के पृष्ठ',
   'settings.thisComputer': 'यह कंप्यूटर',
-  'settings.backupExportRow': 'सभी कामों और सभी सेटिंग्स का बैकअप लें',
-  'settings.backupImportRow': 'सभी काम और सभी सेटिंग्स वापस लाएँ',
   'settings.showInSidebar': 'साइडबार में भी दिखाएँ',
   'settings.showInSidebarHint': 'पृष्ठ को साइडबार में भी जोड़ता है। वह इस टाइल पर भी बना रहता है।',
   'targets.pageCard': 'पृष्ठ',

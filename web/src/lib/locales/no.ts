@@ -1072,8 +1072,6 @@ const no: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Innstillingssider',
   'settings.thisComputer': 'Denne datamaskinen',
-  'settings.backupExportRow': 'Sikkerhetskopier alle jobber og alle innstillinger',
-  'settings.backupImportRow': 'Gjenopprett alle jobber og alle innstillinger',
   'settings.showInSidebar': 'Vis også i sidefeltet',
   'settings.showInSidebarHint': 'Legger siden i sidefeltet i tillegg. Den blir også værende på denne flisen.',
   'targets.pageCard': 'Side',

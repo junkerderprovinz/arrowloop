@@ -1072,8 +1072,6 @@ const ja: Translations = {
   'settings.info': '情報',
   'settings.tiles': '設定ページ',
   'settings.thisComputer': 'このパソコン',
-  'settings.backupExportRow': 'すべてのジョブとすべての設定をバックアップ',
-  'settings.backupImportRow': 'すべてのジョブとすべての設定を復元',
   'settings.showInSidebar': 'サイドバーにも表示',
   'settings.showInSidebarHint': 'このページをサイドバーにも置きます。このタイルにも残ります。',
   'targets.pageCard': 'ページ',

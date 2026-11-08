@@ -1072,8 +1072,6 @@ const bg: Translations = {
   'settings.info': 'Информация',
   'settings.tiles': 'Страници с настройки',
   'settings.thisComputer': 'Този компютър',
-  'settings.backupExportRow': 'Архивиране на всички задачи и всички настройки',
-  'settings.backupImportRow': 'Възстановяване на всички задачи и всички настройки',
   'settings.showInSidebar': 'Показвай и в страничната лента',
   'settings.showInSidebarHint': 'Добавя страницата и към страничната лента. Тя остава и в тази плочка.',
   'targets.pageCard': 'Страница',

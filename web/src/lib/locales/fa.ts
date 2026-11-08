@@ -1072,8 +1072,6 @@ const fa: Translations = {
   'settings.info': 'اطلاعات',
   'settings.tiles': 'صفحه‌های تنظیمات',
   'settings.thisComputer': 'این رایانه',
-  'settings.backupExportRow': 'پشتیبان‌گیری از همهٔ کارها و همهٔ تنظیمات',
-  'settings.backupImportRow': 'بازگردانی همهٔ کارها و همهٔ تنظیمات',
   'settings.showInSidebar': 'نمایش در نوار کناری هم',
   'settings.showInSidebarHint': 'صفحه را در نوار کناری هم می‌گذارد. در این کاشی هم می‌ماند.',
   'targets.pageCard': 'صفحه',

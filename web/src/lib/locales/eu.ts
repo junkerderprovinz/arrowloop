@@ -1072,8 +1072,6 @@ const eu: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Ezarpen-orriak',
   'settings.thisComputer': 'Ordenagailu hau',
-  'settings.backupExportRow': 'Egin lan guztien eta ezarpen guztien babeskopia',
-  'settings.backupImportRow': 'Leheneratu lan guztiak eta ezarpen guztiak',
   'settings.showInSidebar': 'Erakutsi alboko barran ere',
   'settings.showInSidebarHint': 'Orria alboko barran ere jartzen du. Lauza honetan ere geratzen da.',
   'targets.pageCard': 'Orria',

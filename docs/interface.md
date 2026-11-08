@@ -457,11 +457,12 @@ the tile that has the focus, in the column and in the strip. The strip shows
 the same order. The browser keeps the order, and **Reset** in the **Tile order**
 row on **Look** brings back the original one.
 
-- **General**: the settings backup, whose Import also takes a FolderSync
-  export or a luckyBackup profile ([Configuration](configuration.md#moving-over-from-foldersync-or-luckybackup)),
-  and the workload (bandwidth limit, jobs at
-  once and the run log file), and in the desktop app this computer: the
-  window, starting with the system and automatic updates.
+- **General**: the settings backup, with Export and Import side by side and
+  in its (i) what they cover and that Import also takes a FolderSync export
+  or a luckyBackup profile ([Configuration](configuration.md#moving-over-from-foldersync-or-luckybackup)).
+  Then the workload (bandwidth limit, jobs at once and the run log file), and
+  in the desktop app this computer: the window, starting with the system and
+  automatic updates.
 - **Look**: language, design (Dark, Light or System) with the **OLED** switch,
   corners, motion, the job list (Cards or Compact), the tile order, labels and
   colours.

@@ -1072,8 +1072,6 @@ const el: Translations = {
   'settings.info': 'Πληροφορίες',
   'settings.tiles': 'Σελίδες ρυθμίσεων',
   'settings.thisComputer': 'Αυτός ο υπολογιστής',
-  'settings.backupExportRow': 'Αντίγραφο ασφαλείας όλων των εργασιών και όλων των ρυθμίσεων',
-  'settings.backupImportRow': 'Επαναφορά όλων των εργασιών και όλων των ρυθμίσεων',
   'settings.showInSidebar': 'Εμφάνιση και στην πλαϊνή μπάρα',
   'settings.showInSidebarHint': 'Βάζει τη σελίδα και στην πλαϊνή μπάρα. Μένει και σε αυτό το πλακίδιο.',
   'targets.pageCard': 'Σελίδα',

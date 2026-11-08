@@ -1072,8 +1072,6 @@ const fr: Translations = {
   'settings.info': 'Infos',
   'settings.tiles': 'Pages de réglages',
   'settings.thisComputer': 'Cet ordinateur',
-  'settings.backupExportRow': 'Sauvegarder toutes les tâches et tous les réglages',
-  'settings.backupImportRow': 'Restaurer toutes les tâches et tous les réglages',
   'settings.showInSidebar': 'Afficher aussi dans la barre latérale',
   'settings.showInSidebarHint': 'Ajoute aussi la page à la barre latérale. Elle reste aussi dans cette tuile.',
   'targets.pageCard': 'Page',

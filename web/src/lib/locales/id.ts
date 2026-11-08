@@ -1072,8 +1072,6 @@ const id: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Halaman pengaturan',
   'settings.thisComputer': 'Komputer ini',
-  'settings.backupExportRow': 'Cadangkan semua tugas dan semua pengaturan',
-  'settings.backupImportRow': 'Pulihkan semua tugas dan semua pengaturan',
   'settings.showInSidebar': 'Tampilkan juga di bilah sisi',
   'settings.showInSidebarHint': 'Menaruh halaman ini juga di bilah sisi. Halaman tetap ada di petak ini.',
   'targets.pageCard': 'Halaman',

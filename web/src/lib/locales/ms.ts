@@ -1072,8 +1072,6 @@ const ms: Translations = {
   'settings.info': 'Maklumat',
   'settings.tiles': 'Halaman tetapan',
   'settings.thisComputer': 'Komputer ini',
-  'settings.backupExportRow': 'Sandarkan semua tugas dan semua tetapan',
-  'settings.backupImportRow': 'Pulihkan semua tugas dan semua tetapan',
   'settings.showInSidebar': 'Papar juga di bar sisi',
   'settings.showInSidebarHint': 'Meletakkan halaman ini juga di bar sisi. Ia kekal juga di jubin ini.',
   'targets.pageCard': 'Halaman',

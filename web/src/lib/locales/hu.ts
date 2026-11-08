@@ -1072,8 +1072,6 @@ const hu: Translations = {
   'settings.info': 'Infó',
   'settings.tiles': 'Beállítási oldalak',
   'settings.thisComputer': 'Ez a számítógép',
-  'settings.backupExportRow': 'Minden feladat és minden beállítás mentése',
-  'settings.backupImportRow': 'Minden feladat és minden beállítás visszaállítása',
   'settings.showInSidebar': 'Az oldalsávban is jelenjen meg',
   'settings.showInSidebarHint': 'Az oldalt az oldalsávba is kiteszi. Ezen a csempén is megmarad.',
   'targets.pageCard': 'Oldal',

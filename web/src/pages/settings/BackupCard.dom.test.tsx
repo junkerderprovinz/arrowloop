@@ -51,6 +51,17 @@ async function importFile() {
   })
 }
 
+describe('the backup card', () => {
+  it('holds Export and Import side by side in one row, with no row labels of their own', () => {
+    render(<BackupCard hueIndex={0} />)
+    const row = screen.getByTestId('backup-buttons')
+    const names = Array.from(row.querySelectorAll('button')).map((b) => b.textContent)
+    expect(names).toEqual([en['backup.export'], en['backup.import']])
+    expect(row.className).toContain('flex-wrap')
+    expect(document.querySelector('[data-glim-label]')).toBeNull()
+  })
+})
+
 describe('the one Import button', () => {
   it('offers the files of the other programs as well as our own', async () => {
     picked.mockResolvedValue(null)
@@ -58,7 +69,8 @@ describe('the one Import button', () => {
     const accept = picked.mock.calls[0][0] as string
     expect(accept).toContain('.json')
     expect(accept).toContain('.profile')
-    expect(screen.getByText(en['backup.importOthers'])).toBeTruthy()
+    expect(screen.queryByText(en['backup.importOthers'])).toBeNull()
+    expect(screen.getByLabelText(`${en['backup.hint']} ${en['backup.importOthers']}`)).toBeTruthy()
   })
 
   it('shows what a luckyBackup profile adds and saves only when asked', async () => {

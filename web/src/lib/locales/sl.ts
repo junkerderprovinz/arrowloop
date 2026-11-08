@@ -1072,8 +1072,6 @@ const sl: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Strani nastavitev',
   'settings.thisComputer': 'Ta računalnik',
-  'settings.backupExportRow': 'Varnostno kopiraj vsa opravila in vse nastavitve',
-  'settings.backupImportRow': 'Obnovi vsa opravila in vse nastavitve',
   'settings.showInSidebar': 'Pokaži tudi v stranski vrstici',
   'settings.showInSidebarHint': 'Doda stran tudi v stransko vrstico. Ostane tudi na tej ploščici.',
   'targets.pageCard': 'Stran',

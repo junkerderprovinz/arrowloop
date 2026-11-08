@@ -1072,8 +1072,6 @@ const vi: Translations = {
   'settings.info': 'Thông tin',
   'settings.tiles': 'Các trang cài đặt',
   'settings.thisComputer': 'Máy tính này',
-  'settings.backupExportRow': 'Sao lưu mọi công việc và mọi cài đặt',
-  'settings.backupImportRow': 'Khôi phục mọi công việc và mọi cài đặt',
   'settings.showInSidebar': 'Hiện cả trên thanh bên',
   'settings.showInSidebarHint': 'Đặt trang này cả lên thanh bên. Trang vẫn ở trong ô này.',
   'targets.pageCard': 'Trang',

@@ -1072,8 +1072,6 @@ const hr: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Stranice postavki',
   'settings.thisComputer': 'Ovo računalo',
-  'settings.backupExportRow': 'Sigurnosno kopiraj sve zadatke i sve postavke',
-  'settings.backupImportRow': 'Vrati sve zadatke i sve postavke',
   'settings.showInSidebar': 'Prikaži i u bočnoj traci',
   'settings.showInSidebarHint': 'Stavlja stranicu i u bočnu traku. Ostaje i na ovoj pločici.',
   'targets.pageCard': 'Stranica',

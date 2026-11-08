@@ -10,7 +10,6 @@ import { download, pickTextFile } from '../../lib/download'
 import { errorText } from '../../lib/errorText'
 import { useT } from '../../lib/i18n'
 import { importSections, type ImportPlan, type ImportSection } from '../../lib/importPlan'
-import { SettingsRow } from './rows'
 
 type Picked = { name: string; text: string }
 
@@ -79,10 +78,10 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
   }
 
   return (
-    <Card title={t('backup.title')} hint={t('backup.hint')} hueIndex={hueIndex}>
+    <Card title={t('backup.title')} hint={t('backup.hint') + ' ' + t('backup.importOthers')} hueIndex={hueIndex}>
       {/* Neutral: the one filled accent on a page belongs to its main action,
           and neither of these is what Settings exists for. */}
-      <SettingsRow label={t('settings.backupExportRow')}>
+      <div data-new="import-others" data-testid="backup-buttons" className="flex flex-wrap items-center justify-end gap-3">
         <Button
           label={t('backup.export')}
           labelKey="backup.export"
@@ -99,23 +98,18 @@ export function BackupCard({ hueIndex }: { hueIndex: number }) {
               .catch((e: Error) => fail(errorText(t, e)))
           }}
         />
-      </SettingsRow>
-      <div data-new="import-others">
-        <SettingsRow label={t('settings.backupImportRow')}>
-          <Button
-            label={t('backup.import')}
-            labelKey="backup.import"
-            glyph={<IconImport />}
-            busy={restoring}
-            disabled={restoring}
-            onClick={() => {
-              void pickTextFile('.json,.profile,application/json,text/plain').then((file) => {
-                if (file) look(file)
-              })
-            }}
-          />
-        </SettingsRow>
-        <p className="text-subline text-carbon-textSub">{t('backup.importOthers')}</p>
+        <Button
+          label={t('backup.import')}
+          labelKey="backup.import"
+          glyph={<IconImport />}
+          busy={restoring}
+          disabled={restoring}
+          onClick={() => {
+            void pickTextFile('.json,.profile,application/json,text/plain').then((file) => {
+              if (file) look(file)
+            })
+          }}
+        />
       </div>
       {error && (
         <div key={refused} className="glim-shake text-subline">

@@ -1072,8 +1072,6 @@ const zh: Translations = {
   'settings.info': '信息',
   'settings.tiles': '设置页面',
   'settings.thisComputer': '这台电脑',
-  'settings.backupExportRow': '备份所有任务和所有设置',
-  'settings.backupImportRow': '恢复所有任务和所有设置',
   'settings.showInSidebar': '同时显示在侧边栏',
   'settings.showInSidebarHint': '同时把这个页面放到侧边栏。它也会留在这个磁贴里。',
   'targets.pageCard': '页面',

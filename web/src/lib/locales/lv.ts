@@ -1072,8 +1072,6 @@ const lv: Translations = {
   'settings.info': 'Informācija',
   'settings.tiles': 'Iestatījumu lapas',
   'settings.thisComputer': 'Šis dators',
-  'settings.backupExportRow': 'Dublēt visus uzdevumus un visus iestatījumus',
-  'settings.backupImportRow': 'Atjaunot visus uzdevumus un visus iestatījumus',
   'settings.showInSidebar': 'Rādīt arī sānjoslā',
   'settings.showInSidebarHint': 'Ievieto lapu arī sānjoslā. Tā paliek arī šajā flīzē.',
   'targets.pageCard': 'Lapa',

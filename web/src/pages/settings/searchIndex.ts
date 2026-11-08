@@ -36,7 +36,8 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
     {
       title: 'backup.title',
       hint: 'backup.hint',
-      rows: [{ key: 'settings.backupExportRow' }, { key: 'settings.backupImportRow' }],
+      rows: [],
+      body: ['backup.export', 'backup.import', 'backup.importOthers'],
     },
     {
       title: 'autoBackup.title',

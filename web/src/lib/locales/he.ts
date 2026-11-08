@@ -1072,8 +1072,6 @@ const he: Translations = {
   'settings.info': 'מידע',
   'settings.tiles': 'דפי הגדרות',
   'settings.thisComputer': 'המחשב הזה',
-  'settings.backupExportRow': 'גיבוי כל המשימות וכל ההגדרות',
-  'settings.backupImportRow': 'שחזור כל המשימות וכל ההגדרות',
   'settings.showInSidebar': 'הצג גם בסרגל הצד',
   'settings.showInSidebarHint': 'מוסיף את הדף גם לסרגל הצד. הוא נשאר גם באריח הזה.',
   'targets.pageCard': 'דף',

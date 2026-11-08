@@ -1072,8 +1072,6 @@ const gl: Translations = {
   'settings.info': 'Información',
   'settings.tiles': 'Páxinas de axustes',
   'settings.thisComputer': 'Este ordenador',
-  'settings.backupExportRow': 'Gardar copia de todas as tarefas e todos os axustes',
-  'settings.backupImportRow': 'Restaurar todas as tarefas e todos os axustes',
   'settings.showInSidebar': 'Mostrar tamén na barra lateral',
   'settings.showInSidebarHint': 'Pon a páxina tamén na barra lateral. Tamén queda neste mosaico.',
   'targets.pageCard': 'Páxina',

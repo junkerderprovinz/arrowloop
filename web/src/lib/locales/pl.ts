@@ -1072,8 +1072,6 @@ const pl: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Strony ustawień',
   'settings.thisComputer': 'Ten komputer',
-  'settings.backupExportRow': 'Utwórz kopię wszystkich zadań i wszystkich ustawień',
-  'settings.backupImportRow': 'Przywróć wszystkie zadania i wszystkie ustawienia',
   'settings.showInSidebar': 'Pokaż także w panelu bocznym',
   'settings.showInSidebarHint': 'Dodaje stronę także do panelu bocznego. Zostaje też na tym kafelku.',
   'targets.pageCard': 'Strona',

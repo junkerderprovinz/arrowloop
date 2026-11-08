@@ -1072,8 +1072,6 @@ const nl: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Instellingenpagina\'s',
   'settings.thisComputer': 'Deze computer',
-  'settings.backupExportRow': 'Alle taken en alle instellingen back-uppen',
-  'settings.backupImportRow': 'Alle taken en alle instellingen herstellen',
   'settings.showInSidebar': 'Ook in de zijbalk tonen',
   'settings.showInSidebarHint': 'Zet de pagina ook in de zijbalk. Op deze tegel blijft hij ook staan.',
   'targets.pageCard': 'Pagina',

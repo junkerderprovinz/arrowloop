@@ -1072,8 +1072,6 @@ const is: Translations = {
   'settings.info': 'Upplýsingar',
   'settings.tiles': 'Stillingasíður',
   'settings.thisComputer': 'Þessi tölva',
-  'settings.backupExportRow': 'Taka afrit af öllum verkum og öllum stillingum',
-  'settings.backupImportRow': 'Endurheimta öll verk og allar stillingar',
   'settings.showInSidebar': 'Sýna líka í hliðarstikunni',
   'settings.showInSidebarHint': 'Setur síðuna líka í hliðarstikuna. Hún verður líka áfram á þessum reit.',
   'targets.pageCard': 'Síða',

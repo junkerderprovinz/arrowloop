@@ -1072,8 +1072,6 @@ const it: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Pagine delle impostazioni',
   'settings.thisComputer': 'Questo computer',
-  'settings.backupExportRow': 'Salva tutti i lavori e tutte le impostazioni',
-  'settings.backupImportRow': 'Ripristina tutti i lavori e tutte le impostazioni',
   'settings.showInSidebar': 'Mostra anche nella barra laterale',
   'settings.showInSidebarHint': 'Mette la pagina anche nella barra laterale. Resta anche in questo riquadro.',
   'targets.pageCard': 'Pagina',

@@ -1072,8 +1072,6 @@ const uk: Translations = {
   'settings.info': 'Інфо',
   'settings.tiles': 'Сторінки налаштувань',
   'settings.thisComputer': 'Цей комп\'ютер',
-  'settings.backupExportRow': 'Створити резервну копію всіх завдань і всіх налаштувань',
-  'settings.backupImportRow': 'Відновити всі завдання й усі налаштування',
   'settings.showInSidebar': 'Показувати також на бічній панелі',
   'settings.showInSidebarHint': 'Додає сторінку й на бічну панель. У цій плитці вона теж лишається.',
   'targets.pageCard': 'Сторінка',

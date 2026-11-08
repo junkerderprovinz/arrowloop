@@ -1072,8 +1072,6 @@ const sr: Translations = {
   'settings.info': 'Инфо',
   'settings.tiles': 'Странице подешавања',
   'settings.thisComputer': 'Овај рачунар',
-  'settings.backupExportRow': 'Направи резервну копију свих послова и свих подешавања',
-  'settings.backupImportRow': 'Врати све послове и сва подешавања',
   'settings.showInSidebar': 'Прикажи и у бочној траци',
   'settings.showInSidebarHint': 'Ставља страницу и у бочну траку. Остаје и на овој плочици.',
   'targets.pageCard': 'Страница',

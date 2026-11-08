@@ -1072,8 +1072,6 @@ const lt: Translations = {
   'settings.info': 'Informacija',
   'settings.tiles': 'Nustatymų puslapiai',
   'settings.thisComputer': 'Šis kompiuteris',
-  'settings.backupExportRow': 'Sukurti visų užduočių ir visų nustatymų atsarginę kopiją',
-  'settings.backupImportRow': 'Atkurti visas užduotis ir visus nustatymus',
   'settings.showInSidebar': 'Rodyti ir šoninėje juostoje',
   'settings.showInSidebarHint': 'Įdeda puslapį ir į šoninę juostą. Jis lieka ir šioje plytelėje.',
   'targets.pageCard': 'Puslapis',

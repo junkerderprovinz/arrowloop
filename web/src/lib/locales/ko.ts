@@ -1072,8 +1072,6 @@ const ko: Translations = {
   'settings.info': '정보',
   'settings.tiles': '설정 페이지',
   'settings.thisComputer': '이 컴퓨터',
-  'settings.backupExportRow': '모든 작업과 모든 설정 백업',
-  'settings.backupImportRow': '모든 작업과 모든 설정 복원',
   'settings.showInSidebar': '사이드바에도 표시',
   'settings.showInSidebarHint': '이 페이지를 사이드바에도 둡니다. 이 타일에도 그대로 남습니다.',
   'targets.pageCard': '페이지',

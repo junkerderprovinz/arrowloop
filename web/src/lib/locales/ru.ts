@@ -1072,8 +1072,6 @@ const ru: Translations = {
   'settings.info': 'Инфо',
   'settings.tiles': 'Страницы настроек',
   'settings.thisComputer': 'Этот компьютер',
-  'settings.backupExportRow': 'Сохранить все задания и все настройки',
-  'settings.backupImportRow': 'Восстановить все задания и все настройки',
   'settings.showInSidebar': 'Показывать и в боковой панели',
   'settings.showInSidebarHint': 'Добавляет страницу и в боковую панель. В этой плитке она тоже остаётся.',
   'targets.pageCard': 'Страница',

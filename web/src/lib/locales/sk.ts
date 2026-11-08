@@ -1072,8 +1072,6 @@ const sk: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Stránky nastavení',
   'settings.thisComputer': 'Tento počítač',
-  'settings.backupExportRow': 'Zálohovať všetky úlohy a všetky nastavenia',
-  'settings.backupImportRow': 'Obnoviť všetky úlohy a všetky nastavenia',
   'settings.showInSidebar': 'Zobraziť aj v bočnom paneli',
   'settings.showInSidebarHint': 'Pridá stránku aj do bočného panela. Na tejto dlaždici zostane tiež.',
   'targets.pageCard': 'Stránka',

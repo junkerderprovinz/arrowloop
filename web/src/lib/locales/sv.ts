@@ -1072,8 +1072,6 @@ const sv: Translations = {
   'settings.info': 'Info',
   'settings.tiles': 'Inställningssidor',
   'settings.thisComputer': 'Den här datorn',
-  'settings.backupExportRow': 'Säkerhetskopiera alla jobb och alla inställningar',
-  'settings.backupImportRow': 'Återställ alla jobb och alla inställningar',
   'settings.showInSidebar': 'Visa även i sidofältet',
   'settings.showInSidebarHint': 'Lägger även sidan i sidofältet. Den stannar kvar i den här rutan också.',
   'targets.pageCard': 'Sida',
