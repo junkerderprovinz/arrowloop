@@ -1,7 +1,7 @@
 // The page a new install opens on: what ArrowLoop has found on this machine
 // and the three steps to the first sync.
 
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import { IconCheck, IconSearch } from '../components/glyphs'
 import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
@@ -11,6 +11,7 @@ import { FIRST_STEPS, foundLine, stepStates, type FirstStep, type Found, type St
 import { Button } from '../lib/glimstone/Button'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { Link, navigate } from '../lib/router'
+import { useSceneStops } from '../lib/sceneStops'
 import { openSetting } from './settings/SettingsSearch'
 import { SCENE_STOPS, ScenePointer, StepPicture } from './welcomeArt'
 
@@ -48,49 +49,6 @@ function StepMark({ n, state }: { n: number; state: StepState }) {
   )
 }
 
-/** Where an element lies inside an ancestor, by layout alone. A card that is
- *  still sliding in would shift what its bounding box reports. */
-function placeWithin(el: HTMLElement, root: HTMLElement): [number, number] {
-  let x = 0
-  let y = 0
-  for (let at: HTMLElement | null = el; at && at !== root; at = at.offsetParent as HTMLElement | null) {
-    x += at.offsetLeft
-    y += at.offsetTop
-  }
-  return [x, y]
-}
-
-/**
- * Measures the pointer's stops in the step grid's own pixels and hands them to
- * the stylesheet as --at-*, again whenever the grid changes size.
- */
-function useSceneStops() {
-  const grid = useRef<HTMLDivElement>(null)
-  const [stops, setStops] = useState<CSSProperties>({})
-  useLayoutEffect(() => {
-    const root = grid.current
-    if (!root) return
-    const measure = () => {
-      const frames = Array.from(root.querySelectorAll<HTMLElement>('[data-step-frame]'))
-      if (frames.length < 3) return
-      const next: Record<string, string> = {}
-      for (const [name, [card, x, y]] of Object.entries(SCENE_STOPS)) {
-        const frame = frames[card]!
-        const [left, top] = placeWithin(frame, root)
-        const scale = frame.offsetWidth / 240
-        next[`--at-${name}-x`] = `${(left + x * scale).toFixed(1)}px`
-        next[`--at-${name}-y`] = `${(top + y * scale).toFixed(1)}px`
-      }
-      setStops((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : (next as CSSProperties)))
-    }
-    measure()
-    const watch = new ResizeObserver(measure)
-    watch.observe(root)
-    return () => watch.disconnect()
-  }, [])
-  return { grid, stops }
-}
-
 /** What the machine already holds, read once; a question that fails names nothing. */
 function useFound(): { found: Found; hasTarget: boolean } {
   const [found, setFound] = useState<Found>({ targets: 0, drives: 0 })
@@ -121,7 +79,7 @@ export function Welcome({ fresh }: { fresh: boolean | null }) {
   const { found, hasTarget } = useFound()
   const states = stepStates(hasTarget)
   const line = foundLine(found, t)
-  const { grid, stops } = useSceneStops()
+  const { grid, stops } = useSceneStops(SCENE_STOPS)
 
   useEffect(() => {
     if (fresh === false) navigate('/jobs', { replace: true })
