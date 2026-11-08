@@ -176,6 +176,32 @@ describe('the overview', () => {
     }
   })
 
+  it('shows a paired instance with its jobs, when each ran and its latest runs', async () => {
+    const backup = job('backup', { recent: [ran(3, 'backup', 'disk full')], nextRun: new Date(Date.now() + 3_600_000).toISOString() })
+    const mail = job('mail', { recent: [ran(1, 'mail'), ran(5, 'mail')] })
+    instances.mockImplementation(() =>
+      Promise.resolve([{ id: 'n1', name: 'Attic NAS', deployment: 'server', state: 'ok', jobs: [backup, mail] } as OtherInstance]),
+    )
+    page()
+    const card = (await screen.findByText('Attic NAS')).closest('.glim-panel') as HTMLElement
+    expect(card.querySelector('li[data-job="backup"]')!.textContent).toMatch(/last run .*next run/)
+    const runs = within(card).getByTestId('instance-runs')
+    expect(within(runs).getByText('Last runs')).toBeTruthy()
+    expect(within(runs).getAllByRole('listitem').map((li) => li.querySelector('.truncate')?.textContent)).toEqual(['mail', 'backup', 'mail'])
+  })
+
+  it('says when an instance that is away was last seen, without its jobs', async () => {
+    const seen = Math.floor(Date.now() / 1000) - 600
+    instances.mockImplementation(() =>
+      Promise.resolve([{ id: 'n1', name: 'Attic NAS', deployment: 'server', state: 'away', lastSeen: seen } as OtherInstance]),
+    )
+    page()
+    const card = (await screen.findByText('Attic NAS')).closest('.glim-panel') as HTMLElement
+    expect(within(card).getByText(/Not reachable, last seen/)).toBeTruthy()
+    expect(within(card).queryByTestId('instance-runs')).toBeNull()
+    expect(within(card).queryByRole('button', { name: 'Run now' })).toBeNull()
+  })
+
   it('shows the paired instances only once there are any', async () => {
     instances.mockImplementation(() =>
       Promise.resolve([{ id: 'n1', name: 'Attic NAS', deployment: 'server', state: 'ok', jobs: [job('backup')] } as OtherInstance]),

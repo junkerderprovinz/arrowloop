@@ -2,12 +2,14 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react'
 
 import { IconPlay, IconStop } from './glyphs'
 import { JobStatusLine } from './JobStatusLine'
+import { RecentRun } from './RecentRun'
 import { RunStrip } from './RunStrip'
 import { api, type Job, type OtherInstance } from '../lib/api'
+import { dayTime } from '../lib/dayTime'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { useT } from '../lib/i18n'
-import { jobStatus } from '../lib/jobList'
+import { jobStatus, latestRuns } from '../lib/jobList'
 import { kindName, seenAgo } from '../lib/pairing'
 import { useToast } from '../lib/toast'
 
@@ -15,10 +17,14 @@ import { useToast } from '../lib/toast'
 // this one only by asking.
 const REFRESH_MS = 15_000
 
+/** How many of an instance's latest runs its card lists, as many as the Overview lists of this one. */
+const RECENT = 5
+
 /**
- * The jobs of every instance paired with this one, a card per instance. A job
- * there can be started or stopped from here, and everything else is changed on
- * the instance itself. Without another instance it draws `empty`.
+ * The jobs and latest runs of every instance paired with this one, a card per
+ * instance laid out as this one's Overview lays out its own. A job there can be
+ * started or stopped from here, and everything else is changed on the instance
+ * itself. Without another instance it draws `empty`.
  */
 export function OtherInstances({ firstHue, empty = null }: { firstHue: number; empty?: ReactNode }) {
   const { t, lang } = useT()
@@ -56,13 +62,7 @@ export function OtherInstances({ firstHue, empty = null }: { firstHue: number; e
               {other.state === 'ok' && (other.jobs ?? []).length === 0 && (
                 <p className="text-subline text-carbon-textMuted">{t('instances.noJobs')}</p>
               )}
-              {other.state === 'ok' && (other.jobs ?? []).length > 0 && (
-                <ul className="flex flex-col gap-2">
-                  {(other.jobs ?? []).map((job) => (
-                    <OtherJob key={job.name} instance={other} job={job} onChanged={load} />
-                  ))}
-                </ul>
-              )}
+              {other.state === 'ok' && (other.jobs ?? []).length > 0 && <Insides instance={other} onChanged={load} />}
             </div>
           </Card>
         )
@@ -71,12 +71,52 @@ export function OtherInstances({ firstHue, empty = null }: { firstHue: number; e
   )
 }
 
-/** One job of another instance: its name, its last runs, its status and Run now or Cancel. */
-function OtherJob({ instance, job, onChanged }: { instance: OtherInstance; job: Job; onChanged: () => void }) {
+/** An instance's jobs beside its latest runs, split as the Overview splits its own once the card is wide enough. */
+function Insides({ instance, onChanged }: { instance: OtherInstance; onChanged: () => void }) {
   const { t } = useT()
+  const jobs = instance.jobs ?? []
+  const runs = latestRuns(jobs, RECENT)
+  return (
+    <div className="@container">
+      <div className="grid grid-cols-1 items-start gap-6 @3xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <section className="flex min-w-0 flex-col gap-2">
+          <h3 className="glim-eyebrow">{t('nav.jobs')}</h3>
+          <ul className="flex flex-col gap-2">
+            {jobs.map((job) => (
+              <OtherJob key={job.name} instance={instance} job={job} onChanged={onChanged} />
+            ))}
+          </ul>
+        </section>
+        <section data-testid="instance-runs" className="flex min-w-0 flex-col gap-2">
+          <h3 className="glim-eyebrow">{t('activity.recent')}</h3>
+          {runs.length === 0 ? (
+            <p className="text-subline text-carbon-textMuted">{t('history.empty')}</p>
+          ) : (
+            <ul className="flex flex-col gap-3">
+              {runs.map((r) => (
+                <RecentRun key={r.ID} run={r} />
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * One job of another instance: its name with when it ran last and runs next,
+ * its last runs as a strip, its status and Run now or Cancel.
+ */
+function OtherJob({ instance, job, onChanged }: { instance: OtherInstance; job: Job; onChanged: () => void }) {
+  const { t, lang } = useT()
   const push = useToast()
   const [busy, setBusy] = useState(false)
   const status = jobStatus(job, { held: false, conflict: false, notes: false })
+  const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
+  // The status of a job that ran fine is already the time of that run.
+  const last = status !== 'last' && job.recent[0]
+  const next = job.nextRun && !job.disabled ? job.nextRun : ''
 
   async function press() {
     setBusy(true)
@@ -97,7 +137,15 @@ function OtherJob({ instance, job, onChanged }: { instance: OtherInstance; job: 
 
   return (
     <li data-job={job.name} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-control bg-carbon-surface2 px-3 py-2">
-      <span className="min-w-0 flex-1 basis-40 text-body font-semibold text-carbon-text [overflow-wrap:anywhere]">{job.name}</span>
+      <span className="flex min-w-0 flex-1 basis-40 flex-col gap-0.5">
+        <span className="text-body font-semibold text-carbon-text [overflow-wrap:anywhere]">{job.name}</span>
+        {(last || next) && (
+          <span className="glim-num flex flex-wrap gap-x-3 text-subline text-carbon-textSub">
+            {last && <span>{t('jobs.lastRun', { when: when(last.Finished || last.Started) })}</span>}
+            {next && <span>{t('jobs.fact.next', { when: when(next) })}</span>}
+          </span>
+        )}
+      </span>
       <RunStrip recent={job.recent} />
       <JobStatusLine job={job} status={status} />
       <Button
