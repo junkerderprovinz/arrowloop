@@ -725,6 +725,26 @@ export type OtherInstance = {
 }
 
 /**
+ * A job of another instance as it is edited from here: the entry as the file
+ * there holds it, without its commands, and the defaults it falls back on
+ * there.
+ */
+export type OpenedJob = { job: RawJob; defaults?: Settings['defaults'] }
+
+/**
+ * What a side on another instance can name: its targets by name alone, its
+ * marked drives and the names of its exclude sets.
+ */
+export type InstancePlaces = {
+  targets: { name: string; type: string; provider?: string; mark?: string }[]
+  drives: { id: string; label: string; path: string; attached: boolean }[]
+  excludeSets: string[]
+}
+
+/** One folder's listing, as the folder picker walks it. */
+export type FolderListing = { path: string; parent: string; shown?: string; entries: { name: string; path: string }[] }
+
+/**
  * Which way a refused phrase went wrong, from internal/seedphrase, with the
  * word and its place for an unknown one.
  */
@@ -1195,10 +1215,7 @@ export const api = {
   },
 
   /** The folders inside one folder. An empty path asks for the roots. */
-  browse: (path?: string) =>
-    request<{ path: string; parent: string; shown?: string; entries: { name: string; path: string }[] }>(
-      `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`,
-    ),
+  browse: (path?: string) => request<FolderListing>(`/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`),
 
   /**
    * The network shares this computer is already connected to, such as a
@@ -1302,6 +1319,23 @@ export const api = {
 
   stopOnInstance: (id: string, job: string) =>
     post<{ stopped: boolean }>(`/api/instances/${encodeURIComponent(id)}/jobs/${encodeURIComponent(job)}/stop`),
+
+  instanceJob: (id: string, job: string) =>
+    request<OpenedJob>(`/api/instances/${encodeURIComponent(id)}/jobs/${encodeURIComponent(job)}/config`),
+
+  /** Saves a job on the instance it belongs to, which checks it by its own rules and may refuse it. */
+  saveInstanceJob: (id: string, job: string, entry: RawJob) =>
+    request<OpenedJob>(`/api/instances/${encodeURIComponent(id)}/jobs/${encodeURIComponent(job)}/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    }),
+
+  instancePlaces: (id: string) => request<InstancePlaces>(`/api/instances/${encodeURIComponent(id)}/places`),
+
+  /** The folders inside one folder of another instance, or its roots for an empty path. */
+  browseOnInstance: (id: string, path?: string) =>
+    request<FolderListing>(`/api/instances/${encodeURIComponent(id)}/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`),
 
   /** Puts the jobs in this order and keeps it, for a job somebody moved in a list. */
   orderJobs: (names: string[]) =>

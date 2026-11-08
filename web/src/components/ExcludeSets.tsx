@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Lines, Text } from './Field'
 import { IconAdd, IconTrash } from './glyphs'
 import { IconAction } from './IconAction'
-import { api } from '../lib/api'
+import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 
 /**
@@ -93,17 +93,15 @@ export function ExcludeSetPicker({
   onChange: (next: string[]) => void
 }) {
   const { t } = useT()
+  const host = useHost()
   const [available, setAvailable] = useState<string[] | null>(null)
 
   useEffect(() => {
-    api
-      .settings()
-      .then((s) => {
-        const sets = (s.excludeSets as Sets | undefined) ?? {}
-        setAvailable(Object.keys(sets).sort())
-      })
+    host
+      .excludeSets()
+      .then(setAvailable)
       .catch(() => setAvailable([]))
-  }, [])
+  }, [host])
 
   if (available === null) return null
   if (available.length === 0) {

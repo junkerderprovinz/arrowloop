@@ -59,9 +59,16 @@ describe('the other instances', () => {
     runOnInstance.mockResolvedValue({ job: 'Photos', status: 'started' })
     render(<OtherInstances firstHue={1} />)
     expect(await screen.findByText('Cellar')).toBeTruthy()
-    expect(screen.getByText('Photos')).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Photos' })).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Run now' }))
     await waitFor(() => expect(runOnInstance).toHaveBeenCalledWith('c'.repeat(40), 'Photos'))
+  })
+
+  it('opens a job of another instance on its own page', async () => {
+    instances.mockResolvedValue([cellar])
+    render(<OtherInstances firstHue={1} />)
+    fireEvent.click(await screen.findByRole('link', { name: 'Photos' }))
+    expect(window.location.pathname).toBe(`/instances/${'c'.repeat(40)}/jobs/Photos`)
   })
 
   it('stops a job that runs there', async () => {

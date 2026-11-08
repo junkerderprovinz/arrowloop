@@ -8,9 +8,11 @@ import { api, type Job, type OtherInstance } from '../lib/api'
 import { dayTime } from '../lib/dayTime'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { useT } from '../lib/i18n'
+import { useT, type Translate } from '../lib/i18n'
 import { jobStatus, latestRuns } from '../lib/jobList'
 import { kindName, seenAgo } from '../lib/pairing'
+import { Link } from '../lib/router'
+import { remoteJobPath } from '../lib/routes'
 import { useToast } from '../lib/toast'
 
 // How often the overview asks the other instances again. Their runs reach
@@ -23,8 +25,8 @@ const RECENT = 5
 /**
  * The jobs and latest runs of every instance paired with this one, a card per
  * instance laid out as this one's Overview lays out its own. A job there can be
- * started or stopped from here, and everything else is changed on the instance
- * itself. Without another instance it draws `empty`.
+ * started or stopped from here, and its name opens it to be edited. Without
+ * another instance it draws `empty`.
  */
 export function OtherInstances({ firstHue, empty = null }: { firstHue: number; empty?: ReactNode }) {
   const { t, lang } = useT()
@@ -49,13 +51,9 @@ export function OtherInstances({ firstHue, empty = null }: { firstHue: number; e
     <section className="flex flex-col gap-10" aria-label={t('instances.title')}>
       {instances.map((other, i) => {
         const kind = kindName(t, other.deployment)
-        let note = ''
-        if (other.state === 'approve') note = t('instances.approve')
-        if (other.state === 'waiting') note = t('instances.waiting')
-        if (other.state === 'away') note = t('instances.away', { time: seenAgo(lang, other.lastSeen ?? 0) })
-        if (other.state === 'error') note = t('instances.error', { reason: other.error ?? '' })
+        const note = instanceNote(other, t, lang)
         return (
-          <Card key={other.id} title={other.name || kind} hint={i === 0 ? t('instances.hint') : undefined} hueIndex={firstHue + i}>
+          <Card key={other.id} title={other.name || kind} hint={i === 0 ? t('instances.hintOpen') : undefined} hueIndex={firstHue + i}>
             <div className="flex flex-col gap-3">
               {kind && other.name && <p className="text-subline text-carbon-textMuted">{kind}</p>}
               {note && <p className="text-subline text-carbon-textSub">{note}</p>}
@@ -69,6 +67,15 @@ export function OtherInstances({ firstHue, empty = null }: { firstHue: number; e
       })}
     </section>
   )
+}
+
+/** Why an instance shows no jobs, or nothing while it shows them. */
+export function instanceNote(other: OtherInstance, t: Translate, lang: string): string {
+  if (other.state === 'approve') return t('instances.approve')
+  if (other.state === 'waiting') return t('instances.waiting')
+  if (other.state === 'away') return t('instances.away', { time: seenAgo(lang, other.lastSeen ?? 0) })
+  if (other.state === 'error') return t('instances.error', { reason: other.error ?? '' })
+  return ''
 }
 
 /** An instance's jobs beside its latest runs, split as the Overview splits its own once the card is wide enough. */
@@ -138,7 +145,12 @@ function OtherJob({ instance, job, onChanged }: { instance: OtherInstance; job: 
   return (
     <li data-job={job.name} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-control bg-carbon-surface2 px-3 py-2">
       <span className="flex min-w-0 flex-1 basis-40 flex-col gap-0.5">
-        <span className="text-body font-semibold text-carbon-text [overflow-wrap:anywhere]">{job.name}</span>
+        <Link
+          to={remoteJobPath(instance.id, job.name)}
+          className="self-start rounded-control text-body font-semibold text-carbon-text decoration-accent underline-offset-4 outline-none [overflow-wrap:anywhere] hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
+        >
+          {job.name}
+        </Link>
         {(last || next) && (
           <span className="glim-num flex flex-wrap gap-x-3 text-subline text-carbon-textSub">
             {last && <span>{t('jobs.lastRun', { when: when(last.Finished || last.Started) })}</span>}

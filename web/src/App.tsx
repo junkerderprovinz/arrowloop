@@ -11,6 +11,7 @@ import { Anomalies } from './pages/Anomalies'
 import { Conflicts } from './pages/Conflicts'
 import { History } from './pages/History'
 import { JobPage } from './pages/JobPage'
+import { RemoteJob } from './pages/RemoteJob'
 import { Jobs } from './pages/Jobs'
 import { Overview } from './pages/Overview'
 import { Instances } from './pages/Instances'
@@ -51,7 +52,7 @@ import { useNavPins } from './lib/navPins'
 import { followSettings, useAnomaliesOn } from './lib/anomalyModule'
 import { coalesce } from './lib/coalesce'
 import { navigate, useLocation } from './lib/router'
-import { jobPlace, resolveRoute } from './lib/routes'
+import { home, jobPlace, resolveRoute } from './lib/routes'
 import { followDevice, paintTheme, storedTheme, storeTheme, type ThemeChoice } from './lib/themeSetting'
 import { wireTooltips } from './lib/tooltip'
 import { isActivityView, onUpdateReady, useTrayWords } from './lib/desk'
@@ -451,6 +452,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     <Jobs jobs={jobs} findings={findings?.open ?? []} progress={progress} conflicts={conflicts?.conflicts} onSaved={saved} />
   ) : view.page === 'job' ? (
     <JobPage name={view.name} />
+  ) : view.page === 'remoteJob' ? (
+    <RemoteJob instance={view.instance} name={view.name} back={pins.instances ? '/instances' : home(pins)} />
   ) : view.page === 'targets' ? (
     <Targets />
   ) : view.page === 'instances' ? (

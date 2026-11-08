@@ -8,13 +8,14 @@ import { SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
-import type { Known } from '../components/FolderPicker'
+import { placeOffers, type Known } from '../components/FolderPicker'
 import { ScheduleDetails, ScheduleKinds, useSchedule } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
 import { Toggle } from '../lib/glimstone/Toggle'
 import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
+import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 import { SubCard } from './settings/rows'
 
@@ -78,20 +79,11 @@ export function useJobConfig(onSaved: () => void) {
   // whole, so a folder on them can be chosen; a drive that is not plugged in
   // cannot be opened and is taken whole.
   useEffect(() => {
-    const offers: Known[] = []
     void Promise.allSettled([api.volumes(), api.remotes()]).then(([v, r]) => {
-      if (v.status === 'fulfilled') {
-        for (const drive of v.value.volumes) {
-          offers.push({ value: `${drive.path}/`, label: `${t('edit.pickDrive')}: ${drive.label}`, browse: drive.attached })
-        }
-      }
-      if (r.status === 'fulfilled') {
-        setRemotes(r.value.remotes)
-        for (const remote of r.value.remotes) {
-          offers.push({ value: `${remote.name}:`, label: `${t('edit.pickRemote')}: ${remote.name}`, browse: true })
-        }
-      }
-      setKnown(offers)
+      const drives = v.status === 'fulfilled' ? v.value.volumes : []
+      const targets = r.status === 'fulfilled' ? r.value.remotes : []
+      setRemotes(targets)
+      setKnown(placeOffers(drives, targets, t))
     })
   }, [t])
 
@@ -313,6 +305,7 @@ export function JobForm({
   onHeld: () => void
 }) {
   const { t } = useT()
+  const host = useHost()
   const [advanced, setAdvanced] = useState(false)
   // What the job runs with. A job written by hand can hold some settings and
   // leave others to the defaults, and those show the default's value too.
@@ -422,57 +415,61 @@ export function JobForm({
         </Field>
       </SubCard>
 
-      <section className="flex flex-col gap-4">
-        <button
-          type="button"
-          aria-expanded={advanced}
-          onClick={() => setAdvanced((was) => !was)}
-          className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
-        >
-          <svg
-            aria-hidden
-            width="10"
-            height="10"
-            viewBox="0 0 10 10"
-            className={`glim-btn-glyph transition-transform ${advanced ? '' : '-rotate-90 rtl:rotate-90'}`}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
+      {/* The state database and the commands stay as the other instance has
+          them, so a job there has nothing advanced to edit from here. */}
+      {!host.name && (
+        <section className="flex flex-col gap-4">
+          <button
+            type="button"
+            aria-expanded={advanced}
+            onClick={() => setAdvanced((was) => !was)}
+            className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
           >
-            <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {t('edit.advanced')}
-        </button>
-        {advanced && (
-          <>
-            <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
-              <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
-            </FieldRow>
-            {/* Shown and never edited: the server keeps what the file says,
-                since a command set here would run with the rights of the
-                process. */}
-            {(job.before || job.after) && (
-              <Field label={t('edit.commands')} hint={t('edit.commandsHint')} plain>
-                <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-body">
-                  {(
-                    [
-                      ['edit.before', job.before],
-                      ['edit.after', job.after],
-                    ] as const
-                  )
-                    .filter(([, command]) => command)
-                    .map(([key, command]) => (
-                      <Fragment key={key}>
-                        <dt className="text-carbon-textMuted">{t(key)}</dt>
-                        <dd className="min-w-0 break-all font-mono">{command}</dd>
-                      </Fragment>
-                    ))}
-                </dl>
-              </Field>
-            )}
-          </>
-        )}
-      </section>
+            <svg
+              aria-hidden
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              className={`glim-btn-glyph transition-transform ${advanced ? '' : '-rotate-90 rtl:rotate-90'}`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t('edit.advanced')}
+          </button>
+          {advanced && (
+            <>
+              <FieldRow label={t('edit.state')} hint={t('edit.stateHint')} width={PATH_W}>
+                <Text value={job.state ?? ''} onChange={(v) => patch({ state: v })} label={t('edit.state')} mono />
+              </FieldRow>
+              {/* Shown and never edited: the server keeps what the file says,
+                  since a command set here would run with the rights of the
+                  process. */}
+              {(job.before || job.after) && (
+                <Field label={t('edit.commands')} hint={t('edit.commandsHint')} plain>
+                  <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-body">
+                    {(
+                      [
+                        ['edit.before', job.before],
+                        ['edit.after', job.after],
+                      ] as const
+                    )
+                      .filter(([, command]) => command)
+                      .map(([key, command]) => (
+                        <Fragment key={key}>
+                          <dt className="text-carbon-textMuted">{t(key)}</dt>
+                          <dd className="min-w-0 break-all font-mono">{command}</dd>
+                        </Fragment>
+                      ))}
+                  </dl>
+                </Field>
+              )}
+            </>
+          )}
+        </section>
+      )}
     </div>
   )
 }

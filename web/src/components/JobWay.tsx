@@ -9,6 +9,7 @@ import { Held } from './GlobalValues'
 import type { Direction, Remote } from '../lib/api'
 import { placeOf } from '../lib/entryLabel'
 import { Button } from '../lib/glimstone/Button'
+import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 import { isLocalTarget } from '../lib/localTarget'
 import { usePlaces } from '../lib/places'
@@ -123,7 +124,10 @@ function SideCard({
   const { drives } = usePlaces()
   const [picking, setPicking] = useState(false)
   const face = placeFace(path, remotes, drives)
-  const name = face.name ?? (path ? t('side.onDevice') : t('edit.sideUnset'))
+  const host = useHost()
+  // A folder of another instance is not on this device.
+  const here = host.name ? t('job.onInstance', { name: host.name }) : t('side.onDevice')
+  const name = face.name ?? (path ? here : t('edit.sideUnset'))
 
   return (
     <section className="glim-subcard flex min-w-0 flex-1 flex-col gap-3 px-4 pb-4 pt-3">

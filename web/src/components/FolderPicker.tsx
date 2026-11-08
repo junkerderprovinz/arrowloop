@@ -7,8 +7,8 @@ import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { IconAdd, IconApply, IconBack, IconClose, IconFolder, IconFolderAdd, IconTabStorage } from './glyphs'
-import { api } from '../lib/api'
-import { useT } from '../lib/i18n'
+import { useHost } from '../lib/host'
+import { useT, type Translate } from '../lib/i18n'
 import { useModal } from '../lib/modal'
 
 /**
@@ -16,6 +16,21 @@ import { useModal } from '../lib/modal'
  * it is; a target opens, so a folder on it can be chosen or made.
  */
 export type Known = { value: string; label: string; browse?: boolean }
+
+/**
+ * The registered drives and the configured targets as the picker offers them.
+ * A drive that is not plugged in cannot be opened and is taken whole.
+ */
+export function placeOffers(
+  drives: { path: string; label: string; attached: boolean }[],
+  targets: { name: string }[],
+  t: Translate,
+): Known[] {
+  return [
+    ...drives.map((d) => ({ value: `${d.path}/`, label: `${t('edit.pickDrive')}: ${d.label}`, browse: d.attached })),
+    ...targets.map((r) => ({ value: `${r.name}:`, label: `${t('edit.pickRemote')}: ${r.name}`, browse: true })),
+  ]
+}
 
 /**
  * Picks a folder that really exists, on this machine or on a configured
@@ -39,6 +54,8 @@ export function FolderPicker({
   onClose: () => void
 }) {
   const { t } = useT()
+  const host = useHost()
+  const title = host.name ? t('pick.titleOn', { name: host.name }) : t('pick.title')
   const [at, setAt] = useState('')
   const [shown, setShown] = useState('')
   const [parent, setParent] = useState('')
@@ -70,7 +87,7 @@ export function FolderPicker({
   async function go(path: string, fallback = true) {
     setBusy(true)
     try {
-      const answer = await api.browse(path || undefined)
+      const answer = await host.browse(path || undefined)
       setAt(answer.path)
       setShown(answer.shown ?? '')
       setParent(answer.parent)
@@ -89,11 +106,11 @@ export function FolderPicker({
 
   async function create() {
     const name = (naming ?? '').trim()
-    if (!at || name === '') return
+    if (!at || name === '' || !host.makeDir) return
     setBusy(true)
     setError(null)
     try {
-      const made = await api.makeDir(at, name)
+      const made = await host.makeDir(at, name)
       setNaming(null)
       await go(made.path, false)
     } catch (e) {
@@ -113,15 +130,13 @@ export function FolderPicker({
       className="glim-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-6"
       role="dialog"
       aria-modal="true"
-      aria-label={t('pick.title')}
+      aria-label={title}
       onClick={onClose}
     >
       {/* Wide enough for the three footer buttons in one row in German, since
           that row does not wrap. */}
       <div className="w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
-        <Card
-          title={t('pick.title')}
-        >
+        <Card title={title}>
           <p className="mb-3 truncate font-mono text-subline text-carbon-text" title={shown || at}>
             {shown || at || t('pick.roots')}
           </p>
@@ -193,15 +208,17 @@ export function FolderPicker({
               row, so walking in and pressing the button is one gesture. */}
           <div className="flex items-center justify-end gap-2">
             {/* Makes one folder inside the open one; a name with a separator
-                is refused. */}
-            <Button
-              label={t('pick.newFolder')}
-              labelKey="pick.newFolder"
-              glyph={<IconFolderAdd />}
-              disabled={!at || busy}
-              onClick={() => setNaming('')}
-              className="me-auto"
-            />
+                is refused. Another instance's folders are only looked at. */}
+            {host.makeDir && (
+              <Button
+                label={t('pick.newFolder')}
+                labelKey="pick.newFolder"
+                glyph={<IconFolderAdd />}
+                disabled={!at || busy}
+                onClick={() => setNaming('')}
+                className="me-auto"
+              />
+            )}
             <Button
               label={t('pick.cancel')}
               labelKey="pick.cancel"

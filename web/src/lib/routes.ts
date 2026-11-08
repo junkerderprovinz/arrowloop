@@ -20,6 +20,7 @@ export const FORMER_TILES: Record<string, TileId> = {
 export type View =
   | { page: 'dashboard' | 'jobs' | 'conflicts' | 'trash' | 'history' | 'welcome' | 'anomalies' | 'targets' | 'instances' }
   | { page: 'job'; name: string }
+  | { page: 'remoteJob'; instance: string; name: string }
   | { page: 'settings'; tile: TileId }
 
 /** `wait` holds an address back until the engine has said what it leads to. */
@@ -54,7 +55,7 @@ export function home(pins: NavPins): string {
 export function resolveRoute(pathname: string, search: URLSearchParams, ctx: RouteContext): Resolved {
   const query = search.toString() ? `?${search}` : ''
   const parts = pathname.split('/').filter(Boolean).map(decode)
-  const [first, second, third] = parts
+  const [first, second, third, fourth] = parts
 
   switch (first) {
     case undefined:
@@ -86,6 +87,9 @@ export function resolveRoute(pathname: string, search: URLSearchParams, ctx: Rou
       if (parts.length > 1) return { redirect: '/targets' }
       return ctx.pins.targets ? { view: { page: 'targets' } } : { redirect: `/settings/targets${query}` }
     case 'instances':
+      // A job of another instance opens from the Overview as well, so its page
+      // does not wait for Instances to be pinned.
+      if (parts.length === 4 && second && third === 'jobs' && fourth) return { view: { page: 'remoteJob', instance: second, name: fourth } }
       if (parts.length > 1) return { redirect: '/instances' }
       return ctx.pins.instances ? { view: { page: 'instances' } } : { redirect: `/settings/pairing${query}` }
   }
@@ -103,6 +107,11 @@ function settings(tile: string | undefined, depth: number, query: string, ctx: R
   const moved = FORMER_TILES[tile]
   if (moved && offered(moved)) return { redirect: `/settings/${moved}${query}` }
   return { redirect: `/settings/${first}` }
+}
+
+/** The address of a job of another instance of the group. */
+export function remoteJobPath(instance: string, job: string): string {
+  return `/instances/${encodeURIComponent(instance)}/jobs/${encodeURIComponent(job)}`
 }
 
 /** The address of a page another screen narrows to one job, and on Anomalies to one finding. */

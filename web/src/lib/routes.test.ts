@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { jobPlace, resolveRoute, TILE_IDS, type RouteContext } from './routes'
+import { jobPlace, remoteJobPath, resolveRoute, TILE_IDS, type RouteContext } from './routes'
 
 const ctx = (over: Partial<RouteContext> = {}): RouteContext => ({
   pins: { dashboard: false, targets: false, instances: false },
@@ -77,6 +77,13 @@ describe('the addresses', () => {
   it('lead an unpinned Instances page to the Pairing tile that holds it', () => {
     expect(go('/instances')).toEqual({ redirect: '/settings/pairing' })
     expect(go('/instances/x', { pins: { dashboard: false, targets: false, instances: true } })).toEqual({ redirect: '/instances' })
+  })
+
+  it('open a job of another instance at its own address, pinned or not', () => {
+    const id = 'c'.repeat(40)
+    expect(go(`/instances/${id}/jobs/My%20photos`)).toEqual({ view: { page: 'remoteJob', instance: id, name: 'My photos' } })
+    expect(remoteJobPath(id, 'a/b')).toBe(`/instances/${id}/jobs/a%2Fb`)
+    expect(go(`/instances/${id}/jobs`)).toEqual({ redirect: '/instances' })
   })
 
   it('open Settings on the tile that was open last', () => {

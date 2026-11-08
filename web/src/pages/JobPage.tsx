@@ -82,7 +82,7 @@ export function JobPage({ name }: { name: string }) {
 
   return (
     <Stack>
-      <Head
+      <JobHead
         job={job}
         status={status}
         notes={notes.length}
@@ -244,22 +244,27 @@ function useCardFromAddress(ready: boolean): JobPageCard | null {
 /**
  * The page's head, standing on the page with no card around it: the tile of
  * the job's direction, its name, one line on what it joins and when it runs,
- * its status and its actions.
+ * its status and its actions. `mark` stands beside the name, and Back leads to
+ * the jobs unless `onBack` says otherwise.
  */
-function Head({
+export function JobHead({
   job,
   status,
-  notes,
+  notes = 0,
   heldFinding,
   noteFinding,
   actions,
+  mark,
+  onBack,
 }: {
   job: Job
   status: ReturnType<typeof jobStatus>
-  notes: number
+  notes?: number
   heldFinding?: string
   noteFinding?: string
   actions: ReactNode
+  mark?: ReactNode
+  onBack?: () => void
 }) {
   const { t, lang } = useT()
   const goTo = useGoTo()
@@ -275,7 +280,7 @@ function Head({
           title={t('preview.back')}
           labelKey="preview.back"
           className="glim-glyph-only flex-none rounded-control"
-          onClick={() => goTo({ tab: 'jobs', job: '' })}
+          onClick={onBack ?? (() => goTo({ tab: 'jobs', job: '' }))}
         >
           <IconBack />
         </IconAction>
@@ -286,6 +291,7 @@ function Head({
       <div className="flex min-w-0 flex-1 basis-[28rem] flex-col gap-0.5">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <h1 className="min-w-0 text-status font-semibold text-carbon-text [overflow-wrap:anywhere]">{job.name}</h1>
+          {mark}
           {/* A count leads to what it counts. */}
           {notes > 0 && (
             <button type="button" onClick={() => goTo({ tab: 'anomalies', job: job.name })}>

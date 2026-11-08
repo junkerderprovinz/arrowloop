@@ -8,11 +8,21 @@ import { ConfirmWindow } from './ConfirmWindow'
 import { GlobalSwitch, useNudge } from './GlobalValues'
 import type { RawJob } from '../lib/api'
 import { JOB_WINDOW_SETTINGS, followsAll, inheritAll, overrideAll } from '../lib/follows'
+import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 import { useToast } from '../lib/toast'
 import { JobForm, useJobConfig } from '../pages/Editor'
 
 export type JobConfig = ReturnType<typeof useJobConfig>
+
+/**
+ * What the window needs of a job list: this instance's whole list, or the one
+ * job of another instance that is open here. Only a job added for the window
+ * is ever removed by it.
+ */
+export type EditedJobs = Pick<JobConfig, 'jobs' | 'known' | 'remotes' | 'defaults' | 'busy' | 'patch' | 'replace' | 'save'> & {
+  remove?: JobConfig['remove']
+}
 
 /**
  * A job's settings in a window, with Save as its main button. Cancel puts the
@@ -30,7 +40,7 @@ export function JobEditor({
   onClose,
   onSaved,
 }: {
-  config: JobConfig
+  config: EditedJobs
   /** The entry's place in the configuration. */
   at: number
   /** A job made for this window, which Cancel takes away again. */
@@ -40,6 +50,7 @@ export function JobEditor({
   onSaved?: (name: string) => void
 }) {
   const { t } = useT()
+  const host = useHost()
   const [original] = useState<RawJob | undefined>(() => config.jobs?.[at])
   // Counts refused saves, so each one remounts the button and shakes it again.
   const [refused, setRefused] = useState(0)
@@ -47,7 +58,7 @@ export function JobEditor({
   const job = config.jobs?.[at]
 
   function cancel() {
-    if (added) void config.remove(at, false)
+    if (added) void config.remove?.(at, false)
     else if (original) config.replace(at, original)
     onClose()
   }
@@ -56,7 +67,13 @@ export function JobEditor({
   const follows = followsAll(job, JOB_WINDOW_SETTINGS)
   return (
     <Dialog
-      title={added ? t('job.new') : t('job.editTitle', { name: original?.name || t('edit.unnamed') })}
+      title={
+        added
+          ? t('job.new')
+          : host.name
+            ? t('job.editTitleOn', { job: original?.name || t('edit.unnamed'), name: host.name })
+            : t('job.editTitle', { name: original?.name || t('edit.unnamed') })
+      }
       onClose={cancel}
       closeOnBackdrop={false}
       width="widest"
@@ -155,7 +172,7 @@ export function RemoveJobDialog({
 }
 
 /** Reports what the configuration refused as a toast, the one place failures are told. */
-export function useConfigErrors(config: JobConfig) {
+export function useConfigErrors(config: { error: string | null }) {
   const push = useToast()
   useEffect(() => {
     if (config.error) push(config.error, 'fail')
