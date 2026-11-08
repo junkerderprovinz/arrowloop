@@ -499,8 +499,23 @@ instances approved each other, **Instances** on each one shows the jobs of the
 others, a card per instance with their last runs and their status, and **Run
 now** or **Cancel the run** works on them from there. Instances stands at the
 end of the Pairing tile, or in the sidebar once it is switched on in the
-**Sidebar** card on **Look**. Everything else, from a job's settings to its
-trash, you change on the instance itself.
+**Sidebar** card on **Look**.
+
+A job's name on such a card opens its page, marked **On** and the name of the
+instance it belongs to. **Edit** opens the usual editor for its sides,
+schedule, mode, exclusions and the other settings, and **Pause** holds it.
+**Browse targets** walks the folders of that instance and opens its targets by
+name. **Save** sends the job to its instance, which checks it by its own rules,
+just as a save there would, and a refusal shows in the editor. A side can name
+only a target that instance has, by its name. The state database and the
+commands before and after a run stay as that instance has them. Each save, and
+each run started or stopped from here, is written to that instance's log with
+the name and id of the instance it came from. Adding or removing a job, its
+files, preview and checks, the targets themselves, the settings and the trash
+stay with each instance. An instance on an older version can still run and
+stop its jobs from here, and the page says to update it to edit them. The phone
+app starts and stops the jobs of the other instances, and leaves editing them
+to the web interface.
 
 The tile is built as BombVault's and KnightLoader's: three numbered cards whose
 pictures play the steps below, then **Phrase**, **Instances** with who is in
@@ -651,7 +666,9 @@ Over plain HTTP the session cookie crosses the wire in clear, so a machine
 reachable from outside wants TLS in front of it, with a password or without.
 
 A paired instance reaches this one only through the relay, and only for the
-job list, **Run now** and **Cancel the run**. An instance that serves the relay
+job list, **Run now** and **Cancel the run**, opening and saving a job, and the
+folders and target names its sides are picked from. Every other route answers
+the group with 404. An instance that serves the relay
 opens `/relay/connect` for it and nothing else: it lets in only the key of its
 own group, drops everybody on it when the switch goes off or it leaves the
 group, and answers 404 there while it does not serve. It has to be approved here first,

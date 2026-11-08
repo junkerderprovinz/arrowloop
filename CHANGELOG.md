@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **Open and edit the jobs of a paired instance.** A job's name on an instance's card opens its page, marked with the instance it belongs to, and Edit opens the usual editor: sides, schedule, mode, exclusions and the rest. The folder picker walks that instance's folders and offers its targets by name. Save goes to the instance the job belongs to, which checks it by its own rules and logs which instance made the change. Its targets, settings, trash and the twelve words stay where they are, and adding or removing a job is still done on the instance itself. The phone app starts and stops those jobs as before.
+
 ## 2.6.0 - 2026-11-08
 
 ArrowLoop opens on an Overview, pairs your instances with twelve words, backs up its settings on its own, imports FolderSync and luckyBackup setups, trusts the certificate authorities you install on Android and comes as a Flatpak.
