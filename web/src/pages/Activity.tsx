@@ -2,16 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { JobMark } from '../components/JobMark'
 import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
-import { Num, Rule } from '../components/Shell'
+import { RecentRun } from '../components/RecentRun'
+import { Rule } from '../components/Shell'
 import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { api, type Job, type LatestRun, type RunEvent, type Touch, type Volume } from '../lib/api'
 import { desk, inDesktopWindow, resizeFromEdges } from '../lib/desk'
 import { entryAction, entryLabel, entryRoute } from '../lib/entryLabel'
-import { failureLine } from '../lib/failure'
 import { useT } from '../lib/i18n'
-import { since } from '../lib/since'
 import { wireTooltips } from '../lib/tooltip'
 
 /**
@@ -215,7 +214,7 @@ export function Activity() {
             ) : (
               <ul className="flex flex-col gap-2">
                 {latest.map((r) => (
-                  <RunRow key={r.ID} run={r} />
+                  <RecentRun key={r.ID} run={r} today={r.Since} />
                 ))}
               </ul>
             )}
@@ -337,37 +336,4 @@ function clock(at: Date, lang: string): string {
   const today = new Date()
   const sameDay = at.toDateString() === today.toDateString()
   return at.toLocaleString(lang, sameDay ? { hour: '2-digit', minute: '2-digit' } : { dateStyle: 'short', timeStyle: 'short' })
-}
-
-function RunRow({ run }: { run: LatestRun }) {
-  const { t, lang } = useT()
-  const failed = run.Err !== ''
-  const { count, unit } = since(run.Finished || run.Started)
-  const parts = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' }).formatToParts(-count, unit)
-  const counts = [
-    run.Copied > 0 ? t('history.copied', { count: run.Copied }) : '',
-    run.Moved > 0 ? t('history.moved', { count: run.Moved }) : '',
-    run.Trashed > 0 ? t('history.trashed', { count: run.Trashed }) : '',
-    run.Conflicts > 0 ? t('history.conflicts', { count: run.Conflicts }) : '',
-  ].filter(Boolean)
-  // A job that runs on every change says how busy it was instead of filling
-  // the list with its runs.
-  const today = run.Since > 1 ? t('tray.runsToday', { count: run.Since }) : ''
-  const said = failed ? failureLine(run.Err, run.Failure, t, lang) : counts.length > 0 ? counts.join(' · ') : t('history.ok')
-  return (
-    <li className="flex items-start gap-2">
-      <JobMark status={failed ? 'failed' : 'ok'} size={18} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-baseline gap-2">
-          <span className="truncate text-body">{run.Job}</span>
-          <span className="ms-auto shrink-0 text-subline text-carbon-textMuted" title={new Date(run.Finished || run.Started).toLocaleString(lang)}>
-            {parts.map((part, i) => (part.type === 'integer' ? <Num key={i}>{part.value}</Num> : part.value))}
-          </span>
-        </div>
-        <span className={`truncate text-subline ${failed ? 'text-statusFail' : 'text-carbon-textMuted'}`}>
-          {today ? `${said} · ${today}` : said}
-        </span>
-      </div>
-    </li>
-  )
 }
