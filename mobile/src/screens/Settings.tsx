@@ -545,6 +545,7 @@ export function Settings() {
               <Button
                 label={t("phone.sharedRemove")}
                 glyph="IconTrash"
+                wide={false}
                 busy={sharedBusy === folder.uri}
                 disabled={sharedBusy !== null}
                 onPress={() => changeShared(folder.uri, () => engine.removeSharedFolder(folder.uri))}
