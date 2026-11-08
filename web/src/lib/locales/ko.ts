@@ -1404,6 +1404,7 @@ const ko: Translations = {
   'new.change.systemAccent': '{accent} 맨 앞의 마법 지팡이 견본은 시스템 색상을 따릅니다. Android 12 이상에서는 Material You, 데스크톱 앱에서는 Windows, macOS, Linux의 강조 색상, Firefox와 Safari에서는 시스템 색상입니다. 시스템에 색상이 없으면 이 견본은 나타나지 않습니다.',
   'new.change.oxicloud': 'OxiCloud는 클라우드 아래에 전용 타일이 있습니다. OxiCloud가 기대하는 주소와 앱 비밀번호를 만드는 곳을 보여 줍니다.',
   'new.change.flatpak': 'ArrowLoop는 Linux용 Flatpak으로도 제공됩니다. 자체 WebKitGTK를 포함하며 업데이트는 소프트웨어 센터에서 받습니다.',
+  'new.change.remoteJobs': '{overview}에서 다른 인스턴스 카드에 있는 작업 이름을 누르면 그 작업이 열립니다. 여기서 편집할 수 있고, 저장하면 그 인스턴스로 보내져 그 인스턴스가 자체 규칙에 따라 확인합니다.',
   'new.change.userCas': '휴대폰 앱은 Android 설정에 설치된 인증 기관을 신뢰하므로, 자체 인증서를 쓰는 서버에도 연결됩니다.',
   'new.change.signInCard': '로그인 화면이 새로워졌습니다. 위쪽에 ArrowLoop 로고와 이름이 있고 모든 버튼이 카드만큼 넓습니다. 커서는 처음부터 비밀번호 칸에 있고, 로그인 버튼은 무언가 입력할 때까지 기다리며, 비밀번호나 코드가 틀리면 살짝 흔들립니다.',
   'autoBackup.title': '자동 백업',

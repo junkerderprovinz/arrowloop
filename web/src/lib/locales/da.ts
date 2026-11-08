@@ -1404,6 +1404,7 @@ const da: Translations = {
   'new.change.systemAccent': 'Farvefeltet med tryllestaven først i {accent} bruger systemets farve: Material You fra Android 12, accentfarven i Windows, macOS eller Linux i skrivebordsappen og systemfarven i Firefox og Safari. Hvor systemet ikke har nogen, er feltet der ikke.',
   'new.change.oxicloud': 'OxiCloud har sin egen flise under Skyer. Den viser den adresse, OxiCloud forventer, og hvor app-adgangskoden oprettes.',
   'new.change.flatpak': 'ArrowLoop findes også som Flatpak til Linux. Den har sin egen WebKitGTK med og får sine opdateringer fra dit softwarecenter.',
+  'new.change.remoteJobs': 'På {overview} åbner navnet på et job på kortet for en anden instans jobbet. Du redigerer det herfra, og Gem sender det til den instans, som tjekker det efter sine egne regler.',
   'new.change.userCas': 'Telefonappen stoler på de certifikatudstedere, der er installeret i Androids indstillinger, så også en server med sit eget certifikat får forbindelse.',
   'new.change.signInCard': 'Login-siden har fået et nyt udseende med ArrowLoops logo og navn øverst og hver knap lige så bred som kortet. Markøren står allerede i adgangskodefeltet, login-knappen venter, til du skriver noget, og ved en forkert adgangskode eller kode ryster den kort.',
   'autoBackup.title': 'Automatiske sikkerhedskopier',

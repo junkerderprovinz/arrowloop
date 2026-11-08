@@ -1404,6 +1404,7 @@ const sl: Translations = {
   'new.change.systemAccent': 'Vzorec s čarobno paličico na začetku {accent} prevzame barvo vašega sistema: Material You od Androida 12, poudarjeno barvo sistemov Windows, macOS ali Linux v namizni aplikaciji in sistemsko barvo v Firefoxu in Safariju. Kjer sistem barve nima, vzorca ni.',
   'new.change.oxicloud': 'OxiCloud ima lastno ploščico pod Oblaki. Prikaže naslov, ki ga OxiCloud pričakuje, in kje se ustvari geslo za aplikacijo.',
   'new.change.flatpak': 'ArrowLoop je za Linux na voljo tudi kot Flatpak. Prinese lasten WebKitGTK in posodobitve dobiva iz tvojega središča za programsko opremo.',
+  'new.change.remoteJobs': 'Na strani {overview} ime opravila na kartici druge instance odpre to opravilo. Urejaš ga od tu, Shrani pa ga pošlje tej instanci, ki ga preveri po svojih pravilih.',
   'new.change.userCas': 'Aplikacija v telefonu zaupa overiteljem potrdil, nameščenim v nastavitvah Androida, zato se poveže tudi strežnik z lastnim potrdilom.',
   'new.change.signInCard': 'Stran za prijavo ima nov videz, z logotipom in imenom ArrowLoop na vrhu in vsakim gumbom tako širokim kot kartica. Kazalec je že v polju za geslo, gumb za prijavo počaka, da kaj vnesete, ob napačnem geslu ali kodi pa se rahlo strese.',
   'autoBackup.title': 'Samodejne varnostne kopije',

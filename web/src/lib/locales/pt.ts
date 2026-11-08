@@ -1404,6 +1404,7 @@ const pt: Translations = {
   'new.change.systemAccent': 'A amostra com a varinha no início de {accent} usa a cor do seu sistema: Material You a partir do Android 12, a cor de destaque do Windows, macOS ou Linux na aplicação de computador e a cor do sistema no Firefox e no Safari. Onde o sistema não tem uma, a amostra não aparece.',
   'new.change.oxicloud': 'O OxiCloud tem mosaico próprio em Nuvens. Mostra o endereço que o OxiCloud espera e onde se cria a palavra-passe da aplicação.',
   'new.change.flatpak': 'O ArrowLoop também está disponível como Flatpak para Linux. Traz o seu próprio WebKitGTK e recebe as atualizações pelo teu centro de software.',
+  'new.change.remoteJobs': 'No {overview}, o nome de uma tarefa no cartão de outra instância abre essa tarefa. Editas a tarefa a partir daqui, e Guardar envia-a para essa instância, que a verifica segundo as suas próprias regras.',
   'new.change.userCas': 'A aplicação do telefone confia nas autoridades de certificação instaladas nas definições do Android, por isso também se liga um servidor com certificado próprio.',
   'new.change.signInCard': 'A página de início de sessão tem um aspeto novo, com o logótipo e o nome do ArrowLoop em cima e cada botão tão largo como o cartão. O cursor já está no campo da palavra-passe, o botão de entrada espera até escreveres alguma coisa, e com uma palavra-passe ou um código errados dá um pequeno abanão.',
   'autoBackup.title': 'Cópias automáticas',

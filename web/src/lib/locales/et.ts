@@ -1404,6 +1404,7 @@ const et: Translations = {
   'new.change.systemAccent': 'Võlukepiga värvinäidis rea {accent} alguses võtab süsteemi värvi: Material You alates Android 12-st, Windowsi, macOS-i või Linuxi rõhuvärvi töölauarakenduses ja süsteemi värvi Firefoxis ja Safaris. Kus süsteemil seda pole, näidist ei ole.',
   'new.change.oxicloud': 'OxiCloudil on oma paan jaotises Pilved. See näitab aadressi, mida OxiCloud ootab, ja kus rakenduse parool luuakse.',
   'new.change.flatpak': 'ArrowLoop on Linuxile saadaval ka Flatpakina. Sellel on oma WebKitGTK ja uuendused tulevad sinu tarkvarakeskusest.',
+  'new.change.remoteJobs': 'Lehel {overview} avab töö nimi teise eksemplari kaardil selle töö. Muudad seda siit ja Salvesta saadab selle tollele eksemplarile, mis kontrollib seda oma reeglite järgi.',
   'new.change.userCas': 'Telefonirakendus usaldab Androidi seadetesse paigaldatud sertifitseerimiskeskusi, nii et ühendub ka oma sertifikaadiga server.',
   'new.change.signInCard': 'Sisselogimise leht on uue ilmega, üleval on ArrowLoopi logo ja nimi ning iga nupp on sama lai kui kaart. Kursor on juba paroolilahtris, sisselogimise nupp ootab, kuni midagi sisestad, ja vale parooli või koodi korral väriseb see korraks.',
   'autoBackup.title': 'Automaatsed varukoopiad',

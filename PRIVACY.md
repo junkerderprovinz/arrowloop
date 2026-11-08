@@ -51,7 +51,9 @@ Only what you set up, and only to where you point it:
 - **Pairing**, if you pair your instances: they reach each other through a
   relay, ParleyPort, which we run at parleyport.halleluja.design unless you
   choose a relay of your own or none. What your instances send each other (the
-  job list, and the request to start or stop a job) is encrypted end to end
+  job list, a job's settings when another instance opens or saves it, the
+  folder names its folder picker shows, and the request to start or stop a
+  job) is encrypted end to end
   with a key made from your twelve words, which never leave your instances.
   The relay sees which instance a message is for, how big it is, when it
   arrives and the IP addresses of your instances, keeps none of it, and stores

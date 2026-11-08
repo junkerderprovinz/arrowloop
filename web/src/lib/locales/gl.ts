@@ -1404,6 +1404,7 @@ const gl: Translations = {
   'new.change.systemAccent': 'A mostra coa variña ao comezo de {accent} colle a cor do teu sistema: Material You desde Android 12, a cor de acento de Windows, macOS ou Linux na aplicación de escritorio e a cor do sistema en Firefox e Safari. Onde o sistema non ten ningunha, a mostra non aparece.',
   'new.change.oxicloud': 'OxiCloud ten a súa propia tella en Nubes. Mostra o enderezo que espera OxiCloud e onde se crea o contrasinal de aplicación.',
   'new.change.flatpak': 'ArrowLoop tamén está dispoñible como Flatpak para Linux. Trae o seu propio WebKitGTK e recibe as actualizacións desde o teu centro de software.',
+  'new.change.remoteJobs': 'En {overview}, o nome dunha tarefa na tarxeta doutra instancia abre esa tarefa. Desde aquí podes editala, e Gardar envíaa a esa instancia, que a comproba segundo as súas propias regras.',
   'new.change.userCas': 'A aplicación do teléfono confía nas autoridades de certificación instaladas na configuración de Android, así que tamén se conecta un servidor cun certificado propio.',
   'new.change.signInCard': 'A páxina de inicio de sesión ten un aspecto novo, co logotipo e o nome de ArrowLoop arriba e cada botón tan ancho coma a tarxeta. O cursor xa está no campo do contrasinal, o botón de inicio de sesión agarda a que escribas algo, e cun contrasinal ou un código incorrectos dá unha pequena sacudida.',
   'autoBackup.title': 'Copias de seguranza automáticas',

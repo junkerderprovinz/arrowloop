@@ -10,9 +10,17 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.1 - 2026-11-08
+
+ArrowLoop opens and edits the jobs of your other paired instances.
+
 ## ✨ Added
 
-- **Open and edit the jobs of a paired instance.** A job's name on an instance's card opens its page, marked with the instance it belongs to, and Edit opens the usual editor: sides, schedule, mode, exclusions and the rest. A side can be one of that instance's targets by its name, one of its drives, or a folder at or below one its jobs already use, and the folder picker offers exactly these. Save goes to the instance the job belongs to, which checks it by its own rules and logs which instance made the change. A network share by its address and the folders that hold its settings are refused, and its trash switch, its brakes and the name and sides of a job that runs commands stay as that instance has them. Its targets, settings, trash and the twelve words stay where they are, and adding or removing a job is still done on the instance itself. The phone app starts and stops those jobs as before.
+- **Open and edit a job of a paired instance.** On the Overview and under Instances, the name of each job on another instance's card opens its page, marked with the instance it belongs to, with Pause, Edit, Run now and its last runs. Edit opens the usual editor, and Save sends the job to that instance, which checks it by its own rules, says why when it refuses, and logs which instance made the change. A side can be one of its targets, one of its marked drives, or a folder at or below one its jobs already use, and the folder picker offers just these. A network share by its address and the folders that hold its settings are refused. The trash switch, the brakes and the commands stay as that instance has them, and so do the name and the sides of a job that runs commands. Adding or removing a job is still done on the instance itself, and the phone app starts and stops these jobs as before.
+
+## 🌐 Translations
+
+- **Every new text is in all 42 languages.**
 
 ## 2.6.0 - 2026-11-08
 

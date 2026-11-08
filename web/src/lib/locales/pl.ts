@@ -1404,6 +1404,7 @@ const pl: Translations = {
   'new.change.systemAccent': 'Próbka z różdżką na początku {accent} przejmuje kolor systemu: Material You od Androida 12, kolor akcentu Windows, macOS lub Linuksa w aplikacji na komputer i kolor systemu w Firefoksie i Safari. Gdzie system go nie ma, próbki nie ma.',
   'new.change.oxicloud': 'OxiCloud ma własny kafelek w sekcji Chmury. Pokazuje adres, którego oczekuje OxiCloud, i miejsce, w którym tworzy się hasło aplikacji.',
   'new.change.flatpak': 'ArrowLoop jest też dostępny jako Flatpak dla Linuksa. Ma własny WebKitGTK i dostaje aktualizacje z twojego centrum oprogramowania.',
+  'new.change.remoteJobs': 'Na stronie {overview} nazwa zadania na karcie innej instancji otwiera to zadanie. Edytujesz je stąd, a Zapisz wysyła je do tej instancji, która sprawdza je według własnych zasad.',
   'new.change.userCas': 'Aplikacja na telefonie ufa urzędom certyfikacji zainstalowanym w ustawieniach Androida, więc łączy się też serwer z własnym certyfikatem.',
   'new.change.signInCard': 'Strona logowania ma nowy wygląd, na górze jest logo i nazwa ArrowLoop, a każdy przycisk jest tak szeroki jak karta. Kursor stoi już w polu hasła, przycisk logowania czeka, aż coś wpiszesz, a przy błędnym haśle lub kodzie lekko się trzęsie.',
   'autoBackup.title': 'Automatyczne kopie',

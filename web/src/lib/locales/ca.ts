@@ -1404,6 +1404,7 @@ const ca: Translations = {
   'new.change.systemAccent': 'La mostra amb la vareta al començament de {accent} agafa el color del sistema: Material You a partir d\'Android 12, el color d\'accent de Windows, macOS o Linux a l\'aplicació d\'escriptori i el color del sistema a Firefox i Safari. On el sistema no en té, la mostra no hi és.',
   'new.change.oxicloud': 'OxiCloud té la seva pròpia rajola a Núvols. Mostra l\'adreça que espera OxiCloud i on es crea la contrasenya d\'aplicació.',
   'new.change.flatpak': 'ArrowLoop també es pot instal·lar com a Flatpak a Linux. Porta el seu propi WebKitGTK i rep les actualitzacions des del teu centre de programari.',
+  'new.change.remoteJobs': 'A {overview}, el nom d\'una tasca a la targeta d\'una altra instància obre aquesta tasca. L\'edites des d\'aquí, i Desa l\'envia a aquella instància, que la comprova amb les seves pròpies regles.',
   'new.change.userCas': 'L\'aplicació del telèfon confia en les autoritats de certificació instal·lades a la configuració d\'Android, així que també s\'hi connecta un servidor amb un certificat propi.',
   'new.change.signInCard': 'La pàgina d\'inici de sessió té un aspecte nou, amb el logotip i el nom d\'ArrowLoop a dalt i cada botó tan ample com la targeta. El cursor ja és al camp de la contrasenya, el botó d\'inici de sessió espera que escriguis alguna cosa, i amb una contrasenya o un codi incorrectes fa una petita sacsejada.',
   'autoBackup.title': 'Còpies automàtiques',

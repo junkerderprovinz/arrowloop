@@ -1404,6 +1404,7 @@ const ja: Translations = {
   'new.change.systemAccent': '{accent} の先頭にある魔法の杖の見本は、システムの色を使います。Android 12 以降では Material You、デスクトップ版では Windows、macOS、Linux のアクセントカラー、Firefox と Safari ではシステムの色です。システムに色がない場合、この見本は表示されません。',
   'new.change.oxicloud': 'OxiCloud にはクラウドの下に専用のタイルがあります。OxiCloud が求めるアドレスと、アプリパスワードを作成する場所が表示されます。',
   'new.change.flatpak': 'ArrowLoop は Linux 向けに Flatpak でも提供されます。独自の WebKitGTK を同梱し、更新はソフトウェアセンターから届きます。',
+  'new.change.remoteJobs': '{overview} では、ほかのインスタンスのカードにあるジョブの名前からそのジョブを開けます。ここから編集でき、保存するとそのインスタンスに送られ、そのインスタンスが自分のルールで確認します。',
   'new.change.userCas': 'スマートフォンのアプリは Android の設定にインストールされた認証局を信頼するため、独自の証明書を持つサーバーにも接続できます。',
   'new.change.signInCard': 'サインインページが新しくなりました。上に ArrowLoop のロゴと名前があり、どのボタンもカードと同じ幅です。カーソルは最初からパスワード欄にあり、ログインボタンは何か入力するまで待ち、パスワードやコードが違うときは小さく揺れます。',
   'autoBackup.title': '自動バックアップ',

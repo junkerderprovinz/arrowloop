@@ -1404,6 +1404,7 @@ const fi: Translations = {
   'new.change.systemAccent': 'Taikasauvalla merkitty värinäyte kohdan {accent} alussa käyttää järjestelmän väriä: Material You Android 12:sta alkaen, Windowsin, macOSin tai Linuxin korostusväri työpöytäsovelluksessa ja järjestelmän väri Firefoxissa ja Safarissa. Jos järjestelmällä ei ole väriä, näytettä ei ole.',
   'new.change.oxicloud': 'OxiCloudilla on oma ruutunsa kohdassa Pilvet. Se näyttää osoitteen, jota OxiCloud odottaa, ja missä sovellussalasana luodaan.',
   'new.change.flatpak': 'ArrowLoop on saatavilla myös Flatpakina Linuxille. Siinä on oma WebKitGTK, ja se saa päivityksensä ohjelmistokeskuksestasi.',
+  'new.change.remoteJobs': 'Sivulla {overview} toisen instanssin kortilla olevan työn nimi avaa sen työn. Muokkaat sitä täältä, ja Tallenna lähettää sen sille instanssille, joka tarkistaa sen omien sääntöjensä mukaan.',
   'new.change.userCas': 'Puhelinsovellus luottaa Androidin asetuksiin asennettuihin varmenteiden myöntäjiin, joten myös palvelin, jolla on oma varmenne, saa yhteyden.',
   'new.change.signInCard': 'Kirjautumissivu on uudistunut, ylhäällä on ArrowLoopin logo ja nimi ja jokainen painike on kortin levyinen. Kohdistin on valmiiksi salasanakentässä, kirjautumispainike odottaa, kunnes kirjoitat jotain, ja väärästä salasanasta tai koodista se heilahtaa hieman.',
   'autoBackup.title': 'Automaattiset varmuuskopiot',

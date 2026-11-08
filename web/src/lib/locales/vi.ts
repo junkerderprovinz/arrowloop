@@ -1404,6 +1404,7 @@ const vi: Translations = {
   'new.change.systemAccent': 'Mẫu màu có cây đũa phép ở đầu {accent} lấy màu của hệ thống bạn: Material You từ Android 12, màu nhấn của Windows, macOS hoặc Linux trong ứng dụng máy tính, và màu hệ thống trong Firefox và Safari. Nếu hệ thống không có màu này, mẫu sẽ không xuất hiện.',
   'new.change.oxicloud': 'OxiCloud có ô riêng trong mục Đám mây. Ô này cho thấy địa chỉ OxiCloud cần và nơi tạo mật khẩu ứng dụng.',
   'new.change.flatpak': 'ArrowLoop cũng có dạng Flatpak cho Linux. Ứng dụng mang theo WebKitGTK riêng và nhận cập nhật từ trung tâm phần mềm của bạn.',
+  'new.change.remoteJobs': 'Trong {overview}, tên của một công việc trên thẻ của phiên bản khác sẽ mở công việc đó. Bạn sửa nó ngay từ đây, và Lưu sẽ gửi nó đến phiên bản đó, nơi kiểm tra nó theo quy tắc riêng của mình.',
   'new.change.userCas': 'Ứng dụng trên điện thoại tin cậy các tổ chức cấp chứng chỉ được cài trong phần cài đặt của Android, nên máy chủ có chứng chỉ riêng cũng kết nối được.',
   'new.change.signInCard': 'Trang đăng nhập có diện mạo mới, với logo và tên ArrowLoop ở trên cùng và mỗi nút rộng bằng thẻ. Con trỏ đã nằm sẵn trong ô mật khẩu, nút đăng nhập chờ đến khi bạn nhập gì đó, và khi mật khẩu hoặc mã sai thì nút rung nhẹ.',
   'autoBackup.title': 'Sao lưu tự động',

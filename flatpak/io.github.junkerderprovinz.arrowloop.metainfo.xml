@@ -79,6 +79,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.1" date="2026-11-08">
+      <description>
+        <p>Open and edit the jobs of your other paired instances.</p>
+        <ul>
+          <li>A job's name on another instance's card opens it, and Edit changes it there</li>
+          <li>That instance checks every change by its own rules and only takes its own targets, drives and the folders it already syncs</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.1</url>
+    </release>
     <release version="2.6.0" date="2026-11-08">
       <description>
         <p>ArrowLoop opens on an Overview, pairs your instances with twelve words, backs up its settings on its own and comes as a Flatpak.</p>

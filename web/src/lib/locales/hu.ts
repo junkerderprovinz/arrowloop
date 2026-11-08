@@ -1404,6 +1404,7 @@ const hu: Translations = {
   'new.change.systemAccent': 'A {accent} elején álló varázspálcás színminta a rendszer színét veszi át: Android 12-től a Material You, az asztali alkalmazásban a Windows, a macOS vagy a Linux kiemelőszíne, Firefoxban és Safariban pedig a rendszerszín. Ahol a rendszernek nincs ilyen, a minta nem jelenik meg.',
   'new.change.oxicloud': 'Az OxiCloudnak saját csempéje van a Felhők alatt. Megmutatja, milyen címet vár az OxiCloud, és hol készül az alkalmazásjelszó.',
   'new.change.flatpak': 'Az ArrowLoop Flatpakként is elérhető Linuxra. Saját WebKitGTK-t hoz magával, a frissítéseket pedig a szoftverközpontodból kapja.',
+  'new.change.remoteJobs': 'Az {overview} oldalon egy másik példány kártyáján a feladat neve megnyitja a feladatot. Innen szerkesztheted, a Mentés pedig elküldi annak a példánynak, amely a saját szabályai szerint ellenőrzi.',
   'new.change.userCas': 'A telefonos alkalmazás megbízik az Android beállításaiban telepített hitelesítésszolgáltatókban, így a saját tanúsítvánnyal rendelkező kiszolgáló is csatlakozik.',
   'new.change.signInCard': 'A bejelentkezési oldal új külsőt kapott, felül az ArrowLoop logójával és nevével, és minden gomb olyan széles, mint a kártya. A kurzor már a jelszómezőben áll, a belépés gomb megvárja, amíg beír valamit, és hibás jelszónál vagy kódnál kicsit megrázkódik.',
   'autoBackup.title': 'Automatikus mentések',
