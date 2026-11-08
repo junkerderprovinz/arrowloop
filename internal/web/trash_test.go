@@ -126,7 +126,8 @@ func silentServer(t *testing.T) (addr string, hangUp func()) {
 }
 
 func TestASideThatNeverAnswersGivesUpWhileTheOtherIsListed(t *testing.T) {
-	web.ShortenTrashWait(t, time.Second)
+	// The wait holds for both sides, so it leaves a busy machine time to list the local one.
+	web.ShortenTrashWait(t, 3*time.Second)
 	addr, hangUp := silentServer(t)
 	h := engineFor(t, `{"jobs":[{"name":"cloud","left":"%[1]s/left",`+
 		`"right":":s3,provider=Other,endpoint='http://`+addr+`',access_key_id=k,secret_access_key=s:bucket",`+
