@@ -63,6 +63,9 @@ export function ChoiceRow<T extends string>({
   const strip = options.length * widest + (options.length - 1) * WELL_GAP + 2 * WELL_PAD;
   const fits = room > 0 && name > 0 && measured && name + space.md + strip <= room;
   const perRow = room > 0 && measured ? perRowFor(options.length, room - 2 * WELL_PAD, widest, WELL_GAP) : options.length;
+  // Even shares on one row only once the labels are known to fit them; until
+  // then the segments wrap around their labels.
+  const shared = room > 0 && measured && perRow === options.length;
   const wrapped = perRow * widest + (perRow - 1) * WELL_GAP + 2 * WELL_PAD;
 
   return (
@@ -101,7 +104,7 @@ export function ChoiceRow<T extends string>({
             onChange={onChange}
             options={options}
             disabled={disabled}
-            perRow={perRow < options.length ? perRow : undefined}
+            perRow={shared ? undefined : perRow}
             style={full ? { alignSelf: "stretch" } : measured && room > 0 ? { width: Math.min(wrapped, room), alignSelf: "flex-start" } : null}
           />
         </View>

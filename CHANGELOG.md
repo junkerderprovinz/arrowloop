@@ -27,6 +27,7 @@ The full notes for each release are in
 
 - **The phone app's engine restarts quickly after you add or remove a certificate authority.** While a screen was open, the old engine waited ten seconds for it and then logged its exit as a failure. It ends the screen's live updates and stops right away, and a stop the app asked for is never logged as a failure.
 - **A saved password in the phone app's target form shows its name again.** The row lost its label, the (i) sat on top of Saved and a wide empty space opened around it. It looks like the other fields: the name with its (i), and under it Saved and Change.
+- **The schedule choices in the phone app's job form keep their words whole.** At phone width Manual, Weekdays and Real time broke in the middle of the word. Each choice stays on one line, and the row wraps onto a second one where they don't fit side by side.
 
 ## 2.5.0 - 2026-11-08
 

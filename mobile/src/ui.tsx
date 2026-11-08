@@ -1257,7 +1257,9 @@ export function Choice<T extends string>({
   disabled?: boolean;
   /**
    * How many segments share a row, for more than one row holds: they wrap
-   * into even rows, each segment as wide as the others in its row.
+   * into even rows, each segment as wide as the others in its row. A segment
+   * is never narrower than its label, so a label too long for its share
+   * moves to the next row rather than breaking.
    */
   perRow?: number;
   style?: StyleProp<ViewStyle>;
@@ -1265,14 +1267,14 @@ export function Choice<T extends string>({
   const { p, corners, accent, hueAt } = useTheme();
   const mine = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
   // A share of the row that leaves room for the gaps; growing fills the rest.
-  const basis: DimensionValue | undefined = perRow ? `${Math.floor(100 / perRow) - 4}%` : undefined;
+  const share: DimensionValue | undefined = perRow ? `${Math.floor(100 / perRow) - 4}%` : undefined;
   return (
     <View
       pointerEvents={disabled ? "none" : "auto"}
       style={[
         styles.well,
         { backgroundColor: p.surface2, ...corners.pill },
-        basis ? styles.wrapped : null,
+        share ? styles.wrapped : null,
         disabled ? styles.dimmed : null,
         style,
       ]}
@@ -1286,7 +1288,7 @@ export function Choice<T extends string>({
             option={option}
             on={on}
             fill={fill}
-            basis={basis}
+            share={share}
             onPress={() => onChange(option.value)}
           />
         );
@@ -1300,13 +1302,13 @@ function Segment({
   option,
   on,
   fill,
-  basis,
+  share,
   onPress,
 }: {
   option: { label: string; hint?: string; mark?: (ink: string) => ReactNode; glyph?: string; disabled?: boolean };
   on: boolean;
   fill: string;
-  basis?: DimensionValue;
+  share?: DimensionValue;
   onPress: () => void;
 }) {
   const { p, corners, labels } = useTheme();
@@ -1327,7 +1329,7 @@ function Segment({
         styles.segment,
         option.hint || (glyph && word) ? styles.segmentRow : null,
         corners.pill,
-        basis ? { flexBasis: basis } : null,
+        share ? [styles.segmentWrapped, { minWidth: share }] : styles.segmentShared,
         on ? { backgroundColor: fill } : null,
         { opacity: press.dim, transform: [{ scale: press.scale }] },
         option.disabled ? styles.dimmed : null,
@@ -1336,12 +1338,9 @@ function Segment({
       {option.mark ? option.mark(ink) : glyph}
       {word ? (
         <Text
-          // In rows a label that does not fit its share takes a second line.
-          // On one row it shrinks rather than truncates, down to 0.7; below
-          // that the strip has too many segments.
-          numberOfLines={basis ? 2 : 1}
-          adjustsFontSizeToFit={!basis}
-          minimumFontScale={0.7}
+          // adjustsFontSizeToFit would shrink a long label, but on Android it
+          // breaks the word onto a second line instead.
+          numberOfLines={1}
           style={[styles.segmentText, { color: ink }]}
         >
           {option.label}
@@ -1761,13 +1760,14 @@ const styles = StyleSheet.create({
   wrapped: { flexWrap: "wrap" },
   // Centred for when the groove stretches to a neighbouring button's height.
   segment: {
-    flex: 1,
-    minWidth: 0,
     paddingVertical: 7,
     paddingHorizontal: 6,
     alignItems: "center",
     justifyContent: "center",
   },
+  segmentShared: { flex: 1, minWidth: 0 },
+  // Not `flex`, which would set the basis to zero and let a label be squeezed.
+  segmentWrapped: { flexGrow: 1, flexShrink: 0, flexBasis: "auto" },
   segmentText: { fontSize: text.meta, fontWeight: "500", flexShrink: 1 },
   segmentRow: { flexDirection: "row", gap: 4 },
 
