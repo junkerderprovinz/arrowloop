@@ -1102,6 +1102,7 @@ const ms: Translations = {
   'look.overviewHint': 'ArrowLoop dibuka pada Gambaran. Jika dimatikan, ia dibuka pada Tugas, dan Tetapan mengambil tempat Gambaran pada bar.',
   'look.pinTileHint': 'Jika dimatikan, halaman ini menunggu anda pada jubinnya dalam Tetapan.',
   'look.overviewOnBar': 'Gambaran pada bar',
+  'look.instancesInMore': 'Instans di bawah Lagi',
   'workload.retries': 'Cuba semula',
   'safety.brakes': 'Brek',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const ms: Translations = {
   'new.change.overview': '{overview} menunjukkan keadaan semuanya sekali imbas: apa yang sedang berjalan dan apa yang menunggu anda, setiap tugas dengan larian terakhir dan seterusnya, larian terkini dan tugas instans anda yang telah digandingkan. ArrowLoop dibuka pada halaman ini. Kad {sidebar} dalam {settings}, {look} menyembunyikannya semula, di sebelah suis untuk Destinasi dan Instans, dan pada telefon halaman ini mempunyai suisnya sendiri di bawah {appearance}.',
   'nav.instances': 'Instans',
   'instances.none': 'Belum ada instans lain yang digandingkan dengan instans ini. Anda boleh menggandingkannya di Tetapan, Gandingan.',
-  'settings.showInMore': 'Papar juga di bawah Lagi',
-  'settings.showInMoreHint': 'Meletakkan halaman ini juga di bawah Lagi. Ia kekal juga di sini.',
 }
 
 export default ms

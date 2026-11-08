@@ -1102,6 +1102,7 @@ const et: Translations = {
   'look.overviewHint': 'ArrowLoop avaneb Ülevaatega. Kui selle välja lülitad, avaneb see Töödega ja Seaded võtab ribal Ülevaate koha.',
   'look.pinTileHint': 'Kui selle välja lülitad, ootab leht sind oma paanil Seadetes.',
   'look.overviewOnBar': 'Ülevaade ribal',
+  'look.instancesInMore': 'Eksemplarid jaotises Veel',
   'workload.retries': 'Kordusproovid',
   'safety.brakes': 'Piduriid',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const et: Translations = {
   'new.change.overview': '{overview} näitab ühe pilguga, kuidas kõik on: mis töötab ja mis sind ootab, iga töö koos viimase ja järgmise käivitusega, viimased käivitused ja su seotud eksemplaride tööd. ArrowLoop avaneb sellel lehel. Kaardil {sidebar} jaotises {settings}, {look} saad selle jälle peita, Sihtkohtade ja Eksemplaride lülitite kõrval, ja telefonis on lehel oma lüliti jaotises {appearance}.',
   'nav.instances': 'Eksemplarid',
   'instances.none': 'Selle eksemplariga pole veel ühtegi teist seotud. Siduda saad jaotises Seaded, Sidumine.',
-  'settings.showInMore': 'Näita ka jaotises Veel',
-  'settings.showInMoreHint': 'Paneb lehe ka jaotisesse Veel. See jääb ka siia.',
 }
 
 export default et

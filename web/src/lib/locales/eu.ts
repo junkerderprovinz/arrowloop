@@ -1102,6 +1102,7 @@ const eu: Translations = {
   'look.overviewHint': 'ArrowLoop Ikuspegian irekitzen da. Desaktibatuz gero, Lanak atalean irekitzen da, eta Ezarpenak Ikuspegiaren lekua hartzen du barran.',
   'look.pinTileHint': 'Desaktibatuz gero, orria zure zain dago Ezarpenetako bere lauzan.',
   'look.overviewOnBar': 'Ikuspegia barran',
+  'look.instancesInMore': 'Instantziak Gehiago atalean',
   'workload.retries': 'Saiakera berriak',
   'safety.brakes': 'Balaztak',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const eu: Translations = {
   'new.change.overview': '{overview} atalak begirada batean erakusten du dena nola dagoen: zer dabilen eta zer dagoen zure zain, lan bakoitza bere azken eta hurrengo exekuzioarekin, azken exekuzioak eta zure instantzia parekatuen lanak. ArrowLoop orri honetan irekitzen da. {settings}, {look} ataleko {sidebar} txartelak berriro ezkutatzen du, Helburuak eta Instantziak etengailuen ondoan, eta telefonoan etengailu propioa du {appearance} atalean.',
   'nav.instances': 'Instantziak',
   'instances.none': 'Oraindik ez dago beste instantziarik honekin parekatuta. Ezarpenak, Parekatzea atalean parekatu dezakezu bat.',
-  'settings.showInMore': 'Erakutsi Gehiago atalean ere',
-  'settings.showInMoreHint': 'Orria Gehiago atalean ere jartzen du. Hemen ere geratzen da.',
 }
 
 export default eu

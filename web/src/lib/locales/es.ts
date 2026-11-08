@@ -1102,6 +1102,7 @@ const es: Translations = {
   'look.overviewHint': 'ArrowLoop se abre en el Resumen. Si lo desactivas, se abre en Tareas, y Ajustes ocupa el lugar del Resumen en la barra.',
   'look.pinTileHint': 'Si lo desactivas, la página te espera en su mosaico de Ajustes.',
   'look.overviewOnBar': 'Resumen en la barra',
+  'look.instancesInMore': 'Instancias en Más',
   'workload.retries': 'Reintentos',
   'safety.brakes': 'Frenos',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const es: Translations = {
   'new.change.overview': '{overview} muestra de un vistazo cómo está todo: qué se ejecuta y qué te espera, cada tarea con su última y su próxima ejecución, las ejecuciones más recientes y las tareas de tus instancias emparejadas. ArrowLoop se abre en esta página. La tarjeta {sidebar} en {settings}, {look} la vuelve a ocultar, junto a los interruptores de Destinos e Instancias, y en el móvil tiene su propio interruptor en {appearance}.',
   'nav.instances': 'Instancias',
   'instances.none': 'Todavía no hay ninguna otra instancia emparejada con esta. Puedes emparejar una en Ajustes, Emparejamiento.',
-  'settings.showInMore': 'Mostrar también en Más',
-  'settings.showInMoreHint': 'Pone la página también en Más. También se queda aquí.',
 }
 
 export default es

@@ -1102,6 +1102,7 @@ const da: Translations = {
   'look.overviewHint': 'ArrowLoop åbner på Oversigt. Slået fra åbner det på Job, og Indstillinger tager pladsen for Oversigt på linjen.',
   'look.pinTileHint': 'Slået fra venter siden på sit felt i Indstillinger.',
   'look.overviewOnBar': 'Oversigt på linjen',
+  'look.instancesInMore': 'Instanser under Mere',
   'workload.retries': 'Nye forsøg',
   'safety.brakes': 'Bremser',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const da: Translations = {
   'new.change.overview': '{overview} viser med et blik, hvordan det hele står til: hvad der kører, og hvad der venter på dig, hvert job med seneste og næste kørsel, de nyeste kørsler og jobbene på dine parrede instanser. ArrowLoop åbner på den side. Kortet {sidebar} i {settings}, {look} kan skjule den igen, ved siden af kontakterne for Mål og Instanser, og på telefonen har siden sin egen kontakt under {appearance}.',
   'nav.instances': 'Instanser',
   'instances.none': 'Ingen anden instans er parret med denne endnu. Du parrer en under Indstillinger, Parring.',
-  'settings.showInMore': 'Vis også under Mere',
-  'settings.showInMoreHint': 'Sætter siden under Mere som ekstra. Den bliver også her.',
 }
 
 export default da

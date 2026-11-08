@@ -1102,6 +1102,7 @@ const is: Translations = {
   'look.overviewHint': 'ArrowLoop opnast á Yfirliti. Sé slökkt á þessu opnast það á Verkum, og Stillingar taka sæti Yfirlits á stikunni.',
   'look.pinTileHint': 'Sé slökkt á þessu bíður síðan þín á reitnum sínum í Stillingum.',
   'look.overviewOnBar': 'Yfirlit á stikunni',
+  'look.instancesInMore': 'Tilvik undir Meira',
   'workload.retries': 'Endurtilraunir',
   'safety.brakes': 'Hemlar',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const is: Translations = {
   'new.change.overview': '{overview} sýnir í fljótu bragði hvernig allt stendur: hvað er í gangi og hvað bíður þín, hvert verk með síðustu og næstu keyrslu, nýjustu keyrslurnar og verk paraðra tilvika þinna. ArrowLoop opnast á þessari síðu. Spjaldið {sidebar} undir {settings}, {look} felur hana aftur, við hliðina á rofunum fyrir Áfangastaði og Tilvik, og í símanum hefur síðan sinn eigin rofa undir {appearance}.',
   'nav.instances': 'Tilvik',
   'instances.none': 'Ekkert annað tilvik er parað við þetta enn. Þú parar tilvik undir Stillingar, Pörun.',
-  'settings.showInMore': 'Sýna líka undir Meira',
-  'settings.showInMoreHint': 'Setur síðuna líka undir Meira. Hún verður líka áfram hér.',
 }
 
 export default is

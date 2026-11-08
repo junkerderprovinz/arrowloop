@@ -1102,6 +1102,7 @@ const hu: Translations = {
   'look.overviewHint': 'Az ArrowLoop az Áttekintéssel nyílik meg. Kikapcsolva a Feladatokkal nyílik meg, és a sávon a Beállítások veszi át az Áttekintés helyét.',
   'look.pinTileHint': 'Kikapcsolva az oldal a csempéjén vár rád a Beállításokban.',
   'look.overviewOnBar': 'Áttekintés a sávon',
+  'look.instancesInMore': 'Példányok a Továbbiak alatt',
   'workload.retries': 'Újrapróbálkozások',
   'safety.brakes': 'Fékek',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const hu: Translations = {
   'new.change.overview': 'Az {overview} egy pillantással megmutatja, hogyan áll minden: mi fut és mi vár rád, minden feladatot a legutóbbi és a következő futásával, a legutóbbi futásokat és a párosított példányaid feladatait. Az ArrowLoop ezzel az oldallal nyílik meg. A {settings}, {look} alatti {sidebar} kártyán újra elrejtheted, a Célok és a Példányok kapcsolója mellett, a telefonon pedig saját kapcsolója van a {appearance} alatt.',
   'nav.instances': 'Példányok',
   'instances.none': 'Ehhez a példányhoz még nincs másik párosítva. Párosítani a Beállítások, Párosítás alatt tudsz.',
-  'settings.showInMore': 'A Továbbiak alatt is jelenjen meg',
-  'settings.showInMoreHint': 'Az oldalt a Továbbiak alá is kiteszi. Itt is megmarad.',
 }
 
 export default hu

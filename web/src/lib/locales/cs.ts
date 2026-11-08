@@ -1102,6 +1102,7 @@ const cs: Translations = {
   'look.overviewHint': 'ArrowLoop se otevírá na Přehledu. Když to vypneš, otevře se na Úlohách a Nastavení zaujme místo Přehledu na liště.',
   'look.pinTileHint': 'Když to vypneš, stránka na tebe čeká na své dlaždici v Nastavení.',
   'look.overviewOnBar': 'Přehled na liště',
+  'look.instancesInMore': 'Instance v nabídce Více',
   'workload.retries': 'Opakování',
   'safety.brakes': 'Brzdy',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const cs: Translations = {
   'new.change.overview': '{overview} ukazuje na první pohled, jak všechno stojí: co běží a co čeká na tebe, každou úlohu s posledním a dalším během, nejnovější běhy a úlohy tvých spárovaných instancí. ArrowLoop se otevírá na této stránce. Karta {sidebar} v {settings}, {look} ji zase skryje, hned vedle přepínačů pro Cíle a Instance, a v telefonu má stránka vlastní přepínač v {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'S touto instancí zatím není spárovaná žádná další. Spárovat můžeš v Nastavení, Párování.',
-  'settings.showInMore': 'Zobrazit také v nabídce Více',
-  'settings.showInMoreHint': 'Přidá stránku i do nabídky Více. Tady zůstane také.',
 }
 
 export default cs

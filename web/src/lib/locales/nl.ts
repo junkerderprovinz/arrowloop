@@ -1102,6 +1102,7 @@ const nl: Translations = {
   'look.overviewHint': 'ArrowLoop opent op het Overzicht. Uitgeschakeld opent het op Taken, en Instellingen neemt de plek van het Overzicht in de balk in.',
   'look.pinTileHint': 'Uitgeschakeld wacht de pagina op haar tegel in Instellingen.',
   'look.overviewOnBar': 'Overzicht in de balk',
+  'look.instancesInMore': 'Instanties onder Meer',
   'workload.retries': 'Nieuwe pogingen',
   'safety.brakes': 'Remmen',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const nl: Translations = {
   'new.change.overview': '{overview} laat in één oogopslag zien hoe alles ervoor staat: wat er loopt en wat op je wacht, elke taak met de laatste en volgende run, de nieuwste runs en de taken van je gekoppelde instanties. ArrowLoop opent op deze pagina. De kaart {sidebar} in {settings}, {look} verbergt de pagina weer, naast de schakelaars voor Doelen en Instanties, en op de telefoon heeft de pagina een eigen schakelaar onder {appearance}.',
   'nav.instances': 'Instanties',
   'instances.none': 'Er is nog geen andere instantie met deze gekoppeld. Koppelen doe je onder Instellingen, Koppeling.',
-  'settings.showInMore': 'Ook onder Meer tonen',
-  'settings.showInMoreHint': 'Zet de pagina ook onder Meer. Hier blijft hij ook staan.',
 }
 
 export default nl

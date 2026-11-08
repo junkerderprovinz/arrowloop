@@ -1102,6 +1102,7 @@ const fr: Translations = {
   'look.overviewHint': 'ArrowLoop s\'ouvre sur l\'Aperçu. Si vous le désactivez, il s\'ouvre sur Tâches, et Réglages prend la place de l\'Aperçu dans la barre.',
   'look.pinTileHint': 'Si vous le désactivez, la page vous attend sur sa tuile dans Réglages.',
   'look.overviewOnBar': 'Aperçu dans la barre',
+  'look.instancesInMore': 'Instances dans Plus',
   'workload.retries': 'Nouvelles tentatives',
   'safety.brakes': 'Freins',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const fr: Translations = {
   'new.change.overview': '{overview} montre d\'un coup d\'œil où en est chaque chose : ce qui tourne et ce qui vous attend, chaque tâche avec sa dernière et sa prochaine exécution, les exécutions les plus récentes et les tâches de vos instances appairées. ArrowLoop s\'ouvre sur cette page. La carte {sidebar} dans {settings}, {look} la masque à nouveau, à côté des interrupteurs pour Cibles et Instances, et sur le téléphone elle a son propre interrupteur dans {appearance}.',
   'nav.instances': 'Instances',
   'instances.none': 'Aucune autre instance n\'est encore appairée avec celle-ci. Vous pouvez en appairer une dans Réglages, Appairage.',
-  'settings.showInMore': 'Afficher aussi dans Plus',
-  'settings.showInMoreHint': 'Ajoute aussi la page à Plus. Elle reste aussi ici.',
 }
 
 export default fr

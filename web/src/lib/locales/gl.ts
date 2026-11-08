@@ -1102,6 +1102,7 @@ const gl: Translations = {
   'look.overviewHint': 'ArrowLoop ábrese no Resumo. Se o desactivas, ábrese en Tarefas, e Axustes ocupa o lugar do Resumo na barra.',
   'look.pinTileHint': 'Se o desactivas, a páxina agárdate no seu mosaico de Axustes.',
   'look.overviewOnBar': 'Resumo na barra',
+  'look.instancesInMore': 'Instancias en Máis',
   'workload.retries': 'Reintentos',
   'safety.brakes': 'Freos',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const gl: Translations = {
   'new.change.overview': '{overview} amosa dunha ollada como está todo: que se executa e que agarda por ti, cada tarefa coa súa última e seguinte execución, as execucións máis recentes e as tarefas das túas instancias emparelladas. ArrowLoop ábrese nesta páxina. A tarxeta {sidebar} en {settings}, {look} vólvea agochar, xunto aos interruptores de Destinos e Instancias, e no móbil ten un interruptor propio en {appearance}.',
   'nav.instances': 'Instancias',
   'instances.none': 'Aínda non hai ningunha outra instancia emparellada con esta. Podes emparellar unha en Axustes, Emparellamento.',
-  'settings.showInMore': 'Mostrar tamén en Máis',
-  'settings.showInMoreHint': 'Pon a páxina tamén en Máis. Tamén queda aquí.',
 }
 
 export default gl

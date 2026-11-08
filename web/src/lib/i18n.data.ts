@@ -1166,6 +1166,7 @@ export const en = {
   'look.overviewHint': 'ArrowLoop opens on the Overview. Switched off, it opens on Jobs, and Settings takes the Overview\'s place on the bar.',
   'look.pinTileHint': 'Switched off, the page waits on its tile in Settings.',
   'look.overviewOnBar': 'Overview on the bar',
+  'look.instancesInMore': 'Instances under More',
   'workload.retries': 'Retries',
   'safety.brakes': 'Brakes',
   'notify.matrix': 'Matrix',
@@ -1574,8 +1575,6 @@ export const en = {
   'new.change.overview': '{overview} shows how everything stands at a glance: what runs and what waits for you, each job with its last and next run, the latest runs and the jobs of your paired instances. ArrowLoop opens on it. The {sidebar} card in {settings}, {look} hides it again, beside the switches for Targets and Instances, and on the phone it has a switch of its own under {appearance}.',
   'nav.instances': 'Instances',
   'instances.none': 'No other instance is paired with this one yet. You pair one under Settings, Pairing.',
-  'settings.showInMore': 'Also show under More',
-  'settings.showInMoreHint': 'Puts the page under More as well. It stays here too.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -2735,6 +2734,7 @@ export const de: Translations = {
   'look.overviewHint': 'ArrowLoop öffnet mit der Übersicht. Ausgeschaltet öffnet es mit den Aufträgen, und Einstellungen nimmt ihren Platz in der Leiste ein.',
   'look.pinTileHint': 'Ausgeschaltet wartet die Seite in ihrer Kachel in den Einstellungen.',
   'look.overviewOnBar': 'Übersicht in der Leiste',
+  'look.instancesInMore': 'Instanzen unter Mehr',
   'workload.retries': 'Wiederholungen',
   'safety.brakes': 'Bremsen',
   'notify.matrix': 'Matrix',
@@ -3140,8 +3140,6 @@ export const de: Translations = {
   'new.change.overview': '{overview} zeigt dir auf einen Blick, wie alles steht: was läuft und was auf dich wartet, jeden Auftrag mit seinem letzten und nächsten Lauf, die letzten Läufe und die Aufträge deiner gekoppelten Instanzen. ArrowLoop öffnet mit ihr. Die Karte {sidebar} in {settings}, {look} blendet sie wieder aus, gleich neben den Schaltern für Ziele und Instanzen, und auf dem Handy hat sie einen eigenen Schalter unter {appearance}.',
   'nav.instances': 'Instanzen',
   'instances.none': 'Noch ist keine andere Instanz mit dieser gekoppelt. Koppeln kannst du unter Einstellungen, Kopplung.',
-  'settings.showInMore': 'Auch unter Mehr zeigen',
-  'settings.showInMoreHint': 'Stellt die Seite zusätzlich unter Mehr. Hier bleibt sie auch.',
 }
 
 export interface Language {

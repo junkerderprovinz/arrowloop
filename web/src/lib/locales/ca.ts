@@ -1102,6 +1102,7 @@ const ca: Translations = {
   'look.overviewHint': 'ArrowLoop s\'obre amb el Resum. Si ho desactives, s\'obre amb Tasques, i Configuració ocupa el lloc del Resum a la barra.',
   'look.pinTileHint': 'Si ho desactives, la pàgina t\'espera a la seva fitxa de Configuració.',
   'look.overviewOnBar': 'Resum a la barra',
+  'look.instancesInMore': 'Instàncies a Més',
   'workload.retries': 'Reintents',
   'safety.brakes': 'Frens',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const ca: Translations = {
   'new.change.overview': '{overview} mostra d\'un cop d\'ull com està tot: què s\'executa i què t\'espera, cada tasca amb l\'última execució i la propera, les execucions més recents i les tasques de les teves instàncies aparellades. ArrowLoop s\'obre amb aquesta pàgina. La targeta {sidebar} de {settings}, {look} la torna a amagar, al costat dels interruptors de Destinacions i Instàncies, i al mòbil té un interruptor propi a {appearance}.',
   'nav.instances': 'Instàncies',
   'instances.none': 'Encara no hi ha cap altra instància aparellada amb aquesta. En pots aparellar una a Configuració, Aparellament.',
-  'settings.showInMore': 'Mostra també a Més',
-  'settings.showInMoreHint': 'Posa la pàgina també a Més. També es queda aquí.',
 }
 
 export default ca

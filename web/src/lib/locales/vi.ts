@@ -1102,6 +1102,7 @@ const vi: Translations = {
   'look.overviewHint': 'ArrowLoop mở ở Tổng quan. Khi tắt, ứng dụng mở ở Công việc, và Cài đặt thế chỗ Tổng quan trên thanh.',
   'look.pinTileHint': 'Khi tắt, trang này chờ bạn ở ô của nó trong Cài đặt.',
   'look.overviewOnBar': 'Tổng quan trên thanh',
+  'look.instancesInMore': 'Phiên bản trong Thêm',
   'workload.retries': 'Thử lại',
   'safety.brakes': 'Phanh',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const vi: Translations = {
   'new.change.overview': '{overview} cho bạn thấy mọi thứ đang ra sao chỉ trong nháy mắt: cái gì đang chạy và cái gì đang chờ bạn, từng công việc với lần chạy gần nhất và lần chạy tiếp theo, các lần chạy mới nhất và công việc của các phiên bản đã ghép nối. ArrowLoop mở ở trang này. Thẻ {sidebar} trong {settings}, {look} có thể ẩn trang này đi, cạnh các công tắc cho Đích và Phiên bản, và trên điện thoại trang này có công tắc riêng trong {appearance}.',
   'nav.instances': 'Phiên bản',
   'instances.none': 'Chưa có phiên bản nào khác được ghép nối với phiên bản này. Bạn có thể ghép nối trong Cài đặt, Ghép nối.',
-  'settings.showInMore': 'Hiện cả trong Thêm',
-  'settings.showInMoreHint': 'Đặt trang này cả vào Thêm. Trang vẫn ở đây.',
 }
 
 export default vi

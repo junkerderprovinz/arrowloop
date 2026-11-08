@@ -1102,6 +1102,7 @@ const ja: Translations = {
   'look.overviewHint': 'ArrowLoop は概要を開いて起動します。オフにするとジョブを開いて起動し、バーでは概要の代わりに設定が表示されます。',
   'look.pinTileHint': 'オフにすると、このページは設定のタイルから開けます。',
   'look.overviewOnBar': 'バーに概要を表示',
+  'look.instancesInMore': '「その他」にインスタンス',
   'workload.retries': '再試行',
   'safety.brakes': 'ブレーキ',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const ja: Translations = {
   'new.change.overview': '{overview} では、すべての状況がひと目でわかります。実行中のものとあなたの対応を待っているもの、各ジョブの前回と次回の実行、最近の実行、ペアリングしたインスタンスのジョブを表示します。ArrowLoop はこのページを開いて起動します。{settings}、{look} の {sidebar} カードでは、接続先やインスタンスのスイッチと並んで、このページを再び非表示にできます。スマホでは {appearance} に専用のスイッチがあります。',
   'nav.instances': 'インスタンス',
   'instances.none': 'このインスタンスとペアリングされたほかのインスタンスはまだありません。「設定」の「ペアリング」でペアリングできます。',
-  'settings.showInMore': '「その他」にも表示',
-  'settings.showInMoreHint': 'このページを「その他」にも置きます。ここにも残ります。',
 }
 
 export default ja

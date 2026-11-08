@@ -1102,6 +1102,7 @@ const tr: Translations = {
   'look.overviewHint': 'ArrowLoop Genel bakış ile açılır. Kapatırsan İşler ile açılır ve çubukta Genel bakış\'ın yerini Ayarlar alır.',
   'look.pinTileHint': 'Kapatırsan sayfa, Ayarlar\'daki kendi karosunda seni bekler.',
   'look.overviewOnBar': 'Çubukta Genel bakış',
+  'look.instancesInMore': 'Daha fazla altında Örnekler',
   'workload.retries': 'Yeniden denemeler',
   'safety.brakes': 'Frenler',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const tr: Translations = {
   'new.change.overview': '{overview} her şeyin ne durumda olduğunu bir bakışta gösterir: neyin çalıştığını ve neyin seni beklediğini, her işi son ve sonraki çalıştırmasıyla, en son çalıştırmaları ve eşleştirdiğin örneklerin işlerini. ArrowLoop bu sayfayla açılır. {settings}, {look} içindeki {sidebar} kartında, Hedefler ve Örnekler anahtarlarının yanında, sayfayı yeniden gizleyebilirsin. Telefonda ise {appearance} altında kendi anahtarı var.',
   'nav.instances': 'Örnekler',
   'instances.none': 'Bu örnekle henüz başka bir örnek eşleştirilmedi. Eşleştirmeyi Ayarlar, Eşleştirme altında yapabilirsin.',
-  'settings.showInMore': 'Daha fazla altında da göster',
-  'settings.showInMoreHint': 'Sayfayı Daha fazla altına da koyar. Burada da kalır.',
 }
 
 export default tr

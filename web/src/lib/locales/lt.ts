@@ -1102,6 +1102,7 @@ const lt: Translations = {
   'look.overviewHint': 'ArrowLoop atsidaro Apžvalgoje. Išjungus atsidaro Užduotyse, o Nustatymai užima Apžvalgos vietą juostoje.',
   'look.pinTileHint': 'Išjungus puslapis laukia tavęs savo plytelėje Nustatymuose.',
   'look.overviewOnBar': 'Apžvalga juostoje',
+  'look.instancesInMore': 'Egzemplioriai skiltyje Daugiau',
   'workload.retries': 'Kartojimai',
   'safety.brakes': 'Stabdžiai',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const lt: Translations = {
   'new.change.overview': '{overview} vienu žvilgsniu parodo, kaip viskas klostosi: kas vyksta ir kas laukia tavęs, kiekvieną užduotį su paskutiniu ir kitu paleidimu, naujausius paleidimus ir tavo susietų egzempliorių užduotis. ArrowLoop atsidaro šiame puslapyje. Kortelė {sidebar} skiltyje {settings}, {look} vėl jį paslepia, šalia Paskirčių ir Egzempliorių jungiklių, o telefone puslapis turi savo jungiklį skiltyje {appearance}.',
   'nav.instances': 'Egzemplioriai',
   'instances.none': 'Su šiuo dar nesusietas joks kitas egzempliorius. Susieti gali skiltyje Nustatymai, Susiejimas.',
-  'settings.showInMore': 'Rodyti ir skiltyje Daugiau',
-  'settings.showInMoreHint': 'Įdeda puslapį ir į skiltį Daugiau. Jis lieka ir čia.',
 }
 
 export default lt

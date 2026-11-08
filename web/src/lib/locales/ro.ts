@@ -1102,6 +1102,7 @@ const ro: Translations = {
   'look.overviewHint': 'ArrowLoop se deschide pe Privire de ansamblu. Dacă îl dezactivezi, se deschide pe Sarcini, iar Setări ia locul paginii Privire de ansamblu în bară.',
   'look.pinTileHint': 'Dacă îl dezactivezi, pagina te așteaptă în dala ei din Setări.',
   'look.overviewOnBar': 'Privire de ansamblu în bară',
+  'look.instancesInMore': 'Instanțe în Mai mult',
   'workload.retries': 'Reîncercări',
   'safety.brakes': 'Frâne',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const ro: Translations = {
   'new.change.overview': '{overview} arată dintr-o privire cum stau lucrurile: ce rulează și ce te așteaptă, fiecare sarcină cu ultima și următoarea rulare, cele mai recente rulări și sarcinile instanțelor tale împerecheate. ArrowLoop se deschide pe această pagină. Cardul {sidebar} din {settings}, {look} o ascunde din nou, lângă comutatoarele pentru Destinații și Instanțe, iar pe telefon pagina are propriul comutator în {appearance}.',
   'nav.instances': 'Instanțe',
   'instances.none': 'Încă nicio altă instanță nu este împerecheată cu aceasta. Poți împerechea una în Setări, Împerechere.',
-  'settings.showInMore': 'Afișează și în Mai mult',
-  'settings.showInMoreHint': 'Pune pagina și în Mai mult. Rămâne și aici.',
 }
 
 export default ro

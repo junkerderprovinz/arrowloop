@@ -1102,6 +1102,7 @@ const fa: Translations = {
   'look.overviewHint': 'ArrowLoop با نمای کلی باز می‌شود. اگر خاموشش کنی، با کارها باز می‌شود و تنظیمات جای نمای کلی را در نوار می‌گیرد.',
   'look.pinTileHint': 'اگر خاموشش کنی، صفحه در کاشی خودش در تنظیمات منتظرت می‌ماند.',
   'look.overviewOnBar': 'نمای کلی در نوار',
+  'look.instancesInMore': 'نمونه‌ها زیر بیشتر',
   'workload.retries': 'تلاش مجدد',
   'safety.brakes': 'ترمزها',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const fa: Translations = {
   'new.change.overview': '{overview} با یک نگاه نشان می‌دهد همه‌چیز در چه حال است: چه چیزی در حال اجراست و چه چیزی منتظر توست، هر کار با آخرین اجرا و اجرای بعدی‌اش، آخرین اجراها و کارهای نمونه‌های جفت‌شده‌ات. ArrowLoop با همین صفحه باز می‌شود. کارت {sidebar} در {settings}، {look} دوباره پنهانش می‌کند، کنار کلیدهای مقصدها و نمونه‌ها، و در گوشی هم زیر {appearance} کلید خودش را دارد.',
   'nav.instances': 'نمونه‌ها',
   'instances.none': 'هنوز هیچ نمونهٔ دیگری با این نمونه جفت نشده است. در تنظیمات، جفت‌سازی می‌توانی یکی را جفت کنی.',
-  'settings.showInMore': 'نمایش زیر بیشتر هم',
-  'settings.showInMoreHint': 'صفحه را زیر بیشتر هم می‌گذارد. اینجا هم می‌ماند.',
 }
 
 export default fa

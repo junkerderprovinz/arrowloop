@@ -628,8 +628,9 @@ hold a single action is that action's button instead.
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
 engine, Pairing, Settings backup, On a server, Desktop app, Problems?,
-About this app and Danger zone. Pairing opens the same steps as on the web,
-and its **Also show under More** switch adds Instances to the More sheet. Appearance has the **Overview on the bar** switch and the **OLED** switch under
+About this app and Danger zone. Pairing opens the same cards as on the web,
+and **Instances under More**, under Appearance, adds Instances to the More
+sheet. Until then its cards follow on the Pairing screen. Appearance has the **Overview on the bar** switch and the **OLED** switch under
 Design, and from Android 12 on the accent row starts with the wand swatch,
 which takes Material You's colour from the wallpaper.
 

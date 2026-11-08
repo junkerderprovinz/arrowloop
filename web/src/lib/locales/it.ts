@@ -1102,6 +1102,7 @@ const it: Translations = {
   'look.overviewHint': 'ArrowLoop si apre sulla Panoramica. Se lo disattivi, si apre su Lavori, e Impostazioni prende il posto della Panoramica nella barra.',
   'look.pinTileHint': 'Se lo disattivi, la pagina ti aspetta nel suo riquadro in Impostazioni.',
   'look.overviewOnBar': 'Panoramica nella barra',
+  'look.instancesInMore': 'Istanze in Altro',
   'workload.retries': 'Nuovi tentativi',
   'safety.brakes': 'Freni',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const it: Translations = {
   'new.change.overview': '{overview} mostra a colpo d\'occhio come sta andando tutto: cosa è in esecuzione e cosa ti aspetta, ogni lavoro con l\'ultima e la prossima esecuzione, le esecuzioni più recenti e i lavori delle tue istanze associate. ArrowLoop si apre su questa pagina. La scheda {sidebar} in {settings}, {look} la nasconde di nuovo, accanto agli interruttori per Destinazioni e Istanze, e sul telefono ha un interruttore tutto suo in {appearance}.',
   'nav.instances': 'Istanze',
   'instances.none': 'Nessun\'altra istanza è ancora associata a questa. Puoi associarne una in Impostazioni, Associazione.',
-  'settings.showInMore': 'Mostra anche in Altro',
-  'settings.showInMoreHint': 'Mette la pagina anche in Altro. Resta anche qui.',
 }
 
 export default it

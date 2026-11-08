@@ -1102,6 +1102,7 @@ const sl: Translations = {
   'look.overviewHint': 'ArrowLoop se odpre na Pregledu. Ko je izklopljeno, se odpre na Opravilih, Nastavitve pa zasedejo mesto Pregleda v vrstici.',
   'look.pinTileHint': 'Ko je izklopljeno, te stran čaka na svoji ploščici v Nastavitvah.',
   'look.overviewOnBar': 'Pregled v vrstici',
+  'look.instancesInMore': 'Instance pod Več',
   'workload.retries': 'Ponovni poskusi',
   'safety.brakes': 'Zavore',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const sl: Translations = {
   'new.change.overview': '{overview} na prvi pogled pokaže, kako vse stoji: kaj teče in kaj čaka nate, vsako opravilo z zadnjim in naslednjim zagonom, najnovejše zagone in opravila tvojih seznanjenih instanc. ArrowLoop se odpre na tej strani. Kartica {sidebar} v {settings}, {look} jo spet skrije, ob stikalih za Cilje in Instance, na telefonu pa ima stran svoje stikalo v {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'S to instanco še ni seznanjena nobena druga. Seznaniš jo lahko v Nastavitvah, Seznanjanje.',
-  'settings.showInMore': 'Pokaži tudi pod Več',
-  'settings.showInMoreHint': 'Doda stran tudi pod Več. Ostane tudi tukaj.',
 }
 
 export default sl

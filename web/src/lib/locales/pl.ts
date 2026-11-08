@@ -1102,6 +1102,7 @@ const pl: Translations = {
   'look.overviewHint': 'ArrowLoop otwiera się na Przeglądzie. Po wyłączeniu otwiera się na Zadaniach, a Ustawienia zajmują miejsce Przeglądu na pasku.',
   'look.pinTileHint': 'Po wyłączeniu strona czeka na ciebie na swoim kafelku w Ustawieniach.',
   'look.overviewOnBar': 'Przegląd na pasku',
+  'look.instancesInMore': 'Instancje w sekcji Więcej',
   'workload.retries': 'Ponowne próby',
   'safety.brakes': 'Hamulce',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const pl: Translations = {
   'new.change.overview': '{overview} pokazuje na pierwszy rzut oka, jak wszystko wygląda: co działa i co czeka na ciebie, każde zadanie z ostatnim i następnym przebiegiem, najnowsze przebiegi i zadania twoich sparowanych instancji. ArrowLoop otwiera się na tej stronie. Karta {sidebar} w {settings}, {look} ponownie ją ukrywa, obok przełączników Cele i Instancje, a na telefonie strona ma własny przełącznik w {appearance}.',
   'nav.instances': 'Instancje',
   'instances.none': 'Z tą instancją nie jest jeszcze sparowana żadna inna. Sparujesz ją w Ustawieniach, Parowanie.',
-  'settings.showInMore': 'Pokaż także w sekcji Więcej',
-  'settings.showInMoreHint': 'Dodaje stronę także do sekcji Więcej. Zostaje też tutaj.',
 }
 
 export default pl

@@ -1102,6 +1102,7 @@ const sv: Translations = {
   'look.overviewHint': 'ArrowLoop öppnas på Översikt. Avstängt öppnas det på Jobb, och Inställningar tar platsen för Översikt på raden.',
   'look.pinTileHint': 'Avstängt väntar sidan på sin ruta i Inställningar.',
   'look.overviewOnBar': 'Översikt på raden',
+  'look.instancesInMore': 'Instanser under Mer',
   'workload.retries': 'Nya försök',
   'safety.brakes': 'Bromsar',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const sv: Translations = {
   'new.change.overview': '{overview} visar med en blick hur allt står till: vad som körs och vad som väntar på dig, varje jobb med senaste och nästa körning, de senaste körningarna och jobben från dina parkopplade instanser. ArrowLoop öppnas på den här sidan. Kortet {sidebar} under {settings}, {look} döljer den igen, bredvid reglagen för Mål och Instanser, och på telefonen har sidan ett eget reglage under {appearance}.',
   'nav.instances': 'Instanser',
   'instances.none': 'Ingen annan instans är parkopplad med den här än. Du parkopplar en under Inställningar, Parkoppling.',
-  'settings.showInMore': 'Visa även under Mer',
-  'settings.showInMoreHint': 'Lägger även sidan under Mer. Den stannar kvar här också.',
 }
 
 export default sv

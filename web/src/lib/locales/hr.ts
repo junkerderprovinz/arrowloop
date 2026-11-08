@@ -1102,6 +1102,7 @@ const hr: Translations = {
   'look.overviewHint': 'ArrowLoop se otvara na Pregledu. Kad je isključeno, otvara se na Zadacima, a Postavke preuzimaju mjesto Pregleda na traci.',
   'look.pinTileHint': 'Kad je isključeno, stranica te čeka na svojoj pločici u Postavkama.',
   'look.overviewOnBar': 'Pregled na traci',
+  'look.instancesInMore': 'Instance pod Više',
   'workload.retries': 'Ponovni pokušaji',
   'safety.brakes': 'Kočnice',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const hr: Translations = {
   'new.change.overview': '{overview} na prvi pogled pokazuje kako sve stoji: što radi i što te čeka, svaki zadatak s posljednjim i sljedećim izvođenjem, najnovija izvođenja i zadatke tvojih uparenih instanci. ArrowLoop se otvara na toj stranici. Kartica {sidebar} u {settings}, {look} ponovno je skriva, uz prekidače za Odredišta i Instance, a na mobitelu stranica ima vlastiti prekidač pod {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'Još nijedna druga instanca nije uparena s ovom. Upariti možeš u Postavkama, Uparivanje.',
-  'settings.showInMore': 'Prikaži i pod Više',
-  'settings.showInMoreHint': 'Stavlja stranicu i pod Više. Ostaje i ovdje.',
 }
 
 export default hr

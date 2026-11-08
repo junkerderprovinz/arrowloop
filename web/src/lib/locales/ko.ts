@@ -1102,6 +1102,7 @@ const ko: Translations = {
   'look.overviewHint': 'ArrowLoop은 개요 화면으로 열립니다. 끄면 작업 화면으로 열리고, 바에서는 개요 자리에 설정이 표시됩니다.',
   'look.pinTileHint': '끄면 이 페이지는 설정의 타일에서 열 수 있습니다.',
   'look.overviewOnBar': '바에 개요 표시',
+  'look.instancesInMore': '더 보기에 인스턴스',
   'workload.retries': '재시도',
   'safety.brakes': '제동',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const ko: Translations = {
   'new.change.overview': '{overview}에서는 모든 상황을 한눈에 볼 수 있습니다. 실행 중인 것과 확인을 기다리는 것, 각 작업의 마지막 실행과 다음 실행, 최근 실행, 페어링한 인스턴스의 작업을 보여 줍니다. ArrowLoop은 이 페이지로 열립니다. {settings}, {look}의 {sidebar} 카드에서 대상과 인스턴스 스위치 옆에 있는 스위치로 다시 숨길 수 있으며, 휴대폰에서는 {appearance}에 전용 스위치가 있습니다.',
   'nav.instances': '인스턴스',
   'instances.none': '아직 이 인스턴스와 페어링된 다른 인스턴스가 없습니다. 설정, 페어링에서 페어링할 수 있습니다.',
-  'settings.showInMore': '더 보기에도 표시',
-  'settings.showInMoreHint': '이 페이지를 더 보기에도 둡니다. 여기에도 그대로 남습니다.',
 }
 
 export default ko

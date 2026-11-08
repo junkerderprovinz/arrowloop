@@ -1102,6 +1102,7 @@ const zh: Translations = {
   'look.overviewHint': 'ArrowLoop 打开时显示概览。关闭后会打开任务，栏中概览的位置由设置代替。',
   'look.pinTileHint': '关闭后，该页面会在设置中自己的磁贴里等你。',
   'look.overviewOnBar': '栏中显示概览',
+  'look.instancesInMore': '“更多”中的实例',
   'workload.retries': '重试',
   'safety.brakes': '刹车',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const zh: Translations = {
   'new.change.overview': '{overview} 让你一眼看清一切状况：正在运行什么、什么在等你处理，每个任务的上次运行和下次运行，最近的运行，以及你已配对的实例上的任务。ArrowLoop 打开时显示这个页面。在 {settings}、{look} 的 {sidebar} 卡片上，就在目标和实例的开关旁边，可以再次隐藏它，在手机上则在 {appearance} 下有单独的开关。',
   'nav.instances': '实例',
   'instances.none': '还没有其他实例与此实例配对。你可以在“设置”的“配对”中进行配对。',
-  'settings.showInMore': '同时显示在“更多”中',
-  'settings.showInMoreHint': '同时把这个页面放到“更多”中。它也会留在这里。',
 }
 
 export default zh

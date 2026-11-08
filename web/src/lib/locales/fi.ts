@@ -1102,6 +1102,7 @@ const fi: Translations = {
   'look.overviewHint': 'ArrowLoop avautuu Yleiskatsaukseen. Kun tämä on pois päältä, se avautuu Töihin, ja Asetukset ottaa Yleiskatsauksen paikan palkissa.',
   'look.pinTileHint': 'Kun tämä on pois päältä, sivu odottaa ruudussaan Asetuksissa.',
   'look.overviewOnBar': 'Yleiskatsaus palkissa',
+  'look.instancesInMore': 'Instanssit kohdassa Lisää',
   'workload.retries': 'Uudelleenyritykset',
   'safety.brakes': 'Jarrut',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const fi: Translations = {
   'new.change.overview': '{overview} näyttää yhdellä silmäyksellä, miten kaikki on: mikä on käynnissä ja mikä odottaa sinua, jokaisen työn viimeisen ja seuraavan ajon, uusimmat ajot ja pariutettujen instanssiesi työt. ArrowLoop avautuu tälle sivulle. Kortilla {sidebar} kohdassa {settings}, {look} voit piilottaa sen taas, Kohteiden ja Instanssien kytkinten vieressä, ja puhelimessa sivulla on oma kytkin kohdassa {appearance}.',
   'nav.instances': 'Instanssit',
   'instances.none': 'Tähän ei ole vielä pariutettu muita instansseja. Voit pariuttaa kohdassa Asetukset, Pariliitos.',
-  'settings.showInMore': 'Näytä myös kohdassa Lisää',
-  'settings.showInMoreHint': 'Lisää sivun myös kohtaan Lisää. Se pysyy myös täällä.',
 }
 
 export default fi

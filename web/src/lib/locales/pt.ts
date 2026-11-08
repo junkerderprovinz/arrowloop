@@ -1102,6 +1102,7 @@ const pt: Translations = {
   'look.overviewHint': 'O ArrowLoop abre no Resumo. Se o desligares, abre em Tarefas, e Definições ocupa o lugar do Resumo na barra.',
   'look.pinTileHint': 'Se o desligares, a página espera por ti no seu mosaico em Definições.',
   'look.overviewOnBar': 'Resumo na barra',
+  'look.instancesInMore': 'Instâncias em Mais',
   'workload.retries': 'Novas tentativas',
   'safety.brakes': 'Travões',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const pt: Translations = {
   'new.change.overview': '{overview} mostra num relance como está tudo: o que está a correr e o que está à tua espera, cada tarefa com a última e a próxima execução, as execuções mais recentes e as tarefas das tuas instâncias emparelhadas. O ArrowLoop abre nesta página. O cartão {sidebar} em {settings}, {look} volta a ocultá-la, ao lado dos interruptores de Destinos e Instâncias, e no telemóvel a página tem um interruptor próprio em {appearance}.',
   'nav.instances': 'Instâncias',
   'instances.none': 'Ainda nenhuma outra instância está emparelhada com esta. Podes emparelhar uma em Definições, Emparelhamento.',
-  'settings.showInMore': 'Mostrar também em Mais',
-  'settings.showInMoreHint': 'Põe a página também em Mais. Também fica aqui.',
 }
 
 export default pt

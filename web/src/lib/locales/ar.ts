@@ -1102,6 +1102,7 @@ const ar: Translations = {
   'look.overviewHint': 'يفتح ArrowLoop على نظرة عامة. وعند إيقاف هذا الخيار يفتح على المهام، وتأخذ الإعدادات مكان نظرة عامة في الشريط.',
   'look.pinTileHint': 'عند إيقاف هذا الخيار تنتظرك الصفحة في مربعها ضمن الإعدادات.',
   'look.overviewOnBar': 'نظرة عامة في الشريط',
+  'look.instancesInMore': 'النسخ تحت المزيد',
   'workload.retries': 'إعادة المحاولة',
   'safety.brakes': 'المكابح',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const ar: Translations = {
   'new.change.overview': 'تعرض {overview} حال كل شيء بنظرة واحدة: ما يعمل وما ينتظرك، وكل مهمة مع آخر تشغيل والتشغيل التالي لها، وأحدث عمليات التشغيل، ومهام نسخك المقترنة. ويفتح ArrowLoop على هذه الصفحة. ويمكنك إخفاؤها مجددًا من بطاقة {sidebar} في {settings}، {look}، بجانب مفتاحي الوجهات والنسخ، وعلى الهاتف لها مفتاح خاص بها في {appearance}.',
   'nav.instances': 'النسخ',
   'instances.none': 'لا توجد بعد نسخة أخرى مقترنة بهذه النسخة. يمكنك إقران واحدة من الإعدادات، الاقتران.',
-  'settings.showInMore': 'أظهرها تحت المزيد أيضًا',
-  'settings.showInMoreHint': 'تضع الصفحة تحت المزيد أيضًا، وتبقى هنا كذلك.',
 }
 
 export default ar

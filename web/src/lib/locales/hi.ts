@@ -1102,6 +1102,7 @@ const hi: Translations = {
   'look.overviewHint': 'ArrowLoop अवलोकन पर खुलता है। बंद करने पर यह काम पर खुलता है, और पट्टी पर अवलोकन की जगह सेटिंग्स आ जाती है।',
   'look.pinTileHint': 'बंद करने पर यह पृष्ठ सेटिंग्स में अपनी टाइल पर आपका इंतज़ार करता है।',
   'look.overviewOnBar': 'पट्टी पर अवलोकन',
+  'look.instancesInMore': 'और में इंस्टेंस',
   'workload.retries': 'पुनः प्रयास',
   'safety.brakes': 'ब्रेक',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const hi: Translations = {
   'new.change.overview': '{overview} एक नज़र में दिखाता है कि सब कुछ कैसा चल रहा है: क्या चल रहा है और क्या आपका इंतज़ार कर रहा है, हर काम अपने पिछले और अगले चक्र के साथ, हाल के चक्र और आपके पेयर किए गए इंस्टेंस के काम। ArrowLoop इसी पृष्ठ पर खुलता है। {settings}, {look} में {sidebar} कार्ड इसे फिर से छिपा सकता है, गंतव्य और इंस्टेंस के स्विच के पास, और फ़ोन पर {appearance} में इसका अपना स्विच है।',
   'nav.instances': 'इंस्टेंस',
   'instances.none': 'अभी तक कोई दूसरा इंस्टेंस इससे पेयर नहीं है। आप सेटिंग्स, पेयरिंग में कोई इंस्टेंस पेयर कर सकते हैं।',
-  'settings.showInMore': 'और में भी दिखाएँ',
-  'settings.showInMoreHint': 'पृष्ठ को और में भी जोड़ता है। वह यहाँ भी बना रहता है।',
 }
 
 export default hi

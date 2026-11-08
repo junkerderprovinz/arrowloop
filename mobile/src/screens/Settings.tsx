@@ -671,6 +671,14 @@ export function Settings() {
           value={look.overviewOnBar}
           onChange={(overviewOnBar) => setAppearance({ overviewOnBar })}
         />
+        {pairable ? (
+          <Toggle
+            label={t("look.instancesInMore")}
+            hint={t("look.pinTileHint")}
+            value={look.instancesInMore}
+            onChange={(instancesInMore) => setAppearance({ instancesInMore })}
+          />
+        ) : null}
 
         <AxisLabel hint={t("look.jobViewHint")}>{t("look.jobView")}</AxisLabel>
         <Choice<JobView>

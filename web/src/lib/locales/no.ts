@@ -1102,6 +1102,7 @@ const no: Translations = {
   'look.overviewHint': 'ArrowLoop åpner på Oversikt. Slått av åpner det på Jobber, og Innstillinger tar plassen til Oversikt på linjen.',
   'look.pinTileHint': 'Slått av venter siden på flisen sin i Innstillinger.',
   'look.overviewOnBar': 'Oversikt på linjen',
+  'look.instancesInMore': 'Instanser under Mer',
   'workload.retries': 'Nye forsøk',
   'safety.brakes': 'Bremser',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const no: Translations = {
   'new.change.overview': '{overview} viser med ett blikk hvordan alt står til: hva som kjører og hva som venter på deg, hver jobb med siste og neste kjøring, de nyeste kjøringene og jobbene til de parede instansene dine. ArrowLoop åpner på denne siden. Kortet {sidebar} i {settings}, {look} skjuler den igjen, ved siden av bryterne for Mål og Instanser, og på telefonen har siden en egen bryter under {appearance}.',
   'nav.instances': 'Instanser',
   'instances.none': 'Ingen annen instans er paret med denne ennå. Du parer en under Innstillinger, Paring.',
-  'settings.showInMore': 'Vis også under Mer',
-  'settings.showInMoreHint': 'Legger siden under Mer i tillegg. Den blir også værende her.',
 }
 
 export default no

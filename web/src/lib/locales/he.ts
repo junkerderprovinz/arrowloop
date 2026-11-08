@@ -1102,6 +1102,7 @@ const he: Translations = {
   'look.overviewHint': 'ArrowLoop נפתח בסקירה. כשהאפשרות כבויה, הוא נפתח במשימות, והגדרות תופסות את מקומה של הסקירה בסרגל.',
   'look.pinTileHint': 'כשהאפשרות כבויה, הדף מחכה לך באריח שלו בהגדרות.',
   'look.overviewOnBar': 'סקירה בסרגל',
+  'look.instancesInMore': 'מופעים תחת עוד',
   'workload.retries': 'ניסיונות חוזרים',
   'safety.brakes': 'בלמים',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const he: Translations = {
   'new.change.overview': '{overview} מראה במבט אחד איך הכול עומד: מה רץ ומה מחכה לך, כל משימה עם ההרצה האחרונה והבאה שלה, ההרצות האחרונות והמשימות של המופעים המצומדים שלך. ArrowLoop נפתח בדף הזה. הכרטיס {sidebar} תחת {settings}, {look} מסתיר אותו שוב, ליד המתגים של יעדים ומופעים, ובטלפון יש לו מתג משלו תחת {appearance}.',
   'nav.instances': 'מופעים',
   'instances.none': 'עדיין אין מופע אחר שמצומד למופע הזה. אפשר לצמד מופע תחת הגדרות, צימוד.',
-  'settings.showInMore': 'הצג גם תחת עוד',
-  'settings.showInMoreHint': 'מוסיף את הדף גם תחת עוד. הוא נשאר גם כאן.',
 }
 
 export default he

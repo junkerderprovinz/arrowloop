@@ -1102,6 +1102,7 @@ const lv: Translations = {
   'look.overviewHint': 'ArrowLoop atveras Pārskatā. Ja to izslēdz, tas atveras Uzdevumos, un Iestatījumi ieņem Pārskata vietu joslā.',
   'look.pinTileHint': 'Ja to izslēdz, lapa tevi gaida savā flīzē Iestatījumos.',
   'look.overviewOnBar': 'Pārskats joslā',
+  'look.instancesInMore': 'Instances sadaļā Vairāk',
   'workload.retries': 'Atkārtojumi',
   'safety.brakes': 'Bremzes',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const lv: Translations = {
   'new.change.overview': '{overview} vienā mirklī parāda, kā viss rit: kas darbojas un kas gaida tevi, katru uzdevumu ar pēdējo un nākamo palaišanu, jaunākās palaišanas un tavu sapāroto instanču uzdevumus. ArrowLoop atveras šajā lapā. Kartīte {sidebar} sadaļā {settings}, {look} to atkal paslēpj, blakus Galamērķu un Instanču slēdžiem, un tālrunī lapai ir savs slēdzis sadaļā {appearance}.',
   'nav.instances': 'Instances',
   'instances.none': 'Ar šo vēl nav sapārota neviena cita instance. Sapārot vari sadaļā Iestatījumi, Pārošana.',
-  'settings.showInMore': 'Rādīt arī sadaļā Vairāk',
-  'settings.showInMoreHint': 'Ievieto lapu arī sadaļā Vairāk. Tā paliek arī šeit.',
 }
 
 export default lv

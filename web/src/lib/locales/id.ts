@@ -1102,6 +1102,7 @@ const id: Translations = {
   'look.overviewHint': 'ArrowLoop terbuka di Ringkasan. Jika dimatikan, ArrowLoop terbuka di Tugas, dan Pengaturan mengambil tempat Ringkasan di bilah.',
   'look.pinTileHint': 'Jika dimatikan, halaman ini menunggu Anda di petaknya di Pengaturan.',
   'look.overviewOnBar': 'Ringkasan di bilah',
+  'look.instancesInMore': 'Instance di Lainnya',
   'workload.retries': 'Percobaan ulang',
   'safety.brakes': 'Rem',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const id: Translations = {
   'new.change.overview': '{overview} menunjukkan sekilas keadaan semuanya: apa yang berjalan dan apa yang menunggu Anda, setiap tugas dengan proses terakhir dan berikutnya, proses terbaru, dan tugas dari instance Anda yang sudah dipasangkan. ArrowLoop terbuka di halaman ini. Kartu {sidebar} di {settings}, {look} bisa menyembunyikannya lagi, di samping sakelar untuk Tujuan dan Instance, dan di ponsel halaman ini punya sakelar sendiri di {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'Belum ada instance lain yang dipasangkan dengan instance ini. Anda bisa memasangkan satu di Pengaturan, Pemasangan.',
-  'settings.showInMore': 'Tampilkan juga di Lainnya',
-  'settings.showInMoreHint': 'Menaruh halaman ini juga di Lainnya. Halaman tetap ada di sini.',
 }
 
 export default id

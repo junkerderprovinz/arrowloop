@@ -1102,6 +1102,7 @@ const sk: Translations = {
   'look.overviewHint': 'ArrowLoop sa otvára na Prehľade. Keď to vypneš, otvorí sa na Úlohách a Nastavenia zaujmú miesto Prehľadu na lište.',
   'look.pinTileHint': 'Keď to vypneš, stránka na teba čaká na svojej dlaždici v Nastaveniach.',
   'look.overviewOnBar': 'Prehľad na lište',
+  'look.instancesInMore': 'Inštancie v ponuke Viac',
   'workload.retries': 'Opakovania',
   'safety.brakes': 'Brzdy',
   'notify.matrix': 'Matrix',
@@ -1532,8 +1533,6 @@ const sk: Translations = {
   'new.change.overview': '{overview} ukazuje na prvý pohľad, ako všetko stojí: čo beží a čo čaká na teba, každú úlohu s posledným a ďalším behom, najnovšie behy a úlohy tvojich spárovaných inštancií. ArrowLoop sa otvára na tejto stránke. Karta {sidebar} v {settings}, {look} ju opäť skryje, vedľa prepínačov pre Ciele a Inštancie, a v telefóne má stránka vlastný prepínač v {appearance}.',
   'nav.instances': 'Inštancie',
   'instances.none': 'S touto inštanciou zatiaľ nie je spárovaná žiadna iná. Spárovať ju môžeš v Nastaveniach, Párovanie.',
-  'settings.showInMore': 'Zobraziť aj v ponuke Viac',
-  'settings.showInMoreHint': 'Pridá stránku aj do ponuky Viac. Tu zostane tiež.',
 }
 
 export default sk
