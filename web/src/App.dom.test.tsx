@@ -172,6 +172,7 @@ describe('the app', () => {
     const watcher = { ...nightly, name: 'watcher', schedule: '', watch: true, recent: [run(100, 'watcher')] }
     jobs.mockImplementation(() => Promise.resolve([nightly, watcher]))
     history.mockImplementation(() => Promise.resolve(Array.from({ length: 50 }, (_, i) => run(100 - i, 'watcher'))))
+    window.history.replaceState(null, '', '/jobs')
     show()
     expect(await screen.findByText('Failed')).toBeTruthy()
     expect(screen.getAllByTestId('job-row')).toHaveLength(2)
