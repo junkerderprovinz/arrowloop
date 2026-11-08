@@ -530,8 +530,13 @@ until you give one.
 The instances reach each other through a relay. **Project relay** is
 ParleyPort, which the project runs at `parleyport.halleluja.design`, free of
 charge. **Own relay** takes the address of one you run yourself, from the
-Unraid Community Apps or with Docker. **No relay** keeps the instance to
-itself. Each route says what it needs beside a picture of a message on its
+Unraid Community Apps or with Docker. **ArrowLoop instance** makes one of your
+instances the relay: switch on **Serve as relay** on the one that is reachable
+from outside, and it answers the others of your group at `/relay/connect` on
+its own address, behind the same reverse proxy and certificate. Enter that
+address on every instance, the one that serves included. The phone and the
+desktop app are reached by nobody, so they use such a relay but never serve
+one. **No relay** keeps the instance to itself. Each route says what it needs beside a picture of a message on its
 way, and **What the relay sees** opens the rest. While the relay cannot be
 reached, the card lists what to check. Every call between your instances is
 sealed with a key made from the
@@ -646,7 +651,10 @@ Over plain HTTP the session cookie crosses the wire in clear, so a machine
 reachable from outside wants TLS in front of it, with a password or without.
 
 A paired instance reaches this one only through the relay, and only for the
-job list, **Run now** and **Cancel the run**. It has to be approved here first,
+job list, **Run now** and **Cancel the run**. An instance that serves the relay
+opens `/relay/connect` for it and nothing else: it lets in only the key of its
+own group, drops everybody on it when the switch goes off or it leaves the
+group, and answers 404 there while it does not serve. It has to be approved here first,
 and it never sees the settings, the targets, the trash or the twelve words.
 Without a password anybody who opens this interface can read the words, which
 the Pairing tile says.
