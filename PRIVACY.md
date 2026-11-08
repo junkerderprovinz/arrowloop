@@ -1,6 +1,6 @@
 # Privacy policy: ArrowLoop
 
-Last updated: 7 November 2026. Applies to the ArrowLoop Android app, the
+Last updated: 8 November 2026. Applies to the ArrowLoop Android app, the
 desktop app and the container, from version 1.1.0, until this date changes.
 
 ## The short version

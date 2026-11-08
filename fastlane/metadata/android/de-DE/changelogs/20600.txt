@@ -1,0 +1,1 @@
+Eine neue Übersicht zeigt auf einen Blick, wie alles steht. Koppel deine ArrowLoop-Instanzen mit zwölf Wörtern und sieh ihre Aufträge, sichere die Einstellungen automatisch, übernimm Einstellungen aus FolderSync und luckyBackup und verbinde dich mit Servern, die eine eigene Zertifizierungsstelle nutzen. OxiCloud hat eine eigene Kachel.

@@ -79,6 +79,19 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.0" date="2026-11-08">
+      <description>
+        <p>ArrowLoop opens on an Overview, pairs your instances with twelve words, backs up its settings on its own and comes as a Flatpak.</p>
+        <ul>
+          <li>The Overview shows how all jobs and paired instances stand</li>
+          <li>Pair a server, the desktop app and the phone app with twelve words and see each other's jobs</li>
+          <li>The settings are backed up every night, at a time you choose</li>
+          <li>Import takes a FolderSync export or a luckyBackup profile</li>
+          <li>OxiCloud has a tile of its own</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.0</url>
+    </release>
     <release version="2.5.0" date="2026-11-08">
       <description>
         <p>Put the jobs in your own order and see them in a compact list, go true black on OLED screens and let the accent take your system's colour.</p>

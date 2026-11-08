@@ -1,0 +1,1 @@
+A new Overview shows how everything stands at a glance. Pair your ArrowLoop instances with twelve words and see their jobs, back up the settings automatically, import FolderSync and luckyBackup setups, and connect to servers with your own certificate authority. OxiCloud has a tile of its own.
