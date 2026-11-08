@@ -113,12 +113,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 	}
 	boot.Banner()
 
-	httpServer := &http.Server{
-		Handler:           server.Guard(server.Handler()),
-		ReadHeaderTimeout: 10 * time.Second,
-		// No write timeout: the events endpoint is a stream that stays open for
-		// as long as somebody is watching, and a write deadline would cut it.
-	}
+	httpServer := newHTTPServer(server.Guard(server.Handler()))
 
 	errs := make(chan error, 1)
 	go func() {
@@ -157,6 +152,21 @@ func cmdWeb(ctx context.Context, args []string) error {
 	shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return httpServer.Shutdown(shutdown)
+}
+
+func newHTTPServer(handler http.Handler) *http.Server {
+	// Shutdown waits for every handler to return but cancels none of them,
+	// so the events stream would hold it until its timeout.
+	requests, cancel := context.WithCancel(context.Background())
+	server := &http.Server{
+		Handler:           handler,
+		ReadHeaderTimeout: 10 * time.Second,
+		// No write timeout: the events endpoint is a stream that stays open for
+		// as long as somebody is watching, and a write deadline would cut it.
+		BaseContext: func(net.Listener) context.Context { return requests },
+	}
+	server.RegisterOnShutdown(cancel)
+	return server
 }
 
 // shutdownGrace is how long a shutdown waits for a stopped run to record

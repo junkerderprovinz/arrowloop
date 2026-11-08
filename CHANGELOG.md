@@ -23,6 +23,10 @@ The full notes for each release are in
 
 - **ArrowLoop follows GlimStone 4.2.7.** Moving a job, a settings tile or a column works as before, and the part that decides where it lands is the same one the other apps use.
 
+## 🐛 Fixed
+
+- **The phone app's engine restarts quickly after you add or remove a certificate authority.** While a screen was open, the old engine waited ten seconds for it and then logged its exit as a failure. It ends the screen's live updates and stops right away, and a stop the app asked for is never logged as a failure.
+
 ## 2.5.0 - 2026-11-08
 
 Put your jobs in your own order and see them in a compact list, go true black on OLED screens and let the accent take your system's colour. The sign-in page has a new look, the lists sort, filter and search from their own headings, a backup of a folder people keep working in stays green, and previews against an FTP server on a phone work again.

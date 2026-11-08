@@ -11,6 +11,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.util.Collections
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import javax.crypto.Mac
@@ -23,6 +24,8 @@ import javax.crypto.spec.SecretKeySpec
 object Engine {
 
     private const val TAG = "ArrowLoop"
+
+    private const val SIGTERM = 15
 
     /**
      * Loopback only, so the engine is not reachable from the network the phone
@@ -39,6 +42,12 @@ object Engine {
 
     @Volatile
     private var process: Process? = null
+
+    /**
+     * Engines this process sent SIGTERM. One still starting up has no handler
+     * for it yet and dies of it, which is no failure when the app asked.
+     */
+    private val asked: MutableSet<Process> = Collections.synchronizedSet(HashSet())
 
     @Volatile
     private var token: String? = null
@@ -291,7 +300,8 @@ object Engine {
             } catch (_: InterruptedException) {
                 return@Thread
             }
-            if (code != 0) {
+            val stopped = asked.remove(started) && code == 128 + SIGTERM
+            if (code != 0 && !stopped) {
                 // Above 128 the code names the signal: 139 is SIGSEGV, 159 is
                 // SIGSYS, which Android's seccomp filter sends.
                 val why = if (code > 128) " (killed by signal ${code - 128})" else ""
@@ -307,7 +317,10 @@ object Engine {
      */
     @Synchronized
     fun stop() {
-        process?.destroy()
+        process?.let {
+            asked.add(it)
+            it.destroy()
+        }
         process = null
         AppData.stop()
     }
@@ -320,6 +333,7 @@ object Engine {
     @Synchronized
     fun restart(context: Context) {
         val old = process ?: return
+        asked.add(old)
         old.destroy()
         // An engine still running would answer the probe in start, which
         // would then leave it be and start nothing.
