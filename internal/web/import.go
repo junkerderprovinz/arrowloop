@@ -54,6 +54,7 @@ func (s *Server) applyImport(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, errors.New("an ArrowLoop backup replaces the whole setup, so it goes through the restore"))
 		return
 	}
+	s.backUpFirst()
 
 	var made []string
 	undo := func() {

@@ -828,9 +828,7 @@ func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	s.saving.Lock()
 	defer s.saving.Unlock()
-	// A failed backup is logged by the runner and does not stop the import:
-	// a broken backup folder must not stand between somebody and a restore.
-	_ = s.Runner.BackUp(time.Now())
+	s.backUpFirst()
 	next, err := s.Runner.Config().Replace(doc)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -838,6 +836,13 @@ func (s *Server) replaceConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	s.Runner.Reload(next)
 	writeJSON(w, http.StatusOK, map[string]any{"jobs": len(next.Jobs)})
+}
+
+// backUpFirst keeps the setup an import is about to change. A failed backup
+// is logged by the runner and does not stop the import: a broken backup
+// folder must not stand between somebody and a restore.
+func (s *Server) backUpFirst() {
+	_ = s.Runner.BackUp(time.Now())
 }
 
 // listBackups says where the automatic backups go, which are there and how

@@ -582,9 +582,11 @@ anybody having to think of it. It is on from the start: every night at 03:00
 the engine looks at the file and, if it changed since the newest copy, writes a
 new one into the `backups` folder beside it, named after the moment it was
 made, such as `arrowloop-auto-20261107-031500.json`. A file that has not
-changed is not copied again, so the copies reach back as far as the edits do. Right before an import
-replaces everything, the engine keeps the setup it replaces the same way,
-whatever the day's copy did.
+changed is not copied again, so the copies reach back as far as the edits do.
+Right before an import replaces everything, or one from FolderSync or
+luckyBackup adds to it, the engine keeps the setup as it was the same way,
+whatever the day's copy did. If that copy fails, the import still goes ahead
+and the card shows the failure.
 
 **Days between backups**, **Time of day**, **Backups to keep** and **Backup
 folder** set how often, when, how many and where. The days are counted on the

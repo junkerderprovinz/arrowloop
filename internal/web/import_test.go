@@ -1,13 +1,17 @@
 package web_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 )
 
@@ -185,5 +189,43 @@ func TestAnArrowLoopBackupIsNamedNotAdded(t *testing.T) {
 	}
 	if code, _, _ := importing(t, h, "/api/import", string(backup)); code != http.StatusBadRequest {
 		t.Errorf("importing a backup answered %d", code)
+	}
+}
+
+// The import adds to the setup rather than replacing it, but a dozen paused
+// jobs are as much to undo, so the setup before it is kept as for a restore.
+func TestAnImportKeepsTheSetupItAddsTo(t *testing.T) {
+	h := newHarness(t)
+	withRcloneConfig(t)
+	before, _ := os.ReadFile(h.configPath)
+
+	if code, _, said := importing(t, h, "/api/import", profile); code != http.StatusOK {
+		t.Fatalf("import answered %d: %s", code, said)
+	}
+	dir := filepath.Join(h.dir, "backups")
+	files, err := autobackup.List(dir)
+	if err != nil || len(files) != 1 {
+		t.Fatalf("%d backups after the import: %v", len(files), err)
+	}
+	if kept, _ := autobackup.Read(dir, files[0].Name); !bytes.Equal(kept, before) {
+		t.Errorf("the backup holds %s, not the setup before the import", kept)
+	}
+}
+
+func TestAnImportGoesAheadWhenTheBackupFails(t *testing.T) {
+	// The backup folder lies inside the configuration file, so it cannot be made.
+	h := engineFor(t, `{"autoBackup":{"folder":"%[1]s/arrowloop.json/backups"},"jobs":[]}`)
+	withRcloneConfig(t)
+
+	if code, _, said := importing(t, h, "/api/import", profile); code != http.StatusOK {
+		t.Fatalf("import answered %d: %s", code, said)
+	}
+	if _, ok := h.runner.Config().Find("Music"); !ok {
+		t.Error("the import added nothing")
+	}
+	var got daemon.Backups
+	h.get(t, "/api/config/backups", &got)
+	if got.Last == nil || got.Last.Error == "" {
+		t.Errorf("the failed backup was not recorded: %+v", got.Last)
 	}
 }
