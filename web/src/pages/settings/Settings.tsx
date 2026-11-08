@@ -115,12 +115,12 @@ export function Settings(props: SettingsProps) {
   )
 }
 
-function TilePage({ tile, look, version, window, onWindow, targets, whatsNew }: SettingsProps) {
+function TilePage({ tile, tiles, look, version, window, onWindow, targets, whatsNew }: SettingsProps) {
   switch (tile) {
     case 'general':
       return <GeneralPage window={window} onWindow={onWindow} />
     case 'look':
-      return <LookPage {...look} />
+      return <LookPage {...look} pairing={tiles.some((x) => x.id === 'pairing')} />
     case 'sync':
       return <SyncPage />
     case 'safety':

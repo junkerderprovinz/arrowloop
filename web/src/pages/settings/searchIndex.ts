@@ -82,6 +82,15 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
       ],
     },
     {
+      title: 'look.labelsSidebar',
+      hint: 'look.sidebarHint',
+      rows: [
+        { key: 'nav.overview', hint: 'look.overviewHint' },
+        { key: 'nav.targets', hint: 'look.pinTileHint' },
+        { key: 'nav.instances', hint: 'look.pinTileHint' },
+      ],
+    },
+    {
       title: 'look.colors',
       rows: [
         { key: 'look.accent' },

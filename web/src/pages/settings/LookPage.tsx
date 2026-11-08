@@ -33,6 +33,7 @@ import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT } from '../../lib/i18n'
 import { useJobView, type JobView } from '../../lib/jobView'
 import { MOTION_INTENSITIES, type MotionIntensity } from '../../lib/motion'
+import { setNavPin, useNavPins } from '../../lib/navPins'
 import { applyOled, darkShowing, oledRefusal, storedOled, watchDarkShowing } from '../../lib/theme'
 import type { ThemeChoice } from '../../lib/themeSetting'
 import { counter, SettingsRow } from './rows'
@@ -154,8 +155,13 @@ export function LookPage({
   lang,
   onLang,
   languages,
-}: LookProps) {
+  pairing = false,
+}: LookProps & {
+  /** Whether this build pairs instances, without which Instances has no page to pin. */
+  pairing?: boolean
+}) {
   const { t } = useT()
+  const pins = useNavPins()
   const storm = useStormUnlock(motion, onMotion)
   const leaf = useLeafUnlock(shape, onShape)
   const discoUnlock = useDiscoUnlock(disco, onDisco)
@@ -298,9 +304,40 @@ export function LookPage({
         </div>
       </Card>
 
+      {/* Every page that can leave the sidebar, in the sidebar's order, as
+          KnightLoader gathers them. Targets and Instances keep the same switch
+          on their own tiles. */}
+      <Card title={t('look.labelsSidebar')} hint={t('look.sidebarHint')} hueIndex={2}>
+        <div data-new="sidebar-pins" className="flex flex-col gap-4">
+          <ToggleRow
+            label={t('nav.overview')}
+            hint={t('look.overviewHint')}
+            checked={pins.dashboard}
+            onChange={(on) => setNavPin('dashboard', on)}
+            hueIndex={0}
+          />
+          <ToggleRow
+            label={t('nav.targets')}
+            hint={t('look.pinTileHint')}
+            checked={pins.targets}
+            onChange={(on) => setNavPin('targets', on)}
+            hueIndex={1}
+          />
+          {pairing && (
+            <ToggleRow
+              label={t('nav.instances')}
+              hint={t('look.pinTileHint')}
+              checked={pins.instances}
+              onChange={(on) => setNavPin('instances', on)}
+              hueIndex={2}
+            />
+          )}
+        </div>
+      </Card>
+
       {/* Accent and rainbow share one card, last, as in BombVault: the accent
           is the rainbow's position zero. */}
-      <Card title={t('look.colors')} hueIndex={2}>
+      <Card title={t('look.colors')} hueIndex={3}>
         {/* The reset belongs to this row rather than to the card's action
             slot: it resets only the accent. */}
         <div className="flex flex-wrap items-center gap-3">
