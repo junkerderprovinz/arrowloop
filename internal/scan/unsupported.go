@@ -1,13 +1,9 @@
 package scan
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
-	"sort"
 
 	rclonefs "github.com/rclone/rclone/fs"
 )
@@ -19,7 +15,8 @@ type Unsupported struct {
 	Kind string
 }
 
-// FindUnsupported lists what a local side holds that the engine cannot carry.
+// noteUnsupported names what a local folder holds that the engine cannot
+// carry.
 //
 // rclone's local backend drops symlinks and special files from the listing
 // (Object.Storable) with only a log line, so without this they would be
@@ -27,66 +24,33 @@ type Unsupported struct {
 // a second full copy, and rclone's .rclonelink files are of no use to other
 // programs. Remote sides offer no way to look, so only local sides are
 // inspected.
-func FindUnsupported(ctx context.Context, f rclonefs.Fs, opt Options) ([]Unsupported, error) {
-	root, ok := localRoot(f)
-	if !ok {
-		return nil, nil
+func (p pruned) noteUnsupported(dir string) {
+	if p.local == "" {
+		return
 	}
-
-	var out []Unsupported
-	seen := 0
-	Report(ctx, Reading{Stage: StageCheck})
-	err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			return ctxErr
-		}
-		if err != nil {
-			// An unreadable directory is left to the listing, which fails on
-			// it with a better message, and a missing root is a new job's
-			// target that does not exist yet.
-			if p == root && !errors.Is(err, fs.ErrNotExist) {
-				return err
-			}
-			return nil
-		}
-		rel, relErr := filepath.Rel(root, p)
-		if relErr != nil {
-			return nil
-		}
-		rel = filepath.ToSlash(rel)
-		if rel == "." {
-			return nil
-		}
-		if IsReserved(rel) {
-			if d.IsDir() {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		if opt.Exclude.Excluded(rel) {
-			if d.IsDir() {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		if !d.IsDir() {
-			seen++
-			Report(ctx, Reading{Stage: StageCheck, Done: seen})
-		}
-		if kind := unsupportedKind(d.Type()); kind != "" {
-			out = append(out, Unsupported{Path: rel, Kind: kind})
-		}
-		return nil
-	})
+	// The backend has just read this folder, so a failure here means it went
+	// away since, and the next run sees what is left.
+	entries, err := os.ReadDir(filepath.Join(p.local, filepath.FromSlash(dir)))
 	if err != nil {
-		return nil, fmt.Errorf("look for unsupported entries under %s: %w", root, err)
+		return
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].Path < out[j].Path })
-	return out, nil
+	for _, d := range entries {
+		kind := unsupportedKind(d.Type())
+		if kind == "" {
+			continue
+		}
+		rel := path.Join(dir, d.Name())
+		if IsReserved(rel) || p.exclude.Excluded(rel) {
+			continue
+		}
+		p.mu.Lock()
+		*p.unsupported = append(*p.unsupported, Unsupported{Path: rel, Kind: kind})
+		p.mu.Unlock()
+	}
 }
 
 // unsupportedKind names the entry type, or returns "" for something the engine
-// can carry. WalkDir reports the type from an lstat, so a symlink is reported
+// can carry. ReadDir reports the type from an lstat, so a symlink is reported
 // as a symlink rather than as whatever it points at, and with winsymlink=0 (see
 // go.mod) a Windows junction is reported as one too.
 func unsupportedKind(mode os.FileMode) string {
@@ -108,8 +72,8 @@ func unsupportedKind(mode os.FileMode) string {
 }
 
 // localRoot maps a filesystem back to a real directory, when there is one. On
-// Windows rclone returns the root as "//?/C:/...", which Win32 and
-// filepath.Rel do not accept until it is cleaned.
+// Windows rclone returns the root as "//?/C:/...", which Win32 does not accept
+// until it is cleaned.
 func localRoot(f rclonefs.Fs) (string, bool) {
 	if f == nil || f.Name() != "local" {
 		return "", false

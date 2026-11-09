@@ -5,11 +5,10 @@ import "context"
 // Stage names a part of reading a job, before any file moves.
 type Stage string
 
-// The stages in the order a run passes them: each side is listed, a local side
-// is walked again for links the listing leaves out, then the sides are compared.
+// The stages in the order a run passes them: each side is listed, then the
+// sides are compared.
 const (
 	StageList    Stage = "list"
-	StageCheck   Stage = "check"
 	StageCompare Stage = "compare"
 )
 

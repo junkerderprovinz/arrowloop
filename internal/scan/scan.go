@@ -74,6 +74,8 @@ type Listing struct {
 	// What they hold is unknown, not absent, so a run leaves each one alone
 	// on both sides.
 	Unreadable []Unreadable
+	// Unsupported lists what a local side holds that the engine cannot carry.
+	Unsupported []Unsupported
 }
 
 // Unreadable is a folder below the root that could not be listed.
@@ -145,7 +147,8 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	defer dropStats(group)
 	ctx = accounting.WithStatsGroup(ctx, group)
 	stats := accounting.Stats(ctx)
-	side := pruned{Fs: f, exclude: opt.Exclude, mu: &sync.Mutex{}, sealed: &out.Sealed, unreadable: &out.Unreadable}
+	side := pruned{Fs: f, exclude: opt.Exclude, mu: &sync.Mutex{}, sealed: &out.Sealed, unreadable: &out.Unreadable, unsupported: &out.Unsupported}
+	side.local, _ = localRoot(f)
 	err := walk.ListR(ctx, side, "", true, -1, listType, func(entries fs.DirEntries) error {
 		defer func() { Report(ctx, Reading{Stage: StageList, Done: found}) }()
 		for _, entry := range entries {
@@ -224,6 +227,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	sort.Slice(out.Collisions, func(i, j int) bool { return out.Collisions[i].Key < out.Collisions[j].Key })
 	sort.Strings(out.Sealed)
 	sort.Slice(out.Unreadable, func(i, j int) bool { return out.Unreadable[i].Path < out.Unreadable[j].Path })
+	sort.Slice(out.Unsupported, func(i, j int) bool { return out.Unsupported[i].Path < out.Unsupported[j].Path })
 	return out, nil
 }
 
@@ -242,24 +246,32 @@ func dropStats(group string) {
 // The local backend opens every folder the walk reaches, and a drive root holds
 // several, such as System Volume Information, that the process may not open;
 // each would fail the scan. A sealed or unreadable folder is listed as empty
-// too, and noted.
+// too, and noted. On a local side every folder listed is also searched for the
+// entries the backend leaves out (see noteUnsupported).
 type pruned struct {
 	fs.Fs
-	exclude    *filter.Set
-	mu         *sync.Mutex
-	sealed     *[]string
-	unreadable *[]Unreadable
+	exclude     *filter.Set
+	mu          *sync.Mutex
+	sealed      *[]string
+	unreadable  *[]Unreadable
+	unsupported *[]Unsupported
+	local       string
 }
 
 func (p pruned) List(ctx context.Context, dir string) (fs.DirEntries, error) {
 	if dir == "" {
-		return p.Fs.List(ctx, dir)
+		entries, err := p.Fs.List(ctx, dir)
+		if err == nil {
+			p.noteUnsupported(dir)
+		}
+		return entries, err
 	}
 	if IsReserved(dir) || p.exclude.ExcludesTree(dir) {
 		return nil, nil
 	}
 	entries, err := listCounted(ctx, p.Fs, dir)
 	if err == nil {
+		p.noteUnsupported(dir)
 		return entries, nil
 	}
 	gone := errors.Is(err, fs.ErrorDirNotFound)

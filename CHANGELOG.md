@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ⚡ Improved
+
+- **A local side is read once instead of twice.** Symbolic links, junctions and the other entries the engine cannot copy are found while the side is read, so the extra stage "Checking the left side for links" is gone and a large folder is done sooner. Such entries still show up as left for later, as before.
+
 ## 2.6.2 - 2026-11-09
 
 The Automatic backups card picks its folder in the folder picker and leaves restoring to Import settings.

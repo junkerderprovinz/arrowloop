@@ -317,12 +317,8 @@ func readSide(ctx context.Context, side plan.Side, f fs.Fs, opt scan.Options, ex
 	if err != nil {
 		return nil, nil, err
 	}
-	odd, err := scan.FindUnsupported(scan.ForSide(ctx, side.String(), len(listing.Files), false), f, opt)
-	if err != nil {
-		return nil, nil, err
-	}
 	var skips []plan.Skip
-	for _, u := range odd {
+	for _, u := range listing.Unsupported {
 		skips = append(skips, plan.Skip{
 			Path:   u.Path,
 			Reason: plan.Because("unsupported", "kind", u.Kind, "side", side.String()),

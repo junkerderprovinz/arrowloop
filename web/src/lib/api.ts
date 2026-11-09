@@ -549,7 +549,7 @@ export type RunEvent = {
   /** What the step's log line says beyond its kind; see RunEntry.Note. */
   note?: string
   /** Set while the job is still being read, before anything moves. */
-  stage?: 'list' | 'check' | 'compare'
+  stage?: 'list' | 'compare'
   /** The total is the last run's count, so this run may pass it. */
   guess?: boolean
   /** Bytes a second, on a `moving` frame, while anything moves at all. */

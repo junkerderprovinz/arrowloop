@@ -147,5 +147,5 @@ function counted(at: Progress, t: T, lang: string): string {
 function stageLine(stage: NonNullable<RunEvent["stage"]>, side: string | undefined, job: Job, t: T): string {
   if (stage === "compare") return t("progress.compare");
   const place = sidePair(job.left, job.right, t)[side === "right" ? 1 : 0];
-  return stage === "check" ? t("progress.checkPlace", { place }) : t("progress.listPlace", { place });
+  return t("progress.listPlace", { place });
 }

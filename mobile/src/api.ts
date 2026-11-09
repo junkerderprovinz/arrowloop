@@ -413,7 +413,7 @@ export interface RunEvent {
   side?: string;
   /** What a finished step's line in the log says beyond its kind; see Entry.Note. */
   note?: string;
-  stage?: "list" | "check" | "compare";
+  stage?: "list" | "compare";
   /** The total is the last run's count, so this run may pass it. */
   guess?: boolean;
   /**

@@ -34,7 +34,7 @@ func TestReadingReportsEveryStageBeforeTheFirstFileMoves(t *testing.T) {
 		}
 		last[name] = r
 	}
-	want := []string{"list left", "check left", "list right", "check right", "compare "}
+	want := []string{"list left", "list right", "compare "}
 	if !reflect.DeepEqual(order, want) {
 		t.Fatalf("stages ran as %q, want %q", order, want)
 	}
@@ -45,10 +45,6 @@ func TestReadingReportsEveryStageBeforeTheFirstFileMoves(t *testing.T) {
 	}
 	if r := last["list right"]; r.Done != 4 || r.Total != 3 || !r.Guess {
 		t.Errorf("right listing ended at %+v, want 4 of a guessed 3", r)
-	}
-	// The second walk knows what the listing found.
-	if r := last["check right"]; r.Done != 4 || r.Total != 4 || r.Guess {
-		t.Errorf("right check ended at %+v, want 4 of a known 4", r)
 	}
 	if r := last["compare "]; r.Total != 4 || r.Done != 3 {
 		t.Errorf("comparison ended at %+v, want the fourth of 4 paths", r)
