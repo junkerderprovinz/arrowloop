@@ -464,7 +464,7 @@ const lv: Translations = {
   'start.withSystemHint': 'ArrowLoop startē, kad piesakāties, tāpēc ieplānots uzdevums izpildās bez tā, ka kāds vispirms atvērtu logu. Ieraksts pieder tikai jums un neprasa administratora tiesības.',
   'update.auto': 'Atjaunināt automātiski',
   'update.autoHint': 'Reizi dienā ArrowLoop meklē jaunu versiju, lejupielādē to fonā un pārbauda pēc kontrolsummām, kas publicētas kopā ar laidienu. Jaunā versija sāk darboties nākamajā reizē, kad palaižat ArrowLoop, tāpēc notiekoša sinhronizācija netiek pārtraukta. Instalēta un pārnēsājama kopija abas atjauninās tur, kur tās atrodas.',
-  'update.autoContainerHint': 'Iespējams tikai darbvirsmas būvējumā: konteiners nevar aizstāt pats sevi no iekšpuses. Tā vietā atjaunini to tāpat, kā to izvietoji (docker pull, Unraid Community Applications, Watchtower u. c.).',
+  'update.autoContainerHint': 'Reizi dienā ArrowLoop pajautā GitHub, vai ir iznākusi jauna versija, un nosauc to šeit. Konteiners nevar aizstāt pats sevi no iekšpuses, tāpēc atjaunini to tāpat, kā to izvietoji (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} ir lejupielādēts un darbosies nākamajā reizē, kad palaidīsiet lietotni.',
   'update.fromStore': 'Atjauninājumi nāk caur programmatūras centru',
   'update.fromStoreHint': 'Šī ArrowLoop kopija ir Flatpak un pati sevi neaizstāj. Ja tā instalēta no Flathub, katru jauno versiju tā saņem caur tavu programmatūras centru. Ja tā instalēta no lejupielādēta .flatpak faila, tā atjaunojas, kad tādā pašā veidā atver nākamā laidiena failu.',

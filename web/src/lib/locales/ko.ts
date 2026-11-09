@@ -464,7 +464,7 @@ const ko: Translations = {
   'start.withSystemHint': '로그인하면 ArrowLoop가 시작되므로 누군가 먼저 창을 열지 않아도 예약된 작업이 실행됩니다. 이 항목은 사용자 본인만의 것이며 관리자 권한을 요구하지 않습니다.',
   'update.auto': '자동으로 업데이트',
   'update.autoHint': 'ArrowLoop는 하루에 한 번 새 버전을 찾아 백그라운드에서 내려받고, 릴리스와 함께 게시된 체크섬으로 확인합니다. 새 버전은 다음에 ArrowLoop를 시작할 때부터 실행되므로 진행 중인 동기화가 끊기지 않습니다. 설치된 사본과 포터블 사본 모두 있는 자리에서 업데이트됩니다.',
-  'update.autoContainerHint': '데스크톱 빌드에서만 가능합니다. 컨테이너는 내부에서 스스로를 교체할 수 없습니다. 대신 배포한 방식 그대로 업데이트하세요 (docker pull, Unraid Community Applications, Watchtower 등).',
+  'update.autoContainerHint': 'ArrowLoop은 하루에 한 번 GitHub에 새 버전이 나왔는지 확인하고 여기에 알려 줍니다. 컨테이너는 내부에서 스스로를 교체할 수 없으므로 배포한 방식 그대로 업데이트하세요 (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version}을(를) 내려받았습니다. 다음에 앱을 시작할 때부터 실행됩니다.',
   'update.fromStore': '업데이트는 소프트웨어 센터를 통해 받습니다',
   'update.fromStoreHint': '이 ArrowLoop는 Flatpak이라 스스로를 교체하지 않습니다. Flathub에서 설치했다면 새 버전은 소프트웨어 센터를 통해 받습니다. 내려받은 .flatpak 파일로 설치했다면 다음 릴리스의 파일을 같은 방법으로 열면 업데이트됩니다.',

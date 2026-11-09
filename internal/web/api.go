@@ -90,6 +90,15 @@ type Server struct {
 	// release. Empty means api.github.com.
 	Releases string
 
+	// ReleaseLook is how often WatchReleases looks whether its daily check is
+	// due, so the switch takes effect soon after it is turned on. Zero means
+	// an hour.
+	ReleaseLook time.Duration
+
+	// newRelease is the newer release the daily check found.
+	newReleaseMu sync.Mutex
+	newRelease   string
+
 	// Pairing keeps the phrase's secret, this instance's member key and the
 	// relay it dials, and Group the other instances paired with it. Without
 	// both the pairing routes are unregistered.

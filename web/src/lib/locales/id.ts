@@ -464,7 +464,7 @@ const id: Translations = {
   'start.withSystemHint': 'ArrowLoop berjalan saat Anda masuk, sehingga tugas terjadwal berjalan tanpa ada yang membuka jendelanya lebih dulu. Entri ini hanya milik Anda dan tidak meminta hak administrator.',
   'update.auto': 'Perbarui otomatis',
   'update.autoHint': 'Sekali sehari ArrowLoop mencari versi baru, mengunduhnya di latar belakang, dan memeriksanya dengan checksum yang diterbitkan bersama rilisnya. Versi baru mulai dipakai saat Anda menjalankan ArrowLoop berikutnya, jadi sinkronisasi yang sedang berjalan tidak terputus. Salinan terpasang dan salinan portabel sama-sama diperbarui di tempatnya.',
-  'update.autoContainerHint': 'Hanya bisa di build desktop: kontainer tidak bisa mengganti dirinya sendiri dari dalam. Perbarui dengan cara yang sama seperti saat kamu memasangnya (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'Sekali sehari ArrowLoop bertanya ke GitHub apakah ada versi baru dan menyebutkannya di sini. Kontainer tidak bisa mengganti dirinya sendiri dari dalam, jadi perbarui dengan cara yang sama seperti saat kamu memasangnya (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} sudah diunduh dan berjalan saat Anda menjalankan aplikasi berikutnya.',
   'update.fromStore': 'Pembaruan datang lewat pusat perangkat lunak',
   'update.fromStoreHint': 'Salinan ArrowLoop ini adalah Flatpak dan tidak mengganti dirinya sendiri. Jika dipasang dari Flathub, setiap versi baru datang lewat pusat perangkat lunak Anda. Jika dipasang dari berkas .flatpak yang diunduh, salinan ini diperbarui saat Anda membuka berkas rilis berikutnya dengan cara yang sama.',

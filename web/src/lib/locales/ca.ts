@@ -464,7 +464,7 @@ const ca: Translations = {
   'start.withSystemHint': 'ArrowLoop s\'inicia quan inicieu la sessió, de manera que una tasca programada s\'executa sense que ningú obri la finestra abans. L\'entrada és només vostra i no demana permisos d\'administrador.',
   'update.auto': 'Actualitza automàticament',
   'update.autoHint': 'Un cop al dia ArrowLoop cerca una versió nova, la baixa en segon pla i la comprova amb les sumes de verificació publicades amb la versió. La versió nova entra en funcionament la propera vegada que inicieu ArrowLoop, de manera que una sincronització en curs no s\'interromp. Una còpia instal·lada i una de portable s\'actualitzen totes dues allà on són.',
-  'update.autoContainerHint': 'Només és possible a la compilació d’escriptori: un contenidor no es pot reemplaçar a si mateix des de dins. Actualitza’l tal com el vas desplegar (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'Un cop al dia, ArrowLoop pregunta a GitHub si hi ha una versió nova i te l’indica aquí. Un contenidor no es pot reemplaçar a si mateix des de dins, així que actualitza’l tal com el vas desplegar (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} s\'ha baixat i s\'executarà la propera vegada que inicieu l\'aplicació.',
   'update.fromStore': 'Les actualitzacions arriben pel centre de programari',
   'update.fromStoreHint': 'Aquesta còpia d\'ArrowLoop és un Flatpak i no es reemplaça a si mateixa. Instal·lada des de Flathub, rep cada versió nova pel teu centre de programari. Instal·lada des d\'un fitxer .flatpak baixat, s\'actualitza quan obres de la mateixa manera el fitxer de la versió següent.',

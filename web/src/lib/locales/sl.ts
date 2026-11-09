@@ -464,7 +464,7 @@ const sl: Translations = {
   'start.withSystemHint': 'ArrowLoop se zažene ob vaši prijavi, tako da načrtovano opravilo teče, ne da bi kdo prej odprl okno. Vnos pripada samo vam in ne zahteva skrbniških pravic.',
   'update.auto': 'Samodejno posodabljaj',
   'update.autoHint': 'Enkrat na dan ArrowLoop poišče novo različico, jo prenese v ozadju in jo preveri s kontrolnimi vsotami, objavljenimi z izdajo. Nova različica začne delovati ob naslednjem zagonu ArrowLoopa, zato se sinhronizacija, ki teče, ne prekine. Nameščena in prenosna kopija se obe posodobita tam, kjer sta.',
-  'update.autoContainerHint': 'Mogoče samo v namizni izgradnji: vsebnik se ne more sam zamenjati od znotraj. Namesto tega ga posodobi tako, kot si ga namestil (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'Enkrat na dan ArrowLoop vpraša GitHub, ali je izšla nova različica, in jo navede tukaj. Vsebnik se ne more sam zamenjati od znotraj, zato ga posodobi tako, kot si ga namestil (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} je prenesen in bo tekel ob naslednjem zagonu aplikacije.',
   'update.fromStore': 'Posodobitve prihajajo prek središča programske opreme',
   'update.fromStoreHint': 'Ta kopija ArrowLoopa je Flatpak in se ne zamenja sama. Če je nameščena s Flathuba, vsako novo različico dobi prek tvojega središča programske opreme. Če je nameščena iz prenesene datoteke .flatpak, se posodobi, ko na enak način odpreš datoteko naslednje izdaje.',

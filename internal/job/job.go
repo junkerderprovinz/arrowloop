@@ -68,6 +68,11 @@ type Config struct {
 	// AutoBackup is the copy of this file the engine keeps on its own.
 	AutoBackup AutoBackup `json:"autoBackup,omitempty"`
 
+	// UpdateCheck has a container ask GitHub once a day whether a newer
+	// release is out and report it. A container is updated the way it was
+	// deployed, so this only asks.
+	UpdateCheck bool `json:"updateCheck,omitempty"`
+
 	// dir is where the file was read from, so relative paths inside it are
 	// relative to the file.
 	dir string

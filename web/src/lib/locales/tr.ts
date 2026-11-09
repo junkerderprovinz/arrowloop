@@ -464,7 +464,7 @@ const tr: Translations = {
   'start.withSystemHint': 'ArrowLoop siz oturum açtığınızda başlar, böylece zamanlanmış bir iş kimse önce pencereyi açmadan çalışır. Bu kayıt yalnızca size aittir ve yönetici hakkı istemez.',
   'update.auto': 'Otomatik güncelle',
   'update.autoHint': 'ArrowLoop günde bir kez yeni bir sürüm arar, onu arka planda indirir ve sürümle birlikte yayımlanan sağlama toplamlarıyla denetler. Yeni sürüm, ArrowLoop\'u bir sonraki başlatışınızda devreye girer, böylece süren bir eşitleme yarıda kesilmez. Kurulu kopya da taşınabilir kopya da bulundukları yerde güncellenir.',
-  'update.autoContainerHint': 'Yalnızca masaüstü sürümünde mümkün: bir konteyner kendini içeriden değiştiremez. Bunun yerine onu nasıl dağıttıysan öyle güncelle (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'ArrowLoop günde bir kez GitHub\'a yeni bir sürüm çıkıp çıkmadığını sorar ve burada belirtir. Bir konteyner kendini içeriden değiştiremez, bu yüzden onu nasıl dağıttıysan öyle güncelle (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} indirildi ve uygulamayı bir sonraki başlatışınızda çalışacak.',
   'update.fromStore': 'Güncellemeler yazılım merkezinden gelir',
   'update.fromStoreHint': 'ArrowLoop\'un bu kopyası bir Flatpak ve kendini değiştirmez. Flathub\'dan kurulduysa her yeni sürüm yazılım merkezin üzerinden gelir. İndirilmiş bir .flatpak dosyasından kurulduysa, sonraki sürümün dosyasını aynı şekilde açtığında güncellenir.',

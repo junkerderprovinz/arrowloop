@@ -132,6 +132,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 
 	server.StartPairing()
 	defer server.StopPairing()
+	go server.WatchReleases(ctx)
 
 	boot.Ready(fmt.Sprintf("http://%s", listener.Addr()))
 

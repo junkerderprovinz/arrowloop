@@ -464,7 +464,7 @@ const nl: Translations = {
   'start.withSystemHint': 'ArrowLoop start zodra je inlogt, zodat een geplande taak draait zonder dat iemand eerst het venster opent. De vermelding is alleen van jou en vraagt geen beheerdersrechten.',
   'update.auto': 'Automatisch bijwerken',
   'update.autoHint': 'Eén keer per dag zoekt ArrowLoop naar een nieuwe versie, downloadt die op de achtergrond en controleert hem met de checksums die bij de release zijn gepubliceerd. De nieuwe versie neemt het over zodra je ArrowLoop weer start, dus een lopende synchronisatie wordt niet onderbroken. Een geïnstalleerde en een draagbare kopie worden allebei bijgewerkt waar ze staan.',
-  'update.autoContainerHint': 'Alleen mogelijk in de desktopversie: een container kan zichzelf niet van binnenuit vervangen. Werk hem in plaats daarvan bij zoals je hem hebt uitgerold (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'Eén keer per dag vraagt ArrowLoop aan GitHub of er een nieuwe versie is en noemt die hier. Een container kan zichzelf niet van binnenuit vervangen, dus werk hem bij zoals je hem hebt uitgerold (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} is gedownload en draait zodra je de app weer start.',
   'update.fromStore': 'Updates komen via je softwarecentrum',
   'update.fromStoreHint': 'Deze kopie van ArrowLoop is een Flatpak en vervangt zichzelf niet. Geïnstalleerd via Flathub krijgt ze elke nieuwe versie via je softwarecentrum. Geïnstalleerd vanuit een gedownload .flatpak-bestand wordt ze bijgewerkt als je het bestand van de volgende release op dezelfde manier opent.',

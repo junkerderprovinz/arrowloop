@@ -464,7 +464,7 @@ const gl: Translations = {
   'start.withSystemHint': 'ArrowLoop iníciase ao iniciar sesión, de xeito que unha tarefa programada execútase sen que ninguén abra antes a xanela. A entrada é só túa e non pide permisos de administrador.',
   'update.auto': 'Actualizar automaticamente',
   'update.autoHint': 'Unha vez ao día ArrowLoop busca unha versión nova, descárgaa en segundo plano e compróbaa coas sumas de verificación publicadas coa versión. A versión nova entra en uso a próxima vez que inicies ArrowLoop, así que unha sincronización en curso non se interrompe. Unha copia instalada e unha portátil actualízanse as dúas onde están.',
-  'update.autoContainerHint': 'Só é posible na versión de escritorio: un contedor non se pode substituír a si mesmo desde dentro. Actualízao do mesmo xeito que o despregaches (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'Unha vez ao día, ArrowLoop pregúntalle a GitHub se hai unha versión nova e indícaa aquí. Un contedor non se pode substituír a si mesmo desde dentro, así que actualízao do mesmo xeito que o despregaches (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} está descargado e usarase a próxima vez que inicies a aplicación.',
   'update.fromStore': 'As actualizacións chegan polo centro de software',
   'update.fromStoreHint': 'Esta copia de ArrowLoop é un Flatpak e non se substitúe a si mesma. Instalada desde Flathub, recibe cada versión nova polo teu centro de software. Instalada desde un ficheiro .flatpak descargado, actualízase cando abres do mesmo xeito o ficheiro da seguinte versión.',

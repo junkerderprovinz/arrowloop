@@ -567,9 +567,11 @@ The words themselves never leave an instance.
 ## Info
 
 The last tile has three cards. **Version** lists ArrowLoop, GlimStone and
-rclone, each linked to its release notes. Under them stand **New** and **Check
-for updates**, which wears the sync symbol and asks GitHub for a newer
-release. **New** opens the window
+rclone, each linked to its release notes, with **Update automatically** right
+under ArrowLoop in the desktop app and in a container, where it asks GitHub
+once a day and names a newer release under ArrowLoop. Under them stand **New**
+and **Check for updates**, which wears the sync symbol and asks GitHub for a
+newer release. **New** opens the window
 with the release notes and the changes (see below); while it lists no change it
 reads **Release notes** and opens the same window. **Help** leads to GitHub, to email and to this
 manual, and **Bug report** downloads one file with the versions, the settings

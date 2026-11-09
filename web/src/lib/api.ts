@@ -380,6 +380,8 @@ export type Settings = {
     /** Whether a run far outside its job's usual range makes a note; undefined means it does. */
     unusual?: boolean
   }
+  /** A container asks GitHub once a day for a newer release and reports it. */
+  updateCheck?: boolean
   /**
    * The copies of this file the engine keeps on its own. Undefined fields keep
    * the engine's own values: on, every day at 03:00, seven kept, beside the
@@ -1187,7 +1189,9 @@ export const api = {
     request<{ window: boolean; security?: boolean; pairing?: boolean; version: string }>('/api/capabilities'),
 
   /** The versions this build is made of, for the Info tile. */
-  versions: () => request<{ arrowloop: string; rclone: string; go: string; deployment?: Deployment }>('/api/versions'),
+  /** `newRelease` is the newer release a container's daily check found. */
+  versions: () =>
+    request<{ arrowloop: string; rclone: string; go: string; deployment?: Deployment; newRelease?: string }>('/api/versions'),
 
   /** The notes of this release and every one before it, newest first, in Markdown. */
   releaseNotes: () => request<{ notes: { version: string; body: string }[] }>('/api/release-notes'),
