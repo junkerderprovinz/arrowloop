@@ -10,6 +10,15 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **As many notification channels as you like.** The Notifications card on Safety net is a list now: add Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io, as often as you want, each with its own name, switch, "when" and test button. Discord gets an embed, a webhook gets the method, headers and body you write, and Apprise addresses such as `tgram://` or `pover://` reach Telegram, Pushover and the rest without a key on the Apprise server. Your settings come over as they are.
+- **Read tokens for dashboards.** Homepage, Homarr and the like read how ArrowLoop is doing and what its runs did at `/api/fortress/v1/status` and `/api/fortress/v1/log`, with a read token made under Settings, Security. The token opens nothing else.
+
+## ⚡ Improved
+
+- **A message that does not get through is tried again**, three times with a pause, when a second try could help. A test that fails says why in your language.
+
 ## 2.6.4 - 2026-11-09
 
 A round of phone fixes from danpeig's report: times follow the phone's 24-hour setting, the keyboard stays clear of a new folder's name, and the settings backup goes to any folder you choose.

@@ -49,8 +49,8 @@ browser asking first.
 Without a password, the interface also refuses to download or restore the
 settings backup or hand out an automatic one, to delete from the trash for good, to forget a job's state and
 to delete a target, since anybody who reaches the port could otherwise do it.
-The settings never hand out the Matrix token or the webhook address, with or
-without a password. The phone app and the desktop window, which nobody else
+The settings never hand out a notification token, password or secret
+address, with or without a password. The phone app and the desktop window, which nobody else
 reaches, are not asked.
 
 The same section sets up a second factor: six digits from an authenticator app

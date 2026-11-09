@@ -15,8 +15,10 @@ refuses. A complete example is
   "bwlimit": "",
   "parallelJobs": 1,
   "notify": {
-    "matrix": { "homeserver": "https://matrix.example.org", "room": "!abc:example.org", "token": "syt_..." },
-    "onSuccess": false
+    "channels": [
+      { "id": "room", "kind": "matrix", "enabled": true,
+        "matrix": { "homeserver": "https://matrix.example.org", "room": "!abc:example.org", "token": "syt_..." } }
+    ]
   },
   "jobs": [
     {
@@ -405,13 +407,7 @@ same value unless its `-keep-history` flag gives another.
 | `parallelJobs` | `1` | How many jobs may run at once. |
 | `history` | beside the file | Where run records go. A change takes effect the next time the program starts. |
 | `historyKeep` | ninety days | How long a run record is kept, such as `"720h"`. `"0"` keeps every record; see [Every run is written down](#every-run-is-written-down). |
-| `notify.on` | `failure` | When a message goes out: `never`, `failure` or `always`; see [Notifications](#notifications). |
-| `notify.webhook` | none | An address a message is posted to, shaped by `notify.webhookFormat`: `generic`, `discord`, `slack`, `gotify` or `ntfy`. |
-| `notify.matrix` | none | A room to post into: homeserver, room id, access token. |
-| `notify.smtp` | none | A mail server and the addresses a plain-text mail goes from and to. |
-| `notify.apprise` | none | The notify endpoint of an Apprise API server, and optional tags. |
-| `notify.healthchecks` | none | A Healthchecks.io check every job pings, and under `jobs` a check of a job's own. |
-| `notify.onSuccess` | `false` | The older way to say `"on": "always"`. |
+| `notify.channels` | none | Where messages go, one entry per channel: Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io; see [Notifications](#notifications). |
 | `retry.attempts` | `3` | How many further tries a failed scheduled run gets before the job waits for its next scheduled time. `0` means none; see [After a failure](#after-a-failure). |
 | `retry.wait` | `5m` | How long to wait before the first further try. Each try after that waits twice as long, up to six hours. |
 | `anomalies.failingAfter` | `3` | How many failed runs in a row make a note. `0` means never; see [Anomalies](#anomalies). |
@@ -444,71 +440,85 @@ same value unless its `-keep-history` flag gives another.
 
 ```json
 "notify": {
-  "on": "failure",
-  "webhook": "https://ntfy.sh/my-arrowloop-topic",
-  "webhookFormat": "ntfy",
-  "matrix": { "homeserver": "https://matrix.example.org", "room": "!abc:example.org", "token": "syt_..." },
-  "smtp": {
-    "host": "mail.example.org", "port": 587, "tls": "starttls",
-    "username": "arrowloop", "password": "...",
-    "from": "arrowloop@example.org", "to": "me@example.org, backup@example.org"
-  },
-  "apprise": { "url": "http://apprise:8000/notify/arrowloop", "tags": "backups" },
-  "healthchecks": {
-    "url": "https://hc-ping.com/<uuid>",
-    "jobs": { "photos": "https://hc-ping.com/<another uuid>" }
-  }
+  "channels": [
+    { "id": "phone", "kind": "ntfy", "name": "Phone", "enabled": true, "on": "failure",
+      "ntfy": { "url": "https://ntfy.sh/my-arrowloop-topic" } },
+    { "id": "room", "kind": "matrix", "enabled": true, "on": "failure",
+      "matrix": { "homeserver": "https://matrix.example.org", "room": "!abc:example.org", "token": "syt_..." } },
+    { "id": "mail", "kind": "smtp", "enabled": true, "on": "always",
+      "smtp": { "host": "mail.example.org", "port": 587, "tls": "starttls", "username": "arrowloop", "password": "...",
+                "from": "arrowloop@example.org", "to": "me@example.org, backup@example.org" } },
+    { "id": "checks", "kind": "healthchecks", "enabled": true,
+      "healthchecks": { "url": "https://hc-ping.com/<uuid>", "byKey": { "photos": "https://hc-ping.com/<another uuid>" } } }
+  ]
 }
 ```
 
-`on` says when a message goes out: `never`, `failure` or `always`. The default
-is `failure`, because a tool that announces every successful sync teaches you to
+`channels` is a list, so there can be as many as you like, two Discord
+channels or a mail for every run beside an ntfy push for the failures. Each
+entry has an `id` of its own, a `kind`, an optional `name` the card and the log
+show, an `enabled` switch that turns it off and keeps what it holds, and the
+block of its service under the same name as `kind`.
+
+`on` says what a channel gets: `never`, `failure` or `always`. The default is
+`failure`, because a tool that announces every successful sync teaches you to
 ignore it, and then the one message that mattered is ignored with the rest. A
-file written before `on` existed says `"onSuccess": true` for `always`, which
-still works; when both are set, `on` decides.
+failed run counts as a failure. A job a brake holds counts as one too and is
+reported unless `anomalies.notifyHeld` is `false`. The notes about a job that
+keeps failing, a job that is overdue and an unusual run go out as a warning,
+which a channel set to `failure` carries, when `anomalies.notifyNotes` is
+`true`.
 
-A failed run is reported, a successful one only under `always`. A job a brake
-holds is reported unless `anomalies.notifyHeld` is `false`, and the notes about
-a job that keeps failing, a job that is overdue and an unusual run are reported
-when `anomalies.notifyNotes` is `true`. `never` silences all of it, Healthchecks
-included.
-
-Each channel has an `enabled` switch, which turns it off and keeps what it
-holds. A channel without the switch sends once it is filled in, so a file from
-before the switch keeps working unchanged.
-
-| Channel | Fields | What it sends |
+| `kind` | Block | What it sends |
 |---|---|---|
-| Webhook | `webhook`, `webhookFormat`, `webhookEnabled` | A POST to the address. `generic` (the default) sends `{"subject", "body", "ok"}`, `discord` a `content` and `slack` a `text`. `gotify` sends a title, the message and priority 8 for bad news or 5 otherwise; the address carries the app token as `?token=`. `ntfy` posts the text to the topic's address with a `Title` header and high priority for bad news. |
-| Matrix | `matrix.homeserver`, `matrix.room`, `matrix.token`, `matrix.enabled` | A message in the room, posted as the account the token belongs to. The account has to be in the room. |
-| Email | `smtp.host`, `smtp.port`, `smtp.tls`, `smtp.username`, `smtp.password`, `smtp.from`, `smtp.to`, `smtp.enabled` | A plain-text mail. `tls` is `starttls` (the default, port 587), `tls` for a connection encrypted from the start (port 465) or `none`. Under `starttls` a server that does not offer STARTTLS is refused rather than sent the password in clear. `to` takes several addresses separated by commas or semicolons, and ArrowLoop logs in only when `username` is set. |
-| Apprise | `apprise.url`, `apprise.tags`, `apprise.enabled` | A POST to the notify endpoint of an [Apprise API](https://github.com/caronc/apprise-api) server you run, which passes it on to whatever its key is set up for. `tags` limits a shared key to some of its targets. |
-| Healthchecks.io | `healthchecks.url`, `healthchecks.jobs`, `healthchecks.enabled` | A ping to `<url>/start` when a run begins, then `<url>` when it succeeds or `<url>/fail` when it does not, with the run's summary as the body. `jobs` gives a job its own check, by job name; every other job pings `url`. Any server that speaks the same protocol works. |
+| `discord` | `discord.url` | An embed in the channel the webhook address belongs to, coloured by how good or bad the news is. |
+| `slack` | `slack.url` | A `text` to an incoming webhook. |
+| `ntfy` | `ntfy.url`, `ntfy.token` | The message to the topic's address with a title, `high` priority for a failure and `urgent` for a brake against bulk overwrites. The token is only needed for a topic that asks for one. |
+| `gotify` | `gotify.url`, `gotify.token`, `gotify.priorityFailure`, `gotify.prioritySuccess` | A message to the server, priority 8 for bad news and 5 otherwise unless set. The token can also sit in the address as `?token=`. |
+| `matrix` | `matrix.homeserver`, `matrix.room`, `matrix.token` | A message in the room, posted as the account the token belongs to. The account has to be in the room, and the room can be given as an `#alias`. |
+| `smtp` | `smtp.host`, `smtp.port`, `smtp.tls`, `smtp.username`, `smtp.password`, `smtp.from`, `smtp.to` | A plain-text mail. `tls` is `starttls` (the default, port 587), `tls` for a connection encrypted from the start (port 465) or `none`. Under `starttls` a server that does not offer STARTTLS is refused rather than sent the password in clear. `to` takes several addresses separated by commas or semicolons, and ArrowLoop logs in only when `username` is set. |
+| `apprise` | `apprise.url`, `apprise.tags`, `apprise.urls` | A POST to an [Apprise API](https://github.com/caronc/apprise-api) server you run. With a key in `url`, it goes to whatever that key is set up for, and `tags` limits a shared key to some of its targets. With `urls`, such as `tgram://...` or `pover://...`, `url` is the server's `/notify` without a key, and Telegram, Pushover and the other services Apprise knows work without a key on the server. |
+| `webhook` | `webhook.url`, `webhook.method`, `webhook.headers`, `webhook.body` | A request of your own: `POST` (the default), `PUT` or `GET`, with the headers and the body as written. `%%title%%`, `%%body%%`, `%%ok%%`, `%%event%%`, `%%severity%%`, `%%time%%` and `%%link%%` are filled in, escaped for where they stand. A new webhook on the card starts with `{"subject":"%%title%%","body":"%%body%%","ok":%%ok%%}`. |
+| `healthchecks` | `healthchecks.url`, `healthchecks.byKey` | A ping to `<url>/start` when a run begins, then `<url>` when it succeeds or `<url>/fail` when it does not, with the run's summary as the body. `byKey` gives a job its own check, by job name; every other job pings `url`. `on` counts only as `never`, which keeps the check quiet. Any server that speaks the same protocol works. |
 
 A job held by a brake has not synced, so its check gets `/fail`, and so does a
 run whose drive went missing after the start was pinged. A drive that is
 missing before anything starts is no run, and the check hears nothing; it goes
-late on its own schedule if that keeps happening. A check under `jobs` follows
+late on its own schedule if that keeps happening. A check under `byKey` follows
 the name, so a renamed job pings the shared check until its entry is renamed
 too.
 
-Every send is limited to fifteen seconds, the channels are sent to at the same
-time, and a failure at one does not stop the others. A message that cannot be
-delivered is written to the log and changes nothing about the run. The log
-names the channel and its host and says what went wrong, a refused connection or
-the status the server answered, but never the address itself, since a webhook,
-an Apprise key and a Healthchecks check all carry their secret in it. A
-password written into an address in a run's error, such as
-`sftp://user:secret@host`, is replaced by `***` before the message leaves.
+Every attempt is limited to fifteen seconds (`timeoutSeconds`, up to 60), and a
+message a second try could still deliver, after a refused connection, a
+timeout, a 429 or a 5xx, is tried three times (`attempts`, up to 5) with a
+pause in between. The channels are sent to at the same time, and a failure at
+one does not stop the others. A message that cannot be delivered is written to
+the log and changes nothing about the run. The log names the channel and says
+what went wrong, but never the address or a token. A password written into an
+address in a run's error, such as `sftp://user:secret@host`, is replaced by
+`***` before the message leaves. A channel switched on but missing something,
+such as an address, sends nothing, and the log says so when the settings are
+loaded.
 
-The Matrix token, the webhook address, the mail password, the Apprise address
-and every Healthchecks address stay on the server. The Notifications card on
-**Safety net** shows them as **Saved** with **Change**; the settings API and
-the bug report hand out `********` in their place, and saving the page back
-keeps what is stored. Every channel on the card has **Send a test**, which sends
-through that channel as the card shows it, saved or not, ignoring `on` and the
-channel's switch, and says why when it fails. The phone has the same channels
-under **Global sync settings**, since its engine is the same program and sends them itself.
+Every token and password, every header value and every address that is its own
+key (a webhook, Discord, Slack, ntfy, Gotify, an Apprise key or its `urls`,
+every Healthchecks check) stay on the server. The Notifications card on
+**Safety net** shows them as **Saved** with **Change**; the settings API and the
+bug report hand out `********` in their place, and saving the page back keeps
+what is stored. A token or password is put back only beside the server it was
+saved for, so whoever changes the address has to type it again. Every channel
+on the card has **Send a test**, which sends through that channel as the card
+shows it, saved or not, ignoring `on` and the channel's switch, and says why
+when it fails. The phone reports runs through Android's own notifications and
+sends through none of these channels.
+
+A file from before the channel list holds one block per service under `notify`
+(`webhook` with `webhookFormat`, `matrix`, `smtp`, `apprise`, `healthchecks`
+with `jobs`, and `on` or `onSuccess`). ArrowLoop reads it into channels when it
+starts, keeps everything that was set up, and writes `channels` into the file.
+The older keys stay beside it, so going back to an older version loses nothing;
+a later version removes them. A backup in the older shape is restored the same
+way.
 
 !!! note "No Unraid notifications"
     Unraid's own notifications come from its notify script, a PHP script that
@@ -518,6 +528,23 @@ under **Global sync settings**, since its engine is the same program and sends t
     Unraid is set up for, and the Unraid API needs an API key, which is a
     credential for the host. Apprise or ntfy reach the same phone without
     either.
+
+## Status for dashboards
+
+A dashboard such as Homepage or Homarr reads how ArrowLoop is doing from
+`/api/fortress/v1/status` and what its runs did from `/api/fortress/v1/log`,
+the same two addresses every app of the family answers on. Both need a read
+token, made under **Settings**, **Security**, **Read tokens** and sent as
+`Authorization: Bearer <token>`. A read token opens these two addresses and
+nothing else, whether a password is set or not. It is shown once when it is
+made; ArrowLoop keeps only a fingerprint of it in `security.json`.
+
+The status names the jobs that need you (a job a brake holds, the notes, a last
+run that failed or left files for later), the runs in progress with how far
+they got, and when each scheduled job runs next. A run of a mirror or a move
+job says that a restart should wait for it. The log has one entry per stored
+run, oldest first, and pages with `?after=<cursor>&limit=<n>`. Both answer in
+the language `lang` or the `Accept-Language` header asks for.
 
 ## Defaults and the settings tiles
 
