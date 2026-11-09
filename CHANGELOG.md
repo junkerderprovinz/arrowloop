@@ -10,6 +10,14 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🐛 Fixed
+
+- **The phone app's folder picker stays above the keyboard.** Naming a new folder used to put the keyboard right over the box you type into. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **The phone's settings backup can be pointed somewhere else.** Choose a folder picks where Export writes and where Import reads, and Choose a file to import opens Android's own file picker, so a backup in a cloud app or anywhere else comes in without typing a path. Export also writes to the path in the box now, not always to Downloads. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **The folder picker for automatic backups on the phone reaches Download and Documents.** One level up in the folder picker stopped above the app's own data, where Android lets nobody look. It goes to the phone's top level instead, with internal storage, Download and Documents. A folder chosen after typing a path also replaces the typed one in the box. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **The phone app keeps to its clock setting.** History, the overview, the trash and the backups show 14:40 on a phone set to 24 hours, whatever the language, and the clock dialog for a schedule follows the same setting. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **Unlocking with a fingerprint shows a calm screen behind the prompt.** The locked screen's Unlock button stretched down the whole page in the accent colour, under the start of the lock's explanation. Behind the phone's prompt there is now only the app's background, and the button keeps its size for when the prompt is closed. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+
 ## 2.6.3 - 2026-11-09
 
 A job waits for its drive instead of failing, a local side is read once, and a file left for later only fails a run when the next run has to leave it too.
