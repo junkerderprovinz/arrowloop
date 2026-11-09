@@ -4,7 +4,8 @@ import { About } from '../../components/About'
 import { IconGithub } from '../../components/brandGlyphs'
 import { IconDiagnostics } from '../../components/glyphs'
 import { Stack } from '../../components/Shell'
-import { api, ApiError } from '../../lib/api'
+import { ToggleRow } from '../../components/ToggleRow'
+import { api, ApiError, type WindowSettings } from '../../lib/api'
 import { MAIL_SVG, MANUAL_SVG } from '../../lib/appMarks'
 import { download } from '../../lib/download'
 import { GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
@@ -17,6 +18,7 @@ import { useT, type TranslationKey } from '../../lib/i18n'
 import { shownVersion } from '../../lib/infoTile'
 import { useToast } from '../../lib/toast'
 import { openNewsWindow, useWhatsNew } from '../../lib/whatsNewStore'
+import { SettingsRow } from './rows'
 
 const REFUSED: Record<string, TranslationKey> = {
   'dev-build': 'info.refusedDevBuild',
@@ -26,11 +28,22 @@ const REFUSED: Record<string, TranslationKey> = {
 }
 
 /**
- * The last tile: every version this build is made of with the one way to the
- * release notes and to what the last update changed, the ways to report a
- * problem, and the maker's card.
+ * The last tile: every version this build is made of with how the desktop app
+ * updates and the one way to the release notes and to what the last update
+ * changed, the ways to report a problem, and the maker's card.
  */
-export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: ReactNode }) {
+export function InfoPage({
+  version,
+  whatsNew,
+  window: windowSettings,
+  onWindow,
+}: {
+  version: string
+  whatsNew?: ReactNode
+  /** Null on a build with no window of its own. */
+  window: WindowSettings | null
+  onWindow: (next: WindowSettings) => void
+}) {
   const { t } = useT()
   const push = useToast()
   const [versions, setVersions] = useState<{ arrowloop: string; rclone: string } | null>(null)
@@ -96,6 +109,7 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
                 checkFailed: t('info.checkFailed'),
               },
             }}
+            settings={windowSettings && <UpdateSetting window={windowSettings} onWindow={onWindow} />}
             onReleaseNotes={openNewsWindow}
             whatsNew={listed ? whatsNew : undefined}
           />
@@ -145,5 +159,28 @@ export function InfoPage({ version, whatsNew }: { version: string; whatsNew?: Re
 
       <About hueIndex={2} />
     </Stack>
+  )
+}
+
+/**
+ * Only the desktop app replaces itself. A container is updated the way it was
+ * deployed, the phone and a Flatpak through their store.
+ */
+function UpdateSetting({ window: windowSettings, onWindow }: { window: WindowSettings; onWindow: (next: WindowSettings) => void }) {
+  const { t } = useT()
+  if (windowSettings.updatesFromStore) {
+    return (
+      <SettingsRow label={t('update.fromStore')} hint={t('update.fromStoreHint')}>
+        {null}
+      </SettingsRow>
+    )
+  }
+  return (
+    <ToggleRow
+      label={t('update.auto')}
+      hint={t('update.autoHint')}
+      checked={windowSettings.autoUpdate}
+      onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
+    />
   )
 }

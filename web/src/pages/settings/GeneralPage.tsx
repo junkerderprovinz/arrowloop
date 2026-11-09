@@ -10,8 +10,8 @@ import { Reading, useEngineSettings } from './engineSettings'
 import { SettingsRow } from './rows'
 
 /**
- * What concerns the app as a whole: this computer's window, start and updates
- * where there is a desktop app, the settings backups, and how hard the engine
+ * What concerns the app as a whole: this computer's window and start where
+ * there is a desktop app, the settings backups, and how hard the engine
  * may work on this machine.
  */
 export function GeneralPage({
@@ -55,20 +55,6 @@ export function GeneralPage({
               hint={t('start.withSystemHint')}
               checked={windowSettings.startWithSystem}
               onChange={(startWithSystem) => onWindow({ ...windowSettings, startWithSystem })}
-            />
-          )}
-          {/* Only the desktop app replaces itself. A container is updated the
-              way it was deployed, the phone and a Flatpak through their store. */}
-          {windowSettings.updatesFromStore ? (
-            <SettingsRow label={t('update.fromStore')} hint={t('update.fromStoreHint')}>
-              {null}
-            </SettingsRow>
-          ) : (
-            <ToggleRow
-              label={t('update.auto')}
-              hint={t('update.autoHint')}
-              checked={windowSettings.autoUpdate}
-              onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
             />
           )}
         </Card>

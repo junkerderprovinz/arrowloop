@@ -462,8 +462,7 @@ row on **Look** brings back the original one.
   in its (i) what they cover and that Import also takes a FolderSync export
   or a luckyBackup profile ([Configuration](configuration.md#moving-over-from-foldersync-or-luckybackup)).
   Then the workload (bandwidth limit, jobs at once and the run log file), and
-  in the desktop app this computer: the window, starting with the system and
-  automatic updates.
+  in the desktop app this computer: the window and starting with the system.
 - **Look**: language, design (Dark, Light or System) with the **OLED** switch,
   corners, motion, the job list (Cards or Compact), the tile order, labels and
   colours.

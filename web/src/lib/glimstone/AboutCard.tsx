@@ -107,6 +107,9 @@ export interface InfoVersionCardProps {
   /** "Check for updates" at the bottom of the card. Omit it and the card
    *  offers no check. */
   updateCheck?: UpdateCheck;
+  /** How the app updates itself, such as a switch for automatic updates,
+   *  drawn under the versions it concerns. */
+  settings?: ReactNode;
   /** Opens the app's window on the running version's release notes, for an
    *  app that marks no changes. */
   onReleaseNotes?: () => void;
@@ -122,6 +125,7 @@ export function InfoVersionCard({
   text,
   rows,
   updateCheck,
+  settings,
   onReleaseNotes,
   whatsNew,
   openUrl = openInBrowser,
@@ -144,6 +148,7 @@ export function InfoVersionCard({
           </li>
         ))}
       </ul>
+      {settings}
       {(notes || whatsNew || updateCheck) && (
         <div className="glim-version-actions">
           {notes && <Button label={notes} labelKey="about.releaseNotes" onClick={onReleaseNotes} />}

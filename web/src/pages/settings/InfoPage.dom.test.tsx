@@ -2,7 +2,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ApiError } from '../../lib/api'
+import { ApiError, type WindowSettings } from '../../lib/api'
 import { CHANGES } from '../../lib/whatsNew'
 
 const updateCheck = vi.fn()
@@ -52,6 +52,19 @@ function desktop(platform: string) {
   return runtime
 }
 
+const windowSettings: WindowSettings = {
+  tray: false,
+  closeToTray: false,
+  minimiseToTray: false,
+  startWithSystem: false,
+  canStartWithSystem: true,
+  autoUpdate: false,
+  updatesFromStore: false,
+}
+
+// A build with no window of its own: the container, or the web page beside it.
+const server = { window: null, onWindow: () => {} }
+
 async function click(name: string | RegExp, role = 'button') {
   await act(async () => {
     fireEvent.click(screen.getByRole(role, { name }))
@@ -60,7 +73,7 @@ async function click(name: string | RegExp, role = 'button') {
 
 describe('the Info tile', () => {
   it('lists every version the build is made of, each linked to its release', async () => {
-    render(<InfoPage version="v1.8.0" />)
+    render(<InfoPage version="v1.8.0" {...server} />)
     const rclone = await screen.findByRole('link', { name: '1.75.2' })
     expect(rclone.getAttribute('href')).toBe('https://github.com/rclone/rclone/releases/tag/v1.75.2')
     expect(screen.getByRole('link', { name: '1.8.0' }).getAttribute('href')).toBe(
@@ -74,7 +87,7 @@ describe('the Info tile', () => {
 
   it('has one button to the release notes and the changes, before the update check', async () => {
     localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'dev', from: '', seen: [] }))
-    render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} />)
+    render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} {...server} />)
     await screen.findByRole('link', { name: '1.75.2' })
     const buttons = [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label') ?? b.textContent)
     expect(buttons.slice(0, 2)).toEqual(['New · 3', 'Check for updates'])
@@ -83,7 +96,7 @@ describe('the Info tile', () => {
 
   it('offers the release notes in its place while no change is listed', async () => {
     localStorage.setItem('arrowloop.whatsNew', JSON.stringify({ version: 'dev', from: '', seen: CHANGES.map((c) => c.id) }))
-    render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} />)
+    render(<InfoPage version="v1.8.0" whatsNew={<button type="button">New · 3</button>} {...server} />)
     await screen.findByRole('link', { name: '1.75.2' })
     expect(screen.getByRole('button', { name: 'Release notes' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'New · 3' })).toBeNull()
@@ -91,7 +104,7 @@ describe('the Info tile', () => {
 
   it('says why an update check could not run, in the reader\'s words', async () => {
     updateCheck.mockRejectedValue(new ApiError('GitHub answered HTTP 403', 502, 'rate-limited'))
-    render(<InfoPage version="v1.8.0" />)
+    render(<InfoPage version="v1.8.0" {...server} />)
     await click('Check for updates')
     await waitFor(() => expect(screen.getByRole('button', { name: 'Check failed' })).toBeTruthy())
     expect(pushed).toEqual([
@@ -101,14 +114,14 @@ describe('the Info tile', () => {
 
   it('names a newer release', async () => {
     updateCheck.mockResolvedValue({ current: 'v1.8.0', latest: 'v1.9.0', updateAvailable: true, releaseUrl: '' })
-    render(<InfoPage version="v1.8.0" />)
+    render(<InfoPage version="v1.8.0" {...server} />)
     await click('Check for updates')
     await waitFor(() => expect(screen.getByRole('button', { name: 'Update available' })).toBeTruthy())
     expect(pushed[0]?.message).toBe('ArrowLoop 1.9.0 is out.')
   })
 
   it('hands the bug report to the browser as a file', async () => {
-    render(<InfoPage version="v1.8.0" />)
+    render(<InfoPage version="v1.8.0" {...server} />)
     await click(/Bug report/)
     await waitFor(() => expect(downloaded).toHaveBeenCalledTimes(1))
     expect(downloaded.mock.calls[0]?.[0]).toMatch(/^arrowloop-report-\d{4}-\d\d-\d\d\.json$/)
@@ -117,7 +130,7 @@ describe('the Info tile', () => {
   it('reaches GitHub, the mail program and the manual through the system in the desktop build', async () => {
     const runtime = desktop('linux')
     const open = vi.spyOn(window, 'open')
-    render(<InfoPage version="v1.0.0" />)
+    render(<InfoPage version="v1.0.0" {...server} />)
     await click('GitHub')
     await click('Email')
     await click(/Manual/)
@@ -133,8 +146,29 @@ describe('the Info tile', () => {
 
   it('opens a new tab in a browser', async () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null)
-    render(<InfoPage version="v1.0.0" />)
+    render(<InfoPage version="v1.0.0" {...server} />)
     await click('GitHub')
     expect(open).toHaveBeenCalledWith('https://github.com/junkerderprovinz/arrowloop', '_blank', 'noopener,noreferrer')
+  })
+
+  it('carries the update switch of the desktop app under the versions', async () => {
+    const onWindow = vi.fn()
+    render(<InfoPage version="v1.8.0" window={windowSettings} onWindow={onWindow} />)
+    await screen.findByRole('link', { name: '1.75.2' })
+    fireEvent.click(screen.getByRole('switch', { name: 'Update automatically' }))
+    expect(onWindow).toHaveBeenCalledWith({ ...windowSettings, autoUpdate: true })
+  })
+
+  it('says a Flatpak updates through the software centre instead of offering the switch', async () => {
+    render(<InfoPage version="v1.8.0" window={{ ...windowSettings, updatesFromStore: true }} onWindow={() => {}} />)
+    await screen.findByRole('link', { name: '1.75.2' })
+    expect(screen.getByText('Updates come through your software centre')).toBeTruthy()
+    expect(screen.queryByRole('switch', { name: 'Update automatically' })).toBeNull()
+  })
+
+  it('offers no update switch where there is no desktop app', async () => {
+    render(<InfoPage version="v1.8.0" {...server} />)
+    await screen.findByRole('link', { name: '1.75.2' })
+    expect(screen.queryByRole('switch')).toBeNull()
   })
 })

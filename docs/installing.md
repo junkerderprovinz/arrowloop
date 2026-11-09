@@ -247,7 +247,7 @@ flatpak install --user arrowloop-linux-amd64.flatpak
 ```
 
 The Flatpak brings its own WebKitGTK and pulls the GNOME runtime from Flathub,
-so nothing else needs installing. It never replaces itself, and the General tile
+so nothing else needs installing. It never replaces itself, and the Info tile
 says so where the other copies show **Update automatically**. A copy from the
 file updates when you install the next release's file the same way. Its
 settings and jobs live in
@@ -335,8 +335,8 @@ downloads the file for your system in the background and checks it against the
 release's `checksums.txt`. The new version starts the next time you start
 ArrowLoop, so a sync that is running is never cut off, and a note in the corner
 of the window says when it is ready. Pre-releases are never installed.
-**Update automatically**, on the General tile under Settings, turns this off; it is
-on from the start. The container, the phone and the Flatpak do not show the
+**Update automatically**, in the Version card on the Info tile under Settings,
+turns this off; it is on from the start. The container, the phone and the Flatpak do not show the
 switch: a container is updated the way it was deployed, the phone through its
 store or a new APK, and the Flatpak through Flatpak (see
 [As a Flatpak](#as-a-flatpak)).

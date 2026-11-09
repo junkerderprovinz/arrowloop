@@ -23,6 +23,7 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The ARM downloads say ARM.** The second part of the Windows and Linux buttons on the Apps tile repeated Windows and Linux until the pointer reached it. It reads ARM, as on the README.
+- **Update automatically has moved to the Info tile.** It sits in the Version card under the versions it keeps current, and so does the Flatpak's note that it updates through your software centre.
 
 ## 2.6.2 - 2026-11-09
 

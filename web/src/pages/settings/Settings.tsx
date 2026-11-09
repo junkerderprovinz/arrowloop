@@ -134,6 +134,6 @@ function TilePage({ tile, tiles, look, version, window, onWindow, targets, whats
     case 'apps':
       return <Apps version={version} desktop={window !== null} />
     case 'info':
-      return <InfoPage version={version} whatsNew={whatsNew} />
+      return <InfoPage version={version} whatsNew={whatsNew} window={window} onWindow={onWindow} />
   }
 }
