@@ -101,13 +101,24 @@ function Shell() {
   // The optional lock gates the whole app, since the job list alone shows
   // every synced path. It closes again after AWAY_MS in the background.
   const [locked, setLocked] = useState(look.lock);
+  // Whether the phone's prompt was closed without unlocking, which is when
+  // the locked screen has something to say.
+  const [refused, setRefused] = useState(false);
   const left = useRef(0);
+  // A newer prompt settles the one before it, which must not show the
+  // locked screen behind the one still open.
+  const asked = useRef(0);
 
   const unlock = useCallback(() => {
+    const ask = ++asked.current;
+    const answered = (ok: boolean) => {
+      if (ok) setLocked(false);
+      else if (ask === asked.current) setRefused(true);
+    };
+    setRefused(false);
     engine
       .confirmDeviceLock(t("settings.locked"), t("settings.lockHint"))
-      .then((ok) => ok && setLocked(false))
-      .catch(() => {});
+      .then(answered, () => answered(false));
   }, [t]);
 
   useEffect(() => {
@@ -174,7 +185,7 @@ function Shell() {
     };
   }, [state]);
 
-  if (locked) return <Locked onUnlock={unlock} />;
+  if (locked) return <Locked refused={refused} onUnlock={unlock} />;
 
   if (state !== "ready" || !settled) return <Waiting state={state} log={log} onRetry={retry} />;
 
@@ -537,16 +548,21 @@ function deeperThanRoot(route: RouteProp<ParamListBase>): boolean {
 }
 
 /**
- * The screen in front of a locked app. Its button reopens the system dialog
- * after it has been dismissed.
+ * The screen in front of a locked app. Behind the phone's prompt it is the
+ * bare ground, since Android dims it and shows through whatever it holds.
+ * Once the prompt is dismissed, its button opens it again.
  */
-function Locked({ onUnlock }: { onUnlock: () => void }) {
+function Locked({ refused, onUnlock }: { refused: boolean; onUnlock: () => void }) {
   const { t } = useT();
+  if (!refused) return <Screen>{null}</Screen>;
   return (
     <Screen>
-      <Heading>{t("settings.locked")}</Heading>
-      <Body>{t("settings.lockHint")}</Body>
-      <Button label={t("settings.unlock")} labelKey="settings.unlock" tone="accent" onPress={onUnlock} />
+      <View style={styles.centre}>
+        <Heading>{t("settings.locked")}</Heading>
+        <Body>{t("settings.lockHint")}</Body>
+        {/* Not wide: in a column that would stretch it down the whole screen. */}
+        <Button label={t("settings.unlock")} labelKey="settings.unlock" tone="accent" wide={false} onPress={onUnlock} />
+      </View>
     </Screen>
   );
 }
