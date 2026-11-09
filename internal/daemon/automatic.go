@@ -28,9 +28,9 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 	// the interface can say it is waiting. A before command may be what
 	// mounts it, so such a job finds out from the run.
 	if j.Before == "" {
-		if err := attached(j); err != nil {
-			r.waitForDrive(name)
-			return history.Run{}, fmt.Errorf("%w: %w", ErrVolumeMissing, err)
+		if err := r.away(j); err != nil {
+			r.waitForDrive(name, err)
+			return history.Run{}, err
 		}
 	}
 	r.waiting.clear(name)
@@ -51,7 +51,7 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 		return r.execute(ctx, j, only, nil, nil, live)
 	})
 	if errors.Is(err, ErrVolumeMissing) {
-		r.waitForDrive(name)
+		r.waitForDrive(name, err)
 	}
 	return rec, err
 }

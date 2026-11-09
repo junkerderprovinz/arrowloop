@@ -277,6 +277,9 @@ type jobView struct {
 	// NextRun is when the schedule next reaches this job; see nextRun. It is a
 	// due time, and a condition such as mains power may still hold the run.
 	NextRun *string `json:"nextRun,omitempty"`
+	// Away is since when the job has waited for a drive or a folder that is
+	// not there. It runs by itself once that is back.
+	Away *string `json:"away,omitempty"`
 	// Recent is the job's last stored runs, newest first, for the strip a job
 	// list draws beside each name.
 	Recent []history.Run `json:"recent"`
@@ -342,6 +345,10 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 		if when, ok := nextRun(j, time.Now()); ok {
 			stamp := when.UTC().Format(time.RFC3339)
 			v.NextRun = &stamp
+		}
+		if since, ok := s.Runner.WaitingFor(j.Name); ok {
+			stamp := since.UTC().Format(time.RFC3339)
+			v.Away = &stamp
 		}
 		out = append(out, v)
 	}

@@ -37,7 +37,7 @@ func fromSnapshot(ctx context.Context, ends Ends, act plan.Action) (Ends, error)
 	if s == nil || act.Kind != plan.Copy {
 		return Ends{}, errNoSnapshot
 	}
-	root, ok := localPath(ends.side(act.Src), "")
+	root, ok := LocalPath(ends.side(act.Src), "")
 	if !ok {
 		return Ends{}, errNoSnapshot
 	}

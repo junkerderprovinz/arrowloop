@@ -167,6 +167,9 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	if err != nil {
 		return nil, compare, err
 	}
+	if err := away(plan.Left, ends.Left, left, len(visible)); err != nil {
+		return nil, compare, err
+	}
 	// On a first run there is no record to measure against, and the left side
 	// is the best guess at what the right one holds.
 	expect := len(visible)
@@ -175,6 +178,9 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	}
 	right, rightOdd, err := readSide(ctx, plan.Right, ends.Right, scanOpt, expect)
 	if err != nil {
+		return nil, compare, err
+	}
+	if err := away(plan.Right, ends.Right, right, len(visible)); err != nil {
 		return nil, compare, err
 	}
 	sealed, err := passOverSealed(left, right, visible, compare.FoldCase)
@@ -315,6 +321,9 @@ func leaveUnread(left, right *scan.Listing, visible map[string]state.Entry, fold
 func readSide(ctx context.Context, side plan.Side, f fs.Fs, opt scan.Options, expect int) (*scan.Listing, []plan.Skip, error) {
 	listing, err := scan.List(scan.ForSide(ctx, side.String(), expect, true), f, opt)
 	if err != nil {
+		if root, local := apply.LocalPath(f, ""); local && errors.Is(err, scan.ErrGone) {
+			return nil, nil, &plan.GoneError{Side: side, Root: root}
+		}
 		return nil, nil, err
 	}
 	var skips []plan.Skip
@@ -325,6 +334,17 @@ func readSide(ctx context.Context, side plan.Side, f fs.Fs, opt scan.Options, ex
 		})
 	}
 	return listing, skips, nil
+}
+
+// away refuses a side on this machine whose folder is not there while the
+// record knows files, which is a drive that was pulled out. A missing folder
+// the record knows nothing of is the target of a new job, and the run makes it.
+func away(side plan.Side, f fs.Fs, listing *scan.Listing, known int) error {
+	root, local := apply.LocalPath(f, "")
+	if !local || !listing.Absent || known == 0 {
+		return nil
+	}
+	return &plan.GoneError{Side: side, Root: root}
 }
 
 // foldCase decides whether names are matched case-insensitively, one answer

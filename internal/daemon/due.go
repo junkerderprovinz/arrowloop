@@ -123,12 +123,12 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 	return due
 }
 
-// catchUp runs the jobs whose drive is back and that missed a turn while it
-// was away. A computer's clock only fires on each job's own turns, where a
-// phone's next wake-up finds the turn owed, so the scheduler asks this every
-// minute.
-func (r *Runner) catchUp(ctx context.Context, now time.Time) {
-	for _, name := range r.returned(ctx, now) {
+// catchUp runs the jobs whose drive is back, once each, for the turn they lost
+// while it was away; after that they keep to their schedule. A computer's
+// clock only fires on each job's own turns, so the scheduler asks this every
+// minute, which is how often a drive coming back is noticed.
+func (r *Runner) catchUp(ctx context.Context) {
+	for _, name := range r.returned() {
 		if ctx.Err() != nil {
 			return
 		}
@@ -137,22 +137,17 @@ func (r *Runner) catchUp(ctx context.Context, now time.Time) {
 	}
 }
 
-// returned is the jobs waiting for a drive that is attached again and that
-// owe a turn. One whose drive is back and that owes nothing stops waiting. A
-// job with a before command is left to its turn, since the command may be
-// what attaches the drive.
-func (r *Runner) returned(ctx context.Context, now time.Time) []string {
+// returned is the jobs waiting for a drive that is there again. A job with a
+// before command is left to its turn, since the command may be what attaches
+// the drive.
+func (r *Runner) returned() []string {
 	running := r.Running()
 	var back []string
 	for _, j := range r.config().Jobs {
 		if _, waits := r.waiting.Since(j.Name); !waits {
 			continue
 		}
-		if j.Disabled || j.Before != "" || running[j.Name] || attached(j) != nil {
-			continue
-		}
-		if !r.owed(ctx, j, now) {
-			r.waiting.clear(j.Name)
+		if j.Disabled || j.Before != "" || running[j.Name] || r.away(j) != nil {
 			continue
 		}
 		back = append(back, j.Name)

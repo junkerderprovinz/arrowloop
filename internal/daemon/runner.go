@@ -175,7 +175,7 @@ func (r *Runner) preview(ctx context.Context, j job.Job) (*plan.Plan, error) {
 	defer db.Close()
 
 	p, _, err := engine.Prepare(ctx, ends, db, opt)
-	return p, err
+	return p, awayFrom(err)
 }
 
 // fewerLogins steps down the connections to an FTP server that turned a login
@@ -322,6 +322,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	}
 	if err == nil {
 		res, p, err = do(ctx, j, live)
+		err = awayFrom(err)
 	}
 
 	// A plan a brake refused holds the job. It is not a failure, or the retries
@@ -335,7 +336,8 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	}
 
 	// Neither a drive that is not plugged in nor a held job is a run, so
-	// nothing is recorded.
+	// nothing is recorded, not even the part of a run done before its drive
+	// was pulled out.
 	if errors.Is(err, ErrVolumeMissing) || errors.Is(err, ErrHeld) {
 		// The drive may have gone between the check and the work. Whatever
 		// the before command stopped still has to be started again.
@@ -353,6 +355,8 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		return history.Run{}, err
 	}
 
+	// Whatever started it, a run that got this far found its drive.
+	r.waiting.clear(name)
 	rec.Finished = time.Now()
 	if err != nil {
 		rec.Err = err.Error()
@@ -467,14 +471,24 @@ func hideMeta(ends apply.Ends) {
 // that is missing.
 func resolve(j job.Job) (left, right string, err error) {
 	left, err = volume.Resolve(j.Left)
-	if err != nil {
+	if err != nil || offline(left) {
 		return "", "", fmt.Errorf("%w: left side %s", ErrVolumeMissing, volume.Describe(j.Left))
 	}
 	right, err = volume.Resolve(j.Right)
-	if err != nil {
+	if err != nil || offline(right) {
 		return "", "", fmt.Errorf("%w: right side %s", ErrVolumeMissing, volume.Describe(j.Right))
 	}
 	return left, right, nil
+}
+
+// awayFrom turns a side the engine found gone into a drive that is away,
+// which is no failure.
+func awayFrom(err error) error {
+	var gone *plan.GoneError
+	if errors.As(err, &gone) {
+		return fmt.Errorf("%w: %w", ErrVolumeMissing, err)
+	}
+	return err
 }
 
 // execute does the actual sync for one job, optionally limited to some paths.
@@ -773,7 +787,7 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 		}
 		// After the retries, so a retry that found the drive back has
 		// already ended the job's wait.
-		r.catchUp(ctx, time.Now())
+		r.catchUp(ctx)
 		r.backUpIfDue(time.Now())
 	}))
 
