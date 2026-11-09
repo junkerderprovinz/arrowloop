@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 15784 245.3">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16168 245.3">
 <svg x="0" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from Unraid&#x27;s Community Applications">
   <title>Install from Unraid&#x27;s Community Applications</title>
   <defs>
@@ -16,10 +16,10 @@
   <style>
     @keyframes b0-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b0-band { animation: b0-pass 13.596s linear 0.000s infinite backwards; }
+    .b0-band { animation: b0-pass 13.941s linear 0.000s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b0-band { animation: none; opacity: 0; }
     }
@@ -52,10 +52,10 @@
   <style>
     @keyframes b1-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b1-band { animation: b1-pass 13.596s linear 0.693s infinite backwards; }
+    .b1-band { animation: b1-pass 13.941s linear 0.693s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b1-band { animation: none; opacity: 0; }
     }
@@ -90,10 +90,10 @@
   <style>
     @keyframes b2-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b2-band { animation: b2-pass 13.596s linear 1.385s infinite backwards; }
+    .b2-band { animation: b2-pass 13.941s linear 1.385s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b2-band { animation: none; opacity: 0; }
     }
@@ -126,10 +126,10 @@
   <style>
     @keyframes b3-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b3-band { animation: b3-pass 13.596s linear 2.078s infinite backwards; }
+    .b3-band { animation: b3-pass 13.941s linear 2.078s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b3-band { animation: none; opacity: 0; }
     }
@@ -162,10 +162,10 @@
   <style>
     @keyframes b4-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b4-band { animation: b4-pass 13.596s linear 2.771s infinite backwards; }
+    .b4-band { animation: b4-pass 13.941s linear 2.771s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b4-band { animation: none; opacity: 0; }
     }
@@ -198,10 +198,10 @@
   <style>
     @keyframes b5-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b5-band { animation: b5-pass 13.596s linear 3.463s infinite backwards; }
+    .b5-band { animation: b5-pass 13.941s linear 3.463s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b5-band { animation: none; opacity: 0; }
     }
@@ -234,10 +234,10 @@
   <style>
     @keyframes b6-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b6-band { animation: b6-pass 13.596s linear 4.156s infinite backwards; }
+    .b6-band { animation: b6-pass 13.941s linear 4.156s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b6-band { animation: none; opacity: 0; }
     }
@@ -270,10 +270,10 @@
   <style>
     @keyframes b7-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b7-band { animation: b7-pass 13.596s linear 4.848s infinite backwards; }
+    .b7-band { animation: b7-pass 13.941s linear 4.848s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b7-band { animation: none; opacity: 0; }
     }
@@ -306,17 +306,17 @@
   <style>
     @keyframes b8-pass {
       0%       { transform: translateX(-278.4px); }
-      5.67%   { transform: translateX(736.2px); }
+      5.53%   { transform: translateX(736.2px); }
       100%     { transform: translateX(736.2px); }
     }
-    .b8-band { animation: b8-pass 13.596s linear 5.488s infinite backwards; }
+    .b8-band { animation: b8-pass 13.941s linear 5.488s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b8-band { animation: none; opacity: 0; }
     }
   </style>
   <path d="M0,0 H419.583 A38.2,38.2 0 0 1 457.783,38.2 V207.1 A38.2,38.2 0 0 1 419.583,245.3 H0 V0 Z" fill="#0078d4"/>
   <rect width="7.893" height="245.3" fill="#000" fill-opacity="0.28"/>
-  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#ffffff">ARM64</text>
+  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#ffffff">ARM</text>
   <g clip-path="url(#b8-edge)">
     <g class="b8-band">
       <rect x="0" y="-60" width="173.6" height="365.3"
@@ -340,10 +340,10 @@
   <style>
     @keyframes b9-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b9-band { animation: b9-pass 13.596s linear 5.889s infinite backwards; }
+    .b9-band { animation: b9-pass 13.941s linear 5.889s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b9-band { animation: none; opacity: 0; }
     }
@@ -376,10 +376,10 @@
   <style>
     @keyframes b10-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b10-band { animation: b10-pass 13.596s linear 6.582s infinite backwards; }
+    .b10-band { animation: b10-pass 13.941s linear 6.582s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b10-band { animation: none; opacity: 0; }
     }
@@ -400,7 +400,7 @@
   <title>Download for Linux on ARM</title>
   <defs>
     <clipPath id="b11-edge">
-      <path d="M0,0 H457.783 V245.3 H0 V0 Z"/>
+      <path d="M0,0 H419.583 A38.2,38.2 0 0 1 457.783,38.2 V207.1 A38.2,38.2 0 0 1 419.583,245.3 H0 V0 Z"/>
     </clipPath>
     <linearGradient id="b11-sheen" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0"    stop-color="#fff" stop-opacity="0"/>
@@ -412,17 +412,17 @@
   <style>
     @keyframes b11-pass {
       0%       { transform: translateX(-278.4px); }
-      5.67%   { transform: translateX(736.2px); }
+      5.53%   { transform: translateX(736.2px); }
       100%     { transform: translateX(736.2px); }
     }
-    .b11-band { animation: b11-pass 13.596s linear 7.222s infinite backwards; }
+    .b11-band { animation: b11-pass 13.941s linear 7.222s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b11-band { animation: none; opacity: 0; }
     }
   </style>
-  <path d="M0,0 H457.783 V245.3 H0 V0 Z" fill="#fcc624"/>
+  <path d="M0,0 H419.583 A38.2,38.2 0 0 1 457.783,38.2 V207.1 A38.2,38.2 0 0 1 419.583,245.3 H0 V0 Z" fill="#fcc624"/>
   <rect width="7.893" height="245.3" fill="#000" fill-opacity="0.28"/>
-  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#1b1b1b">ARM64</text>
+  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#1b1b1b">ARM</text>
   <g clip-path="url(#b11-edge)">
     <g class="b11-band">
       <rect x="0" y="-60" width="173.6" height="365.3"
@@ -430,11 +430,11 @@
     </g>
   </g>
 </svg>
-<svg x="9624" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the Linux Flatpak">
-  <title>Download the Linux Flatpak</title>
+<svg x="9624" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Flatpak">
+  <title>Download the Flatpak</title>
   <defs>
     <clipPath id="b12-edge">
-      <path d="M0,0 H457.783 V245.3 H0 V0 Z"/>
+      <path d="M38.2,0 H841.9 V245.3 H38.2 A38.2,38.2 0 0 1 0,207.1 V38.2 A38.2,38.2 0 0 1 38.2,0 Z"/>
     </clipPath>
     <linearGradient id="b12-sheen" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0"    stop-color="#fff" stop-opacity="0"/>
@@ -446,17 +446,19 @@
   <style>
     @keyframes b12-pass {
       0%       { transform: translateX(-278.4px); }
-      5.67%   { transform: translateX(736.2px); }
-      100%     { transform: translateX(736.2px); }
+      7.63%   { transform: translateX(1120.3px); }
+      100%     { transform: translateX(1120.3px); }
     }
-    .b12-band { animation: b12-pass 13.596s linear 7.570s infinite backwards; }
+    .b12-band { animation: b12-pass 13.941s linear 7.622s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b12-band { animation: none; opacity: 0; }
     }
   </style>
-  <path d="M0,0 H457.783 V245.3 H0 V0 Z" fill="#fcc624"/>
-  <rect width="7.893" height="245.3" fill="#000" fill-opacity="0.28"/>
-  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#1b1b1b">Flatpak x64</text>
+  <path d="M38.2,0 H841.9 V245.3 H38.2 A38.2,38.2 0 0 1 0,207.1 V38.2 A38.2,38.2 0 0 1 38.2,0 Z" fill="#4a90d9"/>
+  <g transform="translate(85.0 56.65) scale(5.5)" fill="#ffffff">
+    <path d="M12 0c-.556 0-1.111.144-1.61.432l-7.603 4.39a3.217 3.217 0 0 0-1.61 2.788v8.78c0 1.151.612 2.212 1.61 2.788l7.603 4.39a3.217 3.217 0 0 0 3.22 0l7.603-4.39a3.217 3.217 0 0 0 1.61-2.788V7.61a3.217 3.217 0 0 0-1.61-2.788L13.61.432A3.218 3.218 0 0 0 12 0Zm0 2.358c.15 0 .299.039.431.115l7.604 4.39c.132.077.24.187.315.316L12 12v9.642a.863.863 0 0 1-.431-.116l-7.604-4.39a.866.866 0 0 1-.431-.746V7.61c0-.153.041-.302.116-.43L12 12Z"/>
+  </g>
+  <text x="300" y="151" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="82" font-weight="700" fill="#ffffff">Flatpak</text>
   <g clip-path="url(#b12-edge)">
     <g class="b12-band">
       <rect x="0" y="-60" width="173.6" height="365.3"
@@ -464,8 +466,8 @@
     </g>
   </g>
 </svg>
-<svg x="10106" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the Linux Flatpak for ARM">
-  <title>Download the Linux Flatpak for ARM</title>
+<svg x="10490" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the Flatpak for ARM">
+  <title>Download the Flatpak for ARM</title>
   <defs>
     <clipPath id="b13-edge">
       <path d="M0,0 H419.583 A38.2,38.2 0 0 1 457.783,38.2 V207.1 A38.2,38.2 0 0 1 419.583,245.3 H0 V0 Z"/>
@@ -480,17 +482,17 @@
   <style>
     @keyframes b13-pass {
       0%       { transform: translateX(-278.4px); }
-      5.67%   { transform: translateX(736.2px); }
+      5.53%   { transform: translateX(736.2px); }
       100%     { transform: translateX(736.2px); }
     }
-    .b13-band { animation: b13-pass 13.596s linear 7.918s infinite backwards; }
+    .b13-band { animation: b13-pass 13.941s linear 8.262s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b13-band { animation: none; opacity: 0; }
     }
   </style>
-  <path d="M0,0 H419.583 A38.2,38.2 0 0 1 457.783,38.2 V207.1 A38.2,38.2 0 0 1 419.583,245.3 H0 V0 Z" fill="#fcc624"/>
+  <path d="M0,0 H419.583 A38.2,38.2 0 0 1 457.783,38.2 V207.1 A38.2,38.2 0 0 1 419.583,245.3 H0 V0 Z" fill="#4a90d9"/>
   <rect width="7.893" height="245.3" fill="#000" fill-opacity="0.28"/>
-  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#1b1b1b">Flatpak ARM64</text>
+  <text x="228.892" y="151" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#ffffff">ARM</text>
   <g clip-path="url(#b13-edge)">
     <g class="b13-band">
       <rect x="0" y="-60" width="173.6" height="365.3"
@@ -498,7 +500,7 @@
     </g>
   </g>
 </svg>
-<svg x="10588" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="On Google Play soon">
+<svg x="10972" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="On Google Play soon">
   <title>On Google Play soon</title>
   <defs>
     <clipPath id="b14-edge">
@@ -514,10 +516,10 @@
   <style>
     @keyframes b14-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b14-band { animation: b14-pass 13.596s linear 8.318s infinite backwards; }
+    .b14-band { animation: b14-pass 13.941s linear 8.663s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b14-band { animation: none; opacity: 0; }
     }
@@ -535,7 +537,7 @@
     </g>
   </g>
 </svg>
-<svg x="11454" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Get it on F-Droid">
+<svg x="11838" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Get it on F-Droid">
   <title>Get it on F-Droid</title>
   <defs>
     <clipPath id="b15-edge">
@@ -551,10 +553,10 @@
   <style>
     @keyframes b15-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b15-band { animation: b15-pass 13.596s linear 9.011s infinite backwards; }
+    .b15-band { animation: b15-pass 13.941s linear 9.356s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b15-band { animation: none; opacity: 0; }
     }
@@ -571,7 +573,7 @@
     </g>
   </g>
 </svg>
-<svg x="12320" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Android app">
+<svg x="12704" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Android app">
   <title>Download the Android app</title>
   <defs>
     <clipPath id="b16-edge">
@@ -587,10 +589,10 @@
   <style>
     @keyframes b16-pass {
       0%       { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%     { transform: translateX(1120.3px); }
     }
-    .b16-band { animation: b16-pass 13.596s linear 9.704s infinite backwards; }
+    .b16-band { animation: b16-pass 13.941s linear 10.048s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b16-band { animation: none; opacity: 0; }
     }
@@ -607,7 +609,7 @@
     </g>
   </g>
 </svg>
-<svg x="13186" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="13570" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b17-edge">
@@ -623,14 +625,14 @@
   <style>
     @keyframes b17-pass {
       0%             { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%           { transform: translateX(1120.3px); }
     }
     /* Linear, so the hand-off from one button to the next stays on time. The
        backwards fill mode holds the 0% state, off the left edge, during the
        delay; without it the band would wait motionless at x=0, inside the
        button, until the first pass starts. */
-    .b17-band { animation: b17-pass 13.596s linear 10.396s infinite backwards; }
+    .b17-band { animation: b17-pass 13.941s linear 10.741s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b17-band { animation: none; opacity: 0; }
     }
@@ -643,7 +645,7 @@
     </g>
   </g>
 </svg>
-<svg x="14052" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="14436" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b18-edge">
@@ -659,14 +661,14 @@
   <style>
     @keyframes b18-pass {
       0%             { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%           { transform: translateX(1120.3px); }
     }
     /* Linear, so the hand-off from one button to the next stays on time. The
        backwards fill mode holds the 0% state, off the left edge, during the
        delay; without it the band would wait motionless at x=0, inside the
        button, until the first pass starts. */
-    .b18-band { animation: b18-pass 13.596s linear 11.089s infinite backwards; }
+    .b18-band { animation: b18-pass 13.941s linear 11.434s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b18-band { animation: none; opacity: 0; }
     }
@@ -679,7 +681,7 @@
     </g>
   </g>
 </svg>
-<svg x="14918" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="15302" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b19-edge">
@@ -695,14 +697,14 @@
   <style>
     @keyframes b19-pass {
       0%             { transform: translateX(-278.4px); }
-      7.82%   { transform: translateX(1120.3px); }
+      7.63%   { transform: translateX(1120.3px); }
       100%           { transform: translateX(1120.3px); }
     }
     /* Linear, so the hand-off from one button to the next stays on time. The
        backwards fill mode holds the 0% state, off the left edge, during the
        delay; without it the band would wait motionless at x=0, inside the
        button, until the first pass starts. */
-    .b19-band { animation: b19-pass 13.596s linear 11.782s infinite backwards; }
+    .b19-band { animation: b19-pass 13.941s linear 12.126s infinite backwards; }
     @media (prefers-reduced-motion: reduce) {
       .b19-band { animation: none; opacity: 0; }
     }

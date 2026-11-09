@@ -25,6 +25,10 @@ used. Copyright 2024 Fonticons, Inc.
 Simple Icons does not carry Windows any more, so the platform marks all come from
 Font Awesome, drawn to one convention and at one weight.
 
+**Simple Icons**, for `flatpak.txt`: Flatpak's mark, which Flatpak publishes
+under CC BY 3.0 at <https://flatpak.org/press>; the path is Simple Icons' (the
+collection itself is CC0 1.0).
+
 The shared set these files are copied from also has F-Droid's mark (CC0 1.0) and
 Vivaldi's, both from Simple Icons. ArrowLoop has no button for either, so they
 are not here.
