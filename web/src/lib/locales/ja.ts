@@ -464,6 +464,7 @@ const ja: Translations = {
   'start.withSystemHint': 'サインインすると ArrowLoop が起動するので、誰かが先にウィンドウを開かなくても予定されたジョブが動きます。この登録はあなた専用で、管理者権限は必要ありません。',
   'update.auto': '自動でアップデート',
   'update.autoHint': 'ArrowLoop は 1 日に 1 回新しいバージョンを探し、バックグラウンドでダウンロードして、リリースと一緒に公開されたチェックサムで確認します。新しいバージョンは次に ArrowLoop を起動したときから動くので、実行中の同期が途中で止まることはありません。インストールしたコピーもポータブル版のコピーも、置いてある場所でそのまま更新されます。',
+  'update.autoContainerHint': 'デスクトップ版でのみ可能です。コンテナは内側から自分自身を置き換えられません。代わりに、デプロイしたときと同じ方法で更新してください（docker pull、Unraid Community Applications、Watchtower など）。',
   'update.ready': 'ArrowLoop {version} をダウンロードしました。次にアプリを起動したときから動きます。',
   'update.fromStore': '更新はソフトウェアセンターから届きます',
   'update.fromStoreHint': 'この ArrowLoop は Flatpak なので、自分自身を置き換えることはありません。Flathub からインストールした場合は、新しいバージョンがソフトウェアセンターから届きます。ダウンロードした .flatpak ファイルからインストールした場合は、次のリリースのファイルを同じように開くと更新されます。',

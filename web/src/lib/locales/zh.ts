@@ -464,6 +464,7 @@ const zh: Translations = {
   'start.withSystemHint': '登录后 ArrowLoop 会自动启动，这样即使没人先打开窗口，计划任务也能运行。该条目只属于你，不需要管理员权限。',
   'update.auto': '自动更新',
   'update.autoHint': 'ArrowLoop 每天查找一次新版本，在后台下载，并用随发布一起公布的校验和进行核对。新版本会在你下次启动 ArrowLoop 时生效，所以正在进行的同步不会被打断。安装版和便携版都会在原位置更新。',
+  'update.autoContainerHint': '只有桌面版可以这样做：容器无法从内部替换自己。请改为按你部署它的方式来更新（docker pull、Unraid Community Applications、Watchtower 等）。',
   'update.ready': '已下载 ArrowLoop {version}，下次启动应用时生效。',
   'update.fromStore': '更新通过软件中心送达',
   'update.fromStoreHint': '这份 ArrowLoop 是 Flatpak，不会自行替换。从 Flathub 安装时，每个新版本都会通过软件中心送达。从下载的 .flatpak 文件安装时，用同样的方式打开下一个版本的文件即可更新。',

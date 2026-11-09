@@ -464,6 +464,7 @@ const is: Translations = {
   'start.withSystemHint': 'ArrowLoop ræsist þegar þú skráir þig inn, svo áætlað verk keyrir án þess að nokkur opni gluggann fyrst. Færslan tilheyrir þér einum og biður ekki um kerfisstjóraréttindi.',
   'update.auto': 'Uppfæra sjálfkrafa',
   'update.autoHint': 'Einu sinni á dag leitar ArrowLoop að nýrri útgáfu, sækir hana í bakgrunni og ber hana saman við gátsummurnar sem birtar eru með útgáfunni. Nýja útgáfan tekur við næst þegar þú ræsir ArrowLoop, svo samstilling sem er í gangi rofnar ekki. Uppsett eintak og færanlegt eintak uppfærast bæði þar sem þau eru.',
+  'update.autoContainerHint': 'Aðeins mögulegt í skjáborðsútgáfunni: gámur getur ekki skipt sjálfum sér út innan frá. Uppfærðu hann þess í stað á sama hátt og þú settir hann upp (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'ArrowLoop {version} hefur verið sótt og keyrir næst þegar þú ræsir forritið.',
   'update.fromStore': 'Uppfærslur koma í gegnum hugbúnaðarmiðstöðina',
   'update.fromStoreHint': 'Þetta eintak af ArrowLoop er Flatpak og skiptir sér ekki út sjálft. Sett upp af Flathub fær það hverja nýja útgáfu í gegnum hugbúnaðarmiðstöðina þína. Sett upp af niðurhalaðri .flatpak-skrá uppfærist það þegar þú opnar skrá næstu útgáfu á sama hátt.',

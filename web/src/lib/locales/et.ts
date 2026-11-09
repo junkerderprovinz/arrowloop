@@ -464,6 +464,7 @@ const et: Translations = {
   'start.withSystemHint': 'ArrowLoop käivitub sisselogimisel, nii et ajastatud töö jookseb ilma et keegi peaks enne akna avama. Kirje kuulub ainult sulle ega küsi administraatori õigusi.',
   'update.auto': 'Uuenda automaatselt',
   'update.autoHint': 'Kord päevas otsib ArrowLoop uut versiooni, laadib selle taustal alla ja kontrollib seda väljalaskega avaldatud kontrollsummade järgi. Uus versioon hakkab tööle järgmisel korral, kui ArrowLoopi käivitad, nii et käimasolev sünkroonimine ei katke. Paigaldatud koopia ja kaasaskantav koopia uuenevad mõlemad seal, kus nad asuvad.',
+  'update.autoContainerHint': 'Võimalik ainult töölauaversioonis: konteiner ei saa end seestpoolt asendada. Uuenda seda selle asemel samal viisil, nagu selle juurutasid (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'ArrowLoop {version} on alla laaditud ja töötab järgmisel käivitamisel.',
   'update.fromStore': 'Uuendused tulevad tarkvarakeskuse kaudu',
   'update.fromStoreHint': 'See ArrowLoopi koopia on Flatpak ega asenda ennast ise. Flathubist paigaldatuna saab see iga uue versiooni sinu tarkvarakeskuse kaudu. Allalaaditud .flatpak-failist paigaldatuna uueneb see, kui avad samamoodi järgmise väljalaske faili.',

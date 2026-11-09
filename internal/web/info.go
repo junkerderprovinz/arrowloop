@@ -38,6 +38,8 @@ type versions struct {
 	ArrowLoop string `json:"arrowloop"`
 	Rclone    string `json:"rclone"`
 	Go        string `json:"go"`
+	// Deployment is what kind of instance answers, as in Server.Deployment.
+	Deployment string `json:"deployment,omitempty"`
 }
 
 func currentVersions() versions {
@@ -47,7 +49,9 @@ func currentVersions() versions {
 }
 
 func (s *Server) versions(w http.ResponseWriter, _ *http.Request) {
-	writeJSON(w, http.StatusOK, currentVersions())
+	v := currentVersions()
+	v.Deployment = s.Deployment
+	writeJSON(w, http.StatusOK, v)
 }
 
 func (s *Server) releaseNotes(w http.ResponseWriter, _ *http.Request) {

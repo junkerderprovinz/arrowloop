@@ -347,11 +347,11 @@ describe('a job card', () => {
     expect(opened).not.toHaveBeenCalled()
   })
 
-  it('never shows a run that skipped files as in sync', async () => {
+  it('shows a run that left files for the next one as synced', async () => {
     page({ jobs: [job('photos', { recent: [{ ...ran('photos'), Skipped: 2 }] }), job('music')] })
     const status = within(row('photos')).getByTestId('job-status')
-    expect(status.textContent).toBe('Needs a look')
-    expect(status.querySelector('.bg-statusOkSolid')).toBeNull()
+    expect(status.textContent).not.toBe('Needs a look')
+    expect(status.querySelector('.bg-statusOkSolid')).toBeTruthy()
   })
 
   it('gives a job a note speaks of no synced dot, and leads to the note', async () => {

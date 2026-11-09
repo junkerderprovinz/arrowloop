@@ -464,6 +464,7 @@ const eu: Translations = {
   'start.withSystemHint': 'ArrowLoop saioa hastean abiatzen da, eta horrela programatutako lan bat exekutatzen da inork lehenago leihoa ireki gabe. Sarrera zurea da soilik eta ez du administratzaile baimenik eskatzen.',
   'update.auto': 'Eguneratu automatikoki',
   'update.autoHint': 'Egunean behin ArrowLoop-ek bertsio berri bat bilatzen du, atzeko planoan deskargatzen du eta bertsioarekin argitaratutako egiaztapen-baturekin egiaztatzen du. Bertsio berria ArrowLoop abiarazten duzun hurrengo aldian hasten da, beraz martxan dagoen sinkronizazio bat ez da eteten. Kopia instalatua eta kopia eramangarria dauden lekuan eguneratzen dira biak.',
+  'update.autoContainerHint': 'Mahaigaineko bertsioan bakarrik da posible: edukiontzi batek ezin du bere burua barrutik ordezkatu. Eguneratu hura zabaldu zenuen modu berean (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'ArrowLoop {version} deskargatuta dago, eta aplikazioa abiarazten duzun hurrengo aldian ibiliko da.',
   'update.fromStore': 'Eguneraketak software-zentroaren bidez datoz',
   'update.fromStoreHint': 'ArrowLoop-en kopia hau Flatpak bat da eta ez du bere burua ordezkatzen. Flathub-etik instalatuta, software-zentroaren bidez jasotzen du bertsio berri bakoitza. Deskargatutako .flatpak fitxategi batetik instalatuta, hurrengo bertsioaren fitxategia modu berean irekitzean eguneratzen da.',

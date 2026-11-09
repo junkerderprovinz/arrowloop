@@ -37,6 +37,28 @@ func TestTheVersionsNameTheBuildAndTheRcloneItCarries(t *testing.T) {
 	}
 }
 
+// The Info page offers the update switch by what the instance is, and a
+// browser on the desktop app's engine has no window settings to tell it.
+func TestTheVersionsSayWhatKindOfInstanceAnswers(t *testing.T) {
+	h := newHarness(t)
+	srv := httptest.NewServer((&web.Server{History: h.history, Runner: h.runner, Deployment: "container"}).Handler())
+	t.Cleanup(srv.Close)
+	resp, err := srv.Client().Get(srv.URL + "/api/versions")
+	if err != nil {
+		t.Fatalf("GET: %v", err)
+	}
+	defer resp.Body.Close()
+	var got struct {
+		Deployment string `json:"deployment"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if got.Deployment != "container" {
+		t.Errorf("deployment = %q, want container", got.Deployment)
+	}
+}
+
 func TestTheReleaseNotesEndAtTheRunningRelease(t *testing.T) {
 	runningVersion(t, "v1.2.0")
 	h := newHarness(t)

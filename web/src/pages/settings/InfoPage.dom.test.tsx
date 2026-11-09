@@ -7,12 +7,13 @@ import { CHANGES } from '../../lib/whatsNew'
 
 const updateCheck = vi.fn()
 const diagnostics = vi.fn(() => Promise.resolve('{"versions":{}}'))
+const versions = vi.fn(() => Promise.resolve<{ arrowloop: string; rclone: string; go: string; deployment?: string }>({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1' }))
 const pushed: { message: string; severity?: string }[] = []
 
 vi.mock('../../lib/api', async (actual) => ({
   ...(await actual<typeof import('../../lib/api')>()),
   api: {
-    versions: () => Promise.resolve({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1' }),
+    versions: () => versions(),
     updateCheck: () => updateCheck(),
     diagnostics: () => diagnostics(),
   },
@@ -170,5 +171,13 @@ describe('the Info tile', () => {
     render(<InfoPage version="v1.8.0" {...server} />)
     await screen.findByRole('link', { name: '1.75.2' })
     expect(screen.queryByRole('switch')).toBeNull()
+  })
+
+  it('shows a container the update switch turned off, as one it cannot use', async () => {
+    versions.mockResolvedValueOnce({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1', deployment: 'container' })
+    render(<InfoPage version="v1.8.0" {...server} />)
+    const toggle = await screen.findByRole('switch', { name: 'Update automatically' })
+    expect(toggle.getAttribute('aria-checked')).toBe('false')
+    expect((toggle as HTMLButtonElement).disabled || toggle.getAttribute('aria-disabled') === 'true').toBe(true)
   })
 })

@@ -464,6 +464,7 @@ const da: Translations = {
   'start.withSystemHint': 'ArrowLoop starter, når du logger ind, så et planlagt job kører, uden at nogen først skal åbne vinduet. Posten er kun din og kræver ingen administratorrettigheder.',
   'update.auto': 'Opdater automatisk',
   'update.autoHint': 'Én gang om dagen leder ArrowLoop efter en ny version, henter den i baggrunden og kontrollerer den mod de kontrolsummer, der er udgivet med versionen. Den nye version tager over, næste gang du starter ArrowLoop, så en igangværende synkronisering bliver ikke afbrudt. En installeret kopi og en bærbar kopi opdateres begge, hvor de ligger.',
+  'update.autoContainerHint': 'Kun muligt i desktopversionen: en container kan ikke erstatte sig selv indefra. Opdater den i stedet på samme måde, som du udrullede den (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'ArrowLoop {version} er hentet og kører, næste gang du starter appen.',
   'update.fromStore': 'Opdateringer kommer via dit softwarecenter',
   'update.fromStoreHint': 'Denne kopi af ArrowLoop er en Flatpak og udskifter ikke sig selv. Installeret fra Flathub får den hver ny version via dit softwarecenter. Installeret fra en hentet .flatpak-fil opdateres den, når du åbner filen fra næste udgivelse på samme måde.',

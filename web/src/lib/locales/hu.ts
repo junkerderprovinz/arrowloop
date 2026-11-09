@@ -464,6 +464,7 @@ const hu: Translations = {
   'start.withSystemHint': 'Az ArrowLoop a bejelentkezéskor elindul, így az ütemezett feladat lefut anélkül, hogy bárki előbb megnyitná az ablakot. A bejegyzés csak a tiéd, és nem kér rendszergazdai jogokat.',
   'update.auto': 'Automatikus frissítés',
   'update.autoHint': 'Az ArrowLoop naponta egyszer új verziót keres, a háttérben letölti, és a kiadással együtt közzétett ellenőrzőösszegekkel ellenőrzi. Az új verzió az ArrowLoop következő indításakor lép életbe, így a folyamatban lévő szinkronizálás nem szakad meg. A telepített és a hordozható példány egyaránt a helyén frissül.',
+  'update.autoContainerHint': 'Csak az asztali buildben lehetséges: egy konténer nem tudja belülről lecserélni önmagát. Frissítsd inkább úgy, ahogyan telepítetted (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'Az ArrowLoop {version} letöltődött, és az alkalmazás következő indításakor fut.',
   'update.fromStore': 'A frissítések a szoftverközponton át érkeznek',
   'update.fromStoreHint': 'Az ArrowLoop ezen példánya Flatpak, és nem cseréli le önmagát. Flathubról telepítve minden új verziót a szoftverközpontodon át kap meg. Letöltött .flatpak fájlból telepítve akkor frissül, amikor ugyanígy megnyitod a következő kiadás fájlját.',

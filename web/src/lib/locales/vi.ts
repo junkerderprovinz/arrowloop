@@ -464,6 +464,7 @@ const vi: Translations = {
   'start.withSystemHint': 'ArrowLoop khởi động khi bạn đăng nhập, nên một công việc đã lên lịch vẫn chạy mà không cần ai mở cửa sổ trước. Mục này chỉ thuộc về bạn và không đòi quyền quản trị.',
   'update.auto': 'Tự động cập nhật',
   'update.autoHint': 'Mỗi ngày một lần ArrowLoop tìm phiên bản mới, tải về ở chế độ nền và kiểm tra bằng mã tổng kiểm được công bố cùng bản phát hành. Phiên bản mới bắt đầu chạy vào lần tới bạn khởi động ArrowLoop, nên một lần đồng bộ đang chạy không bị ngắt. Bản đã cài đặt và bản di động đều được cập nhật ngay tại chỗ.',
+  'update.autoContainerHint': 'Chỉ làm được trên bản desktop: một container không thể tự thay thế chính nó từ bên trong. Thay vào đó, hãy cập nhật nó theo cách bạn đã triển khai (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'ArrowLoop {version} đã được tải về và sẽ chạy vào lần tới bạn khởi động ứng dụng.',
   'update.fromStore': 'Bản cập nhật đến qua trung tâm phần mềm',
   'update.fromStoreHint': 'Bản ArrowLoop này là Flatpak và không tự thay thế chính nó. Nếu cài từ Flathub, mỗi phiên bản mới sẽ đến qua trung tâm phần mềm của bạn. Nếu cài từ tệp .flatpak đã tải về, nó được cập nhật khi bạn mở tệp của bản phát hành tiếp theo theo cùng cách.',

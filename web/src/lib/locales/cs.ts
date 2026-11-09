@@ -464,6 +464,7 @@ const cs: Translations = {
   'start.withSystemHint': 'ArrowLoop se spustí při vašem přihlášení, takže naplánovaná úloha běží, aniž by někdo musel nejdřív otevřít okno. Záznam patří jen vám a nevyžaduje práva správce.',
   'update.auto': 'Aktualizovat automaticky',
   'update.autoHint': 'Jednou denně ArrowLoop hledá novou verzi, stáhne ji na pozadí a ověří ji podle kontrolních součtů zveřejněných s vydáním. Nová verze se ujme při příštím spuštění ArrowLoop, takže běžící synchronizace se nepřeruší. Nainstalovaná i přenosná kopie se aktualizují tam, kde jsou.',
+  'update.autoContainerHint': 'Možné jen v desktopovém buildu: kontejner se nemůže nahradit sám zevnitř. Aktualizuj ho místo toho stejně, jako jsi ho nasadil (docker pull, Unraid Community Applications, Watchtower, ...).',
   'update.ready': 'ArrowLoop {version} je stažen a poběží při příštím spuštění aplikace.',
   'update.fromStore': 'Aktualizace přicházejí přes správce softwaru',
   'update.fromStoreHint': 'Tato kopie ArrowLoop je Flatpak a sama se nenahrazuje. Když je nainstalovaná z Flathubu, každou novou verzi přinese tvůj správce softwaru. Když je nainstalovaná ze staženého souboru .flatpak, aktualizuješ ji tak, že stejně otevřeš soubor dalšího vydání.',

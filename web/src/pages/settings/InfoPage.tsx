@@ -46,7 +46,7 @@ export function InfoPage({
 }) {
   const { t } = useT()
   const push = useToast()
-  const [versions, setVersions] = useState<{ arrowloop: string; rclone: string } | null>(null)
+  const [versions, setVersions] = useState<{ arrowloop: string; rclone: string; deployment?: string } | null>(null)
   // A release that marks no changes has no list for New to count, so the card
   // offers its notes instead.
   const news = useWhatsNew()
@@ -109,7 +109,13 @@ export function InfoPage({
                 checkFailed: t('info.checkFailed'),
               },
             }}
-            settings={windowSettings && <UpdateSetting window={windowSettings} onWindow={onWindow} />}
+            settings={
+              windowSettings ? (
+                <UpdateSetting window={windowSettings} onWindow={onWindow} />
+              ) : (
+                versions?.deployment === 'container' && <ContainerUpdateSetting />
+              )
+            }
             onReleaseNotes={openNewsWindow}
             whatsNew={listed ? whatsNew : undefined}
           />
@@ -183,4 +189,13 @@ function UpdateSetting({ window: windowSettings, onWindow }: { window: WindowSet
       onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
     />
   )
+}
+
+/**
+ * The switch the desktop app has, shown off and out of reach in a container,
+ * which cannot replace itself from inside. The hint says how it is updated.
+ */
+function ContainerUpdateSetting() {
+  const { t } = useT()
+  return <ToggleRow label={t('update.auto')} hint={t('update.autoContainerHint')} checked={false} disabled onChange={() => {}} />
 }

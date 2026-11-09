@@ -1187,7 +1187,7 @@ export const api = {
     request<{ window: boolean; security?: boolean; pairing?: boolean; version: string }>('/api/capabilities'),
 
   /** The versions this build is made of, for the Info tile. */
-  versions: () => request<{ arrowloop: string; rclone: string; go: string }>('/api/versions'),
+  versions: () => request<{ arrowloop: string; rclone: string; go: string; deployment?: Deployment }>('/api/versions'),
 
   /** The notes of this release and every one before it, newest first, in Markdown. */
   releaseNotes: () => request<{ notes: { version: string; body: string }[] }>('/api/release-notes'),

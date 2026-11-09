@@ -121,14 +121,14 @@ describe('a job page', () => {
     )
     page()
     const row = (await screen.findByText('a/b.jpg')).closest('li') as HTMLElement
-    expect([...row.children].map((c) => (c as HTMLElement).style.order)).toEqual(['0', '1', '2', '3', '4'])
+    expect([...row.children].map((c) => (c as HTMLElement).style.order)).toEqual(['0', '1', '2', '3'])
     expect(row.textContent).not.toContain('photos')
     log.mockImplementation(() => Promise.resolve([]))
   })
 
   it('filters the files touched from the head of their list, with no buttons over it', async () => {
     page()
-    expect(await screen.findByRole('heading', { level: 2, name: /^Files touched/ })).toBeTruthy()
+    expect(await screen.findByRole('heading', { level: 2, name: /^Files/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
@@ -144,7 +144,7 @@ describe('a job page', () => {
 
   it('has a card for each thing it does, none of them folded', async () => {
     page()
-    for (const title of ['Runs', 'Files touched', 'Preview', 'Check', 'Duplicates']) {
+    for (const title of ['Runs', 'Files', 'Preview', 'Check', 'Duplicates']) {
       expect(await screen.findByRole('heading', { level: 2, name: new RegExp(`^${title}`) })).toBeTruthy()
     }
     expect(document.querySelector('[aria-expanded="false"]:not([aria-haspopup])')).toBeNull()
