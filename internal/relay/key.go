@@ -7,9 +7,9 @@ package relay
 // phrase. Proxy frames are sealed with a second key derived from the same
 // secret under its own domain (see seal.go).
 //
-// The domains are ArrowLoop's own, as BombVault and KnightLoader have theirs,
-// so the same twelve words typed into two different apps never put them in
-// one group on the shared relay.
+// The domains are ArrowLoop's own, as every other app on the relay has its
+// own, so the same twelve words typed into two different apps never put them
+// in one group on the shared relay.
 
 import (
 	"crypto/sha256"
@@ -17,9 +17,8 @@ import (
 )
 
 // DefaultRelayURL is the relay every instance dials unless its owner points it
-// elsewhere: ParleyPort, which the project runs for BombVault and KnightLoader
-// as well. Because the address is compiled in, a phrase only has to carry the
-// secret.
+// elsewhere: ParleyPort, the relay the project runs for all of its apps.
+// Because the address is compiled in, a phrase only has to carry the secret.
 const DefaultRelayURL = "wss://parleyport.halleluja.design/relay/connect"
 
 // PairingCode is the text of the QR code shown beside a phrase. On the project
