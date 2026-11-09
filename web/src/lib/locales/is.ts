@@ -559,6 +559,7 @@ const is: Translations = {
   'settings.backupFile': 'Skrá',
   'settings.export': 'Flytja út',
   'settings.import': 'Flytja inn',
+  'settings.importPick': 'Veldu skrá til að flytja inn',
   'settings.exported': 'Vistað í {path}',
   'settings.imported': 'Stillingar endurheimtar',
   'settings.importNotOurs': 'Þessi skrá er ekki ArrowLoop-afrit.',

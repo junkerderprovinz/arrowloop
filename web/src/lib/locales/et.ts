@@ -559,6 +559,7 @@ const et: Translations = {
   'settings.backupFile': 'Fail',
   'settings.export': 'Ekspordi',
   'settings.import': 'Impordi',
+  'settings.importPick': 'Vali imporditav fail',
   'settings.exported': 'Salvestatud asukohta {path}',
   'settings.imported': 'Sätted taastatud',
   'settings.importNotOurs': 'See fail ei ole ArrowLoopi varukoopia.',

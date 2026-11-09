@@ -559,6 +559,7 @@ const eu: Translations = {
   'settings.backupFile': 'Fitxategia',
   'settings.export': 'Esportatu',
   'settings.import': 'Inportatu',
+  'settings.importPick': 'Inportatzeko fitxategi bat aukeratu',
   'settings.exported': '{path} helbidean gordeta',
   'settings.imported': 'Ezarpenak berreskuratuta',
   'settings.importNotOurs': 'Fitxategi hori ez da ArrowLoop babeskopia bat.',

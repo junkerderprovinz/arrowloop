@@ -559,6 +559,7 @@ const ca: Translations = {
   'settings.backupFile': 'Fitxer',
   'settings.export': 'Exporta',
   'settings.import': 'Importa',
+  'settings.importPick': 'Tria un fitxer per importar',
   'settings.exported': 'Desat a {path}',
   'settings.imported': 'Configuració restaurada',
   'settings.importNotOurs': 'Aquest fitxer no és una còpia d\'ArrowLoop.',

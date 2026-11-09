@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.PowerManager
+import android.provider.OpenableColumns
 import android.provider.Settings
 import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Arguments
@@ -23,6 +24,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import java.io.File
+import java.io.IOException
 
 /**
  * The native side of src/engine.ts: only what JavaScript cannot do, such as
@@ -371,15 +373,16 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Writes a settings backup to the public Downloads folder under a fixed
-     * name. The app's all-files access covers it, so no picker is needed.
+     * Writes a settings backup to the given file, or to the public Downloads
+     * folder under a fixed name when the path is blank. A folder gets the
+     * fixed name inside it. The app's all-files access covers both.
      */
     @ReactMethod
-    fun exportSettings(json: String, promise: Promise) {
+    fun exportSettings(json: String, path: String, promise: Promise) {
         try {
-            val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            folder.mkdirs()
-            val file = File(folder, BACKUP_NAME)
+            val given = if (path.isBlank()) File(downloads(), BACKUP_NAME) else File(path)
+            val file = if (given.isDirectory) File(given, BACKUP_NAME) else given
+            file.parentFile?.mkdirs()
             // Encoded before the file is opened, since opening truncates it.
             val bytes = json.toByteArray(Charsets.UTF_8)
             file.writeBytes(bytes)
@@ -393,11 +396,11 @@ class EngineModule(private val context: ReactApplicationContext) :
     @ReactMethod
     fun importSettings(path: String, promise: Promise) {
         try {
-            val file = if (path.isBlank()) {
-                val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                File(folder, BACKUP_NAME).takeIf { it.exists() } ?: File(folder, OLD_BACKUP_NAME)
-            } else {
-                File(path)
+            val file = when {
+                path.isBlank() ->
+                    File(downloads(), BACKUP_NAME).takeIf { it.exists() } ?: File(downloads(), OLD_BACKUP_NAME)
+                File(path).isDirectory -> File(path, BACKUP_NAME)
+                else -> File(path)
             }
             if (!file.exists()) {
                 promise.reject("import", "there is no file at ${file.absolutePath}")
@@ -412,8 +415,47 @@ class EngineModule(private val context: ReactApplicationContext) :
     /** The default backup path, shown before a backup has been written. */
     @ReactMethod
     fun backupPath(promise: Promise) {
-        val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        promise.resolve(File(folder, BACKUP_NAME).absolutePath)
+        promise.resolve(File(downloads(), BACKUP_NAME).absolutePath)
+    }
+
+    private fun downloads(): File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+    /**
+     * Opens Android's file picker and resolves with the chosen file's name and
+     * text, or with null on Back. The file is read through the picker's grant,
+     * so it can come from anywhere the picker reaches, a cloud app's included.
+     */
+    @ReactMethod
+    fun pickBackup(promise: Promise) {
+        val activity = context.currentActivity
+        if (activity == null) {
+            promise.reject("backup", "there is no screen to ask in front of")
+            return
+        }
+        choosing?.reject("backup", "another file was already being picked")
+        choosing = promise
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            // A FolderSync export or a luckyBackup profile is no JSON file.
+            .setType("*/*")
+        try {
+            activity.startActivityForResult(intent, FILE_REQUEST)
+        } catch (e: ActivityNotFoundException) {
+            choosing = null
+            promise.reject("backup", "this phone has no file picker")
+        }
+    }
+
+    private fun readPicked(uri: Uri): WritableMap {
+        val resolver = context.contentResolver
+        val name = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            ?.use { if (it.moveToFirst()) it.getString(0) else null }
+        val text = resolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
+            ?: throw IOException("could not open ${name ?: uri}")
+        return Arguments.createMap().apply {
+            putString("name", name ?: uri.lastPathSegment ?: uri.toString())
+            putString("text", text)
+        }
     }
 
     /**
@@ -500,6 +542,24 @@ class EngineModule(private val context: ReactApplicationContext) :
     // Non-null parameters, as React Native's interface declares them; nullable
     // ones would override nothing.
     override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == FILE_REQUEST) {
+            val waiting = choosing ?: return
+            choosing = null
+            val uri = data?.data
+            if (resultCode != Activity.RESULT_OK || uri == null) {
+                waiting.resolve(null)
+                return
+            }
+            // A file from a cloud app can take a while to arrive.
+            Thread {
+                try {
+                    waiting.resolve(readPicked(uri))
+                } catch (e: Exception) {
+                    waiting.reject("backup", e.message ?: "could not read the file")
+                }
+            }.start()
+            return
+        }
         if (requestCode == PICK_REQUEST) {
             val waiting = picking ?: return
             picking = null
@@ -533,9 +593,12 @@ class EngineModule(private val context: ReactApplicationContext) :
         const val ACCENT_EVENT = "systemAccentChanged"
         private const val UNLOCK_REQUEST = 8422
         private const val PICK_REQUEST = 8425
+        private const val FILE_REQUEST = 8426
     }
 
     private var pending: Promise? = null
 
     private var picking: Promise? = null
+
+    private var choosing: Promise? = null
 }

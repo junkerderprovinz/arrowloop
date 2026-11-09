@@ -559,6 +559,7 @@ const id: Translations = {
   'settings.backupFile': 'Berkas',
   'settings.export': 'Ekspor',
   'settings.import': 'Impor',
+  'settings.importPick': 'Pilih berkas untuk diimpor',
   'settings.exported': 'Disimpan ke {path}',
   'settings.imported': 'Pengaturan dipulihkan',
   'settings.importNotOurs': 'Berkas itu bukan cadangan ArrowLoop.',

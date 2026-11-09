@@ -559,6 +559,7 @@ const hu: Translations = {
   'settings.backupFile': 'Fájl',
   'settings.export': 'Exportálás',
   'settings.import': 'Importálás',
+  'settings.importPick': 'Válassz importálandó fájlt',
   'settings.exported': 'Mentve ide: {path}',
   'settings.imported': 'A beállítások visszaálltak',
   'settings.importNotOurs': 'Ez a fájl nem ArrowLoop-mentés.',

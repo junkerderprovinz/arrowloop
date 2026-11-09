@@ -559,6 +559,7 @@ const vi: Translations = {
   'settings.backupFile': 'Tệp',
   'settings.export': 'Xuất',
   'settings.import': 'Nhập',
+  'settings.importPick': 'Chọn tệp để nhập',
   'settings.exported': 'Đã lưu vào {path}',
   'settings.imported': 'Đã khôi phục thiết lập',
   'settings.importNotOurs': 'Tệp đó không phải bản sao lưu ArrowLoop.',

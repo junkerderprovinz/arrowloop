@@ -559,6 +559,7 @@ const uk: Translations = {
   'settings.backupFile': 'Файл',
   'settings.export': 'Експорт',
   'settings.import': 'Імпорт',
+  'settings.importPick': 'Вибрати файл для імпорту',
   'settings.exported': 'Збережено в {path}',
   'settings.imported': 'Налаштування відновлено',
   'settings.importNotOurs': 'Цей файл не є резервною копією ArrowLoop.',

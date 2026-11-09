@@ -559,6 +559,7 @@ const tr: Translations = {
   'settings.backupFile': 'Dosya',
   'settings.export': 'Dışa aktar',
   'settings.import': 'İçe aktar',
+  'settings.importPick': 'İçe aktarılacak dosyayı seç',
   'settings.exported': '{path} konumuna kaydedildi',
   'settings.imported': 'Ayarlar geri yüklendi',
   'settings.importNotOurs': 'Bu dosya bir ArrowLoop yedeği değil.',

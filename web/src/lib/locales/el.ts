@@ -559,6 +559,7 @@ const el: Translations = {
   'settings.backupFile': 'Αρχείο',
   'settings.export': 'Εξαγωγή',
   'settings.import': 'Εισαγωγή',
+  'settings.importPick': 'Επιλογή αρχείου για εισαγωγή',
   'settings.exported': 'Αποθηκεύτηκε στο {path}',
   'settings.imported': 'Οι ρυθμίσεις επανήλθαν',
   'settings.importNotOurs': 'Αυτό το αρχείο δεν είναι αντίγραφο του ArrowLoop.',

@@ -559,6 +559,7 @@ const fa: Translations = {
   'settings.backupFile': 'فایل',
   'settings.export': 'برون‌بری',
   'settings.import': 'درون‌ریزی',
+  'settings.importPick': 'یک فایل برای درون‌ریزی انتخاب کن',
   'settings.exported': 'در {path} ذخیره شد',
   'settings.imported': 'تنظیمات بازیابی شد',
   'settings.importNotOurs': 'آن فایل پشتیبان ArrowLoop نیست.',

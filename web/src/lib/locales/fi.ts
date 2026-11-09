@@ -559,6 +559,7 @@ const fi: Translations = {
   'settings.backupFile': 'Tiedosto',
   'settings.export': 'Vie',
   'settings.import': 'Tuo',
+  'settings.importPick': 'Valitse tuotava tiedosto',
   'settings.exported': 'Tallennettu kohteeseen {path}',
   'settings.imported': 'Asetukset palautettu',
   'settings.importNotOurs': 'Tiedosto ei ole ArrowLoopin varmuuskopio.',

@@ -559,6 +559,7 @@ const ro: Translations = {
   'settings.backupFile': 'Fișier',
   'settings.export': 'Exportă',
   'settings.import': 'Importă',
+  'settings.importPick': 'Alege un fișier de importat',
   'settings.exported': 'Salvat în {path}',
   'settings.imported': 'Setări restaurate',
   'settings.importNotOurs': 'Acel fișier nu este o copie ArrowLoop.',

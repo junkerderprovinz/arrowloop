@@ -559,6 +559,7 @@ const zh: Translations = {
   'settings.backupFile': '文件',
   'settings.export': '导出',
   'settings.import': '导入',
+  'settings.importPick': '选择要导入的文件',
   'settings.exported': '已保存到 {path}',
   'settings.imported': '设置已恢复',
   'settings.importNotOurs': '那个文件不是 ArrowLoop 的备份。',

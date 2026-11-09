@@ -21,11 +21,13 @@ interface EngineNativeModule {
   openNotificationSettings(): Promise<void>;
   /** Opens the battery optimisation list, where OEMs decide whether background jobs run. */
   openBatterySettings(): Promise<void>;
-  /** Writes a settings backup to Downloads and returns its path. */
-  exportSettings(json: string): Promise<string>;
+  /** Writes a settings backup and returns its path; an empty path means Downloads. */
+  exportSettings(json: string, path: string): Promise<string>;
   /** Reads a backup; an empty path means the default place. */
   importSettings(path: string): Promise<string>;
   backupPath(): Promise<string>;
+  /** Opens Android's file picker; resolves with the file chosen, or null on Back. */
+  pickBackup(): Promise<PickedFile | null>;
   /** Whether the phone has a real screen lock rather than a swipe. */
   hasDeviceLock(): Promise<boolean>;
   /** Asks for the phone's lock and resolves true when it was given. */
@@ -63,6 +65,12 @@ interface EngineNativeModule {
   addSharedFolder(): Promise<SharedFolder[]>;
   /** Gives a folder back and starts the engine over. */
   removeSharedFolder(uri: string): Promise<SharedFolder[]>;
+}
+
+/** A file chosen in Android's picker, which has a name to show but no path. */
+export interface PickedFile {
+  name: string;
+  text: string;
 }
 
 /** Material 3's primary for the light and the dark look, as ARGB ints. */
@@ -187,9 +195,10 @@ export const engine = {
   token: () => (native ? native.token() : Promise.resolve("")),
   openNotificationSettings: () => (native ? native.openNotificationSettings() : missing()),
   openBatterySettings: () => (native ? native.openBatterySettings() : missing()),
-  exportSettings: (json: string) => (native ? native.exportSettings(json) : missing()),
+  exportSettings: (json: string, path: string) => (native ? native.exportSettings(json, path) : missing()),
   importSettings: (path: string) => (native ? native.importSettings(path) : missing()),
   backupPath: () => (native ? native.backupPath() : missing()),
+  pickBackup: () => (native ? native.pickBackup() : missing()),
   hasDeviceLock: () => (native ? native.hasDeviceLock() : Promise.resolve(false)),
   confirmDeviceLock: (title: string, detail: string) =>
     native ? native.confirmDeviceLock(title, detail) : missing(),

@@ -559,6 +559,7 @@ const lt: Translations = {
   'settings.backupFile': 'Failas',
   'settings.export': 'Eksportuoti',
   'settings.import': 'Importuoti',
+  'settings.importPick': 'Pasirink failą importui',
   'settings.exported': 'Įrašyta į {path}',
   'settings.imported': 'Nustatymai atkurti',
   'settings.importNotOurs': 'Šis failas nėra ArrowLoop atsarginė kopija.',

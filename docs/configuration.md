@@ -565,7 +565,10 @@ and **Safety net** tiles lists the jobs that have one.
 **Settings backup**, on the **General** tile under **Settings**, has two
 rows. **Back up all jobs and all settings** exports them to a single JSON file,
 and **Restore all jobs and all settings** imports one back, so a new machine is
-one restore away. The phone's card uses the same two rows.
+one restore away. The phone's card uses the same two rows. It writes to
+Downloads unless another folder is typed or chosen with **Choose a folder**, and
+**Choose a file to import** opens Android's own file picker, which also reaches
+the files in a cloud app.
 
 Importing replaces everything and asks first, with the file's name in the
 question, because the one thing nobody can do afterwards is get the old setup

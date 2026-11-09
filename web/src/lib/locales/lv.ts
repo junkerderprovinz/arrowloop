@@ -559,6 +559,7 @@ const lv: Translations = {
   'settings.backupFile': 'Fails',
   'settings.export': 'Eksportēt',
   'settings.import': 'Importēt',
+  'settings.importPick': 'Izvēlies failu importam',
   'settings.exported': 'Saglabāts: {path}',
   'settings.imported': 'Iestatījumi atjaunoti',
   'settings.importNotOurs': 'Šis fails nav ArrowLoop dublējums.',

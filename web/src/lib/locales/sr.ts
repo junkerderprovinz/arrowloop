@@ -559,6 +559,7 @@ const sr: Translations = {
   'settings.backupFile': 'Датотека',
   'settings.export': 'Извези',
   'settings.import': 'Увези',
+  'settings.importPick': 'Изабери датотеку за увоз',
   'settings.exported': 'Сачувано у {path}',
   'settings.imported': 'Подешавања су враћена',
   'settings.importNotOurs': 'Та датотека није ArrowLoop резервна копија.',

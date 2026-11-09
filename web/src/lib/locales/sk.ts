@@ -559,6 +559,7 @@ const sk: Translations = {
   'settings.backupFile': 'Súbor',
   'settings.export': 'Exportovať',
   'settings.import': 'Importovať',
+  'settings.importPick': 'Vyber súbor na import',
   'settings.exported': 'Uložené do {path}',
   'settings.imported': 'Nastavenia obnovené',
   'settings.importNotOurs': 'Tento súbor nie je zálohou ArrowLoop.',

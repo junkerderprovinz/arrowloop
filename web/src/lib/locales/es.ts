@@ -559,6 +559,7 @@ const es: Translations = {
   'settings.backupFile': 'Archivo',
   'settings.export': 'Exportar',
   'settings.import': 'Importar',
+  'settings.importPick': 'Elegir un archivo para importar',
   'settings.exported': 'Guardado en {path}',
   'settings.imported': 'Ajustes restaurados',
   'settings.importNotOurs': 'Ese archivo no es una copia de ArrowLoop.',

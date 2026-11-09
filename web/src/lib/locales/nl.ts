@@ -559,6 +559,7 @@ const nl: Translations = {
   'settings.backupFile': 'Bestand',
   'settings.export': 'Exporteren',
   'settings.import': 'Importeren',
+  'settings.importPick': 'Kies een bestand om te importeren',
   'settings.exported': 'Opgeslagen in {path}',
   'settings.imported': 'Instellingen hersteld',
   'settings.importNotOurs': 'Dat bestand is geen ArrowLoop-back-up.',

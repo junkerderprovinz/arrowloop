@@ -559,6 +559,7 @@ const he: Translations = {
   'settings.backupFile': 'קובץ',
   'settings.export': 'ייצוא',
   'settings.import': 'ייבוא',
+  'settings.importPick': 'בחר קובץ לייבוא',
   'settings.exported': 'נשמר ב-{path}',
   'settings.imported': 'ההגדרות שוחזרו',
   'settings.importNotOurs': 'הקובץ הזה אינו גיבוי של ArrowLoop.',

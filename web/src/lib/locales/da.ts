@@ -559,6 +559,7 @@ const da: Translations = {
   'settings.backupFile': 'Fil',
   'settings.export': 'Eksportér',
   'settings.import': 'Importér',
+  'settings.importPick': 'Vælg en fil at importere',
   'settings.exported': 'Gemt i {path}',
   'settings.imported': 'Indstillingerne er gendannet',
   'settings.importNotOurs': 'Den fil er ikke en ArrowLoop-sikkerhedskopi.',

@@ -559,6 +559,7 @@ const ms: Translations = {
   'settings.backupFile': 'Fail',
   'settings.export': 'Eksport',
   'settings.import': 'Import',
+  'settings.importPick': 'Pilih fail untuk diimport',
   'settings.exported': 'Disimpan ke {path}',
   'settings.imported': 'Tetapan dipulihkan',
   'settings.importNotOurs': 'Fail itu bukan sandaran ArrowLoop.',

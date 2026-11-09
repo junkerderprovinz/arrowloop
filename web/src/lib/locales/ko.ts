@@ -559,6 +559,7 @@ const ko: Translations = {
   'settings.backupFile': '파일',
   'settings.export': '내보내기',
   'settings.import': '가져오기',
+  'settings.importPick': '가져올 파일 선택',
   'settings.exported': '{path}에 저장했습니다',
   'settings.imported': '설정을 복원했습니다',
   'settings.importNotOurs': '그 파일은 ArrowLoop 백업이 아닙니다.',

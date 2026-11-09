@@ -15,7 +15,7 @@ import {
 import Constants from "expo-constants";
 import { api } from "../api";
 import { AutoBackupSection } from "../autoBackup";
-import { engine, type AppData, type AppDataState, type AppDataWay, type SharedFolder } from "../engine";
+import { engine, type AppData, type AppDataState, type AppDataWay, type PickedFile, type SharedFolder } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, SYSTEM_ACCENT, text, TILE, TOUCH } from "../theme";
@@ -45,6 +45,7 @@ import { animateNext, useMotion, useSystemReduced, type MotionIntensity } from "
 import { ColorPicker, EditableSwatch, ResetMark } from "../ColorPicker";
 import { CryptoDonate } from "../donate";
 import { Field } from "../fields";
+import { FolderPicker } from "../FolderPicker";
 import { DropButton } from "../choiceRow";
 import { wayLabel, wayOf } from "../way";
 import { isAccount } from "../space";
@@ -129,6 +130,7 @@ export function Settings() {
   const [defaults, setDefaults] = useState<Defaults | null>(null);
   const [lockable, setLockable] = useState(false);
   const [backupFile, setBackupFile] = useState("");
+  const [backupFolder, setBackupFolder] = useState(false);
   const [backupBusy, setBackupBusy] = useState(false);
   const [backupSaid, setBackupSaid] = useState("");
   // Counters, so each export, import or copy that lands swells its button again.
@@ -191,6 +193,7 @@ export function Settings() {
       const [config, current] = await Promise.all([api.config(), settingsApi.read()]);
       const where = await engine.exportSettings(
         JSON.stringify({ kind: "arrowloop-settings", version: 1, settings: current, config }, null, 2),
+        backupFile,
       );
       setBackupFile(where);
       setBackupSaid(t("settings.exported", { path: where }));
@@ -205,16 +208,19 @@ export function Settings() {
   /**
    * Reads the file before asking anything. Our own backup replaces every job,
    * so it asks with the web's sentence; a FolderSync export or a luckyBackup
-   * profile shows what it would add beside the jobs already here.
+   * profile shows what it would add beside the jobs already here. Backing
+   * out of Android's picker reads nothing and says nothing.
    */
-  const confirmImport = async () => {
+  const confirmImport = async (read: () => Promise<PickedFile | null>) => {
     setBackupBusy(true);
     setBackupSaid("");
     try {
-      const text = await engine.importSettings(backupFile);
+      const file = await read();
+      if (!file) return;
+      const { name, text } = file;
       const backup = ownBackup(text);
       if (backup) {
-        Alert.alert(t("backup.import"), t("backup.confirm", { file: backupFile }), [
+        Alert.alert(t("backup.import"), t("backup.confirm", { file: name }), [
           { text: t("confirm.cancel"), style: "cancel" },
           { text: t("backup.import"), onPress: () => void importSettings(backup) },
         ]);
@@ -232,7 +238,7 @@ export function Settings() {
       } else {
         Alert.alert(
           t("import.title", { source: plan.source }),
-          `${t("import.confirm", { file: backupFile })}\n\n${sections}`,
+          `${t("import.confirm", { file: name })}\n\n${sections}`,
           [
             { text: t("confirm.cancel"), style: "cancel" },
             { text: t("import.add"), onPress: () => void addImported(text) },
@@ -874,14 +880,26 @@ export function Settings() {
         </View>
       </Section>
 
-      {/* One file with a fixed name in Downloads; the path can be edited to
-          import a file moved elsewhere. */}
+      {/* One file with a fixed name in Downloads unless another place is
+          typed or chosen. A file from anywhere else, a cloud app's included,
+          comes in through Android's own picker. */}
       <Section title={t("settings.backup")} hint={`${t("settings.backupHint")} ${t("backup.importOthers")}`} hue={10}>
         <Field
           label={t("settings.backupFile")}
           value={backupFile}
           onChange={setBackupFile}
           placeholder="/storage/emulated/0/Download"
+        />
+        <Button label={t("pick.title")} labelKey="pick.title" onPress={() => setBackupFolder(true)} />
+        {/* A folder takes the backup under its fixed name. */}
+        <FolderPicker
+          visible={backupFolder}
+          start={backupFile.slice(0, backupFile.lastIndexOf("/")) || undefined}
+          onPick={(path) => {
+            setBackupFile(path);
+            setBackupFolder(false);
+          }}
+          onClose={() => setBackupFolder(false)}
         />
         {/* Both side by side in one row, as on the web, and what they cover in the card's (i). */}
         <View style={styles.backupButtons}>
@@ -899,9 +917,17 @@ export function Settings() {
             wide={false}
             busy={backupBusy}
             confirm={imported}
-            onPress={confirmImport}
+            onPress={() =>
+              void confirmImport(async () => ({ name: backupFile, text: await engine.importSettings(backupFile) }))
+            }
           />
         </View>
+        <Button
+          label={t("settings.importPick")}
+          labelKey="settings.importPick"
+          busy={backupBusy}
+          onPress={() => void confirmImport(engine.pickBackup)}
+        />
         {backupSaid ? <Body>{backupSaid}</Body> : null}
       </Section>
 

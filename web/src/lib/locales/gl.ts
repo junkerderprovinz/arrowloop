@@ -559,6 +559,7 @@ const gl: Translations = {
   'settings.backupFile': 'Ficheiro',
   'settings.export': 'Exportar',
   'settings.import': 'Importar',
+  'settings.importPick': 'Escoller un ficheiro para importar',
   'settings.exported': 'Gardado en {path}',
   'settings.imported': 'Configuración restaurada',
   'settings.importNotOurs': 'Ese ficheiro non é unha copia de ArrowLoop.',

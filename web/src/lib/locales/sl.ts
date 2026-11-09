@@ -559,6 +559,7 @@ const sl: Translations = {
   'settings.backupFile': 'Datoteka',
   'settings.export': 'Izvozi',
   'settings.import': 'Uvozi',
+  'settings.importPick': 'Izberi datoteko za uvoz',
   'settings.exported': 'Shranjeno v {path}',
   'settings.imported': 'Nastavitve so obnovljene',
   'settings.importNotOurs': 'Ta datoteka ni varnostna kopija ArrowLoop.',

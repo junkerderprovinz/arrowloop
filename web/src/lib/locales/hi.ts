@@ -559,6 +559,7 @@ const hi: Translations = {
   'settings.backupFile': 'फ़ाइल',
   'settings.export': 'निर्यात',
   'settings.import': 'आयात',
+  'settings.importPick': 'आयात के लिए फ़ाइल चुनें',
   'settings.exported': '{path} में सहेजा गया',
   'settings.imported': 'सेटिंग बहाल हो गई',
   'settings.importNotOurs': 'वह फ़ाइल ArrowLoop का बैकअप नहीं है।',

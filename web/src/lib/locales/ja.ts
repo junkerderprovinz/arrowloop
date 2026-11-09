@@ -559,6 +559,7 @@ const ja: Translations = {
   'settings.backupFile': 'ファイル',
   'settings.export': '書き出す',
   'settings.import': '読み込む',
+  'settings.importPick': '読み込むファイルを選ぶ',
   'settings.exported': '{path} に保存しました',
   'settings.imported': '設定を復元しました',
   'settings.importNotOurs': 'そのファイルは ArrowLoop のバックアップではありません。',
