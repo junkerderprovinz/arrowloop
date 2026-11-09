@@ -56,7 +56,7 @@ describe('a meaning with a glyph of its own in GlimStone', () => {
     ['backup.export', 'IconExport'],
     ['reset.done', 'IconConfirm'],
     ['twoFactor.confirm', 'IconConfirm'],
-    ['pick.choose', 'IconApply'],
+    ['pick.choose', 'IconCheck'],
     ['notify.test', 'IconSendTest'],
     ['conflict.answerBoth', 'IconKeepBoth'],
     ['conflicts.allLeft', 'IconKeepLeft'],

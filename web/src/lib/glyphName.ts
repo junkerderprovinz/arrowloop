@@ -138,6 +138,8 @@ const RULES: Rule[] = [
   [/cancel|close|dismiss|everyJob|^list\.showAll$/i, 'IconClose'],
 
   [/save|submit/i, 'IconSave'],
+  // Taking the folder that is open is a plain yes, not taking something over.
+  [/^pick\.choose$/, 'IconCheck'],
   [/apply|choose/i, 'IconApply'],
   [/confirm$|\.done$|gotIt/i, 'IconConfirm'],
 

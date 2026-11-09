@@ -6,7 +6,7 @@ import { Text } from './Field'
 import { Rule } from './Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
-import { IconAdd, IconApply, IconBack, IconClose, IconFolder, IconFolderAdd, IconTabStorage } from './glyphs'
+import { IconAdd, IconBack, IconCheck, IconClose, IconFolder, IconFolderAdd, IconTabStorage } from './glyphs'
 import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
 import { useT, type Translate } from '../lib/i18n'
@@ -229,7 +229,7 @@ export function FolderPicker({
             <Button
               label={t('pick.choose')}
               labelKey="pick.choose"
-              glyph={<IconApply />}
+              glyph={<IconCheck />}
               tone="accent"
               disabled={!at}
               onClick={() => {
