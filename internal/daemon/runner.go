@@ -350,6 +350,11 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		if live != nil {
 			live.Drop()
 		}
+		// Started by hand or on its own, the job then waits and carries on
+		// once its drive is back.
+		if errors.Is(err, ErrVolumeMissing) {
+			r.waitForDrive(name, err)
+		}
 		checkOut(false, err.Error())
 		r.publish(Event{Job: name, Phase: "finished", Error: err.Error(), Held: errors.Is(err, ErrHeld)})
 		return history.Run{}, err

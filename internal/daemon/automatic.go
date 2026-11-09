@@ -2,7 +2,6 @@ package daemon
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
@@ -50,8 +49,5 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 		}
 		return r.execute(ctx, j, only, nil, nil, live)
 	})
-	if errors.Is(err, ErrVolumeMissing) {
-		r.waitForDrive(name, err)
-	}
 	return rec, err
 }

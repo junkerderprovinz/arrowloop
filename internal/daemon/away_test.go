@@ -211,3 +211,19 @@ func TestANewJobStillCreatesItsTarget(t *testing.T) {
 		t.Error("a new job waits for a target it is meant to create")
 	}
 }
+
+func TestARunStartedByHandWithoutItsFolderWaitsLikeAnAutomaticOne(t *testing.T) {
+	r, _, right := syncedPair(t)
+	if err := os.Rename(right, right+"-away"); err != nil {
+		t.Fatalf("rename: %v", err)
+	}
+	if _, err := r.Run(context.Background(), "test"); !errors.Is(err, ErrVolumeMissing) {
+		t.Fatalf("a run without the right side ended with %v, want it waiting for the side", err)
+	}
+	if _, waits := r.WaitingFor("test"); !waits {
+		t.Error("the job does not say it waits for its side")
+	}
+	if runs := runsOf(t, r, "test"); len(runs) != 1 {
+		t.Errorf("the log holds %d runs, want only the first", len(runs))
+	}
+}
