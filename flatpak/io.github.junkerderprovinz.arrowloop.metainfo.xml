@@ -79,6 +79,18 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.4" date="2026-11-09">
+      <description>
+        <p>Fixes for the phone app.</p>
+        <ul>
+          <li>Times follow the phone's 24-hour setting</li>
+          <li>The settings backup picks its folder and its file to import</li>
+          <li>The folder picker stays above the keyboard and reaches Download and Documents</li>
+          <li>Run all, Pause and a failed connection test explain themselves</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.4</url>
+    </release>
     <release version="2.6.3" date="2026-11-09">
       <description>
         <p>A job waits for its drive instead of failing, and a file left for later only fails a run when it is left twice.</p>

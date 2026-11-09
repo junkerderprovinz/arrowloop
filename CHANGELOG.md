@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.4 - 2026-11-09
+
+A round of phone fixes from danpeig's report: times follow the phone's 24-hour setting, the keyboard stays clear of a new folder's name, and the settings backup goes to any folder you choose.
+
 ## 🐛 Fixed
 
 - **The phone app's folder picker stays above the keyboard.** Naming a new folder used to put the keyboard right over the box you type into. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
