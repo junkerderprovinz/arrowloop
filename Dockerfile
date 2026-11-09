@@ -44,7 +44,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build -trimpath -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=${VERSION}" \
     -o /out/arrowloop ./cmd/arrowloop
 
-FROM debian:stable-slim@sha256:13e0a2e78aa0554ad5ff66e4e260c6dbcdff807eb1f39d43b9fb0288aae88b04 AS runtime
+FROM debian:stable-slim@sha256:fbfb4059d2127120aa05b6e6064523d2102552f0cf0026ddf0701c12f1f8f3e0 AS runtime
 
 LABEL org.opencontainers.image.title="arrowloop" \
       org.opencontainers.image.description="Two-way file synchronisation with a per-file state database, a trash, and brakes that refuse an implausible deletion." \
