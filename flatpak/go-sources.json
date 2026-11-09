@@ -1625,6 +1625,20 @@
     },
     {
         "type": "file",
+        "url": "https://proxy.golang.org/github.com/junkerderprovinz/parleyport/kit/@v/v0.0.0-20261109190927-566ab90c3be7.mod",
+        "sha256": "68bfaadd836902f36a44083923112d41b858ce326e0fd5d24d977622a15c1847",
+        "dest": "gomod/github.com/junkerderprovinz/parleyport/kit/@v",
+        "dest-filename": "v0.0.0-20261109190927-566ab90c3be7.mod"
+    },
+    {
+        "type": "file",
+        "url": "https://proxy.golang.org/github.com/junkerderprovinz/parleyport/kit/@v/v0.0.0-20261109190927-566ab90c3be7.zip",
+        "sha256": "17169f18ad3cfc593a2e21e32e52f3680393af7642d75364cc25f0447f91eb6d",
+        "dest": "gomod/github.com/junkerderprovinz/parleyport/kit/@v",
+        "dest-filename": "v0.0.0-20261109190927-566ab90c3be7.zip"
+    },
+    {
+        "type": "file",
         "url": "https://proxy.golang.org/github.com/jzelinskie/whirlpool/@v/v0.0.0-20201016144138-0675e54bb004.mod",
         "sha256": "ac5cda0ea152fd5a92c7b44939e387c543d985092f8b60f33dc455c3d7012eee",
         "dest": "gomod/github.com/jzelinskie/whirlpool/@v",
