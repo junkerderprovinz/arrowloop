@@ -129,6 +129,8 @@ export function TargetEdit() {
     }
   };
 
+  const reason = tried && !tried.ok && tried.reason ? failureLine(tried.reason, tried.failure, t, lang) : "";
+
   const save = async () => {
     if (!name.trim()) {
       setError(t("targets.remoteNameHint"));
@@ -234,8 +236,9 @@ export function TargetEdit() {
 
       {error ? <Body>{error}</Body> : null}
 
-      {/* Only the reason: the button itself shows the verdict. */}
-      {tried && !tried.ok && tried.reason ? <Body>{failureLine(tried.reason, tried.failure, t, lang)}</Body> : null}
+      {/* Only the reason: the button itself shows the verdict. Kept mounted,
+          since TalkBack announces a live region when its text changes. */}
+      <View accessibilityLiveRegion="polite">{reason ? <Body>{reason}</Body> : null}</View>
       {tried?.hostKey ? (
         <Section title={t("targets.hostKey")} hint={t("targets.hostKeyHint")}>
           <Body>{tried.hostKey}</Body>
@@ -261,6 +264,7 @@ export function TargetEdit() {
         glyph={!tried || trying ? undefined : tried.ok ? "IconCheck" : "IconClose"}
         busy={trying}
         tone={trying || !tried ? "neutral" : tried.ok ? "ok" : "fail"}
+        spoken={reason ? `${t("targets.checkFailed")}: ${reason}` : undefined}
         shake={refused}
         onPress={tryIt}
       />

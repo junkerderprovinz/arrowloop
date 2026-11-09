@@ -868,6 +868,7 @@ const nl: Translations = {
   'danger.confirm': 'Hiermee verdwijnen alle taken ({jobs}) en alle opslaglocaties ({targets}) uit ArrowLoop op deze telefoon. De bestanden in je mappen en op de opslaglocaties blijven waar ze zijn.',
   'danger.confirmButton': 'Alles verwijderen',
   'phone.runAll': 'Alles uitvoeren',
+  'phone.runAllHint': 'Start elke taak waarvan beide kanten zijn ingesteld, behalve als die gepauzeerd is of al loopt.',
   'phone.stopAll': 'Alle runs stoppen',
   'phone.job': 'Taak',
   'phone.needName': 'Geef de taak een naam.',

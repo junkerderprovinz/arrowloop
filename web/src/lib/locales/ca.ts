@@ -868,6 +868,7 @@ const ca: Translations = {
   'danger.confirm': 'Això treu totes les tasques ({jobs}) i tots els emmagatzematges ({targets}) d\'ArrowLoop en aquest telèfon. Els fitxers de les teves carpetes i dels emmagatzematges es queden on són.',
   'danger.confirmButton': 'Elimina-ho tot',
   'phone.runAll': 'Executa-ho tot',
+  'phone.runAllHint': 'Inicia cada tasca que té els dos costats definits, tret que estigui en pausa o ja s\'estigui executant.',
   'phone.stopAll': 'Atura totes les execucions',
   'phone.job': 'Tasca',
   'phone.needName': 'Posa un nom a la tasca.',

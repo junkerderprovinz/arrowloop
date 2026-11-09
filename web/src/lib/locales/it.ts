@@ -868,6 +868,7 @@ const it: Translations = {
   'danger.confirm': 'Questo toglie da ArrowLoop su questo telefono tutti i lavori ({jobs}) e tutti gli archivi ({targets}). I file nelle tue cartelle e negli archivi restano dove sono.',
   'danger.confirmButton': 'Rimuovi tutto',
   'phone.runAll': 'Esegui tutto',
+  'phone.runAllHint': 'Avvia ogni attività con entrambi i lati impostati, a meno che sia in pausa o già in corso.',
   'phone.stopAll': 'Interrompi tutte le esecuzioni',
   'phone.job': 'Lavoro',
   'phone.needName': 'Dai un nome al lavoro.',

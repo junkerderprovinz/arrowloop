@@ -868,6 +868,7 @@ const fr: Translations = {
   'danger.confirm': 'Cette action retire toutes les tâches ({jobs}) et tous les stockages ({targets}) d\'ArrowLoop sur ce téléphone. Les fichiers de tes dossiers et des stockages restent où ils sont.',
   'danger.confirmButton': 'Tout supprimer',
   'phone.runAll': 'Tout exécuter',
+  'phone.runAllHint': 'Lance chaque tâche dont les deux côtés sont définis, sauf si elle est en pause ou déjà en cours.',
   'phone.stopAll': 'Arrêter toutes les exécutions',
   'phone.job': 'Tâche',
   'phone.needName': 'Donnez un nom à la tâche.',

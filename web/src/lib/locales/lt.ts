@@ -868,6 +868,7 @@ const lt: Translations = {
   'danger.confirm': 'Tai pašalins visas užduotis ({jobs}) ir visas saugyklas ({targets}) iš ArrowLoop šiame telefone. Failai tavo aplankuose ir saugyklose lieka, kur buvo.',
   'danger.confirmButton': 'Pašalinti viską',
   'phone.runAll': 'Paleisti viską',
+  'phone.runAllHint': 'Paleidžia kiekvieną užduotį, kurios abi pusės nustatytos, nebent ji pristabdyta arba jau vykdoma.',
   'phone.stopAll': 'Sustabdyti visus paleidimus',
   'phone.job': 'Užduotis',
   'phone.needName': 'Suteik užduočiai pavadinimą.',

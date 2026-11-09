@@ -4,7 +4,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, EngineError, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
-import { account, isAccount, ReachBadge, Room, useReach, useRoom, type Room as Space } from "../space";
+import { account, isAccount, ReachBadge, Room, useReach, type Reach, useRoom, type Room as Space } from "../space";
 import { space } from "../theme";
 import { Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
@@ -76,7 +76,7 @@ function TargetCard({
 }: {
   remote: Remote;
   room: Space;
-  reach: boolean | undefined;
+  reach: Reach | undefined;
   index: number;
   onEdit: () => void;
   onGone: () => void;

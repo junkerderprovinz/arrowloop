@@ -868,6 +868,7 @@ const no: Translations = {
   'danger.confirm': 'Dette fjerner alle jobber ({jobs}) og alle lagringssteder ({targets}) fra ArrowLoop på denne telefonen. Filene i mappene dine og på lagringsstedene blir liggende der de er.',
   'danger.confirmButton': 'Fjern alt',
   'phone.runAll': 'Kjør alle',
+  'phone.runAllHint': 'Starter hver jobb som har begge sider satt, med mindre den er satt på pause eller allerede kjører.',
   'phone.stopAll': 'Stopp alle kjøringer',
   'phone.job': 'Jobb',
   'phone.needName': 'Gi jobben et navn.',

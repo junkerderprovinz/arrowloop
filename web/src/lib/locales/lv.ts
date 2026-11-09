@@ -868,6 +868,7 @@ const lv: Translations = {
   'danger.confirm': 'Tas noņem visus uzdevumus ({jobs}) un visas krātuves ({targets}) no ArrowLoop šajā tālrunī. Faili tavās mapēs un krātuvēs paliek, kur bija.',
   'danger.confirmButton': 'Noņemt visu',
   'phone.runAll': 'Palaist visu',
+  'phone.runAllHint': 'Palaiž katru uzdevumu, kuram iestatītas abas puses, izņemot pauzētos un tos, kas jau darbojas.',
   'phone.stopAll': 'Apturēt visas palaišanas',
   'phone.job': 'Uzdevums',
   'phone.needName': 'Dod uzdevumam nosaukumu.',

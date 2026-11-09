@@ -868,6 +868,7 @@ const cs: Translations = {
   'danger.confirm': 'Tím se z ArrowLoop v tomto telefonu odeberou všechny úlohy ({jobs}) i všechna úložiště ({targets}). Soubory ve tvých složkách a v úložištích zůstanou, kde jsou.',
   'danger.confirmButton': 'Odebrat vše',
   'phone.runAll': 'Spustit vše',
+  'phone.runAllHint': 'Spustí každou úlohu s nastavenými oběma stranami, kromě pozastavených a těch, které už běží.',
   'phone.stopAll': 'Zastavit všechny běhy',
   'phone.job': 'Úloha',
   'phone.needName': 'Pojmenuj úlohu.',

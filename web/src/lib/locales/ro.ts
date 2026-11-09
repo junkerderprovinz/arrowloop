@@ -868,6 +868,7 @@ const ro: Translations = {
   'danger.confirm': 'Aceasta scoate toate sarcinile ({jobs}) și toate locurile de stocare ({targets}) din ArrowLoop de pe acest telefon. Fișierele din folderele tale și din locurile de stocare rămân unde sunt.',
   'danger.confirmButton': 'Elimină tot',
   'phone.runAll': 'Rulează toate',
+  'phone.runAllHint': 'Pornește fiecare sarcină care are ambele părți setate, în afară de cele puse pe pauză sau care rulează deja.',
   'phone.stopAll': 'Oprește toate rulările',
   'phone.job': 'Sarcină',
   'phone.needName': 'Dă un nume sarcinii.',

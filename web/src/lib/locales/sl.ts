@@ -868,6 +868,7 @@ const sl: Translations = {
   'danger.confirm': 'S tem iz ArrowLoop na tem telefonu odstraniš vsa opravila ({jobs}) in vse shrambe ({targets}). Datoteke v tvojih mapah in v shrambah ostanejo, kjer so.',
   'danger.confirmButton': 'Odstrani vse',
   'phone.runAll': 'Zaženi vse',
+  'phone.runAllHint': 'Zažene vsako opravilo, ki ima nastavljeni obe strani, razen če je začasno ustavljeno ali že teče.',
   'phone.stopAll': 'Ustavi vse zagone',
   'phone.job': 'Opravilo',
   'phone.needName': 'Poimenuj opravilo.',

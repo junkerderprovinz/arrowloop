@@ -868,6 +868,7 @@ const zh: Translations = {
   'danger.confirm': '这会把所有任务（{jobs}）和所有存储（{targets}）从这台手机上的 ArrowLoop 中移除。你文件夹和存储中的文件会保持原样。',
   'danger.confirmButton': '全部移除',
   'phone.runAll': '全部运行',
+  'phone.runAllHint': '启动所有两侧都已设置的任务，已暂停或正在运行的除外。',
   'phone.stopAll': '停止所有运行',
   'phone.job': '任务',
   'phone.needName': '给任务起个名字。',

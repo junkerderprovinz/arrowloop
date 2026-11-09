@@ -868,6 +868,7 @@ const is: Translations = {
   'danger.confirm': 'Þetta fjarlægir öll verk ({jobs}) og allar geymslur ({targets}) úr ArrowLoop í þessum síma. Skrárnar í möppunum þínum og geymslunum haldast þar sem þær eru.',
   'danger.confirmButton': 'Fjarlægja allt',
   'phone.runAll': 'Keyra allt',
+  'phone.runAllHint': 'Ræsir hvert verk sem hefur báðar hliðar stilltar, nema það sé í bið eða þegar í gangi.',
   'phone.stopAll': 'Stöðva allar keyrslur',
   'phone.job': 'Verk',
   'phone.needName': 'Gefðu verkinu nafn.',

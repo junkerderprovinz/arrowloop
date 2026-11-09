@@ -13,7 +13,7 @@ import { OtherInstances } from "../otherInstances";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
-import { bytes, isAccount, ReachBadge, Room, useReach, useRoom } from "../space";
+import { bytes, isAccount, ReachBadge, Room, useReach, type Reach, useRoom } from "../space";
 import { space, text } from "../theme";
 import { useEngineEvents, useEngineStream } from "../useEngine";
 import { useWaiting } from "../waiting";
@@ -187,7 +187,12 @@ export function Overview() {
           onPress={() => void all(running.map((j) => api.stop(j.name)))}
         />
       ) : ready.length > 0 ? (
-        <Fab label={t("phone.runAll")} labelKey="phone.runAll" onPress={() => void runAll()} />
+        <Fab
+          label={t("phone.runAll")}
+          labelKey="phone.runAll"
+          hint={t("phone.runAllHint")}
+          onPress={() => void runAll()}
+        />
       ) : null}
     </Floating>
   );
@@ -466,7 +471,7 @@ function Account({
   remote: Remote;
   index: number;
   room: Room;
-  reach: boolean | undefined;
+  reach: Reach | undefined;
 }) {
   const { t } = useT();
   const { p, corners } = useTheme();

@@ -868,6 +868,7 @@ const ms: Translations = {
   'danger.confirm': 'Ini membuang setiap tugas ({jobs}) dan setiap lokasi storan ({targets}) daripada ArrowLoop pada telefon ini. Fail dalam folder kamu dan dalam lokasi storan kekal di tempatnya.',
   'danger.confirmButton': 'Buang semua',
   'phone.runAll': 'Jalankan semua',
+  'phone.runAllHint': 'Memulakan setiap tugas yang kedua-dua sisinya sudah ditetapkan, kecuali yang dijeda atau sedang berjalan.',
   'phone.stopAll': 'Henti semua larian',
   'phone.job': 'Tugas',
   'phone.needName': 'Beri nama kepada tugas ini.',

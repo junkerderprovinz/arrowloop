@@ -798,8 +798,7 @@ export function Meter({ done, total, hue, slosh = false }: { done: number; total
  * has no hover and a tooltip inside a narrow tile would wrap badly.
  */
 export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
-  const { p, corners, accentInk } = useTheme();
-  const { ms } = useMotion();
+  const { corners, accentInk } = useTheme();
   const [open, setOpen] = useState(false);
   // `on` is the ink of the surface underneath, such as a notch filled with
   // the accent; otherwise the (i) takes the accent.
@@ -814,21 +813,25 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
       >
         <Text style={[styles.bubbleMark, { color: ink }]}>i</Text>
       </Press>
-      {/* The platform fade follows Android's animator scale; the motion
-          setting decides whether it runs at all. */}
-      <Modal
-        visible={open}
-        transparent
-        animationType={ms.fade ? "fade" : "none"}
-        onRequestClose={() => setOpen(false)}
-      >
-        <Pressable style={[styles.tipGround, { backgroundColor: p.scrim }]} onPress={() => setOpen(false)}>
-          <View style={[styles.tipCard, { backgroundColor: p.surface2, ...corners.card }]}>
-            <Text style={[styles.tipText, { color: p.text }]}>{tip}</Text>
-          </View>
-        </Pressable>
-      </Modal>
+      <Tip open={open} text={tip} onClose={() => setOpen(false)} />
     </>
+  );
+}
+
+/** A short text in a small card over the page, which a tap anywhere closes. */
+export function Tip({ open, text, onClose }: { open: boolean; text: string; onClose: () => void }) {
+  const { p, corners } = useTheme();
+  const { ms } = useMotion();
+  return (
+    // The platform fade follows Android's animator scale; the motion setting
+    // decides whether it runs at all.
+    <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
+      <Pressable style={[styles.tipGround, { backgroundColor: p.scrim }]} onPress={onClose}>
+        <View style={[styles.tipCard, { backgroundColor: p.surface2, ...corners.card }]}>
+          <Text style={[styles.tipText, { color: p.text }]}>{text}</Text>
+        </View>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -859,6 +862,7 @@ export function Button({
   glyph: named,
   glyphOnly,
   hint,
+  spoken,
 }: {
   label: string;
   /** The translation key behind `label`, which picks the glyph. */
@@ -885,6 +889,8 @@ export function Button({
   confirm?: number;
   /** The "(i)" at the end of the button, for what the name cannot say. */
   hint?: string;
+  /** What a screen reader says in place of the label, where the label is too short. */
+  spoken?: string;
 }) {
   const { p, corners, labels, accent, hueAt, scheme } = useTheme();
   const { ms } = useMotion();
@@ -941,7 +947,7 @@ export function Button({
       }}
       disabled={disabled || busy}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={spoken ?? label}
       android_ripple={{ color: p.hover }}
       style={[
         styles.button,
@@ -1623,11 +1629,14 @@ export const FAB_ROOM = 96;
 export function Fab({
   label,
   labelKey,
+  hint,
   onPress,
 }: {
   label: string;
   /** The translation key behind `label`, which picks the glyph. */
   labelKey?: string;
+  /** The "(i)" beside the button, for what a glyph alone cannot say. */
+  hint?: string;
   onPress: () => void;
 }) {
   const { p, corners, accent } = useTheme();
@@ -1636,34 +1645,38 @@ export function Fab({
   const name = labelKey ? glyphNameForKey(labelKey) : undefined;
 
   return (
-    <AnimatedPressable
-      onPress={onPress}
-      onPressIn={press.onPressIn}
-      onPressOut={press.onPressOut}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      android_ripple={{ color: p.hover, borderless: false }}
-      style={[
-        styles.fab,
-        {
-          backgroundColor: accent,
-          // A pill radius on a square box is a circle.
-          ...corners.pill,
-          paddingHorizontal: name ? 0 : space.lg,
-          width: name ? TOUCH + space.sm : undefined,
-          opacity: press.dim,
-          transform: [{ scale: press.scale }],
-        },
-      ]}
-    >
-      {name ? (
-        <Glyph name={name} color={ink} size={22} />
-      ) : (
-        <Text numberOfLines={1} style={[styles.fabText, { color: ink }]}>
-          {label}
-        </Text>
-      )}
-    </AnimatedPressable>
+    <View style={styles.fabSpot} pointerEvents="box-none">
+      {hint ? <InfoBubble tip={hint} /> : null}
+      <AnimatedPressable
+        onPress={onPress}
+        onPressIn={press.onPressIn}
+        onPressOut={press.onPressOut}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityHint={hint}
+        android_ripple={{ color: p.hover, borderless: false }}
+        style={[
+          styles.fab,
+          {
+            backgroundColor: accent,
+            // A pill radius on a square box is a circle.
+            ...corners.pill,
+            paddingHorizontal: name ? 0 : space.lg,
+            width: name ? TOUCH + space.sm : undefined,
+            opacity: press.dim,
+            transform: [{ scale: press.scale }],
+          },
+        ]}
+      >
+        {name ? (
+          <Glyph name={name} color={ink} size={22} />
+        ) : (
+          <Text numberOfLines={1} style={[styles.fabText, { color: ink }]}>
+            {label}
+          </Text>
+        )}
+      </AnimatedPressable>
+    </View>
   );
 }
 
@@ -1749,10 +1762,15 @@ const styles = StyleSheet.create({
   tipText: { fontSize: text.body, lineHeight: text.body + 6 },
 
   // The bottom bar reserves its own height, so `space.lg` clears it.
-  fab: {
+  fabSpot: {
     position: "absolute",
     right: space.lg,
     bottom: space.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.sm,
+  },
+  fab: {
     minHeight: TOUCH + space.sm,
     flexDirection: "row",
     alignItems: "center",

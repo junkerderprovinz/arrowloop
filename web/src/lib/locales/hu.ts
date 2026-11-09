@@ -868,6 +868,7 @@ const hu: Translations = {
   'danger.confirm': 'Ez az összes feladatot ({jobs}) és az összes tárhelyet ({targets}) eltávolítja az ArrowLoopból ezen a telefonon. A mappáidban és a tárhelyeken lévő fájlok a helyükön maradnak.',
   'danger.confirmButton': 'Mindet eltávolítom',
   'phone.runAll': 'Összes futtatása',
+  'phone.runAllHint': 'Elindít minden feladatot, amelynek mindkét oldala be van állítva, kivéve ha szünetel vagy már fut.',
   'phone.stopAll': 'Minden futás leállítása',
   'phone.job': 'Feladat',
   'phone.needName': 'Adj nevet a feladatnak.',
