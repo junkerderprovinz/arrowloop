@@ -1230,6 +1230,8 @@ const bg: Translations = {
   'status.failed': 'Провалена',
   'status.paused': 'На пауза',
   'status.never': 'Още не е изпълнявана',
+  'status.away': 'Чака диска',
+  'status.awayHint': 'Диск или папка на тази задача в момента липсва. Задачата продължава сама, щом се появи отново.',
   'jobs.none': 'Още няма задачи. Добави една с бутона в ъгъла.',
   'jobs.strip.title': 'Последни изпълнения',
   'jobs.strip.ok': 'успешни: {count}',

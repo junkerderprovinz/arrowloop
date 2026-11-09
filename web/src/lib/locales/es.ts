@@ -1230,6 +1230,8 @@ const es: Translations = {
   'status.failed': 'Fallida',
   'status.paused': 'En pausa',
   'status.never': 'Aún sin ejecutar',
+  'status.away': 'Esperando el disco',
+  'status.awayHint': 'Ahora falta un disco o una carpeta de esta tarea. La tarea sigue sola en cuanto vuelva.',
   'jobs.none': 'Todavía no hay tareas. Añade una con el botón de la esquina.',
   'jobs.strip.title': 'Últimas ejecuciones',
   'jobs.strip.ok': 'correctas: {count}',

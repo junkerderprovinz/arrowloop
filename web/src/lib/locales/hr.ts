@@ -1230,6 +1230,8 @@ const hr: Translations = {
   'status.failed': 'Nije uspio',
   'status.paused': 'Pauziran',
   'status.never': 'Još nije pokrenut',
+  'status.away': 'Čeka disk',
+  'status.awayHint': 'Disk ili mapa ovog zadatka trenutno nedostaje. Zadatak se sam nastavlja čim se vrati.',
   'jobs.none': 'Još nema zadataka. Dodaj jedan gumbom u kutu.',
   'jobs.strip.title': 'Posljednja izvođenja',
   'jobs.strip.ok': 'uspjelo: {count}',

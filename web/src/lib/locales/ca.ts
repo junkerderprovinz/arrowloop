@@ -1230,6 +1230,8 @@ const ca: Translations = {
   'status.failed': 'Fallida',
   'status.paused': 'En pausa',
   'status.never': 'Encara no executada',
+  'status.away': 'Esperant el disc',
+  'status.awayHint': 'Ara no hi ha un disc o una carpeta d\'aquesta tasca. La tasca continua sola quan torni a ser-hi.',
   'jobs.none': 'Encara no hi ha tasques. Afegeix-ne una amb el botó de la cantonada.',
   'jobs.strip.title': 'Últimes execucions',
   'jobs.strip.ok': 'correctes: {count}',

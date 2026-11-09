@@ -1230,6 +1230,8 @@ const sl: Translations = {
   'status.failed': 'Ni uspelo',
   'status.paused': 'V premoru',
   'status.never': 'Še ni teklo',
+  'status.away': 'Čaka na disk',
+  'status.awayHint': 'Diska ali mape tega opravila trenutno ni. Ko se vrne, se opravilo samo nadaljuje.',
   'jobs.none': 'Še ni opravil. Dodaj jih z gumbom v kotu.',
   'jobs.strip.title': 'Zadnji zagoni',
   'jobs.strip.ok': 'uspelo: {count}',

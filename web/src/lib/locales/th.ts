@@ -1230,6 +1230,8 @@ const th: Translations = {
   'status.failed': 'ล้มเหลว',
   'status.paused': 'หยุดชั่วคราว',
   'status.never': 'ยังไม่เคยทำงาน',
+  'status.away': 'รอดิสก์',
+  'status.awayHint': 'ดิสก์หรือโฟลเดอร์ของงานนี้ไม่อยู่ในขณะนี้ งานจะทำต่อเองเมื่อกลับมา',
   'jobs.none': 'ยังไม่มีงาน เพิ่มได้ด้วยปุ่มที่มุม',
   'jobs.strip.title': 'การทำงานล่าสุด',
   'jobs.strip.ok': 'สำเร็จ: {count}',

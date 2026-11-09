@@ -1230,6 +1230,8 @@ const he: Translations = {
   'status.failed': 'נכשלה',
   'status.paused': 'מושהית',
   'status.never': 'טרם הורצה',
+  'status.away': 'ממתין לכונן',
+  'status.awayHint': 'כונן או תיקייה של משימה זו אינם זמינים כרגע. המשימה תמשיך מעצמה כשהם יחזרו.',
   'jobs.none': 'עדיין אין משימות. אפשר להוסיף אחת בכפתור שבפינה.',
   'jobs.strip.title': 'ההרצות האחרונות',
   'jobs.strip.ok': 'הצליחו: {count}',

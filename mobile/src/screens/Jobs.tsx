@@ -602,6 +602,8 @@ function JobStatus({
       ) : (
         <Badge label={t("status.warned")} tone="warn" />
       );
+    case "away":
+      return <Badge label={t("status.away")} />;
     case "failed":
       return <Badge label={t("status.failed")} tone="fail" />;
     case "paused":

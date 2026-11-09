@@ -29,6 +29,9 @@ export type Job = {
   lastSuccess: string | null
   /** When the schedule next reaches the job, if it has one and is not paused. */
   nextRun?: string
+  /** Since when the job has waited for a drive or folder that is not there.
+   *  It runs by itself once that is back. */
+  away?: string
   /** The last stored runs, newest first, at most fourteen. */
   recent: Run[]
 }

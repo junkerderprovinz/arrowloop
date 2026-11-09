@@ -1230,6 +1230,8 @@ const et: Translations = {
   'status.failed': 'Ebaõnnestus',
   'status.paused': 'Pausil',
   'status.never': 'Pole veel käivitatud',
+  'status.away': 'Ootab ketast',
+  'status.awayHint': 'Selle töö ketas või kaust pole praegu kohal. Töö jätkab ise, kui see on tagasi.',
   'jobs.none': 'Töid pole veel. Lisa üks nurgas oleva nupuga.',
   'jobs.strip.title': 'Viimased käivitused',
   'jobs.strip.ok': 'õnnestus: {count}',

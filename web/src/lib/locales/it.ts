@@ -1230,6 +1230,8 @@ const it: Translations = {
   'status.failed': 'Fallito',
   'status.paused': 'In pausa',
   'status.never': 'Mai eseguito',
+  'status.away': 'In attesa del disco',
+  'status.awayHint': 'Un disco o una cartella di questo lavoro ora manca. Il lavoro riprende da solo appena torna.',
   'jobs.none': 'Ancora nessun lavoro. Creane uno con il pulsante nell\'angolo.',
   'jobs.strip.title': 'Ultime esecuzioni',
   'jobs.strip.ok': 'riuscite: {count}',

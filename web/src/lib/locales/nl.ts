@@ -1230,6 +1230,8 @@ const nl: Translations = {
   'status.failed': 'Mislukt',
   'status.paused': 'Gepauzeerd',
   'status.never': 'Nog niet uitgevoerd',
+  'status.away': 'Wacht op schijf',
+  'status.awayHint': 'Een schijf of map van deze taak is er nu niet. De taak gaat vanzelf verder zodra die terug is.',
   'jobs.none': 'Nog geen taken. Maak er een aan met de knop in de hoek.',
   'jobs.strip.title': 'Laatste runs',
   'jobs.strip.ok': 'gelukt: {count}',

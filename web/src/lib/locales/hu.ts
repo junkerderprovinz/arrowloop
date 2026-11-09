@@ -1230,6 +1230,8 @@ const hu: Translations = {
   'status.failed': 'Sikertelen',
   'status.paused': 'Szüneteltetve',
   'status.never': 'Még nem futott',
+  'status.away': 'Lemezre vár',
+  'status.awayHint': 'A feladat egyik lemeze vagy mappája most nem érhető el. Amint visszakerül, a feladat magától folytatódik.',
   'jobs.none': 'Még nincs feladat. Hozz létre egyet a sarokban lévő gombbal.',
   'jobs.strip.title': 'Utolsó futások',
   'jobs.strip.ok': 'sikerült: {count}',

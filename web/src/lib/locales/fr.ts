@@ -1230,6 +1230,8 @@ const fr: Translations = {
   'status.failed': 'Échec',
   'status.paused': 'En pause',
   'status.never': 'Jamais exécutée',
+  'status.away': 'En attente du disque',
+  'status.awayHint': 'Un disque ou un dossier de cette tâche est absent pour l\'instant. La tâche reprend d\'elle-même dès qu\'il revient.',
   'jobs.none': 'Aucune tâche pour l\'instant. Ajoutez-en une avec le bouton dans le coin.',
   'jobs.strip.title': 'Dernières exécutions',
   'jobs.strip.ok': 'réussies : {count}',

@@ -86,6 +86,12 @@ export function JobStatusLine({
       ) : (
         <Badge tone="warn">{t('status.warned')}</Badge>
       )
+    case 'away':
+      return (
+        <Badge tone="neutral" title={t('status.awayHint')}>
+          {t('status.away')}
+        </Badge>
+      )
     case 'failed':
       return <Badge tone="fail">{t('status.failed')}</Badge>
     case 'paused':

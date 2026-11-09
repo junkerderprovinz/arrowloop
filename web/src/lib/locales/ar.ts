@@ -1230,6 +1230,8 @@ const ar: Translations = {
   'status.failed': 'فشلت',
   'status.paused': 'متوقفة مؤقتًا',
   'status.never': 'لم تعمل بعد',
+  'status.away': 'بانتظار القرص',
+  'status.awayHint': 'قرص أو مجلد لهذه المهمة غير موجود الآن. تتابع المهمة من تلقاء نفسها عند عودته.',
   'jobs.none': 'لا توجد مهام بعد. أضف واحدة بالزر في الزاوية.',
   'jobs.strip.title': 'آخر التشغيلات',
   'jobs.strip.ok': 'نجح: {count}',

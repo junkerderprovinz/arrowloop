@@ -135,6 +135,8 @@ function Status({ job }: { job: Job }) {
   switch (jobStatus(job, { held: false, conflict: false, notes: false })) {
     case "running":
       return <Badge label={t("jobs.state.running")} tone="accent" />;
+    case "away":
+      return <Badge label={t("status.away")} />;
     case "failed":
       return <Badge label={t("status.failed")} tone="fail" />;
     case "warned":

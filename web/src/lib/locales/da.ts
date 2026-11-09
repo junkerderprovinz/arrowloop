@@ -1230,6 +1230,8 @@ const da: Translations = {
   'status.failed': 'Mislykkedes',
   'status.paused': 'På pause',
   'status.never': 'Endnu ikke kørt',
+  'status.away': 'Venter på disk',
+  'status.awayHint': 'En disk eller mappe til dette job er der ikke lige nu. Jobbet fortsætter af sig selv, når den er tilbage.',
   'jobs.none': 'Der er ingen job endnu. Opret et med knappen i hjørnet.',
   'jobs.strip.title': 'Seneste kørsler',
   'jobs.strip.ok': 'gik godt: {count}',

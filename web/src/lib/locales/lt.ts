@@ -1230,6 +1230,8 @@ const lt: Translations = {
   'status.failed': 'Nepavyko',
   'status.paused': 'Pristabdyta',
   'status.never': 'Dar nepaleista',
+  'status.away': 'Laukia disko',
+  'status.awayHint': 'Šios užduoties disko ar aplanko dabar nėra. Kai jis grįš, užduotis tęsis pati.',
   'jobs.none': 'Užduočių dar nėra. Pridėkite vieną mygtuku kampe.',
   'jobs.strip.title': 'Paskutiniai paleidimai',
   'jobs.strip.ok': 'pavyko: {count}',

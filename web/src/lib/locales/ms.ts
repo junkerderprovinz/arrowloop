@@ -1230,6 +1230,8 @@ const ms: Translations = {
   'status.failed': 'Gagal',
   'status.paused': 'Dijeda',
   'status.never': 'Belum pernah dijalankan',
+  'status.away': 'Menunggu cakera',
+  'status.awayHint': 'Cakera atau folder tugas ini tiada sekarang. Tugas bersambung sendiri sebaik sahaja ia kembali.',
   'jobs.none': 'Belum ada tugas. Tambah satu dengan butang di sudut.',
   'jobs.strip.title': 'Larian terakhir',
   'jobs.strip.ok': 'berjaya: {count}',

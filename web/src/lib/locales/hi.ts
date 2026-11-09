@@ -1230,6 +1230,8 @@ const hi: Translations = {
   'status.failed': 'विफल',
   'status.paused': 'रुका हुआ',
   'status.never': 'अभी तक नहीं चला',
+  'status.away': 'डिस्क की प्रतीक्षा',
+  'status.awayHint': 'इस काम की कोई डिस्क या फ़ोल्डर अभी मौजूद नहीं है। उसके लौटते ही काम अपने आप आगे चलेगा।',
   'jobs.none': 'अभी कोई काम नहीं है। कोने के बटन से एक जोड़ें।',
   'jobs.strip.title': 'पिछले चक्र',
   'jobs.strip.ok': 'सफल: {count}',

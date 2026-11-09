@@ -76,6 +76,18 @@ describe('jobStatus', () => {
   it('forgets a failure once a later run worked', () => {
     expect(jobStatus(job('a', { recent: [ok, failed] }), quiet)).toBe('last')
   })
+
+  it('says a job waits for its drive over an older failure, and below a held run', () => {
+    const since = '2027-03-01T11:00:00Z'
+    expect(jobStatus(job('a', { away: since, recent: [failed] }), quiet)).toBe('away')
+    expect(jobStatus(job('a', { away: since }), noted)).toBe('away')
+    expect(jobStatus(job('a', { away: since }), held)).toBe('held')
+    expect(jobStatus(job('a', { away: since, running: true }), quiet)).toBe('running')
+  })
+
+  it('calls a paused job paused even while its drive is away', () => {
+    expect(jobStatus(job('a', { away: '2027-03-01T11:00:00Z', disabled: true }), quiet)).toBe('paused')
+  })
 })
 
 describe('latestRuns', () => {

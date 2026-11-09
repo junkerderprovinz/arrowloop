@@ -1230,6 +1230,8 @@ const cs: Translations = {
   'status.failed': 'Selhala',
   'status.paused': 'Pozastavená',
   'status.never': 'Ještě neběžela',
+  'status.away': 'Čeká na disk',
+  'status.awayHint': 'Disk nebo složka této úlohy teď chybí. Jakmile se vrátí, úloha sama pokračuje.',
   'jobs.none': 'Zatím žádné úlohy. Přidej první tlačítkem v rohu.',
   'jobs.strip.title': 'Poslední běhy',
   'jobs.strip.ok': 'povedlo se: {count}',

@@ -1230,6 +1230,8 @@ const fa: Translations = {
   'status.failed': 'ناموفق',
   'status.paused': 'متوقف',
   'status.never': 'هنوز اجرا نشده',
+  'status.away': 'در انتظار دیسک',
+  'status.awayHint': 'یک دیسک یا پوشهٔ این کار اکنون در دسترس نیست. کار پس از بازگشت آن خودش ادامه می‌دهد.',
   'jobs.none': 'هنوز کاری نیست. با دکمهٔ گوشه یکی اضافه کن.',
   'jobs.strip.title': 'آخرین اجراها',
   'jobs.strip.ok': 'موفق: {count}',

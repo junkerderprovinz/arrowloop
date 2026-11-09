@@ -1230,6 +1230,8 @@ const sv: Translations = {
   'status.failed': 'Misslyckades',
   'status.paused': 'Pausat',
   'status.never': 'Inte körd än',
+  'status.away': 'Väntar på disk',
+  'status.awayHint': 'En disk eller mapp för det här jobbet finns inte just nu. Jobbet fortsätter av sig självt när den är tillbaka.',
   'jobs.none': 'Inga jobb än. Lägg till ett med knappen i hörnet.',
   'jobs.strip.title': 'Senaste körningarna',
   'jobs.strip.ok': 'lyckades: {count}',
