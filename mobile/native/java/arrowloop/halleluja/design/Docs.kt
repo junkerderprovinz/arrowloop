@@ -453,6 +453,15 @@ object Docs {
             Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION,
     )
 
+    /**
+     * The folder pickers to try in turn, Android's own first. Some phones, such
+     * as OPPO's with ColorOS, answer the plain request with their own file
+     * manager, which offers none of the folders other apps share.
+     */
+    fun pickIntents(): List<Intent> = SYSTEM_PICKERS.map { pickIntent().setPackage(it) } + pickIntent()
+
+    private val SYSTEM_PICKERS = listOf("com.google.android.documentsui", "com.android.documentsui")
+
     /** Whether some app on the phone answers the folder picker. */
     fun canPick(context: Context): Boolean =
         context.packageManager.queryIntentActivities(pickIntent(), PackageManager.MATCH_DEFAULT_ONLY).isNotEmpty()

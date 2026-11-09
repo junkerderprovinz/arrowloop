@@ -201,9 +201,15 @@ class EngineModule(private val context: ReactApplicationContext) :
         }
         picking?.reject("folder", "another folder was already being picked")
         picking = promise
-        try {
-            activity.startActivityForResult(Docs.pickIntent(), PICK_REQUEST)
-        } catch (e: ActivityNotFoundException) {
+        val started = Docs.pickIntents().any { intent ->
+            try {
+                activity.startActivityForResult(intent, PICK_REQUEST)
+                true
+            } catch (e: ActivityNotFoundException) {
+                false
+            }
+        }
+        if (!started) {
             picking = null
             promise.reject("folder", "this phone has no folder picker")
         }
