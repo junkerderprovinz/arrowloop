@@ -90,7 +90,11 @@ describe('a selector at the end of a settings row', () => {
     layout(300, 120)
     const segment = screen.getByRole('tab', { name: 'Both ways' })
     expect(segment.style.minWidth).toBe('120px')
-    expect(segment.style.flex).toContain('0.5*(100% - 6.4px)')
+    // Two to a row, each half the row less one gap. The expected basis goes
+    // through the same parser, since jsdom is free to rewrite a calc().
+    const twoPerRow = document.createElement('div').style
+    twoPerRow.flexBasis = 'calc(50% - 3.2px)'
+    expect(segment.style.flexBasis).toBe(twoPerRow.flexBasis)
   })
 })
 
