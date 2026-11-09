@@ -18,6 +18,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/status"
+
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
@@ -256,8 +258,11 @@ func needsSession(rawPath string) bool {
 // the logout can only destroy the caller's own token, which may just have
 // expired. The passkey probe answers a stranger with counts only, and its two
 // login halves are how a passkey signs somebody in. Every other path, a new
-// one included, needs a session.
+// one included, needs a session. The fortress status and log check a read
+// token of their own.
 var openRoutes = map[string]bool{
+	status.StatusPath:            true,
+	status.LogPath:               true,
 	"/api/login":                 true,
 	"/api/logout":                true,
 	"/api/session":               true,

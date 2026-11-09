@@ -132,8 +132,12 @@ func cmdDaemon(ctx context.Context, args []string) error {
 	defer stop()
 
 	runner := daemon.New(cfg, hist, logf)
-	if n := daemon.Notifier(cfg); n != nil {
-		logf("reporting to %s", n.Describe())
+	if ready, _ := daemon.Reporting(cfg); len(ready) > 0 {
+		names := make([]string, len(ready))
+		for i, c := range ready {
+			names[i] = daemon.ChannelName(c) + " (" + string(c.Kind) + ")"
+		}
+		logf("reporting to %s", strings.Join(names, ", "))
 	}
 	logf("watching %d job(s), %d at a time", len(cfg.Jobs), cfg.ParallelJobs)
 	err = runner.Serve(ctx)

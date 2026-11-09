@@ -14,6 +14,8 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
+
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
@@ -48,11 +50,22 @@ func (in *inbox) all() []string {
 
 func (in *inbox) url(path string) string { return in.srv.URL + path }
 
-// notifying reloads a runner with these notification settings.
-func notifying(r *Runner, n job.Notify) {
+// notifying reloads a runner with these channels.
+func notifying(r *Runner, channels ...notify.Channel) {
 	cfg := *r.config()
-	cfg.Notify = n
+	cfg.Notify = job.Notify{Channels: channels}
 	r.Reload(&cfg)
+}
+
+// slack is a channel that posts {"text": ...}, so what it said can be read
+// off the request. One attempt keeps a refusal from waiting for retries.
+func slack(id, url string, on notify.On) notify.Channel {
+	return notify.Channel{ID: id, Kind: notify.KindSlack, Enabled: true, On: on, Attempts: 1, Slack: &notify.Slack{URL: url}}
+}
+
+func checks(url string, byKey map[string]string) notify.Channel {
+	return notify.Channel{ID: "checks", Kind: notify.KindHealthchecks, Enabled: true, On: notify.OnAlways, Attempts: 1,
+		Healthchecks: &notify.Healthchecks{URL: url, ByKey: byKey}}
 }
 
 func breakBefore(r *Runner) {
@@ -68,16 +81,16 @@ func no() *bool  { v := false; return &v }
 func TestAFailedRunReachesEveryChannelThatIsOn(t *testing.T) {
 	r, _, _ := syncedPair(t)
 	hook, apprise, room := newInbox(t), newInbox(t), newInbox(t)
-	notifying(r, job.Notify{
-		Webhook: hook.url("/hook"), WebhookFormat: "discord",
-		Apprise: &job.Apprise{URL: apprise.url("/notify/key")},
-		Matrix:  &job.Matrix{Enabled: no(), Homeserver: room.url(""), Room: "!r:x", Token: "t"},
-	})
+	notifying(r,
+		slack("hook", hook.url("/hook"), notify.OnFailure),
+		notify.Channel{ID: "apprise", Kind: notify.KindApprise, Enabled: true, Attempts: 1, Apprise: &notify.Apprise{URL: apprise.url("/notify/key")}},
+		notify.Channel{ID: "room", Kind: notify.KindMatrix, Enabled: false, Matrix: &notify.Matrix{Homeserver: room.url(""), Room: "!r:x", Token: "t"}},
+	)
 	breakBefore(r)
 	if _, err := r.Run(context.Background(), "test"); err == nil {
 		t.Fatal("the run did not fail")
 	}
-	for name, in := range map[string]*inbox{"webhook": hook, "apprise": apprise} {
+	for name, in := range map[string]*inbox{"slack": hook, "apprise": apprise} {
 		if got := in.all(); len(got) != 1 || !strings.Contains(got[0], "test FAILED") {
 			t.Errorf("%s got %v", name, got)
 		}
@@ -87,36 +100,25 @@ func TestAFailedRunReachesEveryChannelThatIsOn(t *testing.T) {
 	}
 }
 
-func TestASuccessfulRunIsReportedOnlyWhenAskedFor(t *testing.T) {
-	for _, tc := range []struct {
-		name string
-		n    job.Notify
-		want int
-	}{
-		{"by default", job.Notify{}, 0},
-		{"with on always", job.Notify{On: "always"}, 1},
-		{"with the older onSuccess", job.Notify{OnSuccess: true}, 1},
-		{"with on failure over onSuccess", job.Notify{On: "failure", OnSuccess: true}, 0},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			r, _, _ := syncedPair(t)
-			hook := newInbox(t)
-			tc.n.Webhook = hook.url("/hook")
-			notifying(r, tc.n)
-			if _, err := r.Run(context.Background(), "test"); err != nil {
-				t.Fatalf("run: %v", err)
-			}
-			if got := hook.all(); len(got) != tc.want {
-				t.Errorf("got %d messages, want %d: %v", len(got), tc.want, got)
-			}
-		})
+func TestASuccessfulRunIsReportedOnlyWhereAskedFor(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	failures, always, never := newInbox(t), newInbox(t), newInbox(t)
+	notifying(r, slack("failures", failures.url("/f"), notify.OnFailure), slack("always", always.url("/a"), notify.OnAlways), slack("never", never.url("/n"), notify.OnNever))
+	if _, err := r.Run(context.Background(), "test"); err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	if got := always.all(); len(got) != 1 || !strings.Contains(got[0], "test finished") {
+		t.Errorf("the channel for every run got %v", got)
+	}
+	if got := append(failures.all(), never.all()...); len(got) != 0 {
+		t.Errorf("a success reached %v", got)
 	}
 }
 
 func TestHealthchecksHearsTheStartAndTheOutcome(t *testing.T) {
 	r, _, _ := syncedPair(t)
 	hc := newInbox(t)
-	notifying(r, job.Notify{Healthchecks: &job.Healthchecks{URL: hc.url("/all"), Jobs: map[string]string{"test": hc.url("/own")}}})
+	notifying(r, checks(hc.url("/all"), map[string]string{"test": hc.url("/own")}))
 
 	if _, err := r.Run(context.Background(), "test"); err != nil {
 		t.Fatalf("run: %v", err)
@@ -147,7 +149,7 @@ func TestAHeldJobIsToldUnlessThatWasSwitchedOff(t *testing.T) {
 			hook, hc := newInbox(t), newInbox(t)
 			cfg := *r.config()
 			cfg.Anomalies.NotifyHeld = tc.held
-			cfg.Notify = job.Notify{Webhook: hook.url("/hook"), Healthchecks: &job.Healthchecks{URL: hc.url("/all")}}
+			cfg.Notify = job.Notify{Channels: []notify.Channel{slack("hook", hook.url("/hook"), notify.OnFailure), checks(hc.url("/all"), nil)}}
 			r.Reload(&cfg)
 
 			emptyOut(t, left, 30)
@@ -181,7 +183,7 @@ func TestAnUnusualRunIsToldWhenNotesAreSent(t *testing.T) {
 			hook := newInbox(t)
 			cfg := *r.config()
 			cfg.Anomalies.NotifyNotes = tc.notes
-			cfg.Notify = job.Notify{Webhook: hook.url("/hook")}
+			cfg.Notify = job.Notify{Channels: []notify.Channel{slack("hook", hook.url("/hook"), notify.OnFailure)}}
 			r.Reload(&cfg)
 			learned(t, r)
 
@@ -197,7 +199,9 @@ func TestAnUnusualRunIsToldWhenNotesAreSent(t *testing.T) {
 func TestNeverSendsNothingAtAll(t *testing.T) {
 	r, left, _ := syncedPair(t)
 	hook, hc := newInbox(t), newInbox(t)
-	notifying(r, job.Notify{On: "never", Webhook: hook.url("/hook"), Healthchecks: &job.Healthchecks{URL: hc.url("/all")}})
+	quiet := checks(hc.url("/all"), nil)
+	quiet.On = notify.OnNever
+	notifying(r, slack("hook", hook.url("/hook"), notify.OnNever), quiet)
 
 	emptyOut(t, left, 30)
 	held(t, r)
@@ -222,12 +226,11 @@ func TestAMessageThatCannotBeDeliveredLeavesTheRunAlone(t *testing.T) {
 	refusing.code = http.StatusInternalServerError
 	dead := httptest.NewServer(http.NotFoundHandler())
 	dead.Close()
-	notifying(r, job.Notify{
-		On:           "always",
-		Webhook:      refusing.url("/hook/SECRETHOOK"),
-		Apprise:      &job.Apprise{URL: dead.URL + "/notify/SECRETKEY"},
-		Healthchecks: &job.Healthchecks{URL: dead.URL + "/SECRETCHECK"},
-	})
+	notifying(r,
+		slack("hook", refusing.url("/hook/SECRETHOOK"), notify.OnAlways),
+		notify.Channel{ID: "apprise", Kind: notify.KindApprise, Enabled: true, On: notify.OnAlways, Attempts: 1, Apprise: &notify.Apprise{URL: dead.URL + "/notify/SECRETKEY"}},
+		checks(dead.URL+"/SECRETCHECK", nil),
+	)
 
 	if _, err := r.Run(context.Background(), "test"); err != nil {
 		t.Fatalf("a refused message failed the run: %v", err)
@@ -245,45 +248,53 @@ func TestAMessageThatCannotBeDeliveredLeavesTheRunAlone(t *testing.T) {
 	}
 }
 
+func TestAChannelSwitchedOnButIncompleteIsNamedInTheLog(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	var logged []string
+	r.log = func(format string, args ...any) { logged = append(logged, fmt.Sprintf(format, args...)) }
+	half := slack("half", "htt", notify.OnAlways)
+	half.Name = "Kitchen"
+	hook := newInbox(t)
+	notifying(r, half, slack("hook", hook.url("/hook"), notify.OnAlways))
+
+	if !strings.Contains(strings.Join(logged, "\n"), "Kitchen") {
+		t.Errorf("the log does not name the channel: %v", logged)
+	}
+	if _, err := r.Run(context.Background(), "test"); err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	if got := hook.all(); len(got) != 1 {
+		t.Errorf("one incomplete channel kept the others quiet: %v", got)
+	}
+}
+
 func TestATestMessageGoesToTheOneChannelAsked(t *testing.T) {
-	hook, apprise, hc := newInbox(t), newInbox(t), newInbox(t)
-	n := job.Notify{
-		On:           "never",
-		Webhook:      hook.url("/hook"),
-		Apprise:      &job.Apprise{Enabled: no(), URL: apprise.url("/notify/key")},
-		Healthchecks: &job.Healthchecks{URL: hc.url("/all"), Jobs: map[string]string{"photos": hc.url("/photos"), "music": hc.url("/all")}},
-	}
+	apprise, hc := newInbox(t), newInbox(t)
 	// A test is asked for while setting a channel up, which may be before it
-	// is switched on and whatever the "when" says.
-	if err := SendTest(context.Background(), n, "apprise"); err != nil {
-		t.Fatalf("apprise: %v", err)
-	}
-	if got := append(hook.all(), hc.all()...); len(got) != 0 {
-		t.Errorf("other channels heard the test: %v", got)
+	// is switched on and whatever its "when" says.
+	off := notify.Channel{ID: "apprise", Kind: notify.KindApprise, Enabled: false, On: notify.OnNever, Apprise: &notify.Apprise{URL: apprise.url("/notify/key")}}
+	if res := SendTest(context.Background(), off); !res.OK() {
+		t.Fatalf("apprise: %v", res.Err)
 	}
 	if got := apprise.all(); len(got) != 1 {
 		t.Errorf("apprise got %v", got)
 	}
 
-	if err := SendTest(context.Background(), n, "healthchecks"); err != nil {
-		t.Fatalf("healthchecks: %v", err)
+	if res := SendTest(context.Background(), checks(hc.url("/all"), map[string]string{"photos": hc.url("/photos"), "music": hc.url("/all")})); !res.OK() {
+		t.Fatalf("healthchecks: %v", res.Err)
 	}
 	if got := hc.all(); len(got) != 2 {
 		t.Errorf("every distinct check should be pinged once: %v", got)
 	}
 
-	if err := SendTest(context.Background(), n, "smtp"); err == nil {
-		t.Error("a test of a channel that is not filled in passed")
-	}
-	if err := SendTest(context.Background(), n, "pigeon"); err == nil {
-		t.Error("a test of a channel that does not exist passed")
+	if res := SendTest(context.Background(), notify.Channel{ID: "mail", Kind: notify.KindSMTP}); res.OK() || res.Code != notify.CodeInvalid {
+		t.Errorf("a test of a channel that is not filled in answered %+v", res)
 	}
 
-	hook.mu.Lock()
-	hook.code = http.StatusNotFound
-	hook.mu.Unlock()
-	if err := SendTest(context.Background(), n, "webhook"); err == nil || !strings.Contains(err.Error(), "404") {
-		t.Errorf("a refused test says %v", err)
+	gone := newInbox(t)
+	gone.code = http.StatusNotFound
+	if res := SendTest(context.Background(), slack("hook", gone.url("/hook"), notify.OnNever)); res.OK() || res.Status != http.StatusNotFound {
+		t.Errorf("a refused test answered %+v", res)
 	}
 }
 
@@ -304,7 +315,7 @@ func TestAMessageCarriesNoPasswordFromTheRunsError(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			r, _, _ := syncedPair(t)
 			hook, hc := newInbox(t), newInbox(t)
-			notifying(r, job.Notify{Webhook: hook.url("/hook"), Healthchecks: &job.Healthchecks{URL: hc.url("/check")}})
+			notifying(r, slack("hook", hook.url("/hook"), notify.OnFailure), checks(hc.url("/check"), nil))
 			cfg := *r.config()
 			cfg.Jobs = append([]job.Job(nil), cfg.Jobs...)
 			tc.change(&cfg.Jobs[0])
@@ -345,17 +356,16 @@ func TestNoChannelsKeepsEveryChannelQuietAndLeavesTheSettings(t *testing.T) {
 		}
 	}()
 
-	n := job.Notify{
-		On:           "always",
-		Webhook:      hook.url("/hook"),
-		Apprise:      &job.Apprise{URL: apprise.url("/notify/key")},
-		Matrix:       &job.Matrix{Homeserver: room.url(""), Room: "!r:x", Token: "t"},
-		SMTP:         &job.SMTP{Host: "127.0.0.1", Port: mail.Addr().(*net.TCPAddr).Port, From: "a@x", To: "b@x", TLS: "none"},
-		Healthchecks: &job.Healthchecks{URL: hc.url("/all"), Jobs: map[string]string{"test": hc.url("/own")}},
+	channels := []notify.Channel{
+		slack("hook", hook.url("/hook"), notify.OnAlways),
+		{ID: "apprise", Kind: notify.KindApprise, Enabled: true, On: notify.OnAlways, Apprise: &notify.Apprise{URL: apprise.url("/notify/key")}},
+		{ID: "room", Kind: notify.KindMatrix, Enabled: true, On: notify.OnAlways, Matrix: &notify.Matrix{Homeserver: room.url(""), Room: "!r:x", Token: "t"}},
+		{ID: "mail", Kind: notify.KindSMTP, Enabled: true, On: notify.OnAlways, SMTP: &notify.SMTP{Host: "127.0.0.1", Port: mail.Addr().(*net.TCPAddr).Port, From: "a@x", To: "b@x", TLS: "none"}},
+		checks(hc.url("/all"), map[string]string{"test": hc.url("/own")}),
 	}
-	stored, _ := json.Marshal(n)
+	stored, _ := json.Marshal(channels)
 	t.Setenv(NoChannelsEnv, "1")
-	notifying(r, n)
+	notifying(r, channels...)
 
 	if _, err := r.Run(context.Background(), "test"); err != nil {
 		t.Fatalf("run: %v", err)
@@ -367,9 +377,9 @@ func TestNoChannelsKeepsEveryChannelQuietAndLeavesTheSettings(t *testing.T) {
 	}
 	breakBefore(r)
 	r.Run(context.Background(), "test")
-	for _, channel := range []string{"webhook", "matrix", "smtp", "apprise", "healthchecks"} {
-		if err := SendTest(context.Background(), n, channel); err == nil {
-			t.Errorf("a test through %s went out", channel)
+	for _, c := range channels {
+		if res := SendTest(context.Background(), c); res.OK() || res.Code != CodeOff {
+			t.Errorf("a test through %s answered %+v", c.ID, res)
 		}
 	}
 
@@ -379,7 +389,7 @@ func TestNoChannelsKeepsEveryChannelQuietAndLeavesTheSettings(t *testing.T) {
 	if got := dialled.Load(); got != 0 {
 		t.Errorf("the mail server was dialled %d times", got)
 	}
-	if now, _ := json.Marshal(r.config().Notify); string(now) != string(stored) {
+	if now, _ := json.Marshal(r.config().Notify.Channels); string(now) != string(stored) {
 		t.Errorf("the settings changed from %s to %s", stored, now)
 	}
 }

@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
 	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
 	"github.com/robfig/cron/v3"
@@ -25,7 +26,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
-	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
@@ -90,9 +90,11 @@ type Runner struct {
 	mu sync.Mutex
 	// cfg and note change together on a reload.
 	cfg  *job.Config
-	note notify.Notifier
+	note *notify.Dispatcher
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
+	// going is how far each run has got, read off the events it publishes.
+	going    map[string]Working
 	subs     map[chan Event]struct{}
 	watchers map[string]*watched
 }
@@ -127,10 +129,14 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 		log("%v", err)
 	}
 
+	note, incomplete := dispatcher(cfg)
+	for _, name := range incomplete {
+		log("the notification channel %s is switched on but not complete, so it sends nothing", name)
+	}
 	return &Runner{
 		cfg:       cfg,
 		hist:      hist,
-		note:      Notifier(cfg),
+		note:      note,
 		log:       log,
 		shadows:   shadows,
 		anomalies: found,
@@ -712,6 +718,7 @@ func (r *Runner) release(name string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	delete(r.inflight, name)
+	delete(r.going, name)
 }
 
 // Serve runs every scheduled job until the context is cancelled, rebuilding
@@ -890,10 +897,14 @@ func (r *Runner) stopCron(c *cron.Cron) {
 // the copying to stop. A paused job started by hand runs on through later
 // saves.
 func (r *Runner) Reload(cfg *job.Config) {
+	note, incomplete := dispatcher(cfg)
+	for _, name := range incomplete {
+		r.log("the notification channel %s is switched on but not complete, so it sends nothing", name)
+	}
 	r.mu.Lock()
 	was := r.cfg
 	r.cfg = cfg
-	r.note = Notifier(cfg)
+	r.note = note
 	gone := map[string]context.CancelFunc{}
 	paused := map[string]context.CancelFunc{}
 	for name, stop := range r.inflight {
@@ -1221,12 +1232,53 @@ func (r *Runner) Subscribe() (<-chan Event, func()) {
 func (r *Runner) publish(ev Event) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	r.track(ev)
 	for ch := range r.subs {
 		select {
 		case ch <- ev:
 		default:
 		}
 	}
+}
+
+// Working is one run in progress. Total is the steps of its plan, zero while
+// the sides are still being read.
+type Working struct {
+	Job     string
+	Started time.Time
+	Done    int
+	Total   int
+}
+
+// track keeps going in step with the events of a run. r.mu is held.
+func (r *Runner) track(ev Event) {
+	switch ev.Phase {
+	case "started":
+		if r.going == nil {
+			r.going = map[string]Working{}
+		}
+		r.going[ev.Job] = Working{Job: ev.Job, Started: time.Now()}
+	case "progress":
+		w, ok := r.going[ev.Job]
+		if ok && ev.Stage == "" {
+			w.Done, w.Total = ev.Done, ev.Total
+			r.going[ev.Job] = w
+		}
+	case "finished":
+		delete(r.going, ev.Job)
+	}
+}
+
+// Working lists the runs in progress, the oldest first.
+func (r *Runner) Working() []Working {
+	r.mu.Lock()
+	out := make([]Working, 0, len(r.going))
+	for _, w := range r.going {
+		out = append(out, w)
+	}
+	r.mu.Unlock()
+	sort.Slice(out, func(i, j int) bool { return out[i].Started.Before(out[j].Started) })
+	return out
 }
 
 // Running reports which jobs are going right now.

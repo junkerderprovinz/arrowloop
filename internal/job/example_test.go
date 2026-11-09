@@ -33,6 +33,12 @@ func TestTheExampleConfigurationLoads(t *testing.T) {
 	if len(cfg.Jobs) == 0 {
 		t.Fatal("the example configuration has no jobs, which is not an example of anything")
 	}
+	if len(cfg.Notify.Channels) == 0 {
+		t.Error("the example sets up no notification channel")
+	}
+	if after, err := os.ReadFile(copied); err != nil || string(after) != string(raw) {
+		t.Error("loading the example rewrote it, so it is still in the older notification shape")
+	}
 }
 
 // A setting missing from the example is one somebody has to find in the source.
