@@ -160,6 +160,14 @@ describe('the Info tile', () => {
     expect(onWindow).toHaveBeenCalledWith({ ...windowSettings, autoUpdate: true })
   })
 
+  it('puts the update switch right under the app, ahead of what it is made of', async () => {
+    render(<InfoPage version="v1.8.0" window={windowSettings} onWindow={() => {}} />)
+    await screen.findByRole('link', { name: '1.75.2' })
+    const toggle = screen.getByRole('switch', { name: 'Update automatically' })
+    const glimstone = screen.getByText('GlimStone')
+    expect(toggle.compareDocumentPosition(glimstone) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
   it('says a Flatpak updates through the software centre instead of offering the switch', async () => {
     render(<InfoPage version="v1.8.0" window={{ ...windowSettings, updatesFromStore: true }} onWindow={() => {}} />)
     await screen.findByRole('link', { name: '1.75.2' })

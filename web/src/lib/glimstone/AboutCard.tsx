@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import { mailHref, offersMail, openInBrowser, runUpdateCheck, updateFace, updateStage, versionLink, type OpenUrl, type UpdateCheck, type UpdateVerdict, type VersionRow } from "../infoTile.ts";
 import { Button } from "./Button.tsx";
 import { Card } from "./Card.tsx";
@@ -108,7 +108,7 @@ export interface InfoVersionCardProps {
    *  offers no check. */
   updateCheck?: UpdateCheck;
   /** How the app updates itself, such as a switch for automatic updates,
-   *  drawn under the versions it concerns. */
+   *  drawn under the app's own row, the first. */
   settings?: ReactNode;
   /** Opens the app's window on the running version's release notes, for an
    *  app that marks no changes. */
@@ -135,20 +135,22 @@ export function InfoVersionCard({
   return (
     <Card title={text.title} hint={text.hint} hueIndex={hueIndex}>
       <ul className="glim-version-rows">
-        {rows.map((row) => (
-          <li key={row.name} className="glim-version-row">
-            <span className="glim-version-name">
-              <span className="glim-version-part flex items-center gap-1.5">
-                {row.name}
-                {row.hint && <InfoBubble tip={row.hint} />}
+        {rows.map((row, i) => (
+          <Fragment key={row.name}>
+            <li className="glim-version-row">
+              <span className="glim-version-name">
+                <span className="glim-version-part flex items-center gap-1.5">
+                  {row.name}
+                  {row.hint && <InfoBubble tip={row.hint} />}
+                </span>
+                {row.sub && <span className="glim-version-sub">{row.sub}</span>}
               </span>
-              {row.sub && <span className="glim-version-sub">{row.sub}</span>}
-            </span>
-            <VersionNumber row={row} unreleased={text.unreleased} openUrl={openUrl} />
-          </li>
+              <VersionNumber row={row} unreleased={text.unreleased} openUrl={openUrl} />
+            </li>
+            {i === 0 && settings && <li>{settings}</li>}
+          </Fragment>
         ))}
       </ul>
-      {settings}
       {(notes || whatsNew || updateCheck) && (
         <div className="glim-version-actions">
           {notes && <Button label={notes} labelKey="about.releaseNotes" onClick={onReleaseNotes} />}
