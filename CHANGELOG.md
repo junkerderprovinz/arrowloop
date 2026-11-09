@@ -10,6 +10,19 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🐛 Fixed
+
+- **Uninstalling on Windows leaves nothing behind.** The install folder is gone right away, not after the next restart.
+- **The installer window wears ArrowLoop's icon on Linux.** GNOME showed a gear in its place.
+
+## 🌐 Translations
+
+- **The uninstaller names what stays in ArrowLoop's own words.** Its list of what is kept says your jobs, history and settings, and the last page says they are still there, in all 42 languages.
+
+## 🔧 Under the hood
+
+- **The desktop installer is built on PommelPorter 1.1.5.**
+
 ## 2.6.2 - 2026-11-09
 
 The Automatic backups card picks its folder in the folder picker and leaves restoring to Import settings.

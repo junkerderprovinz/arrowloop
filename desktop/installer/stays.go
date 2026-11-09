@@ -1,0 +1,51 @@
+package main
+
+import "github.com/junkerderprovinz/pommelporter"
+
+// stays names what an uninstall leaves in the person's configuration folder:
+// the jobs and settings in arrowloop.json and the run history, in the words of
+// the app's own navigation and the window's form of address.
+var stays = map[string]pommelporter.Stay{
+	"ar": {Item: "مهامك وسجلك وإعداداتك", Note: "مهامك وسجلك وإعداداتك ما زالت موجودة."},
+	"bg": {Item: "Вашите задачи, история и настройки", Note: "Задачите, историята и настройките ви са все още там."},
+	"ca": {Item: "Les teves tasques, el teu historial i la teva configuració", Note: "Les teves tasques, el teu historial i la teva configuració encara hi són."},
+	"cs": {Item: "Vaše úlohy, historie a nastavení", Note: "Vaše úlohy, historie a nastavení tu zůstaly."},
+	"da": {Item: "Dine job, din historik og dine indstillinger", Note: "Dine job, din historik og dine indstillinger er der stadig."},
+	"de": {Item: "Deine Aufträge, dein Verlauf und deine Einstellungen", Note: "Deine Aufträge, dein Verlauf und deine Einstellungen sind noch da."},
+	"el": {Item: "Οι εργασίες, το ιστορικό και οι ρυθμίσεις σας", Note: "Οι εργασίες, το ιστορικό και οι ρυθμίσεις σας είναι ακόμα εκεί."},
+	"en": {Item: "Your jobs, history and settings", Note: "Your jobs, history and settings are still there."},
+	"es": {Item: "Tus tareas, tu historial y tus ajustes", Note: "Tus tareas, tu historial y tus ajustes siguen ahí."},
+	"et": {Item: "Sinu tööd, ajalugu ja seaded", Note: "Sinu tööd, ajalugu ja seaded on alles."},
+	"eu": {Item: "Zure lanak, historia eta ezarpenak", Note: "Zure lanak, historia eta ezarpenak hor daude oraindik."},
+	"fa": {Item: "کارها، تاریخچه و تنظیمات شما", Note: "کارها، تاریخچه و تنظیمات شما هنوز سر جایشان هستند."},
+	"fi": {Item: "Työsi, historiasi ja asetuksesi", Note: "Työsi, historiasi ja asetuksesi ovat yhä tallessa."},
+	"fr": {Item: "Vos tâches, votre historique et vos réglages", Note: "Vos tâches, votre historique et vos réglages sont toujours là."},
+	"gl": {Item: "As túas tarefas, o teu historial e os teus axustes", Note: "As túas tarefas, o teu historial e os teus axustes seguen aí."},
+	"he": {Item: "המשימות, ההיסטוריה וההגדרות שלך", Note: "המשימות, ההיסטוריה וההגדרות שלך עדיין שם."},
+	"hi": {Item: "आपके काम, इतिहास और सेटिंग्स", Note: "आपके काम, इतिहास और सेटिंग्स अब भी मौजूद हैं।"},
+	"hr": {Item: "Vaši zadaci, povijest i postavke", Note: "Vaši zadaci, povijest i postavke i dalje su tu."},
+	"hu": {Item: "A feladatai, előzményei és beállításai", Note: "A feladatai, előzményei és beállításai megmaradtak."},
+	"id": {Item: "Tugas, riwayat, dan pengaturan Anda", Note: "Tugas, riwayat, dan pengaturan Anda masih ada."},
+	"is": {Item: "Verk, saga og stillingar þín", Note: "Verk, saga og stillingar þín eru enn til staðar."},
+	"it": {Item: "I tuoi lavori, la cronologia e le impostazioni", Note: "I tuoi lavori, la cronologia e le impostazioni sono ancora lì."},
+	"ja": {Item: "ジョブ、履歴、設定", Note: "ジョブ、履歴、設定はそのまま残っています。"},
+	"ko": {Item: "작업, 기록, 설정", Note: "작업, 기록, 설정은 그대로 남아 있습니다."},
+	"lt": {Item: "Jūsų užduotys, istorija ir nustatymai", Note: "Jūsų užduotys, istorija ir nustatymai liko vietoje."},
+	"lv": {Item: "Jūsu uzdevumi, vēsture un iestatījumi", Note: "Jūsu uzdevumi, vēsture un iestatījumi joprojām ir vietā."},
+	"ms": {Item: "Tugas, sejarah dan tetapan anda", Note: "Tugas, sejarah dan tetapan anda masih ada."},
+	"nl": {Item: "Je taken, geschiedenis en instellingen", Note: "Je taken, geschiedenis en instellingen zijn er nog."},
+	"no": {Item: "Jobbene, historikken og innstillingene dine", Note: "Jobbene, historikken og innstillingene dine er der fortsatt."},
+	"pl": {Item: "Twoje zadania, historia i ustawienia", Note: "Twoje zadania, historia i ustawienia nadal tam są."},
+	"pt": {Item: "As suas tarefas, o histórico e as definições", Note: "As suas tarefas, o histórico e as definições continuam lá."},
+	"ro": {Item: "Sarcinile, istoricul și setările tale", Note: "Sarcinile, istoricul și setările tale sunt încă acolo."},
+	"ru": {Item: "Ваши задания, журнал и настройки", Note: "Ваши задания, журнал и настройки на месте."},
+	"sk": {Item: "Vaše úlohy, história a nastavenia", Note: "Vaše úlohy, história a nastavenia tu zostali."},
+	"sl": {Item: "Vaša opravila, zgodovina in nastavitve", Note: "Vaša opravila, zgodovina in nastavitve so še vedno tam."},
+	"sr": {Item: "Ваши послови, историја и подешавања", Note: "Ваши послови, историја и подешавања су и даље ту."},
+	"sv": {Item: "Dina jobb, din historik och dina inställningar", Note: "Dina jobb, din historik och dina inställningar finns kvar."},
+	"th": {Item: "งาน ประวัติ และการตั้งค่าของคุณ", Note: "งาน ประวัติ และการตั้งค่าของคุณยังอยู่ครบ"},
+	"tr": {Item: "İşleriniz, geçmişiniz ve ayarlarınız", Note: "İşleriniz, geçmişiniz ve ayarlarınız hâlâ yerinde."},
+	"uk": {Item: "Ваші завдання, журнал і налаштування", Note: "Ваші завдання, журнал і налаштування на місці."},
+	"vi": {Item: "Công việc, lịch sử và cài đặt của bạn", Note: "Công việc, lịch sử và cài đặt của bạn vẫn còn đó."},
+	"zh": {Item: "你的任务、历史和设置", Note: "你的任务、历史和设置都还在。"},
+}
