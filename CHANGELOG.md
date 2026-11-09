@@ -10,6 +10,19 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.2 - 2026-11-09
+
+The Automatic backups card picks its folder in the folder picker and leaves restoring to Import settings.
+
+## ⚡ Improved
+
+- **Choose a folder picks the backup folder.** The Backup folder field on the Automatic backups card has a Choose a folder button beside it, on the web and in the phone app. It opens the folder picker on the machine the engine runs on, where you can also make a new folder. Typing the path still works.
+
+## 🎨 Design
+
+- **The Restore button is gone from the Automatic backups card.** The card shows when the latest backup was made, and Import settings puts a copy back, asking first as before.
+- **Use this folder carries a check** in the folder picker, on the web and in the phone app.
+
 ## 2.6.1 - 2026-11-08
 
 ArrowLoop opens and edits the jobs of your other paired instances.

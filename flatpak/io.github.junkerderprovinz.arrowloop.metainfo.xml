@@ -79,6 +79,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.2" date="2026-11-09">
+      <description>
+        <p>The Automatic backups card picks its folder in the folder picker.</p>
+        <ul>
+          <li>Choose a folder beside the backup folder opens the folder picker</li>
+          <li>Import settings puts a backup back, so the card no longer has its own Restore button</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.2</url>
+    </release>
     <release version="2.6.1" date="2026-11-08">
       <description>
         <p>Open and edit the jobs of your other paired instances.</p>
