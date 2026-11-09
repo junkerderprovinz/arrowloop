@@ -38,6 +38,7 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
   stopped: { either: 'failure.stopped' },
   beforeFailed: { either: 'failure.beforeFailed' },
   afterFailed: { either: 'failure.afterFailed' },
+  leftTwice: { either: 'failure.leftTwice' },
 }
 
 /**

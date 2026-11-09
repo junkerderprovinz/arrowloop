@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { storageKey } from '../lib/storage'
 import { Dialog } from './Dialog'
 
 afterEach(cleanup)
@@ -63,5 +64,36 @@ describe('a window', () => {
     unmount()
     expect(document.activeElement).toBe(behind)
     behind.remove()
+  })
+})
+
+describe('a window that can be resized', () => {
+  afterEach(() => localStorage.clear())
+
+  it('opens at the size it was last dragged to', () => {
+    localStorage.setItem(storageKey('dialog-run'), JSON.stringify({ w: 900, h: 640 }))
+    render(
+      <Dialog title="Run" sizeKey="run" onClose={() => undefined}>
+        <p>Lines</p>
+      </Dialog>,
+    )
+    const card = screen.getByRole('dialog', { name: 'Run' })
+    expect(card.style.width).toBe('900px')
+    expect(card.style.height).toBe('640px')
+  })
+
+  it('keeps the size it is dragged to for the next window of its kind', () => {
+    render(
+      <Dialog title="Run" sizeKey="run" onClose={() => undefined}>
+        <p>Lines</p>
+      </Dialog>,
+    )
+    const card = screen.getByRole('dialog', { name: 'Run' })
+    card.getBoundingClientRect = () => ({ width: 600, height: 400 }) as DOMRect
+    const grip = screen.getByTestId('dialog-grip')
+    fireEvent.pointerDown(grip, { clientX: 100, clientY: 100, pointerId: 1 })
+    fireEvent.pointerMove(grip, { clientX: 150, clientY: 130, pointerId: 1 })
+    fireEvent.pointerUp(grip, { clientX: 150, clientY: 130, pointerId: 1 })
+    expect(JSON.parse(localStorage.getItem(storageKey('dialog-run')) ?? 'null')).toEqual({ w: 700, h: 460 })
   })
 })

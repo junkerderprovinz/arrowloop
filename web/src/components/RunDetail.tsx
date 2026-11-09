@@ -8,8 +8,7 @@ import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
 import { useT } from '../lib/i18n'
 import { Button } from '../lib/glimstone/Button'
-import { IconConflict, IconExport } from './glyphs'
-import { download } from '../lib/download'
+import { IconConflict } from './glyphs'
 
 /**
  * What one run did, path by path, fetched when the run is opened.
@@ -21,11 +20,6 @@ import { download } from '../lib/download'
 
 /** The note a run writes on a conflict it kept both versions of; see plan.Resolution. */
 const KEPT_BOTH = 'keep both'
-
-// Codepoints rather than escapes: a tab mangled into a space still looks right
-// but breaks the columns.
-const TAB = String.fromCharCode(9)
-const NEWLINE = String.fromCharCode(10)
 
 /**
  * Which lines are a problem, so a failed run's own lines stand out in it. A
@@ -42,11 +36,14 @@ export function RunDetail({
   run,
   job,
   tick = 0,
+  onEntries,
 }: {
   run: number
   job: string
   /** Changes while the run is still going, to read its lines again. */
   tick?: number
+  /** Hears the lines once they are read, for a window that offers to save them. */
+  onEntries?: (entries: RunEntry[]) => void
 }) {
   const { t } = useT()
   const goTo = useGoTo()
@@ -67,7 +64,9 @@ export function RunDetail({
     api
       .runEntries(run)
       .then((got) => {
-        if (live) setEntries(got)
+        if (!live) return
+        setEntries(got)
+        onEntries?.(got)
       })
       .catch((e: Error) => {
         if (live) setError(e.message)
@@ -85,20 +84,7 @@ export function RunDetail({
 
   return (
     <div className="glim-content-fade flex flex-col gap-2 pb-3">
-      {/* Tab-separated plain text, so a run that went wrong can be sent on. */}
-      <div className="flex justify-end">
-        <Button
-          label={t('history.download')}
-          labelKey="history.download"
-          glyph={<IconExport />}
-          onClick={() => {
-            const lines = entries.map((e) => [e.Kind, e.Side, e.Path, e.Note].join(TAB))
-            download(`arrowloop-${job}-${run}.txt`, lines.join(NEWLINE) + NEWLINE)
-          }}
-        />
-      </div>
-
-      <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
+      <ul className="flex flex-col gap-1">
         {entries.map((e, i) => {
           const note = entryNote(t, e)
           return (

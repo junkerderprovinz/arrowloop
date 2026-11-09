@@ -564,6 +564,26 @@ func (d *DB) FailuresSince(ctx context.Context, job string, since time.Time) (in
 	return count, time.Unix(0, last.Int64), nil
 }
 
+// LeftLastTime returns the paths the job's newest recorded run left for later.
+func (d *DB) LeftLastTime(ctx context.Context, job string) (map[string]bool, error) {
+	rows, err := d.sql.QueryContext(ctx,
+		`SELECT path FROM entries WHERE kind = 'skip' AND run =
+		   (SELECT id FROM runs WHERE job = ? ORDER BY started DESC LIMIT 1)`, job)
+	if err != nil {
+		return nil, fmt.Errorf("left last time for %q: %w", job, err)
+	}
+	defer rows.Close()
+	out := map[string]bool{}
+	for rows.Next() {
+		var p string
+		if err := rows.Scan(&p); err != nil {
+			return nil, fmt.Errorf("left last time for %q: %w", job, err)
+		}
+		out[p] = true
+	}
+	return out, rows.Err()
+}
+
 // Prune drops runs older than the given age, so the log does not grow without
 // bound on a machine nobody looks at.
 func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int64, error) {

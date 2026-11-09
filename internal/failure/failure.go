@@ -33,6 +33,7 @@ const (
 	AfterFailed      = "afterFailed"
 	HostKeyChanged   = "hostKeyChanged"
 	TooManyLogins    = "tooManyLogins"
+	LeftTwice        = "leftTwice"
 )
 
 // The sentences the engine composes itself, in internal/daemon,
@@ -45,6 +46,7 @@ var (
 	volume = regexp.MustCompile(`the volume this job points at is not attached: (left|right) side|the drive the (left|right) side lives on is not attached`)
 	side   = regexp.MustCompile(`(?:^|: )(?:the )?(left|right) side (?:"(?:[^"\\]|\\.)*"|could not be opened): `)
 	hook   = regexp.MustCompile(`(?:^|: )the command (before|after) the run failed(?:, so the run did not start)?: `)
+	twice  = regexp.MustCompile(`(?:^|: )left for later in two runs in a row: `)
 )
 
 // rule is a family of messages from rclone, the network or the system, matched
@@ -97,6 +99,10 @@ var rules = []rule{
 func Of(text string) *Failure {
 	if text == "" {
 		return nil
+	}
+	// Ahead of the rules, since the reasons it lists use their words.
+	if m := twice.FindStringIndex(text); m != nil {
+		return &Failure{Code: LeftTwice, Params: map[string]string{"output": text[m[1]:]}}
 	}
 	if m := space.FindStringSubmatch(text); m != nil {
 		return &Failure{Code: NotEnoughSpace, Params: map[string]string{"side": m[1], "free": m[2], "needed": m[3]}}

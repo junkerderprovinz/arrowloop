@@ -2,7 +2,8 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import type { Touch } from '../lib/api'
+import type { Job, Touch } from '../lib/api'
+import { Places } from '../lib/places'
 import { TouchRow } from './TouchRow'
 
 afterEach(cleanup)
@@ -31,5 +32,19 @@ describe('a line of the file log', () => {
     )
     const row = screen.getByText(path).closest('li')!
     expect(row.classList.contains('shrink-0')).toBe(true)
+  })
+
+  it('names the left side, what happened with its way, and the right side', () => {
+    const job = { name: 'photos', left: '/data/Handy', right: 'nas:Fotos' } as Job
+    const touch = { Job: 'photos', When: new Date().toISOString(), Seq: 1, Kind: 'copy', Side: 'right', Path: 'a.jpg', Size: 10, Note: '' } as Touch
+    render(
+      <Places.Provider value={{ jobs: [job], drives: [] }}>
+        <ul>
+          <TouchRow touch={touch} />
+        </ul>
+      </Places.Provider>,
+    )
+    const way = screen.getByTestId('touch-way')
+    expect(way.textContent).toBe('HandyCopiedrightnas')
   })
 })

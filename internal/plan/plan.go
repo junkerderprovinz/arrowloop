@@ -71,6 +71,7 @@ var reasonText = map[string]string{
 	"changedDuring":   "changed on the {side} side while this run was going, leaving it for the next run",
 	"inFlux":          "was being written on the {side} side while it was copied, in {runs} runs in a row, leaving it for the next run",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
+	"cloudOnly":       "{what} failed because the file is only a placeholder of a cloud client, which could not download it. Keep it on this device in the cloud client. Leaving it for the next run: {error}",
 	"sealed":          "locked on the {side} side: OneDrive hands its Personal Vault to no app, so this folder is left out",
 	"unreadable":      "could not be read on the {side} side, so this run leaves the folder alone on both sides",
 	"vanished":        "disappeared from the {side} side while it was being read, so this run leaves the folder alone on both sides",

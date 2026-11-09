@@ -363,6 +363,12 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	rec.Copied, rec.Moved, rec.Trashed = res.Copied, res.Moved, res.Trashed
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved
 	rec.Skipped = len(res.Skipped)
+	if rec.Err == "" {
+		if again := r.leftAgain(ctx, name, res.Skipped); again != "" {
+			rec.Err = again
+			err = errors.New(again)
+		}
+	}
 
 	// Runs even when the run was stopped, since cleaning up after it is what
 	// the command is usually for. A refused job never got that far.

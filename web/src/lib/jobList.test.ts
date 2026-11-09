@@ -5,6 +5,7 @@ import { STRIP_LENGTH, jobStatus, latestRuns, runStrip } from './jobList'
 const ok = { Err: '', Conflicts: 0, Skipped: 0, Started: '2027-03-01T10:00:00Z' }
 const failed = { ...ok, Err: 'boom' }
 const leftSomething = { ...ok, Conflicts: 2 }
+const leftForLater = { ...ok, Skipped: 3 }
 
 function job(name: string, over: Partial<Parameters<typeof jobStatus>[0]> = {}) {
   return { name, left: `/data/${name}`, right: `remote:${name}`, running: false, disabled: false, recent: [ok], ...over }
@@ -20,6 +21,10 @@ describe('runStrip', () => {
 
   it('marks a run that set a conflict aside as one to look at', () => {
     expect(runStrip([leftSomething]).at(-1)).toBe('warn')
+  })
+
+  it('keeps a run that left files for the next one green', () => {
+    expect(runStrip([leftForLater]).at(-1)).toBe('ok')
   })
 
   it('keeps only the newest fourteen', () => {
@@ -51,10 +56,12 @@ describe('jobStatus', () => {
     expect(jobStatus(job('a'), { held: true, conflict: true, notes: false })).toBe('held')
   })
 
-  it('never rounds a run that skipped files or a note up to the last good run', () => {
-    expect(jobStatus(job('a', { recent: [{ ...ok, Skipped: 3 }] }), quiet)).toBe('warned')
+  it('never rounds a note up to the last good run', () => {
     expect(jobStatus(job('a'), noted)).toBe('warned')
-    expect(jobStatus(job('a', { recent: [ok, { ...ok, Skipped: 3 }] }), quiet)).toBe('last')
+  })
+
+  it('reads a run that left files for the next one as a good run', () => {
+    expect(jobStatus(job('a', { recent: [leftForLater] }), quiet)).toBe('last')
   })
 
   it('ranks a warning between a waiting conflict and a running job', () => {

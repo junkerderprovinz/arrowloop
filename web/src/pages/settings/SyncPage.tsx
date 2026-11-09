@@ -1,3 +1,4 @@
+import { DirectionGlyph } from '../../components/Direction'
 import { ExceptionsCard, useExceptions } from '../../components/Exceptions'
 import { ExcludeSetEditor, type Sets } from '../../components/ExcludeSets'
 import { NumberField, Text } from '../../components/Field'
@@ -49,9 +50,9 @@ export function SyncPage() {
             value={direction}
             onChange={(next) => setDefault({ direction: next, mode: next === 'both' ? 'sync' : defaults.mode })}
             options={[
-              { value: 'both', label: t('direction.both') },
-              { value: 'leftToRight', label: t('direction.toRight') },
-              { value: 'rightToLeft', label: t('direction.toLeft') },
+              { value: 'both', label: t('direction.both'), icon: <DirectionGlyph direction="both" /> },
+              { value: 'leftToRight', label: t('direction.toRight'), icon: <DirectionGlyph direction="leftToRight" /> },
+              { value: 'rightToLeft', label: t('direction.toLeft'), icon: <DirectionGlyph direction="rightToLeft" /> },
             ]}
           />
         </SettingsRow>

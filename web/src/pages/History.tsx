@@ -44,11 +44,10 @@ const SEVERITY_LABEL: Record<Severity, TranslationKey> = {
 
 /** The file log's columns at their built-in widths; the path takes the rest. */
 export const FILE_COLUMNS: ColumnDef[] = [
-  { id: 'what', width: 256, min: 120 },
+  { id: 'what', width: 384, min: 160 },
   { id: 'when', width: 160, min: 96 },
   { id: 'job', width: 128, min: 64 },
   { id: 'size', width: 56, min: 48 },
-  { id: 'side', width: 24, fixed: true },
   { id: 'path' },
 ]
 const RUN_COLUMNS: ColumnDef[] = [{ id: 'job' }, { id: 'state', width: 240, min: 96 }, { id: 'when', width: 180, min: 120 }]
@@ -180,13 +179,12 @@ export function History({
         {
           id: 'what',
           label: t('history.filterKind'),
-          className: 'w-64 shrink-0 max-md:w-48 max-sm:w-auto',
+          className: 'w-96 shrink-0 max-md:w-72 max-sm:w-auto',
           filter: { active: kind !== 'all', panel: <TouchKindChoice value={kind} onChange={setKind} /> },
         },
         { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },
         { id: 'job', label: t('history.filterJob'), className: 'w-32 shrink-0 max-md:hidden', filter: jobFilter },
         { id: 'size', label: t('list.head.size'), className: 'w-14 shrink-0 max-sm:hidden' },
-        { id: 'side', label: '', className: 'w-6 shrink-0 max-sm:hidden' },
         { id: 'path', label: t('list.head.path'), className: 'min-w-0 flex-1 max-sm:hidden' },
       ]
     : [
@@ -492,7 +490,7 @@ export function RunRow({
 }) {
   const { t, lang } = useT()
   // Only a run with nothing to report wears the green dot; the others say what went otherwise.
-  const fine = !r.Running && !r.Err && r.Conflicts === 0 && r.Skipped === 0
+  const fine = !r.Running && !r.Err && r.Conflicts === 0
   return (
     <li
       onClick={onOpen}
@@ -527,7 +525,7 @@ export function RunRow({
         )}
         {r.Err && <Badge tone="fail">{t('status.failed')}</Badge>}
         {r.Conflicts > 0 && <Badge tone="warn">{t('history.conflicts', { count: r.Conflicts })}</Badge>}
-        {r.Skipped > 0 && <Badge tone="warn">{t('history.left', { count: r.Skipped })}</Badge>}
+        {r.Skipped > 0 && <Badge>{t('history.left', { count: r.Skipped })}</Badge>}
       </span>
       {withJob && (
         <span

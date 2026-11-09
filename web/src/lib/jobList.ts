@@ -2,7 +2,7 @@
 // by what it reads rather than by the API types, so the phone, whose api.ts
 // declares its own, can share it.
 
-type StripRun = { Err: string; Conflicts: number; Skipped: number }
+type StripRun = { Err: string; Conflicts: number }
 
 /** One square of the strip: worked, worked but left something, failed, or no run. */
 export type RunTone = 'ok' | 'warn' | 'fail' | 'none'
@@ -10,12 +10,13 @@ export type RunTone = 'ok' | 'warn' | 'fail' | 'none'
 export const STRIP_LENGTH = 14
 
 /**
- * A run that set a conflict aside or skipped a file worked, but left
- * something for a person, so it is orange rather than green.
+ * A run that set a conflict aside worked, but left something for a person, so
+ * it is orange rather than green. A file left for later is the next run's to
+ * try, and fails that one if it is left again.
  */
 export function runTone(run: StripRun): RunTone {
   if (run.Err !== '') return 'fail'
-  if (run.Conflicts > 0 || run.Skipped > 0) return 'warn'
+  if (run.Conflicts > 0) return 'warn'
   return 'ok'
 }
 
@@ -34,8 +35,7 @@ type ListedJob = { name: string; running: boolean; disabled: boolean; recent: (S
 /**
  * The one status a job's row shows, the loudest that applies. A job that ran
  * fine is `last`, which the row draws quietly as the time of that run, so a
- * held run, a conflict still waiting, a note or a last run that skipped files
- * must win over it: a warning is never rounded up to "synced".
+ * held run, a conflict still waiting or a note must win over it: a warning is never rounded up to "synced".
  */
 export type JobStatus = 'running' | 'held' | 'failed' | 'conflict' | 'warned' | 'paused' | 'never' | 'last'
 
@@ -50,7 +50,7 @@ export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (waits.held) return 'held'
   if (job.recent[0] && job.recent[0].Err !== '') return 'failed'
   if (waits.conflict) return 'conflict'
-  if (waits.notes || (job.recent[0]?.Skipped ?? 0) > 0) return 'warned'
+  if (waits.notes) return 'warned'
   if (job.disabled) return 'paused'
   if (job.recent.length === 0) return 'never'
   return 'last'

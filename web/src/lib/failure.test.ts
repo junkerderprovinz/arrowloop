@@ -41,6 +41,14 @@ describe('a failed run in words', () => {
     )
   })
 
+  it('names the files left for later twice under its sentence', () => {
+    const failure = { code: 'leftTwice', params: { output: 'photo.jpg (copy failed)' } }
+    expect(sayFailure('left for later in two runs in a row: photo.jpg (copy failed)', failure, tIn(de), 'de')).toEqual({
+      said: 'Einige Dateien ließen sich zwei Läufe hintereinander nicht übertragen. Die Liste des Laufs zeigt, welche und warum.',
+      engine: 'photo.jpg (copy failed)',
+    })
+  })
+
   it("shows an error it has no words for as the engine's own, under a lead", () => {
     expect(sayFailure('something nobody planned for', undefined, tIn(de), 'de')).toEqual({
       said: 'Meldung des Motors:',

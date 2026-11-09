@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties, type ReactNode } from 'react'
+import { useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 import { hueVars } from '../lib/appearance'
@@ -8,6 +8,7 @@ import { IconClose } from '../lib/glimstone/glyphs'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { useT } from '../lib/i18n'
 import { useModal } from '../lib/modal'
+import { storageKey } from '../lib/storage'
 
 /**
  * A window over the dimmed page, built like GlimStone's confirmation dialog:
@@ -21,6 +22,26 @@ import { useModal } from '../lib/modal'
  */
 const WIDTH = { normal: 'max-w-xl', wide: 'max-w-3xl', widest: 'max-w-5xl' } as const
 
+type Size = { w: number; h: number }
+
+/** The smallest a window can be dragged to, so its heading and buttons keep their room. */
+const MIN: Size = { w: 360, h: 240 }
+
+function storedSize(key: string | undefined): Size | null {
+  if (!key) return null
+  try {
+    const got = JSON.parse(localStorage.getItem(storageKey(`dialog-${key}`)) ?? 'null') as Size | null
+    return got && got.w > 0 && got.h > 0 ? got : null
+  } catch {
+    return null
+  }
+}
+
+/** A phone-narrow window is a sheet on the bottom edge (index.css), which keeps the screen's width. */
+function sheet(): boolean {
+  return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 639px)').matches
+}
+
 export function Dialog({
   title,
   hint,
@@ -31,6 +52,7 @@ export function Dialog({
   search,
   bar,
   width = 'normal',
+  sizeKey,
   children,
 }: {
   title: string
@@ -61,6 +83,11 @@ export function Dialog({
    * cards side by side with a folder path in each, as a job's window.
    */
   width?: 'normal' | 'wide' | 'widest'
+  /**
+   * Lets the window be dragged larger by its corner, and keeps the size for
+   * the next window that passes the same key.
+   */
+  sizeKey?: string
   children: ReactNode
 }) {
   const { t } = useT()
@@ -69,6 +96,21 @@ export function Dialog({
   // A press that starts inside the card and ends on the backdrop, as when
   // selecting text, is not a click on the backdrop.
   const pressedBackdrop = useRef(false)
+  const [size, setSize] = useState<Size | null>(() => storedSize(sizeKey))
+  const drag = useRef<{ x: number; y: number; w: number; h: number } | null>(null)
+  const resizable = !!sizeKey && !sheet()
+  const sized = resizable && size
+
+  // The window stands in the middle, so the corner follows the pointer when
+  // the window grows by twice the distance moved.
+  const sizeAt = (e: PointerEvent): Size => {
+    const from = drag.current!
+    const way = document.dir === 'rtl' ? -1 : 1
+    return {
+      w: Math.round(Math.min(Math.max(from.w + 2 * way * (e.clientX - from.x), MIN.w), window.innerWidth - 32)),
+      h: Math.round(Math.min(Math.max(from.h + 2 * (e.clientY - from.y), MIN.h), window.innerHeight - 32)),
+    }
+  }
 
   return createPortal(
     <div
@@ -86,10 +128,13 @@ export function Dialog({
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className={`glim-modal-card relative flex max-h-[85vh] w-full ${WIDTH[width]} flex-col rounded-card bg-carbon-surface shadow-2xl outline-none${
-          hueIndex !== undefined ? ' glim-hue' : ''
-        }`}
-        style={hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : undefined}
+        className={`glim-modal-card relative flex w-full flex-col rounded-card bg-carbon-surface shadow-2xl outline-none ${
+          sized ? 'max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)]' : `max-h-[85vh] ${WIDTH[width]}`
+        }${hueIndex !== undefined ? ' glim-hue' : ''}`}
+        style={{
+          ...(hueIndex !== undefined ? (hueVars(hueIndex) as CSSProperties) : {}),
+          ...(sized ? { width: `${size.w}px`, height: `${size.h}px` } : {}),
+        }}
       >
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 pb-2 pt-5">
           <h2 className="flex items-center">
@@ -107,6 +152,36 @@ export function Dialog({
             <Button label={t('common.close')} labelKey="common.close" glyph={<IconClose />} onClick={onClose} />
           )}
         </div>
+        {resizable && (
+          <span
+            data-testid="dialog-grip"
+            aria-hidden
+            className="absolute bottom-1 end-1 flex h-4 w-4 touch-none items-end justify-end text-carbon-textMuted hover:text-carbon-text ltr:cursor-nwse-resize rtl:cursor-nesw-resize"
+            onPointerDown={(e) => {
+              const box = card.current!.getBoundingClientRect()
+              drag.current = { x: e.clientX, y: e.clientY, w: box.width, h: box.height }
+              e.currentTarget.setPointerCapture?.(e.pointerId)
+            }}
+            onPointerMove={(e) => {
+              if (drag.current) setSize(sizeAt(e))
+            }}
+            onPointerUp={(e) => {
+              if (!drag.current) return
+              const next = sizeAt(e)
+              drag.current = null
+              setSize(next)
+              try {
+                localStorage.setItem(storageKey(`dialog-${sizeKey}`), JSON.stringify(next))
+              } catch {
+                // Private windows may refuse storage; the size then lasts until the window closes.
+              }
+            }}
+          >
+            <svg viewBox="0 0 10 10" className="h-2.5 w-2.5 rtl:-scale-x-100" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M9 3 3 9M9 7 7 9" />
+            </svg>
+          </span>
+        )}
       </div>
     </div>,
     document.body,

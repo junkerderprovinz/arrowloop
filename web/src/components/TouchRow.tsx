@@ -4,7 +4,7 @@ import { IconToLeft, IconToRight } from './glyphs'
 import type { Touch } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { dayTime } from '../lib/dayTime'
-import { entryAction, entryNote, unreadFolder } from '../lib/entryLabel'
+import { entryAction, entryNote, placesOf, unreadFolder } from '../lib/entryLabel'
 import { translateSide, useT } from '../lib/i18n'
 import { usePlaces } from '../lib/places'
 
@@ -35,8 +35,10 @@ function touchTone(e: Touch): 'warn' | 'fail' | 'neutral' {
 export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob?: boolean; columns?: Columns }) {
   const { t, lang } = useT()
   const { jobs, drives } = usePlaces()
-  // The path and the arrow beside it say where, so the badge only says what.
-  const label = entryAction(t, e, jobs.find((j) => j.name === e.Job), drives)
+  // The sides around it and the arrow say where, so the badge only says what.
+  const job = jobs.find((j) => j.name === e.Job)
+  const label = entryAction(t, e, job, drives)
+  const sides = job && (e.Side === 'left' || e.Side === 'right') ? placesOf(job, drives) : null
   const note = entryNote(t, e)
   // In the column grid every cell keeps to one line and its column, cut at the
   // end, so the rows read down their columns; the narrow flex row wraps instead.
@@ -52,10 +54,26 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
     >
       {/* Wide enough for a conflict's phrase in the longer languages; a longer
           one wraps inside its badge rather than being cut, outside the grid. */}
-      <span style={columns?.cell('what')} className={`flex w-64 min-w-0 shrink-0 max-md:w-48 max-sm:w-auto max-sm:max-w-full${grid}`}>
-        <Badge tone={touchTone(e)} wrap={!columns} className={columns ? 'min-w-0 max-w-full' : ''}>
-          {columns ? <span className="truncate">{label}</span> : label}
-        </Badge>
+      {/* Left side, what happened with an arrow to where it happened, right
+          side: the way reads at a glance without the column heads. */}
+      <span
+        data-testid="touch-way"
+        style={columns?.cell('what')}
+        className={`flex w-96 min-w-0 shrink-0 items-center gap-2 max-md:w-72 max-sm:w-auto max-sm:max-w-full${grid}`}
+      >
+        {sides && <span className="min-w-0 shrink truncate text-carbon-textSub">{sides[0].name}</span>}
+        <span className="flex min-w-0 shrink-0 items-center gap-1">
+          <Badge tone={touchTone(e)} wrap={!columns} className={columns ? 'min-w-0 max-w-full' : ''}>
+            {columns ? <span className="truncate">{label}</span> : label}
+          </Badge>
+          {sides && (
+            <span className="flex shrink-0 text-carbon-textMuted" title={translateSide(t, e.Side)}>
+              {e.Side === 'right' ? <IconToRight /> : <IconToLeft />}
+              <span className="sr-only">{translateSide(t, e.Side)}</span>
+            </span>
+          )}
+        </span>
+        {sides && <span className="min-w-0 shrink truncate text-carbon-textSub">{sides[1].name}</span>}
       </span>
       <span style={columns?.cell('when')} className={`glim-num w-40 min-w-0 shrink-0 truncate whitespace-nowrap text-carbon-textMuted max-sm:hidden${grid}`}>
         {dayTime(e.When, lang, (p) => t('list.when', p))}
@@ -70,16 +88,6 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
       )}
       <span style={columns?.cell('size')} className={`w-14 shrink-0 whitespace-nowrap tabular-nums text-carbon-textMuted max-sm:hidden${grid}`}>
         {e.Size > 0 ? bytes(e.Size) : ''}
-      </span>
-      {/* The side written to, drawn as an arrow; the word stays in the title
-          and the accessible name. */}
-      <span
-        style={columns?.cell('side')}
-        className="flex w-6 shrink-0 justify-center text-carbon-textMuted"
-        title={e.Side ? translateSide(t, e.Side as 'left' | 'right') : undefined}
-      >
-        {e.Side === 'right' ? <IconToRight /> : e.Side === 'left' ? <IconToLeft /> : null}
-        {e.Side && <span className="sr-only">{translateSide(t, e.Side as 'left' | 'right')}</span>}
       </span>
       {/* A long path wraps rather than losing its end outside the grid; in it
           the whole path is in the bubble. */}

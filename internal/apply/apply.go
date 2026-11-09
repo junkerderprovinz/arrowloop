@@ -743,6 +743,9 @@ func whyFailed(ends Ends, suspects []touch, what, ordinary string, err error) pl
 		// so no side is known.
 		return plan.Because("heldOpenDuring", "what", what, "error", err.Error())
 	}
+	if cloudOnly(err) {
+		return plan.Because("cloudOnly", "what", what, "error", err.Error())
+	}
 	return plan.Because(ordinary, "what", what, "error", err.Error())
 }
 
