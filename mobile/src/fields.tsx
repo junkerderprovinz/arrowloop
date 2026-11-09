@@ -2,6 +2,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { entries } from "../../web/src/lib/lines";
+import { timeOfDay } from "./clock";
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { radiusFor, space, text, TOUCH } from "./theme";
@@ -229,6 +230,7 @@ export function TimeField({
   onChange: (next: string) => void;
 }) {
   const { p, corners } = useTheme();
+  const { lang } = useT();
   const [open, setOpen] = useState(false);
   const { hour, minute } = readTime(value);
 
@@ -248,15 +250,15 @@ export function TimeField({
           { backgroundColor: p.surface2, ...corners.control, minHeight: TOUCH },
         ]}
       >
-        <Text style={[styles.timeText, { color: p.text }]}>{formatTime(hour, minute)}</Text>
+        <Text style={[styles.timeText, { color: p.text }]}>{timeOfDay(hour, minute, lang)}</Text>
       </Press>
       {open ? (
         <DateTimePicker
           // The picker takes a Date; only its hour and minute are read back.
+          // Without is24Hour it follows the phone's clock setting.
           value={dateAt(hour, minute)}
           mode="time"
           display="clock"
-          is24Hour
           onChange={(event, picked) => {
             // Android reports a cancel as an event type, not as a missing date.
             setOpen(false);

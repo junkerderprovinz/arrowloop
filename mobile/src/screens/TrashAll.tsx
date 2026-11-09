@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { api, type Job, type TrashItem, type TrashSide } from "../api";
+import { dated } from "../clock";
 import { useT } from "../i18n";
 import { jobSides } from "../sides";
 import { bytes } from "../space";
@@ -142,7 +143,7 @@ export function TrashAll() {
                         }
                       >
                         <Mono>{item.path}</Mono>
-                        <Caption>{`${bytes(item.size)} · ${when(item.filed) ?? t("trash.unknownAge")}`}</Caption>
+                        <Caption>{`${bytes(item.size)} · ${item.filed ? dated(item.filed, lang) : t("trash.unknownAge")}`}</Caption>
                       </PickRow>
                     );
                   })}
@@ -221,12 +222,6 @@ export function TrashAll() {
       ) : null}
     </Floating>
   );
-}
-
-function when(stamp: string | null): string | null {
-  if (!stamp) return null;
-  const at = new Date(stamp);
-  return Number.isNaN(at.getTime()) ? null : at.toLocaleString();
 }
 
 const styles = StyleSheet.create({

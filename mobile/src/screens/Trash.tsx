@@ -2,6 +2,7 @@ import { useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { api, type Bin } from "../api";
+import { dated } from "../clock";
 import { useT } from "../i18n";
 import type { JobsStack } from "../nav";
 import { space } from "../theme";
@@ -14,7 +15,7 @@ import { bytes } from "../space";
  */
 export function Trash() {
   const route = useRoute<RouteProp<JobsStack, "Trash">>();
-  const { t } = useT();
+  const { t, lang } = useT();
   const { name: job, side, place } = route.params;
 
   const [bin, setBin] = useState<Bin | null>(null);
@@ -69,7 +70,7 @@ export function Trash() {
         return (
           <PickRow key={id} on={on} label={item.path} onPress={() => toggle(id)}>
             <Mono>{item.path}</Mono>
-            <Caption>{when(item.filed) ?? t("trash.unknownAge")}</Caption>
+            <Caption>{item.filed ? dated(item.filed, lang) : t("trash.unknownAge")}</Caption>
           </PickRow>
         );
       })}
@@ -102,12 +103,6 @@ export function Trash() {
       />
     </Page>
   );
-}
-
-function when(stamp: string | null): string | null {
-  if (!stamp) return null;
-  const at = new Date(stamp);
-  return Number.isNaN(at.getTime()) ? null : at.toLocaleString();
 }
 
 const styles = StyleSheet.create({
