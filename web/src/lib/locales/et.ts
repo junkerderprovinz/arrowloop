@@ -1421,8 +1421,6 @@ const et: Translations = {
   'autoBackup.folderPhoneHint': 'Jäta tühjaks, et hoida koopiaid rakenduse sees. Et need jääksid alles ka siis, kui rakendus eemaldatakse, vali kaust Download või Documents sees. Selleks vajab ArrowLoop juurdepääsu kõigile failidele.',
   'autoBackup.latest': 'Viimane varukoopia',
   'autoBackup.none': 'Veel pole',
-  'autoBackup.restore': 'Taasta',
-  'autoBackup.confirm': 'Kas asendada kõik tööd ja kõik seaded varukoopiaga, mis on tehtud {when}? See, mis sul praegu on, salvestatakse enne eraldi varukoopiana, nii et saad alati tagasi minna.',
   'autoBackup.failed': 'Viimast varukoopiat ei õnnestunud kirjutada: {error}. ArrowLoop proovib tunni aja pärast uuesti.',
   'new.change.autoBackup': 'ArrowLoop hoiab sinu eest koopiat kõigist töödest ja seadetest, kord päevas ja vahetult enne, kui import need asendab. Jaotises {title} näed viimast ja saad selle taastada ning valid ise, mitu alles hoida ja kuhu need lähevad.',
   'settings.pairing': 'Sidumine',

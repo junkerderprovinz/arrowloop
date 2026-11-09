@@ -1421,8 +1421,6 @@ const hu: Translations = {
   'autoBackup.folderPhoneHint': 'Hagyd üresen, és a másolatok az alkalmazáson belül maradnak. Ha azt szeretnéd, hogy az alkalmazás eltávolítása után is megmaradjanak, válassz egy mappát a Download vagy a Documents alatt. Ehhez az ArrowLoopnak hozzáférés kell az összes fájlhoz.',
   'autoBackup.latest': 'Legutóbbi mentés',
   'autoBackup.none': 'Még nincs',
-  'autoBackup.restore': 'Visszaállítás',
-  'autoBackup.confirm': 'Lecseréled az összes feladatot és az összes beállítást arra a mentésre, amely ekkor készült: {when}? Ami most megvan, előbb külön mentésként eltárolódik, így bármikor visszatérhetsz.',
   'autoBackup.failed': 'A legutóbbi mentést nem sikerült kiírni: {error}. Az ArrowLoop egy óra múlva újra megpróbálja.',
   'new.change.autoBackup': 'Az ArrowLoop naponta egyszer, és közvetlenül azelőtt, hogy egy importálás lecserélné őket, másolatot készít neked minden feladatról és beállításról. A beállítások {title} részében látod a legutóbbit, és vissza is állíthatod, ott választod ki azt is, hány maradjon meg és hová kerüljenek.',
   'settings.pairing': 'Párosítás',

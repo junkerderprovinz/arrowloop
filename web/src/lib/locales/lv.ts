@@ -1421,8 +1421,6 @@ const lv: Translations = {
   'autoBackup.folderPhoneHint': 'Atstāj tukšu, un kopijas paliks lietotnē. Lai tās saglabātos arī pēc lietotnes noņemšanas, izvēlies mapi, kas atrodas Download vai Documents. Tam ArrowLoop vajag piekļuvi visiem failiem.',
   'autoBackup.latest': 'Jaunākais dublējums',
   'autoBackup.none': 'Vēl nav',
-  'autoBackup.restore': 'Atjaunot',
-  'autoBackup.confirm': 'Aizstāt visus uzdevumus un visus iestatījumus ar dublējumu no {when}? Tas, kas tev ir tagad, vispirms tiek saglabāts kā atsevišķs dublējums, tāpēc vienmēr vari atgriezties.',
   'autoBackup.failed': 'Pēdējo dublējumu neizdevās ierakstīt: {error}. ArrowLoop mēģinās vēlreiz pēc stundas.',
   'new.change.autoBackup': 'ArrowLoop pats saglabā visu uzdevumu un iestatījumu kopiju reizi dienā un tieši pirms importēšana tos aizstāj. Sadaļā {title} redzi jaunāko un vari to atjaunot, un tur arī izvēlies, cik daudz glabāt un kur tās likt.',
   'settings.pairing': 'Pārošana',

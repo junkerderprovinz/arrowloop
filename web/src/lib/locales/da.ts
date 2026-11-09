@@ -1421,8 +1421,6 @@ const da: Translations = {
   'autoBackup.folderPhoneHint': 'Lad feltet være tomt for at gemme kopierne inde i appen. Vil du beholde dem, selv hvis appen fjernes, så vælg en mappe i Download eller Documents. Det kræver, at ArrowLoop får adgang til alle filer.',
   'autoBackup.latest': 'Seneste kopi',
   'autoBackup.none': 'Ingen endnu',
-  'autoBackup.restore': 'Gendan',
-  'autoBackup.confirm': 'Erstat alle job og alle indstillinger med kopien fra {when}? Det, du har nu, gemmes først som en kopi for sig, så du altid kan gå tilbage.',
   'autoBackup.failed': 'Den seneste sikkerhedskopi kunne ikke skrives: {error}. ArrowLoop prøver igen om en time.',
   'new.change.autoBackup': 'ArrowLoop gemmer en kopi af alle job og indstillinger for dig, én gang om dagen og lige før en import erstatter dem. Under {title} ser du den seneste og kan hente den tilbage, og du vælger selv, hvor mange der gemmes, og hvor de ligger.',
   'settings.pairing': 'Parring',

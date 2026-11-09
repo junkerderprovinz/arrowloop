@@ -1421,8 +1421,6 @@ const id: Translations = {
   'autoBackup.folderPhoneHint': 'Biarkan kosong untuk menyimpan salinan di dalam aplikasi. Agar salinan tetap ada meski aplikasi dihapus, pilih folder di Download atau Documents. Untuk itu ArrowLoop perlu akses ke semua berkas.',
   'autoBackup.latest': 'Cadangan terbaru',
   'autoBackup.none': 'Belum ada',
-  'autoBackup.restore': 'Pulihkan',
-  'autoBackup.confirm': 'Ganti semua tugas dan semua pengaturan dengan cadangan dari {when}? Yang Anda punya sekarang disimpan dulu sebagai cadangan tersendiri, jadi Anda selalu bisa kembali.',
   'autoBackup.failed': 'Cadangan terakhir tidak bisa ditulis: {error}. ArrowLoop mencoba lagi dalam satu jam.',
   'new.change.autoBackup': 'ArrowLoop membuat salinan semua tugas dan pengaturan untuk Anda, sekali sehari dan tepat sebelum impor menggantinya. Di {title} Anda bisa melihat yang terbaru dan memulihkannya, dan di sana juga Anda memilih berapa banyak yang disimpan dan ke mana salinan itu disimpan.',
   'settings.pairing': 'Pemasangan',

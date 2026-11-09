@@ -158,6 +158,8 @@ const RULES: Rule[] = [
   [/\.options$|\.more$/i, 'IconMore'],
   // Picks one of the shares the computer is connected to, as a folder.
   [/pickShare/i, 'IconFolder'],
+  // Opens the folder picker where a field holds a folder on this machine.
+  [/^pick\.title$/, 'IconFolder'],
 
   // Vaguest last.
   [/settings|config|engine|backup/i, 'IconGear'],

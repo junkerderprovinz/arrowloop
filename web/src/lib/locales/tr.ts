@@ -1421,8 +1421,6 @@ const tr: Translations = {
   'autoBackup.folderPhoneHint': 'Boş bırakırsan kopyalar uygulamanın içinde kalır. Uygulama kaldırılsa bile kalsınlar istiyorsan Download ya da Documents içinde bir klasör seç. ArrowLoop\'un bunun için tüm dosyalara erişmesi gerekir.',
   'autoBackup.latest': 'Son yedek',
   'autoBackup.none': 'Henüz yok',
-  'autoBackup.restore': 'Geri yükle',
-  'autoBackup.confirm': 'Bütün işler ve bütün ayarlar {when} tarihli yedekle değiştirilsin mi? Şu an elindeki her şey önce ayrı bir yedek olarak saklanır, yani her zaman geri dönebilirsin.',
   'autoBackup.failed': 'Son yedek yazılamadı: {error}. ArrowLoop bir saat sonra yeniden dener.',
   'new.change.autoBackup': 'ArrowLoop bütün işlerin ve ayarların bir kopyasını senin için tutar, günde bir kez ve bir içe aktarma onları değiştirmeden hemen önce. {title} altında en yenisini görür ve geri yükleyebilirsin, kaç tane tutulacağını ve nereye gideceklerini de sen seçersin.',
   'settings.pairing': 'Eşleştirme',

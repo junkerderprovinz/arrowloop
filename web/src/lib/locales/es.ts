@@ -1421,8 +1421,6 @@ const es: Translations = {
   'autoBackup.folderPhoneHint': 'Déjalo vacío para guardar las copias dentro de la aplicación. Para conservarlas aunque se desinstale la aplicación, elige una carpeta en Download o Documents. Para eso ArrowLoop necesita acceso a todos los archivos.',
   'autoBackup.latest': 'Última copia',
   'autoBackup.none': 'Ninguna todavía',
-  'autoBackup.restore': 'Restaurar',
-  'autoBackup.confirm': '¿Sustituir todas las tareas y todos los ajustes por la copia del {when}? Lo que tienes ahora se guarda antes como una copia más, así que siempre puedes volver atrás.',
   'autoBackup.failed': 'No se pudo escribir la última copia: {error}. ArrowLoop lo intentará de nuevo dentro de una hora.',
   'new.change.autoBackup': 'ArrowLoop guarda por ti una copia de todas las tareas y todos los ajustes, una vez al día y justo antes de que una importación los sustituya. En {title} ves la más reciente y puedes recuperarla, y eliges cuántas conservar y dónde se guardan.',
   'settings.pairing': 'Emparejamiento',

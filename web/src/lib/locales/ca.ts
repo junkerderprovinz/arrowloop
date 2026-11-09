@@ -1421,8 +1421,6 @@ const ca: Translations = {
   'autoBackup.folderPhoneHint': 'Deixa-ho buit per guardar les còpies dins de l\'aplicació. Per conservar-les encara que es desinstal·li l\'aplicació, tria una carpeta a Download o Documents. Per això ArrowLoop necessita accés a tots els fitxers.',
   'autoBackup.latest': 'Última còpia',
   'autoBackup.none': 'Encara cap',
-  'autoBackup.restore': 'Restaura',
-  'autoBackup.confirm': 'Vols substituir totes les tasques i tots els paràmetres per la còpia del {when}? El que tens ara es desa abans com una còpia més, així que sempre hi pots tornar.',
   'autoBackup.failed': 'No s\'ha pogut escriure l\'última còpia: {error}. ArrowLoop ho tornarà a provar d\'aquí a una hora.',
   'new.change.autoBackup': 'ArrowLoop desa per tu una còpia de totes les tasques i tots els paràmetres, un cop al dia i just abans que una importació els substitueixi. A {title} veus la més recent i la pots recuperar, i tries quantes se\'n conserven i on es desen.',
   'settings.pairing': 'Aparellament',

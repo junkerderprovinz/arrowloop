@@ -1421,8 +1421,6 @@ const it: Translations = {
   'autoBackup.folderPhoneHint': 'Lasciala vuota per tenere le copie dentro l\'app. Per conservarle anche se l\'app viene rimossa, scegli una cartella in Download o Documents. Per questo ArrowLoop ha bisogno dell\'accesso a tutti i file.',
   'autoBackup.latest': 'Ultimo backup',
   'autoBackup.none': 'Ancora nessuno',
-  'autoBackup.restore': 'Ripristina',
-  'autoBackup.confirm': 'Sostituire tutti i lavori e tutte le impostazioni con il backup del {when}? Quello che hai adesso viene prima salvato come backup a sé, così puoi sempre tornare indietro.',
   'autoBackup.failed': 'Non è stato possibile scrivere l\'ultimo backup: {error}. ArrowLoop riprova tra un\'ora.',
   'new.change.autoBackup': 'ArrowLoop fa per te una copia di tutti i lavori e di tutte le impostazioni, una volta al giorno e subito prima che un\'importazione li sostituisca. In {title} vedi la più recente e puoi ripristinarla, e lì scegli anche quante tenerne e dove metterle.',
   'settings.pairing': 'Associazione',

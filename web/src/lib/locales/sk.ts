@@ -1421,8 +1421,6 @@ const sk: Translations = {
   'autoBackup.folderPhoneHint': 'Nechaj prázdne a kópie zostanú v aplikácii. Aby zostali aj po odstránení aplikácie, vyber priečinok v Download alebo Documents. ArrowLoop na to potrebuje prístup ku všetkým súborom.',
   'autoBackup.latest': 'Posledná záloha',
   'autoBackup.none': 'Zatiaľ žiadna',
-  'autoBackup.restore': 'Obnoviť',
-  'autoBackup.confirm': 'Nahradiť všetky úlohy a všetky nastavenia zálohou z {when}? To, čo máš teraz, sa najprv uloží ako samostatná záloha, takže sa vždy môžeš vrátiť.',
   'autoBackup.failed': 'Poslednú zálohu sa nepodarilo zapísať: {error}. ArrowLoop to skúsi znova o hodinu.',
   'new.change.autoBackup': 'ArrowLoop za teba uchováva kópiu všetkých úloh a nastavení, raz denne a tesne predtým, ako ich nahradí import. V časti {title} vidíš najnovšiu a môžeš ju vrátiť a tiež si vyberieš, koľko ich nechať a kam majú ísť.',
   'settings.pairing': 'Párovanie',

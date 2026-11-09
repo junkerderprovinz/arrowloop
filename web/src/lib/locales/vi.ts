@@ -1421,8 +1421,6 @@ const vi: Translations = {
   'autoBackup.folderPhoneHint': 'Để trống để giữ các bản sao trong ứng dụng. Muốn giữ chúng cả khi gỡ ứng dụng, hãy chọn một thư mục trong Download hoặc Documents. Khi đó ArrowLoop cần quyền truy cập mọi tệp.',
   'autoBackup.latest': 'Bản sao lưu gần nhất',
   'autoBackup.none': 'Chưa có',
-  'autoBackup.restore': 'Khôi phục',
-  'autoBackup.confirm': 'Thay toàn bộ công việc và cài đặt bằng bản sao lưu lúc {when}? Những gì bạn đang có sẽ được lưu thành một bản sao lưu riêng trước, nên bạn luôn có thể quay lại.',
   'autoBackup.failed': 'Không ghi được bản sao lưu gần nhất: {error}. ArrowLoop sẽ thử lại sau một giờ.',
   'new.change.autoBackup': 'ArrowLoop tự giữ một bản sao của mọi công việc và cài đặt cho bạn, mỗi ngày một lần và ngay trước khi một lần nhập thay thế chúng. Trong {title} bạn thấy bản gần nhất và có thể khôi phục nó, đồng thời chọn giữ bao nhiêu bản và lưu ở đâu.',
   'settings.pairing': 'Ghép nối',

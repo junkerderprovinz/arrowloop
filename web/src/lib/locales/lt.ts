@@ -1421,8 +1421,6 @@ const lt: Translations = {
   'autoBackup.folderPhoneHint': 'Palik tuščią, ir kopijos liks programėlėje. Kad jos išliktų net pašalinus programėlę, pasirink aplanką, esantį Download arba Documents. Tam ArrowLoop reikia prieigos prie visų failų.',
   'autoBackup.latest': 'Naujausia kopija',
   'autoBackup.none': 'Kol kas nėra',
-  'autoBackup.restore': 'Atkurti',
-  'autoBackup.confirm': 'Pakeisti visas užduotis ir visus nustatymus kopija iš {when}? Tai, ką turi dabar, pirma išsaugoma kaip atskira kopija, tad visada galėsi grįžti.',
   'autoBackup.failed': 'Paskutinės kopijos nepavyko įrašyti: {error}. ArrowLoop bandys dar kartą po valandos.',
   'new.change.autoBackup': 'ArrowLoop pats saugo visų užduočių ir nustatymų kopiją kartą per dieną ir prieš pat importą, kuris juos pakeičia. Skiltyje {title} matai naujausią ir gali ją atkurti, o ten pat renkiesi, kiek kopijų laikyti ir kur jas dėti.',
   'settings.pairing': 'Susiejimas',

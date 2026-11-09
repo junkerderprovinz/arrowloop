@@ -1062,13 +1062,6 @@ export const api = {
   /** Where the automatic backups go, which are there and how the last one went. */
   autoBackups: () => request<AutoBackups>('/api/config/backups'),
 
-  /** One automatic backup as text, the same thing rawConfig hands out, for replaceConfig. */
-  autoBackup: async (name: string): Promise<string> => {
-    const res = await fetch(`/api/config/backups/${encodeURIComponent(name)}`)
-    if (!res.ok) throw await failure(res)
-    return res.text()
-  },
-
   /** Put a saved configuration back. Validated by the same rules a hand-written file is. */
   replaceConfig: (doc: string) =>
     request<{ jobs: number }>('/api/config/raw', {

@@ -1,30 +1,24 @@
 import { useEffect, useState } from 'react'
 
-import { ConfirmWindow } from '../../components/ConfirmWindow'
+import { FolderPicker } from '../../components/FolderPicker'
 import { FieldRow, NumberField, Text } from '../../components/Field'
-import { IconImport } from '../../components/glyphs'
+import { IconFolder } from '../../components/glyphs'
 import { Since } from '../../components/Since'
 import { TimePicker } from '../../components/TimePicker'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api, type AutoBackups, type Settings } from '../../lib/api'
-import { errorText } from '../../lib/errorText'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { Reading, useEngineSettings } from './engineSettings'
 import { SettingsRow } from './rows'
 
-/**
- * The copies of the setup the engine keeps on its own, and the newest of them
- * put back through the same import a file from Export settings goes through.
- */
+/** The copies of the setup the engine keeps on its own. */
 export function AutoBackupCard({ hueIndex }: { hueIndex: number }) {
-  const { t, lang } = useT()
+  const { t } = useT()
   const { loaded, draft, patch, error } = useEngineSettings()
   const [state, setState] = useState<AutoBackups | null>(null)
-  const [asking, setAsking] = useState(false)
-  const [restoring, setRestoring] = useState(false)
-  const [refused, setRefused] = useState<string | null>(null)
+  const [picking, setPicking] = useState(false)
 
   // Read again after every save, since a new folder or a smaller count
   // changes what is there.
@@ -39,18 +33,6 @@ export function AutoBackupCard({ hueIndex }: { hueIndex: number }) {
   const on = !auto.off
   const latest = state?.files[0]
   const failed = state?.last?.error
-
-  function restore(name: string) {
-    setRestoring(true)
-    setRefused(null)
-    api
-      .autoBackup(name)
-      .then((doc) => api.replaceConfig(doc))
-      // Everything the page holds was read from the replaced configuration.
-      .then(() => window.location.reload())
-      .catch((e: Error) => setRefused(errorText(t, e)))
-      .finally(() => setRestoring(false))
-  }
 
   return (
     <div data-new="auto-backup">
@@ -80,57 +62,33 @@ export function AutoBackupCard({ hueIndex }: { hueIndex: number }) {
                 onChange={(keep) => set({ keep })}
               />
             </SettingsRow>
-            <FieldRow label={t('autoBackup.folder')} hint={t('autoBackup.folderHint')}>
-              <Text
-                value={auto.folder ?? ''}
-                onChange={(folder) => set({ folder })}
-                placeholder={auto.folder ? '' : state?.folder}
-                label={t('autoBackup.folder')}
-                mono
+            <FieldRow label={t('autoBackup.folder')} hint={t('autoBackup.folderHint')} width="w-[31rem]">
+              <span className="flex w-full flex-wrap items-center gap-2 [&>input]:min-w-[12rem] [&>input]:flex-1">
+                <Text
+                  value={auto.folder ?? ''}
+                  onChange={(folder) => set({ folder })}
+                  placeholder={auto.folder ? '' : state?.folder}
+                  label={t('autoBackup.folder')}
+                  mono
+                />
+                <Button label={t('pick.title')} labelKey="pick.title" glyph={<IconFolder />} onClick={() => setPicking(true)} />
+              </span>
+              <FolderPicker
+                open={picking}
+                start={auto.folder || state?.folder}
+                onClose={() => setPicking(false)}
+                onPick={(folder) => {
+                  set({ folder })
+                  setPicking(false)
+                }}
               />
             </FieldRow>
           </>
         )}
         <SettingsRow label={t('autoBackup.latest')}>
-          <span className="flex items-center gap-3">
-            <span className="text-body text-carbon-textSub">
-              {latest ? <Since when={latest.made} /> : t('autoBackup.none')}
-            </span>
-            {latest && (
-              <Button
-                label={t('autoBackup.restore')}
-                labelKey="autoBackup.restore"
-                glyph={<IconImport />}
-                busy={restoring}
-                disabled={restoring}
-                onClick={() => setAsking(true)}
-              />
-            )}
-          </span>
+          <span className="text-body text-carbon-textSub">{latest ? <Since when={latest.made} /> : t('autoBackup.none')}</span>
         </SettingsRow>
         {failed && <p className="text-subline text-statusFail">{t('autoBackup.failed', { error: failed })}</p>}
-        {refused && <p className="glim-shake text-subline text-statusFail">{refused}</p>}
-
-        {asking && latest && (
-          <ConfirmWindow
-            title={t('autoBackup.restore')}
-            message={
-              // The engine keeps the setup it replaces only while backups are on.
-              on
-                ? t('autoBackup.confirm', { when: new Date(latest.made).toLocaleString(lang) })
-                : t('backup.confirm', { file: latest.name })
-            }
-            confirmLabel={t('autoBackup.restore')}
-            confirmLabelKey="autoBackup.restore"
-            confirmGlyph={<IconImport />}
-            cancelLabel={t('confirm.cancel')}
-            onCancel={() => setAsking(false)}
-            onConfirm={() => {
-              setAsking(false)
-              restore(latest.name)
-            }}
-          />
-        )}
       </Card>
     </div>
   )

@@ -1421,8 +1421,6 @@ const ro: Translations = {
   'autoBackup.folderPhoneHint': 'Lasă gol ca să păstrezi copiile în aplicație. Ca să rămână chiar dacă aplicația e ștearsă, alege un dosar din Download sau Documents. Pentru asta, ArrowLoop are nevoie de acces la toate fișierele.',
   'autoBackup.latest': 'Ultima copie',
   'autoBackup.none': 'Încă niciuna',
-  'autoBackup.restore': 'Restaurează',
-  'autoBackup.confirm': 'Înlocuiești toate sarcinile și toate setările cu copia din {when}? Ce ai acum e păstrat mai întâi ca o copie separată, așa că poți reveni oricând.',
   'autoBackup.failed': 'Ultima copie nu a putut fi scrisă: {error}. ArrowLoop încearcă din nou peste o oră.',
   'new.change.autoBackup': 'ArrowLoop păstrează pentru tine o copie a tuturor sarcinilor și setărilor, o dată pe zi și chiar înainte ca un import să le înlocuiască. În {title} vezi cea mai recentă și o poți readuce, iar tot acolo alegi câte păstrezi și unde ajung.',
   'settings.pairing': 'Împerechere',

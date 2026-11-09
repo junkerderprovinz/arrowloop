@@ -1421,8 +1421,6 @@ const he: Translations = {
   'autoBackup.folderPhoneHint': 'השאר ריק כדי לשמור את העותקים בתוך האפליקציה. כדי שיישארו גם אם האפליקציה תוסר, בחר תיקייה בתוך Download או Documents. לשם כך ArrowLoop צריך גישה לכל הקבצים.',
   'autoBackup.latest': 'הגיבוי האחרון',
   'autoBackup.none': 'עדיין אין',
-  'autoBackup.restore': 'שחזור',
-  'autoBackup.confirm': 'להחליף את כל המשימות ואת כל ההגדרות בגיבוי מ-{when}? מה שיש לך עכשיו נשמר קודם כגיבוי נפרד, כך שתמיד אפשר לחזור.',
   'autoBackup.failed': 'לא ניתן היה לכתוב את הגיבוי האחרון: {error}. ArrowLoop ינסה שוב בעוד שעה.',
   'new.change.autoBackup': 'ArrowLoop שומר בשבילך עותק של כל המשימות וכל ההגדרות, פעם ביום וממש לפני שייבוא מחליף אותן. תחת {title} אפשר לראות את האחרון ולשחזר אותו, ושם גם בוחרים כמה לשמור ולאן הם הולכים.',
   'settings.pairing': 'צימוד',

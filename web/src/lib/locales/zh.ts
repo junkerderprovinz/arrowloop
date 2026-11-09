@@ -1421,8 +1421,6 @@ const zh: Translations = {
   'autoBackup.folderPhoneHint': '留空则把副本保存在应用内。如果想在卸载应用后仍保留它们，请选择 Download 或 Documents 中的文件夹。为此 ArrowLoop 需要访问所有文件的权限。',
   'autoBackup.latest': '最近一次备份',
   'autoBackup.none': '暂无',
-  'autoBackup.restore': '恢复',
-  'autoBackup.confirm': '用 {when} 的备份替换全部任务和全部设置吗？当前的内容会先单独存为一份备份，所以你随时都能回退。',
   'autoBackup.failed': '上一次备份未能写入：{error}。ArrowLoop 会在一小时后重试。',
   'new.change.autoBackup': 'ArrowLoop 会替你保存全部任务和设置的副本，每天一次，导入替换它们之前也会先存一份。在{title}里可以看到最近一份并将其恢复，还能选择保留多少份、存放在哪里。',
   'settings.pairing': '配对',

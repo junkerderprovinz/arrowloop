@@ -1421,8 +1421,6 @@ const sv: Translations = {
   'autoBackup.folderPhoneHint': 'Lämna tomt så stannar kopiorna i appen. Vill du ha kvar dem även om appen tas bort, välj en mapp i Download eller Documents. Då behöver ArrowLoop åtkomst till alla filer.',
   'autoBackup.latest': 'Senaste kopian',
   'autoBackup.none': 'Inga än',
-  'autoBackup.restore': 'Återställ',
-  'autoBackup.confirm': 'Ersätta alla jobb och alla inställningar med kopian från {when}? Det du har nu sparas först som en egen kopia, så du kan alltid gå tillbaka.',
   'autoBackup.failed': 'Den senaste kopian kunde inte skrivas: {error}. ArrowLoop försöker igen om en timme.',
   'new.change.autoBackup': 'ArrowLoop sparar en kopia av alla jobb och inställningar åt dig, en gång om dagen och precis innan en import ersätter dem. Under {title} ser du den senaste och kan lägga tillbaka den, och du väljer hur många som sparas och var de hamnar.',
   'settings.pairing': 'Parkoppling',

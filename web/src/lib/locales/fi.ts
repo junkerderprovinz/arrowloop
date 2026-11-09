@@ -1421,8 +1421,6 @@ const fi: Translations = {
   'autoBackup.folderPhoneHint': 'Jätä tyhjäksi, niin kopiot pysyvät sovelluksen sisällä. Jos haluat niiden säilyvän silloinkin, kun sovellus poistetaan, valitse kansio Download- tai Documents-kansiosta. Siihen ArrowLoop tarvitsee pääsyn kaikkiin tiedostoihin.',
   'autoBackup.latest': 'Uusin varmuuskopio',
   'autoBackup.none': 'Ei vielä yhtään',
-  'autoBackup.restore': 'Palauta',
-  'autoBackup.confirm': 'Korvataanko kaikki työt ja kaikki asetukset varmuuskopiolla, joka on tehty {when}? Nykyinen tilanne tallennetaan ensin omaksi varmuuskopiokseen, joten pääset aina takaisin.',
   'autoBackup.failed': 'Viimeisintä varmuuskopiota ei voitu kirjoittaa: {error}. ArrowLoop yrittää uudelleen tunnin kuluttua.',
   'new.change.autoBackup': 'ArrowLoop ottaa puolestasi kopion kaikista töistä ja asetuksista kerran päivässä ja juuri ennen kuin tuonti korvaa ne. Kohdassa {title} näet uusimman ja voit palauttaa sen, ja siellä valitset myös, kuinka monta säilytetään ja minne ne menevät.',
   'settings.pairing': 'Pariliitos',

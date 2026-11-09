@@ -589,7 +589,8 @@ whatever the day's copy did. If that copy fails, the import still goes ahead
 and the card shows the failure.
 
 **Days between backups**, **Time of day**, **Backups to keep** and **Backup
-folder** set how often, when, how many and where. The days are counted on the
+folder** set how often, when, how many and where. **Choose a folder** beside the
+folder opens the folder picker on the machine the engine runs on. The days are counted on the
 calendar and the time is read off the clock of the machine the engine runs on,
 the same way the jobs' schedules read it, so a backup stays at its time when
 the clocks change for summer. A computer or phone that is off or asleep at that
@@ -604,8 +605,8 @@ Each copy is the file byte for byte, the same thing **Back up all jobs and all
 settings** downloads, so it carries the notification secrets as the export does
 and is written readable by the account running ArrowLoop alone. The password and
 the targets' own settings in `rclone.conf` are not part of it. **Latest backup**
-shows when the newest one was made, and **Restore** puts it back through the
-same import, after asking. The phone app has the same card under **Settings**.
+shows when the newest one was made. To put a copy back, choose it with **Import
+settings**, which asks first like any import. The phone app has the same card under **Settings**.
 On the phone the copies stay inside the app unless you choose a folder in
 Download or Documents, which needs access to all files.
 

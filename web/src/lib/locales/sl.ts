@@ -1421,8 +1421,6 @@ const sl: Translations = {
   'autoBackup.folderPhoneHint': 'Pusti prazno in kopije ostanejo v aplikaciji. Če želiš, da ostanejo tudi po odstranitvi aplikacije, izberi mapo v Download ali Documents. ArrowLoop za to potrebuje dostop do vseh datotek.',
   'autoBackup.latest': 'Zadnja kopija',
   'autoBackup.none': 'Še nobene',
-  'autoBackup.restore': 'Obnovi',
-  'autoBackup.confirm': 'Zamenjam vsa opravila in vse nastavitve s kopijo z dne {when}? Kar imaš zdaj, se najprej shrani kot lastna kopija, tako da se lahko vedno vrneš.',
   'autoBackup.failed': 'Zadnje kopije ni bilo mogoče zapisati: {error}. ArrowLoop poskusi znova čez eno uro.',
   'new.change.autoBackup': 'ArrowLoop namesto tebe hrani kopijo vseh opravil in nastavitev, enkrat na dan in tik preden jih zamenja uvoz. Pod {title} vidiš zadnjo in jo lahko vrneš, izbereš pa tudi, koliko jih hraniš in kam gredo.',
   'settings.pairing': 'Seznanjanje',

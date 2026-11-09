@@ -1421,8 +1421,6 @@ const ko: Translations = {
   'autoBackup.folderPhoneHint': '비워 두면 사본이 앱 안에 보관됩니다. 앱을 지워도 남겨 두려면 Download나 Documents 안의 폴더를 고르세요. 그러려면 ArrowLoop에 모든 파일 접근 권한이 필요합니다.',
   'autoBackup.latest': '최근 백업',
   'autoBackup.none': '아직 없음',
-  'autoBackup.restore': '복원',
-  'autoBackup.confirm': '모든 작업과 모든 설정을 {when}의 백업으로 바꿀까요? 지금 상태는 먼저 별도의 백업으로 남겨 두므로 언제든 되돌릴 수 있습니다.',
   'autoBackup.failed': '마지막 백업을 쓰지 못했습니다: {error}. ArrowLoop이 한 시간 뒤에 다시 시도합니다.',
   'new.change.autoBackup': 'ArrowLoop이 하루에 한 번, 그리고 가져오기로 모두 바뀌기 직전에 모든 작업과 설정의 사본을 남겨 둡니다. {title}에서 최근 사본을 보고 되돌릴 수 있으며, 몇 개를 보관할지와 어디에 둘지도 고를 수 있습니다.',
   'settings.pairing': '페어링',

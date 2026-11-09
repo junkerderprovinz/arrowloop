@@ -1421,8 +1421,6 @@ const is: Translations = {
   'autoBackup.folderPhoneHint': 'Skildu eftir autt til að geyma afritin inni í forritinu. Til að halda þeim þótt forritið sé fjarlægt skaltu velja möppu í Download eða Documents. Til þess þarf ArrowLoop aðgang að öllum skrám.',
   'autoBackup.latest': 'Nýjasta afrit',
   'autoBackup.none': 'Ekkert enn',
-  'autoBackup.restore': 'Endurheimta',
-  'autoBackup.confirm': 'Skipta öllum verkum og öllum stillingum út fyrir afritið frá {when}? Það sem þú ert með núna er fyrst geymt sem sérstakt afrit, svo þú getur alltaf farið til baka.',
   'autoBackup.failed': 'Ekki tókst að skrifa síðasta afrit: {error}. ArrowLoop reynir aftur eftir klukkustund.',
   'new.change.autoBackup': 'ArrowLoop tekur afrit af öllum verkum og stillingum fyrir þig einu sinni á dag og rétt áður en innflutningur kemur í stað þeirra. Undir {title} sérðu það nýjasta og getur sett það aftur inn, og þar velurðu líka hve mörg eru geymd og hvert þau fara.',
   'settings.pairing': 'Pörun',

@@ -1421,8 +1421,6 @@ const eu: Translations = {
   'autoBackup.folderPhoneHint': 'Utzi hutsik kopiak aplikazioaren barruan gordetzeko. Aplikazioa kentzen bada ere gorde daitezen, aukeratu karpeta bat Download edo Documents barruan. Horretarako, ArrowLoop-ek fitxategi guztietarako sarbidea behar du.',
   'autoBackup.latest': 'Azken babeskopia',
   'autoBackup.none': 'Bat ere ez oraindik',
-  'autoBackup.restore': 'Leheneratu',
-  'autoBackup.confirm': 'Lan guztiak eta ezarpen guztiak {when} datako babeskopiarekin ordeztu? Orain duzuna babeskopia gisa gordeko da lehenik, beraz beti itzul zaitezke atzera.',
   'autoBackup.failed': 'Ezin izan da azken babeskopia idatzi: {error}. ArrowLoop-ek ordubete barru saiatuko da berriro.',
   'new.change.autoBackup': 'ArrowLoop-ek lan eta ezarpen guztien kopia bat gordetzen du zuretzat, egunean behin eta inportazio batek ordeztu baino lehen. {title} atalean azkena ikusten duzu eta leheneratu dezakezu, eta zuk aukeratzen duzu zenbat gorde eta non.',
   'settings.pairing': 'Parekatzea',

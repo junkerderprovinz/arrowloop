@@ -1421,8 +1421,6 @@ const ja: Translations = {
   'autoBackup.folderPhoneHint': '空のままにすると、コピーはアプリの中に保存されます。アプリを削除しても残しておきたい場合は、Download か Documents の中のフォルダーを選んでください。そのためには ArrowLoop にすべてのファイルへのアクセスが必要です。',
   'autoBackup.latest': '最新のバックアップ',
   'autoBackup.none': 'まだありません',
-  'autoBackup.restore': '復元',
-  'autoBackup.confirm': 'すべてのジョブとすべての設定を {when} のバックアップで置き換えますか。今の状態は先にバックアップとして残るので、いつでも元に戻せます。',
   'autoBackup.failed': '前回のバックアップを書き込めませんでした: {error}。ArrowLoop は 1 時間後にもう一度試します。',
   'new.change.autoBackup': 'ArrowLoop が 1 日 1 回、そしてインポートで置き換わる直前に、すべてのジョブと設定のコピーを自動で残します。{title} で最新のコピーを確認して元に戻せます。残す数や保存先もそこで選べます。',
   'settings.pairing': 'ペアリング',

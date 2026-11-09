@@ -8,8 +8,13 @@ const latest = { name: 'arrowloop-auto-20261107-120000.json', bytes: 120, made: 
 let state: AutoBackups
 let settings: Settings
 const saveSettings = vi.fn((s: Settings) => Promise.resolve({ ...settings, ...s }))
-const autoBackup = vi.fn((_name: string) => Promise.resolve('{"jobs":[]}'))
-const replaceConfig = vi.fn((_doc: string) => Promise.resolve({ jobs: 0 }))
+const browse = vi.fn((path?: string) =>
+  Promise.resolve(
+    path === '/data'
+      ? { path: '/data', parent: '', entries: [{ name: 'copies', path: '/data/copies' }] }
+      : { path: '', parent: '', entries: [{ name: '/data', path: '/data' }] },
+  ),
+)
 
 vi.mock('../../lib/api', async (actual) => ({
   ...(await actual<typeof import('../../lib/api')>()),
@@ -17,8 +22,7 @@ vi.mock('../../lib/api', async (actual) => ({
     settings: () => Promise.resolve(settings),
     saveSettings: (s: Settings) => saveSettings(s),
     autoBackups: () => Promise.resolve(state),
-    autoBackup: (name: string) => autoBackup(name),
-    replaceConfig: (doc: string) => replaceConfig(doc),
+    browse: (path?: string) => browse(path),
   },
 }))
 vi.mock('../../lib/toast', () => ({ useToast: () => () => {} }))
@@ -29,8 +33,7 @@ beforeEach(() => {
   settings = {}
   state = { on: true, folder: '/config/backups', files: [latest], last: null }
   saveSettings.mockClear()
-  autoBackup.mockClear()
-  replaceConfig.mockClear()
+  browse.mockClear()
 })
 afterEach(cleanup)
 
@@ -83,26 +86,33 @@ describe('the automatic backups card', () => {
     expect(when).toBeTruthy()
   })
 
-  it('puts the latest backup back through the import, after asking', async () => {
+  it('picks the folder in the folder picker', async () => {
     render(<AutoBackupCard hueIndex={0} />)
     await act(async () => {
-      fireEvent.click(await screen.findByRole('button', { name: 'Restore' }))
+      fireEvent.click(await screen.findByRole('button', { name: 'Choose a folder' }))
     })
-    expect(replaceConfig).not.toHaveBeenCalled()
-    const dialog = screen.getByRole('dialog')
-    expect(dialog.textContent).toContain('kept as a backup of its own first')
+    const picker = await screen.findByRole('dialog', { name: 'Choose a folder' })
+    await waitFor(() => expect(browse).toHaveBeenCalledWith('/config/backups'))
     await act(async () => {
-      fireEvent.click(screen.getAllByRole('button', { name: 'Restore' }).at(-1)!)
+      fireEvent.click(await within(picker).findByRole('button', { name: /\/data/ }))
     })
-    await waitFor(() => expect(replaceConfig).toHaveBeenCalledWith('{"jobs":[]}'))
-    expect(autoBackup).toHaveBeenCalledWith(latest.name)
+    await within(picker).findByText('copies')
+    await act(async () => {
+      fireEvent.click(within(picker).getByRole('button', { name: 'Use this folder' }))
+    })
+    await waitFor(() => expect(saveSettings).toHaveBeenCalledWith({ autoBackup: { folder: '/data' } }), { timeout: 2000 })
+  })
+
+  it('offers no restore, since Import settings puts a copy back', async () => {
+    render(<AutoBackupCard hueIndex={0} />)
+    await screen.findByTitle(new Date(latest.made).toLocaleString('en'))
+    expect(screen.queryByRole('button', { name: 'Restore' })).toBeNull()
   })
 
   it('says so when there is no backup yet', async () => {
     state = { ...state, files: [] }
     render(<AutoBackupCard hueIndex={0} />)
     expect(await screen.findByText('None yet')).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'Restore' })).toBeNull()
   })
 
   it('tells when the last backup failed', async () => {

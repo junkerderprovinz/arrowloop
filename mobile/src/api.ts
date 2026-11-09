@@ -587,20 +587,6 @@ export const api = {
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
   /** Where the automatic backups go, which are there and how the last one went. */
   autoBackups: () => call<AutoBackups>("/api/config/backups"),
-  /**
-   * Puts an automatic backup back through the engine's import. The file goes
-   * back as the text it is, so keys this build does not know survive.
-   */
-  restoreAutoBackup: async (backup: string) => {
-    let response: Response;
-    try {
-      response = await fetch(`${ORIGIN}/api/config/backups/${name(backup)}`, { headers: await engineHeaders() });
-    } catch (cause) {
-      throw new EngineError(0, String(cause));
-    }
-    if (!response.ok) throw new EngineError(response.status, `HTTP ${response.status}`);
-    await call<{ jobs: number }>("/api/config/raw", { method: "PUT", body: await response.text() });
-  },
   /** What a FolderSync export or a luckyBackup profile would add, or which kind of file it is. Saves nothing. */
   checkImport: (file: string) =>
     call<ImportPlan>("/api/import/check", { method: "POST", body: JSON.stringify({ file }) }),

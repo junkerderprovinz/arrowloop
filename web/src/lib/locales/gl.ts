@@ -1421,8 +1421,6 @@ const gl: Translations = {
   'autoBackup.folderPhoneHint': 'Déixao baleiro para gardar as copias dentro da aplicación. Para que se conserven aínda que quites a aplicación, escolle un cartafol en Download ou Documents. Para iso ArrowLoop necesita acceso a todos os ficheiros.',
   'autoBackup.latest': 'Última copia',
   'autoBackup.none': 'Aínda ningunha',
-  'autoBackup.restore': 'Restaurar',
-  'autoBackup.confirm': 'Substituír todas as tarefas e todos os axustes pola copia do {when}? O que tes agora gárdase antes como copia propia, así que sempre podes volver atrás.',
   'autoBackup.failed': 'Non se puido escribir a última copia: {error}. ArrowLoop téntao de novo nunha hora.',
   'new.change.autoBackup': 'ArrowLoop garda por ti unha copia de todas as tarefas e axustes unha vez ao día e xusto antes de que unha importación os substitúa. En {title} ves a máis recente e podes recuperala, e alí tamén escolles cantas gardar e onde van.',
   'settings.pairing': 'Emparellamento',

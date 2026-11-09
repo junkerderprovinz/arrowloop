@@ -1421,8 +1421,6 @@ const nl: Translations = {
   'autoBackup.folderPhoneHint': 'Laat leeg om de kopieën in de app te bewaren. Wil je ze houden, ook als de app verwijderd wordt, kies dan een map in Download of Documents. Daarvoor heeft ArrowLoop toegang tot alle bestanden nodig.',
   'autoBackup.latest': 'Laatste back-up',
   'autoBackup.none': 'Nog geen',
-  'autoBackup.restore': 'Herstellen',
-  'autoBackup.confirm': 'Alle taken en alle instellingen vervangen door de back-up van {when}? Wat je nu hebt, wordt eerst zelf als back-up bewaard, dus je kunt altijd terug.',
   'autoBackup.failed': 'De laatste back-up kon niet worden geschreven: {error}. ArrowLoop probeert het over een uur opnieuw.',
   'new.change.autoBackup': 'ArrowLoop bewaart voor je een kopie van alle taken en instellingen, eens per dag en vlak voordat een import ze vervangt. Onder {title} zie je de laatste en kun je die terugzetten, en daar kies je ook hoeveel er blijven en waar ze komen.',
   'settings.pairing': 'Koppeling',

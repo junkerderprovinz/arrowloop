@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert } from "react-native";
 
 import { api, type AutoBackups } from "./api";
 import { Field, NumberField, TimeField } from "./fields";
+import { FolderPicker } from "./FolderPicker";
+import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import { useEngineSettings } from "./settings";
 import { Body, Button, Pair, Section, Toggle } from "./ui";
@@ -17,10 +18,7 @@ interface AutoBackup {
   folder?: string;
 }
 
-/**
- * The copies of the setup the engine keeps on its own, as on the web's
- * General tile, and the newest of them put back through the engine's import.
- */
+/** The copies of the setup the engine keeps on its own, as on the web's General tile. */
 export function AutoBackupSection({ hue }: { hue: number }) {
   const { t, lang } = useT();
   const { settings, update, error } = useEngineSettings(true);
@@ -28,9 +26,7 @@ export function AutoBackupSection({ hue }: { hue: number }) {
   // The folder is saved when the field is left, since the engine checks it
   // can write there and a half-typed path would be refused on the way.
   const [folder, setFolder] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [said, setSaid] = useState("");
-  const [restored, setRestored] = useState(0);
+  const [picking, setPicking] = useState(false);
 
   const auto = (settings?.autoBackup ?? {}) as AutoBackup;
   const on = !auto.off;
@@ -42,34 +38,6 @@ export function AutoBackupSection({ hue }: { hue: number }) {
   useEffect(read, [read, settings]);
 
   const latest = state?.files[0];
-
-  const restore = async (name: string) => {
-    setBusy(true);
-    setSaid("");
-    try {
-      await api.restoreAutoBackup(name);
-      setSaid(t("settings.imported"));
-      setRestored((n) => n + 1);
-      read();
-    } catch (e) {
-      setSaid((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  // Restoring replaces every job, so it asks first, with the web's sentence.
-  const confirm = (name: string, made: string) =>
-    Alert.alert(
-      t("autoBackup.restore"),
-      on
-        ? t("autoBackup.confirm", { when: new Date(made).toLocaleString(lang) })
-        : t("backup.confirm", { file: name }),
-      [
-        { text: t("confirm.cancel"), style: "cancel" },
-        { text: t("autoBackup.restore"), onPress: () => void restore(name) },
-      ],
-    );
 
   if (!settings) return null;
 
@@ -107,25 +75,29 @@ export function AutoBackupSection({ hue }: { hue: number }) {
             }}
             placeholder={state?.folder}
           />
+          <Button
+            label={t("pick.title")}
+            labelKey="pick.title"
+            mark={(ink) => <Glyph name="IconFolder" color={ink} />}
+            onPress={() => setPicking(true)}
+          />
+          <FolderPicker
+            visible={picking}
+            start={auto.folder || state?.folder}
+            onPick={(path) => {
+              set({ folder: path });
+              setPicking(false);
+            }}
+            onClose={() => setPicking(false)}
+          />
         </>
       )}
       <Pair
         label={t("autoBackup.latest")}
         value={latest ? new Date(latest.made).toLocaleString(lang) : t("autoBackup.none")}
       />
-      {latest ? (
-        <Button
-          label={t("autoBackup.restore")}
-          labelKey="autoBackup.restore"
-          wide={false}
-          busy={busy}
-          confirm={restored}
-          onPress={() => confirm(latest.name, latest.made)}
-        />
-      ) : null}
       {state?.last?.error ? <Body>{t("autoBackup.failed", { error: state.last.error })}</Body> : null}
       {error ? <Body>{error}</Body> : null}
-      {said ? <Body>{said}</Body> : null}
     </Section>
   );
 }
