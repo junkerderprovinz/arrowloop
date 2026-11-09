@@ -18,11 +18,12 @@ export function touchKey(e: Touch): string {
 
 /**
  * Which lines are a problem, so they stand out in a long list. A folder that
- * could not be read is a warning: nothing in it was touched.
+ * could not be read is a warning: nothing in it was touched. A file left for
+ * later is the next run's to try, so it stands out no more than a copy.
  */
 function touchTone(e: Touch): 'warn' | 'fail' | 'neutral' {
   if (unreadFolder(e)) return 'warn'
-  if (e.Kind === 'skip' || e.Kind === 'error') return 'fail'
+  if (e.Kind === 'error') return 'fail'
   if (e.Kind === 'conflict') return 'warn'
   return 'neutral'
 }

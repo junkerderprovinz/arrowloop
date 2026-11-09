@@ -27,7 +27,6 @@ const KEPT_BOTH = 'keep both'
  */
 function tone(e: RunEntry): 'ok' | 'warn' | 'fail' | 'neutral' {
   if (unreadFolder(e)) return 'warn'
-  if (e.Kind === 'skip') return 'fail'
   if (e.Kind === 'conflict') return 'warn'
   return 'neutral'
 }
