@@ -56,6 +56,8 @@ REQUIRED = {"Action", "Reason", "TrashItem"}
 # every object, and the check must not read that as a field the engine lacks.
 SOMETIMES = {
     "Run": {"Failure"},
+    # Only a job whose drive or folder is gone carries since when.
+    "Job": {"away"},
     # An instance that answered has jobs and no error. Only one that is away
     # carries lastSeen, and an address only where its announce named one.
     "OtherInstance": {"address", "jobs", "lastSeen", "error"},
