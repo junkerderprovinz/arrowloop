@@ -86,8 +86,13 @@ const go = goSources()
 writeFileSync(join(here, 'go-sources.json'), JSON.stringify(go, null, 4) + '\n')
 console.log(`go-sources.json: ${go.length} files`)
 
-run('flatpak-node-generator', [
-  'npm', join(root, 'web', 'package-lock.json'),
-  '-o', join(here, 'node-sources.json'),
-])
-console.log('node-sources.json written')
+const nodeFile = join(here, 'node-sources.json')
+run('flatpak-node-generator', ['npm', join(root, 'web', 'package-lock.json'), '-o', nodeFile])
+// On Windows the generator joins its destinations with backslashes, which the
+// Linux build reads as part of the name rather than as a folder.
+const slashes = (v) => (typeof v === 'string' ? v.replaceAll('\\', '/') : Array.isArray(v) ? v.map(slashes) : v)
+const node = JSON.parse(readFileSync(nodeFile, 'utf8')).map((s) =>
+  Object.fromEntries(Object.entries(s).map(([k, v]) => [k, ['dest', 'dest-filename', 'commands'].includes(k) ? slashes(v) : v])),
+)
+writeFileSync(nodeFile, JSON.stringify(node, null, 4) + '\n')
+console.log(`node-sources.json: ${node.length} sources`)
