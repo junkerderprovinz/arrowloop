@@ -4,7 +4,7 @@ go 1.27.1
 
 toolchain go1.27.3
 
-require github.com/junkerderprovinz/pommelporter v1.1.1
+require github.com/junkerderprovinz/pommelporter v1.1.5
 
 require (
 	github.com/coder/websocket v1.8.14 // indirect
