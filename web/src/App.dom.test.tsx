@@ -45,6 +45,7 @@ vi.mock('./lib/api', async (actual) => ({
     settings: () => settings(),
     remotes: () => Promise.resolve({ remotes: [], backends: [], providers: [], unlisted: [] }),
     instances: () => Promise.resolve([]),
+    versions: () => Promise.resolve({ arrowloop: 'test', rclone: 'v1.76.0', go: 'go1.27.1' }),
     autoBackups: () => Promise.resolve({ on: false, folder: '', files: [], last: null }),
     watch: (on: (ev: RunEvent) => void) => {
       emit = on

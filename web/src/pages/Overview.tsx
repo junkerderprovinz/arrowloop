@@ -1,7 +1,7 @@
 import { useState, type CSSProperties, type MouseEvent } from 'react'
 
 import { IconAction } from '../components/IconAction'
-import { IconAdd, IconPlay, IconStop } from '../components/glyphs'
+import { IconAdd, IconClose, IconPlay, IconStop } from '../components/glyphs'
 import { JobEditor, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
 import { LogoMark } from '../components/LogoMark'
@@ -16,12 +16,14 @@ import type { Finding } from '../lib/anomalies'
 import { api, type Job, type OpenConflict, type Run, type RunEvent } from '../lib/api'
 import { hueVars } from '../lib/appearance'
 import { dayTime } from '../lib/dayTime'
+import { openExternal } from '../lib/external'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { useNarrow } from '../lib/narrow'
 import { jobStatus } from '../lib/jobList'
 import type { NavCounts } from '../lib/navModel'
 import { useOpenJob } from '../lib/openJob'
 import { failing, headOf, lastAndNext, type Headline } from '../lib/overviewHead'
+import { useReleaseNotice, type ReleaseNotice } from '../lib/releaseNotice'
 import { Link, navigate } from '../lib/router'
 import { useStartStop } from '../lib/startStop'
 import { useToast } from '../lib/toast'
@@ -78,6 +80,9 @@ export function Overview({
   const config = useJobConfig(onSaved)
   useConfigErrors(config)
   const [adding, setAdding] = useState<number | null>(null)
+  const [release, hideRelease] = useReleaseNotice()
+  // The cards count their rainbow from the first one shown.
+  const hue = release ? 1 : 0
 
   const empty = jobs.length === 0
   const held = findings.filter((f) => f.held)
@@ -109,8 +114,10 @@ export function Overview({
     <Stack>
       <Head headline={head.headline} needs={head.needs} jobs={jobs} />
 
+      {release && <ReleaseCard release={release} onHide={() => hideRelease(release.tag)} />}
+
       {!empty && (
-        <Card title={t('overview.numbers')} hint={t('overview.numbersHint')} hueIndex={0}>
+        <Card title={t('overview.numbers')} hint={t('overview.numbersHint')} hueIndex={hue}>
           {/* The tiles go by the card's width rather than the window's, which the
               sidebar takes its part of, and a short last row stretches too, so
               they always fill the card. */}
@@ -128,7 +135,7 @@ export function Overview({
       )}
 
       {empty ? (
-        <Card title={t('nav.jobs')} hueIndex={0}>
+        <Card title={t('nav.jobs')} hueIndex={hue}>
           <div className="flex flex-col items-center gap-4 py-4 text-center">
             <p className="max-w-prose text-body text-carbon-textSub">{t('phone.noJobs')}</p>
             <Button label={t('edit.add')} labelKey="edit.add" glyph={<IconAdd />} tone="accent" disabled={!config.jobs} onClick={add} />
@@ -137,7 +144,7 @@ export function Overview({
       ) : (
         // Side by side where there is room, the jobs taking the larger part.
         <div className="grid grid-cols-1 items-start gap-10 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] xl:gap-6">
-          <Card title={t('nav.jobs')} hint={t('overview.jobsHint')} hueIndex={1}>
+          <Card title={t('nav.jobs')} hint={t('overview.jobsHint')} hueIndex={hue + 1}>
             <ul className="-mx-2 flex flex-col">
               {jobs.map((job, i) => (
                 <JobLine
@@ -154,7 +161,7 @@ export function Overview({
             </ul>
           </Card>
 
-          <Card title={t('activity.recent')} hueIndex={2}>
+          <Card title={t('activity.recent')} hueIndex={hue + 2}>
             {runs.length === 0 ? (
               <Empty>{t('history.empty')}</Empty>
             ) : (
@@ -173,7 +180,7 @@ export function Overview({
         </div>
       )}
 
-      <OtherInstances firstHue={3} />
+      <OtherInstances firstHue={hue + 3} />
 
       {adding !== null && config.jobs?.[adding] && (
         <JobEditor config={config} at={adding} added onClose={() => setAdding(null)} />
@@ -226,6 +233,26 @@ function Head({ headline, needs, jobs }: { headline: Headline; needs: number; jo
         {line && <p className="glim-num mt-1 text-subline text-carbon-textSub">{line}</p>}
       </div>
     </div>
+  )
+}
+
+/** A newer release, and how a container that cannot replace itself gets it. */
+function ReleaseCard({ release, onHide }: { release: ReleaseNotice; onHide: () => void }) {
+  const { t } = useT()
+  return (
+    <Card title={t('overview.release.title')} hueIndex={0}>
+      <div data-testid="release-notice" className="flex flex-wrap items-center gap-3">
+        <span aria-hidden className="h-6 w-1.5 shrink-0 rounded-[var(--radius-pill)] bg-statusWarnSolid" />
+        <div className="min-w-0 flex-1 basis-56">
+          <p className="text-body font-medium text-carbon-text">{t('overview.release.out', { version: release.version })}</p>
+          <p className="mt-0.5 text-subline text-carbon-textSub">{t('overview.release.how')}</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <Button label={t('about.releaseNotes')} labelKey="about.releaseNotes" onClick={() => openExternal(release.notes)} />
+          <Button label={t('overview.release.dismiss')} labelKey="overview.release.dismiss" glyph={<IconClose />} onClick={onHide} />
+        </div>
+      </div>
+    </Card>
   )
 }
 

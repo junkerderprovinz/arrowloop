@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **A new version shows on the Overview too.** When a container's daily check finds a newer release, the Overview gives it a card of its own, with how a container is updated and a button to the release notes, as well as the line under ArrowLoop in the Version card. Hide puts it away in this browser until the next release comes out.
+
 ## 2.6.3 - 2026-11-09
 
 A job waits for its drive instead of failing, a local side is read once, and a file left for later only fails a run when the next run has to leave it too.

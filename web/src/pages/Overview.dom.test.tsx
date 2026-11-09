@@ -11,6 +11,13 @@ import { ToastProvider } from '../lib/toast'
 const config = vi.fn(() => Promise.resolve({ jobs: [] as RawJob[] }))
 const run = vi.fn((name: string) => Promise.resolve({ job: name, status: 'started' }))
 const instances = vi.fn(() => Promise.resolve([] as OtherInstance[]))
+const versions = vi.fn(() =>
+  Promise.resolve<{ arrowloop: string; rclone: string; go: string; deployment?: string; newRelease?: string }>({
+    arrowloop: 'v2.6.3',
+    rclone: 'v1.76.0',
+    go: 'go1.27.1',
+  }),
+)
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -21,6 +28,7 @@ vi.mock('../lib/api', () => ({
     run: (name: string) => run(name),
     stopJob: () => Promise.resolve({ stopped: true }),
     instances: () => instances(),
+    versions: () => versions(),
   },
 }))
 
@@ -92,9 +100,59 @@ beforeEach(() => {
   instances.mockReset()
   instances.mockImplementation(() => Promise.resolve([]))
   opened.mockClear()
+  versions.mockReset()
+  versions.mockImplementation(() => Promise.resolve({ arrowloop: 'v2.6.3', rclone: 'v1.76.0', go: 'go1.27.1' }))
+  localStorage.clear()
   window.history.replaceState(null, '', '/dashboard')
 })
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+})
+
+const found = (newRelease: string, deployment = 'container') =>
+  versions.mockImplementation(() => Promise.resolve({ arrowloop: 'v2.6.3', rclone: 'v1.76.0', go: 'go1.27.1', deployment, newRelease }))
+
+describe('a newer release on the overview', () => {
+  it('tells a container which version is out and how to update it', async () => {
+    found('v2.7.0')
+    page()
+    expect(await screen.findByText('ArrowLoop 2.7.0 is out')).toBeTruthy()
+    expect(screen.getByText(/Update the container the way you deployed it/)).toBeTruthy()
+  })
+
+  it('opens the release notes of that version', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    found('v2.7.0')
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Release notes' }))
+    expect(open).toHaveBeenCalledWith('https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.0', '_blank', 'noopener,noreferrer')
+  })
+
+  it('stays hidden in this browser once hidden, until the next release', async () => {
+    found('v2.7.0')
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Hide' }))
+    expect(screen.queryByText('ArrowLoop 2.7.0 is out')).toBeNull()
+
+    cleanup()
+    page()
+    await waitFor(() => expect(versions).toHaveBeenCalledTimes(2))
+    expect(screen.queryByText('ArrowLoop 2.7.0 is out')).toBeNull()
+
+    cleanup()
+    found('v2.8.0')
+    page()
+    expect(await screen.findByText('ArrowLoop 2.8.0 is out')).toBeTruthy()
+  })
+
+  it('stays away from the desktop app, which updates itself', async () => {
+    found('v2.7.0', 'desktop')
+    page()
+    await waitFor(() => expect(versions).toHaveBeenCalled())
+    expect(screen.queryByText(/is out/)).toBeNull()
+  })
+})
 
 describe('the overview', () => {
   it('says all is well when nothing waits', () => {
