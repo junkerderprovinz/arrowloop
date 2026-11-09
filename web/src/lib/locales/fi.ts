@@ -1231,6 +1231,8 @@ const fi: Translations = {
   'status.failed': 'Epäonnistui',
   'status.paused': 'Keskeytetty',
   'status.never': 'Ei vielä ajettu',
+  'status.away': 'Odottaa levyä',
+  'status.awayHint': 'Tämän työn levy tai kansio puuttuu nyt. Työ jatkuu itsestään, kun se on taas paikalla.',
   'jobs.none': 'Ei vielä töitä. Lisää työ kulman painikkeella.',
   'jobs.strip.title': 'Viimeisimmät ajot',
   'jobs.strip.ok': 'onnistui: {count}',

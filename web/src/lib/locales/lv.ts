@@ -1231,6 +1231,8 @@ const lv: Translations = {
   'status.failed': 'Neizdevās',
   'status.paused': 'Pauzēts',
   'status.never': 'Vēl nav palaists',
+  'status.away': 'Gaida disku',
+  'status.awayHint': 'Šī uzdevuma disks vai mape pašlaik nav pieejama. Kad tā atgriezīsies, uzdevums turpināsies pats.',
   'jobs.none': 'Uzdevumu vēl nav. Pievienojiet vienu ar pogu stūrī.',
   'jobs.strip.title': 'Pēdējās palaišanas',
   'jobs.strip.ok': 'izdevās: {count}',

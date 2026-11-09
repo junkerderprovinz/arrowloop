@@ -1231,6 +1231,8 @@ const is: Translations = {
   'status.failed': 'Mistókst',
   'status.paused': 'Í hléi',
   'status.never': 'Ekki keyrt enn',
+  'status.away': 'Bíður eftir diski',
+  'status.awayHint': 'Diskur eða mappa þessa verks er ekki til staðar núna. Verkið heldur áfram af sjálfu sér þegar hann kemur aftur.',
   'jobs.none': 'Engin verk enn. Búðu til eitt með hnappinum í horninu.',
   'jobs.strip.title': 'Síðustu keyrslur',
   'jobs.strip.ok': 'tókst: {count}',

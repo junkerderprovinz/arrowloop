@@ -1231,6 +1231,8 @@ const eu: Translations = {
   'status.failed': 'Huts egin du',
   'status.paused': 'Pausatuta',
   'status.never': 'Ez da oraindik exekutatu',
+  'status.away': 'Diskoaren zain',
+  'status.awayHint': 'Lan honen disko edo karpeta bat ez dago orain. Itzultzen denean, lanak berez jarraitzen du.',
   'jobs.none': 'Ez dago lanik oraindik. Gehitu bat izkinako botoiarekin.',
   'jobs.strip.title': 'Azken exekuzioak',
   'jobs.strip.ok': 'ondo joan dira: {count}',

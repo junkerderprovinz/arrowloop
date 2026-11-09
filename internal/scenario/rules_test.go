@@ -422,12 +422,12 @@ func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 	}
 
 	_, _, err = engine.Prepare(ctx, ends, db, opt)
-	var empty *plan.EmptySideError
+	var gone *plan.GoneError
 	var nothing *engine.NothingToSyncError
 	switch {
-	case errors.As(err, &empty):
-		if !strings.Contains(err.Error(), "4") {
-			t.Errorf("the refusal does not say how many files were known: %v", err)
+	case errors.As(err, &gone):
+		if gone.Side != plan.Left {
+			t.Errorf("the %s side was named as gone, want the left", gone.Side)
 		}
 	case errors.As(err, &nothing):
 		t.Fatalf("a side that vanished was reported as a path that never existed, "+
@@ -444,7 +444,7 @@ func TestAVanishedSideIsNamedByItsRecord(t *testing.T) {
 	if errors.As(err, &nothing) {
 		t.Fatalf("a job whose whole share went away lost the fact that it knew about four files: %v", err)
 	}
-	if !errors.As(err, &empty) {
+	if !errors.As(err, &gone) {
 		t.Fatalf("both sides vanishing was not refused by the record: %v", err)
 	}
 }

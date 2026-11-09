@@ -16,6 +16,7 @@ The full notes for each release are in
 
 ## ⚡ Improved
 
+- **A job waits while its drive is away.** When the external disk or network drive a job syncs with is unplugged or drops off, the job no longer fails run after run. It shows "Waiting for drive" in the list instead. A run that is going when the drive goes stops right there, is not counted as failed and treats nothing as deleted. Once the drive is back, the job runs by itself within a minute and then keeps to its schedule.
 - **A local side is read once instead of twice.** Symbolic links, junctions and the other entries the engine cannot copy are found while the side is read, so the extra stage "Checking the left side for links" is gone and a large folder is done sooner. Such entries still show up as left for later, as before.
 - **A file left for later no longer turns a run orange.** The next run simply tries it again. If that run has to leave it too, it fails: red in the list, a FAILED notification, and the sentence "Some files could not be carried in two runs in a row" with the files and why.
 - **A cloud file that could not be downloaded says so.** On Windows, a file that a cloud client such as OneDrive or OpenCloud keeps online only, and could not fetch when ArrowLoop read it, is left for later with a sentence that explains this and suggests keeping it on the device, instead of the bare Windows error.

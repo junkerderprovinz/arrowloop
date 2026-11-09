@@ -1231,6 +1231,8 @@ const sr: Translations = {
   'status.failed': 'Није успело',
   'status.paused': 'На паузи',
   'status.never': 'Још није покренуто',
+  'status.away': 'Чека диск',
+  'status.awayHint': 'Диск или фасцикла овог посла тренутно недостаје. Посао се сам наставља чим се врати.',
   'jobs.none': 'Још нема послова. Додај један дугметом у углу.',
   'jobs.strip.title': 'Последња покретања',
   'jobs.strip.ok': 'успело: {count}',

@@ -76,6 +76,8 @@ type Listing struct {
 	Unreadable []Unreadable
 	// Unsupported lists what a local side holds that the engine cannot carry.
 	Unsupported []Unsupported
+	// Absent says the root itself is not there, which lists as empty.
+	Absent bool
 }
 
 // Unreadable is a folder below the root that could not be listed.
@@ -126,6 +128,10 @@ func IsReserved(rel string) bool {
 	}
 	return false
 }
+
+// ErrGone fails the listing of a side whose root disappeared during the walk,
+// as when a drive is pulled out or a share drops.
+var ErrGone = errors.New("the side went away while it was being read")
 
 // List walks one side and returns every file in it. Hashes are not computed
 // here, since size and modification time settle most files; Hash fetches one
@@ -195,6 +201,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 		if !errors.Is(err, fs.ErrorDirNotFound) || exists(ctx, f) {
 			return nil, fmt.Errorf("list %s: %w", f.Name(), err)
 		}
+		out.Absent = true
 		return out, nil
 	}
 	// Folders below the root are listed in groups of their own, so what
@@ -206,7 +213,7 @@ func List(ctx context.Context, f fs.Fs, opt Options) (*Listing, error) {
 	// folder after it disappear, and a side that is gone is not one with a
 	// few folders missing.
 	if len(out.Unreadable) > 0 && !exists(ctx, f) {
-		return nil, fmt.Errorf("list %s: the side went away while it was being read: %w", f.Name(), fs.ErrorDirNotFound)
+		return nil, fmt.Errorf("list %s: %w: %w", f.Name(), ErrGone, fs.ErrorDirNotFound)
 	}
 
 	for key, paths := range clashes {

@@ -1231,6 +1231,8 @@ const ro: Translations = {
   'status.failed': 'Eșuată',
   'status.paused': 'În pauză',
   'status.never': 'Încă nerulată',
+  'status.away': 'Așteaptă discul',
+  'status.awayHint': 'Un disc sau un dosar al acestei sarcini lipsește acum. Sarcina continuă singură când revine.',
   'jobs.none': 'Nicio sarcină încă. Adaugă una cu butonul din colț.',
   'jobs.strip.title': 'Ultimele rulări',
   'jobs.strip.ok': 'reușite: {count}',

@@ -10,6 +10,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
 	"strconv"
@@ -70,6 +71,22 @@ func (e Ends) side(s plan.Side) fs.Fs {
 		return e.Left
 	}
 	return e.Right
+}
+
+// gone names a side on this machine whose folder has disappeared. It is
+// asked after a step failed: a drive pulled out in the middle of a run fails
+// every step after it, and the run stops rather than try each one.
+func (e Ends) gone() error {
+	for _, s := range []plan.Side{plan.Left, plan.Right} {
+		root, local := LocalPath(e.side(s), "")
+		if !local {
+			continue
+		}
+		if _, err := os.Stat(root); errors.Is(err, os.ErrNotExist) {
+			return &plan.GoneError{Side: s, Root: root}
+		}
+	}
+	return nil
 }
 
 // Result counts what a run actually did.
@@ -359,8 +376,9 @@ func (t *tally) fatalErr() error {
 // A single action that fails is recorded as a skip and the run carries on,
 // which is safe because a state row is only written once both sides were
 // re-read and found to match. A disagreement stops the run, because it means
-// the engine's picture of the tree is wrong. A stopped context ends it at the
-// step it was on, with the context's error.
+// the engine's picture of the tree is wrong, and so does a side whose folder
+// went away. A stopped context ends it at the step it was on, with the
+// context's error.
 //
 // Directories are created before anything is copied into them and removed
 // after they are emptied, renames run before copies so a freed name is
@@ -405,6 +423,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			if ctx.Err() != nil {
 				return t.res, ctx.Err()
 			}
+			if gone := ends.gone(); gone != nil {
+				return t.res, gone
+			}
 			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, d.Kind.String(), "stepFailed", err))
 			continue
 		}
@@ -431,6 +452,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			}
 			if ctx.Err() != nil {
 				return t.res, ctx.Err()
+			}
+			if gone := ends.gone(); gone != nil {
+				return t.res, gone
 			}
 			t.skip(act.Path, act.Dst.String(), whyFailed(ends, couldHaveLocked(act), "move", "stepFailed", err))
 		}
@@ -460,6 +484,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			if ctx.Err() != nil {
 				return t.res, ctx.Err()
 			}
+			if gone := ends.gone(); gone != nil {
+				return t.res, gone
+			}
 			t.skip(act.Path, "", whyFailed(ends, couldHaveLocked(act), "record", "recordFailed", err))
 		}
 	}
@@ -483,6 +510,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 			if ctx.Err() != nil {
 				return t.res, ctx.Err()
 			}
+			if gone := ends.gone(); gone != nil {
+				return t.res, gone
+			}
 			t.skip(d.Path, d.Dst.String(), whyFailed(ends, nil, "removing the folder", "removeDirFailed", err))
 			continue
 		}
@@ -499,8 +529,8 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 
 // forEach runs the actions concurrently, up to workers at a time. A failure on
 // one file becomes a skip, unless the run was stopped, which says nothing about
-// the file; a disagreement cancels the context and stops the run. The ends are
-// only needed to classify a failure.
+// the file; a disagreement or a side gone away cancels the context and stops
+// the run. The ends are only needed to classify a failure.
 func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, workers int, fn func(context.Context, plan.Action) error) error {
 	if len(acts) == 0 {
 		return nil
@@ -528,6 +558,11 @@ func (t *tally) forEach(ctx context.Context, ends Ends, acts []plan.Action, work
 					}
 					if ctx.Err() != nil {
 						continue
+					}
+					if gone := ends.gone(); gone != nil {
+						t.setFatal(gone)
+						cancel()
+						return
 					}
 					if t.leftForNext(ctx, act, err) {
 						continue
@@ -650,7 +685,7 @@ type touch struct {
 // held asks whether another program holds the file in a way that stops what
 // the action does to it.
 func (w touch) held(ends Ends) bool {
-	full, ok := localPath(ends.side(w.side), w.path)
+	full, ok := LocalPath(ends.side(w.side), w.path)
 	if !ok {
 		return false
 	}
@@ -749,11 +784,11 @@ func whyFailed(ends Ends, suspects []touch, what, ordinary string, err error) pl
 	return plan.Because(ordinary, "what", what, "error", err.Error())
 }
 
-// localPath maps an rclone object back to a real filesystem path, for the local
-// backend only. On Windows Root() returns the extended-length prefix with
-// forward slashes, "//?/C:/...", and filepath.Join cleans it back into the
-// backslash form Win32 accepts.
-func localPath(f fs.Fs, remote string) (string, bool) {
+// LocalPath maps an rclone object back to a real filesystem path, for the local
+// backend only; an empty remote gives the side's own folder. On Windows Root()
+// returns the extended-length prefix with forward slashes, "//?/C:/...", and
+// filepath.Join cleans it back into the backslash form Win32 accepts.
+func LocalPath(f fs.Fs, remote string) (string, bool) {
 	if f == nil || f.Name() != "local" {
 		return "", false
 	}

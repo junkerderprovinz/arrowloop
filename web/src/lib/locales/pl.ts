@@ -1231,6 +1231,8 @@ const pl: Translations = {
   'status.failed': 'Nieudane',
   'status.paused': 'Zapauzowane',
   'status.never': 'Jeszcze nie uruchomione',
+  'status.away': 'Czeka na dysk',
+  'status.awayHint': 'Dysku lub folderu tego zadania teraz nie ma. Zadanie samo ruszy dalej, gdy wróci.',
   'jobs.none': 'Nie ma jeszcze zadań. Dodaj jedno przyciskiem w rogu.',
   'jobs.strip.title': 'Ostatnie przebiegi',
   'jobs.strip.ok': 'udane: {count}',

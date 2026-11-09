@@ -1231,6 +1231,8 @@ const gl: Translations = {
   'status.failed': 'Fallou',
   'status.paused': 'En pausa',
   'status.never': 'Aínda sen executar',
+  'status.away': 'Agardando o disco',
+  'status.awayHint': 'Agora falta un disco ou un cartafol desta tarefa. A tarefa segue soa en canto volva.',
   'jobs.none': 'Aínda non hai tarefas. Engade unha co botón da esquina.',
   'jobs.strip.title': 'Últimas execucións',
   'jobs.strip.ok': 'funcionaron: {count}',

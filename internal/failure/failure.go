@@ -43,7 +43,7 @@ const (
 // own words, as in a notification.
 var (
 	space  = regexp.MustCompile(`not enough room on the destination: the (left|right) side reports (\d+) bytes free and this job would write at least (\d+)`)
-	volume = regexp.MustCompile(`the volume this job points at is not attached: (left|right) side|the drive the (left|right) side lives on is not attached`)
+	volume = regexp.MustCompile(`the volume this job points at is not attached: (?:the )?(left|right) side|the drive the (left|right) side lives on is not attached`)
 	side   = regexp.MustCompile(`(?:^|: )(?:the )?(left|right) side (?:"(?:[^"\\]|\\.)*"|could not be opened): `)
 	hook   = regexp.MustCompile(`(?:^|: )the command (before|after) the run failed(?:, so the run did not start)?: `)
 	twice  = regexp.MustCompile(`(?:^|: )left for later in two runs in a row: `)

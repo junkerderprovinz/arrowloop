@@ -1231,6 +1231,8 @@ const id: Translations = {
   'status.failed': 'Gagal',
   'status.paused': 'Dijeda',
   'status.never': 'Belum pernah dijalankan',
+  'status.away': 'Menunggu cakram',
+  'status.awayHint': 'Cakram atau folder tugas ini sedang tidak ada. Tugas berlanjut sendiri begitu kembali.',
   'jobs.none': 'Belum ada tugas. Tambahkan satu dengan tombol di pojok.',
   'jobs.strip.title': 'Proses terakhir',
   'jobs.strip.ok': 'berhasil: {count}',

@@ -57,21 +57,31 @@ func localSides(j job.Job) []spot {
 			out = append(out, spot{side: side, unplugged: true})
 			continue
 		}
-		parsed, err := fspath.Parse(resolved)
-		if err != nil || parsed.ConfigString != "" {
-			continue
-		}
-		abs, err := filepath.Abs(parsed.Path)
-		if err != nil {
+		abs, local := localFolder(resolved)
+		if !local {
 			continue
 		}
 		s := spot{side: side}
 		if info, err := os.Stat(abs); err == nil && info.IsDir() {
-			s.root = filepath.Clean(abs)
+			s.root = abs
 		}
 		out = append(out, s)
 	}
 	return out
+}
+
+// localFolder returns the folder a resolved side names on this machine, and
+// false for a side on a remote.
+func localFolder(resolved string) (string, bool) {
+	parsed, err := fspath.Parse(resolved)
+	if err != nil || parsed.ConfigString != "" {
+		return "", false
+	}
+	abs, err := filepath.Abs(parsed.Path)
+	if err != nil {
+		return "", false
+	}
+	return abs, true
 }
 
 // watched is one job's watcher and the sides it covers.

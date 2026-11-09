@@ -1231,6 +1231,8 @@ const pt: Translations = {
   'status.failed': 'Falhou',
   'status.paused': 'Em pausa',
   'status.never': 'Ainda não executada',
+  'status.away': 'À espera do disco',
+  'status.awayHint': 'Um disco ou uma pasta desta tarefa não está disponível agora. A tarefa continua sozinha assim que voltar.',
   'jobs.none': 'Ainda não há tarefas. Cria uma com o botão no canto.',
   'jobs.strip.title': 'Últimas execuções',
   'jobs.strip.ok': 'correram bem: {count}',

@@ -9,6 +9,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
 // The space finding as precheck words it; precheck_test.go holds the template
@@ -27,6 +28,10 @@ func TestTheEnginesOwnSentencesCarryTheirFigures(t *testing.T) {
 		{
 			fmt.Errorf("%w: left side USB disk (label Photos)", daemon.ErrVolumeMissing).Error(),
 			failure.Failure{Code: failure.VolumeMissing, Params: map[string]string{"side": "left"}},
+		},
+		{
+			fmt.Errorf("%w: %w", daemon.ErrVolumeMissing, &plan.GoneError{Side: plan.Right, Root: `F:\opencloud`}).Error(),
+			failure.Failure{Code: failure.VolumeMissing, Params: map[string]string{"side": "right"}},
 		},
 		{
 			fmt.Errorf("right side %q: %w", "/storage/emulated/0/DCIM", daemon.ErrNoFileAccess).Error(),

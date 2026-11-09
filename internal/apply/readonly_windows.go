@@ -13,7 +13,7 @@ import (
 // Windows refuses to rename over a read-only file, which is how Git leaves
 // every object and commit graph it writes.
 func unlockForReplace(f fs.Fs, remote string) error {
-	p, ok := localPath(f, remote)
+	p, ok := LocalPath(f, remote)
 	if !ok {
 		return nil
 	}

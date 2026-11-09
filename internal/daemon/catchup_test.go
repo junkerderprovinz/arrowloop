@@ -132,7 +132,7 @@ func TestAJobWhoseDriveComesBackCatchesUpTheTurnItMissedOnce(t *testing.T) {
 	d.missesItsDrive(t)
 
 	d.plug(true)
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if n := len(runsOf(t, d.r, "x")); n != 2 {
 		t.Fatalf("the log holds %d runs after the drive came back, want the old one and the catch-up", n)
 	}
@@ -143,21 +143,23 @@ func TestAJobWhoseDriveComesBackCatchesUpTheTurnItMissedOnce(t *testing.T) {
 		t.Error("the job still waits for a drive it just ran against")
 	}
 
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if n := len(runsOf(t, d.r, "x")); n != 2 {
 		t.Errorf("the next minute ran it again, %d runs", n)
 	}
 }
 
-func TestADriveBackWithNothingOwedOnlyEndsTheWait(t *testing.T) {
+// A turn lost to the drive is caught up even when the schedule's next slot is
+// far off, as for a run a change started.
+func TestADriveBackRunsTheTurnItLostBeforeTheNextSlot(t *testing.T) {
 	d := driveJob(t, "", "")
 	d.workedAt(t, time.Now().Add(-time.Minute))
 	d.missesItsDrive(t)
 
 	d.plug(true)
-	d.r.catchUp(context.Background(), time.Now())
-	if n := len(runsOf(t, d.r, "x")); n != 1 {
-		t.Errorf("a job that owed nothing ran when its drive came back, %d runs", n)
+	d.r.catchUp(context.Background())
+	if n := len(runsOf(t, d.r, "x")); n != 2 {
+		t.Errorf("the log holds %d runs after the drive came back, want the old one and the lost turn", n)
 	}
 	if _, waits := d.r.WaitingFor("x"); waits {
 		t.Error("the job still says it waits for a drive that is plugged in")
@@ -169,7 +171,7 @@ func TestAJobStillWithoutItsDriveKeepsWaiting(t *testing.T) {
 	d.workedAt(t, time.Now().AddDate(-2, 0, 0))
 	d.missesItsDrive(t)
 
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if n := len(runsOf(t, d.r, "x")); n != 1 {
 		t.Errorf("%d runs without the drive", n)
 	}
@@ -188,7 +190,7 @@ func TestAJobNotWaitingForItsDriveIsLeftToItsSchedule(t *testing.T) {
 	d.workedAt(t, time.Now().AddDate(-2, 0, 0))
 	d.plug(true)
 
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if n := len(runsOf(t, d.r, "x")); n != 1 {
 		t.Errorf("an owed job that never missed its drive ran off its schedule, %d runs", n)
 	}
@@ -215,7 +217,7 @@ func TestAJobWithABeforeCommandIsLeftToItsSchedule(t *testing.T) {
 	}
 
 	d.plug(true)
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if _, err := os.Stat(ran); err == nil {
 		t.Error("the before command ran off the job's schedule")
 	}
@@ -236,13 +238,13 @@ func TestAJobAlreadyRunningIsNotCaughtUpAgain(t *testing.T) {
 	if !d.r.claim("x", func() {}) {
 		t.Fatal("could not hold the job")
 	}
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if d.log.said(caughtUp) {
 		t.Error("a job in the middle of a run was caught up as well")
 	}
 
 	d.r.release("x")
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if !d.log.said(caughtUp) {
 		t.Error("the job was not caught up once its run was over")
 	}
@@ -258,7 +260,7 @@ func TestAPausedJobIsNotCaughtUp(t *testing.T) {
 	paused.Jobs[0].Disabled = true
 	d.r.Reload(paused)
 
-	d.r.catchUp(context.Background(), time.Now())
+	d.r.catchUp(context.Background())
 	if n := len(runsOf(t, d.r, "x")); n != 1 {
 		t.Errorf("a paused job ran when its drive came back, %d runs", n)
 	}

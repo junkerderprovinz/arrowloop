@@ -404,6 +404,19 @@ func (e *EmptySideError) Mark() string {
 	return fmt.Sprintf("empty:%s:%d:%d", e.Side, e.Known, e.Held)
 }
 
+// GoneError is returned when the folder a side lives in on this machine is not
+// there. A drive that was pulled out or a share that dropped is away, not
+// emptied, so nothing is planned or carried out against it.
+type GoneError struct {
+	Side Side
+	// Root is the missing folder, as this machine names it.
+	Root string
+}
+
+func (e *GoneError) Error() string {
+	return fmt.Sprintf("the %s side is not there: %s", e.Side, e.Root)
+}
+
 // status is how one side changed since the last agreement.
 type status int
 

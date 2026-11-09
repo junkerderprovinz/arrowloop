@@ -37,6 +37,8 @@ export interface Job {
    * schedule, a held job, or an unparsable expression (internal/web/api.go).
    */
   nextRun?: string;
+  /** Since when the job has waited for a drive or folder that is not there. */
+  away?: string;
   /** Its last runs, newest first. */
   recent: Run[];
 }

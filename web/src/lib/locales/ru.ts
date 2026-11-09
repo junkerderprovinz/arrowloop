@@ -1231,6 +1231,8 @@ const ru: Translations = {
   'status.failed': 'Не удалось',
   'status.paused': 'На паузе',
   'status.never': 'Ещё не запускалось',
+  'status.away': 'Ждёт диск',
+  'status.awayHint': 'Диска или папки этого задания сейчас нет. Задание само продолжится, когда они вернутся.',
   'jobs.none': 'Заданий пока нет. Добавьте первое кнопкой в углу.',
   'jobs.strip.title': 'Последние запуски',
   'jobs.strip.ok': 'успешно: {count}',

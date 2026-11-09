@@ -1231,6 +1231,8 @@ const ko: Translations = {
   'status.failed': '실패',
   'status.paused': '일시 정지됨',
   'status.never': '아직 실행 안 함',
+  'status.away': '드라이브 대기 중',
+  'status.awayHint': '이 작업의 드라이브나 폴더가 지금 없습니다. 다시 돌아오면 작업이 저절로 이어집니다.',
   'jobs.none': '아직 작업이 없습니다. 모서리의 버튼으로 추가하세요.',
   'jobs.strip.title': '최근 실행',
   'jobs.strip.ok': '성공: {count}',

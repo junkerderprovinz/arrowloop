@@ -1231,6 +1231,8 @@ const sk: Translations = {
   'status.failed': 'Zlyhala',
   'status.paused': 'Na pauze',
   'status.never': 'Ešte nebežala',
+  'status.away': 'Čaká na disk',
+  'status.awayHint': 'Disk alebo priečinok tejto úlohy teraz chýba. Keď sa vráti, úloha sama pokračuje.',
   'jobs.none': 'Zatiaľ žiadne úlohy. Pridaj jednu tlačidlom v rohu.',
   'jobs.strip.title': 'Posledné behy',
   'jobs.strip.ok': 'prebehli: {count}',

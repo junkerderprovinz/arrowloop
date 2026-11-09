@@ -1231,6 +1231,8 @@ const zh: Translations = {
   'status.failed': '失败',
   'status.paused': '已暂停',
   'status.never': '尚未运行',
+  'status.away': '等待磁盘',
+  'status.awayHint': '此任务的某个磁盘或文件夹当前不在。它回来后任务会自行继续。',
   'jobs.none': '还没有任务。用角落里的按钮添加一个。',
   'jobs.strip.title': '最近的运行',
   'jobs.strip.ok': '成功：{count}',

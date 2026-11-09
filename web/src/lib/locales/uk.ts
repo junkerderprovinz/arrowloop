@@ -1231,6 +1231,8 @@ const uk: Translations = {
   'status.failed': 'Невдало',
   'status.paused': 'На паузі',
   'status.never': 'Ще не запускалося',
+  'status.away': 'Чекає на диск',
+  'status.awayHint': 'Диска або теки цього завдання зараз немає. Завдання саме продовжиться, щойно вони повернуться.',
   'jobs.none': 'Завдань ще немає. Додайте перше кнопкою в кутку.',
   'jobs.strip.title': 'Останні запуски',
   'jobs.strip.ok': 'вдалося: {count}',

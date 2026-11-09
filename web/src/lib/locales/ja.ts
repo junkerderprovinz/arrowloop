@@ -1231,6 +1231,8 @@ const ja: Translations = {
   'status.failed': '失敗',
   'status.paused': '一時停止中',
   'status.never': '未実行',
+  'status.away': 'ドライブ待ち',
+  'status.awayHint': 'このジョブのドライブまたはフォルダーが今ありません。戻ると自動で再開します。',
   'jobs.none': 'ジョブはまだありません。隅のボタンから追加してください。',
   'jobs.strip.title': '直近の実行',
   'jobs.strip.ok': '成功: {count}',

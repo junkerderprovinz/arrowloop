@@ -30,14 +30,21 @@ export function runStrip(recent: StripRun[]): RunTone[] {
   return [...Array<RunTone>(STRIP_LENGTH - tones.length).fill('none'), ...tones]
 }
 
-type ListedJob = { name: string; running: boolean; disabled: boolean; recent: (StripRun & { Started: string })[] }
+type ListedJob = {
+  name: string
+  running: boolean
+  disabled: boolean
+  /** Since when the job has waited for a drive or folder that is not there. */
+  away?: string
+  recent: (StripRun & { Started: string })[]
+}
 
 /**
  * The one status a job's row shows, the loudest that applies. A job that ran
  * fine is `last`, which the row draws quietly as the time of that run, so a
  * held run, a conflict still waiting or a note must win over it: a warning is never rounded up to "synced".
  */
-export type JobStatus = 'running' | 'held' | 'failed' | 'conflict' | 'warned' | 'paused' | 'never' | 'last'
+export type JobStatus = 'running' | 'held' | 'away' | 'failed' | 'conflict' | 'warned' | 'paused' | 'never' | 'last'
 
 /**
  * What waits on a person for one job outside its own runs. `notes` is a
@@ -48,6 +55,9 @@ export type JobWaits = { held: boolean; conflict: boolean; notes: boolean }
 export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (job.running) return 'running'
   if (waits.held) return 'held'
+  // What a job is waiting for says more than how its last run ended. A job
+  // somebody paused would not run with the drive back either.
+  if (job.away && !job.disabled) return 'away'
   if (job.recent[0] && job.recent[0].Err !== '') return 'failed'
   if (waits.conflict) return 'conflict'
   if (waits.notes) return 'warned'

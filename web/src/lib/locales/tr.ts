@@ -1231,6 +1231,8 @@ const tr: Translations = {
   'status.failed': 'Başarısız',
   'status.paused': 'Duraklatıldı',
   'status.never': 'Henüz çalışmadı',
+  'status.away': 'Disk bekleniyor',
+  'status.awayHint': 'Bu işin bir diski ya da klasörü şu an yok. Geri geldiğinde iş kendiliğinden sürer.',
   'jobs.none': 'Henüz iş yok. Köşedeki düğmeyle bir tane ekle.',
   'jobs.strip.title': 'Son çalıştırmalar',
   'jobs.strip.ok': 'başarılı: {count}',

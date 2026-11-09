@@ -1231,6 +1231,8 @@ const vi: Translations = {
   'status.failed': 'Thất bại',
   'status.paused': 'Tạm dừng',
   'status.never': 'Chưa chạy lần nào',
+  'status.away': 'Đang chờ ổ đĩa',
+  'status.awayHint': 'Ổ đĩa hoặc thư mục của công việc này hiện không có. Công việc sẽ tự chạy tiếp khi nó trở lại.',
   'jobs.none': 'Chưa có công việc nào. Thêm một việc bằng nút ở góc.',
   'jobs.strip.title': 'Các lần chạy gần đây',
   'jobs.strip.ok': 'thành công: {count}',
