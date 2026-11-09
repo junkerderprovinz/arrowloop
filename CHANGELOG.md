@@ -29,7 +29,7 @@ A job waits for its drive instead of failing, a local side is read once, and a f
 
 ## 🐛 Fixed
 
-- **Picking a folder another app shares works on OPPO phones.** ColorOS answers the folder picker with its own file manager, which offers none of the folders other apps share, such as fcitx5's. The phone app asks Android's own picker first. Thanks to @AlairEileen for the report ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
+- **The phone app asks Android's own folder picker first.** On OPPO phones ColorOS answers the folder picker with its own file manager, which offers none of the folders other apps share, such as fcitx5's. With Android's own picker those folders should show up. Thanks to @AlairEileen for the report ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
 
 ## 🎨 Design
 
