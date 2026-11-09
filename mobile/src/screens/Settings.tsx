@@ -51,7 +51,7 @@ import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
 import { useSystemAccent } from "../systemAccent";
 import { AppMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
-import { APPLE_SVG, DOCKER_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
+import { APPLE_SVG, DOCKER_SVG, FLATPAK_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
 import {
   AxisLabel,
@@ -102,6 +102,9 @@ export function Settings() {
   // tile's own yellow and read as holes.
   const linuxMark = (lit: boolean, ink: string) => (
     <AppMark svg={LINUX_SVG} ink={lit ? ink : p.text} cut={lit ? TILE.linux.color : undefined} />
+  );
+  const flatpakMark = (lit: boolean, ink: string) => (
+    <AppMark svg={FLATPAK_SVG} ink={lit ? ink : PLATFORM[scheme].flatpak} />
   );
 
   const [granted, setGranted] = useState<boolean | null>(null);
@@ -944,7 +947,7 @@ export function Settings() {
         <VersionLine version={version} />
       </Section>
 
-      {/* A row per system keeps each ARM64 build beside its own. */}
+      {/* A row per system keeps each ARM build beside its own. */}
       <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={7}>
         <View style={styles.readmeRows}>
           <ReadmeRow>
@@ -957,7 +960,7 @@ export function Settings() {
             />
             <ReadmeButton
               label={t("apps.windows")}
-              sub="ARM64"
+              sub="ARM"
               tile={TILE.windows}
               mark={windowsMark}
               onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
@@ -982,10 +985,26 @@ export function Settings() {
             />
             <ReadmeButton
               label={t("apps.linux")}
-              sub="ARM64"
+              sub="ARM"
               tile={TILE.linux}
               mark={linuxMark}
               onPress={() => Linking.openURL(DOWNLOADS.linuxArm)}
+            />
+          </ReadmeRow>
+          <ReadmeRow>
+            <ReadmeButton
+              label={t("apps.flatpak")}
+              sub="x64"
+              tile={TILE.flatpak}
+              mark={flatpakMark}
+              onPress={() => Linking.openURL(DOWNLOADS.flatpak)}
+            />
+            <ReadmeButton
+              label={t("apps.flatpak")}
+              sub="ARM"
+              tile={TILE.flatpak}
+              mark={flatpakMark}
+              onPress={() => Linking.openURL(DOWNLOADS.flatpakArm)}
             />
           </ReadmeRow>
         </View>

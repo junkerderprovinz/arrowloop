@@ -6,6 +6,7 @@ export const README_TILES = {
   windows: "glim-tile-windows",
   apple: "glim-tile-apple",
   linux: "glim-tile-linux",
+  flatpak: "glim-tile-flatpak",
   android: "glim-tile-android",
   play: "glim-tile-play",
   fdroid: "glim-tile-fdroid",
@@ -26,6 +27,9 @@ export interface ReadmePart {
   name: string;
   /** The second line, shown under the pointer. Without one the name stays in the middle. */
   sub?: string;
+  /** The accessible name of a segment whose word reads right only beside the
+   *  first part, such as "Windows ARM" for ARM. */
+  label?: string;
   href?: string;
   onClick?: () => void;
 }

@@ -5,7 +5,7 @@ import { InfoBubble } from "./InfoBubble.tsx";
 // A button in the shape of the README's download buttons, on the App tab and
 // the About card ("The App tab" in design-language.md). The first part carries
 // the mark and the full name; the parts after it are segments that name only
-// what differs, such as ARM64 beside Windows. The unit lights up as one in its
+// what differs, such as ARM beside Windows. The unit lights up as one in its
 // brand's colour ("Brand tiles"). A link where a part leads to a file or a
 // listing, a button where it does something on the page, and a quiet unit with
 // "Soon" as its second line where the listing does not exist yet.
@@ -44,7 +44,7 @@ export function ReadmeButton({ brand, parts, mark, markClass, art, hint, note, s
     <div ref={ref} className={readmeUnitClass(brand, parts.length, !!note, soon)}>
       {parts.map((part, i) => {
         const sub = soon ? soonLabel : part.sub;
-        const label = sub ? `${part.name} ${sub}` : part.name;
+        const label = part.label ?? (sub ? `${part.name} ${sub}` : part.name);
         const className = readmePartClass(i, soon);
         const face =
           i === 0 && art ? (

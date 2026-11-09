@@ -10,11 +10,19 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **The Apps tile offers the Flatpak**, for x64 and ARM, beside the Windows, macOS and Linux downloads. The phone app lists it too.
+
 ## ⚡ Improved
 
 - **A local side is read once instead of twice.** Symbolic links, junctions and the other entries the engine cannot copy are found while the side is read, so the extra stage "Checking the left side for links" is gone and a large folder is done sooner. Such entries still show up as left for later, as before.
 - **A file left for later no longer turns a run orange.** The next run simply tries it again. If that run has to leave it too, it fails: red in the list, a FAILED notification, and the sentence "Some files could not be carried in two runs in a row" with the files and why.
 - **A cloud file that could not be downloaded says so.** On Windows, a file that a cloud client such as OneDrive or OpenCloud keeps online only, and could not fetch when ArrowLoop read it, is left for later with a sentence that explains this and suggests keeping it on the device, instead of the bare Windows error.
+
+## 🎨 Design
+
+- **The ARM downloads say ARM.** The second part of the Windows and Linux buttons on the Apps tile repeated Windows and Linux until the pointer reached it. It reads ARM, as on the README.
 
 ## 2.6.2 - 2026-11-09
 

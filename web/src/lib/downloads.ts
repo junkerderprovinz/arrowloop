@@ -15,6 +15,8 @@ export const DOWNLOADS = {
   macos: `${RELEASE}/arrowloop-macos-universal.dmg`,
   linux: `${RELEASE}/arrowloop-linux-amd64`,
   linuxArm: `${RELEASE}/arrowloop-linux-arm64`,
+  flatpak: `${RELEASE}/arrowloop-linux-amd64.flatpak`,
+  flatpakArm: `${RELEASE}/arrowloop-linux-arm64.flatpak`,
   apk: `${RELEASE}/arrowloop-android-arm64.apk`,
 }
 

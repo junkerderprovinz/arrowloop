@@ -251,6 +251,7 @@ body {
   --brand-android: var(--tile-ink);
   --brand-docker: var(--tile-ink);
   --brand-windows: var(--tile-ink);
+  --brand-flatpak: var(--tile-ink);
   --brand-unraid-from: var(--tile-ink);
   --brand-unraid-to: var(--tile-ink);
 }

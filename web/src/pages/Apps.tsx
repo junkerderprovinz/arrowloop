@@ -7,7 +7,7 @@ import { Stack } from '../components/Shell'
 import { shownVersion } from '../lib/infoTile'
 import { Card } from '../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../lib/glimstone/ReadmeButton'
-import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, FDROID_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
+import { ANDROID_SVG, APPLE_SVG, DOCKER_SVG, FDROID_SVG, FLATPAK_SVG, LINUX_SVG, PLAY_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from '../lib/appMarks'
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from '../lib/downloads'
 import { followExternal } from '../lib/external'
 import { useT } from '../lib/i18n'
@@ -173,7 +173,7 @@ function DesktopCard({ version }: { version: string }) {
           brand="windows"
           parts={[
             { name: t('apps.windows'), sub: 'x64', href: DOWNLOADS.windows },
-            { name: t('apps.windows'), sub: 'ARM64', href: DOWNLOADS.windowsArm },
+            { name: 'ARM', label: `${t('apps.windows')} ARM`, href: DOWNLOADS.windowsArm },
           ]}
           mark={<BrandMark svg={WINDOWS_SVG} />}
           markClass="glim-windows-mark"
@@ -189,9 +189,19 @@ function DesktopCard({ version }: { version: string }) {
           brand="linux"
           parts={[
             { name: t('apps.linux'), sub: 'x64', href: DOWNLOADS.linux },
-            { name: t('apps.linux'), sub: 'ARM64', href: DOWNLOADS.linuxArm },
+            { name: 'ARM', label: `${t('apps.linux')} ARM`, href: DOWNLOADS.linuxArm },
           ]}
           mark={<BrandMark svg={LINUX_SVG} />}
+          onLinkClick={followExternal}
+        />
+        <ReadmeButton
+          brand="flatpak"
+          parts={[
+            { name: t('apps.flatpak'), sub: 'x64', href: DOWNLOADS.flatpak },
+            { name: 'ARM', label: `${t('apps.flatpak')} ARM`, href: DOWNLOADS.flatpakArm },
+          ]}
+          mark={<BrandMark svg={FLATPAK_SVG} />}
+          markClass="glim-flatpak-mark"
           onLinkClick={followExternal}
         />
       </div>

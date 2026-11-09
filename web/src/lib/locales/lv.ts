@@ -922,6 +922,7 @@ const lv: Translations = {
   'apps.windows': 'Windows',
   'apps.macos': 'macOS',
   'apps.linux': 'Linux',
+  'apps.flatpak': 'Flatpak',
   'apps.playStore': 'Google Play',
   'apps.android': 'Android',
   'apps.apk': 'APK',
