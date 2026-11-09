@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { api, type AutoBackups } from "./api";
+import { dated } from "./clock";
 import { Field, NumberField, TimeField } from "./fields";
 import { FolderPicker } from "./FolderPicker";
 import { Glyph } from "./glyphs";
@@ -81,10 +82,14 @@ export function AutoBackupSection({ hue }: { hue: number }) {
             mark={(ink) => <Glyph name="IconFolder" color={ink} />}
             onPress={() => setPicking(true)}
           />
+          {/* Starts from what is typed, which may not be saved yet, and
+              replaces it: the field can still be focused, and leaving it
+              would otherwise save the typed path over the chosen one. */}
           <FolderPicker
             visible={picking}
-            start={auto.folder || state?.folder}
+            start={folder || auto.folder || state?.folder}
             onPick={(path) => {
+              setFolder(null);
               set({ folder: path });
               setPicking(false);
             }}
@@ -94,7 +99,7 @@ export function AutoBackupSection({ hue }: { hue: number }) {
       )}
       <Pair
         label={t("autoBackup.latest")}
-        value={latest ? new Date(latest.made).toLocaleString(lang) : t("autoBackup.none")}
+        value={latest ? dated(latest.made, lang) : t("autoBackup.none")}
       />
       {state?.last?.error ? <Body>{t("autoBackup.failed", { error: state.last.error })}</Body> : null}
       {error ? <Body>{error}</Body> : null}

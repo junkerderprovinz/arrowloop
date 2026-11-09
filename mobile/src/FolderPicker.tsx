@@ -5,7 +5,7 @@ import { api } from "./api";
 import { useT } from "./i18n";
 import { Glyph } from "./glyphs";
 import { space, text, TOUCH } from "./theme";
-import { Body, Button, Caption, Press, useTheme } from "./ui";
+import { Body, Button, Caption, Press, useKeyboardOverlap, useTheme } from "./ui";
 
 /**
  * A dialog for choosing a folder on the phone or on a target instead of typing
@@ -39,6 +39,7 @@ export function FolderPicker({
   const [busy, setBusy] = useState(false);
   /** The name of the folder being made, or null while none is. */
   const [naming, setNaming] = useState<string | null>(null);
+  const keyboard = useKeyboardOverlap();
 
   /** Opens a folder and reports whether it could be read. */
   const go = useCallback(async (path: string) => {
@@ -58,6 +59,15 @@ export function FolderPicker({
       setBusy(false);
     }
   }, []);
+
+  /**
+   * Opens the folder above, or the top where that cannot be read: above the
+   * app's own data lies a folder Android keeps closed, and the way to the
+   * phone's shared folders would otherwise end there.
+   */
+  const climb = async () => {
+    if (!(await go(parent))) await go(within);
+  };
 
   /** Makes the folder and opens it, since it is usually the one about to be chosen. */
   const make = async () => {
@@ -103,7 +113,12 @@ export function FolderPicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={[styles.ground, { backgroundColor: p.scrim }]} onPress={onClose}>
+      {/* Stands above the keyboard while a new folder is named. */}
+      <Pressable
+        ref={keyboard.ground}
+        style={[styles.ground, { backgroundColor: p.scrim, paddingBottom: space.md + keyboard.covered }]}
+        onPress={onClose}
+      >
         {/* Swallows presses so a tap inside does not close the dialog. */}
         <Pressable
           style={[styles.card, { backgroundColor: p.surface, ...corners.card }]}
@@ -113,7 +128,7 @@ export function FolderPicker({
           <Caption>{at || t("pick.roots")}</Caption>
 
           <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-            {at && at !== within ? row(t("pick.up"), () => void go(parent), "IconBack") : null}
+            {at && at !== within ? row(t("pick.up"), () => void climb(), "IconBack") : null}
             {/* Targets at the top level only, where they cannot pass for a subfolder. */}
             {!at
               ? targets.map((name) =>

@@ -1563,6 +1563,29 @@ function useKeyboardCover(scroller: RefObject<ScrollView | null>, inner: RefObje
   return { frame, covered, onLayout };
 }
 
+/**
+ * How much of a dialog's ground the keyboard covers, for a dialog that has to
+ * keep its field above it. A Modal is not shrunk for the keyboard any more
+ * than a page is.
+ */
+export function useKeyboardOverlap() {
+  const ground = useRef<View>(null);
+  const [covered, setCovered] = useState(0);
+  useEffect(() => {
+    const shown = Keyboard.addListener("keyboardDidShow", (e) => {
+      ground.current?.measureInWindow((_x, y, _w, height) =>
+        setCovered(Math.max(0, y + height - e.endCoordinates.screenY)),
+      );
+    });
+    const hidden = Keyboard.addListener("keyboardDidHide", () => setCovered(0));
+    return () => {
+      shown.remove();
+      hidden.remove();
+    };
+  }, []);
+  return { ground, covered };
+}
+
 export type PageScroll = ReturnType<typeof usePageScroll>;
 
 /**
