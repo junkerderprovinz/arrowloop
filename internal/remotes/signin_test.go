@@ -7,15 +7,18 @@ import (
 	"testing"
 
 	"github.com/rclone/rclone/backend/memory"
+	"github.com/rclone/rclone/backend/overview"
 	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configmap"
 )
 
 // fakeBackend registers a backend for one test, kept out of the tests that
-// walk every backend.
+// walk every backend. rclone logs an error for a backend whose overview it does
+// not ship, so the fake brings an empty one.
 func fakeBackend(t *testing.T, info *rclonefs.RegInfo) {
 	t.Helper()
+	info.Overview = new(overview.BackendConfig)
 	rclonefs.Register(info)
 	t.Cleanup(func() {
 		rclonefs.Registry = slices.DeleteFunc(rclonefs.Registry, func(r *rclonefs.RegInfo) bool { return r == info })
