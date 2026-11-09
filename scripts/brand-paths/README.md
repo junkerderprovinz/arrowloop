@@ -56,8 +56,8 @@ generator, and in the header of every component built from it.
 Apache-2.0 is one-way compatible with this project's AGPL-3.0: these files may be
 carried into it, and the combined work stays AGPL-3.0.
 
-**The brands' own websites and repositories**, for eight providers that neither
-Simple Icons nor Dashboard Icons carries. Like the hand-collected marks above,
+**The brands' own websites and repositories**, for ten providers that neither
+Simple Icons nor Dashboard Icons carries as a mark the generator can draw. Like the hand-collected marks above,
 each is its owner's, used under the trademark position below.
 
 - `drime.svg`: the brand mark in the footer of <https://drime.cloud>, where the
@@ -85,6 +85,18 @@ each is its owner's, used under the trademark position below.
   The drawing is shaded, so the trace keeps six tones, each the average of one
   area of it: the three faces, the heart, and the black and grey of the small
   cubes.
+- `kdrive.svg`: `resources/logos/kdrive-without-text.svg` from Infomaniak's own
+  desktop client <https://github.com/Infomaniak/desktop-kDrive>, the kDrive
+  folders without the wordmark. Dashboard Icons has the same drawing as
+  `infomaniak-kdrive.svg`, but with the wordmark set as `<text>`, which the
+  generator refuses, and Simple Icons has only Infomaniak's company mark. The
+  repository is **GPL-3.0-or-later**, and the file carries that notice in its
+  header. Section 13 of this project's AGPL-3.0 allows combining it with a
+  GPL-3.0 work, and the file keeps its own licence.
+- `dosya.svg`: `logo.svg` from <https://dosya.dev>. The site's `favicon.svg` is
+  the same drawing, with the folder's outline in `#fafafa` when the system is
+  dark. The generator takes that pair through `FORCE_THEMED`, since the
+  near-black outline would vanish on the dark theme.
 
 Every file but the traced FileLu and 1Fichier marks is copied
 unmodified; what the generator produces from one is a translation into JSX and

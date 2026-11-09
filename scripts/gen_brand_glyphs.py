@@ -213,6 +213,10 @@ FORCE_THEMED = {
     "opendrive": {"#fff": ("#ffffff", "#2b2b2b")},
     # White on a #3d3d3d plate, likewise.
     "ulozto": {"#fff": ("#ffffff", "#3d3d3d")},
+    # The folder's near-black outline would vanish on the dark tile. The pair
+    # is the brand's own: dosya.dev's favicon draws it in #fafafa when the
+    # system is dark.
+    "dosya": {"#18181b": ("#fafafa", "#18181b")},
 }
 
 
@@ -383,6 +387,8 @@ TILE_COLOUR = {
     # bubbles stay white.
     "seaweedfs": ("#0162bf", None),
     "opencloud": ("#20434f", "#e2baff"),
+    # kDrive's blue folder rather than the pale ones behind it, which cover more.
+    "kdrive": ("#1a47ff", None),
 }
 
 
@@ -522,6 +528,9 @@ LOCAL = [
     ("IconSia", "sia", "Sia", "sia.tech, the site's favicon", BRAND),
     ("IconFichier", "fichier", "1Fichier",
      "traced from img.1fichier.com/logo.png, which has no vector", BRAND),
+    ("IconKdrive", "kdrive", "Infomaniak kDrive",
+     "Infomaniak/desktop-kDrive, resources/logos/kdrive-without-text.svg", "GPL-3.0-or-later"),
+    ("IconDosya", "dosya", "dosya.dev", "dosya.dev, the site's logo.svg", BRAND),
 ]
 
 # Attributes that mean nothing inside a component, or that the wrapper sets.
@@ -1018,7 +1027,9 @@ def local(name, slug, note, source, licence):
 
     # The root's painting attributes come along: Yandex's whole colour is a
     # `fill` on the `<svg>`.
-    skip = {"viewBox", "width", "height", "id", "class", "role", "style", "x", "y"}
+    # The wrapper is aria-hidden with the provider's name beside it, so the
+    # file's own label goes the way of its title.
+    skip = {"viewBox", "width", "height", "id", "class", "role", "aria-label", "style", "x", "y"}
     root_attrs = []
     for raw, value in root.attrib.items():
         if raw.startswith("{") or raw in skip or _camel(raw) in ("xmlns", "xmlnsXlink", "version"):

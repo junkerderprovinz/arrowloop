@@ -58,6 +58,7 @@
   --brand-premiumize-0: #fc0;
   --brand-filelu-0: #00eaff;
   --brand-sia-0: #C3E500;
+  --brand-dosya-forced0: #fafafa;
 }
 
 @media (prefers-color-scheme: light) {
@@ -107,6 +108,7 @@
     --brand-premiumize-0: #7a6200;
     --brand-filelu-0: #00707a;
     --brand-sia-0: #5b6b00;
+    --brand-dosya-forced0: #18181b;
   }
 }
 
@@ -156,4 +158,5 @@
   --brand-premiumize-0: #7a6200;
   --brand-filelu-0: #00707a;
   --brand-sia-0: #5b6b00;
+  --brand-dosya-forced0: #18181b;
 }

@@ -66,6 +66,8 @@ import {
   IconQingcloud,
   IconSia,
   IconFichier,
+  IconKdrive,
+  IconDosya,
 } from './brandGlyphs'
 import {
   IconAdd,
@@ -156,6 +158,8 @@ const MARKS: Record<string, () => ReactNode> = {
   IconQingcloud: () => <IconQingcloud />,
   IconSia: () => <IconSia />,
   IconFichier: () => <IconFichier />,
+  IconKdrive: () => <IconKdrive />,
+  IconDosya: () => <IconDosya />,
   IconAdd: () => <IconAdd />,
   IconBuckets: () => <IconBuckets />,
   IconCheck: () => <IconCheck />,
