@@ -1,0 +1,1 @@
+Pull the plug on the external drive mid-sync and ArrowLoop simply waits for it, then carries on once it is back, without a single scary red run. A file that has to sit out one run stays calm too. On OPPO phones the folders other apps share should now show up in the picker too.

@@ -79,6 +79,18 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.3" date="2026-11-09">
+      <description>
+        <p>A job waits for its drive instead of failing, and a file left for later only fails a run when it is left twice.</p>
+        <ul>
+          <li>A job pauses while its external or network drive is away and runs again once it is back</li>
+          <li>A local side is read once, so the separate check for links is gone</li>
+          <li>Infomaniak kDrive and dosya.dev join the clouds</li>
+          <li>The Apps tile offers the Flatpak</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.3</url>
+    </release>
     <release version="2.6.2" date="2026-11-09">
       <description>
         <p>The Automatic backups card picks its folder in the folder picker.</p>

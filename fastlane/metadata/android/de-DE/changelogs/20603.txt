@@ -1,0 +1,1 @@
+Zieh mitten im Sync die externe Platte ab, und ArrowLoop wartet einfach, bis sie wieder da ist, und macht dann weiter, ganz ohne roten Schreck. Auch eine Datei, die einen Lauf aussetzen muss, bleibt gelassen. Auf OPPO-Handys sollten sich jetzt auch die Ordner anderer Apps auswählen lassen.
