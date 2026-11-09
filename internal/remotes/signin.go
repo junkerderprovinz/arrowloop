@@ -167,7 +167,8 @@ var writeBack struct {
 var listening sync.Once
 
 // listen routes rclone's saves for the connection string under check to
-// writeBack. Every other save goes to the config file as before.
+// writeBack. Every other save goes to the config file. rclone only saves for a
+// section the config file has, so the section under check is reported as one.
 func listen() {
 	save := rclonefs.ConfigFileSet
 	rclonefs.ConfigFileSet = func(section, key, value string) error {
@@ -181,6 +182,13 @@ func listen() {
 			return nil
 		}
 		return save(section, key, value)
+	}
+	has := rclonefs.ConfigFileHasSection
+	rclonefs.ConfigFileHasSection = func(section string) bool {
+		writeBack.mu.Lock()
+		caught := writeBack.values != nil && section == writeBack.section
+		writeBack.mu.Unlock()
+		return caught || has(section)
 	}
 }
 

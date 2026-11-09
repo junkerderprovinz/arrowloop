@@ -124,6 +124,8 @@ var essential = map[string]map[string]bool{
 	"box":        {"token": true},
 	"jottacloud": {"token": true},
 	"yandex":     {"token": true},
+	// Every call is addressed to one drive, and rclone refuses to start without it.
+	"kdrive": {"token": true, "drive_id": true},
 
 	"filescom":        {"site": true, "username": true, "password": true},
 	"internetarchive": {"access_key_id": true, "secret_access_key": true},
