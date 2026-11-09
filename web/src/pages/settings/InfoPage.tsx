@@ -116,10 +116,10 @@ export function InfoPage({
               },
             }}
             settings={
-              windowSettings ? (
-                <UpdateSetting window={windowSettings} onWindow={onWindow} />
-              ) : (
-                versions?.deployment === 'container' && <ContainerUpdateSetting />
+              (windowSettings || versions?.deployment === 'container') && (
+                <div data-new="auto-update">
+                  {windowSettings ? <UpdateSetting window={windowSettings} onWindow={onWindow} /> : <ContainerUpdateSetting />}
+                </div>
               )
             }
             onReleaseNotes={openNewsWindow}

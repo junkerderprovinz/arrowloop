@@ -63,6 +63,25 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.6.2',
+    changes: [
+      // The tiles stand in the provider picker, a window no address opens.
+      { id: 'kdrive-dosya', text: 'new.change.kdriveDosya' },
+      {
+        id: 'apps-flatpak',
+        at: ['/settings/apps'],
+        where: ['nav.settings', 'settings.apps'],
+        text: 'new.change.appsFlatpak',
+      },
+      {
+        id: 'auto-update',
+        at: ['/settings/info'],
+        where: ['nav.settings', 'settings.info'],
+        text: 'new.change.autoUpdate',
+      },
+    ],
+  },
+  {
     after: '2.6.0',
     changes: [
       {

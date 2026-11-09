@@ -200,7 +200,11 @@ function DesktopCard({ version }: { version: string }) {
             { name: t('apps.flatpak'), sub: 'x64', href: DOWNLOADS.flatpak },
             { name: 'ARM', label: `${t('apps.flatpak')} ARM`, href: DOWNLOADS.flatpakArm },
           ]}
-          mark={<BrandMark svg={FLATPAK_SVG} />}
+          mark={
+            <span data-new="apps-flatpak" className="inline-flex">
+              <BrandMark svg={FLATPAK_SVG} />
+            </span>
+          }
           markClass="glim-flatpak-mark"
           onLinkClick={followExternal}
         />
