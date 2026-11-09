@@ -45,6 +45,6 @@ describe('a line of the file log', () => {
       </Places.Provider>,
     )
     const way = screen.getByTestId('touch-way')
-    expect(way.textContent).toBe('HandyCopiedrightnas')
+    expect(way.textContent).toBe('/data/HandyCopiedrightnas:Fotos')
   })
 })

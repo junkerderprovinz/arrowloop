@@ -4,7 +4,7 @@ import { IconToLeft, IconToRight } from './glyphs'
 import type { Touch } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { dayTime } from '../lib/dayTime'
-import { entryAction, entryNote, placesOf, unreadFolder } from '../lib/entryLabel'
+import { entryAction, entryNote, sideName, unreadFolder } from '../lib/entryLabel'
 import { translateSide, useT } from '../lib/i18n'
 import { usePlaces } from '../lib/places'
 
@@ -39,7 +39,7 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
   // The sides around it and the arrow say where, so the badge only says what.
   const job = jobs.find((j) => j.name === e.Job)
   const label = entryAction(t, e, job, drives)
-  const sides = job && (e.Side === 'left' || e.Side === 'right') ? placesOf(job, drives) : null
+  const sides = job && (e.Side === 'left' || e.Side === 'right') ? [sideName(job.left, drives), sideName(job.right, drives)] : null
   const note = entryNote(t, e)
   // In the column grid every cell keeps to one line and its column, cut at the
   // end, so the rows read down their columns; the narrow flex row wraps instead.
@@ -60,9 +60,13 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
       <span
         data-testid="touch-way"
         style={columns?.cell('what')}
-        className={`flex w-96 min-w-0 shrink-0 items-center gap-2 max-md:w-72 max-sm:w-auto max-sm:max-w-full${grid}`}
+        className={`flex w-[35rem] min-w-0 shrink-0 items-center gap-2 max-md:w-72 max-sm:w-auto max-sm:max-w-full${grid}`}
       >
-        {sides && <span className="min-w-0 shrink truncate text-carbon-textSub">{sides[0].name}</span>}
+        {sides && (
+          <span className="min-w-0 shrink truncate text-carbon-textSub" title={sides[0]}>
+            {sides[0]}
+          </span>
+        )}
         <span className="flex min-w-0 shrink-0 items-center gap-1">
           <Badge tone={touchTone(e)} wrap={!columns} className={columns ? 'min-w-0 max-w-full' : ''}>
             {columns ? <span className="truncate">{label}</span> : label}
@@ -74,7 +78,11 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
             </span>
           )}
         </span>
-        {sides && <span className="min-w-0 shrink truncate text-carbon-textSub">{sides[1].name}</span>}
+        {sides && (
+          <span className="min-w-0 shrink truncate text-carbon-textSub" title={sides[1]}>
+            {sides[1]}
+          </span>
+        )}
       </span>
       <span style={columns?.cell('when')} className={`glim-num w-40 min-w-0 shrink-0 truncate whitespace-nowrap text-carbon-textMuted max-sm:hidden${grid}`}>
         {dayTime(e.When, lang, (p) => t('list.when', p))}

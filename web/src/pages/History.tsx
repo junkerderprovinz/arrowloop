@@ -44,7 +44,7 @@ const SEVERITY_LABEL: Record<Severity, TranslationKey> = {
 
 /** The file log's columns at their built-in widths; the path takes the rest. */
 export const FILE_COLUMNS: ColumnDef[] = [
-  { id: 'what', width: 384, min: 160 },
+  { id: 'what', width: 560, min: 200 },
   { id: 'when', width: 160, min: 96 },
   { id: 'job', width: 128, min: 64 },
   { id: 'size', width: 56, min: 48 },
@@ -179,7 +179,7 @@ export function History({
         {
           id: 'what',
           label: t('history.filterKind'),
-          className: 'w-96 shrink-0 max-md:w-72 max-sm:w-auto',
+          className: 'w-[35rem] shrink-0 max-md:w-72 max-sm:w-auto',
           filter: { active: kind !== 'all', panel: <TouchKindChoice value={kind} onChange={setKind} /> },
         },
         { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },

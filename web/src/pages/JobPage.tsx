@@ -490,7 +490,7 @@ function FilesCard({ job }: { job: Job }) {
     {
       id: 'what',
       label: t('history.filterKind'),
-      className: 'w-96 shrink-0 max-md:w-72 max-sm:w-auto',
+      className: 'w-[35rem] shrink-0 max-md:w-72 max-sm:w-auto',
       filter: { active: kind !== 'all', panel: <TouchKindChoice value={kind} onChange={setKind} /> },
     },
     { id: 'when', label: t('list.head.when'), className: 'w-40 shrink-0 max-sm:hidden' },
