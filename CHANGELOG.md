@@ -13,6 +13,7 @@ The full notes for each release are in
 ## ✨ Added
 
 - **The Apps tile offers the Flatpak**, for x64 and ARM, beside the Windows, macOS and Linux downloads. The phone app lists it too.
+- **A container looks for new versions if you let it.** Switch on Update automatically on the Info tile, and the container asks GitHub once a day for a newer release, names it under ArrowLoop in the Version card and writes it to its log. The switch is off from the start, and the container itself is still updated the way you deployed it.
 
 ## ⚡ Improved
 
@@ -28,7 +29,7 @@ The full notes for each release are in
 ## 🎨 Design
 
 - **The ARM downloads say ARM.** The second part of the Windows and Linux buttons on the Apps tile repeated Windows and Linux until the pointer reached it. It reads ARM, as on the README.
-- **Update automatically has moved to the Info tile.** It sits in the Version card under the versions it keeps current, and so does the Flatpak's note that it updates through your software centre.
+- **Update automatically has moved to the Info tile.** It sits in the Version card right under ArrowLoop, and so does the Flatpak's note that it updates through your software centre.
 
 ## 2.6.2 - 2026-11-09
 

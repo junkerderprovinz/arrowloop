@@ -464,7 +464,7 @@ const he: Translations = {
   'start.withSystemHint': 'ArrowLoop עולה עם הכניסה שלך, כך שמשימה מתוזמנת רצה בלי שמישהו יפתח קודם את החלון. הרישום שייך רק לך ואינו דורש הרשאות מנהל.',
   'update.auto': 'עדכון אוטומטי',
   'update.autoHint': 'פעם ביום ArrowLoop מחפש גרסה חדשה, מוריד אותה ברקע ובודק אותה מול סכומי הביקורת שפורסמו עם הגרסה. הגרסה החדשה נכנסת לפעולה בפעם הבאה שתפעיל את ArrowLoop, כך שסנכרון שרץ לא נקטע. עותק מותקן ועותק נייד מתעדכנים שניהם במקום שבו הם נמצאים.',
-  'update.autoContainerHint': 'אפשרי רק בגרסת שולחן העבודה: קונטיינר לא יכול להחליף את עצמו מבפנים. במקום זאת עדכן אותו באותה דרך שבה פרסת אותו (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'פעם ביום ArrowLoop שואל את GitHub אם יצאה גרסה חדשה ומציין אותה כאן. קונטיינר לא יכול להחליף את עצמו מבפנים, לכן עדכן אותו באותה דרך שבה פרסת אותו (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} הורד ויפעל בפעם הבאה שתפעיל את היישום.',
   'update.fromStore': 'העדכונים מגיעים דרך מרכז התוכנה',
   'update.fromStoreHint': 'העותק הזה של ArrowLoop הוא Flatpak ואינו מחליף את עצמו. אם הותקן מ-Flathub, כל גרסה חדשה מגיעה דרך מרכז התוכנה. אם הותקן מקובץ .flatpak שהורד, הוא מתעדכן כשפותחים באותה דרך את הקובץ של הגרסה הבאה.',

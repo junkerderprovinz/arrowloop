@@ -18,6 +18,7 @@ import { useT, type TranslationKey } from '../../lib/i18n'
 import { shownVersion } from '../../lib/infoTile'
 import { useToast } from '../../lib/toast'
 import { openNewsWindow, useWhatsNew } from '../../lib/whatsNewStore'
+import { useEngineSettings } from './engineSettings'
 import { SettingsRow } from './rows'
 
 const REFUSED: Record<string, TranslationKey> = {
@@ -46,7 +47,7 @@ export function InfoPage({
 }) {
   const { t } = useT()
   const push = useToast()
-  const [versions, setVersions] = useState<{ arrowloop: string; rclone: string; deployment?: string } | null>(null)
+  const [versions, setVersions] = useState<{ arrowloop: string; rclone: string; deployment?: string; newRelease?: string } | null>(null)
   // A release that marks no changes has no list for New to count, so the card
   // offers its notes instead.
   const news = useWhatsNew()
@@ -96,7 +97,12 @@ export function InfoPage({
               releaseNotes: t('about.releaseNotes'),
             }}
             rows={[
-              { name: 'ArrowLoop', version: versions?.arrowloop ?? version, repoUrl: REPO },
+              {
+                name: 'ArrowLoop',
+                sub: versions?.newRelease && t('info.available', { version: shownVersion(versions.newRelease) }),
+                version: versions?.arrowloop ?? version,
+                repoUrl: REPO,
+              },
               { name: 'GlimStone', hint: t('info.glimstoneHint'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO },
               ...(versions ? [{ name: 'rclone', hint: t('info.rcloneHint'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
             ]}
@@ -192,10 +198,20 @@ function UpdateSetting({ window: windowSettings, onWindow }: { window: WindowSet
 }
 
 /**
- * The switch the desktop app has, shown off and out of reach in a container,
- * which cannot replace itself from inside. The hint says how it is updated.
+ * The desktop app's switch as a container has it. A container cannot replace
+ * itself, so there the engine only looks for a new version once a day and the
+ * Version card names it.
  */
 function ContainerUpdateSetting() {
   const { t } = useT()
-  return <ToggleRow label={t('update.auto')} hint={t('update.autoContainerHint')} checked={false} disabled onChange={() => {}} />
+  const { loaded, draft, patch } = useEngineSettings()
+  if (!loaded) return null
+  return (
+    <ToggleRow
+      label={t('update.auto')}
+      hint={t('update.autoContainerHint')}
+      checked={draft.updateCheck === true}
+      onChange={(updateCheck) => patch({ updateCheck })}
+    />
+  )
 }

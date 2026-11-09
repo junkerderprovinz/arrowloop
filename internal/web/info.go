@@ -40,6 +40,8 @@ type versions struct {
 	Go        string `json:"go"`
 	// Deployment is what kind of instance answers, as in Server.Deployment.
 	Deployment string `json:"deployment,omitempty"`
+	// NewRelease is the newer release the daily check found, if any.
+	NewRelease string `json:"newRelease,omitempty"`
 }
 
 func currentVersions() versions {
@@ -51,6 +53,9 @@ func currentVersions() versions {
 func (s *Server) versions(w http.ResponseWriter, _ *http.Request) {
 	v := currentVersions()
 	v.Deployment = s.Deployment
+	s.newReleaseMu.Lock()
+	v.NewRelease = s.newRelease
+	s.newReleaseMu.Unlock()
 	writeJSON(w, http.StatusOK, v)
 }
 
@@ -66,20 +71,66 @@ type updateCheck struct {
 	ReleaseURL      string `json:"releaseUrl"`
 }
 
-// checkUpdate runs only when somebody presses the button, so the engine asks
-// the outside about itself at no other time.
+// checkUpdate answers a press of the button. Apart from it the engine asks the
+// outside about itself only in WatchReleases, while its switch is on.
 func (s *Server) checkUpdate(w http.ResponseWriter, r *http.Request) {
-	api := s.Releases
-	if api == "" {
-		api = releaseAPI
-	}
-	got, code, err := latestRelease(r.Context(), api, boot.Version)
+	got, code, err := latestRelease(r.Context(), s.releases(), boot.Version)
 	if err != nil {
 		s.logf("update check: %v", err)
 		writeJSON(w, http.StatusBadGateway, map[string]string{"code": code, "error": err.Error()})
 		return
 	}
 	writeJSON(w, http.StatusOK, got)
+}
+
+func (s *Server) releases() string {
+	if s.Releases == "" {
+		return releaseAPI
+	}
+	return s.Releases
+}
+
+// releaseCheckEvery is how often WatchReleases asks while its switch is on.
+const releaseCheckEvery = 24 * time.Hour
+
+// WatchReleases asks GitHub once a day, while the update switch is on, whether
+// a newer release is out, and keeps the answer for the Version card. It
+// returns when ctx ends.
+func (s *Server) WatchReleases(ctx context.Context) {
+	look := s.ReleaseLook
+	if look == 0 {
+		look = time.Hour
+	}
+	ticker := time.NewTicker(look)
+	defer ticker.Stop()
+	var last time.Time
+	for {
+		if s.Runner.Config().UpdateCheck && time.Since(last) >= releaseCheckEvery {
+			last = time.Now()
+			s.lookForRelease(ctx)
+		}
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+		}
+	}
+}
+
+func (s *Server) lookForRelease(ctx context.Context) {
+	got, _, err := latestRelease(ctx, s.releases(), boot.Version)
+	if err != nil {
+		s.logf("daily update check: %v", err)
+		return
+	}
+	newer := ""
+	if got.UpdateAvailable {
+		newer = got.Latest
+		s.logf("ArrowLoop %s is out: %s", got.Latest, got.ReleaseURL)
+	}
+	s.newReleaseMu.Lock()
+	s.newRelease = newer
+	s.newReleaseMu.Unlock()
 }
 
 var releaseClient = &http.Client{Timeout: 10 * time.Second}

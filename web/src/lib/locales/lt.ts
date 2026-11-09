@@ -464,7 +464,7 @@ const lt: Translations = {
   'start.withSystemHint': 'ArrowLoop pasileidžia jums prisijungus, tad suplanuota užduotis įvykdoma niekam pirma neatvėrus lango. Įrašas priklauso tik jums ir neprašo administratoriaus teisių.',
   'update.auto': 'Atnaujinti automatiškai',
   'update.autoHint': 'Kartą per dieną ArrowLoop ieško naujos versijos, atsisiunčia ją fone ir patikrina pagal kontrolines sumas, paskelbtas kartu su leidimu. Nauja versija pradeda veikti kitą kartą, kai paleisite ArrowLoop, todėl vykstantis sinchronizavimas nenutrūksta. Tiek įdiegta, tiek nešiojamoji kopija atsinaujina ten, kur yra.',
-  'update.autoContainerHint': 'Galima tik darbalaukio versijoje: konteineris negali pakeisti savęs iš vidaus. Vietoj to atnaujink jį taip, kaip jį diegei (docker pull, Unraid Community Applications, Watchtower ir pan.).',
+  'update.autoContainerHint': 'Kartą per dieną ArrowLoop paklausia GitHub, ar išėjo nauja versija, ir nurodo ją čia. Konteineris negali pakeisti savęs iš vidaus, todėl atnaujink jį taip, kaip jį diegei (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} atsisiųsta ir veiks kitą kartą, kai paleisite programą.',
   'update.fromStore': 'Atnaujinimai ateina per programinės įrangos centrą',
   'update.fromStoreHint': 'Ši ArrowLoop kopija yra Flatpak ir pati savęs nekeičia. Įdiegta iš Flathub, kiekvieną naują versiją ji gauna per tavo programinės įrangos centrą. Įdiegta iš atsisiųsto .flatpak failo, ji atnaujinama, kai tokiu pat būdu atveri kitos laidos failą.',

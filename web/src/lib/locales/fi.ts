@@ -464,7 +464,7 @@ const fi: Translations = {
   'start.withSystemHint': 'ArrowLoop käynnistyy kirjautuessasi, joten ajastettu työ suoritetaan ilman että kenenkään tarvitsee ensin avata ikkunaa. Merkintä on vain sinun eikä vaadi järjestelmänvalvojan oikeuksia.',
   'update.auto': 'Päivitä automaattisesti',
   'update.autoHint': 'Kerran päivässä ArrowLoop etsii uuden version, lataa sen taustalla ja tarkistaa sen julkaisun mukana julkaistuja tarkistussummia vasten. Uusi versio otetaan käyttöön, kun seuraavan kerran käynnistät ArrowLoopin, joten käynnissä oleva synkronointi ei keskeydy. Asennettu kopio ja siirrettävä kopio päivittyvät kumpikin paikallaan.',
-  'update.autoContainerHint': 'Mahdollista vain työpöytäversiossa: kontti ei voi korvata itseään sisältäpäin. Päivitä se sen sijaan samalla tavalla kuin otit sen käyttöön (docker pull, Unraid Community Applications, Watchtower, ...).',
+  'update.autoContainerHint': 'Kerran päivässä ArrowLoop kysyy GitHubista, onko uusi versio julkaistu, ja kertoo sen tässä. Kontti ei voi korvata itseään sisältäpäin, joten päivitä se samalla tavalla kuin otit sen käyttöön (docker pull, Unraid Community Applications, Watchtower).',
   'update.ready': 'ArrowLoop {version} on ladattu ja on käytössä, kun seuraavan kerran käynnistät sovelluksen.',
   'update.fromStore': 'Päivitykset tulevat sovelluskeskuksen kautta',
   'update.fromStoreHint': 'Tämä ArrowLoopin kopio on Flatpak eikä korvaa itseään. Flathubista asennettuna se saa jokaisen uuden version sovelluskeskuksesi kautta. Ladatusta .flatpak-tiedostosta asennettuna se päivittyy, kun avaat seuraavan julkaisun tiedoston samalla tavalla.',

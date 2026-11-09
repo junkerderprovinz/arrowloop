@@ -2,12 +2,19 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ApiError, type WindowSettings } from '../../lib/api'
+import { ApiError, type Settings, type WindowSettings } from '../../lib/api'
 import { CHANGES } from '../../lib/whatsNew'
 
 const updateCheck = vi.fn()
 const diagnostics = vi.fn(() => Promise.resolve('{"versions":{}}'))
-const versions = vi.fn(() => Promise.resolve<{ arrowloop: string; rclone: string; go: string; deployment?: string }>({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1' }))
+const versions = vi.fn(() =>
+  Promise.resolve<{ arrowloop: string; rclone: string; go: string; deployment?: string; newRelease?: string }>({
+    arrowloop: 'v1.8.0',
+    rclone: 'v1.75.2',
+    go: 'go1.27.1',
+  }),
+)
+const saveSettings = vi.fn((s: Settings) => Promise.resolve(s))
 const pushed: { message: string; severity?: string }[] = []
 
 vi.mock('../../lib/api', async (actual) => ({
@@ -16,6 +23,8 @@ vi.mock('../../lib/api', async (actual) => ({
     versions: () => versions(),
     updateCheck: () => updateCheck(),
     diagnostics: () => diagnostics(),
+    settings: () => Promise.resolve({}),
+    saveSettings: (s: Settings) => saveSettings(s),
   },
 }))
 vi.mock('../../lib/toast', () => ({
@@ -181,11 +190,19 @@ describe('the Info tile', () => {
     expect(screen.queryByRole('switch')).toBeNull()
   })
 
-  it('shows a container the update switch turned off, as one it cannot use', async () => {
+  it('lets a container switch on the daily check for a new version', async () => {
     versions.mockResolvedValueOnce({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1', deployment: 'container' })
     render(<InfoPage version="v1.8.0" {...server} />)
     const toggle = await screen.findByRole('switch', { name: 'Update automatically' })
     expect(toggle.getAttribute('aria-checked')).toBe('false')
-    expect((toggle as HTMLButtonElement).disabled || toggle.getAttribute('aria-disabled') === 'true').toBe(true)
+    expect((toggle as HTMLButtonElement).disabled).toBe(false)
+    fireEvent.click(toggle)
+    await waitFor(() => expect(saveSettings).toHaveBeenCalledWith({ updateCheck: true }), { timeout: 3000 })
+  })
+
+  it('names the newer release the daily check found under the app', async () => {
+    versions.mockResolvedValueOnce({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1', deployment: 'container', newRelease: 'v1.9.0' })
+    render(<InfoPage version="v1.8.0" {...server} />)
+    expect(await screen.findByText('ArrowLoop 1.9.0 is out.')).toBeTruthy()
   })
 })

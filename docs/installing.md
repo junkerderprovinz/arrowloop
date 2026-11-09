@@ -336,10 +336,14 @@ release's `checksums.txt`. The new version starts the next time you start
 ArrowLoop, so a sync that is running is never cut off, and a note in the corner
 of the window says when it is ready. Pre-releases are never installed.
 **Update automatically**, in the Version card on the Info tile under Settings,
-turns this off; it is on from the start. The container, the phone and the Flatpak do not show the
-switch: a container is updated the way it was deployed, the phone through its
+turns this off; it is on from the start.
+
+A container cannot replace itself and is updated the way it was deployed. There
+the same switch is off from the start and only reports: switched on, the
+container asks GitHub once a day for a newer release, names it under ArrowLoop
+in the Version card and writes it to its log. The phone updates through its
 store or a new APK, and the Flatpak through Flatpak (see
-[As a Flatpak](#as-a-flatpak)).
+[As a Flatpak](#as-a-flatpak)). Neither shows the switch.
 
 **The installed copy** on Windows cannot replace itself, since no user may
 write to its folder. A scheduled task named **ArrowLoop Update** does it instead,
