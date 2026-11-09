@@ -6,7 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RawJob, Settings } from '../../lib/api'
 
 const saveSettings = vi.fn((s: Settings) => Promise.resolve(s))
-const testNotify = vi.fn((_channel: string, _notify: unknown) => Promise.resolve({ ok: true, reason: undefined as string | undefined }))
+const testNotify = vi.fn((_channel: unknown) =>
+  Promise.resolve({ ok: true } as { ok: boolean; code?: string; status?: number; reason?: string }),
+)
 let stored: Settings = {}
 let jobs: RawJob[] = []
 const saveConfig = vi.fn((next: RawJob[]) => Promise.resolve({ jobs: next }))
@@ -19,7 +21,7 @@ vi.mock('../../lib/api', async (actual) => ({
     jobs: () => Promise.resolve([{ name: 'photos' }]),
     config: () => Promise.resolve({ jobs }),
     saveConfig: (next: RawJob[]) => saveConfig(next),
-    testNotify: (channel: string, notify: unknown) => testNotify(channel, notify),
+    testNotify: (channel: unknown) => testNotify(channel),
     remotes: () => Promise.resolve({ remotes: [{ name: 'nas' }, { name: 'cloud' }], backends: [] }),
     volumes: () => Promise.resolve({ volumes: [{ id: 'usb' }] }),
   },
@@ -102,16 +104,16 @@ describe('two tiles', () => {
 
 describe('a stored secret', () => {
   it('shows as saved and keeps the saved one until something new is typed', async () => {
-    stored = { notify: { webhook: '********' } }
+    stored = { notify: { channels: [{ id: 'd', kind: 'discord', enabled: true, discord: { url: '********' } }] } }
     const { unmount } = render(<SafetyPage />)
     expect(await screen.findByText('Saved')).toBeTruthy()
-    expect(screen.queryByLabelText('Webhook')).toBeNull()
+    expect(screen.queryByLabelText('Address')).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: 'Change' }))
     fireEvent.click(screen.getByRole('button', { name: 'Keep the saved one' }))
     unmount()
 
-    expect(saveSettings.mock.calls.at(-1)?.[0].notify?.webhook).toBe('********')
+    expect(saveSettings.mock.calls.at(-1)?.[0].notify?.channels?.[0]?.discord?.url).toBe('********')
   })
 })
 
@@ -167,40 +169,63 @@ describe('the Targets tile', () => {
 
 describe('the notification channels', () => {
   it('keep what a switched-off channel holds', async () => {
-    stored = { notify: { smtp: { host: 'mail.example.org', from: 'a@example.org', to: 'b@example.org', password: '********' } } }
+    stored = {
+      notify: {
+        channels: [
+          { id: 'mail', kind: 'smtp', enabled: true, smtp: { host: 'mail.example.org', from: 'a@example.org', to: 'b@example.org', password: '********' } },
+        ],
+      },
+    }
     const { unmount } = render(<SafetyPage />)
     expect(await screen.findByDisplayValue('mail.example.org')).toBeTruthy()
 
-    // Webhook, Matrix, then mail.
-    fireEvent.click(screen.getAllByRole('switch', { name: 'Send here' })[2]!)
+    fireEvent.click(screen.getByRole('switch', { name: 'Send here' }))
     expect(screen.queryByDisplayValue('mail.example.org')).toBeNull()
     unmount()
 
-    const smtp = saveSettings.mock.calls.at(-1)?.[0].notify?.smtp
-    expect(smtp).toMatchObject({ enabled: false, host: 'mail.example.org', password: '********' })
+    const mail = saveSettings.mock.calls.at(-1)?.[0].notify?.channels?.[0]
+    expect(mail).toMatchObject({ enabled: false, smtp: { host: 'mail.example.org', password: '********' } })
   })
 
-  it('send a test of what the card shows and say why it failed', async () => {
-    stored = { notify: { webhook: '********', webhookFormat: 'ntfy' } }
-    testNotify.mockResolvedValueOnce({ ok: false, reason: '403 Forbidden: topic is reserved' })
+  it("send a test of what the card shows and say why it failed in the reader's own words", async () => {
+    stored = { notify: { channels: [{ id: 'phone', kind: 'ntfy', enabled: true, ntfy: { url: '********' } }] } }
+    testNotify.mockResolvedValueOnce({ ok: false, code: 'rejected', status: 403, reason: 'the server answered 403 Forbidden' })
     render(<SafetyPage />)
     fireEvent.click(await screen.findByRole('button', { name: 'Send a test' }))
 
-    expect(await screen.findByText('403 Forbidden: topic is reserved')).toBeTruthy()
-    expect(testNotify).toHaveBeenCalledWith('webhook', expect.objectContaining({ webhook: '********', webhookFormat: 'ntfy' }))
+    expect(await screen.findByText('The server turned the message down. (HTTP 403)')).toBeTruthy()
+    expect(testNotify).toHaveBeenCalledWith(expect.objectContaining({ id: 'phone', kind: 'ntfy', ntfy: { url: '********' } }))
   })
 
-  it('read the older onSuccess as after every run, and write on once the choice changes', async () => {
-    stored = { notify: { onSuccess: true } }
+  it('add a channel of the chosen service under an id of its own', async () => {
+    stored = { notify: { channels: [{ id: 'discord', kind: 'discord', enabled: true, discord: { url: '********' } }] } }
     const { unmount } = render(<SafetyPage />)
-    const always = await screen.findByRole('tab', { name: 'After every run' })
-    expect(always.getAttribute('aria-selected')).toBe('true')
-    fireEvent.click(screen.getByRole('tab', { name: 'When a run fails' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Add a channel' }))
+    fireEvent.click(await screen.findByRole('option', { name: 'Discord' }))
     unmount()
 
-    const notify = saveSettings.mock.calls.at(-1)?.[0].notify
-    expect(notify?.on).toBe('failure')
-    expect(notify?.onSuccess).toBeUndefined()
+    const channels = saveSettings.mock.calls.at(-1)?.[0].notify?.channels
+    expect(channels?.map((c) => c.id)).toEqual(['discord', 'discord-2'])
+    expect(channels?.[1]).toMatchObject({ kind: 'discord', enabled: true, on: 'failure' })
+  })
+
+  it('give each channel its own when', async () => {
+    stored = {
+      notify: {
+        channels: [
+          { id: 'a', kind: 'slack', enabled: true, on: 'failure', slack: { url: '********' } },
+          { id: 'b', kind: 'slack', enabled: true, on: 'always', slack: { url: '********' } },
+        ],
+      },
+    }
+    const { unmount } = render(<SafetyPage />)
+    const selected = () => screen.getAllByRole('tab', { name: 'After every run' }).map((tab) => tab.getAttribute('aria-selected'))
+    await waitFor(() => expect(selected()).toEqual(['false', 'true']))
+    fireEvent.click(screen.getAllByRole('tab', { name: 'After every run' })[0]!)
+    unmount()
+
+    const channels = saveSettings.mock.calls.at(-1)?.[0].notify?.channels
+    expect(channels?.map((c) => c.on)).toEqual(['always', 'always'])
   })
 })
 

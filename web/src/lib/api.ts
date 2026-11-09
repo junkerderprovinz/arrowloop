@@ -766,6 +766,9 @@ export type SecurityStatus = {
   recoveryCodesLeft: number
 }
 
+/** A dashboard's read token, as the list shows it. createdAt is in seconds. */
+export type ReadToken = { id: string; name: string; createdAt: number }
+
 /** One registered passkey, as the list shows it. */
 export type PasskeyView = {
   id: string
@@ -927,13 +930,13 @@ export const api = {
   /**
    * Sends a test message through one channel as the page shows it. The engine
    * fills in the secrets the page holds placeholders for, and a refusal comes
-   * back as ok:false with the reason.
+   * back as ok:false with a code to translate and the HTTP status, if any.
    */
-  testNotify: (channel: Channel, notify: Notify) =>
-    request<{ ok: boolean; reason?: string }>('/api/notify/test', {
+  testNotify: (channel: Channel) =>
+    request<{ ok: boolean; code?: string; status?: number; reason?: string }>('/api/notify/test', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ channel, notify }),
+      body: JSON.stringify({ channel }),
     }),
 
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
@@ -1054,6 +1057,14 @@ export const api = {
 
   deletePasskey: (id: string) =>
     request<{ deleted: string }>(`/api/passkeys/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+
+  readTokens: () => request<ReadToken[]>('/api/security/read-tokens'),
+
+  /** The token in the answer is shown once; the engine keeps only its fingerprint. */
+  addReadToken: (name: string) => post<ReadToken & { token: string }>('/api/security/read-tokens', { name }),
+
+  deleteReadToken: (id: string) =>
+    request<{ deleted: boolean }>(`/api/security/read-tokens/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 
   settings: () => request<Settings>('/api/settings'),
 

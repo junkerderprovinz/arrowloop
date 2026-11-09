@@ -1,57 +1,69 @@
-// The notification settings as the engine stores them under `notify`.
-// internal/job/job.go holds the same rules.
+// The notification channels as the engine stores them under `notify`, in the
+// format of the kit's notify package (parleyport/kit/notify).
 
 export type When = 'never' | 'failure' | 'always'
 
-export type Channel = 'webhook' | 'matrix' | 'smtp' | 'apprise' | 'healthchecks'
+export const KINDS = ['discord', 'slack', 'ntfy', 'gotify', 'matrix', 'smtp', 'apprise', 'webhook', 'healthchecks'] as const
 
-/**
- * Every channel has an `enabled` switch. A file without it predates the
- * switch, and a channel filled in there was meant to send, so undefined counts
- * as on once the channel has what it needs.
- */
-export type Notify = {
+export type Kind = (typeof KINDS)[number]
+
+export type Channel = {
+  id: string
+  kind: Kind
+  name?: string
+  enabled: boolean
   on?: When
-  /** How an older file says `always`; `on` decides when both are set. */
-  onSuccess?: boolean
-  webhook?: string
-  webhookFormat?: string
-  webhookEnabled?: boolean
-  matrix?: { enabled?: boolean; homeserver: string; room: string; token: string }
+  events?: string[]
+  attempts?: number
+  timeoutSeconds?: number
+  webhook?: { url: string; method?: string; headers?: Record<string, string>; body?: string }
+  discord?: { url: string }
+  slack?: { url: string }
+  gotify?: { url: string; token?: string; priorityFailure?: number; prioritySuccess?: number }
+  ntfy?: { url: string; token?: string }
+  matrix?: { homeserver: string; room: string; token: string }
   smtp?: {
-    enabled?: boolean
-    host?: string
+    host: string
     port?: number
     username?: string
     password?: string
-    from?: string
+    from: string
     /** Several addresses, separated by commas or semicolons. */
-    to?: string
+    to: string
     tls?: string
   }
-  apprise?: { enabled?: boolean; url?: string; tags?: string }
-  /** `jobs` gives a job a check of its own, by job name. */
-  healthchecks?: { enabled?: boolean; url?: string; jobs?: Record<string, string> }
+  /** Without urls, url is a key's endpoint; with them, the stateless /notify. */
+  apprise?: { url: string; urls?: string[]; tags?: string }
+  /** byKey gives a job a check of its own, by job name. */
+  healthchecks?: { url?: string; byKey?: Record<string, string> }
 }
 
-/** When a message goes out, with the older onSuccess read as the engine reads it. */
-export function notifyWhen(n: Notify): When {
-  if (n.on) return n.on
-  return n.onSuccess ? 'always' : 'failure'
-}
+export type Notify = { channels?: Channel[] }
 
-/** Whether a channel is switched on, as the engine decides it for a file without the switch. */
-export function channelOn(n: Notify, channel: Channel): boolean {
-  switch (channel) {
+/** What a new webhook posts: the same document a webhook from an older file keeps. */
+const WEBHOOK_BODY = '{"subject":"%%title%%","body":"%%body%%","ok":%%ok%%}'
+
+/** A channel of one service, switched on and still empty, under an id no other channel has. */
+export function newChannel(kind: Kind, channels: Channel[]): Channel {
+  const taken = new Set(channels.map((c) => c.id))
+  let id: string = kind
+  for (let n = 2; taken.has(id); n++) id = `${kind}-${n}`
+  const c: Channel = { id, kind, enabled: true, on: kind === 'healthchecks' ? 'always' : 'failure' }
+  switch (kind) {
     case 'webhook':
-      return n.webhookEnabled ?? !!n.webhook
+      return { ...c, webhook: { url: '', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: WEBHOOK_BODY } }
     case 'matrix':
-      return n.matrix?.enabled ?? !!(n.matrix?.homeserver && n.matrix.room && n.matrix.token)
+      return { ...c, matrix: { homeserver: '', room: '', token: '' } }
     case 'smtp':
-      return n.smtp?.enabled ?? !!(n.smtp?.host && n.smtp.from && n.smtp.to)
-    case 'apprise':
-      return n.apprise?.enabled ?? !!n.apprise?.url
+      return { ...c, smtp: { host: '', from: '', to: '' } }
     case 'healthchecks':
-      return n.healthchecks?.enabled ?? !!(n.healthchecks?.url || Object.values(n.healthchecks?.jobs ?? {}).some(Boolean))
+      return { ...c, healthchecks: {} }
+    default:
+      return { ...c, [kind]: { url: '' } }
   }
+}
+
+/** Whether a channel sends anything at all. A check pings every run unless its when is never. */
+export function sends(c: Channel): boolean {
+  return c.enabled && c.on !== 'never'
 }

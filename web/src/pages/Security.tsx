@@ -3,15 +3,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { Card } from '../lib/glimstone/Card'
 import { PasskeyCard } from '../components/PasskeyCard'
 import { PasswordCard } from '../components/PasswordCard'
+import { ReadTokenCard } from '../components/ReadTokenCard'
 import { Stack } from '../components/Shell'
 import { TwoFactorCard } from '../components/TwoFactorCard'
 import { api, type SecurityStatus } from '../lib/api'
 import { useT } from '../lib/i18n'
 
 /**
- * The password, the second factor and the passkeys. Three cards, because they
- * are three decisions: whether there is a lock at all, whether the password
- * needs a code beside it, and whether a key may stand in for typing it.
+ * The password, the second factor, the passkeys and the read tokens. Four
+ * cards, because they are four decisions: whether there is a lock at all,
+ * whether the password needs a code beside it, whether a key may stand in for
+ * typing it, and which dashboards may read how ArrowLoop is doing.
  */
 export function Security() {
   const { t } = useT()
@@ -52,6 +54,7 @@ export function Security() {
         hueIndex={1}
       />
       <PasskeyCard passwordSet={passwordSet} twoFactor={status.twoFactor} hueIndex={2} />
+      <ReadTokenCard hueIndex={3} />
     </Stack>
   )
 }

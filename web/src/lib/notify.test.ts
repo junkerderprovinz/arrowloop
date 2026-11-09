@@ -1,30 +1,40 @@
 import { describe, expect, it } from 'vitest'
 
-import { channelOn, notifyWhen } from './notify'
+import { KINDS, newChannel, sends } from './notify'
 
-describe('the notification settings', () => {
-  it('read an older file the way the engine does', () => {
-    expect(notifyWhen({})).toBe('failure')
-    expect(notifyWhen({ onSuccess: true })).toBe('always')
-    expect(notifyWhen({ on: 'failure', onSuccess: true })).toBe('failure')
-    expect(channelOn({ webhook: 'https://hooks.example/x' }, 'webhook')).toBe(true)
-    expect(channelOn({ matrix: { homeserver: 'https://m.example', room: '!r:m', token: '********' } }, 'matrix')).toBe(true)
+describe('the notification channels', () => {
+  it('get an id no other channel has', () => {
+    const first = newChannel('discord', [])
+    const second = newChannel('discord', [first])
+    const third = newChannel('discord', [first, second])
+    expect(new Set([first.id, second.id, third.id]).size).toBe(3)
   })
 
-  it('keep a channel off that was switched off, however filled in it is', () => {
-    const n = {
-      webhook: 'https://hooks.example/x',
-      webhookEnabled: false,
-      smtp: { enabled: false, host: 'm', from: 'a@b', to: 'c@d' },
-      healthchecks: { enabled: false, url: 'https://hc-ping.com/x' },
+  it('start switched on with the block of their service', () => {
+    for (const kind of KINDS) {
+      const c = newChannel(kind, [])
+      expect(c.kind).toBe(kind)
+      expect(c.enabled).toBe(true)
+      expect(c[kind]).toBeDefined()
     }
-    expect(channelOn(n, 'webhook')).toBe(false)
-    expect(channelOn(n, 'smtp')).toBe(false)
-    expect(channelOn(n, 'healthchecks')).toBe(false)
   })
 
-  it('show a channel nobody filled in as off', () => {
-    expect(channelOn({}, 'apprise')).toBe(false)
-    expect(channelOn({ smtp: { host: 'm', from: 'a@b' } }, 'smtp')).toBe(false)
+  it('report failures unless told otherwise, and Healthchecks every run', () => {
+    expect(newChannel('ntfy', []).on).toBe('failure')
+    expect(newChannel('healthchecks', []).on).toBe('always')
+  })
+
+  it('give a webhook a JSON body that names the outcome', () => {
+    const hook = newChannel('webhook', []).webhook!
+    expect(hook.headers?.['Content-Type']).toBe('application/json')
+    expect(hook.body).toContain('%%title%%')
+    expect(hook.body).toContain('%%ok%%')
+  })
+
+  it('send only while switched on, and a check only while its when is not never', () => {
+    expect(sends({ ...newChannel('slack', []), enabled: false })).toBe(false)
+    expect(sends({ ...newChannel('slack', []), on: 'never' })).toBe(false)
+    expect(sends({ ...newChannel('healthchecks', []), on: 'never' })).toBe(false)
+    expect(sends(newChannel('healthchecks', []))).toBe(true)
   })
 })
