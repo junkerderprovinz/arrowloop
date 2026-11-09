@@ -148,7 +148,7 @@ require (
 	github.com/jlaffaye/ftp v0.2.4 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7 // indirect
-	github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109190927-566ab90c3be7 // indirect
+	github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109232503-890905435ec3 // indirect
 	github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004 // indirect
 	github.com/klauspost/compress v1.20.3 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect

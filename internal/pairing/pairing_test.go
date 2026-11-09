@@ -132,3 +132,61 @@ func TestADamagedFileStopsTheStart(t *testing.T) {
 		t.Fatal("a cut-off file opened as an install outside any group")
 	}
 }
+
+func TestTheGroupStateIsKeptSealed(t *testing.T) {
+	dir := t.TempDir()
+	s, err := Open(dir, key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Update(func(st *State) error { st.Secret = []byte("0123456789abcdef"); return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if raw, err := s.GroupStore().Load(); err != nil || raw != nil {
+		t.Fatalf("a new group's state = %q, %v, want none", raw, err)
+	}
+	state := []byte(`{"members":{"cellar":{"name":"Cellar"}}}`)
+	if err := s.GroupStore().Save(state); err != nil {
+		t.Fatal(err)
+	}
+
+	raw, err := os.ReadFile(filepath.Join(dir, FileName))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Contains(raw, []byte("Cellar")) {
+		t.Errorf("%s shows the group's members to anybody who reads it: %s", FileName, raw)
+	}
+	again, err := Open(dir, key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, err := again.GroupStore().Load(); err != nil || !bytes.Equal(got, state) {
+		t.Errorf("the group's state after a restart = %q, %v, want it back", got, err)
+	}
+}
+
+func TestAnotherPhraseStartsTheGroupStateOver(t *testing.T) {
+	s, err := Open(t.TempDir(), key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Update(func(st *State) error { st.Secret, st.Name = []byte("0123456789abcdef"), "Cellar"; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.GroupStore().Save([]byte(`{"group":"old"}`)); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Update(func(st *State) error { st.Name = "Attic"; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if raw, _ := s.GroupStore().Load(); raw == nil {
+		t.Fatal("renaming the instance dropped its group's state")
+	}
+	if err := s.Update(func(st *State) error { st.Secret = nil; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if raw, _ := s.GroupStore().Load(); raw != nil {
+		t.Errorf("after leaving the group its state = %s, want none", raw)
+	}
+}

@@ -1,0 +1,7 @@
+{
+  "secret": "sealed:f53HfhFVaE8KUFlXWCwdesnflXYAAIXoiOryZ5floXCmwI2PaI1ZO9TPQQ+h9xdNSHnLiH/tx9ADMi3O",
+  "member": "sealed:BvmKA+sFyQMsnV+BX1G8reuzJF3PAUMkofxUMkcZgoY1Z9gHdsv9Y98qzLycLeUl3c2vfVCsjWLPJGGvnjx2MA3zZW80Q9urV1l1SVxDkgVlMVtYbLhyAxa8fYE",
+  "relayMode": "own",
+  "relayUrl": "http://127.0.0.1:63474",
+  "name": "bravo"
+}
