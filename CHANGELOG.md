@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.5 - 2026-11-10
+
+A folder from another app shows up on the phone the moment you add it, a Mac keeps watching a folder that was replaced, and the uninstaller says what stays.
+
 ## 🐛 Fixed
 
 - **A folder added from another app on the phone shows up right away.** After Use this folder and Allow, the app went back to the overview while it restarted its engine for the new folder, so it looked as if nothing had been added. The settings page now stays open and lists the folder. Thanks to @AlairEileen ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).

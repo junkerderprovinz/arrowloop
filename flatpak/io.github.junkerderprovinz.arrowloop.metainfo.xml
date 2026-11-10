@@ -79,6 +79,18 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.5" date="2026-11-10">
+      <description>
+        <p>Fixes for the phone app and the desktop.</p>
+        <ul>
+          <li>A folder added from another app on the phone shows up right away</li>
+          <li>A folder replaced under the same name stays watched on a Mac</li>
+          <li>The uninstaller says what stays, in all 42 languages</li>
+          <li>The Pairing tile shows ParleyPort's new logo</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.5</url>
+    </release>
     <release version="2.6.4" date="2026-11-09">
       <description>
         <p>Fixes for the phone app.</p>
