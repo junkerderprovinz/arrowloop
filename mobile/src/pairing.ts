@@ -32,7 +32,7 @@ export function kindName(t: T, deployment: string): string {
   return key ? t(key) : "";
 }
 
-/** A refused phrase, pairing request or address in the reader's language. */
+/** A refused phrase or pairing request in the reader's language. */
 export function refusalText(t: T, e: unknown): string {
   if (e instanceof EngineError) {
     const v = e.values ?? {};
@@ -45,18 +45,6 @@ export function refusalText(t: T, e: unknown): string {
         return t("pairing.errChecksum");
       case "phraseExists":
         return t("pairing.errExists");
-      case "addressNotNearby":
-        return t("pairing.addresses.errNotNearby");
-      case "addressUnreachable":
-        return t("pairing.addresses.errUnreachable", { address: v.address ?? "" });
-      case "addressStranger":
-        return t("pairing.addresses.errStranger", { address: v.address ?? "" });
-      case "addressSelf":
-        return t("pairing.addresses.errSelf", { address: v.address ?? "" });
-      case "addressRemoved":
-        return t("pairing.addresses.errRemoved", { address: v.address ?? "" });
-      case "addressesFull":
-        return t("pairing.addresses.errFull", { count: v.count ?? "32" });
     }
     if (e.status === 403) return t("login.wrong");
     if (e.status === 429) return t("login.locked");

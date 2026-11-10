@@ -97,10 +97,9 @@ export function Pairing() {
               onRefresh={load}
             />
           ) : null}
-          {group.active ? <AddressesCard addresses={group.addresses} onChange={load} /> : null}
         </>
       ) : null}
-      {inMore ? null : <OtherInstances firstHue={8} />}
+      {inMore ? null : <OtherInstances firstHue={7} />}
     </Page>
   );
 }
@@ -703,94 +702,6 @@ function InstanceCard({ group, onGroup }: { group: ConnectInfo; onGroup: (g: Con
           </View>
           <InfoBubble tip={t("pairing.ownKeyTip")} />
         </View>
-      ) : null}
-    </Section>
-  );
-}
-
-/** An address as the owner typed it, without the scheme the engine adds. */
-function shownAddress(address: string): string {
-  return address.replace(/^http:\/\//, "");
-}
-
-/**
- * Where instances of the group answer on this network, for when the phone
- * cannot find them by itself, as on the web's card. Adding an address asks
- * who answers there first, and says who did or why nobody of the group does.
- */
-function AddressesCard({ addresses, onChange }: { addresses: string[]; onChange: () => void }) {
-  const { t } = useT();
-  const { p } = useTheme();
-  const [typed, setTyped] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [said, setSaid] = useState<{ text: string; ok: boolean } | null>(null);
-
-  function add() {
-    const address = typed.trim();
-    if (!address) return;
-    setBusy(true);
-    setSaid(null);
-    api
-      .addAddress(address)
-      .then(
-        (found) => {
-          setTyped("");
-          setSaid({ text: t("pairing.addresses.found", { name: found.member.name || found.member.id }), ok: true });
-          onChange();
-        },
-        (e: unknown) => setSaid({ text: refusalText(t, e), ok: false }),
-      )
-      .finally(() => setBusy(false));
-  }
-
-  function remove(address: string) {
-    setBusy(true);
-    setSaid(null);
-    api
-      .saveAddresses(addresses.filter((a) => a !== address))
-      .then(onChange, (e: unknown) => setSaid({ text: refusalText(t, e), ok: false }))
-      .finally(() => setBusy(false));
-  }
-
-  return (
-    <Section title={t("pairing.addresses.title")} hint={t("pairing.addresses.hint")} hue={7}>
-      {addresses.length === 0 ? (
-        <Body>{t("pairing.addresses.empty")}</Body>
-      ) : (
-        <View>
-          {addresses.map((a) => (
-            <Member key={a} glyph="IconServer" name={shownAddress(a)}>
-              <Button
-                label={t("pairing.addresses.remove")}
-                labelKey="pairing.addresses.remove"
-                glyph="IconClose"
-                disabled={busy}
-                onPress={() => remove(a)}
-              />
-            </Member>
-          ))}
-        </View>
-      )}
-      <Field label={t("pairing.addresses.label")} value={typed} onChange={setTyped} placeholder="192.168.1.10:8422" />
-      <View style={[styles.actions, styles.end]}>
-        <Button
-          label={t("pairing.addresses.add")}
-          labelKey="pairing.addresses.add"
-          glyph="IconAdd"
-          tone="accent"
-          busy={busy}
-          disabled={busy || !typed.trim()}
-          onPress={add}
-        />
-      </View>
-      {said ? (
-        said.ok ? (
-          <Caption>
-            <Text style={{ color: p.okInk }}>{said.text}</Text>
-          </Caption>
-        ) : (
-          <Refusal text={said.text} />
-        )
       ) : null}
     </Section>
   );

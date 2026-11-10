@@ -40,7 +40,6 @@ const group: ConnectInfo = {
   pending: [],
   awaiting: false,
   fingerprint: 'aaaa bbbb cccc dddd',
-  addresses: [],
 }
 
 const relay: RelayConfig = {

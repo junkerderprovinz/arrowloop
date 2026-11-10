@@ -552,17 +552,9 @@ the multicast address `239.255.77.50`, port 8752, and where multicast does not
 reach, as from a container on a Docker bridge, it tries the other addresses of
 its own network on its port and on 8422. It goes by the address you open its
 interface at. The phone and the desktop app take no calls from the network,
-but they call the others directly once they know where they are. Every
-address an instance answered at is remembered and tried first at the next
-start. Where nothing tells one instance where another is, such as the desktop
-app when a DNS filter keeps the relay away, **Known addresses** takes the
-address of the other one's interface, for example `192.168.1.10:8422`. It asks
-who answers there before it keeps the address, and says why when nobody of
-the group does: the address is not in your own network, nothing answers, an
-instance of another group answers, or it is this instance itself. The address
-may name any port, so a container mapped to another port of its host is found
-as well. A call goes directly first and over the relay only when that fails,
-never both ways at once.
+but they call the others directly once they know where they are. A call goes
+directly first and over the relay only when that fails, never both ways at
+once.
 
 Everywhere else the instances reach each other through a relay. **Project relay** is
 ParleyPort, which the project runs at `parleyport.halleluja.design`, free of

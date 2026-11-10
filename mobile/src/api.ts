@@ -102,14 +102,6 @@ export interface ConnectInfo {
   awaiting: boolean;
   /** This engine's own key, as the others list it. */
   fingerprint: string;
-  /** Where instances of the group answer on this network, as the owner typed them in. */
-  addresses: string[];
-}
-
-/** An address the owner typed in, with the instance of the group that answered there. */
-export interface AddressFound {
-  member: { id: string; name: string; state: "pending" | "approved" | "unknown" };
-  addresses: string[];
 }
 
 export type RelayMode = "project" | "own" | "off";
@@ -649,12 +641,6 @@ export const api = {
   /** Takes another instance out of the group on every instance of it. */
   removeMember: (id: string) => call<void>(`/api/connect/members/${name(id)}`, { method: "DELETE" }),
   relay: () => call<RelayConfig>("/api/relay/config"),
-  /** Asks who answers at an address on this network and keeps it when an instance of the group does. */
-  addAddress: (address: string) =>
-    call<AddressFound>("/api/connect/addresses", { method: "POST", body: JSON.stringify({ address }) }),
-  /** Keeps the edited list of addresses, which is how one leaves it. */
-  saveAddresses: (addresses: string[]) =>
-    call<{ addresses: string[] }>("/api/connect/addresses", { method: "PUT", body: JSON.stringify({ addresses }) }),
   saveRelay: (change: { mode?: RelayMode; relayUrl?: string }) =>
     call<RelayConfig>("/api/relay/config", { method: "PUT", body: JSON.stringify(change) }),
   /** The other instances of the group with their jobs. */

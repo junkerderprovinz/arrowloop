@@ -66,7 +66,6 @@ const outside: ConnectInfo = {
   pending: [],
   awaiting: false,
   fingerprint: '',
-  addresses: [],
 }
 
 const relayConfig: RelayConfig = {

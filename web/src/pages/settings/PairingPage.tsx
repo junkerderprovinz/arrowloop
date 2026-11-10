@@ -7,7 +7,6 @@ import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { useNavPins } from '../../lib/navPins'
 import { pairStage } from '../../lib/pairing'
-import { AddressesCard } from './pairing/AddressesCard'
 import { GroupCard } from './pairing/GroupCard'
 import { InstanceCard } from './pairing/InstanceCard'
 import { PairingSteps } from './pairing/PairingSteps'
@@ -106,10 +105,9 @@ export function PairingPage() {
               onRefresh={load}
             />
           )}
-          {group.active && <AddressesCard addresses={group.addresses} hueIndex={7} onChange={load} />}
         </>
       )}
-      {!pinned && <OtherInstances firstHue={8} />}
+      {!pinned && <OtherInstances firstHue={7} />}
     </Stack>
   )
 }
