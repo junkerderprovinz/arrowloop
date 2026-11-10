@@ -51,6 +51,7 @@ func main() {
 			// test build names both after itself.
 			InstanceID: id,
 			Autostart:  name,
+			Stays:      stays,
 			Legacy: pommelporter.Legacy{
 				// 1.1.0 and earlier, from Wails v2's script, which ran company
 				// and product together into one name.
