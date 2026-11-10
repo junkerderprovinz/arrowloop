@@ -262,7 +262,7 @@ export interface Plan {
 /** Whether a job can work at all; the engine's sentence travels beside the code. */
 export interface CheckReport {
   ok: boolean;
-  findings: { code: string; text: string; fatal: boolean }[];
+  findings: { code: string; vars?: Record<string, string>; text: string; fatal: boolean }[];
 }
 
 /** Where the two sides differ from what the record says about them. */
@@ -270,7 +270,7 @@ export interface VerifyReport {
   found: number;
   returned: number;
   truncated: boolean;
-  findings: { code: string; path: string; text: string; invisible: boolean }[];
+  findings: { code: string; path: string; vars?: Record<string, string>; text: string; invisible: boolean }[];
 }
 
 /**

@@ -4,19 +4,17 @@ import { Badge } from '../lib/glimstone/Badge'
 import { Button } from '../lib/glimstone/Button'
 import { IconCheck } from './glyphs'
 import { api, type CheckFinding, type VerifyFinding } from '../lib/api'
-import { useT } from '../lib/i18n'
+import { useFinding, useT } from '../lib/i18n'
 
 type Row = { key: string; text: string; bad: boolean }
 
 /**
  * Checks whether a job can work at all and whether both sides match its record.
  * `start` checks straight away, for a link that asked for the check.
- *
- * Findings show the server's own sentence rather than a translation of their
- * code; the code is in the payload for a locale that wants to take one over.
  */
 export function CheckPanel({ job, start = false }: { job: string; start?: boolean }) {
   const { t } = useT()
+  const finding = useFinding()
   const [rows, setRows] = useState<Row[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(start)
@@ -36,7 +34,7 @@ export function CheckPanel({ job, start = false }: { job: string; start?: boolea
       const health = await api.checkJob(job)
       const out: Row[] = health.findings.map((f: CheckFinding, i: number) => ({
         key: `h${i}`,
-        text: f.text,
+        text: finding(f),
         bad: f.fatal,
       }))
 
@@ -46,7 +44,7 @@ export function CheckPanel({ job, start = false }: { job: string; start?: boolea
           out.push(
             ...seen.findings.map((f: VerifyFinding, i: number) => ({
               key: `v${i}`,
-              text: f.text,
+              text: finding(f),
               // No future run would notice an invisible finding by itself.
               bad: f.invisible,
             })),
