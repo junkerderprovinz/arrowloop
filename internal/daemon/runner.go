@@ -93,6 +93,9 @@ type Runner struct {
 	note *notify.Dispatcher
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
+	// requested holds the jobs another app asked for while they ran; see
+	// Request.
+	requested map[string]bool
 	// going is how far each run has got, read off the events it publishes.
 	going    map[string]Working
 	subs     map[chan Event]struct{}
@@ -141,6 +144,7 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 		shadows:   shadows,
 		anomalies: found,
 		inflight:  map[string]context.CancelFunc{},
+		requested: map[string]bool{},
 		reload:    make(chan struct{}, 1),
 	}
 }
@@ -719,6 +723,10 @@ func (r *Runner) release(name string) {
 	defer r.mu.Unlock()
 	delete(r.inflight, name)
 	delete(r.going, name)
+	if r.requested[name] {
+		delete(r.requested, name)
+		go r.runRequested(name)
+	}
 }
 
 // Serve runs every scheduled job until the context is cancelled, rebuilding
