@@ -13,10 +13,12 @@ The full notes for each release are in
 ## ✨ Added
 
 - **As many notification channels as you like.** The Notifications card on Safety net is a list now: add Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io, as often as you want, each with its own name, switch, "when" and test button. Discord gets an embed, a webhook gets the method, headers and body you write, and Apprise addresses such as `tgram://` or `pover://` reach Telegram, Pushover and the rest without a key on the Apprise server. Your settings come over as they are.
+- **Paired instances on the same network talk to each other directly.** They find each other there and call each other without the relay, sealed and signed just as over it, so a DNS filter that blocks the relay no longer keeps two instances at home apart. A container or server announces itself on the network, and from behind a Docker bridge it looks through its own network for the others. The phone and the desktop app call the others directly once they know where they are. Instances elsewhere still meet on the relay.
 - **Read tokens for dashboards.** Homepage, Homarr and the like read how ArrowLoop is doing and what its runs did at `/api/fortress/v1/status` and `/api/fortress/v1/log`, with a read token made under Settings, Security. The token opens nothing else.
 
 ## ⚡ Improved
 
+- **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and it still talks to instances that have not been updated yet.
 - **A message that does not get through is tried again**, three times with a pause, when a second try could help. A test that fails says why in your language.
 
 ## 2.6.4 - 2026-11-09

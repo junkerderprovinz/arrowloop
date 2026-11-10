@@ -750,7 +750,7 @@ export type InstancePlaces = {
 export type FolderListing = { path: string; parent: string; shown?: string; entries: { name: string; path: string }[] }
 
 /**
- * Which way a refused phrase went wrong, from internal/seedphrase, with the
+ * Which way a refused phrase went wrong, from the kit's phrase package, with the
  * word and its place for an unknown one.
  */
 export type PhraseProblem = 'word_count' | 'unknown_word' | 'checksum'
