@@ -887,7 +887,6 @@ const vi: Translations = {
   'danger.confirm': 'Thao tác này gỡ mọi công việc ({jobs}) và mọi nơi lưu trữ ({targets}) khỏi ArrowLoop trên máy này. Các tệp trong thư mục của bạn và trong nơi lưu trữ vẫn nằm nguyên chỗ cũ.',
   'danger.confirmButton': 'Xoá tất cả',
   'phone.runAll': 'Chạy tất cả',
-  'phone.runAllHint': 'Chạy mọi tác vụ đã đặt cả hai phía, trừ tác vụ đang tạm dừng hoặc đang chạy.',
   'phone.stopAll': 'Dừng tất cả lần chạy',
   'phone.job': 'Công việc',
   'phone.needName': 'Đặt tên cho công việc.',

@@ -887,7 +887,6 @@ const eu: Translations = {
   'danger.confirm': 'Honek lan guztiak ({jobs}) eta biltegi guztiak ({targets}) kentzen ditu telefono honetako ArrowLoop-etik. Zure karpetetako eta biltegietako fitxategiak dauden lekuan geratzen dira.',
   'danger.confirmButton': 'Kendu guztia',
   'phone.runAll': 'Exekutatu guztiak',
-  'phone.runAllHint': 'Bi aldeak ezarrita dituen lan bakoitza abiarazten du, pausatuta edo dagoeneko martxan ez badago.',
   'phone.stopAll': 'Gelditu exekuzio guztiak',
   'phone.job': 'Lana',
   'phone.needName': 'Eman izena lanari.',

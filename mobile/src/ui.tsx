@@ -1639,14 +1639,11 @@ export const FAB_ROOM = 96;
 export function Fab({
   label,
   labelKey,
-  hint,
   onPress,
 }: {
   label: string;
   /** The translation key behind `label`, which picks the glyph. */
   labelKey?: string;
-  /** The "(i)" beside the button, for what a glyph alone cannot say. */
-  hint?: string;
   onPress: () => void;
 }) {
   const { p, corners, accent } = useTheme();
@@ -1656,14 +1653,12 @@ export function Fab({
 
   return (
     <View style={styles.fabSpot} pointerEvents="box-none">
-      {hint ? <InfoBubble tip={hint} /> : null}
       <AnimatedPressable
         onPress={onPress}
         onPressIn={press.onPressIn}
         onPressOut={press.onPressOut}
         accessibilityRole="button"
         accessibilityLabel={label}
-        accessibilityHint={hint}
         android_ripple={{ color: p.hover, borderless: false }}
         style={[
           styles.fab,

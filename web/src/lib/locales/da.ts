@@ -887,7 +887,6 @@ const da: Translations = {
   'danger.confirm': 'Det fjerner hvert job ({jobs}) og hvert lager ({targets}) fra ArrowLoop på denne telefon. Filerne i dine mapper og på lagrene bliver, hvor de er.',
   'danger.confirmButton': 'Fjern alle',
   'phone.runAll': 'Kør alle',
-  'phone.runAllHint': 'Starter hvert job, der har begge sider sat, medmindre det er sat på pause eller allerede kører.',
   'phone.stopAll': 'Stop alle kørsler',
   'phone.job': 'Job',
   'phone.needName': 'Giv jobbet et navn.',

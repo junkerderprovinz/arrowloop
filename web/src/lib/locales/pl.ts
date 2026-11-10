@@ -887,7 +887,6 @@ const pl: Translations = {
   'danger.confirm': 'To usunie wszystkie zadania ({jobs}) i wszystkie magazyny ({targets}) z ArrowLoop na tym telefonie. Pliki w Twoich folderach i w magazynach zostają tam, gdzie były.',
   'danger.confirmButton': 'Usuń wszystko',
   'phone.runAll': 'Uruchom wszystkie',
-  'phone.runAllHint': 'Uruchamia każde zadanie z ustawionymi obiema stronami, chyba że jest wstrzymane albo już trwa.',
   'phone.stopAll': 'Zatrzymaj wszystkie przebiegi',
   'phone.job': 'Zadanie',
   'phone.needName': 'Nadaj zadaniu nazwę.',

@@ -887,7 +887,6 @@ const id: Translations = {
   'danger.confirm': 'Ini menghapus semua tugas ({jobs}) dan semua penyimpanan ({targets}) dari ArrowLoop di ponsel ini. Berkas di folder dan penyimpananmu tetap di tempatnya.',
   'danger.confirmButton': 'Hapus semua',
   'phone.runAll': 'Jalankan semua',
-  'phone.runAllHint': 'Menjalankan setiap tugas yang kedua sisinya sudah diatur, kecuali yang dijeda atau sedang berjalan.',
   'phone.stopAll': 'Hentikan semua jalan',
   'phone.job': 'Tugas',
   'phone.needName': 'Beri nama pada tugas ini.',

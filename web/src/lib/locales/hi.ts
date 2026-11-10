@@ -887,7 +887,6 @@ const hi: Translations = {
   'danger.confirm': 'इससे इस फ़ोन पर ArrowLoop से सभी काम ({jobs}) और सभी स्टोरेज ({targets}) हट जाएँगे। आपके फ़ोल्डरों और स्टोरेज की फ़ाइलें जहाँ हैं वहीं रहेंगी।',
   'danger.confirmButton': 'सब हटाएँ',
   'phone.runAll': 'सब चलाएँ',
-  'phone.runAllHint': 'हर वह जॉब शुरू करता है जिसके दोनों साइड तय हैं, जब तक वह रुका हुआ न हो या पहले से चल न रहा हो।',
   'phone.stopAll': 'सभी चक्र रोकें',
   'phone.job': 'काम',
   'phone.needName': 'काम को एक नाम दें।',

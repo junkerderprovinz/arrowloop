@@ -887,7 +887,6 @@ const es: Translations = {
   'danger.confirm': 'Esto quita todas las tareas ({jobs}) y todas las ubicaciones de almacenamiento ({targets}) de ArrowLoop en este teléfono. Los archivos de tus carpetas y de las ubicaciones de almacenamiento se quedan donde están.',
   'danger.confirmButton': 'Quitar todo',
   'phone.runAll': 'Ejecutar todo',
-  'phone.runAllHint': 'Inicia cada tarea que tiene los dos lados definidos, salvo que esté en pausa o ya en ejecución.',
   'phone.stopAll': 'Detener todas las ejecuciones',
   'phone.job': 'Tarea',
   'phone.needName': 'Ponle un nombre a la tarea.',

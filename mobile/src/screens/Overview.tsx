@@ -190,7 +190,6 @@ export function Overview() {
         <Fab
           label={t("phone.runAll")}
           labelKey="phone.runAll"
-          hint={t("phone.runAllHint")}
           onPress={() => void runAll()}
         />
       ) : null}

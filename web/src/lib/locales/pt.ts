@@ -887,7 +887,6 @@ const pt: Translations = {
   'danger.confirm': 'Isto tira todas as tarefas ({jobs}) e todos os locais de armazenamento ({targets}) do ArrowLoop neste telemóvel. Os ficheiros nas tuas pastas e nos locais de armazenamento ficam onde estão.',
   'danger.confirmButton': 'Remover tudo',
   'phone.runAll': 'Executar tudo',
-  'phone.runAllHint': 'Inicia cada tarefa com os dois lados definidos, exceto se estiver em pausa ou já em execução.',
   'phone.stopAll': 'Parar todas as execuções',
   'phone.job': 'Tarefa',
   'phone.needName': 'Dá um nome à tarefa.',

@@ -887,7 +887,6 @@ const fi: Translations = {
   'danger.confirm': 'Tämä poistaa kaikki työt ({jobs}) ja kaikki tallennuspaikat ({targets}) ArrowLoopista tässä puhelimessa. Kansioidesi ja tallennuspaikkojen tiedostot pysyvät paikoillaan.',
   'danger.confirmButton': 'Poista kaikki',
   'phone.runAll': 'Suorita kaikki',
-  'phone.runAllHint': 'Käynnistää jokaisen tehtävän, jolla on molemmat puolet asetettu, ellei se ole tauolla tai jo käynnissä.',
   'phone.stopAll': 'Pysäytä kaikki ajot',
   'phone.job': 'Työ',
   'phone.needName': 'Anna työlle nimi.',

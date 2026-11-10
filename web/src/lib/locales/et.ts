@@ -887,7 +887,6 @@ const et: Translations = {
   'danger.confirm': 'See eemaldab sellest telefonist ArrowLoopis kõik tööd ({jobs}) ja kõik salvestuskohad ({targets}). Failid sinu kaustades ja salvestuskohtades jäävad sinna, kus nad on.',
   'danger.confirmButton': 'Eemalda kõik',
   'phone.runAll': 'Käivita kõik',
-  'phone.runAllHint': 'Käivitab iga töö, millel on mõlemad pooled määratud, kui see pole peatatud ega juba käimas.',
   'phone.stopAll': 'Peata kõik käivitused',
   'phone.job': 'Töö',
   'phone.needName': 'Pane tööle nimi.',

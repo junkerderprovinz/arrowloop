@@ -887,7 +887,6 @@ const hr: Translations = {
   'danger.confirm': 'Ovim se iz ArrowLoopa na ovom telefonu uklanjaju svi zadaci ({jobs}) i sve pohrane ({targets}). Datoteke u tvojim mapama i pohranama ostaju gdje jesu.',
   'danger.confirmButton': 'Ukloni sve',
   'phone.runAll': 'Pokreni sve',
-  'phone.runAllHint': 'Pokreće svaki zadatak kojemu su postavljene obje strane, osim ako je pauziran ili već radi.',
   'phone.stopAll': 'Zaustavi sva pokretanja',
   'phone.job': 'Zadatak',
   'phone.needName': 'Daj zadatku naziv.',

@@ -887,7 +887,6 @@ const ko: Translations = {
   'danger.confirm': '이 휴대폰의 ArrowLoop에서 모든 작업({jobs}개)과 모든 저장소({targets}개)를 제거합니다. 폴더와 저장소에 있는 파일은 그대로 남습니다.',
   'danger.confirmButton': '모두 삭제',
   'phone.runAll': '모두 실행',
-  'phone.runAllHint': '양쪽이 모두 설정된 작업을 모두 시작합니다. 일시 중지되었거나 이미 실행 중인 작업은 제외합니다.',
   'phone.stopAll': '모든 실행 중지',
   'phone.job': '작업',
   'phone.needName': '작업에 이름을 지정하세요.',

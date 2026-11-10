@@ -887,7 +887,6 @@ const sk: Translations = {
   'danger.confirm': 'Týmto sa z ArrowLoop na tomto telefóne odstránia všetky úlohy ({jobs}) a všetky úložiská ({targets}). Súbory v tvojich priečinkoch a v úložiskách zostanú tam, kde sú.',
   'danger.confirmButton': 'Odstrániť všetko',
   'phone.runAll': 'Spustiť všetko',
-  'phone.runAllHint': 'Spustí každú úlohu s nastavenými oboma stranami, okrem pozastavených a tých, ktoré už bežia.',
   'phone.stopAll': 'Zastaviť všetky behy',
   'phone.job': 'Úloha',
   'phone.needName': 'Pomenuj úlohu.',

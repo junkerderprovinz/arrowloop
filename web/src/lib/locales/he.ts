@@ -887,7 +887,6 @@ const he: Translations = {
   'danger.confirm': 'הפעולה מסירה את כל המשימות ({jobs}) ואת כל מקומות האחסון ({targets}) מ-ArrowLoop בטלפון הזה. הקבצים בתיקיות שלכם ובמקומות האחסון נשארים במקומם.',
   'danger.confirmButton': 'הסרת הכול',
   'phone.runAll': 'הרצת הכול',
-  'phone.runAllHint': 'מפעיל כל משימה ששני הצדדים שלה מוגדרים, אלא אם היא מושהית או כבר רצה.',
   'phone.stopAll': 'עצירת כל ההרצות',
   'phone.job': 'משימה',
   'phone.needName': 'תן שם למשימה.',

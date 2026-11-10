@@ -887,7 +887,6 @@ const tr: Translations = {
   'danger.confirm': 'Bu, bu telefondaki ArrowLoop\'tan tüm işleri ({jobs}) ve tüm depolamaları ({targets}) kaldırır. Klasörlerindeki ve depolamalardaki dosyalar olduğu yerde kalır.',
   'danger.confirmButton': 'Hepsini kaldır',
   'phone.runAll': 'Hepsini çalıştır',
-  'phone.runAllHint': 'Her iki tarafı da ayarlanmış her işi başlatır, duraklatılmış ya da zaten çalışan işler hariç.',
   'phone.stopAll': 'Tüm çalışmaları durdur',
   'phone.job': 'İş',
   'phone.needName': 'İşe bir ad ver.',

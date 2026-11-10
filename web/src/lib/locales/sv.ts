@@ -887,7 +887,6 @@ const sv: Translations = {
   'danger.confirm': 'Det här tar bort alla jobb ({jobs}) och alla lagringar ({targets}) ur ArrowLoop på den här telefonen. Filerna i dina mappar och på lagringarna ligger kvar där de är.',
   'danger.confirmButton': 'Ta bort allt',
   'phone.runAll': 'Kör alla',
-  'phone.runAllHint': 'Startar varje jobb som har båda sidorna angivna, utom om det är pausat eller redan körs.',
   'phone.stopAll': 'Stoppa alla körningar',
   'phone.job': 'Jobb',
   'phone.needName': 'Ge jobbet ett namn.',

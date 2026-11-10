@@ -887,7 +887,6 @@ const ar: Translations = {
   'danger.confirm': 'سيُزيل هذا كل المهام ({jobs}) وكل أماكن التخزين ({targets}) من ArrowLoop على هذا الهاتف. أما الملفات في مجلداتك وفي أماكن التخزين فتبقى حيث هي.',
   'danger.confirmButton': 'إزالة الكل',
   'phone.runAll': 'شغّل الكل',
-  'phone.runAllHint': 'يبدأ كل مهمة حُدد جانباها، إلا إذا كانت متوقفة مؤقتًا أو قيد التشغيل بالفعل.',
   'phone.stopAll': 'أوقف كل العمليات',
   'phone.job': 'مهمة',
   'phone.needName': 'أعطِ المهمة اسمًا.',

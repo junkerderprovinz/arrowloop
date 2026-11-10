@@ -887,7 +887,6 @@ const ja: Translations = {
   'danger.confirm': 'この端末の ArrowLoop から、すべてのジョブ（{jobs} 件）とすべてのストレージ（{targets} 件）を取り除きます。フォルダーやストレージにあるファイルはそのまま残ります。',
   'danger.confirmButton': 'すべて削除',
   'phone.runAll': 'すべて実行',
-  'phone.runAllHint': '両側が設定されたジョブをすべて開始します。一時停止中や実行中のジョブは除きます。',
   'phone.stopAll': 'すべての実行を停止',
   'phone.job': 'ジョブ',
   'phone.needName': 'ジョブに名前を付けてください。',
