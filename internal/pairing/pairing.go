@@ -99,6 +99,10 @@ type Store struct {
 	// group is what the kit's group keeps about its members, nil until it
 	// saved once in the current group.
 	group []byte
+	// legacy is the group from legacyGroupFile at legacyPath, until
+	// MoveLegacy takes it over.
+	legacy     *group.Roster
+	legacyPath string
 }
 
 // Open reads the file in dir. A missing file is an instance outside any
@@ -116,7 +120,7 @@ func Open(dir string, key []byte) (*Store, error) {
 			return nil, err
 		}
 	}
-	if err := s.migrate(dir); err != nil {
+	if err := s.readLegacy(dir); err != nil {
 		return nil, err
 	}
 	return s, nil
@@ -191,14 +195,19 @@ func (s *Store) Update(fn func(*State) error) error {
 	if err := fn(&next); err != nil {
 		return err
 	}
-	group := s.group
-	if !bytes.Equal(next.Secret, s.now.Secret) {
-		group = nil
+	state := s.group
+	another := !bytes.Equal(next.Secret, s.now.Secret)
+	if another {
+		state = nil
 	}
-	if err := s.write(next, group); err != nil {
+	if err := s.write(next, state); err != nil {
 		return err
 	}
-	s.now, s.group = next.clone(), group
+	s.now, s.group = next.clone(), state
+	if another && s.legacy != nil {
+		s.legacy = nil
+		return setAside(s.legacyPath)
+	}
 	return nil
 }
 

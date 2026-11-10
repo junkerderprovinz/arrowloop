@@ -41,7 +41,7 @@ func installFrom(t *testing.T, name string) string {
 }
 
 // openGroup opens the kit's group on what s keeps, with no relay and no
-// network, as far as a test of the stored state needs one.
+// network, and moves the group from before into it, as the server does.
 func openGroup(t *testing.T, s *Store) (*group.Group, member.Identity) {
 	t.Helper()
 	st := s.Get()
@@ -54,6 +54,9 @@ func openGroup(t *testing.T, s *Store) (*group.Group, member.Identity) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { _ = g.Close() })
+	if err := s.MoveLegacy(g); err != nil {
+		t.Fatal(err)
+	}
 	return g, id
 }
 
@@ -92,7 +95,12 @@ func TestAGroupFromBeforeTheKitKeepsItsMembers(t *testing.T) {
 
 func TestTheMigratedGroupSurvivesARestart(t *testing.T) {
 	dir := installFrom(t, "bravo")
-	if _, err := Open(dir, fixtureKey); err != nil {
+	s, err := Open(dir, fixtureKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, _ := openGroup(t, s)
+	if err := first.Close(); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := os.Stat(filepath.Join(dir, legacyGroupFile)); !errors.Is(err, os.ErrNotExist) {
