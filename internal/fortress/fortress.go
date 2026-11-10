@@ -127,24 +127,36 @@ func severity(k anomaly.Kind) status.Severity {
 	return status.SeverityWarn
 }
 
+// Outcome names how run ended: "failed", "left" when it left files for a
+// later run, "done" when it changed something and "quiet" when there was
+// nothing to do.
+func Outcome(run history.Run) string {
+	switch {
+	case run.Failed():
+		return "failed"
+	case run.Skipped > 0:
+		return "left"
+	case run.Changed():
+		return "done"
+	}
+	return "quiet"
+}
+
 // Log builds one page from runs, the stored runs recorded after the cursor
 // after, oldest first. The cursor is a run's id.
 func Log(runs []history.Run, after, lang string) status.LogPage {
 	tr := translator(lang)
 	page := status.LogPage{Entries: []status.LogEntry{}, Next: after}
 	for _, run := range runs {
-		e := status.LogEntry{ID: "run-" + strconv.FormatInt(run.ID, 10), At: run.Finished.UTC(), Level: status.SeverityInfo, Link: "/history"}
-		switch {
-		case run.Failed():
-			e.Level, e.Code = status.SeverityError, "run.failed"
-		case run.Skipped > 0:
-			e.Level, e.Code = status.SeverityWarn, "run.left"
-		case run.Changed():
-			e.Code = "run.done"
-		default:
-			e.Code = "run.quiet"
+		outcome := Outcome(run)
+		e := status.LogEntry{ID: "run-" + strconv.FormatInt(run.ID, 10), At: run.Finished.UTC(), Level: status.SeverityInfo, Code: "run." + outcome, Link: "/history"}
+		switch outcome {
+		case "failed":
+			e.Level = status.SeverityError
+		case "left":
+			e.Level = status.SeverityWarn
 		}
-		e.Text = tr("log."+strings.TrimPrefix(e.Code, "run."), run.Job, run.Skipped)
+		e.Text = tr("log."+outcome, run.Job, run.Skipped)
 		page.Entries = append(page.Entries, e)
 		page.Next = strconv.FormatInt(run.ID, 10)
 	}

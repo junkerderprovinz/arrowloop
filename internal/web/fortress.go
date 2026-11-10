@@ -5,18 +5,23 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
+	kitfortress "github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/fortress"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
 // readTokenOpens lets a request with a read token through to the status and
@@ -69,6 +74,84 @@ func (f fortressSource) Log(ctx context.Context, q status.LogQuery) (status.LogP
 		}
 	}
 	return fortress.Log(runs, q.After, q.Lang), nil
+}
+
+// FortressActions are what this engine does for the other apps of a fortress
+// it joins: list its jobs and start one.
+func (s *Server) FortressActions() []kitfortress.Action {
+	return []kitfortress.Action{
+		{Name: "jobs.list", Run: s.fortressJobs},
+		{Name: "jobs.run", Run: s.fortressRun},
+	}
+}
+
+// fortressJob is a job as another app sees it. The sides stay out: a side
+// can carry a remote's settings, and the other app asks for a job by name.
+type fortressJob struct {
+	Name      string   `json:"name"`
+	Direction string   `json:"direction"`
+	Mode      string   `json:"mode"`
+	Paused    bool     `json:"paused"`
+	Running   bool     `json:"running"`
+	LastRun   *lastRun `json:"lastRun,omitempty"`
+}
+
+type lastRun struct {
+	At time.Time `json:"at"`
+	// Outcome is one of fortress.Outcome's names.
+	Outcome string `json:"outcome"`
+}
+
+func (s *Server) fortressJobs(ctx context.Context, _ kitfortress.Caller, _ []byte) ([]byte, error) {
+	latest := map[string]history.Run{}
+	if s.History != nil {
+		runs, err := s.History.Latest(ctx, time.Time{})
+		if err != nil {
+			return nil, err
+		}
+		for _, l := range runs {
+			latest[l.Run.Job] = l.Run
+		}
+	}
+	running := s.Runner.Running()
+	out := []fortressJob{}
+	for _, j := range s.Runner.Config().Jobs {
+		v := fortressJob{
+			Name:      j.Name,
+			Direction: directionName(plan.ParseDirection(j.Direction)),
+			Mode:      plan.ParseMode(j.Mode).String(),
+			Paused:    j.Disabled,
+			Running:   running[j.Name],
+		}
+		if run, ok := latest[j.Name]; ok {
+			v.LastRun = &lastRun{At: run.Finished.UTC(), Outcome: fortress.Outcome(run)}
+		}
+		out = append(out, v)
+	}
+	return json.Marshal(out)
+}
+
+func (s *Server) fortressRun(_ context.Context, from kitfortress.Caller, body []byte) ([]byte, error) {
+	var req struct {
+		Job string `json:"job"`
+	}
+	if json.Unmarshal(body, &req) != nil {
+		return nil, &kitfortress.Refusal{Code: "bad_request"}
+	}
+	queued, err := s.Runner.Request(req.Job, from.App+" on "+from.Device)
+	switch {
+	case errors.Is(err, daemon.ErrNoSuchJob):
+		return nil, &kitfortress.Refusal{Code: "no_such_job"}
+	case errors.Is(err, daemon.ErrPaused):
+		return nil, &kitfortress.Refusal{Code: "job_paused"}
+	case err != nil:
+		return nil, err
+	}
+	state := "started"
+	if queued {
+		state = "queued"
+	}
+	return json.Marshal(map[string]string{"job": req.Job, "status": state})
 }
 
 // instanceID names this install for as long as its key lasts. It is derived
