@@ -562,7 +562,6 @@ const ms: Translations = {
   'settings.importPick': 'Pilih fail untuk diimport',
   'settings.exported': 'Disimpan ke {path}',
   'settings.imported': 'Tetapan dipulihkan',
-  'settings.importNotOurs': 'Fail itu bukan sandaran ArrowLoop.',
   'settings.lock': 'Kunci',
   'settings.lockOn': 'Kunci aplikasi',
   'settings.lockHint': 'Menggunakan kunci telefon itu sendiri, bukan PIN kedua. Selepas seminit pergi, aplikasi bertanya semula.',

@@ -562,7 +562,6 @@ const fr: Translations = {
   'settings.importPick': 'Choisir un fichier à importer',
   'settings.exported': 'Enregistré dans {path}',
   'settings.imported': 'Réglages restaurés',
-  'settings.importNotOurs': 'Ce fichier n\'est pas une sauvegarde ArrowLoop.',
   'settings.lock': 'Verrou',
   'settings.lockOn': 'Verrouiller l\'application',
   'settings.lockHint': 'Utilise le verrou du téléphone, pas un second code. Après une minute d\'absence, l\'application redemande.',

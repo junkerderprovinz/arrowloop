@@ -562,7 +562,6 @@ const fa: Translations = {
   'settings.importPick': 'یک فایل برای درون‌ریزی انتخاب کن',
   'settings.exported': 'در {path} ذخیره شد',
   'settings.imported': 'تنظیمات بازیابی شد',
-  'settings.importNotOurs': 'آن فایل پشتیبان ArrowLoop نیست.',
   'settings.lock': 'قفل',
   'settings.lockOn': 'قفل کردن برنامه',
   'settings.lockHint': 'از قفل خود گوشی استفاده می‌کند، نه یک رمز دوم. پس از یک دقیقه دوری، برنامه دوباره می‌پرسد.',

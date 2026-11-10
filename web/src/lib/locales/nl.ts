@@ -562,7 +562,6 @@ const nl: Translations = {
   'settings.importPick': 'Kies een bestand om te importeren',
   'settings.exported': 'Opgeslagen in {path}',
   'settings.imported': 'Instellingen hersteld',
-  'settings.importNotOurs': 'Dat bestand is geen ArrowLoop-back-up.',
   'settings.lock': 'Vergrendeling',
   'settings.lockOn': 'App vergrendelen',
   'settings.lockHint': 'Gebruikt de vergrendeling van de telefoon, geen tweede pincode. Na een minuut weg vraagt de app opnieuw.',

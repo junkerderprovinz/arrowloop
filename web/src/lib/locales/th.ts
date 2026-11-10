@@ -562,7 +562,6 @@ const th: Translations = {
   'settings.importPick': 'เลือกไฟล์ที่จะนำเข้า',
   'settings.exported': 'บันทึกไว้ที่ {path}',
   'settings.imported': 'กู้คืนการตั้งค่าแล้ว',
-  'settings.importNotOurs': 'ไฟล์นั้นไม่ใช่ไฟล์สำรองของ ArrowLoop',
   'settings.lock': 'ล็อก',
   'settings.lockOn': 'ล็อกแอป',
   'settings.lockHint': 'ใช้ล็อกของเครื่องเอง ไม่ใช่ PIN อีกชุด เมื่อออกไปเกินหนึ่งนาที แอปจะถามอีกครั้ง',

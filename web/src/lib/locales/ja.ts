@@ -562,7 +562,6 @@ const ja: Translations = {
   'settings.importPick': '読み込むファイルを選ぶ',
   'settings.exported': '{path} に保存しました',
   'settings.imported': '設定を復元しました',
-  'settings.importNotOurs': 'そのファイルは ArrowLoop のバックアップではありません。',
   'settings.lock': 'ロック',
   'settings.lockOn': 'アプリをロックする',
   'settings.lockHint': '二つめの暗証番号ではなく、端末そのもののロックを使います。一分離れると、もう一度たずねます。',

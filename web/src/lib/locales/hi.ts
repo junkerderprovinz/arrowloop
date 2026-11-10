@@ -562,7 +562,6 @@ const hi: Translations = {
   'settings.importPick': 'आयात के लिए फ़ाइल चुनें',
   'settings.exported': '{path} में सहेजा गया',
   'settings.imported': 'सेटिंग बहाल हो गई',
-  'settings.importNotOurs': 'वह फ़ाइल ArrowLoop का बैकअप नहीं है।',
   'settings.lock': 'ताला',
   'settings.lockOn': 'ऐप पर ताला लगाएँ',
   'settings.lockHint': 'फ़ोन के अपने ताले का उपयोग करता है, दूसरा पिन नहीं। एक मिनट दूर रहने के बाद ऐप फिर पूछता है।',

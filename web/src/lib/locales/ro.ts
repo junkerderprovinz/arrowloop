@@ -562,7 +562,6 @@ const ro: Translations = {
   'settings.importPick': 'Alege un fișier de importat',
   'settings.exported': 'Salvat în {path}',
   'settings.imported': 'Setări restaurate',
-  'settings.importNotOurs': 'Acel fișier nu este o copie ArrowLoop.',
   'settings.lock': 'Blocare',
   'settings.lockOn': 'Blochează aplicația',
   'settings.lockHint': 'Folosește blocarea telefonului, nu un al doilea PIN. După un minut de absență aplicația întreabă din nou.',

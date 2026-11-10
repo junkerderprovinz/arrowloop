@@ -562,7 +562,6 @@ const vi: Translations = {
   'settings.importPick': 'Chọn tệp để nhập',
   'settings.exported': 'Đã lưu vào {path}',
   'settings.imported': 'Đã khôi phục thiết lập',
-  'settings.importNotOurs': 'Tệp đó không phải bản sao lưu ArrowLoop.',
   'settings.lock': 'Khoá',
   'settings.lockOn': 'Khoá ứng dụng',
   'settings.lockHint': 'Dùng khoá của chính máy, không phải mã PIN thứ hai. Sau một phút rời đi, ứng dụng hỏi lại.',

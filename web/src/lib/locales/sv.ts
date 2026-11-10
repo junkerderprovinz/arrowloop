@@ -562,7 +562,6 @@ const sv: Translations = {
   'settings.importPick': 'Välj en fil att importera',
   'settings.exported': 'Sparad i {path}',
   'settings.imported': 'Inställningarna återställda',
-  'settings.importNotOurs': 'Den filen är ingen ArrowLoop-säkerhetskopia.',
   'settings.lock': 'Lås',
   'settings.lockOn': 'Lås appen',
   'settings.lockHint': 'Använder telefonens eget lås, inte en andra PIN-kod. Efter en minut borta frågar appen igen.',

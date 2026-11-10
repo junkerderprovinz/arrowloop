@@ -562,7 +562,6 @@ const et: Translations = {
   'settings.importPick': 'Vali imporditav fail',
   'settings.exported': 'Salvestatud asukohta {path}',
   'settings.imported': 'Sätted taastatud',
-  'settings.importNotOurs': 'See fail ei ole ArrowLoopi varukoopia.',
   'settings.lock': 'Lukk',
   'settings.lockOn': 'Lukusta rakendus',
   'settings.lockHint': 'Kasutab telefoni enda lukku, mitte teist PIN-i. Pärast minutit eemal küsib rakendus uuesti.',

@@ -562,7 +562,6 @@ const hu: Translations = {
   'settings.importPick': 'Válassz importálandó fájlt',
   'settings.exported': 'Mentve ide: {path}',
   'settings.imported': 'A beállítások visszaálltak',
-  'settings.importNotOurs': 'Ez a fájl nem ArrowLoop-mentés.',
   'settings.lock': 'Zár',
   'settings.lockOn': 'Az alkalmazás zárolása',
   'settings.lockHint': 'A telefon saját zárját használja, nem egy második PIN-t. Egy perc távollét után újra kérdez.',

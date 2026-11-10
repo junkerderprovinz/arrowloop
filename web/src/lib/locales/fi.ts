@@ -562,7 +562,6 @@ const fi: Translations = {
   'settings.importPick': 'Valitse tuotava tiedosto',
   'settings.exported': 'Tallennettu kohteeseen {path}',
   'settings.imported': 'Asetukset palautettu',
-  'settings.importNotOurs': 'Tiedosto ei ole ArrowLoopin varmuuskopio.',
   'settings.lock': 'Lukko',
   'settings.lockOn': 'Lukitse sovellus',
   'settings.lockHint': 'Käyttää puhelimen omaa lukkoa, ei toista PIN-koodia. Minuutin poissaolon jälkeen sovellus kysyy uudelleen.',

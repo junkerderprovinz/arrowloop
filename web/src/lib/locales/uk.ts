@@ -562,7 +562,6 @@ const uk: Translations = {
   'settings.importPick': 'Вибрати файл для імпорту',
   'settings.exported': 'Збережено в {path}',
   'settings.imported': 'Налаштування відновлено',
-  'settings.importNotOurs': 'Цей файл не є резервною копією ArrowLoop.',
   'settings.lock': 'Блокування',
   'settings.lockOn': 'Блокувати застосунок',
   'settings.lockHint': 'Використовує блокування самого телефона, а не другий PIN. Після хвилини відсутності застосунок запитає знову.',

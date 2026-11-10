@@ -562,7 +562,6 @@ const ko: Translations = {
   'settings.importPick': '가져올 파일 선택',
   'settings.exported': '{path}에 저장했습니다',
   'settings.imported': '설정을 복원했습니다',
-  'settings.importNotOurs': '그 파일은 ArrowLoop 백업이 아닙니다.',
   'settings.lock': '잠금',
   'settings.lockOn': '앱 잠그기',
   'settings.lockHint': '두 번째 PIN이 아니라 기기 자체의 잠금을 씁니다. 1분 동안 벗어나면 다시 묻습니다.',

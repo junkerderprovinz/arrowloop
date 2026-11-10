@@ -562,7 +562,6 @@ const id: Translations = {
   'settings.importPick': 'Pilih berkas untuk diimpor',
   'settings.exported': 'Disimpan ke {path}',
   'settings.imported': 'Pengaturan dipulihkan',
-  'settings.importNotOurs': 'Berkas itu bukan cadangan ArrowLoop.',
   'settings.lock': 'Kunci',
   'settings.lockOn': 'Kunci aplikasi',
   'settings.lockHint': 'Memakai kunci ponsel itu sendiri, bukan PIN kedua. Setelah satu menit pergi, aplikasi bertanya lagi.',

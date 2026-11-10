@@ -562,7 +562,6 @@ const tr: Translations = {
   'settings.importPick': 'İçe aktarılacak dosyayı seç',
   'settings.exported': '{path} konumuna kaydedildi',
   'settings.imported': 'Ayarlar geri yüklendi',
-  'settings.importNotOurs': 'Bu dosya bir ArrowLoop yedeği değil.',
   'settings.lock': 'Kilit',
   'settings.lockOn': 'Uygulamayı kilitle',
   'settings.lockHint': 'İkinci bir PIN değil, telefonun kendi kilidini kullanır. Bir dakika uzaklaşınca uygulama yeniden sorar.',

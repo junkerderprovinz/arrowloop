@@ -562,7 +562,6 @@ const gl: Translations = {
   'settings.importPick': 'Escoller un ficheiro para importar',
   'settings.exported': 'Gardado en {path}',
   'settings.imported': 'Configuración restaurada',
-  'settings.importNotOurs': 'Ese ficheiro non é unha copia de ArrowLoop.',
   'settings.lock': 'Bloqueo',
   'settings.lockOn': 'Bloquear a aplicación',
   'settings.lockHint': 'Usa o bloqueo do propio teléfono, non un segundo PIN. Tras un minuto fóra, a aplicación pregunta de novo.',

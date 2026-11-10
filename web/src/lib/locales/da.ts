@@ -562,7 +562,6 @@ const da: Translations = {
   'settings.importPick': 'Vælg en fil at importere',
   'settings.exported': 'Gemt i {path}',
   'settings.imported': 'Indstillingerne er gendannet',
-  'settings.importNotOurs': 'Den fil er ikke en ArrowLoop-sikkerhedskopi.',
   'settings.lock': 'Lås',
   'settings.lockOn': 'Lås appen',
   'settings.lockHint': 'Bruger telefonens egen lås, ikke en anden pinkode. Efter et minut væk spørger appen igen.',

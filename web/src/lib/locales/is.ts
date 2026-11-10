@@ -562,7 +562,6 @@ const is: Translations = {
   'settings.importPick': 'Veldu skrá til að flytja inn',
   'settings.exported': 'Vistað í {path}',
   'settings.imported': 'Stillingar endurheimtar',
-  'settings.importNotOurs': 'Þessi skrá er ekki ArrowLoop-afrit.',
   'settings.lock': 'Lás',
   'settings.lockOn': 'Læsa forritinu',
   'settings.lockHint': 'Notar lás símans sjálfs, ekki annað PIN. Eftir mínútu í burtu spyr forritið aftur.',

@@ -562,7 +562,6 @@ const ar: Translations = {
   'settings.importPick': 'اختر ملفاً للاستيراد',
   'settings.exported': 'حُفظ في {path}',
   'settings.imported': 'استُعيدت الإعدادات',
-  'settings.importNotOurs': 'هذا الملف ليس نسخة احتياطية من ArrowLoop.',
   'settings.lock': 'القفل',
   'settings.lockOn': 'قفل التطبيق',
   'settings.lockHint': 'يستخدم قفل الهاتف نفسه لا رمزًا ثانيًا. بعد دقيقة من الغياب يسأل التطبيق من جديد.',

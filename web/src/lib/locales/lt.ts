@@ -562,7 +562,6 @@ const lt: Translations = {
   'settings.importPick': 'Pasirink failą importui',
   'settings.exported': 'Įrašyta į {path}',
   'settings.imported': 'Nustatymai atkurti',
-  'settings.importNotOurs': 'Šis failas nėra ArrowLoop atsarginė kopija.',
   'settings.lock': 'Užraktas',
   'settings.lockOn': 'Užrakinti programą',
   'settings.lockHint': 'Naudoja paties telefono užraktą, o ne antrą PIN. Po minutės nebuvimo programa paklausia iš naujo.',

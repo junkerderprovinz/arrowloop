@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🐛 Fixed
+
+- **The phone restores its automatic backups.** Import refused them with "That file is not an ArrowLoop backup", because an automatic backup is the engine's whole settings file rather than the bundle Export writes. Import now takes either, asks first, and puts every job and setting back, the way the web interface already did. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
+
 ## 2.6.7 - 2026-11-10
 
 A job's run list on the phone shows every run in full again.

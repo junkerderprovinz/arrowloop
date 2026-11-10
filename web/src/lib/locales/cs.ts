@@ -562,7 +562,6 @@ const cs: Translations = {
   'settings.importPick': 'Vyber soubor k importu',
   'settings.exported': 'Uloženo do {path}',
   'settings.imported': 'Nastavení obnoveno',
-  'settings.importNotOurs': 'Tento soubor není zálohou ArrowLoop.',
   'settings.lock': 'Zámek',
   'settings.lockOn': 'Zamknout aplikaci',
   'settings.lockHint': 'Používá zámek samotného telefonu, ne druhý PIN. Po minutě mimo se aplikace zeptá znovu.',

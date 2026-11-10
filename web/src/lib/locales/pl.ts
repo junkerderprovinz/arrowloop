@@ -562,7 +562,6 @@ const pl: Translations = {
   'settings.importPick': 'Wybierz plik do importu',
   'settings.exported': 'Zapisano w {path}',
   'settings.imported': 'Ustawienia przywrócone',
-  'settings.importNotOurs': 'Ten plik nie jest kopią ArrowLoop.',
   'settings.lock': 'Blokada',
   'settings.lockOn': 'Zablokuj aplikację',
   'settings.lockHint': 'Używa blokady samego telefonu, nie drugiego PIN-u. Po minucie nieobecności aplikacja pyta ponownie.',

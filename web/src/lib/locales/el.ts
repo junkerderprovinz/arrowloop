@@ -562,7 +562,6 @@ const el: Translations = {
   'settings.importPick': 'Επιλογή αρχείου για εισαγωγή',
   'settings.exported': 'Αποθηκεύτηκε στο {path}',
   'settings.imported': 'Οι ρυθμίσεις επανήλθαν',
-  'settings.importNotOurs': 'Αυτό το αρχείο δεν είναι αντίγραφο του ArrowLoop.',
   'settings.lock': 'Κλείδωμα',
   'settings.lockOn': 'Κλείδωμα της εφαρμογής',
   'settings.lockHint': 'Χρησιμοποιεί το κλείδωμα του ίδιου του τηλεφώνου, όχι δεύτερο PIN. Μετά από ένα λεπτό απουσίας η εφαρμογή ρωτά ξανά.',

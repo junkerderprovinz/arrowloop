@@ -587,6 +587,8 @@ export const api = {
   config: () => call<Config>("/api/config"),
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
+  /** Puts a whole saved configuration back, such as an automatic backup. */
+  replaceConfig: (doc: string) => call<{ jobs: number }>("/api/config/raw", { method: "PUT", body: doc }),
   /** Where the automatic backups go, which are there and how the last one went. */
   autoBackups: () => call<AutoBackups>("/api/config/backups"),
   /** What a FolderSync export or a luckyBackup profile would add, or which kind of file it is. Saves nothing. */

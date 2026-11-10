@@ -562,7 +562,6 @@ const ru: Translations = {
   'settings.importPick': 'Выбрать файл для импорта',
   'settings.exported': 'Сохранено в {path}',
   'settings.imported': 'Настройки восстановлены',
-  'settings.importNotOurs': 'Этот файл не является резервной копией ArrowLoop.',
   'settings.lock': 'Блокировка',
   'settings.lockOn': 'Блокировать приложение',
   'settings.lockHint': 'Использует блокировку самого телефона, а не второй PIN. После минуты отсутствия приложение спросит снова.',

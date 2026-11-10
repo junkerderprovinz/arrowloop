@@ -562,7 +562,6 @@ const eu: Translations = {
   'settings.importPick': 'Inportatzeko fitxategi bat aukeratu',
   'settings.exported': '{path} helbidean gordeta',
   'settings.imported': 'Ezarpenak berreskuratuta',
-  'settings.importNotOurs': 'Fitxategi hori ez da ArrowLoop babeskopia bat.',
   'settings.lock': 'Blokeoa',
   'settings.lockOn': 'Blokeatu aplikazioa',
   'settings.lockHint': 'Telefonoaren beraren blokeoa erabiltzen du, ez bigarren PIN bat. Minutu bat kanpoan eta gero, aplikazioak berriro galdetzen du.',

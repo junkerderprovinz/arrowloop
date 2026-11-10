@@ -562,7 +562,6 @@ const he: Translations = {
   'settings.importPick': 'בחר קובץ לייבוא',
   'settings.exported': 'נשמר ב-{path}',
   'settings.imported': 'ההגדרות שוחזרו',
-  'settings.importNotOurs': 'הקובץ הזה אינו גיבוי של ArrowLoop.',
   'settings.lock': 'נעילה',
   'settings.lockOn': 'נעילת האפליקציה',
   'settings.lockHint': 'משתמש בנעילה של המכשיר עצמו, לא בקוד שני. אחרי דקה מחוץ לאפליקציה היא שואלת שוב.',

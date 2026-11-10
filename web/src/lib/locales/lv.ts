@@ -562,7 +562,6 @@ const lv: Translations = {
   'settings.importPick': 'Izvēlies failu importam',
   'settings.exported': 'Saglabāts: {path}',
   'settings.imported': 'Iestatījumi atjaunoti',
-  'settings.importNotOurs': 'Šis fails nav ArrowLoop dublējums.',
   'settings.lock': 'Slēdzene',
   'settings.lockOn': 'Bloķēt lietotni',
   'settings.lockHint': 'Izmanto paša tālruņa slēdzeni, nevis otru PIN. Pēc minūtes prombūtnes lietotne jautā vēlreiz.',

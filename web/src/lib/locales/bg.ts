@@ -562,7 +562,6 @@ const bg: Translations = {
   'settings.importPick': 'Избери файл за импорт',
   'settings.exported': 'Записано в {path}',
   'settings.imported': 'Настройките са възстановени',
-  'settings.importNotOurs': 'Този файл не е резервно копие на ArrowLoop.',
   'settings.lock': 'Заключване',
   'settings.lockOn': 'Заключване на приложението',
   'settings.lockHint': 'Използва заключването на самия телефон, не втори PIN. След минута отсъствие приложението пита отново.',

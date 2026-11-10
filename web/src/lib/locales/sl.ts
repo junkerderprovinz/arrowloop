@@ -562,7 +562,6 @@ const sl: Translations = {
   'settings.importPick': 'Izberi datoteko za uvoz',
   'settings.exported': 'Shranjeno v {path}',
   'settings.imported': 'Nastavitve so obnovljene',
-  'settings.importNotOurs': 'Ta datoteka ni varnostna kopija ArrowLoop.',
   'settings.lock': 'Ključavnica',
   'settings.lockOn': 'Zakleni aplikacijo',
   'settings.lockHint': 'Uporablja ključavnico samega telefona, ne drugega PIN-a. Po minuti odsotnosti aplikacija vpraša znova.',

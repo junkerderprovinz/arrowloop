@@ -562,7 +562,6 @@ const ca: Translations = {
   'settings.importPick': 'Tria un fitxer per importar',
   'settings.exported': 'Desat a {path}',
   'settings.imported': 'Configuració restaurada',
-  'settings.importNotOurs': 'Aquest fitxer no és una còpia d\'ArrowLoop.',
   'settings.lock': 'Bloqueig',
   'settings.lockOn': 'Bloqueja l\'aplicació',
   'settings.lockHint': 'Fa servir el bloqueig del mateix telèfon, no un segon PIN. Al cap d\'un minut fora, l\'aplicació ho torna a demanar.',

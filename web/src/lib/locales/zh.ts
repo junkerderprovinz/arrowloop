@@ -562,7 +562,6 @@ const zh: Translations = {
   'settings.importPick': '选择要导入的文件',
   'settings.exported': '已保存到 {path}',
   'settings.imported': '设置已恢复',
-  'settings.importNotOurs': '那个文件不是 ArrowLoop 的备份。',
   'settings.lock': '锁',
   'settings.lockOn': '锁定应用',
   'settings.lockHint': '用手机本身的锁，不是第二个 PIN。离开一分钟后会再问一次。',
