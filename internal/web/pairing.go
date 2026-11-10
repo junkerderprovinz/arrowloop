@@ -16,7 +16,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -45,8 +44,6 @@ func (s *Server) pairingRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE /api/connect/members/{id}", s.removeMember)
 	mux.HandleFunc("POST /api/connect/devices/{id}/approve", s.approveMember)
 	mux.HandleFunc("POST /api/connect/devices/{id}/refuse", s.refuseMember)
-	mux.HandleFunc("POST /api/connect/addresses", s.addAddress)
-	mux.HandleFunc("PUT /api/connect/addresses", s.saveAddresses)
 	mux.HandleFunc("GET /api/relay/config", s.readRelay)
 	mux.HandleFunc("PUT /api/relay/config", s.writeRelay)
 	// Open like a relay of its own: the relay key in the first frame is the
@@ -223,7 +220,7 @@ func (s *Server) self(st pairing.State) group.Self {
 const defaultPort = 8422
 
 // groupPorts are where the instances of the group take calls, for an address
-// the group remembers rather than one announced or typed in.
+// the group learned rather than one announced.
 func (s *Server) groupPorts() []int {
 	if len(s.Ports) > 0 {
 		return s.Ports
@@ -330,9 +327,6 @@ type connectInfo struct {
 	// Fingerprint is this instance's own key as the others list it while it
 	// waits for approval there, "" outside a group.
 	Fingerprint string `json:"fingerprint"`
-	// Addresses are where the owner said instances of the group answer on
-	// this network, for one that cannot find them by itself.
-	Addresses []string `json:"addresses"`
 }
 
 type groupMember struct {
@@ -389,10 +383,6 @@ func (s *Server) connectInfo() connectInfo {
 		Members:         []groupMember{},
 		Away:            []awayMember{},
 		Pending:         []pendingMember{},
-		Addresses:       []string{},
-	}
-	if g := s.joined(); g != nil {
-		info.Addresses = g.Addresses()
 	}
 	for _, m := range s.instances() {
 		info.Awaiting = info.Awaiting || m.Awaiting
@@ -1107,124 +1097,4 @@ func (s *Server) instanceJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.toInstance(w, r, "/api/jobs/"+url.PathEscape(r.PathValue("name"))+"/"+action)
-}
-
-// typedAddress reads an address the owner typed in as the address of an
-// instance's web interface: the scheme is http and the port ArrowLoop's own
-// unless the owner wrote them.
-func typedAddress(raw string) string {
-	addr := strings.TrimSpace(raw)
-	if strings.Contains(addr, "://") {
-		return addr
-	}
-	if _, _, err := net.SplitHostPort(addr); err != nil {
-		addr = net.JoinHostPort(addr, strconv.Itoa(defaultPort))
-	}
-	return "http://" + addr
-}
-
-// addressRefusals are the codes the interface words a refused address by.
-var addressRefusals = []struct {
-	err  error
-	code string
-}{
-	{group.ErrNotNearby, "addressNotNearby"},
-	{group.ErrUnreachable, "addressUnreachable"},
-	{group.ErrStranger, "addressStranger"},
-	{group.ErrSelf, "addressSelf"},
-	{group.ErrRemoved, "addressRemoved"},
-}
-
-// refuseAddress answers an address the group would not take, with a code the
-// interface words in the reader's language.
-func refuseAddress(w http.ResponseWriter, address string, err error) {
-	code := "addressUnreachable"
-	for _, r := range addressRefusals {
-		if errors.Is(err, r.err) {
-			code = r.code
-			break
-		}
-	}
-	writeJSON(w, http.StatusBadRequest, map[string]any{
-		"error": err.Error(), "code": code, "values": map[string]string{"address": address},
-	})
-}
-
-// maxAddresses is how many addresses the group keeps.
-const maxAddresses = 32
-
-type addressView struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	State string `json:"state"`
-}
-
-// addAddress asks whoever answers at an address the owner typed in who it
-// is, and keeps the address when an instance of the group answered there.
-// That is how an instance nobody can call, such as the desktop app, finds the
-// others when the relay is out of reach.
-func (s *Server) addAddress(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Address string `json:"address"`
-	}
-	if !readBody(w, r, &req) {
-		return
-	}
-	g := s.joined()
-	if g == nil {
-		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
-		return
-	}
-	addr := typedAddress(req.Address)
-	known := g.Addresses()
-	if len(known) >= maxAddresses {
-		writeJSON(w, http.StatusBadRequest, map[string]any{
-			"error": "the list is full", "code": "addressesFull", "values": map[string]string{"count": strconv.Itoa(maxAddresses)},
-		})
-		return
-	}
-	ctx, cancel := context.WithTimeout(r.Context(), relayTimeout)
-	defer cancel()
-	m, err := g.Probe(ctx, addr)
-	if err != nil {
-		refuseAddress(w, req.Address, err)
-		return
-	}
-	if err := g.SetAddresses(append(known, addr)); err != nil {
-		refuseAddress(w, req.Address, err)
-		return
-	}
-	state := string(m.State)
-	if m.State == group.StateUnknown {
-		state = "unknown"
-	}
-	writeJSON(w, http.StatusOK, map[string]any{
-		"member":    addressView{ID: m.ID, Name: m.Name, State: state},
-		"addresses": g.Addresses(),
-	})
-}
-
-// saveAddresses keeps the list the owner edited, which is how an address
-// leaves it.
-func (s *Server) saveAddresses(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Addresses []string `json:"addresses"`
-	}
-	if !readBody(w, r, &req) {
-		return
-	}
-	g := s.joined()
-	if g == nil {
-		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
-		return
-	}
-	addrs := make([]string, len(req.Addresses))
-	for i, a := range req.Addresses {
-		addrs[i] = typedAddress(a)
-	}
-	if err := g.SetAddresses(addrs); err != nil {
-		refuseAddress(w, strings.Join(req.Addresses, ", "), err)
-		return
-	}
-	writeJSON(w, http.StatusOK, map[string]any{"addresses": g.Addresses()})
 }
