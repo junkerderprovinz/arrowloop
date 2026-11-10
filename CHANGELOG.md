@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.8 - 2026-11-10
+
+Automatic backups come back on the phone, Check this job speaks your language, and an anomaly you allowed goes away as soon as its run starts.
+
 ## 🐛 Fixed
 
 - **The phone restores its automatic backups.** Import refused them with "That file is not an ArrowLoop backup", because an automatic backup is the engine's whole settings file rather than the bundle Export writes. Import now takes either, asks first, and puts every job and setting back, the way the web interface already did. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).

@@ -79,6 +79,17 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.8" date="2026-11-10">
+      <description>
+        <p>Fixes for the phone app and the web interface.</p>
+        <ul>
+          <li>Automatic backups can be restored on the phone</li>
+          <li>Check this job shows its findings in every language</li>
+          <li>An anomaly you allowed closes as soon as its run starts</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.8</url>
+    </release>
     <release version="2.6.7" date="2026-11-10">
       <description>
         <p>A job's run list on the phone shows every run in full again.</p>
