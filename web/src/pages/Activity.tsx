@@ -115,7 +115,7 @@ export function Activity() {
     const follow = () => window.location.reload()
     window.addEventListener('storage', follow)
     const stop = api.watch((ev) => {
-      if (ev.phase === 'moving') return
+      if (ev.phase === 'moving' || ev.phase === 'group') return
       if (ev.phase === 'progress') {
         setProgress((prev) => ({ ...prev, [ev.job]: ev }))
         // A change goes on top of the list the window last asked for. The

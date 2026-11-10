@@ -9,17 +9,13 @@ import { engine } from "../engine";
 import { Field, Refusal } from "../fields";
 import { Glyph } from "../glyphs";
 import { useT, type TranslationKey } from "../i18n";
+import { useEngineStream } from "../useEngine";
 import { OtherInstances } from "../otherInstances";
 import { FORMS, kindName, modeOf, pairStage, refusalText, relayForm, seenAt, type PairStage, type RelayForm } from "../pairing";
 import { checkPhrase, PHRASE_WORDS } from "../phraseWords";
 import { useAppearance } from "../settings";
 import { contrastOn, softOn, space, text, TOUCH } from "../theme";
 import { AxisLabel, Badge, Body, Button, Caption, Choice, InfoBubble, Page, Press, Section, useTheme, type Tone } from "../ui";
-
-// How often the screen asks again who is there. Members come and go with the
-// relay connection, which nothing pushes here, and asking is also what lets
-// two instances meet and pin each other's key.
-const REFRESH_MS = 10_000;
 
 // What the engine lets an announce carry.
 const MAX_NAME = 64;
@@ -62,12 +58,16 @@ export function Pairing() {
     setGroup(g);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      load();
-      const id = setInterval(load, REFRESH_MS);
-      return () => clearInterval(id);
-    }, [load]),
+  // The engine says on its event stream when somebody comes, goes, waits or
+  // is approved, or when the relay comes or goes. A stream that opens again
+  // missed what happened while it was down, so the screen reads the group then.
+  useFocusEffect(useCallback(() => load(), [load]));
+  useEngineStream(
+    true,
+    (event) => {
+      if (event.phase === "group") load();
+    },
+    load,
   );
 
   const stage = group ? pairStage(group, createdHere) : "unpaired";
@@ -671,7 +671,7 @@ function InstanceCard({ group, onGroup }: { group: ConnectInfo; onGroup: (g: Con
   const typing = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  // The screen reads the group every few seconds, which must not undo what is being typed.
+  // The screen reads the group again whenever it changes, which must not undo what is being typed.
   useEffect(() => {
     if (!typing.current) setName(group.name);
   }, [group.name]);
@@ -868,7 +868,7 @@ function RelayCard({
   const typing = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  // The screen reads the relay every few seconds, which must not undo what is being typed or picked.
+  // The screen reads the relay again whenever the group changes, which must not undo what is being typed or picked.
   useEffect(() => {
     if (!typing.current) setAddress(relay.relayUrl);
   }, [relay.relayUrl]);

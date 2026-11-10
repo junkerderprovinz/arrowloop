@@ -14,11 +14,6 @@ import { PairingSteps } from './pairing/PairingSteps'
 import { PhraseCard } from './pairing/PhraseCard'
 import { RelayCard } from './pairing/RelayCard'
 
-// How often the tile asks again who is there. Members come and go with the
-// relay connection, which nothing pushes here, and asking is also what lets
-// two instances meet and pin each other's key.
-const REFRESH_MS = 10_000
-
 /**
  * Counts on from the seconds the engine last reported, so the search timer
  * runs and the minute passes between two reads of the group.
@@ -74,10 +69,13 @@ export function PairingPage() {
     setGroup(g)
   }, [])
 
+  // The engine says on its event stream when somebody comes, goes, waits or
+  // is approved, or when the relay comes or goes.
   useEffect(() => {
     load()
-    const id = window.setInterval(load, REFRESH_MS)
-    return () => window.clearInterval(id)
+    return api.watch((ev) => {
+      if (ev.phase === 'group') load()
+    })
   }, [load])
 
   const stage = group ? pairStage(group, joinedAgo, createdHere) : 'unpaired'

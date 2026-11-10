@@ -19,6 +19,7 @@ The full notes for each release are in
 
 ## ⚡ Improved
 
+- **The Pairing tile follows your group live.** An instance that arrives, waits, is approved or leaves shows up at once in the web interface, the desktop app and on the phone, instead of at the next check ten seconds later.
 - **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and it still talks to instances that have not been updated yet.
 - **A message that does not get through is tried again**, three times with a pause, when a second try could help. A test that fails says why in your language.
 

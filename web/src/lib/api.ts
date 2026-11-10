@@ -538,8 +538,9 @@ export type RunEvent = {
   job: string
   /** `moving` carries the files in the air and the speed; only the speed is
    *  drawn here, and the phase has to be known so its frames do not fall
-   *  through to the generic handler. See App.tsx. */
-  phase: 'started' | 'progress' | 'finished' | 'moving' | 'anomaly'
+   *  through to the generic handler. See App.tsx. `group` names no job and
+   *  says only that the pairing group changed. */
+  phase: 'started' | 'progress' | 'finished' | 'moving' | 'anomaly' | 'group'
   error?: string
   /** On `finished`: a safety brake refused the run, which is a finding and no failure. */
   held?: boolean

@@ -409,7 +409,8 @@ export interface TrashItem {
  */
 export interface RunEvent {
   job: string;
-  phase: "started" | "progress" | "finished" | "moving" | "anomaly";
+  /** `group` names no job and says only that the pairing group changed. */
+  phase: "started" | "progress" | "finished" | "moving" | "anomaly" | "group";
   error?: string;
   /** On "finished": a safety brake refused the run, which is a finding and no failure. */
   held?: boolean;

@@ -12,6 +12,7 @@ const makePhrase = vi.fn()
 const joinGroup = vi.fn()
 const approveMember = vi.fn()
 const revealPhrase = vi.fn()
+let heard: ((ev: { job: string; phase: string }) => void) | null = null
 vi.mock('../../lib/api', async (original) => ({
   ...(await original<typeof import('../../lib/api')>()),
   api: {
@@ -27,6 +28,12 @@ vi.mock('../../lib/api', async (original) => ({
     renameInstance: vi.fn(),
     saveRelay: vi.fn(),
     instances: () => Promise.resolve([]),
+    watch: (onEvent: (ev: { job: string; phase: string }) => void) => {
+      heard = onEvent
+      return () => {
+        heard = null
+      }
+    },
   },
 }))
 
@@ -178,5 +185,23 @@ describe('the Pairing tile', () => {
     render(<PairingPage />)
     expect(await screen.findByRole('img', { name: en['relay.pic.relay'] })).toBeTruthy()
     expect(screen.getByTestId('relay-state').textContent).toBe(en['relay.connected'])
+  })
+
+  it('reads the group again when the event stream says it changed, and not on a timer', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
+      render(<PairingPage />)
+      await waitFor(() => expect(connect).toHaveBeenCalledTimes(1))
+      vi.advanceTimersByTime(60_000)
+      expect(connect).toHaveBeenCalledTimes(1)
+
+      heard?.({ job: 'photos', phase: 'finished' })
+      expect(connect).toHaveBeenCalledTimes(1)
+      heard?.({ job: '', phase: 'group' })
+      await waitFor(() => expect(connect).toHaveBeenCalledTimes(2))
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })

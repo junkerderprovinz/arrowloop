@@ -21,7 +21,7 @@ export function InstanceCard({ group, hueIndex, onGroup }: { group: ConnectInfo;
   const typing = useRef(false)
   const timer = useRef<number | undefined>(undefined)
 
-  // The page reads the group every few seconds, which must not undo what is being typed.
+  // The page reads the group again whenever it changes, which must not undo what is being typed.
   useEffect(() => {
     if (!typing.current) setName(group.name)
   }, [group.name])
