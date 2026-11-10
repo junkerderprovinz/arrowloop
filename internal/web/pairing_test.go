@@ -474,9 +474,19 @@ type older struct {
 
 func newOlder(t *testing.T, url string, secret []byte) *older {
 	t.Helper()
-	id, err := member.NewIdentity(member.KindInstance)
+	return newDevice(t, url, secret, member.KindInstance)
+}
+
+// newDevice is a member of kind on the relay at url that answers like older.
+func newDevice(t *testing.T, url string, secret []byte, kind member.Kind) *older {
+	t.Helper()
+	id, err := member.NewIdentity(kind)
 	if err != nil {
 		t.Fatal(err)
+	}
+	self := relay.Announce{Name: "older", Deployment: "container"}
+	if kind != member.KindInstance {
+		self = relay.Announce{Name: "phone", Deployment: string(kind), Client: true}
 	}
 	o := &older{id: id.ID()}
 	o.client, err = relay.NewClient(relay.ClientOptions{
@@ -484,7 +494,7 @@ func newOlder(t *testing.T, url string, secret []byte) *older {
 		Key:      pairing.Domain.GroupKey(secret),
 		FrameKey: pairing.Domain.FrameKey(secret),
 		Signing:  pairing.Domain.Signing(),
-		Self:     relay.Announce{Name: "older", Deployment: "container"},
+		Self:     self,
 		Identity: &id,
 		Serve: func(_ context.Context, call relay.ProxyCall) (int, []byte) {
 			o.mu.Lock()
@@ -674,5 +684,35 @@ func TestTheWebUIChecksWordsAgainstThePhraseList(t *testing.T) {
 	}
 	if got, want := strings.Fields(string(raw)), phrase.Wordlist(); !slices.Equal(got, want) {
 		t.Fatal("web/src/lib/bip39-english.txt differs from the kit's word list; copy the list across")
+	}
+}
+
+// ArrowLoop has no phone app of another kind, so a device that signs as one
+// holds the phrase and nothing else. It waits like any newcomer, in sight, so
+// it cannot fill the places for instances waiting to be approved unseen.
+func TestADeviceOfAnotherKindWaitsInSightAndCanBeRefused(t *testing.T) {
+	url := testRelay(t)
+	a := newNode(t, url)
+	a.send(t, http.MethodPut, "/api/connect", `{"name":"alpha"}`)
+	a.send(t, http.MethodPost, "/api/connect/activate", "{}")
+	phone := newDevice(t, url, secretOf(t, a), member.KindMobile)
+	aID := groupID(t, phone, "alpha")
+
+	eventually(t, "the device waiting on a", func() bool {
+		phone.call(t, aID, http.MethodGet, "/api/jobs", nil)
+		pending := a.connect(t).Pending
+		return len(pending) == 1 && pending[0].ID == phone.id
+	})
+	if status, _ := a.send(t, http.MethodPost, "/api/connect/devices/"+phone.id+"/approve", "{}"); status != http.StatusBadRequest {
+		t.Errorf("approving a device that is no instance = %d, want 400", status)
+	}
+	if status, body := a.send(t, http.MethodPost, "/api/connect/devices/"+phone.id+"/refuse", "{}"); status != http.StatusNoContent {
+		t.Fatalf("refuse = %d %s", status, body)
+	}
+	if pending := a.connect(t).Pending; len(pending) != 0 {
+		t.Errorf("after refusing, waiting = %+v, want nobody", pending)
+	}
+	if status, _ := phone.call(t, aID, http.MethodGet, "/api/jobs", nil); status != http.StatusGone {
+		t.Errorf("the refused device's next call = %d, want 410", status)
 	}
 }

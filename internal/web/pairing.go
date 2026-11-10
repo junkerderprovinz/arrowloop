@@ -312,8 +312,21 @@ func (s *Server) connectInfo() connectInfo {
 		Away:            []awayMember{},
 		Pending:         []pendingMember{},
 	}
+	var members []group.Member
+	if g := s.joined(); g != nil {
+		members = g.Members()
+	}
 	anyone := false
-	for _, m := range s.instances() {
+	for _, m := range members {
+		// A device of another kind holds the phrase and nothing else. It is
+		// listed to be refused, so it cannot hold a place for a waiting
+		// instance unseen.
+		if m.State == group.StatePending {
+			info.Pending = append(info.Pending, pendingMember{ID: m.ID, Name: m.Name, Fingerprint: member.Fingerprint(m.Key)})
+		}
+		if m.Kind != member.KindInstance {
+			continue
+		}
 		info.Awaiting = info.Awaiting || m.Awaiting
 		switch {
 		case m.Online():
@@ -321,9 +334,6 @@ func (s *Server) connectInfo() connectInfo {
 			info.Members = append(info.Members, groupMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, Approved: m.State == group.StateApproved})
 		case m.State == group.StateApproved:
 			info.Away = append(info.Away, awayMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, LastSeen: m.LastSeen.Unix()})
-		}
-		if m.State == group.StatePending {
-			info.Pending = append(info.Pending, pendingMember{ID: m.ID, Name: m.Name, Fingerprint: member.Fingerprint(m.Key)})
 		}
 	}
 	sort.Slice(info.Pending, func(i, j int) bool { return info.Pending[i].ID < info.Pending[j].ID })
@@ -563,8 +573,12 @@ type memberDecision struct {
 func (s *Server) approveMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	g := s.joined()
-	if g == nil {
+	switch {
+	case g == nil:
 		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
+		return
+	case !relay.ValidInstanceID(id):
+		writeError(w, http.StatusBadRequest, errors.New("only another ArrowLoop instance joins the group"))
 		return
 	}
 	if !answerApproval(w, g.Approve(id)) {
