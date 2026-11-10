@@ -201,7 +201,7 @@ func run() error {
 	}()
 	sh.live.Watch(ctx, runner)
 	tell.watch(ctx, runner, window, sh.showMain)
-	newBridge().run(ctx, runner, app)
+	newBridge().run(ctx, runner, server, app)
 
 	// A newer release is downloaded in the background and starts next time;
 	// see updates.go. The installed copy leaves that to the installer's

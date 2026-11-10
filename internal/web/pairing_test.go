@@ -1,6 +1,7 @@
 package web_test
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -838,4 +839,57 @@ func phraseOfNew(t *testing.T, n *node) string {
 	t.Helper()
 	n.send(t, http.MethodPost, "/api/connect/activate", "{}")
 	return phraseOf(t, n)
+}
+
+// stream reads n's event stream until the test ends and hands each frame's
+// data to a channel.
+func stream(t *testing.T, n *node) <-chan string {
+	t.Helper()
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, n.srv.URL+"/api/events", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := n.srv.Client().Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	frames := make(chan string, 64)
+	go func() {
+		defer resp.Body.Close()
+		lines := bufio.NewScanner(resp.Body)
+		for lines.Scan() {
+			if data, ok := strings.CutPrefix(lines.Text(), "data: "); ok {
+				select {
+				case frames <- data:
+				default:
+				}
+			}
+		}
+	}()
+	return frames
+}
+
+// The Pairing tile follows the group on the event stream rather than asking
+// again every few seconds.
+func TestTheEventStreamSaysWhenTheGroupChanges(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	a.send(t, http.MethodPost, "/api/connect/activate", "{}")
+	frames := stream(t, a)
+
+	b.send(t, http.MethodPost, "/api/connect/join", `{"phrase":"`+phraseOf(t, a)+`"}`)
+	deadline := time.After(30 * time.Second)
+	for {
+		select {
+		case data := <-frames:
+			var ev struct{ Job, Phase string }
+			if json.Unmarshal([]byte(data), &ev) == nil && ev.Phase == web.GroupChanged && ev.Job == "" {
+				return
+			}
+		case <-deadline:
+			t.Fatal("a's event stream never said that another instance came")
+		}
+	}
 }

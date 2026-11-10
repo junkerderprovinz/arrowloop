@@ -107,13 +107,15 @@ func (s *Server) applyGroup() {
 
 func (s *Server) closeGroupLocked() {
 	s.liveMu.Lock()
-	g := s.live
-	s.live = nil
+	g, stop := s.live, s.liveStop
+	s.live, s.liveStop = nil, nil
 	s.liveGen++
 	s.liveMu.Unlock()
 	if g == nil {
 		return
 	}
+	stop()
+	defer s.groupChanged()
 	if err := g.Close(); err != nil {
 		s.logf("pairing: could not save the group on leaving it: %v", err)
 	}
@@ -152,9 +154,12 @@ func (s *Server) openGroupLocked() {
 		Store:    s.Pairing.GroupStore(),
 		// Every ArrowLoop is an instance, its phone and desktop app included,
 		// so a device of another kind holds the phrase and nothing else.
-		Kinds:    []member.Kind{member.KindInstance},
-		Ports:    s.groupPorts(),
-		OnChange: func() { s.noteMemberSeen(gen) },
+		Kinds: []member.Kind{member.KindInstance},
+		Ports: s.groupPorts(),
+		OnChange: func() {
+			s.noteMemberSeen(gen)
+			s.groupChanged()
+		},
 		OnRemoved: func() {
 			s.groupMu.Lock()
 			defer s.groupMu.Unlock()
@@ -171,9 +176,69 @@ func (s *Server) openGroupLocked() {
 	if err := s.Pairing.MoveLegacy(g); err != nil {
 		s.logf("pairing: could not take over the group from before: %v", err)
 	}
+	ctx, stop := context.WithCancel(context.Background())
 	s.liveMu.Lock()
-	s.live = g
+	s.live, s.liveStop = g, stop
 	s.liveMu.Unlock()
+	go s.followRelay(ctx, g)
+	s.groupChanged()
+}
+
+// GroupChanged is the phase of an event on the stream that says the group
+// changed: somebody came, went, waits or was approved, or the relay came or
+// went. It names no job.
+const GroupChanged = "group"
+
+// WatchGroup returns a channel that receives whenever the group changes, and
+// the function that ends the watch. A burst of changes may arrive as one.
+func (s *Server) WatchGroup() (<-chan struct{}, func()) {
+	ch := make(chan struct{}, 1)
+	s.watchMu.Lock()
+	if s.watchers == nil {
+		s.watchers = map[chan struct{}]struct{}{}
+	}
+	s.watchers[ch] = struct{}{}
+	s.watchMu.Unlock()
+	return ch, func() {
+		s.watchMu.Lock()
+		delete(s.watchers, ch)
+		s.watchMu.Unlock()
+	}
+}
+
+func (s *Server) groupChanged() {
+	s.watchMu.Lock()
+	defer s.watchMu.Unlock()
+	for ch := range s.watchers {
+		select {
+		case ch <- struct{}{}:
+		default:
+		}
+	}
+}
+
+// relayLook is how often the relay connection is looked at. The group reports
+// changes to its members, but not this instance's own connection, which the
+// Pairing tile shows as well.
+const relayLook = 5 * time.Second
+
+// followRelay tells the watchers when g's relay connection comes or goes,
+// until ctx ends.
+func (s *Server) followRelay(ctx context.Context, g *group.Group) {
+	t := time.NewTicker(relayLook)
+	defer t.Stop()
+	was := g.RelayConnected()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-t.C:
+		}
+		if now := g.RelayConnected(); now != was {
+			was = now
+			s.groupChanged()
+		}
+	}
 }
 
 // self is what the other members see of this instance.

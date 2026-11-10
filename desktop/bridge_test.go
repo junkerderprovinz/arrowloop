@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 func phases(evs []daemon.Event) []string {
@@ -79,5 +80,22 @@ func TestEachJobKeepsItsOwnProgress(t *testing.T) {
 	}
 	if done["photos"] != 3 || done["music"] != 2 {
 		t.Errorf("the windows would show %v", done)
+	}
+}
+
+// A group that changes often reaches the windows as one event, since each
+// only makes the Pairing tile read the group again.
+func TestGroupChangesReachTheWindowsOnce(t *testing.T) {
+	b := newBridge()
+	b.groupChanged()
+	b.add(daemon.Event{Job: "photos", Phase: "started"})
+	b.groupChanged()
+	got := phases(b.take())
+	want := []string{"photos:started", ":" + web.GroupChanged}
+	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
+		t.Errorf("sent %v, expected %v", got, want)
+	}
+	if again := b.take(); len(again) != 0 {
+		t.Errorf("the group change went out twice: %v", phases(again))
 	}
 }

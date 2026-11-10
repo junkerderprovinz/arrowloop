@@ -122,17 +122,22 @@ type Server struct {
 	// "container", "server", "desktop" or "phone".
 	Deployment string
 
-	// groupMu keeps two openings of the group apart, liveMu guards live, the
-	// group in use, and liveGen, which counts the groups opened. memberMu
-	// keeps two mints of a member key apart, and groupOnce builds group, what
-	// another member may call here.
+	// groupMu keeps two openings of the group apart, and liveMu guards live,
+	// the group in use, liveStop, which ends what follows it, and liveGen,
+	// which counts the groups opened. memberMu keeps two mints of a member key
+	// apart, and groupOnce builds group, what another member may call here.
 	groupMu   sync.Mutex
 	liveMu    sync.Mutex
 	live      *group.Group
 	liveGen   uint64
+	liveStop  context.CancelFunc
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler
+
+	// watchers are told when the group changes; see WatchGroup.
+	watchMu  sync.Mutex
+	watchers map[chan struct{}]struct{}
 
 	// servedOnce builds served, the relay this instance runs for its group
 	// while the owner has it switched on.
@@ -716,8 +721,9 @@ func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, entries)
 }
 
-// events streams what the runner is doing, so a screen can show a job going
-// from waiting to running without asking again every second.
+// events streams what the runner is doing and when the group changes, so a
+// screen can show a job going from waiting to running, or another instance
+// arriving, without asking again every few seconds.
 func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -732,6 +738,8 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 
 	ch, stop := s.Runner.Subscribe()
 	defer stop()
+	group, unwatch := s.WatchGroup()
+	defer unwatch()
 
 	// A comment line every twenty seconds keeps a proxy from closing the idle
 	// stream.
@@ -744,6 +752,10 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 			return
 		case <-ping.C:
 			fmt.Fprint(w, ": ping\n\n")
+			flusher.Flush()
+		case <-group:
+			payload, _ := json.Marshal(daemon.Event{Phase: GroupChanged})
+			fmt.Fprintf(w, "data: %s\n\n", payload)
 			flusher.Flush()
 		case ev, open := <-ch:
 			if !open {
