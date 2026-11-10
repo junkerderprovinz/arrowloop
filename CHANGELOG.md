@@ -13,6 +13,11 @@ The full notes for each release are in
 ## 🐛 Fixed
 
 - **The phone restores its automatic backups.** Import refused them with "That file is not an ArrowLoop backup", because an automatic backup is the engine's whole settings file rather than the bundle Export writes. Import now takes either, asks first, and puts every job and setting back, the way the web interface already did. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
+- **Check this job speaks your language.** What the check and the comparison found stood in English on the phone and in the web interface, whatever the language. Every finding now comes in all 42 languages, with the side it names translated too.
+
+## 🎨 Design
+
+- **The label switches on the phone stay on one line.** Labels and Bottom bar under Look broke into two rows with Symbol alone on the second. Each segment is now as wide as its word, and they only wrap where the words truly do not fit side by side.
 
 ## 2.6.7 - 2026-11-10
 
