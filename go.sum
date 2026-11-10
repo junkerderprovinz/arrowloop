@@ -320,8 +320,8 @@ github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7 h1:JcltaO1HXM5S2K
 github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7/go.mod h1:MEkhEPFwP3yudWO0lj6vfYpLIB+3eIcuIW+e0AZzUQk=
 github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109232503-890905435ec3 h1:M5k8YXP8hrIEoOsl2M+aj2xyb7p27EGt/Qg9Daec7SA=
 github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109232503-890905435ec3/go.mod h1:/GHVd/HB+Br/336IHKuQBYSc4UGG3NXAfowh1q/DYx8=
-github.com/junkerderprovinz/parleyport/kit v0.0.0-20261110175722-9d5773f12ccb h1:u5lItyA/qZ6d8vOWpQ1sCO/5VhVeltWZKL3jpMK+HtY=
-github.com/junkerderprovinz/parleyport/kit v0.0.0-20261110175722-9d5773f12ccb/go.mod h1:/GHVd/HB+Br/336IHKuQBYSc4UGG3NXAfowh1q/DYx8=
+github.com/junkerderprovinz/parleyport/kit v0.0.0-20261110180703-85563775f682 h1:DbjkFIFX2+ir7ywQimt7fd5VusP3vDSDmwnMvfIgXR8=
+github.com/junkerderprovinz/parleyport/kit v0.0.0-20261110180703-85563775f682/go.mod h1:/GHVd/HB+Br/336IHKuQBYSc4UGG3NXAfowh1q/DYx8=
 github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004 h1:G+9t9cEtnC9jFiTxyptEKuNIAbiN5ZCQzX2a74lj3xg=
 github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004/go.mod h1:KmHnJWQrgEvbuy0vcvj00gtMqbvNn1L+3YUZLK/B92c=
 github.com/keybase/go-keychain v0.0.1 h1:way+bWYa6lDppZoZcgMbYsvC7GxljxrskdNInRtuthU=
