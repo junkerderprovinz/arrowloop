@@ -15,6 +15,14 @@ The full notes for each release are in
 - **A folder added from another app on the phone shows up right away.** After Use this folder and Allow, the app went back to the overview while it restarted its engine for the new folder, so it looked as if nothing had been added. The settings page now stays open and lists the folder. Thanks to @AlairEileen ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
 - **On a Mac, a folder replaced under the same name stays watched.** macOS can report the new folder before the removal of the old one, and changes inside it then went unnoticed until the next scheduled run.
 
+## 🎨 Design
+
+- **The Pairing tile shows ParleyPort's new logo.**
+
+## 🌐 Translations
+
+- **The uninstaller says in ArrowLoop's own words what stays.** Its list of what is kept names your jobs, history and settings, and the last page says they are still there, in all 42 languages.
+
 ## 2.6.4 - 2026-11-09
 
 A round of phone fixes from danpeig's report: times follow the phone's 24-hour setting, the keyboard stays clear of a new folder's name, and the settings backup goes to any folder you choose.
