@@ -70,6 +70,12 @@ func run() error {
 		return err
 	}
 
+	// Wails turns WebKit's DMA-BUF renderer off on NVIDIA itself, but cannot
+	// see the driver from inside a Flatpak.
+	if flatpak.ID() != "" && os.Getenv("WEBKIT_DISABLE_DMABUF_RENDERER") == "" && flatpak.NVIDIARenders("/sys", os.Getenv) {
+		os.Setenv("WEBKIT_DISABLE_DMABUF_RENDERER", "1")
+	}
+
 	// Filled in below, once this is known to be the only copy. The windows
 	// load nothing before app.Run.
 	var api http.Handler
