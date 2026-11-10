@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.7 - 2026-11-10
+
+A job's run list on the phone shows every run in full again.
+
 ## 🐛 Fixed
 
 - **A job's run list on the phone no longer cuts off its runs.** A run with nothing to do carried the whole sentence "Both sides already agree. There is nothing to do." in a small badge beside the time, which ran past the edge of the card and lost part of its text. Like the History tab, the job page now marks only finished and failed runs with a badge, and the line below still says that both sides were already the same. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).

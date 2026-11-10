@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.6.7" date="2026-11-10">
+      <description>
+        <p>A job's run list on the phone shows every run in full again.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.6.7</url>
+    </release>
     <release version="2.6.6" date="2026-11-10">
       <description>
         <p>The Flatpak opens again on PCs with an NVIDIA graphics card under Wayland.</p>
