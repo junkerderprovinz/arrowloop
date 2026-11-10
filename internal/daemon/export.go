@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -22,7 +23,7 @@ import (
 // it is sent. Closing it removes the stage, and by names the asker in the log.
 func (r *Runner) Export(ctx context.Context, by string) (io.ReadCloser, int64, error) {
 	cfg := r.config()
-	stage, err := os.MkdirTemp(cfg.Dir(), ".export-")
+	stage, err := liveStages.make(cfg.Dir())
 	if err != nil {
 		return nil, 0, fmt.Errorf("stage the export: %w", err)
 	}
@@ -41,7 +42,7 @@ func (r *Runner) Export(ctx context.Context, by string) (io.ReadCloser, int64, e
 		if f != nil {
 			f.Close()
 		}
-		os.RemoveAll(stage)
+		liveStages.remove(stage)
 		return nil, 0, fmt.Errorf("pack the export: %w", err)
 	}
 	r.log("the backup went to %s, %d bytes", by, n)
@@ -111,5 +112,60 @@ type staged struct {
 }
 
 func (s staged) Close() error {
-	return errors.Join(s.File.Close(), os.RemoveAll(s.dir))
+	return errors.Join(s.File.Close(), liveStages.remove(s.dir))
+}
+
+// stagePrefix starts the name of every folder an export is staged in.
+const stagePrefix = ".export-"
+
+// stages are the folders of the exports being read in this process. An
+// engine started again in the same process, as the phone's is, must not
+// sweep away an export another one still sends.
+type stages struct {
+	mu   sync.Mutex
+	live map[string]bool
+}
+
+var liveStages = &stages{live: map[string]bool{}}
+
+func (s *stages) make(dir string) (string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	stage, err := os.MkdirTemp(dir, stagePrefix)
+	if err == nil {
+		s.live[stage] = true
+	}
+	return stage, err
+}
+
+func (s *stages) remove(stage string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	delete(s.live, stage)
+	return os.RemoveAll(stage)
+}
+
+// sweepExports removes the stages in dir that an export left behind when the
+// program stopped halfway through it.
+func sweepExports(dir string) error {
+	if dir == "" {
+		return nil
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return fmt.Errorf("look for unfinished exports: %w", err)
+	}
+	liveStages.mu.Lock()
+	defer liveStages.mu.Unlock()
+	var errs []error
+	for _, e := range entries {
+		stage := filepath.Join(dir, e.Name())
+		if !e.IsDir() || !strings.HasPrefix(e.Name(), stagePrefix) || liveStages.live[stage] {
+			continue
+		}
+		if err := os.RemoveAll(stage); err != nil {
+			errs = append(errs, fmt.Errorf("remove an unfinished export: %w", err))
+		}
+	}
+	return errors.Join(errs...)
 }

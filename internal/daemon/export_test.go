@@ -100,3 +100,68 @@ func keys(m map[string][]byte) []string {
 	}
 	return out
 }
+
+func exportStages(t *testing.T, dir string) []string {
+	t.Helper()
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out []string
+	for _, e := range entries {
+		if strings.HasPrefix(e.Name(), ".export-") {
+			out = append(out, e.Name())
+		}
+	}
+	return out
+}
+
+func TestAStartClearsWhatAnExportLeftBehind(t *testing.T) {
+	cfg, hist, _, _ := fixture(t, func(d, left, right string) string {
+		return fmt.Sprintf(`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"state/photos.db"}]}`, jsonPath(left), jsonPath(right))
+	})
+	left := filepath.Join(cfg.Dir(), ".export-123", "backup.tar")
+	if err := os.MkdirAll(filepath.Dir(left), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(left, []byte("half a tar"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	unrelated := filepath.Join(cfg.Dir(), ".exports")
+	if err := os.Mkdir(unrelated, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	daemon.New(cfg, hist, nil)
+	if got := exportStages(t, cfg.Dir()); len(got) != 0 {
+		t.Errorf("after a start %v is still there", got)
+	}
+	if _, err := os.Stat(unrelated); err != nil {
+		t.Errorf("a folder that is no export went too: %v", err)
+	}
+}
+
+func TestAStartLeavesAnExportThatIsBeingRead(t *testing.T) {
+	cfg, hist, _, _ := fixture(t, func(d, left, right string) string {
+		return fmt.Sprintf(`{"jobs":[{"name":"photos","left":"%s","right":"%s","state":"state/photos.db"}]}`, jsonPath(left), jsonPath(right))
+	})
+	backup, n, err := daemon.New(cfg, hist, nil).Export(context.Background(), "the vault")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var said []string
+	daemon.New(cfg, hist, func(format string, args ...any) { said = append(said, fmt.Sprintf(format, args...)) })
+	if got := exportStages(t, cfg.Dir()); len(got) != 1 || len(said) != 0 {
+		t.Fatalf("a second start left %v of the export being read and said %q", got, said)
+	}
+	raw, err := io.ReadAll(backup)
+	if err != nil || int64(len(raw)) != n {
+		t.Fatalf("the export read %d of %d bytes after a second start: %v", len(raw), n, err)
+	}
+	if err := backup.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if got := exportStages(t, cfg.Dir()); len(got) != 0 {
+		t.Errorf("after the export was read %v is still there", got)
+	}
+}

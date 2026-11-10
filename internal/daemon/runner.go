@@ -120,6 +120,9 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 	if err := shadow.Sweep(context.Background(), shadows); err != nil {
 		log("%v", err)
 	}
+	if err := sweepExports(cfg.Dir()); err != nil {
+		log("%v", err)
+	}
 
 	// A configuration that was never read from a file has no place to keep
 	// findings, so they live as long as the runner.
