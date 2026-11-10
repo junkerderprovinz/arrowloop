@@ -146,13 +146,13 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
           <Card key={run.ID}>
             <View style={styles.head}>
               <Caption>{clock(run.Started, lang)}</Caption>
+              {/* A run with nothing to do has no badge: the line below says so,
+                  and a sentence does not fit beside the time. */}
               {failed(run) ? (
                 <Badge label={t("history.failed")} tone="fail" />
               ) : touched(run) > 0 ? (
                 <Badge label={t("history.ok")} tone="ok" />
-              ) : (
-                <Badge label={t("preview.nothing")} />
-              )}
+              ) : null}
             </View>
             <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
           </Card>
