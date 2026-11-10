@@ -1,0 +1,10 @@
+# The default rules do the work. The group files ArrowLoop 2.6 wrote for the
+# migration test hold the public member keys of throwaway test instances, which
+# the generic rule takes for API keys.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public member keys in the group files of the migration test"
+paths = ['''internal/pairing/testdata/before-kit/[a-z]+/group\.json''']
