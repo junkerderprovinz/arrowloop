@@ -1,18 +1,27 @@
 package web_test
 
 import (
+	"archive/tar"
 	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/json"
 	"errors"
+	"io"
+	"net"
+	"net/http"
 	"net/http/httptest"
+	"net/netip"
+	"os"
+	"path/filepath"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/lan"
 	"github.com/junkerderprovinz/parleyport/kit/member"
 	"github.com/junkerderprovinz/parleyport/kit/relay"
 
@@ -38,27 +47,45 @@ func (s *memStore) Save(b []byte) error {
 	return nil
 }
 
-func openFortress(t *testing.T, relayURL, app, device string, actions []fortress.Action, uses []string) (*fortress.Fortress, string) {
+// openFortress opens app on device in a fortress of the test's phrase, met on
+// the relay at relayURL or, without one, only on the network lan announces
+// on. edit sets what the app brings.
+func openFortress(t *testing.T, relayURL string, network *lan.Service, app, device string, edit func(*fortress.Config)) (*fortress.Fortress, string) {
 	t.Helper()
 	seed := sha256.Sum256([]byte(device))
 	id, err := member.FromSeed(member.KindInstance, seed[:])
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err := fortress.Open(fortress.Config{
+	var current atomic.Pointer[fortress.Fortress]
+	direct := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if f := current.Load(); f != nil && r.URL.Path == group.DirectPath {
+			f.DirectHandler().ServeHTTP(w, r)
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	t.Cleanup(direct.Close)
+	cfg := fortress.Config{
 		App:      fortress.App{ID: app, Name: app, Version: "1.0.0"},
 		Secret:   []byte("a phrase both hold"),
 		Identity: id,
-		Self:     group.Self{Name: device, Deployment: "container"},
-		Relay:    group.RelayOwn,
-		RelayURL: relayURL,
+		Self:     group.Self{Name: device, Deployment: "container", DirectURL: direct.URL},
+		Relay:    group.RelayOff,
+		LAN:      network,
 		Store:    &memStore{},
-		Actions:  actions,
-		Uses:     uses,
-	})
+	}
+	if relayURL != "" {
+		cfg.Relay, cfg.RelayURL = group.RelayOwn, relayURL
+	}
+	if edit != nil {
+		edit(&cfg)
+	}
+	f, err := fortress.Open(cfg)
 	if err != nil {
 		t.Fatal(err)
 	}
+	current.Store(f)
 	t.Cleanup(func() { _ = f.Close() })
 	return f, id.ID()
 }
@@ -87,8 +114,8 @@ func fortressPair(t *testing.T, h *harness) (*fortress.Fortress, *fortress.Fortr
 	t.Cleanup(rel.Close)
 	t.Cleanup(rel.CloseClientConnections)
 	s := &web.Server{History: h.history, Runner: h.runner}
-	engine, engineID := openFortress(t, rel.URL, "arrowloop", "Tower", s.FortressActions(), nil)
-	loader, loaderID := openFortress(t, rel.URL, "knightloader", "Attic", nil, []string{"jobs.list", "jobs.run"})
+	engine, engineID := openFortress(t, rel.URL, nil, "arrowloop", "Tower", func(c *fortress.Config) { c.Actions = s.FortressActions() })
+	loader, loaderID := openFortress(t, rel.URL, nil, "knightloader", "Attic", func(c *fortress.Config) { c.Uses = []string{"jobs.list", "jobs.run"} })
 	knows(t, loader, engineID, "arrowloop")
 	knows(t, engine, loaderID, "knightloader")
 	return engine, loader, engineID
@@ -202,4 +229,75 @@ func TestAnotherAppListsAndStartsJobsThroughTheFortress(t *testing.T) {
 			t.Errorf("jobs.list went with jobs.run: %v", err)
 		}
 	})
+}
+
+// onTheNetwork is a network announce service on a multicast group of the
+// test's own, or a skip on a host that cannot join one.
+func onTheNetwork(t *testing.T, port int) *lan.Service {
+	t.Helper()
+	addr := netip.AddrPortFrom(netip.MustParseAddr("239.255.77.252"), uint16(port))
+	probe, err := net.ListenMulticastUDP("udp4", nil, net.UDPAddrFromAddrPort(addr))
+	if err != nil {
+		t.Skipf("this host cannot join a multicast group: %v", err)
+	}
+	_ = probe.Close()
+	s := lan.New(lan.Config{Group: addr})
+	s.Start()
+	t.Cleanup(func() { _ = s.Close() })
+	return s
+}
+
+func freeUDPPort(t *testing.T) int {
+	t.Helper()
+	c, err := net.ListenPacket("udp4", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	return c.LocalAddr().(*net.UDPAddr).Port
+}
+
+func TestABackupToolOnTheSameNetworkFetchesTheExport(t *testing.T) {
+	h := newHarness(t)
+	if err := os.WriteFile(filepath.Join(h.left, "a.jpg"), []byte("abc"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.runner.Run(context.Background(), "photos"); err != nil {
+		t.Fatal(err)
+	}
+	port := freeUDPPort(t)
+	s := &web.Server{History: h.history, Runner: h.runner}
+	_, engineID := openFortress(t, "", onTheNetwork(t, port), "arrowloop", "Tower", func(c *fortress.Config) { c.Export = s.FortressExport })
+	vault, _ := openFortress(t, "", onTheNetwork(t, port), "bombvault", "Tower vault", func(c *fortress.Config) { c.Uses = []string{fortress.ExportAction} })
+	knows(t, vault, engineID, "arrowloop")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	backup, err := vault.Export(ctx, engineID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer backup.Close()
+	names := map[string][]byte{}
+	tr := tar.NewReader(backup)
+	for {
+		hd, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		names[hd.Name], _ = io.ReadAll(tr)
+	}
+	config, err := os.ReadFile(h.configPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(names["arrowloop.json"], config) {
+		t.Errorf("the export holds the configuration as %q", names["arrowloop.json"])
+	}
+	if _, ok := names["photos.db"]; !ok {
+		t.Errorf("the export holds %d files, without photos.db", len(names))
+	}
 }

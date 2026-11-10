@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -83,6 +84,12 @@ func (s *Server) FortressActions() []kitfortress.Action {
 		{Name: "jobs.list", Run: s.fortressJobs},
 		{Name: "jobs.run", Run: s.fortressRun},
 	}
+}
+
+// FortressExport hands this engine's backup to an app of the fortress that
+// keeps backups, for fortress.Config.Export.
+func (s *Server) FortressExport(ctx context.Context, from kitfortress.Caller) (io.ReadCloser, int64, error) {
+	return s.Runner.Export(ctx, from.App+" on "+from.Device)
 }
 
 // fortressJob is a job as another app sees it. The sides stay out: a side
