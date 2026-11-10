@@ -1526,7 +1526,7 @@ const nl: Translations = {
   'pairing.addresses.remove': 'Verwijderen',
   'pairing.addresses.empty': 'Nog geen adressen.',
   'pairing.addresses.found': '{name} antwoordt daar.',
-  'pairing.addresses.errNotNearby': 'Hier werkt alleen een adres in je eigen netwerk, op poort {port}, zoals 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Hier werkt alleen een adres in je eigen netwerk, zoals 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Op {address} antwoordt niets. Draait ArrowLoop daar?',
   'pairing.addresses.errStranger': 'Op {address} antwoordt een ArrowLoop, maar die hoort bij een andere groep.',
   'pairing.addresses.errSelf': '{address} is deze instantie zelf.',

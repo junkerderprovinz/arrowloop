@@ -1526,7 +1526,7 @@ const fa: Translations = {
   'pairing.addresses.remove': 'حذف',
   'pairing.addresses.empty': 'هنوز نشانی‌ای نیست.',
   'pairing.addresses.found': '{name} آنجا پاسخ می‌دهد.',
-  'pairing.addresses.errNotNearby': 'اینجا فقط نشانی‌ای در شبکه خودت کار می‌کند، روی پورت {port}، مثلا 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'اینجا فقط نشانی‌ای در شبکه خودت کار می‌کند، مثلا 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'در {address} چیزی پاسخ نمی‌دهد. ArrowLoop آنجا اجرا می‌شود؟',
   'pairing.addresses.errStranger': 'در {address} یک ArrowLoop پاسخ می‌دهد، اما به گروه دیگری تعلق دارد.',
   'pairing.addresses.errSelf': '{address} خود همین نمونه است.',

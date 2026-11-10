@@ -1526,7 +1526,7 @@ const he: Translations = {
   'pairing.addresses.remove': 'הסר',
   'pairing.addresses.empty': 'עדיין אין כתובות.',
   'pairing.addresses.found': '{name} עונה שם.',
-  'pairing.addresses.errNotNearby': 'כאן עובדת רק כתובת ברשת שלך, בפורט {port}, למשל 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'כאן עובדת רק כתובת ברשת שלך, למשל 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'שום דבר לא עונה בכתובת {address}. האם ArrowLoop פועל שם?',
   'pairing.addresses.errStranger': 'בכתובת {address} עונה ArrowLoop, אבל הוא שייך לקבוצה אחרת.',
   'pairing.addresses.errSelf': '{address} הוא המופע הזה עצמו.',

@@ -1526,7 +1526,7 @@ const uk: Translations = {
   'pairing.addresses.remove': 'Вилучити',
   'pairing.addresses.empty': 'Адрес поки немає.',
   'pairing.addresses.found': 'Там відповідає {name}.',
-  'pairing.addresses.errNotNearby': 'Тут підходить лише адреса у твоїй власній мережі, з портом {port}, наприклад 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Тут підходить лише адреса у твоїй власній мережі, наприклад 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'За адресою {address} ніхто не відповідає. ArrowLoop там запущено?',
   'pairing.addresses.errStranger': 'За адресою {address} відповідає ArrowLoop, але він з іншої групи.',
   'pairing.addresses.errSelf': 'За адресою {address} розташований сам цей екземпляр.',

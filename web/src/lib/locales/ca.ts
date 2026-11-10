@@ -1526,7 +1526,7 @@ const ca: Translations = {
   'pairing.addresses.remove': 'Elimina',
   'pairing.addresses.empty': 'Encara no hi ha cap adreça.',
   'pairing.addresses.found': '{name} respon en aquesta adreça.',
-  'pairing.addresses.errNotNearby': 'Aquí només funciona una adreça de la teva pròpia xarxa, al port {port}, com ara 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Aquí només funciona una adreça de la teva pròpia xarxa, com ara 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'No respon res a {address}. Hi funciona ArrowLoop?',
   'pairing.addresses.errStranger': 'A {address} respon un ArrowLoop, però pertany a un altre grup.',
   'pairing.addresses.errSelf': '{address} és aquesta mateixa instància.',

@@ -1526,7 +1526,7 @@ const hu: Translations = {
   'pairing.addresses.remove': 'Eltávolítás',
   'pairing.addresses.empty': 'Még nincs cím.',
   'pairing.addresses.found': 'Ott {name} válaszol.',
-  'pairing.addresses.errNotNearby': 'Itt csak a saját hálózatod egy címe működik, a(z) {port} porton, például 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Itt csak a saját hálózatod egy címe működik, például 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'A(z) {address} címen semmi sem válaszol. Fut ott az ArrowLoop?',
   'pairing.addresses.errStranger': 'A(z) {address} címen egy ArrowLoop válaszol, de egy másik csoporthoz tartozik.',
   'pairing.addresses.errSelf': 'A(z) {address} maga ez a példány.',

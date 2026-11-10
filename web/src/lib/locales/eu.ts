@@ -1526,7 +1526,7 @@ const eu: Translations = {
   'pairing.addresses.remove': 'Kendu',
   'pairing.addresses.empty': 'Oraindik ez dago helbiderik.',
   'pairing.addresses.found': '{name} instantziak erantzuten du han.',
-  'pairing.addresses.errNotNearby': 'Hemen zure sareko helbide batek bakarrik balio du, {port} atakan, adibidez 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Hemen zure sareko helbide batek bakarrik balio du, adibidez 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Ez du ezerk erantzuten {address} helbidean. ArrowLoop martxan dago han?',
   'pairing.addresses.errStranger': 'ArrowLoop batek erantzuten du {address} helbidean, baina beste talde batekoa da.',
   'pairing.addresses.errSelf': '{address} instantzia hau bera da.',

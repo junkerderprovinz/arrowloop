@@ -1526,7 +1526,7 @@ const th: Translations = {
   'pairing.addresses.remove': 'นำออก',
   'pairing.addresses.empty': 'ยังไม่มีที่อยู่',
   'pairing.addresses.found': '{name} ตอบกลับที่นั่น',
-  'pairing.addresses.errNotNearby': 'ที่นี่ใช้ได้เฉพาะที่อยู่ในเครือข่ายของคุณเองบนพอร์ต {port} เช่น 192.168.1.10:{port}',
+  'pairing.addresses.errNotNearby': 'ที่นี่ใช้ได้เฉพาะที่อยู่ในเครือข่ายของคุณเอง เช่น 192.168.1.10:8422',
   'pairing.addresses.errUnreachable': 'ไม่มีอะไรตอบกลับที่ {address} ArrowLoop ทำงานอยู่ที่นั่นหรือไม่',
   'pairing.addresses.errStranger': 'มี ArrowLoop ตอบกลับที่ {address} แต่อยู่ในกลุ่มอื่น',
   'pairing.addresses.errSelf': '{address} คืออินสแตนซ์นี้เอง',

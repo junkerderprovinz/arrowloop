@@ -1526,7 +1526,7 @@ const sl: Translations = {
   'pairing.addresses.remove': 'Odstrani',
   'pairing.addresses.empty': 'Še ni naslovov.',
   'pairing.addresses.found': 'Tam se odziva {name}.',
-  'pairing.addresses.errNotNearby': 'Tu deluje le naslov v tvojem lastnem omrežju, na vratih {port}, na primer 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Tu deluje le naslov v tvojem lastnem omrežju, na primer 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Na naslovu {address} se nič ne odziva. Ali tam teče ArrowLoop?',
   'pairing.addresses.errStranger': 'Na naslovu {address} se odziva ArrowLoop, vendar spada v drugo skupino.',
   'pairing.addresses.errSelf': '{address} je ta instanca sama.',

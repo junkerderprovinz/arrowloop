@@ -1526,7 +1526,7 @@ const cs: Translations = {
   'pairing.addresses.remove': 'Odebrat',
   'pairing.addresses.empty': 'Zatím žádné adresy.',
   'pairing.addresses.found': 'Odpovídá tam {name}.',
-  'pairing.addresses.errNotNearby': 'Funguje tu jen adresa ve tvé vlastní síti, na portu {port}, třeba 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Funguje tu jen adresa ve tvé vlastní síti, třeba 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Na adrese {address} nic neodpovídá. Běží tam ArrowLoop?',
   'pairing.addresses.errStranger': 'Na adrese {address} odpovídá ArrowLoop, ale patří do jiné skupiny.',
   'pairing.addresses.errSelf': '{address} je přímo tato instance.',

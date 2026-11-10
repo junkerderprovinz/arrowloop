@@ -1526,7 +1526,7 @@ const is: Translations = {
   'pairing.addresses.remove': 'Fjarlægja',
   'pairing.addresses.empty': 'Engin vistföng enn.',
   'pairing.addresses.found': '{name} svarar þar.',
-  'pairing.addresses.errNotNearby': 'Hér virkar aðeins vistfang á þínu eigin neti, á gátt {port}, til dæmis 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Hér virkar aðeins vistfang á þínu eigin neti, til dæmis 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Ekkert svarar á {address}. Er ArrowLoop í gangi þar?',
   'pairing.addresses.errStranger': 'ArrowLoop svarar á {address}, en það tilheyrir öðrum hópi.',
   'pairing.addresses.errSelf': '{address} er þetta tilvik sjálft.',

@@ -1526,7 +1526,7 @@ const sr: Translations = {
   'pairing.addresses.remove': 'Уклони',
   'pairing.addresses.empty': 'Још нема адреса.',
   'pairing.addresses.found': 'Тамо одговара {name}.',
-  'pairing.addresses.errNotNearby': 'Овде ради само адреса у твојој мрежи, на порту {port}, на пример 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Овде ради само адреса у твојој мрежи, на пример 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'На адреси {address} ништа не одговара. Да ли тамо ради ArrowLoop?',
   'pairing.addresses.errStranger': 'На адреси {address} одговара ArrowLoop, али припада другој групи.',
   'pairing.addresses.errSelf': '{address} је управо ова инстанца.',

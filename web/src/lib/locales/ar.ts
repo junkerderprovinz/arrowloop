@@ -1526,7 +1526,7 @@ const ar: Translations = {
   'pairing.addresses.remove': 'إزالة',
   'pairing.addresses.empty': 'لا توجد عناوين بعد.',
   'pairing.addresses.found': 'تجيب {name} هناك.',
-  'pairing.addresses.errNotNearby': 'لا يصلح هنا إلا عنوان في شبكتك أنت، على المنفذ {port}، مثل 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'لا يصلح هنا إلا عنوان في شبكتك أنت، مثل 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'لا شيء يجيب على {address}. هل يعمل ArrowLoop هناك؟',
   'pairing.addresses.errStranger': 'يجيب ArrowLoop على {address}، لكنه ينتمي إلى مجموعة أخرى.',
   'pairing.addresses.errSelf': '{address} هو عنوان هذه النسخة نفسها.',

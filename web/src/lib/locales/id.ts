@@ -1526,7 +1526,7 @@ const id: Translations = {
   'pairing.addresses.remove': 'Hapus',
   'pairing.addresses.empty': 'Belum ada alamat.',
   'pairing.addresses.found': '{name} menjawab di sana.',
-  'pairing.addresses.errNotNearby': 'Di sini hanya alamat di jaringan Anda sendiri yang bisa dipakai, pada port {port}, misalnya 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Di sini hanya alamat di jaringan Anda sendiri yang bisa dipakai, misalnya 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Tidak ada yang menjawab di {address}. Apakah ArrowLoop berjalan di sana?',
   'pairing.addresses.errStranger': 'Sebuah ArrowLoop menjawab di {address}, tetapi milik grup lain.',
   'pairing.addresses.errSelf': '{address} adalah instance ini sendiri.',

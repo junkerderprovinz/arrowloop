@@ -1526,7 +1526,7 @@ const bg: Translations = {
   'pairing.addresses.remove': 'Премахни',
   'pairing.addresses.empty': 'Още няма адреси.',
   'pairing.addresses.found': 'Там отговаря {name}.',
-  'pairing.addresses.errNotNearby': 'Тук работи само адрес в собствената ти мрежа, на порт {port}, например 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Тук работи само адрес в собствената ти мрежа, например 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'На {address} нищо не отговаря. Работи ли там ArrowLoop?',
   'pairing.addresses.errStranger': 'На {address} отговаря ArrowLoop, но той принадлежи на друга група.',
   'pairing.addresses.errSelf': '{address} е самата тази инстанция.',

@@ -1526,7 +1526,7 @@ const lv: Translations = {
   'pairing.addresses.remove': 'Noņemt',
   'pairing.addresses.empty': 'Adrešu vēl nav.',
   'pairing.addresses.found': 'Tur atbild {name}.',
-  'pairing.addresses.errNotNearby': 'Šeit der tikai adrese tavā paša tīklā, portā {port}, piemēram, 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Šeit der tikai adrese tavā paša tīklā, piemēram, 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Adresē {address} neviens neatbild. Vai ArrowLoop tur darbojas?',
   'pairing.addresses.errStranger': 'Adresē {address} atbild ArrowLoop, bet tas pieder citai grupai.',
   'pairing.addresses.errSelf': '{address} ir pati šī instance.',

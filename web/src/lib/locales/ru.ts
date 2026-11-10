@@ -1526,7 +1526,7 @@ const ru: Translations = {
   'pairing.addresses.remove': 'Удалить',
   'pairing.addresses.empty': 'Адресов пока нет.',
   'pairing.addresses.found': 'Там отвечает {name}.',
-  'pairing.addresses.errNotNearby': 'Здесь подходит только адрес в твоей собственной сети, с портом {port}, например 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Здесь подходит только адрес в твоей собственной сети, например 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'По адресу {address} никто не отвечает. ArrowLoop там запущен?',
   'pairing.addresses.errStranger': 'По адресу {address} отвечает ArrowLoop, но он из другой группы.',
   'pairing.addresses.errSelf': 'По адресу {address} находится сам этот экземпляр.',

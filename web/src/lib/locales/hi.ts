@@ -1526,7 +1526,7 @@ const hi: Translations = {
   'pairing.addresses.remove': 'हटाएँ',
   'pairing.addresses.empty': 'अभी कोई पता नहीं।',
   'pairing.addresses.found': 'वहाँ {name} जवाब देता है।',
-  'pairing.addresses.errNotNearby': 'यहाँ सिर्फ़ आपके अपने नेटवर्क का पता चलता है, पोर्ट {port} पर, जैसे 192.168.1.10:{port}।',
+  'pairing.addresses.errNotNearby': 'यहाँ सिर्फ़ आपके अपने नेटवर्क का पता चलता है, जैसे 192.168.1.10:8422।',
   'pairing.addresses.errUnreachable': '{address} पर कोई जवाब नहीं देता। क्या वहाँ ArrowLoop चल रहा है?',
   'pairing.addresses.errStranger': '{address} पर एक ArrowLoop जवाब देता है, लेकिन वह किसी दूसरे समूह का है।',
   'pairing.addresses.errSelf': '{address} यही इंस्टेंस है।',

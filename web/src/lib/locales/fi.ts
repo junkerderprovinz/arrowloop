@@ -1526,7 +1526,7 @@ const fi: Translations = {
   'pairing.addresses.remove': 'Poista',
   'pairing.addresses.empty': 'Ei vielä osoitteita.',
   'pairing.addresses.found': '{name} vastaa siellä.',
-  'pairing.addresses.errNotNearby': 'Tässä toimii vain oman verkkosi osoite portissa {port}, esimerkiksi 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Tässä toimii vain oman verkkosi osoite, esimerkiksi 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Osoitteessa {address} ei vastaa mikään. Onko ArrowLoop käynnissä siellä?',
   'pairing.addresses.errStranger': 'Osoitteessa {address} vastaa ArrowLoop, mutta se kuuluu toiseen ryhmään.',
   'pairing.addresses.errSelf': '{address} on tämä instanssi itse.',

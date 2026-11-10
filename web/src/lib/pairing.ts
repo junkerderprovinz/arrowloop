@@ -50,7 +50,7 @@ export function refusalText(t: Translate, e: unknown): string {
       case 'phraseExists':
         return t('pairing.errExists')
       case 'addressNotNearby':
-        return t('pairing.addresses.errNotNearby', { port: v.port ?? '8422' })
+        return t('pairing.addresses.errNotNearby')
       case 'addressUnreachable':
         return t('pairing.addresses.errUnreachable', { address: v.address ?? '' })
       case 'addressStranger':

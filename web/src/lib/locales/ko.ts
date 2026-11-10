@@ -1526,7 +1526,7 @@ const ko: Translations = {
   'pairing.addresses.remove': '제거',
   'pairing.addresses.empty': '아직 주소가 없습니다.',
   'pairing.addresses.found': '{name}이(가) 그곳에서 응답합니다.',
-  'pairing.addresses.errNotNearby': '여기에서는 내 네트워크 안에 있는 포트 {port}의 주소만 사용할 수 있습니다. 예: 192.168.1.10:{port}',
+  'pairing.addresses.errNotNearby': '여기에서는 내 네트워크 안에 있는 주소만 사용할 수 있습니다. 예: 192.168.1.10:8422',
   'pairing.addresses.errUnreachable': '{address}에서 응답하는 것이 없습니다. 그곳에서 ArrowLoop가 실행 중인가요?',
   'pairing.addresses.errStranger': '{address}에서 ArrowLoop가 응답하지만 다른 그룹에 속해 있습니다.',
   'pairing.addresses.errSelf': '{address}은(는) 바로 이 인스턴스입니다.',

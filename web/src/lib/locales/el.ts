@@ -1526,7 +1526,7 @@ const el: Translations = {
   'pairing.addresses.remove': 'Αφαίρεση',
   'pairing.addresses.empty': 'Δεν υπάρχουν ακόμη διευθύνσεις.',
   'pairing.addresses.found': 'Εκεί απαντά το {name}.',
-  'pairing.addresses.errNotNearby': 'Εδώ λειτουργεί μόνο μια διεύθυνση στο δικό σου δίκτυο, στη θύρα {port}, για παράδειγμα 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Εδώ λειτουργεί μόνο μια διεύθυνση στο δικό σου δίκτυο, για παράδειγμα 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Τίποτα δεν απαντά στη διεύθυνση {address}. Τρέχει εκεί το ArrowLoop;',
   'pairing.addresses.errStranger': 'Στη διεύθυνση {address} απαντά ένα ArrowLoop, αλλά ανήκει σε άλλη ομάδα.',
   'pairing.addresses.errSelf': 'Στη διεύθυνση {address} βρίσκεται αυτή η ίδια η εγκατάσταση.',

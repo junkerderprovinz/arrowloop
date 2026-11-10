@@ -1526,7 +1526,7 @@ const vi: Translations = {
   'pairing.addresses.remove': 'Gỡ bỏ',
   'pairing.addresses.empty': 'Chưa có địa chỉ nào.',
   'pairing.addresses.found': '{name} trả lời ở đó.',
-  'pairing.addresses.errNotNearby': 'Ở đây chỉ dùng được địa chỉ trong mạng của chính bạn, trên cổng {port}, ví dụ 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Ở đây chỉ dùng được địa chỉ trong mạng của chính bạn, ví dụ 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Không có gì trả lời tại {address}. ArrowLoop có đang chạy ở đó không?',
   'pairing.addresses.errStranger': 'Có một ArrowLoop trả lời tại {address}, nhưng nó thuộc về nhóm khác.',
   'pairing.addresses.errSelf': '{address} chính là phiên bản này.',

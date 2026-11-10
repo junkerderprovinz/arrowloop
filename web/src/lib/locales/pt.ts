@@ -1526,7 +1526,7 @@ const pt: Translations = {
   'pairing.addresses.remove': 'Remover',
   'pairing.addresses.empty': 'Ainda não há endereços.',
   'pairing.addresses.found': '{name} responde aí.',
-  'pairing.addresses.errNotNearby': 'Aqui só funciona um endereço da tua própria rede, na porta {port}, como 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Aqui só funciona um endereço da tua própria rede, como 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Nada responde em {address}. O ArrowLoop está a correr lá?',
   'pairing.addresses.errStranger': 'Em {address} responde um ArrowLoop, mas pertence a outro grupo.',
   'pairing.addresses.errSelf': '{address} é esta própria instância.',

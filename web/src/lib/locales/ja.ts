@@ -1526,7 +1526,7 @@ const ja: Translations = {
   'pairing.addresses.remove': '削除',
   'pairing.addresses.empty': 'まだアドレスはありません。',
   'pairing.addresses.found': '{name} がそこで応答しています。',
-  'pairing.addresses.errNotNearby': 'ここで使えるのは、自分のネットワーク内にあるポート {port} のアドレスだけです。例: 192.168.1.10:{port}',
+  'pairing.addresses.errNotNearby': 'ここで使えるのは、自分のネットワーク内にあるアドレスだけです。例: 192.168.1.10:8422',
   'pairing.addresses.errUnreachable': '{address} では何も応答しません。そこで ArrowLoop は動いていますか？',
   'pairing.addresses.errStranger': '{address} では ArrowLoop が応答していますが、別のグループのものです。',
   'pairing.addresses.errSelf': '{address} はこのインスタンス自身です。',

@@ -1526,7 +1526,7 @@ const ro: Translations = {
   'pairing.addresses.remove': 'Elimină',
   'pairing.addresses.empty': 'Încă nu există adrese.',
   'pairing.addresses.found': '{name} răspunde acolo.',
-  'pairing.addresses.errNotNearby': 'Aici merge doar o adresă din propria ta rețea, pe portul {port}, de exemplu 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Aici merge doar o adresă din propria ta rețea, de exemplu 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Nu răspunde nimic la {address}. Rulează ArrowLoop acolo?',
   'pairing.addresses.errStranger': 'La {address} răspunde un ArrowLoop, dar aparține altui grup.',
   'pairing.addresses.errSelf': '{address} este chiar această instanță.',

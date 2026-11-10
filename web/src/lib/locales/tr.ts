@@ -1526,7 +1526,7 @@ const tr: Translations = {
   'pairing.addresses.remove': 'Kaldır',
   'pairing.addresses.empty': 'Henüz adres yok.',
   'pairing.addresses.found': '{name} orada yanıt veriyor.',
-  'pairing.addresses.errNotNearby': 'Burada yalnızca kendi ağındaki, {port} portunu kullanan bir adres çalışır, örneğin 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Burada yalnızca kendi ağındaki bir adres çalışır, örneğin 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': '{address} adresinde hiçbir şey yanıt vermiyor. ArrowLoop orada çalışıyor mu?',
   'pairing.addresses.errStranger': '{address} adresinde bir ArrowLoop yanıt veriyor, ama başka bir gruba ait.',
   'pairing.addresses.errSelf': '{address} bu örneğin kendisi.',

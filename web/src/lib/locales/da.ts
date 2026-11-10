@@ -1526,7 +1526,7 @@ const da: Translations = {
   'pairing.addresses.remove': 'Fjern',
   'pairing.addresses.empty': 'Ingen adresser endnu.',
   'pairing.addresses.found': '{name} svarer der.',
-  'pairing.addresses.errNotNearby': 'Her virker kun en adresse på dit eget netværk, på port {port}, fx 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Her virker kun en adresse på dit eget netværk, fx 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Intet svarer på {address}. Kører ArrowLoop der?',
   'pairing.addresses.errStranger': 'Et ArrowLoop svarer på {address}, men det hører til en anden gruppe.',
   'pairing.addresses.errSelf': '{address} er denne instans selv.',

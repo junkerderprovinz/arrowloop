@@ -1526,7 +1526,7 @@ const zh: Translations = {
   'pairing.addresses.remove': '移除',
   'pairing.addresses.empty': '还没有地址。',
   'pairing.addresses.found': '{name} 在那里响应。',
-  'pairing.addresses.errNotNearby': '这里只能使用你自己网络中的地址，端口为 {port}，例如 192.168.1.10:{port}。',
+  'pairing.addresses.errNotNearby': '这里只能使用你自己网络中的地址，例如 192.168.1.10:8422。',
   'pairing.addresses.errUnreachable': '{address} 上没有任何响应。ArrowLoop 在那里运行吗？',
   'pairing.addresses.errStranger': '{address} 上有一个 ArrowLoop 在响应，但它属于另一个组。',
   'pairing.addresses.errSelf': '{address} 就是此实例本身。',

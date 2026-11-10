@@ -1526,7 +1526,7 @@ const lt: Translations = {
   'pairing.addresses.remove': 'Pašalinti',
   'pairing.addresses.empty': 'Adresų dar nėra.',
   'pairing.addresses.found': 'Ten atsako {name}.',
-  'pairing.addresses.errNotNearby': 'Čia tinka tik adresas tavo paties tinkle, prievade {port}, pavyzdžiui, 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Čia tinka tik adresas tavo paties tinkle, pavyzdžiui, 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Adresu {address} niekas neatsako. Ar ten veikia ArrowLoop?',
   'pairing.addresses.errStranger': 'Adresu {address} atsako ArrowLoop, bet jis priklauso kitai grupei.',
   'pairing.addresses.errSelf': '{address} yra pats šis egzempliorius.',

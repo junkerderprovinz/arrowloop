@@ -1526,7 +1526,7 @@ const et: Translations = {
   'pairing.addresses.remove': 'Eemalda',
   'pairing.addresses.empty': 'Aadresse veel pole.',
   'pairing.addresses.found': 'Seal vastab {name}.',
-  'pairing.addresses.errNotNearby': 'Siin sobib ainult aadress sinu enda võrgus, pordil {port}, näiteks 192.168.1.10:{port}.',
+  'pairing.addresses.errNotNearby': 'Siin sobib ainult aadress sinu enda võrgus, näiteks 192.168.1.10:8422.',
   'pairing.addresses.errUnreachable': 'Aadressil {address} ei vasta miski. Kas ArrowLoop seal töötab?',
   'pairing.addresses.errStranger': 'Aadressil {address} vastab ArrowLoop, aga see kuulub teise gruppi.',
   'pairing.addresses.errSelf': '{address} on see eksemplar ise.',
