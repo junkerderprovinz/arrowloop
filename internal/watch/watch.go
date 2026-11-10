@@ -155,11 +155,14 @@ func (w *Watcher) Run(ctx context.Context) error {
 				continue
 			}
 			// A folder created again under the same name needs a new watch.
-			if ev.Has(fsnotify.Remove) || ev.Has(fsnotify.Rename) {
+			// kqueue can report that Create before the Remove of the folder it
+			// replaced, so a folder found again after a Remove is watched anew.
+			gone := ev.Has(fsnotify.Remove) || ev.Has(fsnotify.Rename)
+			if gone {
 				w.forget(ev.Name)
 			}
 			// Watches do not cover subtrees, so a new directory needs its own.
-			if ev.Has(fsnotify.Create) && !w.src.recursive {
+			if (ev.Has(fsnotify.Create) || gone) && !w.src.recursive {
 				if info, err := os.Stat(ev.Name); err == nil && info.IsDir() {
 					if err := w.addTree(ev.Name); err != nil {
 						w.opt.Log("could not watch the new folder %s: %v", ev.Name, err)
