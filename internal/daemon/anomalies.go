@@ -300,7 +300,7 @@ func (r *Runner) Approve(ctx context.Context, id string) (history.Run, error) {
 	if err != nil {
 		return history.Run{}, err
 	}
-	how := decided{approved: marks, keepOne: true}
+	how := decided{approved: marks, keepOne: true, passed: func() { r.settle(f.Job, anomaly.Ran, brakes...) }}
 	return r.runAnswering(ctx, f.Job, false, answer{outcome: anomaly.Ran, kinds: brakes},
 		func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 			return r.executeAs(ctx, j, nil, nil, nil, how, live)
@@ -316,7 +316,7 @@ func (r *Runner) TakeBack(ctx context.Context, id string) (history.Run, error) {
 	if !ok || !f.Held {
 		return history.Run{}, anomaly.ErrUnknown
 	}
-	how := decided{back: plan.Brake(f.Kind), keepOne: true}
+	how := decided{back: plan.Brake(f.Kind), keepOne: true, passed: func() { r.settle(f.Job, anomaly.TakenBack, f.Kind) }}
 	return r.runAnswering(ctx, f.Job, false, answer{outcome: anomaly.TakenBack, kinds: []anomaly.Kind{f.Kind}},
 		func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 			return r.executeAs(ctx, j, nil, nil, nil, how, live)

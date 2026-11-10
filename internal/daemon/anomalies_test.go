@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 
@@ -141,6 +142,38 @@ func TestApprovingRunsExactlyTheShownChange(t *testing.T) {
 	open, closed := r.Findings(context.Background())
 	if len(open) != 0 || len(closed) != 1 || closed[0].Outcome != anomaly.Ran {
 		t.Errorf("got %d open and %d closed findings, want one closed as run", len(open), len(closed))
+	}
+}
+
+// A run that was allowed can take long, and the note asking for it must not
+// stand there as if nothing had been answered while its files move.
+func TestApprovingClosesTheFindingBeforeTheFilesMove(t *testing.T) {
+	r, left, _ := syncedPair(t)
+	emptyOut(t, left, 30)
+	f := held(t, r)
+
+	events, stop := r.Subscribe()
+	var phases []string
+	read := make(chan struct{})
+	go func() {
+		for ev := range events {
+			// A progress event without a stage is the apply step, after the
+			// reading of both sides.
+			if ev.Job == "test" && ev.Stage == "" {
+				phases = append(phases, ev.Phase)
+			}
+		}
+		close(read)
+	}()
+	if _, err := r.Approve(context.Background(), f.ID); err != nil {
+		t.Fatalf("approving: %v", err)
+	}
+	stop()
+	<-read
+
+	closed, moving := slices.Index(phases, "anomaly"), slices.Index(phases, "progress")
+	if closed < 0 || moving < 0 || closed > moving {
+		t.Errorf("the finding closed at event %d and the files began to move at %d: %v", closed, moving, phases)
 	}
 }
 

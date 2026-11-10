@@ -511,6 +511,10 @@ type decided struct {
 	// keepOne keeps the content a copy replaces even on a job that keeps no
 	// versions, for a run that overwrites in bulk on somebody's word.
 	keepOne bool
+
+	// passed is called once the plan is past the brakes, so the finding the
+	// run answers closes when its files start to move, not when the last has.
+	passed func()
 }
 
 // executeAs is execute for a run that answers a finding. A run that failed
@@ -575,6 +579,16 @@ func (r *Runner) executeOnce(ctx context.Context, j job.Job, only []string, show
 		}
 		p = plan.TakeBack(p, how.back)
 		r.log("%s: taking back %d files a safety brake refused to change", j.Name, len(p.Actions))
+		how.passed()
+		res, err := engine.ExecuteWatched(ctx, ends, db, p, compare, watcher)
+		return res, p, err
+	}
+	if how.passed != nil {
+		p, compare, err := engine.Prepare(ctx, ends, db, opt)
+		if err != nil {
+			return apply.Result{}, nil, err
+		}
+		how.passed()
 		res, err := engine.ExecuteWatched(ctx, ends, db, p, compare, watcher)
 		return res, p, err
 	}
