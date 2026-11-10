@@ -122,15 +122,14 @@ type Server struct {
 	// "container", "server", "desktop" or "phone".
 	Deployment string
 
-	// groupMu keeps two openings of the group apart, and liveMu guards live,
-	// the group in use, liveStop, which ends what follows it, and liveGen,
-	// which counts the groups opened. memberMu keeps two mints of a member key
-	// apart, and groupOnce builds group, what another member may call here.
+	// groupMu keeps two openings of the group apart, liveMu guards live, the
+	// group in use, and liveGen, which counts the groups opened. memberMu
+	// keeps two mints of a member key apart, and groupOnce builds group, what
+	// another member may call here.
 	groupMu   sync.Mutex
 	liveMu    sync.Mutex
 	live      *group.Group
 	liveGen   uint64
-	liveStop  context.CancelFunc
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler

@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -904,5 +905,45 @@ func TestTheEventStreamSaysWhenTheGroupChanges(t *testing.T) {
 		case <-deadline:
 			t.Fatal("a's event stream never said that another instance came")
 		}
+	}
+}
+
+// groupEvent waits for a group event on frames.
+func groupEvent(t *testing.T, frames <-chan string, what string) {
+	t.Helper()
+	deadline := time.After(30 * time.Second)
+	for {
+		select {
+		case data := <-frames:
+			var ev struct{ Job, Phase string }
+			if json.Unmarshal([]byte(data), &ev) == nil && ev.Phase == web.GroupChanged && ev.Job == "" {
+				return
+			}
+		case <-deadline:
+			t.Fatalf("the event stream never said %s", what)
+		}
+	}
+}
+
+// The Pairing tile shows whether the relay is reachable, so losing it is a
+// change the clients hear of like any other.
+func TestARelayThatGoesAwayReachesTheEventStream(t *testing.T) {
+	r := relay.New()
+	var down atomic.Bool
+	r.Admit = func(string) bool { return !down.Load() }
+	srv := httptest.NewServer(r)
+	t.Cleanup(srv.Close)
+	a := newNode(t, srv.URL)
+	a.send(t, http.MethodPost, "/api/connect/activate", "{}")
+	eventually(t, "a on the relay", func() bool { return a.relay(t).Connected })
+	frames := stream(t, a)
+
+	// A socket the relay took over outlives the test server's Close, so the
+	// relay itself turns everybody away.
+	down.Store(true)
+	r.Revoke()
+	groupEvent(t, frames, "that the relay went away")
+	if a.relay(t).Connected {
+		t.Error("the relay still counts as connected")
 	}
 }

@@ -107,14 +107,13 @@ func (s *Server) applyGroup() {
 
 func (s *Server) closeGroupLocked() {
 	s.liveMu.Lock()
-	g, stop := s.live, s.liveStop
-	s.live, s.liveStop = nil, nil
+	g := s.live
+	s.live = nil
 	s.liveGen++
 	s.liveMu.Unlock()
 	if g == nil {
 		return
 	}
-	stop()
 	defer s.groupChanged()
 	if err := g.Close(); err != nil {
 		s.logf("pairing: could not save the group on leaving it: %v", err)
@@ -176,11 +175,9 @@ func (s *Server) openGroupLocked() {
 	if err := s.Pairing.MoveLegacy(g); err != nil {
 		s.logf("pairing: could not take over the group from before: %v", err)
 	}
-	ctx, stop := context.WithCancel(context.Background())
 	s.liveMu.Lock()
-	s.live, s.liveStop = g, stop
+	s.live = g
 	s.liveMu.Unlock()
-	go s.followRelay(ctx, g)
 	s.groupChanged()
 }
 
@@ -213,30 +210,6 @@ func (s *Server) groupChanged() {
 		select {
 		case ch <- struct{}{}:
 		default:
-		}
-	}
-}
-
-// relayLook is how often the relay connection is looked at. The group reports
-// changes to its members, but not this instance's own connection, which the
-// Pairing tile shows as well.
-const relayLook = 5 * time.Second
-
-// followRelay tells the watchers when g's relay connection comes or goes,
-// until ctx ends.
-func (s *Server) followRelay(ctx context.Context, g *group.Group) {
-	t := time.NewTicker(relayLook)
-	defer t.Stop()
-	was := g.RelayConnected()
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case <-t.C:
-		}
-		if now := g.RelayConnected(); now != was {
-			was = now
-			s.groupChanged()
 		}
 	}
 }
