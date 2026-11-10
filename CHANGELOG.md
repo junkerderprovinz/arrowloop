@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.6.6 - 2026-11-10
+
+The Flatpak opens again on PCs with an NVIDIA graphics card under Wayland.
+
 ## 🐛 Fixed
 
 - **The Flatpak opens on a PC with an NVIDIA graphics card.** Under Wayland the window never appeared and the log ended with "Error 71 (Protocol error) dispatching to Wayland display". The desktop app already switches off the WebKit renderer that NVIDIA's driver trips over, but inside the Flatpak it could not see the driver, so it never did. Now it reads the driver from where Flatpak can see it. Thanks to @RektalTk ([#143](https://github.com/junkerderprovinz/arrowloop/issues/143)).
