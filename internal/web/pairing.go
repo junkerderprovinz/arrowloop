@@ -250,7 +250,7 @@ func (s *Server) self(st pairing.State) group.Self {
 const defaultPort = 8422
 
 // groupPorts are where the instances of the group take calls, for an address
-// that is typed in or remembered rather than announced.
+// the group remembers rather than one announced or typed in.
 func (s *Server) groupPorts() []int {
 	if len(s.Ports) > 0 {
 		return s.Ports
@@ -1173,7 +1173,7 @@ func refuseAddress(w http.ResponseWriter, address string, err error) {
 		}
 	}
 	writeJSON(w, http.StatusBadRequest, map[string]any{
-		"error": err.Error(), "code": code, "values": map[string]string{"address": address, "port": strconv.Itoa(defaultPort)},
+		"error": err.Error(), "code": code, "values": map[string]string{"address": address},
 	})
 }
 

@@ -786,6 +786,19 @@ func TestAnAddressTypedInFindsAnInstanceWithoutTheRelay(t *testing.T) {
 	})
 }
 
+// A container may be mapped to any port of its host, so a typed address may
+// name any port as long as it stays in the own network.
+func TestATypedAddressMayNameAnyPort(t *testing.T) {
+	a := nodeWith(t, setup{}, newHarness(t))
+	a.send(t, http.MethodPut, "/api/connect", `{"name":"alpha"}`)
+	b := nodeWith(t, setup{deployment: "desktop"}, newHarness(t))
+	b.send(t, http.MethodPost, "/api/connect/join", `{"phrase":"`+phraseOfNew(t, a)+`"}`)
+
+	if status, found := b.addAddress(t, addressOf(a)); status != http.StatusOK || found.Member.Name != "alpha" {
+		t.Errorf("alpha on a port of its own = %d %+v, want it found", status, found)
+	}
+}
+
 func TestATypedAddressSaysWhyItFindsNoInstance(t *testing.T) {
 	dead := httpDeadPort(t)
 	stranger := nodeWith(t, setup{}, newHarness(t))
@@ -795,7 +808,7 @@ func TestATypedAddressSaysWhyItFindsNoInstance(t *testing.T) {
 
 	for _, tc := range []struct{ address, code string }{
 		{"8.8.8.8:8422", "addressNotNearby"},
-		{"192.168.1.10:22", "addressNotNearby"},
+		{"ftp://192.168.1.10", "addressNotNearby"},
 		{"127.0.0.1:" + strconv.Itoa(dead), "addressUnreachable"},
 		{addressOf(stranger), "addressStranger"},
 		{addressOf(a), "addressSelf"},

@@ -114,8 +114,8 @@ type Server struct {
 	// does until a browser shows the address.
 	LAN       *lan.Service
 	DirectURL string
-	// Ports are where the instances of the group listen, for an address
-	// typed in or remembered; empty means ArrowLoop's default port.
+	// Ports are where the instances of the group listen, for an address the
+	// group remembers; empty means ArrowLoop's default port.
 	Ports []int
 
 	// Deployment is what this instance tells the others of its group it is:
