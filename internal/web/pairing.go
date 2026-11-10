@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -44,6 +45,8 @@ func (s *Server) pairingRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE /api/connect/members/{id}", s.removeMember)
 	mux.HandleFunc("POST /api/connect/devices/{id}/approve", s.approveMember)
 	mux.HandleFunc("POST /api/connect/devices/{id}/refuse", s.refuseMember)
+	mux.HandleFunc("POST /api/connect/addresses", s.addAddress)
+	mux.HandleFunc("PUT /api/connect/addresses", s.saveAddresses)
 	mux.HandleFunc("GET /api/relay/config", s.readRelay)
 	mux.HandleFunc("PUT /api/relay/config", s.writeRelay)
 	// Open like a relay of its own: the relay key in the first frame is the
@@ -142,11 +145,16 @@ func (s *Server) openGroupLocked() {
 		Domain:   pairing.Domain,
 		Secret:   st.Secret,
 		Identity: id,
-		Self:     group.Self{Name: s.instanceName(st), Deployment: s.Deployment, DirectURL: s.DirectURL},
+		Self:     s.self(st),
 		Relay:    mode,
 		RelayURL: relayURL,
 		LAN:      s.LAN,
 		Store:    s.Pairing.GroupStore(),
+		// Every ArrowLoop is an instance, its phone and desktop app included,
+		// so a device of another kind holds the phrase and nothing else.
+		Kinds:    []member.Kind{member.KindInstance},
+		Ports:    s.groupPorts(),
+		OnChange: func() { s.noteMemberSeen(gen) },
 		OnRemoved: func() {
 			s.groupMu.Lock()
 			defer s.groupMu.Unlock()
@@ -160,9 +168,47 @@ func (s *Server) openGroupLocked() {
 		s.logf("pairing: could not join the group: %v", err)
 		return
 	}
+	if err := s.Pairing.MoveLegacy(g); err != nil {
+		s.logf("pairing: could not take over the group from before: %v", err)
+	}
 	s.liveMu.Lock()
 	s.live = g
 	s.liveMu.Unlock()
+}
+
+// self is what the other members see of this instance.
+func (s *Server) self(st pairing.State) group.Self {
+	return group.Self{Name: s.instanceName(st), Deployment: s.Deployment, DirectURL: s.DirectURL}
+}
+
+// defaultPort is where an ArrowLoop listens unless told otherwise.
+const defaultPort = 8422
+
+// groupPorts are where the instances of the group take calls, for an address
+// that is typed in or remembered rather than announced.
+func (s *Server) groupPorts() []int {
+	if len(s.Ports) > 0 {
+		return s.Ports
+	}
+	return []int{defaultPort}
+}
+
+// noteMemberSeen records when another instance first showed up in the group,
+// for the Pairing tile, as soon as the group of generation gen sees one.
+func (s *Server) noteMemberSeen(gen uint64) {
+	st := s.Pairing.Get()
+	if st.JoinedAt.IsZero() || !st.MemberSeenAt.IsZero() || s.generation() != gen {
+		return
+	}
+	for _, m := range s.instances() {
+		if m.Online() {
+			now := time.Now()
+			if err := s.Pairing.Update(func(stored *pairing.State) error { stored.MemberSeenAt = now; return nil }); err != nil {
+				s.logf("pairing: could not record the first member of the group: %v", err)
+			}
+			return
+		}
+	}
 }
 
 // identity is the key this instance signs its calls to the group with, minted
@@ -198,21 +244,12 @@ func (s *Server) groupID() string {
 	return ""
 }
 
-// instances is every other instance of the group this one knows. Every
-// ArrowLoop is an instance, its phone and desktop app included, so a device
-// of another kind is nothing to list or approve.
+// instances is every other instance of the group this one knows.
 func (s *Server) instances() []group.Member {
-	g := s.joined()
-	if g == nil {
-		return nil
+	if g := s.joined(); g != nil {
+		return g.Members()
 	}
-	var out []group.Member
-	for _, m := range g.Members() {
-		if m.Kind == member.KindInstance {
-			out = append(out, m)
-		}
-	}
-	return out
+	return nil
 }
 
 func (s *Server) relayConnected() bool {
@@ -255,6 +292,9 @@ type connectInfo struct {
 	// Fingerprint is this instance's own key as the others list it while it
 	// waits for approval there, "" outside a group.
 	Fingerprint string `json:"fingerprint"`
+	// Addresses are where the owner said instances of the group answer on
+	// this network, for one that cannot find them by itself.
+	Addresses []string `json:"addresses"`
 }
 
 type groupMember struct {
@@ -311,39 +351,24 @@ func (s *Server) connectInfo() connectInfo {
 		Members:         []groupMember{},
 		Away:            []awayMember{},
 		Pending:         []pendingMember{},
+		Addresses:       []string{},
 	}
-	var members []group.Member
 	if g := s.joined(); g != nil {
-		members = g.Members()
+		info.Addresses = g.Addresses()
 	}
-	anyone := false
-	for _, m := range members {
-		// A device of another kind holds the phrase and nothing else. It is
-		// listed to be refused, so it cannot hold a place for a waiting
-		// instance unseen.
+	for _, m := range s.instances() {
+		info.Awaiting = info.Awaiting || m.Awaiting
 		if m.State == group.StatePending {
 			info.Pending = append(info.Pending, pendingMember{ID: m.ID, Name: m.Name, Fingerprint: member.Fingerprint(m.Key)})
 		}
-		if m.Kind != member.KindInstance {
-			continue
-		}
-		info.Awaiting = info.Awaiting || m.Awaiting
 		switch {
 		case m.Online():
-			anyone = true
 			info.Members = append(info.Members, groupMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, Approved: m.State == group.StateApproved})
 		case m.State == group.StateApproved:
 			info.Away = append(info.Away, awayMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, LastSeen: m.LastSeen.Unix()})
 		}
 	}
 	sort.Slice(info.Pending, func(i, j int) bool { return info.Pending[i].ID < info.Pending[j].ID })
-
-	if anyone && !st.JoinedAt.IsZero() && st.MemberSeenAt.IsZero() {
-		st.MemberSeenAt = now
-		if err := s.Pairing.Update(func(stored *pairing.State) error { stored.MemberSeenAt = now; return nil }); err != nil {
-			s.logf("pairing: could not record the first member of the group: %v", err)
-		}
-	}
 	if !st.JoinedAt.IsZero() {
 		info.JoinedAgo = max(int64(now.Sub(st.JoinedAt).Seconds()), 0)
 	}
@@ -383,7 +408,9 @@ func (s *Server) renameInstance(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	s.applyGroup()
+	if g := s.joined(); g != nil {
+		g.SetSelf(s.self(s.Pairing.Get()))
+	}
 	writeJSON(w, http.StatusOK, s.connectInfo())
 }
 
@@ -573,12 +600,8 @@ type memberDecision struct {
 func (s *Server) approveMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	g := s.joined()
-	switch {
-	case g == nil:
+	if g == nil {
 		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
-		return
-	case !relay.ValidInstanceID(id):
-		writeError(w, http.StatusBadRequest, errors.New("only another ArrowLoop instance joins the group"))
 		return
 	}
 	if !answerApproval(w, g.Approve(id)) {
@@ -896,7 +919,6 @@ func (s *Server) groupRemoveMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.PathValue("id")
-	g := s.joined()
 	if id == s.groupID() {
 		// Answered before the relay socket closes under this call, and left
 		// on a goroutine of its own, since leaving waits for this very call.
@@ -914,21 +936,23 @@ func (s *Server) groupRemoveMember(w http.ResponseWriter, r *http.Request) {
 		}()
 		return
 	}
-	if g == nil {
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
-	if err := g.Remove(id); err != nil {
-		writeError(w, http.StatusBadRequest, err)
-		return
+	s.importDecision(w, group.Roster{Removed: map[string]time.Time{id: time.Now()}})
+}
+
+// importDecision takes a decision an instance without the kit passed on as
+// the group takes one from its own route, without passing it on again.
+func (s *Server) importDecision(w http.ResponseWriter, r group.Roster) {
+	if g := s.joined(); g != nil {
+		if err := g.Import(r); err != nil {
+			writeError(w, http.StatusInternalServerError, err)
+			return
+		}
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
 
 // groupApproveMember takes an approval an instance without the kit passed on,
-// for a member that called here already. The kit pins a key passed on only
-// over its own route, so a member that never called here waits for approval
-// when it first does.
+// with the key of the instance approved.
 func (s *Server) groupApproveMember(w http.ResponseWriter, r *http.Request) {
 	if !fromApprovedInstance(r) {
 		refuseDecision(w)
@@ -943,21 +967,13 @@ func (s *Server) groupApproveMember(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, errors.New("an approval passed on carries the key and the kind of the instance approved"))
 		return
 	}
-	g := s.joined()
-	if g == nil {
-		writeError(w, http.StatusNotFound, group.ErrNoSuchMember)
-		return
-	}
 	for _, m := range s.instances() {
 		if m.ID == id && m.Key != nil && !bytes.Equal(m.Key, passed.Key) {
 			writeError(w, http.StatusConflict, errors.New("this instance pinned another key for that member"))
 			return
 		}
 	}
-	if !answerApproval(w, g.Approve(id)) {
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
+	s.importDecision(w, group.Roster{Members: []group.Member{{ID: id, Kind: member.KindInstance, Key: passed.Key, State: group.StateApproved}}})
 }
 
 // groupRefuseMember takes a refusal an instance without the kit passed on.
@@ -966,13 +982,7 @@ func (s *Server) groupRefuseMember(w http.ResponseWriter, r *http.Request) {
 		refuseDecision(w)
 		return
 	}
-	if g := s.joined(); g != nil {
-		if err := g.Remove(r.PathValue("id")); err != nil && !errors.Is(err, group.ErrNoSuchMember) {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-	}
-	w.WriteHeader(http.StatusNoContent)
+	s.importDecision(w, group.Roster{Removed: map[string]time.Time{r.PathValue("id"): time.Now()}})
 }
 
 // instanceView is one other instance as the overview shows it.
@@ -1059,4 +1069,124 @@ func (s *Server) instanceJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.toInstance(w, r, "/api/jobs/"+url.PathEscape(r.PathValue("name"))+"/"+action)
+}
+
+// typedAddress reads an address the owner typed in as the address of an
+// instance's web interface: the scheme is http and the port ArrowLoop's own
+// unless the owner wrote them.
+func typedAddress(raw string) string {
+	addr := strings.TrimSpace(raw)
+	if strings.Contains(addr, "://") {
+		return addr
+	}
+	if _, _, err := net.SplitHostPort(addr); err != nil {
+		addr = net.JoinHostPort(addr, strconv.Itoa(defaultPort))
+	}
+	return "http://" + addr
+}
+
+// addressRefusals are the codes the interface words a refused address by.
+var addressRefusals = []struct {
+	err  error
+	code string
+}{
+	{group.ErrNotNearby, "addressNotNearby"},
+	{group.ErrUnreachable, "addressUnreachable"},
+	{group.ErrStranger, "addressStranger"},
+	{group.ErrSelf, "addressSelf"},
+	{group.ErrRemoved, "addressRemoved"},
+}
+
+// refuseAddress answers an address the group would not take, with a code the
+// interface words in the reader's language.
+func refuseAddress(w http.ResponseWriter, address string, err error) {
+	code := "addressUnreachable"
+	for _, r := range addressRefusals {
+		if errors.Is(err, r.err) {
+			code = r.code
+			break
+		}
+	}
+	writeJSON(w, http.StatusBadRequest, map[string]any{
+		"error": err.Error(), "code": code, "values": map[string]string{"address": address, "port": strconv.Itoa(defaultPort)},
+	})
+}
+
+// maxAddresses is how many addresses the group keeps.
+const maxAddresses = 32
+
+type addressView struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	State string `json:"state"`
+}
+
+// addAddress asks whoever answers at an address the owner typed in who it
+// is, and keeps the address when an instance of the group answered there.
+// That is how an instance nobody can call, such as the desktop app, finds the
+// others when the relay is out of reach.
+func (s *Server) addAddress(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Address string `json:"address"`
+	}
+	if !readBody(w, r, &req) {
+		return
+	}
+	g := s.joined()
+	if g == nil {
+		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
+		return
+	}
+	addr := typedAddress(req.Address)
+	known := g.Addresses()
+	if len(known) >= maxAddresses {
+		writeJSON(w, http.StatusBadRequest, map[string]any{
+			"error": "the list is full", "code": "addressesFull", "values": map[string]string{"count": strconv.Itoa(maxAddresses)},
+		})
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), relayTimeout)
+	defer cancel()
+	m, err := g.Probe(ctx, addr)
+	if err != nil {
+		refuseAddress(w, req.Address, err)
+		return
+	}
+	if err := g.SetAddresses(append(known, addr)); err != nil {
+		refuseAddress(w, req.Address, err)
+		return
+	}
+	state := string(m.State)
+	if m.State == group.StateUnknown {
+		state = "unknown"
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"member":    addressView{ID: m.ID, Name: m.Name, State: state},
+		"addresses": g.Addresses(),
+	})
+}
+
+// saveAddresses keeps the list the owner edited, which is how an address
+// leaves it.
+func (s *Server) saveAddresses(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Addresses []string `json:"addresses"`
+	}
+	if !readBody(w, r, &req) {
+		return
+	}
+	g := s.joined()
+	if g == nil {
+		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
+		return
+	}
+	addrs := make([]string, len(req.Addresses))
+	for i, a := range req.Addresses {
+		addrs[i] = typedAddress(a)
+	}
+	if err := g.SetAddresses(addrs); err != nil {
+		refuseAddress(w, strings.Join(req.Addresses, ", "), err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"addresses": g.Addresses()})
 }

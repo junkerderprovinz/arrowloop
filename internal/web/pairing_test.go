@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -79,6 +80,9 @@ type setup struct {
 	deployment string
 	lan        *lan.Service
 	from       string
+	// ports are where the instances it is told about by address listen,
+	// besides its own.
+	ports []int
 }
 
 func nodeWith(t *testing.T, su setup, h *harness) *node {
@@ -111,6 +115,7 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 	log := &lockedLog{}
 	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf}
 	h.srv = httptest.NewUnstartedServer(s.Handler())
+	s.Ports = append(slices.Clone(su.ports), h.srv.Listener.Addr().(*net.TCPAddr).Port)
 	if su.lan != nil {
 		s.DirectURL = "http://" + h.srv.Listener.Addr().String()
 	}
@@ -688,9 +693,9 @@ func TestTheWebUIChecksWordsAgainstThePhraseList(t *testing.T) {
 }
 
 // ArrowLoop has no phone app of another kind, so a device that signs as one
-// holds the phrase and nothing else. It waits like any newcomer, in sight, so
-// it cannot fill the places for instances waiting to be approved unseen.
-func TestADeviceOfAnotherKindWaitsInSightAndCanBeRefused(t *testing.T) {
+// holds the phrase and nothing else. It is turned away and never listed, so it
+// cannot fill the places for instances waiting to be approved.
+func TestADeviceOfAnotherKindIsTurnedAway(t *testing.T) {
 	url := testRelay(t)
 	a := newNode(t, url)
 	a.send(t, http.MethodPut, "/api/connect", `{"name":"alpha"}`)
@@ -698,21 +703,139 @@ func TestADeviceOfAnotherKindWaitsInSightAndCanBeRefused(t *testing.T) {
 	phone := newDevice(t, url, secretOf(t, a), member.KindMobile)
 	aID := groupID(t, phone, "alpha")
 
-	eventually(t, "the device waiting on a", func() bool {
-		phone.call(t, aID, http.MethodGet, "/api/jobs", nil)
-		pending := a.connect(t).Pending
-		return len(pending) == 1 && pending[0].ID == phone.id
-	})
-	if status, _ := a.send(t, http.MethodPost, "/api/connect/devices/"+phone.id+"/approve", "{}"); status != http.StatusBadRequest {
-		t.Errorf("approving a device that is no instance = %d, want 400", status)
-	}
-	if status, body := a.send(t, http.MethodPost, "/api/connect/devices/"+phone.id+"/refuse", "{}"); status != http.StatusNoContent {
-		t.Fatalf("refuse = %d %s", status, body)
+	for range 3 {
+		if status, body := phone.call(t, aID, http.MethodGet, "/api/jobs", nil); status == http.StatusOK || status == http.StatusForbidden && strings.Contains(string(body), "memberPending") {
+			t.Fatalf("a device of another kind = %d %s, want it turned away", status, body)
+		}
 	}
 	if pending := a.connect(t).Pending; len(pending) != 0 {
-		t.Errorf("after refusing, waiting = %+v, want nobody", pending)
+		t.Errorf("waiting = %+v, want nobody", pending)
 	}
-	if status, _ := phone.call(t, aID, http.MethodGet, "/api/jobs", nil); status != http.StatusGone {
-		t.Errorf("the refused device's next call = %d, want 410", status)
+}
+
+// portOf is the port of a test server's address.
+func portOf(t *testing.T, raw string) int {
+	t.Helper()
+	_, port, err := net.SplitHostPort(strings.TrimPrefix(raw, "http://"))
+	if err != nil {
+		t.Fatal(err)
 	}
+	n, err := strconv.Atoi(port)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return n
+}
+
+// addressOf is n's address as an owner would type it, without the scheme.
+func addressOf(n *node) string { return strings.TrimPrefix(n.srv.URL, "http://") }
+
+type addressAnswer struct {
+	Code      string   `json:"code"`
+	Addresses []string `json:"addresses"`
+	Member    struct {
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		State string `json:"state"`
+	} `json:"member"`
+}
+
+func (n *node) addAddress(t *testing.T, address string) (int, addressAnswer) {
+	t.Helper()
+	status, body := n.send(t, http.MethodPost, "/api/connect/addresses", `{"address":"`+address+`"}`)
+	var out addressAnswer
+	if err := json.Unmarshal(body, &out); err != nil {
+		t.Fatalf("POST /api/connect/addresses = %d %s", status, body)
+	}
+	return status, out
+}
+
+// A desktop app takes no calls from the network, and a DNS filter may keep
+// the relay away, so an address typed in is how it finds a server at home.
+func TestAnAddressTypedInFindsAnInstanceWithoutTheRelay(t *testing.T) {
+	a := nodeWith(t, setup{}, newHarness(t))
+	a.send(t, http.MethodPut, "/api/connect", `{"name":"alpha"}`)
+	b := nodeWith(t, setup{deployment: "desktop", ports: []int{portOf(t, a.srv.URL)}}, newHarness(t))
+	b.send(t, http.MethodPost, "/api/connect/join", `{"phrase":"`+phraseOfNew(t, a)+`"}`)
+
+	status, found := b.addAddress(t, addressOf(a))
+	if status != http.StatusOK || found.Member.Name != "alpha" || found.Member.State != "pending" {
+		t.Fatalf("adding alpha's address = %d %+v, want alpha found and waiting for approval", status, found)
+	}
+	if len(found.Addresses) != 1 || found.Addresses[0] != a.srv.URL {
+		t.Errorf("known addresses = %q, want %s", found.Addresses, a.srv.URL)
+	}
+	eventually(t, "b greeting a at the address", func() bool { return len(a.connect(t).Pending) == 1 })
+	b.send(t, http.MethodPost, "/api/connect/devices/"+found.Member.ID+"/approve", "{}")
+	a.send(t, http.MethodPost, "/api/connect/devices/"+a.connect(t).Pending[0].ID+"/approve", "{}")
+	eventually(t, "a's jobs on b", func() bool {
+		rows := b.instances(t)
+		return len(rows) == 1 && rows[0].Name == "alpha" && rows[0].State == "ok"
+	})
+
+	// The list goes, and the address b reached a at stays remembered.
+	if status, body := b.send(t, http.MethodPut, "/api/connect/addresses", `{"addresses":[]}`); status != http.StatusOK {
+		t.Fatalf("emptying the list = %d %s", status, body)
+	}
+	b.server.StopPairing()
+	b.server.StartPairing()
+	eventually(t, "a's jobs on b after a restart, at the address it remembered", func() bool {
+		rows := b.instances(t)
+		return len(rows) == 1 && rows[0].State == "ok"
+	})
+}
+
+func TestATypedAddressSaysWhyItFindsNoInstance(t *testing.T) {
+	dead := httpDeadPort(t)
+	stranger := nodeWith(t, setup{}, newHarness(t))
+	stranger.send(t, http.MethodPost, "/api/connect/activate", "{}")
+	a := nodeWith(t, setup{ports: []int{dead, portOf(t, stranger.srv.URL)}}, newHarness(t))
+	a.send(t, http.MethodPost, "/api/connect/activate", "{}")
+
+	for _, tc := range []struct{ address, code string }{
+		{"8.8.8.8:8422", "addressNotNearby"},
+		{"192.168.1.10:22", "addressNotNearby"},
+		{"127.0.0.1:" + strconv.Itoa(dead), "addressUnreachable"},
+		{addressOf(stranger), "addressStranger"},
+		{addressOf(a), "addressSelf"},
+	} {
+		status, out := a.addAddress(t, tc.address)
+		if status != http.StatusBadRequest || out.Code != tc.code {
+			t.Errorf("%s = %d %q, want 400 %s", tc.address, status, out.Code, tc.code)
+		}
+	}
+	if status, body := a.send(t, http.MethodPut, "/api/connect/addresses", `{"addresses":["8.8.8.8:8422"]}`); status != http.StatusBadRequest || !strings.Contains(string(body), "addressNotNearby") {
+		t.Errorf("a list with an address far away = %d %s, want 400 addressNotNearby", status, body)
+	}
+	if got := a.connectAddresses(t); len(got) != 0 {
+		t.Errorf("known addresses = %q after refusals, want none", got)
+	}
+}
+
+func (n *node) connectAddresses(t *testing.T) []string {
+	t.Helper()
+	var v struct {
+		Addresses []string `json:"addresses"`
+	}
+	n.get(t, "/api/connect", &v)
+	return v.Addresses
+}
+
+// httpDeadPort is a port on the loopback nothing listens on.
+func httpDeadPort(t *testing.T) int {
+	t.Helper()
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	port := l.Addr().(*net.TCPAddr).Port
+	_ = l.Close()
+	return port
+}
+
+// phraseOfNew puts n in a group of its own and returns its phrase.
+func phraseOfNew(t *testing.T, n *node) string {
+	t.Helper()
+	n.send(t, http.MethodPost, "/api/connect/activate", "{}")
+	return phraseOf(t, n)
 }

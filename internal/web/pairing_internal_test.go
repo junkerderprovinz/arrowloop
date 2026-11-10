@@ -94,3 +94,16 @@ func TestTheDirectRouteIsWhereTheGroupCalls(t *testing.T) {
 		t.Errorf("the group calls %s, but Handler serves /api/group/call", group.DirectPath)
 	}
 }
+
+func TestAnAddressTypedInIsReadAsAnInstancesWebAddress(t *testing.T) {
+	for _, tc := range []struct{ typed, want string }{
+		{"192.168.1.10", "http://192.168.1.10:8422"},
+		{" 192.168.1.10:9000 ", "http://192.168.1.10:9000"},
+		{"https://10.0.0.2", "https://10.0.0.2"},
+		{"http://10.0.0.2:8422/", "http://10.0.0.2:8422/"},
+	} {
+		if got := typedAddress(tc.typed); got != tc.want {
+			t.Errorf("typedAddress(%q) = %q, want %q", tc.typed, got, tc.want)
+		}
+	}
+}
