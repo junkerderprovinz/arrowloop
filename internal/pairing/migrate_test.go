@@ -133,7 +133,10 @@ func TestAGroupFileWithoutAPhraseIsSetAside(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := s.Update(func(st *State) error { st.Secret, st.Member = bytes.Repeat([]byte{1}, 16), bytes.Repeat([]byte{2}, 32); return nil }); err != nil {
+	if err := s.Update(func(st *State) error {
+		st.Secret, st.Member = bytes.Repeat([]byte{1}, 16), bytes.Repeat([]byte{2}, 32)
+		return nil
+	}); err != nil {
 		t.Fatal(err)
 	}
 	g, _ := openGroup(t, s)

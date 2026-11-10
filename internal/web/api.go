@@ -17,7 +17,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/lan"
 	kitnotify "github.com/junkerderprovinz/parleyport/kit/notify"
+	"github.com/junkerderprovinz/parleyport/kit/relay"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
@@ -25,14 +28,12 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
-	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
-	"github.com/junkerderprovinz/arrowloop/internal/relay"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
@@ -102,20 +103,30 @@ type Server struct {
 	newReleaseMu sync.Mutex
 	newRelease   string
 
-	// Pairing keeps the phrase's secret, this instance's member key and the
-	// relay it dials, and Group the other instances paired with it. Without
-	// both the pairing routes are unregistered.
+	// Pairing keeps the phrase's secret, this instance's member key, the relay
+	// it dials and who is in its group. Without it the pairing routes are
+	// unregistered.
 	Pairing *pairing.Store
-	Group   *federation.Manager
+
+	// LAN is where the instances of the group on this network find each
+	// other, started by the caller; nil leaves them to the relay. DirectURL is
+	// where the others on the network reach this instance, "" where nothing
+	// does until a browser shows the address.
+	LAN       *lan.Service
+	DirectURL string
 
 	// Deployment is what this instance tells the others of its group it is:
 	// "container", "server", "desktop" or "phone".
 	Deployment string
 
-	// relayMu keeps two rebuilds of the relay client apart, memberMu two
-	// mints of a member key, and groupOnce builds group, what another member
-	// may call here.
-	relayMu   sync.Mutex
+	// groupMu keeps two openings of the group apart, liveMu guards live, the
+	// group in use, and liveGen, which counts the groups opened. memberMu
+	// keeps two mints of a member key apart, and groupOnce builds group, what
+	// another member may call here.
+	groupMu   sync.Mutex
+	liveMu    sync.Mutex
+	live      *group.Group
+	liveGen   uint64
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler
@@ -251,8 +262,11 @@ func (s *Server) Handler() http.Handler {
 	// A phone's wake-up runs whatever the schedule says is due.
 	mux.HandleFunc("POST /api/run-due", s.runDue)
 
-	if s.Pairing != nil && s.Group != nil {
+	if s.Pairing != nil {
 		s.pairingRoutes(mux)
+		// Open, like the relay socket: the group checks every call against
+		// the phrase's keys before it reads the body.
+		mux.HandleFunc("POST /api/group/call", s.serveDirect)
 	}
 
 	// The status and the log every app of a fortress answers with. A

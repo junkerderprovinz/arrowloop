@@ -18,6 +18,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/group"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 
 	"github.com/junkerderprovinz/arrowloop/internal/security"
@@ -259,9 +260,11 @@ func needsSession(rawPath string) bool {
 // expired. The passkey probe answers a stranger with counts only, and its two
 // login halves are how a passkey signs somebody in. Every other path, a new
 // one included, needs a session. The fortress status and log check a read
-// token of their own.
+// token of their own, and a call from another instance of the group the
+// phrase's keys.
 var openRoutes = map[string]bool{
 	status.StatusPath:            true,
+	group.DirectPath:             true,
 	status.LogPath:               true,
 	"/api/login":                 true,
 	"/api/logout":                true,

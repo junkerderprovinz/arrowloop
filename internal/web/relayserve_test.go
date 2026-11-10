@@ -10,8 +10,10 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/junkerderprovinz/arrowloop/internal/relay"
-	"github.com/junkerderprovinz/arrowloop/internal/seedphrase"
+	"github.com/junkerderprovinz/parleyport/kit/phrase"
+	"github.com/junkerderprovinz/parleyport/kit/relay"
+
+	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 )
 
 type relayState struct {
@@ -54,11 +56,11 @@ func makePhrase(t *testing.T, n *node) string {
 	if err := json.Unmarshal(body, &made); err != nil {
 		t.Fatal(err)
 	}
-	secret, err := seedphrase.Decode(made.Phrase)
+	secret, err := phrase.Decode(made.Phrase)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return relay.DeriveKey(secret)
+	return pairing.Domain.GroupKey(secret)
 }
 
 // dialServed opens the relay socket n serves and says hello with key, the way
@@ -118,7 +120,7 @@ func TestTheServedRelayAdmitsOnlyItsOwnGroup(t *testing.T) {
 	a.saveRelay(t, `{"serve":true}`)
 	key := makePhrase(t, a)
 
-	stranger := dialServed(t, a, relay.DeriveKey([]byte("fedcba9876543210")))
+	stranger := dialServed(t, a, pairing.Domain.GroupKey([]byte("fedcba9876543210")))
 	if !closed(stranger) {
 		t.Error("the served relay kept a connection with another group's key")
 	}

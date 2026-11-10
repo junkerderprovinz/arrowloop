@@ -17,7 +17,8 @@ import (
 	rcloneconfig "github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/fspath"
 
-	"github.com/junkerderprovinz/arrowloop/internal/federation"
+	"github.com/junkerderprovinz/parleyport/kit/group"
+
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -197,11 +198,11 @@ func (s *Server) writeRefusal(w http.ResponseWriter, err error) {
 // instance's log: by the name it announces and by its id, which no other
 // member can take.
 func (s *Server) callerName(r *http.Request) string {
-	c, ok := federation.CallerOf(r.Context())
+	c, ok := group.CallerOf(r.Context())
 	if !ok {
 		return "an unknown instance"
 	}
-	for _, m := range s.Group.Members() {
+	for _, m := range s.instances() {
 		if m.ID == c.ID && m.Name != "" {
 			return fmt.Sprintf("the instance %q (%s)", m.Name, c.ID)
 		}
@@ -557,10 +558,15 @@ func (s *Server) toInstance(w http.ResponseWriter, r *http.Request, path string)
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), relayTimeout)
 	defer cancel()
-	out, status, err := s.Group.Proxy(ctx, r.PathValue("id"), r.Method, path, body)
+	g := s.joined()
+	if g == nil {
+		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
+		return
+	}
+	status, out, err := g.Call(ctx, r.PathValue("id"), r.Method, path, body)
 	if err != nil {
 		code := http.StatusBadGateway
-		if errors.Is(err, federation.ErrUnknownInstance) {
+		if errors.Is(err, group.ErrUnreachable) {
 			code = http.StatusNotFound
 		}
 		writeError(w, code, err)

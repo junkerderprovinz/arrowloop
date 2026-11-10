@@ -165,6 +165,8 @@ github.com/diskfs/go-diskfs v1.9.4 h1:0j2d7eG4IjyxL6+ChWbDPocdBCF6HQ4HBWU2WDYWVn
 github.com/diskfs/go-diskfs v1.9.4/go.mod h1:TePJORO83Adh5pb2SqsxAwaP0fofFxKLkxctiS/9OQc=
 github.com/djherbis/times v1.6.0 h1:w2ctJ92J8fBvWPxugmXIv7Nz7Q3iDMKNx9v5ocVH20c=
 github.com/djherbis/times v1.6.0/go.mod h1:gOHeRAz2h+VJNZ5Gmc/o7iD9k4wW7NMVqieYCY99oc0=
+github.com/dlclark/regexp2 v1.11.0 h1:G/nrcoOa7ZXlpoa/91N3X7mM3r8eIlMBBJZvsz/mxKI=
+github.com/dlclark/regexp2 v1.11.0/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cnmRbL6yW8=
 github.com/dnaeon/go-vcr v1.2.0 h1:zHCHvJYTMh1N7xnV7zf1m1GPBF9Ad0Jk/whtQ1663qI=
 github.com/dnaeon/go-vcr v1.2.0/go.mod h1:R4UdLID7HZT3taECzJs4YgbbH6PIGXB6W/sc5OLb6RQ=
 github.com/dromara/dongle v1.0.1 h1:si/7UP/EXxnFVZok1cNos70GiMGxInAYMilHQFP5dJs=
@@ -316,8 +318,6 @@ github.com/jtolds/gls v4.20.0+incompatible h1:xdiiI2gbIgH/gLH7ADydsJ1uDOEzR8yvV7
 github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
 github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7 h1:JcltaO1HXM5S2KYOYcKgAV7slU0xPy1OcvrVgn98sRQ=
 github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7/go.mod h1:MEkhEPFwP3yudWO0lj6vfYpLIB+3eIcuIW+e0AZzUQk=
-github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109190927-566ab90c3be7 h1:IL1Pcvy0xDuEkJJLmt4Q/4q7GML/4tN37eSBunfVKqg=
-github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109190927-566ab90c3be7/go.mod h1:HERYrtSlZoAGTQEnfT6qbifE2wTnVQd4Xqq65C+L81s=
 github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109232503-890905435ec3 h1:M5k8YXP8hrIEoOsl2M+aj2xyb7p27EGt/Qg9Daec7SA=
 github.com/junkerderprovinz/parleyport/kit v0.0.0-20261109232503-890905435ec3/go.mod h1:/GHVd/HB+Br/336IHKuQBYSc4UGG3NXAfowh1q/DYx8=
 github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004 h1:G+9t9cEtnC9jFiTxyptEKuNIAbiN5ZCQzX2a74lj3xg=
