@@ -428,3 +428,50 @@ func TestAnotherAppCreatesAJobFromItsCategoryFolder(t *testing.T) {
 		}
 	})
 }
+
+func TestABackupToolOnTheSameNetworkHandsTheBackupBack(t *testing.T) {
+	h := newHarness(t)
+	if _, err := h.runner.Run(context.Background(), "photos"); err != nil {
+		t.Fatal(err)
+	}
+	s := &web.Server{History: h.history, Runner: h.runner}
+	backup, n, err := h.runner.Export(context.Background(), "the test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, _ := io.ReadAll(backup)
+	backup.Close()
+	before, err := os.ReadFile(h.configPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	next, err := h.runner.Config().Replace(bytes.Replace(before, []byte(`"photos"`), []byte(`"pictures"`), 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.runner.Reload(next)
+
+	port := freeUDPPort(t)
+	engine, engineID := openFortress(t, "", onTheNetwork(t, port), "arrowloop", "Tower", func(c *fortress.Config) { c.Import = s.FortressImport })
+	vault, vaultID := openFortress(t, "", onTheNetwork(t, port), "bombvault", "Tower vault", func(c *fortress.Config) { c.Uses = []string{fortress.ImportAction} })
+	knows(t, vault, engineID, "arrowloop")
+	knows(t, engine, vaultID, "bombvault")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if err := vault.Import(ctx, engineID, bytes.NewReader(raw), n); !errors.Is(err, fortress.ErrPermissionOff) {
+		t.Fatalf("an import before anybody switched it on: %v, want ErrPermissionOff", err)
+	}
+	if err := engine.SetPermission("bombvault", "arrowloop", fortress.ImportAction, true); err != nil {
+		t.Fatal(err)
+	}
+	if err := vault.Import(ctx, engineID, bytes.NewReader(raw), n); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := h.runner.Config().Find("photos"); !ok {
+		t.Errorf("after the import the jobs are %v, want photos back", h.runner.Config().Jobs)
+	}
+	if err := vault.Import(ctx, engineID, bytes.NewReader([]byte("hello")), 5); refusal(err) != "bad_backup" {
+		t.Errorf("an import of something else: %v, want bad_backup", err)
+	}
+}

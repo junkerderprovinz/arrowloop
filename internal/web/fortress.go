@@ -95,6 +95,21 @@ func (s *Server) FortressExport(ctx context.Context, from kitfortress.Caller) (i
 	return s.Runner.Export(ctx, from.App+" on "+from.Device)
 }
 
+// FortressImport puts back a backup FortressExport handed out, for
+// fortress.Config.Import.
+func (s *Server) FortressImport(ctx context.Context, from kitfortress.Caller, backup io.Reader, n int64) error {
+	s.saving.Lock()
+	defer s.saving.Unlock()
+	err := s.Runner.Import(ctx, backup, n, from.App+" on "+from.Device)
+	switch {
+	case errors.Is(err, daemon.ErrBadBackup):
+		return &kitfortress.Refusal{Code: "bad_backup"}
+	case errors.Is(err, daemon.ErrBusy):
+		return &kitfortress.Refusal{Code: "busy"}
+	}
+	return err
+}
+
 // fortressJob is a job as another app sees it. The sides stay out: a side
 // can carry a remote's settings, and the other app asks for a job by name.
 type fortressJob struct {
