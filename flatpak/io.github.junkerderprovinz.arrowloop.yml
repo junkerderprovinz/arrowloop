@@ -1,11 +1,3 @@
-# Builds the desktop app as a Flatpak from this checkout:
-#
-#     flatpak-builder --user --install --force-clean --state-dir=flatpak/.state \
-#       flatpak/.build flatpak/io.github.junkerderprovinz.arrowloop.yml
-#
-# The build has no network, so every Go module and npm package comes from
-# go-sources.json and node-sources.json. node flatpak/update-sources.mjs writes
-# both again after a dependency changes.
 id: io.github.junkerderprovinz.arrowloop
 runtime: org.gnome.Platform
 runtime-version: '51'
@@ -16,21 +8,15 @@ sdk-extensions:
 command: arrowloop
 finish-args:
   - --share=ipc
+  - --share=network
   - --socket=wayland
   - --socket=fallback-x11
   - --device=dri
-  # The jobs reach SFTP, SMB, WebDAV, S3 and the cloud services rclone speaks.
-  - --share=network
-  # A job may sync any folder the person picks: anything in the home folder,
-  # and the drives and shares mounted under the other three.
   - --filesystem=home
   - --filesystem=/media
   - --filesystem=/run/media
   - --filesystem=/mnt
-  # A held job and a failed run are told as a notification while the window
-  # is in the tray.
   - --talk-name=org.freedesktop.Notifications
-  # The tray icon, which brings the hidden window back.
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:
   - name: arrowloop
@@ -48,10 +34,9 @@ modules:
     build-commands:
       - npm --prefix web ci --offline --no-audit --no-fund --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache
       - npm --prefix web run build
-      # The newest release in the metainfo is the version the About card shows,
-      # so a tag cannot ship without its release entry.
+      # The About card shows the newest release in the metainfo.
       - >-
-        version=$(sed -n 's|.*<release version="\([^"]*\)".*|\1|p' flatpak/io.github.junkerderprovinz.arrowloop.metainfo.xml | head -1);
+        version=$(sed -n 's|.*<release version="\([^"]*\)".*|\1|p' flatpak/$FLATPAK_ID.metainfo.xml | head -1);
         cd desktop && go build -tags production,gtk3 -trimpath -buildvcs=false
         -ldflags "-s -w -X github.com/junkerderprovinz/arrowloop/internal/boot.Version=v$version"
         -o arrowloop .
