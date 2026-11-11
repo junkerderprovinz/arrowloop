@@ -851,7 +851,10 @@ func (s *Server) serveRelay(w http.ResponseWriter, r *http.Request) {
 // Outside a group it answers like a version without the feature.
 func (s *Server) serveDirect(w http.ResponseWriter, r *http.Request) {
 	if f := s.fortressNow(); f != nil {
-		f.DirectHandler().ServeHTTP(w, r)
+		s.liveMu.Lock()
+		movers := s.movers
+		s.liveMu.Unlock()
+		f.DirectHandler(movers).ServeHTTP(w, r)
 		return
 	}
 	g := s.joined()
@@ -888,6 +891,7 @@ func groupRoutes() []groupRoute {
 		{"DELETE /api/connect/members/{id}", (*Server).groupRemoveMember},
 		{"POST /api/connect/devices/{id}/approve", (*Server).groupApproveMember},
 		{"POST /api/connect/devices/{id}/refuse", (*Server).groupRefuseMember},
+		{"POST " + changedPhrasePath, (*Server).takeChangedPhrase},
 	}
 }
 

@@ -2,7 +2,10 @@ package web
 
 import (
 	"context"
+	"crypto/hmac"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"slices"
 	"strconv"
@@ -170,28 +173,41 @@ func (k movedKeeper) Keep(secret []byte) error {
 
 // move hands the fortress phrase to the instances the pairing had under the
 // app's own phrase that were away when this one joined, until each is in the
-// fortress.
+// pairing in the fortress. An instance that took the phrase and has not
+// arrived when it changes is handed the new one the same way.
 func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity, mode group.RelayMode, relayURL string) {
 	old, err := group.Open(group.Config{
 		Domain: pairing.Domain, Secret: st.MoveFrom, Identity: id, Self: s.self(st),
 		Relay: mode, RelayURL: relayURL, Store: s.Pairing.MoveStore(),
 		Kinds: []member.Kind{member.KindInstance},
-	}, http.NotFoundHandler())
+	}, s.moversHandler())
 	if err != nil {
 		s.logf("fortress: could not reach the instances of the group from before: %v", err)
 		return
 	}
-	defer old.Close()
+	s.liveMu.Lock()
+	s.movers = old
+	s.liveMu.Unlock()
+	defer func() {
+		s.liveMu.Lock()
+		s.movers = nil
+		s.liveMu.Unlock()
+		old.Close()
+	}()
 	tick := time.NewTicker(moveWait)
 	defer tick.Stop()
 	for {
 		s.forgetTakenOut(old)
 		kitfortress.Move(ctx, old, st.Secret)
-		if s.movedAll(old) {
-			if err := s.Pairing.MoveDone(); err != nil {
-				s.logf("fortress: could not note that every instance of the group moved: %v", err)
+		if f := s.fortressNow(); f != nil {
+			left := f.Left(old)
+			if len(left) == 0 {
+				if err := s.Pairing.MoveDone(); err != nil {
+					s.logf("fortress: could not note that every instance of the group moved: %v", err)
+				}
+				return
 			}
-			return
+			s.passChange(ctx, old, online(left, nil), st)
 		}
 		select {
 		case <-ctx.Done():
@@ -215,23 +231,90 @@ func (s *Server) forgetTakenOut(old *group.Group) {
 	}
 }
 
-// movedAll reports whether every approved instance of the group from before
-// is in the fortress.
-func (s *Server) movedAll(old *group.Group) bool {
-	f := s.fortressNow()
-	if f == nil {
-		return false
+// changedPhrasePath is where an instance of the pairing takes the phrase the
+// fortress changed to when the fortress did not reach it, such as one that
+// took the phrase moments before and is not there yet. It answers in the
+// pairing and, while its instances move, under the app's own phrase.
+const changedPhrasePath = "/api/fortress/changed-phrase"
+
+// changedPhrase carries the phrase the fortress changed from as well, which
+// shows that the sender held the one it replaces, so that no sibling can turn
+// an instance back to an older phrase or into another fortress.
+type changedPhrase struct {
+	From   []byte `json:"from"`
+	Secret []byte `json:"secret"`
+}
+
+// passChange hands st's fortress phrase to those of ids that g reaches now,
+// where it replaces st.FortressPrevious, and returns the ids that took it.
+func (s *Server) passChange(ctx context.Context, g *group.Group, ids []string, st pairing.State) []string {
+	if st.FortressPrevious == nil {
+		return nil
 	}
-	var in []string
-	for _, m := range f.Members() {
-		in = append(in, m.ID)
+	body, err := json.Marshal(changedPhrase{From: st.FortressPrevious, Secret: st.Secret})
+	if err != nil {
+		return nil
 	}
-	for _, m := range old.Members() {
-		if m.Kind == member.KindInstance && m.State == group.StateApproved && !slices.Contains(in, m.ID) {
-			return false
+	var took []string
+	for _, id := range ids {
+		ctx, cancel := context.WithTimeout(ctx, relayTimeout)
+		status, _, err := g.Call(ctx, id, http.MethodPost, changedPhrasePath, body)
+		cancel()
+		if err == nil && status == http.StatusNoContent {
+			took = append(took, id)
 		}
 	}
-	return true
+	return took
+}
+
+// online lists the ids of the instances in ms that can be called now, but
+// for those in except.
+func online(ms []group.Member, except []string) []string {
+	var ids []string
+	for _, m := range ms {
+		if m.Kind == member.KindInstance && m.State == group.StateApproved && m.Online() && !slices.Contains(except, m.ID) {
+			ids = append(ids, m.ID)
+		}
+	}
+	return ids
+}
+
+// moversHandler answers the instances of the pairing under the app's own
+// phrase while they move into the fortress.
+func (s *Server) moversHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost || r.URL.Path != changedPhrasePath {
+			writeError(w, http.StatusNotFound, fmt.Errorf("no such address for the group: %s %s", r.Method, r.URL.Path))
+			return
+		}
+		s.takeChangedPhrase(w, r)
+	})
+}
+
+func (s *Server) takeChangedPhrase(w http.ResponseWriter, r *http.Request) {
+	if c, ok := group.CallerOf(r.Context()); !ok || c.Kind != member.KindInstance {
+		writeError(w, http.StatusForbidden, errors.New("only an instance of the group hands on a phrase"))
+		return
+	}
+	var req changedPhrase
+	if !readBody(w, r, &req) {
+		return
+	}
+	if len(req.Secret) != phrase.SecretLen {
+		writeError(w, http.StatusBadRequest, errors.New("that is no phrase"))
+		return
+	}
+	st := s.Pairing.Get()
+	if !st.Fortress || !hmac.Equal(req.From, st.Secret) {
+		writeError(w, http.StatusConflict, errors.New("this instance holds another phrase than the one that changed"))
+		return
+	}
+	if err := (fortressKeeper{s}).Keep(req.Secret); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	s.logf("fortress: the fortress phrase changed where the fortress did not reach this instance, and it takes the new one")
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // joinFortress joins the fortress of secret. The instances paired with this
@@ -279,11 +362,45 @@ func (s *Server) changeFortressPhrase(ctx context.Context) (string, []string, er
 	if err != nil {
 		return "", nil, err
 	}
+	// The fortress reaches only the members it heard of, so the instances of
+	// the pairing it missed are handed the phrase in the pairing, and those
+	// still moving in under the app's own phrase, which may have taken the
+	// first moments ago.
+	st := s.Pairing.Get()
+	paired := f.Pairing()
+	took = append(took, s.passChange(ctx, paired, online(paired.Members(), took), st)...)
+	s.liveMu.Lock()
+	old := s.movers
+	s.liveMu.Unlock()
+	var moving []group.Member
+	if old != nil {
+		moving = f.Left(old)
+		took = append(took, s.passChange(ctx, old, online(moving, took), st)...)
+	}
+
 	left := []string{}
-	for _, m := range f.Members() {
-		if m.Kind == member.KindInstance && !slices.Contains(took, m.ID) && !slices.Contains(left, m.Device) {
-			left = append(left, m.Device)
+	note := func(id, name string) {
+		if !slices.Contains(took, id) && !slices.Contains(left, name) {
+			left = append(left, name)
 		}
+	}
+	for _, m := range f.Members() {
+		if m.Kind == member.KindInstance {
+			note(m.ID, m.Device)
+		}
+	}
+	// An instance the pairing never met under the fortress phrase still holds
+	// the app's own, and the move brings it the new one.
+	for _, m := range paired.Members() {
+		if m.Kind == member.KindInstance && m.State == group.StateApproved && !m.Met.IsZero() {
+			note(m.ID, m.Name)
+		}
+	}
+	// One still moving in may hold the phrase from before, which no answer
+	// it gave proves: it leaves the pairing as it takes the phrase, and the
+	// answer can get lost with it.
+	for _, m := range moving {
+		note(m.ID, m.Name)
 	}
 	slices.Sort(left)
 	s.closeGroupLocked()

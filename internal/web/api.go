@@ -138,11 +138,14 @@ type Server struct {
 	liveGen uint64
 	// fort is the fortress this instance is in and fortLAN where it announces
 	// itself there, both nil outside one, and changing is set while this
-	// instance changes the fortress phrase itself. All three are guarded by
-	// liveMu. moveStop ends the move of the instances that were away.
+	// instance changes the fortress phrase itself. movers is the pairing on
+	// the app's own phrase while its instances move into the fortress. All
+	// four are guarded by liveMu. moveStop ends the move of the instances
+	// that were away.
 	fort      *kitfortress.Fortress
 	fortLAN   *lan.Service
 	changing  bool
+	movers    *group.Group
 	moveStop  context.CancelFunc
 	moving    sync.WaitGroup
 	memberMu  sync.Mutex

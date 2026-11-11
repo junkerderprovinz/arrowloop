@@ -20,3 +20,6 @@ func ShortenTrashWait(t testing.TB, d time.Duration) {
 	trashWait = d
 	t.Cleanup(func() { trashWait = was })
 }
+
+// InFortress reports whether s has its fortress open.
+func (s *Server) InFortress() bool { return s.fortressNow() != nil }

@@ -157,6 +157,9 @@ type connectView struct {
 		Name     string `json:"name"`
 		Approved bool   `json:"approved"`
 	} `json:"members"`
+	Away []struct {
+		ID string `json:"id"`
+	} `json:"away"`
 	Pending []struct {
 		ID string `json:"id"`
 	} `json:"pending"`

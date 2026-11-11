@@ -246,3 +246,88 @@ func TestAnInstanceTakenOutWhileAwayIsNotHandedTheFortressPhrase(t *testing.T) {
 		time.Sleep(25 * time.Millisecond)
 	}
 }
+
+// changePhrase gives n's fortress a new phrase and returns it with the
+// devices the change left on the old one.
+func (n *node) changePhrase(t *testing.T) (string, []string) {
+	t.Helper()
+	status, body := n.send(t, http.MethodPost, "/api/fortress/phrase", `{}`)
+	if status != http.StatusOK {
+		t.Fatalf("change the phrase = %d %s", status, body)
+	}
+	var changed struct {
+		Phrase string   `json:"phrase"`
+		Left   []string `json:"left"`
+	}
+	if err := json.Unmarshal(body, &changed); err != nil || changed.Phrase == "" {
+		t.Fatalf("the change answered %s", body)
+	}
+	return changed.Phrase, changed.Left
+}
+
+func TestTheMoveEndsOnceEveryPairedInstanceIsInThePairingAgain(t *testing.T) {
+	web.ShortenMoveWait(t, 200*time.Millisecond)
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	pair(t, a, b)
+	b.server.StopPairing()
+	a.join(t, newWords(t))
+	time.Sleep(time.Second)
+	if a.server.Pairing.Get().MoveFrom == nil {
+		t.Fatal("the move ended while an instance of the pairing was away")
+	}
+	b.server.StartPairing()
+	eventually(t, "the move to end", func() bool { return a.server.Pairing.Get().MoveFrom == nil })
+	eventually(t, "the move to end on the instance that followed", func() bool { return b.server.Pairing.Get().MoveFrom == nil })
+}
+
+func TestAChangedPhraseKeepsWhoThePairingKnew(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	_, bID := pair(t, a, b)
+	b.server.StopPairing()
+	a.join(t, newWords(t))
+	a.changePhrase(t)
+	if away := a.connect(t).Away; !slices.ContainsFunc(away, func(m struct {
+		ID string `json:"id"`
+	}) bool {
+		return m.ID == bID
+	}) {
+		t.Errorf("after the change the pairing lists %v as away, want the instance that was away", away)
+	}
+}
+
+func TestAnInstanceOnItsWayInFollowsAPhraseChangedBeforeItArrived(t *testing.T) {
+	web.ShortenMoveWait(t, 200*time.Millisecond)
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	pair(t, a, b)
+	b.server.StopPairing()
+	words := newWords(t)
+	a.join(t, words)
+	// b took the phrase over the pairing and went away before the fortress
+	// heard of it, as when the phrase changes seconds after the join.
+	secret, err := phrase.Decode(words)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := b.server.Pairing.EnterFortress(secret); err != nil {
+		t.Fatal(err)
+	}
+	changed, _ := a.changePhrase(t)
+	b.server.StartPairing()
+	eventually(t, "the instance on its way to take the new phrase", func() bool { return b.shownPhrase(t) == changed })
+}
+
+func TestAnInstanceThatTookThePhraseAndWentAwayIsLeftOnTheOldOne(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	pair(t, a, b)
+	name := b.connect(t).Name
+	a.join(t, newWords(t))
+	eventually(t, "the paired instance to take the phrase", b.server.InFortress)
+	b.server.StopPairing()
+	if _, left := a.changePhrase(t); !slices.Contains(left, name) {
+		t.Errorf("the change left %v on the old phrase, want %s among them", left, name)
+	}
+}
