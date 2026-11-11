@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/hostpath"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 	"github.com/junkerderprovinz/parleyport/kit/statustest"
 
@@ -19,8 +20,9 @@ import (
 )
 
 // statusServer is the real API on an engine with two runs of photos behind
-// it, the second of which left files for later, and a read token.
-func statusServer(t *testing.T) (http.Handler, string, *security.Store) {
+// it, the second of which left files for later, and a read token. mounts is
+// the engine's mount table, nil for the test machine's own.
+func statusServer(t *testing.T, mounts func() (hostpath.Table, error)) (http.Handler, string, *security.Store) {
 	t.Helper()
 	h := newHarness(t)
 	ctx := context.Background()
@@ -39,16 +41,58 @@ func statusServer(t *testing.T) (http.Handler, string, *security.Store) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s := &web.Server{History: h.history, Runner: h.runner, Security: store, Key: testKey}
+	s := &web.Server{History: h.history, Runner: h.runner, Security: store, Key: testKey, Mounts: mounts}
 	return s.Handler(), token, store
 }
 
 func TestTheStatusAnswersTheFortressContract(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
-	handler, token, _ := statusServer(t)
+	handler, token, _ := statusServer(t, nil)
 	statustest.Run(t, handler, statustest.Options{Authenticate: func(r *http.Request) {
 		r.Header.Set("Authorization", "Bearer "+token)
 	}})
+}
+
+// dockerID is the container an engine in unraidMounts runs in. Unraid keeps
+// Docker on a loop device mounted at /var/lib/docker, so the path Docker's
+// hostname file has on that file system starts at /containers.
+const dockerID = "4b1d9e0c7a2f5b3e8d6c1a9f0e7b2d4c6a8e0f1b3d5c7e9a2b4d6f8e0c1a3b5d"
+
+const unraidMounts = `1203 1012 0:345 / / rw,relatime - overlay overlay rw,lowerdir=/a:/b
+1210 1203 0:46 /appdata/arrowloop /config rw,noatime - fuse.shfs shfs rw
+1214 1203 7:2 /containers/` + dockerID + `/resolv.conf /etc/resolv.conf rw,relatime - btrfs /dev/loop2 rw
+1215 1203 7:2 /containers/` + dockerID + `/hostname /etc/hostname rw,relatime - btrfs /dev/loop2 rw
+`
+
+func TestTheStatusNamesTheContainerTheEngineRunsIn(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	inDocker, err := hostpath.Parse(strings.NewReader(unraidMounts))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		name string
+		tab  hostpath.Table
+		want string
+	}{
+		{"in a container", inDocker, dockerID},
+		{"on a desktop", hostpath.Table{}, ""},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			handler, token, _ := statusServer(t, func() (hostpath.Table, error) { return c.tab, nil })
+			req := httptest.NewRequest(http.MethodGet, status.StatusPath, nil)
+			req.Header.Set("Authorization", "Bearer "+token)
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, req)
+			var rep status.Report
+			if err := json.Unmarshal(rec.Body.Bytes(), &rep); rec.Code != http.StatusOK || err != nil {
+				t.Fatalf("the status answered %d %s", rec.Code, rec.Body)
+			}
+			if rep.Instance.Container != c.want {
+				t.Errorf("the status names the container %q, want %q", rep.Instance.Container, c.want)
+			}
+		})
+	}
 }
 
 func TestAReadTokenGetsPastThePasswordToTheStatusOnly(t *testing.T) {
@@ -57,7 +101,7 @@ func TestAReadTokenGetsPastThePasswordToTheStatusOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Setenv(web.PasswordHashEnv, hash)
-	handler, token, _ := statusServer(t)
+	handler, token, _ := statusServer(t, nil)
 	srv := httptest.NewServer(handler)
 	t.Cleanup(srv.Close)
 

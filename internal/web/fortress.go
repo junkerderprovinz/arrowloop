@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -46,7 +47,7 @@ func (f fortressSource) Report(ctx context.Context, lang string) (status.Report,
 	open, _ := s.Runner.Findings(ctx)
 	snap := fortress.Snapshot{
 		App:      status.App{ID: "arrowloop", Name: "ArrowLoop", Version: boot.Version},
-		Instance: status.Instance{ID: s.instanceID(), Name: s.ownName()},
+		Instance: status.Instance{ID: s.instanceID(), Name: s.ownName(), Container: s.containerID()},
 		Jobs:     s.Runner.Config().Jobs,
 		Findings: open,
 		Working:  s.Runner.Working(),
@@ -185,6 +186,29 @@ func (s *Server) instanceID() string {
 	mac := hmac.New(sha256.New, s.key())
 	mac.Write([]byte("arrowloop/fortress/instance-id/v1"))
 	return hex.EncodeToString(mac.Sum(nil)[:16])
+}
+
+// dockerFile matches where Docker keeps a file it mounts into a container,
+// under the container's full id.
+var dockerFile = regexp.MustCompile(`containers/([0-9a-f]{64})/`)
+
+// containerID is the id of the container this engine runs in, or "" outside
+// one. It comes from the file Docker mounts over /etc/hostname rather than
+// from the hostname, which a template may set to anything.
+func (s *Server) containerID() string {
+	tab, err := s.mountTable()
+	if err != nil {
+		return ""
+	}
+	for _, m := range tab.Mounts {
+		if m.Point != "/etc/hostname" {
+			continue
+		}
+		if id := dockerFile.FindStringSubmatch(m.Root); id != nil {
+			return id[1]
+		}
+	}
+	return ""
 }
 
 // ownName is the name the other instances see, or the app's where the
