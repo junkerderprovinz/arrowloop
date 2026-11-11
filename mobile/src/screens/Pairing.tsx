@@ -267,6 +267,7 @@ function PhraseCard({
     const tip = t("pairing.enterTip", { path: [t("nav.settings"), t("settings.pairing"), t("pairing.show")].join(", ") });
     body = (
       <PhraseEntry
+        label={t("pairing.enterLabel")}
         hint={tip}
         join={{ label: t("pairing.join"), key: "pairing.join" }}
         onBack={() => setEntering(false)}
@@ -463,11 +464,14 @@ function WordSlots({ words, unknown = [], code }: { words: string[]; unknown?: n
  * engine can say. `onJoin` answers with the reason it was refused, if it was.
  */
 function PhraseEntry({
+  label,
   hint,
   join,
   onBack,
   onJoin,
 }: {
+  /** What the words are, which differs between the group and the fortress. */
+  label: string;
   hint: string;
   join: { label: string; key: string };
   onBack: () => void;
@@ -494,7 +498,7 @@ function PhraseEntry({
   return (
     <>
       <Field
-        label={t("pairing.enterLabel")}
+        label={label}
         hint={hint}
         value={typed}
         multiline
@@ -666,7 +670,7 @@ function FortressCard({
     body = entering ? (
       <>
         {paired.length > 0 ? <Body>{fill(text.moves, { ...app, devices })}</Body> : null}
-        <PhraseEntry hint={t("fortress.phraseWhere")} join={{ label: text.join, key: "pairing.join" }} onBack={() => setEntering(false)} onJoin={join} />
+        <PhraseEntry label={text.phraseTitle} hint={t("fortress.phraseWhere")} join={{ label: text.join, key: "pairing.join" }} onBack={() => setEntering(false)} onJoin={join} />
       </>
     ) : (
       <>
