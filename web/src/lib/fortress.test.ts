@@ -70,6 +70,11 @@ describe('the pairing that moves into the fortress', () => {
     })
     expect(names).toEqual(['Tower', '3', 'Laptop'])
   })
+
+  it('names a device once when it was paired again under a new key', () => {
+    const names = pairedWith({ members: [{ id: '1', name: 'Pixel', approved: true }], away: [{ id: '2', name: 'Pixel' }] })
+    expect(names).toEqual(['Pixel'])
+  })
 })
 
 describe('the colours the fortress takes', () => {

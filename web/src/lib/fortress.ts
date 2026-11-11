@@ -132,5 +132,5 @@ export function pairedWith(group: {
   members: { id: string; name: string; approved: boolean }[]
   away: { id: string; name: string }[]
 }): string[] {
-  return [...group.members.filter((m) => m.approved), ...group.away].map((m) => m.name || m.id)
+  return [...new Set([...group.members.filter((m) => m.approved), ...group.away].map((m) => m.name || m.id))]
 }
