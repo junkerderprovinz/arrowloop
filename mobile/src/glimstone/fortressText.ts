@@ -55,7 +55,6 @@ export interface FortressText {
   joinedTitle: string;
   joinedMoved: string;
   joinedNext: string;
-  done: string;
   cancel: string;
   close: string;
   leaveTitle: string;

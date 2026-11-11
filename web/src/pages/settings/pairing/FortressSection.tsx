@@ -21,7 +21,6 @@ const LABEL_KEYS = {
   remove: 'pairing.remove',
   unlock: 'pairing.show',
   copy: 'common.copy',
-  done: 'fortress.done',
 }
 
 /** A refusal of the password, or of anything else, in the reader's words. */
