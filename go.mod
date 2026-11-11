@@ -16,7 +16,7 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/godbus/dbus/v5 v5.2.4
-	github.com/junkerderprovinz/parleyport/kit v0.0.0-20261111081458-2251fca7e00d
+	github.com/junkerderprovinz/parleyport/kit v0.0.0-20261111082249-ebe99a99861a
 	github.com/pkg/sftp v1.13.12
 	github.com/rclone/gofakes3 v0.0.12
 	github.com/rclone/rclone v1.76.0
