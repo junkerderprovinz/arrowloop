@@ -265,6 +265,20 @@ flatpak override --user --filesystem=/srv/data io.github.junkerderprovinz.arrowl
 run inside the sandbox too, so they find the tools the Flatpak ships rather than
 the ones on your system.
 
+### On Arch Linux and NixOS
+
+On Arch Linux the single file and the installer work once WebKitGTK is
+installed:
+
+```sh
+sudo pacman -S webkit2gtk-4.1
+```
+
+NixOS keeps its libraries in the Nix store, not where the single file looks for
+them, so the file does not start there. The Flatpak does: add
+`services.flatpak.enable = true;` to your configuration, rebuild, and install
+the file as shown above. The [container](#as-a-container) runs on NixOS too.
+
 ### Starting with the system
 
 **Start with the system**, on the **General** tile under Settings, registers
