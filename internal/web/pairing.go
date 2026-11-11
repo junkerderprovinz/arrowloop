@@ -25,6 +25,7 @@ import (
 	"sync"
 	"time"
 
+	kitfortress "github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/group"
 	"github.com/junkerderprovinz/parleyport/kit/member"
 	"github.com/junkerderprovinz/parleyport/kit/phrase"
@@ -103,6 +104,9 @@ func (s *Server) applyGroup() {
 }
 
 func (s *Server) closeGroupLocked() {
+	if s.closeFortressLocked() {
+		return
+	}
 	s.liveMu.Lock()
 	g := s.live
 	s.live = nil
@@ -139,6 +143,10 @@ func (s *Server) openGroupLocked() {
 		mode = group.RelayOff
 	}
 	gen := s.generation()
+	if st.Fortress {
+		s.openFortressLocked(st, id, mode, relayURL, gen)
+		return
+	}
 	g, err := group.Open(group.Config{
 		Domain:   pairing.Domain,
 		Secret:   st.Secret,
@@ -164,7 +172,7 @@ func (s *Server) openGroupLocked() {
 				s.enterGroupLocked(nil)
 			}
 		},
-	}, s.groupHandler())
+	}, kitfortress.Moving(s.groupHandler(), movedKeeper{s}))
 	if err != nil {
 		s.logf("pairing: could not join the group: %v", err)
 		return
@@ -575,7 +583,7 @@ func (s *Server) enterGroupLocked(secret []byte) error {
 		joined = time.Now()
 	}
 	err := s.Pairing.Update(func(st *pairing.State) error {
-		st.Secret, st.Member = secret, nil
+		st.Secret, st.Member, st.Fortress = secret, nil, false
 		st.JoinedAt, st.MemberSeenAt = joined, time.Time{}
 		return nil
 	})
@@ -842,6 +850,10 @@ func (s *Server) serveRelay(w http.ResponseWriter, r *http.Request) {
 // serveDirect takes the calls other instances on this network make here.
 // Outside a group it answers like a version without the feature.
 func (s *Server) serveDirect(w http.ResponseWriter, r *http.Request) {
+	if f := s.fortressNow(); f != nil {
+		f.DirectHandler().ServeHTTP(w, r)
+		return
+	}
 	g := s.joined()
 	if g == nil {
 		writeError(w, http.StatusNotFound, fmt.Errorf("no such address: %s", r.URL.Path))

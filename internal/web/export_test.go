@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+// ShortenMoveWait hands the fortress phrase to the instances that were away
+// every d instead of every minute.
+func ShortenMoveWait(t testing.TB, d time.Duration) {
+	was := moveWait
+	moveWait = d
+	t.Cleanup(func() { moveWait = was })
+}
+
 // ShortenTrashWait lets a test reach the deadline on a side's trash listing
 // without waiting the full minute.
 func ShortenTrashWait(t testing.TB, d time.Duration) {

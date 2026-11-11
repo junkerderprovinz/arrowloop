@@ -17,6 +17,7 @@ import (
 	"sync"
 	"time"
 
+	kitfortress "github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/group"
 	"github.com/junkerderprovinz/parleyport/kit/hostpath"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
@@ -131,10 +132,19 @@ type Server struct {
 	// group in use, and liveGen, which counts the groups opened. memberMu
 	// keeps two mints of a member key apart, and groupOnce builds group, what
 	// another member may call here.
-	groupMu   sync.Mutex
-	liveMu    sync.Mutex
-	live      *group.Group
-	liveGen   uint64
+	groupMu sync.Mutex
+	liveMu  sync.Mutex
+	live    *group.Group
+	liveGen uint64
+	// fort is the fortress this instance is in and fortLAN where it announces
+	// itself there, both nil outside one, and changing is set while this
+	// instance changes the fortress phrase itself. All three are guarded by
+	// liveMu. moveStop ends the move of the instances that were away.
+	fort      *kitfortress.Fortress
+	fortLAN   *lan.Service
+	changing  bool
+	moveStop  context.CancelFunc
+	moving    sync.WaitGroup
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler
@@ -276,6 +286,7 @@ func (s *Server) Handler() http.Handler {
 
 	if s.Pairing != nil {
 		s.pairingRoutes(mux)
+		s.fortressRoutes(mux)
 		// Open, like the relay socket: the group checks every call against
 		// the phrase's keys before it reads the body.
 		mux.HandleFunc("POST /api/group/call", s.serveDirect)
