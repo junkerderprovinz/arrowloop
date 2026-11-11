@@ -187,3 +187,46 @@ func TestAJoinIsRefusedWithItsReason(t *testing.T) {
 		t.Errorf("a second fortress = %d %s, want inFortress", status, body)
 	}
 }
+
+func TestAPhonePairedBeforeTheFortressKeepsRunningJobs(t *testing.T) {
+	url := testRelay(t)
+	a, phone := newNode(t, url), newNodeAs(t, url, "phone")
+	_, phoneID := pair(t, a, phone)
+	a.join(t, newWords(t))
+	eventually(t, "the phone to follow into the fortress", func() bool { return phone.fortress(t).Joined })
+
+	eventually(t, "the phone's jobs on the overview", func() bool {
+		rows := a.instances(t)
+		return len(rows) == 1 && rows[0].ID == phoneID && rows[0].State == "ok" && len(rows[0].Jobs) == 1
+	})
+	eventually(t, "the instance on the phone's overview", func() bool {
+		rows := phone.instances(t)
+		return len(rows) == 1 && rows[0].State == "ok"
+	})
+	write(t, phone.left, "a.txt", "from the pocket")
+	if status, body := a.send(t, http.MethodPost, "/api/instances/"+phoneID+"/jobs/photos/run", ""); status != http.StatusAccepted {
+		t.Fatalf("run on the phone = %d %s", status, body)
+	}
+	waitForRun(t, phone.harness, 1)
+}
+
+func TestAnInstanceTakenOutWhileAwayIsNotHandedTheFortressPhrase(t *testing.T) {
+	web.ShortenMoveWait(t, 100*time.Millisecond)
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	_, bID := pair(t, a, b)
+	b.server.StopPairing()
+	a.join(t, newWords(t))
+	if status, body := a.send(t, http.MethodDelete, "/api/connect/members/"+bID, ""); status != http.StatusNoContent {
+		t.Fatalf("take the instance out = %d %s", status, body)
+	}
+
+	b.server.StartPairing()
+	deadline := time.Now().Add(4 * time.Second)
+	for time.Now().Before(deadline) {
+		if b.fortress(t).Joined {
+			t.Fatal("the instance taken out was handed the fortress phrase")
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+}

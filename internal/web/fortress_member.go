@@ -185,6 +185,7 @@ func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity,
 	tick := time.NewTicker(moveWait)
 	defer tick.Stop()
 	for {
+		s.forgetTakenOut(old)
 		kitfortress.Move(ctx, old, st.Secret)
 		if s.movedAll(old) {
 			if err := s.Pairing.MoveDone(); err != nil {
@@ -197,6 +198,20 @@ func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity,
 			return
 		case <-tick.C:
 		}
+	}
+}
+
+// forgetTakenOut drops from the group from before every instance the owner
+// took out of the pairing since, so that it is never handed the fortress
+// phrase.
+func (s *Server) forgetTakenOut(old *group.Group) {
+	g := s.joined()
+	if g == nil {
+		return
+	}
+	r := g.Roster()
+	if err := old.Import(group.Roster{Removed: r.Removed, Revoked: r.Revoked}); err != nil {
+		s.logf("fortress: could not note who was taken out of the group from before: %v", err)
 	}
 }
 
