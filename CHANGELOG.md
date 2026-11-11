@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🎨 Design
+
+- **The sign-in page names each field inside it.** Password, New password and Confirm password stand in grey in their fields until you type, and the form is a plain column of fields and buttons. The code from the log keeps its label above the field, beside its (i).
+
 ## 2.6.8 - 2026-11-10
 
 Automatic backups come back on the phone, Check this job speaks your language, and an anomaly you allowed goes away as soon as its run starts.

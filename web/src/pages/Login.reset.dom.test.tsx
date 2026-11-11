@@ -87,6 +87,12 @@ describe('Login, a forgotten password', () => {
     expect(screen.getByText('Code from the container log')).toBeTruthy()
   })
 
+  it('writes the new password and its confirmation into their fields', async () => {
+    await openReset()
+    expect(newBoxes().map((box) => box.placeholder)).toEqual(['New password', 'Confirm password'])
+    expect(screen.getByLabelText('New password', { selector: 'input' })).toBe(newBoxes()[0])
+  })
+
   it('says in the code tip where the log is, how long the code lasts and what goes', async () => {
     resetBegin.mockResolvedValue({ minutes: 10, minPasswordLen: 12 })
     await openReset()

@@ -302,6 +302,18 @@ function shown(el: Element): boolean {
 const FIELDS = 'input:not([type="hidden"], [type="checkbox"], [type="radio"], :disabled), textarea:not(:disabled)';
 
 /**
+ * Writes a sign-in field's label into the field as its placeholder and says
+ * whether it did, so the card hides the label above it. A field with a
+ * placeholder of its own or with a hint keeps its label above. `was` is the
+ * label written before, which a new language replaces.
+ */
+export function labelInside(field: { placeholder: string } | null, label: string, hint?: string, was?: string): boolean {
+  if (!field || hint || (field.placeholder && field.placeholder !== was)) return false;
+  field.placeholder = label;
+  return true;
+}
+
+/**
  * Puts the focus in the first empty field inside `root`, or in its first field
  * when all hold something, such as a name the app filled in.
  */

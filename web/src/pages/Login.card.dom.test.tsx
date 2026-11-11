@@ -52,9 +52,11 @@ describe('Login, the card', () => {
     expect(screen.queryByText('This interface is protected')).toBeNull()
   })
 
-  it('labels the password above its field', () => {
+  it('writes Password into its field and keeps it as the field name', () => {
     render(<Login onIn={vi.fn()} />)
+    expect(passwordBox().placeholder).toBe('Password')
     expect(screen.getByLabelText('Password', { selector: 'input' })).toBe(passwordBox())
+    expect(document.querySelector(`label[for="${passwordBox().id}"]`)!.className).toBe('glim-sr-only')
   })
 
   it('opens with the focus in the password', () => {
