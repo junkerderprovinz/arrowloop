@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/hostpath"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
 	kitnotify "github.com/junkerderprovinz/parleyport/kit/notify"
 	"github.com/junkerderprovinz/parleyport/kit/relay"
@@ -43,6 +44,10 @@ import (
 type Server struct {
 	History *history.DB
 	Runner  *daemon.Runner
+
+	// Mounts reads the mount table that maps host folders into this
+	// container; nil reads this process's own.
+	Mounts func() (hostpath.Table, error)
 
 	// UI is the built interface. A nil filesystem serves the API only.
 	UI fs.FS

@@ -14,6 +14,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -21,11 +22,13 @@ import (
 
 	"github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/hostpath"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
 	"github.com/junkerderprovinz/parleyport/kit/member"
 	"github.com/junkerderprovinz/parleyport/kit/relay"
 
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
@@ -300,4 +303,128 @@ func TestABackupToolOnTheSameNetworkFetchesTheExport(t *testing.T) {
 	if _, ok := names["photos.db"]; !ok {
 		t.Errorf("the export holds %d files, without photos.db", len(names))
 	}
+}
+
+// containerMounts is the mount table of an engine in a container on Unraid:
+// its own configuration, the downloads and the media share, and a file
+// Docker puts in.
+const containerMounts = `1203 1012 0:345 / / rw,relatime - overlay overlay rw,lowerdir=/a:/b
+1204 1203 0:350 / /proc rw,nosuid - proc proc rw
+1210 1203 0:46 /appdata/arrowloop /config rw,noatime - fuse.shfs shfs rw
+1211 1203 0:46 /downloads /downloads rw,noatime - fuse.shfs shfs rw
+1212 1203 0:46 /media /media rw,noatime - fuse.shfs shfs rw
+1215 1203 8:17 /var/lib/docker/containers/4b1d/hostname /etc/hostname rw,relatime - btrfs /dev/sdb1 rw
+`
+
+type target struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Kind  string `json:"kind"`
+	Where string `json:"where"`
+}
+
+func TestAnotherAppCreatesAJobFromItsCategoryFolder(t *testing.T) {
+	if err := remotes.Save("nas", "sftp", map[string]string{"host": "nas.lan", "user": "ana", "pass": "hunter2"}); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = remotes.Delete("nas") })
+	h := newHarness(t)
+	tab, err := hostpath.Parse(strings.NewReader(containerMounts))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rel := httptest.NewServer(relay.New())
+	t.Cleanup(rel.Close)
+	t.Cleanup(rel.CloseClientConnections)
+	s := &web.Server{History: h.history, Runner: h.runner, Mounts: func() (hostpath.Table, error) { return tab, nil }}
+	engine, engineID := openFortress(t, rel.URL, nil, "arrowloop", "Tower", func(c *fortress.Config) { c.Actions = s.FortressActions() })
+	loader, loaderID := openFortress(t, rel.URL, nil, "knightloader", "Attic", func(c *fortress.Config) { c.Uses = []string{"jobs.targets", "jobs.create"} })
+	knows(t, loader, engineID, "arrowloop")
+	knows(t, engine, loaderID, "knightloader")
+
+	t.Run("targets", func(t *testing.T) {
+		var targets []target
+		if err := act(t, loader, engineID, "jobs.targets", nil, &targets); err != nil {
+			t.Fatal(err)
+		}
+		byID := map[string]target{}
+		for _, tg := range targets {
+			byID[tg.ID] = tg
+		}
+		for _, want := range []target{
+			{ID: "share:/downloads", Name: "downloads", Kind: "share", Where: "/mnt/user/downloads"},
+			{ID: "share:/media", Name: "media", Kind: "share", Where: "/mnt/user/media"},
+			{ID: "remote:nas", Name: "nas", Kind: "remote", Where: "sftp nas.lan"},
+		} {
+			if got := byID[want.ID]; got != want {
+				t.Errorf("target %s listed as %+v, want %+v", want.ID, got, want)
+			}
+		}
+		for id := range byID {
+			if id == "share:/etc/hostname" || id == "share:/" || id == "share:/proc" {
+				t.Errorf("%s is listed as a target", id)
+			}
+		}
+		raw, _ := json.Marshal(targets)
+		if strings.Contains(string(raw), "ana") || strings.Contains(string(raw), "hunter2") {
+			t.Errorf("the targets carry a login: %s", raw)
+		}
+	})
+
+	t.Run("create", func(t *testing.T) {
+		for _, c := range []struct {
+			body                   map[string]string
+			left, right, dir, mode string
+		}{
+			{map[string]string{"name": "Movies", "source": "/mnt/user/downloads/movies", "target": "share:/media", "mode": "move"}, "/downloads/movies", "/media/Movies", "leftToRight", "move"},
+			{map[string]string{"name": "Books", "source": "/mnt/user/downloads/books", "target": "remote:nas", "mode": "mirror"}, "/downloads/books", "nas:Books", "leftToRight", "mirror"},
+			{map[string]string{"name": "Music", "source": "/mnt/user/downloads/music", "target": "share:/media", "mode": "sync"}, "/downloads/music", "/media/Music", "", ""},
+		} {
+			var answer struct{ Job string }
+			if err := act(t, loader, engineID, "jobs.create", c.body, &answer); err != nil || answer.Job != c.body["name"] {
+				t.Fatalf("jobs.create %v: %+v, %v", c.body, answer, err)
+			}
+			j, ok := h.runner.Config().Find(c.body["name"])
+			if !ok {
+				t.Fatalf("%s was not saved", c.body["name"])
+			}
+			if j.Left != c.left || j.Right != c.right || j.Direction != c.dir || j.Mode != c.mode {
+				t.Errorf("%s saved as %s to %s, %q %q", j.Name, j.Left, j.Right, j.Direction, j.Mode)
+			}
+		}
+	})
+
+	t.Run("refusals", func(t *testing.T) {
+		for body, want := range map[string]string{
+			`{"name":"Movies","source":"/mnt/user/downloads/x","target":"share:/media","mode":"move"}`:     "name_taken",
+			`{"name":"New","source":"/mnt/user/downloads/x","target":"share:/films","mode":"move"}`:        "no_such_target",
+			`{"name":"New","source":"/mnt/user/downloads/x","target":"share:/etc/hostname","mode":"move"}`: "no_such_target",
+			`{"name":"New","source":"/mnt/user/isos","target":"share:/media","mode":"move"}`:               "source_not_mounted",
+			`{"name":"New","source":"/mnt/user/downloads/../isos","target":"share:/media","mode":"move"}`:  "bad_request",
+			`{"name":"New","source":"/mnt/user/downloads/x","target":"share:/media","mode":"fast"}`:        "bad_request",
+			`{"name":"a/b","source":"/mnt/user/downloads/x","target":"share:/media","mode":"move"}`:        "bad_request",
+			`{"source":"/mnt/user/downloads/x","target":"share:/media","mode":"move"}`:                     "bad_request",
+			`[`: "bad_request",
+		} {
+			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+			_, err := loader.Act(ctx, engineID, "jobs.create", []byte(body))
+			cancel()
+			if got := refusal(err); got != want {
+				t.Errorf("jobs.create with %s: %v, want %s", body, err, want)
+			}
+		}
+	})
+
+	t.Run("permission off", func(t *testing.T) {
+		if err := engine.SetPermission("knightloader", "arrowloop", "jobs.create", false); err != nil {
+			t.Fatal(err)
+		}
+		body := map[string]string{"name": "Later", "source": "/mnt/user/downloads/x", "target": "share:/media", "mode": "move"}
+		if err := act(t, loader, engineID, "jobs.create", body, nil); !errors.Is(err, fortress.ErrPermissionOff) {
+			t.Errorf("jobs.create with the permission off: %v, want ErrPermissionOff", err)
+		}
+		if err := act(t, loader, engineID, "jobs.targets", nil, nil); err != nil {
+			t.Errorf("jobs.targets went with jobs.create: %v", err)
+		}
+	})
 }

@@ -78,11 +78,14 @@ func (f fortressSource) Log(ctx context.Context, q status.LogQuery) (status.LogP
 }
 
 // FortressActions are what this engine does for the other apps of a fortress
-// it joins: list its jobs and start one.
+// it joins: list its jobs and start one, and list where a new job can write
+// and add one.
 func (s *Server) FortressActions() []kitfortress.Action {
 	return []kitfortress.Action{
 		{Name: "jobs.list", Run: s.fortressJobs},
 		{Name: "jobs.run", Run: s.fortressRun},
+		{Name: "jobs.targets", Run: s.fortressTargets},
+		{Name: "jobs.create", Run: s.fortressCreate},
 	}
 }
 
