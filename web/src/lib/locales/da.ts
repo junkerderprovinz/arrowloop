@@ -1609,6 +1609,18 @@ const da: Translations = {
   'new.change.overview': '{overview} viser med et blik, hvordan det hele står til: hvad der kører, og hvad der venter på dig, hvert job med seneste og næste kørsel, de nyeste kørsler og jobbene på dine parrede instanser. ArrowLoop åbner på den side. Kortet {sidebar} i {settings}, {look} kan skjule den igen, ved siden af kontakterne for Mål og Instanser, og på telefonen har siden sin egen kontakt under {appearance}.',
   'nav.instances': 'Instanser',
   'instances.none': 'Ingen anden instans er parret med denne endnu. Du parrer en under Indstillinger, Parring.',
+  'fortress.title': 'Fæstning',
+  'fortress.outBody': 'Bliv en del af en fæstning med dens sætning. Så dukker de andre apps op her sammen med det, de må gøre hos {app}.',
+  'fortress.phraseWhere': 'Alle apps i fæstningen kan vise dig sætningen. Indsæt den i det første felt, så udfylder den resten.',
+  'fortress.inFortress': 'ArrowLoop er allerede i en fæstning. Forlad den først for at slutte dig til en anden.',
+  'fortress.changeKept': 'Sætningen forbliver, som den er.',
+  'fortress.permissionPair': '{from} hos {to}',
+  'fortress.action.jobsList': 'Se jobbene',
+  'fortress.action.jobsRun': 'Starte et job',
+  'fortress.action.jobsTargets': 'Se målene for nye job',
+  'fortress.action.jobsCreate': 'Tilføje et job',
+  'fortress.action.backupExport': 'Hente en sikkerhedskopi',
+  'fortress.action.backupImport': 'Gendanne en sikkerhedskopi',
 }
 
 export default da

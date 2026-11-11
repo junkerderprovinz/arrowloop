@@ -1609,6 +1609,18 @@ const lv: Translations = {
   'new.change.overview': '{overview} vienā mirklī parāda, kā viss rit: kas darbojas un kas gaida tevi, katru uzdevumu ar pēdējo un nākamo palaišanu, jaunākās palaišanas un tavu sapāroto instanču uzdevumus. ArrowLoop atveras šajā lapā. Kartīte {sidebar} sadaļā {settings}, {look} to atkal paslēpj, blakus Galamērķu un Instanču slēdžiem, un tālrunī lapai ir savs slēdzis sadaļā {appearance}.',
   'nav.instances': 'Instances',
   'instances.none': 'Ar šo vēl nav sapārota neviena cita instance. Sapārot vari sadaļā Iestatījumi, Pārošana.',
+  'fortress.title': 'Cietoksnis',
+  'fortress.outBody': 'Pievienojieties cietoksnim ar tā frāzi. Tad šeit parādīsies pārējās lietotnes un tas, ko tās drīkst darīt {app}.',
+  'fortress.phraseWhere': 'Frāzi jums var parādīt jebkura cietokšņa lietotne. Ielīmējiet to pirmajā laukā, un tā aizpildīs pārējos.',
+  'fortress.inFortress': 'ArrowLoop jau ir cietoksnī. Vispirms izejiet no tā, lai pievienotos citam.',
+  'fortress.changeKept': 'Frāze paliek, kāda ir.',
+  'fortress.permissionPair': '{from} pie {to}',
+  'fortress.action.jobsList': 'Redzēt uzdevumus',
+  'fortress.action.jobsRun': 'Palaist uzdevumu',
+  'fortress.action.jobsTargets': 'Redzēt galamērķus jauniem uzdevumiem',
+  'fortress.action.jobsCreate': 'Pievienot uzdevumu',
+  'fortress.action.backupExport': 'Iegūt rezerves kopiju',
+  'fortress.action.backupImport': 'Atjaunot rezerves kopiju',
 }
 
 export default lv

@@ -1609,6 +1609,18 @@ const sv: Translations = {
   'new.change.overview': '{overview} visar med en blick hur allt står till: vad som körs och vad som väntar på dig, varje jobb med senaste och nästa körning, de senaste körningarna och jobben från dina parkopplade instanser. ArrowLoop öppnas på den här sidan. Kortet {sidebar} under {settings}, {look} döljer den igen, bredvid reglagen för Mål och Instanser, och på telefonen har sidan ett eget reglage under {appearance}.',
   'nav.instances': 'Instanser',
   'instances.none': 'Ingen annan instans är parkopplad med den här än. Du parkopplar en under Inställningar, Parkoppling.',
+  'fortress.title': 'Fästning',
+  'fortress.outBody': 'Gå med i en fästning med dess fras. Då visas de andra apparna här, tillsammans med vad de får göra hos {app}.',
+  'fortress.phraseWhere': 'Alla appar i fästningen kan visa dig frasen. Klistra in den i det första fältet så fyller den resten.',
+  'fortress.inFortress': 'ArrowLoop är redan med i en fästning. Lämna den först för att gå med i en annan.',
+  'fortress.changeKept': 'Frasen förblir som den är.',
+  'fortress.permissionPair': '{from} hos {to}',
+  'fortress.action.jobsList': 'Se jobben',
+  'fortress.action.jobsRun': 'Starta ett jobb',
+  'fortress.action.jobsTargets': 'Se målen för nya jobb',
+  'fortress.action.jobsCreate': 'Lägga till ett jobb',
+  'fortress.action.backupExport': 'Hämta en säkerhetskopia',
+  'fortress.action.backupImport': 'Återställa en säkerhetskopia',
 }
 
 export default sv

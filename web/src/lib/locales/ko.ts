@@ -1609,6 +1609,18 @@ const ko: Translations = {
   'new.change.overview': '{overview}에서는 모든 상황을 한눈에 볼 수 있습니다. 실행 중인 것과 확인을 기다리는 것, 각 작업의 마지막 실행과 다음 실행, 최근 실행, 페어링한 인스턴스의 작업을 보여 줍니다. ArrowLoop은 이 페이지로 열립니다. {settings}, {look}의 {sidebar} 카드에서 대상과 인스턴스 스위치 옆에 있는 스위치로 다시 숨길 수 있으며, 휴대폰에서는 {appearance}에 전용 스위치가 있습니다.',
   'nav.instances': '인스턴스',
   'instances.none': '아직 이 인스턴스와 페어링된 다른 인스턴스가 없습니다. 설정, 페어링에서 페어링할 수 있습니다.',
+  'fortress.title': '요새',
+  'fortress.outBody': '문구로 요새에 참여하세요. 그러면 다른 앱과 그 앱이 {app}에서 할 수 있는 일이 여기에 보여요.',
+  'fortress.phraseWhere': '요새의 어느 앱에서든 문구를 볼 수 있어요. 첫 칸에 붙여 넣으면 나머지 칸도 채워져요.',
+  'fortress.inFortress': 'ArrowLoop는 이미 요새에 있어요. 다른 요새에 참여하려면 먼저 나가세요.',
+  'fortress.changeKept': '문구는 그대로예요.',
+  'fortress.permissionPair': '{from} → {to}',
+  'fortress.action.jobsList': '작업 보기',
+  'fortress.action.jobsRun': '작업 시작하기',
+  'fortress.action.jobsTargets': '새 작업의 대상 보기',
+  'fortress.action.jobsCreate': '작업 추가하기',
+  'fortress.action.backupExport': '백업 가져오기',
+  'fortress.action.backupImport': '백업 복원하기',
 }
 
 export default ko

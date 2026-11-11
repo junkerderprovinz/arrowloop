@@ -1609,6 +1609,18 @@ const no: Translations = {
   'new.change.overview': '{overview} viser med ett blikk hvordan alt står til: hva som kjører og hva som venter på deg, hver jobb med siste og neste kjøring, de nyeste kjøringene og jobbene til de parede instansene dine. ArrowLoop åpner på denne siden. Kortet {sidebar} i {settings}, {look} skjuler den igjen, ved siden av bryterne for Mål og Instanser, og på telefonen har siden en egen bryter under {appearance}.',
   'nav.instances': 'Instanser',
   'instances.none': 'Ingen annen instans er paret med denne ennå. Du parer en under Innstillinger, Paring.',
+  'fortress.title': 'Festning',
+  'fortress.outBody': 'Bli med i en festning med frasen dens. Da dukker de andre appene opp her, sammen med det de får gjøre hos {app}.',
+  'fortress.phraseWhere': 'Alle apper i festningen kan vise deg frasen. Lim den inn i det første feltet, så fyller den resten.',
+  'fortress.inFortress': 'ArrowLoop er allerede i en festning. Forlat den først for å bli med i en annen.',
+  'fortress.changeKept': 'Frasen forblir som den er.',
+  'fortress.permissionPair': '{from} hos {to}',
+  'fortress.action.jobsList': 'Se jobbene',
+  'fortress.action.jobsRun': 'Starte en jobb',
+  'fortress.action.jobsTargets': 'Se målene for nye jobber',
+  'fortress.action.jobsCreate': 'Legge til en jobb',
+  'fortress.action.backupExport': 'Hente en sikkerhetskopi',
+  'fortress.action.backupImport': 'Gjenopprette en sikkerhetskopi',
 }
 
 export default no

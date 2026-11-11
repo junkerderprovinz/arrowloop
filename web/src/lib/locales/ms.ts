@@ -1609,6 +1609,18 @@ const ms: Translations = {
   'new.change.overview': '{overview} menunjukkan keadaan semuanya sekali imbas: apa yang sedang berjalan dan apa yang menunggu anda, setiap tugas dengan larian terakhir dan seterusnya, larian terkini dan tugas instans anda yang telah digandingkan. ArrowLoop dibuka pada halaman ini. Kad {sidebar} dalam {settings}, {look} menyembunyikannya semula, di sebelah suis untuk Destinasi dan Instans, dan pada telefon halaman ini mempunyai suisnya sendiri di bawah {appearance}.',
   'nav.instances': 'Instans',
   'instances.none': 'Belum ada instans lain yang digandingkan dengan instans ini. Anda boleh menggandingkannya di Tetapan, Gandingan.',
+  'fortress.title': 'Kubu',
+  'fortress.outBody': 'Sertai kubu dengan frasanya. Kemudian apl lain muncul di sini, berserta apa yang boleh dilakukan di {app}.',
+  'fortress.phraseWhere': 'Setiap apl dalam kubu boleh menunjukkan frasa itu kepada anda. Tampalkannya dalam medan pertama dan ia mengisi yang lain.',
+  'fortress.inFortress': 'ArrowLoop sudah berada dalam sebuah kubu. Keluar dahulu untuk menyertai kubu lain.',
+  'fortress.changeKept': 'Frasa kekal seperti sedia ada.',
+  'fortress.permissionPair': '{from} di {to}',
+  'fortress.action.jobsList': 'Lihat tugas',
+  'fortress.action.jobsRun': 'Mulakan tugas',
+  'fortress.action.jobsTargets': 'Lihat destinasi untuk tugas baharu',
+  'fortress.action.jobsCreate': 'Tambah tugas',
+  'fortress.action.backupExport': 'Ambil sandaran',
+  'fortress.action.backupImport': 'Pulihkan sandaran',
 }
 
 export default ms

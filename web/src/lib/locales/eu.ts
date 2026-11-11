@@ -1609,6 +1609,18 @@ const eu: Translations = {
   'new.change.overview': '{overview} atalak begirada batean erakusten du dena nola dagoen: zer dabilen eta zer dagoen zure zain, lan bakoitza bere azken eta hurrengo exekuzioarekin, azken exekuzioak eta zure instantzia parekatuen lanak. ArrowLoop orri honetan irekitzen da. {settings}, {look} ataleko {sidebar} txartelak berriro ezkutatzen du, Helburuak eta Instantziak etengailuen ondoan, eta telefonoan etengailu propioa du {appearance} atalean.',
   'nav.instances': 'Instantziak',
   'instances.none': 'Oraindik ez dago beste instantziarik honekin parekatuta. Ezarpenak, Parekatzea atalean parekatu dezakezu bat.',
+  'fortress.title': 'Gotorlekua',
+  'fortress.outBody': 'Sartu gotorleku batean bere esaldiarekin. Orduan beste aplikazioak agertuko dira hemen, eta {app}-n zer egin dezaketen.',
+  'fortress.phraseWhere': 'Gotorlekuko edozein aplikaziok erakuts diezazuke esaldia. Itsatsi lehen eremuan eta gainerakoak beteko ditu.',
+  'fortress.inFortress': 'ArrowLoop gotorleku batean dago jada. Irten hortik lehenik beste batean sartzeko.',
+  'fortress.changeKept': 'Esaldia dagoen bezala geratzen da.',
+  'fortress.permissionPair': '{from} {to}-n',
+  'fortress.action.jobsList': 'Lanak ikustea',
+  'fortress.action.jobsRun': 'Lan bat abiaraztea',
+  'fortress.action.jobsTargets': 'Lan berrien helburuak ikustea',
+  'fortress.action.jobsCreate': 'Lan bat gehitzea',
+  'fortress.action.backupExport': 'Babeskopia bat ekartzea',
+  'fortress.action.backupImport': 'Babeskopia bat leheneratzea',
 }
 
 export default eu

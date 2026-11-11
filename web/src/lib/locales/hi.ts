@@ -1609,6 +1609,18 @@ const hi: Translations = {
   'new.change.overview': '{overview} एक नज़र में दिखाता है कि सब कुछ कैसा चल रहा है: क्या चल रहा है और क्या आपका इंतज़ार कर रहा है, हर काम अपने पिछले और अगले चक्र के साथ, हाल के चक्र और आपके पेयर किए गए इंस्टेंस के काम। ArrowLoop इसी पृष्ठ पर खुलता है। {settings}, {look} में {sidebar} कार्ड इसे फिर से छिपा सकता है, गंतव्य और इंस्टेंस के स्विच के पास, और फ़ोन पर {appearance} में इसका अपना स्विच है।',
   'nav.instances': 'इंस्टेंस',
   'instances.none': 'अभी तक कोई दूसरा इंस्टेंस इससे पेयर नहीं है। आप सेटिंग्स, पेयरिंग में कोई इंस्टेंस पेयर कर सकते हैं।',
+  'fortress.title': 'किला',
+  'fortress.outBody': 'किसी किले में उसके वाक्यांश से शामिल हों। फिर दूसरे ऐप यहाँ दिखेंगे, साथ में यह भी कि वे {app} पर क्या कर सकते हैं।',
+  'fortress.phraseWhere': 'किले का हर ऐप आपको वाक्यांश दिखा सकता है। इसे पहले फ़ील्ड में चिपकाएँ, बाकी फ़ील्ड अपने आप भर जाएँगे।',
+  'fortress.inFortress': 'ArrowLoop पहले से एक किले में है। दूसरे में शामिल होने के लिए पहले इसे छोड़ें।',
+  'fortress.changeKept': 'वाक्यांश जैसा है वैसा ही रहता है।',
+  'fortress.permissionPair': '{from} से {to} पर',
+  'fortress.action.jobsList': 'काम देखना',
+  'fortress.action.jobsRun': 'कोई काम शुरू करना',
+  'fortress.action.jobsTargets': 'नए कामों के गंतव्य देखना',
+  'fortress.action.jobsCreate': 'कोई काम जोड़ना',
+  'fortress.action.backupExport': 'बैकअप लाना',
+  'fortress.action.backupImport': 'बैकअप वापस लगाना',
 }
 
 export default hi

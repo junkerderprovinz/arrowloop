@@ -1609,6 +1609,18 @@ const vi: Translations = {
   'new.change.overview': '{overview} cho bạn thấy mọi thứ đang ra sao chỉ trong nháy mắt: cái gì đang chạy và cái gì đang chờ bạn, từng công việc với lần chạy gần nhất và lần chạy tiếp theo, các lần chạy mới nhất và công việc của các phiên bản đã ghép nối. ArrowLoop mở ở trang này. Thẻ {sidebar} trong {settings}, {look} có thể ẩn trang này đi, cạnh các công tắc cho Đích và Phiên bản, và trên điện thoại trang này có công tắc riêng trong {appearance}.',
   'nav.instances': 'Phiên bản',
   'instances.none': 'Chưa có phiên bản nào khác được ghép nối với phiên bản này. Bạn có thể ghép nối trong Cài đặt, Ghép nối.',
+  'fortress.title': 'Pháo đài',
+  'fortress.outBody': 'Tham gia một pháo đài bằng cụm từ của nó. Sau đó các ứng dụng khác hiện ở đây, kèm những gì chúng được làm tại {app}.',
+  'fortress.phraseWhere': 'Mọi ứng dụng trong pháo đài đều có thể cho bạn xem cụm từ. Dán vào ô đầu tiên, các ô còn lại sẽ tự điền.',
+  'fortress.inFortress': 'ArrowLoop đã ở trong một pháo đài. Hãy rời khỏi đó trước để tham gia pháo đài khác.',
+  'fortress.changeKept': 'Cụm từ vẫn giữ nguyên.',
+  'fortress.permissionPair': '{from} tại {to}',
+  'fortress.action.jobsList': 'Xem các công việc',
+  'fortress.action.jobsRun': 'Chạy một công việc',
+  'fortress.action.jobsTargets': 'Xem các đích cho công việc mới',
+  'fortress.action.jobsCreate': 'Thêm một công việc',
+  'fortress.action.backupExport': 'Lấy một bản sao lưu',
+  'fortress.action.backupImport': 'Khôi phục một bản sao lưu',
 }
 
 export default vi

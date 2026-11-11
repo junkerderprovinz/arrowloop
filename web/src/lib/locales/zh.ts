@@ -1609,6 +1609,18 @@ const zh: Translations = {
   'new.change.overview': '{overview} 让你一眼看清一切状况：正在运行什么、什么在等你处理，每个任务的上次运行和下次运行，最近的运行，以及你已配对的实例上的任务。ArrowLoop 打开时显示这个页面。在 {settings}、{look} 的 {sidebar} 卡片上，就在目标和实例的开关旁边，可以再次隐藏它，在手机上则在 {appearance} 下有单独的开关。',
   'nav.instances': '实例',
   'instances.none': '还没有其他实例与此实例配对。你可以在“设置”的“配对”中进行配对。',
+  'fortress.title': '堡垒',
+  'fortress.outBody': '用口令加入一个堡垒。之后，其他应用及其在 {app} 上可做的事会显示在这里。',
+  'fortress.phraseWhere': '堡垒中的任何应用都能向你显示口令。把它粘贴到第一个框中，其余的会自动填好。',
+  'fortress.inFortress': 'ArrowLoop 已在一个堡垒中。先退出它，才能加入另一个。',
+  'fortress.changeKept': '口令保持不变。',
+  'fortress.permissionPair': '{from} → {to}',
+  'fortress.action.jobsList': '查看任务',
+  'fortress.action.jobsRun': '启动任务',
+  'fortress.action.jobsTargets': '查看新任务可用的目标',
+  'fortress.action.jobsCreate': '添加任务',
+  'fortress.action.backupExport': '获取备份',
+  'fortress.action.backupImport': '恢复备份',
 }
 
 export default zh

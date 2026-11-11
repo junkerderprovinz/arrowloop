@@ -1609,6 +1609,18 @@ const gl: Translations = {
   'new.change.overview': '{overview} amosa dunha ollada como está todo: que se executa e que agarda por ti, cada tarefa coa súa última e seguinte execución, as execucións máis recentes e as tarefas das túas instancias emparelladas. ArrowLoop ábrese nesta páxina. A tarxeta {sidebar} en {settings}, {look} vólvea agochar, xunto aos interruptores de Destinos e Instancias, e no móbil ten un interruptor propio en {appearance}.',
   'nav.instances': 'Instancias',
   'instances.none': 'Aínda non hai ningunha outra instancia emparellada con esta. Podes emparellar unha en Axustes, Emparellamento.',
+  'fortress.title': 'Fortaleza',
+  'fortress.outBody': 'Únete a unha fortaleza coa súa frase. Entón aparecen aquí as outras apps e o que poden facer en {app}.',
+  'fortress.phraseWhere': 'Calquera app da fortaleza pode amosarche a frase. Pégaa no primeiro campo e encherá o resto.',
+  'fortress.inFortress': 'ArrowLoop xa está nunha fortaleza. Sae dela primeiro para unirte a outra.',
+  'fortress.changeKept': 'A frase queda como está.',
+  'fortress.permissionPair': '{from} en {to}',
+  'fortress.action.jobsList': 'Ver as tarefas',
+  'fortress.action.jobsRun': 'Iniciar unha tarefa',
+  'fortress.action.jobsTargets': 'Ver os destinos para tarefas novas',
+  'fortress.action.jobsCreate': 'Engadir unha tarefa',
+  'fortress.action.backupExport': 'Traer unha copia de seguridade',
+  'fortress.action.backupImport': 'Restaurar unha copia de seguridade',
 }
 
 export default gl

@@ -48,6 +48,9 @@ const RULES: Rule[] = [
   [/^pairing\.remove$/i, 'IconKeyRevoke'],
   [/^pairing\.enter$/i, 'IconPencil'],
   [/^pairing\.checkAgain$/i, 'IconRetry'],
+  // The fortress's new phrase, and the Done that closes its windows.
+  [/^fortress\.changePhrase$/i, 'IconRefresh'],
+  [/^fortress\.done$/i, 'IconConfirm'],
   [/^relay\.seesTitle$/i, 'IconEye'],
 
   // The three answers to a conflict, for one or for all of them.

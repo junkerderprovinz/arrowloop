@@ -1609,6 +1609,18 @@ const lt: Translations = {
   'new.change.overview': '{overview} vienu žvilgsniu parodo, kaip viskas klostosi: kas vyksta ir kas laukia tavęs, kiekvieną užduotį su paskutiniu ir kitu paleidimu, naujausius paleidimus ir tavo susietų egzempliorių užduotis. ArrowLoop atsidaro šiame puslapyje. Kortelė {sidebar} skiltyje {settings}, {look} vėl jį paslepia, šalia Paskirčių ir Egzempliorių jungiklių, o telefone puslapis turi savo jungiklį skiltyje {appearance}.',
   'nav.instances': 'Egzemplioriai',
   'instances.none': 'Su šiuo dar nesusietas joks kitas egzempliorius. Susieti gali skiltyje Nustatymai, Susiejimas.',
+  'fortress.title': 'Tvirtovė',
+  'fortress.outBody': 'Prisijunkite prie tvirtovės jos fraze. Tada čia atsiras kitos programos ir tai, ką jos gali daryti {app}.',
+  'fortress.phraseWhere': 'Frazę jums gali parodyti bet kuri tvirtovės programa. Įklijuokite ją į pirmą lauką ir ji užpildys likusius.',
+  'fortress.inFortress': 'ArrowLoop jau yra tvirtovėje. Pirmiausia iš jos išeikite, kad prisijungtumėte prie kitos.',
+  'fortress.changeKept': 'Frazė lieka tokia pati.',
+  'fortress.permissionPair': '{from} prie {to}',
+  'fortress.action.jobsList': 'Matyti užduotis',
+  'fortress.action.jobsRun': 'Paleisti užduotį',
+  'fortress.action.jobsTargets': 'Matyti naujų užduočių paskirtis',
+  'fortress.action.jobsCreate': 'Pridėti užduotį',
+  'fortress.action.backupExport': 'Parsisiųsti atsarginę kopiją',
+  'fortress.action.backupImport': 'Atkurti atsarginę kopiją',
 }
 
 export default lt

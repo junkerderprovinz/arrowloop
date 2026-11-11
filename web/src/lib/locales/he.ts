@@ -1609,6 +1609,18 @@ const he: Translations = {
   'new.change.overview': '{overview} מראה במבט אחד איך הכול עומד: מה רץ ומה מחכה לך, כל משימה עם ההרצה האחרונה והבאה שלה, ההרצות האחרונות והמשימות של המופעים המצומדים שלך. ArrowLoop נפתח בדף הזה. הכרטיס {sidebar} תחת {settings}, {look} מסתיר אותו שוב, ליד המתגים של יעדים ומופעים, ובטלפון יש לו מתג משלו תחת {appearance}.',
   'nav.instances': 'מופעים',
   'instances.none': 'עדיין אין מופע אחר שמצומד למופע הזה. אפשר לצמד מופע תחת הגדרות, צימוד.',
+  'fortress.title': 'מבצר',
+  'fortress.outBody': 'הצטרפו למבצר עם הביטוי שלו. אז יופיעו כאן האפליקציות האחרות ומה מותר להן לעשות ב-{app}.',
+  'fortress.phraseWhere': 'כל אפליקציה במבצר יכולה להציג לכם את הביטוי. הדביקו אותו בשדה הראשון והוא ימלא את השאר.',
+  'fortress.inFortress': 'ArrowLoop כבר נמצא במבצר. צאו ממנו קודם כדי להצטרף לאחר.',
+  'fortress.changeKept': 'הביטוי נשאר כפי שהוא.',
+  'fortress.permissionPair': '{from} אצל {to}',
+  'fortress.action.jobsList': 'לראות את המשימות',
+  'fortress.action.jobsRun': 'להפעיל משימה',
+  'fortress.action.jobsTargets': 'לראות את היעדים למשימות חדשות',
+  'fortress.action.jobsCreate': 'להוסיף משימה',
+  'fortress.action.backupExport': 'להביא גיבוי',
+  'fortress.action.backupImport': 'לשחזר גיבוי',
 }
 
 export default he

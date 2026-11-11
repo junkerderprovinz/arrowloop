@@ -1609,6 +1609,18 @@ const es: Translations = {
   'new.change.overview': '{overview} muestra de un vistazo cómo está todo: qué se ejecuta y qué te espera, cada tarea con su última y su próxima ejecución, las ejecuciones más recientes y las tareas de tus instancias emparejadas. ArrowLoop se abre en esta página. La tarjeta {sidebar} en {settings}, {look} la vuelve a ocultar, junto a los interruptores de Destinos e Instancias, y en el móvil tiene su propio interruptor en {appearance}.',
   'nav.instances': 'Instancias',
   'instances.none': 'Todavía no hay ninguna otra instancia emparejada con esta. Puedes emparejar una en Ajustes, Emparejamiento.',
+  'fortress.title': 'Fortaleza',
+  'fortress.outBody': 'Únete a una fortaleza con su frase. Entonces aparecen aquí las demás apps y lo que pueden hacer en {app}.',
+  'fortress.phraseWhere': 'Cualquier app de la fortaleza puede mostrarte la frase. Pégala en el primer campo y rellenará el resto.',
+  'fortress.inFortress': 'ArrowLoop ya está en una fortaleza. Sal de ella primero para unirte a otra.',
+  'fortress.changeKept': 'La frase se queda como está.',
+  'fortress.permissionPair': '{from} en {to}',
+  'fortress.action.jobsList': 'Ver las tareas',
+  'fortress.action.jobsRun': 'Iniciar una tarea',
+  'fortress.action.jobsTargets': 'Ver los destinos para tareas nuevas',
+  'fortress.action.jobsCreate': 'Añadir una tarea',
+  'fortress.action.backupExport': 'Traer una copia de seguridad',
+  'fortress.action.backupImport': 'Restaurar una copia de seguridad',
 }
 
 export default es

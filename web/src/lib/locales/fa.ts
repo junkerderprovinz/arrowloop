@@ -1609,6 +1609,18 @@ const fa: Translations = {
   'new.change.overview': '{overview} با یک نگاه نشان می‌دهد همه‌چیز در چه حال است: چه چیزی در حال اجراست و چه چیزی منتظر توست، هر کار با آخرین اجرا و اجرای بعدی‌اش، آخرین اجراها و کارهای نمونه‌های جفت‌شده‌ات. ArrowLoop با همین صفحه باز می‌شود. کارت {sidebar} در {settings}، {look} دوباره پنهانش می‌کند، کنار کلیدهای مقصدها و نمونه‌ها، و در گوشی هم زیر {appearance} کلید خودش را دارد.',
   'nav.instances': 'نمونه‌ها',
   'instances.none': 'هنوز هیچ نمونهٔ دیگری با این نمونه جفت نشده است. در تنظیمات، جفت‌سازی می‌توانی یکی را جفت کنی.',
+  'fortress.title': 'دژ',
+  'fortress.outBody': 'با عبارتِ یک دژ به آن بپیوند. آن‌وقت برنامه‌های دیگر اینجا دیده می‌شوند، همراه با کارهایی که اجازه دارند در {app} انجام دهند.',
+  'fortress.phraseWhere': 'هر برنامه‌ای در دژ می‌تواند عبارت را به تو نشان دهد. آن را در نخستین فیلد بچسبان تا بقیه را پر کند.',
+  'fortress.inFortress': 'ArrowLoop از قبل در یک دژ است. اول از آن خارج شو تا به دژ دیگری بپیوندی.',
+  'fortress.changeKept': 'عبارت همان‌طور که هست می‌ماند.',
+  'fortress.permissionPair': '{from} نزد {to}',
+  'fortress.action.jobsList': 'دیدن کارها',
+  'fortress.action.jobsRun': 'اجرای یک کار',
+  'fortress.action.jobsTargets': 'دیدن مقصدها برای کارهای تازه',
+  'fortress.action.jobsCreate': 'افزودن یک کار',
+  'fortress.action.backupExport': 'گرفتن یک پشتیبان',
+  'fortress.action.backupImport': 'بازگرداندن یک پشتیبان',
 }
 
 export default fa

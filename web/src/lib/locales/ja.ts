@@ -1609,6 +1609,18 @@ const ja: Translations = {
   'new.change.overview': '{overview} では、すべての状況がひと目でわかります。実行中のものとあなたの対応を待っているもの、各ジョブの前回と次回の実行、最近の実行、ペアリングしたインスタンスのジョブを表示します。ArrowLoop はこのページを開いて起動します。{settings}、{look} の {sidebar} カードでは、接続先やインスタンスのスイッチと並んで、このページを再び非表示にできます。スマホでは {appearance} に専用のスイッチがあります。',
   'nav.instances': 'インスタンス',
   'instances.none': 'このインスタンスとペアリングされたほかのインスタンスはまだありません。「設定」の「ペアリング」でペアリングできます。',
+  'fortress.title': '要塞',
+  'fortress.outBody': 'フレーズで要塞に参加してください。参加すると、ほかのアプリと、それらが {app} で行えることがここに表示されます。',
+  'fortress.phraseWhere': '要塞内のどのアプリでもフレーズを表示できます。最初の欄に貼り付けると、残りの欄も埋まります。',
+  'fortress.inFortress': 'ArrowLoop はすでに要塞に参加しています。別の要塞に参加するには、先にそこから抜けてください。',
+  'fortress.changeKept': 'フレーズはそのままです。',
+  'fortress.permissionPair': '{from} から {to} へ',
+  'fortress.action.jobsList': 'ジョブを見る',
+  'fortress.action.jobsRun': 'ジョブを開始する',
+  'fortress.action.jobsTargets': '新しいジョブの接続先を見る',
+  'fortress.action.jobsCreate': 'ジョブを追加する',
+  'fortress.action.backupExport': 'バックアップを取ってくる',
+  'fortress.action.backupImport': 'バックアップを戻す',
 }
 
 export default ja

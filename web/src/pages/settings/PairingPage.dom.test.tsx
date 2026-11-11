@@ -5,6 +5,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ConnectInfo, RelayConfig } from '../../lib/api'
+import type { FortressInfo } from '../../lib/fortress'
 
 const connect = vi.fn()
 const relay = vi.fn()
@@ -12,6 +13,7 @@ const makePhrase = vi.fn()
 const joinGroup = vi.fn()
 const approveMember = vi.fn()
 const revealPhrase = vi.fn()
+const fortress = vi.fn()
 let heard: ((ev: { job: string; phase: string }) => void) | null = null
 vi.mock('../../lib/api', async (original) => ({
   ...(await original<typeof import('../../lib/api')>()),
@@ -22,6 +24,7 @@ vi.mock('../../lib/api', async (original) => ({
     joinGroup: (phrase: string) => joinGroup(phrase),
     approveMember: (id: string) => approveMember(id),
     revealPhrase: (password: string) => revealPhrase(password),
+    fortress: () => fortress(),
     leaveGroup: vi.fn(),
     refuseMember: vi.fn(),
     removeMember: vi.fn(),
@@ -78,9 +81,12 @@ const relayConfig: RelayConfig = {
   canServe: true,
 }
 
+const noFortress: FortressInfo = { joined: false, phrase: false, device: 'nas', defaultDevice: 'nas', passwordSet: true, members: [], permissions: [] }
+
 beforeEach(() => {
-  for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase]) fn.mockReset()
+  for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase, fortress]) fn.mockReset()
   relay.mockResolvedValue(relayConfig)
+  fortress.mockResolvedValue(noFortress)
 })
 afterEach(cleanup)
 
@@ -202,5 +208,30 @@ describe('the Pairing tile', () => {
     } finally {
       vi.useRealTimers()
     }
+  })
+
+  it('offers to join a fortress below the pairing', async () => {
+    connect.mockResolvedValue(outside)
+    render(<PairingPage />)
+    expect(await screen.findByText('Not in a fortress yet')).toBeTruthy()
+    expect(screen.getByRole('button', { name: /make a phrase/i })).toBeTruthy()
+  })
+
+  it('leaves the phrase to the fortress once this instance is in one', async () => {
+    connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
+    fortress.mockResolvedValue({ ...noFortress, joined: true, phrase: true })
+    render(<PairingPage />)
+    expect(await screen.findByText(en['fortress.title'])).toBeTruthy()
+    expect(screen.queryByText(en['pairing.searchingLead'])).toBeNull()
+    expect(screen.getAllByRole('button', { name: 'Show phrase' })).toHaveLength(1)
+    expect(screen.queryByRole('button', { name: en['pairing.leave'] })).toBeNull()
+  })
+
+  it('reads the fortress again when the window gets the focus back', async () => {
+    connect.mockResolvedValue(outside)
+    render(<PairingPage />)
+    await waitFor(() => expect(fortress).toHaveBeenCalledTimes(1))
+    fireEvent.focus(window)
+    await waitFor(() => expect(fortress).toHaveBeenCalledTimes(2))
   })
 })

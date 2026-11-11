@@ -1609,6 +1609,18 @@ const th: Translations = {
   'new.change.overview': '{overview} แสดงให้เห็นในพริบตาว่าทุกอย่างเป็นอย่างไร อะไรกำลังทำงานและอะไรรอคุณอยู่ งานแต่ละงานพร้อมการทำงานล่าสุดและครั้งถัดไป การทำงานล่าสุด และงานของอินสแตนซ์ที่คุณจับคู่ไว้ ArrowLoop จะเปิดที่หน้านี้ การ์ด {sidebar} ใน {settings}, {look} ซ่อนหน้านี้ได้อีกครั้ง ข้างสวิตช์ของปลายทางและอินสแตนซ์ และบนโทรศัพท์หน้านี้มีสวิตช์ของตัวเองใน {appearance}',
   'nav.instances': 'อินสแตนซ์',
   'instances.none': 'ยังไม่มีอินสแตนซ์อื่นที่จับคู่กับอินสแตนซ์นี้ คุณจับคู่ได้ที่การตั้งค่า การจับคู่',
+  'fortress.title': 'ป้อมปราการ',
+  'fortress.outBody': 'เข้าร่วมป้อมปราการด้วยวลีของมัน จากนั้นแอปอื่นๆ จะแสดงที่นี่ พร้อมสิ่งที่แอปเหล่านั้นทำได้ใน {app}',
+  'fortress.phraseWhere': 'ทุกแอปในป้อมปราการแสดงวลีให้คุณดูได้ วางวลีในช่องแรก แล้วช่องที่เหลือจะถูกเติมให้',
+  'fortress.inFortress': 'ArrowLoop อยู่ในป้อมปราการแล้ว ออกจากที่นั่นก่อนจึงจะเข้าร่วมที่อื่นได้',
+  'fortress.changeKept': 'วลียังคงเหมือนเดิม',
+  'fortress.permissionPair': '{from} ที่ {to}',
+  'fortress.action.jobsList': 'ดูงาน',
+  'fortress.action.jobsRun': 'เริ่มงาน',
+  'fortress.action.jobsTargets': 'ดูปลายทางสำหรับงานใหม่',
+  'fortress.action.jobsCreate': 'เพิ่มงาน',
+  'fortress.action.backupExport': 'ดึงข้อมูลสำรอง',
+  'fortress.action.backupImport': 'กู้คืนข้อมูลสำรอง',
 }
 
 export default th

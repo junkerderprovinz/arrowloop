@@ -1609,6 +1609,18 @@ const sr: Translations = {
   'new.change.overview': '{overview} на први поглед показује како све стоји: шта ради и шта те чека, сваки посао са последњим и следећим покретањем, најновија покретања и послове твојих упарених инстанци. ArrowLoop се отвара на овој страници. Картица {sidebar} у {settings}, {look} је поново скрива, поред прекидача за Одредишта и Инстанце, а на телефону страница има свој прекидач у {appearance}.',
   'nav.instances': 'Инстанце',
   'instances.none': 'Са овом инстанцом још није упарена ниједна друга. Упарити је можеш у Подешавањима, Упаривање.',
+  'fortress.title': 'Тврђава',
+  'fortress.outBody': 'Придружите се тврђави њеном фразом. Тада се овде појављују остале апликације и оно што смеју да раде у {app}.',
+  'fortress.phraseWhere': 'Фразу може да вам покаже свака апликација у тврђави. Налепите је у прво поље и попуниће остала.',
+  'fortress.inFortress': 'ArrowLoop је већ у тврђави. Прво је напустите да бисте се придружили другој.',
+  'fortress.changeKept': 'Фраза остаје каква јесте.',
+  'fortress.permissionPair': '{from} код {to}',
+  'fortress.action.jobsList': 'Видети послове',
+  'fortress.action.jobsRun': 'Покренути посао',
+  'fortress.action.jobsTargets': 'Видети одредишта за нове послове',
+  'fortress.action.jobsCreate': 'Додати посао',
+  'fortress.action.backupExport': 'Преузети резервну копију',
+  'fortress.action.backupImport': 'Вратити резервну копију',
 }
 
 export default sr

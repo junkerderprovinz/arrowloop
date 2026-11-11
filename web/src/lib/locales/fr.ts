@@ -1609,6 +1609,18 @@ const fr: Translations = {
   'new.change.overview': '{overview} montre d\'un coup d\'œil où en est chaque chose : ce qui tourne et ce qui vous attend, chaque tâche avec sa dernière et sa prochaine exécution, les exécutions les plus récentes et les tâches de vos instances appairées. ArrowLoop s\'ouvre sur cette page. La carte {sidebar} dans {settings}, {look} la masque à nouveau, à côté des interrupteurs pour Cibles et Instances, et sur le téléphone elle a son propre interrupteur dans {appearance}.',
   'nav.instances': 'Instances',
   'instances.none': 'Aucune autre instance n\'est encore appairée avec celle-ci. Vous pouvez en appairer une dans Réglages, Appairage.',
+  'fortress.title': 'Forteresse',
+  'fortress.outBody': 'Rejoignez une forteresse avec sa phrase. Les autres apps apparaissent alors ici, avec ce qu\'elles ont le droit de faire chez {app}.',
+  'fortress.phraseWhere': 'Chaque app de la forteresse peut vous montrer la phrase. Collez-la dans le premier champ et elle remplit les autres.',
+  'fortress.inFortress': 'ArrowLoop est déjà dans une forteresse. Quittez-la d\'abord pour en rejoindre une autre.',
+  'fortress.changeKept': 'La phrase reste telle quelle.',
+  'fortress.permissionPair': '{from} chez {to}',
+  'fortress.action.jobsList': 'Voir les tâches',
+  'fortress.action.jobsRun': 'Lancer une tâche',
+  'fortress.action.jobsTargets': 'Voir les cibles des nouvelles tâches',
+  'fortress.action.jobsCreate': 'Ajouter une tâche',
+  'fortress.action.backupExport': 'Récupérer une sauvegarde',
+  'fortress.action.backupImport': 'Restaurer une sauvegarde',
 }
 
 export default fr

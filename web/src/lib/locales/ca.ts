@@ -1609,6 +1609,18 @@ const ca: Translations = {
   'new.change.overview': '{overview} mostra d\'un cop d\'ull com està tot: què s\'executa i què t\'espera, cada tasca amb l\'última execució i la propera, les execucions més recents i les tasques de les teves instàncies aparellades. ArrowLoop s\'obre amb aquesta pàgina. La targeta {sidebar} de {settings}, {look} la torna a amagar, al costat dels interruptors de Destinacions i Instàncies, i al mòbil té un interruptor propi a {appearance}.',
   'nav.instances': 'Instàncies',
   'instances.none': 'Encara no hi ha cap altra instància aparellada amb aquesta. En pots aparellar una a Configuració, Aparellament.',
+  'fortress.title': 'Fortalesa',
+  'fortress.outBody': 'Uneix-te a una fortalesa amb la seva frase. Llavors aquí apareixen les altres apps i el que poden fer a {app}.',
+  'fortress.phraseWhere': 'Qualsevol app de la fortalesa et pot mostrar la frase. Enganxa-la al primer camp i omplirà la resta.',
+  'fortress.inFortress': 'ArrowLoop ja és en una fortalesa. Surt-ne primer per unir-te a una altra.',
+  'fortress.changeKept': 'La frase es queda com està.',
+  'fortress.permissionPair': '{from} a {to}',
+  'fortress.action.jobsList': 'Veure les tasques',
+  'fortress.action.jobsRun': 'Iniciar una tasca',
+  'fortress.action.jobsTargets': 'Veure les destinacions per a tasques noves',
+  'fortress.action.jobsCreate': 'Afegir una tasca',
+  'fortress.action.backupExport': 'Obtenir una còpia de seguretat',
+  'fortress.action.backupImport': 'Restaurar una còpia de seguretat',
 }
 
 export default ca

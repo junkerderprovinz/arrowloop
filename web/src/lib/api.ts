@@ -39,6 +39,7 @@ export type Job = {
 export type { Reason } from './i18n'
 import type { Reason } from './i18n'
 import { inDesktopWindow, watchDesktop } from './desk'
+import type { FortressInfo, FortressPermission } from './fortress'
 
 /** What one side holds: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
@@ -1313,6 +1314,27 @@ export const api = {
 
   /** Takes another instance out of the group on every instance of it. */
   removeMember: (id: string) => send(`/api/connect/members/${encodeURIComponent(id)}`, 'DELETE'),
+
+  fortress: () => request<FortressInfo>('/api/fortress'),
+
+  /** Joins the fortress of a phrase. The paired instances follow by themselves. */
+  joinFortress: (phrase: string) => post<FortressInfo>('/api/fortress/join', { phrase }),
+
+  /** Shows the fortress phrase again, which asks for the password where one is set. */
+  showFortressPhrase: (password = '') => post<Phrase>('/api/fortress/phrase/show', { password }),
+
+  /** Gives the fortress a new phrase, behind the password as showing it is. */
+  changeFortressPhrase: (password = '') => post<Phrase & { left: string[] }>('/api/fortress/phrase', { password }),
+
+  /** What the other apps of the fortress call this instance; empty for the computer's name. */
+  nameInFortress: (device: string) =>
+    request<FortressInfo>('/api/fortress/device', { method: 'PUT', body: JSON.stringify({ device }) }),
+
+  setFortressPermission: (p: FortressPermission) =>
+    request<FortressInfo>('/api/fortress/permissions', { method: 'PUT', body: JSON.stringify(p) }),
+
+  /** Leaves the fortress, and with it the pairing its phrase holds. */
+  leaveFortress: () => request<FortressInfo>('/api/fortress', { method: 'DELETE' }),
 
   relay: () => request<RelayConfig>('/api/relay/config'),
 

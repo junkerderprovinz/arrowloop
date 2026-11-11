@@ -1609,6 +1609,18 @@ const tr: Translations = {
   'new.change.overview': '{overview} her şeyin ne durumda olduğunu bir bakışta gösterir: neyin çalıştığını ve neyin seni beklediğini, her işi son ve sonraki çalıştırmasıyla, en son çalıştırmaları ve eşleştirdiğin örneklerin işlerini. ArrowLoop bu sayfayla açılır. {settings}, {look} içindeki {sidebar} kartında, Hedefler ve Örnekler anahtarlarının yanında, sayfayı yeniden gizleyebilirsin. Telefonda ise {appearance} altında kendi anahtarı var.',
   'nav.instances': 'Örnekler',
   'instances.none': 'Bu örnekle henüz başka bir örnek eşleştirilmedi. Eşleştirmeyi Ayarlar, Eşleştirme altında yapabilirsin.',
+  'fortress.title': 'Kale',
+  'fortress.outBody': 'Bir kaleye ifadesiyle katıl. Ardından diğer uygulamalar ve {app} içinde ne yapabilecekleri burada görünür.',
+  'fortress.phraseWhere': 'Kaledeki her uygulama ifadeyi sana gösterebilir. İlk alana yapıştır, gerisini o doldurur.',
+  'fortress.inFortress': 'ArrowLoop zaten bir kalede. Başka birine katılmak için önce oradan ayrıl.',
+  'fortress.changeKept': 'İfade olduğu gibi kalır.',
+  'fortress.permissionPair': '{from} → {to}',
+  'fortress.action.jobsList': 'İşleri görmek',
+  'fortress.action.jobsRun': 'Bir iş başlatmak',
+  'fortress.action.jobsTargets': 'Yeni işlerin hedeflerini görmek',
+  'fortress.action.jobsCreate': 'Bir iş eklemek',
+  'fortress.action.backupExport': 'Bir yedek almak',
+  'fortress.action.backupImport': 'Bir yedeği geri yüklemek',
 }
 
 export default tr

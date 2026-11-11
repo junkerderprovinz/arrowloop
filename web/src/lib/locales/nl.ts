@@ -1609,6 +1609,18 @@ const nl: Translations = {
   'new.change.overview': '{overview} laat in één oogopslag zien hoe alles ervoor staat: wat er loopt en wat op je wacht, elke taak met de laatste en volgende run, de nieuwste runs en de taken van je gekoppelde instanties. ArrowLoop opent op deze pagina. De kaart {sidebar} in {settings}, {look} verbergt de pagina weer, naast de schakelaars voor Doelen en Instanties, en op de telefoon heeft de pagina een eigen schakelaar onder {appearance}.',
   'nav.instances': 'Instanties',
   'instances.none': 'Er is nog geen andere instantie met deze gekoppeld. Koppelen doe je onder Instellingen, Koppeling.',
+  'fortress.title': 'Vesting',
+  'fortress.outBody': 'Kom in een vesting met haar frase. Dan verschijnen hier de andere apps en wat ze bij {app} mogen doen.',
+  'fortress.phraseWhere': 'Elke app in de vesting kan je de frase tonen. Plak hem in het eerste veld, dan vult hij de rest.',
+  'fortress.inFortress': 'ArrowLoop zit al in een vesting. Verlaat die eerst om bij een andere te gaan.',
+  'fortress.changeKept': 'De frase blijft zoals ze is.',
+  'fortress.permissionPair': '{from} bij {to}',
+  'fortress.action.jobsList': 'De taken zien',
+  'fortress.action.jobsRun': 'Een taak starten',
+  'fortress.action.jobsTargets': 'De doelen voor nieuwe taken zien',
+  'fortress.action.jobsCreate': 'Een taak toevoegen',
+  'fortress.action.backupExport': 'Een back-up ophalen',
+  'fortress.action.backupImport': 'Een back-up terugzetten',
 }
 
 export default nl

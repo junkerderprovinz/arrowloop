@@ -1609,6 +1609,18 @@ const is: Translations = {
   'new.change.overview': '{overview} sýnir í fljótu bragði hvernig allt stendur: hvað er í gangi og hvað bíður þín, hvert verk með síðustu og næstu keyrslu, nýjustu keyrslurnar og verk paraðra tilvika þinna. ArrowLoop opnast á þessari síðu. Spjaldið {sidebar} undir {settings}, {look} felur hana aftur, við hliðina á rofunum fyrir Áfangastaði og Tilvik, og í símanum hefur síðan sinn eigin rofa undir {appearance}.',
   'nav.instances': 'Tilvik',
   'instances.none': 'Ekkert annað tilvik er parað við þetta enn. Þú parar tilvik undir Stillingar, Pörun.',
+  'fortress.title': 'Vígi',
+  'fortress.outBody': 'Gakktu í vígi með setningu þess. Þá birtast hér hin forritin og hvað þau mega gera hjá {app}.',
+  'fortress.phraseWhere': 'Öll forrit í víginu geta sýnt þér setninguna. Límdu hana í fyrsta reitinn og hún fyllir hina.',
+  'fortress.inFortress': 'ArrowLoop er þegar í vígi. Farðu fyrst úr því til að ganga í annað.',
+  'fortress.changeKept': 'Setningin helst óbreytt.',
+  'fortress.permissionPair': '{from} hjá {to}',
+  'fortress.action.jobsList': 'Sjá verkin',
+  'fortress.action.jobsRun': 'Ræsa verk',
+  'fortress.action.jobsTargets': 'Sjá áfangastaði fyrir ný verk',
+  'fortress.action.jobsCreate': 'Bæta við verki',
+  'fortress.action.backupExport': 'Sækja afrit',
+  'fortress.action.backupImport': 'Endurheimta afrit',
 }
 
 export default is

@@ -1609,6 +1609,18 @@ const et: Translations = {
   'new.change.overview': '{overview} näitab ühe pilguga, kuidas kõik on: mis töötab ja mis sind ootab, iga töö koos viimase ja järgmise käivitusega, viimased käivitused ja su seotud eksemplaride tööd. ArrowLoop avaneb sellel lehel. Kaardil {sidebar} jaotises {settings}, {look} saad selle jälle peita, Sihtkohtade ja Eksemplaride lülitite kõrval, ja telefonis on lehel oma lüliti jaotises {appearance}.',
   'nav.instances': 'Eksemplarid',
   'instances.none': 'Selle eksemplariga pole veel ühtegi teist seotud. Siduda saad jaotises Seaded, Sidumine.',
+  'fortress.title': 'Kindlus',
+  'fortress.outBody': 'Liitu kindlusega selle fraasiga. Siis ilmuvad siia teised rakendused ja see, mida nad võivad {app}-is teha.',
+  'fortress.phraseWhere': 'Iga rakendus kindluses saab sulle fraasi näidata. Kleebi see esimesse välja, siis täidab see ka ülejäänud.',
+  'fortress.inFortress': 'ArrowLoop on juba kindluses. Lahku sealt enne, kui liitud teisega.',
+  'fortress.changeKept': 'Fraas jääb samaks.',
+  'fortress.permissionPair': '{from} → {to}',
+  'fortress.action.jobsList': 'Näha töid',
+  'fortress.action.jobsRun': 'Käivitada töö',
+  'fortress.action.jobsTargets': 'Näha uute tööde sihtkohti',
+  'fortress.action.jobsCreate': 'Lisada töö',
+  'fortress.action.backupExport': 'Tuua varukoopia',
+  'fortress.action.backupImport': 'Taastada varukoopia',
 }
 
 export default et

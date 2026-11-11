@@ -1609,6 +1609,18 @@ const sk: Translations = {
   'new.change.overview': '{overview} ukazuje na prvý pohľad, ako všetko stojí: čo beží a čo čaká na teba, každú úlohu s posledným a ďalším behom, najnovšie behy a úlohy tvojich spárovaných inštancií. ArrowLoop sa otvára na tejto stránke. Karta {sidebar} v {settings}, {look} ju opäť skryje, vedľa prepínačov pre Ciele a Inštancie, a v telefóne má stránka vlastný prepínač v {appearance}.',
   'nav.instances': 'Inštancie',
   'instances.none': 'S touto inštanciou zatiaľ nie je spárovaná žiadna iná. Spárovať ju môžeš v Nastaveniach, Párovanie.',
+  'fortress.title': 'Pevnosť',
+  'fortress.outBody': 'Pripojte sa k pevnosti jej frázou. Potom sa tu objavia ostatné aplikácie a to, čo smú robiť v {app}.',
+  'fortress.phraseWhere': 'Frázu vám môže ukázať každá aplikácia v pevnosti. Vložte ju do prvého poľa a vyplní aj ostatné.',
+  'fortress.inFortress': 'ArrowLoop už je v pevnosti. Najprv ju opustite, potom sa môžete pripojiť k inej.',
+  'fortress.changeKept': 'Fráza zostáva, ako je.',
+  'fortress.permissionPair': '{from} u {to}',
+  'fortress.action.jobsList': 'Zobraziť úlohy',
+  'fortress.action.jobsRun': 'Spustiť úlohu',
+  'fortress.action.jobsTargets': 'Zobraziť ciele pre nové úlohy',
+  'fortress.action.jobsCreate': 'Pridať úlohu',
+  'fortress.action.backupExport': 'Stiahnuť zálohu',
+  'fortress.action.backupImport': 'Obnoviť zálohu',
 }
 
 export default sk

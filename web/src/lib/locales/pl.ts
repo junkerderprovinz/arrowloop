@@ -1609,6 +1609,18 @@ const pl: Translations = {
   'new.change.overview': '{overview} pokazuje na pierwszy rzut oka, jak wszystko wygląda: co działa i co czeka na ciebie, każde zadanie z ostatnim i następnym przebiegiem, najnowsze przebiegi i zadania twoich sparowanych instancji. ArrowLoop otwiera się na tej stronie. Karta {sidebar} w {settings}, {look} ponownie ją ukrywa, obok przełączników Cele i Instancje, a na telefonie strona ma własny przełącznik w {appearance}.',
   'nav.instances': 'Instancje',
   'instances.none': 'Z tą instancją nie jest jeszcze sparowana żadna inna. Sparujesz ją w Ustawieniach, Parowanie.',
+  'fortress.title': 'Twierdza',
+  'fortress.outBody': 'Dołącz do twierdzy za pomocą jej frazy. Wtedy pojawią się tu inne aplikacje i to, co mogą robić w {app}.',
+  'fortress.phraseWhere': 'Każda aplikacja w twierdzy może pokazać ci frazę. Wklej ją w pierwsze pole, a wypełni pozostałe.',
+  'fortress.inFortress': 'ArrowLoop jest już w twierdzy. Najpierw ją opuść, aby dołączyć do innej.',
+  'fortress.changeKept': 'Fraza pozostaje bez zmian.',
+  'fortress.permissionPair': '{from} u {to}',
+  'fortress.action.jobsList': 'Widzieć zadania',
+  'fortress.action.jobsRun': 'Uruchamiać zadanie',
+  'fortress.action.jobsTargets': 'Widzieć cele dla nowych zadań',
+  'fortress.action.jobsCreate': 'Dodawać zadanie',
+  'fortress.action.backupExport': 'Pobierać kopię zapasową',
+  'fortress.action.backupImport': 'Przywracać kopię zapasową',
 }
 
 export default pl

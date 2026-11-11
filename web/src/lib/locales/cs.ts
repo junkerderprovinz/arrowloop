@@ -1609,6 +1609,18 @@ const cs: Translations = {
   'new.change.overview': '{overview} ukazuje na první pohled, jak všechno stojí: co běží a co čeká na tebe, každou úlohu s posledním a dalším během, nejnovější běhy a úlohy tvých spárovaných instancí. ArrowLoop se otevírá na této stránce. Karta {sidebar} v {settings}, {look} ji zase skryje, hned vedle přepínačů pro Cíle a Instance, a v telefonu má stránka vlastní přepínač v {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'S touto instancí zatím není spárovaná žádná další. Spárovat můžeš v Nastavení, Párování.',
+  'fortress.title': 'Pevnost',
+  'fortress.outBody': 'Připojte se k pevnosti její frází. Pak se tu objeví ostatní aplikace a to, co smějí dělat v {app}.',
+  'fortress.phraseWhere': 'Frázi vám může ukázat každá aplikace v pevnosti. Vložte ji do prvního pole a vyplní i ostatní.',
+  'fortress.inFortress': 'ArrowLoop už je v pevnosti. Nejdřív ji opusťte, pak se můžete připojit k jiné.',
+  'fortress.changeKept': 'Fráze zůstává, jak je.',
+  'fortress.permissionPair': '{from} u {to}',
+  'fortress.action.jobsList': 'Zobrazit úlohy',
+  'fortress.action.jobsRun': 'Spustit úlohu',
+  'fortress.action.jobsTargets': 'Zobrazit cíle pro nové úlohy',
+  'fortress.action.jobsCreate': 'Přidat úlohu',
+  'fortress.action.backupExport': 'Stáhnout zálohu',
+  'fortress.action.backupImport': 'Obnovit zálohu',
 }
 
 export default cs

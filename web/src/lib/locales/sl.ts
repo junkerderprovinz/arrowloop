@@ -1609,6 +1609,18 @@ const sl: Translations = {
   'new.change.overview': '{overview} na prvi pogled pokaže, kako vse stoji: kaj teče in kaj čaka nate, vsako opravilo z zadnjim in naslednjim zagonom, najnovejše zagone in opravila tvojih seznanjenih instanc. ArrowLoop se odpre na tej strani. Kartica {sidebar} v {settings}, {look} jo spet skrije, ob stikalih za Cilje in Instance, na telefonu pa ima stran svoje stikalo v {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'S to instanco še ni seznanjena nobena druga. Seznaniš jo lahko v Nastavitvah, Seznanjanje.',
+  'fortress.title': 'Trdnjava',
+  'fortress.outBody': 'Pridružite se trdnjavi z njeno frazo. Potem se tu prikažejo druge aplikacije in to, kar smejo početi v {app}.',
+  'fortress.phraseWhere': 'Frazo vam lahko pokaže vsaka aplikacija v trdnjavi. Prilepite jo v prvo polje in izpolnila bo ostala.',
+  'fortress.inFortress': 'ArrowLoop je že v trdnjavi. Najprej jo zapustite, da se pridružite drugi.',
+  'fortress.changeKept': 'Fraza ostane, kot je.',
+  'fortress.permissionPair': '{from} pri {to}',
+  'fortress.action.jobsList': 'Videti opravila',
+  'fortress.action.jobsRun': 'Zagnati opravilo',
+  'fortress.action.jobsTargets': 'Videti cilje za nova opravila',
+  'fortress.action.jobsCreate': 'Dodati opravilo',
+  'fortress.action.backupExport': 'Prenesti varnostno kopijo',
+  'fortress.action.backupImport': 'Obnoviti varnostno kopijo',
 }
 
 export default sl

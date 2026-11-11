@@ -12,9 +12,22 @@ const SETTLE_MS = 800
 
 /**
  * This instance as the others see it: the name it goes by, saved on its own
- * once typing pauses, and the key to compare when it waits for approval.
+ * once typing pauses, and the key to compare when it waits for approval. In a
+ * fortress the name goes to the fortress, which tells the other apps as well.
  */
-export function InstanceCard({ group, hueIndex, onGroup }: { group: ConnectInfo; hueIndex: number; onGroup: (g: ConnectInfo) => void }) {
+export function InstanceCard({
+  group,
+  hueIndex,
+  inFortress,
+  onGroup,
+  onRefresh,
+}: {
+  group: ConnectInfo
+  hueIndex: number
+  inFortress: boolean
+  onGroup: (g: ConnectInfo) => void
+  onRefresh: () => void
+}) {
   const { t } = useT()
   const [name, setName] = useState(group.name)
   const [error, setError] = useState<string | null>(null)
@@ -33,9 +46,8 @@ export function InstanceCard({ group, hueIndex, onGroup }: { group: ConnectInfo;
     setError(null)
     window.clearTimeout(timer.current)
     timer.current = window.setTimeout(() => {
-      api
-        .renameInstance(next)
-        .then(onGroup)
+      const saved = inFortress ? api.nameInFortress(next).then(onRefresh) : api.renameInstance(next).then(onGroup)
+      saved
         .catch((e: unknown) => setError(refusalText(t, e)))
         .finally(() => {
           typing.current = false

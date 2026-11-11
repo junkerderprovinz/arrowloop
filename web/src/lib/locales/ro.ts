@@ -1609,6 +1609,18 @@ const ro: Translations = {
   'new.change.overview': '{overview} arată dintr-o privire cum stau lucrurile: ce rulează și ce te așteaptă, fiecare sarcină cu ultima și următoarea rulare, cele mai recente rulări și sarcinile instanțelor tale împerecheate. ArrowLoop se deschide pe această pagină. Cardul {sidebar} din {settings}, {look} o ascunde din nou, lângă comutatoarele pentru Destinații și Instanțe, iar pe telefon pagina are propriul comutator în {appearance}.',
   'nav.instances': 'Instanțe',
   'instances.none': 'Încă nicio altă instanță nu este împerecheată cu aceasta. Poți împerechea una în Setări, Împerechere.',
+  'fortress.title': 'Fortăreață',
+  'fortress.outBody': 'Alătură-te unei fortărețe cu fraza ei. Apoi aici apar celelalte aplicații și ce au voie să facă în {app}.',
+  'fortress.phraseWhere': 'Orice aplicație din fortăreață îți poate arăta fraza. Lipește-o în primul câmp și le completează pe celelalte.',
+  'fortress.inFortress': 'ArrowLoop este deja într-o fortăreață. Ieși mai întâi din ea ca să te alături alteia.',
+  'fortress.changeKept': 'Fraza rămâne așa cum este.',
+  'fortress.permissionPair': '{from} la {to}',
+  'fortress.action.jobsList': 'Să vadă sarcinile',
+  'fortress.action.jobsRun': 'Să pornească o sarcină',
+  'fortress.action.jobsTargets': 'Să vadă destinațiile pentru sarcini noi',
+  'fortress.action.jobsCreate': 'Să adauge o sarcină',
+  'fortress.action.backupExport': 'Să aducă o copie de rezervă',
+  'fortress.action.backupImport': 'Să restaureze o copie de rezervă',
 }
 
 export default ro

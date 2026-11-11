@@ -1609,6 +1609,18 @@ const ar: Translations = {
   'new.change.overview': 'تعرض {overview} حال كل شيء بنظرة واحدة: ما يعمل وما ينتظرك، وكل مهمة مع آخر تشغيل والتشغيل التالي لها، وأحدث عمليات التشغيل، ومهام نسخك المقترنة. ويفتح ArrowLoop على هذه الصفحة. ويمكنك إخفاؤها مجددًا من بطاقة {sidebar} في {settings}، {look}، بجانب مفتاحي الوجهات والنسخ، وعلى الهاتف لها مفتاح خاص بها في {appearance}.',
   'nav.instances': 'النسخ',
   'instances.none': 'لا توجد بعد نسخة أخرى مقترنة بهذه النسخة. يمكنك إقران واحدة من الإعدادات، الاقتران.',
+  'fortress.title': 'الحصن',
+  'fortress.outBody': 'انضم إلى حصن بعبارته. ستظهر هنا بعد ذلك التطبيقات الأخرى وما يُسمح لها بفعله لدى {app}.',
+  'fortress.phraseWhere': 'يمكن لكل تطبيق في الحصن أن يعرض لك العبارة. الصقها في الحقل الأول فتملأ بقية الحقول.',
+  'fortress.inFortress': 'ArrowLoop موجود في حصن بالفعل. غادره أولًا للانضمام إلى حصن آخر.',
+  'fortress.changeKept': 'تبقى العبارة كما هي.',
+  'fortress.permissionPair': '{from} لدى {to}',
+  'fortress.action.jobsList': 'عرض المهام',
+  'fortress.action.jobsRun': 'تشغيل مهمة',
+  'fortress.action.jobsTargets': 'عرض الوجهات للمهام الجديدة',
+  'fortress.action.jobsCreate': 'إضافة مهمة',
+  'fortress.action.backupExport': 'جلب نسخة احتياطية',
+  'fortress.action.backupImport': 'استعادة نسخة احتياطية',
 }
 
 export default ar

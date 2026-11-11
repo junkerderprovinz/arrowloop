@@ -1609,6 +1609,18 @@ const hu: Translations = {
   'new.change.overview': 'Az {overview} egy pillantással megmutatja, hogyan áll minden: mi fut és mi vár rád, minden feladatot a legutóbbi és a következő futásával, a legutóbbi futásokat és a párosított példányaid feladatait. Az ArrowLoop ezzel az oldallal nyílik meg. A {settings}, {look} alatti {sidebar} kártyán újra elrejtheted, a Célok és a Példányok kapcsolója mellett, a telefonon pedig saját kapcsolója van a {appearance} alatt.',
   'nav.instances': 'Példányok',
   'instances.none': 'Ehhez a példányhoz még nincs másik párosítva. Párosítani a Beállítások, Párosítás alatt tudsz.',
+  'fortress.title': 'Erőd',
+  'fortress.outBody': 'Csatlakozz egy erődhöz a jelmondatával. Ekkor itt megjelennek a többi alkalmazások, és az is, mit tehetnek a(z) {app} alkalmazásban.',
+  'fortress.phraseWhere': 'Az erőd bármelyik alkalmazása megmutathatja a jelmondatot. Illeszd be az első mezőbe, és kitölti a többit.',
+  'fortress.inFortress': 'A ArrowLoop már egy erődben van. Előbb lépj ki belőle, ha egy másikhoz csatlakoznál.',
+  'fortress.changeKept': 'A jelmondat marad, ami volt.',
+  'fortress.permissionPair': '{from} → {to}',
+  'fortress.action.jobsList': 'Megnézni a feladatokat',
+  'fortress.action.jobsRun': 'Elindítani egy feladatot',
+  'fortress.action.jobsTargets': 'Megnézni az új feladatok céljait',
+  'fortress.action.jobsCreate': 'Hozzáadni egy feladatot',
+  'fortress.action.backupExport': 'Lekérni egy mentést',
+  'fortress.action.backupImport': 'Visszaállítani egy mentést',
 }
 
 export default hu

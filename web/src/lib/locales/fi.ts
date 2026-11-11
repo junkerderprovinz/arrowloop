@@ -1609,6 +1609,18 @@ const fi: Translations = {
   'new.change.overview': '{overview} näyttää yhdellä silmäyksellä, miten kaikki on: mikä on käynnissä ja mikä odottaa sinua, jokaisen työn viimeisen ja seuraavan ajon, uusimmat ajot ja pariutettujen instanssiesi työt. ArrowLoop avautuu tälle sivulle. Kortilla {sidebar} kohdassa {settings}, {look} voit piilottaa sen taas, Kohteiden ja Instanssien kytkinten vieressä, ja puhelimessa sivulla on oma kytkin kohdassa {appearance}.',
   'nav.instances': 'Instanssit',
   'instances.none': 'Tähän ei ole vielä pariutettu muita instansseja. Voit pariuttaa kohdassa Asetukset, Pariliitos.',
+  'fortress.title': 'Linnoitus',
+  'fortress.outBody': 'Liity linnoitukseen sen lauseella. Sitten muut sovellukset näkyvät täällä, samoin se, mitä ne saavat tehdä {app}-sovelluksessa.',
+  'fortress.phraseWhere': 'Jokainen linnoituksen sovellus voi näyttää sinulle lauseen. Liitä se ensimmäiseen kenttään, niin se täyttää loputkin.',
+  'fortress.inFortress': 'ArrowLoop on jo linnoituksessa. Poistu siitä ensin, jos haluat liittyä toiseen.',
+  'fortress.changeKept': 'Lause pysyy ennallaan.',
+  'fortress.permissionPair': '{from} → {to}',
+  'fortress.action.jobsList': 'Nähdä työt',
+  'fortress.action.jobsRun': 'Käynnistää työ',
+  'fortress.action.jobsTargets': 'Nähdä uusien töiden kohteet',
+  'fortress.action.jobsCreate': 'Lisätä työ',
+  'fortress.action.backupExport': 'Hakea varmuuskopio',
+  'fortress.action.backupImport': 'Palauttaa varmuuskopio',
 }
 
 export default fi

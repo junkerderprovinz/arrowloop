@@ -1609,6 +1609,18 @@ const hr: Translations = {
   'new.change.overview': '{overview} na prvi pogled pokazuje kako sve stoji: što radi i što te čeka, svaki zadatak s posljednjim i sljedećim izvođenjem, najnovija izvođenja i zadatke tvojih uparenih instanci. ArrowLoop se otvara na toj stranici. Kartica {sidebar} u {settings}, {look} ponovno je skriva, uz prekidače za Odredišta i Instance, a na mobitelu stranica ima vlastiti prekidač pod {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'Još nijedna druga instanca nije uparena s ovom. Upariti možeš u Postavkama, Uparivanje.',
+  'fortress.title': 'Utvrda',
+  'fortress.outBody': 'Pridružite se utvrdi njezinom frazom. Tada se ovdje pojavljuju ostale aplikacije i ono što smiju raditi u {app}.',
+  'fortress.phraseWhere': 'Svaka aplikacija u utvrdi može vam pokazati frazu. Zalijepite je u prvo polje i ispunit će ostala.',
+  'fortress.inFortress': 'ArrowLoop je već u utvrdi. Najprije je napustite da biste se pridružili drugoj.',
+  'fortress.changeKept': 'Fraza ostaje kakva jest.',
+  'fortress.permissionPair': '{from} kod {to}',
+  'fortress.action.jobsList': 'Vidjeti zadatke',
+  'fortress.action.jobsRun': 'Pokrenuti zadatak',
+  'fortress.action.jobsTargets': 'Vidjeti odredišta za nove zadatke',
+  'fortress.action.jobsCreate': 'Dodati zadatak',
+  'fortress.action.backupExport': 'Dohvatiti sigurnosnu kopiju',
+  'fortress.action.backupImport': 'Vratiti sigurnosnu kopiju',
 }
 
 export default hr

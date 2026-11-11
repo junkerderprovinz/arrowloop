@@ -1609,6 +1609,18 @@ const id: Translations = {
   'new.change.overview': '{overview} menunjukkan sekilas keadaan semuanya: apa yang berjalan dan apa yang menunggu Anda, setiap tugas dengan proses terakhir dan berikutnya, proses terbaru, dan tugas dari instance Anda yang sudah dipasangkan. ArrowLoop terbuka di halaman ini. Kartu {sidebar} di {settings}, {look} bisa menyembunyikannya lagi, di samping sakelar untuk Tujuan dan Instance, dan di ponsel halaman ini punya sakelar sendiri di {appearance}.',
   'nav.instances': 'Instance',
   'instances.none': 'Belum ada instance lain yang dipasangkan dengan instance ini. Anda bisa memasangkan satu di Pengaturan, Pemasangan.',
+  'fortress.title': 'Benteng',
+  'fortress.outBody': 'Gabung ke benteng dengan frasanya. Lalu aplikasi lain muncul di sini, beserta apa yang boleh mereka lakukan di {app}.',
+  'fortress.phraseWhere': 'Setiap aplikasi di benteng bisa menunjukkan frasanya. Tempel di kolom pertama, lalu kolom lain ikut terisi.',
+  'fortress.inFortress': 'ArrowLoop sudah ada di sebuah benteng. Keluar dulu dari sana untuk bergabung ke benteng lain.',
+  'fortress.changeKept': 'Frasanya tetap seperti semula.',
+  'fortress.permissionPair': '{from} di {to}',
+  'fortress.action.jobsList': 'Melihat tugas',
+  'fortress.action.jobsRun': 'Menjalankan tugas',
+  'fortress.action.jobsTargets': 'Melihat tujuan untuk tugas baru',
+  'fortress.action.jobsCreate': 'Menambah tugas',
+  'fortress.action.backupExport': 'Mengambil cadangan',
+  'fortress.action.backupImport': 'Memulihkan cadangan',
 }
 
 export default id

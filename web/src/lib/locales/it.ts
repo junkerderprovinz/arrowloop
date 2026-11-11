@@ -1609,6 +1609,18 @@ const it: Translations = {
   'new.change.overview': '{overview} mostra a colpo d\'occhio come sta andando tutto: cosa è in esecuzione e cosa ti aspetta, ogni lavoro con l\'ultima e la prossima esecuzione, le esecuzioni più recenti e i lavori delle tue istanze associate. ArrowLoop si apre su questa pagina. La scheda {sidebar} in {settings}, {look} la nasconde di nuovo, accanto agli interruttori per Destinazioni e Istanze, e sul telefono ha un interruttore tutto suo in {appearance}.',
   'nav.instances': 'Istanze',
   'instances.none': 'Nessun\'altra istanza è ancora associata a questa. Puoi associarne una in Impostazioni, Associazione.',
+  'fortress.title': 'Fortezza',
+  'fortress.outBody': 'Entra in una fortezza con la sua frase. Qui compaiono allora le altre app e ciò che possono fare in {app}.',
+  'fortress.phraseWhere': 'Ogni app della fortezza può mostrarti la frase. Incollala nel primo campo e riempirà gli altri.',
+  'fortress.inFortress': 'ArrowLoop è già in una fortezza. Esci prima da quella per entrare in un\'altra.',
+  'fortress.changeKept': 'La frase resta com\'è.',
+  'fortress.permissionPair': '{from} presso {to}',
+  'fortress.action.jobsList': 'Vedere i lavori',
+  'fortress.action.jobsRun': 'Avviare un lavoro',
+  'fortress.action.jobsTargets': 'Vedere le destinazioni per i nuovi lavori',
+  'fortress.action.jobsCreate': 'Aggiungere un lavoro',
+  'fortress.action.backupExport': 'Prendere un backup',
+  'fortress.action.backupImport': 'Ripristinare un backup',
 }
 
 export default it
