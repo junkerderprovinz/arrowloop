@@ -393,18 +393,18 @@ func (s *Server) changeFortressPhrase(ctx context.Context) (string, []string, er
 			note(m.ID, m.Device)
 		}
 	}
-	// An instance the pairing never met under the fortress phrase still holds
-	// the app's own, and the move brings it the new one.
+	// Every instance the pairing approved counts, whether or not the move has
+	// its group open: one moving in may hold the phrase from before, and its
+	// answer can get lost as it leaves the pairing. Those left behind are
+	// listed apart.
+	behind := map[string]bool{}
+	for _, m := range f.Behind() {
+		behind[m.ID] = true
+	}
 	for _, m := range paired.Members() {
-		if m.Kind == member.KindInstance && m.State == group.StateApproved && !m.Met.IsZero() {
+		if m.Kind == member.KindInstance && m.State == group.StateApproved && !behind[m.ID] {
 			note(m.ID, m.Name)
 		}
-	}
-	// One still moving in may hold the phrase from before, which no answer
-	// it gave proves: it leaves the pairing as it takes the phrase, and the
-	// answer can get lost with it.
-	for _, m := range moving {
-		note(m.ID, m.Name)
 	}
 	slices.Sort(left)
 	s.closeGroupLocked()

@@ -364,6 +364,25 @@ func TestAnInstanceOnItsWayInFollowsAPhraseChangedBeforeItArrived(t *testing.T) 
 	eventually(t, "the instance on its way to take the new phrase", func() bool { return b.shownPhrase(t) == changed })
 }
 
+func TestAPhraseChangeNamesAnInstanceThatHasNotArrivedWhileNoMoveRuns(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	pair(t, a, b)
+	name := b.connect(t).Name
+	b.server.StopPairing()
+	a.join(t, newWords(t))
+	// The group from before is not open, as in the moment after the join
+	// before the move opens it.
+	a.server.StopPairing()
+	if err := a.server.Pairing.MoveDone(); err != nil {
+		t.Fatal(err)
+	}
+	a.server.StartPairing()
+	if _, left := a.changePhrase(t); !slices.Contains(left, name) {
+		t.Errorf("the change left %v on the old phrase, want %s among them", left, name)
+	}
+}
+
 func TestAnInstanceThatTookThePhraseAndWentAwayIsLeftOnTheOldOne(t *testing.T) {
 	url := testRelay(t)
 	a, b := newNode(t, url), newNode(t, url)
