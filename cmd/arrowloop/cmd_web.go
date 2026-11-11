@@ -205,10 +205,11 @@ func writeStarterConfig(path string) error {
 }
 
 // deployment is what this instance tells the others of its group it is. The
-// phone app starts this same command, and a container has Docker's marker
-// file at its root.
+// phone app starts this same command, built for linux, and is the only one
+// that hands it an app token. A container has Docker's marker file at its
+// root.
 func deployment() string {
-	if runtime.GOOS == "android" {
+	if runtime.GOOS == "android" || os.Getenv(web.AppTokenEnv) != "" {
 		return "phone"
 	}
 	if _, err := os.Stat("/.dockerenv"); err == nil {

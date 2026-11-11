@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 func TestTheNameserverListIsReadTheWayAndroidWritesIt(t *testing.T) {
@@ -262,5 +263,12 @@ func TestTheAppsWordOnFileAccessHoldsForTheSharedFoldersOnly(t *testing.T) {
 	}
 	if err := check("/storage/emulated/0/DCIM"); err != nil {
 		t.Errorf("a granted permission still refused the run: %v", err)
+	}
+}
+
+func TestTheEngineThePhoneAppStartsTellsTheGroupItIsAPhone(t *testing.T) {
+	t.Setenv(web.AppTokenEnv, "from the app")
+	if got := deployment(); got != "phone" {
+		t.Errorf("deployment under the phone app = %q, want phone", got)
 	}
 }
