@@ -75,12 +75,14 @@ func nodeOn(t *testing.T, relayURL, deployment string, h *harness) *node {
 }
 
 // setup is how a test stands an instance up: on its relay, "" for none, on
-// a network of the test's own, and from the files another release wrote.
+// a network of the test's own, from the files another release wrote, and
+// behind the guard a network port gets.
 type setup struct {
 	relay      string
 	deployment string
 	lan        *lan.Service
 	from       string
+	guard      bool
 }
 
 func nodeWith(t *testing.T, su setup, h *harness) *node {
@@ -112,7 +114,11 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 	}
 	log := &lockedLog{}
 	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf}
-	h.srv = httptest.NewUnstartedServer(s.Handler())
+	handler := s.Handler()
+	if su.guard {
+		handler = s.Guard(handler)
+	}
+	h.srv = httptest.NewUnstartedServer(handler)
 	if su.lan != nil {
 		s.DirectURL = "http://" + h.srv.Listener.Addr().String()
 	}

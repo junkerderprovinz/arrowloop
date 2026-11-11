@@ -15,6 +15,8 @@ import (
 	"path"
 	"regexp"
 	"strings"
+
+	"github.com/junkerderprovinz/parleyport/kit/group"
 )
 
 // Guard wraps the handler of a server that listens on a network port. A page
@@ -46,7 +48,7 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		// A browser sends a form or text/plain to any site without asking, but
 		// asks the server first before sending JSON there, and this server never
 		// says yes.
-		if changes(r.Method) && !isJSON(r.Header.Get("Content-Type")) {
+		if changes(r.Method) && !isJSON(r.Header.Get("Content-Type")) && !groupUpload(r) {
 			writeError(w, http.StatusUnsupportedMediaType, errors.New("a change has to be sent as JSON, with Content-Type: application/json"))
 			return
 		}
@@ -112,6 +114,16 @@ func needsPassword(method, rawPath string) bool {
 		}
 	}
 	return false
+}
+
+// kitUpload is the type the kit sends a backup under to the call route of
+// another member. A browser asks before sending it, as it does for JSON.
+const kitUpload = "application/x-kit-upload"
+
+// groupUpload reports whether r is a stream another member of the group sends
+// to the call route, which checks the call's signature itself.
+func groupUpload(r *http.Request) bool {
+	return r.URL.Path == group.DirectPath && r.Header.Get("Content-Type") == kitUpload
 }
 
 // changes reports whether a request method can change something.

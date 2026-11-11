@@ -1,14 +1,18 @@
 package web_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
+	"os"
 	"slices"
 	"testing"
 	"time"
 
 	"github.com/junkerderprovinz/parleyport/kit/fortress"
+	"github.com/junkerderprovinz/parleyport/kit/lan"
 	"github.com/junkerderprovinz/parleyport/kit/phrase"
 
 	"github.com/junkerderprovinz/arrowloop/internal/web"
@@ -393,5 +397,68 @@ func TestAnInstanceThatTookThePhraseAndWentAwayIsLeftOnTheOldOne(t *testing.T) {
 	b.server.StopPairing()
 	if _, left := a.changePhrase(t); !slices.Contains(left, name) {
 		t.Errorf("the change left %v on the old phrase, want %s among them", left, name)
+	}
+}
+
+// The kit streams a backup to the call route as an upload, not as JSON, and
+// the guard on an engine's network port has to let it through.
+func TestABackupToolHandsTheBackupBackPastTheGuard(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	network := onOneNetwork(t)
+	h := newHarness(t)
+	if _, err := h.runner.Run(context.Background(), "photos"); err != nil {
+		t.Fatal(err)
+	}
+	backup, n, err := h.runner.Export(context.Background(), "the test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, _ := io.ReadAll(backup)
+	backup.Close()
+	before, err := os.ReadFile(h.configPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	next, err := h.runner.Config().Replace(bytes.Replace(before, []byte(`"photos"`), []byte(`"pictures"`), 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.runner.Reload(next)
+
+	a := nodeWith(t, setup{lan: network(), guard: true}, h)
+	words := newWords(t)
+	a.join(t, words)
+	secret, err := phrase.Decode(words)
+	if err != nil {
+		t.Fatal(err)
+	}
+	vaultLAN := lan.New(lan.Config{Group: fortress.Multicast})
+	vaultLAN.Start()
+	t.Cleanup(func() { _ = vaultLAN.Close() })
+	vault, _ := openFortress(t, "", vaultLAN, "bombvault", "Tower vault", func(c *fortress.Config) {
+		c.Secret = secret
+		c.Uses = []string{fortress.ImportAction}
+	})
+	var engineID string
+	eventually(t, "the backup tool to find the engine on the network", func() bool {
+		for _, m := range vault.Members() {
+			if m.App.ID == "arrowloop" && m.Direct {
+				engineID = m.ID
+				return true
+			}
+		}
+		return false
+	})
+	if status, body := a.send(t, http.MethodPut, "/api/fortress/permissions", `{"from":"bombvault","to":"arrowloop","action":"`+fortress.ImportAction+`","on":true}`); status != http.StatusOK {
+		t.Fatalf("switch the import on = %d %s", status, body)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if err := vault.Import(ctx, engineID, bytes.NewReader(raw), n); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := h.runner.Config().Find("photos"); !ok {
+		t.Errorf("after the import the jobs are %v, want photos back", h.runner.Config().Jobs)
 	}
 }
