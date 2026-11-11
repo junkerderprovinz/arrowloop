@@ -64,3 +64,11 @@ describe('the label engine reaches every button', () => {
     ).toEqual([])
   })
 })
+
+describe('the keys GlimStone asks for itself', () => {
+  it('draws every device kind of a fortress app', () => {
+    for (const key of ['deviceServer', 'devicePc', 'deviceLaptop', 'devicePhone']) {
+      expect(glyphFor(key), key).toBeDefined()
+    }
+  })
+})

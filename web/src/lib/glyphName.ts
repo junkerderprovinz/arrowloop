@@ -48,9 +48,12 @@ const RULES: Rule[] = [
   [/^pairing\.remove$/i, 'IconKeyRevoke'],
   [/^pairing\.enter$/i, 'IconPencil'],
   [/^pairing\.checkAgain$/i, 'IconRetry'],
-  // The fortress's new phrase, and the Done that closes its windows.
+  // The fortress's new phrase, and the devices GlimStone draws in its app
+  // cards, a desktop app and a laptop alike as the app's window.
   [/^fortress\.changePhrase$/i, 'IconRefresh'],
-  [/^fortress\.done$/i, 'IconConfirm'],
+  [/^deviceServer$/, 'IconServer'],
+  [/^device(Pc|Laptop)$/, 'IconApp'],
+  [/^devicePhone$/, 'IconPhone'],
   [/^relay\.seesTitle$/i, 'IconEye'],
 
   // The three answers to a conflict, for one or for all of them.
