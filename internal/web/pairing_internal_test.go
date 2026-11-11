@@ -26,6 +26,7 @@ var groupAllowlist = []string{
 	"DELETE /api/connect/members/{id}",
 	"POST /api/connect/devices/{id}/approve",
 	"POST /api/connect/devices/{id}/refuse",
+	"POST " + changedPhrasePath,
 }
 
 func TestTheGroupRoutesAreTheAllowlist(t *testing.T) {
