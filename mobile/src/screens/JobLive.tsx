@@ -5,7 +5,7 @@ import { api, failed, touched, type Job, type Run } from "../api";
 import { describeCadence, readCadence } from "../../../web/src/lib/cadence";
 import { failureLine } from "../../../web/src/lib/failure";
 import { mayRun } from "../fileAccess";
-import { useT } from "../i18n";
+import { findingText, useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { space } from "../theme";
 import { useEngineEvents } from "../useEngine";
@@ -37,12 +37,12 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
   const look = async () => {
     setFound(null);
     const health = await api.check(jobName);
-    const out: Finding[] = health.findings.map((f, i) => ({ key: `h${i}`, text: f.text, bad: f.fatal }));
+    const out: Finding[] = health.findings.map((f, i) => ({ key: `h${i}`, text: findingText(t, f), bad: f.fatal }));
     if (health.ok) {
       try {
         const seen = await api.verify(jobName);
         // An invisible finding is one no future run would notice by itself.
-        out.push(...seen.findings.map((f, i) => ({ key: `v${i}`, text: `${f.path}: ${f.text}`, bad: f.invisible })));
+        out.push(...seen.findings.map((f, i) => ({ key: `v${i}`, text: `${f.path}: ${findingText(t, f)}`, bad: f.invisible })));
         if (seen.truncated) {
           out.push({ key: "more", text: t("check.more", { found: seen.found, shown: seen.returned }), bad: false });
         }
@@ -146,13 +146,13 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
           <Card key={run.ID}>
             <View style={styles.head}>
               <Caption>{clock(run.Started, lang)}</Caption>
+              {/* A run with nothing to do has no badge: the line below says so,
+                  and a sentence does not fit beside the time. */}
               {failed(run) ? (
                 <Badge label={t("history.failed")} tone="fail" />
               ) : touched(run) > 0 ? (
                 <Badge label={t("history.ok")} tone="ok" />
-              ) : (
-                <Badge label={t("preview.nothing")} />
-              )}
+              ) : null}
             </View>
             <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
           </Card>

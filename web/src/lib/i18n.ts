@@ -182,10 +182,19 @@ export interface Reason {
  * sentence. Side names in the values are translated too.
  */
 export function useReason(): (reason?: Reason | null) => string {
+  return useCoded((code) => `reason.${code}` as TranslationKey)
+}
+
+/** Render a finding of a job's check or comparison the same way, under `finding.`. */
+export function useFinding(): (finding?: Reason | null) => string {
+  return useCoded((code) => `finding.${code}` as TranslationKey)
+}
+
+function useCoded(keyOf: (code: string) => TranslationKey): (reason?: Reason | null) => string {
   const { t } = useT()
   return (reason) => {
     if (!reason) return ''
-    const key = `reason.${reason.code}` as TranslationKey
+    const key = keyOf(reason.code)
     const vars: Record<string, string> = {}
     for (const [name, value] of Object.entries(reason.vars ?? {})) {
       vars[name] = name === 'side' || name === 'other' ? translateSide(t, value) : value

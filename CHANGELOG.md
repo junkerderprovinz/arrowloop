@@ -22,6 +22,54 @@ The full notes for each release are in
 - **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and it still talks to instances that have not been updated yet.
 - **A message that does not get through is tried again**, three times with a pause, when a second try could help. A test that fails says why in your language.
 
+## 2.6.8 - 2026-11-10
+
+Automatic backups come back on the phone, Check this job speaks your language, and an anomaly you allowed goes away as soon as its run starts.
+
+## 🐛 Fixed
+
+- **The phone restores its automatic backups.** Import refused them with "That file is not an ArrowLoop backup", because an automatic backup is the engine's whole settings file rather than the bundle Export writes. Import now takes either, asks first, and puts every job and setting back, the way the web interface already did. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
+- **An anomaly you allowed goes away as soon as its run starts.** After Run anyway or Take back, the held note stayed on the Anomalies page until the whole run had finished, which on a large job looked as if the tap had done nothing. It closes once the run's plan is past the safety brakes.
+- **Check this job speaks your language.** What the check and the comparison found stood in English on the phone and in the web interface, whatever the language. Every finding now comes in all 42 languages, with the side it names translated too.
+
+## 🎨 Design
+
+- **Run all on the phone stands on its own.** The (i) beside the button on the Overview is gone.
+- **The label switches on the phone stay on one line.** Labels and Bottom bar under Look broke into two rows with Symbol alone on the second. Each segment is now as wide as its word, and they only wrap where the words truly do not fit side by side.
+
+## 2.6.7 - 2026-11-10
+
+A job's run list on the phone shows every run in full again.
+
+## 🐛 Fixed
+
+- **A job's run list on the phone no longer cuts off its runs.** A run with nothing to do carried the whole sentence "Both sides already agree. There is nothing to do." in a small badge beside the time, which ran past the edge of the card and lost part of its text. Like the History tab, the job page now marks only finished and failed runs with a badge, and the line below still says that both sides were already the same. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+
+## 2.6.6 - 2026-11-10
+
+The Flatpak opens again on PCs with an NVIDIA graphics card under Wayland.
+
+## 🐛 Fixed
+
+- **The Flatpak opens on a PC with an NVIDIA graphics card.** Under Wayland the window never appeared and the log ended with "Error 71 (Protocol error) dispatching to Wayland display". The desktop app already switches off the WebKit renderer that NVIDIA's driver trips over, but inside the Flatpak it could not see the driver, so it never did. Now it reads the driver from where Flatpak can see it. Thanks to @RektalTk ([#143](https://github.com/junkerderprovinz/arrowloop/issues/143)).
+
+## 2.6.5 - 2026-11-10
+
+A folder from another app shows up on the phone the moment you add it, a Mac keeps watching a folder that was replaced, and the uninstaller says what stays.
+
+## 🐛 Fixed
+
+- **A folder added from another app on the phone shows up right away.** After Use this folder and Allow, the app went back to the overview while it restarted its engine for the new folder, so it looked as if nothing had been added. The settings page now stays open and lists the folder. Thanks to @AlairEileen ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
+- **On a Mac, a folder replaced under the same name stays watched.** macOS can report the new folder before the removal of the old one, and changes inside it then went unnoticed until the next scheduled run.
+
+## 🎨 Design
+
+- **The Pairing tile shows ParleyPort's new logo.**
+
+## 🌐 Translations
+
+- **The uninstaller says in ArrowLoop's own words what stays.** Its list of what is kept names your jobs, history and settings, and the last page says they are still there, in all 42 languages.
+
 ## 2.6.4 - 2026-11-09
 
 A round of phone fixes from danpeig's report: times follow the phone's 24-hour setting, the keyboard stays clear of a new folder's name, and the settings backup goes to any folder you choose.

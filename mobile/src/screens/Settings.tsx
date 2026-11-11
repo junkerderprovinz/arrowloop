@@ -9,7 +9,6 @@ import {
   Platform,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import Constants from "expo-constants";
@@ -88,8 +87,6 @@ export function Settings() {
   const { p, corners, scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const reduced = useSystemReduced();
-  // Below 600 the label selectors go two to a row, since their labels run long.
-  const labelRows = useWindowDimensions().width < 600 ? 2 : undefined;
   const waiting = useWaiting();
   const storm = useStormUnlock();
   const leaf = useLeafUnlock();
@@ -206,10 +203,11 @@ export function Settings() {
   };
 
   /**
-   * Reads the file before asking anything. Our own backup replaces every job,
-   * so it asks with the web's sentence; a FolderSync export or a luckyBackup
-   * profile shows what it would add beside the jobs already here. Backing
-   * out of Android's picker reads nothing and says nothing.
+   * Reads the file before asking anything. Our own backup and an automatic
+   * backup replace every job, so they ask with the web's sentence; a
+   * FolderSync export or a luckyBackup profile shows what it would add beside
+   * the jobs already here. Backing out of Android's picker reads nothing and
+   * says nothing.
    */
   const confirmImport = async (read: () => Promise<PickedFile | null>) => {
     setBackupBusy(true);
@@ -218,12 +216,17 @@ export function Settings() {
       const file = await read();
       if (!file) return;
       const { name, text } = file;
-      const backup = ownBackup(text);
-      if (backup) {
+      const askReplace = (put: () => Promise<unknown>) =>
         Alert.alert(t("backup.import"), t("backup.confirm", { file: name }), [
           { text: t("confirm.cancel"), style: "cancel" },
-          { text: t("backup.import"), onPress: () => void importSettings(backup) },
+          { text: t("backup.import"), onPress: () => void restore(put) },
         ]);
+      const backup = ownBackup(text);
+      if (backup) {
+        askReplace(async () => {
+          await settingsApi.write(backup.settings as EngineSettings);
+          await api.writeConfig(backup.config as never);
+        });
         return;
       }
       const plan = await api.checkImport(text);
@@ -231,8 +234,8 @@ export function Settings() {
         .map((s) => `${s.heading}\n${s.lines.map((line) => `• ${line}`).join("\n")}`)
         .join("\n\n");
       if (plan.source === "ArrowLoop") {
-        // A backup of the container's whole file, without the phone's settings.
-        setBackupSaid(t("settings.importNotOurs"));
+        // The engine's whole file, as an automatic backup keeps it.
+        askReplace(() => api.replaceConfig(text));
       } else if (plan.jobs.length === 0 && plan.targets.length === 0) {
         setBackupSaid([t("import.nothing"), sections].filter(Boolean).join("\n\n"));
       } else {
@@ -265,12 +268,11 @@ export function Settings() {
     }
   };
 
-  const importSettings = async (backup: OwnBackup) => {
+  const restore = async (put: () => Promise<unknown>) => {
     setBackupBusy(true);
     setBackupSaid("");
     try {
-      await settingsApi.write(backup.settings as EngineSettings);
-      await api.writeConfig(backup.config as never);
+      await put();
       setBackupSaid(t("settings.imported"));
       setImported((n) => n + 1);
       await refresh();
@@ -650,7 +652,7 @@ export function Settings() {
         <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
         <Choice<LabelMode>
           hue={3}
-          perRow={labelRows}
+          byContent
           // A stored `reactive` shows as symbols, which is how it rendered.
           value={look.labels === "reactive" ? "glyph" : look.labels}
           onChange={(labels) => setAppearance({ labels })}
@@ -663,7 +665,7 @@ export function Settings() {
         <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
         <Choice<BarLabelMode>
           hue={4}
-          perRow={labelRows}
+          byContent
           // The resolved mode, so a stored "same" still lights a segment; see
           // barMode in ui.tsx.
           value={barLabels}

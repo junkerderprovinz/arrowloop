@@ -105,3 +105,18 @@ export function useT(): I18n {
   if (!value) throw new Error("useT outside I18nProvider");
   return value;
 }
+
+/**
+ * A finding of a job's check or comparison in the reader's language, with
+ * the side it names translated too. A code this build does not know keeps the
+ * engine's own sentence.
+ */
+export function findingText(t: T, finding: { code: string; vars?: Record<string, string>; text: string }): string {
+  const key = `finding.${finding.code}` as TranslationKey;
+  if (!(key in en)) return finding.text;
+  const vars: Record<string, string> = {};
+  for (const [name, value] of Object.entries(finding.vars ?? {})) {
+    vars[name] = name === "side" && (value === "left" || value === "right") ? t(`side.${value}`) : value;
+  }
+  return t(key, vars);
+}

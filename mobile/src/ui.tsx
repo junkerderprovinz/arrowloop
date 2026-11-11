@@ -1246,6 +1246,7 @@ export function Choice<T extends string>({
   hue,
   disabled,
   perRow,
+  byContent,
   style,
 }: {
   /**
@@ -1276,6 +1277,12 @@ export function Choice<T extends string>({
    * moves to the next row rather than breaking.
    */
   perRow?: number;
+  /**
+   * Each segment as wide as its label, all sharing what is left of the row,
+   * and a new row only where the labels do not fit side by side. For labels
+   * of very different lengths, which even shares would break onto two rows.
+   */
+  byContent?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const { p, corners, accent, hueAt } = useTheme();
@@ -1288,7 +1295,7 @@ export function Choice<T extends string>({
       style={[
         styles.well,
         { backgroundColor: p.surface2, ...corners.pill },
-        share ? styles.wrapped : null,
+        share || byContent ? styles.wrapped : null,
         disabled ? styles.dimmed : null,
         style,
       ]}
@@ -1303,6 +1310,7 @@ export function Choice<T extends string>({
             on={on}
             fill={fill}
             share={share}
+            byContent={byContent}
             onPress={() => onChange(option.value)}
           />
         );
@@ -1317,12 +1325,14 @@ function Segment({
   on,
   fill,
   share,
+  byContent,
   onPress,
 }: {
   option: { label: string; hint?: string; mark?: (ink: string) => ReactNode; glyph?: string; disabled?: boolean };
   on: boolean;
   fill: string;
   share?: DimensionValue;
+  byContent?: boolean;
   onPress: () => void;
 }) {
   const { p, corners, labels } = useTheme();
@@ -1343,7 +1353,7 @@ function Segment({
         styles.segment,
         option.hint || (glyph && word) ? styles.segmentRow : null,
         corners.pill,
-        share ? [styles.segmentWrapped, { minWidth: share }] : styles.segmentShared,
+        share ? [styles.segmentWrapped, { minWidth: share }] : byContent ? styles.segmentWrapped : styles.segmentShared,
         on ? { backgroundColor: fill } : null,
         { opacity: press.dim, transform: [{ scale: press.scale }] },
         option.disabled ? styles.dimmed : null,
@@ -1629,14 +1639,11 @@ export const FAB_ROOM = 96;
 export function Fab({
   label,
   labelKey,
-  hint,
   onPress,
 }: {
   label: string;
   /** The translation key behind `label`, which picks the glyph. */
   labelKey?: string;
-  /** The "(i)" beside the button, for what a glyph alone cannot say. */
-  hint?: string;
   onPress: () => void;
 }) {
   const { p, corners, accent } = useTheme();
@@ -1646,14 +1653,12 @@ export function Fab({
 
   return (
     <View style={styles.fabSpot} pointerEvents="box-none">
-      {hint ? <InfoBubble tip={hint} /> : null}
       <AnimatedPressable
         onPress={onPress}
         onPressIn={press.onPressIn}
         onPressOut={press.onPressOut}
         accessibilityRole="button"
         accessibilityLabel={label}
-        accessibilityHint={hint}
         android_ripple={{ color: p.hover, borderless: false }}
         style={[
           styles.fab,

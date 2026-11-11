@@ -263,7 +263,7 @@ export interface Plan {
 /** Whether a job can work at all; the engine's sentence travels beside the code. */
 export interface CheckReport {
   ok: boolean;
-  findings: { code: string; text: string; fatal: boolean }[];
+  findings: { code: string; vars?: Record<string, string>; text: string; fatal: boolean }[];
 }
 
 /** Where the two sides differ from what the record says about them. */
@@ -271,7 +271,7 @@ export interface VerifyReport {
   found: number;
   returned: number;
   truncated: boolean;
-  findings: { code: string; path: string; text: string; invisible: boolean }[];
+  findings: { code: string; path: string; vars?: Record<string, string>; text: string; invisible: boolean }[];
 }
 
 /**
@@ -589,6 +589,8 @@ export const api = {
   config: () => call<Config>("/api/config"),
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
+  /** Puts a whole saved configuration back, such as an automatic backup. */
+  replaceConfig: (doc: string) => call<{ jobs: number }>("/api/config/raw", { method: "PUT", body: doc }),
   /** Where the automatic backups go, which are there and how the last one went. */
   autoBackups: () => call<AutoBackups>("/api/config/backups"),
   /** What a FolderSync export or a luckyBackup profile would add, or which kind of file it is. Saves nothing. */

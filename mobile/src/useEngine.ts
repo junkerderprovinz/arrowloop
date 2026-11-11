@@ -54,8 +54,8 @@ export function useEngine(t: T) {
     };
   }, []);
 
-  const wait = useCallback(async () => {
-    setState("starting");
+  const wait = useCallback(async (keepScreens = false) => {
+    if (!keepScreens) setState("starting");
     const until = Date.now() + WAIT_MS;
     let asked = 0;
     while (Date.now() < until) {
@@ -94,11 +94,14 @@ export function useEngine(t: T) {
   }, [start, t]);
 
   // Android may have reclaimed the service while the app was in the background.
+  // The screens stay up meanwhile: coming back from the folder picker finds
+  // the engine restarting for the new folder, and the waiting screen would
+  // throw away the navigation and land on the overview.
   useEffect(() => {
     const sub = AppState.addEventListener("change", (next) => {
       if (next === "active" && state === "ready") {
         api.alive().then((up) => {
-          if (!up) engine.start().then(wait, () => setState("trouble"));
+          if (!up) engine.start().then(() => wait(true), () => setState("trouble"));
         });
       }
     });

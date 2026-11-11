@@ -78,11 +78,12 @@ func TestAHeldJobIsListedAndAnsweredOverTheAPI(t *testing.T) {
 		t.Fatalf("taking back answered %d, want it started", got)
 	}
 
-	// The answer runs on its own, so the list is asked until it has landed.
+	// The answer runs on its own, and the finding closes once its plan is past
+	// the brakes, so the list is asked until the run that answers it is over.
 	deadline := time.Now().Add(20 * time.Second)
 	for {
 		h.get(t, "/api/anomalies", &list)
-		if len(list.Open) == 0 && len(list.Closed) == 1 {
+		if len(list.Open) == 0 && len(list.Closed) == 1 && !h.runner.Running()["photos"] {
 			break
 		}
 		if time.Now().After(deadline) {

@@ -1,0 +1,1 @@
+Am Handy gibt es diesmal nichts Neues. Dieses Release bringt das Linux-Flatpak auf PCs mit NVIDIA-Karte zum Starten, und die Versionsnummer zieht mit, damit alles zusammenpasst.
