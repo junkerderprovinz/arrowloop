@@ -132,10 +132,12 @@ func TestAnInstanceThatWasAwayFollowsOnceItIsBack(t *testing.T) {
 func TestTheFortressPhraseIsShownAgainAndAChangeReachesTheOthers(t *testing.T) {
 	url := testRelay(t)
 	a, b := newNode(t, url), newNode(t, url)
-	pair(t, a, b)
+	aID, bID := pair(t, a, b)
 	words := newWords(t)
 	a.join(t, words)
-	eventually(t, "the paired instance to follow", func() bool { return b.fortress(t).Joined })
+	// A change reaches only the members in reach, and the one that followed
+	// is in reach once the two have met in the fortress.
+	eventually(t, "the two to meet in the fortress", func() bool { return meets(t, a, bID) && meets(t, b, aID) })
 	if got := a.shownPhrase(t); got != words {
 		t.Fatalf("the phrase is shown as %q, want the one entered", got)
 	}
@@ -154,7 +156,21 @@ func TestTheFortressPhraseIsShownAgainAndAChangeReachesTheOthers(t *testing.T) {
 	if got := a.shownPhrase(t); got != changed.Phrase {
 		t.Errorf("after the change the phrase is shown as %q", got)
 	}
+	if len(changed.Left) != 0 {
+		t.Fatalf("the change left %v on the old phrase", changed.Left)
+	}
 	eventually(t, "the other instance to take the new phrase", func() bool { return b.shownPhrase(t) == changed.Phrase })
+}
+
+// meets reports whether n sees the member id in the fortress right now.
+func meets(t *testing.T, n *node, id string) bool {
+	t.Helper()
+	for _, m := range n.fortress(t).Members {
+		if m.ID == id && m.Online {
+			return true
+		}
+	}
+	return false
 }
 
 func TestLeavingTheFortressLeavesItAll(t *testing.T) {
