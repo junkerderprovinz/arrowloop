@@ -67,6 +67,19 @@ type State struct {
 	// from two instances that each made a phrase of their own by them.
 	JoinedAt     time.Time
 	MemberSeenAt time.Time
+
+	// Fortress is whether Secret is the phrase of a fortress, which the
+	// pairing derives its keys from as well.
+	Fortress bool
+	// PairingPrevious is the secret of the app's own phrase the pairing moved
+	// from on entering the fortress, and FortressPrevious the fortress's
+	// secret before its phrase changed. The kit takes over what was kept
+	// under them.
+	PairingPrevious  []byte
+	FortressPrevious []byte
+	// MoveFrom is the app's own phrase while instances that were away still
+	// have to be handed the fortress phrase over it.
+	MoveFrom []byte
 }
 
 // Mode is the relay mode in force.
@@ -88,6 +101,19 @@ type onDisk struct {
 	JoinedAt     time.Time `json:"joinedAt,omitzero"`
 	MemberSeenAt time.Time `json:"memberSeenAt,omitzero"`
 	Group        string    `json:"group,omitempty"`
+
+	Fortress         bool   `json:"fortress,omitempty"`
+	PairingPrevious  string `json:"pairingPrevious,omitempty"`
+	FortressPrevious string `json:"fortressPrevious,omitempty"`
+	MoveFrom         string `json:"moveFrom,omitempty"`
+	FortressGroup    string `json:"fortressGroup,omitempty"`
+	MoveGroup        string `json:"moveGroup,omitempty"`
+}
+
+// blobs are what the kit keeps for the pairing, the fortress and the move,
+// each sealed in the file.
+type blobs struct {
+	group, fortress, moving []byte
 }
 
 // Store reads and writes the file.
@@ -96,9 +122,9 @@ type Store struct {
 	path string
 	key  []byte
 	now  State
-	// group is what the kit's group keeps about its members, nil until it
-	// saved once in the current group.
-	group []byte
+	// b is what the kit keeps, each nil until it saved once in the current
+	// group.
+	b blobs
 	// legacy is the group from legacyGroupFile at legacyPath, until
 	// MoveLegacy takes it over.
 	legacy     *group.Roster
@@ -133,21 +159,32 @@ func (s *Store) read(body []byte) error {
 	}
 	st := State{
 		RelayMode: d.RelayMode, RelayURL: d.RelayURL, RelayServe: d.RelayServe, Name: d.Name,
-		JoinedAt: d.JoinedAt, MemberSeenAt: d.MemberSeenAt,
+		JoinedAt: d.JoinedAt, MemberSeenAt: d.MemberSeenAt, Fortress: d.Fortress,
 	}
-	var err error
-	if st.Secret, err = s.openHex(d.Secret); err != nil {
-		return err
+	for _, f := range []struct {
+		into   *[]byte
+		sealed string
+	}{
+		{&st.Secret, d.Secret}, {&st.Member, d.Member}, {&st.PairingPrevious, d.PairingPrevious},
+		{&st.FortressPrevious, d.FortressPrevious}, {&st.MoveFrom, d.MoveFrom},
+	} {
+		var err error
+		if *f.into, err = s.openHex(f.sealed); err != nil {
+			return err
+		}
 	}
-	if st.Member, err = s.openHex(d.Member); err != nil {
-		return err
-	}
-	if d.Group != "" {
-		plain, err := security.Unseal(s.key, d.Group)
+	for _, f := range []struct {
+		into   *[]byte
+		sealed string
+	}{{&s.b.group, d.Group}, {&s.b.fortress, d.FortressGroup}, {&s.b.moving, d.MoveGroup}} {
+		if f.sealed == "" {
+			continue
+		}
+		plain, err := security.Unseal(s.key, f.sealed)
 		if err != nil {
 			return s.unopened(err)
 		}
-		s.group = []byte(plain)
+		*f.into = []byte(plain)
 	}
 	s.now = st
 	return nil
@@ -182,6 +219,9 @@ func (s *Store) Get() State {
 func (st State) clone() State {
 	st.Secret = bytes.Clone(st.Secret)
 	st.Member = bytes.Clone(st.Member)
+	st.PairingPrevious = bytes.Clone(st.PairingPrevious)
+	st.FortressPrevious = bytes.Clone(st.FortressPrevious)
+	st.MoveFrom = bytes.Clone(st.MoveFrom)
 	return st
 }
 
@@ -195,15 +235,16 @@ func (s *Store) Update(fn func(*State) error) error {
 	if err := fn(&next); err != nil {
 		return err
 	}
-	state := s.group
+	kept := s.b
 	another := !bytes.Equal(next.Secret, s.now.Secret)
 	if another {
-		state = nil
+		kept = blobs{}
+		next.PairingPrevious, next.FortressPrevious, next.MoveFrom = nil, nil, nil
 	}
-	if err := s.write(next, state); err != nil {
+	if err := s.write(next, kept); err != nil {
 		return err
 	}
-	s.now, s.group = next.clone(), state
+	s.now, s.b = next.clone(), kept
 	if another && s.legacy != nil {
 		s.legacy = nil
 		return setAside(s.legacyPath)
@@ -211,42 +252,121 @@ func (s *Store) Update(fn func(*State) error) error {
 	return nil
 }
 
-// GroupStore is where the kit's group keeps its state, in this file.
-func (s *Store) GroupStore() group.Store { return groupStore{s} }
-
-type groupStore struct{ s *Store }
-
-func (g groupStore) Load() ([]byte, error) {
-	g.s.mu.Lock()
-	defer g.s.mu.Unlock()
-	return bytes.Clone(g.s.group), nil
-}
-
-func (g groupStore) Save(raw []byte) error {
-	g.s.mu.Lock()
-	defer g.s.mu.Unlock()
-	raw = bytes.Clone(raw)
-	if err := g.s.write(g.s.now, raw); err != nil {
+// EnterFortress makes secret the phrase of this instance, as the fortress it
+// joins. The pairing moves over from the app's own phrase, if there was one,
+// keeping who was approved, and the move to the instances that were away
+// starts from a copy of that.
+func (s *Store) EnterFortress(secret []byte) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	next := s.now.clone()
+	kept := blobs{group: s.b.group}
+	if next.Secret != nil && !next.Fortress {
+		next.PairingPrevious, next.MoveFrom = bytes.Clone(next.Secret), bytes.Clone(next.Secret)
+		kept.moving = bytes.Clone(s.b.group)
+	}
+	next.Secret, next.Fortress, next.FortressPrevious = bytes.Clone(secret), true, nil
+	if err := s.write(next, kept); err != nil {
 		return err
 	}
-	g.s.group = raw
+	s.now, s.b = next, kept
 	return nil
 }
 
-func (s *Store) write(st State, group []byte) error {
+// ChangeFortressSecret takes the fortress's new phrase and keeps the one
+// before for the kit to move from.
+func (s *Store) ChangeFortressSecret(secret []byte) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	next := s.now.clone()
+	next.FortressPrevious, next.Secret = next.Secret, bytes.Clone(secret)
+	if err := s.write(next, s.b); err != nil {
+		return err
+	}
+	s.now = next
+	return nil
+}
+
+// MoveDone forgets the app's own phrase once every instance it paired has the
+// fortress's.
+func (s *Store) MoveDone() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	next := s.now.clone()
+	next.MoveFrom = nil
+	kept := s.b
+	kept.moving = nil
+	if err := s.write(next, kept); err != nil {
+		return err
+	}
+	s.now, s.b = next, kept
+	return nil
+}
+
+// GroupStore is where the kit keeps the pairing, FortressStore the fortress
+// and MoveStore the pairing under the app's own phrase while it moves, all in
+// this file.
+func (s *Store) GroupStore() group.Store {
+	return blobStore{s, func(b *blobs) *[]byte { return &b.group }}
+}
+
+func (s *Store) FortressStore() group.Store {
+	return blobStore{s, func(b *blobs) *[]byte { return &b.fortress }}
+}
+
+func (s *Store) MoveStore() group.Store {
+	return blobStore{s, func(b *blobs) *[]byte { return &b.moving }}
+}
+
+type blobStore struct {
+	s     *Store
+	field func(*blobs) *[]byte
+}
+
+func (g blobStore) Load() ([]byte, error) {
+	g.s.mu.Lock()
+	defer g.s.mu.Unlock()
+	return bytes.Clone(*g.field(&g.s.b)), nil
+}
+
+func (g blobStore) Save(raw []byte) error {
+	g.s.mu.Lock()
+	defer g.s.mu.Unlock()
+	kept := g.s.b
+	*g.field(&kept) = bytes.Clone(raw)
+	if err := g.s.write(g.s.now, kept); err != nil {
+		return err
+	}
+	g.s.b = kept
+	return nil
+}
+
+func (s *Store) write(st State, b blobs) error {
 	d := onDisk{
 		RelayMode: st.RelayMode, RelayURL: st.RelayURL, RelayServe: st.RelayServe, Name: st.Name,
-		JoinedAt: st.JoinedAt, MemberSeenAt: st.MemberSeenAt,
+		JoinedAt: st.JoinedAt, MemberSeenAt: st.MemberSeenAt, Fortress: st.Fortress,
 	}
-	var err error
-	if d.Secret, err = s.sealHex(st.Secret); err != nil {
-		return err
+	for _, f := range []struct {
+		into  *string
+		plain []byte
+	}{
+		{&d.Secret, st.Secret}, {&d.Member, st.Member}, {&d.PairingPrevious, st.PairingPrevious},
+		{&d.FortressPrevious, st.FortressPrevious}, {&d.MoveFrom, st.MoveFrom},
+	} {
+		var err error
+		if *f.into, err = s.sealHex(f.plain); err != nil {
+			return err
+		}
 	}
-	if d.Member, err = s.sealHex(st.Member); err != nil {
-		return err
-	}
-	if len(group) > 0 {
-		if d.Group, err = security.Seal(s.key, string(group)); err != nil {
+	for _, f := range []struct {
+		into  *string
+		plain []byte
+	}{{&d.Group, b.group}, {&d.FortressGroup, b.fortress}, {&d.MoveGroup, b.moving}} {
+		if len(f.plain) == 0 {
+			continue
+		}
+		var err error
+		if *f.into, err = security.Seal(s.key, string(f.plain)); err != nil {
 			return err
 		}
 	}

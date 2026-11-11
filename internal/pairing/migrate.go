@@ -59,7 +59,7 @@ func (s *Store) readLegacy(dir string) error {
 	}
 	next := s.now.clone()
 	next.JoinedAt, next.MemberSeenAt = old.JoinedAt, old.MemberSeenAt
-	if err := s.write(next, s.group); err != nil {
+	if err := s.write(next, s.b); err != nil {
 		return err
 	}
 	roster := fromLegacy(old)
