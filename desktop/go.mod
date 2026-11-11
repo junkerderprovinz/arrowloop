@@ -146,7 +146,7 @@ require (
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/jlaffaye/ftp v0.2.4 // indirect
 	github.com/jtolio/noiseconn v0.0.0-20231127013910-f6d9ecbf1de7 // indirect
-	github.com/junkerderprovinz/parleyport/kit v0.0.0-20261111021153-139f11f60f0d // indirect
+	github.com/junkerderprovinz/parleyport/kit v0.0.0-20261111071643-7e223fa182b2 // indirect
 	github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004 // indirect
 	github.com/klauspost/compress v1.20.3 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
