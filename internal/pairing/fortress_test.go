@@ -63,7 +63,8 @@ func TestANewFortressPhraseKeepsTheOldOneAsPrevious(t *testing.T) {
 		t.Fatal(err)
 	}
 	st := reopened(t, dir).Get()
-	if !bytes.Equal(st.Secret, []byte("another phrase!!")) || !bytes.Equal(st.FortressPrevious, []byte("fortress phrase!")) || !st.Fortress {
+	if !bytes.Equal(st.Secret, []byte("another phrase!!")) || !bytes.Equal(st.FortressPrevious, []byte("fortress phrase!")) ||
+		!bytes.Equal(st.PairingPrevious, []byte("fortress phrase!")) || !st.Fortress {
 		t.Errorf("after a new phrase the state is %+v", st)
 	}
 	if got, _ := reopened(t, dir).FortressStore().Load(); string(got) != `{"fortress":"members"}` {

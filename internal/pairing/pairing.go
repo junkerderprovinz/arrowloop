@@ -71,10 +71,10 @@ type State struct {
 	// Fortress is whether Secret is the phrase of a fortress, which the
 	// pairing derives its keys from as well.
 	Fortress bool
-	// PairingPrevious is the secret of the app's own phrase the pairing moved
-	// from on entering the fortress, and FortressPrevious the fortress's
-	// secret before its phrase changed. The kit takes over what was kept
-	// under them.
+	// PairingPrevious is the secret the pairing's keys came from before: the
+	// app's own phrase on entering the fortress, the fortress's phrase before
+	// once that changed. FortressPrevious is the fortress's secret before its
+	// phrase changed. The kit takes over what was kept under them.
 	PairingPrevious  []byte
 	FortressPrevious []byte
 	// MoveFrom is the app's own phrase while instances that were away still
@@ -274,12 +274,13 @@ func (s *Store) EnterFortress(secret []byte) error {
 }
 
 // ChangeFortressSecret takes the fortress's new phrase and keeps the one
-// before for the kit to move from.
+// before for the kit to move the fortress and the pairing from, since the
+// pairing's keys come from the fortress phrase.
 func (s *Store) ChangeFortressSecret(secret []byte) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	next := s.now.clone()
-	next.FortressPrevious, next.Secret = next.Secret, bytes.Clone(secret)
+	next.FortressPrevious, next.PairingPrevious, next.Secret = next.Secret, bytes.Clone(next.Secret), bytes.Clone(secret)
 	if err := s.write(next, s.b); err != nil {
 		return err
 	}
