@@ -1565,6 +1565,8 @@ const es: Translations = {
   'pairing.waitNext': 'Esperando la siguiente instancia',
   'pairing.searching': 'Buscando otras instancias',
   'pairing.inactive': 'Inactiva',
+  'pairing.behindTitle': 'No se unieron',
+  'pairing.behindTip': 'Estos dispositivos estaban emparejados con este antes de que se uniera a la fortaleza, pero no lo siguieron en 30 días, así que su emparejamiento anterior se ha cerrado. Para traer uno, introduce en él la frase de la fortaleza. Si ya no lo usas, quítalo sin más.',
   'pairing.relayCheckOpen': 'Qué comprobar',
   'pairing.relayCheckLead': 'Las instancias en redes distintas solo se encuentran a través del repetidor. Comprueba en esta instancia:',
   'pairing.relayCheckProject': '¿Llega a internet? Necesita HTTPS saliente por el puerto 443 hacia {host}.',

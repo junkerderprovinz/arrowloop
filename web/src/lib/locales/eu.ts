@@ -1565,6 +1565,8 @@ const eu: Translations = {
   'pairing.waitNext': 'Hurrengo instantziaren zain',
   'pairing.searching': 'Beste instantziak bilatzen',
   'pairing.inactive': 'Inaktibo',
+  'pairing.behindTitle': 'Ez dira etorri',
+  'pairing.behindTip': 'Gailu hauek honekin parekatuta zeuden gotorlekura sartu aurretik, baina ez dute 30 egunetan jarraitu, eta haien parekatze zaharra itxi egin da. Bat ekartzeko, idatzi bertan gotorlekuko esaldia. Jada erabiltzen ez baduzu, kendu besterik gabe.',
   'pairing.relayCheckOpen': 'Zer egiaztatu',
   'pairing.relayCheckLead': 'Sare desberdinetako instantziek bitartekariaren bidez soilik aurkitzen dute elkar. Egiaztatu instantzia honetan:',
   'pairing.relayCheckProject': 'Internetera iristen da? Irteerako HTTPS behar du 443 atakan {host} helbidera.',

@@ -796,9 +796,10 @@ const STAGE_BADGE: Record<Exclude<PairStage, "unpaired" | "paired">, { tone: Ton
 const GLYPH: Record<string, string> = { phone: "IconPhone", desktop: "IconApp" };
 
 /**
- * Who is in the group: the instances that wait for approval, this phone with
- * where it stands, the others that are there and the approved ones that are
- * away, each with the button that takes it out.
+ * Who is in the group: the instances that wait for approval, those that did
+ * not follow into the fortress, this phone with where it stands, the others
+ * that are there and the approved ones that are away, each with the button
+ * that takes it out.
  */
 function GroupCard({ group, stage, onRefresh }: { group: ConnectInfo; stage: PairStage; onRefresh: () => void }) {
   const { t, lang } = useT();
@@ -868,6 +869,17 @@ function GroupCard({ group, stage, onRefresh }: { group: ConnectInfo; stage: Pai
                 disabled={busy}
                 onPress={() => void run(() => api.approveMember(m.id))}
               />
+            </Member>
+          ))}
+        </View>
+      ) : null}
+
+      {group.behind.length > 0 ? (
+        <View style={[styles.well, { backgroundColor: p.surface2, ...corners.control }]}>
+          <AxisLabel hint={t("pairing.behindTip")}>{t("pairing.behindTitle")}</AxisLabel>
+          {group.behind.map((m) => (
+            <Member key={m.id} glyph={GLYPH[m.deployment] ?? "IconServer"} name={m.name || m.id} mark={kindName(t, m.deployment)}>
+              {remove(m.id, m.name)}
             </Member>
           ))}
         </View>

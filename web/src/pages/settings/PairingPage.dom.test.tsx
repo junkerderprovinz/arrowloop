@@ -14,6 +14,7 @@ const joinGroup = vi.fn()
 const approveMember = vi.fn()
 const revealPhrase = vi.fn()
 const fortress = vi.fn()
+const removeMember = vi.fn()
 let heard: ((ev: { job: string; phase: string }) => void) | null = null
 vi.mock('../../lib/api', async (original) => ({
   ...(await original<typeof import('../../lib/api')>()),
@@ -27,7 +28,7 @@ vi.mock('../../lib/api', async (original) => ({
     fortress: () => fortress(),
     leaveGroup: vi.fn(),
     refuseMember: vi.fn(),
-    removeMember: vi.fn(),
+    removeMember: (id: string) => removeMember(id),
     renameInstance: vi.fn(),
     saveRelay: vi.fn(),
     instances: () => Promise.resolve([]),
@@ -68,6 +69,7 @@ const outside: ConnectInfo = {
   memberSeen: false,
   pending: [],
   awaiting: false,
+  behind: [],
   fingerprint: '',
 }
 
@@ -84,7 +86,7 @@ const relayConfig: RelayConfig = {
 const noFortress: FortressInfo = { joined: false, phrase: false, device: 'nas', defaultDevice: 'nas', passwordSet: true, members: [], permissions: [] }
 
 beforeEach(() => {
-  for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase, fortress]) fn.mockReset()
+  for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase, fortress, removeMember]) fn.mockReset()
   relay.mockResolvedValue(relayConfig)
   fortress.mockResolvedValue(noFortress)
 })
@@ -164,6 +166,23 @@ describe('the Pairing tile', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Approve' }))
     await waitFor(() => expect(approveMember).toHaveBeenCalledWith('b'.repeat(40)))
   })
+  it('lists the devices that did not follow into the fortress by name and kind, and takes one out', async () => {
+    connect.mockResolvedValue({
+      ...outside,
+      active: true,
+      memberSeen: true,
+      behind: [{ id: 'c'.repeat(40), name: 'Old laptop', deployment: 'desktop' }],
+    })
+    removeMember.mockResolvedValue(undefined)
+    render(<PairingPage />)
+    const section = await screen.findByRole('region', { name: en['pairing.behindTitle'] })
+    expect(within(section).getByText('Old laptop')).toBeTruthy()
+    expect(within(section).getByText(en['instances.kind.desktop'])).toBeTruthy()
+    fireEvent.click(within(section).getByRole('button', { name: en['pairing.remove'] }))
+    fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: en['pairing.remove'] }))
+    await waitFor(() => expect(removeMember).toHaveBeenCalledWith('c'.repeat(40)))
+  })
+
   it('draws the three steps as numbered cards, each with its picture', async () => {
     connect.mockResolvedValue(outside)
     const { container } = render(<PairingPage />)

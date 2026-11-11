@@ -163,6 +163,11 @@ type connectView struct {
 	Pending []struct {
 		ID string `json:"id"`
 	} `json:"pending"`
+	Behind []struct {
+		ID         string `json:"id"`
+		Name       string `json:"name"`
+		Deployment string `json:"deployment"`
+	} `json:"behind"`
 	Fingerprint string `json:"fingerprint"`
 }
 

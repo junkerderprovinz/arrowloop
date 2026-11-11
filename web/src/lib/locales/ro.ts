@@ -1565,6 +1565,8 @@ const ro: Translations = {
   'pairing.waitNext': 'Așteaptă următoarea instanță',
   'pairing.searching': 'Caută alte instanțe',
   'pairing.inactive': 'Inactivă',
+  'pairing.behindTitle': 'Nu au venit',
+  'pairing.behindTip': 'Aceste dispozitive erau împerecheate cu acesta înainte să intre în fortăreață, dar nu l-au urmat în 30 de zile, așa că vechea lor împerechere s-a închis. Ca să aduci unul, introdu pe el fraza fortăreței. Dacă nu-l mai folosești, pur și simplu elimină-l.',
   'pairing.relayCheckOpen': 'Ce poți verifica',
   'pairing.relayCheckLead': 'Instanțele din rețele diferite se găsesc între ele doar prin releu. Verifică pe această instanță:',
   'pairing.relayCheckProject': 'Ajunge la internet? Are nevoie de HTTPS de ieșire pe portul 443 către {host}.',

@@ -1565,6 +1565,8 @@ const sv: Translations = {
   'pairing.waitNext': 'Väntar på nästa instans',
   'pairing.searching': 'Letar efter andra instanser',
   'pairing.inactive': 'Inaktiv',
+  'pairing.behindTitle': 'Kom inte med',
+  'pairing.behindTip': 'De här enheterna var parkopplade med den här innan den gick med i fästningen, men följde inte efter inom 30 dagar, så deras gamla parkoppling är stängd. Vill du ta med en anger du fästningens fras på den. Använder du den inte längre kan du bara ta bort den.',
   'pairing.relayCheckOpen': 'Vad du kan kontrollera',
   'pairing.relayCheckLead': 'Instanser i olika nätverk hittar varandra bara via reläet. Kontrollera på den här instansen:',
   'pairing.relayCheckProject': 'Når den internet? Den behöver utgående HTTPS på port 443 till {host}.',

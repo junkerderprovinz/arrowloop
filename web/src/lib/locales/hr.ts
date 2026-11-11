@@ -1565,6 +1565,8 @@ const hr: Translations = {
   'pairing.waitNext': 'Čeka se sljedeća instanca',
   'pairing.searching': 'Traže se druge instance',
   'pairing.inactive': 'Neaktivna',
+  'pairing.behindTitle': 'Nisu došli',
+  'pairing.behindTip': 'Ovi uređaji bili su upareni s ovim prije nego što se pridružio utvrdi, ali ga nisu slijedili u roku od 30 dana pa je njihovo staro uparivanje zatvoreno. Da biste neki doveli, unesite na njemu frazu utvrde. Ako ga više ne koristite, jednostavno ga uklonite.',
   'pairing.relayCheckOpen': 'Što provjeriti',
   'pairing.relayCheckLead': 'Instance u različitim mrežama pronalaze se samo preko releja. Provjeri na ovoj instanci:',
   'pairing.relayCheckProject': 'Doseže li internet? Treba joj odlazni HTTPS na portu 443 prema {host}.',

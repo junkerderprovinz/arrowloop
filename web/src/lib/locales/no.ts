@@ -1565,6 +1565,8 @@ const no: Translations = {
   'pairing.waitNext': 'Venter på den neste instansen',
   'pairing.searching': 'Ser etter andre instanser',
   'pairing.inactive': 'Inaktiv',
+  'pairing.behindTitle': 'Ble ikke med',
+  'pairing.behindTip': 'Disse enhetene var paret med denne før den ble med i festningen, men fulgte ikke etter innen 30 dager, så den gamle paringen deres er stengt. Vil du ta med en, skriver du inn festningens frase på den. Bruker du den ikke lenger, fjerner du den bare.',
   'pairing.relayCheckOpen': 'Hva du kan sjekke',
   'pairing.relayCheckLead': 'Instanser på ulike nettverk finner hverandre bare gjennom reléet. Sjekk på denne instansen:',
   'pairing.relayCheckProject': 'Når den internett? Den trenger utgående HTTPS på port 443 til {host}.',

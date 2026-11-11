@@ -1565,6 +1565,8 @@ const fi: Translations = {
   'pairing.waitNext': 'Odottaa seuraavaa instanssia',
   'pairing.searching': 'Etsii muita instansseja',
   'pairing.inactive': 'Ei aktiivinen',
+  'pairing.behindTitle': 'Eivät tulleet mukaan',
+  'pairing.behindTip': 'Nämä laitteet oli pariliitetty tähän ennen kuin se liittyi linnoitukseen, mutta ne eivät seuranneet 30 päivän kuluessa, joten niiden vanha pariliitos on suljettu. Saat laitteen mukaan syöttämällä siihen linnoituksen lauseen. Jos et enää käytä sitä, poista se vain.',
   'pairing.relayCheckOpen': 'Mitä voit tarkistaa',
   'pairing.relayCheckLead': 'Eri verkoissa olevat instanssit löytävät toisensa vain releen kautta. Tarkista tässä instanssissa:',
   'pairing.relayCheckProject': 'Pääseekö se internetiin? Se tarvitsee lähtevän HTTPS-yhteyden porttiin 443 osoitteeseen {host}.',

@@ -1565,6 +1565,8 @@ const gl: Translations = {
   'pairing.waitNext': 'Á espera da seguinte instancia',
   'pairing.searching': 'Buscando outras instancias',
   'pairing.inactive': 'Inactiva',
+  'pairing.behindTitle': 'Non viñeron',
+  'pairing.behindTip': 'Estes dispositivos estaban emparellados con este antes de que se unise á fortaleza, pero non o seguiron en 30 días, así que o seu emparellamento antigo pechouse. Para traer un, introduce nel a frase da fortaleza. Se xa non o usas, quítao sen máis.',
   'pairing.relayCheckOpen': 'Que comprobar',
   'pairing.relayCheckLead': 'As instancias en redes distintas só se atopan a través do relé. Comproba nesta instancia:',
   'pairing.relayCheckProject': 'Chega a internet? Precisa HTTPS saínte polo porto 443 a {host}.',

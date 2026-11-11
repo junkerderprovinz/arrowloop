@@ -1565,6 +1565,8 @@ const lt: Translations = {
   'pairing.waitNext': 'Laukiama kito egzemplioriaus',
   'pairing.searching': 'Ieškoma kitų egzempliorių',
   'pairing.inactive': 'Neaktyvu',
+  'pairing.behindTitle': 'Nepersikėlė',
+  'pairing.behindTip': 'Šie įrenginiai buvo susieti su šiuo prieš jam prisijungiant prie tvirtovės, bet per 30 dienų jo nesekė, todėl jų senasis susiejimas uždarytas. Norėdami vieną perkelti, įveskite jame tvirtovės frazę. Jei jo nebenaudojate, tiesiog pašalinkite.',
   'pairing.relayCheckOpen': 'Ką patikrinti',
   'pairing.relayCheckLead': 'Skirtinguose tinkluose esantys egzemplioriai vienas kitą randa tik per relę. Patikrink šiame egzemplioriuje:',
   'pairing.relayCheckProject': 'Ar jis pasiekia internetą? Reikia išeinančio HTTPS per 443 prievadą į {host}.',

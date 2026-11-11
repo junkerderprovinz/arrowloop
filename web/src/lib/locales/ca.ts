@@ -1565,6 +1565,8 @@ const ca: Translations = {
   'pairing.waitNext': 'Esperant la instància següent',
   'pairing.searching': 'Cercant altres instàncies',
   'pairing.inactive': 'Inactiva',
+  'pairing.behindTitle': 'No han vingut',
+  'pairing.behindTip': 'Aquests dispositius estaven aparellats amb aquest abans que s\'unís a la fortalesa, però no l\'han seguit en 30 dies, així que el seu aparellament antic s\'ha tancat. Per portar-ne un, introdueix-hi la frase de la fortalesa. Si ja no el fas servir, elimina\'l i prou.',
   'pairing.relayCheckOpen': 'Què comprovar',
   'pairing.relayCheckLead': 'Les instàncies en xarxes diferents només es troben a través del repetidor. Comprova en aquesta instància:',
   'pairing.relayCheckProject': 'Arriba a internet? Necessita HTTPS sortint pel port 443 cap a {host}.',

@@ -332,6 +332,9 @@ type connectInfo struct {
 	// Awaiting whether another instance said lately that this one waits there.
 	Pending  []pendingMember `json:"pending"`
 	Awaiting bool            `json:"awaiting"`
+	// Behind is every instance paired here before the fortress that had not
+	// followed into it when the group from before closed.
+	Behind []behindMember `json:"behind"`
 	// Fingerprint is this instance's own key as the others list it while it
 	// waits for approval there, "" outside a group.
 	Fingerprint string `json:"fingerprint"`
@@ -353,6 +356,13 @@ type awayMember struct {
 	Address    string `json:"address,omitempty"`
 	// LastSeen is Unix seconds.
 	LastSeen int64 `json:"lastSeen"`
+}
+
+// behindMember carries no address, since the owner finds the device by name.
+type behindMember struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Deployment string `json:"deployment"`
 }
 
 type pendingMember struct {
@@ -391,6 +401,14 @@ func (s *Server) connectInfo() connectInfo {
 		Members:         []groupMember{},
 		Away:            []awayMember{},
 		Pending:         []pendingMember{},
+		Behind:          []behindMember{},
+	}
+	behind := map[string]bool{}
+	if f := s.fortressNow(); f != nil {
+		for _, m := range f.Behind() {
+			behind[m.ID] = true
+			info.Behind = append(info.Behind, behindMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment})
+		}
 	}
 	for _, m := range s.instances() {
 		info.Awaiting = info.Awaiting || m.Awaiting
@@ -398,6 +416,7 @@ func (s *Server) connectInfo() connectInfo {
 			info.Pending = append(info.Pending, pendingMember{ID: m.ID, Name: m.Name, Fingerprint: member.Fingerprint(m.Key)})
 		}
 		switch {
+		case behind[m.ID]:
 		case m.Online():
 			info.Members = append(info.Members, groupMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, Approved: m.State == group.StateApproved})
 		case m.State == group.StateApproved:

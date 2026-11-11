@@ -1565,6 +1565,8 @@ const tr: Translations = {
   'pairing.waitNext': 'Sonraki örnek bekleniyor',
   'pairing.searching': 'Diğer örnekler aranıyor',
   'pairing.inactive': 'Etkin değil',
+  'pairing.behindTitle': 'Gelmeyenler',
+  'pairing.behindTip': 'Bu cihazlar, bu cihaz kaleye katılmadan önce onunla eşleştirilmişti ama 30 gün içinde peşinden gelmediler, bu yüzden eski eşleştirmeleri kapandı. Birini getirmek için o cihaza kalenin ifadesini gir. Artık kullanmıyorsan kaldırman yeterli.',
   'pairing.relayCheckOpen': 'Kontrol edilecekler',
   'pairing.relayCheckLead': 'Farklı ağlardaki örnekler birbirini yalnızca röle üzerinden bulur. Bu örnekte şunları kontrol et:',
   'pairing.relayCheckProject': 'İnternete ulaşabiliyor mu? {host} adresine giden HTTPS için 443 portu gerekiyor.',

@@ -1565,6 +1565,8 @@ const lv: Translations = {
   'pairing.waitNext': 'Gaida nākamo instanci',
   'pairing.searching': 'Meklē citas instances',
   'pairing.inactive': 'Neaktīva',
+  'pairing.behindTitle': 'Nepievienojās',
+  'pairing.behindTip': 'Šīs ierīces bija sapārotas ar šo, pirms tā pievienojās cietoksnim, bet 30 dienu laikā tai nesekoja, tāpēc to vecā pārošana ir slēgta. Lai kādu paņemtu līdzi, ievadiet tajā cietokšņa frāzi. Ja to vairs neizmantojat, vienkārši noņemiet to.',
   'pairing.relayCheckOpen': 'Ko pārbaudīt',
   'pairing.relayCheckLead': 'Instances dažādos tīklos atrod cita citu tikai caur releju. Pārbaudi šajā instancē:',
   'pairing.relayCheckProject': 'Vai tā sasniedz internetu? Tai vajag izejošu HTTPS uz 443. portu uz {host}.',

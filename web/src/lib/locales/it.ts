@@ -1565,6 +1565,8 @@ const it: Translations = {
   'pairing.waitNext': 'In attesa della prossima istanza',
   'pairing.searching': 'Ricerca di altre istanze',
   'pairing.inactive': 'Inattiva',
+  'pairing.behindTitle': 'Rimasti indietro',
+  'pairing.behindTip': 'Questi dispositivi erano associati a questo prima che entrasse nella fortezza, ma non l\'hanno seguito entro 30 giorni, quindi la loro vecchia associazione è chiusa. Per portarne uno con te, inserisci su di esso la frase della fortezza. Se non lo usi più, rimuovilo e basta.',
   'pairing.relayCheckOpen': 'Cosa controllare',
   'pairing.relayCheckLead': 'Le istanze su reti diverse si trovano solo tramite il relay. Controlla su questa istanza:',
   'pairing.relayCheckProject': 'Riesce a raggiungere internet? Le serve HTTPS in uscita sulla porta 443 verso {host}.',

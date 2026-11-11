@@ -1565,6 +1565,8 @@ const pl: Translations = {
   'pairing.waitNext': 'Czeka na kolejną instancję',
   'pairing.searching': 'Szuka innych instancji',
   'pairing.inactive': 'Nieaktywne',
+  'pairing.behindTitle': 'Nie przeszły',
+  'pairing.behindTip': 'Te urządzenia były sparowane z tym, zanim dołączyło do twierdzy, ale nie poszły za nim w ciągu 30 dni, więc ich stare parowanie zostało zamknięte. Aby zabrać któreś, wpisz na nim frazę twierdzy. Jeśli już go nie używasz, po prostu je usuń.',
   'pairing.relayCheckOpen': 'Co możesz sprawdzić',
   'pairing.relayCheckLead': 'Instancje w różnych sieciach znajdują się nawzajem tylko przez przekaźnik. Sprawdź na tej instancji:',
   'pairing.relayCheckProject': 'Czy ma dostęp do internetu? Potrzebuje wychodzącego HTTPS na porcie 443 do {host}.',

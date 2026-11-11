@@ -1565,6 +1565,8 @@ const sk: Translations = {
   'pairing.waitNext': 'Čaká sa na ďalšiu inštanciu',
   'pairing.searching': 'Hľadanie ďalších inštancií',
   'pairing.inactive': 'Neaktívne',
+  'pairing.behindTitle': 'Neprešli',
+  'pairing.behindTip': 'Tieto zariadenia boli spárované s týmto predtým, ako sa pripojilo k pevnosti, ale do 30 dní ho nenasledovali, takže ich staré párovanie je zatvorené. Ak chcete niektoré priviesť, zadajte na ňom frázu pevnosti. Ak ho už nepoužívate, jednoducho ho odstráňte.',
   'pairing.relayCheckOpen': 'Čo skontrolovať',
   'pairing.relayCheckLead': 'Inštancie v rôznych sieťach sa nájdu len cez relé. Skontroluj na tejto inštancii:',
   'pairing.relayCheckProject': 'Má prístup na internet? Potrebuje odchádzajúce HTTPS na porte 443 na {host}.',

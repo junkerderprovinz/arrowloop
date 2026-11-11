@@ -1565,6 +1565,8 @@ const da: Translations = {
   'pairing.waitNext': 'Venter på den næste instans',
   'pairing.searching': 'Leder efter andre instanser',
   'pairing.inactive': 'Inaktiv',
+  'pairing.behindTitle': 'Kom ikke med',
+  'pairing.behindTip': 'Disse enheder var parret med denne, før den kom ind i fæstningen, men fulgte ikke med inden for 30 dage, så deres gamle parring er lukket. Vil du have en med, så indtast fæstningens sætning på den. Bruger du den ikke længere, så fjern den bare.',
   'pairing.relayCheckOpen': 'Hvad du skal tjekke',
   'pairing.relayCheckLead': 'Instanser på forskellige netværk finder kun hinanden gennem videresenderen. Tjek på denne instans:',
   'pairing.relayCheckProject': 'Kan den nå internettet? Den skal bruge udgående HTTPS på port 443 til {host}.',

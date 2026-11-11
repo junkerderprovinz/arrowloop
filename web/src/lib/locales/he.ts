@@ -1565,6 +1565,8 @@ const he: Translations = {
   'pairing.waitNext': 'ממתין למופע הבא',
   'pairing.searching': 'מחפש מופעים אחרים',
   'pairing.inactive': 'לא פעיל',
+  'pairing.behindTitle': 'לא הצטרפו',
+  'pairing.behindTip': 'המכשירים האלה היו מצומדים למכשיר הזה לפני שהצטרף למבצר, אבל לא הגיעו אחריו תוך 30 יום, ולכן הצימוד הישן שלהם נסגר. כדי להביא אחד מהם, הזינו בו את הביטוי של המבצר. אם אתם כבר לא משתמשים בו, פשוט הסירו אותו.',
   'pairing.relayCheckOpen': 'מה לבדוק',
   'pairing.relayCheckLead': 'מופעים ברשתות שונות מוצאים זה את זה רק דרך הממסר. בדוק במופע הזה:',
   'pairing.relayCheckProject': 'האם הוא מגיע לאינטרנט? הוא צריך HTTPS יוצא בפורט 443 אל {host}.',

@@ -1565,6 +1565,8 @@ const ja: Translations = {
   'pairing.waitNext': '次のインスタンスを待っています',
   'pairing.searching': '他のインスタンスを検索しています',
   'pairing.inactive': '非アクティブ',
+  'pairing.behindTitle': '移行しなかったデバイス',
+  'pairing.behindTip': 'これらのデバイスは、この端末が要塞に参加する前にペアリングされていましたが、30日以内に移行しなかったため、古いペアリングは閉じられました。連れてくるには、そのデバイスで要塞のフレーズを入力してください。もう使っていない場合は、削除するだけで大丈夫です。',
   'pairing.relayCheckOpen': '確認できること',
   'pairing.relayCheckLead': '異なるネットワークにあるインスタンス同士は、リレーを通してのみ見つかります。このインスタンスで確認してください：',
   'pairing.relayCheckProject': 'インターネットに接続できますか？{host}へのポート443の送信HTTPSが必要です。',

@@ -1565,6 +1565,8 @@ const is: Translations = {
   'pairing.waitNext': 'Bíður eftir næsta tilviki',
   'pairing.searching': 'Leitar að öðrum tilvikum',
   'pairing.inactive': 'Óvirkt',
+  'pairing.behindTitle': 'Komu ekki með',
+  'pairing.behindTip': 'Þessi tæki voru pöruð við þetta áður en það gekk í vígið, en fylgdu ekki á eftir innan 30 daga, svo gamla pörunin þeirra er lokuð. Til að fá eitt með slærðu inn setningu vígisins á því. Ef þú notar það ekki lengur skaltu bara fjarlægja það.',
   'pairing.relayCheckOpen': 'Hvað á að athuga',
   'pairing.relayCheckLead': 'Tilvik á ólíkum netum finna hvert annað aðeins í gegnum relay. Athugaðu á þessu tilviki:',
   'pairing.relayCheckProject': 'Nær það til internetsins? Það þarf útfarandi HTTPS um gátt 443 til {host}.',

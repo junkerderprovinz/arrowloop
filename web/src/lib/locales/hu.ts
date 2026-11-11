@@ -1565,6 +1565,8 @@ const hu: Translations = {
   'pairing.waitNext': 'Várakozás a következő példányra',
   'pairing.searching': 'Más példányok keresése',
   'pairing.inactive': 'Inaktív',
+  'pairing.behindTitle': 'Nem jöttek át',
+  'pairing.behindTip': 'Ezek az eszközök párosítva voltak ezzel, mielőtt csatlakozott az erődhöz, de 30 napon belül nem követték, ezért a régi párosításuk lezárult. Ha egyet át szeretnél hozni, add meg rajta az erőd jelmondatát. Ha már nem használod, egyszerűen távolítsd el.',
   'pairing.relayCheckOpen': 'Ellenőrizendők',
   'pairing.relayCheckLead': 'A különböző hálózatokon lévő példányok csak a relayn keresztül találják meg egymást. Ellenőrizd ezen a példányon:',
   'pairing.relayCheckProject': 'Eléri az internetet? Kimenő HTTPS-re van szüksége a 443-as porton a(z) {host} felé.',

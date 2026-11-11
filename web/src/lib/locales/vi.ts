@@ -1565,6 +1565,8 @@ const vi: Translations = {
   'pairing.waitNext': 'Đang chờ phiên bản tiếp theo',
   'pairing.searching': 'Đang tìm các phiên bản khác',
   'pairing.inactive': 'Không hoạt động',
+  'pairing.behindTitle': 'Không đi theo',
+  'pairing.behindTip': 'Các thiết bị này đã được ghép nối với thiết bị này trước khi nó vào pháo đài, nhưng không đi theo trong vòng 30 ngày, nên việc ghép nối cũ của chúng đã đóng lại. Để đưa một thiết bị đi cùng, hãy nhập cụm từ của pháo đài trên thiết bị đó. Nếu bạn không dùng nó nữa, chỉ cần gỡ bỏ.',
   'pairing.relayCheckOpen': 'Những điều cần kiểm tra',
   'pairing.relayCheckLead': 'Các phiên bản ở các mạng khác nhau chỉ tìm thấy nhau qua relay. Hãy kiểm tra trên phiên bản này:',
   'pairing.relayCheckProject': 'Nó có kết nối được internet không? Nó cần HTTPS đi ra qua cổng 443 tới {host}.',

@@ -1565,6 +1565,8 @@ const cs: Translations = {
   'pairing.waitNext': 'Čeká se na další instanci',
   'pairing.searching': 'Hledá se po dalších instancích',
   'pairing.inactive': 'Neaktivní',
+  'pairing.behindTitle': 'Nepřešla',
+  'pairing.behindTip': 'Tato zařízení byla spárovaná s tímto, než se připojilo k pevnosti, ale do 30 dnů ho nenásledovala, takže jejich staré párování je uzavřené. Chcete-li některé přivést, zadejte na něm frázi pevnosti. Pokud ho už nepoužíváte, prostě ho odeberte.',
   'pairing.relayCheckOpen': 'Co zkontrolovat',
   'pairing.relayCheckLead': 'Instance v různých sítích se najdou jen přes přeposílač. Zkontroluj na této instanci:',
   'pairing.relayCheckProject': 'Dostane se na internet? Potřebuje odchozí HTTPS na portu 443 k {host}.',

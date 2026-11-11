@@ -101,6 +101,8 @@ export interface ConnectInfo {
   pending: { id: string; name: string; fingerprint: string }[];
   /** Whether another instance said lately that this one waits for approval there. */
   awaiting: boolean;
+  /** Instances paired here before the fortress that did not follow into it in time. */
+  behind: { id: string; name: string; deployment: Deployment }[];
   /** This engine's own key, as the others list it. */
   fingerprint: string;
 }

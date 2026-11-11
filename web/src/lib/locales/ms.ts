@@ -1565,6 +1565,8 @@ const ms: Translations = {
   'pairing.waitNext': 'Menunggu instans seterusnya',
   'pairing.searching': 'Mencari instans lain',
   'pairing.inactive': 'Tidak aktif',
+  'pairing.behindTitle': 'Tidak ikut serta',
+  'pairing.behindTip': 'Peranti-peranti ini digandingkan dengan yang ini sebelum ia menyertai kubu, tetapi tidak menyusul dalam masa 30 hari, jadi gandingan lama mereka telah ditutup. Untuk membawa satu, masukkan frasa kubu padanya. Jika anda tidak menggunakannya lagi, alih keluar sahaja.',
   'pairing.relayCheckOpen': 'Apa yang perlu disemak',
   'pairing.relayCheckLead': 'Instans dalam rangkaian berbeza hanya bertemu satu sama lain melalui relay. Semak pada instans ini:',
   'pairing.relayCheckProject': 'Bolehkah ia mencapai internet? Ia memerlukan HTTPS keluar pada port 443 ke {host}.',

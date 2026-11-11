@@ -1565,6 +1565,8 @@ const et: Translations = {
   'pairing.waitNext': 'Ootab järgmist eksemplari',
   'pairing.searching': 'Otsib teisi eksemplare',
   'pairing.inactive': 'Mitteaktiivne',
+  'pairing.behindTitle': 'Ei tulnud kaasa',
+  'pairing.behindTip': 'Need seadmed olid selle seadmega seotud enne, kui see kindlusega liitus, kuid ei järgnenud 30 päeva jooksul, seega nende vana sidumine on suletud. Ühe kaasa toomiseks sisesta sellel kindluse fraas. Kui sa seda enam ei kasuta, eemalda see lihtsalt.',
   'pairing.relayCheckOpen': 'Mida kontrollida',
   'pairing.relayCheckLead': 'Eri võrkudes olevad eksemplarid leiavad üksteist ainult edastaja kaudu. Kontrolli selles eksemplaris:',
   'pairing.relayCheckProject': 'Kas see pääseb internetti? Vaja on väljuvat HTTPS-i pordil 443 aadressile {host}.',

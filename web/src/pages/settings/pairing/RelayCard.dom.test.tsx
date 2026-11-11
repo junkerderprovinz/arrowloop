@@ -39,6 +39,7 @@ const group: ConnectInfo = {
   memberSeen: true,
   pending: [],
   awaiting: false,
+  behind: [],
   fingerprint: 'aaaa bbbb cccc dddd',
 }
 

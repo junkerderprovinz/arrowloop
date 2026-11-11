@@ -173,8 +173,9 @@ func (k movedKeeper) Keep(secret []byte) error {
 
 // move hands the fortress phrase to the instances the pairing had under the
 // app's own phrase that were away when this one joined, until each is in the
-// pairing in the fortress. An instance that took the phrase and has not
-// arrived when it changes is handed the new one the same way.
+// pairing in the fortress or the kit closes the group from before after 30
+// days. An instance that took the phrase and has not arrived when it changes
+// is handed the new one the same way.
 func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity, mode group.RelayMode, relayURL string) {
 	old, err := group.Open(group.Config{
 		Domain: pairing.Domain, Secret: st.MoveFrom, Identity: id, Self: s.self(st),
@@ -200,14 +201,17 @@ func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity,
 		s.forgetTakenOut(old)
 		kitfortress.Move(ctx, old, st.Secret)
 		if f := s.fortressNow(); f != nil {
-			left := f.Left(old)
-			if len(left) == 0 {
-				if err := s.Pairing.MoveDone(); err != nil {
-					s.logf("fortress: could not note that every instance of the group moved: %v", err)
+			if f.Settle(old) {
+				if behind := len(f.Behind()); behind > 0 {
+					s.logf("fortress: the group from before closed with %d instances that never followed", behind)
 				}
+				if err := s.Pairing.MoveDone(); err != nil {
+					s.logf("fortress: could not note that the move into the fortress ended: %v", err)
+				}
+				s.groupChanged()
 				return
 			}
-			s.passChange(ctx, old, online(left, nil), st)
+			s.passChange(ctx, old, online(f.Left(old), nil), st)
 		}
 		select {
 		case <-ctx.Done():

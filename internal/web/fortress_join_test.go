@@ -281,6 +281,51 @@ func TestTheMoveEndsOnceEveryPairedInstanceIsInThePairingAgain(t *testing.T) {
 	eventually(t, "the move to end on the instance that followed", func() bool { return b.server.Pairing.Get().MoveFrom == nil })
 }
 
+func TestTheMoveEndsAfterThirtyDaysAndShowsWhoStayedBehind(t *testing.T) {
+	web.ShortenMoveWait(t, 100*time.Millisecond)
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	_, bID := pair(t, a, b)
+	name := b.connect(t).Name
+	b.server.StopPairing()
+	a.join(t, newWords(t))
+	time.Sleep(500 * time.Millisecond)
+	if behind := a.connect(t).Behind; len(behind) != 0 {
+		t.Fatalf("left behind %v before the 30 days are over", behind)
+	}
+
+	a.server.BackdateMove(t, 30*24*time.Hour+time.Minute)
+	eventually(t, "the move to end", func() bool { return a.server.Pairing.Get().MoveFrom == nil })
+	info := a.connect(t)
+	if len(info.Behind) != 1 || info.Behind[0].ID != bID || info.Behind[0].Name != name {
+		t.Fatalf("left behind %+v, want the instance that was away", info.Behind)
+	}
+	for _, m := range info.Away {
+		if m.ID == bID {
+			t.Error("the instance left behind is listed as away as well")
+		}
+	}
+	_, raw := a.send(t, http.MethodGet, "/api/connect", "")
+	var listed struct {
+		Behind []map[string]any `json:"behind"`
+	}
+	if err := json.Unmarshal(raw, &listed); err != nil || len(listed.Behind) != 1 {
+		t.Fatalf("GET /api/connect = %s", raw)
+	}
+	for field := range listed.Behind[0] {
+		if field != "id" && field != "name" && field != "deployment" {
+			t.Errorf("a device left behind carries %q", field)
+		}
+	}
+
+	if status, body := a.send(t, http.MethodDelete, "/api/connect/members/"+bID, ""); status != http.StatusNoContent {
+		t.Fatalf("take the instance out = %d %s", status, body)
+	}
+	if behind := a.connect(t).Behind; len(behind) != 0 {
+		t.Errorf("left behind %v after it was taken out", behind)
+	}
+}
+
 func TestAChangedPhraseKeepsWhoThePairingKnew(t *testing.T) {
 	url := testRelay(t)
 	a, b := newNode(t, url), newNode(t, url)

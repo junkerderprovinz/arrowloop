@@ -1565,6 +1565,8 @@ const id: Translations = {
   'pairing.waitNext': 'Menunggu instance berikutnya',
   'pairing.searching': 'Mencari instance lain',
   'pairing.inactive': 'Tidak aktif',
+  'pairing.behindTitle': 'Tidak ikut',
+  'pairing.behindTip': 'Perangkat-perangkat ini dipasangkan dengan yang ini sebelum bergabung ke benteng, tetapi tidak menyusul dalam 30 hari, jadi pemasangan lamanya ditutup. Untuk membawa salah satunya, masukkan frasa benteng di perangkat itu. Kalau sudah tidak dipakai, hapus saja.',
   'pairing.relayCheckOpen': 'Yang perlu diperiksa',
   'pairing.relayCheckLead': 'Instance di jaringan yang berbeda hanya saling menemukan lewat relay. Periksa di instance ini:',
   'pairing.relayCheckProject': 'Apakah instance ini bisa menjangkau internet? Dibutuhkan HTTPS keluar pada port 443 ke {host}.',

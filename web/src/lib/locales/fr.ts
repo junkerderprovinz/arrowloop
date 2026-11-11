@@ -1565,6 +1565,8 @@ const fr: Translations = {
   'pairing.waitNext': 'En attente de l\'instance suivante',
   'pairing.searching': 'Recherche d\'autres instances',
   'pairing.inactive': 'Inactive',
+  'pairing.behindTitle': 'Restés en arrière',
+  'pairing.behindTip': 'Ces appareils étaient appairés avec celui-ci avant qu\'il rejoigne la forteresse, mais ne l\'ont pas suivi dans les 30 jours, donc leur ancien appairage est fermé. Pour en faire venir un, saisissez la phrase de la forteresse sur cet appareil. Si vous ne l\'utilisez plus, retirez-le simplement.',
   'pairing.relayCheckOpen': 'À vérifier',
   'pairing.relayCheckLead': 'Les instances sur des réseaux différents ne se trouvent que par le relais. Vérifiez sur cette instance :',
   'pairing.relayCheckProject': 'Atteint-elle Internet ? Elle a besoin d\'un accès HTTPS sortant sur le port 443 vers {host}.',
