@@ -3,19 +3,30 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { Alert, StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import Constants from "expo-constants";
-import { api, type ConnectInfo, type RelayConfig, type RelayMode } from "../api";
+import { api, EngineError, type ConnectInfo, type RelayConfig, type RelayMode } from "../api";
 import { QR } from "../donate";
 import { engine } from "../engine";
 import { Field, Refusal } from "../fields";
+import { fill } from "../glimstone/fortressText";
+import { fortressText } from "../glimstone/fortressTexts";
 import { Glyph } from "../glyphs";
 import { useT, type TranslationKey } from "../i18n";
 import { useEngineStream } from "../useEngine";
 import { OtherInstances } from "../otherInstances";
 import { FORMS, kindName, modeOf, pairStage, refusalText, relayForm, seenAt, type PairStage, type RelayForm } from "../pairing";
 import { checkPhrase, PHRASE_WORDS } from "../phraseWords";
+import {
+  fortressApps,
+  fortressHues,
+  fortressPermissions,
+  pairedWith,
+  permissionOf,
+  SELF,
+  type FortressInfo,
+} from "../../../web/src/lib/fortress";
 import { useAppearance } from "../settings";
 import { contrastOn, softOn, space, text, TOUCH } from "../theme";
-import { AxisLabel, Badge, Body, Button, Caption, Choice, InfoBubble, Page, Press, Section, useTheme, type Tone } from "../ui";
+import { AxisLabel, Badge, Body, Button, Caption, Choice, InfoBubble, Page, Press, Section, Toggle, useTheme, type Tone } from "../ui";
 
 // What the engine lets an announce carry.
 const MAX_NAME = 64;
@@ -25,14 +36,17 @@ const SETTLE_MS = 800;
 
 /**
  * Pairing, as on the web's tile and in BombVault and KnightLoader: three
- * numbered steps, the twelve words, who came with them, this phone, and the
- * relay that carries the rest. While Instances is not under More, its cards
- * follow. The phone's own engine does the pairing, and this screen only asks it.
+ * numbered steps, the twelve words, who came with them, this phone, the relay
+ * that carries the rest, and the fortress. While Instances is not under More,
+ * its cards follow. The phone's own engine does the pairing, and this screen
+ * only asks it. In a fortress its phrase is the pairing's, so the fortress
+ * card shows and changes it and the group's phrase card steps aside.
  */
 export function Pairing() {
   const { t } = useT();
   const [group, setGroup] = useState<ConnectInfo | null>(null);
   const [relay, setRelay] = useState<RelayConfig | null>(null);
+  const [fortress, setFortress] = useState<FortressInfo | null>(null);
   const [error, setError] = useState(false);
   const [createdHere, setCreatedHere] = useState(false);
   const inMore = useAppearance().instancesInMore;
@@ -42,11 +56,14 @@ export function Pairing() {
 
   const load = useCallback(() => {
     const read = ++asked.current;
-    Promise.all([api.connect(), api.relay()]).then(
-      ([g, r]) => {
+    // The fortress has a card of its own, so a fortress that cannot be read
+    // leaves the pairing cards standing.
+    Promise.all([api.connect(), api.relay(), api.fortress().catch(() => null)]).then(
+      ([g, r, f]) => {
         if (read !== asked.current) return;
         setGroup(g);
         setRelay(r);
+        setFortress(f);
         setError(false);
       },
       () => read === asked.current && setError(true),
@@ -61,6 +78,8 @@ export function Pairing() {
   // The engine says on its event stream when somebody comes, goes, waits or
   // is approved, or when the relay comes or goes. A stream that opens again
   // missed what happened while it was down, so the screen reads the group then.
+  // The other apps of the fortress tell it nothing, so the screen reads it
+  // again whenever it comes to the front.
   useFocusEffect(useCallback(() => load(), [load]));
   useEngineStream(
     true,
@@ -71,6 +90,7 @@ export function Pairing() {
   );
 
   const stage = group ? pairStage(group, createdHere) : "unpaired";
+  const inFortress = fortress?.joined === true;
 
   return (
     <Page>
@@ -82,9 +102,11 @@ export function Pairing() {
       ) : null}
       {group ? (
         <>
-          <PhraseCard group={group} stage={stage} onCreatedHere={setCreatedHere} onGroup={takeGroup} onRefresh={load} />
+          {inFortress ? null : (
+            <PhraseCard group={group} stage={stage} onCreatedHere={setCreatedHere} onGroup={takeGroup} onRefresh={load} />
+          )}
           <GroupCard group={group} stage={stage} onRefresh={load} />
-          <InstanceCard group={group} onGroup={takeGroup} />
+          <InstanceCard group={group} inFortress={inFortress} onGroup={takeGroup} onRefresh={load} />
           {relay ? (
             <RelayCard
               group={group}
@@ -97,9 +119,10 @@ export function Pairing() {
               onRefresh={load}
             />
           ) : null}
+          {fortress ? <FortressCard fortress={fortress} pairedWith={pairedWith(group)} onFortress={setFortress} onRefresh={load} /> : null}
         </>
       ) : null}
-      {inMore ? null : <OtherInstances firstHue={7} />}
+      {inMore ? null : <OtherInstances firstHue={7 + (fortress ? fortressHues(fortress) : 0)} />}
     </Page>
   );
 }
@@ -241,13 +264,22 @@ function PhraseCard({
   let body: ReactNode;
   let foot: ReactNode = null;
   if (entering) {
+    const tip = t("pairing.enterTip", { path: [t("nav.settings"), t("settings.pairing"), t("pairing.show")].join(", ") });
     body = (
       <PhraseEntry
+        hint={tip}
+        join={{ label: t("pairing.join"), key: "pairing.join" }}
         onBack={() => setEntering(false)}
-        onPaired={(g) => {
-          setEntering(false);
-          setSaid({ text: t("pairing.joined"), ok: true });
-          onGroup(g);
+        onJoin={async (phrase) => {
+          try {
+            const g = await nameOnce(await api.joinGroup(phrase));
+            setEntering(false);
+            setSaid({ text: t("pairing.joined"), ok: true });
+            onGroup(g);
+            return null;
+          } catch (e) {
+            return refusalText(t, e);
+          }
         }}
       />
     );
@@ -426,10 +458,21 @@ function WordSlots({ words, unknown = [], code }: { words: string[]; unknown?: n
 /**
  * Takes the twelve words of another instance. It reads a paste with line
  * breaks, list numbers and commas, fills the slots as the words arrive and
- * names an unknown word with its place before anything is sent. Pair waits for
- * twelve known words, and whether they belong together only the engine can say.
+ * names an unknown word with its place before anything is sent. The button
+ * waits for twelve known words, and whether they belong together only the
+ * engine can say. `onJoin` answers with the reason it was refused, if it was.
  */
-function PhraseEntry({ onBack, onPaired }: { onBack: () => void; onPaired: (g: ConnectInfo) => void }) {
+function PhraseEntry({
+  hint,
+  join,
+  onBack,
+  onJoin,
+}: {
+  hint: string;
+  join: { label: string; key: string };
+  onBack: () => void;
+  onJoin: (phrase: string) => Promise<string | null>;
+}) {
   const { t } = useT();
   const { p } = useTheme();
   const [typed, setTyped] = useState("");
@@ -444,21 +487,15 @@ function PhraseEntry({ onBack, onPaired }: { onBack: () => void; onPaired: (g: C
 
   async function pair() {
     setBusy(true);
-    try {
-      onPaired(await nameOnce(await api.joinGroup(words.join(" "))));
-    } catch (e) {
-      setRefusal(refusalText(t, e));
-    } finally {
-      setBusy(false);
-    }
+    setRefusal(await onJoin(words.join(" ")));
+    setBusy(false);
   }
 
-  const tip = t("pairing.enterTip", { path: [t("nav.settings"), t("settings.pairing"), t("pairing.show")].join(", ") });
   return (
     <>
       <Field
         label={t("pairing.enterLabel")}
-        hint={tip}
+        hint={hint}
         value={typed}
         multiline
         placeholder={t("pairing.enterPlaceholder")}
@@ -475,8 +512,8 @@ function PhraseEntry({ onBack, onPaired }: { onBack: () => void; onPaired: (g: C
       <View style={[styles.actions, styles.end]}>
         <Button label={t("preview.back")} labelKey="preview.back" onPress={onBack} />
         <Button
-          label={t("pairing.join")}
-          labelKey="pairing.join"
+          label={join.label}
+          labelKey={join.key}
           glyph="IconLink"
           tone="accent"
           busy={busy}
@@ -485,6 +522,262 @@ function PhraseEntry({ onBack, onPaired }: { onBack: () => void; onPaired: (g: C
         />
       </View>
     </>
+  );
+}
+
+const DEVICE_GLYPH: Record<string, string> = { phone: "IconPhone", pc: "IconApp", laptop: "IconApp" };
+
+/**
+ * The fortress, as on the web's Pairing tile: outside one, the twelve words
+ * join it; inside, the other apps with the permissions that involve ArrowLoop,
+ * the phrase with its QR code, a new phrase and the way out. The words show
+ * behind the password where the engine has one, else behind the phone's own
+ * lock. Every switch saves as it flips.
+ */
+function FortressCard({
+  fortress,
+  pairedWith: paired,
+  onFortress,
+  onRefresh,
+}: {
+  fortress: FortressInfo;
+  /** The instances whose pairing comes along on joining and ends on leaving. */
+  pairedWith: string[];
+  onFortress: (f: FortressInfo) => void;
+  /** Reads the group again, which joining and leaving change as well. */
+  onRefresh: () => void;
+}) {
+  const { t, lang } = useT();
+  const { p } = useTheme();
+  const text = fortressText(lang);
+  const [entering, setEntering] = useState(false);
+  // Which of the two the password field stands in front of.
+  const [asking, setAsking] = useState<"show" | "change" | null>(null);
+  const [password, setPassword] = useState("");
+  const [shown, setShown] = useState<{ phrase: string; code: string; left?: string[] } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [said, setSaid] = useState<{ text: string; ok: boolean; more?: string } | null>(null);
+
+  // Words shown here belong to the fortress they were shown for. The desktop
+  // or the web can leave it, and reading it again is the only sign.
+  useEffect(() => {
+    if (fortress.joined) return;
+    setShown(null);
+    setAsking(null);
+  }, [fortress.joined]);
+
+  const app = { app: SELF.name };
+  const devices = paired.join(", ");
+  const refused = (e: unknown) => (e instanceof EngineError && e.status === 403 ? text.passwordWrong : refusalText(t, e));
+
+  async function run(action: () => Promise<void>) {
+    setBusy(true);
+    setSaid(null);
+    try {
+      await action();
+    } catch (e) {
+      setSaid({ text: refused(e), ok: false });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const reveal = (words: { phrase: string; code: string; left?: string[] }) => {
+    setShown(words);
+    setAsking(null);
+    setPassword("");
+    setCopied(false);
+  };
+  const show = (typed = "") => run(async () => reveal(await api.showFortressPhrase(typed)));
+  const change = (typed = "") =>
+    run(async () => {
+      reveal(await api.changeFortressPhrase(typed));
+      onRefresh();
+    });
+
+  async function unlocked(): Promise<boolean> {
+    if (!(await engine.hasDeviceLock().catch(() => false))) return true;
+    return engine.confirmDeviceLock(text.phraseTitle, text.phraseBody).catch(() => false);
+  }
+
+  function start(what: "show" | "change") {
+    setSaid(null);
+    if (fortress.passwordSet) {
+      setAsking(what);
+      setPassword("");
+      return;
+    }
+    void unlocked().then((ok) => {
+      if (ok) void (what === "show" ? show() : change());
+    });
+  }
+
+  const askChange = () =>
+    Alert.alert(text.changeTitle, `${text.changeBody}\n\n${text.changeAway}`, [
+      { text: text.cancel, style: "cancel" },
+      { text: text.changeConfirm, onPress: () => start("change") },
+    ]);
+
+  const leave = () =>
+    Alert.alert(
+      text.leaveTitle,
+      [fill(text.leaveBody, app), paired.length > 0 ? fill(text.leavePairing, { devices }) : "", text.leaveBack].filter(Boolean).join("\n\n"),
+      [
+        { text: text.cancel, style: "cancel" },
+        {
+          text: text.leaveConfirm,
+          style: "destructive",
+          onPress: () =>
+            void run(async () => {
+              onFortress(await api.leaveFortress());
+              onRefresh();
+            }),
+        },
+      ],
+    );
+
+  async function join(phrase: string): Promise<string | null> {
+    try {
+      onFortress(await api.joinFortress(phrase));
+      setEntering(false);
+      setSaid({ text: fill(text.joinedTitle, app), ok: true, more: paired.length > 0 ? fill(text.joinedMoved, { devices }) : undefined });
+      onRefresh();
+      return null;
+    } catch (e) {
+      return e instanceof EngineError && e.code === "inFortress" ? t("fortress.inFortress") : refusalText(t, e);
+    }
+  }
+
+  const flip = (id: string, on: boolean) => {
+    setSaid(null);
+    api.setFortressPermission(permissionOf(id, on)).then(onFortress, (e: unknown) => setSaid({ text: refusalText(t, e), ok: false }));
+  };
+
+  const copy = (phrase: string) =>
+    void engine.copy(phrase).then(
+      () => setCopied(true),
+      () => {},
+    );
+
+  let body: ReactNode;
+  let foot: ReactNode = null;
+  if (!fortress.joined) {
+    body = entering ? (
+      <>
+        {paired.length > 0 ? <Body>{fill(text.moves, { ...app, devices })}</Body> : null}
+        <PhraseEntry hint={t("fortress.phraseWhere")} join={{ label: text.join, key: "pairing.join" }} onBack={() => setEntering(false)} onJoin={join} />
+      </>
+    ) : (
+      <>
+        <Text style={[styles.strong, { color: p.text }]}>{text.outTitle}</Text>
+        <Body>{t("fortress.outBody", { app: SELF.name })}</Body>
+      </>
+    );
+    if (!entering) {
+      foot = <Button label={text.joinTitle} labelKey="pairing.join" tone="accent" onPress={() => setEntering(true)} />;
+    }
+  } else if (asking) {
+    body = (
+      <>
+        <Body>{fill(text.phrasePassword, app)}</Body>
+        <Field label={fill(text.password, app)} value={password} secret onChange={setPassword} />
+      </>
+    );
+    foot = (
+      <>
+        <Button
+          label={text.cancel}
+          labelKey="confirm.cancel"
+          onPress={() => {
+            setAsking(null);
+            if (asking === "change") setSaid({ text: t("fortress.changeKept"), ok: true });
+          }}
+        />
+        <Button
+          label={asking === "show" ? text.unlock : text.changeConfirm}
+          labelKey={asking === "show" ? "pairing.show" : "fortress.changePhrase"}
+          tone="accent"
+          busy={busy}
+          disabled={password === ""}
+          onPress={() => void (asking === "show" ? show(password) : change(password))}
+        />
+      </>
+    );
+  } else if (shown) {
+    body = (
+      <>
+        <AxisLabel>{shown.left ? text.changedTitle : text.phraseTitle}</AxisLabel>
+        <WordSlots words={shown.phrase.split(/\s+/)} code={shown.code} />
+        <Caption>{text.scanHint}</Caption>
+        {shown.left && shown.left.length > 0 ? <Body>{fill(text.changedLeft, { devices: shown.left.join(", ") })}</Body> : null}
+      </>
+    );
+    foot = (
+      <>
+        <Button label={text.close} labelKey="common.close" glyph="IconClose" onPress={() => setShown(null)} />
+        <Button
+          label={copied ? text.copied : text.copy}
+          labelKey={copied ? "common.copied" : "common.copy"}
+          glyph={copied ? "IconCheck" : "IconCopy"}
+          onPress={() => copy(shown.phrase)}
+        />
+      </>
+    );
+  } else {
+    const apps = fortressApps(fortress.members, (unix) => seenAt(lang, unix));
+    const permissions = fortressPermissions(fortress.permissions, fortress.members, t);
+    body = (
+      <>
+        {apps.map((a) => (
+          <View key={a.id} style={styles.app}>
+            <AxisLabel>{a.name}</AxisLabel>
+            {a.instances.map((i) => (
+              <Member
+                key={i.id}
+                glyph={DEVICE_GLYPH[i.deviceKind] ?? "IconServer"}
+                name={i.device}
+                mark={i.form ? (text.forms[i.form as keyof typeof text.forms] ?? i.form) : undefined}
+                note={i.lastSeen ? fill(text.lastSeen, { time: i.lastSeen }) : undefined}
+              >
+                <Badge label={i.presence === "connected" ? text.connected : text.away} tone={i.presence === "connected" ? "ok" : "neutral"} />
+                {i.relay ? <Badge label={text.viaRelay} /> : null}
+              </Member>
+            ))}
+          </View>
+        ))}
+        <AxisLabel hint={text.permissionsAbout}>{text.permissions}</AxisLabel>
+        {permissions.length === 0 ? <Caption>{text.noPermissions}</Caption> : null}
+        {permissions.map((perm) => (
+          <Toggle key={perm.id} label={perm.title} hint={perm.detail} value={perm.on} onChange={(on) => flip(perm.id, on)} />
+        ))}
+      </>
+    );
+    foot = (
+      <>
+        {fortress.phrase ? (
+          <>
+            <Button label={text.showPhrase} labelKey="pairing.show" glyph="IconEye" disabled={busy} onPress={() => start("show")} />
+            <Button label={text.changePhrase} labelKey="fortress.changePhrase" glyph="IconRefresh" disabled={busy} onPress={askChange} />
+          </>
+        ) : null}
+        <Button label={text.leave} labelKey="pairing.leave" glyph="IconSignOut" disabled={busy} onPress={leave} />
+      </>
+    );
+  }
+
+  return (
+    <Section title={t("fortress.title")} hint={text.about} hue={7}>
+      {said && said.ok ? (
+        <Said>
+          {said.text}
+          {said.more ? `\n${said.more}` : null}
+        </Said>
+      ) : null}
+      {body}
+      {said && !said.ok ? <Refusal text={said.text} /> : null}
+      {foot ? <View style={[styles.actions, styles.end]}>{foot}</View> : null}
+    </Section>
   );
 }
 
@@ -661,9 +954,20 @@ function WaitRow({ text: said }: { text: string }) {
 
 /**
  * This phone as the others see it: the name it goes by, saved on its own once
- * typing pauses, and the key to compare when it waits for approval.
+ * typing pauses, and the key to compare when it waits for approval. In a
+ * fortress the name goes to the fortress, which tells the other apps as well.
  */
-function InstanceCard({ group, onGroup }: { group: ConnectInfo; onGroup: (g: ConnectInfo) => void }) {
+function InstanceCard({
+  group,
+  inFortress,
+  onGroup,
+  onRefresh,
+}: {
+  group: ConnectInfo;
+  inFortress: boolean;
+  onGroup: (g: ConnectInfo) => void;
+  onRefresh: () => void;
+}) {
   const { t } = useT();
   const [name, setName] = useState(group.name);
   const [refusal, setRefusal] = useState<string | null>(null);
@@ -682,9 +986,9 @@ function InstanceCard({ group, onGroup }: { group: ConnectInfo; onGroup: (g: Con
     setRefusal(null);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      api
-        .renameInstance(next)
-        .then(onGroup, (e: unknown) => setRefusal(refusalText(t, e)))
+      const saved = inFortress ? api.nameInFortress(next).then(onRefresh) : api.renameInstance(next).then(onGroup);
+      saved
+        .catch((e: unknown) => setRefusal(refusalText(t, e)))
         .finally(() => {
           typing.current = false;
         });
@@ -917,6 +1221,7 @@ const styles = StyleSheet.create({
   note: { paddingHorizontal: space.md, paddingVertical: space.sm + 2 },
   noteText: { fontSize: text.subline, lineHeight: 18 },
   member: { gap: space.xs, paddingTop: space.sm, borderTopWidth: StyleSheet.hairlineWidth },
+  app: { gap: space.xs },
   // Two words to a row: the longest on the list still fits beside its number.
   slots: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   slot: {
