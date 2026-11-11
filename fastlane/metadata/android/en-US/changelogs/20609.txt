@@ -1,0 +1,1 @@
+No new buttons this time, just a sturdier engine. ArrowLoop is now built with Go 1.27.4, which fixes a crash in its web server. Your jobs won't notice a thing, and that's exactly how it should be.
