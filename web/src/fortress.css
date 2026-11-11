@@ -1,0 +1,432 @@
+/* Copied verbatim from GlimStone, packages/core/tokens.css at commit 15ef572
+   of feat/fortress-ui, the build the two packages in web/vendor come from:
+   the fortress and the dropdown a selector shows when its labels do not fit.
+   tokens.css holds the rest of GlimStone at the version in
+   lib/glimstone/version.ts. Once GlimStone releases the fortress and the
+   copies follow it, this file goes. */
+@layer components {
+  /* A strip of one whose labels do not fit shows a dropdown in its place and
+     no groove around it. watchSelectorFit lifts the class for each reading,
+     so it measures the segments and the room as the strip would show them. */
+  .glim-sel--listed {
+    padding: 0;
+    background-color: transparent;
+  }
+  .glim-sel--listed > :not(.glim-sel-list) { display: none; }
+  .glim-sel-list {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* The Instances tab with the fortress in it ("The fortress" in the design
+     language): the grids of instance cards, the switch for the other apps, the
+     permissions and the page's floating actions. Every card owns a rainbow
+     position, so its buttons, switches and glyphs take the card's hue. */
+  .glim-fortress {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    min-height: 100%;
+  }
+  .glim-fortress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 32rem), 1fr));
+    gap: 1rem;
+  }
+
+  /* One instance, or one app with a row per instance. The mark stands at the
+     start, the name with its badges, the facts and the actions beside it. */
+  .glim-instance {
+    --instance-mark: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .glim-instance-top {
+    display: flex;
+    align-items: flex-start;
+  }
+  /* A card in a taller row grows below its body, so the rows stay under the
+     head and only the foot moves down. */
+  .glim-instance-top:last-child { flex: 1; }
+  .glim-instance-mark {
+    flex: none;
+    width: var(--instance-mark);
+    height: var(--instance-mark);
+    margin-block: 1rem 0.875rem;
+    margin-inline-start: 1rem;
+    object-fit: contain;
+  }
+  .glim-instance-main {
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.125rem 0.875rem;
+  }
+  .glim-instance-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.375rem 0.625rem;
+  }
+  .glim-instance-title {
+    margin: 0;
+    font-size: var(--text-title);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .glim-instance-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-inline-start: auto;
+  }
+  .glim-instance-facts {
+    margin: 0;
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+    overflow-wrap: anywhere;
+  }
+  .glim-instance-figures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    margin: 0.375rem 0 0;
+  }
+  .glim-instance-figures > div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .glim-instance-figures dt {
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .glim-instance-figures dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .glim-instance-body { padding: 0 1rem 0.75rem; }
+  .glim-instance-acts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding: 0.5rem 0 0;
+  }
+  .glim-instance > .glim-instance-acts { padding: 0 1rem 0.875rem; }
+  .glim-instance-note {
+    margin-inline-end: auto;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+
+  /* The places one app runs, one row each on the second surface. */
+  .glim-instance-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glim-instance-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface2);
+  }
+  .glim-instance-device {
+    display: grid;
+    place-items: center;
+    width: 1.875rem;
+    height: 1.875rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface3);
+    color: var(--carbon-text-sub);
+  }
+  .glim-instance-device svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  .glim-instance-row:hover .glim-instance-device {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .glim-instance-row-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .glim-instance-row-name {
+    font-size: var(--text-subline);
+    font-weight: 600;
+  }
+  .glim-instance-row-sub {
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+  }
+
+  /* Outside a fortress: an empty place in the grid, drawn with a dashed edge
+     so it does not pass for an instance. */
+  .glim-instance--out {
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.75rem 1.5rem;
+    border: 1.5px dashed var(--carbon-border);
+    background-color: transparent;
+    box-shadow: none;
+    text-align: center;
+  }
+  .glim-instance--out .glim-instance-title { font-size: var(--text-body); }
+  .glim-instance-hint {
+    margin: 0;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+  .glim-instance-found {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+  .glim-instance-found img {
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: contain;
+  }
+
+  /* The switch that shows the other apps: its name with the (i), a line of
+     what it would show, and the switch at the end. */
+  .glim-fortress-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.125rem;
+  }
+  .glim-fortress-switch-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+  .glim-fortress-switch-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+  }
+  .glim-fortress-sub {
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+
+  /* One permission: the two apps it joins, what it allows, and its switch. */
+  .glim-permissions {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glim-permission {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: var(--radius-control);
+  }
+  .glim-permission:hover { background-color: var(--carbon-hover); }
+  .glim-permission-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+  .glim-permission-pair img {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: contain;
+  }
+  /* The list's chevron, turned to point from the app that acts to the ones it acts at. */
+  .glim-permission-arrow {
+    width: 0.7rem;
+    height: 0.7rem;
+    rotate: -90deg;
+    color: var(--carbon-text-muted);
+  }
+  [dir="rtl"] .glim-permission-arrow { rotate: 90deg; }
+  .glim-permission-to { display: inline-flex; }
+  .glim-permission-to > * + * { margin-inline-start: -0.55rem; }
+  .glim-permission-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+  .glim-permission-title { font-weight: 600; }
+  .glim-permission:not(.glim-permission--on) .glim-permission-title { color: var(--carbon-text-sub); }
+
+  /* The action the page exists for stands in the window's bottom right corner,
+     with the rarer ones beside it ("Page actions"). */
+  .glim-fortress-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin-top: auto;
+    padding: 1rem 0 0.25rem;
+    pointer-events: none;
+  }
+  .glim-fortress-actions > * {
+    pointer-events: auto;
+    box-shadow: var(--elevation);
+  }
+
+  /* The twelve words: numbered fields to type into, and numbered tiles to read. */
+  .glim-phrase-fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+  .glim-phrase-field {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .glim-phrase-number {
+    flex: none;
+    width: 1.3rem;
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+    text-align: end;
+  }
+  .glim-phrase-words {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glim-phrase-words li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface2);
+    font-weight: 500;
+  }
+  /* The words beside their QR code, the rows stretched to the code's height
+     ("Pairing a phone"). The code keeps a light ground and dark modules in
+     every theme, since that is what a camera reads. */
+  .glim-phrase-show {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 8rem;
+    gap: 0.4rem 1rem;
+  }
+  .glim-phrase-show > .glim-phrase-words { grid-auto-rows: 1fr; }
+  .glim-phrase-qr {
+    width: 8rem;
+    height: 8rem;
+    border-radius: var(--radius-control);
+  }
+  .glim-phrase-scan {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-meta);
+    text-align: end;
+  }
+  @media (max-width: 640px) {
+    .glim-phrase-show { grid-template-columns: minmax(0, 1fr); }
+    .glim-phrase-qr { justify-self: end; }
+  }
+  .glim-fortress-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .glim-fortress-text p { margin: 0; }
+  .glim-fortress-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+  .glim-fortress-note svg {
+    flex: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-top: 0.2rem;
+    color: var(--accent-glyph);
+  }
+  .glim-fortress-error {
+    margin: 0;
+    color: var(--status-fail-text);
+    font-size: var(--text-subline);
+  }
+  .glim-fortress-result {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .glim-fortress-result-mark {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--status-ok-bg);
+    color: var(--status-ok-text);
+  }
+  .glim-fortress-result-title {
+    margin: 0 0 0.25rem;
+    font-size: var(--text-title);
+    font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    .glim-instance { --instance-mark: 3.75rem; }
+    .glim-instance-mark {
+      margin-block: 0.875rem 0.75rem;
+      margin-inline-start: 0.875rem;
+    }
+    .glim-instance-main { padding: 0.875rem 0.875rem 0.75rem; }
+    .glim-fortress-switch { padding: 0.75rem 0.875rem; }
+    .glim-permission {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.5rem 0.75rem;
+      padding-inline: 0.5rem;
+    }
+    .glim-permission-pair { grid-column: 1 / -1; }
+    .glim-phrase-fields,
+    .glim-phrase-words { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .glim-fortress-actions {
+      padding: 0.75rem 0;
+      background-color: var(--carbon-bg);
+      pointer-events: auto;
+    }
+  }
+}
