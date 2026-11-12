@@ -59,6 +59,7 @@ export function WindowBar({
 
   return (
     <header
+      data-glim="WindowBar"
       aria-label={appName}
       className="glim-window-bar"
       onMouseDown={down}

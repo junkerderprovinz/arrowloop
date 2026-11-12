@@ -1571,7 +1571,7 @@ const tr: Translations = {
   'pairing.paired': 'Eşleştirildi',
   'pairing.waitNext': 'Sonraki örnek bekleniyor',
   'pairing.searching': 'Diğer örnekler aranıyor',
-  'pairing.inactive': 'Etkin değil',
+  'pairing.notReachable': 'Ulaşılamıyor',
   'pairing.behindTitle': 'Gelmeyenler',
   'pairing.behindTip': 'Bu cihazlar, bu cihaz kaleye katılmadan önce onunla eşleştirilmişti ama 30 gün içinde peşinden gelmediler, bu yüzden eski eşleştirmeleri kapandı. Birini getirmek için o cihaza kalenin ifadesini gir. Artık kullanmıyorsan kaldırman yeterli.',
   'pairing.relayCheckOpen': 'Kontrol edilecekler',

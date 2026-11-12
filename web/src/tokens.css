@@ -139,6 +139,8 @@
   --brand-docker:            #2396ed;
   --brand-unraid-from:       #e32929;
   --brand-unraid-to:         #ff8d30;
+  --brand-mos:               #26a269;
+  --brand-umbrel:            #7d7bf6;
   --brand-windows:           #2b88d8;
   --brand-flatpak:           #4a90d9;
   --brand-github:  #ffffff;
@@ -235,6 +237,8 @@
     --brand-docker:            #2396ed;
     --brand-unraid-from:       #e32929;
     --brand-unraid-to:         #ff8d30;
+    --brand-mos:               #26a269;
+    --brand-umbrel:            #5351f3;
     --brand-windows:           #0078d4;
     --brand-flatpak:           #4a90d9;
     --brand-github:  #181717;
@@ -303,6 +307,8 @@
   --brand-docker:            #2396ed;
   --brand-unraid-from:       #e32929;
   --brand-unraid-to:         #ff8d30;
+  --brand-mos:               #26a269;
+  --brand-umbrel:            #5351f3;
   --brand-windows:           #0078d4;
   --brand-flatpak:           #4a90d9;
   --brand-github:  #181717;
@@ -2081,6 +2087,8 @@ body {
 .glim-docker-mark { color: var(--brand-docker); }
 .glim-windows-mark { color: var(--brand-windows); }
 .glim-flatpak-mark { color: var(--brand-flatpak); }
+.glim-mos-mark { color: var(--brand-mos); }
+.glim-umbrel-mark { color: var(--brand-umbrel); }
 .glim-paypal-mark { color: var(--brand-paypal); }
 .glim-bitcoin-mark { color: var(--brand-bitcoin); }
 .glim-github-mark { color: var(--brand-github); }
@@ -2109,6 +2117,8 @@ body {
     --brand-docker: var(--tile-ink);
     --brand-windows: var(--tile-ink);
     --brand-flatpak: var(--tile-ink);
+    --brand-mos: var(--tile-ink);
+    --brand-umbrel: var(--tile-ink);
     --brand-unraid-from: var(--tile-ink);
     --brand-unraid-to: var(--tile-ink);
   }
@@ -2139,6 +2149,11 @@ body {
 .glim-tile-fdroid  { --tile: #1976d2; --tile-ink: #ffffff; } /* 4.6:1 */
 .glim-tile-docker  { --tile: #1d63ed; --tile-ink: #ffffff; } /* 5.2:1 */
 .glim-tile-unraid  { --tile: #f15a2c; --tile-ink: #ffffff; } /* 3.4:1 */
+.glim-tile-mos     { --tile: #26a269; --tile-ink: #ffffff; } /* 3.3:1 */
+/* ZimaOS sets its black mark on a light grey that is the light theme's own
+   ground, so the lit tile carries a ring. 16.5:1. */
+.glim-tile-zimaos  { --tile: #f4f4f4; --tile-ink: #161616; --tile-edge: #a8a8a8; }
+.glim-tile-umbrel  { --tile: #5351f3; --tile-ink: #ffffff; } /* 5.5:1 */
 .glim-tile-zip     { --tile: #4d5562; --tile-ink: #ffffff; } /* 7.5:1 */
 .glim-tile-github  { --tile: #181717; --tile-ink: #ffffff; } /* 17.9:1 */
 .glim-tile-paypal  { --tile: #003087; --tile-ink: #ffffff; } /* 13.4:1 */
@@ -3160,7 +3175,12 @@ body {
     translate: 3px 0;
     transition: translate 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .glim-toggle-track[aria-checked="true"] .glim-toggle-thumb { translate: 18px 0; }
+  /* On the accent the thumb takes the fill's ink, or the light ramp's pale
+     ground would vanish into a yellow or a green. */
+  .glim-toggle-track[aria-checked="true"] .glim-toggle-thumb {
+    background-color: var(--accent-contrast);
+    translate: 18px 0;
+  }
   /* The flex track already mirrors the thumb's rest position under RTL, so the
      shift turns round with it. */
   .glim-toggle-thumb:dir(rtl) { translate: -3px 0; }
@@ -3206,6 +3226,13 @@ body {
     padding-inline: 0;
     aspect-ratio: 1;
   }
+  /* The four forms (badgeClassName). A pill's radius is half its height, so a
+     short badge stays a pill rather than a lozenge, and in the leaf shape the
+     two sharp corners stay sharp. */
+  .glim-badge--rounded { border-radius: 0.3125rem; }
+  .glim-badge--square { border-radius: 0; }
+  .glim-badge--pill { border-radius: calc(var(--badge-h) / 2); }
+  .glim-badge--circle { border-radius: 50%; }
 
   /* warn uses the strong wash, which is meant for small chips; the plain one is
      for panels that hold paragraphs. active is the accent-soft wash, not a solid
@@ -3800,17 +3827,21 @@ body {
   /* The one horizontal selector (selector.ts; "The one horizontal selector").
      The track spans its box and its segments share the width, so a card of
      stacked selectors ends in one edge; `--inline` hugs the segments for a
-     toolbar row. A track wraps, it never scrolls. */
+     toolbar row. A track keeps to one row: it never wraps and never scrolls,
+     and watchSelectorFit gives its segments the room by their labels, then
+     their glyphs, then cut labels. A row that does not fit gives way inside
+     its box, so its labels must not widen the box around it: without the
+     containment a grid or flex parent grows to hold the whole row. */
   .glim-sel {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     width: 100%;
+    contain: inline-size;
   }
-  .glim-sel--inline {
-    width: fit-content;
-    max-width: 100%;
-  }
+  /* selectorFlex sets the width: the segments side by side, or the whole box
+     once they do not fit. */
+  .glim-sel--inline { max-width: 100%; }
   /* The groove is surface3, one step off both parents a well may sit on, a
      card and a sub-card; 0.2rem is the thinnest ring that still reads as a
      groove. */
@@ -3821,19 +3852,17 @@ body {
     background-color: var(--carbon-surface3);
   }
   .glim-sel--chip { gap: 0.25rem; }
-  /* Page tabs stay on one row and give up their words first. */
-  .glim-sel--fit { flex-wrap: nowrap; }
-  /* Paired segments stretch, so a label that wraps keeps its neighbour on the
-     same top and at the same height. Half the strip less half the larger gap,
-     so two always fit a row. */
-  .glim-sel--pairs { align-items: stretch; }
-  @media (max-width: 600px) {
-    .glim-sel--pairs {
-      --seg-basis: calc(50% - 0.25rem);
-      width: 100%;
-    }
-    /* A pill around several rows bulges at its ends. */
-    .glim-sel--pairs.glim-sel--well { border-radius: var(--radius-card); }
+  /* A strip of one whose labels do not fit shows a dropdown in its place and
+     no groove around it. watchSelectorFit lifts the class for each reading,
+     so it measures the segments and the room as the strip would show them. */
+  .glim-sel--listed {
+    padding: 0;
+    background-color: transparent;
+  }
+  .glim-sel--listed > :not(.glim-sel-list) { display: none; }
+  .glim-sel-list {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .glim-sel-seg {
@@ -3898,7 +3927,7 @@ body {
   }
   /* A segment with a glyph, or one in a strip beside a button, has the
      button's box; a box sized by its text comes out shorter than the controls
-     around it. A floor rather than a height, so a wrapped label grows it. */
+     around it. */
   .glim-sel-seg--btn {
     min-height: var(--btn-h);
     padding-block: 0;
@@ -3930,18 +3959,13 @@ body {
     height: 1.25rem;
   }
 
+  /* A label never takes a second line. Cut short, it keeps its full text in
+     the segment's bubble. */
   .glim-sel-label {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-  /* A pinned segment lets its label break instead of cutting it off;
-     segmentLayout decides when that may happen. */
-  .glim-sel-label--wrap {
-    white-space: normal;
-    text-wrap: balance;
-    overflow-wrap: break-word;
   }
 
   /* Under a finger a 20px pill is too small to hit. A well is a row of
@@ -4223,11 +4247,15 @@ body {
     color: var(--carbon-text-muted);
   }
 
-  /* The sub-card (rule 1): a flat, filled group inside a card under a small
-     uppercase title, in place of a card inside a card or a fold-out. The
-     title takes the sub text rather than the eyebrow's muted one, which falls
-     short of AA on surface2. */
+  /* The sub-card (rule 1): a flat, filled group inside a card or a window, in
+     place of a card inside a card or a fold-out. Its title is a section badge
+     in the notch on its top edge (rule 11), so a titled one is `relative` for
+     the notch, keeps the badge's lower half clear of its first row, and
+     stands a little further from what comes before it, which the badge's
+     upper half reaches into. What belongs to the whole group stands at the
+     end of the heading's row. */
   .glim-subcard {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -4235,27 +4263,27 @@ body {
     border-radius: var(--radius-card);
     background-color: var(--carbon-surface2);
   }
-  .glim-subcard-title {
+  .glim-subcard--titled { padding-top: 1.25rem; }
+  * + .glim-subcard--titled { margin-top: 0.5rem; }
+  .glim-subcard-end {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.375rem;
-    margin: 0;
-    font-size: var(--text-meta);
-    font-weight: 600;
-    line-height: 1rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--carbon-text-sub);
+    justify-content: flex-end;
+    gap: 0.75rem;
   }
   /* What carries surface2 at rest would vanish into the sub-card, so fields,
-     quiet buttons and bare selector segments step up one surface. */
+     quiet buttons, bare selector segments and resting tiles step up one
+     surface, and hover one more (rule 21). A tile does so in a well too. */
   .glim-subcard .glim-btn--subtle,
   .glim-subcard .glim-num-field,
-  .glim-subcard .glim-sel--chip .glim-sel-seg:not(.glim-active) {
+  .glim-subcard .glim-sel--chip .glim-sel-seg:not(.glim-active),
+  :is(.glim-subcard, .glim-well) .glim-sel-tile:not(.glim-active) {
     background-color: var(--carbon-surface3);
   }
   .glim-subcard .glim-num-field:focus,
-  .glim-subcard .glim-sel--chip .glim-sel-seg:not(.glim-active):not(:disabled):hover {
+  .glim-subcard .glim-sel--chip .glim-sel-seg:not(.glim-active):not(:disabled):hover,
+  :is(.glim-subcard, .glim-well) .glim-sel-tile:not(.glim-active):hover {
     background-color: var(--carbon-hover-raised);
   }
 
@@ -5075,6 +5103,418 @@ body {
   .glim-meter-track--quiet.glim-meter-track--busy > .glim-meter-fill {
     background: repeating-linear-gradient(-45deg, var(--carbon-text-muted) 0 4px, transparent 4px 8px);
   }
+
+  /* The Instances tab with the fortress in it ("The fortress" in the design
+     language): the grids of instance cards, the switch for the other apps, the
+     permissions and the page's floating actions. Every card owns a rainbow
+     position, so its buttons, switches and glyphs take the card's hue. */
+  .glim-fortress {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    min-height: 100%;
+  }
+  .glim-fortress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 32rem), 1fr));
+    gap: 1rem;
+  }
+
+  /* One instance, or one app with a row per instance. The mark stands at the
+     start, the name with its badges, the facts and the actions beside it. */
+  .glim-instance {
+    --instance-mark: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .glim-instance-top {
+    display: flex;
+    align-items: flex-start;
+  }
+  /* A card in a taller row grows below its body, so the rows stay under the
+     head and only the foot moves down. */
+  .glim-instance-top:last-child { flex: 1; }
+  .glim-instance-mark {
+    flex: none;
+    width: var(--instance-mark);
+    height: var(--instance-mark);
+    margin-block: 1rem 0.875rem;
+    margin-inline-start: 1rem;
+    object-fit: contain;
+  }
+  .glim-instance-main {
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.125rem 0.875rem;
+  }
+  .glim-instance-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.375rem 0.625rem;
+  }
+  .glim-instance-title {
+    margin: 0;
+    font-size: var(--text-title);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .glim-instance-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-inline-start: auto;
+  }
+  .glim-instance-facts {
+    margin: 0;
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+    overflow-wrap: anywhere;
+  }
+  .glim-instance-figures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    margin: 0.375rem 0 0;
+  }
+  .glim-instance-figures > div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .glim-instance-figures dt {
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .glim-instance-figures dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .glim-instance-body { padding: 0 1rem 0.75rem; }
+  .glim-instance-acts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding: 0.5rem 0 0;
+  }
+  .glim-instance > .glim-instance-acts { padding: 0 1rem 0.875rem; }
+  .glim-instance-note {
+    margin-inline-end: auto;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+
+  /* The places one app runs, one row each on the second surface. */
+  .glim-instance-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glim-instance-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface2);
+  }
+  .glim-instance-device {
+    display: grid;
+    place-items: center;
+    width: 1.875rem;
+    height: 1.875rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface3);
+    color: var(--carbon-text-sub);
+  }
+  .glim-instance-device svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  .glim-instance-row:hover .glim-instance-device {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .glim-instance-row-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .glim-instance-row-name {
+    font-size: var(--text-subline);
+    font-weight: 600;
+  }
+  .glim-instance-row-sub {
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+  }
+
+  /* Outside a fortress: an empty place in the grid, drawn with a dashed edge
+     so it does not pass for an instance. */
+  .glim-instance--out {
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.75rem 1.5rem;
+    border: 1.5px dashed var(--carbon-border);
+    background-color: transparent;
+    box-shadow: none;
+    text-align: center;
+  }
+  .glim-instance--out .glim-instance-title { font-size: var(--text-body); }
+  .glim-instance-hint {
+    margin: 0;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+  .glim-instance-found {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+  .glim-instance-found img {
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: contain;
+  }
+
+  /* The switch that shows the other apps: its name with the (i), a line of
+     what it would show, and the switch at the end. */
+  .glim-fortress-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.125rem;
+  }
+  .glim-fortress-switch-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+  .glim-fortress-switch-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+  }
+  .glim-fortress-sub {
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+
+  /* One permission: the two apps it joins, what it allows, and its switch. */
+  .glim-permissions {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glim-permission {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: var(--radius-control);
+  }
+  .glim-permission:hover { background-color: var(--carbon-hover); }
+  .glim-permission-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+  .glim-permission-pair img {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: contain;
+  }
+  /* The list's chevron, turned to point from the app that acts to the ones it acts at. */
+  .glim-permission-arrow {
+    width: 0.7rem;
+    height: 0.7rem;
+    rotate: -90deg;
+    color: var(--carbon-text-muted);
+  }
+  [dir="rtl"] .glim-permission-arrow { rotate: 90deg; }
+  .glim-permission-to { display: inline-flex; }
+  .glim-permission-to > * + * { margin-inline-start: -0.55rem; }
+  .glim-permission-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+  .glim-permission-title { font-weight: 600; }
+  .glim-permission:not(.glim-permission--on) .glim-permission-title { color: var(--carbon-text-sub); }
+
+  /* The action the page exists for stands in the window's bottom right corner,
+     with the rarer ones beside it ("Page actions"). */
+  .glim-fortress-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin-top: auto;
+    padding: 1rem 0 0.25rem;
+    pointer-events: none;
+  }
+  .glim-fortress-actions > * {
+    pointer-events: auto;
+    box-shadow: var(--elevation);
+  }
+
+  /* The twelve words: numbered fields to type into, and numbered tiles to read. */
+  .glim-phrase-fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+  .glim-phrase-field {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .glim-phrase-number {
+    flex: none;
+    width: 1.3rem;
+    color: var(--carbon-text-muted);
+    font-size: var(--text-meta);
+    text-align: end;
+  }
+  .glim-phrase-words {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glim-phrase-words li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface2);
+    font-weight: 500;
+  }
+  /* The words beside their QR code, the rows stretched to the code's height
+     ("Pairing a phone"). The code keeps a light ground and dark modules in
+     every theme, since that is what a camera reads. */
+  .glim-phrase-show {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 8rem;
+    gap: 0.4rem 1rem;
+  }
+  .glim-phrase-show > .glim-phrase-words { grid-auto-rows: 1fr; }
+  .glim-phrase-qr {
+    width: 8rem;
+    height: 8rem;
+    border-radius: var(--radius-control);
+  }
+  .glim-phrase-scan {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-meta);
+    text-align: end;
+  }
+  @media (max-width: 640px) {
+    .glim-phrase-show { grid-template-columns: minmax(0, 1fr); }
+    .glim-phrase-qr { justify-self: end; }
+  }
+  .glim-fortress-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .glim-fortress-text p { margin: 0; }
+  .glim-fortress-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+  }
+  .glim-fortress-note svg {
+    flex: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-top: 0.2rem;
+    color: var(--accent-glyph);
+  }
+  .glim-fortress-error {
+    margin: 0;
+    color: var(--status-fail-text);
+    font-size: var(--text-subline);
+  }
+  .glim-fortress-result {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .glim-fortress-result-mark {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--status-ok-bg);
+    color: var(--status-ok-text);
+  }
+  .glim-fortress-result-title {
+    margin: 0 0 0.25rem;
+    font-size: var(--text-title);
+    font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    .glim-instance { --instance-mark: 3.75rem; }
+    .glim-instance-mark {
+      margin-block: 0.875rem 0.75rem;
+      margin-inline-start: 0.875rem;
+    }
+    .glim-instance-main { padding: 0.875rem 0.875rem 0.75rem; }
+    .glim-fortress-switch { padding: 0.75rem 0.875rem; }
+    .glim-permission {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.5rem 0.75rem;
+      padding-inline: 0.5rem;
+    }
+    .glim-permission-pair { grid-column: 1 / -1; }
+    .glim-phrase-fields,
+    .glim-phrase-words { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .glim-fortress-actions {
+      padding: 0.75rem 0;
+      background-color: var(--carbon-bg);
+      pointer-events: auto;
+    }
+  }
 }
 
 /* Outside the layer, or the house ring's offset would win: inside a menu the
@@ -5095,12 +5535,14 @@ body {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
-/* An app's own rule for links outranks the layer, so a link with a button's look
-   takes its colour back from there. */
-a:is(.glim-btn, .glim-icon-btn) {
+/* An app's own rule for links or buttons, such as a reset's
+   `a, button { color: inherit }`, stands outside any layer and so outranks every
+   rule in one. These take their colour back from the layer, where the ink on a
+   filled one is the computed contrast (rule 45). */
+:is(a, button):is(.glim-btn, .glim-icon-btn, .glim-badge, .glim-sel-seg, .glim-sel-tile, .glim-nav-row, .glim-give-network, .glim-give-coin) {
   color: revert-layer;
-  text-decoration: none;
 }
+a:is(.glim-btn, .glim-icon-btn) { text-decoration: none; }
 /* Under the message, at its end. The stage's floor is for a row of buttons. */
 .glim-toast-action {
   align-self: flex-end;
@@ -5112,6 +5554,416 @@ a:is(.glim-btn, .glim-icon-btn) {
   .glim-rowmark { transition: background-color var(--motion-control-dur) ease; }
   .glim-list-row-actions { transition: opacity var(--motion-control-dur) ease; }
   .glim-tree-toggle > svg { transition: rotate var(--motion-control-dur) ease; }
+}
+
+/* Waiting (BusyRing, SkeletonRow; busy.ts). Both stay hidden for
+   --busy-delay, so an answer that comes quickly never flashes a loader, and
+   both read the motion engine: at "off" and under reduced motion nothing
+   turns and no light crosses. */
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      --motion-spin-dur: 1.5s;
+      --motion-skeleton-dur: 1.6s;
+      --motion-skeleton-glow: 100%;
+    }
+    :root[data-motion='subtle'] {
+      --motion-spin-dur: 2.4s;
+      --motion-skeleton-dur: 2.8s;
+      --motion-skeleton-glow: 60%;
+    }
+    /* Long rather than 0; both stop outright at this level, below. */
+    :root[data-motion='off'] {
+      --motion-spin-dur: 60s;
+      --motion-skeleton-dur: 60s;
+      --motion-skeleton-glow: 0%;
+    }
+  }
+  :root[data-motion='storm'] {
+    --motion-spin-dur: 0.9s;
+    --motion-skeleton-dur: 1s;
+    --motion-skeleton-glow: 100%;
+  }
+
+  /* The light that crosses a placeholder: a faint white on the dark ramps, a
+     strong one on the light ramp, where a darker band would read as a shadow. */
+  :root,
+  [data-theme="dark"] { --skeleton-glow: rgb(255 255 255 / 0.1); }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --skeleton-glow: rgb(255 255 255 / 0.9); }
+  }
+  [data-theme="light"] { --skeleton-glow: rgb(255 255 255 / 0.9); }
+
+  @keyframes glim-busy-show {
+    from { visibility: hidden; }
+  }
+
+  /* Two flat arcs that turn against each other in one period, so they meet at
+     the top and the bottom. Each arc is a hard conic stop masked to a ring,
+     with a cap at either end that follows the shape. The ring takes the
+     accent, since waiting on the app is activity (rule 3), and a button's ink
+     inside its glyph slot. Standing still, the inner arc stays turned off the
+     outer one, so the two never read as one broken circle. */
+  .glim-busy-ring {
+    --ring-size: 1.375rem;
+    --ring-th: calc(var(--ring-size) / 10);
+    --ring-arc: 155deg;
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: var(--ring-size);
+    height: var(--ring-size);
+    vertical-align: -0.15em;
+    color: var(--accent-glyph);
+    animation: glim-busy-show 0s var(--busy-delay, 400ms) both;
+  }
+  .glim-busy-ring--small { --ring-size: 0.875rem; }
+  .glim-busy-ring--large { --ring-size: 2rem; }
+  .glim-btn-glyph > .glim-busy-ring { color: currentColor; }
+  .glim-busy-ring-arc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+  .glim-busy-ring-arc--inner {
+    inset: calc(var(--ring-th) * 2.6);
+    transform: rotate(-0.4turn);
+  }
+  .glim-busy-ring-arc::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(currentColor 0deg var(--ring-arc), transparent var(--ring-arc) 360deg);
+    mask: radial-gradient(farthest-side, #0000 calc(100% - var(--ring-th)), #000 0);
+  }
+  .glim-busy-ring-tail {
+    position: absolute;
+    inset: 0;
+    transform: rotate(var(--ring-arc));
+  }
+  .glim-busy-ring-arc::after,
+  .glim-busy-ring-tail::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--ring-th);
+    height: var(--ring-th);
+    margin-left: calc(var(--ring-th) / -2);
+    border-radius: var(--radius-pill);
+    background: currentColor;
+  }
+
+  /* A placeholder in the box of a ListRow, so the list does not jump when the
+     rows arrive. Its blocks stand on surface2, one step up from the card (rule
+     21). The light is fixed to the viewport, so one band passes over every row
+     at once instead of each block running its own. */
+  .glim-skeleton-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    min-height: 2.6rem;
+    padding-inline: 0.5rem;
+    animation: glim-busy-show 0s var(--busy-delay, 400ms) both;
+  }
+  .glim-skeleton-block {
+    flex: none;
+    background-color: var(--carbon-surface2);
+    background-image: linear-gradient(
+      100deg,
+      transparent 20%,
+      color-mix(in srgb, var(--skeleton-glow) var(--motion-skeleton-glow, 0%), transparent) 50%,
+      transparent 80%
+    );
+    background-attachment: fixed;
+    background-position: -24rem 0;
+    background-size: 24rem 100%;
+    background-repeat: no-repeat;
+  }
+  .glim-skeleton-tile {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-control);
+  }
+  .glim-skeleton-name {
+    flex: 0 1 var(--skeleton-width, 55%);
+    height: 0.75rem;
+    border-radius: min(var(--radius-control), 0.375rem);
+  }
+  .glim-skeleton-badge {
+    width: 3.5rem;
+    height: 1.25rem;
+    margin-inline-start: auto;
+    border-radius: var(--radius-pill);
+  }
+  /* Three lengths in turn, so a column of rows reads as names, not a grid. */
+  .glim-skeleton-row:nth-child(3n + 2) { --skeleton-width: 40%; }
+  .glim-skeleton-row:nth-child(3n + 3) { --skeleton-width: 48%; }
+
+  @keyframes glim-busy-cw { to { transform: rotate(1turn); } }
+  @keyframes glim-busy-ccw { to { transform: rotate(-1turn); } }
+  @keyframes glim-skeleton-sweep {
+    from { background-position: -24rem 0; }
+    to   { background-position: 100vw 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion='off']) .glim-busy-ring-arc { animation: glim-busy-cw var(--motion-spin-dur) linear infinite; }
+    :root:not([data-motion='off']) .glim-busy-ring-arc--inner { animation-name: glim-busy-ccw; }
+    :root:not([data-motion='off']) .glim-skeleton-block { animation: glim-skeleton-sweep var(--motion-skeleton-dur) ease-in-out infinite; }
+  }
+  /* Storm moves under reduced motion too, with its own numbers. */
+  @media (prefers-reduced-motion: reduce) {
+    :root[data-motion='storm'] .glim-busy-ring-arc { animation: glim-busy-cw var(--motion-spin-dur) linear infinite; }
+    :root[data-motion='storm'] .glim-busy-ring-arc--inner { animation-name: glim-busy-ccw; }
+    :root[data-motion='storm'] .glim-skeleton-block { animation: glim-skeleton-sweep var(--motion-skeleton-dur) ease-in-out infinite; }
+  }
+}
+
+/* Overlays in the top layer (Popover, Sheet; overlay.ts). A popover is an
+   element with the popover attribute, tied to its trigger by CSS anchor
+   positioning, or placed by bubblePosition.ts where the browser has none. A
+   sheet is a <dialog> shown modal, so the page behind it is inert by itself. */
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      --motion-sheet-dur: 300ms;
+      --motion-sheet-shift: 1;
+    }
+    :root[data-motion='subtle'] {
+      --motion-sheet-dur: 160ms;
+      --motion-sheet-shift: 0.25;
+    }
+    :root[data-motion='off'] {
+      --motion-sheet-dur: 0s;
+      --motion-sheet-shift: 0;
+    }
+  }
+  :root[data-motion='storm'] {
+    --motion-sheet-dur: 460ms;
+    --motion-sheet-shift: 1;
+  }
+
+  .glim-popover {
+    position: fixed;
+    inset: auto;
+    width: max-content;
+    max-width: min(22rem, calc(100vw - 16px));
+    margin: 0;
+    padding: 1rem;
+    border: 0;
+    border-radius: var(--radius-card);
+    background-color: var(--carbon-surface);
+    color: var(--carbon-text);
+    box-shadow: var(--elevation), var(--hairline);
+  }
+  /* Under the trigger and centred on it, above where there is no room below. */
+  @supports (anchor-name: --a) {
+    .glim-popover {
+      position-area: block-end;
+      position-try-fallbacks: flip-block;
+      margin-block: 8px;
+    }
+  }
+
+  /* A card at the end edge, inset by the page gutter so the title's notch has
+     room above it, and rising from the bottom on a phone. The dialog itself
+     has no padding, so a press that lands on it lands on the scrim. */
+  .glim-sheet {
+    position: fixed;
+    inset: var(--page-gutter) var(--page-gutter) var(--page-gutter) auto;
+    width: min(28rem, calc(100vw - 2 * var(--page-gutter)));
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: var(--radius-card);
+    background-color: var(--carbon-surface);
+    color: var(--carbon-text);
+    box-shadow: var(--elevation), var(--hairline);
+    transition: translate var(--motion-sheet-dur, 0s) cubic-bezier(.2, .6, .2, 1);
+  }
+  .glim-sheet::backdrop {
+    background: var(--glim-scrim);
+    backdrop-filter: blur(var(--glim-scrim-blur));
+  }
+  .glim-sheet-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 1.25rem;
+  }
+  .glim-sheet-title { margin: 0; }
+  .glim-sheet-body {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+  }
+  @starting-style {
+    .glim-sheet[open] { translate: calc(var(--motion-sheet-shift, 0) * (100% + var(--page-gutter))) 0; }
+    [dir="rtl"] .glim-sheet[open] { translate: calc(var(--motion-sheet-shift, 0) * (-100% - var(--page-gutter))) 0; }
+  }
+  @media (max-width: 600px) {
+    .glim-sheet {
+      inset: auto 0 0;
+      width: 100%;
+      max-height: 85vh;
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
+    }
+    .glim-sheet-panel { height: auto; max-height: 85vh; }
+    @starting-style {
+      .glim-sheet[open],
+      [dir="rtl"] .glim-sheet[open] { translate: 0 calc(var(--motion-sheet-shift, 0) * 100%); }
+    }
+  }
+}
+
+/* The list of a list page (ListTable; listModel.ts). A row reads as a ListRow:
+   the same height, a hover a step up the ramp, and a picked row filled with the
+   accent wash (rule 5). The header's words are buttons that sort, with a ▾
+   beside a column that filters, and a line under the header explains both
+   while the pointer is on it. */
+@layer components {
+  .glim-list {
+    position: relative;
+    min-width: 0;
+  }
+  .glim-list-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--text-body);
+  }
+  .glim-list-th {
+    height: 2.25rem;
+    padding: 0 0.25rem;
+    font-size: var(--text-meta);
+    font-weight: 500;
+    text-align: start;
+    color: var(--carbon-text-muted);
+  }
+  .glim-list-th-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+  }
+  .glim-list-th.glim-table-end .glim-list-th-box { flex-direction: row-reverse; }
+  .glim-list-sort,
+  .glim-list-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 1.75rem;
+    padding: 0 0.4rem;
+    border: 0;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .glim-list-filter { padding: 0 0.3rem; }
+  .glim-list-sort > svg,
+  .glim-list-filter > svg {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+  .glim-list-sort-mark { flex: none; }
+  .glim-list-sort-mark--asc { rotate: 180deg; }
+  .glim-list-th[aria-sort] .glim-list-sort { color: var(--carbon-text); }
+  .glim-list-filter[aria-pressed="true"] {
+    background-color: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  @media (hover: hover) {
+    :is(.glim-list-sort, .glim-list-filter):hover { background-color: var(--carbon-hover); color: var(--carbon-text); }
+  }
+  .glim-list-tr { cursor: default; }
+  .glim-list-tr > td {
+    height: 2.6rem;
+    padding: 0 0.65rem;
+    white-space: nowrap;
+  }
+  .glim-list-tr > td:first-child { border-start-start-radius: var(--radius-control); border-end-start-radius: var(--radius-control); }
+  .glim-list-tr > td:last-child { border-start-end-radius: var(--radius-control); border-end-end-radius: var(--radius-control); }
+  .glim-list-tr:hover > td { background-color: var(--carbon-hover); }
+  .glim-list-tr[aria-selected="true"] > td {
+    background-color: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .glim-list-tr > td:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: -2px;
+  }
+  .glim-list-tr > td.glim-table-end { text-align: end; }
+  .glim-list-hint {
+    position: absolute;
+    top: 2.25rem;
+    inset-inline: 0.25rem;
+    z-index: 1;
+    margin: 0;
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--radius-control);
+    background-color: var(--carbon-surface2);
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
+    visibility: hidden;
+  }
+  .glim-list:has(thead:hover) .glim-list-hint { visibility: visible; }
+  .glim-list-search {
+    position: absolute;
+    top: 0.25rem;
+    inset-inline-end: 0;
+    z-index: 2;
+    width: min(16rem, 60%);
+    box-shadow: var(--elevation);
+  }
+  .glim-list-empty {
+    margin: 0;
+    padding: 1.5rem 0.65rem;
+    color: var(--carbon-text-muted);
+    text-align: center;
+  }
+  .glim-list-filter-values {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+}
+
+/* A value a field cannot take (fieldError.ts): the field keeps its fill in the
+   fault wash and a line under it says why, until the value is fixed. In a
+   field row the line takes the whole width, under the control at the end. */
+@layer components {
+  :is(.glim-input, .glim-num-field)[aria-invalid="true"] { background-color: var(--status-fail-bg); }
+  .glim-field-error {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+    color: var(--status-fail-text);
+    font-size: var(--text-subline);
+  }
+  .glim-field-error > svg {
+    flex: none;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  .glim-field-row > .glim-field-error {
+    justify-content: flex-end;
+    margin-top: 0;
+  }
 }
 
 /* Local addition, not in GlimStone: the height of a selector segment, so every

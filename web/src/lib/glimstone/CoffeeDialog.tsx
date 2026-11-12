@@ -36,6 +36,8 @@ export function CoffeeDialog({ widgetUrl, text, onClose, ref }: CoffeeDialogProp
       {/* As tall as the screen allows less a margin: BMAC's payment step is
           about 1200px, and every pixel here is scrolling a donor is spared. */}
       <div
+        data-glim="CoffeeDialog"
+        data-glim-title={text.title}
         ref={ref}
         tabIndex={-1}
         role="dialog"

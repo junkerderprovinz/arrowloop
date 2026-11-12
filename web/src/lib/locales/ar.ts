@@ -1571,7 +1571,7 @@ const ar: Translations = {
   'pairing.paired': 'مقترنة',
   'pairing.waitNext': 'بانتظار النسخة التالية',
   'pairing.searching': 'يبحث عن نسخ أخرى',
-  'pairing.inactive': 'غير نشطة',
+  'pairing.notReachable': 'غير قابل للوصول',
   'pairing.behindTitle': 'لم تنتقل',
   'pairing.behindTip': 'كانت هذه الأجهزة مقترنة بهذا الجهاز قبل انضمامه إلى الحصن، لكنها لم تلحق به خلال 30 يومًا، لذا أُغلق اقترانها القديم. لإحضار أحدها، أدخل عبارة الحصن عليه. وإن لم تعد تستخدمه، فأزله ببساطة.',
   'pairing.relayCheckOpen': 'ما يجب التحقق منه',

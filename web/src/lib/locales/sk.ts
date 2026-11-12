@@ -1571,7 +1571,7 @@ const sk: Translations = {
   'pairing.paired': 'Spárované',
   'pairing.waitNext': 'Čaká sa na ďalšiu inštanciu',
   'pairing.searching': 'Hľadanie ďalších inštancií',
-  'pairing.inactive': 'Neaktívne',
+  'pairing.notReachable': 'Nedostupné',
   'pairing.behindTitle': 'Neprešli',
   'pairing.behindTip': 'Tieto zariadenia boli spárované s týmto predtým, ako sa pripojilo k pevnosti, ale do 30 dní ho nenasledovali, takže ich staré párovanie je zatvorené. Ak chcete niektoré priviesť, zadajte na ňom frázu pevnosti. Ak ho už nepoužívate, jednoducho ho odstráňte.',
   'pairing.relayCheckOpen': 'Čo skontrolovať',

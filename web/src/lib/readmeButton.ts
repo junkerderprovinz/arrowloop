@@ -12,6 +12,9 @@ export const README_TILES = {
   fdroid: "glim-tile-fdroid",
   docker: "glim-tile-docker",
   unraid: "glim-tile-unraid",
+  mos: "glim-tile-mos",
+  zimaos: "glim-tile-zimaos",
+  umbrel: "glim-tile-umbrel",
   zip: "glim-tile-zip",
   github: "glim-tile-github",
   paypal: "glim-tile-paypal",
@@ -36,7 +39,12 @@ export interface ReadmePart {
 
 /** A unit whose first part goes nowhere is still to come. */
 export function readmeSoon(parts: ReadmePart[]): boolean {
-  return !parts[0].href && !parts[0].onClick;
+  return !parts[0]?.href && !parts[0]?.onClick;
+}
+
+/** The part's accessible name, with `sub` the second line it shows. */
+export function readmePartLabel(part: ReadmePart, sub: string | undefined): string {
+  return part.label ?? (sub ? `${part.name} ${sub}` : part.name);
 }
 
 export function readmeUnitClass(brand: ReadmeBrand, parts: number, note: boolean, soon: boolean): string {

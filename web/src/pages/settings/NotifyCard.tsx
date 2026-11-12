@@ -9,9 +9,10 @@ import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
+import { SubCard } from '../../lib/glimstone/SubCard'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { KINDS, newChannel, sends, type Channel, type Kind, type Notify, type When } from '../../lib/notify'
-import { SecretRow, SettingsRow, SubCard } from './rows'
+import { SecretRow, SettingsRow } from './rows'
 
 /** The services' own names, which no language translates. */
 const BRANDS: Partial<Record<Kind, string>> = {
@@ -143,7 +144,7 @@ function ChannelCard({
   const on = check ? sends(c) : c.enabled
 
   return (
-    <SubCard label={label} hint={t(HINTS[c.kind])}>
+    <SubCard title={label} hint={t(HINTS[c.kind])}>
       <ToggleRow
         label={t('notify.use')}
         checked={on}

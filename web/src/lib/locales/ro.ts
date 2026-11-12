@@ -1571,7 +1571,7 @@ const ro: Translations = {
   'pairing.paired': 'Împerecheat',
   'pairing.waitNext': 'Așteaptă următoarea instanță',
   'pairing.searching': 'Caută alte instanțe',
-  'pairing.inactive': 'Inactivă',
+  'pairing.notReachable': 'Inaccesibil',
   'pairing.behindTitle': 'Nu au venit',
   'pairing.behindTip': 'Aceste dispozitive erau împerecheate cu acesta înainte să intre în fortăreață, dar nu l-au urmat în 30 de zile, așa că vechea lor împerechere s-a închis. Ca să aduci unul, introdu pe el fraza fortăreței. Dacă nu-l mai folosești, pur și simplu elimină-l.',
   'pairing.relayCheckOpen': 'Ce poți verifica',

@@ -98,6 +98,10 @@ STANDARD = [
     "IconFolderAdd",
     "IconGear",
     "IconPhone",
+    # The devices an instance runs on, in the fortress's app cards, and the
+    # machine an SFTP or WebDAV target lives on.
+    "IconServer",
+    "IconLaptop",
     "IconSchedules",
     "IconSync",
     # Settings tiles.
@@ -212,16 +216,6 @@ APP = [
         "ink": [1.5, 0, 11, 14],
         "svg": (
             '<path fill-rule="evenodd" clip-rule="evenodd" d="M7 2a2 2 0 0 0 -2 2v1h4V4a2 2 0 0 0 -2 -2ZM3 4v1a1.5 1.5 0 0 0 -1.5 1.5v6A1.5 1.5 0 0 0 3 14h8a1.5 1.5 0 0 0 1.5 -1.5v-6A1.5 1.5 0 0 0 11 5V4a4 4 0 1 0 -8 0Zm4 6.75a1.25 1.25 0 1 0 0 -2.5 1.25 1.25 0 0 0 0 2.5Z" />'
-        ),
-    },
-    {
-        "name": "IconServer",
-        "means": "SFTP: a machine reached over SSH",
-        "source": "Streamline computer-devices/database-server-2.svg",
-        "viewBox": "0 -0.006 14 14",
-        "ink": [0, 0, 14, 13.987],
-        "svg": (
-            '<path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h11A1.5 1.5 0 0 1 14 1.5V3a1.5 1.5 0 0 1 -1.5 1.5h-11A1.5 1.5 0 0 1 0 3V1.5Zm0 6A1.5 1.5 0 0 1 1.5 6h11A1.5 1.5 0 0 1 14 7.5V9a1.5 1.5 0 0 1 -1.5 1.5H7.75v1.987H12a0.75 0.75 0 0 1 0 1.5H2a0.75 0.75 0 0 1 0 -1.5h4.25V10.5H1.5A1.5 1.5 0 0 1 0 9V7.5Zm3.5 -5.25a0.75 0.75 0 1 1 -1.5 0 0.75 0.75 0 0 1 1.5 0Zm4.33 -0.625a0.625 0.625 0 1 0 0 1.25H11a0.625 0.625 0 1 0 0 -1.25H7.83ZM3.5 8.25a0.75 0.75 0 1 1 -1.5 0 0.75 0.75 0 0 1 1.5 0Zm3.706 0c0 -0.345 0.28 -0.625 0.625 -0.625H11a0.625 0.625 0 1 1 0 1.25H7.83a0.625 0.625 0 0 1 -0.624 -0.625Z" />'
         ),
     },
     {

@@ -23,6 +23,7 @@ export function Card({
   children,
   hueIndex,
   nested,
+  ...data
 }: {
   /** The section name. Omit it where a control inside already carries the same
    *  name; the badge still renders to keep the card's hue notch. */
@@ -39,9 +40,14 @@ export function Card({
   /** This card sits inside another card that already provides the surface and
    *  the padding. */
   nested?: boolean;
+  /** Data attributes for the box, so a component built on the card can name itself. */
+  [data: `data-${string}`]: string | undefined;
 }) {
   return (
     <div
+      data-glim="Card"
+      data-glim-title={title}
+      {...data}
       className={`glim-panel glim-notch-card${
         nested ? " glim-panel--nested" : ""
       }${hueIndex !== undefined ? " glim-hue" : ""}`}

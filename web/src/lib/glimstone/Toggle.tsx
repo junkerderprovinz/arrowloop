@@ -41,7 +41,7 @@ export function Toggle({ checked, onChange, label, hideLabel = false, disabled, 
   const reason = useId();
   return (
     <>
-      <span ref={frame} className={`glim-toggle${className ? ` ${className}` : ""}`} style={style}>
+      <span data-glim="Toggle" ref={frame} className={`glim-toggle${className ? ` ${className}` : ""}`} style={style}>
         {label !== undefined && !hideLabel && <span className="glim-toggle-label">{label}</span>}
         {/* No `title=`: the label is always visible beside the switch, so a
             tooltip would only repeat it. A refused switch's bubble says why. */}

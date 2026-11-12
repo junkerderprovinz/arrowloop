@@ -1571,7 +1571,7 @@ const ja: Translations = {
   'pairing.paired': 'ペアリング済み',
   'pairing.waitNext': '次のインスタンスを待っています',
   'pairing.searching': '他のインスタンスを検索しています',
-  'pairing.inactive': '非アクティブ',
+  'pairing.notReachable': '到達できません',
   'pairing.behindTitle': '移行しなかったデバイス',
   'pairing.behindTip': 'これらのデバイスは、この端末が要塞に参加する前にペアリングされていましたが、30日以内に移行しなかったため、古いペアリングは閉じられました。連れてくるには、そのデバイスで要塞のフレーズを入力してください。もう使っていない場合は、削除するだけで大丈夫です。',
   'pairing.relayCheckOpen': '確認できること',

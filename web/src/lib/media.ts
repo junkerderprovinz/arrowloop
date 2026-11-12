@@ -1,7 +1,7 @@
 // The breakpoints a component reads in script rather than in CSS, because they
 // change what it renders or what it says, not only how it looks.
 
-/** At least this wide is the desktop shell; below it a well pins its segments. */
+/** At least this wide is the desktop shell. */
 export const DESKTOP_QUERY = "(min-width: 48rem)";
 
 /** At least this wide, the column of tiles shows words; below it glyphs alone. */

@@ -60,6 +60,8 @@ export function ConfirmDialog({
       }}
     >
       <div
+        data-glim="ConfirmDialog"
+        data-glim-title={title}
         ref={ref}
         role="dialog"
         aria-modal="true"

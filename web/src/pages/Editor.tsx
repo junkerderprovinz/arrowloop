@@ -11,13 +11,13 @@ import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { placeOffers, type Known } from '../components/FolderPicker'
 import { ScheduleDetails, ScheduleKinds, useSchedule } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
+import { SubCard } from '../lib/glimstone/SubCard'
 import { Toggle } from '../lib/glimstone/Toggle'
 import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
-import { SubCard } from './settings/rows'
 
 /**
  * What a new job starts out ignoring: files the operating system or a tool
@@ -350,7 +350,7 @@ export function JobForm({
         {...held}
       />
 
-      <SubCard label={t('edit.schedule')}>
+      <SubCard title={t('edit.schedule')}>
         <SettingRow label={t('edit.when')} {...held}>
           <span data-new="schedule-hs" className="flex max-w-full">
             <ScheduleKinds editor={schedule} />
@@ -367,7 +367,7 @@ export function JobForm({
         </SettingRow>
       </SubCard>
 
-      <SubCard label={t('edit.matching')}>
+      <SubCard title={t('edit.matching')}>
         {/* The mode exists only once one side is the source, and a newer
             version can only win where both sides change. */}
         {direction !== 'both' && (
@@ -409,7 +409,7 @@ export function JobForm({
         )}
       </SubCard>
 
-      <SubCard label={t('edit.exclude')}>
+      <SubCard title={t('edit.exclude')}>
         <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')}>
           <ExcludeSetPicker chosen={job.excludeSets ?? []} onChange={(v) => patch({ excludeSets: v })} />
         </Field>

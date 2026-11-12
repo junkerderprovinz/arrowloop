@@ -36,6 +36,7 @@ export function IconTipButton({ tip, disabled, className, style, children, href,
     <>
       {tooltip.wrap(
         <Element
+          data-glim="IconTipButton"
           {...rest}
           {...own}
           ref={tooltip.ref}

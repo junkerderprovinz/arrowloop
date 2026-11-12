@@ -100,6 +100,8 @@ export function CryptoDonateDialog({
       }}
     >
       <div
+        data-glim="CryptoDonateDialog"
+        data-glim-title={text.title}
         ref={ref}
         tabIndex={-1}
         role="dialog"

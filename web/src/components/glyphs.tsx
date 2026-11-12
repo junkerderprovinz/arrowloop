@@ -347,7 +347,7 @@ export function IconPrune(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Back. KnightLoader's drawing on a 20-unit grid. */
+/** Back. Drawn on a 20-unit grid. */
 export function IconBack(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="4.25 3.6 12.8 12.8" mirror {...props}>
@@ -378,7 +378,7 @@ export function IconMoveDown(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Expand. KnightLoader's drawing on a 20-unit grid. */
+/** Expand. Drawn on a 20-unit grid. */
 export function IconExpand(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="3.6 2.95 12.8 12.8" {...props}>
@@ -423,7 +423,7 @@ export function IconFilter(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Drag to reorder. Drawn for TowerTorch, commit 25aab69. */
+/** Drag to reorder. Drawn for GlimStone. */
 export function IconGrip(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="1 1 12 12" {...props}>
@@ -495,7 +495,7 @@ export function IconSun(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** The look follows the device, light or dark. Drawn for ArrowLoop after BombVault's System theme mark, ArrowLoop commit 771005df. */
+/** The look follows the device, light or dark. Drawn for GlimStone. */
 export function IconThemeSystem(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -504,7 +504,7 @@ export function IconThemeSystem(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Round corners. Drawn for ArrowLoop, commit 771005df. */
+/** Round corners. Drawn for GlimStone. */
 export function IconCornerRound(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -513,7 +513,7 @@ export function IconCornerRound(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Softly rounded corners. Drawn for ArrowLoop, commit 771005df. */
+/** Softly rounded corners. Drawn for GlimStone. */
 export function IconCornerSoft(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -522,7 +522,7 @@ export function IconCornerSoft(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Square corners. Drawn for ArrowLoop, commit 771005df. */
+/** Square corners. Drawn for GlimStone. */
 export function IconCornerSquare(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -531,7 +531,7 @@ export function IconCornerSquare(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** The leaf: two opposite corners round, the other two square. Drawn for ArrowLoop, commit 771005df. */
+/** The leaf: two opposite corners round, the other two square. Drawn for GlimStone. */
 export function IconCornerLeaf(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -540,7 +540,7 @@ export function IconCornerLeaf(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** No motion. Drawn for ArrowLoop, commit 771005df. */
+/** No motion. Drawn for GlimStone. */
 export function IconMotionOff(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -549,7 +549,7 @@ export function IconMotionOff(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Gentle motion. Drawn for ArrowLoop, commit 771005df. */
+/** Gentle motion. Drawn for GlimStone. */
 export function IconMotionSubtle(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -558,7 +558,7 @@ export function IconMotionSubtle(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Wild motion. Drawn for ArrowLoop, commit 771005df. */
+/** Wild motion. Drawn for GlimStone. */
 export function IconMotionWild(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -567,7 +567,7 @@ export function IconMotionWild(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** The storm, the hidden level above wild. Drawn for ArrowLoop, commit 771005df. */
+/** The storm, the hidden level above wild. Drawn for GlimStone. */
 export function IconMotionStorm(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 -0.006 14 14" {...props}>
@@ -662,6 +662,24 @@ export function IconPhone(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
       <path fillRule="evenodd" d="M3.5 1.75c0 -0.13807 0.11193 -0.25 0.25 -0.25h6.5c0.1381 0 0.25 0.11193 0.25 0.25v10.5c0 0.1381 -0.1119 0.25 -0.25 0.25H3.80187c-0.00499 -0.0021 -0.01076 -0.0046 -0.01724 -0.0076 -0.04612 -0.0217 -0.10526 -0.0581 -0.16134 -0.106 -0.0566 -0.0482 -0.09333 -0.0937 -0.11253 -0.1264 -0.0059 -0.0101 -0.00911 -0.0171 -0.01076 -0.0212V1.75ZM3.75 0C2.7835 0 2 0.783502 2 1.75v10.5c0 0.5919 0.36126 1.0316 0.65 1.2778 0.15613 0.1331 0.32809 0.2431 0.49782 0.3227 0.15436 0.0724 0.36996 0.1495 0.60218 0.1495h6.5c0.9665 0 1.75 -0.7835 1.75 -1.75V1.75C12 0.783502 11.2165 0 10.25 0h-6.5ZM6.5 9.75c-0.41421 0 -0.75 0.3358 -0.75 0.75s0.33579 0.75 0.75 0.75h1c0.41421 0 0.75 -0.3358 0.75 -0.75s-0.33579 -0.75 -0.75 -0.75h-1Z" clipRule="evenodd" />
+    </G>
+  )
+}
+
+/** A server, the box an app runs on. Drawn for GlimStone. */
+export function IconServer(props: SVGProps<SVGSVGElement>) {
+  return (
+    <G box="0 0 14 14" {...props}>
+      <path fillRule="evenodd" d="M1.5 0.5h11A1.5 1.5 0 0 1 14 2v2.75A1.5 1.5 0 0 1 12.5 6.25h-11A1.5 1.5 0 0 1 0 4.75V2A1.5 1.5 0 0 1 1.5 0.5ZM2 3.375a1 1 0 1 0 2 0a1 1 0 1 0 -2 0ZM6 2.625h5.5v1.5H6ZM1.5 7.75h11A1.5 1.5 0 0 1 14 9.25V12A1.5 1.5 0 0 1 12.5 13.5h-11A1.5 1.5 0 0 1 0 12V9.25A1.5 1.5 0 0 1 1.5 7.75ZM2 10.625a1 1 0 1 0 2 0a1 1 0 1 0 -2 0ZM6 9.875h5.5v1.5H6Z" />
+    </G>
+  )
+}
+
+/** A laptop. Drawn for GlimStone. */
+export function IconLaptop(props: SVGProps<SVGSVGElement>) {
+  return (
+    <G box="0 0.25 14 14" {...props}>
+      <path fillRule="evenodd" d="M2.5 1.5h9A1.5 1.5 0 0 1 13 3v6.25H1V3A1.5 1.5 0 0 1 2.5 1.5ZM2.5 3v4.75h9V3ZM0 10.75h14v0.75A1.5 1.5 0 0 1 12.5 13h-11A1.5 1.5 0 0 1 0 11.5Z" />
     </G>
   )
 }
@@ -818,7 +836,7 @@ export function IconMailOpen(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Manual. Drawn for BombVault's Help card. */
+/** Manual. Drawn for GlimStone. */
 export function IconManual(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
@@ -827,7 +845,7 @@ export function IconManual(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-/** Manual, under the pointer, a finger or the focus. Drawn for BombVault's Help card. */
+/** Manual, under the pointer, a finger or the focus. Drawn for GlimStone. */
 export function IconManualOpen(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0.125 14 14" {...props}>
@@ -940,15 +958,6 @@ export function IconLock(props: SVGProps<SVGSVGElement>) {
   return (
     <G box="0 0 14 14" {...props}>
       <path fillRule="evenodd" clipRule="evenodd" d="M7 2a2 2 0 0 0 -2 2v1h4V4a2 2 0 0 0 -2 -2ZM3 4v1a1.5 1.5 0 0 0 -1.5 1.5v6A1.5 1.5 0 0 0 3 14h8a1.5 1.5 0 0 0 1.5 -1.5v-6A1.5 1.5 0 0 0 11 5V4a4 4 0 1 0 -8 0Zm4 6.75a1.25 1.25 0 1 0 0 -2.5 1.25 1.25 0 0 0 0 2.5Z" />
-    </G>
-  )
-}
-
-/** SFTP: a machine reached over SSH. Streamline computer-devices/database-server-2.svg. */
-export function IconServer(props: SVGProps<SVGSVGElement>) {
-  return (
-    <G box="0 -0.006 14 14" {...props}>
-      <path fillRule="evenodd" clipRule="evenodd" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h11A1.5 1.5 0 0 1 14 1.5V3a1.5 1.5 0 0 1 -1.5 1.5h-11A1.5 1.5 0 0 1 0 3V1.5Zm0 6A1.5 1.5 0 0 1 1.5 6h11A1.5 1.5 0 0 1 14 7.5V9a1.5 1.5 0 0 1 -1.5 1.5H7.75v1.987H12a0.75 0.75 0 0 1 0 1.5H2a0.75 0.75 0 0 1 0 -1.5h4.25V10.5H1.5A1.5 1.5 0 0 1 0 9V7.5Zm3.5 -5.25a0.75 0.75 0 1 1 -1.5 0 0.75 0.75 0 0 1 1.5 0Zm4.33 -0.625a0.625 0.625 0 1 0 0 1.25H11a0.625 0.625 0 1 0 0 -1.25H7.83ZM3.5 8.25a0.75 0.75 0 1 1 -1.5 0 0.75 0.75 0 0 1 1.5 0Zm3.706 0c0 -0.345 0.28 -0.625 0.625 -0.625H11a0.625 0.625 0 1 1 0 1.25H7.83a0.625 0.625 0 0 1 -0.624 -0.625Z" />
     </G>
   )
 }

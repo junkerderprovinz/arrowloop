@@ -79,7 +79,7 @@ function ApkButton() {
         brand="android"
         parts={[
           { name: t('apps.android'), sub: t('apps.apk'), href: APK },
-          { name: t('apps.qr'), sub: t('apps.apk'), onClick: () => setQr((open) => !open) },
+          { name: t('apps.qr'), label: `${t('apps.qr')} ${t('apps.apk')}`, onClick: () => setQr((open) => !open) },
         ]}
         mark={<BrandMark svg={ANDROID_SVG} />}
         markClass="glim-android-mark"

@@ -1571,7 +1571,7 @@ const hr: Translations = {
   'pairing.paired': 'Uparena',
   'pairing.waitNext': 'Čeka se sljedeća instanca',
   'pairing.searching': 'Traže se druge instance',
-  'pairing.inactive': 'Neaktivna',
+  'pairing.notReachable': 'Nedostupno',
   'pairing.behindTitle': 'Nisu došli',
   'pairing.behindTip': 'Ovi uređaji bili su upareni s ovim prije nego što se pridružio utvrdi, ali ga nisu slijedili u roku od 30 dana pa je njihovo staro uparivanje zatvoreno. Da biste neki doveli, unesite na njemu frazu utvrde. Ako ga više ne koristite, jednostavno ga uklonite.',
   'pairing.relayCheckOpen': 'Što provjeriti',

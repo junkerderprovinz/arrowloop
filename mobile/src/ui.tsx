@@ -1150,7 +1150,7 @@ export function Switcher({
    */
   refused?: string;
 }) {
-  const { p, corners, accent, hueAt } = useTheme();
+  const { p, corners, accent, accentContrast, hueAt } = useTheme();
   const { ms } = useMotion();
   const wobble = useRef(new Animated.Value(0)).current;
   const on = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
@@ -1175,11 +1175,16 @@ export function Switcher({
           },
         ]}
       >
-        {/* The knob takes the page's ground colour rather than a fixed white. */}
+        {/* Off, the knob takes the page's ground. On, it takes the fill's ink,
+            or the light theme's pale ground vanishes into a yellow or a green. */}
         <View
           style={[
             styles.knob,
-            { ...corners.pill, backgroundColor: p.background, alignSelf: value ? "flex-end" : "flex-start" },
+            {
+              ...corners.pill,
+              backgroundColor: value ? contrastOn(on) || accentContrast : p.background,
+              alignSelf: value ? "flex-end" : "flex-start",
+            },
           ]}
         />
       </TouchableOpacity>
