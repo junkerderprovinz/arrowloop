@@ -1,8 +1,11 @@
 import { useMemo, useSyncExternalStore, type ComponentProps } from 'react'
 
+import { at, inApp } from './base'
+
 // The browser's own history is the router's state, which is all an app of a
 // dozen addresses needs: a bookmark, Back and Ctrl-click work without a
-// routing library.
+// routing library. The app names its addresses from its own root, which lies
+// under the page's base.
 
 const listeners = new Set<() => void>()
 
@@ -15,7 +18,7 @@ function subscribe(listener: () => void) {
   }
 }
 
-const here = () => window.location.pathname + window.location.search
+const here = () => inApp(window.location.pathname) + window.location.search
 
 /**
  * Goes to an address inside the app. Asking for the address already shown adds
@@ -23,8 +26,8 @@ const here = () => window.location.pathname + window.location.search
  */
 export function navigate(to: string, { replace = false }: { replace?: boolean } = {}) {
   if (to === here()) return
-  if (replace) window.history.replaceState(null, '', to)
-  else window.history.pushState(null, '', to)
+  if (replace) window.history.replaceState(null, '', at(to))
+  else window.history.pushState(null, '', at(to))
   for (const listener of listeners) listener()
 }
 
@@ -43,7 +46,7 @@ export function useLocation(): { pathname: string; search: URLSearchParams } {
 export function Link({ to, onClick, ...rest }: Omit<ComponentProps<'a'>, 'href'> & { to: string }) {
   return (
     <a
-      href={to}
+      href={at(to)}
       {...rest}
       onClick={(e) => {
         onClick?.(e)

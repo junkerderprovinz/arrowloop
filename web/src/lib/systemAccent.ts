@@ -6,6 +6,7 @@
 import { setSystemAccent } from './appearance'
 import { watchBrowserAccent } from './browserAccent'
 import { inDesktopWindow } from './desk'
+import { at } from './base'
 
 /** The colour in the shell's answer, or undefined where the desktop has none. */
 export function accentFrom(body: unknown): string | undefined {
@@ -14,7 +15,7 @@ export function accentFrom(body: unknown): string | undefined {
 }
 
 async function desktopAccent(): Promise<string | undefined> {
-  const res = await fetch('/api/window/accent')
+  const res = await fetch(at('/api/window/accent'))
   if (!res.ok) throw new Error(res.statusText)
   return accentFrom(await res.json())
 }

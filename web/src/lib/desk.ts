@@ -4,6 +4,7 @@
 import { useEffect } from 'react'
 
 import type { Translate } from './i18n'
+import { at } from './base'
 
 /** The tray's lines, in the language the interface shows. */
 export type TrayWords = {
@@ -210,7 +211,7 @@ export function trayWords(t: Translate): TrayWords {
 }
 
 async function send<T>(path: string, method: string, body?: unknown): Promise<T> {
-  const res = await fetch(path, {
+  const res = await fetch(at(path), {
     method,
     headers: method === 'GET' ? undefined : { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),

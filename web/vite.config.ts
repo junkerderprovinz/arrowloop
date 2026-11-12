@@ -18,6 +18,8 @@ function keepDist() {
 // The dev server proxies /api to a locally running `arrowloop web`.
 export default defineConfig({
   plugins: [react(), keepDist()],
+  // Relative, so that the same build works under any path the server names.
+  base: './',
   build: { outDir: 'dist', emptyOutDir: true },
   server: {
     proxy: {

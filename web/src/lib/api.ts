@@ -40,6 +40,7 @@ export type { Reason } from './i18n'
 import type { Reason } from './i18n'
 import { inDesktopWindow, watchDesktop } from './desk'
 import type { FortressInfo, FortressPermission } from './fortress'
+import { at } from './base'
 
 /** What one side holds: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
@@ -621,7 +622,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (method !== 'GET' && method !== 'HEAD') {
     init = { ...init, headers: { 'Content-Type': 'application/json', ...init?.headers } }
   }
-  const res = await fetch(path, init)
+  const res = await fetch(at(path), init)
   if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
   if (!res.ok) {
     throw await failure(res)
@@ -642,7 +643,7 @@ async function failure(res: Response): Promise<ApiError> {
 
 /** A change answered with nothing, 204, which request would fail to read. */
 async function send(path: string, method: string, body?: unknown): Promise<void> {
-  const res = await fetch(path, {
+  const res = await fetch(at(path), {
     method,
     headers: { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),
@@ -1074,7 +1075,7 @@ export const api = {
 
   /** The configuration file as text, so a backup keeps keys this build does not know. */
   rawConfig: async (): Promise<string> => {
-    const res = await fetch('/api/config/raw')
+    const res = await fetch(at('/api/config/raw'))
     if (!res.ok) throw await failure(res)
     return res.text()
   },
@@ -1224,7 +1225,7 @@ export const api = {
 
   /** The bug report: versions, settings and jobs without secrets, the last runs. */
   diagnostics: async (): Promise<string> => {
-    const res = await fetch('/api/diagnostics')
+    const res = await fetch(at('/api/diagnostics'))
     if (!res.ok) throw await failure(res)
     return res.text()
   },
@@ -1393,7 +1394,7 @@ export const api = {
   /** Live run events. Returns the function that closes the stream. */
   watch: (onEvent: (ev: RunEvent) => void): (() => void) => {
     if (inDesktopWindow()) return watchDesktop((data) => onEvent(data as RunEvent))
-    const source = new EventSource('/api/events')
+    const source = new EventSource(at('/api/events'))
     // A browser gives up on a stream that is refused rather than dropped, and
     // the refusal it saw says nothing, so the session is asked.
     source.onerror = () => {
