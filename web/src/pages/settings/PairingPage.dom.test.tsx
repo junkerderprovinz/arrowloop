@@ -83,7 +83,7 @@ const relayConfig: RelayConfig = {
   canServe: true,
 }
 
-const noFortress: FortressInfo = { joined: false, phrase: false, device: 'nas', defaultDevice: 'nas', passwordSet: true, members: [], permissions: [] }
+const noFortress: FortressInfo = { joined: false, phrase: false, device: 'nas', defaultDevice: 'nas', passwordSet: true, members: [], permissions: [], removed: [], removedHere: false }
 
 beforeEach(() => {
   for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase, fortress, removeMember]) fn.mockReset()

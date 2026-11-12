@@ -171,13 +171,25 @@ export function FortressSection({
     }
   }
   // The answer shows the new words, so they come only for the password, as
-  // showing the phrase does. GlimStone's change window waits meanwhile.
+  // showing the phrase does. GlimStone's change window waits meanwhile. The
+  // Fortress card offers it, and the fortress again right after a removal.
   const onChangePhrase = (): Promise<ChangeAnswer> =>
-    (fortress.passwordSet ? new Promise<NewPhrase>((resolve) => setAsking(() => resolve)) : changePhrase(t, text, '')).then(keep)
+    (fortress.passwordSet ? new Promise<NewPhrase>((resolve) => setAsking(() => resolve)) : changePhrase(t, text, '')).then((answer) => {
+      if (answer.words) onRefresh()
+      return keep(answer)
+    })
   const onLeave = async (): Promise<FortressAnswer> => {
     try {
       onFortress(await api.leaveFortress())
       onRefresh()
+      return { ok: true }
+    } catch (e) {
+      return { error: refusalText(t, e) }
+    }
+  }
+  const onRemove = async (id: string): Promise<FortressAnswer> => {
+    try {
+      onFortress(await api.removeFortressMember(id))
       return { ok: true }
     } catch (e) {
       return { error: refusalText(t, e) }
@@ -219,7 +231,10 @@ export function FortressSection({
         onPermission={onPermission}
         notify={push}
         onJoin={onJoin}
-        onRemove={() => Promise.resolve({ error: text.failed })}
+        onRemove={onRemove}
+        onChangePhrase={fortress.phrase ? onChangePhrase : undefined}
+        removed={fortress.removed.map((r) => fill(text.memberOn, { app: r.name, device: r.device }))}
+        removedHere={fortress.removedHere}
         onOpen={onOpen}
         pairedWith={pairedWith}
         labelKeys={LABEL_KEYS}

@@ -130,7 +130,7 @@ describe('the pairing that moves into the fortress', () => {
 })
 
 describe('the colours the fortress takes', () => {
-  const info: FortressInfo = { joined: false, phrase: false, device: '', defaultDevice: '', passwordSet: false, members: [], permissions: [] }
+  const info: FortressInfo = { joined: false, phrase: false, device: '', defaultDevice: '', passwordSet: false, members: [], permissions: [], removed: [], removedHere: false }
 
   it('takes one for the card outside a fortress', () => {
     expect(fortressHues(info)).toBe(1)

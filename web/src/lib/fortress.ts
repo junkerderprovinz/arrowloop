@@ -41,7 +41,14 @@ export type FortressInfo = {
   members: FortressMember[]
   /** The permissions that involve ArrowLoop. */
   permissions: FortressPermission[]
+  /** The members taken out here since the phrase last changed, which it still lets back in. */
+  removed: FortressRemoved[]
+  /** Another member took this instance out, and it has not joined again since. */
+  removedHere: boolean
 }
+
+/** A member taken out of the fortress, by the names it went by. */
+export type FortressRemoved = { app: string; name: string; device: string }
 
 /** GlimStone's FortressInstance. */
 export type FortressInstanceView = {

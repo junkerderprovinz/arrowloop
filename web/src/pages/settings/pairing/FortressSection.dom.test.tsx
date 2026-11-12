@@ -3,7 +3,7 @@
 // inside, the Fortress card on top shows the phrase behind the password with
 // its QR code, changes it and lets ArrowLoop leave, and every permission
 // saves as it is switched.
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -38,6 +38,10 @@ vi.mock('../../../lib/api', async (original) => {
         calls.push(`permission ${p.from} ${p.to} ${p.action} ${p.on}`)
         return Promise.resolve(joined({ permissions: [p] }))
       },
+      removeFortressMember: (id: string) => {
+        calls.push(`remove ${id}`)
+        return Promise.resolve(joined({ removed: [{ app: 'firesquire', name: 'FireSquire', device: 'Tower' }] }))
+      },
       leaveFortress: () => {
         calls.push('leave')
         return Promise.resolve(outside())
@@ -64,7 +68,18 @@ import { en } from '../../../lib/i18n'
 import { FortressSection } from './FortressSection'
 
 function outside(over: Partial<FortressInfo> = {}): FortressInfo {
-  return { joined: false, phrase: false, device: 'Tower', defaultDevice: 'Tower', passwordSet, members: [], permissions: [], ...over }
+  return {
+    joined: false,
+    phrase: false,
+    device: 'Tower',
+    defaultDevice: 'Tower',
+    passwordSet,
+    members: [],
+    permissions: [],
+    removed: [],
+    removedHere: false,
+    ...over,
+  }
 }
 const joined = (over: Partial<FortressInfo> = {}) => outside({ joined: true, phrase: true, ...over })
 
@@ -276,6 +291,41 @@ describe('the fortress on the Pairing tile', () => {
       expect(calls).toEqual(['status t1 en'])
       expect(await screen.findByText('Two updates wait')).toBeTruthy()
       expect(screen.getByText('Checked the containers')).toBeTruthy()
+    })
+  })
+
+  describe('Remove on another app', () => {
+    const squire = { id: 'fs1', app: 'firesquire', name: 'FireSquire', version: '1.3.1', device: 'Tower', deployment: 'plugin', kind: 'instance', online: true, relay: false, pages: false }
+
+    it('asks first, then offers the new phrase behind the password', async () => {
+      render(<Page start={joined({ members: [squire] })} />)
+      fireEvent.click(await waitFor(() => button('others')))
+      const card = await waitFor(() => document.querySelector('[data-fortress-app="firesquire"]')!)
+      fireEvent.click(within(card as HTMLElement).getByRole('button', { name: 'Remove' }))
+      expect(screen.getByRole('dialog', { name: 'Remove FireSquire on Tower?' })).toBeTruthy()
+      expect(calls).toEqual([])
+      await act(async () => fireEvent.click(button('remove')))
+      expect(calls).toEqual(['remove fs1'])
+      expect(screen.getByRole('dialog', { name: 'Change the phrase now?' })).toBeTruthy()
+      await act(async () => fireEvent.click(button('change')))
+      fireEvent.change(screen.getByLabelText('Password of ArrowLoop'), { target: { value: 'hunter2' } })
+      await act(async () => fireEvent.click(button('change-unlock')))
+      expect(calls).toEqual(['remove fs1', 'change hunter2'])
+      expect(button('words').textContent).toContain('wrong')
+      expect(refreshed).toHaveBeenCalled()
+    })
+
+    it('names who was removed until the phrase changes', async () => {
+      render(<Page start={joined({ removed: [{ app: 'firesquire', name: 'FireSquire', device: 'Tower' }] })} />)
+      const line = await waitFor(() => button('removed'))
+      expect(line.textContent).toContain('Removed: FireSquire on Tower. Change the phrase to close the way back in.')
+      expect(within(line).getByRole('button', { name: 'Change phrase' })).toBeTruthy()
+    })
+
+    it('says so when another app took ArrowLoop out', async () => {
+      render(<Page start={outside({ removedHere: true })} />)
+      expect(await screen.findByText('Removed from the fortress')).toBeTruthy()
+      expect(screen.getByText('Another app in the fortress removed ArrowLoop. Enter the current phrase to come back in.')).toBeTruthy()
     })
   })
 })

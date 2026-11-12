@@ -1336,6 +1336,9 @@ export const api = {
   setFortressPermission: (p: FortressPermission) =>
     request<FortressInfo>('/api/fortress/permissions', { method: 'PUT', body: JSON.stringify(p) }),
 
+  /** Takes another member out of the fortress, here and at every member in reach. */
+  removeFortressMember: (id: string) => request<FortressInfo>(`/api/fortress/members/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+
   /** Leaves the fortress, and with it the pairing its phrase holds. */
   leaveFortress: () => request<FortressInfo>('/api/fortress', { method: 'DELETE' }),
 
