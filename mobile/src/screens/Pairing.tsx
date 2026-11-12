@@ -553,7 +553,13 @@ function FortressCard({
 }) {
   const { t, lang } = useT();
   const { p } = useTheme();
-  const text = fortressText(lang);
+  // GlimStone's change texts tell members out of reach that they need the new
+  // phrase, but the kit lets them follow on the old one for 30 days.
+  const text = {
+    ...fortressText(lang),
+    changeBody: t("fortress.changeBody"),
+    changeAway: t("fortress.changeAway"),
+  };
   const [entering, setEntering] = useState(false);
   // Which of the two the password field stands in front of.
   const [asking, setAsking] = useState<"show" | "change" | null>(null);
@@ -714,7 +720,7 @@ function FortressCard({
         <AxisLabel>{shown.left ? text.changedTitle : text.phraseTitle}</AxisLabel>
         <WordSlots words={shown.phrase.split(/\s+/)} code={shown.code} />
         <Caption>{text.scanHint}</Caption>
-        {shown.left && shown.left.length > 0 ? <Body>{fill(text.changedLeft, { devices: shown.left.join(", ") })}</Body> : null}
+        {shown.left && shown.left.length > 0 ? <Body>{t("fortress.changedLeft", { devices: shown.left.join(", ") })}</Body> : null}
       </>
     );
     foot = (
