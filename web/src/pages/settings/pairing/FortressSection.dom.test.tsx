@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 // The fortress on the Pairing tile: outside one, the twelve words join it;
-// inside, the phrase shows behind the password with its QR code, every
-// permission saves as it is switched, and the phrase changes and ArrowLoop
-// leaves from the Fortress card.
+// inside, the Fortress card on top shows the phrase behind the password with
+// its QR code, changes it and lets ArrowLoop leave, and every permission
+// saves as it is switched.
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -132,6 +132,15 @@ describe('the fortress on the Pairing tile', () => {
     render(<Page start={outside()} pairedWith={['attic']} />)
     await openJoin()
     expect(screen.getByText('ArrowLoop is already paired with attic. Joining moves that pairing into the fortress, so there is nothing to pair again.')).toBeTruthy()
+  })
+
+  it('keeps the phrase, its change and leaving together in the Fortress card on top', async () => {
+    render(<Page start={joined()} />)
+    const card = (await waitFor(() => button('show'))).closest('[data-glim="FortressPairing"]')!
+    expect(card.contains(button('open-change'))).toBe(true)
+    expect(card.contains(button('open-leave'))).toBe(true)
+    expect(document.querySelectorAll('[data-fortress="show"]')).toHaveLength(1)
+    expect(card.compareDocumentPosition(button('others')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('shows the phrase with its QR code only after the password', async () => {

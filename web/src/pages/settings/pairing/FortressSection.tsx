@@ -2,9 +2,9 @@ import { fill, fortressText, type ChangeAnswer, type FortressAnswer, type Fortre
 import { Fortress, FortressPairing } from '@glimstone/react/Fortress'
 import { PasswordField } from '@glimstone/react/PasswordField'
 import { Window } from '@glimstone/react/Window'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
-import { api, ApiError } from '../../../lib/api'
+import { api, ApiError, type Phrase } from '../../../lib/api'
 import { fortressApps, fortressPermissions, permissionOf, SELF, type FortressInfo } from '../../../lib/fortress'
 import { useT } from '../../../lib/i18n'
 import type { Translate } from '../../../lib/i18n.data'
@@ -29,21 +29,25 @@ function refused(t: Translate, text: FortressText, e: unknown): string {
   return refusalText(t, e)
 }
 
+/** A new phrase in GlimStone's words, with the text of its QR code beside them. */
+type NewPhrase = ChangeAnswer & { code?: string; wrong?: boolean }
+
 /** Asks the engine for a new phrase and words its answer for GlimStone's flow. */
-async function changePhrase(t: Translate, text: FortressText, password: string): Promise<ChangeAnswer & { wrong?: boolean }> {
+async function changePhrase(t: Translate, text: FortressText, password: string): Promise<NewPhrase> {
   try {
     const r = await api.changeFortressPhrase(password)
-    return { words: r.phrase.split(' '), left: r.left }
+    return { words: r.phrase.split(' '), left: r.left, code: r.code }
   } catch (e) {
     return { error: refused(t, text, e), wrong: e instanceof ApiError && e.status === 403 }
   }
 }
 
 /**
- * ArrowLoop's place in the fortress: GlimStone's fortress with the twelve
- * words to join, the phrase behind the password and the other apps with their
- * permissions, then the card where the phrase changes and ArrowLoop leaves.
- * The name the others know this instance by is the one the instance card sets.
+ * ArrowLoop's place in the fortress. Inside one, the Fortress card comes
+ * first, the one place where the phrase shows behind the password and
+ * changes, and where ArrowLoop leaves. The other apps with their permissions
+ * follow. Outside, the twelve words join one. The name the others know this
+ * instance by is the one the instance card sets.
  */
 export function FortressSection({
   fortress,
@@ -81,7 +85,18 @@ export function FortressSection({
     }
   }, [lang, t])
   // The step that waits for the password before a new phrase is made.
-  const [asking, setAsking] = useState<((answer: ChangeAnswer) => void) | null>(null)
+  const [asking, setAsking] = useState<((answer: NewPhrase) => void) | null>(null)
+  // The engine writes the QR code's text, which names an own relay that the
+  // phone app has no other way to learn. GlimStone asks for it by the words.
+  const shown = useRef<Phrase | null>(null)
+  const keep = <A extends { words?: string[]; code?: string }>(answer: A): A => {
+    if (answer.words && answer.code) shown.current = { phrase: answer.words.join(' '), code: answer.code }
+    return answer
+  }
+  const phraseQr = (words: string[]) => {
+    const phrase = words.join(' ')
+    return shown.current?.phrase === phrase ? shown.current.code : phrase
+  }
 
   const apps = fortressApps(fortress.members, (unix) => seenAgo(lang, unix))
 
@@ -96,7 +111,8 @@ export function FortressSection({
   }
   const onShowPhrase = async (password?: string): Promise<PhraseAnswer> => {
     try {
-      return { words: (await api.showFortressPhrase(password ?? '')).phrase.split(' ') }
+      const r = await api.showFortressPhrase(password ?? '')
+      return keep({ words: r.phrase.split(' '), code: r.code })
     } catch (e) {
       return { error: refused(t, text, e) }
     }
@@ -104,7 +120,7 @@ export function FortressSection({
   // The answer shows the new words, so they come only for the password, as
   // showing the phrase does. GlimStone's change window waits meanwhile.
   const onChangePhrase = (): Promise<ChangeAnswer> =>
-    fortress.passwordSet ? new Promise((resolve) => setAsking(() => resolve)) : changePhrase(t, text, '')
+    (fortress.passwordSet ? new Promise<NewPhrase>((resolve) => setAsking(() => resolve)) : changePhrase(t, text, '')).then(keep)
   const onLeave = async (): Promise<FortressAnswer> => {
     try {
       onFortress(await api.leaveFortress())
@@ -125,6 +141,21 @@ export function FortressSection({
 
   return (
     <div id="fortress" className="flex scroll-mt-6 flex-col gap-10">
+      {fortress.joined && (
+        <FortressPairing
+          text={{ ...text, pairing: t('fortress.title') }}
+          lang={lang}
+          app={SELF}
+          onShowPhrase={fortress.phrase ? onShowPhrase : undefined}
+          phrasePassword={fortress.passwordSet}
+          phraseQr={phraseQr}
+          onChangePhrase={fortress.phrase ? onChangePhrase : undefined}
+          onLeave={onLeave}
+          pairedWith={pairedWith}
+          labelKeys={LABEL_KEYS}
+          hueIndex={hueStart}
+        />
+      )}
       <Fortress
         text={text}
         lang={lang}
@@ -136,24 +167,10 @@ export function FortressSection({
         notify={push}
         onJoin={onJoin}
         onRemove={() => Promise.resolve({ error: text.failed })}
-        onShowPhrase={fortress.phrase ? onShowPhrase : undefined}
-        phrasePassword={fortress.passwordSet}
         pairedWith={pairedWith}
         labelKeys={LABEL_KEYS}
-        hueStart={hueStart}
+        hueStart={hueStart + 1}
       />
-      {fortress.joined && (
-        <FortressPairing
-          text={{ ...text, pairing: t('fortress.title') }}
-          lang={lang}
-          app={SELF}
-          onLeave={onLeave}
-          onChangePhrase={fortress.phrase ? onChangePhrase : undefined}
-          pairedWith={pairedWith}
-          labelKeys={LABEL_KEYS}
-          hueIndex={hueStart + apps.length + 2}
-        />
-      )}
       {asking && (
         <ChangePassword
           text={text}
@@ -171,7 +188,7 @@ export function FortressSection({
  * Asks for the login password in front of a phrase change. A wrong one keeps
  * it open, and closing it keeps the phrase.
  */
-function ChangePassword({ text, onAnswer }: { text: FortressText; onAnswer: (answer: ChangeAnswer) => void }) {
+function ChangePassword({ text, onAnswer }: { text: FortressText; onAnswer: (answer: NewPhrase) => void }) {
   const { t } = useT()
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
