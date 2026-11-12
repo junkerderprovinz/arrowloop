@@ -1564,7 +1564,7 @@ const is: Translations = {
   'pairing.paired': 'Parað',
   'pairing.waitNext': 'Bíður eftir næsta tilviki',
   'pairing.searching': 'Leitar að öðrum tilvikum',
-  'pairing.inactive': 'Óvirkt',
+  'pairing.notReachable': 'Ekki aðgengilegt',
   'pairing.behindTitle': 'Komu ekki með',
   'pairing.behindTip': 'Þessi tæki voru pöruð við þetta áður en það gekk í vígið, en fylgdu ekki á eftir innan 30 daga, svo gamla pörunin þeirra er lokuð. Til að fá eitt með slærðu inn setningu vígisins á því. Ef þú notar það ekki lengur skaltu bara fjarlægja það.',
   'pairing.relayCheckOpen': 'Hvað á að athuga',

@@ -1564,7 +1564,7 @@ const ko: Translations = {
   'pairing.paired': '페어링됨',
   'pairing.waitNext': '다음 인스턴스를 기다리는 중',
   'pairing.searching': '다른 인스턴스를 찾는 중',
-  'pairing.inactive': '비활성',
+  'pairing.notReachable': '연결할 수 없음',
   'pairing.behindTitle': '따라오지 않은 기기',
   'pairing.behindTip': '이 기기들은 이 기기가 요새에 들어오기 전에 페어링되어 있었지만 30일 안에 따라오지 않아서 예전 페어링이 닫혔어요. 데려오려면 그 기기에 요새 문구를 입력하세요. 더 이상 쓰지 않는다면 그냥 제거하면 돼요.',
   'pairing.relayCheckOpen': '확인할 사항',

@@ -1564,7 +1564,7 @@ const id: Translations = {
   'pairing.paired': 'Dipasangkan',
   'pairing.waitNext': 'Menunggu instance berikutnya',
   'pairing.searching': 'Mencari instance lain',
-  'pairing.inactive': 'Tidak aktif',
+  'pairing.notReachable': 'Tidak dapat dijangkau',
   'pairing.behindTitle': 'Tidak ikut',
   'pairing.behindTip': 'Perangkat-perangkat ini dipasangkan dengan yang ini sebelum bergabung ke benteng, tetapi tidak menyusul dalam 30 hari, jadi pemasangan lamanya ditutup. Untuk membawa salah satunya, masukkan frasa benteng di perangkat itu. Kalau sudah tidak dipakai, hapus saja.',
   'pairing.relayCheckOpen': 'Yang perlu diperiksa',

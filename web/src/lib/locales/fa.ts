@@ -1564,7 +1564,7 @@ const fa: Translations = {
   'pairing.paired': 'جفت شد',
   'pairing.waitNext': 'منتظر نمونهٔ بعدی',
   'pairing.searching': 'در حال جستجوی نمونه‌های دیگر',
-  'pairing.inactive': 'غیرفعال',
+  'pairing.notReachable': 'در دسترس نیست',
   'pairing.behindTitle': 'نیامدند',
   'pairing.behindTip': 'این دستگاه‌ها پیش از پیوستن این دستگاه به دژ با آن جفت شده بودند، اما در ۳۰ روز دنبالش نیامدند، پس جفت‌سازی قدیمی‌شان بسته شد. برای آوردن یکی، عبارت دژ را روی آن وارد کن. اگر دیگر از آن استفاده نمی‌کنی، کافی است حذفش کنی.',
   'pairing.relayCheckOpen': 'موارد قابل بررسی',

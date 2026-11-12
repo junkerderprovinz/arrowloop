@@ -1564,7 +1564,7 @@ const lt: Translations = {
   'pairing.paired': 'Susieta',
   'pairing.waitNext': 'Laukiama kito egzemplioriaus',
   'pairing.searching': 'Ieškoma kitų egzempliorių',
-  'pairing.inactive': 'Neaktyvu',
+  'pairing.notReachable': 'Nepasiekiama',
   'pairing.behindTitle': 'Nepersikėlė',
   'pairing.behindTip': 'Šie įrenginiai buvo susieti su šiuo prieš jam prisijungiant prie tvirtovės, bet per 30 dienų jo nesekė, todėl jų senasis susiejimas uždarytas. Norėdami vieną perkelti, įveskite jame tvirtovės frazę. Jei jo nebenaudojate, tiesiog pašalinkite.',
   'pairing.relayCheckOpen': 'Ką patikrinti',

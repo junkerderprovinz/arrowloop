@@ -903,7 +903,7 @@ function GroupCard({ group, stage, onRefresh }: { group: ConnectInfo; stage: Pai
           mark={kindName(t, m.deployment)}
           note={m.lastSeen > 0 ? t("pairing.lastSeen", { time: seenAt(lang, m.lastSeen) }) : undefined}
         >
-          <Badge label={t("pairing.inactive")} />
+          <Badge label={t("pairing.notReachable")} />
           {remove(m.id, m.name)}
         </Member>
       ))}

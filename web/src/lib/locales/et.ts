@@ -1564,7 +1564,7 @@ const et: Translations = {
   'pairing.paired': 'Seotud',
   'pairing.waitNext': 'Ootab järgmist eksemplari',
   'pairing.searching': 'Otsib teisi eksemplare',
-  'pairing.inactive': 'Mitteaktiivne',
+  'pairing.notReachable': 'Ei ole kättesaadav',
   'pairing.behindTitle': 'Ei tulnud kaasa',
   'pairing.behindTip': 'Need seadmed olid selle seadmega seotud enne, kui see kindlusega liitus, kuid ei järgnenud 30 päeva jooksul, seega nende vana sidumine on suletud. Ühe kaasa toomiseks sisesta sellel kindluse fraas. Kui sa seda enam ei kasuta, eemalda see lihtsalt.',
   'pairing.relayCheckOpen': 'Mida kontrollida',

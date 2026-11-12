@@ -152,7 +152,7 @@ export function GroupCard({ group, stage, joinedAgo, hueIndex, onRefresh }: {
                 note={m.lastSeen > 0 ? t('pairing.lastSeen', { time: seenAgo(lang, m.lastSeen) }) : undefined}
               >
                 {kindName(t, m.deployment) && <Mark>{kindName(t, m.deployment)}</Mark>}
-                <Badge tone="neutral">{t('pairing.inactive')}</Badge>
+                <Badge tone="neutral">{t('pairing.notReachable')}</Badge>
                 {remove(m.id, m.name)}
               </Row>
             ))}

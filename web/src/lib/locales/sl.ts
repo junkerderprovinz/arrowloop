@@ -1564,7 +1564,7 @@ const sl: Translations = {
   'pairing.paired': 'Seznanjeno',
   'pairing.waitNext': 'Čakanje na naslednjo instanco',
   'pairing.searching': 'Iskanje drugih instanc',
-  'pairing.inactive': 'Neaktivno',
+  'pairing.notReachable': 'Ni dosegljivo',
   'pairing.behindTitle': 'Niso prišle zraven',
   'pairing.behindTip': 'Te naprave so bile seznanjene s to, preden se je pridružila trdnjavi, a ji v 30 dneh niso sledile, zato je njihovo staro seznanjanje zaprto. Če želite katero pripeljati, vnesite nanjo frazo trdnjave. Če je ne uporabljate več, jo preprosto odstranite.',
   'pairing.relayCheckOpen': 'Kaj lahko preveriš',

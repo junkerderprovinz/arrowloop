@@ -1564,7 +1564,7 @@ const pl: Translations = {
   'pairing.paired': 'Sparowano',
   'pairing.waitNext': 'Czeka na kolejną instancję',
   'pairing.searching': 'Szuka innych instancji',
-  'pairing.inactive': 'Nieaktywne',
+  'pairing.notReachable': 'Nieosiągalna',
   'pairing.behindTitle': 'Nie przeszły',
   'pairing.behindTip': 'Te urządzenia były sparowane z tym, zanim dołączyło do twierdzy, ale nie poszły za nim w ciągu 30 dni, więc ich stare parowanie zostało zamknięte. Aby zabrać któreś, wpisz na nim frazę twierdzy. Jeśli już go nie używasz, po prostu je usuń.',
   'pairing.relayCheckOpen': 'Co możesz sprawdzić',

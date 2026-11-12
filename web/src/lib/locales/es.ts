@@ -1564,7 +1564,7 @@ const es: Translations = {
   'pairing.paired': 'Emparejada',
   'pairing.waitNext': 'Esperando la siguiente instancia',
   'pairing.searching': 'Buscando otras instancias',
-  'pairing.inactive': 'Inactiva',
+  'pairing.notReachable': 'No accesible',
   'pairing.behindTitle': 'No se unieron',
   'pairing.behindTip': 'Estos dispositivos estaban emparejados con este antes de que se uniera a la fortaleza, pero no lo siguieron en 30 días, así que su emparejamiento anterior se ha cerrado. Para traer uno, introduce en él la frase de la fortaleza. Si ya no lo usas, quítalo sin más.',
   'pairing.relayCheckOpen': 'Qué comprobar',

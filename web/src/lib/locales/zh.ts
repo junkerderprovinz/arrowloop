@@ -1564,7 +1564,7 @@ const zh: Translations = {
   'pairing.paired': '已配对',
   'pairing.waitNext': '正在等待下一台实例',
   'pairing.searching': '正在搜索其他实例',
-  'pairing.inactive': '不活跃',
+  'pairing.notReachable': '无法连接',
   'pairing.behindTitle': '没有跟过来',
   'pairing.behindTip': '这些设备在本设备加入堡垒之前就已与它配对，但在 30 天内没有跟过来，所以它们的旧配对已关闭。要把某台设备带过来，请在那台设备上输入堡垒的口令。如果你不再使用它，直接移除即可。',
   'pairing.relayCheckOpen': '检查项',

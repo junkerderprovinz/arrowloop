@@ -1564,7 +1564,7 @@ const gl: Translations = {
   'pairing.paired': 'Emparellado',
   'pairing.waitNext': 'Á espera da seguinte instancia',
   'pairing.searching': 'Buscando outras instancias',
-  'pairing.inactive': 'Inactiva',
+  'pairing.notReachable': 'Non accesible',
   'pairing.behindTitle': 'Non viñeron',
   'pairing.behindTip': 'Estes dispositivos estaban emparellados con este antes de que se unise á fortaleza, pero non o seguiron en 30 días, así que o seu emparellamento antigo pechouse. Para traer un, introduce nel a frase da fortaleza. Se xa non o usas, quítao sen máis.',
   'pairing.relayCheckOpen': 'Que comprobar',

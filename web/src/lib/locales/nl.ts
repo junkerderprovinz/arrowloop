@@ -1564,7 +1564,7 @@ const nl: Translations = {
   'pairing.paired': 'Gekoppeld',
   'pairing.waitNext': 'Wacht op de volgende instantie',
   'pairing.searching': 'Zoekt naar andere instanties',
-  'pairing.inactive': 'Inactief',
+  'pairing.notReachable': 'Niet bereikbaar',
   'pairing.behindTitle': 'Niet meegekomen',
   'pairing.behindTip': 'Deze apparaten waren met dit apparaat gekoppeld voordat het de vesting in ging, maar zijn binnen 30 dagen niet gevolgd, dus hun oude koppeling is gesloten. Wil je er een meenemen, voer daar dan de frase van de vesting in. Gebruik je het niet meer, verwijder het dan gewoon.',
   'pairing.relayCheckOpen': 'Wat je kunt controleren',
