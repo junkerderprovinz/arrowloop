@@ -201,7 +201,8 @@ export function wheelValue<T extends string, G>(all: SelectChoice<T, G>[], value
     const candidate = stepIndex(all.length, next, delta);
     if (candidate === next) return undefined;
     next = candidate;
-    if (!all[next].disabled) return all[next].value;
+    const choice = all[next]!;
+    if (!choice.disabled) return choice.value;
   }
 }
 

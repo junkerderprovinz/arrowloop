@@ -16,17 +16,19 @@
 // `tone: "heading"` with `size: "heading"` is the card heading notch: a solid
 // accent fill with the computed contrast ink, straddling the card's top edge.
 // It takes none of the four state hues, which would claim a status the heading
-// does not have, and its 22px stage keeps it apart from status chips. Only the
-// outermost heading of a card or dialog is a badge; nested sub-labels, a page's
-// <h1> and a heading on a filled status callout stay plain text.
+// does not have, and its 22px stage keeps it apart from status chips. The
+// heading of a card, a sub-card or a window is a badge. A page's <h1> and a
+// heading on a filled status callout stay plain text.
 
 export type BadgeTone = "ok" | "fail" | "warn" | "active" | "neutral" | "heading" | "muted";
 export type BadgeSize = "small" | "medium" | "large" | "heading" | "icon";
-// pill: for standalone chips and counts. rounded: the default. square: a
-// square-aspect icon tile. circle: the width locked to the height. All four
-// read --radius-pill, so in round every badge is a true pill or circle. The
-// plain length token, because a percentage radius resolves per axis into an
-// ellipse.
+// The four forms of a badge. Without a form the corners follow the shape
+// setting through --radius-pill. With one they keep it under every setting:
+// rounded a small radius, square none, pill half the badge's height, so a
+// short badge never turns into a lozenge, and circle a circle around one glyph.
+export type BadgeForm = "rounded" | "square" | "pill" | "circle";
+
+/** @deprecated Use `BadgeForm`. Only "circle" has an effect: it makes the badge icon-only. */
 export type BadgeShape = "pill" | "rounded" | "square" | "circle";
 
 // An explicit start offset for the heading notch, as a quarter-rem step.
@@ -40,12 +42,14 @@ export type NotchInset = 4 | 5 | 6;
 export interface BadgeOptions {
   tone?: BadgeTone;
   size?: BadgeSize;
+  form?: BadgeForm;
+  /** @deprecated Use `form`. */
   shape?: BadgeShape;
   /** The stage height becomes a floor with vertical padding, so a second line
    *  grows the box instead of spilling out of it. The box then has no definite
    *  height, so beside a taller flex sibling it stretches unless aligned. */
   wrap?: boolean;
-  /** Zero horizontal padding and a 1:1 aspect ratio, as for `shape: "circle"`. */
+  /** Zero horizontal padding and a 1:1 aspect ratio, as for `form: "circle"`. */
   iconOnly?: boolean;
   /** Heading notch only: keep its look without positioning it, for several
    *  heading badges that straddle one card edge together inside a
@@ -60,14 +64,15 @@ export interface BadgeOptions {
 export function badgeClassName({
   tone = "neutral",
   size = "medium",
-  shape = "rounded",
+  form,
+  shape,
   wrap,
   iconOnly,
   inFlow,
   insetStart,
   action,
 }: BadgeOptions = {}): string {
-  const isIconOnly = shape === "circle" || iconOnly === true;
+  const isIconOnly = form === "circle" || shape === "circle" || iconOnly === true;
   const isNotch = tone === "heading" && size === "heading";
   // An icon-only active badge takes the solid accent with contrast ink: with no
   // text left, the translucent wash only makes the tile look dimmed, and a
@@ -77,6 +82,7 @@ export function badgeClassName({
     "glim-badge",
     `glim-badge--${size}`,
     `glim-badge--${fill}`,
+    form && `glim-badge--${form}`,
     wrap && "glim-badge--wrap",
     isIconOnly && "glim-badge--icon-only",
     isNotch && "glim-badge--notch",

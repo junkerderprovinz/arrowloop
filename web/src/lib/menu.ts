@@ -54,7 +54,7 @@ export function tidyMenu<G>(entries: readonly MenuEntry<G>[]): MenuEntry<G>[] {
   return entries.filter((e, i, all) => {
     if (e !== "-") return true;
     const before = all[i - 1];
-    return i > 0 && i < all.length - 1 && before !== "-" && !isMenuHead(before);
+    return i > 0 && i < all.length - 1 && before !== "-" && !isMenuHead(before!);
   });
 }
 
@@ -177,7 +177,7 @@ export function focusMenuRow(menu: HTMLElement, move: "next" | "prev" | "first" 
   const at = rows.indexOf(document.activeElement as HTMLElement);
   let next = move === "first" ? 0 : move === "last" ? last : at + (move === "next" ? 1 : -1);
   if (at < 0 && move === "prev") next = last;
-  rows[(next + rows.length) % rows.length].focus();
+  rows[(next + rows.length) % rows.length]!.focus();
 }
 
 // One menu is open at a time in the whole document. Opening one closes the

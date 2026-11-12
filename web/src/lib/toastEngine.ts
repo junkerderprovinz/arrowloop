@@ -5,11 +5,16 @@
 //
 // Hover or focus pauses the countdown and keeps the remaining time:
 // pauseToast freezes `remainingMs` and resumeToast restarts from it, never from
-// the full duration.
+// the full duration. A toast with an action has no countdown: it waits for its
+// action or its dismiss button, since somebody reading slowly would otherwise
+// lose the Undo.
+
+import type { Politeness } from "./announce.ts";
 
 export type ToastSeverity = "success" | "warn" | "fail";
 
-/** How long a toast stays: long enough to read, short enough not to pile up. */
+/** How long a toast without an action stays: long enough to read, short
+ *  enough not to pile up. */
 export const TOAST_DURATION_MS = 4000;
 
 /** The most toasts shown at once, the largest stack that fits a 720px
@@ -31,8 +36,10 @@ export interface ToastEntry {
   /** What is left of the duration, authoritative only while paused
    *  (expiresAt === null). */
   remainingMs: number;
-  /** Epoch ms this toast auto-dismisses at, or null while paused. */
+  /** Epoch ms this toast auto-dismisses at, or null while paused or sticky. */
   expiresAt: number | null;
+  /** It has an action and stays until it is dismissed. */
+  sticky?: boolean;
 }
 
 /** Appends a new toast; toasts stack rather than replace each other. Over
@@ -49,13 +56,15 @@ export function addToast(
   durationMs: number = TOAST_DURATION_MS,
   maxVisible: number = MAX_VISIBLE_TOASTS
 ): ToastEntry[] {
+  const sticky = !!toast.action;
   const newest: ToastEntry = {
     id: toast.id,
     message: toast.message,
     severity: toast.severity,
     action: toast.action,
     remainingMs: durationMs,
-    expiresAt: now + durationMs,
+    expiresAt: sticky ? null : now + durationMs,
+    ...(sticky ? { sticky } : {}),
   };
   let toDrop = list.length + 1 - maxVisible;
   if (toDrop <= 0) return [...list, newest];
@@ -86,11 +95,11 @@ export function pauseToast(list: ToastEntry[], id: string, now: number): ToastEn
   });
 }
 
-/** Restarts the clock from the frozen remainder. A running toast is left
- *  alone. */
+/** Restarts the clock from the frozen remainder. A running or sticky toast is
+ *  left alone. */
 export function resumeToast(list: ToastEntry[], id: string, now: number): ToastEntry[] {
   return list.map((t) => {
-    if (t.id !== id || t.expiresAt != null) return t;
+    if (t.id !== id || t.expiresAt != null || t.sticky) return t;
     return { ...t, expiresAt: now + t.remainingMs };
   });
 }
@@ -127,6 +136,12 @@ export function applyEngagement(
  */
 export function softBreaks(message: string): string[] {
   return message.split(/(?<=[/\\])/);
+}
+
+/** How a toast is read out: a failure interrupts, everything else waits for a
+ *  pause in what the screen reader is saying. */
+export function toastPoliteness(severity: ToastSeverity): Politeness {
+  return severity === "fail" ? "assertive" : "polite";
 }
 
 /** Quiet mode filters by severity: it hides routine successes, never warnings
