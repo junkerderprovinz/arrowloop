@@ -595,8 +595,10 @@ database. Before one is put back, ArrowLoop keeps what it had as
 `before-import.tar` beside its settings, and no job runs while it goes back.
 
 **Show phrase** asks for the password and shows the twelve words with a QR
-code. **Change phrase** moves every app it can reach to new words and names the
-ones still on the old phrase, so a removed device stays out. **Leave fortress**
+code. **Change phrase** moves every app it can reach to new words, so a removed
+device stays out, and names the ones still on the old phrase. Those follow on
+their own once they are back, and only one that stays away for more than 30
+days needs the new words typed in. **Leave fortress**
 takes ArrowLoop out of the fortress and out of the pairing with it.
 
 ## Info
