@@ -1481,6 +1481,7 @@ const id: Translations = {
   'new.change.fortressBackup': 'Aplikasi cadangan di benteng Anda bisa mengambil pengaturan ArrowLoop dan memulihkannya. Pemulihan tetap mati sampai Anda menyalakannya.',
   'new.change.fortressPhrase': 'Ubin {pairing} menampilkan frasa benteng beserta kode QR setelah kata sandi Anda, dan bisa menggantinya untuk semua aplikasi di benteng.',
   'new.change.fortressRemove': 'Ubin {pairing} bisa mengeluarkan aplikasi lain dari benteng, lalu menawarkan frasa baru, karena dengan frasa lama aplikasi itu langsung bisa masuk lagi.',
+  'new.change.fortressOpen': 'Buka di kartu aplikasi lain menampilkan halamannya sendiri, di rumah maupun di jalan, di balik login aplikasi itu sendiri. Plugin menampilkan status dan baris log terakhirnya sebagai gantinya.',
   'new.change.notifyManyChannels': 'Notifikasi di ubin {safetyNet} dikirim ke saluran sebanyak yang Anda mau, masing-masing dengan nama, sakelar, dan ujinya sendiri.',
   'new.change.readTokens': 'Token baca di {security} membiarkan dasbor seperti Homepage membaca keadaan ArrowLoop, dan tidak lebih.',
   'new.change.directLan': 'Instance yang terpasang di jaringan yang sama berbicara langsung satu sama lain, jadi filter DNS yang memblokir relay tidak lagi memisahkan mereka.',

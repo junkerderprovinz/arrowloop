@@ -1481,6 +1481,7 @@ const vi: Translations = {
   'new.change.fortressBackup': 'Một ứng dụng sao lưu trong pháo đài của bạn có thể lấy cài đặt của ArrowLoop và khôi phục lại. Việc khôi phục vẫn tắt cho đến khi bạn bật nó.',
   'new.change.fortressPhrase': 'Ô {pairing} hiển thị cụm từ của pháo đài kèm mã QR sau khi bạn nhập mật khẩu, và có thể đổi nó cho mọi ứng dụng trong pháo đài.',
   'new.change.fortressRemove': 'Ô {pairing} có thể xóa một ứng dụng khác khỏi pháo đài rồi đề nghị cụm từ mới, vì với cụm từ cũ nó vào lại được ngay.',
+  'new.change.fortressOpen': 'Mở trên thẻ của ứng dụng khác hiện các trang của chính ứng dụng đó, ở nhà hay khi ra ngoài, sau bước đăng nhập của nó. Một plugin thì hiện trạng thái và các dòng nhật ký mới nhất thay vào đó.',
   'new.change.notifyManyChannels': 'Thông báo trên ô {safetyNet} gửi đến bao nhiêu kênh tùy bạn, mỗi kênh có tên, công tắc và nút gửi thử riêng.',
   'new.change.readTokens': 'Token đọc trong {security} cho phép một bảng điều khiển như Homepage đọc tình trạng của ArrowLoop, và không gì khác.',
   'new.change.directLan': 'Các phiên bản đã ghép nối trong cùng một mạng nói chuyện trực tiếp với nhau, nên bộ lọc DNS chặn relay không còn tách chúng ra.',

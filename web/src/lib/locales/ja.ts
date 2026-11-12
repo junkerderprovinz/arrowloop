@@ -1481,6 +1481,7 @@ const ja: Translations = {
   'new.change.fortressBackup': '要塞内のバックアップアプリは、ArrowLoop の設定を取ってきて元に戻せます。元に戻す操作は、スイッチを入れるまでオフのままです。',
   'new.change.fortressPhrase': '{pairing} タイルでは、パスワードを入力すると要塞のフレーズが QR コード付きで表示され、要塞内のすべてのアプリに対してフレーズを変更できます。',
   'new.change.fortressRemove': '{pairing} タイルでは要塞から別のアプリを削除でき、そのあと新しいフレーズを提案します。古いフレーズのままだと、すぐに戻ってこられるためです。',
+  'new.change.fortressOpen': 'ほかのアプリのカードの「開く」で、そのアプリ自身のページが家でも外出先でも開きます。サインインはそのアプリ自身のものです。プラグインは代わりに状態とログの最新行を表示します。',
   'new.change.notifyManyChannels': '{safetyNet} タイルの通知は、好きなだけのチャンネルに送れます。チャンネルごとに名前、スイッチ、テストがあります。',
   'new.change.readTokens': '{security} の読み取りトークンを使うと、Homepage などのダッシュボードが ArrowLoop の状態を読み取れます。それ以外のことはできません。',
   'new.change.directLan': '同じネットワーク上のペアリング済みインスタンスは直接やり取りするので、リレーをブロックする DNS フィルターがあっても切り離されません。',

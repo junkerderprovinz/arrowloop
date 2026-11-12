@@ -1481,6 +1481,7 @@ const es: Translations = {
   'new.change.fortressBackup': 'Una app de copias de seguridad de tu fortaleza puede traer los ajustes de ArrowLoop y restaurarlos. La restauración queda desactivada hasta que la actives.',
   'new.change.fortressPhrase': 'El mosaico {pairing} muestra la frase de la fortaleza con un código QR después de tu contraseña, y puede cambiarla para todas las apps de la fortaleza.',
   'new.change.fortressRemove': 'El mosaico {pairing} puede quitar otra app de la fortaleza y luego ofrece una frase nueva, porque con la antigua volvería a entrar enseguida.',
+  'new.change.fortressOpen': 'Abrir en la tarjeta de otra app muestra sus propias páginas, en casa y fuera, tras su propio inicio de sesión. Un plugin muestra en su lugar su estado y las últimas líneas de su registro.',
   'new.change.notifyManyChannels': 'Las notificaciones del mosaico {safetyNet} van a tantos canales como quieras, cada uno con su nombre, su interruptor y su prueba.',
   'new.change.readTokens': 'Un token de lectura en {security} deja que un panel como Homepage lea cómo está ArrowLoop, y nada más.',
   'new.change.directLan': 'Las instancias emparejadas en la misma red hablan directamente entre sí, así que un filtro DNS que bloquee el repetidor ya no las separa.',

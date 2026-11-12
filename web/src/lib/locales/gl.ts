@@ -1481,6 +1481,7 @@ const gl: Translations = {
   'new.change.fortressBackup': 'Unha app de copias de seguridade da túa fortaleza pode traer a configuración de ArrowLoop e restaurala. A restauración queda desactivada ata que a actives.',
   'new.change.fortressPhrase': 'A tesela {pairing} mostra a frase da fortaleza cun código QR despois do teu contrasinal, e pode cambiala para todas as apps da fortaleza.',
   'new.change.fortressRemove': 'A tesela {pairing} pode quitar outra app da fortaleza e despois ofrece unha frase nova, porque coa antiga volvería entrar axiña.',
+  'new.change.fortressOpen': 'Abrir na tarxeta doutra app amosa as súas propias páxinas, na casa e fóra, tras o seu propio inicio de sesión. Un complemento amosa no seu lugar o seu estado e as últimas liñas do rexistro.',
   'new.change.notifyManyChannels': 'As notificacións da tesela {safetyNet} van a tantas canles como queiras, cada unha co seu nome, interruptor e proba.',
   'new.change.readTokens': 'Un token de lectura en {security} deixa que un panel como Homepage lea como está ArrowLoop, e nada máis.',
   'new.change.directLan': 'As instancias emparelladas na mesma rede falan directamente entre elas, así que un filtro DNS que bloquee o relé xa non as separa.',

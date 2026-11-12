@@ -1481,6 +1481,7 @@ const eu: Translations = {
   'new.change.fortressBackup': 'Zure gotorlekuko babeskopia-aplikazio batek ArrowLoopen ezarpenak ekar ditzake eta leheneratu. Leheneratzea itzalita geratzen da zuk piztu arte.',
   'new.change.fortressPhrase': '{pairing} lauzak gotorlekuaren esaldia QR kode batekin erakusten du zure pasahitzaren ondoren, eta gotorlekuko aplikazio guztientzat alda dezake.',
   'new.change.fortressRemove': '{pairing} lauzak beste aplikazio bat gotorlekutik kendu dezake, eta ondoren esaldi berri bat eskaintzen du, zaharrarekin berehala itzuliko litzatekeelako.',
+  'new.change.fortressOpen': 'Beste aplikazio baten txarteleko Ireki-k haren orriak erakusten ditu, etxean zein kanpoan, haren saio-hasieraren atzean. Plugin batek bere egoera eta erregistroko azken lerroak erakusten ditu horren ordez.',
   'new.change.notifyManyChannels': '{safetyNet} lauzako jakinarazpenak nahi adina kanaletara doaz, bakoitza bere izen, etengailu eta probarekin.',
   'new.change.readTokens': '{security} ataleko irakurketa-token batek Homepage bezalako panel bati ArrowLoop nola dabilen irakurtzen uzten dio, eta beste ezer ez.',
   'new.change.directLan': 'Sare berean dauden instantzia parekatuek zuzenean hitz egiten dute elkarrekin, beraz bitartekaria blokeatzen duen DNS iragazki batek ez ditu gehiago bereizten.',

@@ -1481,6 +1481,7 @@ const sk: Translations = {
   'new.change.fortressBackup': 'Zálohovacia aplikácia v tvojej pevnosti môže stiahnuť nastavenia ArrowLoop a obnoviť ich. Obnovenie zostane vypnuté, kým ho nezapneš.',
   'new.change.fortressPhrase': 'Dlaždica {pairing} po zadaní hesla ukáže frázu pevnosti s QR kódom a môže ju zmeniť pre všetky aplikácie v pevnosti.',
   'new.change.fortressRemove': 'Dlaždica {pairing} môže odstrániť inú aplikáciu z pevnosti a potom ponúkne novú frázu, lebo so starou by sa hneď vrátila.',
+  'new.change.fortressOpen': 'Otvoriť na karte inej aplikácie ukáže jej vlastné stránky, doma aj na cestách, za jej vlastným prihlásením. Doplnok namiesto toho ukáže svoj stav a posledné riadky denníka.',
   'new.change.notifyManyChannels': 'Oznámenia na dlaždici {safetyNet} idú do ľubovoľného počtu kanálov, každý s vlastným názvom, prepínačom a testom.',
   'new.change.readTokens': 'Token na čítanie v sekcii {security} dovolí dashboardu ako Homepage čítať, ako sa ArrowLoop darí, a nič viac.',
   'new.change.directLan': 'Spárované inštancie v rovnakej sieti spolu hovoria priamo, takže ich DNS filter, ktorý blokuje relé, už nerozdelí.',

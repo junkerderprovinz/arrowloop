@@ -1481,6 +1481,7 @@ const nl: Translations = {
   'new.change.fortressBackup': 'Een back-upapp in je vesting kan de instellingen van ArrowLoop ophalen en terugzetten. Terugzetten blijft uit tot je het aanzet.',
   'new.change.fortressPhrase': 'De tegel {pairing} toont na je wachtwoord de frase van de vesting met een QR-code, en kan haar voor alle apps in de vesting wijzigen.',
   'new.change.fortressRemove': 'De tegel {pairing} kan een andere app uit de vesting halen en biedt daarna een nieuwe frase aan, want met de oude komt die meteen weer binnen.',
+  'new.change.fortressOpen': 'Openen op de kaart van een andere app toont de eigen pagina\'s van die app, thuis en onderweg, achter haar eigen aanmelding. Een plug-in toont in plaats daarvan zijn status en de laatste regels van zijn log.',
   'new.change.notifyManyChannels': 'Meldingen op de tegel {safetyNet} gaan naar zoveel kanalen als je wilt, elk met een eigen naam, schakelaar en test.',
   'new.change.readTokens': 'Een leestoken onder {security} laat een dashboard zoals Homepage lezen hoe het met ArrowLoop gaat, en verder niets.',
   'new.change.directLan': 'Gekoppelde instanties in hetzelfde netwerk praten rechtstreeks met elkaar, dus een DNS-filter dat de relay blokkeert, houdt ze niet meer uit elkaar.',

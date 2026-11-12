@@ -1481,6 +1481,7 @@ const hu: Translations = {
   'new.change.fortressBackup': 'Egy mentést készítő alkalmazás az erődödben lekérheti az ArrowLoop beállításait, és visszaállíthatja őket. A visszaállítás kikapcsolva marad, amíg be nem kapcsolod.',
   'new.change.fortressPhrase': 'A {pairing} csempe a jelszavad után QR-kóddal együtt megmutatja az erőd jelmondatát, és az erőd összes alkalmazására megváltoztathatja.',
   'new.change.fortressRemove': 'A {pairing} csempe el tud távolítani egy másik alkalmazást az erődből, és utána új jelmondatot kínál, mert a régivel rögtön visszajutna.',
+  'new.change.fortressOpen': 'A Megnyitás egy másik alkalmazás kártyáján annak saját oldalait mutatja, otthon és útközben is, a saját bejelentkezése mögött. Egy bővítmény helyette az állapotát és a naplója utolsó sorait mutatja.',
   'new.change.notifyManyChannels': 'A {safetyNet} csempe értesítései annyi csatornára mennek, amennyire szeretnéd, mindegyik saját névvel, kapcsolóval és teszttel.',
   'new.change.readTokens': 'Egy olvasási token a {security} részben megengedi egy irányítópultnak, például a Homepage-nek, hogy kiolvassa, hogyan áll az ArrowLoop, de semmi mást.',
   'new.change.directLan': 'Az ugyanazon a hálózaton lévő párosított példányok közvetlenül beszélnek egymással, így egy DNS-szűrő, amely blokkolja a relayt, már nem választja szét őket.',

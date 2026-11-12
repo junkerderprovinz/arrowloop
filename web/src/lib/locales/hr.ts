@@ -1481,6 +1481,7 @@ const hr: Translations = {
   'new.change.fortressBackup': 'Aplikacija za sigurnosne kopije u tvojoj utvrdi može dohvatiti postavke ArrowLoopa i vratiti ih. Vraćanje ostaje isključeno dok ga ne uključiš.',
   'new.change.fortressPhrase': 'Pločica {pairing} nakon tvoje lozinke prikazuje frazu utvrde s QR kodom i može je promijeniti za sve aplikacije u utvrdi.',
   'new.change.fortressRemove': 'Pločica {pairing} može ukloniti drugu aplikaciju iz utvrde i zatim nudi novu frazu, jer bi se sa starom odmah vratila.',
+  'new.change.fortressOpen': 'Otvori na kartici druge aplikacije prikazuje njezine stranice, kod kuće i u pokretu, iza njezine vlastite prijave. Dodatak umjesto toga prikazuje svoje stanje i zadnje retke zapisnika.',
   'new.change.notifyManyChannels': 'Obavijesti na pločici {safetyNet} idu na koliko god kanala želiš, svaki s vlastitim nazivom, prekidačem i testom.',
   'new.change.readTokens': 'Token za čitanje u odjeljku {security} dopušta nadzornoj ploči kao što je Homepage da čita kako je ArrowLoopu, i ništa više.',
   'new.change.directLan': 'Uparene instance u istoj mreži razgovaraju izravno jedna s drugom, pa ih DNS filtar koji blokira relej više ne razdvaja.',

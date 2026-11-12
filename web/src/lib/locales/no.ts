@@ -1481,6 +1481,7 @@ const no: Translations = {
   'new.change.fortressBackup': 'En app for sikkerhetskopier i festningen din kan hente ArrowLoops innstillinger og gjenopprette dem. Gjenopprettingen er slått av til du slår den på.',
   'new.change.fortressPhrase': 'Flisen {pairing} viser frasen til festningen med en QR-kode etter passordet ditt, og kan endre den for alle appene i festningen.',
   'new.change.fortressRemove': 'Flisen {pairing} kan ta en annen app ut av festningen og tilbyr deretter en ny frase, siden den gamle ville slippe den rett inn igjen.',
+  'new.change.fortressOpen': 'Åpne på kortet til en annen app viser appens egne sider, hjemme og på farten, bak dens egen pålogging. En plugin viser i stedet tilstanden sin og de siste linjene i loggen.',
   'new.change.notifyManyChannels': 'Varsler på flisen {safetyNet} går til så mange kanaler du vil, hver med sitt eget navn, sin egen bryter og sin egen test.',
   'new.change.readTokens': 'Et lesetoken under {security} lar et dashbord som Homepage lese hvordan det går med ArrowLoop, og ingenting annet.',
   'new.change.directLan': 'Parede instanser på samme nettverk snakker direkte med hverandre, så et DNS-filter som blokkerer reléet, holder dem ikke lenger fra hverandre.',

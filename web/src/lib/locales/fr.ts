@@ -1481,6 +1481,7 @@ const fr: Translations = {
   'new.change.fortressBackup': 'Une app de sauvegarde de votre forteresse peut récupérer les réglages d\'ArrowLoop et les restaurer. La restauration reste désactivée tant que vous ne l\'activez pas.',
   'new.change.fortressPhrase': 'La tuile {pairing} affiche la phrase de la forteresse avec un code QR après votre mot de passe, et peut la changer pour toutes les apps de la forteresse.',
   'new.change.fortressRemove': 'La tuile {pairing} peut retirer une autre app de la forteresse, puis propose une nouvelle phrase, car l’ancienne la laisserait revenir aussitôt.',
+  'new.change.fortressOpen': 'Ouvrir sur la carte d\'une autre app affiche ses propres pages, chez vous comme en déplacement, derrière sa propre connexion. Un plugin affiche à la place son état et les dernières lignes de son journal.',
   'new.change.notifyManyChannels': 'Les notifications de la tuile {safetyNet} partent vers autant de canaux que vous voulez, chacun avec son nom, son interrupteur et son test.',
   'new.change.readTokens': 'Un jeton de lecture dans {security} permet à un tableau de bord comme Homepage de lire l\'état d\'ArrowLoop, et rien d\'autre.',
   'new.change.directLan': 'Les instances appairées sur le même réseau se parlent directement, si bien qu\'un filtre DNS qui bloque le relais ne les sépare plus.',

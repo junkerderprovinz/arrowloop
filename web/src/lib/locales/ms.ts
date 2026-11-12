@@ -1481,6 +1481,7 @@ const ms: Translations = {
   'new.change.fortressBackup': 'Apl sandaran dalam kubu Anda boleh mengambil tetapan ArrowLoop dan memulihkannya. Pemulihan kekal dimatikan sehingga Anda menghidupkannya.',
   'new.change.fortressPhrase': 'Jubin {pairing} menunjukkan frasa kubu bersama kod QR selepas kata laluan Anda, dan boleh menukarnya untuk semua apl dalam kubu.',
   'new.change.fortressRemove': 'Jubin {pairing} boleh mengalih keluar apl lain daripada kubu, kemudian menawarkan frasa baharu, kerana dengan frasa lama apl itu boleh terus masuk semula.',
+  'new.change.fortressOpen': 'Buka pada kad apl lain menunjukkan halamannya sendiri, di rumah atau di luar, di sebalik log masuk apl itu sendiri. Pemalam menunjukkan keadaan dan baris log terakhirnya sebagai ganti.',
   'new.change.notifyManyChannels': 'Pemberitahuan pada jubin {safetyNet} dihantar ke seberapa banyak saluran yang Anda mahu, setiap satu dengan nama, suis dan ujiannya sendiri.',
   'new.change.readTokens': 'Token baca di bawah {security} membenarkan papan pemuka seperti Homepage membaca keadaan ArrowLoop, dan tiada yang lain.',
   'new.change.directLan': 'Instans yang digandingkan dalam rangkaian yang sama berhubung terus antara satu sama lain, jadi penapis DNS yang menyekat relay tidak lagi memisahkan mereka.',

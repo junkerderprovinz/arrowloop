@@ -1481,6 +1481,7 @@ const sl: Translations = {
   'new.change.fortressBackup': 'Aplikacija za varnostne kopije v tvoji trdnjavi lahko prenese nastavitve ArrowLoop in jih obnovi. Obnavljanje ostane izklopljeno, dokler ga ne vklopiš.',
   'new.change.fortressPhrase': 'Ploščica {pairing} po vnosu gesla pokaže frazo trdnjave s kodo QR in jo lahko spremeni za vse aplikacije v trdnjavi.',
   'new.change.fortressRemove': 'Ploščica {pairing} lahko odstrani drugo aplikacijo iz trdnjave in nato ponudi novo frazo, saj bi se s staro takoj vrnila.',
+  'new.change.fortressOpen': 'Odpri na kartici druge aplikacije pokaže njene strani, doma in na poti, za njeno lastno prijavo. Vtičnik namesto tega pokaže svoje stanje in zadnje vrstice dnevnika.',
   'new.change.notifyManyChannels': 'Obvestila na ploščici {safetyNet} gredo v poljubno število kanalov, vsak s svojim imenom, stikalom in preizkusom.',
   'new.change.readTokens': 'Žeton za branje v razdelku {security} nadzorni plošči, kot je Homepage, dovoli brati, kako gre ArrowLoop, in nič drugega.',
   'new.change.directLan': 'Seznanjene instance v istem omrežju se pogovarjajo neposredno, zato jih filter DNS, ki blokira rele, ne loči več.',

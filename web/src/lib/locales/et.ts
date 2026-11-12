@@ -1481,6 +1481,7 @@ const et: Translations = {
   'new.change.fortressBackup': 'Varundusrakendus sinu kindluses saab tuua ArrowLoopi seaded ja need taastada. Taastamine jääb välja lülitatuks, kuni sa selle sisse lülitad.',
   'new.change.fortressPhrase': 'Paan {pairing} näitab pärast parooli kindluse fraasi koos QR-koodiga ja saab seda muuta kõigi kindluse rakenduste jaoks.',
   'new.change.fortressRemove': 'Paan {pairing} saab teise rakenduse kindlusest eemaldada ja pakub siis uut fraasi, sest vanaga pääseks see kohe tagasi.',
+  'new.change.fortressOpen': 'Ava teise rakenduse kaardil näitab selle oma lehti, kodus ja teel, selle enda sisselogimise taga. Plugin näitab selle asemel oma olekut ja logi viimaseid ridu.',
   'new.change.notifyManyChannels': 'Paani {safetyNet} teavitused lähevad nii paljudesse kanalitesse, kui soovid, igaühel oma nimi, lüliti ja test.',
   'new.change.readTokens': 'Lugemisluba jaotises {security} laseb juhtpaneelil nagu Homepage lugeda, kuidas ArrowLoopil läheb, ja mitte midagi muud.',
   'new.change.directLan': 'Seotud eksemplarid samas võrgus räägivad omavahel otse, nii et edastajat blokeeriv DNS-filter neid enam ei lahuta.',

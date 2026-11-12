@@ -1481,6 +1481,7 @@ const zh: Translations = {
   'new.change.fortressBackup': '堡垒中的备份应用可以获取 ArrowLoop 的设置并恢复它们。恢复功能默认关闭，直到你打开它。',
   'new.change.fortressPhrase': '输入密码后，“{pairing}”磁贴会显示堡垒口令和二维码，并可为堡垒中的所有应用更改口令。',
   'new.change.fortressRemove': '“{pairing}”磁贴可以将其他应用从堡垒中移除，随后会建议换一个新口令，因为旧口令会让它立刻回来。',
+  'new.change.fortressOpen': '在另一个应用的卡片上点“打开”，就能看到它自己的页面，在家在外都行，前面是它自己的登录。插件则改为显示它的状态和最新的日志行。',
   'new.change.notifyManyChannels': '“{safetyNet}”磁贴上的通知可以发送到任意多个渠道，每个渠道都有自己的名称、开关和测试。',
   'new.change.readTokens': '“{security}”中的读取令牌让 Homepage 等仪表板可以读取 ArrowLoop 的运行状况，除此之外什么也做不了。',
   'new.change.directLan': '同一网络中已配对的实例会直接通信，因此屏蔽中继的 DNS 过滤器不会再把它们隔开。',

@@ -1481,6 +1481,7 @@ const ro: Translations = {
   'new.change.fortressBackup': 'O aplicație de copii de rezervă din fortăreața ta poate aduce setările ArrowLoop și le poate restaura. Restaurarea rămâne oprită până când o pornești.',
   'new.change.fortressPhrase': 'Placa {pairing} arată fraza fortăreței cu un cod QR după parola ta și o poate schimba pentru toate aplicațiile din fortăreață.',
   'new.change.fortressRemove': 'Placa {pairing} poate elimina altă aplicație din fortăreață și apoi propune o frază nouă, pentru că cu cea veche ar intra imediat la loc.',
+  'new.change.fortressOpen': 'Deschide pe cardul altei aplicații îi arată propriile pagini, acasă și pe drum, în spatele propriei autentificări. Un plugin arată în schimb starea sa și ultimele rânduri din jurnal.',
   'new.change.notifyManyChannels': 'Notificările de pe placa {safetyNet} merg către câte canale vrei, fiecare cu numele, comutatorul și testul lui.',
   'new.change.readTokens': 'Un token de citire din {security} lasă un panou precum Homepage să citească cum se descurcă ArrowLoop, și nimic altceva.',
   'new.change.directLan': 'Instanțele împerecheate din aceeași rețea vorbesc direct între ele, așa că un filtru DNS care blochează releul nu le mai desparte.',

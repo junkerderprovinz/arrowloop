@@ -1481,6 +1481,7 @@ const pl: Translations = {
   'new.change.fortressBackup': 'Aplikacja do kopii zapasowych w twojej twierdzy może pobrać ustawienia ArrowLoop i je przywrócić. Przywracanie pozostaje wyłączone, dopóki go nie włączysz.',
   'new.change.fortressPhrase': 'Kafelek {pairing} po podaniu hasła pokazuje frazę twierdzy z kodem QR i może ją zmienić dla wszystkich aplikacji w twierdzy.',
   'new.change.fortressRemove': 'Kafelek {pairing} może usunąć inną aplikację z twierdzy, a potem proponuje nową frazę, bo ze starą od razu wróciłaby do środka.',
+  'new.change.fortressOpen': 'Otwórz na karcie innej aplikacji pokazuje jej własne strony, w domu i w drodze, za jej własnym logowaniem. Wtyczka pokazuje zamiast tego swój stan i ostatnie wiersze dziennika.',
   'new.change.notifyManyChannels': 'Powiadomienia na kafelku {safetyNet} trafiają do tylu kanałów, ilu chcesz, każdy z własną nazwą, przełącznikiem i testem.',
   'new.change.readTokens': 'Token odczytu w sekcji {security} pozwala pulpitowi takiemu jak Homepage odczytać, jak się ma ArrowLoop, i nic więcej.',
   'new.change.directLan': 'Sparowane instancje w tej samej sieci rozmawiają ze sobą bezpośrednio, więc filtr DNS blokujący przekaźnik już ich nie rozdziela.',

@@ -1481,6 +1481,7 @@ const lt: Translations = {
   'new.change.fortressBackup': 'Atsarginių kopijų programa tavo tvirtovėje gali parsisiųsti ArrowLoop nustatymus ir juos atkurti. Atkūrimas lieka išjungtas, kol jo neįjungsi.',
   'new.change.fortressPhrase': 'Plytelė {pairing} po tavo slaptažodžio parodo tvirtovės frazę su QR kodu ir gali ją pakeisti visoms tvirtovės programoms.',
   'new.change.fortressRemove': 'Plytelė {pairing} gali pašalinti kitą programą iš tvirtovės ir tada pasiūlo naują frazę, nes su senąja ji iškart sugrįžtų.',
+  'new.change.fortressOpen': 'Atidaryti kitos programos kortelėje parodo jos pačios puslapius, namie ir kelyje, už jos pačios prisijungimo. Papildinys vietoj to parodo savo būseną ir paskutines žurnalo eilutes.',
   'new.change.notifyManyChannels': 'Pranešimai plytelėje {safetyNet} keliauja į tiek kanalų, kiek nori, kiekvienas su savo pavadinimu, jungikliu ir bandymu.',
   'new.change.readTokens': 'Skaitymo raktas skiltyje {security} leidžia informacijos skydeliui, pavyzdžiui, Homepage, skaityti, kaip sekasi ArrowLoop, ir nieko daugiau.',
   'new.change.directLan': 'Susieti egzemplioriai tame pačiame tinkle bendrauja tiesiogiai, todėl DNS filtras, blokuojantis relę, jų nebeatskiria.',
