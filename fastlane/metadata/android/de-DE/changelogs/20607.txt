@@ -1,1 +1,0 @@
-Die Auftragsseite versucht nicht mehr, einen ganzen Satz in ein winziges Abzeichen zu quetschen. Läufe ohne Änderung sagen das jetzt einfach im Klartext, und nichts wird mehr abgeschnitten. Danke an danpeig für den Screenshot.

@@ -1,1 +1,0 @@
-No more typing the backup folder out letter by letter: Choose a folder opens a picker right beside it. The Restore button has taken early retirement, since Import settings already does that job and asks first.

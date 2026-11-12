@@ -1,1 +1,0 @@
-Your ArrowLoop instances just learned to take orders from each other. Open a job on the NAS from your laptop, change the schedule, hit Save. The NAS still has the last word, though: it checks every change and won't let anyone point a job at a folder it doesn't already sync. Polite, but firm.

@@ -1,1 +1,0 @@
-Deine automatischen Backups waren die ganze Zeit da, nur der Import wollte sie nicht ansehen. Jetzt kommen sie mit einem Tipp zurück. Auftrag prüfen antwortet in deiner Sprache, und ein angehaltener Auftrag, den du laufen lässt, sieht nicht mehr angehalten aus, sobald er startet. Danke an danpeig für die Meldung.

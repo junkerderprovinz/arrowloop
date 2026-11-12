@@ -574,6 +574,31 @@ relay cannot read or change any of it. It sees which instance a message is
 for, how big it is, when it arrives and the IP addresses of your instances.
 The words themselves never leave an instance.
 
+### The fortress
+
+A fortress is all the apps of one household that share a phrase: ArrowLoop,
+BombVault, KnightLoader and the others. **Enter phrase** on the Pairing tile,
+on the web or on the phone, joins ArrowLoop with that phrase, and from then on
+the fortress's phrase is also the phrase of the pairing. The instances ArrowLoop
+was paired with come along with their approvals. One that is away gets the
+phrase once it is back, and the old pairing stays open for it for 30 days.
+After that the old pairing closes, and the tile names every instance that never
+came, so you can bring it in with the phrase or remove it.
+
+**Show the other apps of the fortress**, under your instances, shows a card for
+every other app with its instances, and the permissions. A permission is one
+thing another app may do here: see the jobs, start a job, see the targets for
+new jobs, add a job, fetch a backup or put a backup back. Each has its own
+switch, and all are on except putting a backup back, which waits until you
+switch it on. A backup is the settings file and a copy of each job's state
+database. Before one is put back, ArrowLoop keeps what it had as
+`before-import.tar` beside its settings, and no job runs while it goes back.
+
+**Show phrase** asks for the password and shows the twelve words with a QR
+code. **Change phrase** moves every app it can reach to new words and names the
+ones still on the old phrase, so a removed device stays out. **Leave fortress**
+takes ArrowLoop out of the fortress and out of the pairing with it.
+
 ## Info
 
 The last tile has three cards. **Version** lists ArrowLoop, GlimStone and

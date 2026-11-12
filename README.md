@@ -149,7 +149,8 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 - **A plan before every run.** The preview lists every copy, deletion and conflict. Untick a row and that file stays exactly as it is. [The interface](https://junkerderprovinz.github.io/arrowloop/interface/)
 - **Brakes instead of surprises.** Deletions go to a trash, a run that would delete too much or finds a side suddenly empty stops, and a crash at any step can be picked up again. [Safety](https://junkerderprovinz.github.io/arrowloop/safety/)
 - **Over 60 clouds and servers.** Every rclone backend is built in: SMB, SFTP, S3, WebDAV, Nextcloud, OneDrive, Google Drive and the rest. [Configuring a job](https://junkerderprovinz.github.io/arrowloop/configuration/)
-- **Runs on its own.** Schedules, real-time watching, notifications and a run log that writes down every run. [Configuring a job](https://junkerderprovinz.github.io/arrowloop/configuration/)
+- **Runs on its own.** Schedules, real-time watching, notifications on as many channels as you like and a run log that writes down every run. [Configuring a job](https://junkerderprovinz.github.io/arrowloop/configuration/)
+- **Plays well with your other apps.** Pair your instances, or join a fortress with one phrase, and your other apps can see and start your jobs or back up the settings, each with a switch of its own. [Pairing](https://junkerderprovinz.github.io/arrowloop/interface/#pairing)
 - **Wherever you need it.** A Docker container for your server or Unraid, a desktop app for Windows, macOS and Linux, and an Android app that runs the engine on the phone. [Installing](https://junkerderprovinz.github.io/arrowloop/installing/)
 
 <br>

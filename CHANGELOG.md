@@ -10,151 +10,63 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.7.0 - 2026-11-12
+
+ArrowLoop moves into the fortress: one phrase for all your apps, a switch for everything they may do here, notifications on as many channels as you like, and a stack of phone fixes for the road.
+
 ## ✨ Added
 
-- **As many notification channels as you like.** The Notifications card on Safety net is a list now: add Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io, as often as you want, each with its own name, switch, "when" and test button. Discord gets an embed, a webhook gets the method, headers and body you write, and Apprise addresses such as `tgram://` or `pover://` reach Telegram, Pushover and the rest without a key on the Apprise server. Your settings come over as they are.
-- **Paired instances on the same network talk to each other directly.** They find each other there and call each other without the relay, sealed and signed just as over it, so a DNS filter that blocks the relay no longer keeps two instances at home apart. A container or server announces itself on the network, and from behind a Docker bridge it looks through its own network for the others. The phone and the desktop app call the others directly once they know where they are. Instances elsewhere still meet on the relay.
-- **Read tokens for dashboards.** Homepage, Homarr and the like read how ArrowLoop is doing and what its runs did at `/api/fortress/v1/status` and `/api/fortress/v1/log`, with a read token made under Settings, Security. The token opens nothing else.
-- **ArrowLoop joins a fortress.** Enter the fortress's twelve words on the Pairing tile, in the web interface or on the phone, and ArrowLoop joins your other apps there. The instances it is paired with come along with their approvals, and one that was away follows once it is back. One that still hasn't come along after 30 days shows up on the Pairing tile by name, so you can bring it in with the fortress phrase or remove it.
-- **Your other apps can work with your jobs.** In a fortress they can list the jobs, start one, see where a new job can write and add one, and a backup app can fetch ArrowLoop's settings and put them back. Each permission has its own switch.
-- **The fortress phrase can be shown and changed.** The words come with a QR code once you enter your password. A new phrase reaches every app and instance in reach, including one that joined a moment earlier, and any it missed are named so you know where to type the new words. Plugins that hold only the fortress's keys pick up the new phrase on their own within 30 days of the change.
-
-## ⚡ Improved
-
-- **The Pairing tile follows your group live.** An instance that arrives, waits, is approved or leaves shows up at once in the web interface, the desktop app and on the phone, instead of at the next check ten seconds later.
-- **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and it still talks to instances that have not been updated yet.
-- **A message that does not get through is tried again**, three times with a pause, when a second try could help. A test that fails says why in your language.
-
-## 2.6.9 - 2026-11-11
-
-The sign-in page names each field inside it, Installing covers Arch Linux and NixOS, and the builds use Go 1.27.4.
-
-## ⚡ Improved
-
-- **Installing covers Arch Linux and NixOS.** On Arch the single file and the installer need `webkit2gtk-4.1`, and on NixOS the Flatpak and the container are the way in. Thanks to @Revan335 for asking ([#145](https://github.com/junkerderprovinz/arrowloop/issues/145)).
-
-## 🐛 Fixed
-
-- **Builds use Go 1.27.4.** It fixes a crash in Go's HTTP/1 server ([GO-2026-6859](https://pkg.go.dev/vuln/GO-2026-6859)), the server behind the web interface and the relay.
+- **ArrowLoop joins a fortress.** Type the fortress's phrase on the Pairing tile, on the web or on the phone, and ArrowLoop takes its seat next to your other apps. The instances you paired before come along with their approvals, so nobody pairs again.
+- **Your other apps can lend a hand with your jobs.** In a fortress they can see your jobs and the targets a new job could write to, start a job and add one. Each of these has its own switch, so you decide who may do what.
+- **A backup app can fetch ArrowLoop's settings and bring them back.** It takes the settings along with each job's state. Putting them back stays off until you switch it on, and before anything is replaced ArrowLoop keeps what it had as `before-import.tar` beside its settings.
+- **The phrase can be shown and changed.** After your password the words come with a QR code. A new phrase reaches every app and instance in reach, and any that missed it are named, so you know where to type it.
+- **As many notification channels as you like.** Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io, each with its own name, switch, "when" and test button. Your current settings come over as they are.
+- **Read tokens for dashboards.** Homepage, Homarr and friends can read how ArrowLoop is doing with a token you make under Settings › Security, and that token opens nothing else.
+- **Paired instances at home talk to each other directly.** On the same network they skip the relay, sealed and signed just the same, so a DNS filter that blocks the relay can't keep them apart anymore.
+- **Open and edit a job on another instance.** The name of a job on another instance's card opens it with Pause, Edit, Run now and its runs. Save sends it over, and that instance checks it by its own rules.
+- **Infomaniak kDrive and dosya.dev** join the clouds, through rclone 1.76.
+- **The Apps tile offers the Flatpak** for x64 and ARM, and the phone app lists it too.
+- **A container can keep an eye out for new versions.** Switch on Update automatically on the Info tile, and it asks GitHub once a day and names a newer release in the Version card. It stays off until you turn it on.
 
 ## 🎨 Design
 
-- **The sign-in page names each field inside it.** Password, New password and Confirm password stand in grey in their fields until you type, and the form is a plain column of fields and buttons. The code from the log keeps its label above the field, beside its (i).
-
-## 2.6.8 - 2026-11-10
-
-Automatic backups come back on the phone, Check this job speaks your language, and an anomaly you allowed goes away as soon as its run starts.
-
-## 🐛 Fixed
-
-- **The phone restores its automatic backups.** Import refused them with "That file is not an ArrowLoop backup", because an automatic backup is the engine's whole settings file rather than the bundle Export writes. Import now takes either, asks first, and puts every job and setting back, the way the web interface already did. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
-- **An anomaly you allowed goes away as soon as its run starts.** After Run anyway or Take back, the held note stayed on the Anomalies page until the whole run had finished, which on a large job looked as if the tap had done nothing. It closes once the run's plan is past the safety brakes.
-- **Check this job speaks your language.** What the check and the comparison found stood in English on the phone and in the web interface, whatever the language. Every finding now comes in all 42 languages, with the side it names translated too.
-
-## 🎨 Design
-
-- **Run all on the phone stands on its own.** The (i) beside the button on the Overview is gone.
-- **The label switches on the phone stay on one line.** Labels and Bottom bar under Look broke into two rows with Symbol alone on the second. Each segment is now as wide as its word, and they only wrap where the words truly do not fit side by side.
-
-## 2.6.7 - 2026-11-10
-
-A job's run list on the phone shows every run in full again.
-
-## 🐛 Fixed
-
-- **A job's run list on the phone no longer cuts off its runs.** A run with nothing to do carried the whole sentence "Both sides already agree. There is nothing to do." in a small badge beside the time, which ran past the edge of the card and lost part of its text. Like the History tab, the job page now marks only finished and failed runs with a badge, and the line below still says that both sides were already the same. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-
-## 2.6.6 - 2026-11-10
-
-The Flatpak opens again on PCs with an NVIDIA graphics card under Wayland.
-
-## 🐛 Fixed
-
-- **The Flatpak opens on a PC with an NVIDIA graphics card.** Under Wayland the window never appeared and the log ended with "Error 71 (Protocol error) dispatching to Wayland display". The desktop app already switches off the WebKit renderer that NVIDIA's driver trips over, but inside the Flatpak it could not see the driver, so it never did. Now it reads the driver from where Flatpak can see it. Thanks to @RektalTk ([#143](https://github.com/junkerderprovinz/arrowloop/issues/143)).
-
-## 2.6.5 - 2026-11-10
-
-A folder from another app shows up on the phone the moment you add it, a Mac keeps watching a folder that was replaced, and the uninstaller says what stays.
-
-## 🐛 Fixed
-
-- **A folder added from another app on the phone shows up right away.** After Use this folder and Allow, the app went back to the overview while it restarted its engine for the new folder, so it looked as if nothing had been added. The settings page now stays open and lists the folder. Thanks to @AlairEileen ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
-- **On a Mac, a folder replaced under the same name stays watched.** macOS can report the new folder before the removal of the old one, and changes inside it then went unnoticed until the next scheduled run.
-
-## 🎨 Design
-
+- **The sign-in page names each field inside it.** Password and the other fields show their name in grey until you type.
+- **A run's window can be dragged larger** and remembers that size for every run.
+- **Every line of a job's files names both sides**, with an arrow pointing to where something happened.
 - **The Pairing tile shows ParleyPort's new logo.**
-
-## 🌐 Translations
-
-- **The uninstaller says in ArrowLoop's own words what stays.** Its list of what is kept names your jobs, history and settings, and the last page says they are still there, in all 42 languages.
-
-## 2.6.4 - 2026-11-09
-
-A round of phone fixes from danpeig's report: times follow the phone's 24-hour setting, the keyboard stays clear of a new folder's name, and the settings backup goes to any folder you choose.
-
-## 🐛 Fixed
-
-- **The phone app's folder picker stays above the keyboard.** Naming a new folder used to put the keyboard right over the box you type into. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-- **The phone's settings backup can be pointed somewhere else.** Choose a folder picks where Export writes and where Import reads, and Choose a file to import opens Android's own file picker, so a backup in a cloud app or anywhere else comes in without typing a path. Export also writes to the path in the box now, not always to Downloads. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-- **The folder picker for automatic backups on the phone reaches Download and Documents.** One level up in the folder picker stopped above the app's own data, where Android lets nobody look. It goes to the phone's top level instead, with internal storage, Download and Documents. A folder chosen after typing a path also replaces the typed one in the box. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-- **The phone app keeps to its clock setting.** History, the overview, the trash and the backups show 14:40 on a phone set to 24 hours, whatever the language, and the clock dialog for a schedule follows the same setting. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-- **Unlocking with a fingerprint shows a calm screen behind the prompt.** The locked screen's Unlock button stretched down the whole page in the accent colour, under the start of the lock's explanation. Behind the phone's prompt there is now only the app's background, and the button keeps its size for when the prompt is closed. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-- **The phone app explains Run all, Pause and a failed connection.** Run all on the overview and Pause in the job list have an (i) that says what they do. When Test connection fails, TalkBack reads the reason along with Not connected, and a tap on the Not connected badge in the targets list shows why. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
-
-## 2.6.3 - 2026-11-09
-
-A job waits for its drive instead of failing, a local side is read once, and a file left for later only fails a run when the next run has to leave it too.
-
-## ✨ Added
-
-- **Two more clouds: Infomaniak kDrive and dosya.dev.** Both are on the Cloud card, through rclone 1.76.
-- **The Apps tile offers the Flatpak**, for x64 and ARM, beside the Windows, macOS and Linux downloads. The phone app lists it too.
-- **A container looks for new versions if you let it.** Switch on Update automatically on the Info tile, and the container asks GitHub once a day for a newer release, names it under ArrowLoop in the Version card and writes it to its log. The switch is off from the start, and the container itself is still updated the way you deployed it.
+- **Little things got tidier.** The sync directions carry arrows, the ARM downloads say ARM, Use this folder carries a check, and the label switches on the phone stay on one line.
 
 ## ⚡ Improved
 
-- **A job waits while its drive is away.** When the external disk or network drive a job syncs with is unplugged or drops off, the job no longer fails run after run. It shows "Waiting for drive" in the list instead. A run that is going when the drive goes stops right there, is not counted as failed and treats nothing as deleted. Once the drive is back, the job runs by itself within a minute and then keeps to its schedule.
-- **A local side is read once instead of twice.** Symbolic links, junctions and the other entries the engine cannot copy are found while the side is read, so the extra stage "Checking the left side for links" is gone and a large folder is done sooner. Such entries still show up as left for later, as before.
-- **A file left for later no longer turns a run orange.** The next run simply tries it again. If that run has to leave it too, it fails: red in the list, a FAILED notification, and the sentence "Some files could not be carried in two runs in a row" with the files and why.
-- **A cloud file that could not be downloaded says so.** On Windows, a file that a cloud client such as OneDrive or OpenCloud keeps online only, and could not fetch when ArrowLoop read it, is left for later with a sentence that explains this and suggests keeping it on the device, instead of the bare Windows error.
+- **Your pairing moves into the fortress with you.** An instance that was away follows once it's back. After 30 days the old pairing closes, and the Pairing tile names anyone who never came, so you can bring them in with the phrase or remove them.
+- **The Pairing tile follows your group live.** An instance that arrives, waits, is approved or leaves shows up at once, on the web, on the desktop and on the phone.
+- **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and still talks to instances that haven't updated yet.
+- **On Unraid, ArrowLoop goes by the server's name** in the pairing and the fortress instead of its container id, until you give it a name of your own.
+- **A notification that doesn't get through is tried again**, three times with a pause, and a failed test says why in your language.
+- **A job waits for its drive instead of failing.** While an external or network drive is away, the job shows "Waiting for drive" and runs by itself within a minute of the drive coming back.
+- **A local side is read once instead of twice**, so large folders are done sooner.
+- **A file left for later no longer turns a run orange.** The next run simply tries it again, and only if that run has to leave it too does the run fail.
+- **A cloud file that couldn't be downloaded says so** on Windows, instead of showing the bare Windows error.
+- **Choose a folder picks the folder for automatic backups**, on the web and on the phone. Putting a backup back goes through Import settings.
+- **Installing covers Arch Linux and NixOS.** Thanks to @Revan335 for asking ([#145](https://github.com/junkerderprovinz/arrowloop/issues/145)).
+- **Questions go to the support thread, bugs and ideas to issues.**
 
 ## 🐛 Fixed
 
-- **The phone app asks Android's own folder picker first.** On OPPO phones ColorOS answers the folder picker with its own file manager, which offers none of the folders other apps share, such as fcitx5's. With Android's own picker those folders should show up. Thanks to @AlairEileen for the report ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
-
-## 🎨 Design
-
-- **A run's window can be dragged larger** by its corner and keeps that size for every run. Save this list sits at the bottom beside Close.
-- **Every line of a job's files names both sides**: the left folder, what happened with an arrow to the side it happened on, and the right folder. The card is called Files.
-- **Both ways, Only to the right and Only to the left carry their arrows** among the sync defaults.
-- **The ARM downloads say ARM.** The second part of the Windows and Linux buttons on the Apps tile repeated Windows and Linux until the pointer reached it. It reads ARM, as on the README.
-- **Update automatically has moved to the Info tile.** It sits in the Version card right under ArrowLoop, and so does the Flatpak's note that it updates through your software centre.
-
-## 2.6.2 - 2026-11-09
-
-The Automatic backups card picks its folder in the folder picker and leaves restoring to Import settings.
-
-## ⚡ Improved
-
-- **Choose a folder picks the backup folder.** The Backup folder field on the Automatic backups card has a Choose a folder button beside it, on the web and in the phone app. It opens the folder picker on the machine the engine runs on, where you can also make a new folder. Typing the path still works.
-
-## 🎨 Design
-
-- **The Restore button is gone from the Automatic backups card.** The card shows when the latest backup was made, and Import settings puts a copy back, asking first as before.
-- **Use this folder carries a check** in the folder picker, on the web and in the phone app.
-
-## 2.6.1 - 2026-11-08
-
-ArrowLoop opens and edits the jobs of your other paired instances.
-
-## ✨ Added
-
-- **Open and edit a job of a paired instance.** On the Overview and under Instances, the name of each job on another instance's card opens its page, marked with the instance it belongs to, with Pause, Edit, Run now and its last runs. Edit opens the usual editor, and Save sends the job to that instance, which checks it by its own rules, says why when it refuses, and logs which instance made the change. A side can be one of its targets, one of its marked drives, or a folder at or below one its jobs already use, and the folder picker offers just these. A network share by its address and the folders that hold its settings are refused. The trash switch, the brakes and the commands stay as that instance has them, and so do the name and the sides of a job that runs commands. Adding or removing a job is still done on the instance itself, and the phone app starts and stops these jobs as before.
+- **The phone app asks Android's own folder picker first**, so OPPO phones with ColorOS see the folders other apps share. A folder added from another app also shows up right away. Thanks to @AlairEileen ([#140](https://github.com/junkerderprovinz/arrowloop/issues/140)).
+- **The phone's folder picker and settings backup behave.** The picker stays above the keyboard and reaches Download and Documents, and the settings backup can go to any folder or come from any file. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **The phone app keeps to its clock and explains itself.** Times follow the phone's 24-hour setting, the unlock screen stays calm behind the fingerprint prompt, Pause has an (i), and a failed connection says why. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **A job's run list on the phone shows every run in full.** Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
+- **The phone restores its automatic backups.** Import takes them as well as an export, asks first and puts every job and setting back. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
+- **The Flatpak opens on a PC with an NVIDIA graphics card** under Wayland. Thanks to @RektalTk ([#143](https://github.com/junkerderprovinz/arrowloop/issues/143)).
+- **An anomaly you allowed goes away as soon as its run starts**, not only once the whole run is done.
+- **Check this job speaks your language**, findings and side names included.
+- **On a Mac, a folder replaced under the same name stays watched.**
+- **Builds use Go 1.27.4**, which fixes a crash in Go's HTTP/1 server ([GO-2026-6859](https://pkg.go.dev/vuln/GO-2026-6859)).
 
 ## 🌐 Translations
 
-- **Every new text is in all 42 languages.**
+- **Every new text is in all 42 languages,** and the uninstaller says in ArrowLoop's own words what stays.
 
 ## 2.6.0 - 2026-11-08
 

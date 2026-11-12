@@ -1,1 +1,0 @@
-Den Sicherungsordner musst du nicht mehr Buchstabe für Buchstabe eintippen: „Ordner wählen“ öffnet gleich daneben die Ordnerauswahl. Der Knopf „Wiederherstellen“ ist in Frührente gegangen, das erledigt „Einstellungen importieren“ schon, und es fragt vorher nach.

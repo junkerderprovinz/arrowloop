@@ -1,1 +1,0 @@
-Deine ArrowLoop-Instanzen nehmen jetzt Aufträge voneinander an. Öffne den Auftrag auf dem NAS am Laptop, ändere den Zeitplan, speichern, fertig. Das letzte Wort hat trotzdem das NAS: Es prüft jede Änderung und lässt sich keinen Ordner unterjubeln, den es nicht ohnehin schon synchronisiert. Höflich, aber bestimmt.

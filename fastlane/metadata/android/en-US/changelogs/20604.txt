@@ -1,1 +1,0 @@
-Your phone says 14:40, and now ArrowLoop does too. The keyboard no longer sits on the folder name you are typing, the settings backup goes to any folder and comes back from any app, and Run all, Pause and a failed connection test explain themselves. Thanks to danpeig for a long and very useful list.

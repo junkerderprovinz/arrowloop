@@ -1,6 +1,6 @@
 # Privacy policy: ArrowLoop
 
-Last updated: 8 November 2026. Applies to the ArrowLoop Android app, the
+Last updated: 12 November 2026. Applies to the ArrowLoop Android app, the
 desktop app and the container, from version 1.1.0, until this date changes.
 
 ## The short version
@@ -44,20 +44,30 @@ Only what you set up, and only to where you point it:
 - **Your files**, to and from the storage targets you add: cloud storage, an
   SFTP, WebDAV or SMB server, another folder, whatever the job names. The
   provider of that storage handles your files under its own terms.
-- **Notifications**, if you add a Matrix room or a webhook: a short report on a
-  run goes to that address. It holds the job's name, whether it succeeded, how
-  many files were copied, moved or deleted, an error message if there was one,
-  and the paths of up to five files left for the next run.
+- **Notifications**, if you add a channel such as Discord, Slack, ntfy,
+  Gotify, Matrix, mail, Apprise, a webhook or Healthchecks.io: a short report
+  on a run goes to that address. It holds the job's name, whether it
+  succeeded, how many files were copied, moved or deleted, an error message if
+  there was one, and the paths of up to five files left for the next run.
 - **Pairing**, if you pair your instances: they reach each other through a
   relay, ParleyPort, which we run at parleyport.halleluja.design unless you
-  choose a relay of your own or none. What your instances send each other (the
-  job list, a job's settings when another instance opens or saves it, the
-  folder names its folder picker shows, and the request to start or stop a
-  job) is encrypted end to end
+  choose a relay of your own or none, and directly when they are on the same
+  network. What your instances send each other (the job list, a job's settings
+  when another instance opens or saves it, the folder names its folder picker
+  shows, and the request to start or stop a job) is encrypted end to end
   with a key made from your twelve words, which never leave your instances.
   The relay sees which instance a message is for, how big it is, when it
   arrives and the IP addresses of your instances, keeps none of it, and stores
-  nothing.
+  nothing. A container or server that is paired announces itself on your own
+  network so the others find it there.
+- **The fortress**, if ArrowLoop joins one: your other apps in it see
+  how ArrowLoop is doing and its run log, and, where you leave the permission
+  on, list, start or add a job, see the targets a new job could write to,
+  fetch a backup of the settings with each job's state, or put one back.
+  These travel the same way as pairing, encrypted end to end with a key made
+  from the fortress's phrase.
+- **Dashboards**, if you make a read token: whatever holds the token can read
+  how ArrowLoop is doing and its run log, and nothing else.
 - **Links you tap**, such as the source code or a donation page, open in your
   browser, which then connects to that site.
 

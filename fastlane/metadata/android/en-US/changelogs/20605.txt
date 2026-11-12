@@ -1,1 +1,0 @@
-You picked the folder, tapped Allow, and ArrowLoop wandered off to the overview as if nothing had happened. Now it stays on the settings page and shows the folder you just added. Thanks to AlairEileen for the report.

@@ -1,1 +1,0 @@
-Diesmal keine neuen Knöpfe, dafür ein stabilerer Motor. ArrowLoop wird jetzt mit Go 1.27.4 gebaut, das einen Absturz im Webserver behebt. Deine Aufträge merken davon nichts, und genau so soll es sein.

@@ -1,1 +1,0 @@
-Ordner gewählt, Zulassen getippt, und ArrowLoop ist zur Übersicht abgebogen, als wäre nichts passiert. Jetzt bleibt es auf den Einstellungen und zeigt den Ordner, den du gerade hinzugefügt hast. Danke an AlairEileen für die Meldung.

@@ -63,8 +63,22 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
-    after: '2.6.2',
+    after: '2.6.0',
     changes: [
+      { id: 'fortress-join', text: 'new.change.fortressJoin', names: { pairing: 'settings.pairing' } },
+      { id: 'fortress-jobs', text: 'new.change.fortressJobs' },
+      { id: 'fortress-backup', text: 'new.change.fortressBackup' },
+      { id: 'fortress-phrase', text: 'new.change.fortressPhrase', names: { pairing: 'settings.pairing' } },
+      { id: 'notify-many-channels', text: 'new.change.notifyManyChannels', names: { safetyNet: 'settings.safetyNet' } },
+      { id: 'read-tokens', text: 'new.change.readTokens', names: { security: 'settings.security' } },
+      { id: 'direct-lan', text: 'new.change.directLan' },
+      {
+        id: 'remote-jobs',
+        at: ['/dashboard'],
+        where: ['nav.overview'],
+        text: 'new.change.remoteJobs',
+        names: { overview: 'nav.overview' },
+      },
       // The tiles stand in the provider picker, a window no address opens.
       { id: 'kdrive-dosya', text: 'new.change.kdriveDosya' },
       {
@@ -78,18 +92,6 @@ export const RELEASES: Release[] = [
         at: ['/settings/info'],
         where: ['nav.settings', 'settings.info'],
         text: 'new.change.autoUpdate',
-      },
-    ],
-  },
-  {
-    after: '2.6.0',
-    changes: [
-      {
-        id: 'remote-jobs',
-        at: ['/dashboard'],
-        where: ['nav.overview'],
-        text: 'new.change.remoteJobs',
-        names: { overview: 'nav.overview' },
       },
     ],
   },

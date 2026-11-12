@@ -1,1 +1,0 @@
-Nothing new on the phone this time. This release gets the Linux Flatpak to open on PCs with an NVIDIA card, and the version number climbs along so everything stays in step.
