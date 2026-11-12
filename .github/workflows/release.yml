@@ -24,9 +24,12 @@ jobs:
   pommelporter:
     uses: junkerderprovinz/junkerderprovinz/.github/workflows/pommelporter-current.yml@1281c4effcac6978034bc18fa75444cb4b7f35b7 # main
 
+  glimstone:
+    uses: junkerderprovinz/junkerderprovinz/.github/workflows/glimstone-current.yml@main
+
   # Before forty minutes of builds rather than after them.
   notes:
-    needs: pommelporter
+    needs: [pommelporter, glimstone]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

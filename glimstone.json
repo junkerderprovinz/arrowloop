@@ -1,0 +1,16 @@
+{
+  "targets": [
+    {
+      "name": "web",
+      "mode": "port",
+      "version": "4.2.8",
+      "versionFile": "web/src/lib/glimstone/version.ts"
+    },
+    {
+      "name": "phone",
+      "mode": "port",
+      "version": "4.2.8",
+      "versionFile": "mobile/src/glimstone/version.ts"
+    }
+  ]
+}
