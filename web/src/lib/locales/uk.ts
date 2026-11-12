@@ -1652,6 +1652,7 @@ const uk: Translations = {
   'fortress.action.jobsCreate': 'Додати завдання',
   'fortress.action.backupExport': 'Забрати резервну копію',
   'fortress.action.backupImport': 'Відновити резервну копію',
+  'fortress.action.uiOpen': 'Відкрити його сторінки',
 }
 
 export default uk

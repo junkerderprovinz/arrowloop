@@ -1652,6 +1652,7 @@ const el: Translations = {
   'fortress.action.jobsCreate': 'Να προσθέτει μια εργασία',
   'fortress.action.backupExport': 'Να παίρνει ένα αντίγραφο ασφαλείας',
   'fortress.action.backupImport': 'Να επαναφέρει ένα αντίγραφο ασφαλείας',
+  'fortress.action.uiOpen': 'Να ανοίγει τις σελίδες του',
 }
 
 export default el

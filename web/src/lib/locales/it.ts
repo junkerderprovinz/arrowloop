@@ -1652,6 +1652,7 @@ const it: Translations = {
   'fortress.action.jobsCreate': 'Aggiungere un lavoro',
   'fortress.action.backupExport': 'Prendere un backup',
   'fortress.action.backupImport': 'Ripristinare un backup',
+  'fortress.action.uiOpen': 'Aprire le sue pagine',
 }
 
 export default it

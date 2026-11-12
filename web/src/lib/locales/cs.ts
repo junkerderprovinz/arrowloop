@@ -1652,6 +1652,7 @@ const cs: Translations = {
   'fortress.action.jobsCreate': 'Přidat úlohu',
   'fortress.action.backupExport': 'Stáhnout zálohu',
   'fortress.action.backupImport': 'Obnovit zálohu',
+  'fortress.action.uiOpen': 'Otevřít jeho stránky',
 }
 
 export default cs

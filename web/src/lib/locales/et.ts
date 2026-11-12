@@ -1652,6 +1652,7 @@ const et: Translations = {
   'fortress.action.jobsCreate': 'Lisada töö',
   'fortress.action.backupExport': 'Tuua varukoopia',
   'fortress.action.backupImport': 'Taastada varukoopia',
+  'fortress.action.uiOpen': 'Avada selle lehti',
 }
 
 export default et

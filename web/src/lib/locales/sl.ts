@@ -1652,6 +1652,7 @@ const sl: Translations = {
   'fortress.action.jobsCreate': 'Dodati opravilo',
   'fortress.action.backupExport': 'Prenesti varnostno kopijo',
   'fortress.action.backupImport': 'Obnoviti varnostno kopijo',
+  'fortress.action.uiOpen': 'Odpreti njegove strani',
 }
 
 export default sl

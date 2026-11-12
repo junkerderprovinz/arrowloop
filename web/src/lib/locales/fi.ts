@@ -1652,6 +1652,7 @@ const fi: Translations = {
   'fortress.action.jobsCreate': 'Lisätä työ',
   'fortress.action.backupExport': 'Hakea varmuuskopio',
   'fortress.action.backupImport': 'Palauttaa varmuuskopio',
+  'fortress.action.uiOpen': 'Avata sen sivut',
 }
 
 export default fi

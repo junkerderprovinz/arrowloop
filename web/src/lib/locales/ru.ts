@@ -1652,6 +1652,7 @@ const ru: Translations = {
   'fortress.action.jobsCreate': 'Добавить задание',
   'fortress.action.backupExport': 'Забрать резервную копию',
   'fortress.action.backupImport': 'Восстановить резервную копию',
+  'fortress.action.uiOpen': 'Открыть его страницы',
 }
 
 export default ru

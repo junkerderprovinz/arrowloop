@@ -1652,6 +1652,7 @@ const ro: Translations = {
   'fortress.action.jobsCreate': 'Să adauge o sarcină',
   'fortress.action.backupExport': 'Să aducă o copie de rezervă',
   'fortress.action.backupImport': 'Să restaureze o copie de rezervă',
+  'fortress.action.uiOpen': 'Să-i deschidă paginile',
 }
 
 export default ro

@@ -1652,6 +1652,7 @@ const hu: Translations = {
   'fortress.action.jobsCreate': 'Hozzáadni egy feladatot',
   'fortress.action.backupExport': 'Lekérni egy mentést',
   'fortress.action.backupImport': 'Visszaállítani egy mentést',
+  'fortress.action.uiOpen': 'Megnyitni az oldalait',
 }
 
 export default hu

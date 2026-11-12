@@ -1652,6 +1652,7 @@ const ca: Translations = {
   'fortress.action.jobsCreate': 'Afegir una tasca',
   'fortress.action.backupExport': 'Obtenir una còpia de seguretat',
   'fortress.action.backupImport': 'Restaurar una còpia de seguretat',
+  'fortress.action.uiOpen': 'Obrir les seves pàgines',
 }
 
 export default ca

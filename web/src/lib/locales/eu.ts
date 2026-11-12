@@ -1652,6 +1652,7 @@ const eu: Translations = {
   'fortress.action.jobsCreate': 'Lan bat gehitzea',
   'fortress.action.backupExport': 'Babeskopia bat ekartzea',
   'fortress.action.backupImport': 'Babeskopia bat leheneratzea',
+  'fortress.action.uiOpen': 'Bere orriak irekitzea',
 }
 
 export default eu

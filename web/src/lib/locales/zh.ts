@@ -1652,6 +1652,7 @@ const zh: Translations = {
   'fortress.action.jobsCreate': '添加任务',
   'fortress.action.backupExport': '获取备份',
   'fortress.action.backupImport': '恢复备份',
+  'fortress.action.uiOpen': '打开它的页面',
 }
 
 export default zh

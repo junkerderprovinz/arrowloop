@@ -1652,6 +1652,7 @@ const sv: Translations = {
   'fortress.action.jobsCreate': 'Lägga till ett jobb',
   'fortress.action.backupExport': 'Hämta en säkerhetskopia',
   'fortress.action.backupImport': 'Återställa en säkerhetskopia',
+  'fortress.action.uiOpen': 'Öppna dess sidor',
 }
 
 export default sv

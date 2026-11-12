@@ -1652,6 +1652,7 @@ const th: Translations = {
   'fortress.action.jobsCreate': 'เพิ่มงาน',
   'fortress.action.backupExport': 'ดึงข้อมูลสำรอง',
   'fortress.action.backupImport': 'กู้คืนข้อมูลสำรอง',
+  'fortress.action.uiOpen': 'เปิดหน้าของแอป',
 }
 
 export default th

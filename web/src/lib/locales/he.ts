@@ -1652,6 +1652,7 @@ const he: Translations = {
   'fortress.action.jobsCreate': 'להוסיף משימה',
   'fortress.action.backupExport': 'להביא גיבוי',
   'fortress.action.backupImport': 'לשחזר גיבוי',
+  'fortress.action.uiOpen': 'לפתוח את הדפים שלו',
 }
 
 export default he

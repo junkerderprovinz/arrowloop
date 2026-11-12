@@ -1652,6 +1652,7 @@ const lt: Translations = {
   'fortress.action.jobsCreate': 'Pridėti užduotį',
   'fortress.action.backupExport': 'Parsisiųsti atsarginę kopiją',
   'fortress.action.backupImport': 'Atkurti atsarginę kopiją',
+  'fortress.action.uiOpen': 'Atverti jo puslapius',
 }
 
 export default lt

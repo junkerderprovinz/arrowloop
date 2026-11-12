@@ -1652,6 +1652,7 @@ const ko: Translations = {
   'fortress.action.jobsCreate': '작업 추가하기',
   'fortress.action.backupExport': '백업 가져오기',
   'fortress.action.backupImport': '백업 복원하기',
+  'fortress.action.uiOpen': '페이지 열기',
 }
 
 export default ko

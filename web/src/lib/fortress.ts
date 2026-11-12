@@ -65,6 +65,7 @@ const ACTION_TITLES: Record<string, TranslationKey> = {
   'jobs.create': 'fortress.action.jobsCreate',
   'backup.export': 'fortress.action.backupExport',
   'backup.import': 'fortress.action.backupImport',
+  'ui.open': 'fortress.action.uiOpen',
 }
 
 function deviceKind(m: FortressMember): FortressInstanceView['deviceKind'] {

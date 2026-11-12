@@ -1652,6 +1652,7 @@ const ar: Translations = {
   'fortress.action.jobsCreate': 'إضافة مهمة',
   'fortress.action.backupExport': 'جلب نسخة احتياطية',
   'fortress.action.backupImport': 'استعادة نسخة احتياطية',
+  'fortress.action.uiOpen': 'فتح صفحاته',
 }
 
 export default ar

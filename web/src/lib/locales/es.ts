@@ -1652,6 +1652,7 @@ const es: Translations = {
   'fortress.action.jobsCreate': 'Añadir una tarea',
   'fortress.action.backupExport': 'Traer una copia de seguridad',
   'fortress.action.backupImport': 'Restaurar una copia de seguridad',
+  'fortress.action.uiOpen': 'Abrir sus páginas',
 }
 
 export default es

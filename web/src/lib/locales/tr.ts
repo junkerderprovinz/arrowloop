@@ -1652,6 +1652,7 @@ const tr: Translations = {
   'fortress.action.jobsCreate': 'Bir iş eklemek',
   'fortress.action.backupExport': 'Bir yedek almak',
   'fortress.action.backupImport': 'Bir yedeği geri yüklemek',
+  'fortress.action.uiOpen': 'Sayfalarını açmak',
 }
 
 export default tr

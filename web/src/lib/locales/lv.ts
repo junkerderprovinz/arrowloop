@@ -1652,6 +1652,7 @@ const lv: Translations = {
   'fortress.action.jobsCreate': 'Pievienot uzdevumu',
   'fortress.action.backupExport': 'Iegūt rezerves kopiju',
   'fortress.action.backupImport': 'Atjaunot rezerves kopiju',
+  'fortress.action.uiOpen': 'Atvērt tās lapas',
 }
 
 export default lv

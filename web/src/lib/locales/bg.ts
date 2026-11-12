@@ -1652,6 +1652,7 @@ const bg: Translations = {
   'fortress.action.jobsCreate': 'Да добавя задача',
   'fortress.action.backupExport': 'Да вземе резервно копие',
   'fortress.action.backupImport': 'Да възстанови резервно копие',
+  'fortress.action.uiOpen': 'Да отваря страниците му',
 }
 
 export default bg

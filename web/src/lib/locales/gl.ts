@@ -1652,6 +1652,7 @@ const gl: Translations = {
   'fortress.action.jobsCreate': 'Engadir unha tarefa',
   'fortress.action.backupExport': 'Traer unha copia de seguridade',
   'fortress.action.backupImport': 'Restaurar unha copia de seguridade',
+  'fortress.action.uiOpen': 'Abrir as súas páxinas',
 }
 
 export default gl

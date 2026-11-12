@@ -1652,6 +1652,7 @@ const id: Translations = {
   'fortress.action.jobsCreate': 'Menambah tugas',
   'fortress.action.backupExport': 'Mengambil cadangan',
   'fortress.action.backupImport': 'Memulihkan cadangan',
+  'fortress.action.uiOpen': 'Membuka halamannya',
 }
 
 export default id

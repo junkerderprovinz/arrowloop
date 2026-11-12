@@ -1652,6 +1652,7 @@ const is: Translations = {
   'fortress.action.jobsCreate': 'Bæta við verki',
   'fortress.action.backupExport': 'Sækja afrit',
   'fortress.action.backupImport': 'Endurheimta afrit',
+  'fortress.action.uiOpen': 'Opna síðurnar þess',
 }
 
 export default is

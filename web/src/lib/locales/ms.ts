@@ -1652,6 +1652,7 @@ const ms: Translations = {
   'fortress.action.jobsCreate': 'Tambah tugas',
   'fortress.action.backupExport': 'Ambil sandaran',
   'fortress.action.backupImport': 'Pulihkan sandaran',
+  'fortress.action.uiOpen': 'Buka halamannya',
 }
 
 export default ms

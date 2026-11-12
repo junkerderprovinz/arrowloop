@@ -1652,6 +1652,7 @@ const vi: Translations = {
   'fortress.action.jobsCreate': 'Thêm một công việc',
   'fortress.action.backupExport': 'Lấy một bản sao lưu',
   'fortress.action.backupImport': 'Khôi phục một bản sao lưu',
+  'fortress.action.uiOpen': 'Mở các trang của nó',
 }
 
 export default vi

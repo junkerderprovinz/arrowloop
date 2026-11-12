@@ -1652,6 +1652,7 @@ const da: Translations = {
   'fortress.action.jobsCreate': 'Tilføje et job',
   'fortress.action.backupExport': 'Hente en sikkerhedskopi',
   'fortress.action.backupImport': 'Gendanne en sikkerhedskopi',
+  'fortress.action.uiOpen': 'Åbne dens sider',
 }
 
 export default da

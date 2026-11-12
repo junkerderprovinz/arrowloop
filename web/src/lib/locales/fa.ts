@@ -1652,6 +1652,7 @@ const fa: Translations = {
   'fortress.action.jobsCreate': 'افزودن یک کار',
   'fortress.action.backupExport': 'گرفتن یک پشتیبان',
   'fortress.action.backupImport': 'بازگرداندن یک پشتیبان',
+  'fortress.action.uiOpen': 'باز کردن صفحه‌هایش',
 }
 
 export default fa

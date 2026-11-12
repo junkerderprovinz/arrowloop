@@ -1652,6 +1652,7 @@ const hi: Translations = {
   'fortress.action.jobsCreate': 'कोई काम जोड़ना',
   'fortress.action.backupExport': 'बैकअप लाना',
   'fortress.action.backupImport': 'बैकअप वापस लगाना',
+  'fortress.action.uiOpen': 'इसके पेज खोलना',
 }
 
 export default hi

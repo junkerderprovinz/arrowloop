@@ -1652,6 +1652,7 @@ const sr: Translations = {
   'fortress.action.jobsCreate': 'Додати посао',
   'fortress.action.backupExport': 'Преузети резервну копију',
   'fortress.action.backupImport': 'Вратити резервну копију',
+  'fortress.action.uiOpen': 'Отворити његове странице',
 }
 
 export default sr

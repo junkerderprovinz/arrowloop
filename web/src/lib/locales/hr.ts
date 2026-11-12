@@ -1652,6 +1652,7 @@ const hr: Translations = {
   'fortress.action.jobsCreate': 'Dodati zadatak',
   'fortress.action.backupExport': 'Dohvatiti sigurnosnu kopiju',
   'fortress.action.backupImport': 'Vratiti sigurnosnu kopiju',
+  'fortress.action.uiOpen': 'Otvoriti njegove stranice',
 }
 
 export default hr
