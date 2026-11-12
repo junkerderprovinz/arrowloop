@@ -111,6 +111,14 @@ CREATE TABLE IF NOT EXISTS entries (
 	PRIMARY KEY (run, seq)
 );
 
+CREATE TABLE IF NOT EXISTS openings (
+	id     INTEGER PRIMARY KEY AUTOINCREMENT,
+	at     INTEGER NOT NULL,
+	app    TEXT    NOT NULL,
+	device TEXT    NOT NULL,
+	member TEXT    NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS going (
 	key          TEXT    PRIMARY KEY,
 	job          TEXT    NOT NULL,
@@ -611,8 +619,8 @@ func (d *DB) LeftLastTime(ctx context.Context, job string) (map[string]bool, err
 	return out, rows.Err()
 }
 
-// Prune drops runs older than the given age, so the log does not grow without
-// bound on a machine nobody looks at.
+// Prune drops runs and openings older than the given age, so the log does
+// not grow without bound on a machine nobody looks at.
 func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int64, error) {
 	if keep <= 0 {
 		return 0, nil
@@ -623,6 +631,9 @@ func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int6
 	if _, err := d.sql.ExecContext(ctx,
 		`DELETE FROM entries WHERE run IN (SELECT id FROM runs WHERE started < ?)`, cut); err != nil {
 		return 0, fmt.Errorf("prune history entries: %w", err)
+	}
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM openings WHERE at < ?`, cut); err != nil {
+		return 0, fmt.Errorf("prune the openings: %w", err)
 	}
 	res, err := d.sql.ExecContext(ctx, `DELETE FROM runs WHERE started < ?`, cut)
 	if err != nil {

@@ -166,7 +166,7 @@ func TestTheLogNamesEveryRunByItsOutcome(t *testing.T) {
 		{ID: 6, Job: "Musik", Skipped: 1, Finished: now.Add(2 * time.Minute)},
 		{ID: 9, Job: "Musik", Err: "refused", Finished: now.Add(3 * time.Minute)},
 	}
-	page := Log(runs, "3", "en")
+	page := Log(runs, nil, "3", "en", 50)
 	want := []struct {
 		code  string
 		level status.Severity
@@ -174,7 +174,7 @@ func TestTheLogNamesEveryRunByItsOutcome(t *testing.T) {
 	if len(page.Entries) != len(want) || page.Next != "9" {
 		t.Fatalf("the page is %+v", page)
 	}
-	de := Log(runs, "3", "de")
+	de := Log(runs, nil, "3", "de", 50)
 	for i, w := range want {
 		e := page.Entries[i]
 		if e.Code != w.code || e.Level != w.level || e.Link != "/history" || e.Text == de.Entries[i].Text {
@@ -187,8 +187,41 @@ func TestTheLogNamesEveryRunByItsOutcome(t *testing.T) {
 }
 
 func TestAnEmptyLogPageRepeatsTheCursor(t *testing.T) {
-	if p := Log(nil, "12", "en"); p.Next != "12" || len(p.Entries) != 0 {
+	if p := Log(nil, nil, "12", "en", 50); p.Next != "12" || len(p.Entries) != 0 {
 		t.Errorf("an empty page is %+v", p)
+	}
+}
+
+func TestAnOpeningFromAnotherAppTakesItsTurnAmongTheRuns(t *testing.T) {
+	runs := []history.Run{
+		{ID: 4, Job: "Fotos", Copied: 2, Finished: now},
+		{ID: 5, Job: "Musik", Copied: 1, Finished: now.Add(2 * time.Minute)},
+	}
+	opened := []history.Opening{{ID: 7, At: now.Add(time.Minute), App: "BombVault", Device: "Attic", Member: "0123456789abcdef"}}
+	page := Log(runs, opened, "3", "en", 2)
+	if len(page.Entries) != 2 || page.Entries[0].ID != "run-4" || page.Entries[1].ID != "opened-7" {
+		t.Fatalf("the page is %+v", page.Entries)
+	}
+	e := page.Entries[1]
+	if e.Code != "ui.opened" || e.Level != status.SeverityInfo || !e.At.Equal(now.Add(time.Minute)) {
+		t.Errorf("the opening reads %+v", e)
+	}
+	for _, part := range []string{"BombVault", "Attic", "89abcdef"} {
+		if !strings.Contains(e.Text, part) {
+			t.Errorf("the opening %q does not name %s", e.Text, part)
+		}
+	}
+	if strings.Contains(e.Text, "01234567") {
+		t.Errorf("the opening %q names the whole id", e.Text)
+	}
+	if run, open := Cursor(page.Next); run != 4 || open != 7 {
+		t.Errorf("the cursor %q reads as run %d, opening %d", page.Next, run, open)
+	}
+	if run, open := Cursor("9"); run != 9 || open != 0 {
+		t.Errorf("a cursor from before openings reads as run %d, opening %d", run, open)
+	}
+	if run, open := Cursor("nonsense"); run != 0 || open != 0 {
+		t.Errorf("a cursor this engine never handed out reads as run %d, opening %d", run, open)
 	}
 }
 

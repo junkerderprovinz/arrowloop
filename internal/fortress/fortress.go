@@ -142,23 +142,69 @@ func Outcome(run history.Run) string {
 	return "quiet"
 }
 
-// Log builds one page from runs, the stored runs recorded after the cursor
-// after, oldest first. The cursor is a run's id.
-func Log(runs []history.Run, after, lang string) status.LogPage {
+// Log builds one page from runs and opened, the stored runs and openings
+// recorded after the cursor after, each oldest first. It takes at most limit
+// of them in the order they happened; Cursor reads the cursor it hands out.
+func Log(runs []history.Run, opened []history.Opening, after, lang string, limit int) status.LogPage {
 	tr := translator(lang)
 	page := status.LogPage{Entries: []status.LogEntry{}, Next: after}
-	for _, run := range runs {
-		outcome := Outcome(run)
-		e := status.LogEntry{ID: "run-" + strconv.FormatInt(run.ID, 10), At: run.Finished.UTC(), Level: status.SeverityInfo, Code: "run." + outcome, Link: "/history"}
+	run, open := Cursor(after)
+	for len(page.Entries) < limit && (len(runs) > 0 || len(opened) > 0) {
+		if len(runs) == 0 || len(opened) > 0 && opened[0].At.Before(runs[0].Finished) {
+			o := opened[0]
+			opened = opened[1:]
+			page.Entries = append(page.Entries, status.LogEntry{
+				ID: "opened-" + strconv.FormatInt(o.ID, 10), At: o.At.UTC(), Level: status.SeverityInfo, Code: "ui.opened",
+				Text: strings.NewReplacer("{app}", o.App, "{device}", o.Device, "{id}", shortID(o.Member)).Replace(tr("log.opened", "", 0)),
+			})
+			open = o.ID
+			continue
+		}
+		r := runs[0]
+		runs = runs[1:]
+		outcome := Outcome(r)
+		e := status.LogEntry{ID: "run-" + strconv.FormatInt(r.ID, 10), At: r.Finished.UTC(), Level: status.SeverityInfo, Code: "run." + outcome, Link: "/history"}
 		switch outcome {
 		case "failed":
 			e.Level = status.SeverityError
 		case "left":
 			e.Level = status.SeverityWarn
 		}
-		e.Text = tr("log."+outcome, run.Job, run.Skipped)
+		e.Text = tr("log."+outcome, r.Job, r.Skipped)
 		page.Entries = append(page.Entries, e)
-		page.Next = strconv.FormatInt(run.ID, 10)
+		run = r.ID
+	}
+	if len(page.Entries) > 0 {
+		page.Next = strconv.FormatInt(run, 10)
+		if open > 0 {
+			page.Next += "." + strconv.FormatInt(open, 10)
+		}
 	}
 	return page
+}
+
+// Cursor reads a cursor Log handed out as the last run and the last opening
+// it covered. One from before there were openings names a run alone, and one
+// this engine never handed out starts at the beginning.
+func Cursor(after string) (run, opened int64) {
+	r, o, _ := strings.Cut(after, ".")
+	run, err := strconv.ParseInt(r, 10, 64)
+	if err != nil {
+		return 0, 0
+	}
+	if o != "" {
+		if opened, err = strconv.ParseInt(o, 10, 64); err != nil {
+			return 0, 0
+		}
+	}
+	return run, opened
+}
+
+// shortID is the end of a member's id, as the bar above an opened page shows
+// it.
+func shortID(id string) string {
+	if len(id) > 8 {
+		return id[len(id)-8:]
+	}
+	return id
 }

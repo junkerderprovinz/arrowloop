@@ -27,7 +27,9 @@ func translator(lang string) func(key, job string, count int) string {
 }
 
 // texts holds the sentences of the report and the log in every language the
-// interface offers. {job} is a job's name and {count} a number.
+// interface offers. {job} is a job's name and {count} a number; {app},
+// {device} and {id} name the app that opened the interface, where it runs and
+// the end of its id.
 var texts = map[string]map[string]string{
 	"en": {
 		"need.held.delete": "{job} is held: too many deletions ({count}).",
@@ -42,6 +44,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ran, nothing had changed.",
 		"log.left":         "{job} ran and left files for later ({count}).",
 		"log.failed":       "{job} failed.",
+		"log.opened":       "Opened from {app} on {device} ({id}).",
 	},
 	"de": {
 		"need.held.delete": "{job} ist angehalten: zu viele Löschungen ({count}).",
@@ -56,6 +59,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ist gelaufen, es hatte sich nichts geändert.",
 		"log.left":         "{job} ist gelaufen und hat Dateien für später zurückgestellt ({count}).",
 		"log.failed":       "{job} ist gescheitert.",
+		"log.opened":       "Geöffnet aus {app} auf {device} ({id}).",
 	},
 	"fr": {
 		"need.held.delete": "La tâche {job} est retenue : trop de suppressions ({count}).",
@@ -70,6 +74,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} a tourné, rien n'avait changé.",
 		"log.left":         "{job} a tourné et a reporté des fichiers à plus tard ({count}).",
 		"log.failed":       "{job} a échoué.",
+		"log.opened":       "Ouvert depuis {app} sur {device} ({id}).",
 	},
 	"es": {
 		"need.held.delete": "La tarea {job} está detenida: demasiados borrados ({count}).",
@@ -84,6 +89,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} se ejecutó, no había cambios.",
 		"log.left":         "{job} se ejecutó y aplazó archivos para después ({count}).",
 		"log.failed":       "{job} falló.",
+		"log.opened":       "Abierto desde {app} en {device} ({id}).",
 	},
 	"it": {
 		"need.held.delete": "Il lavoro {job} è sospeso: troppe cancellazioni ({count}).",
@@ -98,6 +104,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} è stato eseguito, non era cambiato nulla.",
 		"log.left":         "{job} è stato eseguito e ha rimandato dei file a dopo ({count}).",
 		"log.failed":       "{job} è fallito.",
+		"log.opened":       "Aperto da {app} su {device} ({id}).",
 	},
 	"pt": {
 		"need.held.delete": "A tarefa {job} está retida: demasiadas eliminações ({count}).",
@@ -112,6 +119,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} correu, nada tinha mudado.",
 		"log.left":         "{job} correu e adiou ficheiros para depois ({count}).",
 		"log.failed":       "{job} falhou.",
+		"log.opened":       "Aberto a partir de {app} em {device} ({id}).",
 	},
 	"nl": {
 		"need.held.delete": "{job} wordt vastgehouden: te veel verwijderingen ({count}).",
@@ -126,6 +134,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} is gedraaid, er was niets veranderd.",
 		"log.left":         "{job} is gedraaid en heeft bestanden uitgesteld tot later ({count}).",
 		"log.failed":       "{job} is mislukt.",
+		"log.opened":       "Geopend vanuit {app} op {device} ({id}).",
 	},
 	"pl": {
 		"need.held.delete": "Zadanie {job} jest wstrzymane: zbyt wiele usunięć ({count}).",
@@ -140,6 +149,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Zadanie {job} zostało wykonane, nic się nie zmieniło.",
 		"log.left":         "Zadanie {job} zostało wykonane i odłożyło pliki na później ({count}).",
 		"log.failed":       "Zadanie {job} zakończyło się błędem.",
+		"log.opened":       "Otwarte z {app} na urządzeniu {device} ({id}).",
 	},
 	"ru": {
 		"need.held.delete": "Задание {job} приостановлено: слишком много удалений ({count}).",
@@ -154,6 +164,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Задание {job} выполнено, ничего не изменилось.",
 		"log.left":         "Задание {job} выполнено, файлы отложены на потом ({count}).",
 		"log.failed":       "Задание {job} завершилось ошибкой.",
+		"log.opened":       "Открыто из {app} на устройстве {device} ({id}).",
 	},
 	"uk": {
 		"need.held.delete": "Завдання {job} призупинено: забагато видалень ({count}).",
@@ -168,6 +179,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Завдання {job} виконано, нічого не змінилося.",
 		"log.left":         "Завдання {job} виконано, файли відкладено на потім ({count}).",
 		"log.failed":       "Завдання {job} завершилося помилкою.",
+		"log.opened":       "Відкрито з {app} на пристрої {device} ({id}).",
 	},
 	"cs": {
 		"need.held.delete": "Úloha {job} je zastavená: příliš mnoho mazání ({count}).",
@@ -182,6 +194,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Úloha {job} proběhla, nic se nezměnilo.",
 		"log.left":         "Úloha {job} proběhla a odložila soubory na později ({count}).",
 		"log.failed":       "Úloha {job} selhala.",
+		"log.opened":       "Otevřeno z {app} na zařízení {device} ({id}).",
 	},
 	"sv": {
 		"need.held.delete": "{job} har stoppats: för många raderingar ({count}).",
@@ -196,6 +209,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} kördes, inget hade ändrats.",
 		"log.left":         "{job} kördes och sköt upp filer till senare ({count}).",
 		"log.failed":       "{job} misslyckades.",
+		"log.opened":       "Öppnad från {app} på {device} ({id}).",
 	},
 	"da": {
 		"need.held.delete": "{job} er stoppet: for mange sletninger ({count}).",
@@ -210,6 +224,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} kørte, intet var ændret.",
 		"log.left":         "{job} kørte og udskød filer til senere ({count}).",
 		"log.failed":       "{job} mislykkedes.",
+		"log.opened":       "Åbnet fra {app} på {device} ({id}).",
 	},
 	"fi": {
 		"need.held.delete": "{job} on pysäytetty: liikaa poistoja ({count}).",
@@ -224,6 +239,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ajettiin, mikään ei ollut muuttunut.",
 		"log.left":         "{job} ajettiin, ja tiedostoja siirrettiin myöhemmäksi ({count}).",
 		"log.failed":       "{job} epäonnistui.",
+		"log.opened":       "Avattu sovelluksesta {app} laitteella {device} ({id}).",
 	},
 	"no": {
 		"need.held.delete": "{job} er holdt tilbake: for mange slettinger ({count}).",
@@ -238,6 +254,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} kjørte, ingenting hadde endret seg.",
 		"log.left":         "{job} kjørte og utsatte filer til senere ({count}).",
 		"log.failed":       "{job} feilet.",
+		"log.opened":       "Åpnet fra {app} på {device} ({id}).",
 	},
 	"tr": {
 		"need.held.delete": "{job} durduruldu: çok fazla silme ({count}).",
@@ -252,6 +269,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} çalıştı, hiçbir şey değişmemişti.",
 		"log.left":         "{job} çalıştı ve dosyaları sonraya bıraktı ({count}).",
 		"log.failed":       "{job} başarısız oldu.",
+		"log.opened":       "{device} üzerindeki {app} tarafından açıldı ({id}).",
 	},
 	"el": {
 		"need.held.delete": "Η εργασία {job} είναι σταματημένη: πάρα πολλές διαγραφές ({count}).",
@@ -266,6 +284,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Η εργασία {job} εκτελέστηκε, τίποτα δεν είχε αλλάξει.",
 		"log.left":         "Η εργασία {job} εκτελέστηκε και άφησε αρχεία για αργότερα ({count}).",
 		"log.failed":       "Η εργασία {job} απέτυχε.",
+		"log.opened":       "Άνοιξε από το {app} στη συσκευή {device} ({id}).",
 	},
 	"hu": {
 		"need.held.delete": "{job} felfüggesztve: túl sok törlés ({count}).",
@@ -280,6 +299,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} lefutott, semmi sem változott.",
 		"log.left":         "{job} lefutott, és fájlokat halasztott későbbre ({count}).",
 		"log.failed":       "{job} sikertelen volt.",
+		"log.opened":       "Megnyitva innen: {app}, {device} ({id}).",
 	},
 	"ro": {
 		"need.held.delete": "{job} este oprită: prea multe ștergeri ({count}).",
@@ -294,6 +314,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} a rulat, nu se schimbase nimic.",
 		"log.left":         "{job} a rulat și a amânat fișiere pentru mai târziu ({count}).",
 		"log.failed":       "{job} a eșuat.",
+		"log.opened":       "Deschis din {app} pe {device} ({id}).",
 	},
 	"ja": {
 		"need.held.delete": "{job} は保留中です: 削除が多すぎます（{count}）。",
@@ -308,6 +329,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} を実行しました。変更はありませんでした。",
 		"log.left":         "{job} を実行し、ファイルを後回しにしました（{count}）。",
 		"log.failed":       "{job} は失敗しました。",
+		"log.opened":       "{device} の {app} から開かれました（{id}）。",
 	},
 	"ko": {
 		"need.held.delete": "{job} 작업이 보류되었습니다: 삭제가 너무 많습니다 ({count}).",
@@ -322,6 +344,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} 작업이 실행되었고, 바뀐 것이 없었습니다.",
 		"log.left":         "{job} 작업이 실행되어 파일을 나중으로 미뤘습니다 ({count}).",
 		"log.failed":       "{job} 작업이 실패했습니다.",
+		"log.opened":       "{device}의 {app}에서 열었습니다 ({id}).",
 	},
 	"zh": {
 		"need.held.delete": "{job} 已暂扣：删除过多（{count}）。",
@@ -336,6 +359,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} 已运行，没有任何变化。",
 		"log.left":         "{job} 已运行，并把文件留待稍后（{count}）。",
 		"log.failed":       "{job} 失败了。",
+		"log.opened":       "已从 {device} 上的 {app} 打开（{id}）。",
 	},
 	"ar": {
 		"need.held.delete": "{job} موقوفة: عمليات حذف كثيرة جدًا ({count}).",
@@ -350,6 +374,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} عملت، ولم يتغير شيء.",
 		"log.left":         "{job} عملت وأجّلت ملفات إلى لاحق ({count}).",
 		"log.failed":       "{job} فشلت.",
+		"log.opened":       "فُتح من {app} على {device} ({id}).",
 	},
 	"he": {
 		"need.held.delete": "{job} מוחזקת: יותר מדי מחיקות ({count}).",
@@ -364,6 +389,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} רצה, שום דבר לא השתנה.",
 		"log.left":         "{job} רצה ודחתה קבצים למועד מאוחר ({count}).",
 		"log.failed":       "{job} נכשלה.",
+		"log.opened":       "נפתח מ-{app} במכשיר {device} ({id}).",
 	},
 	"th": {
 		"need.held.delete": "{job} ถูกพักไว้: ลบมากเกินไป ({count})",
@@ -378,6 +404,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ทำงานแล้ว ไม่มีอะไรเปลี่ยน",
 		"log.left":         "{job} ทำงานแล้วและเลื่อนไฟล์ไว้ก่อน ({count})",
 		"log.failed":       "{job} ล้มเหลว",
+		"log.opened":       "เปิดจาก {app} บน {device} ({id})",
 	},
 	"vi": {
 		"need.held.delete": "{job} bị giữ lại: quá nhiều lần xóa ({count}).",
@@ -392,6 +419,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} đã chạy, không có gì thay đổi.",
 		"log.left":         "{job} đã chạy và để lại tệp cho lần sau ({count}).",
 		"log.failed":       "{job} đã thất bại.",
+		"log.opened":       "Đã mở từ {app} trên {device} ({id}).",
 	},
 	"bg": {
 		"need.held.delete": "{job} е спряна: твърде много изтривания ({count}).",
@@ -406,6 +434,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} се изпълни, нищо не се беше променило.",
 		"log.left":         "{job} се изпълни и отложи файлове за после ({count}).",
 		"log.failed":       "{job} се провали.",
+		"log.opened":       "Отворено от {app} на устройството {device} ({id}).",
 	},
 	"sk": {
 		"need.held.delete": "{job} je pozastavená: príliš veľa mazaní ({count}).",
@@ -420,6 +449,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} prebehla, nič sa nezmenilo.",
 		"log.left":         "{job} prebehla a odložila súbory na neskôr ({count}).",
 		"log.failed":       "{job} zlyhala.",
+		"log.opened":       "Otvorené z {app} na zariadení {device} ({id}).",
 	},
 	"sl": {
 		"need.held.delete": "{job} je zadržano: preveč brisanj ({count}).",
@@ -434,6 +464,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} se je izvedlo, nič se ni spremenilo.",
 		"log.left":         "{job} se je izvedlo in datoteke preložilo na pozneje ({count}).",
 		"log.failed":       "{job} ni uspelo.",
+		"log.opened":       "Odprto iz {app} na napravi {device} ({id}).",
 	},
 	"hr": {
 		"need.held.delete": "{job} je zadržan: previše brisanja ({count}).",
@@ -448,6 +479,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} se izveo, ništa se nije promijenilo.",
 		"log.left":         "{job} se izveo i odgodio datoteke za poslije ({count}).",
 		"log.failed":       "{job} nije uspio.",
+		"log.opened":       "Otvoreno iz {app} na uređaju {device} ({id}).",
 	},
 	"sr": {
 		"need.held.delete": "{job} је заустављен: превише брисања ({count}).",
@@ -462,6 +494,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} се извршио, ништа се није променило.",
 		"log.left":         "{job} се извршио и одложио датотеке за касније ({count}).",
 		"log.failed":       "{job} није успео.",
+		"log.opened":       "Отворено из {app} на уређају {device} ({id}).",
 	},
 	"lt": {
 		"need.held.delete": "{job} sustabdyta: per daug šalinimų ({count}).",
@@ -476,6 +509,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} buvo paleista, niekas nepasikeitė.",
 		"log.left":         "{job} buvo paleista ir atidėjo failus vėlesniam kartui ({count}).",
 		"log.failed":       "{job} nepavyko.",
+		"log.opened":       "Atidaryta iš {app} įrenginyje {device} ({id}).",
 	},
 	"lv": {
 		"need.held.delete": "Uzdevums {job} ir apturēts: pārāk daudz dzēšanu ({count}).",
@@ -490,6 +524,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Uzdevums {job} izpildījās, nekas nebija mainījies.",
 		"log.left":         "Uzdevums {job} izpildījās un atlika failus uz vēlāku laiku ({count}).",
 		"log.failed":       "Uzdevums {job} neizdevās.",
+		"log.opened":       "Atvērts no {app} ierīcē {device} ({id}).",
 	},
 	"et": {
 		"need.held.delete": "Töö {job} on peatatud: liiga palju kustutamisi ({count}).",
@@ -504,6 +539,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Töö {job} käivitus, midagi polnud muutunud.",
 		"log.left":         "Töö {job} käivitus ja lükkas faile edasi ({count}).",
 		"log.failed":       "Töö {job} ebaõnnestus.",
+		"log.opened":       "Avatud rakendusest {app} seadmes {device} ({id}).",
 	},
 	"is": {
 		"need.held.delete": "Verkið {job} er stöðvað: of margar eyðingar ({count}).",
@@ -518,6 +554,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Verkið {job} keyrði, ekkert hafði breyst.",
 		"log.left":         "Verkið {job} keyrði og frestaði skrám til síðar ({count}).",
 		"log.failed":       "Verkið {job} mistókst.",
+		"log.opened":       "Opnað úr {app} á {device} ({id}).",
 	},
 	"ca": {
 		"need.held.delete": "La tasca {job} està aturada: massa esborrats ({count}).",
@@ -532,6 +569,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "La tasca {job} s'ha executat, no havia canviat res.",
 		"log.left":         "La tasca {job} s'ha executat i ha ajornat fitxers per a més tard ({count}).",
 		"log.failed":       "La tasca {job} ha fallat.",
+		"log.opened":       "Obert des de {app} a {device} ({id}).",
 	},
 	"gl": {
 		"need.held.delete": "A tarefa {job} está retida: demasiados borrados ({count}).",
@@ -546,6 +584,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "A tarefa {job} executouse, non cambiara nada.",
 		"log.left":         "A tarefa {job} executouse e adiou ficheiros para máis tarde ({count}).",
 		"log.failed":       "A tarefa {job} fallou.",
+		"log.opened":       "Aberto desde {app} en {device} ({id}).",
 	},
 	"eu": {
 		"need.held.delete": "{job} lana geldituta dago: ezabaketa gehiegi ({count}).",
@@ -560,6 +599,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} lana exekutatu da, ez zen ezer aldatu.",
 		"log.left":         "{job} lana exekutatu da eta fitxategiak geroko utzi ditu ({count}).",
 		"log.failed":       "{job} lanak huts egin du.",
+		"log.opened":       "{device} gailuko {app} aplikaziotik irekia ({id}).",
 	},
 	"id": {
 		"need.held.delete": "{job} ditahan: terlalu banyak penghapusan ({count}).",
@@ -574,6 +614,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} berjalan, tidak ada yang berubah.",
 		"log.left":         "{job} berjalan dan menunda berkas untuk nanti ({count}).",
 		"log.failed":       "{job} gagal.",
+		"log.opened":       "Dibuka dari {app} di {device} ({id}).",
 	},
 	"ms": {
 		"need.held.delete": "{job} ditahan: terlalu banyak pemadaman ({count}).",
@@ -588,6 +629,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} berjalan, tiada apa-apa yang berubah.",
 		"log.left":         "{job} berjalan dan menangguhkan fail ke kemudian ({count}).",
 		"log.failed":       "{job} gagal.",
+		"log.opened":       "Dibuka daripada {app} pada {device} ({id}).",
 	},
 	"hi": {
 		"need.held.delete": "{job} रोका गया है: बहुत ज़्यादा विलोपन ({count})।",
@@ -602,6 +644,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} चला, कुछ नहीं बदला था।",
 		"log.left":         "{job} चला और फ़ाइलें बाद के लिए टाल दीं ({count})।",
 		"log.failed":       "{job} विफल रहा।",
+		"log.opened":       "{device} पर {app} से खोला गया ({id})।",
 	},
 	"fa": {
 		"need.held.delete": "{job} نگه داشته شده است: حذف بیش از حد ({count}).",
@@ -616,5 +659,6 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} اجرا شد، چیزی تغییر نکرده بود.",
 		"log.left":         "{job} اجرا شد و پرونده‌هایی را به بعد موکول کرد ({count}).",
 		"log.failed":       "{job} ناموفق بود.",
+		"log.opened":       "از {app} روی {device} باز شد ({id}).",
 	},
 }
