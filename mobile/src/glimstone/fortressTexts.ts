@@ -53,5 +53,5 @@ export const FORTRESS_LANGUAGES = Object.keys(TEXTS);
 /** The table for a language tag such as `pt-BR`: its own, its base language's, or English. */
 export function fortressText(lang: string): FortressText {
   const tag = lang.toLowerCase();
-  return TEXTS[tag] ?? TEXTS[tag.split(/[-_]/)[0] ?? ""] ?? en;
+  return TEXTS[tag] ?? TEXTS[tag.split(/[-_]/)[0]!] ?? en;
 }
