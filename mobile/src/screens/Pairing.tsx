@@ -529,7 +529,7 @@ function PhraseEntry({
   );
 }
 
-const DEVICE_GLYPH: Record<string, string> = { phone: "IconPhone", pc: "IconApp", laptop: "IconApp" };
+const DEVICE_GLYPH: Record<string, string> = { phone: "IconPhone", pc: "IconApp", laptop: "IconLaptop" };
 
 /**
  * The fortress, as on the web's Pairing tile: outside one, the twelve words

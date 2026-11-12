@@ -49,10 +49,11 @@ const RULES: Rule[] = [
   [/^pairing\.enter$/i, 'IconPencil'],
   [/^pairing\.checkAgain$/i, 'IconRetry'],
   // The fortress's new phrase, and the devices GlimStone draws in its app
-  // cards, a desktop app and a laptop alike as the app's window.
+  // cards, a desktop app on a PC as the app's window.
   [/^fortress\.changePhrase$/i, 'IconRefresh'],
   [/^deviceServer$/, 'IconServer'],
-  [/^device(Pc|Laptop)$/, 'IconApp'],
+  [/^devicePc$/, 'IconApp'],
+  [/^deviceLaptop$/, 'IconLaptop'],
   [/^devicePhone$/, 'IconPhone'],
   [/^relay\.seesTitle$/i, 'IconEye'],
 
