@@ -67,7 +67,7 @@ export function SignInField({ label, htmlFor, hint, hidden, children }: { label:
     was.current = label;
   }, [htmlFor, label, hint]);
   return (
-    <div className="glim-signin-field" hidden={hidden}>
+    <div data-glim="SignInField" className="glim-signin-field" hidden={hidden}>
       <label htmlFor={htmlFor} className={inside ? "glim-sr-only" : "glim-signin-label"}>
         {label}
         {hint && <InfoBubble tip={hint} />}
@@ -126,7 +126,7 @@ export function SignInCard({
   const back = <Button label={text.back} labelKey={keys.back} tone="subtle" data-signin="back" disabled={!!s.busy} onClick={flow.back} />;
 
   return (
-    <div className={["glim-signin", className].filter(Boolean).join(" ")}>
+    <div data-glim="SignInCard" className={["glim-signin", className].filter(Boolean).join(" ")}>
       <div ref={card} className="glim-card glim-signin-card">
         <div className="glim-signin-head">
           {logo && (

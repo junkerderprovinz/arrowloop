@@ -6,6 +6,7 @@ import { takePageHue } from "../appearance.ts";
 import type { WidthStage } from "../controls.ts";
 import { useLabelMode } from "./useLabelMode.ts";
 import { useTipBubble } from "./useTipBubble.tsx";
+import { BusyRing } from "./BusyRing.tsx";
 import { glyphFor, IconClose } from "./glyphs.tsx";
 
 export type { ButtonSize, ButtonTone, ButtonVariant } from "../button.ts";
@@ -54,7 +55,7 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   hueIndex?: number;
   /** Forwarded to the underlying <button>, so a dialog can move focus to it. */
   ref?: Ref<HTMLButtonElement>;
-  /** Shows a spinner in place of the glyph. Separate from `disabled`, since a
+  /** Shows the busy ring in place of the glyph, at once. Separate from `disabled`, since a
    *  caller may want one without the other. */
   busy?: boolean;
   /** For a dialog that opens with focus on one of its buttons. */
@@ -149,6 +150,7 @@ export function Button({
           <button> emits no mouse events. */}
       {tooltip.wrap(
         <Element
+          data-glim="Button"
           {...rest}
           {...own}
           ref={mergeRefs(ref, tooltip.ref)}
@@ -162,7 +164,7 @@ export function Button({
           {before}
           {view.showGlyph && (
             <span className="glim-btn-glyph">
-              {busy ? <span className="glim-spinner" /> : resolved}
+              {busy ? <BusyRing size="small" delay={0} /> : resolved}
             </span>
           )}
           <span className={view.labelClass}>{label}</span>

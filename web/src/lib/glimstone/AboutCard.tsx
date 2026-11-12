@@ -58,7 +58,7 @@ export function InfoAboutCard({
   hueIndex,
 }: InfoAboutCardProps) {
   return (
-    <Card title={text.title} hueIndex={hueIndex}>
+    <Card data-glim="InfoAboutCard" title={text.title} hueIndex={hueIndex}>
       {/* No reading-width cap: a reading width belongs to a whole page, and a
           cap on this card alone reads as hand-set line breaks. */}
       <p className="glim-info-text">{text.body}</p>
@@ -133,7 +133,7 @@ export function InfoVersionCard({
 }: InfoVersionCardProps) {
   const notes = !whatsNew && onReleaseNotes && text.releaseNotes;
   return (
-    <Card title={text.title} hint={text.hint} hueIndex={hueIndex}>
+    <Card data-glim="InfoVersionCard" title={text.title} hint={text.hint} hueIndex={hueIndex}>
       <ul className="glim-version-rows">
         {rows.map((row, i) => (
           <Fragment key={row.name}>
@@ -272,7 +272,7 @@ export function InfoHelpCard({
   const wantsMail = offersMail(text.report, mailAddress);
 
   return (
-    <Card title={text.title} hint={text.hint} hueIndex={hueIndex}>
+    <Card data-glim="InfoHelpCard" title={text.title} hint={text.hint} hueIndex={hueIndex}>
       <p className="glim-info-text">{text.report}</p>
       <div className="glim-readme-btn-rows">
         <ReadmeButton
@@ -324,17 +324,19 @@ export interface InfoTileProps {
   about: Omit<InfoAboutCardProps, "hueIndex">;
   /** The Version card's rainbow position; the cards after it take the next ones. */
   hueIndex?: number;
+  /** Data attributes for the tile, so a component built on it can name itself. */
+  [data: `data-${string}`]: string | undefined;
 }
 
 /** The Info tile's cards in their fixed order, for the page that stacks them. */
-export function InfoTile({ version, help, about, hueIndex }: InfoTileProps) {
+export function InfoTile({ version, help, about, hueIndex, ...data }: InfoTileProps) {
   const at = (offset: number) => (hueIndex === undefined ? undefined : hueIndex + offset);
   return (
-    <>
+    <div data-glim="InfoTile" {...data} style={{ display: "contents" }}>
       <InfoVersionCard {...version} hueIndex={at(0)} />
       <InfoHelpCard {...help} hueIndex={at(1)} />
       <InfoAboutCard {...about} hueIndex={at(2)} />
-    </>
+    </div>
   );
 }
 
@@ -402,6 +404,7 @@ export function AboutCard({
   ];
   return (
     <InfoTile
+      data-glim="AboutCard"
       hueIndex={hueIndex}
       about={{ text, onCoffee, coffeeArt, onPaypal, paypalGlyph, onCrypto, cryptoGlyph }}
       version={{ text: { title: text.version, unreleased: text.unreleased }, rows, openUrl }}

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, type MouseEvent, type ReactNode } from "react";
-import { keepReadmeFit, readmePartClass, readmeSoon, readmeUnitClass, type ReadmeBrand, type ReadmePart } from "../readmeButton.ts";
+import { keepReadmeFit, readmePartClass, readmePartLabel, readmeSoon, readmeUnitClass, type ReadmeBrand, type ReadmePart } from "../readmeButton.ts";
 import { InfoBubble } from "./InfoBubble.tsx";
 
 // A button in the shape of the README's download buttons, on the App tab and
@@ -41,10 +41,10 @@ export function ReadmeButton({ brand, parts, mark, markClass, art, hint, note, s
   useLayoutEffect(() => (ref.current ? keepReadmeFit(ref.current) : undefined), [words]);
 
   return (
-    <div ref={ref} className={readmeUnitClass(brand, parts.length, !!note, soon)}>
+    <div data-glim="ReadmeButton" ref={ref} className={readmeUnitClass(brand, parts.length, !!note, soon)}>
       {parts.map((part, i) => {
         const sub = soon ? soonLabel : part.sub;
-        const label = part.label ?? (sub ? `${part.name} ${sub}` : part.name);
+        const label = readmePartLabel(part, sub);
         const className = readmePartClass(i, soon);
         const face =
           i === 0 && art ? (
@@ -104,5 +104,5 @@ export function ReadmeButton({ brand, parts, mark, markClass, art, hint, note, s
 
 /** A vendor mark kept as its own markup, from appMarks.ts. */
 export function BrandMark({ svg }: { svg: string }) {
-  return <span className="glim-brand-svg" aria-hidden dangerouslySetInnerHTML={{ __html: svg }} />;
+  return <span data-glim="BrandMark" className="glim-brand-svg" aria-hidden dangerouslySetInnerHTML={{ __html: svg }} />;
 }

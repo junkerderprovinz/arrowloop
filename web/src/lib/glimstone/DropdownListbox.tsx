@@ -10,10 +10,11 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { computeBubblePosition } from "../bubblePosition.ts";
+import { portalTarget } from "../overlay.ts";
 import { usePortalHue } from "./portalHue.ts";
 
 // The `role="listbox"` panel a button-opens-a-list picker drops open. It is
-// portalled to document.body, because a card with `overflow: hidden` clips an
+// portalled to <body> (portalTarget), because a card with `overflow: hidden` clips an
 // absolutely positioned panel whatever its z-index, and placed with
 // computeBubblePosition, which clamps it into the viewport and flips it above
 // the trigger when needed.
@@ -162,7 +163,7 @@ export function DropdownListbox({
     if (!open || !pos || focusedOnOpen.current) return;
     const opts = options();
     if (opts.length === 0) return;
-    const active = opts.find((o) => o.getAttribute("aria-selected") === "true") ?? opts[0];
+    const active = opts.find((o) => o.getAttribute("aria-selected") === "true") ?? opts[0]!;
     focusedOnOpen.current = true;
     active.scrollIntoView?.({ block: "nearest" });
     active.focus();
@@ -196,14 +197,16 @@ export function DropdownListbox({
       const dir = e.key === "ArrowDown" ? 1 : -1;
       next = at < 0 ? (dir === 1 ? 0 : opts.length - 1) : (at + dir + opts.length) % opts.length;
     }
-    opts[next].scrollIntoView?.({ block: "nearest" });
-    opts[next].focus();
+    const option = opts[next]!;
+    option.scrollIntoView?.({ block: "nearest" });
+    option.focus();
   }
 
   if (!open) return null;
 
   return createPortal(
     <div
+      data-glim="DropdownListbox"
       ref={panelRef}
       role="listbox"
       onKeyDown={onPanelKeyDown}
@@ -228,6 +231,6 @@ export function DropdownListbox({
     >
       {children}
     </div>,
-    document.body
+    portalTarget(),
   );
 }

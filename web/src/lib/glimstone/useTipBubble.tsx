@@ -2,6 +2,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } f
 import { createPortal } from "react-dom";
 import { dismissBubbleOn, placeBubble } from "../tipBubble.ts";
 import { pointerWasLast, trackInputModality } from "../inputModality.ts";
+import { portalTarget } from "../overlay.ts";
 
 // The one hover and focus tooltip, as a hook. The "(i)" of InfoBubble, a
 // bare IconTipButton, a SelectorTab segment and a Button whose text the label
@@ -104,7 +105,7 @@ export function useTipBubble(tip?: string, disabled = false): TipBubble {
           >
             {tip}
           </div>,
-          document.body,
+          portalTarget(),
         )
       : null,
     wrap: (node: ReactNode) =>
