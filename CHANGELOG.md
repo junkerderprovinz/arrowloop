@@ -17,13 +17,14 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 ## ✨ Added
 
 - **ArrowLoop joins a fortress.** Type the fortress's phrase on the Pairing tile, on the web or on the phone, and ArrowLoop takes its seat next to your other apps. The instances you paired before come along with their approvals, so nobody pairs again.
-- **Your other apps can lend a hand with your jobs.** In a fortress they can see your jobs and the targets a new job could write to, start a job and add one. Each of these has its own switch, so you decide who may do what.
+- **Your other apps can lend a hand with your jobs.** In a fortress they can see your jobs and the targets a new job could write to, start a job and add one. Each of these has its own switch, so you decide who may do what, and an app only gets to try what it named when it joined.
 - **A backup app can fetch ArrowLoop's settings and bring them back.** It takes the settings along with each job's state. Putting them back stays off until you switch it on, and before anything is replaced ArrowLoop keeps what it had as `before-import.tar` beside its settings.
-- **The phrase can be shown and changed.** After your password the words come with a QR code, and a new phrase reaches every app in reach. Apps that are away follow on their own once they're back, unless they stay away longer than 30 days.
+- **The phrase lives in one card at the top.** Show it, change it or leave from the Fortress card. After your password the words come with a QR code, which also tells the phone app about a relay of your own. A new phrase reaches every app in reach, and apps that are away follow on their own once they're back, unless they stay away longer than 30 days. A newcomer still holding the old phrase finds nobody at all.
 - **As many notification channels as you like.** Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io, each with its own name, switch, "when" and test button. Your current settings come over as they are.
 - **Read tokens for dashboards.** Homepage, Homarr and friends can read how ArrowLoop is doing with a token you make under Settings › Security, and that token opens nothing else.
 - **Paired instances at home talk to each other directly.** On the same network they skip the relay, sealed and signed just the same, so a DNS filter that blocks the relay can't keep them apart anymore.
 - **Open and edit a job on another instance.** The name of a job on another instance's card opens it with Pause, Edit, Run now and its runs. Save sends it over, and that instance checks it by its own rules.
+<!-- open-anywhere -->
 - **Infomaniak kDrive and dosya.dev** join the clouds, through rclone 1.76.
 - **The Apps tile offers the Flatpak** for x64 and ARM, and the phone app lists it too.
 - **A container can keep an eye out for new versions.** Switch on Update automatically on the Info tile, and it asks GitHub once a day and names a newer release in the Version card. It stays off until you turn it on.
