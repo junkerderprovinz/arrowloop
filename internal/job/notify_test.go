@@ -1,107 +1,141 @@
 package job
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/junkerderprovinz/parleyport/kit/notify"
 )
 
-func notifyFrom(t *testing.T, notify string) Notify {
+func notifyFrom(t *testing.T, n string) Notify {
 	t.Helper()
-	cfg, err := Load(writeConfig(t, `{"jobs":[],"notify":`+notify+`}`))
+	cfg, err := Load(writeConfig(t, `{"jobs":[],"notify":`+n+`}`))
 	if err != nil {
 		t.Fatalf("load: %v", err)
 	}
 	return cfg.Notify
 }
 
-// A file written before "on" existed says the same with onSuccess, and has to
-// keep meaning what it meant.
-func TestAnOlderFileKeepsItsChannelsAndItsChoice(t *testing.T) {
-	n := notifyFrom(t, `{"webhook":"https://hooks.example/abc","matrix":{"homeserver":"https://m.example","room":"!r:m.example","token":"syt"}}`)
-	if n.When() != "failure" || !n.Reports(true) || n.Reports(false) {
-		t.Errorf("without onSuccess the file reported %q", n.When())
-	}
-	if !n.WebhookOn() || !n.Matrix.On() {
-		t.Errorf("a filled-in channel with no switch was off: webhook %v, matrix %v", n.WebhookOn(), n.Matrix.On())
-	}
+// beforeChannels is what a file from before the channel list holds, each
+// service in a block of its own, as testdata/notify-before-channels.json
+// has it.
+var beforeChannels = []notify.Channel{
+	{ID: "matrix", Kind: notify.KindMatrix, Enabled: true, On: notify.OnAlways,
+		Matrix: &notify.Matrix{Homeserver: "https://matrix.example.org", Room: "!room:example.org", Token: "syt_example"}},
+	{ID: "webhook", Kind: notify.KindDiscord, Enabled: true, On: notify.OnAlways,
+		Discord: &notify.Discord{URL: "https://discord.com/api/webhooks/123/example"}},
+	{ID: "smtp", Kind: notify.KindSMTP, Enabled: false, On: notify.OnAlways,
+		SMTP: &notify.SMTP{Host: "mail.example.org", Port: 465, TLS: "tls", Username: "arrowloop", Password: "example-password", From: "arrowloop@example.org", To: "me@example.org; you@example.org"}},
+	{ID: "apprise", Kind: notify.KindApprise, Enabled: true, On: notify.OnAlways,
+		Apprise: &notify.Apprise{URL: "http://apprise:8000/notify/example", Tags: "backups"}},
+	{ID: "healthchecks", Kind: notify.KindHealthchecks, Enabled: true, On: notify.OnAlways,
+		Healthchecks: &notify.Healthchecks{URL: "https://hc-ping.com/every-job", ByKey: map[string]string{"photos": "https://hc-ping.com/photos"}}},
+}
 
-	n = notifyFrom(t, `{"webhook":"https://hooks.example/abc","onSuccess":true}`)
-	if n.When() != "always" || !n.Reports(false) {
-		t.Errorf("onSuccess no longer reports a successful run: %q", n.When())
+func sameChannels(t *testing.T, got, want []notify.Channel) {
+	t.Helper()
+	if len(got) != len(want) {
+		t.Fatalf("got %d channels, want %d: %+v", len(got), len(want), got)
+	}
+	for i := range want {
+		if !reflect.DeepEqual(got[i], want[i]) {
+			g, _ := json.Marshal(got[i])
+			w, _ := json.Marshal(want[i])
+			t.Errorf("channel %d is\n%s\nwant\n%s", i, g, w)
+		}
 	}
 }
 
-func TestOnDecidesOverOnSuccess(t *testing.T) {
-	n := notifyFrom(t, `{"on":"never","onSuccess":true}`)
-	if n.Reports(true) || n.Reports(false) || !n.Silent() {
-		t.Error("never still reports")
+func TestAFileFromBeforeTheChannelsKeepsEveryChannel(t *testing.T) {
+	old, err := os.ReadFile(filepath.Join("testdata", "notify-before-channels.json"))
+	if err != nil {
+		t.Fatal(err)
 	}
-	n = notifyFrom(t, `{"on":"failure","onSuccess":true}`)
-	if n.Reports(false) || !n.Reports(true) {
-		t.Error("failure reports a successful run")
+	path := writeConfig(t, string(old))
+
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sameChannels(t, cfg.Notify.Channels, beforeChannels)
+
+	// The channels are written to the file, and the older keys stay beside
+	// them, so going back a version loses nothing either.
+	var doc struct {
+		Notify map[string]json.RawMessage `json:"notify"`
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"channels", "matrix", "webhook", "smtp", "apprise", "healthchecks", "on"} {
+		if _, ok := doc.Notify[key]; !ok {
+			t.Errorf("the file has no notify.%s after the load: %s", key, raw)
+		}
+	}
+
+	again, err := Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sameChannels(t, again.Notify.Channels, beforeChannels)
+}
+
+// The kit reads the older file as this app meant it: onSuccess said always,
+// and never kept Healthchecks quiet too.
+func TestTheOlderWhenKeepsItsMeaning(t *testing.T) {
+	n := notifyFrom(t, `{"webhook":"https://hooks.example/abc","onSuccess":true}`)
+	if len(n.Channels) != 1 || n.Channels[0].On != notify.OnAlways {
+		t.Errorf("onSuccess became %+v", n.Channels)
+	}
+	n = notifyFrom(t, `{"on":"never","healthchecks":{"url":"https://hc-ping.com/all"}}`)
+	if len(n.Channels) != 1 || n.Channels[0].On != notify.OnNever {
+		t.Errorf("never became %+v", n.Channels)
+	}
+	n = notifyFrom(t, `{"healthchecks":{"url":"https://hc-ping.com/all"}}`)
+	if n.Channels[0].On != notify.OnAlways {
+		t.Errorf("Healthchecks pings %s, but it pinged every run", n.Channels[0].On)
 	}
 }
 
-func TestASwitchedOffChannelKeepsItsSettings(t *testing.T) {
-	n := notifyFrom(t, `{
-	  "webhook":"https://hooks.example/abc","webhookEnabled":false,
-	  "matrix":{"enabled":false,"homeserver":"https://m.example","room":"!r:m.example","token":"syt"},
-	  "smtp":{"enabled":false,"host":"mail.example","from":"a@example.org","to":"b@example.org","password":"pw"},
-	  "apprise":{"enabled":false,"url":"http://apprise:8000/notify/key"},
-	  "healthchecks":{"enabled":false,"url":"https://hc-ping.com/uuid"}
-	}`)
-	if n.WebhookOn() || n.Matrix.On() || n.SMTP.On() || n.Apprise.On() {
-		t.Error("a channel switched off still sends")
-	}
-	if n.CheckFor("photos") != "" {
-		t.Error("switched-off Healthchecks still pings")
-	}
-	if n.Webhook == "" || n.Matrix.Token == "" || n.SMTP.Password == "" || n.Apprise.URL == "" || n.Healthchecks.URL == "" {
-		t.Error("switching a channel off lost its settings")
+func TestOnceThereAreChannelsTheOlderKeysAreIgnored(t *testing.T) {
+	n := notifyFrom(t, `{"channels":[{"id":"phone","kind":"ntfy","enabled":true,"ntfy":{"url":"https://ntfy.example/topic"}}],"webhook":"https://hooks.example/old"}`)
+	if len(n.Channels) != 1 || n.Channels[0].ID != "phone" {
+		t.Errorf("the channels are %+v", n.Channels)
 	}
 }
 
-func TestAHalfFilledChannelSendsNothing(t *testing.T) {
-	n := notifyFrom(t, `{"smtp":{"host":"mail.example","from":"a@example.org"},"matrix":{"homeserver":"https://m.example","room":"","token":""}}`)
-	if n.SMTP.On() {
-		t.Error("mail with no recipient counts as on")
-	}
-	if n.Matrix.On() {
-		t.Error("Matrix with no room counts as on")
-	}
-	var none *SMTP
-	if none.On() {
-		t.Error("a missing channel counts as on")
+func TestAnEmptyChannelListStaysEmpty(t *testing.T) {
+	if n := notifyFrom(t, `{"channels":[],"webhook":"https://hooks.example/old"}`); len(n.Channels) != 0 {
+		t.Errorf("a list emptied by hand came back as %+v", n.Channels)
 	}
 }
 
-func TestAJobsOwnCheckReplacesTheSharedOne(t *testing.T) {
-	n := notifyFrom(t, `{"healthchecks":{"url":"https://hc-ping.com/all","jobs":{"photos":"https://hc-ping.com/photos","music":""}}}`)
-	if got := n.CheckFor("photos"); got != "https://hc-ping.com/photos" {
-		t.Errorf("photos pings %q", got)
-	}
-	if got := n.CheckFor("music"); got != "https://hc-ping.com/all" {
-		t.Errorf("an empty entry pings %q instead of the shared check", got)
-	}
-	if got := n.CheckFor("documents"); got != "https://hc-ping.com/all" {
-		t.Errorf("a job without its own check pings %q", got)
-	}
-
-	never := notifyFrom(t, `{"on":"never","healthchecks":{"url":"https://hc-ping.com/all"}}`)
-	if never.CheckFor("photos") != "" {
-		t.Error("never still pings Healthchecks")
+// A channel being filled in is saved switched on while its address is half
+// typed; it stays quiet rather than stopping the next start.
+func TestAHalfFilledChannelDoesNotStopTheLoad(t *testing.T) {
+	n := notifyFrom(t, `{"channels":[{"id":"a","kind":"discord","enabled":true,"discord":{"url":"htt"}}]}`)
+	if len(n.Channels) != 1 {
+		t.Fatalf("the channel was dropped: %+v", n.Channels)
 	}
 }
 
-func TestLoadRefusesANotificationSettingItCannotRead(t *testing.T) {
-	for _, tc := range []struct{ name, notify, want string }{
-		{"an unknown when", `{"on":"sometimes"}`, "sometimes"},
-		{"an unknown webhook format", `{"webhook":"https://x.example","webhookFormat":"teams"}`, "teams"},
-		{"an unknown mail encryption", `{"smtp":{"host":"m","from":"a@b","to":"c@d","tls":"ssl3"}}`, "ssl3"},
-		{"a port out of range", `{"smtp":{"host":"m","from":"a@b","to":"c@d","port":70000}}`, "70000"},
+func TestLoadRefusesAChannelListItCannotRead(t *testing.T) {
+	for _, tc := range []struct{ name, channels, want string }{
+		{"an unknown service", `[{"id":"a","kind":"teams"}]`, "unknown_kind"},
+		{"two channels with one id", `[{"id":"a","kind":"slack"},{"id":"a","kind":"discord"}]`, "duplicate_id"},
+		{"an unknown when", `[{"id":"a","kind":"slack","on":"sometimes"}]`, "bad_on"},
+		{"a misspelt setting", `[{"id":"a","kind":"slack","slak":{"url":"https://x.example"}}]`, "slak"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := Load(writeConfig(t, `{"jobs":[],"notify":`+tc.notify+`}`))
+			_, err := Load(writeConfig(t, `{"jobs":[],"notify":{"channels":`+tc.channels+`}}`))
 			if err == nil || !strings.Contains(err.Error(), tc.want) {
 				t.Fatalf("err = %v, want one naming %q", err, tc.want)
 			}

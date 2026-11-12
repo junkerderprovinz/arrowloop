@@ -71,7 +71,7 @@ export function RelayCard({ group, relay, stage, hueIndex, onRelay, onRefresh }:
   const typing = useRef(false)
   const timer = useRef<number | undefined>(undefined)
 
-  // The page reads the relay every few seconds, which must not undo what is being typed or picked.
+  // The page reads the relay again whenever the group changes, which must not undo what is being typed or picked.
   useEffect(() => {
     if (!typing.current) setAddress(relay.relayUrl)
   }, [relay.relayUrl])

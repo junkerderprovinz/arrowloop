@@ -24,7 +24,7 @@ func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 		// passkeys here. The desktop window cannot, since nobody else reaches it.
 		"security": s.Security != nil,
 		// Whether this instance can be paired with others.
-		"pairing": s.Pairing != nil && s.Group != nil,
+		"pairing": s.Pairing != nil,
 		"version": boot.Version,
 	})
 }

@@ -51,7 +51,7 @@ export function PhraseCard({
   const [copied, setCopied] = useState(false)
 
   // Words shown here belong to the group they were shown for. Another tab can
-  // leave it, and the poll is the only sign.
+  // leave it, which this one learns only by reading the group again.
   const wasActive = useRef(group.active)
   useEffect(() => {
     if (wasActive.current && !group.active) forget()

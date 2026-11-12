@@ -14,9 +14,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/lan"
+
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
-	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
@@ -88,10 +89,6 @@ func cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
-	group, err := federation.Load(filepath.Dir(*configPath))
-	if err != nil {
-		return err
-	}
 
 	server := &web.Server{
 		History:     hist,
@@ -103,13 +100,20 @@ func cmdWeb(ctx context.Context, args []string) error {
 		Key:         key,
 		Log:         logf,
 		Pairing:     paired,
-		Group:       group,
 		Deployment:  deployment(),
 	}
 
 	listener, err := net.Listen("tcp", *addr)
 	if err != nil {
 		return fmt.Errorf("listen on %s: %w", *addr, err)
+	}
+	// An instance only its own machine reaches calls the others directly once
+	// it knows their address, and announces nothing of its own.
+	if direct := directURL(listener.Addr()); direct != "" {
+		network := lan.New(lan.Config{Group: lanGroup, Ports: []int{defaultPort}})
+		network.Start()
+		defer network.Close()
+		server.LAN, server.DirectURL = network, direct
 	}
 	boot.Banner()
 
@@ -201,10 +205,11 @@ func writeStarterConfig(path string) error {
 }
 
 // deployment is what this instance tells the others of its group it is. The
-// phone app starts this same command, and a container has Docker's marker
-// file at its root.
+// phone app starts this same command, built for linux, and is the only one
+// that hands it an app token. A container has Docker's marker file at its
+// root.
 func deployment() string {
-	if runtime.GOOS == "android" {
+	if runtime.GOOS == "android" || os.Getenv(web.AppTokenEnv) != "" {
 		return "phone"
 	}
 	if _, err := os.Stat("/.dockerenv"); err == nil {

@@ -1,0 +1,7 @@
+{
+  "secret": "sealed:XMqmqZU0Cx3swiInnZI+qiND1KofSAKvdYLb8awUpNlZMHAdsb08/W/txjuFcflmvEe+RfCjFvFv79pK",
+  "member": "sealed:eXqSUWGT+Z8YhapB9wo6InJF3MOk15Wu++ZROyw8QZcml6Gve066sbQuov2j+veNuYAYgzcQ6uwSKU6UiKffjNL12oqbqgyRo4fVqyXHjHag6aPosGjBCwghkZk",
+  "relayMode": "own",
+  "relayUrl": "http://127.0.0.1:63474",
+  "name": "alpha"
+}

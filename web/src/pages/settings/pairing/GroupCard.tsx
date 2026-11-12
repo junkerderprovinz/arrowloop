@@ -37,9 +37,10 @@ function Approved({ label }: { label: string }) {
 }
 
 /**
- * Who is in the group: the instances that wait for approval, this instance
- * with where it stands, the others that are there and the approved ones that
- * are away, each with the button that takes it out.
+ * Who is in the group: the instances that wait for approval, those that did
+ * not follow into the fortress, this instance with where it stands, the others
+ * that are there and the approved ones that are away, each with the button
+ * that takes it out.
  */
 export function GroupCard({ group, stage, joinedAgo, hueIndex, onRefresh }: {
   group: ConnectInfo
@@ -110,6 +111,23 @@ export function GroupCard({ group, stage, joinedAgo, hueIndex, onRefresh }: {
                     disabled={busy}
                     onClick={() => void run(() => api.approveMember(p.id))}
                   />
+                </Row>
+              ))}
+            </Rows>
+          </section>
+        )}
+
+        {group.behind.length > 0 && (
+          <section className="glim-subcard flex flex-col gap-3 px-4 pb-4 pt-3" aria-label={t('pairing.behindTitle')}>
+            <h3 className="glim-eyebrow flex items-center gap-1.5 font-semibold">
+              {t('pairing.behindTitle')}
+              <InfoBubble tip={t('pairing.behindTip')} />
+            </h3>
+            <Rows>
+              {group.behind.map((m) => (
+                <Row key={m.id} glyph={glyphFor(m.deployment)} name={m.name || m.id}>
+                  {kindName(t, m.deployment) && <Mark>{kindName(t, m.deployment)}</Mark>}
+                  {remove(m.id, m.name)}
                 </Row>
               ))}
             </Rows>

@@ -8,11 +8,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
+
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
-	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
@@ -84,14 +85,19 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, change anomaly.Ra
 		r.mu.Unlock()
 	}
 	r.publish(ev)
-	if !tells || cfg.Notify.Silent() {
+	if !tells {
 		return
 	}
-	subject := fmt.Sprintf("ArrowLoop: %s is held", f.Job)
-	if !f.Held {
-		subject = fmt.Sprintf("ArrowLoop: a note about %s", f.Job)
+	// A note goes out as a warning, which a channel set to failures carries,
+	// since somebody who switched notes on wants to hear of them.
+	e := notify.Event{Kind: "job.note", Severity: notify.SeverityWarning, Title: fmt.Sprintf("ArrowLoop: a note about %s", f.Job), Body: f.Detail, Key: f.Job}
+	if f.Held {
+		e.Kind, e.Severity, e.Title = "job.held", notify.SeverityFailure, fmt.Sprintf("ArrowLoop: %s is held", f.Job)
+		if f.Kind.Severity() == "critical" {
+			e.Severity = notify.SeverityCritical
+		}
 	}
-	r.tell(ctx, f.Job, notify.Message{Subject: subject, Body: f.Detail, Failed: f.Held})
+	r.tell(ctx, f.Job, e)
 }
 
 // Found is a new finding somebody should hear of.

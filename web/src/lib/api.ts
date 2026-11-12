@@ -39,6 +39,7 @@ export type Job = {
 export type { Reason } from './i18n'
 import type { Reason } from './i18n'
 import { inDesktopWindow, watchDesktop } from './desk'
+import type { FortressInfo, FortressPermission } from './fortress'
 
 /** What one side holds: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
@@ -538,8 +539,9 @@ export type RunEvent = {
   job: string
   /** `moving` carries the files in the air and the speed; only the speed is
    *  drawn here, and the phase has to be known so its frames do not fall
-   *  through to the generic handler. See App.tsx. */
-  phase: 'started' | 'progress' | 'finished' | 'moving' | 'anomaly'
+   *  through to the generic handler. See App.tsx. `group` names no job and
+   *  says only that the pairing group changed. */
+  phase: 'started' | 'progress' | 'finished' | 'moving' | 'anomaly' | 'group'
   error?: string
   /** On `finished`: a safety brake refused the run, which is a finding and no failure. */
   held?: boolean
@@ -691,6 +693,8 @@ export type ConnectInfo = {
   pending: { id: string; name: string; fingerprint: string }[]
   /** Whether another instance said lately that this one waits for approval there. */
   awaiting: boolean
+  /** Instances paired here before the fortress that did not follow into it in time. */
+  behind: { id: string; name: string; deployment: Deployment }[]
   /** This instance's own key, as the others list it. */
   fingerprint: string
 }
@@ -750,7 +754,7 @@ export type InstancePlaces = {
 export type FolderListing = { path: string; parent: string; shown?: string; entries: { name: string; path: string }[] }
 
 /**
- * Which way a refused phrase went wrong, from internal/seedphrase, with the
+ * Which way a refused phrase went wrong, from the kit's phrase package, with the
  * word and its place for an unknown one.
  */
 export type PhraseProblem = 'word_count' | 'unknown_word' | 'checksum'
@@ -765,6 +769,9 @@ export type SecurityStatus = {
   twoFactor: boolean
   recoveryCodesLeft: number
 }
+
+/** A dashboard's read token, as the list shows it. createdAt is in seconds. */
+export type ReadToken = { id: string; name: string; createdAt: number }
 
 /** One registered passkey, as the list shows it. */
 export type PasskeyView = {
@@ -927,13 +934,13 @@ export const api = {
   /**
    * Sends a test message through one channel as the page shows it. The engine
    * fills in the secrets the page holds placeholders for, and a refusal comes
-   * back as ok:false with the reason.
+   * back as ok:false with a code to translate and the HTTP status, if any.
    */
-  testNotify: (channel: Channel, notify: Notify) =>
-    request<{ ok: boolean; reason?: string }>('/api/notify/test', {
+  testNotify: (channel: Channel) =>
+    request<{ ok: boolean; code?: string; status?: number; reason?: string }>('/api/notify/test', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ channel, notify }),
+      body: JSON.stringify({ channel }),
     }),
 
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
@@ -1054,6 +1061,14 @@ export const api = {
 
   deletePasskey: (id: string) =>
     request<{ deleted: string }>(`/api/passkeys/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+
+  readTokens: () => request<ReadToken[]>('/api/security/read-tokens'),
+
+  /** The token in the answer is shown once; the engine keeps only its fingerprint. */
+  addReadToken: (name: string) => post<ReadToken & { token: string }>('/api/security/read-tokens', { name }),
+
+  deleteReadToken: (id: string) =>
+    request<{ deleted: boolean }>(`/api/security/read-tokens/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 
   settings: () => request<Settings>('/api/settings'),
 
@@ -1301,6 +1316,27 @@ export const api = {
 
   /** Takes another instance out of the group on every instance of it. */
   removeMember: (id: string) => send(`/api/connect/members/${encodeURIComponent(id)}`, 'DELETE'),
+
+  fortress: () => request<FortressInfo>('/api/fortress'),
+
+  /** Joins the fortress of a phrase. The paired instances follow by themselves. */
+  joinFortress: (phrase: string) => post<FortressInfo>('/api/fortress/join', { phrase }),
+
+  /** Shows the fortress phrase again, which asks for the password where one is set. */
+  showFortressPhrase: (password = '') => post<Phrase>('/api/fortress/phrase/show', { password }),
+
+  /** Gives the fortress a new phrase, behind the password as showing it is. */
+  changeFortressPhrase: (password = '') => post<Phrase & { left: string[] }>('/api/fortress/phrase', { password }),
+
+  /** What the other apps of the fortress call this instance; empty for the computer's name. */
+  nameInFortress: (device: string) =>
+    request<FortressInfo>('/api/fortress/device', { method: 'PUT', body: JSON.stringify({ device }) }),
+
+  setFortressPermission: (p: FortressPermission) =>
+    request<FortressInfo>('/api/fortress/permissions', { method: 'PUT', body: JSON.stringify(p) }),
+
+  /** Leaves the fortress, and with it the pairing its phrase holds. */
+  leaveFortress: () => request<FortressInfo>('/api/fortress', { method: 'DELETE' }),
 
   relay: () => request<RelayConfig>('/api/relay/config'),
 

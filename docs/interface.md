@@ -546,7 +546,17 @@ from the instance itself. The name the others see is set under **Name in the
 group** on **This instance**, saved as you type, and it is the computer's name
 until you give one.
 
-The instances reach each other through a relay. **Project relay** is
+Instances on one network call each other directly and need no relay for
+that. A container or a server that listens on the network announces itself on
+the multicast address `239.255.77.50`, port 8752, and where multicast does not
+reach, as from a container on a Docker bridge, it tries the other addresses of
+its own network on its port and on 8422. It goes by the address you open its
+interface at. The phone and the desktop app take no calls from the network,
+but they call the others directly once they know where they are. A call goes
+directly first and over the relay only when that fails, never both ways at
+once.
+
+Everywhere else the instances reach each other through a relay. **Project relay** is
 ParleyPort, which the project runs at `parleyport.halleluja.design`, free of
 charge. **Own relay** takes the address of one you run yourself, from the
 Unraid Community Apps or with Docker. **ArrowLoop instance** makes one of your
@@ -671,10 +681,13 @@ it. A password, a second factor and passkeys are set on the **Security** tile;
 Over plain HTTP the session cookie crosses the wire in clear, so a machine
 reachable from outside wants TLS in front of it, with a password or without.
 
-A paired instance reaches this one only through the relay, and only for the
-job list, **Run now** and **Cancel the run**, opening and saving a job, and the
+A paired instance reaches this one directly at `/api/group/call` or through
+the relay, and only for the job list, **Run now** and **Cancel the run**, opening and saving a job, and the
 folders and target names its sides are picked from. Every other route answers
-the group with 404. An instance that serves the relay
+the group with 404. The direct route needs no session, like the relay socket:
+a call there carries a tag made from the twelve words and is refused before
+its body is read when the tag is wrong, and inside it is sealed and signed as
+over the relay. An instance that serves the relay
 opens `/relay/connect` for it and nothing else: it lets in only the key of its
 own group, drops everybody on it when the switch goes off or it leaves the
 group, and answers 404 there while it does not serve. It has to be approved here first,

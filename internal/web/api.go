@@ -3,6 +3,7 @@
 package web
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -16,20 +17,25 @@ import (
 	"sync"
 	"time"
 
+	kitfortress "github.com/junkerderprovinz/parleyport/kit/fortress"
+	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/hostpath"
+	"github.com/junkerderprovinz/parleyport/kit/lan"
+	kitnotify "github.com/junkerderprovinz/parleyport/kit/notify"
+	"github.com/junkerderprovinz/parleyport/kit/relay"
+	"github.com/junkerderprovinz/parleyport/kit/status"
+
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
-	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
-	"github.com/junkerderprovinz/arrowloop/internal/relay"
-	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
@@ -39,6 +45,10 @@ import (
 type Server struct {
 	History *history.DB
 	Runner  *daemon.Runner
+
+	// Mounts reads the mount table that maps host folders into this
+	// container; nil reads this process's own.
+	Mounts func() (hostpath.Table, error)
 
 	// UI is the built interface. A nil filesystem serves the API only.
 	UI fs.FS
@@ -99,23 +109,54 @@ type Server struct {
 	newReleaseMu sync.Mutex
 	newRelease   string
 
-	// Pairing keeps the phrase's secret, this instance's member key and the
-	// relay it dials, and Group the other instances paired with it. Without
-	// both the pairing routes are unregistered.
+	// Pairing keeps the phrase's secret, this instance's member key, the relay
+	// it dials and who is in its group. Without it the pairing routes are
+	// unregistered.
 	Pairing *pairing.Store
-	Group   *federation.Manager
+
+	// LAN is where the instances of the group on this network find each
+	// other, started by the caller; nil leaves them to the relay. DirectURL is
+	// where the others on the network reach this instance, "" where nothing
+	// does until a browser shows the address.
+	LAN       *lan.Service
+	DirectURL string
+	// Ports are where the instances of the group listen, for an address the
+	// group remembers; empty means ArrowLoop's default port.
+	Ports []int
 
 	// Deployment is what this instance tells the others of its group it is:
 	// "container", "server", "desktop" or "phone".
 	Deployment string
 
-	// relayMu keeps two rebuilds of the relay client apart, memberMu two
-	// mints of a member key, and groupOnce builds group, what another member
-	// may call here.
-	relayMu   sync.Mutex
+	// groupMu keeps two openings of the group apart, liveMu guards live, the
+	// group in use, and liveGen, which counts the groups opened. memberMu
+	// keeps two mints of a member key apart, and groupOnce builds group, what
+	// another member may call here.
+	groupMu sync.Mutex
+	liveMu  sync.Mutex
+	live    *group.Group
+	liveGen uint64
+	// fort is the fortress this instance is in and fortLAN where it announces
+	// itself there, both nil outside one, and changing is set while this
+	// instance changes the fortress phrase itself. movers is the pairing on
+	// the app's own phrase while its instances move into the fortress. All
+	// four are guarded by liveMu. moveStop ends the move of the instances
+	// that were away, and forget opens the fortress again once the phrase
+	// before the last change is due to go; groupMu guards both.
+	fort      *kitfortress.Fortress
+	fortLAN   *lan.Service
+	changing  bool
+	movers    *group.Group
+	moveStop  context.CancelFunc
+	moving    sync.WaitGroup
+	forget    *time.Timer
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler
+
+	// watchers are told when the group changes; see WatchGroup.
+	watchMu  sync.Mutex
+	watchers map[chan struct{}]struct{}
 
 	// servedOnce builds served, the relay this instance runs for its group
 	// while the owner has it switched on.
@@ -221,6 +262,10 @@ func (s *Server) Handler() http.Handler {
 		mux.HandleFunc("POST /api/passkeys/register/begin", s.passkeyRegisterBegin)
 		mux.HandleFunc("POST /api/passkeys/register/finish", s.passkeyRegisterFinish)
 		mux.HandleFunc("DELETE /api/passkeys/{id}", s.deletePasskey)
+
+		mux.HandleFunc("GET /api/security/read-tokens", s.listReadTokens)
+		mux.HandleFunc("POST /api/security/read-tokens", s.addReadToken)
+		mux.HandleFunc("DELETE /api/security/read-tokens/{id}", s.deleteReadToken)
 	}
 
 	if s.Window != nil {
@@ -244,9 +289,19 @@ func (s *Server) Handler() http.Handler {
 	// A phone's wake-up runs whatever the schedule says is due.
 	mux.HandleFunc("POST /api/run-due", s.runDue)
 
-	if s.Pairing != nil && s.Group != nil {
+	if s.Pairing != nil {
 		s.pairingRoutes(mux)
+		s.fortressRoutes(mux)
+		// Open, like the relay socket: the group checks every call against
+		// the phrase's keys before it reads the body.
+		mux.HandleFunc("POST /api/group/call", s.serveDirect)
 	}
+
+	// The status and the log every app of a fortress answers with. A
+	// dashboard reads them with a read token; see fortress.go.
+	fortress := status.Handler(fortressSource{s}, s.readTokenOpens)
+	mux.Handle("/api/fortress/v1/status", fortress)
+	mux.Handle("/api/fortress/v1/log", fortress)
 
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
@@ -686,8 +741,9 @@ func (s *Server) runEntries(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, entries)
 }
 
-// events streams what the runner is doing, so a screen can show a job going
-// from waiting to running without asking again every second.
+// events streams what the runner is doing and when the group changes, so a
+// screen can show a job going from waiting to running, or another instance
+// arriving, without asking again every few seconds.
 func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -702,6 +758,8 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 
 	ch, stop := s.Runner.Subscribe()
 	defer stop()
+	group, unwatch := s.WatchGroup()
+	defer unwatch()
 
 	// A comment line every twenty seconds keeps a proxy from closing the idle
 	// stream.
@@ -714,6 +772,10 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 			return
 		case <-ping.C:
 			fmt.Fprint(w, ": ping\n\n")
+			flusher.Flush()
+		case <-group:
+			payload, _ := json.Marshal(daemon.Event{Phase: GroupChanged})
+			fmt.Fprintf(w, "data: %s\n\n", payload)
 			flusher.Flush()
 		case ev, open := <-ch:
 			if !open {
@@ -904,179 +966,103 @@ func checkBackupFolder(update map[string]any, current *job.Config) error {
 // readSettings hands back the file's top-level keys apart from the jobs, as a
 // map so keys this build does not know survive a round trip.
 func (s *Server) readSettings(w http.ResponseWriter, r *http.Request) {
-	settings, err := s.Runner.Config().SettingsAsMap()
+	cfg := s.Runner.Config()
+	settings, err := cfg.SettingsAsMap()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, withheld(settings))
+	writeJSON(w, http.StatusOK, withChannels(settings, cfg.Notify))
 }
 
-// withheld replaces the notification secrets in a settings map with
-// remotes.Placeholder, as a target's password is: the Matrix token posts as the
-// account, the mail password logs in, and the address of a webhook, an Apprise
-// server or a check is its own key.
-func withheld(settings map[string]any) map[string]any {
-	eachSecret(settings, func(holder map[string]any, key string, _ secretAt) {
-		if secret, _ := holder[key].(string); secret != "" {
-			holder[key] = remotes.Placeholder
-		}
-	})
+// withChannels puts the notification channels in place of the notify block,
+// each secret replaced by notify.Placeholder, as a target's password is. The
+// keys of the older shape stay in the file but never reach a page.
+func withChannels(settings map[string]any, n job.Notify) map[string]any {
+	for _, k := range keysLike(settings, "notify") {
+		delete(settings, k)
+	}
+	channels := notify.Redacted(n.Channels)
+	if channels == nil {
+		channels = []kitnotify.Channel{}
+	}
+	settings["notify"] = map[string]any{"channels": channels}
 	return settings
 }
 
-// keepSecrets puts the stored notification secrets back where a settings
-// update carries the placeholder for them. A token or a password is put back
-// only beside the server it was saved for, as remotes.WithSavedSecrets does,
-// so changing the address cannot send the saved one somewhere else.
-func keepSecrets(update map[string]any, stored *job.Config) error {
-	var refused error
-	eachSecret(update, func(holder map[string]any, key string, s secretAt) {
-		if holder[key] != remotes.Placeholder {
-			return
-		}
-		secret := s.kept(stored.Notify)
-		if secret != "" && s.sameServer != nil && !s.sameServer(holder, stored.Notify) {
-			refused = fmt.Errorf("the saved %s belongs to the server it was saved with; type it again to use it with this one", s.name)
-			return
-		}
-		holder[key] = secret
-	})
-	return refused
-}
-
-// secretAt is one place under "notify" that holds a secret: the objects on
-// the way to it, the key, and the stored value. sameServer tells whether the
-// object holding the secret still names the stored server; a secret that is
-// itself the address has none.
-type secretAt struct {
-	path       []string
-	key        string
-	name       string
-	kept       func(job.Notify) string
-	sameServer func(holder map[string]any, stored job.Notify) bool
-}
-
-var notifySecrets = []secretAt{
-	{key: "webhook", kept: func(n job.Notify) string { return n.Webhook }},
-	{path: []string{"matrix"}, key: "token", name: "Matrix token",
-		kept: func(n job.Notify) string {
-			if n.Matrix == nil {
-				return ""
-			}
-			return n.Matrix.Token
-		},
-		sameServer: func(holder map[string]any, stored job.Notify) bool {
-			var m job.Matrix
-			return decodes(holder, &m) && m.Homeserver == stored.Matrix.Homeserver
-		}},
-	{path: []string{"smtp"}, key: "password", name: "mail password",
-		kept: func(n job.Notify) string {
-			if n.SMTP == nil {
-				return ""
-			}
-			return n.SMTP.Password
-		},
-		// The encryption counts too: "none" would hand the password over in
-		// the clear.
-		sameServer: func(holder map[string]any, stored job.Notify) bool {
-			var s job.SMTP
-			was := stored.SMTP
-			return decodes(holder, &s) && s.Host == was.Host && s.Port == was.Port && s.Username == was.Username && s.TLS == was.TLS
-		}},
-	{path: []string{"apprise"}, key: "url", kept: func(n job.Notify) string {
-		if n.Apprise == nil {
-			return ""
-		}
-		return n.Apprise.URL
-	}},
-	{path: []string{"healthchecks"}, key: "url", kept: func(n job.Notify) string {
-		if n.Healthchecks == nil {
-			return ""
-		}
-		return n.Healthchecks.URL
-	}},
-}
-
-// decodes reads a settings object the way Load reads the file, so a key
-// spelled twice in different cases settles as it will when the secret is used.
-func decodes(holder map[string]any, into any) bool {
-	raw, err := json.Marshal(holder)
-	return err == nil && json.Unmarshal(raw, into) == nil
-}
-
-// eachSecret visits every notification secret in a settings map, in whatever
-// case its keys are spelled. A job's own check is named by the job, whose
-// name is matched exactly, as Load does.
-func eachSecret(settings map[string]any, visit func(holder map[string]any, key string, s secretAt)) {
-	for _, notify := range objects(settings, "notify") {
-		for _, s := range notifySecrets {
-			holders := []map[string]any{notify}
-			for _, step := range s.path {
-				var next []map[string]any
-				for _, h := range holders {
-					next = append(next, objects(h, step)...)
-				}
-				holders = next
-			}
-			for _, h := range holders {
-				for _, k := range keysLike(h, s.key) {
-					visit(h, k, s)
-				}
-			}
-		}
-		for _, checks := range objects(notify, "healthchecks") {
-			for _, jobs := range objects(checks, "jobs") {
-				for name := range jobs {
-					visit(jobs, name, secretAt{key: name, kept: func(n job.Notify) string {
-						if n.Healthchecks == nil {
-							return ""
-						}
-						return n.Healthchecks.Jobs[name]
-					}})
-				}
-			}
-		}
+// sentChannels reads the channel list a page sent under notify.
+func sentChannels(block any) ([]kitnotify.Channel, error) {
+	raw, err := json.Marshal(block)
+	if err != nil {
+		return nil, err
 	}
+	var sent struct {
+		Channels []kitnotify.Channel `json:"channels"`
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&sent); err != nil {
+		return nil, fmt.Errorf("read the notification channels: %w", err)
+	}
+	return sent.Channels, nil
+}
+
+// keepSecrets puts the stored secrets back where a settings update carries
+// the placeholder for them, and keeps the rest of the stored notify block, so
+// the older keys a file carries stay until a later version drops them.
+func keepSecrets(update map[string]any, stored *job.Config) error {
+	for _, k := range keysLike(update, "notify") {
+		if update[k] == nil {
+			continue
+		}
+		sent, err := sentChannels(update[k])
+		if err != nil {
+			return err
+		}
+		merged, err := notify.Merge(sent, stored.Notify.Channels)
+		if err != nil {
+			return err
+		}
+		block := map[string]any{}
+		if settings, err := stored.SettingsAsMap(); err == nil {
+			for _, old := range objects(settings, "notify") {
+				block = old
+			}
+		}
+		block["channels"] = merged
+		update[k] = block
+	}
+	return nil
 }
 
 // testNotify sends a test message through one channel as the page shows it,
 // saved or not, with the stored secrets where the page holds placeholders.
 // A refusal is an answer, not an error status, as a target's check is. The
-// address is the caller's choice, so a server's refusal is told by its status
-// alone: what it wrote back could be any page on the network.
+// address is the caller's choice, so a server's refusal is told by its code
+// and status alone: what it wrote back could be any page on the network.
 func (s *Server) testNotify(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Channel string         `json:"channel"`
-		Notify  map[string]any `json:"notify"`
+		Channel kitnotify.Channel `json:"channel"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	if err := keepSecrets(map[string]any{"notify": body.Notify}, s.Runner.Config()); err != nil {
-		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": err.Error()})
-		return
-	}
-	var n job.Notify
-	raw, err := json.Marshal(body.Notify)
-	if err == nil {
-		err = json.Unmarshal(raw, &n)
-	}
+	merged, err := notify.Merge([]kitnotify.Channel{body.Channel}, s.Runner.Config().Notify.Channels)
 	if err != nil {
-		writeError(w, http.StatusBadRequest, fmt.Errorf("read the notification settings: %w", err))
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "code": "moved", "reason": err.Error()})
 		return
 	}
-	if err := daemon.SendTest(r.Context(), n, body.Channel); err != nil {
-		reason := notify.Redact(err).Error()
-		var refused *notify.Refused
-		if errors.As(err, &refused) {
-			reason = fmt.Sprintf("the server answered %d %s", refused.Code, http.StatusText(refused.Code))
-		}
-		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": reason})
+	res := daemon.SendTest(r.Context(), merged[0])
+	if res.OK() {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+	reason := res.Code
+	if res.Status != 0 {
+		reason = fmt.Sprintf("the server answered %d %s", res.Status, http.StatusText(res.Status))
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"ok": false, "code": res.Code, "status": res.Status, "reason": reason})
 }
 
 // keysLike lists the keys of m that spell name in any case, since Load reads
@@ -1139,7 +1125,7 @@ func (s *Server) writeSettings(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, withheld(settings))
+	writeJSON(w, http.StatusOK, withChannels(settings, next.Notify))
 }
 
 // writeJobOrder puts the jobs in the order a list shows after somebody moved

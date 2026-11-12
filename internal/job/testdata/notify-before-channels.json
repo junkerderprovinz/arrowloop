@@ -1,0 +1,14 @@
+{
+  "jobs": [
+    {"name": "photos", "left": "left", "right": "right", "state": "photos.db"}
+  ],
+  "notify": {
+    "on": "always",
+    "matrix": {"homeserver": "https://matrix.example.org", "room": "!room:example.org", "token": "syt_example"},
+    "webhook": "https://discord.com/api/webhooks/123/example",
+    "webhookFormat": "discord",
+    "smtp": {"enabled": false, "host": "mail.example.org", "port": 465, "tls": "tls", "username": "arrowloop", "password": "example-password", "from": "arrowloop@example.org", "to": "me@example.org; you@example.org"},
+    "apprise": {"url": "http://apprise:8000/notify/example", "tags": "backups"},
+    "healthchecks": {"url": "https://hc-ping.com/every-job", "jobs": {"photos": "https://hc-ping.com/photos", "music": ""}}
+  }
+}

@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
 	_ "github.com/rclone/rclone/backend/local"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
@@ -433,7 +434,7 @@ func TestADriveThatIsAwaySendsNoCheckPing(t *testing.T) {
 			if !withBefore {
 				cfg.Jobs[0].Before = ""
 			}
-			cfg.Notify = job.Notify{Healthchecks: &job.Healthchecks{URL: check.URL + "/check"}}
+			cfg.Notify = job.Notify{Channels: []notify.Channel{{ID: "check", Kind: notify.KindHealthchecks, Enabled: true, Healthchecks: &notify.Healthchecks{URL: check.URL + "/check"}}}}
 			r.Reload(&cfg)
 
 			if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {

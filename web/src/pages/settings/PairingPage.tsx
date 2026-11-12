@@ -3,20 +3,17 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { OtherInstances } from '../../components/OtherInstances'
 import { Stack } from '../../components/Shell'
 import { api, type ConnectInfo, type RelayConfig } from '../../lib/api'
+import { fortressHues, pairedWith, type FortressInfo } from '../../lib/fortress'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { useNavPins } from '../../lib/navPins'
 import { pairStage } from '../../lib/pairing'
+import { FortressSection } from './pairing/FortressSection'
 import { GroupCard } from './pairing/GroupCard'
 import { InstanceCard } from './pairing/InstanceCard'
 import { PairingSteps } from './pairing/PairingSteps'
 import { PhraseCard } from './pairing/PhraseCard'
 import { RelayCard } from './pairing/RelayCard'
-
-// How often the tile asks again who is there. Members come and go with the
-// relay connection, which nothing pushes here, and asking is also what lets
-// two instances meet and pin each other's key.
-const REFRESH_MS = 10_000
 
 /**
  * Counts on from the seconds the engine last reported, so the search timer
@@ -42,12 +39,15 @@ function useJoinedAgo(group: ConnectInfo | null): number {
 /**
  * Pairing, as in BombVault and KnightLoader: three steps that explain it, the
  * twelve words, who came with them, this instance, and the relay that carries
- * the rest. While Instances is not in the sidebar, its cards follow.
+ * the rest, then the fortress. While Instances is not in the sidebar, its
+ * cards follow. In a fortress its phrase is the pairing's, so the fortress
+ * shows and changes it and the group's phrase card steps aside.
  */
 export function PairingPage() {
   const { t } = useT()
   const [group, setGroup] = useState<ConnectInfo | null>(null)
   const [relay, setRelay] = useState<RelayConfig | null>(null)
+  const [fortress, setFortress] = useState<FortressInfo | null>(null)
   const [error, setError] = useState(false)
   const [createdHere, setCreatedHere] = useState(false)
   const pinned = useNavPins().instances
@@ -58,11 +58,14 @@ export function PairingPage() {
 
   const load = useCallback(() => {
     const read = ++asked.current
-    Promise.all([api.connect(), api.relay()])
-      .then(([g, r]) => {
+    // The fortress has a card of its own, so a fortress that cannot be read
+    // leaves the pairing cards standing.
+    Promise.all([api.connect(), api.relay(), api.fortress().catch(() => null)])
+      .then(([g, r, f]) => {
         if (read !== asked.current) return
         setGroup(g)
         setRelay(r)
+        setFortress(f)
         setError(false)
       })
       .catch(() => read === asked.current && setError(true))
@@ -73,13 +76,24 @@ export function PairingPage() {
     setGroup(g)
   }, [])
 
+  // The engine says on its event stream when somebody comes, goes, waits or
+  // is approved, or when the relay comes or goes. The other apps of the
+  // fortress tell it nothing, so the page reads it again when it gets the
+  // focus back.
   useEffect(() => {
     load()
-    const id = window.setInterval(load, REFRESH_MS)
-    return () => window.clearInterval(id)
+    window.addEventListener('focus', load)
+    const unwatch = api.watch((ev) => {
+      if (ev.phase === 'group') load()
+    })
+    return () => {
+      window.removeEventListener('focus', load)
+      unwatch()
+    }
   }, [load])
 
   const stage = group ? pairStage(group, joinedAgo, createdHere) : 'unpaired'
+  const inFortress = fortress?.joined === true
 
   return (
     <Stack>
@@ -91,9 +105,11 @@ export function PairingPage() {
       )}
       {group && (
         <>
-          <PhraseCard group={group} stage={stage} hueIndex={3} onCreatedHere={setCreatedHere} onGroup={takeGroup} onRefresh={load} />
+          {!inFortress && (
+            <PhraseCard group={group} stage={stage} hueIndex={3} onCreatedHere={setCreatedHere} onGroup={takeGroup} onRefresh={load} />
+          )}
           <GroupCard group={group} stage={stage} joinedAgo={joinedAgo} hueIndex={4} onRefresh={load} />
-          <InstanceCard group={group} hueIndex={5} onGroup={takeGroup} />
+          <InstanceCard group={group} hueIndex={5} inFortress={inFortress} onGroup={takeGroup} onRefresh={load} />
           {relay && (
             <RelayCard
               group={group}
@@ -107,9 +123,12 @@ export function PairingPage() {
               onRefresh={load}
             />
           )}
+          {fortress && (
+            <FortressSection fortress={fortress} pairedWith={pairedWith(group)} hueStart={7} onFortress={setFortress} onRefresh={load} />
+          )}
         </>
       )}
-      {!pinned && <OtherInstances firstHue={7} />}
+      {!pinned && <OtherInstances firstHue={7 + (fortress ? fortressHues(fortress) : 0)} />}
     </Stack>
   )
 }

@@ -5,6 +5,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ConnectInfo, RelayConfig } from '../../lib/api'
+import type { FortressInfo } from '../../lib/fortress'
 
 const connect = vi.fn()
 const relay = vi.fn()
@@ -12,6 +13,9 @@ const makePhrase = vi.fn()
 const joinGroup = vi.fn()
 const approveMember = vi.fn()
 const revealPhrase = vi.fn()
+const fortress = vi.fn()
+const removeMember = vi.fn()
+let heard: ((ev: { job: string; phase: string }) => void) | null = null
 vi.mock('../../lib/api', async (original) => ({
   ...(await original<typeof import('../../lib/api')>()),
   api: {
@@ -21,12 +25,19 @@ vi.mock('../../lib/api', async (original) => ({
     joinGroup: (phrase: string) => joinGroup(phrase),
     approveMember: (id: string) => approveMember(id),
     revealPhrase: (password: string) => revealPhrase(password),
+    fortress: () => fortress(),
     leaveGroup: vi.fn(),
     refuseMember: vi.fn(),
-    removeMember: vi.fn(),
+    removeMember: (id: string) => removeMember(id),
     renameInstance: vi.fn(),
     saveRelay: vi.fn(),
     instances: () => Promise.resolve([]),
+    watch: (onEvent: (ev: { job: string; phase: string }) => void) => {
+      heard = onEvent
+      return () => {
+        heard = null
+      }
+    },
   },
 }))
 
@@ -58,6 +69,7 @@ const outside: ConnectInfo = {
   memberSeen: false,
   pending: [],
   awaiting: false,
+  behind: [],
   fingerprint: '',
 }
 
@@ -71,9 +83,12 @@ const relayConfig: RelayConfig = {
   canServe: true,
 }
 
+const noFortress: FortressInfo = { joined: false, phrase: false, device: 'nas', defaultDevice: 'nas', passwordSet: true, members: [], permissions: [] }
+
 beforeEach(() => {
-  for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase]) fn.mockReset()
+  for (const fn of [connect, relay, makePhrase, joinGroup, approveMember, revealPhrase, fortress, removeMember]) fn.mockReset()
   relay.mockResolvedValue(relayConfig)
+  fortress.mockResolvedValue(noFortress)
 })
 afterEach(cleanup)
 
@@ -151,6 +166,23 @@ describe('the Pairing tile', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Approve' }))
     await waitFor(() => expect(approveMember).toHaveBeenCalledWith('b'.repeat(40)))
   })
+  it('lists the devices that did not follow into the fortress by name and kind, and takes one out', async () => {
+    connect.mockResolvedValue({
+      ...outside,
+      active: true,
+      memberSeen: true,
+      behind: [{ id: 'c'.repeat(40), name: 'Old laptop', deployment: 'desktop' }],
+    })
+    removeMember.mockResolvedValue(undefined)
+    render(<PairingPage />)
+    const section = await screen.findByRole('region', { name: en['pairing.behindTitle'] })
+    expect(within(section).getByText('Old laptop')).toBeTruthy()
+    expect(within(section).getByText(en['instances.kind.desktop'])).toBeTruthy()
+    fireEvent.click(within(section).getByRole('button', { name: en['pairing.remove'] }))
+    fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: en['pairing.remove'] }))
+    await waitFor(() => expect(removeMember).toHaveBeenCalledWith('c'.repeat(40)))
+  })
+
   it('draws the three steps as numbered cards, each with its picture', async () => {
     connect.mockResolvedValue(outside)
     const { container } = render(<PairingPage />)
@@ -177,5 +209,48 @@ describe('the Pairing tile', () => {
     render(<PairingPage />)
     expect(await screen.findByRole('img', { name: en['relay.pic.relay'] })).toBeTruthy()
     expect(screen.getByTestId('relay-state').textContent).toBe(en['relay.connected'])
+  })
+
+  it('reads the group again when the event stream says it changed, and not on a timer', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
+      render(<PairingPage />)
+      await waitFor(() => expect(connect).toHaveBeenCalledTimes(1))
+      vi.advanceTimersByTime(60_000)
+      expect(connect).toHaveBeenCalledTimes(1)
+
+      heard?.({ job: 'photos', phase: 'finished' })
+      expect(connect).toHaveBeenCalledTimes(1)
+      heard?.({ job: '', phase: 'group' })
+      await waitFor(() => expect(connect).toHaveBeenCalledTimes(2))
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('offers to join a fortress below the pairing', async () => {
+    connect.mockResolvedValue(outside)
+    render(<PairingPage />)
+    expect(await screen.findByText('Not in a fortress yet')).toBeTruthy()
+    expect(screen.getByRole('button', { name: /make a phrase/i })).toBeTruthy()
+  })
+
+  it('leaves the phrase to the fortress once this instance is in one', async () => {
+    connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
+    fortress.mockResolvedValue({ ...noFortress, joined: true, phrase: true })
+    render(<PairingPage />)
+    expect(await screen.findByText(en['fortress.title'])).toBeTruthy()
+    expect(screen.queryByText(en['pairing.searchingLead'])).toBeNull()
+    expect(screen.getAllByRole('button', { name: 'Show phrase' })).toHaveLength(1)
+    expect(screen.queryByRole('button', { name: en['pairing.leave'] })).toBeNull()
+  })
+
+  it('reads the fortress again when the window gets the focus back', async () => {
+    connect.mockResolvedValue(outside)
+    render(<PairingPage />)
+    await waitFor(() => expect(fortress).toHaveBeenCalledTimes(1))
+    fireEvent.focus(window)
+    await waitFor(() => expect(fortress).toHaveBeenCalledTimes(2))
   })
 })

@@ -471,6 +471,33 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	return out, rows.Err()
 }
 
+// After returns up to limit stored runs recorded after the run with id after,
+// oldest first. Ids grow in the order runs are recorded, so a reader can
+// page through the log with the last id it saw.
+func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
+	rows, err := d.sql.QueryContext(ctx, `
+		SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered
+		FROM runs WHERE id > ? ORDER BY id LIMIT ?`, after, limit)
+	if err != nil {
+		return nil, fmt.Errorf("read the runs after %d: %w", after, err)
+	}
+	defer rows.Close()
+
+	var out []Run
+	for rows.Next() {
+		var r Run
+		var started, finished int64
+		if err := rows.Scan(&r.ID, &r.Job, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered); err != nil {
+			return nil, fmt.Errorf("scan run: %w", err)
+		}
+		r.Started = time.Unix(0, started)
+		r.Finished = time.Unix(0, finished)
+		out = append(out, r)
+	}
+	return out, rows.Err()
+}
+
 // Latest is one job's newest stored run, with how many runs the job started
 // since a given moment.
 type Latest struct {

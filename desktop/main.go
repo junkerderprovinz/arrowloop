@@ -33,7 +33,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
-	"github.com/junkerderprovinz/arrowloop/internal/federation"
 	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
@@ -174,10 +173,6 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	group, err := federation.Load(filepath.Dir(configPath))
-	if err != nil {
-		return err
-	}
 	server := &web.Server{
 		History: hist, Runner: runner, UI: ui,
 		Placeholder:  webui.Placeholder,
@@ -187,7 +182,6 @@ func run() error {
 		Key:          key,
 		Log:          desktopLog,
 		Pairing:      paired,
-		Group:        group,
 		Deployment:   "desktop",
 	}
 	api = server.Handler()
@@ -213,7 +207,7 @@ func run() error {
 	}()
 	sh.live.Watch(ctx, runner)
 	tell.watch(ctx, runner, window, sh.showMain)
-	newBridge().run(ctx, runner, app)
+	newBridge().run(ctx, runner, server, app)
 
 	// A newer release is downloaded in the background and starts next time;
 	// see updates.go. The installed copy leaves that to the installer's

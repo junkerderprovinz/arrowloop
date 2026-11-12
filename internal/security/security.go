@@ -1,5 +1,6 @@
 // Package security keeps what the interface sets up about signing in: the
-// password hash, the second factor and the registered passkeys.
+// password hash, the second factor, the registered passkeys and the read
+// tokens of dashboards.
 //
 // They live in security.json beside the configuration file and never in it.
 // The API serves arrowloop.json whole as a backup and replaces it whole on a
@@ -104,6 +105,8 @@ type State struct {
 	// PasskeyUser is the account id every passkey is registered under. It has
 	// to stay the same for the keys to keep working, so it is drawn once.
 	PasskeyUser []byte `json:"passkeyUser,omitempty"`
+
+	ReadTokens []ReadToken `json:"readTokens,omitempty"`
 }
 
 // clone copies the slices, so a caller holding a State cannot change the
@@ -113,6 +116,7 @@ func (s State) clone() State {
 	out.TOTP.Recovery = slices.Clone(s.TOTP.Recovery)
 	out.Passkeys = slices.Clone(s.Passkeys)
 	out.PasskeyUser = slices.Clone(s.PasskeyUser)
+	out.ReadTokens = slices.Clone(s.ReadTokens)
 	return out
 }
 

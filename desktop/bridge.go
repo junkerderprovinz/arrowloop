@@ -8,6 +8,7 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // runEvent is the name the interface listens for, carrying the same JSON the
@@ -19,9 +20,9 @@ const runEvent = "arrowloop:run"
 // often than anybody can read.
 const bridgeEvery = 100 * time.Millisecond
 
-// bridge carries the runner's events into the windows. The asset server on
-// Windows hands a response over only once the handler returns, so the
-// /api/events stream never arrives there.
+// bridge carries the runner's events and the group's changes into the
+// windows. The asset server on Windows hands a response over only once the
+// handler returns, so the /api/events stream never arrives there.
 //
 // Reading and emitting run apart: an emit waits when a window's queue is full,
 // and a reader stuck behind it would let the runner drop events, a finished
@@ -32,7 +33,10 @@ type bridge struct {
 	queue  []daemon.Event
 	latest map[string]daemon.Event
 	moving map[string]daemon.Event
-	wake   chan struct{}
+	// grouped is whether the group changed since the last take. A change only
+	// makes the Pairing tile read the group again, so several go out as one.
+	grouped bool
+	wake    chan struct{}
 }
 
 func newBridge() *bridge {
@@ -67,6 +71,17 @@ func (b *bridge) add(ev daemon.Event) {
 	}
 }
 
+// groupChanged records that the group changed without ever waiting.
+func (b *bridge) groupChanged() {
+	b.mu.Lock()
+	b.grouped = true
+	b.mu.Unlock()
+	select {
+	case b.wake <- struct{}{}:
+	default:
+	}
+}
+
 // take returns what has gathered, starts and finishes first so a job's
 // progress never lands before its start.
 func (b *bridge) take() []daemon.Event {
@@ -82,14 +97,21 @@ func (b *bridge) take() []daemon.Event {
 		out = append(out, ev)
 		delete(b.moving, job)
 	}
+	if b.grouped {
+		out = append(out, daemon.Event{Phase: web.GroupChanged})
+		b.grouped = false
+	}
 	return out
 }
 
-// run follows the runner and emits to every window until the context ends.
-func (b *bridge) run(ctx context.Context, runner *daemon.Runner, app *application.App) {
+// run follows the runner and the group of server and emits to every window
+// until the context ends.
+func (b *bridge) run(ctx context.Context, runner *daemon.Runner, server *web.Server, app *application.App) {
 	events, stop := runner.Subscribe()
+	group, unwatch := server.WatchGroup()
 	go func() {
 		defer stop()
+		defer unwatch()
 		for {
 			select {
 			case <-ctx.Done():
@@ -99,6 +121,8 @@ func (b *bridge) run(ctx context.Context, runner *daemon.Runner, app *applicatio
 					return
 				}
 				b.add(ev)
+			case <-group:
+				b.groupChanged()
 			}
 		}
 	}()

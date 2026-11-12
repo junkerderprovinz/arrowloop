@@ -8,6 +8,7 @@ import { applyCachedAppearance, takePageHue } from './lib/appearance'
 import { applyStoredLabelModes, BOTTOM_BAR_AXIS } from './lib/controls'
 import { applyDisco } from './lib/disco'
 import { getDisco } from './lib/discoSetting'
+import { setGlyphResolver as setPackageGlyphResolver } from '@glimstone/react/glyphs'
 import { setGlyphResolver } from './lib/glimstone/glyphs'
 import { glyphFor } from './lib/glyphFor'
 import { applyStoredLanguage, I18nProvider } from './lib/i18n'
@@ -37,8 +38,11 @@ paintTheme(storedTheme())
 watchSystemAccent()
 
 // Registered once rather than passed at every call site, so a button in
-// glyph-only mode has a mark to draw even where nobody handed it one.
+// glyph-only mode has a mark to draw even where nobody handed it one. The
+// fortress comes from GlimStone's package, whose buttons ask a resolver of
+// their own.
 setGlyphResolver(glyphFor)
+setPackageGlyphResolver(glyphFor)
 
 // The glyph buttons ArrowLoop draws itself never pass through Button, so they
 // take their colour of the page here.

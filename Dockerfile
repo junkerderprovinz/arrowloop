@@ -15,6 +15,8 @@ ARG BUILDPLATFORM
 FROM --platform=$BUILDPLATFORM node:24-slim@sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9 AS web
 WORKDIR /src
 COPY web/package.json web/package-lock.json ./web/
+# The GlimStone packages are installed from the tarballs there.
+COPY web/vendor ./web/vendor
 RUN npm --prefix web ci --no-audit --no-fund
 COPY web/ ./web/
 RUN npm --prefix web run build

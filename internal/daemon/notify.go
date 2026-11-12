@@ -8,10 +8,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
+
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
-	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/scrub"
 )
 
@@ -23,55 +24,82 @@ const NoChannelsEnv = "ARROWLOOP_NO_CHANNELS"
 
 func channelsOff() bool { return os.Getenv(NoChannelsEnv) != "" }
 
-// Notifier builds the destination list from the configuration: every channel
-// that is switched on and filled in. Nothing to send to returns nil. Whether
-// a message goes out at all is decided where it is made.
-func Notifier(cfg *job.Config) notify.Notifier {
+// source names ArrowLoop where a service shows the sender.
+const source = "ArrowLoop"
+
+// Reporting names the channels that are switched on and complete, the ones
+// a run is told through. One switched on but still missing something is
+// named in incomplete, so the log can say why it does not send.
+func Reporting(cfg *job.Config) (ready []notify.Channel, incomplete []string) {
 	if channelsOff() {
-		return nil
+		return nil, nil
 	}
-	n := cfg.Notify
-	var out notify.Multi
-	if n.Matrix.On() {
-		out = append(out, matrixOf(n.Matrix))
+	for _, c := range cfg.Notify.Channels {
+		if !c.Enabled {
+			continue
+		}
+		if err := notify.Validate([]notify.Channel{c}); err != nil {
+			incomplete = append(incomplete, ChannelName(c))
+			continue
+		}
+		ready = append(ready, c)
 	}
-	if n.WebhookOn() {
-		out = append(out, &notify.Webhook{URL: n.Webhook, Format: n.WebhookFormat})
-	}
-	if n.SMTP.On() {
-		out = append(out, smtpOf(n.SMTP))
-	}
-	if n.Apprise.On() {
-		out = append(out, &notify.Apprise{URL: n.Apprise.URL, Tags: n.Apprise.Tags})
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
+	return ready, incomplete
 }
 
-func matrixOf(m *job.Matrix) *notify.Matrix {
-	return &notify.Matrix{Homeserver: m.Homeserver, Room: m.Room, Token: m.Token}
+// dispatcher builds what sends the messages from the ready channels, or nil
+// where there are none.
+func dispatcher(cfg *job.Config) (d *notify.Dispatcher, incomplete []string) {
+	ready, incomplete := Reporting(cfg)
+	if len(ready) == 0 {
+		return nil, incomplete
+	}
+	d, err := notify.NewDispatcher(ready, notify.Options{Source: source})
+	if err != nil {
+		// Each channel passed on its own, so only two under one id fail here,
+		// which Load refuses.
+		return nil, incomplete
+	}
+	return d, incomplete
 }
 
-func smtpOf(s *job.SMTP) *notify.SMTP {
-	return &notify.SMTP{Host: s.Host, Port: s.Port, Username: s.Username, Password: s.Password, From: s.From, To: s.To, TLS: s.TLS}
+// ChannelName is how a channel is named in the log: by the name it was given,
+// else by its id.
+func ChannelName(c notify.Channel) string {
+	if c.Name != "" {
+		return c.Name
+	}
+	return c.ID
 }
 
-// tell sends a message and logs what could not be delivered. The run's own
+// tell sends an event and logs what could not be delivered. The run's own
 // context may be cancelled by a stop, and a stopped run is still reported.
-func (r *Runner) tell(ctx context.Context, name string, msg notify.Message) {
-	r.mu.Lock()
-	note := r.note
-	r.mu.Unlock()
-	if note == nil {
+func (r *Runner) tell(ctx context.Context, name string, e notify.Event) {
+	d := r.dispatcher()
+	if d == nil {
 		return
 	}
-	clean := scrub.Knowing(r.config().Jobs)
-	msg.Subject, msg.Body = clean(msg.Subject), clean(msg.Body)
-	if err := note.Send(context.WithoutCancel(ctx), msg); err != nil {
-		r.log("could not send the notification for %s: %v", name, err)
+	e = r.scrubbed(e)
+	for _, res := range d.Send(context.WithoutCancel(ctx), e) {
+		if !res.OK() {
+			r.log("could not send the notification for %s through %s: %v", name, res.Channel, res.Err)
+		}
 	}
+}
+
+func (r *Runner) dispatcher() *notify.Dispatcher {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.note
+}
+
+// scrubbed takes passwords, connection strings and what a hook printed out
+// of an event before it leaves the machine, as the bug report does.
+func (r *Runner) scrubbed(e notify.Event) notify.Event {
+	clean := scrub.Knowing(r.config().Jobs)
+	e.Title = scrub.Text(clean(e.Title))
+	e.Body = scrub.Text(clean(e.Body))
+	return e
 }
 
 // checkIn pings the job's Healthchecks check that a run began and returns
@@ -79,24 +107,31 @@ func (r *Runner) tell(ctx context.Context, name string, msg notify.Message) {
 // a check server that is slow to answer does not delay the copying; the end
 // waits for the start, or the check would see them the wrong way round.
 func (r *Runner) checkIn(ctx context.Context, name string) func(ok bool, detail string) {
-	address := r.config().Notify.CheckFor(name)
-	if address == "" || channelsOff() {
+	d := r.dispatcher()
+	if d == nil {
 		return func(bool, string) {}
 	}
-	check := notify.Healthchecks{URL: address}
 	ctx = context.WithoutCancel(ctx)
+	ping := func(e notify.Event) {
+		e.Key = name
+		for _, res := range d.Ping(ctx, r.scrubbed(e)) {
+			if !res.OK() {
+				r.log("could not tell the check for %s how the run went: %v", name, res.Err)
+			}
+		}
+	}
 	started := make(chan struct{})
 	go func() {
 		defer close(started)
-		if err := check.Start(ctx); err != nil {
-			r.log("could not tell the check for %s that a run began: %v", name, err)
-		}
+		ping(notify.Event{Kind: "run.started", Ping: notify.PingStart})
 	}()
 	return func(ok bool, detail string) {
 		<-started
-		if err := check.Finish(ctx, ok, scrub.Knowing(r.config().Jobs)(detail)); err != nil {
-			r.log("could not tell the check for %s how the run ended: %v", name, err)
+		e := notify.Event{Kind: "run.done", Ping: notify.PingSuccess, Body: detail}
+		if !ok {
+			e.Kind, e.Ping = "run.failed", notify.PingFail
 		}
+		ping(e)
 	}
 }
 
@@ -126,84 +161,37 @@ func summary(rec history.Run, res apply.Result) string {
 	return b.String()
 }
 
-// announce tells whoever is watching about a finished run, if the settings
-// say it is worth telling.
+// announce tells whoever is watching about a finished run. Each channel's
+// "when" decides whether a success is worth it.
 func (r *Runner) announce(ctx context.Context, rec history.Run, body string) {
-	if !r.config().Notify.Reports(rec.Failed()) {
-		return
-	}
-	subject := fmt.Sprintf("ArrowLoop: %s finished", rec.Job)
+	e := notify.Event{Kind: "run.done", Severity: notify.SeveritySuccess, Title: fmt.Sprintf("ArrowLoop: %s finished", rec.Job), Body: body, Key: rec.Job}
 	if rec.Failed() {
-		subject = fmt.Sprintf("ArrowLoop: %s FAILED", rec.Job)
+		e.Kind, e.Severity, e.Title = "run.failed", notify.SeverityFailure, fmt.Sprintf("ArrowLoop: %s FAILED", rec.Job)
 	}
-	r.tell(ctx, rec.Job, notify.Message{Subject: subject, Body: body, Failed: rec.Failed()})
+	r.tell(ctx, rec.Job, e)
 }
 
-// testMessage is what the "send a test" button sends.
-var testMessage = notify.Message{
-	Subject: "ArrowLoop: a test message",
-	Body:    "If you can read this, ArrowLoop's messages reach you here.",
+// testEvent is what the "send a test" button sends.
+var testEvent = notify.Event{
+	Kind:  "test",
+	Title: "ArrowLoop: a test message",
+	Body:  "If you can read this, ArrowLoop's messages reach you here.",
 }
 
-// SendTest sends a test message through one channel, named as the
-// configuration names it, and reports what went wrong. It ignores the channel's
-// switch and the "when" setting, since a test is how somebody finds out
-// whether a channel they are setting up works. NoChannelsEnv still holds.
-func SendTest(ctx context.Context, n job.Notify, channel string) error {
+// CodeOff is the code of a test this engine does not send, as on the phone.
+const CodeOff = "off"
+
+// SendTest sends a test message through one channel as the settings page
+// shows it, switched on or not and whatever its "when" says, since a test is
+// how somebody finds out whether a channel they are setting up works.
+// NoChannelsEnv still holds.
+func SendTest(ctx context.Context, ch notify.Channel) notify.Result {
 	if channelsOff() {
-		return errors.New("this engine sends no messages")
+		return notify.Result{Channel: ch.ID, Kind: ch.Kind, Code: CodeOff, Err: errors.New("this engine sends no messages")}
 	}
-	ctx, cancel := context.WithTimeout(ctx, notify.SendTimeout)
-	defer cancel()
-	switch channel {
-	case "matrix":
-		if n.Matrix == nil {
-			return errors.New("matrix needs a homeserver, a room and a token")
-		}
-		return matrixOf(n.Matrix).Send(ctx, testMessage)
-	case "webhook":
-		if n.Webhook == "" {
-			return errors.New("the webhook has no address")
-		}
-		return (&notify.Webhook{URL: n.Webhook, Format: n.WebhookFormat}).Send(ctx, testMessage)
-	case "smtp":
-		if n.SMTP == nil {
-			return errors.New("mail needs a server, a sender and a recipient")
-		}
-		return smtpOf(n.SMTP).Send(ctx, testMessage)
-	case "apprise":
-		if n.Apprise == nil || n.Apprise.URL == "" {
-			return errors.New("apprise has no address")
-		}
-		return (&notify.Apprise{URL: n.Apprise.URL, Tags: n.Apprise.Tags}).Send(ctx, testMessage)
-	case "healthchecks":
-		return pingEveryCheck(ctx, n.Healthchecks)
+	d, err := notify.NewDispatcher(nil, notify.Options{Source: source})
+	if err != nil {
+		return notify.Result{Channel: ch.ID, Kind: ch.Kind, Code: notify.CodeInvalid, Err: err}
 	}
-	return fmt.Errorf("there is no channel called %q", channel)
-}
-
-// pingEveryCheck sends a success to the shared check and to every job's own,
-// once each.
-func pingEveryCheck(ctx context.Context, h *job.Healthchecks) error {
-	var addresses []string
-	if h != nil {
-		addresses = append(addresses, h.URL)
-		for _, own := range h.Jobs {
-			addresses = append(addresses, own)
-		}
-	}
-	seen := map[string]bool{"": true}
-	for _, a := range addresses {
-		if seen[a] {
-			continue
-		}
-		seen[a] = true
-		if err := (notify.Healthchecks{URL: a}).Finish(ctx, true, testMessage.Body); err != nil {
-			return err
-		}
-	}
-	if len(seen) == 1 {
-		return errors.New("healthchecks has no check address")
-	}
-	return nil
+	return d.Test(ctx, ch, testEvent)
 }

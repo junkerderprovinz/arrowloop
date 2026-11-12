@@ -12,6 +12,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
+
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
@@ -66,7 +68,7 @@ func TestANotificationTargetAddedLaterIsUsed(t *testing.T) {
 	r := smallRunner(t, cfg)
 
 	next := *cfg
-	next.Notify = job.Notify{Webhook: srv.URL, OnSuccess: true}
+	next.Notify = job.Notify{Channels: []notify.Channel{slack("hook", srv.URL, notify.OnAlways)}}
 	r.Reload(&next)
 
 	if _, err := r.Run(context.Background(), "quick"); err != nil {

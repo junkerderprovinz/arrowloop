@@ -13,6 +13,8 @@ import (
 
 	"github.com/rclone/rclone/fs"
 
+	kitnotify "github.com/junkerderprovinz/parleyport/kit/notify"
+
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
@@ -279,7 +281,7 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 		Versions: currentVersions(),
 		System:   runtime.GOOS + "/" + runtime.GOARCH,
 		Desktop:  s.Window != nil,
-		Settings: withoutAddresses(withoutHomeInSettings(withheld(settings))),
+		Settings: withoutAddresses(withoutHomeInSettings(withChannels(settings, cfg.Notify))),
 		Jobs:     make([]reportJob, 0, len(cfg.Jobs)),
 		Runs:     make([]history.Run, 0, len(runs)),
 		Findings: make([]reportFinding, 0, len(open)),
@@ -336,27 +338,27 @@ func withoutHomeInSettings(settings map[string]any) map[string]any {
 	return settings
 }
 
-// notifyAddresses are the notification settings that name a person or a
-// server of theirs without being secret.
-var notifyAddresses = map[string][]string{
-	"matrix": {"homeserver", "room"},
-	"smtp":   {"host", "username", "from", "to"},
-}
-
-// withoutAddresses writes every notification address that is filled in as
-// "set", so the report still shows which channels are set up.
+// withoutAddresses writes every notification address that names a person
+// or a server of theirs without being secret as "set", so the report still
+// shows which channels are set up. The secrets are placeholders already.
 func withoutAddresses(settings map[string]any) map[string]any {
-	for _, notify := range objects(settings, "notify") {
-		for channel, keys := range notifyAddresses {
-			for _, holder := range objects(notify, channel) {
-				for _, key := range keys {
-					for _, k := range keysLike(holder, key) {
-						if v, _ := holder[k].(string); v != "" {
-							holder[k] = "set"
-						}
-					}
-				}
-			}
+	block, _ := settings["notify"].(map[string]any)
+	channels, _ := block["channels"].([]kitnotify.Channel)
+	set := func(v *string) {
+		if *v != "" {
+			*v = "set"
+		}
+	}
+	for _, c := range channels {
+		if m := c.Matrix; m != nil {
+			set(&m.Homeserver)
+			set(&m.Room)
+		}
+		if m := c.SMTP; m != nil {
+			set(&m.Host)
+			set(&m.Username)
+			set(&m.From)
+			set(&m.To)
 		}
 	}
 	return settings

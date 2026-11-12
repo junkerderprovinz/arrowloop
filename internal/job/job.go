@@ -2,6 +2,7 @@
 package job
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -10,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/junkerderprovinz/parleyport/kit/notify"
+	"github.com/junkerderprovinz/parleyport/kit/notify/legacy"
 	"github.com/robfig/cron/v3"
 	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
@@ -324,156 +327,55 @@ func (c *Config) KeepHistoryFor() (time.Duration, bool) {
 	return d, true
 }
 
-// Notify says where a run reports to and when.
+// Notify says where messages go: one channel per destination, in the format
+// of the kit's notify package. A file from before the list holds one block
+// per service instead, which is read into channels as the kit's legacy
+// package reads it, and Load then writes the channels beside those keys.
 type Notify struct {
-	// On is "never", "failure" or "always". Empty follows OnSuccess, which is
-	// how a file says it that was written before On existed.
-	On string `json:"on,omitempty"`
+	Channels []notify.Channel `json:"channels"`
 
-	Matrix *Matrix `json:"matrix,omitempty"`
-
-	// Webhook is the address a message is posted to, and WebhookFormat shapes
-	// the body for the service behind it: "generic" (the default), "discord",
-	// "slack", "gotify" or "ntfy".
-	Webhook        string `json:"webhook,omitempty"`
-	WebhookFormat  string `json:"webhookFormat,omitempty"`
-	WebhookEnabled *bool  `json:"webhookEnabled,omitempty"`
-
-	SMTP         *SMTP         `json:"smtp,omitempty"`
-	Apprise      *Apprise      `json:"apprise,omitempty"`
-	Healthchecks *Healthchecks `json:"healthchecks,omitempty"`
-
-	// OnSuccess sends a message for every run, not only for failures. It is
-	// off by default, because regular success messages teach people to ignore
-	// all of them.
-	OnSuccess bool `json:"onSuccess,omitempty"`
+	// older marks channels read from the blocks of an older file.
+	older bool
 }
 
-// Every channel has an Enabled switch that turns it off without clearing its
-// settings. A file without the switch predates it, and a channel filled in
-// there was meant to send, so nil counts as on.
-
-// Matrix is a room to post into.
-type Matrix struct {
-	Enabled    *bool  `json:"enabled,omitempty"`
-	Homeserver string `json:"homeserver"`
-	Room       string `json:"room"`
-	Token      string `json:"token"`
-}
-
-// SMTP sends each message as a plain-text mail.
-type SMTP struct {
-	Enabled  *bool  `json:"enabled,omitempty"`
-	Host     string `json:"host,omitempty"`
-	Port     int    `json:"port,omitempty"`
-	Username string `json:"username,omitempty"`
-	Password string `json:"password,omitempty"`
-	From     string `json:"from,omitempty"`
-	// To takes several addresses, separated by commas or semicolons.
-	To string `json:"to,omitempty"`
-	// TLS is "starttls" (the default), "tls" for a connection that is
-	// encrypted from the start, or "none".
-	TLS string `json:"tls,omitempty"`
-}
-
-// Apprise posts to a user-run Apprise API server, which reaches the services
-// Apprise knows without ArrowLoop carrying any of them.
-type Apprise struct {
-	Enabled *bool `json:"enabled,omitempty"`
-	// URL is the server's notify endpoint, its key included.
-	URL string `json:"url,omitempty"`
-	// Tags limits a shared key to some of its targets, comma separated.
-	Tags string `json:"tags,omitempty"`
-}
-
-// Healthchecks pings a check when a run starts and again with its outcome, so
-// a run that never happens shows up as a missed ping.
-type Healthchecks struct {
-	Enabled *bool  `json:"enabled,omitempty"`
-	URL     string `json:"url,omitempty"`
-	// Jobs gives a job a check of its own, by job name, in place of URL.
-	Jobs map[string]string `json:"jobs,omitempty"`
-}
-
-func switchedOn(enabled *bool) bool { return enabled == nil || *enabled }
-
-// When is On with the older OnSuccess applied.
-func (n Notify) When() string {
-	if n.On != "" {
-		return n.On
+// UnmarshalJSON reads either shape. Once a file has a channel list, the
+// older keys beside it are left alone and not read.
+func (n *Notify) UnmarshalJSON(data []byte) error {
+	var keys map[string]json.RawMessage
+	if err := json.Unmarshal(data, &keys); err != nil {
+		return err
 	}
-	if n.OnSuccess {
-		return "always"
-	}
-	return "failure"
-}
-
-// Silent reports whether nothing at all is sent.
-func (n Notify) Silent() bool { return n.When() == "never" }
-
-// Reports reports whether a run with this outcome gets a message.
-func (n Notify) Reports(failed bool) bool {
-	switch n.When() {
-	case "always":
-		return true
-	case "failure":
-		return failed
-	}
-	return false
-}
-
-// WebhookOn reports whether the webhook sends.
-func (n Notify) WebhookOn() bool { return n.Webhook != "" && switchedOn(n.WebhookEnabled) }
-
-// On reports whether the room is switched on and filled in.
-func (m *Matrix) On() bool {
-	return m != nil && switchedOn(m.Enabled) && m.Homeserver != "" && m.Room != "" && m.Token != ""
-}
-
-// On reports whether mail is switched on and has somewhere to go.
-func (s *SMTP) On() bool {
-	return s != nil && switchedOn(s.Enabled) && s.Host != "" && s.From != "" && s.To != ""
-}
-
-// On reports whether the Apprise server is switched on and named.
-func (a *Apprise) On() bool { return a != nil && switchedOn(a.Enabled) && a.URL != "" }
-
-// CheckFor is the Healthchecks address a job pings, or empty when it pings
-// none.
-func (n Notify) CheckFor(job string) string {
-	h := n.Healthchecks
-	if h == nil || !switchedOn(h.Enabled) || n.Silent() {
-		return ""
-	}
-	if own := h.Jobs[job]; own != "" {
-		return own
-	}
-	return h.URL
-}
-
-// check refuses a setting that would otherwise send nothing without a word.
-func (n Notify) check() error {
-	switch n.On {
-	case "", "never", "failure", "always":
-	default:
-		return fmt.Errorf("notify says on %q; it has to be never, failure or always", n.On)
-	}
-	switch n.WebhookFormat {
-	case "", "generic", "discord", "slack", "gotify", "ntfy":
-	default:
-		return fmt.Errorf("notify says webhookFormat %q; it has to be generic, discord, slack, gotify or ntfy", n.WebhookFormat)
-	}
-	if s := n.SMTP; s != nil {
-		switch s.TLS {
-		case "", "starttls", "tls", "none":
-		default:
-			return fmt.Errorf("notify says smtp tls %q; it has to be starttls, tls or none", s.TLS)
+	for k, raw := range keys {
+		if !strings.EqualFold(k, "channels") {
+			continue
 		}
-		if s.Port < 0 || s.Port > 65535 {
-			return fmt.Errorf("notify says smtp port %d, which is no port", s.Port)
+		dec := json.NewDecoder(bytes.NewReader(raw))
+		dec.DisallowUnknownFields()
+		*n = Notify{}
+		if err := dec.Decode(&n.Channels); err != nil {
+			return fmt.Errorf("notify channels: %w", err)
 		}
+		return nil
 	}
+	channels, err := legacy.FromNested(data)
+	if err != nil {
+		return fmt.Errorf("notify: %w", err)
+	}
+	*n = Notify{Channels: channels, older: len(channels) > 0}
 	return nil
+}
+
+// check refuses a channel list that is not one: an unknown service, two
+// channels under one id, a "when" that means nothing. What a channel still
+// lacks is not checked here, since the settings page saves a channel while
+// it is being filled in; such a channel stays quiet until it is complete.
+func (n Notify) check() error {
+	shape := make([]notify.Channel, len(n.Channels))
+	for i, c := range n.Channels {
+		c.Enabled = false
+		shape[i] = c
+	}
+	return notify.Validate(shape)
 }
 
 // Job is one pairing of two ends.
@@ -745,7 +647,29 @@ func (c *Config) Retired() []string { return c.retired }
 
 // Load reads and validates a configuration file. Everything is checked here,
 // so a bad cron expression fails at start rather than when the job first runs.
+// Notifications in the shape from before the channel list are written back
+// as channels.
 func Load(path string) (*Config, error) {
+	cfg, err := load(path)
+	if err != nil || !cfg.Notify.older {
+		return cfg, err
+	}
+	saved, err := cfg.save(func(doc map[string]any) {
+		for k, v := range doc {
+			if block, ok := v.(map[string]any); ok && strings.EqualFold(k, "notify") {
+				block["channels"] = cfg.Notify.Channels
+			}
+		}
+	})
+	if err != nil {
+		// The older shape reads the same way every time, so a file that
+		// cannot be written loses nothing and is converted on a later start.
+		return cfg, nil
+	}
+	return saved, nil
+}
+
+func load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("read config: %w", err)
@@ -1178,7 +1102,7 @@ func (c *Config) save(edit func(map[string]any)) (*Config, error) {
 	}
 	defer os.Remove(tmp)
 
-	checked, err := Load(tmp)
+	checked, err := load(tmp)
 	if err != nil {
 		return nil, err
 	}

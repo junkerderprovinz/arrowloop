@@ -160,8 +160,9 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
     {
       title: 'settings.notifications',
       rows: [
-        { key: 'notify.when', hint: 'notify.whenHint' },
-        { key: 'notify.webhook', hint: 'notify.webhookHint' },
+        { key: 'notify.add' },
+        { key: 'notify.when', hint: 'notify.onHint' },
+        { key: 'notify.webhook', hint: 'notify.webhookFreeHint' },
         { key: 'notify.matrix', hint: 'notify.matrixHint' },
         { key: 'engine.matrixHome' },
         { key: 'engine.matrixRoom' },
@@ -178,6 +179,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
     { title: 'login.password', hint: 'password.hint', rows: [] },
     { title: 'twoFactor.title', hint: 'twoFactor.hint', rows: [] },
     { title: 'passkey.title', hint: 'passkey.hint', rows: [] },
+    { title: 'readToken.title', rows: [{ key: 'readToken.add' }] },
   ],
   pairing: [
     { title: 'pairing.howTitle', rows: [], body: ['pairing.step1Body', 'pairing.step3Body'] },

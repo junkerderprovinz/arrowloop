@@ -209,7 +209,7 @@ func TestAChangeHasToBeSentAsJSON(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
 	srv := newGuardedServer(t)
 
-	for _, kind := range []string{"", "text/plain", "application/x-www-form-urlencoded", "multipart/form-data; boundary=x"} {
+	for _, kind := range []string{"", "text/plain", "application/x-www-form-urlencoded", "multipart/form-data; boundary=x", "application/x-kit-upload"} {
 		header := map[string]string{}
 		if kind != "" {
 			header["Content-Type"] = kind

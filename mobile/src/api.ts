@@ -7,6 +7,7 @@ import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
 import type { Failure } from "../../web/src/lib/failure";
+import type { FortressInfo, FortressPermission } from "../../web/src/lib/fortress";
 import type { ImportPlan } from "../../web/src/lib/importPlan";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
@@ -100,6 +101,8 @@ export interface ConnectInfo {
   pending: { id: string; name: string; fingerprint: string }[];
   /** Whether another instance said lately that this one waits for approval there. */
   awaiting: boolean;
+  /** Instances paired here before the fortress that did not follow into it in time. */
+  behind: { id: string; name: string; deployment: Deployment }[];
   /** This engine's own key, as the others list it. */
   fingerprint: string;
 }
@@ -401,7 +404,8 @@ export interface TrashItem {
  */
 export interface RunEvent {
   job: string;
-  phase: "started" | "progress" | "finished" | "moving" | "anomaly";
+  /** `group` names no job and says only that the pairing group changed. */
+  phase: "started" | "progress" | "finished" | "moving" | "anomaly" | "group";
   error?: string;
   /** On "finished": a safety brake refused the run, which is a finding and no failure. */
   held?: boolean;
@@ -641,6 +645,23 @@ export const api = {
   refuseMember: (id: string) => call<void>(`/api/connect/devices/${name(id)}/refuse`, { method: "POST", body: "{}" }),
   /** Takes another instance out of the group on every instance of it. */
   removeMember: (id: string) => call<void>(`/api/connect/members/${name(id)}`, { method: "DELETE" }),
+  fortress: () => call<FortressInfo>("/api/fortress"),
+  /** Joins the fortress of a phrase. The paired instances follow by themselves. */
+  joinFortress: (phrase: string) =>
+    call<FortressInfo>("/api/fortress/join", { method: "POST", body: JSON.stringify({ phrase }) }),
+  /** Shows the fortress phrase again, which asks for the password where one is set. */
+  showFortressPhrase: (password = "") =>
+    call<Phrase>("/api/fortress/phrase/show", { method: "POST", body: JSON.stringify({ password }) }),
+  /** Gives the fortress a new phrase, behind the password as showing it is. */
+  changeFortressPhrase: (password = "") =>
+    call<Phrase & { left: string[] }>("/api/fortress/phrase", { method: "POST", body: JSON.stringify({ password }) }),
+  /** What the other apps of the fortress call this phone; empty for the engine's host name. */
+  nameInFortress: (device: string) =>
+    call<FortressInfo>("/api/fortress/device", { method: "PUT", body: JSON.stringify({ device }) }),
+  setFortressPermission: (p: FortressPermission) =>
+    call<FortressInfo>("/api/fortress/permissions", { method: "PUT", body: JSON.stringify(p) }),
+  /** Leaves the fortress, and with it the pairing its phrase holds. */
+  leaveFortress: () => call<FortressInfo>("/api/fortress", { method: "DELETE" }),
   relay: () => call<RelayConfig>("/api/relay/config"),
   saveRelay: (change: { mode?: RelayMode; relayUrl?: string }) =>
     call<RelayConfig>("/api/relay/config", { method: "PUT", body: JSON.stringify(change) }),

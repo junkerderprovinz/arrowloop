@@ -21,11 +21,33 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, errors.New("send the job as a JSON object"))
 		return
 	}
+	stored, err := s.addJob(j)
+	var bad badJob
+	switch {
+	case errors.Is(err, errNameTaken):
+		writeError(w, http.StatusConflict, fmt.Errorf("there is a job called %q already", j["name"]))
+	case errors.As(err, &bad):
+		writeError(w, http.StatusBadRequest, bad.error)
+	case err != nil:
+		writeError(w, http.StatusInternalServerError, err)
+	default:
+		writeJSON(w, http.StatusCreated, stored)
+	}
+}
+
+// errNameTaken is addJob's answer for a name another job has.
+var errNameTaken = errors.New("there is a job by that name already")
+
+// badJob is a job the configuration refuses.
+type badJob struct{ error }
+
+// addJob saves j as a new job and returns it as stored. It gets a state
+// database named after it unless j names one.
+func (s *Server) addJob(j map[string]any) (map[string]any, error) {
 	name, _ := j["name"].(string)
 	name = strings.TrimSpace(name)
 	if err := checkJobName(name); err != nil {
-		writeError(w, http.StatusBadRequest, err)
-		return
+		return nil, badJob{err}
 	}
 	j["name"] = name
 	if state, _ := j["state"].(string); strings.TrimSpace(state) == "" {
@@ -36,28 +58,24 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 	defer s.saving.Unlock()
 	current := s.Runner.Config()
 	if _, taken := current.Find(name); taken {
-		writeError(w, http.StatusConflict, fmt.Errorf("there is a job called %q already", name))
-		return
+		return nil, errNameTaken
 	}
 	next, err := current.AddJobs(j)
 	if err != nil {
-		writeError(w, http.StatusBadRequest, err)
-		return
+		return nil, badJob{err}
 	}
 	s.Runner.Reload(next)
 
 	jobs, err := next.JobsAsMaps()
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
+		return nil, err
 	}
 	for _, stored := range jobs {
 		if stored["name"] == name {
-			writeJSON(w, http.StatusCreated, stored)
-			return
+			return stored, nil
 		}
 	}
-	writeError(w, http.StatusInternalServerError, errors.New("the job was saved but cannot be read back"))
+	return nil, errors.New("the job was saved but cannot be read back")
 }
 
 // checkJobName refuses names that cannot stand in the state database's file

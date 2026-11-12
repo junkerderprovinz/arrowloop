@@ -158,7 +158,8 @@ func TestAnUpdateCheckThatCannotRunSaysWhy(t *testing.T) {
 
 func TestTheBugReportCarriesNoSecret(t *testing.T) {
 	h := newHarness(t)
-	settings := `{"notify":{"webhook":"https://hooks.example/abc123secret","matrix":{"homeserver":"https://m.example","room":"!r:m.example","token":"syt_tokensecret"}}}`
+	settings := `{"notify":{"channels":[{"id":"hook","kind":"discord","enabled":true,"discord":{"url":"https://hooks.example/abc123secret"}},` +
+		`{"id":"room","kind":"matrix","enabled":true,"matrix":{"homeserver":"https://m.example","room":"!r:m.example","token":"syt_tokensecret"}}]}}`
 	if resp, body := putJSON(t, h.srv, "/api/settings", settings); resp.StatusCode != http.StatusOK {
 		t.Fatalf("save settings: %s %s", resp.Status, body)
 	}
@@ -286,8 +287,8 @@ func TestTheBugReportShowsAHomeFolderAsATilde(t *testing.T) {
 // a Matrix room names the person as well as a password would.
 func TestTheBugReportNamesNoAddress(t *testing.T) {
 	h := newHarness(t)
-	settings := `{"notify":{"matrix":{"homeserver":"https://matrix.anna-berger.example","room":"!annasroom:anna-berger.example","token":"t"},` +
-		`"smtp":{"host":"mail.anna-berger.example","port":587,"username":"anna.berger","from":"arrowloop@anna-berger.example","to":"anna@berger.example","password":"p"}}}`
+	settings := `{"notify":{"channels":[{"id":"room","kind":"matrix","enabled":true,"matrix":{"homeserver":"https://matrix.anna-berger.example","room":"!annasroom:anna-berger.example","token":"t"}},` +
+		`{"id":"mail","kind":"smtp","enabled":true,"smtp":{"host":"mail.anna-berger.example","port":587,"username":"anna.berger","from":"arrowloop@anna-berger.example","to":"anna@berger.example","password":"p"}}]}}`
 	if resp, body := putJSON(t, h.srv, "/api/settings", settings); resp.StatusCode != http.StatusOK {
 		t.Fatalf("save settings: %s %s", resp.Status, body)
 	}
@@ -300,15 +301,17 @@ func TestTheBugReportNamesNoAddress(t *testing.T) {
 	var got struct {
 		Settings struct {
 			Notify struct {
-				Matrix map[string]any `json:"matrix"`
-				SMTP   map[string]any `json:"smtp"`
+				Channels []struct {
+					Matrix map[string]any `json:"matrix"`
+					SMTP   map[string]any `json:"smtp"`
+				} `json:"channels"`
 			} `json:"notify"`
 		} `json:"settings"`
 	}
 	if err := json.Unmarshal([]byte(text), &got); err != nil {
 		t.Fatalf("decode: %v", err)
 	}
-	if got.Settings.Notify.Matrix["room"] != "set" || got.Settings.Notify.SMTP["to"] != "set" || got.Settings.Notify.SMTP["port"] != float64(587) {
+	if c := got.Settings.Notify.Channels; len(c) != 2 || c[0].Matrix["room"] != "set" || c[1].SMTP["to"] != "set" || c[1].SMTP["port"] != float64(587) {
 		t.Errorf("the report lost which settings are filled in: %+v", got.Settings.Notify)
 	}
 }

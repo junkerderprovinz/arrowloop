@@ -290,6 +290,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     )
     askFindings()
     const stop = api.watch((ev) => {
+      if (ev.phase === 'group') return
       if (ev.phase === 'anomaly') {
         if (ev.told) told.add(ev.told)
         askFindings()

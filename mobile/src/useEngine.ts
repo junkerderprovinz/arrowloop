@@ -116,8 +116,9 @@ export function useEngine(t: T) {
  */
 export function useEngineEvents(ready: boolean, onEvent: () => void) {
   useEngineStream(ready, (event) => {
-    // Progress frames arrive twice a second and change no list.
-    if (event.phase === "moving") return;
+    // Progress frames arrive twice a second and change no list, and the
+    // pairing group is the Pairing screen's alone.
+    if (event.phase === "moving" || event.phase === "group") return;
     onEvent();
   });
 }

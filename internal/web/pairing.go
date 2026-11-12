@@ -1,14 +1,12 @@
 package web
 
 // Pairing, as in KnightLoader and BombVault: one instance makes a phrase of
-// twelve words, the others enter it, and from then on they meet on the relay
-// and call each other's API there, sealed under a key only the phrase gives
-// and signed with a key of each instance's own. Every instance approves every
-// other one before it is served, and one taken out of the group has its key
-// revoked on every instance.
-//
-// The relay only ever sees relay.DeriveKey of the secret, so neither its
-// operator nor its memory can give back what a person would type.
+// twelve words, the others enter it, and from then on they call each other's
+// API, directly on one network and over the relay elsewhere, sealed under a
+// key only the phrase gives and signed with a key of each instance's own.
+// Every instance approves every other one before it is served, and one taken
+// out of the group has its key revoked on every instance. The kit's group does
+// all of that; this file is what ArrowLoop puts around it.
 
 import (
 	"bytes"
@@ -18,7 +16,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -28,10 +25,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/junkerderprovinz/arrowloop/internal/federation"
+	kitfortress "github.com/junkerderprovinz/parleyport/kit/fortress"
+	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/member"
+	"github.com/junkerderprovinz/parleyport/kit/phrase"
+	"github.com/junkerderprovinz/parleyport/kit/relay"
+
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
-	"github.com/junkerderprovinz/arrowloop/internal/relay"
-	"github.com/junkerderprovinz/arrowloop/internal/seedphrase"
 )
 
 // pairingRoutes registers what the Pairing tile and the overview ask.
@@ -58,23 +58,247 @@ func (s *Server) pairingRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/instances/{id}/browse", s.instanceBrowse)
 }
 
-// StartPairing dials the relay when this instance is in a group. Call it once
-// the server is set up; without a pairing store it does nothing.
+// StartPairing joins the group this instance is in. Call it once the server
+// is set up; without a pairing store it does nothing.
 func (s *Server) StartPairing() {
-	if s.Pairing != nil {
-		s.applyRelay()
+	if s.Pairing == nil {
+		return
 	}
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	s.openGroupLocked()
 }
 
-// StopPairing closes the relay connection.
+// StopPairing leaves the relay and the network.
 func (s *Server) StopPairing() {
-	if s.Group != nil {
-		s.Group.SetRelay(nil)
-	}
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	s.closeGroupLocked()
 }
 
 // relayTimeout bounds what the interface waits for another instance.
 const relayTimeout = 15 * time.Second
+
+// joined is the group this instance is in, nil outside one.
+func (s *Server) joined() *group.Group {
+	s.liveMu.Lock()
+	defer s.liveMu.Unlock()
+	return s.live
+}
+
+// generation counts the groups opened, so a group that heard this instance
+// was taken out acts only while it is still the one in use.
+func (s *Server) generation() uint64 {
+	s.liveMu.Lock()
+	defer s.liveMu.Unlock()
+	return s.liveGen
+}
+
+// applyGroup opens the group again on what is stored now. The kit takes the
+// name and the relay only when a group opens.
+func (s *Server) applyGroup() {
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	s.closeGroupLocked()
+	s.openGroupLocked()
+}
+
+func (s *Server) closeGroupLocked() {
+	if s.closeFortressLocked() {
+		return
+	}
+	s.liveMu.Lock()
+	g := s.live
+	s.live = nil
+	s.liveGen++
+	s.liveMu.Unlock()
+	if g == nil {
+		return
+	}
+	defer s.groupChanged()
+	if err := g.Close(); err != nil {
+		s.logf("pairing: could not save the group on leaving it: %v", err)
+	}
+}
+
+// openGroupLocked joins the stored group, if any. A relay that cannot be
+// reached is no error here; the group keeps trying in the background.
+func (s *Server) openGroupLocked() {
+	// Members admitted under a group this instance left, or before the switch
+	// went off, would otherwise stay on until they drop.
+	s.servedRelay().Revoke()
+	st := s.Pairing.Get()
+	if st.Secret == nil {
+		return
+	}
+	id, ok := s.identity()
+	if !ok {
+		return
+	}
+	mode, relayURL := group.RelayProject, ""
+	switch st.Mode() {
+	case pairing.ModeOwn:
+		mode, relayURL = group.RelayOwn, strings.TrimSpace(st.RelayURL)
+	case pairing.ModeOff:
+		mode = group.RelayOff
+	}
+	gen := s.generation()
+	if st.Fortress {
+		s.openFortressLocked(st, id, mode, relayURL, gen)
+		return
+	}
+	g, err := group.Open(group.Config{
+		Domain:   pairing.Domain,
+		Secret:   st.Secret,
+		Identity: id,
+		Self:     s.self(st),
+		Relay:    mode,
+		RelayURL: relayURL,
+		LAN:      s.LAN,
+		Store:    s.Pairing.GroupStore(),
+		// Every ArrowLoop is an instance, its phone and desktop app included,
+		// so a device of another kind holds the phrase and nothing else.
+		Kinds: []member.Kind{member.KindInstance},
+		Ports: s.groupPorts(),
+		OnChange: func() {
+			s.noteMemberSeen(gen)
+			s.groupChanged()
+		},
+		OnRemoved: func() {
+			s.groupMu.Lock()
+			defer s.groupMu.Unlock()
+			if s.generation() == gen {
+				s.logf("pairing: an instance of the group took this one out, so it left the group")
+				s.enterGroupLocked(nil)
+			}
+		},
+	}, kitfortress.Moving(s.groupHandler(), movedKeeper{s}))
+	if err != nil {
+		s.logf("pairing: could not join the group: %v", err)
+		return
+	}
+	if err := s.Pairing.MoveLegacy(g); err != nil {
+		s.logf("pairing: could not take over the group from before: %v", err)
+	}
+	s.liveMu.Lock()
+	s.live = g
+	s.liveMu.Unlock()
+	s.groupChanged()
+}
+
+// GroupChanged is the phase of an event on the stream that says the group
+// changed: somebody came, went, waits or was approved, or the relay came or
+// went. It names no job.
+const GroupChanged = "group"
+
+// WatchGroup returns a channel that receives whenever the group changes, and
+// the function that ends the watch. A burst of changes may arrive as one.
+func (s *Server) WatchGroup() (<-chan struct{}, func()) {
+	ch := make(chan struct{}, 1)
+	s.watchMu.Lock()
+	if s.watchers == nil {
+		s.watchers = map[chan struct{}]struct{}{}
+	}
+	s.watchers[ch] = struct{}{}
+	s.watchMu.Unlock()
+	return ch, func() {
+		s.watchMu.Lock()
+		delete(s.watchers, ch)
+		s.watchMu.Unlock()
+	}
+}
+
+func (s *Server) groupChanged() {
+	s.watchMu.Lock()
+	defer s.watchMu.Unlock()
+	for ch := range s.watchers {
+		select {
+		case ch <- struct{}{}:
+		default:
+		}
+	}
+}
+
+// self is what the other members see of this instance.
+func (s *Server) self(st pairing.State) group.Self {
+	return group.Self{Name: s.instanceName(st), Deployment: s.Deployment, DirectURL: s.DirectURL}
+}
+
+// defaultPort is where an ArrowLoop listens unless told otherwise.
+const defaultPort = 8422
+
+// groupPorts are where the instances of the group take calls, for an address
+// the group learned rather than one announced.
+func (s *Server) groupPorts() []int {
+	if len(s.Ports) > 0 {
+		return s.Ports
+	}
+	return []int{defaultPort}
+}
+
+// noteMemberSeen records when another instance first showed up in the group,
+// for the Pairing tile, as soon as the group of generation gen sees one.
+func (s *Server) noteMemberSeen(gen uint64) {
+	st := s.Pairing.Get()
+	if st.JoinedAt.IsZero() || !st.MemberSeenAt.IsZero() || s.generation() != gen {
+		return
+	}
+	for _, m := range s.instances() {
+		if m.Online() {
+			now := time.Now()
+			if err := s.Pairing.Update(func(stored *pairing.State) error { stored.MemberSeenAt = now; return nil }); err != nil {
+				s.logf("pairing: could not record the first member of the group: %v", err)
+			}
+			return
+		}
+	}
+}
+
+// identity is the key this instance signs its calls to the group with, minted
+// the first time it is needed. It belongs to one group: entering another
+// mints a new one. ok is false outside a group.
+func (s *Server) identity() (member.Identity, bool) {
+	s.memberMu.Lock()
+	defer s.memberMu.Unlock()
+	st := s.Pairing.Get()
+	if st.Secret == nil {
+		return member.Identity{}, false
+	}
+	if len(st.Member) == ed25519.SeedSize {
+		id, err := member.FromSeed(member.KindInstance, st.Member)
+		return id, err == nil
+	}
+	id, err := member.NewIdentity(member.KindInstance)
+	if err == nil {
+		err = s.Pairing.Update(func(st *pairing.State) error { st.Member = id.Seed(); return nil })
+	}
+	if err != nil {
+		s.logf("pairing: no member key, so the group refuses this instance's calls until one can be made: %v", err)
+		return member.Identity{}, false
+	}
+	return id, true
+}
+
+// groupID is the id the group knows this instance by, "" outside a group.
+func (s *Server) groupID() string {
+	if id, ok := s.identity(); ok {
+		return id.ID()
+	}
+	return ""
+}
+
+// instances is every other instance of the group this one knows.
+func (s *Server) instances() []group.Member {
+	if g := s.joined(); g != nil {
+		return g.Members()
+	}
+	return nil
+}
+
+func (s *Server) relayConnected() bool {
+	g := s.joined()
+	return g != nil && g.RelayConnected()
+}
 
 // connectInfo is what GET /api/connect answers. It never carries the phrase,
 // which only the reveal route hands out.
@@ -108,6 +332,9 @@ type connectInfo struct {
 	// Awaiting whether another instance said lately that this one waits there.
 	Pending  []pendingMember `json:"pending"`
 	Awaiting bool            `json:"awaiting"`
+	// Behind is every instance paired here before the fortress that had not
+	// followed into it when the group from before closed.
+	Behind []behindMember `json:"behind"`
 	// Fingerprint is this instance's own key as the others list it while it
 	// waits for approval there, "" outside a group.
 	Fingerprint string `json:"fingerprint"`
@@ -131,69 +358,78 @@ type awayMember struct {
 	LastSeen int64 `json:"lastSeen"`
 }
 
+// behindMember carries no address, since the owner finds the device by name.
+type behindMember struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Deployment string `json:"deployment"`
+}
+
 type pendingMember struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Fingerprint string `json:"fingerprint"`
 }
 
-func (s *Server) readConnect(w http.ResponseWriter, _ *http.Request) {
-	// The tile asks this while it is open, which is when the instances of a
-	// group have to meet to be approved on each other.
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 2*relayTimeout)
-		defer cancel()
-		s.Group.Greet(ctx, time.Now())
-	}()
+func (s *Server) readConnect(w http.ResponseWriter, r *http.Request) {
+	s.noteAddress(r)
 	writeJSON(w, http.StatusOK, s.connectInfo())
+}
+
+// noteAddress tells the group the address a signed-in browser reached this
+// instance at, which is where the others on the network reach it too. From
+// inside a container nothing else tells it. A phone and the desktop app take
+// no calls from the network at all.
+func (s *Server) noteAddress(r *http.Request) {
+	if g := s.joined(); g != nil && s.canServe() {
+		g.NoteAddress(r)
+	}
 }
 
 func (s *Server) connectInfo() connectInfo {
 	st := s.Pairing.Get()
 	now := time.Now()
-	members := s.Group.Members()
-	names := map[string]string{}
 	info := connectInfo{
 		Active:          st.Secret != nil,
-		Connected:       s.Group.RelayConnected(),
+		Connected:       s.relayConnected(),
 		PasswordSet:     len(s.passwordHash()) > 0,
 		RelayMode:       st.Mode(),
 		RelayURL:        relayTarget(st),
-		ProjectRelayURL: relay.DefaultRelayURL,
+		ProjectRelayURL: relay.DefaultURL,
 		Name:            s.instanceName(st),
 		Deployment:      s.Deployment,
 		Members:         []groupMember{},
 		Away:            []awayMember{},
 		Pending:         []pendingMember{},
-		Awaiting:        s.Group.AwaitingApproval(now),
+		Behind:          []behindMember{},
 	}
-	for _, m := range members {
-		names[m.ID] = m.Name
-		info.Members = append(info.Members, groupMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, Approved: s.Group.Approved(m.ID)})
+	behind := map[string]bool{}
+	if f := s.fortressNow(); f != nil {
+		for _, m := range f.Behind() {
+			behind[m.ID] = true
+			info.Behind = append(info.Behind, behindMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment})
+		}
 	}
-	away, err := s.Group.AwayMembers(now)
-	if err != nil {
-		s.logf("pairing: could not record the instances of the group: %v", err)
-	}
-	for _, m := range away {
-		names[m.ID] = m.Name
-		info.Away = append(info.Away, awayMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, LastSeen: m.LastSeen.Unix()})
-	}
-	for _, p := range s.Group.PendingMembers() {
-		info.Pending = append(info.Pending, pendingMember{ID: p.ID, Name: names[p.ID], Fingerprint: p.Fingerprint})
+	for _, m := range s.instances() {
+		info.Awaiting = info.Awaiting || m.Awaiting
+		if m.State == group.StatePending {
+			info.Pending = append(info.Pending, pendingMember{ID: m.ID, Name: m.Name, Fingerprint: member.Fingerprint(m.Key)})
+		}
+		switch {
+		case behind[m.ID]:
+		case m.Online():
+			info.Members = append(info.Members, groupMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, Approved: m.State == group.StateApproved})
+		case m.State == group.StateApproved:
+			info.Away = append(info.Away, awayMember{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, LastSeen: m.LastSeen.Unix()})
+		}
 	}
 	sort.Slice(info.Pending, func(i, j int) bool { return info.Pending[i].ID < info.Pending[j].ID })
-
-	group, err := s.Group.Group(len(members) > 0, now)
-	if err != nil {
-		s.logf("pairing: could not record the first member of the group: %v", err)
+	if !st.JoinedAt.IsZero() {
+		info.JoinedAgo = max(int64(now.Sub(st.JoinedAt).Seconds()), 0)
 	}
-	if !group.JoinedAt.IsZero() {
-		info.JoinedAgo = max(int64(now.Sub(group.JoinedAt).Seconds()), 0)
-	}
-	info.MemberSeen = !group.MemberSeenAt.IsZero()
-	if member := s.memberKey(); member != nil {
-		info.Fingerprint = relay.Fingerprint(member.Public().(ed25519.PublicKey))
+	info.MemberSeen = !st.MemberSeenAt.IsZero()
+	if id, ok := s.identity(); ok {
+		info.Fingerprint = member.Fingerprint(id.Public())
 	}
 	return info
 }
@@ -227,7 +463,9 @@ func (s *Server) renameInstance(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	s.applyRelay()
+	if g := s.joined(); g != nil {
+		g.SetSelf(s.self(s.Pairing.Get()))
+	}
 	writeJSON(w, http.StatusOK, s.connectInfo())
 }
 
@@ -241,7 +479,7 @@ func (s *Server) activateGroup(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	secret, phrase, err := seedphrase.New()
+	secret, words, err := phrase.New()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -250,7 +488,7 @@ func (s *Server) activateGroup(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"phrase": phrase, "code": s.pairingCode(phrase), "info": s.connectInfo()})
+	writeJSON(w, http.StatusOK, map[string]any{"phrase": words, "code": s.pairingCode(words), "info": s.connectInfo()})
 }
 
 func (s *Server) joinGroup(w http.ResponseWriter, r *http.Request) {
@@ -263,11 +501,11 @@ func (s *Server) joinGroup(w http.ResponseWriter, r *http.Request) {
 	// A code read from another instance's QR names its own relay on a second
 	// line, and the words come first.
 	words, own, _ := strings.Cut(strings.TrimSpace(req.Phrase), "\n")
-	secret, err := seedphrase.Decode(words)
+	secret, err := phrase.Decode(words)
 	if err != nil {
 		// The reason and its details rather than a sentence, so the interface
 		// can explain the mistyped word in the reader's language.
-		var de *seedphrase.DecodeError
+		var de *phrase.DecodeError
 		if errors.As(err, &de) {
 			writeJSON(w, http.StatusBadRequest, map[string]any{
 				"error": de.Error(),
@@ -320,12 +558,12 @@ func (s *Server) revealPhrase(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
 		return
 	}
-	phrase, err := seedphrase.Encode(secret)
+	words, err := phrase.Encode(secret)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]string{"phrase": phrase, "code": s.pairingCode(phrase)})
+	writeJSON(w, http.StatusOK, map[string]string{"phrase": words, "code": s.pairingCode(words)})
 }
 
 func (s *Server) leaveGroup(w http.ResponseWriter, _ *http.Request) {
@@ -338,33 +576,50 @@ func (s *Server) leaveGroup(w http.ResponseWriter, _ *http.Request) {
 
 // pairingCode is the text of the QR code beside a phrase, naming this
 // instance's own relay when it dials one (relay.PairingCode).
-func (s *Server) pairingCode(phrase string) string {
+func (s *Server) pairingCode(words string) string {
 	st := s.Pairing.Get()
 	own := ""
 	if st.Mode() == pairing.ModeOwn {
 		own = st.RelayURL
 	}
-	return relay.PairingCode(phrase, own)
+	return relay.PairingCode(words, own)
 }
 
 // enterGroup stores secret as this instance's group, or leaves the group with
-// nil, and redials the relay. Either way the group starts over with nobody
-// seen in it and nobody approved, under a new member key, which the others
-// pin as a new instance.
+// nil. Either way the group starts over with nobody seen in it and nobody
+// approved, under a new member key, which the others pin as a new instance.
 func (s *Server) enterGroup(secret []byte) error {
-	if err := s.Pairing.Update(func(st *pairing.State) error {
-		st.Secret, st.Member = secret, nil
-		return nil
-	}); err != nil {
-		return err
-	}
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	return s.enterGroupLocked(secret)
+}
+
+func (s *Server) enterGroupLocked(secret []byte) error {
+	// Closed first, so the group cannot save its members over the fresh start.
+	s.closeGroupLocked()
 	joined := time.Time{}
 	if secret != nil {
 		joined = time.Now()
 	}
-	err := s.Group.SetJoined(joined)
-	s.applyRelay()
+	err := s.Pairing.Update(func(st *pairing.State) error {
+		st.Secret, st.Member, st.Fortress = secret, nil, false
+		st.JoinedAt, st.MemberSeenAt = joined, time.Time{}
+		return nil
+	})
+	s.openGroupLocked()
 	return err
+}
+
+// onlineInstances is the approved instances of the group that can be called
+// now, but for except.
+func (s *Server) onlineInstances(except string) []string {
+	var out []string
+	for _, m := range s.instances() {
+		if m.ID != except && m.State == group.StateApproved && m.Online() {
+			out = append(out, m.ID)
+		}
+	}
+	return out
 }
 
 // removeMember takes another instance out of the group on every instance of
@@ -372,21 +627,26 @@ func (s *Server) enterGroup(secret []byte) error {
 // instance waiting for approval when the phrase is entered there again.
 func (s *Server) removeMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	if id == s.groupID() {
+	g := s.joined()
+	switch {
+	case id == s.groupID():
 		writeError(w, http.StatusBadRequest, errors.New("to leave the group, use DELETE /api/connect"))
 		return
+	case g == nil:
+		writeError(w, http.StatusBadRequest, errors.New("this instance is in no group"))
+		return
 	}
-	if err := s.Group.RemoveMember(id, time.Now()); err != nil {
+	tell := s.onlineInstances("")
+	if err := g.Remove(id); err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	go s.passOn("", http.MethodDelete, "/api/connect/members/"+url.PathEscape(id), nil)
+	go s.passOn(g, tell, http.MethodDelete, "/api/connect/members/"+url.PathEscape(id), nil)
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// memberDecision is what an approval carries when it is passed on: the key
-// approved and the kind it signs as, so an instance the new one has not called
-// yet pins it as approved.
+// memberDecision is what an approval carries on the routes instances without
+// the kit pass decisions on: the key approved and the kind it signs as.
 type memberDecision struct {
 	Key  []byte `json:"key,omitempty"`
 	Kind string `json:"kind,omitempty"`
@@ -394,22 +654,36 @@ type memberDecision struct {
 
 func (s *Server) approveMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	key, kind, err := s.Group.Approve(id, nil, "")
-	if !answerApproval(w, err) {
+	g := s.joined()
+	if g == nil {
+		writeError(w, http.StatusNotFound, errors.New("this instance is in no group"))
 		return
 	}
-	body, _ := json.Marshal(memberDecision{Key: key, Kind: kind})
-	go s.passOn(id, http.MethodPost, "/api/connect/devices/"+url.PathEscape(id)+"/approve", body)
+	if !answerApproval(w, g.Approve(id)) {
+		return
+	}
+	for _, m := range s.instances() {
+		if m.ID == id {
+			body, _ := json.Marshal(memberDecision{Key: m.Key, Kind: string(m.Kind)})
+			go s.passOn(g, s.onlineInstances(id), http.MethodPost, "/api/connect/devices/"+url.PathEscape(id)+"/approve", body)
+		}
+	}
 	w.WriteHeader(http.StatusNoContent)
 }
 
 func (s *Server) refuseMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	if err := s.Group.Refuse(id, time.Now()); err != nil {
+	g := s.joined()
+	if g == nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	tell := s.onlineInstances(id)
+	if err := g.Remove(id); err != nil && !errors.Is(err, group.ErrNoSuchMember) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	go s.passOn(id, http.MethodPost, "/api/connect/devices/"+url.PathEscape(id)+"/refuse", []byte("{}"))
+	go s.passOn(g, tell, http.MethodPost, "/api/connect/devices/"+url.PathEscape(id)+"/refuse", []byte("{}"))
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -419,33 +693,28 @@ func answerApproval(w http.ResponseWriter, err error) bool {
 	switch {
 	case err == nil:
 		return true
-	case errors.Is(err, federation.ErrNoSuchPending):
+	case errors.Is(err, group.ErrNoSuchMember):
 		writeError(w, http.StatusNotFound, err)
-	case errors.Is(err, federation.ErrKindMismatch):
-		writeError(w, http.StatusBadRequest, err)
-	case errors.Is(err, federation.ErrGone):
+	case errors.Is(err, group.ErrRemoved):
 		writeError(w, http.StatusGone, err)
-	case errors.Is(err, federation.ErrKeyMismatch):
-		writeError(w, http.StatusConflict, err)
 	default:
 		writeError(w, http.StatusInternalServerError, err)
 	}
 	return false
 }
 
-// passOn hands a decision about the group's members, made here by the owner,
-// to the other instances of the group, signed with this instance's key. skip
-// is a member that is not told. One that is away misses it: an instance
-// approved here still waits there, and one removed here is still served there.
-func (s *Server) passOn(skip, method, path string, body []byte) {
+// passOn hands a decision the owner made here to the instances in to, on the
+// route ArrowLoop used before the kit. The group passes it on over its own
+// route as well, but an instance that has not taken the update yet hears it
+// only here; one that has answers it without acting twice. A 404 is such an
+// instance that does not know the member yet and takes it from the group.
+func (s *Server) passOn(g *group.Group, to []string, method, path string, body []byte) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*relayTimeout)
 	defer cancel()
-	for _, m := range s.Group.Members() {
-		if m.ID == skip {
-			continue
-		}
-		if _, status, err := s.Group.Proxy(ctx, m.ID, method, path, body); err != nil || status >= 300 {
-			s.logf("pairing: could not pass %s %s on to %s: status %d, %v", method, path, m.Name, status, err)
+	for _, id := range to {
+		status, _, err := g.Call(ctx, id, method, path, body)
+		if err != nil || (status >= 300 && status != http.StatusNotFound) {
+			s.logf("pairing: could not pass %s %s on to %s: status %d, %v", method, path, id, status, err)
 		}
 	}
 }
@@ -468,11 +737,11 @@ type relayView struct {
 func (s *Server) relayView() relayView {
 	st := s.Pairing.Get()
 	v := relayView{
-		Mode: st.Mode(), RelayURL: st.RelayURL, ProjectRelayURL: relay.DefaultRelayURL, Connected: s.Group.RelayConnected(),
+		Mode: st.Mode(), RelayURL: st.RelayURL, ProjectRelayURL: relay.DefaultURL, Connected: s.relayConnected(),
 		Serve: st.RelayServe, CanServe: s.canServe(),
 	}
-	// Sockets admitted before the switch went off are dropped by applyRelay,
-	// so the count only means something while it is on.
+	// Sockets admitted before the switch went off are dropped when the group
+	// opens again, so the count only means something while it is on.
 	if s.serving(st) {
 		v.ServeClients = s.servedRelay().Len()
 	}
@@ -522,7 +791,7 @@ func (s *Server) writeRelay(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	s.applyRelay()
+	s.applyGroup()
 	writeJSON(w, http.StatusOK, s.relayView())
 }
 
@@ -549,7 +818,7 @@ func relayTarget(st pairing.State) string {
 	case pairing.ModeOwn:
 		return strings.TrimSpace(st.RelayURL)
 	}
-	return relay.DefaultRelayURL
+	return relay.DefaultURL
 }
 
 // servedRelayPath is where an instance that serves the relay of its group
@@ -579,7 +848,7 @@ func (s *Server) servedRelay() *relay.Server {
 		srv.Admit = func(key string) bool {
 			st := s.Pairing.Get()
 			// Constant time, because the caller controls the guess.
-			return s.serving(st) && hmac.Equal([]byte(key), []byte(relay.DeriveKey(st.Secret)))
+			return s.serving(st) && hmac.Equal([]byte(key), []byte(pairing.Domain.GroupKey(st.Secret)))
 		}
 		srv.TrustedProxies = s.trustedProxies
 		s.served = srv
@@ -597,123 +866,22 @@ func (s *Server) serveRelay(w http.ResponseWriter, r *http.Request) {
 	s.servedRelay().ServeHTTP(w, r)
 }
 
-// applyRelay rebuilds the relay client from what is stored and installs it on
-// the group, which closes the previous one. A relay that cannot be reached is
-// no error here; the client keeps retrying in the background.
-func (s *Server) applyRelay() {
-	s.relayMu.Lock()
-	defer s.relayMu.Unlock()
-	// Members admitted under a group this instance left, or before the switch
-	// went off, would otherwise stay on until they drop.
-	s.servedRelay().Revoke()
-	st := s.Pairing.Get()
-	target := relayTarget(st)
-	if st.Secret == nil || target == "" {
-		s.Group.SetRelay(nil)
+// serveDirect takes the calls other instances on this network make here.
+// Outside a group it answers like a version without the feature.
+func (s *Server) serveDirect(w http.ResponseWriter, r *http.Request) {
+	if f := s.fortressNow(); f != nil {
+		s.liveMu.Lock()
+		movers := s.movers
+		s.liveMu.Unlock()
+		f.DirectHandler(movers).ServeHTTP(w, r)
 		return
 	}
-	member := s.memberKey()
-	if member == nil {
-		s.Group.SetRelay(nil)
+	g := s.joined()
+	if g == nil {
+		writeError(w, http.StatusNotFound, fmt.Errorf("no such address: %s", r.URL.Path))
 		return
 	}
-	c, err := relay.NewClient(relay.ClientOptions{
-		URL:      target,
-		Key:      relay.DeriveKey(st.Secret),
-		FrameKey: relay.DeriveFrameKey(st.Secret),
-		Self: relay.Announce{
-			InstanceID: relay.MemberID(relay.KindInstance, member.Public().(ed25519.PublicKey)),
-			Name:       s.instanceName(st),
-			Deployment: s.Deployment,
-		},
-		Member: member,
-		Trusts: s.Group.TrustsAnswer,
-		Serve:  s.Group.Guard(s.serveGroupCall),
-		// A member that leaves keeps its card here, written while it was
-		// still there. One that arrives is greeted at once, so each owner
-		// finds the other waiting for approval without this instance's
-		// Pairing tile having to be open.
-		OnChange: func() {
-			go func() {
-				if _, err := s.Group.AwayMembers(time.Now()); err != nil {
-					s.logf("pairing: could not record the instances of the group: %v", err)
-				}
-				ctx, cancel := context.WithTimeout(context.Background(), 2*relayTimeout)
-				defer cancel()
-				s.Group.Greet(ctx, time.Now())
-			}()
-		},
-	})
-	if err != nil {
-		s.logf("pairing: could not set up the relay client: %v", err)
-		s.Group.SetRelay(nil)
-		return
-	}
-	c.Start()
-	s.Group.SetRelay(c)
-}
-
-// memberKey is the key this instance signs its calls to the group with, nil
-// outside a group. It is minted the first time it is needed and belongs to one
-// group: entering another mints a new one.
-func (s *Server) memberKey() ed25519.PrivateKey {
-	s.memberMu.Lock()
-	defer s.memberMu.Unlock()
-	st := s.Pairing.Get()
-	if st.Secret == nil {
-		return nil
-	}
-	if len(st.Member) == ed25519.SeedSize {
-		return ed25519.NewKeyFromSeed(st.Member)
-	}
-	seed, err := relay.NewMemberSeed()
-	if err == nil {
-		err = s.Pairing.Update(func(st *pairing.State) error { st.Member = seed; return nil })
-	}
-	if err != nil {
-		s.logf("pairing: no member key, so the group refuses this instance's calls until one can be made: %v", err)
-		return nil
-	}
-	return ed25519.NewKeyFromSeed(seed)
-}
-
-// groupID is the id the group knows this instance by, "" outside a group.
-func (s *Server) groupID() string {
-	member := s.memberKey()
-	if member == nil {
-		return ""
-	}
-	return relay.MemberID(relay.KindInstance, member.Public().(ed25519.PublicKey))
-}
-
-// serveGroupCall turns one call from another member, already admitted by the
-// group's guard, into a request against groupHandler.
-func (s *Server) serveGroupCall(ctx context.Context, call relay.ProxyCall) (int, []byte) {
-	var body io.Reader
-	if len(call.Body) > 0 {
-		body = bytes.NewReader(call.Body)
-	}
-	req, err := http.NewRequestWithContext(ctx, call.Method, call.Path, body)
-	if err != nil {
-		return http.StatusBadRequest, []byte(err.Error())
-	}
-	if len(call.Body) > 0 {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	rec := newRelayRecorder()
-	// No net/http server is here to recover a panicking handler, and this
-	// runs on the goroutine reading relay frames, so a panic would take the
-	// whole instance down.
-	defer func() {
-		if p := recover(); p != nil {
-			s.logf("pairing: a handler panicked serving %s %s: %v", call.Method, call.Path, p)
-		}
-	}()
-	s.groupHandler().ServeHTTP(rec, req)
-	if rec.tooLong {
-		return http.StatusBadGateway, []byte(errRelayAnswerTooLong.Error())
-	}
-	return rec.status, rec.body.Bytes()
+	g.DirectHandler().ServeHTTP(w, r)
 }
 
 // groupRoute is one call another member of the group may make here.
@@ -722,13 +890,16 @@ type groupRoute struct {
 	handle  func(s *Server, w http.ResponseWriter, r *http.Request)
 }
 
+// legacyHelloPath is where instances without the kit greet the others.
+const legacyHelloPath = "/api/group/hello"
+
 // groupRoutes is everything another member of the group may ask. Settings,
 // the targets themselves, adding or removing a job, the trash and the phrase
 // stay with the owner, and a route the main router gains stays out of reach
-// until it is listed here.
+// until it is listed here. The group answers its own routes before these.
 func groupRoutes() []groupRoute {
 	return []groupRoute{
-		{"GET " + federation.HelloPath, (*Server).groupHello},
+		{"GET " + legacyHelloPath, (*Server).groupHello},
 		{"GET /api/jobs", (*Server).listJobs},
 		{"POST /api/jobs/{name}/run", (*Server).groupRunJob},
 		{"POST /api/jobs/{name}/stop", (*Server).groupStopJob},
@@ -739,6 +910,7 @@ func groupRoutes() []groupRoute {
 		{"DELETE /api/connect/members/{id}", (*Server).groupRemoveMember},
 		{"POST /api/connect/devices/{id}/approve", (*Server).groupApproveMember},
 		{"POST /api/connect/devices/{id}/refuse", (*Server).groupRefuseMember},
+		{"POST " + changedPhrasePath, (*Server).takeChangedPhrase},
 	}
 }
 
@@ -789,11 +961,11 @@ func (s *Server) groupStopJob(w http.ResponseWriter, r *http.Request) {
 }
 
 // fromApprovedInstance reports whether a call from the group came from an
-// instance whose key is pinned and approved here. Only such a call may decide
-// who else is in the group.
-func (s *Server) fromApprovedInstance(r *http.Request) bool {
-	c, ok := federation.CallerOf(r.Context())
-	return ok && s.Group.ApprovedInstance(c)
+// instance. The group serves only members approved here, and only an
+// instance decides who else is in it.
+func fromApprovedInstance(r *http.Request) bool {
+	c, ok := group.CallerOf(r.Context())
+	return ok && c.Kind == member.KindInstance
 }
 
 func refuseDecision(w http.ResponseWriter) {
@@ -803,31 +975,49 @@ func refuseDecision(w http.ResponseWriter) {
 	})
 }
 
+// groupRemoveMember takes a removal an instance without the kit passed on.
 func (s *Server) groupRemoveMember(w http.ResponseWriter, r *http.Request) {
-	if !s.fromApprovedInstance(r) {
+	if !fromApprovedInstance(r) {
 		refuseDecision(w)
 		return
 	}
 	id := r.PathValue("id")
 	if id == s.groupID() {
-		// Answered before the relay socket closes under this call.
+		// Answered before the relay socket closes under this call, and left
+		// on a goroutine of its own, since leaving waits for this very call.
 		w.WriteHeader(http.StatusNoContent)
+		gen := s.generation()
 		go func() {
-			if err := s.enterGroup(nil); err != nil {
+			s.groupMu.Lock()
+			defer s.groupMu.Unlock()
+			if s.generation() != gen {
+				return
+			}
+			if err := s.enterGroupLocked(nil); err != nil {
 				s.logf("pairing: did not leave the group after an instance of it took this one out: %v", err)
 			}
 		}()
 		return
 	}
-	if err := s.Group.RemoveMember(id, time.Now()); err != nil {
-		writeError(w, http.StatusBadRequest, err)
-		return
+	s.importDecision(w, group.Roster{Removed: map[string]time.Time{id: time.Now()}})
+}
+
+// importDecision takes a decision an instance without the kit passed on as
+// the group takes one from its own route, without passing it on again.
+func (s *Server) importDecision(w http.ResponseWriter, r group.Roster) {
+	if g := s.joined(); g != nil {
+		if err := g.Import(r); err != nil {
+			writeError(w, http.StatusInternalServerError, err)
+			return
+		}
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// groupApproveMember takes an approval an instance without the kit passed on,
+// with the key of the instance approved.
 func (s *Server) groupApproveMember(w http.ResponseWriter, r *http.Request) {
-	if !s.fromApprovedInstance(r) {
+	if !fromApprovedInstance(r) {
 		refuseDecision(w)
 		return
 	}
@@ -835,57 +1025,27 @@ func (s *Server) groupApproveMember(w http.ResponseWriter, r *http.Request) {
 	if !readBody(w, r, &passed) {
 		return
 	}
-	if passed.Key == nil {
-		writeError(w, http.StatusBadRequest, errors.New("an approval passed on carries the key approved"))
+	id := r.PathValue("id")
+	if member.Kind(passed.Kind) != member.KindInstance || member.ID(member.KindInstance, passed.Key) != id {
+		writeError(w, http.StatusBadRequest, errors.New("an approval passed on carries the key and the kind of the instance approved"))
 		return
 	}
-	if _, _, err := s.Group.Approve(r.PathValue("id"), passed.Key, passed.Kind); !answerApproval(w, err) {
-		return
+	for _, m := range s.instances() {
+		if m.ID == id && m.Key != nil && !bytes.Equal(m.Key, passed.Key) {
+			writeError(w, http.StatusConflict, errors.New("this instance pinned another key for that member"))
+			return
+		}
 	}
-	w.WriteHeader(http.StatusNoContent)
+	s.importDecision(w, group.Roster{Members: []group.Member{{ID: id, Kind: member.KindInstance, Key: passed.Key, State: group.StateApproved}}})
 }
 
+// groupRefuseMember takes a refusal an instance without the kit passed on.
 func (s *Server) groupRefuseMember(w http.ResponseWriter, r *http.Request) {
-	if !s.fromApprovedInstance(r) {
+	if !fromApprovedInstance(r) {
 		refuseDecision(w)
 		return
 	}
-	if err := s.Group.Refuse(r.PathValue("id"), time.Now()); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
-}
-
-// relayAnswerMax bounds what one call from the group answers, which the relay
-// carries in a single frame.
-const relayAnswerMax = 4 << 20
-
-// relayRecorder buffers one handler's answer in memory, so production code
-// does not depend on httptest.
-type relayRecorder struct {
-	header  http.Header
-	status  int
-	body    bytes.Buffer
-	tooLong bool
-}
-
-func newRelayRecorder() *relayRecorder {
-	return &relayRecorder{header: http.Header{}, status: http.StatusOK}
-}
-
-// errRelayAnswerTooLong stops a handler that writes past relayAnswerMax.
-var errRelayAnswerTooLong = errors.New("the answer is too large to pass on")
-
-func (r *relayRecorder) Header() http.Header    { return r.header }
-func (r *relayRecorder) WriteHeader(status int) { r.status = status }
-
-func (r *relayRecorder) Write(b []byte) (int, error) {
-	if r.tooLong || r.body.Len()+len(b) > relayAnswerMax {
-		r.tooLong = true
-		return 0, errRelayAnswerTooLong
-	}
-	return r.body.Write(b)
+	s.importDecision(w, group.Roster{Removed: map[string]time.Time{r.PathValue("id"): time.Now()}})
 }
 
 // instanceView is one other instance as the overview shows it.
@@ -895,8 +1055,9 @@ type instanceView struct {
 	Deployment string `json:"deployment"`
 	Address    string `json:"address,omitempty"`
 	// State is "ok" with Jobs, "approve" while it waits for approval here,
-	// "waiting" while this instance waits for approval there, "away" when the
-	// relay does not see it, and "error" when it did not answer.
+	// "waiting" while this instance waits for approval there, "away" when
+	// neither the network nor the relay reaches it, and "error" when it did
+	// not answer.
 	State string            `json:"state"`
 	Jobs  []json.RawMessage `json:"jobs,omitempty"`
 	// LastSeen is Unix seconds, for an instance that is away.
@@ -907,40 +1068,41 @@ type instanceView struct {
 // listInstances asks every other instance of the group for its jobs, side by
 // side, so one that is slow does not hold up the others.
 func (s *Server) listInstances(w http.ResponseWriter, r *http.Request) {
-	now := time.Now()
-	members := s.Group.Members()
-	pending := map[string]bool{}
-	for _, p := range s.Group.PendingMembers() {
-		pending[p.ID] = true
-	}
-	out := make([]instanceView, len(members))
-	var wg sync.WaitGroup
-	for i, m := range members {
-		out[i] = instanceView{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address}
-		if pending[m.ID] {
-			out[i].State = "approve"
+	s.noteAddress(r)
+	g := s.joined()
+	var online, away []instanceView
+	var asks []int
+	for _, m := range s.instances() {
+		view := instanceView{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address}
+		switch {
+		case m.Online() && m.State == group.StatePending:
+			view.State = "approve"
+		case m.Online():
+			asks = append(asks, len(online))
+		case m.State == group.StateApproved:
+			view.State, view.LastSeen = "away", m.LastSeen.Unix()
+			away = append(away, view)
+			continue
+		default:
 			continue
 		}
+		online = append(online, view)
+	}
+	var wg sync.WaitGroup
+	for _, i := range asks {
 		wg.Go(func() {
 			ctx, cancel := context.WithTimeout(r.Context(), relayTimeout)
 			defer cancel()
-			out[i].State, out[i].Jobs, out[i].Error = s.memberJobs(ctx, m.ID)
+			online[i].State, online[i].Jobs, online[i].Error = memberJobs(ctx, g, online[i].ID)
 		})
 	}
 	wg.Wait()
-	away, err := s.Group.AwayMembers(now)
-	if err != nil {
-		s.logf("pairing: could not record the instances of the group: %v", err)
-	}
-	for _, m := range away {
-		out = append(out, instanceView{ID: m.ID, Name: m.Name, Deployment: m.Deployment, Address: m.Address, State: "away", LastSeen: m.LastSeen.Unix()})
-	}
-	writeJSON(w, http.StatusOK, out)
+	writeJSON(w, http.StatusOK, append(append([]instanceView{}, online...), away...))
 }
 
 // memberJobs is one member's job list, or why there is none.
-func (s *Server) memberJobs(ctx context.Context, id string) (string, []json.RawMessage, string) {
-	body, status, err := s.Group.Proxy(ctx, id, http.MethodGet, "/api/jobs", nil)
+func memberJobs(ctx context.Context, g *group.Group, id string) (string, []json.RawMessage, string) {
+	status, body, err := g.Call(ctx, id, http.MethodGet, "/api/jobs", nil)
 	var untrusted *relay.UntrustedAnswer
 	switch {
 	case errors.As(err, &untrusted) && untrusted.Status == http.StatusForbidden && bytes.Contains(untrusted.Body, []byte(`"memberPending"`)):
