@@ -12,7 +12,6 @@ import (
 	"io"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -75,15 +74,18 @@ func (f fortressSource) Report(ctx context.Context, lang string) (status.Report,
 
 func (f fortressSource) Log(ctx context.Context, q status.LogQuery) (status.LogPage, error) {
 	var runs []history.Run
+	var opened []history.Opening
 	if f.s.History != nil {
-		// A cursor this engine never handed out starts at the beginning.
-		after, _ := strconv.ParseInt(q.After, 10, 64)
+		run, open := fortress.Cursor(q.After)
 		var err error
-		if runs, err = f.s.History.After(ctx, after, q.Limit); err != nil {
+		if runs, err = f.s.History.After(ctx, run, q.Limit); err != nil {
+			return status.LogPage{}, err
+		}
+		if opened, err = f.s.History.OpeningsAfter(ctx, open, q.Limit); err != nil {
 			return status.LogPage{}, err
 		}
 	}
-	return fortress.Log(runs, q.After, q.Lang), nil
+	return fortress.Log(runs, opened, q.After, q.Lang, q.Limit), nil
 }
 
 // FortressActions are what this engine does for the other apps of a fortress

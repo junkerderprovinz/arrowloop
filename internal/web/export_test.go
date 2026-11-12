@@ -70,3 +70,10 @@ func (s *Server) BackdatePhraseChange(t testing.TB, ago time.Duration) {
 	}
 	s.openGroupLocked()
 }
+
+// OpensWithSignIn reports whether the fortress would open s's interface now,
+// and whether it offers one at all.
+func (s *Server) OpensWithSignIn() (offered, signIn bool) {
+	ui := s.fortressUI()
+	return ui != nil, ui != nil && ui.SignIn()
+}

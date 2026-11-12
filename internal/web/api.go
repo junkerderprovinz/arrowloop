@@ -163,6 +163,14 @@ type Server struct {
 	servedOnce sync.Once
 	served     *relay.Server
 
+	// browserOnce builds browser, the interface as a browser reaches it,
+	// which the members of the fortress open. tails keeps the end of each
+	// member's log the status window showed.
+	browserOnce sync.Once
+	browser     http.Handler
+	tailsMu     sync.Mutex
+	tails       map[string]*logTail
+
 	// checked runs once a sign-in's credentials have held and before its
 	// session is handed out, which is where a test lands a reset.
 	checked func()
@@ -322,7 +330,22 @@ func (s *Server) Handler() http.Handler {
 		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder, assets: &assets{}})
 	}
 	// Protect passes everything straight through when no password is set.
-	return s.Protect(mux)
+	// The pages the fortress opens check their ticket, outside it.
+	protected := s.Protect(mux)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := kitfortress.Opened(r); ok && closedToOpened(r.Method, r.URL.Path) {
+			writeJSON(w, http.StatusForbidden, map[string]string{
+				"code":  closedThroughFortress,
+				"error": "this is not done through the fortress; open ArrowLoop on its own address for it",
+			})
+			return
+		}
+		if openedPath(r.URL.Path) {
+			s.serveOpened(w, r)
+			return
+		}
+		protected.ServeHTTP(w, r)
+	})
 }
 
 // jobView is one row of the job list.
@@ -834,13 +857,14 @@ func (s spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer index.Close()
-		info, found := s.assets.info(s.fs, "index.html")
-		setCacheHeaders(w, "index.html", info, found)
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeContent(w, r, "index.html", time.Time{}, index)
+		serveIndex(w, r, index)
 		return
 	}
 	defer f.Close()
+	if name == "index.html" {
+		serveIndex(w, r, f)
+		return
+	}
 	info, found := s.assets.info(s.fs, name)
 	setCacheHeaders(w, name, info, found)
 	http.ServeContent(w, r, name, time.Time{}, f)

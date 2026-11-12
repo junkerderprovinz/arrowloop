@@ -1,7 +1,9 @@
 package web_test
 
 import (
+	"io"
 	"net/http"
+	"strings"
 	"testing"
 	"testing/fstest"
 
@@ -155,5 +157,71 @@ func TestTheAssetsFolderIsAnsweredLikeARoute(t *testing.T) {
 	}
 	if got := resp.Header.Get("Content-Type"); got != "text/html; charset=utf-8" {
 		t.Errorf("GET /assets came back as %q rather than the page", got)
+	}
+}
+
+// Behind a reverse proxy, and when another app of the fortress opens this
+// one, the interface lives under a path, and the page has to know which.
+func TestThePageKnowsThePathItIsServedUnder(t *testing.T) {
+	h := newHarness(t)
+	ui := fstest.MapFS{"index.html": &fstest.MapFile{Data: []byte(`<!doctype html><html><head><base href="/" /><script src="./assets/index-AAA.js"></script></head></html>`)}}
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: ui})
+
+	page := func(path, prefix string) string {
+		t.Helper()
+		req, err := http.NewRequest(http.MethodGet, srv.URL+path, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if prefix != "" {
+			req.Header.Set("X-Forwarded-Prefix", prefix)
+		}
+		resp, err := srv.Client().Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		if !strings.Contains(resp.Header.Get("Vary"), "X-Forwarded-Prefix") {
+			t.Errorf("%s under %q does not vary by the prefix", path, prefix)
+		}
+		return string(body)
+	}
+	cases := []struct{ path, prefix, base string }{
+		{"/", "", `<base href="/">`},
+		{"/jobs/Fotos", "", `<base href="/">`},
+		{"/", "/fortress/open/0123abcd/", `<base href="/fortress/open/0123abcd/">`},
+		{"/history", "/arrowloop", `<base href="/arrowloop/">`},
+		{"/", `/"><script>alert(1)</script>/`, `<base href="/">`},
+		{"/", "/a/../b/", `<base href="/">`},
+		{"/", "//attacker.example/", `<base href="/">`},
+		{"/", "https://attacker.example/", `<base href="/">`},
+	}
+	for _, c := range cases {
+		body := page(c.path, c.prefix)
+		if !strings.Contains(body, c.base) || strings.Count(body, "<base") != 1 {
+			t.Errorf("%s under %q reads %s, want %s once", c.path, c.prefix, body, c.base)
+		}
+	}
+}
+
+// A page that names one prefix must not be answered from a cache to a
+// request under another.
+func TestThePageUnderAPrefixHasAValidatorOfItsOwn(t *testing.T) {
+	h := newHarness(t)
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, UI: uiFS()})
+	etag := func(prefix string) string {
+		t.Helper()
+		req, _ := http.NewRequest(http.MethodGet, srv.URL+"/", nil)
+		req.Header.Set("X-Forwarded-Prefix", prefix)
+		resp, err := srv.Client().Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		return resp.Header.Get("ETag")
+	}
+	if a, b := etag("/one/"), etag("/two/"); a == "" || a == b {
+		t.Errorf("the pages under two prefixes carry the ETags %q and %q", a, b)
 	}
 }

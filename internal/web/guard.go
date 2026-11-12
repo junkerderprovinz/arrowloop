@@ -65,7 +65,16 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 	}))
 
 	if token == "" {
-		return guarded
+		// The fortress checks the requests of a page it opened by their
+		// ticket, and that page sends them as cross-site, from an origin of
+		// its own.
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if openedPath(r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			guarded.ServeHTTP(w, r)
+		})
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if challenge := r.Header.Get(challengeHeader); challenge != "" {

@@ -92,6 +92,8 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 		},
 		Status:    fortressSource{s},
 		Actions:   s.FortressActions(),
+		Uses:      []string{kitfortress.OpenAction},
+		UI:        s.fortressUI(),
 		Export:    s.FortressExport,
 		Import:    s.FortressImport,
 		OnRemoved: func() { s.removedFrom(gen) },
@@ -463,6 +465,10 @@ type fortressMemberView struct {
 	// Relay means it is reached through the relay alone.
 	Relay    bool  `json:"relay"`
 	LastSeen int64 `json:"lastSeen,omitempty"`
+	// Host is the server it says it runs on, and Pages whether its pages
+	// open from here through the fortress.
+	Host  string `json:"host,omitempty"`
+	Pages bool   `json:"pages"`
 }
 
 type fortressPermissionView struct {
@@ -491,6 +497,7 @@ func (s *Server) fortressView() fortressView {
 		mv := fortressMemberView{
 			ID: m.ID, App: m.App.ID, Name: m.App.Name, Version: m.App.Version, Device: m.Device,
 			Deployment: m.Deployment, Kind: string(m.Kind), Online: m.Online(), Relay: m.Relay && !m.Direct,
+			Host: m.Host, Pages: slices.Contains(m.Actions, kitfortress.OpenAction),
 		}
 		if !m.LastSeen.IsZero() {
 			mv.LastSeen = m.LastSeen.Unix()
@@ -514,6 +521,8 @@ func (s *Server) fortressRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /api/fortress/device", s.nameFortressDevice)
 	mux.HandleFunc("PUT /api/fortress/permissions", s.switchFortressPermission)
 	mux.HandleFunc("DELETE /api/fortress", s.leaveFortress)
+	mux.HandleFunc("POST /api/fortress/open/{id}", s.openMember)
+	mux.HandleFunc("GET /api/fortress/members/{id}/status", s.memberStatus)
 }
 
 // writeFortressError answers with the code the page words a refusal by.

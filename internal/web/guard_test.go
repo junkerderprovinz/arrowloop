@@ -276,3 +276,45 @@ func TestTheAppMayDoWithoutAPassword(t *testing.T) {
 		t.Errorf("the app's backup answered %d", code)
 	}
 }
+
+// A page another app of the fortress opens runs sandboxed under this
+// instance's address, in an origin of its own: the browser sends its writes
+// as cross-site, from Origin null, and they must not reach the API even with
+// this instance's session cookie, which SameSite=Lax holds back anyway.
+func TestAnOpenedPageCannotChangeAnythingHere(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	srv := newGuardedServer(t)
+	json := map[string]string{"Content-Type": "application/json"}
+	for _, from := range []map[string]string{
+		{"Sec-Fetch-Site": "cross-site", "Origin": "null"},
+		{"Origin": "null"},
+	} {
+		header := map[string]string{"Cookie": "arrowloop_session=whatever"}
+		for k, v := range json {
+			header[k] = v
+		}
+		for k, v := range from {
+			header[k] = v
+		}
+		for _, method := range []string{http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete} {
+			if code := send(t, srv, method, "/api/jobs/nope/stop", header, ""); code != http.StatusForbidden {
+				t.Errorf("%s with %v answered %d", method, from, code)
+			}
+		}
+	}
+}
+
+// The opened page's own requests go to the fortress's path as cross-site
+// writes, which the fortress answers itself, not the guard in front of the
+// API.
+func TestTheFortressAnswersTheRequestsOfAnOpenedPage(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	srv := newGuardedServer(t)
+	header := map[string]string{"Sec-Fetch-Site": "cross-site", "Origin": "null", "Content-Type": "text/plain"}
+	for _, method := range []string{http.MethodGet, http.MethodPost} {
+		code := send(t, srv, method, "/fortress/open/0123456789abcdef0123456789abcdef/api/jobs", header, "attacker.example")
+		if code == http.StatusForbidden || code == http.StatusUnsupportedMediaType || code == http.StatusMisdirectedRequest {
+			t.Errorf("%s through the fortress was refused by the guard with %d", method, code)
+		}
+	}
+}
