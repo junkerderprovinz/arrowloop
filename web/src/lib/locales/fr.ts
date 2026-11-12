@@ -1653,6 +1653,7 @@ const fr: Translations = {
   'fortress.action.backupExport': 'Récupérer une sauvegarde',
   'fortress.action.backupImport': 'Restaurer une sauvegarde',
   'fortress.action.uiOpen': 'Ouvrir ses pages',
+  'fortress.openNeedsPassword': 'Définis d’abord un mot de passe dans Réglages, Sécurité, puis les autres applis s’ouvriront d’ici.',
 }
 
 export default fr

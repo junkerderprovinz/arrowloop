@@ -1653,6 +1653,7 @@ const ar: Translations = {
   'fortress.action.backupExport': 'جلب نسخة احتياطية',
   'fortress.action.backupImport': 'استعادة نسخة احتياطية',
   'fortress.action.uiOpen': 'فتح صفحاته',
+  'fortress.openNeedsPassword': 'عيّن أولاً كلمة مرور في الإعدادات، الأمان، وبعدها تُفتح التطبيقات الأخرى من هنا.',
 }
 
 export default ar

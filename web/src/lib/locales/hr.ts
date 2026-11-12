@@ -1653,6 +1653,7 @@ const hr: Translations = {
   'fortress.action.backupExport': 'Dohvatiti sigurnosnu kopiju',
   'fortress.action.backupImport': 'Vratiti sigurnosnu kopiju',
   'fortress.action.uiOpen': 'Otvoriti njegove stranice',
+  'fortress.openNeedsPassword': 'Najprije postavi lozinku u Postavkama, Sigurnost, pa će se ostale aplikacije otvarati odavde.',
 }
 
 export default hr

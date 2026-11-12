@@ -1653,6 +1653,7 @@ const gl: Translations = {
   'fortress.action.backupExport': 'Traer unha copia de seguridade',
   'fortress.action.backupImport': 'Restaurar unha copia de seguridade',
   'fortress.action.uiOpen': 'Abrir as súas páxinas',
+  'fortress.openNeedsPassword': 'Primeiro pon un contrasinal en Axustes, Seguranza e despois as outras apps abriranse desde aquí.',
 }
 
 export default gl

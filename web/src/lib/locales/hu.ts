@@ -1653,6 +1653,7 @@ const hu: Translations = {
   'fortress.action.backupExport': 'Lekérni egy mentést',
   'fortress.action.backupImport': 'Visszaállítani egy mentést',
   'fortress.action.uiOpen': 'Megnyitni az oldalait',
+  'fortress.openNeedsPassword': 'Előbb állíts be jelszót a Beállítások, Biztonság alatt, utána a többi app innen is megnyílik.',
 }
 
 export default hu

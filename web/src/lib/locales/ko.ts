@@ -1653,6 +1653,7 @@ const ko: Translations = {
   'fortress.action.backupExport': '백업 가져오기',
   'fortress.action.backupImport': '백업 복원하기',
   'fortress.action.uiOpen': '페이지 열기',
+  'fortress.openNeedsPassword': '먼저 설정, 보안에서 비밀번호를 정하면 다른 앱을 여기서 열 수 있습니다.',
 }
 
 export default ko

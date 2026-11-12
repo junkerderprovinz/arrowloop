@@ -1653,6 +1653,7 @@ const et: Translations = {
   'fortress.action.backupExport': 'Tuua varukoopia',
   'fortress.action.backupImport': 'Taastada varukoopia',
   'fortress.action.uiOpen': 'Avada selle lehti',
+  'fortress.openNeedsPassword': 'Määra kõigepealt parool jaotises Seaded, Turvalisus, siis avanevad teised rakendused siit.',
 }
 
 export default et

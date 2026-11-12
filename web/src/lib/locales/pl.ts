@@ -1653,6 +1653,7 @@ const pl: Translations = {
   'fortress.action.backupExport': 'Pobierać kopię zapasową',
   'fortress.action.backupImport': 'Przywracać kopię zapasową',
   'fortress.action.uiOpen': 'Otwierać jego strony',
+  'fortress.openNeedsPassword': 'Najpierw ustaw hasło w Ustawieniach, Bezpieczeństwo, a wtedy inne aplikacje otworzą się stąd.',
 }
 
 export default pl

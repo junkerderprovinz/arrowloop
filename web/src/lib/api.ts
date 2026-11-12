@@ -39,7 +39,7 @@ export type Job = {
 export type { Reason } from './i18n'
 import type { Reason } from './i18n'
 import { inDesktopWindow, watchDesktop } from './desk'
-import type { FortressInfo, FortressPermission } from './fortress'
+import type { FortressInfo, FortressPermission, MemberStatus } from './fortress'
 import { at } from './base'
 
 /** What one side holds: its name there, its size and when it changed. */
@@ -1338,6 +1338,13 @@ export const api = {
 
   /** Leaves the fortress, and with it the pairing its phrase holds. */
   leaveFortress: () => request<FortressInfo>('/api/fortress', { method: 'DELETE' }),
+
+  /** Opens another member's pages through the fortress and answers the path of the tab that shows them. */
+  openFortressMember: (id: string) => post<{ path: string }>(`/api/fortress/open/${encodeURIComponent(id)}`),
+
+  /** Another member's status report and the end of its log, newest first. */
+  fortressMemberStatus: (id: string, lang: string) =>
+    request<MemberStatus>(`/api/fortress/members/${encodeURIComponent(id)}/status?lang=${encodeURIComponent(lang)}`),
 
   relay: () => request<RelayConfig>('/api/relay/config'),
 

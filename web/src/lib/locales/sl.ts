@@ -1653,6 +1653,7 @@ const sl: Translations = {
   'fortress.action.backupExport': 'Prenesti varnostno kopijo',
   'fortress.action.backupImport': 'Obnoviti varnostno kopijo',
   'fortress.action.uiOpen': 'Odpreti njegove strani',
+  'fortress.openNeedsPassword': 'Najprej nastavi geslo v Nastavitvah, Varnost, nato se bodo druge aplikacije odpirale od tu.',
 }
 
 export default sl

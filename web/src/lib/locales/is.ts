@@ -1653,6 +1653,7 @@ const is: Translations = {
   'fortress.action.backupExport': 'Sækja afrit',
   'fortress.action.backupImport': 'Endurheimta afrit',
   'fortress.action.uiOpen': 'Opna síðurnar þess',
+  'fortress.openNeedsPassword': 'Settu fyrst lykilorð undir Stillingar, Öryggi, þá opnast hin forritin héðan.',
 }
 
 export default is

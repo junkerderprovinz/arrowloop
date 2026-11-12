@@ -1653,6 +1653,7 @@ const fi: Translations = {
   'fortress.action.backupExport': 'Hakea varmuuskopio',
   'fortress.action.backupImport': 'Palauttaa varmuuskopio',
   'fortress.action.uiOpen': 'Avata sen sivut',
+  'fortress.openNeedsPassword': 'Aseta ensin salasana kohdassa Asetukset, Turvallisuus, niin muut sovellukset aukeavat täältä.',
 }
 
 export default fi

@@ -1653,6 +1653,7 @@ const lt: Translations = {
   'fortress.action.backupExport': 'Parsisiųsti atsarginę kopiją',
   'fortress.action.backupImport': 'Atkurti atsarginę kopiją',
   'fortress.action.uiOpen': 'Atverti jo puslapius',
+  'fortress.openNeedsPassword': 'Pirmiausia nustatyk slaptažodį skiltyje Nustatymai, Saugumas, tada kitos programos atsidarys iš čia.',
 }
 
 export default lt

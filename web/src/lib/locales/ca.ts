@@ -1653,6 +1653,7 @@ const ca: Translations = {
   'fortress.action.backupExport': 'Obtenir una còpia de seguretat',
   'fortress.action.backupImport': 'Restaurar una còpia de seguretat',
   'fortress.action.uiOpen': 'Obrir les seves pàgines',
+  'fortress.openNeedsPassword': 'Primer posa una contrasenya a Configuració, Seguretat, i després les altres apps s\'obriran des d\'aquí.',
 }
 
 export default ca

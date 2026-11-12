@@ -1653,6 +1653,7 @@ const id: Translations = {
   'fortress.action.backupExport': 'Mengambil cadangan',
   'fortress.action.backupImport': 'Memulihkan cadangan',
   'fortress.action.uiOpen': 'Membuka halamannya',
+  'fortress.openNeedsPassword': 'Atur dulu kata sandi di Pengaturan, Keamanan, lalu aplikasi lain bisa dibuka dari sini.',
 }
 
 export default id

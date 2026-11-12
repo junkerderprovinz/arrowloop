@@ -1653,6 +1653,7 @@ const sv: Translations = {
   'fortress.action.backupExport': 'Hämta en säkerhetskopia',
   'fortress.action.backupImport': 'Återställa en säkerhetskopia',
   'fortress.action.uiOpen': 'Öppna dess sidor',
+  'fortress.openNeedsPassword': 'Ange först ett lösenord under Inställningar, Säkerhet, så öppnas de andra apparna härifrån.',
 }
 
 export default sv

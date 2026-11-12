@@ -1653,6 +1653,7 @@ const he: Translations = {
   'fortress.action.backupExport': 'להביא גיבוי',
   'fortress.action.backupImport': 'לשחזר גיבוי',
   'fortress.action.uiOpen': 'לפתוח את הדפים שלו',
+  'fortress.openNeedsPassword': 'קודם הגדר סיסמה בהגדרות, אבטחה, ואז האפליקציות האחרות ייפתחו מכאן.',
 }
 
 export default he

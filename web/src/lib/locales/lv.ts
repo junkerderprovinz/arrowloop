@@ -1653,6 +1653,7 @@ const lv: Translations = {
   'fortress.action.backupExport': 'Iegūt rezerves kopiju',
   'fortress.action.backupImport': 'Atjaunot rezerves kopiju',
   'fortress.action.uiOpen': 'Atvērt tās lapas',
+  'fortress.openNeedsPassword': 'Vispirms iestati paroli sadaļā Iestatījumi, Drošība, tad citas lietotnes atvērsies no šejienes.',
 }
 
 export default lv

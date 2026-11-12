@@ -1653,6 +1653,7 @@ const ro: Translations = {
   'fortress.action.backupExport': 'Să aducă o copie de rezervă',
   'fortress.action.backupImport': 'Să restaureze o copie de rezervă',
   'fortress.action.uiOpen': 'Să-i deschidă paginile',
+  'fortress.openNeedsPassword': 'Setează mai întâi o parolă în Setări, Securitate, apoi celelalte aplicații se deschid de aici.',
 }
 
 export default ro

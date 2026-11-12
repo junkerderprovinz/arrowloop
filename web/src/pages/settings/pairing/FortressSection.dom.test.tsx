@@ -15,6 +15,7 @@ const NEW_PHRASE = 'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong'
 const calls: string[] = []
 const toasts: string[] = []
 let joinRefusal: Error | null = null
+let openRefusal: Error | null = null
 let passwordSet = true
 
 vi.mock('../../../lib/api', async (original) => {
@@ -40,6 +41,17 @@ vi.mock('../../../lib/api', async (original) => {
       leaveFortress: () => {
         calls.push('leave')
         return Promise.resolve(outside())
+      },
+      openFortressMember: (id: string) => {
+        calls.push(`open ${id}`)
+        return openRefusal ? Promise.reject(openRefusal) : Promise.resolve({ path: `/fortress/open/ticket-of-${id}` })
+      },
+      fortressMemberStatus: (id: string, lang: string) => {
+        calls.push(`status ${id} ${lang}`)
+        return Promise.resolve({
+          report: { state: 'ok', needsYou: [{ severity: 'warn', text: 'Two updates wait' }], work: [], next: [] },
+          log: [{ at: '2026-11-12T18:00:00Z', level: 'info', text: 'Checked the containers' }],
+        })
       },
     },
   }
@@ -87,6 +99,7 @@ beforeEach(() => {
   calls.length = 0
   toasts.length = 0
   joinRefusal = null
+  openRefusal = null
   passwordSet = true
   refreshed.mockReset()
 })
@@ -209,7 +222,7 @@ describe('the fortress on the Pairing tile', () => {
 
   it('saves a permission the moment its switch flips', async () => {
     const start = joined({
-      members: [{ id: 'b1', app: 'bombvault', name: 'BombVault', version: '9.1.0', device: 'Tower', deployment: 'container', kind: 'instance', online: true, relay: false }],
+      members: [{ id: 'b1', app: 'bombvault', name: 'BombVault', version: '9.1.0', device: 'Tower', deployment: 'container', kind: 'instance', online: true, relay: false, pages: true }],
       permissions: [{ from: 'bombvault', to: 'arrowloop', action: 'backup.export', on: true }],
     })
     render(<Page start={start} />)
@@ -218,5 +231,51 @@ describe('the fortress on the Pairing tile', () => {
     await act(async () => fireEvent.click(permission))
     expect(calls).toEqual(['permission bombvault arrowloop backup.export false'])
     expect(toasts).toEqual([`Switched off: ${en['fortress.action.backupExport']}`])
+  })
+
+  describe('Open on another app', () => {
+    const vault = { id: 'b1', app: 'bombvault', name: 'BombVault', version: '9.1.0', device: 'Tower', deployment: 'container', kind: 'instance', online: true, relay: false, pages: true }
+    const roll = { ...vault, id: 't1', app: 'tollroll', name: 'TollRoll', deployment: 'plugin', pages: false }
+
+    async function openOn(app: string) {
+      fireEvent.click(await waitFor(() => button('others')))
+      const card = await waitFor(() => document.querySelector(`[data-fortress-app="${app}"]`)!)
+      await act(async () => fireEvent.click(card.querySelector<HTMLButtonElement>('[data-fortress="open"]')!))
+    }
+
+    it('opens the pages of an app that has them in a tab of their own', async () => {
+      const opened = vi.spyOn(window, 'open').mockReturnValue(null)
+      render(<Page start={joined({ members: [vault] })} />)
+      await openOn('bombvault')
+      expect(calls).toEqual(['open b1'])
+      expect(opened).toHaveBeenCalledWith('/fortress/open/ticket-of-b1', '_blank', 'noopener')
+      opened.mockRestore()
+    })
+
+    it('says why an app did not open', async () => {
+      openRefusal = new ApiError('no password there', 403, 'ui_no_login')
+      const opened = vi.spyOn(window, 'open').mockReturnValue(null)
+      render(<Page start={joined({ members: [vault] })} />)
+      await openOn('bombvault')
+      expect(opened).not.toHaveBeenCalled()
+      expect(toasts).toEqual(['This app opens from elsewhere only once it has a password.'])
+      opened.mockRestore()
+    })
+
+    it('asks for a password here before it opens anything', async () => {
+      passwordSet = false
+      render(<Page start={joined({ members: [vault] })} />)
+      await openOn('bombvault')
+      expect(calls).toEqual([])
+      expect(toasts).toEqual([en['fortress.openNeedsPassword']])
+    })
+
+    it('shows how an app without pages is doing', async () => {
+      render(<Page start={joined({ members: [roll] })} />)
+      await openOn('tollroll')
+      expect(calls).toEqual(['status t1 en'])
+      expect(await screen.findByText('Two updates wait')).toBeTruthy()
+      expect(screen.getByText('Checked the containers')).toBeTruthy()
+    })
   })
 })

@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
 import { en } from './i18n'
-import { fortressApps, fortressHues, fortressPermissions, pairedWith, permissionOf, type FortressInfo, type FortressMember } from './fortress'
+import { fortressApps, fortressHues, fortressPermissions, pairedWith, permissionOf, statusLines, type FortressInfo, type FortressMember } from './fortress'
 
 const t = (key: keyof typeof en, vars: Record<string, string | number> = {}) =>
   en[key].replace(/\{(\w+)\}/g, (all, name: string) => (name in vars ? String(vars[name]) : all))
 
 function member(over: Partial<FortressMember>): FortressMember {
-  return { id: 'm1', app: 'bombvault', name: 'BombVault', version: '9.1.0', device: 'Tower', deployment: 'container', kind: 'instance', online: true, relay: false, ...over }
+  return { id: 'm1', app: 'bombvault', name: 'BombVault', version: '9.1.0', device: 'Tower', deployment: 'container', kind: 'instance', online: true, relay: false, pages: true, ...over }
 }
 
 describe('the other apps of the fortress', () => {
@@ -31,6 +31,58 @@ describe('the other apps of the fortress', () => {
   it('draws a phone as a phone and calls its form the Android app', () => {
     const [app] = fortressApps([member({ deployment: 'phone' })], () => '')
     expect(app.instances[0]).toMatchObject({ deviceKind: 'phone', form: 'android' })
+  })
+})
+
+describe('opening another app', () => {
+  it('offers Open on every instance and names each by the end of its id', () => {
+    const [app] = fortressApps([member({ id: '0123456789abcdef' }), member({ id: 'fedcba9876543210', app: 'tollroll', deployment: 'plugin', pages: false })], () => '')
+    expect(app.instances[0]).toMatchObject({ open: {}, print: '89abcdef', doubt: false })
+  })
+
+  it('asks first where two members claim one app on one server or device', () => {
+    const apps = fortressApps(
+      [
+        member({ id: 'b1', host: 'Tower', device: 'Tower' }),
+        member({ id: 'b2', host: 'Tower', device: 'Tower vault' }),
+        member({ id: 'b3', host: 'Cellar', device: 'Cellar' }),
+        member({ id: 'k1', app: 'knightloader', name: 'KnightLoader', device: 'Desk' }),
+        member({ id: 'k2', app: 'knightloader', name: 'KnightLoader', device: 'Desk' }),
+        member({ id: 'k3', app: 'knightloader', name: 'KnightLoader', device: 'Attic' }),
+      ],
+      () => '',
+    )
+    expect(apps.find((a) => a.id === 'bombvault')!.instances.map((i) => [i.id, i.doubt])).toEqual([
+      ['b1', true],
+      ['b2', true],
+      ['b3', false],
+    ])
+    expect(apps.find((a) => a.id === 'knightloader')!.instances.map((i) => i.doubt)).toEqual([true, true, false])
+  })
+})
+
+describe('the status window of a member', () => {
+  it('puts the times of the report and the log in words of the reader', () => {
+    const when = (at: string) => `at ${at.slice(11, 16)}`
+    const { report, log } = statusLines(
+      {
+        report: {
+          state: 'warning',
+          needsYou: [{ severity: 'warn', text: 'An update waits' }],
+          work: [{ title: 'Backup', progress: 0.5 }, { title: 'Check' }],
+          next: [{ title: 'Nightly', at: '2026-11-13T03:00:00Z' }],
+        },
+        log: [{ at: '2026-11-12T18:00:00Z', level: 'info', text: 'Opened from ArrowLoop on Tower (89abcdef).' }],
+      },
+      when,
+    )
+    expect(report).toEqual({
+      state: 'warning',
+      needsYou: [{ severity: 'warn', text: 'An update waits' }],
+      work: [{ title: 'Backup', progress: 0.5 }, { title: 'Check' }],
+      next: [{ title: 'Nightly', at: 'at 03:00' }],
+    })
+    expect(log).toEqual([{ at: 'at 18:00', level: 'info', text: 'Opened from ArrowLoop on Tower (89abcdef).' }])
   })
 })
 

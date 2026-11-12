@@ -1653,6 +1653,7 @@ const ja: Translations = {
   'fortress.action.backupExport': 'バックアップを取ってくる',
   'fortress.action.backupImport': 'バックアップを戻す',
   'fortress.action.uiOpen': 'ページを開く',
+  'fortress.openNeedsPassword': '先に「設定」の「セキュリティ」でパスワードを設定すると、ほかのアプリをここから開けます。',
 }
 
 export default ja

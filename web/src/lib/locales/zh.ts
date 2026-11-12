@@ -1653,6 +1653,7 @@ const zh: Translations = {
   'fortress.action.backupExport': '获取备份',
   'fortress.action.backupImport': '恢复备份',
   'fortress.action.uiOpen': '打开它的页面',
+  'fortress.openNeedsPassword': '请先在“设置”的“安全”中设置密码，之后就能从这里打开其他应用。',
 }
 
 export default zh

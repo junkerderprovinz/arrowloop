@@ -1653,6 +1653,7 @@ const uk: Translations = {
   'fortress.action.backupExport': 'Забрати резервну копію',
   'fortress.action.backupImport': 'Відновити резервну копію',
   'fortress.action.uiOpen': 'Відкрити його сторінки',
+  'fortress.openNeedsPassword': 'Спершу задай пароль у Налаштуваннях, Безпека, і тоді інші застосунки відкриватимуться звідси.',
 }
 
 export default uk

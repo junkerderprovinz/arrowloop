@@ -1653,6 +1653,7 @@ const cs: Translations = {
   'fortress.action.backupExport': 'Stáhnout zálohu',
   'fortress.action.backupImport': 'Obnovit zálohu',
   'fortress.action.uiOpen': 'Otevřít jeho stránky',
+  'fortress.openNeedsPassword': 'Nejdřív nastav heslo v Nastavení, Zabezpečení a pak se odsud otevřou i ostatní aplikace.',
 }
 
 export default cs

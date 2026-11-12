@@ -1653,6 +1653,7 @@ const tr: Translations = {
   'fortress.action.backupExport': 'Bir yedek almak',
   'fortress.action.backupImport': 'Bir yedeği geri yüklemek',
   'fortress.action.uiOpen': 'Sayfalarını açmak',
+  'fortress.openNeedsPassword': 'Önce Ayarlar, Güvenlik altında bir parola belirle, sonra diğer uygulamalar buradan açılır.',
 }
 
 export default tr

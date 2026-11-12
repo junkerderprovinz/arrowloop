@@ -1653,6 +1653,7 @@ const vi: Translations = {
   'fortress.action.backupExport': 'Lấy một bản sao lưu',
   'fortress.action.backupImport': 'Khôi phục một bản sao lưu',
   'fortress.action.uiOpen': 'Mở các trang của nó',
+  'fortress.openNeedsPassword': 'Hãy đặt mật khẩu trước trong Cài đặt, Bảo mật, rồi các ứng dụng khác sẽ mở được từ đây.',
 }
 
 export default vi

@@ -1653,6 +1653,7 @@ const hi: Translations = {
   'fortress.action.backupExport': 'बैकअप लाना',
   'fortress.action.backupImport': 'बैकअप वापस लगाना',
   'fortress.action.uiOpen': 'इसके पेज खोलना',
+  'fortress.openNeedsPassword': 'पहले सेटिंग्स, सुरक्षा में एक पासवर्ड रखें, फिर दूसरे ऐप यहीं से खुलेंगे।',
 }
 
 export default hi

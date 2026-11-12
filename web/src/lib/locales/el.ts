@@ -1653,6 +1653,7 @@ const el: Translations = {
   'fortress.action.backupExport': 'Να παίρνει ένα αντίγραφο ασφαλείας',
   'fortress.action.backupImport': 'Να επαναφέρει ένα αντίγραφο ασφαλείας',
   'fortress.action.uiOpen': 'Να ανοίγει τις σελίδες του',
+  'fortress.openNeedsPassword': 'Όρισε πρώτα κωδικό στις Ρυθμίσεις, Ασφάλεια και μετά οι άλλες εφαρμογές θα ανοίγουν από εδώ.',
 }
 
 export default el

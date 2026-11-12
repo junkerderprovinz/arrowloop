@@ -1653,6 +1653,7 @@ const ru: Translations = {
   'fortress.action.backupExport': 'Забрать резервную копию',
   'fortress.action.backupImport': 'Восстановить резервную копию',
   'fortress.action.uiOpen': 'Открыть его страницы',
+  'fortress.openNeedsPassword': 'Сначала задай пароль в разделе Настройки, Безопасность, и тогда другие приложения будут открываться отсюда.',
 }
 
 export default ru

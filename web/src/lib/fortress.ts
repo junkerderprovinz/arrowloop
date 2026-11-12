@@ -21,6 +21,10 @@ export type FortressMember = {
   /** Reached through the relay alone. */
   relay: boolean
   lastSeen?: number
+  /** The server it says it runs on. */
+  host?: string
+  /** Whether its pages open from here through the fortress. */
+  pages: boolean
 }
 
 /** What one app may do at another, as one switch. */
@@ -49,6 +53,12 @@ export type FortressInstanceView = {
   presence: 'connected' | 'away'
   relay: boolean
   lastSeen?: string
+  /** Set on every instance, so that each card offers Open. */
+  open?: { href?: string; host?: string }
+  /** Another member claims the same app on the same server or device. */
+  doubt?: boolean
+  /** The end of its id, as the bar above an opened page shows it. */
+  print?: string
 }
 
 /** GlimStone's FortressApp. */
@@ -74,6 +84,14 @@ function deviceKind(m: FortressMember): FortressInstanceView['deviceKind'] {
   return 'server'
 }
 
+/**
+ * Whether another member claims m's app on m's server or device. One of the
+ * two could be pretending, so Open asks first.
+ */
+function doubted(m: FortressMember, members: FortressMember[]): boolean {
+  return members.some((o) => o.id !== m.id && o.app === m.app && ((!!m.host && o.host === m.host) || o.device === m.device))
+}
+
 /** The other apps of the fortress, each with its instances, sorted by name. */
 export function fortressApps(members: FortressMember[], ago: (unix: number) => string): FortressAppView[] {
   const apps = new Map<string, FortressAppView>()
@@ -89,6 +107,9 @@ export function fortressApps(members: FortressMember[], ago: (unix: number) => s
       presence: m.online ? 'connected' : 'away',
       relay: m.relay,
       lastSeen: !m.online && m.lastSeen ? ago(m.lastSeen) : undefined,
+      open: {},
+      doubt: doubted(m, members),
+      print: m.id.slice(-8),
     })
     apps.set(m.app, app)
   }
@@ -134,4 +155,30 @@ export function pairedWith(group: {
   away: { id: string; name: string }[]
 }): string[] {
   return [...new Set([...group.members.filter((m) => m.approved), ...group.away].map((m) => m.name || m.id))]
+}
+
+/** A member's status report as the engine hands it on, in the member's words. */
+export type MemberStatus = {
+  report: {
+    state: string
+    needsYou: { severity: string; text: string }[]
+    work: { title: string; progress?: number }[]
+    next: { title: string; at: string }[]
+  }
+  /** The end of its log, newest first. */
+  log: { at: string; level: string; text: string }[]
+}
+
+/** The report and the log as GlimStone's status window shows them, each time in the reader's words. */
+export function statusLines(status: MemberStatus, when: (at: string) => string): MemberStatus {
+  const r = status.report
+  return {
+    report: {
+      state: r.state,
+      needsYou: (r.needsYou ?? []).map((n) => ({ severity: n.severity, text: n.text })),
+      work: (r.work ?? []).map((w) => (w.progress === undefined ? { title: w.title } : { title: w.title, progress: w.progress })),
+      next: (r.next ?? []).map((n) => ({ title: n.title, at: when(n.at) })),
+    },
+    log: (status.log ?? []).map((l) => ({ at: when(l.at), level: l.level, text: l.text })),
+  }
 }

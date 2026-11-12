@@ -1653,6 +1653,7 @@ const eu: Translations = {
   'fortress.action.backupExport': 'Babeskopia bat ekartzea',
   'fortress.action.backupImport': 'Babeskopia bat leheneratzea',
   'fortress.action.uiOpen': 'Bere orriak irekitzea',
+  'fortress.openNeedsPassword': 'Ezarri lehenik pasahitz bat Ezarpenak, Segurtasuna atalean, eta gero beste aplikazioak hemendik irekiko dira.',
 }
 
 export default eu

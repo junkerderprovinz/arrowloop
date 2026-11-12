@@ -1653,6 +1653,7 @@ const sk: Translations = {
   'fortress.action.backupExport': 'Stiahnuť zálohu',
   'fortress.action.backupImport': 'Obnoviť zálohu',
   'fortress.action.uiOpen': 'Otvoriť jeho stránky',
+  'fortress.openNeedsPassword': 'Najprv nastav heslo v Nastaveniach, Zabezpečenie a potom sa odtiaľto otvoria aj ostatné aplikácie.',
 }
 
 export default sk

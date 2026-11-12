@@ -1653,6 +1653,7 @@ const ms: Translations = {
   'fortress.action.backupExport': 'Ambil sandaran',
   'fortress.action.backupImport': 'Pulihkan sandaran',
   'fortress.action.uiOpen': 'Buka halamannya',
+  'fortress.openNeedsPassword': 'Tetapkan kata laluan dahulu di Tetapan, Keselamatan, kemudian apl lain dibuka dari sini.',
 }
 
 export default ms

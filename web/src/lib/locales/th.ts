@@ -1653,6 +1653,7 @@ const th: Translations = {
   'fortress.action.backupExport': 'ดึงข้อมูลสำรอง',
   'fortress.action.backupImport': 'กู้คืนข้อมูลสำรอง',
   'fortress.action.uiOpen': 'เปิดหน้าของแอป',
+  'fortress.openNeedsPassword': 'ตั้งรหัสผ่านก่อนที่การตั้งค่า ความปลอดภัย แล้วแอปอื่นจะเปิดจากที่นี่ได้',
 }
 
 export default th

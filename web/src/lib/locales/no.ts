@@ -1653,6 +1653,7 @@ const no: Translations = {
   'fortress.action.backupExport': 'Hente en sikkerhetskopi',
   'fortress.action.backupImport': 'Gjenopprette en sikkerhetskopi',
   'fortress.action.uiOpen': 'Åpne sidene dens',
+  'fortress.openNeedsPassword': 'Angi først et passord under Innstillinger, Sikkerhet, så åpnes de andre appene herfra.',
 }
 
 export default no

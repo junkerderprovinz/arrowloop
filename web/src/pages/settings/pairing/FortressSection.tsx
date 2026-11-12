@@ -1,11 +1,25 @@
-import { fill, fortressText, type ChangeAnswer, type FortressAnswer, type FortressText, type PhraseAnswer } from '@glimstone/core'
+import {
+  fill,
+  fortressText,
+  openRefusalText,
+  type ChangeAnswer,
+  type FortressAnswer,
+  type FortressApp,
+  type FortressInstance,
+  type FortressText,
+  type PhraseAnswer,
+} from '@glimstone/core'
 import { Fortress, FortressPairing } from '@glimstone/react/Fortress'
+import { FortressStatusWindow } from '@glimstone/react/FortressStatusWindow'
 import { PasswordField } from '@glimstone/react/PasswordField'
 import { Window } from '@glimstone/react/Window'
 import { useMemo, useRef, useState } from 'react'
 
 import { api, ApiError, type Phrase } from '../../../lib/api'
-import { fortressApps, fortressPermissions, permissionOf, SELF, type FortressInfo } from '../../../lib/fortress'
+import { at } from '../../../lib/base'
+import { dayTime } from '../../../lib/dayTime'
+import { inDesktopWindow } from '../../../lib/desk'
+import { fortressApps, fortressPermissions, permissionOf, SELF, statusLines, type FortressInfo, type MemberStatus } from '../../../lib/fortress'
 import { useT } from '../../../lib/i18n'
 import type { Translate } from '../../../lib/i18n.data'
 import { refusalText, seenAgo } from '../../../lib/pairing'
@@ -28,6 +42,12 @@ function refused(t: Translate, text: FortressText, e: unknown): string {
   if (e instanceof ApiError && e.status === 403) return text.passwordWrong
   return refusalText(t, e)
 }
+
+/** The code a refusal came with, for openRefusalText. */
+const refusalCode = (e: unknown) => (e instanceof ApiError ? (e.code ?? '') : '')
+
+/** A member Open shows as a window: its report once it came, or why it did not. */
+type Shown = { app: FortressApp; instance: FortressInstance; got?: MemberStatus; error?: string }
 
 /** A new phrase in GlimStone's words, with the text of its QR code beside them. */
 type NewPhrase = ChangeAnswer & { code?: string; wrong?: boolean }
@@ -100,6 +120,39 @@ export function FortressSection({
 
   const apps = fortressApps(fortress.members, (unix) => seenAgo(lang, unix))
 
+  // A member with pages opens them in a tab through the fortress, which needs
+  // this browser's password session; the desktop window has none to hand the
+  // tab. Any other member, such as a plugin whose pages live in Unraid, shows
+  // its report in a window.
+  const [status, setStatus] = useState<Shown | null>(null)
+  const showStatus = (app: FortressApp, instance: FortressInstance) => {
+    setStatus({ app, instance })
+    const when = (iso: string) => dayTime(iso, lang, (p) => t('list.when', p))
+    const keep = (change: Partial<Shown>) => setStatus((s) => (s?.instance.id === instance.id ? { ...s, ...change } : s))
+    api.fortressMemberStatus(instance.id, lang).then(
+      (got) => keep({ got: statusLines(got, when) }),
+      (e) => keep({ error: openRefusalText(text, refusalCode(e)) }),
+    )
+  }
+  const onOpen = (app: FortressApp, instance: FortressInstance) => {
+    const member = fortress.members.find((m) => m.id === instance.id)
+    if (!member?.pages || inDesktopWindow()) {
+      showStatus(app, instance)
+      return
+    }
+    if (!fortress.passwordSet) {
+      push(t('fortress.openNeedsPassword'), 'warn')
+      return
+    }
+    // Asked at once, since the browser lets a tab open only shortly after the click.
+    api.openFortressMember(instance.id).then(
+      ({ path }) => {
+        window.open(at(path), '_blank', 'noopener')
+      },
+      (e) => push(openRefusalText(text, refusalCode(e)), 'fail'),
+    )
+  }
+
   const onJoin = async (words: string[]): Promise<FortressAnswer> => {
     try {
       onFortress(await api.joinFortress(words.join(' ')))
@@ -167,10 +220,24 @@ export function FortressSection({
         notify={push}
         onJoin={onJoin}
         onRemove={() => Promise.resolve({ error: text.failed })}
+        onOpen={onOpen}
         pairedWith={pairedWith}
         labelKeys={LABEL_KEYS}
         hueStart={hueStart + 1}
       />
+      {status && (
+        <FortressStatusWindow
+          app={status.app}
+          instance={status.instance}
+          report={status.got?.report}
+          log={status.got?.log}
+          loading={!status.got && !status.error}
+          error={status.error}
+          text={text}
+          lang={lang}
+          onClose={() => setStatus(null)}
+        />
+      )}
       {asking && (
         <ChangePassword
           text={text}

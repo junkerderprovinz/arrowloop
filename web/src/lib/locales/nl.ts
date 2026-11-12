@@ -1653,6 +1653,7 @@ const nl: Translations = {
   'fortress.action.backupExport': 'Een back-up ophalen',
   'fortress.action.backupImport': 'Een back-up terugzetten',
   'fortress.action.uiOpen': 'De pagina\'s openen',
+  'fortress.openNeedsPassword': 'Stel eerst een wachtwoord in onder Instellingen, Beveiliging, dan openen de andere apps vanaf hier.',
 }
 
 export default nl

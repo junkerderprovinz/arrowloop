@@ -1653,6 +1653,7 @@ const sr: Translations = {
   'fortress.action.backupExport': 'Преузети резервну копију',
   'fortress.action.backupImport': 'Вратити резервну копију',
   'fortress.action.uiOpen': 'Отворити његове странице',
+  'fortress.openNeedsPassword': 'Прво постави лозинку у Подешавањима, Безбедност, па ће се остале апликације отварати одавде.',
 }
 
 export default sr

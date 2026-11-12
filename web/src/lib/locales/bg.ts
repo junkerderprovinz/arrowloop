@@ -1653,6 +1653,7 @@ const bg: Translations = {
   'fortress.action.backupExport': 'Да вземе резервно копие',
   'fortress.action.backupImport': 'Да възстанови резервно копие',
   'fortress.action.uiOpen': 'Да отваря страниците му',
+  'fortress.openNeedsPassword': 'Първо задай парола в Настройки, Сигурност и тогава другите приложения ще се отварят оттук.',
 }
 
 export default bg
