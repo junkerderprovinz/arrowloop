@@ -1,7 +1,3 @@
 # A report in the wrong shape beats one a template turned away, and the shape
 # can be asked for afterwards.
 blank_issues_enabled: true
-contact_links:
-  - name: Question rather than a bug
-    url: https://github.com/junkerderprovinz/arrowloop/discussions/new?category=q-a
-    about: Ask in the Q&A discussions, where the answer also helps the next person with the same question. A plain issue works too.

@@ -240,7 +240,7 @@ You do not have to take my word for it. The code is open and every release note 
 
 <br>
 
-Questions? Ask in [Discussions](https://github.com/junkerderprovinz/arrowloop/discussions/categories/q-a) or check the [support thread](https://forums.unraid.net/topic/200733-support-junkerderprovinz-arrowloop/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/arrowloop/issues).
+Questions? Check the [support thread](https://forums.unraid.net/topic/200733-support-junkerderprovinz-arrowloop/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/arrowloop/issues).
 
 Reporting something that went wrong is worth as much. A two-way sync meets
 filesystems, network shares and timing that no test suite can reach on its own,
