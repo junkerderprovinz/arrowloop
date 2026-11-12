@@ -1,3 +1,5 @@
+// First, so that nothing reads storage before it works in a sandboxed page.
+import './lib/storageShim'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
