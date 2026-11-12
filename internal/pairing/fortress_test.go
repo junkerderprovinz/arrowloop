@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func paired(t *testing.T, dir string) *Store {
@@ -59,16 +60,43 @@ func TestANewFortressPhraseKeepsTheOldOneAsPrevious(t *testing.T) {
 	if err := s.FortressStore().Save([]byte(`{"fortress":"members"}`)); err != nil {
 		t.Fatal(err)
 	}
+	before := time.Now()
 	if err := s.ChangeFortressSecret([]byte("another phrase!!")); err != nil {
 		t.Fatal(err)
 	}
 	st := reopened(t, dir).Get()
 	if !bytes.Equal(st.Secret, []byte("another phrase!!")) || !bytes.Equal(st.FortressPrevious, []byte("fortress phrase!")) ||
-		!bytes.Equal(st.PairingPrevious, []byte("fortress phrase!")) || !st.Fortress {
+		!bytes.Equal(st.PairingPrevious, []byte("fortress phrase!")) || !st.Fortress || st.FortressChanged.Before(before.Truncate(time.Second)) {
 		t.Errorf("after a new phrase the state is %+v", st)
 	}
 	if got, _ := reopened(t, dir).FortressStore().Load(); string(got) != `{"fortress":"members"}` {
 		t.Errorf("the fortress holds %q after a new phrase", got)
+	}
+}
+
+func TestForgettingTheFortressPhraseBeforeKeepsTheNewOne(t *testing.T) {
+	dir := t.TempDir()
+	s := paired(t, dir)
+	if err := s.EnterFortress([]byte("fortress phrase!")); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ChangeFortressSecret([]byte("another phrase!!")); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ForgetFortressPrevious(); err != nil {
+		t.Fatal(err)
+	}
+	st := reopened(t, dir).Get()
+	if !bytes.Equal(st.Secret, []byte("another phrase!!")) || st.FortressPrevious != nil || st.PairingPrevious != nil ||
+		!st.FortressChanged.IsZero() || !bytes.Equal(st.MoveFrom, []byte("the app's phrase")) || !st.Fortress {
+		t.Errorf("after forgetting the phrase before the state is %+v", st)
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, FileName))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Contains(raw, []byte(`"fortressPrevious"`)) || bytes.Contains(raw, []byte(`"pairingPrevious"`)) {
+		t.Errorf("%s keeps the phrase before: %s", FileName, raw)
 	}
 }
 

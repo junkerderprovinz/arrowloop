@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 )
 
 // ShortenMoveWait hands the fortress phrase to the instances that were away
@@ -48,6 +50,22 @@ func (s *Server) BackdateMove(t testing.TB, ago time.Duration) {
 		t.Fatal(err)
 	}
 	if err := store.Save(raw); err != nil {
+		t.Fatal(err)
+	}
+	s.openGroupLocked()
+}
+
+// BackdatePhraseChange opens the fortress again as if its phrase had changed
+// ago before now.
+func (s *Server) BackdatePhraseChange(t testing.TB, ago time.Duration) {
+	t.Helper()
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	s.closeGroupLocked()
+	if err := s.Pairing.Update(func(st *pairing.State) error {
+		st.FortressChanged = time.Now().Add(-ago)
+		return nil
+	}); err != nil {
 		t.Fatal(err)
 	}
 	s.openGroupLocked()

@@ -17,7 +17,7 @@ The full notes for each release are in
 - **Read tokens for dashboards.** Homepage, Homarr and the like read how ArrowLoop is doing and what its runs did at `/api/fortress/v1/status` and `/api/fortress/v1/log`, with a read token made under Settings, Security. The token opens nothing else.
 - **ArrowLoop joins a fortress.** Enter the fortress's twelve words on the Pairing tile, in the web interface or on the phone, and ArrowLoop joins your other apps there. The instances it is paired with come along with their approvals, and one that was away follows once it is back. One that still hasn't come along after 30 days shows up on the Pairing tile by name, so you can bring it in with the fortress phrase or remove it.
 - **Your other apps can work with your jobs.** In a fortress they can list the jobs, start one, see where a new job can write and add one, and a backup app can fetch ArrowLoop's settings and put them back. Each permission has its own switch.
-- **The fortress phrase can be shown and changed.** The words come with a QR code once you enter your password. A new phrase reaches every app and instance in reach, including one that joined a moment earlier, and any it missed are named so you know where to type the new words.
+- **The fortress phrase can be shown and changed.** The words come with a QR code once you enter your password. A new phrase reaches every app and instance in reach, including one that joined a moment earlier, and any it missed are named so you know where to type the new words. Plugins that hold only the fortress's keys pick up the new phrase on their own within 30 days of the change.
 
 ## ⚡ Improved
 

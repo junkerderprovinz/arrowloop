@@ -141,13 +141,15 @@ type Server struct {
 	// instance changes the fortress phrase itself. movers is the pairing on
 	// the app's own phrase while its instances move into the fortress. All
 	// four are guarded by liveMu. moveStop ends the move of the instances
-	// that were away.
+	// that were away, and forget opens the fortress again once the phrase
+	// before the last change is due to go; groupMu guards both.
 	fort      *kitfortress.Fortress
 	fortLAN   *lan.Service
 	changing  bool
 	movers    *group.Group
 	moveStop  context.CancelFunc
 	moving    sync.WaitGroup
+	forget    *time.Timer
 	memberMu  sync.Mutex
 	groupOnce sync.Once
 	group     http.Handler

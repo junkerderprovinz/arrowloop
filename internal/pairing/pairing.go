@@ -74,9 +74,11 @@ type State struct {
 	// PairingPrevious is the secret the pairing's keys came from before: the
 	// app's own phrase on entering the fortress, the fortress's phrase before
 	// once that changed. FortressPrevious is the fortress's secret before its
-	// phrase changed. The kit takes over what was kept under them.
+	// phrase changed, at FortressChanged. The kit takes over what was kept
+	// under them.
 	PairingPrevious  []byte
 	FortressPrevious []byte
+	FortressChanged  time.Time
 	// MoveFrom is the app's own phrase while instances that were away still
 	// have to be handed the fortress phrase over it.
 	MoveFrom []byte
@@ -102,12 +104,13 @@ type onDisk struct {
 	MemberSeenAt time.Time `json:"memberSeenAt,omitzero"`
 	Group        string    `json:"group,omitempty"`
 
-	Fortress         bool   `json:"fortress,omitempty"`
-	PairingPrevious  string `json:"pairingPrevious,omitempty"`
-	FortressPrevious string `json:"fortressPrevious,omitempty"`
-	MoveFrom         string `json:"moveFrom,omitempty"`
-	FortressGroup    string `json:"fortressGroup,omitempty"`
-	MoveGroup        string `json:"moveGroup,omitempty"`
+	Fortress         bool      `json:"fortress,omitempty"`
+	PairingPrevious  string    `json:"pairingPrevious,omitempty"`
+	FortressPrevious string    `json:"fortressPrevious,omitempty"`
+	FortressChanged  time.Time `json:"fortressChanged,omitzero"`
+	MoveFrom         string    `json:"moveFrom,omitempty"`
+	FortressGroup    string    `json:"fortressGroup,omitempty"`
+	MoveGroup        string    `json:"moveGroup,omitempty"`
 }
 
 // blobs are what the kit keeps for the pairing, the fortress and the move,
@@ -159,7 +162,7 @@ func (s *Store) read(body []byte) error {
 	}
 	st := State{
 		RelayMode: d.RelayMode, RelayURL: d.RelayURL, RelayServe: d.RelayServe, Name: d.Name,
-		JoinedAt: d.JoinedAt, MemberSeenAt: d.MemberSeenAt, Fortress: d.Fortress,
+		JoinedAt: d.JoinedAt, MemberSeenAt: d.MemberSeenAt, Fortress: d.Fortress, FortressChanged: d.FortressChanged,
 	}
 	for _, f := range []struct {
 		into   *[]byte
@@ -240,6 +243,7 @@ func (s *Store) Update(fn func(*State) error) error {
 	if another {
 		kept = blobs{}
 		next.PairingPrevious, next.FortressPrevious, next.MoveFrom = nil, nil, nil
+		next.FortressChanged = time.Time{}
 	}
 	if err := s.write(next, kept); err != nil {
 		return err
@@ -265,7 +269,7 @@ func (s *Store) EnterFortress(secret []byte) error {
 		next.PairingPrevious, next.MoveFrom = bytes.Clone(next.Secret), bytes.Clone(next.Secret)
 		kept.moving = bytes.Clone(s.b.group)
 	}
-	next.Secret, next.Fortress, next.FortressPrevious = bytes.Clone(secret), true, nil
+	next.Secret, next.Fortress, next.FortressPrevious, next.FortressChanged = bytes.Clone(secret), true, nil, time.Time{}
 	if err := s.write(next, kept); err != nil {
 		return err
 	}
@@ -281,6 +285,24 @@ func (s *Store) ChangeFortressSecret(secret []byte) error {
 	defer s.mu.Unlock()
 	next := s.now.clone()
 	next.FortressPrevious, next.PairingPrevious, next.Secret = next.Secret, bytes.Clone(next.Secret), bytes.Clone(secret)
+	next.FortressChanged = time.Now().Round(0)
+	if err := s.write(next, s.b); err != nil {
+		return err
+	}
+	s.now = next
+	return nil
+}
+
+// ForgetFortressPrevious drops the fortress's secret before its phrase
+// changed, in the pairing as well where its keys came from that one.
+func (s *Store) ForgetFortressPrevious() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	next := s.now.clone()
+	if bytes.Equal(next.PairingPrevious, next.FortressPrevious) {
+		next.PairingPrevious = nil
+	}
+	next.FortressPrevious, next.FortressChanged = nil, time.Time{}
 	if err := s.write(next, s.b); err != nil {
 		return err
 	}
@@ -345,7 +367,7 @@ func (g blobStore) Save(raw []byte) error {
 func (s *Store) write(st State, b blobs) error {
 	d := onDisk{
 		RelayMode: st.RelayMode, RelayURL: st.RelayURL, RelayServe: st.RelayServe, Name: st.Name,
-		JoinedAt: st.JoinedAt, MemberSeenAt: st.MemberSeenAt, Fortress: st.Fortress,
+		JoinedAt: st.JoinedAt, MemberSeenAt: st.MemberSeenAt, Fortress: st.Fortress, FortressChanged: st.FortressChanged,
 	}
 	for _, f := range []struct {
 		into  *string

@@ -33,6 +33,11 @@ var (
 // are handed its phrase again, until each of them has it.
 var moveWait = time.Minute
 
+// previousKept is how long the fortress is given its secret before a change
+// of phrase. The kit answers on that phrase meanwhile, so that the members
+// that hold only keys, such as the Unraid plugins, fetch the new ones.
+const previousKept = 30 * 24 * time.Hour
+
 // fortressNow is the fortress this instance is in, nil outside one.
 func (s *Server) fortressNow() *kitfortress.Fortress {
 	s.liveMu.Lock()
@@ -43,6 +48,14 @@ func (s *Server) fortressNow() *kitfortress.Fortress {
 // openFortressLocked opens the fortress st names, and the pairing with it,
 // with groupMu held.
 func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode group.RelayMode, relayURL string, gen uint64) {
+	if st.FortressPrevious != nil && time.Since(st.FortressChanged) >= previousKept {
+		if err := s.Pairing.ForgetFortressPrevious(); err != nil {
+			s.logf("fortress: could not forget the phrase before the last change: %v", err)
+			st.FortressPrevious = nil
+		} else {
+			st = s.Pairing.Get()
+		}
+	}
 	var network *lan.Service
 	if s.LAN != nil {
 		network = lan.New(lan.Config{Group: kitfortress.Multicast, Ports: s.groupPorts()})
@@ -89,6 +102,9 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 	s.liveMu.Lock()
 	s.fort, s.fortLAN, s.live = f, network, f.Pairing()
 	s.liveMu.Unlock()
+	if st.FortressPrevious != nil {
+		s.forget = time.AfterFunc(time.Until(st.FortressChanged.Add(previousKept)), s.applyGroup)
+	}
 	if st.MoveFrom != nil {
 		ctx, cancel := context.WithCancel(context.Background())
 		s.moveStop = cancel
@@ -100,6 +116,10 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 // closeFortressLocked leaves the fortress, the pairing and the move, with
 // groupMu held. It reports whether this instance was in one.
 func (s *Server) closeFortressLocked() bool {
+	if s.forget != nil {
+		s.forget.Stop()
+		s.forget = nil
+	}
 	if s.moveStop != nil {
 		s.moveStop()
 		s.moving.Wait()
