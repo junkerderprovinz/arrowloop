@@ -72,7 +72,7 @@ Set a password for the WebUI under Settings, Security, where two-factor authenti
     Target="ARROWLOOP_API_TOKEN"
     Default=""
     Mode=""
-    Description="Optional. Lets another program on your network, such as CastleCommander, add a job to ArrowLoop. Put a long random string here, for example what openssl rand -hex 32 prints, and enter the same string in that program. The token can only add jobs and read the job list."
+    Description="Optional. Lets another program on your network, such as CannonCommander, add a job to ArrowLoop. Put a long random string here, for example what openssl rand -hex 32 prints, and enter the same string in that program. The token can only add jobs and read the job list."
     Type="Variable"
     Display="advanced"
     Required="false"

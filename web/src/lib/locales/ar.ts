@@ -1450,7 +1450,7 @@ const ar: Translations = {
   'history.findings': 'النتائج',
   'anomalies.closedInHistory': 'المغلقة في السجل',
   'new.change.closedFindings': 'انتقلت النتائج المغلقة خلال الثلاثين يومًا الماضية من {anomalies} إلى {history}، كعرض ثالث بجانب {runs} و{files}، ولها عناوين للفرز والتصفية. أما {anomalies} فتعرض المفتوح فقط وتقود إليها.',
-  'new.change.apiJob': 'يمكن لبرنامج آخر على شبكتك، مثل CastleCommander، إضافة مهمة باستخدام رمز تضبطه في ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'يمكن لبرنامج آخر على شبكتك، مثل CannonCommander، إضافة مهمة باستخدام رمز تضبطه في ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'تعمل المهمة التي يضيفها برنامج آخر وفق جدولها مثل أي مهمة أخرى، والنسخ المطابق يحذف في وجهته، لذا احفظ الرمز بأمان كما تحفظ كلمة المرور.',
   'dupes.findOnLeft': 'ابحث عن التكرارات في الجانب الأيسر',
   'dupes.findOnRight': 'ابحث عن التكرارات في الجانب الأيمن',

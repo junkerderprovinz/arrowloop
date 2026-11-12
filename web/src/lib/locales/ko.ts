@@ -1450,7 +1450,7 @@ const ko: Translations = {
   'history.findings': '발견',
   'anomalies.closedInHistory': '닫힌 항목은 기록에서',
   'new.change.closedFindings': '지난 30일 동안 닫힌 발견은 {anomalies}에서 {history}로 옮겨 {runs}, {files} 옆의 세 번째 보기가 되었고, 정렬하고 걸러 내는 제목도 있습니다. {anomalies}는 열린 것만 보여 주고 그리로 안내합니다.',
-  'new.change.apiJob': 'CastleCommander 같은 네트워크의 다른 프로그램이 ARROWLOOP_API_TOKEN에 설정한 토큰으로 작업을 추가할 수 있습니다.',
+  'new.change.apiJob': 'CannonCommander 같은 네트워크의 다른 프로그램이 ARROWLOOP_API_TOKEN에 설정한 토큰으로 작업을 추가할 수 있습니다.',
   'new.change.apiJobCare': '다른 프로그램이 추가한 작업도 다른 작업처럼 일정에 따라 실행되며 미러는 대상에서 삭제하므로, 토큰을 비밀번호만큼 안전하게 보관하세요.',
   'dupes.findOnLeft': '왼쪽에서 중복 찾기',
   'dupes.findOnRight': '오른쪽에서 중복 찾기',

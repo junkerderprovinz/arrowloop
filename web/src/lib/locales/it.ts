@@ -1450,7 +1450,7 @@ const it: Translations = {
   'history.findings': 'Rilevamenti',
   'anomalies.closedInHistory': 'Quelli chiusi nella cronologia',
   'new.change.closedFindings': 'I rilevamenti chiusi negli ultimi trenta giorni sono passati da {anomalies} a {history}, come terza vista accanto a {runs} e {files}, con intestazioni proprie per ordinare e filtrare. {anomalies} mostra solo ciò che è aperto e porta lì.',
-  'new.change.apiJob': 'Un altro programma della tua rete, come CastleCommander, può aggiungere un lavoro con un token che imposti in ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Un altro programma della tua rete, come CannonCommander, può aggiungere un lavoro con un token che imposti in ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Un lavoro aggiunto da un altro programma viene eseguito secondo la sua pianificazione come tutti gli altri, e un mirror elimina nella destinazione, quindi custodisci il token con la stessa cura della password.',
   'dupes.findOnLeft': 'Cerca duplicati sul lato sinistro',
   'dupes.findOnRight': 'Cerca duplicati sul lato destro',

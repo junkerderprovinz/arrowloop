@@ -1450,7 +1450,7 @@ const sl: Translations = {
   'history.findings': 'Ugotovitve',
   'anomalies.closedInHistory': 'Zaprte v zgodovini',
   'new.change.closedFindings': 'Ugotovitve, zaprte v zadnjih tridesetih dneh, so se iz {anomalies} preselile v {history}, kot tretji pogled ob {runs} in {files}, z lastnimi naslovi za razvrščanje in filtriranje. {anomalies} kaže samo odprto in vodi tja.',
-  'new.change.apiJob': 'Drug program v vašem omrežju, na primer CastleCommander, lahko doda opravilo z žetonom, ki ga nastavite v ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Drug program v vašem omrežju, na primer CannonCommander, lahko doda opravilo z žetonom, ki ga nastavite v ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Opravilo, ki ga doda drug program, se izvaja po svojem urniku kot vsako drugo, zrcaljenje pa briše na cilju, zato žeton varujte enako skrbno kot geslo.',
   'dupes.findOnLeft': 'Poišči dvojnike na levi strani',
   'dupes.findOnRight': 'Poišči dvojnike na desni strani',

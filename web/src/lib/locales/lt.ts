@@ -1450,7 +1450,7 @@ const lt: Translations = {
   'history.findings': 'Radiniai',
   'anomalies.closedInHistory': 'Uždaryti istorijoje',
   'new.change.closedFindings': 'Per pastarąsias trisdešimt dienų uždaryti radiniai persikėlė iš {anomalies} į {history}, kaip trečias rodinys šalia {runs} ir {files}, su savo antraštėmis rikiavimui ir filtravimui. {anomalies} rodo tik atvirus ir veda ten.',
-  'new.change.apiJob': 'Kita jūsų tinklo programa, pavyzdžiui, CastleCommander, gali pridėti užduotį naudodama žetoną, kurį nustatote ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Kita jūsų tinklo programa, pavyzdžiui, CannonCommander, gali pridėti užduotį naudodama žetoną, kurį nustatote ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Kitos programos pridėta užduotis vykdoma pagal savo tvarkaraštį kaip ir bet kuri kita, o veidrodinis režimas trina paskirties vietoje, todėl saugokite žetoną taip pat kaip slaptažodį.',
   'dupes.findOnLeft': 'Ieškoti dublikatų kairėje pusėje',
   'dupes.findOnRight': 'Ieškoti dublikatų dešinėje pusėje',

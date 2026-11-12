@@ -1450,7 +1450,7 @@ const he: Translations = {
   'history.findings': 'ממצאים',
   'anomalies.closedInHistory': 'הסגורים בהיסטוריה',
   'new.change.closedFindings': 'ממצאים שנסגרו בשלושים הימים האחרונים עברו מ{anomalies} ל{history}, כתצוגה שלישית לצד {runs} ו{files}, עם כותרות משלהם למיון ולסינון. {anomalies} מציג רק את הפתוח ומוביל לשם.',
-  'new.change.apiJob': 'תוכנה אחרת ברשת שלך, כמו CastleCommander, יכולה להוסיף משימה בעזרת אסימון שמגדירים ב-ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'תוכנה אחרת ברשת שלך, כמו CannonCommander, יכולה להוסיף משימה בעזרת אסימון שמגדירים ב-ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'משימה שתוכנה אחרת מוסיפה רצה לפי התזמון שלה כמו כל משימה אחרת, ושיקוף מוחק ביעד, לכן יש לשמור על האסימון כמו על הסיסמה.',
   'dupes.findOnLeft': 'חיפוש כפילויות בצד השמאלי',
   'dupes.findOnRight': 'חיפוש כפילויות בצד הימני',

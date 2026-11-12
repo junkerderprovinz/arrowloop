@@ -1450,7 +1450,7 @@ const fa: Translations = {
   'history.findings': 'یافته‌ها',
   'anomalies.closedInHistory': 'بسته‌شده‌ها در سابقه',
   'new.change.closedFindings': 'یافته‌هایی که در سی روز گذشته بسته شده‌اند از {anomalies} به {history} رفته‌اند، به‌عنوان نمای سوم کنار {runs} و {files}، با سرستون‌های خودشان برای مرتب‌سازی و فیلتر. {anomalies} فقط موارد باز را نشان می‌دهد و به آنجا راه می‌برد.',
-  'new.change.apiJob': 'برنامهٔ دیگری در شبکهٔ شما، مانند CastleCommander، می‌تواند با توکنی که در ARROWLOOP_API_TOKEN تنظیم می‌کنید کاری اضافه کند.',
+  'new.change.apiJob': 'برنامهٔ دیگری در شبکهٔ شما، مانند CannonCommander، می‌تواند با توکنی که در ARROWLOOP_API_TOKEN تنظیم می‌کنید کاری اضافه کند.',
   'new.change.apiJobCare': 'کاری که برنامهٔ دیگری اضافه می‌کند مانند هر کار دیگری طبق زمان‌بندی‌اش اجرا می‌شود و آینه‌سازی در مقصد حذف می‌کند، پس توکن را به اندازهٔ گذرواژه امن نگه دارید.',
   'dupes.findOnLeft': 'یافتن تکراری‌ها در سمت چپ',
   'dupes.findOnRight': 'یافتن تکراری‌ها در سمت راست',

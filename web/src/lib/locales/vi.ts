@@ -1450,7 +1450,7 @@ const vi: Translations = {
   'history.findings': 'Phát hiện',
   'anomalies.closedInHistory': 'Mục đã đóng trong Lịch sử',
   'new.change.closedFindings': 'Các phát hiện đã đóng trong ba mươi ngày qua được chuyển từ {anomalies} sang {history}, thành chế độ xem thứ ba bên cạnh {runs} và {files}, với tiêu đề riêng để sắp xếp và lọc. {anomalies} chỉ hiện mục còn mở và dẫn tới đó.',
-  'new.change.apiJob': 'Một chương trình khác trong mạng của bạn, như CastleCommander, có thể thêm công việc bằng token bạn đặt trong ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Một chương trình khác trong mạng của bạn, như CannonCommander, có thể thêm công việc bằng token bạn đặt trong ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Công việc do chương trình khác thêm sẽ chạy theo lịch như mọi công việc khác, và chế độ phản chiếu sẽ xóa ở đích, vì vậy hãy giữ token an toàn như mật khẩu.',
   'dupes.findOnLeft': 'Tìm tệp trùng ở bên trái',
   'dupes.findOnRight': 'Tìm tệp trùng ở bên phải',

@@ -1450,7 +1450,7 @@ const tr: Translations = {
   'history.findings': 'Bulgular',
   'anomalies.closedInHistory': 'Kapananlar geçmişte',
   'new.change.closedFindings': 'Son otuz günde kapanan bulgular {anomalies} sayfasından {history} sayfasına taşındı; {runs} ve {files} yanında üçüncü bir görünüm olarak, sıralama ve süzme için kendi başlıklarıyla. {anomalies} yalnızca açık olanları gösterir ve oraya götürür.',
-  'new.change.apiJob': 'Ağınızdaki başka bir program, örneğin CastleCommander, ARROWLOOP_API_TOKEN içinde ayarladığınız bir belirteçle iş ekleyebilir.',
+  'new.change.apiJob': 'Ağınızdaki başka bir program, örneğin CannonCommander, ARROWLOOP_API_TOKEN içinde ayarladığınız bir belirteçle iş ekleyebilir.',
   'new.change.apiJobCare': 'Başka bir programın eklediği iş, diğerleri gibi kendi zamanlamasına göre çalışır ve yansılama hedefte siler, bu yüzden belirteci parola kadar güvenli saklayın.',
   'dupes.findOnLeft': 'Sol tarafta kopyaları ara',
   'dupes.findOnRight': 'Sağ tarafta kopyaları ara',

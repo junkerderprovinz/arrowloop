@@ -1450,7 +1450,7 @@ const eu: Translations = {
   'history.findings': 'Aurkikuntzak',
   'anomalies.closedInHistory': 'Itxitakoak historian',
   'new.change.closedFindings': 'Azken hogeita hamar egunetan itxitako aurkikuntzak {anomalies} orritik {history} orrira pasatu dira, {runs} eta {files} ikuspegien ondoko hirugarren ikuspegi gisa, ordenatzeko eta iragazteko beren goiburuekin. {anomalies} orriak irekita dagoena bakarrik erakusten du eta hara eramaten du.',
-  'new.change.apiJob': 'Zure sareko beste programa batek, CastleCommander adibidez, lan bat gehi dezake ARROWLOOP_API_TOKEN aldagaian ezartzen duzun token batekin.',
+  'new.change.apiJob': 'Zure sareko beste programa batek, CannonCommander adibidez, lan bat gehi dezake ARROWLOOP_API_TOKEN aldagaian ezartzen duzun token batekin.',
   'new.change.apiJobCare': 'Beste programa batek gehitutako lana bere programazioaren arabera exekutatzen da beste edozein bezala, eta ispilu batek helmugan ezabatzen du, beraz gorde tokena pasahitza bezain ondo.',
   'dupes.findOnLeft': 'Bilatu bikoiztuak ezkerreko aldean',
   'dupes.findOnRight': 'Bilatu bikoiztuak eskuineko aldean',

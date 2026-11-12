@@ -1450,7 +1450,7 @@ const ms: Translations = {
   'history.findings': 'Penemuan',
   'anomalies.closedInHistory': 'Yang ditutup dalam Sejarah',
   'new.change.closedFindings': 'Penemuan yang ditutup dalam tiga puluh hari lepas telah berpindah dari {anomalies} ke {history}, sebagai paparan ketiga di sebelah {runs} dan {files}, dengan tajuknya sendiri untuk mengisih dan menapis. {anomalies} hanya menunjukkan yang terbuka dan membawa ke sana.',
-  'new.change.apiJob': 'Program lain dalam rangkaian anda, seperti CastleCommander, boleh menambah tugas dengan token yang anda tetapkan dalam ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Program lain dalam rangkaian anda, seperti CannonCommander, boleh menambah tugas dengan token yang anda tetapkan dalam ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Tugas yang ditambah oleh program lain berjalan mengikut jadualnya seperti tugas lain, dan cermin memadam di destinasi, jadi simpan token seselamat kata laluan.',
   'dupes.findOnLeft': 'Cari pendua di sisi kiri',
   'dupes.findOnRight': 'Cari pendua di sisi kanan',

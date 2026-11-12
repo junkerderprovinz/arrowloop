@@ -1450,7 +1450,7 @@ const pl: Translations = {
   'history.findings': 'Wykrycia',
   'anomalies.closedInHistory': 'Zamknięte w historii',
   'new.change.closedFindings': 'Wykrycia zamknięte w ciągu ostatnich trzydziestu dni przeniosły się z {anomalies} do {history}, jako trzeci widok obok {runs} i {files}, z własnymi nagłówkami do sortowania i filtrowania. {anomalies} pokazuje tylko otwarte i prowadzi tam.',
-  'new.change.apiJob': 'Inny program w Twojej sieci, na przykład CastleCommander, może dodać zadanie za pomocą tokenu ustawionego w ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Inny program w Twojej sieci, na przykład CannonCommander, może dodać zadanie za pomocą tokenu ustawionego w ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Zadanie dodane przez inny program działa według swojego harmonogramu jak każde inne, a kopia lustrzana usuwa w miejscu docelowym, więc chroń token tak samo jak hasło.',
   'dupes.findOnLeft': 'Szukaj duplikatów po lewej stronie',
   'dupes.findOnRight': 'Szukaj duplikatów po prawej stronie',

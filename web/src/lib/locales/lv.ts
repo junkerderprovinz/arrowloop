@@ -1450,7 +1450,7 @@ const lv: Translations = {
   'history.findings': 'Atradumi',
   'anomalies.closedInHistory': 'Slēgtie vēsturē',
   'new.change.closedFindings': 'Pēdējās trīsdesmit dienās slēgtie atradumi ir pārcelti no {anomalies} uz {history} kā trešais skats blakus {runs} un {files}, ar saviem virsrakstiem kārtošanai un filtrēšanai. {anomalies} rāda tikai atvērto un ved uz turieni.',
-  'new.change.apiJob': 'Cita programma jūsu tīklā, piemēram, CastleCommander, var pievienot uzdevumu ar marķieri, ko iestatāt mainīgajā ARROWLOOP_API_TOKEN.',
+  'new.change.apiJob': 'Cita programma jūsu tīklā, piemēram, CannonCommander, var pievienot uzdevumu ar marķieri, ko iestatāt mainīgajā ARROWLOOP_API_TOKEN.',
   'new.change.apiJobCare': 'Citas programmas pievienots uzdevums darbojas pēc sava grafika kā jebkurš cits, un spoguļošana dzēš galamērķī, tāpēc glabājiet marķieri tikpat rūpīgi kā paroli.',
   'dupes.findOnLeft': 'Meklēt dublikātus kreisajā pusē',
   'dupes.findOnRight': 'Meklēt dublikātus labajā pusē',
