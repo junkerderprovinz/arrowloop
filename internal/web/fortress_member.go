@@ -1,6 +1,7 @@
 package web
 
 import (
+	"cmp"
 	"context"
 	"crypto/hmac"
 	"encoding/json"
@@ -28,6 +29,7 @@ import (
 var (
 	errInFortress = errors.New("this instance is in a fortress already")
 	errNoFortress = errors.New("this instance is in no fortress")
+	errNoMember   = errors.New("no other member of the fortress has that id")
 )
 
 // moveWait is how often the instances the pairing had before the fortress
@@ -159,10 +161,15 @@ func (s *Server) removedFrom(gen uint64) {
 	go func() {
 		s.groupMu.Lock()
 		defer s.groupMu.Unlock()
-		if s.generation() == gen {
-			s.logf("fortress: another member took this instance out, so it left the fortress")
-			_ = s.enterGroupLocked(nil)
+		if s.generation() != gen {
+			return
 		}
+		s.logf("fortress: another member took this instance out, so it left the fortress")
+		_ = s.enterGroupLocked(nil)
+		if err := s.Pairing.Update(func(st *pairing.State) error { st.RemovedHere = true; return nil }); err != nil {
+			s.logf("fortress: could not note that another member took this instance out: %v", err)
+		}
+		s.groupChanged()
 	}()
 }
 
@@ -439,6 +446,32 @@ func (s *Server) changeFortressPhrase(ctx context.Context) (string, []string, er
 	return words, left, err
 }
 
+// removeFortressMember takes another member out of the fortress, here and at
+// every member in reach, and keeps its name until the phrase changes, since
+// that phrase still lets it back in. This instance is no other member, so it
+// leaves instead.
+func (s *Server) removeFortressMember(id string) error {
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	f := s.fortressNow()
+	if f == nil {
+		return errNoFortress
+	}
+	for _, m := range f.Members() {
+		if m.ID != id {
+			continue
+		}
+		if err := f.Remove(id); err != nil {
+			return err
+		}
+		gone := pairing.Removed{App: m.App.ID, Name: cmp.Or(m.App.Name, m.App.ID), Device: m.Device}
+		err := s.Pairing.Update(func(st *pairing.State) error { st.Removed = append(st.Removed, gone); return nil })
+		s.groupChanged()
+		return err
+	}
+	return errNoMember
+}
+
 // fortressView is what GET /api/fortress answers with, in the shape every app
 // of the fortress uses. It never carries the phrase.
 type fortressView struct {
@@ -451,6 +484,10 @@ type fortressView struct {
 	PasswordSet   bool                     `json:"passwordSet"`
 	Members       []fortressMemberView     `json:"members"`
 	Permissions   []fortressPermissionView `json:"permissions"`
+	// Removed are the members taken out here since the phrase last changed,
+	// and RemovedHere says another member took this instance out.
+	Removed     []pairing.Removed `json:"removed"`
+	RemovedHere bool              `json:"removedHere"`
 }
 
 type fortressMemberView struct {
@@ -485,6 +522,7 @@ func (s *Server) fortressView() fortressView {
 		Device: st.Name, DefaultDevice: s.instanceName(pairing.State{}),
 		PasswordSet: len(s.passwordHash()) > 0,
 		Members:     []fortressMemberView{}, Permissions: []fortressPermissionView{},
+		Removed: append([]pairing.Removed{}, st.Removed...), RemovedHere: st.RemovedHere,
 	}
 	f := s.fortressNow()
 	if f == nil {
@@ -520,6 +558,7 @@ func (s *Server) fortressRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/fortress/phrase", s.changeFortressRoute)
 	mux.HandleFunc("PUT /api/fortress/device", s.nameFortressDevice)
 	mux.HandleFunc("PUT /api/fortress/permissions", s.switchFortressPermission)
+	mux.HandleFunc("DELETE /api/fortress/members/{id}", s.removeFortressRoute)
 	mux.HandleFunc("DELETE /api/fortress", s.leaveFortress)
 	mux.HandleFunc("POST /api/fortress/open/{id}", s.openMember)
 	mux.HandleFunc("GET /api/fortress/members/{id}/status", s.memberStatus)
@@ -532,6 +571,8 @@ func writeFortressError(w http.ResponseWriter, err error) {
 		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error(), "code": "inFortress"})
 	case errors.Is(err, errNoFortress):
 		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error(), "code": "noFortress"})
+	case errors.Is(err, errNoMember):
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": err.Error(), "code": "noMember"})
 	default:
 		writeError(w, http.StatusInternalServerError, err)
 	}
@@ -657,6 +698,17 @@ func (s *Server) switchFortressPermission(w http.ResponseWriter, r *http.Request
 	}
 	if err := f.SetPermission(req.From, req.To, req.Action, req.On); err != nil {
 		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, s.fortressView())
+}
+
+// removeFortressRoute takes another member out of the fortress. A page
+// another app opened here never reaches it (closedPrefixes), nor does the API
+// token.
+func (s *Server) removeFortressRoute(w http.ResponseWriter, r *http.Request) {
+	if err := s.removeFortressMember(r.PathValue("id")); err != nil {
+		writeFortressError(w, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, s.fortressView())

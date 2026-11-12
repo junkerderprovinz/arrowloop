@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"sync"
 	"time"
 
@@ -82,6 +83,19 @@ type State struct {
 	// MoveFrom is the app's own phrase while instances that were away still
 	// have to be handed the fortress phrase over it.
 	MoveFrom []byte
+	// Removed are the members this instance took out of the fortress since
+	// its phrase last changed, which that phrase still lets back in.
+	Removed []Removed
+	// RemovedHere says another member took this instance out, until it joins
+	// a fortress again.
+	RemovedHere bool
+}
+
+// Removed is a member taken out of the fortress, by the names it went by.
+type Removed struct {
+	App    string `json:"app"`
+	Name   string `json:"name"`
+	Device string `json:"device"`
 }
 
 // Mode is the relay mode in force.
@@ -111,6 +125,8 @@ type onDisk struct {
 	MoveFrom         string    `json:"moveFrom,omitempty"`
 	FortressGroup    string    `json:"fortressGroup,omitempty"`
 	MoveGroup        string    `json:"moveGroup,omitempty"`
+	Removed          string    `json:"removed,omitempty"`
+	RemovedHere      bool      `json:"removedHere,omitempty"`
 }
 
 // blobs are what the kit keeps for the pairing, the fortress and the move,
@@ -163,6 +179,16 @@ func (s *Store) read(body []byte) error {
 	st := State{
 		RelayMode: d.RelayMode, RelayURL: d.RelayURL, RelayServe: d.RelayServe, Name: d.Name,
 		JoinedAt: d.JoinedAt, MemberSeenAt: d.MemberSeenAt, Fortress: d.Fortress, FortressChanged: d.FortressChanged,
+		RemovedHere: d.RemovedHere,
+	}
+	if d.Removed != "" {
+		plain, err := security.Unseal(s.key, d.Removed)
+		if err != nil {
+			return s.unopened(err)
+		}
+		if err := json.Unmarshal([]byte(plain), &st.Removed); err != nil {
+			return fmt.Errorf("%s is damaged (%v); delete it to leave the group and pair again", s.path, err)
+		}
 	}
 	for _, f := range []struct {
 		into   *[]byte
@@ -225,6 +251,7 @@ func (st State) clone() State {
 	st.PairingPrevious = bytes.Clone(st.PairingPrevious)
 	st.FortressPrevious = bytes.Clone(st.FortressPrevious)
 	st.MoveFrom = bytes.Clone(st.MoveFrom)
+	st.Removed = slices.Clone(st.Removed)
 	return st
 }
 
@@ -243,7 +270,7 @@ func (s *Store) Update(fn func(*State) error) error {
 	if another {
 		kept = blobs{}
 		next.PairingPrevious, next.FortressPrevious, next.MoveFrom = nil, nil, nil
-		next.FortressChanged = time.Time{}
+		next.FortressChanged, next.Removed = time.Time{}, nil
 	}
 	if err := s.write(next, kept); err != nil {
 		return err
@@ -270,6 +297,7 @@ func (s *Store) EnterFortress(secret []byte) error {
 		kept.moving = bytes.Clone(s.b.group)
 	}
 	next.Secret, next.Fortress, next.FortressPrevious, next.FortressChanged = bytes.Clone(secret), true, nil, time.Time{}
+	next.Removed, next.RemovedHere = nil, false
 	if err := s.write(next, kept); err != nil {
 		return err
 	}
@@ -285,7 +313,7 @@ func (s *Store) ChangeFortressSecret(secret []byte) error {
 	defer s.mu.Unlock()
 	next := s.now.clone()
 	next.FortressPrevious, next.PairingPrevious, next.Secret = next.Secret, bytes.Clone(next.Secret), bytes.Clone(secret)
-	next.FortressChanged = time.Now().Round(0)
+	next.FortressChanged, next.Removed = time.Now().Round(0), nil
 	if err := s.write(next, s.b); err != nil {
 		return err
 	}
@@ -368,6 +396,16 @@ func (s *Store) write(st State, b blobs) error {
 	d := onDisk{
 		RelayMode: st.RelayMode, RelayURL: st.RelayURL, RelayServe: st.RelayServe, Name: st.Name,
 		JoinedAt: st.JoinedAt, MemberSeenAt: st.MemberSeenAt, Fortress: st.Fortress, FortressChanged: st.FortressChanged,
+		RemovedHere: st.RemovedHere,
+	}
+	if len(st.Removed) > 0 {
+		plain, err := json.Marshal(st.Removed)
+		if err != nil {
+			return err
+		}
+		if d.Removed, err = security.Seal(s.key, string(plain)); err != nil {
+			return err
+		}
 	}
 	for _, f := range []struct {
 		into  *string

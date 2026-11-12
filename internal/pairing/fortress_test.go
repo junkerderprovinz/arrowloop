@@ -153,3 +153,57 @@ func reopened(t *testing.T, dir string) *Store {
 	}
 	return s
 }
+
+func TestTheRemovedAreKeptSealedUntilThePhraseChanges(t *testing.T) {
+	dir := t.TempDir()
+	s := paired(t, dir)
+	if err := s.EnterFortress([]byte("fortress phrase!")); err != nil {
+		t.Fatal(err)
+	}
+	gone := Removed{App: "firesquire", Name: "FireSquire", Device: "Bottich"}
+	if err := s.Update(func(st *State) error { st.Removed = append(st.Removed, gone); return nil }); err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, FileName))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Contains(raw, []byte("Bottich")) {
+		t.Errorf("the file names the removed member in the clear: %s", raw)
+	}
+	if got := reopened(t, dir).Get().Removed; len(got) != 1 || got[0] != gone {
+		t.Fatalf("after a restart the removed are %+v", got)
+	}
+	if err := s.ChangeFortressSecret([]byte("another phrase!!")); err != nil {
+		t.Fatal(err)
+	}
+	if got := reopened(t, dir).Get().Removed; len(got) != 0 {
+		t.Errorf("after a new phrase the removed are %+v", got)
+	}
+}
+
+func TestTakenOutStaysUntilTheNextFortress(t *testing.T) {
+	dir := t.TempDir()
+	s := paired(t, dir)
+	if err := s.EnterFortress([]byte("fortress phrase!")); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Update(func(st *State) error {
+		st.Secret, st.Member, st.Fortress = nil, nil, false
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Update(func(st *State) error { st.RemovedHere = true; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if !reopened(t, dir).Get().RemovedHere {
+		t.Fatal("a restart forgets that another member took the instance out")
+	}
+	if err := s.EnterFortress([]byte("fortress phrase!")); err != nil {
+		t.Fatal(err)
+	}
+	if reopened(t, dir).Get().RemovedHere {
+		t.Error("joining again still says another member took the instance out")
+	}
+}

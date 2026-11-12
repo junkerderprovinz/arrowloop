@@ -146,6 +146,7 @@ func TestASignedInUserOpensAnotherInstanceBehindItsOwnSignIn(t *testing.T) {
 		{http.MethodPost, "api/security/password"},
 		{http.MethodPost, "api/security/read-tokens"},
 		{http.MethodPost, "api/fortress/open/" + bID},
+		{http.MethodDelete, "api/fortress/members/" + bID},
 		{http.MethodGet, "api/fortress/v1/status"},
 		{http.MethodDelete, "api/passkeys/x"},
 		{http.MethodGet, "fortress/open/0123456789abcdef0123456789abcdef/"},
