@@ -1480,6 +1480,7 @@ const lv: Translations = {
   'new.change.fortressJobs': 'Citas tava cietokšņa lietotnes var redzēt tavus uzdevumus un galamērķus, palaist uzdevumu un pievienot jaunu. Katrai no šīm iespējām ir savs slēdzis.',
   'new.change.fortressBackup': 'Rezerves kopiju lietotne tavā cietoksnī var iegūt ArrowLoop iestatījumus un tos atjaunot. Atjaunošana paliek izslēgta, līdz tu to ieslēdz.',
   'new.change.fortressPhrase': 'Flīze {pairing} pēc tavas paroles parāda cietokšņa frāzi ar QR kodu un var to mainīt visām cietokšņa lietotnēm.',
+  'new.change.fortressRemove': 'Flīze {pairing} var noņemt citu lietotni no cietokšņa un pēc tam piedāvā jaunu frāzi, jo ar veco tā uzreiz tiktu atpakaļ.',
   'new.change.notifyManyChannels': 'Paziņojumi flīzē {safetyNet} nonāk tik daudzos kanālos, cik vēlies, katrs ar savu nosaukumu, slēdzi un pārbaudi.',
   'new.change.readTokens': 'Lasīšanas marķieris sadaļā {security} ļauj informācijas panelim, piemēram, Homepage, nolasīt, kā klājas ArrowLoop, un neko vairāk.',
   'new.change.directLan': 'Sapārotas instances vienā tīklā sazinās tieši cita ar citu, tāpēc DNS filtrs, kas bloķē releju, tās vairs nešķir.',

@@ -1480,6 +1480,7 @@ const id: Translations = {
   'new.change.fortressJobs': 'Aplikasi lain di benteng Anda bisa melihat tugas dan tujuan Anda, menjalankan tugas, dan menambah tugas. Masing-masing punya sakelar sendiri.',
   'new.change.fortressBackup': 'Aplikasi cadangan di benteng Anda bisa mengambil pengaturan ArrowLoop dan memulihkannya. Pemulihan tetap mati sampai Anda menyalakannya.',
   'new.change.fortressPhrase': 'Ubin {pairing} menampilkan frasa benteng beserta kode QR setelah kata sandi Anda, dan bisa menggantinya untuk semua aplikasi di benteng.',
+  'new.change.fortressRemove': 'Ubin {pairing} bisa mengeluarkan aplikasi lain dari benteng, lalu menawarkan frasa baru, karena dengan frasa lama aplikasi itu langsung bisa masuk lagi.',
   'new.change.notifyManyChannels': 'Notifikasi di ubin {safetyNet} dikirim ke saluran sebanyak yang Anda mau, masing-masing dengan nama, sakelar, dan ujinya sendiri.',
   'new.change.readTokens': 'Token baca di {security} membiarkan dasbor seperti Homepage membaca keadaan ArrowLoop, dan tidak lebih.',
   'new.change.directLan': 'Instance yang terpasang di jaringan yang sama berbicara langsung satu sama lain, jadi filter DNS yang memblokir relay tidak lagi memisahkan mereka.',

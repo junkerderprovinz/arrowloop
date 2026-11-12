@@ -1480,6 +1480,7 @@ const is: Translations = {
   'new.change.fortressJobs': 'Önnur forrit í víginu þínu geta séð verkin þín og áfangastaði, ræst verk og bætt við verki. Hvert þeirra hefur sinn eigin rofa.',
   'new.change.fortressBackup': 'Afritunarforrit í víginu þínu getur sótt stillingar ArrowLoop og endurheimt þær. Endurheimtin er óvirk þar til þú kveikir á henni.',
   'new.change.fortressPhrase': 'Reiturinn {pairing} sýnir setningu vígisins með QR-kóða eftir lykilorðið þitt og getur breytt henni fyrir öll forrit vígisins.',
+  'new.change.fortressRemove': 'Reiturinn {pairing} getur fjarlægt annað forrit úr víginu og býður svo nýja setningu, því með þeirri gömlu kæmist það strax aftur inn.',
   'new.change.notifyManyChannels': 'Tilkynningar á reitnum {safetyNet} fara á eins margar rásir og þú vilt, hver með sitt eigið heiti, rofa og prófun.',
   'new.change.readTokens': 'Lestrartákn undir {security} leyfir mælaborði eins og Homepage að lesa hvernig ArrowLoop gengur, og ekkert annað.',
   'new.change.directLan': 'Paruð tilvik á sama neti tala beint saman, svo DNS-sía sem lokar á relay heldur þeim ekki lengur aðskildum.',

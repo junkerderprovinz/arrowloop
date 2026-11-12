@@ -1480,6 +1480,7 @@ const da: Translations = {
   'new.change.fortressJobs': 'Andre apps i din fæstning kan se dine job og mål, starte et job og tilføje et. Hver mulighed har sin egen kontakt.',
   'new.change.fortressBackup': 'En app til sikkerhedskopier i din fæstning kan hente ArrowLoops indstillinger og gendanne dem. Gendannelse er slået fra, indtil du slår den til.',
   'new.change.fortressPhrase': 'Flisen {pairing} viser fæstningens sætning med en QR-kode efter din adgangskode og kan ændre den for alle apps i fæstningen.',
+  'new.change.fortressRemove': 'Flisen {pairing} kan tage en anden app ud af fæstningen og tilbyder derefter en ny sætning, da den gamle ville lukke den lige ind igen.',
   'new.change.notifyManyChannels': 'Notifikationer på flisen {safetyNet} går til lige så mange kanaler, du vil, hver med sit eget navn, sin egen kontakt og sin egen test.',
   'new.change.readTokens': 'Et læsetoken under {security} lader et dashboard som Homepage læse, hvordan ArrowLoop har det, og intet andet.',
   'new.change.directLan': 'Parrede instanser på samme netværk taler direkte med hinanden, så et DNS-filter, der blokerer videresenderen, ikke længere holder dem adskilt.',

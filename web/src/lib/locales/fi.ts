@@ -1480,6 +1480,7 @@ const fi: Translations = {
   'new.change.fortressJobs': 'Linnoituksesi muut sovellukset voivat nähdä työsi ja kohteesi, käynnistää työn ja lisätä uuden. Jokaisella näistä on oma kytkimensä.',
   'new.change.fortressBackup': 'Linnoituksesi varmuuskopiosovellus voi hakea ArrowLoopin asetukset ja palauttaa ne. Palautus pysyy pois päältä, kunnes kytket sen päälle.',
   'new.change.fortressPhrase': '{pairing}-ruutu näyttää salasanasi jälkeen linnoituksen lauseen QR-koodin kanssa ja voi vaihtaa sen kaikille linnoituksen sovelluksille.',
+  'new.change.fortressRemove': '{pairing}-ruutu voi poistaa toisen sovelluksen linnoituksesta ja tarjoaa sitten uuden lauseen, koska vanhalla se pääsisi heti takaisin.',
   'new.change.notifyManyChannels': '{safetyNet}-ruudun ilmoitukset menevät niin moneen kanavaan kuin haluat, jokaisella oma nimi, kytkin ja testi.',
   'new.change.readTokens': 'Lukutunniste kohdassa {security} antaa Homepagen kaltaisen koontinäytön lukea, miten ArrowLoop voi, eikä mitään muuta.',
   'new.change.directLan': 'Samassa verkossa olevat pariliitetyt instanssit puhuvat suoraan keskenään, joten releen estävä DNS-suodatin ei enää erota niitä.',

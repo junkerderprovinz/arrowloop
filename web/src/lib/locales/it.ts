@@ -1480,6 +1480,7 @@ const it: Translations = {
   'new.change.fortressJobs': 'Le altre app della tua fortezza possono vedere i tuoi lavori e le tue destinazioni, avviare un lavoro e aggiungerne uno. Ognuna di queste cose ha il suo interruttore.',
   'new.change.fortressBackup': 'Un\'app di backup della tua fortezza può prendere le impostazioni di ArrowLoop e ripristinarle. Il ripristino resta spento finché non lo accendi.',
   'new.change.fortressPhrase': 'Il riquadro {pairing} mostra la frase della fortezza con un codice QR dopo la tua password, e può cambiarla per tutte le app della fortezza.',
+  'new.change.fortressRemove': 'Il riquadro {pairing} può rimuovere un’altra app dalla fortezza e poi propone una nuova frase, perché con quella vecchia rientrerebbe subito.',
   'new.change.notifyManyChannels': 'Le notifiche del riquadro {safetyNet} vanno a tutti i canali che vuoi, ognuno con il suo nome, il suo interruttore e la sua prova.',
   'new.change.readTokens': 'Un token di lettura in {security} permette a una dashboard come Homepage di leggere come sta ArrowLoop, e nient\'altro.',
   'new.change.directLan': 'Le istanze associate nella stessa rete si parlano direttamente, quindi un filtro DNS che blocca il relay non le separa più.',

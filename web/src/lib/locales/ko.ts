@@ -1480,6 +1480,7 @@ const ko: Translations = {
   'new.change.fortressJobs': '요새의 다른 앱은 작업과 대상을 보고, 작업을 시작하고, 작업을 추가할 수 있습니다. 각각 전용 스위치가 있습니다.',
   'new.change.fortressBackup': '요새의 백업 앱은 ArrowLoop의 설정을 가져가고 복원할 수 있습니다. 복원은 직접 켜기 전까지 꺼져 있습니다.',
   'new.change.fortressPhrase': '{pairing} 타일은 비밀번호를 입력한 뒤 요새 문구를 QR 코드와 함께 보여 주고, 요새의 모든 앱에 대해 문구를 바꿀 수 있습니다.',
+  'new.change.fortressRemove': '{pairing} 타일에서 다른 앱을 요새에서 제거할 수 있으며, 이어서 새 문구를 제안합니다. 이전 문구로는 바로 다시 들어올 수 있기 때문입니다.',
   'new.change.notifyManyChannels': '{safetyNet} 타일의 알림은 원하는 만큼 많은 채널로 보낼 수 있으며, 채널마다 이름, 스위치, 테스트가 있습니다.',
   'new.change.readTokens': '{security}의 읽기 토큰으로 Homepage 같은 대시보드가 ArrowLoop의 상태를 읽을 수 있으며, 그 밖의 것은 할 수 없습니다.',
   'new.change.directLan': '같은 네트워크에 있는 페어링된 인스턴스는 서로 직접 통신하므로, 릴레이를 막는 DNS 필터가 있어도 더 이상 끊기지 않습니다.',

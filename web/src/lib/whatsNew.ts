@@ -69,6 +69,7 @@ export const RELEASES: Release[] = [
       { id: 'fortress-jobs', text: 'new.change.fortressJobs' },
       { id: 'fortress-backup', text: 'new.change.fortressBackup' },
       { id: 'fortress-phrase', text: 'new.change.fortressPhrase', names: { pairing: 'settings.pairing' } },
+      { id: 'fortress-remove', text: 'new.change.fortressRemove', names: { pairing: 'settings.pairing' } },
       { id: 'notify-many-channels', text: 'new.change.notifyManyChannels', names: { safetyNet: 'settings.safetyNet' } },
       { id: 'read-tokens', text: 'new.change.readTokens', names: { security: 'settings.security' } },
       { id: 'direct-lan', text: 'new.change.directLan' },

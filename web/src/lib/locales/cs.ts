@@ -1480,6 +1480,7 @@ const cs: Translations = {
   'new.change.fortressJobs': 'Ostatní aplikace v tvé pevnosti mohou vidět tvoje úlohy a cíle, spustit úlohu a nějakou přidat. Každá z těchto možností má vlastní přepínač.',
   'new.change.fortressBackup': 'Zálohovací aplikace v tvé pevnosti může stáhnout nastavení ArrowLoop a obnovit je. Obnovení zůstane vypnuté, dokud ho nezapneš.',
   'new.change.fortressPhrase': 'Dlaždice {pairing} ukáže po zadání hesla frázi pevnosti s QR kódem a může ji změnit pro všechny aplikace v pevnosti.',
+  'new.change.fortressRemove': 'Dlaždice {pairing} může odebrat jinou aplikaci z pevnosti a hned potom nabídne novou frázi, protože se starou by se aplikace vrátila zpátky.',
   'new.change.notifyManyChannels': 'Oznámení na dlaždici {safetyNet} jdou do libovolného počtu kanálů, každý s vlastním názvem, přepínačem a testem.',
   'new.change.readTokens': 'Token pro čtení v sekci {security} dovolí dashboardu jako Homepage číst, jak se ArrowLoop daří, a nic víc.',
   'new.change.directLan': 'Spárované instance ve stejné síti spolu mluví přímo, takže je DNS filtr, který blokuje přeposílač, už nerozdělí.',

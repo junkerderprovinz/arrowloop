@@ -1480,6 +1480,7 @@ const ca: Translations = {
   'new.change.fortressJobs': 'Les altres apps de la teva fortalesa poden veure les teves tasques i destinacions, iniciar una tasca i afegir-ne una. Cadascuna d\'aquestes coses té el seu interruptor.',
   'new.change.fortressBackup': 'Una app de còpies de seguretat de la teva fortalesa pot obtenir la configuració d\'ArrowLoop i restaurar-la. La restauració queda desactivada fins que l\'activis.',
   'new.change.fortressPhrase': 'La rajola {pairing} mostra la frase de la fortalesa amb un codi QR després de la teva contrasenya, i la pot canviar per a totes les apps de la fortalesa.',
+  'new.change.fortressRemove': 'La rajola {pairing} pot treure una altra app de la fortalesa i després ofereix una frase nova, perquè amb l’antiga tornaria a entrar de seguida.',
   'new.change.notifyManyChannels': 'Les notificacions de la rajola {safetyNet} van a tants canals com vulguis, cadascun amb el seu nom, interruptor i prova.',
   'new.change.readTokens': 'Un testimoni de lectura a {security} permet que un tauler com Homepage llegeixi com està ArrowLoop, i res més.',
   'new.change.directLan': 'Les instàncies aparellades a la mateixa xarxa parlen directament entre elles, així que un filtre DNS que bloqueja el repetidor ja no les separa.',

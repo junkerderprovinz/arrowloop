@@ -1480,6 +1480,7 @@ const nl: Translations = {
   'new.change.fortressJobs': 'Andere apps in je vesting kunnen je taken en doelen zien, een taak starten en er een toevoegen. Elk daarvan heeft een eigen schakelaar.',
   'new.change.fortressBackup': 'Een back-upapp in je vesting kan de instellingen van ArrowLoop ophalen en terugzetten. Terugzetten blijft uit tot je het aanzet.',
   'new.change.fortressPhrase': 'De tegel {pairing} toont na je wachtwoord de frase van de vesting met een QR-code, en kan haar voor alle apps in de vesting wijzigen.',
+  'new.change.fortressRemove': 'De tegel {pairing} kan een andere app uit de vesting halen en biedt daarna een nieuwe frase aan, want met de oude komt die meteen weer binnen.',
   'new.change.notifyManyChannels': 'Meldingen op de tegel {safetyNet} gaan naar zoveel kanalen als je wilt, elk met een eigen naam, schakelaar en test.',
   'new.change.readTokens': 'Een leestoken onder {security} laat een dashboard zoals Homepage lezen hoe het met ArrowLoop gaat, en verder niets.',
   'new.change.directLan': 'Gekoppelde instanties in hetzelfde netwerk praten rechtstreeks met elkaar, dus een DNS-filter dat de relay blokkeert, houdt ze niet meer uit elkaar.',

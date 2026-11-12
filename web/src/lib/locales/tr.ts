@@ -1480,6 +1480,7 @@ const tr: Translations = {
   'new.change.fortressJobs': 'Kalendeki diğer uygulamalar işlerini ve hedeflerini görebilir, bir iş başlatabilir ve yeni bir iş ekleyebilir. Bunların her birinin kendi anahtarı var.',
   'new.change.fortressBackup': 'Kalendeki bir yedekleme uygulaması ArrowLoop\'un ayarlarını alıp geri yükleyebilir. Geri yükleme, sen açana kadar kapalı kalır.',
   'new.change.fortressPhrase': '{pairing} kutucuğu, parolandan sonra kalenin ifadesini bir QR koduyla gösterir ve kaledeki tüm uygulamalar için değiştirebilir.',
+  'new.change.fortressRemove': '{pairing} kutucuğu başka bir uygulamayı kaleden kaldırabilir ve ardından yeni bir ifade önerir, çünkü eskisiyle hemen geri girebilir.',
   'new.change.notifyManyChannels': '{safetyNet} kutucuğundaki bildirimler istediğin kadar kanala gider, her birinin kendi adı, anahtarı ve testi vardır.',
   'new.change.readTokens': '{security} altındaki bir okuma belirteci, Homepage gibi bir panonun ArrowLoop\'un durumunu okumasına izin verir, başka hiçbir şeye değil.',
   'new.change.directLan': 'Aynı ağdaki eşleştirilmiş örnekler birbiriyle doğrudan konuşur, bu yüzden röleyi engelleyen bir DNS filtresi onları artık ayırmaz.',
