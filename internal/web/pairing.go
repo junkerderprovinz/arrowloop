@@ -435,9 +435,14 @@ func (s *Server) connectInfo() connectInfo {
 }
 
 // instanceName is what the other instances see this one as: the name given on
-// the Pairing tile, else the machine's.
+// the Pairing tile, else the machine's. A container's own hostname is its id,
+// so on Unraid the server's name comes from HOST_HOSTNAME, which Unraid sets
+// on every container.
 func (s *Server) instanceName(st pairing.State) string {
 	if name := strings.TrimSpace(st.Name); name != "" {
+		return name
+	}
+	if name := strings.TrimSpace(os.Getenv("HOST_HOSTNAME")); name != "" {
 		return name
 	}
 	host, _ := os.Hostname()

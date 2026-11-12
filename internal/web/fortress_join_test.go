@@ -22,6 +22,7 @@ type fortressInfo struct {
 	Joined  bool   `json:"joined"`
 	Phrase  bool   `json:"phrase"`
 	Device  string `json:"device"`
+	Default string `json:"defaultDevice"`
 	Members []struct {
 		ID     string `json:"id"`
 		App    string `json:"app"`
@@ -75,6 +76,23 @@ func (n *node) approvedIn(t *testing.T, id string) bool {
 		}
 	}
 	return false
+}
+
+func TestAContainerOnUnraidGoesByTheServerName(t *testing.T) {
+	t.Setenv("HOST_HOSTNAME", "Tower")
+	a := newNode(t, testRelay(t))
+	if got := a.fortress(t).Default; got != "Tower" {
+		t.Errorf("default device = %q, want Tower", got)
+	}
+	if got := a.connect(t).Name; got != "Tower" {
+		t.Errorf("name in the pairing = %q, want Tower", got)
+	}
+	if status, body := a.send(t, http.MethodPut, "/api/fortress/device", `{"device":"Cellar"}`); status != http.StatusOK {
+		t.Fatalf("name the device = %d %s", status, body)
+	}
+	if got := a.connect(t).Name; got != "Cellar" {
+		t.Errorf("name in the pairing after naming it = %q, want Cellar", got)
+	}
 }
 
 func TestJoiningTheFortressTakesThePairedInstancesAlong(t *testing.T) {
