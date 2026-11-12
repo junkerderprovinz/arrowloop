@@ -1652,7 +1652,7 @@ const nl: Translations = {
   'fortress.action.jobsCreate': 'Een taak toevoegen',
   'fortress.action.backupExport': 'Een back-up ophalen',
   'fortress.action.backupImport': 'Een back-up terugzetten',
-  'fortress.action.uiOpen': 'De pagina's openen',
+  'fortress.action.uiOpen': 'De pagina\'s openen',
 }
 
 export default nl
