@@ -10,6 +10,7 @@ import { ProviderPicker } from '../components/ProviderPicker'
 import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
+import { SubCard } from '../lib/glimstone/SubCard'
 import { Button } from '../lib/glimstone/Button'
 import { ConfirmWindow } from '../components/ConfirmWindow'
 import {
@@ -824,10 +825,7 @@ function RemoteForm({
           </p>
         )}
         {rest.length > 0 && (
-          <section className="glim-subcard flex flex-col gap-4 p-4">
-            <h3 className="glim-eyebrow">{t('targets.moreSettings')}</h3>
-            {rest.map(field)}
-          </section>
+          <SubCard title={t('targets.moreSettings')}>{rest.map(field)}</SubCard>
         )}
       </div>
     </Dialog>

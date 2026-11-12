@@ -6,7 +6,7 @@ import { api, type ConnectInfo, type Deployment } from '../../../lib/api'
 import { Badge, type BadgeTone } from '../../../lib/glimstone/Badge'
 import { Button } from '../../../lib/glimstone/Button'
 import { Card } from '../../../lib/glimstone/Card'
-import { InfoBubble } from '../../../lib/glimstone/InfoBubble'
+import { SubCard } from '../../../lib/glimstone/SubCard'
 import { useT, type TranslationKey } from '../../../lib/i18n'
 import { kindName, refusalText, seenAgo, type PairStage } from '../../../lib/pairing'
 import { useToast } from '../../../lib/toast'
@@ -88,11 +88,7 @@ export function GroupCard({ group, stage, joinedAgo, hueIndex, onRefresh }: {
         )}
 
         {group.pending.length > 0 && (
-          <section className="glim-subcard flex flex-col gap-3 px-4 pb-4 pt-3" aria-label={t('pairing.pendingTitle')}>
-            <h3 className="glim-eyebrow flex items-center gap-1.5 font-semibold">
-              {t('pairing.pendingTitle')}
-              <InfoBubble tip={t('pairing.pendingTip')} />
-            </h3>
+          <SubCard title={t('pairing.pendingTitle')} hint={t('pairing.pendingTip')}>
             <Rows>
               {group.pending.map((p) => (
                 <Row key={p.id} glyph={<IconServer />} name={shownName(p.name)} note={t('pairing.fingerprint', { fingerprint: p.fingerprint })}>
@@ -114,15 +110,11 @@ export function GroupCard({ group, stage, joinedAgo, hueIndex, onRefresh }: {
                 </Row>
               ))}
             </Rows>
-          </section>
+          </SubCard>
         )}
 
         {group.behind.length > 0 && (
-          <section className="glim-subcard flex flex-col gap-3 px-4 pb-4 pt-3" aria-label={t('pairing.behindTitle')}>
-            <h3 className="glim-eyebrow flex items-center gap-1.5 font-semibold">
-              {t('pairing.behindTitle')}
-              <InfoBubble tip={t('pairing.behindTip')} />
-            </h3>
+          <SubCard title={t('pairing.behindTitle')} hint={t('pairing.behindTip')}>
             <Rows>
               {group.behind.map((m) => (
                 <Row key={m.id} glyph={glyphFor(m.deployment)} name={m.name || m.id}>
@@ -131,7 +123,7 @@ export function GroupCard({ group, stage, joinedAgo, hueIndex, onRefresh }: {
                 </Row>
               ))}
             </Rows>
-          </section>
+          </SubCard>
         )}
 
         <div className="flex min-w-0 flex-col gap-2">

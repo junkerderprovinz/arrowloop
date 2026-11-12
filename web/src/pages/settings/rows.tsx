@@ -36,22 +36,6 @@ export function SettingsRow({ label, hint, children }: { label: string; hint?: s
   )
 }
 
-/**
- * A group of rows inside a card under a small heading, one step up the surface
- * ramp. It sets a group apart without hiding it behind a fold.
- */
-export function SubCard({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <section className="glim-subcard flex flex-col gap-4 px-4 pb-4 pt-3">
-      <h3 data-glim-label={label} className="glim-eyebrow flex items-center gap-1.5 font-semibold">
-        {label}
-        {hint && <InfoBubble tip={hint} />}
-      </h3>
-      {children}
-    </section>
-  )
-}
-
 /** What the server sends in place of a secret it keeps. */
 const WITHHELD = '********'
 

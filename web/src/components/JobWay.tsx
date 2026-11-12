@@ -9,6 +9,7 @@ import { Held } from './GlobalValues'
 import type { Direction, Remote } from '../lib/api'
 import { placeOf } from '../lib/entryLabel'
 import { Button } from '../lib/glimstone/Button'
+import { SubCard } from '../lib/glimstone/SubCard'
 import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 import { isLocalTarget } from '../lib/localTarget'
@@ -130,32 +131,31 @@ function SideCard({
   const name = face.name ?? (path ? here : t('edit.sideUnset'))
 
   return (
-    <section className="glim-subcard flex min-w-0 flex-1 flex-col gap-3 px-4 pb-4 pt-3">
-      <h3 data-glim-label={label} className="glim-eyebrow flex items-center gap-1.5 font-semibold">
-        {label}
-      </h3>
-      <div className="flex min-w-0 items-center gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-carbon-surface3 text-accentGlyph [&_svg]:h-5 [&_svg]:w-5">
-          {face.mark}
-        </span>
-        <span className={`min-w-0 flex-1 text-body font-medium [overflow-wrap:anywhere] ${path ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
-          {name}
-        </span>
-      </div>
-      <Text value={path} onChange={onChange} label={label} mono />
-      <div className="flex justify-end">
-        <Button label={t('pick.open')} labelKey="pick.open" glyph={<IconFolder />} onClick={() => setPicking(true)} />
-      </div>
-      <FolderPicker
-        open={picking}
-        known={known}
-        start={path}
-        onClose={() => setPicking(false)}
-        onPick={(next) => {
-          onChange(next)
-          setPicking(false)
-        }}
-      />
-    </section>
+    <div className="flex min-w-0 flex-1 flex-col *:flex-1">
+      <SubCard title={label}>
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-carbon-surface3 text-accentGlyph [&_svg]:h-5 [&_svg]:w-5">
+            {face.mark}
+          </span>
+          <span className={`min-w-0 flex-1 text-body font-medium [overflow-wrap:anywhere] ${path ? 'text-carbon-text' : 'text-carbon-textMuted'}`}>
+            {name}
+          </span>
+        </div>
+        <Text value={path} onChange={onChange} label={label} mono />
+        <div className="flex justify-end">
+          <Button label={t('pick.open')} labelKey="pick.open" glyph={<IconFolder />} onClick={() => setPicking(true)} />
+        </div>
+        <FolderPicker
+          open={picking}
+          known={known}
+          start={path}
+          onClose={() => setPicking(false)}
+          onPick={(next) => {
+            onChange(next)
+            setPicking(false)
+          }}
+        />
+      </SubCard>
+    </div>
   )
 }
