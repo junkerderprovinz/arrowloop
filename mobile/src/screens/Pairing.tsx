@@ -559,7 +559,6 @@ function FortressCard({
     ...fortressText(lang),
     changeBody: t("fortress.changeBody"),
     changeAway: t("fortress.changeAway"),
-    changedLeft: t("fortress.changedLeft"),
   };
   const [entering, setEntering] = useState(false);
   // Which of the two the password field stands in front of.
@@ -721,7 +720,7 @@ function FortressCard({
         <AxisLabel>{shown.left ? text.changedTitle : text.phraseTitle}</AxisLabel>
         <WordSlots words={shown.phrase.split(/\s+/)} code={shown.code} />
         <Caption>{text.scanHint}</Caption>
-        {shown.left && shown.left.length > 0 ? <Body>{fill(text.changedLeft, { devices: shown.left.join(", ") })}</Body> : null}
+        {shown.left && shown.left.length > 0 ? <Body>{t("fortress.changedLeft", { devices: shown.left.join(", ") })}</Body> : null}
       </>
     );
     foot = (
