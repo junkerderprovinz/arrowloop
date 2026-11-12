@@ -33,6 +33,7 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **The sign-in page names each field inside it.** Password and the other fields show their name in grey until you type.
 - **A run's window can be dragged larger** and remembers that size for every run.
 - **Every line of a job's files names both sides**, with an arrow pointing to where something happened.
+- **ArrowLoop follows GlimStone 4.4.0.** Groups inside a card or a window carry their title in a badge on the top edge, servers and laptops get glyphs of their own, and the APK button's QR part simply says QR code.
 - **The Pairing tile shows ParleyPort's new logo.**
 - **Little things got tidier.** The sync directions carry arrows, the ARM downloads say ARM, Use this folder carries a check, and the label switches on the phone stay on one line.
 
@@ -42,6 +43,8 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **The Pairing tile follows your group live.** An instance that arrives, waits, is approved or leaves shows up at once, on the web, on the desktop and on the phone.
 - **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and still talks to instances that haven't updated yet.
 - **On Unraid, ArrowLoop goes by the server's name** in the pairing and the fortress instead of its container id, until you give it a name of your own.
+- **An instance that can't be reached says Not reachable**, in every language, on the web and on the phone.
+- **A busy button shows a turning ring** that follows your motion setting, and screen readers read every toast out.
 - **A notification that doesn't get through is tried again**, three times with a pause, and a failed test says why in your language.
 - **A job waits for its drive instead of failing.** While an external or network drive is away, the job shows "Waiting for drive" and runs by itself within a minute of the drive coming back.
 - **A local side is read once instead of twice**, so large folders are done sooner.
@@ -62,6 +65,7 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **An anomaly you allowed goes away as soon as its run starts**, not only once the whole run is done.
 - **Check this job speaks your language**, findings and side names included.
 - **On a Mac, a folder replaced under the same name stays watched.**
+- **A switch that's on stands out again in the light theme**, on the web and on the phone, and picked buttons and tabs keep readable text.
 - **Builds use Go 1.27.4**, which fixes a crash in Go's HTTP/1 server ([GO-2026-6859](https://pkg.go.dev/vuln/GO-2026-6859)).
 
 ## 🌐 Translations
