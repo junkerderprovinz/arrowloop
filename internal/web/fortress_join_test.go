@@ -14,6 +14,7 @@ import (
 	"github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
 	"github.com/junkerderprovinz/parleyport/kit/phrase"
+	"github.com/junkerderprovinz/parleyport/kit/status"
 
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
@@ -479,4 +480,25 @@ func TestABackupToolHandsTheBackupBackPastTheGuard(t *testing.T) {
 	if _, ok := h.runner.Config().Find("photos"); !ok {
 		t.Errorf("after the import the jobs are %v, want photos back", h.runner.Config().Jobs)
 	}
+}
+
+func TestTheOtherAppsSeeArrowLoopsLogoAndServerUnderAnyName(t *testing.T) {
+	t.Setenv("HOST_HOSTNAME", "Tower")
+	url := testRelay(t)
+	a := newNode(t, url)
+	if code, body := a.send(t, http.MethodPut, "/api/fortress/device", `{"device":"Cellar"}`); code != http.StatusOK {
+		t.Fatalf("name the device = %d %s", code, body)
+	}
+	words := newWords(t)
+	a.join(t, words)
+	secret, err := phrase.Decode(words)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loader, _ := openFortress(t, url, nil, "knightloader", "Attic", func(c *fortress.Config) { c.Secret = secret })
+	eventually(t, "the other app to see ArrowLoop's logo on Tower", func() bool {
+		return slices.ContainsFunc(loader.Members(), func(m fortress.Member) bool {
+			return m.App.ID == "arrowloop" && m.Device == "Cellar" && m.Host == "Tower" && status.CheckIcon(m.App.Icon) == nil
+		})
+	})
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -62,7 +63,10 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 		network.Start()
 	}
 	f, err := kitfortress.Open(kitfortress.Config{
-		App:      kitfortress.App{ID: string(pairing.Domain), Name: "ArrowLoop", Version: boot.Version},
+		App: kitfortress.App{ID: string(pairing.Domain), Name: "ArrowLoop", Version: boot.Version, Icon: appIcon},
+		// Unraid names its server to every container, and the apps of a
+		// fortress on one server find each other by it.
+		Host:     strings.TrimSpace(os.Getenv("HOST_HOSTNAME")),
 		Secret:   st.Secret,
 		Previous: st.FortressPrevious,
 		Keeper:   fortressKeeper{s},

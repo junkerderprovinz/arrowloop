@@ -161,3 +161,19 @@ func TestReadTokensAreMadeListedAndDeletedThroughTheAPI(t *testing.T) {
 		t.Error("the deleted token still opens")
 	}
 }
+
+func TestTheStatusCarriesArrowLoopsLogo(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	handler, token, _ := statusServer(t, nil)
+	req := httptest.NewRequest(http.MethodGet, status.StatusPath, nil)
+	req.Header.Set("Authorization", "Bearer "+token)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+	var rep status.Report
+	if err := json.Unmarshal(rec.Body.Bytes(), &rep); rec.Code != http.StatusOK || err != nil {
+		t.Fatalf("the status answered %d %s", rec.Code, rec.Body)
+	}
+	if err := status.CheckIcon(rep.App.Icon); err != nil {
+		t.Errorf("the status carries no logo: %v", err)
+	}
+}

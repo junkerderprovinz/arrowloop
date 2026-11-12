@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
+	_ "embed"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -40,13 +41,20 @@ func (s *Server) readTokenOpens(r *http.Request) error {
 	return nil
 }
 
+// logoSVG is the ArrowLoop mark the other apps of the fortress show.
+//
+//go:embed logo.svg
+var logoSVG []byte
+
+var appIcon, _ = status.IconFromSVG(logoSVG)
+
 type fortressSource struct{ s *Server }
 
 func (f fortressSource) Report(ctx context.Context, lang string) (status.Report, error) {
 	s := f.s
 	open, _ := s.Runner.Findings(ctx)
 	snap := fortress.Snapshot{
-		App:      status.App{ID: "arrowloop", Name: "ArrowLoop", Version: boot.Version},
+		App:      status.App{ID: "arrowloop", Name: "ArrowLoop", Version: boot.Version, Icon: appIcon},
 		Instance: status.Instance{ID: s.instanceID(), Name: s.ownName(), Container: s.containerID()},
 		Jobs:     s.Runner.Config().Jobs,
 		Findings: open,

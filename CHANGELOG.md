@@ -43,6 +43,7 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **The Pairing tile follows your group live.** An instance that arrives, waits, is approved or leaves shows up at once, on the web, on the desktop and on the phone.
 - **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and still talks to instances that haven't updated yet.
 - **On Unraid, ArrowLoop goes by the server's name** in the pairing and the fortress instead of its container id, until you give it a name of your own.
+- **ArrowLoop shows up with its own logo** in your other apps, and they find it on its server whatever name you give it.
 - **An instance that can't be reached says Not reachable**, in every language, on the web and on the phone.
 - **A busy button shows a turning ring** that follows your motion setting, and screen readers read every toast out.
 - **A notification that doesn't get through is tried again**, three times with a pause, and a failed test says why in your language.
