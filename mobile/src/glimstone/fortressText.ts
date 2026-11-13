@@ -119,6 +119,14 @@ export interface FortressText {
   changeConfirm: string;
   changedTitle: string;
   changedLeft: string;
+  /** The heading of the fortress card on a page without a framework, such as an Unraid plugin's settings. */
+  fortress: string;
+  /** For an app that cannot keep the phrase: where it changes, with `{apps}` as a list of "{app} on {device}". */
+  changeElsewhere: string;
+  /** The same while no app in reach keeps the phrase. */
+  changeNowhere: string;
+  /** The phrase changed while the app was away, and the app could not follow on its own. */
+  phraseMoved: string;
   permissions: string;
   /** The small confirmation once a permission is saved on, and off. */
   permissionOn: string;

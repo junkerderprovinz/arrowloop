@@ -83,13 +83,6 @@ function outside(over: Partial<FortressInfo> = {}): FortressInfo {
 }
 const joined = (over: Partial<FortressInfo> = {}) => outside({ joined: true, phrase: true, ...over })
 
-// jsdom has no ResizeObserver, which the permissions' filter measures its room with.
-globalThis.ResizeObserver ??= class {
-  observe() {}
-  disconnect() {}
-  unobserve() {}
-} as unknown as typeof ResizeObserver
-
 const refreshed = vi.fn()
 
 function Page({ start, pairedWith = [] }: { start: FortressInfo; pairedWith?: string[] }) {
@@ -246,6 +239,21 @@ describe('the fortress on the Pairing tile', () => {
     await act(async () => fireEvent.click(permission))
     expect(calls).toEqual(['permission bombvault arrowloop backup.export false'])
     expect(toasts).toEqual([`Switched off: ${en['fortress.action.backupExport']}`])
+  })
+
+  it('lists the permissions without a filter while every one of them involves ArrowLoop', async () => {
+    const start = joined({
+      members: [{ id: 'b1', app: 'bombvault', name: 'BombVault', version: '9.1.0', device: 'Tower', deployment: 'container', kind: 'instance', online: true, relay: false, pages: true }],
+      permissions: [
+        { from: 'bombvault', to: 'arrowloop', action: 'backup.export', on: true },
+        { from: 'bombvault', to: 'arrowloop', action: 'backup.import', on: false },
+      ],
+    })
+    render(<Page start={start} />)
+    fireEvent.click(await waitFor(() => button('others')))
+    await screen.findByRole('switch', { name: en['fortress.action.backupExport'] })
+    expect(screen.queryByRole('radiogroup', { name: 'Permissions' })).toBeNull()
+    expect(document.querySelectorAll('[data-permission]')).toHaveLength(2)
   })
 
   describe('Open on another app', () => {
