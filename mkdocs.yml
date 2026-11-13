@@ -12,12 +12,13 @@ copyright: Copyright (C) 2026 Junker der Provinz. Licensed AGPL-3.0.
 theme:
   name: material
   language: en
+  custom_dir: docs-theme/overrides
   # The mark reads on both palettes, so one file serves both headers.
   logo: assets/logo.svg
   favicon: assets/favicon.png
   font:
-    text: IBM Plex Sans
-    code: IBM Plex Mono
+    text: Noto Sans
+    code: Noto Sans Mono
   palette:
     # Without media queries Material takes the first palette as the default,
     # so the site opens dark whatever the operating system prefers.
@@ -39,6 +40,18 @@ theme:
     - navigation.top
     - content.code.copy
     - toc.follow
+
+extra:
+  docs_theme:
+    accent: "#FCC419"
+    hero:
+      claim: Two-way file sync
+      accent: that shows you the plan before it moves anything.
+      text: ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone and a WebDAV cloud. It remembers what both sides last agreed on, lists every change before a run, and stops rather than delete more than it should.
+      buttons:
+        - { text: Get started, link: installing/, primary: true }
+        - { text: How it compares, link: comparison/ }
+        - { text: Source code, link: "https://github.com/junkerderprovinz/arrowloop" }
 
 markdown_extensions:
   - admonition
