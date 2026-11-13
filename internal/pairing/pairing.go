@@ -84,7 +84,7 @@ type State struct {
 	// have to be handed the fortress phrase over it.
 	MoveFrom []byte
 	// Removed are the members this instance took out of the fortress since
-	// its phrase last changed, which that phrase still lets back in.
+	// its phrase last changed, which keeps it closed to new apps until then.
 	Removed []Removed
 	// RemovedHere says another member took this instance out, until it joins
 	// a fortress again.

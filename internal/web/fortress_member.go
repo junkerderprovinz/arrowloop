@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bytes"
 	"cmp"
 	"context"
 	"crypto/hmac"
@@ -12,6 +13,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode"
 	"unicode/utf8"
@@ -29,6 +31,9 @@ var (
 	errInFortress = errors.New("this instance is in a fortress already")
 	errNoFortress = errors.New("this instance is in no fortress")
 	errNoMember   = errors.New("no other member of the fortress has that id")
+	// errClosedUntilNewPhrase is a join the members turned away: one of them
+	// was removed, and the fortress takes no new app until its phrase changes.
+	errClosedUntilNewPhrase = errors.New("the fortress takes no new app until its phrase changes")
 )
 
 // moveWait is how often the instances the pairing had before the fortress
@@ -58,47 +63,27 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 			st = s.Pairing.Get()
 		}
 	}
-	var network *lan.Service
-	if s.LAN != nil {
-		network = lan.New(lan.Config{Group: kitfortress.Multicast, Ports: s.groupPorts()})
-		network.Start()
-	}
-	f, err := kitfortress.Open(kitfortress.Config{
-		App: kitfortress.App{ID: string(pairing.Domain), Name: "ArrowLoop", Version: memberVersion(), Icon: appIcon},
-		// Unraid names its server to every container, and the apps of a
-		// fortress on one server find each other by it.
-		Host:     strings.TrimSpace(os.Getenv("HOST_HOSTNAME")),
-		Secret:   st.Secret,
-		Previous: st.FortressPrevious,
-		Keeper:   fortressKeeper{s},
-		Identity: id,
-		Self:     s.self(st),
-		Relay:    mode,
-		RelayURL: relayURL,
-		LAN:      network,
-		Store:    s.Pairing.FortressStore(),
-		Pairing: &kitfortress.Pairing{
-			Group: group.Config{
-				Previous: st.PairingPrevious,
-				LAN:      s.LAN,
-				Store:    s.Pairing.GroupStore(),
-				Kinds:    []member.Kind{member.KindInstance},
-				Ports:    s.groupPorts(),
-				OnChange: func() {
-					s.noteMemberSeen(gen)
-					s.groupChanged()
-				},
+	network := s.fortressLAN()
+	cfg := s.fortressConfig(st, id, mode, relayURL, network)
+	cfg.Previous = st.FortressPrevious
+	cfg.Keeper = fortressKeeper{s}
+	cfg.Store = s.Pairing.FortressStore()
+	cfg.Pairing = &kitfortress.Pairing{
+		Group: group.Config{
+			Previous: st.PairingPrevious,
+			LAN:      s.LAN,
+			Store:    s.Pairing.GroupStore(),
+			Kinds:    []member.Kind{member.KindInstance},
+			Ports:    s.groupPorts(),
+			OnChange: func() {
+				s.noteMemberSeen(gen)
+				s.groupChanged()
 			},
-			Serve: s.groupHandler(),
 		},
-		Status:    fortressSource{s},
-		Actions:   s.FortressActions(),
-		Uses:      []string{kitfortress.OpenAction},
-		UI:        s.fortressUI(),
-		Export:    s.FortressExport,
-		Import:    s.FortressImport,
-		OnRemoved: func() { s.removedFrom(gen) },
-	})
+		Serve: s.groupHandler(),
+	}
+	cfg.OnRemoved = func() { s.removedFrom(gen) }
+	f, err := kitfortress.Open(cfg)
 	if err != nil {
 		if network != nil {
 			_ = network.Close()
@@ -118,6 +103,40 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 		s.moving.Go(func() { s.move(ctx, st, id, mode, relayURL) })
 	}
 	s.groupChanged()
+}
+
+// fortressLAN is the service that announces this instance to the fortress on
+// this network, started, or nil without one.
+func (s *Server) fortressLAN() *lan.Service {
+	if s.LAN == nil {
+		return nil
+	}
+	network := lan.New(lan.Config{Group: kitfortress.Multicast, Ports: s.groupPorts()})
+	network.Start()
+	return network
+}
+
+// fortressConfig is what this instance shows the fortress of st.Secret and
+// does for its members, the same while a join is still being tried.
+func (s *Server) fortressConfig(st pairing.State, id member.Identity, mode group.RelayMode, relayURL string, network *lan.Service) kitfortress.Config {
+	return kitfortress.Config{
+		App: kitfortress.App{ID: string(pairing.Domain), Name: "ArrowLoop", Version: memberVersion(), Icon: appIcon},
+		// Unraid names its server to every container, and the apps of a
+		// fortress on one server find each other by it.
+		Host:     strings.TrimSpace(os.Getenv("HOST_HOSTNAME")),
+		Secret:   st.Secret,
+		Identity: id,
+		Self:     s.self(st),
+		Relay:    mode,
+		RelayURL: relayURL,
+		LAN:      network,
+		Status:   fortressSource{s},
+		Actions:  s.FortressActions(),
+		Uses:     []string{kitfortress.OpenAction},
+		UI:       s.fortressUI(),
+		Export:   s.FortressExport,
+		Import:   s.FortressImport,
+	}
 }
 
 // closeFortressLocked leaves the fortress, the pairing and the move, with
@@ -353,15 +372,33 @@ func (s *Server) takeChangedPhrase(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// joinFortress joins the fortress of secret. The instances paired with this
-// one under the app's own phrase are handed the fortress phrase and follow,
-// and the pairing moves with them, approvals kept.
+// joinFortress joins the fortress of secret, unless its members turn this
+// instance away until the phrase changes. The instances paired with this one
+// under the app's own phrase are handed the fortress phrase and follow, and
+// the pairing moves with them, approvals kept.
 func (s *Server) joinFortress(ctx context.Context, secret []byte) error {
 	s.groupMu.Lock()
 	defer s.groupMu.Unlock()
 	st := s.Pairing.Get()
 	if st.Fortress {
 		return errInFortress
+	}
+	// The members know this instance by the key it tries the join with, so
+	// one outside a group keeps the key it made for that.
+	id, ok := s.identity()
+	if !ok {
+		var err error
+		if id, err = member.NewIdentity(member.KindInstance); err != nil {
+			return err
+		}
+	}
+	taken, err := s.takenIn(st, secret, id)
+	if err != nil {
+		return err
+	}
+	if !taken {
+		s.logf("fortress: the members turned the join away until the phrase changes, because one of them was removed")
+		return errClosedUntilNewPhrase
 	}
 	if old := s.joined(); old != nil {
 		ctx, cancel := context.WithTimeout(ctx, relayTimeout)
@@ -370,13 +407,95 @@ func (s *Server) joinFortress(ctx context.Context, secret []byte) error {
 		s.logf("fortress: joined a fortress, and %d instances of the group follow", len(took))
 	}
 	s.closeGroupLocked()
-	err := s.Pairing.EnterFortress(secret)
+	err = s.Pairing.EnterFortress(secret)
 	if err == nil && st.Secret == nil {
 		now := time.Now()
-		err = s.Pairing.Update(func(stored *pairing.State) error { stored.JoinedAt = now; return nil })
+		err = s.Pairing.Update(func(stored *pairing.State) error { stored.JoinedAt, stored.Member = now, id.Seed(); return nil })
 	}
 	s.openGroupLocked()
 	return err
+}
+
+// joinWait bounds how long a join waits for the members to take this
+// instance in or turn it away, and joinSettle is how long the relay has to
+// list them once it connected, as the kit's own command waits.
+var (
+	joinWait   = 5 * time.Second
+	joinSettle = 1500 * time.Millisecond
+)
+
+// takenIn opens the fortress of secret under id until its members answer, and
+// reports whether they take this instance in, which after a removal they do
+// not until the phrase changes. The trial keeps nothing, so a refusal leaves
+// the pairing as it was and hands no instance the phrase.
+func (s *Server) takenIn(st pairing.State, secret []byte, id member.Identity) (bool, error) {
+	trial := st
+	trial.Secret, trial.Fortress = secret, true
+	mode, relayURL := relayOf(st)
+	network := s.fortressLAN()
+	if network != nil {
+		defer func() { _ = network.Close() }()
+	}
+	cfg := s.fortressConfig(trial, id, mode, relayURL, network)
+	cfg.Store = &memoryStore{}
+	f, err := kitfortress.Open(cfg)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+	return !turnedAway(f, relayTarget(st) != "", network != nil), nil
+}
+
+// turnedAway waits until a member of f turns this instance away or takes it
+// in, until the relay lists nobody to do either, or until joinWait is over.
+// Members on this network may announce themselves any moment, so only a
+// fortress reached through the relay alone can tell that nobody is there.
+func turnedAway(f *kitfortress.Fortress, relayed, onLAN bool) bool {
+	tick := time.NewTicker(50 * time.Millisecond)
+	defer tick.Stop()
+	deadline := time.After(joinWait)
+	var connected time.Time
+	for {
+		if f.ShutOut() {
+			return true
+		}
+		members := f.Members()
+		if slices.ContainsFunc(members, func(m kitfortress.Member) bool { return m.State == group.StateApproved }) {
+			return false
+		}
+		now := time.Now()
+		if relayed && connected.IsZero() && f.RelayConnected() {
+			connected = now
+		}
+		settled := !relayed || !connected.IsZero() && now.Sub(connected) >= joinSettle
+		if !onLAN && settled && len(members) == 0 {
+			return false
+		}
+		select {
+		case <-deadline:
+			return false
+		case <-tick.C:
+		}
+	}
+}
+
+// memoryStore keeps what the kit saves for a fortress that is only tried.
+type memoryStore struct {
+	mu  sync.Mutex
+	raw []byte
+}
+
+func (m *memoryStore) Load() ([]byte, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return bytes.Clone(m.raw), nil
+}
+
+func (m *memoryStore) Save(raw []byte) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.raw = bytes.Clone(raw)
+	return nil
 }
 
 // changeFortressPhrase gives the fortress a new phrase and returns its words
@@ -447,8 +566,8 @@ func (s *Server) changeFortressPhrase(ctx context.Context) (string, []string, er
 
 // removeFortressMember takes another member out of the fortress, here and at
 // every member in reach, and keeps its name until the phrase changes, since
-// that phrase still lets it back in. This instance is no other member, so it
-// leaves instead.
+// until then the fortress takes no new app. This instance is no other member,
+// so it leaves instead.
 func (s *Server) removeFortressMember(id string) error {
 	s.groupMu.Lock()
 	defer s.groupMu.Unlock()
@@ -572,6 +691,9 @@ func writeFortressError(w http.ResponseWriter, err error) {
 		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error(), "code": "noFortress"})
 	case errors.Is(err, errNoMember):
 		writeJSON(w, http.StatusNotFound, map[string]string{"error": err.Error(), "code": "noMember"})
+	case errors.Is(err, errClosedUntilNewPhrase):
+		// GlimStone words this refusal in the reader's language by its code.
+		writeJSON(w, http.StatusConflict, map[string]any{"ok": false, "code": group.ClosedUntilNewPhrase})
 	default:
 		writeError(w, http.StatusInternalServerError, err)
 	}

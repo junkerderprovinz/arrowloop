@@ -159,6 +159,8 @@ export function FortressSection({
       onRefresh()
       return { ok: true }
     } catch (e) {
+      // GlimStone words the kit's own refusal itself.
+      if (e instanceof ApiError && e.code === 'closedUntilNewPhrase') return { code: e.code }
       return { error: e instanceof ApiError && e.code === 'inFortress' ? t('fortress.inFortress') : refusalText(t, e) }
     }
   }

@@ -135,13 +135,7 @@ func (s *Server) openGroupLocked() {
 	if !ok {
 		return
 	}
-	mode, relayURL := group.RelayProject, ""
-	switch st.Mode() {
-	case pairing.ModeOwn:
-		mode, relayURL = group.RelayOwn, strings.TrimSpace(st.RelayURL)
-	case pairing.ModeOff:
-		mode = group.RelayOff
-	}
+	mode, relayURL := relayOf(st)
 	gen := s.generation()
 	if st.Fortress {
 		s.openFortressLocked(st, id, mode, relayURL, gen)
@@ -184,6 +178,17 @@ func (s *Server) openGroupLocked() {
 	s.live = g
 	s.liveMu.Unlock()
 	s.groupChanged()
+}
+
+// relayOf is the relay mode and address st gives the kit.
+func relayOf(st pairing.State) (group.RelayMode, string) {
+	switch st.Mode() {
+	case pairing.ModeOwn:
+		return group.RelayOwn, strings.TrimSpace(st.RelayURL)
+	case pairing.ModeOff:
+		return group.RelayOff, ""
+	}
+	return group.RelayProject, ""
 }
 
 // GroupChanged is the phase of an event on the stream that says the group

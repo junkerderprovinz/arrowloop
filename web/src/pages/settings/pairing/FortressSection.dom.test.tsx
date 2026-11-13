@@ -141,6 +141,16 @@ describe('the fortress on the Pairing tile', () => {
     expect((await screen.findByRole('alert')).textContent).toBe(en['fortress.inFortress'])
   })
 
+  it('says the fortress takes no new app while a removal waits for a new phrase', async () => {
+    joinRefusal = new ApiError('Conflict', 409, 'closedUntilNewPhrase')
+    render(<Page start={outside()} />)
+    fireEvent.change(await openJoin(), { target: { value: PHRASE } })
+    await act(async () => fireEvent.click(button('join')))
+    expect((await screen.findByRole('alert')).textContent).toBe(
+      'The fortress takes no new apps right now because a member was removed. You need the new phrase to get in.',
+    )
+  })
+
   it('says where the phrase comes from in words that fit this page', async () => {
     render(<Page start={outside()} />)
     expect(await screen.findByText(en['fortress.outBody'].replace('{app}', 'ArrowLoop'))).toBeTruthy()

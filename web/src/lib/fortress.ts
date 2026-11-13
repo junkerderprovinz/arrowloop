@@ -41,7 +41,7 @@ export type FortressInfo = {
   members: FortressMember[]
   /** The permissions that involve ArrowLoop. */
   permissions: FortressPermission[]
-  /** The members taken out here since the phrase last changed, which it still lets back in. */
+  /** The members taken out here since the phrase last changed, which keeps the fortress closed to new apps until then. */
   removed: FortressRemoved[]
   /** Another member took this instance out, and it has not joined again since. */
   removedHere: boolean

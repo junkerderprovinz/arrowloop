@@ -16,6 +16,11 @@ func ShortenMoveWait(t testing.TB, d time.Duration) {
 	t.Cleanup(func() { moveWait = was })
 }
 
+// SettleJoinsWithin has a join through the relay conclude after d that
+// nobody is there to turn it away. The test's relay lists the members at
+// once, where a real one gets a second and a half.
+func SettleJoinsWithin(d time.Duration) { joinSettle = d }
+
 // ShortenTrashWait lets a test reach the deadline on a side's trash listing
 // without waiting the full minute.
 func ShortenTrashWait(t testing.TB, d time.Duration) {

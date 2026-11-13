@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/junkerderprovinz/parleyport/kit/fortress"
+	"github.com/junkerderprovinz/parleyport/kit/group"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
 	"github.com/junkerderprovinz/parleyport/kit/phrase"
 	"github.com/junkerderprovinz/parleyport/kit/status"
@@ -235,6 +236,84 @@ func TestAJoinIsRefusedWithItsReason(t *testing.T) {
 	_ = json.Unmarshal(body, &refused)
 	if status != http.StatusConflict || refused.Code != "inFortress" {
 		t.Errorf("a second fortress = %d %s, want inFortress", status, body)
+	}
+}
+
+func TestAJoinIsTakenInByTheAppsAlreadyThere(t *testing.T) {
+	url := testRelay(t)
+	words := newWords(t)
+	secret, err := phrase.Decode(words)
+	if err != nil {
+		t.Fatal(err)
+	}
+	vault, _ := openFortress(t, url, nil, "bombvault", "Tower", func(c *fortress.Config) { c.Secret = secret })
+	a := newNode(t, url)
+	start := time.Now()
+	a.join(t, words)
+	if waited := time.Since(start); waited >= 5*time.Second {
+		t.Errorf("the join took %v, as long as it waits for members that never answer", waited)
+	}
+	if !a.fortress(t).Joined {
+		t.Fatal("after the join the instance is in no fortress")
+	}
+	eventually(t, "the app already there to meet ArrowLoop", func() bool {
+		return slices.ContainsFunc(vault.Members(), func(m fortress.Member) bool { return m.App.ID == "arrowloop" && m.Online() })
+	})
+}
+
+func TestAJoinAfterARemovalIsTurnedAwayAndLeavesNothingBehind(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	_, bID := pair(t, a, b)
+	paired := phraseOf(t, a)
+
+	words := newWords(t)
+	secret, err := phrase.Decode(words)
+	if err != nil {
+		t.Fatal(err)
+	}
+	onThePhrase := func(c *fortress.Config) { c.Secret = secret }
+	vault, vaultID := openFortress(t, url, nil, "bombvault", "Tower", onThePhrase)
+	loader, loaderID := openFortress(t, url, nil, "knightloader", "Attic", onThePhrase)
+	squire, squireID := openFortress(t, url, nil, "firesquire", "Cellar", onThePhrase)
+	for _, f := range []*fortress.Fortress{vault, loader, squire} {
+		eventually(t, "each app to see the other two", func() bool { return len(f.Members()) == 2 })
+	}
+	knows(t, vault, loaderID, "knightloader")
+	knows(t, loader, vaultID, "bombvault")
+	if err := vault.Remove(squireID); err != nil {
+		t.Fatal(err)
+	}
+	eventually(t, "the other app to take the removed one out", func() bool {
+		return !slices.ContainsFunc(loader.Members(), func(m fortress.Member) bool { return m.ID == squireID })
+	})
+	_ = squire.Close()
+
+	status, body := a.send(t, http.MethodPost, "/api/fortress/join", `{"phrase":"`+words+`"}`)
+	var refused map[string]any
+	if err := json.Unmarshal(body, &refused); err != nil {
+		t.Fatalf("the join answered %d %s", status, body)
+	}
+	if status != http.StatusConflict || refused["code"] != group.ClosedUntilNewPhrase || refused["ok"] != false {
+		t.Fatalf("the join = %d %s, want %s", status, body, group.ClosedUntilNewPhrase)
+	}
+	if _, worded := refused["error"]; worded {
+		t.Errorf("the refusal brings words of its own, %s, where the page has GlimStone's", body)
+	}
+	if a.server.InFortress() || a.fortress(t).Joined {
+		t.Error("the instance turned away is in the fortress")
+	}
+	if st := a.server.Pairing.Get(); st.Fortress || st.MoveFrom != nil {
+		t.Errorf("the instance turned away keeps the membership: fortress %v, moving %v", st.Fortress, st.MoveFrom != nil)
+	}
+	if got := phraseOf(t, a); got != paired {
+		t.Errorf("the pairing holds %q after the refusal, want its own phrase", got)
+	}
+	if !a.approvedIn(t, bID) {
+		t.Error("the pairing lost the other instance")
+	}
+	if b.server.Pairing.Get().Fortress {
+		t.Error("the paired instance was handed the phrase of a fortress that turned the join away")
 	}
 }
 

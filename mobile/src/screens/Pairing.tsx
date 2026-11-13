@@ -8,6 +8,7 @@ import { engine } from "../engine";
 import { Field, Refusal } from "../fields";
 import { fill } from "../glimstone/fortressText";
 import { fortressText } from "../glimstone/fortressTexts";
+import { joinRefusalText } from "../glimstone/joinRefusal";
 import { Glyph } from "../glyphs";
 import { useT, type TranslationKey } from "../i18n";
 import { useEngineStream } from "../useEngine";
@@ -638,6 +639,7 @@ function FortressCard({
       onRefresh();
       return null;
     } catch (e) {
+      if (e instanceof EngineError && e.code === "closedUntilNewPhrase") return joinRefusalText(text, e.code);
       return e instanceof EngineError && e.code === "inFortress" ? t("fortress.inFortress") : refusalText(t, e);
     }
   }

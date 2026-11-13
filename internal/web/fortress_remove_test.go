@@ -141,7 +141,16 @@ func TestAnInstanceTakenOutSaysSoUntilItJoinsAgain(t *testing.T) {
 	if v := n.removedView(t); v.Joined || !v.RemovedHere {
 		t.Fatalf("after a restart = %+v", v)
 	}
-	n.join(t, words)
+	// The fortress takes no new app until its phrase changes, and the instance
+	// taken out comes back as a new one.
+	status, body := n.send(t, http.MethodPost, "/api/fortress/join", `{"phrase":"`+words+`"}`)
+	if status != http.StatusConflict || !strings.Contains(string(body), `"closedUntilNewPhrase"`) {
+		t.Fatalf("joining again with the old phrase = %d %s, want closedUntilNewPhrase", status, body)
+	}
+	if v := n.removedView(t); v.Joined || !v.RemovedHere {
+		t.Fatalf("after the old phrase was turned away = %+v", v)
+	}
+	n.join(t, newWords(t))
 	if v := n.removedView(t); !v.Joined || v.RemovedHere {
 		t.Fatalf("after joining again = %+v", v)
 	}

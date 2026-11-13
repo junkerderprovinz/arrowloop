@@ -5,9 +5,12 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configfile"
+
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // testRcloneConf is the rclone configuration every test in this package
@@ -21,6 +24,7 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	web.SettleJoinsWithin(200 * time.Millisecond)
 	testRcloneConf = filepath.Join(dir, "rclone.conf")
 	if err := useRcloneConfig(testRcloneConf); err != nil {
 		fmt.Fprintln(os.Stderr, err)

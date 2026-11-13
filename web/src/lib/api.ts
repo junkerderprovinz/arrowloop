@@ -634,11 +634,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
-/** The error a failed answer carries, or its status line when it has none. */
+/**
+ * The error a failed answer carries, or its status line when it has none. A
+ * code without an error is a refusal the page words itself.
+ */
 async function failure(res: Response): Promise<ApiError> {
   try {
     const body = await res.json()
-    if (body?.error) return new ApiError(body.error, res.status, body.code, body.values, body.failure ?? undefined)
+    if (body?.error || body?.code) return new ApiError(body.error ?? res.statusText, res.status, body.code, body.values, body.failure ?? undefined)
   } catch {
     // The body was not the JSON error shape; the status line has to do.
   }
