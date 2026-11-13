@@ -243,6 +243,8 @@ export type Run = {
    * negative, its counts are what it has done so far and it has no end yet.
    */
   Running?: boolean
+  /** The job had no trash, so the files it counts as Trashed are deleted for good. */
+  NoTrash?: boolean
 }
 
 /** A job's newest run, with how many runs the job started since the time asked for. */
@@ -426,6 +428,8 @@ export type StatCounts = {
   copied: number
   moved: number
   trashed: number
+  /** What jobs without a trash deleted for good, which trashed leaves out. */
+  deleted: number
   conflicts: number
   dirsMade: number
   dirsRemoved: number

@@ -190,7 +190,11 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 		default:
 			out.Copied += rec.Copied
 			out.Moved += rec.Moved
-			out.Trashed += rec.Trashed
+			if rec.NoTrash {
+				out.Deleted += rec.Trashed
+			} else {
+				out.Trashed += rec.Trashed
+			}
 			out.Conflicts += rec.Conflicts
 		}
 	}
@@ -202,12 +206,15 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 // waiting for a drive, the charger or their own previous run, which are not
 // failures.
 type Due struct {
-	Ran       int `json:"ran"`
-	Failed    int `json:"failed"`
-	Held      int `json:"held"`
-	Copied    int `json:"copied"`
-	Moved     int `json:"moved"`
-	Trashed   int `json:"trashed"`
+	Ran     int `json:"ran"`
+	Failed  int `json:"failed"`
+	Held    int `json:"held"`
+	Copied  int `json:"copied"`
+	Moved   int `json:"moved"`
+	Trashed int `json:"trashed"`
+	// Deleted is what jobs without a trash removed for good, which Trashed
+	// leaves out.
+	Deleted   int `json:"deleted"`
 	Conflicts int `json:"conflicts"`
 	// Reason is the first failure's message, which a notification shows.
 	Reason string `json:"reason,omitempty"`
@@ -219,7 +226,7 @@ type Due struct {
 // Changed says whether anything moved, and so whether a notification is worth
 // posting.
 func (d Due) Changed() bool {
-	return d.Copied+d.Moved+d.Trashed+d.Conflicts > 0
+	return d.Copied+d.Moved+d.Trashed+d.Deleted+d.Conflicts > 0
 }
 
 // lastSuccess is the history lookup; a runner without a history has never

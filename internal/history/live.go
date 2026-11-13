@@ -33,16 +33,17 @@ type live struct {
 	last   int64
 }
 
-// Begin starts following a run. Its id is negative, so it never meets a
-// stored run's, and it lasts until Record or Drop.
-func (d *DB) Begin(job string, started time.Time) *Live {
+// Begin starts following r and gives it an id. The id is negative, so it
+// never meets a stored run's, and it lasts until Record or Drop.
+func (d *DB) Begin(r Run) *Live {
 	d.liveMu.Lock()
 	defer d.liveMu.Unlock()
 	if d.runs == nil {
 		d.runs = map[int64]*Live{}
 	}
 	d.last--
-	l := &Live{db: d, id: d.last, key: d.keyFor(d.last), run: Run{ID: d.last, Job: job, Started: started, Running: true}}
+	r.ID, r.Running = d.last, true
+	l := &Live{db: d, id: d.last, key: d.keyFor(d.last), run: r}
 	d.runs[l.id] = l
 	return l
 }

@@ -205,12 +205,17 @@ class EngineService : Service() {
             return
         }
         if (!due.changed()) return
-        tell(
-            CHANNEL_DONE,
-            DONE_ID,
-            getString(R.string.notify_done),
-            getString(R.string.notify_done_what, due.copied, due.moved, due.trashed, due.conflicts),
-        )
+        tell(CHANNEL_DONE, DONE_ID, getString(R.string.notify_done), doneWhat(due))
+    }
+
+    /**
+     * The counts of a finished wake-up. What a job without a trash deleted is
+     * gone for good, so it is never counted as binned.
+     */
+    private fun doneWhat(due: Due): String = when {
+        due.deleted == 0 -> getString(R.string.notify_done_what, due.copied, due.moved, due.trashed, due.conflicts)
+        due.trashed == 0 -> getString(R.string.notify_done_what_deleted, due.copied, due.moved, due.deleted, due.conflicts)
+        else -> getString(R.string.notify_done_what_both, due.copied, due.moved, due.trashed, due.deleted, due.conflicts)
     }
 
     /**
@@ -275,6 +280,7 @@ class EngineService : Service() {
         val copied: Int = 0,
         val moved: Int = 0,
         val trashed: Int = 0,
+        val deleted: Int = 0,
         val conflicts: Int = 0,
         val reason: String = "",
         val failedJob: String = "",
@@ -283,7 +289,7 @@ class EngineService : Service() {
         val params: Map<String, String> = emptyMap(),
         val found: List<Found> = emptyList(),
     ) {
-        fun changed() = copied + moved + trashed + conflicts > 0
+        fun changed() = copied + moved + trashed + deleted + conflicts > 0
     }
 
     /** A new finding the engine thinks somebody should hear of. */
@@ -313,6 +319,7 @@ class EngineService : Service() {
             copied = json.optInt("copied"),
             moved = json.optInt("moved"),
             trashed = json.optInt("trashed"),
+            deleted = json.optInt("deleted"),
             conflicts = json.optInt("conflicts"),
             reason = json.optString("reason"),
             failedJob = json.optString("failedJob"),

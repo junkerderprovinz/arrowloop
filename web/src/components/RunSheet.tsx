@@ -29,7 +29,7 @@ export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
   const figures: [string, number][] = [
     [t('history.fig.copied'), run.Copied],
     [t('history.fig.moved'), run.Moved],
-    [t('history.fig.trashed'), run.Trashed],
+    [t(run.NoTrash ? 'history.fig.deleted' : 'history.fig.trashed'), run.Trashed],
     [t('history.fig.conflicts'), run.Conflicts],
     [t('history.fig.left'), run.Skipped],
   ]

@@ -8,6 +8,8 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -391,5 +393,41 @@ func TestNoChannelsKeepsEveryChannelQuietAndLeavesTheSettings(t *testing.T) {
 	}
 	if now, _ := json.Marshal(r.config().Notify.Channels); string(now) != string(stored) {
 		t.Errorf("the settings changed from %s to %s", stored, now)
+	}
+}
+
+func TestTheMessageSaysDeletedForAJobWithoutATrash(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		noTrash bool
+		want    string
+	}{
+		{"with the trash", false, "1 trashed"},
+		{"without the trash", true, "1 deleted"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r, left, _ := syncedPair(t)
+			hook := newInbox(t)
+			cfg := *r.config()
+			cfg.Jobs = append([]job.Job(nil), cfg.Jobs...)
+			cfg.Jobs[0].NoTrash = tc.noTrash
+			cfg.Notify = job.Notify{Channels: []notify.Channel{slack("hook", hook.url("/hook"), notify.OnAlways)}}
+			r.Reload(&cfg)
+			if err := os.Remove(filepath.Join(left, "datei-00.txt")); err != nil {
+				t.Fatal(err)
+			}
+
+			rec, err := r.Run(context.Background(), "test")
+			if err != nil {
+				t.Fatalf("run: %v", err)
+			}
+			if rec.Trashed != 1 || rec.NoTrash != tc.noTrash {
+				t.Errorf("the run reads %+v", rec)
+			}
+			got := hook.all()
+			if len(got) != 1 || !strings.Contains(got[0], tc.want) {
+				t.Errorf("the webhook got %v, want it to say %q", got, tc.want)
+			}
+		})
 	}
 }

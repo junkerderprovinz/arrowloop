@@ -38,6 +38,9 @@ type Run struct {
 	// Answered marks a run somebody allowed or took back after a brake held
 	// the job. It did what they asked, not what the job usually does.
 	Answered bool `json:",omitempty"`
+	// NoTrash marks a run of a job without a trash, so what it counts as
+	// Trashed was deleted outright.
+	NoTrash bool `json:",omitempty"`
 }
 
 // Failed reports whether the run ended badly.
@@ -96,7 +99,8 @@ CREATE TABLE IF NOT EXISTS runs (
 	unchanged    INTEGER NOT NULL,
 	skipped      INTEGER NOT NULL,
 	err          TEXT    NOT NULL,
-	answered     INTEGER NOT NULL DEFAULT 0
+	answered     INTEGER NOT NULL DEFAULT 0,
+	no_trash     INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS runs_job_started ON runs (job, started DESC);
 
@@ -130,7 +134,8 @@ CREATE TABLE IF NOT EXISTS going (
 	conflicts    INTEGER NOT NULL,
 	dirs_made    INTEGER NOT NULL,
 	dirs_removed INTEGER NOT NULL,
-	skipped      INTEGER NOT NULL
+	skipped      INTEGER NOT NULL,
+	no_trash     INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS going_entries (
@@ -151,6 +156,8 @@ CREATE TABLE IF NOT EXISTS going_entries (
 var migrations = []string{
 	`ALTER TABLE entries ADD COLUMN size INTEGER NOT NULL DEFAULT 0`,
 	`ALTER TABLE runs ADD COLUMN answered INTEGER NOT NULL DEFAULT 0`,
+	`ALTER TABLE runs ADD COLUMN no_trash INTEGER NOT NULL DEFAULT 0`,
+	`ALTER TABLE going ADD COLUMN no_trash INTEGER NOT NULL DEFAULT 0`,
 }
 
 // version is the history's layout. It goes up when a newer layout would be
@@ -215,10 +222,10 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 	defer tx.Rollback() //nolint:errcheck // a committed transaction rolls back to nothing
 
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		r.Job, r.Started.UnixNano(), r.Finished.UnixNano(),
-		r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Unchanged, r.Skipped, r.Err, r.Answered)
+		r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Unchanged, r.Skipped, r.Err, r.Answered, r.NoTrash)
 	if err != nil {
 		return fmt.Errorf("record run for %q: %w", r.Job, err)
 	}
@@ -433,7 +440,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	if limit <= 0 {
 		limit = 20
 	}
-	query := `SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered
+	query := `SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash
 	          FROM runs`
 	args := []any{}
 	var conds []string
@@ -469,7 +476,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 		var r Run
 		var started, finished int64
 		if err := rows.Scan(&r.ID, &r.Job, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered); err != nil {
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.NoTrash); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		r.Started = time.Unix(0, started)
@@ -519,7 +526,7 @@ type Latest struct {
 func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 	rows, err := d.sql.QueryContext(ctx, `
 		SELECT r.id, r.job, r.started, r.finished, r.copied, r.moved, r.trashed, r.conflicts,
-		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err,
+		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err, r.no_trash,
 		       (SELECT COUNT(*) FROM runs c WHERE c.job = r.job AND c.started >= ?)
 		FROM runs r
 		WHERE r.id = (SELECT m.id FROM runs m WHERE m.job = r.job ORDER BY m.started DESC LIMIT 1)
@@ -534,7 +541,7 @@ func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 		var l Latest
 		var started, finished int64
 		if err := rows.Scan(&l.ID, &l.Job, &started, &finished, &l.Copied, &l.Moved, &l.Trashed,
-			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.Since); err != nil {
+			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.NoTrash, &l.Since); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		l.Started = time.Unix(0, started)

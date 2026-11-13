@@ -37,6 +37,10 @@
     <string name="notify_done">Sync finished</string>
     <!-- Four numbers in this order: copied, moved, binned, conflicts. -->
     <string name="notify_done_what">%1$d copied, %2$d moved, %3$d binned, %4$d conflicts</string>
+    <!-- The same for jobs without a trash: copied, moved, deleted, conflicts. -->
+    <string name="notify_done_what_deleted">%1$d copied, %2$d moved, %3$d deleted, %4$d conflicts</string>
+    <!-- Jobs of both kinds in one sync: copied, moved, binned, deleted, conflicts. -->
+    <string name="notify_done_what_both">%1$d copied, %2$d moved, %3$d binned, %4$d deleted, %5$d conflicts</string>
     <string name="notify_failed">Sync failed</string>
     <!--
       A failure this app authors itself, and so one it can say in the phone's

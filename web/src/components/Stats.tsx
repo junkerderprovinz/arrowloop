@@ -51,6 +51,11 @@ export function Stats({ job }: { job?: string }) {
         <span className="text-carbon-textMuted">
           {t('stats.trashed', { count: stats.totals.trashed })}
         </span>
+        {stats.totals.deleted > 0 && (
+          <span className="text-carbon-textMuted">
+            {t('stats.deleted', { count: stats.totals.deleted })}
+          </span>
+        )}
         {stats.totals.conflicts > 0 && (
           <span className="text-statusWarn">
             {t('stats.conflicts', { count: stats.totals.conflicts })}

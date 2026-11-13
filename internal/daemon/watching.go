@@ -192,7 +192,7 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watch
 		case err != nil:
 			r.log("%s failed after a change: %v", name, err)
 		case rec.Changed():
-			r.log("%s: %d copied, %d moved, %d trashed after a change", name, rec.Copied, rec.Moved, rec.Trashed)
+			r.log("%s: %d copied, %d moved, %d %s after a change", name, rec.Copied, rec.Moved, rec.Trashed, removed(rec))
 		}
 	})
 	if err != nil {

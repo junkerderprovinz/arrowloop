@@ -191,6 +191,8 @@ export interface Run {
   Err: string;
   /** What kind of failure Err is, where the engine knows. */
   Failure?: Failure;
+  /** The job had no trash, so the files it counts as Trashed are deleted for good. */
+  NoTrash?: boolean;
 }
 
 /**

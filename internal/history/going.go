@@ -91,13 +91,13 @@ func (d *DB) checkpoint(ctx context.Context, now time.Time) error {
 	for _, p := range parts {
 		r := p.run
 		if _, err := tx.ExecContext(ctx,
-			`INSERT INTO going (key, job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			`INSERT INTO going (key, job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped, no_trash)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			 ON CONFLICT (key) DO UPDATE SET beat = excluded.beat, copied = excluded.copied, moved = excluded.moved,
 			   trashed = excluded.trashed, conflicts = excluded.conflicts, dirs_made = excluded.dirs_made,
 			   dirs_removed = excluded.dirs_removed, skipped = excluded.skipped`,
 			p.l.key, r.Job, r.Started.UnixNano(), now.UnixNano(),
-			r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped); err != nil {
+			r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped, r.NoTrash); err != nil {
 			return err
 		}
 		for i, e := range p.fresh {
@@ -162,8 +162,8 @@ func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 	var r Run
 	var started, last int64
 	err = tx.QueryRowContext(ctx,
-		`SELECT job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped FROM going WHERE key = ? AND beat < ?`, key, cut).
-		Scan(&r.Job, &started, &last, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Skipped)
+		`SELECT job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped, no_trash FROM going WHERE key = ? AND beat < ?`, key, cut).
+		Scan(&r.Job, &started, &last, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Skipped, &r.NoTrash)
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -174,9 +174,9 @@ func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 		return err
 	}
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
-		r.Job, started, last, r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped, Interrupted)
+		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, no_trash)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
+		r.Job, started, last, r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped, Interrupted, r.NoTrash)
 	if err != nil {
 		return err
 	}

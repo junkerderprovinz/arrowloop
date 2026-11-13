@@ -138,7 +138,7 @@ func (r *Runner) checkIn(ctx context.Context, name string) func(ok bool, detail 
 // summary is what a run did, in a few lines.
 func summary(rec history.Run, res apply.Result) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "%d copied, %d moved, %d trashed, %d conflicts", rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts)
+	fmt.Fprintf(&b, "%d copied, %d moved, %d %s, %d conflicts", rec.Copied, rec.Moved, rec.Trashed, removed(rec), rec.Conflicts)
 	if rec.DirsMade+rec.DirsRemoved > 0 {
 		fmt.Fprintf(&b, ", %d folders made, %d removed", rec.DirsMade, rec.DirsRemoved)
 	}
@@ -159,6 +159,15 @@ func summary(rec history.Run, res apply.Result) string {
 		fmt.Fprintf(&b, "\n%s", rec.Err)
 	}
 	return b.String()
+}
+
+// removed is the word for what a run's deletions became, which a job
+// without a trash cannot take back.
+func removed(rec history.Run) string {
+	if rec.NoTrash {
+		return "deleted"
+	}
+	return "trashed"
 }
 
 // announce tells whoever is watching about a finished run. Each channel's

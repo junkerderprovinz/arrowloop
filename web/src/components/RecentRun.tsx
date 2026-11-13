@@ -18,7 +18,7 @@ export function RecentRun({ run, today = 0 }: { run: Run; today?: number }) {
   const counts = [
     run.Copied > 0 ? t('history.copied', { count: run.Copied }) : '',
     run.Moved > 0 ? t('history.moved', { count: run.Moved }) : '',
-    run.Trashed > 0 ? t('history.trashed', { count: run.Trashed }) : '',
+    run.Trashed > 0 ? t(run.NoTrash ? 'history.deleted' : 'history.trashed', { count: run.Trashed }) : '',
     run.Conflicts > 0 ? t('history.conflicts', { count: run.Conflicts }) : '',
   ].filter(Boolean)
   // A job that runs on every change says how busy it was instead of filling

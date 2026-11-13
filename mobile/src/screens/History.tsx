@@ -746,12 +746,15 @@ function entryWord(kind: string, t: T): string {
 
 export function counters(run: Run, t: T): string {
   const parts: string[] = [];
-  const add = (n: number, key: "history.copied" | "history.moved" | "history.trashed" | "history.conflicts") => {
+  const add = (
+    n: number,
+    key: "history.copied" | "history.moved" | "history.trashed" | "history.deleted" | "history.conflicts",
+  ) => {
     if (n > 0) parts.push(t(key, { count: n }));
   };
   add(run.Copied, "history.copied");
   add(run.Moved, "history.moved");
-  add(run.Trashed, "history.trashed");
+  add(run.Trashed, run.NoTrash ? "history.deleted" : "history.trashed");
   add(run.Conflicts, "history.conflicts");
   if (parts.length === 0) {
     if (isPerfectlyIdle(run.ID, run.Unchanged)) return t("history.perfectlyIdle");

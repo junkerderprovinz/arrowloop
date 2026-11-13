@@ -38,7 +38,7 @@ func TestARunCutOffByAKillIsRecordedAtTheNextStart(t *testing.T) {
 	first := openAt(t, path)
 	start := time.Now().Add(-10 * time.Minute)
 
-	live := first.Begin("photos", start)
+	live := first.Begin(Run{Job: "photos", Started: start})
 	live.Add(Entry{Kind: "copy", Side: "right", Path: "a.jpg", Size: 10})
 	if err := first.checkpoint(ctx, start.Add(time.Minute)); err != nil {
 		t.Fatal(err)
@@ -85,7 +85,7 @@ func TestARunThatStillBeatsIsLeftToItsOwnProgram(t *testing.T) {
 	defer busy.Close()
 	now := time.Now()
 
-	live := busy.Begin("photos", now)
+	live := busy.Begin(Run{Job: "photos", Started: now})
 	live.Add(Entry{Kind: "copy", Path: "a.jpg"})
 	if err := busy.checkpoint(ctx, now); err != nil {
 		t.Fatal(err)
@@ -116,7 +116,7 @@ func TestARunTakenForAbandonedWhileItsProgramSleptIsRecordedOnce(t *testing.T) {
 	defer sleeper.Close()
 	now := time.Now()
 
-	live := sleeper.Begin("photos", now.Add(-time.Hour))
+	live := sleeper.Begin(Run{Job: "photos", Started: now.Add(-time.Hour)})
 	live.Add(Entry{Kind: "copy", Path: "a.jpg"})
 	if err := sleeper.checkpoint(ctx, now.Add(-time.Hour)); err != nil {
 		t.Fatal(err)
@@ -152,7 +152,7 @@ func TestAProgramNeverRecordsItsOwnRunAsInterrupted(t *testing.T) {
 	db := openAt(t, filepath.Join(t.TempDir(), "runs.db"))
 	defer db.Close()
 	now := time.Now()
-	db.Begin("photos", now.Add(-time.Hour))
+	db.Begin(Run{Job: "photos", Started: now.Add(-time.Hour)})
 	if err := db.checkpoint(ctx, now.Add(-time.Hour)); err != nil {
 		t.Fatal(err)
 	}
@@ -170,9 +170,9 @@ func TestAFinishedOrDroppedRunLeavesNoNotes(t *testing.T) {
 	defer db.Close()
 	now := time.Now()
 
-	done := db.Begin("photos", now)
+	done := db.Begin(Run{Job: "photos", Started: now})
 	done.Add(Entry{Kind: "copy", Path: "a.jpg"})
-	held := db.Begin("music", now)
+	held := db.Begin(Run{Job: "music", Started: now})
 	held.Add(Entry{Kind: "copy", Path: "b.mp3"})
 	if err := db.checkpoint(ctx, now); err != nil {
 		t.Fatal(err)

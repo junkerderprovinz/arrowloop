@@ -24,9 +24,12 @@ type Counts struct {
 	// Failed is included in Runs, not subtracted from it.
 	Failed int `json:"failed"`
 
-	Copied      int `json:"copied"`
-	Moved       int `json:"moved"`
-	Trashed     int `json:"trashed"`
+	Copied  int `json:"copied"`
+	Moved   int `json:"moved"`
+	Trashed int `json:"trashed"`
+	// Deleted is what jobs without a trash removed for good, which Trashed
+	// leaves out.
+	Deleted     int `json:"deleted"`
 	Conflicts   int `json:"conflicts"`
 	DirsMade    int `json:"dirsMade"`
 	DirsRemoved int `json:"dirsRemoved"`
@@ -42,7 +45,11 @@ func (c *Counts) add(r Run) {
 	}
 	c.Copied += r.Copied
 	c.Moved += r.Moved
-	c.Trashed += r.Trashed
+	if r.NoTrash {
+		c.Deleted += r.Trashed
+	} else {
+		c.Trashed += r.Trashed
+	}
 	c.Conflicts += r.Conflicts
 	c.DirsMade += r.DirsMade
 	c.DirsRemoved += r.DirsRemoved
@@ -166,7 +173,7 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 
 	// Both ends of the window go into the query, so every row has a bucket
 	// and the totals add up to the chart.
-	query := `SELECT job, started, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err
+	query := `SELECT job, started, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, no_trash
 	          FROM runs WHERE started >= ? AND started < ?`
 	args := []any{first.UnixNano(), end.UnixNano()}
 	if q.Job != "" {
@@ -186,7 +193,7 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 		var r Run
 		var started int64
 		if err := rows.Scan(&r.Job, &started, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts,
-			&r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err); err != nil {
+			&r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.NoTrash); err != nil {
 			return Stats{}, fmt.Errorf("scan run for summary: %w", err)
 		}
 		// Converted per run, so the offset is the one in effect when the run

@@ -302,12 +302,12 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	r.muteWatcher(name)
 	defer r.muteWatcher(name)
 
-	rec := history.Run{Job: name, Started: time.Now(), Answered: ans.outcome != passed.outcome}
+	rec := history.Run{Job: name, Started: time.Now(), Answered: ans.outcome != passed.outcome, NoTrash: j.NoTrash}
 	// Begun before the start is announced, so a screen that looks at the log
 	// on hearing it finds the run there.
 	var live *history.Live
 	if r.hist != nil {
-		live = r.hist.Begin(name, rec.Started)
+		live = r.hist.Begin(rec)
 	}
 	r.publish(Event{Job: name, Phase: "started"})
 	var res apply.Result
@@ -869,8 +869,8 @@ func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, er
 	case err != nil:
 		r.log("%s failed: %v", name, err)
 	case rec.Changed():
-		r.log("%s: %d copied, %d moved, %d trashed, %d conflicts in %s",
-			name, rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts,
+		r.log("%s: %d copied, %d moved, %d %s, %d conflicts in %s",
+			name, rec.Copied, rec.Moved, rec.Trashed, removed(rec), rec.Conflicts,
 			rec.Finished.Sub(rec.Started).Round(time.Millisecond))
 	default:
 		r.log("%s: nothing to do", name)

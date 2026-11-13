@@ -13,7 +13,7 @@ func TestARunShowsInTheLogWhileItGoes(t *testing.T) {
 	ctx := context.Background()
 	start := time.Date(2027, 3, 1, 12, 0, 0, 0, time.UTC)
 
-	live := db.Begin("photos", start)
+	live := db.Begin(history.Run{Job: "photos", Started: start})
 	live.Add(history.Entry{Kind: "copy", Side: "right", Path: "a.jpg", Size: 10})
 	live.Add(history.Entry{Kind: "mkdir", Side: "right", Path: "b.jpg"})
 
@@ -51,7 +51,7 @@ func TestARecordedRunReplacesItsLiveLines(t *testing.T) {
 	ctx := context.Background()
 	start := time.Date(2027, 3, 1, 12, 0, 0, 0, time.UTC)
 
-	live := db.Begin("photos", start)
+	live := db.Begin(history.Run{Job: "photos", Started: start})
 	live.Add(history.Entry{Kind: "copy", Side: "right", Path: "a.jpg", Note: "replaced", Size: 10})
 	live.Add(history.Entry{Kind: "trash", Side: "left", Path: "c.jpg", Note: "bin"})
 	before, err := db.Log(ctx, history.Filter{})
@@ -91,7 +91,7 @@ func TestTheLiveLinesAreSearchedLikeTheStoredOnes(t *testing.T) {
 	}); err != nil {
 		t.Fatalf("record: %v", err)
 	}
-	live := db.Begin("photos", start)
+	live := db.Begin(history.Run{Job: "photos", Started: start})
 	live.Add(history.Entry{Kind: "copy", Side: "right", Path: "Urlaub/new.jpg"})
 	live.Add(history.Entry{Kind: "trash", Side: "right", Path: "Urlaub/gone.jpg"})
 	live.Add(history.Entry{Kind: "copy", Side: "right", Path: "Arbeit/x.txt"})
@@ -117,7 +117,7 @@ func TestTheLiveLinesAreSearchedLikeTheStoredOnes(t *testing.T) {
 func TestADroppedRunLeavesNothing(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
-	live := db.Begin("photos", time.Now())
+	live := db.Begin(history.Run{Job: "photos", Started: time.Now()})
 	live.Add(history.Entry{Kind: "copy", Path: "a.jpg"})
 	live.Drop()
 
@@ -140,9 +140,9 @@ func TestTheRunFiltersApplyToARunningRun(t *testing.T) {
 	db := openTemp(t)
 	ctx := context.Background()
 	start := time.Now()
-	busy := db.Begin("busy", start)
+	busy := db.Begin(history.Run{Job: "busy", Started: start})
 	busy.Add(history.Entry{Kind: "copy", Path: "a.jpg"})
-	db.Begin("idle", start.Add(time.Second))
+	db.Begin(history.Run{Job: "idle", Started: start.Add(time.Second)})
 
 	changed, err := db.Following(ctx, "", history.ShowChanged, time.Time{}, time.Time{}, 10)
 	if err != nil {
