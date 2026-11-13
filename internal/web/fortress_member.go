@@ -22,7 +22,6 @@ import (
 	"github.com/junkerderprovinz/parleyport/kit/member"
 	"github.com/junkerderprovinz/parleyport/kit/phrase"
 
-	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 )
 
@@ -65,7 +64,7 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 		network.Start()
 	}
 	f, err := kitfortress.Open(kitfortress.Config{
-		App: kitfortress.App{ID: string(pairing.Domain), Name: "ArrowLoop", Version: boot.Version, Icon: appIcon},
+		App: kitfortress.App{ID: string(pairing.Domain), Name: "ArrowLoop", Version: memberVersion(), Icon: appIcon},
 		// Unraid names its server to every container, and the apps of a
 		// fortress on one server find each other by it.
 		Host:     strings.TrimSpace(os.Getenv("HOST_HOSTNAME")),

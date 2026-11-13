@@ -47,13 +47,19 @@ var logoSVG []byte
 
 var appIcon, _ = status.IconFromSVG(logoSVG)
 
+// memberVersion is the version the other apps of a fortress show, which put
+// their own "v" in front of it.
+func memberVersion() string {
+	return strings.TrimPrefix(boot.Version, "v")
+}
+
 type fortressSource struct{ s *Server }
 
 func (f fortressSource) Report(ctx context.Context, lang string) (status.Report, error) {
 	s := f.s
 	open, _ := s.Runner.Findings(ctx)
 	snap := fortress.Snapshot{
-		App:      status.App{ID: "arrowloop", Name: "ArrowLoop", Version: boot.Version, Icon: appIcon},
+		App:      status.App{ID: "arrowloop", Name: "ArrowLoop", Version: memberVersion(), Icon: appIcon},
 		Instance: status.Instance{ID: s.instanceID(), Name: s.ownName(), Container: s.containerID()},
 		Jobs:     s.Runner.Config().Jobs,
 		Findings: open,
