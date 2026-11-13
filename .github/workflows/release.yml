@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   pommelporter:
-    uses: junkerderprovinz/junkerderprovinz/.github/workflows/pommelporter-current.yml@1cd42565df4b327b82579c1a43544bcab444d194 # main
+    uses: junkerderprovinz/junkerderprovinz/.github/workflows/pommelporter-current.yml@3537fbabd3876b61093a72ee7c9ebe7f96004754 # main
 
   # Before forty minutes of builds rather than after them.
   notes:
