@@ -1804,8 +1804,9 @@ const styles = StyleSheet.create({
   // The README's proportions: the mark 24 in from the start, the name from 63.
   readmeRow: { flexDirection: "row", flexWrap: "wrap", gap: README_GAP },
   readme: { height: 46.6, overflow: "hidden", justifyContent: "center" },
-  // Vendor artwork keeps the README's width inside a wider button.
-  readmeArt: { alignItems: "center" },
+  // Vendor artwork keeps the README's width inside a wider button, and its
+  // start, so its words line up with the names of the buttons beside it.
+  readmeArt: { alignItems: "flex-start" },
   readmeMark: { position: "absolute", start: 24, top: 10.8, width: 32, height: 25 },
   readmeName: { flex: 1, justifyContent: "center", marginStart: 63, marginEnd: 10 },
   readmeNameText: { fontSize: text.body, fontWeight: "700" },
