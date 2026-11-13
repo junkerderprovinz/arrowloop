@@ -881,11 +881,9 @@ export function Schedule({
 
   const every = (label: string, hint?: string) => (
     <>
-      <Field
+      <NumberField
         label={label}
         hint={hint}
-        keyboard="numeric"
-        short
         value={String(state.everyCount)}
         onChange={(v) => set({ everyCount: Math.max(1, Math.round(Number(v) || 1)) })}
       />
