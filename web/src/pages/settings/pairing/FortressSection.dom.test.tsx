@@ -326,14 +326,14 @@ describe('the fortress on the Pairing tile', () => {
     it('names who was removed until the phrase changes', async () => {
       render(<Page start={joined({ removed: [{ app: 'firesquire', name: 'FireSquire', device: 'Tower' }] })} />)
       const line = await waitFor(() => button('removed'))
-      expect(line.textContent).toContain('Removed: FireSquire on Tower. Change the phrase to close the way back in.')
+      expect(line.textContent).toContain('Removed: FireSquire on Tower. No new app can join until you change the phrase.')
       expect(within(line).getByRole('button', { name: 'Change phrase' })).toBeTruthy()
     })
 
     it('says so when another app took ArrowLoop out', async () => {
       render(<Page start={outside({ removedHere: true })} />)
       expect(await screen.findByText('Removed from the fortress')).toBeTruthy()
-      expect(screen.getByText('Another app in the fortress removed ArrowLoop. Enter the current phrase to come back in.')).toBeTruthy()
+      expect(screen.getByText('Another app in the fortress removed ArrowLoop. Once the phrase has changed, the new one gets you back in.')).toBeTruthy()
     })
   })
 })

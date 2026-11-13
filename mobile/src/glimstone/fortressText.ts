@@ -71,6 +71,8 @@ export interface FortressText {
   join: string;
   /** For an app to pass as the error when the words open no fortress. */
   joinRefused: string;
+  /** For an app to pass as the error when the fortress takes no new app, because a member was removed and the phrase has not changed since. */
+  joinLocked: string;
   joinedTitle: string;
   joinedMoved: string;
   joinedNext: string;
@@ -84,11 +86,11 @@ export interface FortressText {
   removeTitle: string;
   removeBody: string;
   removeBack: string;
-  /** The step after a removal that offers the new phrase, since the old one still lets the instance back in. */
+  /** The step after a removal that offers the new phrase, since until it changes the fortress takes no new app. */
   removedTitle: string;
   removedBody: string;
   later: string;
-  /** The line that stays while instances removed since the last change could get back in, with `{devices}` as a list. */
+  /** The line that names the instances removed since the phrase last changed, while the fortress takes no new app, with `{devices}` as a list. */
   removedNote: string;
   phraseTitle: string;
   phrasePassword: string;
