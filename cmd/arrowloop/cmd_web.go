@@ -204,16 +204,21 @@ func writeStarterConfig(path string) error {
 	return nil
 }
 
+// containerRoot is where deployment looks for the files Docker and Podman
+// put into a container.
+var containerRoot = "/"
+
 // deployment is what this instance tells the others of its group it is. The
 // phone app starts this same command, built for linux, and is the only one
-// that hands it an app token. A container has Docker's marker file at its
-// root.
+// that hands it an app token.
 func deployment() string {
 	if runtime.GOOS == "android" || os.Getenv(web.AppTokenEnv) != "" {
 		return "phone"
 	}
-	if _, err := os.Stat("/.dockerenv"); err == nil {
-		return "container"
+	for _, marker := range []string{".dockerenv", "run/.containerenv"} {
+		if _, err := os.Stat(filepath.Join(containerRoot, marker)); err == nil {
+			return "container"
+		}
 	}
 	return "server"
 }
