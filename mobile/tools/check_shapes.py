@@ -55,7 +55,8 @@ REQUIRED = {"Action", "Reason", "TrashItem"}
 # healthy history has no failed run, so `Run.Failure` is rightly absent from
 # every object, and the check must not read that as a field the engine lacks.
 SOMETIMES = {
-    "Run": {"Failure"},
+    # The check's jobs all have a trash, so NoTrash never comes up.
+    "Run": {"Failure", "NoTrash"},
     # Only a job whose drive or folder is gone carries since when.
     "Job": {"away"},
     # An instance that answered has jobs and no error. Only one that is away
