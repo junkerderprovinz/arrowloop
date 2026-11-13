@@ -51,7 +51,7 @@ export const sv: FortressText = {
   leave: "Lämna fästningen",
   joinTitle: "Gå med i en fästning",
   word: "Ord {n}",
-  phraseWhere: "Alla appar i fästningen visar frasen under Instanser. Klistra in den i första fältet så fördelas den över resten.",
+  phraseWhere: "Alla appar i fästningen kan visa dig frasen. Klistra in den i första fältet så fördelas den över resten.",
   moves: "{app} är redan parkopplad med {devices}. När du går med flyttar parkopplingen in i fästningen, så du behöver inte parkoppla igen.",
   join: "Gå med",
   joinRefused: "De här orden öppnar ingen fästning. Kontrollera dem och försök igen.",

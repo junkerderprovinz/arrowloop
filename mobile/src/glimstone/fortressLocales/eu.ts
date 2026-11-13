@@ -51,7 +51,7 @@ export const eu: FortressText = {
   leave: "Irten gotorlekutik",
   joinTitle: "Sartu gotorleku batean",
   word: "{n}. hitza",
-  phraseWhere: "Gotorlekuko aplikazio guztiek Instantziak atalean erakusten dute esaldia. Itsatsi lehen eremuan, eta gainerakoetara banatuko da.",
+  phraseWhere: "Gotorlekuko edozein aplikaziok erakuts diezazuke esaldia. Itsatsi lehen eremuan, eta gainerakoetara banatuko da.",
   moves: "{app} aplikazioa dagoeneko parekatuta dago hauekin: {devices}. Sartzean, parekatze hori gotorlekura igarotzen da, eta ez duzu berriro parekatu beharrik.",
   join: "Sartu",
   joinRefused: "Hitz hauek ez dute gotorlekurik irekitzen. Egiaztatu eta saiatu berriro.",

@@ -66,7 +66,7 @@ export const cs: FortressText = {
   leave: "Opustit pevnost",
   joinTitle: "Připojit se k pevnosti",
   word: "Slovo {n}",
-  phraseWhere: "Frázi najdeš v každé aplikaci pevnosti v části Instance. Vlož ji do prvního pole a sama se rozdělí do ostatních.",
+  phraseWhere: "Frázi ti může ukázat každá aplikace v pevnosti. Vlož ji do prvního pole a sama se rozdělí do ostatních.",
   moves: "Stávající párování aplikace {app}: {devices}. Při připojení se přesune do pevnosti, takže nic nemusíš párovat znovu.",
   join: "Připojit",
   joinRefused: "Tato slova neotevírají žádnou pevnost. Zkontroluj je a zkus to znovu.",

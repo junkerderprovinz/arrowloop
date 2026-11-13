@@ -51,7 +51,7 @@ export const id: FortressText = {
   leave: "Keluar dari benteng",
   joinTitle: "Gabung ke benteng",
   word: "Kata {n}",
-  phraseWhere: "Setiap aplikasi di benteng menampilkan frasa di bagian Instance. Tempel ke kolom pertama, nanti kata-katanya tersebar ke kolom lainnya.",
+  phraseWhere: "Setiap aplikasi di benteng bisa menunjukkan frasanya. Tempel ke kolom pertama, nanti kata-katanya tersebar ke kolom lainnya.",
   moves: "{app} sudah dipasangkan dengan {devices}. Saat bergabung, pemasangan itu ikut pindah ke benteng, jadi tidak perlu dipasangkan ulang.",
   join: "Gabung",
   joinRefused: "Kata-kata ini tidak membuka benteng mana pun. Periksa lalu coba lagi.",

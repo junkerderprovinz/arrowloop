@@ -51,7 +51,7 @@ export const nl: FortressText = {
   leave: "Vesting verlaten",
   joinTitle: "Aansluiten bij een vesting",
   word: "Woord {n}",
-  phraseWhere: "Elke app in de vesting toont de frase onder Instanties. Plak de frase in het eerste veld, dan verdelen de woorden zich over de rest.",
+  phraseWhere: "Elke app in de vesting kan je de frase tonen. Plak de frase in het eerste veld, dan verdelen de woorden zich over de rest.",
   moves: "{app} is al gekoppeld aan {devices}. Bij het aansluiten verhuist die koppeling mee naar de vesting, opnieuw koppelen hoeft dus niet.",
   join: "Aansluiten",
   joinRefused: "Deze woorden openen geen vesting. Controleer ze en probeer het opnieuw.",

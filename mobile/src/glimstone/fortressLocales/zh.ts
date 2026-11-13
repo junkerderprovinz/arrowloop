@@ -51,7 +51,7 @@ export const zh: FortressText = {
   leave: "退出堡垒",
   joinTitle: "加入堡垒",
   word: "第 {n} 个词",
-  phraseWhere: "堡垒中的每个应用都会在“实例”下显示口令。粘贴到第一个输入框，其余输入框会自动填好。",
+  phraseWhere: "堡垒中的任何应用都能向你显示口令。粘贴到第一个输入框，其余输入框会自动填好。",
   moves: "{app} 已与 {devices} 配对。加入后，这些配对会一并移入堡垒，无需重新配对。",
   join: "加入",
   joinRefused: "这些词无法打开任何堡垒。请检查后重试。",

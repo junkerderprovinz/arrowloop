@@ -51,7 +51,7 @@ export const ro: FortressText = {
   leave: "Părăsește fortăreața",
   joinTitle: "Intră într-o fortăreață",
   word: "Cuvântul {n}",
-  phraseWhere: "Fiecare aplicație din fortăreață arată fraza la Instanțe. Lipește-o în primul câmp și se împarte singură în celelalte.",
+  phraseWhere: "Orice aplicație din fortăreață îți poate arăta fraza. Lipește-o în primul câmp și se împarte singură în celelalte.",
   moves: "{app} are deja o împerechere cu {devices}. La intrare, împerecherea trece în fortăreață, deci nu trebuie să împerechezi nimic din nou.",
   join: "Intră",
   joinRefused: "Aceste cuvinte nu deschid nicio fortăreață. Verifică-le și încearcă din nou.",

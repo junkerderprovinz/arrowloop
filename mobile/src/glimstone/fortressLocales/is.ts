@@ -51,7 +51,7 @@ export const is: FortressText = {
   leave: "Yfirgefa vígið",
   joinTitle: "Ganga í vígi",
   word: "Orð {n}",
-  phraseWhere: "Öll forrit í víginu sýna setninguna undir Tilvik. Límdu hana í fyrsta reitinn og þá dreifist hún á hina.",
+  phraseWhere: "Öll forrit í víginu geta sýnt þér setninguna. Límdu hana í fyrsta reitinn og þá dreifist hún á hina.",
   moves: "Forritið {app} er þegar parað. Pöruð tæki: {devices}. Við inngöngu flyst pörunin inn í vígið, svo þú þarft ekki að para aftur.",
   join: "Ganga í",
   joinRefused: "Þessi orð opna ekkert vígi. Athugaðu þau og reyndu aftur.",

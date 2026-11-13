@@ -51,7 +51,7 @@ export const fi: FortressText = {
   leave: "Poistu linnoituksesta",
   joinTitle: "Liity linnoitukseen",
   word: "Sana {n}",
-  phraseWhere: "Jokainen linnoituksen sovellus näyttää lauseen kohdassa Instanssit. Liitä se ensimmäiseen kenttään, niin se jakautuu muihin kenttiin.",
+  phraseWhere: "Jokainen linnoituksen sovellus voi näyttää sinulle lauseen. Liitä se ensimmäiseen kenttään, niin se jakautuu muihin kenttiin.",
   moves: "Sovelluksella {app} on jo pariliitos: {devices}. Liittyminen siirtää pariliitoksen linnoitukseen, joten mitään ei tarvitse pariuttaa uudelleen.",
   join: "Liity",
   joinRefused: "Nämä sanat eivät avaa mitään linnoitusta. Tarkista ne ja yritä uudelleen.",

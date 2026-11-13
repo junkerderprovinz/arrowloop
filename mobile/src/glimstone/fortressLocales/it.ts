@@ -51,7 +51,7 @@ export const it: FortressText = {
   leave: "Lascia la fortezza",
   joinTitle: "Entra in una fortezza",
   word: "Parola {n}",
-  phraseWhere: "Ogni app della fortezza mostra la frase in Istanze. Incollala nel primo campo e si distribuisce sugli altri.",
+  phraseWhere: "Ogni app della fortezza può mostrarti la frase. Incollala nel primo campo e si distribuisce sugli altri.",
   moves: "{app} ha già un'associazione con {devices}. Entrando, questa associazione passa nella fortezza, quindi non devi associare nulla di nuovo.",
   join: "Entra",
   joinRefused: "Queste parole non aprono nessuna fortezza. Controllale e riprova.",

@@ -51,7 +51,7 @@ export const ca: FortressText = {
   leave: "Surt de la fortalesa",
   joinTitle: "Uneix-te a una fortalesa",
   word: "Paraula {n}",
-  phraseWhere: "Totes les apps de la fortalesa mostren la frase a Instàncies. Enganxa-la al primer camp i es reparteix per la resta.",
+  phraseWhere: "Qualsevol app de la fortalesa et pot mostrar la frase. Enganxa-la al primer camp i es reparteix per la resta.",
   moves: "{app} ja té un aparellament amb {devices}. En unir-te, aquest aparellament passa a la fortalesa, així que no cal aparellar res de nou.",
   join: "Uneix-te",
   joinRefused: "Aquestes paraules no obren cap fortalesa. Revisa-les i torna-ho a provar.",

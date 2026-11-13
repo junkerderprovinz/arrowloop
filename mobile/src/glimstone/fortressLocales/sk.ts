@@ -66,7 +66,7 @@ export const sk: FortressText = {
   leave: "Opustiť pevnosť",
   joinTitle: "Pripojiť sa k pevnosti",
   word: "Slovo {n}",
-  phraseWhere: "Frázu nájdeš v každej aplikácii pevnosti v časti Inštancie. Vlož ju do prvého poľa a sama sa rozloží do ostatných.",
+  phraseWhere: "Frázu ti môže ukázať každá aplikácia v pevnosti. Vlož ju do prvého poľa a sama sa rozloží do ostatných.",
   moves: "Doterajšie párovanie aplikácie {app}: {devices}. Pri pripojení sa presunie do pevnosti, takže nič nemusíš párovať znova.",
   join: "Pripojiť",
   joinRefused: "Tieto slová neotvárajú žiadnu pevnosť. Skontroluj ich a skús to znova.",

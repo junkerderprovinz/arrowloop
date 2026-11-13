@@ -63,7 +63,7 @@ export const hr: FortressText = {
   leave: "Napusti utvrdu",
   joinTitle: "Pridruži se utvrdi",
   word: "Riječ {n}",
-  phraseWhere: "Svaka aplikacija u utvrdi prikazuje frazu pod Instance. Zalijepi je u prvo polje i sama će se rasporediti po ostalima.",
+  phraseWhere: "Svaka aplikacija u utvrdi može ti pokazati frazu. Zalijepi je u prvo polje i sama će se rasporediti po ostalima.",
   moves: "Postojeće uparivanje aplikacije {app}: {devices}. Pri pridruživanju ono prelazi u utvrdu, pa ništa ne moraš ponovno uparivati.",
   join: "Pridruži se",
   joinRefused: "Ove riječi ne otvaraju nijednu utvrdu. Provjeri ih i pokušaj ponovno.",

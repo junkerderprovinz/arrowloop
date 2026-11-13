@@ -51,7 +51,7 @@ export const fr: FortressText = {
   leave: "Quitter la forteresse",
   joinTitle: "Rejoindre une forteresse",
   word: "Mot {n}",
-  phraseWhere: "Chaque app de la forteresse affiche la phrase sous Instances. Collez-la dans le premier champ, elle se répartit sur les autres.",
+  phraseWhere: "Chaque app de la forteresse peut vous montrer la phrase. Collez-la dans le premier champ, elle se répartit sur les autres.",
   moves: "{app} a déjà un appairage avec {devices}. En rejoignant la forteresse, cet appairage y passe aussi, vous n'avez rien à appairer de nouveau.",
   join: "Rejoindre",
   joinRefused: "Ces mots n'ouvrent aucune forteresse. Vérifiez-les et réessayez.",

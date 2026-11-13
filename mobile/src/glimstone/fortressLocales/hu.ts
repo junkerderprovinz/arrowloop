@@ -51,7 +51,7 @@ export const hu: FortressText = {
   leave: "Kilépés az erődből",
   joinTitle: "Belépés egy erődbe",
   word: "{n}. szó",
-  phraseWhere: "Az erőd minden alkalmazása a Példányok alatt mutatja a jelmondatot. Illeszd be az első mezőbe, és magától szétoszlik a többire.",
+  phraseWhere: "Az erőd bármelyik alkalmazása megmutathatja a jelmondatot. Illeszd be az első mezőbe, és magától szétoszlik a többire.",
   moves: "{app} már párosítva van ezekkel: {devices}. Belépéskor ez a párosítás átkerül az erődbe, így nem kell újra párosítanod.",
   join: "Belépés",
   joinRefused: "Ezek a szavak egy erődöt sem nyitnak. Nézd át őket, és próbáld újra.",

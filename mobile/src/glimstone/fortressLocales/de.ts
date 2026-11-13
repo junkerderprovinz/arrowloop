@@ -51,7 +51,7 @@ export const de: FortressText = {
   leave: "Festung verlassen",
   joinTitle: "Festung beitreten",
   word: "Wort {n}",
-  phraseWhere: "Die Phrase steht in jeder App der Festung unter Instanzen. Füg sie ins erste Feld ein, dann verteilt sie sich auf die anderen.",
+  phraseWhere: "Jede App in der Festung kann dir die Phrase zeigen. Füg sie ins erste Feld ein, dann füllt sie die übrigen.",
   moves: "{app} ist schon mit {devices} gekoppelt. Beim Beitritt zieht diese Kopplung in die Festung um, neu koppeln musst du nichts.",
   join: "Beitreten",
   joinRefused: "Diese Wörter öffnen keine Festung. Prüf sie und versuch es noch einmal.",

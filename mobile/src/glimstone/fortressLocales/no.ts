@@ -51,7 +51,7 @@ export const no: FortressText = {
   leave: "Forlat festningen",
   joinTitle: "Bli med i en festning",
   word: "Ord {n}",
-  phraseWhere: "Alle appene i festningen viser frasen under Instanser. Lim den inn i det første feltet, så fordeler den seg på resten.",
+  phraseWhere: "Alle appene i festningen kan vise deg frasen. Lim den inn i det første feltet, så fordeler den seg på resten.",
   moves: "{app} er allerede paret med {devices}. Når du blir med, flytter paringen inn i festningen, så du trenger ikke å pare på nytt.",
   join: "Bli med",
   joinRefused: "Disse ordene åpner ingen festning. Sjekk dem og prøv igjen.",

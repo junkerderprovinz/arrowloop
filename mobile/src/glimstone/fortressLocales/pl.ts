@@ -66,7 +66,7 @@ export const pl: FortressText = {
   leave: "Opuść twierdzę",
   joinTitle: "Dołącz do twierdzy",
   word: "Słowo {n}",
-  phraseWhere: "Każda aplikacja w twierdzy pokazuje frazę w sekcji Instancje. Wklej ją w pierwsze pole, a sama rozłoży się na pozostałe.",
+  phraseWhere: "Każda aplikacja w twierdzy może pokazać ci frazę. Wklej ją w pierwsze pole, a sama rozłoży się na pozostałe.",
   moves: "Istniejące parowanie aplikacji {app}: {devices}. Po dołączeniu przejdzie ono do twierdzy, więc nie musisz niczego parować od nowa.",
   join: "Dołącz",
   joinRefused: "Te słowa nie otwierają żadnej twierdzy. Sprawdź je i spróbuj ponownie.",

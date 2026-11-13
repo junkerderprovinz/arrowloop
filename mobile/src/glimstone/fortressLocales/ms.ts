@@ -51,7 +51,7 @@ export const ms: FortressText = {
   leave: "Keluar dari kubu",
   joinTitle: "Sertai kubu",
   word: "Perkataan {n}",
-  phraseWhere: "Setiap apl dalam kubu memaparkan frasa di bawah Instans. Tampal ke dalam medan pertama dan perkataan selebihnya akan diisi ke medan lain.",
+  phraseWhere: "Setiap apl dalam kubu boleh menunjukkan frasa itu kepada anda. Tampal ke dalam medan pertama dan perkataan selebihnya akan diisi ke medan lain.",
   moves: "{app} sudah digandingkan dengan {devices}. Apabila menyertai, gandingan itu turut berpindah ke dalam kubu, jadi tidak perlu menggandingkan semula.",
   join: "Sertai",
   joinRefused: "Perkataan ini tidak membuka mana-mana kubu. Semak dan cuba lagi.",

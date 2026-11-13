@@ -66,7 +66,7 @@ export const sl: FortressText = {
   leave: "Zapusti trdnjavo",
   joinTitle: "Pridruži se trdnjavi",
   word: "Beseda {n}",
-  phraseWhere: "Vsaka aplikacija v trdnjavi pokaže frazo pod Instance. Prilepi jo v prvo polje in sama se bo razporedila po ostalih.",
+  phraseWhere: "Frazo ti lahko pokaže vsaka aplikacija v trdnjavi. Prilepi jo v prvo polje in sama se bo razporedila po ostalih.",
   moves: "Obstoječe seznanjanje aplikacije {app}: {devices}. Ob pridružitvi se preseli v trdnjavo, zato ti ni treba ničesar znova seznanjati.",
   join: "Pridruži se",
   joinRefused: "Te besede ne odprejo nobene trdnjave. Preveri jih in poskusi znova.",

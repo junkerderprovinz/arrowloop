@@ -51,7 +51,7 @@ export const gl: FortressText = {
   leave: "Saír da fortaleza",
   joinTitle: "Unirse a unha fortaleza",
   word: "Palabra {n}",
-  phraseWhere: "Todas as apps da fortaleza amosan a frase en Instancias. Pégaa no primeiro campo e repártese polos demais.",
+  phraseWhere: "Calquera app da fortaleza pode amosarche a frase. Pégaa no primeiro campo e repártese polos demais.",
   moves: "{app} xa ten un emparellamento con {devices}. Ao unirte, ese emparellamento pasa á fortaleza, así que non tes que emparellar nada de novo.",
   join: "Unirse",
   joinRefused: "Estas palabras non abren ningunha fortaleza. Revísaas e téntao de novo.",

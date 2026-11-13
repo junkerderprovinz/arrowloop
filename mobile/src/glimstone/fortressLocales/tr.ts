@@ -51,7 +51,7 @@ export const tr: FortressText = {
   leave: "Kaleden ayrıl",
   joinTitle: "Bir kaleye katıl",
   word: "{n}. kelime",
-  phraseWhere: "Kaledeki her uygulama ifadeyi Örnekler bölümünde gösterir. İlk alana yapıştırdığında kalan alanlara kendiliğinden dağılır.",
+  phraseWhere: "Kaledeki her uygulama ifadeyi sana gösterebilir. İlk alana yapıştırdığında kalan alanlara kendiliğinden dağılır.",
   moves: "{app} uygulaması şunlarla zaten eşleştirilmiş: {devices}. Katıldığında bu eşleştirme kaleye taşınır, yeniden eşleştirmen gerekmez.",
   join: "Katıl",
   joinRefused: "Bu kelimeler hiçbir kaleyi açmıyor. Kontrol edip yeniden dene.",

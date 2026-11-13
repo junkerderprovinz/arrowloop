@@ -66,7 +66,7 @@ export const lt: FortressText = {
   leave: "Palikti tvirtovę",
   joinTitle: "Prisijungti prie tvirtovės",
   word: "Žodis {n}",
-  phraseWhere: "Kiekviena tvirtovės programėlė rodo frazę skiltyje Egzemplioriai. Įklijuokite ją į pirmą lauką, ir ji pasiskirstys po kitus.",
+  phraseWhere: "Frazę jums gali parodyti bet kuri tvirtovės programėlė. Įklijuokite ją į pirmą lauką, ir ji pasiskirstys po kitus.",
   moves: "Programėlė {app} jau susieta: {devices}. Prisijungus šis susiejimas persikels į tvirtovę, todėl nieko nereikės susieti iš naujo.",
   join: "Prisijungti",
   joinRefused: "Šie žodžiai neatveria jokios tvirtovės. Patikrinkite juos ir bandykite dar kartą.",

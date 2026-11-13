@@ -51,7 +51,7 @@ export const vi: FortressText = {
   leave: "Rời pháo đài",
   joinTitle: "Tham gia pháo đài",
   word: "Từ {n}",
-  phraseWhere: "Mọi ứng dụng trong pháo đài đều hiện cụm từ ở mục Phiên bản. Dán vào ô đầu tiên, cụm từ sẽ tự chia sang các ô còn lại.",
+  phraseWhere: "Mọi ứng dụng trong pháo đài đều có thể cho bạn xem cụm từ. Dán vào ô đầu tiên, cụm từ sẽ tự chia sang các ô còn lại.",
   moves: "{app} đã được ghép nối với {devices}. Khi tham gia, việc ghép nối này sẽ chuyển vào pháo đài, nên bạn không cần ghép nối lại.",
   join: "Tham gia",
   joinRefused: "Các từ này không mở được pháo đài nào. Hãy kiểm tra rồi thử lại.",

@@ -51,7 +51,7 @@ export const en: FortressText = {
   leave: "Leave fortress",
   joinTitle: "Join a fortress",
   word: "Word {n}",
-  phraseWhere: "Every app in the fortress shows the phrase under Instances. Paste it into the first field and it spreads over the rest.",
+  phraseWhere: "Every app in the fortress can show you the phrase. Paste it into the first field and it fills the rest.",
   moves: "{app} is already paired with {devices}. Joining moves that pairing into the fortress, so there is nothing to pair again.",
   join: "Join",
   joinRefused: "These words open no fortress. Check them and try again.",

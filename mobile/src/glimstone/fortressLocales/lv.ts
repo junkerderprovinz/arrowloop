@@ -51,7 +51,7 @@ export const lv: FortressText = {
   leave: "Pamest cietoksni",
   joinTitle: "Pievienoties cietoksnim",
   word: "Vārds {n}",
-  phraseWhere: "Katra cietokšņa lietotne rāda frāzi sadaļā Instances. Ielīmē to pirmajā laukā, un tā sadalīsies pa pārējiem.",
+  phraseWhere: "Frāzi tev var parādīt jebkura cietokšņa lietotne. Ielīmē to pirmajā laukā, un tā sadalīsies pa pārējiem.",
   moves: "Lietotne {app} jau ir sapārota: {devices}. Pievienojoties šī pārošana pāriet uz cietoksni, tāpēc nekas nav jāpāro no jauna.",
   join: "Pievienoties",
   joinRefused: "Šie vārdi neatver nevienu cietoksni. Pārbaudi tos un mēģini vēlreiz.",

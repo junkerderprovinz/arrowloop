@@ -51,7 +51,7 @@ export const et: FortressText = {
   leave: "Lahku kindlusest",
   joinTitle: "Liitu kindlusega",
   word: "Sõna {n}",
-  phraseWhere: "Iga kindluse rakendus näitab fraasi jaotises Eksemplarid. Kleebi see esimesse välja ja see jaotub ülejäänud väljadele.",
+  phraseWhere: "Iga kindluse rakendus saab sulle fraasi näidata. Kleebi see esimesse välja ja see jaotub ülejäänud väljadele.",
   moves: "Rakendus {app} on juba seotud: {devices}. Liitumisel kolib see sidumine kindlusesse, nii et uuesti siduma ei pea.",
   join: "Liitu",
   joinRefused: "Need sõnad ei ava ühtegi kindlust. Kontrolli neid ja proovi uuesti.",
