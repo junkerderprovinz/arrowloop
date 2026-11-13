@@ -903,12 +903,13 @@ export function Settings() {
           }}
           onClose={() => setBackupFolder(false)}
         />
-        {/* Both side by side in one row, as on the web, and what they cover in the card's (i). */}
-        <View style={styles.backupButtons}>
+        {/* Both side by side in one row, as on the web, and what they cover in
+            the card's (i). They share the row, so its edges are the edges of
+            the buttons above and below. */}
+        <View style={styles.actions}>
           <Button
             label={t("settings.export")}
             labelKey="settings.export"
-            wide={false}
             busy={backupBusy}
             confirm={exported}
             onPress={exportSettings}
@@ -916,7 +917,6 @@ export function Settings() {
           <Button
             label={t("settings.import")}
             labelKey="settings.import"
-            wide={false}
             busy={backupBusy}
             confirm={imported}
             onPress={() =>
@@ -1336,7 +1336,6 @@ function langFlag(code: string): string {
 const styles = StyleSheet.create({
   // Wraps, or a row of three buttons clips the last one on a narrow phone.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  backupButtons: { flexDirection: "row", flexWrap: "wrap", justifyContent: "flex-end", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },
   axisName: { flexDirection: "row", alignItems: "center", gap: space.sm },
   axisRowInner: { flexDirection: "row", alignItems: "center", gap: space.md, flex: 1 },
