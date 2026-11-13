@@ -40,12 +40,14 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **Little things got tidier.** The sync directions carry arrows, the ARM downloads say ARM, Use this folder carries a check, and the label switches on the phone stay on one line.
 - **Still learning and learned look different under any accent.** A ring still filling is yellow and a full one green. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
 - **Buy me a coffee, Export and Import line up with the buttons around them** on the phone. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
+- **The documentation has a new look** in dark and light, and a button right under the README's intro leads there.
 
 ## ⚡ Improved
 
 - **Your pairing moves into the fortress with you.** An instance that was away follows once it's back. After 30 days the old pairing closes, and the Pairing tile names anyone who never came, so you can bring them in with the phrase or remove them.
 - **The Pairing tile follows your group live.** An instance that arrives, waits, is approved or leaves shows up at once, on the web, on the desktop and on the phone.
 - **Your group comes along unchanged.** An instance paired before the update keeps its phrase, its key and every approval, and still talks to instances that haven't updated yet.
+- **An app taken out of the fortress stays out.** One that was away learns it on its next call, and on the phone the Pairing screen says so. The new phrase reaches each remaining app sealed for that app alone, so the one taken out can't read it.
 - **On Unraid, ArrowLoop goes by the server's name** in the pairing and the fortress instead of its container id, until you give it a name of your own.
 - **ArrowLoop shows up with its own logo** in your other apps, and they find it on its server whatever name you give it.
 - **An instance that can't be reached says Not reachable**, in every language, on the web and on the phone.
@@ -66,6 +68,7 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **The phone app keeps to its clock and explains itself.** Times follow the phone's 24-hour setting, the unlock screen stays calm behind the fingerprint prompt, Pause has an (i), and a failed connection says why. Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
 - **A job's run list on the phone shows every run in full.** Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
 - **The phone goes by its own name in your fortress**, the one you gave it in Android's settings, instead of localhost.
+- **ArrowLoop says what it runs on.** Under Podman it counts as a container, as it does under Docker, and in a fortress the phone app shows up as a phone. Your other apps also show its version without a doubled v.
 - **The phone restores its automatic backups.** Import takes them as well as an export, asks first and puts every job and setting back. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
 - **A job without a trash says deleted, not trashed**, in the history, the statistics and every notification. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
 - **A run that found both sides alike is marked Completed** on a job's page on the phone. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
