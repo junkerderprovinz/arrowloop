@@ -714,11 +714,15 @@ func (s *Server) removeFortressRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 // leaveFortress takes this instance out of the fortress and so out of its
-// pairing, which the fortress phrase holds as well.
+// pairing, which the fortress phrase holds as well. The members in reach drop
+// it at once, the others when they hear it from them.
 func (s *Server) leaveFortress(w http.ResponseWriter, _ *http.Request) {
 	if !s.Pairing.Get().Fortress {
 		writeFortressError(w, errNoFortress)
 		return
+	}
+	if f := s.fortressNow(); f != nil {
+		f.Leave()
 	}
 	if err := s.enterGroup(nil); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
