@@ -86,7 +86,7 @@ const ACTION_TITLES: Record<string, TranslationKey> = {
 }
 
 function deviceKind(m: FortressMember): FortressInstanceView['deviceKind'] {
-  if (m.deployment === 'phone' || m.kind === 'mobile') return 'phone'
+  if (m.deployment === 'phone' || m.deployment === 'android' || m.kind === 'mobile') return 'phone'
   if (m.deployment === 'desktop') return 'pc'
   return 'server'
 }

@@ -51,6 +51,7 @@ describe('a refused phrase', () => {
 describe('the names of the kinds', () => {
   it('names every kind an instance announces and nothing else', () => {
     expect(kindName(t, 'phone')).toBe('Phone app')
+    expect(kindName(t, 'android')).toBe('Phone app')
     expect(kindName(t, 'robot')).toBe('')
   })
 })

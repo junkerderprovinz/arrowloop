@@ -33,3 +33,34 @@ func TestTheFortressSeesTheVersionWithoutTheTagsV(t *testing.T) {
 		t.Errorf("version = %q, want 2.7.0", got)
 	}
 }
+
+// The other apps name a member by GlimStone's forms, where a phone app is
+// "android".
+func TestThePhoneJoinsTheFortressAsAnAndroidApp(t *testing.T) {
+	url := testRelay(t)
+	a := nodeWith(t, setup{relay: url}, newHarness(t))
+	b := nodeWith(t, setup{relay: url, deployment: "phone"}, newHarness(t))
+	words := newWords(t)
+	a.join(t, words)
+	b.join(t, words)
+	var got string
+	eventually(t, "the first to see the phone", func() bool {
+		var v struct {
+			Members []struct {
+				App        string `json:"app"`
+				Deployment string `json:"deployment"`
+			} `json:"members"`
+		}
+		a.get(t, "/api/fortress", &v)
+		for _, m := range v.Members {
+			if m.App == "arrowloop" {
+				got = m.Deployment
+				return true
+			}
+		}
+		return false
+	})
+	if got != "android" {
+		t.Errorf("deployment = %q, want android", got)
+	}
+}

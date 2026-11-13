@@ -21,7 +21,7 @@ const STAGE_BADGE: Record<Exclude<PairStage, 'unpaired' | 'paired'>, { tone: Bad
 }
 
 function glyphFor(deployment: Deployment) {
-  if (deployment === 'phone') return <IconPhone />
+  if (deployment === 'phone' || deployment === 'android') return <IconPhone />
   if (deployment === 'desktop') return <IconApp />
   return <IconServer />
 }

@@ -662,7 +662,7 @@ function post<T>(path: string, body: unknown = {}): Promise<T> {
 }
 
 /** What an instance tells the others of its group it is. */
-export type Deployment = 'container' | 'server' | 'desktop' | 'phone'
+export type Deployment = 'container' | 'server' | 'desktop' | 'phone' | 'android'
 
 /** Another instance of the group, reachable now. */
 export type GroupMember = { id: string; name: string; deployment: Deployment; address?: string; approved: boolean }

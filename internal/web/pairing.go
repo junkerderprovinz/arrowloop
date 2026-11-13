@@ -221,7 +221,13 @@ func (s *Server) groupChanged() {
 
 // self is what the other members see of this instance.
 func (s *Server) self(st pairing.State) group.Self {
-	return group.Self{Name: s.instanceName(st), Deployment: s.Deployment, DirectURL: s.DirectURL}
+	self := group.Self{Name: s.instanceName(st), Deployment: s.Deployment, DirectURL: s.DirectURL}
+	// The other apps of a fortress name a member by GlimStone's forms, where
+	// the phone app is "android".
+	if st.Fortress && self.Deployment == "phone" {
+		self.Deployment = "android"
+	}
+	return self
 }
 
 // defaultPort is where an ArrowLoop listens unless told otherwise.

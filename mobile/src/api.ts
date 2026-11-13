@@ -59,7 +59,7 @@ export interface AutoBackups {
  * follow web/src/lib/api.ts, which cannot be imported here, since it reaches
  * the web's i18n.ts and Vite's import.meta.glob.
  */
-export type Deployment = "container" | "server" | "desktop" | "phone";
+export type Deployment = "container" | "server" | "desktop" | "phone" | "android";
 
 /** Another instance of the group, reachable now. */
 export interface GroupMember {

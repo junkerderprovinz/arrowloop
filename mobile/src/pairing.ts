@@ -24,6 +24,7 @@ const KIND: Record<string, TranslationKey> = {
   server: "instances.kind.server",
   desktop: "instances.kind.desktop",
   phone: "instances.kind.phone",
+  android: "instances.kind.phone",
 };
 
 /** The kind an instance announced, in the reader's words, or nothing for one it did not. */

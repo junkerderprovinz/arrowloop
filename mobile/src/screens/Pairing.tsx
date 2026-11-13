@@ -787,7 +787,7 @@ const STAGE_BADGE: Record<Exclude<PairStage, "unpaired" | "paired">, { tone: Ton
   alone: { tone: "warn", key: "pairing.stateAlone" },
 };
 
-const GLYPH: Record<string, string> = { phone: "IconPhone", desktop: "IconApp" };
+const GLYPH: Record<string, string> = { phone: "IconPhone", android: "IconPhone", desktop: "IconApp" };
 
 /**
  * Who is in the group: the instances that wait for approval, those that did
