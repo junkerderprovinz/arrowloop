@@ -6,7 +6,7 @@ import { matchesQuery } from "../../../web/src/lib/fold";
 import type { HistoryStack } from "../nav";
 import { jobSides } from "../sides";
 import { useWaiting } from "../waiting";
-import { entryLabel, entryNote, plainKey, unreadFolder } from "../../../web/src/lib/entryLabel";
+import { entryLabel, entryNote, groupWord, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { jobNamesInOrder } from "../../../web/src/lib/jobOrder";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
@@ -659,7 +659,7 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
       {entries?.length === 0 ? <Body>{t("phone.runEmpty")}</Body> : null}
       {[...groups.entries()].map(([kind, list]) => (
         <View key={kind} style={styles.group}>
-          <AxisLabel>{`${entryWord(kind, t)} · ${list.length}`}</AxisLabel>
+          <AxisLabel>{`${groupWord(t, kind, list)} · ${list.length}`}</AxisLabel>
           {list.slice(0, 50).map((entry, i) => {
             const labelled = { Kind: entry.Kind, Side: entry.Side ?? "", Note: entry.Note, Path: entry.Path };
             return (
@@ -736,12 +736,6 @@ function tone(item: Touch): "ok" | "warn" | "fail" | "neutral" {
 /** The note beside a file log line, or null when its label already says it. */
 function shownNote(t: T, item: Touch): string | null {
   return entryNote(t, { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note });
-}
-
-/** An entry kind in its plain word, or the kind itself for one this build does not know. */
-function entryWord(kind: string, t: T): string {
-  const key = plainKey(kind);
-  return key ? t(key) : kind;
 }
 
 export function counters(run: Run, t: T): string {

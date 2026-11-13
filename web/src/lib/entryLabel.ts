@@ -113,6 +113,18 @@ export function plainKey(kind: string): TranslationKey | null {
   return PLAIN[kind] ?? null
 }
 
+/**
+ * The heading over a run's files of one kind. Removed files say the trash only
+ * when one of them went there, since a job without a trash deletes outright.
+ */
+export function groupWord(t: T, kind: string, entries: Pick<Entry, 'Note'>[]): string {
+  if (PLAIN[kind] === 'entry.trash') {
+    return t(entries.some((e) => e.Note === BIN) ? 'entry.binned' : 'entry.deleted')
+  }
+  const key = plainKey(kind)
+  return key ? t(key) : kind
+}
+
 /** The folder a path sits in, which a rename keeps and a move changes. */
 function folderOf(path: string): string {
   const at = path.lastIndexOf('/')

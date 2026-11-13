@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryAction, entryLabel, entryNote, placeOf, placesOf, sideName, transferLabel, unreadFolder } from './entryLabel'
+import { entryAction, entryLabel, groupWord, entryNote, placeOf, placesOf, sideName, transferLabel, unreadFolder } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -212,5 +212,21 @@ describe('a side as it reads', () => {
   it('leaves a folder or a target as written', () => {
     expect(sideName('D:\opencloud', drives)).toBe('D:\opencloud')
     expect(sideName('OpenCloud:Fotos', drives)).toBe('OpenCloud:Fotos')
+  })
+})
+
+describe('the heading over the files of one kind', () => {
+  const noted = (Note: string): RunEntry => ({ Kind: 'trash', Side: 'right', Path: 'a.jpg', Note, Size: 0 })
+
+  it('says the files went to the trash when they did', () => {
+    expect(groupWord(t, 'trash', [noted('bin')])).toBe('In den Papierkorb')
+  })
+
+  it('says deleted when none of them went to the trash', () => {
+    expect(groupWord(t, 'trash', [noted(''), noted('')])).toBe('Gelöscht')
+  })
+
+  it('keeps the plain word for every other kind', () => {
+    expect(groupWord(t, 'copy', [entry('copy', 'right')])).toBe(t('entry.copy'))
   })
 })
