@@ -557,6 +557,7 @@ function FortressCard({
     if (fortress.joined) return;
     setShown(null);
     setAsking(null);
+    setSaid(null);
   }, [fortress.joined]);
 
   const app = { app: SELF.name };
@@ -659,6 +660,11 @@ function FortressCard({
       <>
         {paired.length > 0 ? <Body>{fill(text.moves, { ...app, devices })}</Body> : null}
         <PhraseEntry label={text.phraseTitle} hint={t("fortress.phraseWhere")} join={{ label: text.join, key: "pairing.join" }} onBack={() => setEntering(false)} onJoin={join} />
+      </>
+    ) : fortress.removedHere ? (
+      <>
+        <Text style={[styles.strong, { color: p.text }]}>{text.removedHereTitle}</Text>
+        <Body>{fill(text.removedHereHint, app)}</Body>
       </>
     ) : (
       <>
