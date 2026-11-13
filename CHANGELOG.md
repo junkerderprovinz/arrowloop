@@ -38,6 +38,8 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **ArrowLoop follows GlimStone 4.4.0.** Groups inside a card or a window carry their title in a badge on the top edge, servers and laptops get glyphs of their own, and the APK button's QR part simply says QR code.
 - **The Pairing tile shows ParleyPort's new logo.**
 - **Little things got tidier.** The sync directions carry arrows, the ARM downloads say ARM, Use this folder carries a check, and the label switches on the phone stay on one line.
+- **Still learning and learned look different under any accent.** A ring still filling is yellow and a full one green. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
+- **Buy me a coffee, Export and Import line up with the buttons around them** on the phone. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
 
 ## ⚡ Improved
 
@@ -65,6 +67,9 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **A job's run list on the phone shows every run in full.** Thanks to @danpeig ([#142](https://github.com/junkerderprovinz/arrowloop/issues/142)).
 - **The phone goes by its own name in your fortress**, the one you gave it in Android's settings, instead of localhost.
 - **The phone restores its automatic backups.** Import takes them as well as an export, asks first and puts every job and setting back. Thanks to @danpeig ([#144](https://github.com/junkerderprovinz/arrowloop/issues/144)).
+- **A job without a trash says deleted, not trashed**, in the history, the statistics and every notification. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
+- **A run that found both sides alike is marked Completed** on a job's page on the phone. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
+- **The Every box of a schedule can be emptied while you type**, so the 6 of every 6 hours can become a 3. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
 - **The Flatpak opens on a PC with an NVIDIA graphics card** under Wayland. Thanks to @RektalTk ([#143](https://github.com/junkerderprovinz/arrowloop/issues/143)).
 - **An anomaly you allowed goes away as soon as its run starts**, not only once the whole run is done.
 - **Check this job speaks your language**, findings and side names included.
