@@ -15,11 +15,12 @@ const GAP = 3;
 /**
  * Every job as a ring of ten parts, one for each successful run its habits
  * were learned from, the way the web draws them. A ring still filling takes
- * the accent and a full one turns green.
+ * the info colour and a full one turns green, so the two never meet under a
+ * green accent.
  */
 export function LearningRings({ learning, onOpen }: { learning: JobLearning[]; onOpen: (job: string) => void }) {
   const { t } = useT();
-  const { p, accent, corners } = useTheme();
+  const { p, corners } = useTheme();
   return (
     <>
       <View style={styles.grid}>
@@ -50,7 +51,7 @@ export function LearningRings({ learning, onOpen }: { learning: JobLearning[]; o
                       r={RADIUS}
                       fill="none"
                       strokeWidth={3.5}
-                      stroke={i < lit ? (done ? p.okSolid : accent) : p.surface3}
+                      stroke={i < lit ? (done ? p.okSolid : p.infoSolid) : p.surface3}
                       strokeDasharray={`${(PART - GAP).toFixed(2)} ${ROUND.toFixed(2)}`}
                       strokeDashoffset={-(i * PART + GAP / 2)}
                     />
@@ -66,7 +67,7 @@ export function LearningRings({ learning, onOpen }: { learning: JobLearning[]; o
       </View>
       <View style={styles.legend}>
         <View style={styles.key}>
-          <View style={[styles.dot, { borderColor: accent }]} />
+          <View style={[styles.dot, { borderColor: p.infoSolid }]} />
           <Text style={[styles.keyText, { color: p.textMuted }]}>{t("anomaly.learn.learning")}</Text>
         </View>
         <View style={styles.key}>

@@ -1,7 +1,7 @@
 // Every job as a ring of ten parts, one for each successful run its habits
 // were learned from, as BombVault draws its watched items. A ring still
-// filling takes the accent and a full one turns green, so the jobs that are
-// done stand out.
+// filling takes the info colour and a full one turns green, so the jobs that
+// are done stand out under any accent, a green one included.
 import { useState, type CSSProperties } from 'react'
 
 import { DirectionGlyph } from './Direction'
@@ -59,7 +59,7 @@ function Ring({ learning, onOpen }: { learning: JobLearning; onOpen: () => void 
                   strokeDasharray={`${(PART - GAP).toFixed(2)} ${ROUND.toFixed(2)}`}
                   strokeDashoffset={(-(i * PART + GAP / 2)).toFixed(2)}
                   style={grows ? ({ '--ring-i': i - grown.from } as CSSProperties) : undefined}
-                  className={`${i < lit ? (done ? 'stroke-statusOkSolid' : 'stroke-accent') : 'stroke-carbon-surface3'}${
+                  className={`${i < lit ? (done ? 'stroke-statusOkSolid' : 'stroke-statusInfoSolid') : 'stroke-carbon-surface3'}${
                     grows ? ' glim-ring-grow' : ''
                   }`}
                 />
@@ -88,7 +88,7 @@ export function LearningRings({ learning, onOpen }: { learning: JobLearning[]; o
       </ul>
       <p className="flex flex-wrap justify-end gap-x-4 gap-y-1 text-meta text-carbon-textMuted">
         <span className="inline-flex items-center gap-1.5">
-          <i aria-hidden="true" className="h-2.5 w-2.5 rounded-full shadow-[inset_0_0_0_2.5px_var(--accent)]" />
+          <i aria-hidden="true" className="h-2.5 w-2.5 rounded-full shadow-[inset_0_0_0_2.5px_var(--status-info-solid)]" />
           {t('anomaly.learn.learning')}
         </span>
         <span className="inline-flex items-center gap-1.5">

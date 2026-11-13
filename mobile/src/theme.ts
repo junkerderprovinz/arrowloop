@@ -23,6 +23,8 @@ export interface Palette {
   textMuted: string;
   /** Each status has an ink for text on the page and a solid for fills; on
    *  the light theme the ink is darker. */
+  infoInk: string;
+  infoSolid: string;
   okInk: string;
   okSolid: string;
   failInk: string;
@@ -48,6 +50,8 @@ const dark: Palette = {
   text: "#f4f4f4",
   textSub: "#c6c6c6",
   textMuted: "#8d8d8d",
+  infoInk: "#FCC419",
+  infoSolid: "#FCC419",
   okInk: "#6fdc8c",
   okSolid: "#6fdc8c",
   failInk: "#ff8389",
@@ -71,6 +75,8 @@ const light: Palette = {
   text: "#161616",
   textSub: "#525252",
   textMuted: "#6f6f6f",
+  infoInk: "#8E6A00",
+  infoSolid: "#A87D00",
   okInk: "#0e6027",
   okSolid: "#198038",
   failInk: "#da1e28",
