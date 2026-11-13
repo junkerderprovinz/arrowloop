@@ -96,6 +96,17 @@ func TestAContainerOnUnraidGoesByTheServerName(t *testing.T) {
 	}
 }
 
+func TestAPhoneGoesByTheNameAndroidKnowsIt(t *testing.T) {
+	t.Setenv(web.DeviceNameEnv, "Pixel of Anna")
+	a := newNode(t, testRelay(t))
+	if got := a.fortress(t).Default; got != "Pixel of Anna" {
+		t.Errorf("default device = %q, want the phone's name", got)
+	}
+	if got := a.connect(t).Name; got != "Pixel of Anna" {
+		t.Errorf("name in the pairing = %q, want the phone's name", got)
+	}
+}
+
 func TestJoiningTheFortressTakesThePairedInstancesAlong(t *testing.T) {
 	url := testRelay(t)
 	a, b := newNode(t, url), newNode(t, url)

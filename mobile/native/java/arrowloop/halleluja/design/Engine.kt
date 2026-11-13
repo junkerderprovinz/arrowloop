@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.Network
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import java.io.File
 import java.net.HttpURLConnection
@@ -152,6 +153,19 @@ object Engine {
 
     private fun config(context: Context): File = File(home(context), "arrowloop.json")
 
+    /**
+     * The name the phone goes by in Android's settings, else its maker and
+     * model. The engine would otherwise go by its hostname, which on Android is
+     * always "localhost".
+     */
+    private fun deviceName(context: Context): String {
+        val given = Settings.Global.getString(context.contentResolver, Settings.Global.DEVICE_NAME)
+        if (!given.isNullOrBlank()) return given.trim()
+        val maker = Build.MANUFACTURER.trim().replaceFirstChar { it.titlecase() }
+        val model = Build.MODEL.trim()
+        return if (model.startsWith(maker, ignoreCase = true)) model else "$maker $model"
+    }
+
     /** Writes a configuration with no jobs if there is none yet. */
     fun ensureConfig(context: Context) {
         val file = config(context)
@@ -269,6 +283,7 @@ object Engine {
         builder.environment()["TZ"] = TimeZone.getDefault().id
         builder.environment()["ARROWLOOP_DNS_FILE"] = nameserverFile(context).absolutePath
         builder.environment()["ARROWLOOP_FILE_ACCESS"] = Storage.accessFile(context).absolutePath
+        builder.environment()["ARROWLOOP_DEVICE_NAME"] = deviceName(context)
         // The phone reports runs through Android's notifications alone, so the
         // engine skips the message channels and Healthchecks checks its
         // configuration may hold. See internal/daemon/notify.go.

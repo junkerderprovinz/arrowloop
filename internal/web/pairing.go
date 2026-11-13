@@ -434,16 +434,19 @@ func (s *Server) connectInfo() connectInfo {
 	return info
 }
 
+// DeviceNameEnv carries the name the phone goes by in Android's settings. The
+// hostname Go sees on Android is always "localhost".
+const DeviceNameEnv = "ARROWLOOP_DEVICE_NAME"
+
 // instanceName is what the other instances see this one as: the name given on
 // the Pairing tile, else the machine's. A container's own hostname is its id,
 // so on Unraid the server's name comes from HOST_HOSTNAME, which Unraid sets
 // on every container.
 func (s *Server) instanceName(st pairing.State) string {
-	if name := strings.TrimSpace(st.Name); name != "" {
-		return name
-	}
-	if name := strings.TrimSpace(os.Getenv("HOST_HOSTNAME")); name != "" {
-		return name
+	for _, name := range []string{st.Name, os.Getenv(DeviceNameEnv), os.Getenv("HOST_HOSTNAME")} {
+		if name = strings.TrimSpace(name); name != "" {
+			return name
+		}
 	}
 	host, _ := os.Hostname()
 	return host

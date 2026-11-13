@@ -2,7 +2,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import Constants from "expo-constants";
 import { api, EngineError, type ConnectInfo, type RelayConfig, type RelayMode } from "../api";
 import { QR } from "../donate";
 import { engine } from "../engine";
@@ -27,9 +26,6 @@ import {
 import { useAppearance } from "../settings";
 import { contrastOn, softOn, space, text, TOUCH } from "../theme";
 import { AxisLabel, Badge, Body, Button, Caption, Choice, InfoBubble, Page, Press, Section, Toggle, useTheme, type Tone } from "../ui";
-
-// What the engine lets an announce carry.
-const MAX_NAME = 64;
 
 /** How long typing has to pause before a name or an address is saved. */
 const SETTLE_MS = 800;
@@ -127,20 +123,6 @@ export function Pairing() {
   );
 }
 
-/**
- * Gives the phone the name the handset goes by, once, where the engine would
- * otherwise announce it as Android's host name, which is "localhost".
- */
-async function nameOnce(info: ConnectInfo): Promise<ConnectInfo> {
-  const device = Constants.deviceName?.trim().slice(0, MAX_NAME);
-  if ((info.name && info.name !== "localhost") || !device) return info;
-  try {
-    return await api.renameInstance(device);
-  } catch {
-    return info;
-  }
-}
-
 /** Three numbered cards before any button does anything. */
 function Steps() {
   const { t } = useT();
@@ -231,7 +213,7 @@ function PhraseCard({
       setShown({ phrase: made.phrase, code: made.code });
       setCopied(false);
       onCreatedHere(true);
-      onGroup(await nameOnce(made.info));
+      onGroup(made.info);
     });
 
   const reveal = () =>
@@ -273,7 +255,7 @@ function PhraseCard({
         onBack={() => setEntering(false)}
         onJoin={async (phrase) => {
           try {
-            const g = await nameOnce(await api.joinGroup(phrase));
+            const g = await api.joinGroup(phrase);
             setEntering(false);
             setSaid({ text: t("pairing.joined"), ok: true });
             onGroup(g);
