@@ -636,11 +636,6 @@ function FortressCard({
       ],
     );
 
-  const joinRefused = (e: unknown) => {
-    if (e instanceof EngineError && e.code === "closedUntilNewPhrase") return joinRefusalText(text, e.code);
-    return e instanceof EngineError && e.code === "inFortress" ? t("fortress.inFortress") : refusalText(t, e);
-  };
-
   async function join(phrase: string): Promise<string | null> {
     try {
       onFortress(await api.joinFortress(phrase));
@@ -663,6 +658,11 @@ function FortressCard({
       return joinRefused(e);
     }
   }
+
+  const joinRefused = (e: unknown) => {
+    if (e instanceof EngineError && e.code === "closedUntilNewPhrase") return joinRefusalText(text, e.code);
+    return e instanceof EngineError && e.code === "inFortress" ? t("fortress.inFortress") : refusalText(t, e);
+  };
 
   const flip = (id: string, on: boolean) => {
     setSaid(null);
