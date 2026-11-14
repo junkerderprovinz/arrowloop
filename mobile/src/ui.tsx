@@ -807,6 +807,9 @@ export function InfoBubble({ tip, on }: { tip: string; on?: string }) {
     <>
       <Press
         onPress={() => setOpen(true)}
+        // TalkBack would otherwise read the bare "i".
+        accessibilityRole="button"
+        accessibilityLabel={tip}
         // Often sits on a pressable tile.
         hitSlop={8}
         style={[styles.bubble, { backgroundColor: softOn(ink, on ? 0.22 : 0.15), ...corners.pill }]}
