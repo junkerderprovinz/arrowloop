@@ -98,8 +98,8 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
       <Section title={t("job.runCard")} hint={t("jobs.runNowHint")}>
         <View style={styles.actions}>
           <Button
-            // Cancel rather than pause: the next run starts from the beginning,
-            // and "pause" is the word for holding a schedule.
+            // Cancel rather than pause, since "pause" is the word for holding
+            // the schedule as well.
             label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
             labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
             busy={busy === "run"}
@@ -150,11 +150,14 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
                   what it found. */}
               {failed(run) ? (
                 <Badge label={t("history.failed")} tone="fail" />
+              ) : run.Stopped ? (
+                <Badge label={t("status.stopped")} />
               ) : (
                 <Badge label={t("history.ok")} tone="ok" />
               )}
             </View>
             <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
+            {run.Stopped ? <Caption>{t("history.stopped")}</Caption> : null}
           </Card>
         ))}
       </Section>

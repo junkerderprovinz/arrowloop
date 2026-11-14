@@ -66,6 +66,7 @@ export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
           ))}
         </dl>
         {run.Err && <FailureText raw={run.Err} failure={run.Failure} className="text-statusFail" />}
+        {run.Stopped && <p className="text-subline text-carbon-textSub">{t('history.stopped')}</p>}
         <RunDetail run={run.ID} job={run.Job} tick={run.Running ? tick : 0} onEntries={setEntries} />
       </div>
     </Dialog>

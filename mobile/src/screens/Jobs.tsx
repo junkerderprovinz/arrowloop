@@ -610,6 +610,8 @@ function JobStatus({
       return <Badge label={t("status.failed")} tone="fail" />;
     case "paused":
       return <Badge label={t("jobs.state.disabled")} />;
+    case "stopped":
+      return <Badge label={t("status.stopped")} />;
     case "never":
       return <Caption>{t("jobs.historyEmpty")}</Caption>;
     default:

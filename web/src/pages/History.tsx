@@ -490,7 +490,7 @@ export function RunRow({
 }) {
   const { t, lang } = useT()
   // Only a run with nothing to report wears the green dot; the others say what went otherwise.
-  const fine = !r.Running && !r.Err && r.Conflicts === 0
+  const fine = !r.Running && !r.Err && !r.Stopped && r.Conflicts === 0
   return (
     <li
       onClick={onOpen}
@@ -524,6 +524,7 @@ export function RunRow({
           </Badge>
         )}
         {r.Err && <Badge tone="fail">{t('status.failed')}</Badge>}
+        {r.Stopped && <Badge tone="neutral">{t('status.stopped')}</Badge>}
         {r.Conflicts > 0 && <Badge tone="warn">{t('history.conflicts', { count: r.Conflicts })}</Badge>}
         {r.Skipped > 0 && <Badge>{t('history.left', { count: r.Skipped })}</Badge>}
       </span>

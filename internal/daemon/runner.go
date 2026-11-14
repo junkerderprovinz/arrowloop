@@ -329,7 +329,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	}
 	// A drive that is away is no run and no failure, so the job's check hears
 	// of every other way this ends and of that one not at all.
-	checkOut := func(bool, string) {}
+	checkOut := func(notify.Ping, string) {}
 	if !errors.Is(err, ErrVolumeMissing) {
 		checkOut = r.checkIn(ctx, name)
 	}
@@ -368,7 +368,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		if errors.Is(err, ErrVolumeMissing) {
 			r.waitForDrive(name, err)
 		}
-		checkOut(false, err.Error())
+		checkOut(notify.PingFail, err.Error())
 		r.publish(Event{Job: name, Phase: "finished", Error: err.Error(), Held: errors.Is(err, ErrHeld)})
 		return history.Run{}, err
 	}
@@ -376,7 +376,10 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	// Whatever started it, a run that got this far found its drive.
 	r.waiting.clear(name)
 	rec.Finished = time.Now()
-	if err != nil {
+	// A run cancelled by hand, by Pause or by the program ending has done
+	// nothing wrong, whatever error its last step made of the cancel.
+	rec.Stopped = err != nil && errors.Is(ctx.Err(), context.Canceled)
+	if err != nil && !rec.Stopped {
 		rec.Err = err.Error()
 	}
 	if p != nil {
@@ -385,7 +388,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	rec.Copied, rec.Moved, rec.Trashed = res.Copied, res.Moved, res.Trashed
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved
 	rec.Skipped = len(res.Skipped)
-	if rec.Err == "" {
+	if rec.Err == "" && !rec.Stopped {
 		if again := r.leftAgain(ctx, name, res.Skipped); again != "" {
 			rec.Err = again
 			err = errors.New(again)
@@ -397,6 +400,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	if j.Refused() == nil {
 		if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &rec)); aErr != nil && rec.Err == "" {
 			rec.Err = fmt.Sprintf("%s: %v", hook.AfterFailed, aErr)
+			rec.Stopped = false
 			err = errors.New(rec.Err)
 		}
 	}
@@ -410,11 +414,11 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		}
 	}
 	said := summary(rec, res)
-	checkOut(!rec.Failed(), said)
+	checkOut(ending(rec), said)
 	r.announce(ctx, rec, said)
 	r.review(ctx, rec)
 	finished := Event{Job: name, Phase: "finished", Run: &rec}
-	if err != nil {
+	if rec.Failed() {
 		finished.Error = err.Error()
 	}
 	r.publish(finished)
@@ -435,6 +439,8 @@ func hookEnv(j job.Job, rec *history.Run) map[string]string {
 	env["ARROWLOOP_RESULT"] = "ok"
 	if rec.Failed() {
 		env["ARROWLOOP_RESULT"] = "failed"
+	} else if rec.Stopped {
+		env["ARROWLOOP_RESULT"] = "stopped"
 	}
 	env["ARROWLOOP_ERROR"] = rec.Err
 	env["ARROWLOOP_COPIED"] = strconv.Itoa(rec.Copied)
@@ -866,6 +872,8 @@ func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, er
 		r.log("%s: %v", name, err)
 	case errors.Is(err, ErrAlreadyRunning):
 		r.log("%s is still running from last time, skipping this turn", name)
+	case rec.Stopped:
+		r.log("%s: stopped before it finished", name)
 	case err != nil:
 		r.log("%s failed: %v", name, err)
 	case rec.Changed():

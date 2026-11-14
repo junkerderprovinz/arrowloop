@@ -7,8 +7,8 @@ import { since } from '../lib/since'
 
 /**
  * One run in a short list of the latest: its job, how long ago it ended, and
- * what it moved or why it failed. `today` counts the job's runs since the
- * morning.
+ * what it moved, why it failed or that it was stopped. `today` counts the
+ * job's runs since the morning.
  */
 export function RecentRun({ run, today = 0 }: { run: Run; today?: number }) {
   const { t, lang } = useT()
@@ -24,10 +24,16 @@ export function RecentRun({ run, today = 0 }: { run: Run; today?: number }) {
   // A job that runs on every change says how busy it was instead of filling
   // the list with its runs.
   const busy = today > 1 ? t('tray.runsToday', { count: today }) : ''
-  const said = failed ? failureLine(run.Err, run.Failure, t, lang) : counts.length > 0 ? counts.join(' · ') : t('history.ok')
+  const said = failed
+    ? failureLine(run.Err, run.Failure, t, lang)
+    : run.Stopped
+      ? t('history.stopped')
+      : counts.length > 0
+        ? counts.join(' · ')
+        : t('history.ok')
   return (
     <li className="flex items-start gap-2">
-      <JobMark status={failed ? 'failed' : 'ok'} size={18} />
+      <JobMark status={failed ? 'failed' : run.Stopped ? 'stopped' : 'ok'} size={18} />
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-baseline gap-2">
           <span className="truncate text-body">{run.Job}</span>

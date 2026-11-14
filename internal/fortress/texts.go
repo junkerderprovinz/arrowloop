@@ -44,6 +44,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ran, nothing had changed.",
 		"log.left":         "{job} ran and left files for later ({count}).",
 		"log.failed":       "{job} failed.",
+		"log.stopped":      "{job} was stopped before it finished.",
 		"log.opened":       "Opened from {app} on {device} ({id}).",
 	},
 	"de": {
@@ -59,6 +60,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ist gelaufen, es hatte sich nichts geändert.",
 		"log.left":         "{job} ist gelaufen und hat Dateien für später zurückgestellt ({count}).",
 		"log.failed":       "{job} ist gescheitert.",
+		"log.stopped":      "Der Lauf von {job} wurde gestoppt, bevor er fertig war.",
 		"log.opened":       "Geöffnet aus {app} auf {device} ({id}).",
 	},
 	"fr": {
@@ -74,6 +76,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} a tourné, rien n'avait changé.",
 		"log.left":         "{job} a tourné et a reporté des fichiers à plus tard ({count}).",
 		"log.failed":       "{job} a échoué.",
+		"log.stopped":      "L'exécution de {job} a été arrêtée avant la fin.",
 		"log.opened":       "Ouvert depuis {app} sur {device} ({id}).",
 	},
 	"es": {
@@ -89,6 +92,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} se ejecutó, no había cambios.",
 		"log.left":         "{job} se ejecutó y aplazó archivos para después ({count}).",
 		"log.failed":       "{job} falló.",
+		"log.stopped":      "La ejecución de {job} se detuvo antes de terminar.",
 		"log.opened":       "Abierto desde {app} en {device} ({id}).",
 	},
 	"it": {
@@ -104,6 +108,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} è stato eseguito, non era cambiato nulla.",
 		"log.left":         "{job} è stato eseguito e ha rimandato dei file a dopo ({count}).",
 		"log.failed":       "{job} è fallito.",
+		"log.stopped":      "L'esecuzione di {job} è stata fermata prima di finire.",
 		"log.opened":       "Aperto da {app} su {device} ({id}).",
 	},
 	"pt": {
@@ -119,6 +124,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} correu, nada tinha mudado.",
 		"log.left":         "{job} correu e adiou ficheiros para depois ({count}).",
 		"log.failed":       "{job} falhou.",
+		"log.stopped":      "A execução de {job} foi parada antes de terminar.",
 		"log.opened":       "Aberto a partir de {app} em {device} ({id}).",
 	},
 	"nl": {
@@ -134,6 +140,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} is gedraaid, er was niets veranderd.",
 		"log.left":         "{job} is gedraaid en heeft bestanden uitgesteld tot later ({count}).",
 		"log.failed":       "{job} is mislukt.",
+		"log.stopped":      "De run van {job} werd gestopt voordat hij klaar was.",
 		"log.opened":       "Geopend vanuit {app} op {device} ({id}).",
 	},
 	"pl": {
@@ -149,6 +156,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Zadanie {job} zostało wykonane, nic się nie zmieniło.",
 		"log.left":         "Zadanie {job} zostało wykonane i odłożyło pliki na później ({count}).",
 		"log.failed":       "Zadanie {job} zakończyło się błędem.",
+		"log.stopped":      "Przebieg zadania {job} został zatrzymany, zanim się zakończył.",
 		"log.opened":       "Otwarte z {app} na urządzeniu {device} ({id}).",
 	},
 	"ru": {
@@ -164,6 +172,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Задание {job} выполнено, ничего не изменилось.",
 		"log.left":         "Задание {job} выполнено, файлы отложены на потом ({count}).",
 		"log.failed":       "Задание {job} завершилось ошибкой.",
+		"log.stopped":      "Запуск задания {job} был остановлен до завершения.",
 		"log.opened":       "Открыто из {app} на устройстве {device} ({id}).",
 	},
 	"uk": {
@@ -179,6 +188,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Завдання {job} виконано, нічого не змінилося.",
 		"log.left":         "Завдання {job} виконано, файли відкладено на потім ({count}).",
 		"log.failed":       "Завдання {job} завершилося помилкою.",
+		"log.stopped":      "Запуск завдання {job} зупинили до завершення.",
 		"log.opened":       "Відкрито з {app} на пристрої {device} ({id}).",
 	},
 	"cs": {
@@ -194,6 +204,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Úloha {job} proběhla, nic se nezměnilo.",
 		"log.left":         "Úloha {job} proběhla a odložila soubory na později ({count}).",
 		"log.failed":       "Úloha {job} selhala.",
+		"log.stopped":      "Běh úlohy {job} byl zastaven, než doběhl.",
 		"log.opened":       "Otevřeno z {app} na zařízení {device} ({id}).",
 	},
 	"sv": {
@@ -209,6 +220,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} kördes, inget hade ändrats.",
 		"log.left":         "{job} kördes och sköt upp filer till senare ({count}).",
 		"log.failed":       "{job} misslyckades.",
+		"log.stopped":      "Körningen av {job} stoppades innan den var klar.",
 		"log.opened":       "Öppnad från {app} på {device} ({id}).",
 	},
 	"da": {
@@ -224,6 +236,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} kørte, intet var ændret.",
 		"log.left":         "{job} kørte og udskød filer til senere ({count}).",
 		"log.failed":       "{job} mislykkedes.",
+		"log.stopped":      "Kørslen af {job} blev stoppet, før den var færdig.",
 		"log.opened":       "Åbnet fra {app} på {device} ({id}).",
 	},
 	"fi": {
@@ -239,6 +252,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ajettiin, mikään ei ollut muuttunut.",
 		"log.left":         "{job} ajettiin, ja tiedostoja siirrettiin myöhemmäksi ({count}).",
 		"log.failed":       "{job} epäonnistui.",
+		"log.stopped":      "Tehtävän {job} ajo pysäytettiin ennen kuin se valmistui.",
 		"log.opened":       "Avattu sovelluksesta {app} laitteella {device} ({id}).",
 	},
 	"no": {
@@ -254,6 +268,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} kjørte, ingenting hadde endret seg.",
 		"log.left":         "{job} kjørte og utsatte filer til senere ({count}).",
 		"log.failed":       "{job} feilet.",
+		"log.stopped":      "Kjøringen av {job} ble stoppet før den var ferdig.",
 		"log.opened":       "Åpnet fra {app} på {device} ({id}).",
 	},
 	"tr": {
@@ -269,6 +284,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} çalıştı, hiçbir şey değişmemişti.",
 		"log.left":         "{job} çalıştı ve dosyaları sonraya bıraktı ({count}).",
 		"log.failed":       "{job} başarısız oldu.",
+		"log.stopped":      "{job} bitmeden durduruldu.",
 		"log.opened":       "{device} üzerindeki {app} tarafından açıldı ({id}).",
 	},
 	"el": {
@@ -284,6 +300,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Η εργασία {job} εκτελέστηκε, τίποτα δεν είχε αλλάξει.",
 		"log.left":         "Η εργασία {job} εκτελέστηκε και άφησε αρχεία για αργότερα ({count}).",
 		"log.failed":       "Η εργασία {job} απέτυχε.",
+		"log.stopped":      "Η εκτέλεση της εργασίας {job} σταμάτησε πριν τελειώσει.",
 		"log.opened":       "Άνοιξε από το {app} στη συσκευή {device} ({id}).",
 	},
 	"hu": {
@@ -299,6 +316,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} lefutott, semmi sem változott.",
 		"log.left":         "{job} lefutott, és fájlokat halasztott későbbre ({count}).",
 		"log.failed":       "{job} sikertelen volt.",
+		"log.stopped":      "{job} futását leállították, mielőtt befejeződött.",
 		"log.opened":       "Megnyitva innen: {app}, {device} ({id}).",
 	},
 	"ro": {
@@ -314,6 +332,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} a rulat, nu se schimbase nimic.",
 		"log.left":         "{job} a rulat și a amânat fișiere pentru mai târziu ({count}).",
 		"log.failed":       "{job} a eșuat.",
+		"log.stopped":      "Rularea pentru {job} a fost oprită înainte să se termine.",
 		"log.opened":       "Deschis din {app} pe {device} ({id}).",
 	},
 	"ja": {
@@ -329,6 +348,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} を実行しました。変更はありませんでした。",
 		"log.left":         "{job} を実行し、ファイルを後回しにしました（{count}）。",
 		"log.failed":       "{job} は失敗しました。",
+		"log.stopped":      "{job} の実行は完了する前に停止しました。",
 		"log.opened":       "{device} の {app} から開かれました（{id}）。",
 	},
 	"ko": {
@@ -344,6 +364,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} 작업이 실행되었고, 바뀐 것이 없었습니다.",
 		"log.left":         "{job} 작업이 실행되어 파일을 나중으로 미뤘습니다 ({count}).",
 		"log.failed":       "{job} 작업이 실패했습니다.",
+		"log.stopped":      "{job} 작업의 실행이 끝나기 전에 중지되었습니다.",
 		"log.opened":       "{device}의 {app}에서 열었습니다 ({id}).",
 	},
 	"zh": {
@@ -359,6 +380,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} 已运行，没有任何变化。",
 		"log.left":         "{job} 已运行，并把文件留待稍后（{count}）。",
 		"log.failed":       "{job} 失败了。",
+		"log.stopped":      "{job} 的运行在完成前被停止了。",
 		"log.opened":       "已从 {device} 上的 {app} 打开（{id}）。",
 	},
 	"ar": {
@@ -374,6 +396,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} عملت، ولم يتغير شيء.",
 		"log.left":         "{job} عملت وأجّلت ملفات إلى لاحق ({count}).",
 		"log.failed":       "{job} فشلت.",
+		"log.stopped":      "أُوقف تشغيل {job} قبل أن ينتهي.",
 		"log.opened":       "فُتح من {app} على {device} ({id}).",
 	},
 	"he": {
@@ -389,6 +412,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} רצה, שום דבר לא השתנה.",
 		"log.left":         "{job} רצה ודחתה קבצים למועד מאוחר ({count}).",
 		"log.failed":       "{job} נכשלה.",
+		"log.stopped":      "ההרצה של {job} נעצרה לפני שהסתיימה.",
 		"log.opened":       "נפתח מ-{app} במכשיר {device} ({id}).",
 	},
 	"th": {
@@ -404,6 +428,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} ทำงานแล้ว ไม่มีอะไรเปลี่ยน",
 		"log.left":         "{job} ทำงานแล้วและเลื่อนไฟล์ไว้ก่อน ({count})",
 		"log.failed":       "{job} ล้มเหลว",
+		"log.stopped":      "การทำงานของ {job} ถูกหยุดก่อนที่จะเสร็จ",
 		"log.opened":       "เปิดจาก {app} บน {device} ({id})",
 	},
 	"vi": {
@@ -419,6 +444,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} đã chạy, không có gì thay đổi.",
 		"log.left":         "{job} đã chạy và để lại tệp cho lần sau ({count}).",
 		"log.failed":       "{job} đã thất bại.",
+		"log.stopped":      "Lần chạy của {job} đã bị dừng trước khi xong.",
 		"log.opened":       "Đã mở từ {app} trên {device} ({id}).",
 	},
 	"bg": {
@@ -434,6 +460,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} се изпълни, нищо не се беше променило.",
 		"log.left":         "{job} се изпълни и отложи файлове за после ({count}).",
 		"log.failed":       "{job} се провали.",
+		"log.stopped":      "Изпълнението на {job} беше спряно, преди да завърши.",
 		"log.opened":       "Отворено от {app} на устройството {device} ({id}).",
 	},
 	"sk": {
@@ -449,6 +476,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} prebehla, nič sa nezmenilo.",
 		"log.left":         "{job} prebehla a odložila súbory na neskôr ({count}).",
 		"log.failed":       "{job} zlyhala.",
+		"log.stopped":      "Beh úlohy {job} bol zastavený skôr, ako sa dokončil.",
 		"log.opened":       "Otvorené z {app} na zariadení {device} ({id}).",
 	},
 	"sl": {
@@ -464,6 +492,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} se je izvedlo, nič se ni spremenilo.",
 		"log.left":         "{job} se je izvedlo in datoteke preložilo na pozneje ({count}).",
 		"log.failed":       "{job} ni uspelo.",
+		"log.stopped":      "Zagon opravila {job} je bil ustavljen, preden se je končal.",
 		"log.opened":       "Odprto iz {app} na napravi {device} ({id}).",
 	},
 	"hr": {
@@ -479,6 +508,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} se izveo, ništa se nije promijenilo.",
 		"log.left":         "{job} se izveo i odgodio datoteke za poslije ({count}).",
 		"log.failed":       "{job} nije uspio.",
+		"log.stopped":      "Izvođenje zadatka {job} zaustavljeno je prije nego što je završilo.",
 		"log.opened":       "Otvoreno iz {app} na uređaju {device} ({id}).",
 	},
 	"sr": {
@@ -494,6 +524,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} се извршио, ништа се није променило.",
 		"log.left":         "{job} се извршио и одложио датотеке за касније ({count}).",
 		"log.failed":       "{job} није успео.",
+		"log.stopped":      "Извршавање задатка {job} заустављено је пре него што је завршено.",
 		"log.opened":       "Отворено из {app} на уређају {device} ({id}).",
 	},
 	"lt": {
@@ -509,6 +540,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} buvo paleista, niekas nepasikeitė.",
 		"log.left":         "{job} buvo paleista ir atidėjo failus vėlesniam kartui ({count}).",
 		"log.failed":       "{job} nepavyko.",
+		"log.stopped":      "Užduoties {job} paleidimas buvo sustabdytas, kol dar nebuvo baigtas.",
 		"log.opened":       "Atidaryta iš {app} įrenginyje {device} ({id}).",
 	},
 	"lv": {
@@ -524,6 +556,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Uzdevums {job} izpildījās, nekas nebija mainījies.",
 		"log.left":         "Uzdevums {job} izpildījās un atlika failus uz vēlāku laiku ({count}).",
 		"log.failed":       "Uzdevums {job} neizdevās.",
+		"log.stopped":      "Uzdevuma {job} palaišana tika apturēta, pirms tā bija pabeigta.",
 		"log.opened":       "Atvērts no {app} ierīcē {device} ({id}).",
 	},
 	"et": {
@@ -539,6 +572,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Töö {job} käivitus, midagi polnud muutunud.",
 		"log.left":         "Töö {job} käivitus ja lükkas faile edasi ({count}).",
 		"log.failed":       "Töö {job} ebaõnnestus.",
+		"log.stopped":      "Töö {job} käivitus peatati enne, kui see lõppes.",
 		"log.opened":       "Avatud rakendusest {app} seadmes {device} ({id}).",
 	},
 	"is": {
@@ -554,6 +588,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "Verkið {job} keyrði, ekkert hafði breyst.",
 		"log.left":         "Verkið {job} keyrði og frestaði skrám til síðar ({count}).",
 		"log.failed":       "Verkið {job} mistókst.",
+		"log.stopped":      "Keyrsla {job} var stöðvuð áður en henni lauk.",
 		"log.opened":       "Opnað úr {app} á {device} ({id}).",
 	},
 	"ca": {
@@ -569,6 +604,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "La tasca {job} s'ha executat, no havia canviat res.",
 		"log.left":         "La tasca {job} s'ha executat i ha ajornat fitxers per a més tard ({count}).",
 		"log.failed":       "La tasca {job} ha fallat.",
+		"log.stopped":      "L'execució de {job} s'ha aturat abans d'acabar.",
 		"log.opened":       "Obert des de {app} a {device} ({id}).",
 	},
 	"gl": {
@@ -584,6 +620,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "A tarefa {job} executouse, non cambiara nada.",
 		"log.left":         "A tarefa {job} executouse e adiou ficheiros para máis tarde ({count}).",
 		"log.failed":       "A tarefa {job} fallou.",
+		"log.stopped":      "A execución de {job} detívose antes de rematar.",
 		"log.opened":       "Aberto desde {app} en {device} ({id}).",
 	},
 	"eu": {
@@ -599,6 +636,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} lana exekutatu da, ez zen ezer aldatu.",
 		"log.left":         "{job} lana exekutatu da eta fitxategiak geroko utzi ditu ({count}).",
 		"log.failed":       "{job} lanak huts egin du.",
+		"log.stopped":      "{job} lanaren exekuzioa amaitu aurretik gelditu da.",
 		"log.opened":       "{device} gailuko {app} aplikaziotik irekia ({id}).",
 	},
 	"id": {
@@ -614,6 +652,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} berjalan, tidak ada yang berubah.",
 		"log.left":         "{job} berjalan dan menunda berkas untuk nanti ({count}).",
 		"log.failed":       "{job} gagal.",
+		"log.stopped":      "Proses {job} dihentikan sebelum selesai.",
 		"log.opened":       "Dibuka dari {app} di {device} ({id}).",
 	},
 	"ms": {
@@ -629,6 +668,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} berjalan, tiada apa-apa yang berubah.",
 		"log.left":         "{job} berjalan dan menangguhkan fail ke kemudian ({count}).",
 		"log.failed":       "{job} gagal.",
+		"log.stopped":      "Larian {job} dihentikan sebelum selesai.",
 		"log.opened":       "Dibuka daripada {app} pada {device} ({id}).",
 	},
 	"hi": {
@@ -644,6 +684,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} चला, कुछ नहीं बदला था।",
 		"log.left":         "{job} चला और फ़ाइलें बाद के लिए टाल दीं ({count})।",
 		"log.failed":       "{job} विफल रहा।",
+		"log.stopped":      "{job} का रन पूरा होने से पहले रोक दिया गया।",
 		"log.opened":       "{device} पर {app} से खोला गया ({id})।",
 	},
 	"fa": {
@@ -659,6 +700,7 @@ var texts = map[string]map[string]string{
 		"log.quiet":        "{job} اجرا شد، چیزی تغییر نکرده بود.",
 		"log.left":         "{job} اجرا شد و پرونده‌هایی را به بعد موکول کرد ({count}).",
 		"log.failed":       "{job} ناموفق بود.",
+		"log.stopped":      "اجرای {job} پیش از تمام شدن متوقف شد.",
 		"log.opened":       "از {app} روی {device} باز شد ({id}).",
 	},
 }

@@ -135,9 +135,9 @@ func (s Show) shows(r Run) bool {
 	case ShowFailed:
 		return r.Failed()
 	case ShowSucceeded:
-		return !r.Failed()
+		return !r.Failed() && !r.Stopped
 	case ShowUsual:
-		return !r.Failed() && !r.Answered
+		return !r.Failed() && !r.Stopped && !r.Answered
 	default:
 		return true
 	}

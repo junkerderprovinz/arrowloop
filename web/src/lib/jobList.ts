@@ -2,10 +2,10 @@
 // by what it reads rather than by the API types, so the phone, whose api.ts
 // declares its own, can share it.
 
-type StripRun = { Err: string; Conflicts: number }
+type StripRun = { Err: string; Conflicts: number; Stopped?: boolean }
 
-/** One square of the strip: worked, worked but left something, failed, or no run. */
-export type RunTone = 'ok' | 'warn' | 'fail' | 'none'
+/** One square of the strip: worked, worked but left something, failed, stopped, or no run. */
+export type RunTone = 'ok' | 'warn' | 'fail' | 'stopped' | 'none'
 
 export const STRIP_LENGTH = 14
 
@@ -16,6 +16,7 @@ export const STRIP_LENGTH = 14
  */
 export function runTone(run: StripRun): RunTone {
   if (run.Err !== '') return 'fail'
+  if (run.Stopped) return 'stopped'
   if (run.Conflicts > 0) return 'warn'
   return 'ok'
 }
@@ -44,7 +45,7 @@ type ListedJob = {
  * fine is `last`, which the row draws quietly as the time of that run, so a
  * held run, a conflict still waiting or a note must win over it: a warning is never rounded up to "synced".
  */
-export type JobStatus = 'running' | 'held' | 'away' | 'failed' | 'conflict' | 'warned' | 'paused' | 'never' | 'last'
+export type JobStatus = 'running' | 'held' | 'away' | 'failed' | 'conflict' | 'warned' | 'paused' | 'stopped' | 'never' | 'last'
 
 /**
  * What waits on a person for one job outside its own runs. `notes` is a
@@ -61,7 +62,9 @@ export function jobStatus(job: ListedJob, waits: JobWaits): JobStatus {
   if (job.recent[0] && job.recent[0].Err !== '') return 'failed'
   if (waits.conflict) return 'conflict'
   if (waits.notes) return 'warned'
+  // Pause stops the run as well, and the job being paused is the news.
   if (job.disabled) return 'paused'
+  if (job.recent[0]?.Stopped) return 'stopped'
   if (job.recent.length === 0) return 'never'
   return 'last'
 }

@@ -5,10 +5,10 @@ import type { Job } from '../lib/api'
 /**
  * A job's state, drawn as the app's logo with its rings in the status colour.
  * The arrow keeps its greys, since it is what makes the logo recognisable. A
- * running job's mark turns; paused is muted rather than alarming.
+ * running job's mark turns; paused and stopped are muted rather than alarming.
  */
 
-export type JobStatus = 'running' | 'failed' | 'paused' | 'ok'
+export type JobStatus = 'running' | 'failed' | 'paused' | 'stopped' | 'ok'
 
 /**
  * What a job's mark should say. Running beats a previous failure, and paused
@@ -25,13 +25,15 @@ const INK: Record<JobStatus, string> = {
   running: 'text-accentGlyph',
   failed: 'text-statusFail',
   paused: 'text-carbon-textMuted',
+  stopped: 'text-carbon-textMuted',
   ok: 'text-statusOk',
 }
 
-const LABEL: Record<JobStatus, 'jobs.state.running' | 'jobs.state.failed' | 'jobs.state.disabled' | 'jobs.state.idle'> = {
+const LABEL: Record<JobStatus, 'jobs.state.running' | 'jobs.state.failed' | 'jobs.state.disabled' | 'status.stopped' | 'jobs.state.idle'> = {
   running: 'jobs.state.running',
   failed: 'jobs.state.failed',
   paused: 'jobs.state.disabled',
+  stopped: 'status.stopped',
   ok: 'jobs.state.idle',
 }
 

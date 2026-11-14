@@ -429,6 +429,8 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
               </Text>
               {failed(item) ? (
                 <Badge label={t("history.failed")} tone="fail" />
+              ) : item.Stopped ? (
+                <Badge label={t("status.stopped")} />
               ) : (
                 <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
               )}
@@ -652,6 +654,7 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
         <>
           <Caption>{clock(run.Started, lang)}</Caption>
           <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
+          {run.Stopped ? <Caption>{t("history.stopped")}</Caption> : null}
         </>
       ) : null}
       {error ? <Body>{error}</Body> : null}

@@ -4,6 +4,7 @@ import { STRIP_LENGTH, jobStatus, latestRuns, runStrip } from './jobList'
 
 const ok = { Err: '', Conflicts: 0, Skipped: 0, Started: '2027-03-01T10:00:00Z' }
 const failed = { ...ok, Err: 'boom' }
+const stopped = { ...ok, Stopped: true }
 const leftSomething = { ...ok, Conflicts: 2 }
 const leftForLater = { ...ok, Skipped: 3 }
 
@@ -21,6 +22,10 @@ describe('runStrip', () => {
 
   it('marks a run that set a conflict aside as one to look at', () => {
     expect(runStrip([leftSomething]).at(-1)).toBe('warn')
+  })
+
+  it('draws a stopped run apart from a failed one and from no run at all', () => {
+    expect(runStrip([stopped]).at(-1)).toBe('stopped')
   })
 
   it('keeps a run that left files for the next one green', () => {
@@ -71,6 +76,12 @@ describe('jobStatus', () => {
 
   it('names a waiting conflict on a paused job', () => {
     expect(jobStatus(job('a', { disabled: true }), conflict)).toBe('conflict')
+  })
+
+  it('says the last run was stopped, unless the job is paused', () => {
+    expect(jobStatus(job('a', { recent: [stopped, failed] }), quiet)).toBe('stopped')
+    expect(jobStatus(job('a', { recent: [stopped], disabled: true }), quiet)).toBe('paused')
+    expect(jobStatus(job('a', { recent: [stopped] }), noted)).toBe('warned')
   })
 
   it('forgets a failure once a later run worked', () => {

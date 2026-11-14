@@ -63,7 +63,7 @@ func Report(s Snapshot, lang string) status.Report {
 				ID: "failed-" + run.Job, Severity: status.SeverityError, Code: "job.failed",
 				Text: tr("need.failed", run.Job, 0), Since: run.Finished.UTC(), Link: "/history",
 			})
-		case !run.Failed() && run.Skipped > 0:
+		case !run.Failed() && !run.Stopped && run.Skipped > 0:
 			r.NeedsYou = append(r.NeedsYou, status.Need{
 				ID: "left-" + run.Job, Severity: status.SeverityWarn, Code: "job.left",
 				Text: tr("need.left", run.Job, run.Skipped), Since: run.Finished.UTC(), Link: "/history",
@@ -127,13 +127,15 @@ func severity(k anomaly.Kind) status.Severity {
 	return status.SeverityWarn
 }
 
-// Outcome names how run ended: "failed", "left" when it left files for a
-// later run, "done" when it changed something and "quiet" when there was
-// nothing to do.
+// Outcome names how run ended: "failed", "stopped" when somebody or the
+// program ending stopped it, "left" when it left files for a later run, "done"
+// when it changed something and "quiet" when there was nothing to do.
 func Outcome(run history.Run) string {
 	switch {
 	case run.Failed():
 		return "failed"
+	case run.Stopped:
+		return "stopped"
 	case run.Skipped > 0:
 		return "left"
 	case run.Changed():

@@ -276,7 +276,7 @@ func (f *filmJob) stopped(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read the log: %v", err)
 	}
-	if len(runs) != 1 || runs[0].Err == "" {
+	if len(runs) != 1 || !runs[0].Stopped {
 		t.Errorf("the log holds %+v, want one stopped run", runs)
 	}
 

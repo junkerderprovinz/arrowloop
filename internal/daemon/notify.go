@@ -106,10 +106,10 @@ func (r *Runner) scrubbed(e notify.Event) notify.Event {
 // what ends it. The start goes out beside the run rather than ahead of it, so
 // a check server that is slow to answer does not delay the copying; the end
 // waits for the start, or the check would see them the wrong way round.
-func (r *Runner) checkIn(ctx context.Context, name string) func(ok bool, detail string) {
+func (r *Runner) checkIn(ctx context.Context, name string) func(end notify.Ping, detail string) {
 	d := r.dispatcher()
 	if d == nil {
-		return func(bool, string) {}
+		return func(notify.Ping, string) {}
 	}
 	ctx = context.WithoutCancel(ctx)
 	ping := func(e notify.Event) {
@@ -125,14 +125,29 @@ func (r *Runner) checkIn(ctx context.Context, name string) func(ok bool, detail 
 		defer close(started)
 		ping(notify.Event{Kind: "run.started", Ping: notify.PingStart})
 	}()
-	return func(ok bool, detail string) {
+	return func(end notify.Ping, detail string) {
 		<-started
-		e := notify.Event{Kind: "run.done", Ping: notify.PingSuccess, Body: detail}
-		if !ok {
-			e.Kind, e.Ping = "run.failed", notify.PingFail
+		kind := "run.done"
+		switch end {
+		case notify.PingFail:
+			kind = "run.failed"
+		case notify.PingLog:
+			kind = "run.stopped"
 		}
-		ping(e)
+		ping(notify.Event{Kind: kind, Ping: end, Body: detail})
 	}
+}
+
+// ending is how a recorded run ends its check. A stopped run neither did the
+// job's work nor failed at it, so the check only hears that it stopped.
+func ending(rec history.Run) notify.Ping {
+	switch {
+	case rec.Failed():
+		return notify.PingFail
+	case rec.Stopped:
+		return notify.PingLog
+	}
+	return notify.PingSuccess
 }
 
 // summary is what a run did, in a few lines.
@@ -157,6 +172,8 @@ func summary(rec history.Run, res apply.Result) string {
 	// Last, since scrubbing cuts what a failed command printed off at the end.
 	if rec.Err != "" {
 		fmt.Fprintf(&b, "\n%s", rec.Err)
+	} else if rec.Stopped {
+		b.WriteString("\nstopped before it finished")
 	}
 	return b.String()
 }
@@ -171,8 +188,12 @@ func removed(rec history.Run) string {
 }
 
 // announce tells whoever is watching about a finished run. Each channel's
-// "when" decides whether a success is worth it.
+// "when" decides whether a success is worth it. A stopped run is neither, and
+// whoever stopped it knows.
 func (r *Runner) announce(ctx context.Context, rec history.Run, body string) {
+	if rec.Stopped {
+		return
+	}
 	e := notify.Event{Kind: "run.done", Severity: notify.SeveritySuccess, Title: fmt.Sprintf("ArrowLoop: %s finished", rec.Job), Body: body, Key: rec.Job}
 	if rec.Failed() {
 		e.Kind, e.Severity, e.Title = "run.failed", notify.SeverityFailure, fmt.Sprintf("ArrowLoop: %s FAILED", rec.Job)

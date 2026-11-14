@@ -99,6 +99,8 @@ export function JobStatusLine({
       return <Badge tone="fail">{t('status.failed')}</Badge>
     case 'paused':
       return <Badge tone="neutral">{t('status.paused')}</Badge>
+    case 'stopped':
+      return <Badge tone="neutral">{t('status.stopped')}</Badge>
     case 'never':
       return <Badge tone="neutral">{t('status.never')}</Badge>
     default:

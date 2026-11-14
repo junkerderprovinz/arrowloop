@@ -218,6 +218,8 @@ func cmdHistory(ctx context.Context, args []string) error {
 		result := "ok"
 		if r.Failed() {
 			result = r.Err
+		} else if r.Stopped {
+			result = "stopped"
 		}
 		fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%d\t%d\t%d\t%d\t%s\n",
 			r.Started.Format("2006-01-02 15:04:05"), r.Job,

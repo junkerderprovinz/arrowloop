@@ -127,8 +127,12 @@ func (r *Runner) settle(name, outcome string, kinds ...anomaly.Kind) {
 }
 
 // review makes or clears the notes about a job that keeps failing and about a
-// run far outside its usual range, once a run has been recorded.
+// run far outside its usual range, once a run has been recorded. A stopped run
+// did part of its work, which says nothing either way.
 func (r *Runner) review(ctx context.Context, rec history.Run) {
+	if rec.Stopped {
+		return
+	}
 	if !rec.Failed() {
 		r.settle(rec.Job, anomaly.Resolved, anomaly.Failing, anomaly.Overdue)
 		// An answered run did what somebody just allowed, however far that is

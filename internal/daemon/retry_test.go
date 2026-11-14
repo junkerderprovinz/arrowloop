@@ -186,3 +186,20 @@ func TestAComputerDoesNotRetryAJobThatWorked(t *testing.T) {
 		t.Error("a failure that a later success cleared was tried again")
 	}
 }
+
+// A run somebody stopped has had its turn: it is not tried again at the next
+// wake-up, and the job goes on at its next scheduled time.
+func TestAStoppedRunWaitsForTheNextTurn(t *testing.T) {
+	r, hist := retrySandbox(t, 3, "5m")
+	stopped := time.Date(2026, 9, 12, 3, 0, 0, 0, time.Local)
+	if err := hist.Record(context.Background(), history.Run{Job: "x", Started: stopped, Finished: stopped, Stopped: true}, nil); err != nil {
+		t.Fatalf("record: %v", err)
+	}
+
+	if isDue(t, r, stopped.Add(30*time.Minute)) {
+		t.Error("the stopped job ran again at the next wake-up")
+	}
+	if !isDue(t, r, stopped.Add(24*time.Hour+time.Minute)) {
+		t.Error("the stopped job missed its next turn")
+	}
+}

@@ -240,6 +240,8 @@ export type Run = {
   Err: string
   /** What kind of failure Err is, where the engine knows. */
   Failure?: Failure
+  /** Somebody stopped the run, or the engine ended with it. It has no Err and did not finish. */
+  Stopped?: boolean
   /**
    * A run still going, listed only when asked for with `going`. Its id is
    * negative, its counts are what it has done so far and it has no end yet.

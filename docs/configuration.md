@@ -361,7 +361,7 @@ restart what `before` stopped. It learns how the run went from its environment:
 |---|---|
 | `ARROWLOOP_JOB` | The job's name. Also set for `before`. |
 | `ARROWLOOP_LEFT`, `ARROWLOOP_RIGHT` | The two sides as written in the file. Also set for `before`. |
-| `ARROWLOOP_RESULT` | `ok` or `failed`. |
+| `ARROWLOOP_RESULT` | `ok`, `failed`, or `stopped` for a run stopped by hand, by Pause or by ArrowLoop quitting. |
 | `ARROWLOOP_ERROR` | Why the run failed, empty otherwise. |
 | `ARROWLOOP_COPIED`, `ARROWLOOP_MOVED`, `ARROWLOOP_DELETED` | How many files the run copied, moved and deleted. |
 | `ARROWLOOP_CONFLICTS`, `ARROWLOOP_SKIPPED` | How many files were in conflict and how many were left for later. |

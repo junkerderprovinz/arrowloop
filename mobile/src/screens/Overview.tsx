@@ -369,6 +369,7 @@ function LastRun({ run, tally, jobs }: { run: Run | null | "none"; tally: Tally 
       <View style={styles.line}>
         <Title>{run.Job}</Title>
         {failed(run) ? <Badge label={t("history.failed")} tone="fail" /> : null}
+        {run.Stopped ? <Badge label={t("status.stopped")} /> : null}
       </View>
       <Pair label={t("overview.lastSync")} value={clock(run.Started, lang)} />
       {run.Finished ? <Pair label={t("overview.finishedAt")} value={clock(run.Finished, lang)} /> : null}

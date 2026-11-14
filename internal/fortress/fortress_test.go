@@ -165,13 +165,14 @@ func TestTheLogNamesEveryRunByItsOutcome(t *testing.T) {
 		{ID: 5, Job: "Fotos", Unchanged: 9, Finished: now.Add(time.Minute)},
 		{ID: 6, Job: "Musik", Skipped: 1, Finished: now.Add(2 * time.Minute)},
 		{ID: 9, Job: "Musik", Err: "refused", Finished: now.Add(3 * time.Minute)},
+		{ID: 10, Job: "Musik", Copied: 4, Skipped: 1, Stopped: true, Finished: now.Add(4 * time.Minute)},
 	}
 	page := Log(runs, nil, "3", "en", 50)
 	want := []struct {
 		code  string
 		level status.Severity
-	}{{"run.done", status.SeverityInfo}, {"run.quiet", status.SeverityInfo}, {"run.left", status.SeverityWarn}, {"run.failed", status.SeverityError}}
-	if len(page.Entries) != len(want) || page.Next != "9" {
+	}{{"run.done", status.SeverityInfo}, {"run.quiet", status.SeverityInfo}, {"run.left", status.SeverityWarn}, {"run.failed", status.SeverityError}, {"run.stopped", status.SeverityInfo}}
+	if len(page.Entries) != len(want) || page.Next != "10" {
 		t.Fatalf("the page is %+v", page)
 	}
 	de := Log(runs, nil, "3", "de", 50)

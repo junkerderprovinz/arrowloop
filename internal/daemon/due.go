@@ -44,9 +44,16 @@ func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
 		return true
 	}
 	// A next tick after the last success that has already passed is a tick
-	// this job missed.
+	// this job missed. A stopped run took its tick, though its work is still
+	// owed at the next one.
+	turn := last
+	if r.hist != nil {
+		if stopped, was, err := r.hist.LastStopped(ctx, j.Name); err == nil && was && stopped.After(turn) {
+			turn, ok = stopped, true
+		}
+	}
 	if ok {
-		if next := parsed.Next(last); next.After(now) {
+		if next := parsed.Next(turn); next.After(now) {
 			return false
 		}
 	}

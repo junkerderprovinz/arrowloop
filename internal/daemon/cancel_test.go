@@ -84,8 +84,8 @@ func TestAStoppedRunIsStillRecorded(t *testing.T) {
 	if len(runs) != 1 {
 		t.Fatalf("the log holds %d runs for a run that was started and stopped", len(runs))
 	}
-	if runs[0].Err == "" {
-		t.Error("the stopped run is recorded as a success")
+	if !runs[0].Stopped {
+		t.Errorf("the stopped run is recorded as %+v", runs[0])
 	}
 }
 
@@ -110,7 +110,7 @@ func TestQuittingStopsARunAndWaitsForItsRecord(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read the log: %v", err)
 	}
-	if len(runs) != 1 || runs[0].Err == "" {
+	if len(runs) != 1 || !runs[0].Stopped {
 		t.Errorf("after quitting the log holds %+v, want the one stopped run", runs)
 	}
 }

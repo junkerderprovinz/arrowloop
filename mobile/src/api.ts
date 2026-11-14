@@ -195,6 +195,8 @@ export interface Run {
   Failure?: Failure;
   /** The job had no trash, so the files it counts as Trashed are deleted for good. */
   NoTrash?: boolean;
+  /** Somebody stopped the run, or the engine ended with it. It has no Err and did not finish. */
+  Stopped?: boolean;
 }
 
 /**

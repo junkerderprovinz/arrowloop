@@ -143,6 +143,8 @@ function Status({ job }: { job: Job }) {
       return <Badge label={t("status.warned")} tone="warn" />;
     case "paused":
       return <Badge label={t("jobs.state.disabled")} />;
+    case "stopped":
+      return <Badge label={t("status.stopped")} />;
     case "never":
       return <Caption>{t("jobs.historyEmpty")}</Caption>;
     default: {
@@ -175,6 +177,8 @@ function LatestRuns({ runs }: { runs: Run[] }) {
           </Text>
           {failed(run) ? (
             <Badge label={t("history.failed")} tone="fail" />
+          ) : run.Stopped ? (
+            <Badge label={t("status.stopped")} />
           ) : (
             <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
           )}
