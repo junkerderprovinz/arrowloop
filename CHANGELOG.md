@@ -10,7 +10,7 @@ The full notes for each release are in
 
 ## Unreleased
 
-## 2.7.0 - 2026-11-12
+## 2.7.0 - 2026-11-14
 
 ArrowLoop moves into the fortress: one phrase for all your apps, a switch for everything they may do here, notifications on as many channels as you like, and a stack of phone fixes for the road.
 
