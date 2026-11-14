@@ -25,6 +25,7 @@ const ro: Translations = {
   'jobs.cancelRun': 'Anulează rularea',
   'jobs.stopping': 'Rularea se oprește',
   'jobs.pauseHint': 'Oprește rularea în curs, dacă există, și ține sarcina pe loc până o reiei. Următoarea rulare continuă de unde s-a oprit aceasta. O poți porni în continuare manual.',
+  'jobs.resumeRunningHint': 'Această sarcină este pe pauză, dar o rulare este încă în desfășurare. Ai pornit-o manual sau se încheie după pauză. Reia pune sarcina înapoi în programul ei.',
   'jobs.runNowHint': 'Pornește această sarcină imediat, fără previzualizare. Aceleași plase rămân: nimic nu se șterge definitiv, iar o rulare care ar elimina mai mult de jumătate din tot ce cunoaște se oprește și o spune.',
   'jobs.check': 'Verifică sarcina',
   'jobs.dupes': 'Caută duplicate',

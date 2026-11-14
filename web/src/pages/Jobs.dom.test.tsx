@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Finding } from '../lib/anomalies'
 import type { Job, RawJob, Run } from '../lib/api'
 import { GoTo } from '../lib/goTo'
+import { en } from '../lib/i18n.data'
 import { OpenJob } from '../lib/openJob'
 import { ToastProvider } from '../lib/toast'
 
@@ -224,6 +225,17 @@ describe('a job card', () => {
     fireEvent.click(within(actions).getByRole('button', { name: 'Run now' }))
     expect(opened).not.toHaveBeenCalled()
     expect(run).toHaveBeenCalledWith('photos')
+  })
+
+  it('says on Resume why a paused job is running, and leaves an idle paused job unexplained', async () => {
+    page({ jobs: [job('photos', { disabled: true, running: true }), job('music', { disabled: true })] })
+    const running = await within(await waitFor(() => row('photos'))).findByRole('button', { name: 'Resume' })
+    fireEvent.focus(running)
+    const tip = document.getElementById(running.getAttribute('aria-describedby') ?? '')
+    expect(tip?.textContent).toContain(en['jobs.resumeRunningHint'])
+    const idle = within(row('music')).getByRole('button', { name: 'Resume' })
+    fireEvent.focus(idle)
+    expect(idle.getAttribute('aria-describedby')).toBeNull()
   })
 
   it('names the job in a button the keyboard reaches first, which opens it once', async () => {

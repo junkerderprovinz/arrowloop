@@ -25,6 +25,7 @@ const vi: Translations = {
   'jobs.cancelRun': 'Hủy lần chạy',
   'jobs.stopping': 'Đang dừng lần chạy',
   'jobs.pauseHint': 'Dừng lần chạy đang diễn ra, nếu có, và giữ tác vụ lại cho đến khi bạn tiếp tục. Lần chạy sau sẽ tiếp tục từ chỗ lần này dừng lại. Bạn vẫn có thể chạy nó bằng tay.',
+  'jobs.resumeRunningHint': 'Tác vụ này đang tạm dừng, nhưng vẫn còn một lượt chạy đang diễn ra. Bạn đã chạy nó thủ công, hoặc nó đang kết thúc sau khi tạm dừng. Tiếp tục sẽ đưa tác vụ trở lại lịch của nó.',
   'jobs.runNowHint': 'Chạy công việc này ngay, không cần xem trước. Vẫn giữ nguyên các lưới an toàn: không xóa hẳn thứ gì, và lần chạy nào định gỡ quá nửa số tệp đã biết sẽ dừng lại và báo.',
   'jobs.check': 'Kiểm tra công việc',
   'jobs.dupes': 'Tìm bản trùng',

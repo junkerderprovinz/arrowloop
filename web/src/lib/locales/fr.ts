@@ -25,6 +25,7 @@ const fr: Translations = {
   'jobs.cancelRun': 'Annuler l\'exécution',
   'jobs.stopping': 'Arrêt de l\'exécution',
   'jobs.pauseHint': 'Arrête l\'exécution en cours, s\'il y en a une, et met la tâche en attente jusqu\'à ce que vous la repreniez. La prochaine exécution reprend là où celle-ci s\'est arrêtée. Vous pouvez toujours la lancer à la main.',
+  'jobs.resumeRunningHint': 'Cette tâche est en pause, mais une exécution est encore en cours. Vous l\'avez lancée à la main, ou elle se termine après la pause. Reprendre remet la tâche sur son planning.',
   'jobs.runNowHint': 'Lancer cette tâche tout de suite, sans aperçu. Les mêmes filets restent en place : rien n\'est supprimé définitivement, et une exécution qui retirerait plus de la moitié de ce qu\'elle connaît s\'arrête et le dit.',
   'jobs.check': 'Vérifier la tâche',
   'jobs.dupes': 'Chercher les doublons',

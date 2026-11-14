@@ -25,6 +25,7 @@ const is: Translations = {
   'jobs.cancelRun': 'Hætta við keyrslu',
   'jobs.stopping': 'Stöðva keyrslu',
   'jobs.pauseHint': 'Stöðvar keyrslu sem er í gangi, ef einhver er, og heldur verkinu þar til þú heldur áfram. Næsta keyrsla heldur áfram þar sem þessi hætti. Þú getur samt ræst það handvirkt.',
+  'jobs.resumeRunningHint': 'Þetta verk er í bið, en keyrsla er enn í gangi. Þú ræstir hana handvirkt, eða hún er að ljúka sér eftir hléið. Halda áfram setur verkið aftur á tímaáætlun sína.',
   'jobs.runNowHint': 'Keyra þetta verk strax, án forskoðunar. Sömu öryggisnetin gilda: engu er eytt endanlega, og keyrsla sem myndi fjarlægja meira en helming alls sem hún þekkir stöðvast og segir frá því.',
   'jobs.check': 'Athuga verkið',
   'jobs.dupes': 'Leita að tvítekningum',

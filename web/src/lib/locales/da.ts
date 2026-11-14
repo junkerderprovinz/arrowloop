@@ -25,6 +25,7 @@ const da: Translations = {
   'jobs.cancelRun': 'Afbryd kørslen',
   'jobs.stopping': 'Kørslen stoppes',
   'jobs.pauseHint': 'Stopper den kørsel, der er i gang, og holder jobbet, indtil du genoptager det. Næste kørsel fortsætter, hvor denne slap. Du kan stadig starte det i hånden.',
+  'jobs.resumeRunningHint': 'Jobbet er sat på pause, men en kørsel er stadig i gang. Du startede den selv, eller den er ved at stoppe efter pausen. Genoptag sætter jobbet tilbage på dets tidsplan.',
   'jobs.runNowHint': 'Start jobbet med det samme, uden forhåndsvisning. De samme sikkerhedsnet gælder: intet slettes endeligt, og en kørsel, der ville fjerne mere end halvdelen af alt kendt, stopper og siger det.',
   'jobs.check': 'Tjek jobbet',
   'jobs.dupes': 'Find dubletter',

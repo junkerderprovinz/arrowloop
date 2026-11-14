@@ -25,6 +25,7 @@ const gl: Translations = {
   'jobs.cancelRun': 'Cancelar a execución',
   'jobs.stopping': 'Detendo a execución',
   'jobs.pauseHint': 'Detén a execución en curso, se a hai, e retén a tarefa ata que a retomes. A seguinte execución continúa onde se detivo esta. Podes seguir iniciándoa a man.',
+  'jobs.resumeRunningHint': 'Esta tarefa está en pausa, pero aínda hai unha execución en marcha. Iniciáchela a man ou está rematando despois da pausa. Retomar volve poñer a tarefa no seu horario.',
   'jobs.runNowHint': 'Iniciar esta tarefa agora mesmo, sen vista previa. As mesmas redes seguen: non se borra nada definitivamente, e unha execución que quitaría máis da metade de todo o coñecido detense e dío.',
   'jobs.check': 'Comprobar a tarefa',
   'jobs.dupes': 'Buscar duplicados',

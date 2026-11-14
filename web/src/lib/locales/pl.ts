@@ -25,6 +25,7 @@ const pl: Translations = {
   'jobs.cancelRun': 'Przerwij przebieg',
   'jobs.stopping': 'Zatrzymywanie przebiegu',
   'jobs.pauseHint': 'Zatrzymuje trwający przebieg, jeśli jest, i wstrzymuje zadanie, dopóki go nie wznowisz. Następny przebieg zacznie tam, gdzie ten się zatrzymał. Ręcznie nadal możesz je uruchomić.',
+  'jobs.resumeRunningHint': 'To zadanie jest wstrzymane, ale jedno uruchomienie wciąż trwa. Uruchomiono je ręcznie albo kończy się po wstrzymaniu. Wznów przywraca zadanie do jego harmonogramu.',
   'jobs.runNowHint': 'Uruchom to zadanie od razu, bez podglądu. Zabezpieczenia pozostają te same: nic nie jest kasowane bezpowrotnie, a przebieg, który usunąłby więcej niż połowę znanych plików, zatrzymuje się i mówi o tym.',
   'jobs.check': 'Sprawdź zadanie',
   'jobs.dupes': 'Szukaj duplikatów',

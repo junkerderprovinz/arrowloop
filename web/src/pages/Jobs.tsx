@@ -372,7 +372,7 @@ function JobCard({
                 <IconAction
                   title={job.disabled ? t('jobs.resume') : t('jobs.pause')}
                   labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
-                  hint={job.disabled ? undefined : t('jobs.pauseHint')}
+                  hint={job.disabled ? (job.running ? t('jobs.resumeRunningHint') : undefined) : t('jobs.pauseHint')}
                   disabled={busy}
                   onClick={onPause}
                 >

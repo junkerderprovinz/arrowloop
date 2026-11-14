@@ -25,6 +25,7 @@ const eu: Translations = {
   'jobs.cancelRun': 'Utzi exekuzioa',
   'jobs.stopping': 'Exekuzioa gelditzen',
   'jobs.pauseHint': 'Abian dagoen exekuzioa gelditzen du, baldin badago, eta lana geldirik uzten du berrekin arte. Hurrengo exekuzioak hau gelditu zen tokitik jarraituko du. Eskuz abiarazten jarrai dezakezu.',
+  'jobs.resumeRunningHint': 'Lan hau pausatuta dago, baina exekuzio bat martxan dago oraindik. Eskuz abiarazi duzu, edo pausaren ondoren amaitzen ari da. Jarraitu sakatuta, lana bere ordutegira itzultzen da.',
   'jobs.runNowHint': 'Hasi lan hau berehala, aurrebistarik gabe. Segurtasun-sareak berdinak dira: ez da ezer betiko ezabatzen, eta ezagutzen duen guztiaren erdia baino gehiago kenduko lukeen exekuzio bat gelditu eta esan egiten du.',
   'jobs.check': 'Egiaztatu lana',
   'jobs.dupes': 'Bilatu bikoiztuak',

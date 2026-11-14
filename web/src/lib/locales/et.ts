@@ -25,6 +25,7 @@ const et: Translations = {
   'jobs.cancelRun': 'Katkesta käivitus',
   'jobs.stopping': 'Käivitus peatub',
   'jobs.pauseHint': 'Peatab käimasoleva käivituse, kui see on, ja hoiab tööd seni, kuni sa selle jätkad. Järgmine käivitus jätkab sealt, kus see pooleli jäi. Käsitsi saad seda ikka käivitada.',
+  'jobs.resumeRunningHint': 'See töö on peatatud, kuid üks käivitus on veel pooleli. Alustasid selle käsitsi või see lõpetab pärast peatamist. Jätka paneb töö tagasi ajakavasse.',
   'jobs.runNowHint': 'Käivita see töö kohe, ilma eelvaateta. Samad turvavõrgud jäävad: midagi ei kustutata jäädavalt ja käivitus, mis eemaldaks üle poole kõigest teadaolevast, peatub ja ütleb seda.',
   'jobs.check': 'Kontrolli tööd',
   'jobs.dupes': 'Otsi duplikaate',

@@ -94,7 +94,7 @@ export function JobPage({ name }: { name: string }) {
               <Button
                 label={job.disabled ? t('jobs.resume') : t('jobs.pause')}
                 labelKey={job.disabled ? 'jobs.resume' : 'jobs.pause'}
-                title={job.disabled ? undefined : t('jobs.pauseHint')}
+                title={job.disabled ? (job.running ? t('jobs.resumeRunningHint') : undefined) : t('jobs.pauseHint')}
                 glyph={job.disabled ? <IconPlay /> : <IconPause />}
                 disabled={config.busy}
                 onClick={() => void config.setDisabled(job.name, !job.disabled)}

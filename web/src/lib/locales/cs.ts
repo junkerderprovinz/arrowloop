@@ -25,6 +25,7 @@ const cs: Translations = {
   'jobs.cancelRun': 'Zrušit běh',
   'jobs.stopping': 'Běh se zastavuje',
   'jobs.pauseHint': 'Zastaví probíhající běh, pokud nějaký je, a podrží úlohu, dokud ji neobnovíte. Další běh naváže tam, kde tento skončil. Ručně ji spustit můžete dál.',
+  'jobs.resumeRunningHint': 'Úloha je pozastavená, ale jedno spuštění ještě běží. Spustili jste ho ručně, nebo po pozastavení dobíhá. Pokračovat vrátí úlohu do jejího plánu.',
   'jobs.runNowHint': 'Spustit tuto úlohu hned, bez náhledu. Stejné pojistky zůstávají: nic se nemaže natrvalo a běh, který by odstranil více než polovinu všeho známého, se zastaví a řekne to.',
   'jobs.check': 'Zkontrolovat úlohu',
   'jobs.dupes': 'Hledat duplicity',

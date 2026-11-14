@@ -25,6 +25,7 @@ const lt: Translations = {
   'jobs.cancelRun': 'Atšaukti paleidimą',
   'jobs.stopping': 'Paleidimas stabdomas',
   'jobs.pauseHint': 'Sustabdo vykstantį paleidimą, jei toks yra, ir sulaiko užduotį, kol ją pratęsite. Kitas paleidimas tęs nuo ten, kur šis sustojo. Rankiniu būdu ją vis tiek galite paleisti.',
+  'jobs.resumeRunningHint': 'Ši užduotis pristabdyta, bet vykdymas dar vyksta. Jį paleidote rankiniu būdu arba jis baigiasi po pristabdymo. Tęsti grąžina užduotį į jos tvarkaraštį.',
   'jobs.runNowHint': 'Paleisti šią užduotį iškart, be peržiūros. Lieka tie patys saugikliai: niekas nešalinama visam laikui, o paleidimas, kuris pašalintų daugiau nei pusę visų žinomų failų, sustoja ir tai praneša.',
   'jobs.check': 'Patikrinti užduotį',
   'jobs.dupes': 'Ieškoti dublikatų',

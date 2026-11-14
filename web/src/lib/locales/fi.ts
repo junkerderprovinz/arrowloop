@@ -25,6 +25,7 @@ const fi: Translations = {
   'jobs.cancelRun': 'Peruuta ajo',
   'jobs.stopping': 'Ajoa pysäytetään',
   'jobs.pauseHint': 'Pysäyttää käynnissä olevan ajon, jos sellainen on, ja pitää tehtävän pysähdyksissä, kunnes jatkat sitä. Seuraava ajo jatkaa siitä, mihin tämä jäi. Voit yhä käynnistää sen käsin.',
+  'jobs.resumeRunningHint': 'Tämä työ on keskeytetty, mutta yksi ajo on yhä käynnissä. Käynnistit sen itse, tai se on päättymässä keskeytyksen jälkeen. Jatka palauttaa työn aikatauluunsa.',
   'jobs.runNowHint': 'Käynnistä tämä työ heti, ilman esikatselua. Samat turvaverkot pysyvät: mitään ei poisteta lopullisesti, ja ajo, joka poistaisi yli puolet kaikesta tuntemastaan, pysähtyy ja kertoo siitä.',
   'jobs.check': 'Tarkista työ',
   'jobs.dupes': 'Etsi kaksoiskappaleet',

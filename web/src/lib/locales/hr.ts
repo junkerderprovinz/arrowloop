@@ -25,6 +25,7 @@ const hr: Translations = {
   'jobs.cancelRun': 'Otkaži pokretanje',
   'jobs.stopping': 'Izvođenje se zaustavlja',
   'jobs.pauseHint': 'Zaustavlja izvođenje koje je u tijeku, ako postoji, i zadržava zadatak dok ga ne nastavite. Sljedeće izvođenje nastavlja ondje gdje je ovo stalo. Ručno ga i dalje možete pokrenuti.',
+  'jobs.resumeRunningHint': 'Zadatak je pauziran, ali jedno izvođenje još traje. Pokrenuli ste ga ručno ili se završava nakon pauze. Nastavi vraća zadatak na njegov raspored.',
   'jobs.runNowHint': 'Pokreni ovaj zadatak odmah, bez pretpregleda. Iste zaštite ostaju: ništa se ne briše zauvijek, a izvođenje koje bi uklonilo više od polovice svega poznatog staje i to kaže.',
   'jobs.check': 'Provjeri zadatak',
   'jobs.dupes': 'Traži duplikate',

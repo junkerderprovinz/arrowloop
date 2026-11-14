@@ -25,6 +25,7 @@ const sl: Translations = {
   'jobs.cancelRun': 'Prekliči zagon',
   'jobs.stopping': 'Zagon se ustavlja',
   'jobs.pauseHint': 'Ustavi zagon, ki teče, če obstaja, in zadrži opravilo, dokler ga ne nadaljujete. Naslednji zagon nadaljuje tam, kjer se je ta ustavil. Ročno ga lahko še vedno zaženete.',
+  'jobs.resumeRunningHint': 'Opravilo je začasno ustavljeno, vendar en zagon še teče. Zagnali ste ga ročno ali se po premoru zaključuje. Nadaljuj vrne opravilo na njegov urnik.',
   'jobs.runNowHint': 'Zaženi to opravilo takoj, brez predogleda. Iste varovalke ostanejo: nič se ne izbriše dokončno, zagon, ki bi odstranil več kot polovico vsega znanega, pa se ustavi in to pove.',
   'jobs.check': 'Preveri opravilo',
   'jobs.dupes': 'Poišči podvojeno',

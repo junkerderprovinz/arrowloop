@@ -25,6 +25,7 @@ const ms: Translations = {
   'jobs.cancelRun': 'Batalkan larian',
   'jobs.stopping': 'Menghentikan larian',
   'jobs.pauseHint': 'Menghentikan larian yang sedang berjalan, jika ada, dan menahan tugas sehingga anda menyambungnya. Larian seterusnya bersambung dari tempat larian ini berhenti. Anda masih boleh menjalankannya secara manual.',
+  'jobs.resumeRunningHint': 'Tugas ini dijeda, tetapi satu larian masih berjalan. Anda memulakannya sendiri, atau ia sedang berhenti selepas dijeda. Sambung meletakkan semula tugas pada jadualnya.',
   'jobs.runNowHint': 'Mulakan tugas ini serta-merta, tanpa pratonton. Jaring keselamatan yang sama kekal: tiada apa-apa dipadam terus, dan larian yang akan membuang lebih separuh daripada segala yang diketahuinya akan berhenti dan memberitahunya.',
   'jobs.check': 'Semak tugas ini',
   'jobs.dupes': 'Cari pendua',

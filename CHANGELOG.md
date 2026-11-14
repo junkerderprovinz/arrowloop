@@ -74,9 +74,10 @@ ArrowLoop moves into the fortress: one phrase for all your apps, a switch for ev
 - **A job without a trash says deleted, not trashed**, in the history, the statistics and every notification. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
 - **A run that found both sides alike is marked Completed** on a job's page on the phone. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
 - **The Every box of a schedule can be emptied while you type**, so the 6 of every 6 hours can become a 3. Thanks to @danpeig ([#152](https://github.com/junkerderprovinz/arrowloop/issues/152)).
-- **A run you stop is no failure.** Pause and Cancel the run record it as stopped, with no error badge, no failure message and no note about failing runs, and the next run picks up where it stopped. Thanks to @danpeig ([#158](https://github.com/junkerderprovinz/arrowloop/issues/158)).
+- **A run you stop is no failure.** Pause and Cancel the run record it as stopped, with no error badge, no failure message and no note about failing runs, and the next run picks up where it stopped. An after-command sees `ARROWLOOP_RESULT=stopped` for it. Thanks to @danpeig ([#158](https://github.com/junkerderprovinz/arrowloop/issues/158)).
 - **A job waiting for another one says so.** With one job at a time, a job you start while another runs reads "Waiting for another job to finish" instead of claiming to compare both sides, on the web and on the phone. Thanks to @danpeig ([#158](https://github.com/junkerderprovinz/arrowloop/issues/158)).
 - **Buttons on the phone don't stay tinted after a press**, Pause on a job's card among them. Thanks to @danpeig ([#158](https://github.com/junkerderprovinz/arrowloop/issues/158)).
+- **Resume tells you why a paused job is still running:** you started it by hand, or it is winding down after Pause. Thanks to @danpeig ([#158](https://github.com/junkerderprovinz/arrowloop/issues/158)).
 - **The Flatpak opens on a PC with an NVIDIA graphics card** under Wayland. Thanks to @RektalTk ([#143](https://github.com/junkerderprovinz/arrowloop/issues/143)).
 - **An anomaly you allowed goes away as soon as its run starts**, not only once the whole run is done.
 - **Check this job speaks your language**, findings and side names included.

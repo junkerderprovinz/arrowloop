@@ -25,6 +25,7 @@ const it: Translations = {
   'jobs.cancelRun': 'Annulla l\'esecuzione',
   'jobs.stopping': 'Arresto dell\'esecuzione',
   'jobs.pauseHint': 'Ferma l\'esecuzione in corso, se c\'è, e tiene ferma l\'attività finché non la riprendi. La prossima esecuzione riparte da dove si è fermata questa. Puoi comunque avviarla a mano.',
+  'jobs.resumeRunningHint': 'Questa attività è in pausa, ma c\'è ancora un\'esecuzione in corso. L\'hai avviata a mano, oppure si sta chiudendo dopo la pausa. Riprendi rimette l\'attività nella sua pianificazione.',
   'jobs.runNowHint': 'Avvia subito questo lavoro, senza anteprima. Le stesse reti restano: nulla viene cancellato per sempre, e un\'esecuzione che rimuoverebbe più della metà di tutto ciò che conosce si ferma e lo dice.',
   'jobs.check': 'Controlla il lavoro',
   'jobs.dupes': 'Cerca duplicati',

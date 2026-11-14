@@ -25,6 +25,7 @@ const es: Translations = {
   'jobs.cancelRun': 'Cancelar la ejecución',
   'jobs.stopping': 'Deteniendo la ejecución',
   'jobs.pauseHint': 'Detiene la ejecución en curso, si la hay, y retiene la tarea hasta que la reanudes. La próxima ejecución sigue donde se quedó esta. Puedes seguir iniciándola a mano.',
+  'jobs.resumeRunningHint': 'Esta tarea está en pausa, pero todavía hay una ejecución en marcha. La iniciaste a mano o está terminando después de la pausa. Reanudar vuelve a poner la tarea en su horario.',
   'jobs.runNowHint': 'Iniciar esta tarea ahora mismo, sin vista previa. Las mismas redes siguen puestas: nada se borra definitivamente, y una ejecución que quitaría más de la mitad de todo lo conocido se detiene y lo dice.',
   'jobs.check': 'Comprobar la tarea',
   'jobs.dupes': 'Buscar duplicados',

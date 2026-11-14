@@ -25,6 +25,7 @@ const ca: Translations = {
   'jobs.cancelRun': 'Cancel\'la l\'execució',
   'jobs.stopping': 'S\'està aturant l\'execució',
   'jobs.pauseHint': 'Atura l\'execució en curs, si n\'hi ha, i reté la tasca fins que la reprenguis. La propera execució continua on s\'ha aturat aquesta. La pots continuar iniciant a mà.',
+  'jobs.resumeRunningHint': 'Aquesta tasca està en pausa, però encara hi ha una execució en marxa. L\'has iniciada a mà o s\'està acabant després de la pausa. Reprendre torna a posar la tasca al seu horari.',
   'jobs.runNowHint': 'Inicia aquesta tasca ara mateix, sense previsualització. Les mateixes xarxes hi continuen: no s\'esborra res definitivament, i una execució que trauria més de la meitat de tot el que coneix s\'atura i ho diu.',
   'jobs.check': 'Comprova la tasca',
   'jobs.dupes': 'Cerca duplicats',

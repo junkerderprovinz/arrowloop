@@ -25,6 +25,7 @@ const nl: Translations = {
   'jobs.cancelRun': 'Run afbreken',
   'jobs.stopping': 'Run wordt gestopt',
   'jobs.pauseHint': 'Stopt de run die bezig is, als die er is, en houdt de taak vast tot je hem hervat. De volgende run gaat verder waar deze stopte. Met de hand starten kan nog steeds.',
+  'jobs.resumeRunningHint': 'Deze taak staat op pauze, maar er loopt nog een uitvoering. Je hebt hem met de hand gestart, of hij rondt af na het pauzeren. Hervatten zet de taak terug op zijn schema.',
   'jobs.runNowHint': 'Deze taak meteen starten, zonder voorbeeld. Dezelfde vangnetten blijven: niets wordt definitief verwijderd, en een run die meer dan de helft van alles wat hij kent zou weghalen stopt en zegt het.',
   'jobs.check': 'Taak controleren',
   'jobs.dupes': 'Dubbele bestanden zoeken',

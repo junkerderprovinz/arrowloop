@@ -453,8 +453,9 @@ function JobCard({
         <Button
           label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
           labelKey={job.disabled ? "jobs.resume" : "jobs.pause"}
-          // As on the web: Resume needs no explaining, Pause stops a run too.
-          hint={job.disabled ? undefined : t("jobs.pauseHint")}
+          // As on the web: Pause stops a run too, and Resume only needs
+          // explaining while a paused job runs anyway.
+          hint={job.disabled ? (job.running ? t("jobs.resumeRunningHint") : undefined) : t("jobs.pauseHint")}
           busy={holding}
           onPress={onHold}
         />
