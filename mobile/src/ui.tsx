@@ -929,6 +929,21 @@ export function Button({
     if (shake) wobbleOnce(wobble, ms.fade);
   }, [shake, ms.fade, wobble]);
 
+  // A button that turns off under the finger, or whose screen is covered by
+  // the next, lets go by itself: the release may never reach it, and it would
+  // come back tinted once it is on again.
+  const letGo = useRef(() => {});
+  letGo.current = () => {
+    press.onPressOut();
+    setHeld(false);
+  };
+  const off = Boolean(disabled || busy);
+  useEffect(() => {
+    if (off) letGo.current();
+  }, [off]);
+  const nav = useContext(NavigationContext);
+  useEffect(() => nav?.addListener("blur", () => letGo.current()), [nav]);
+
   const name = named ?? (labelKey ? glyphNameForKey(labelKey) : undefined);
   const glyph = mark ? mark(ink) : name ? <Glyph name={name} color={tinted ? tint : ink} /> : null;
   const showWord = !glyph || (!glyphOnly && (labels === "text" || labels === "textGlyph"));
