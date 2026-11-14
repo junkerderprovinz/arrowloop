@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { en } from './i18n'
-import { fortressApps, fortressHues, fortressPermissions, pairedWith, permissionOf, statusLines, type FortressInfo, type FortressMember } from './fortress'
+import { fortressApps, fortressHues, fortressPermissions, leftNames, pairedWith, permissionOf, statusLines, type FortressInfo, type FortressMember } from './fortress'
 
 const t = (key: keyof typeof en, vars: Record<string, string | number> = {}) =>
   en[key].replace(/\{(\w+)\}/g, (all, name: string) => (name in vars ? String(vars[name]) : all))
@@ -26,6 +26,32 @@ describe('the other apps of the fortress', () => {
       ['Tower', 'connected', undefined],
       ['Cellar', 'away', 'an hour ago'],
     ])
+  })
+
+  it('shows a member that never said its app by its device, away and with nothing to open', () => {
+    const apps = fortressApps(
+      [
+        member({ id: 'cellar-member', app: '', name: '', version: '', device: 'Cellar', deployment: 'plugin', online: false, pages: false, lastSeen: 1000 }),
+        member({ id: 'attic-member', app: '', name: '', version: '', device: 'Attic', deployment: '', online: false, pages: false }),
+      ],
+      () => 'an hour ago',
+    )
+    expect(apps.map((a) => a.name)).toEqual(['Attic', 'Cellar'])
+    expect(apps[1].instances).toEqual([
+      { id: 'cellar-member', device: 'Cellar', deviceKind: 'server', form: 'plugin', version: undefined, presence: 'away', relay: false, lastSeen: 'an hour ago', open: undefined, doubt: false, print: 'r-member' },
+    ])
+  })
+
+  it('names the app beside every device a phrase change missed, and the device alone where the app is unknown', () => {
+    const names = leftNames(
+      [
+        { app: 'BombVault', device: 'Tower' },
+        { app: 'FireSquire', device: 'Tower' },
+        { app: '', device: 'Cellar' },
+      ],
+      (app, device) => `${app} on ${device}`,
+    )
+    expect(names).toEqual(['BombVault on Tower', 'FireSquire on Tower', 'Cellar'])
   })
 
   it('draws a phone as a phone and calls its form the Android app', () => {
@@ -130,7 +156,7 @@ describe('the pairing that moves into the fortress', () => {
 })
 
 describe('the colours the fortress takes', () => {
-  const info: FortressInfo = { joined: false, phrase: false, device: '', defaultDevice: '', passwordSet: false, members: [], permissions: [], removed: [], removedHere: false }
+  const info: FortressInfo = { joined: false, phrase: false, device: '', defaultDevice: '', passwordSet: false, members: [], permissions: [], removed: [], removedHere: false, phraseChanged: false }
 
   it('takes one for the card outside a fortress', () => {
     expect(fortressHues(info)).toBe(1)
@@ -139,5 +165,10 @@ describe('the colours the fortress takes', () => {
   it('takes one more for each other app once joined', () => {
     const members = [member({ id: 'b1' }), member({ id: 'b2' }), member({ id: 'k1', app: 'knightloader' }), member({ id: 'a1', app: 'arrowloop' })]
     expect(fortressHues({ ...info, joined: true, members })).toBe(5)
+  })
+
+  it('takes one for each member known by its device alone', () => {
+    const members = [member({ id: 'b1' }), member({ id: 'u1', app: '' }), member({ id: 'u2', app: '' })]
+    expect(fortressHues({ ...info, joined: true, members })).toBe(6)
   })
 })

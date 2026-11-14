@@ -7,7 +7,7 @@ import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
 import type { Failure } from "../../web/src/lib/failure";
-import type { FortressInfo, FortressPermission } from "../../web/src/lib/fortress";
+import type { FortressInfo, FortressLeft, FortressPermission } from "../../web/src/lib/fortress";
 import type { ImportPlan } from "../../web/src/lib/importPlan";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
@@ -660,7 +660,7 @@ export const api = {
     call<Phrase>("/api/fortress/phrase/show", { method: "POST", body: JSON.stringify({ password }) }),
   /** Gives the fortress a new phrase, behind the password as showing it is. */
   changeFortressPhrase: (password = "") =>
-    call<Phrase & { left: string[] }>("/api/fortress/phrase", { method: "POST", body: JSON.stringify({ password }) }),
+    call<Phrase & { left: FortressLeft[] }>("/api/fortress/phrase", { method: "POST", body: JSON.stringify({ password }) }),
   /** What the other apps of the fortress call this phone; empty for the engine's host name. */
   nameInFortress: (device: string) =>
     call<FortressInfo>("/api/fortress/device", { method: "PUT", body: JSON.stringify({ device }) }),

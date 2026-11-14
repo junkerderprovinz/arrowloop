@@ -82,3 +82,6 @@ func (s *Server) OpensWithSignIn() (offered, signIn bool) {
 	ui := s.fortressUI()
 	return ui != nil, ui != nil && ui.SignIn()
 }
+
+// MemberViews is what GET /api/fortress lists of members.
+var MemberViews = memberViews

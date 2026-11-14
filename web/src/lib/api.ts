@@ -41,7 +41,7 @@ export type Job = {
 export type { Reason } from './i18n'
 import type { Reason } from './i18n'
 import { inDesktopWindow, watchDesktop } from './desk'
-import type { FortressInfo, FortressPermission, MemberStatus } from './fortress'
+import type { FortressInfo, FortressLeft, FortressPermission, MemberStatus } from './fortress'
 import { at } from './base'
 
 /** What one side holds: its name there, its size and when it changed. */
@@ -1338,7 +1338,7 @@ export const api = {
   showFortressPhrase: (password = '') => post<Phrase>('/api/fortress/phrase/show', { password }),
 
   /** Gives the fortress a new phrase, behind the password as showing it is. */
-  changeFortressPhrase: (password = '') => post<Phrase & { left: string[] }>('/api/fortress/phrase', { password }),
+  changeFortressPhrase: (password = '') => post<Phrase & { left: FortressLeft[] }>('/api/fortress/phrase', { password }),
 
   /** What the other apps of the fortress call this instance; empty for the computer's name. */
   nameInFortress: (device: string) =>

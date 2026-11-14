@@ -19,6 +19,7 @@ import {
   fortressApps,
   fortressHues,
   fortressPermissions,
+  leftNames,
   pairedWith,
   permissionOf,
   SELF,
@@ -519,7 +520,8 @@ const DEVICE_GLYPH: Record<string, string> = { phone: "IconPhone", pc: "IconApp"
  * join it; inside, the other apps with the permissions that involve ArrowLoop,
  * the phrase with its QR code, a new phrase and the way out. The words show
  * behind the password where the engine has one, else behind the phone's own
- * lock. Every switch saves as it flips.
+ * lock. Every switch saves as it flips. Once a member says the phrase changed
+ * and nobody in reach hands the new one over, it asks for the new words.
  */
 function FortressCard({
   fortress,
@@ -544,6 +546,8 @@ function FortressCard({
     changeAway: t("fortress.changeAway"),
   };
   const [entering, setEntering] = useState(false);
+  // The new words of a phrase change this instance missed.
+  const [following, setFollowing] = useState(false);
   // Which of the two the password field stands in front of.
   const [asking, setAsking] = useState<"show" | "change" | null>(null);
   const [password, setPassword] = useState("");
@@ -586,7 +590,8 @@ function FortressCard({
   const show = (typed = "") => run(async () => reveal(await api.showFortressPhrase(typed)));
   const change = (typed = "") =>
     run(async () => {
-      reveal(await api.changeFortressPhrase(typed));
+      const r = await api.changeFortressPhrase(typed);
+      reveal({ ...r, left: leftNames(r.left ?? [], (name, device) => fill(text.memberOn, { app: name, device })) });
       onRefresh();
     });
 
@@ -631,6 +636,11 @@ function FortressCard({
       ],
     );
 
+  const joinRefused = (e: unknown) => {
+    if (e instanceof EngineError && e.code === "closedUntilNewPhrase") return joinRefusalText(text, e.code);
+    return e instanceof EngineError && e.code === "inFortress" ? t("fortress.inFortress") : refusalText(t, e);
+  };
+
   async function join(phrase: string): Promise<string | null> {
     try {
       onFortress(await api.joinFortress(phrase));
@@ -639,8 +649,18 @@ function FortressCard({
       onRefresh();
       return null;
     } catch (e) {
-      if (e instanceof EngineError && e.code === "closedUntilNewPhrase") return joinRefusalText(text, e.code);
-      return e instanceof EngineError && e.code === "inFortress" ? t("fortress.inFortress") : refusalText(t, e);
+      return joinRefused(e);
+    }
+  }
+
+  async function follow(phrase: string): Promise<string | null> {
+    try {
+      onFortress(await api.joinFortress(phrase));
+      setFollowing(false);
+      onRefresh();
+      return null;
+    } catch (e) {
+      return joinRefused(e);
     }
   }
 
@@ -724,11 +744,27 @@ function FortressCard({
         />
       </>
     );
+  } else if (following) {
+    body = (
+      <PhraseEntry
+        label={text.changedTitle}
+        hint={fill(text.phraseMoved, app)}
+        join={{ label: text.join, key: "pairing.join" }}
+        onBack={() => setFollowing(false)}
+        onJoin={follow}
+      />
+    );
   } else {
     const apps = fortressApps(fortress.members, (unix) => seenAt(lang, unix));
     const permissions = fortressPermissions(fortress.permissions, fortress.members, t);
     body = (
       <>
+        {fortress.phraseChanged ? (
+          <>
+            <Text style={[styles.strong, { color: p.text }]}>{text.changedTitle}</Text>
+            <Body>{fill(text.phraseMoved, app)}</Body>
+          </>
+        ) : null}
         {apps.map((a) => (
           <View key={a.id} style={styles.app}>
             <AxisLabel>{a.name}</AxisLabel>
@@ -755,6 +791,9 @@ function FortressCard({
     );
     foot = (
       <>
+        {fortress.phraseChanged ? (
+          <Button label={text.enterPhrase} labelKey="pairing.join" tone="accent" disabled={busy} onPress={() => setFollowing(true)} />
+        ) : null}
         {fortress.phrase ? (
           <>
             <Button label={text.showPhrase} labelKey="pairing.show" glyph="IconEye" disabled={busy} onPress={() => start("show")} />

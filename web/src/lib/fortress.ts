@@ -10,7 +10,7 @@ export const SELF = { id: 'arrowloop', name: 'ArrowLoop' }
 /** One instance of another app in the fortress (internal/web/fortress_member.go). */
 export type FortressMember = {
   id: string
-  /** The app's id, such as "bombvault", and its name. */
+  /** The app's id, such as "bombvault", and its name, both empty for a member that never said which app it runs. */
   app: string
   name: string
   version: string
@@ -45,6 +45,16 @@ export type FortressInfo = {
   removed: FortressRemoved[]
   /** Another member took this instance out, and it has not joined again since. */
   removedHere: boolean
+  /** A member said the fortress has a new phrase, which nobody in reach hands over, so the owner enters it. */
+  phraseChanged: boolean
+}
+
+/** A member a phrase change did not reach. `app` is empty for one that never said which app it runs. */
+export type FortressLeft = { app: string; device: string }
+
+/** The members a phrase change did not reach, each as its app on its device in `on`'s words. */
+export function leftNames(left: FortressLeft[], on: (app: string, device: string) => string): string[] {
+  return left.map((l) => (l.app ? on(l.app, l.device) : l.device))
 }
 
 /** A member taken out of the fortress, by the names it went by. */
@@ -60,7 +70,7 @@ export type FortressInstanceView = {
   presence: 'connected' | 'away'
   relay: boolean
   lastSeen?: string
-  /** Set on every instance, so that each card offers Open. */
+  /** Set on every instance of a known app, so that its card offers Open. */
   open?: { href?: string; host?: string }
   /** Another member claims the same app on the same server or device. */
   doubt?: boolean
@@ -96,15 +106,22 @@ function deviceKind(m: FortressMember): FortressInstanceView['deviceKind'] {
  * two could be pretending, so Open asks first.
  */
 function doubted(m: FortressMember, members: FortressMember[]): boolean {
-  return members.some((o) => o.id !== m.id && o.app === m.app && ((!!m.host && o.host === m.host) || o.device === m.device))
+  return members.some((o) => o.id !== m.id && !!m.app && o.app === m.app && ((!!m.host && o.host === m.host) || o.device === m.device))
 }
 
-/** The other apps of the fortress, each with its instances, sorted by name. */
+/** The card a member goes on: its app's, or one of its own under its device's name for a member that never said its app. */
+const cardOf = (m: FortressMember) => m.app || m.id
+
+/**
+ * The other apps of the fortress, each with its instances, sorted by name. A
+ * member that never said its app has nothing to open.
+ */
 export function fortressApps(members: FortressMember[], ago: (unix: number) => string): FortressAppView[] {
   const apps = new Map<string, FortressAppView>()
   for (const m of members) {
     if (m.app === SELF.id) continue
-    const app = apps.get(m.app) ?? { id: m.app, name: m.name || m.app, instances: [] }
+    const key = cardOf(m)
+    const app = apps.get(key) ?? { id: key, name: m.app ? m.name || m.app : m.device || m.id.slice(-8), instances: [] }
     app.instances.push({
       id: m.id,
       device: m.device,
@@ -114,11 +131,11 @@ export function fortressApps(members: FortressMember[], ago: (unix: number) => s
       presence: m.online ? 'connected' : 'away',
       relay: m.relay,
       lastSeen: !m.online && m.lastSeen ? ago(m.lastSeen) : undefined,
-      open: {},
+      open: m.app ? {} : undefined,
       doubt: doubted(m, members),
       print: m.id.slice(-8),
     })
-    apps.set(m.app, app)
+    apps.set(key, app)
   }
   return [...apps.values()].sort((a, b) => a.name.localeCompare(b.name))
 }
@@ -144,7 +161,7 @@ export function fortressPermissions(permissions: FortressPermission[], members: 
  */
 export function fortressHues(f: FortressInfo): number {
   if (!f.joined) return 1
-  return new Set(f.members.filter((m) => m.app !== SELF.id).map((m) => m.app)).size + 3
+  return new Set(f.members.filter((m) => m.app !== SELF.id).map(cardOf)).size + 3
 }
 
 /** The permission an id of fortressPermissions names. */

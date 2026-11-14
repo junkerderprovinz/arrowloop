@@ -369,13 +369,17 @@ func (n *node) changePhrase(t *testing.T) (string, []string) {
 		t.Fatalf("change the phrase = %d %s", status, body)
 	}
 	var changed struct {
-		Phrase string   `json:"phrase"`
-		Left   []string `json:"left"`
+		Phrase string      `json:"phrase"`
+		Left   []leftEntry `json:"left"`
 	}
 	if err := json.Unmarshal(body, &changed); err != nil || changed.Phrase == "" {
 		t.Fatalf("the change answered %s", body)
 	}
-	return changed.Phrase, changed.Left
+	devices := []string{}
+	for _, l := range changed.Left {
+		devices = append(devices, l.Device)
+	}
+	return changed.Phrase, devices
 }
 
 func TestTheMoveEndsOnceEveryPairedInstanceIsInThePairingAgain(t *testing.T) {

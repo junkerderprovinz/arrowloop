@@ -1,7 +1,10 @@
 import {
+  createFortressFlow,
   fill,
   fortressText,
+  joinRefusalText,
   openRefusalText,
+  phraseReady,
   type ChangeAnswer,
   type FortressAnswer,
   type FortressApp,
@@ -9,17 +12,19 @@ import {
   type FortressText,
   type PhraseAnswer,
 } from '@glimstone/core'
+import { Button } from '@glimstone/react/Button'
 import { Fortress, FortressPairing } from '@glimstone/react/Fortress'
 import { FortressStatusWindow } from '@glimstone/react/FortressStatusWindow'
+import { glyphFor } from '@glimstone/react/glyphs'
 import { PasswordField } from '@glimstone/react/PasswordField'
 import { Window } from '@glimstone/react/Window'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useSyncExternalStore } from 'react'
 
 import { api, ApiError, type Phrase } from '../../../lib/api'
 import { at } from '../../../lib/base'
 import { dayTime } from '../../../lib/dayTime'
 import { inDesktopWindow } from '../../../lib/desk'
-import { fortressApps, fortressPermissions, permissionOf, SELF, statusLines, type FortressInfo, type MemberStatus } from '../../../lib/fortress'
+import { fortressApps, fortressPermissions, leftNames, permissionOf, SELF, statusLines, type FortressInfo, type MemberStatus } from '../../../lib/fortress'
 import { useT } from '../../../lib/i18n'
 import type { Translate } from '../../../lib/i18n.data'
 import { refusalText, seenAgo } from '../../../lib/pairing'
@@ -56,7 +61,8 @@ type NewPhrase = ChangeAnswer & { code?: string; wrong?: boolean }
 async function changePhrase(t: Translate, text: FortressText, password: string): Promise<NewPhrase> {
   try {
     const r = await api.changeFortressPhrase(password)
-    return { words: r.phrase.split(' '), left: r.left, code: r.code }
+    const left = leftNames(r.left ?? [], (app, device) => fill(text.memberOn, { app, device }))
+    return { words: r.phrase.split(' '), left, code: r.code }
   } catch (e) {
     return { error: refused(t, text, e), wrong: e instanceof ApiError && e.status === 403 }
   }
@@ -65,8 +71,10 @@ async function changePhrase(t: Translate, text: FortressText, password: string):
 /**
  * ArrowLoop's place in the fortress. Inside one, the Fortress card comes
  * first, the one place where the phrase shows behind the password and
- * changes, and where ArrowLoop leaves. The other apps with their permissions
- * follow. Outside, the twelve words join one. The name the others know this
+ * changes, and where ArrowLoop leaves. Once a member says the phrase changed
+ * and nobody in reach hands the new one over, it asks for the new words. The
+ * other apps with their permissions follow. Outside, the twelve words join
+ * one. The name the others know this
  * instance by is the one the instance card sets.
  */
 export function FortressSection({
@@ -221,7 +229,9 @@ export function FortressSection({
           pairedWith={pairedWith}
           labelKeys={LABEL_KEYS}
           hueIndex={hueStart}
-        />
+        >
+          {fortress.phraseChanged && <NewWords text={text} onJoin={onJoin} />}
+        </FortressPairing>
       )}
       <Fortress
         text={text}
@@ -265,6 +275,95 @@ export function FortressSection({
         />
       )}
     </div>
+  )
+}
+
+/**
+ * Says on the Fortress card that the fortress has a new phrase ArrowLoop
+ * could not follow on its own, and takes its words. With them ArrowLoop stays
+ * the member it was.
+ */
+function NewWords({ text, onJoin }: { text: FortressText; onJoin: (words: string[]) => Promise<FortressAnswer> }) {
+  const latest = useRef({ text, onJoin })
+  latest.current = { text, onJoin }
+  const flow = useMemo(
+    () =>
+      createFortressFlow(() => ({
+        onJoin: latest.current.onJoin,
+        failed: latest.current.text.failed,
+        joinRefusal: (code) => joinRefusalText(latest.current.text, code),
+      })),
+    [],
+  )
+  const s = useSyncExternalStore(flow.subscribe, flow.state, flow.state)
+  const w = s.window?.kind === 'join' ? s.window : null
+
+  return (
+    <>
+      <div className="glim-fortress-removed" data-fortress="moved" role="status">
+        {glyphFor('info')}
+        <span>
+          <strong>{text.changedTitle}</strong> {fill(text.phraseMoved, { app: SELF.name })}
+        </span>
+        <Button label={text.enterPhrase} labelKey={LABEL_KEYS.join} tone="subtle" onClick={flow.openJoin} data-fortress="open-new-words" />
+      </div>
+      {w && (
+        <Window
+          title={text.changedTitle}
+          size="wide"
+          text={{ cancel: text.cancel, close: text.close }}
+          onClose={flow.close}
+          actions={[
+            {
+              label: text.join,
+              labelKey: LABEL_KEYS.join,
+              primary: true,
+              disabled: s.busy === 'join' || !phraseReady(w.words),
+              attrs: { 'data-fortress': 'join' },
+              onClick: () => {
+                void flow.join()
+                return false
+              },
+            },
+          ]}
+        >
+          <form
+            className="glim-fortress-text"
+            onSubmit={(e) => {
+              e.preventDefault()
+              void flow.join()
+            }}
+          >
+            <p>{fill(text.phraseMoved, { app: SELF.name })}</p>
+            <div className="glim-phrase-fields">
+              {w.words.map((word, i) => (
+                <label key={i} className="glim-phrase-field">
+                  <span className="glim-phrase-number glim-num">{i + 1}</span>
+                  <input
+                    className="glim-input"
+                    data-word={i}
+                    value={word}
+                    aria-label={fill(text.word, { n: i + 1 })}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    onChange={(e) => flow.enter(i, e.target.value)}
+                  />
+                </label>
+              ))}
+            </div>
+            <button type="submit" hidden />
+            <p className="glim-fortress-sub">{text.phraseWhere}</p>
+            {s.error && (
+              <p className="glim-fortress-error" role="alert">
+                {s.error}
+              </p>
+            )}
+          </form>
+        </Window>
+      )}
+    </>
   )
 }
 

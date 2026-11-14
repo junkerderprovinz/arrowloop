@@ -4,6 +4,7 @@
 // its QR code, changes it and lets ArrowLoop leave, and every permission
 // saves as it is switched.
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fortressText } from '@glimstone/core'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -17,6 +18,7 @@ const toasts: string[] = []
 let joinRefusal: Error | null = null
 let openRefusal: Error | null = null
 let passwordSet = true
+let left = [{ app: '', device: 'Cellar' }]
 
 vi.mock('../../../lib/api', async (original) => {
   const actual = await original<typeof import('../../../lib/api')>()
@@ -32,7 +34,7 @@ vi.mock('../../../lib/api', async (original) => {
         passwordSet && password !== 'hunter2' ? wrong() : Promise.resolve({ phrase: PHRASE, code: PHRASE }),
       changeFortressPhrase: (password: string) => {
         calls.push(`change ${password}`)
-        return passwordSet && password !== 'hunter2' ? wrong() : Promise.resolve({ phrase: NEW_PHRASE, code: NEW_PHRASE, left: ['Cellar'] })
+        return passwordSet && password !== 'hunter2' ? wrong() : Promise.resolve({ phrase: NEW_PHRASE, code: NEW_PHRASE, left })
       },
       setFortressPermission: (p: FortressPermission) => {
         calls.push(`permission ${p.from} ${p.to} ${p.action} ${p.on}`)
@@ -78,6 +80,7 @@ function outside(over: Partial<FortressInfo> = {}): FortressInfo {
     permissions: [],
     removed: [],
     removedHere: false,
+    phraseChanged: false,
     ...over,
   }
 }
@@ -109,6 +112,7 @@ beforeEach(() => {
   joinRefusal = null
   openRefusal = null
   passwordSet = true
+  left = [{ app: '', device: 'Cellar' }]
   refreshed.mockReset()
 })
 afterEach(cleanup)
@@ -236,6 +240,47 @@ describe('the fortress on the Pairing tile', () => {
     expect(calls).toEqual(['change hunter2', 'leave'])
     expect(await screen.findByText('Not in a fortress yet')).toBeTruthy()
     expect(refreshed).toHaveBeenCalled()
+  })
+
+  it('names the app beside every device still on the old phrase, once per member', async () => {
+    passwordSet = false
+    left = [
+      { app: 'BombVault', device: 'Tower' },
+      { app: 'FireSquire', device: 'Tower' },
+    ]
+    render(<Page start={joined()} />)
+    fireEvent.click(await waitFor(() => button('open-change')))
+    await act(async () => fireEvent.click(button('change')))
+    expect(screen.getByText(en['fortress.changedLeft'].replace('{devices}', 'BombVault on Tower and FireSquire on Tower'))).toBeTruthy()
+  })
+
+  it('says on the Fortress card that the fortress has a new phrase and takes the new words', async () => {
+    render(<Page start={joined({ phraseChanged: true })} />)
+    const glim = fortressText('en')
+    const note = await waitFor(() => {
+      const found = document.querySelector('[data-glim="FortressPairing"] [data-fortress="moved"]')
+      expect(found).toBeTruthy()
+      return found!
+    })
+    expect(note.textContent).toContain(glim.changedTitle)
+    expect(note.textContent).toContain(glim.phraseMoved.replace('{app}', 'ArrowLoop'))
+    fireEvent.click(button('open-new-words'))
+    const field = await waitFor(() => {
+      const found = document.querySelector<HTMLInputElement>('[data-word="0"]')
+      expect(found).toBeTruthy()
+      return found!
+    })
+    fireEvent.change(field, { target: { value: NEW_PHRASE } })
+    await act(async () => fireEvent.click(button('join')))
+    expect(calls).toEqual([`join ${NEW_PHRASE}`])
+    await waitFor(() => expect(document.querySelector('[data-fortress="moved"]')).toBeNull())
+  })
+
+  it('says nothing about a new phrase while the fortress has none', async () => {
+    render(<Page start={joined()} />)
+    await screen.findByText(en['fortress.title'])
+    expect(document.querySelector('[data-fortress="moved"]')).toBeNull()
+    expect(document.querySelector('[data-fortress="open-new-words"]')).toBeNull()
   })
 
   it('saves a permission the moment its switch flips', async () => {
