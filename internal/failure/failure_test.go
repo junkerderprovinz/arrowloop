@@ -149,6 +149,15 @@ func TestAnFTPServerOutOfLoginsIsNamed(t *testing.T) {
 	}
 }
 
+// Samba answers a share past its max connections with this status, and
+// DietPi sets that limit to twice the cores.
+func TestASambaShareOutOfConnectionsIsNamed(t *testing.T) {
+	text := `list :smb{Pjiws}: couldn't initialize SMB: response error: Insufficient system resources exist to complete the API.`
+	if got := failure.Of(text); got == nil || got.Code != failure.TooManyLogins {
+		t.Errorf("Of(%q) = %+v, want the server out of logins", text, got)
+	}
+}
+
 // pure-ftpd refuses a plain login with the same code as a full server, and a
 // server busy with requests is not out of logins.
 func TestOtherRefusalsAreNotTakenForTooManyLogins(t *testing.T) {

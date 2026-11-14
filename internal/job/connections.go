@@ -9,6 +9,8 @@ import (
 	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config/configmap"
 	"github.com/rclone/rclone/fs/fspath"
+
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
 // FTPConnections is how many connections an FTP target opens at once unless
@@ -28,9 +30,9 @@ func init() {
 	}
 }
 
-// found holds how many connections an FTP server took once it had turned a
-// login away, by server and account, since the cap belongs to the server and
-// not to one target. It lasts as long as the process: finding the number
+// found holds how many connections an FTP or SMB server took once it had
+// turned one away, by server and account, since the cap belongs to the server
+// and not to one target. It lasts as long as the process: finding the number
 // again costs one refused login for each halving.
 var found = struct {
 	sync.Mutex
@@ -67,6 +69,15 @@ func ftpSide(side string) (fspath.Parsed, place, bool) {
 	return parsed, p, err == nil
 }
 
+// smbConnections is how many connections an SMB server was found to take, or
+// 0 where none was turned away. rclone opens one for each transfer and has no
+// setting to cap them.
+func smbConnections(p place) int {
+	found.Lock()
+	defer found.Unlock()
+	return found.at[p.target+p.account]
+}
+
 // Narrow returns side set to open the connections its FTP server was found to
 // take, or side as it is where nothing was found or its target names its own
 // number.
@@ -84,12 +95,17 @@ func Narrow(side string) string {
 	return strings.TrimSuffix(parsed.ConfigString, ":") + ",concurrency=" + strconv.Itoa(n) + ":" + parsed.Path
 }
 
-// StepDown halves the connections a side's FTP server is opened with, after
-// it turned a login away, and returns the new number. It reports false for a
-// side not on an FTP server, one whose target names its own number, and one
-// down to a single connection.
-func StepDown(side string) (int, bool) {
+// StepDown halves the connections a side's server is opened with, after it
+// turned one away, and returns the new number. An SMB server starts from the
+// job's transfers. It reports false for a side on neither FTP nor SMB, one
+// whose target names its own number, and one down to a single connection.
+func (j Job) StepDown(side string) (int, bool) {
 	_, p, ok := ftpSide(side)
+	if !ok {
+		if p, ok = smbSide(side); ok && p.connections == 0 {
+			p.connections = j.fitTransfers(j.transfers())
+		}
+	}
 	if !ok || p.ownConnections || p.connections <= 1 {
 		return 0, false
 	}
@@ -100,12 +116,30 @@ func StepDown(side string) (int, bool) {
 	return n, true
 }
 
-// fitTransfers keeps a job's transfers below the connections either side
-// takes. rclone waits for a free connection, and a transfer that holds one
-// while it looks something up on the same side would otherwise wait forever.
+func smbSide(side string) (place, bool) {
+	p, err := locate(side)
+	return p, err == nil && strings.HasPrefix(p.target, "smb ")
+}
+
+func (j Job) transfers() int {
+	if j.Transfers > 0 {
+		return j.Transfers
+	}
+	return plan.DefaultOptions().Transfers
+}
+
+// fitTransfers keeps a job's transfers within the connections either side
+// takes. On FTP rclone waits for a free connection, and a transfer that holds
+// one while it looks something up on the same side would otherwise wait
+// forever, so one stays free there.
 func (j Job) fitTransfers(transfers int) int {
 	for _, side := range []string{j.Left, j.Right} {
-		if p, err := locate(side); err == nil && p.connections > 0 {
+		p, err := locate(side)
+		switch {
+		case err != nil || p.connections == 0:
+		case strings.HasPrefix(p.target, "smb "):
+			transfers = min(transfers, p.connections)
+		default:
 			transfers = min(transfers, max(p.connections-1, 1))
 		}
 	}

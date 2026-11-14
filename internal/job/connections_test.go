@@ -56,7 +56,7 @@ func TestAJobAskingForFewerTransfersKeepsItsNumber(t *testing.T) {
 func TestAnFTPServerThatTurnedALoginAwayIsOpenedWithHalfAsMany(t *testing.T) {
 	targets(t, "phone: type=ftp host=192.168.1.40")
 	for _, want := range []int{2, 1} {
-		got, ok := StepDown("phone:DCIM")
+		got, ok := Job{}.StepDown("phone:DCIM")
 		if !ok || got != want {
 			t.Fatalf("stepped down to %d (%v), want %d", got, ok, want)
 		}
@@ -67,14 +67,14 @@ func TestAnFTPServerThatTurnedALoginAwayIsOpenedWithHalfAsMany(t *testing.T) {
 			t.Errorf("%d transfers at once on %d connections", got, want)
 		}
 	}
-	if got, ok := StepDown("phone:DCIM"); ok {
+	if got, ok := (Job{}).StepDown("phone:DCIM"); ok {
 		t.Errorf("stepped down to %d from one connection", got)
 	}
 }
 
 func TestATargetsOwnConcurrencyIsNeverSteppedDown(t *testing.T) {
 	targets(t, "tight: type=ftp host=192.168.1.41 concurrency=3")
-	if got, ok := StepDown("tight:DCIM"); ok {
+	if got, ok := (Job{}).StepDown("tight:DCIM"); ok {
 		t.Errorf("stepped down to %d", got)
 	}
 	if side := Narrow("tight:DCIM"); side != "tight:DCIM" {
@@ -84,7 +84,7 @@ func TestATargetsOwnConcurrencyIsNeverSteppedDown(t *testing.T) {
 
 func TestAnFTPServerReachedWithoutATargetIsSteppedDownToo(t *testing.T) {
 	side := ":ftp,host=192.168.1.42,user=me:DCIM"
-	if got, ok := StepDown(side); !ok || got != 2 {
+	if got, ok := (Job{}).StepDown(side); !ok || got != 2 {
 		t.Fatalf("stepped down to %d (%v), want 2", got, ok)
 	}
 	if got := Narrow(side); got != ":ftp,host=192.168.1.42,user=me,concurrency=2:DCIM" {
@@ -99,7 +99,7 @@ func TestTargetsOnOneFTPAccountShareWhatWasFound(t *testing.T) {
 		"music: type=ftp host=192.168.1.43 user=me",
 		"guest: type=ftp host=192.168.1.43 user=guest",
 	)
-	if _, ok := StepDown("photos:DCIM"); !ok {
+	if _, ok := (Job{}).StepDown("photos:DCIM"); !ok {
 		t.Fatal("not stepped down")
 	}
 	if got := Narrow("music:Music"); got != "music,concurrency=2:Music" {
@@ -110,14 +110,49 @@ func TestTargetsOnOneFTPAccountShareWhatWasFound(t *testing.T) {
 	}
 }
 
-func TestOnlyFTPSidesAreSteppedDown(t *testing.T) {
+func TestOnlyFTPAndSMBSidesAreSteppedDown(t *testing.T) {
 	targets(t, "nas: type=sftp host=192.168.1.44")
 	for _, side := range []string{"nas:photos", t.TempDir()} {
-		if got, ok := StepDown(side); ok {
+		if got, ok := (Job{}).StepDown(side); ok {
 			t.Errorf("%s stepped down to %d", side, got)
 		}
 		if got := Narrow(side); got != side {
 			t.Errorf("%s opened as %q", side, got)
 		}
+	}
+}
+
+func TestAnSMBServerThatTurnedAConnectionAwayGetsHalfTheTransfers(t *testing.T) {
+	targets(t, "pi: type=smb host=192.168.1.50 user=me")
+	j := Job{Left: "pi:dietpi", Right: t.TempDir(), Transfers: 4}
+	if got := transfersOf(t, j); got != 4 {
+		t.Fatalf("%d transfers at once before anything was turned away, want 4", got)
+	}
+	for _, want := range []int{2, 1} {
+		got, ok := j.StepDown(j.Left)
+		if !ok || got != want {
+			t.Fatalf("stepped down to %d (%v), want %d", got, ok, want)
+		}
+		if got := transfersOf(t, j); got != want {
+			t.Errorf("%d transfers at once on %d connections", got, want)
+		}
+		if side := Narrow(j.Left); side != j.Left {
+			t.Errorf("opened as %q", side)
+		}
+	}
+	if got, ok := j.StepDown(j.Left); ok {
+		t.Errorf("stepped down to %d from one connection", got)
+	}
+}
+
+func TestAnSMBJobLeftAtTheDefaultTransfersIsSteppedDownFromThem(t *testing.T) {
+	targets(t, "pi: type=smb host=192.168.1.51 user=me")
+	j := Job{Left: t.TempDir(), Right: "pi:dietpi"}
+	want := transfersOf(t, j) / 2
+	if got, ok := j.StepDown(j.Right); !ok || got != want {
+		t.Fatalf("stepped down to %d (%v), want %d", got, ok, want)
+	}
+	if got := transfersOf(t, j); got != want {
+		t.Errorf("%d transfers at once, want %d", got, want)
 	}
 }

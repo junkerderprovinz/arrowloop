@@ -69,8 +69,8 @@ type place struct {
 	// unnamed is set for a target whose account only its credentials know.
 	unnamed bool
 	// connections is how many connections rclone opens to the server at
-	// once, 0 for no limit. Only FTP's concurrency counts connections: SFTP's
-	// counts the requests within one.
+	// once, 0 for no limit. FTP's concurrency counts connections, SFTP's counts
+	// the requests within one, and SMB opens one for each transfer.
 	connections int
 	// ownConnections is set where the target's settings name that number.
 	ownConnections bool
@@ -129,8 +129,12 @@ func locate(side string) (place, error) {
 			side = fspath.JoinRootPath(target, at)
 		default:
 			p, err := identify(parsed.Name, info.Name, at, get)
-			if err == nil && info.Name == "ftp" {
+			switch {
+			case err != nil:
+			case info.Name == "ftp":
 				p.connections, p.ownConnections = connections(p, cfg)
+			case info.Name == "smb":
+				p.connections = smbConnections(p)
 			}
 			return p, err
 		}

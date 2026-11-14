@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 🐛 Fixed
+
+- **A job against a Samba share with a connection limit no longer fails with "Insufficient system resources".** DietPi, for one, lets a share take twice as many connections as the machine has cores, and each transfer opens one. When the share turns a connection away, ArrowLoop tries again with half the transfers, down to one, and remembers the number for that server. Thanks to @aegidius77 ([#160](https://github.com/junkerderprovinz/arrowloop/issues/160)).
+
 ## 2.7.1 - 2026-11-14
 
 On Windows, ArrowLoop refuses a settings backup with a file name that would land outside the import folder, and the fortress kit goes to 1.0.1.

@@ -65,8 +65,9 @@ var rules = []rule{
 	// go on to say it could not connect.
 	{HostKeyChanged, []string{"host key mismatch"}},
 	// An FTP server's cap on logins at once, which ProFTPD answers with the
-	// code of a wrong password.
+	// code of a wrong password, and Samba's on connections to a share.
 	{TooManyLogins, []string{
+		"insufficient system resources exist to complete the api",
 		"login limit", "too many connect", "too many users", "too many sessions",
 		"connections as the same user", "(the maximum) are already logged in",
 		"maximum number of clients", "maximum number of allowed clients",

@@ -191,9 +191,10 @@ func (r *Runner) preview(ctx context.Context, j job.Job) (*plan.Plan, error) {
 	return p, awayFrom(err)
 }
 
-// fewerLogins steps down the connections to an FTP server that turned a login
-// away for the ones already open, and reports whether that leaves anything to
-// try again. A failure that names its side steps down that side alone.
+// fewerLogins steps down the connections to an FTP or SMB server that turned
+// one away for the ones already open, and reports whether that leaves
+// anything to try again. A failure that names its side steps down that side
+// alone.
 func (r *Runner) fewerLogins(j job.Job, err error) bool {
 	if err == nil {
 		return false
@@ -207,7 +208,7 @@ func (r *Runner) fewerLogins(j job.Job, err error) bool {
 		if named := f.Params["side"]; named != "" && named != s.name {
 			continue
 		}
-		n, ok := job.StepDown(s.side)
+		n, ok := j.StepDown(s.side)
 		if !ok {
 			continue
 		}
@@ -215,7 +216,7 @@ func (r *Runner) fewerLogins(j job.Job, err error) bool {
 		if n == 1 {
 			fewer = "one connection"
 		}
-		r.log("%s: the FTP server on the %s side turned a login away, trying again with %s", j.Name, s.name, fewer)
+		r.log("%s: the server on the %s side turned a connection away, trying again with %s", j.Name, s.name, fewer)
 		stepped = true
 	}
 	return stepped
@@ -537,8 +538,8 @@ type decided struct {
 }
 
 // executeAs is execute for a run that answers a finding. A run that failed
-// before it had a plan changed nothing, so it starts over when an FTP server
-// turned a login away and fewer connections are left to try.
+// before it had a plan changed nothing, so it starts over when a server turned
+// a connection away and fewer connections are left to try.
 func (r *Runner) executeAs(ctx context.Context, j job.Job, only []string, shown map[string]plan.Shown, resolve map[string]plan.Resolution, how decided, live *history.Live) (apply.Result, *plan.Plan, error) {
 	for {
 		res, p, err := r.executeOnce(ctx, j, only, shown, resolve, how, live)
