@@ -1,0 +1,1 @@
+Nothing changes on your phone this time. On Windows, a cooked-up backup can no longer slip files past the import folder, and the fortress keeps every call on its own path. Small patch, firmly closed doors.

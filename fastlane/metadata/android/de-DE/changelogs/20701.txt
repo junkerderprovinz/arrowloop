@@ -1,0 +1,1 @@
+Auf deinem Handy ändert sich diesmal nichts. Unter Windows schmuggelt eine präparierte Sicherung keine Dateien mehr am Import-Ordner vorbei, und die Festung hält jeden Aufruf auf seinem eigenen Weg. Kleiner Patch, fest verschlossene Türen.

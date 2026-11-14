@@ -79,6 +79,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.7.1" date="2026-11-14">
+      <description>
+        <p>Security fixes for bringing settings back and for the fortress.</p>
+        <ul>
+          <li>A settings backup with a file name outside the import folder is refused (only Windows was affected)</li>
+          <li>The fortress kit 1.0.1 keeps direct calls on their own path</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.1</url>
+    </release>
     <release version="2.7.0" date="2026-11-14">
       <description>
         <p>ArrowLoop joins the fortress with your other apps.</p>

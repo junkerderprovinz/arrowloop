@@ -10,6 +10,15 @@ The full notes for each release are in
 
 ## Unreleased
 
+## 2.7.1 - 2026-11-14
+
+On Windows, ArrowLoop refuses a settings backup with a file name that would land outside the import folder, and the fortress kit goes to 1.0.1.
+
+## 🐛 Fixed
+
+- **Bringing settings back checks every file name the way Windows reads it.** A name with backslashes could write a file outside the import folder before the backup was checked. ArrowLoop now refuses such a backup as a whole. Only an app of your fortress could send one, and only once you had switched on putting settings back for it. Linux, the phone and the container were not affected.
+- **The fortress kit is at 1.0.1.** An app holding the phrase could announce an address that sent ArrowLoop's direct call to another page of a host on your network. The call now always goes where it belongs.
+
 ## 2.7.0 - 2026-11-14
 
 ArrowLoop moves into the fortress: one phrase for all your apps, a switch for everything they may do here, notifications on as many channels as you like, and a stack of phone fixes for the road.
