@@ -48,7 +48,9 @@ export function propAround(source: string, at: number): string | null {
   for (let i = at; i >= 0; i--) {
     const c = source[i]
     if (c === '}' || c === ')' || c === ']') depth++
-    else if (c === '(' || c === '[') depth--
+    // A bracket that closes nothing seen so far encloses the call, as the
+    // parentheses around an inner ternary do.
+    else if (c === '(' || c === '[') depth = Math.max(0, depth - 1)
     else if (c === '{') {
       if (depth === 0) {
         // Without `name=` in front, the expression is rendered as page text.
@@ -102,6 +104,11 @@ describe('the scanner', () => {
   it('finds the container through a ternary', () => {
     const line = "<InfoBubble tip={on ? t('a.oneHint') : t('a.twoHint')} />"
     expect(propAround(line, line.indexOf("t('a.twoHint'"))).toBe('tip')
+  })
+
+  it('finds the container around a parenthesised inner ternary', () => {
+    const line = "<Button hint={off ? (going ? t('a.goingHint') : undefined) : t('a.offHint')} />"
+    expect(propAround(line, line.indexOf("t('a.goingHint'"))).toBe('hint')
   })
 
   it('is not fooled by a brace inside the expression', () => {
