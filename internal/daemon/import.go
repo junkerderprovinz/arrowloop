@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path"
 	"path/filepath"
 	"slices"
-	"strings"
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/dbfile"
@@ -124,12 +122,18 @@ func receive(backup io.Reader, n int64, stage string) (map[string]string, error)
 		if err != nil {
 			return nil, fmt.Errorf("%w: %w", ErrBadBackup, err)
 		}
-		if h.Typeflag != tar.TypeReg || !local(h.Name) {
+		// Export writes slashes, but Windows reads a backslash as a separator
+		// too, so the name is checked as the system will read it.
+		name := filepath.FromSlash(h.Name)
+		if !filepath.IsLocal(name) {
+			return nil, fmt.Errorf("%w: it holds %q, which leaves its folder", ErrBadBackup, h.Name)
+		}
+		if h.Typeflag != tar.TypeReg {
 			continue
 		}
 		// Under the name it had, so that the configuration finds its state
 		// paths inside the stage when it is checked.
-		dest := filepath.Join(stage, "files", filepath.FromSlash(h.Name))
+		dest := filepath.Join(stage, "files", name)
 		if err := os.MkdirAll(filepath.Dir(dest), 0o700); err != nil {
 			return nil, err
 		}
@@ -147,12 +151,6 @@ func receive(backup io.Reader, n int64, stage string) (map[string]string, error)
 		files[h.Name] = dest
 	}
 	return files, nil
-}
-
-// local reports whether a name in the tar stays inside the folder it is
-// unpacked in.
-func local(name string) bool {
-	return name != "" && !path.IsAbs(name) && path.Clean(name) == name && name != ".." && !strings.HasPrefix(name, "../")
 }
 
 // jobNames are the jobs of both configurations, which the import holds.

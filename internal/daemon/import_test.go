@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 	"time"
 
@@ -230,6 +231,78 @@ func TestAnImportThatIsNotWholeOrNotABackupChangesNothing(t *testing.T) {
 		for _, name := range leftovers(t, dir) {
 			t.Errorf("%s left %s behind", what, name)
 		}
+	}
+}
+
+// withEntry is backup with one more file in it, under name.
+func withEntry(t *testing.T, backup []byte, name string) []byte {
+	t.Helper()
+	var buf bytes.Buffer
+	tw := tar.NewWriter(&buf)
+	tr := tar.NewReader(bytes.NewReader(backup))
+	for {
+		h, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := tw.WriteHeader(h); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := io.Copy(tw, tr); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := tw.WriteHeader(&tar.Header{Name: name, Mode: 0o600, Size: 4}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tw.Write([]byte("evil")); err != nil {
+		t.Fatal(err)
+	}
+	if err := tw.Close(); err != nil {
+		t.Fatal(err)
+	}
+	return buf.Bytes()
+}
+
+func TestAnImportRefusesAFileThatWouldLandOutsideItsFolder(t *testing.T) {
+	r, backup, dir := imported(t)
+	// The stage sits in dir and unpacks into a folder of its own, so two
+	// steps up reach dir and three reach the folder above it.
+	targets := []string{filepath.Join(dir, "evil"), filepath.Join(filepath.Dir(dir), "evil")}
+
+	names := map[string]string{
+		"climbing into the configuration folder": "../../evil",
+		"climbing above it":                      "../../../evil",
+		"an absolute path":                       filepath.ToSlash(filepath.Join(dir, "evil")),
+	}
+	// Elsewhere a backslash is part of the name and keeps the file inside.
+	if runtime.GOOS == "windows" {
+		names["climbing with backslashes"] = `..\..\evil`
+		names["climbing above it with backslashes"] = `..\..\..\evil`
+	}
+	for what, name := range names {
+		t.Run(what, func(t *testing.T) {
+			raw := withEntry(t, backup, name)
+			err := r.Import(context.Background(), bytes.NewReader(raw), int64(len(raw)), "the vault")
+			if !errors.Is(err, daemon.ErrBadBackup) {
+				t.Errorf("an import holding %q: %v, want ErrBadBackup", name, err)
+			}
+			for _, p := range targets {
+				if _, err := os.Stat(p); err == nil {
+					t.Errorf("the import wrote %s", p)
+					_ = os.Remove(p)
+				}
+			}
+			if len(r.Config().Jobs) != 2 {
+				t.Errorf("an import holding %q replaced the configuration", name)
+			}
+			for _, p := range leftovers(t, dir) {
+				t.Errorf("the import left %s behind", p)
+			}
+		})
 	}
 }
 
