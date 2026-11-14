@@ -547,39 +547,52 @@ func (s *Server) changeFortressPhrase(ctx context.Context) (string, []leftMember
 		took = append(took, s.passChange(ctx, old, online(moving, took), st)...)
 	}
 
+	left := leftOnOldPhrase(took, f.Members(), paired.Members(), f.Behind())
+	s.closeGroupLocked()
+	s.openGroupLocked()
+	words, err := phrase.Encode(s.Pairing.Get().Secret)
+	return words, left, err
+}
+
+// leftOnOldPhrase lists the instances of the fortress and the pairing that
+// did not take the new phrase, but for those left behind, which are listed
+// apart. The fortress may list a member before it learned its name and app,
+// so what the pairing knows of it fills the gaps.
+func leftOnOldPhrase(took []string, members []kitfortress.Member, paired, behind []group.Member) []leftMember {
 	left := []leftMember{}
-	noted := map[string]bool{}
+	at := map[string]int{}
 	note := func(id, app, device string) {
-		if !slices.Contains(took, id) && !noted[id] {
-			noted[id] = true
-			left = append(left, leftMember{App: app, Device: device})
+		if slices.Contains(took, id) {
+			return
 		}
+		if i, ok := at[id]; ok {
+			left[i].App, left[i].Device = cmp.Or(left[i].App, app), cmp.Or(left[i].Device, device)
+			return
+		}
+		at[id] = len(left)
+		left = append(left, leftMember{App: app, Device: device})
 	}
-	for _, m := range f.Members() {
+	for _, m := range members {
 		if m.Kind == member.KindInstance {
 			note(m.ID, cmp.Or(m.App.Name, m.App.ID), m.Device)
 		}
 	}
 	// Every instance the pairing approved counts, whether or not the move has
 	// its group open: one moving in may hold the phrase from before, and its
-	// answer can get lost as it leaves the pairing. Those left behind are
-	// listed apart.
-	behind := map[string]bool{}
-	for _, m := range f.Behind() {
-		behind[m.ID] = true
+	// answer can get lost as it leaves the pairing.
+	gone := map[string]bool{}
+	for _, m := range behind {
+		gone[m.ID] = true
 	}
-	for _, m := range paired.Members() {
-		if m.Kind == member.KindInstance && m.State == group.StateApproved && !behind[m.ID] {
+	for _, m := range paired {
+		if m.Kind == member.KindInstance && m.State == group.StateApproved && !gone[m.ID] {
 			note(m.ID, "ArrowLoop", m.Name)
 		}
 	}
 	slices.SortFunc(left, func(x, y leftMember) int {
 		return cmp.Or(cmp.Compare(x.Device, y.Device), cmp.Compare(x.App, y.App))
 	})
-	s.closeGroupLocked()
-	s.openGroupLocked()
-	words, err := phrase.Encode(s.Pairing.Get().Secret)
-	return words, left, err
+	return left
 }
 
 // leftMember is a member the phrase change did not reach. App is empty for

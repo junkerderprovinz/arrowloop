@@ -85,3 +85,6 @@ func (s *Server) OpensWithSignIn() (offered, signIn bool) {
 
 // MemberViews is what GET /api/fortress lists of members.
 var MemberViews = memberViews
+
+// LeftOnOldPhrase is what a phrase change lists as left on the old phrase.
+var LeftOnOldPhrase = leftOnOldPhrase

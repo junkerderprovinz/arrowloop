@@ -95,6 +95,19 @@ func TestAPhraseChangeNamesEveryAppOnADeviceStillOnTheOldPhrase(t *testing.T) {
 	}
 }
 
+// The fortress lists a member as soon as it hears from it, before it learns
+// the member's name and app, while the pairing already knows it by name.
+func TestAPairedInstanceTheFortressHasNotNamedYetIsLeftUnderItsName(t *testing.T) {
+	const id = "instance-kirthallia"
+	left := web.LeftOnOldPhrase(nil,
+		[]fortress.Member{{ID: id, Kind: member.KindInstance, State: group.StateApproved, LastSeen: time.Now()}},
+		[]group.Member{{ID: id, Kind: member.KindInstance, Name: "Kirthallia", State: group.StateApproved}},
+		nil)
+	if len(left) != 1 || left[0].App != "ArrowLoop" || left[0].Device != "Kirthallia" {
+		t.Errorf("the change left %+v on the old phrase, want ArrowLoop on Kirthallia", left)
+	}
+}
+
 // keptSecret is the keeper of the app that changes the phrase in a test.
 type keptSecret struct {
 	mu     sync.Mutex
