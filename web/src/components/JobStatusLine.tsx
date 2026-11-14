@@ -43,7 +43,10 @@ export function JobStatusLine({
   switch (status) {
     case 'running': {
       const total = event?.total ?? 0
-      const badge = (
+      // A run still waiting for another job has not touched either side.
+      const badge = job.queued ? (
+        <Badge tone="neutral">{t('status.queued')}</Badge>
+      ) : (
         <Badge tone="active" className="glim-live">
           {t('status.running')}
         </Badge>

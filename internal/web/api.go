@@ -357,9 +357,12 @@ type jobView struct {
 	Schedule  string `json:"schedule"`
 	// Watch, because a watching job writes the same schedule as one that only
 	// keeps to the clock.
-	Watch       bool    `json:"watch"`
-	Disabled    bool    `json:"disabled"`
-	Running     bool    `json:"running"`
+	Watch    bool `json:"watch"`
+	Disabled bool `json:"disabled"`
+	Running  bool `json:"running"`
+	// Queued is a running job that still waits for another run to finish,
+	// so it has not read either side yet.
+	Queued      bool    `json:"queued"`
 	LastSuccess *string `json:"lastSuccess"`
 	// NextRun is when the schedule next reaches this job; see nextRun. It is a
 	// due time, and a condition such as mains power may still hold the run.
@@ -404,7 +407,7 @@ func directionName(d plan.Direction) string {
 }
 
 func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
-	running := s.Runner.Running()
+	running, queued := s.Runner.Running(), s.Runner.Queued()
 	cfg := s.Runner.Config()
 	// The strips are a nicety, so a failed read leaves them empty rather than
 	// failing the whole list.
@@ -419,7 +422,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			Name: j.Name, Left: j.Left, Right: j.Right, Watch: j.Watch,
 			// Resolved, so an unset field and "both" look the same.
 			Direction: directionName(plan.ParseDirection(j.Direction)),
-			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name],
+			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name], Queued: queued[j.Name],
 			Recent: recent[j.Name],
 		}
 		if v.Recent == nil {

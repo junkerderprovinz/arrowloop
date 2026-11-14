@@ -373,7 +373,7 @@ function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: n
 
   return (
     <Card title={t('job.runs')} hueIndex={0}>
-      {job.running && <Now event={event} speed={speed} />}
+      {job.running && <Now event={event} speed={speed} queued={job.queued} />}
       {runs === null ? (
         <Empty>{t('history.working')}</Empty>
       ) : runs.length === 0 ? (
@@ -401,7 +401,7 @@ function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: n
  * stops short of full, since this run may hold more; with nothing to measure
  * against the bar is indeterminate.
  */
-function Now({ event, speed }: { event?: RunEvent; speed?: number }) {
+function Now({ event, speed, queued }: { event?: RunEvent; speed?: number; queued?: boolean }) {
   const { t, lang } = useT()
   const total = event?.total ?? 0
   const done = event?.done ?? 0
@@ -410,7 +410,7 @@ function Now({ event, speed }: { event?: RunEvent; speed?: number }) {
   const format = new Intl.NumberFormat(lang)
   const counts = { done: format.format(done), total: format.format(total) }
 
-  let words = t(event ? 'progress.starting' : 'progress.opening')
+  let words = t(event ? 'progress.starting' : queued ? 'progress.queued' : 'progress.opening')
   if (known) words = t(event?.guess ? 'progress.about' : 'progress.of', counts)
   else if (event?.stage) words = t('progress.found', counts)
 

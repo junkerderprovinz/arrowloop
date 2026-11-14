@@ -1306,7 +1306,22 @@ func (r *Runner) Working() []Working {
 	return out
 }
 
-// Running reports which jobs are going right now.
+// Queued reports which of the running jobs still wait for their turn, behind
+// as many runs as parallelJobs allows. They have read neither side yet.
+func (r *Runner) Queued() map[string]bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	out := map[string]bool{}
+	for name := range r.inflight {
+		if _, going := r.going[name]; !going {
+			out[name] = true
+		}
+	}
+	return out
+}
+
+// Running reports which jobs are going right now, waiting for their turn or
+// not.
 func (r *Runner) Running() map[string]bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()

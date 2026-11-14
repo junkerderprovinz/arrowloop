@@ -112,11 +112,12 @@ function stepped(steps: Step[], event: RunEvent): Step[] {
 
 /**
  * A running job's bar and one line under it. Before the first progress frame
- * the run is reading both sides, and the line says so.
+ * the run is reading both sides, or waiting for another job's run to finish,
+ * and the line says which.
  */
 export function RunProgress({ job, at, hue }: { job: Job; at?: Progress; hue: string }) {
   const { t, lang } = useT();
-  if (!at) return <Caption>{t("progress.opening")}</Caption>;
+  if (!at) return <Caption>{t(job.queued ? "progress.queued" : "progress.opening")}</Caption>;
   if (at.joined) return at.speed > 0 ? <Caption>{perSecond(at.speed, lang)}</Caption> : null;
   const line = counted(at, t, lang);
   return (

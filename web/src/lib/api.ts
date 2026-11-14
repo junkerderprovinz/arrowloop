@@ -26,6 +26,8 @@ export type Job = {
   watch: boolean
   disabled: boolean
   running: boolean
+  /** Running, but still waiting for another job's run to finish first. An older engine does not say. */
+  queued?: boolean
   lastSuccess: string | null
   /** When the schedule next reaches the job, if it has one and is not paused. */
   nextRun?: string

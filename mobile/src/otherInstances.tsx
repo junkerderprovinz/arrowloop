@@ -134,7 +134,7 @@ function Status({ job }: { job: Job }) {
   const { p } = useTheme();
   switch (jobStatus(job, { held: false, conflict: false, notes: false })) {
     case "running":
-      return <Badge label={t("jobs.state.running")} tone="accent" />;
+      return job.queued ? <Badge label={t("status.queued")} /> : <Badge label={t("jobs.state.running")} tone="accent" />;
     case "away":
       return <Badge label={t("status.away")} />;
     case "failed":

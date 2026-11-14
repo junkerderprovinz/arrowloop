@@ -582,7 +582,7 @@ function JobStatus({
     case "running":
       return (
         <View style={styles.status}>
-          <Badge label={t("jobs.state.running")} tone="accent" />
+          {job.queued ? <Badge label={t("status.queued")} /> : <Badge label={t("jobs.state.running")} tone="accent" />}
           <RunProgress job={job} at={progress} hue={hue} />
         </View>
       );

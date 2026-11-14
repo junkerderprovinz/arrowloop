@@ -32,6 +32,8 @@ export interface Job {
   watch: boolean;
   disabled: boolean;
   running: boolean;
+  /** Running, but still waiting for another job's run to finish first. An older engine does not say. */
+  queued?: boolean;
   lastSuccess: string | null;
   /**
    * When the schedule next runs this job; absent for a job without a
