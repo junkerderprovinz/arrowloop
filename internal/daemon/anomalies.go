@@ -239,7 +239,7 @@ func (r *Runner) overdue(ctx context.Context, now time.Time) {
 	}
 	running := r.Running()
 	for _, j := range cfg.Jobs {
-		if j.Disabled || j.Schedule == "" {
+		if !cfg.RunsOnItsOwn(j) || j.Schedule == "" {
 			r.settle(j.Name, anomaly.Resolved, anomaly.Overdue)
 			continue
 		}

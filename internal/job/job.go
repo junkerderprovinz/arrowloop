@@ -43,6 +43,11 @@ type Config struct {
 	// down.
 	ParallelJobs int `json:"parallelJobs,omitempty"`
 
+	// PauseAutomatic holds every job's automatic runs, as pausing each one
+	// would, and leaves the jobs' own pause alone. A job still runs when it is
+	// started by hand.
+	PauseAutomatic bool `json:"pauseAutomatic,omitempty"`
+
 	Notify Notify `json:"notify,omitempty"`
 
 	// Retry is what happens after a scheduled run fails.
@@ -857,6 +862,12 @@ func (c *Config) resolve(p string) string {
 
 // Dir is the directory the configuration was read from.
 func (c *Config) Dir() string { return c.dir }
+
+// RunsOnItsOwn reports whether j may start without being asked: neither the
+// job nor automatic runs as a whole are paused.
+func (c *Config) RunsOnItsOwn(j Job) bool {
+	return !j.Disabled && !c.PauseAutomatic
+}
 
 // Find returns the job with this name.
 func (c *Config) Find(name string) (Job, bool) {

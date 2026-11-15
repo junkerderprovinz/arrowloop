@@ -103,6 +103,10 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
   ],
   sync: [
     {
+      title: 'automatic.title',
+      rows: [{ key: 'automatic.pause', hint: 'automatic.pauseHint' }],
+    },
+    {
       title: 'engine.defaults',
       hint: 'settings.syncHint',
       rows: [

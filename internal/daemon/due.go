@@ -28,7 +28,7 @@ func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 
 // owed reports whether a job is due, which Due describes.
 func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
-	if j.Disabled || j.Schedule == "" {
+	if !r.config().RunsOnItsOwn(j) || j.Schedule == "" {
 		return false
 	}
 	parsed, err := job.ParseSchedule(j.Schedule)
@@ -105,11 +105,12 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 	if r.hist == nil {
 		return nil
 	}
-	policy := r.config().Retry
+	cfg := r.config()
+	policy := cfg.Retry
 	running := r.Running()
 	var due []string
-	for _, j := range r.config().Jobs {
-		if j.Disabled || j.Schedule == "" || running[j.Name] {
+	for _, j := range cfg.Jobs {
+		if !cfg.RunsOnItsOwn(j) || j.Schedule == "" || running[j.Name] {
 			continue
 		}
 		// An unreadable log is no reason to run, and the scheduled turns
@@ -148,13 +149,14 @@ func (r *Runner) catchUp(ctx context.Context) {
 // before command is left to its turn, since the command may be what attaches
 // the drive.
 func (r *Runner) returned() []string {
+	cfg := r.config()
 	running := r.Running()
 	var back []string
-	for _, j := range r.config().Jobs {
+	for _, j := range cfg.Jobs {
 		if _, waits := r.waiting.Since(j.Name); !waits {
 			continue
 		}
-		if j.Disabled || j.Before != "" || running[j.Name] || r.away(j) != nil {
+		if !cfg.RunsOnItsOwn(j) || j.Before != "" || running[j.Name] || r.away(j) != nil {
 			continue
 		}
 		back = append(back, j.Name)

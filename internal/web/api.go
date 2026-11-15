@@ -380,10 +380,11 @@ const recentRuns = 14
 
 // nextRun is when the schedule will next reach this job. It is computed with
 // the same Next the scheduler uses, so it needs no live scheduler. A job with
-// no schedule, a disabled job and an expression that does not parse have no
-// next run; a watching job still has its scheduled time.
-func nextRun(j job.Job, now time.Time) (time.Time, bool) {
-	if j.Disabled || strings.TrimSpace(j.Schedule) == "" {
+// no schedule, a paused job, any job while automatic runs are paused and an
+// expression that does not parse have no next run; a watching job still has
+// its scheduled time.
+func nextRun(cfg *job.Config, j job.Job, now time.Time) (time.Time, bool) {
+	if !cfg.RunsOnItsOwn(j) || strings.TrimSpace(j.Schedule) == "" {
 		return time.Time{}, false
 	}
 	parsed, err := job.ParseSchedule(j.Schedule)
@@ -432,7 +433,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			stamp := when.UTC().Format(time.RFC3339)
 			v.LastSuccess = &stamp
 		}
-		if when, ok := nextRun(j, time.Now()); ok {
+		if when, ok := nextRun(cfg, j, time.Now()); ok {
 			stamp := when.UTC().Format(time.RFC3339)
 			v.NextRun = &stamp
 		}

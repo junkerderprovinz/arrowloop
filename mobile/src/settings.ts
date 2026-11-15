@@ -148,6 +148,8 @@ export interface EngineSettings {
   notOnBattery?: boolean;
   /** Holds automatic runs on a metered connection. */
   notOnMetered?: boolean;
+  /** Holds every job's automatic runs; a job still runs when started by hand. */
+  pauseAutomatic?: boolean;
   [key: string]: unknown;
 }
 

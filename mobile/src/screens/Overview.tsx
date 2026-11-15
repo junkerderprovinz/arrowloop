@@ -11,6 +11,7 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
 import { OtherInstances } from "../otherInstances";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
+import { useEngineSettings } from "../settings";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
 import { bytes, isAccount, ReachBadge, Room, useReach, type Reach, useRoom } from "../space";
@@ -210,9 +211,10 @@ function Head({ jobs }: { jobs: Job[] }) {
   const held = findings.filter((f) => f.held).length;
   const { headline, needs } = headOf({ jobs, conflicts: waiting.conflicts ?? 0, held, notes: findings.length - held });
   const { last, next } = lastAndNext(jobs);
+  const paused = !!useEngineSettings(true).settings?.pauseAutomatic;
   const line = [
     last ? t("jobs.lastRun", { when: clock(last, lang) }) : "",
-    next ? t("jobs.fact.next", { when: clock(next, lang) }) : "",
+    paused ? t("automatic.paused") : next ? t("jobs.fact.next", { when: clock(next, lang) }) : "",
   ]
     .filter(Boolean)
     .join(" · ");

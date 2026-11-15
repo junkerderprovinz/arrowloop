@@ -344,6 +344,8 @@ export type Touch = RunEntry & {
 export type Settings = {
   bwlimit?: string
   parallelJobs?: number
+  /** Holds every job's automatic runs; a job still runs when started by hand. */
+  pauseAutomatic?: boolean
   history?: string
   /** Per-job settings that fill in what a job does not say for itself. */
   defaults?: {

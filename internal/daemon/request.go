@@ -18,11 +18,12 @@ var (
 // carried as well. queued reports that the request waits for such a run. by
 // names the asker in the log.
 func (r *Runner) Request(name, by string) (queued bool, err error) {
-	j, ok := r.config().Find(name)
+	cfg := r.config()
+	j, ok := cfg.Find(name)
 	switch {
 	case !ok:
 		return false, fmt.Errorf("%w: %s", ErrNoSuchJob, name)
-	case j.Disabled:
+	case !cfg.RunsOnItsOwn(j):
 		return false, fmt.Errorf("%w: %s", ErrPaused, name)
 	}
 	if r.keepRequest(name) {

@@ -103,8 +103,10 @@ say how much waits across all jobs.
 
 A click anywhere else on the card opens the job's page.
 
-**Add a job** stands at the bottom right. **More** beside it has **Run all**
-and **Stop all**.
+**Add a job** stands at the bottom right. **More** beside it has **Run all**,
+**Stop all** and **Pause automatic runs**, which holds every schedule, watcher
+and request from another app until **Resume automatic runs**. Meanwhile the
+Overview says so where it would name the next run.
 
 ## Sort, filter and search
 
@@ -466,8 +468,9 @@ row on **Look** brings back the original one.
 - **Look**: language, design (Dark, Light or System) with the **OLED** switch,
   corners, motion, the job list (Cards or Compact), the tile order, labels and
   colours.
-- **Sync**: the global sync settings every job starts from, transfer,
-  contents, **Exceptions**, retries and the shared exclude lists.
+- **Sync**: the switch for automatic runs, the global sync settings every job
+  starts from, transfer, contents, **Exceptions**, retries and the shared
+  exclude lists.
   **Exceptions** lists only the jobs with a value of their own, each with those
   values and **Use the default**, and is not there while every job follows the
   defaults. **Safety net** has the same card for jobs with brakes of their own.

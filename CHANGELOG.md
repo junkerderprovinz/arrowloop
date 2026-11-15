@@ -13,6 +13,7 @@ The full notes for each release are in
 ## ✨ Added
 
 - **A job can take only some of the files.** Write patterns under "Only these files", such as `*.tar.gz`, and the job syncs just the files that match. Every other file stays where it is on both sides, and your exclusions still apply. An import from FolderSync brings its include filters along. Thanks to @danpeig ([#159](https://github.com/junkerderprovinz/arrowloop/issues/159)).
+- **One switch pauses every automatic run.** Pick "Pause automatic runs" under More on the Jobs page, on the phone as well, or switch it on at the top of Settings › Sync. No job then starts on its own, whether by schedule, a watched folder, a retry or a request from another app, until you resume. A run already going finishes, and you can still start any job by hand. Thanks to @danpeig ([#161](https://github.com/junkerderprovinz/arrowloop/issues/161)).
 
 ## 🐛 Fixed
 

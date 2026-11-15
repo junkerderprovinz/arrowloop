@@ -282,7 +282,8 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 
 	if err := r.slots.take(ctx, func() int { return r.config().ParallelJobs }); err != nil {
 		// Pausing or removing a job stops it, and one still waiting has not run.
-		if now, ok := r.config().Find(name); !ok || now.Disabled {
+		cfg := r.config()
+		if now, ok := cfg.Find(name); !ok || now.Disabled || auto && !cfg.RunsOnItsOwn(now) {
 			return history.Run{}, ErrWithdrawn
 		}
 		return history.Run{}, err
@@ -291,8 +292,9 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 
 	// The turn can come long after the job was asked for, and the job may have
 	// been edited, paused or removed meanwhile.
-	j, ok = r.config().Find(name)
-	if !ok || auto && j.Disabled {
+	cfg := r.config()
+	j, ok = cfg.Find(name)
+	if !ok || auto && !cfg.RunsOnItsOwn(j) {
 		return history.Run{}, ErrWithdrawn
 	}
 	if j.Left == "" || j.Right == "" {
@@ -801,7 +803,7 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 	var scheduled []string
 
 	for _, j := range cfg.Jobs {
-		if j.Disabled || j.Schedule == "" {
+		if !cfg.RunsOnItsOwn(j) || j.Schedule == "" {
 			continue
 		}
 		name := j.Name
@@ -816,7 +818,7 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 	}
 
 	for _, j := range cfg.Jobs {
-		if j.Disabled || !j.Watch {
+		if !cfg.RunsOnItsOwn(j) || !j.Watch {
 			continue
 		}
 		r.startWatcher(ctx, round, j, nil, time.Now())
@@ -891,9 +893,10 @@ func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, er
 // time in file order. It runs them in a goroutine so Serve can answer reloads
 // while the first sync takes minutes.
 func (r *Runner) runAtStart(ctx context.Context) {
+	cfg := r.config()
 	var due []string
-	for _, j := range r.config().Jobs {
-		if !j.Disabled && j.RunAtStart {
+	for _, j := range cfg.Jobs {
+		if cfg.RunsOnItsOwn(j) && j.RunAtStart {
 			due = append(due, j.Name)
 		}
 	}
@@ -959,6 +962,12 @@ func (r *Runner) Reload(cfg *job.Config) {
 	for name, stop := range paused {
 		r.log("%s: stopping, the job was paused", name)
 		stop()
+	}
+	switch {
+	case cfg.PauseAutomatic && !was.PauseAutomatic:
+		r.log("automatic runs are paused, jobs only run when started by hand")
+	case !cfg.PauseAutomatic && was.PauseAutomatic:
+		r.log("automatic runs are back on")
 	}
 	// A raised limit lets waiting runs start.
 	r.slots.wake()

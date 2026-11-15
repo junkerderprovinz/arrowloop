@@ -12,6 +12,7 @@ import { Empty, Stack } from '../components/Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { useJobConfig } from './Editor'
+import { useEngineSettings } from './settings/engineSettings'
 import type { Finding } from '../lib/anomalies'
 import { api, type Job, type OpenConflict, type Run, type RunEvent } from '../lib/api'
 import { hueVars } from '../lib/appearance'
@@ -90,6 +91,7 @@ export function Overview({
   const running = jobs.filter((j) => j.running)
   // Paused jobs and drafts stay out of "run all", as they would on a schedule.
   const ready = jobs.filter((j) => !j.disabled && !j.running && j.left && j.right)
+  const settings = useEngineSettings()
 
   function add() {
     const at = config.add()
@@ -107,7 +109,7 @@ export function Overview({
 
   return (
     <Stack>
-      <Head headline={head.headline} needs={head.needs} jobs={jobs} />
+      <Head headline={head.headline} needs={head.needs} jobs={jobs} paused={!!settings.draft.pauseAutomatic} />
 
       {!empty && (
         <Card title={t('overview.numbers')} hint={t('overview.numbersHint')} hueIndex={0}>
@@ -209,11 +211,16 @@ export function Overview({
  * things stand, and under it when the last run ended and the next one starts.
  * The mark turns while anything runs, as a running job's mark does.
  */
-function Head({ headline, needs, jobs }: { headline: Headline; needs: number; jobs: Job[] }) {
+function Head({ headline, needs, jobs, paused }: { headline: Headline; needs: number; jobs: Job[]; paused: boolean }) {
   const { t, lang } = useT()
   const { last, next } = lastAndNext(jobs)
   const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
-  const line = [last && t('jobs.lastRun', { when: when(last) }), next && t('jobs.fact.next', { when: when(next) })].filter(Boolean).join(' · ')
+  const line = [
+    last && t('jobs.lastRun', { when: when(last) }),
+    paused ? t('automatic.paused') : next && t('jobs.fact.next', { when: when(next) }),
+  ]
+    .filter(Boolean)
+    .join(' · ')
   return (
     <div data-testid="overview-head" data-new="overview" className="flex items-center gap-4 pt-2 md:gap-5">
       <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-carbon-surface ${MARK[headline]}`}>

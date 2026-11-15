@@ -13,6 +13,7 @@ import { RunStrip } from '../components/RunStrip'
 import { Card } from '../lib/glimstone/Card'
 import { Badge } from '../lib/glimstone/Badge'
 import { useJobConfig } from './Editor'
+import { useEngineSettings } from './settings/engineSettings'
 import type { Finding } from '../lib/anomalies'
 import { api, type Job, type OpenConflict, type RunEvent } from '../lib/api'
 import { hueVars } from '../lib/appearance'
@@ -124,6 +125,8 @@ export function Jobs({
   const nothing = jobs.length === 0 && drafts.length === 0
   // Paused jobs and drafts stay out of "run all", as they would on a schedule.
   const ready = jobs.filter((j) => !j.disabled && !j.running && j.left && j.right)
+  const settings = useEngineSettings()
+  const paused = !!settings.draft.pauseAutomatic
   const running = jobs.filter((j) => j.running)
 
   // The engine starts and stops one job at a time, so every job is asked on
@@ -233,6 +236,12 @@ export function Jobs({
               labelKey: 'jobs.stopAll',
               disabled: running.length === 0,
               onSelect: () => everyJob(running.map((j) => j.name), api.stopJob),
+            },
+            {
+              label: t(paused ? 'automatic.resume' : 'automatic.pause'),
+              labelKey: paused ? 'automatic.resume' : 'automatic.pause',
+              disabled: !settings.loaded,
+              onSelect: () => settings.patch({ pauseAutomatic: paused ? undefined : true }),
             },
           ]}
         />

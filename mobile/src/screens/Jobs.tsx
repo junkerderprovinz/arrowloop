@@ -26,7 +26,7 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { MoveScope, MovingCell, useHoldToMove } from "../reorder";
-import { useAppearance } from "../settings";
+import { useAppearance, useEngineSettings } from "../settings";
 import { sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
 import { space, text, TOUCH } from "../theme";
@@ -250,12 +250,23 @@ export function Jobs() {
     await load();
   };
   const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
+  const engine = useEngineSettings(true);
+  const paused = !!engine.settings?.pauseAutomatic;
   const more = [
     ...(ready.length > 0
       ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void runAll() }]
       : []),
     ...(running.length > 0
       ? [{ label: t("phone.stopAll"), glyph: "IconStop", onPress: () => void all(running.map((j) => api.stop(j.name))) }]
+      : []),
+    ...(engine.settings
+      ? [
+          {
+            label: t(paused ? "automatic.resume" : "automatic.pause"),
+            glyph: paused ? "IconPlay" : "IconPause",
+            onPress: () => void engine.update({ pauseAutomatic: !paused }),
+          },
+        ]
       : []),
   ];
 

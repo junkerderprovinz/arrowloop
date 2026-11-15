@@ -419,6 +419,7 @@ same value unless its `-keep-history` flag gives another.
 |---|---|---|
 | `bwlimit` | none | rclone syntax, `1M` or a timetable like `08:00,512k 19:00,off`. |
 | `parallelJobs` | `1` | How many jobs may run at once. |
+| `pauseAutomatic` | `false` | Holds every automatic run: schedules, watching, retries, catch-up runs, runs at start and requests from other apps. A run already going finishes, a job started by hand still runs, and each job keeps its own pause. |
 | `history` | beside the file | Where run records go. A change takes effect the next time the program starts. |
 | `historyKeep` | ninety days | How long a run record is kept, such as `"720h"`. `"0"` keeps every record; see [Every run is written down](#every-run-is-written-down). |
 | `notify.channels` | none | Where messages go, one entry per channel: Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io; see [Notifications](#notifications). |

@@ -45,7 +45,7 @@ func TestWhenTheClockNextReachesAJob(t *testing.T) {
 		{name: "an expression that does not parse", schedule: "jeden dienstag bitte"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			got, ok := nextRun(job.Job{Schedule: c.schedule, Disabled: c.disabled}, now)
+			got, ok := nextRun(&job.Config{}, job.Job{Schedule: c.schedule, Disabled: c.disabled}, now)
 			if ok != c.haveTime {
 				t.Fatalf("have a time = %v, want %v (got %v)", ok, c.haveTime, got)
 			}
@@ -59,11 +59,18 @@ func TestWhenTheClockNextReachesAJob(t *testing.T) {
 // The schedule behind a watcher is the run that will definitely happen.
 func TestAWatchingJobStillHasItsBackstop(t *testing.T) {
 	now := time.Date(2027, 3, 1, 12, 30, 0, 0, time.UTC)
-	when, ok := nextRun(job.Job{Schedule: "@every 1h", Watch: true}, now)
+	when, ok := nextRun(&job.Config{}, job.Job{Schedule: "@every 1h", Watch: true}, now)
 	if !ok {
 		t.Fatal("a watching job with a schedule reported no next run")
 	}
 	if !when.Equal(now.Add(time.Hour)) {
 		t.Errorf("next run %v, want %v", when, now.Add(time.Hour))
+	}
+}
+
+func TestNoJobHasANextRunWhileAutomaticRunsArePaused(t *testing.T) {
+	now := time.Date(2027, 3, 1, 12, 30, 0, 0, time.UTC)
+	if when, ok := nextRun(&job.Config{PauseAutomatic: true}, job.Job{Schedule: "0 3 * * *"}, now); ok {
+		t.Errorf("next run %v while automatic runs are paused", when)
 	}
 }

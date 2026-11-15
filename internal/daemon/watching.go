@@ -249,8 +249,9 @@ func (r *Runner) rewatch(ctx, round context.Context, now time.Time) {
 		if round.Err() != nil {
 			return
 		}
-		j, ok := r.config().Find(name)
-		if !ok || j.Disabled || !j.Watch {
+		cfg := r.config()
+		j, ok := cfg.Find(name)
+		if !ok || !cfg.RunsOnItsOwn(j) || !j.Watch {
 			continue
 		}
 		seen := localSides(j)

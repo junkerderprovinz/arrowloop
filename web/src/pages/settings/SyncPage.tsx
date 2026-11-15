@@ -39,6 +39,15 @@ export function SyncPage() {
 
   return (
     <Stack>
+      <Card title={t('automatic.title')} hueIndex={cardHue()}>
+        <ToggleRow
+          label={t('automatic.pause')}
+          checked={!!draft.pauseAutomatic}
+          onChange={(v) => patch({ pauseAutomatic: v || undefined })}
+          hint={t('automatic.pauseHint')}
+        />
+      </Card>
+
       <Card title={t('engine.defaults')} hint={t('settings.syncHint')} hueIndex={cardHue()}>
         <SettingsRow label={t('direction.label')} hint={t('defaults.followHint')}>
           <Selector<Direction>
