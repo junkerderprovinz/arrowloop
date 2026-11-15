@@ -1,17 +1,18 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useEffect, useMemo, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
-import { api, EngineError, type Backend, type Provider, type Remote, type SetupQuestion } from "../api";
+import { api, EngineError, type Backend, type Provider, type Remote, type SetupQuestion, type TryAnswer } from "../api";
 import { Field, SecretField } from "../fields";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
-import { failureLine, type Failure } from "../../../web/src/lib/failure";
+import { CERTIFICATE_KEY } from "../../../web/src/lib/certificate";
+import { failureLine } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { optionLabel } from "../../../web/src/lib/optionNames";
 import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
-import { Body, Button, Caption, Choice, Empty, Page, PickRow, Row, Section, Title, Toggle } from "../ui";
+import { Body, Button, Caption, Choice, Empty, Page, Pair, PickRow, Row, Section, Title, Toggle } from "../ui";
 import type { TranslationKey } from "../../../web/src/lib/i18n.data";
 
 /**
@@ -94,7 +95,7 @@ export function TargetEdit() {
   // The connection test's state. These hooks have to stay above the early
   // return, or the hook count changes between renders.
   const [trying, setTrying] = useState(false);
-  const [tried, setTried] = useState<{ ok: boolean; reason?: string; failure?: Failure; hostKey?: string } | null>(null);
+  const [tried, setTried] = useState<TryAnswer | null>(null);
   // A counter rather than a flag, so every failed attempt shakes the button.
   const [refused, setRefused] = useState(0);
   // What rclone's setup left to choose at the last test.
@@ -104,20 +105,20 @@ export function TargetEdit() {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
   }
 
-  const answered = (answer: { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion; hostKey?: string }) => {
+  const answered = (answer: TryAnswer) => {
     if (answer.question) setQuestion(answer.question);
     setTried(answer.question ? { ok: false, reason: t("targets.question.hint") } : answer);
     if (!answer.ok) setRefused((n) => n + 1);
   };
 
-  const tryIt = async () => {
+  const tryIt = async (sent = values) => {
     setTrying(true);
     setTried(null);
     try {
       answered(
         await api.tryRemote(
           backendName,
-          { ...(provider?.preset ?? {}), ...prune(values) },
+          { ...(provider?.preset ?? {}), ...prune(sent) },
           // Lets the engine fill in the withheld secrets of a saved target.
           editing,
         ),
@@ -131,6 +132,17 @@ export function TargetEdit() {
 
   const reason = tried && !tried.ok && tried.reason ? failureLine(tried.reason, tried.failure, t, lang) : "";
 
+  // Holds the target to the certificate the test refused, and tests again with it.
+  const trust = (fingerprint: string) => {
+    const next = { ...values, [CERTIFICATE_KEY]: fingerprint };
+    setValues(next);
+    void tryIt(next);
+  };
+  const pinned = values[CERTIFICATE_KEY] ?? "";
+  const refusedCert = backend?.trustsCertificate && tried && !tried.ok ? tried.certificate : undefined;
+  // prune drops an emptied setting, which would keep the saved fingerprint.
+  const unpinned = !pinned && existing?.settings.some((s) => s.key === CERTIFICATE_KEY);
+
   const save = async () => {
     if (!name.trim()) {
       setError(t("targets.remoteNameHint"));
@@ -140,7 +152,7 @@ export function TargetEdit() {
     try {
       await api.saveRemote(name.trim(), {
         type: backendName,
-        settings: { ...(provider?.preset ?? {}), ...prune(values) },
+        settings: { ...(provider?.preset ?? {}), ...prune(values), ...(unpinned ? { [CERTIFICATE_KEY]: "" } : {}) },
       });
       nav.popToTop();
     } catch (e) {
@@ -244,6 +256,40 @@ export function TargetEdit() {
           <Body>{tried.hostKey}</Body>
         </Section>
       ) : null}
+      {refusedCert ? (
+        <Section title={t(refusedCert.changed ? "targets.certificate.changed" : "targets.certificate.untrusted")}>
+          <Body>{t(refusedCert.changed ? "targets.certificate.changedHint" : "targets.certificate.untrustedHint")}</Body>
+          <Pair label={t("targets.certificate.fingerprint")} value={refusedCert.fingerprint} />
+          {/* Where the engine kept only the fingerprint, the rest is empty. */}
+          {refusedCert.subject ? (
+            <>
+              <Pair label={t("targets.certificate.subject")} value={refusedCert.subject} />
+              <Pair label={t("targets.certificate.issuer")} value={refusedCert.issuer} />
+              <Pair
+                label={t("targets.certificate.validUntil")}
+                value={new Date(refusedCert.notAfter).toLocaleDateString(lang)}
+              />
+            </>
+          ) : null}
+          <Button
+            label={t("targets.certificate.trust")}
+            labelKey="targets.certificate.trust"
+            glyph="IconShieldOn"
+            busy={trying}
+            onPress={() => trust(refusedCert.fingerprint)}
+          />
+        </Section>
+      ) : pinned ? (
+        <Section title={t("targets.certificate.trusted")} hint={t("targets.certificate.trustedHint")}>
+          <Body>{pinned}</Body>
+          <Button
+            label={t("targets.certificate.remove")}
+            labelKey="targets.certificate.remove"
+            glyph="IconShieldOff"
+            onPress={() => setValues((old) => ({ ...old, [CERTIFICATE_KEY]: "" }))}
+          />
+        </Section>
+      ) : null}
 
       {/* The test runs before anything is saved. The button's colour, word,
           glyph and shake all show the result of the last attempt, so colour is
@@ -266,7 +312,7 @@ export function TargetEdit() {
         tone={trying || !tried ? "neutral" : tried.ok ? "ok" : "fail"}
         spoken={reason ? `${t("targets.checkFailed")}: ${reason}` : undefined}
         shake={refused}
-        onPress={tryIt}
+        onPress={() => void tryIt()}
       />
 
       {/* The control that goes ahead sits on the right. */}

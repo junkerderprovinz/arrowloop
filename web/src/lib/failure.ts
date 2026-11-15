@@ -30,6 +30,11 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
     left: 'failure.hostKeyChanged.left',
     right: 'failure.hostKeyChanged.right',
   },
+  certificateUntrusted: {
+    either: 'failure.certificateUntrusted',
+    left: 'failure.certificateUntrusted.left',
+    right: 'failure.certificateUntrusted.right',
+  },
   tooManyLogins: {
     either: 'failure.tooManyLogins',
     left: 'failure.tooManyLogins.left',

@@ -23,6 +23,8 @@ import {
   IconFolder,
   IconPencil,
   IconSave,
+  IconShieldOff,
+  IconShieldOn,
   IconTabStorage,
   IconTrash,
 } from '../components/glyphs'
@@ -58,6 +60,7 @@ import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
 import { ToggleRow } from '../components/ToggleRow'
 import { SecretRow } from './settings/rows'
 import { failureLine } from '../lib/failure'
+import { CERTIFICATE_KEY, type RefusedCertificate } from '../lib/certificate'
 
 /**
  * The storage targets and registered drives a job's sides can point at, one
@@ -598,11 +601,11 @@ function RemoteForm({
    * Tests the settings save would send, preset included, without writing
    * anything (internal/remotes/trycheck.go).
    */
-  async function tryIt() {
+  async function tryIt(sent = values) {
     setTrying(true)
     setTried(null)
     try {
-      const filled = Object.fromEntries(Object.entries(values).filter(([, value]) => value !== ''))
+      const filled = Object.fromEntries(Object.entries(sent).filter(([, value]) => value !== ''))
       // The name lets the engine fill in the saved secrets this form never
       // received.
       const answer = await api.tryRemote(kind, { ...(preset ?? {}), ...filled }, existing?.name)
@@ -621,6 +624,15 @@ function RemoteForm({
       setTrying(false)
     }
   }
+
+  /** Holds the target to the certificate the test refused, and tests again with it. */
+  function trust(fingerprint: string) {
+    const next = { ...values, [CERTIFICATE_KEY]: fingerprint }
+    setValues(next)
+    void tryIt(next)
+  }
+  const pinned = values[CERTIFICATE_KEY] ?? ''
+  const refusedCert = backend?.trustsCertificate && tried && !tried.ok ? tried.certificate : undefined
 
   async function save() {
     setBusy(true)
@@ -824,11 +836,73 @@ function RemoteForm({
             <span className="font-mono text-carbon-text [overflow-wrap:anywhere]">{tried.hostKey}</span>
           </p>
         )}
+        {refusedCert ? (
+          <CertificateOffer cert={refusedCert} busy={trying} onTrust={() => trust(refusedCert.fingerprint)} />
+        ) : (
+          pinned && (
+            <SubCard
+              title={t('targets.certificate.trusted')}
+              hint={t('targets.certificate.trustedHint')}
+              end={
+                <Button
+                  label={t('targets.certificate.remove')}
+                  labelKey="targets.certificate.remove"
+                  glyph={<IconShieldOff />}
+                  onClick={() => setValues((prev) => ({ ...prev, [CERTIFICATE_KEY]: '' }))}
+                />
+              }
+            >
+              <p className="font-mono text-subline text-carbon-text [overflow-wrap:anywhere]">{pinned}</p>
+            </SubCard>
+          )
+        )}
         {rest.length > 0 && (
           <SubCard title={t('targets.moreSettings')}>{rest.map(field)}</SubCard>
         )}
       </div>
     </Dialog>
+  )
+}
+
+/**
+ * A server certificate the test refused, with what a person needs to compare
+ * it with the one their server shows. Where the engine kept only the
+ * fingerprint, only the fingerprint is shown.
+ */
+function CertificateOffer({ cert, busy, onTrust }: { cert: RefusedCertificate; busy: boolean; onTrust: () => void }) {
+  const { t, lang } = useT()
+  const rows: [string, string, boolean?][] = [[t('targets.certificate.fingerprint'), cert.fingerprint, true]]
+  if (cert.subject) {
+    rows.push(
+      [t('targets.certificate.subject'), cert.subject],
+      [t('targets.certificate.issuer'), cert.issuer],
+      [t('targets.certificate.validUntil'), new Date(cert.notAfter).toLocaleDateString(lang)],
+    )
+  }
+  return (
+    <SubCard title={t(cert.changed ? 'targets.certificate.changed' : 'targets.certificate.untrusted')}>
+      <p className="text-subline text-carbon-textMuted">
+        {t(cert.changed ? 'targets.certificate.changedHint' : 'targets.certificate.untrustedHint')}
+      </p>
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-subline">
+        {rows.map(([label, value, mono]) => (
+          <div key={label} className="contents">
+            <dt className="text-carbon-textMuted">{label}</dt>
+            <dd className={`text-carbon-text [overflow-wrap:anywhere] ${mono ? 'font-mono' : ''}`}>{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="flex justify-end">
+        <Button
+          label={t('targets.certificate.trust')}
+          labelKey="targets.certificate.trust"
+          glyph={<IconShieldOn />}
+          busy={busy}
+          disabled={busy}
+          onClick={onTrust}
+        />
+      </div>
+    </SubCard>
   )
 }
 

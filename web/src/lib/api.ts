@@ -3,6 +3,7 @@
 
 /** Which way a job is allowed to write. */
 import type { FindingListing, JobLearning } from './anomalies'
+import type { RefusedCertificate } from './certificate'
 import type { Failure } from './failure'
 import type { ImportPlan } from './importPlan'
 import type { Channel, Notify } from './notify'
@@ -92,8 +93,18 @@ export type Duplicates = {
 }
 
 /** Whether a target answers, in rclone's words and as a kind the page can say itself. */
-/** A test's verdict. hostKey is the fingerprint of the key an SFTP server was held to. */
-export type CheckAnswer = { ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion; hostKey?: string }
+/**
+ * A test's verdict. hostKey is the fingerprint of the key an SFTP server was
+ * held to, certificate the server certificate the test refused.
+ */
+export type CheckAnswer = {
+  ok: boolean
+  reason?: string
+  failure?: Failure
+  question?: SetupQuestion
+  hostKey?: string
+  certificate?: RefusedCertificate
+}
 
 /**
  * A choice rclone's own setup leaves to the person adding a target, such as
@@ -154,6 +165,8 @@ export type Backend = {
   /** Reachable only with an OAuth token that has to be obtained outside this
    *  program, which the form has to say. */
   needsToken?: boolean
+  /** A target can trust a server certificate no authority vouches for. */
+  trustsCertificate?: boolean
   options: {
     name: string
     help: string
