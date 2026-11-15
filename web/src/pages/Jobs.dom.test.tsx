@@ -203,6 +203,15 @@ describe('the compact view', () => {
     expect(shownOrder()).toEqual(['music', 'photos'])
   })
 
+  it('says under the name why the last run failed', async () => {
+    localStorage.setItem('arrowloop.jobs.view', JSON.stringify('compact'))
+    page({ jobs: [job('photos', { recent: [ran('photos', 'boom')] }), job('music')] })
+    const why = await within(row('photos')).findByTestId('job-failure')
+    expect(why.textContent).toBe(`${en['failure.engineSaid']} boom`)
+    expect(why.getAttribute('data-tip')).toBe(why.textContent)
+    expect(within(row('music')).queryByTestId('job-failure')).toBeNull()
+  })
+
   it('leaves the switch to Settings, Look', async () => {
     page()
     await screen.findAllByTestId('job-row')
@@ -380,6 +389,22 @@ describe('a job card', () => {
   it('says a job failed by its own last run', async () => {
     page({ jobs: [job('photos', { recent: [ran('photos', 'boom'), ran('photos')] })] })
     expect(within(row('photos')).getByText('Failed')).toBeTruthy()
+  })
+
+  it('says under a failed job why its last run failed, with the whole sentence on hover', async () => {
+    const refused = { ...ran('photos', 'x509: certificate signed by unknown authority'), Failure: { code: 'certificateUntrusted' } }
+    page({ jobs: [job('photos', { recent: [refused] }), job('music')] })
+    const why = within(row('photos')).getByTestId('job-failure')
+    expect(why.textContent).toBe(en['failure.certificateUntrusted'])
+    expect(why.getAttribute('data-tip')).toBe(en['failure.certificateUntrusted'])
+    expect(why.className).toContain('text-statusFail')
+    expect(within(row('music')).queryByTestId('job-failure')).toBeNull()
+  })
+
+  it('says nothing of a failure the last run put right', async () => {
+    page({ jobs: [job('photos', { recent: [ran('photos'), ran('photos', 'boom')] })] })
+    await screen.findAllByRole('button', { name: 'Pause' })
+    expect(within(row('photos')).queryByTestId('job-failure')).toBeNull()
   })
 
   it('offers cancel instead of run while the job runs', async () => {

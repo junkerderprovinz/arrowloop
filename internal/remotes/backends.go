@@ -2,6 +2,7 @@ package remotes
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -46,6 +47,9 @@ type Backend struct {
 	// obtained outside this program, so the interface can say so in the
 	// reader's language.
 	NeedsToken bool `json:"needsToken,omitempty"`
+	// TrustsCertificate says a target of this backend can trust a server
+	// certificate no authority vouches for, by its fingerprint.
+	TrustsCertificate bool `json:"trustsCertificate,omitempty"`
 }
 
 // promised are the kinds of storage this product is for, in the order a person
@@ -211,7 +215,7 @@ func Backends() []Backend {
 		// Not nil, so it marshals as a list.
 		b := Backend{
 			Name: info.Name, Description: info.Description, Options: []Option{},
-			NeedsToken: tokenBackends[info.Name],
+			NeedsToken: tokenBackends[info.Name], TrustsCertificate: slices.Contains(pinnable, info.Name),
 		}
 		for _, o := range info.Options {
 			b.Options = append(b.Options, Option{

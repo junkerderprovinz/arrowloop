@@ -81,7 +81,19 @@ ArrowLoop has no switch that turns the check off, since that would let anyone
 between you and the server read your files. Install the authority instead, and
 the check passes as it should.
 
-Install the authority's own certificate, the one that signed the server's, not
+A WebDAV target, such as Nextcloud, ownCloud or OpenCloud, can also trust the
+one certificate its server shows. The failed test then shows the certificate's
+SHA-256 fingerprint with **Trust this certificate**. Compare the fingerprint
+with the one on your server, for example the output of
+`openssl x509 -noout -fingerprint -sha256 -in cert.pem`, trust it and save.
+ArrowLoop accepts exactly that certificate for this target, whatever name and
+dates it carries, and refuses any other. If the server later shows a different
+one, the next run fails and the test shows the new fingerprint, so a swapped
+certificate never gets through unnoticed. **Stop trusting** in the target's
+settings, followed by Save, brings back the usual check.
+
+For any other target, or to trust every server your authority signed, install
+the authority's own certificate, the one that signed the server's, not
 the server's certificate itself. It usually comes as a `.crt` or `.pem` file.
 
 **On the phone:**

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/junkerderprovinz/arrowloop/internal/certpin"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -215,9 +216,14 @@ func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
 }
 
 // refused is a check's answer for settings that do not work: rclone's words,
-// and the kind of failure where the page has a sentence for it.
+// the kind of failure where the page has a sentence for it, and a refused
+// certificate for the person to decide whether to trust it.
 func refused(err error) map[string]any {
-	return map[string]any{"ok": false, "reason": err.Error(), "failure": failure.Of(err.Error())}
+	answer := map[string]any{"ok": false, "reason": err.Error(), "failure": failure.Of(err.Error())}
+	if cert, ok := certpin.Find(err); ok {
+		answer["certificate"] = cert
+	}
+	return answer
 }
 
 // tryRemote checks settings that have not been saved, so a form can be tested

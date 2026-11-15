@@ -35,6 +35,8 @@ const RULES: Rule[] = [
   [/^(password|passkey)\.remove$/i, 'IconKeyRevoke'],
   [/^twoFactor\.add$/i, 'IconShieldOn'],
   [/^twoFactor\.remove$/i, 'IconShieldOff'],
+  [/^targets\.certificate\.trust$/i, 'IconShieldOn'],
+  [/^targets\.certificate\.remove$/i, 'IconShieldOff'],
   [/^notify\.test$/i, 'IconSendTest'],
 
   // Pairing: the words shown, entered and pasted, and the answers to an

@@ -11,12 +11,13 @@ import {
   type AccessibilityActionEvent,
   type GestureResponderEvent,
 } from "react-native";
-import { api, type Job, type Remote } from "../api";
+import { api, type Job, type Remote, type Run } from "../api";
 import { CardMenu, type CardAction } from "../CardMenu";
 import { clock } from "../clock";
 import { Glyph } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
+import { failureLine } from "../../../web/src/lib/failure";
 import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
 import { byJobOrder, stepJob } from "../../../web/src/lib/jobOrder";
@@ -454,6 +455,7 @@ function JobCard({
         progress={progress}
         hue={hue}
       />
+      {jobStatus(job, { held, conflict, notes: noted }) === "failed" ? <FailedBecause run={job.recent[0]!} lines={2} /> : null}
 
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
@@ -528,8 +530,9 @@ function JobRow({
   const { p } = useTheme();
   const hue = useHue(index);
   const last = job.recent[0];
+  const status = jobStatus(job, { held, conflict, notes: noted });
   // The status of a job that ran fine is already the time of that run.
-  const quiet = jobStatus(job, { held, conflict, notes: noted }) === "last";
+  const quiet = status === "last";
   return (
     <Card onPress={onOpen} hue={hue} style={styles.row} {...moving}>
       <View style={[styles.mark, { backgroundColor: hue }]} />
@@ -537,6 +540,7 @@ function JobRow({
         <Text style={[styles.rowName, { color: p.text }]} numberOfLines={1}>
           {job.name}
         </Text>
+        {status === "failed" ? <FailedBecause run={last!} lines={1} /> : null}
         <View style={styles.rowStatus}>
           <JobStatus
             job={job}
@@ -636,6 +640,17 @@ function JobStatus({
   }
 }
 
+/** Why the job's last run failed, cut short, since the job's own screen has it whole. */
+function FailedBecause({ run, lines }: { run: Run; lines: number }) {
+  const { t, lang } = useT();
+  const { p } = useTheme();
+  return (
+    <Text style={[styles.failure, { color: p.failInk }]} numberOfLines={lines}>
+      {failureLine(run.Err, run.Failure, t, lang)}
+    </Text>
+  );
+}
+
 export function arrow(direction: string): string {
   if (direction === "toRight" || direction === "right") return "→";
   if (direction === "toLeft" || direction === "left") return "←";
@@ -654,6 +669,7 @@ const styles = StyleSheet.create({
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
   findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },
+  failure: { fontSize: text.subline, lineHeight: 18 },
   // Room at the end so the floating button does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
   status: { gap: space.sm, alignSelf: "stretch", alignItems: "flex-start" },

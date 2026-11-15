@@ -1,15 +1,15 @@
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { api, failed, type Job, type Run } from "../api";
 import { describeCadence, readCadence } from "../../../web/src/lib/cadence";
 import { failureLine } from "../../../web/src/lib/failure";
 import { mayRun } from "../fileAccess";
 import { findingText, useT } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
-import { space } from "../theme";
+import { softOn, space, text } from "../theme";
 import { useEngineEvents } from "../useEngine";
-import { Badge, Body, Button, Caption, Card, Section } from "../ui";
+import { Badge, Body, Button, Caption, Card, Section, useTheme } from "../ui";
 import { counters } from "./History";
 import { clock } from "../clock";
 import { arrow } from "./Jobs";
@@ -92,10 +92,12 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
   }, []);
 
   if (!job) return null;
+  const last = job.recent[0];
 
   return (
     <>
       <Section title={t("job.runCard")} hint={t("jobs.runNowHint")}>
+        {!job.running && last && failed(last) ? <FailedBecause run={last} /> : null}
         <View style={styles.actions}>
           <Button
             // Cancel rather than pause, since "pause" is the word for holding
@@ -167,6 +169,17 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
   );
 }
 
+/** Why the last run failed, first on the screen, so it is read before Run now is pressed again. */
+function FailedBecause({ run }: { run: Run }) {
+  const { t, lang } = useT();
+  const { p, corners } = useTheme();
+  return (
+    <View style={[styles.failure, { backgroundColor: softOn(p.failInk, 0.15), ...corners.control }]}>
+      <Text style={[styles.failureText, { color: p.failInk }]}>{failureLine(run.Err, run.Failure, t, lang)}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   head: {
     flexDirection: "row",
@@ -178,6 +191,8 @@ const styles = StyleSheet.create({
   finding: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
   mark: { width: 28, alignItems: "center" },
   findingText: { flex: 1 },
+  failure: { paddingVertical: space.sm, paddingHorizontal: space.md },
+  failureText: { fontSize: text.body, lineHeight: 20 },
 });
 
 /** A line of a check's answer; bad marks one a run will not get past or notice. */

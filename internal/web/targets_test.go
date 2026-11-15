@@ -3,6 +3,7 @@ package web_test
 import (
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,8 +12,10 @@ import (
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"
 	_ "github.com/rclone/rclone/backend/smb"
+	_ "github.com/rclone/rclone/backend/webdav"
 	"github.com/rclone/rclone/fs/config"
 
+	"github.com/junkerderprovinz/arrowloop/internal/certpin"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -166,7 +169,7 @@ func TestTheBackendsOfferedAreTheOnesBuiltIn(t *testing.T) {
 	}
 
 	// The promised ones come first; the registry alone would start with crypt.
-	if len(got.Backends) == 0 || got.Backends[0].Name != "s3" {
+	if len(got.Backends) == 0 || got.Backends[0].Name != "webdav" {
 		var leading string
 		if len(got.Backends) > 0 {
 			leading = got.Backends[0].Name
@@ -359,5 +362,31 @@ func TestACheckThatFailsNamesTheKindOfFailure(t *testing.T) {
 		if got.Failure == nil || got.Failure.Code != failure.Unreachable {
 			t.Errorf("%s: failure = %+v for %q, want %s", path, got.Failure, got.Reason, failure.Unreachable)
 		}
+	}
+}
+
+// A server whose certificate is not trusted shows the certificate, so the
+// page can offer to trust it.
+func TestACheckRefusedOverTheCertificateShowsTheCertificate(t *testing.T) {
+	h := newHarness(t)
+	withRcloneConfig(t)
+	srv := httptest.NewTLSServer(http.NotFoundHandler())
+	defer srv.Close()
+
+	resp := h.post(t, "/api/remotes-check", `{"type":"webdav","settings":{"url":"`+srv.URL+`","vendor":"other"}}`)
+	defer resp.Body.Close()
+	var got struct {
+		OK          bool               `json:"ok"`
+		Failure     *failure.Failure   `json:"failure"`
+		Certificate *certpin.Untrusted `json:"certificate"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
+		t.Fatal(err)
+	}
+	if got.OK || got.Certificate == nil || got.Certificate.Fingerprint != certpin.Fingerprint(srv.Certificate().Raw) {
+		t.Fatalf("the answer was ok=%v certificate=%+v, want the server's certificate", got.OK, got.Certificate)
+	}
+	if got.Failure == nil || got.Failure.Code != failure.CertificateUntrusted {
+		t.Errorf("failure = %+v, want %s", got.Failure, failure.CertificateUntrusted)
 	}
 }

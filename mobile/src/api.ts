@@ -6,6 +6,7 @@
 import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
+import type { RefusedCertificate } from "../../web/src/lib/certificate";
 import type { Failure } from "../../web/src/lib/failure";
 import type { FortressInfo, FortressLeft, FortressPermission } from "../../web/src/lib/fortress";
 import type { ImportPlan } from "../../web/src/lib/importPlan";
@@ -357,6 +358,16 @@ export interface Provider {
 }
 
 /** A choice rclone's setup leaves open, answered as the setting `name` (internal/remotes/setup.go). */
+/** A test's verdict, as the engine answers a test of unsaved settings. */
+export interface TryAnswer {
+  ok: boolean;
+  reason?: string;
+  failure?: Failure;
+  question?: SetupQuestion;
+  hostKey?: string;
+  certificate?: RefusedCertificate;
+}
+
 export interface SetupQuestion {
   name: string;
   choices: { value: string; help: string }[];
@@ -375,6 +386,8 @@ export interface Backend {
     type?: string;
     default?: string;
   }[];
+  /** A target can trust a server certificate no authority vouches for. */
+  trustsCertificate?: boolean;
   [key: string]: unknown;
 }
 
@@ -618,9 +631,12 @@ export const api = {
    * (internal/remotes/trycheck.go). `remote` names the target being edited, so
    * the engine can fill in the secrets the form left empty.
    */
-  /** hostKey is the fingerprint of the key an SFTP server was held to. */
+  /**
+   * hostKey is the fingerprint of the key an SFTP server was held to,
+   * certificate the server certificate the test refused.
+   */
   tryRemote: (type: string, settings: Record<string, string>, remote?: string) =>
-    call<{ ok: boolean; reason?: string; failure?: Failure; question?: SetupQuestion; hostKey?: string }>("/api/remotes-check", {
+    call<TryAnswer>("/api/remotes-check", {
       method: "POST",
       body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),
