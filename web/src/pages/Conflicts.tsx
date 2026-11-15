@@ -324,8 +324,8 @@ function ConflictCard({
 
 /** What one side's version is: where the side is, how big and how old the file is, and its name now. */
 function SideHolds({ label, place, version, newer }: { label: string; place?: string; version: SideVersion; newer: boolean }) {
-  const { t, lang } = useT()
-  const modified = new Intl.DateTimeFormat(lang, { dateStyle: 'full', timeStyle: 'short' }).format(new Date(version.mod))
+  const { t, locale } = useT()
+  const modified = new Intl.DateTimeFormat(locale, { dateStyle: 'full', timeStyle: 'short' }).format(new Date(version.mod))
   return (
     <div className="flex min-w-0 flex-col gap-1 rounded-control bg-carbon-surface px-3 py-2">
       <div className="flex flex-wrap items-center gap-2">

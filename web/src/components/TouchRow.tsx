@@ -34,7 +34,7 @@ function touchTone(e: Touch): 'warn' | 'fail' | 'neutral' {
  * `columns` lays the cells out in the order and widths of the list's head.
  */
 export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob?: boolean; columns?: Columns }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const { jobs, drives } = usePlaces()
   // The sides around it and the arrow say where, so the badge only says what.
   const job = jobs.find((j) => j.name === e.Job)
@@ -85,7 +85,7 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
         )}
       </span>
       <span style={columns?.cell('when')} className={`glim-num w-40 min-w-0 shrink-0 truncate whitespace-nowrap text-carbon-textMuted max-sm:hidden${grid}`}>
-        {dayTime(e.When, lang, (p) => t('list.when', p))}
+        {dayTime(e.When, locale, (p) => t('list.when', p))}
       </span>
       {jobColumn && (
         <span

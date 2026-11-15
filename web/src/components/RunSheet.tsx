@@ -22,10 +22,10 @@ const NEWLINE = String.fromCharCode(10)
  * run's window shares one size, the last one dragged to.
  */
 export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const tick = useLiveTick(!!run.Running)
   const [entries, setEntries] = useState<RunEntry[]>([])
-  const when = dayTime(run.Started, lang, (p) => t('list.when', p))
+  const when = dayTime(run.Started, locale, (p) => t('list.when', p))
   const figures: [string, number][] = [
     [t('history.fig.copied'), run.Copied],
     [t('history.fig.moved'), run.Moved],

@@ -92,7 +92,7 @@ export function FortressSection({
   /** Reads the group again, which joining and leaving change as well. */
   onRefresh: () => void
 }) {
-  const { t, lang } = useT()
+  const { t, lang, locale } = useT()
   const push = useToast()
   // GlimStone words the fortress for an Instances tab. On this tile the
   // group's card has an Enter phrase too, so the fortress's says what it
@@ -135,7 +135,7 @@ export function FortressSection({
   const [status, setStatus] = useState<Shown | null>(null)
   const showStatus = (app: FortressApp, instance: FortressInstance) => {
     setStatus({ app, instance })
-    const when = (iso: string) => dayTime(iso, lang, (p) => t('list.when', p))
+    const when = (iso: string) => dayTime(iso, locale, (p) => t('list.when', p))
     const keep = (change: Partial<Shown>) => setStatus((s) => (s?.instance.id === instance.id ? { ...s, ...change } : s))
     api.fortressMemberStatus(instance.id, lang).then(
       (got) => keep({ got: statusLines(got, when) }),

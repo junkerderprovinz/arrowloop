@@ -318,7 +318,7 @@ function JobCard({
   onStep,
   endsDrag,
 }: JobItemProps) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const open = useOpenJob()
   const { drives } = usePlaces()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
@@ -357,7 +357,7 @@ function JobCard({
                   {t('jobs.runs', { cadence: describeCadence(cadence, t) })}
                 </span>
                 {job.nextRun && !job.disabled && (
-                  <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })}</span>
+                  <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, locale, (p) => t('list.when', p)) })}</span>
                 )}
               </span>
             </span>
@@ -427,7 +427,7 @@ function JobRow({
   onStep,
   endsDrag,
 }: JobItemProps) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const open = useOpenJob()
   const narrow = useNarrow()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
@@ -467,7 +467,7 @@ function JobRow({
       </span>
       {last && (
         <span className="glim-num hidden shrink-0 whitespace-nowrap text-subline text-carbon-textSub sm:inline">
-          {t('jobs.lastRun', { when: dayTime(last.Finished, lang, (p) => t('list.when', p)) })}
+          {t('jobs.lastRun', { when: dayTime(last.Finished, locale, (p) => t('list.when', p)) })}
         </span>
       )}
       <span data-testid="job-actions" className="flex shrink-0 items-center gap-1.5" onClick={keepInCard}>

@@ -323,7 +323,7 @@ function Conflict({
 
 /** One side's version of a file both sides changed, as the preview and the conflicts tab show it. */
 export function Version({ side, version, newer }: { side: string; version?: SideVersion; newer: boolean }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   if (!version) {
     return (
       <div className="bg-carbon-surface2 px-3 py-2 text-subline text-carbon-textMuted" style={{ borderRadius: 'var(--radius-control)' }}>
@@ -343,7 +343,7 @@ export function Version({ side, version, newer }: { side: string; version?: Side
       <p className="mt-0.5 text-subline text-carbon-textMuted">
         {t('conflict.size')}: <Num>{bytes(version.size)}</Num>
         {' · '}
-        {t('conflict.changed')}: <Num>{dayTime(version.mod, lang, (p) => t('list.when', p))}</Num>
+        {t('conflict.changed')}: <Num>{dayTime(version.mod, locale, (p) => t('list.when', p))}</Num>
       </p>
     </div>
   )

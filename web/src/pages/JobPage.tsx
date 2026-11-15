@@ -266,10 +266,10 @@ export function JobHead({
   mark?: ReactNode
   onBack?: () => void
 }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const goTo = useGoTo()
   const { drives } = usePlaces()
-  const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
+  const when = (at: string) => dayTime(at, locale, (p) => t('list.when', p))
 
   return (
     <div data-new="job-page" className="flex flex-wrap items-center gap-x-4 gap-y-3">
