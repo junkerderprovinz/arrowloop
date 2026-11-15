@@ -14,6 +14,7 @@
 :root,
 [data-theme="dark"] {
   --brand-github-0: #868181; /* lifted from #181717 */
+  --brand-discord-0: #6a76f3; /* lifted from #5865F2 */
   --brand-nextcloud-0: #0089d3; /* lifted from #0082C9 */
   --brand-owncloud-0: #2d80f2; /* lifted from #041E42 */
   --brand-dropbox-0: #2d7dff; /* lifted from #0061FF */
@@ -63,6 +64,7 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --brand-github-0: #181717;
+    --brand-discord-0: #5865F2;
     --brand-nextcloud-0: #0082C9;
     --brand-owncloud-0: #041E42;
     --brand-dropbox-0: #0061FF;
@@ -112,6 +114,7 @@
 
 [data-theme="light"] {
   --brand-github-0: #181717;
+  --brand-discord-0: #5865F2;
   --brand-nextcloud-0: #0082C9;
   --brand-owncloud-0: #041E42;
   --brand-dropbox-0: #0061FF;

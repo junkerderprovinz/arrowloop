@@ -39,6 +39,7 @@ OUT = Path(__file__).parent.parent / "web" / "src" / "components" / "brandGlyphs
 # generic glyph instead.
 MARKS = [
     ("IconGithub", "github", "This project's own repository"),
+    ("IconDiscord", "discord", "This project's own Discord server"),
 
     # OpenCloud never wears ownCloud's mark; its own drawing is under LOCAL.
     ("IconNextcloud", "nextcloud", "Nextcloud"),

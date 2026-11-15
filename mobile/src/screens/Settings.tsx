@@ -30,7 +30,7 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import { COFFEE, GLIMSTONE_RELEASE_URL, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { COFFEE, DISCORD, GLIMSTONE_RELEASE_URL, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
@@ -50,7 +50,7 @@ import { wayLabel, wayOf } from "../way";
 import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
 import { useSystemAccent } from "../systemAccent";
-import { AppMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
+import { AppMark, BrandMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
 import { APPLE_SVG, DOCKER_SVG, FLATPAK_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
 import {
@@ -1103,6 +1103,20 @@ export function Settings() {
             tile={TILE.github}
             mark={(lit, ink) => <DonateMark name="github" scheme={scheme} ink={lit ? ink : undefined} />}
             onPress={() => Linking.openURL(REPO)}
+          />
+          <ReadmeButton
+            label={t("about.discord")}
+            tile={TILE.discord}
+            mark={(lit, ink) => (
+              <BrandMark
+                name="IconDiscord"
+                width={32}
+                height={25}
+                scheme={scheme}
+                lit={lit ? { ink, cut: TILE.discord.color } : undefined}
+              />
+            )}
+            onPress={() => Linking.openURL(DISCORD)}
           />
           {/* Mail reaches the authors rather than a vendor, so it takes the
               accent at rest and lit, and its envelope opens under the

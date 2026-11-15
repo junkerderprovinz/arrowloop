@@ -1,6 +1,6 @@
 // The logic behind the Info tile ("The Info tile and the About card" in
 // design-language.md): which version is a release with a page to open, what the
-// update check shows on itself, and whether the Help card offers mail.
+// update check shows on itself, and whether the Help card offers mail or Discord.
 
 import type { ButtonTone } from "./button.ts";
 import { groupStage, type WidthStage } from "./controls.ts";
@@ -77,6 +77,11 @@ export function versionLink(row: VersionRow): { shown: string; released: boolean
 /** The Help card offers mail only where its sentence names that route and there is an address. */
 export function offersMail(report: string, mailAddress?: string): boolean {
   return /e-?mail/i.test(report) && Boolean(mailAddress);
+}
+
+/** The Help card offers Discord on the same terms: its sentence names Discord and there is an invite. */
+export function offersDiscord(report: string, discordUrl?: string): boolean {
+  return /discord/i.test(report) && Boolean(discordUrl);
 }
 
 /** Subject only: a prefilled body reads as a form to fill in. */

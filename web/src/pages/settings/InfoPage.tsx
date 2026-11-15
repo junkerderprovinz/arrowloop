@@ -1,14 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react'
 
 import { About } from '../../components/About'
-import { IconGithub } from '../../components/brandGlyphs'
+import { IconDiscord, IconGithub } from '../../components/brandGlyphs'
 import { IconDiagnostics } from '../../components/glyphs'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api, ApiError, type WindowSettings } from '../../lib/api'
 import { MAIL_SVG, MANUAL_SVG } from '../../lib/appMarks'
 import { download } from '../../lib/download'
-import { GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
+import { DISCORD, GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
 import { openExternal } from '../../lib/external'
 import { InfoVersionCard } from '../../lib/glimstone/AboutCard'
 import { Card } from '../../lib/glimstone/Card'
@@ -139,6 +139,12 @@ export function InfoPage({
             parts={[{ name: t('about.repo'), onClick: () => openExternal(REPO) }]}
             mark={<IconGithub />}
             markClass="glim-github-mark"
+          />
+          <ReadmeButton
+            brand="discord"
+            parts={[{ name: t('about.discord'), onClick: () => openExternal(DISCORD) }]}
+            mark={<IconDiscord />}
+            markClass="glim-discord-mark"
           />
           {/* Subject only: a prefilled body reads as a form to fill in. */}
           <ReadmeButton

@@ -209,7 +209,8 @@
      on the light #d1d1d1, and PayPal's navy fails on the dark #525252. Warm
      brands are deepened for the light theme and dark ones lightened for the
      dark theme. Contrast: 5.7, 3.3, 3.1 and 7.7 to one on the dark ground, 3.2,
-     3.2, 8.7 and 11.9 on the light one.
+     3.2, 8.7 and 11.9 on the light one. Discord's blurple, lightened for the
+     dark theme, reads 3.1 on the dark ground and 3.0 on the light one.
 
      The mail button has no brand colour: it reaches the app's own authors and
      follows the user's accent. The manual's book takes the yellow of the
@@ -218,6 +219,7 @@
   --brand-docs: light-dark(#8a6d00, #ffdd00);
   --brand-bitcoin: light-dark(#a85d00, #f7931a);
   --brand-paypal: light-dark(#003087, #4fb5f0);
+  --brand-discord: light-dark(#5865f2, #949cf7);
 
   /* The App tab's marks that are one flat colour or one gradient, at rest. The
      dark theme lifts a colour a dark tile would swallow; the light theme keeps
@@ -2261,6 +2263,7 @@
   .glim-paypal-mark { color: var(--brand-paypal); }
   .glim-bitcoin-mark { color: var(--brand-bitcoin); }
   .glim-github-mark { color: var(--brand-github); }
+  .glim-discord-mark { color: var(--brand-discord); }
   .glim-house-mark { color: var(--accent-glyph); }
   /* The manual's book, in the yellow of the README's docs button. */
   .glim-docs-mark { color: var(--brand-docs); }
@@ -2325,6 +2328,7 @@
   .glim-tile-umbrel  { --tile: #5351f3; --tile-ink: #ffffff; } /* 5.5:1 */
   .glim-tile-zip     { --tile: #4d5562; --tile-ink: #ffffff; } /* 7.5:1 */
   .glim-tile-github  { --tile: #181717; --tile-ink: #ffffff; } /* 17.9:1 */
+  .glim-tile-discord { --tile: #5865f2; --tile-ink: #ffffff; } /* 4.6:1 */
   .glim-tile-paypal  { --tile: #003087; --tile-ink: #ffffff; } /* 13.4:1 */
   .glim-tile-bitcoin { --tile: #f7931a; --tile-ink: #161616; } /* 7.9:1 */
   /* Buy Me a Coffee's own near-black, the ink of their button. 13.8:1. */

@@ -14,10 +14,11 @@ The full notes for each release are in
 
 - **A job can take only some of the files.** Write patterns under "Only these files", such as `*.tar.gz`, and the job syncs just the files that match. Every other file stays where it is on both sides, and your exclusions still apply. An import from FolderSync brings its include filters along. Thanks to @danpeig ([#159](https://github.com/junkerderprovinz/arrowloop/issues/159)).
 - **One switch pauses every automatic run.** Pick "Pause automatic runs" under More on the Jobs page, on the phone as well, or switch it on at the top of Settings › Sync. No job then starts on its own, whether by schedule, a watched folder, a retry or a request from another app, until you resume. A run already going finishes, and you can still start any job by hand. Thanks to @danpeig ([#161](https://github.com/junkerderprovinz/arrowloop/issues/161)).
+- **ArrowLoop has its own Discord server.** A Discord button stands right after GitHub on the Help card of the Info tile and on the phone, for questions and ideas. Email stays where it was.
 
 ## 🎨 Design
 
-- **ArrowLoop follows GlimStone 4.5.1.** Placeholder text is easier to read in every field, the focus ring stands out on every background, and a dropdown jumps to the option whose first letter you type. The GlimStone version on the Info tile opens the newest release. On the phone the info colour of the light theme is a shade darker, as it is on the web.
+- **ArrowLoop follows GlimStone 4.5.2.** Placeholder text is easier to read in every field, the focus ring stands out on every background, and a dropdown jumps to the option whose first letter you type. The GlimStone version on the Info tile opens the newest release. On the phone the info colour of the light theme is a shade darker, as it is on the web.
 
 ## 🐛 Fixed
 

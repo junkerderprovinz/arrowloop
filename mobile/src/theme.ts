@@ -134,6 +134,7 @@ export const TILE = {
   paypal: { color: "#003087", ink: "#ffffff" },
   bitcoin: { color: "#f7931a", ink: "#161616" },
   github: { color: "#181717", ink: "#ffffff" },
+  discord: { color: "#5865f2", ink: "#ffffff" },
   windows: { color: "#0078d4", ink: "#ffffff" },
   apple: { color: "#6e6e73", ink: "#ffffff" },
   linux: { color: "#fcc624", ink: "#161616" },
