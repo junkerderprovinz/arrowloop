@@ -180,9 +180,9 @@ export function FolderPicker({
                 </button>
               </li>
             )}
-            {/* A target can take a while to answer, and an empty list meanwhile
-                would read as a folder with nothing in it. */}
-            {busy && entries.length === 0 ? (
+            {/* A target can take a while to answer, and the folder just left
+                or an empty list would meanwhile pass for the answer. */}
+            {busy ? (
               <li className="px-2 py-3 text-subline text-carbon-textMuted">{t('pick.loading')}</li>
             ) : entries.length === 0 ? (
               <li className="px-2 py-3 text-subline text-carbon-textMuted">{t('pick.empty')}</li>

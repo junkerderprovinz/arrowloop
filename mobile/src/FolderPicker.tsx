@@ -128,16 +128,24 @@ export function FolderPicker({
           <Caption>{at || t("pick.roots")}</Caption>
 
           <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-            {at && at !== within ? row(t("pick.up"), () => void climb(), "IconBack") : null}
-            {/* Targets at the top level only, where they cannot pass for a subfolder. */}
-            {!at
-              ? targets.map((name) =>
-                  row(name, () => void go(`${name}:`), "IconTabStorage"),
-                )
-              : null}
-            {entries.map((entry) => row(entry.name, () => void go(entry.path), "IconFolder"))}
-            {!busy && !entries.length && !error ? <Caption>{t("pick.empty")}</Caption> : null}
-            {error ? <Caption>{error}</Caption> : null}
+            {/* A target can take a while to answer, and the folder just left
+                or an empty list would meanwhile pass for the answer. */}
+            {busy ? (
+              <Caption>{t("pick.loading")}</Caption>
+            ) : (
+              <>
+                {at && at !== within ? row(t("pick.up"), () => void climb(), "IconBack") : null}
+                {/* Targets at the top level only, where they cannot pass for a subfolder. */}
+                {!at
+                  ? targets.map((name) =>
+                      row(name, () => void go(`${name}:`), "IconTabStorage"),
+                    )
+                  : null}
+                {entries.map((entry) => row(entry.name, () => void go(entry.path), "IconFolder"))}
+                {!entries.length && !error ? <Caption>{t("pick.empty")}</Caption> : null}
+                {error ? <Caption>{error}</Caption> : null}
+              </>
+            )}
           </ScrollView>
 
           {/* The top level lists storage volumes and targets, where no folder
