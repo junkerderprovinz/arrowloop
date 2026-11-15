@@ -38,9 +38,16 @@ const ftp: Backend = {
 
 const onedrive: Backend = { name: 'onedrive', description: '', options: [option('token', { secret: true })] }
 
+const kdrive: Backend = {
+  name: 'kdrive',
+  description: '',
+  options: [option('token', { secret: true }), option('drive_id'), option('root_folder_id')],
+}
+
 const providers: Provider[] = [
   { id: 'ftp', name: 'FTP', backend: 'ftp', group: 'protocol', mark: 'IconTransfer' },
   { id: 'onedrive', name: 'OneDrive', backend: 'onedrive', group: 'cloud', mark: 'IconOnedrive' },
+  { id: 'kdrive', name: 'Infomaniak kDrive', backend: 'kdrive', group: 'cloud', mark: 'IconTabStorage' },
 ]
 
 const saveRemote = vi.fn((name: string, _type: string, _settings: Record<string, string>): Promise<unknown> =>
@@ -53,7 +60,7 @@ const tryRemote = vi.fn((_type: string, settings: Record<string, string>) =>
 
 vi.mock('../lib/api', () => ({
   api: {
-    remotes: () => Promise.resolve({ remotes: [], backends: [ftp, onedrive], providers, unlisted: [] }),
+    remotes: () => Promise.resolve({ remotes: [], backends: [ftp, onedrive, kdrive], providers, unlisted: [] }),
     tryRemote: (type: string, settings: Record<string, string>) => tryRemote(type, settings),
     volumes: () => Promise.resolve({ volumes: [] }),
     checkRemote: () => Promise.resolve({ ok: true }),
@@ -131,5 +138,32 @@ describe('a sign-in that opens more than one drive', () => {
     const dialog = await add('OneDrive')
     fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
     expect(await within(dialog).findByRole('button', { name: 'Drive' })).toBeTruthy()
+  })
+})
+
+describe('the kDrive root folder', () => {
+  const pick = (dialog: HTMLElement, name: string) => {
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Root folder' }))
+    fireEvent.click(screen.getByRole('option', { name }))
+  }
+
+  it("leaves rclone's default, the private folder, when nothing is picked", async () => {
+    const dialog = await add('Infomaniak kDrive')
+    expect(within(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Private folder')
+    expect((await saved(dialog)).root_folder_id).toBeUndefined()
+  })
+
+  it('saves the shared folder as common', async () => {
+    const dialog = await add('Infomaniak kDrive')
+    pick(dialog, 'Shared folder')
+    expect((await saved(dialog)).root_folder_id).toBe('common')
+  })
+
+  it('takes any other folder by the ID typed in', async () => {
+    const dialog = await add('Infomaniak kDrive')
+    expect(within(dialog).queryByRole('textbox', { name: 'Folder ID' })).toBeNull()
+    pick(dialog, 'Another folder, by ID')
+    fireEvent.change(within(dialog).getByRole('textbox', { name: 'Folder ID' }), { target: { value: '98765' } })
+    expect((await saved(dialog)).root_folder_id).toBe('98765')
   })
 })

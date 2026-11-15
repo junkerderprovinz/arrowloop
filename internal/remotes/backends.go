@@ -17,9 +17,10 @@ type Option struct {
 	Required bool   `json:"required"`
 	Secret   bool   `json:"secret"`
 	Advanced bool   `json:"advanced"`
-	// Essential means the target will not work in practice without this.
-	// rclone's Required describes its interactive setup, where everything else
-	// is prompted for with a default: s3 marks none of its options required and
+	// Essential means the target will not work in practice without this, or
+	// that it decides which part of the account the target sees. rclone's
+	// Required describes its interactive setup, where everything else is
+	// prompted for with a default: s3 marks none of its options required and
 	// smb marks only host. Essential comes from a hand-kept list and only adds
 	// to what the form shows.
 	Essential bool `json:"essential"`
@@ -125,7 +126,9 @@ var essential = map[string]map[string]bool{
 	"jottacloud": {"token": true},
 	"yandex":     {"token": true},
 	// Every call is addressed to one drive, and rclone refuses to start without it.
-	"kdrive": {"token": true, "drive_id": true},
+	// The root folder decides whether the target sees the private folder or the
+	// one shared with the whole drive, and the phone shows only this list.
+	"kdrive": {"token": true, "drive_id": true, "root_folder_id": true},
 
 	"filescom":        {"site": true, "username": true, "password": true},
 	"internetarchive": {"access_key_id": true, "secret_access_key": true},

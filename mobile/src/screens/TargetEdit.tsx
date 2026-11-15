@@ -9,6 +9,7 @@ import { failureLine, type Failure } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { optionLabel } from "../../../web/src/lib/optionNames";
 import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
+import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from "../../../web/src/lib/kdriveRoot";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Choice, Empty, Page, PickRow, Row, Section, Title, Toggle } from "../ui";
@@ -195,6 +196,15 @@ export function TargetEdit() {
               </View>
             );
           }
+          if (backendName === "kdrive" && option.name === "root_folder_id") {
+            return (
+              <KdriveRootField
+                key={option.name}
+                value={values.root_folder_id ?? ""}
+                onChange={(next) => setValues((old) => ({ ...old, root_folder_id: next }))}
+              />
+            );
+          }
           if (option.type === "bool") {
             // Off is left unsaved where it is rclone's default.
             return (
@@ -275,6 +285,36 @@ export function TargetEdit() {
         <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
       </View>
     </Page>
+  );
+}
+
+/**
+ * kDrive's root folder: the private folder, the shared one, or another by its
+ * ID. Which of the three is picked is kept here, since an ID still being typed
+ * is empty and would read as the private folder.
+ */
+function KdriveRootField({ value, onChange }: { value: string; onChange: (next: string) => void }) {
+  const { t } = useT();
+  const [byId, setById] = useState(() => kdriveRoot(value) === "id");
+  const mode = byId ? "id" : kdriveRoot(value);
+  return (
+    <View style={styles.choice}>
+      <Row
+        label={t("targets.kdriveRoot")}
+        hint={[t("targets.kdriveRootHint"), t("help.rcloneName", { name: "root_folder_id" })].join(" ")}
+      />
+      <Choice
+        value={mode}
+        onChange={(next) => {
+          setById(next === "id");
+          onChange(kdriveRootValue(next));
+        }}
+        options={KDRIVE_ROOTS.map((root) => ({ value: root, label: t(`targets.kdriveRoot.${root}`) }))}
+      />
+      {byId ? (
+        <Field label={t("targets.kdriveFolderId")} hint={t("targets.kdriveFolderIdHint")} value={value} onChange={onChange} />
+      ) : null}
+    </View>
   );
 }
 
