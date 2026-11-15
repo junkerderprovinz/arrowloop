@@ -30,7 +30,7 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import { COFFEE, glimstoneRelease, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { COFFEE, GLIMSTONE_RELEASE_URL, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
@@ -1135,7 +1135,7 @@ export function Settings() {
             </Text>
             {"  ·  "}
             <Text
-              onPress={() => Linking.openURL(glimstoneRelease(GLIMSTONE_VERSION))}
+              onPress={() => Linking.openURL(GLIMSTONE_RELEASE_URL)}
               style={[styles.link, { color: accentInk }]}
             >
               {`GlimStone ${GLIMSTONE_VERSION}`}

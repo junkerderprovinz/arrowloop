@@ -103,7 +103,7 @@ export function InfoPage({
                 version: versions?.arrowloop ?? version,
                 repoUrl: REPO,
               },
-              { name: 'GlimStone', hint: t('info.glimstoneHint'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO },
+              { name: 'GlimStone', hint: t('info.glimstoneHint'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO, latest: true },
               ...(versions ? [{ name: 'rclone', hint: t('info.rcloneHint'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
             ]}
             updateCheck={{

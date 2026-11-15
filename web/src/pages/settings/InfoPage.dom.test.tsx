@@ -91,8 +91,9 @@ describe('the Info tile', () => {
       'https://github.com/junkerderprovinz/arrowloop/releases/tag/v1.8.0',
     )
     expect(screen.getByText('GlimStone')).toBeTruthy()
+    // GlimStone's patch tags fold into the next minor, so its number opens the newest release.
     expect(screen.getByRole('link', { name: GLIMSTONE_VERSION }).getAttribute('href')).toBe(
-      `https://github.com/junkerderprovinz/glimstone/releases/tag/v${GLIMSTONE_VERSION}`,
+      'https://github.com/junkerderprovinz/glimstone/releases/latest',
     )
   })
 

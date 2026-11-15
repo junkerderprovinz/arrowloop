@@ -39,9 +39,8 @@ export const MANUAL = "https://junkerderprovinz.github.io/arrowloop/";
 /** Shared by every tool; the subject line names the product. */
 export const MAIL = "hello@halleluja.design";
 
-/** Where a version number links to, built from the version rather than listed per release. */
-export const glimstoneRelease = (version: string): string =>
-  `${GLIMSTONE_REPO}/releases/tag/v${version}`;
+/** Where the GlimStone version links: its patch tags fold into the next minor and vanish, the newest release stays. */
+export const GLIMSTONE_RELEASE_URL = `${GLIMSTONE_REPO}/releases/latest`;
 
 /** One address, and the chain it lives on. */
 export interface CryptoNetwork {

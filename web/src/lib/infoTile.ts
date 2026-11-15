@@ -24,6 +24,9 @@ export interface VersionRow {
   /** Stands in front of the tag where one repository ships several artefacts,
    *  such as `mobile/`. */
   tagPrefix?: string;
+  /** Opens the newest release instead of the version's own, for a dependency
+   *  whose patch tags fold away, such as GlimStone. */
+  latest?: boolean;
 }
 
 export interface UpdateCheck {
@@ -67,6 +70,7 @@ export function versionLink(row: VersionRow): { shown: string; released: boolean
   const released = /^v\d+\.\d+\.\d+$/.test(tag);
   const shown = shownVersion(row.version);
   if (!released || !row.repoUrl) return { shown, released };
+  if (row.latest) return { shown, released, href: `${row.repoUrl}/releases/latest` };
   return { shown, released, href: `${row.repoUrl}/releases/tag/${encodeURIComponent(`${row.tagPrefix ?? ""}${tag}`)}` };
 }
 
