@@ -518,7 +518,7 @@ const he: Translations = {
   'confirm.delete': 'מחק',
   'confirm.cancel': 'ביטול',
   'about.title': 'על ArrowLoop',
-  'about.report': 'בעיות, בקשות או הצעות? פתחו נושא ב-GitHub או כתבו ב-Discord.',
+  'about.report': 'בעיות, משאלות או הצעות? אתם מוזמנים לפתוח issue ב-GitHub, או לקפוץ להגיד שלום ב-Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'קנו לי קפה',
   'about.crypto': 'קריפטו',

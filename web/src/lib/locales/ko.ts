@@ -518,7 +518,7 @@ const ko: Translations = {
   'confirm.delete': '삭제',
   'confirm.cancel': '취소',
   'about.title': 'ArrowLoop 정보',
-  'about.report': '문제, 바라는 점, 개선 아이디어가 있나요? GitHub에 이슈를 남기거나 Discord에 들러 주세요.',
+  'about.report': '문제나 바람, 제안이 있나요? 편하게 GitHub에 이슈를 열거나 Discord에 들러 인사해 주세요.',
   'about.discord': 'Discord',
   'about.coffeeButton': '커피 사주기',
   'about.crypto': '암호화폐',

@@ -518,7 +518,7 @@ const lt: Translations = {
   'confirm.delete': 'Ištrinti',
   'confirm.cancel': 'Atšaukti',
   'about.title': 'Apie ArrowLoop',
-  'about.report': 'Problemos, pageidavimai ar pasiūlymai? Sukurk problemą GitHub arba užsuk į Discord.',
+  'about.report': "Problemos, norai ar pasiūlymai? Drąsiai atidaryk issue GitHub'e arba užsuk pasisveikinti į Discord.",
   'about.discord': 'Discord',
   'about.coffeeButton': 'Pavaišinti kava',
   'about.crypto': 'Kripto',

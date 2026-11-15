@@ -518,7 +518,7 @@ const hu: Translations = {
   'confirm.delete': 'Törlés',
   'confirm.cancel': 'Mégse',
   'about.title': 'A ArrowLoopről',
-  'about.report': 'Probléma, kívánság vagy javaslat? Nyiss egy hibajegyet a GitHubon, vagy szólj a Discordon.',
+  'about.report': 'Problémád, kívánságod vagy ötleted van? Nyiss nyugodtan egy issue-t a GitHubon, vagy ugorj be köszönni a Discordon.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Hívj meg egy kávéra',
   'about.crypto': 'Kripto',

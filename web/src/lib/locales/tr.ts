@@ -518,7 +518,7 @@ const tr: Translations = {
   'confirm.delete': 'Sil',
   'confirm.cancel': 'İptal',
   'about.title': 'ArrowLoop hakkında',
-  'about.report': "Sorun, istek ya da öneri mi var? GitHub üzerinde konu aç ya da Discord'a uğra.",
+  'about.report': "Sorun, dilek ya da öneri mi var? GitHub'da bir issue açabilir ya da Discord'a uğrayıp merhaba diyebilirsin.",
   'about.discord': 'Discord',
   'about.coffeeButton': 'Bana bir kahve ısmarla',
   'about.crypto': 'Kripto',

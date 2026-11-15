@@ -518,7 +518,7 @@ const zh: Translations = {
   'confirm.delete': '删除',
   'confirm.cancel': '取消',
   'about.title': '关于 ArrowLoop',
-  'about.report': '有问题、需求或改进建议？在 GitHub 上开一个 issue，或者来 Discord 聊聊。',
+  'about.report': '遇到问题、有愿望或建议？欢迎在 GitHub 上提 issue，或者来 Discord 打个招呼。',
   'about.discord': 'Discord',
   'about.coffeeButton': '请我喝杯咖啡',
   'about.crypto': '加密货币',

@@ -518,7 +518,7 @@ const eu: Translations = {
   'confirm.delete': 'Ezabatu',
   'confirm.cancel': 'Utzi',
   'about.title': 'ArrowLoop-i buruz',
-  'about.report': 'Arazoak, nahiak edo iradokizunak? Ireki gai bat GitHuben, edo idatzi Discorden.',
+  'about.report': 'Arazoak, nahiak edo iradokizunak? Ireki issue bat GitHuben nahi duzunean, edo pasa zaitez Discordera kaixo esatera.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Erosi kafe bat',
   'about.crypto': 'Kripto',

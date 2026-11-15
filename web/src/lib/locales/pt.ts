@@ -518,7 +518,7 @@ const pt: Translations = {
   'confirm.delete': 'Apagar',
   'confirm.cancel': 'Cancelar',
   'about.title': 'Sobre o ArrowLoop',
-  'about.report': 'Problemas, desejos ou sugestões? Abre uma questão no GitHub, ou passa pelo Discord.',
+  'about.report': 'Problemas, desejos ou sugestões? Abre à vontade uma issue no GitHub, ou passa pelo Discord para dizer olá.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Paga-me um café',
   'about.crypto': 'Cripto',

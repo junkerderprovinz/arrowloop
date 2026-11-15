@@ -518,7 +518,7 @@ const ro: Translations = {
   'confirm.delete': 'Șterge',
   'confirm.cancel': 'Anulează',
   'about.title': 'Despre ArrowLoop',
-  'about.report': 'Probleme, dorințe sau sugestii? Deschide o problemă pe GitHub sau scrie pe Discord.',
+  'about.report': 'Probleme, dorințe sau sugestii? Deschide liniștit un issue pe GitHub sau treci să saluți pe Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Fă-mi cinste cu o cafea',
   'about.crypto': 'Cripto',

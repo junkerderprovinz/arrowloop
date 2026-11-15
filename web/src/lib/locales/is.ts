@@ -518,7 +518,7 @@ const is: Translations = {
   'confirm.delete': 'Eyða',
   'confirm.cancel': 'Hætta við',
   'about.title': 'Um ArrowLoop',
-  'about.report': 'Vandamál, óskir eða ábendingar? Opnaðu mál á GitHub, eða skrifaðu á Discord.',
+  'about.report': 'Vandamál, óskir eða tillögur? Þér er velkomið að opna mál á GitHub eða kíkja við og heilsa á Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Bjóddu mér kaffi',
   'about.crypto': 'Rafmynt',

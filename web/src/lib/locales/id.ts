@@ -518,7 +518,7 @@ const id: Translations = {
   'confirm.delete': 'Hapus',
   'confirm.cancel': 'Batal',
   'about.title': 'Tentang ArrowLoop',
-  'about.report': 'Masalah, keinginan, atau saran? Buka isu di GitHub, atau mampir ke Discord.',
+  'about.report': 'Ada masalah, keinginan, atau saran? Silakan buka issue di GitHub, atau mampir menyapa di Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Traktir saya kopi',
   'about.crypto': 'Kripto',

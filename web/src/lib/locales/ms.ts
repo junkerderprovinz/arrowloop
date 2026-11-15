@@ -518,7 +518,7 @@ const ms: Translations = {
   'confirm.delete': 'Padam',
   'confirm.cancel': 'Batal',
   'about.title': 'Perihal ArrowLoop',
-  'about.report': 'Masalah, kehendak atau cadangan? Buka isu di GitHub, atau singgah di Discord.',
+  'about.report': 'Ada masalah, hajat atau cadangan? Silakan buka issue di GitHub, atau singgah bertegur sapa di Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Belanja saya kopi',
   'about.crypto': 'Kripto',

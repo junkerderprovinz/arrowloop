@@ -518,7 +518,7 @@ const vi: Translations = {
   'confirm.delete': 'Xóa',
   'confirm.cancel': 'Hủy',
   'about.title': 'Giới thiệu về ArrowLoop',
-  'about.report': 'Vấn đề, mong muốn hay góp ý? Mở một issue trên GitHub, hoặc ghé Discord.',
+  'about.report': 'Gặp sự cố, có mong muốn hay góp ý? Cứ thoải mái mở một issue trên GitHub hoặc ghé Discord chào một tiếng nhé.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Mời tôi ly cà phê',
   'about.crypto': 'Tiền mã hoá',

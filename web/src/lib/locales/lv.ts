@@ -518,7 +518,7 @@ const lv: Translations = {
   'confirm.delete': 'Dzēst',
   'confirm.cancel': 'Atcelt',
   'about.title': 'Par ArrowLoop',
-  'about.report': 'Problēmas, vēlmes vai ieteikumi? Atver problēmu GitHub vai raksti Discord.',
+  'about.report': 'Problēmas, vēlmes vai ieteikumi? Droši atver issue GitHub vai iegriezies sasveicināties Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Uzsauc kafiju',
   'about.crypto': 'Kripto',

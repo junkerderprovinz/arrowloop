@@ -518,7 +518,7 @@ const ja: Translations = {
   'confirm.delete': '削除する',
   'confirm.cancel': 'キャンセル',
   'about.title': 'ArrowLoop について',
-  'about.report': '問題、要望、改善案はありますか。GitHub で issue を立てるか、Discord で声をかけてください。',
+  'about.report': '不具合、要望、提案はありますか？GitHub で issue を開くか、Discord に気軽に遊びに来てください。',
   'about.discord': 'Discord',
   'about.coffeeButton': 'コーヒーをおごる',
   'about.crypto': '暗号資産',

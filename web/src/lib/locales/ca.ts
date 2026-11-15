@@ -518,7 +518,7 @@ const ca: Translations = {
   'confirm.delete': 'Esborra',
   'confirm.cancel': 'Cancel·la',
   'about.title': 'Quant a ArrowLoop',
-  'about.report': 'Problemes, desitjos o suggeriments? Obre una incidència a GitHub o passa per Discord.',
+  'about.report': 'Problemes, desitjos o suggeriments? Obre una incidència a GitHub quan vulguis, o passa a saludar per Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Convida’m a un cafè',
   'about.crypto': 'Cripto',

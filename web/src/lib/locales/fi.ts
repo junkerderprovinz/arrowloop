@@ -518,7 +518,7 @@ const fi: Translations = {
   'confirm.delete': 'Poista',
   'confirm.cancel': 'Peruuta',
   'about.title': 'Tietoja ArrowLoopista',
-  'about.report': 'Ongelmia, toiveita tai ehdotuksia? Avaa issue GitHubissa tai kirjoita Discordissa.',
+  'about.report': 'Ongelmia, toiveita tai ehdotuksia? Avaa ihmeessä issue GitHubissa tai tule moikkaamaan Discordiin.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Tarjoa kahvi',
   'about.crypto': 'Krypto',

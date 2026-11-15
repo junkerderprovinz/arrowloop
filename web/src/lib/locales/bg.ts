@@ -518,7 +518,7 @@ const bg: Translations = {
   'confirm.delete': 'Изтрий',
   'confirm.cancel': 'Отказ',
   'about.title': 'За ArrowLoop',
-  'about.report': 'Проблеми, желания или предложения? Отвори задача в GitHub или пиши в Discord.',
+  'about.report': 'Проблеми, желания или идеи? Спокойно отвори issue в GitHub или намини да кажеш здрасти в Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Почерпи ме с кафе',
   'about.crypto': 'Крипто',

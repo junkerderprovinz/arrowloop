@@ -518,7 +518,7 @@ const hr: Translations = {
   'confirm.delete': 'Izbriši',
   'confirm.cancel': 'Odustani',
   'about.title': 'O ArrowLoopu',
-  'about.report': 'Problemi, želje ili prijedlozi? Otvori problem na GitHubu ili se javi na Discordu.',
+  'about.report': 'Problemi, želje ili prijedlozi? Slobodno otvori issue na GitHubu ili svrati pozdraviti na Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Počasti me kavom',
   'about.crypto': 'Kripto',

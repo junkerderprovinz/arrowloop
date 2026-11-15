@@ -518,7 +518,7 @@ const nl: Translations = {
   'confirm.delete': 'Verwijderen',
   'confirm.cancel': 'Annuleren',
   'about.title': 'Over ArrowLoop',
-  'about.report': 'Problemen, wensen of suggesties? Open een issue op GitHub, of kom langs op Discord.',
+  'about.report': 'Problemen, wensen of ideeën? Open gerust een issue op GitHub, of kom even hallo zeggen op Discord.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Trakteer op koffie',
   'about.crypto': 'Crypto',

@@ -518,7 +518,7 @@ const th: Translations = {
   'confirm.delete': 'ลบ',
   'confirm.cancel': 'ยกเลิก',
   'about.title': 'เกี่ยวกับ ArrowLoop',
-  'about.report': 'มีปัญหา ความต้องการ หรือข้อเสนอแนะไหม เปิด issue บน GitHub หรือแวะมาที่ Discord',
+  'about.report': 'มีปัญหา ความต้องการ หรือข้อเสนอแนะไหม เปิด issue บน GitHub หรือแวะมาทักทายกันบน Discord ได้เลย',
   'about.discord': 'Discord',
   'about.coffeeButton': 'เลี้ยงกาแฟ',
   'about.crypto': 'คริปโท',

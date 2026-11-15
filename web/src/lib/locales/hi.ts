@@ -518,7 +518,7 @@ const hi: Translations = {
   'confirm.delete': 'मिटाएँ',
   'confirm.cancel': 'रद्द करें',
   'about.title': 'ArrowLoop के बारे में',
-  'about.report': 'समस्याएँ, इच्छाएँ या सुझाव? GitHub पर issue खोलें या Discord पर लिखें।',
+  'about.report': 'कोई समस्या, इच्छा या सुझाव? GitHub पर बेझिझक issue खोलें, या Discord पर आकर हैलो कहें।',
   'about.discord': 'Discord',
   'about.coffeeButton': 'मुझे कॉफ़ी पिलाएँ',
   'about.crypto': 'क्रिप्टो',

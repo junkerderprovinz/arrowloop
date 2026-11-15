@@ -518,7 +518,7 @@ const et: Translations = {
   'confirm.delete': 'Kustuta',
   'confirm.cancel': 'Loobu',
   'about.title': 'Teave ArrowLoopi kohta',
-  'about.report': 'Probleeme, soove või ettepanekuid? Ava GitHubis teema või kirjuta Discordis.',
+  'about.report': 'Probleemid, soovid või ettepanekud? Ava julgelt GitHubis issue või astu läbi ja ütle Discordis tere.',
   'about.discord': 'Discord',
   'about.coffeeButton': 'Osta mulle kohv',
   'about.crypto': 'Krüpto',
