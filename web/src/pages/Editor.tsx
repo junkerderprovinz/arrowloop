@@ -409,6 +409,12 @@ export function JobForm({
         )}
       </SubCard>
 
+      <SubCard title={t('edit.include')}>
+        <Field label={t('edit.includePatterns')} hint={t('edit.includeHint')}>
+          <Lines value={job.include ?? []} onChange={(v) => patch({ include: v })} placeholder={'*.tar.gz\nsrc/**'} />
+        </Field>
+      </SubCard>
+
       <SubCard title={t('edit.exclude')}>
         <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')}>
           <ExcludeSetPicker chosen={job.excludeSets ?? []} onChange={(v) => patch({ excludeSets: v })} />

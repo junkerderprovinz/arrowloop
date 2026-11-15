@@ -174,7 +174,20 @@
           "deleteFilesAfterSync": true,
           "syncHiddenFiles": true,
           "active": false,
-          "syncRules": [],
+          "syncRules": [
+            {
+              "syncRule": "FileType",
+              "stringValue": "pdf",
+              "longValue": 0,
+              "includeRule": true
+            },
+            {
+              "syncRule": "FileSizeLargerThan",
+              "stringValue": "",
+              "longValue": 1048576,
+              "includeRule": true
+            }
+          ],
           "webhooks": []
         }
       ]

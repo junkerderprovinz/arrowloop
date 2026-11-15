@@ -486,6 +486,16 @@ export function JobEdit() {
         ) : null}
       </Section>
 
+      <Section title={t("edit.include")} hue={3}>
+        <LinesField
+          label={t("edit.includePatterns")}
+          hint={t("edit.includeHint")}
+          value={job.include ?? []}
+          onChange={(list) => set({ include: list })}
+          placeholder={"*.jpg\nDCIM/**"}
+        />
+      </Section>
+
       {/* A shared list adds its patterns to the job's own. */}
       <Section title={t("edit.exclude")} hue={3}>
         <AxisLabel hint={t("edit.excludeSetsHint")}>{t("edit.excludeSets")}</AxisLabel>

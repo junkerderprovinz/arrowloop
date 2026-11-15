@@ -171,7 +171,7 @@ every row out does nothing rather than running everything.
 **Add a job** opens the form in a window, and **Edit** on a job's page does the
 same for that job. **Save** is the window's main button. Each field stands at
 the end of its row with its name at the start, and in a narrow window it moves
-under the name. The exclude list keeps its name above it.
+under the name. The include and exclude lists keep their names above them.
 
 A new job takes its direction, mode, schedule, quiet period and what gets
 carried from the global sync settings, and the form shows each of them with the

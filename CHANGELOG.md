@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **A job can take only some of the files.** Write patterns under "Only these files", such as `*.tar.gz`, and the job syncs just the files that match. Every other file stays where it is on both sides, and your exclusions still apply. An import from FolderSync brings its include filters along. Thanks to @danpeig ([#159](https://github.com/junkerderprovinz/arrowloop/issues/159)).
+
 ## 🐛 Fixed
 
 - **A job against a Samba share with a connection limit no longer fails with "Insufficient system resources".** DietPi, for one, lets a share take twice as many connections as the machine has cores, and each transfer opens one. When the share turns a connection away, ArrowLoop tries again with half the transfers, down to one, and remembers the number for that server. Thanks to @aegidius77 ([#160](https://github.com/junkerderprovinz/arrowloop/issues/160)).

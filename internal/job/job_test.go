@@ -307,3 +307,20 @@ func TestUnusualRunsAreReportedUnlessSwitchedOff(t *testing.T) {
 		}
 	}
 }
+
+func TestAJobWithIncludePatternsTakesOnlyTheFilesTheyMatch(t *testing.T) {
+	opt, err := Job{Left: "a", Right: "b", Include: []string{"*.tar.gz"}, Exclude: []string{"old/**"}}.Options()
+	if err != nil {
+		t.Fatalf("options: %v", err)
+	}
+	for path, hidden := range map[string]bool{
+		"nightly/home.tar.gz":      false,
+		"nightly/notes.txt":        true,
+		"old/home.tar.gz":          true,
+		"nightly/home.tar.gz.part": true,
+	} {
+		if got := opt.Exclude.Excluded(path); got != hidden {
+			t.Errorf("%s hidden = %v, want %v", path, got, hidden)
+		}
+	}
+}

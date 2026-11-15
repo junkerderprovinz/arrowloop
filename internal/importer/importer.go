@@ -219,14 +219,14 @@ func onTarget(target, p string, rooted bool) string {
 	return target + ":" + p
 }
 
-// addExclude appends a pattern if ArrowLoop's filter takes it and reports
-// whether it did.
-func addExclude(j map[string]any, pattern string) bool {
+// addPattern appends a pattern to the job's "exclude" or "include" list if
+// ArrowLoop's filter takes it and reports whether it did.
+func addPattern(j map[string]any, key, pattern string) bool {
 	if _, err := filter.New([]string{pattern}); err != nil {
 		return false
 	}
-	list, _ := j["exclude"].([]string)
-	j["exclude"] = append(list, pattern)
+	list, _ := j[key].([]string)
+	j[key] = append(list, pattern)
 	return true
 }
 

@@ -296,6 +296,8 @@ export type RawJob = {
   /** Settles a conflict for the version changed last; the other goes to the trash. */
   newerWins?: boolean
   exclude?: string[]
+  /** Narrows the job to the files these patterns match; empty takes every file. */
+  include?: string[]
   /**
    * The job's own brakes. Left out, the job follows the global ones; zero
    * switches a brake off for this job.

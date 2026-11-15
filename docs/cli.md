@@ -30,6 +30,7 @@ plain paths.
 |---|---|---|
 | `-quiet-period` | 5s | how long a file must sit unchanged before it is touched, 0 disables |
 | `-exclude` | - | glob of paths to leave alone entirely, repeatable |
+| `-include` | - | glob of the only files to sync, repeatable |
 | `-no-default-excludes` | off | also sync half-written files such as `*.part` and Office owner files |
 | `-transfers` | 4 | how many files may be copied at the same time |
 | `-bwlimit` | - | bandwidth limit in rclone syntax, `1M` or a timetable like `08:00,512k 19:00,off` |

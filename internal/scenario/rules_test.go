@@ -563,3 +563,75 @@ func TestAChosenConflictKeepsOneVersionAndBinsTheOther(t *testing.T) {
 		t.Fatalf("the chosen resolution did not settle: %d actions left", len(after.Actions))
 	}
 }
+
+func only(t *testing.T, patterns ...string) *filter.Set {
+	t.Helper()
+	s, err := filter.New(nil)
+	if err == nil {
+		s, err = s.Only(patterns)
+	}
+	if err != nil {
+		t.Fatalf("filter: %v", err)
+	}
+	return s
+}
+
+func TestIncludePatternsLetOnlyTheirFilesCross(t *testing.T) {
+	j := newJob(t, quick())
+	j.opt.Exclude = only(t, "*.tar.gz")
+	write(t, j.left, "nightly/home.tar.gz", "an archive")
+	write(t, j.left, "nightly/home.log", "what the backup said")
+	write(t, j.left, "notes.txt", "unrelated")
+
+	j.sync(t)
+
+	got := tree(t, j.right)
+	if _, ok := got["nightly/home.tar.gz"]; !ok || len(got) != 1 {
+		t.Fatalf("expected only the archive to cross, got %v", keys(got))
+	}
+}
+
+// A file the patterns stop matching drops out of the job, as an excluded one
+// does, and stays where it is on both sides.
+func TestNarrowingAJobDoesNotDelete(t *testing.T) {
+	j := newJob(t, quick())
+	write(t, j.left, "home.tar.gz", "an archive")
+	write(t, j.left, "notes.txt", "synced before the job was narrowed")
+	j.sync(t)
+	requireConverged(t, j, "after the first run")
+
+	j.opt.Exclude = only(t, "*.tar.gz")
+	p, res := j.sync(t)
+	if res.Trashed != 0 || len(p.Actions) != 0 {
+		t.Fatalf("narrowing the job produced work: %d trashed, %d actions", res.Trashed, len(p.Actions))
+	}
+	for _, side := range []string{j.left, j.right} {
+		if _, err := os.Stat(filepath.Join(side, "notes.txt")); err != nil {
+			t.Errorf("the file left out was destroyed on %s: %v", side, err)
+		}
+	}
+}
+
+// Folders count as left out unless a pattern names them, so a job for one kind
+// of file does not copy the whole folder tree empty.
+func TestANarrowedJobCarriesOnlyTheFoldersItsPatternsName(t *testing.T) {
+	opt := quick()
+	opt.EmptyDirs = true
+	j := newJob(t, opt)
+	j.opt.Exclude = only(t, "*.tar.gz", "keep")
+	write(t, j.left, "nightly/home.tar.gz", "an archive")
+	for _, dir := range []string{"empty/inside", "keep/inside"} {
+		if err := os.MkdirAll(filepath.Join(j.left, dir), 0o755); err != nil {
+			t.Fatalf("mkdir: %v", err)
+		}
+	}
+
+	j.sync(t)
+
+	if _, err := os.Stat(filepath.Join(j.right, "empty")); err == nil {
+		t.Error("a folder no pattern names was carried")
+	}
+	if _, err := os.Stat(filepath.Join(j.right, "keep", "inside")); err != nil {
+		t.Errorf("the folder a pattern names was not carried: %v", err)
+	}
+}

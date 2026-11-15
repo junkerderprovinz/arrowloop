@@ -110,12 +110,12 @@ func (p *Plan) lbTask(t lbTask, i int, targets map[string]string) {
 	for _, set := range lbTemplates {
 		if t.on(set.key) {
 			for _, pattern := range set.patterns {
-				addExclude(j, rsyncPattern(pattern))
+				addPattern(j, "exclude", rsyncPattern(pattern))
 			}
 		}
 	}
 	for _, pattern := range t["ExcludeListItem"] {
-		if converted := rsyncPattern(pattern); converted == "" || !addExclude(j, converted) {
+		if converted := rsyncPattern(pattern); converted == "" || !addPattern(j, "exclude", converted) {
 			p.skip(name, "ExcludeListItem: %s", pattern)
 		}
 	}

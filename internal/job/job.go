@@ -430,6 +430,10 @@ type Job struct {
 	Exclude           []string `json:"exclude,omitempty"`
 	NoDefaultExcludes bool     `json:"noDefaultExcludes,omitempty"`
 
+	// Include narrows the job to the files these patterns match. Empty takes
+	// every file, and an exclusion still wins over it.
+	Include []string `json:"include,omitempty"`
+
 	// ExcludeSets names reusable pattern lists defined at the top of the file.
 	// Their patterns are added to Exclude rather than replacing it. An
 	// undefined name is an error at load, because a filter that silently
@@ -916,6 +920,9 @@ func (j Job) Options() (engine.Options, error) {
 	}
 	excl, err := filter.New(patterns)
 	if err != nil {
+		return engine.Options{}, err
+	}
+	if excl, err = excl.Only(j.Include); err != nil {
 		return engine.Options{}, err
 	}
 

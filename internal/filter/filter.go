@@ -36,7 +36,8 @@ var Binned = []string{
 	".trashed-*", // Android's media store, which keeps them thirty days
 }
 
-// Set is a compiled list of exclude patterns.
+// Set is a compiled list of exclude patterns, and of include patterns where a
+// job takes only some of the files.
 type Set struct {
 	patterns []string
 	res      []*regexp.Regexp
@@ -44,6 +45,9 @@ type Set struct {
 	// names directories whose whole contents are excluded. It is nil for any
 	// other pattern.
 	trees []*regexp.Regexp
+
+	only    []string
+	onlyRes []*regexp.Regexp
 }
 
 // New compiles a set of glob patterns.
@@ -77,6 +81,30 @@ func New(patterns []string) (*Set, error) {
 	return s, nil
 }
 
+// Only returns a copy of the set that also hides every file matching none of
+// patterns. They match the way exclude patterns do, and an exclusion still
+// wins over them.
+func (s *Set) Only(patterns []string) (*Set, error) {
+	n := *s
+	n.only, n.onlyRes = nil, nil
+	for _, p := range patterns {
+		p = norm.NFC.String(p)
+		re, err := compile(p)
+		if err != nil {
+			return nil, fmt.Errorf("include pattern %q: %w", p, err)
+		}
+		n.only = append(n.only, p)
+		n.onlyRes = append(n.onlyRes, re)
+	}
+	return &n, nil
+}
+
+// Narrows reports whether the set takes only the files its include patterns
+// match.
+func (s *Set) Narrows() bool {
+	return s != nil && len(s.only) > 0
+}
+
 // Patterns returns the patterns this set was built from, for reporting.
 func (s *Set) Patterns() []string {
 	if s == nil {
@@ -87,24 +115,37 @@ func (s *Set) Patterns() []string {
 
 // Excluded reports whether a relative path is hidden from the job.
 func (s *Set) Excluded(rel string) bool {
-	if s == nil || len(s.res) == 0 {
+	if s == nil {
 		return false
 	}
 	rel = norm.NFC.String(rel)
+	if matchesAny(s.patterns, s.res, rel) {
+		return true
+	}
+	return s.Narrows() && !matchesAny(s.only, s.onlyRes, rel)
+}
+
+// HidesFolder reports whether the exclude patterns hide a folder and all it
+// holds. Include patterns name files, so they hide no folder.
+func (s *Set) HidesFolder(rel string) bool {
+	return s != nil && matchesAny(s.patterns, s.res, norm.NFC.String(rel))
+}
+
+func matchesAny(patterns []string, res []*regexp.Regexp, rel string) bool {
 	base := rel
 	if i := strings.LastIndex(rel, "/"); i >= 0 {
 		base = rel[i+1:]
 	}
-	for i, re := range s.res {
+	for i, re := range res {
 		subject := base
-		if strings.Contains(s.patterns[i], "/") {
+		if strings.Contains(patterns[i], "/") {
 			subject = rel
 		}
 		if re.MatchString(subject) {
 			return true
 		}
-		// A pattern naming a directory hides everything under it.
-		if strings.HasPrefix(rel, s.patterns[i]+"/") {
+		// A pattern naming a directory takes everything under it.
+		if strings.HasPrefix(rel, patterns[i]+"/") {
 			return true
 		}
 	}

@@ -157,6 +157,7 @@ export interface JobConfig {
   noTrash?: boolean;
   newerWins?: boolean;
   exclude?: string[];
+  include?: string[];
   noDefaultExcludes?: boolean;
   excludeSets?: string[];
   direction?: string;

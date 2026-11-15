@@ -210,12 +210,19 @@ func (w *Watcher) interesting(ev fsnotify.Event) bool {
 		if scan.IsReserved(rel) {
 			return false
 		}
-		if w.opt.Exclude.Excluded(rel) {
+		if w.opt.Exclude.Excluded(rel) && (w.opt.Exclude.HidesFolder(rel) || !mayBeFolder(ev.Name)) {
 			return false
 		}
 		return true
 	}
 	return true
+}
+
+// mayBeFolder reports whether an event's path is a folder or is gone, and so
+// may have been one.
+func mayBeFolder(name string) bool {
+	info, err := os.Stat(name)
+	return err != nil || info.IsDir()
 }
 
 // addTree watches a directory and everything already under it.
@@ -243,7 +250,7 @@ func (w *Watcher) addTree(root string) error {
 		rel, relErr := filepath.Rel(root, p)
 		if relErr == nil {
 			rel = filepath.ToSlash(rel)
-			if rel != "." && (scan.IsReserved(rel) || w.opt.Exclude.Excluded(rel)) {
+			if rel != "." && (scan.IsReserved(rel) || w.opt.Exclude.HidesFolder(rel)) {
 				return filepath.SkipDir
 			}
 		}

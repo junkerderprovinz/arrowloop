@@ -231,3 +231,38 @@ func TestAChangeMadeAsSoonAsTheWatcherIsBuiltIsReported(t *testing.T) {
 	go w.Run(ctx)
 	waitFor(t, &fired, 1, "a file written right after the watcher was built")
 }
+
+// Include patterns name files, so the folders that hold them are watched
+// whatever they are called.
+func TestAJobForSomeFilesWatchesEveryFolder(t *testing.T) {
+	excl, err := filter.New(nil)
+	if err == nil {
+		excl, err = excl.Only([]string{"*.jpg"})
+	}
+	if err != nil {
+		t.Fatalf("filter: %v", err)
+	}
+	root, fired := harness(t, watch.Options{Exclude: excl})
+
+	write(t, filepath.Join(root, "notes.txt"), "not a photo")
+	time.Sleep(400 * time.Millisecond)
+	if n := fired.Load(); n != 0 {
+		t.Fatalf("a file the job leaves out woke it %d times", n)
+	}
+
+	album := filepath.Join(root, "DCIM", "Camera")
+	if err := os.MkdirAll(album, 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	time.Sleep(200 * time.Millisecond)
+	before := fired.Load()
+	write(t, filepath.Join(album, "IMG_1.jpg"), "a photo")
+	deadline := time.Now().Add(3 * time.Second)
+	for time.Now().Before(deadline) {
+		if fired.Load() > before {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	t.Fatal("a photo in a new folder was never noticed")
+}

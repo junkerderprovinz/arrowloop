@@ -20,7 +20,7 @@ import (
 func cmdSync(ctx context.Context, args []string) error {
 	defaults := plan.DefaultOptions()
 	fset := flag.NewFlagSet("sync", flag.ExitOnError)
-	var excludes repeatable
+	var excludes, includes repeatable
 	var (
 		leftPath   = fset.String("left", "", "left side, any rclone remote or a local path")
 		rightPath  = fset.String("right", "", "right side, any rclone remote or a local path")
@@ -39,6 +39,7 @@ func cmdSync(ctx context.Context, args []string) error {
 		verbose    = fset.Bool("v", false, "let rclone report what it is doing underneath")
 	)
 	fset.Var(&excludes, "exclude", "glob of paths to leave alone entirely, repeatable")
+	fset.Var(&includes, "include", "glob of the only files to sync, repeatable")
 	if err := fset.Parse(args); err != nil {
 		return err
 	}
@@ -55,6 +56,9 @@ func cmdSync(ctx context.Context, args []string) error {
 	}
 	exclude, err := filter.New(patterns)
 	if err != nil {
+		return err
+	}
+	if exclude, err = exclude.Only(includes); err != nil {
 		return err
 	}
 

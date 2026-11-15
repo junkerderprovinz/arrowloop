@@ -65,6 +65,7 @@ manager happened to start the process in.
 | `disabled` | `false` | Keeps the job in the file without running it on its own. It can still be started by hand. |
 | `exclude` | none | Globs of paths to leave alone entirely; see [Exclude patterns](#exclude-patterns). |
 | `excludeSets` | none | Names of [shared exclude lists](#shared-exclude-lists). Their patterns are added to `exclude`. |
+| `include` | none | Globs of the only files the job takes; see [Include patterns](#include-patterns). |
 | `noDefaultExcludes` | `false` | Also sync half-written files such as `*.part` and Office owner files. |
 | `quietPeriod` | `5s` | How long a file must sit unchanged before it is touched. |
 | `modWindow` | `2s` | How far modification times may differ and still count as equal. Only applies where a side cannot produce a hash. |
@@ -155,6 +156,19 @@ which is why adding one never deletes anything; see
 [Safety](safety.md#excluding-never-deletes). The names programs use while still
 writing are excluded by default, and [Safety](safety.md#default-excludes) lists
 them.
+
+## Include patterns
+
+A job with include patterns takes only the files they match. They are written
+the way exclude patterns are, so `["*.tar.gz"]` keeps a job to backup archives
+and `["src/**"]` keeps it to one folder. An exclude still wins:
+`"include": ["*.tar.gz"], "exclude": ["old/**"]` leaves the archives under `old`
+alone.
+
+A file no pattern matches is left out the same way an excluded one is. It stays
+where it is on both sides and never counts as deleted, so narrowing a job later
+is safe. With `emptyDirs` on, only the folders a pattern names are carried as
+folders of their own. The others appear wherever a file needs them.
 
 ## Shared exclude lists
 
@@ -668,7 +682,7 @@ spells it so it can be found there. A name that is already taken gets a number.
 | FolderSync "delete after sync", move mode | mode `move` |
 | FolderSync deletions on a one-way pair, luckyBackup "delete files on the destination" | mode `mirror` |
 | FolderSync "overwrite oldest" on a conflict | `newerWins` |
-| FolderSync name and folder filters, luckyBackup excludes and its exclude check boxes | `exclude` patterns |
+| FolderSync name and folder filters, luckyBackup excludes and its exclude check boxes | `exclude` patterns, or `include` patterns for a FolderSync include filter |
 | luckyBackup snapshots | `keepVersions`, one fewer than the snapshots |
 
 No password, key passphrase, secret key or token is carried over, even where

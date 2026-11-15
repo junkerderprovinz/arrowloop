@@ -162,3 +162,65 @@ func TestAPatternWithAccentsMatchesItsName(t *testing.T) {
 		t.Error("a name pattern with accents does not match")
 	}
 }
+
+func TestOnly(t *testing.T) {
+	cases := []struct {
+		name    string
+		include []string
+		exclude []string
+		path    string
+		want    bool
+	}{
+		{"a file matching an include pattern is kept", []string{"*.tar.gz"}, nil, "backups/2026/home.tar.gz", false},
+		{"a file matching none is hidden", []string{"*.tar.gz"}, nil, "backups/2026/notes.txt", true},
+		{"any one of the patterns is enough", []string{"*.c", "*.h"}, nil, "src/x.h", false},
+		{"naming a directory keeps what is inside it", []string{"src"}, nil, "src/a/b.go", false},
+		{"a pattern with a slash is anchored to the whole path", []string{"src/*.go"}, nil, "lib/src/x.go", true},
+		{"an exclusion still wins over an inclusion", []string{"*.tar.gz"}, []string{"old/**"}, "old/home.tar.gz", true},
+		{"no include patterns keep everything", nil, nil, "a/b.txt", false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			s, err := New(tc.exclude)
+			if err != nil {
+				t.Fatalf("compile: %v", err)
+			}
+			if s, err = s.Only(tc.include); err != nil {
+				t.Fatalf("compile: %v", err)
+			}
+			if got := s.Excluded(tc.path); got != tc.want {
+				t.Errorf("Excluded(%q) with only %v = %v, want %v", tc.path, tc.include, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestOnlyReportsWhetherItNarrows(t *testing.T) {
+	s, _ := New(nil)
+	if s.Narrows() {
+		t.Error("a set without include patterns narrows")
+	}
+	if s, _ = s.Only([]string{"*.jpg"}); !s.Narrows() {
+		t.Error("a set with include patterns does not narrow")
+	}
+}
+
+// A listing has to open every folder, since a kept file may lie anywhere.
+func TestOnlyPrunesNoFolder(t *testing.T) {
+	s, _ := New(nil)
+	s, _ = s.Only([]string{"*.jpg"})
+	if s.ExcludesTree("Documents") {
+		t.Error("a folder was pruned for not matching an include pattern")
+	}
+}
+
+func TestOnlyExcludePatternsHideAFolder(t *testing.T) {
+	s, _ := New([]string{"cache"})
+	s, _ = s.Only([]string{"*.jpg"})
+	if s.HidesFolder("DCIM") {
+		t.Error("a folder was hidden for not matching an include pattern")
+	}
+	if !s.HidesFolder("cache") {
+		t.Error("an excluded folder was not hidden")
+	}
+}

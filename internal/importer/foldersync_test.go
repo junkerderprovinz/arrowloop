@@ -63,6 +63,7 @@ func TestFolderSyncPairsBecomeJobs(t *testing.T) {
 	expect(t, scans, "right", "Office:team/scans")
 	expect(t, scans, "direction", "rightToLeft")
 	expect(t, scans, "mode", "move")
+	expect(t, scans, "include", []string{"*.pdf"})
 	if _, set := scans["schedule"]; set {
 		t.Errorf("an advanced interval became schedule %v", scans["schedule"])
 	}
@@ -80,6 +81,7 @@ func TestFolderSyncListsWhatItLeavesOut(t *testing.T) {
 		{Subject: "Documents", What: "webhooks"},
 		{Subject: "Music", What: "accountType: Hubic"},
 		{Subject: "Scans", What: "syncInterval: Advanced"},
+		{Subject: "Scans", What: "syncRules: FileSizeLargerThan 1048576 (include)"},
 	} {
 		if !has(p.Skipped, n.Subject, n.What) {
 			t.Errorf("%+v is not listed in %+v", n, p.Skipped)

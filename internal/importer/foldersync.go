@@ -354,14 +354,14 @@ var fsIntervals = map[string]string{
 	"Monthly":        "@monthly",
 }
 
-// fsFilters carries the exclusions that have a glob of their own. Size, age
-// and regular expressions have none, and an include rule turns the filter
-// around, so those are listed.
+// fsFilters carries the rules that have a glob of their own, an include rule
+// as an include pattern. Size, age and regular expressions have none, so those
+// are listed.
 func (p *Plan) fsFilters(j map[string]any, name string, rules []fsRule, field string) {
 	for _, r := range rules {
 		v := r.StringValue
 		var pattern string
-		if !r.IncludeRule && v != "" {
+		if v != "" {
 			switch r.SyncRule {
 			case "FileType":
 				pattern = "*." + strings.TrimLeft(v, "*.")
@@ -383,7 +383,11 @@ func (p *Plan) fsFilters(j map[string]any, name string, rules []fsRule, field st
 				pattern = "*" + v + "*/**"
 			}
 		}
-		if pattern != "" && !strings.Contains(v, "/") && addExclude(j, pattern) {
+		key := "exclude"
+		if r.IncludeRule {
+			key = "include"
+		}
+		if pattern != "" && !strings.Contains(v, "/") && addPattern(j, key, pattern) {
 			continue
 		}
 		what := strings.TrimSpace(fmt.Sprintf("%s: %s %s", field, r.SyncRule, firstOf(v, strconv.FormatInt(r.LongValue, 10))))
