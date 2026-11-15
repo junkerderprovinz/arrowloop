@@ -6,9 +6,9 @@ import { IconDiagnostics } from '../../components/glyphs'
 import { Stack } from '../../components/Shell'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api, ApiError, type WindowSettings } from '../../lib/api'
-import { MAIL_SVG, MANUAL_SVG } from '../../lib/appMarks'
+import { MANUAL_SVG } from '../../lib/appMarks'
 import { download } from '../../lib/download'
-import { DISCORD, GLIMSTONE_REPO, MAIL, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
+import { DISCORD, GLIMSTONE_REPO, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
 import { openExternal } from '../../lib/external'
 import { InfoVersionCard } from '../../lib/glimstone/AboutCard'
 import { Card } from '../../lib/glimstone/Card'
@@ -128,9 +128,8 @@ export function InfoPage({
         </div>
       </div>
 
-      {/* Built here rather than with the reference Help card, which offers
-          Email only where the sentence spells out "email" and so drops it in
-          most of the languages here. */}
+      {/* Built here rather than with the reference Help card so the bug
+          report's mark takes GitHub's colour beside the issue button. */}
       <Card title={t('info.help')} hint={t('info.helpHint')} hueIndex={1}>
         <p className="text-body text-carbon-textSub">{t('about.report')}</p>
         <div className="glim-readme-btn-rows">
@@ -145,18 +144,6 @@ export function InfoPage({
             parts={[{ name: t('about.discord'), onClick: () => openExternal(DISCORD) }]}
             mark={<IconDiscord />}
             markClass="glim-discord-mark"
-          />
-          {/* Subject only: a prefilled body reads as a form to fill in. */}
-          <ReadmeButton
-            brand="house"
-            parts={[
-              {
-                name: t('about.mail'),
-                onClick: () => openExternal(`mailto:${MAIL}?subject=${encodeURIComponent(`ArrowLoop ${t('about.mailSubject')}`)}`),
-              },
-            ]}
-            mark={<BrandMark svg={MAIL_SVG} />}
-            markClass="glim-house-mark"
           />
           {/* The README's docs button, its book and its yellow. */}
           <ReadmeButton

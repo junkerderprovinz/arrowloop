@@ -613,7 +613,7 @@ once a day and names a newer release under ArrowLoop. Under them stand **New**
 and **Check for updates**, which wears the sync symbol and asks GitHub for a
 newer release. **New** opens the window
 with the release notes and the changes (see below); while it lists no change it
-reads **Release notes** and opens the same window. **Help** leads to GitHub, to the ArrowLoop Discord server, to email and to this
+reads **Release notes** and opens the same window. **Help** leads to GitHub, to the ArrowLoop Discord server and to this
 manual, and **Bug report** downloads one file with the versions, the settings
 and jobs without passwords or keys, the last 100 runs and the open anomalies.
 Nothing is sent: you attach the file to an issue yourself. Then comes

@@ -7,7 +7,7 @@ import {
   type BrandData,
   type GlyphData,
 } from "../../web/src/lib/glyphs.data";
-import { COFFEE_BUTTON_SVG, MAIL_SVG, MANUAL_SVG } from "../../web/src/lib/appMarks";
+import { COFFEE_BUTTON_SVG, MANUAL_SVG } from "../../web/src/lib/appMarks";
 import { glyphNameFor } from "../../web/src/lib/glyphName";
 import { BRAND } from "./theme";
 
@@ -290,15 +290,6 @@ export function CoffeeArt({ cup, ink }: { cup: string; ink: string }) {
     .split("currentColor")
     .join(ink);
   return <SvgXml xml={xml} width={160} height={46.6} />;
-}
-
-/**
- * The Email button's envelope, which opens while the button is pressed. Each
- * drawing is cropped to its own ink, so both fill the web's mark box at the
- * same size.
- */
-export function MailMark({ open, ink }: { open: boolean; ink: string }) {
-  return <PairMark svg={MAIL_SVG} open={open} ink={ink} />;
 }
 
 /** The Manual button's book, closed at rest and open while the button is pressed. */

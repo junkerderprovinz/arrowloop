@@ -36,8 +36,6 @@ export const GLIMSTONE_REPO = "https://github.com/junkerderprovinz/glimstone";
 export const RCLONE_REPO = "https://github.com/rclone/rclone";
 /** The handbook, built from docs/ by mkdocs. */
 export const MANUAL = "https://junkerderprovinz.github.io/arrowloop/";
-/** Shared by every tool; the subject line names the product. */
-export const MAIL = "hello@halleluja.design";
 export const DISCORD = "https://discord.gg/XpMW5dgVRa";
 
 /** Where the GlimStone version links: its patch tags fold into the next minor and vanish, the newest release stays. */

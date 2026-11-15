@@ -139,21 +139,27 @@ describe('the Info tile', () => {
     expect(downloaded.mock.calls[0]?.[0]).toMatch(/^arrowloop-report-\d{4}-\d\d-\d\d\.json$/)
   })
 
-  it('reaches GitHub, the mail program and the manual through the system in the desktop build', async () => {
+  it('reaches GitHub, Discord and the manual through the system in the desktop build', async () => {
     const runtime = desktop('linux')
     const open = vi.spyOn(window, 'open')
     render(<InfoPage version="v1.0.0" {...server} />)
     await click('GitHub')
-    await click('Email')
+    await click('Discord')
     await click(/Manual/)
     await click('1.8.0', 'link')
     expect(runtime.BrowserOpenURL.mock.calls.map((c) => c[0])).toEqual([
       'https://github.com/junkerderprovinz/arrowloop',
-      'mailto:hello@halleluja.design?subject=ArrowLoop%20Feedback',
+      'https://discord.gg/XpMW5dgVRa',
       'https://junkerderprovinz.github.io/arrowloop/',
       'https://github.com/junkerderprovinz/arrowloop/releases/tag/v1.8.0',
     ])
     expect(open).not.toHaveBeenCalled()
+  })
+
+  it('offers no mail route', () => {
+    render(<InfoPage version="v1.0.0" {...server} />)
+    expect(screen.queryByRole('button', { name: /mail/i })).toBeNull()
+    expect(screen.getByText(/Problems, wishes or suggestions/).textContent).not.toMatch(/mail/i)
   })
 
   it('opens a new tab in a browser', async () => {

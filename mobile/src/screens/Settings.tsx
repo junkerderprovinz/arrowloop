@@ -30,7 +30,7 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import { COFFEE, DISCORD, GLIMSTONE_RELEASE_URL, MAIL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { COFFEE, DISCORD, GLIMSTONE_RELEASE_URL, PAYPAL, REPO } from "../../../web/src/lib/donate";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
@@ -50,7 +50,7 @@ import { wayLabel, wayOf } from "../way";
 import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
 import { useSystemAccent } from "../systemAccent";
-import { AppMark, BrandMark, CoffeeArt, DonateMark, MailMark, ManualMark } from "../glyphs";
+import { AppMark, BrandMark, CoffeeArt, DonateMark, ManualMark } from "../glyphs";
 import { APPLE_SVG, DOCKER_SVG, FLATPAK_SVG, LINUX_SVG, UNRAID_SVG, WINDOWS_SVG, ZIP_SVG } from "../../../web/src/lib/appMarks";
 import { DOCKER_RUN, DOWNLOADS, UNRAID_CA, sourceZip } from "../../../web/src/lib/downloads";
 import {
@@ -84,7 +84,7 @@ export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
   const look = useAppearance();
-  const { p, corners, scheme, accent, accentContrast, accentInk, barLabels } = useTheme();
+  const { p, corners, scheme, accent, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
   const reduced = useSystemReduced();
   const waiting = useWaiting();
@@ -1118,18 +1118,8 @@ export function Settings() {
             )}
             onPress={() => Linking.openURL(DISCORD)}
           />
-          {/* Mail reaches the authors rather than a vendor, so it takes the
-              accent at rest and lit, and its envelope opens under the
-              finger. The manual is the README's docs button, its book in the
+          {/* The manual is the README's docs button, its book in the
               README's yellow, and the book opens under the finger. */}
-          <ReadmeButton
-            label={t("about.mail")}
-            tile={{ color: accent, ink: accentContrast }}
-            mark={(lit, ink) => <MailMark open={lit} ink={lit ? ink : accentInk} />}
-            onPress={() =>
-              Linking.openURL(`mailto:${MAIL}?subject=${encodeURIComponent(`ArrowLoop: ${t("about.mailSubject")}`)}`)
-            }
-          />
           <ReadmeButton
             label={t("phone.manual")}
             sub={t("action.open")}
