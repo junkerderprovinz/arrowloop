@@ -260,16 +260,15 @@ export function TargetEdit() {
         <Section title={t(refusedCert.changed ? "targets.certificate.changed" : "targets.certificate.untrusted")}>
           <Body>{t(refusedCert.changed ? "targets.certificate.changedHint" : "targets.certificate.untrustedHint")}</Body>
           <Pair label={t("targets.certificate.fingerprint")} value={refusedCert.fingerprint} />
-          {/* Where the engine kept only the fingerprint, the rest is empty. */}
           {refusedCert.subject ? (
-            <>
-              <Pair label={t("targets.certificate.subject")} value={refusedCert.subject} />
-              <Pair label={t("targets.certificate.issuer")} value={refusedCert.issuer} />
-              <Pair
-                label={t("targets.certificate.validUntil")}
-                value={new Date(refusedCert.notAfter).toLocaleDateString(lang)}
-              />
-            </>
+            <Pair label={t("targets.certificate.subject")} value={refusedCert.subject} />
+          ) : null}
+          {refusedCert.issuer ? <Pair label={t("targets.certificate.issuer")} value={refusedCert.issuer} /> : null}
+          {refusedCert.notAfter ? (
+            <Pair
+              label={t("targets.certificate.validUntil")}
+              value={new Date(refusedCert.notAfter).toLocaleDateString(lang)}
+            />
           ) : null}
           <Button
             label={t("targets.certificate.trust")}

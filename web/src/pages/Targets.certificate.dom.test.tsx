@@ -122,6 +122,16 @@ describe('a server certificate no authority vouches for', () => {
     expect(within(dialog).queryByText('Certificate not trusted')).toBeNull()
   })
 
+  it('shows the issuer and expiry even when the certificate names no holder', async () => {
+    tryRemote.mockImplementationOnce(() => Promise.resolve(refused({ ...own, subject: '', issuer: 'Caddy Local Authority' })))
+    const dialog = await addNextcloud()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Test connection' }))
+
+    const offer = (await within(dialog).findByText('Certificate not trusted')).closest('section') as HTMLElement
+    expect(within(offer).getByText('Caddy Local Authority')).toBeTruthy()
+    expect(within(offer).getByText(new Date(own.notAfter).toLocaleDateString('en'))).toBeTruthy()
+  })
+
   it('stays trusted in the editor until it is removed, and removing it clears the setting', async () => {
     remotes.push({
       name: 'cloud',

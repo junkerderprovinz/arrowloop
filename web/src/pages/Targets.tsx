@@ -867,18 +867,14 @@ function RemoteForm({
 /**
  * A server certificate the test refused, with what a person needs to compare
  * it with the one their server shows. Where the engine kept only the
- * fingerprint, only the fingerprint is shown.
+ * fingerprint, the other rows stay away.
  */
 function CertificateOffer({ cert, busy, onTrust }: { cert: RefusedCertificate; busy: boolean; onTrust: () => void }) {
   const { t, lang } = useT()
   const rows: [string, string, boolean?][] = [[t('targets.certificate.fingerprint'), cert.fingerprint, true]]
-  if (cert.subject) {
-    rows.push(
-      [t('targets.certificate.subject'), cert.subject],
-      [t('targets.certificate.issuer'), cert.issuer],
-      [t('targets.certificate.validUntil'), new Date(cert.notAfter).toLocaleDateString(lang)],
-    )
-  }
+  if (cert.subject) rows.push([t('targets.certificate.subject'), cert.subject])
+  if (cert.issuer) rows.push([t('targets.certificate.issuer'), cert.issuer])
+  if (cert.notAfter) rows.push([t('targets.certificate.validUntil'), new Date(cert.notAfter).toLocaleDateString(lang)])
   return (
     <SubCard title={t(cert.changed ? 'targets.certificate.changed' : 'targets.certificate.untrusted')}>
       <p className="text-subline text-carbon-textMuted">

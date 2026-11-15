@@ -4,6 +4,7 @@
 package certpin
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
@@ -26,10 +27,18 @@ type Certificate struct {
 
 // Describe reads a certificate for the screen.
 func Describe(c *x509.Certificate) Certificate {
+	subject := name(c.Subject.CommonName, c.Subject.String())
+	if subject == "" {
+		subject = firstHost(c)
+	}
+	issuer := name(c.Issuer.CommonName, c.Issuer.String())
+	if issuer == "" && bytes.Equal(c.RawIssuer, c.RawSubject) {
+		issuer = subject
+	}
 	return Certificate{
 		Fingerprint: Fingerprint(c.Raw),
-		Subject:     name(c.Subject.CommonName, c.Subject.String()),
-		Issuer:      name(c.Issuer.CommonName, c.Issuer.String()),
+		Subject:     subject,
+		Issuer:      issuer,
 		NotBefore:   c.NotBefore,
 		NotAfter:    c.NotAfter,
 	}
@@ -40,6 +49,18 @@ func name(common, full string) string {
 		return common
 	}
 	return full
+}
+
+// firstHost names a certificate that carries its hosts only in the
+// alternative names, as Caddy's do.
+func firstHost(c *x509.Certificate) string {
+	if len(c.DNSNames) > 0 {
+		return c.DNSNames[0]
+	}
+	if len(c.IPAddresses) > 0 {
+		return c.IPAddresses[0].String()
+	}
+	return ""
 }
 
 // Fingerprint is the SHA-256 of a certificate in the colon-separated form
