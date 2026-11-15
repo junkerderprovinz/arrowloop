@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ApiError, type Settings, type WindowSettings } from '../../lib/api'
+import { GLIMSTONE_VERSION } from '../../lib/glimstone/version'
 import { CHANGES } from '../../lib/whatsNew'
 
 const updateCheck = vi.fn()
@@ -90,8 +91,8 @@ describe('the Info tile', () => {
       'https://github.com/junkerderprovinz/arrowloop/releases/tag/v1.8.0',
     )
     expect(screen.getByText('GlimStone')).toBeTruthy()
-    expect(screen.getByRole('link', { name: '4.4.1' }).getAttribute('href')).toBe(
-      'https://github.com/junkerderprovinz/glimstone/releases/tag/v4.4.1',
+    expect(screen.getByRole('link', { name: GLIMSTONE_VERSION }).getAttribute('href')).toBe(
+      `https://github.com/junkerderprovinz/glimstone/releases/tag/v${GLIMSTONE_VERSION}`,
     )
   })
 
