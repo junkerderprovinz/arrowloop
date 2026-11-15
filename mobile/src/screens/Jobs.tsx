@@ -594,7 +594,7 @@ function JobStatus({
     case "running":
       return (
         <View style={styles.status}>
-          {job.queued ? <Badge label={t("status.queued")} /> : <Badge label={t("jobs.state.running")} tone="accent" />}
+          {job.queued ? <Badge label={t("status.queued")} /> : <Badge label={t("status.running")} tone="accent" />}
           <RunProgress job={job} at={progress} hue={hue} />
         </View>
       );
@@ -621,7 +621,7 @@ function JobStatus({
     case "failed":
       return <Badge label={t("status.failed")} tone="fail" />;
     case "paused":
-      return <Badge label={t("jobs.state.disabled")} />;
+      return <Badge label={t("status.paused")} />;
     case "stopped":
       return <Badge label={t("status.stopped")} />;
     case "never":
