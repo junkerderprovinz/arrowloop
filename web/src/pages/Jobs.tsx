@@ -15,12 +15,13 @@ import { Badge } from '../lib/glimstone/Badge'
 import { useJobConfig } from './Editor'
 import { useEngineSettings } from './settings/engineSettings'
 import type { Finding } from '../lib/anomalies'
-import { api, type Job, type OpenConflict, type RunEvent } from '../lib/api'
+import { api, type Job, type OpenConflict, type Run, type RunEvent } from '../lib/api'
 import { hueVars } from '../lib/appearance'
 import { describeCadence, readCadence } from '../lib/cadence'
 import { dayTime } from '../lib/dayTime'
 import { useReorder } from '../lib/dragLift'
 import { sideName } from '../lib/entryLabel'
+import { failureLine } from '../lib/failure'
 import { useGoTo } from '../lib/goTo'
 import { useT } from '../lib/i18n'
 import { jobCardPlace, type JobPageCard } from '../lib/jobCards'
@@ -360,6 +361,7 @@ function JobCard({
                   <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, lang, (p) => t('list.when', p)) })}</span>
                 )}
               </span>
+              {status === 'failed' && <FailedBecause run={job.recent[0]} />}
             </span>
           </span>
           <span className="ms-auto flex min-w-0 max-w-full flex-col items-end gap-3">
@@ -460,7 +462,10 @@ function JobRow({
       <Grip name={job.name} onGrab={onGrab} />
       <span aria-hidden className="h-6 w-1.5 shrink-0 rounded-[var(--radius-pill)] bg-accent" />
       <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
-        <span className="min-w-0 truncate text-body font-medium sm:flex-1">{job.name}</span>
+        <span className="flex min-w-0 flex-col sm:flex-1">
+          <span className="min-w-0 truncate text-body font-medium">{job.name}</span>
+          {status === 'failed' && <FailedBecause run={job.recent[0]} />}
+        </span>
         <span data-testid="job-status" className="flex shrink-0 sm:justify-end">
           <JobStatusLine job={job} status={status} heldFinding={held?.id} noteFinding={note?.id} event={event} />
         </span>
@@ -482,6 +487,17 @@ function JobRow({
         />
       </span>
     </li>
+  )
+}
+
+/** Why the job's last run failed, cut to one line, with the whole sentence on hover. */
+function FailedBecause({ run }: { run: Run }) {
+  const { t, lang } = useT()
+  const why = failureLine(run.Err, run.Failure, t, lang)
+  return (
+    <span data-testid="job-failure" data-tip={why} className="min-w-0 truncate text-subline text-statusFail">
+      {why}
+    </span>
   )
 }
 

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { CheckPanel } from '../components/CheckPanel'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { DupesPanel } from '../components/DupesPanel'
+import { FailureText } from '../components/FailureText'
 import { FindingCard } from '../components/FindingCard'
 import { IconAction } from '../components/IconAction'
 import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../components/glyphs'
@@ -350,7 +351,10 @@ function UsualCard({ job, lastRun }: { job: string; lastRun?: number }) {
   )
 }
 
-/** The job's runs, newest first, with what a running one is doing right now. */
+/**
+ * The job's runs, newest first, with what a running one is doing right now
+ * or why the last one failed.
+ */
 function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: number }) {
   const { t } = useT()
   const tick = useLiveTick(job.running)
@@ -370,10 +374,14 @@ function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: n
   }, [job.name, limit, tick, job.recent[0]?.ID])
 
   const shown = open ? (runs?.find((r) => r.ID === open.ID || (open.ID < 0 && r.Started === open.Started)) ?? open) : null
+  const last = job.recent[0]
 
   return (
     <Card title={t('job.runs')} hueIndex={0}>
       {job.running && <Now event={event} speed={speed} queued={job.queued} />}
+      {!job.running && last && last.Err !== '' && (
+        <FailureText raw={last.Err} failure={last.Failure} className="rounded-control bg-statusFailBg px-3 py-2.5 text-statusFail" />
+      )}
       {runs === null ? (
         <Empty>{t('history.working')}</Empty>
       ) : runs.length === 0 ? (

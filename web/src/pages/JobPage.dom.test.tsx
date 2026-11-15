@@ -200,6 +200,35 @@ describe('a job page', () => {
     expect(went).toHaveBeenCalledWith({ tab: 'conflicts', job: 'photos' })
   })
 
+  it('says why the last run failed at the top of the runs', async () => {
+    const at = '2027-03-01T03:00:00Z'
+    const refused: Run = {
+      ID: 1, Job: 'photos', Started: at, Finished: at, Copied: 0, Moved: 0, Trashed: 0, Conflicts: 0,
+      DirsMade: 0, DirsRemoved: 0, Unchanged: 0, Skipped: 0, Err: 'x509: certificate signed by unknown authority',
+      Failure: { code: 'certificateUntrusted' },
+    }
+    const shown = (recent: Run[]) =>
+      render(
+        <ToastProvider>
+          <LiveJobs.Provider
+            value={{ jobs: [{ ...job('photos'), recent }], findings: [], conflicted: [], progress: {}, speeds: {}, onSaved: () => undefined }}
+          >
+            <JobPage name="photos" />
+          </LiveJobs.Provider>
+        </ToastProvider>,
+      )
+
+    shown([refused])
+    const runs = (await screen.findByRole('heading', { level: 2, name: /^Runs/ })).parentElement as HTMLElement
+    const why = within(runs).getByText(en['failure.certificateUntrusted'])
+    expect(why.closest('.bg-statusFailBg')).toBe(runs.children[1])
+    cleanup()
+
+    shown([{ ...refused, Err: '', Failure: undefined }, refused])
+    await screen.findByRole('heading', { level: 2, name: /^Runs/ })
+    expect(screen.queryByText(en['failure.certificateUntrusted'])).toBeNull()
+  })
+
   it('says so when no job has the name', async () => {
     page('films')
     expect(await screen.findByText('There is no job by this name.')).toBeTruthy()
