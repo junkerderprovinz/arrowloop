@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/junkerderprovinz/arrowloop/internal/certpin"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
@@ -82,6 +83,12 @@ func TestBackendErrorsAreNamedWithTheirSide(t *testing.T) {
 		},
 		"no answer within 1m0s: the right side could not be opened: read metadata failed: context deadline exceeded": {
 			Code: failure.Unreachable, Params: map[string]string{"side": "right"},
+		},
+		`right side "cloud:": couldn't list files: Propfind "https://192.168.1.10/remote.php/webdav/": tls: failed to verify certificate: x509: certificate signed by unknown authority`: {
+			Code: failure.CertificateUntrusted, Params: map[string]string{"side": "right"},
+		},
+		`left side "cloud:": couldn't list files: Propfind "https://nextcloud.lan/": ` + (&certpin.Untrusted{Certificate: certpin.Certificate{Fingerprint: "AB:CD"}, Changed: true}).Error(): {
+			Code: failure.CertificateUntrusted, Params: map[string]string{"side": "left"},
 		},
 		"429 Too Many Requests": {Code: failure.RateLimited},
 		"context canceled":      {Code: failure.Stopped},

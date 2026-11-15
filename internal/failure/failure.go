@@ -19,21 +19,22 @@ type Failure struct {
 
 // The codes the interface has a sentence for.
 const (
-	NotEnoughSpace   = "notEnoughSpace"
-	VolumeMissing    = "volumeMissing"
-	Unreachable      = "unreachable"
-	SignInFailed     = "signInFailed"
-	PermissionDenied = "permissionDenied"
-	NoFileAccess     = "noFileAccess"
-	NotFound         = "notFound"
-	QuotaExceeded    = "quotaExceeded"
-	RateLimited      = "rateLimited"
-	Stopped          = "stopped"
-	BeforeFailed     = "beforeFailed"
-	AfterFailed      = "afterFailed"
-	HostKeyChanged   = "hostKeyChanged"
-	TooManyLogins    = "tooManyLogins"
-	LeftTwice        = "leftTwice"
+	NotEnoughSpace       = "notEnoughSpace"
+	VolumeMissing        = "volumeMissing"
+	Unreachable          = "unreachable"
+	SignInFailed         = "signInFailed"
+	PermissionDenied     = "permissionDenied"
+	NoFileAccess         = "noFileAccess"
+	NotFound             = "notFound"
+	QuotaExceeded        = "quotaExceeded"
+	RateLimited          = "rateLimited"
+	Stopped              = "stopped"
+	BeforeFailed         = "beforeFailed"
+	AfterFailed          = "afterFailed"
+	HostKeyChanged       = "hostKeyChanged"
+	TooManyLogins        = "tooManyLogins"
+	LeftTwice            = "leftTwice"
+	CertificateUntrusted = "certificateUntrusted"
 )
 
 // The sentences the engine composes itself, in internal/daemon,
@@ -64,6 +65,9 @@ var rules = []rule{
 	// rclone's words for a server that shows another key than the pinned one
 	// go on to say it could not connect.
 	{HostKeyChanged, []string{"host key mismatch"}},
+	// Go's words for a refused certificate, and internal/certpin's for one
+	// other than the trusted one.
+	{CertificateUntrusted, []string{"failed to verify certificate", "certificate changed, sha-256"}},
 	// An FTP server's cap on logins at once, which ProFTPD answers with the
 	// code of a wrong password, and Samba's on connections to a share.
 	{TooManyLogins, []string{

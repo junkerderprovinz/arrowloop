@@ -53,14 +53,15 @@ func WithSavedSecrets(name, backend string, settings map[string]string) map[stri
 // aside, with nothing added or left out. Far more than the address decides
 // where a connection goes: an SFTP socks_proxy, a known_hosts_file of none, a
 // backend's own api_url. An empty value counts as no value, as Save stores it.
-// A fresh two-factor code changes nothing about where a connection goes.
+// A fresh two-factor code changes nothing about where a connection goes, and
+// neither does the certificate the person just chose to trust.
 func sameTarget(data config.Storage, name, backend string, settings map[string]string) bool {
 	keys := data.GetKeyList(name)
 	for key := range settings {
 		keys = append(keys, key)
 	}
 	for _, key := range keys {
-		if key == "type" || (IsSecret(backend, key) && !addressKeys[key]) || (key == oneTimeCode && sessionKey[backend] != "") {
+		if key == "type" || key == CertificateKey || (IsSecret(backend, key) && !addressKeys[key]) || (key == oneTimeCode && sessionKey[backend] != "") {
 			continue
 		}
 		if stored, _ := data.GetValue(name, key); settings[key] != stored {
