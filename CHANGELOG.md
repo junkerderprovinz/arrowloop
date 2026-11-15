@@ -17,6 +17,9 @@ The full notes for each release are in
 
 ## 🐛 Fixed
 
+- **Dates follow the region of your phone or browser.** With English on a British phone a date reads 03/11, the way the UK writes the 3rd of November. Weekdays and month names stay in the language you picked in ArrowLoop, and in the browser the region also decides between 14:05 and 2:05 PM. Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218)).
+- **Every status badge starts with a capital.** The phone wrote "running" and "disabled" next to "Stopped". A paused job now says "Paused" there as well, the same as on the web. Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218)).
+- **The folder picker says when it is still listing.** A folder on a target can take a moment. Until it answers, the picker shows "Listing the folders…" instead of the folder you just left, and an empty folder says "No folders in here." Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218)).
 - **A job against a Samba share with a connection limit no longer fails with "Insufficient system resources".** DietPi, for one, lets a share take twice as many connections as the machine has cores, and each transfer opens one. When the share turns a connection away, ArrowLoop tries again with half the transfers, down to one, and remembers the number for that server. Thanks to @aegidius77 ([#160](https://github.com/junkerderprovinz/arrowloop/issues/160)).
 
 ## 2.7.1 - 2026-11-14
