@@ -1373,7 +1373,7 @@ const ko: Translations = {
   'targets.kdriveRoot.common': '공유 폴더',
   'targets.kdriveRoot.id': 'ID로 지정하는 다른 폴더',
   'targets.kdriveFolderId': '폴더 ID',
-  'targets.kdriveFolderIdHint': '브라우저에서 kDrive의 폴더를 여세요. 주소에서 /files/ 뒤의 숫자가 ID입니다.',
+  'targets.kdriveFolderIdHint': '폴더 이름이 아니라 kDrive가 그 폴더에 쓰는 번호입니다.',
   'anomalies.all': '모든 발견 항목',
   'list.onlyJob': '{job}만',
   'list.everyJob': '모든 작업 보기',

@@ -1373,7 +1373,7 @@ const id: Translations = {
   'targets.kdriveRoot.common': 'Folder bersama',
   'targets.kdriveRoot.id': 'Folder lain lewat ID',
   'targets.kdriveFolderId': 'ID folder',
-  'targets.kdriveFolderIdHint': 'Buka folder itu di kDrive lewat browser. ID-nya adalah angka setelah /files/ di alamatnya.',
+  'targets.kdriveFolderIdHint': 'Nomor yang dipakai kDrive untuk folder itu, bukan namanya.',
   'anomalies.all': 'Semua temuan',
   'list.onlyJob': 'Hanya {job}',
   'list.everyJob': 'Tampilkan semua tugas',

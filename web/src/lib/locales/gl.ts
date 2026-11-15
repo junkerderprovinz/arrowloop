@@ -1373,7 +1373,7 @@ const gl: Translations = {
   'targets.kdriveRoot.common': 'Cartafol compartido',
   'targets.kdriveRoot.id': 'Outro cartafol, polo ID',
   'targets.kdriveFolderId': 'ID do cartafol',
-  'targets.kdriveFolderIdHint': 'Abre o cartafol en kDrive no navegador. O ID é o número que vai despois de /files/ no enderezo.',
+  'targets.kdriveFolderIdHint': 'O número que kDrive usa para o cartafol, non o seu nome.',
   'anomalies.all': 'Todas as anomalías',
   'list.onlyJob': 'Só {job}',
   'list.everyJob': 'Amosar todas as tarefas',

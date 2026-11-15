@@ -1373,7 +1373,7 @@ const uk: Translations = {
   'targets.kdriveRoot.common': 'Спільна тека',
   'targets.kdriveRoot.id': 'Інша тека за ID',
   'targets.kdriveFolderId': 'ID теки',
-  'targets.kdriveFolderIdHint': 'Відкрийте теку в kDrive у браузері. ID вказано в адресі після /files/.',
+  'targets.kdriveFolderIdHint': 'Номер, яким kDrive позначає теку, а не її назва.',
   'anomalies.all': 'Усі аномалії',
   'list.onlyJob': 'Лише {job}',
   'list.everyJob': 'Показати всі завдання',

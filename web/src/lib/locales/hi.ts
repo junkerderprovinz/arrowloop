@@ -1373,7 +1373,7 @@ const hi: Translations = {
   'targets.kdriveRoot.common': 'साझा फ़ोल्डर',
   'targets.kdriveRoot.id': 'ID से कोई दूसरा फ़ोल्डर',
   'targets.kdriveFolderId': 'फ़ोल्डर ID',
-  'targets.kdriveFolderIdHint': 'फ़ोल्डर को ब्राउज़र में kDrive पर खोलें। पते में /files/ के बाद वाली संख्या ही उसकी ID है।',
+  'targets.kdriveFolderIdHint': 'वह संख्या जिससे kDrive फ़ोल्डर को पहचानता है, उसका नाम नहीं।',
   'anomalies.all': 'सभी विसंगतियाँ',
   'list.onlyJob': 'केवल {job}',
   'list.everyJob': 'सभी कार्य दिखाएँ',

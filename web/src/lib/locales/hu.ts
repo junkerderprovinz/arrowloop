@@ -1373,7 +1373,7 @@ const hu: Translations = {
   'targets.kdriveRoot.common': 'Megosztott mappa',
   'targets.kdriveRoot.id': 'Másik mappa azonosító alapján',
   'targets.kdriveFolderId': 'Mappaazonosító',
-  'targets.kdriveFolderIdHint': 'Nyisd meg a mappát a kDrive-ban a böngészőben. Az azonosító a címben a /files/ utáni szám.',
+  'targets.kdriveFolderIdHint': 'A szám, amellyel a kDrive a mappát azonosítja, nem a mappa neve.',
   'anomalies.all': 'Minden rendellenesség',
   'list.onlyJob': 'Csak {job}',
   'list.everyJob': 'Minden feladat mutatása',

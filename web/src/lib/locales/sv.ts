@@ -1373,7 +1373,7 @@ const sv: Translations = {
   'targets.kdriveRoot.common': 'Delad mapp',
   'targets.kdriveRoot.id': 'En annan mapp via ID',
   'targets.kdriveFolderId': 'Mapp-ID',
-  'targets.kdriveFolderIdHint': 'Öppna mappen i kDrive i webbläsaren. ID:t är talet efter /files/ i adressen.',
+  'targets.kdriveFolderIdHint': 'Numret kDrive använder för mappen, inte dess namn.',
   'anomalies.all': 'Alla avvikelser',
   'list.onlyJob': 'Bara {job}',
   'list.everyJob': 'Visa alla jobb',

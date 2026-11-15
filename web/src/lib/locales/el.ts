@@ -1373,7 +1373,7 @@ const el: Translations = {
   'targets.kdriveRoot.common': 'Κοινόχρηστος φάκελος',
   'targets.kdriveRoot.id': 'Άλλος φάκελος, με ID',
   'targets.kdriveFolderId': 'ID φακέλου',
-  'targets.kdriveFolderIdHint': 'Ανοίξτε τον φάκελο στο kDrive στον περιηγητή σας. Το ID είναι ο αριθμός μετά το /files/ στη διεύθυνση.',
+  'targets.kdriveFolderIdHint': 'Ο αριθμός που χρησιμοποιεί το kDrive για τον φάκελο, όχι το όνομά του.',
   'anomalies.all': 'Όλες οι ανωμαλίες',
   'list.onlyJob': 'Μόνο {job}',
   'list.everyJob': 'Εμφάνιση όλων των εργασιών',

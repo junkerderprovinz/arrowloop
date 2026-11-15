@@ -1373,7 +1373,7 @@ const vi: Translations = {
   'targets.kdriveRoot.common': 'Thư mục chung',
   'targets.kdriveRoot.id': 'Thư mục khác theo ID',
   'targets.kdriveFolderId': 'ID thư mục',
-  'targets.kdriveFolderIdHint': 'Mở thư mục trong kDrive trên trình duyệt. ID là số nằm sau /files/ trong địa chỉ.',
+  'targets.kdriveFolderIdHint': 'Số mà kDrive dùng cho thư mục, không phải tên thư mục.',
   'anomalies.all': 'Tất cả bất thường',
   'list.onlyJob': 'Chỉ {job}',
   'list.everyJob': 'Hiện mọi tác vụ',

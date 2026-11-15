@@ -1373,7 +1373,7 @@ const eu: Translations = {
   'targets.kdriveRoot.common': 'Karpeta partekatua',
   'targets.kdriveRoot.id': 'Beste karpeta bat, IDaren bidez',
   'targets.kdriveFolderId': 'Karpetaren IDa',
-  'targets.kdriveFolderIdHint': 'Ireki karpeta kDriven zure nabigatzailean. IDa helbidean /files/ ondoren dagoen zenbakia da.',
+  'targets.kdriveFolderIdHint': 'kDrivek karpetarentzat erabiltzen duen zenbakia, ez haren izena.',
   'anomalies.all': 'Anomalia guztiak',
   'list.onlyJob': '{job} soilik',
   'list.everyJob': 'Erakutsi lan guztiak',

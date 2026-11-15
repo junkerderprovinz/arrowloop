@@ -1373,7 +1373,7 @@ const zh: Translations = {
   'targets.kdriveRoot.common': '共享文件夹',
   'targets.kdriveRoot.id': '按 ID 指定其他文件夹',
   'targets.kdriveFolderId': '文件夹 ID',
-  'targets.kdriveFolderIdHint': '在浏览器中打开 kDrive 里的这个文件夹。地址中 /files/ 后面的数字就是 ID。',
+  'targets.kdriveFolderIdHint': 'kDrive 给这个文件夹的编号，不是文件夹名称。',
   'anomalies.all': '全部异常',
   'list.onlyJob': '仅 {job}',
   'list.everyJob': '显示所有任务',

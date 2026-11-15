@@ -1373,7 +1373,7 @@ const bg: Translations = {
   'targets.kdriveRoot.common': 'Обща папка',
   'targets.kdriveRoot.id': 'Друга папка по ID',
   'targets.kdriveFolderId': 'ID на папката',
-  'targets.kdriveFolderIdHint': 'Отворете папката в kDrive в браузъра. ID е числото след /files/ в адреса.',
+  'targets.kdriveFolderIdHint': 'Числото, с което kDrive води папката, а не името ѝ.',
   'anomalies.all': 'Всички аномалии',
   'list.onlyJob': 'Само {job}',
   'list.everyJob': 'Покажи всички задачи',

@@ -1373,7 +1373,7 @@ const pl: Translations = {
   'targets.kdriveRoot.common': 'Folder wspólny',
   'targets.kdriveRoot.id': 'Inny folder według ID',
   'targets.kdriveFolderId': 'ID folderu',
-  'targets.kdriveFolderIdHint': 'Otwórz folder w kDrive w przeglądarce. ID to liczba po /files/ w adresie.',
+  'targets.kdriveFolderIdHint': 'Numer, którym kDrive oznacza folder, a nie jego nazwa.',
   'anomalies.all': 'Wszystkie anomalie',
   'list.onlyJob': 'Tylko {job}',
   'list.everyJob': 'Pokaż wszystkie zadania',

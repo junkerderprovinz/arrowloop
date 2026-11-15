@@ -1373,7 +1373,7 @@ const cs: Translations = {
   'targets.kdriveRoot.common': 'Sdílená složka',
   'targets.kdriveRoot.id': 'Jiná složka podle ID',
   'targets.kdriveFolderId': 'ID složky',
-  'targets.kdriveFolderIdHint': 'Otevřete složku v kDrive v prohlížeči. ID je číslo za /files/ v adrese.',
+  'targets.kdriveFolderIdHint': 'Číslo, pod kterým kDrive složku vede, ne její název.',
   'anomalies.all': 'Všechny anomálie',
   'list.onlyJob': 'Jen {job}',
   'list.everyJob': 'Zobrazit všechny úlohy',

@@ -1373,7 +1373,7 @@ const fa: Translations = {
   'targets.kdriveRoot.common': 'پوشهٔ مشترک',
   'targets.kdriveRoot.id': 'پوشه‌ای دیگر با شناسه',
   'targets.kdriveFolderId': 'شناسهٔ پوشه',
-  'targets.kdriveFolderIdHint': 'پوشه را در kDrive در مرورگر باز کنید. شناسه همان عددی است که در نشانی بعد از /files/ می‌آید.',
+  'targets.kdriveFolderIdHint': 'عددی که kDrive برای پوشه به کار می‌برد، نه نام آن.',
   'anomalies.all': 'همهٔ ناهنجاری‌ها',
   'list.onlyJob': 'فقط {job}',
   'list.everyJob': 'نمایش همهٔ کارها',

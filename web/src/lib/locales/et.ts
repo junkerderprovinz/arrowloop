@@ -1373,7 +1373,7 @@ const et: Translations = {
   'targets.kdriveRoot.common': 'Jagatud kaust',
   'targets.kdriveRoot.id': 'Muu kaust ID järgi',
   'targets.kdriveFolderId': 'Kausta ID',
-  'targets.kdriveFolderIdHint': 'Ava kaust brauseris kDrive\'is. ID on aadressis /files/ järel olev number.',
+  'targets.kdriveFolderIdHint': 'Number, millega kDrive kausta tähistab, mitte selle nimi.',
   'anomalies.all': 'Kõik anomaaliad',
   'list.onlyJob': 'Ainult {job}',
   'list.everyJob': 'Näita kõiki töid',

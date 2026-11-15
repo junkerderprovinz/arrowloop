@@ -1373,7 +1373,7 @@ const hr: Translations = {
   'targets.kdriveRoot.common': 'Zajednička mapa',
   'targets.kdriveRoot.id': 'Druga mapa prema ID-u',
   'targets.kdriveFolderId': 'ID mape',
-  'targets.kdriveFolderIdHint': 'Otvorite mapu u kDriveu u pregledniku. ID je broj iza /files/ u adresi.',
+  'targets.kdriveFolderIdHint': 'Broj pod kojim kDrive vodi mapu, a ne njezin naziv.',
   'anomalies.all': 'Sve anomalije',
   'list.onlyJob': 'Samo {job}',
   'list.everyJob': 'Prikaži sve zadatke',

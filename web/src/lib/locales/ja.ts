@@ -1373,7 +1373,7 @@ const ja: Translations = {
   'targets.kdriveRoot.common': '共有フォルダー',
   'targets.kdriveRoot.id': 'ID で指定する別のフォルダー',
   'targets.kdriveFolderId': 'フォルダー ID',
-  'targets.kdriveFolderIdHint': 'ブラウザーで kDrive のフォルダーを開いてください。アドレスの /files/ の後の数字が ID です。',
+  'targets.kdriveFolderIdHint': 'フォルダー名ではなく、kDrive がそのフォルダーに付けている番号です。',
   'anomalies.all': 'すべての検出',
   'list.onlyJob': '{job} のみ',
   'list.everyJob': 'すべてのジョブを表示',

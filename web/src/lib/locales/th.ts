@@ -1373,7 +1373,7 @@ const th: Translations = {
   'targets.kdriveRoot.common': 'โฟลเดอร์ที่แชร์',
   'targets.kdriveRoot.id': 'โฟลเดอร์อื่นตาม ID',
   'targets.kdriveFolderId': 'ID โฟลเดอร์',
-  'targets.kdriveFolderIdHint': 'เปิดโฟลเดอร์ใน kDrive บนเบราว์เซอร์ ID คือตัวเลขหลัง /files/ ในที่อยู่',
+  'targets.kdriveFolderIdHint': 'หมายเลขที่ kDrive ใช้กับโฟลเดอร์นี้ ไม่ใช่ชื่อโฟลเดอร์',
   'anomalies.all': 'ความผิดปกติทั้งหมด',
   'list.onlyJob': 'เฉพาะ {job}',
   'list.everyJob': 'แสดงงานทั้งหมด',

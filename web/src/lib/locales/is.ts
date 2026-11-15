@@ -1373,7 +1373,7 @@ const is: Translations = {
   'targets.kdriveRoot.common': 'Sameiginleg mappa',
   'targets.kdriveRoot.id': 'Önnur mappa eftir auðkenni',
   'targets.kdriveFolderId': 'Auðkenni möppu',
-  'targets.kdriveFolderIdHint': 'Opnaðu möppuna í kDrive í vafranum. Auðkennið er talan á eftir /files/ í slóðinni.',
+  'targets.kdriveFolderIdHint': 'Talan sem kDrive notar fyrir möppuna, ekki nafn hennar.',
   'anomalies.all': 'Öll frávik',
   'list.onlyJob': 'Aðeins {job}',
   'list.everyJob': 'Sýna öll verk',

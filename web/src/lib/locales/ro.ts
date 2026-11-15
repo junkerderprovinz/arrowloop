@@ -1373,7 +1373,7 @@ const ro: Translations = {
   'targets.kdriveRoot.common': 'Dosar partajat',
   'targets.kdriveRoot.id': 'Alt dosar, după ID',
   'targets.kdriveFolderId': 'ID-ul dosarului',
-  'targets.kdriveFolderIdHint': 'Deschide dosarul în kDrive în browser. ID-ul este numărul de după /files/ din adresă.',
+  'targets.kdriveFolderIdHint': 'Numărul pe care kDrive îl folosește pentru dosar, nu numele lui.',
   'anomalies.all': 'Toate anomaliile',
   'list.onlyJob': 'Doar {job}',
   'list.everyJob': 'Arată toate sarcinile',

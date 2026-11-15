@@ -1373,7 +1373,7 @@ const sr: Translations = {
   'targets.kdriveRoot.common': 'Заједничка фасцикла',
   'targets.kdriveRoot.id': 'Друга фасцикла по ID-у',
   'targets.kdriveFolderId': 'ID фасцикле',
-  'targets.kdriveFolderIdHint': 'Отворите фасциклу у kDrive-у у прегледачу. ID је број после /files/ у адреси.',
+  'targets.kdriveFolderIdHint': 'Број под којим kDrive води фасциклу, а не њен назив.',
   'anomalies.all': 'Све аномалије',
   'list.onlyJob': 'Само {job}',
   'list.everyJob': 'Прикажи све задатке',

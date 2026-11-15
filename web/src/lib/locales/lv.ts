@@ -1373,7 +1373,7 @@ const lv: Translations = {
   'targets.kdriveRoot.common': 'Koplietotā mape',
   'targets.kdriveRoot.id': 'Cita mape pēc ID',
   'targets.kdriveFolderId': 'Mapes ID',
-  'targets.kdriveFolderIdHint': 'Atveriet mapi kDrive pārlūkā. ID ir skaitlis aiz /files/ adresē.',
+  'targets.kdriveFolderIdHint': 'Skaitlis, ar kuru kDrive apzīmē mapi, nevis tās nosaukums.',
   'anomalies.all': 'Visi atradumi',
   'list.onlyJob': 'Tikai {job}',
   'list.everyJob': 'Rādīt visus darbus',

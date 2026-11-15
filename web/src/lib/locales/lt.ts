@@ -1373,7 +1373,7 @@ const lt: Translations = {
   'targets.kdriveRoot.common': 'Bendras aplankas',
   'targets.kdriveRoot.id': 'Kitas aplankas pagal ID',
   'targets.kdriveFolderId': 'Aplanko ID',
-  'targets.kdriveFolderIdHint': 'Atidarykite aplanką kDrive naršyklėje. ID yra skaičius po /files/ adrese.',
+  'targets.kdriveFolderIdHint': 'Skaičius, kuriuo kDrive žymi aplanką, o ne jo pavadinimas.',
   'anomalies.all': 'Visi radiniai',
   'list.onlyJob': 'Tik {job}',
   'list.everyJob': 'Rodyti visas užduotis',

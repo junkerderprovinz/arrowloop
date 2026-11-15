@@ -1373,7 +1373,7 @@ const ar: Translations = {
   'targets.kdriveRoot.common': 'المجلد المشترك',
   'targets.kdriveRoot.id': 'مجلد آخر بمعرّفه',
   'targets.kdriveFolderId': 'معرّف المجلد',
-  'targets.kdriveFolderIdHint': 'افتح المجلد في kDrive في متصفحك. المعرّف هو الرقم بعد /files/ في العنوان.',
+  'targets.kdriveFolderIdHint': 'الرقم الذي يستخدمه kDrive للمجلد، وليس اسمه.',
   'anomalies.all': 'كل الحالات الشاذة',
   'list.onlyJob': '{job} فقط',
   'list.everyJob': 'عرض كل المهام',

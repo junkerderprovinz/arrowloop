@@ -1373,7 +1373,7 @@ const sk: Translations = {
   'targets.kdriveRoot.common': 'Zdieľaný priečinok',
   'targets.kdriveRoot.id': 'Iný priečinok podľa ID',
   'targets.kdriveFolderId': 'ID priečinka',
-  'targets.kdriveFolderIdHint': 'Otvorte priečinok v kDrive v prehliadači. ID je číslo za /files/ v adrese.',
+  'targets.kdriveFolderIdHint': 'Číslo, pod ktorým kDrive priečinok vedie, nie jeho názov.',
   'anomalies.all': 'Všetky anomálie',
   'list.onlyJob': 'Len {job}',
   'list.everyJob': 'Zobraziť všetky úlohy',

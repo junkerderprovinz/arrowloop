@@ -1373,7 +1373,7 @@ const es: Translations = {
   'targets.kdriveRoot.common': 'Carpeta compartida',
   'targets.kdriveRoot.id': 'Otra carpeta, por ID',
   'targets.kdriveFolderId': 'ID de la carpeta',
-  'targets.kdriveFolderIdHint': 'Abre la carpeta en kDrive en tu navegador. El ID es el número que sigue a /files/ en la dirección.',
+  'targets.kdriveFolderIdHint': 'El número que kDrive usa para la carpeta, no su nombre.',
   'anomalies.all': 'Todas las anomalías',
   'list.onlyJob': 'Solo {job}',
   'list.everyJob': 'Mostrar todas las tareas',

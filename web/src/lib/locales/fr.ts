@@ -1373,7 +1373,7 @@ const fr: Translations = {
   'targets.kdriveRoot.common': 'Dossier partagé',
   'targets.kdriveRoot.id': 'Un autre dossier, par son ID',
   'targets.kdriveFolderId': 'ID du dossier',
-  'targets.kdriveFolderIdHint': 'Ouvrez le dossier dans kDrive dans votre navigateur. L\'ID est le nombre qui suit /files/ dans l\'adresse.',
+  'targets.kdriveFolderIdHint': 'Le numéro que kDrive attribue au dossier, pas son nom.',
   'anomalies.all': 'Toutes les anomalies',
   'list.onlyJob': 'Seulement {job}',
   'list.everyJob': 'Afficher toutes les tâches',

@@ -1373,7 +1373,7 @@ const he: Translations = {
   'targets.kdriveRoot.common': 'תיקייה משותפת',
   'targets.kdriveRoot.id': 'תיקייה אחרת לפי מזהה',
   'targets.kdriveFolderId': 'מזהה תיקייה',
-  'targets.kdriveFolderIdHint': 'פתח את התיקייה ב-kDrive בדפדפן. המזהה הוא המספר שאחרי /files/ בכתובת.',
+  'targets.kdriveFolderIdHint': 'המספר ש-kDrive משתמש בו עבור התיקייה, לא השם שלה.',
   'anomalies.all': 'כל החריגות',
   'list.onlyJob': 'רק {job}',
   'list.everyJob': 'הצג את כל המשימות',

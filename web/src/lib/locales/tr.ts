@@ -1373,7 +1373,7 @@ const tr: Translations = {
   'targets.kdriveRoot.common': 'Paylaşılan klasör',
   'targets.kdriveRoot.id': 'Kimliğiyle başka bir klasör',
   'targets.kdriveFolderId': 'Klasör kimliği',
-  'targets.kdriveFolderIdHint': 'Klasörü tarayıcıda kDrive\'da açın. Kimlik, adresteki /files/ kısmından sonraki sayıdır.',
+  'targets.kdriveFolderIdHint': 'kDrive\'ın klasör için kullandığı numara, klasörün adı değil.',
   'anomalies.all': 'Tüm bulgular',
   'list.onlyJob': 'Yalnızca {job}',
   'list.everyJob': 'Tüm işleri göster',

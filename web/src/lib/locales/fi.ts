@@ -1373,7 +1373,7 @@ const fi: Translations = {
   'targets.kdriveRoot.common': 'Jaettu kansio',
   'targets.kdriveRoot.id': 'Muu kansio tunnuksella',
   'targets.kdriveFolderId': 'Kansion tunnus',
-  'targets.kdriveFolderIdHint': 'Avaa kansio kDrivessa selaimessa. Tunnus on osoitteessa /files/-kohdan jälkeinen numero.',
+  'targets.kdriveFolderIdHint': 'Numero, jolla kDrive tunnistaa kansion, ei sen nimi.',
   'anomalies.all': 'Kaikki poikkeamat',
   'list.onlyJob': 'Vain {job}',
   'list.everyJob': 'Näytä kaikki työt',

@@ -1373,7 +1373,7 @@ const nl: Translations = {
   'targets.kdriveRoot.common': 'Gedeelde map',
   'targets.kdriveRoot.id': 'Een andere map, via ID',
   'targets.kdriveFolderId': 'Map-ID',
-  'targets.kdriveFolderIdHint': 'Open de map in kDrive in je browser. De ID is het getal na /files/ in het adres.',
+  'targets.kdriveFolderIdHint': 'Het nummer dat kDrive voor de map gebruikt, niet de naam.',
   'anomalies.all': 'Alle afwijkingen',
   'list.onlyJob': 'Alleen {job}',
   'list.everyJob': 'Alle taken tonen',
