@@ -10,6 +10,7 @@ import { optionHint, providerHint, providerName } from "../../../web/src/lib/opt
 import { optionLabel } from "../../../web/src/lib/optionNames";
 import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from "../../../web/src/lib/kdriveRoot";
+import { settingsToSave } from "../../../web/src/lib/savedSettings";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Choice, Empty, Page, PickRow, Row, Section, Title, Toggle } from "../ui";
@@ -141,7 +142,7 @@ export function TargetEdit() {
     try {
       await api.saveRemote(name.trim(), {
         type: backendName,
-        settings: { ...(provider?.preset ?? {}), ...prune(values) },
+        settings: { ...(provider?.preset ?? {}), ...settingsToSave(values, existing?.settings ?? []) },
       });
       nav.popToTop();
     } catch (e) {

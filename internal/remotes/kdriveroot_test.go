@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/rclone/rclone/backend/kdrive"
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/config"
 )
 
 func TestTheKdriveFormOffersTheRootFolderUpFront(t *testing.T) {
@@ -54,5 +55,15 @@ func TestASavedKdriveRootFolderReachesTheRemote(t *testing.T) {
 	}
 	if got, _ := cfg.Get("root_folder_id"); got != "common" {
 		t.Fatalf("rclone opens the target with root_folder_id %q, want common", got)
+	}
+}
+
+func TestAnEmptiedKdriveRootFolderLeavesTheSection(t *testing.T) {
+	saved(t, "kd", "kdrive", map[string]string{"drive_id": "123456", "root_folder_id": "common"})
+	if err := Save("kd", "kdrive", map[string]string{"drive_id": "123456", "root_folder_id": ""}); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	if got, ok := config.LoadedData().GetValue("kd", "root_folder_id"); ok {
+		t.Fatalf("root_folder_id stays in the section as %q", got)
 	}
 }

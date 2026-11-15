@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { Backend, Provider } from '../lib/api'
+import type { Backend, Provider, Remote } from '../lib/api'
 import { ToastProvider } from '../lib/toast'
 
 globalThis.ResizeObserver ??= class {
@@ -50,6 +50,8 @@ const providers: Provider[] = [
   { id: 'kdrive', name: 'Infomaniak kDrive', backend: 'kdrive', group: 'cloud', mark: 'IconTabStorage' },
 ]
 
+let savedTargets: Remote[] = []
+
 const saveRemote = vi.fn((name: string, _type: string, _settings: Record<string, string>): Promise<unknown> =>
   Promise.resolve({ saved: name }),
 )
@@ -60,7 +62,7 @@ const tryRemote = vi.fn((_type: string, settings: Record<string, string>) =>
 
 vi.mock('../lib/api', () => ({
   api: {
-    remotes: () => Promise.resolve({ remotes: [], backends: [ftp, onedrive, kdrive], providers, unlisted: [] }),
+    remotes: () => Promise.resolve({ remotes: savedTargets, backends: [ftp, onedrive, kdrive], providers, unlisted: [] }),
     tryRemote: (type: string, settings: Record<string, string>) => tryRemote(type, settings),
     volumes: () => Promise.resolve({ volumes: [] }),
     checkRemote: () => Promise.resolve({ ok: true }),
@@ -73,6 +75,7 @@ const { Targets } = await import('./Targets')
 
 afterEach(() => {
   cleanup()
+  savedTargets = []
   saveRemote.mockReset()
   saveRemote.mockImplementation((name: string) => Promise.resolve({ saved: name }))
   tryRemote.mockClear()
@@ -157,6 +160,29 @@ describe('the kDrive root folder', () => {
     const dialog = await add('Infomaniak kDrive')
     pick(dialog, 'Shared folder')
     expect((await saved(dialog)).root_folder_id).toBe('common')
+  })
+
+  it('clears a saved shortcut when the folder ID is left empty', async () => {
+    savedTargets = [
+      {
+        name: 'kd',
+        type: 'kdrive',
+        settings: [
+          { key: 'drive_id', value: '123456', secret: false },
+          { key: 'root_folder_id', value: 'common', secret: false },
+        ],
+      },
+    ]
+    render(
+      <ToastProvider>
+        <Targets />
+      </ToastProvider>,
+    )
+    fireEvent.click((await screen.findAllByRole('button', { name: 'Edit' }))[0])
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Shared folder')
+    pick(dialog, 'Another folder, by ID')
+    expect((await saved(dialog)).root_folder_id).toBe('')
   })
 
   it('takes any other folder by the ID typed in', async () => {
