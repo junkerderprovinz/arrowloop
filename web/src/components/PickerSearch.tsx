@@ -47,7 +47,7 @@ export function PickerSearch({
           e.preventDefault()
           onChange('')
         }}
-        className="h-full min-w-0 flex-1 bg-transparent text-meta text-carbon-text placeholder:text-carbon-textMuted [&::-webkit-search-cancel-button]:hidden"
+        className="h-full min-w-0 flex-1 bg-transparent text-meta text-carbon-text placeholder:text-(--field-placeholder) [&::-webkit-search-cancel-button]:hidden"
         // The ring goes round the whole field, icon and clear button included.
         style={{ outline: 'none' }}
       />

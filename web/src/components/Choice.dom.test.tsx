@@ -31,3 +31,13 @@ describe('a closed dropdown', () => {
     expect(passed).toBe(true)
   })
 })
+
+describe('an open dropdown', () => {
+  it('jumps to the option a typed letter starts', () => {
+    render(<Choice value="a" options={options} onChange={() => {}} label="Pick" />)
+    fireEvent.click(screen.getByRole('button', { name: 'Pick' }))
+    const listbox = screen.getByRole('listbox')
+    fireEvent.keyDown(listbox, { key: 'g' })
+    expect(document.activeElement?.textContent).toContain('Gamma')
+  })
+})

@@ -16,6 +16,7 @@ export function InfoBubble({ tip, onAccent = false }: { tip: string; onAccent?: 
       <span
         data-glim="InfoBubble"
         ref={tooltip.ref}
+        role="img"
         aria-label={tip}
         aria-describedby={tooltip.describedBy}
         tabIndex={0}

@@ -4,7 +4,7 @@
 // A sheet is a <dialog> shown modal, which makes the page behind it inert.
 
 import { computeBubblePosition } from "./bubblePosition.ts";
-import { focusedAsker, returnFocus } from "./dialog.ts";
+import { focusedAsker, keepTabInside, returnFocus } from "./dialog.ts";
 
 const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -82,7 +82,8 @@ export function openPopover(popover: HTMLElement, anchor: HTMLElement, name: str
 /**
  * Shows a sheet modal. Escape and a press on the scrim call `onClose`, which
  * the caller answers by closing it, and focus goes back to the control that
- * asked. Returns the cleanup.
+ * asked. Tab wraps inside it, where a modal <dialog> alone lets it out to the
+ * browser. Returns the cleanup.
  */
 export function openSheet(dialog: HTMLDialogElement, onClose: () => void): () => void {
   const asker = focusedAsker();
@@ -94,11 +95,16 @@ export function openSheet(dialog: HTMLDialogElement, onClose: () => void): () =>
   const onClick = (e: MouseEvent) => {
     if (e.target === dialog) onClose();
   };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Tab") keepTabInside(dialog, e);
+  };
   dialog.addEventListener("cancel", onCancel);
   dialog.addEventListener("click", onClick);
+  dialog.addEventListener("keydown", onKey);
   return () => {
     dialog.removeEventListener("cancel", onCancel);
     dialog.removeEventListener("click", onClick);
+    dialog.removeEventListener("keydown", onKey);
     if (dialog.open) dialog.close();
     returnFocus(asker);
   };

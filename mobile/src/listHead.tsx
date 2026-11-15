@@ -174,7 +174,7 @@ export function ListSearch({
         onChangeText={onChange}
         autoFocus
         placeholder={placeholder}
-        placeholderTextColor={p.textMuted}
+        placeholderTextColor={p.textSub}
         accessibilityLabel={t("list.search")}
         style={[styles.field, { backgroundColor: p.surface2, color: p.text, ...corners.control }]}
       />

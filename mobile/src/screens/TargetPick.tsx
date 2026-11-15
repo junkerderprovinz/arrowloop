@@ -79,7 +79,7 @@ export function TargetPick() {
           value={query}
           onChangeText={setQuery}
           placeholder={t("targets.search")}
-          placeholderTextColor={p.textMuted}
+          placeholderTextColor={p.textSub}
           accessibilityLabel={t("targets.search")}
           autoCapitalize="none"
           autoCorrect={false}

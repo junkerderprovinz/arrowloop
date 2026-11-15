@@ -1,11 +1,13 @@
 // Appearance is the set of looks the user owns: what shape the corners take,
-// how much it moves, and what colour it uses for activity, either one accent or
-// a palette handed out by position. All of it is applied to the document root,
-// so every component picks it up through the tokens it already reads.
+// how much it moves, how much room a row takes, and what colour it uses for
+// activity, either one accent or a palette handed out by position. All of it is
+// applied to the document root, so every component picks it up through the
+// tokens it already reads.
 //
 // It has no framework dependency; the React and Vue packages wrap it.
 
-import { accentInks, contrastOn, validHex as valid } from './contrast.ts';
+import { accentHovers, accentInks, contrastOn, validHex as valid } from './contrast.ts';
+import { inkCss } from './oklab.ts';
 import { storageKey } from './storage.ts';
 import { applyOled, storedOled } from './theme.ts';
 
@@ -156,6 +158,24 @@ export function applyMotion(motion: Motion | string | undefined): void {
   document.documentElement.setAttribute('data-motion', m);
 }
 
+/**
+ * How much room a row of a list or a table takes. The strings go into
+ * `data-density` and storage like the other axes; the stylesheet reads them
+ * through --row-h, --row-gap, --row-pad and --cell-pad-block.
+ */
+export type Density = 'compact' | 'normal' | 'airy';
+
+/** The densities a picker shows, tightest first. */
+export const DENSITIES: Density[] = ['compact', 'normal', 'airy'];
+
+export const DEFAULT_DENSITY: Density = 'normal';
+
+/** Sets the attribute the row tokens key off. */
+export function applyDensity(density: Density | string | undefined): void {
+  const d: Density = DENSITIES.includes(density as Density) ? (density as Density) : DEFAULT_DENSITY;
+  document.documentElement.setAttribute('data-density', d);
+}
+
 /** How many taps on `wild`, once it is chosen, reveal the storm. */
 export const STORM_TAPS = 5;
 
@@ -222,9 +242,10 @@ const systemListeners = new Set<() => void>();
  * a light accent never gets white text.
  *
  * `--accent-ink`, `--accent-glyph` and `--accent-hover` are derived in
- * tokens.css with color-mix, so they also follow a later light or dark switch.
- * Where that mix would fall short of 4.5:1 on a ramp, the ramp's ink is set
- * here instead, as `--accent-ink-light` or `--accent-ink-dark`.
+ * tokens.css, so they also follow a later light or dark switch. Where the ink's
+ * OKLab step would fall short of 4.5:1 on a ramp, the ramp's ink is set here
+ * instead, as `--accent-ink-light` or `--accent-ink-dark`, and the same goes for
+ * a hover the ink would not read on (`--accent-hover-light`, `-dark`).
  */
 export function applyAccent(accent: string | undefined): void {
   accentSetting = accent;
@@ -237,6 +258,11 @@ function paintAccent(hex: string | undefined): void {
   for (const [ramp, ink] of Object.entries(inks)) {
     if (ink) root.setProperty(`--accent-ink-${ramp}`, ink);
     else root.removeProperty(`--accent-ink-${ramp}`);
+  }
+  const hovers = valid(hex) ? accentHovers(hex) : { light: undefined, dark: undefined };
+  for (const [ramp, hover] of Object.entries(hovers)) {
+    if (hover) root.setProperty(`--accent-hover-${ramp}`, hover);
+    else root.removeProperty(`--accent-hover-${ramp}`);
   }
   if (!valid(hex)) {
     root.removeProperty('--accent');
@@ -354,7 +380,7 @@ export function takePageHue(el: HTMLElement): void {
   }
   const i = Array.prototype.indexOf.call(document.querySelectorAll(TINTED), el);
   const n = ((i % RAINBOW.length) + RAINBOW.length) % RAINBOW.length;
-  el.style.setProperty('--btn-tint', `color-mix(in srgb, var(--rb-${n}) var(--ink-mix), black)`);
+  el.style.setProperty('--btn-tint', inkCss(`var(--rb-${n})`));
 }
 
 /**
@@ -391,8 +417,10 @@ export function hueVars(i: number): Record<string, string> {
     // A small circular badge has no neighbouring rows to repeat its colour and
     // reads as grey at the wash's 16%, so it gets its own tier.
     '--item-hue-badge': `color-mix(in srgb, ${hue} 50%, transparent)`,
-    // Without this a gold focus ring would sit around a teal tab.
-    '--item-hue-ring': `color-mix(in srgb, ${hue} 55%, transparent)`,
+    // The hue on the accent's ink steps, for a line-drawn glyph and for the
+    // focus ring, so a gold ring never sits around a teal tab.
+    '--item-hue-glyph': inkCss(hue),
+    '--item-hue-ring': 'var(--item-hue-glyph)',
   };
 }
 
@@ -429,14 +457,20 @@ interface Cached {
   shape?: string;
   accent?: string;
   rainbow?: RainbowState;
+  density?: string;
 }
 
 /** `accent` is the setting, so the system mode is cached as SYSTEM_ACCENT. */
-export function cacheAppearance(shape: string, accent: string, rainbow?: RainbowState): void {
+export function cacheAppearance(shape: string, accent: string, rainbow?: RainbowState, density?: string): void {
   try {
-    // The conditional spread omits the key under exactOptionalPropertyTypes
+    // The conditional spreads omit a key under exactOptionalPropertyTypes
     // instead of storing it as undefined.
-    const payload: Cached = { shape, accent, ...(rainbow !== undefined ? { rainbow } : {}) };
+    const payload: Cached = {
+      shape,
+      accent,
+      ...(rainbow !== undefined ? { rainbow } : {}),
+      ...(density !== undefined ? { density } : {}),
+    };
     localStorage.setItem(storageKey('appearance'), JSON.stringify(payload));
   } catch {
     // With storage disabled the default look flashes once per load.
@@ -452,15 +486,18 @@ export function applyCachedAppearance(): void {
     const raw = localStorage.getItem(storageKey('appearance'));
     if (!raw) {
       applyShape(DEFAULT_SHAPE);
+      applyDensity(DEFAULT_DENSITY);
       applyRainbow(undefined);
       return;
     }
-    const { shape, accent, rainbow } = JSON.parse(raw) as Cached;
+    const { shape, accent, rainbow, density } = JSON.parse(raw) as Cached;
     applyShape(shape);
+    applyDensity(density);
     applyAccent(accent);
     applyRainbow(rainbow);
   } catch {
     applyShape(DEFAULT_SHAPE);
+    applyDensity(DEFAULT_DENSITY);
     applyRainbow(undefined);
   }
 }

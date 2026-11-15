@@ -52,7 +52,7 @@ export function Field({
             // The Enter key ends the entry as leaving the field does.
             onSubmitEditing={onBlur}
             placeholder={placeholder}
-            placeholderTextColor={p.textMuted}
+            placeholderTextColor={p.textSub}
             secureTextEntry={hidden}
             multiline={multiline}
             keyboardType={keyboard === "numeric" ? "number-pad" : "default"}

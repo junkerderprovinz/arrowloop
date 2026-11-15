@@ -2,6 +2,8 @@
 // with it. Every ink it hands out reaches 4.5:1, the minimum for body text,
 // whatever colour somebody picked or the system supplied.
 
+import { darkenTo, INK_LIGHTNESS, lightenTo } from './oklab.ts';
+
 /** The ratio body text needs, and the floor of every ink computed here. */
 export const MIN_TEXT_CONTRAST = 4.5;
 
@@ -15,9 +17,9 @@ const BLACK = '#000000';
 // to the dark figure, so the dark ink holds there as well.
 const LIGHT_CARD = '#FFFFFF';
 const DARK_CARD = '#262626';
+// The share of the accent in --accent-soft, which applyAccent writes.
+const SOFT_SHARE = 0.14;
 
-// --ink-mix of the light ramp in tokens.css.
-const LIGHT_INK_MIX = 0.55;
 
 type Rgb = [number, number, number];
 
@@ -98,20 +100,55 @@ export function contrastOn(hex: string): string {
 
 /**
  * The accent used as ink on each ramp, where the theme's own derivation in
- * tokens.css falls short of 4.5:1 on its card. Undefined for a ramp means the
- * stylesheet's mix holds and nothing needs setting, which is the case for
- * every preset.
+ * tokens.css falls short of 4.5:1 on its card or on the accent's own wash
+ * there (--accent-soft, a picked row or a selected badge). Undefined for a
+ * ramp means the stylesheet's step holds and nothing needs setting, which is
+ * the case for every preset.
  *
- * The light ink starts from the stylesheet's mix toward black and goes on
- * toward black; the dark ink starts from the accent itself and goes toward
- * white.
+ * Each starts from the stylesheet's own step in OKLab (oklab.ts) and, should
+ * that fall short, goes on in sRGB: the light ink toward black, the dark ink
+ * toward white.
  */
 export function accentInks(hex: string): { light: string | undefined; dark: string | undefined } {
   if (!validHex(hex)) return { light: undefined, dark: undefined };
   const accent = rgb(hex);
-  const light = mix(accent, rgb(BLACK), 1 - LIGHT_INK_MIX);
+  const light = rgb(darkenTo(hex, INK_LIGHTNESS.light));
+  const dark = rgb(lightenTo(hex, INK_LIGHTNESS.dark));
+  // The wash darkens white and lightens the dark card, so it is the tighter
+  // ground on either ramp.
+  const lightWash = mix(rgb(LIGHT_CARD), accent, SOFT_SHARE).map(Math.round) as Rgb;
+  const darkWash = mix(rgb(DARK_CARD), accent, SOFT_SHARE).map(Math.round) as Rgb;
+  const reads = (ink: Rgb, card: Rgb, wash: Rgb) => Math.min(ratio(ink, card), ratio(ink, wash)) >= MIN_TEXT_CONTRAST;
   return {
-    light: ratio(light, rgb(LIGHT_CARD)) >= MIN_TEXT_CONTRAST ? undefined : pushed(light, rgb(BLACK), rgb(LIGHT_CARD)),
-    dark: ratio(accent, rgb(DARK_CARD)) >= MIN_TEXT_CONTRAST ? undefined : pushed(accent, rgb(WHITE), rgb(DARK_CARD)),
+    light: reads(light, rgb(LIGHT_CARD), lightWash) ? undefined : pushed(light, rgb(BLACK), lightWash),
+    dark: reads(dark, rgb(DARK_CARD), darkWash) ? undefined : pushed(dark, rgb(WHITE), darkWash),
   };
+}
+
+// --carbon-text of each ramp in tokens.css, which a filled control's hover
+// moves toward.
+const LIGHT_TEXT = '#161616';
+const DARK_TEXT = '#F4F4F4';
+// The hover's step, color-mix(accent 85%, text) in tokens.css.
+const HOVER_STEP = 0.15;
+
+/**
+ * The hover of an accent fill on each ramp, where the stylesheet's step toward
+ * the text colour would take the fill's ink under 4.5:1. That happens on the
+ * mid-tones, where the ink only just clears the fill: a grey such as #777777
+ * carries a black ink, and on the light ramp its hover darkens toward that
+ * black. The hover then takes the same step away from the ink instead, which
+ * only adds contrast. Undefined means the stylesheet's step holds, as it does
+ * for every preset.
+ */
+export function accentHovers(hex: string): { light: string | undefined; dark: string | undefined } {
+  if (!validHex(hex)) return { light: undefined, dark: undefined };
+  const fill = rgb(hex);
+  const ink = rgb(contrastOn(hex));
+  const away = luminance(ink) > luminance(fill) ? rgb(BLACK) : rgb(WHITE);
+  const hover = (text: string) => {
+    const toward = mix(fill, rgb(text), HOVER_STEP).map(Math.round) as Rgb;
+    return ratio(ink, toward) >= MIN_TEXT_CONTRAST ? undefined : hexOf(mix(fill, away, HOVER_STEP));
+  };
+  return { light: hover(LIGHT_TEXT), dark: hover(DARK_TEXT) };
 }

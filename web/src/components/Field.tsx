@@ -114,7 +114,7 @@ export function Text({
       inputMode={code ? 'numeric' : undefined}
       autoComplete={code ? 'one-time-code' : undefined}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-meta outline-none transition placeholder:text-carbon-textMuted focus:brightness-125 ${
+      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-meta outline-none transition placeholder:text-(--field-placeholder) focus:brightness-125 ${
         readOnly ? 'text-carbon-textMuted' : 'text-carbon-text'
       } ${mono ? 'font-mono' : ''}`}
       style={{ borderRadius: 'var(--radius-control)' }}
@@ -220,7 +220,7 @@ export function Lines({
         setText(e.target.value)
         onChange(entries(e.target.value))
       }}
-      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-carbon-textMuted focus:brightness-125"
+      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-(--field-placeholder) focus:brightness-125"
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -360,7 +360,7 @@ export function Secret({
         autoComplete={autoComplete}
         aria-label={label}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125`}
+        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-(--field-placeholder) focus:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <button

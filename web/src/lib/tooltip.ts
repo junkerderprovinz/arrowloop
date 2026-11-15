@@ -140,6 +140,7 @@ export function infoIcon(text: string): HTMLSpanElement {
   span.innerHTML =
     '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="4.6" r="0.9" fill="currentColor"/><path d="M8 7v4.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
   span.setAttribute('data-tip', text);
+  span.setAttribute('role', 'img');
   span.setAttribute('aria-label', text);
   span.tabIndex = 0;
   return span;

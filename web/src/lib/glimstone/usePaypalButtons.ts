@@ -1,6 +1,16 @@
 import { useEffect, useRef } from "react";
 import { donationHandlers, loadPaypal, type GiveFrequency, type PaypalConfig } from "../paypal.ts";
 
+export interface PaypalButtonsOptions {
+  config: PaypalConfig;
+  frequency: GiveFrequency;
+  /** The amount to charge, or null while the typed amount is not valid. */
+  amount: string | null;
+  description: string;
+  onDone: () => void;
+  onError: () => void;
+}
+
 /**
  * Renders PayPal's two buttons into the returned ref, and again whenever the
  * frequency changes, since a subscription needs the other SDK namespace. The
@@ -13,15 +23,7 @@ export function usePaypalButtons({
   description,
   onDone,
   onError,
-}: {
-  config: PaypalConfig;
-  frequency: GiveFrequency;
-  /** The amount to charge, or null while the typed amount is not valid. */
-  amount: string | null;
-  description: string;
-  onDone: () => void;
-  onError: () => void;
-}) {
+}: PaypalButtonsOptions) {
   const container = useRef<HTMLDivElement>(null);
   const latest = useRef({ amount, onDone, onError });
   latest.current = { amount, onDone, onError };

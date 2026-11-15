@@ -337,3 +337,12 @@ export function showRefusal(root: HTMLElement | null, refusal: SignInRefusal): (
   const button = root?.querySelector<HTMLElement>(`[data-signin="${refusal.button}"]`);
   return button ? shake(button) : () => {};
 }
+
+/** The label keys behind the card's buttons, which pick their glyphs (see Button). */
+export interface SignInLabelKeys {
+  signIn: string;
+  passkey: string;
+  forgot: string;
+  back: string;
+  setPassword: string;
+}

@@ -7,68 +7,16 @@
 
 @custom-variant dark (&:is([data-theme="dark"] *));
 
+/* tokens:theme begin: written by scripts/build-tokens.mjs from packages/core/tokens */
 @theme {
-  --color-carbon-background: var(--carbon-bg);
-  --color-carbon-sidebar: var(--carbon-sidebar);
-  --color-carbon-surface: var(--carbon-surface);
-  --color-carbon-surface2: var(--carbon-surface2);
-  --color-carbon-surface3: var(--carbon-surface3);
-  --color-carbon-text: var(--carbon-text);
-  --color-carbon-textSub: var(--carbon-text-sub);
-  --color-carbon-textMuted: var(--carbon-text-muted);
-  --color-carbon-border: var(--carbon-border);
-  --color-carbon-hover: var(--carbon-hover);
-  --color-carbon-hoverRaised: var(--carbon-hover-raised);
-
-  --color-accent: var(--accent);
-  --color-accentContrast: var(--accent-contrast);
-  --color-accentSoft: var(--accent-soft);
-  /* The accent where the colour is read rather than filled (see --accent-ink in
-     tokens.css): text-* and strokes on the page's ground use ink, bg-* keeps
-     text-accent with --accent-contrast on top. */
-  --color-accentInk: var(--accent-ink);
-  /* The ink for a line-drawn glyph, which takes a rainbow position where text
-     does not. */
-  --color-accentGlyph: var(--accent-glyph);
-  /* The accent-filled button's hover step (rule 21). */
-  --color-accentHover: var(--accent-hover);
-
-  --color-statusOk: var(--status-ok-text);
-  --color-statusOkBg: var(--status-ok-bg);
-  --color-statusOkSolid: var(--status-ok-solid);
-  --color-statusOkHover: var(--status-ok-hover);
-
-  --color-statusFail: var(--status-fail-text);
-  --color-statusFailBg: var(--status-fail-bg);
-  --color-statusFailSolid: var(--status-fail-solid);
-  --color-statusFailHover: var(--status-fail-hover);
-
-  --color-statusWarn: var(--status-warn-text);
-  --color-statusWarnBg: var(--status-warn-bg);
-  /* Opaque, for a chip on a row that already has a fill the translucent wash
-     would show through. */
-  --color-statusWarnBgStrong: var(--status-warn-bg-strong);
-  /* The quiet end, for a paragraph that explains rather than warns. */
-  --color-statusWarnBgSoft: var(--status-warn-bg-soft);
-  --color-statusWarnSolid: var(--status-warn-solid);
-  --color-statusWarnHover: var(--status-warn-hover);
-
-  --color-statusInfo: var(--status-info-text);
-  --color-statusInfoBg: var(--status-info-bg);
-  --color-statusInfoSolid: var(--status-info-solid);
-
-  --color-statusNeutral: var(--status-neutral-text);
-  --color-statusNeutralBg: var(--status-neutral-bg);
-  --color-statusNeutralSolid: var(--status-neutral-solid);
-
   --radius-card: var(--radius-card);
   --radius-control: var(--radius-control);
   --radius-pill: var(--radius-pill);
 
   /* The type scale as text-status, text-title, text-body, text-subline and
      text-meta. Each key names its own runtime property, which works because
-     @theme compiles into a cascade layer that the unlayered :root in
-     tokens.css outranks. */
+     @theme compiles into a cascade layer that the unlayered :root in tokens.css
+     outranks. */
   --text-status: var(--text-status);
   --text-title: var(--text-title);
   --text-body: var(--text-body);
@@ -77,7 +25,60 @@
   --text-heading: var(--text-heading);
   --text-dense: var(--text-dense);
   --text-caption: var(--text-caption);
+
+  --color-carbon-background: var(--carbon-bg);
+  --color-carbon-sidebar: var(--carbon-sidebar);
+  --color-carbon-surface: var(--carbon-surface);
+  --color-carbon-surface2: var(--carbon-surface2);
+  --color-carbon-surface3: var(--carbon-surface3);
+  --color-carbon-hover: var(--carbon-hover);
+  --color-carbon-hoverRaised: var(--carbon-hover-raised);
+  --color-carbon-border: var(--carbon-border);
+  --color-carbon-text: var(--carbon-text);
+  --color-carbon-textSub: var(--carbon-text-sub);
+  --color-carbon-textMuted: var(--carbon-text-muted);
+  --color-accent: var(--accent);
+  --color-accentContrast: var(--accent-contrast);
+  --color-accentSoft: var(--accent-soft);
+
+  /* The accent where the colour is read rather than filled (see --accent-ink in
+     tokens.css): text-* and strokes on the page's ground use ink, bg-* keeps
+     text-accent with --accent-contrast on top. */
+  --color-accentInk: var(--accent-ink);
+
+  /* The ink for a line-drawn glyph, which takes a rainbow position where text
+     does not. */
+  --color-accentGlyph: var(--accent-glyph);
+  --color-statusInfo: var(--status-info-text);
+  --color-statusInfoBg: var(--status-info-bg);
+  --color-statusInfoSolid: var(--status-info-solid);
+  --color-statusOk: var(--status-ok-text);
+  --color-statusOkBg: var(--status-ok-bg);
+  --color-statusOkSolid: var(--status-ok-solid);
+  --color-statusFail: var(--status-fail-text);
+  --color-statusFailBg: var(--status-fail-bg);
+  --color-statusFailSolid: var(--status-fail-solid);
+  --color-statusWarn: var(--status-warn-text);
+  --color-statusWarnBg: var(--status-warn-bg);
+
+  /* Opaque, for a chip on a row that already has a fill the translucent wash
+     would show through. */
+  --color-statusWarnBgStrong: var(--status-warn-bg-strong);
+
+  /* The quiet end, for a paragraph that explains rather than warns. */
+  --color-statusWarnBgSoft: var(--status-warn-bg-soft);
+  --color-statusWarnSolid: var(--status-warn-solid);
+  --color-statusNeutral: var(--status-neutral-text);
+  --color-statusNeutralBg: var(--status-neutral-bg);
+  --color-statusNeutralSolid: var(--status-neutral-solid);
+
+  /* The accent-filled button's hover step (rule 21). */
+  --color-accentHover: var(--accent-hover);
+  --color-statusOkHover: var(--status-ok-hover);
+  --color-statusFailHover: var(--status-fail-hover);
+  --color-statusWarnHover: var(--status-warn-hover);
 }
+/* tokens:theme end */
 
 /* Tailwind resolves `--color-accent: var(--accent)` once at :root, so bg-accent
    and text-accent never see a .glim-hue subtree's own --accent. Anything in the

@@ -180,6 +180,35 @@ export function focusMenuRow(menu: HTMLElement, move: "next" | "prev" | "first" 
   rows[(next + rows.length) % rows.length]!.focus();
 }
 
+/**
+ * Moves the focus to the next element whose name starts with the typed
+ * letter, after the focused one and wrapping, and says whether one took it. A
+ * letter none starts with leaves the focus where it is.
+ */
+export function focusByLetter(items: HTMLElement[], letter: string): boolean {
+  const at = items.indexOf(document.activeElement as HTMLElement);
+  const wanted = letter.toLocaleLowerCase();
+  for (let step = 1; step <= items.length; step++) {
+    const item = items[(at + step) % items.length]!;
+    const name = (item.getAttribute("aria-label") ?? item.textContent ?? "").trim().toLocaleLowerCase();
+    if (name.startsWith(wanted)) {
+      item.focus();
+      return true;
+    }
+  }
+  return false;
+}
+
+/** focusMenuRowByLetter is focusByLetter over a menu's rows. */
+export function focusMenuRowByLetter(menu: HTMLElement, letter: string): boolean {
+  return focusByLetter(menuRows(menu), letter);
+}
+
+/** Whether a key is a letter typed to jump, rather than Space or a shortcut. */
+export function isTypeahead(e: KeyboardEvent): boolean {
+  return e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey;
+}
+
 // One menu is open at a time in the whole document. Opening one closes the
 // last, and Escape reaches the open one from anywhere, so a window under it
 // keeps its own Escape for later.
@@ -226,4 +255,9 @@ export function closeMenuOutside(inside: () => (Element | null | undefined)[], c
   }
   document.addEventListener("click", onClick, true);
   return () => document.removeEventListener("click", onClick, true);
+}
+
+export interface MenuBarHandle {
+  /** Opens a menu by its index and puts the focus on its first row. */
+  open: (index: number) => void;
 }

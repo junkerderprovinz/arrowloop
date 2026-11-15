@@ -73,7 +73,7 @@ export function usePhraseEntry({ id, label, busy, onPair }: {
           setText(e.target.value)
           setRefusal(null)
         }}
-        className="min-h-16 w-full resize-y bg-carbon-surface2 px-3 py-2.5 font-mono text-subline text-carbon-text outline-none transition placeholder:font-sans placeholder:text-carbon-textMuted focus:brightness-125"
+        className="min-h-16 w-full resize-y bg-carbon-surface2 px-3 py-2.5 font-mono text-subline text-carbon-text outline-none transition placeholder:font-sans placeholder:text-(--field-placeholder) focus:brightness-125"
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <WordSlots words={words} unknown={unknown} />

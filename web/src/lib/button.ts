@@ -35,7 +35,7 @@ export type ButtonTone = "accent" | "neutral" | "subtle" | "ok" | "danger" | "wa
  *           edit, delete. It follows the label mode like any button and only
  *           changes shape: where the mode hides words it is a square at the
  *           button height instead of hugging its glyph. Reactive stays an
- *           ordinary reactive button, because it grows on hover.
+ *           ordinary reactive button, because its words open on hover.
  */
 export type ButtonVariant = "default" | "chip" | "icon";
 
@@ -106,20 +106,18 @@ export function buttonView(b: ButtonInput): ButtonView {
   // Reactive words arrive on hover, a CSS state, so it counts as a hiding mode here.
   const showText = effective !== "glyph" && !reactive;
 
-  // Text and text-with-glyph take the stage from the label in the current
-  // language, so switching between them never reflows. In the hiding modes a
-  // button hugs its glyph, and a reactive one grows as its words arrive. A chip
-  // is sized by its glyph to fit its pill, and the icon variant is a square
-  // only in glyph mode.
+  // Every mode that shows words takes the stage from the label in the current
+  // language, reactive included, so its words open inside a box that was
+  // always their size and the row never moves under the pointer. In glyph mode
+  // a button hugs its glyph. A chip is sized by its glyph to fit its pill, and
+  // the icon variant is a square only in glyph mode.
   const stage = chip
     ? "glim-btn-chip"
     : effective === "glyph"
       ? iconOnly
         ? "glim-btn-icon"
         : ""
-      : reactive
-        ? ""
-        : STAGE_CLASS[b.stage ?? widthStage(b.label, b.hasGlyph)];
+      : STAGE_CLASS[b.stage ?? widthStage(b.label, b.hasGlyph)];
 
   // Where the label is hidden the tooltip carries it joined with the title,
   // once if they are the same words. Reactive counts as showing text, since

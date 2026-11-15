@@ -94,6 +94,54 @@ export const MARKS = {
     size: 14,
     body: '<rect x="6.8" y="2.5" width="2.4" height="11" rx="0.6" transform="rotate(45 8 8)"/><rect x="6.8" y="2.5" width="2.4" height="11" rx="0.6" transform="rotate(-45 8 8)"/>',
   },
+  /** `IconBack` from the assortment: the previous page or step. It turns round under a right-to-left language. */
+  back: {
+    viewBox: "4.25 3.6 12.8 12.8",
+    size: 14,
+    body: '<path d="M6.6 10 13 3.6l1.7 1.7L10 10l4.7 4.7-1.7 1.7L6.6 10Z"/>',
+  },
+  /** `IconForward` from the assortment: the next page or step. */
+  forward: {
+    viewBox: "2.95 3.6 12.8 12.8",
+    size: 14,
+    body: '<path d="M13.4 10 7 16.4l-1.7-1.7L10 10 5.3 5.3 7 3.6 13.4 10Z"/>',
+  },
+  /** `IconUpload` from the assortment: files handed to the app, in a drop zone. */
+  upload: {
+    viewBox: "0 0 14 14",
+    size: 16,
+    body: '<path fill-rule="evenodd" d="M7 14A7 7 0 1 0 7 0a7 7 0 0 0 0 14Zm3.146 -8.31L7.353 2.895a0.5 0.5 0 0 0 -0.707 0L3.854 5.69a0.5 0.5 0 0 0 0.353 0.854H6l0 3.707a1 1 0 0 0 2 0l0 -3.707h1.793a0.5 0.5 0 0 0 0.353 -0.854Z" clip-rule="evenodd" stroke-width="1"></path>',
+  },
+  /** `IconCalendar` from the assortment: the end of a date field. */
+  calendar: {
+    viewBox: "0.625 0.5 12.75 12.75",
+    size: 14,
+    body: '<path fill-rule="evenodd" d="M2.25 2H11.75A1.5 1.5 0 0 1 13.25 3.5V11.75A1.5 1.5 0 0 1 11.75 13.25H2.25A1.5 1.5 0 0 1 0.75 11.75V3.5A1.5 1.5 0 0 1 2.25 2ZM3.25 0.5H4.5V2H3.25ZM9.5 0.5H10.75V2H9.5ZM2.25 6H4.75V8.25H2.25ZM5.75 6H8.25V8.25H5.75ZM9.25 6H11.75V8.25H9.25ZM2.25 9.5H4.75V11.75H2.25ZM5.75 9.5H8.25V11.75H5.75Z"></path>',
+  },
+  /** `IconStar` from the assortment: one star of a rating. */
+  star: {
+    viewBox: "1.007 0.513 21.972 21.972",
+    size: 20,
+    body: '<path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/>',
+  },
+  /** `IconPlay` from the assortment: start a timer. */
+  play: {
+    viewBox: "0.01 0.019 13.981 13.981",
+    size: 16,
+    body: '<path fill-rule="evenodd" d="M2.67593 0.019165c-0.29576 0 -0.58657 0.0753875 -0.84499 0.218948 -0.26314 0.134139 -0.48525 0.336896 -0.64277 0.58693 -0.15979 0.253627 -0.247004 0.546207 -0.252169 0.845927l-0.000075 0V12.3396H0.935852l0.000149 0.0086c0.005165 0.2997 0.092379 0.5923 0.252169 0.8459 0.15752 0.2501 0.37963 0.4528 0.64277 0.587 0.25842 0.1435 0.54923 0.2189 0.84499 0.2189 0.29995 0 0.59481 -0.0775 0.85596 -0.2251 0.00575 -0.0032 0.01143 -0.0066 0.01704 -0.0101l8.62977 -5.33745c0.2617 -0.13189 0.4826 -0.33282 0.6388 -0.5813 0.1611 -0.25659 0.2467 -0.55345 0.2467 -0.85647 0 -0.30301 -0.0856 -0.59988 -0.2467 -0.85646 -0.1563 -0.24874 -0.3776 -0.44984 -0.6396 -0.58172L3.54751 0.253465c-0.00515 -0.00316 -0.01036 -0.006227 -0.01562 -0.009199 -0.26115 -0.1475588 -0.55601 -0.225101 -0.85596 -0.225101Z" clip-rule="evenodd" stroke-width="1"></path>',
+  },
+  /** `IconPause` from the assortment: hold a timer. */
+  pause: {
+    viewBox: "0 0 14 14",
+    size: 16,
+    body: '<path fill-rule="evenodd" d="M0 1.5C0 0.671573 0.671573 0 1.5 0H4c0.82843 0 1.5 0.671573 1.5 1.5v11c0 0.8284 -0.67157 1.5 -1.5 1.5H1.5C0.671573 14 0 13.3284 0 12.5v-11ZM10 0c-0.82843 0 -1.5 0.671573 -1.5 1.5v11c0 0.8284 0.67157 1.5 1.5 1.5h2.5c0.8284 0 1.5 -0.6716 1.5 -1.5v-11c0 -0.828427 -0.6716 -1.5 -1.5 -1.5H10Z" clip-rule="evenodd" stroke-width="1"></path>',
+  },
+  /** `IconResetArrow` from the assortment: put a timer or a pad back to where it started. */
+  resetArrow: {
+    viewBox: "1.5 1 13 13",
+    size: 16,
+    body: '<path d="M14 8A6 6 0 1 1 8 2L8 4.7A3.3 3.3 0 1 0 11.3 8Z"/><path d="M8 1 3.5 3 8 5Z"/>',
+  },
 } satisfies Record<string, Mark>;
 
 // The toast's severity as filled shapes (design-language.md, "Icon glyphs"). The

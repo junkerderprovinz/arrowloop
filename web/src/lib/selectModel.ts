@@ -207,6 +207,19 @@ export function wheelValue<T extends string, G>(all: SelectChoice<T, G>[], value
 }
 
 /**
+ * The option Home or End on a closed trigger opens the list on, the first or
+ * the last one that can be chosen, or undefined for any other key. A native
+ * select would choose that option at once and change the value unseen; the
+ * select-only combobox pattern opens the list there instead.
+ */
+export function endOption<T extends string, G>(all: SelectChoice<T, G>[], key: string): T | undefined {
+  const choosable = all.filter((x) => !x.disabled);
+  if (key === "Home") return choosable[0]?.value;
+  if (key === "End") return choosable.at(-1)?.value;
+  return undefined;
+}
+
+/**
  * Closes an open list when a wheel or a finger moves the page past it, as a
  * resize does. Scroll events do not: the list follows its trigger, and a page
  * still gliding to a trigger that just took focus would close it as it opens.

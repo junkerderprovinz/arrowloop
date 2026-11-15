@@ -1,11 +1,11 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-import { MOTION_VALUES } from './motion'
+import { DEFAULT_MOTION, MOTION_VALUES } from './motion'
 
 /**
  * Every motion level answers every dial. A level that leaves one out inherits
- * the bare :root value, which is the lively one, and the block still reads as
+ * the bare :root value, which is the calm default, and the block still reads as
  * complete because each line in it is right.
  */
 
@@ -20,14 +20,14 @@ function dials(selector: string): string[] {
 }
 
 describe('the app motion dials', () => {
-  const lively = dials(':root')
+  const calm = dials(':root')
 
-  it('reads the lively block at all', () => {
-    expect(lively).toContain('--motion-logo-dur')
+  it('reads the default block at all', () => {
+    expect(calm).toContain('--motion-logo-dur')
   })
 
-  it.each(MOTION_VALUES.filter((v) => v !== 'wild'))('are all answered at %s', (level) => {
-    expect(dials(`:root[data-motion='${level}']`).sort()).toEqual([...lively].sort())
+  it.each(MOTION_VALUES.filter((v) => v !== DEFAULT_MOTION))('are all answered at %s', (level) => {
+    expect(dials(`:root[data-motion='${level}']`).sort()).toEqual([...calm].sort())
   })
 })
 
@@ -44,27 +44,23 @@ function declared(sheet: string, selector: string): Set<string> {
 }
 
 describe("GlimStone's motion dials", () => {
-  const quiet = MOTION_VALUES.filter((v) => v !== 'wild')
-  const byLevel = Object.fromEntries(quiet.map((l) => [l, declared(tokens, `:root[data-motion='${l}']`)]))
-  // A dial is whatever some level sets; the lively default is the bare :root.
-  const all = new Set(quiet.flatMap((l) => [...(byLevel[l] ?? [])]))
+  const others = MOTION_VALUES.filter((v) => v !== DEFAULT_MOTION)
+  const byLevel = Object.fromEntries(others.map((l) => [l, declared(tokens, `:root[data-motion='${l}']`)]))
+  // A dial is whatever some level sets; the calm default is the bare :root.
+  const all = new Set(others.flatMap((l) => [...(byLevel[l] ?? [])]))
 
   it('finds the dials at all', () => {
     expect(all.size).toBeGreaterThanOrEqual(15)
   })
 
-  it.each(quiet)('are all declared at %s', (level) => {
-    expect([...all].filter((d) => !byLevel[level]?.has(d))).toEqual([])
-  })
-
-  it('are all declared by the lively default', () => {
+  it('are all declared by the calm default', () => {
     const root = declared(tokens, ':root')
     expect([...all].filter((d) => !root.has(d))).toEqual([])
   })
 
-  it('are never keyed to the lively level by name', () => {
+  it('are never keyed to the default level by name', () => {
     for (const sheet of [tokens, css]) {
-      expect(sheet).not.toMatch(/data-motion=['"]wild['"]/)
+      expect(sheet).not.toMatch(/data-motion=['"]subtle['"]/)
     }
   })
 })

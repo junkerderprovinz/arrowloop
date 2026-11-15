@@ -149,3 +149,10 @@ export function toastPoliteness(severity: ToastSeverity): Politeness {
 export function shouldShowToast(severity: ToastSeverity, quiet: boolean): boolean {
   return !quiet || severity !== "success";
 }
+
+export interface ToastViewportEntry {
+  id: string;
+  message: string;
+  severity: ToastSeverity;
+  action?: ToastAction;
+}
