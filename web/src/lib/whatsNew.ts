@@ -63,6 +63,20 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.7.1',
+    changes: [
+      { id: 'only-files', text: 'new.change.onlyFiles', names: { only: 'edit.include' } },
+      {
+        id: 'pause-automatic',
+        text: 'new.change.pauseAutomatic',
+        names: { pause: 'automatic.pause', more: 'list.more', jobs: 'nav.jobs' },
+      },
+      { id: 'discord-help', text: 'new.change.discordHelp', names: { help: 'info.help', info: 'settings.info' } },
+      { id: 'trust-certificate', text: 'new.change.trustCertificate' },
+      { id: 'kdrive-root', text: 'new.change.kdriveRoot' },
+    ],
+  },
+  {
     after: '2.6.0',
     changes: [
       { id: 'fortress-join', text: 'new.change.fortressJoin', names: { pairing: 'settings.pairing' } },
