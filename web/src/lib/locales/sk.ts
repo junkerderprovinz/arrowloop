@@ -707,6 +707,7 @@ const sk: Translations = {
   'pick.create': 'Vytvoriť',
   'pick.roots': 'Disky a korene',
   'pick.empty': 'Tu nie sú priečinky.',
+  'pick.hidden': 'Zobraziť skryté priečinky',
   'look.accentReset': 'Späť na predvolené',
   'pick.cancel': 'Zrušiť',
   'look.paletteReset': 'Späť na predvolené farby',

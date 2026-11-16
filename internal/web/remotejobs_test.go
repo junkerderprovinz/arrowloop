@@ -289,6 +289,23 @@ func TestTheGroupBrowsesOnlyWhatItMayChoose(t *testing.T) {
 	}
 }
 
+func TestTheGroupSeesHiddenFoldersOnlyWhenItAsks(t *testing.T) {
+	config, left, _ := apart(t)
+	if err := os.Mkdir(filepath.Join(left, ".backup"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	a, _, _, bID := pairedPair(t, config)
+	openOn(t, a, bID, "photos")
+	at := "/api/instances/" + bID + "/browse?path=" + url.QueryEscape(left)
+
+	if status, body := a.send(t, http.MethodGet, at, ""); status != http.StatusOK || strings.Contains(string(body), ".backup") {
+		t.Errorf("the side of the other instance = %d %s, want no hidden folder", status, body)
+	}
+	if status, body := a.send(t, http.MethodGet, at+"&hidden=1", ""); status != http.StatusOK || !strings.Contains(string(body), `".backup"`) {
+		t.Errorf("the side of the other instance with hidden folders = %d %s, want .backup", status, body)
+	}
+}
+
 func TestTheOwnersLogQuotesTheNameAnInstanceGivesItself(t *testing.T) {
 	a, b, _, bID := pairedPair(t, "")
 	if status, body := a.send(t, http.MethodPut, "/api/connect", `{"name":"Attic\nforged line"}`); status != http.StatusOK {

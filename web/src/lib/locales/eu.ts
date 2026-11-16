@@ -707,6 +707,7 @@ const eu: Translations = {
   'pick.create': 'Sortu',
   'pick.roots': 'Diskoak eta erroak',
   'pick.empty': 'Hemen ez dago karpetarik.',
+  'pick.hidden': 'Erakutsi karpeta ezkutuak',
   'look.accentReset': 'Lehenetsira itzuli',
   'pick.cancel': 'Utzi',
   'look.paletteReset': 'Lehenetsitako koloreetara itzuli',

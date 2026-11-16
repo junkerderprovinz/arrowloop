@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	_ "github.com/rclone/rclone/backend/alias"
@@ -120,6 +121,51 @@ func TestTheSharesListIsAListEvenWhenEmpty(t *testing.T) {
 	h.get(t, "/api/shares", &got)
 	if got.Shares == nil {
 		t.Error("the shares arrived as null, which the page would have to guard against")
+	}
+}
+
+// listedNames asks the picker for the folders in at and returns their names.
+func listedNames(t *testing.T, h *harness, at, query string) []string {
+	t.Helper()
+	var got browseAnswer
+	h.get(t, "/api/browse?path="+url.QueryEscape(at)+query, &got)
+	names := []string{}
+	for _, e := range got.Entries {
+		names = append(names, e.Name)
+	}
+	return names
+}
+
+func TestHiddenFoldersAreListedOnlyWhenAskedFor(t *testing.T) {
+	h := newHarness(t)
+	dir := t.TempDir()
+	for _, name := range []string{"Music", ".backup", ".arrowloop"} {
+		if err := os.Mkdir(filepath.Join(dir, name), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	if got := listedNames(t, h, dir, ""); !slices.Equal(got, []string{"Music"}) {
+		t.Errorf("the folder lists %q", got)
+	}
+	// ArrowLoop's own folder is never a side, shown or not.
+	if got := listedNames(t, h, dir, "&hidden=1"); !slices.Equal(got, []string{".backup", "Music"}) {
+		t.Errorf("with hidden folders shown, the folder lists %q", got)
+	}
+}
+
+func TestHiddenFoldersOnADriveAreListedWithoutItsMarker(t *testing.T) {
+	h := newHarness(t)
+	mount, at := markedDrive(t)
+	if err := os.Mkdir(filepath.Join(mount, ".backup"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	if got := listedNames(t, h, at+"/", ""); len(got) != 0 {
+		t.Errorf("the top of the drive lists %q", got)
+	}
+	if got := listedNames(t, h, at+"/", "&hidden=1"); !slices.Equal(got, []string{".backup"}) {
+		t.Errorf("with hidden folders shown, the top of the drive lists %q", got)
 	}
 }
 

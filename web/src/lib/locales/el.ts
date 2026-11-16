@@ -707,6 +707,7 @@ const el: Translations = {
   'pick.create': 'Δημιουργία',
   'pick.roots': 'Δίσκοι και ρίζες',
   'pick.empty': 'Δεν υπάρχουν φάκελοι εδώ.',
+  'pick.hidden': 'Εμφάνιση κρυφών φακέλων',
   'look.accentReset': 'Πίσω στο προεπιλεγμένο',
   'pick.cancel': 'Άκυρο',
   'look.paletteReset': 'Πίσω στα προεπιλεγμένα χρώματα',

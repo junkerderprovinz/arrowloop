@@ -707,6 +707,7 @@ const it: Translations = {
   'pick.create': 'Crea',
   'pick.roots': 'Dischi e radici',
   'pick.empty': 'Qui non ci sono cartelle.',
+  'pick.hidden': 'Mostra le cartelle nascoste',
   'look.accentReset': 'Torna al valore predefinito',
   'pick.cancel': 'Annulla',
   'look.paletteReset': 'Torna ai colori predefiniti',

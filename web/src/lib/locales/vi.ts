@@ -707,6 +707,7 @@ const vi: Translations = {
   'pick.create': 'Tạo',
   'pick.roots': 'Ổ đĩa và gốc',
   'pick.empty': 'Ở đây không có thư mục.',
+  'pick.hidden': 'Hiện thư mục ẩn',
   'look.accentReset': 'Về mặc định',
   'pick.cancel': 'Hủy',
   'look.paletteReset': 'Về màu mặc định',

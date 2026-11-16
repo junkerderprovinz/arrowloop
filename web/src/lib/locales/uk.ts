@@ -707,6 +707,7 @@ const uk: Translations = {
   'pick.create': 'Створити',
   'pick.roots': 'Диски й корені',
   'pick.empty': 'Тут немає тек.',
+  'pick.hidden': 'Показувати приховані теки',
   'look.accentReset': 'Повернути типове',
   'pick.cancel': 'Скасувати',
   'look.paletteReset': 'Повернути типові кольори',

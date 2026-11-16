@@ -707,6 +707,7 @@ const ar: Translations = {
   'pick.create': 'إنشاء',
   'pick.roots': 'الأقراص والجذور',
   'pick.empty': 'لا مجلدات هنا.',
+  'pick.hidden': 'إظهار المجلدات المخفية',
   'look.accentReset': 'العودة إلى الافتراضي',
   'pick.cancel': 'إلغاء',
   'look.paletteReset': 'العودة إلى الألوان الافتراضية',

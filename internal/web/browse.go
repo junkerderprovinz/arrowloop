@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
@@ -44,6 +45,7 @@ type browseAnswer struct {
 
 // browse lists the folders inside one folder, on this machine or on a
 // configured target. Files are left out, since a job's side is always a folder.
+// Hidden folders are listed only when asked for with hidden=1.
 func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	at := r.URL.Query().Get("path")
 	if at == "" {
@@ -55,7 +57,7 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, browseAnswer{Entries: roots})
 		return
 	}
-	answer, err := folderListing(r.Context(), at)
+	answer, err := folderListing(r.Context(), at, wantsHidden(r))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -63,11 +65,16 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, answer)
 }
 
+func wantsHidden(r *http.Request) bool {
+	return r.URL.Query().Get("hidden") == "1"
+}
+
 // folderListing lists the folders in at, a folder on this machine, on a
-// marked drive or on a target.
-func folderListing(ctx context.Context, at string) (browseAnswer, error) {
+// marked drive or on a target. A target lists its hidden folders either way,
+// as rclone lists them.
+func folderListing(ctx context.Context, at string, hidden bool) (browseAnswer, error) {
 	if strings.HasPrefix(at, volume.Prefix) {
-		return volumeListing(at)
+		return volumeListing(at, hidden)
 	}
 
 	if name, dir, ok := remotes.Split(at); ok {
@@ -89,7 +96,7 @@ func folderListing(ctx context.Context, at string) (browseAnswer, error) {
 	// than it reads.
 	at = filepath.Clean(at)
 
-	names, err := subfolders(at)
+	names, err := subfolders(at, hidden)
 	if err != nil {
 		return browseAnswer{}, fmt.Errorf("cannot read %s: %w", at, err)
 	}
@@ -102,13 +109,13 @@ func folderListing(ctx context.Context, at string) (browseAnswer, error) {
 
 // volumeListing lists a folder on a marked drive and answers in drive paths,
 // so a job keeps finding the folder after the drive has changed its letter.
-func volumeListing(at string) (browseAnswer, error) {
+func volumeListing(at string, hidden bool) (browseAnswer, error) {
 	id, sub := splitVolume(at)
 	dir, err := volume.Resolve(volume.Prefix + id + "/" + sub)
 	if err != nil {
 		return browseAnswer{}, fmt.Errorf("cannot read %s: %w", volume.Describe(at), err)
 	}
-	names, err := subfolders(dir)
+	names, err := subfolders(dir, hidden)
 	if err != nil {
 		return browseAnswer{}, fmt.Errorf("cannot read %s: %w", volume.Describe(at), err)
 	}
@@ -132,17 +139,20 @@ func splitVolume(at string) (id, sub string) {
 	return id, strings.Trim(path.Clean("/"+sub), "/")
 }
 
-// subfolders lists the folders in dir by name, without the hidden ones.
-func subfolders(dir string) ([]string, error) {
+// subfolders lists the folders in dir by name, the hidden ones only when asked
+// for. ArrowLoop's own folder is never listed, since it cannot be a side.
+func subfolders(dir string, hidden bool) ([]string, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
 	var out []string
 	for _, e := range entries {
-		if e.IsDir() && !strings.HasPrefix(e.Name(), ".") {
-			out = append(out, e.Name())
+		name := e.Name()
+		if !e.IsDir() || scan.IsReserved(name) || (!hidden && strings.HasPrefix(name, ".")) {
+			continue
 		}
+		out = append(out, name)
 	}
 	sort.Slice(out, func(i, j int) bool { return strings.ToLower(out[i]) < strings.ToLower(out[j]) })
 	return out, nil

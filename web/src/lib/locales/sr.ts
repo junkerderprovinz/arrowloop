@@ -707,6 +707,7 @@ const sr: Translations = {
   'pick.create': 'Направи',
   'pick.roots': 'Дискови и корени',
   'pick.empty': 'Овде нема фасцикли.',
+  'pick.hidden': 'Прикажи скривене фасцикле',
   'look.accentReset': 'Назад на подразумевано',
   'pick.cancel': 'Одустани',
   'look.paletteReset': 'Назад на подразумеване боје',

@@ -168,7 +168,7 @@ func (s *Server) groupBrowse(w http.ResponseWriter, r *http.Request) {
 		s.writeRefusal(w, err)
 		return
 	}
-	answer, err := folderListing(r.Context(), at)
+	answer, err := folderListing(r.Context(), at, wantsHidden(r))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return
@@ -541,7 +541,11 @@ func (s *Server) instancePlaces(w http.ResponseWriter, r *http.Request) {
 
 // instanceBrowse lists the folders in one folder of another instance.
 func (s *Server) instanceBrowse(w http.ResponseWriter, r *http.Request) {
-	s.toInstance(w, r, "/api/browse?path="+url.QueryEscape(r.URL.Query().Get("path")))
+	at := "/api/browse?path=" + url.QueryEscape(r.URL.Query().Get("path"))
+	if wantsHidden(r) {
+		at += "&hidden=1"
+	}
+	s.toInstance(w, r, at)
 }
 
 // toInstance passes the call on to the instance of the group the address

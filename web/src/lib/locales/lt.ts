@@ -707,6 +707,7 @@ const lt: Translations = {
   'pick.create': 'Sukurti',
   'pick.roots': 'Diskai ir šaknys',
   'pick.empty': 'Čia nėra aplankų.',
+  'pick.hidden': 'Rodyti paslėptus aplankus',
   'look.accentReset': 'Grįžti į numatytąjį',
   'pick.cancel': 'Atšaukti',
   'look.paletteReset': 'Grįžti į numatytąsias spalvas',

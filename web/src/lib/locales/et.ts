@@ -707,6 +707,7 @@ const et: Translations = {
   'pick.create': 'Loo',
   'pick.roots': 'Kettad ja juured',
   'pick.empty': 'Siin pole kaustu.',
+  'pick.hidden': 'Näita peidetud kaustu',
   'look.accentReset': 'Tagasi vaikeväärtusele',
   'pick.cancel': 'Loobu',
   'look.paletteReset': 'Tagasi vaikevärvidele',

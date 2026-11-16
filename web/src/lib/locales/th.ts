@@ -707,6 +707,7 @@ const th: Translations = {
   'pick.create': 'สร้าง',
   'pick.roots': 'ไดรฟ์และราก',
   'pick.empty': 'ที่นี่ไม่มีโฟลเดอร์',
+  'pick.hidden': 'แสดงโฟลเดอร์ที่ซ่อนอยู่',
   'look.accentReset': 'กลับเป็นค่าเริ่มต้น',
   'pick.cancel': 'ยกเลิก',
   'look.paletteReset': 'กลับเป็นสีเริ่มต้น',

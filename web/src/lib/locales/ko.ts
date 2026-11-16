@@ -707,6 +707,7 @@ const ko: Translations = {
   'pick.create': '만들기',
   'pick.roots': '드라이브와 루트',
   'pick.empty': '여기에는 폴더가 없습니다.',
+  'pick.hidden': '숨김 폴더 표시',
   'look.accentReset': '기본값으로 되돌리기',
   'pick.cancel': '취소',
   'look.paletteReset': '기본 색으로 되돌리기',

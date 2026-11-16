@@ -707,6 +707,7 @@ const no: Translations = {
   'pick.create': 'Opprett',
   'pick.roots': 'Disker og røtter',
   'pick.empty': 'Ingen mapper her.',
+  'pick.hidden': 'Vis skjulte mapper',
   'look.accentReset': 'Tilbake til standard',
   'pick.cancel': 'Avbryt',
   'look.paletteReset': 'Tilbake til standardfargene',

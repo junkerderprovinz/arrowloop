@@ -707,6 +707,7 @@ const fi: Translations = {
   'pick.create': 'Luo',
   'pick.roots': 'Levyt ja juuret',
   'pick.empty': 'Täällä ei ole kansioita.',
+  'pick.hidden': 'Näytä piilokansiot',
   'look.accentReset': 'Takaisin oletukseen',
   'pick.cancel': 'Peruuta',
   'look.paletteReset': 'Takaisin oletusväreihin',

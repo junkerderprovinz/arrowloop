@@ -707,6 +707,7 @@ const cs: Translations = {
   'pick.create': 'Vytvořit',
   'pick.roots': 'Disky a kořeny',
   'pick.empty': 'Tady nejsou složky.',
+  'pick.hidden': 'Zobrazit skryté složky',
   'look.accentReset': 'Zpět na výchozí',
   'pick.cancel': 'Zrušit',
   'look.paletteReset': 'Zpět na výchozí barvy',

@@ -689,6 +689,12 @@ function post<T>(path: string, body: unknown = {}): Promise<T> {
   })
 }
 
+/** The query of a folder listing; without a path it asks for the roots. */
+function browseQuery(path?: string, hidden?: boolean): string {
+  if (!path) return ''
+  return `?path=${encodeURIComponent(path)}${hidden ? '&hidden=1' : ''}`
+}
+
 /** What an instance tells the others of its group it is. */
 export type Deployment = 'container' | 'server' | 'desktop' | 'phone' | 'android'
 
@@ -1259,7 +1265,7 @@ export const api = {
   },
 
   /** The folders inside one folder. An empty path asks for the roots. */
-  browse: (path?: string) => request<FolderListing>(`/api/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`),
+  browse: (path?: string, hidden?: boolean) => request<FolderListing>(`/api/browse${browseQuery(path, hidden)}`),
 
   /**
    * The network shares this computer is already connected to, such as a
@@ -1409,8 +1415,8 @@ export const api = {
   instancePlaces: (id: string) => request<InstancePlaces>(`/api/instances/${encodeURIComponent(id)}/places`),
 
   /** The folders inside one folder of another instance, or its roots for an empty path. */
-  browseOnInstance: (id: string, path?: string) =>
-    request<FolderListing>(`/api/instances/${encodeURIComponent(id)}/browse${path ? `?path=${encodeURIComponent(path)}` : ''}`),
+  browseOnInstance: (id: string, path?: string, hidden?: boolean) =>
+    request<FolderListing>(`/api/instances/${encodeURIComponent(id)}/browse${browseQuery(path, hidden)}`),
 
   /** Puts the jobs in this order and keeps it, for a job somebody moved in a list. */
   orderJobs: (names: string[]) =>

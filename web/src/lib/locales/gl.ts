@@ -707,6 +707,7 @@ const gl: Translations = {
   'pick.create': 'Crear',
   'pick.roots': 'Discos e raíces',
   'pick.empty': 'Aquí non hai cartafoles.',
+  'pick.hidden': 'Amosar os cartafoles agochados',
   'look.accentReset': 'Volver ao valor predeterminado',
   'pick.cancel': 'Cancelar',
   'look.paletteReset': 'Volver ás cores predeterminadas',

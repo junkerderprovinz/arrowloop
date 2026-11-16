@@ -707,6 +707,7 @@ const hu: Translations = {
   'pick.create': 'Létrehozás',
   'pick.roots': 'Lemezek és gyökerek',
   'pick.empty': 'Itt nincsenek mappák.',
+  'pick.hidden': 'Rejtett mappák megjelenítése',
   'look.accentReset': 'Vissza az alapértelmezettre',
   'pick.cancel': 'Mégse',
   'look.paletteReset': 'Vissza az alapszínekhez',

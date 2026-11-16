@@ -707,6 +707,7 @@ const ms: Translations = {
   'pick.create': 'Cipta',
   'pick.roots': 'Cakera dan akar',
   'pick.empty': 'Tiada folder di sini.',
+  'pick.hidden': 'Tunjukkan folder tersembunyi',
   'look.accentReset': 'Kembali ke lalai',
   'pick.cancel': 'Batal',
   'look.paletteReset': 'Kembali ke warna lalai',

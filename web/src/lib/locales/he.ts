@@ -707,6 +707,7 @@ const he: Translations = {
   'pick.create': 'צור',
   'pick.roots': 'כוננים ושורשים',
   'pick.empty': 'אין כאן תיקיות.',
+  'pick.hidden': 'הצגת תיקיות מוסתרות',
   'look.accentReset': 'חזרה לברירת המחדל',
   'pick.cancel': 'ביטול',
   'look.paletteReset': 'חזרה לצבעי ברירת המחדל',

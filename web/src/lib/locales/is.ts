@@ -707,6 +707,7 @@ const is: Translations = {
   'pick.create': 'Búa til',
   'pick.roots': 'Diskar og rætur',
   'pick.empty': 'Engar möppur hér.',
+  'pick.hidden': 'Sýna faldar möppur',
   'look.accentReset': 'Aftur í sjálfgefið',
   'pick.cancel': 'Hætta við',
   'look.paletteReset': 'Aftur í sjálfgefnu litina',

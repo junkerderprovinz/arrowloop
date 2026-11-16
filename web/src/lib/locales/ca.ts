@@ -707,6 +707,7 @@ const ca: Translations = {
   'pick.create': 'Crea',
   'pick.roots': 'Discs i arrels',
   'pick.empty': 'Aquí no hi ha carpetes.',
+  'pick.hidden': 'Mostra les carpetes ocultes',
   'look.accentReset': 'Torna al valor per defecte',
   'pick.cancel': 'Cancel·la',
   'look.paletteReset': 'Torna als colors per defecte',

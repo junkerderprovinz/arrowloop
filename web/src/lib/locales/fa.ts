@@ -707,6 +707,7 @@ const fa: Translations = {
   'pick.create': 'ایجاد',
   'pick.roots': 'درایوها و ریشه‌ها',
   'pick.empty': 'اینجا پوشه‌ای نیست.',
+  'pick.hidden': 'نمایش پوشه‌های پنهان',
   'look.accentReset': 'بازگشت به پیش‌فرض',
   'pick.cancel': 'انصراف',
   'look.paletteReset': 'بازگشت به رنگ‌های پیش‌فرض',
