@@ -975,20 +975,16 @@
   }
 }
 /* tokens:motion begin: written by scripts/build-tokens.mjs from packages/core/tokens */
-/* The toast's travel is a token so it can flip with the writing direction; a
-   keyframe does not mirror on its own. */
-:root {
-  --glim-toast-slide: 12px;
-
-  /* A tab change. The strip sets --tab-dir to 1 toward a later tab and -1
-     toward an earlier one; --tab-dir-sign flips the side under a right-to-left
-     script. */
-  --tab-dir-sign: 1;
+/* A tab change. The strip sets --tab-dir to 1 toward a later tab and -1 toward
+   an earlier one; --tab-dir-sign flips the side under a right-to-left script. */
+@layer components {
+  :root {
+    --tab-dir-sign: 1;
+  }
 }
 
 @layer components {
   [dir="rtl"] {
-    --glim-toast-slide: -12px;
     --tab-dir-sign: -1;
   }
 }
@@ -2775,8 +2771,10 @@
    window. The page starts under it and a scrim leaves it clear, so the window
    can still be moved and closed while a dialog is open. Without the bar
    --window-bar is 0 and none of this moves anything. */
-:root {
-  --window-bar: 0px;
+@layer components {
+  :root {
+    --window-bar: 0px;
+  }
 }
 
 @layer components {

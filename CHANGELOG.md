@@ -19,7 +19,7 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **ArrowLoop follows GlimStone 4.5.2.** Placeholder text is easier to read in every field, the focus ring stands out on every background, and a dropdown jumps to the option whose first letter you type. The GlimStone version on the Info tile opens the newest release. On the phone the info colour of the light theme is a shade darker, as it is on the web.
+- **ArrowLoop follows GlimStone 4.5.3.** Placeholder text is easier to read in every field, the focus ring stands out on every background, and a dropdown jumps to the option whose first letter you type. The GlimStone version on the Info tile opens the newest release. On the phone the info colour of the light theme is a shade darker, as it is on the web.
 
 ## ⚡ Improved
 
