@@ -8,6 +8,14 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🎨 Design
+
+- **Every setting of a target has a proper name.** All of rclone's options carry a readable name in the target form, such as "Authentication URL" or "Minimum pause between requests", in place of names like auth_url or pacer_min_sleep. The names are in English and German so far.
+- **An empty field shows rclone's name for it.** The name stands in grey inside the field and goes away as soon as you click into it. A field's default value has moved into its (i) bubble, on the phone as well.
+- **Inclusions and Exclusions read as a pair.** The job editor's card "Only these files" is called Inclusions, and its patterns field Own inclusions, beside Exclusions and Own exclusions. On the phone too.
+
 ## 2.7.2 - 2026-11-16
 
 A job can take only the files you name, one switch pauses every automatic run, a WebDAV target can trust the certificate your own server made, and a kDrive target can start in the shared folder. A failed job says why, dates follow your region, a Samba share with a connection limit no longer stops a job, and questions go to ArrowLoop's own Discord server.
