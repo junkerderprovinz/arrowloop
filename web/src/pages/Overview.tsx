@@ -212,9 +212,9 @@ export function Overview({
  * The mark turns while anything runs, as a running job's mark does.
  */
 function Head({ headline, needs, jobs, paused }: { headline: Headline; needs: number; jobs: Job[]; paused: boolean }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const { last, next } = lastAndNext(jobs)
-  const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
+  const when = (at: string) => dayTime(at, locale, (p) => t('list.when', p))
   const line = [
     last && t('jobs.lastRun', { when: when(last) }),
     paused ? t('automatic.paused') : next && t('jobs.fact.next', { when: when(next) }),
@@ -285,12 +285,12 @@ function JobLine({
   event?: RunEvent
   onAnswered: () => void
 }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const open = useOpenJob()
   const narrow = useNarrow()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
   const startStop = useStartStop(job, onAnswered)
-  const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
+  const when = (at: string) => dayTime(at, locale, (p) => t('list.when', p))
   // The status of a job that ran fine is already the time of that run.
   const last = status !== 'last' && job.recent[0]
   const next = job.nextRun && !job.disabled ? job.nextRun : ''

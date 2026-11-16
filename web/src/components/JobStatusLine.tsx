@@ -30,7 +30,7 @@ export function JobStatusLine({
   /** The running job's progress, drawn as a bar under the badge. */
   event?: RunEvent
 }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const goTo = useGoTo()
   const anomalies = useAnomaliesOn()
   // The status sits inside a row that opens the job, which a click on a
@@ -107,7 +107,7 @@ export function JobStatusLine({
       return (
         <span className="flex items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub">
           <span aria-hidden className="h-[7px] w-[7px] shrink-0 rounded-full bg-statusOkSolid" />
-          <span className="glim-num">{dayTime(job.recent[0].Finished, lang, (p) => t('list.when', p))}</span>
+          <span className="glim-num">{dayTime(job.recent[0].Finished, locale, (p) => t('list.when', p))}</span>
         </span>
       )
   }

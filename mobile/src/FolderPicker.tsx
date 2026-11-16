@@ -37,6 +37,9 @@ export function FolderPicker({
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  // The folder being listed, named before it answers so the one just left
+  // cannot pass for it. null while nothing is being opened.
+  const [opening, setOpening] = useState<string | null>(null);
   /** The name of the folder being made, or null while none is. */
   const [naming, setNaming] = useState<string | null>(null);
   const keyboard = useKeyboardOverlap();
@@ -44,6 +47,7 @@ export function FolderPicker({
   /** Opens a folder and reports whether it could be read. */
   const go = useCallback(async (path: string) => {
     setBusy(true);
+    setOpening(path);
     setError("");
     try {
       const answer = await api.browse(path || undefined);
@@ -57,6 +61,7 @@ export function FolderPicker({
       return false;
     } finally {
       setBusy(false);
+      setOpening(null);
     }
   }, []);
 
@@ -125,25 +130,38 @@ export function FolderPicker({
           onPress={() => {}}
         >
           <Body>{t("pick.title")}</Body>
-          <Caption>{at || t("pick.roots")}</Caption>
+          <Caption>{(opening ?? at) || t("pick.roots")}</Caption>
 
           <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-            {at && at !== within ? row(t("pick.up"), () => void climb(), "IconBack") : null}
-            {/* Targets at the top level only, where they cannot pass for a subfolder. */}
-            {!at
-              ? targets.map((name) =>
-                  row(name, () => void go(`${name}:`), "IconTabStorage"),
-                )
-              : null}
-            {entries.map((entry) => row(entry.name, () => void go(entry.path), "IconFolder"))}
-            {!busy && !entries.length && !error ? <Caption>{t("pick.empty")}</Caption> : null}
-            {error ? <Caption>{error}</Caption> : null}
+            {/* A target can take a while to answer, and the folder just left
+                or an empty list would meanwhile pass for the answer. */}
+            {busy ? (
+              <Caption>{t("pick.loading")}</Caption>
+            ) : (
+              <>
+                {at && at !== within ? row(t("pick.up"), () => void climb(), "IconBack") : null}
+                {/* Targets at the top level only, where they cannot pass for a subfolder. */}
+                {!at
+                  ? targets.map((name) =>
+                      row(name, () => void go(`${name}:`), "IconTabStorage"),
+                    )
+                  : null}
+                {entries.map((entry) => row(entry.name, () => void go(entry.path), "IconFolder"))}
+                {!entries.length && !error ? <Caption>{t("pick.empty")}</Caption> : null}
+                {error ? <Caption>{error}</Caption> : null}
+              </>
+            )}
           </ScrollView>
 
           {/* The top level lists storage volumes and targets, where no folder
               can be made. */}
           {at && naming === null ? (
-            <Button label={t("pick.newFolder")} labelKey="pick.newFolder" onPress={() => setNaming("")} />
+            <Button
+              label={t("pick.newFolder")}
+              labelKey="pick.newFolder"
+              disabled={busy}
+              onPress={() => setNaming("")}
+            />
           ) : null}
           {at && naming !== null ? (
             <View style={styles.naming}>
@@ -180,6 +198,7 @@ export function FolderPicker({
                 label={t("pick.choose")}
                 labelKey="pick.choose"
                 tone="accent"
+                disabled={busy}
                 onPress={() => onPick(at)}
               />
             ) : null}

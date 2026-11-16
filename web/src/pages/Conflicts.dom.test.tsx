@@ -86,9 +86,9 @@ describe('the conflicts list', () => {
     )
     expect(screen.getByText('a.conflict-left-20270301-030000.txt')).toBeTruthy()
     const right = screen.getByText('Right side').parentElement?.parentElement as HTMLElement
-    expect(within(right).getByText('newer')).toBeTruthy()
+    expect(within(right).getByText('Newer')).toBeTruthy()
     const left = screen.getByText('Left side').parentElement?.parentElement as HTMLElement
-    expect(within(left).queryByText('newer')).toBeNull()
+    expect(within(left).queryByText('Newer')).toBeNull()
   })
 
   it('gives every conflict shown one answer from the corner, once asked', async () => {

@@ -12,6 +12,7 @@ import {
   type TranslationKey,
   type Translations,
 } from "../../web/src/lib/i18n.data";
+import { useClockLayout } from "./clock";
 import { locales } from "./locales";
 import { settings } from "./settings";
 
@@ -49,6 +50,9 @@ function fromDevice(): string {
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState(fromDevice);
   const [settled, setSettled] = useState(false);
+  // Every screen that shows a time asks for the language, so rendering here
+  // when the clock or region changes redraws the times already on screen.
+  useClockLayout();
 
   // The screens wait for this: a language arriving once the native headers are
   // drawn makes react-native-screens add a header view that already has a

@@ -37,6 +37,7 @@ import {
   type TranslationKey,
   type Translations,
 } from './i18n.data'
+import { dateLocale, regionOf } from './dateLocale'
 
 // The tables live in i18n.data.ts, which the Android app shares.
 export { en, de, LANGUAGES, SUPPORTED, isRtl }
@@ -67,6 +68,18 @@ function resolveCode(raw: string | null): string {
 function installerCode(): string | null {
   const code = new URLSearchParams(window.location.search).get('lang')
   return code && SUPPORTED.includes(code) ? code : null
+}
+
+/**
+ * The region the browser is set to, from the first of its languages that names
+ * one, since a list such as "en, en-GB" leads with the bare language.
+ */
+function browserRegion(): string | null {
+  for (const tag of navigator.languages ?? [navigator.language]) {
+    const region = regionOf(tag)
+    if (region) return region
+  }
+  return null
 }
 
 /**
@@ -104,6 +117,8 @@ export type { Translate }
 
 export interface I18nContextValue {
   lang: string
+  /** What dates and times are written in: the language with the browser's region. */
+  locale: string
   setLanguage: (code: string) => void
   t: Translate
   languages: Language[]
@@ -119,6 +134,7 @@ function fill(text: string, vars?: Record<string, string | number>): string {
 
 const I18nContext = createContext<I18nContextValue>({
   lang: DEFAULT_CODE,
+  locale: DEFAULT_CODE,
   setLanguage: () => undefined,
   t: (key, vars) => fill(en[key] ?? key, vars),
   languages: LANGUAGES,
@@ -162,7 +178,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     [table],
   )
 
-  return createElement(I18nContext.Provider, { value: { lang, setLanguage, t, languages: LANGUAGES } }, children)
+  const locale = dateLocale(lang, browserRegion())
+
+  return createElement(I18nContext.Provider, { value: { lang, locale, setLanguage, t, languages: LANGUAGES } }, children)
 }
 
 export function useT(): I18nContextValue {

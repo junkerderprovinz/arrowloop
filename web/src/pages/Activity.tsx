@@ -284,7 +284,7 @@ function RunningRow({ job, event }: { job: Job; event?: RunEvent }) {
  * path it came from and went to.
  */
 function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drives: Volume[] }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const job = jobs.find((j) => j.name === change.Job)
   const route = entryRoute(change, job, drives)
   // The paths underneath say where, so the badge only says what.
@@ -297,8 +297,8 @@ function ChangeRow({ change, jobs, drives }: { change: Touch; jobs: Job[]; drive
         <span className="min-w-0 truncate" title={label}>
           <Badge tone={tone}>{label}</Badge>
         </span>
-        <span className="ms-auto shrink-0 truncate text-subline text-carbon-textMuted" title={when.toLocaleString(lang)}>
-          {change.Job} · {clock(when, lang)}
+        <span className="ms-auto shrink-0 truncate text-subline text-carbon-textMuted" title={when.toLocaleString(locale)}>
+          {change.Job} · {clock(when, locale)}
         </span>
       </div>
       {route ? (
@@ -332,8 +332,8 @@ function PathLine({ path, lead, muted = false }: { path: string; lead?: string; 
 }
 
 /** The time of day for today, and the date as well for anything older. */
-function clock(at: Date, lang: string): string {
+function clock(at: Date, locale: string): string {
   const today = new Date()
   const sameDay = at.toDateString() === today.toDateString()
-  return at.toLocaleString(lang, sameDay ? { hour: '2-digit', minute: '2-digit' } : { dateStyle: 'short', timeStyle: 'short' })
+  return at.toLocaleString(locale, sameDay ? { hour: '2-digit', minute: '2-digit' } : { dateStyle: 'short', timeStyle: 'short' })
 }

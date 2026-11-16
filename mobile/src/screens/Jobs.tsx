@@ -77,6 +77,7 @@ export function Jobs() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const { jobView } = useAppearance();
+  const engine = useEngineSettings(true);
   // A moved job keeps its new place until the engine has the order and the
   // list has been read again.
   const [order, setOrder] = useState<string[] | null>(null);
@@ -251,7 +252,6 @@ export function Jobs() {
     await load();
   };
   const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
-  const engine = useEngineSettings(true);
   const paused = !!engine.settings?.pauseAutomatic;
   const more = [
     ...(ready.length > 0
@@ -598,7 +598,7 @@ function JobStatus({
     case "running":
       return (
         <View style={styles.status}>
-          {job.queued ? <Badge label={t("status.queued")} /> : <Badge label={t("jobs.state.running")} tone="accent" />}
+          {job.queued ? <Badge label={t("status.queued")} /> : <Badge label={t("status.running")} tone="accent" />}
           <RunProgress job={job} at={progress} hue={hue} />
         </View>
       );
@@ -625,7 +625,7 @@ function JobStatus({
     case "failed":
       return <Badge label={t("status.failed")} tone="fail" />;
     case "paused":
-      return <Badge label={t("jobs.state.disabled")} />;
+      return <Badge label={t("status.paused")} />;
     case "stopped":
       return <Badge label={t("status.stopped")} />;
     case "never":

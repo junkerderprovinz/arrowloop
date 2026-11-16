@@ -1,6 +1,8 @@
-import { getCalendars } from "expo-localization";
+import { getCalendars, getLocales } from "expo-localization";
+import { useSyncExternalStore } from "react";
 import { AppState } from "react-native";
 
+import { dateLocale } from "../../web/src/lib/dateLocale";
 import { hourCycle } from "../../web/src/lib/hourCycle";
 
 /** Whether Android's clock is set to 24-hour time, or null where it does not say. */
@@ -8,20 +10,48 @@ function phoneClock(): boolean | null {
   return getCalendars()[0]?.uses24hourClock ?? null;
 }
 
-// Read again whenever the app comes back, since the setting is changed in
-// Android's own settings while the app waits behind them.
+/** The region Android is set to, which orders the day and month whatever language the app speaks. */
+function phoneRegion(): string | null {
+  return getLocales()[0]?.regionCode ?? null;
+}
+
+// Read again whenever the app comes back, since both are changed in Android's
+// own settings while the app waits behind them.
 let uses24 = phoneClock();
+let region = phoneRegion();
+const listeners = new Set<() => void>();
 AppState.addEventListener("change", (state) => {
-  if (state === "active") uses24 = phoneClock();
+  if (state !== "active") return;
+  const clock = phoneClock();
+  const place = phoneRegion();
+  if (clock === uses24 && place === region) return;
+  uses24 = clock;
+  region = place;
+  for (const listener of listeners) listener();
 });
 
-/** A moment in the app's language, with the hours the way the phone's clock shows them. */
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+/**
+ * The phone's clock and region as one value that changes when either does, so
+ * a screen that spells times while it renders can render again.
+ */
+export function useClockLayout(): string {
+  return useSyncExternalStore(subscribe, () => `${uses24}/${region}`);
+}
+
+/** A moment in the app's language, laid out the way the phone's region and clock show it. */
 function spelled(iso: string, lang: string, parts: Intl.DateTimeFormatOptions): string {
   const at = new Date(iso);
   if (Number.isNaN(at.getTime())) return "-";
   const options = { ...parts, ...hourCycle(uses24) };
   try {
-    return at.toLocaleString(lang, options);
+    return at.toLocaleString(dateLocale(lang, region), options);
   } catch {
     // An unknown language tag falls back to the default locale.
     return at.toLocaleString(undefined, options);

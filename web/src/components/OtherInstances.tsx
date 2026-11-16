@@ -116,11 +116,11 @@ function Insides({ instance, onChanged }: { instance: OtherInstance; onChanged: 
  * its last runs as a strip, its status and Run now or Cancel.
  */
 function OtherJob({ instance, job, onChanged }: { instance: OtherInstance; job: Job; onChanged: () => void }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const push = useToast()
   const [busy, setBusy] = useState(false)
   const status = jobStatus(job, { held: false, conflict: false, notes: false })
-  const when = (at: string) => dayTime(at, lang, (p) => t('list.when', p))
+  const when = (at: string) => dayTime(at, locale, (p) => t('list.when', p))
   // The status of a job that ran fine is already the time of that run.
   const last = status !== 'last' && job.recent[0]
   const next = job.nextRun && !job.disabled ? job.nextRun : ''

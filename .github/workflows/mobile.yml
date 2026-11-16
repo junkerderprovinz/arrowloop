@@ -79,6 +79,12 @@ jobs:
         working-directory: mobile
         run: npx tsc --noEmit
 
+      # A hook below an early return compiles and crashes the screen on its
+      # second render.
+      - name: The screens call their hooks in the same order every render
+        working-directory: mobile
+        run: npm run lint
+
       # getString fills by position, so a translation with fewer placeholders
       # silently drops the remaining arguments.
       - name: The translations carry the same placeholders

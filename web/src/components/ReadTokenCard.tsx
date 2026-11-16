@@ -17,7 +17,7 @@ const LOG_PATH = '/api/fortress/v1/log'
  * making another.
  */
 export function ReadTokenCard({ hueIndex }: { hueIndex?: number }) {
-  const { t, lang } = useT()
+  const { t, locale } = useT()
   const [tokens, setTokens] = useState<ReadToken[]>([])
   const [name, setName] = useState('')
   const [made, setMade] = useState<string | null>(null)
@@ -81,7 +81,7 @@ export function ReadTokenCard({ hueIndex }: { hueIndex?: number }) {
               <div className="flex min-w-0 flex-col">
                 <span className="truncate text-body text-carbon-text">{tok.name}</span>
                 <span className="truncate text-subline text-carbon-textSub">
-                  {t('readToken.made', { date: new Date(tok.createdAt * 1000).toLocaleDateString(lang) })}
+                  {t('readToken.made', { date: new Date(tok.createdAt * 1000).toLocaleDateString(locale) })}
                 </span>
               </div>
               <IconAction title={t('readToken.remove')} labelKey="readToken.remove" disabled={busy} onClick={() => setPendingDelete(tok)} />

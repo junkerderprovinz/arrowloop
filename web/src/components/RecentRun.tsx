@@ -11,7 +11,7 @@ import { since } from '../lib/since'
  * job's runs since the morning.
  */
 export function RecentRun({ run, today = 0 }: { run: Run; today?: number }) {
-  const { t, lang } = useT()
+  const { t, lang, locale } = useT()
   const failed = run.Err !== ''
   const { count, unit } = since(run.Finished || run.Started)
   const parts = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' }).formatToParts(-count, unit)
@@ -37,7 +37,7 @@ export function RecentRun({ run, today = 0 }: { run: Run; today?: number }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-baseline gap-2">
           <span className="truncate text-body">{run.Job}</span>
-          <span className="ms-auto shrink-0 text-subline text-carbon-textMuted" title={new Date(run.Finished || run.Started).toLocaleString(lang)}>
+          <span className="ms-auto shrink-0 text-subline text-carbon-textMuted" title={new Date(run.Finished || run.Started).toLocaleString(locale)}>
             {parts.map((part, i) => (part.type === 'integer' ? <Num key={i}>{part.value}</Num> : part.value))}
           </span>
         </div>

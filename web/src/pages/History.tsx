@@ -12,6 +12,7 @@ import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
 import { Card } from '../lib/glimstone/Card'
 import { api, type HistoryShow, type Job, type Run, type Touch } from '../lib/api'
+import { capitalized } from '../lib/capitalized'
 import { dayTime } from '../lib/dayTime'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { useLiveTick } from '../lib/liveTick'
@@ -488,7 +489,7 @@ export function RunRow({
   /** The list's column layout, which only History's runs have. */
   columns?: Columns
 }) {
-  const { t, lang } = useT()
+  const { t, lang, locale } = useT()
   // Only a run with nothing to report wears the green dot; the others say what went otherwise.
   const fine = !r.Running && !r.Err && !r.Stopped && r.Conflicts === 0
   return (
@@ -512,7 +513,7 @@ export function RunRow({
         ) : (
           <span className="flex items-center gap-1.5">
             {fine && <span aria-hidden className="h-[7px] w-[7px] shrink-0 rounded-full bg-statusOkSolid" />}
-            <span className="glim-num">{dayTime(r.Started, lang, (p) => t('list.when', p))}</span>
+            <span className="glim-num">{dayTime(r.Started, locale, (p) => t('list.when', p))}</span>
           </span>
         )}
       </button>
@@ -525,8 +526,8 @@ export function RunRow({
         )}
         {r.Err && <Badge tone="fail">{t('status.failed')}</Badge>}
         {r.Stopped && <Badge tone="neutral">{t('status.stopped')}</Badge>}
-        {r.Conflicts > 0 && <Badge tone="warn">{t('history.conflicts', { count: r.Conflicts })}</Badge>}
-        {r.Skipped > 0 && <Badge>{t('history.left', { count: r.Skipped })}</Badge>}
+        {r.Conflicts > 0 && <Badge tone="warn">{capitalized(t('history.conflicts', { count: r.Conflicts }), lang)}</Badge>}
+        {r.Skipped > 0 && <Badge>{capitalized(t('history.left', { count: r.Skipped }), lang)}</Badge>}
       </span>
       {withJob && (
         <span
@@ -534,7 +535,7 @@ export function RunRow({
           className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap text-subline text-carbon-textSub${columns ? ' md:justify-end' : ''}`}
         >
           {fine && <span aria-hidden className="h-[7px] w-[7px] rounded-full bg-statusOkSolid" />}
-          <span className="glim-num">{dayTime(r.Started, lang, (p) => t('list.when', p))}</span>
+          <span className="glim-num">{dayTime(r.Started, locale, (p) => t('list.when', p))}</span>
         </span>
       )}
     </li>

@@ -1,5 +1,5 @@
 import { LogoMark } from './LogoMark'
-import { useT } from '../lib/i18n'
+import { useT, type TranslationKey } from '../lib/i18n'
 import type { Job } from '../lib/api'
 
 /**
@@ -29,12 +29,12 @@ const INK: Record<JobStatus, string> = {
   ok: 'text-statusOk',
 }
 
-const LABEL: Record<JobStatus, 'jobs.state.running' | 'jobs.state.failed' | 'jobs.state.disabled' | 'status.stopped' | 'jobs.state.idle'> = {
-  running: 'jobs.state.running',
-  failed: 'jobs.state.failed',
-  paused: 'jobs.state.disabled',
+const LABEL: Record<JobStatus, TranslationKey> = {
+  running: 'status.running',
+  failed: 'status.failed',
+  paused: 'status.paused',
   stopped: 'status.stopped',
-  ok: 'jobs.state.idle',
+  ok: 'status.ready',
 }
 
 export function JobMark({ status, size = 20 }: { status: JobStatus; size?: number }) {
