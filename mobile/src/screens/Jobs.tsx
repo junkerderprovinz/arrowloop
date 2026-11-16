@@ -76,6 +76,7 @@ export function Jobs() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const { jobView } = useAppearance();
+  const engine = useEngineSettings(true);
   // A moved job keeps its new place until the engine has the order and the
   // list has been read again.
   const [order, setOrder] = useState<string[] | null>(null);
@@ -250,7 +251,6 @@ export function Jobs() {
     await load();
   };
   const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
-  const engine = useEngineSettings(true);
   const paused = !!engine.settings?.pauseAutomatic;
   const more = [
     ...(ready.length > 0
