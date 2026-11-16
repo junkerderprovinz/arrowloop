@@ -179,7 +179,7 @@ function MoreSheet({
 
   useModal(sheet, onClose, { focus: 'first', returnTo: opener })
 
-  const row = 'flex min-h-12 items-center gap-3 rounded-control px-3 text-body hover:bg-carbon-hover'
+  const row = 'flex min-h-12 items-center gap-3 rounded-control px-3 text-body hover:bg-hover'
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex flex-col justify-end">

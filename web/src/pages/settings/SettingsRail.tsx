@@ -191,7 +191,7 @@ export function SettingsRail({ tiles, active, across = false }: { tiles: Tile[];
               className={`glim-nav-row glim-hue glim-hue-icon group flex select-none [-webkit-touch-callout:none] max-h-[calc((100%_-_13_*_0.25rem)_/_14)] shrink-0 grow basis-0 items-center rounded-[var(--radius-pill)] text-[15px] leading-5 font-medium transition-colors ${
                 reactive ? 'min-h-12 flex-col justify-center gap-0.5 px-1' : 'min-h-10 px-3'
               } ${mode === 'glyph' ? 'justify-center' : reactive ? '' : 'gap-3'} ${
-                selected ? 'glim-active bg-accent text-accentContrast' : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'
+                selected ? 'glim-active bg-accent text-accentContrast' : 'bg-carbon-surface2 text-carbon-textSub hover:bg-hover hover:text-carbon-text'
               } ${drag.look(tile.id)}`}
             >
               {mode !== 'text' && <Icon />}
@@ -305,7 +305,7 @@ function Strip({
                 className={`glim-nav-row glim-hue glim-hue-icon flex h-10 grow items-center justify-center rounded-[var(--radius-pill)] text-[15px] leading-5 font-medium transition-colors ${
                   selected
                     ? 'glim-active min-w-0 gap-2 bg-accent px-3 text-accentContrast'
-                    : 'min-w-10 bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'
+                    : 'min-w-10 bg-carbon-surface2 text-carbon-textSub hover:bg-hover hover:text-carbon-text'
                 }`}
               >
                 <Icon />

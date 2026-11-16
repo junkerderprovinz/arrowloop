@@ -195,7 +195,7 @@ function MenuPanel({
             onClose()
             item.onSelect()
           }}
-          className="flex w-full items-center gap-2.5 px-3 py-2 text-start text-body text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text focus-visible:bg-carbon-hover focus-visible:text-carbon-text disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex w-full items-center gap-2.5 px-3 py-2 text-start text-body text-carbon-textSub transition-colors hover:bg-hover hover:text-carbon-text focus-visible:bg-hover focus-visible:text-carbon-text disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className="flex w-4 shrink-0 justify-center text-carbon-textMuted" aria-hidden>
             {glyphFor(item.labelKey)}

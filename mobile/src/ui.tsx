@@ -27,6 +27,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { Glyph, glyphNameForKey, GLYPH, ProviderMark } from "./glyphs";
+import { hoverOver } from "../../web/src/lib/oklab";
 import {
   contrastOn,
   DEFAULT_ACCENT,
@@ -898,14 +899,15 @@ export function Button({
   const { p, corners, labels, accent, hueAt, scheme } = useTheme();
   const { ms } = useMotion();
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
-  // GlimStone's rule 40: a grey button takes the accent while it is held, 22%
-  // of it in its ground and all of it in its glyph, and its words keep their
-  // colour. A finger is the only thing that reaches for a button here.
+  // GlimStone's rule 40: a grey button takes the accent's hover while it is
+  // held, the colour a row takes, and all of the accent in its glyph, and its
+  // words keep their colour. A finger is the only thing that reaches for a
+  // button here.
   const [held, setHeld] = useState(false);
   const tint = inkFor(fill, scheme);
   const tinted = held && tone === "neutral" && !disabled && !busy;
   const ground = tinted
-    ? mixHex(p.surface3, tint, 0.22)
+    ? hoverOver(p.surface3, fill)
     : tone === "accent"
       ? fill
       : tone === "ok"

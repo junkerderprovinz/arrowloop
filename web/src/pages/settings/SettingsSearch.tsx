@@ -291,7 +291,7 @@ export function SettingsSearch({ tiles, tile }: { tiles: Tile[]; tile: TileId })
                   onMouseEnter={() => setActive(index)}
                   onClick={() => pick(hit)}
                   className={`flex cursor-pointer flex-col gap-0.5 px-4 py-2 text-body ${
-                    index === active ? 'bg-carbon-hover text-carbon-text' : 'text-carbon-textSub'
+                    index === active ? 'bg-hover text-carbon-text' : 'text-carbon-textSub'
                   }`}
                 >
                   <span className="truncate">{hit.item.name}</span>

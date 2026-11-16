@@ -518,7 +518,7 @@ body {
   background-color: var(--carbon-surface3);
 }
 .glim-subcard button.bg-carbon-surface2:hover {
-  background-color: var(--carbon-hover-raised);
+  background-color: var(--hover);
 }
 /* Inside a subcard a groove takes the next surface, or it vanishes into the
    subcard's own. */

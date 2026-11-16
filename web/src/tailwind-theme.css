@@ -77,6 +77,10 @@
   --color-statusOkHover: var(--status-ok-hover);
   --color-statusFailHover: var(--status-fail-hover);
   --color-statusWarnHover: var(--status-warn-hover);
+
+  /* The accent's hover (rule 21): hover:bg-hover on anything the pointer can
+     reach, a button, a row, a menu entry or a tile. */
+  --color-hover: var(--hover);
 }
 /* tokens:theme end */
 
@@ -91,6 +95,7 @@
   --color-accentSoft: var(--item-hue-soft);
   --color-accentGlyph: var(--accent-glyph);
   --color-accentHover: var(--accent-hover);
+  --color-hover: var(--hover);
 }
 [data-rainbow='reactive'] .glim-hue {
   --color-accent: var(--carbon-text-muted);

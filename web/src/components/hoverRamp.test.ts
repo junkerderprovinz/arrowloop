@@ -3,10 +3,10 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-// GlimStone rule 21: hover moves up the surface ramp. `--carbon-hover` is for
-// an element with no fill of its own and sits below surface2, so on a filled
-// element it darkens under the pointer. Surface2 hovers to surface3, surface3
-// to hover-raised.
+// GlimStone rule 21: whatever the pointer is over takes `--hover`, the
+// accent's tint at surface3's lightness, so a button, a row, a menu entry and
+// a tile light up in one colour. A grey step from the surface ramp under the
+// pointer would stand out next to the tinted ones.
 //
 // Each string literal is checked on its own rather than each line, since a
 // variant table puts different variants' fill and hover on adjacent lines. A
@@ -15,16 +15,8 @@ import { describe, expect, it } from 'vitest'
 const here = dirname(fileURLToPath(import.meta.url))
 const src = join(here, '..')
 
-/** Each resting fill, and the hover it is allowed to take (rule 21). */
-const RAMP = [
-  { filled: 'bg-carbon-surface2', hover: 'hover:bg-carbon-surface3' },
-  { filled: 'bg-carbon-surface3', hover: 'hover:bg-carbon-hoverRaised' },
-]
-/**
- * The hover for something with no fill of its own, wrong on anything filled.
- * Anchored, because `hover:bg-carbon-hoverRaised` contains it.
- */
-const WRONG = /hover:bg-carbon-hover(?![A-Za-z-])/
+/** A hover to a grey step of the surface ramp. */
+const GREY = /hover:bg-carbon-(?:hover|hoverRaised|surface\d)(?![A-Za-z0-9-])/
 
 function sourceFiles(dir: string): string[] {
   const found: string[] = []
@@ -56,32 +48,30 @@ function classLists(text: string): [string, number][] {
   return pieces
 }
 
-/** Every `file:line` where a filled element hovers to the tone below its own. */
+/** Every `file:line` where something hovers to a grey step. */
 function offenders(): string[] {
   const hits: string[] = []
   for (const path of sourceFiles(src)) {
     const text = readFileSync(path, 'utf8')
     for (const [piece, at] of classLists(text)) {
-      if (!WRONG.test(piece)) continue
-      const tier = RAMP.find((t) => piece.includes(t.filled))
-      if (!tier) continue
+      const grey = piece.match(GREY)
+      if (!grey) continue
       const line = text.slice(0, at).split('\n').length
-      hits.push(`${path.slice(src.length + 1)}:${line} (${tier.hover})`)
+      hits.push(`${path.slice(src.length + 1)}:${line} (${grey[0]})`)
     }
   }
-  return hits.sort()
+  return [...new Set(hits)].sort()
 }
 
-describe('hover ramp', () => {
+describe('hover colour', () => {
   it('reads the source at all', () => {
     // An empty list would let the assertion below pass without checking anything.
     const files = sourceFiles(src)
     expect(files.length).toBeGreaterThan(20)
-    expect(files.some((f) => readFileSync(f, 'utf8').includes(RAMP[0].filled))).toBe(true)
+    expect(files.some((f) => readFileSync(f, 'utf8').includes('hover:bg-hover'))).toBe(true)
   })
 
-  it('never hovers a filled element to the tone below its own', () => {
-    // Each hit names the hover its tier should carry instead.
-    expect(offenders(), `hovers below its own tone at: ${offenders().join(', ')}`).toEqual([])
+  it('lights everything under the pointer in the accent hover', () => {
+    expect(offenders(), `grey hover at: ${offenders().join(', ')}`).toEqual([])
   })
 })

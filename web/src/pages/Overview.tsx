@@ -248,7 +248,7 @@ function Tile({ to, label, value, tone }: { to: string; label: string; value: nu
   return (
     <Link
       to={to}
-      className="glim-row flex min-w-0 grow basis-[calc((100%-0.75rem)/2)] flex-col gap-1 rounded-control bg-carbon-surface2 px-4 py-3 @lg:basis-[calc((100%-1.5rem)/3)] @4xl:basis-0 transition-colors hover:bg-carbon-surface3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
+      className="glim-row flex min-w-0 grow basis-[calc((100%-0.75rem)/2)] flex-col gap-1 rounded-control bg-carbon-surface2 px-4 py-3 @lg:basis-[calc((100%-1.5rem)/3)] @4xl:basis-0 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
     >
       <span className={`glim-num text-status font-bold leading-tight ${tone && value > 0 ? TONE[tone] : 'text-carbon-text'}`}>
         {new Intl.NumberFormat(lang).format(value)}
@@ -299,7 +299,7 @@ function JobLine({
       data-job={job.name}
       onClick={() => open(job.name)}
       style={hueVars(hueIndex) as CSSProperties}
-      className="glim-hue glim-row flex cursor-pointer items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover"
+      className="glim-hue glim-row flex cursor-pointer items-center gap-3 rounded-control px-2 py-2 hover:bg-hover"
     >
       <span aria-hidden className="h-6 w-1.5 shrink-0 rounded-[var(--radius-pill)] bg-accent" />
       {/* On a phone the status goes under the name, so the name keeps its room. */}

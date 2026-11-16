@@ -432,7 +432,7 @@ function RemoteRow({
   const why = result && !result.ok && result.reason ? failureLine(result.reason, result.failure, t, lang) : ''
 
   return (
-    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover">
+    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-hover">
       {/* The engine identifies the product and its mark from the saved
           settings (internal/remotes/identify.go). */}
       <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[20px]">
@@ -890,7 +890,7 @@ function RemoteForm({
               type="button"
               aria-expanded={moreShown}
               onClick={() => setMoreOpen(!moreShown)}
-              className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
+              className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-hover focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
             >
               <svg
                 aria-hidden
@@ -1065,7 +1065,7 @@ function ShareHost({
                 onShare(sh)
                 setOpen(false)
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-start text-meta text-carbon-textSub transition-colors hover:bg-carbon-hover hover:text-carbon-text"
+              className="flex w-full items-center gap-2 px-3 py-2 text-start text-meta text-carbon-textSub transition-colors hover:bg-hover hover:text-carbon-text"
             >
               <span className="shrink-0 text-carbon-textMuted" aria-hidden>
                 <IconFolder />
@@ -1111,7 +1111,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-carbon-hover">
+    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-hover">
       <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control">
         <IconTabStorage />
       </span>

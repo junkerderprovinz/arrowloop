@@ -495,7 +495,7 @@ export function RunRow({
   return (
     <li
       onClick={onOpen}
-      className={`glim-row flex min-h-11 cursor-pointer items-center gap-x-3 gap-y-1 rounded-control px-2 py-1.5 hover:bg-carbon-hover max-sm:flex-wrap${
+      className={`glim-row flex min-h-11 cursor-pointer items-center gap-x-3 gap-y-1 rounded-control px-2 py-1.5 hover:bg-hover max-sm:flex-wrap${
         columns ? ' md:grid md:[grid-template-columns:var(--list-cols)]' : ''
       }`}
     >

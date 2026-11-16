@@ -41,7 +41,7 @@ function Ring({ learning, onOpen }: { learning: JobLearning; onOpen: () => void 
         aria-describedby={tooltip.describedBy}
         {...tooltip.handlers}
         onClick={onOpen}
-        className="flex min-h-11 min-w-0 flex-1 flex-col items-center gap-1.5 rounded-control px-1 pb-2 pt-2.5 text-carbon-text hover:bg-carbon-hover"
+        className="flex min-h-11 min-w-0 flex-1 flex-col items-center gap-1.5 rounded-control px-1 pb-2 pt-2.5 text-carbon-text hover:bg-hover"
       >
         <span className="relative flex h-[54px] w-[54px] items-center justify-center text-carbon-textSub [&>svg:last-child]:h-5 [&>svg:last-child]:w-5">
           {/* A circle's stroke starts at three o'clock; the turn puts the first

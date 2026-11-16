@@ -330,7 +330,7 @@ function Choice({ glyph, title, sub, disabled = false, shaking = false, onClick 
       data-choice
       disabled={disabled}
       onClick={onClick}
-      className={`grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3.5 rounded-control bg-carbon-surface2 p-4 text-start transition-colors enabled:hover:bg-carbon-surface3 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--focus-ring)]${
+      className={`grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3.5 rounded-control bg-carbon-surface2 p-4 text-start transition-colors enabled:hover:bg-hover disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--focus-ring)]${
         shaking ? ' glim-shake' : ''
       }`}
     >

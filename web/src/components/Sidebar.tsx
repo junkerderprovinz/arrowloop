@@ -23,7 +23,7 @@ import { useRainbow } from './Shell'
 const navBase =
   'glim-nav-row relative flex w-full items-center rounded-[var(--radius-pill)] px-3 py-2.5 text-[15px] font-medium transition duration-150 select-none'
 const navActive = 'glim-active bg-accent text-accentContrast'
-const navInactive = 'text-[var(--sidebar-text)] hover:bg-carbon-hover hover:text-carbon-text'
+const navInactive = 'text-[var(--sidebar-text)] hover:bg-hover hover:text-carbon-text'
 
 // In rainbow mode each glyph carries its entry's own hue.
 const navHued = 'glim-hue glim-hue-icon'
@@ -207,7 +207,7 @@ export function Sidebar({
         onPointerUp={holdEnd}
         onPointerLeave={holdEnd}
         onPointerCancel={holdEnd}
-        className={`flex flex-col items-center gap-2 rounded-card transition-colors hover:bg-carbon-hover ${
+        className={`flex flex-col items-center gap-2 rounded-card transition-colors hover:bg-hover ${
           narrow ? 'px-2 py-4' : 'px-4 py-6'
         }`}
       >

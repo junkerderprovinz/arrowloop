@@ -163,7 +163,7 @@ export function FolderPicker({
                     setEntries([])
                     void go(k.value, false)
                   }}
-                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta transition hover:bg-carbon-hover"
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta transition hover:bg-hover"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
                   <span className="shrink-0 text-carbon-textMuted" aria-hidden>
@@ -179,7 +179,7 @@ export function FolderPicker({
                 <button
                   type="button"
                   onClick={() => void go(parent, false)}
-                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta text-carbon-textMuted transition hover:bg-carbon-hover hover:text-carbon-text"
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta text-carbon-textMuted transition hover:bg-hover hover:text-carbon-text"
                   style={{ borderRadius: 'var(--radius-control)' }}
                 >
                   <IconBack />
@@ -199,7 +199,7 @@ export function FolderPicker({
                   <button
                     type="button"
                     onClick={() => void go(e.path, false)}
-                    className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta transition hover:bg-carbon-hover"
+                    className="flex w-full items-center gap-2 px-2 py-1.5 text-start text-meta transition hover:bg-hover"
                     style={{ borderRadius: 'var(--radius-control)' }}
                   >
                     <span className="shrink-0 text-carbon-textMuted" aria-hidden>

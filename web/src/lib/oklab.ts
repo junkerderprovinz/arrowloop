@@ -15,7 +15,19 @@ export type Oklab = [number, number, number];
  * or below, the dark ramp's at this one or above. The contrast step
  * (prefers-contrast: more) takes the second pair.
  */
-export const INK_LIGHTNESS = { light: 0.52, dark: 0.74, lightMore: 0.4, darkMore: 0.84 } as const;
+export const INK_LIGHTNESS = { light: 0.5, dark: 0.74, lightMore: 0.4, darkMore: 0.84 } as const;
+
+/** --hover-chroma in tokens.css: the share of the accent's chroma a hover keeps. */
+const HOVER_CHROMA = 0.3;
+
+/**
+ * What tokens.css's --hover gives over `ground`: its lightness with 30% of the
+ * accent's chroma, for the phone, which has no stylesheet to work it out.
+ */
+export function hoverOver(ground: string, accent: string): string {
+  const [, a, b] = oklabOf(accent);
+  return srgbOf([oklabOf(ground)[0], a * HOVER_CHROMA, b * HOVER_CHROMA]);
+}
 
 const linear = (v: number) => {
   const s = v / 255;

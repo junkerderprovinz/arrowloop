@@ -27,7 +27,7 @@ export function SelectionMark({
         onPick(e.shiftKey)
       }}
       className={`glim-select-mark grid h-[18px] w-[18px] flex-none place-items-center rounded-full transition-colors [&_svg]:h-2.5 [&_svg]:w-2.5 ${
-        checked ? 'bg-accent text-accentContrast' : 'bg-carbon-surface3 text-transparent hover:bg-carbon-hoverRaised'
+        checked ? 'bg-accent text-accentContrast' : 'bg-carbon-surface3 text-transparent hover:bg-hover'
       }`}
     >
       <IconCheck />

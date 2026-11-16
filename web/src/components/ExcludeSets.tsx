@@ -124,7 +124,7 @@ export function ExcludeSetPicker({
             className={`inline-flex h-[var(--badge-md)] grow items-center justify-center px-3 font-mono text-meta transition-colors ${
               on
                 ? 'bg-accent text-accentContrast hover:bg-accentHover'
-                : 'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text'
+                : 'bg-carbon-surface2 text-carbon-textSub hover:bg-hover hover:text-carbon-text'
             }`}
           >
             {name}

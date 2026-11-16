@@ -184,7 +184,7 @@ export function ScheduleDetails({
                     className={`glim-hue grow px-2.5 py-1 text-meta font-medium transition-colors ${
                       on
                         ? 'bg-accent text-accentContrast hover:bg-accentHover'
-                        : 'bg-transparent text-carbon-textMuted hover:bg-carbon-hover hover:text-carbon-text'
+                        : 'bg-transparent text-carbon-textMuted hover:bg-hover hover:text-carbon-text'
                     }`}
                   >
                     {t(`schedule.day.${key}` as const)}

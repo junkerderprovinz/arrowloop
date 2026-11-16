@@ -356,9 +356,9 @@ export function Selector<T extends string>({
               active
                 ? 'glim-active bg-accent text-accentContrast'
                 : variant === 'well'
-                  ? 'bg-transparent text-carbon-textSub hover:bg-carbon-hover hover:text-carbon-text'
+                  ? 'bg-transparent text-carbon-textSub hover:bg-hover hover:text-carbon-text'
                   : // With no groove behind it, an idle chip needs its own fill.
-                    'bg-carbon-surface2 text-carbon-textSub hover:bg-carbon-surface3 hover:text-carbon-text',
+                    'bg-carbon-surface2 text-carbon-textSub hover:bg-hover hover:text-carbon-text',
             ].join(' ')}
           >
             {o.icon && (

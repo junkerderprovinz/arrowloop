@@ -12,9 +12,14 @@ The full notes for each release are in
 
 ## 🎨 Design
 
-- **Every setting of a target has a proper name.** All of rclone's options carry a readable name in the target form, such as "Authentication URL" or "Minimum pause between requests", in place of names like auth_url or pacer_min_sleep. The names are in English and German so far.
+- **Every setting of a target has a proper name.** All of rclone's options carry a readable name in the target form, such as "Authentication URL" or "Minimum pause between requests", in place of names like auth_url or pacer_min_sleep. The names come in all 42 languages.
 - **An empty field shows rclone's name for it.** The name stands in grey inside the field and goes away as soon as you click into it. A field's default value has moved into its (i) bubble, on the phone as well.
 - **Inclusions and Exclusions read as a pair.** The job editor's card "Only these files" is called Inclusions, and its patterns field Own inclusions, beside Exclusions and Own exclusions. On the phone too.
+- **Whatever the pointer is over lights up in your accent colour.** Buttons, rows, menus and tiles take the same soft tint of the accent under the pointer, where they turned grey before, and a held button on the phone does the same. Accent text in the light theme is a shade darker, so it reads well on every card. This comes with GlimStone 4.5.4.
+
+## 🌐 Translations
+
+- **Two Icelandic help sentences about signing in read properly again.** They had lost the word for password.
 
 ## 2.7.2 - 2026-11-16
 

@@ -75,7 +75,7 @@ const light: Palette = {
   text: "#161616",
   textSub: "#525252",
   textMuted: "#6f6f6f",
-  infoInk: "#836407",
+  infoInk: "#7C5E07",
   infoSolid: "#A87D00",
   okInk: "#0e6027",
   okSolid: "#198038",

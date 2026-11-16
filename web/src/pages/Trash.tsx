@@ -390,7 +390,7 @@ function SideList({
             {entries.map((e) => (
               <li
                 key={e.remote}
-                className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-carbon-hover"
+                className="glim-row flex min-h-10 items-center gap-3 rounded-control px-2 text-subline hover:bg-hover"
               >
                 <span className="min-w-0 flex-1 truncate font-mono text-carbon-text" title={e.remote}>
                   {e.path}
