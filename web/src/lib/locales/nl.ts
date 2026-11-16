@@ -763,6 +763,7 @@ const nl: Translations = {
   'targets.cloud': 'Clouds',
   'targets.storage': 'Objectopslag',
   'targets.connections': 'Servers en shares',
+  'targets.layered': 'Op een ander doel',
   'targets.pickMore': 'Nog {count}, onder hun rclone-naam',
   'opt.user': 'Gebruikersnaam',
   'opt.pass': 'Wachtwoord',

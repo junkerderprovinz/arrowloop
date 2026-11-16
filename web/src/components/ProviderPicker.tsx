@@ -14,9 +14,9 @@ const NEW_MARKS: Record<string, string> = { synologyc2: 'provider-marks', filefa
  * README buttons: the mark at the start, the name beside it. A provider with
  * a brand lights up in the brand's colour from BRAND_TILES; a protocol wears
  * one of the app's own glyphs and lights up in the accent. Only the protocols
- * carry their hint in an info bubble, since a cloud's name already says what
- * it is. The order is alphabetical by the name shown, which for a few is
- * translated.
+ * and the targets built on another one carry their hint in an info bubble,
+ * since a cloud's name already says what it is. The order is alphabetical by
+ * the name shown, which for a few is translated.
  */
 export function ProviderPicker({
   providers,
@@ -45,7 +45,7 @@ export function ProviderPicker({
         {sorted.map((p) => {
           const lit = p.mark ? BRAND_TILES[p.mark] : undefined
           const hint = providerHint(p.id, t)
-          const bubble = p.group === 'protocol' ? hint : undefined
+          const bubble = p.group === 'protocol' || p.group === 'layered' ? hint : undefined
           return (
             <li
               key={p.id}

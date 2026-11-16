@@ -763,6 +763,7 @@ const he: Translations = {
   'targets.cloud': 'עננים',
   'targets.storage': 'אחסון אובייקטים',
   'targets.connections': 'שרתים ושיתופים',
+  'targets.layered': 'על גבי יעד אחר',
   'targets.pickMore': 'עוד {count}, בשם שלהם ב-rclone',
   'opt.user': 'שם משתמש',
   'opt.pass': 'סיסמה',

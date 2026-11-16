@@ -763,6 +763,7 @@ const sk: Translations = {
   'targets.cloud': 'Cloudy',
   'targets.storage': 'Objektové úložisko',
   'targets.connections': 'Servery a zdieľania',
+  'targets.layered': 'Na inom cieli',
   'targets.pickMore': 'Ďalších {count}, pod názvom v rclone',
   'opt.user': 'Používateľské meno',
   'opt.pass': 'Heslo',

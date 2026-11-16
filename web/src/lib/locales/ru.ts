@@ -763,6 +763,7 @@ const ru: Translations = {
   'targets.cloud': 'Облака',
   'targets.storage': 'Объектное хранилище',
   'targets.connections': 'Серверы и общие папки',
+  'targets.layered': 'Поверх другой цели',
   'targets.pickMore': 'Ещё {count}, под именем в rclone',
   'opt.user': 'Имя пользователя',
   'opt.pass': 'Пароль',

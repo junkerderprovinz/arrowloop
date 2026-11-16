@@ -763,6 +763,7 @@ const da: Translations = {
   'targets.cloud': 'Skyer',
   'targets.storage': 'Objektlager',
   'targets.connections': 'Servere og delinger',
+  'targets.layered': 'Oven på et andet mål',
   'targets.pickMore': '{count} mere, under deres rclone-navn',
   'opt.user': 'Brugernavn',
   'opt.pass': 'Adgangskode',

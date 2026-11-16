@@ -140,7 +140,7 @@ export type Provider = {
   name: string
   backend: string
   /** Which of the three cards this belongs on. */
-  group: 'cloud' | 'storage' | 'protocol'
+  group: 'cloud' | 'storage' | 'protocol' | 'layered'
   /** Written into the target without anybody being asked. */
   preset?: Record<string, string>
   /** The component name of its logo, absent where there is none. */

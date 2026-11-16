@@ -763,6 +763,7 @@ const th: Translations = {
   'targets.cloud': 'คลาวด์',
   'targets.storage': 'ที่เก็บอ็อบเจกต์',
   'targets.connections': 'เซิร์ฟเวอร์และการแชร์',
+  'targets.layered': 'บนปลายทางอื่น',
   'targets.pickMore': 'อีก {count} รายการ ตามชื่อใน rclone',
   'opt.user': 'ชื่อผู้ใช้',
   'opt.pass': 'รหัสผ่าน',

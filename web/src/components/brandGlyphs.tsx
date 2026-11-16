@@ -889,6 +889,16 @@ export function IconOpencloud(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** dosya.dev. Source: supplied by jdp, from the brand's own material (the brand's own mark) */
+export function IconDosya(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="1.9 3.9 20.2 17.2" width="1em" height="1em" aria-hidden {...props}>
+      <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4.2l2.1 2.6h6.7A2.5 2.5 0 0 1 21 10.1v7.4A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z" fill="none" stroke="var(--mark-ink, var(--brand-dosya-forced0))" strokeWidth="2.2" strokeLinejoin="round" />
+      <circle cx="16.6" cy="14.6" r="2.1" fill="var(--mark-ink, #16a34a)" />
+    </svg>
+  )
+}
+
 /** OneDrive. Source: homarr-labs/dashboard-icons, svg/microsoft-onedrive.svg (Apache-2.0) */
 export function IconOnedrive(props: SVGProps<SVGSVGElement>) {
   return (
@@ -963,6 +973,20 @@ export function IconPremiumize(props: SVGProps<SVGSVGElement>) {
         <circle cx="124" cy="-.138" r="47.5" style={{ fill: "var(--mark-ink, #a00)", fillOpacity: "1" }} />
         <path d="M125 64.831a65 62.532 0 0 0-65 62.531v65h130v-65a65 62.532 0 0 0-65-62.531" style={{ fill: "var(--mark-cut, #a00)", fillOpacity: "1", stroke: "none" }} />
         <path d="m5 97.362 110 25 130-130c-33.227 57.786-74.464 116.997-120 185z" style={{ fill: "var(--mark-ink, var(--brand-premiumize-0))", fillOpacity: "1", fillRule: "evenodd", stroke: "none", strokeWidth: "1.0347985px", strokeLinecap: "butt", strokeLinejoin: "miter", strokeOpacity: "1" }} />
+      </g>
+    </svg>
+  )
+}
+
+/** kDrive, its mark without the wordmark. Source: homarr-labs/dashboard-icons, svg/infomaniak-kdrive.svg (Apache-2.0) */
+export function IconKdrive(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="3.8 3.65 38.5 37.62" width="1em" height="1em" aria-hidden {...props}>
+      <g transform="translate(2.7 2.7)">
+        <path d="M17.69875,1.09237333 L20.9498646,2.45149406 C21.4474541,2.65951014 21.8321632,3.07062623 22.0067361,3.5809107 L23.2993651,7.35932279 C23.507457,7.9675847 24.0110913,8.42792756 24.6355575,8.58065859 L38.1622862,11.8890061 C39.0062956,12.0954327 39.6,12.8518439 39.6,13.7207305 L39.6,29.5039626 C39.6,30.5454138 38.755737,31.3896768 37.7142857,31.3896768 C37.5263088,31.3896768 37.3393883,31.3615701 37.1597239,31.3062887 L16.4168667,24.9238714 C15.6256368,24.6804161 15.0857143,23.949383 15.0857143,23.1215453 L15.0857143,2.83217848 C15.0857143,1.79072724 15.9299773,0.946464194 16.9714286,0.946464194 C17.2211384,0.946464194 17.4683617,0.996060047 17.69875,1.09237333 Z" fill="var(--mark-ink, #A2BFFF)" opacity="0.504231771" />
+        <path d="M12.9844642,4.8638019 L16.2355789,6.22292264 C16.7331684,6.43093871 17.1178775,6.84205481 17.2924504,7.35233927 L18.5850794,11.1307514 C18.7931713,11.7390133 19.2968056,12.1993561 19.9212718,12.3520872 L33.4480005,15.6604347 C34.2920099,15.8668613 34.8857143,16.6232724 34.8857143,17.492159 L34.8857143,33.2753911 C34.8857143,34.3168424 34.0414512,35.1611054 33,35.1611054 C32.812023,35.1611054 32.6251026,35.1329986 32.4454381,35.0777173 L11.702581,28.6953 C10.9113511,28.4518446 10.3714286,27.7208116 10.3714286,26.8929739 L10.3714286,6.60360705 C10.3714286,5.56215581 11.2156916,4.71789277 12.2571429,4.71789277 C12.5068527,4.71789277 12.7540759,4.76748862 12.9844642,4.8638019 Z" fill="var(--mark-ink, #A0BDFF)" opacity="0.8" />
+        <path d="M8.27017853,8.0695163 L11.5212932,9.42863704 C12.0188827,9.63665312 12.4035918,10.0477692 12.5781647,10.5580537 L13.8707937,14.3364658 C14.0788856,14.9447277 14.5825199,15.4050705 15.2069861,15.5578016 L28.7337147,18.8661491 C29.5777242,19.0725757 30.1714286,19.8289868 30.1714286,20.6978734 L30.1714286,36.4811055 C30.1714286,37.5225568 29.3271655,38.3668198 28.2857143,38.3668198 C28.0977373,38.3668198 27.9108169,38.338713 27.7311524,38.2834317 L6.98829528,31.9010144 C6.19706535,31.657559 5.65714286,30.926526 5.65714286,30.0986883 L5.65714286,9.80932145 C5.65714286,8.76787021 6.5014059,7.92360717 7.54285714,7.92360717 C7.79256702,7.92360717 8.03979023,7.97320302 8.27017853,8.0695163 Z" fill="var(--mark-ink, #1A47FF)" />
+        <path d="M3.4876051,16.4316364 L24.4389842,22.2514639 C25.0714868,22.427159 25.5671027,22.9191442 25.7474438,23.5503378 L29.6938899,37.3629002 C29.8369442,37.8635904 29.5470231,38.3854484 29.0463329,38.5285027 C28.87081,38.5786521 28.6845034,38.5767704 28.5100292,38.5230861 L6.56474672,31.7706918 C5.99382885,31.5950247 5.5399025,31.159248 5.34109823,30.5959693 L1.2046949,18.8761596 C0.858078987,17.8940811 1.37322316,16.8169615 2.35530161,16.4703456 C2.71984558,16.341683 3.11512553,16.3281699 3.4876051,16.4316364 Z" fill="var(--mark-cut, #5287FF)" />
       </g>
     </svg>
   )
@@ -1151,9 +1175,11 @@ export const BRAND_TILES: Record<string, { tile: string; ink: string }> = {
   IconCloudinary: { tile: '#000000', ink: '#ffffff' },
   IconInternetArchive: { tile: '#000000', ink: '#ffffff' },
   IconOpencloud: { tile: '#20434f', ink: '#e2baff' },
+  IconDosya: { tile: '#18181b', ink: '#ffffff' },
   IconOnedrive: { tile: '#0078d4', ink: '#ffffff' },
   IconOracleCloud: { tile: '#c74634', ink: '#ffffff' },
   IconPremiumize: { tile: '#ffcc00', ink: '#161616' },
+  IconKdrive: { tile: '#1a47ff', ink: '#ffffff' },
   IconDrime: { tile: '#56e16c', ink: '#161616' },
   IconFilelu: { tile: '#00eaff', ink: '#161616' },
   IconShade: { tile: '#ae4bff', ink: '#ffffff' },

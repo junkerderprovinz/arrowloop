@@ -763,6 +763,7 @@ const eu: Translations = {
   'targets.cloud': 'Hodeiak',
   'targets.storage': 'Objektu-biltegia',
   'targets.connections': 'Zerbitzariak eta partekatzeak',
+  'targets.layered': 'Beste helburu baten gainean',
   'targets.pickMore': 'Beste {count}, beren rclone izenaz',
   'opt.user': 'Erabiltzaile-izena',
   'opt.pass': 'Pasahitza',

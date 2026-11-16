@@ -763,6 +763,7 @@ const ms: Translations = {
   'targets.cloud': 'Awan',
   'targets.storage': 'Storan objek',
   'targets.connections': 'Pelayan dan perkongsian',
+  'targets.layered': 'Di atas sasaran lain',
   'targets.pickMore': '{count} lagi, dengan nama rclone mereka',
   'opt.user': 'Nama pengguna',
   'opt.pass': 'Kata laluan',

@@ -763,6 +763,7 @@ const hi: Translations = {
   'targets.cloud': 'क्लाउड',
   'targets.storage': 'ऑब्जेक्ट स्टोरेज',
   'targets.connections': 'सर्वर और साझा फ़ोल्डर',
+  'targets.layered': 'किसी दूसरे लक्ष्य पर',
   'targets.pickMore': '{count} और, उनके rclone नाम से',
   'opt.user': 'उपयोक्ता नाम',
   'opt.pass': 'पासवर्ड',

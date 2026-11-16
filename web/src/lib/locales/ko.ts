@@ -763,6 +763,7 @@ const ko: Translations = {
   'targets.cloud': '클라우드',
   'targets.storage': '오브젝트 스토리지',
   'targets.connections': '서버 및 공유',
+  'targets.layered': '다른 대상 위에',
   'targets.pickMore': '{count}개 더, rclone 이름으로',
   'opt.user': '사용자 이름',
   'opt.pass': '비밀번호',

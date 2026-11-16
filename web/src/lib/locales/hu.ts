@@ -763,6 +763,7 @@ const hu: Translations = {
   'targets.cloud': 'Felhők',
   'targets.storage': 'Objektumároló',
   'targets.connections': 'Kiszolgálók és megosztások',
+  'targets.layered': 'Egy másik célon',
   'targets.pickMore': 'Még {count}, az rclone-neve szerint',
   'opt.user': 'Felhasználónév',
   'opt.pass': 'Jelszó',

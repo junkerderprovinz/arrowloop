@@ -763,6 +763,7 @@ const vi: Translations = {
   'targets.cloud': 'Đám mây',
   'targets.storage': 'Lưu trữ đối tượng',
   'targets.connections': 'Máy chủ và chia sẻ',
+  'targets.layered': 'Trên một đích khác',
   'targets.pickMore': '{count} mục nữa, theo tên rclone',
   'opt.user': 'Tên người dùng',
   'opt.pass': 'Mật khẩu',

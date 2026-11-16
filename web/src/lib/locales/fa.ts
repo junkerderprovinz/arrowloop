@@ -763,6 +763,7 @@ const fa: Translations = {
   'targets.cloud': 'ابرها',
   'targets.storage': 'ذخیره‌سازی شیءگرا',
   'targets.connections': 'سرورها و اشتراک‌ها',
+  'targets.layered': 'روی مقصدی دیگر',
   'targets.pickMore': '{count} مورد دیگر، با نامشان در rclone',
   'opt.user': 'نام کاربری',
   'opt.pass': 'گذرواژه',

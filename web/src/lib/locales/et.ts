@@ -763,6 +763,7 @@ const et: Translations = {
   'targets.cloud': 'Pilved',
   'targets.storage': 'Objektisalvestus',
   'targets.connections': 'Serverid ja jagamised',
+  'targets.layered': 'Teise sihtkoha peal',
   'targets.pickMore': 'Veel {count}, rclone nime järgi',
   'opt.user': 'Kasutajanimi',
   'opt.pass': 'Parool',

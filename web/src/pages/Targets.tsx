@@ -132,7 +132,7 @@ export function Targets() {
           rows={rows[group]}
           marked={group === GROUPS.find((g) => rows[g].length > 0)}
           backends={backends}
-          providers={providers.filter((p) => p.group === group)}
+          providers={providers.filter((p) => p.group === group || (group === 'protocol' && p.group === 'layered'))}
           onChanged={refresh}
         />
       ))}
@@ -184,12 +184,25 @@ const GROUPS = ['cloud', 'storage', 'protocol'] as const
 
 type Group = (typeof GROUPS)[number]
 
+/**
+ * The picker's sections. A target built on another one has a section of its
+ * own there, and once saved it sits among the servers and shares.
+ */
+const PICK_GROUPS = [...GROUPS, 'layered'] as const
+
 /** Each card's title and empty line, so the three never read alike. */
 const TEXT = {
   cloud: { title: 'targets.cloud', empty: 'targets.cloudEmpty' },
   storage: { title: 'targets.storage', empty: 'targets.bucketEmpty' },
   protocol: { title: 'targets.connections', empty: 'targets.serverEmpty' },
 } as const
+
+const PICK_TITLE: Record<(typeof PICK_GROUPS)[number], TranslationKey> = {
+  cloud: 'targets.cloud',
+  storage: 'targets.storage',
+  protocol: 'targets.connections',
+  layered: 'targets.layered',
+}
 
 function Storage({
   group,
@@ -297,7 +310,7 @@ function AddTarget({
   }
 
   // By the name shown and by rclone's own, which is what a guide online calls it.
-  const groups = GROUPS.map((group) => ({
+  const groups = PICK_GROUPS.map((group) => ({
     group,
     providers: providers.filter((p) => p.group === group && matchesQuery(query, [providerName(p, t), p.name, p.backend])),
     // An rclone backend with no provider entry counts as a protocol here.
@@ -324,7 +337,7 @@ function AddTarget({
         ) : (
           groups.map((g) => (
             <section key={g.group} className="flex flex-col gap-3">
-              <h3 className="glim-eyebrow">{t(TEXT[g.group].title)}</h3>
+              <h3 className="glim-eyebrow">{t(PICK_TITLE[g.group])}</h3>
               <ProviderPicker
                 providers={g.providers}
                 unlisted={g.unlisted}

@@ -55,6 +55,7 @@
   --brand-cloudinary-0: #ffffff;
   --brand-internetarchive-0: #ffffff;
   --brand-opencloud-0: #e2baff;
+  --brand-dosya-forced0: #fafafa;
   --brand-oracle-cloud-0: #d15f4f; /* lifted from #C74634 */
   --brand-premiumize-0: #fc0;
   --brand-filelu-0: #00eaff;
@@ -105,6 +106,7 @@
     --brand-cloudinary-0: #000000;
     --brand-internetarchive-0: #000000;
     --brand-opencloud-0: #20434f;
+    --brand-dosya-forced0: #18181b;
     --brand-oracle-cloud-0: #C74634;
     --brand-premiumize-0: #7a6200;
     --brand-filelu-0: #00707a;
@@ -155,6 +157,7 @@
   --brand-cloudinary-0: #000000;
   --brand-internetarchive-0: #000000;
   --brand-opencloud-0: #20434f;
+  --brand-dosya-forced0: #18181b;
   --brand-oracle-cloud-0: #C74634;
   --brand-premiumize-0: #7a6200;
   --brand-filelu-0: #00707a;

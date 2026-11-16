@@ -23,6 +23,7 @@ A job can take only the files you name, one switch pauses every automatic run, a
 ## 🎨 Design
 
 - **ArrowLoop follows GlimStone 4.5.3.** Placeholder text is easier to read in every field, the focus ring stands out on every background, and a dropdown jumps to the option whose first letter you type. The GlimStone version on the Info tile opens the newest release. On the phone the info colour of the light theme is a shade darker, as it is on the web.
+- **The picker finds kDrive under K.** It shows kDrive with Infomaniak underneath and its own logo, dosya.dev has its logo too, and the targets built on another target, such as Encrypted or Split into pieces, sit in a section of their own at the end, each with a line on what it does.
 
 ## ⚡ Improved
 

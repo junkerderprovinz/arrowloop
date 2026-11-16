@@ -763,6 +763,7 @@ const ar: Translations = {
   'targets.cloud': 'السحابات',
   'targets.storage': 'تخزين الكائنات',
   'targets.connections': 'خوادم ومشاركات',
+  'targets.layered': 'على هدف آخر',
   'targets.pickMore': '{count} أخرى، باسمها في rclone',
   'opt.user': 'اسم المستخدم',
   'opt.pass': 'كلمة المرور',

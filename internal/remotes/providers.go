@@ -100,6 +100,9 @@ const (
 	GroupStorage Group = "storage"
 	// GroupProtocol is a machine, a share or an address somebody types in.
 	GroupProtocol Group = "protocol"
+	// GroupLayered is a target built on another target, such as one that
+	// encrypts or splits what goes into it.
+	GroupLayered Group = "layered"
 )
 
 // providers is the hand-kept list of products, since rclone's registry does
@@ -157,7 +160,7 @@ var providers = []Provider{
 	{ID: "mailru", Name: "Mail.ru Cloud", Backend: "mailru", Group: GroupCloud, Mark: "IconMailru"},
 	{ID: "zoho", Name: "Zoho WorkDrive", Backend: "zoho", Group: GroupCloud, Mark: "IconZoho"},
 	{ID: "hidrive", Name: "IONOS HiDrive", Backend: "hidrive", Group: GroupCloud, Mark: "IconIonos"},
-	{ID: "kdrive", Name: "Infomaniak kDrive", Backend: "kdrive", Group: GroupCloud, Mark: "IconTabStorage"},
+	{ID: "kdrive", Name: "kDrive / Infomaniak", Backend: "kdrive", Group: GroupCloud, Mark: "IconKdrive"},
 	{ID: "sharefile", Name: "ShareFile", Backend: "sharefile", Group: GroupCloud, Mark: "IconCitrix"},
 	{ID: "sugarsync", Name: "SugarSync", Backend: "sugarsync", Group: GroupCloud, Mark: "IconSugarsync"},
 	{ID: "putio", Name: "put.io", Backend: "putio", Group: GroupCloud, Mark: "IconPutio"},
@@ -177,7 +180,7 @@ var providers = []Provider{
 	{ID: "fichier", Name: "1Fichier", Auth: AuthAPIKey, AuthURL: "https://1fichier.com/console/params.pl",
 		Backend: "fichier", Group: GroupCloud, Mark: "IconFichier"},
 	{ID: "dosya", Name: "dosya.dev", Auth: AuthAPIKey, AuthURL: "https://dosya.dev/profile",
-		Backend: "dosya", Group: GroupCloud, Mark: "IconTabStorage"},
+		Backend: "dosya", Group: GroupCloud, Mark: "IconDosya"},
 	{ID: "drime", Name: "Drime", Auth: AuthAPIKey, Backend: "drime", Group: GroupCloud, Mark: "IconDrime"},
 	{ID: "filelu", Name: "FileLu", Auth: AuthAPIKey, Backend: "filelu", Group: GroupCloud, Mark: "IconFilelu"},
 	{ID: "shade", Name: "Shade", Auth: AuthAPIKey, Backend: "shade", Group: GroupCloud, Mark: "IconShade"},
@@ -261,26 +264,28 @@ var providers = []Provider{
 
 	// Targets built on another target. Their names are words, translated in
 	// the interface.
-	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupProtocol, Mark: "IconLock"},
-	{ID: "alias", Name: "Alias", Backend: "alias", Group: GroupProtocol, Mark: "IconLink"},
-	{ID: "archive", Name: "Archive files", Backend: "archive", Group: GroupProtocol, Mark: "IconFolder"},
-	{ID: "cache", Name: "Cache", Backend: "cache", Group: GroupProtocol, Mark: "IconRefresh"},
-	{ID: "chunker", Name: "Split into pieces", Backend: "chunker", Group: GroupProtocol, Mark: "IconCopy"},
-	{ID: "combine", Name: "Combined targets", Backend: "combine", Group: GroupProtocol, Mark: "IconAdd"},
-	{ID: "compress", Name: "Compressed", Backend: "compress", Group: GroupProtocol, Mark: "IconDownload"},
-	{ID: "hasher", Name: "Checksums", Backend: "hasher", Group: GroupProtocol, Mark: "IconCheck"},
-	{ID: "union", Name: "Merged targets", Backend: "union", Group: GroupProtocol, Mark: "IconSync"},
-	{ID: "memory", Name: "In memory", Backend: "memory", Group: GroupProtocol, Mark: "IconDiagnostics"},
+	{ID: "crypt", Name: "Encrypted", Backend: "crypt", Group: GroupLayered, Mark: "IconLock"},
+	{ID: "alias", Name: "Alias", Backend: "alias", Group: GroupLayered, Mark: "IconLink"},
+	{ID: "archive", Name: "Archive files", Backend: "archive", Group: GroupLayered, Mark: "IconFolder"},
+	{ID: "cache", Name: "Cache", Backend: "cache", Group: GroupLayered, Mark: "IconRefresh"},
+	{ID: "chunker", Name: "Split into pieces", Backend: "chunker", Group: GroupLayered, Mark: "IconCopy"},
+	{ID: "combine", Name: "Combined targets", Backend: "combine", Group: GroupLayered, Mark: "IconAdd"},
+	{ID: "compress", Name: "Compressed", Backend: "compress", Group: GroupLayered, Mark: "IconDownload"},
+	{ID: "hasher", Name: "Checksums", Backend: "hasher", Group: GroupLayered, Mark: "IconCheck"},
+	{ID: "union", Name: "Merged targets", Backend: "union", Group: GroupLayered, Mark: "IconSync"},
+	{ID: "memory", Name: "In memory", Backend: "memory", Group: GroupLayered, Mark: "IconDiagnostics"},
 }
 
-// groupOrder is the order the three cards appear in: clouds first, because
-// that is what most people are looking for, and protocols last.
+// groupOrder is the order the cards appear in: clouds first, because that is
+// what most people are looking for, and targets built on another target last.
 func groupOrder(g Group) int {
 	switch g {
 	case GroupCloud:
 		return 0
 	case GroupStorage:
 		return 1
+	case GroupLayered:
+		return 3
 	default:
 		return 2
 	}

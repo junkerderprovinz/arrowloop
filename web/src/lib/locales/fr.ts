@@ -763,6 +763,7 @@ const fr: Translations = {
   'targets.cloud': 'Clouds',
   'targets.storage': 'Stockage objet',
   'targets.connections': 'Serveurs et partages',
+  'targets.layered': 'Sur une autre cible',
   'targets.pickMore': '{count} de plus, sous leur nom rclone',
   'opt.user': 'Nom d\'utilisateur',
   'opt.pass': 'Mot de passe',

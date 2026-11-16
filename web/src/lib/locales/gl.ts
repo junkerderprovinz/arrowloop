@@ -763,6 +763,7 @@ const gl: Translations = {
   'targets.cloud': 'Nubes',
   'targets.storage': 'Almacenamento de obxectos',
   'targets.connections': 'Servidores e comparticións',
+  'targets.layered': 'Sobre outro destino',
   'targets.pickMore': '{count} máis, polo seu nome en rclone',
   'opt.user': 'Usuario',
   'opt.pass': 'Contrasinal',

@@ -763,6 +763,7 @@ const lv: Translations = {
   'targets.cloud': 'Mākoņi',
   'targets.storage': 'Objektu krātuve',
   'targets.connections': 'Serveri un koplietojumi',
+  'targets.layered': 'Uz cita mērķa',
   'targets.pickMore': 'Vēl {count}, pēc to rclone nosaukuma',
   'opt.user': 'Lietotājvārds',
   'opt.pass': 'Parole',

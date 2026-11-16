@@ -763,6 +763,7 @@ const el: Translations = {
   'targets.cloud': 'Νέφη',
   'targets.storage': 'Αποθήκευση αντικειμένων',
   'targets.connections': 'Διακομιστές και κοινόχρηστα',
+  'targets.layered': 'Πάνω σε άλλο στόχο',
   'targets.pickMore': 'Άλλα {count}, με το όνομά τους στο rclone',
   'opt.user': 'Όνομα χρήστη',
   'opt.pass': 'Κωδικός πρόσβασης',

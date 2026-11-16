@@ -763,6 +763,7 @@ const ja: Translations = {
   'targets.cloud': 'クラウド',
   'targets.storage': 'オブジェクトストレージ',
   'targets.connections': 'サーバーと共有',
+  'targets.layered': '別のターゲットの上に',
   'targets.pickMore': '他に {count} 件、rclone の名前で',
   'opt.user': 'ユーザー名',
   'opt.pass': 'パスワード',

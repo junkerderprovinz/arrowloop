@@ -763,6 +763,7 @@ const ro: Translations = {
   'targets.cloud': 'Nori',
   'targets.storage': 'Stocare de obiecte',
   'targets.connections': 'Servere și partajări',
+  'targets.layered': 'Peste altă țintă',
   'targets.pickMore': 'Încă {count}, după numele din rclone',
   'opt.user': 'Nume utilizator',
   'opt.pass': 'Parolă',

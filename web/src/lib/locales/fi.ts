@@ -763,6 +763,7 @@ const fi: Translations = {
   'targets.cloud': 'Pilvet',
   'targets.storage': 'Objektitallennus',
   'targets.connections': 'Palvelimet ja jaot',
+  'targets.layered': 'Toisen kohteen päällä',
   'targets.pickMore': '{count} lisää, rclone-nimellään',
   'opt.user': 'Käyttäjätunnus',
   'opt.pass': 'Salasana',

@@ -763,6 +763,7 @@ const uk: Translations = {
   'targets.cloud': 'Хмари',
   'targets.storage': 'Об\'єктне сховище',
   'targets.connections': 'Сервери та спільні теки',
+  'targets.layered': 'Поверх іншої цілі',
   'targets.pickMore': 'Ще {count}, під назвою в rclone',
   'opt.user': 'Ім\'я користувача',
   'opt.pass': 'Пароль',

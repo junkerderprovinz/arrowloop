@@ -13,8 +13,9 @@ import { Body, Caption, Empty, Page, Press, ReadmeButton, ReadmeRow, Title, useT
 /**
  * Picks the kind of storage for a new target, as README buttons matching the
  * web app's, under a search that narrows every group at once. The engine
- * lists only the providers compiled into this build. Only protocols carry a
- * hint, since "SMB" or "WebDAV" does not say what it is.
+ * lists only the providers compiled into this build. Only protocols and the
+ * targets built on another one carry a hint, since "SMB" or "Alias" does not
+ * say what it is.
  */
 export function TargetPick() {
   const nav = useNavigation<Nav<MoreStack>>();
@@ -39,6 +40,7 @@ export function TargetPick() {
     { title: t("targets.cloud"), items: found.filter((x) => x.group === "cloud") },
     { title: t("targets.storage"), items: found.filter((x) => x.group === "storage") },
     { title: t("targets.connections"), items: found.filter((x) => x.group === "protocol") },
+    { title: t("targets.layered"), items: found.filter((x) => x.group === "layered") },
   ].filter((g) => g.items.length > 0);
   const tile = (id: string, fallback: string) => {
     const known = providers.find((x) => x.id === id);
@@ -55,7 +57,7 @@ export function TargetPick() {
         label={name}
         sub={sub}
         tile={tile}
-        hint={provider.group === "protocol" ? providerHint(provider.id, t) : undefined}
+        hint={provider.group === "protocol" || provider.group === "layered" ? providerHint(provider.id, t) : undefined}
         mark={(lit, ink) => (
           <ProviderMark
             name={provider.mark}

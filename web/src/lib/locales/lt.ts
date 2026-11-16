@@ -763,6 +763,7 @@ const lt: Translations = {
   'targets.cloud': 'Debesys',
   'targets.storage': 'Objektų saugykla',
   'targets.connections': 'Serveriai ir bendrinimai',
+  'targets.layered': 'Ant kito tikslo',
   'targets.pickMore': 'Dar {count}, pagal rclone pavadinimą',
   'opt.user': 'Naudotojo vardas',
   'opt.pass': 'Slaptažodis',

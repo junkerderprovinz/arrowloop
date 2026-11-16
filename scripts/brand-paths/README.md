@@ -46,6 +46,7 @@ computed from the first.
 
 **Dashboard Icons** (`homarr-labs/dashboard-icons`, <https://dashboardicons.com>)
 - `microsoft-onedrive.svg`, `oracle-cloud.svg` and `premiumize.svg`, the three nobody has supplied,
+`kdrive.svg`, its `infomaniak-kdrive.svg` with the wordmark left out, since the mark stands beside its name,
 and the Unraid button's `unraid.txt`, its `unraid.svg` with the gradient left
 out, since the button draws it in one ink.
 **Apache-2.0**, whose licence text is beside this file as

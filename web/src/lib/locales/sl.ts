@@ -763,6 +763,7 @@ const sl: Translations = {
   'targets.cloud': 'Oblaki',
   'targets.storage': 'Objektna shramba',
   'targets.connections': 'Strežniki in mape v skupni rabi',
+  'targets.layered': 'Na drugem cilju',
   'targets.pickMore': 'Še {count}, pod imenom v rclone',
   'opt.user': 'Uporabniško ime',
   'opt.pass': 'Geslo',

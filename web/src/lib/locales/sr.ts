@@ -763,6 +763,7 @@ const sr: Translations = {
   'targets.cloud': 'Облаци',
   'targets.storage': 'Објектно складиште',
   'targets.connections': 'Сервери и дељења',
+  'targets.layered': 'На другом одредишту',
   'targets.pickMore': 'Још {count}, под називом у rclone',
   'opt.user': 'Корисничко име',
   'opt.pass': 'Лозинка',

@@ -763,6 +763,7 @@ const sv: Translations = {
   'targets.cloud': 'Moln',
   'targets.storage': 'Objektlagring',
   'targets.connections': 'Servrar och utdelningar',
+  'targets.layered': 'Ovanpå ett annat mål',
   'targets.pickMore': '{count} till, med sina rclone-namn',
   'opt.user': 'Användarnamn',
   'opt.pass': 'Lösenord',

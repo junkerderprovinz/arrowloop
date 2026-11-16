@@ -763,6 +763,7 @@ const ca: Translations = {
   'targets.cloud': 'Núvols',
   'targets.storage': 'Emmagatzematge d\'objectes',
   'targets.connections': 'Servidors i recursos compartits',
+  'targets.layered': 'Sobre una altra destinació',
   'targets.pickMore': '{count} més, pel seu nom a rclone',
   'opt.user': 'Nom d\'usuari',
   'opt.pass': 'Contrasenya',

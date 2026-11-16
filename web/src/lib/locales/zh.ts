@@ -763,6 +763,7 @@ const zh: Translations = {
   'targets.cloud': '云服务',
   'targets.storage': '对象存储',
   'targets.connections': '服务器与共享',
+  'targets.layered': '基于另一个目标',
   'targets.pickMore': '还有 {count} 个，按 rclone 名称',
   'opt.user': '用户名',
   'opt.pass': '密码',

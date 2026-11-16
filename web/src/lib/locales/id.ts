@@ -763,6 +763,7 @@ const id: Translations = {
   'targets.cloud': 'Awan',
   'targets.storage': 'Penyimpanan objek',
   'targets.connections': 'Server dan berbagi pakai',
+  'targets.layered': 'Di atas target lain',
   'targets.pickMore': '{count} lagi, dengan nama rclone-nya',
   'opt.user': 'Nama pengguna',
   'opt.pass': 'Kata sandi',

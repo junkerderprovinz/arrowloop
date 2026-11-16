@@ -763,6 +763,7 @@ const hr: Translations = {
   'targets.cloud': 'Oblaci',
   'targets.storage': 'Objektna pohrana',
   'targets.connections': 'Poslužitelji i dijeljenja',
+  'targets.layered': 'Na drugom odredištu',
   'targets.pickMore': 'Još {count}, pod nazivom u rcloneu',
   'opt.user': 'Korisničko ime',
   'opt.pass': 'Lozinka',

@@ -214,6 +214,9 @@ FORCE_THEMED = {
     "opendrive": {"#fff": ("#ffffff", "#2b2b2b")},
     # White on a #3d3d3d plate, likewise.
     "ulozto": {"#fff": ("#ffffff", "#3d3d3d")},
+    # A near-black outline beside a green dot that reads anywhere; the dark
+    # ink is the one dosya.dev's own dark logo uses.
+    "dosya": {"#18181b": ("#fafafa", "#18181b")},
 }
 
 
@@ -502,6 +505,7 @@ LOCAL = [
     ("IconCloudinary", "cloudinary", "Cloudinary", JDP, BRAND),
     ("IconInternetArchive", "internetarchive", "Internet Archive", JDP, BRAND),
     ("IconOpencloud", "opencloud", "OpenCloud", JDP, BRAND),
+    ("IconDosya", "dosya", "dosya.dev", JDP, BRAND),
 
     # Dashboard Icons, Apache-2.0.
     ("IconOnedrive", "microsoft-onedrive", "OneDrive",
@@ -510,6 +514,8 @@ LOCAL = [
      "homarr-labs/dashboard-icons, svg/oracle-cloud.svg", "Apache-2.0"),
     ("IconPremiumize", "premiumize", "premiumize.me",
      "homarr-labs/dashboard-icons, svg/premiumize.svg", "Apache-2.0"),
+    ("IconKdrive", "kdrive", "kDrive, its mark without the wordmark",
+     "homarr-labs/dashboard-icons, svg/infomaniak-kdrive.svg", "Apache-2.0"),
 
     # From each brand's own website or repositories.
     ("IconDrime", "drime", "Drime", "drime.cloud, the brand mark in the page footer", BRAND),
@@ -826,17 +832,21 @@ def roles(root, slug):
     def apart(a, b):
         return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5 > SAME_SURFACE
 
+    # An outline has no surface, so nothing drawn inside it lies on it.
+    def surface(part):
+        return part["fill"] not in (None, "none", "transparent")
+
     for i, part in enumerate(parts):
         part["depth"] = 0
         for below in reversed(parts[:i]):
-            if lies_on(part["box"], below["box"]):
+            if surface(below) and lies_on(part["box"], below["box"]):
                 part["depth"] = below["depth"] + (1 if apart(part["rgb"], below["rgb"]) else 0)
                 break
     # A part under a larger one of another colour shows only through that
     # one's holes, as MEGA's white disc shows through the M.
     for i, part in enumerate(parts):
         for above in parts[i + 1:]:
-            if lies_on(part["box"], above["box"]) and apart(part["rgb"], above["rgb"]):
+            if surface(above) and lies_on(part["box"], above["box"]) and apart(part["rgb"], above["rgb"]):
                 if above["depth"] % 2 == part["depth"] % 2:
                     part["depth"] = above["depth"] + 1
                 break

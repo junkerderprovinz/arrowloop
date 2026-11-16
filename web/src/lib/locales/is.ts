@@ -763,6 +763,7 @@ const is: Translations = {
   'targets.cloud': 'Skýin',
   'targets.storage': 'Hlutageymsla',
   'targets.connections': 'Netþjónar og sameignir',
+  'targets.layered': 'Ofan á öðru markmiði',
   'targets.pickMore': '{count} til viðbótar, undir rclone-heiti',
   'opt.user': 'Notandanafn',
   'opt.pass': 'Lykilorð',

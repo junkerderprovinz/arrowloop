@@ -763,6 +763,7 @@ const tr: Translations = {
   'targets.cloud': 'Bulutlar',
   'targets.storage': 'Nesne depolama',
   'targets.connections': 'Sunucular ve paylaşımlar',
+  'targets.layered': 'Başka bir hedefin üzerinde',
   'targets.pickMore': '{count} tane daha, rclone adlarıyla',
   'opt.user': 'Kullanıcı adı',
   'opt.pass': 'Parola',
