@@ -707,6 +707,7 @@ const pl: Translations = {
   'pick.create': 'Utwórz',
   'pick.roots': 'Dyski i korzenie',
   'pick.empty': 'Tu nie ma folderów.',
+  'pick.hidden': 'Pokazuj ukryte foldery',
   'look.accentReset': 'Wróć do domyślnego',
   'pick.cancel': 'Anuluj',
   'look.paletteReset': 'Wróć do domyślnych kolorów',

@@ -707,6 +707,7 @@ const tr: Translations = {
   'pick.create': 'Oluştur',
   'pick.roots': 'Diskler ve kökler',
   'pick.empty': 'Burada klasör yok.',
+  'pick.hidden': 'Gizli klasörleri göster',
   'look.accentReset': 'Varsayılana dön',
   'pick.cancel': 'İptal',
   'look.paletteReset': 'Varsayılan renklere dön',

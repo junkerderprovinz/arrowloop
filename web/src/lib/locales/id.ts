@@ -707,6 +707,7 @@ const id: Translations = {
   'pick.create': 'Buat',
   'pick.roots': 'Cakram dan akar',
   'pick.empty': 'Tidak ada folder di sini.',
+  'pick.hidden': 'Tampilkan folder tersembunyi',
   'look.accentReset': 'Kembali ke bawaan',
   'pick.cancel': 'Batal',
   'look.paletteReset': 'Kembali ke warna bawaan',

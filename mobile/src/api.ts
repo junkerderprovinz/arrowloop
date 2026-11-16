@@ -695,10 +695,10 @@ export const api = {
   stopOnInstance: (id: string, job: string) =>
     call<void>(`/api/instances/${name(id)}/jobs/${name(job)}/stop`, { method: "POST" }),
 
-  /** Lists the folders inside a folder; no path lists the roots. */
-  browse: (path?: string) =>
+  /** Lists the folders inside a folder, the hidden ones too when asked; no path lists the roots. */
+  browse: (path?: string, hidden?: boolean) =>
     call<{ path: string; parent: string; entries: { name: string; path: string }[] }>(
-      `/api/browse${path ? `?path=${encodeURIComponent(path)}` : ""}`,
+      `/api/browse${path ? `?path=${encodeURIComponent(path)}${hidden ? "&hidden=1" : ""}` : ""}`,
     ),
   /** Makes one folder; the engine refuses a name with a path separator. */
   makeDir: (parent: string, name: string) =>

@@ -11,13 +11,14 @@ import { api, type FolderListing, type Settings } from './api'
 export type Host = {
   /** The other instance's name, undefined for this one. */
   name?: string
-  browse: (path?: string) => Promise<FolderListing>
+  /** Lists one folder, its hidden folders too when hidden is set. */
+  browse: (path?: string, hidden?: boolean) => Promise<FolderListing>
   makeDir?: (parent: string, name: string) => Promise<{ path: string }>
   excludeSets: () => Promise<string[]>
 }
 
 export const THIS_HOST: Host = {
-  browse: (path) => api.browse(path),
+  browse: (path, hidden) => api.browse(path, hidden),
   makeDir: (parent, name) => api.makeDir(parent, name),
   excludeSets: () =>
     api.settings().then((s: Settings) => Object.keys((s.excludeSets as Record<string, string[]> | undefined) ?? {}).sort()),
@@ -27,7 +28,7 @@ export const THIS_HOST: Host = {
 export function otherHost(id: string, name: string, excludeSets: string[]): Host {
   return {
     name,
-    browse: (path) => api.browseOnInstance(id, path),
+    browse: (path, hidden) => api.browseOnInstance(id, path, hidden),
     excludeSets: () => Promise.resolve(excludeSets),
   }
 }

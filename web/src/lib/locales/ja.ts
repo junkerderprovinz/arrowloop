@@ -707,6 +707,7 @@ const ja: Translations = {
   'pick.create': '作成',
   'pick.roots': 'ドライブとルート',
   'pick.empty': 'ここにフォルダーはありません。',
+  'pick.hidden': '隠しフォルダーを表示する',
   'look.accentReset': '既定に戻す',
   'pick.cancel': 'キャンセル',
   'look.paletteReset': '既定の色に戻す',

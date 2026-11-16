@@ -707,6 +707,7 @@ const nl: Translations = {
   'pick.create': 'Aanmaken',
   'pick.roots': 'Schijven en wortels',
   'pick.empty': 'Hier staan geen mappen.',
+  'pick.hidden': 'Verborgen mappen tonen',
   'look.accentReset': 'Terug naar de standaard',
   'pick.cancel': 'Annuleren',
   'look.paletteReset': 'Terug naar de standaardkleuren',

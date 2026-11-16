@@ -707,6 +707,7 @@ const lv: Translations = {
   'pick.create': 'Izveidot',
   'pick.roots': 'Diski un saknes',
   'pick.empty': 'Šeit nav mapju.',
+  'pick.hidden': 'Rādīt slēptās mapes',
   'look.accentReset': 'Atpakaļ uz noklusējumu',
   'pick.cancel': 'Atcelt',
   'look.paletteReset': 'Atpakaļ uz noklusējuma krāsām',

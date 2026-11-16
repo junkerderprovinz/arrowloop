@@ -707,6 +707,7 @@ const hr: Translations = {
   'pick.create': 'Stvori',
   'pick.roots': 'Diskovi i korijeni',
   'pick.empty': 'Ovdje nema mapa.',
+  'pick.hidden': 'Prikaži skrivene mape',
   'look.accentReset': 'Natrag na zadano',
   'pick.cancel': 'Odustani',
   'look.paletteReset': 'Natrag na zadane boje',

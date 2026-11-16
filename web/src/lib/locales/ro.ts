@@ -707,6 +707,7 @@ const ro: Translations = {
   'pick.create': 'Creează',
   'pick.roots': 'Discuri și rădăcini',
   'pick.empty': 'Aici nu sunt dosare.',
+  'pick.hidden': 'Arată dosarele ascunse',
   'look.accentReset': 'Înapoi la implicit',
   'pick.cancel': 'Anulează',
   'look.paletteReset': 'Înapoi la culorile implicite',

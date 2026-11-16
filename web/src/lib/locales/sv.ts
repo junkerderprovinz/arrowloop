@@ -707,6 +707,7 @@ const sv: Translations = {
   'pick.create': 'Skapa',
   'pick.roots': 'Diskar och rötter',
   'pick.empty': 'Inga mappar här.',
+  'pick.hidden': 'Visa dolda mappar',
   'look.accentReset': 'Tillbaka till standard',
   'pick.cancel': 'Avbryt',
   'look.paletteReset': 'Tillbaka till standardfärgerna',

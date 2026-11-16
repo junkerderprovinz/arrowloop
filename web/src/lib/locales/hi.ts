@@ -707,6 +707,7 @@ const hi: Translations = {
   'pick.create': 'बनाएँ',
   'pick.roots': 'ड्राइव और मूल',
   'pick.empty': 'यहाँ कोई फ़ोल्डर नहीं।',
+  'pick.hidden': 'छिपे फ़ोल्डर दिखाएँ',
   'look.accentReset': 'डिफ़ॉल्ट पर लौटें',
   'pick.cancel': 'रद्द करें',
   'look.paletteReset': 'डिफ़ॉल्ट रंगों पर लौटें',

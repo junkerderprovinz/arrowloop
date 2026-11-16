@@ -707,6 +707,7 @@ const zh: Translations = {
   'pick.create': '创建',
   'pick.roots': '驱动器和根目录',
   'pick.empty': '这里没有文件夹。',
+  'pick.hidden': '显示隐藏文件夹',
   'look.accentReset': '恢复默认',
   'pick.cancel': '取消',
   'look.paletteReset': '恢复默认配色',

@@ -67,6 +67,8 @@ export interface Appearance {
   instancesInMore: boolean;
   /** Whether the Overview holds the bar's first place, where the app opens. */
   overviewOnBar: boolean;
+  /** Whether the folder picker lists hidden folders. */
+  hiddenFolders: boolean;
 }
 
 export type JobView = "cards" | "compact";
@@ -88,6 +90,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   jobView: "cards",
   instancesInMore: false,
   overviewOnBar: true,
+  hiddenFolders: false,
 };
 
 const KEY = "arrowloop.appearance";

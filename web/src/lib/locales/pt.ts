@@ -707,6 +707,7 @@ const pt: Translations = {
   'pick.create': 'Criar',
   'pick.roots': 'Discos e raízes',
   'pick.empty': 'Aqui não há pastas.',
+  'pick.hidden': 'Mostrar pastas ocultas',
   'look.accentReset': 'Voltar ao valor padrão',
   'pick.cancel': 'Cancelar',
   'look.paletteReset': 'Voltar às cores padrão',

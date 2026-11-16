@@ -4,8 +4,9 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { api } from "./api";
 import { useT } from "./i18n";
 import { Glyph } from "./glyphs";
+import { appearance, setAppearance, useAppearance } from "./settings";
 import { space, text, TOUCH } from "./theme";
-import { Body, Button, Caption, Press, useKeyboardOverlap, useTheme } from "./ui";
+import { Body, Button, Caption, Press, Toggle, useKeyboardOverlap, useTheme } from "./ui";
 
 /**
  * A dialog for choosing a folder on the phone or on a target instead of typing
@@ -43,6 +44,7 @@ export function FolderPicker({
   /** The name of the folder being made, or null while none is. */
   const [naming, setNaming] = useState<string | null>(null);
   const keyboard = useKeyboardOverlap();
+  const { hiddenFolders } = useAppearance();
 
   /** Opens a folder and reports whether it could be read. */
   const go = useCallback(async (path: string) => {
@@ -50,7 +52,9 @@ export function FolderPicker({
     setOpening(path);
     setError("");
     try {
-      const answer = await api.browse(path || undefined);
+      // Read from the store rather than the render, so a listing asked for
+      // right after the switch flips already follows it.
+      const answer = await api.browse(path || undefined, appearance().hiddenFolders);
       setAt(answer.path ?? path);
       setParent(answer.parent ?? "");
       setEntries(answer.entries ?? []);
@@ -152,6 +156,15 @@ export function FolderPicker({
               </>
             )}
           </ScrollView>
+
+          <Toggle
+            label={t("pick.hidden")}
+            value={hiddenFolders}
+            onChange={(next) => {
+              setAppearance({ hiddenFolders: next });
+              if (at) void go(at);
+            }}
+          />
 
           {/* The top level lists storage volumes and targets, where no folder
               can be made. */}

@@ -707,6 +707,7 @@ const es: Translations = {
   'pick.create': 'Crear',
   'pick.roots': 'Discos y raíces',
   'pick.empty': 'Aquí no hay carpetas.',
+  'pick.hidden': 'Mostrar carpetas ocultas',
   'look.accentReset': 'Volver al valor por defecto',
   'pick.cancel': 'Cancelar',
   'look.paletteReset': 'Volver a los colores por defecto',

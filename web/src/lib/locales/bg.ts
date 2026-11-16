@@ -707,6 +707,7 @@ const bg: Translations = {
   'pick.create': 'Създай',
   'pick.roots': 'Дискове и корени',
   'pick.empty': 'Тук няма папки.',
+  'pick.hidden': 'Показване на скритите папки',
   'look.accentReset': 'Обратно към стандартното',
   'pick.cancel': 'Отказ',
   'look.paletteReset': 'Обратно към стандартните цветове',

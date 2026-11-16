@@ -707,6 +707,7 @@ const sl: Translations = {
   'pick.create': 'Ustvari',
   'pick.roots': 'Diski in koreni',
   'pick.empty': 'Tukaj ni map.',
+  'pick.hidden': 'Pokaži skrite mape',
   'look.accentReset': 'Nazaj na privzeto',
   'pick.cancel': 'Prekliči',
   'look.paletteReset': 'Nazaj na privzete barve',

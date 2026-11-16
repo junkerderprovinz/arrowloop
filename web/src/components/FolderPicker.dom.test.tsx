@@ -91,4 +91,38 @@ describe('the folder picker', () => {
     expect(choose().disabled).toBe(false)
     expect(make().disabled).toBe(false)
   })
+
+  it('lists hidden folders once the switch is on and remembers the switch', async () => {
+    localStorage.clear()
+    const asked: { path: string; hidden: boolean }[] = []
+    const host: Host = {
+      browse: (path = '', hidden = false) => {
+        asked.push({ path, hidden })
+        const names = hidden ? ['.backup', 'Music'] : ['Music']
+        return Promise.resolve({
+          path,
+          parent: '',
+          entries: names.map((name) => ({ name, path: `${path}/${name}` })),
+        } as FolderListing)
+      },
+      excludeSets: () => Promise.resolve([]),
+    }
+    open(host)
+    await screen.findByText('Music')
+    expect(screen.queryByText('.backup')).toBeNull()
+    const hidden = () => screen.getByRole('switch', { name: 'Show hidden folders' })
+    expect(hidden().getAttribute('aria-checked')).toBe('false')
+
+    fireEvent.click(hidden())
+    await screen.findByText('.backup')
+    expect(asked.at(-1)).toEqual({ path: 'nas:photos', hidden: true })
+
+    cleanup()
+    asked.length = 0
+    open(host)
+    await screen.findByText('.backup')
+    expect(hidden().getAttribute('aria-checked')).toBe('true')
+    expect(asked).toEqual([{ path: 'nas:photos', hidden: true }])
+    localStorage.clear()
+  })
 })

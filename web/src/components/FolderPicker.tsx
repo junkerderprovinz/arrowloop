@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import { IconAction } from './IconAction'
 import { Text } from './Field'
 import { Rule } from './Shell'
+import { ToggleRow } from './ToggleRow'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { IconAdd, IconBack, IconCheck, IconClose, IconFolder, IconFolderAdd, IconTabStorage } from './glyphs'
@@ -11,12 +12,15 @@ import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
 import { useT, type Translate } from '../lib/i18n'
 import { useModal } from '../lib/modal'
+import { useRemembered } from '../lib/remember'
 
 /**
  * A place the picker offers above the folders. A registered drive is taken as
  * it is; a target opens, so a folder on it can be chosen or made.
  */
 export type Known = { value: string; label: string; browse?: boolean }
+
+const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean'
 
 /**
  * The registered drives and the configured targets as the picker offers them.
@@ -68,6 +72,9 @@ export function FolderPicker({
   const [opening, setOpening] = useState<string | null>(null)
   // null while the new-folder name box is closed.
   const [naming, setNaming] = useState<string | null>(null)
+  // One choice for every picker in this browser, since a hidden folder wanted
+  // for one field is usually wanted for the next.
+  const [hidden, setHidden] = useRemembered('arrowloop.picker.hidden', false, isBoolean)
 
   // Each opening starts from the field it was opened from, not where the last
   // visit ended.
@@ -88,11 +95,11 @@ export function FolderPicker({
    * placeholder or a path from another machine) opens the top of the tree
    * instead of a dead end; a folder navigated to keeps its error.
    */
-  async function go(path: string, fallback = true) {
+  async function go(path: string, fallback = true, withHidden = hidden) {
     setBusy(true)
     setOpening(path)
     try {
-      const answer = await host.browse(path || undefined)
+      const answer = await host.browse(path || undefined, withHidden)
       setAt(answer.path)
       setShown(answer.shown ?? '')
       setParent(answer.parent)
@@ -211,6 +218,18 @@ export function FolderPicker({
               ))
             )}
           </ul>
+
+          <div className="my-3">
+            <ToggleRow
+              label={t('pick.hidden')}
+              checked={hidden}
+              onChange={(next) => {
+                setHidden(next)
+                // The roots hold no hidden folders, so only an open folder is listed again.
+                if (at) void go(at, false, next)
+              }}
+            />
+          </div>
 
           {/* Choosing takes the folder currently open rather than a highlighted
               row, so walking in and pressing the button is one gesture. */}
