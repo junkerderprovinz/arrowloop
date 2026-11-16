@@ -51,7 +51,7 @@ import { loadAppearance, useAppearance } from "./src/settings";
 import { watchSystemAccent } from "./src/systemAccent";
 import { contrastOn, raised, space, text } from "./src/theme";
 import { Glyph } from "./src/glyphs";
-import { Badge, Body, Button, Heading, Press, Screen, usePress, useTheme } from "./src/ui";
+import { Badge, Body, Button, Heading, Press, Screen, usePress, useSideRoom, useTheme } from "./src/ui";
 import { engine } from "./src/engine";
 import { useEngine } from "./src/useEngine";
 import { useWaiting, WaitingProvider } from "./src/waiting";
@@ -316,6 +316,8 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   };
   // Clear of the gesture bar, with a floor for phones with buttons.
   const below = Math.max(inset.bottom, space.sm);
+  // As wide as the page's column, so on a tablet the places stay together.
+  const room = useSideRoom(space.md);
 
   const go = (name: string) => {
     const route = state.routes.find((r) => r.name === name);
@@ -346,7 +348,7 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
       {/* The app's ground under the bar, or Android's near-white window
           background shows through around it. */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: p.background }]} />
-      <View style={[styles.bar, { backgroundColor: p.surface2, ...corners.pill, marginBottom: below }]}>
+      <View style={[styles.bar, { backgroundColor: p.surface2, ...corners.pill, marginHorizontal: room, marginBottom: below }]}>
         <View style={styles.well}>
           {places.map((place, index) => (
             <BarSegment
@@ -489,6 +491,7 @@ function MoreSheet({
   const { ms } = useMotion();
   const { findings, trash, anomaliesOn } = useWaiting();
   const { instancesInMore } = useAppearance();
+  const room = useSideRoom(space.md);
   const counts: Record<MorePlace["screen"], number | null> = {
     TrashAll: trash,
     TargetList: null,
@@ -500,7 +503,7 @@ function MoreSheet({
 
   return (
     <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
-      <Pressable style={[styles.ground, { backgroundColor: p.scrim, paddingBottom: above }]} onPress={onClose}>
+      <Pressable style={[styles.ground, { backgroundColor: p.scrim, paddingHorizontal: room, paddingBottom: above }]} onPress={onClose}>
         {/* Swallows presses, so a tap between the rows does not close it. */}
         <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
           {MORE.filter(
@@ -582,6 +585,7 @@ function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry:
   const { t } = useT();
   // This screen is outside the navigator, so it applies the insets itself.
   const inset = useSafeAreaInsets();
+  const room = useSideRoom();
   if (state === "starting") {
     return (
       <Screen>
@@ -594,7 +598,7 @@ function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry:
   }
   return (
     <Screen>
-      <ScrollView contentContainerStyle={[styles.trouble, { paddingTop: inset.top + space.lg }]}>
+      <ScrollView contentContainerStyle={[styles.trouble, { paddingTop: inset.top + space.lg, paddingHorizontal: room }]}>
         <Heading>{t("error.unreachable")}</Heading>
         <Text
           style={[
@@ -627,7 +631,7 @@ const styles = StyleSheet.create({
   log: { fontFamily: "monospace", fontSize: text.meta, padding: space.md },
 
   // Inset from the edges so the bar floats on the page.
-  bar: { marginHorizontal: space.md, padding: 3 },
+  bar: { padding: 3 },
   well: { flexDirection: "row", gap: 2 },
   // Equal widths whatever the words, and a fixed height so the bar does not
   // change size with the label setting. 48 fits glyph, gap, caption and
@@ -658,7 +662,7 @@ const styles = StyleSheet.create({
 
   // Fills the screen so a tap anywhere closes the sheet; the sheet itself
   // stands at the bottom, over the bar's end.
-  ground: { flex: 1, justifyContent: "flex-end", paddingHorizontal: space.md },
+  ground: { flex: 1, justifyContent: "flex-end" },
   sheet: { padding: space.sm, gap: space.xs, elevation: 8 },
   sheetRow: {
     flexDirection: "row",

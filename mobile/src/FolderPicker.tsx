@@ -5,6 +5,7 @@ import { api } from "./api";
 import { useT } from "./i18n";
 import { Glyph } from "./glyphs";
 import { appearance, setAppearance, useAppearance } from "./settings";
+import { DIALOG } from "./layout";
 import { space, text, TOUCH } from "./theme";
 import { Body, Button, Caption, Press, Toggle, useKeyboardOverlap, useTheme } from "./ui";
 
@@ -225,10 +226,11 @@ export function FolderPicker({
 const styles = StyleSheet.create({
   ground: {
     flex: 1,
+    alignItems: "center",
     justifyContent: "center",
     padding: space.md,
   },
-  card: { padding: space.md, gap: space.sm, maxHeight: "80%" },
+  card: { width: "100%", maxWidth: DIALOG, padding: space.md, gap: space.sm, maxHeight: "80%" },
   list: { flexGrow: 0 },
   row: {
     flexDirection: "row",

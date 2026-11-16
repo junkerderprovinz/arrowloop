@@ -14,6 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   useColorScheme,
+  useWindowDimensions,
   View,
   type DimensionValue,
   type FlatListProps,
@@ -53,6 +54,7 @@ import { useSystemAccent } from "./systemAccent";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
+import { sideRoom } from "./layout";
 
 // GlimStone's controls for React Native, with the design language's shapes
 // and sizes: a notch 22 tall overlapping its card by half, a well whose chosen
@@ -271,9 +273,21 @@ function useScrollMotion() {
   };
 }
 
-/** A FlatList whose cards arrive like a page's and which springs at either end. */
+/**
+ * The padding beside a page's column, its gutter on a phone and more on a
+ * screen wide enough to stretch the cards.
+ */
+export function useSideRoom(gutter: number = space.lg): number {
+  return sideRoom(useWindowDimensions().width, gutter);
+}
+
+/**
+ * A FlatList whose cards arrive like a page's and which springs at either
+ * end. Its rows keep to the page's column, whatever side padding the list asks for.
+ */
 export function MovingList<T>(props: FlatListProps<T>) {
   const motion = useScrollMotion();
+  const room = useSideRoom();
   const { onScroll } = props;
   return (
     <Arrival.Provider value={motion.line}>
@@ -281,6 +295,7 @@ export function MovingList<T>(props: FlatListProps<T>) {
         <FlatList
           {...props}
           {...motion.scroll}
+          contentContainerStyle={[props.contentContainerStyle, { paddingHorizontal: room }]}
           onScroll={(e) => {
             motion.scroll.onScroll(e);
             onScroll?.(e);
@@ -491,9 +506,11 @@ export function Sheet({
   const { t } = useT();
   const { ms } = useMotion();
   const inset = useSafeAreaInsets();
+  // As wide as the bar, which stops where the page's column does.
+  const room = useSideRoom(space.md);
   return (
     <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
-      <View style={[styles.sheetGround, { paddingBottom: Math.max(inset.bottom, space.sm) }]}>
+      <View style={[styles.sheetGround, { paddingHorizontal: room, paddingBottom: Math.max(inset.bottom, space.sm) }]}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
         <View style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
           <View style={styles.sheetHead}>
@@ -1515,6 +1532,7 @@ export function Page({
   const own = usePageScroll();
   const { scroller, inner } = scroll ?? own;
   const keyboard = useKeyboardCover(scroller, inner);
+  const room = useSideRoom();
   return (
     <Animated.View ref={keyboard.frame} style={[motion.style, { paddingBottom: keyboard.covered }]}>
       <ScrollView
@@ -1523,7 +1541,7 @@ export function Page({
         onLayout={keyboard.onLayout}
         {...motion.scroll}
         style={{ backgroundColor: p.background }}
-        contentContainerStyle={[styles.page, fab ? styles.fabRoom : null]}
+        contentContainerStyle={[styles.page, { paddingHorizontal: room }, fab ? styles.fabRoom : null]}
         keyboardShouldPersistTaps="handled"
       >
         <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
@@ -1865,7 +1883,7 @@ const styles = StyleSheet.create({
   listTop: { height: space.xl },
   listPiece: { paddingHorizontal: space.lg },
   listEnd: { height: space.md },
-  sheetGround: { flex: 1, justifyContent: "flex-end", paddingHorizontal: space.md },
+  sheetGround: { flex: 1, justifyContent: "flex-end" },
   sheet: { maxHeight: "88%", overflow: "hidden", elevation: 8 },
   sheetHead: { paddingHorizontal: space.lg, paddingTop: space.lg },
   sheetTitle: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },

@@ -85,6 +85,10 @@ jobs:
         working-directory: mobile
         run: npm run lint
 
+      - name: The app's own tests pass
+        working-directory: mobile
+        run: npm test
+
       # getString fills by position, so a translation with fewer placeholders
       # silently drops the remaining arguments.
       - name: The translations carry the same placeholders

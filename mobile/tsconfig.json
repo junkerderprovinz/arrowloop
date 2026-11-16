@@ -25,5 +25,7 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "android"]
+  // The tests run in Node, whose globals would leak into every screen's
+  // types if this project knew them.
+  "exclude": ["node_modules", "android", "**/*.test.ts"]
 }
