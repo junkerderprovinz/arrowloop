@@ -63,6 +63,9 @@ export function FolderPicker({
   const [entries, setEntries] = useState<{ name: string; path: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  // The folder being listed, named before it answers so the one just left
+  // cannot pass for it. null while nothing is being opened.
+  const [opening, setOpening] = useState<string | null>(null)
   // null while the new-folder name box is closed.
   const [naming, setNaming] = useState<string | null>(null)
 
@@ -87,6 +90,7 @@ export function FolderPicker({
    */
   async function go(path: string, fallback = true) {
     setBusy(true)
+    setOpening(path)
     try {
       const answer = await host.browse(path || undefined)
       setAt(answer.path)
@@ -102,6 +106,7 @@ export function FolderPicker({
       setError(errorText(t, e))
     } finally {
       setBusy(false)
+      setOpening(null)
     }
   }
 
@@ -123,6 +128,8 @@ export function FolderPicker({
 
   if (!open) return null
 
+  const place = opening ?? (shown || at)
+
   // Portalled, since a card that animates in is a transformed ancestor and
   // would pin the fixed backdrop to itself instead of the window.
   return createPortal(
@@ -138,8 +145,8 @@ export function FolderPicker({
           that row does not wrap. */}
       <div className="w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <Card title={title}>
-          <p className="mb-3 truncate font-mono text-subline text-carbon-text" title={shown || at}>
-            {shown || at || t('pick.roots')}
+          <p className="mb-3 truncate font-mono text-subline text-carbon-text" title={place}>
+            {place || t('pick.roots')}
           </p>
 
           {error && <p className="mb-3 text-subline text-statusFail">{error}</p>}
@@ -231,7 +238,7 @@ export function FolderPicker({
               labelKey="pick.choose"
               glyph={<IconCheck />}
               tone="accent"
-              disabled={!at}
+              disabled={!at || busy}
               onClick={() => {
                 if (at) onPick(at)
               }}

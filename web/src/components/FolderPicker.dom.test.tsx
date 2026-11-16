@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import type { FolderListing } from '../lib/api'
@@ -13,6 +13,7 @@ function slowHost() {
   const waiting = new Map<string, (listing: FolderListing) => void>()
   const host: Host = {
     browse: (path = '') => new Promise((resolve) => waiting.set(path, resolve)),
+    makeDir: (at: string, name: string) => Promise.resolve({ path: `${at}/${name}` }),
     excludeSets: () => Promise.resolve([]),
   }
   const answer = async (path: string, names: string[]) => {
@@ -21,7 +22,7 @@ function slowHost() {
       parent: '',
       entries: names.map((name) => ({ name, path: `${path}/${name}` })),
     } as FolderListing)
-    await screen.findByText(path)
+    await waitFor(() => expect(screen.queryByText('Listing the folders…')).toBeNull())
   }
   return { host, answer }
 }
@@ -60,5 +61,34 @@ describe('the folder picker', () => {
     await answer('nas:photos/2026', [])
     expect(screen.getByText('No folders in here.')).toBeTruthy()
     expect(screen.queryByText('Listing the folders…')).toBeNull()
+  })
+
+  it('names the target it opens before the target answers', () => {
+    const { host } = slowHost()
+    open(host)
+    expect(screen.getByText('nas:photos')).toBeTruthy()
+    expect(screen.queryByText('Drives and roots')).toBeNull()
+  })
+
+  it('names the folder it opens while that folder is listed', async () => {
+    const { host, answer } = slowHost()
+    open(host)
+    await answer('nas:photos', ['2026'])
+    fireEvent.click(screen.getByText('2026'))
+    expect(screen.getByText('nas:photos/2026')).toBeTruthy()
+  })
+
+  it('offers the folder buttons only once the folder being opened has answered', async () => {
+    const { host, answer } = slowHost()
+    open(host)
+    await answer('nas:photos', ['2026'])
+    fireEvent.click(screen.getByText('2026'))
+    const choose = () => screen.getByRole('button', { name: 'Use this folder' }) as HTMLButtonElement
+    const make = () => screen.getByRole('button', { name: 'New folder' }) as HTMLButtonElement
+    expect(choose().disabled).toBe(true)
+    expect(make().disabled).toBe(true)
+    await answer('nas:photos/2026', [])
+    expect(choose().disabled).toBe(false)
+    expect(make().disabled).toBe(false)
   })
 })
