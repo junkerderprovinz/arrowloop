@@ -62,6 +62,7 @@ import { ToggleRow } from '../components/ToggleRow'
 import { SecretRow } from './settings/rows'
 import { failureLine } from '../lib/failure'
 import { CERTIFICATE_KEY, type RefusedCertificate } from '../lib/certificate'
+import { anySaved } from '../lib/savedSettings'
 
 /**
  * The storage targets and registered drives a job's sides can point at, one
@@ -610,6 +611,9 @@ function RemoteForm({
     const main = options.filter((o) => (o.required || o.essential) && (!preset || preset[o.name] === undefined))
     return [main, options.filter((o) => !main.includes(o))]
   }, [backend, preset])
+  // Folded until opened, unless one of them is already set on this target.
+  const [moreOpen, setMoreOpen] = useState<boolean>()
+  const moreShown = moreOpen ?? anySaved(existing?.settings ?? [], rest.map((o) => o.name))
 
   /**
    * Tests the settings save would send, preset included, without writing
@@ -877,7 +881,33 @@ function RemoteForm({
           )
         )}
         {rest.length > 0 && (
-          <SubCard title={t('targets.moreSettings')}>{rest.map(field)}</SubCard>
+          <section className="flex flex-col gap-4">
+            <button
+              type="button"
+              aria-expanded={moreShown}
+              onClick={() => setMoreOpen(!moreShown)}
+              className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-carbon-surface3 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
+            >
+              <svg
+                aria-hidden
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                className={`glim-btn-glyph transition-transform ${moreShown ? '' : '-rotate-90 rtl:rotate-90'}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {t('targets.moreSettings')}
+            </button>
+            {moreShown && (
+              <div role="region" aria-label={t('targets.moreSettings')} className="flex flex-col gap-4">
+                {rest.map(field)}
+              </div>
+            )}
+          </section>
         )}
       </div>
     </Dialog>

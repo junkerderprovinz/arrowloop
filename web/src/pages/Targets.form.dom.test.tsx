@@ -105,8 +105,16 @@ async function saved(dialog: HTMLElement) {
 }
 
 describe('the target form', () => {
+  it('keeps the other settings folded until they are opened', async () => {
+    const dialog = await addFtp()
+    expect(within(dialog).queryByRole('region', { name: 'Other settings' })).toBeNull()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Other settings' }))
+    expect(within(dialog).getByRole('region', { name: 'Other settings' })).toBeTruthy()
+  })
+
   it('draws a yes-or-no setting as a switch', async () => {
     const dialog = await addFtp()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Other settings' }))
     const epsv = within(dialog).getByRole('switch', { name: 'disable_epsv' })
     expect(epsv.getAttribute('aria-checked')).toBe('false')
     fireEvent.click(epsv)
@@ -150,6 +158,7 @@ describe('a sign-in that opens more than one drive', () => {
 
 describe('the kDrive root folder', () => {
   const others = (dialog: HTMLElement) => within(within(dialog).getByRole('region', { name: 'Other settings' }))
+  const unfold = (dialog: HTMLElement) => fireEvent.click(within(dialog).getByRole('button', { name: 'Other settings' }))
   const pick = (dialog: HTMLElement, name: string) => {
     fireEvent.click(others(dialog).getByRole('button', { name: 'Root folder' }))
     fireEvent.click(screen.getByRole('option', { name }))
@@ -157,12 +166,14 @@ describe('the kDrive root folder', () => {
 
   it("leaves rclone's default, the private folder, when nothing is picked", async () => {
     const dialog = await add('Infomaniak kDrive')
+    unfold(dialog)
     expect(others(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Private folder')
     expect((await saved(dialog)).root_folder_id).toBeUndefined()
   })
 
   it('saves the shared folder as common', async () => {
     const dialog = await add('Infomaniak kDrive')
+    unfold(dialog)
     pick(dialog, 'Shared folder')
     expect((await saved(dialog)).root_folder_id).toBe('common')
   })
@@ -192,6 +203,7 @@ describe('the kDrive root folder', () => {
 
   it('takes any other folder by the ID typed in', async () => {
     const dialog = await add('Infomaniak kDrive')
+    unfold(dialog)
     expect(within(dialog).queryByRole('textbox', { name: 'Folder ID' })).toBeNull()
     pick(dialog, 'Another folder, by ID')
     fireEvent.change(within(dialog).getByRole('textbox', { name: 'Folder ID' }), { target: { value: '98765' } })
