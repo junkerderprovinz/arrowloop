@@ -3,7 +3,7 @@
     "name": "ArrowLoop",
     "slug": "arrowloop-mobile",
     "version": "2.7.3",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "scheme": "arrowloop",

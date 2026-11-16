@@ -5,6 +5,7 @@ const {
   withAppBuildGradle,
   withDangerousMod,
   withGradleProperties,
+  withMainActivity,
   withMainApplication,
   AndroidConfig,
 } = require("expo/config-plugins");
@@ -162,6 +163,40 @@ function withEngineHttp(config) {
         "withEngine: could not find onCreate in MainApplication; the Expo template changed shape, and without the client the app runs five requests to the engine at a time",
       );
     }
+    return cfg;
+  });
+}
+
+/**
+ * Lets a tablet turn with the device and keeps a phone upright. The manifest
+ * cannot say this, since its orientation applies to every screen size.
+ */
+function addRotation(contents) {
+  const marker = "followRotationOnTablets(";
+  if (contents.includes(marker)) return contents;
+  const out = contents
+    .replace(/(\nimport android\.os\.Bundle\n)/, "$1import android.content.res.Configuration\n")
+    .replace(/(\n(\s*)super\.onCreate\(null\))/, "\n$2followRotationOnTablets(resources.configuration)$1")
+    .replace(
+      /(class MainActivity : ReactActivity\(\) \{\n)/,
+      `$1  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    followRotationOnTablets(newConfig)
+  }
+
+`,
+    );
+  if ((out.match(/followRotationOnTablets\(/g) ?? []).length !== 2 || !out.includes("res.Configuration")) {
+    throw new Error(
+      "withEngine: could not find onCreate in MainActivity; the Expo template changed shape, and without it a tablet stays upright and a phone turns",
+    );
+  }
+  return out;
+}
+
+function withRotation(config) {
+  return withMainActivity(config, (cfg) => {
+    cfg.modResults.contents = addRotation(cfg.modResults.contents);
     return cfg;
   });
 }
@@ -567,6 +602,7 @@ module.exports = function withEngine(config) {
   config = withNativeSources(config);
   config = withPackageRegistered(config);
   config = withEngineHttp(config);
+  config = withRotation(config);
   config = withEngineManifest(config);
   config = withNetworkConfig(config);
   config = withEngineGradle(config);
@@ -574,3 +610,5 @@ module.exports = function withEngine(config) {
   config = withGradleMemory(config);
   return config;
 };
+
+module.exports.addRotation = addRotation;
