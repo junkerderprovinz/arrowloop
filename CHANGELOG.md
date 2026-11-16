@@ -10,6 +10,10 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **Hidden folders can be picked.** The folder picker has a switch "Show hidden folders", so a folder like .backup/arrowloop works for the settings backup, the automatic backup or a job. The picker remembers the switch, on the phone as well. Thanks to @kdqic3 ([#221](https://github.com/junkerderprovinz/arrowloop/issues/221)).
+
 ## 🎨 Design
 
 - **Every setting of a target has a proper name.** All of rclone's options carry a readable name in the target form, such as "Authentication URL" or "Minimum pause between requests", in place of names like auth_url or pacer_min_sleep. The names come in all 42 languages.

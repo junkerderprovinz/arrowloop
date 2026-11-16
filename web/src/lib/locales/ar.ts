@@ -1718,6 +1718,7 @@ const ar: Translations = {
   'new.change.discordHelp': 'تقود بطاقة {help} في {info} إلى خادم Discord الخاص بـ ArrowLoop.',
   'new.change.trustCertificate': 'يمكن لهدف WebDAV صنع خادمه شهادته بنفسه أن يثق بها عبر بصمتها.',
   'new.change.kdriveRoot': 'يمكن لهدف kDrive أن يبدأ في مجلدك الخاص أو المشترك أو أي مجلد عبر معرّفه.',
+  'new.change.hiddenFolders': 'في منتقي المجلدات، يعرض المفتاح {show} المجلدات المخفية أيضًا.',
   'welcome.title': 'مرحبًا بك في ArrowLoop',
   'welcome.lead': 'يُبقي ArrowLoop مجلدين متطابقين، على هذا الجهاز أو على قرص أو في السحابة. ثلاث خطوات إلى أول مزامنة:',
   'welcome.foundTargets': 'وجهات يعرفها rclone بالفعل: {count}',

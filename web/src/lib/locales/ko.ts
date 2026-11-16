@@ -1718,6 +1718,7 @@ const ko: Translations = {
   'new.change.discordHelp': '{info}의 {help} 카드에서 ArrowLoop의 Discord 서버로 갈 수 있습니다.',
   'new.change.trustCertificate': '서버가 인증서를 직접 만든 WebDAV 대상은 지문으로 그 인증서를 신뢰할 수 있습니다.',
   'new.change.kdriveRoot': 'kDrive 대상은 개인 폴더, 공유 폴더 또는 ID로 지정한 아무 폴더에서나 시작할 수 있습니다.',
+  'new.change.hiddenFolders': '폴더 선택에서 {show} 스위치를 켜면 숨김 폴더도 표시됩니다.',
   'welcome.title': 'ArrowLoop에 오신 것을 환영합니다',
   'welcome.lead': 'ArrowLoop은 이 컴퓨터, 드라이브, 클라우드에 있는 두 폴더를 같은 상태로 유지합니다. 첫 동기화까지 세 단계입니다.',
   'welcome.foundTargets': 'rclone이 이미 아는 대상: {count}',

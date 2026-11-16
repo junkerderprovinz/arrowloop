@@ -1718,6 +1718,7 @@ const sv: Translations = {
   'new.change.discordHelp': 'Kortet {help} under {info} leder till ArrowLoops egen Discord-server.',
   'new.change.trustCertificate': 'Ett WebDAV-mål vars server själv har gjort sitt certifikat kan lita på det via fingeravtrycket.',
   'new.change.kdriveRoot': 'Ett kDrive-mål kan börja i din privata mapp, i den delade eller i vilken mapp som helst via dess ID.',
+  'new.change.hiddenFolders': 'I mappväljaren visar reglaget {show} även dolda mappar.',
   'welcome.title': 'Välkommen till ArrowLoop',
   'welcome.lead': 'ArrowLoop håller två mappar likadana, på den här datorn, på en enhet eller i molnet. Tre steg till den första synkroniseringen:',
   'welcome.foundTargets': 'Mål som rclone redan känner till: {count}',

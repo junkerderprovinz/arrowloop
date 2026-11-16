@@ -1718,6 +1718,7 @@ const el: Translations = {
   'new.change.discordHelp': 'Η κάρτα {help} στο {info} οδηγεί στον δικό του διακομιστή Discord του ArrowLoop.',
   'new.change.trustCertificate': 'Ένας στόχος WebDAV του οποίου ο διακομιστής έφτιαξε μόνος το πιστοποιητικό του μπορεί να το εμπιστευτεί μέσω του αποτυπώματος.',
   'new.change.kdriveRoot': 'Ένας στόχος kDrive μπορεί να ξεκινά στον ιδιωτικό σου φάκελο, στον κοινόχρηστο ή σε οποιονδήποτε φάκελο με το ID του.',
+  'new.change.hiddenFolders': 'Στην επιλογή φακέλου, ο διακόπτης {show} δείχνει και τους κρυφούς φακέλους.',
   'welcome.title': 'Καλώς ήρθες στο ArrowLoop',
   'welcome.lead': 'Το ArrowLoop κρατά δύο φακέλους ίδιους, σε αυτό το μηχάνημα, σε μονάδα δίσκου ή στο cloud. Τρία βήματα ως τον πρώτο συγχρονισμό:',
   'welcome.foundTargets': 'Προορισμοί που το rclone ήδη γνωρίζει: {count}',

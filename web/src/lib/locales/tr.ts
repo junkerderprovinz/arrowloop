@@ -1718,6 +1718,7 @@ const tr: Translations = {
   'new.change.discordHelp': "{info} içindeki {help} kartı ArrowLoop'un kendi Discord sunucusuna götürür.",
   'new.change.trustCertificate': 'Sunucusu sertifikasını kendisi oluşturan bir WebDAV hedefi ona parmak iziyle güvenebilir.',
   'new.change.kdriveRoot': 'Bir kDrive hedefi özel klasörünüzde, paylaşılan klasörde ya da kimliğiyle herhangi bir klasörde başlayabilir.',
+  'new.change.hiddenFolders': 'Klasör seçicide {show} anahtarı gizli klasörleri de gösterir.',
   'welcome.title': 'ArrowLoop\'a hoş geldin',
   'welcome.lead': 'ArrowLoop iki klasörü, bu makinede, bir sürücüde ya da bulutta aynı tutar. İlk eşitlemeye üç adım:',
   'welcome.foundTargets': 'rclone\'un zaten bildiği hedefler: {count}',

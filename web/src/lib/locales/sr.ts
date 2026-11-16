@@ -1718,6 +1718,7 @@ const sr: Translations = {
   'new.change.discordHelp': 'Картица {help} под {info} води на ArrowLoop-ов сопствени Discord сервер.',
   'new.change.trustCertificate': 'WebDAV одредиште чији је сервер сам направио свој сертификат може му веровати по отиску.',
   'new.change.kdriveRoot': 'kDrive одредиште може почети у твојој приватној фасцикли, у заједничкој или у било којој фасцикли по ID-у.',
+  'new.change.hiddenFolders': 'У избору фасцикле прекидач {show} приказује и скривене фасцикле.',
   'welcome.title': 'Добродошли у ArrowLoop',
   'welcome.lead': 'ArrowLoop одржава две фасцикле истим, на овом рачунару, на диску или у облаку. Три корака до прве синхронизације:',
   'welcome.foundTargets': 'Одредишта која rclone већ познаје: {count}',

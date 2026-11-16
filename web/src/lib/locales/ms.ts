@@ -1718,6 +1718,7 @@ const ms: Translations = {
   'new.change.discordHelp': 'Kad {help} pada {info} membawa ke pelayan Discord ArrowLoop sendiri.',
   'new.change.trustCertificate': 'Sasaran WebDAV yang pelayannya membuat sijilnya sendiri boleh mempercayainya melalui cap jarinya.',
   'new.change.kdriveRoot': 'Sasaran kDrive boleh bermula dalam folder peribadi anda, folder kongsi atau mana-mana folder melalui ID-nya.',
+  'new.change.hiddenFolders': 'Dalam pemilih folder, suis {show} turut memaparkan folder tersembunyi.',
   'welcome.title': 'Selamat datang ke ArrowLoop',
   'welcome.lead': 'ArrowLoop memastikan dua folder sentiasa sama, pada mesin ini, pada pemacu atau di awan. Tiga langkah menuju penyegerakan pertama:',
   'welcome.foundTargets': 'Destinasi yang sudah dikenali rclone: {count}',

@@ -1718,6 +1718,7 @@ const cs: Translations = {
   'new.change.discordHelp': 'Karta {help} v {info} vede na vlastní Discord server ArrowLoopu.',
   'new.change.trustCertificate': 'Cíl WebDAV, jehož server si certifikát vystavil sám, mu může důvěřovat podle otisku.',
   'new.change.kdriveRoot': 'Cíl kDrive může začínat ve tvé soukromé složce, ve sdílené nebo v jakékoli složce podle ID.',
+  'new.change.hiddenFolders': 'Ve výběru složky ukáže přepínač {show} i skryté složky.',
   'welcome.title': 'Vítej v ArrowLoop',
   'welcome.lead': 'ArrowLoop udržuje dvě složky shodné, na tomto počítači, na disku nebo v cloudu. Tři kroky k první synchronizaci:',
   'welcome.foundTargets': 'Cíle, které rclone už zná: {count}',

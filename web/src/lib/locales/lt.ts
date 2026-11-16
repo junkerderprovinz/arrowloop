@@ -1718,6 +1718,7 @@ const lt: Translations = {
   'new.change.discordHelp': 'Kortelė {help} skiltyje {info} veda į paties ArrowLoop Discord serverį.',
   'new.change.trustCertificate': 'WebDAV tikslas, kurio serveris pats sukūrė savo sertifikatą, gali juo pasitikėti pagal kontrolinį kodą.',
   'new.change.kdriveRoot': 'kDrive tikslas gali prasidėti tavo privačiame aplanke, bendrame aplanke ar bet kuriame aplanke pagal ID.',
+  'new.change.hiddenFolders': 'Aplanko parinkiklyje jungiklis {show} rodo ir paslėptus aplankus.',
   'welcome.title': 'Sveiki atvykę į ArrowLoop',
   'welcome.lead': 'ArrowLoop palaiko du aplankus vienodus, šiame kompiuteryje, diske ar debesyje. Trys žingsniai iki pirmo sinchronizavimo:',
   'welcome.foundTargets': 'Paskirtys, kurias rclone jau žino: {count}',

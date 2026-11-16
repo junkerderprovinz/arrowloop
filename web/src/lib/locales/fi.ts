@@ -1718,6 +1718,7 @@ const fi: Translations = {
   'new.change.discordHelp': 'Kortti {help} sivulla {info} vie ArrowLoopin omalle Discord-palvelimelle.',
   'new.change.trustCertificate': 'WebDAV-kohde, jonka palvelin on itse tehnyt varmenteensa, voi luottaa siihen sormenjäljen perusteella.',
   'new.change.kdriveRoot': 'kDrive-kohde voi alkaa yksityisestä kansiostasi, jaetusta kansiosta tai mistä tahansa kansiosta sen ID:llä.',
+  'new.change.hiddenFolders': 'Kansion valinnassa kytkin {show} näyttää myös piilotetut kansiot.',
   'welcome.title': 'Tervetuloa ArrowLoopiin',
   'welcome.lead': 'ArrowLoop pitää kaksi kansiota samanlaisina, tällä koneella, asemalla tai pilvessä. Kolme vaihetta ensimmäiseen synkronointiin:',
   'welcome.foundTargets': 'rclonen jo tuntemat kohteet: {count}',

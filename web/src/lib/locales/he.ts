@@ -1718,6 +1718,7 @@ const he: Translations = {
   'new.change.discordHelp': 'הכרטיס {help} תחת {info} מוביל לשרת ה-Discord של ArrowLoop.',
   'new.change.trustCertificate': 'יעד WebDAV שהשרת שלו יצר את התעודה בעצמו יכול לסמוך עליה לפי טביעת האצבע.',
   'new.change.kdriveRoot': 'יעד kDrive יכול להתחיל בתיקייה הפרטית שלכם, בתיקייה המשותפת או בכל תיקייה לפי המזהה שלה.',
+  'new.change.hiddenFolders': 'בבורר התיקיות, המתג {show} מציג גם תיקיות מוסתרות.',
   'welcome.title': 'ברוך הבא אל ArrowLoop',
   'welcome.lead': 'ArrowLoop שומר על שתי תיקיות זהות, במכונה הזאת, בכונן או בענן. שלושה שלבים עד הסנכרון הראשון:',
   'welcome.foundTargets': 'יעדים ש-rclone כבר מכיר: {count}',

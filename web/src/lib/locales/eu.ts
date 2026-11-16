@@ -1718,6 +1718,7 @@ const eu: Translations = {
   'new.change.discordHelp': '{info} ataleko {help} txartelak ArrowLoop-en Discord zerbitzarira eramaten du.',
   'new.change.trustCertificate': 'Bere zerbitzariak ziurtagiria berak sortu duen WebDAV helburu batek hatz-markaren bidez fida daiteke.',
   'new.change.kdriveRoot': 'kDrive helburu bat zure karpeta pribatuan, partekatuan edo edozein karpetatan has daiteke bere IDaren bidez.',
+  'new.change.hiddenFolders': 'Karpeta-hautatzailean, {show} etengailuak karpeta ezkutuak ere erakusten ditu.',
   'welcome.title': 'Ongi etorri ArrowLoop-era',
   'welcome.lead': 'ArrowLoop-ek bi karpeta berdin mantentzen ditu, makina honetan, disko batean edo hodeian. Hiru urrats lehen sinkronizaziora arte:',
   'welcome.foundTargets': 'rclone-k ezagutzen dituen helburuak: {count}',

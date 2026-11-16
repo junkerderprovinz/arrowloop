@@ -1718,6 +1718,7 @@ const et: Translations = {
   'new.change.discordHelp': 'Kaart {help} lehel {info} viib ArrowLoopi enda Discordi serverisse.',
   'new.change.trustCertificate': 'WebDAV-sihtkoht, mille server on sertifikaadi ise teinud, võib seda sõrmejälje järgi usaldada.',
   'new.change.kdriveRoot': "kDrive'i sihtkoht võib alata sinu privaatkaustas, jagatud kaustas või mis tahes kaustas ID järgi.",
+  'new.change.hiddenFolders': 'Kaustavalijas näitab lüliti {show} ka peidetud kaustu.',
   'welcome.title': 'Tere tulemast ArrowLoopi',
   'welcome.lead': 'ArrowLoop hoiab kaks kausta ühesugused, sellel masinal, kettal või pilves. Kolm sammu esimese sünkroonimiseni:',
   'welcome.foundTargets': 'Sihtkohad, mida rclone juba tunneb: {count}',

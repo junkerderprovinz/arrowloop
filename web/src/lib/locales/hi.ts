@@ -1718,6 +1718,7 @@ const hi: Translations = {
   'new.change.discordHelp': '{info} पर {help} कार्ड ArrowLoop के अपने Discord सर्वर तक ले जाता है।',
   'new.change.trustCertificate': 'जिस WebDAV लक्ष्य के सर्वर ने अपना प्रमाणपत्र खुद बनाया है, वह फ़िंगरप्रिंट से उस पर भरोसा कर सकता है।',
   'new.change.kdriveRoot': 'kDrive लक्ष्य आपके निजी फ़ोल्डर, साझा फ़ोल्डर या किसी भी फ़ोल्डर में उसकी ID से शुरू हो सकता है।',
+  'new.change.hiddenFolders': 'फ़ोल्डर चुनने में, {show} स्विच छिपे फ़ोल्डर भी दिखाता है।',
   'welcome.title': 'ArrowLoop में आपका स्वागत है',
   'welcome.lead': 'ArrowLoop दो फ़ोल्डरों को एक जैसा रखता है, इसी मशीन पर, किसी ड्राइव पर या क्लाउड में। पहले सिंक तक तीन कदम:',
   'welcome.foundTargets': 'rclone जिन गंतव्यों को पहले से जानता है: {count}',

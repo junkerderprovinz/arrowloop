@@ -1718,6 +1718,7 @@ const lv: Translations = {
   'new.change.discordHelp': 'Kartīte {help} sadaļā {info} ved uz ArrowLoop paša Discord serveri.',
   'new.change.trustCertificate': 'WebDAV mērķis, kura serveris pats izveidojis savu sertifikātu, var tam uzticēties pēc pirkstu nospieduma.',
   'new.change.kdriveRoot': 'kDrive mērķis var sākties tavā privātajā mapē, koplietotajā mapē vai jebkurā mapē pēc ID.',
+  'new.change.hiddenFolders': 'Mapju izvēlē slēdzis {show} parāda arī slēptās mapes.',
   'welcome.title': 'Laipni lūdzam ArrowLoop',
   'welcome.lead': 'ArrowLoop uztur divas mapes vienādas, šajā datorā, diskā vai mākonī. Trīs soļi līdz pirmajai sinhronizācijai:',
   'welcome.foundTargets': 'Galamērķi, ko rclone jau pazīst: {count}',

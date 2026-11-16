@@ -1718,6 +1718,7 @@ const th: Translations = {
   'new.change.discordHelp': 'การ์ด {help} ใน {info} พาไปยังเซิร์ฟเวอร์ Discord ของ ArrowLoop',
   'new.change.trustCertificate': 'ปลายทาง WebDAV ที่เซิร์ฟเวอร์สร้างใบรับรองเองสามารถเชื่อถือใบรับรองนั้นได้ด้วยลายนิ้วมือ',
   'new.change.kdriveRoot': 'ปลายทาง kDrive เริ่มที่โฟลเดอร์ส่วนตัว โฟลเดอร์ที่แชร์ หรือโฟลเดอร์ใดก็ได้ตาม ID',
+  'new.change.hiddenFolders': 'ในตัวเลือกโฟลเดอร์ สวิตช์ {show} จะแสดงโฟลเดอร์ที่ซ่อนอยู่ด้วย',
   'welcome.title': 'ยินดีต้อนรับสู่ ArrowLoop',
   'welcome.lead': 'ArrowLoop ทำให้สองโฟลเดอร์เหมือนกันอยู่เสมอ ไม่ว่าจะอยู่ในเครื่องนี้ ในไดรฟ์ หรือบนคลาวด์ สามขั้นตอนสู่การซิงค์ครั้งแรก:',
   'welcome.foundTargets': 'ปลายทางที่ rclone รู้จักอยู่แล้ว: {count}',

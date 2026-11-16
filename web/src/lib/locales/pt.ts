@@ -1718,6 +1718,7 @@ const pt: Translations = {
   'new.change.discordHelp': 'O cartão {help} em {info} leva ao servidor de Discord do ArrowLoop.',
   'new.change.trustCertificate': 'Um destino WebDAV cujo servidor criou o próprio certificado pode confiar nele pela impressão digital.',
   'new.change.kdriveRoot': 'Um destino kDrive pode começar na tua pasta privada, na partilhada ou em qualquer pasta pelo seu ID.',
+  'new.change.hiddenFolders': 'No seletor de pastas, o interruptor {show} também mostra as pastas ocultas.',
   'welcome.title': 'Bem-vindo ao ArrowLoop',
   'welcome.lead': 'O ArrowLoop mantém duas pastas iguais, neste computador, num disco ou na nuvem. Três passos até à primeira sincronização:',
   'welcome.foundTargets': 'Destinos que o rclone já conhece: {count}',

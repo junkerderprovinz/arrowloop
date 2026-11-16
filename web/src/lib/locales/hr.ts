@@ -1718,6 +1718,7 @@ const hr: Translations = {
   'new.change.discordHelp': 'Kartica {help} pod {info} vodi na ArrowLoopov vlastiti Discord poslužitelj.',
   'new.change.trustCertificate': 'WebDAV odredište čiji je poslužitelj sam izradio svoj certifikat može mu vjerovati po otisku.',
   'new.change.kdriveRoot': 'kDrive odredište može početi u tvojoj privatnoj mapi, u zajedničkoj ili u bilo kojoj mapi prema ID-u.',
+  'new.change.hiddenFolders': 'U odabiru mape prekidač {show} prikazuje i skrivene mape.',
   'welcome.title': 'Dobro došao u ArrowLoop',
   'welcome.lead': 'ArrowLoop održava dvije mape jednakima, na ovom računalu, na disku ili u oblaku. Tri koraka do prve sinkronizacije:',
   'welcome.foundTargets': 'Odredišta koja rclone već poznaje: {count}',

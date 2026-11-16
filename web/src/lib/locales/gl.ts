@@ -1718,6 +1718,7 @@ const gl: Translations = {
   'new.change.discordHelp': 'A tarxeta {help} en {info} leva ao servidor de Discord propio de ArrowLoop.',
   'new.change.trustCertificate': 'Un destino WebDAV cuxo servidor creou o seu propio certificado pode confiar nel pola súa pegada.',
   'new.change.kdriveRoot': 'Un destino kDrive pode comezar no teu cartafol privado, no compartido ou en calquera cartafol polo seu ID.',
+  'new.change.hiddenFolders': 'No selector de cartafoles, o interruptor {show} tamén mostra os cartafoles ocultos.',
   'welcome.title': 'Benvido a ArrowLoop',
   'welcome.lead': 'ArrowLoop mantén dous cartafoles iguais, nesta máquina, nunha unidade ou na nube. Tres pasos ata a primeira sincronización:',
   'welcome.foundTargets': 'Destinos que rclone xa coñece: {count}',

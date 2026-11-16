@@ -1718,6 +1718,7 @@ const hu: Translations = {
   'new.change.discordHelp': 'Az {info} {help} kártyája az ArrowLoop saját Discord-szerverére visz.',
   'new.change.trustCertificate': 'Egy WebDAV-cél, amelynek szervere maga készítette a tanúsítványát, ujjlenyomat alapján megbízhat benne.',
   'new.change.kdriveRoot': 'Egy kDrive-cél indulhat a privát mappádban, a közös mappában vagy bármely mappában az azonosítója alapján.',
+  'new.change.hiddenFolders': 'A mappaválasztóban a(z) {show} kapcsoló a rejtett mappákat is megmutatja.',
   'welcome.title': 'Üdvözöl az ArrowLoop',
   'welcome.lead': 'Az ArrowLoop két mappát tart azonosan, ezen a gépen, egy meghajtón vagy a felhőben. Három lépés az első szinkronizálásig:',
   'welcome.foundTargets': 'Az rclone által már ismert célok: {count}',

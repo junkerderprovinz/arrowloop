@@ -1718,6 +1718,7 @@ const uk: Translations = {
   'new.change.discordHelp': 'Картка {help} у розділі {info} веде на власний Discord-сервер ArrowLoop.',
   'new.change.trustCertificate': 'Ціль WebDAV, сервер якої сам створив свій сертифікат, може довіряти йому за відбитком.',
   'new.change.kdriveRoot': 'Ціль kDrive може починатися у вашій особистій теці, у спільній або в будь-якій теці за її ID.',
+  'new.change.hiddenFolders': 'У виборі теки перемикач {show} показує й приховані теки.',
   'welcome.title': 'Ласкаво просимо до ArrowLoop',
   'welcome.lead': 'ArrowLoop тримає дві теки однаковими: на цьому комп\'ютері, на диску чи в хмарі. Три кроки до першої синхронізації:',
   'welcome.foundTargets': 'Призначення, які rclone уже знає: {count}',

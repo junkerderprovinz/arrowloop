@@ -1718,6 +1718,7 @@ const id: Translations = {
   'new.change.discordHelp': 'Kartu {help} di {info} mengarah ke server Discord milik ArrowLoop.',
   'new.change.trustCertificate': 'Target WebDAV yang servernya membuat sertifikatnya sendiri bisa memercayainya lewat sidik jarinya.',
   'new.change.kdriveRoot': 'Target kDrive bisa dimulai di folder pribadimu, folder bersama, atau folder mana pun lewat ID-nya.',
+  'new.change.hiddenFolders': 'Di pemilih folder, sakelar {show} juga menampilkan folder tersembunyi.',
   'welcome.title': 'Selamat datang di ArrowLoop',
   'welcome.lead': 'ArrowLoop menjaga dua folder tetap sama, di mesin ini, di drive, atau di cloud. Tiga langkah menuju sinkronisasi pertama:',
   'welcome.foundTargets': 'Tujuan yang sudah dikenal rclone: {count}',

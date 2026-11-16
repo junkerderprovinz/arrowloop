@@ -1718,6 +1718,7 @@ const fa: Translations = {
   'new.change.discordHelp': 'کارت {help} در {info} به سرور Discord خود ArrowLoop می‌رود.',
   'new.change.trustCertificate': 'مقصد WebDAV که سرورش گواهی خود را ساخته است می‌تواند با اثر انگشت به آن اعتماد کند.',
   'new.change.kdriveRoot': 'مقصد kDrive می‌تواند در پوشه خصوصی شما، پوشه مشترک یا هر پوشه‌ای با شناسه‌اش شروع شود.',
+  'new.change.hiddenFolders': 'در انتخابگر پوشه، کلید {show} پوشه‌های پنهان را هم نشان می‌دهد.',
   'welcome.title': 'به ArrowLoop خوش آمدید',
   'welcome.lead': 'ArrowLoop دو پوشه را یکسان نگه می‌دارد، روی همین دستگاه، روی یک درایو یا در فضای ابری. سه گام تا اولین همگام‌سازی:',
   'welcome.foundTargets': 'مقصدهایی که rclone از قبل می‌شناسد: {count}',

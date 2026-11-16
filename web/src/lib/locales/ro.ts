@@ -1718,6 +1718,7 @@ const ro: Translations = {
   'new.change.discordHelp': 'Cardul {help} din {info} duce la serverul Discord propriu al ArrowLoop.',
   'new.change.trustCertificate': 'O țintă WebDAV al cărei server și-a creat singur certificatul îl poate considera de încredere după amprentă.',
   'new.change.kdriveRoot': 'O țintă kDrive poate începe în dosarul tău privat, în cel partajat sau în orice dosar după ID.',
+  'new.change.hiddenFolders': 'În selectorul de foldere, comutatorul {show} afișează și folderele ascunse.',
   'welcome.title': 'Bun venit în ArrowLoop',
   'welcome.lead': 'ArrowLoop ține două foldere la fel, pe acest calculator, pe o unitate sau în cloud. Trei pași până la prima sincronizare:',
   'welcome.foundTargets': 'Destinații pe care rclone le cunoaște deja: {count}',
