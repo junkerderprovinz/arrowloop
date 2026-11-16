@@ -33,13 +33,14 @@ var alwaysSecret = map[string]bool{
 }
 
 // sensitiveButShown are options rclone marks Sensitive, which it redacts from a
-// config somebody shares, that only say which server or which account a target
-// is. Every other Sensitive option is withheld, so a credential rclone adds
-// later stays off the screen without anybody adding it here.
+// config somebody shares, that only say which server, which account or which
+// folder a target is. Every other Sensitive option is withheld, so a credential
+// rclone adds later stays off the screen without anybody adding it here.
 var sensitiveButShown = map[string]bool{
 	"host": true, "url": true, "api_url": true, "namenode": true,
 	"user": true, "username": true, "email": true, "apple_id": true,
-	"account": true, "access_key_id": true, "client_id": true, "app_id": true, "drive_id": true,
+	"account": true, "access_key_id": true, "client_id": true, "app_id": true,
+	"drive_id": true, "root_folder_id": true,
 	"tenant": true, "tenant_id": true, "tenant_domain": true, "domain": true, "user_id": true,
 	"namespace": true, "compartment": true, "project_number": true, "user_project": true,
 	"cloud_name": true,

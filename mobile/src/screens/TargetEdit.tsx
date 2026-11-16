@@ -10,15 +10,19 @@ import { failureLine } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
 import { optionLabel } from "../../../web/src/lib/optionNames";
 import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
+import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from "../../../web/src/lib/kdriveRoot";
+import { anySaved, settingsToSave } from "../../../web/src/lib/savedSettings";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Choice, Empty, Page, Pair, PickRow, Row, Section, Title, Toggle } from "../ui";
 import type { TranslationKey } from "../../../web/src/lib/i18n.data";
 
+type Option = NonNullable<Backend["options"]>[number];
+
 /**
- * The target form. Its fields are the options rclone marks required or
- * essential for the backend; the provider's preset (such as the S3 provider
- * name) is applied underneath and not shown.
+ * The target form. It asks for the options rclone marks required or essential
+ * for the backend and folds the others away. The provider's preset (such as
+ * the S3 provider name) is applied underneath and not shown.
  */
 export function TargetEdit() {
   const route = useRoute<RouteProp<MoreStack, "TargetEdit">>();
@@ -83,13 +87,15 @@ export function TargetEdit() {
     [backends, backendName],
   );
 
-  // Required options first, then the ones rclone calls essential.
-  const options = useMemo(() => {
-    const all = backend?.options ?? [];
-    const preset = provider?.preset ?? {};
-    return all
-      .filter((o) => (o.required || o.essential) && !(o.name in preset))
-      .sort((a, b) => Number(Boolean(b.required)) - Number(Boolean(a.required)));
+  // Required options first, then the ones rclone calls essential. The rest
+  // are folded away, since s3 alone has dozens.
+  const [options, others] = useMemo(() => {
+    const all = (backend?.options ?? []).filter((o) => !(o.name in (provider?.preset ?? {})));
+    const asked = (o: Option) => Boolean(o.required || o.essential);
+    return [
+      all.filter(asked).sort((a, b) => Number(Boolean(b.required)) - Number(Boolean(a.required))),
+      all.filter((o) => !asked(o)),
+    ];
   }, [backend, provider]);
 
   // The connection test's state. These hooks have to stay above the early
@@ -100,6 +106,8 @@ export function TargetEdit() {
   const [refused, setRefused] = useState(0);
   // What rclone's setup left to choose at the last test.
   const [question, setQuestion] = useState<SetupQuestion | null>(null);
+  // Unset until somebody opens or closes the fold.
+  const [othersOpen, setOthersOpen] = useState<boolean | null>(null);
 
   if (!backendName) {
     return <Empty title={t("targets.addStorage")} detail={error || t("history.working")} />;
@@ -130,6 +138,54 @@ export function TargetEdit() {
     }
   };
 
+  const othersShown = othersOpen ?? anySaved(existing?.settings ?? [], others.map((o) => o.name));
+
+  const field = (option: Option) => {
+    if (backendName === "ftp" && option.name === "explicit_tls") return null;
+    if (backendName === "ftp" && option.name === "tls") {
+      return (
+        <View key={option.name} style={styles.choice}>
+          <Row label={t("targets.ftpTls")} hint={t("targets.ftpTlsHint")} />
+          <Choice
+            value={ftpTls(values)}
+            onChange={(mode) => setValues((old) => withFtpTls(old, mode))}
+            options={FTP_TLS.map((mode) => ({ value: mode, label: t(`targets.ftpTls.${mode}`) }))}
+          />
+        </View>
+      );
+    }
+    if (backendName === "kdrive" && option.name === "root_folder_id") {
+      return (
+        <KdriveRootField
+          key={option.name}
+          value={values.root_folder_id ?? ""}
+          onChange={(next) => setValues((old) => ({ ...old, root_folder_id: next }))}
+        />
+      );
+    }
+    if (option.type === "bool") {
+      // Off is left unsaved where it is rclone's default.
+      return (
+        <Toggle
+          key={option.name}
+          label={optionLabel(option.name, t)}
+          hint={optionHint(option, t, provider)}
+          value={(values[option.name] || option.default) === "true"}
+          onChange={(on) =>
+            setValues((old) => ({ ...old, [option.name]: String(on) === option.default ? "" : String(on) }))
+          }
+        />
+      );
+    }
+    const props = {
+      label: optionLabel(option.name, t),
+      hint: optionHint(option, t, provider),
+      value: values[option.name] ?? "",
+      onChange: (next: string) => setValues((old) => ({ ...old, [option.name]: next })),
+    };
+    return option.secret ? <SecretField key={option.name} {...props} /> : <Field key={option.name} {...props} />;
+  };
+
   const reason = tried && !tried.ok && tried.reason ? failureLine(tried.reason, tried.failure, t, lang) : "";
 
   // Holds the target to the certificate the test refused, and tests again with it.
@@ -140,8 +196,6 @@ export function TargetEdit() {
   };
   const pinned = values[CERTIFICATE_KEY] ?? "";
   const refusedCert = backend?.trustsCertificate && tried && !tried.ok ? tried.certificate : undefined;
-  // prune drops an emptied setting, which would keep the saved fingerprint.
-  const unpinned = !pinned && existing?.settings.some((s) => s.key === CERTIFICATE_KEY);
 
   const save = async () => {
     if (!name.trim()) {
@@ -152,7 +206,7 @@ export function TargetEdit() {
     try {
       await api.saveRemote(name.trim(), {
         type: backendName,
-        settings: { ...(provider?.preset ?? {}), ...prune(values), ...(unpinned ? { [CERTIFICATE_KEY]: "" } : {}) },
+        settings: { ...(provider?.preset ?? {}), ...settingsToSave(values, existing?.settings ?? []) },
       });
       nav.popToTop();
     } catch (e) {
@@ -193,44 +247,22 @@ export function TargetEdit() {
       ) : null}
 
       <Section title={t("targets.access")}>
-        {options.map((option) => {
-          if (backendName === "ftp" && option.name === "explicit_tls") return null;
-          if (backendName === "ftp" && option.name === "tls") {
-            return (
-              <View key={option.name} style={styles.choice}>
-                <Row label={t("targets.ftpTls")} hint={t("targets.ftpTlsHint")} />
-                <Choice
-                  value={ftpTls(values)}
-                  onChange={(mode) => setValues((old) => withFtpTls(old, mode))}
-                  options={FTP_TLS.map((mode) => ({ value: mode, label: t(`targets.ftpTls.${mode}`) }))}
-                />
-              </View>
-            );
-          }
-          if (option.type === "bool") {
-            // Off is left unsaved where it is rclone's default.
-            return (
-              <Toggle
-                key={option.name}
-                label={optionLabel(option.name, t)}
-                hint={optionHint(option, t, provider)}
-                value={(values[option.name] || option.default) === "true"}
-                onChange={(on) =>
-                  setValues((old) => ({ ...old, [option.name]: String(on) === option.default ? "" : String(on) }))
-                }
-              />
-            );
-          }
-          const props = {
-            label: optionLabel(option.name, t),
-            hint: optionHint(option, t, provider),
-            value: values[option.name] ?? "",
-            onChange: (next: string) => setValues((old) => ({ ...old, [option.name]: next })),
-          };
-          return option.secret ? <SecretField key={option.name} {...props} /> : <Field key={option.name} {...props} />;
-        })}
+        {options.map(field)}
         {options.length === 0 ? <Body>{t("phone.noSettings")}</Body> : null}
       </Section>
+
+      {/* Opens by itself where the saved target uses one of these, so a
+          setting in use never hides behind the fold. */}
+      {others.length > 0 ? (
+        <Section title={t("targets.moreSettings")}>
+          <Button
+            label={t(othersShown ? "anomaly.showLess" : "anomaly.showMore")}
+            labelKey={othersShown ? "anomaly.showLess" : "anomaly.showMore"}
+            onPress={() => setOthersOpen(!othersShown)}
+          />
+          {othersShown ? others.map(field) : null}
+        </Section>
+      ) : null}
 
       {question ? (
         <Section title={t(QUESTION_LABELS[question.name] ?? "targets.question.other")} hint={t("targets.question.hint")}>
@@ -320,6 +352,36 @@ export function TargetEdit() {
         <Button label={t("targets.save")} labelKey="targets.save" tone="accent" busy={saving} onPress={save} />
       </View>
     </Page>
+  );
+}
+
+/**
+ * kDrive's root folder: the private folder, the shared one, or another by its
+ * ID. Which of the three is picked is kept here, since an ID still being typed
+ * is empty and would read as the private folder.
+ */
+function KdriveRootField({ value, onChange }: { value: string; onChange: (next: string) => void }) {
+  const { t } = useT();
+  const [byId, setById] = useState(() => kdriveRoot(value) === "id");
+  const mode = byId ? "id" : kdriveRoot(value);
+  return (
+    <View style={styles.choice}>
+      <Row
+        label={t("targets.kdriveRoot")}
+        hint={[t("targets.kdriveRootHint"), t("help.rcloneName", { name: "root_folder_id" })].join(" ")}
+      />
+      <Choice
+        value={mode}
+        onChange={(next) => {
+          setById(next === "id");
+          onChange(kdriveRootValue(next));
+        }}
+        options={KDRIVE_ROOTS.map((root) => ({ value: root, label: t(`targets.kdriveRoot.${root}`) }))}
+      />
+      {byId ? (
+        <Field label={t("targets.kdriveFolderId")} hint={t("targets.kdriveFolderIdHint")} value={value} onChange={onChange} />
+      ) : null}
+    </View>
   );
 }
 

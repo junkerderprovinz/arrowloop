@@ -57,6 +57,7 @@ import { suggestTargetName } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
 import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
+import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from '../lib/kdriveRoot'
 import { ToggleRow } from '../components/ToggleRow'
 import { SecretRow } from './settings/rows'
 import { failureLine } from '../lib/failure'
@@ -670,7 +671,13 @@ function RemoteForm({
   // A stored secret arrives as the placeholder and goes back untouched unless
   // it is changed, which tells the engine to keep it (remotes.Save).
   const plainField = (o: Backend['options'][number]) =>
-    kind === 'ftp' && o.name === 'explicit_tls' ? null : kind === 'ftp' && o.name === 'tls' ? (
+    kind === 'ftp' && o.name === 'explicit_tls' ? null : kind === 'kdrive' && o.name === 'root_folder_id' ? (
+      <KdriveRootField
+        key={o.name}
+        value={values.root_folder_id ?? ''}
+        onChange={(next) => setValues((prev) => ({ ...prev, root_folder_id: next }))}
+      />
+    ) : kind === 'ftp' && o.name === 'tls' ? (
       <FieldRow key={o.name} label={t('targets.ftpTls')} hint={t('targets.ftpTlsHint')}>
         <span data-new="target-switches" className="flex w-full">
           <Choice
@@ -899,6 +906,40 @@ function CertificateOffer({ cert, busy, onTrust }: { cert: RefusedCertificate; b
         />
       </div>
     </SubCard>
+  )
+}
+
+/**
+ * kDrive's root folder: the private folder, the shared one, or another by its
+ * ID. Which of the three is picked is kept here, since an ID still being typed
+ * is empty and would read as the private folder.
+ */
+function KdriveRootField({ value, onChange }: { value: string; onChange: (next: string) => void }) {
+  const { t } = useT()
+  const [byId, setById] = useState(() => kdriveRoot(value) === 'id')
+  const mode = byId ? 'id' : kdriveRoot(value)
+  return (
+    <>
+      <FieldRow
+        label={t('targets.kdriveRoot')}
+        hint={[t('targets.kdriveRootHint'), t('help.rcloneName', { name: 'root_folder_id' })].join(' ')}
+      >
+        <Choice
+          value={mode}
+          onChange={(next) => {
+            setById(next === 'id')
+            onChange(kdriveRootValue(next))
+          }}
+          label={t('targets.kdriveRoot')}
+          options={KDRIVE_ROOTS.map((root) => ({ value: root, label: t(`targets.kdriveRoot.${root}`) }))}
+        />
+      </FieldRow>
+      {byId && (
+        <FieldRow label={t('targets.kdriveFolderId')} hint={t('targets.kdriveFolderIdHint')}>
+          <Text value={value} onChange={onChange} label={t('targets.kdriveFolderId')} mono />
+        </FieldRow>
+      )}
+    </>
   )
 }
 
