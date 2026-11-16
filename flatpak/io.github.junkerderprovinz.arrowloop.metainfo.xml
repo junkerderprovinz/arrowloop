@@ -79,6 +79,19 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.7.3" date="2026-11-16">
+      <description>
+        <p>A proper name for every setting of a target, hidden folders in the picker, and hovers in your accent colour.</p>
+        <ul>
+          <li>Every rclone option in the target form has a readable name, in all 42 languages</li>
+          <li>An empty field shows rclone's name for it, and its default sits in the (i) bubble</li>
+          <li>The folder picker can show hidden folders</li>
+          <li>The job editor's cards are called Inclusions and Exclusions</li>
+          <li>Whatever the pointer is over lights up in the accent colour</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.3</url>
+    </release>
     <release version="2.7.2" date="2026-11-16">
       <description>
         <p>Only the files you name, a pause for every automatic run, and trust for your own server's certificate.</p>

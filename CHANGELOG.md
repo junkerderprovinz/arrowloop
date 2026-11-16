@@ -8,7 +8,9 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.7.3 - 2026-11-16
+
+Every setting of a target has a proper name, hidden folders can be picked, Inclusions and Exclusions read as a pair, and whatever the pointer is over lights up in your accent colour.
 
 ## ✨ Added
 
