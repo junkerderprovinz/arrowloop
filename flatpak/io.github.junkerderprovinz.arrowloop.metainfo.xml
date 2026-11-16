@@ -79,6 +79,22 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.7.2" date="2026-11-16">
+      <description>
+        <p>Only the files you name, a pause for every automatic run, and trust for your own server's certificate.</p>
+        <ul>
+          <li>A job can take only the files that match its patterns</li>
+          <li>One switch pauses every automatic run until you resume</li>
+          <li>A WebDAV target can trust the certificate its own server made</li>
+          <li>A kDrive target can start in the shared folder or any folder by its ID</li>
+          <li>A failed job says why on its card and its page</li>
+          <li>Dates follow the region of your device</li>
+          <li>A Samba share with a connection limit no longer stops a job</li>
+          <li>The Help card sends questions to ArrowLoop's Discord server</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.2</url>
+    </release>
     <release version="2.7.1" date="2026-11-14">
       <description>
         <p>Security fixes for bringing settings back and for the fortress.</p>

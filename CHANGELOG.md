@@ -8,7 +8,9 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.7.2 - 2026-11-16
+
+A job can take only the files you name, one switch pauses every automatic run, a WebDAV target can trust the certificate your own server made, and a kDrive target can start in the shared folder. A failed job says why, dates follow your region, a Samba share with a connection limit no longer stops a job, and questions go to ArrowLoop's own Discord server.
 
 ## ✨ Added
 
