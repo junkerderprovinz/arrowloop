@@ -20,12 +20,16 @@ export function Field({
   onBlur,
   error,
   short,
+  hidePlaceholderOnFocus,
 }: {
   label: string;
   hint?: string;
   value: string;
   onChange: (next: string) => void;
   placeholder?: string;
+  /** For a placeholder that names the field rather than suggests a value,
+   *  which would only stand in the way of typing. */
+  hidePlaceholderOnFocus?: boolean;
   multiline?: boolean;
   secret?: boolean;
   keyboard?: "default" | "numeric";
@@ -37,6 +41,7 @@ export function Field({
 }) {
   const { p, corners } = useTheme();
   const [hidden, setHidden] = useState(Boolean(secret));
+  const [focused, setFocused] = useState(false);
   return (
     <View style={styles.field}>
       <View style={short ? styles.beside : styles.field}>
@@ -48,10 +53,14 @@ export function Field({
           <TextInput
             value={value}
             onChangeText={onChange}
-            onBlur={onBlur}
+            onFocus={() => setFocused(true)}
+            onBlur={() => {
+              setFocused(false);
+              onBlur?.();
+            }}
             // The Enter key ends the entry as leaving the field does.
             onSubmitEditing={onBlur}
-            placeholder={placeholder}
+            placeholder={hidePlaceholderOnFocus && focused ? undefined : placeholder}
             placeholderTextColor={p.textSub}
             secureTextEntry={hidden}
             multiline={multiline}
@@ -129,12 +138,14 @@ export function SecretField({
   value,
   onChange,
   placeholder,
+  hidePlaceholderOnFocus,
 }: {
   label: string;
   hint?: string;
   value: string;
   onChange: (next: string) => void;
   placeholder?: string;
+  hidePlaceholderOnFocus?: boolean;
 }) {
   const { t } = useT();
   const { p } = useTheme();
@@ -158,7 +169,15 @@ export function SecretField({
   }
   return (
     <View style={styles.field}>
-      <Field label={label} hint={hint} secret value={stored ? "" : value} onChange={onChange} placeholder={placeholder} />
+      <Field
+        label={label}
+        hint={hint}
+        secret
+        value={stored ? "" : value}
+        onChange={onChange}
+        placeholder={placeholder}
+        hidePlaceholderOnFocus={hidePlaceholderOnFocus}
+      />
       {changing ? (
         <Button
           label={t("notify.keep")}

@@ -168,7 +168,7 @@ export function TargetEdit() {
       return (
         <Toggle
           key={option.name}
-          label={optionLabel(option.name, t)}
+          label={optionLabel(option.name, t, backendName)}
           hint={optionHint(option, t, provider)}
           value={(values[option.name] || option.default) === "true"}
           onChange={(on) =>
@@ -177,11 +177,16 @@ export function TargetEdit() {
         />
       );
     }
+    // An empty field shows rclone's name, which its documentation uses, and
+    // the default goes in the bubble, where nobody takes it for a value
+    // already filled in.
     const props = {
-      label: optionLabel(option.name, t),
+      label: optionLabel(option.name, t, backendName),
       hint: optionHint(option, t, provider),
       value: values[option.name] ?? "",
       onChange: (next: string) => setValues((old) => ({ ...old, [option.name]: next })),
+      placeholder: option.name,
+      hidePlaceholderOnFocus: true,
     };
     return option.secret ? <SecretField key={option.name} {...props} /> : <Field key={option.name} {...props} />;
   };

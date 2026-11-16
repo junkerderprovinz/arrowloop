@@ -133,6 +133,12 @@ describe('a job of another instance', () => {
     expect(within(picker).queryByRole('button', { name: 'New folder' })).toBeNull()
   })
 
+  it('names the patterns a job takes and the ones it leaves as one pair', async () => {
+    const dialog = await openEditor()
+    expect(within(within(dialog).getByRole('region', { name: 'Inclusions' })).getByText('Own inclusions')).toBeTruthy()
+    expect(within(within(dialog).getByRole('region', { name: 'Exclusions' })).getByText('Own exclusions')).toBeTruthy()
+  })
+
   it('offers the exclude sets of the instance it belongs to', async () => {
     const dialog = await openEditor()
     expect(await within(dialog).findByText('media')).toBeTruthy()

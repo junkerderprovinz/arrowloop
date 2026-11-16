@@ -409,8 +409,8 @@ export function JobForm({
         )}
       </SubCard>
 
-      <SubCard title={t('edit.include')}>
-        <Field label={t('edit.includePatterns')} hint={t('edit.includeHint')}>
+      <SubCard title={t('edit.inclusions')}>
+        <Field label={t('edit.ownInclude')} hint={t('edit.includeHint')}>
           <Lines value={job.include ?? []} onChange={(v) => patch({ include: v })} placeholder={'*.tar.gz\nsrc/**'} />
         </Field>
       </SubCard>

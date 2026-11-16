@@ -686,7 +686,9 @@ function RemoteForm({
   }
 
   // A stored secret arrives as the placeholder and goes back untouched unless
-  // it is changed, which tells the engine to keep it (remotes.Save).
+  // it is changed, which tells the engine to keep it (remotes.Save). An empty
+  // field shows rclone's name, which its documentation uses, and the default
+  // goes in the bubble, where nobody takes it for a value already filled in.
   const plainField = (o: Backend['options'][number]) =>
     kind === 'ftp' && o.name === 'explicit_tls' ? null : kind === 'kdrive' && o.name === 'root_folder_id' ? (
       <KdriveRootField
@@ -710,7 +712,7 @@ function RemoteForm({
       // field would be.
       <ToggleRow
         key={o.name}
-        label={optionLabel(o.name, t)}
+        label={optionLabel(o.name, t, kind)}
         hint={optionHint(o, t, provider)}
         checked={(values[o.name] || o.default) === 'true'}
         onChange={(on) => setValues((prev) => ({ ...prev, [o.name]: String(on) === o.default ? '' : String(on) }))}
@@ -718,20 +720,21 @@ function RemoteForm({
     ) : o.secret ? (
       <SecretRow
         key={o.name}
-        label={optionLabel(o.name, t)}
+        label={optionLabel(o.name, t, kind)}
         hint={optionHint(o, t, provider)}
         value={values[o.name] ?? ''}
         onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-        placeholder={o.default}
+        placeholder={o.name}
+        hidePlaceholderOnFocus
       />
     ) : (
-      <FieldRow key={o.name} label={optionLabel(o.name, t)} hint={optionHint(o, t, provider)}>
+      <FieldRow key={o.name} label={optionLabel(o.name, t, kind)} hint={optionHint(o, t, provider)}>
         {kind === 'smb' && o.name === 'host' ? (
           <ShareHost
-            label={optionLabel(o.name, t)}
+            label={optionLabel(o.name, t, kind)}
             value={values.host ?? ''}
             onChange={(next) => setValues((prev) => ({ ...prev, host: next }))}
-            placeholder={o.default || o.examples?.[0]?.value}
+            placeholder={o.name}
             // The account comes along where the field is still empty; the
             // password cannot be read back from Windows.
             onShare={(picked) =>
@@ -748,8 +751,9 @@ function RemoteForm({
             <Text
               value={values[o.name] ?? ''}
               onChange={(next) => setValues((prev) => ({ ...prev, [o.name]: next }))}
-              placeholder={provider?.defaults?.[o.name] || o.default || o.examples?.[0]?.value}
-              label={optionLabel(o.name, t)}
+              placeholder={o.name}
+              hidePlaceholderOnFocus
+              label={optionLabel(o.name, t, kind)}
               mono
             />
           </span>
@@ -1035,7 +1039,7 @@ function ShareHost({
   return (
     <div ref={row} className="flex w-full items-center gap-2">
       <div className="min-w-0 flex-1">
-        <Text value={value} onChange={onChange} placeholder={placeholder} label={label} mono />
+        <Text value={value} onChange={onChange} placeholder={placeholder} hidePlaceholderOnFocus label={label} mono />
       </div>
       <IconAction
         title={t('targets.pickShare')}

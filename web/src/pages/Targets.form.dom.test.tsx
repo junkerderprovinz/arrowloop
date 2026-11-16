@@ -115,16 +115,31 @@ describe('the target form', () => {
   it('draws a yes-or-no setting as a switch', async () => {
     const dialog = await addFtp()
     fireEvent.click(within(dialog).getByRole('button', { name: 'Other settings' }))
-    const epsv = within(dialog).getByRole('switch', { name: 'disable_epsv' })
+    const epsv = within(dialog).getByRole('switch', { name: 'Turn off EPSV' })
     expect(epsv.getAttribute('aria-checked')).toBe('false')
     fireEvent.click(epsv)
     expect((await saved(dialog)).disable_epsv).toBe('true')
   })
 
+  it("shows rclone's name inside an empty field until the field gets focus", async () => {
+    const dialog = await addFtp()
+    const port = within(dialog).getByRole('textbox', { name: 'Port' })
+    expect(port.getAttribute('placeholder')).toBe('port')
+    fireEvent.focus(port)
+    expect(port.getAttribute('placeholder')).toBeNull()
+    fireEvent.blur(port)
+    expect(port.getAttribute('placeholder')).toBe('port')
+  })
+
+  it("says rclone's default in the field's bubble rather than in the field", async () => {
+    const dialog = await addFtp()
+    expect(within(dialog).getByRole('img', { name: /Default: 21$/ })).toBeTruthy()
+  })
+
   it('asks for FTP encryption once and never sets both kinds of TLS', async () => {
     const dialog = await addFtp()
-    expect(within(dialog).queryByRole('switch', { name: 'tls' })).toBeNull()
-    expect(within(dialog).queryByRole('switch', { name: 'explicit_tls' })).toBeNull()
+    expect(within(dialog).queryByRole('switch', { name: 'Implicit TLS' })).toBeNull()
+    expect(within(dialog).queryByRole('switch', { name: 'Explicit TLS' })).toBeNull()
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Encryption' }))
     fireEvent.click(screen.getByRole('option', { name: 'Implicit TLS on port 990' }))

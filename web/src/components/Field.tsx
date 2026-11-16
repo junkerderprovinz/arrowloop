@@ -92,6 +92,7 @@ export function Text({
   label,
   code,
   readOnly,
+  hidePlaceholderOnFocus,
 }: {
   value: string
   onChange: (next: string) => void
@@ -103,17 +104,23 @@ export function Text({
   /** A one-time code: a number pad on a phone, and the browser may fill in a
    *  code it received. */
   code?: boolean
+  /** For a placeholder that names the field rather than suggests a value,
+   *  which would only stand in the way of typing. */
+  hidePlaceholderOnFocus?: boolean
 }) {
+  const [focused, setFocused] = useState(false)
   return (
     <input
       type="text"
       value={value}
-      placeholder={placeholder}
+      placeholder={hidePlaceholderOnFocus && focused ? undefined : placeholder}
       aria-label={label}
       readOnly={readOnly}
       inputMode={code ? 'numeric' : undefined}
       autoComplete={code ? 'one-time-code' : undefined}
       onChange={(e) => onChange(e.target.value)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-meta outline-none transition placeholder:text-(--field-placeholder) focus:brightness-125 ${
         readOnly ? 'text-carbon-textMuted' : 'text-carbon-text'
       } ${mono ? 'font-mono' : ''}`}
@@ -337,6 +344,7 @@ export function Secret({
   placeholder,
   autoComplete,
   label,
+  hidePlaceholderOnFocus,
 }: {
   value: string
   onChange: (next: string) => void
@@ -346,8 +354,11 @@ export function Secret({
   autoComplete?: string
   /** The accessible name for a box whose row names it beside the field. */
   label?: string
+  /** As for Text. */
+  hidePlaceholderOnFocus?: boolean
 }) {
   const [shown, setShown] = useState(false)
+  const [focused, setFocused] = useState(false)
   const { t } = useT()
   const eye = shown ? t('secret.hide') : t('secret.show')
 
@@ -356,10 +367,12 @@ export function Secret({
       <input
         type={shown ? 'text' : 'password'}
         value={value}
-        placeholder={placeholder}
+        placeholder={hidePlaceholderOnFocus && focused ? undefined : placeholder}
         autoComplete={autoComplete}
         aria-label={label}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-(--field-placeholder) focus:brightness-125`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />

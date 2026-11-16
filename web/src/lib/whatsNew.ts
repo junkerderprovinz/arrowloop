@@ -65,7 +65,7 @@ export const RELEASES: Release[] = [
   {
     after: '2.7.1',
     changes: [
-      { id: 'only-files', text: 'new.change.onlyFiles', names: { only: 'edit.include' } },
+      { id: 'only-files', text: 'new.change.onlyFiles', names: { only: 'edit.inclusions' } },
       {
         id: 'pause-automatic',
         text: 'new.change.pauseAutomatic',

@@ -486,9 +486,9 @@ export function JobEdit() {
         ) : null}
       </Section>
 
-      <Section title={t("edit.include")} hue={3}>
+      <Section title={t("edit.inclusions")} hue={3}>
         <LinesField
-          label={t("edit.includePatterns")}
+          label={t("edit.ownInclude")}
           hint={t("edit.includeHint")}
           value={job.include ?? []}
           onChange={(list) => set({ include: list })}
@@ -515,7 +515,7 @@ export function JobEdit() {
         })}
         <View ref={excludeRef} collapsable={false}>
           <LinesField
-            label={t("edit.excludeOwn")}
+            label={t("edit.ownExclude")}
             hint={t("edit.excludeHint")}
             value={job.exclude ?? []}
             onChange={(list) => set({ exclude: list })}

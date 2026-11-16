@@ -52,12 +52,14 @@ export function SecretRow({
   value,
   onChange,
   placeholder,
+  hidePlaceholderOnFocus,
 }: {
   label: string
   hint?: string
   value: string
   onChange: (next: string) => void
   placeholder?: string
+  hidePlaceholderOnFocus?: boolean
 }) {
   const { t } = useT()
   const [changing, setChanging] = useState(false)
@@ -87,7 +89,14 @@ export function SecretRow({
     <div className="flex flex-wrap items-center justify-end gap-2">
       <div className="min-w-0 flex-[1_1_24rem]">
         <FieldRow label={label} hint={hint}>
-          <Secret value={stored ? '' : value} onChange={onChange} placeholder={placeholder} autoComplete="off" label={label} />
+          <Secret
+            value={stored ? '' : value}
+            onChange={onChange}
+            placeholder={placeholder}
+            hidePlaceholderOnFocus={hidePlaceholderOnFocus}
+            autoComplete="off"
+            label={label}
+          />
         </FieldRow>
       </div>
       {keep}

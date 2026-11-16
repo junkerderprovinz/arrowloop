@@ -4,9 +4,8 @@
 //  1. What this field is, in this app's own words.
 //  2. What this product needs in it, the sign-in style and the shape of its
 //     address, built from tokens in the provider table, which has no language.
-//  3. rclone's own help, only for a field this app has no name for, which is
-//     where somebody following rclone's documentation looks. A field this app
-//     does name says rclone's name for it instead.
+//  3. rclone's own help, for a field this app has no sentence of its own for,
+//     then rclone's name for the field and its default.
 
 import type { TranslationKey } from './i18n.data'
 import { hasOptionLabel } from './optionNames'
@@ -15,7 +14,13 @@ type Translate = (key: TranslationKey, vars?: Record<string, string | number>) =
 
 /** Just enough of an option for this to decide. Structural, because the
  *  desktop and the phone declare their own types. */
-export type HintOption = { name: string; help?: string }
+export type HintOption = {
+  name: string
+  help?: string
+  type?: string
+  default?: string
+  examples?: { value: string }[]
+}
 
 /** Likewise the product, which may not be known at all for a raw backend. */
 export type HintProvider = {
@@ -194,11 +199,21 @@ export function optionHint(
     if (provider.authUrl) about.push(t('help.authWhere', { url: provider.authUrl }))
   }
 
-  // A field with a name of our own still says what rclone calls it, which is
-  // what its documentation and a hand-written rclone.conf use.
+  // The field shows rclone's name only while it is empty, and rclone's
+  // documentation and a hand-written rclone.conf use that name.
   const named = hasOptionLabel(o.name) ? t('help.rcloneName', { name: o.name }) : undefined
-  if (own || about.length > 0 || named) return [own, ...about, named].filter(Boolean).join(' ')
+  const parts = [own ?? o.help, ...about, named, fallback(o, assumed, t)].filter(Boolean)
+  return parts.length > 0 ? parts.join(' ') : undefined
+}
 
-  // rclone's help, only for a field without a name of our own.
-  return o.help || undefined
+/**
+ * What an empty field leaves rclone to use, or failing that a value of the
+ * right shape. A switch shows its default by its position, and a value the
+ * product presets is said above.
+ */
+function fallback(o: HintOption, assumed: string | undefined, t: Translate) {
+  if (o.type === 'bool' || assumed) return undefined
+  if (o.default) return t('help.optionDefault', { value: o.default })
+  const example = o.examples?.[0]?.value
+  return example ? t('help.optionExample', { value: example }) : undefined
 }

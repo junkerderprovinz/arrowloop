@@ -25,10 +25,10 @@ describe('a field bubble', () => {
 
   it("puts the app's own words over rclone's for the connections an FTP target opens", () => {
     expect(optionHint({ name: 'concurrency', help: 'Maximum number of FTP simultaneous connections, 0 for unlimited.' }, t, { backend: 'ftp' })).toBe(
-      'opt.ftpConcurrencyHint',
+      'opt.ftpConcurrencyHint help.rcloneName{"name":"concurrency"}',
     )
     expect(optionHint({ name: 'concurrency', help: 'The maximum number of outstanding requests for one file' }, t, { backend: 'sftp' })).toBe(
-      'The maximum number of outstanding requests for one file',
+      'The maximum number of outstanding requests for one file help.rcloneName{"name":"concurrency"}',
     )
   })
 
@@ -38,8 +38,32 @@ describe('a field bubble', () => {
     )
   })
 
-  it("keeps rclone's own help for a field it has no name for", () => {
-    expect(optionHint({ name: 'chunk_size', help: 'Chunk size to use.' }, t)).toBe('Chunk size to use.')
+  it("keeps rclone's own help where the app has no sentence of its own", () => {
+    expect(optionHint({ name: 'chunk_size', help: 'Chunk size to use.' }, t)).toBe(
+      'Chunk size to use. help.rcloneName{"name":"chunk_size"}',
+    )
+  })
+
+  it("says rclone's default, which the field itself leaves to its name", () => {
+    expect(optionHint({ name: 'pacer_min_sleep', help: 'Minimum time to sleep between API calls.', default: '10ms' }, t)).toBe(
+      'Minimum time to sleep between API calls. help.rcloneName{"name":"pacer_min_sleep"} help.optionDefault{"value":"10ms"}',
+    )
+  })
+
+  it('leaves the default of a switch to the switch', () => {
+    expect(optionHint({ name: 'disable_epsv', default: 'false', type: 'bool' }, t)).not.toContain('help.optionDefault')
+  })
+
+  it("says what the server expects instead of rclone's default where the product names one", () => {
+    const hint = optionHint({ name: 'region', default: 'us-east-1' }, t, { backend: 's3', defaults: { region: 'garage' } })
+    expect(hint).toContain('help.serverDefault{"value":"garage"}')
+    expect(hint).not.toContain('help.optionDefault')
+  })
+
+  it('gives an example where rclone has no default', () => {
+    expect(optionHint({ name: 'region', examples: [{ value: 'us-east-1' }] }, t, { backend: 's3' })).toContain(
+      'help.optionExample{"value":"us-east-1"}',
+    )
   })
 
   it('explains how combine writes its targets', () => {
