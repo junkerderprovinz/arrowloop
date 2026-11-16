@@ -1191,7 +1191,7 @@ const bg: Translations = {
   'opt.copyShortcutContent': 'Копиране на съдържанието на преките пътища',
   'opt.copyTimeout': 'Време за изчакване при копиране',
   'opt.copyTotalConcurrency': 'Общо паралелни части при копиране',
-  'opt.crc32sumCommand': 'Команда за контролни суми CRC-32',
+  'opt.crc32sumCommand': 'Команда за контролни суми CRC32',
   'opt.createLibrary': 'Създаване на библиотеката, ако липсва',
   'opt.createPolicy': 'Правило за създаване на файлове',
   'opt.dataTransferProtection': 'Защита на преноса на данни',

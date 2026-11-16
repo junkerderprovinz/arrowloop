@@ -1191,7 +1191,7 @@ const th: Translations = {
   'opt.copyShortcutContent': 'คัดลอกเนื้อหาของทางลัด',
   'opt.copyTimeout': 'ระยะหมดเวลาตอนคัดลอก',
   'opt.copyTotalConcurrency': 'ชิ้นส่วนคัดลอกขนานทั้งหมด',
-  'opt.crc32sumCommand': 'คำสั่งเช็กซัม CRC-32',
+  'opt.crc32sumCommand': 'คำสั่งเช็กซัม CRC32',
   'opt.createLibrary': 'สร้างไลบรารีถ้ายังไม่มี',
   'opt.createPolicy': 'นโยบายการสร้างไฟล์',
   'opt.dataTransferProtection': 'การป้องกันการส่งข้อมูล',

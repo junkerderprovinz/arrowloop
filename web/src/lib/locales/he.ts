@@ -1191,7 +1191,7 @@ const he: Translations = {
   'opt.copyShortcutContent': 'העתקת התוכן של קיצורי דרך',
   'opt.copyTimeout': 'זמן קצוב להעתקה',
   'opt.copyTotalConcurrency': 'חלקי העתקה מקבילים בסך הכול',
-  'opt.crc32sumCommand': 'פקודה לסכום ביקורת CRC-32',
+  'opt.crc32sumCommand': 'פקודה לסכום ביקורת CRC32',
   'opt.createLibrary': 'יצירת הספרייה אם היא חסרה',
   'opt.createPolicy': 'מדיניות ליצירת קבצים',
   'opt.dataTransferProtection': 'הגנה על העברת נתונים',

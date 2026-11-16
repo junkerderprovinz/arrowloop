@@ -1191,7 +1191,7 @@ const vi: Translations = {
   'opt.copyShortcutContent': 'Sao chép nội dung của lối tắt',
   'opt.copyTimeout': 'Thời gian chờ sao chép',
   'opt.copyTotalConcurrency': 'Tổng số phần sao chép song song',
-  'opt.crc32sumCommand': 'Lệnh tổng kiểm CRC-32',
+  'opt.crc32sumCommand': 'Lệnh tổng kiểm CRC32',
   'opt.createLibrary': 'Tạo thư viện nếu chưa có',
   'opt.createPolicy': 'Chính sách tạo tệp',
   'opt.dataTransferProtection': 'Bảo vệ truyền dữ liệu',

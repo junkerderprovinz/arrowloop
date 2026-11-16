@@ -1191,7 +1191,7 @@ const zh: Translations = {
   'opt.copyShortcutContent': '复制快捷方式的内容',
   'opt.copyTimeout': '复制超时',
   'opt.copyTotalConcurrency': '总并行复制分段数',
-  'opt.crc32sumCommand': 'CRC-32 校验和命令',
+  'opt.crc32sumCommand': 'CRC32 校验和命令',
   'opt.createLibrary': '资料库不存在时创建',
   'opt.createPolicy': '创建文件的策略',
   'opt.dataTransferProtection': '数据传输保护',

@@ -1191,7 +1191,7 @@ const no: Translations = {
   'opt.copyShortcutContent': 'Kopier innholdet i snarveier',
   'opt.copyTimeout': 'Tidsavbrudd ved kopiering',
   'opt.copyTotalConcurrency': 'Parallelle kopideler totalt',
-  'opt.crc32sumCommand': 'Kommando for CRC-32-sjekksummer',
+  'opt.crc32sumCommand': 'Kommando for CRC32-sjekksummer',
   'opt.createLibrary': 'Opprett biblioteket hvis det mangler',
   'opt.createPolicy': 'Regel for oppretting av filer',
   'opt.dataTransferProtection': 'Beskyttelse av dataoverføringen',

@@ -1191,7 +1191,7 @@ const ru: Translations = {
   'opt.copyShortcutContent': 'Копировать содержимое ярлыков',
   'opt.copyTimeout': 'Тайм-аут копирования',
   'opt.copyTotalConcurrency': 'Всего параллельных частей копирования',
-  'opt.crc32sumCommand': 'Команда для контрольных сумм CRC-32',
+  'opt.crc32sumCommand': 'Команда для контрольных сумм CRC32',
   'opt.createLibrary': 'Создать библиотеку, если её нет',
   'opt.createPolicy': 'Правило для создания файлов',
   'opt.dataTransferProtection': 'Защита передачи данных',

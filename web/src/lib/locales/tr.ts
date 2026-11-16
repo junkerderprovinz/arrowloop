@@ -1191,7 +1191,7 @@ const tr: Translations = {
   'opt.copyShortcutContent': 'Kısayolların içeriğini kopyala',
   'opt.copyTimeout': 'Kopyalama zaman aşımı',
   'opt.copyTotalConcurrency': 'Toplam paralel kopyalama parçası',
-  'opt.crc32sumCommand': 'CRC-32 sağlama toplamı komutu',
+  'opt.crc32sumCommand': 'CRC32 sağlama toplamı komutu',
   'opt.createLibrary': 'Kitaplık yoksa oluştur',
   'opt.createPolicy': 'Dosya oluşturma ilkesi',
   'opt.dataTransferProtection': 'Veri aktarımı koruması',

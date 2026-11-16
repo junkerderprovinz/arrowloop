@@ -1191,7 +1191,7 @@ const eu: Translations = {
   'opt.copyShortcutContent': 'Kopiatu lasterbideen edukia',
   'opt.copyTimeout': 'Kopiatzeko denbora-muga',
   'opt.copyTotalConcurrency': 'Kopia-zati paraleloak guztira',
-  'opt.crc32sumCommand': 'CRC-32 kontrol-baturaren komandoa',
+  'opt.crc32sumCommand': 'CRC32 kontrol-baturaren komandoa',
   'opt.createLibrary': 'Sortu liburutegia ez badago',
   'opt.createPolicy': 'Fitxategiak sortzeko politika',
   'opt.dataTransferProtection': 'Datu-transferentziaren babesa',

@@ -1191,7 +1191,7 @@ const hi: Translations = {
   'opt.copyShortcutContent': 'शॉर्टकट की सामग्री कॉपी करें',
   'opt.copyTimeout': 'कॉपी का टाइमआउट',
   'opt.copyTotalConcurrency': 'कुल समानांतर कॉपी हिस्से',
-  'opt.crc32sumCommand': 'CRC-32 चेकसम कमांड',
+  'opt.crc32sumCommand': 'CRC32 चेकसम कमांड',
   'opt.createLibrary': 'लाइब्रेरी न हो तो बनाएँ',
   'opt.createPolicy': 'फ़ाइलें बनाने की नीति',
   'opt.dataTransferProtection': 'डेटा ट्रांसफ़र सुरक्षा',

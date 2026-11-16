@@ -1191,7 +1191,7 @@ const sr: Translations = {
   'opt.copyShortcutContent': 'Копирај садржај пречица',
   'opt.copyTimeout': 'Временско ограничење при копирању',
   'opt.copyTotalConcurrency': 'Укупно паралелних делова копирања',
-  'opt.crc32sumCommand': 'Команда за CRC-32 контролне суме',
+  'opt.crc32sumCommand': 'Команда за CRC32 контролне суме',
   'opt.createLibrary': 'Направи библиотеку ако недостаје',
   'opt.createPolicy': 'Правило за прављење датотека',
   'opt.dataTransferProtection': 'Заштита преноса података',

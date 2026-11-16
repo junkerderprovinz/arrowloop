@@ -1191,7 +1191,7 @@ const ko: Translations = {
   'opt.copyShortcutContent': '바로 가기의 내용 복사',
   'opt.copyTimeout': '복사 시간 제한',
   'opt.copyTotalConcurrency': '전체 병렬 복사 파트 수',
-  'opt.crc32sumCommand': 'CRC-32 체크섬 명령',
+  'opt.crc32sumCommand': 'CRC32 체크섬 명령',
   'opt.createLibrary': '라이브러리가 없으면 만들기',
   'opt.createPolicy': '파일 생성 정책',
   'opt.dataTransferProtection': '데이터 전송 보호',

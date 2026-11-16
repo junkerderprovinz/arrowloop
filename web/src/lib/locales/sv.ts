@@ -1191,7 +1191,7 @@ const sv: Translations = {
   'opt.copyShortcutContent': 'Kopiera innehållet i genvägar',
   'opt.copyTimeout': 'Tidsgräns vid kopiering',
   'opt.copyTotalConcurrency': 'Parallella kopieringsdelar totalt',
-  'opt.crc32sumCommand': 'Kommando för CRC-32-kontrollsummor',
+  'opt.crc32sumCommand': 'Kommando för CRC32-kontrollsummor',
   'opt.createLibrary': 'Skapa biblioteket om det saknas',
   'opt.createPolicy': 'Regel för att skapa filer',
   'opt.dataTransferProtection': 'Skydd av dataöverföringen',

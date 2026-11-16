@@ -1191,7 +1191,7 @@ const id: Translations = {
   'opt.copyShortcutContent': 'Salin isi pintasan',
   'opt.copyTimeout': 'Batas waktu penyalinan',
   'opt.copyTotalConcurrency': 'Total bagian salinan paralel',
-  'opt.crc32sumCommand': 'Perintah checksum CRC-32',
+  'opt.crc32sumCommand': 'Perintah checksum CRC32',
   'opt.createLibrary': 'Buat pustaka jika belum ada',
   'opt.createPolicy': 'Kebijakan untuk membuat file',
   'opt.dataTransferProtection': 'Perlindungan transfer data',

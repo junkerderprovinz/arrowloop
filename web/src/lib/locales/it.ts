@@ -1191,7 +1191,7 @@ const it: Translations = {
   'opt.copyShortcutContent': 'Copia il contenuto delle scorciatoie',
   'opt.copyTimeout': 'Timeout di copia',
   'opt.copyTotalConcurrency': 'Parti di copia parallele in totale',
-  'opt.crc32sumCommand': 'Comando per il checksum CRC-32',
+  'opt.crc32sumCommand': 'Comando per il checksum CRC32',
   'opt.createLibrary': 'Crea la libreria se manca',
   'opt.createPolicy': 'Criterio per creare i file',
   'opt.dataTransferProtection': 'Protezione del trasferimento dati',

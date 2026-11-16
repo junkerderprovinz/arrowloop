@@ -1191,7 +1191,7 @@ const hr: Translations = {
   'opt.copyShortcutContent': 'Kopiraj sadržaj prečaca',
   'opt.copyTimeout': 'Vremensko ograničenje pri kopiranju',
   'opt.copyTotalConcurrency': 'Ukupno paralelnih dijelova kopiranja',
-  'opt.crc32sumCommand': 'Naredba za CRC-32 kontrolne zbrojeve',
+  'opt.crc32sumCommand': 'Naredba za CRC32 kontrolne zbrojeve',
   'opt.createLibrary': 'Stvori knjižnicu ako nedostaje',
   'opt.createPolicy': 'Pravilo za stvaranje datoteka',
   'opt.dataTransferProtection': 'Zaštita prijenosa podataka',

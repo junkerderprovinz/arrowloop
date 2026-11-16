@@ -1191,7 +1191,7 @@ const ro: Translations = {
   'opt.copyShortcutContent': 'Copiază conținutul scurtăturilor',
   'opt.copyTimeout': 'Timp limită la copiere',
   'opt.copyTotalConcurrency': 'Părți de copiere paralele în total',
-  'opt.crc32sumCommand': 'Comandă pentru suma de control CRC-32',
+  'opt.crc32sumCommand': 'Comandă pentru suma de control CRC32',
   'opt.createLibrary': 'Creează biblioteca dacă lipsește',
   'opt.createPolicy': 'Regulă pentru crearea fișierelor',
   'opt.dataTransferProtection': 'Protecția transferului de date',

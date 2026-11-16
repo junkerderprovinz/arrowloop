@@ -1191,7 +1191,7 @@ const da: Translations = {
   'opt.copyShortcutContent': 'Kopiér indholdet af genveje',
   'opt.copyTimeout': 'Tidsgrænse ved kopiering',
   'opt.copyTotalConcurrency': 'Parallelle kopidele i alt',
-  'opt.crc32sumCommand': 'Kommando til CRC-32-kontrolsummer',
+  'opt.crc32sumCommand': 'Kommando til CRC32-kontrolsummer',
   'opt.createLibrary': 'Opret biblioteket, hvis det mangler',
   'opt.createPolicy': 'Regel for oprettelse af filer',
   'opt.dataTransferProtection': 'Beskyttelse af dataoverførslen',

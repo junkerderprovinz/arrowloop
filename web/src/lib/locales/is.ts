@@ -1191,7 +1191,7 @@ const is: Translations = {
   'opt.copyShortcutContent': 'Afrita innihald flýtileiða',
   'opt.copyTimeout': 'Tímamörk við afritun',
   'opt.copyTotalConcurrency': 'Samhliða afritunarhlutar alls',
-  'opt.crc32sumCommand': 'Skipun fyrir CRC-32-gátsummur',
+  'opt.crc32sumCommand': 'Skipun fyrir CRC32-gátsummur',
   'opt.createLibrary': 'Búa til safnið ef það vantar',
   'opt.createPolicy': 'Regla um stofnun skráa',
   'opt.dataTransferProtection': 'Vernd gagnaflutnings',

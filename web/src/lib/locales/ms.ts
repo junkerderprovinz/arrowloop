@@ -1191,7 +1191,7 @@ const ms: Translations = {
   'opt.copyShortcutContent': 'Salin kandungan pintasan',
   'opt.copyTimeout': 'Had masa salinan',
   'opt.copyTotalConcurrency': 'Jumlah bahagian salinan selari',
-  'opt.crc32sumCommand': 'Arahan checksum CRC-32',
+  'opt.crc32sumCommand': 'Arahan checksum CRC32',
   'opt.createLibrary': 'Cipta pustaka jika tiada',
   'opt.createPolicy': 'Dasar untuk mencipta fail',
   'opt.dataTransferProtection': 'Perlindungan pemindahan data',

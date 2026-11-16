@@ -1191,7 +1191,7 @@ const pt: Translations = {
   'opt.copyShortcutContent': 'Copiar o conteúdo dos atalhos',
   'opt.copyTimeout': 'Tempo limite da cópia',
   'opt.copyTotalConcurrency': 'Partes de cópia em paralelo no total',
-  'opt.crc32sumCommand': 'Comando de soma de verificação CRC-32',
+  'opt.crc32sumCommand': 'Comando de soma de verificação CRC32',
   'opt.createLibrary': 'Criar a biblioteca se não existir',
   'opt.createPolicy': 'Política para criar ficheiros',
   'opt.dataTransferProtection': 'Proteção da transferência de dados',

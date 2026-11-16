@@ -1191,7 +1191,7 @@ const et: Translations = {
   'opt.copyShortcutContent': 'Kopeeri otseteede sisu',
   'opt.copyTimeout': 'Kopeerimise ajalõpp',
   'opt.copyTotalConcurrency': 'Paralleelseid kopeerimisosi kokku',
-  'opt.crc32sumCommand': 'CRC-32 kontrollsumma käsk',
+  'opt.crc32sumCommand': 'CRC32 kontrollsumma käsk',
   'opt.createLibrary': 'Loo teek, kui see puudub',
   'opt.createPolicy': 'Failide loomise reegel',
   'opt.dataTransferProtection': 'Andmeedastuse kaitse',

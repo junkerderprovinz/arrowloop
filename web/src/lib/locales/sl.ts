@@ -1191,7 +1191,7 @@ const sl: Translations = {
   'opt.copyShortcutContent': 'Kopiraj vsebino bližnjic',
   'opt.copyTimeout': 'Časovna omejitev kopiranja',
   'opt.copyTotalConcurrency': 'Vzporedni deli kopiranja skupaj',
-  'opt.crc32sumCommand': 'Ukaz za kontrolne vsote CRC-32',
+  'opt.crc32sumCommand': 'Ukaz za kontrolne vsote CRC32',
   'opt.createLibrary': 'Ustvari knjižnico, če manjka',
   'opt.createPolicy': 'Pravilo za ustvarjanje datotek',
   'opt.dataTransferProtection': 'Zaščita prenosa podatkov',

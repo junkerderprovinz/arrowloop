@@ -1191,7 +1191,7 @@ const nl: Translations = {
   'opt.copyShortcutContent': 'Inhoud van snelkoppelingen kopiëren',
   'opt.copyTimeout': 'Time-out bij het kopiëren',
   'opt.copyTotalConcurrency': 'Parallelle kopieerdelen in totaal',
-  'opt.crc32sumCommand': 'Opdracht voor CRC-32-checksums',
+  'opt.crc32sumCommand': 'Opdracht voor CRC32-checksums',
   'opt.createLibrary': 'Bibliotheek aanmaken als die ontbreekt',
   'opt.createPolicy': 'Beleid voor het aanmaken van bestanden',
   'opt.dataTransferProtection': 'Bescherming van de gegevensoverdracht',

@@ -1191,7 +1191,7 @@ const lv: Translations = {
   'opt.copyShortcutContent': 'Kopēt saīšņu saturu',
   'opt.copyTimeout': 'Kopēšanas noildze',
   'opt.copyTotalConcurrency': 'Paralēlas kopēšanas daļas kopā',
-  'opt.crc32sumCommand': 'Komanda CRC-32 kontrolsummām',
+  'opt.crc32sumCommand': 'Komanda CRC32 kontrolsummām',
   'opt.createLibrary': 'Izveidot bibliotēku, ja tās nav',
   'opt.createPolicy': 'Politika failu izveidei',
   'opt.dataTransferProtection': 'Datu pārsūtīšanas aizsardzība',

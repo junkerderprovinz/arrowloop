@@ -1191,7 +1191,7 @@ const gl: Translations = {
   'opt.copyShortcutContent': 'Copiar o contido dos atallos',
   'opt.copyTimeout': 'Tempo límite de copia',
   'opt.copyTotalConcurrency': 'Partes de copia en paralelo en total',
-  'opt.crc32sumCommand': 'Comando de suma de verificación CRC-32',
+  'opt.crc32sumCommand': 'Comando de suma de verificación CRC32',
   'opt.createLibrary': 'Crear a biblioteca se non existe',
   'opt.createPolicy': 'Política para crear ficheiros',
   'opt.dataTransferProtection': 'Protección da transferencia de datos',

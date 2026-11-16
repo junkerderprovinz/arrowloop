@@ -1191,7 +1191,7 @@ const ar: Translations = {
   'opt.copyShortcutContent': 'نسخ محتوى الاختصارات',
   'opt.copyTimeout': 'مهلة النسخ',
   'opt.copyTotalConcurrency': 'مجموع أجزاء النسخ المتوازية',
-  'opt.crc32sumCommand': 'أمر مجموع التحقق CRC-32',
+  'opt.crc32sumCommand': 'أمر مجموع التحقق CRC32',
   'opt.createLibrary': 'إنشاء المكتبة إن لم تكن موجودة',
   'opt.createPolicy': 'سياسة إنشاء الملفات',
   'opt.dataTransferProtection': 'حماية نقل البيانات',

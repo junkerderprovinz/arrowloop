@@ -1191,7 +1191,7 @@ const cs: Translations = {
   'opt.copyShortcutContent': 'Kopírovat obsah zástupců',
   'opt.copyTimeout': 'Časový limit kopírování',
   'opt.copyTotalConcurrency': 'Paralelní části kopírování celkem',
-  'opt.crc32sumCommand': 'Příkaz pro kontrolní součty CRC-32',
+  'opt.crc32sumCommand': 'Příkaz pro kontrolní součty CRC32',
   'opt.createLibrary': 'Vytvořit knihovnu, pokud chybí',
   'opt.createPolicy': 'Pravidlo pro vytváření souborů',
   'opt.dataTransferProtection': 'Ochrana přenosu dat',

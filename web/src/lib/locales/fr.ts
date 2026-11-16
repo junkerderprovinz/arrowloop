@@ -1191,7 +1191,7 @@ const fr: Translations = {
   'opt.copyShortcutContent': 'Copier le contenu des raccourcis',
   'opt.copyTimeout': 'Délai de copie',
   'opt.copyTotalConcurrency': 'Parties de copie en parallèle au total',
-  'opt.crc32sumCommand': 'Commande de somme de contrôle CRC-32',
+  'opt.crc32sumCommand': 'Commande de somme de contrôle CRC32',
   'opt.createLibrary': 'Créer la bibliothèque si elle manque',
   'opt.createPolicy': 'Règle pour créer des fichiers',
   'opt.dataTransferProtection': 'Protection du transfert de données',

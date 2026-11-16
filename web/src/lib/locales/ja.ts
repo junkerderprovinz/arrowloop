@@ -1191,7 +1191,7 @@ const ja: Translations = {
   'opt.copyShortcutContent': 'ショートカットの中身をコピー',
   'opt.copyTimeout': 'コピーのタイムアウト',
   'opt.copyTotalConcurrency': '全体の並列コピーパート数',
-  'opt.crc32sumCommand': 'CRC-32 チェックサムのコマンド',
+  'opt.crc32sumCommand': 'CRC32 チェックサムのコマンド',
   'opt.createLibrary': 'ライブラリがなければ作成',
   'opt.createPolicy': 'ファイル作成のポリシー',
   'opt.dataTransferProtection': 'データ転送の保護',

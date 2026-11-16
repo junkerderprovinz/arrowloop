@@ -1191,7 +1191,7 @@ const fa: Translations = {
   'opt.copyShortcutContent': 'کپی محتوای میان‌برها',
   'opt.copyTimeout': 'مهلت کپی',
   'opt.copyTotalConcurrency': 'کل تکه‌های موازی کپی',
-  'opt.crc32sumCommand': 'فرمان چک‌سام CRC-32',
+  'opt.crc32sumCommand': 'فرمان چک‌سام CRC32',
   'opt.createLibrary': 'ساختن کتابخانه اگر نباشد',
   'opt.createPolicy': 'سیاست ساختن فایل‌ها',
   'opt.dataTransferProtection': 'حفاظت از انتقال داده',

@@ -1191,7 +1191,7 @@ const fi: Translations = {
   'opt.copyShortcutContent': 'Kopioi pikakuvakkeiden sisältö',
   'opt.copyTimeout': 'Kopioinnin aikakatkaisu',
   'opt.copyTotalConcurrency': 'Rinnakkaiset kopio-osat yhteensä',
-  'opt.crc32sumCommand': 'CRC-32-tarkistussumman komento',
+  'opt.crc32sumCommand': 'CRC32-tarkistussumman komento',
   'opt.createLibrary': 'Luo kirjasto, jos sitä ei ole',
   'opt.createPolicy': 'Tiedostojen luomisen käytäntö',
   'opt.dataTransferProtection': 'Tiedonsiirron suojaus',

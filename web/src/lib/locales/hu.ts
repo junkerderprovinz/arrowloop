@@ -1191,7 +1191,7 @@ const hu: Translations = {
   'opt.copyShortcutContent': 'Parancsikonok tartalmának másolása',
   'opt.copyTimeout': 'Másolás időkorlátja',
   'opt.copyTotalConcurrency': 'Párhuzamos másolási részek összesen',
-  'opt.crc32sumCommand': 'Parancs CRC-32-ellenőrzőösszeghez',
+  'opt.crc32sumCommand': 'Parancs CRC32-ellenőrzőösszeghez',
   'opt.createLibrary': 'Könyvtár létrehozása, ha hiányzik',
   'opt.createPolicy': 'Fájlok létrehozásának szabálya',
   'opt.dataTransferProtection': 'Adatátvitel védelme',

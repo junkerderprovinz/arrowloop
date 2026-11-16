@@ -1191,7 +1191,7 @@ const ca: Translations = {
   'opt.copyShortcutContent': 'Copia el contingut de les dreceres',
   'opt.copyTimeout': 'Temps límit de còpia',
   'opt.copyTotalConcurrency': 'Parts de còpia en paral·lel en total',
-  'opt.crc32sumCommand': 'Ordre de suma de verificació CRC-32',
+  'opt.crc32sumCommand': 'Ordre de suma de verificació CRC32',
   'opt.createLibrary': 'Crea la biblioteca si no existeix',
   'opt.createPolicy': 'Política per crear fitxers',
   'opt.dataTransferProtection': 'Protecció de la transferència de dades',

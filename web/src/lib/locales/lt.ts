@@ -1191,7 +1191,7 @@ const lt: Translations = {
   'opt.copyShortcutContent': 'Kopijuoti nuorodų turinį',
   'opt.copyTimeout': 'Kopijavimo laiko riba',
   'opt.copyTotalConcurrency': 'Iš viso lygiagrečių kopijavimo dalių',
-  'opt.crc32sumCommand': 'CRC-32 kontrolinės sumos komanda',
+  'opt.crc32sumCommand': 'CRC32 kontrolinės sumos komanda',
   'opt.createLibrary': 'Sukurti biblioteką, jei jos nėra',
   'opt.createPolicy': 'Failų kūrimo taisyklė',
   'opt.dataTransferProtection': 'Duomenų perdavimo apsauga',

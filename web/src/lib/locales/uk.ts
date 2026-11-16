@@ -1191,7 +1191,7 @@ const uk: Translations = {
   'opt.copyShortcutContent': 'Копіювати вміст ярликів',
   'opt.copyTimeout': 'Тайм-аут копіювання',
   'opt.copyTotalConcurrency': 'Усього паралельних частин копіювання',
-  'opt.crc32sumCommand': 'Команда для контрольних сум CRC-32',
+  'opt.crc32sumCommand': 'Команда для контрольних сум CRC32',
   'opt.createLibrary': 'Створити бібліотеку, якщо її немає',
   'opt.createPolicy': 'Правило для створення файлів',
   'opt.dataTransferProtection': 'Захист передавання даних',

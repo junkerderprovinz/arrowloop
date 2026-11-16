@@ -1191,7 +1191,7 @@ const el: Translations = {
   'opt.copyShortcutContent': 'Αντιγραφή του περιεχομένου των συντομεύσεων',
   'opt.copyTimeout': 'Χρονικό όριο αντιγραφής',
   'opt.copyTotalConcurrency': 'Συνολικά παράλληλα τμήματα αντιγραφής',
-  'opt.crc32sumCommand': 'Εντολή αθροίσματος ελέγχου CRC-32',
+  'opt.crc32sumCommand': 'Εντολή αθροίσματος ελέγχου CRC32',
   'opt.createLibrary': 'Δημιουργία της βιβλιοθήκης αν λείπει',
   'opt.createPolicy': 'Πολιτική για δημιουργία αρχείων',
   'opt.dataTransferProtection': 'Προστασία μεταφοράς δεδομένων',

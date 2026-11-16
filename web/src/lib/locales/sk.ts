@@ -1191,7 +1191,7 @@ const sk: Translations = {
   'opt.copyShortcutContent': 'Kopírovať obsah skratiek',
   'opt.copyTimeout': 'Časový limit kopírovania',
   'opt.copyTotalConcurrency': 'Paralelné časti kopírovania celkovo',
-  'opt.crc32sumCommand': 'Príkaz pre kontrolné súčty CRC-32',
+  'opt.crc32sumCommand': 'Príkaz pre kontrolné súčty CRC32',
   'opt.createLibrary': 'Vytvoriť knižnicu, ak chýba',
   'opt.createPolicy': 'Pravidlo pre vytváranie súborov',
   'opt.dataTransferProtection': 'Ochrana prenosu dát',
