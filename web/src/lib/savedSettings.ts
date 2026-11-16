@@ -18,3 +18,11 @@ export function settingsToSave(values: Record<string, string>, saved: SavedSetti
   }
   return out
 }
+
+/**
+ * Whether the saved target has a value for any of these keys. A fold holding
+ * them starts open then, so a setting that is in use is never out of sight.
+ */
+export function anySaved(saved: { key: string; value: string }[], keys: string[]): boolean {
+  return saved.some((s) => s.value !== '' && keys.includes(s.key))
+}

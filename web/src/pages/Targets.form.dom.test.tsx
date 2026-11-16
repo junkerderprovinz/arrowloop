@@ -41,7 +41,11 @@ const onedrive: Backend = { name: 'onedrive', description: '', options: [option(
 const kdrive: Backend = {
   name: 'kdrive',
   description: '',
-  options: [option('token', { secret: true }), option('drive_id'), option('root_folder_id')],
+  options: [
+    option('token', { secret: true }),
+    option('drive_id'),
+    option('root_folder_id', { essential: false, advanced: true }),
+  ],
 }
 
 const providers: Provider[] = [
@@ -145,14 +149,15 @@ describe('a sign-in that opens more than one drive', () => {
 })
 
 describe('the kDrive root folder', () => {
+  const others = (dialog: HTMLElement) => within(within(dialog).getByRole('region', { name: 'Other settings' }))
   const pick = (dialog: HTMLElement, name: string) => {
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Root folder' }))
+    fireEvent.click(others(dialog).getByRole('button', { name: 'Root folder' }))
     fireEvent.click(screen.getByRole('option', { name }))
   }
 
   it("leaves rclone's default, the private folder, when nothing is picked", async () => {
     const dialog = await add('Infomaniak kDrive')
-    expect(within(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Private folder')
+    expect(others(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Private folder')
     expect((await saved(dialog)).root_folder_id).toBeUndefined()
   })
 
@@ -180,7 +185,7 @@ describe('the kDrive root folder', () => {
     )
     fireEvent.click((await screen.findAllByRole('button', { name: 'Edit' }))[0])
     const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Shared folder')
+    expect(others(dialog).getByRole('button', { name: 'Root folder' }).textContent).toBe('Shared folder')
     pick(dialog, 'Another folder, by ID')
     expect((await saved(dialog)).root_folder_id).toBe('')
   })

@@ -71,8 +71,8 @@ func TestTheCredentialsAreOnTheFirstScreen(t *testing.T) {
 	}
 }
 
-// The phone shows only the first screen, so a port behind the advanced switch
-// cannot be set there at all.
+// A port among the other settings is folded away on the phone, where nobody
+// looks for it.
 func TestThePortIsOnTheFirstScreen(t *testing.T) {
 	for _, b := range remotes.Backends() {
 		switch b.Name {
@@ -93,7 +93,7 @@ func TestThePortIsOnTheFirstScreen(t *testing.T) {
 }
 
 // A two-factor code among the further settings reads as optional, and
-// the phone shows only the first screen.
+// the phone folds those away.
 func TestTheTwoFactorCodeIsOnTheFirstScreen(t *testing.T) {
 	for _, b := range remotes.Backends() {
 		if b.Name != "mega" && b.Name != "protondrive" {

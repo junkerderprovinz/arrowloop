@@ -8,7 +8,7 @@ import (
 	"github.com/rclone/rclone/fs/config"
 )
 
-func TestTheKdriveFormOffersTheRootFolderUpFront(t *testing.T) {
+func TestTheKdriveFormOffersTheRootFolderAmongTheOtherSettings(t *testing.T) {
 	for _, b := range Backends() {
 		if b.Name != "kdrive" {
 			continue
@@ -17,8 +17,8 @@ func TestTheKdriveFormOffersTheRootFolderUpFront(t *testing.T) {
 			if o.Name != "root_folder_id" {
 				continue
 			}
-			if !o.Essential {
-				t.Error("root_folder_id waits among the further settings, which the phone never shows")
+			if o.Essential || !o.Advanced {
+				t.Error("root_folder_id is asked up front, though few targets need anything but the private folder")
 			}
 			if o.Secret {
 				t.Error("root_folder_id is drawn as a password, though private, common or a folder ID opens nothing")

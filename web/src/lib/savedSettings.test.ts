@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { settingsToSave } from './savedSettings'
+import { anySaved, settingsToSave } from './savedSettings'
 
 describe('the settings a phone form saves', () => {
   const saved = [
@@ -22,5 +22,18 @@ describe('the settings a phone form saves', () => {
 
   it('counts a field of spaces as empty', () => {
     expect(settingsToSave({ root_folder_id: '  ', drive_id: ' ' }, saved)).toEqual({ root_folder_id: '' })
+  })
+})
+
+describe('the folded settings on the phone', () => {
+  const others = ['root_folder_id', 'chunk_size']
+
+  it('start open when the saved target has one of them set', () => {
+    expect(anySaved([{ key: 'drive_id', value: '123456' }, { key: 'root_folder_id', value: 'common' }], others)).toBe(true)
+  })
+
+  it('start closed when none of them is set', () => {
+    expect(anySaved([{ key: 'drive_id', value: '123456' }, { key: 'root_folder_id', value: '' }], others)).toBe(false)
+    expect(anySaved([], others)).toBe(false)
   })
 })
