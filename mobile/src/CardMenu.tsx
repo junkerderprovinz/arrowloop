@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "r
 
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
+import { menuRoom } from "./layout";
 import { endEdge, raised, space, text, TOUCH } from "./theme";
 import { Button, Press, useTheme } from "./ui";
 
@@ -37,7 +38,7 @@ export function CardMenu({
   const { p, corners } = useTheme();
   const screen = useWindowDimensions();
   const button = useRef<View>(null);
-  const [at, setAt] = useState<{ top: number; edge: { left?: number; right?: number } } | null>(null);
+  const [at, setAt] = useState<{ top: number; edge: { left?: number; right?: number }; room: number } | null>(null);
 
   // A single action stands as a plain button, since a menu would only hide it.
   const only = items.length === 1 ? items[0] : undefined;
@@ -47,10 +48,12 @@ export function CardMenu({
   const open = () => {
     button.current?.measureInWindow((x, y, w, h) => {
       const height = items.length * (TOUCH + space.xs) + space.sm * 2;
+      const edge = endEdge(x, w, screen.width);
       setAt({
         // Above the button when there is no room below it.
         top: y + h + space.xs + height > screen.height ? Math.max(space.sm, y - height) : y + h + space.xs,
-        edge: endEdge(x, w, screen.width),
+        edge,
+        room: menuRoom(screen.width, edge.left ?? edge.right ?? 0, space.lg),
       });
     });
   };
@@ -99,7 +102,7 @@ export function CardMenu({
           <Pressable
             style={[
               styles.sheet,
-              { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge },
+              { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge, maxWidth: at?.room },
               raised(p),
             ]}
             onPress={() => {}}
@@ -117,7 +120,7 @@ export function CardMenu({
                 style={[styles.row, { backgroundColor: p.surface2, ...corners.control }]}
               >
                 <Glyph name={item.glyph} color={p.text} size={18} />
-                <Text style={[styles.rowText, { color: p.text }]} numberOfLines={1}>
+                <Text style={[styles.rowText, { color: p.text }]} numberOfLines={2}>
                   {item.label}
                 </Text>
               </Press>
@@ -138,7 +141,6 @@ const styles = StyleSheet.create({
   sheet: {
     position: "absolute",
     minWidth: 200,
-    maxWidth: 320,
     padding: space.sm,
     gap: space.xs,
     elevation: 8,
@@ -150,5 +152,7 @@ const styles = StyleSheet.create({
     minHeight: TOUCH,
     paddingHorizontal: space.md,
   },
-  rowText: { flex: 1, fontSize: text.body },
+  // Measured at its own width rather than flex: 1, whose zero basis lets the
+  // sheet shrink to its minimum and cut the label.
+  rowText: { flexGrow: 1, flexShrink: 1, fontSize: text.body },
 });
