@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rows, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
 import { PageAction, PageActions } from '../components/PageActions'
-import { PickerSearch } from '../components/PickerSearch'
+import { PickerWindow } from '../components/PickerWindow'
 import { ProviderPicker } from '../components/ProviderPicker'
 import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
@@ -285,17 +285,6 @@ function AddTarget({
   const [picked, setPicked] = useState<{ kind: string; provider: Provider | null } | null>(null)
   const [query, setQuery] = useState('')
 
-  // While a query narrows the tiles the window keeps the height it opened
-  // with, or the search would move away from the eye with every letter.
-  const body = useRef<HTMLDivElement>(null)
-  const [floor, setFloor] = useState<number>()
-  useLayoutEffect(() => {
-    const scroller = body.current?.parentElement
-    if (!scroller || floor !== undefined) return
-    const style = getComputedStyle(scroller)
-    setFloor(scroller.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom))
-  }, [picked, floor])
-
   if (picked) {
     return (
       <RemoteForm
@@ -323,34 +312,28 @@ function AddTarget({
   }
 
   return (
-    <Dialog
+    <PickerWindow
       title={t('targets.addStorage')}
       hint={t('targets.addStorageHint')}
       onClose={() => onDone(false)}
-      width="wide"
-      search={<PickerSearch value={query} onChange={setQuery} label={t('targets.search')} />}
-    >
-      <div ref={body} className="flex flex-col gap-6" style={{ minHeight: floor }}>
-        {groups.length === 0 ? (
-          <p className="py-6 text-center text-subline text-carbon-textMuted">
-            {t('targets.searchNone', { query: query.trim(), s3: tile('s3', 'S3'), webdav: tile('webdav', 'WebDAV') })}
-          </p>
-        ) : (
-          groups.map((g) => (
-            <section key={g.group} className="flex flex-col gap-3">
-              <h3 className="glim-eyebrow">{t(PICK_TITLE[g.group])}</h3>
-              <ProviderPicker
-                providers={g.providers}
-                unlisted={g.unlisted}
-                onPick={(choice) =>
-                  setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
-                }
-              />
-            </section>
-          ))
-        )}
-      </div>
-    </Dialog>
+      query={query}
+      onQuery={setQuery}
+      searchLabel={t('targets.search')}
+      none={t('targets.searchNone', { query: query.trim(), s3: tile('s3', 'S3'), webdav: tile('webdav', 'WebDAV') })}
+      sections={groups.map((g) => ({
+        id: g.group,
+        title: t(PICK_TITLE[g.group]),
+        body: (
+          <ProviderPicker
+            providers={g.providers}
+            unlisted={g.unlisted}
+            onPick={(choice) =>
+              setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
+            }
+          />
+        ),
+      }))}
+    />
   )
 }
 
