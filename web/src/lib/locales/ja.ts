@@ -1719,6 +1719,7 @@ const ja: Translations = {
   'new.change.trustCertificate': 'サーバーが自分で証明書を作った WebDAV ターゲットは、フィンガープリントでその証明書を信頼できます。',
   'new.change.kdriveRoot': 'kDrive ターゲットは、プライベートフォルダー、共有フォルダー、または ID で指定した任意のフォルダーから始められます。',
   'new.change.hiddenFolders': 'フォルダーの選択で、スイッチ {show} を使うと隠しフォルダーも表示されます。',
+  'new.change.tabletLandscape': 'タブレットでは、スマートフォンのアプリが端末の向きに合わせて回転し、ページ、下のバー、下から開くパネルは画面中央の列に収まります。',
   'welcome.title': 'ArrowLoop へようこそ',
   'welcome.lead': 'ArrowLoop は、このマシン、ドライブ、クラウドにある 2 つのフォルダーを同じ状態に保ちます。最初の同期まで 3 つのステップです。',
   'welcome.foundTargets': 'rclone が既に知っている接続先: {count}',

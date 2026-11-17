@@ -1719,6 +1719,7 @@ const lv: Translations = {
   'new.change.trustCertificate': 'WebDAV mērķis, kura serveris pats izveidojis savu sertifikātu, var tam uzticēties pēc pirkstu nospieduma.',
   'new.change.kdriveRoot': 'kDrive mērķis var sākties tavā privātajā mapē, koplietotajā mapē vai jebkurā mapē pēc ID.',
   'new.change.hiddenFolders': 'Mapju izvēlē slēdzis {show} parāda arī slēptās mapes.',
+  'new.change.tabletLandscape': 'Planšetdatorā tālruņa lietotne griežas līdzi ierīcei, un tās lapas, apakšējā josla un no apakšas izslīdošie paneļi paliek kolonnā ekrāna vidū.',
   'welcome.title': 'Laipni lūdzam ArrowLoop',
   'welcome.lead': 'ArrowLoop uztur divas mapes vienādas, šajā datorā, diskā vai mākonī. Trīs soļi līdz pirmajai sinhronizācijai:',
   'welcome.foundTargets': 'Galamērķi, ko rclone jau pazīst: {count}',

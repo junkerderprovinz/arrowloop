@@ -1719,6 +1719,7 @@ const zh: Translations = {
   'new.change.trustCertificate': '服务器自签证书的 WebDAV 目标可以按指纹信任该证书。',
   'new.change.kdriveRoot': 'kDrive 目标可以从你的私人文件夹、共享文件夹或按 ID 指定的任意文件夹开始。',
   'new.change.hiddenFolders': '在文件夹选择器中，开关 {show} 也会显示隐藏的文件夹。',
+  'new.change.tabletLandscape': '在平板电脑上，手机应用会随设备旋转，其页面、底部栏和从下方滑出的面板都保持在屏幕中间的一列中。',
   'welcome.title': '欢迎使用 ArrowLoop',
   'welcome.lead': 'ArrowLoop 让两个文件夹保持一致，无论在本机、驱动器还是云端。三步完成首次同步：',
   'welcome.foundTargets': 'rclone 已识别的目标：{count}',

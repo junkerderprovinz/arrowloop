@@ -1719,6 +1719,7 @@ const pl: Translations = {
   'new.change.trustCertificate': 'Cel WebDAV, którego serwer sam wystawił swój certyfikat, może mu zaufać po odcisku.',
   'new.change.kdriveRoot': 'Cel kDrive może zaczynać się w twoim folderze prywatnym, we wspólnym albo w dowolnym folderze według ID.',
   'new.change.hiddenFolders': 'W wyborze folderu przełącznik {show} pokazuje też ukryte foldery.',
+  'new.change.tabletLandscape': 'Na tablecie aplikacja na telefon obraca się razem z urządzeniem, a jej strony, dolny pasek i panele wysuwane od dołu pozostają w kolumnie na środku ekranu.',
   'welcome.title': 'Witamy w ArrowLoop',
   'welcome.lead': 'ArrowLoop utrzymuje dwa foldery w zgodzie, na tym komputerze, na dysku lub w chmurze. Trzy kroki do pierwszej synchronizacji:',
   'welcome.foundTargets': 'Cele, które rclone już zna: {count}',

@@ -1719,6 +1719,7 @@ const lt: Translations = {
   'new.change.trustCertificate': 'WebDAV tikslas, kurio serveris pats sukūrė savo sertifikatą, gali juo pasitikėti pagal kontrolinį kodą.',
   'new.change.kdriveRoot': 'kDrive tikslas gali prasidėti tavo privačiame aplanke, bendrame aplanke ar bet kuriame aplanke pagal ID.',
   'new.change.hiddenFolders': 'Aplanko parinkiklyje jungiklis {show} rodo ir paslėptus aplankus.',
+  'new.change.tabletLandscape': 'Planšetėje telefono programėlė sukasi kartu su įrenginiu, o jos puslapiai, apatinė juosta ir iš apačios iškylantys skydeliai lieka stulpelyje ekrano viduryje.',
   'welcome.title': 'Sveiki atvykę į ArrowLoop',
   'welcome.lead': 'ArrowLoop palaiko du aplankus vienodus, šiame kompiuteryje, diske ar debesyje. Trys žingsniai iki pirmo sinchronizavimo:',
   'welcome.foundTargets': 'Paskirtys, kurias rclone jau žino: {count}',

@@ -1719,6 +1719,7 @@ const id: Translations = {
   'new.change.trustCertificate': 'Target WebDAV yang servernya membuat sertifikatnya sendiri bisa memercayainya lewat sidik jarinya.',
   'new.change.kdriveRoot': 'Target kDrive bisa dimulai di folder pribadimu, folder bersama, atau folder mana pun lewat ID-nya.',
   'new.change.hiddenFolders': 'Di pemilih folder, sakelar {show} juga menampilkan folder tersembunyi.',
+  'new.change.tabletLandscape': 'Di tablet, aplikasi ponsel ikut berputar bersama perangkat, dan halaman, bilah bawah, serta panel yang muncul dari bawah tetap berada dalam satu kolom di tengah layar.',
   'welcome.title': 'Selamat datang di ArrowLoop',
   'welcome.lead': 'ArrowLoop menjaga dua folder tetap sama, di mesin ini, di drive, atau di cloud. Tiga langkah menuju sinkronisasi pertama:',
   'welcome.foundTargets': 'Tujuan yang sudah dikenal rclone: {count}',

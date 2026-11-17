@@ -1719,6 +1719,7 @@ const is: Translations = {
   'new.change.trustCertificate': 'WebDAV-markmið þar sem þjónninn bjó sjálfur til skírteinið getur treyst því eftir fingrafarinu.',
   'new.change.kdriveRoot': 'kDrive-markmið getur byrjað í einkamöppunni þinni, sameiginlegu möppunni eða hvaða möppu sem er eftir auðkenni.',
   'new.change.hiddenFolders': 'Í möppuvalinu sýnir rofinn {show} líka faldar möppur.',
+  'new.change.tabletLandscape': 'Á spjaldtölvu snýst símaforritið með tækinu, og síður þess, neðri stikan og spjöldin sem renna upp haldast í dálki á miðjum skjánum.',
   'welcome.title': 'Velkomin í ArrowLoop',
   'welcome.lead': 'ArrowLoop heldur tveimur möppum eins, á þessari vél, á drifi eða í skýinu. Þrjú skref að fyrstu samstillingu:',
   'welcome.foundTargets': 'Áfangastaðir sem rclone þekkir nú þegar: {count}',

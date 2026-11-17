@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.7.4" date="2026-11-17">
+      <description>
+        <p>On a tablet the phone app turns into landscape with the device, and phones stay upright.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.4</url>
+    </release>
     <release version="2.7.3" date="2026-11-16">
       <description>
         <p>A proper name for every setting of a target, hidden folders in the picker, and hovers in your accent colour.</p>

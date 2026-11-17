@@ -1719,6 +1719,7 @@ const eu: Translations = {
   'new.change.trustCertificate': 'Bere zerbitzariak ziurtagiria berak sortu duen WebDAV helburu batek hatz-markaren bidez fida daiteke.',
   'new.change.kdriveRoot': 'kDrive helburu bat zure karpeta pribatuan, partekatuan edo edozein karpetatan has daiteke bere IDaren bidez.',
   'new.change.hiddenFolders': 'Karpeta-hautatzailean, {show} etengailuak karpeta ezkutuak ere erakusten ditu.',
+  'new.change.tabletLandscape': 'Tableta batean, telefonoko aplikazioa gailuarekin batera biratzen da, eta haren orriak, beheko barra eta behetik igotzen diren panelak pantailaren erdiko zutabe batean geratzen dira.',
   'welcome.title': 'Ongi etorri ArrowLoop-era',
   'welcome.lead': 'ArrowLoop-ek bi karpeta berdin mantentzen ditu, makina honetan, disko batean edo hodeian. Hiru urrats lehen sinkronizaziora arte:',
   'welcome.foundTargets': 'rclone-k ezagutzen dituen helburuak: {count}',

@@ -1719,6 +1719,7 @@ const hr: Translations = {
   'new.change.trustCertificate': 'WebDAV odredište čiji je poslužitelj sam izradio svoj certifikat može mu vjerovati po otisku.',
   'new.change.kdriveRoot': 'kDrive odredište može početi u tvojoj privatnoj mapi, u zajedničkoj ili u bilo kojoj mapi prema ID-u.',
   'new.change.hiddenFolders': 'U odabiru mape prekidač {show} prikazuje i skrivene mape.',
+  'new.change.tabletLandscape': 'Na tabletu se aplikacija za telefon okreće zajedno s uređajem, a njezine stranice, donja traka i ploče koje izlaze odozdo ostaju u stupcu na sredini zaslona.',
   'welcome.title': 'Dobro došao u ArrowLoop',
   'welcome.lead': 'ArrowLoop održava dvije mape jednakima, na ovom računalu, na disku ili u oblaku. Tri koraka do prve sinkronizacije:',
   'welcome.foundTargets': 'Odredišta koja rclone već poznaje: {count}',

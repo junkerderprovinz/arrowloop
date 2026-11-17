@@ -1719,6 +1719,7 @@ const fr: Translations = {
   'new.change.trustCertificate': 'Une cible WebDAV dont le serveur a créé son propre certificat peut lui faire confiance par son empreinte.',
   'new.change.kdriveRoot': "Une cible kDrive peut commencer dans votre dossier privé, dans le dossier partagé ou dans n'importe quel dossier par son ID.",
   'new.change.hiddenFolders': 'Dans le sélecteur de dossiers, l\'interrupteur {show} affiche aussi les dossiers masqués.',
+  'new.change.tabletLandscape': 'Sur une tablette, l\'application du téléphone tourne avec l\'appareil, et ses pages, la barre du bas et les panneaux qui montent d\'en bas restent dans une colonne au milieu de l\'écran.',
   'welcome.title': 'Bienvenue dans ArrowLoop',
   'welcome.lead': 'ArrowLoop garde deux dossiers identiques, sur cette machine, sur un disque ou dans le cloud. Trois étapes jusqu\'à la première synchronisation :',
   'welcome.foundTargets': 'Cibles déjà connues de rclone : {count}',

@@ -1719,6 +1719,7 @@ const ar: Translations = {
   'new.change.trustCertificate': 'يمكن لهدف WebDAV صنع خادمه شهادته بنفسه أن يثق بها عبر بصمتها.',
   'new.change.kdriveRoot': 'يمكن لهدف kDrive أن يبدأ في مجلدك الخاص أو المشترك أو أي مجلد عبر معرّفه.',
   'new.change.hiddenFolders': 'في منتقي المجلدات، يعرض المفتاح {show} المجلدات المخفية أيضًا.',
+  'new.change.tabletLandscape': 'على الجهاز اللوحي يدور تطبيق الهاتف مع الجهاز، وتبقى صفحاته والشريط السفلي واللوحات التي تنزلق للأعلى في عمود وسط الشاشة.',
   'welcome.title': 'مرحبًا بك في ArrowLoop',
   'welcome.lead': 'يُبقي ArrowLoop مجلدين متطابقين، على هذا الجهاز أو على قرص أو في السحابة. ثلاث خطوات إلى أول مزامنة:',
   'welcome.foundTargets': 'وجهات يعرفها rclone بالفعل: {count}',

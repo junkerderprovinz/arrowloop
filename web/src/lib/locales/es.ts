@@ -1719,6 +1719,7 @@ const es: Translations = {
   'new.change.trustCertificate': 'Un destino WebDAV cuyo servidor creó su propio certificado puede confiar en él por su huella.',
   'new.change.kdriveRoot': 'Un destino kDrive puede empezar en tu carpeta privada, en la compartida o en cualquier carpeta por su ID.',
   'new.change.hiddenFolders': 'En el selector de carpetas, el interruptor {show} también muestra las carpetas ocultas.',
+  'new.change.tabletLandscape': 'En una tableta, la aplicación del teléfono gira con el dispositivo, y sus páginas, la barra inferior y los paneles que suben desde abajo se mantienen en una columna en el centro de la pantalla.',
   'welcome.title': 'Te damos la bienvenida a ArrowLoop',
   'welcome.lead': 'ArrowLoop mantiene dos carpetas iguales, en este equipo, en una unidad o en la nube. Tres pasos hasta la primera sincronización:',
   'welcome.foundTargets': 'Destinos que rclone ya conoce: {count}',

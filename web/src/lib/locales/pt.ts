@@ -1719,6 +1719,7 @@ const pt: Translations = {
   'new.change.trustCertificate': 'Um destino WebDAV cujo servidor criou o próprio certificado pode confiar nele pela impressão digital.',
   'new.change.kdriveRoot': 'Um destino kDrive pode começar na tua pasta privada, na partilhada ou em qualquer pasta pelo seu ID.',
   'new.change.hiddenFolders': 'No seletor de pastas, o interruptor {show} também mostra as pastas ocultas.',
+  'new.change.tabletLandscape': 'Num tablet, a aplicação do telefone roda com o dispositivo, e as suas páginas, a barra inferior e os painéis que sobem de baixo ficam numa coluna a meio do ecrã.',
   'welcome.title': 'Bem-vindo ao ArrowLoop',
   'welcome.lead': 'O ArrowLoop mantém duas pastas iguais, neste computador, num disco ou na nuvem. Três passos até à primeira sincronização:',
   'welcome.foundTargets': 'Destinos que o rclone já conhece: {count}',

@@ -1719,6 +1719,7 @@ const ca: Translations = {
   'new.change.trustCertificate': "Una destinació WebDAV el servidor de la qual ha creat el seu propi certificat hi pot confiar per l'empremta.",
   'new.change.kdriveRoot': 'Una destinació kDrive pot començar a la teva carpeta privada, a la compartida o a qualsevol carpeta pel seu ID.',
   'new.change.hiddenFolders': 'Al selector de carpetes, l\'interruptor {show} també mostra les carpetes ocultes.',
+  'new.change.tabletLandscape': 'En una tauleta, l\'aplicació del telèfon gira amb el dispositiu, i les pàgines, la barra inferior i els panells que pugen des de baix es mantenen en una columna al centre de la pantalla.',
   'welcome.title': 'Et donem la benvinguda a ArrowLoop',
   'welcome.lead': 'ArrowLoop manté dues carpetes iguals, en aquest equip, en una unitat o al núvol. Tres passos fins a la primera sincronització:',
   'welcome.foundTargets': 'Destinacions que rclone ja coneix: {count}',

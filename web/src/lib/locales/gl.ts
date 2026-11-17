@@ -1719,6 +1719,7 @@ const gl: Translations = {
   'new.change.trustCertificate': 'Un destino WebDAV cuxo servidor creou o seu propio certificado pode confiar nel pola súa pegada.',
   'new.change.kdriveRoot': 'Un destino kDrive pode comezar no teu cartafol privado, no compartido ou en calquera cartafol polo seu ID.',
   'new.change.hiddenFolders': 'No selector de cartafoles, o interruptor {show} tamén mostra os cartafoles ocultos.',
+  'new.change.tabletLandscape': 'Nunha tableta, a aplicación do teléfono xira co dispositivo, e as súas páxinas, a barra inferior e os paneis que soben desde abaixo quedan nunha columna no medio da pantalla.',
   'welcome.title': 'Benvido a ArrowLoop',
   'welcome.lead': 'ArrowLoop mantén dous cartafoles iguais, nesta máquina, nunha unidade ou na nube. Tres pasos ata a primeira sincronización:',
   'welcome.foundTargets': 'Destinos que rclone xa coñece: {count}',

@@ -8,6 +8,14 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.7.4 - 2026-11-17
+
+On a tablet the phone app turns into landscape with the device, and phones stay upright.
+
+## ✨ Added
+
+- **The app turns with a tablet.** On a tablet it follows the device into landscape, and the pages, the bottom bar and the sheets keep to a column in the middle of the screen. Phones stay upright as before. Thanks to @leonp5 ([#223](https://github.com/junkerderprovinz/arrowloop/issues/223)).
+
 ## 2.7.3 - 2026-11-16
 
 Every setting of a target has a proper name, hidden folders can be picked, Inclusions and Exclusions read as a pair, and whatever the pointer is over lights up in your accent colour.

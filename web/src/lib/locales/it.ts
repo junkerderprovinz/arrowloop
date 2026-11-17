@@ -1719,6 +1719,7 @@ const it: Translations = {
   'new.change.trustCertificate': "Una destinazione WebDAV il cui server ha creato da sé il proprio certificato può fidarsene tramite l'impronta.",
   'new.change.kdriveRoot': 'Una destinazione kDrive può partire dalla tua cartella privata, da quella condivisa o da qualsiasi cartella tramite il suo ID.',
   'new.change.hiddenFolders': 'Nel selettore di cartelle, l\'interruttore {show} mostra anche le cartelle nascoste.',
+  'new.change.tabletLandscape': 'Su un tablet l\'app del telefono ruota con il dispositivo, e le sue pagine, la barra in basso e i pannelli che salgono dal basso restano in una colonna al centro dello schermo.',
   'welcome.title': 'Benvenuto in ArrowLoop',
   'welcome.lead': 'ArrowLoop mantiene uguali due cartelle, su questo computer, su un\'unità o nel cloud. Tre passi fino alla prima sincronizzazione:',
   'welcome.foundTargets': 'Destinazioni che rclone conosce già: {count}',
