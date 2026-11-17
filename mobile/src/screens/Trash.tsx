@@ -55,7 +55,7 @@ export function Trash() {
     });
 
   return (
-    <Page>
+    <Page spread>
       <Card>
         <View style={styles.head}>
           <Title>{`${t("nav.trash")} · ${place}`}</Title>

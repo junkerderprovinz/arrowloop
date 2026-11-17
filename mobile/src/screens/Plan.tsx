@@ -54,7 +54,7 @@ export function Plan() {
   }
 
   return (
-    <Page>
+    <Page spread>
       <Card>
         <View style={styles.head}>
           <Title>{t("preview.for", { job })}</Title>

@@ -12,13 +12,27 @@ import {
 } from "@react-navigation/material-top-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, AppState, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Animated,
+  AppState,
+  I18nManager,
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { I18nProvider, useT } from "./src/i18n";
 import {
   BAR,
   MORE,
+  railCurrent,
+  railPlaces,
   type BarPlace,
   type ConflictsStack,
   type HistoryStack,
@@ -26,7 +40,11 @@ import {
   type MorePlace,
   type MoreStack,
   type OverviewStack,
+  type RailCount,
+  type RailPlace,
 } from "./src/nav";
+import { FrameProvider } from "./src/frame";
+import { GUTTER, railWidth, sceneWidth, sideBarShown } from "./src/layout";
 import { History } from "./src/screens/History";
 import { Instances } from "./src/screens/Instances";
 import { JobEdit } from "./src/screens/JobEdit";
@@ -49,7 +67,7 @@ import { useDiscoWalk } from "./src/disco";
 import { useMotion } from "./src/motion";
 import { loadAppearance, useAppearance } from "./src/settings";
 import { watchSystemAccent } from "./src/systemAccent";
-import { contrastOn, raised, space, text } from "./src/theme";
+import { contrastOn, raised, space, text, TOUCH } from "./src/theme";
 import { Glyph } from "./src/glyphs";
 import { Badge, Body, Button, Heading, Press, Screen, usePress, useSideRoom, useTheme } from "./src/ui";
 import { engine } from "./src/engine";
@@ -87,7 +105,7 @@ export default function App() {
 }
 
 function Shell() {
-  const { p, scheme, accent } = useTheme();
+  const { p, scheme, accent, barLabels } = useTheme();
   const { t, settled, load } = useT();
   const { state, log, retry } = useEngine(t);
 
@@ -143,6 +161,16 @@ function Shell() {
     if (locked) unlock();
   }, [locked, unlock]);
 
+  // A wide window trades the bar for the web's side bar. The navigator stays
+  // the same either way, so turning the tablet keeps every tab's stack and
+  // scroll position; only where the bar stands and how wide the pages are
+  // change.
+  const window = useWindowDimensions();
+  const inset = useSafeAreaInsets();
+  const wide = sideBarShown(window.width);
+  const scene = sceneWidth(window.width, railWidth(barLabels), I18nManager.isRTL ? inset.right : inset.left);
+  const frame = useMemo(() => ({ wide, width: wide ? scene : window.width }), [wide, scene, window.width]);
+
   // So the navigator's own chrome uses GlimStone's colours.
   const base = scheme === "light" ? DefaultTheme : DarkTheme;
   const navTheme = {
@@ -159,7 +187,7 @@ function Shell() {
   };
 
   // A tab's first page carries the app's mark where a page opened from it
-  // has its back arrow.
+  // has its back arrow. The side bar carries the mark itself.
   const header = ({ navigation, route }: { navigation: { getState(): { routes: { key: string }[] } }; route: { key: string } }) => {
     const first = navigation.getState().routes[0]?.key === route.key;
     return {
@@ -167,7 +195,7 @@ function Shell() {
       headerTitleStyle: { color: p.text, fontSize: text.status, fontWeight: "600" },
       headerTintColor: p.text,
       headerShadowVisible: false,
-      headerLeft: first ? () => <Image source={MARK} style={styles.mark} accessibilityIgnoresInvertColors /> : undefined,
+      headerLeft: first && !wide ? () => <Image source={MARK} style={styles.mark} accessibilityIgnoresInvertColors /> : undefined,
       contentStyle: { backgroundColor: p.background },
     } as const;
   };
@@ -191,96 +219,108 @@ function Shell() {
 
   return (
     <WaitingProvider>
-      <StatusBar style={scheme === "light" ? "dark" : "light"} />
-      <NavigationContainer theme={navTheme}>
-        <Tabs.Navigator
-          tabBarPosition="bottom"
-          screenOptions={({ route }) => ({
-            swipeEnabled: !deeperThanRoot(route),
-            // TabBar draws the floating bar itself; the navigator's own bar
-            // only keeps its reserved height.
-            tabBarStyle: {
-              backgroundColor: "transparent",
-              borderTopWidth: 0,
-              elevation: 0,
-            },
-          })}
-          tabBar={(props) => <TabBar {...props} />}
-        >
-          {/* The first tab is where the app opens, so without the overview it opens on the jobs. */}
-          {look.overviewOnBar ? (
-            <Tabs.Screen name="OverviewTab" options={{ title: t("nav.overview") }}>
+      <FrameProvider value={frame}>
+        <StatusBar style={scheme === "light" ? "dark" : "light"} />
+        <NavigationContainer theme={navTheme}>
+          <Tabs.Navigator
+            // The side bar goes before the pager in a row, which in a right to
+            // left language puts it on the right as the web's rail is. The pager
+            // keeps its place among the navigator's children whichever way the
+            // bar stands, so it is never mounted afresh.
+            tabBarPosition={wide ? "top" : "bottom"}
+            style={wide ? styles.besideBar : undefined}
+            screenOptions={({ route }) => ({
+              // A sideways swipe, or a slide through every page between two
+              // places, belongs to the phone's pager and not to a side bar.
+              swipeEnabled: !wide && !deeperThanRoot(route),
+              animationEnabled: !wide,
+              // The pager sizes each page to the whole window otherwise.
+              sceneStyle: wide ? { width: scene } : undefined,
+              // TabBar draws the floating bar itself; the navigator's own bar
+              // only keeps its reserved height.
+              tabBarStyle: {
+                backgroundColor: "transparent",
+                borderTopWidth: 0,
+                elevation: 0,
+              },
+            })}
+            tabBar={(props) => (wide ? <SideBar {...props} /> : <TabBar {...props} />)}
+          >
+            {/* The first tab is where the app opens, so without the overview it opens on the jobs. */}
+            {look.overviewOnBar ? (
+              <Tabs.Screen name="OverviewTab" options={{ title: t("nav.overview") }}>
+                {() => (
+                  <OverviewNav.Navigator screenOptions={header}>
+                    <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: t("nav.overview") }} />
+                    <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+                    <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
+                  </OverviewNav.Navigator>
+                )}
+              </Tabs.Screen>
+            ) : null}
+
+            <Tabs.Screen name="JobsTab" options={{ title: t("nav.jobs") }}>
               {() => (
-                <OverviewNav.Navigator screenOptions={header}>
-                  <OverviewNav.Screen name="OverviewHome" component={Overview} options={{ title: t("nav.overview") }} />
-                  <OverviewNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
-                  <OverviewNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
-                </OverviewNav.Navigator>
+                <JobsNav.Navigator screenOptions={header}>
+                  <JobsNav.Screen name="JobList" component={Jobs} options={{ title: t("jobs.title") }} />
+                  {/* Opening and editing a job share one screen under two route names. */}
+                  <JobsNav.Screen name="JobDetail" component={JobEdit} options={{ title: "" }} />
+                  <JobsNav.Screen
+                    name="JobEdit"
+                    component={JobEdit}
+                    options={({ route }) => ({
+                      title: route.params?.name ? t("edit.editJob") : t("edit.add"),
+                    })}
+                  />
+                  <JobsNav.Screen name="Plan" component={Plan} options={{ title: t("preview.title") }} />
+                  <JobsNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+                  <JobsNav.Screen name="Trash" component={Trash} options={{ title: t("nav.trash") }} />
+                </JobsNav.Navigator>
               )}
             </Tabs.Screen>
-          ) : null}
 
-          <Tabs.Screen name="JobsTab" options={{ title: t("nav.jobs") }}>
-            {() => (
-              <JobsNav.Navigator screenOptions={header}>
-                <JobsNav.Screen name="JobList" component={Jobs} options={{ title: t("jobs.title") }} />
-                {/* Opening and editing a job share one screen under two route names. */}
-                <JobsNav.Screen name="JobDetail" component={JobEdit} options={{ title: "" }} />
-                <JobsNav.Screen
-                  name="JobEdit"
-                  component={JobEdit}
-                  options={({ route }) => ({
-                    title: route.params?.name ? t("edit.editJob") : t("edit.add"),
-                  })}
-                />
-                <JobsNav.Screen name="Plan" component={Plan} options={{ title: t("preview.title") }} />
-                <JobsNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
-                <JobsNav.Screen name="Trash" component={Trash} options={{ title: t("nav.trash") }} />
-              </JobsNav.Navigator>
-            )}
-          </Tabs.Screen>
+            <Tabs.Screen name="ConflictsTab" options={{ title: t("nav.conflicts") }}>
+              {() => (
+                <ConflictsNav.Navigator screenOptions={header}>
+                  <ConflictsNav.Screen
+                    name="ConflictList"
+                    component={Conflicts}
+                    options={{ title: t("nav.conflicts") }}
+                  />
+                </ConflictsNav.Navigator>
+              )}
+            </Tabs.Screen>
 
-          <Tabs.Screen name="ConflictsTab" options={{ title: t("nav.conflicts") }}>
-            {() => (
-              <ConflictsNav.Navigator screenOptions={header}>
-                <ConflictsNav.Screen
-                  name="ConflictList"
-                  component={Conflicts}
-                  options={{ title: t("nav.conflicts") }}
-                />
-              </ConflictsNav.Navigator>
-            )}
-          </Tabs.Screen>
+            <Tabs.Screen name="HistoryTab" options={{ title: t("nav.history") }}>
+              {() => (
+                <HistoryNav.Navigator screenOptions={header}>
+                  <HistoryNav.Screen name="RunList" component={History} options={{ title: t("history.title") }} />
+                </HistoryNav.Navigator>
+              )}
+            </Tabs.Screen>
 
-          <Tabs.Screen name="HistoryTab" options={{ title: t("nav.history") }}>
-            {() => (
-              <HistoryNav.Navigator screenOptions={header}>
-                <HistoryNav.Screen name="RunList" component={History} options={{ title: t("history.title") }} />
-              </HistoryNav.Navigator>
-            )}
-          </Tabs.Screen>
-
-          {/* The places behind More share one tab. Picking one makes it the
-              stack's first screen, so back from a target's form returns to
-              the targets, and a swipe from History lands where More last led. */}
-          <Tabs.Screen name="MoreTab" options={{ title: t("more.title") }}>
-            {() => (
-              <MoreNav.Navigator screenOptions={header}>
-                <MoreNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
-                <MoreNav.Screen name="TargetList" component={Targets} options={{ title: t("targets.title") }} />
-                <MoreNav.Screen name="TargetPick" component={TargetPick} options={{ title: t("targets.addStorage") }} />
-                <MoreNav.Screen name="TargetEdit" component={TargetEdit} options={{ title: t("action.edit") }} />
-                <MoreNav.Screen name="Instances" component={Instances} options={{ title: t("nav.instances") }} />
-                <MoreNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
-                <MoreNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
-                <MoreNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
-                <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("settings.sync") }} />
-                <MoreNav.Screen name="Pairing" component={Pairing} options={{ title: t("settings.pairing") }} />
-              </MoreNav.Navigator>
-            )}
-          </Tabs.Screen>
-        </Tabs.Navigator>
-      </NavigationContainer>
+            {/* The places behind More share one tab. Picking one makes it the
+                stack's first screen, so back from a target's form returns to
+                the targets, and a swipe from History lands where More last led. */}
+            <Tabs.Screen name="MoreTab" options={{ title: t("more.title") }}>
+              {() => (
+                <MoreNav.Navigator screenOptions={header}>
+                  <MoreNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
+                  <MoreNav.Screen name="TargetList" component={Targets} options={{ title: t("targets.title") }} />
+                  <MoreNav.Screen name="TargetPick" component={TargetPick} options={{ title: t("targets.addStorage") }} />
+                  <MoreNav.Screen name="TargetEdit" component={TargetEdit} options={{ title: t("action.edit") }} />
+                  <MoreNav.Screen name="Instances" component={Instances} options={{ title: t("nav.instances") }} />
+                  <MoreNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
+                  <MoreNav.Screen name="SettingsHome" component={Settings} options={{ title: t("nav.settings") }} />
+                  <MoreNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
+                  <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("settings.sync") }} />
+                  <MoreNav.Screen name="Pairing" component={Pairing} options={{ title: t("settings.pairing") }} />
+                </MoreNav.Navigator>
+              )}
+            </Tabs.Screen>
+          </Tabs.Navigator>
+        </NavigationContainer>
+      </FrameProvider>
     </WaitingProvider>
   );
 }
@@ -305,8 +345,7 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   const current = state.routes[state.index]?.name;
   const places = BAR.filter((place) => place.tab !== "OverviewTab" || overviewOnBar);
   const settingsOnBar = !overviewOnBar;
-  const moreTab = state.routes.find((r) => r.name === "MoreTab");
-  const moreFirst = (moreTab?.state as { routes?: { name: string }[] } | undefined)?.routes?.[0]?.name;
+  const moreFirst = firstOnMore(state);
   const onSettings = current === "MoreTab" && moreFirst === "SettingsHome";
   const counts: Record<BarPlace["tab"], number | null> = {
     OverviewTab: null,
@@ -319,28 +358,11 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   // As wide as the page's column, so on a tablet the places stay together.
   const room = useSideRoom(space.md);
 
-  const go = (name: string) => {
-    const route = state.routes.find((r) => r.name === name);
-    if (!route) return;
-    const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-    if (!event.defaultPrevented) navigation.navigate(name);
-  };
-
-  // The picked place replaces whatever More held, rather than piling up on it.
+  const moves = tabMoves(state, navigation);
+  const go = moves.go;
   const openMore = (screen: MorePlace["screen"]) => {
     setSheet(false);
-    const at = state.routes.findIndex((r) => r.name === "MoreTab");
-    // Handed over as a partial state, so the router fills in the rest.
-    const partial = {
-      index: at,
-      routes: state.routes.map((r, i) => ({
-        key: r.key,
-        name: r.name,
-        params: r.params,
-        state: i === at ? { routes: [{ name: screen }] } : r.state,
-      })),
-    };
-    navigation.dispatch(CommonActions.reset(partial as Parameters<typeof CommonActions.reset>[0]));
+    moves.openMore(screen);
   };
 
   return (
@@ -388,6 +410,179 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
         onPick={openMore}
       />
     </View>
+  );
+}
+
+/** The screen More opened on, which tells the places behind it apart. */
+function firstOnMore(state: MaterialTopTabBarProps["state"]): string | undefined {
+  const moreTab = state.routes.find((r) => r.name === "MoreTab");
+  return (moreTab?.state as { routes?: { name: string }[] } | undefined)?.routes?.[0]?.name;
+}
+
+/** Moving to a tab, and to a place behind More, for both the bar and the side bar. */
+function tabMoves(state: MaterialTopTabBarProps["state"], navigation: MaterialTopTabBarProps["navigation"]) {
+  const go = (name: string) => {
+    const route = state.routes.find((r) => r.name === name);
+    if (!route) return;
+    const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+    if (!event.defaultPrevented) navigation.navigate(name);
+  };
+
+  // The picked place replaces whatever More held, rather than piling up on it.
+  const openMore = (screen: MorePlace["screen"]) => {
+    const at = state.routes.findIndex((r) => r.name === "MoreTab");
+    // Handed over as a partial state, so the router fills in the rest.
+    const partial = {
+      index: at,
+      routes: state.routes.map((r, i) => ({
+        key: r.key,
+        name: r.name,
+        params: r.params,
+        state: i === at ? { routes: [{ name: screen }] } : r.state,
+      })),
+    };
+    navigation.dispatch(CommonActions.reset(partial as Parameters<typeof CommonActions.reset>[0]));
+  };
+
+  const open = (place: RailPlace) => ("tab" in place.go ? go(place.go.tab) : openMore(place.go.more));
+  return { go, openMore, open };
+}
+
+/**
+ * The web's navigation rail for a wide window, a card with the gutter around
+ * it. The current place is filled like the bar's; with the bar set to glyphs
+ * it narrows to the web's glyph rail.
+ */
+function SideBar({ state, navigation }: MaterialTopTabBarProps) {
+  const { p, corners, barLabels } = useTheme();
+  const { t } = useT();
+  const waiting = useWaiting();
+  const { overviewOnBar, instancesInMore } = useAppearance();
+  const inset = useSafeAreaInsets();
+  const places = railPlaces({ overview: overviewOnBar, anomalies: waiting.anomaliesOn !== false, instances: instancesInMore });
+  const lit = railCurrent(places, state.routes[state.index]?.name, firstOnMore(state));
+  const moves = tabMoves(state, navigation);
+  const narrow = barLabels === "glyph";
+  const counts: Record<RailCount, number | null> = {
+    running: waiting.running,
+    conflicts: waiting.conflicts,
+    trash: waiting.trash,
+    findings: waiting.findings?.length ?? null,
+  };
+  const list = places.filter((place) => !place.footer);
+  const foot = places.filter((place) => place.footer);
+  const entry = (place: RailPlace, index: number) => (
+    <RailEntry
+      key={place.key}
+      label={t(place.label)}
+      glyph={place.glyph}
+      index={index}
+      on={lit === place.key}
+      count={place.count ? counts[place.count] : null}
+      narrow={narrow}
+      onPress={() => moves.open(place)}
+    />
+  );
+  const home = list[0];
+
+  return (
+    // The app's ground around the card, or Android's window background
+    // shows through the gutter.
+    <View
+      style={{
+        backgroundColor: p.background,
+        paddingTop: inset.top + GUTTER,
+        paddingBottom: inset.bottom + GUTTER,
+        paddingStart: (I18nManager.isRTL ? inset.right : inset.left) + GUTTER,
+      }}
+    >
+      <ScrollView
+        style={[styles.rail, { width: railWidth(barLabels), backgroundColor: p.surface, ...corners.card }]}
+        contentContainerStyle={styles.railInside}
+      >
+        {/* Like the web's logo, it leads to the first place. */}
+        <Press
+          accessibilityRole="button"
+          accessibilityLabel="ArrowLoop"
+          onPress={() => home && moves.open(home)}
+          android_ripple={{ color: p.hover }}
+          style={[narrow ? styles.railHeadNarrow : styles.railHead, corners.card]}
+        >
+          <Image source={MARK} style={narrow ? styles.railMarkNarrow : styles.railMark} accessibilityIgnoresInvertColors />
+          {narrow ? null : <Text style={[styles.wordmark, { color: p.text }]}>ArrowLoop</Text>}
+        </Press>
+        <View style={[styles.railList, narrow ? styles.railListNarrow : null]}>{list.map((place, i) => entry(place, i))}</View>
+        <View style={[styles.railFoot, narrow ? styles.railListNarrow : null]}>
+          {foot.map((place, i) => entry(place, list.length + i))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+/** One row of the side bar, as the web rail draws it. */
+function RailEntry({
+  label,
+  glyph,
+  index,
+  on,
+  count,
+  narrow,
+  onPress,
+}: {
+  label: string;
+  glyph: string;
+  index: number;
+  on: boolean;
+  count: number | null;
+  narrow: boolean;
+  onPress: () => void;
+}) {
+  const { p, corners, barLabels, accent, hueAt } = useTheme();
+  const press = usePress();
+  const hue = hueAt(index);
+  const fill = hue ?? accent;
+  const ink = on ? contrastOn(fill) : p.textSub;
+  const showGlyph = barLabels !== "text";
+  const badge = count ? (
+    <View style={[styles.count, narrow ? null : styles.railCount, { backgroundColor: on ? ink : p.surface3, ...corners.pill }]}>
+      <Text style={[styles.countText, { color: on ? fill : p.text }]}>{count}</Text>
+    </View>
+  ) : null;
+  return (
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityState={on ? { selected: true } : {}}
+      accessibilityLabel={count ? `${label}, ${count}` : label}
+      onPress={onPress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      android_ripple={{ color: p.hover }}
+      style={[
+        styles.railRow,
+        narrow ? styles.railRowNarrow : null,
+        {
+          ...corners.pill,
+          backgroundColor: on ? fill : "transparent",
+          opacity: press.dim,
+          transform: [{ scale: press.scale }],
+        },
+      ]}
+    >
+      {showGlyph ? (
+        <View>
+          {/* With the rainbow on, a quiet row's glyph carries its own colour, as on the web. */}
+          <Glyph name={glyph} color={on ? ink : (hue ?? p.textSub)} size={20} />
+          {narrow ? badge : null}
+        </View>
+      ) : null}
+      {narrow ? null : (
+        <Text numberOfLines={1} style={[styles.railText, { color: on ? ink : p.text }]}>
+          {label}
+        </Text>
+      )}
+      {narrow ? null : badge}
+    </AnimatedPressable>
   );
 }
 
@@ -629,6 +824,30 @@ const styles = StyleSheet.create({
   },
   trouble: { padding: space.lg, gap: space.md },
   log: { fontFamily: "monospace", fontSize: text.meta, padding: space.md },
+
+  besideBar: { flexDirection: "row" },
+  rail: { flex: 1 },
+  railInside: { flexGrow: 1 },
+  railHead: { alignItems: "center", gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.xl },
+  railHeadNarrow: { alignItems: "center", paddingHorizontal: space.sm, paddingVertical: space.lg },
+  railMark: { width: 104, height: 104 },
+  railMarkNarrow: { width: 44, height: 44 },
+  wordmark: { fontSize: 20, fontWeight: "700", letterSpacing: -0.4 },
+  railList: { flex: 1, gap: space.xs, padding: space.md },
+  railListNarrow: { padding: space.sm },
+  railFoot: { gap: space.xs, padding: space.md },
+  // The web's row at a finger's height.
+  railRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    minHeight: TOUCH,
+    paddingHorizontal: 14,
+  },
+  railRowNarrow: { justifyContent: "center", paddingHorizontal: 0 },
+  railText: { flex: 1, fontSize: 15, fontWeight: "500" },
+  // At the row's end, where the web rail puts it, rather than on a glyph's corner.
+  railCount: { position: "relative", top: 0, end: 0 },
 
   // Inset from the edges so the bar floats on the page.
   bar: { padding: 3 },

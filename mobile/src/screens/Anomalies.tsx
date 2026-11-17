@@ -153,7 +153,7 @@ export function Anomalies() {
   const closed = listing.closed.filter(mine);
 
   return (
-    <Page>
+    <Page spread>
       {job ? (
         <View style={styles.chip}>
           <Caption>{t("list.onlyJob", { job })}</Caption>

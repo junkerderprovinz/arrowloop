@@ -32,7 +32,9 @@ import {
   Sheet,
   useTheme,
 } from "../ui";
+import { capitalized } from "../../../web/src/lib/capitalized";
 import { clock } from "../clock";
+import { useFrame } from "../frame";
 import { bytes } from "../space";
 
 /**
@@ -112,6 +114,7 @@ type Opened = { id: number; job: string; run?: Run };
 function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) {
   const { t, lang } = useT();
   const { p, accent } = useTheme();
+  const { wide } = useFrame();
 
   const [rows, setRows] = useState<Touch[] | null>(null);
   const [jobs, setJobs] = useState<string[]>([]);
@@ -211,15 +214,30 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
           sort={sort}
           onSort={(by, dir) => setSort({ by, dir })}
           onSearch={() => setSearching(true)}
-          heads={[
-            {
-              id: "what",
-              label: t("history.filterKind"),
-              filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
-            },
-            { id: "when", label: t("list.head.when"), sorts: true },
-            { id: "path", label: t("list.head.path"), sorts: true },
-          ]}
+          heads={
+            wide
+              ? [
+                  {
+                    id: "what",
+                    label: t("history.filterKind"),
+                    width: FILE_COLUMNS.what,
+                    filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
+                  },
+                  { id: "when", label: t("list.head.when"), sorts: true, width: FILE_COLUMNS.when },
+                  { id: "job", label: t("history.filterJob"), width: FILE_COLUMNS.job },
+                  { id: "size", label: t("list.head.size"), width: FILE_COLUMNS.size },
+                  { id: "path", label: t("list.head.path"), sorts: true, grow: true },
+                ]
+              : [
+                  {
+                    id: "what",
+                    label: t("history.filterKind"),
+                    filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
+                  },
+                  { id: "when", label: t("list.head.when"), sorts: true },
+                  { id: "path", label: t("list.head.path"), sorts: true },
+                ]
+          }
         />
       </ListPiece>
     </>
@@ -260,29 +278,54 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
         onEndReached={() => {
           if (rows && rows.length >= limit) setLimit((n) => n * 2);
         }}
-        renderItem={({ item }) => (
-          <ListPiece>
-            <Press onPress={() => setOpened({ id: item.Run, job: item.Job })} accessibilityRole="button" style={styles.row}>
-              <Mono>{item.Path}</Mono>
-              <View style={styles.meta}>
-                <Badge
-                  label={entryLabel(
-                    t,
-                    { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path },
-                    configs.find((c) => c.name === item.Job),
-                    drives,
-                  )}
-                  tone={tone(item)}
-                />
-                {item.Job ? <Caption>{item.Job}</Caption> : null}
-                <Caption>{clock(item.When, lang)}</Caption>
-                {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
-              </View>
-              {/* Why a path was skipped, or the name a renamed file had. */}
-              {shownNote(t, item) ? <Caption>{shownNote(t, item)}</Caption> : null}
-            </Press>
-          </ListPiece>
-        )}
+        renderItem={({ item }) => {
+          const badge = (
+            <Badge
+              label={entryLabel(
+                t,
+                { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path },
+                configs.find((c) => c.name === item.Job),
+                drives,
+              )}
+              tone={tone(item)}
+            />
+          );
+          // Why a path was skipped, or the name a renamed file had.
+          const note = shownNote(t, item) ? <Caption>{shownNote(t, item)}</Caption> : null;
+          return (
+            <ListPiece>
+              {wide ? (
+                <Press
+                  onPress={() => setOpened({ id: item.Run, job: item.Job })}
+                  accessibilityRole="button"
+                  style={[styles.row, styles.across]}
+                >
+                  <View style={{ width: FILE_COLUMNS.what }}>{badge}</View>
+                  <View style={{ width: FILE_COLUMNS.when }}>
+                    <Caption>{clock(item.When, lang)}</Caption>
+                  </View>
+                  <View style={{ width: FILE_COLUMNS.job }}>{item.Job ? <Caption>{item.Job}</Caption> : null}</View>
+                  <View style={{ width: FILE_COLUMNS.size }}>{item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}</View>
+                  <View style={styles.grow}>
+                    <Mono>{item.Path}</Mono>
+                    {note}
+                  </View>
+                </Press>
+              ) : (
+                <Press onPress={() => setOpened({ id: item.Run, job: item.Job })} accessibilityRole="button" style={styles.row}>
+                  <Mono>{item.Path}</Mono>
+                  <View style={styles.meta}>
+                    {badge}
+                    {item.Job ? <Caption>{item.Job}</Caption> : null}
+                    <Caption>{clock(item.When, lang)}</Caption>
+                    {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
+                  </View>
+                  {note}
+                </Press>
+              )}
+            </ListPiece>
+          );
+        }}
       />
       <Sheet open={filtering} title={t("history.filter")} onClose={() => setFiltering(false)}>
         <AxisLabel>{t("history.files")}</AxisLabel>
@@ -307,6 +350,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
 function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) {
   const { t, lang } = useT();
   const { p, accent } = useTheme();
+  const { wide } = useFrame();
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [show, setShow] = useState<RunShow>("all");
   const [job, setJob] = useState("");
@@ -384,9 +428,11 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
               id: "job",
               label: t("history.filterJob"),
               sorts: true,
+              grow: wide,
               filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
             },
-            { id: "when", label: t("list.head.when"), sorts: true },
+            ...(wide ? [{ id: "state", label: t("list.head.state"), width: RUN_COLUMNS.state }] : []),
+            { id: "when", label: t("list.head.when"), sorts: true, width: wide ? RUN_COLUMNS.when : undefined },
           ]}
         />
       </ListPiece>
@@ -419,23 +465,27 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
         }
         renderItem={({ item }) => (
           <ListPiece>
-            <Press
-              onPress={() => setOpened({ id: item.ID, job: item.Job, run: item })}
-              accessibilityRole="button"
-              style={[styles.row, styles.runRow]}
-            >
-              <Text style={[styles.runName, { color: p.text }]}>
-                {item.Job}
-              </Text>
-              {failed(item) ? (
-                <Badge label={t("history.failed")} tone="fail" />
-              ) : item.Stopped ? (
-                <Badge label={t("status.stopped")} />
-              ) : (
-                <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
-              )}
-              <Caption>{clock(item.Started, lang)}</Caption>
-            </Press>
+            {wide ? (
+              <RunRowAcross run={item} onPress={() => setOpened({ id: item.ID, job: item.Job, run: item })} />
+            ) : (
+              <Press
+                onPress={() => setOpened({ id: item.ID, job: item.Job, run: item })}
+                accessibilityRole="button"
+                style={[styles.row, styles.runRow]}
+              >
+                <Text style={[styles.runName, { color: p.text }]}>
+                  {item.Job}
+                </Text>
+                {failed(item) ? (
+                  <Badge label={t("history.failed")} tone="fail" />
+                ) : item.Stopped ? (
+                  <Badge label={t("status.stopped")} />
+                ) : (
+                  <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
+                )}
+                <Caption>{clock(item.Started, lang)}</Caption>
+              </Press>
+            )}
           </ListPiece>
         )}
       />
@@ -649,7 +699,7 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
   const run = opened?.run;
 
   return (
-    <Sheet open={opened !== null} title={opened?.job ?? ""} onClose={onClose}>
+    <Sheet open={opened !== null} title={opened?.job ?? ""} onClose={onClose} centred>
       {run ? (
         <>
           <Caption>{clock(run.Started, lang)}</Caption>
@@ -682,6 +732,37 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
         </View>
       ))}
     </Sheet>
+  );
+}
+
+/** The fixed columns of the file log beside the side bar, the web's widths. */
+const FILE_COLUMNS = { what: 200, when: 150, job: 128, size: 72 };
+
+const RUN_COLUMNS = { state: 240, when: 170 };
+
+/**
+ * One run on one row beside the side bar, as the web's run list draws it:
+ * the job, a badge for whatever went otherwise than planned, and the time
+ * with the green dot of a run that went through.
+ */
+function RunRowAcross({ run, onPress }: { run: Run; onPress: () => void }) {
+  const { t, lang } = useT();
+  const { p } = useTheme();
+  const fine = !failed(run) && !run.Stopped && run.Conflicts === 0;
+  return (
+    <Press onPress={onPress} accessibilityRole="button" style={[styles.row, styles.across]}>
+      <Text style={[styles.runName, { color: p.text }]}>{run.Job}</Text>
+      <View style={[styles.badges, { width: RUN_COLUMNS.state }]}>
+        {failed(run) ? <Badge label={t("history.failed")} tone="fail" /> : null}
+        {run.Stopped ? <Badge label={t("status.stopped")} /> : null}
+        {run.Conflicts > 0 ? <Badge label={capitalized(t("history.conflicts", { count: run.Conflicts }), lang)} tone="warn" /> : null}
+        {run.Skipped > 0 ? <Badge label={capitalized(t("history.left", { count: run.Skipped }), lang)} /> : null}
+      </View>
+      <View style={[styles.when, { width: RUN_COLUMNS.when }]}>
+        {fine ? <View style={[styles.dot, { backgroundColor: p.okSolid }]} /> : null}
+        <Caption>{clock(run.Started, lang)}</Caption>
+      </View>
+    </Press>
   );
 }
 
@@ -768,6 +849,11 @@ const styles = StyleSheet.create({
   runRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   runName: { flex: 1, fontSize: text.body, fontWeight: "600" },
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: space.sm },
+  // The list head's gap, so the cells stand under their heads.
+  across: { flexDirection: "row", alignItems: "center", gap: space.md },
+  grow: { flex: 1, minWidth: 0, gap: space.xs },
+  badges: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.xs },
+  when: { flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   separator: { height: StyleSheet.hairlineWidth, opacity: 0.6 },
   group: { gap: space.xs },

@@ -13,6 +13,7 @@ import { OtherInstances } from "../otherInstances";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { useEngineSettings } from "../settings";
 import { SideRow, sideMark } from "../sideRow";
+import { useFrame } from "../frame";
 import { sidePair } from "../sides";
 import { bytes, isAccount, ReachBadge, Room, useReach, type Reach, useRoom } from "../space";
 import { space, text } from "../theme";
@@ -52,6 +53,7 @@ const NEXT_SHOWN = 3;
 export function Overview() {
   const nav = useNavigation<Nav<OverviewStack>>();
   const { t } = useT();
+  const { wide } = useFrame();
   const { intensity: motion } = useMotion();
   const waiting = useWaiting();
   const progress = useRunProgress();
@@ -114,68 +116,90 @@ export function Overview() {
   // Over the job list, so saving the new job lands there.
   const addJob = () => nav.getParent()?.navigate("JobsTab", { screen: "JobEdit", params: {}, initial: false });
 
+  const doing = (
+    <>
+      <Section title={t("overview.numbers")} hint={t("overview.numbersHint")} hue={0}>
+        <View style={styles.tiles}>
+          <Tile value={waiting.conflicts} label={t("nav.conflicts")} onPress={() => toTab("ConflictsTab")} />
+          {waiting.anomaliesOn !== false ? (
+            <Tile
+              value={waiting.findings === null ? null : waiting.findings.length}
+              label={t("nav.anomalies")}
+              onPress={() => nav.navigate("Anomalies")}
+            />
+          ) : null}
+          <Tile
+            value={waiting.trash}
+            label={t("nav.trash")}
+            detail={waiting.trashBytes === null ? undefined : bytes(waiting.trashBytes)}
+            onPress={() => nav.navigate("TrashAll")}
+          />
+        </View>
+      </Section>
+
+      <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={1}>
+        {empty ? (
+          <>
+            <Body>{t("phone.noJobs")}</Body>
+            <View style={styles.actions}>
+              <Button label={t("edit.add")} labelKey="edit.add" tone="accent" wide={false} onPress={addJob} />
+            </View>
+          </>
+        ) : null}
+        {!empty && running.length === 0 ? <Body>{t("overview.idle")}</Body> : null}
+        {running.map((job) => (
+          <RunningJob
+            key={job.name}
+            job={job}
+            index={jobs.indexOf(job)}
+            at={progress[job.name]}
+            remotes={remotes ?? []}
+            onOpen={() => openJob(job.name)}
+          />
+        ))}
+        <Activity progress={progress} jobs={jobs} onOpen={openJob} />
+        {empty ? null : <NextRuns jobs={jobs} onOpen={openJob} />}
+      </Section>
+    </>
+  );
+
+  const standing = (
+    <>
+      <Section title={t("overview.status")} hue={2}>
+        <LastRun run={recent.newest} tally={recent.tally} jobs={jobs} />
+      </Section>
+
+      {/* Left out without a target elsewhere; adding one is the targets page's work. */}
+      {accounts === null || accounts.length > 0 ? (
+        <Section title={t("overview.accounts")} hue={3}>
+          <Accounts accounts={accounts} />
+        </Section>
+      ) : null}
+
+      <OtherInstances firstHue={4} />
+    </>
+  );
+
   return (
     <Floating>
-      <Page fab>
+      <Page fab spread>
         {access === false ? <AccessNotice /> : null}
 
         <Head jobs={jobs} />
 
-        <Section title={t("overview.numbers")} hint={t("overview.numbersHint")} hue={0}>
-          <View style={styles.tiles}>
-            <Tile value={waiting.conflicts} label={t("nav.conflicts")} onPress={() => toTab("ConflictsTab")} />
-            {waiting.anomaliesOn !== false ? (
-              <Tile
-                value={waiting.findings === null ? null : waiting.findings.length}
-                label={t("nav.anomalies")}
-                onPress={() => nav.navigate("Anomalies")}
-              />
-            ) : null}
-            <Tile
-              value={waiting.trash}
-              label={t("nav.trash")}
-              detail={waiting.trashBytes === null ? undefined : bytes(waiting.trashBytes)}
-              onPress={() => nav.navigate("TrashAll")}
-            />
+        {wide ? (
+          // Side by side where there is room, as on the web: what runs on the
+          // larger side, how things stand on the other.
+          <View style={styles.columns}>
+            <View style={styles.major}>{doing}</View>
+            <View style={styles.minor}>{standing}</View>
           </View>
-        </Section>
-
-        <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={1}>
-          {empty ? (
-            <>
-              <Body>{t("phone.noJobs")}</Body>
-              <View style={styles.actions}>
-                <Button label={t("edit.add")} labelKey="edit.add" tone="accent" wide={false} onPress={addJob} />
-              </View>
-            </>
-          ) : null}
-          {!empty && running.length === 0 ? <Body>{t("overview.idle")}</Body> : null}
-          {running.map((job) => (
-            <RunningJob
-              key={job.name}
-              job={job}
-              index={jobs.indexOf(job)}
-              at={progress[job.name]}
-              remotes={remotes ?? []}
-              onOpen={() => openJob(job.name)}
-            />
-          ))}
-          <Activity progress={progress} jobs={jobs} onOpen={openJob} />
-          {empty ? null : <NextRuns jobs={jobs} onOpen={openJob} />}
-        </Section>
-
-        <Section title={t("overview.status")} hue={2}>
-          <LastRun run={recent.newest} tally={recent.tally} jobs={jobs} />
-        </Section>
-
-        {/* Left out without a target elsewhere; adding one is the targets page's work. */}
-        {accounts === null || accounts.length > 0 ? (
-          <Section title={t("overview.accounts")} hue={3}>
-            <Accounts accounts={accounts} />
-          </Section>
-        ) : null}
-
-        <OtherInstances firstHue={4} />
+        ) : (
+          <>
+            {doing}
+            {standing}
+          </>
+        )}
 
         {error ? <Caption>{error}</Caption> : null}
       </Page>
@@ -501,6 +525,10 @@ const styles = StyleSheet.create({
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   line: { flexDirection: "row", alignItems: "center", gap: space.sm, flexWrap: "wrap" },
   nextRow: { minHeight: 32, justifyContent: "center" },
+  // The web's 3fr and 2fr, each column keeping the page's gap.
+  columns: { flexDirection: "row", alignItems: "flex-start", gap: space.xl },
+  major: { flex: 3, minWidth: 0, gap: space.md },
+  minor: { flex: 2, minWidth: 0, gap: space.md },
   actions: { flexDirection: "row" },
   tiles: { flexDirection: "row", gap: space.sm },
   tile: { flex: 1, minWidth: 0, padding: space.md, gap: 2 },

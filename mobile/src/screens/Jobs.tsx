@@ -27,6 +27,7 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { MoveScope, MovingCell, useHoldToMove } from "../reorder";
+import { useFrame } from "../frame";
 import { useAppearance, useEngineSettings } from "../settings";
 import { sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
@@ -414,14 +415,10 @@ function JobCard({
   const { t } = useT();
   const hue = useHue(index);
   const { p } = useTheme();
-  return (
-    <Card onPress={onOpen} hue={hue} {...moving}>
-      <CardHead mark={mark} title={job.name}>
-        <View style={styles.menuSlot}>
-          <CardMenu items={menu} />
-        </View>
-      </CardHead>
+  const { wide } = useFrame();
 
+  const joins = (
+    <>
       {/* Paths wrap rather than truncate, since the cut part is what tells
           two similar jobs apart. */}
       <SideRow path={job.left} mark={leftMark} />
@@ -444,7 +441,11 @@ function JobCard({
           </Text>
         </Press>
       ) : null}
+    </>
+  );
 
+  const state = (
+    <>
       <JobStatus
         job={job}
         held={held}
@@ -462,8 +463,9 @@ function JobCard({
           what the hold button does. The control that goes ahead sits on the
           right. Both are quiet, since the floating button is the screen's one
           accent. */}
-      <View style={styles.actions}>
+      <View style={[styles.actions, wide ? styles.actionsAcross : null]}>
         <Button
+          wide={!wide}
           label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
           labelKey={job.disabled ? "jobs.resume" : "jobs.pause"}
           // As on the web: Pause stops a run too, and Resume only needs
@@ -473,12 +475,36 @@ function JobCard({
           onPress={onHold}
         />
         <Button
+          wide={!wide}
           label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
           labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
           busy={busy}
           onPress={onAct}
         />
       </View>
+    </>
+  );
+
+  return (
+    <Card onPress={onOpen} hue={hue} {...moving}>
+      <CardHead mark={mark} title={job.name}>
+        <View style={styles.menuSlot}>
+          <CardMenu items={menu} />
+        </View>
+      </CardHead>
+      {/* Beside the side bar, as the web's card: what the job joins on the
+          left, its status over its buttons on the right. */}
+      {wide ? (
+        <View style={styles.across}>
+          <View style={styles.joins}>{joins}</View>
+          <View style={styles.state}>{state}</View>
+        </View>
+      ) : (
+        <>
+          {joins}
+          {state}
+        </>
+      )}
     </Card>
   );
 }
@@ -528,33 +554,53 @@ function JobRow({
 }) {
   const { t, lang } = useT();
   const { p } = useTheme();
+  const { wide } = useFrame();
   const hue = useHue(index);
   const last = job.recent[0];
   const status = jobStatus(job, { held, conflict, notes: noted });
   // The status of a job that ran fine is already the time of that run.
   const quiet = status === "last";
+  const name = (
+    <>
+      <Text style={[styles.rowName, { color: p.text }]} numberOfLines={1}>
+        {job.name}
+      </Text>
+      {status === "failed" ? <FailedBecause run={last!} lines={1} /> : null}
+    </>
+  );
+  const statusLine = (
+    <JobStatus
+      job={job}
+      held={held}
+      noted={noted}
+      conflict={conflict}
+      onConflict={onConflict}
+      onNote={onNote}
+      progress={progress}
+      hue={hue}
+    />
+  );
+  const lastRun = last && !quiet ? <Caption>{t("jobs.lastRun", { when: clock(last.Finished, lang) })}</Caption> : null;
   return (
     <Card onPress={onOpen} hue={hue} style={styles.row} {...moving}>
       <View style={[styles.mark, { backgroundColor: hue }]} />
-      <View style={styles.rowText}>
-        <Text style={[styles.rowName, { color: p.text }]} numberOfLines={1}>
-          {job.name}
-        </Text>
-        {status === "failed" ? <FailedBecause run={last!} lines={1} /> : null}
-        <View style={styles.rowStatus}>
-          <JobStatus
-            job={job}
-            held={held}
-            noted={noted}
-            conflict={conflict}
-            onConflict={onConflict}
-            onNote={onNote}
-            progress={progress}
-            hue={hue}
-          />
-          {last && !quiet ? <Caption>{t("jobs.lastRun", { when: clock(last.Finished, lang) })}</Caption> : null}
+      {/* Beside the side bar the status and the last run take columns of
+          their own, as on the web's compact row. */}
+      {wide ? (
+        <View style={styles.rowAcross}>
+          <View style={styles.rowText}>{name}</View>
+          <View style={styles.rowStatusCell}>{statusLine}</View>
+          <View style={styles.rowLastCell}>{lastRun}</View>
         </View>
-      </View>
+      ) : (
+        <View style={styles.rowText}>
+          {name}
+          <View style={styles.rowStatus}>
+            {statusLine}
+            {lastRun}
+          </View>
+        </View>
+      )}
       <CardMenu items={menu} glyphOnly />
       <Button
         label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
@@ -666,6 +712,13 @@ const styles = StyleSheet.create({
   rowText: { flex: 1, minWidth: 0, gap: space.xs },
   rowName: { fontSize: text.body, fontWeight: "600" },
   rowStatus: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.sm },
+  rowAcross: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.lg },
+  rowStatusCell: { width: 200, alignItems: "flex-start" },
+  rowLastCell: { width: 180, alignItems: "flex-end" },
+  across: { flexDirection: "row", alignItems: "center", gap: space.xl },
+  joins: { flex: 1, minWidth: 0, gap: space.sm },
+  state: { flexShrink: 0, maxWidth: "45%", alignItems: "flex-end", gap: space.sm },
+  actionsAcross: { justifyContent: "flex-end" },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
   findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },

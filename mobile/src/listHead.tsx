@@ -20,6 +20,10 @@ export interface Head {
   sorts?: boolean;
   /** Opens the filter sheet, and whether the filter narrows the list now. */
   filter?: { active: boolean; open: () => void };
+  /** The column's width where the rows below stand in columns. */
+  width?: number;
+  /** Takes the room the fixed columns leave. */
+  grow?: boolean;
 }
 
 const KEY = "arrowloop.list.tips";
@@ -83,7 +87,10 @@ export function ListHead({
           const on = sort?.by === head.id;
           const active = !!head.filter?.active;
           return (
-            <View key={head.id} style={styles.head}>
+            <View
+              key={head.id}
+              style={[styles.head, head.width !== undefined ? { width: head.width } : null, head.grow ? styles.grow : null]}
+            >
               <Press
                 accessibilityRole="button"
                 accessibilityLabel={head.label}
@@ -215,6 +222,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   head: { flexDirection: "row", alignItems: "center", gap: 2, minHeight: TOUCH, flexShrink: 1 },
+  grow: { flex: 1, minWidth: 0 },
   name: { flexDirection: "row", alignItems: "center", gap: 4, minHeight: TOUCH, flexShrink: 1 },
   label: { fontSize: text.meta, fontWeight: "600" },
   caret: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },

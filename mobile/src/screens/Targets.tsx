@@ -41,7 +41,7 @@ export function Targets() {
 
   return (
     <Floating>
-      <Page fab>
+      <Page fab spread>
       {!remotes ? <Empty title={t("history.working")} detail={error || undefined} /> : null}
       {(remotes ?? []).map((remote, index) => (
         <TargetCard

@@ -54,7 +54,8 @@ import { useSystemAccent } from "./systemAccent";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
-import { sideRoom } from "./layout";
+import { COLUMN, GUTTER, pageRoom, panelWidth } from "./layout";
+import { useFrame } from "./frame";
 
 // GlimStone's controls for React Native, with the design language's shapes
 // and sizes: a notch 22 tall overlapping its card by half, a well whose chosen
@@ -275,10 +276,11 @@ function useScrollMotion() {
 
 /**
  * The padding beside a page's column, its gutter on a phone and more on a
- * screen wide enough to stretch the cards.
+ * screen wide enough to stretch the cards. Beside the side bar a list asks to
+ * `spread` across the page.
  */
-export function useSideRoom(gutter: number = space.lg): number {
-  return sideRoom(useWindowDimensions().width, gutter);
+export function useSideRoom(gutter: number = space.lg, spread = false): number {
+  return pageRoom(useFrame(), gutter, spread);
 }
 
 /**
@@ -287,7 +289,7 @@ export function useSideRoom(gutter: number = space.lg): number {
  */
 export function MovingList<T>(props: FlatListProps<T>) {
   const motion = useScrollMotion();
-  const room = useSideRoom();
+  const room = useSideRoom(space.lg, true);
   const { onScroll } = props;
   return (
     <Arrival.Provider value={motion.line}>
@@ -489,30 +491,48 @@ export function ListEnd() {
 /**
  * A window that rises from the bottom edge, for what a row used to fold out:
  * its title as a badge, the content scrolling between, and Close in the
- * bottom row, in reach of the thumb.
+ * bottom row, in reach of the thumb. Beside the side bar it stands as the
+ * web's panel along the end edge, or `centred` as the web's dialog where the
+ * web opens one.
  */
 export function Sheet({
   open,
   title,
   onClose,
+  centred,
   children,
 }: {
   open: boolean;
   title: string;
   onClose: () => void;
+  centred?: boolean;
   children: ReactNode;
 }) {
   const { p, corners, accent } = useTheme();
   const { t } = useT();
   const { ms } = useMotion();
   const inset = useSafeAreaInsets();
+  const { wide } = useFrame();
   // As wide as the bar, which stops where the page's column does.
   const room = useSideRoom(space.md);
+  const { width } = useWindowDimensions();
+  const ground = !wide
+    ? [styles.sheetGround, { paddingHorizontal: room, paddingBottom: Math.max(inset.bottom, space.sm) }]
+    : [
+        centred ? styles.dialogGround : styles.panelGround,
+        {
+          paddingTop: inset.top + GUTTER,
+          paddingBottom: inset.bottom + GUTTER,
+          paddingLeft: inset.left + GUTTER,
+          paddingRight: inset.right + GUTTER,
+        },
+      ];
+  const shape = !wide ? styles.sheet : centred ? styles.dialog : [styles.panel, { width: panelWidth(width) }];
   return (
     <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
-      <View style={[styles.sheetGround, { paddingHorizontal: room, paddingBottom: Math.max(inset.bottom, space.sm) }]}>
+      <View style={ground}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
-        <View style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
+        <View style={[shape, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
           <View style={styles.sheetHead}>
             <View style={[styles.sheetTitle, { backgroundColor: accent, ...corners.pill }]}>
               <Text style={[styles.notchText, { color: contrastOn(accent) }]} numberOfLines={2}>
@@ -520,7 +540,7 @@ export function Sheet({
               </Text>
             </View>
           </View>
-          <ScrollView style={styles.sheetScroll} contentContainerStyle={styles.sheetBody}>
+          <ScrollView style={wide && !centred ? styles.panelScroll : styles.sheetScroll} contentContainerStyle={styles.sheetBody}>
             {children}
           </ScrollView>
           <View style={styles.sheetFoot}>
@@ -1515,15 +1535,18 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
 
 /**
  * A scrolling page. `fab` adds room at the bottom so a floating button does
- * not cover the last row.
+ * not cover the last row, and `spread` lets a page of lists use the width
+ * beside the side bar.
  */
 export function Page({
   children,
   fab,
+  spread,
   scroll,
 }: {
   children: ReactNode;
   fab?: boolean;
+  spread?: boolean;
   /** From usePageScroll, for a page that brings a part of itself into view. */
   scroll?: PageScroll;
 }) {
@@ -1532,7 +1555,7 @@ export function Page({
   const own = usePageScroll();
   const { scroller, inner } = scroll ?? own;
   const keyboard = useKeyboardCover(scroller, inner);
-  const room = useSideRoom();
+  const room = useSideRoom(space.lg, spread);
   return (
     <Animated.View ref={keyboard.frame} style={[motion.style, { paddingBottom: keyboard.covered }]}>
       <ScrollView
@@ -1888,6 +1911,12 @@ const styles = StyleSheet.create({
   sheetHead: { paddingHorizontal: space.lg, paddingTop: space.lg },
   sheetTitle: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
   sheetScroll: { flexGrow: 0, flexShrink: 1 },
+  // The panel runs the window's height, so Close rests at its foot.
+  panelGround: { flex: 1, flexDirection: "row", justifyContent: "flex-end" },
+  panel: { alignSelf: "stretch", overflow: "hidden", elevation: 8 },
+  panelScroll: { flex: 1 },
+  dialogGround: { flex: 1, alignItems: "center", justifyContent: "center" },
+  dialog: { width: "100%", maxWidth: COLUMN, maxHeight: "100%", overflow: "hidden", elevation: 8 },
   sheetBody: { padding: space.lg, gap: space.md },
   sheetFoot: { flexDirection: "row", justifyContent: "flex-end", padding: space.lg, paddingTop: 0 },
   mark: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },

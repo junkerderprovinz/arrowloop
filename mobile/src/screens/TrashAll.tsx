@@ -91,7 +91,7 @@ export function TrashAll() {
 
   return (
     <Floating>
-      <Page fab>
+      <Page fab spread>
         <Tiles
           label={t("nav.trash")}
           tiles={[

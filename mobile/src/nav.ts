@@ -91,3 +91,60 @@ export const MORE: MorePlace[] = [
   { screen: "Instances", label: "nav.instances", glyph: "IconServer" },
   { screen: "SettingsHome", label: "nav.settings", glyph: "IconGear" },
 ];
+
+/** What a place on the side bar counts beside its name. */
+export type RailCount = "running" | "conflicts" | "trash" | "findings";
+
+/** A place on the side bar: a tab of its own, or a screen behind More. */
+export interface RailPlace {
+  key: BarPlace["tab"] | MorePlace["screen"];
+  label: TranslationKey;
+  glyph: string;
+  go: { tab: BarPlace["tab"] } | { more: MorePlace["screen"] };
+  count?: RailCount;
+  /** Stands at the foot of the bar, as Settings does on the web. */
+  footer: boolean;
+}
+
+/**
+ * The side bar a wide window shows instead of the bar and its sheet, in the
+ * web rail's order. It lists Targets always, since a wide window has no More
+ * sheet to keep them in.
+ */
+export function railPlaces(shown: { overview: boolean; anomalies: boolean; instances: boolean }): RailPlace[] {
+  const tab = (place: BarPlace, count?: RailCount): RailPlace => ({
+    key: place.tab,
+    label: place.label,
+    glyph: place.glyph,
+    go: { tab: place.tab },
+    count,
+    footer: false,
+  });
+  const more = (place: MorePlace, count?: RailCount): RailPlace => ({
+    key: place.screen,
+    label: place.label,
+    glyph: place.glyph,
+    go: { more: place.screen },
+    count,
+    footer: place.screen === "SettingsHome",
+  });
+  const bar = (name: BarPlace["tab"]) => BAR.find((b) => b.tab === name)!;
+  const behind = (name: MorePlace["screen"]) => MORE.find((m) => m.screen === name)!;
+  return [
+    ...(shown.overview ? [tab(bar("OverviewTab"))] : []),
+    tab(bar("JobsTab"), "running"),
+    tab(bar("ConflictsTab"), "conflicts"),
+    ...(shown.anomalies ? [more(behind("Anomalies"), "findings")] : []),
+    more(behind("TrashAll"), "trash"),
+    tab(bar("HistoryTab")),
+    more(behind("TargetList")),
+    ...(shown.instances ? [more(behind("Instances"))] : []),
+    more(behind("SettingsHome")),
+  ];
+}
+
+/** The place to light for the tab on screen and, on More, the screen it opened on. */
+export function railCurrent(places: RailPlace[], tab: string | undefined, moreFirst: string | undefined): RailPlace["key"] | null {
+  const lit = places.find((p) => ("tab" in p.go ? p.go.tab === tab : tab === "MoreTab" && p.go.more === moreFirst));
+  return lit?.key ?? null;
+}
