@@ -16,6 +16,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 )
 
 // smallConfig is two jobs over empty folders, one of them held up by a before
@@ -68,7 +69,7 @@ func TestANotificationTargetAddedLaterIsUsed(t *testing.T) {
 	r := smallRunner(t, cfg)
 
 	next := *cfg
-	next.Notify = job.Notify{Channels: []notify.Channel{slack("hook", srv.URL, notify.OnAlways)}}
+	next.Notify = job.Notify{Channels: alnotify.FromKit([]notify.Channel{slack("hook", srv.URL, notify.OnAlways)})}
 	r.Reload(&next)
 
 	if _, err := r.Run(context.Background(), "quick"); err != nil {

@@ -21,6 +21,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
 
@@ -434,7 +435,7 @@ func TestADriveThatIsAwaySendsNoCheckPing(t *testing.T) {
 			if !withBefore {
 				cfg.Jobs[0].Before = ""
 			}
-			cfg.Notify = job.Notify{Channels: []notify.Channel{{ID: "check", Kind: notify.KindHealthchecks, Enabled: true, Healthchecks: &notify.Healthchecks{URL: check.URL + "/check"}}}}
+			cfg.Notify = job.Notify{Channels: alnotify.FromKit([]notify.Channel{{ID: "check", Kind: notify.KindHealthchecks, Enabled: true, Healthchecks: &notify.Healthchecks{URL: check.URL + "/check"}}})}
 			r.Reload(&cfg)
 
 			if _, err := r.Run(t.Context(), "onstick"); !errors.Is(err, daemon.ErrVolumeMissing) {
