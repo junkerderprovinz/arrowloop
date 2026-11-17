@@ -422,7 +422,7 @@ same value unless its `-keep-history` flag gives another.
 | `pauseAutomatic` | `false` | Holds every automatic run: schedules, watching, retries, catch-up runs, runs at start and requests from other apps. A run already going finishes, a job started by hand still runs, and each job keeps its own pause. |
 | `history` | beside the file | Where run records go. A change takes effect the next time the program starts. |
 | `historyKeep` | ninety days | How long a run record is kept, such as `"720h"`. `"0"` keeps every record; see [Every run is written down](#every-run-is-written-down). |
-| `notify.channels` | none | Where messages go, one entry per channel: Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, a webhook of your own or Healthchecks.io; see [Notifications](#notifications). |
+| `notify.channels` | none | Where messages go, one entry per channel: Discord, Slack, ntfy, Gotify, Matrix, mail, Apprise, Shoutrrr, a webhook of your own or Healthchecks.io; see [Notifications](#notifications). |
 | `retry.attempts` | `3` | How many further tries a failed scheduled run gets before the job waits for its next scheduled time. `0` means none; see [After a failure](#after-a-failure). |
 | `retry.wait` | `5m` | How long to wait before the first further try. Each try after that waits twice as long, up to six hours. |
 | `anomalies.failingAfter` | `3` | How many failed runs in a row make a note. `0` means never; see [Anomalies](#anomalies). |
@@ -493,6 +493,7 @@ which a channel set to `failure` carries, when `anomalies.notifyNotes` is
 | `matrix` | `matrix.homeserver`, `matrix.room`, `matrix.token` | A message in the room, posted as the account the token belongs to. The account has to be in the room, and the room can be given as an `#alias`. |
 | `smtp` | `smtp.host`, `smtp.port`, `smtp.tls`, `smtp.username`, `smtp.password`, `smtp.from`, `smtp.to` | A plain-text mail. `tls` is `starttls` (the default, port 587), `tls` for a connection encrypted from the start (port 465) or `none`. Under `starttls` a server that does not offer STARTTLS is refused rather than sent the password in clear. `to` takes several addresses separated by commas or semicolons, and ArrowLoop logs in only when `username` is set. |
 | `apprise` | `apprise.url`, `apprise.tags`, `apprise.urls` | A POST to an [Apprise API](https://github.com/caronc/apprise-api) server you run. With a key in `url`, it goes to whatever that key is set up for, and `tags` limits a shared key to some of its targets. With `urls`, such as `tgram://...` or `pover://...`, `url` is the server's `/notify` without a key, and Telegram, Pushover and the other services Apprise knows work without a key on the server. |
+| `shoutrrr` | `shoutrrr.urls` | A message through [Shoutrrr](https://github.com/nicholas-fedor/shoutrrr), which reaches Telegram, Pushover, Teams and over twenty other services from ArrowLoop itself, with no server of its own. `urls` takes one address per service, such as `telegram://token@telegram?chats=@channel` or `pushover://shoutrrr:token@userkey`. The card takes them in one field, separated by spaces. |
 | `webhook` | `webhook.url`, `webhook.method`, `webhook.headers`, `webhook.body` | A request of your own: `POST` (the default), `PUT` or `GET`, with the headers and the body as written. `%%title%%`, `%%body%%`, `%%ok%%`, `%%event%%`, `%%severity%%`, `%%time%%` and `%%link%%` are filled in, escaped for where they stand. A new webhook on the card starts with `{"subject":"%%title%%","body":"%%body%%","ok":%%ok%%}`. |
 | `healthchecks` | `healthchecks.url`, `healthchecks.byKey` | A ping to `<url>/start` when a run begins, then `<url>` when it succeeds or `<url>/fail` when it does not, with the run's summary as the body. `byKey` gives a job its own check, by job name; every other job pings `url`. `on` counts only as `never`, which keeps the check quiet. Any server that speaks the same protocol works. |
 
@@ -506,7 +507,7 @@ too.
 Every attempt is limited to fifteen seconds (`timeoutSeconds`, up to 60), and a
 message a second try could still deliver, after a refused connection, a
 timeout, a 429 or a 5xx, is tried three times (`attempts`, up to 5) with a
-pause in between. The channels are sent to at the same time, and a failure at
+pause in between. Shoutrrr does not say which of its failures another try could fix, so every address of a Shoutrrr channel that failed is tried again, and only that one, so the others do not get the message twice. The channels are sent to at the same time, and a failure at
 one does not stop the others. A message that cannot be delivered is written to
 the log and changes nothing about the run. The log names the channel and says
 what went wrong, but never the address or a token. A password written into an
@@ -517,7 +518,7 @@ loaded.
 
 Every token and password, every header value and every address that is its own
 key (a webhook, Discord, Slack, ntfy, Gotify, an Apprise key or its `urls`,
-every Healthchecks check) stay on the server. The Notifications card on
+every Shoutrrr address, every Healthchecks check) stay on the server. The Notifications card on
 **Safety net** shows them as **Saved** with **Change**; the settings API and the
 bug report hand out `********` in their place, and saving the page back keeps
 what is stored. A token or password is put back only beside the server it was
@@ -541,8 +542,8 @@ way.
     container cannot run it. Writing notification files into the host's
     `/tmp/notifications` through a mount would skip the agents and the mail
     Unraid is set up for, and the Unraid API needs an API key, which is a
-    credential for the host. Apprise or ntfy reach the same phone without
-    either.
+    credential for the host. Apprise, Shoutrrr or ntfy reach the same phone
+    without either.
 
 ## Status for dashboards
 
