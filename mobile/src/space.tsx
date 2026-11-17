@@ -154,7 +154,7 @@ export function Room({ room, hue }: { room: Room; hue?: string }) {
   // Zero used is a real answer, hence `??`.
   const used = room.used ?? (total > 0 && free !== undefined ? total - free : undefined);
 
-  // WebDAV reports bytes in use without a total, and zero when empty.
+  // WebDAV reports bytes in use without a total.
   if (total <= 0 && used === undefined) return <Caption>{t("overview.noSpace")}</Caption>;
 
   return (
