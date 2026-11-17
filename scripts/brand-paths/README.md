@@ -61,6 +61,18 @@ generator, and in the header of every component built from it.
 Apache-2.0 is one-way compatible with this project's AGPL-3.0: these files may be
 carried into it, and the combined work stays AGPL-3.0.
 
+**Shoutrrr's repository**, <https://github.com/nicholas-fedor/shoutrrr>, for
+`shoutrrr.svg`: `docs/assets/media/shoutrrr-logotype.svg`, the gopher with the
+megaphone in its speech bubble. The repository is under the **MIT** licence,
+whose text is beside this file as `LICENSE-shoutrrr.txt`; it asks for the
+copyright notice to travel with the file, which is why it is named here and in
+the generator. Copyright Nicholas Fedor. MIT, like Apache-2.0, may be carried
+into AGPL-3.0. The file is the Inkscape original with what draws nothing taken
+out: the JPEG it was traced over, which lies outside the drawing, the hidden
+elements, Inkscape's own attributes and metadata, and a `paint-order:normal`,
+the default, which the phone's generator does not read. Every path, fill and
+transform that draws is as drawn.
+
 **The brands' own websites and repositories**, for eight providers and two
 notification services that neither Simple Icons nor Dashboard Icons carries. Like the hand-collected marks above,
 each is its owner's, used under the trademark position below.
@@ -100,8 +112,8 @@ each is its owner's, used under the trademark position below.
   fit its edges, since the word's first P covers part of it. The original fades
   the arc out at both ends, and the trace cuts it where the fade begins.
 
-Every file but the traced FileLu, 1Fichier and Apprise marks is copied
-unmodified; what the generator produces from one is a translation into JSX and
+Every file but the traced FileLu, 1Fichier and Apprise marks and the trimmed
+Shoutrrr file is copied unmodified; what the generator produces from one is a translation into JSX and
 nothing else. It keeps the drawing's own paths, fills, gradients and viewBox,
 prefixes every `id` with the file's name so two marks on
 one page cannot swap gradients, and dissolves an Illustrator `<style>` block

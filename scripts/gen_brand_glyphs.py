@@ -72,8 +72,8 @@ MARKS = [
     ("IconOvh", "ovh", "OVHcloud Object Storage"),
     ("IconMinio", "minio", "MinIO"),
 
-    # Notification services. Slack, Gotify, Healthchecks.io and Apprise have no
-    # mark in this set, so theirs are under LOCAL.
+    # Notification services. Slack, Gotify, Healthchecks.io, Apprise and
+    # Shoutrrr have no mark in this set, so theirs are under LOCAL.
     ("IconNtfy", "ntfy", "ntfy"),
     ("IconMatrix", "matrix", "Matrix"),
 ]
@@ -565,6 +565,8 @@ LOCAL = [
     ("IconApprise", "apprise", "Apprise",
      "traced from caronc/apprise, apprise/assets/themes/default/apprise-logo.png, which has no vector",
      BRAND),
+    ("IconShoutrrr", "shoutrrr", "Shoutrrr",
+     "nicholas-fedor/shoutrrr, docs/assets/media/shoutrrr-logotype.svg", "MIT"),
 ]
 
 # Attributes that mean nothing inside a component, or that the wrapper sets.

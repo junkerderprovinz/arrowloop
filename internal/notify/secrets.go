@@ -5,7 +5,8 @@
 //
 // Beyond the tokens, passwords and header values the kit's Redacted hides,
 // the address of a webhook, a Discord or Slack hook, an ntfy topic, a Gotify
-// server, an Apprise key and a check is its own key, so those are hidden too.
+// server, an Apprise key, a check and every Shoutrrr address is its own key,
+// so those are hidden too.
 package notify
 
 import (
@@ -26,15 +27,20 @@ var ErrMoved = errors.New("type it again")
 
 // Redacted returns a copy of channels with every secret replaced by
 // Placeholder.
-func Redacted(channels []kit.Channel) []kit.Channel {
-	out := kit.Redacted(channels)
+func Redacted(channels []Channel) []Channel {
+	shared := kit.Redacted(kitChannels(channels))
+	out := make([]Channel, len(channels))
 	for i := range out {
-		c := &out[i]
+		out[i].Channel = shared[i]
+		if s := channels[i].Shoutrrr; s != nil {
+			out[i].Shoutrrr = &Shoutrrr{URLs: maskAll(s.URLs)}
+		}
+		c := &out[i].Channel
 		for _, a := range addresses(c) {
 			*a = mask(*a)
 		}
-		if c.Apprise != nil && len(c.Apprise.URLs) > 0 {
-			c.Apprise.URLs = []string{Placeholder}
+		if c.Apprise != nil {
+			c.Apprise.URLs = maskAll(c.Apprise.URLs)
 		}
 		if c.Healthchecks != nil {
 			for key, u := range c.Healthchecks.ByKey {
@@ -48,8 +54,8 @@ func Redacted(channels []kit.Channel) []kit.Channel {
 // Merge puts the secrets Redacted took out of next back from prev, the
 // stored channels, and refuses a placeholder that cannot come back with an
 // error wrapping ErrMoved.
-func Merge(next, prev []kit.Channel) ([]kit.Channel, error) {
-	old := make(map[string]kit.Channel, len(prev))
+func Merge(next, prev []Channel) ([]Channel, error) {
+	old := make(map[string]Channel, len(prev))
 	for _, c := range prev {
 		old[c.ID] = c
 	}
@@ -63,13 +69,16 @@ func Merge(next, prev []kit.Channel) ([]kit.Channel, error) {
 		if !ok || p.Kind != c.Kind {
 			continue
 		}
-		have := addresses(&p)
-		for j, a := range addresses(c) {
+		if c.Shoutrrr != nil && p.Shoutrrr != nil && masked(c.Shoutrrr.URLs) {
+			c.Shoutrrr.URLs = append([]string(nil), p.Shoutrrr.URLs...)
+		}
+		have := addresses(&p.Channel)
+		for j, a := range addresses(&c.Channel) {
 			if *a == Placeholder && j < len(have) {
 				*a = *have[j]
 			}
 		}
-		if c.Apprise != nil && p.Apprise != nil && len(c.Apprise.URLs) == 1 && c.Apprise.URLs[0] == Placeholder {
+		if c.Apprise != nil && p.Apprise != nil && masked(c.Apprise.URLs) {
 			c.Apprise.URLs = append([]string(nil), p.Apprise.URLs...)
 		}
 		// The kit compares the server and the login. The encryption counts
@@ -85,7 +94,10 @@ func Merge(next, prev []kit.Channel) ([]kit.Channel, error) {
 			}
 		}
 	}
-	out = kit.Merge(out, prev)
+	shared := kit.Merge(kitChannels(out), kitChannels(prev))
+	for i := range out {
+		out[i].Channel = shared[i]
+	}
 	for i := range next {
 		if field := lost(&next[i], &out[i]); field != "" {
 			name := next[i].Name
@@ -100,16 +112,18 @@ func Merge(next, prev []kit.Channel) ([]kit.Channel, error) {
 
 // lost names the first secret that was a placeholder in sent and did not come
 // back in merged.
-func lost(sent, merged *kit.Channel) string {
+func lost(sent, merged *Channel) string {
 	gone := func(was, now string) bool { return was == Placeholder && (now == "" || now == Placeholder) }
-	now := addresses(merged)
-	for j, a := range addresses(sent) {
+	now := addresses(&merged.Channel)
+	for j, a := range addresses(&sent.Channel) {
 		if gone(*a, *now[j]) {
 			return "address"
 		}
 	}
-	if sent.Apprise != nil && len(sent.Apprise.URLs) == 1 && sent.Apprise.URLs[0] == Placeholder &&
-		(len(merged.Apprise.URLs) == 0 || merged.Apprise.URLs[0] == Placeholder) {
+	if sent.Apprise != nil && masked(sent.Apprise.URLs) && (len(merged.Apprise.URLs) == 0 || masked(merged.Apprise.URLs)) {
+		return "address"
+	}
+	if sent.Shoutrrr != nil && masked(sent.Shoutrrr.URLs) && (len(merged.Shoutrrr.URLs) == 0 || masked(merged.Shoutrrr.URLs)) {
 		return "address"
 	}
 	if sent.Healthchecks != nil {
@@ -126,7 +140,7 @@ func lost(sent, merged *kit.Channel) string {
 			}
 		}
 	}
-	if was := tokenOf(sent); was != nil && gone(*was, *tokenOf(merged)) {
+	if was := tokenOf(&sent.Channel); was != nil && gone(*was, *tokenOf(&merged.Channel)) {
 		return "token"
 	}
 	if sent.SMTP != nil && gone(sent.SMTP.Password, merged.SMTP.Password) {
@@ -182,6 +196,19 @@ func addresses(c *kit.Channel) []*string {
 	return out
 }
 
+// maskAll stands one placeholder in for a list of addresses, which Merge
+// puts back whole.
+func maskAll(vs []string) []string {
+	if len(vs) == 0 {
+		return vs
+	}
+	return []string{Placeholder}
+}
+
+func masked(vs []string) bool {
+	return len(vs) == 1 && vs[0] == Placeholder
+}
+
 func mask(v string) string {
 	if v == "" {
 		return ""
@@ -191,12 +218,12 @@ func mask(v string) string {
 
 // deepCopy copies channels through their JSON form, which is what they are
 // stored as.
-func deepCopy(channels []kit.Channel) ([]kit.Channel, error) {
+func deepCopy(channels []Channel) ([]Channel, error) {
 	raw, err := json.Marshal(channels)
 	if err != nil {
 		return nil, fmt.Errorf("copy the channels: %w", err)
 	}
-	var out []kit.Channel
+	var out []Channel
 	if err := json.Unmarshal(raw, &out); err != nil {
 		return nil, fmt.Errorf("copy the channels: %w", err)
 	}
