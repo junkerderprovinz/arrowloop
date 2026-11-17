@@ -72,6 +72,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.notifyTiles',
         names: { add: 'notify.add' },
       },
+      {
+        id: 'notify-shoutrrr',
+        at: ['/settings/safety'],
+        via: 'notify-add',
+        where: ['nav.settings', 'settings.safetyNet'],
+        text: 'new.change.notifyShoutrrr',
+      },
     ],
   },
   {
