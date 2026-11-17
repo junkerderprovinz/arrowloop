@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **A built-in VPN for the jobs that want one.** Pick your provider from tiles with their logos under Settings, General, or paste the WireGuard configuration of a server of your own, then switch **Through the VPN** on in a job. The tunnel runs inside ArrowLoop, so it needs no WireGuard on the machine and no extra rights in a container. It comes up for that job's runs and goes down after, and a run whose tunnel does not come up fails, with nothing synced over your own connection. Before this, a `before` and `after` command around `wg-quick` was the only way, and not one that worked in the container.
+
 ## 2.7.4 - 2026-11-17
 
 On a tablet the phone app turns into landscape with the device, and phones stay upright.

@@ -80,6 +80,7 @@ manager happened to start the process in.
 | `brakePercent` | `50` | Hold a run deleting more than this share of known files. `0` switches the brake off. |
 | `changePercent` | `50` | Hold a run overwriting more than this share of known files. `0` switches the brake off. |
 | `brakeFloor` | `10` | Never trip either brake below this many deletions or overwrites. |
+| `vpn` | `false` | Send every connection of the job's runs through the built-in VPN; see [Through a VPN](#through-a-vpn). |
 | `before` | none | A shell command run before every run. If it fails, the run does not start. See below. |
 | `after` | none | A shell command run after every run, successful or not. If it fails, the run is marked failed. |
 
@@ -396,6 +397,65 @@ such as an SSH tunnel, keeps running.
     back what the file on disk says for a job of the same name. A job created or
     renamed in the interface starts without commands. The interface and the file
     agree on everything else.
+
+## Through a VPN
+
+```json
+{
+  "name": "nas-at-home",
+  "left": "/data/photos",
+  "right": "nas:photos",
+  "state": "state/nas-at-home.db",
+  "vpn": true
+}
+```
+
+ArrowLoop carries a WireGuard tunnel of its own. It runs inside the program,
+so it needs no WireGuard on the machine, no admin rights and no extra
+capability in a container. You set it up once under **Settings**, **General**,
+**VPN**: pick your provider from the tiles and enter what it asks for, or
+choose **Own WireGuard config** and paste or upload the `.conf` file of a
+server you run, such as a router or a NAS at home.
+
+A job with `vpn` set brings the tunnel up when its run starts. Jobs that run at
+the same time share one tunnel, and the last of them to finish takes it down,
+so the tunnel is only up while such a job runs. Everything else of ArrowLoop,
+including the jobs without `vpn`, keeps to the machine's own connection.
+
+Every connection of such a run goes to a proxy on `127.0.0.1` that dials only
+into the tunnel, names included: they resolve through the name servers of the
+WireGuard configuration. A run whose tunnel does not come up within 45 seconds
+fails with the reason, and nothing is synced over the machine's own
+connection. A tunnel that drops in the middle of a run holds its connections
+for 30 seconds while WireGuard gets it back, and then they fail.
+
+Precheck, Verify, the trash of a side and the conflict list of such a job go
+through the tunnel too, since they read the same sides.
+
+| Target | Through the VPN |
+|---|---|
+| WebDAV (Nextcloud, ownCloud, OpenCloud), S3, SFTP, FTP, Google Drive, OneDrive, Dropbox, pCloud, Box, B2, MEGA and the other cloud services | yes |
+| A folder on this machine | it makes no connection of its own |
+| SMB, Swift, Azure Blob and Files, Proton Drive, Storj, HDFS, 1Fichier, ImageKit, filen | no: these keep connections the tunnel cannot carry |
+| crypt, compress, chunker, hasher, union, combine and alias on top of another target | no, for now |
+| An SFTP target with its own `ssh` command or SOCKS proxy, an FTP target with a SOCKS proxy, IDrive e2, SharePoint | no |
+
+A job whose side cannot go through the VPN is refused at the start of every
+run with the side it is about. Nothing is sent.
+
+The logins are kept in `vpn.json` beside the configuration, each sealed with
+the install's key from `ARROWLOOP_APP_KEY` or `app.key` (see
+[A password for the interface](installing.md#a-password-for-the-interface)),
+and they never come back to the interface. The file is not part of `arrowloop.json`, so a settings backup does
+not carry a VPN login.
+
+On the phone there is no built-in VPN, since Android's own VPN covers every
+app. A job with `vpn` set fails there with a sentence that says so.
+
+!!! tip "Before this, a command did it"
+    Bringing `wg-quick` up in `before` and down in `after` works on a machine
+    where ArrowLoop may change the network, and it moves the whole machine onto
+    the tunnel. The built-in VPN needs neither and carries only the job.
 
 ## Every run is written down
 
