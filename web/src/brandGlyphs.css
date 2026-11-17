@@ -66,6 +66,7 @@
   --brand-apprise-forced0: #3fa9a6;
   --brand-apprise-forced1: #319491;
   --brand-apprise-forced2: #a6e8de;
+  --brand-shoutrrr-0: #f5d089;
 }
 
 @media (prefers-color-scheme: light) {
@@ -123,6 +124,7 @@
     --brand-apprise-forced0: #237171;
     --brand-apprise-forced1: #185858;
     --brand-apprise-forced2: #169e8d;
+    --brand-shoutrrr-0: #885d0c;
   }
 }
 
@@ -180,4 +182,5 @@
   --brand-apprise-forced0: #237171;
   --brand-apprise-forced1: #185858;
   --brand-apprise-forced2: #169e8d;
+  --brand-shoutrrr-0: #885d0c;
 }
