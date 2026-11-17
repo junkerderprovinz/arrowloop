@@ -81,7 +81,7 @@
   <releases>
     <release version="2.7.5" date="2026-11-17">
       <description>
-        <p>Notification channels are picked from tiles with each service's logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.</p>
+        <p>Shoutrrr joins the notification channels, every channel is picked from a tile with its logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.</p>
       </description>
       <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.5</url>
     </release>
