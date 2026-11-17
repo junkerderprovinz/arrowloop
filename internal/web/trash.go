@@ -420,7 +420,8 @@ func keptLimit(r *http.Request) int {
 // sideOf opens one end of one job, by the job's name and the word "left" or
 // "right". The path comes from the job's configuration, so a caller cannot
 // name a folder of its own. The volume is resolved first, as the runner does,
-// so a drive letter given to another disk is not opened.
+// so a drive letter given to another disk is not opened. A job that goes
+// through the VPN holds the tunnel until ctx ends.
 func (s *Server) sideOf(ctx context.Context, name, side string) (rclonefs.Fs, int, error) {
 	j, ok := s.Runner.Config().Find(name)
 	if !ok {
@@ -437,6 +438,10 @@ func (s *Server) sideOf(ctx context.Context, name, side string) (rclonefs.Fs, in
 	resolved, err := volume.Resolve(spec)
 	if err != nil {
 		return nil, http.StatusServiceUnavailable, fmt.Errorf("the drive the %s side lives on is not attached: %s", side, volume.Describe(spec))
+	}
+	ctx, err = s.throughVPN(ctx, j)
+	if err != nil {
+		return nil, http.StatusBadGateway, err
 	}
 	f, err := rclonefs.NewFs(ctx, job.Narrow(resolved))
 	if err != nil {

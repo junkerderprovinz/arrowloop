@@ -38,6 +38,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -173,6 +174,12 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	tunnel, err := vpnconn.New(vpnconn.Options{Dir: filepath.Dir(configPath), Key: key, Logf: desktopLog})
+	if err != nil {
+		return err
+	}
+	defer tunnel.Close()
+	runner.SetVPN(tunnel)
 	server := &web.Server{
 		History: hist, Runner: runner, UI: ui,
 		Placeholder:  webui.Placeholder,
@@ -182,6 +189,7 @@ func run() error {
 		Key:          key,
 		Log:          desktopLog,
 		Pairing:      paired,
+		VPN:          tunnel,
 		Deployment:   "desktop",
 	}
 	api = server.Handler()

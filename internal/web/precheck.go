@@ -24,7 +24,12 @@ func (s *Server) checkJob(w http.ResponseWriter, r *http.Request) {
 	opt := precheck.Opts{NoEstimate: r.URL.Query().Get("estimate") == "false"}
 
 	// The request's context, so navigating away stops the listing.
-	report := precheck.Check(r.Context(), j, opt)
+	ctx, err := s.throughVPN(r.Context(), j)
+	if err != nil {
+		writeError(w, http.StatusBadGateway, err)
+		return
+	}
+	report := precheck.Check(ctx, j, opt)
 
 	// 200 with a verdict: an unplugged drive answers the question rather than
 	// failing the request.

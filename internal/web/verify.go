@@ -37,7 +37,12 @@ func (s *Server) verifyJob(w http.ResponseWriter, r *http.Request) {
 
 	// The request's context: navigating away stops a listing nobody is
 	// waiting for, unlike a run, which moves files.
-	report, err := verify.Check(r.Context(), j, opt)
+	ctx, err := s.throughVPN(r.Context(), j)
+	if err != nil {
+		writeError(w, http.StatusBadGateway, err)
+		return
+	}
+	report, err := verify.Check(ctx, j, opt)
 	if err != nil {
 		// The comparison could not be made; an empty 200 would read as a clean
 		// bill of health.

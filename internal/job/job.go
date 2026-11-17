@@ -476,6 +476,12 @@ type Job struct {
 	// job. See Defaults.FoldCase.
 	FoldCase *bool `json:"foldCase,omitempty"`
 
+	// VPN sends every connection the job's runs make through the built-in
+	// VPN set up in the settings, which comes up for the run and goes down
+	// after the last run that needs it. A run whose tunnel does not come up
+	// fails rather than syncing over the machine's own network.
+	VPN bool `json:"vpn,omitempty"`
+
 	// Before and After are shell commands run around every run of the job.
 	// Before failing cancels the run. They can only be written in the file
 	// itself: every save from the interface keeps what the file on disk says,

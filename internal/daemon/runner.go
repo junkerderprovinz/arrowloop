@@ -31,6 +31,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // ErrAlreadyRunning is returned when a job is asked for while the same job is
@@ -91,6 +92,9 @@ type Runner struct {
 	// cfg and note change together on a reload.
 	cfg  *job.Config
 	note *notify.Dispatcher
+	// vpn brings the tunnel up for the jobs that go through it; nil where the
+	// engine has none.
+	vpn *vpnconn.Manager
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
 	// requested holds the jobs another app asked for while they ran; see
@@ -337,8 +341,14 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		checkOut = r.checkIn(ctx, name)
 	}
 	if err == nil {
-		res, p, err = do(ctx, j, live)
-		err = awayFrom(err)
+		// Held from here, once the job has its turn and its drive, so a job
+		// waiting for either keeps no tunnel up.
+		runCtx, done, verr := r.ThroughVPN(ctx, j)
+		if err = verr; err == nil {
+			res, p, err = do(runCtx, j, live)
+			done()
+			err = awayFrom(err)
+		}
 	}
 
 	// A plan a brake refused holds the job. It is not a failure, or the retries

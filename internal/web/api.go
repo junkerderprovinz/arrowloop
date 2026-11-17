@@ -38,6 +38,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // Server answers the browser. It holds no configuration of its own: the runner
@@ -123,6 +124,10 @@ type Server struct {
 	// Ports are where the instances of the group listen, for an address the
 	// group remembers; empty means ArrowLoop's default port.
 	Ports []int
+
+	// VPN brings the tunnel up for the jobs that go through it; nil where the
+	// engine has none, as on a phone.
+	VPN *vpnconn.Manager
 
 	// Deployment is what this instance tells the others of its group it is:
 	// "container", "server", "desktop" or "phone".
@@ -226,6 +231,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/settings", s.readSettings)
 	mux.HandleFunc("PUT /api/settings", s.writeSettings)
 	mux.HandleFunc("POST /api/notify/test", s.testNotify)
+	if s.VPN != nil {
+		s.vpnRoutes(mux)
+	}
 	mux.HandleFunc("GET /api/config/raw", s.readRawConfig)
 	mux.HandleFunc("PUT /api/config/raw", s.replaceConfig)
 	mux.HandleFunc("GET /api/config/backups", s.listBackups)
