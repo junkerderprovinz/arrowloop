@@ -14,7 +14,7 @@ import {
 import { api, type Job, type Remote, type Run } from "../api";
 import { CardMenu, type CardAction } from "../CardMenu";
 import { clock } from "../clock";
-import { Glyph } from "../glyphs";
+import { GLYPH, Glyph } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { failureLine } from "../../../web/src/lib/failure";
@@ -22,6 +22,7 @@ import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
 import { byJobOrder, stepJob } from "../../../web/src/lib/jobOrder";
 import { mayRun, mayRunAll } from "../fileAccess";
+import { barFit, jobsBar, type BarButton } from "../jobsBar";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
@@ -43,11 +44,11 @@ import {
   CardHead,
   Empty,
   FAB_ROOM,
-  Fab,
   Floating,
   MovingList,
   Press,
   useHue,
+  useSideRoom,
   useTheme,
 } from "../ui";
 
@@ -253,23 +254,18 @@ export function Jobs() {
   };
   const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
   const paused = !!engine.settings?.pauseAutomatic;
-  const more = [
-    ...(ready.length > 0
-      ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void runAll() }]
-      : []),
-    ...(running.length > 0
-      ? [{ label: t("phone.stopAll"), glyph: "IconStop", onPress: () => void all(running.map((j) => api.stop(j.name))) }]
-      : []),
-    ...(engine.settings
-      ? [
-          {
-            label: t(paused ? "automatic.resume" : "automatic.pause"),
-            glyph: paused ? "IconPlay" : "IconPause",
-            onPress: () => void engine.update({ pauseAutomatic: !paused }),
-          },
-        ]
-      : []),
-  ];
+  const bar = jobsBar({
+    ready: ready.length,
+    running: running.length,
+    paused,
+    settingsLoaded: !!engine.settings,
+  });
+  const press: Record<BarButton["id"], () => void> = {
+    automatic: () => void engine.update({ pauseAutomatic: !paused }),
+    runAll: () => void runAll(),
+    stopAll: () => void all(running.map((j) => api.stop(j.name))),
+    add: () => nav.navigate("JobEdit", {}),
+  };
 
   const compact = jobView === "compact";
 
@@ -351,14 +347,70 @@ export function Jobs() {
           />
         </MoveScope>
       </View>
-      {/* The screen's rarer actions, quiet beside the one accent. */}
-      {more.length > 0 ? (
-        <View style={styles.moreSlot}>
-          <CardMenu items={more} floating />
-        </View>
-      ) : null}
-      <Fab label={t("edit.add")} labelKey="edit.add" onPress={() => nav.navigate("JobEdit", {})} />
+      <JobsBar buttons={bar} onPress={(id) => press[id]()} />
     </Floating>
+  );
+}
+
+/**
+ * The list's three actions side by side at the foot of the screen, equally
+ * wide. Each word is measured at the buttons' type, so a long translation or
+ * a large font turns the row into glyphs instead of cutting a word short.
+ */
+function JobsBar({ buttons, onPress }: { buttons: BarButton[]; onPress: (id: BarButton["id"]) => void }) {
+  const { t } = useT();
+  const { p, labels } = useTheme();
+  const side = useSideRoom();
+  const [room, setRoom] = useState(0);
+  const [words, setWords] = useState<Record<string, number>>({});
+  const fit = barFit(
+    labels,
+    buttons.map((b) => words[t(b.label)]),
+    { room, gap: space.sm, pad: space.sm, glyph: GLYPH },
+  );
+  return (
+    <View style={[styles.bar, { paddingHorizontal: side, backgroundColor: p.background }]}>
+      <View
+        style={styles.barMeasure}
+        pointerEvents="none"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        {buttons.map((b) => {
+          const word = t(b.label);
+          return (
+            <Text
+              key={b.id}
+              numberOfLines={1}
+              style={styles.barWord}
+              onLayout={(e) => {
+                const width = Math.ceil(e.nativeEvent.layout.width);
+                setWords((known) => (known[word] === width ? known : { ...known, [word]: width }));
+              }}
+            >
+              {word}
+            </Text>
+          );
+        })}
+      </View>
+      <View style={styles.barRow} onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
+        {buttons.map((b) => (
+          <View key={b.id} style={styles.barSlot}>
+            <Button
+              label={t(b.label)}
+              spoken={t(b.spoken)}
+              glyph={fit === "words" ? undefined : b.glyph}
+              glyphOnly={fit === "glyphs"}
+              tone={b.tone}
+              disabled={b.disabled}
+              wide={false}
+              snug
+              onPress={() => onPress(b.id)}
+            />
+          </View>
+        ))}
+      </View>
+    </View>
   );
 }
 
@@ -460,7 +512,7 @@ function JobCard({
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
           what the hold button does. The control that goes ahead sits on the
-          right. Both are quiet, since the floating button is the screen's one
+          right. Both are quiet, since Add at the foot is the screen's one
           accent. */}
       <View style={styles.actions}>
         <Button
@@ -670,7 +722,7 @@ const styles = StyleSheet.create({
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
   findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },
   failure: { fontSize: text.subline, lineHeight: 18 },
-  // Room at the end so the floating button does not cover the last card.
+  // Room at the end so the bar at the foot does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
   status: { gap: space.sm, alignSelf: "stretch", alignItems: "flex-start" },
   // A touch target of its own, though the badge inside stays small.
@@ -678,6 +730,10 @@ const styles = StyleSheet.create({
   quiet: { flexDirection: "row", alignItems: "center", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
-  // Left of the floating button, at its height.
-  moreSlot: { position: "absolute", right: space.lg + TOUCH + space.sm * 2, bottom: space.lg },
+  bar: { position: "absolute", left: 0, right: 0, bottom: 0, paddingTop: space.sm, paddingBottom: space.lg },
+  barRow: { flexDirection: "row", gap: space.sm },
+  barSlot: { flex: 1, minWidth: 0 },
+  // Invisible copies of the words at the buttons' type, for their one-line widths.
+  barMeasure: { position: "absolute", left: 0, top: 0, opacity: 0, alignItems: "flex-start" },
+  barWord: { fontSize: text.body, fontWeight: "600" },
 });
