@@ -10,6 +10,7 @@ vi.mock('../../lib/api', async (actual) => ({
     settings: () => Promise.resolve({}),
     saveSettings: () => Promise.resolve({}),
     autoBackups: () => Promise.resolve({ on: false, folder: '', files: [], last: null }),
+    capabilities: () => Promise.resolve({ window: true, vpn: false, version: 'test' }),
   },
 }))
 vi.mock('../../lib/toast', () => ({ useToast: () => () => {} }))

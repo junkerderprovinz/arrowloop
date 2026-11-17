@@ -58,6 +58,12 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
         { key: 'engine.history', hint: 'engine.historyHint' },
       ],
     },
+    {
+      title: 'vpn.title',
+      hint: 'vpn.hint',
+      rows: [{ key: 'vpn.jobs', hint: 'vpn.jobsHint' }],
+      body: ['vpn.setUp', 'vpn.custom', 'vpn.test'],
+    },
   ],
   look: [
     {

@@ -79,9 +79,12 @@ func TestABrokenConfigIsRefusedWithItsCode(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
-	var out map[string]string
+	var out struct {
+		Code   string            `json:"code"`
+		Values map[string]string `json:"values"`
+	}
 	json.NewDecoder(resp.Body).Decode(&out)
-	if resp.StatusCode != http.StatusBadRequest || out["code"] != vpnconn.CodeConfigInvalid || out["field"] != "config" {
+	if resp.StatusCode != http.StatusBadRequest || out.Code != vpnconn.CodeConfigInvalid || out.Values["field"] != "config" {
 		t.Errorf("answered %s %v", resp.Status, out)
 	}
 }

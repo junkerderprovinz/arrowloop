@@ -72,6 +72,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.notifyTiles',
         names: { add: 'notify.add' },
       },
+      {
+        id: 'vpn',
+        at: ['/settings/general'],
+        where: ['nav.settings', 'settings.general'],
+        text: 'new.change.vpn',
+        names: { vpn: 'edit.vpn' },
+      },
     ],
   },
   {

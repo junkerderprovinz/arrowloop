@@ -7,6 +7,7 @@ import type { RefusedCertificate } from './certificate'
 import type { Failure } from './failure'
 import type { ImportPlan } from './importPlan'
 import type { Channel, Notify } from './notify'
+import type { VpnField, VpnState } from './vpn'
 
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
@@ -37,6 +38,8 @@ export type Job = {
   away?: string
   /** The last stored runs, newest first, at most fourteen. */
   recent: Run[]
+  /** The job's runs go through the built-in VPN. */
+  vpn?: boolean
 }
 
 export type { Reason } from './i18n'
@@ -317,6 +320,8 @@ export type RawJob = {
    */
   brakePercent?: number
   changePercent?: number
+  /** Sends every connection of the job's runs through the built-in VPN of the settings. */
+  vpn?: boolean
   /** Shell commands around every run. Only the file sets them; a save keeps them. */
   before?: string
   after?: string
@@ -971,6 +976,15 @@ export const api = {
    * fills in the secrets the page holds placeholders for, and a refusal comes
    * back as ok:false with a code to translate and the HTTP status, if any.
    */
+  /** The VPN settings: the providers, the one in use and where its tunnel stands. A login never comes back. */
+  vpn: () => request<VpnState>('/api/vpn'),
+  /** Stores a provider's login and makes it the one jobs go through. An empty field keeps what is stored. */
+  saveVpn: (id: string, fields: Partial<Record<VpnField, string>>) =>
+    request<VpnState>(`/api/vpn/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify({ fields }) }),
+  forgetVpn: (id: string) => request<VpnState>(`/api/vpn/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+  /** Brings the tunnel up as a run would, asks which address traffic leaves by, and takes it down. */
+  testVpn: () => request<{ ok: boolean; reason?: string; state: VpnState }>('/api/vpn/test', { method: 'POST' }),
+
   testNotify: (channel: Channel) =>
     request<{ ok: boolean; code?: string; status?: number; reason?: string }>('/api/notify/test', {
       method: 'POST',
@@ -1236,7 +1250,7 @@ export const api = {
 
   /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () =>
-    request<{ window: boolean; security?: boolean; pairing?: boolean; version: string }>('/api/capabilities'),
+    request<{ window: boolean; security?: boolean; pairing?: boolean; vpn?: boolean; version: string }>('/api/capabilities'),
 
   /** The versions this build is made of, for the Info tile. */
   /** `newRelease` is the newer release a container's daily check found. */

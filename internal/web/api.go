@@ -381,6 +381,8 @@ type jobView struct {
 	// Recent is the job's last stored runs, newest first, for the strip a job
 	// list draws beside each name.
 	Recent []history.Run `json:"recent"`
+	// VPN says the job's runs go through the built-in VPN.
+	VPN bool `json:"vpn,omitempty"`
 }
 
 // recentRuns is how many runs a job list shows per job.
@@ -432,7 +434,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			// Resolved, so an unset field and "both" look the same.
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name], Queued: queued[j.Name],
-			Recent: recent[j.Name],
+			Recent: recent[j.Name], VPN: j.VPN,
 		}
 		if v.Recent == nil {
 			v.Recent = []history.Run{}

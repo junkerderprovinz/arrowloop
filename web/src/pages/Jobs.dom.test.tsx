@@ -25,6 +25,7 @@ const orderJobs = vi.fn((names: string[]) => Promise.resolve({ jobs: names.lengt
 
 vi.mock('../lib/api', () => ({
   api: {
+    capabilities: () => Promise.resolve({ window: false, version: 'test' }),
     config: () => config(),
     saveConfig: (jobs: RawJob[]) => saveConfig(jobs),
     settings: () => Promise.resolve({}),

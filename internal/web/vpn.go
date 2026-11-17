@@ -76,7 +76,7 @@ func writeVPNError(w http.ResponseWriter, err error) {
 	}
 	out := map[string]any{"error": ref.Text, "code": ref.Code}
 	if ref.Field != "" {
-		out["field"] = ref.Field
+		out["values"] = map[string]string{"field": ref.Field}
 	}
 	writeJSON(w, ref.Status, out)
 }

@@ -350,6 +350,10 @@ export function JobForm({
         {...held}
       />
 
+      {/* Another instance has a VPN of its own or none, and keeps the
+          switch as its owner set it. */}
+      {!host.name && <VpnSwitch on={!!job.vpn} onChange={(vpn) => patch({ vpn: vpn || undefined })} />}
+
       <SubCard title={t('edit.schedule')}>
         <SettingRow label={t('edit.when')} {...held}>
           <span data-new="schedule-hs" className="flex max-w-full">
@@ -480,5 +484,36 @@ export function JobForm({
         </section>
       )}
     </div>
+  )
+}
+
+/**
+ * Whether the job's runs go through the built-in VPN, on an engine that has
+ * one. A job switched to it on an engine that has none, as one brought over
+ * from another machine, keeps the switch, so it can be switched off.
+ */
+export function VpnSwitch({ on, onChange }: { on: boolean; onChange: (next: boolean) => void }) {
+  const { t } = useT()
+  const [vpn, setVpn] = useState<{ offered: boolean; setUp: boolean } | null>(null)
+  useEffect(() => {
+    api
+      .capabilities()
+      .then(async (c) => setVpn(c.vpn ? { offered: true, setUp: (await api.vpn()).provider !== '' } : { offered: false, setUp: false }))
+      .catch(() => setVpn(null))
+  }, [])
+  if (!on && !vpn?.offered) return null
+  return (
+    <SubCard title={t('edit.connection')}>
+      <div data-new="vpn">
+        <SettingRow label={t('edit.vpn')} hint={t('edit.vpnHint')}>
+          <Toggle checked={on} onChange={onChange} label={t('edit.vpn')} hideLabel />
+        </SettingRow>
+      </div>
+      {on && vpn && !vpn.setUp && (
+        <p role="status" className="text-subline text-statusWarn">
+          {t(vpn.offered ? 'edit.vpnNone' : 'edit.vpnNotHere')}
+        </p>
+      )}
+    </SubCard>
   )
 }
