@@ -548,7 +548,6 @@ const fi: Translations = {
   'nav.trash': 'Roskakori',
   'overview.running': 'Käynnissä nyt',
   'overview.idle': 'Mitään ei ole juuri nyt käynnissä.',
-  'overview.noSpace': 'Tämä kohde ei kerro, kuinka täynnä se on.',
   'nav.overview': 'Yleiskatsaus',
   'overview.idleHint': 'Työt käyvät aikataulunsa mukaan tai kun käynnistät jonkin itse.',
   'overview.accounts': 'Liitetyt tilit',

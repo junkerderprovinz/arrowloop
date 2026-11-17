@@ -548,7 +548,6 @@ const eu: Translations = {
   'nav.trash': 'Zakarrontzia',
   'overview.running': 'Orain martxan',
   'overview.idle': 'Une honetan ez dabil ezer.',
-  'overview.noSpace': 'Helburu honek ez du esaten zenbateraino beteta dagoen.',
   'nav.overview': 'Ikuspegia',
   'overview.idleHint': 'Lanak beren programazioaren arabera abiatzen dira, edo eskuz abiarazten duzunean.',
   'overview.accounts': 'Konektatutako kontuak',

@@ -548,7 +548,6 @@ const uk: Translations = {
   'nav.trash': 'Кошик',
   'overview.running': 'Зараз виконується',
   'overview.idle': 'Зараз нічого не виконується.',
-  'overview.noSpace': 'Ця ціль не каже, наскільки вона заповнена.',
   'nav.overview': 'Огляд',
   'overview.idleHint': 'Завдання виконуються за своїм розкладом або коли ти запускаєш одне вручну.',
   'overview.accounts': 'Підключені облікові записи',

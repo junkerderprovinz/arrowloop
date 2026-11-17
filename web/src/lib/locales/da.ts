@@ -548,7 +548,6 @@ const da: Translations = {
   'nav.trash': 'Papirkurv',
   'overview.running': 'Kører nu',
   'overview.idle': 'Der kører ikke noget lige nu.',
-  'overview.noSpace': 'Dette mål siger ikke, hvor fuldt det er.',
   'nav.overview': 'Oversigt',
   'overview.idleHint': 'Job kører efter deres tidsplan, eller når du selv starter et.',
   'overview.accounts': 'Tilsluttede konti',

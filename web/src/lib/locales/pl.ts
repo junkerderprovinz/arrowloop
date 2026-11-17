@@ -548,7 +548,6 @@ const pl: Translations = {
   'nav.trash': 'Kosz',
   'overview.running': 'Teraz trwa',
   'overview.idle': 'W tej chwili nic nie działa.',
-  'overview.noSpace': 'Ten cel nie mówi, jak bardzo jest pełny.',
   'nav.overview': 'Przegląd',
   'overview.idleHint': 'Zadania działają według swojego harmonogramu albo gdy uruchomisz jedno ręcznie.',
   'overview.accounts': 'Połączone konta',

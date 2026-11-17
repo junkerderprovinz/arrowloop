@@ -548,7 +548,6 @@ const ar: Translations = {
   'nav.trash': 'سلة المهملات',
   'overview.running': 'قيد التشغيل',
   'overview.idle': 'لا شيء قيد التشغيل الآن.',
-  'overview.noSpace': 'هذا الهدف لا يذكر مقدار امتلائه.',
   'nav.overview': 'نظرة عامة',
   'overview.idleHint': 'تعمل المهام حسب جدولها، أو عندما تبدأ واحدة بنفسك.',
   'overview.accounts': 'الحسابات المتصلة',

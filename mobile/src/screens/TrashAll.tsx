@@ -4,7 +4,7 @@ import { api, type Job, type TrashItem, type TrashSide } from "../api";
 import { dated } from "../clock";
 import { useT } from "../i18n";
 import { jobSides } from "../sides";
-import { bytes } from "../space";
+import { bytes } from "../usage";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { failureLine } from "../../../web/src/lib/failure";

@@ -548,7 +548,6 @@ const it: Translations = {
   'nav.trash': 'Cestino',
   'overview.running': 'In esecuzione',
   'overview.idle': 'Al momento non è in esecuzione nulla.',
-  'overview.noSpace': 'Questa destinazione non dice quanto è piena.',
   'nav.overview': 'Panoramica',
   'overview.idleHint': 'I lavori partono secondo la loro pianificazione, o quando ne avvii uno a mano.',
   'overview.accounts': 'Account collegati',

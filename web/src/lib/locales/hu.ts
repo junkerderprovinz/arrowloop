@@ -548,7 +548,6 @@ const hu: Translations = {
   'nav.trash': 'Kuka',
   'overview.running': 'Most fut',
   'overview.idle': 'Éppen semmi sem fut.',
-  'overview.noSpace': 'Ez a cél nem mondja meg, mennyire van tele.',
   'nav.overview': 'Áttekintés',
   'overview.idleHint': 'A feladatok az ütemezésük szerint futnak, vagy amikor kézzel indítasz egyet.',
   'overview.accounts': 'Csatlakoztatott fiókok',

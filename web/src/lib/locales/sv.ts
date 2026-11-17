@@ -548,7 +548,6 @@ const sv: Translations = {
   'nav.trash': 'Papperskorg',
   'overview.running': 'Körs nu',
   'overview.idle': 'Inget körs just nu.',
-  'overview.noSpace': 'Det här målet säger inte hur fullt det är.',
   'nav.overview': 'Översikt',
   'overview.idleHint': 'Jobb körs enligt sitt schema, eller när du startar ett för hand.',
   'overview.accounts': 'Anslutna konton',

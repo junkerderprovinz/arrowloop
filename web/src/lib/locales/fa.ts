@@ -548,7 +548,6 @@ const fa: Translations = {
   'nav.trash': 'سطل زباله',
   'overview.running': 'در حال اجرا',
   'overview.idle': 'همین حالا چیزی در حال اجرا نیست.',
-  'overview.noSpace': 'این مقصد نمی‌گوید چقدر پر است.',
   'nav.overview': 'نمای کلی',
   'overview.idleHint': 'کارها طبق زمان‌بندی خود اجرا می‌شوند، یا وقتی خودت یکی را شروع کنی.',
   'overview.accounts': 'حساب‌های متصل',

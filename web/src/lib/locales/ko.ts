@@ -548,7 +548,6 @@ const ko: Translations = {
   'nav.trash': '휴지통',
   'overview.running': '지금 실행 중',
   'overview.idle': '지금은 아무것도 실행되지 않습니다.',
-  'overview.noSpace': '이 대상은 얼마나 찼는지 알려주지 않습니다.',
   'nav.overview': '개요',
   'overview.idleHint': '작업은 일정에 따라, 또는 직접 시작할 때 실행됩니다.',
   'overview.accounts': '연결된 계정',

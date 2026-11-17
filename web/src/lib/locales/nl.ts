@@ -548,7 +548,6 @@ const nl: Translations = {
   'nav.trash': 'Prullenbak',
   'overview.running': 'Nu bezig',
   'overview.idle': 'Er loopt op dit moment niets.',
-  'overview.noSpace': 'Deze bestemming zegt niet hoe vol ze is.',
   'nav.overview': 'Overzicht',
   'overview.idleHint': 'Taken lopen volgens hun planning, of wanneer je er zelf een start.',
   'overview.accounts': 'Verbonden accounts',

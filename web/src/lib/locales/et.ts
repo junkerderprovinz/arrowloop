@@ -548,7 +548,6 @@ const et: Translations = {
   'nav.trash': 'Prügikast',
   'overview.running': 'Praegu töötab',
   'overview.idle': 'Praegu ei tööta midagi.',
-  'overview.noSpace': 'See sihtkoht ei ütle, kui täis ta on.',
   'nav.overview': 'Ülevaade',
   'overview.idleHint': 'Tööd käivituvad ajakava järgi või kui sa ise ühe käivitad.',
   'overview.accounts': 'Ühendatud kontod',

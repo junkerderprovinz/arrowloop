@@ -548,7 +548,6 @@ const gl: Translations = {
   'nav.trash': 'Lixo',
   'overview.running': 'Executándose agora',
   'overview.idle': 'Agora mesmo non se executa nada.',
-  'overview.noSpace': 'Este destino non di o cheo que está.',
   'nav.overview': 'Resumo',
   'overview.idleHint': 'As tarefas execútanse segundo a súa programación, ou cando inicias unha a man.',
   'overview.accounts': 'Contas conectadas',

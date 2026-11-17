@@ -548,7 +548,6 @@ const th: Translations = {
   'nav.trash': 'ถังขยะ',
   'overview.running': 'กำลังทำงาน',
   'overview.idle': 'ตอนนี้ยังไม่มีอะไรทำงานอยู่',
-  'overview.noSpace': 'ปลายทางนี้ไม่บอกว่าเต็มแค่ไหน',
   'nav.overview': 'ภาพรวม',
   'overview.idleHint': 'งานจะทำงานตามกำหนดการ หรือเมื่อคุณเริ่มเองด้วยมือ',
   'overview.accounts': 'บัญชีที่เชื่อมต่อ',

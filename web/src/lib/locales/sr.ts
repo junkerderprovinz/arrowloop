@@ -548,7 +548,6 @@ const sr: Translations = {
   'nav.trash': 'Корпа',
   'overview.running': 'Тренутно ради',
   'overview.idle': 'Тренутно ништа не ради.',
-  'overview.noSpace': 'Ово одредиште не каже колико је пуно.',
   'nav.overview': 'Преглед',
   'overview.idleHint': 'Послови се покрећу по свом распореду или када неки покренеш ручно.',
   'overview.accounts': 'Повезани налози',

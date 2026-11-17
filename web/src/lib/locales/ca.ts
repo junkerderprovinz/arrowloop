@@ -548,7 +548,6 @@ const ca: Translations = {
   'nav.trash': 'Paperera',
   'overview.running': 'S\'està executant',
   'overview.idle': 'Ara mateix no s\'executa res.',
-  'overview.noSpace': 'Aquest destí no diu com de ple està.',
   'nav.overview': 'Resum',
   'overview.idleHint': 'Les tasques s\'executen segons la seva programació, o quan en engegues una a mà.',
   'overview.accounts': 'Comptes connectats',

@@ -548,7 +548,6 @@ const lt: Translations = {
   'nav.trash': 'Šiukšlinė',
   'overview.running': 'Dabar vykdoma',
   'overview.idle': 'Šiuo metu niekas nevykdoma.',
-  'overview.noSpace': 'Ši paskirtis nesako, kiek ji pilna.',
   'nav.overview': 'Apžvalga',
   'overview.idleHint': 'Užduotys vykdomos pagal savo tvarkaraštį arba kai paleidi vieną ranka.',
   'overview.accounts': 'Prijungtos paskyros',

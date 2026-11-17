@@ -548,7 +548,6 @@ const vi: Translations = {
   'nav.trash': 'Thùng rác',
   'overview.running': 'Đang chạy',
   'overview.idle': 'Hiện không có gì đang chạy.',
-  'overview.noSpace': 'Đích này không cho biết nó đầy đến đâu.',
   'nav.overview': 'Tổng quan',
   'overview.idleHint': 'Các công việc chạy theo lịch của chúng, hoặc khi bạn tự khởi động một công việc.',
   'overview.accounts': 'Tài khoản đã kết nối',

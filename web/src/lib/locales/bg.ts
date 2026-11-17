@@ -548,7 +548,6 @@ const bg: Translations = {
   'nav.trash': 'Кошче',
   'overview.running': 'Тече сега',
   'overview.idle': 'В момента не тече нищо.',
-  'overview.noSpace': 'Тази цел не казва колко е пълна.',
   'nav.overview': 'Преглед',
   'overview.idleHint': 'Задачите се изпълняват по график или когато стартираш някоя на ръка.',
   'overview.accounts': 'Свързани профили',

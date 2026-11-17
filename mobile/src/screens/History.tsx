@@ -33,7 +33,7 @@ import {
   useTheme,
 } from "../ui";
 import { clock } from "../clock";
-import { bytes } from "../space";
+import { bytes } from "../usage";
 
 /**
  * The history tab: a log of every file touched, and a list of runs behind a

@@ -548,7 +548,6 @@ const is: Translations = {
   'nav.trash': 'Rusl',
   'overview.running': 'Í gangi núna',
   'overview.idle': 'Ekkert er í gangi núna.',
-  'overview.noSpace': 'Þessi áfangastaður segir ekki hversu fullur hann er.',
   'nav.overview': 'Yfirlit',
   'overview.idleHint': 'Verk keyra eftir áætlun sinni, eða þegar þú ræsir eitt sjálfur.',
   'overview.accounts': 'Tengdir reikningar',

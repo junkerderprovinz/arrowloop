@@ -548,7 +548,6 @@ const sl: Translations = {
   'nav.trash': 'Koš',
   'overview.running': 'Trenutno teče',
   'overview.idle': 'Trenutno ne teče nič.',
-  'overview.noSpace': 'Ta cilj ne pove, kako poln je.',
   'nav.overview': 'Pregled',
   'overview.idleHint': 'Opravila tečejo po svojem urniku ali ko katero zaženeš ročno.',
   'overview.accounts': 'Povezani računi',
