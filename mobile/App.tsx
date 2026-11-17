@@ -538,7 +538,7 @@ function RailEntry({
   narrow: boolean;
   onPress: () => void;
 }) {
-  const { p, corners, barLabels, accent, hueAt } = useTheme();
+  const { p, corners, barLabels, accent, accentInk, hueAt } = useTheme();
   const press = usePress();
   const hue = hueAt(index);
   const fill = hue ?? accent;
@@ -571,8 +571,8 @@ function RailEntry({
     >
       {showGlyph ? (
         <View>
-          {/* With the rainbow on, a quiet row's glyph carries its own colour, as on the web. */}
-          <Glyph name={glyph} color={on ? ink : (hue ?? p.textSub)} size={20} />
+          {/* A quiet row's glyph carries its colour, as on the web. */}
+          <Glyph name={glyph} color={on ? ink : (hue ?? accentInk)} size={20} />
           {narrow ? badge : null}
         </View>
       ) : null}
