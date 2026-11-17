@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.7.5" date="2026-11-17">
+      <description>
+        <p>Notification channels are picked from tiles with each service's logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.5</url>
+    </release>
     <release version="2.7.4" date="2026-11-17">
       <description>
         <p>On a tablet the phone app turns into landscape with the device, and phones stay upright.</p>

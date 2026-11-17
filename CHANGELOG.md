@@ -8,6 +8,22 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.7.5 - 2026-11-17
+
+Notification channels are picked from tiles with each service's logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.
+
+## 🎨 Design
+
+- **Notification channels are picked from tiles.** "Add a channel" shows every service as a tile with its logo, in the same window the target picker uses, and a search finds a service by name.
+- **The Jobs tab on the phone has its three actions side by side.** Pause automatic runs, Run all and Add stand as three equal buttons at the foot of the list, where two of them used to hide behind More. While a job runs, Stop all takes the place of Run all, and where the words do not fit, the row shows its symbols.
+- **The overview's status sits below the title.** "All is well" is one size smaller than "Overview". Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+
+## 🐛 Fixed
+
+- **The More menu on the phone shows its whole text.** Menus and dropdowns grow as wide as their longest entry. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+- **The run time no longer looks like a clock time.** The overview shows "31 s" instead of 0:31. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+- **A target that does not say how full it is shows no figure.** That goes for the web and the phone, where Nextcloud used to claim 0 B in use. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+
 ## 2.7.4 - 2026-11-17
 
 On a tablet the phone app turns into landscape with the device, and phones stay upright.
