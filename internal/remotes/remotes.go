@@ -354,14 +354,27 @@ func About(ctx context.Context, name string) (Usage, error) {
 	if got == nil {
 		return Usage{}, nil
 	}
-	return Usage{
-		Supported: true,
-		Total:     got.Total,
-		Used:      got.Used,
-		Free:      got.Free,
-		Trashed:   got.Trashed,
-		Other:     got.Other,
-	}, nil
+	backend, _ := config.LoadedData().GetValue(name, "type")
+	return usageOf(backend, got), nil
+}
+
+// usageOf drops the zeros that mean unknown: a total of zero, and zero in use
+// from a WebDAV server without a quota, since Nextcloud reports a home folder
+// it has not counted as empty and leaves mounted storage out.
+func usageOf(backend string, got *rclonefs.Usage) Usage {
+	u := Usage{Total: got.Total, Used: got.Used, Free: got.Free, Trashed: got.Trashed, Other: got.Other}
+	zero := func(v *int64) bool { return v != nil && *v == 0 }
+	if zero(u.Total) {
+		u.Total = nil
+		if zero(u.Free) {
+			u.Free = nil
+		}
+	}
+	if backend == "webdav" && u.Total == nil && zero(u.Used) {
+		u.Used = nil
+	}
+	u.Supported = u.Total != nil || u.Used != nil || u.Free != nil || u.Trashed != nil || u.Other != nil
+	return u
 }
 
 // isEmptyTarget reports whether an error only means the target does not exist
