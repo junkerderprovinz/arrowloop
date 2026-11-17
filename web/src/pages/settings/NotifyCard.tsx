@@ -1,12 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
+import {
+  BRAND_TILES,
+  IconApprise,
+  IconDiscord,
+  IconGotify,
+  IconHealthchecks,
+  IconMatrix,
+  IconNtfy,
+  IconSlack,
+} from '../../components/brandGlyphs'
 import { Choice, FieldRow, Lines, NumberField, Text } from '../../components/Field'
-import { IconCheck, IconClose } from '../../components/glyphs'
+import { IconAdd, IconCheck, IconClose, IconLink, IconMail } from '../../components/glyphs'
+import { PickTiles } from '../../components/PickTiles'
+import { PickerWindow } from '../../components/PickerWindow'
 import { Selector } from '../../components/Selector'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api } from '../../lib/api'
 import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
+import { matchesQuery } from '../../lib/fold'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { SubCard } from '../../lib/glimstone/SubCard'
@@ -46,6 +59,26 @@ const HINTS: Record<Kind, TranslationKey> = {
   healthchecks: 'notify.healthchecksHint',
 }
 
+/**
+ * Each service's own mark, and the BRAND_TILES entry its tile lights up in.
+ * Email and webhooks belong to nobody, so they wear the app's own glyphs and
+ * light up in the accent.
+ */
+const MARKS: Record<Kind, { mark: ReactNode; brand?: string }> = {
+  discord: { mark: <IconDiscord />, brand: 'IconDiscord' },
+  slack: { mark: <IconSlack />, brand: 'IconSlack' },
+  ntfy: { mark: <IconNtfy />, brand: 'IconNtfy' },
+  gotify: { mark: <IconGotify />, brand: 'IconGotify' },
+  matrix: { mark: <IconMatrix />, brand: 'IconMatrix' },
+  smtp: { mark: <IconMail /> },
+  apprise: { mark: <IconApprise />, brand: 'IconApprise' },
+  webhook: { mark: <IconLink /> },
+  healthchecks: { mark: <IconHealthchecks />, brand: 'IconHealthchecks' },
+}
+
+/** The open standards, which stand after the services in a section of their own. */
+const STANDARDS: Kind[] = ['smtp', 'webhook']
+
 /** What a failed test answers with, by the code the engine gives. */
 const FAILURES: Record<string, TranslationKey> = {
   invalid: 'notify.fail.invalid',
@@ -83,6 +116,7 @@ export function NotifyCard({
 }) {
   const { t } = useT()
   const [jobs, setJobs] = useState<string[]>([])
+  const [choosing, setChoosing] = useState(false)
   useEffect(() => {
     api
       .jobs()
@@ -110,15 +144,72 @@ export function NotifyCard({
         />
       ))}
 
-      <SettingsRow label={t('notify.add')}>
-        <Choice<'' | Kind>
-          label={t('notify.add')}
-          value=""
-          onChange={(kind) => kind && setChannels([...channels, newChannel(kind, channels)])}
-          options={[{ value: '', label: t('notify.addChoose') }, ...KINDS.map((k) => ({ value: k, label: kindLabel(k) }))]}
+      <div className="flex justify-end" data-new="notify-tiles">
+        <Button label={t('notify.add')} labelKey="notify.add" glyph={<IconAdd />} onClick={() => setChoosing(true)} />
+      </div>
+      {choosing && (
+        <ChannelPicker
+          kindLabel={kindLabel}
+          hueIndex={hueIndex}
+          onPick={(kind) => {
+            setChoosing(false)
+            setChannels([...channels, newChannel(kind, channels)])
+          }}
+          onClose={() => setChoosing(false)}
         />
-      </SettingsRow>
+      )}
     </Card>
+  )
+}
+
+/**
+ * The services as tiles with their marks, the way a target's product is
+ * picked, each explained in its bubble. The search finds a service by the
+ * name shown and by the kind's own name, so "smtp" finds Email.
+ */
+function ChannelPicker({
+  kindLabel,
+  hueIndex,
+  onPick,
+  onClose,
+}: {
+  kindLabel: (kind: Kind) => string
+  hueIndex: number
+  onPick: (kind: Kind) => void
+  onClose: () => void
+}) {
+  const { t } = useT()
+  const [query, setQuery] = useState('')
+  const tiles = (standard: boolean) =>
+    KINDS.filter((k) => STANDARDS.includes(k) === standard && matchesQuery(query, [kindLabel(k), k])).map((k) => ({
+      id: k,
+      name: kindLabel(k),
+      mark: MARKS[k].mark,
+      lit: MARKS[k].brand ? BRAND_TILES[MARKS[k].brand] : undefined,
+      hint: t(HINTS[k]),
+      bubble: true,
+    }))
+  const sections = [
+    { id: 'services', title: t('notify.pickServices'), tiles: tiles(false) },
+    { id: 'standards', title: t('notify.pickStandards'), tiles: tiles(true) },
+  ].filter((s) => s.tiles.length > 0)
+
+  return (
+    <PickerWindow
+      title={t('notify.add')}
+      hint={t('notify.addHint')}
+      hueIndex={hueIndex}
+      query={query}
+      onQuery={setQuery}
+      searchLabel={t('notify.search')}
+      none={t('notify.searchNone', { query: query.trim() })}
+      sections={sections.map((s) => ({
+        id: s.id,
+        title: s.title,
+        body: <PickTiles tiles={s.tiles} onPick={(id) => onPick(id as Kind)} />,
+      }))}
+      onClose={onClose}
+    />
   )
 }
 
