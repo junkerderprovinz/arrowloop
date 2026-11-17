@@ -4,6 +4,7 @@ import { isLocalTarget } from "../../web/src/lib/localTarget";
 import { api, type Remote, type Usage } from "./api";
 import { useT } from "./i18n";
 import { Badge, Caption, Meter, Press, Tip } from "./ui";
+import { usageShown } from "./usage";
 
 // How full a target is, fetched and drawn for both the overview and the
 // targets list.
@@ -24,18 +25,6 @@ export function isAccount(remote: Remote): boolean {
 export function account(remote: Remote): { who?: string; where?: string } {
   const said = (key: string) => remote.settings.find((s) => s.key === key && !s.secret)?.value;
   return { who: said("user"), where: said("url") ?? said("endpoint") ?? said("remote") };
-}
-
-export function bytes(n: number | undefined): string {
-  if (n === undefined) return "?";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  let value = n;
-  let unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit += 1;
-  }
-  return `${value < 10 && unit > 0 ? value.toFixed(1) : Math.round(value)} ${units[unit]}`;
 }
 
 /**
@@ -139,34 +128,17 @@ export function ReachBadge({ reach }: { reach: Reach | undefined }) {
   );
 }
 
-/**
- * The usage bar and its caption, drawn from whichever numbers the service
- * reported: a bucket has none, a disk has all three.
- */
+/** The usage bar and its caption, or nothing when the target gave no figure. */
 export function Room({ room, hue }: { room: Room; hue?: string }) {
   const { t } = useT();
   // An unreachable target already shows a badge on its card.
   if (!room || unreachable(room) || room === "gone") return null;
-  if (!room.supported) return <Caption>{t("overview.noSpace")}</Caption>;
-
-  const total = room.total ?? 0;
-  const free = room.free;
-  // Zero used is a real answer, hence `??`.
-  const used = room.used ?? (total > 0 && free !== undefined ? total - free : undefined);
-
-  // WebDAV reports bytes in use without a total, and zero when empty.
-  if (total <= 0 && used === undefined) return <Caption>{t("overview.noSpace")}</Caption>;
-
+  const shown = usageShown(room, t);
+  if (!shown) return null;
   return (
     <>
-      {total > 0 ? <Meter done={used ?? 0} total={total} hue={hue} slosh /> : null}
-      <Caption>
-        {total > 0 && free !== undefined
-          ? t("targets.spaceFree", { free: bytes(free), total: bytes(total) })
-          : used !== undefined
-            ? t("targets.spaceUsed", { used: bytes(used) })
-            : t("targets.spaceTotal", { total: bytes(total) })}
-      </Caption>
+      {shown.meter ? <Meter done={shown.meter.done} total={shown.meter.total} hue={hue} slosh /> : null}
+      <Caption>{shown.line}</Caption>
     </>
   );
 }

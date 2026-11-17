@@ -548,7 +548,6 @@ const ms: Translations = {
   'nav.trash': 'Tong sampah',
   'overview.running': 'Sedang berjalan',
   'overview.idle': 'Tiada apa-apa sedang berjalan.',
-  'overview.noSpace': 'Destinasi ini tidak menyatakan sepenuh mana ia.',
   'nav.overview': 'Gambaran',
   'overview.idleHint': 'Tugas berjalan mengikut jadualnya, atau apabila anda memulakan satu sendiri.',
   'overview.accounts': 'Akaun bersambung',

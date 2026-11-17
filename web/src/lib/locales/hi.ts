@@ -548,7 +548,6 @@ const hi: Translations = {
   'nav.trash': 'रद्दी',
   'overview.running': 'अभी चल रहा है',
   'overview.idle': 'अभी कुछ नहीं चल रहा।',
-  'overview.noSpace': 'यह गंतव्य नहीं बताता कि वह कितना भरा है।',
   'nav.overview': 'अवलोकन',
   'overview.idleHint': 'काम अपने शेड्यूल पर चलते हैं, या जब आप खुद कोई शुरू करते हैं।',
   'overview.accounts': 'जुड़े हुए खाते',

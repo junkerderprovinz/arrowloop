@@ -548,7 +548,6 @@ const cs: Translations = {
   'nav.trash': 'Koš',
   'overview.running': 'Právě běží',
   'overview.idle': 'Nic právě neběží.',
-  'overview.noSpace': 'Tento cíl neříká, jak je plný.',
   'nav.overview': 'Přehled',
   'overview.idleHint': 'Úlohy běží podle svého plánu, nebo když nějakou spustíš ručně.',
   'overview.accounts': 'Připojené účty',

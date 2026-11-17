@@ -548,7 +548,6 @@ const id: Translations = {
   'nav.trash': 'Tempat sampah',
   'overview.running': 'Sedang berjalan',
   'overview.idle': 'Saat ini tidak ada yang berjalan.',
-  'overview.noSpace': 'Tujuan ini tidak menyebut seberapa penuh isinya.',
   'nav.overview': 'Ringkasan',
   'overview.idleHint': 'Tugas berjalan sesuai jadwalnya, atau saat kamu menjalankan satu secara manual.',
   'overview.accounts': 'Akun terhubung',

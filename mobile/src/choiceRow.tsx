@@ -12,6 +12,7 @@ import {
 import Svg, { Path } from "react-native-svg";
 
 import { Glyph } from "./glyphs";
+import { menuRoom } from "./layout";
 import { contrastOn, endEdge, raised, space, text, TOUCH } from "./theme";
 import { AxisLabel, Choice, InfoBubble, Press, Row, useTheme } from "./ui";
 import { perRowFor } from "../../web/src/lib/segmentLayout";
@@ -148,17 +149,19 @@ function Dropdown<T extends string>({
   const { p, corners, accent, hueAt } = useTheme();
   const screen = useWindowDimensions();
   const button = useRef<View>(null);
-  const [at, setAt] = useState<{ top: number; edge: { left?: number; right?: number }; width: number } | null>(null);
+  const [at, setAt] = useState<{ top: number; edge: { left?: number; right?: number }; width: number; room: number } | null>(null);
   const current = options.find((o) => o.value === value);
   const fill = (hue !== undefined ? hueAt(hue) : undefined) ?? accent;
 
   const open = () => {
     button.current?.measureInWindow((x, y, w, h) => {
       const height = options.length * (TOUCH + space.xs) + space.sm * 2;
+      const edge = endEdge(x, w, screen.width);
       setAt({
         top: y + h + space.xs + height > screen.height ? Math.max(space.sm, y - height - space.xs) : y + h + space.xs,
-        edge: endEdge(x, w, screen.width),
+        edge,
         width: w,
+        room: menuRoom(screen.width, edge.left ?? edge.right ?? 0, space.lg),
       });
     });
   };
@@ -184,7 +187,7 @@ function Dropdown<T extends string>({
             accessibilityLabel={label}
             style={[
               styles.list,
-              { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge, minWidth: Math.max(200, at?.width ?? 0) },
+              { backgroundColor: p.surface, ...corners.card, top: at?.top, ...at?.edge, minWidth: Math.max(200, at?.width ?? 0), maxWidth: at?.room },
               raised(p),
             ]}
             onPress={() => {}}
@@ -204,7 +207,7 @@ function Dropdown<T extends string>({
                   }}
                   style={[styles.option, { backgroundColor: on ? fill : p.surface2, ...corners.control }]}
                 >
-                  <Text style={[styles.optionText, { color: ink }]} numberOfLines={1}>
+                  <Text style={[styles.optionText, { color: ink }]} numberOfLines={2}>
                     {o.label}
                   </Text>
                   {o.hint ? <InfoBubble tip={o.hint} on={on ? ink : undefined} /> : null}
@@ -280,7 +283,8 @@ const styles = StyleSheet.create({
   dimmed: { opacity: 0.4 },
 
   ground: { flex: 1 },
-  list: { position: "absolute", maxWidth: 320, padding: space.sm, gap: space.xs, elevation: 8 },
+  list: { position: "absolute", padding: space.sm, gap: space.xs, elevation: 8 },
   option: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: TOUCH, paddingHorizontal: space.md },
-  optionText: { flex: 1, fontSize: text.body },
+  // Its own width as the basis, as in CardMenu, so the list grows to the label.
+  optionText: { flexGrow: 1, flexShrink: 1, fontSize: text.body },
 });

@@ -548,7 +548,6 @@ const es: Translations = {
   'nav.trash': 'Papelera',
   'overview.running': 'Ejecutándose ahora',
   'overview.idle': 'Ahora mismo no se ejecuta nada.',
-  'overview.noSpace': 'Este destino no dice cómo de lleno está.',
   'nav.overview': 'Resumen',
   'overview.idleHint': 'Las tareas se ejecutan según su programación, o cuando inicias una a mano.',
   'overview.accounts': 'Cuentas conectadas',

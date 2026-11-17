@@ -548,7 +548,6 @@ const tr: Translations = {
   'nav.trash': 'Çöp kutusu',
   'overview.running': 'Şu an çalışıyor',
   'overview.idle': 'Şu anda hiçbir şey çalışmıyor.',
-  'overview.noSpace': 'Bu hedef ne kadar dolu olduğunu söylemiyor.',
   'nav.overview': 'Genel bakış',
   'overview.idleHint': 'İşler kendi planlarına göre, ya da birini elle başlattığında çalışır.',
   'overview.accounts': 'Bağlı hesaplar',

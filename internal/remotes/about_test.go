@@ -3,6 +3,9 @@ package remotes
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	_ "github.com/rclone/rclone/backend/local"
@@ -76,5 +79,76 @@ func TestNothingKnownIsAbsentOnTheWireRatherThanZero(t *testing.T) {
 	}
 	if got := string(raw); got != `{"supported":true,"free":0}` {
 		t.Errorf("a genuinely full target travels as %s", got)
+	}
+}
+
+// davQuota stands in for a WebDAV server that answers the quota question with
+// the two figures as given, written the way Nextcloud writes them.
+func davQuota(t *testing.T, used, available string) string {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "PROPFIND" {
+			http.Error(w, "not here", http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		w.WriteHeader(http.StatusMultiStatus)
+		fmt.Fprintf(w, `<?xml version="1.0"?>
+<d:multistatus xmlns:d="DAV:">
+ <d:response>
+  <d:href>%s</d:href>
+  <d:propstat>
+   <d:prop>
+    <d:quota-available-bytes>%s</d:quota-available-bytes>
+    <d:quota-used-bytes>%s</d:quota-used-bytes>
+   </d:prop>
+   <d:status>HTTP/1.1 200 OK</d:status>
+  </d:propstat>
+ </d:response>
+</d:multistatus>`, r.URL.Path, available, used)
+	}))
+	t.Cleanup(srv.Close)
+	return srv.URL + "/remote.php/dav/files/someone/"
+}
+
+func nextcloud(t *testing.T, used, available string) Usage {
+	t.Helper()
+	configured(t, "cloud", "webdav", map[string]string{"url": davQuota(t, used, available), "vendor": "nextcloud", "user": "someone"})
+	usage, err := About(context.Background(), "cloud")
+	if err != nil {
+		t.Fatalf("about: %v", err)
+	}
+	return usage
+}
+
+// Nextcloud clamps a home folder whose size it has not counted to zero and
+// leaves mounted storage out of the figure, so an account holding gigabytes
+// can say it uses nothing.
+func TestAWebDAVServerWithoutAQuotaThatSaysZeroIsNotBelieved(t *testing.T) {
+	usage := nextcloud(t, "0", "-3")
+	if usage.Supported || usage.Used != nil || usage.Total != nil || usage.Free != nil {
+		t.Errorf("an account of unknown size was reported as %+v", usage)
+	}
+}
+
+// Nextcloud answers zero for both figures when it could not work them out.
+func TestAWebDAVServerThatCouldNotCountSaysNothing(t *testing.T) {
+	usage := nextcloud(t, "0", "0")
+	if usage.Supported || usage.Used != nil || usage.Total != nil || usage.Free != nil {
+		t.Errorf("an account that could not be counted was reported as %+v", usage)
+	}
+}
+
+func TestAnEmptyAccountWithAQuotaStillUsesNothing(t *testing.T) {
+	usage := nextcloud(t, "0", "1000")
+	if !usage.Supported || usage.Used == nil || *usage.Used != 0 || usage.Total == nil || *usage.Total != 1000 {
+		t.Errorf("an empty account with a quota was reported as %+v", usage)
+	}
+}
+
+func TestAnAccountWithoutAQuotaReportsWhatItHolds(t *testing.T) {
+	usage := nextcloud(t, "52000000000", "-3")
+	if !usage.Supported || usage.Used == nil || *usage.Used != 52000000000 || usage.Total != nil {
+		t.Errorf("an account without a quota was reported as %+v", usage)
 	}
 }

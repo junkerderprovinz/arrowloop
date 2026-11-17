@@ -548,7 +548,6 @@ const hr: Translations = {
   'nav.trash': 'Smeće',
   'overview.running': 'Trenutno radi',
   'overview.idle': 'Trenutno ništa ne radi.',
-  'overview.noSpace': 'Ovo odredište ne kaže koliko je puno.',
   'nav.overview': 'Pregled',
   'overview.idleHint': 'Zadaci se pokreću po svom rasporedu ili kad ih sam pokreneš.',
   'overview.accounts': 'Povezani računi',

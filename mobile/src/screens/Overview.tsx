@@ -11,10 +11,12 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
 import { OtherInstances } from "../otherInstances";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
+import { runLength } from "../runLength";
 import { useEngineSettings } from "../settings";
 import { SideRow, sideMark } from "../sideRow";
 import { sidePair } from "../sides";
-import { bytes, isAccount, ReachBadge, Room, useReach, type Reach, useRoom } from "../space";
+import { isAccount, ReachBadge, Room, useReach, type Reach, useRoom } from "../space";
+import { bytes } from "../usage";
 import { space, text } from "../theme";
 import { useEngineEvents, useEngineStream } from "../useEngine";
 import { useWaiting } from "../waiting";
@@ -30,7 +32,6 @@ import {
   Empty,
   Fab,
   Floating,
-  Heading,
   Page,
   Pair,
   Press,
@@ -201,7 +202,8 @@ export function Overview() {
 /**
  * The sentence on how everything stands, as the web's Overview opens with,
  * beside a dot in its colour, and under it when the last run ended and the
- * next one starts.
+ * next one starts. It stands a step below the status size, since the phone's
+ * header already names the screen at that size right above it.
  */
 function Head({ jobs }: { jobs: Job[] }) {
   const { t, lang } = useT();
@@ -236,7 +238,7 @@ function Head({ jobs }: { jobs: Job[] }) {
     <View style={styles.head} accessible accessibilityRole="header">
       <View style={styles.headLine}>
         <View style={[styles.headDot, { backgroundColor: ink[headline] }]} />
-        <Heading>{said[headline]}</Heading>
+        <Title>{said[headline]}</Title>
       </View>
       {line ? <Caption>{line}</Caption> : null}
     </View>
@@ -342,18 +344,6 @@ function NextRuns({ jobs, onOpen }: { jobs: Job[]; onOpen: (name: string) => voi
 }
 
 /**
- * A run's length as m:ss or h:mm:ss. A number with a unit word would need that
- * word's plural forms in every language, and "1 seconds" is what a single form
- * gives.
- */
-function span(secs: number): string {
-  const h = Math.floor(secs / 3600);
-  const m = Math.floor((secs % 3600) / 60);
-  const s = String(secs % 60).padStart(2, "0");
-  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`;
-}
-
-/**
  * The newest run across all jobs: which job, when, how long, and what it moved.
  * The change rows stand at zero too, so the card does not shift between runs.
  */
@@ -363,8 +353,7 @@ function LastRun({ run, tally, jobs }: { run: Run | null | "none"; tally: Tally 
   if (run === null) return <Caption>{t("history.working")}</Caption>;
   if (run === "none") return <Body>{t("history.empty")}</Body>;
 
-  const started = new Date(run.Started).getTime();
-  const secs = run.Finished ? Math.max(0, Math.round((new Date(run.Finished).getTime() - started) / 1000)) : null;
+  const length = runLength(run.Started, run.Finished, t);
 
   return (
     <>
@@ -375,7 +364,7 @@ function LastRun({ run, tally, jobs }: { run: Run | null | "none"; tally: Tally 
       </View>
       <Pair label={t("overview.lastSync")} value={clock(run.Started, lang)} />
       {run.Finished ? <Pair label={t("overview.finishedAt")} value={clock(run.Finished, lang)} /> : null}
-      {secs !== null ? <Pair label={t("overview.duration")} value={span(secs)} /> : null}
+      {length !== null ? <Pair label={t("overview.duration")} value={length} /> : null}
       {failed(run) ? <Body>{run.Err}</Body> : null}
       <View style={[styles.well, { backgroundColor: p.surface2, ...corners.card }]}>
         <AxisLabel>{t("overview.changes")}</AxisLabel>
@@ -495,7 +484,7 @@ function Account({
 const styles = StyleSheet.create({
   head: { gap: space.xs, paddingHorizontal: space.xs },
   headLine: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  headDot: { width: 12, height: 12, borderRadius: 6 },
+  headDot: { width: 10, height: 10, borderRadius: 5 },
   // A sub-card: a flat inset group one step above the card, without a shadow.
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },

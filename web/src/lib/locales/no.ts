@@ -548,7 +548,6 @@ const no: Translations = {
   'nav.trash': 'Papirkurv',
   'overview.running': 'Kjører nå',
   'overview.idle': 'Ingenting kjører akkurat nå.',
-  'overview.noSpace': 'Dette målet sier ikke hvor fullt det er.',
   'nav.overview': 'Oversikt',
   'overview.idleHint': 'Jobber kjører etter planen sin, eller når du starter en selv.',
   'overview.accounts': 'Tilkoblede kontoer',

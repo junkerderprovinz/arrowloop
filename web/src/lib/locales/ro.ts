@@ -548,7 +548,6 @@ const ro: Translations = {
   'nav.trash': 'Coș',
   'overview.running': 'Rulează acum',
   'overview.idle': 'Momentan nu rulează nimic.',
-  'overview.noSpace': 'Această destinație nu spune cât de plină este.',
   'nav.overview': 'Privire de ansamblu',
   'overview.idleHint': 'Sarcinile rulează după programarea lor, sau când pornești una manual.',
   'overview.accounts': 'Conturi conectate',

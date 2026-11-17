@@ -548,7 +548,6 @@ const he: Translations = {
   'nav.trash': 'סל האשפה',
   'overview.running': 'פועל כעת',
   'overview.idle': 'כרגע לא פועל דבר.',
-  'overview.noSpace': 'היעד הזה לא אומר כמה הוא מלא.',
   'nav.overview': 'סקירה',
   'overview.idleHint': 'משימות פועלות לפי התזמון שלהן, או כשמפעילים אחת ידנית.',
   'overview.accounts': 'חשבונות מחוברים',

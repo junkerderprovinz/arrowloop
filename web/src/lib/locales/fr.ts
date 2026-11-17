@@ -548,7 +548,6 @@ const fr: Translations = {
   'nav.trash': 'Corbeille',
   'overview.running': 'En cours',
   'overview.idle': 'Rien ne tourne en ce moment.',
-  'overview.noSpace': 'Cette destination ne dit pas à quel point elle est pleine.',
   'nav.overview': 'Aperçu',
   'overview.idleHint': 'Les tâches tournent selon leur planification, ou quand vous en lancez une à la main.',
   'overview.accounts': 'Comptes connectés',

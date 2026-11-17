@@ -548,7 +548,6 @@ const pt: Translations = {
   'nav.trash': 'Reciclagem',
   'overview.running': 'A decorrer agora',
   'overview.idle': 'Neste momento não está nada a decorrer.',
-  'overview.noSpace': 'Este destino não diz o quão cheio está.',
   'nav.overview': 'Resumo',
   'overview.idleHint': 'As tarefas correm segundo o seu agendamento, ou quando inicias uma à mão.',
   'overview.accounts': 'Contas ligadas',

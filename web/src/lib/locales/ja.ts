@@ -548,7 +548,6 @@ const ja: Translations = {
   'nav.trash': 'ごみ箱',
   'overview.running': '実行中',
   'overview.idle': 'いま動いているものはありません。',
-  'overview.noSpace': 'この保存先は空き具合を知らせません。',
   'nav.overview': '概要',
   'overview.idleHint': 'ジョブは予定どおりに、または手動で開始したときに動きます。',
   'overview.accounts': '接続中のアカウント',

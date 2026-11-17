@@ -548,7 +548,6 @@ const sk: Translations = {
   'nav.trash': 'Kôš',
   'overview.running': 'Práve beží',
   'overview.idle': 'Práve nič nebeží.',
-  'overview.noSpace': 'Tento cieľ nehovorí, ako je plný.',
   'nav.overview': 'Prehľad',
   'overview.idleHint': 'Úlohy bežia podľa svojho plánu, alebo keď niektorú spustíš ručne.',
   'overview.accounts': 'Pripojené účty',

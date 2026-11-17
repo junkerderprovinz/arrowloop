@@ -548,7 +548,6 @@ const ru: Translations = {
   'nav.trash': 'Корзина',
   'overview.running': 'Сейчас работает',
   'overview.idle': 'Сейчас ничего не работает.',
-  'overview.noSpace': 'Эта цель не сообщает, насколько она заполнена.',
   'nav.overview': 'Обзор',
   'overview.idleHint': 'Задания идут по своему расписанию или когда ты запускаешь одно вручную.',
   'overview.accounts': 'Подключённые учётные записи',

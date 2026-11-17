@@ -548,7 +548,6 @@ const lv: Translations = {
   'nav.trash': 'Miskaste',
   'overview.running': 'Šobrīd darbojas',
   'overview.idle': 'Pašlaik nekas nedarbojas.',
-  'overview.noSpace': 'Šis mērķis nesaka, cik pilns tas ir.',
   'nav.overview': 'Pārskats',
   'overview.idleHint': 'Uzdevumi darbojas pēc sava grafika vai kad tu kādu palaid pats.',
   'overview.accounts': 'Pievienotie konti',

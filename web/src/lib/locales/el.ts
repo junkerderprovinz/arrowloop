@@ -548,7 +548,6 @@ const el: Translations = {
   'nav.trash': 'Κάδος',
   'overview.running': 'Εκτελείται τώρα',
   'overview.idle': 'Δεν εκτελείται τίποτα αυτή τη στιγμή.',
-  'overview.noSpace': 'Αυτός ο προορισμός δεν λέει πόσο γεμάτος είναι.',
   'nav.overview': 'Επισκόπηση',
   'overview.idleHint': 'Οι εργασίες τρέχουν με το πρόγραμμά τους ή όταν ξεκινήσεις μία με το χέρι.',
   'overview.accounts': 'Συνδεδεμένοι λογαριασμοί',
