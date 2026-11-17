@@ -1,5 +1,5 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Alert,
   AppState,
@@ -7,6 +7,7 @@ import {
   Linking,
   PermissionsAndroid,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -17,7 +18,13 @@ import { AutoBackupSection } from "../autoBackup";
 import { engine, type AppData, type AppDataState, type AppDataWay, type PickedFile, type SharedFolder } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
-import { ACCENTS, BRAND, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, SYSTEM_ACCENT, text, TILE, TOUCH } from "../theme";
+import { FrameProvider, useFrame } from "../frame";
+import { Glyph } from "../glyphs";
+import { SECTION_TILE, paneWidth, settingsTiles, shownTile, TILE_COLUMN, type SectionId, type SettingsTile, type TileId } from "../settingsTiles";
+import { Pairing } from "./Pairing";
+import { SyncSettings } from "./SyncSettings";
+import { Targets } from "./Targets";
+import { ACCENTS, BRAND, contrastOn, DEFAULT_ACCENT, PLATFORM, RAINBOW, space, SYSTEM_ACCENT, text, TILE, TOUCH } from "../theme";
 import {
   setAppearance,
   settings as settingsApi,
@@ -63,6 +70,7 @@ import {
   InfoBubble,
   Mono,
   Pair,
+  Press,
   README_GAP,
   ReadmeButton,
   ReadmeRow,
@@ -83,6 +91,8 @@ import {
 export function Settings() {
   const nav = useNavigation<Nav<SettingsStack>>();
   const { t, lang } = useT();
+  const frame = useFrame();
+  const [picked, setPicked] = useState<TileId | null>(null);
   const look = useAppearance();
   const { p, corners, scheme, accent, accentInk, barLabels } = useTheme();
   const { intensity: motion } = useMotion();
@@ -416,755 +426,783 @@ export function Settings() {
     }
   };
 
-  return (
+  const page = (
     <Page>
       {/* The language comes first: somebody who cannot read the screen comes
           looking for exactly this. */}
-      <Section title={t("look.language")} hue={0}>
-        {/* A dropdown that opens a page rather than a list: forty languages
-            want a page. The notch names the setting, so the control shows
-            only the language in use. */}
-        <DropButton
-          accessibilityLabel={`${t("look.language")}: ${langName(lang)}`}
-          onPress={() => nav.navigate("Language")}
-          style={styles.language}
-        >
-          {/* The flag is an emoji, not a glyph. */}
-          <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>
-          <Text style={[styles.languageName, { color: p.text }]} numberOfLines={1}>
-            {langName(lang)}
-          </Text>
-        </DropButton>
-      </Section>
+      <OnTile section="language">
+        <Section title={t("look.language")} hue={0}>
+          {/* A dropdown that opens a page rather than a list: forty languages
+              want a page. The notch names the setting, so the control shows
+              only the language in use. */}
+          <DropButton
+            accessibilityLabel={`${t("look.language")}: ${langName(lang)}`}
+            onPress={() => nav.navigate("Language")}
+            style={styles.language}
+          >
+            {/* The flag is an emoji, not a glyph. */}
+            <Text style={styles.flag}>{flagEmoji(langFlag(lang))}</Text>
+            <Text style={[styles.languageName, { color: p.text }]} numberOfLines={1}>
+              {langName(lang)}
+            </Text>
+          </DropButton>
+        </Section>
+      </OnTile>
 
       {/* The defaults at a glance and the way to all of them, as the web's
           Sync tile leads to its page. */}
-      <Section title={t("settings.sync")} hint={t("settings.syncHint")} hue={3}>
-        <Pair label={t("direction.label")} value={defaults ? directionOf(defaults, t) : ""} />
-        <Pair
-          label={t("edit.schedule")}
-          value={defaults ? sentence(describeValue(inForce(defaults, "schedule"), "schedule", t)) : ""}
-        />
-        <Button label={t("engine.defaults")} glyph="IconSync" onPress={() => nav.navigate("Sync")} />
-      </Section>
+      <OnTile section="sync">
+        <Section title={t("settings.sync")} hint={t("settings.syncHint")} hue={3}>
+          <Pair label={t("direction.label")} value={defaults ? directionOf(defaults, t) : ""} />
+          <Pair
+            label={t("edit.schedule")}
+            value={defaults ? sentence(describeValue(inForce(defaults, "schedule"), "schedule", t)) : ""}
+          />
+          <Button label={t("engine.defaults")} glyph="IconSync" onPress={() => nav.navigate("Sync")} />
+        </Section>
+      </OnTile>
 
       {/* An engine built without pairing has no such page. */}
-      {pairable ? (
-        <Section title={t("settings.pairing")} hint={t("pairing.phraseHint")} hue={5}>
-          <Button label={t("settings.pairing")} glyph="IconLink" onPress={() => nav.navigate("Pairing")} />
-        </Section>
-      ) : null}
+      <OnTile section="pairing">
+        {pairable ? (
+          <Section title={t("settings.pairing")} hint={t("pairing.phraseHint")} hue={5}>
+            <Button label={t("settings.pairing")} glyph="IconLink" onPress={() => nav.navigate("Pairing")} />
+          </Section>
+        ) : null}
+      </OnTile>
 
       {/* Each switch reads Android's state; a tap opens the request dialog or
           the settings page, and the switch follows what Android reports when
           the app returns. */}
-      <Section title={t("phone.thisPhone")} hue={4}>
-        <Toggle
-          label={t("phone.access")}
-          // On Android 10 the switch cannot move, and the bubble says why.
-          hint={possible ? t("phone.permissionHint") : t("phone.accessNone")}
-          // Off until the answer arrives.
-          value={granted === true}
-          disabled={!possible}
-          onChange={() => engine.openStorageSettings()}
-        />
-        <Toggle
-          label={t("phone.appData")}
-          hint={t("phone.appDataHint")}
-          value={appDataOn}
-          disabled={appData === null || appDataWanted !== null}
-          onChange={(on) => changeAppData({ on }, () => engine.setAppData(on))}
-        />
-        {appData && appDataOn ? (
-          <>
-            {/* The way that works is marked until one is picked; a way that
-                cannot work here is dimmed, and the line below says why. */}
-            <Choice<AppDataWay>
-              hue={0}
-              value={appDataWanted?.way ?? appData.way}
-              disabled={appDataWanted !== null}
-              onChange={(way) => {
-                if (way !== appData.way) changeAppData({ way }, () => engine.setAppDataWay(way));
-              }}
-              options={[
-                { value: "root", label: t("phone.appDataWayRoot"), disabled: !appData.root },
-                { value: "shizuku", label: "Shizuku", disabled: !appData.shizuku },
-              ]}
-            />
-            {appDataWanted === null && appData.state !== "off" ? (
-              <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
-            ) : null}
-            {!appData.shizuku || appData.state === "noShizuku" ? (
-              <Button
-                label={t("phone.appDataGetShizuku")}
-                glyph="IconDownload"
-                hint={t("phone.appDataGetShizukuHint")}
-                onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
-              />
-            ) : null}
-            {/* Also while root is dimmed, since a wrong name for su is one
-                reason it can be. */}
-            {appData.way === "root" || !appData.root ? (
-              <Field
-                label={t("phone.appDataSu")}
-                hint={t("phone.appDataSuHint")}
-                value={su}
-                onChange={(next) => {
-                  suTyped.current = next;
-                  setSuDraft(next);
-                }}
-                onBlur={storeSu}
-                error={suValid ? undefined : t("phone.appDataSuBad")}
-              />
-            ) : null}
-            {appData.way === "root" && (appData.state === "rootDenied" || appData.state === "noSu") ? (
-              <View style={styles.actions}>
-                <Button
-                  label={t("phone.appDataRequestRoot")}
-                  glyph="IconUnlock"
-                  busy={appDataWanted !== null}
-                  onPress={() => changeAppData({}, engine.requestRoot)}
-                />
-              </View>
-            ) : null}
-            {appData.state === "shizukuDenied" ? (
-              <View style={styles.actions}>
-                <Button
-                  label={t("phone.appDataAsk")}
-                  glyph="IconUnlock"
-                  onPress={() => engine.askShizuku().then(setAppData, () => {})}
-                />
-              </View>
-            ) : null}
-          </>
-        ) : null}
-        {/* What an app offers in Android's file picker needs neither root
-            nor Shizuku, so it stands apart from Android/data. */}
-        <Button
-          label={t("phone.sharedAdd")}
-          glyph="IconFolderAdd"
-          hint={t("phone.sharedAddHint")}
-          busy={sharedBusy === "add"}
-          disabled={sharedBusy !== null}
-          onPress={() => changeShared("add", engine.addSharedFolder)}
-        />
-        {shared.map((folder) => (
-          <Row
-            key={folder.uri}
-            label={`${folder.name} · ${folder.app}`}
-            control={
-              <Button
-                label={t("phone.sharedRemove")}
-                glyph="IconTrash"
-                wide={false}
-                busy={sharedBusy === folder.uri}
-                disabled={sharedBusy !== null}
-                onPress={() => changeShared(folder.uri, () => engine.removeSharedFolder(folder.uri))}
-              />
-            }
+      <OnTile section="thisPhone">
+        <Section title={t("phone.thisPhone")} hue={4}>
+          <Toggle
+            label={t("phone.access")}
+            // On Android 10 the switch cannot move, and the bubble says why.
+            hint={possible ? t("phone.permissionHint") : t("phone.accessNone")}
+            // Off until the answer arrives.
+            value={granted === true}
+            disabled={!possible}
+            onChange={() => engine.openStorageSettings()}
           />
-        ))}
-        <Toggle
-          label={t("phone.notify")}
-          hint={t("phone.permissionHint")}
-          value={notify === true}
-          onChange={() => {
-            // After a refusal Android shows no dialog, so the settings page is
-            // the fallback.
-            if (notify) engine.openNotificationSettings();
-            else askNotifications().then((ok) => (ok ? refresh() : engine.openNotificationSettings()));
-          }}
-        />
-        <Toggle
-          label={t("phone.doze")}
-          hint={t("phone.dozeOff")}
-          value={doze === true}
-          onChange={() => engine.openBatterySettings().catch(() => engine.openAppSettings())}
-        />
-        {/* The phone's own lock rather than an app PIN, so there is no second
-            secret to forget. */}
-        <Toggle
-          label={t("settings.lockOn")}
-          hint={lockable ? t("settings.lockHint") : t("settings.lockUnavailable")}
-          value={look.lock}
-          disabled={!lockable}
-          onChange={(on) => {
-            // The lock is tried before it is switched on, so it cannot lock
-            // somebody out.
-            if (!on) {
-              setAppearance({ lock: false });
-              return;
-            }
-            engine
-              .confirmDeviceLock(t("settings.lock"), t("settings.lockHint"))
-              .then((ok) => ok && setAppearance({ lock: true }))
-              .catch(() => {});
-          }}
-        />
-      </Section>
+          <Toggle
+            label={t("phone.appData")}
+            hint={t("phone.appDataHint")}
+            value={appDataOn}
+            disabled={appData === null || appDataWanted !== null}
+            onChange={(on) => changeAppData({ on }, () => engine.setAppData(on))}
+          />
+          {appData && appDataOn ? (
+            <>
+              {/* The way that works is marked until one is picked; a way that
+                  cannot work here is dimmed, and the line below says why. */}
+              <Choice<AppDataWay>
+                hue={0}
+                value={appDataWanted?.way ?? appData.way}
+                disabled={appDataWanted !== null}
+                onChange={(way) => {
+                  if (way !== appData.way) changeAppData({ way }, () => engine.setAppDataWay(way));
+                }}
+                options={[
+                  { value: "root", label: t("phone.appDataWayRoot"), disabled: !appData.root },
+                  { value: "shizuku", label: "Shizuku", disabled: !appData.shizuku },
+                ]}
+              />
+              {appDataWanted === null && appData.state !== "off" ? (
+                <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
+              ) : null}
+              {!appData.shizuku || appData.state === "noShizuku" ? (
+                <Button
+                  label={t("phone.appDataGetShizuku")}
+                  glyph="IconDownload"
+                  hint={t("phone.appDataGetShizukuHint")}
+                  onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
+                />
+              ) : null}
+              {/* Also while root is dimmed, since a wrong name for su is one
+                  reason it can be. */}
+              {appData.way === "root" || !appData.root ? (
+                <Field
+                  label={t("phone.appDataSu")}
+                  hint={t("phone.appDataSuHint")}
+                  value={su}
+                  onChange={(next) => {
+                    suTyped.current = next;
+                    setSuDraft(next);
+                  }}
+                  onBlur={storeSu}
+                  error={suValid ? undefined : t("phone.appDataSuBad")}
+                />
+              ) : null}
+              {appData.way === "root" && (appData.state === "rootDenied" || appData.state === "noSu") ? (
+                <View style={styles.actions}>
+                  <Button
+                    label={t("phone.appDataRequestRoot")}
+                    glyph="IconUnlock"
+                    busy={appDataWanted !== null}
+                    onPress={() => changeAppData({}, engine.requestRoot)}
+                  />
+                </View>
+              ) : null}
+              {appData.state === "shizukuDenied" ? (
+                <View style={styles.actions}>
+                  <Button
+                    label={t("phone.appDataAsk")}
+                    glyph="IconUnlock"
+                    onPress={() => engine.askShizuku().then(setAppData, () => {})}
+                  />
+                </View>
+              ) : null}
+            </>
+          ) : null}
+          {/* What an app offers in Android's file picker needs neither root
+              nor Shizuku, so it stands apart from Android/data. */}
+          <Button
+            label={t("phone.sharedAdd")}
+            glyph="IconFolderAdd"
+            hint={t("phone.sharedAddHint")}
+            busy={sharedBusy === "add"}
+            disabled={sharedBusy !== null}
+            onPress={() => changeShared("add", engine.addSharedFolder)}
+          />
+          {shared.map((folder) => (
+            <Row
+              key={folder.uri}
+              label={`${folder.name} · ${folder.app}`}
+              control={
+                <Button
+                  label={t("phone.sharedRemove")}
+                  glyph="IconTrash"
+                  wide={false}
+                  busy={sharedBusy === folder.uri}
+                  disabled={sharedBusy !== null}
+                  onPress={() => changeShared(folder.uri, () => engine.removeSharedFolder(folder.uri))}
+                />
+              }
+            />
+          ))}
+          <Toggle
+            label={t("phone.notify")}
+            hint={t("phone.permissionHint")}
+            value={notify === true}
+            onChange={() => {
+              // After a refusal Android shows no dialog, so the settings page is
+              // the fallback.
+              if (notify) engine.openNotificationSettings();
+              else askNotifications().then((ok) => (ok ? refresh() : engine.openNotificationSettings()));
+            }}
+          />
+          <Toggle
+            label={t("phone.doze")}
+            hint={t("phone.dozeOff")}
+            value={doze === true}
+            onChange={() => engine.openBatterySettings().catch(() => engine.openAppSettings())}
+          />
+          {/* The phone's own lock rather than an app PIN, so there is no second
+              secret to forget. */}
+          <Toggle
+            label={t("settings.lockOn")}
+            hint={lockable ? t("settings.lockHint") : t("settings.lockUnavailable")}
+            value={look.lock}
+            disabled={!lockable}
+            onChange={(on) => {
+              // The lock is tried before it is switched on, so it cannot lock
+              // somebody out.
+              if (!on) {
+                setAppearance({ lock: false });
+                return;
+              }
+              engine
+                .confirmDeviceLock(t("settings.lock"), t("settings.lockHint"))
+                .then((ok) => ok && setAppearance({ lock: true }))
+                .catch(() => {});
+            }}
+          />
+        </Section>
+      </OnTile>
 
       {/* The selectors on this page count through the palette in the order
           they stand: the Android/data way, Design, Corners, the two label
           rows, the job list, then Motion. */}
-      <Section title={t("phone.appearance")} hue={1}>
-        <AxisLabel>{t("phone.design")}</AxisLabel>
-        <Choice<ThemeChoice>
-          hue={1}
-          value={look.theme}
-          onChange={(theme) => setAppearance({ theme })}
-          options={[
-            { value: "dark", label: t("look.dark"), glyph: "IconMoon" },
-            { value: "light", label: t("look.light"), glyph: "IconSun" },
-            { value: "system", label: t("phone.system"), glyph: "IconThemeSystem" },
-          ]}
-        />
-        {/* Stepped back while light shows, since it waits for the dark look
-            rather than being off. Under Light it refuses instead, and the
-            reason has to stay readable. */}
-        <View style={scheme === "dark" || oledRefused ? null : styles.dimmed}>
-          <Toggle
-            label={t("look.oled")}
-            hint={t("look.oledHint")}
-            value={look.oled}
-            onChange={(oled) => setAppearance({ oled })}
-            refused={oledRefused}
+      <OnTile section="appearance">
+        <Section title={t("phone.appearance")} hue={1}>
+          <AxisLabel>{t("phone.design")}</AxisLabel>
+          <Choice<ThemeChoice>
+            hue={1}
+            value={look.theme}
+            onChange={(theme) => setAppearance({ theme })}
+            options={[
+              { value: "dark", label: t("look.dark"), glyph: "IconMoon" },
+              { value: "light", label: t("look.light"), glyph: "IconSun" },
+              { value: "system", label: t("phone.system"), glyph: "IconThemeSystem" },
+            ]}
           />
-        </View>
-
-        <AxisLabel hint={t("look.cornersHint")}>{t("look.corners")}</AxisLabel>
-        <Choice<Shape>
-          hue={2}
-          value={look.shape}
-          onChange={(shape) => {
-            setAppearance({ shape });
-            leaf.tap(shape);
-          }}
-          options={[
-            { value: "round", label: t("look.round"), glyph: "IconCornerRound" },
-            { value: "soft", label: t("look.soft"), glyph: "IconCornerSoft" },
-            { value: "square", label: t("look.square"), glyph: "IconCornerSquare" },
-            ...(leaf.offered ? [{ value: "leaf" as Shape, label: t("look.leaf"), glyph: "IconCornerLeaf" }] : []),
-          ]}
-        />
-
-        {/* Three modes, without the web's pointer-based `reactive`. The bottom
-            bar has its own setting, since it fits five words across the width. */}
-        <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
-        <Choice<LabelMode>
-          hue={3}
-          byContent
-          // A stored `reactive` shows as symbols, which is how it rendered.
-          value={look.labels === "reactive" ? "glyph" : look.labels}
-          onChange={(labels) => setAppearance({ labels })}
-          options={[
-            { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
-            { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
-            { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
-          ]}
-        />
-        <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
-        <Choice<BarLabelMode>
-          hue={4}
-          byContent
-          // The resolved mode, so a stored "same" still lights a segment; see
-          // barMode in ui.tsx.
-          value={barLabels}
-          onChange={(barLabels) => setAppearance({ barLabels })}
-          options={[
-            { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
-            { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
-            { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
-          ]}
-        />
-        <Toggle
-          label={t("look.overviewOnBar")}
-          hint={t("look.overviewHint")}
-          value={look.overviewOnBar}
-          onChange={(overviewOnBar) => setAppearance({ overviewOnBar })}
-        />
-        {pairable ? (
-          <Toggle
-            label={t("look.instancesInMore")}
-            hint={t("look.pinTileHint")}
-            value={look.instancesInMore}
-            onChange={(instancesInMore) => setAppearance({ instancesInMore })}
-          />
-        ) : null}
-
-        <AxisLabel hint={t("look.jobViewHint")}>{t("look.jobView")}</AxisLabel>
-        <Choice<JobView>
-          hue={5}
-          value={look.jobView}
-          onChange={(jobView) => setAppearance({ jobView })}
-          options={[
-            { value: "cards", label: t("jobs.view.cards") },
-            { value: "compact", label: t("jobs.view.compact") },
-          ]}
-        />
-
-        {/* Every swatch chooses on the first press and opens the picker on a
-            second. The web's reactive switch is left out, since a phone has
-            no pointer. */}
-        <AxisLabel>{t("look.colors")}</AxisLabel>
-        {/* Dimmed rather than hidden while the rainbow is on, so it still shows
-            which accent returns when the rainbow is switched off. */}
-        <View style={[styles.axisRow, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
-          <View style={styles.axisRowInner}>
-            <Body>{t("look.accent")}</Body>
-            <View style={styles.swatches}>
-              {system ? (
-                <EditableSwatch
-                  hex={system}
-                  label={t("look.systemAccent")}
-                  hint={t("look.systemAccentTip")}
-                  glyph="IconAccentSystem"
-                  selected={look.accent === SYSTEM_ACCENT}
-                  onPress={() => {
-                    setAccentSlot(-1);
-                    setArmed(null);
-                    setAppearance({ accent: SYSTEM_ACCENT });
-                  }}
-                />
-              ) : null}
-              {ACCENTS.map((a, i) => {
-                // The slot holding the live accent shows it, edited or not, so
-                // the applied colour always has a circle to reopen.
-                const mine = i === accentSlot;
-                const hex = mine ? look.accent : a.hex;
-                return (
-                  <EditableSwatch
-                    key={a.hex}
-                    hex={hex}
-                    // An edited slot is labelled with its hex, not the preset's name.
-                    label={mine && hex.toLowerCase() !== a.hex.toLowerCase() ? hex.toUpperCase() : a.name}
-                    selected={mine}
-                    onPress={() => {
-                      setAccentSlot(i);
-                      setAppearance({ accent: hex });
-                      if (armed?.kind === "accent" && armed.index === i) {
-                        setEditing({ kind: "accent", index: i, hex });
-                        setArmed(null);
-                      } else {
-                        setArmed({ kind: "accent", index: i });
-                      }
-                    }}
-                  />
-                );
-              })}
-            </View>
-            <ResetMark
-              label={t("look.accentReset")}
-              disabled={look.accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase()}
-              onPress={() => setAppearance({ accent: DEFAULT_ACCENT })}
+          {/* Stepped back while light shows, since it waits for the dark look
+              rather than being off. Under Light it refuses instead, and the
+              reason has to stay readable. */}
+          <View style={scheme === "dark" || oledRefused ? null : styles.dimmed}>
+            <Toggle
+              label={t("look.oled")}
+              hint={t("look.oledHint")}
+              value={look.oled}
+              onChange={(oled) => setAppearance({ oled })}
+              refused={oledRefused}
             />
           </View>
-        </View>
 
-        <Toggle
-          label={t("look.rainbowOn")}
-          hint={t("look.rainbowHint")}
-          value={look.rainbow}
-          hue={0}
-          onChange={(rainbow) => {
-            animateNext(motion);
-            setAppearance({ rainbow });
-            disco.turned(rainbow);
-          }}
-        />
+          <AxisLabel hint={t("look.cornersHint")}>{t("look.corners")}</AxisLabel>
+          <Choice<Shape>
+            hue={2}
+            value={look.shape}
+            onChange={(shape) => {
+              setAppearance({ shape });
+              leaf.tap(shape);
+            }}
+            options={[
+              { value: "round", label: t("look.round"), glyph: "IconCornerRound" },
+              { value: "soft", label: t("look.soft"), glyph: "IconCornerSoft" },
+              { value: "square", label: t("look.square"), glyph: "IconCornerSquare" },
+              ...(leaf.offered ? [{ value: "leaf" as Shape, label: t("look.leaf"), glyph: "IconCornerLeaf" }] : []),
+            ]}
+          />
 
-        {look.rainbow && (
-          <View>
+          {/* Three modes, without the web's pointer-based `reactive`. The bottom
+              bar has its own setting, since it fits five words across the width. */}
+          <AxisLabel hint={t("look.labelsHint")}>{t("look.labels")}</AxisLabel>
+          <Choice<LabelMode>
+            hue={3}
+            byContent
+            // A stored `reactive` shows as symbols, which is how it rendered.
+            value={look.labels === "reactive" ? "glyph" : look.labels}
+            onChange={(labels) => setAppearance({ labels })}
+            options={[
+              { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
+              { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
+              { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
+            ]}
+          />
+          <AxisLabel hint={t("look.barLabelsHint")}>{t("look.barLabels")}</AxisLabel>
+          <Choice<BarLabelMode>
+            hue={4}
+            byContent
+            // The resolved mode, so a stored "same" still lights a segment; see
+            // barMode in ui.tsx.
+            value={barLabels}
+            onChange={(barLabels) => setAppearance({ barLabels })}
+            options={[
+              { value: "text", label: t("look.labelText"), glyph: "IconLabelText" },
+              { value: "textGlyph", label: t("look.labelTextGlyph"), glyph: "IconLabelTextGlyph" },
+              { value: "glyph", label: t("look.labelGlyph"), glyph: "IconLabelGlyph" },
+            ]}
+          />
+          <Toggle
+            label={t("look.overviewOnBar")}
+            hint={t("look.overviewHint")}
+            value={look.overviewOnBar}
+            onChange={(overviewOnBar) => setAppearance({ overviewOnBar })}
+          />
+          {pairable ? (
             <Toggle
-              label={t("look.rainbowRotate")}
-              hint={t("look.rotateHint")}
-              value={look.rainbowRotate}
-              hue={1}
-              onChange={(rainbowRotate) =>
-                setAppearance({
-                  rainbowRotate,
-                  // A new offset each time it is switched on.
-                  rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
-                })
-              }
+              label={t("look.instancesInMore")}
+              hint={t("look.pinTileHint")}
+              value={look.instancesInMore}
+              onChange={(instancesInMore) => setAppearance({ instancesInMore })}
             />
+          ) : null}
 
-            {disco.offered && (
-              <Toggle
-                label={t("look.disco")}
-                hint={t("look.discoHint")}
-                value={look.disco}
-                hue={2}
-                onChange={(on) => setAppearance({ disco: on })}
-              />
-            )}
+          <AxisLabel hint={t("look.jobViewHint")}>{t("look.jobView")}</AxisLabel>
+          <Choice<JobView>
+            hue={5}
+            value={look.jobView}
+            onChange={(jobView) => setAppearance({ jobView })}
+            options={[
+              { value: "cards", label: t("jobs.view.cards") },
+              { value: "compact", label: t("jobs.view.compact") },
+            ]}
+          />
 
-            <View style={styles.axisRow}>
-              <View style={styles.axisName}>
-                <Body>{t("look.palette")}</Body>
-                <InfoBubble tip={t("look.paletteHint")} />
-              </View>
+          {/* Every swatch chooses on the first press and opens the picker on a
+              second. The web's reactive switch is left out, since a phone has
+              no pointer. */}
+          <AxisLabel>{t("look.colors")}</AxisLabel>
+          {/* Dimmed rather than hidden while the rainbow is on, so it still shows
+              which accent returns when the rainbow is switched off. */}
+          <View style={[styles.axisRow, look.rainbow ? styles.dimmed : null]} pointerEvents={look.rainbow ? "none" : "auto"}>
+            <View style={styles.axisRowInner}>
+              <Body>{t("look.accent")}</Body>
               <View style={styles.swatches}>
-                {palette.map((hex, i) => (
+                {system ? (
                   <EditableSwatch
-                    key={`${i}-${hex}`}
-                    hex={hex}
-                    label={hex.toUpperCase()}
-                    // All palette colours are in force, so the ring marks the
-                    // swatch a second press would open.
-                    selected={armed?.kind === "palette" && armed.index === i}
+                    hex={system}
+                    label={t("look.systemAccent")}
+                    hint={t("look.systemAccentTip")}
+                    glyph="IconAccentSystem"
+                    selected={look.accent === SYSTEM_ACCENT}
                     onPress={() => {
-                      if (armed?.kind === "palette" && armed.index === i) {
-                        setEditing({ kind: "palette", index: i, hex });
-                        setArmed(null);
-                      } else {
-                        setArmed({ kind: "palette", index: i });
-                      }
+                      setAccentSlot(-1);
+                      setArmed(null);
+                      setAppearance({ accent: SYSTEM_ACCENT });
                     }}
                   />
-                ))}
+                ) : null}
+                {ACCENTS.map((a, i) => {
+                  // The slot holding the live accent shows it, edited or not, so
+                  // the applied colour always has a circle to reopen.
+                  const mine = i === accentSlot;
+                  const hex = mine ? look.accent : a.hex;
+                  return (
+                    <EditableSwatch
+                      key={a.hex}
+                      hex={hex}
+                      // An edited slot is labelled with its hex, not the preset's name.
+                      label={mine && hex.toLowerCase() !== a.hex.toLowerCase() ? hex.toUpperCase() : a.name}
+                      selected={mine}
+                      onPress={() => {
+                        setAccentSlot(i);
+                        setAppearance({ accent: hex });
+                        if (armed?.kind === "accent" && armed.index === i) {
+                          setEditing({ kind: "accent", index: i, hex });
+                          setArmed(null);
+                        } else {
+                          setArmed({ kind: "accent", index: i });
+                        }
+                      }}
+                    />
+                  );
+                })}
               </View>
               <ResetMark
-                label={t("look.paletteReset")}
-                disabled={palette.join() === RAINBOW.join()}
-                onPress={() => setAppearance({ palette: [] })}
+                label={t("look.accentReset")}
+                disabled={look.accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase()}
+                onPress={() => setAppearance({ accent: DEFAULT_ACCENT })}
               />
             </View>
           </View>
-        )}
 
-      </Section>
+          <Toggle
+            label={t("look.rainbowOn")}
+            hint={t("look.rainbowHint")}
+            value={look.rainbow}
+            hue={0}
+            onChange={(rainbow) => {
+              animateNext(motion);
+              setAppearance({ rainbow });
+              disco.turned(rainbow);
+            }}
+          />
+
+          {look.rainbow && (
+            <View>
+              <Toggle
+                label={t("look.rainbowRotate")}
+                hint={t("look.rotateHint")}
+                value={look.rainbowRotate}
+                hue={1}
+                onChange={(rainbowRotate) =>
+                  setAppearance({
+                    rainbowRotate,
+                    // A new offset each time it is switched on.
+                    rainbowSeed: rainbowRotate ? (look.rainbowSeed + 1) % 8 : 0,
+                  })
+                }
+              />
+
+              {disco.offered && (
+                <Toggle
+                  label={t("look.disco")}
+                  hint={t("look.discoHint")}
+                  value={look.disco}
+                  hue={2}
+                  onChange={(on) => setAppearance({ disco: on })}
+                />
+              )}
+
+              <View style={styles.axisRow}>
+                <View style={styles.axisName}>
+                  <Body>{t("look.palette")}</Body>
+                  <InfoBubble tip={t("look.paletteHint")} />
+                </View>
+                <View style={styles.swatches}>
+                  {palette.map((hex, i) => (
+                    <EditableSwatch
+                      key={`${i}-${hex}`}
+                      hex={hex}
+                      label={hex.toUpperCase()}
+                      // All palette colours are in force, so the ring marks the
+                      // swatch a second press would open.
+                      selected={armed?.kind === "palette" && armed.index === i}
+                      onPress={() => {
+                        if (armed?.kind === "palette" && armed.index === i) {
+                          setEditing({ kind: "palette", index: i, hex });
+                          setArmed(null);
+                        } else {
+                          setArmed({ kind: "palette", index: i });
+                        }
+                      }}
+                    />
+                  ))}
+                </View>
+                <ResetMark
+                  label={t("look.paletteReset")}
+                  disabled={palette.join() === RAINBOW.join()}
+                  onPress={() => setAppearance({ palette: [] })}
+                />
+              </View>
+            </View>
+          )}
+
+        </Section>
+      </OnTile>
 
       {/* While the phone asks for less motion the bubble says so, or somebody
           picks the liveliest level, sees nothing move and takes it for a bug.
           The picker stays live: the choice is stored and comes back the
           moment the phone's setting does. The storm is not stopped by it, so
           the sentence does not show then. */}
-      <Section
-        title={t("look.motion")}
-        hint={reduced && look.motion !== "storm" ? `${t("look.motionHint")} ${t("phone.motionReduced")}` : t("look.motionHint")}
-        hue={5}
-      >
-        <Choice<MotionIntensity>
-          hue={6}
-          value={look.motion}
-          onChange={(motion) => {
-            // Animated at the new level, as a preview of it.
-            animateNext(motion);
-            setAppearance({ motion });
-            // Taps on the chosen level count towards the storm; see eggs.tsx.
-            storm.tap(motion);
-          }}
-          options={[
-            { value: "off", label: t("look.motionOff"), glyph: "IconMotionOff" },
-            { value: "subtle", label: t("look.motionSubtle"), glyph: "IconMotionSubtle" },
-            { value: "wild", label: t("look.motionWild"), glyph: "IconMotionWild" },
-            ...(storm.offered ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm"), glyph: "IconMotionStorm" }] : []),
-          ]}
-        />
-      </Section>
+      <OnTile section="motion">
+        <Section
+          title={t("look.motion")}
+          hint={reduced && look.motion !== "storm" ? `${t("look.motionHint")} ${t("phone.motionReduced")}` : t("look.motionHint")}
+          hue={5}
+        >
+          <Choice<MotionIntensity>
+            hue={6}
+            value={look.motion}
+            onChange={(motion) => {
+              // Animated at the new level, as a preview of it.
+              animateNext(motion);
+              setAppearance({ motion });
+              // Taps on the chosen level count towards the storm; see eggs.tsx.
+              storm.tap(motion);
+            }}
+            options={[
+              { value: "off", label: t("look.motionOff"), glyph: "IconMotionOff" },
+              { value: "subtle", label: t("look.motionSubtle"), glyph: "IconMotionSubtle" },
+              { value: "wild", label: t("look.motionWild"), glyph: "IconMotionWild" },
+              ...(storm.offered ? [{ value: "storm" as MotionIntensity, label: t("look.motionStorm"), glyph: "IconMotionStorm" }] : []),
+            ]}
+          />
+        </Section>
+      </OnTile>
 
-      <Section title={t("phone.syncEngine")} hint={t("phone.engineHint")} hue={9}>
-        <Body>{running ? t("phone.engineOn") : t("phone.engineOff")}</Body>
-        <View style={styles.actions}>
-          {running ? (
-            <Button
-              label={t("phone.engineStop")}
-              labelKey="phone.engineStop"
-              onPress={() => engine.stop().then(refresh)}
-            />
-          ) : (
-            <Button
-              label={t("phone.engineStart")}
-              labelKey="phone.engineStart"
-              onPress={() => engine.start().then(refresh)}
-            />
-          )}
-        </View>
-      </Section>
+      <OnTile section="engine">
+        <Section title={t("phone.syncEngine")} hint={t("phone.engineHint")} hue={9}>
+          <Body>{running ? t("phone.engineOn") : t("phone.engineOff")}</Body>
+          <View style={styles.actions}>
+            {running ? (
+              <Button
+                label={t("phone.engineStop")}
+                labelKey="phone.engineStop"
+                onPress={() => engine.stop().then(refresh)}
+              />
+            ) : (
+              <Button
+                label={t("phone.engineStart")}
+                labelKey="phone.engineStart"
+                onPress={() => engine.start().then(refresh)}
+              />
+            )}
+          </View>
+        </Section>
+      </OnTile>
 
       {/* One file with a fixed name in Downloads unless another place is
           typed or chosen. A file from anywhere else, a cloud app's included,
           comes in through Android's own picker. */}
-      <Section title={t("settings.backup")} hint={`${t("settings.backupHint")} ${t("backup.importOthers")}`} hue={10}>
-        <Field
-          label={t("settings.backupFile")}
-          value={backupFile}
-          onChange={setBackupFile}
-          placeholder="/storage/emulated/0/Download"
-        />
-        <Button label={t("pick.title")} labelKey="pick.title" onPress={() => setBackupFolder(true)} />
-        {/* A folder takes the backup under its fixed name. */}
-        <FolderPicker
-          visible={backupFolder}
-          start={backupFile.slice(0, backupFile.lastIndexOf("/")) || undefined}
-          onPick={(path) => {
-            setBackupFile(path);
-            setBackupFolder(false);
-          }}
-          onClose={() => setBackupFolder(false)}
-        />
-        {/* Both side by side in one row, as on the web, and what they cover in
-            the card's (i). They share the row, so its edges are the edges of
-            the buttons above and below. */}
-        <View style={styles.actions}>
-          <Button
-            label={t("settings.export")}
-            labelKey="settings.export"
-            busy={backupBusy}
-            confirm={exported}
-            onPress={exportSettings}
+      <OnTile section="backup">
+        <Section title={t("settings.backup")} hint={`${t("settings.backupHint")} ${t("backup.importOthers")}`} hue={10}>
+          <Field
+            label={t("settings.backupFile")}
+            value={backupFile}
+            onChange={setBackupFile}
+            placeholder="/storage/emulated/0/Download"
           />
-          <Button
-            label={t("settings.import")}
-            labelKey="settings.import"
-            busy={backupBusy}
-            confirm={imported}
-            onPress={() =>
-              void confirmImport(async () => ({ name: backupFile, text: await engine.importSettings(backupFile) }))
-            }
+          <Button label={t("pick.title")} labelKey="pick.title" onPress={() => setBackupFolder(true)} />
+          {/* A folder takes the backup under its fixed name. */}
+          <FolderPicker
+            visible={backupFolder}
+            start={backupFile.slice(0, backupFile.lastIndexOf("/")) || undefined}
+            onPick={(path) => {
+              setBackupFile(path);
+              setBackupFolder(false);
+            }}
+            onClose={() => setBackupFolder(false)}
           />
-        </View>
-        <Button
-          label={t("settings.importPick")}
-          labelKey="settings.importPick"
-          busy={backupBusy}
-          onPress={() => void confirmImport(engine.pickBackup)}
-        />
-        {backupSaid ? <Body>{backupSaid}</Body> : null}
-      </Section>
+          {/* Both side by side in one row, as on the web, and what they cover in
+              the card's (i). They share the row, so its edges are the edges of
+              the buttons above and below. */}
+          <View style={styles.actions}>
+            <Button
+              label={t("settings.export")}
+              labelKey="settings.export"
+              busy={backupBusy}
+              confirm={exported}
+              onPress={exportSettings}
+            />
+            <Button
+              label={t("settings.import")}
+              labelKey="settings.import"
+              busy={backupBusy}
+              confirm={imported}
+              onPress={() =>
+                void confirmImport(async () => ({ name: backupFile, text: await engine.importSettings(backupFile) }))
+              }
+            />
+          </View>
+          <Button
+            label={t("settings.importPick")}
+            labelKey="settings.importPick"
+            busy={backupBusy}
+            onPress={() => void confirmImport(engine.pickBackup)}
+          />
+          {backupSaid ? <Body>{backupSaid}</Body> : null}
+        </Section>
+      </OnTile>
 
-      <AutoBackupSection hue={11} />
+      <OnTile section="autoBackup">
+        <AutoBackupSection hue={11} />
+      </OnTile>
 
       {/* The forms of ArrowLoop a phone is not, in the README's order: the
           server first, then the desktop app. Every download is the newest
           release, and each card names it. */}
-      <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={6}>
-        <ReadmeRow>
-          <ReadmeButton
-            label={t("apps.unraid")}
-            sub={t("apps.unraidSub")}
-            tile={TILE.unraid}
-            mark={(lit, ink) => <AppMark svg={UNRAID_SVG} ink={lit ? ink : p.text} />}
-            onPress={() => Linking.openURL(UNRAID_CA)}
-          />
-          <ReadmeButton
-            label={t("apps.docker")}
-            sub={dockerCopied ? t("apps.copied") : t("apps.dockerSub")}
-            tile={TILE.docker}
-            hint={`${t("apps.dockerHint")} ${DOCKER_RUN}`}
-            mark={(lit, ink) => <AppMark svg={DOCKER_SVG} ink={lit ? ink : PLATFORM[scheme].docker} />}
-            confirm={dockered}
-            onPress={() =>
-              void engine.copy(DOCKER_RUN).then(
-                () => {
-                  setDockerCopied(true);
-                  setDockered((n) => n + 1);
-                },
-                () => {},
-              )
-            }
-          />
-          <ReadmeButton
-            label={t("apps.source")}
-            sub={t("apps.zipSub")}
-            tile={TILE.zip}
-            mark={(lit, ink) => <AppMark svg={ZIP_SVG} ink={lit ? ink : p.textSub} />}
-            onPress={() => Linking.openURL(sourceZip(version ?? ""))}
-          />
-        </ReadmeRow>
-        <VersionLine version={version} />
-      </Section>
+      <OnTile section="server">
+        <Section title={t("apps.serverTitle")} hint={t("apps.serverHint")} hue={6}>
+          <ReadmeRow>
+            <ReadmeButton
+              label={t("apps.unraid")}
+              sub={t("apps.unraidSub")}
+              tile={TILE.unraid}
+              mark={(lit, ink) => <AppMark svg={UNRAID_SVG} ink={lit ? ink : p.text} />}
+              onPress={() => Linking.openURL(UNRAID_CA)}
+            />
+            <ReadmeButton
+              label={t("apps.docker")}
+              sub={dockerCopied ? t("apps.copied") : t("apps.dockerSub")}
+              tile={TILE.docker}
+              hint={`${t("apps.dockerHint")} ${DOCKER_RUN}`}
+              mark={(lit, ink) => <AppMark svg={DOCKER_SVG} ink={lit ? ink : PLATFORM[scheme].docker} />}
+              confirm={dockered}
+              onPress={() =>
+                void engine.copy(DOCKER_RUN).then(
+                  () => {
+                    setDockerCopied(true);
+                    setDockered((n) => n + 1);
+                  },
+                  () => {},
+                )
+              }
+            />
+            <ReadmeButton
+              label={t("apps.source")}
+              sub={t("apps.zipSub")}
+              tile={TILE.zip}
+              mark={(lit, ink) => <AppMark svg={ZIP_SVG} ink={lit ? ink : p.textSub} />}
+              onPress={() => Linking.openURL(sourceZip(version ?? ""))}
+            />
+          </ReadmeRow>
+          <VersionLine version={version} />
+        </Section>
+      </OnTile>
 
       {/* A row per system keeps each ARM build beside its own. */}
-      <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={7}>
-        <View style={styles.readmeRows}>
-          <ReadmeRow>
-            <ReadmeButton
-              label={t("apps.windows")}
-              sub="x64"
-              tile={TILE.windows}
-              mark={windowsMark}
-              onPress={() => Linking.openURL(DOWNLOADS.windows)}
-            />
-            <ReadmeButton
-              label={t("apps.windows")}
-              sub="ARM"
-              tile={TILE.windows}
-              mark={windowsMark}
-              onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
-            />
-          </ReadmeRow>
-          <ReadmeRow>
-            <ReadmeButton
-              label={t("apps.macos")}
-              sub="Universal"
-              tile={TILE.apple}
-              mark={(lit, ink) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />}
-              onPress={() => Linking.openURL(DOWNLOADS.macos)}
-            />
-          </ReadmeRow>
-          <ReadmeRow>
-            <ReadmeButton
-              label={t("apps.linux")}
-              sub="x64"
-              tile={TILE.linux}
-              mark={linuxMark}
-              onPress={() => Linking.openURL(DOWNLOADS.linux)}
-            />
-            <ReadmeButton
-              label={t("apps.linux")}
-              sub="ARM"
-              tile={TILE.linux}
-              mark={linuxMark}
-              onPress={() => Linking.openURL(DOWNLOADS.linuxArm)}
-            />
-          </ReadmeRow>
-          <ReadmeRow>
-            <ReadmeButton
-              label={t("apps.flatpak")}
-              sub="x64"
-              tile={TILE.flatpak}
-              mark={flatpakMark}
-              onPress={() => Linking.openURL(DOWNLOADS.flatpak)}
-            />
-            <ReadmeButton
-              label={t("apps.flatpak")}
-              sub="ARM"
-              tile={TILE.flatpak}
-              mark={flatpakMark}
-              onPress={() => Linking.openURL(DOWNLOADS.flatpakArm)}
-            />
-          </ReadmeRow>
-        </View>
-        <VersionLine version={version} />
-      </Section>
+      <OnTile section="desktop">
+        <Section title={t("apps.desktopTitle")} hint={t("apps.desktopHint")} hue={7}>
+          <View style={styles.readmeRows}>
+            <ReadmeRow>
+              <ReadmeButton
+                label={t("apps.windows")}
+                sub="x64"
+                tile={TILE.windows}
+                mark={windowsMark}
+                onPress={() => Linking.openURL(DOWNLOADS.windows)}
+              />
+              <ReadmeButton
+                label={t("apps.windows")}
+                sub="ARM"
+                tile={TILE.windows}
+                mark={windowsMark}
+                onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
+              />
+            </ReadmeRow>
+            <ReadmeRow>
+              <ReadmeButton
+                label={t("apps.macos")}
+                sub="Universal"
+                tile={TILE.apple}
+                mark={(lit, ink) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />}
+                onPress={() => Linking.openURL(DOWNLOADS.macos)}
+              />
+            </ReadmeRow>
+            <ReadmeRow>
+              <ReadmeButton
+                label={t("apps.linux")}
+                sub="x64"
+                tile={TILE.linux}
+                mark={linuxMark}
+                onPress={() => Linking.openURL(DOWNLOADS.linux)}
+              />
+              <ReadmeButton
+                label={t("apps.linux")}
+                sub="ARM"
+                tile={TILE.linux}
+                mark={linuxMark}
+                onPress={() => Linking.openURL(DOWNLOADS.linuxArm)}
+              />
+            </ReadmeRow>
+            <ReadmeRow>
+              <ReadmeButton
+                label={t("apps.flatpak")}
+                sub="x64"
+                tile={TILE.flatpak}
+                mark={flatpakMark}
+                onPress={() => Linking.openURL(DOWNLOADS.flatpak)}
+              />
+              <ReadmeButton
+                label={t("apps.flatpak")}
+                sub="ARM"
+                tile={TILE.flatpak}
+                mark={flatpakMark}
+                onPress={() => Linking.openURL(DOWNLOADS.flatpakArm)}
+              />
+            </ReadmeRow>
+          </View>
+          <VersionLine version={version} />
+        </Section>
+      </OnTile>
 
-      <Section title={t("problems.title")} hint={t("problems.hint")} hue={2}>
-        <View style={[styles.report, { backgroundColor: p.surface2, ...corners.control }]}>
-          <Mono>{report}</Mono>
-        </View>
-        <View style={styles.actions}>
-          <Button
-            label={reportCopied ? t("problems.copied") : t("problems.copy")}
-            labelKey="problems.copy"
-            confirm={reported}
-            onPress={() =>
-              // The label changes only once the copy has landed.
-              void engine.copy(report).then(
-                () => {
-                  setReportCopied(true);
-                  setReported((n) => n + 1);
-                },
-                () => {},
-              )
-            }
-          />
-        </View>
-      </Section>
+      <OnTile section="problems">
+        <Section title={t("problems.title")} hint={t("problems.hint")} hue={2}>
+          <View style={[styles.report, { backgroundColor: p.surface2, ...corners.control }]}>
+            <Mono>{report}</Mono>
+          </View>
+          <View style={styles.actions}>
+            <Button
+              label={reportCopied ? t("problems.copied") : t("problems.copy")}
+              labelKey="problems.copy"
+              confirm={reported}
+              onPress={() =>
+                // The label changes only once the copy has landed.
+                void engine.copy(report).then(
+                  () => {
+                    setReportCopied(true);
+                    setReported((n) => n + 1);
+                  },
+                  () => {},
+                )
+              }
+            />
+          </View>
+        </Section>
+      </OnTile>
 
       {/* GlimStone's About card: who made it, the ways to give, the ways to
           report, then the versions and the privacy policy. The title counts
           the taps for the loop egg, being the only part of the card with no
           other action. */}
-      <Section title={t("phone.aboutTitle")} hue={3} onTitlePress={loop.tap}>
-        {loop.mark}
-        <Body>{t("about.body")}</Body>
+      <OnTile section="about">
+        <Section title={t("phone.aboutTitle")} hue={3} onTitlePress={loop.tap}>
+          {loop.mark}
+          <Body>{t("about.body")}</Body>
 
-        <Body>{t("about.coffee")}</Body>
-        {/* The README's give buttons, a blank line below the sentence above,
-            since they are the loudest row on the card. Brand marks are passed
-            explicitly, never matched from the label key. */}
-        <ReadmeRow style={styles.give}>
-          <ReadmeButton
-            label={t("about.coffeeButton")}
-            art
-            tile={TILE.coffee}
-            mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
-            onPress={() => Linking.openURL(COFFEE)}
-          />
-          <ReadmeButton
-            label={t("about.paypal")}
-            tile={TILE.paypal}
-            mark={(lit, ink) => <DonateMark name="paypal" scheme={scheme} ink={lit ? ink : undefined} />}
-            onPress={() => Linking.openURL(PAYPAL)}
-          />
-          <ReadmeButton
-            label={t("about.crypto")}
-            tile={TILE.bitcoin}
-            mark={(lit, ink) => <DonateMark name="bitcoin" scheme={scheme} ink={lit ? ink : undefined} />}
-            onPress={() => setCrypto(true)}
-          />
-        </ReadmeRow>
+          <Body>{t("about.coffee")}</Body>
+          {/* The README's give buttons, a blank line below the sentence above,
+              since they are the loudest row on the card. Brand marks are passed
+              explicitly, never matched from the label key. */}
+          <ReadmeRow style={styles.give}>
+            <ReadmeButton
+              label={t("about.coffeeButton")}
+              art
+              tile={TILE.coffee}
+              mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
+              onPress={() => Linking.openURL(COFFEE)}
+            />
+            <ReadmeButton
+              label={t("about.paypal")}
+              tile={TILE.paypal}
+              mark={(lit, ink) => <DonateMark name="paypal" scheme={scheme} ink={lit ? ink : undefined} />}
+              onPress={() => Linking.openURL(PAYPAL)}
+            />
+            <ReadmeButton
+              label={t("about.crypto")}
+              tile={TILE.bitcoin}
+              mark={(lit, ink) => <DonateMark name="bitcoin" scheme={scheme} ink={lit ? ink : undefined} />}
+              onPress={() => setCrypto(true)}
+            />
+          </ReadmeRow>
 
-        <Body>{t("about.report")}</Body>
-        <ReadmeRow>
-          <ReadmeButton
-            label={t("about.repo")}
-            tile={TILE.github}
-            mark={(lit, ink) => <DonateMark name="github" scheme={scheme} ink={lit ? ink : undefined} />}
-            onPress={() => Linking.openURL(REPO)}
-          />
-          <ReadmeButton
-            label={t("about.discord")}
-            tile={TILE.discord}
-            mark={(lit, ink) => (
-              <BrandMark
-                name="IconDiscord"
-                width={32}
-                height={25}
-                scheme={scheme}
-                lit={lit ? { ink, cut: TILE.discord.color } : undefined}
-              />
-            )}
-            onPress={() => Linking.openURL(DISCORD)}
-          />
-          {/* The manual is the README's docs button, its book in the
-              README's yellow, and the book opens under the finger. */}
-          <ReadmeButton
-            label={t("phone.manual")}
-            sub={t("action.open")}
-            tile={TILE.docs}
-            mark={(lit, ink) => <ManualMark open={lit} ink={lit ? ink : BRAND[scheme].docs} />}
-            onPress={() => Linking.openURL(MANUAL)}
-          />
-        </ReadmeRow>
+          <Body>{t("about.report")}</Body>
+          <ReadmeRow>
+            <ReadmeButton
+              label={t("about.repo")}
+              tile={TILE.github}
+              mark={(lit, ink) => <DonateMark name="github" scheme={scheme} ink={lit ? ink : undefined} />}
+              onPress={() => Linking.openURL(REPO)}
+            />
+            <ReadmeButton
+              label={t("about.discord")}
+              tile={TILE.discord}
+              mark={(lit, ink) => (
+                <BrandMark
+                  name="IconDiscord"
+                  width={32}
+                  height={25}
+                  scheme={scheme}
+                  lit={lit ? { ink, cut: TILE.discord.color } : undefined}
+                />
+              )}
+              onPress={() => Linking.openURL(DISCORD)}
+            />
+            {/* The manual is the README's docs button, its book in the
+                README's yellow, and the book opens under the finger. */}
+            <ReadmeButton
+              label={t("phone.manual")}
+              sub={t("action.open")}
+              tile={TILE.docs}
+              mark={(lit, ink) => <ManualMark open={lit} ink={lit ? ink : BRAND[scheme].docs} />}
+              onPress={() => Linking.openURL(MANUAL)}
+            />
+          </ReadmeRow>
 
-        {/* The engine reports its own version; the app manifest's is only the
-            fallback when there is no engine to ask. Every number links to its
-            release. A line after a row of buttons takes a step of space. */}
-        <View style={styles.afterControls}>
-          <Caption>
-            <Text onPress={() => Linking.openURL(releaseUrl(version))} style={[styles.link, { color: accentInk }]}>
-              {`ArrowLoop ${(version ?? appVersion).replace(/^v/, "")}`}
-            </Text>
-            {"  ·  "}
-            <Text
-              onPress={() => Linking.openURL(GLIMSTONE_RELEASE_URL)}
-              style={[styles.link, { color: accentInk }]}
-            >
-              {`GlimStone ${GLIMSTONE_VERSION}`}
-            </Text>
-          </Caption>
-          <Caption>
-            <Text accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY)} style={{ color: accentInk }}>
-              {t("phone.privacy")}
-            </Text>
-          </Caption>
-        </View>
-      </Section>
+          {/* The engine reports its own version; the app manifest's is only the
+              fallback when there is no engine to ask. Every number links to its
+              release. A line after a row of buttons takes a step of space. */}
+          <View style={styles.afterControls}>
+            <Caption>
+              <Text onPress={() => Linking.openURL(releaseUrl(version))} style={[styles.link, { color: accentInk }]}>
+                {`ArrowLoop ${(version ?? appVersion).replace(/^v/, "")}`}
+              </Text>
+              {"  ·  "}
+              <Text
+                onPress={() => Linking.openURL(GLIMSTONE_RELEASE_URL)}
+                style={[styles.link, { color: accentInk }]}
+              >
+                {`GlimStone ${GLIMSTONE_VERSION}`}
+              </Text>
+            </Caption>
+            <Caption>
+              <Text accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY)} style={{ color: accentInk }}>
+                {t("phone.privacy")}
+              </Text>
+            </Caption>
+          </View>
+        </Section>
+      </OnTile>
 
       {/* Quiet, with a glyph and no red: the question it asks is the warning. */}
-      <Section title={t("danger.title")} hue={6}>
-        <View style={styles.actions}>
-          <Button
-            label={t("danger.removeAll")}
-            glyph="IconTrash"
-            busy={removing}
-            shake={removeFailed}
-            onPress={() => void removeAll()}
-          />
-        </View>
-      </Section>
+      <OnTile section="danger">
+        <Section title={t("danger.title")} hue={6}>
+          <View style={styles.actions}>
+            <Button
+              label={t("danger.removeAll")}
+              glyph="IconTrash"
+              busy={removing}
+              shake={removeFailed}
+              onPress={() => void removeAll()}
+            />
+          </View>
+        </Section>
+      </OnTile>
 
       {crypto ? <CryptoDonate onClose={() => setCrypto(false)} /> : null}
 
@@ -1187,6 +1225,74 @@ export function Settings() {
         />
       ) : null}
     </Page>
+  );
+
+  // Beside the side bar, the web's Settings: its tiles in a column and the
+  // page of the one picked beside them. Sync, Targets and Pairing are screens
+  // of their own on the phone and show whole. The page keeps its place in the
+  // tree either way, so turning the tablet keeps where it was scrolled to.
+  const tiles = settingsTiles({ pairable });
+  const shown = shownTile(tiles, picked);
+  const screen = frame.wide ? tiles.find((tile) => tile.id === shown)?.screen : undefined;
+  const pane = useMemo(() => (frame.wide ? { wide: true, width: paneWidth(frame.width) } : frame), [frame]);
+  return (
+    <View style={frame.wide ? styles.besideTiles : styles.fill}>
+      {frame.wide ? <SettingsTiles tiles={tiles} shown={shown} onPick={setPicked} /> : null}
+      <FrameProvider value={pane}>
+        <View style={styles.fill}>
+          <ShownTile.Provider value={frame.wide ? shown : null}>
+            {screen === "Sync" ? <SyncSettings /> : screen === "TargetList" ? <Targets /> : screen === "Pairing" ? <Pairing /> : page}
+          </ShownTile.Provider>
+        </View>
+      </FrameProvider>
+    </View>
+  );
+}
+
+/** The tile on show beside the side bar, or null on a phone, which shows every card. */
+const ShownTile = createContext<TileId | null>(null);
+
+/** A card of the page, shown on a phone and on its own tile beside the side bar. */
+function OnTile({ section, children }: { section: SectionId; children: ReactNode }) {
+  const shown = useContext(ShownTile);
+  return shown === null || SECTION_TILE[section] === shown ? children : null;
+}
+
+/**
+ * The web's column of tiles, its tab selector turned on its side. The tiles
+ * share the column's height, so a short list fills it with tall tiles, and
+ * the open one is filled with its palette position or the accent.
+ */
+function SettingsTiles({ tiles, shown, onPick }: { tiles: SettingsTile[]; shown: TileId; onPick: (id: TileId) => void }) {
+  const { t } = useT();
+  const { p, corners, accent, accentInk, hueAt } = useTheme();
+  return (
+    <ScrollView
+      style={styles.tiles}
+      contentContainerStyle={styles.tilesInside}
+      accessibilityRole="tablist"
+    >
+      {tiles.map((tile, i) => {
+        const on = tile.id === shown;
+        const fill = hueAt(i) ?? accent;
+        const ink = on ? contrastOn(fill) : p.textSub;
+        return (
+          <Press
+            key={tile.id}
+            accessibilityRole="tab"
+            accessibilityState={on ? { selected: true } : {}}
+            onPress={() => onPick(tile.id)}
+            android_ripple={{ color: p.hover }}
+            style={[styles.tile, { backgroundColor: on ? fill : p.surface2, ...corners.pill }]}
+          >
+            <Glyph name={tile.glyph} color={on ? ink : (hueAt(i) ?? accentInk)} size={20} />
+            <Text style={[styles.tileText, { color: on ? ink : p.textSub }]} numberOfLines={2}>
+              {t(tile.label)}
+            </Text>
+          </Press>
+        );
+      })}
+    </ScrollView>
   );
 }
 
@@ -1338,6 +1444,22 @@ function langFlag(code: string): string {
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
+  besideTiles: { flex: 1, flexDirection: "row" },
+  // The page's own gap under the title bar and the web's room before the column.
+  tiles: { width: TILE_COLUMN + space.xl, flexGrow: 0 },
+  tilesInside: { flexGrow: 1, gap: space.xs, paddingStart: space.xl, paddingTop: space.xs, paddingBottom: space.lg },
+  tile: {
+    flexGrow: 1,
+    flexBasis: 0,
+    minHeight: TOUCH,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    paddingHorizontal: 14,
+    paddingVertical: space.xs,
+  },
+  tileText: { flex: 1, fontSize: 15, fontWeight: "500", lineHeight: 20 },
   // Wraps, or a row of three buttons clips the last one on a narrow phone.
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   axisRow: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.sm },

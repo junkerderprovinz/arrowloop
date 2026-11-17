@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { TILE_IDS } from "../../web/src/lib/routes.ts";
-import { SECTION_TILE, settingsTiles, type SectionId } from "./settingsTiles.ts";
+import { SECTION_TILE, TILE_COLUMN, paneWidth, settingsTiles, shownTile, type SectionId } from "./settingsTiles.ts";
+import { WIDE_ROOM } from "./layout.ts";
 
 const ids = (pairable: boolean) => settingsTiles({ pairable }).map((tile) => tile.id);
 
@@ -51,7 +52,7 @@ test("sync, targets and pairing show their own screens beside the tiles", () => 
 test("each card of the phone's settings page lands on the tile the web keeps it on", () => {
   const on = (tile: string) =>
     (Object.keys(SECTION_TILE) as SectionId[]).filter((section) => SECTION_TILE[section] === tile);
-  assert.deepEqual(on("general"), ["thisPhone", "engine", "backup", "danger"]);
+  assert.deepEqual(on("general"), ["thisPhone", "engine", "backup", "autoBackup", "danger"]);
   assert.deepEqual(on("look"), ["language", "appearance", "motion"]);
   assert.deepEqual(on("apps"), ["server", "desktop"]);
   assert.deepEqual(on("info"), ["problems", "about"]);
@@ -62,4 +63,21 @@ test("a tile without a screen of its own always has cards to show", () => {
     if (tile.screen) continue;
     assert.ok(Object.values(SECTION_TILE).includes(tile.id), tile.id);
   }
+});
+
+test("the settings open on General", () => {
+  assert.equal(shownTile(settingsTiles({ pairable: true }), null), "general");
+});
+
+test("a picked tile stays shown", () => {
+  assert.equal(shownTile(settingsTiles({ pairable: true }), "apps"), "apps");
+});
+
+test("a tile that went away gives way to General", () => {
+  assert.equal(shownTile(settingsTiles({ pairable: false }), "pairing"), "general");
+});
+
+test("the page beside the tiles gets what the tile column and its gutter leave", () => {
+  assert.equal(paneWidth(1040), 1040 - WIDE_ROOM - TILE_COLUMN);
+  assert.equal(TILE_COLUMN, 204);
 });

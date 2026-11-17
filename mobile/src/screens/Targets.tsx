@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { api, EngineError, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
@@ -29,10 +29,13 @@ export function Targets() {
     }
   }, []);
 
-  useEffect(() => {
-    const stop = nav.addListener("focus", load);
-    return stop;
-  }, [nav, load]);
+  // Also on mounting into a screen that already has the focus, as Settings
+  // shows this page beside the side bar.
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
 
   // Each card fills in its size as its own answer lands, so the slowest
   // service does not hold up the list.

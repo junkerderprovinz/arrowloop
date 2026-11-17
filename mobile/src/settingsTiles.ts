@@ -1,4 +1,5 @@
 import type { TranslationKey } from "./i18n";
+import { WIDE_ROOM } from "./layout.ts";
 import type { MoreStack } from "./nav";
 
 export type TileId = "general" | "look" | "sync" | "targets" | "pairing" | "apps" | "info";
@@ -43,6 +44,7 @@ export type SectionId =
   | "motion"
   | "engine"
   | "backup"
+  | "autoBackup"
   | "server"
   | "desktop"
   | "problems"
@@ -63,9 +65,23 @@ export const SECTION_TILE: Record<SectionId, TileId> = {
   motion: "look",
   engine: "general",
   backup: "general",
+  autoBackup: "general",
   server: "apps",
   desktop: "apps",
   problems: "info",
   about: "info",
   danger: "general",
 };
+
+/** The tile to show: the one picked last while it is offered, General otherwise. */
+export function shownTile(tiles: SettingsTile[], picked: TileId | null): TileId {
+  return tiles.some((tile) => tile.id === picked) ? picked! : "general";
+}
+
+/** The web's column of tiles, 12.75rem. */
+export const TILE_COLUMN = 204;
+
+/** How wide the page beside the tiles is, which its cards centre in. */
+export function paneWidth(page: number): number {
+  return page - WIDE_ROOM - TILE_COLUMN;
+}
