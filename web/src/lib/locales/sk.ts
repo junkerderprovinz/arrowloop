@@ -1719,7 +1719,7 @@ const sk: Translations = {
   'new.change.trustCertificate': 'Cieľ WebDAV, ktorého server si certifikát vystavil sám, mu môže dôverovať podľa odtlačku.',
   'new.change.kdriveRoot': 'Cieľ kDrive môže začínať v tvojom súkromnom priečinku, v zdieľanom alebo v akomkoľvek priečinku podľa ID.',
   'new.change.hiddenFolders': 'Vo výbere priečinka ukáže prepínač {show} aj skryté priečinky.',
-  'new.change.tabletLandscape': 'Na tablete sa mobilná aplikácia otáča spolu so zariadením a jej stránky, spodná lišta a panely vysúvané zdola zostávajú v stĺpci uprostred obrazovky.',
+  'new.change.tabletLandscape': 'Na tablete sa aplikácia pre telefón otáča spolu so zariadením a jej stránky, dolná lišta a panely vysúvané zdola zostávajú v stĺpci uprostred obrazovky.',
   'welcome.title': 'Víta ťa ArrowLoop',
   'welcome.lead': 'ArrowLoop udržiava dva priečinky rovnaké, na tomto počítači, na disku alebo v cloude. Tri kroky k prvej synchronizácii:',
   'welcome.foundTargets': 'Ciele, ktoré rclone už pozná: {count}',

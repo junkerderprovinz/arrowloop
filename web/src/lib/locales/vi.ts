@@ -1719,7 +1719,7 @@ const vi: Translations = {
   'new.change.trustCertificate': 'Đích WebDAV có máy chủ tự tạo chứng chỉ có thể tin cậy chứng chỉ đó qua dấu vân tay.',
   'new.change.kdriveRoot': 'Đích kDrive có thể bắt đầu ở thư mục riêng của bạn, thư mục chung hoặc bất kỳ thư mục nào theo ID.',
   'new.change.hiddenFolders': 'Trong bộ chọn thư mục, công tắc {show} cũng hiện các thư mục ẩn.',
-  'new.change.tabletLandscape': 'Trên máy tính bảng, ứng dụng điện thoại xoay theo thiết bị, còn các trang, thanh dưới cùng và các bảng trượt lên từ bên dưới nằm trong một cột ở giữa màn hình.',
+  'new.change.tabletLandscape': 'Trên máy tính bảng, ứng dụng điện thoại xoay theo thiết bị, còn các trang, thanh dưới và các bảng trượt lên từ bên dưới nằm trong một cột ở giữa màn hình.',
   'welcome.title': 'Chào mừng đến với ArrowLoop',
   'welcome.lead': 'ArrowLoop giữ hai thư mục giống hệt nhau, trên máy này, trên ổ đĩa hoặc trên đám mây. Ba bước để có lần đồng bộ đầu tiên:',
   'welcome.foundTargets': 'Đích mà rclone đã biết: {count}',

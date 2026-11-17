@@ -1719,7 +1719,7 @@ const sv: Translations = {
   'new.change.trustCertificate': 'Ett WebDAV-mål vars server själv har gjort sitt certifikat kan lita på det via fingeravtrycket.',
   'new.change.kdriveRoot': 'Ett kDrive-mål kan börja i din privata mapp, i den delade eller i vilken mapp som helst via dess ID.',
   'new.change.hiddenFolders': 'I mappväljaren visar reglaget {show} även dolda mappar.',
-  'new.change.tabletLandscape': 'På en surfplatta vrider sig telefonappen med enheten, och dess sidor, den nedre listen och panelerna som glider upp håller sig i en kolumn mitt på skärmen.',
+  'new.change.tabletLandscape': 'På en surfplatta vrider sig telefonappen med enheten, och dess sidor, den nedre raden och panelerna som glider upp håller sig i en kolumn mitt på skärmen.',
   'welcome.title': 'Välkommen till ArrowLoop',
   'welcome.lead': 'ArrowLoop håller två mappar likadana, på den här datorn, på en enhet eller i molnet. Tre steg till den första synkroniseringen:',
   'welcome.foundTargets': 'Mål som rclone redan känner till: {count}',

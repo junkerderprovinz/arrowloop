@@ -1719,7 +1719,7 @@ const nl: Translations = {
   'new.change.trustCertificate': 'Een WebDAV-doel waarvan de server zelf zijn certificaat maakte, kan dat vertrouwen op vingerafdruk.',
   'new.change.kdriveRoot': 'Een kDrive-doel kan beginnen in je privémap, in de gedeelde map of in elke map via zijn ID.',
   'new.change.hiddenFolders': 'In de mapkiezer toont de schakelaar {show} ook verborgen mappen.',
-  'new.change.tabletLandscape': 'Op een tablet draait de telefoonapp mee met het apparaat, en de pagina\'s, de onderste balk en de panelen die van onderen openschuiven blijven in een kolom in het midden van het scherm.',
+  'new.change.tabletLandscape': 'Op een tablet draait de telefoonapp mee met het apparaat, en de pagina\'s, de onderbalk en de panelen die van onderen openschuiven blijven in een kolom in het midden van het scherm.',
   'welcome.title': 'Welkom bij ArrowLoop',
   'welcome.lead': 'ArrowLoop houdt twee mappen gelijk, op deze computer, op een schijf of in de cloud. Drie stappen naar de eerste synchronisatie:',
   'welcome.foundTargets': 'Doelen die rclone al kent: {count}',

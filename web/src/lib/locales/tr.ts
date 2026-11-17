@@ -1719,7 +1719,7 @@ const tr: Translations = {
   'new.change.trustCertificate': 'Sunucusu sertifikasını kendisi oluşturan bir WebDAV hedefi ona parmak iziyle güvenebilir.',
   'new.change.kdriveRoot': 'Bir kDrive hedefi özel klasörünüzde, paylaşılan klasörde ya da kimliğiyle herhangi bir klasörde başlayabilir.',
   'new.change.hiddenFolders': 'Klasör seçicide {show} anahtarı gizli klasörleri de gösterir.',
-  'new.change.tabletLandscape': 'Tablette telefon uygulaması cihazla birlikte döner, sayfaları, alt çubuk ve aşağıdan açılan paneller ekranın ortasındaki bir sütunda kalır.',
+  'new.change.tabletLandscape': 'Tablette telefon uygulaması cihazla birlikte döner ve sayfaları, alt çubuk ile aşağıdan açılan paneller ekranın ortasındaki bir sütunda kalır.',
   'welcome.title': 'ArrowLoop\'a hoş geldin',
   'welcome.lead': 'ArrowLoop iki klasörü, bu makinede, bir sürücüde ya da bulutta aynı tutar. İlk eşitlemeye üç adım:',
   'welcome.foundTargets': 'rclone\'un zaten bildiği hedefler: {count}',
