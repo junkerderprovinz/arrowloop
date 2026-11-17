@@ -16,6 +16,10 @@ On a tablet the phone app turns into landscape with the device, and phones stay 
 
 - **The app turns with a tablet.** On a tablet it follows the device into landscape, and the pages, the bottom bar and the sheets keep to a column in the middle of the screen. Phones stay upright as before. Thanks to @leonp5 ([#223](https://github.com/junkerderprovinz/arrowloop/issues/223)).
 
+## 🎨 Design
+
+- **The installer follows PommelPorter 1.2.2.** Its buttons and the folder picker light up in a soft shade of ArrowLoop's colour under the pointer, like the app itself.
+
 ## 2.7.3 - 2026-11-16
 
 Every setting of a target has a proper name, hidden folders can be picked, Inclusions and Exclusions read as a pair, and whatever the pointer is over lights up in your accent colour.
