@@ -31,7 +31,6 @@ import {
   Empty,
   Fab,
   Floating,
-  Heading,
   Page,
   Pair,
   Press,
@@ -202,7 +201,8 @@ export function Overview() {
 /**
  * The sentence on how everything stands, as the web's Overview opens with,
  * beside a dot in its colour, and under it when the last run ended and the
- * next one starts.
+ * next one starts. It stands a step below the status size, since the phone's
+ * header already names the screen at that size right above it.
  */
 function Head({ jobs }: { jobs: Job[] }) {
   const { t, lang } = useT();
@@ -237,7 +237,7 @@ function Head({ jobs }: { jobs: Job[] }) {
     <View style={styles.head} accessible accessibilityRole="header">
       <View style={styles.headLine}>
         <View style={[styles.headDot, { backgroundColor: ink[headline] }]} />
-        <Heading>{said[headline]}</Heading>
+        <Title>{said[headline]}</Title>
       </View>
       {line ? <Caption>{line}</Caption> : null}
     </View>
@@ -483,7 +483,7 @@ function Account({
 const styles = StyleSheet.create({
   head: { gap: space.xs, paddingHorizontal: space.xs },
   headLine: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  headDot: { width: 12, height: 12, borderRadius: 6 },
+  headDot: { width: 10, height: 10, borderRadius: 5 },
   // A sub-card: a flat inset group one step above the card, without a shadow.
   well: { padding: space.md, gap: space.sm },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
