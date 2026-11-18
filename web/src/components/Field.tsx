@@ -83,7 +83,14 @@ export const CONTROL_H = 'h-[var(--btn-h)]'
  */
 export const KEY_CONTROL_H = 'h-[var(--btn-h-key)]'
 
-/** A borderless, filled text box; focus is a brightness step rather than a ring. */
+/**
+ * A box's focus. It keeps its ground, since a lighter one washes out on the
+ * light theme where the fields are already near white, and wears the ring
+ * every other control has.
+ */
+export const FIELD_FOCUS = 'focus:outline-solid focus:outline-2 focus:outline-offset-2 focus:outline-(--focus-ring)'
+
+/** A borderless, filled text box. */
 export function Text({
   value,
   onChange,
@@ -121,7 +128,7 @@ export function Text({
       onChange={(e) => onChange(e.target.value)}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
-      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-meta outline-none transition placeholder:text-(--field-placeholder) focus:brightness-125 ${
+      className={`w-full ${CONTROL_H} bg-carbon-surface2 px-3 text-meta outline-none transition placeholder:text-(--field-placeholder) ${FIELD_FOCUS} ${
         readOnly ? 'text-carbon-textMuted' : 'text-carbon-text'
       } ${mono ? 'font-mono' : ''}`}
       style={{ borderRadius: 'var(--radius-control)' }}
@@ -152,7 +159,7 @@ export function Day({
       max={max}
       aria-label={label}
       onChange={(e) => onChange(e.target.value)}
-      className={`${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition focus:brightness-125`}
+      className={`${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition ${FIELD_FOCUS}`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -195,7 +202,7 @@ export function NumberField({
           // schedule of "@every NaNh".
           if (Number.isFinite(next)) onChange(next)
         }}
-        className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition focus:brightness-125`}
+        className={`w-24 ${CONTROL_H} bg-carbon-surface2 px-3 text-meta text-carbon-text outline-none transition ${FIELD_FOCUS}`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />
     </span>
@@ -227,7 +234,7 @@ export function Lines({
         setText(e.target.value)
         onChange(entries(e.target.value))
       }}
-      className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-(--field-placeholder) focus:brightness-125"
+      className={`w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-(--field-placeholder) ${FIELD_FOCUS}`}
       style={{ borderRadius: 'var(--radius-control)' }}
     />
   )
@@ -286,7 +293,7 @@ export function Choice<T extends string>({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-body' : 'text-meta'} text-carbon-text outline-none transition hover:bg-hover focus-visible:brightness-125`}
+        className={`flex w-full ${CONTROL_H} items-center ${roomy ? 'gap-2.5' : 'gap-2'} bg-carbon-surface2 pl-3 pr-8 text-start ${roomy ? 'text-body' : 'text-meta'} text-carbon-text outline-none transition hover:bg-hover focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)`}
         style={{ borderRadius: 'var(--radius-control)' }}
       >
         {current?.flag && <Flag code={current.flag} />}
@@ -373,7 +380,7 @@ export function Secret({
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-(--field-placeholder) focus:brightness-125`}
+        className={`w-full ${CONTROL_H} bg-carbon-surface2 pl-3 pr-9 font-mono text-meta text-carbon-text outline-none transition placeholder:font-sans placeholder:text-(--field-placeholder) ${FIELD_FOCUS}`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <button
