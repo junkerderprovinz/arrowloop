@@ -176,14 +176,15 @@ func TestTheFortressPhraseIsShownAgainAndAChangeReachesTheOthers(t *testing.T) {
 	if got := a.shownPhrase(t); got != words {
 		t.Fatalf("the phrase is shown as %q, want the one entered", got)
 	}
+	other := []leftEntry{{App: "ArrowLoop", Device: b.connect(t).Name}}
 
 	status, body := a.send(t, http.MethodPost, "/api/fortress/phrase", `{}`)
 	if status != http.StatusOK {
 		t.Fatalf("change the phrase = %d %s", status, body)
 	}
 	var changed struct {
-		Phrase string   `json:"phrase"`
-		Left   []string `json:"left"`
+		Phrase string      `json:"phrase"`
+		Left   []leftEntry `json:"left"`
 	}
 	if err := json.Unmarshal(body, &changed); err != nil || changed.Phrase == words || changed.Phrase == "" {
 		t.Fatalf("the change answered %s", body)
@@ -191,8 +192,10 @@ func TestTheFortressPhraseIsShownAgainAndAChangeReachesTheOthers(t *testing.T) {
 	if got := a.shownPhrase(t); got != changed.Phrase {
 		t.Errorf("after the change the phrase is shown as %q", got)
 	}
-	if len(changed.Left) != 0 {
-		t.Fatalf("the change left %v on the old phrase", changed.Left)
+	// The kit hands the new phrase over once, so a call lost on the relay
+	// leaves the other instance listed until it asks for the phrase itself.
+	if len(changed.Left) != 0 && !slices.Equal(changed.Left, other) {
+		t.Errorf("the change left %+v on the old phrase, want nobody or %+v", changed.Left, other)
 	}
 	eventually(t, "the other instance to take the new phrase", func() bool { return b.shownPhrase(t) == changed.Phrase })
 }
