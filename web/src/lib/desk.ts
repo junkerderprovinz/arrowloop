@@ -104,13 +104,32 @@ export function onUpdateReady(callback: (version: string) => void): () => void {
   return listen(UPDATE_READY_EVENT, (data) => callback(String(data)))
 }
 
+/** Where the window keeps, for its session, that the window manager draws its title bar. */
+const SYSTEM_FRAME_KEY = 'arrowloop:system-frame'
+
+/**
+ * Whether the window manager draws the title bar, which the shell says with
+ * frame=system in the address it opens. A move to another page drops the
+ * query, and a reload there has to know all the same.
+ */
+function systemFrame(): boolean {
+  const said = new URLSearchParams(window.location.search).get('frame') === 'system'
+  try {
+    if (said) sessionStorage.setItem(SYSTEM_FRAME_KEY, '1')
+    return said || sessionStorage.getItem(SYSTEM_FRAME_KEY) === '1'
+  } catch {
+    return said
+  }
+}
+
 /**
  * Whether this page draws the window's title bar. The main window is frameless
  * on Windows and Linux and keeps its own title bar on macOS, whose traffic
- * lights people expect; see desktop/shell.go.
+ * lights people expect, and on a Linux desktop whose window manager draws one
+ * regardless; see desktop/shell.go.
  */
 export function drawsOwnFrame(): boolean {
-  return inDesktopWindow() && !isActivityView() && !/Macintosh/.test(navigator.userAgent)
+  return inDesktopWindow() && !isActivityView() && !/Macintosh/.test(navigator.userAgent) && !systemFrame()
 }
 
 // The runtime's window object and its methods, as @wailsio/runtime numbers them.

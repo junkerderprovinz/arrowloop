@@ -63,15 +63,17 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 	// On Windows and Linux the page draws the title bar in the house style
 	// (web/src/components/WindowFrame.tsx) and does the dragging and the edge
 	// resizing. Windows keeps the frame's shadow, rounded corners and snapping.
-	// macOS keeps its own title bar and the traffic lights people expect.
+	// macOS keeps its own title bar and the traffic lights people expect, and
+	// so does a Linux desktop whose window manager draws one regardless.
+	decorated := runtime.GOOS == "linux" && systemDecorates()
 	s.main = app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Name:      "main",
 		Title:     "ArrowLoop",
 		Width:     1100,
 		Height:    760,
-		URL:       pageURL("", lang),
+		URL:       pageURL("", lang, decorated),
 		Hidden:    inTray,
-		Frameless: runtime.GOOS != "darwin",
+		Frameless: runtime.GOOS != "darwin" && !decorated,
 	})
 	s.remember(inTray)
 	s.main.RegisterHook(events.Common.WindowClosing, s.closing)
@@ -93,7 +95,7 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 		Height:       size.Height,
 		MinWidth:     300,
 		MinHeight:    360,
-		URL:          pageURL("activity", lang),
+		URL:          pageURL("activity", lang, false),
 		Frameless:    true,
 		AlwaysOnTop:  true,
 		Hidden:       true,
@@ -158,12 +160,15 @@ func (s *shell) closing(e *application.WindowEvent) {
 }
 
 // pageURL is the address a window opens. The interface draws its compact view
-// for view=activity and starts in lang while nobody has picked a language in
-// it.
-func pageURL(view, lang string) string {
+// for view=activity, starts in lang while nobody has picked a language in it,
+// and leaves the title bar out for frame=system.
+func pageURL(view, lang string, systemFrame bool) string {
 	q := url.Values{}
 	if view != "" {
 		q.Set("view", view)
+	}
+	if systemFrame {
+		q.Set("frame", "system")
 	}
 	if lang != "" {
 		q.Set("lang", lang)
