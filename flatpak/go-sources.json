@@ -3011,17 +3011,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.81.0.mod",
-        "sha256": "1c71b23be972760dc9b91d47c2ce0cc56f046135975784d9211d83030fefbafd",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.81.2.mod",
+        "sha256": "c9dff2a21cbfc0c4dc15d949ca884fafced92144810dcdb7cf96e79607db4ee3",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.81.0.mod"
+        "dest-filename": "v1.81.2.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.81.0.zip",
-        "sha256": "0ca92ad3eb57d927cdd90b1a9231a028539c51cf3fb2cc147c6e1b1e3f4c58d8",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.81.2.zip",
+        "sha256": "fdacc281f4896de4738f70b2e9bb8369d0ff4838a3ed7be3481a87c0a23cce13",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.81.0.zip"
+        "dest-filename": "v1.81.2.zip"
     },
     {
         "type": "file",

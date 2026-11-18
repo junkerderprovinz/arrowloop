@@ -27,7 +27,7 @@ require (
 	golang.org/x/sys v0.50.0
 	golang.org/x/term v0.48.0
 	golang.org/x/text v0.44.0
-	modernc.org/libc v1.81.0
+	modernc.org/libc v1.81.2
 	modernc.org/sqlite v1.62.0
 )
 
