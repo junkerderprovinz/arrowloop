@@ -13,6 +13,8 @@ import {
   menuRoom,
   pageRoom,
   sceneBox,
+  titleRow,
+  pageTop,
   panelWidth,
   railWidth,
   sceneWidth,
@@ -143,4 +145,29 @@ test("a page beside the side bar stops above the system's navigation bar", () =>
 
 test("a page beside the settings tiles uses the width the tiles leave", () => {
   assert.equal(pageRoom({ wide: true, width: 900, fill: true }, PAGE_GUTTER, false), WIDE_ROOM);
+});
+
+test("a phone's pages keep their title row", () => {
+  assert.deepEqual(titleRow(false, true, 24), { shown: true, top: 0 });
+  assert.deepEqual(titleRow(false, false, 24), { shown: true, top: 0 });
+});
+
+test("beside the side bar a tab's first page has no title row, as the web's pages have none", () => {
+  assert.equal(titleRow(true, true, 24).shown, false);
+});
+
+test("a first page without its title row keeps clear of the status bar", () => {
+  assert.equal(titleRow(true, true, 24).top, 24);
+});
+
+test("a page opened from a tab keeps its title row and back arrow beside the side bar", () => {
+  assert.deepEqual(titleRow(true, false, 24), { shown: true, top: 0 });
+});
+
+test("a page under a title row keeps a sliver above its first card", () => {
+  assert.equal(pageTop(true), 4);
+});
+
+test("a page without a title row keeps the web's gutter above its first card, level with the side bar", () => {
+  assert.equal(pageTop(false), GUTTER);
 });

@@ -1,4 +1,4 @@
-import { NavigationContext } from "@react-navigation/native";
+import { NavigationContext, NavigationRouteContext } from "@react-navigation/native";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import {
   ActivityIndicator,
@@ -54,7 +54,7 @@ import { useSystemAccent } from "./systemAccent";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
-import { COLUMN, GUTTER, pageRoom, panelWidth } from "./layout";
+import { COLUMN, GUTTER, pageRoom, pageTop, panelWidth, titleRow } from "./layout";
 import { useFrame } from "./frame";
 
 // GlimStone's controls for React Native, with the design language's shapes
@@ -1560,6 +1560,7 @@ export function Page({
   const { scroller, inner } = scroll ?? own;
   const keyboard = useKeyboardCover(scroller, inner);
   const room = useSideRoom(space.lg, spread);
+  const top = pageTop(useTitled());
   return (
     <Animated.View ref={keyboard.frame} style={[motion.style, { paddingBottom: keyboard.covered }]}>
       <ScrollView
@@ -1568,13 +1569,22 @@ export function Page({
         onLayout={keyboard.onLayout}
         {...motion.scroll}
         style={{ backgroundColor: p.background }}
-        contentContainerStyle={[styles.page, { paddingHorizontal: room }, fab ? styles.fabRoom : null]}
+        contentContainerStyle={[styles.page, { paddingHorizontal: room, paddingTop: top }, fab ? styles.fabRoom : null]}
         keyboardShouldPersistTaps="handled"
       >
         <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
       </ScrollView>
     </Animated.View>
   );
+}
+
+/** Whether the page stands under a title row, which a tab's first page beside the side bar has not. */
+function useTitled(): boolean {
+  const nav = useContext(NavigationContext);
+  const route = useContext(NavigationRouteContext);
+  const { wide } = useFrame();
+  const first = route !== undefined && nav?.getState()?.routes[0]?.key === route.key;
+  return titleRow(wide, first, 0).shown;
 }
 
 /**
@@ -1765,8 +1775,7 @@ export function Floating({ children }: { children: ReactNode }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  // Every page sits under a title bar, which already leaves room above.
-  page: { padding: space.lg, paddingTop: space.xs, gap: space.md },
+  page: { padding: space.lg, gap: space.md },
   card: { padding: space.lg, gap: space.sm, overflow: "hidden" },
   edge: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4 },
 

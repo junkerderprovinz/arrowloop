@@ -44,7 +44,7 @@ import {
   type RailPlace,
 } from "./src/nav";
 import { FrameProvider } from "./src/frame";
-import { GUTTER, railWidth, sceneBox, sceneWidth, sideBarShown } from "./src/layout";
+import { GUTTER, railWidth, sceneBox, sceneWidth, sideBarShown, titleRow } from "./src/layout";
 import { History } from "./src/screens/History";
 import { Instances } from "./src/screens/Instances";
 import { JobEdit } from "./src/screens/JobEdit";
@@ -187,16 +187,19 @@ function Shell() {
   };
 
   // A tab's first page carries the app's mark where a page opened from it
-  // has its back arrow. The side bar carries the mark itself.
+  // has its back arrow. Beside the side bar, which carries the mark, the
+  // first page has no title row at all.
   const header = ({ navigation, route }: { navigation: { getState(): { routes: { key: string }[] } }; route: { key: string } }) => {
     const first = navigation.getState().routes[0]?.key === route.key;
+    const title = titleRow(wide, first, inset.top);
     return {
+      headerShown: title.shown,
       headerStyle: { backgroundColor: p.background },
       headerTitleStyle: { color: p.text, fontSize: text.status, fontWeight: "600" },
       headerTintColor: p.text,
       headerShadowVisible: false,
       headerLeft: first && !wide ? () => <Image source={MARK} style={styles.mark} accessibilityIgnoresInvertColors /> : undefined,
-      contentStyle: { backgroundColor: p.background },
+      contentStyle: { backgroundColor: p.background, paddingTop: title.top },
     } as const;
   };
 

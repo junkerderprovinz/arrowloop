@@ -20,6 +20,7 @@ import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { FrameProvider, useFrame } from "../frame";
 import { Glyph } from "../glyphs";
+import { pageTop } from "../layout";
 import { SECTION_TILE, paneWidth, settingsTiles, shownTile, TILE_COLUMN, type SectionId, type SettingsTile, type TileId } from "../settingsTiles";
 import { Pairing } from "./Pairing";
 import { SyncSettings } from "./SyncSettings";
@@ -1445,10 +1446,11 @@ function langFlag(code: string): string {
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   besideTiles: { flex: 1, flexDirection: "row" },
-  // The web's room before the column, and its top in line with the first
-  // card's title.
+  // The web's room before the column, and its top level with the first
+  // card's title, which stands in the card's top margin below the page's own
+  // room.
   tiles: { width: TILE_COLUMN + space.xl, flexGrow: 0 },
-  tilesInside: { gap: space.xs, paddingStart: space.xl, paddingTop: space.lg, paddingBottom: space.lg },
+  tilesInside: { gap: space.xs, paddingStart: space.xl, paddingTop: pageTop(false) + space.md, paddingBottom: space.lg },
   // The web's tile at a finger's height.
   tile: {
     minHeight: TOUCH,

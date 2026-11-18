@@ -94,3 +94,23 @@ export function panelWidth(window: number): number {
 export function menuRoom(window: number, offset: number, gutter: number): number {
   return window - offset - gutter;
 }
+
+/**
+ * Whether a page shows its title row, and the room it keeps above itself in
+ * its place. Beside the side bar a tab's first page drops the row, as the
+ * web's pages have none, and then has to clear the status bar itself. A page
+ * opened from it keeps the row for its back arrow.
+ */
+export function titleRow(wide: boolean, first: boolean, topInset: number): { shown: boolean; top: number } {
+  const shown = !(wide && first);
+  return { shown, top: shown ? 0 : topInset };
+}
+
+/**
+ * The room a page keeps above its first card: a sliver under a title row,
+ * which leaves room of its own, and without one the web's gutter, so the
+ * first card stands level with the side bar's top.
+ */
+export function pageTop(titled: boolean): number {
+  return titled ? 4 : GUTTER;
+}
