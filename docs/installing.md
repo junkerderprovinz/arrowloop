@@ -329,6 +329,11 @@ running is the kind of surprise somebody finds a week later. Both choices switch
 off together with the icon, since a window that hides with nothing left to bring
 it back is gone. Switching the icon off or on applies at once.
 
+Hiding the window closes it for real, along with the browser engine that draws
+it. A copy waiting in the notification area holds only the sync engine, about
+50 MB on Windows rather than close to 500 MB with a hidden window, and the icon
+builds a fresh window when you open it, which takes under a second.
+
 Starting it a second time does not start a second copy. It brings the running
 window back, which is what a second double-click means when the first one is
 sitting in the notification area.

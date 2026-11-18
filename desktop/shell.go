@@ -17,9 +17,9 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
-// A click on the tray icon takes the focus from the small window, which hides
+// A click on the tray icon takes the focus from the small window, which closes
 // it, before the click itself arrives. A click this soon after is the one that
-// hid it, and means close rather than open again.
+// closed it, and means close rather than open again.
 const refocusGrace = 400 * time.Millisecond
 
 // trayGap is the room between the small window and the taskbar or the icon.
@@ -27,22 +27,37 @@ const trayGap = 8
 
 // shell is everything the desktop adds around the engine: the main window, the
 // small window at the tray icon, and the icon with its menu.
+//
+// A window exists only while it is on screen. A webview kept hidden behind the
+// icon holds a web process and its page, hundreds of megabytes for a program
+// that mostly waits for the next schedule. The windows are made, closed and
+// read on the main thread alone.
 type shell struct {
-	ctx      context.Context
-	app      *application.App
-	store    *deskset.Store
-	runner   *daemon.Runner
+	ctx    context.Context
+	app    *application.App
+	store  *deskset.Store
+	runner *daemon.Runner
+	live   *TrayLive
+	lang   string
+
 	main     *application.WebviewWindow
 	activity *application.WebviewWindow
-	live     *TrayLive
+	// activityHid is when the small window last closed on losing the focus.
+	activityHid time.Time
+	// update is the version waiting for the next start that no main window
+	// has been told of yet.
+	update string
 
-	// Unix nanoseconds, read on the main thread, which must not wait on mu.
-	activityHid atomic.Int64
 	// quitChosen is set when somebody quits from the menu or the close button,
 	// rather than the installer or the session ending the program.
 	quitChosen atomic.Bool
 
+	// keep writes the small window's size once a drag on its edge stops, since
+	// the drag sends a stream of resizes.
+	keep *time.Timer
+
 	mu         sync.Mutex
+	resized    deskset.Size
 	tray       *application.SystemTray
 	trayHidden bool
 	pause      *application.MenuItem
@@ -55,83 +70,26 @@ type trayItems struct {
 	open, syncNow, quit *application.MenuItem
 }
 
-// newShell builds the windows. With inTray the main window starts hidden, its
-// way back being the icon. lang is the installer's language, or "".
+// newShell sets up the windows. With inTray the program starts with none, its
+// way to the main window being the icon. lang is the installer's language, or
+// "".
 func newShell(ctx context.Context, app *application.App, store *deskset.Store, icons *TraySet, inTray bool, lang string) *shell {
-	s := &shell{ctx: ctx, app: app, store: store, live: newTrayLive(icons)}
-
-	// On Windows and Linux the page draws the title bar in the house style
-	// (web/src/components/WindowFrame.tsx) and does the dragging and the edge
-	// resizing. Windows keeps the frame's shadow, rounded corners and snapping.
-	// macOS keeps its own title bar and the traffic lights people expect.
-	s.main = app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Name:      "main",
-		Title:     "ArrowLoop",
-		Width:     1100,
-		Height:    760,
-		URL:       pageURL("", lang),
-		Hidden:    inTray,
-		Frameless: runtime.GOOS != "darwin",
-	})
-	s.remember(inTray)
-	s.main.RegisterHook(events.Common.WindowClosing, s.closing)
-	s.main.OnWindowEvent(events.Common.WindowMinimise, func(*application.WindowEvent) {
-		if set := s.store.Get(); set.Tray && set.MinimiseToTray {
-			s.toTray()
-		}
-	})
-
-	// The interface reads the query and draws its compact view.
-	size := deskset.Size{Width: 360, Height: 480}
-	if kept, ok := store.ActivitySize(); ok {
-		size = kept
+	s := &shell{ctx: ctx, app: app, store: store, live: newTrayLive(icons), lang: lang}
+	if !inTray {
+		s.main = s.openMain()
 	}
-	s.activity = app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Name:         "activity",
-		Title:        "ArrowLoop",
-		Width:        size.Width,
-		Height:       size.Height,
-		MinWidth:     300,
-		MinHeight:    360,
-		URL:          pageURL("activity", lang),
-		Frameless:    true,
-		AlwaysOnTop:  true,
-		Hidden:       true,
-		HideOnEscape: true,
-		Windows:      application.WindowsWindow{HiddenOnTaskbar: true},
-	})
-	// Dragging an edge sends a stream of these, so the size is kept once they
-	// stop.
-	// Showing the window reports a resize too, which is not worth a write.
-	kept := size
-	keep := time.AfterFunc(time.Hour, func() {
-		w, h := s.activity.Size()
-		if now := (deskset.Size{Width: w, Height: h}); now != kept {
-			kept = now
+	s.remember(inTray)
+
+	s.keep = time.AfterFunc(time.Hour, func() {
+		s.mu.Lock()
+		now := s.resized
+		s.mu.Unlock()
+		// Showing the window reports a resize too, which is not worth a write.
+		if now != s.activitySize() {
 			_ = store.SetActivitySize(now)
 		}
 	})
-	keep.Stop()
-	s.activity.OnWindowEvent(events.Common.WindowDidResize, func(*application.WindowEvent) {
-		keep.Reset(time.Second)
-	})
-	// Alt+F4 on the small window would otherwise destroy it for good.
-	s.activity.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) {
-		if s.ending() {
-			return
-		}
-		e.Cancel()
-		s.activity.Hide()
-	})
-	// A hidden window stays the foreground one until something else takes
-	// over, and losing that must not count as the click that closed it.
-	s.activity.OnWindowEvent(events.Common.WindowLostFocus, func(*application.WindowEvent) {
-		if !s.activity.IsVisible() {
-			return
-		}
-		s.activityHid.Store(time.Now().UnixNano())
-		s.activity.Hide()
-	})
+	s.keep.Stop()
 
 	store.Watch(s.follow)
 	app.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(*application.ApplicationEvent) {
@@ -140,21 +98,149 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 	return s
 }
 
+// openMain makes the main window. It runs on the main thread, or before the
+// program runs.
+//
+// On Windows and Linux the page draws the title bar in the house style
+// (web/src/components/WindowFrame.tsx) and does the dragging and the edge
+// resizing. Windows keeps the frame's shadow, rounded corners and snapping.
+// macOS keeps its own title bar and the traffic lights people expect.
+func (s *shell) openMain() *application.WebviewWindow {
+	w := s.app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Name:      "main",
+		Title:     "ArrowLoop",
+		Width:     1100,
+		Height:    760,
+		URL:       pageURL("", s.lang),
+		Frameless: runtime.GOOS != "darwin",
+	})
+	w.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) { s.closing(w, e) })
+	w.OnWindowEvent(events.Common.WindowMinimise, func(*application.WindowEvent) {
+		if set := s.store.Get(); set.Tray && set.MinimiseToTray {
+			s.toTray()
+		}
+	})
+	// Wails holds the event until the page has loaded.
+	if s.update != "" {
+		s.app.Event.Emit(updateReadyEvent, s.update)
+		s.update = ""
+	}
+	return w
+}
+
+// openActivity makes the small window, hidden until it has been placed at the
+// icon. The interface reads the query and draws its compact view. It runs on
+// the main thread.
+func (s *shell) openActivity() *application.WebviewWindow {
+	size := s.activitySize()
+	w := s.app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Name:        "activity",
+		Title:       "ArrowLoop",
+		Width:       size.Width,
+		Height:      size.Height,
+		MinWidth:    300,
+		MinHeight:   360,
+		URL:         pageURL("activity", s.lang),
+		Frameless:   true,
+		AlwaysOnTop: true,
+		Hidden:      true,
+		KeyBindings: map[string]func(application.Window){
+			"escape": func(application.Window) { application.InvokeSync(s.closeActivity) },
+		},
+		Windows: application.WindowsWindow{HiddenOnTaskbar: true},
+	})
+	w.OnWindowEvent(events.Common.WindowDidResize, func(*application.WindowEvent) {
+		width, height := w.Size()
+		// Closed by the time the size was asked for.
+		if width == 0 {
+			return
+		}
+		s.mu.Lock()
+		s.resized = deskset.Size{Width: width, Height: height}
+		s.mu.Unlock()
+		s.keep.Reset(time.Second)
+	})
+	// Alt+F4 closes it the way a click elsewhere does.
+	w.RegisterHook(events.Common.WindowClosing, func(*application.WindowEvent) {
+		if s.ending() {
+			return
+		}
+		application.InvokeSync(func() {
+			if s.activity == w {
+				s.activity = nil
+			}
+		})
+	})
+	w.OnWindowEvent(events.Common.WindowLostFocus, func(*application.WindowEvent) {
+		application.InvokeSync(func() {
+			if s.activity != w {
+				return
+			}
+			s.activityHid = time.Now()
+			s.closeActivity()
+		})
+	})
+	return w
+}
+
+// activitySize is the small window's size as somebody last left it.
+func (s *shell) activitySize() deskset.Size {
+	if kept, ok := s.store.ActivitySize(); ok {
+		return kept
+	}
+	return deskset.Size{Width: 360, Height: 480}
+}
+
+// closeActivity closes the small window if it is open. It runs on the main
+// thread.
+func (s *shell) closeActivity() {
+	if w := s.activity; w != nil {
+		s.activity = nil
+		w.Close()
+	}
+}
+
 // ending reports whether the program is on its way out, when every window
 // closes for real.
 func (s *shell) ending() bool { return s.app.Context().Err() != nil }
 
+// closeOutcome is what a close of the main window leads to.
+type closeOutcome int
+
+const (
+	// letClose lets the window go, as the shell itself asked.
+	letClose closeOutcome = iota
+	closeToTray
+	quitProgram
+)
+
+// onClose decides what a close of the main window does. shown is whether the
+// window is still the one on screen rather than one the shell is putting away.
+func onClose(shown bool, set deskset.Settings) closeOutcome {
+	switch {
+	case !shown:
+		return letClose
+	case set.Tray && set.CloseToTray:
+		return closeToTray
+	default:
+		return quitProgram
+	}
+}
+
 // closing decides what the main window's close button does.
-func (s *shell) closing(e *application.WindowEvent) {
+func (s *shell) closing(w *application.WebviewWindow, e *application.WindowEvent) {
 	if s.ending() {
 		return
 	}
-	e.Cancel()
-	if set := s.store.Get(); set.Tray && set.CloseToTray {
+	shown := application.InvokeSyncWithResult(func() bool { return s.main == w })
+	switch onClose(shown, s.store.Get()) {
+	case closeToTray:
+		e.Cancel()
 		s.toTray()
-		return
+	case quitProgram:
+		e.Cancel()
+		s.quit()
 	}
-	s.quit()
 }
 
 // pageURL is the address a window opens. The interface draws its compact view
@@ -189,19 +275,41 @@ func (s *shell) ended() {
 	}
 }
 
-// toTray hides the main window behind the icon.
+// toTray closes the main window, leaving the icon as the way back.
 func (s *shell) toTray() {
-	s.main.Hide()
+	application.InvokeSync(func() {
+		if w := s.main; w != nil {
+			s.main = nil
+			w.Close()
+		}
+	})
 	s.remember(true)
 }
 
 // showMain brings the main window back from the tray, the taskbar or behind
-// other windows. Focus also restores a window that was hidden while minimised.
+// other windows. Called before the program runs, it waits for it.
 func (s *shell) showMain() {
-	s.activity.Hide()
-	s.main.Show()
-	s.main.Focus()
+	application.InvokeSync(func() {
+		s.closeActivity()
+		if s.main == nil {
+			s.main = s.openMain()
+		}
+		s.main.Show()
+		s.main.Focus()
+	})
 	s.remember(false)
+}
+
+// announce tells the main window which version waits for the next start, or
+// keeps it for the next main window while there is none.
+func (s *shell) announce(version string) {
+	application.InvokeSync(func() {
+		if s.main == nil {
+			s.update = version
+			return
+		}
+		s.app.Event.Emit(updateReadyEvent, version)
+	})
 }
 
 // remember keeps where the main window is, so a program ended from outside
@@ -218,6 +326,7 @@ func (s *shell) follow() {
 	set := s.store.Get()
 	words := s.store.Words()
 
+	var trayGone bool
 	s.mu.Lock()
 	justPaused := set.Paused && !s.paused
 	s.paused = set.Paused
@@ -232,7 +341,7 @@ func (s *shell) follow() {
 		s.tray.Show()
 		s.trayHidden = false
 	case !set.Tray && s.tray != nil && !s.trayHidden:
-		s.activity.Hide()
+		trayGone = true
 		if runtime.GOOS == "linux" {
 			s.live.attach(nil)
 			s.tray.Destroy()
@@ -254,6 +363,9 @@ func (s *shell) follow() {
 	}
 	s.mu.Unlock()
 
+	if trayGone {
+		application.InvokeSync(s.closeActivity)
+	}
 	s.live.show(set.Paused, words)
 
 	// A run already going is automatic work too, and pausing means it stops.
@@ -296,13 +408,14 @@ func (s *shell) startTray() *application.SystemTray {
 // toggleActivity opens the small window at the icon, or closes it. It runs on
 // the main thread.
 func (s *shell) toggleActivity(tray *application.SystemTray) {
-	if s.activity.IsVisible() {
-		s.activity.Hide()
+	if s.activity != nil {
+		s.closeActivity()
 		return
 	}
-	if time.Since(time.Unix(0, s.activityHid.Load())) < refocusGrace {
+	if time.Since(s.activityHid) < refocusGrace {
 		return
 	}
+	s.activity = s.openActivity()
 	if err := tray.PositionWindow(s.activity, trayGap); err != nil {
 		log.Printf("tray: place the window at the icon: %v", err)
 	}
