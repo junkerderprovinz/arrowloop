@@ -562,6 +562,7 @@ const ko: Translations = {
   'phone.permissionDenied': '권한 허용되지 않음',
   'phone.openSettings': '설정 열기',
   'phone.noJobs': '작업은 두 폴더를 같은 상태로 유지합니다. 아래 버튼으로 첫 작업을 추가하세요.',
+  'phone.jobsNone': '아직 작업이 없습니다. 아래 버튼으로 추가하세요.',
   'overview.numbers': '숫자로 보기',
   'overview.numbersHint': '숫자를 누르면 해당 목록이 있는 페이지가 열립니다.',
   'overview.jobsHint': '직접 정한 순서대로 작업을 마지막 실행, 다음 실행과 함께 보여 줍니다. 클릭하면 작업이 열립니다.',

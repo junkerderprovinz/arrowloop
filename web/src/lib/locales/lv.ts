@@ -562,6 +562,7 @@ const lv: Translations = {
   'phone.permissionDenied': 'Atļauja nav piešķirta',
   'phone.openSettings': 'Atvērt iestatījumus',
   'phone.noJobs': 'Uzdevums uztur divas mapes vienādas. Pievienojiet pirmo ar pogu zemāk.',
+  'phone.jobsNone': 'Uzdevumu vēl nav. Pievienojiet vienu ar pogu zemāk.',
   'overview.numbers': 'Skaitļos',
   'overview.numbersHint': 'Katrs skaitlis atver lapu ar atbilstošo sarakstu.',
   'overview.jobsHint': 'Tavi uzdevumi tavā secībā, ar pēdējo un nākamo palaišanu. Klikšķis atver uzdevumu.',

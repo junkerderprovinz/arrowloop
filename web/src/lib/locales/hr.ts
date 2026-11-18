@@ -562,6 +562,7 @@ const hr: Translations = {
   'phone.permissionDenied': 'Dozvola nije dodijeljena',
   'phone.openSettings': 'Otvori postavke',
   'phone.noJobs': 'Zadatak održava dvije mape jednakima. Dodaj prvi gumbom ispod.',
+  'phone.jobsNone': 'Još nema zadataka. Dodaj jedan gumbom ispod.',
   'overview.numbers': 'U brojkama',
   'overview.numbersHint': 'Svaki broj otvara stranicu s pripadajućim popisom.',
   'overview.jobsHint': 'Tvoji zadaci tvojim redoslijedom, s posljednjim i sljedećim izvođenjem. Klik otvara zadatak.',

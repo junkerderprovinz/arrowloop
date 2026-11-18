@@ -562,6 +562,7 @@ const tr: Translations = {
   'phone.permissionDenied': 'İzin verilmedi',
   'phone.openSettings': 'Ayarları aç',
   'phone.noJobs': 'Bir iş iki klasörü aynı tutar. İlkini aşağıdaki düğmeyle ekle.',
+  'phone.jobsNone': 'Henüz iş yok. Aşağıdaki düğmeyle bir tane ekle.',
   'overview.numbers': 'Sayılarla',
   'overview.numbersHint': 'Her sayı, ilgili listeyi gösteren sayfayı açar.',
   'overview.jobsHint': 'İşlerin kendi sıranda, son ve sonraki çalıştırmalarıyla. Bir tıklama işi açar.',

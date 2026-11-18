@@ -562,6 +562,7 @@ const it: Translations = {
   'phone.permissionDenied': 'Autorizzazione non concessa',
   'phone.openSettings': 'Apri impostazioni',
   'phone.noJobs': 'Un lavoro mantiene uguali due cartelle. Crea il primo con il pulsante qui sotto.',
+  'phone.jobsNone': 'Ancora nessun lavoro. Creane uno con il pulsante qui sotto.',
   'overview.numbers': 'In cifre',
   'overview.numbersHint': 'Ogni numero apre la pagina con l\'elenco corrispondente.',
   'overview.jobsHint': 'I tuoi lavori nel tuo ordine, con l\'ultima e la prossima esecuzione. Un clic apre un lavoro.',

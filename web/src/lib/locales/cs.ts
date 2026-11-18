@@ -562,6 +562,7 @@ const cs: Translations = {
   'phone.permissionDenied': 'Oprávnění neuděleno',
   'phone.openSettings': 'Otevřít nastavení',
   'phone.noJobs': 'Úloha udržuje dvě složky shodné. Přidej první tlačítkem níže.',
+  'phone.jobsNone': 'Zatím žádné úlohy. Přidej první tlačítkem níže.',
   'overview.numbers': 'V číslech',
   'overview.numbersHint': 'Každé číslo otevře stránku s příslušným seznamem.',
   'overview.jobsHint': 'Tvoje úlohy v tvém vlastním pořadí, s posledním a dalším během. Kliknutím úlohu otevřeš.',

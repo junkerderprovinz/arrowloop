@@ -562,6 +562,7 @@ const fr: Translations = {
   'phone.permissionDenied': 'Autorisation non accordée',
   'phone.openSettings': 'Ouvrir les réglages',
   'phone.noJobs': 'Une tâche garde deux dossiers identiques. Ajoutez la première avec le bouton ci-dessous.',
+  'phone.jobsNone': 'Aucune tâche pour l\'instant. Ajoutez-en une avec le bouton ci-dessous.',
   'overview.numbers': 'En chiffres',
   'overview.numbersHint': 'Chaque nombre ouvre la page qui en donne la liste.',
   'overview.jobsHint': 'Vos tâches dans votre propre ordre, avec leur dernière et leur prochaine exécution. Un clic ouvre une tâche.',

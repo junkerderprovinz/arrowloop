@@ -562,6 +562,7 @@ const lt: Translations = {
   'phone.permissionDenied': 'Leidimas nesuteiktas',
   'phone.openSettings': 'Atidaryti nustatymus',
   'phone.noJobs': 'Užduotis palaiko du aplankus vienodus. Pridėkite pirmąją mygtuku žemiau.',
+  'phone.jobsNone': 'Užduočių dar nėra. Pridėkite vieną mygtuku žemiau.',
   'overview.numbers': 'Skaičiais',
   'overview.numbersHint': 'Kiekvienas skaičius atveria puslapį su atitinkamu sąrašu.',
   'overview.jobsHint': 'Tavo užduotys tavo nustatyta tvarka, su paskutiniu ir kitu paleidimu. Spustelėjus atsiveria užduotis.',

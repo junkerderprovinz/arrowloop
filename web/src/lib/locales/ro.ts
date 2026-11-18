@@ -562,6 +562,7 @@ const ro: Translations = {
   'phone.permissionDenied': 'Permisiune neacordată',
   'phone.openSettings': 'Deschide setările',
   'phone.noJobs': 'O sarcină ține două foldere la fel. Adaugă prima cu butonul de mai jos.',
+  'phone.jobsNone': 'Nicio sarcină încă. Adaugă una cu butonul de mai jos.',
   'overview.numbers': 'În cifre',
   'overview.numbersHint': 'Fiecare număr deschide pagina cu lista corespunzătoare.',
   'overview.jobsHint': 'Sarcinile tale în ordinea ta, cu ultima și următoarea rulare. Un clic deschide o sarcină.',

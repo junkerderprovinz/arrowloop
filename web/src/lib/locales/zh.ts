@@ -562,6 +562,7 @@ const zh: Translations = {
   'phone.permissionDenied': '未授予权限',
   'phone.openSettings': '打开设置',
   'phone.noJobs': '任务让两个文件夹保持一致。用下面的按钮添加第一个。',
+  'phone.jobsNone': '还没有任务。用下面的按钮添加一个。',
   'overview.numbers': '数字一览',
   'overview.numbersHint': '每个数字都会打开列出相应内容的页面。',
   'overview.jobsHint': '按你自己的顺序列出你的任务，附上次运行和下次运行。点击即可打开任务。',

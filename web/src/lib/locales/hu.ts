@@ -562,6 +562,7 @@ const hu: Translations = {
   'phone.permissionDenied': 'Engedély nincs megadva',
   'phone.openSettings': 'Beállítások megnyitása',
   'phone.noJobs': 'Egy feladat két mappát tart azonosan. Az elsőt az alábbi gombbal hozhatod létre.',
+  'phone.jobsNone': 'Még nincs feladat. Hozz létre egyet az alábbi gombbal.',
   'overview.numbers': 'Számokban',
   'overview.numbersHint': 'Minden szám a hozzá tartozó listát nyitja meg.',
   'overview.jobsHint': 'A feladataid a saját sorrendedben, a legutóbbi és a következő futásukkal. Egy kattintás megnyitja a feladatot.',

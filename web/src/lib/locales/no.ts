@@ -562,6 +562,7 @@ const no: Translations = {
   'phone.permissionDenied': 'Tillatelse ikke gitt',
   'phone.openSettings': 'Åpne innstillinger',
   'phone.noJobs': 'En jobb holder to mapper like. Legg til den første med knappen under.',
+  'phone.jobsNone': 'Ingen jobber ennå. Legg til en med knappen under.',
   'overview.numbers': 'I tall',
   'overview.numbersHint': 'Hvert tall åpner siden med listen bak det.',
   'overview.jobsHint': 'Jobbene dine i din egen rekkefølge, med siste og neste kjøring. Et klikk åpner en jobb.',

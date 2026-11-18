@@ -341,7 +341,7 @@ export function Jobs() {
                 tintColor={accent}
               />
             }
-            ListEmptyComponent={<Empty title={t("jobs.none")} />}
+            ListEmptyComponent={<Empty title={t("phone.jobsNone")} />}
             ListFooterComponent={error ? <Caption>{error}</Caption> : null}
             renderItem={renderJob}
           />

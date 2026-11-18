@@ -562,6 +562,7 @@ const sl: Translations = {
   'phone.permissionDenied': 'Dovoljenje ni dodeljeno',
   'phone.openSettings': 'Odpri nastavitve',
   'phone.noJobs': 'Opravilo ohranja dve mapi enaki. Dodaj prvo z gumbom spodaj.',
+  'phone.jobsNone': 'Še ni opravil. Dodaj prvo z gumbom spodaj.',
   'overview.numbers': 'V številkah',
   'overview.numbersHint': 'Vsaka številka odpre stran z ustreznim seznamom.',
   'overview.jobsHint': 'Tvoja opravila v tvojem vrstnem redu, z zadnjim in naslednjim zagonom. Klik odpre opravilo.',

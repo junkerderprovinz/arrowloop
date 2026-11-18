@@ -562,6 +562,7 @@ const pl: Translations = {
   'phone.permissionDenied': 'Uprawnienie nieudzielone',
   'phone.openSettings': 'Otwórz ustawienia',
   'phone.noJobs': 'Zadanie utrzymuje dwa foldery w zgodzie. Dodaj pierwsze przyciskiem poniżej.',
+  'phone.jobsNone': 'Nie ma jeszcze zadań. Dodaj jedno przyciskiem poniżej.',
   'overview.numbers': 'W liczbach',
   'overview.numbersHint': 'Każda liczba otwiera stronę z odpowiednią listą.',
   'overview.jobsHint': 'Twoje zadania w twojej kolejności, z ostatnim i następnym przebiegiem. Kliknięcie otwiera zadanie.',

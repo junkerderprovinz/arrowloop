@@ -562,6 +562,7 @@ const es: Translations = {
   'phone.permissionDenied': 'Permiso no concedido',
   'phone.openSettings': 'Abrir ajustes',
   'phone.noJobs': 'Una tarea mantiene dos carpetas iguales. Añade la primera con el botón de abajo.',
+  'phone.jobsNone': 'Todavía no hay tareas. Añade una con el botón de abajo.',
   'overview.numbers': 'En cifras',
   'overview.numbersHint': 'Cada número abre la página con la lista correspondiente.',
   'overview.jobsHint': 'Tus tareas en tu propio orden, con su última y su próxima ejecución. Un clic abre una tarea.',

@@ -562,6 +562,7 @@ const he: Translations = {
   'phone.permissionDenied': 'ההרשאה לא ניתנה',
   'phone.openSettings': 'פתח את ההגדרות',
   'phone.noJobs': 'משימה שומרת על שתי תיקיות זהות. אפשר להוסיף את הראשונה בכפתור שלמטה.',
+  'phone.jobsNone': 'עדיין אין משימות. אפשר להוסיף אחת בכפתור שלמטה.',
   'overview.numbers': 'במספרים',
   'overview.numbersHint': 'כל מספר פותח את הדף עם הרשימה שלו.',
   'overview.jobsHint': 'המשימות שלך בסדר שבחרת, עם ההרצה האחרונה וההרצה הבאה שלהן. לחיצה פותחת משימה.',

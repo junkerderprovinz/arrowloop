@@ -562,6 +562,7 @@ const vi: Translations = {
   'phone.permissionDenied': 'Chưa cấp quyền',
   'phone.openSettings': 'Mở cài đặt',
   'phone.noJobs': 'Một công việc giữ hai thư mục giống hệt nhau. Thêm việc đầu tiên bằng nút bên dưới.',
+  'phone.jobsNone': 'Chưa có công việc nào. Thêm một việc bằng nút bên dưới.',
   'overview.numbers': 'Bằng con số',
   'overview.numbersHint': 'Mỗi con số mở trang liệt kê các mục của nó.',
   'overview.jobsHint': 'Công việc của bạn theo thứ tự bạn tự sắp, kèm lần chạy gần nhất và lần chạy tiếp theo. Bấm vào để mở một công việc.',

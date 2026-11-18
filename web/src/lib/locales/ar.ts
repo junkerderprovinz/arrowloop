@@ -562,6 +562,7 @@ const ar: Translations = {
   'phone.permissionDenied': 'الإذن غير ممنوح',
   'phone.openSettings': 'فتح الإعدادات',
   'phone.noJobs': 'تُبقي المهمة مجلدين متطابقين. أضف أول مهمة بالزر أدناه.',
+  'phone.jobsNone': 'لا توجد مهام بعد. أضف واحدة بالزر أدناه.',
   'overview.numbers': 'بالأرقام',
   'overview.numbersHint': 'كل رقم يفتح الصفحة التي تعرض عناصره.',
   'overview.jobsHint': 'مهامك بترتيبك أنت، مع آخر تشغيل والتشغيل التالي لكل منها. انقر على مهمة لفتحها.',

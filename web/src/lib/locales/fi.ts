@@ -562,6 +562,7 @@ const fi: Translations = {
   'phone.permissionDenied': 'Käyttöoikeutta ei myönnetty',
   'phone.openSettings': 'Avaa asetukset',
   'phone.noJobs': 'Työ pitää kaksi kansiota samanlaisina. Lisää ensimmäinen alla olevalla painikkeella.',
+  'phone.jobsNone': 'Ei vielä töitä. Lisää työ alla olevalla painikkeella.',
   'overview.numbers': 'Lukuina',
   'overview.numbersHint': 'Jokainen luku avaa sivun, jolla on sitä vastaava luettelo.',
   'overview.jobsHint': 'Työsi omassa järjestyksessäsi, viimeisen ja seuraavan ajon kanssa. Napsautus avaa työn.',

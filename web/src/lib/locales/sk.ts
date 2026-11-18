@@ -562,6 +562,7 @@ const sk: Translations = {
   'phone.permissionDenied': 'Oprávnenie neudelené',
   'phone.openSettings': 'Otvoriť nastavenia',
   'phone.noJobs': 'Úloha udržiava dva priečinky rovnaké. Pridaj prvú tlačidlom nižšie.',
+  'phone.jobsNone': 'Zatiaľ žiadne úlohy. Pridaj jednu tlačidlom nižšie.',
   'overview.numbers': 'V číslach',
   'overview.numbersHint': 'Každé číslo otvorí stránku s príslušným zoznamom.',
   'overview.jobsHint': 'Tvoje úlohy v tvojom vlastnom poradí, s posledným a ďalším behom. Kliknutím úlohu otvoríš.',

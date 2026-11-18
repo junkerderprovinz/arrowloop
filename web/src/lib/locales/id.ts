@@ -562,6 +562,7 @@ const id: Translations = {
   'phone.permissionDenied': 'Izin belum diberikan',
   'phone.openSettings': 'Buka pengaturan',
   'phone.noJobs': 'Sebuah tugas menjaga dua folder tetap sama. Tambahkan yang pertama dengan tombol di bawah.',
+  'phone.jobsNone': 'Belum ada tugas. Tambahkan satu dengan tombol di bawah.',
   'overview.numbers': 'Dalam angka',
   'overview.numbersHint': 'Setiap angka membuka halaman berisi daftarnya.',
   'overview.jobsHint': 'Tugas Anda dalam urutan Anda sendiri, dengan proses terakhir dan berikutnya. Klik untuk membuka tugas.',

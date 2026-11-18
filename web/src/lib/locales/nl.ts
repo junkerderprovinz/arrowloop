@@ -562,6 +562,7 @@ const nl: Translations = {
   'phone.permissionDenied': 'Toestemming niet verleend',
   'phone.openSettings': 'Instellingen openen',
   'phone.noJobs': 'Een taak houdt twee mappen gelijk. Maak de eerste aan met de knop hieronder.',
+  'phone.jobsNone': 'Nog geen taken. Maak er een aan met de knop hieronder.',
   'overview.numbers': 'In cijfers',
   'overview.numbersHint': 'Elk getal opent de pagina met de bijbehorende lijst.',
   'overview.jobsHint': 'Je taken in je eigen volgorde, met hun laatste en volgende run. Een klik opent een taak.',
