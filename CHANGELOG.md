@@ -19,8 +19,13 @@ A tablet held sideways gets the side bar, the settings tiles and the wide lists 
 - **Settings on a tablet are tiles beside their page.** General, Look, Sync, Targets, Pairing, Apps and Info stand in a column as on the desktop, and the picked one opens beside it.
 - **Filters and runs open as on the desktop.** A filter slides in as a panel at the edge of the screen, and a run opens in a dialog in the middle.
 
+## ⚡ Improved
+
+- **The pickers for channels and targets answer to the keyboard.** The arrow keys move across the tiles, Enter picks the one tile a search leaves, and Escape first empties the search before it closes the window.
+
 ## 🐛 Fixed
 
+- **A field you type in keeps its box.** In the light theme a focused field turned white and lost its outline. It now keeps its grey box and gets a ring in the accent colour.
 - **An empty Targets page says how to connect the first target.** It used to stay blank, on the phone as on the tablet.
 
 ## 2.7.5 - 2026-11-17
