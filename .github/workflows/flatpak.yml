@@ -46,9 +46,20 @@ jobs:
       - name: Check the metainfo
         run: flatpak-builder-lint appstream flatpak/io.github.junkerderprovinz.arrowloop.metainfo.xml
 
+      # On the amd64 runner the SDK install now and then stops with "Invalid
+      # cross-device link" and goes through on the next try.
+      - name: Install the SDK
+        run: |
+          for attempt in 1 2 3; do
+            flatpak-builder --disable-rofiles-fuse --install-deps-from=flathub --install-deps-only \
+              --state-dir=flatpak/.state flatpak/.build flatpak/io.github.junkerderprovinz.arrowloop.yml && exit 0
+            sleep 15
+          done
+          exit 1
+
       - name: Build
         run: |
-          flatpak-builder --disable-rofiles-fuse --install-deps-from=flathub --force-clean \
+          flatpak-builder --disable-rofiles-fuse --force-clean \
             --state-dir=flatpak/.state --repo=flatpak/.repo \
             flatpak/.build flatpak/io.github.junkerderprovinz.arrowloop.yml
 
