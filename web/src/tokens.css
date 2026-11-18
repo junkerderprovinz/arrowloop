@@ -2404,7 +2404,7 @@
     transition: max-width var(--motion-modal-dur) cubic-bezier(.2, .6, .2, 1);
   }
   .glim-window.glim-pick-window--form { max-width: 40rem; }
-  .glim-pick-window > .glim-window-body { overflow: hidden; }
+  .glim-pick-window:not(.glim-pick-window--form) > .glim-window-body { overflow: hidden; }
   .glim-input.glim-pick-search {
     flex: none;
     align-self: flex-end;
