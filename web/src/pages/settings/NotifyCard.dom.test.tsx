@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { useState } from 'react'
+import { SERVICE_MARKS } from '@glimstone/core/serviceMarks'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { Notify } from '../../lib/notify'
@@ -127,6 +128,42 @@ describe('the channel chooser', () => {
       fireEvent.change(search, { target: { value: service } })
       expect(tiles(chooser).map((b) => b.getAttribute('aria-label'))).toEqual(['Shoutrrr'])
     }
+  })
+
+  it('takes the marks GlimStone carries and keeps its own drawing of Shoutrrr', () => {
+    const chooser = openChooser()
+    const drawn = (name: string) => within(chooser).getByRole('button', { name }).querySelector('.glim-brand-svg')!.innerHTML
+    const as = (svg: string) => {
+      const box = document.createElement('div')
+      box.innerHTML = svg
+      return box.innerHTML
+    }
+    for (const [name, id] of [['Gotify', 'gotify'], ['Slack', 'slack'], ['Apprise', 'apprise'], ['Healthchecks.io', 'healthchecks']] as const) {
+      expect(drawn(name), name).toBe(as(SERVICE_MARKS[id].svg))
+    }
+    expect(drawn('Shoutrrr')).not.toBe(as(SERVICE_MARKS.shoutrrr.svg))
+    expect(drawn('Shoutrrr')).toContain('var(--brand-shoutrrr-0)')
+  })
+
+  it("puts the What's new dot of Shoutrrr on its tile", () => {
+    const chooser = openChooser()
+    expect(chooser.querySelector('[data-new="notify-shoutrrr"]')?.closest('button')?.getAttribute('aria-label')).toBe('Shoutrrr')
+  })
+
+  it('picks the one tile a search leaves on Enter', () => {
+    const chooser = openChooser()
+    const search = within(chooser).getByRole('searchbox', { name: 'Search services' })
+    fireEvent.change(search, { target: { value: 'pushover' } })
+    fireEvent.keyDown(search, { key: 'Enter' })
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getByTestId('kinds').textContent).toBe('shoutrrr')
+  })
+
+  it('goes down from the search to the first tile', () => {
+    const chooser = openChooser()
+    const search = within(chooser).getByRole('searchbox', { name: 'Search services' })
+    fireEvent.keyDown(search, { key: 'ArrowDown' })
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('Apprise')
   })
 
   it('empties the search on Escape before it lets the window close', () => {

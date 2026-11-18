@@ -114,6 +114,40 @@ describe('the storage picker', () => {
   })
 })
 
+describe('the form after a pick', () => {
+  it("takes the tiles' place in the same window, and Back brings them back with the search as it was", async () => {
+    const { dialog, search } = await openPicker()
+    fireEvent.change(search, { target: { value: 'dav' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'WebDAV' }))
+    expect(screen.getByRole('dialog')).toBe(dialog)
+    expect(within(dialog).getByLabelText('Name')).toBeTruthy()
+    expect(tiles(dialog)).toEqual([])
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Back' }))
+    const again = within(dialog).getByRole('searchbox', { name: 'Search storage and clouds' }) as HTMLInputElement
+    expect(again.value).toBe('dav')
+    expect(tiles(dialog)).toEqual(['WebDAV'])
+  })
+
+  it('suggests the name of the product picked, and of the next one picked after Back', async () => {
+    const { dialog } = await openPicker()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'WebDAV' }))
+    expect((within(dialog).getByLabelText('Name') as HTMLInputElement).value).toBe('WebDAV')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Back' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Google Drive' }))
+    expect((within(dialog).getByLabelText('Name') as HTMLInputElement).value).toBe('Google-Drive')
+  })
+
+  it('saves the new target from the foot and closes', async () => {
+    const { dialog } = await openPicker()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'WebDAV' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveRemote).toHaveBeenCalled())
+    expect(saveRemote.mock.calls[0].slice(0, 2)).toEqual(['WebDAV', 'webdav'])
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+})
+
 describe('a target that needs a sign-in token', () => {
   it('names its own rclone type in the command that fetches one', async () => {
     const { dialog } = await openPicker()

@@ -1,26 +1,16 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
+import { SERVICE_MARKS } from '@glimstone/core/serviceMarks'
+import { PickerWindow, type PickerItem } from '@glimstone/react/PickerWindow'
 
-import {
-  BRAND_TILES,
-  IconApprise,
-  IconDiscord,
-  IconGotify,
-  IconHealthchecks,
-  IconMatrix,
-  IconNtfy,
-  IconShoutrrr,
-  IconSlack,
-} from '../../components/brandGlyphs'
+import { BRAND_TILES, IconShoutrrr } from '../../components/brandGlyphs'
+import { newOnMark, tileMark } from '../../components/brandMarks'
 import { Choice, FieldRow, Lines, NumberField, Text } from '../../components/Field'
 import { IconAdd, IconCheck, IconClose, IconLink, IconMail } from '../../components/glyphs'
-import { PickTiles } from '../../components/PickTiles'
-import { PickerWindow } from '../../components/PickerWindow'
 import { Selector } from '../../components/Selector'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api } from '../../lib/api'
 import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
-import { matchesQuery } from '../../lib/fold'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { SubCard } from '../../lib/glimstone/SubCard'
@@ -64,21 +54,21 @@ const HINTS: Record<Kind, TranslationKey> = {
 }
 
 /**
- * Each service's own mark, and the BRAND_TILES entry its tile lights up in.
- * Email and webhooks belong to nobody, so they wear the app's own glyphs and
- * light up in the accent.
+ * Each service's mark, by the id GlimStone keeps it under. Shoutrrr wears the
+ * drawing this app made of it, and email and webhooks belong to nobody, so they
+ * wear the app's own glyphs and light up in the accent.
  */
-const MARKS: Record<Kind, { mark: ReactNode; brand?: string }> = {
-  discord: { mark: <IconDiscord />, brand: 'IconDiscord' },
-  slack: { mark: <IconSlack />, brand: 'IconSlack' },
-  ntfy: { mark: <IconNtfy />, brand: 'IconNtfy' },
-  gotify: { mark: <IconGotify />, brand: 'IconGotify' },
-  matrix: { mark: <IconMatrix />, brand: 'IconMatrix' },
-  smtp: { mark: <IconMail /> },
-  apprise: { mark: <IconApprise />, brand: 'IconApprise' },
-  shoutrrr: { mark: <IconShoutrrr />, brand: 'IconShoutrrr' },
-  webhook: { mark: <IconLink /> },
-  healthchecks: { mark: <IconHealthchecks />, brand: 'IconHealthchecks' },
+const MARKS: Record<Kind, PickerItem['mark']> = {
+  discord: SERVICE_MARKS.discord,
+  slack: SERVICE_MARKS.slack,
+  ntfy: SERVICE_MARKS.ntfy,
+  gotify: SERVICE_MARKS.gotify,
+  matrix: SERVICE_MARKS.matrix,
+  smtp: <IconMail />,
+  apprise: SERVICE_MARKS.apprise,
+  shoutrrr: tileMark(<IconShoutrrr />, BRAND_TILES.IconShoutrrr),
+  webhook: <IconLink />,
+  healthchecks: SERVICE_MARKS.healthchecks,
 }
 
 /**
@@ -89,7 +79,7 @@ const REACHES: Partial<Record<Kind, string[]>> = {
   shoutrrr: ['Telegram', 'Pushover', 'Teams', 'Mattermost', 'Rocket.Chat', 'Pushbullet', 'Zulip', 'Signal', 'Google Chat', 'Bark', 'Opsgenie', 'PagerDuty', 'Twilio'],
 }
 
-/** The open standards, which stand after the services in a section of their own. */
+/** The open standards, which stand after the services in a group of their own. */
 const STANDARDS: Kind[] = ['smtp', 'webhook']
 
 /** What a failed test answers with, by the code the engine gives. */
@@ -163,7 +153,6 @@ export function NotifyCard({
       {choosing && (
         <ChannelPicker
           kindLabel={kindLabel}
-          hueIndex={hueIndex}
           onPick={(kind) => {
             setChoosing(false)
             setChannels([...channels, newChannel(kind, channels)])
@@ -182,46 +171,39 @@ export function NotifyCard({
  */
 function ChannelPicker({
   kindLabel,
-  hueIndex,
   onPick,
   onClose,
 }: {
   kindLabel: (kind: Kind) => string
-  hueIndex: number
   onPick: (kind: Kind) => void
   onClose: () => void
 }) {
   const { t } = useT()
-  const [query, setQuery] = useState('')
-  const tiles = (standard: boolean) =>
-    KINDS.filter((k) => STANDARDS.includes(k) === standard && matchesQuery(query, [kindLabel(k), k, ...(REACHES[k] ?? [])])).map((k) => ({
-      id: k,
-      name: kindLabel(k),
-      mark: MARKS[k].mark,
-      lit: MARKS[k].brand ? BRAND_TILES[MARKS[k].brand] : undefined,
-      hint: t(HINTS[k]),
-      bubble: true,
-      newId: k === 'shoutrrr' ? 'notify-shoutrrr' : undefined,
-    }))
-  const sections = [
-    { id: 'services', title: t('notify.pickServices'), tiles: tiles(false) },
-    { id: 'standards', title: t('notify.pickStandards'), tiles: tiles(true) },
-  ].filter((s) => s.tiles.length > 0)
 
   return (
     <PickerWindow
       title={t('notify.add')}
       hint={t('notify.addHint')}
-      hueIndex={hueIndex}
-      query={query}
-      onQuery={setQuery}
-      searchLabel={t('notify.search')}
-      none={t('notify.searchNone', { query: query.trim() })}
-      sections={sections.map((s) => ({
-        id: s.id,
-        title: s.title,
-        body: <PickTiles tiles={s.tiles} onPick={(id) => onPick(id as Kind)} />,
+      items={KINDS.map((k) => ({
+        id: k,
+        label: kindLabel(k),
+        mark: newOnMark(MARKS[k], k === 'shoutrrr' ? 'notify-shoutrrr' : undefined),
+        group: STANDARDS.includes(k) ? 'standards' : 'services',
+        hint: t(HINTS[k]),
+        terms: REACHES[k],
       }))}
+      groups={[
+        { id: 'services', title: t('notify.pickServices') },
+        { id: 'standards', title: t('notify.pickStandards') },
+      ]}
+      text={{
+        search: t('notify.search'),
+        none: t('notify.searchNone'),
+        close: t('common.close'),
+        cancel: t('targets.cancel'),
+        back: t('preview.back'),
+      }}
+      onPick={(id) => onPick(id as Kind)}
       onClose={onClose}
     />
   )
