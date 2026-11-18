@@ -15,6 +15,7 @@ import {
   sceneBox,
   titleRow,
   pageTop,
+  floatingInset,
   panelWidth,
   railWidth,
   sceneWidth,
@@ -170,4 +171,20 @@ test("a page under a title row keeps a sliver above its first card", () => {
 
 test("a page without a title row keeps the web's gutter above its first card, level with the side bar", () => {
   assert.equal(pageTop(false), GUTTER);
+});
+
+test("a floating action on a phone keeps the gutter from the edge and the bar", () => {
+  assert.deepEqual(floatingInset({ wide: false, width: 411 }), { end: 16, bottom: 16 });
+  assert.deepEqual(floatingInset({ wide: false, width: 800 }), { end: 16, bottom: 16 });
+});
+
+test("a floating action beside the side bar stands where the job list's buttons end", () => {
+  const frame = { wide: true, width: 1179 };
+  assert.deepEqual(floatingInset(frame), { end: pageRoom(frame, PAGE_GUTTER, true), bottom: 16 });
+  assert.equal(floatingInset(frame).end, WIDE_ROOM);
+});
+
+test("a floating action on a very wide screen keeps to the list's edge", () => {
+  const frame = { wide: true, width: 1800 };
+  assert.equal(floatingInset(frame).end, (1800 - WIDE_COLUMN) / 2);
 });

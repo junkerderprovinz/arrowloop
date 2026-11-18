@@ -29,6 +29,7 @@ import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { MoveScope, MovingCell, useHoldToMove } from "../reorder";
 import { useFrame } from "../frame";
+import { floatingInset } from "../layout";
 import { useAppearance, useEngineSettings } from "../settings";
 import { sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
@@ -361,10 +362,13 @@ export function Jobs() {
 function JobsBar({ buttons, onPress }: { buttons: BarButton[]; onPress: (id: BarButton["id"]) => void }) {
   const { t } = useT();
   const { p, labels } = useTheme();
-  const { wide } = useFrame();
-  // Beside the side bar the row keeps to the list's edge, as the web's page
-  // actions stand at the end of the page rather than across it.
-  const side = useSideRoom(space.lg, wide);
+  const frame = useFrame();
+  const column = useSideRoom();
+  // Beside the side bar the row stands at the end of the page, as the web's
+  // page actions do, in the same place as every other floating page action.
+  const inset = floatingInset(frame);
+  const side = frame.wide ? inset.end : column;
+  const wide = frame.wide;
   const [room, setRoom] = useState(0);
   const [words, setWords] = useState<Record<string, number>>({});
   const fit = barFit(
@@ -373,7 +377,7 @@ function JobsBar({ buttons, onPress }: { buttons: BarButton[]; onPress: (id: Bar
     { room, gap: space.sm, pad: space.sm, glyph: GLYPH },
   );
   return (
-    <View style={[styles.bar, { paddingHorizontal: side, backgroundColor: p.background }]}>
+    <View style={[styles.bar, { paddingHorizontal: side, paddingBottom: inset.bottom, backgroundColor: p.background }]}>
       <View
         style={styles.barMeasure}
         pointerEvents="none"
@@ -786,7 +790,7 @@ const styles = StyleSheet.create({
   quiet: { flexDirection: "row", alignItems: "center", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
-  bar: { position: "absolute", left: 0, right: 0, bottom: 0, paddingTop: space.sm, paddingBottom: space.lg },
+  bar: { position: "absolute", left: 0, right: 0, bottom: 0, paddingTop: space.sm },
   barRow: { flexDirection: "row", gap: space.sm },
   barRowWide: { alignSelf: "flex-end", width: 480 },
   barSlot: { flex: 1, minWidth: 0 },

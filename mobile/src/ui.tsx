@@ -54,7 +54,7 @@ import { useSystemAccent } from "./systemAccent";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
-import { COLUMN, GUTTER, pageRoom, pageTop, panelWidth, titleRow } from "./layout";
+import { COLUMN, floatingInset, GUTTER, pageRoom, pageTop, panelWidth, titleRow } from "./layout";
 import { useFrame } from "./frame";
 
 // GlimStone's controls for React Native, with the design language's shapes
@@ -1728,11 +1728,12 @@ export function Fab({
 }) {
   const { p, corners, accent } = useTheme();
   const press = usePress();
+  const inset = floatingInset(useFrame());
   const ink = contrastOn(accent);
   const name = labelKey ? glyphNameForKey(labelKey) : undefined;
 
   return (
-    <View style={styles.fabSpot} pointerEvents="box-none">
+    <View style={[styles.fabSpot, { right: inset.end, bottom: inset.bottom }]} pointerEvents="box-none">
       <AnimatedPressable
         onPress={onPress}
         onPressIn={press.onPressIn}
@@ -1848,8 +1849,6 @@ const styles = StyleSheet.create({
   // The bottom bar reserves its own height, so `space.lg` clears it.
   fabSpot: {
     position: "absolute",
-    right: space.lg,
-    bottom: space.lg,
     flexDirection: "row",
     alignItems: "center",
     gap: space.sm,

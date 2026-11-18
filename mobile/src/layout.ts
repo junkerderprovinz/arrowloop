@@ -114,3 +114,13 @@ export function titleRow(wide: boolean, first: boolean, topInset: number): { sho
 export function pageTop(titled: boolean): number {
   return titled ? 4 : GUTTER;
 }
+
+/**
+ * Where a floating page action stands: on a phone the gutter from the edge
+ * and the bar, beside the side bar at the end of the page's lists, where the
+ * job list's buttons end.
+ */
+export function floatingInset(frame: { wide: boolean; width: number; fill?: boolean }): { end: number; bottom: number } {
+  const end = frame.wide ? pageRoom(frame, GUTTER, true) : GUTTER;
+  return { end, bottom: GUTTER };
+}
