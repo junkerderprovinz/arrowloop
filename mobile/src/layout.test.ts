@@ -98,7 +98,7 @@ test("a cutout on the side bar's edge comes off the pages too", () => {
   assert.equal(sceneWidth(1280, RAIL, 32), 1280 - 32 - GUTTER - RAIL);
 });
 
-test("a page on a phone keeps the room it always had", () => {
+test("a page on a phone keeps the phone's column, spread or not", () => {
   for (const spread of [false, true]) {
     assert.equal(pageRoom({ wide: false, width: 411 }, PAGE_GUTTER, spread), sideRoom(411, PAGE_GUTTER));
     assert.equal(pageRoom({ wide: false, width: 800 }, PAGE_GUTTER, spread), sideRoom(800, PAGE_GUTTER));
