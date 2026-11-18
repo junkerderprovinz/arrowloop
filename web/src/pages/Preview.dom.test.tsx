@@ -83,6 +83,19 @@ describe('the preview', () => {
   })
 })
 
+describe('the files too young to go', () => {
+  it('are counted beside the unchanged files, apart from the work left for later', async () => {
+    plan.young = 3
+    try {
+      render(<Preview job="docs" onDone={() => undefined} />)
+      expect(await screen.findByText(/Not old enough yet: 3/)).toBeTruthy()
+      expect(screen.queryByRole('heading', { level: 3, name: 'Left for later' })).toBeNull()
+    } finally {
+      delete plan.young
+    }
+  })
+})
+
 describe('Escape on the preview', () => {
   function open() {
     const onDone = vi.fn()

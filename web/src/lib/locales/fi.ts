@@ -2134,6 +2134,15 @@ const fi: Translations = {
   'fortress.action.backupImport': 'Palauttaa varmuuskopio',
   'fortress.action.uiOpen': 'Avata sen sivut',
   'fortress.openNeedsPassword': 'Aseta ensin salasana kohdassa Asetukset, Turvallisuus, niin muut sovellukset aukeavat täältä.',
+  'edit.minAge': 'Siirrä vasta, kun vanhempi kuin',
+  'edit.minAgeHint': 'Tiedosto siirtyy toiselle puolelle vasta, kun se on näin vanha, laskettuna sen viimeisestä muutoksesta. Siihen asti se pysyy paikallaan, joten uudet kuvat jäävät hetkeksi puhelimeen.',
+  'edit.minAge.off': 'Pois',
+  'edit.minAge.days': '{days} päivää',
+  'edit.minAge.custom': 'Oma arvo',
+  'edit.minAgeUnit': 'päivää',
+  'jobs.fact.minAge': 'vain yli {days} päivää vanhat tiedostot',
+  'preview.young': 'Ei vielä tarpeeksi vanhoja: {count}',
+  'new.change.minAge': '{option} pitää tiedoston yhdensuuntaisen työn lähteellä, kunnes se on tarpeeksi vanha, joten uudet kuvat jäävät hetkeksi puhelimeen.',
 }
 
 export default fi

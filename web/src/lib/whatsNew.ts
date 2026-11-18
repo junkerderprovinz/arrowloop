@@ -64,7 +64,18 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 export const RELEASES: Release[] = [
   {
     after: '2.7.5',
-    changes: [{ id: 'tablet-shell', text: 'new.change.tabletShell' }],
+    changes: [
+      { id: 'tablet-shell', text: 'new.change.tabletShell' },
+      {
+        id: 'min-age',
+        at: ['/jobs/:name'],
+        via: 'edit-job',
+        go: '/jobs',
+        where: ['nav.jobs', 'new.where.jobPage'],
+        text: 'new.change.minAge',
+        names: { option: 'edit.minAge' },
+      },
+    ],
   },
   {
     after: '2.7.4',

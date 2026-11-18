@@ -2134,6 +2134,15 @@ const ar: Translations = {
   'fortress.action.backupImport': 'استعادة نسخة احتياطية',
   'fortress.action.uiOpen': 'فتح صفحاته',
   'fortress.openNeedsPassword': 'عيّن أولاً كلمة مرور في الإعدادات، الأمان، وبعدها تُفتح التطبيقات الأخرى من هنا.',
+  'edit.minAge': 'النقل فقط عندما يكون أقدم من',
+  'edit.minAgeHint': 'لا ينتقل الملف إلى الجهة الأخرى إلا حين يبلغ هذا العمر، محسوبًا من آخر تغيير له. وحتى ذلك الحين يبقى مكانه، فتبقى الصور الحديثة على الهاتف لبعض الوقت.',
+  'edit.minAge.off': 'إيقاف',
+  'edit.minAge.days': '{days} يومًا',
+  'edit.minAge.custom': 'مخصص',
+  'edit.minAgeUnit': 'يومًا',
+  'jobs.fact.minAge': 'الملفات الأقدم من {days} يومًا فقط',
+  'preview.young': 'لم تبلغ العمر بعد: {count}',
+  'new.change.minAge': '{option} يُبقي الملف على المصدر في مهمة باتجاه واحد حتى يبلغ العمر الكافي، فتبقى الصور الحديثة على الهاتف لبعض الوقت.',
 }
 
 export default ar

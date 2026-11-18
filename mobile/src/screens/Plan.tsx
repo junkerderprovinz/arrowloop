@@ -42,8 +42,13 @@ export function Plan() {
   const conflicts = actions.filter((a) => a.kind === "conflict");
   const rest = actions.filter((a) => a.kind !== "conflict");
 
+  // A file kept back for its age is counted beside the unchanged ones, so a
+  // job that waits does not look as if it had nothing to send.
+  const young = plan.young ? t("preview.young", { count: plan.young }) : "";
+
   if (actions.length === 0) {
-    return <Empty title={t("preview.nothing")} detail={t("preview.identical", { count: plan.unchanged })} />;
+    const identical = t("preview.identical", { count: plan.unchanged });
+    return <Empty title={t("preview.nothing")} detail={young ? `${identical} · ${young}` : identical} />;
   }
 
   const groups = new Map<string, Action[]>();
@@ -88,6 +93,7 @@ export function Plan() {
           {list.length > 30 ? <Caption>{t("trash.more", { total: list.length, shown: 30 })}</Caption> : null}
         </Card>
       ))}
+      {young ? <Caption>{young}</Caption> : null}
 
       {/* Nothing can be deselected here, so the desktop's "Run 5 of 12" count
           would always show the same number twice. */}

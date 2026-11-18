@@ -489,6 +489,7 @@ function JobCard({
         <WayGlyph way={wayOf(job.direction)} color={p.textSub} flowing={job.running} />
       </View>
       <SideRow path={job.right} mark={rightMark} />
+      {job.minAgeDays ? <Caption>{t("jobs.fact.minAge", { days: job.minAgeDays })}</Caption> : null}
 
       {/* What the engine found, as one line that leads to the Anomalies
           screen, which holds the files and the answers. */}

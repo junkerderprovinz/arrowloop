@@ -2134,6 +2134,15 @@ const fr: Translations = {
   'fortress.action.backupImport': 'Restaurer une sauvegarde',
   'fortress.action.uiOpen': 'Ouvrir ses pages',
   'fortress.openNeedsPassword': 'Définis d’abord un mot de passe dans Réglages, Sécurité, puis les autres applis s’ouvriront d’ici.',
+  'edit.minAge': 'Transférer seulement si plus ancien que',
+  'edit.minAgeHint': 'Un fichier ne passe de l\'autre côté qu\'une fois cet âge atteint, compté depuis sa dernière modification. D\'ici là, il reste où il est, et les photos récentes restent un moment sur le téléphone.',
+  'edit.minAge.off': 'Désactivé',
+  'edit.minAge.days': '{days} jours',
+  'edit.minAge.custom': 'Personnalisé',
+  'edit.minAgeUnit': 'jours',
+  'jobs.fact.minAge': 'seulement les fichiers de plus de {days} jours',
+  'preview.young': 'Pas encore assez anciens : {count}',
+  'new.change.minAge': '{option} garde un fichier sur la source d\'une tâche à sens unique jusqu\'à ce qu\'il soit assez ancien. Les photos récentes restent ainsi un moment sur le téléphone.',
 }
 
 export default fr

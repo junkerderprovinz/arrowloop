@@ -2134,6 +2134,15 @@ const he: Translations = {
   'fortress.action.backupImport': 'לשחזר גיבוי',
   'fortress.action.uiOpen': 'לפתוח את הדפים שלו',
   'fortress.openNeedsPassword': 'קודם הגדר סיסמה בהגדרות, אבטחה, ואז האפליקציות האחרות ייפתחו מכאן.',
+  'edit.minAge': 'להעביר רק כשהוא ישן מ־',
+  'edit.minAgeHint': 'קובץ עובר לצד השני רק כשהוא בגיל הזה, מחושב מהשינוי האחרון שלו. עד אז הוא נשאר במקומו, כך שתמונות חדשות נשארות בטלפון עוד זמן מה.',
+  'edit.minAge.off': 'כבוי',
+  'edit.minAge.days': '{days} ימים',
+  'edit.minAge.custom': 'מותאם אישית',
+  'edit.minAgeUnit': 'ימים',
+  'jobs.fact.minAge': 'רק קבצים ישנים מ־{days} ימים',
+  'preview.young': 'עדיין לא ישנים מספיק: {count}',
+  'new.change.minAge': '{option} משאיר קובץ במקור של משימה חד־כיוונית עד שהוא ישן מספיק, כך שתמונות חדשות נשארות בטלפון עוד זמן מה.',
 }
 
 export default he

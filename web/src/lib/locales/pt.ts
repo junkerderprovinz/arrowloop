@@ -2134,6 +2134,15 @@ const pt: Translations = {
   'fortress.action.backupImport': 'Repor uma cópia de segurança',
   'fortress.action.uiOpen': 'Abrir as suas páginas',
   'fortress.openNeedsPassword': 'Define primeiro uma palavra-passe em Definições, Segurança e depois as outras apps abrem-se a partir daqui.',
+  'edit.minAge': 'Transferir só quando tiver mais de',
+  'edit.minAgeHint': 'Um ficheiro só passa para o outro lado quando tem esta idade, contada a partir da última alteração. Até lá fica onde está, e as fotos recentes ficam algum tempo no telemóvel.',
+  'edit.minAge.off': 'Desligado',
+  'edit.minAge.days': '{days} dias',
+  'edit.minAge.custom': 'Personalizado',
+  'edit.minAgeUnit': 'dias',
+  'jobs.fact.minAge': 'só ficheiros com mais de {days} dias',
+  'preview.young': 'Ainda demasiado recentes: {count}',
+  'new.change.minAge': '{option} deixa um ficheiro na origem de uma tarefa de sentido único até ter idade suficiente, e as fotos recentes ficam algum tempo no telemóvel.',
 }
 
 export default pt

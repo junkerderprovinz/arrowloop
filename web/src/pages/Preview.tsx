@@ -186,6 +186,7 @@ export function PreviewPlan({ job, onDone }: { job: string; onDone: () => void }
       <p className="text-subline text-carbon-textMuted">
         {t('preview.unchanged', { count: plan.unchanged })}
         {plan.agreed > 0 && <> {' · '} {t('preview.identical', { count: plan.agreed })}</>}
+        {!!plan.young && <> {' · '} {t('preview.young', { count: plan.young })}</>}
       </p>
       {plan.skipped.length > 0 && <Skips title={t('preview.skipped')} skips={plan.skipped} />}
       {/* An older engine on another machine does not send the list. */}

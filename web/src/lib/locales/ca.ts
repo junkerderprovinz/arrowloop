@@ -2134,6 +2134,15 @@ const ca: Translations = {
   'fortress.action.backupImport': 'Restaurar una còpia de seguretat',
   'fortress.action.uiOpen': 'Obrir les seves pàgines',
   'fortress.openNeedsPassword': 'Primer posa una contrasenya a Configuració, Seguretat, i després les altres apps s\'obriran des d\'aquí.',
+  'edit.minAge': 'Transferir només si té més de',
+  'edit.minAgeHint': 'Un fitxer només passa a l\'altra banda quan té aquesta antiguitat, comptada des del seu darrer canvi. Fins aleshores es queda on és, així les fotos recents es queden una estona al telèfon.',
+  'edit.minAge.off': 'Desactivat',
+  'edit.minAge.days': '{days} dies',
+  'edit.minAge.custom': 'Personalitzat',
+  'edit.minAgeUnit': 'dies',
+  'jobs.fact.minAge': 'només fitxers de més de {days} dies',
+  'preview.young': 'Encara no prou antics: {count}',
+  'new.change.minAge': '{option} deixa un fitxer a l\'origen d\'una tasca d\'un sol sentit fins que és prou antic, així les fotos recents es queden una estona al telèfon.',
 }
 
 export default ca

@@ -308,6 +308,7 @@ export function JobHead({
           </span>
           <span>{t('jobs.runs', { cadence: describeCadence(readCadence(job.schedule ?? '', !!job.watch), t) })}</span>
           {job.nextRun && !job.disabled && <span>{t('jobs.fact.next', { when: when(job.nextRun) })}</span>}
+          {job.minAgeDays ? <span>{t('jobs.fact.minAge', { days: job.minAgeDays })}</span> : null}
         </span>
       </div>
       <span className="flex shrink-0 items-center">

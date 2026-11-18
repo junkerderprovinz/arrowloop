@@ -2134,6 +2134,15 @@ const nl: Translations = {
   'fortress.action.backupImport': 'Een back-up terugzetten',
   'fortress.action.uiOpen': 'De pagina\'s openen',
   'fortress.openNeedsPassword': 'Stel eerst een wachtwoord in onder Instellingen, Beveiliging, dan openen de andere apps vanaf hier.',
+  'edit.minAge': 'Pas overzetten als ouder dan',
+  'edit.minAgeHint': 'Een bestand gaat pas over als het zo oud is, gerekend vanaf de laatste wijziging. Tot dan blijft het waar het is, zodat recente foto\'s nog een tijdje op de telefoon blijven.',
+  'edit.minAge.off': 'Uit',
+  'edit.minAge.days': '{days} dagen',
+  'edit.minAge.custom': 'Eigen waarde',
+  'edit.minAgeUnit': 'dagen',
+  'jobs.fact.minAge': 'alleen bestanden ouder dan {days} dagen',
+  'preview.young': 'Nog niet oud genoeg: {count}',
+  'new.change.minAge': '{option} houdt een bestand bij een eenrichtingstaak op de bron tot het oud genoeg is, zodat recente foto\'s nog een tijdje op de telefoon blijven.',
 }
 
 export default nl

@@ -124,6 +124,14 @@ describe('the jobs page', () => {
     expect(rows.map((r) => r.querySelectorAll('.glim-notch-card').length)).toEqual([1, 1])
     expect(rows.map((r) => r.querySelector('h2')?.textContent)).toEqual(['photos', 'music'])
   })
+
+  it('says on the card how old a file has to be before the job sends it', async () => {
+    page({ jobs: [job('photos', { direction: 'leftToRight', minAgeDays: 30 }), job('music')] })
+    const wait = en['jobs.fact.minAge'].replace('{days}', '30')
+    await screen.findAllByTestId('job-row')
+    expect(within(row('photos')).getByText(wait)).toBeTruthy()
+    expect(within(row('music')).queryByText(/older than/)).toBeNull()
+  })
 })
 
 const shownOrder = () => screen.getAllByTestId('job-row').map((r) => r.getAttribute('data-job'))

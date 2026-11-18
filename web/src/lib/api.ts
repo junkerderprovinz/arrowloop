@@ -37,6 +37,8 @@ export type Job = {
   away?: string
   /** The last stored runs, newest first, at most fourteen. */
   recent: Run[]
+  /** How many days old a file has to be before a one-way job sends it. */
+  minAgeDays?: number
 }
 
 export type { Reason } from './i18n'
@@ -234,6 +236,8 @@ export type Plan = {
   passedOver: Skip[]
   unchanged: number
   agreed: number
+  /** Files a one-way job keeps until they are old enough. An older engine does not say. */
+  young?: number
 }
 
 export type Run = {
@@ -295,6 +299,8 @@ export type RawJob = {
   watchSettle?: string
   runAtStart?: boolean
   quietPeriod?: string
+  /** Keeps a file on the source of a one-way job until it is this many days old. */
+  minAgeDays?: number
   emptyDirs?: boolean
   metadata?: boolean
   /** Names of shared pattern lists this job asks for. */

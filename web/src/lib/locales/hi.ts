@@ -2134,6 +2134,15 @@ const hi: Translations = {
   'fortress.action.backupImport': 'बैकअप वापस लगाना',
   'fortress.action.uiOpen': 'इसके पेज खोलना',
   'fortress.openNeedsPassword': 'पहले सेटिंग्स, सुरक्षा में एक पासवर्ड रखें, फिर दूसरे ऐप यहीं से खुलेंगे।',
+  'edit.minAge': 'तभी भेजें जब इससे पुरानी हो',
+  'edit.minAgeHint': 'कोई फ़ाइल उस तरफ़ तभी जाती है जब वह इतनी पुरानी हो जाए, उसके आख़िरी बदलाव से गिनकर। तब तक वह जहाँ है वहीं रहती है, इसलिए नई फ़ोटो कुछ समय फ़ोन पर रहती हैं।',
+  'edit.minAge.off': 'बंद',
+  'edit.minAge.days': '{days} दिन',
+  'edit.minAge.custom': 'अपना मान',
+  'edit.minAgeUnit': 'दिन',
+  'jobs.fact.minAge': 'सिर्फ़ {days} दिन से पुरानी फ़ाइलें',
+  'preview.young': 'अभी पर्याप्त पुरानी नहीं: {count}',
+  'new.change.minAge': '{option} एकतरफ़ा काम में फ़ाइल को स्रोत पर तब तक रखता है जब तक वह पर्याप्त पुरानी न हो जाए, इसलिए नई फ़ोटो कुछ समय फ़ोन पर रहती हैं।',
 }
 
 export default hi

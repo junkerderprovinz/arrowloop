@@ -2134,6 +2134,15 @@ const cs: Translations = {
   'fortress.action.backupImport': 'Obnovit zálohu',
   'fortress.action.uiOpen': 'Otevřít jeho stránky',
   'fortress.openNeedsPassword': 'Nejdřív nastav heslo v Nastavení, Zabezpečení a pak se odsud otevřou i ostatní aplikace.',
+  'edit.minAge': 'Přenést, až bude starší než',
+  'edit.minAgeHint': 'Soubor jde na druhou stranu, až když je takto starý, počítáno od jeho poslední změny. Do té doby zůstane, kde je, takže nové fotky zůstanou chvíli v telefonu.',
+  'edit.minAge.off': 'Vypnuto',
+  'edit.minAge.days': '{days} dní',
+  'edit.minAge.custom': 'Vlastní',
+  'edit.minAgeUnit': 'dní',
+  'jobs.fact.minAge': 'jen soubory starší než {days} dní',
+  'preview.young': 'Ještě nejsou dost staré: {count}',
+  'new.change.minAge': '{option} nechá soubor ve zdroji jednosměrné úlohy, dokud není dost starý, takže nové fotky zůstanou chvíli v telefonu.',
 }
 
 export default cs

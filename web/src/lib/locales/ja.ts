@@ -2134,6 +2134,15 @@ const ja: Translations = {
   'fortress.action.backupImport': 'バックアップを戻す',
   'fortress.action.uiOpen': 'ページを開く',
   'fortress.openNeedsPassword': '先に「設定」の「セキュリティ」でパスワードを設定すると、ほかのアプリをここから開けます。',
+  'edit.minAge': 'この期間を過ぎてから転送',
+  'edit.minAgeHint': 'ファイルは最後の変更からこの日数が経ってから向こうへ渡ります。それまでは元の場所に残るので、最近の写真はしばらく携帯に残ります。',
+  'edit.minAge.off': 'オフ',
+  'edit.minAge.days': '{days}日',
+  'edit.minAge.custom': 'カスタム',
+  'edit.minAgeUnit': '日',
+  'jobs.fact.minAge': '{days}日より古いファイルのみ',
+  'preview.young': 'まだ期間に達していません: {count}',
+  'new.change.minAge': '{option}を使うと、一方向のジョブでファイルが十分に古くなるまで元の側に残ります。最近の写真はしばらく携帯に残ります。',
 }
 
 export default ja
