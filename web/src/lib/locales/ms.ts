@@ -563,6 +563,7 @@ const ms: Translations = {
   'phone.openSettings': 'Buka tetapan',
   'phone.noJobs': 'Satu tugas memastikan dua folder sentiasa sama. Tambah yang pertama dengan butang di bawah.',
   'phone.jobsNone': 'Belum ada tugas. Tambah satu dengan butang di bawah.',
+  'phone.targetsNone': 'Belum ada yang disambung. Sambung storan atau awan dengan butang di sudut.',
   'overview.numbers': 'Dalam angka',
   'overview.numbersHint': 'Setiap angka membuka halaman yang menyenaraikannya.',
   'overview.jobsHint': 'Tugas anda mengikut susunan anda sendiri, dengan larian terakhir dan seterusnya. Klik untuk membuka tugas.',

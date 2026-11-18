@@ -563,6 +563,7 @@ const et: Translations = {
   'phone.openSettings': 'Ava seaded',
   'phone.noJobs': 'Töö hoiab kaks kausta ühesugused. Lisa esimene allpool oleva nupuga.',
   'phone.jobsNone': 'Töid pole veel. Lisa üks allpool oleva nupuga.',
+  'phone.targetsNone': 'Midagi pole veel ühendatud. Ühenda hoidla või pilv nurgas oleva nupuga.',
   'overview.numbers': 'Arvudes',
   'overview.numbersHint': 'Iga arv avab lehe vastava loendiga.',
   'overview.jobsHint': 'Sinu tööd sinu enda järjekorras, koos viimase ja järgmise käivitusega. Klõps avab töö.',

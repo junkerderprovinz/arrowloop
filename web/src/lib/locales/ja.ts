@@ -563,6 +563,7 @@ const ja: Translations = {
   'phone.openSettings': '設定を開く',
   'phone.noJobs': 'ジョブは 2 つのフォルダーを同じ状態に保ちます。下のボタンから最初のジョブを追加してください。',
   'phone.jobsNone': 'ジョブはまだありません。下のボタンから追加してください。',
+  'phone.targetsNone': 'まだ何も接続されていません。隅のボタンからストレージやクラウドを接続してください。',
   'overview.numbers': '数字で見る',
   'overview.numbersHint': '各数字から、その一覧のページが開きます。',
   'overview.jobsHint': 'ジョブを自分で決めた順に、前回と次回の実行とあわせて表示します。クリックするとジョブが開きます。',

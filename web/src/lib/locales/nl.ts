@@ -563,6 +563,7 @@ const nl: Translations = {
   'phone.openSettings': 'Instellingen openen',
   'phone.noJobs': 'Een taak houdt twee mappen gelijk. Maak de eerste aan met de knop hieronder.',
   'phone.jobsNone': 'Nog geen taken. Maak er een aan met de knop hieronder.',
+  'phone.targetsNone': 'Nog niets verbonden. Verbind opslag of een cloud met de knop in de hoek.',
   'overview.numbers': 'In cijfers',
   'overview.numbersHint': 'Elk getal opent de pagina met de bijbehorende lijst.',
   'overview.jobsHint': 'Je taken in je eigen volgorde, met hun laatste en volgende run. Een klik opent een taak.',

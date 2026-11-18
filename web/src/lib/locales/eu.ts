@@ -563,6 +563,7 @@ const eu: Translations = {
   'phone.openSettings': 'Ireki ezarpenak',
   'phone.noJobs': 'Lan batek bi karpeta berdin mantentzen ditu. Gehitu lehena beheko botoiarekin.',
   'phone.jobsNone': 'Ez dago lanik oraindik. Gehitu bat beheko botoiarekin.',
+  'phone.targetsNone': 'Ez dago ezer konektatuta oraindik. Konektatu biltegi bat edo hodei bat izkinako botoiarekin.',
   'overview.numbers': 'Zenbakitan',
   'overview.numbersHint': 'Zenbaki bakoitzak dagokion zerrenda duen orria irekitzen du.',
   'overview.jobsHint': 'Zure lanak zure ordenan, azken exekuzioarekin eta hurrengoarekin. Klik eginda lana irekitzen da.',

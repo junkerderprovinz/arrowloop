@@ -563,6 +563,7 @@ const ca: Translations = {
   'phone.openSettings': 'Obre la configuració',
   'phone.noJobs': 'Una tasca manté dues carpetes iguals. Afegeix la primera amb el botó de sota.',
   'phone.jobsNone': 'Encara no hi ha tasques. Afegeix-ne una amb el botó de sota.',
+  'phone.targetsNone': 'Encara no hi ha res connectat. Connecta un emmagatzematge o un núvol amb el botó de la cantonada.',
   'overview.numbers': 'En xifres',
   'overview.numbersHint': 'Cada número obre la pàgina amb la llista corresponent.',
   'overview.jobsHint': 'Les teves tasques en el teu propi ordre, amb l\'última execució i la propera. Un clic obre una tasca.',

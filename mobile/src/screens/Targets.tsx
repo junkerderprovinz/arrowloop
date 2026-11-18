@@ -46,6 +46,7 @@ export function Targets() {
     <Floating>
       <Page fab spread>
       {!remotes ? <Empty title={t("history.working")} detail={error || undefined} /> : null}
+      {remotes?.length === 0 ? <Empty title={t("phone.targetsNone")} /> : null}
       {(remotes ?? []).map((remote, index) => (
         <TargetCard
           key={remote.name}

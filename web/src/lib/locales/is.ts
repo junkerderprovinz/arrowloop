@@ -563,6 +563,7 @@ const is: Translations = {
   'phone.openSettings': 'Opna stillingar',
   'phone.noJobs': 'Verk heldur tveimur möppum eins. Búðu til það fyrsta með hnappinum hér fyrir neðan.',
   'phone.jobsNone': 'Engin verk enn. Búðu til eitt með hnappinum hér fyrir neðan.',
+  'phone.targetsNone': 'Ekkert er tengt enn. Tengdu geymslu eða ský með hnappinum í horninu.',
   'overview.numbers': 'Í tölum',
   'overview.numbersHint': 'Hver tala opnar síðuna með listanum sem liggur að baki henni.',
   'overview.jobsHint': 'Verkin þín í þinni eigin röð, með síðustu og næstu keyrslu. Smellur opnar verk.',

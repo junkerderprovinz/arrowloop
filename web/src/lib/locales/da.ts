@@ -563,6 +563,7 @@ const da: Translations = {
   'phone.openSettings': 'Åbn indstillinger',
   'phone.noJobs': 'Et job holder to mapper ens. Opret det første med knappen herunder.',
   'phone.jobsNone': 'Der er ingen job endnu. Opret et med knappen herunder.',
+  'phone.targetsNone': 'Der er intet forbundet endnu. Forbind lager eller en sky med knappen i hjørnet.',
   'overview.numbers': 'I tal',
   'overview.numbersHint': 'Hvert tal åbner siden med den tilhørende liste.',
   'overview.jobsHint': 'Dine job i din egen rækkefølge, med seneste og næste kørsel. Et klik åbner et job.',

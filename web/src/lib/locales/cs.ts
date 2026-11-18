@@ -563,6 +563,7 @@ const cs: Translations = {
   'phone.openSettings': 'Otevřít nastavení',
   'phone.noJobs': 'Úloha udržuje dvě složky shodné. Přidej první tlačítkem níže.',
   'phone.jobsNone': 'Zatím žádné úlohy. Přidej první tlačítkem níže.',
+  'phone.targetsNone': 'Zatím není nic připojeno. Připoj úložiště nebo cloud tlačítkem v rohu.',
   'overview.numbers': 'V číslech',
   'overview.numbersHint': 'Každé číslo otevře stránku s příslušným seznamem.',
   'overview.jobsHint': 'Tvoje úlohy v tvém vlastním pořadí, s posledním a dalším během. Kliknutím úlohu otevřeš.',

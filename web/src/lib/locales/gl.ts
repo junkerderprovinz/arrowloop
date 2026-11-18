@@ -563,6 +563,7 @@ const gl: Translations = {
   'phone.openSettings': 'Abrir os axustes',
   'phone.noJobs': 'Unha tarefa mantén dous cartafoles iguais. Engade a primeira co botón de abaixo.',
   'phone.jobsNone': 'Aínda non hai tarefas. Engade unha co botón de abaixo.',
+  'phone.targetsNone': 'Aínda non hai nada conectado. Conecta un almacenamento ou unha nube co botón da esquina.',
   'overview.numbers': 'En cifras',
   'overview.numbersHint': 'Cada número abre a páxina coa lista correspondente.',
   'overview.jobsHint': 'As túas tarefas na túa propia orde, coa súa última e seguinte execución. Un clic abre unha tarefa.',

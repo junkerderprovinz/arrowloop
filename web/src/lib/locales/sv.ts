@@ -563,6 +563,7 @@ const sv: Translations = {
   'phone.openSettings': 'Öppna inställningar',
   'phone.noJobs': 'Ett jobb håller två mappar likadana. Lägg till det första med knappen nedan.',
   'phone.jobsNone': 'Inga jobb än. Lägg till ett med knappen nedan.',
+  'phone.targetsNone': 'Inget är anslutet än. Anslut lagring eller ett moln med knappen i hörnet.',
   'overview.numbers': 'I siffror',
   'overview.numbersHint': 'Varje tal öppnar sidan med listan bakom det.',
   'overview.jobsHint': 'Dina jobb i din egen ordning, med senaste och nästa körning. Ett klick öppnar ett jobb.',

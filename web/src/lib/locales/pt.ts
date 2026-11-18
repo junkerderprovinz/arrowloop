@@ -563,6 +563,7 @@ const pt: Translations = {
   'phone.openSettings': 'Abrir definições',
   'phone.noJobs': 'Uma tarefa mantém duas pastas iguais. Cria a primeira com o botão abaixo.',
   'phone.jobsNone': 'Ainda não há tarefas. Cria uma com o botão abaixo.',
+  'phone.targetsNone': 'Ainda não há nada ligado. Liga um armazenamento ou uma nuvem com o botão no canto.',
   'overview.numbers': 'Em números',
   'overview.numbersHint': 'Cada número abre a página com a lista correspondente.',
   'overview.jobsHint': 'As tuas tarefas pela tua ordem, com a última e a próxima execução. Um clique abre uma tarefa.',
