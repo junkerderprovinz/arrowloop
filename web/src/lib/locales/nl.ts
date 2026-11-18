@@ -1730,6 +1730,7 @@ const nl: Translations = {
   'new.change.kdriveRoot': 'Een kDrive-doel kan beginnen in je privémap, in de gedeelde map of in elke map via zijn ID.',
   'new.change.hiddenFolders': 'In de mapkiezer toont de schakelaar {show} ook verborgen mappen.',
   'new.change.tabletLandscape': 'Op een tablet draait de telefoonapp mee met het apparaat, en de pagina\'s, de onderbalk en de panelen die van onderen openschuiven blijven in een kolom in het midden van het scherm.',
+  'new.change.tabletShell': 'Op een tablet in liggende stand toont de telefoonapp de zijbalk van de desktop- en containerversie, de instellingen als tegels en de lijsten over de hele breedte.',
   'new.change.notifyTiles': '{add} toont elke dienst als tegel met zijn logo, en de zoekfunctie vindt hem op naam.',
   'new.change.notifyShoutrrr': 'Een Shoutrrr-kanaal stuurt rechtstreeks vanuit ArrowLoop naar Telegram, Pushover, Teams en meer dan twintig andere diensten, zonder eigen server.',
   'welcome.title': 'Welkom bij ArrowLoop',

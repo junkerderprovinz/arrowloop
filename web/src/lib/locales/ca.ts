@@ -1730,6 +1730,7 @@ const ca: Translations = {
   'new.change.kdriveRoot': 'Una destinació kDrive pot començar a la teva carpeta privada, a la compartida o a qualsevol carpeta pel seu ID.',
   'new.change.hiddenFolders': 'Al selector de carpetes, l\'interruptor {show} també mostra les carpetes ocultes.',
   'new.change.tabletLandscape': 'En una tauleta, l\'aplicació del telèfon gira amb el dispositiu, i les pàgines, la barra inferior i els panells que pugen des de baix es mantenen en una columna al centre de la pantalla.',
+  'new.change.tabletShell': 'En una tauleta en horitzontal, l\'aplicació del telèfon mostra la barra lateral de les versions d\'escriptori i de contenidor, els ajustos com a rajoles i les llistes a tota l\'amplada.',
   'new.change.notifyTiles': '{add} mostra cada servei com una rajola amb el seu logotip, i la cerca en troba un pel nom.',
   'new.change.notifyShoutrrr': 'Un canal Shoutrrr envia directament des d\'ArrowLoop a Telegram, Pushover, Teams i més de vint serveis més, i no necessita cap servidor propi.',
   'welcome.title': 'Et donem la benvinguda a ArrowLoop',

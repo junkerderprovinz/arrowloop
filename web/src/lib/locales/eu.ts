@@ -1730,6 +1730,7 @@ const eu: Translations = {
   'new.change.kdriveRoot': 'kDrive helburu bat zure karpeta pribatuan, partekatuan edo edozein karpetatan has daiteke bere IDaren bidez.',
   'new.change.hiddenFolders': 'Karpeta-hautatzailean, {show} etengailuak karpeta ezkutuak ere erakusten ditu.',
   'new.change.tabletLandscape': 'Tableta batean, telefonoko aplikazioa gailuarekin batera biratzen da, eta haren orriak, beheko barra eta behetik igotzen diren panelak pantailaren erdiko zutabe batean geratzen dira.',
+  'new.change.tabletShell': 'Tableta etzanda dagoenean, telefonoko aplikazioak mahaigaineko eta edukiontziko bertsioen alboko barra erakusten du, ezarpenak lauza gisa eta zerrendak zabalera osoan.',
   'new.change.notifyTiles': '{add} atalak zerbitzu bakoitza bere logoarekin erakusten du lauza batean, eta bilaketak izenez aurkitzen du.',
   'new.change.notifyShoutrrr': 'Shoutrrr kanal batek zuzenean ArrowLoop-etik bidaltzen du Telegram, Pushover, Teams eta beste hogei zerbitzu baino gehiagora, eta ez du zerbitzari propiorik behar.',
   'welcome.title': 'Ongi etorri ArrowLoop-era',

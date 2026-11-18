@@ -1730,6 +1730,7 @@ const lv: Translations = {
   'new.change.kdriveRoot': 'kDrive mērķis var sākties tavā privātajā mapē, koplietotajā mapē vai jebkurā mapē pēc ID.',
   'new.change.hiddenFolders': 'Mapju izvēlē slēdzis {show} parāda arī slēptās mapes.',
   'new.change.tabletLandscape': 'Planšetdatorā tālruņa lietotne griežas līdzi ierīcei, un tās lapas, apakšējā josla un no apakšas izslīdošie paneļi paliek kolonnā ekrāna vidū.',
+  'new.change.tabletShell': 'Guļus turētā planšetdatorā tālruņa lietotne rāda darbvirsmas un konteinera versijas sānjoslu, iestatījumus kā flīzes un sarakstus visā platumā.',
   'new.change.notifyTiles': '{add} rāda katru pakalpojumu kā flīzi ar tā logotipu, un meklēšana to atrod pēc nosaukuma.',
   'new.change.notifyShoutrrr': 'Shoutrrr kanāls sūta tieši no ArrowLoop uz Telegram, Pushover, Teams un vairāk nekā divdesmit citiem pakalpojumiem, un tam nav vajadzīgs savs serveris.',
   'welcome.title': 'Laipni lūdzam ArrowLoop',

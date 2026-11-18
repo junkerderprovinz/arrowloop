@@ -1730,6 +1730,7 @@ const vi: Translations = {
   'new.change.kdriveRoot': 'Đích kDrive có thể bắt đầu ở thư mục riêng của bạn, thư mục chung hoặc bất kỳ thư mục nào theo ID.',
   'new.change.hiddenFolders': 'Trong bộ chọn thư mục, công tắc {show} cũng hiện các thư mục ẩn.',
   'new.change.tabletLandscape': 'Trên máy tính bảng, ứng dụng điện thoại xoay theo thiết bị, còn các trang, thanh dưới và các bảng trượt lên từ bên dưới nằm trong một cột ở giữa màn hình.',
+  'new.change.tabletShell': 'Trên máy tính bảng đặt nằm ngang, ứng dụng điện thoại hiện thanh bên của bản máy tính và bản container, phần cài đặt dạng ô và danh sách trải hết chiều ngang.',
   'new.change.notifyTiles': '{add} hiển thị mỗi dịch vụ thành một ô kèm logo, và ô tìm kiếm tìm được theo tên.',
   'new.change.notifyShoutrrr': 'Kênh Shoutrrr gửi thẳng từ ArrowLoop tới Telegram, Pushover, Teams và hơn hai mươi dịch vụ khác, không cần máy chủ riêng.',
   'welcome.title': 'Chào mừng đến với ArrowLoop',

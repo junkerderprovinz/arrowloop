@@ -1730,6 +1730,7 @@ const lt: Translations = {
   'new.change.kdriveRoot': 'kDrive tikslas gali prasidėti tavo privačiame aplanke, bendrame aplanke ar bet kuriame aplanke pagal ID.',
   'new.change.hiddenFolders': 'Aplanko parinkiklyje jungiklis {show} rodo ir paslėptus aplankus.',
   'new.change.tabletLandscape': 'Planšetėje telefono programėlė sukasi kartu su įrenginiu, o jos puslapiai, apatinė juosta ir iš apačios iškylantys skydeliai lieka stulpelyje ekrano viduryje.',
+  'new.change.tabletShell': 'Gulsčiai laikomoje planšetėje telefono programėlė rodo darbalaukio ir konteinerio versijų šoninę juostą, nustatymus kaip plyteles ir sąrašus per visą plotį.',
   'new.change.notifyTiles': '{add} rodo kiekvieną paslaugą kaip plytelę su jos logotipu, o paieška randa ją pagal pavadinimą.',
   'new.change.notifyShoutrrr': 'Shoutrrr kanalas siunčia tiesiai iš ArrowLoop į Telegram, Pushover, Teams ir daugiau nei dvidešimt kitų paslaugų, o savo serverio jam nereikia.',
   'welcome.title': 'Sveiki atvykę į ArrowLoop',

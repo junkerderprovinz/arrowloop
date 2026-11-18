@@ -1730,6 +1730,7 @@ const fr: Translations = {
   'new.change.kdriveRoot': "Une cible kDrive peut commencer dans votre dossier privé, dans le dossier partagé ou dans n'importe quel dossier par son ID.",
   'new.change.hiddenFolders': 'Dans le sélecteur de dossiers, l\'interrupteur {show} affiche aussi les dossiers masqués.',
   'new.change.tabletLandscape': 'Sur une tablette, l\'application du téléphone tourne avec l\'appareil, et ses pages, la barre du bas et les panneaux qui montent d\'en bas restent dans une colonne au milieu de l\'écran.',
+  'new.change.tabletShell': 'Sur une tablette tenue à l\'horizontale, l\'application du téléphone affiche la barre latérale des versions bureau et conteneur, les réglages en tuiles et les listes sur toute la largeur.',
   'new.change.notifyTiles': '{add} présente chaque service sous forme de tuile avec son logo, et la recherche le trouve par son nom.',
   'new.change.notifyShoutrrr': 'Un canal Shoutrrr envoie directement depuis ArrowLoop vers Telegram, Pushover, Teams et plus de vingt autres services, sans serveur à lui.',
   'welcome.title': 'Bienvenue dans ArrowLoop',

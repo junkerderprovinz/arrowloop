@@ -1730,6 +1730,7 @@ const cs: Translations = {
   'new.change.kdriveRoot': 'Cíl kDrive může začínat ve tvé soukromé složce, ve sdílené nebo v jakékoli složce podle ID.',
   'new.change.hiddenFolders': 'Ve výběru složky ukáže přepínač {show} i skryté složky.',
   'new.change.tabletLandscape': 'Na tabletu se aplikace pro telefon otáčí spolu se zařízením a její stránky, dolní lišta i panely vysouvané zdola zůstávají ve sloupci uprostřed obrazovky.',
+  'new.change.tabletShell': 'Na tabletu na šířku ukazuje aplikace pro telefon boční lištu desktopové a kontejnerové verze, nastavení jako dlaždice a seznamy přes celou šířku.',
   'new.change.notifyTiles': '{add} ukazuje každou službu jako dlaždici s jejím logem a vyhledávání ji najde podle jména.',
   'new.change.notifyShoutrrr': 'Kanál Shoutrrr posílá přímo z ArrowLoopu do Telegramu, Pushoveru, Teams a více než dvaceti dalších služeb a nepotřebuje vlastní server.',
   'welcome.title': 'Vítej v ArrowLoop',

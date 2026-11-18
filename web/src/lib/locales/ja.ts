@@ -1730,6 +1730,7 @@ const ja: Translations = {
   'new.change.kdriveRoot': 'kDrive ターゲットは、プライベートフォルダー、共有フォルダー、または ID で指定した任意のフォルダーから始められます。',
   'new.change.hiddenFolders': 'フォルダーの選択で、スイッチ {show} を使うと隠しフォルダーも表示されます。',
   'new.change.tabletLandscape': 'タブレットでは、スマートフォンのアプリが端末の向きに合わせて回転し、ページ、下のバー、下から開くパネルは画面中央の列に収まります。',
+  'new.change.tabletShell': '横向きのタブレットでは、スマートフォンのアプリがデスクトップ版とコンテナ版のサイドバーを表示し、設定をタイルで、一覧を画面の幅いっぱいに表示します。',
   'new.change.notifyTiles': '{add} では各サービスがロゴ付きのタイルで表示され、名前で検索できます。',
   'new.change.notifyShoutrrr': 'Shoutrrr チャンネルは ArrowLoop から直接 Telegram、Pushover、Teams など 20 を超えるサービスに送ります。専用のサーバーは要りません。',
   'welcome.title': 'ArrowLoop へようこそ',

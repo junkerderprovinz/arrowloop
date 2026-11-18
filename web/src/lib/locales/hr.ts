@@ -1730,6 +1730,7 @@ const hr: Translations = {
   'new.change.kdriveRoot': 'kDrive odredište može početi u tvojoj privatnoj mapi, u zajedničkoj ili u bilo kojoj mapi prema ID-u.',
   'new.change.hiddenFolders': 'U odabiru mape prekidač {show} prikazuje i skrivene mape.',
   'new.change.tabletLandscape': 'Na tabletu se aplikacija za telefon okreće zajedno s uređajem, a njezine stranice, donja traka i ploče koje izlaze odozdo ostaju u stupcu na sredini zaslona.',
+  'new.change.tabletShell': 'Na vodoravno okrenutom tabletu aplikacija za telefon prikazuje bočnu traku stolne i kontejnerske verzije, postavke kao pločice i popise preko cijele širine.',
   'new.change.notifyTiles': '{add} prikazuje svaku uslugu kao pločicu s njezinim logotipom, a pretraga je pronalazi po imenu.',
   'new.change.notifyShoutrrr': 'Kanal Shoutrrr šalje izravno iz ArrowLoopa na Telegram, Pushover, Teams i više od dvadeset drugih usluga i ne treba vlastiti poslužitelj.',
   'welcome.title': 'Dobro došao u ArrowLoop',

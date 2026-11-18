@@ -1730,6 +1730,7 @@ const it: Translations = {
   'new.change.kdriveRoot': 'Una destinazione kDrive può partire dalla tua cartella privata, da quella condivisa o da qualsiasi cartella tramite il suo ID.',
   'new.change.hiddenFolders': 'Nel selettore di cartelle, l\'interruttore {show} mostra anche le cartelle nascoste.',
   'new.change.tabletLandscape': 'Su un tablet l\'app del telefono ruota con il dispositivo, e le sue pagine, la barra in basso e i pannelli che salgono dal basso restano in una colonna al centro dello schermo.',
+  'new.change.tabletShell': 'Su un tablet tenuto in orizzontale l\'app del telefono mostra la barra laterale delle versioni desktop e container, le impostazioni come riquadri e gli elenchi su tutta la larghezza.',
   'new.change.notifyTiles': '{add} mostra ogni servizio come una tessera con il suo logo, e la ricerca lo trova per nome.',
   'new.change.notifyShoutrrr': 'Un canale Shoutrrr invia direttamente da ArrowLoop a Telegram, Pushover, Teams e a oltre venti altri servizi, senza bisogno di un server proprio.',
   'welcome.title': 'Benvenuto in ArrowLoop',

@@ -1730,6 +1730,7 @@ const pt: Translations = {
   'new.change.kdriveRoot': 'Um destino kDrive pode começar na tua pasta privada, na partilhada ou em qualquer pasta pelo seu ID.',
   'new.change.hiddenFolders': 'No seletor de pastas, o interruptor {show} também mostra as pastas ocultas.',
   'new.change.tabletLandscape': 'Num tablet, a aplicação do telefone roda com o dispositivo, e as suas páginas, a barra inferior e os painéis que sobem de baixo ficam numa coluna a meio do ecrã.',
+  'new.change.tabletShell': 'Num tablet na horizontal, a aplicação do telefone mostra a barra lateral das versões de computador e de contentor, as definições como mosaicos e as listas em toda a largura.',
   'new.change.notifyTiles': '{add} mostra cada serviço como um mosaico com o respetivo logótipo, e a pesquisa encontra-o pelo nome.',
   'new.change.notifyShoutrrr': 'Um canal Shoutrrr envia diretamente do ArrowLoop para Telegram, Pushover, Teams e mais de vinte outros serviços, sem precisar de um servidor próprio.',
   'welcome.title': 'Bem-vindo ao ArrowLoop',

@@ -1730,6 +1730,7 @@ const ro: Translations = {
   'new.change.kdriveRoot': 'O țintă kDrive poate începe în dosarul tău privat, în cel partajat sau în orice dosar după ID.',
   'new.change.hiddenFolders': 'În selectorul de foldere, comutatorul {show} afișează și folderele ascunse.',
   'new.change.tabletLandscape': 'Pe o tabletă, aplicația de telefon se rotește odată cu dispozitivul, iar paginile ei, bara de jos și panourile care urcă de jos rămân într-o coloană în mijlocul ecranului.',
+  'new.change.tabletShell': 'Pe o tabletă ținută orizontal, aplicația de telefon arată bara laterală a versiunilor desktop și container, setările ca plăci și listele pe toată lățimea.',
   'new.change.notifyTiles': '{add} arată fiecare serviciu ca o dală cu logoul lui, iar căutarea îl găsește după nume.',
   'new.change.notifyShoutrrr': 'Un canal Shoutrrr trimite direct din ArrowLoop către Telegram, Pushover, Teams și peste douăzeci de alte servicii și nu are nevoie de un server propriu.',
   'welcome.title': 'Bun venit în ArrowLoop',
