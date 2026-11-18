@@ -1234,7 +1234,7 @@ export function Settings() {
   const tiles = settingsTiles({ pairable });
   const shown = shownTile(tiles, picked);
   const screen = frame.wide ? tiles.find((tile) => tile.id === shown)?.screen : undefined;
-  const pane = useMemo(() => (frame.wide ? { wide: true, width: paneWidth(frame.width) } : frame), [frame]);
+  const pane = useMemo(() => (frame.wide ? { wide: true, width: paneWidth(frame.width), fill: true } : frame), [frame]);
   return (
     <View style={frame.wide ? styles.besideTiles : styles.fill}>
       {frame.wide ? <SettingsTiles tiles={tiles} shown={shown} onPick={setPicked} /> : null}
@@ -1259,9 +1259,8 @@ function OnTile({ section, children }: { section: SectionId; children: ReactNode
 }
 
 /**
- * The web's column of tiles, its tab selector turned on its side. The tiles
- * share the column's height, so a short list fills it with tall tiles, and
- * the open one is filled with its palette position or the accent.
+ * The web's column of tiles, its tab selector turned on its side, the open
+ * one filled with its palette position or the accent.
  */
 function SettingsTiles({ tiles, shown, onPick }: { tiles: SettingsTile[]; shown: TileId; onPick: (id: TileId) => void }) {
   const { t } = useT();
@@ -1446,12 +1445,12 @@ function langFlag(code: string): string {
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   besideTiles: { flex: 1, flexDirection: "row" },
-  // The page's own gap under the title bar and the web's room before the column.
+  // The web's room before the column, and its top in line with the first
+  // card's title.
   tiles: { width: TILE_COLUMN + space.xl, flexGrow: 0 },
-  tilesInside: { flexGrow: 1, gap: space.xs, paddingStart: space.xl, paddingTop: space.xs, paddingBottom: space.lg },
+  tilesInside: { gap: space.xs, paddingStart: space.xl, paddingTop: space.lg, paddingBottom: space.lg },
+  // The web's tile at a finger's height.
   tile: {
-    flexGrow: 1,
-    flexBasis: 0,
     minHeight: TOUCH,
     flexDirection: "row",
     alignItems: "center",

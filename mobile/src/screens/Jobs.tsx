@@ -361,7 +361,10 @@ export function Jobs() {
 function JobsBar({ buttons, onPress }: { buttons: BarButton[]; onPress: (id: BarButton["id"]) => void }) {
   const { t } = useT();
   const { p, labels } = useTheme();
-  const side = useSideRoom();
+  const { wide } = useFrame();
+  // Beside the side bar the row keeps to the list's edge, as the web's page
+  // actions stand at the end of the page rather than across it.
+  const side = useSideRoom(space.lg, wide);
   const [room, setRoom] = useState(0);
   const [words, setWords] = useState<Record<string, number>>({});
   const fit = barFit(
@@ -394,7 +397,7 @@ function JobsBar({ buttons, onPress }: { buttons: BarButton[]; onPress: (id: Bar
           );
         })}
       </View>
-      <View style={styles.barRow} onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
+      <View style={[styles.barRow, wide ? styles.barRowWide : null]} onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
         {buttons.map((b) => (
           <View key={b.id} style={styles.barSlot}>
             <Button
@@ -785,6 +788,7 @@ const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
   bar: { position: "absolute", left: 0, right: 0, bottom: 0, paddingTop: space.sm, paddingBottom: space.lg },
   barRow: { flexDirection: "row", gap: space.sm },
+  barRowWide: { alignSelf: "flex-end", width: 480 },
   barSlot: { flex: 1, minWidth: 0 },
   // Invisible copies of the words at the buttons' type, for their one-line widths.
   barMeasure: { position: "absolute", left: 0, top: 0, opacity: 0, alignItems: "flex-start" },

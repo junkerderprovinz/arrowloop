@@ -9,6 +9,8 @@ import { useWindowDimensions } from "react-native";
 export interface Frame {
   wide: boolean;
   width: number;
+  /** Every page in it spreads across its width, as pageRoom says. */
+  fill?: boolean;
 }
 
 const FrameContext = createContext<Frame | null>(null);

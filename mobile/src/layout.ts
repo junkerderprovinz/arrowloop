@@ -62,11 +62,21 @@ export const WIDE_ROOM = 24;
 /**
  * The room beside a page's content. Beside the side bar a list spreads across
  * the page as the web's lists do, while a form keeps the column a phone's
- * fields are made for.
+ * fields are made for. A frame that `fill`s, the pane beside the settings
+ * tiles, spreads every page in it, as the web's settings fill their pane.
  */
-export function pageRoom(frame: { wide: boolean; width: number }, gutter: number, spread: boolean): number {
+export function pageRoom(frame: { wide: boolean; width: number; fill?: boolean }, gutter: number, spread: boolean): number {
   if (!frame.wide) return sideRoom(frame.width, gutter);
-  return sideRoom(frame.width, WIDE_ROOM, spread ? WIDE_COLUMN : COLUMN);
+  return sideRoom(frame.width, WIDE_ROOM, spread || frame.fill ? WIDE_COLUMN : COLUMN);
+}
+
+/**
+ * The size of each page beside the side bar. The pager would size it to the
+ * whole window, and with no bar below it the page would run under the
+ * system's navigation bar.
+ */
+export function sceneBox(wide: boolean, width: number, bottomInset: number): { width: number; paddingBottom: number } | undefined {
+  return wide ? { width, paddingBottom: bottomInset } : undefined;
 }
 
 /** The web's side panel, 28rem at the window's end edge. */

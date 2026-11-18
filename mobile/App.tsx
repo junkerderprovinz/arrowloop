@@ -44,7 +44,7 @@ import {
   type RailPlace,
 } from "./src/nav";
 import { FrameProvider } from "./src/frame";
-import { GUTTER, railWidth, sceneWidth, sideBarShown } from "./src/layout";
+import { GUTTER, railWidth, sceneBox, sceneWidth, sideBarShown } from "./src/layout";
 import { History } from "./src/screens/History";
 import { Instances } from "./src/screens/Instances";
 import { JobEdit } from "./src/screens/JobEdit";
@@ -234,8 +234,7 @@ function Shell() {
               // places, belongs to the phone's pager and not to a side bar.
               swipeEnabled: !wide && !deeperThanRoot(route),
               animationEnabled: !wide,
-              // The pager sizes each page to the whole window otherwise.
-              sceneStyle: wide ? { width: scene } : undefined,
+              sceneStyle: sceneBox(wide, scene, inset.bottom),
               // TabBar draws the floating bar itself; the navigator's own bar
               // only keeps its reserved height.
               tabBarStyle: {

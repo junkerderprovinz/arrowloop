@@ -12,6 +12,7 @@ import {
   WIDE_ROOM,
   menuRoom,
   pageRoom,
+  sceneBox,
   panelWidth,
   railWidth,
   sceneWidth,
@@ -132,3 +133,14 @@ test("a menu on a tablet may grow past a phone's width", () => {
   assert.ok(menuRoom(1280, 24, PAGE_GUTTER) > 411);
 });
 
+test("a phone's pages keep the pager's own size, since the bar below them clears the navigation bar", () => {
+  assert.equal(sceneBox(false, 411, 48), undefined);
+});
+
+test("a page beside the side bar stops above the system's navigation bar", () => {
+  assert.deepEqual(sceneBox(true, 1179, 48), { width: 1179, paddingBottom: 48 });
+});
+
+test("a page beside the settings tiles uses the width the tiles leave", () => {
+  assert.equal(pageRoom({ wide: true, width: 900, fill: true }, PAGE_GUTTER, false), WIDE_ROOM);
+});
