@@ -71,11 +71,6 @@ MARKS = [
     ("IconHetzner", "hetzner", "Hetzner Object Storage"),
     ("IconOvh", "ovh", "OVHcloud Object Storage"),
     ("IconMinio", "minio", "MinIO"),
-
-    # Notification services. Slack, Gotify, Healthchecks.io, Apprise and
-    # Shoutrrr have no mark in this set, so theirs are under LOCAL.
-    ("IconNtfy", "ntfy", "ntfy"),
-    ("IconMatrix", "matrix", "Matrix"),
 ]
 
 HEAD = '''import type { SVGProps } from 'react'
@@ -222,24 +217,7 @@ FORCE_THEMED = {
     # A near-black outline beside a green dot that reads anywhere; the dark
     # ink is the one dosya.dev's own dark logo uses.
     "dosya": {"#18181b": ("#fafafa", "#18181b")},
-    # The dark half of the pulse, white on the dark ground as the brand's own
-    # dark-mode mark draws it.
-    "healthchecks": {"#33333f": ("#ffffff", "#33333f")},
-    # A megaphone in two dark teals and a pale arc: the teals lighten on the dark
-    # ground and the arc deepens on the light one, each to the floor its ground
-    # needs and no further.
-    "apprise": {
-        "#237171": ("#3fa9a6", "#237171"),
-        "#185858": ("#319491", "#185858"),
-        "#a6e8de": ("#a6e8de", "#169e8d"),
-    },
 }
-
-
-# Marks drawn with a dark outline round every part, which keeps a pale part
-# apart from a light ground on its own. Deepening Gotify's white eyes and
-# envelope would only grey them.
-OUTLINED = {"gotify"}
 
 
 def _drop_plate(root, source, slug):
@@ -330,7 +308,7 @@ def themed(colours, slug, ground=None):
         return forced
 
     lift = max(contrast(c, SURFACE_DARK) for c in rest) < DARK_FLOOR
-    fade = set() if slug in OUTLINED else {
+    fade = {
         _rgb(c) for c in rest
         if (ground is None or _rgb(c) in ground) and contrast(c, SURFACE_LIGHT) < LIGHT_FLOOR
     }
@@ -409,9 +387,6 @@ TILE_COLOUR = {
     # bubbles stay white.
     "seaweedfs": ("#0162bf", None),
     "opencloud": ("#20434f", "#e2baff"),
-    # Slack's aubergine rather than the cyan of one of its four bars, which
-    # holds white ink no better than 2:1.
-    "slack": ("#4a154b", None),
 }
 
 
@@ -556,15 +531,6 @@ LOCAL = [
      "traced from img.1fichier.com/logo.png, which has no vector", BRAND),
 
     # Notification services.
-    ("IconSlack", "slack", "Slack",
-     "homarr-labs/dashboard-icons, svg/slack.svg", "Apache-2.0"),
-    ("IconGotify", "gotify", "Gotify",
-     "homarr-labs/dashboard-icons, svg/gotify.svg, after gotify/logo (CC BY 4.0)", "Apache-2.0"),
-    ("IconHealthchecks", "healthchecks", "Healthchecks.io",
-     "healthchecks/healthchecks, static/img/favicon.svg", BRAND),
-    ("IconApprise", "apprise", "Apprise",
-     "traced from caronc/apprise, apprise/assets/themes/default/apprise-logo.png, which has no vector",
-     BRAND),
     ("IconShoutrrr", "shoutrrr", "Shoutrrr",
      "nicholas-fedor/shoutrrr, docs/assets/media/shoutrrr-logotype.svg", "MIT"),
 ]
@@ -1036,30 +1002,11 @@ export function {name}(props: SVGProps<SVGSVGElement>) {{
 '''
 
 
-def _unwrap_switch(root):
-    """Turn an Illustrator `<switch>` into the group it falls back to.
-
-    Illustrator wraps its drawing in a switch whose first choice is a
-    `<foreignObject>` only Illustrator understands. A browser skips it and
-    draws the group after it; the measuring here would not, so the choice is
-    made once, in the file's own favour.
-    """
-    parents = {child: parent for parent in root.iter() for child in parent}
-    for switch in [e for e in root.iter() if e.tag == SVG_NS + "switch"]:
-        for choice in list(switch):
-            if choice.tag == SVG_NS + "foreignObject" and choice.get("requiredExtensions"):
-                switch.remove(choice)
-        if len(switch) != 1:
-            raise SystemExit("a <switch> with %d choices left; pick one by hand" % len(switch))
-        switch.tag = SVG_NS + "g"
-    return root
-
-
 def local(name, slug, note, source, licence):
     if not (BRAND_DIR / (slug + ".svg")).is_file():
         return pair(name, slug, note, source, licence)
     path = BRAND_DIR / (slug + ".svg")
-    root = _unwrap_switch(_inline_css(ET.fromstring(io.open(path, encoding="utf-8").read()), slug))
+    root = _inline_css(ET.fromstring(io.open(path, encoding="utf-8").read()), slug)
 
     # The source's box, or one built from width and height, since a component
     # without a viewBox does not scale to 1em.
