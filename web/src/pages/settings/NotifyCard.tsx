@@ -198,6 +198,7 @@ function ChannelPicker({
       ]}
       text={{
         search: t('notify.search'),
+        clear: t('settings.searchClear'),
         none: t('notify.searchNone'),
         close: t('common.close'),
         cancel: t('targets.cancel'),

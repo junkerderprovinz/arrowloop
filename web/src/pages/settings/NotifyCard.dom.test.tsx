@@ -166,6 +166,16 @@ describe('the channel chooser', () => {
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Apprise')
   })
 
+  it("empties the search with a button named in the page's language", () => {
+    const chooser = openChooser()
+    const search = within(chooser).getByRole('searchbox', { name: 'Search services' }) as HTMLInputElement
+    expect(within(chooser).queryByRole('button', { name: 'Clear the search' })).toBeNull()
+    fireEvent.change(search, { target: { value: 'slack' } })
+    fireEvent.click(within(chooser).getByRole('button', { name: 'Clear the search' }))
+    expect(search.value).toBe('')
+    expect(tiles(chooser)).toHaveLength(10)
+  })
+
   it('empties the search on Escape before it lets the window close', () => {
     const chooser = openChooser()
     const search = within(chooser).getByRole('searchbox', { name: 'Search services' })

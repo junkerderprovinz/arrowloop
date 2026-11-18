@@ -4,7 +4,7 @@ import type { WindowAction } from '@glimstone/react/Window'
 
 import { newOnMark, pickMark } from './brandMarks'
 import { useT, type TranslationKey } from '../lib/i18n'
-import { providerHint, providerName } from '../lib/optionHint'
+import { nameAndKind, providerHint, providerName } from '../lib/optionHint'
 import type { Backend, Provider } from '../lib/api'
 
 /** The rows whose mark a What's new entry points at, by provider id. */
@@ -56,14 +56,22 @@ export function ProviderPicker({
 }) {
   const { t } = useT()
   const items: PickerItem[] = [
-    ...providers.map((p) => ({
-      id: p.id,
-      label: providerName(p, t),
-      mark: newOnMark(pickMark(p.mark), NEW_MARKS[p.id]),
-      group: p.group,
-      hint: providerHint(p.id, t),
-      terms: [p.name, p.backend],
-    })),
+    ...providers.map((p) => {
+      const { name, sub } = nameAndKind(providerName(p, t))
+      // A cloud's name already says what it is, so only a protocol and a
+      // target built on another one carry their hint in an (i).
+      const bubble = p.group === 'protocol' || p.group === 'layered'
+      return {
+        id: p.id,
+        label: name,
+        sub,
+        mark: newOnMark(pickMark(p.mark), NEW_MARKS[p.id]),
+        group: p.group,
+        hint: bubble ? providerHint(p.id, t) : undefined,
+        tip: bubble ? undefined : providerHint(p.id, t),
+        terms: [p.name, p.backend],
+      }
+    }),
     ...unlisted.map((b) => ({ id: b.name, label: b.name, group: UNLISTED })),
   ]
   const groups = [
@@ -83,6 +91,7 @@ export function ProviderPicker({
       groups={groups}
       text={{
         search: t('targets.search'),
+        clear: t('settings.searchClear'),
         none: t('targets.searchNone', { s3: name('s3', 'S3'), webdav: name('webdav', 'WebDAV') }),
         close: t('common.close'),
         cancel: t('targets.cancel'),

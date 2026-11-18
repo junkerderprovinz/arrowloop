@@ -276,26 +276,37 @@ function AddTarget({
         setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
       }
       form={picked ? form.body : undefined}
+      // The words stay put, so the buttons keep their width. Colour, glyph
+      // and the bubble carry the verdict.
       actions={[
         {
-          label: trying ? t('targets.checking') : !tried ? t('targets.check') : tried.ok ? t('targets.checkOk') : t('targets.checkFailed'),
+          label: t('targets.check'),
           labelKey: 'targets.check',
           glyph: trying || !tried ? undefined : tried.ok ? <IconCheck /> : <IconClose />,
+          tone: trying || !tried ? undefined : tried.ok ? 'ok' : 'danger',
+          busy: trying,
+          title:
+            trying || !tried
+              ? undefined
+              : tried.ok
+                ? t('targets.checkOk')
+                : tried.reason
+                  ? failureLine(tried.reason, tried.failure, t, lang)
+                  : t('targets.checkFailed'),
           disabled: busy || trying || !kind,
-          attrs:
-            tried && !tried.ok && !trying
-              ? { className: 'glim-shake', ...(tried.reason ? { title: failureLine(tried.reason, tried.failure, t, lang) } : {}) }
-              : undefined,
+          attrs: tried && !tried.ok && !trying ? { className: 'glim-shake' } : undefined,
           onClick: () => {
             void form.tryIt()
             return false
           },
         },
         {
-          label: checking ? t('targets.checking') : t('targets.save'),
-          labelKey: checking ? 'targets.checking' : 'targets.save',
+          label: t('targets.save'),
+          labelKey: 'targets.save',
           glyph: <IconSave />,
           primary: true,
+          busy: checking,
+          title: checking ? t('targets.checking') : undefined,
           disabled: busy || checking || !name.trim() || !kind,
           attrs: form.unsaved > 0 && !busy ? { className: 'glim-shake' } : undefined,
           onClick: () => {

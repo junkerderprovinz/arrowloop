@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { Backend, Provider } from '../lib/api'
@@ -20,6 +20,7 @@ const providers: Provider[] = [
   { id: 'dropbox', name: 'Dropbox', backend: 'dropbox', group: 'cloud', mark: 'IconDropbox' },
   { id: 'hidrive', name: 'IONOS HiDrive', backend: 'hidrive', group: 'cloud', mark: 'IconIonos' },
   { id: 'sftp', name: 'SFTP', backend: 'sftp', group: 'protocol', mark: 'IconServer' },
+  { id: 'smb', name: 'SMB', backend: 'smb', group: 'protocol', mark: 'IconFolder' },
 ]
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -52,7 +53,7 @@ describe('the provider picker', () => {
 
   it('shows one README button per provider, by name and in order', () => {
     pick()
-    expect(tiles().map((b) => b.getAttribute('aria-label'))).toEqual(['Dropbox', 'IONOS HiDrive', 'MEGA', 'SFTP'])
+    expect(tiles().map((b) => b.getAttribute('aria-label'))).toEqual(['Dropbox', 'IONOS HiDrive', 'MEGA', 'SFTP', 'SMB Windows share'])
     for (const button of tiles()) {
       expect(button.querySelector('.glim-readme-btn-mark svg')).not.toBeNull()
     }
@@ -106,12 +107,22 @@ describe('the provider picker', () => {
     expect(glyph.getAttribute('fill')).toBe('currentColor')
   })
 
-  it('explains in a bubble what a name cannot say, and leaves a plain name alone', () => {
+  it('explains a protocol in a bubble and a cloud in a tooltip', async () => {
     pick()
     const item = (name: string) => tile(name).closest('li')!
     expect(item('SFTP').querySelector('.glim-readme-btn-hint')).not.toBeNull()
-    expect(item('IONOS HiDrive').querySelector('.glim-readme-btn-hint')).not.toBeNull()
+    expect(item('IONOS HiDrive').querySelector('.glim-readme-btn-hint')).toBeNull()
     expect(item('Dropbox').querySelector('.glim-readme-btn-hint')).toBeNull()
+    fireEvent.mouseEnter(tile('IONOS HiDrive'))
+    await waitFor(() => expect(screen.getByRole('tooltip').textContent).toBe('The cloud storage from IONOS.'))
+  })
+
+  it('puts what a protocol is on a second line under its short name', () => {
+    pick()
+    const smb = tile('SMB Windows share')
+    expect(smb.textContent).toContain('SMB')
+    expect(smb.textContent).toContain('Windows share')
+    expect(smb.textContent).not.toContain('SMB / Windows share')
   })
 
   it('shows the form in place of the tiles, with Back before its actions', () => {

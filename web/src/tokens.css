@@ -2396,14 +2396,28 @@
 
   /* The picker window (PickerWindow): 48rem wide, the search at its top end
      from the moment it opens, and only the tiles scrolling under it, so the
-     heading, the search and the foot stay where they are. */
-  .glim-window.glim-pick-window { max-width: 48rem; }
+     heading, the search and the foot stay where they are. A form after the
+     pick narrows the window to a form's width around the same middle, so its
+     names and fields stay together. */
+  .glim-window.glim-pick-window {
+    max-width: 48rem;
+    transition: max-width var(--motion-modal-dur) cubic-bezier(.2, .6, .2, 1);
+  }
+  .glim-window.glim-pick-window--form { max-width: 40rem; }
   .glim-pick-window > .glim-window-body { overflow: hidden; }
   .glim-input.glim-pick-search {
     flex: none;
     align-self: flex-end;
     width: 16rem;
     max-width: 100%;
+  }
+  /* A longer word for "search" in another language ends in an ellipsis
+     rather than being cut, and the field clears with its own grey button. */
+  .glim-pick-search .glim-glyph-field-input { font-size: var(--text-subline); }
+  .glim-pick-search .glim-glyph-field-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
   }
   .glim-pick-scroll {
     display: flex;
