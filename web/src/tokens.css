@@ -2394,6 +2394,48 @@
     width: auto;
   }
 
+  /* The picker window (PickerWindow): 48rem wide, the search at its top end
+     from the moment it opens, and only the tiles scrolling under it, so the
+     heading, the search and the foot stay where they are. */
+  .glim-window.glim-pick-window { max-width: 48rem; }
+  .glim-pick-window > .glim-window-body { overflow: hidden; }
+  .glim-input.glim-pick-search {
+    flex: none;
+    align-self: flex-end;
+    width: 16rem;
+    max-width: 100%;
+  }
+  .glim-pick-scroll {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--space-10);
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .glim-pick-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  .glim-pick-section > .glim-eyebrow {
+    margin: 0;
+    font-weight: inherit;
+  }
+  .glim-pick-none {
+    margin: 0;
+    padding-block: var(--space-10);
+    text-align: center;
+    font-size: var(--text-subline);
+    color: var(--carbon-text-muted);
+  }
+  /* On a phone the search spans the width above the tiles, which go two to a
+     row, closer together. */
+  @media (max-width: 600px) {
+    .glim-input.glim-pick-search { width: 100%; }
+    .glim-pick-window .glim-provider-pick { gap: var(--space-4); }
+  }
+
   .glim-readme-btn-unit {
     position: relative;
     display: inline-flex;
