@@ -45,10 +45,11 @@ Only what you set up, and only to where you point it:
   SFTP, WebDAV or SMB server, another folder, whatever the job names. The
   provider of that storage handles your files under its own terms.
 - **Notifications**, if you add a channel such as Discord, Slack, ntfy,
-  Gotify, Matrix, mail, Apprise, a webhook or Healthchecks.io: a short report
-  on a run goes to that address. It holds the job's name, whether it
-  succeeded, how many files were copied, moved or deleted, an error message if
-  there was one, and the paths of up to five files left for the next run.
+  Gotify, Matrix, mail, Apprise, Shoutrrr, a webhook or Healthchecks.io: a
+  short report on a run goes to that address. It holds the job's name,
+  whether it succeeded, how many files were copied, moved or deleted, an error
+  message if there was one, and the paths of up to five files left for the
+  next run.
 - **Pairing**, if you pair your instances: they reach each other through a
   relay, ParleyPort, which we run at parleyport.halleluja.design unless you
   choose a relay of your own or none, and directly when they are on the same

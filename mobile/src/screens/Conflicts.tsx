@@ -5,7 +5,7 @@ import { useT, type T, type TranslationKey } from "../i18n";
 import { fullClock } from "../clock";
 import { remoteOf, sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
-import { bytes } from "../space";
+import { bytes } from "../usage";
 import { space } from "../theme";
 import { useEngineStream } from "../useEngine";
 import { CONFLICT_KINDS, conflictKey, conflictKind, decisionsByJob, newerSide, type ConflictKind } from "../../../web/src/lib/conflicts";

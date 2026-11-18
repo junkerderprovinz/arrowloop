@@ -26,6 +26,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
@@ -90,7 +91,7 @@ type Runner struct {
 	mu sync.Mutex
 	// cfg and note change together on a reload.
 	cfg  *job.Config
-	note *notify.Dispatcher
+	note *alnotify.Dispatcher
 	// inflight holds, per running job, the way to stop it.
 	inflight map[string]context.CancelFunc
 	// requested holds the jobs another app asked for while they ran; see

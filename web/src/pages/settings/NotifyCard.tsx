@@ -1,12 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
+import {
+  BRAND_TILES,
+  IconApprise,
+  IconDiscord,
+  IconGotify,
+  IconHealthchecks,
+  IconMatrix,
+  IconNtfy,
+  IconShoutrrr,
+  IconSlack,
+} from '../../components/brandGlyphs'
 import { Choice, FieldRow, Lines, NumberField, Text } from '../../components/Field'
-import { IconCheck, IconClose } from '../../components/glyphs'
+import { IconAdd, IconCheck, IconClose, IconLink, IconMail } from '../../components/glyphs'
+import { PickTiles } from '../../components/PickTiles'
+import { PickerWindow } from '../../components/PickerWindow'
 import { Selector } from '../../components/Selector'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api } from '../../lib/api'
 import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
+import { matchesQuery } from '../../lib/fold'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { SubCard } from '../../lib/glimstone/SubCard'
@@ -20,6 +34,7 @@ const BRANDS: Partial<Record<Kind, string>> = {
   slack: 'Slack',
   ntfy: 'ntfy',
   gotify: 'Gotify',
+  shoutrrr: 'Shoutrrr',
 }
 
 const LABELS: Record<Kind, TranslationKey | undefined> = {
@@ -30,6 +45,7 @@ const LABELS: Record<Kind, TranslationKey | undefined> = {
   matrix: 'notify.matrix',
   smtp: 'notify.smtp',
   apprise: 'notify.apprise',
+  shoutrrr: undefined,
   webhook: 'notify.webhook',
   healthchecks: 'notify.healthchecks',
 }
@@ -42,9 +58,39 @@ const HINTS: Record<Kind, TranslationKey> = {
   matrix: 'notify.matrixHint',
   smtp: 'notify.smtpHint',
   apprise: 'notify.appriseHint',
+  shoutrrr: 'notify.shoutrrrHint',
   webhook: 'notify.webhookFreeHint',
   healthchecks: 'notify.healthchecksHint',
 }
+
+/**
+ * Each service's own mark, and the BRAND_TILES entry its tile lights up in.
+ * Email and webhooks belong to nobody, so they wear the app's own glyphs and
+ * light up in the accent.
+ */
+const MARKS: Record<Kind, { mark: ReactNode; brand?: string }> = {
+  discord: { mark: <IconDiscord />, brand: 'IconDiscord' },
+  slack: { mark: <IconSlack />, brand: 'IconSlack' },
+  ntfy: { mark: <IconNtfy />, brand: 'IconNtfy' },
+  gotify: { mark: <IconGotify />, brand: 'IconGotify' },
+  matrix: { mark: <IconMatrix />, brand: 'IconMatrix' },
+  smtp: { mark: <IconMail /> },
+  apprise: { mark: <IconApprise />, brand: 'IconApprise' },
+  shoutrrr: { mark: <IconShoutrrr />, brand: 'IconShoutrrr' },
+  webhook: { mark: <IconLink /> },
+  healthchecks: { mark: <IconHealthchecks />, brand: 'IconHealthchecks' },
+}
+
+/**
+ * What the search finds a service by beside its name. Shoutrrr is how most
+ * services without a tile of their own are reached, so it answers to them.
+ */
+const REACHES: Partial<Record<Kind, string[]>> = {
+  shoutrrr: ['Telegram', 'Pushover', 'Teams', 'Mattermost', 'Rocket.Chat', 'Pushbullet', 'Zulip', 'Signal', 'Google Chat', 'Bark', 'Opsgenie', 'PagerDuty', 'Twilio'],
+}
+
+/** The open standards, which stand after the services in a section of their own. */
+const STANDARDS: Kind[] = ['smtp', 'webhook']
 
 /** What a failed test answers with, by the code the engine gives. */
 const FAILURES: Record<string, TranslationKey> = {
@@ -83,6 +129,7 @@ export function NotifyCard({
 }) {
   const { t } = useT()
   const [jobs, setJobs] = useState<string[]>([])
+  const [choosing, setChoosing] = useState(false)
   useEffect(() => {
     api
       .jobs()
@@ -110,15 +157,73 @@ export function NotifyCard({
         />
       ))}
 
-      <SettingsRow label={t('notify.add')}>
-        <Choice<'' | Kind>
-          label={t('notify.add')}
-          value=""
-          onChange={(kind) => kind && setChannels([...channels, newChannel(kind, channels)])}
-          options={[{ value: '', label: t('notify.addChoose') }, ...KINDS.map((k) => ({ value: k, label: kindLabel(k) }))]}
+      <div className="flex justify-end" data-new="notify-tiles" data-new-way="notify-add">
+        <Button label={t('notify.add')} labelKey="notify.add" glyph={<IconAdd />} onClick={() => setChoosing(true)} />
+      </div>
+      {choosing && (
+        <ChannelPicker
+          kindLabel={kindLabel}
+          hueIndex={hueIndex}
+          onPick={(kind) => {
+            setChoosing(false)
+            setChannels([...channels, newChannel(kind, channels)])
+          }}
+          onClose={() => setChoosing(false)}
         />
-      </SettingsRow>
+      )}
     </Card>
+  )
+}
+
+/**
+ * The services as tiles with their marks, the way a target's product is
+ * picked, each explained in its bubble. The search finds a service by the
+ * name shown and by the kind's own name, so "smtp" finds Email.
+ */
+function ChannelPicker({
+  kindLabel,
+  hueIndex,
+  onPick,
+  onClose,
+}: {
+  kindLabel: (kind: Kind) => string
+  hueIndex: number
+  onPick: (kind: Kind) => void
+  onClose: () => void
+}) {
+  const { t } = useT()
+  const [query, setQuery] = useState('')
+  const tiles = (standard: boolean) =>
+    KINDS.filter((k) => STANDARDS.includes(k) === standard && matchesQuery(query, [kindLabel(k), k, ...(REACHES[k] ?? [])])).map((k) => ({
+      id: k,
+      name: kindLabel(k),
+      mark: MARKS[k].mark,
+      lit: MARKS[k].brand ? BRAND_TILES[MARKS[k].brand] : undefined,
+      hint: t(HINTS[k]),
+      bubble: true,
+      newId: k === 'shoutrrr' ? 'notify-shoutrrr' : undefined,
+    }))
+  const sections = [
+    { id: 'services', title: t('notify.pickServices'), tiles: tiles(false) },
+    { id: 'standards', title: t('notify.pickStandards'), tiles: tiles(true) },
+  ].filter((s) => s.tiles.length > 0)
+
+  return (
+    <PickerWindow
+      title={t('notify.add')}
+      hint={t('notify.addHint')}
+      hueIndex={hueIndex}
+      query={query}
+      onQuery={setQuery}
+      searchLabel={t('notify.search')}
+      none={t('notify.searchNone', { query: query.trim() })}
+      sections={sections.map((s) => ({
+        id: s.id,
+        title: s.title,
+        body: <PickTiles tiles={s.tiles} onPick={(id) => onPick(id as Kind)} />,
+      }))}
+      onClose={onClose}
+    />
   )
 }
 
@@ -253,11 +358,11 @@ function Fields({ channel: c, set, jobs }: { channel: Channel; set: (next: Parti
       return (
         <>
           <SecretRow label={t('notify.address')} value={a.url} onChange={(url) => setApprise({ url })} placeholder="http://apprise:8000/notify/arrowloop" />
-          <SecretRow
+          <AddressesRow
             label={t('notify.appriseUrls')}
             hint={t('notify.appriseUrlsHint')}
-            value={(a.urls ?? []).join(' ')}
-            onChange={(text) => setApprise({ urls: text.split(/\s+/).filter(Boolean) })}
+            urls={a.urls ?? []}
+            onChange={(urls) => setApprise({ urls })}
             placeholder="tgram://bottoken/chatid"
           />
           <FieldRow label={t('notify.appriseTags')} hint={t('notify.appriseTagsHint')}>
@@ -266,11 +371,55 @@ function Fields({ channel: c, set, jobs }: { channel: Channel; set: (next: Parti
         </>
       )
     }
+    case 'shoutrrr':
+      return (
+        <AddressesRow
+          label={t('notify.address')}
+          urls={c.shoutrrr?.urls ?? []}
+          onChange={(urls) => set({ shoutrrr: { urls } })}
+          placeholder="telegram://token@telegram?chats=@channel pushover://shoutrrr:token@userkey"
+        />
+      )
     case 'webhook':
       return <WebhookFields channel={c} set={set} />
     case 'healthchecks':
       return <CheckFields channel={c} set={set} jobs={jobs} />
   }
+}
+
+/**
+ * Several addresses in one field, separated by spaces. The text is kept as
+ * typed, or the space before the next address would vanish with the list it
+ * splits into.
+ */
+function AddressesRow({
+  label,
+  hint,
+  urls,
+  onChange,
+  placeholder,
+}: {
+  label: string
+  hint?: string
+  urls: string[]
+  onChange: (urls: string[]) => void
+  placeholder: string
+}) {
+  const [typed, setTyped] = useState(urls.join(' '))
+  const split = (text: string) => text.split(/\s+/).filter(Boolean)
+  const value = split(typed).join(' ') === urls.join(' ') ? typed : urls.join(' ')
+  return (
+    <SecretRow
+      label={label}
+      hint={hint}
+      value={value}
+      onChange={(text) => {
+        setTyped(text)
+        onChange(split(text))
+      }}
+      placeholder={placeholder}
+    />
+  )
 }
 
 function MailFields({ channel: c, set }: { channel: Channel; set: (next: Partial<Channel>) => void }) {

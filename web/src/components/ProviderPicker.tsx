@@ -1,22 +1,19 @@
-import type { CSSProperties } from 'react'
 import { BRAND_TILES } from './brandGlyphs'
 import { brandMark } from './brandMarks'
-import { ReadmeButton } from '../lib/glimstone/ReadmeButton'
+import { PickTiles } from './PickTiles'
 import { useT } from '../lib/i18n'
-import { nameAndKind, providerHint, providerName } from '../lib/optionHint'
+import { providerHint, providerName } from '../lib/optionHint'
 import type { Backend, Provider } from '../lib/api'
 
 /** The rows whose mark a What's new entry points at, by provider id. */
 const NEW_MARKS: Record<string, string> = { synologyc2: 'provider-marks', filefabric: 'provider-marks' }
 
 /**
- * Picks what a target connects to by product name rather than by protocol, as
- * README buttons: the mark at the start, the name beside it. A provider with
- * a brand lights up in the brand's colour from BRAND_TILES; a protocol wears
- * one of the app's own glyphs and lights up in the accent. Only the protocols
- * and the targets built on another one carry their hint in an info bubble,
- * since a cloud's name already says what it is. The order is alphabetical by
- * the name shown, which for a few is translated.
+ * Picks what a target connects to by product name rather than by protocol. A
+ * provider with a brand lights up in the brand's colour from BRAND_TILES; a
+ * protocol wears one of the app's own glyphs and lights up in the accent. Only
+ * the protocols and the targets built on another one carry their hint in an
+ * info bubble, since a cloud's name already says what it is.
  */
 export function ProviderPicker({
   providers,
@@ -32,38 +29,22 @@ export function ProviderPicker({
    */
   onPick: (picked: Provider | string) => void
 }) {
-  const { t, lang } = useT()
-  const sorted = [...providers].sort((a, b) =>
-    providerName(a, t).localeCompare(providerName(b, t), lang, { sensitivity: 'base' }),
-  )
+  const { t } = useT()
 
   return (
     <div className="flex flex-col gap-4">
-      {/* As many across as the window is wide, each at least the README
-          button's width. The window scrolls the list. */}
-      <ul className="glim-provider-pick">
-        {sorted.map((p) => {
-          const lit = p.mark ? BRAND_TILES[p.mark] : undefined
-          const hint = providerHint(p.id, t)
-          const bubble = p.group === 'protocol' || p.group === 'layered' ? hint : undefined
-          return (
-            <li
-              key={p.id}
-              data-new={NEW_MARKS[p.id]}
-              title={bubble ? undefined : hint}
-              style={lit && ({ '--provider-tile': lit.tile, '--provider-ink': lit.ink } as CSSProperties)}
-            >
-              <ReadmeButton
-                brand="house"
-                parts={[{ ...nameAndKind(providerName(p, t)), onClick: () => onPick(p) }]}
-                mark={brandMark(p.mark)}
-                markClass="text-carbon-textSub"
-                hint={bubble}
-              />
-            </li>
-          )
-        })}
-      </ul>
+      <PickTiles
+        tiles={providers.map((p) => ({
+          id: p.id,
+          name: providerName(p, t),
+          mark: brandMark(p.mark),
+          lit: p.mark ? BRAND_TILES[p.mark] : undefined,
+          hint: providerHint(p.id, t),
+          bubble: p.group === 'protocol' || p.group === 'layered',
+          newId: NEW_MARKS[p.id],
+        }))}
+        onPick={(id) => onPick(providers.find((p) => p.id === id)!)}
+      />
 
       {/* rclone backends with no provider entry, after the products and
           smaller, since few people look for a protocol by its rclone name. */}

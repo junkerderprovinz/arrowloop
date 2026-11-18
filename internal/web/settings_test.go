@@ -165,10 +165,11 @@ const allSecrets = `{"channels": [
   {"id": "room", "kind": "matrix", "enabled": true, "matrix": {"homeserver": "https://matrix.example.org", "room": "!a:example.org", "token": "SECRETTOKEN"}},
   {"id": "mail", "kind": "smtp", "enabled": true, "smtp": {"host": "mail.example.org", "from": "a@example.org", "to": "b@example.org", "username": "arrowloop", "password": "SECRETPASSWORD"}},
   {"id": "apprise", "kind": "apprise", "enabled": true, "apprise": {"url": "http://apprise:8000/notify/SECRETKEY", "tags": "backups"}},
-  {"id": "checks", "kind": "healthchecks", "enabled": true, "healthchecks": {"url": "https://hc-ping.com/SECRETCHECK", "byKey": {"photos": "https://hc-ping.com/SECRETJOBCHECK"}}}
+  {"id": "checks", "kind": "healthchecks", "enabled": true, "healthchecks": {"url": "https://hc-ping.com/SECRETCHECK", "byKey": {"photos": "https://hc-ping.com/SECRETJOBCHECK"}}},
+  {"id": "shout", "kind": "shoutrrr", "enabled": true, "shoutrrr": {"urls": ["telegram://123:SECRETBOT@telegram?chats=SECRETCHAT", "pushover://shoutrrr:SECRETAPP@SECRETUSER"]}}
 ]}`
 
-var secretWords = []string{"SECRETHOOK", "SECRETHEADER", "SECRETTOKEN", "SECRETPASSWORD", "SECRETKEY", "SECRETCHECK", "SECRETJOBCHECK"}
+var secretWords = []string{"SECRETHOOK", "SECRETHEADER", "SECRETTOKEN", "SECRETPASSWORD", "SECRETKEY", "SECRETCHECK", "SECRETJOBCHECK", "SECRETBOT", "SECRETCHAT", "SECRETAPP", "SECRETUSER"}
 
 func storedChannels(t *testing.T, h *harness) string {
 	t.Helper()
@@ -176,9 +177,9 @@ func storedChannels(t *testing.T, h *harness) string {
 }
 
 // The Matrix token posts as the account, a mail password logs in, a header
-// carries a key, and a webhook's, an Apprise server's and a check's address
-// are their own keys, so none goes back to the screen, and the placeholder
-// the screen sends back keeps them.
+// carries a key, and a webhook's, an Apprise server's, a check's and every
+// Shoutrrr address are their own keys, so none goes back to the screen, and
+// the placeholder the screen sends back keeps them.
 func TestTheNotificationSecretsStayOnTheServer(t *testing.T) {
 	h := newHarness(t)
 	resp, answer := putJSON(t, h.srv, "/api/settings", `{"notify":`+allSecrets+`}`)
@@ -286,6 +287,21 @@ func TestATestMessageUsesTheStoredSecret(t *testing.T) {
 	}
 	if strings.Contains(answer, "SECRETPATH") {
 		t.Errorf("the answer carries the address: %s", answer)
+	}
+}
+
+func TestATestThroughShoutrrrUsesTheStoredAddress(t *testing.T) {
+	h := newHarness(t)
+	var got []string
+	hook := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = append(got, r.URL.Path)
+	}))
+	defer hook.Close()
+	putJSON(t, h.srv, "/api/settings", `{"notify":{"channels":[{"id":"s","kind":"shoutrrr","enabled":true,"shoutrrr":{"urls":["generic+`+hook.URL+`/SECRETPATH"]}}]}}`)
+
+	_, answer := doJSON(t, h.srv, http.MethodPost, "/api/notify/test", `{"channel":{"id":"s","kind":"shoutrrr","shoutrrr":{"urls":["********"]}}}`)
+	if !strings.Contains(answer, `"ok":true`) || len(got) != 1 || got[0] != "/SECRETPATH" {
+		t.Fatalf("the test answered %s and reached %v", answer, got)
 	}
 }
 

@@ -19,6 +19,7 @@ import (
 	"github.com/junkerderprovinz/parleyport/kit/notify"
 
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 )
 
 // inbox records what reached a test server, in order.
@@ -55,7 +56,7 @@ func (in *inbox) url(path string) string { return in.srv.URL + path }
 // notifying reloads a runner with these channels.
 func notifying(r *Runner, channels ...notify.Channel) {
 	cfg := *r.config()
-	cfg.Notify = job.Notify{Channels: channels}
+	cfg.Notify = job.Notify{Channels: alnotify.FromKit(channels)}
 	r.Reload(&cfg)
 }
 
@@ -99,6 +100,33 @@ func TestAFailedRunReachesEveryChannelThatIsOn(t *testing.T) {
 	}
 	if got := room.all(); len(got) != 0 {
 		t.Errorf("a switched-off room was posted to: %v", got)
+	}
+}
+
+func TestAFailedRunReachesAShoutrrrAddress(t *testing.T) {
+	r, _, _ := syncedPair(t)
+	hook := newInbox(t)
+	shout := alnotify.Channel{
+		Channel:  notify.Channel{ID: "shout", Kind: alnotify.KindShoutrrr, Enabled: true, Attempts: 1},
+		Shoutrrr: &alnotify.Shoutrrr{URLs: []string{"generic+" + hook.url("/shout") + "?template=json"}},
+	}
+	cfg := *r.config()
+	cfg.Notify = job.Notify{Channels: []alnotify.Channel{shout}}
+	r.Reload(&cfg)
+	breakBefore(r)
+	if _, err := r.Run(context.Background(), "test"); err == nil {
+		t.Fatal("the run did not fail")
+	}
+	if got := hook.all(); len(got) != 1 || !strings.HasPrefix(got[0], "/shout ") || !strings.Contains(got[0], "test FAILED") {
+		t.Errorf("the Shoutrrr address got %v", got)
+	}
+
+	shout.Enabled = false
+	if res := SendTest(context.Background(), shout); !res.OK() {
+		t.Fatalf("the test through Shoutrrr answered %+v", res)
+	}
+	if got := hook.all(); len(got) != 2 || !strings.Contains(got[1], "a test message") {
+		t.Errorf("the Shoutrrr address got %v", got)
 	}
 }
 
@@ -151,7 +179,7 @@ func TestAHeldJobIsToldUnlessThatWasSwitchedOff(t *testing.T) {
 			hook, hc := newInbox(t), newInbox(t)
 			cfg := *r.config()
 			cfg.Anomalies.NotifyHeld = tc.held
-			cfg.Notify = job.Notify{Channels: []notify.Channel{slack("hook", hook.url("/hook"), notify.OnFailure), checks(hc.url("/all"), nil)}}
+			cfg.Notify = job.Notify{Channels: alnotify.FromKit([]notify.Channel{slack("hook", hook.url("/hook"), notify.OnFailure), checks(hc.url("/all"), nil)})}
 			r.Reload(&cfg)
 
 			emptyOut(t, left, 30)
@@ -185,7 +213,7 @@ func TestAnUnusualRunIsToldWhenNotesAreSent(t *testing.T) {
 			hook := newInbox(t)
 			cfg := *r.config()
 			cfg.Anomalies.NotifyNotes = tc.notes
-			cfg.Notify = job.Notify{Channels: []notify.Channel{slack("hook", hook.url("/hook"), notify.OnFailure)}}
+			cfg.Notify = job.Notify{Channels: alnotify.FromKit([]notify.Channel{slack("hook", hook.url("/hook"), notify.OnFailure)})}
 			r.Reload(&cfg)
 			learned(t, r)
 
@@ -275,27 +303,27 @@ func TestATestMessageGoesToTheOneChannelAsked(t *testing.T) {
 	// A test is asked for while setting a channel up, which may be before it
 	// is switched on and whatever its "when" says.
 	off := notify.Channel{ID: "apprise", Kind: notify.KindApprise, Enabled: false, On: notify.OnNever, Apprise: &notify.Apprise{URL: apprise.url("/notify/key")}}
-	if res := SendTest(context.Background(), off); !res.OK() {
+	if res := SendTest(context.Background(), alnotify.Channel{Channel: off}); !res.OK() {
 		t.Fatalf("apprise: %v", res.Err)
 	}
 	if got := apprise.all(); len(got) != 1 {
 		t.Errorf("apprise got %v", got)
 	}
 
-	if res := SendTest(context.Background(), checks(hc.url("/all"), map[string]string{"photos": hc.url("/photos"), "music": hc.url("/all")})); !res.OK() {
+	if res := SendTest(context.Background(), alnotify.Channel{Channel: checks(hc.url("/all"), map[string]string{"photos": hc.url("/photos"), "music": hc.url("/all")})}); !res.OK() {
 		t.Fatalf("healthchecks: %v", res.Err)
 	}
 	if got := hc.all(); len(got) != 2 {
 		t.Errorf("every distinct check should be pinged once: %v", got)
 	}
 
-	if res := SendTest(context.Background(), notify.Channel{ID: "mail", Kind: notify.KindSMTP}); res.OK() || res.Code != notify.CodeInvalid {
+	if res := SendTest(context.Background(), alnotify.Channel{Channel: notify.Channel{ID: "mail", Kind: notify.KindSMTP}}); res.OK() || res.Code != notify.CodeInvalid {
 		t.Errorf("a test of a channel that is not filled in answered %+v", res)
 	}
 
 	gone := newInbox(t)
 	gone.code = http.StatusNotFound
-	if res := SendTest(context.Background(), slack("hook", gone.url("/hook"), notify.OnNever)); res.OK() || res.Status != http.StatusNotFound {
+	if res := SendTest(context.Background(), alnotify.Channel{Channel: slack("hook", gone.url("/hook"), notify.OnNever)}); res.OK() || res.Status != http.StatusNotFound {
 		t.Errorf("a refused test answered %+v", res)
 	}
 }
@@ -380,7 +408,7 @@ func TestNoChannelsKeepsEveryChannelQuietAndLeavesTheSettings(t *testing.T) {
 	breakBefore(r)
 	r.Run(context.Background(), "test")
 	for _, c := range channels {
-		if res := SendTest(context.Background(), c); res.OK() || res.Code != CodeOff {
+		if res := SendTest(context.Background(), alnotify.Channel{Channel: c}); res.OK() || res.Code != CodeOff {
 			t.Errorf("a test through %s answered %+v", c.ID, res)
 		}
 	}
@@ -411,7 +439,7 @@ func TestTheMessageSaysDeletedForAJobWithoutATrash(t *testing.T) {
 			cfg := *r.config()
 			cfg.Jobs = append([]job.Job(nil), cfg.Jobs...)
 			cfg.Jobs[0].NoTrash = tc.noTrash
-			cfg.Notify = job.Notify{Channels: []notify.Channel{slack("hook", hook.url("/hook"), notify.OnAlways)}}
+			cfg.Notify = job.Notify{Channels: alnotify.FromKit([]notify.Channel{slack("hook", hook.url("/hook"), notify.OnAlways)})}
 			r.Reload(&cfg)
 			if err := os.Remove(filepath.Join(left, "datei-00.txt")); err != nil {
 				t.Fatal(err)

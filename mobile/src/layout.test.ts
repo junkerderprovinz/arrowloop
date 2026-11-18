@@ -10,6 +10,7 @@ import {
   RAIL_NARROW,
   WIDE_COLUMN,
   WIDE_ROOM,
+  menuRoom,
   pageRoom,
   panelWidth,
   railWidth,
@@ -122,3 +123,12 @@ test("a sheet beside the side bar is the web's side panel", () => {
 test("a side panel in a narrow window leaves the gutter on both sides", () => {
   assert.equal(panelWidth(400), 400 - 2 * GUTTER);
 });
+
+test("a menu at the end of a phone may reach across to the far gutter", () => {
+  assert.equal(menuRoom(411, 85, PAGE_GUTTER), 411 - 85 - PAGE_GUTTER);
+});
+
+test("a menu on a tablet may grow past a phone's width", () => {
+  assert.ok(menuRoom(1280, 24, PAGE_GUTTER) > 411);
+});
+

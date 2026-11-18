@@ -35,7 +35,7 @@ import {
 import { capitalized } from "../../../web/src/lib/capitalized";
 import { clock } from "../clock";
 import { useFrame } from "../frame";
-import { bytes } from "../space";
+import { bytes } from "../usage";
 
 /**
  * The history tab: a log of every file touched, and a list of runs behind a

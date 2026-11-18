@@ -7,7 +7,7 @@ import { useT } from "./i18n";
 import { animateNext, useMotion } from "./motion";
 import { STEPS_KEPT, type Progress } from "./progress";
 import { remoteOf } from "./sides";
-import { bytes } from "./space";
+import { bytes } from "./usage";
 import { space, text } from "./theme";
 import { AxisLabel, Caption, Meter, Press, useHue, useTheme } from "./ui";
 

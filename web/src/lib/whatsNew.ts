@@ -63,6 +63,25 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.7.4',
+    changes: [
+      {
+        id: 'notify-tiles',
+        at: ['/settings/safety'],
+        where: ['nav.settings', 'settings.safetyNet'],
+        text: 'new.change.notifyTiles',
+        names: { add: 'notify.add' },
+      },
+      {
+        id: 'notify-shoutrrr',
+        at: ['/settings/safety'],
+        via: 'notify-add',
+        where: ['nav.settings', 'settings.safetyNet'],
+        text: 'new.change.notifyShoutrrr',
+      },
+    ],
+  },
+  {
     after: '2.7.3',
     changes: [{ id: 'tablet-landscape', text: 'new.change.tabletLandscape' }],
   },

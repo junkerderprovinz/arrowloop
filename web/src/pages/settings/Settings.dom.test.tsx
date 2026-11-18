@@ -201,7 +201,7 @@ describe('the notification channels', () => {
     stored = { notify: { channels: [{ id: 'discord', kind: 'discord', enabled: true, discord: { url: '********' } }] } }
     const { unmount } = render(<SafetyPage />)
     fireEvent.click(await screen.findByRole('button', { name: 'Add a channel' }))
-    fireEvent.click(await screen.findByRole('option', { name: 'Discord' }))
+    fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Discord' }))
     unmount()
 
     const channels = saveSettings.mock.calls.at(-1)?.[0].notify?.channels

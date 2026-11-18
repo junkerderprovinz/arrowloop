@@ -75,3 +75,12 @@ export const PANEL = 448;
 export function panelWidth(window: number): number {
   return Math.min(PANEL, window - 2 * GUTTER);
 }
+
+/**
+ * Returns the widest a menu held against a button's end edge may grow: across
+ * the screen to the gutter on the far side. The menu is only as wide as its
+ * longest label, so a wide screen does not stretch it.
+ */
+export function menuRoom(window: number, offset: number, gutter: number): number {
+  return window - offset - gutter;
+}

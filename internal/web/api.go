@@ -21,7 +21,6 @@ import (
 	"github.com/junkerderprovinz/parleyport/kit/group"
 	"github.com/junkerderprovinz/parleyport/kit/hostpath"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
-	kitnotify "github.com/junkerderprovinz/parleyport/kit/notify"
 	"github.com/junkerderprovinz/parleyport/kit/relay"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 
@@ -1010,22 +1009,18 @@ func withChannels(settings map[string]any, n job.Notify) map[string]any {
 	for _, k := range keysLike(settings, "notify") {
 		delete(settings, k)
 	}
-	channels := notify.Redacted(n.Channels)
-	if channels == nil {
-		channels = []kitnotify.Channel{}
-	}
-	settings["notify"] = map[string]any{"channels": channels}
+	settings["notify"] = map[string]any{"channels": notify.Redacted(n.Channels)}
 	return settings
 }
 
 // sentChannels reads the channel list a page sent under notify.
-func sentChannels(block any) ([]kitnotify.Channel, error) {
+func sentChannels(block any) ([]notify.Channel, error) {
 	raw, err := json.Marshal(block)
 	if err != nil {
 		return nil, err
 	}
 	var sent struct {
-		Channels []kitnotify.Channel `json:"channels"`
+		Channels []notify.Channel `json:"channels"`
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
@@ -1070,13 +1065,13 @@ func keepSecrets(update map[string]any, stored *job.Config) error {
 // and status alone: what it wrote back could be any page on the network.
 func (s *Server) testNotify(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Channel kitnotify.Channel `json:"channel"`
+		Channel notify.Channel `json:"channel"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	merged, err := notify.Merge([]kitnotify.Channel{body.Channel}, s.Runner.Config().Notify.Channels)
+	merged, err := notify.Merge([]notify.Channel{body.Channel}, s.Runner.Config().Notify.Channels)
 	if err != nil {
 		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "code": "moved", "reason": err.Error()})
 		return

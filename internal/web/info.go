@@ -13,12 +13,11 @@ import (
 
 	"github.com/rclone/rclone/fs"
 
-	kitnotify "github.com/junkerderprovinz/parleyport/kit/notify"
-
 	"github.com/junkerderprovinz/arrowloop/internal/anomaly"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/releasenotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scrub"
 )
@@ -343,7 +342,7 @@ func withoutHomeInSettings(settings map[string]any) map[string]any {
 // shows which channels are set up. The secrets are placeholders already.
 func withoutAddresses(settings map[string]any) map[string]any {
 	block, _ := settings["notify"].(map[string]any)
-	channels, _ := block["channels"].([]kitnotify.Channel)
+	channels, _ := block["channels"].([]notify.Channel)
 	set := func(v *string) {
 		if *v != "" {
 			*v = "set"

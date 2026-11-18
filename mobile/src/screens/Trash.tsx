@@ -7,7 +7,7 @@ import { useT } from "../i18n";
 import type { JobsStack } from "../nav";
 import { space } from "../theme";
 import { Badge, Button, Caption, Card, Empty, Mono, Page, PickRow, Title } from "../ui";
-import { bytes } from "../space";
+import { bytes } from "../usage";
 
 /**
  * Lists what a job moved into its bin and restores the rows tapped. Per-row

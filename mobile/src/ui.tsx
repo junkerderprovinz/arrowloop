@@ -898,6 +898,7 @@ export function Button({
   busy,
   disabled,
   wide,
+  snug,
   shake,
   confirm,
   glyph: named,
@@ -924,6 +925,8 @@ export function Button({
   busy?: boolean;
   disabled?: boolean;
   wide?: boolean;
+  /** Half the side padding, for a row that shares a narrow screen between several buttons. */
+  snug?: boolean;
   /** Increment to wobble once. */
   shake?: number;
   /** Increment to swell once, when what the button did has landed. */
@@ -1013,6 +1016,7 @@ export function Button({
           ...corners.pill,
           opacity: disabled || busy ? 0.45 : press.dim,
           flexGrow: wide === false ? 0 : 1,
+          paddingHorizontal: snug ? space.sm : space.lg,
           transform: [
             { translateX: wobbleShift(wobble) },
             { scale: press.scale },

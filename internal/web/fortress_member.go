@@ -360,6 +360,12 @@ func (s *Server) takeChangedPhrase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	st := s.Pairing.Get()
+	// The kit may have handed this instance the phrase already, with its
+	// answer lost on the way back.
+	if st.Fortress && hmac.Equal(req.Secret, st.Secret) {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
 	if !st.Fortress || !hmac.Equal(req.From, st.Secret) {
 		writeError(w, http.StatusConflict, errors.New("this instance holds another phrase than the one that changed"))
 		return
