@@ -58,6 +58,7 @@ manager happened to start the process in.
 | `state` | required | Where this job remembers what the two sides agreed on. |
 | `direction` | both ways | `leftToRight` or `rightToLeft` makes one side the source and never writes to it. Anything else, including an empty field, is both ways. |
 | `mode` | `sync` | What a one-way job does beyond copying: `sync`, `mirror` or `move`. The last two need a one-way `direction`; see [Copy only, mirror or move](#copy-only-mirror-or-move). |
+| `minAgeDays` | `0` | Keep a file on the source of a one-way job until it is this many days old. `0` sends every file. Needs a one-way `direction`; see [Waiting until a file is old enough](#waiting-until-a-file-is-old-enough). |
 | `schedule` | none | A cron expression. Left out, the job takes the default schedule; written as `""`, it only runs when somebody asks, whatever the default says. |
 | `watch` | `false` | Run when a local side changes. Needs a schedule as well; see below. |
 | `watchSettle` | `2s` | How long the tree must go quiet before a change counts. |
@@ -143,6 +144,43 @@ source is not carried over: the destination keeps its copy, as with `sync`.
 ways cannot use either and is refused when the file is read. So is any value
 other than these three, because two of them delete, and a misspelt one must not
 quietly run as a plain copy.
+
+## Waiting until a file is old enough
+
+`minAgeDays` keeps a file on the source of a one-way job until it is that many
+days old. The job form offers it as **Transfer only when older than**, with
+**Off**, 7, 30, 60 and 120 days and a number of your own. It is what rclone's
+`--min-age` does, and the reason to want it is a phone: a job that moves the
+camera folder to a server with `"minAgeDays": 30` leaves last month's photos
+on the phone to show and share, and takes each one once it turns 30 days old.
+
+```json
+{
+  "name": "camera",
+  "left": "/storage/emulated/0/DCIM/Camera",
+  "right": "nas:photos",
+  "state": "state/camera.db",
+  "direction": "leftToRight",
+  "mode": "move",
+  "minAgeDays": 30
+}
+```
+
+The age is counted from the file's modification time, which for a photo is
+when it was taken. A file dated in the future counts as young, as it does in
+rclone. Only what goes from the source waits: a copy, a move off the source and
+an edit that would overwrite the destination. Deletions on the destination that
+`mirror` carries over do not wait, and neither does a rename.
+
+A file that waits is not a file left for later. Waiting is what the job was
+asked to do, so the run is not marked as having left work behind, and the
+preview counts these files beside the unchanged ones as **Not old enough yet**.
+
+A job that runs both ways cannot have it and is refused when the file is read,
+with the reason. Hiding a young file on one side of a two-way job would make it
+look deleted there, and the other side would delete its copy. The form shows
+the setting only once the job has a direction, and turning a job back to both
+ways drops it. A negative number, or more than 36500 days, is refused as well.
 
 ## Exclude patterns
 

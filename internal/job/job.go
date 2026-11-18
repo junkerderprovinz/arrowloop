@@ -263,6 +263,10 @@ const (
 	maxBackupKeep          = 1000
 )
 
+// maxMinAgeDays is a century, far past any photo worth keeping on a phone and
+// far short of the days a time.Duration can count.
+const maxMinAgeDays = 36500
+
 // On reports whether automatic backups are made.
 func (b AutoBackup) On() bool { return !b.Off }
 
@@ -457,6 +461,12 @@ type Job struct {
 	// side). It is separate from Direction because it answers a separate
 	// question.
 	Mode string `json:"mode,omitempty"`
+
+	// MinAgeDays keeps a file on the source of a one-way job until it is this
+	// many days old, so recent photos stay on the phone for a while. Zero
+	// sends every file. A two-way job is refused it, because a file kept out
+	// of sight on one side would look deleted there.
+	MinAgeDays int `json:"minAgeDays,omitempty"`
 
 	QuietPeriod string `json:"quietPeriod,omitempty"`
 	ModWindow   string `json:"modWindow,omitempty"`
@@ -752,6 +762,14 @@ func load(path string) (*Config, error) {
 				"job %q is set to %s and runs both ways; %s needs a one-way direction, because it decides which side is right",
 				j.Name, j.Mode, j.Mode)
 		}
+		if j.MinAgeDays < 0 || j.MinAgeDays > maxMinAgeDays {
+			return nil, fmt.Errorf("job %q says minAgeDays %d; it has to be a number of days from 0 to %d", j.Name, j.MinAgeDays, maxMinAgeDays)
+		}
+		if j.MinAgeDays > 0 && plan.ParseDirection(j.Direction) == plan.Both {
+			j.refused = fmt.Errorf(
+				"job %q waits %d days before it sends a file and runs both ways; a minimum age needs a one-way direction, because a file kept back on one side would look deleted there",
+				j.Name, j.MinAgeDays)
+		}
 		// Sets are folded into the job's own list here, so nothing downstream
 		// needs to know they exist.
 		for _, name := range j.ExcludeSets {
@@ -913,6 +931,7 @@ func (j Job) Options() (engine.Options, error) {
 		compare.Transfers = j.Transfers
 	}
 	compare.Transfers = j.fitTransfers(compare.Transfers)
+	compare.MinAge = time.Duration(j.MinAgeDays) * 24 * time.Hour
 	if j.BrakePercent != nil {
 		compare.BrakePercent = *j.BrakePercent
 	}

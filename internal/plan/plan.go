@@ -260,6 +260,10 @@ type Plan struct {
 	// Dirs is empty unless the job syncs empty directories, which needs both
 	// sides to be able to hold one.
 	Dirs []DirAction
+	// Young counts the files a one-way job keeps on its source until they
+	// reach MinAge. They are not skips: waiting is what the job was told to
+	// do, so a run does not report them as left for later.
+	Young int
 }
 
 // Options is the per-job settings shared by the comparison and the apply stage.
@@ -283,7 +287,14 @@ type Options struct {
 	// touches it, so a file still being saved is not copied half-written.
 	QuietPeriod time.Duration
 
-	// Now is the reference point for QuietPeriod. Zero means time.Now.
+	// MinAge holds a file on the source of a one-way job until its
+	// modification time is this far in the past, as rclone's --min-age does.
+	// A two-way job ignores it: a file one side keeps out of sight would look
+	// deleted there. Zero sends every file.
+	MinAge time.Duration
+
+	// Now is the reference point for QuietPeriod and MinAge. Zero means
+	// time.Now.
 	Now time.Time
 
 	// FoldCase records whether this job matches names case-insensitively,
@@ -602,6 +613,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 
 	detectRenames(ctx, out, opt.Direction)
 	enforce(ctx, out, opt.Direction, opt.Mode)
+	holdYoung(out, opt)
 
 	// The brake weighs the plan after enforce, which adds a mirror's
 	// deletions. With no record yet, a mirror weighs them against what the

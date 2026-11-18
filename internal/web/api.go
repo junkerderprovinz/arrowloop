@@ -369,6 +369,8 @@ type jobView struct {
 	// Away is since when the job has waited for a drive or a folder that is
 	// not there. It runs by itself once that is back.
 	Away *string `json:"away,omitempty"`
+	// MinAgeDays is how old a file has to be before a one-way job sends it.
+	MinAgeDays int `json:"minAgeDays,omitempty"`
 	// Recent is the job's last stored runs, newest first, for the strip a job
 	// list draws beside each name.
 	Recent []history.Run `json:"recent"`
@@ -423,7 +425,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			// Resolved, so an unset field and "both" look the same.
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name], Queued: queued[j.Name],
-			Recent: recent[j.Name],
+			Recent: recent[j.Name], MinAgeDays: j.MinAgeDays,
 		}
 		if v.Recent == nil {
 			v.Recent = []history.Run{}
@@ -469,6 +471,8 @@ type planView struct {
 	PassedOver []skipView   `json:"passedOver"`
 	Unchanged  int          `json:"unchanged"`
 	Agreed     int          `json:"agreed"`
+	// Young counts the files a one-way job keeps until they are old enough.
+	Young int `json:"young"`
 }
 
 // sideView is one side's version of a file: what it is called there, how big
@@ -509,6 +513,7 @@ func viewOf(p *plan.Plan) planView {
 		PassedOver: make([]skipView, 0, len(p.PassedOver)),
 		Unchanged:  p.Unchanged,
 		Agreed:     len(p.Agreed),
+		Young:      p.Young,
 	}
 	for _, a := range p.Actions {
 		// The same description a run compares the ticked rows with.
