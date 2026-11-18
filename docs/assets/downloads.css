@@ -1,0 +1,67 @@
+/* The download table on the home page: one row per platform, the usual
+   pick as the accent button and the other builds beside it. The rows share
+   one grid so the notes line up. */
+
+.md-typeset .al-downloads {
+  display: grid;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
+  margin: 1.2em 0;
+  overflow: hidden;
+  border-radius: var(--dt-radius-card);
+  background-color: var(--dt-surface);
+  box-shadow: var(--dt-elevation);
+}
+
+.md-typeset .al-downloads__row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  gap: .5rem 1rem;
+  padding: .75rem 1.1rem;
+}
+
+.md-typeset .al-downloads__row + .al-downloads__row {
+  border-top: 1px solid var(--dt-hairline);
+}
+
+.md-typeset .al-downloads__platform {
+  margin: 0;
+  font-weight: 600;
+  color: var(--dt-text);
+}
+
+.md-typeset .al-downloads__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+
+/* A row without a note lets its buttons run on into the note column, so the
+   widest row does not push every note to the right. */
+.md-typeset .al-downloads__links:last-child {
+  grid-column: 2 / -1;
+}
+
+.md-typeset .al-downloads__note {
+  margin: 0;
+  font-size: .75rem;
+  line-height: 1.4;
+  color: var(--dt-text-sub);
+}
+
+.md-typeset .al-downloads__note a {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .al-downloads {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .md-typeset .al-downloads__row {
+    gap: .45rem;
+  }
+  .md-typeset .al-downloads__links:last-child {
+    grid-column: auto;
+  }
+}

@@ -12,6 +12,81 @@ engine is the part that can lose data, and it is proved on its own; the
 scheduler, the job file and the run log are built on top of it.
 [How it compares](comparison.md) sets it beside GoodSync and the other tools.
 
+## Download
+
+Every link fetches the newest release. The
+[release notes](https://github.com/junkerderprovinz/arrowloop/releases/latest)
+say what changed, and the
+[releases page](https://github.com/junkerderprovinz/arrowloop/releases) keeps
+the older versions.
+
+<div class="al-downloads">
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">Windows</p>
+    <div class="al-downloads__links">
+      <a class="md-button md-button--primary" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe" aria-label="Windows installer">Installer</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-portable.exe" aria-label="Windows portable">Portable</a>
+    </div>
+    <p class="al-downloads__note">ARM:
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe" aria-label="Windows on ARM installer">installer</a>,
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-portable.exe" aria-label="Windows on ARM portable">portable</a></p>
+  </div>
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">macOS</p>
+    <div class="al-downloads__links">
+      <a class="md-button md-button--primary" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg" aria-label="macOS disk image">Disk image</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.zip" aria-label="macOS app as a zip">Zip</a>
+    </div>
+    <p class="al-downloads__note">For Intel and Apple silicon</p>
+  </div>
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">Linux</p>
+    <div class="al-downloads__links">
+      <a class="md-button md-button--primary" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64-installer" aria-label="Linux installer">Installer</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.flatpak" aria-label="Linux Flatpak">Flatpak</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64" aria-label="Linux single file">Single file</a>
+    </div>
+    <p class="al-downloads__note">ARM:
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64-installer" aria-label="Linux on ARM installer">installer</a>,
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.flatpak" aria-label="Linux on ARM Flatpak">Flatpak</a>,
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64" aria-label="Linux on ARM single file">single file</a></p>
+  </div>
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">Android</p>
+    <div class="al-downloads__links">
+      <a class="md-button md-button--primary" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk" aria-label="Android APK">APK</a>
+      <a class="md-button" href="https://f-droid.org/packages/arrowloop.halleluja.design/">F-Droid</a>
+    </div>
+    <p class="al-downloads__note">Google Play is coming soon</p>
+  </div>
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">Docker</p>
+    <div class="al-downloads__links">
+      <a class="md-button md-button--primary" href="https://hub.docker.com/r/junkerderprovinz/arrowloop">Docker Hub</a>
+      <a class="md-button" href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml">Compose file</a>
+    </div>
+    <p class="al-downloads__note"><code>junkerderprovinz/arrowloop</code></p>
+  </div>
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">Unraid</p>
+    <div class="al-downloads__links">
+      <a class="md-button md-button--primary" href="https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1">Community Applications</a>
+      <a class="md-button" href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/templates/my-ArrowLoop.xml" aria-label="Unraid template">Template</a>
+    </div>
+  </div>
+  <div class="al-downloads__row">
+    <p class="al-downloads__platform">App stores</p>
+    <div class="al-downloads__links">
+      <a class="md-button" href="https://mos-official.net/apps.html?search=ArrowLoop">MOS</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/zimaos-apps#install">ZimaOS and CasaOS</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/umbrel-apps#install">umbrelOS</a>
+    </div>
+  </div>
+</div>
+
+[Installing](installing.md) explains each one, including the warning Windows
+and macOS show on the first start.
+
 ## The name
 
 The name is a picture of how it works: two arrows closing a loop. What happens

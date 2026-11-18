@@ -49,9 +49,13 @@ extra:
       accent: that shows you the plan before it moves anything.
       text: ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone and a WebDAV cloud. It remembers what both sides last agreed on, lists every change before a run, and stops rather than delete more than it should.
       buttons:
-        - { text: Get started, link: installing/, primary: true }
+        - { text: Download, link: "#download", primary: true }
+        - { text: Get started, link: installing/ }
         - { text: How it compares, link: comparison/ }
         - { text: Source code, link: "https://github.com/junkerderprovinz/arrowloop" }
+
+extra_css:
+  - assets/downloads.css
 
 markdown_extensions:
   - admonition

@@ -188,7 +188,8 @@ reason that reads like a bug.
 ## As a desktop application
 
 Windows, Linux and macOS builds are on the
-[releases page](https://github.com/junkerderprovinz/arrowloop/releases). Windows
+[releases page](https://github.com/junkerderprovinz/arrowloop/releases), and
+the [download links](index.md#download) always fetch the newest. Windows
 and Linux get an **installer**. On Windows it gives ArrowLoop an entry under
 Apps and installs it for all users under `C:\Program Files\ArrowLoop`, or in
 another folder you pick. It asks for an administrator once, while it installs;
