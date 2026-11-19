@@ -70,8 +70,14 @@ export function sayFailure(
   return { said, engine: p.output || undefined }
 }
 
+/**
+ * Kinds whose engine words are a VPN provider's or the tunnel's own English,
+ * which the run's page shows under the sentence and a one-line row leaves out.
+ */
+const DETAIL_ONLY = new Set(['vpnDown', 'vpnRefused'])
+
 /** The same on one line, for a row with room for nothing more. */
 export function failureLine(raw: string, failure: Failure | null | undefined, t: Translate, lang: string): string {
   const { said, engine } = sayFailure(raw, failure, t, lang)
-  return engine ? `${said} ${engine}` : said
+  return engine && !DETAIL_ONLY.has(failure?.code ?? '') ? `${said} ${engine}` : said
 }

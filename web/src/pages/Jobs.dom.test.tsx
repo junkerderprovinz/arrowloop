@@ -402,6 +402,18 @@ describe('a job card', () => {
     expect(within(row('music')).queryByTestId('job-failure')).toBeNull()
   })
 
+  it("says a VPN that did not come up in the reader's words, with the provider's own on hover", async () => {
+    const output = 'Own WireGuard config: vpn: resolve vpn.example.net: no such host'
+    const down = {
+      ...ran('photos', `the VPN did not come up, so the run did not start: ${output}`),
+      Failure: { code: 'vpnDown', params: { output } },
+    }
+    page({ jobs: [job('photos', { recent: [down] })] })
+    const why = within(row('photos')).getByTestId('job-failure')
+    expect(why.textContent).toBe(en['failure.vpnDown'])
+    expect(why.getAttribute('data-tip')).toBe(`${en['failure.vpnDown']} ${output}`)
+  })
+
   it('says nothing of a failure the last run put right', async () => {
     page({ jobs: [job('photos', { recent: [ran('photos'), ran('photos', 'boom')] })] })
     await screen.findAllByRole('button', { name: 'Pause' })

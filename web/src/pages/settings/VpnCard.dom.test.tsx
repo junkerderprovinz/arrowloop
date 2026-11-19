@@ -9,6 +9,7 @@ const calls: { save: [string, Record<string, string>][]; forget: string[] } = { 
 let state: VpnState
 let offered = true
 let saveAnswer: () => Promise<VpnState>
+let testAnswer: () => Promise<{ ok: boolean; reason?: string; state: VpnState }>
 
 function stateWith(provider: string, status: VpnState['status'] = 'down', jobs: string[] = []): VpnState {
   return {
@@ -34,7 +35,7 @@ vi.mock('../../lib/api', async (actual) => ({
       state = stateWith('')
       return Promise.resolve(state)
     },
-    testVpn: () => Promise.resolve({ ok: true, state: { ...state, exitIp: '203.0.113.7' } }),
+    testVpn: () => testAnswer(),
   },
 }))
 
@@ -47,12 +48,15 @@ globalThis.ResizeObserver ??= class {
 
 const { VpnCard } = await import('./VpnCard')
 
+const unresolved = 'Own WireGuard config: vpn: resolve vpn.example.net: lookup vpn.example.net: no such host'
+
 beforeEach(() => {
   calls.save = []
   calls.forget = []
   offered = true
   state = stateWith('')
   saveAnswer = () => Promise.resolve(stateWith('custom'))
+  testAnswer = () => Promise.resolve({ ok: true, state: { ...state, exitIp: '203.0.113.7' } })
 })
 afterEach(cleanup)
 
@@ -96,6 +100,35 @@ describe('the VPN card', () => {
     render(<VpnCard hueIndex={0} />)
     fireEvent.click(await screen.findByRole('button', { name: 'Test' }))
     expect(await screen.findByText('Traffic leaves at 203.0.113.7.')).toBeTruthy()
+  })
+
+  it("says a server name that was not found in the reader's words and keeps the engine's on hover", async () => {
+    state = {
+      ...stateWith('custom', 'failed'),
+      error: unresolved,
+      errorCode: 'vpn-name-unresolved',
+    }
+    render(<VpnCard hueIndex={0} />)
+    const said = await screen.findByRole('status')
+    expect(said.textContent).toMatch(/^The server's name was not found\./)
+    expect(said.textContent).not.toContain('vpn: resolve')
+    expect(said.getAttribute('data-tip')).toContain(unresolved)
+  })
+
+  it("answers a failed test in the reader's words", async () => {
+    state = stateWith('custom')
+    testAnswer = () =>
+      Promise.resolve({
+        ok: false,
+        reason: unresolved,
+        state: { ...stateWith('custom', 'failed'), error: unresolved, errorCode: 'vpn-name-unresolved' },
+      })
+    render(<VpnCard hueIndex={0} />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Test' }))
+    const verdict = await screen.findByTestId('vpn-verdict')
+    expect(verdict.textContent).toMatch(/^The server's name was not found\./)
+    expect(verdict.textContent).not.toContain('vpn: resolve')
+    expect(verdict.getAttribute('data-tip')).toContain(unresolved)
   })
 })
 

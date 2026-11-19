@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type HTMLAttributes } from 'react'
 
 import { Dialog } from '../../components/Dialog'
 import { FieldRow, Secret, Text } from '../../components/Field'
@@ -71,9 +71,13 @@ const FAILURES: Record<string, TranslationKey> = {
   'vpn-location-unknown': 'vpn.error.locationUnknown',
 }
 
-function failureOf(t: T, st: VpnState, name: string): string {
+/**
+ * Why the tunnel did not come up, in the reader's words where the engine gave
+ * a code, and the engine's own English for the tooltip.
+ */
+function failureOf(t: T, st: VpnState, name: string): { said: string; detail?: string } {
   const key = st.errorCode ? FAILURES[st.errorCode] : undefined
-  return key ? `${t(key, { name })} ${st.error ?? ''}`.trim() : (st.error ?? '')
+  return key ? { said: t(key, { name }), detail: st.error } : { said: st.error ?? '' }
 }
 
 /**
@@ -141,15 +145,11 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
                 : t(status.word)}
             </Badge>
           </SettingsRow>
-          {vpn.status === 'failed' && (
-            <p role="status" className="text-subline text-statusFail">
-              {failureOf(t, vpn, nameOf(t, inUse))}
-            </p>
-          )}
+          {vpn.status === 'failed' && <FailedBecause {...failureOf(t, vpn, nameOf(t, inUse))} role="status" />}
           <SettingsRow label={t('vpn.jobs')} hint={t('vpn.jobsHint')}>
             <span className="text-subline text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
           </SettingsRow>
-          <TestButton onState={setVpn} />
+          <TestButton name={nameOf(t, inUse)} onState={setVpn} />
         </>
       )}
 
@@ -457,11 +457,25 @@ function ConfigField({ hint, value, onValue }: { hint: string; value: string; on
   )
 }
 
+/** A failure in the reader's words, with the engine's own on hover. */
+function FailedBecause({
+  said,
+  detail,
+  className = '',
+  ...rest
+}: { said: string; detail?: string } & HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p {...rest} data-tip={detail ? `${said} ${detail}` : undefined} className={`text-subline text-statusFail ${className}`}>
+      {said}
+    </p>
+  )
+}
+
 /** Brings the tunnel up once, as a run would, and says where traffic leaves. */
-function TestButton({ onState }: { onState: (next: VpnState) => void }) {
+function TestButton({ name, onState }: { name: string; onState: (next: VpnState) => void }) {
   const { t } = useT()
   const [testing, setTesting] = useState(false)
-  const [verdict, setVerdict] = useState<{ ok: boolean; said?: string } | null>(null)
+  const [verdict, setVerdict] = useState<{ ok: boolean; said?: string; detail?: string } | null>(null)
 
   async function test() {
     setTesting(true)
@@ -469,10 +483,11 @@ function TestButton({ onState }: { onState: (next: VpnState) => void }) {
     try {
       const answer = await api.testVpn()
       onState(answer.state)
-      setVerdict({
-        ok: answer.ok,
-        said: answer.ok ? (answer.state.exitIp ? t('vpn.exit', { address: answer.state.exitIp }) : undefined) : answer.reason,
-      })
+      if (answer.ok) {
+        setVerdict({ ok: true, said: answer.state.exitIp ? t('vpn.exit', { address: answer.state.exitIp }) : undefined })
+      } else {
+        setVerdict({ ok: false, ...failureOf(t, { ...answer.state, error: answer.reason ?? answer.state.error }, name) })
+      }
     } catch (e) {
       setVerdict({ ok: false, said: errorText(t, e) })
     } finally {
@@ -493,9 +508,12 @@ function TestButton({ onState }: { onState: (next: VpnState) => void }) {
         onClick={() => void test()}
         disabled={testing}
       />
-      {verdict?.said && (
-        <p className={`self-stretch text-end text-subline ${verdict.ok ? 'text-carbon-textSub' : 'text-statusFail'}`}>{verdict.said}</p>
-      )}
+      {verdict?.said &&
+        (verdict.ok ? (
+          <p className="self-stretch text-end text-subline text-carbon-textSub">{verdict.said}</p>
+        ) : (
+          <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" className="self-stretch text-end" />
+        ))}
     </div>
   )
 }

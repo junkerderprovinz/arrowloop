@@ -41,6 +41,14 @@ describe('a failed run in words', () => {
     )
   })
 
+  it("leaves the VPN's own English off the one-line failure", () => {
+    const failure = { code: 'vpnDown', params: { output: 'Own WireGuard config: vpn: resolve vpn.example.net: no such host' } }
+    const raw = `the VPN did not come up, so the run did not start: ${failure.params.output}`
+    expect(failureLine(raw, failure, tIn(de), 'de')).toBe(
+      'Das VPN kam nicht zustande, deshalb wurde über deine eigene Verbindung nichts übertragen. Teste es in den Einstellungen unter Allgemein.',
+    )
+  })
+
   it('names the files left for later twice under its sentence', () => {
     const failure = { code: 'leftTwice', params: { output: 'photo.jpg (copy failed)' } }
     expect(sayFailure('left for later in two runs in a row: photo.jpg (copy failed)', failure, tIn(de), 'de')).toEqual({
