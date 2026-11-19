@@ -1,0 +1,1 @@
+Diesmal bleibt es auf deinem Handy ruhig, denn die Arbeit ging an den Rest der Familie. Die Desktop-Version schläft im Infobereich mit einem Zehntel des Speichers und zeigt unter KDE Plasma keine doppelten Fensterknöpfe mehr. Die Dokumentation verrät endlich, wo sich die Downloads verstecken, und die Docker-Hub-Seite ist keine leere Wand mehr.

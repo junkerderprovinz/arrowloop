@@ -1731,6 +1731,7 @@ const ko: Translations = {
   'new.change.hiddenFolders': '폴더 선택에서 {show} 스위치를 켜면 숨김 폴더도 표시됩니다.',
   'new.change.tabletLandscape': '태블릿에서는 휴대폰 앱이 기기와 함께 회전하고, 페이지와 하단 바, 아래에서 올라오는 패널은 화면 가운데의 한 열에 머뭅니다.',
   'new.change.tabletShell': '가로로 놓은 태블릿에서는 휴대폰 앱이 데스크톱 및 컨테이너 버전의 사이드바를 보여 주고, 설정은 타일로, 목록은 전체 너비로 표시합니다.',
+  'new.change.trayMemory': '알림 영역에 있는 동안 데스크톱 앱은 창을 닫고 메모리를 약 10분의 1만 쓰며, 아이콘을 누르면 1초도 안 되어 새 창이 열립니다.',
   'new.change.notifyTiles': '{add}에서 모든 서비스가 로고와 함께 타일로 표시되고, 이름으로 검색할 수 있습니다.',
   'new.change.notifyShoutrrr': 'Shoutrrr 채널은 ArrowLoop에서 바로 Telegram, Pushover, Teams 등 20개가 넘는 서비스로 보냅니다. 별도의 서버는 필요 없습니다.',
   'welcome.title': 'ArrowLoop에 오신 것을 환영합니다',

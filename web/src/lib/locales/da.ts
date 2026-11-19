@@ -1731,6 +1731,7 @@ const da: Translations = {
   'new.change.hiddenFolders': 'I mappevælgeren viser kontakten {show} også skjulte mapper.',
   'new.change.tabletLandscape': 'På en tablet drejer telefonappen med enheden, og dens sider, bundlinjen og de paneler, der glider op, bliver i en kolonne midt på skærmen.',
   'new.change.tabletShell': 'På en tablet på langs viser telefonappen sidebjælken fra desktop- og containerversionen, indstillingerne som fliser og listerne i hele bredden.',
+  'new.change.trayMemory': 'I meddelelsesområdet lukker skrivebordsappen sit vindue og bruger omkring en tiendedel af hukommelsen, og ikonet åbner et nyt vindue på under et sekund.',
   'new.change.notifyTiles': '{add} viser hver tjeneste som en flise med sit logo, og en søgning finder den ved navn.',
   'new.change.notifyShoutrrr': 'En Shoutrrr-kanal sender direkte fra ArrowLoop til Telegram, Pushover, Teams og over tyve andre tjenester og behøver ingen server for sig selv.',
   'welcome.title': 'Velkommen til ArrowLoop',

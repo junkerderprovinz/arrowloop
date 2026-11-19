@@ -1731,6 +1731,7 @@ const tr: Translations = {
   'new.change.hiddenFolders': 'Klasör seçicide {show} anahtarı gizli klasörleri de gösterir.',
   'new.change.tabletLandscape': 'Tablette telefon uygulaması cihazla birlikte döner ve sayfaları, alt çubuk ile aşağıdan açılan paneller ekranın ortasındaki bir sütunda kalır.',
   'new.change.tabletShell': 'Yatay tutulan tablette telefon uygulaması, masaüstü ve konteyner sürümlerinin kenar çubuğunu, ayarları kutucuklar olarak ve listeleri tam genişlikte gösterir.',
+  'new.change.trayMemory': 'Bildirim alanındayken masaüstü uygulaması penceresini kapatır ve belleğin yaklaşık onda birini kullanır, simge ise bir saniyeden kısa sürede yeni bir pencere açar.',
   'new.change.notifyTiles': '{add} her hizmeti logosuyla bir kutucuk olarak gösterir, arama da onu adıyla bulur.',
   'new.change.notifyShoutrrr': 'Shoutrrr kanalı doğrudan ArrowLoop\'tan Telegram, Pushover, Teams ve yirmiden fazla başka hizmete gönderir ve kendine ait bir sunucu gerektirmez.',
   'welcome.title': 'ArrowLoop\'a hoş geldin',

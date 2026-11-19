@@ -1731,6 +1731,7 @@ const es: Translations = {
   'new.change.hiddenFolders': 'En el selector de carpetas, el interruptor {show} también muestra las carpetas ocultas.',
   'new.change.tabletLandscape': 'En una tableta, la aplicación del teléfono gira con el dispositivo, y sus páginas, la barra inferior y los paneles que suben desde abajo se mantienen en una columna en el centro de la pantalla.',
   'new.change.tabletShell': 'En una tableta en horizontal, la aplicación del teléfono muestra la barra lateral de las versiones de escritorio y de contenedor, los ajustes como mosaicos y las listas a todo lo ancho.',
+  'new.change.trayMemory': 'En el área de notificación la aplicación de escritorio cierra su ventana y necesita una décima parte de la memoria, y el icono abre una ventana nueva en menos de un segundo.',
   'new.change.notifyTiles': '{add} muestra cada servicio como un mosaico con su logotipo, y la búsqueda encuentra uno por su nombre.',
   'new.change.notifyShoutrrr': 'Un canal Shoutrrr envía directamente desde ArrowLoop a Telegram, Pushover, Teams y más de veinte servicios más, y no necesita un servidor propio.',
   'welcome.title': 'Te damos la bienvenida a ArrowLoop',

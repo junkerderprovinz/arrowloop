@@ -1731,6 +1731,7 @@ const ms: Translations = {
   'new.change.hiddenFolders': 'Dalam pemilih folder, suis {show} turut memaparkan folder tersembunyi.',
   'new.change.tabletLandscape': 'Pada tablet, aplikasi telefon berpusing bersama peranti, dan halamannya, bar bawah serta panel yang muncul dari bawah kekal dalam satu lajur di tengah skrin.',
   'new.change.tabletShell': 'Pada tablet yang dipegang mendatar, aplikasi telefon menunjukkan bar sisi versi desktop dan bekas, tetapan sebagai jubin dan senarai merentas seluruh lebar.',
+  'new.change.trayMemory': 'Di kawasan pemberitahuan, aplikasi desktop menutup tetingkapnya dan hanya memerlukan kira-kira satu persepuluh memori, dan ikon membuka tetingkap baharu dalam masa kurang sesaat.',
   'new.change.notifyTiles': '{add} menunjukkan setiap perkhidmatan sebagai jubin dengan logonya, dan carian menemuinya mengikut nama.',
   'new.change.notifyShoutrrr': 'Saluran Shoutrrr menghantar terus dari ArrowLoop ke Telegram, Pushover, Teams dan lebih dua puluh perkhidmatan lain, tanpa memerlukan pelayan sendiri.',
   'welcome.title': 'Selamat datang ke ArrowLoop',

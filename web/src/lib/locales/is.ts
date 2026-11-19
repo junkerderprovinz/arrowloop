@@ -1731,6 +1731,7 @@ const is: Translations = {
   'new.change.hiddenFolders': 'Í möppuvalinu sýnir rofinn {show} líka faldar möppur.',
   'new.change.tabletLandscape': 'Á spjaldtölvu snýst símaforritið með tækinu, og síður þess, neðri stikan og spjöldin sem renna upp haldast í dálki á miðjum skjánum.',
   'new.change.tabletShell': 'Á spjaldtölvu á hlið sýnir símaforritið hliðarstiku tölvu- og gámaútgáfunnar, stillingarnar sem reiti og listana í allri breiddinni.',
+  'new.change.trayMemory': 'Á tilkynningasvæðinu lokar skjáborðsforritið glugganum sínum og notar um tíunda hluta minnisins, og táknið opnar nýjan glugga á innan við sekúndu.',
   'new.change.notifyTiles': '{add} sýnir hverja þjónustu sem reit með merki hennar, og leitin finnur hana eftir nafni.',
   'new.change.notifyShoutrrr': 'Shoutrrr-rás sendir beint úr ArrowLoop á Telegram, Pushover, Teams og yfir tuttugu aðrar þjónustur og þarf engan eigin þjón.',
   'welcome.title': 'Velkomin í ArrowLoop',

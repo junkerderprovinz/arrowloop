@@ -1731,6 +1731,7 @@ const fi: Translations = {
   'new.change.hiddenFolders': 'Kansion valinnassa kytkin {show} näyttää myös piilotetut kansiot.',
   'new.change.tabletLandscape': 'Tabletilla puhelinsovellus kääntyy laitteen mukana, ja sen sivut, alapalkki ja alhaalta nousevat paneelit pysyvät sarakkeessa näytön keskellä.',
   'new.change.tabletShell': 'Vaakatasossa pidetyllä tabletilla puhelinsovellus näyttää työpöytä- ja konttiversion sivupalkin, asetukset ruutuina ja luettelot koko leveydeltä.',
+  'new.change.trayMemory': 'Ilmoitusalueella työpöytäsovellus sulkee ikkunansa ja tarvitsee noin kymmenesosan muistista, ja kuvake avaa uuden ikkunan alle sekunnissa.',
   'new.change.notifyTiles': '{add} näyttää jokaisen palvelun ruutuna logonsa kanssa, ja haku löytää sen nimellä.',
   'new.change.notifyShoutrrr': 'Shoutrrr-kanava lähettää suoraan ArrowLoopista Telegramiin, Pushoveriin, Teamsiin ja yli kahteenkymmeneen muuhun palveluun, eikä se tarvitse omaa palvelinta.',
   'welcome.title': 'Tervetuloa ArrowLoopiin',

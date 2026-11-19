@@ -1731,6 +1731,7 @@ const no: Translations = {
   'new.change.hiddenFolders': 'I mappevelgeren viser bryteren {show} også skjulte mapper.',
   'new.change.tabletLandscape': 'På et nettbrett snur telefonappen seg med enheten, og sidene, bunnlinjen og panelene som glir opp holder seg i en kolonne midt på skjermen.',
   'new.change.tabletShell': 'På et nettbrett som ligger på tvers viser telefonappen sidelinjen fra skrivebords- og containerversjonen, innstillingene som fliser og listene i hele bredden.',
+  'new.change.trayMemory': 'I varslingsområdet lukker skrivebordsappen vinduet sitt og bruker omtrent en tidel av minnet, og ikonet åpner et nytt vindu på under ett sekund.',
   'new.change.notifyTiles': '{add} viser hver tjeneste som en flis med logoen sin, og et søk finner den på navn.',
   'new.change.notifyShoutrrr': 'En Shoutrrr-kanal sender rett fra ArrowLoop til Telegram, Pushover, Teams og over tjue andre tjenester og trenger ingen egen server.',
   'welcome.title': 'Velkommen til ArrowLoop',

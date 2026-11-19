@@ -1731,6 +1731,7 @@ const sk: Translations = {
   'new.change.hiddenFolders': 'Vo výbere priečinka ukáže prepínač {show} aj skryté priečinky.',
   'new.change.tabletLandscape': 'Na tablete sa aplikácia pre telefón otáča spolu so zariadením a jej stránky, dolná lišta a panely vysúvané zdola zostávajú v stĺpci uprostred obrazovky.',
   'new.change.tabletShell': 'Na tablete na šírku ukazuje aplikácia pre telefón bočnú lištu desktopovej a kontajnerovej verzie, nastavenia ako dlaždice a zoznamy cez celú šírku.',
+  'new.change.trayMemory': 'V oblasti oznámení desktopová aplikácia zatvorí svoje okno a potrebuje zhruba desatinu pamäte a ikona otvorí nové okno za menej než sekundu.',
   'new.change.notifyTiles': '{add} ukazuje každú službu ako dlaždicu s jej logom a vyhľadávanie ju nájde podľa názvu.',
   'new.change.notifyShoutrrr': 'Kanál Shoutrrr posiela priamo z ArrowLoopu do Telegramu, Pushoveru, Teams a viac ako dvadsiatich ďalších služieb a nepotrebuje vlastný server.',
   'welcome.title': 'Víta ťa ArrowLoop',

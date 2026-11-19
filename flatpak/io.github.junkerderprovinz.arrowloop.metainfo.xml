@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.7.7" date="2026-11-19">
+      <description>
+        <p>ArrowLoop in the tray needs a tenth of the memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.7</url>
+    </release>
     <release version="2.7.6" date="2026-11-18">
       <description>
         <p>A tablet held sideways gets the side bar, the settings tiles and the wide lists of the desktop and container versions.</p>

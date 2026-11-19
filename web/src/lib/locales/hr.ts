@@ -1731,6 +1731,7 @@ const hr: Translations = {
   'new.change.hiddenFolders': 'U odabiru mape prekidač {show} prikazuje i skrivene mape.',
   'new.change.tabletLandscape': 'Na tabletu se aplikacija za telefon okreće zajedno s uređajem, a njezine stranice, donja traka i ploče koje izlaze odozdo ostaju u stupcu na sredini zaslona.',
   'new.change.tabletShell': 'Na vodoravno okrenutom tabletu aplikacija za telefon prikazuje bočnu traku stolne i kontejnerske verzije, postavke kao pločice i popise preko cijele širine.',
+  'new.change.trayMemory': 'U području obavijesti desktop aplikacija zatvara svoj prozor i treba otprilike desetinu memorije, a ikona otvara novi prozor za manje od sekunde.',
   'new.change.notifyTiles': '{add} prikazuje svaku uslugu kao pločicu s njezinim logotipom, a pretraga je pronalazi po imenu.',
   'new.change.notifyShoutrrr': 'Kanal Shoutrrr šalje izravno iz ArrowLoopa na Telegram, Pushover, Teams i više od dvadeset drugih usluga i ne treba vlastiti poslužitelj.',
   'welcome.title': 'Dobro došao u ArrowLoop',
