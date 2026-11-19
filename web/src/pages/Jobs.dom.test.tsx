@@ -403,7 +403,7 @@ describe('a job card', () => {
   })
 
   it("says a VPN that did not come up in the reader's words, with the provider's own on hover", async () => {
-    const output = 'Own WireGuard config: vpn: resolve vpn.example.net: no such host'
+    const output = 'WireGuard: vpn: resolve vpn.example.net: no such host'
     const down = {
       ...ran('photos', `the VPN did not come up, so the run did not start: ${output}`),
       Failure: { code: 'vpnDown', params: { output } },

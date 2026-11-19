@@ -47,30 +47,33 @@ export const VPN_PROVIDERS: readonly VpnCatalogEntry[] = [
   { id: 'cactusvpn', name: 'CactusVPN', fields: ['config'], logo: { tile: '#98c000', ink: '#ffffff' } },
   { id: 'vpnac', name: 'VPN.ac', fields: ['config'], logo: { tile: '#13314c', ink: '#ffffff', lit: true } },
   { id: 'unlocator', name: 'Unlocator VPN', fields: ['config'], logo: { tile: '#668efe', ink: '#ffffff', lit: true } },
-  { id: 'custom', name: 'Own WireGuard config', fields: ['config'], logo: { tile: '#88181b', ink: '#ffffff' } },
+  { id: 'custom', name: 'WireGuard', fields: ['config'], logo: { tile: '#88181b', ink: '#ffffff' } },
 ]
 
-/** Where the VPN stands: down while no run needs it. */
+/** Where a VPN stands: down while no run needs it. */
 export type VpnStatus = 'down' | 'connecting' | 'connected' | 'reconnecting' | 'failed'
 
-export type VpnProviderState = {
-  id: string
-  name: string
-  fields: VpnField[]
-  /** A login is stored; it never comes back to the page. */
-  configured: boolean
-  location?: string
-}
+export type VpnProviderState = { id: string; name: string; fields: VpnField[] }
 
-export type VpnState = {
-  /** The provider jobs go through, '' for none. */
+/** One VPN set up with a provider. Its login never comes back to the page. */
+export type VpnTunnelState = {
+  id: string
   provider: string
+  /** The location its login names, or the host of its endpoint. */
+  place?: string
   status: VpnStatus
-  /** The jobs whose runs hold the tunnel up. */
+  /** The jobs whose runs hold it up. */
   jobs: string[]
   endpoint?: string
   exitIp?: string
   error?: string
   errorCode?: string
-  providers: VpnProviderState[]
+}
+
+export type VpnState = { tunnels: VpnTunnelState[]; providers: VpnProviderState[] }
+
+/** A VPN by its provider's name and where it leads, which tells two of one provider apart. */
+export function tunnelName(tunnel: VpnTunnelState, providers: readonly { id: string; name: string }[]): string {
+  const name = providers.find((p) => p.id === tunnel.provider)?.name ?? tunnel.provider
+  return tunnel.place ? `${name} (${tunnel.place})` : name
 }

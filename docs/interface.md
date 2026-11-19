@@ -443,8 +443,8 @@ and **Take back**.
 ## Settings
 
 Settings is a column of tiles beside the page: **General**, **Look**,
-**Sync**, **Safety net**, **Targets**, **Security**, **Pairing**, **Apps** and
-**Info**. A
+**Sync**, **Safety net**, **Targets**, **Integrations**, **Security**,
+**Pairing**, **Apps** and **Info**. A
 tile shows all its cards, one under the other, and only the cards scroll, so
 the column stays in place. In a window narrower than 1024 pixels the tiles
 show their glyphs alone. Below 768 pixels, and on a phone's browser, they move
@@ -463,14 +463,8 @@ row on **Look** brings back the original one.
 - **General**: the settings backup, with Export and Import side by side and
   in its (i) what they cover and that Import also takes a FolderSync export
   or a luckyBackup profile ([Configuration](configuration.md#moving-over-from-foldersync-or-luckybackup)).
-  Then the workload (bandwidth limit, jobs at once and the run log file), the
-  **VPN**, and in the desktop app this computer: the window and starting with
-  the system. The VPN card shows the provider in use, whether its tunnel is up
-  and for which runs, the jobs that go through it and **Test**, which brings
-  the tunnel up once and says where traffic leaves. **Set up a VPN** opens the
-  providers as tiles with their logos and a search, and **Own WireGuard
-  config** after them; see [Through a VPN](configuration.md#through-a-vpn).
-  The tunnel is off whenever no such job runs, which is how it should be.
+  Then the workload (bandwidth limit, jobs at once and the run log file), and
+  in the desktop app this computer: the window and starting with the system.
 - **Look**: language, design (Dark, Light or System) with the **OLED** switch,
   corners, motion, the job list (Cards or Compact), the tile order, labels and
   colours.
@@ -486,6 +480,14 @@ row on **Look** brings back the original one.
   with its switch and **Send a test**. A saved secret shows as **Saved** with
   **Change** beside it; see [Notifications](configuration.md#notifications).
 - **Targets**: the storage targets and drives; see [Drives](#drives).
+- **Integrations**: the **VPN**s the jobs can go through. Until one is set up,
+  the card only offers **Set up a VPN**, which opens the providers as tiles
+  with their logos and a search, and **WireGuard** for a server of your own
+  after them. Each VPN then shows whether its tunnel is up and for which runs,
+  the jobs that go through it, **Test**, which brings the tunnel up once and
+  says where traffic leaves, **Change login** and **Remove**; see
+  [Through a VPN](configuration.md#through-a-vpn). A tunnel is off whenever no
+  job on it runs, which is how it should be.
 - **Security**: password, two-factor authentication and passkeys. The desktop
   app has no such tile, since nobody else reaches its window.
 - **Pairing**: the twelve words that pair this instance with your others, who
@@ -698,7 +700,7 @@ and what its runs usually do are on the job's screen. A More menu that would
 hold a single action is that action's button instead.
 
 The phone has no built-in VPN, since Android's own VPN covers every app, so a
-job there shows no **Through the VPN** switch.
+job there offers no choice of **VPN**.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync

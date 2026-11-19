@@ -38,8 +38,8 @@ export type Job = {
   away?: string
   /** The last stored runs, newest first, at most fourteen. */
   recent: Run[]
-  /** The job's runs go through the built-in VPN. */
-  vpn?: boolean
+  /** The VPN of the settings the job's runs go through. */
+  vpn?: string
 }
 
 export type { Reason } from './i18n'
@@ -320,8 +320,11 @@ export type RawJob = {
    */
   brakePercent?: number
   changePercent?: number
-  /** Sends every connection of the job's runs through the built-in VPN of the settings. */
-  vpn?: boolean
+  /**
+   * The VPN of the settings every connection of the job's runs goes through,
+   * by its id. A file from before there could be several says true.
+   */
+  vpn?: string | true
   /** Shell commands around every run. Only the file sets them; a save keeps them. */
   before?: string
   after?: string
@@ -976,14 +979,18 @@ export const api = {
    * fills in the secrets the page holds placeholders for, and a refusal comes
    * back as ok:false with a code to translate and the HTTP status, if any.
    */
-  /** The VPN settings: the providers, the one in use and where its tunnel stands. A login never comes back. */
+  /** The VPN settings: the providers and the VPNs set up with them, and where each stands. A login never comes back. */
   vpn: () => request<VpnState>('/api/vpn'),
-  /** Stores a provider's login and makes it the one jobs go through. An empty field keeps what is stored. */
+  /** Sets a new VPN up with a provider, beside those there are. */
+  addVpn: (provider: string, fields: Partial<Record<VpnField, string>>) =>
+    request<{ id: string; state: VpnState }>('/api/vpn', { method: 'POST', body: JSON.stringify({ provider, fields }) }),
+  /** Changes a VPN's login. An empty field keeps what is stored. */
   saveVpn: (id: string, fields: Partial<Record<VpnField, string>>) =>
     request<VpnState>(`/api/vpn/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify({ fields }) }),
   forgetVpn: (id: string) => request<VpnState>(`/api/vpn/${encodeURIComponent(id)}`, { method: 'DELETE' }),
-  /** Brings the tunnel up as a run would, asks which address traffic leaves by, and takes it down. */
-  testVpn: () => request<{ ok: boolean; reason?: string; state: VpnState }>('/api/vpn/test', { method: 'POST' }),
+  /** Brings a VPN up as a run would, asks which address traffic leaves by, and takes it down. */
+  testVpn: (id: string) =>
+    request<{ ok: boolean; reason?: string; state: VpnState }>(`/api/vpn/${encodeURIComponent(id)}/test`, { method: 'POST' }),
 
   testNotify: (channel: Channel) =>
     request<{ ok: boolean; code?: string; status?: number; reason?: string }>('/api/notify/test', {

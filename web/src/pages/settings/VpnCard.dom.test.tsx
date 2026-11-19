@@ -3,21 +3,27 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ApiError } from '../../lib/api'
-import { VPN_PROVIDERS, type VpnState } from '../../lib/vpn'
+import { VPN_PROVIDERS, type VpnState, type VpnTunnelState } from '../../lib/vpn'
 
-const calls: { save: [string, Record<string, string>][]; forget: string[] } = { save: [], forget: [] }
+const calls: { add: [string, Record<string, string>][]; save: [string, Record<string, string>][]; forget: string[]; test: string[] } = {
+  add: [],
+  save: [],
+  forget: [],
+  test: [],
+}
 let state: VpnState
 let offered = true
-let saveAnswer: () => Promise<VpnState>
-let testAnswer: () => Promise<{ ok: boolean; reason?: string; state: VpnState }>
+let addAnswer: () => Promise<{ id: string; state: VpnState }>
+let testAnswer: (id: string) => Promise<{ ok: boolean; reason?: string; state: VpnState }>
 
-function stateWith(provider: string, status: VpnState['status'] = 'down', jobs: string[] = []): VpnState {
-  return {
-    provider,
-    status,
-    jobs,
-    providers: VPN_PROVIDERS.map((p) => ({ id: p.id, name: p.name, fields: [...p.fields], configured: p.id === provider })),
-  }
+const providers = VPN_PROVIDERS.map((p) => ({ id: p.id, name: p.name, fields: [...p.fields] }))
+
+function tunnel(id: string, provider: string, more: Partial<VpnTunnelState> = {}): VpnTunnelState {
+  return { id, provider, status: 'down', jobs: [], ...more }
+}
+
+function stateWith(...tunnels: VpnTunnelState[]): VpnState {
+  return { tunnels, providers }
 }
 
 vi.mock('../../lib/api', async (actual) => ({
@@ -25,17 +31,29 @@ vi.mock('../../lib/api', async (actual) => ({
   api: {
     capabilities: () => Promise.resolve({ window: false, vpn: offered, version: 'test' }),
     vpn: () => Promise.resolve(state),
-    jobs: () => Promise.resolve([{ name: 'photos', vpn: true }, { name: 'music' }]),
+    jobs: () =>
+      Promise.resolve([
+        { name: 'photos', vpn: 'custom' },
+        { name: 'music', vpn: 'mullvad' },
+        { name: 'notes' },
+      ]),
+    addVpn: (provider: string, fields: Record<string, string>) => {
+      calls.add.push([provider, fields])
+      return addAnswer()
+    },
     saveVpn: (id: string, fields: Record<string, string>) => {
       calls.save.push([id, fields])
-      return saveAnswer()
+      return Promise.resolve(state)
     },
     forgetVpn: (id: string) => {
       calls.forget.push(id)
-      state = stateWith('')
+      state = stateWith(...state.tunnels.filter((x) => x.id !== id))
       return Promise.resolve(state)
     },
-    testVpn: () => testAnswer(),
+    testVpn: (id: string) => {
+      calls.test.push(id)
+      return testAnswer(id)
+    },
   },
 }))
 
@@ -48,20 +66,24 @@ globalThis.ResizeObserver ??= class {
 
 const { VpnCard } = await import('./VpnCard')
 
-const unresolved = 'Own WireGuard config: vpn: resolve vpn.example.net: lookup vpn.example.net: no such host'
+const unresolved = 'WireGuard: vpn: resolve vpn.example.net: lookup vpn.example.net: no such host'
 
 beforeEach(() => {
+  calls.add = []
   calls.save = []
   calls.forget = []
+  calls.test = []
   offered = true
-  state = stateWith('')
-  saveAnswer = () => Promise.resolve(stateWith('custom'))
-  testAnswer = () => Promise.resolve({ ok: true, state: { ...state, exitIp: '203.0.113.7' } })
+  state = stateWith()
+  addAnswer = () => Promise.resolve({ id: 'custom', state: stateWith(tunnel('custom', 'custom', { place: 'home.example' })) })
+  testAnswer = () => Promise.resolve({ ok: true, state: stateWith(tunnel('custom', 'custom', { exitIp: '203.0.113.7' })) })
 })
 afterEach(cleanup)
 
 const tiles = (within: HTMLElement) =>
   Array.from(within.querySelectorAll<HTMLButtonElement>('.glim-provider-pick button.glim-readme-btn'))
+
+const row = (name: string) => screen.getByRole('region', { name })
 
 async function openChooser() {
   render(<VpnCard hueIndex={0} />)
@@ -76,38 +98,56 @@ describe('the VPN card', () => {
     await waitFor(() => expect(container.textContent).toBe(''))
   })
 
-  it('says that no VPN is set up yet', async () => {
+  it('offers only the way to set one up while none is', async () => {
     render(<VpnCard hueIndex={0} />)
     expect(await screen.findByText(/No VPN is set up/)).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Set up a VPN' })).toBeTruthy()
+    for (const name of ['Test', 'Remove', 'Change login']) expect(screen.queryByRole('button', { name })).toBeNull()
+    expect(screen.queryByText('Jobs that go through it')).toBeNull()
   })
 
-  it('shows the provider in use as off at rest and names the jobs that go through it', async () => {
-    state = stateWith('mullvad')
+  it('lists every VPN with where it leads, how it stands and the jobs that go through it', async () => {
+    state = stateWith(tunnel('custom', 'custom', { place: 'home.example' }), tunnel('mullvad', 'mullvad', { place: 'se-got', status: 'connected', jobs: ['music'] }))
     render(<VpnCard hueIndex={0} />)
-    expect(await screen.findByText('Off until a job needs it')).toBeTruthy()
-    expect(screen.getByText('Mullvad VPN')).toBeTruthy()
-    await waitFor(() => expect(screen.getByText('photos')).toBeTruthy())
+    await screen.findByRole('region', { name: 'WireGuard (home.example)' })
+    expect(within(row('WireGuard (home.example)')).getByText('Off until a job needs it')).toBeTruthy()
+    await waitFor(() => expect(within(row('WireGuard (home.example)')).getByText('photos')).toBeTruthy())
+    expect(within(row('Mullvad VPN (se-got)')).getByText('Connected for music')).toBeTruthy()
+    expect(within(row('Mullvad VPN (se-got)')).getByText('music', { selector: 'span' })).toBeTruthy()
   })
 
-  it('names the runs a connected tunnel carries', async () => {
-    state = stateWith('mullvad', 'connected', ['music', 'photos'])
+  it('tests one VPN and tells where its traffic leaves', async () => {
+    state = stateWith(tunnel('custom', 'custom'), tunnel('mullvad', 'mullvad'))
     render(<VpnCard hueIndex={0} />)
-    expect(await screen.findByText('Connected for music, photos')).toBeTruthy()
+    await screen.findByRole('region', { name: 'WireGuard' })
+    fireEvent.click(within(row('WireGuard')).getByRole('button', { name: 'Test' }))
+    expect(await within(row('WireGuard')).findByText('Traffic leaves at 203.0.113.7.')).toBeTruthy()
+    expect(calls.test).toEqual(['custom'])
   })
 
-  it('tells where traffic leaves after a test', async () => {
-    state = stateWith('custom')
+  it('removes one VPN and keeps the others', async () => {
+    state = stateWith(tunnel('custom', 'custom'), tunnel('mullvad', 'mullvad'))
     render(<VpnCard hueIndex={0} />)
-    fireEvent.click(await screen.findByRole('button', { name: 'Test' }))
-    expect(await screen.findByText('Traffic leaves at 203.0.113.7.')).toBeTruthy()
+    await screen.findByRole('region', { name: 'WireGuard' })
+    fireEvent.click(within(row('WireGuard')).getByRole('button', { name: 'Remove' }))
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'WireGuard' })).toBeNull())
+    expect(calls.forget).toEqual(['custom'])
+    expect(screen.getByRole('region', { name: 'Mullvad VPN' })).toBeTruthy()
+  })
+
+  it("changes one VPN's login", async () => {
+    state = stateWith(tunnel('mullvad-2', 'mullvad', { place: 'de-fra' }))
+    render(<VpnCard hueIndex={0} />)
+    fireEvent.click(within(await screen.findByRole('region', { name: 'Mullvad VPN (de-fra)' })).getByRole('button', { name: 'Change login' }))
+    const form = await screen.findByRole('dialog')
+    expect((within(form).getByLabelText('Server location') as HTMLInputElement).value).toBe('de-fra')
+    fireEvent.change(within(form).getByLabelText('Account number'), { target: { value: '1234' } })
+    fireEvent.click(within(form).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(calls.save).toEqual([['mullvad-2', { accountNumber: '1234' }]]))
   })
 
   it("says a server name that was not found in the reader's words and keeps the engine's on hover", async () => {
-    state = {
-      ...stateWith('custom', 'failed'),
-      error: unresolved,
-      errorCode: 'vpn-name-unresolved',
-    }
+    state = stateWith(tunnel('custom', 'custom', { status: 'failed', error: unresolved, errorCode: 'vpn-name-unresolved' }))
     render(<VpnCard hueIndex={0} />)
     const said = await screen.findByRole('status')
     expect(said.textContent).toMatch(/^The server's name was not found\./)
@@ -116,12 +156,12 @@ describe('the VPN card', () => {
   })
 
   it("answers a failed test in the reader's words", async () => {
-    state = stateWith('custom')
+    state = stateWith(tunnel('custom', 'custom'))
     testAnswer = () =>
       Promise.resolve({
         ok: false,
         reason: unresolved,
-        state: { ...stateWith('custom', 'failed'), error: unresolved, errorCode: 'vpn-name-unresolved' },
+        state: stateWith(tunnel('custom', 'custom', { status: 'failed', error: unresolved, errorCode: 'vpn-name-unresolved' })),
       })
     render(<VpnCard hueIndex={0} />)
     fireEvent.click(await screen.findByRole('button', { name: 'Test' }))
@@ -133,7 +173,7 @@ describe('the VPN card', () => {
 })
 
 describe('the VPN chooser', () => {
-  it('shows every provider as a tile with its logo, and the own config in a section of its own', async () => {
+  it('shows every provider as a tile with its logo, and WireGuard in a section of its own', async () => {
     const chooser = await openChooser()
     const sections = Array.from(chooser.querySelectorAll('section')).map((s) => ({
       title: s.querySelector('h3')?.textContent,
@@ -143,15 +183,10 @@ describe('the VPN chooser', () => {
       { title: 'Providers', count: VPN_PROVIDERS.length - 1 },
       { title: 'Your own server', count: 1 },
     ])
+    expect(within(chooser).getByRole('button', { name: 'WireGuard' })).toBeTruthy()
     for (const tile of tiles(chooser)) {
       expect(tile.querySelector('.glim-readme-btn-mark img, .glim-readme-btn-mark .glim-mark-rest')).not.toBeNull()
     }
-  })
-
-  it("lights a provider's tile in its brand colour", async () => {
-    const chooser = await openChooser()
-    const item = within(chooser).getByRole('button', { name: 'NordVPN' }).closest('li')!
-    expect(item.style.getPropertyValue('--provider-tile')).toBe('#4580ff')
   })
 
   it('opens in the picker window the channels and targets use', async () => {
@@ -176,33 +211,40 @@ describe('the VPN chooser', () => {
     expect(mark.querySelector('.block')).toBeNull()
   })
 
+  it("lights a provider's tile in its brand colour", async () => {
+    const chooser = await openChooser()
+    const item = within(chooser).getByRole('button', { name: 'NordVPN' }).closest('li')!
+    expect(item.style.getPropertyValue('--provider-tile')).toBe('#4580ff')
+  })
+
   it('finds a provider by name', async () => {
     const chooser = await openChooser()
     fireEvent.change(within(chooser).getByRole('searchbox'), { target: { value: 'mull' } })
     expect(tiles(chooser).map((b) => b.getAttribute('aria-label'))).toEqual(['Mullvad VPN'])
   })
 
-  it('saves a pasted WireGuard configuration as the own config', async () => {
+  it('adds a pasted WireGuard configuration as a VPN of its own', async () => {
+    state = stateWith(tunnel('mullvad', 'mullvad'))
     const chooser = await openChooser()
-    fireEvent.click(within(chooser).getByRole('button', { name: 'Own WireGuard config' }))
+    fireEvent.click(within(chooser).getByRole('button', { name: 'WireGuard' }))
     const form = await screen.findByRole('dialog')
-    const save = within(form).getByRole('button', { name: 'Save and use' }) as HTMLButtonElement
+    const save = within(form).getByRole('button', { name: 'Save' }) as HTMLButtonElement
     expect(save.disabled).toBe(true)
     fireEvent.change(within(form).getByRole('textbox', { name: 'WireGuard configuration' }), {
       target: { value: '[Interface]\nPrivateKey = x\n' },
     })
     fireEvent.click(save)
-    await waitFor(() => expect(calls.save).toEqual([['custom', { config: '[Interface]\nPrivateKey = x\n' }]]))
-    expect(await screen.findByText('Own WireGuard config')).toBeTruthy()
+    await waitFor(() => expect(calls.add).toEqual([['custom', { config: '[Interface]\nPrivateKey = x\n' }]]))
+    expect(await screen.findByRole('region', { name: 'WireGuard (home.example)' })).toBeTruthy()
   })
 
   it('says why a configuration was refused and keeps the form open', async () => {
-    saveAnswer = () => Promise.reject(new ApiError('vpn: the interface has no address', 400, 'vpn-config-invalid', { field: 'config' }))
+    addAnswer = () => Promise.reject(new ApiError('vpn: the interface has no address', 400, 'vpn-config-invalid', { field: 'config' }))
     const chooser = await openChooser()
-    fireEvent.click(within(chooser).getByRole('button', { name: 'Own WireGuard config' }))
+    fireEvent.click(within(chooser).getByRole('button', { name: 'WireGuard' }))
     const form = await screen.findByRole('dialog')
     fireEvent.change(within(form).getByRole('textbox', { name: 'WireGuard configuration' }), { target: { value: 'nope' } })
-    fireEvent.click(within(form).getByRole('button', { name: 'Save and use' }))
+    fireEvent.click(within(form).getByRole('button', { name: 'Save' }))
     expect((await within(form).findByRole('alert')).textContent).toContain('the interface has no address')
   })
 

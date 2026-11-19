@@ -67,10 +67,10 @@ export const RELEASES: Release[] = [
     changes: [
       {
         id: 'vpn',
-        at: ['/settings/general'],
-        where: ['nav.settings', 'settings.general'],
+        at: ['/settings/integrations'],
+        where: ['nav.settings', 'settings.integrations'],
         text: 'new.change.vpn',
-        names: { vpn: 'edit.vpn' },
+        names: { integrations: 'settings.integrations' },
       },
     ],
   },

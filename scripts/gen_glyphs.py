@@ -259,6 +259,19 @@ APP = [
         ),
     },
     {
+        "name": "IconPlug",
+        "means": "Integrations, the services ArrowLoop is plugged into",
+        "source": "KnightLoader's drawing",
+        "viewBox": "2 2 16 16",
+        "ink": [4.5, 2, 15.5, 18],
+        "svg": (
+            '<rect x="6.6" y="2" width="1.8" height="4.6" rx=".9" />'
+            '<rect x="11.6" y="2" width="1.8" height="4.6" rx=".9" />'
+            '<path d="M5.3 6.1h9.4a.8.8 0 0 1 .8.8v1.6a4.4 4.4 0 0 1-4.4 4.4H8.9a4.4 4.4 0 0 1-4.4-4.4V6.9a.8.8 0 0 1 .8-.8Z" />'
+            '<rect x="9.1" y="12.4" width="1.8" height="5.6" rx=".9" />'
+        ),
+    },
+    {
         "name": "IconCheckDraw",
         "means": "A tick that draws itself in where a copy or a check has just worked",
         "source": "Drawn for ArrowLoop",

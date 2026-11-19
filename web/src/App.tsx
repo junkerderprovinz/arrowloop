@@ -159,6 +159,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   // bounce to the first tile while the question is out.
   const [canSecure, setCanSecure] = useState<boolean | null>(null)
   const [canPair, setCanPair] = useState<boolean | null>(null)
+  const [hasVpn, setHasVpn] = useState<boolean | null>(null)
   useTrayWords(window_ !== null, t)
   useUpdateReadyToast()
   const push = useToast()
@@ -192,11 +193,13 @@ export function App({ signOut = false }: { signOut?: boolean }) {
         setRunning(can.version || 'dev')
         setCanSecure(can.security === true)
         setCanPair(can.pairing === true)
+        setHasVpn(can.vpn === true)
         if (can.window) void api.window().then(setWindow)
       })
       .catch(() => {
         setCanSecure(false)
         setCanPair(false)
+        setHasVpn(false)
       })
     api
       .settings()
@@ -362,7 +365,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     if (running !== null) startWhatsNew(running)
   }, [running])
 
-  const tiles = useMemo(() => settingsTiles(canSecure, canPair), [canSecure, canPair])
+  const tiles = useMemo(() => settingsTiles(canSecure, canPair, hasVpn), [canSecure, canPair, hasVpn])
   const resolved = useMemo(
     () =>
       resolveRoute(pathname, search, {

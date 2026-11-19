@@ -13,7 +13,17 @@ import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT, type TranslationKey } from '../../lib/i18n'
-import { CUSTOM, VPN_PROVIDERS, type VpnField, type VpnProviderState, type VpnState, type VpnStatus } from '../../lib/vpn'
+import { SubCard } from '../../lib/glimstone/SubCard'
+import {
+  CUSTOM,
+  tunnelName,
+  VPN_PROVIDERS,
+  type VpnField,
+  type VpnProviderState,
+  type VpnState,
+  type VpnStatus,
+  type VpnTunnelState,
+} from '../../lib/vpn'
 import { SettingsRow } from './rows'
 
 type T = ReturnType<typeof useT>['t']
@@ -43,9 +53,6 @@ export function VpnMark({ id }: { id: string }) {
   return <span aria-hidden className="flex h-full w-full" dangerouslySetInnerHTML={{ __html: vpnTileMark(id).svg }} />
 }
 
-/** The own config is no brand, so its name is the interface's words. */
-const nameOf = (t: T, p: { id: string; name: string }) => (p.id === CUSTOM ? t('vpn.custom') : p.name)
-
 const STATUS: Record<VpnStatus, { word: TranslationKey; tone: 'ok' | 'warn' | 'fail' | 'neutral' }> = {
   down: { word: 'vpn.status.down', tone: 'neutral' },
   connecting: { word: 'vpn.status.connecting', tone: 'warn' },
@@ -66,27 +73,30 @@ const FAILURES: Record<string, TranslationKey> = {
 }
 
 /**
- * Why the tunnel did not come up, in the reader's words where the engine gave
- * a code, and the engine's own English for the tooltip.
+ * Why a VPN did not come up, in the reader's words where the engine gave a
+ * code, and the engine's own English for the tooltip.
  */
-function failureOf(t: T, st: VpnState, name: string): { said: string; detail?: string } {
+function failureOf(t: T, st: Pick<VpnTunnelState, 'error' | 'errorCode'>, name: string): { said: string; detail?: string } {
   const key = st.errorCode ? FAILURES[st.errorCode] : undefined
   return key ? { said: t(key, { name }), detail: st.error } : { said: st.error ?? '' }
 }
 
+/** What the form is open for: a new VPN of a provider, or the login of one set up. */
+type Editing = { provider: string; tunnel?: VpnTunnelState }
+
 /**
- * The VPN the jobs switched to it go through: the provider in use and where
- * its tunnel stands, the jobs that use it, and a test that brings it up once.
- * The tunnel is only up while such a job runs, so "off" is its resting state
- * and no fault.
+ * The VPNs jobs can go through, each with where its tunnel stands, the jobs
+ * that name it and a test that brings it up once. Until one is set up the card
+ * only offers to set one up. A tunnel is only up while such a job runs, so
+ * "off" is its resting state and no fault.
  */
 export function VpnCard({ hueIndex }: { hueIndex: number }) {
   const { t } = useT()
   const [offered, setOffered] = useState<boolean | null>(null)
   const [vpn, setVpn] = useState<VpnState | null>(null)
-  const [jobs, setJobs] = useState<string[]>([])
+  const [jobs, setJobs] = useState<{ name: string; vpn?: string }[]>([])
   const [picking, setPicking] = useState(false)
-  const [editing, setEditing] = useState<string | null>(null)
+  const [editing, setEditing] = useState<Editing | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -105,9 +115,9 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
     read()
     api
       .jobs()
-      .then((list) => setJobs(list.filter((j) => j.vpn).map((j) => j.name)))
+      .then(setJobs)
       .catch(() => {})
-    // The tunnel comes and goes with the runs, so the badge is read again
+    // The tunnels come and go with the runs, so the badges are read again
     // while the card is open.
     const every = window.setInterval(read, 5000)
     return () => window.clearInterval(every)
@@ -123,47 +133,28 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
     )
   }
 
-  const inUse = vpn.providers.find((p) => p.id === vpn.provider)
-  const status = STATUS[vpn.status]
+  const provider = (id: string) => vpn.providers.find((p) => p.id === id)
 
   return (
     <Card title={t('vpn.title')} hint={t('vpn.hint')} hueIndex={hueIndex}>
-      {!inUse ? (
+      {vpn.tunnels.length === 0 ? (
         <p className="text-subline text-carbon-textSub">{t('vpn.none')}</p>
       ) : (
-        <>
-          <SettingsRow label={nameOf(t, inUse)}>
-            <Badge tone={status.tone}>
-              {vpn.status === 'connected' && vpn.jobs.length > 0
-                ? t('vpn.carrying', { jobs: vpn.jobs.join(', ') })
-                : t(status.word)}
-            </Badge>
-          </SettingsRow>
-          {vpn.status === 'failed' && <FailedBecause {...failureOf(t, vpn, nameOf(t, inUse))} role="status" />}
-          <SettingsRow label={t('vpn.jobs')} hint={t('vpn.jobsHint')}>
-            <span className="text-subline text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
-          </SettingsRow>
-          <TestButton name={nameOf(t, inUse)} onState={setVpn} />
-        </>
+        vpn.tunnels.map((tunnel) => (
+          <TunnelCard
+            key={tunnel.id}
+            tunnel={tunnel}
+            name={tunnelName(tunnel, vpn.providers)}
+            jobs={jobs.filter((j) => j.vpn === tunnel.id).map((j) => j.name)}
+            onState={setVpn}
+            onEdit={() => setEditing({ provider: tunnel.provider, tunnel })}
+            onRemove={() => void api.forgetVpn(tunnel.id).then(setVpn, (e) => setError(errorText(t, e)))}
+          />
+        ))
       )}
 
       <div className="flex flex-wrap justify-end gap-2" data-new="vpn">
-        {inUse && (
-          <>
-            <Button
-              label={t('edit.remove')}
-              labelKey="edit.remove"
-              onClick={() => void api.forgetVpn(inUse.id).then(setVpn, (e) => setError(errorText(t, e)))}
-            />
-            <Button label={t('vpn.edit')} labelKey="vpn.edit" onClick={() => setEditing(inUse.id)} />
-          </>
-        )}
-        <Button
-          label={inUse ? t('vpn.other') : t('vpn.setUp')}
-          labelKey={inUse ? 'vpn.other' : 'vpn.setUp'}
-          glyph={inUse ? undefined : <IconAdd />}
-          onClick={() => setPicking(true)}
-        />
+        <Button label={t('vpn.setUp')} labelKey="vpn.setUp" glyph={<IconAdd />} onClick={() => setPicking(true)} />
       </div>
 
       {picking && (
@@ -171,18 +162,19 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
           vpn={vpn}
           onPick={(id) => {
             setPicking(false)
-            setEditing(id)
+            setEditing({ provider: id })
           }}
           onClose={() => setPicking(false)}
         />
       )}
-      {editing && (
+      {editing && provider(editing.provider) && (
         <VpnForm
-          provider={vpn.providers.find((p) => p.id === editing)!}
-          current={inUse}
+          provider={provider(editing.provider)!}
+          tunnel={editing.tunnel}
+          name={editing.tunnel ? tunnelName(editing.tunnel, vpn.providers) : provider(editing.provider)!.name}
           hueIndex={hueIndex}
           onBack={
-            editing === vpn.provider
+            editing.tunnel
               ? undefined
               : () => {
                   setEditing(null)
@@ -200,6 +192,47 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
   )
 }
 
+/** One VPN: its logo and where it stands, the jobs that name it, and what can be done with it. */
+function TunnelCard({
+  tunnel,
+  name,
+  jobs,
+  onState,
+  onEdit,
+  onRemove,
+}: {
+  tunnel: VpnTunnelState
+  name: string
+  jobs: string[]
+  onState: (next: VpnState) => void
+  onEdit: () => void
+  onRemove: () => void
+}) {
+  const { t } = useT()
+  const status = STATUS[tunnel.status]
+  return (
+    <SubCard title={name}>
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex h-9 w-11 shrink-0">
+          <VpnMark id={tunnel.provider} />
+        </span>
+        <Badge tone={status.tone}>
+          {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
+        </Badge>
+      </div>
+      {tunnel.status === 'failed' && <FailedBecause {...failureOf(t, tunnel, name)} role="status" />}
+      <SettingsRow label={t('vpn.jobs')} hint={t('vpn.jobsHint')}>
+        <span className="text-subline text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
+      </SettingsRow>
+      <TestButton tunnel={tunnel.id} name={name} onState={onState} />
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button label={t('edit.remove')} labelKey="edit.remove" onClick={onRemove} />
+        <Button label={t('vpn.edit')} labelKey="vpn.edit" onClick={onEdit} />
+      </div>
+    </SubCard>
+  )
+}
+
 /**
  * The providers as tiles with their logos, in the window a target's product
  * and a notification channel are picked in, and a WireGuard server of one's
@@ -209,11 +242,11 @@ function VpnPicker({ vpn, onPick, onClose }: { vpn: VpnState; onPick: (id: strin
   const { t } = useT()
   const items: PickerItem[] = vpn.providers.map((p) => ({
     id: p.id,
-    label: nameOf(t, p),
+    label: p.name,
     mark: vpnTileMark(p.id),
     group: p.id === CUSTOM ? 'own' : 'providers',
-    hint: p.id === CUSTOM ? t('vpn.customHint') : undefined,
-    sub: p.configured ? t('vpn.saved') : undefined,
+    ...(p.id === CUSTOM && { hint: t('vpn.customHint') }),
+    sub: vpn.tunnels.some((x) => x.provider === p.id) ? t('vpn.saved') : undefined,
   }))
 
   return (
@@ -233,7 +266,6 @@ function VpnPicker({ vpn, onPick, onClose }: { vpn: VpnState; onPick: (id: strin
         cancel: t('vpn.cancel'),
         back: t('preview.back'),
       }}
-      selected={vpn.provider || undefined}
       onPick={onPick}
       onClose={onClose}
     />
@@ -272,20 +304,23 @@ const NOTES: Partial<Record<string, TranslationKey>> = {
 type Values = Partial<Record<VpnField, string>>
 
 /**
- * One provider's login. A stored login never comes back to the page, so its
- * fields start empty and an empty field keeps what is stored. Saving makes
- * the provider the one jobs go through; nothing connects until a job runs.
+ * A provider's login, for a new VPN or one set up. A stored login never comes
+ * back to the page, so the fields of one set up start empty and an empty field
+ * keeps what is stored. Nothing connects until a job that names it runs.
  */
 function VpnForm({
   provider: p,
-  current,
+  tunnel,
+  name,
   hueIndex,
   onBack,
   onSaved,
   onClose,
 }: {
   provider: VpnProviderState
-  current?: VpnProviderState
+  /** The VPN whose login this changes; a new one without it. */
+  tunnel?: VpnTunnelState
+  name: string
   hueIndex: number
   /** Back to the tiles, for a provider just picked from them. */
   onBack?: () => void
@@ -297,8 +332,7 @@ function VpnForm({
   const [missing, setMissing] = useState<VpnField | ''>('')
   const [refusal, setRefusal] = useState('')
   const [busy, setBusy] = useState(false)
-  const name = nameOf(t, p)
-  const filled = p.configured || p.fields.every((f) => f === 'location' || values[f]?.trim())
+  const filled = !!tunnel || p.fields.every((f) => f === 'location' || values[f]?.trim())
   const note = NOTES[p.id]
   const hintOf = (f: VpnField) => {
     const key = (f === 'location' && LOCATION_HINTS[p.id]) || FIELDS[f].hint
@@ -314,7 +348,7 @@ function VpnForm({
   async function save() {
     setBusy(true)
     try {
-      onSaved(await api.saveVpn(p.id, values))
+      onSaved(tunnel ? await api.saveVpn(tunnel.id, values) : (await api.addVpn(p.id, values)).state)
     } catch (e) {
       const field = e instanceof ApiError ? (e.values?.field as VpnField | undefined) : undefined
       if (e instanceof ApiError && e.code === 'vpn-field-missing' && field) setMissing(field)
@@ -342,8 +376,8 @@ function VpnForm({
           )}
           <span className="flex-1" />
           <Button
-            label={t('vpn.save')}
-            labelKey="vpn.save"
+            label={t('edit.save')}
+            labelKey="edit.save"
             tone="accent"
             busy={busy}
             disabled={busy || !filled}
@@ -357,12 +391,7 @@ function VpnForm({
           <VpnMark id={p.id} />
         </span>
         {note && <p className="text-subline text-carbon-textSub">{t(note, { name })}</p>}
-        {current && current.id !== p.id && (
-          <p className="rounded-control bg-statusWarnBgSoft px-3 py-2.5 text-subline text-carbon-text">
-            {t('vpn.replaces', { name, current: nameOf(t, current) })}
-          </p>
-        )}
-        {p.configured && <p className="text-meta text-carbon-textSub">{t('vpn.keepSaved')}</p>}
+        {tunnel && <p className="text-meta text-carbon-textSub">{t('vpn.keepSaved')}</p>}
         {p.fields.map((f) => (
           <div key={f} className="flex flex-col gap-1.5">
             {f === 'config' ? (
@@ -377,7 +406,7 @@ function VpnForm({
                   <Secret value={values[f] ?? ''} onChange={(v) => set(f, v)} autoComplete="off" label={t(FIELDS[f].label)} />
                 ) : (
                   <Text
-                    value={values[f] ?? (f === 'location' ? (p.location ?? '') : '')}
+                    value={values[f] ?? (f === 'location' ? (tunnel?.place ?? '') : '')}
                     onChange={(v) => set(f, v)}
                     label={t(FIELDS[f].label)}
                     mono
@@ -454,8 +483,8 @@ function FailedBecause({
   )
 }
 
-/** Brings the tunnel up once, as a run would, and says where traffic leaves. */
-function TestButton({ name, onState }: { name: string; onState: (next: VpnState) => void }) {
+/** Brings a VPN up once, as a run would, and says where traffic leaves. */
+function TestButton({ tunnel, name, onState }: { tunnel: string; name: string; onState: (next: VpnState) => void }) {
   const { t } = useT()
   const [testing, setTesting] = useState(false)
   const [verdict, setVerdict] = useState<{ ok: boolean; said?: string; detail?: string } | null>(null)
@@ -464,12 +493,13 @@ function TestButton({ name, onState }: { name: string; onState: (next: VpnState)
     setTesting(true)
     setVerdict(null)
     try {
-      const answer = await api.testVpn()
+      const answer = await api.testVpn(tunnel)
       onState(answer.state)
+      const st = answer.state.tunnels.find((x) => x.id === tunnel)
       if (answer.ok) {
-        setVerdict({ ok: true, said: answer.state.exitIp ? t('vpn.exit', { address: answer.state.exitIp }) : undefined })
+        setVerdict({ ok: true, said: st?.exitIp ? t('vpn.exit', { address: st.exitIp }) : undefined })
       } else {
-        setVerdict({ ok: false, ...failureOf(t, { ...answer.state, error: answer.reason ?? answer.state.error }, name) })
+        setVerdict({ ok: false, ...failureOf(t, { errorCode: st?.errorCode, error: answer.reason ?? st?.error }, name) })
       }
     } catch (e) {
       setVerdict({ ok: false, said: errorText(t, e) })

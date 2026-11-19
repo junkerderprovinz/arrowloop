@@ -80,7 +80,7 @@ manager happened to start the process in.
 | `brakePercent` | `50` | Hold a run deleting more than this share of known files. `0` switches the brake off. |
 | `changePercent` | `50` | Hold a run overwriting more than this share of known files. `0` switches the brake off. |
 | `brakeFloor` | `10` | Never trip either brake below this many deletions or overwrites. |
-| `vpn` | `false` | Send every connection of the job's runs through the built-in VPN; see [Through a VPN](#through-a-vpn). |
+| `vpn` | none | The VPN of the settings every connection of the job's runs goes through, by its id; see [Through a VPN](#through-a-vpn). |
 | `before` | none | A shell command run before every run. If it fails, the run does not start. See below. |
 | `after` | none | A shell command run after every run, successful or not. If it fails, the run is marked failed. |
 
@@ -406,21 +406,31 @@ such as an SSH tunnel, keeps running.
   "left": "/data/photos",
   "right": "nas:photos",
   "state": "state/nas-at-home.db",
-  "vpn": true
+  "vpn": "custom"
 }
 ```
 
-ArrowLoop carries a WireGuard tunnel of its own. It runs inside the program,
-so it needs no WireGuard on the machine, no admin rights and no extra
-capability in a container. You set it up once under **Settings**, **General**,
-**VPN**: pick your provider from the tiles and enter what it asks for, or
-choose **Own WireGuard config** and paste or upload the `.conf` file of a
-server you run, such as a router or a NAS at home.
+ArrowLoop carries WireGuard tunnels of its own. They run inside the program,
+so they need no WireGuard on the machine, no admin rights and no extra
+capability in a container. You set them up under **Settings**,
+**Integrations**, **VPN**: pick your provider from the tiles and enter what it
+asks for, or choose **WireGuard** and paste or upload the `.conf` file of a
+server you run, such as a router or a NAS at home. There can be several, such
+as two servers of your own or one provider at two locations, and each job
+chooses one under **Connection** in its settings, or **No VPN**.
 
-A job with `vpn` set brings the tunnel up when its run starts. Jobs that run at
-the same time share one tunnel, and the last of them to finish takes it down,
-so the tunnel is only up while such a job runs. Everything else of ArrowLoop,
-including the jobs without `vpn`, keeps to the machine's own connection.
+`vpn` holds the id of that VPN: the provider's, such as `mullvad` or `custom`
+for a WireGuard server of your own, with `-2`, `-3` and so on after it for a
+second and third of one provider. A file from before there could be several
+says `true`, which ArrowLoop reads as the VPN that was in use then and writes
+back with its id.
+
+A job with `vpn` set brings its tunnel up when its run starts. Jobs on the same
+VPN that run at the same time share one tunnel, and the last of them to finish
+takes it down, so a tunnel is only up while such a job runs. A job only ever
+goes through its own VPN, and everything else of ArrowLoop, including the jobs
+without `vpn`, keeps to the machine's own connection. A job whose VPN was
+removed fails until it gets another or **No VPN**.
 
 Every connection of such a run goes to a proxy on `127.0.0.1` that dials only
 into the tunnel, names included: they resolve through the name servers of the
@@ -443,7 +453,7 @@ through the tunnel too, since they read the same sides.
 A job whose side cannot go through the VPN is refused at the start of every
 run with the side it is about. Nothing is sent.
 
-The logins are kept in `vpn.json` beside the configuration, each sealed with
+The VPNs and their logins are kept in `vpn.json` beside the configuration, each login sealed with
 the install's key from `ARROWLOOP_APP_KEY` or `app.key` (see
 [A password for the interface](installing.md#a-password-for-the-interface)),
 and they never come back to the interface. The file is not part of `arrowloop.json`, so a settings backup does

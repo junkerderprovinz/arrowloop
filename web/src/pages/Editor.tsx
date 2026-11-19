@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 import { byJobOrder } from '../lib/jobOrder'
 
-import { Field, FieldRow, Lines, Text } from '../components/Field'
+import { Choice, Field, FieldRow, Lines, Text } from '../components/Field'
 import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
 import { SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
@@ -18,7 +18,8 @@ import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
 import { overNetwork } from '../lib/localTarget'
-import { useT } from '../lib/i18n'
+import { tunnelName, type VpnState } from '../lib/vpn'
+import { useT, type TranslationKey } from '../lib/i18n'
 
 /**
  * What a new job starts out ignoring: files the operating system or a tool
@@ -351,11 +352,11 @@ export function JobForm({
         {...held}
       />
 
-      {/* Another instance has a VPN of its own or none, and keeps the
-          switch as its owner set it. */}
+      {/* Another instance has VPNs of its own or none, and keeps the
+          choice as its owner made it. */}
       {!host.name && (
-        <VpnSwitch
-          on={!!job.vpn}
+        <VpnChoice
+          value={typeof job.vpn === 'string' ? job.vpn : ''}
           network={overNetwork(job.left ?? '', remotes) || overNetwork(job.right ?? '', remotes)}
           onChange={(vpn) => patch({ vpn: vpn || undefined })}
         />
@@ -495,32 +496,44 @@ export function JobForm({
 }
 
 /**
- * Whether the job's runs go through the built-in VPN, on an engine that has
- * one and for a job with a side across the network, since folders on this
- * device never touch it. A job switched to it where it does nothing, as one
- * brought over from another machine, keeps the switch, so it can be switched
- * off.
+ * The VPN of the settings the job's runs go through, or none, on an engine
+ * that has VPNs and for a job with a side across the network, since folders
+ * on this device never touch one. A job that names a VPN where it does
+ * nothing, or one that is gone, as a job brought over from another machine,
+ * keeps the choice, so it can be set to none.
  */
-export function VpnSwitch({ on, network, onChange }: { on: boolean; network: boolean; onChange: (next: boolean) => void }) {
+export function VpnChoice({ value, network, onChange }: { value: string; network: boolean; onChange: (next: string) => void }) {
   const { t } = useT()
-  const [vpn, setVpn] = useState<{ offered: boolean; setUp: boolean } | null>(null)
+  const [vpn, setVpn] = useState<{ offered: boolean; state?: VpnState } | null>(null)
   useEffect(() => {
     api
       .capabilities()
-      .then(async (c) => setVpn(c.vpn ? { offered: true, setUp: (await api.vpn()).provider !== '' } : { offered: false, setUp: false }))
+      .then(async (c) => setVpn(c.vpn ? { offered: true, state: await api.vpn() } : { offered: false }))
       .catch(() => setVpn(null))
   }, [])
-  if (!on && (!vpn?.offered || !network)) return null
+  if (!vpn || (!value && (!vpn.offered || !network))) return null
+  const tunnels = vpn.state?.tunnels ?? []
+  const options = [
+    { value: '', label: t('edit.vpnOff') },
+    ...tunnels.map((x) => ({ value: x.id, label: tunnelName(x, vpn.state!.providers) })),
+  ]
+  const warning: TranslationKey | null = !vpn.offered
+    ? 'edit.vpnNotHere'
+    : tunnels.length === 0
+      ? 'edit.vpnNone'
+      : value && !tunnels.some((x) => x.id === value)
+        ? 'edit.vpnGone'
+        : null
   return (
     <SubCard title={t('edit.connection')}>
       <div data-new="vpn">
         <SettingRow label={t('edit.vpn')} hint={t('edit.vpnHint')}>
-          <Toggle checked={on} onChange={onChange} label={t('edit.vpn')} hideLabel />
+          <Choice value={value} onChange={onChange} options={options} label={t('edit.vpn')} />
         </SettingRow>
       </div>
-      {on && vpn && !vpn.setUp && (
+      {warning && (
         <p role="status" className="text-subline text-statusWarn">
-          {t(vpn.offered ? 'edit.vpnNone' : 'edit.vpnNotHere')}
+          {t(warning)}
         </p>
       )}
     </SubCard>

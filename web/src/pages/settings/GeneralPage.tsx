@@ -8,7 +8,6 @@ import { AutoBackupCard } from './AutoBackupCard'
 import { BackupCard } from './BackupCard'
 import { Reading, useEngineSettings } from './engineSettings'
 import { SettingsRow } from './rows'
-import { VpnCard } from './VpnCard'
 
 /**
  * What concerns the app as a whole: this computer's window and start where
@@ -64,7 +63,6 @@ export function GeneralPage({
       <BackupCard hueIndex={windowSettings ? 1 : 0} />
       <AutoBackupCard hueIndex={windowSettings ? 2 : 1} />
       <WorkloadCard hueIndex={windowSettings ? 3 : 2} />
-      <VpnCard hueIndex={windowSettings ? 4 : 3} />
     </Stack>
   )
 }
