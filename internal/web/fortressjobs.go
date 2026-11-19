@@ -133,7 +133,7 @@ func (s *Server) fortressCreate(_ context.Context, from kitfortress.Caller, body
 	}
 	j["left"], j["right"] = left, to.side(name)
 
-	_, err = s.addJob(j)
+	stored, err := s.addJob(j)
 	var bad badJob
 	switch {
 	case errors.Is(err, errNameTaken):
@@ -144,5 +144,6 @@ func (s *Server) fortressCreate(_ context.Context, from kitfortress.Caller, body
 		return nil, err
 	}
 	s.logf("%s on %s added the job %s, from %s to %s", from.App, from.Device, name, left, to.Where)
-	return json.Marshal(map[string]string{"job": name})
+	id, _ := stored["id"].(string)
+	return json.Marshal(map[string]string{"job": name, "id": id})
 }

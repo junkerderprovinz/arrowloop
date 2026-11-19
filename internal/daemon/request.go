@@ -24,34 +24,34 @@ func (r *Runner) Request(name, by string) (queued bool, err error) {
 	case !ok:
 		return false, fmt.Errorf("%w: %s", ErrNoSuchJob, name)
 	case !cfg.RunsOnItsOwn(j):
-		return false, fmt.Errorf("%w: %s", ErrPaused, name)
+		return false, fmt.Errorf("%w: %s", ErrPaused, j.Name)
 	}
-	if r.keepRequest(name) {
-		r.log("%s: asked for by %s, runs again once this run ends", name, by)
+	if r.keepRequest(j.Key()) {
+		r.log("%s: asked for by %s, runs again once this run ends", j.Name, by)
 		return true, nil
 	}
-	r.log("%s: asked for by %s", name, by)
-	go r.runRequested(name)
+	r.log("%s: asked for by %s", j.Name, by)
+	go r.runRequested(j.Key())
 	return false, nil
 }
 
-// keepRequest notes a request for name if the job is running, for release to
+// keepRequest notes a request for the job if it is running, for release to
 // answer, and reports whether it did.
-func (r *Runner) keepRequest(name string) bool {
+func (r *Runner) keepRequest(key string) bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	if _, running := r.inflight[name]; !running {
+	if _, running := r.inflight[key]; !running {
 		return false
 	}
-	r.requested[name] = true
+	r.requested[key] = true
 	return true
 }
 
 // runRequested runs a requested job. When another run claims the job first,
 // the request waits for that one.
-func (r *Runner) runRequested(name string) {
-	_, err := r.runAndReport(context.Background(), name)
-	if errors.Is(err, ErrAlreadyRunning) && !r.keepRequest(name) {
-		go r.runRequested(name)
+func (r *Runner) runRequested(key string) {
+	_, err := r.runAndReport(context.Background(), key)
+	if errors.Is(err, ErrAlreadyRunning) && !r.keepRequest(key) {
+		go r.runRequested(key)
 	}
 }

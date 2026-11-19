@@ -176,7 +176,7 @@ func cmdJobs(ctx context.Context, args []string) error {
 			schedule = "disabled"
 		}
 		last := "never"
-		if when, ok, err := hist.LastSuccess(ctx, j.Name); err == nil && ok {
+		if when, ok, err := hist.LastSuccess(ctx, j.Key()); err == nil && ok {
 			last = when.Format("2006-01-02 15:04")
 		}
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", j.Name, schedule, j.Left, j.Right, last)
@@ -188,7 +188,7 @@ func cmdJobs(ctx context.Context, args []string) error {
 func cmdHistory(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("history", flag.ExitOnError)
 	configPath := fset.String("config", defaultConfig, "the configuration file")
-	which := fset.String("job", "", "only this job")
+	which := fset.String("job", "", "only this job, by its name or its id")
 	limit := fset.Int("limit", 20, "how many runs to show")
 	if err := fset.Parse(args); err != nil {
 		return err
@@ -203,7 +203,11 @@ func cmdHistory(ctx context.Context, args []string) error {
 	}
 	defer hist.Close()
 
-	runs, err := hist.Recent(ctx, *which, history.ShowAll, *limit)
+	key := *which
+	if j, ok := cfg.Find(key); ok {
+		key = j.Key()
+	}
+	runs, err := hist.Recent(ctx, key, history.ShowAll, *limit)
 	if err != nil {
 		return err
 	}

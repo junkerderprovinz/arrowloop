@@ -172,7 +172,7 @@ func TestAnotherAppListsAndStartsJobsThroughTheFortress(t *testing.T) {
 		{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","quietPeriod":"0s"},
 		{"name":"inbox","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/inbox.db","direction":"leftToRight","mode":"move","disabled":true}]}`)
 	finished := time.Now().Add(-time.Hour).UTC().Truncate(time.Second)
-	if err := h.history.Record(context.Background(), history.Run{Job: "photos", Started: finished.Add(-time.Minute), Finished: finished, Copied: 3}, nil); err != nil {
+	if err := h.history.Record(context.Background(), history.Run{JobID: jobID(t, h, "photos"), Job: "photos", Started: finished.Add(-time.Minute), Finished: finished, Copied: 3}, nil); err != nil {
 		t.Fatal(err)
 	}
 	engine, loader, engineID := fortressPair(t, h)

@@ -17,6 +17,8 @@ export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 export type Mode = 'sync' | 'mirror' | 'move'
 
 export type Job = {
+  /** Stays with the job through a rename. An older engine sends none. */
+  id?: string
   name: string
   left: string
   right: string
@@ -283,6 +285,8 @@ export type Share = {
  * carried through, so a field this build does not understand survives an edit.
  */
 export type RawJob = {
+  /** Given by the engine and kept through a rename; the editor passes it on untouched. */
+  id?: string
   name?: string
   left?: string
   right?: string

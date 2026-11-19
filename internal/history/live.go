@@ -149,7 +149,7 @@ func (d *DB) liveRuns(stored []Run, job string, show Show, since, until time.Tim
 	var going []Run
 	for _, c := range d.snapshot() {
 		r := c.run
-		if job != "" && r.Job != job || !show.shows(r) {
+		if job != "" && r.Key() != job || !show.shows(r) {
 			continue
 		}
 		if !since.IsZero() && r.Started.Before(since) || !until.IsZero() && r.Started.After(until) {
@@ -178,7 +178,7 @@ func (d *DB) liveTouches(stored []Touch, f Filter, limit int) []Touch {
 	needle := foldASCII(f.Contains)
 	var going []Touch
 	for _, c := range d.snapshot() {
-		if f.Job != "" && c.run.Job != f.Job {
+		if f.Job != "" && c.run.Key() != f.Job {
 			continue
 		}
 		taken := 0
@@ -190,7 +190,7 @@ func (d *DB) liveTouches(stored []Touch, f Filter, limit int) []Touch {
 			if needle != "" && !strings.Contains(foldASCII(e.Path), needle) {
 				continue
 			}
-			going = append(going, Touch{Entry: e, Run: c.run.ID, Job: c.run.Job, When: c.run.Started, Seq: i})
+			going = append(going, Touch{Entry: e, Run: c.run.ID, Job: c.run.Job, JobID: c.run.Key(), When: c.run.Started, Seq: i})
 			taken++
 		}
 	}

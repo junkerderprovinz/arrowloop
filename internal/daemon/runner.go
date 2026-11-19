@@ -26,6 +26,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
@@ -92,7 +93,9 @@ type Runner struct {
 	// cfg and note change together on a reload.
 	cfg  *job.Config
 	note *alnotify.Dispatcher
-	// inflight holds, per running job, the way to stop it.
+	// inflight holds, per running job, the way to stop it. This map and the
+	// others below are keyed by the job's Key, so a job renamed while it runs
+	// is still the job that runs.
 	inflight map[string]context.CancelFunc
 	// requested holds the jobs another app asked for while they ran; see
 	// Request.
@@ -140,7 +143,7 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 	for _, name := range incomplete {
 		log("the notification channel %s is switched on but not complete, so it sends nothing", name)
 	}
-	return &Runner{
+	r := &Runner{
 		cfg:       cfg,
 		hist:      hist,
 		note:      note,
@@ -151,17 +154,54 @@ func New(cfg *job.Config, hist *history.DB, log func(string, ...any)) *Runner {
 		requested: map[string]bool{},
 		reload:    make(chan struct{}, 1),
 	}
+	// The file may have been edited by hand while the engine was off.
+	r.relabel(cfg)
+	return r
+}
+
+// relabel gives the runs and findings of every job the name it goes by in cfg.
+func (r *Runner) relabel(cfg *job.Config) {
+	names := make(map[string]string, len(cfg.Jobs))
+	for _, j := range cfg.Jobs {
+		names[j.Key()] = j.Name
+	}
+	r.anomalies.Relabel(names)
+	if r.hist == nil {
+		return
+	}
+	if err := r.hist.Relabel(context.Background(), names); err != nil {
+		r.log("%v", err)
+	}
+}
+
+// nameOf is what the job with this key or name is called now, or the key
+// itself for a job that is gone.
+func (r *Runner) nameOf(ref string) string {
+	if j, ok := r.config().Find(ref); ok {
+		return j.Name
+	}
+	return ref
+}
+
+// keyOf is the key of the job a caller asked for by id or by name, or what
+// it asked with for a job that is gone, since a run can outlive its job.
+func (r *Runner) keyOf(ref string) string {
+	if j, ok := r.config().Find(ref); ok {
+		return j.Key()
+	}
+	return ref
 }
 
 // Preview works out what a job would do and changes nothing. It plans afresh,
-// so the preview describes the tree as it is now.
+// so the preview describes the tree as it is now. Like every method here that
+// takes a job, it takes the job's id or its name.
 func (r *Runner) Preview(ctx context.Context, name string) (*plan.Plan, error) {
 	j, ok := r.config().Find(name)
 	if !ok {
 		return nil, fmt.Errorf("no job called %q", name)
 	}
 	if j.Left == "" || j.Right == "" {
-		return nil, fmt.Errorf("%w: %s", ErrHalfWritten, name)
+		return nil, fmt.Errorf("%w: %s", ErrHalfWritten, j.Name)
 	}
 	if err := j.Refused(); err != nil {
 		return nil, err
@@ -261,30 +301,32 @@ func (r *Runner) runAs(ctx context.Context, name string, auto bool, do work) (hi
 
 // runAnswering is runAs for a run that answers a finding: once its plan is
 // past the brakes, the job's findings of these kinds close with this outcome.
-func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans answer, do work) (history.Run, error) {
-	j, ok := r.config().Find(name)
+func (r *Runner) runAnswering(ctx context.Context, ref string, auto bool, ans answer, do work) (history.Run, error) {
+	j, ok := r.config().Find(ref)
 	if !ok {
-		return history.Run{}, fmt.Errorf("no job called %q", name)
+		return history.Run{}, fmt.Errorf("no job called %q", ref)
 	}
 	if j.Left == "" || j.Right == "" {
-		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
+		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, j.Name)
 	}
+	// From here the job is asked for by its key, which a rename leaves alone.
+	key := j.Key()
 	// rclone keeps its live transfer map per stats group, so without a group
 	// two jobs syncing at once would each report the other's files.
-	ctx = accounting.WithStatsGroup(ctx, "job/"+name)
+	ctx = accounting.WithStatsGroup(ctx, "job/"+key)
 
-	// The run's own context, so it can be stopped by name.
+	// The run's own context, so it can be stopped.
 	ctx, stop := context.WithCancel(ctx)
 	defer stop()
-	if !r.claim(name, stop) {
+	if !r.claim(key, stop) {
 		return history.Run{}, ErrAlreadyRunning
 	}
-	defer r.release(name)
+	defer r.release(key)
 
 	if err := r.slots.take(ctx, func() int { return r.config().ParallelJobs }); err != nil {
 		// Pausing or removing a job stops it, and one still waiting has not run.
 		cfg := r.config()
-		if now, ok := cfg.Find(name); !ok || now.Disabled || auto && !cfg.RunsOnItsOwn(now) {
+		if now, ok := cfg.Find(key); !ok || now.Disabled || auto && !cfg.RunsOnItsOwn(now) {
 			return history.Run{}, ErrWithdrawn
 		}
 		return history.Run{}, err
@@ -294,26 +336,27 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	// The turn can come long after the job was asked for, and the job may have
 	// been edited, paused or removed meanwhile.
 	cfg := r.config()
-	j, ok = cfg.Find(name)
+	j, ok = cfg.Find(key)
 	if !ok || auto && !cfg.RunsOnItsOwn(j) {
 		return history.Run{}, ErrWithdrawn
 	}
 	if j.Left == "" || j.Right == "" {
-		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, name)
+		return history.Run{}, fmt.Errorf("%w: %s", ErrHalfWritten, j.Name)
 	}
+	name := j.Name
 
 	// The engine's own writes must not come back as a change.
-	r.muteWatcher(name)
-	defer r.muteWatcher(name)
+	r.muteWatcher(key)
+	defer r.muteWatcher(key)
 
-	rec := history.Run{Job: name, Started: time.Now(), Answered: ans.outcome != passed.outcome, NoTrash: j.NoTrash}
+	rec := history.Run{JobID: j.ID, Job: name, Started: time.Now(), Answered: ans.outcome != passed.outcome, NoTrash: j.NoTrash}
 	// Begun before the start is announced, so a screen that looks at the log
 	// on hearing it finds the run there.
 	var live *history.Live
 	if r.hist != nil {
 		live = r.hist.Begin(rec)
 	}
-	r.publish(Event{Job: name, Phase: "started"})
+	r.publish(Event{Job: name, JobID: key, Phase: "started"})
 	var res apply.Result
 	var p *plan.Plan
 	// A refused job runs neither command and is recorded as failed, so its
@@ -345,11 +388,11 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	// A plan a brake refused holds the job. It is not a failure, or the retries
 	// would run it again within minutes and the note about failing runs would
 	// count it.
-	if found, braked := refusal(name, err); braked {
+	if found, braked := refusal(j, err); braked {
 		r.hold(ctx, found)
 		err = fmt.Errorf("%w: %w", ErrHeld, err)
 	} else if p != nil {
-		r.settle(name, ans.outcome, ans.kinds...)
+		r.settle(key, ans.outcome, ans.kinds...)
 	}
 
 	// Neither a drive that is not plugged in nor a held job is a run, so
@@ -359,7 +402,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		// The drive may have gone between the check and the work. Whatever
 		// the before command stopped still has to be started again.
 		if ranBefore {
-			gone := history.Run{Job: name, Started: rec.Started, Finished: time.Now(), Err: err.Error()}
+			gone := history.Run{JobID: j.ID, Job: name, Started: rec.Started, Finished: time.Now(), Err: err.Error()}
 			if aErr := hook.Run(context.WithoutCancel(ctx), j.After, hookEnv(j, &gone)); aErr != nil {
 				r.log("%s: %s: %v", name, hook.AfterFailed, aErr)
 			}
@@ -370,15 +413,15 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		// Started by hand or on its own, the job then waits and carries on
 		// once its drive is back.
 		if errors.Is(err, ErrVolumeMissing) {
-			r.waitForDrive(name, err)
+			r.waitForDrive(key, err)
 		}
 		checkOut(notify.PingFail, err.Error())
-		r.publish(Event{Job: name, Phase: "finished", Error: err.Error(), Held: errors.Is(err, ErrHeld)})
+		r.publish(Event{Job: name, JobID: key, Phase: "finished", Error: err.Error(), Held: errors.Is(err, ErrHeld)})
 		return history.Run{}, err
 	}
 
 	// Whatever started it, a run that got this far found its drive.
-	r.waiting.clear(name)
+	r.waiting.clear(key)
 	rec.Finished = time.Now()
 	// A run cancelled by hand, by Pause or by the program ending has done
 	// nothing wrong, whatever error its last step made of the cancel.
@@ -393,7 +436,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved
 	rec.Skipped = len(res.Skipped)
 	if rec.Err == "" && !rec.Stopped {
-		if again := r.leftAgain(ctx, name, res.Skipped); again != "" {
+		if again := r.leftAgain(ctx, j, res.Skipped); again != "" {
 			rec.Err = again
 			err = errors.New(again)
 		}
@@ -409,6 +452,10 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 		}
 	}
 
+	// The job may have been renamed while it ran, and the run goes into the
+	// log under the name it has now.
+	rec.Job = r.nameOf(key)
+	name = rec.Job
 	// A stopped run is recorded too, so the write cannot use the run's own
 	// context, which the stop cancelled. The lines are the ones the run wrote
 	// into live as it went, which are res.Entries.
@@ -421,7 +468,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	checkOut(ending(rec), said)
 	r.announce(ctx, rec, said)
 	r.review(ctx, rec)
-	finished := Event{Job: name, Phase: "finished", Run: &rec}
+	finished := Event{Job: name, JobID: key, Phase: "finished", Run: &rec}
 	if rec.Failed() {
 		finished.Error = err.Error()
 	}
@@ -568,7 +615,7 @@ func (r *Runner) executeOnce(ctx context.Context, j job.Job, only []string, show
 	ctx = engine.Configure(ctx, opt)
 	ctx = apply.WithVersions(ctx, versions)
 	ctx = apply.WithTrash(ctx, !j.NoTrash)
-	ctx = scan.WithWatch(ctx, (&readingFor{runner: r, job: j.Name}).report)
+	ctx = scan.WithWatch(ctx, (&readingFor{runner: r, job: j}).report)
 	// A shadow copy is taken only once a file is found held open, and removed
 	// with the run, since it holds space on its volume.
 	if shots := shadow.New(r.shadows); shots != nil {
@@ -592,9 +639,9 @@ func (r *Runner) executeOnce(ctx context.Context, j job.Job, only []string, show
 	// Started here because the right side has to be open to say which way a
 	// file is going. The step counter is shared with the progress watcher.
 	steps := &stepCount{}
-	defer r.watchMoving(ctx, j.Name, ends.Right, steps)()
+	defer r.watchMoving(ctx, j, ends.Right, steps)()
 
-	watcher := progressFor{runner: r, job: j.Name, steps: steps, live: live}
+	watcher := progressFor{runner: r, job: j, steps: steps, live: live}
 	if how.back != "" {
 		p, compare, err := engine.Prepare(ctx, ends, db, opt)
 		if err != nil {
@@ -708,9 +755,20 @@ func (r *Runner) claim(name string, stop context.CancelFunc) bool {
 
 // Cancel stops a run that is in progress, and says whether there was one. The
 // run unwinds as on shutdown and is still recorded.
-func (r *Runner) Cancel(name string) bool {
+func (r *Runner) Cancel(ref string) bool {
+	key := r.keyOf(ref)
 	r.mu.Lock()
-	stop := r.inflight[name]
+	stop := r.inflight[key]
+	// A job removed while it runs is no longer in the configuration, and is
+	// asked for by the name its run went by.
+	if stop == nil {
+		for k, w := range r.going {
+			if w.Job == ref {
+				key, stop = k, r.inflight[k]
+			}
+		}
+	}
+	name := r.calledLocked(key)
 	r.mu.Unlock()
 	if stop == nil {
 		return false
@@ -745,14 +803,14 @@ func (r *Runner) StopAll(ctx context.Context) {
 	}
 }
 
-func (r *Runner) release(name string) {
+func (r *Runner) release(key string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	delete(r.inflight, name)
-	delete(r.going, name)
-	if r.requested[name] {
-		delete(r.requested, name)
-		go r.runRequested(name)
+	delete(r.inflight, key)
+	delete(r.going, key)
+	if r.requested[key] {
+		delete(r.requested, key)
+		go r.runRequested(key)
 	}
 }
 
@@ -807,15 +865,15 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 		if !cfg.RunsOnItsOwn(j) || j.Schedule == "" {
 			continue
 		}
-		name := j.Name
+		key := j.Key()
 		parsed, err := job.ParseSchedule(j.Schedule)
 		if err != nil {
 			// Load refuses this, so carry on with the jobs that are fine.
-			r.log("%s: unusable schedule %q: %v", name, j.Schedule, err)
+			r.log("%s: unusable schedule %q: %v", j.Name, j.Schedule, err)
 			continue
 		}
-		c.Schedule(parsed, cron.FuncJob(func() { r.runAndReport(ctx, name) }))
-		scheduled = append(scheduled, fmt.Sprintf("%s (%s)", name, j.Schedule))
+		c.Schedule(parsed, cron.FuncJob(func() { r.runAndReport(ctx, key) }))
+		scheduled = append(scheduled, fmt.Sprintf("%s (%s)", j.Name, j.Schedule))
 	}
 
 	for _, j := range cfg.Jobs {
@@ -828,9 +886,9 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 	c.Schedule(cron.Every(time.Minute), cron.FuncJob(func() {
 		r.overdue(ctx, time.Now())
 		r.rewatch(ctx, round, time.Now())
-		for _, name := range r.Retrying(ctx, time.Now()) {
-			r.log("%s: trying again after a failure", name)
-			r.runAndReport(ctx, name)
+		for _, key := range r.Retrying(ctx, time.Now()) {
+			r.log("%s: trying again after a failure", r.nameOf(key))
+			r.runAndReport(ctx, key)
 		}
 		// After the retries, so a retry that found the drive back has
 		// already ended the job's wait.
@@ -865,8 +923,9 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 // runAndReport runs one job automatically, writes the one log line its outcome
 // is worth, and hands the outcome back. A missing volume, a held-back run and a
 // job still running from last time are normal here, not failures.
-func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, error) {
-	rec, err := r.RunAutomatically(ctx, name)
+func (r *Runner) runAndReport(ctx context.Context, key string) (history.Run, error) {
+	rec, err := r.RunAutomatically(ctx, key)
+	name := r.nameOf(key)
 	switch {
 	case errors.Is(err, ErrHeldBack), errors.Is(err, ErrHeld):
 		r.log("%s: %v", name, err)
@@ -895,22 +954,23 @@ func (r *Runner) runAndReport(ctx context.Context, name string) (history.Run, er
 // while the first sync takes minutes.
 func (r *Runner) runAtStart(ctx context.Context) {
 	cfg := r.config()
-	var due []string
+	var due, names []string
 	for _, j := range cfg.Jobs {
 		if cfg.RunsOnItsOwn(j) && j.RunAtStart {
-			due = append(due, j.Name)
+			due = append(due, j.Key())
+			names = append(names, j.Name)
 		}
 	}
 	if len(due) == 0 {
 		return
 	}
-	r.log("running at start: %s", strings.Join(due, ", "))
+	r.log("running at start: %s", strings.Join(names, ", "))
 	go func() {
-		for _, name := range due {
+		for _, key := range due {
 			if ctx.Err() != nil {
 				return
 			}
-			r.runAndReport(ctx, name)
+			r.runAndReport(ctx, key)
 		}
 	}()
 }
@@ -933,7 +993,7 @@ func (r *Runner) stopCron(c *cron.Cron) {
 // stopped, since nothing would list it any more to stop it by hand. So is the
 // run of a job this configuration pauses: somebody who presses Pause expects
 // the copying to stop. A paused job started by hand runs on through later
-// saves.
+// saves, and a renamed job runs on under its new name.
 func (r *Runner) Reload(cfg *job.Config) {
 	note, incomplete := dispatcher(cfg)
 	for _, name := range incomplete {
@@ -943,27 +1003,27 @@ func (r *Runner) Reload(cfg *job.Config) {
 	was := r.cfg
 	r.cfg = cfg
 	r.note = note
-	gone := map[string]context.CancelFunc{}
-	paused := map[string]context.CancelFunc{}
-	for name, stop := range r.inflight {
-		now, ok := cfg.Find(name)
-		before, _ := was.Find(name)
+	type stopping struct {
+		name, why string
+		stop      context.CancelFunc
+	}
+	var stops []stopping
+	for key, stop := range r.inflight {
+		now, ok := cfg.Find(key)
+		before, _ := was.Find(key)
 		switch {
 		case !ok:
-			gone[name] = stop
+			stops = append(stops, stopping{before.Name, "removed", stop})
 		case now.Disabled && !before.Disabled:
-			paused[name] = stop
+			stops = append(stops, stopping{now.Name, "paused", stop})
 		}
 	}
 	r.mu.Unlock()
-	for name, stop := range gone {
-		r.log("%s: stopping, the job was removed", name)
-		stop()
+	for _, s := range stops {
+		r.log("%s: stopping, the job was %s", s.name, s.why)
+		s.stop()
 	}
-	for name, stop := range paused {
-		r.log("%s: stopping, the job was paused", name)
-		stop()
-	}
+	r.relabel(cfg)
 	switch {
 	case cfg.PauseAutomatic && !was.PauseAutomatic:
 		r.log("automatic runs are paused, jobs only run when started by hand")
@@ -1002,7 +1062,7 @@ const MovingBusy = 8
 // is called. It runs its own ticker because a large file finishes no steps for
 // seconds at a time. Identical frames are dropped, and the reading is skipped
 // while many steps finish in one tick; see MovingBusy.
-func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs, steps *stepCount) func() {
+func (r *Runner) watchMoving(ctx context.Context, j job.Job, right rclonefs.Fs, steps *stepCount) func() {
 	done := make(chan struct{})
 	go func() {
 		tick := time.NewTicker(MovingTick)
@@ -1015,7 +1075,7 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 				return
 			}
 			last, lastRate, lastSpeed = now, rate, speed
-			r.publish(Event{Job: name, Phase: "moving", Moving: now, Rate: rate, Speed: speed})
+			r.publish(Event{Job: j.Name, JobID: j.Key(), Phase: "moving", Moving: now, Rate: rate, Speed: speed})
 		}
 		since := time.Now()
 		var gauge speedometer
@@ -1025,7 +1085,7 @@ func (r *Runner) watchMoving(ctx context.Context, name string, right rclonefs.Fs
 			case <-done:
 				// One last empty frame clears the rows on the screen.
 				if len(last) > 0 || lastRate > 0 || lastSpeed > 0 {
-					r.publish(Event{Job: name, Phase: "moving", Moving: []engine.Moving{}})
+					r.publish(Event{Job: j.Name, JobID: j.Key(), Phase: "moving", Moving: []engine.Moving{}})
 				}
 				return
 			case <-ctx.Done():
@@ -1145,7 +1205,10 @@ func sameMoving(a, b []engine.Moving) bool {
 
 // Event is something worth telling a watching screen about.
 type Event struct {
+	// Job is the name the job goes by when the event goes out, and JobID the
+	// id it keeps; a screen that follows a run across a rename goes by the id.
 	Job   string       `json:"job"`
+	JobID string       `json:"jobId,omitempty"`
 	Phase string       `json:"phase"` // "started", "progress", "moving", "finished" or "anomaly"
 	Run   *history.Run `json:"run,omitempty"`
 	Error string       `json:"error,omitempty"`
@@ -1193,11 +1256,14 @@ type Event struct {
 	Speed int64 `json:"speed,omitempty"`
 }
 
+// Key is the key of the job the event is about.
+func (e Event) Key() string { return jobid.Key(e.JobID, e.Job) }
+
 // progressFor turns the apply stage's reports into events on the stream. Every
 // step is published; publish drops a send that would block.
 type progressFor struct {
 	runner *Runner
-	job    string
+	job    job.Job
 	// steps counts what finishes, for the in-flight ticker. It may be nil.
 	steps *stepCount
 	// live takes every line the run writes, so the log shows it at once. It
@@ -1206,14 +1272,14 @@ type progressFor struct {
 }
 
 func (p progressFor) Starting(total int) {
-	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: 0, Total: total})
+	p.runner.publish(Event{Job: p.job.Name, JobID: p.job.Key(), Phase: "progress", Done: 0, Total: total})
 }
 
 func (p progressFor) Did(kind, path, side, note string, done, total int) {
 	if p.steps != nil {
 		p.steps.add(kind)
 	}
-	p.runner.publish(Event{Job: p.job, Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side, Note: note})
+	p.runner.publish(Event{Job: p.job.Name, JobID: p.job.Key(), Phase: "progress", Done: done, Total: total, Kind: kind, Path: path, Side: side, Note: note})
 }
 
 // Logged hands one line of the run's list to the log of runs still going.
@@ -1231,7 +1297,7 @@ const readingEvery = 250 * time.Millisecond
 // exists and the apply stage takes over.
 type readingFor struct {
 	runner *Runner
-	job    string
+	job    job.Job
 
 	mu    sync.Mutex
 	last  time.Time
@@ -1248,7 +1314,7 @@ func (w *readingFor) report(r scan.Reading) {
 	}
 	w.last, w.stage = now, r
 	w.mu.Unlock()
-	w.runner.publish(Event{Job: w.job, Phase: "progress", Stage: string(r.Stage), Side: r.Side, Done: r.Done, Total: r.Total, Guess: r.Guess})
+	w.runner.publish(Event{Job: w.job.Name, JobID: w.job.Key(), Phase: "progress", Stage: string(r.Stage), Side: r.Side, Done: r.Done, Total: r.Total, Guess: r.Guess})
 }
 
 // Subscribe returns a channel of events and the function that stops it. A send
@@ -1276,6 +1342,11 @@ func (r *Runner) Subscribe() (<-chan Event, func()) {
 func (r *Runner) publish(ev Event) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	// A run goes on through a rename, and what it tells goes out under the
+	// name the job has now.
+	if j, ok := r.cfg.Find(ev.JobID); ev.JobID != "" && ok {
+		ev.Job = j.Name
+	}
 	r.track(ev)
 	for ch := range r.subs {
 		select {
@@ -1289,10 +1360,14 @@ func (r *Runner) publish(ev Event) {
 // the sides are still being read.
 type Working struct {
 	Job     string
+	JobID   string
 	Started time.Time
 	Done    int
 	Total   int
 }
+
+// Key is the key of the job the run belongs to.
+func (w Working) Key() string { return jobid.Key(w.JobID, w.Job) }
 
 // track keeps going in step with the events of a run. r.mu is held.
 func (r *Runner) track(ev Event) {
@@ -1301,15 +1376,18 @@ func (r *Runner) track(ev Event) {
 		if r.going == nil {
 			r.going = map[string]Working{}
 		}
-		r.going[ev.Job] = Working{Job: ev.Job, Started: time.Now()}
+		r.going[ev.Key()] = Working{Job: ev.Job, JobID: ev.Key(), Started: time.Now()}
 	case "progress":
-		w, ok := r.going[ev.Job]
-		if ok && ev.Stage == "" {
-			w.Done, w.Total = ev.Done, ev.Total
-			r.going[ev.Job] = w
+		w, ok := r.going[ev.Key()]
+		if ok {
+			w.Job = ev.Job
+			if ev.Stage == "" {
+				w.Done, w.Total = ev.Done, ev.Total
+			}
+			r.going[ev.Key()] = w
 		}
 	case "finished":
-		delete(r.going, ev.Job)
+		delete(r.going, ev.Key())
 	}
 }
 
@@ -1318,6 +1396,9 @@ func (r *Runner) Working() []Working {
 	r.mu.Lock()
 	out := make([]Working, 0, len(r.going))
 	for _, w := range r.going {
+		if j, ok := r.cfg.Find(w.JobID); ok {
+			w.Job = j.Name
+		}
 		out = append(out, w)
 	}
 	r.mu.Unlock()
@@ -1326,14 +1407,16 @@ func (r *Runner) Working() []Working {
 }
 
 // Queued reports which of the running jobs still wait for their turn, behind
-// as many runs as parallelJobs allows. They have read neither side yet.
+// as many runs as parallelJobs allows. They have read neither side yet. It and
+// Running name each job as it is called at the moment of asking, so a job
+// renamed while it runs is listed under its new name.
 func (r *Runner) Queued() map[string]bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	out := map[string]bool{}
-	for name := range r.inflight {
-		if _, going := r.going[name]; !going {
-			out[name] = true
+	for key := range r.inflight {
+		if _, going := r.going[key]; !going {
+			out[r.calledLocked(key)] = true
 		}
 	}
 	return out
@@ -1345,8 +1428,20 @@ func (r *Runner) Running() map[string]bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	out := make(map[string]bool, len(r.inflight))
-	for name := range r.inflight {
-		out[name] = true
+	for key := range r.inflight {
+		out[r.calledLocked(key)] = true
 	}
 	return out
+}
+
+// calledLocked is what the job with this key is called, for a caller that
+// holds r.mu. A job removed while it runs keeps the name its run went by.
+func (r *Runner) calledLocked(key string) string {
+	if j, ok := r.cfg.Find(key); ok {
+		return j.Name
+	}
+	if w, ok := r.going[key]; ok {
+		return w.Job
+	}
+	return key
 }

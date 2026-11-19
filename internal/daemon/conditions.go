@@ -93,19 +93,19 @@ func (w *waiting) folders(name string) []plan.GoneError {
 
 // WaitingFor reports whether this job is waiting for a drive to be attached,
 // and since when.
-func (r *Runner) WaitingFor(name string) (time.Time, bool) { return r.waiting.Since(name) }
+func (r *Runner) WaitingFor(ref string) (time.Time, bool) { return r.waiting.Since(r.keyOf(ref)) }
 
 // waitForDrive marks a job as waiting for its drive, and for the folder a run
 // found gone if err names one. A watch on the drive ends with the drive, so
 // the job's watcher is started again once it is back.
-func (r *Runner) waitForDrive(name string, err error) {
+func (r *Runner) waitForDrive(key string, err error) {
 	var found []plan.GoneError
 	var gone *plan.GoneError
 	if errors.As(err, &gone) {
 		found = append(found, *gone)
 	}
-	r.waiting.note(name, time.Now(), found...)
-	j, ok := r.config().Find(name)
+	r.waiting.note(key, time.Now(), found...)
+	j, ok := r.config().Find(key)
 	if !ok {
 		return
 	}
@@ -114,7 +114,7 @@ func (r *Runner) waitForDrive(name string, err error) {
 	defer r.mu.Unlock()
 	// The run has said the drive is missing, so what look finds gone is not
 	// logged again.
-	if w := r.watchers[name]; w != nil && w.failed == "" {
+	if w := r.watchers[key]; w != nil && w.failed == "" {
 		w.look(seen)
 	}
 }
@@ -125,7 +125,7 @@ func (r *Runner) away(j job.Job) error {
 	if err := attached(j); err != nil {
 		return err
 	}
-	for _, gone := range r.waiting.folders(j.Name) {
+	for _, gone := range r.waiting.folders(j.Key()) {
 		if _, err := os.Stat(gone.Root); err != nil {
 			return fmt.Errorf("%w: %w", ErrVolumeMissing, &gone)
 		}

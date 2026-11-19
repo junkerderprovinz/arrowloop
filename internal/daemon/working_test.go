@@ -3,10 +3,12 @@ package daemon
 import (
 	"testing"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
 func TestWorkingFollowsARunFromStartToFinish(t *testing.T) {
-	r := &Runner{}
+	r := &Runner{cfg: &job.Config{}}
 	before := time.Now()
 	r.publish(Event{Job: "Fotos", Phase: "started"})
 
@@ -31,7 +33,7 @@ func TestWorkingFollowsARunFromStartToFinish(t *testing.T) {
 }
 
 func TestWorkingListsRunsOldestFirst(t *testing.T) {
-	r := &Runner{}
+	r := &Runner{cfg: &job.Config{}}
 	r.publish(Event{Job: "b", Phase: "started"})
 	time.Sleep(time.Millisecond)
 	r.publish(Event{Job: "a", Phase: "started"})

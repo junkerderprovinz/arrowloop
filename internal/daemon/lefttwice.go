@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
@@ -12,13 +13,13 @@ import (
 // run had left for later too, or returns "" when there are none. Leaving a file
 // once is routine, since the next run tries again; leaving it twice means the
 // retry did not help and somebody has to look.
-func (r *Runner) leftAgain(ctx context.Context, name string, skipped []plan.Skip) string {
+func (r *Runner) leftAgain(ctx context.Context, j job.Job, skipped []plan.Skip) string {
 	if r.hist == nil || len(skipped) == 0 {
 		return ""
 	}
-	before, err := r.hist.LeftLastTime(context.WithoutCancel(ctx), name)
+	before, err := r.hist.LeftLastTime(context.WithoutCancel(ctx), j.Key())
 	if err != nil {
-		r.log("%s: could not read what the last run left for later: %v", name, err)
+		r.log("%s: could not read what the last run left for later: %v", j.Name, err)
 		return ""
 	}
 	var again []plan.Skip

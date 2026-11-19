@@ -12,7 +12,8 @@ import (
 // optionally split per job, plus the totals. Every rule lives in
 // history.Summary.
 func (s *Server) historyStats(w http.ResponseWriter, r *http.Request) {
-	q := history.StatsQuery{Job: r.URL.Query().Get("job")}
+	asked := r.URL.Query().Get("job")
+	q := history.StatsQuery{Job: s.historyKey(r.Context(), asked)}
 
 	// A value that cannot be parsed is refused rather than replaced by the
 	// default, which would draw a month for "days=3O". A window that is too
@@ -38,6 +39,14 @@ func (s *Server) historyStats(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
+	}
+	// The answer echoes the question as the page put it, so a page racing two
+	// requests can tell them apart.
+	if asked != "" {
+		out.Job = asked
+		for i := range out.Rows {
+			out.Rows[i].Job = asked
+		}
 	}
 	writeJSON(w, http.StatusOK, out)
 }

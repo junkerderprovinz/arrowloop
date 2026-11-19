@@ -88,9 +88,9 @@ function OtherJob({ instance, job, onChanged }: { instance: OtherInstance; job: 
     setSaid(null);
     try {
       if (job.running) {
-        await api.stopOnInstance(instance.id, job.name);
+        await api.stopOnInstance(instance.id, job.id ?? job.name);
       } else {
-        await api.runOnInstance(instance.id, job.name);
+        await api.runOnInstance(instance.id, job.id ?? job.name);
         setSaid({ text: t("instances.started", { job: job.name, name: instance.name }), ok: true });
       }
       onChanged();

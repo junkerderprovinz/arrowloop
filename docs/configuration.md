@@ -53,7 +53,8 @@ manager happened to start the process in.
 
 | Field | Default | What it does |
 |---|---|---|
-| `name` | required | How the job is asked for and how its history is kept apart. Two jobs cannot share one. |
+| `id` | given at load | Stays with the job for good. The run log, the safety brakes and what the job has learned are kept under it, so a renamed job keeps all of them. ArrowLoop writes one for every job that lacks it; leave it as it is. |
+| `name` | required | How the job is asked for and how it shows in every list. Two jobs cannot share one, and it can change at any time. |
 | `left`, `right` | required | A local path or any rclone remote. Which is which makes no difference to the engine. Both naming one place is refused, also through a symlink, an alias or two remotes set up for the same server, bucket or drive. |
 | `state` | required | Where this job remembers what the two sides agreed on. |
 | `direction` | both ways | `leftToRight` or `rightToLeft` makes one side the source and never writes to it. Anything else, including an empty field, is both ways. |

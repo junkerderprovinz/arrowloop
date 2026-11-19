@@ -17,7 +17,10 @@ func TestSyncNowStartsEveryJobThatCanRun(t *testing.T) {
 		{Name: "busy", Left: "/a", Right: "/b"},
 		{Name: "music", Left: "/c", Right: "/d"},
 	}
-	got := startable(jobs, map[string]bool{"busy": true})
+	var got []string
+	for _, j := range startable(jobs, map[string]bool{"busy": true}) {
+		got = append(got, j.Name)
+	}
 	if want := []string{"photos", "music"}; !slices.Equal(got, want) {
 		t.Errorf("Force sync starts %v, expected %v", got, want)
 	}

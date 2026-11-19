@@ -434,10 +434,10 @@ func (s *shell) toggleActivity(tray *application.SystemTray) {
 // syncAll starts every job that can run, as if each had been started by hand,
 // so no condition and no pause holds it.
 func syncAll(ctx context.Context, runner *daemon.Runner) {
-	for _, name := range startable(runner.Config().Jobs, runner.Running()) {
+	for _, j := range startable(runner.Config().Jobs, runner.Running()) {
 		go func() {
-			if _, err := runner.Run(ctx, name); err != nil {
-				log.Printf("tray: %s: %v", name, err)
+			if _, err := runner.Run(ctx, j.Key()); err != nil {
+				log.Printf("tray: %s: %v", j.Name, err)
 			}
 		}()
 	}
@@ -445,13 +445,13 @@ func syncAll(ctx context.Context, runner *daemon.Runner) {
 
 // startable is every job Force sync starts: switched on, both sides set, and
 // not already running.
-func startable(jobs []job.Job, running map[string]bool) []string {
-	var out []string
+func startable(jobs []job.Job, running map[string]bool) []job.Job {
+	var out []job.Job
 	for _, j := range jobs {
 		if j.Disabled || j.Left == "" || j.Right == "" || running[j.Name] {
 			continue
 		}
-		out = append(out, j.Name)
+		out = append(out, j)
 	}
 	return out
 }

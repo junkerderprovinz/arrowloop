@@ -25,6 +25,8 @@ export async function engineHeaders(): Promise<Record<string, string>> {
 
 /** A job as the list shows it: resolved, with its live state. */
 export interface Job {
+  /** Stays with the job through a rename. An older engine sends none. */
+  id?: string;
   name: string;
   left: string;
   right: string;
@@ -144,6 +146,8 @@ export interface OtherInstance {
 
 /** A job as the configuration file holds it. */
 export interface JobConfig {
+  /** Given by the engine and kept through a rename; the editor passes it on untouched. */
+  id?: string;
   name: string;
   left: string;
   right: string;

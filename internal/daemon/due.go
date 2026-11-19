@@ -16,11 +16,13 @@ import (
 // a phone the engine is not running at night, so Android wakes it and this
 // works out which jobs are due from the cron expressions, leaving one
 // definition of the schedule. A scheduled job that has never run is due.
+//
+// It and Retrying list the jobs by their Key.
 func (r *Runner) Due(ctx context.Context, now time.Time) []string {
 	var due []string
 	for _, j := range r.config().Jobs {
 		if r.owed(ctx, j, now) {
-			due = append(due, j.Name)
+			due = append(due, j.Key())
 		}
 	}
 	return due
@@ -36,7 +38,8 @@ func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
 		r.log("%s: unusable schedule %q: %v", j.Name, j.Schedule, err)
 		return false
 	}
-	last, ok, err := r.lastSuccess(ctx, j.Name)
+	key := j.Key()
+	last, ok, err := r.lastSuccess(ctx, key)
 	if err != nil {
 		// A broken log must not stop every schedule: a run too many costs
 		// a comparison, a run too few a night's backup.
@@ -48,7 +51,7 @@ func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
 	// owed at the next one.
 	turn := last
 	if r.hist != nil {
-		if stopped, was, err := r.hist.LastStopped(ctx, j.Name); err == nil && was && stopped.After(turn) {
+		if stopped, was, err := r.hist.LastStopped(ctx, key); err == nil && was && stopped.After(turn) {
 			turn, ok = stopped, true
 		}
 	}
@@ -59,13 +62,13 @@ func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
 	}
 	// For a job that never worked, last is the zero time and every failure
 	// counts.
-	if r.backingOff(ctx, j.Name, last, parsed, now) {
+	if r.backingOff(ctx, j, last, parsed, now) {
 		return false
 	}
 	// A held job is looked at once per scheduled turn, to see whether what
 	// held it has gone. It never succeeds while held, and without this a
 	// phone would list both sides at every wake-up.
-	if seen, held := r.Held(j.Name); held && parsed.Next(seen).After(now) {
+	if seen, held := r.Held(key); held && parsed.Next(seen).After(now) {
 		return false
 	}
 	return true
@@ -76,13 +79,13 @@ func (r *Runner) owed(ctx context.Context, j job.Job, now time.Time) bool {
 // out of attempts until its next scheduled time. A failed job stays owed until
 // it works, and without this limit a phone would wake all night for a remote
 // that is down. An unreadable history does not back off.
-func (r *Runner) backingOff(ctx context.Context, name string, since time.Time, parsed cron.Schedule, now time.Time) bool {
+func (r *Runner) backingOff(ctx context.Context, j job.Job, since time.Time, parsed cron.Schedule, now time.Time) bool {
 	if r.hist == nil {
 		return false
 	}
-	fails, lastFail, err := r.hist.FailuresSince(ctx, name, since)
+	fails, lastFail, err := r.hist.FailuresSince(ctx, j.Key(), since)
 	if err != nil {
-		r.log("%s: cannot read its failures (%v), trying it", name, err)
+		r.log("%s: cannot read its failures (%v), trying it", j.Name, err)
 		return false
 	}
 	if fails == 0 {
@@ -110,23 +113,24 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 	running := r.Running()
 	var due []string
 	for _, j := range cfg.Jobs {
+		key := j.Key()
 		if !cfg.RunsOnItsOwn(j) || j.Schedule == "" || running[j.Name] {
 			continue
 		}
 		// An unreadable log is no reason to run, and the scheduled turns
 		// report it.
-		last, _, err := r.lastSuccess(ctx, j.Name)
+		last, _, err := r.lastSuccess(ctx, key)
 		if err != nil {
 			continue
 		}
-		fails, lastFail, err := r.hist.FailuresSince(ctx, j.Name, last)
+		fails, lastFail, err := r.hist.FailuresSince(ctx, key, last)
 		if err != nil || fails == 0 || fails > policy.AttemptCount() {
 			continue
 		}
 		if lastFail.Add(policy.WaitFor(fails)).After(now) {
 			continue
 		}
-		due = append(due, j.Name)
+		due = append(due, key)
 	}
 	return due
 }
@@ -136,12 +140,12 @@ func (r *Runner) Retrying(ctx context.Context, now time.Time) []string {
 // clock only fires on each job's own turns, so the scheduler asks this every
 // minute, which is how often a drive coming back is noticed.
 func (r *Runner) catchUp(ctx context.Context) {
-	for _, name := range r.returned() {
+	for _, key := range r.returned() {
 		if ctx.Err() != nil {
 			return
 		}
-		r.log("%s: its drive is back, catching up the run it missed", name)
-		r.runAndReport(ctx, name)
+		r.log("%s: its drive is back, catching up the run it missed", r.nameOf(key))
+		r.runAndReport(ctx, key)
 	}
 }
 
@@ -153,13 +157,13 @@ func (r *Runner) returned() []string {
 	running := r.Running()
 	var back []string
 	for _, j := range cfg.Jobs {
-		if _, waits := r.waiting.Since(j.Name); !waits {
+		if _, waits := r.waiting.Since(j.Key()); !waits {
 			continue
 		}
 		if !cfg.RunsOnItsOwn(j) || j.Before != "" || running[j.Name] || r.away(j) != nil {
 			continue
 		}
-		back = append(back, j.Name)
+		back = append(back, j.Key())
 	}
 	return back
 }
@@ -176,13 +180,18 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 		r.log("nothing is due")
 		return Due{Found: r.drainTold()}
 	}
-	r.log("due now: %s", strings.Join(due, ", "))
+	names := make([]string, len(due))
+	for i, key := range due {
+		names[i] = r.nameOf(key)
+	}
+	r.log("due now: %s", strings.Join(names, ", "))
 	var out Due
-	for _, name := range due {
+	for i, key := range due {
 		if ctx.Err() != nil {
 			break
 		}
-		rec, err := r.runAndReport(ctx, name)
+		name := names[i]
+		rec, err := r.runAndReport(ctx, key)
 		out.Ran++
 		switch {
 		case errors.Is(err, ErrHeldBack), errors.Is(err, ErrVolumeMissing),
@@ -240,9 +249,9 @@ func (d Due) Changed() bool {
 
 // lastSuccess is the history lookup; a runner without a history has never
 // succeeded.
-func (r *Runner) lastSuccess(ctx context.Context, name string) (time.Time, bool, error) {
+func (r *Runner) lastSuccess(ctx context.Context, key string) (time.Time, bool, error) {
 	if r.hist == nil {
 		return time.Time{}, false, nil
 	}
-	return r.hist.LastSuccess(ctx, name)
+	return r.hist.LastSuccess(ctx, key)
 }

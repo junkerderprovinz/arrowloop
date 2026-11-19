@@ -349,6 +349,9 @@ func (s *Server) Handler() http.Handler {
 
 // jobView is one row of the job list.
 type jobView struct {
+	// ID is what a client asks for the job by, since it stays through a
+	// rename. An older engine sends none, and its jobs are asked for by name.
+	ID        string `json:"id,omitempty"`
 	Name      string `json:"name"`
 	Left      string `json:"left"`
 	Right     string `json:"right"`
@@ -411,24 +414,25 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 	cfg := s.Runner.Config()
 	// The strips are a nicety, so a failed read leaves them empty rather than
 	// failing the whole list.
-	names := make([]string, len(cfg.Jobs))
+	keys := make([]string, len(cfg.Jobs))
 	for i, j := range cfg.Jobs {
-		names[i] = j.Name
+		keys[i] = j.Key()
 	}
-	recent, _ := s.History.EachRecent(r.Context(), names, recentRuns)
+	recent, _ := s.History.EachRecent(r.Context(), keys, recentRuns)
 	out := make([]jobView, 0, len(cfg.Jobs))
 	for _, j := range cfg.Jobs {
+		key := j.Key()
 		v := jobView{
-			Name: j.Name, Left: j.Left, Right: j.Right, Watch: j.Watch,
+			ID: j.ID, Name: j.Name, Left: j.Left, Right: j.Right, Watch: j.Watch,
 			// Resolved, so an unset field and "both" look the same.
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name], Queued: queued[j.Name],
-			Recent: recent[j.Name],
+			Recent: recent[key],
 		}
 		if v.Recent == nil {
 			v.Recent = []history.Run{}
 		}
-		if when, ok, err := s.History.LastSuccess(r.Context(), j.Name); err == nil && ok {
+		if when, ok, err := s.History.LastSuccess(r.Context(), key); err == nil && ok {
 			stamp := when.UTC().Format(time.RFC3339)
 			v.LastSuccess = &stamp
 		}
@@ -436,7 +440,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			stamp := when.UTC().Format(time.RFC3339)
 			v.NextRun = &stamp
 		}
-		if since, ok := s.Runner.WaitingFor(j.Name); ok {
+		if since, ok := s.Runner.WaitingFor(key); ok {
 			stamp := since.UTC().Format(time.RFC3339)
 			v.Away = &stamp
 		}
@@ -640,7 +644,7 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Get("going") == "1" {
 		list = s.History.Following
 	}
-	runs, err := list(r.Context(), r.URL.Query().Get("job"), show,
+	runs, err := list(r.Context(), s.historyKey(r.Context(), r.URL.Query().Get("job")), show,
 		parseDay(r.URL.Query().Get("since"), false),
 		parseDay(r.URL.Query().Get("until"), true),
 		limit)
@@ -652,6 +656,22 @@ func (s *Server) listHistory(w http.ResponseWriter, r *http.Request) {
 		runs = []history.Run{}
 	}
 	writeJSON(w, http.StatusOK, runs)
+}
+
+// historyKey is what the run log keeps the job a client asked for under. A
+// client asks by id or by name, and for a job that is gone, by the name it
+// had last.
+func (s *Server) historyKey(ctx context.Context, ref string) string {
+	if ref == "" {
+		return ""
+	}
+	if j, ok := s.Runner.Config().Find(ref); ok {
+		return j.Key()
+	}
+	if key, ok := s.History.Named(ctx, ref); ok {
+		return key
+	}
+	return ref
 }
 
 // latestRuns answers every job's newest run and how many runs it started since
@@ -687,7 +707,7 @@ func (s *Server) jobTouches(w http.ResponseWriter, r *http.Request) {
 			limit = n
 		}
 	}
-	touches, err := s.History.TouchesLike(r.Context(), r.PathValue("name"), r.URL.Query().Get("q"), limit)
+	touches, err := s.History.TouchesLike(r.Context(), s.historyKey(r.Context(), r.PathValue("name")), r.URL.Query().Get("q"), limit)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -717,7 +737,7 @@ func (s *Server) fileLog(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	touches, err := s.History.Log(r.Context(), history.Filter{
-		Job:      q.Get("job"),
+		Job:      s.historyKey(r.Context(), q.Get("job")),
 		Contains: q.Get("q"),
 		Kinds:    kinds,
 		Limit:    limit,

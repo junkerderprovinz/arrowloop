@@ -159,7 +159,7 @@ func edited(cfg *job.Config) *job.Config {
 
 func runsOf(t *testing.T, r *Runner, name string) []history.Run {
 	t.Helper()
-	runs, err := r.hist.Recent(context.Background(), name, history.ShowAll, 10)
+	runs, err := r.hist.Recent(context.Background(), r.keyOf(name), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("read the log: %v", err)
 	}

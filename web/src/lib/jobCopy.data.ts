@@ -10,6 +10,7 @@
 /** The little of a job this needs to know. Structural, because the two
  *  surfaces spell their job type differently. */
 export interface CopyableJob {
+  id?: string;
   name?: string;
   state?: string;
   disabled?: boolean;
@@ -29,13 +30,16 @@ export function jobCopy<T extends CopyableJob>(
   fallback: string,
 ): T {
   const name = uniqueName(`${source.name || fallback}-${suffix}`, taken);
-  return {
+  const copy: T = {
     ...source,
     name,
     // Its own database; two jobs writing one record would delete each other's files.
     state: `state/${name}.db`,
     disabled: true,
   };
+  // A job of its own, with its own history, under the id the engine gives it.
+  delete copy.id;
+  return copy;
 }
 
 /**

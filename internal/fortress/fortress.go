@@ -36,7 +36,7 @@ func Report(s Snapshot, lang string) status.Report {
 	enabled := map[string]job.Job{}
 	for _, j := range s.Jobs {
 		if !j.Disabled {
-			enabled[j.Name] = j
+			enabled[j.Key()] = j
 		}
 	}
 
@@ -47,18 +47,18 @@ func Report(s Snapshot, lang string) status.Report {
 
 	found := map[string]bool{}
 	for _, f := range s.Findings {
-		found[f.Job] = true
+		found[f.Key()] = true
 		r.NeedsYou = append(r.NeedsYou, findingNeed(f, tr))
 		if f.Kind == anomaly.Overdue {
 			r.State = status.Worst(r.State, status.StateOverdue)
 		}
 	}
 	for _, run := range s.Latest {
-		if _, ok := enabled[run.Job]; !ok {
+		if _, ok := enabled[run.Key()]; !ok {
 			continue
 		}
 		switch {
-		case run.Failed() && !found[run.Job]:
+		case run.Failed() && !found[run.Key()]:
 			r.NeedsYou = append(r.NeedsYou, status.Need{
 				ID: "failed-" + run.Job, Severity: status.SeverityError, Code: "job.failed",
 				Text: tr("need.failed", run.Job, 0), Since: run.Finished.UTC(), Link: "/history",
@@ -77,7 +77,7 @@ func Report(s Snapshot, lang string) status.Report {
 			Kind:          status.KindSync,
 			Title:         w.Job,
 			StartedAt:     w.Started.UTC(),
-			BlocksRestart: deletes(enabled[w.Job]),
+			BlocksRestart: deletes(enabled[w.Key()]),
 		}
 		if w.Total > 0 {
 			p := min(float64(w.Done)/float64(w.Total), 1)

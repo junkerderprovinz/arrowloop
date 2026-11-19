@@ -128,8 +128,10 @@ func (s *Server) FortressImport(ctx context.Context, from kitfortress.Caller, ba
 }
 
 // fortressJob is a job as another app sees it. The sides stay out: a side
-// can carry a remote's settings, and the other app asks for a job by name.
+// can carry a remote's settings. The other app asks for a job by its id, or
+// by name if it knows no ids.
 type fortressJob struct {
+	ID        string   `json:"id,omitempty"`
 	Name      string   `json:"name"`
 	Direction string   `json:"direction"`
 	Mode      string   `json:"mode"`
@@ -152,20 +154,21 @@ func (s *Server) fortressJobs(ctx context.Context, _ kitfortress.Caller, _ []byt
 			return nil, err
 		}
 		for _, l := range runs {
-			latest[l.Run.Job] = l.Run
+			latest[l.Key()] = l.Run
 		}
 	}
 	running := s.Runner.Running()
 	out := []fortressJob{}
 	for _, j := range s.Runner.Config().Jobs {
 		v := fortressJob{
+			ID:        j.ID,
 			Name:      j.Name,
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Mode:      plan.ParseMode(j.Mode).String(),
 			Paused:    j.Disabled,
 			Running:   running[j.Name],
 		}
-		if run, ok := latest[j.Name]; ok {
+		if run, ok := latest[j.Key()]; ok {
 			v.LastRun = &lastRun{At: run.Finished.UTC(), Outcome: fortress.Outcome(run)}
 		}
 		out = append(out, v)

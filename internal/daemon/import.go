@@ -55,11 +55,11 @@ func (r *Runner) Import(ctx context.Context, backup io.Reader, n int64, by strin
 		return fmt.Errorf("%w: %w", ErrBadBackup, err)
 	}
 
-	names := jobNames(cfg, checked)
-	if !r.claimAll(names) {
+	keys := jobKeys(cfg, checked)
+	if !r.claimAll(keys) {
 		return ErrBusy
 	}
-	defer r.releaseAll(names)
+	defer r.releaseAll(keys)
 
 	if err := keepReserve(ctx, cfg); err != nil {
 		return err
@@ -153,34 +153,34 @@ func receive(backup io.Reader, n int64, stage string) (map[string]string, error)
 	return files, nil
 }
 
-// jobNames are the jobs of both configurations, which the import holds.
-func jobNames(configs ...*job.Config) []string {
+// jobKeys are the jobs of both configurations, which the import holds.
+func jobKeys(configs ...*job.Config) []string {
 	seen := map[string]bool{}
 	var out []string
 	for _, c := range configs {
 		for _, j := range c.Jobs {
-			if !seen[j.Name] {
-				seen[j.Name] = true
-				out = append(out, j.Name)
+			if !seen[j.Key()] {
+				seen[j.Key()] = true
+				out = append(out, j.Key())
 			}
 		}
 	}
 	return out
 }
 
-func (r *Runner) claimAll(names []string) bool {
-	for i, name := range names {
-		if !r.claim(name, func() {}) {
-			r.releaseAll(names[:i])
+func (r *Runner) claimAll(keys []string) bool {
+	for i, key := range keys {
+		if !r.claim(key, func() {}) {
+			r.releaseAll(keys[:i])
 			return false
 		}
 	}
 	return true
 }
 
-func (r *Runner) releaseAll(names []string) {
-	for _, name := range names {
-		r.release(name)
+func (r *Runner) releaseAll(keys []string) {
+	for _, key := range keys {
+		r.release(key)
 	}
 }
 
