@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"context"
@@ -17,19 +17,16 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
-	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/service"
 )
 
-const defaultConfig = "arrowloop.json"
-
 // load reads the configuration and starts the process-wide accounting, which
 // the bandwidth limit needs.
-func load(ctx context.Context, path string) (*job.Config, error) {
+func (o Options) load(ctx context.Context, path string) (*job.Config, error) {
 	// Storage targets live beside the configuration rather than at rclone's
 	// default, which inside a container is not on a mounted volume (see
 	// internal/remotes/where.go).
-	if err := remotes.Use(path); err != nil {
+	if err := o.Remotes(path); err != nil {
 		return nil, fmt.Errorf("decide where the storage targets live: %w", err)
 	}
 
@@ -40,13 +37,13 @@ func load(ctx context.Context, path string) (*job.Config, error) {
 	// Settings the file still carries but this version ignores are named, so
 	// nobody believes they are in force.
 	if gone := cfg.Retired(); len(gone) > 0 {
-		fmt.Fprintf(os.Stderr,
+		fmt.Fprintf(o.Stderr,
 			"note: %s carries settings this version no longer has and ignored them: %s\n",
 			path, strings.Join(gone, ", "))
 	}
 	for _, j := range cfg.Jobs {
 		if err := j.Refused(); err != nil {
-			fmt.Fprintf(os.Stderr, "note: %v; the other jobs run as usual\n", err)
+			fmt.Fprintf(o.Stderr, "note: %v; the other jobs run as usual\n", err)
 		}
 	}
 	if err := engine.StartAccounting(ctx, cfg.BwLimit); err != nil {
@@ -59,10 +56,23 @@ func logf(format string, args ...any) {
 	fmt.Printf("%s  %s\n", time.Now().Format("15:04:05"), fmt.Sprintf(format, args...))
 }
 
+// progress is logf for a command whose standard output is its result, so a
+// script reading the result does not get the log mixed in.
+func (o Options) progress(format string, args ...any) {
+	fmt.Fprintf(o.Stderr, "%s  %s\n", time.Now().Format("15:04:05"), fmt.Sprintf(format, args...))
+}
+
+// summary is the one line a finished run is worth.
+func summary(rec history.Run) string {
+	return fmt.Sprintf("%s: %d copied, %d moved, %d trashed, %d conflicts, %d folders made, %d folders removed, %d unchanged, %d left for later, in %s",
+		rec.Job, rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts, rec.DirsMade, rec.DirsRemoved,
+		rec.Unchanged, rec.Skipped, rec.Finished.Sub(rec.Started).Round(time.Millisecond))
+}
+
 // cmdRun executes one named job immediately, whatever its schedule says.
-func cmdRun(ctx context.Context, args []string) error {
+func (o Options) cmdRun(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("run", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file")
+	configPath := fset.String("config", o.Config, "the configuration file")
 	verbose := fset.Bool("v", false, "let rclone report what it is doing underneath")
 	if err := fset.Parse(args); err != nil {
 		return err
@@ -72,7 +82,7 @@ func cmdRun(ctx context.Context, args []string) error {
 	}
 	quieten(ctx, *verbose)
 
-	cfg, err := load(ctx, *configPath)
+	cfg, err := o.load(ctx, *configPath)
 	if err != nil {
 		return err
 	}
@@ -82,21 +92,23 @@ func cmdRun(ctx context.Context, args []string) error {
 	}
 	defer hist.Close()
 
-	runner := daemon.New(cfg, hist, logf)
-	rec, err := runner.Run(ctx, fset.Arg(0))
+	ctx, stop := stopOnSignal(ctx)
+	defer stop()
+	rec, err := daemon.New(cfg, hist, o.progress).Run(ctx, fset.Arg(0))
+	if cause := context.Cause(ctx); errors.As(cause, new(interrupted)) {
+		return cause
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s: %d copied, %d moved, %d trashed, %d conflicts, %d folders made, %d folders removed, %d unchanged, %d left for later, in %s\n",
-		rec.Job, rec.Copied, rec.Moved, rec.Trashed, rec.Conflicts, rec.DirsMade, rec.DirsRemoved,
-		rec.Unchanged, rec.Skipped, rec.Finished.Sub(rec.Started).Round(time.Millisecond))
+	fmt.Fprintln(o.Stdout, summary(rec))
 	return nil
 }
 
 // cmdDaemon runs every scheduled job until it is asked to stop.
-func cmdDaemon(ctx context.Context, args []string) error {
+func (o Options) cmdDaemon(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("daemon", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file")
+	configPath := fset.String("config", o.Config, "the configuration file")
 	keepFlag := fset.Duration("keep-history", 0, "how long to keep run records instead of historyKeep, 0 keeps them forever")
 	verbose := fset.Bool("v", false, "let rclone report what it is doing underneath")
 	if err := fset.Parse(args); err != nil {
@@ -104,7 +116,7 @@ func cmdDaemon(ctx context.Context, args []string) error {
 	}
 	quieten(ctx, *verbose)
 
-	cfg, err := load(ctx, *configPath)
+	cfg, err := o.load(ctx, *configPath)
 	if err != nil {
 		return err
 	}
@@ -149,9 +161,9 @@ func cmdDaemon(ctx context.Context, args []string) error {
 
 // cmdJobs lists what the configuration defines and when each job last
 // succeeded, since a job that fails every run still looks busy in a log.
-func cmdJobs(ctx context.Context, args []string) error {
+func (o Options) cmdJobs(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("jobs", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file")
+	configPath := fset.String("config", o.Config, "the configuration file")
 	if err := fset.Parse(args); err != nil {
 		return err
 	}
@@ -165,7 +177,7 @@ func cmdJobs(ctx context.Context, args []string) error {
 	}
 	defer hist.Close()
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+	w := tabwriter.NewWriter(o.Stdout, 0, 0, 2, ' ', 0)
 	fmt.Fprintln(w, "JOB\tSCHEDULE\tLEFT\tRIGHT\tLAST SUCCESS")
 	for _, j := range cfg.Jobs {
 		schedule := j.Schedule
@@ -185,9 +197,9 @@ func cmdJobs(ctx context.Context, args []string) error {
 }
 
 // cmdHistory prints what the runs did.
-func cmdHistory(ctx context.Context, args []string) error {
+func (o Options) cmdHistory(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("history", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file")
+	configPath := fset.String("config", o.Config, "the configuration file")
 	which := fset.String("job", "", "only this job, by its name or its id")
 	limit := fset.Int("limit", 20, "how many runs to show")
 	if err := fset.Parse(args); err != nil {
@@ -212,11 +224,11 @@ func cmdHistory(ctx context.Context, args []string) error {
 		return err
 	}
 	if len(runs) == 0 {
-		fmt.Println("no runs recorded yet")
+		fmt.Fprintln(o.Stdout, "no runs recorded yet")
 		return nil
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+	w := tabwriter.NewWriter(o.Stdout, 0, 0, 2, ' ', 0)
 	fmt.Fprintln(w, "WHEN\tJOB\tTOOK\tCOPIED\tMOVED\tTRASHED\tCONFLICTS\tLATER\tRESULT")
 	for _, r := range runs {
 		result := "ok"
@@ -235,9 +247,9 @@ func cmdHistory(ctx context.Context, args []string) error {
 
 // cmdService prints the file this operating system wants in order to keep the
 // daemon running, and the command that switches it on (see package service).
-func cmdService(args []string) error {
+func (o Options) cmdService(args []string) error {
 	fset := flag.NewFlagSet("service", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file the service should use")
+	configPath := fset.String("config", o.Config, "the configuration file the service should use")
 	goos := fset.String("os", "", "produce the file for another system: linux, darwin or windows")
 	if err := fset.Parse(args); err != nil {
 		return err
@@ -262,6 +274,6 @@ func cmdService(args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Print(def.String())
+	fmt.Fprint(o.Stdout, def.String())
 	return nil
 }

@@ -1732,6 +1732,7 @@ const fr: Translations = {
   'new.change.tabletLandscape': 'Sur une tablette, l\'application du téléphone tourne avec l\'appareil, et ses pages, la barre du bas et les panneaux qui montent d\'en bas restent dans une colonne au milieu de l\'écran.',
   'new.change.tabletShell': 'Sur une tablette tenue à l\'horizontale, l\'application du téléphone affiche la barre latérale des versions bureau et conteneur, les réglages en tuiles et les listes sur toute la largeur.',
   'new.change.trayMemory': 'Dans la zone de notification, l\'application de bureau ferme sa fenêtre et n\'utilise plus qu\'un dixième de la mémoire, et l\'icône ouvre une nouvelle fenêtre en moins d\'une seconde.',
+  'new.change.desktopCli': 'L\'application de bureau accepte les mêmes commandes que la ligne de commande. Sa commande run-due lance tout ce qui est dû puis se ferme, ainsi cron, le Planificateur de tâches de Windows ou un minuteur systemd tiennent vos tâches à l\'heure sans que l\'application reste ouverte.',
   'new.change.notifyTiles': '{add} présente chaque service sous forme de tuile avec son logo, et la recherche le trouve par son nom.',
   'new.change.notifyShoutrrr': 'Un canal Shoutrrr envoie directement depuis ArrowLoop vers Telegram, Pushover, Teams et plus de vingt autres services, sans serveur à lui.',
   'welcome.title': 'Bienvenue dans ArrowLoop',

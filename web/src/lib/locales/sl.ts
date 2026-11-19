@@ -1732,6 +1732,7 @@ const sl: Translations = {
   'new.change.tabletLandscape': 'Na tabličnem računalniku se aplikacija za telefon obrača skupaj z napravo, njene strani, spodnja vrstica in plošče, ki se odprejo od spodaj, pa ostanejo v stolpcu na sredini zaslona.',
   'new.change.tabletShell': 'Na vodoravno obrnjenem tabličnem računalniku aplikacija za telefon pokaže stransko vrstico namizne in vsebniške različice, nastavitve kot ploščice in sezname čez vso širino.',
   'new.change.trayMemory': 'V obvestilnem območju namizna aplikacija zapre svoje okno in porabi približno desetino pomnilnika, ikona pa odpre novo okno v manj kot sekundi.',
+  'new.change.desktopCli': 'Namizna aplikacija razume iste ukaze kot ukazna vrstica. Njen ukaz run-due zažene vse, kar je na vrsti, in se zapre, tako da cron, Razporejevalnik opravil v sistemu Windows ali časovnik systemd ohranjajo vaša opravila po urniku, ne da bi aplikacija ostala odprta.',
   'new.change.notifyTiles': '{add} prikaže vsako storitev kot ploščico z njenim logotipom, iskanje pa jo najde po imenu.',
   'new.change.notifyShoutrrr': 'Kanal Shoutrrr pošilja neposredno iz ArrowLoopa v Telegram, Pushover, Teams in več kot dvajset drugih storitev in ne potrebuje lastnega strežnika.',
   'welcome.title': 'Dobrodošli v ArrowLoopu',

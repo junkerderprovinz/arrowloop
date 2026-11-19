@@ -235,7 +235,10 @@ application and a server nobody asked to run.
 
 The schedules run for as long as the window is open. For a machine that should
 sync while nobody is looking, use `arrowloop daemon` and `arrowloop service`
-instead; see [the command line](cli.md).
+instead; see [the command line](cli.md). To sync on schedule without keeping the
+app open at all, let cron, Task Scheduler or a systemd timer start
+`ArrowLoop run-due` now and then, which runs whatever is due and exits; see
+[from the desktop app](cli.md#from-the-desktop-app).
 
 ### As a Flatpak
 

@@ -1732,6 +1732,7 @@ const lv: Translations = {
   'new.change.tabletLandscape': 'Planšetdatorā tālruņa lietotne griežas līdzi ierīcei, un tās lapas, apakšējā josla un no apakšas izslīdošie paneļi paliek kolonnā ekrāna vidū.',
   'new.change.tabletShell': 'Guļus turētā planšetdatorā tālruņa lietotne rāda darbvirsmas un konteinera versijas sānjoslu, iestatījumus kā flīzes un sarakstus visā platumā.',
   'new.change.trayMemory': 'Paziņojumu apgabalā darbvirsmas lietotne aizver savu logu un izmanto aptuveni desmito daļu atmiņas, bet ikona atver jaunu logu mazāk nekā sekundē.',
+  'new.change.desktopCli': 'Darbvirsmas lietotne saprot tās pašas komandas, ko komandrinda. Tās komanda run-due palaiž visu, kam pienācis laiks, un aizveras, tāpēc cron, Windows uzdevumu plānotājs vai systemd taimeris var turēt jūsu uzdevumus grafikā, lietotnei nepaliekot atvērtai.',
   'new.change.notifyTiles': '{add} rāda katru pakalpojumu kā flīzi ar tā logotipu, un meklēšana to atrod pēc nosaukuma.',
   'new.change.notifyShoutrrr': 'Shoutrrr kanāls sūta tieši no ArrowLoop uz Telegram, Pushover, Teams un vairāk nekā divdesmit citiem pakalpojumiem, un tam nav vajadzīgs savs serveris.',
   'welcome.title': 'Laipni lūdzam ArrowLoop',

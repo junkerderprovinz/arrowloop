@@ -1732,6 +1732,7 @@ const ja: Translations = {
   'new.change.tabletLandscape': 'タブレットでは、スマートフォンのアプリが端末の向きに合わせて回転し、ページ、下のバー、下から開くパネルは画面中央の列に収まります。',
   'new.change.tabletShell': '横向きのタブレットでは、スマートフォンのアプリがデスクトップ版とコンテナ版のサイドバーを表示し、設定をタイルで、一覧を画面の幅いっぱいに表示します。',
   'new.change.trayMemory': '通知領域にいる間、デスクトップアプリはウィンドウを閉じ、メモリは約10分の1で済みます。アイコンから1秒足らずで新しいウィンドウが開きます。',
+  'new.change.desktopCli': 'デスクトップ版のアプリはコマンドラインと同じコマンドを受け付けます。run-due コマンドは実行時刻を過ぎたものをすべて実行して終了するので、cron や Windows のタスク スケジューラ、systemd のタイマーから、アプリを開いたままにせずにジョブを予定どおり動かせます。',
   'new.change.notifyTiles': '{add} では各サービスがロゴ付きのタイルで表示され、名前で検索できます。',
   'new.change.notifyShoutrrr': 'Shoutrrr チャンネルは ArrowLoop から直接 Telegram、Pushover、Teams など 20 を超えるサービスに送ります。専用のサーバーは要りません。',
   'welcome.title': 'ArrowLoop へようこそ',

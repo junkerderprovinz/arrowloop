@@ -1732,6 +1732,7 @@ const id: Translations = {
   'new.change.tabletLandscape': 'Di tablet, aplikasi ponsel ikut berputar bersama perangkat, dan halaman, bilah bawah, serta panel yang muncul dari bawah tetap berada dalam satu kolom di tengah layar.',
   'new.change.tabletShell': 'Di tablet yang dipegang mendatar, aplikasi ponsel menampilkan bilah samping versi desktop dan kontainer, pengaturan sebagai ubin, dan daftar selebar layar.',
   'new.change.trayMemory': 'Di area notifikasi, aplikasi desktop menutup jendelanya dan hanya butuh sekitar sepersepuluh memori, dan ikonnya membuka jendela baru dalam waktu kurang dari sedetik.',
+  'new.change.desktopCli': 'Aplikasi desktop menerima perintah yang sama dengan baris perintah. Perintah run-due miliknya menjalankan semua yang sudah waktunya lalu keluar, jadi cron, Penjadwal Tugas Windows, atau timer systemd bisa menjaga tugas Anda tetap sesuai jadwal tanpa aplikasi harus tetap terbuka.',
   'new.change.notifyTiles': '{add} menampilkan setiap layanan sebagai ubin dengan logonya, dan pencarian menemukannya lewat nama.',
   'new.change.notifyShoutrrr': 'Saluran Shoutrrr mengirim langsung dari ArrowLoop ke Telegram, Pushover, Teams, dan lebih dari dua puluh layanan lain, tanpa perlu server sendiri.',
   'welcome.title': 'Selamat datang di ArrowLoop',

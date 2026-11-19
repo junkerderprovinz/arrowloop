@@ -1732,6 +1732,7 @@ const vi: Translations = {
   'new.change.tabletLandscape': 'Trên máy tính bảng, ứng dụng điện thoại xoay theo thiết bị, còn các trang, thanh dưới và các bảng trượt lên từ bên dưới nằm trong một cột ở giữa màn hình.',
   'new.change.tabletShell': 'Trên máy tính bảng đặt nằm ngang, ứng dụng điện thoại hiện thanh bên của bản máy tính và bản container, phần cài đặt dạng ô và danh sách trải hết chiều ngang.',
   'new.change.trayMemory': 'Trong khu thông báo, ứng dụng máy tính đóng cửa sổ của mình và chỉ cần khoảng một phần mười bộ nhớ, còn biểu tượng mở cửa sổ mới trong chưa đầy một giây.',
+  'new.change.desktopCli': 'Ứng dụng máy tính nhận cùng các lệnh như dòng lệnh. Lệnh run-due của nó chạy mọi việc đã đến hạn rồi thoát, nên cron, Task Scheduler của Windows hay một bộ hẹn giờ systemd có thể giữ công việc của bạn đúng lịch mà không cần để ứng dụng mở.',
   'new.change.notifyTiles': '{add} hiển thị mỗi dịch vụ thành một ô kèm logo, và ô tìm kiếm tìm được theo tên.',
   'new.change.notifyShoutrrr': 'Kênh Shoutrrr gửi thẳng từ ArrowLoop tới Telegram, Pushover, Teams và hơn hai mươi dịch vụ khác, không cần máy chủ riêng.',
   'welcome.title': 'Chào mừng đến với ArrowLoop',

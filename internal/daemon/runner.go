@@ -27,6 +27,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/hook"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/jobid"
+	"github.com/junkerderprovinz/arrowloop/internal/joblock"
 	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
@@ -39,6 +40,16 @@ import (
 // still going. Two runs over one pair of folders would race through the same
 // files and state database, so the tick is let go by.
 var ErrAlreadyRunning = errors.New("this job is still running from last time")
+
+// ErrRunningElsewhere is returned when another process is running the job,
+// such as the desktop app when a scheduled run-due starts. It counts as
+// ErrAlreadyRunning.
+var ErrRunningElsewhere error = elsewhere{}
+
+type elsewhere struct{}
+
+func (elsewhere) Error() string        { return "another ArrowLoop is running this job right now" }
+func (elsewhere) Is(target error) bool { return target == ErrAlreadyRunning }
 
 // ErrVolumeMissing is returned when a job points at a removable drive or a
 // share that is not attached right now. It is not recorded as a failure,
@@ -322,6 +333,19 @@ func (r *Runner) runAnswering(ctx context.Context, ref string, auto bool, ans an
 		return history.Run{}, ErrAlreadyRunning
 	}
 	defer r.release(key)
+	// Locked by key beside the state database, so another process that still
+	// knows the job by its old name and state file finds the same lock.
+	unlock, held, lockErr := joblock.Take(filepath.Dir(j.State), key)
+	switch {
+	case held:
+		return history.Run{}, ErrRunningElsewhere
+	case lockErr != nil:
+		// The claim above still keeps this process from overlapping itself,
+		// and a lock that cannot be written is no reason to miss a backup.
+		r.log("%s: %v", j.Name, lockErr)
+	default:
+		defer unlock()
+	}
 
 	if err := r.slots.take(ctx, func() int { return r.config().ParallelJobs }); err != nil {
 		// Pausing or removing a job stops it, and one still waiting has not run.
@@ -933,6 +957,8 @@ func (r *Runner) runAndReport(ctx context.Context, key string) (history.Run, err
 		r.log("%s did not start: %v", name, err)
 	case errors.Is(err, ErrVolumeMissing), errors.Is(err, ErrWithdrawn):
 		r.log("%s: %v", name, err)
+	case errors.Is(err, ErrRunningElsewhere):
+		r.log("%s: %v, skipping this turn", name, err)
 	case errors.Is(err, ErrAlreadyRunning):
 		r.log("%s is still running from last time, skipping this turn", name)
 	case rec.Stopped:

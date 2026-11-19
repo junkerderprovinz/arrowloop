@@ -1732,6 +1732,7 @@ const pt: Translations = {
   'new.change.tabletLandscape': 'Num tablet, a aplicação do telefone roda com o dispositivo, e as suas páginas, a barra inferior e os painéis que sobem de baixo ficam numa coluna a meio do ecrã.',
   'new.change.tabletShell': 'Num tablet na horizontal, a aplicação do telefone mostra a barra lateral das versões de computador e de contentor, as definições como mosaicos e as listas em toda a largura.',
   'new.change.trayMemory': 'Na área de notificação a aplicação para computador fecha a sua janela e precisa de cerca de um décimo da memória, e o ícone abre uma janela nova em menos de um segundo.',
+  'new.change.desktopCli': 'A aplicação de computador aceita os mesmos comandos que a linha de comandos. O seu comando run-due executa tudo o que está na hora e fecha-se, por isso o cron, o Agendador de Tarefas do Windows ou um temporizador do systemd mantêm as suas tarefas em dia sem a aplicação ficar aberta.',
   'new.change.notifyTiles': '{add} mostra cada serviço como um mosaico com o respetivo logótipo, e a pesquisa encontra-o pelo nome.',
   'new.change.notifyShoutrrr': 'Um canal Shoutrrr envia diretamente do ArrowLoop para Telegram, Pushover, Teams e mais de vinte outros serviços, sem precisar de um servidor próprio.',
   'welcome.title': 'Bem-vindo ao ArrowLoop',

@@ -1732,6 +1732,7 @@ const gl: Translations = {
   'new.change.tabletLandscape': 'Nunha tableta, a aplicación do teléfono xira co dispositivo, e as súas páxinas, a barra inferior e os paneis que soben desde abaixo quedan nunha columna no medio da pantalla.',
   'new.change.tabletShell': 'Nunha tableta en horizontal, a aplicación do teléfono mostra a barra lateral das versións de escritorio e de contedor, os axustes como mosaicos e as listas en todo o ancho.',
   'new.change.trayMemory': 'Na área de notificación a aplicación de escritorio pecha a súa xanela e precisa arredor dunha décima parte da memoria, e a icona abre unha xanela nova en menos dun segundo.',
+  'new.change.desktopCli': 'A aplicación de escritorio acepta as mesmas ordes que a liña de comandos. A súa orde run-due executa todo o que toca e péchase, así cron, o Programador de tarefas de Windows ou un temporizador de systemd manteñen as túas tarefas ao día sen que a aplicación teña que estar aberta.',
   'new.change.notifyTiles': '{add} amosa cada servizo como un mosaico co seu logotipo, e a busca atopa un polo nome.',
   'new.change.notifyShoutrrr': 'Unha canle Shoutrrr envía directamente desde ArrowLoop a Telegram, Pushover, Teams e máis de vinte servizos máis, e non precisa un servidor propio.',
   'welcome.title': 'Benvido a ArrowLoop',

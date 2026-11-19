@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 )
 
 // ErrNoSuchJob and ErrPaused are why Request turns a request away.
@@ -48,10 +49,18 @@ func (r *Runner) keepRequest(key string) bool {
 }
 
 // runRequested runs a requested job. When another run claims the job first,
-// the request waits for that one.
+// the request waits for that one. Another process says nothing when its run
+// ends, so a job running there is asked again a little later.
 func (r *Runner) runRequested(key string) {
 	_, err := r.runAndReport(context.Background(), key)
-	if errors.Is(err, ErrAlreadyRunning) && !r.keepRequest(key) {
+	switch {
+	case errors.Is(err, ErrRunningElsewhere):
+		time.AfterFunc(elsewhereRetry, func() { r.runRequested(key) })
+	case errors.Is(err, ErrAlreadyRunning) && !r.keepRequest(key):
 		go r.runRequested(key)
 	}
 }
+
+// elsewhereRetry is how long a request waits for a job another process is
+// running.
+const elsewhereRetry = 30 * time.Second

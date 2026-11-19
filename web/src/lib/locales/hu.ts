@@ -1732,6 +1732,7 @@ const hu: Translations = {
   'new.change.tabletLandscape': 'Táblagépen a telefonos alkalmazás az eszközzel együtt elfordul, az oldalai, az alsó sáv és az alulról felcsúszó panelek pedig egy oszlopban maradnak a képernyő közepén.',
   'new.change.tabletShell': 'Fekvő táblagépen a telefonos alkalmazás az asztali és a konténeres változat oldalsávját mutatja, a beállításokat csempékként, a listákat pedig teljes szélességben.',
   'new.change.trayMemory': 'Az értesítési területen az asztali alkalmazás bezárja az ablakát, és nagyjából a memória tizedét használja, az ikon pedig egy másodpercen belül új ablakot nyit.',
+  'new.change.desktopCli': 'Az asztali alkalmazás ugyanazokat a parancsokat érti, mint a parancssor. A run-due parancsa lefuttat mindent, ami esedékes, majd kilép, így a cron, a Windows Feladatütemezője vagy egy systemd időzítő nyitva hagyott alkalmazás nélkül is tartja a feladatok ütemezését.',
   'new.change.notifyTiles': '{add}: minden szolgáltatás csempeként jelenik meg a logójával, és a keresés név alapján megtalálja.',
   'new.change.notifyShoutrrr': 'A Shoutrrr-csatorna közvetlenül az ArrowLoopból küld a Telegramra, a Pushoverre, a Teamsbe és több mint húsz további szolgáltatásba, saját kiszolgáló nélkül.',
   'welcome.title': 'Üdvözöl az ArrowLoop',

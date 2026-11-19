@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"context"
@@ -29,9 +29,9 @@ import (
 // cmdWeb serves the interface and, unless told otherwise, runs the schedules
 // in the same process, so the interface sees the scheduled runs and no two
 // processes share a state database.
-func cmdWeb(ctx context.Context, args []string) error {
+func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	fset := flag.NewFlagSet("web", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file")
+	configPath := fset.String("config", o.Config, "the configuration file")
 	addr := fset.String("addr", defaultAddr(), "address to listen on")
 	noSchedule := fset.Bool("no-schedule", false, "serve the interface only, do not run the schedules")
 	verbose := fset.Bool("v", false, "let rclone report what it is doing underneath")
@@ -46,7 +46,7 @@ func cmdWeb(ctx context.Context, args []string) error {
 		return err
 	}
 
-	cfg, err := load(ctx, *configPath)
+	cfg, err := o.load(ctx, *configPath)
 	if err != nil {
 		return err
 	}
