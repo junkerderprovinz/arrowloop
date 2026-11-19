@@ -13,6 +13,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/scrub"
 )
 
@@ -30,7 +31,7 @@ const source = "ArrowLoop"
 // Reporting names the channels that are switched on and complete, the ones
 // a run is told through. One switched on but still missing something is
 // named in incomplete, so the log can say why it does not send.
-func Reporting(cfg *job.Config) (ready []notify.Channel, incomplete []string) {
+func Reporting(cfg *job.Config) (ready []alnotify.Channel, incomplete []string) {
 	if channelsOff() {
 		return nil, nil
 	}
@@ -38,7 +39,7 @@ func Reporting(cfg *job.Config) (ready []notify.Channel, incomplete []string) {
 		if !c.Enabled {
 			continue
 		}
-		if err := notify.Validate([]notify.Channel{c}); err != nil {
+		if err := alnotify.Validate([]alnotify.Channel{c}); err != nil {
 			incomplete = append(incomplete, ChannelName(c))
 			continue
 		}
@@ -49,12 +50,12 @@ func Reporting(cfg *job.Config) (ready []notify.Channel, incomplete []string) {
 
 // dispatcher builds what sends the messages from the ready channels, or nil
 // where there are none.
-func dispatcher(cfg *job.Config) (d *notify.Dispatcher, incomplete []string) {
+func dispatcher(cfg *job.Config) (d *alnotify.Dispatcher, incomplete []string) {
 	ready, incomplete := Reporting(cfg)
 	if len(ready) == 0 {
 		return nil, incomplete
 	}
-	d, err := notify.NewDispatcher(ready, notify.Options{Source: source})
+	d, err := alnotify.NewDispatcher(ready, notify.Options{Source: source})
 	if err != nil {
 		// Each channel passed on its own, so only two under one id fail here,
 		// which Load refuses.
@@ -65,7 +66,7 @@ func dispatcher(cfg *job.Config) (d *notify.Dispatcher, incomplete []string) {
 
 // ChannelName is how a channel is named in the log: by the name it was given,
 // else by its id.
-func ChannelName(c notify.Channel) string {
+func ChannelName(c alnotify.Channel) string {
 	if c.Name != "" {
 		return c.Name
 	}
@@ -87,7 +88,7 @@ func (r *Runner) tell(ctx context.Context, name string, e notify.Event) {
 	}
 }
 
-func (r *Runner) dispatcher() *notify.Dispatcher {
+func (r *Runner) dispatcher() *alnotify.Dispatcher {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	return r.note
@@ -215,11 +216,11 @@ const CodeOff = "off"
 // shows it, switched on or not and whatever its "when" says, since a test is
 // how somebody finds out whether a channel they are setting up works.
 // NoChannelsEnv still holds.
-func SendTest(ctx context.Context, ch notify.Channel) notify.Result {
+func SendTest(ctx context.Context, ch alnotify.Channel) notify.Result {
 	if channelsOff() {
 		return notify.Result{Channel: ch.ID, Kind: ch.Kind, Code: CodeOff, Err: errors.New("this engine sends no messages")}
 	}
-	d, err := notify.NewDispatcher(nil, notify.Options{Source: source})
+	d, err := alnotify.NewDispatcher(nil, notify.Options{Source: source})
 	if err != nil {
 		return notify.Result{Channel: ch.ID, Kind: ch.Kind, Code: notify.CodeInvalid, Err: err}
 	}

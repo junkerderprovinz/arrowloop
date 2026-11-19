@@ -10,8 +10,8 @@ import (
 
 // stored has a secret of every kind, each a word that must not leave the
 // engine.
-func stored() []kit.Channel {
-	return []kit.Channel{
+func stored() []Channel {
+	return append(FromKit([]kit.Channel{
 		{ID: "hook", Kind: kit.KindWebhook, Enabled: true, Webhook: &kit.Webhook{URL: "https://hooks.example/SECRETHOOK", Headers: map[string]string{"Authorization": "Bearer SECRETHEADER"}}},
 		{ID: "discord", Kind: kit.KindDiscord, Enabled: true, Discord: &kit.Discord{URL: "https://discord.com/api/webhooks/1/SECRETDISCORD"}},
 		{ID: "slack", Kind: kit.KindSlack, Enabled: true, Slack: &kit.Slack{URL: "https://hooks.slack.com/services/SECRETSLACK"}},
@@ -22,7 +22,7 @@ func stored() []kit.Channel {
 		{ID: "apprise", Kind: kit.KindApprise, Enabled: true, Apprise: &kit.Apprise{URL: "http://apprise:8000/notify", URLs: []string{"tgram://SECRETTELEGRAM/123"}}},
 		{ID: "appkey", Kind: kit.KindApprise, Enabled: true, Apprise: &kit.Apprise{URL: "http://apprise:8000/notify/SECRETKEY", Tags: "backups"}},
 		{ID: "checks", Kind: kit.KindHealthchecks, Enabled: true, Healthchecks: &kit.Healthchecks{URL: "https://hc-ping.com/SECRETCHECK", ByKey: map[string]string{"photos": "https://hc-ping.com/SECRETJOBCHECK"}}},
-	}
+	}), Channel{Channel: kit.Channel{ID: "shout", Kind: KindShoutrrr, Enabled: true}, Shoutrrr: &Shoutrrr{URLs: []string{"telegram://SECRETBOT@telegram?chats=SECRETCHAT", "pushover://shoutrrr:SECRETAPP@SECRETUSER"}}})
 }
 
 func TestRedactedHandsOutNoSecret(t *testing.T) {
@@ -43,7 +43,7 @@ func TestRedactedHandsOutNoSecret(t *testing.T) {
 func TestRedactedLeavesTheStoredChannelsAlone(t *testing.T) {
 	s := stored()
 	Redacted(s)
-	if s[0].Webhook.URL != "https://hooks.example/SECRETHOOK" || s[9].Healthchecks.ByKey["photos"] == Placeholder {
+	if s[0].Webhook.URL != "https://hooks.example/SECRETHOOK" || s[9].Healthchecks.ByKey["photos"] == Placeholder || s[10].Shoutrrr.URLs[0] == Placeholder {
 		t.Errorf("redacting changed what is stored: %+v", s[0].Webhook)
 	}
 }
@@ -64,6 +64,7 @@ func TestANewSecretReplacesTheStoredOne(t *testing.T) {
 	next := Redacted(stored())
 	next[6].SMTP.Password = "newpw"
 	next[9].Healthchecks.ByKey["music"] = "https://hc-ping.com/music"
+	next[10].Shoutrrr.URLs = []string{"ntfy://ntfy.sh/mine"}
 	merged, err := Merge(next, stored())
 	if err != nil {
 		t.Fatal(err)
@@ -71,20 +72,31 @@ func TestANewSecretReplacesTheStoredOne(t *testing.T) {
 	if merged[6].SMTP.Password != "newpw" || merged[9].Healthchecks.ByKey["music"] != "https://hc-ping.com/music" || merged[9].Healthchecks.ByKey["photos"] != "https://hc-ping.com/SECRETJOBCHECK" {
 		t.Errorf("merged into %+v and %+v", merged[6].SMTP, merged[9].Healthchecks)
 	}
+	if got := merged[10].Shoutrrr.URLs; len(got) != 1 || got[0] != "ntfy://ntfy.sh/mine" {
+		t.Errorf("the typed Shoutrrr address came back as %v", got)
+	}
 }
 
 // A placeholder stands for a secret saved for one server. Whoever changes the
 // server beside it has to type the secret, or could have it sent to his own.
 func TestASavedSecretIsNotMovedToAnotherServer(t *testing.T) {
-	cases := map[string]func(c []kit.Channel){
-		"matrix homeserver": func(c []kit.Channel) { c[5].Matrix.Homeserver = "https://elsewhere.example" },
-		"mail host":         func(c []kit.Channel) { c[6].SMTP.Host = "elsewhere.example" },
-		"mail port":         func(c []kit.Channel) { c[6].SMTP.Port = 2525 },
-		"mail user":         func(c []kit.Channel) { c[6].SMTP.Username = "someone" },
-		"mail encryption":   func(c []kit.Channel) { c[6].SMTP.TLS = "none" },
-		"ntfy topic":        func(c []kit.Channel) { c[4].Ntfy.URL = "https://elsewhere.example/topic" },
-		"webhook address":   func(c []kit.Channel) { c[0].Webhook.URL = "https://elsewhere.example/in" },
-		"another kind":      func(c []kit.Channel) { c[5].Kind = kit.KindSlack; c[5].Slack = &kit.Slack{URL: Placeholder} },
+	cases := map[string]func(c []Channel){
+		"matrix homeserver": func(c []Channel) { c[5].Matrix.Homeserver = "https://elsewhere.example" },
+		"mail host":         func(c []Channel) { c[6].SMTP.Host = "elsewhere.example" },
+		"mail port":         func(c []Channel) { c[6].SMTP.Port = 2525 },
+		"mail user":         func(c []Channel) { c[6].SMTP.Username = "someone" },
+		"mail encryption":   func(c []Channel) { c[6].SMTP.TLS = "none" },
+		"ntfy topic":        func(c []Channel) { c[4].Ntfy.URL = "https://elsewhere.example/topic" },
+		"webhook address":   func(c []Channel) { c[0].Webhook.URL = "https://elsewhere.example/in" },
+		"another kind":      func(c []Channel) { c[5].Kind = kit.KindSlack; c[5].Slack = &kit.Slack{URL: Placeholder} },
+		"apprise to shoutrrr": func(c []Channel) {
+			c[7].Kind = KindShoutrrr
+			c[7].Shoutrrr = &Shoutrrr{URLs: []string{Placeholder}}
+		},
+		"shoutrrr to apprise": func(c []Channel) {
+			c[10].Kind = kit.KindApprise
+			c[10].Apprise = &kit.Apprise{URL: "http://apprise:8000/notify", URLs: []string{Placeholder}}
+		},
 	}
 	for what, change := range cases {
 		next := Redacted(stored())
@@ -96,8 +108,12 @@ func TestASavedSecretIsNotMovedToAnotherServer(t *testing.T) {
 }
 
 func TestAPlaceholderWithNothingBehindItIsRefused(t *testing.T) {
-	next := []kit.Channel{{ID: "new", Kind: kit.KindDiscord, Discord: &kit.Discord{URL: Placeholder}}}
-	if _, err := Merge(next, stored()); err == nil {
-		t.Error("a placeholder for a channel that was never saved was accepted")
+	for _, next := range [][]Channel{
+		FromKit([]kit.Channel{{ID: "new", Kind: kit.KindDiscord, Discord: &kit.Discord{URL: Placeholder}}}),
+		{{Channel: kit.Channel{ID: "new", Kind: KindShoutrrr}, Shoutrrr: &Shoutrrr{URLs: []string{Placeholder}}}},
+	} {
+		if _, err := Merge(next, stored()); err == nil {
+			t.Errorf("a placeholder for %s, which was never saved, was accepted", next[0].Kind)
+		}
 	}
 }

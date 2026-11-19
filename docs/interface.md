@@ -482,8 +482,8 @@ row on **Look** brings back the original one.
   defaults. **Safety net** has the same card for jobs with brakes of their own.
 - **Safety net**: the two brakes, the anomaly notes with their switch, and the
   notifications: when they go out, then a webhook (generic, Discord, Slack,
-  Gotify or ntfy), Matrix, email, Apprise and Healthchecks.io, each with its
-  switch and **Send a test**. A saved secret shows as **Saved** with
+  Gotify or ntfy), Matrix, email, Apprise, Shoutrrr and Healthchecks.io, each
+  with its switch and **Send a test**. A saved secret shows as **Saved** with
   **Change** beside it; see [Notifications](configuration.md#notifications).
 - **Targets**: the storage targets and drives; see [Drives](#drives).
 - **Security**: password, two-factor authentication and passkeys. The desktop

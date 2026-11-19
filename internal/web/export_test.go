@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
 	"time"
@@ -88,3 +89,13 @@ var MemberViews = memberViews
 
 // LeftOnOldPhrase is what a phrase change lists as left on the old phrase.
 var LeftOnOldPhrase = leftOnOldPhrase
+
+// PassChangeAgain hands the fortress's current phrase change once more to
+// every instance of the pairing in reach, as a change does when the kit's
+// hand-over got no answer, and returns the ids that took it.
+func (s *Server) PassChangeAgain(ctx context.Context) []string {
+	s.groupMu.Lock()
+	defer s.groupMu.Unlock()
+	paired := s.fortressNow().Pairing()
+	return s.passChange(ctx, paired, online(paired.Members(), nil), s.Pairing.Get())
+}

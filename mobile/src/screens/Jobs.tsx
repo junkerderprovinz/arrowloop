@@ -14,7 +14,7 @@ import {
 import { api, type Job, type Remote, type Run } from "../api";
 import { CardMenu, type CardAction } from "../CardMenu";
 import { clock } from "../clock";
-import { Glyph } from "../glyphs";
+import { GLYPH, Glyph } from "../glyphs";
 import { markForSide } from "../jobMark";
 import { groupFindings, shortLine, type Finding } from "../../../web/src/lib/anomalies";
 import { failureLine } from "../../../web/src/lib/failure";
@@ -22,11 +22,14 @@ import { jobCopy } from "../../../web/src/lib/jobCopy.data";
 import { jobStatus } from "../../../web/src/lib/jobList";
 import { byJobOrder, stepJob } from "../../../web/src/lib/jobOrder";
 import { mayRun, mayRunAll } from "../fileAccess";
+import { barFit, jobsBar, type BarButton } from "../jobsBar";
 import { useT } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
 import { MoveScope, MovingCell, useHoldToMove } from "../reorder";
+import { useFrame } from "../frame";
+import { floatingInset } from "../layout";
 import { useAppearance, useEngineSettings } from "../settings";
 import { sidePair } from "../sides";
 import { SideRow, sideMark } from "../sideRow";
@@ -43,11 +46,11 @@ import {
   CardHead,
   Empty,
   FAB_ROOM,
-  Fab,
   Floating,
   MovingList,
   Press,
   useHue,
+  useSideRoom,
   useTheme,
 } from "../ui";
 
@@ -253,23 +256,18 @@ export function Jobs() {
   };
   const runAll = async () => all((await mayRunAll(ready, t)).map((j) => api.run(j.name)));
   const paused = !!engine.settings?.pauseAutomatic;
-  const more = [
-    ...(ready.length > 0
-      ? [{ label: t("phone.runAll"), glyph: "IconPlay", onPress: () => void runAll() }]
-      : []),
-    ...(running.length > 0
-      ? [{ label: t("phone.stopAll"), glyph: "IconStop", onPress: () => void all(running.map((j) => api.stop(j.name))) }]
-      : []),
-    ...(engine.settings
-      ? [
-          {
-            label: t(paused ? "automatic.resume" : "automatic.pause"),
-            glyph: paused ? "IconPlay" : "IconPause",
-            onPress: () => void engine.update({ pauseAutomatic: !paused }),
-          },
-        ]
-      : []),
-  ];
+  const bar = jobsBar({
+    ready: ready.length,
+    running: running.length,
+    paused,
+    settingsLoaded: !!engine.settings,
+  });
+  const press: Record<BarButton["id"], () => void> = {
+    automatic: () => void engine.update({ pauseAutomatic: !paused }),
+    runAll: () => void runAll(),
+    stopAll: () => void all(running.map((j) => api.stop(j.name))),
+    add: () => nav.navigate("JobEdit", {}),
+  };
 
   const compact = jobView === "compact";
 
@@ -345,20 +343,82 @@ export function Jobs() {
                 tintColor={accent}
               />
             }
-            ListEmptyComponent={<Empty title={t("jobs.none")} />}
+            ListEmptyComponent={<Empty title={t("phone.jobsNone")} />}
             ListFooterComponent={error ? <Caption>{error}</Caption> : null}
             renderItem={renderJob}
           />
         </MoveScope>
       </View>
-      {/* The screen's rarer actions, quiet beside the one accent. */}
-      {more.length > 0 ? (
-        <View style={styles.moreSlot}>
-          <CardMenu items={more} floating />
-        </View>
-      ) : null}
-      <Fab label={t("edit.add")} labelKey="edit.add" onPress={() => nav.navigate("JobEdit", {})} />
+      <JobsBar buttons={bar} onPress={(id) => press[id]()} />
     </Floating>
+  );
+}
+
+/**
+ * The list's three actions side by side at the foot of the screen, equally
+ * wide. Each word is measured at the buttons' type, so a long translation or
+ * a large font turns the row into glyphs instead of cutting a word short.
+ */
+function JobsBar({ buttons, onPress }: { buttons: BarButton[]; onPress: (id: BarButton["id"]) => void }) {
+  const { t } = useT();
+  const { p, labels } = useTheme();
+  const frame = useFrame();
+  const column = useSideRoom();
+  // Beside the side bar the row stands at the end of the page, as the web's
+  // page actions do, in the same place as every other floating page action.
+  const inset = floatingInset(frame);
+  const side = frame.wide ? inset.end : column;
+  const wide = frame.wide;
+  const [room, setRoom] = useState(0);
+  const [words, setWords] = useState<Record<string, number>>({});
+  const fit = barFit(
+    labels,
+    buttons.map((b) => words[t(b.label)]),
+    { room, gap: space.sm, pad: space.sm, glyph: GLYPH },
+  );
+  return (
+    <View style={[styles.bar, { paddingHorizontal: side, paddingBottom: inset.bottom, backgroundColor: p.background }]}>
+      <View
+        style={styles.barMeasure}
+        pointerEvents="none"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        {buttons.map((b) => {
+          const word = t(b.label);
+          return (
+            <Text
+              key={b.id}
+              numberOfLines={1}
+              style={styles.barWord}
+              onLayout={(e) => {
+                const width = Math.ceil(e.nativeEvent.layout.width);
+                setWords((known) => (known[word] === width ? known : { ...known, [word]: width }));
+              }}
+            >
+              {word}
+            </Text>
+          );
+        })}
+      </View>
+      <View style={[styles.barRow, wide ? styles.barRowWide : null]} onLayout={(e) => setRoom(e.nativeEvent.layout.width)}>
+        {buttons.map((b) => (
+          <View key={b.id} style={styles.barSlot}>
+            <Button
+              label={t(b.label)}
+              spoken={t(b.spoken)}
+              glyph={fit === "words" ? undefined : b.glyph}
+              glyphOnly={fit === "glyphs"}
+              tone={b.tone}
+              disabled={b.disabled}
+              wide={false}
+              snug
+              onPress={() => onPress(b.id)}
+            />
+          </View>
+        ))}
+      </View>
+    </View>
   );
 }
 
@@ -414,14 +474,10 @@ function JobCard({
   const { t } = useT();
   const hue = useHue(index);
   const { p } = useTheme();
-  return (
-    <Card onPress={onOpen} hue={hue} {...moving}>
-      <CardHead mark={mark} title={job.name}>
-        <View style={styles.menuSlot}>
-          <CardMenu items={menu} />
-        </View>
-      </CardHead>
+  const { wide } = useFrame();
 
+  const joins = (
+    <>
       {/* Paths wrap rather than truncate, since the cut part is what tells
           two similar jobs apart. */}
       <SideRow path={job.left} mark={leftMark} />
@@ -444,7 +500,11 @@ function JobCard({
           </Text>
         </Press>
       ) : null}
+    </>
+  );
 
+  const state = (
+    <>
       <JobStatus
         job={job}
         held={held}
@@ -460,10 +520,11 @@ function JobCard({
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
           what the hold button does. The control that goes ahead sits on the
-          right. Both are quiet, since the floating button is the screen's one
+          right. Both are quiet, since Add at the foot is the screen's one
           accent. */}
-      <View style={styles.actions}>
+      <View style={[styles.actions, wide ? styles.actionsAcross : null]}>
         <Button
+          wide={!wide}
           label={job.disabled ? t("jobs.resume") : t("jobs.pause")}
           labelKey={job.disabled ? "jobs.resume" : "jobs.pause"}
           // As on the web: Pause stops a run too, and Resume only needs
@@ -473,12 +534,36 @@ function JobCard({
           onPress={onHold}
         />
         <Button
+          wide={!wide}
           label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
           labelKey={job.running ? "jobs.cancelRun" : "jobs.runNow"}
           busy={busy}
           onPress={onAct}
         />
       </View>
+    </>
+  );
+
+  return (
+    <Card onPress={onOpen} hue={hue} {...moving}>
+      <CardHead mark={mark} title={job.name}>
+        <View style={styles.menuSlot}>
+          <CardMenu items={menu} />
+        </View>
+      </CardHead>
+      {/* Beside the side bar, as the web's card: what the job joins on the
+          left, its status over its buttons on the right. */}
+      {wide ? (
+        <View style={styles.across}>
+          <View style={styles.joins}>{joins}</View>
+          <View style={styles.state}>{state}</View>
+        </View>
+      ) : (
+        <>
+          {joins}
+          {state}
+        </>
+      )}
     </Card>
   );
 }
@@ -528,33 +613,53 @@ function JobRow({
 }) {
   const { t, lang } = useT();
   const { p } = useTheme();
+  const { wide } = useFrame();
   const hue = useHue(index);
   const last = job.recent[0];
   const status = jobStatus(job, { held, conflict, notes: noted });
   // The status of a job that ran fine is already the time of that run.
   const quiet = status === "last";
+  const name = (
+    <>
+      <Text style={[styles.rowName, { color: p.text }]} numberOfLines={1}>
+        {job.name}
+      </Text>
+      {status === "failed" ? <FailedBecause run={last!} lines={1} /> : null}
+    </>
+  );
+  const statusLine = (
+    <JobStatus
+      job={job}
+      held={held}
+      noted={noted}
+      conflict={conflict}
+      onConflict={onConflict}
+      onNote={onNote}
+      progress={progress}
+      hue={hue}
+    />
+  );
+  const lastRun = last && !quiet ? <Caption>{t("jobs.lastRun", { when: clock(last.Finished, lang) })}</Caption> : null;
   return (
     <Card onPress={onOpen} hue={hue} style={styles.row} {...moving}>
       <View style={[styles.mark, { backgroundColor: hue }]} />
-      <View style={styles.rowText}>
-        <Text style={[styles.rowName, { color: p.text }]} numberOfLines={1}>
-          {job.name}
-        </Text>
-        {status === "failed" ? <FailedBecause run={last!} lines={1} /> : null}
-        <View style={styles.rowStatus}>
-          <JobStatus
-            job={job}
-            held={held}
-            noted={noted}
-            conflict={conflict}
-            onConflict={onConflict}
-            onNote={onNote}
-            progress={progress}
-            hue={hue}
-          />
-          {last && !quiet ? <Caption>{t("jobs.lastRun", { when: clock(last.Finished, lang) })}</Caption> : null}
+      {/* Beside the side bar the status and the last run take columns of
+          their own, as on the web's compact row. */}
+      {wide ? (
+        <View style={styles.rowAcross}>
+          <View style={styles.rowText}>{name}</View>
+          <View style={styles.rowStatusCell}>{statusLine}</View>
+          <View style={styles.rowLastCell}>{lastRun}</View>
         </View>
-      </View>
+      ) : (
+        <View style={styles.rowText}>
+          {name}
+          <View style={styles.rowStatus}>
+            {statusLine}
+            {lastRun}
+          </View>
+        </View>
+      )}
       <CardMenu items={menu} glyphOnly />
       <Button
         label={job.running ? t("jobs.cancelRun") : t("jobs.runNow")}
@@ -666,11 +771,18 @@ const styles = StyleSheet.create({
   rowText: { flex: 1, minWidth: 0, gap: space.xs },
   rowName: { fontSize: text.body, fontWeight: "600" },
   rowStatus: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.sm },
+  rowAcross: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.lg },
+  rowStatusCell: { width: 200, alignItems: "flex-start" },
+  rowLastCell: { width: 180, alignItems: "flex-end" },
+  across: { flexDirection: "row", alignItems: "center", gap: space.xl },
+  joins: { flex: 1, minWidth: 0, gap: space.sm },
+  state: { flexShrink: 0, maxWidth: "45%", alignItems: "flex-end", gap: space.sm },
+  actionsAcross: { justifyContent: "flex-end" },
   way: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finding: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 44 },
   findingText: { flex: 1, fontSize: text.subline, lineHeight: 18 },
   failure: { fontSize: text.subline, lineHeight: 18 },
-  // Room at the end so the floating button does not cover the last card.
+  // Room at the end so the bar at the foot does not cover the last card.
   list: { padding: space.lg, gap: space.md, paddingBottom: FAB_ROOM },
   status: { gap: space.sm, alignSelf: "stretch", alignItems: "flex-start" },
   // A touch target of its own, though the badge inside stays small.
@@ -678,6 +790,11 @@ const styles = StyleSheet.create({
   quiet: { flexDirection: "row", alignItems: "center", gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   actions: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
-  // Left of the floating button, at its height.
-  moreSlot: { position: "absolute", right: space.lg + TOUCH + space.sm * 2, bottom: space.lg },
+  bar: { position: "absolute", left: 0, right: 0, bottom: 0, paddingTop: space.sm },
+  barRow: { flexDirection: "row", gap: space.sm },
+  barRowWide: { alignSelf: "flex-end", width: 480 },
+  barSlot: { flex: 1, minWidth: 0 },
+  // Invisible copies of the words at the buttons' type, for their one-line widths.
+  barMeasure: { position: "absolute", left: 0, top: 0, opacity: 0, alignItems: "flex-start" },
+  barWord: { fontSize: text.body, fontWeight: "600" },
 });

@@ -1,9 +1,10 @@
 // The notification channels as the engine stores them under `notify`, in the
-// format of the kit's notify package (parleyport/kit/notify).
+// format of the kit's notify package (parleyport/kit/notify), with Shoutrrr's
+// beside the kit's kinds.
 
 export type When = 'never' | 'failure' | 'always'
 
-export const KINDS = ['discord', 'slack', 'ntfy', 'gotify', 'matrix', 'smtp', 'apprise', 'webhook', 'healthchecks'] as const
+export const KINDS = ['discord', 'slack', 'ntfy', 'gotify', 'matrix', 'smtp', 'apprise', 'shoutrrr', 'webhook', 'healthchecks'] as const
 
 export type Kind = (typeof KINDS)[number]
 
@@ -34,6 +35,8 @@ export type Channel = {
   }
   /** Without urls, url is a key's endpoint; with them, the stateless /notify. */
   apprise?: { url: string; urls?: string[]; tags?: string }
+  /** One address per service, such as telegram://... or pushover://... */
+  shoutrrr?: { urls?: string[] }
   /** byKey gives a job a check of its own, by job name. */
   healthchecks?: { url?: string; byKey?: Record<string, string> }
 }
@@ -58,6 +61,8 @@ export function newChannel(kind: Kind, channels: Channel[]): Channel {
       return { ...c, smtp: { host: '', from: '', to: '' } }
     case 'healthchecks':
       return { ...c, healthchecks: {} }
+    case 'shoutrrr':
+      return { ...c, shoutrrr: { urls: [] } }
     default:
       return { ...c, [kind]: { url: '' } }
   }

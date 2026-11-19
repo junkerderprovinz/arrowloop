@@ -28,8 +28,6 @@
   --brand-hetzner-0: #f43453; /* lifted from #D50C2D */
   --brand-ovh-0: #2e84dd; /* lifted from #123F6D */
   --brand-minio-0: #d8566d; /* lifted from #C72E49 */
-  --brand-ntfy-0: #38907e; /* lifted from #317F6F */
-  --brand-matrix-0: #828282; /* lifted from #000000 */
   --brand-jottacloud-0: #896ee8; /* lifted from #7d5fe6 */
   --brand-opendrive-forced0: #ffffff;
   --brand-putio-0: #ffffff;
@@ -62,10 +60,7 @@
   --brand-premiumize-0: #fc0;
   --brand-filelu-0: #00eaff;
   --brand-sia-0: #C3E500;
-  --brand-healthchecks-forced0: #ffffff;
-  --brand-apprise-forced0: #3fa9a6;
-  --brand-apprise-forced1: #319491;
-  --brand-apprise-forced2: #a6e8de;
+  --brand-shoutrrr-0: #f5d089;
 }
 
 @media (prefers-color-scheme: light) {
@@ -85,8 +80,6 @@
     --brand-hetzner-0: #D50C2D;
     --brand-ovh-0: #123F6D;
     --brand-minio-0: #C72E49;
-    --brand-ntfy-0: #317F6F;
-    --brand-matrix-0: #000000;
     --brand-jottacloud-0: #7d5fe6;
     --brand-opendrive-forced0: #2b2b2b;
     --brand-putio-0: #666666;
@@ -119,10 +112,7 @@
     --brand-premiumize-0: #7a6200;
     --brand-filelu-0: #00707a;
     --brand-sia-0: #5b6b00;
-    --brand-healthchecks-forced0: #33333f;
-    --brand-apprise-forced0: #237171;
-    --brand-apprise-forced1: #185858;
-    --brand-apprise-forced2: #169e8d;
+    --brand-shoutrrr-0: #885d0c;
   }
 }
 
@@ -142,8 +132,6 @@
   --brand-hetzner-0: #D50C2D;
   --brand-ovh-0: #123F6D;
   --brand-minio-0: #C72E49;
-  --brand-ntfy-0: #317F6F;
-  --brand-matrix-0: #000000;
   --brand-jottacloud-0: #7d5fe6;
   --brand-opendrive-forced0: #2b2b2b;
   --brand-putio-0: #666666;
@@ -176,8 +164,5 @@
   --brand-premiumize-0: #7a6200;
   --brand-filelu-0: #00707a;
   --brand-sia-0: #5b6b00;
-  --brand-healthchecks-forced0: #33333f;
-  --brand-apprise-forced0: #237171;
-  --brand-apprise-forced1: #185858;
-  --brand-apprise-forced2: #169e8d;
+  --brand-shoutrrr-0: #885d0c;
 }

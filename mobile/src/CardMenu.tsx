@@ -25,12 +25,9 @@ export interface CardAction {
  */
 export function CardMenu({
   items,
-  floating,
   glyphOnly,
 }: {
   items: CardAction[];
-  /** Beside a screen's floating button, where it shows its glyph alone. */
-  floating?: boolean;
   /** An ordinary button showing its glyph alone, where a row has no room for words. */
   glyphOnly?: boolean;
 }) {
@@ -59,38 +56,14 @@ export function CardMenu({
   };
 
   if (only) {
-    return floating ? (
-      <Press
-        onPress={only.onPress}
-        accessibilityRole="button"
-        accessibilityLabel={only.label}
-        android_ripple={{ color: p.hover }}
-        style={[styles.floating, { backgroundColor: p.surface2, ...corners.pill }]}
-      >
-        <Glyph name={only.glyph} color={p.text} size={22} />
-      </Press>
-    ) : (
-      <Button label={only.label} glyph={only.glyph} glyphOnly={glyphOnly} wide={false} onPress={only.onPress} />
-    );
+    return <Button label={only.label} glyph={only.glyph} glyphOnly={glyphOnly} wide={false} onPress={only.onPress} />;
   }
 
   return (
     <>
       {/* Measured through this view, since the button does not hand out its own. */}
       <View ref={button} collapsable={false}>
-        {floating ? (
-          <Press
-            onPress={open}
-            accessibilityRole="button"
-            accessibilityLabel={t("more.title")}
-            android_ripple={{ color: p.hover }}
-            style={[styles.floating, { backgroundColor: p.surface2, ...corners.pill }]}
-          >
-            <Glyph name="IconMore" color={p.text} size={22} />
-          </Press>
-        ) : (
-          <Button label={t("more.title")} glyph="IconMore" glyphOnly={glyphOnly} wide={false} onPress={open} />
-        )}
+        <Button label={t("more.title")} glyph="IconMore" glyphOnly={glyphOnly} wide={false} onPress={open} />
       </View>
       <Modal
         visible={at !== null}
@@ -133,9 +106,6 @@ export function CardMenu({
 }
 
 const styles = StyleSheet.create({
-  // The floating button's size, so the two stand as a pair.
-  floating: { width: TOUCH + space.sm, height: TOUCH + space.sm, alignItems: "center", justifyContent: "center", elevation: 6 },
-
   // Fills the screen so a tap anywhere closes the menu.
   ground: { flex: 1 },
   sheet: {

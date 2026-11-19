@@ -6,7 +6,7 @@ import { Body, Page, Section } from "../ui";
 export function Instances() {
   const { t } = useT();
   return (
-    <Page>
+    <Page spread>
       <OtherInstances
         firstHue={0}
         empty={

@@ -49,7 +49,6 @@ export function Dialog({
   onClose,
   closeOnBackdrop = true,
   footer,
-  search,
   bar,
   width = 'normal',
   sizeKey,
@@ -71,11 +70,6 @@ export function Dialog({
    * out, the row holds a single Close.
    */
   footer?: ReactNode
-  /**
-   * A picker's search, at the end of the heading's line, where it stays put
-   * while the body scrolls. The line wraps, so a narrow window puts it below.
-   */
-  search?: ReactNode
   /** A selector between the window's views, under the heading, where it stays put while the body scrolls. */
   bar?: ReactNode
   /**
@@ -143,7 +137,6 @@ export function Dialog({
               {hint && <InfoBubble tip={hint} onAccent />}
             </Badge>
           </h2>
-          {search}
         </div>
         {bar && <div className="px-5 pb-2 pt-1">{bar}</div>}
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-2">{children}</div>

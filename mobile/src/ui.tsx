@@ -1,4 +1,4 @@
-import { NavigationContext } from "@react-navigation/native";
+import { NavigationContext, NavigationRouteContext } from "@react-navigation/native";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import {
   ActivityIndicator,
@@ -54,7 +54,8 @@ import { useSystemAccent } from "./systemAccent";
 import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
-import { sideRoom } from "./layout";
+import { COLUMN, floatingInset, GUTTER, pageRoom, pageTop, panelWidth, titleRow } from "./layout";
+import { useFrame } from "./frame";
 
 // GlimStone's controls for React Native, with the design language's shapes
 // and sizes: a notch 22 tall overlapping its card by half, a well whose chosen
@@ -275,10 +276,11 @@ function useScrollMotion() {
 
 /**
  * The padding beside a page's column, its gutter on a phone and more on a
- * screen wide enough to stretch the cards.
+ * screen wide enough to stretch the cards. Beside the side bar a list asks to
+ * `spread` across the page.
  */
-export function useSideRoom(gutter: number = space.lg): number {
-  return sideRoom(useWindowDimensions().width, gutter);
+export function useSideRoom(gutter: number = space.lg, spread = false): number {
+  return pageRoom(useFrame(), gutter, spread);
 }
 
 /**
@@ -287,7 +289,7 @@ export function useSideRoom(gutter: number = space.lg): number {
  */
 export function MovingList<T>(props: FlatListProps<T>) {
   const motion = useScrollMotion();
-  const room = useSideRoom();
+  const room = useSideRoom(space.lg, true);
   const { onScroll } = props;
   return (
     <Arrival.Provider value={motion.line}>
@@ -489,30 +491,48 @@ export function ListEnd() {
 /**
  * A window that rises from the bottom edge, for what a row used to fold out:
  * its title as a badge, the content scrolling between, and Close in the
- * bottom row, in reach of the thumb.
+ * bottom row, in reach of the thumb. Beside the side bar it stands as the
+ * web's panel along the end edge, or `centred` as the web's dialog where the
+ * web opens one.
  */
 export function Sheet({
   open,
   title,
   onClose,
+  centred,
   children,
 }: {
   open: boolean;
   title: string;
   onClose: () => void;
+  centred?: boolean;
   children: ReactNode;
 }) {
   const { p, corners, accent } = useTheme();
   const { t } = useT();
   const { ms } = useMotion();
   const inset = useSafeAreaInsets();
+  const { wide } = useFrame();
   // As wide as the bar, which stops where the page's column does.
   const room = useSideRoom(space.md);
+  const { width } = useWindowDimensions();
+  const ground = !wide
+    ? [styles.sheetGround, { paddingHorizontal: room, paddingBottom: Math.max(inset.bottom, space.sm) }]
+    : [
+        centred ? styles.dialogGround : styles.panelGround,
+        {
+          paddingTop: inset.top + GUTTER,
+          paddingBottom: inset.bottom + GUTTER,
+          paddingLeft: inset.left + GUTTER,
+          paddingRight: inset.right + GUTTER,
+        },
+      ];
+  const shape = !wide ? styles.sheet : centred ? styles.dialog : [styles.panel, { width: panelWidth(width) }];
   return (
     <Modal visible={open} transparent animationType={ms.fade ? "fade" : "none"} onRequestClose={onClose}>
-      <View style={[styles.sheetGround, { paddingHorizontal: room, paddingBottom: Math.max(inset.bottom, space.sm) }]}>
+      <View style={ground}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: p.scrim }]} onPress={onClose} />
-        <View style={[styles.sheet, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
+        <View style={[shape, { backgroundColor: p.surface, ...corners.card }, raised(p)]}>
           <View style={styles.sheetHead}>
             <View style={[styles.sheetTitle, { backgroundColor: accent, ...corners.pill }]}>
               <Text style={[styles.notchText, { color: contrastOn(accent) }]} numberOfLines={2}>
@@ -520,7 +540,7 @@ export function Sheet({
               </Text>
             </View>
           </View>
-          <ScrollView style={styles.sheetScroll} contentContainerStyle={styles.sheetBody}>
+          <ScrollView style={wide && !centred ? styles.panelScroll : styles.sheetScroll} contentContainerStyle={styles.sheetBody}>
             {children}
           </ScrollView>
           <View style={styles.sheetFoot}>
@@ -878,6 +898,7 @@ export function Button({
   busy,
   disabled,
   wide,
+  snug,
   shake,
   confirm,
   glyph: named,
@@ -904,6 +925,8 @@ export function Button({
   busy?: boolean;
   disabled?: boolean;
   wide?: boolean;
+  /** Half the side padding, for a row that shares a narrow screen between several buttons. */
+  snug?: boolean;
   /** Increment to wobble once. */
   shake?: number;
   /** Increment to swell once, when what the button did has landed. */
@@ -993,6 +1016,7 @@ export function Button({
           ...corners.pill,
           opacity: disabled || busy ? 0.45 : press.dim,
           flexGrow: wide === false ? 0 : 1,
+          paddingHorizontal: snug ? space.sm : space.lg,
           transform: [
             { translateX: wobbleShift(wobble) },
             { scale: press.scale },
@@ -1515,15 +1539,18 @@ export function Empty({ title, detail }: { title: string; detail?: string }) {
 
 /**
  * A scrolling page. `fab` adds room at the bottom so a floating button does
- * not cover the last row.
+ * not cover the last row, and `spread` lets a page of lists use the width
+ * beside the side bar.
  */
 export function Page({
   children,
   fab,
+  spread,
   scroll,
 }: {
   children: ReactNode;
   fab?: boolean;
+  spread?: boolean;
   /** From usePageScroll, for a page that brings a part of itself into view. */
   scroll?: PageScroll;
 }) {
@@ -1532,7 +1559,8 @@ export function Page({
   const own = usePageScroll();
   const { scroller, inner } = scroll ?? own;
   const keyboard = useKeyboardCover(scroller, inner);
-  const room = useSideRoom();
+  const room = useSideRoom(space.lg, spread);
+  const top = pageTop(useTitled());
   return (
     <Animated.View ref={keyboard.frame} style={[motion.style, { paddingBottom: keyboard.covered }]}>
       <ScrollView
@@ -1541,13 +1569,22 @@ export function Page({
         onLayout={keyboard.onLayout}
         {...motion.scroll}
         style={{ backgroundColor: p.background }}
-        contentContainerStyle={[styles.page, { paddingHorizontal: room }, fab ? styles.fabRoom : null]}
+        contentContainerStyle={[styles.page, { paddingHorizontal: room, paddingTop: top }, fab ? styles.fabRoom : null]}
         keyboardShouldPersistTaps="handled"
       >
         <Arrival.Provider value={motion.line}>{children}</Arrival.Provider>
       </ScrollView>
     </Animated.View>
   );
+}
+
+/** Whether the page stands under a title row, which a tab's first page beside the side bar has not. */
+function useTitled(): boolean {
+  const nav = useContext(NavigationContext);
+  const route = useContext(NavigationRouteContext);
+  const { wide } = useFrame();
+  const first = route !== undefined && nav?.getState()?.routes[0]?.key === route.key;
+  return titleRow(wide, first, 0).shown;
 }
 
 /**
@@ -1691,11 +1728,12 @@ export function Fab({
 }) {
   const { p, corners, accent } = useTheme();
   const press = usePress();
+  const inset = floatingInset(useFrame());
   const ink = contrastOn(accent);
   const name = labelKey ? glyphNameForKey(labelKey) : undefined;
 
   return (
-    <View style={styles.fabSpot} pointerEvents="box-none">
+    <View style={[styles.fabSpot, { right: inset.end, bottom: inset.bottom }]} pointerEvents="box-none">
       <AnimatedPressable
         onPress={onPress}
         onPressIn={press.onPressIn}
@@ -1738,8 +1776,7 @@ export function Floating({ children }: { children: ReactNode }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  // Every page sits under a title bar, which already leaves room above.
-  page: { padding: space.lg, paddingTop: space.xs, gap: space.md },
+  page: { padding: space.lg, gap: space.md },
   card: { padding: space.lg, gap: space.sm, overflow: "hidden" },
   edge: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4 },
 
@@ -1812,8 +1849,6 @@ const styles = StyleSheet.create({
   // The bottom bar reserves its own height, so `space.lg` clears it.
   fabSpot: {
     position: "absolute",
-    right: space.lg,
-    bottom: space.lg,
     flexDirection: "row",
     alignItems: "center",
     gap: space.sm,
@@ -1888,6 +1923,12 @@ const styles = StyleSheet.create({
   sheetHead: { paddingHorizontal: space.lg, paddingTop: space.lg },
   sheetTitle: { alignSelf: "flex-start", paddingHorizontal: space.md, paddingVertical: 3 },
   sheetScroll: { flexGrow: 0, flexShrink: 1 },
+  // The panel runs the window's height, so Close rests at its foot.
+  panelGround: { flex: 1, flexDirection: "row", justifyContent: "flex-end" },
+  panel: { alignSelf: "stretch", overflow: "hidden", elevation: 8 },
+  panelScroll: { flex: 1 },
+  dialogGround: { flex: 1, alignItems: "center", justifyContent: "center" },
+  dialog: { width: "100%", maxWidth: COLUMN, maxHeight: "100%", overflow: "hidden", elevation: 8 },
   sheetBody: { padding: space.lg, gap: space.md },
   sheetFoot: { flexDirection: "row", justifyContent: "flex-end", padding: space.lg, paddingTop: 0 },
   mark: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },

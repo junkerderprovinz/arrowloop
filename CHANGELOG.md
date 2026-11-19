@@ -14,6 +14,48 @@ The full notes for each release are in
 
 - **A built-in VPN for the jobs that want one.** Pick your provider from tiles with their logos under Settings, General, or paste the WireGuard configuration of a server of your own, then switch **Through the VPN** on in a job. The tunnel runs inside ArrowLoop, so it needs no WireGuard on the machine and no extra rights in a container. It comes up for that job's runs and goes down after, and a run whose tunnel does not come up fails, with nothing synced over your own connection. Before this, a `before` and `after` command around `wg-quick` was the only way, and not one that worked in the container.
 
+## 2.7.6 - 2026-11-18
+
+A tablet held sideways gets the side bar, the settings tiles and the wide lists of the desktop and container versions.
+
+## 🎨 Design
+
+- **A tablet held sideways shows the desktop layout.** From 840 dp of width the bottom bar gives way to the side bar of the desktop and container versions, in the same order and look, with Settings at its foot and no page titles above the pages. Phones and tablets held upright keep the phone layout, and turning the tablet keeps the page you are on. Thanks to @leonp5 for the idea ([#223](https://github.com/junkerderprovinz/arrowloop/issues/223)).
+- **The lists on a tablet use the width.** A job card shows what the job joins beside its status and buttons, the history lists files and runs in columns, the overview stands in two columns and a conflict shows both sides next to each other.
+- **Settings on a tablet are tiles beside their page.** General, Look, Sync, Targets, Pairing, Apps and Info stand in a column as on the desktop, and the picked one opens beside it.
+- **Filters and runs open as on the desktop.** A filter slides in as a panel at the edge of the screen, and a run opens in a dialog in the middle.
+
+## ⚡ Improved
+
+- **The pickers for channels and targets answer to the keyboard.** The arrow keys move across the tiles, Enter picks the one tile a search leaves, and Escape first empties the search before it closes the window.
+
+## 🐛 Fixed
+
+- **A field you type in keeps its box.** In the light theme a focused field turned white and lost its outline. It now keeps its grey box and gets a ring in the accent colour.
+- **An empty Targets page says how to connect the first target.** It used to stay blank, on the phone as on the tablet.
+
+## 2.7.5 - 2026-11-17
+
+Shoutrrr joins the notification channels, every channel is picked from a tile with its logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.
+
+## ✨ Added
+
+- **Shoutrrr as a notification channel.** One address such as `telegram://...` or `pushover://...` reaches Telegram, Pushover, Teams and more than twenty other services. It works on the server, the desktop and the portable version, and needs no Apprise server. Thanks to @danpeig for the idea ([#225](https://github.com/junkerderprovinz/arrowloop/issues/225)).
+
+## 🎨 Design
+
+- **Notification channels are picked from tiles.** "Add a channel" shows every service as a tile with its logo, in the same window the target picker uses, and a search finds a service by name.
+- **The Jobs tab on the phone has its three actions side by side.** Pause automatic runs, Run all and Add stand as three equal buttons at the foot of the list, where two of them used to hide behind More. While a job runs, Stop all takes the place of Run all, and where the words do not fit, the row shows its symbols.
+- **The overview's status sits below the title.** "All is well" is one size smaller than "Overview". Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+
+## 🐛 Fixed
+
+- **Paired instances in a container find each other on the local network.** On a host with a single network interface, such as a container in a bridge network, the local discovery closed right after it started, so the instances only reached each other through the relay.
+- **The Apprise address list takes a space as you type it.** A second address no longer has to be pasted in.
+- **The More menu on the phone shows its whole text.** Menus and dropdowns grow as wide as their longest entry. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+- **The run time no longer looks like a clock time.** The overview shows "31 s" instead of 0:31. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+- **A target that does not say how full it is shows no figure.** That goes for the web and the phone, where Nextcloud used to claim 0 B in use. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+
 ## 2.7.4 - 2026-11-17
 
 On a tablet the phone app turns into landscape with the device, and phones stay upright.

@@ -5,7 +5,6 @@ import { Empty, Rows, Stack } from '../components/Shell'
 import { Dialog } from '../components/Dialog'
 import { IconAction } from '../components/IconAction'
 import { PageAction, PageActions } from '../components/PageActions'
-import { PickerWindow } from '../components/PickerWindow'
 import { ProviderPicker } from '../components/ProviderPicker'
 import { Since } from '../components/Since'
 import { Card } from '../lib/glimstone/Card'
@@ -15,7 +14,6 @@ import { Button } from '../lib/glimstone/Button'
 import { ConfirmWindow } from '../components/ConfirmWindow'
 import {
   IconAdd,
-  IconBack,
   IconCheck,
   IconCheckDraw,
   IconClose,
@@ -50,8 +48,7 @@ import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
 import type { TranslationKey } from '../lib/i18n.data'
 import { useToast } from '../lib/toast'
-import { optionHint, providerName } from '../lib/optionHint'
-import { matchesQuery } from '../lib/fold'
+import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { suggestTargetName } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
@@ -185,25 +182,11 @@ const GROUPS = ['cloud', 'storage', 'protocol'] as const
 
 type Group = (typeof GROUPS)[number]
 
-/**
- * The picker's sections. A target built on another one has a section of its
- * own there, and once saved it sits among the servers and shares.
- */
-const PICK_GROUPS = [...GROUPS, 'layered'] as const
-
-/** Each card's title and empty line, so the three never read alike. */
 const TEXT = {
   cloud: { title: 'targets.cloud', empty: 'targets.cloudEmpty' },
   storage: { title: 'targets.storage', empty: 'targets.bucketEmpty' },
   protocol: { title: 'targets.connections', empty: 'targets.serverEmpty' },
 } as const
-
-const PICK_TITLE: Record<(typeof PICK_GROUPS)[number], TranslationKey> = {
-  cloud: 'targets.cloud',
-  storage: 'targets.storage',
-  protocol: 'targets.connections',
-  layered: 'targets.layered',
-}
 
 function Storage({
   group,
@@ -264,9 +247,8 @@ function Storage({
 
 /**
  * Adding picks a product first, then shows that backend's fields in the same
- * window, so nobody has to know Nextcloud is "webdav". The products stand in
- * their three groups under a search that narrows all of them at once, and
- * Back returns to them.
+ * window, so nobody has to know Nextcloud is "webdav". Back returns to the
+ * products with the search as it was.
  */
 function AddTarget({
   backends,
@@ -281,58 +263,60 @@ function AddTarget({
   taken: string[]
   onDone: (saved: boolean) => void
 }) {
-  const { t } = useT()
-  const [picked, setPicked] = useState<{ kind: string; provider: Provider | null } | null>(null)
-  const [query, setQuery] = useState('')
-
-  if (picked) {
-    return (
-      <RemoteForm
-        title={t('targets.addStorage')}
-        backends={backends}
-        kind={picked.kind}
-        provider={picked.provider}
-        taken={taken}
-        onBack={() => setPicked(null)}
-        onDone={onDone}
-      />
-    )
-  }
-
-  // By the name shown and by rclone's own, which is what a guide online calls it.
-  const groups = PICK_GROUPS.map((group) => ({
-    group,
-    providers: providers.filter((p) => p.group === group && matchesQuery(query, [providerName(p, t), p.name, p.backend])),
-    // An rclone backend with no provider entry counts as a protocol here.
-    unlisted: group === 'protocol' ? unlisted.filter((b) => matchesQuery(query, [b.name])) : [],
-  })).filter((g) => g.providers.length + g.unlisted.length > 0)
-  const tile = (id: string, fallback: string) => {
-    const p = providers.find((x) => x.id === id)
-    return p ? providerName(p, t) : fallback
-  }
+  const { t, lang } = useT()
+  const [picked, setPicked] = useState<Picked | null>(null)
+  const form = useRemoteForm({ backends, picked, taken, onDone })
+  const { trying, tried, checking, busy, kind, name } = form
 
   return (
-    <PickerWindow
-      title={t('targets.addStorage')}
-      hint={t('targets.addStorageHint')}
+    <ProviderPicker
+      providers={providers}
+      unlisted={unlisted}
+      onPick={(choice) =>
+        setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
+      }
+      form={picked ? form.body : undefined}
+      // The words stay put, so the buttons keep their width. Colour, glyph
+      // and the bubble carry the verdict.
+      actions={[
+        {
+          label: t('targets.check'),
+          labelKey: 'targets.check',
+          glyph: trying || !tried ? undefined : tried.ok ? <IconCheck /> : <IconClose />,
+          tone: trying || !tried ? undefined : tried.ok ? 'ok' : 'danger',
+          busy: trying,
+          title:
+            trying || !tried
+              ? undefined
+              : tried.ok
+                ? t('targets.checkOk')
+                : tried.reason
+                  ? failureLine(tried.reason, tried.failure, t, lang)
+                  : t('targets.checkFailed'),
+          disabled: busy || trying || !kind,
+          attrs: tried && !tried.ok && !trying ? { className: 'glim-shake' } : undefined,
+          onClick: () => {
+            void form.tryIt()
+            return false
+          },
+        },
+        {
+          label: t('targets.save'),
+          labelKey: 'targets.save',
+          glyph: <IconSave />,
+          primary: true,
+          busy: checking,
+          title: checking ? t('targets.checking') : undefined,
+          disabled: busy || checking || !name.trim() || !kind,
+          attrs: form.unsaved > 0 && !busy ? { className: 'glim-shake' } : undefined,
+          onClick: () => {
+            void form.save()
+            return false
+          },
+        },
+      ]}
+      onBack={() => setPicked(null)}
       onClose={() => onDone(false)}
-      query={query}
-      onQuery={setQuery}
-      searchLabel={t('targets.search')}
-      none={t('targets.searchNone', { query: query.trim(), s3: tile('s3', 'S3'), webdav: tile('webdav', 'WebDAV') })}
-      sections={groups.map((g) => ({
-        id: g.group,
-        title: t(PICK_TITLE[g.group]),
-        body: (
-          <ProviderPicker
-            providers={g.providers}
-            unlisted={g.unlisted}
-            onPick={(choice) =>
-              setPicked(typeof choice === 'string' ? { kind: choice, provider: null } : { kind: choice.backend, provider: choice })
-            }
-          />
-        ),
-      }))}
     />
   )
 }
@@ -528,52 +512,46 @@ function space(usage: Usage, t: ReturnType<typeof useT>['t']): string {
   return ''
 }
 
+/** Which product or bare backend the picker chose, before the form opens. */
+type Picked = { kind: string; provider: Provider | null }
+
 /**
- * The form for one target in a window, built from the option metadata rclone
- * carries for each backend, so it stays right as backends gain options. The
- * questions most targets need come first; every other setting stands below
- * them in a sub-card of its own.
+ * A target's form, built from the option metadata rclone carries for each
+ * backend, so it stays right as backends gain options. The questions most
+ * targets need come first; every other setting stands below them in a
+ * sub-card of its own. The fields come back as `body` for the window around
+ * them, which also holds the buttons.
  */
-function RemoteForm({
-  title,
+function useRemoteForm({
   backends,
-  kind: chosen,
-  provider,
+  picked,
+  edited,
   taken,
   existing,
-  onBack,
   onDone,
 }: {
-  title: string
   backends: Backend[]
-  /** The backend, chosen in the provider picker before the form opens. */
-  kind?: string
-  /**
-   * The picked provider: its preset settings, the name to suggest and the
-   * shape of its address. Null for an unlisted backend.
-   */
-  provider?: Provider | null
+  /** What the provider picker chose, for a new target. */
+  picked?: Picked | null
+  /** The product a saved target was made from, null when the engine cannot tell. */
+  edited?: Provider | null
   /** The names already in use, so a suggested one does not collide. */
   taken?: string[]
   existing?: Remote
-  /** Returns to the picker the form was opened from, in place of Cancel. */
-  onBack?: () => void
   onDone: (saved: boolean) => void
 }) {
-  const { t, lang } = useT()
+  const { t } = useT()
   const push = useToast()
+  const provider = existing ? edited : (picked?.provider ?? null)
   const preset = provider?.preset
-  // Suggested from the product's own name, numbered when taken (`OpenCloud-2`).
-  const [name, setName] = useState(() => {
-    if (existing) return existing.name
-    if (!provider) return ''
-    return suggestTargetName(provider.name, taken ?? [])
+  // The name is suggested from the product's own, numbered when taken (`OpenCloud-2`).
+  const start = () => ({
+    name: existing?.name ?? (provider ? suggestTargetName(provider.name, taken ?? []) : ''),
+    values: { ...(preset ?? {}), ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])) },
   })
-  const kind = existing?.type ?? chosen ?? backends[0]?.name ?? ''
-  const [values, setValues] = useState<Record<string, string>>(() => ({
-    ...(preset ?? {}),
-    ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])),
-  }))
+  const [name, setName] = useState(() => start().name)
+  const kind = existing?.type ?? picked?.kind ?? backends[0]?.name ?? ''
+  const [values, setValues] = useState<Record<string, string>>(() => start().values)
   const [busy, setBusy] = useState(false)
   const [checking, setChecking] = useState(false)
   const [trying, setTrying] = useState(false)
@@ -760,6 +738,136 @@ function RemoteForm({
     )
   }
 
+  // The picker stays open while a pick's form comes and goes, so each pick
+  // starts its form afresh.
+  const [shown, setShown] = useState(picked)
+  if (shown !== picked) {
+    setShown(picked)
+    setName(start().name)
+    setValues(start().values)
+    setTried(null)
+    setQuestion(null)
+    setMoreOpen(undefined)
+  }
+
+  const body = (
+    <div className="flex flex-col gap-4 py-2">
+      {/* An OAuth token needs a browser at the provider's sign-in page on the
+          engine's machine, which this interface cannot open, so the form
+          names the command that produces one. */}
+      {backend?.needsToken && (
+        <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
+          <InfoBubble tip={t('targets.tokenHowTo', { backend: backend.name })} />
+          <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
+        </p>
+      )}
+      {/* No backend type on screen: the picker already chose it in terms of
+          products. */}
+      <FieldRow label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
+        {/* Fixed once saved: the jobs that use the target name it, and its
+            secrets never reach this form to be written under a new name. */}
+        <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
+      </FieldRow>
+      {first.map(field)}
+      {question && (
+        <FieldRow label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')} hint={t('targets.question.hint')}>
+          <span data-new="target-setup-choice" className="flex w-full">
+            <Choice
+              value={values[question.name] ?? ''}
+              onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
+              label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')}
+              options={[
+                { value: '', label: t('targets.question.pick') },
+                ...question.choices.map((c) => ({ value: c.value, label: c.help || c.value })),
+              ]}
+            />
+          </span>
+        </FieldRow>
+      )}
+      {/* Shown to compare with the fingerprint the provider publishes:
+          saving holds the target to this key. */}
+      {tried?.hostKey && (
+        <p data-new="sftp-host-key" className="flex flex-wrap items-center gap-x-2 text-subline text-carbon-textMuted">
+          <span className="flex items-center gap-1.5">
+            {t('targets.hostKey')}
+            <InfoBubble tip={t('targets.hostKeyHint')} />
+          </span>
+          <span className="font-mono text-carbon-text [overflow-wrap:anywhere]">{tried.hostKey}</span>
+        </p>
+      )}
+      {refusedCert ? (
+        <CertificateOffer cert={refusedCert} busy={trying} onTrust={() => trust(refusedCert.fingerprint)} />
+      ) : (
+        pinned && (
+          <SubCard
+            title={t('targets.certificate.trusted')}
+            hint={t('targets.certificate.trustedHint')}
+            end={
+              <Button
+                label={t('targets.certificate.remove')}
+                labelKey="targets.certificate.remove"
+                glyph={<IconShieldOff />}
+                onClick={() => setValues((prev) => ({ ...prev, [CERTIFICATE_KEY]: '' }))}
+              />
+            }
+          >
+            <p className="font-mono text-subline text-carbon-text [overflow-wrap:anywhere]">{pinned}</p>
+          </SubCard>
+        )
+      )}
+      {rest.length > 0 && (
+        <section className="flex flex-col gap-4">
+          <button
+            type="button"
+            aria-expanded={moreShown}
+            onClick={() => setMoreOpen(!moreShown)}
+            className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-hover focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
+          >
+            <svg
+              aria-hidden
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              className={`glim-btn-glyph transition-transform ${moreShown ? '' : '-rotate-90 rtl:rotate-90'}`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t('targets.moreSettings')}
+          </button>
+          {moreShown && (
+            <div role="region" aria-label={t('targets.moreSettings')} className="flex flex-col gap-4">
+              {rest.map(field)}
+            </div>
+          )}
+        </section>
+      )}
+    </div>
+  )
+
+  return { body, kind, name, busy, checking, trying, tried, refused, unsaved, tryIt, save }
+}
+
+/** A saved target's form in a window of its own. */
+function RemoteForm({
+  title,
+  backends,
+  provider,
+  existing,
+  onDone,
+}: {
+  title: string
+  backends: Backend[]
+  provider: Provider | null
+  existing: Remote
+  onDone: (saved: boolean) => void
+}) {
+  const { t, lang } = useT()
+  const form = useRemoteForm({ backends, edited: provider, existing, onDone })
+  const { trying, tried, refused, unsaved, busy, checking, kind, name } = form
+
   return (
     <Dialog
       title={title}
@@ -767,11 +875,7 @@ function RemoteForm({
       closeOnBackdrop={false}
       footer={
         <>
-          {onBack ? (
-            <Button label={t('preview.back')} labelKey="preview.back" glyph={<IconBack />} onClick={onBack} />
-          ) : (
-            <Button label={t('targets.cancel')} labelKey="targets.cancel" glyph={<IconClose />} onClick={() => onDone(false)} />
-          )}
+          <Button label={t('targets.cancel')} labelKey="targets.cancel" glyph={<IconClose />} onClick={() => onDone(false)} />
           {/* Tests before anything is written; saving checks again afterwards.
               Colour, word and glyph all carry the last verdict, so colour is
               never the only signal. */}
@@ -787,7 +891,7 @@ function RemoteForm({
             className={tried && !tried.ok && !trying ? 'glim-shake' : ''}
             busy={trying}
             stage={groupStage([t('targets.check'), t('targets.checking'), t('targets.checkOk'), t('targets.checkFailed')])}
-            onClick={() => void tryIt()}
+            onClick={() => void form.tryIt()}
             disabled={busy || trying || !kind}
           />
           <Button
@@ -797,106 +901,13 @@ function RemoteForm({
             glyph={<IconSave />}
             tone="accent"
             className={unsaved > 0 ? 'glim-shake' : ''}
-            onClick={() => void save()}
+            onClick={() => void form.save()}
             disabled={busy || checking || !name.trim() || !kind}
           />
         </>
       }
     >
-      <div className="flex flex-col gap-4 py-2">
-        {/* An OAuth token needs a browser at the provider's sign-in page on the
-            engine's machine, which this interface cannot open, so the form
-            names the command that produces one. */}
-        {backend?.needsToken && (
-          <p className="flex items-start gap-2 text-subline text-carbon-textMuted">
-            <InfoBubble tip={t('targets.tokenHowTo', { backend: backend.name })} />
-            <span>{t('targets.tokenNeeded', { backend: backend.name })}</span>
-          </p>
-        )}
-        {/* No backend type on screen: the picker already chose it in terms of
-            products. */}
-        <FieldRow label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
-          {/* Fixed once saved: the jobs that use the target name it, and its
-              secrets never reach this form to be written under a new name. */}
-          <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
-        </FieldRow>
-        {first.map(field)}
-        {question && (
-          <FieldRow label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')} hint={t('targets.question.hint')}>
-            <span data-new="target-setup-choice" className="flex w-full">
-              <Choice
-                value={values[question.name] ?? ''}
-                onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
-                label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')}
-                options={[
-                  { value: '', label: t('targets.question.pick') },
-                  ...question.choices.map((c) => ({ value: c.value, label: c.help || c.value })),
-                ]}
-              />
-            </span>
-          </FieldRow>
-        )}
-        {/* Shown to compare with the fingerprint the provider publishes:
-            saving holds the target to this key. */}
-        {tried?.hostKey && (
-          <p data-new="sftp-host-key" className="flex flex-wrap items-center gap-x-2 text-subline text-carbon-textMuted">
-            <span className="flex items-center gap-1.5">
-              {t('targets.hostKey')}
-              <InfoBubble tip={t('targets.hostKeyHint')} />
-            </span>
-            <span className="font-mono text-carbon-text [overflow-wrap:anywhere]">{tried.hostKey}</span>
-          </p>
-        )}
-        {refusedCert ? (
-          <CertificateOffer cert={refusedCert} busy={trying} onTrust={() => trust(refusedCert.fingerprint)} />
-        ) : (
-          pinned && (
-            <SubCard
-              title={t('targets.certificate.trusted')}
-              hint={t('targets.certificate.trustedHint')}
-              end={
-                <Button
-                  label={t('targets.certificate.remove')}
-                  labelKey="targets.certificate.remove"
-                  glyph={<IconShieldOff />}
-                  onClick={() => setValues((prev) => ({ ...prev, [CERTIFICATE_KEY]: '' }))}
-                />
-              }
-            >
-              <p className="font-mono text-subline text-carbon-text [overflow-wrap:anywhere]">{pinned}</p>
-            </SubCard>
-          )
-        )}
-        {rest.length > 0 && (
-          <section className="flex flex-col gap-4">
-            <button
-              type="button"
-              aria-expanded={moreShown}
-              onClick={() => setMoreOpen(!moreShown)}
-              className="glim-btn-subtle flex h-[var(--btn-h)] items-center gap-1.5 self-start rounded-control bg-carbon-surface2 px-3 text-body font-semibold text-carbon-text outline-none transition hover:bg-hover focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring)"
-            >
-              <svg
-                aria-hidden
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                className={`glim-btn-glyph transition-transform ${moreShown ? '' : '-rotate-90 rtl:rotate-90'}`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M2 4l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {t('targets.moreSettings')}
-            </button>
-            {moreShown && (
-              <div role="region" aria-label={t('targets.moreSettings')} className="flex flex-col gap-4">
-                {rest.map(field)}
-              </div>
-            )}
-          </section>
-        )}
-      </div>
+      {form.body}
     </Dialog>
   )
 }

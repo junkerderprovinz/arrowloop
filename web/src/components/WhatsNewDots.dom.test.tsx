@@ -68,7 +68,7 @@ describe('the dots of what is new', () => {
   it('take the dot off a link once everything behind it was seen', async () => {
     render(<Page />)
     await waitFor(() => expect(dot('way')).not.toBeNull())
-    act(() => markSeen(['vpn', 'notify-tiles', 'settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks', 'label-glyphs', 'version-card', 'fdroid-logo', 'jobs-view', 'oled', 'system-accent', 'auto-backup', 'import-others', 'pairing', 'apps-flatpak', 'auto-update']))
+    act(() => markSeen(['vpn', 'notify-shoutrrr', 'notify-tiles', 'settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks', 'label-glyphs', 'version-card', 'fdroid-logo', 'jobs-view', 'oled', 'system-accent', 'auto-backup', 'import-others', 'pairing', 'apps-flatpak', 'auto-update']))
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 

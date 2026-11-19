@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/junkerderprovinz/parleyport/kit/notify"
 	"github.com/junkerderprovinz/parleyport/kit/notify/legacy"
 	"github.com/robfig/cron/v3"
 	"golang.org/x/text/collate"
@@ -20,6 +19,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
@@ -333,9 +333,10 @@ func (c *Config) KeepHistoryFor() (time.Duration, bool) {
 }
 
 // Notify says where messages go: one channel per destination, in the format
-// of the kit's notify package. A file from before the list holds one block
-// per service instead, which is read into channels as the kit's legacy
-// package reads it, and Load then writes the channels beside those keys.
+// of the kit's notify package, Shoutrrr's beside the kit's kinds. A file from
+// before the list holds one block per service instead, which is read into
+// channels as the kit's legacy package reads it, and Load then writes the
+// channels beside those keys.
 type Notify struct {
 	Channels []notify.Channel `json:"channels"`
 
@@ -366,7 +367,7 @@ func (n *Notify) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return fmt.Errorf("notify: %w", err)
 	}
-	*n = Notify{Channels: channels, older: len(channels) > 0}
+	*n = Notify{Channels: notify.FromKit(channels), older: len(channels) > 0}
 	return nil
 }
 

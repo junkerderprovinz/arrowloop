@@ -176,14 +176,15 @@ func TestTheFortressPhraseIsShownAgainAndAChangeReachesTheOthers(t *testing.T) {
 	if got := a.shownPhrase(t); got != words {
 		t.Fatalf("the phrase is shown as %q, want the one entered", got)
 	}
+	other := []leftEntry{{App: "ArrowLoop", Device: b.connect(t).Name}}
 
 	status, body := a.send(t, http.MethodPost, "/api/fortress/phrase", `{}`)
 	if status != http.StatusOK {
 		t.Fatalf("change the phrase = %d %s", status, body)
 	}
 	var changed struct {
-		Phrase string   `json:"phrase"`
-		Left   []string `json:"left"`
+		Phrase string      `json:"phrase"`
+		Left   []leftEntry `json:"left"`
 	}
 	if err := json.Unmarshal(body, &changed); err != nil || changed.Phrase == words || changed.Phrase == "" {
 		t.Fatalf("the change answered %s", body)
@@ -191,10 +192,32 @@ func TestTheFortressPhraseIsShownAgainAndAChangeReachesTheOthers(t *testing.T) {
 	if got := a.shownPhrase(t); got != changed.Phrase {
 		t.Errorf("after the change the phrase is shown as %q", got)
 	}
-	if len(changed.Left) != 0 {
-		t.Fatalf("the change left %v on the old phrase", changed.Left)
+	// The kit hands the new phrase over once. When that call is lost, the
+	// other instance is listed: it either took the phrase and moved its
+	// pairing out of the fallback's reach, or it fetches the phrase moments
+	// later.
+	if len(changed.Left) != 0 && !slices.Equal(changed.Left, other) {
+		t.Errorf("the change left %+v on the old phrase, want nobody or %+v", changed.Left, other)
 	}
 	eventually(t, "the other instance to take the new phrase", func() bool { return b.shownPhrase(t) == changed.Phrase })
+}
+
+// An instance can take the new phrase from the kit while its answer gets lost,
+// and then hears of the same change once more through the pairing.
+func TestAnInstanceThatHoldsTheNewPhraseAlreadyCountsAsTakingIt(t *testing.T) {
+	url := testRelay(t)
+	a, b := newNode(t, url), newNode(t, url)
+	aID, bID := pair(t, a, b)
+	a.join(t, newWords(t))
+	eventually(t, "the two to meet in the fortress", func() bool { return meets(t, a, bID) && meets(t, b, aID) })
+	changed, _ := a.changePhrase(t)
+	eventually(t, "the other instance to take the new phrase", func() bool { return b.shownPhrase(t) == changed })
+
+	eventually(t, "the instance that holds the new phrase to count as taking it", func() bool {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		return slices.Equal(a.server.PassChangeAgain(ctx), []string{bID})
+	})
 }
 
 // meets reports whether n sees the member id in the fortress right now.

@@ -49,10 +49,6 @@ computed from the first.
 `kdrive.svg`, its `infomaniak-kdrive.svg` with the wordmark left out, since the mark stands beside its name,
 and the Unraid button's `unraid.txt`, its `unraid.svg` with the gradient left
 out, since the button draws it in one ink.
-For the notification channels, `slack.svg` and `gotify.svg`. Gotify's gopher
-is the Gotify project's own drawing, published under **CC BY 4.0** in
-<https://github.com/gotify/logo>. The file here is Dashboard Icons' cleaned copy
-of it.
 **Apache-2.0**, whose licence text is beside this file as
 `LICENSE-dashboard-icons.txt`. Copyright the Homarr Labs team and contributors.
 Unlike CC0 this one asks for attribution, which is why it is named here, in the
@@ -61,8 +57,20 @@ generator, and in the header of every component built from it.
 Apache-2.0 is one-way compatible with this project's AGPL-3.0: these files may be
 carried into it, and the combined work stays AGPL-3.0.
 
-**The brands' own websites and repositories**, for eight providers and two
-notification services that neither Simple Icons nor Dashboard Icons carries. Like the hand-collected marks above,
+**Shoutrrr's repository**, <https://github.com/nicholas-fedor/shoutrrr>, for
+`shoutrrr.svg`: `docs/assets/media/shoutrrr-logotype.svg`, the gopher with the
+megaphone in its speech bubble. The repository is under the **MIT** licence,
+whose text is beside this file as `LICENSE-shoutrrr.txt`; it asks for the
+copyright notice to travel with the file, which is why it is named here and in
+the generator. Copyright Nicholas Fedor. MIT, like Apache-2.0, may be carried
+into AGPL-3.0. The file is the Inkscape original with what draws nothing taken
+out: the JPEG it was traced over, which lies outside the drawing, the hidden
+elements, Inkscape's own attributes and metadata, and a `paint-order:normal`,
+the default, which the phone's generator does not read. Every path, fill and
+transform that draws is as drawn.
+
+**The brands' own websites and repositories**, for eight providers that neither
+Simple Icons nor Dashboard Icons carries. Like the hand-collected marks above,
 each is its owner's, used under the trademark position below.
 
 - `drime.svg`: the brand mark in the footer of <https://drime.cloud>, where the
@@ -90,25 +98,14 @@ each is its owner's, used under the trademark position below.
   The drawing is shaded, so the trace keeps six tones, each the average of one
   area of it: the three faces, the heart, and the black and grey of the small
   cubes.
-- `healthchecks.svg`: `static/img/favicon.svg` from Healthchecks.io's own
-  repository <https://github.com/healthchecks/healthchecks>.
-- `apprise.svg`: Apprise has its logo only as PNG,
-  `apprise/assets/themes/default/apprise-logo.png` in
-  <https://github.com/caronc/apprise>, the mark and the word APPRISE side by
-  side. The mark alone was traced from it: the megaphone and its A in the two
-  teals sampled from the image, and the arc behind them as the two circles that
-  fit its edges, since the word's first P covers part of it. The original fades
-  the arc out at both ends, and the trace cuts it where the fade begins.
 
-Every file but the traced FileLu, 1Fichier and Apprise marks is copied
-unmodified; what the generator produces from one is a translation into JSX and
+Every file but the traced FileLu and 1Fichier marks and the trimmed Shoutrrr
+file is copied unmodified; what the generator produces from one is a translation into JSX and
 nothing else. It keeps the drawing's own paths, fills, gradients and viewBox,
 prefixes every `id` with the file's name so two marks on
 one page cannot swap gradients, and dissolves an Illustrator `<style>` block
 into the elements it paints - class names are global to a document, so two marks
-both defining `.st0` would have one wearing the other's fill. An Illustrator
-`<switch>`, which offers Illustrator its own `<foreignObject>` first, becomes
-the group a browser would draw anyway.
+both defining `.st0` would have one wearing the other's fill.
 
 ## Trademarks
 

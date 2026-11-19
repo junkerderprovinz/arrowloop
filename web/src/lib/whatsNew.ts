@@ -63,6 +63,22 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.7.6',
+    changes: [
+      {
+        id: 'vpn',
+        at: ['/settings/general'],
+        where: ['nav.settings', 'settings.general'],
+        text: 'new.change.vpn',
+        names: { vpn: 'edit.vpn' },
+      },
+    ],
+  },
+  {
+    after: '2.7.5',
+    changes: [{ id: 'tablet-shell', text: 'new.change.tabletShell' }],
+  },
+  {
     after: '2.7.4',
     changes: [
       {
@@ -73,11 +89,11 @@ export const RELEASES: Release[] = [
         names: { add: 'notify.add' },
       },
       {
-        id: 'vpn',
-        at: ['/settings/general'],
-        where: ['nav.settings', 'settings.general'],
-        text: 'new.change.vpn',
-        names: { vpn: 'edit.vpn' },
+        id: 'notify-shoutrrr',
+        at: ['/settings/safety'],
+        via: 'notify-add',
+        where: ['nav.settings', 'settings.safetyNet'],
+        text: 'new.change.notifyShoutrrr',
       },
     ],
   },

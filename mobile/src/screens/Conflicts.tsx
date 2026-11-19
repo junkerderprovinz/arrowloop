@@ -16,6 +16,7 @@ import { ListHead } from "../listHead";
 import { Tiles } from "../tiles";
 import { AxisLabel, Badge, Body, Button, Caption, Card, Empty, Mono, Page, Pair, Sheet } from "../ui";
 import { useWaiting } from "../waiting";
+import { useFrame } from "../frame";
 
 /** The same three answers as the web's conflicts page, in the order of the sides they keep. */
 const CHOICES: Keep[] = ["left", "both", "right"];
@@ -52,6 +53,7 @@ function keepLabel(keep: Keep, job: Job | undefined, t: T): string {
  */
 export function Conflicts() {
   const { t, lang } = useT();
+  const { wide } = useFrame();
   const [list, setList] = useState<OpenConflict[] | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [remotes, setRemotes] = useState<Remote[]>([]);
@@ -113,7 +115,7 @@ export function Conflicts() {
   const single = new Set(shown.map((c) => c.job)).size === 1 ? jobs.find((j) => j.name === shown[0]?.job) : undefined;
 
   return (
-    <Page>
+    <Page spread>
       {list.length === 0 ? <Empty title={t("conflicts.none")} /> : null}
       {list.length > 0 ? (
         <>
@@ -145,19 +147,21 @@ export function Conflicts() {
             <Mono>{c.plain}</Mono>
             <Caption>{c.job}</Caption>
             <Body>{t(WHY[c.why ?? ""] ?? "conflict.why.unknown")}</Body>
-            {(["left", "right"] as const).map((side) => (
-              <View key={side} style={styles.side}>
-                <View style={styles.sideHead}>
-                  <AxisLabel>{t(side === "left" ? "edit.left" : "edit.right")}</AxisLabel>
-                  {newer === side ? <Badge label={t("conflict.newer")} tone="ok" /> : null}
+            <View style={wide ? styles.sidesAcross : styles.sides}>
+              {(["left", "right"] as const).map((side) => (
+                <View key={side} style={[styles.side, wide ? styles.sideAcross : null]}>
+                  <View style={styles.sideHead}>
+                    <AxisLabel>{t(side === "left" ? "edit.left" : "edit.right")}</AxisLabel>
+                    {newer === side ? <Badge label={t("conflict.newer")} tone="ok" /> : null}
+                  </View>
+                  {job ? <SideRow path={job[side]} mark={sideMark(job[side], remotes)} /> : null}
+                  <Pair label={t("conflict.size")} value={bytes(c[side].size)} />
+                  <Pair label={t("conflict.changed")} value={fullClock(c[side].mod, lang)} />
+                  <Pair label={t("conflict.namedNow")} value={c[side].path.split("/").pop() ?? c[side].path} />
                 </View>
-                {job ? <SideRow path={job[side]} mark={sideMark(job[side], remotes)} /> : null}
-                <Pair label={t("conflict.size")} value={bytes(c[side].size)} />
-                <Pair label={t("conflict.changed")} value={fullClock(c[side].mod, lang)} />
-                <Pair label={t("conflict.namedNow")} value={c[side].path.split("/").pop() ?? c[side].path} />
-              </View>
-            ))}
-            <View style={styles.choices}>
+              ))}
+            </View>
+            <View style={[styles.choices, wide ? styles.choicesAcross : null]}>
               {CHOICES.map((keep) => (
                 <Button key={keep} label={keepLabel(keep, job, t)} glyph={GLYPH[keep]} disabled={busy} onPress={() => void decide([c], keep)} />
               ))}
@@ -203,8 +207,25 @@ export function Conflicts() {
 }
 
 const styles = StyleSheet.create({
+  // The card's own gap, between the two sides.
+  sides: {
+    gap: space.sm,
+  },
+  // The two sides next to each other, as the web compares them.
+  sidesAcross: {
+    flexDirection: "row",
+    gap: space.xl,
+  },
   side: {
     gap: space.xs,
+  },
+  sideAcross: {
+    flex: 1,
+    minWidth: 0,
+  },
+  choicesAcross: {
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   sideHead: {
     flexDirection: "row",

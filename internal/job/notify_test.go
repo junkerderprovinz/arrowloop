@@ -9,6 +9,8 @@ import (
 	"testing"
 
 	"github.com/junkerderprovinz/parleyport/kit/notify"
+
+	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 )
 
 func notifyFrom(t *testing.T, n string) Notify {
@@ -36,8 +38,9 @@ var beforeChannels = []notify.Channel{
 		Healthchecks: &notify.Healthchecks{URL: "https://hc-ping.com/every-job", ByKey: map[string]string{"photos": "https://hc-ping.com/photos"}}},
 }
 
-func sameChannels(t *testing.T, got, want []notify.Channel) {
+func sameChannels(t *testing.T, got []alnotify.Channel, kits []notify.Channel) {
 	t.Helper()
+	want := alnotify.FromKit(kits)
 	if len(got) != len(want) {
 		t.Fatalf("got %d channels, want %d: %+v", len(got), len(want), got)
 	}
@@ -108,6 +111,14 @@ func TestTheOlderWhenKeepsItsMeaning(t *testing.T) {
 func TestOnceThereAreChannelsTheOlderKeysAreIgnored(t *testing.T) {
 	n := notifyFrom(t, `{"channels":[{"id":"phone","kind":"ntfy","enabled":true,"ntfy":{"url":"https://ntfy.example/topic"}}],"webhook":"https://hooks.example/old"}`)
 	if len(n.Channels) != 1 || n.Channels[0].ID != "phone" {
+		t.Errorf("the channels are %+v", n.Channels)
+	}
+}
+
+func TestAShoutrrrChannelLoadsBesideTheKitsKinds(t *testing.T) {
+	n := notifyFrom(t, `{"channels":[{"id":"phone","kind":"ntfy","enabled":true,"ntfy":{"url":"https://ntfy.example/topic"}},`+
+		`{"id":"shout","kind":"shoutrrr","enabled":true,"shoutrrr":{"urls":["telegram://token@telegram?chats=1","pushover://shoutrrr:app@user"]}}]}`)
+	if len(n.Channels) != 2 || n.Channels[1].Kind != alnotify.KindShoutrrr || n.Channels[1].Shoutrrr == nil || len(n.Channels[1].Shoutrrr.URLs) != 2 {
 		t.Errorf("the channels are %+v", n.Channels)
 	}
 }
