@@ -15,7 +15,7 @@ type Provider struct {
 	forget func(ctx context.Context, login Login)
 }
 
-// Custom is the tile for a WireGuard configuration of one's own, such as the
+// Custom is the WireGuard tile, for a configuration of one's own such as the
 // one a router at home hands out.
 const Custom = "custom"
 
@@ -57,6 +57,6 @@ func catalogue() []Provider {
 		{ID: "cactusvpn", Name: "CactusVPN", Fields: []string{"config"}, open: conf},
 		{ID: "vpnac", Name: "VPN.ac", Fields: []string{"config"}, open: conf},
 		{ID: "unlocator", Name: "Unlocator VPN", Fields: []string{"config"}, open: conf},
-		{ID: Custom, Name: "Own WireGuard config", Fields: []string{"config"}, open: conf},
+		{ID: Custom, Name: "WireGuard", Fields: []string{"config"}, open: conf},
 	}
 }

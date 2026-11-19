@@ -47,8 +47,8 @@ func TestTheEnginesOwnSentencesCarryTheirFigures(t *testing.T) {
 			failure.Failure{Code: failure.AfterFailed, Params: map[string]string{"output": "exit status 1"}},
 		},
 		{
-			fmt.Errorf("%w: %w", daemon.ErrVPNDown, errors.New("Own WireGuard config: no handshake with 203.0.113.9:51820 within 45s")).Error(),
-			failure.Failure{Code: failure.VPNDown, Params: map[string]string{"output": "Own WireGuard config: no handshake with 203.0.113.9:51820 within 45s"}},
+			fmt.Errorf("%w: %w", daemon.ErrVPNDown, errors.New("WireGuard: no handshake with 203.0.113.9:51820 within 45s")).Error(),
+			failure.Failure{Code: failure.VPNDown, Params: map[string]string{"output": "WireGuard: no handshake with 203.0.113.9:51820 within 45s"}},
 		},
 		{
 			fmt.Errorf("%w: %w", daemon.ErrVPNDown, errors.New("no VPN is set up in the settings")).Error(),
