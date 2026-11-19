@@ -36,6 +36,7 @@ const (
 	LeftTwice            = "leftTwice"
 	CertificateUntrusted = "certificateUntrusted"
 	VPNDown              = "vpnDown"
+	VPNUnreached         = "vpnUnreached"
 	VPNRefused           = "vpnRefused"
 	NoVPN                = "noVpn"
 )
@@ -52,6 +53,7 @@ var (
 	hook   = regexp.MustCompile(`(?:^|: )the command (before|after) the run failed(?:, so the run did not start)?: `)
 	twice  = regexp.MustCompile(`(?:^|: )left for later in two runs in a row: `)
 	vpn    = regexp.MustCompile(`(?:^|: )the VPN did not come up, so the run did not start: `)
+	away   = regexp.MustCompile(`(?:^|: )the VPN did not come up, so the job's sides could not be reached: `)
 	unfit  = regexp.MustCompile(`(?:^|: )this job goes through the VPN, but one of its sides cannot: the (left|right) side: `)
 	novpn  = regexp.MustCompile(`(?:^|: )this job goes through the VPN, and ArrowLoop has no built-in VPN here`)
 )
@@ -125,6 +127,9 @@ func Of(text string) *Failure {
 	// a network failure, when the trouble is the VPN's.
 	if m := vpn.FindStringIndex(text); m != nil {
 		return &Failure{Code: VPNDown, Params: map[string]string{"output": text[m[1]:]}}
+	}
+	if m := away.FindStringIndex(text); m != nil {
+		return &Failure{Code: VPNUnreached, Params: map[string]string{"output": text[m[1]:]}}
 	}
 	if m := unfit.FindStringSubmatchIndex(text); m != nil {
 		return &Failure{Code: VPNRefused, Params: map[string]string{"side": text[m[2]:m[3]], "output": text[m[1]:]}}

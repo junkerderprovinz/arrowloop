@@ -2211,6 +2211,7 @@ const vi: Translations = {
   'edit.vpnGone': 'VPN mà công việc này đi qua không còn được thiết lập, nên các lần chạy của nó thất bại. Hãy chọn VPN khác, hoặc "Không dùng VPN".',
   'edit.vpnNotHere': 'ArrowLoop không có VPN tích hợp trên thiết bị này, nên các lần chạy của công việc này sẽ thất bại. Hãy chọn "Không dùng VPN" và dùng VPN của hệ thống.',
   'failure.vpnDown': 'VPN không bật lên được, nên không có gì được đồng bộ qua kết nối riêng của bạn. Hãy kiểm tra VPN trong Cài đặt, Tích hợp.',
+  'failure.vpnUnreached': 'VPN không kết nối được, nên không thể truy cập các bên của tác vụ này. Hãy kiểm tra VPN trong Cài đặt, Tích hợp.',
   'failure.vpnRefused.left': 'Các kết nối của bên trái không thể đi qua VPN, nên lần chạy không bắt đầu. Hãy chọn "Không dùng VPN" cho công việc này, hoặc một đích có thể đi qua VPN.',
   'failure.vpnRefused.right': 'Các kết nối của bên phải không thể đi qua VPN, nên lần chạy không bắt đầu. Hãy chọn "Không dùng VPN" cho công việc này, hoặc một đích có thể đi qua VPN.',
   'failure.noVpn': 'Công việc này đi qua VPN, nhưng ArrowLoop không có VPN tích hợp trên thiết bị này. Hãy tắt "Qua VPN" và dùng VPN của hệ thống.',

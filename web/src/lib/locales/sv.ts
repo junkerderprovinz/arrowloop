@@ -2211,6 +2211,7 @@ const sv: Translations = {
   'edit.vpnGone': 'Den VPN som det här jobbet går via är inte längre inställd, så jobbets körningar misslyckas. Välj en annan, eller ”Ingen VPN”.',
   'edit.vpnNotHere': 'ArrowLoop har ingen inbyggd VPN på den här enheten, så körningar av det här jobbet misslyckas. Välj ”Ingen VPN” och använd systemets VPN i stället.',
   'failure.vpnDown': 'VPN:en kopplades inte upp, så ingenting synkroniserades över din egen anslutning. Testa den under Inställningar, Integrationer.',
+  'failure.vpnUnreached': 'VPN:et kom inte upp, så jobbets sidor gick inte att nå. Testa den under Inställningar, Integrationer.',
   'failure.vpnRefused.left': 'Vänster sidas anslutningar kan inte gå via VPN, så körningen startade inte. Välj ”Ingen VPN” för det här jobbet, eller ett mål som kan gå via den.',
   'failure.vpnRefused.right': 'Höger sidas anslutningar kan inte gå via VPN, så körningen startade inte. Välj ”Ingen VPN” för det här jobbet, eller ett mål som kan gå via den.',
   'failure.noVpn': 'Det här jobbet går via VPN, och ArrowLoop har ingen inbyggd VPN på den här enheten. Slå av ”Via VPN” och använd systemets VPN i stället.',

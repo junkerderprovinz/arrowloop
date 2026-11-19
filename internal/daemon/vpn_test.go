@@ -323,3 +323,13 @@ func TestAPreviewOfAJobThroughTheVPNGoesThroughItsTunnel(t *testing.T) {
 		t.Errorf("after the preview the VPN is %s", st.Status)
 	}
 }
+
+func TestATunnelThatDoesNotComeUpForALookSaysNoRunWasMeant(t *testing.T) {
+	s := newVPNRunner(t, func(o *vpnconn.Options) { o.ConnectTimeout = 700 * time.Millisecond })
+	s.srv.Close()
+	j, _ := s.r.Config().Find("through")
+	_, _, err := s.r.ThroughVPN(context.Background(), j)
+	if !errors.Is(err, ErrVPNUnreached) || strings.Contains(err.Error(), "run") {
+		t.Errorf("a look at the job's sides ended with %v", err)
+	}
+}

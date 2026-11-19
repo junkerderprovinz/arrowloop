@@ -45,6 +45,7 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
   afterFailed: { either: 'failure.afterFailed' },
   leftTwice: { either: 'failure.leftTwice' },
   vpnDown: { either: 'failure.vpnDown' },
+  vpnUnreached: { either: 'failure.vpnUnreached' },
   vpnRefused: { left: 'failure.vpnRefused.left', right: 'failure.vpnRefused.right' },
   noVpn: { either: 'failure.noVpn' },
 }
@@ -74,7 +75,7 @@ export function sayFailure(
  * Kinds whose engine words are a VPN provider's or the tunnel's own English,
  * which the run's page shows under the sentence and a one-line row leaves out.
  */
-const DETAIL_ONLY = new Set(['vpnDown', 'vpnRefused'])
+const DETAIL_ONLY = new Set(['vpnDown', 'vpnUnreached', 'vpnRefused'])
 
 /** The same on one line, for a row with room for nothing more. */
 export function failureLine(raw: string, failure: Failure | null | undefined, t: Translate, lang: string): string {

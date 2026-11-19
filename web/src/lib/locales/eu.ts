@@ -2211,6 +2211,7 @@ const eu: Translations = {
   'edit.vpnGone': 'Lan honen VPNa ez dago jada konfiguratuta, beraz bere exekuzioek huts egiten dute. Aukeratu beste bat, edo «VPNrik gabe».',
   'edit.vpnNotHere': 'ArrowLoopek ez du VPN integraturik gailu honetan, beraz lan honen exekuzioek huts egiten dute. Aukeratu «VPNrik gabe» eta erabili sistemaren VPNa.',
   'failure.vpnDown': 'VPNa ez da piztu, beraz ez da ezer sinkronizatu zure konexioaren bidez. Probatu Ezarpenetan, Integrazioak atalean.',
+  'failure.vpnUnreached': 'VPNa ez da konektatu, eta ezin izan da lan honen aldeetara iritsi. Probatu Ezarpenetan, Integrazioak atalean.',
   'failure.vpnRefused.left': 'Ezkerreko aldearen konexioak ezin dira VPNaren bidez joan, beraz exekuzioa ez da hasi. Aukeratu «VPNrik gabe» lan honetarako, edo haren bidez joan daitekeen helburu bat.',
   'failure.vpnRefused.right': 'Eskuineko aldearen konexioak ezin dira VPNaren bidez joan, beraz exekuzioa ez da hasi. Aukeratu «VPNrik gabe» lan honetarako, edo haren bidez joan daitekeen helburu bat.',
   'failure.noVpn': 'Lan hau VPNaren bidez doa, eta ArrowLoopek ez du VPN integraturik gailu honetan. Desaktibatu «VPNaren bidez» eta erabili sistemaren VPNa.',

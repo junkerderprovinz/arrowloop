@@ -2211,6 +2211,7 @@ const lv: Translations = {
   'edit.vpnGone': 'VPN, caur kuru iet šis uzdevums, vairs nav iestatīts, tāpēc tā palaišanas neizdodas. Izvēlies citu vai “Bez VPN”.',
   'edit.vpnNotHere': 'Šajā ierīcē ArrowLoop nav iebūvēta VPN, tāpēc šī uzdevuma palaišanas neizdodas. Izvēlies “Bez VPN” un izmanto sistēmas VPN.',
   'failure.vpnDown': 'VPN neieslēdzās, tāpēc caur tavu paša savienojumu nekas netika sinhronizēts. Pārbaudi to sadaļā Iestatījumi, Integrācijas.',
+  'failure.vpnUnreached': 'VPN neizveidojās, tāpēc šī darba puses nebija sasniedzamas. Pārbaudi to sadaļā Iestatījumi, Integrācijas.',
   'failure.vpnRefused.left': 'Kreisās puses savienojumi nevar iet caur VPN, tāpēc palaišana nesākās. Izvēlies šim uzdevumam “Bez VPN” vai galamērķi, kas var iet caur to.',
   'failure.vpnRefused.right': 'Labās puses savienojumi nevar iet caur VPN, tāpēc palaišana nesākās. Izvēlies šim uzdevumam “Bez VPN” vai galamērķi, kas var iet caur to.',
   'failure.noVpn': 'Šis uzdevums iet caur VPN, bet šajā ierīcē ArrowLoop nav iebūvēta VPN. Izslēdz “Caur VPN” un izmanto sistēmas VPN.',

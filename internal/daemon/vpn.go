@@ -16,6 +16,10 @@ import (
 // over the machine's own network.
 var ErrVPNDown = errors.New("the VPN did not come up, so the run did not start")
 
+// ErrVPNUnreached is the same for a look at a job's sides that somebody asked
+// for outside a run, such as its trash or a preview.
+var ErrVPNUnreached = errors.New("the VPN did not come up, so the job's sides could not be reached")
+
 // ErrNoVPN is a job that goes through the VPN on an engine that has none, as
 // on a phone, where the system's own VPN covers every app.
 var ErrNoVPN = errors.New("this job goes through the VPN, and ArrowLoop has no built-in VPN here")
@@ -65,8 +69,13 @@ func (r *Runner) adoptFormerVPN(tunnel string) {
 // ThroughVPN returns the context a job's connections are made with: for a job
 // that goes through the VPN, one that sends them all into the tunnel, which it
 // holds up until done is called. It fails rather than hand back a context
-// whose connections would leave past the tunnel.
+// whose connections would leave past the tunnel. It is for a look at the
+// job's sides, so a tunnel that does not come up is ErrVPNUnreached.
 func (r *Runner) ThroughVPN(ctx context.Context, j job.Job) (_ context.Context, done func(), err error) {
+	return r.through(ctx, j, ErrVPNUnreached)
+}
+
+func (r *Runner) through(ctx context.Context, j job.Job, down error) (_ context.Context, done func(), err error) {
 	if j.VPN == "" {
 		return ctx, func() {}, nil
 	}
@@ -89,7 +98,7 @@ func (r *Runner) ThroughVPN(ctx context.Context, j job.Job) (_ context.Context, 
 	}
 	lease, err := m.Acquire(ctx, r.tunnelOf(m, j), j.Name)
 	if err != nil {
-		return nil, nil, fmt.Errorf("%w: %w", ErrVPNDown, err)
+		return nil, nil, fmt.Errorf("%w: %w", down, err)
 	}
 	return lease.Context(ctx), lease.Release, nil
 }

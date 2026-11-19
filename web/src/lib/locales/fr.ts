@@ -2211,6 +2211,7 @@ const fr: Translations = {
   'edit.vpnGone': 'Le VPN par lequel passe cette tâche n\'est plus configuré, ses exécutions échouent donc. Choisissez-en un autre, ou « Aucun VPN ».',
   'edit.vpnNotHere': 'ArrowLoop n\'a pas de VPN intégré sur cet appareil, donc les exécutions de cette tâche échouent. Choisissez « Aucun VPN » et utilisez plutôt le VPN du système.',
   'failure.vpnDown': 'Le VPN ne s\'est pas activé, donc rien n\'a été synchronisé par votre propre connexion. Testez-le dans les Réglages, sous Intégrations.',
+  'failure.vpnUnreached': 'Le VPN ne s\'est pas connecté, les côtés de cette tâche étaient donc injoignables. Testez-le dans les Réglages, sous Intégrations.',
   'failure.vpnRefused.left': 'Les connexions du côté gauche ne peuvent pas passer par le VPN, l\'exécution n\'a donc pas démarré. Choisissez « Aucun VPN » pour cette tâche, ou une cible qui peut passer par lui.',
   'failure.vpnRefused.right': 'Les connexions du côté droit ne peuvent pas passer par le VPN, l\'exécution n\'a donc pas démarré. Choisissez « Aucun VPN » pour cette tâche, ou une cible qui peut passer par lui.',
   'failure.noVpn': 'Cette tâche passe par le VPN, et ArrowLoop n\'a pas de VPN intégré sur cet appareil. Désactivez « Via le VPN » et utilisez plutôt le VPN du système.',

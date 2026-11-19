@@ -2211,6 +2211,7 @@ const zh: Translations = {
   'edit.vpnGone': '此任务使用的 VPN 已不再设置，所以它的运行会失败。请选择其他 VPN，或选择“不使用 VPN”。',
   'edit.vpnNotHere': 'ArrowLoop 在这台设备上没有内置 VPN，所以此任务的运行会失败。请选择“不使用 VPN”，改用系统的 VPN。',
   'failure.vpnDown': 'VPN 未能建立，所以没有通过你自己的连接同步任何内容。请在“设置”的“集成”中测试它。',
+  'failure.vpnUnreached': 'VPN 未能连接，因此无法访问此任务的两侧。请在“设置”的“集成”中测试它。',
   'failure.vpnRefused.left': '左侧的连接无法通过 VPN，所以运行没有开始。请为此任务选择“不使用 VPN”，或选择一个可以通过 VPN 的目标。',
   'failure.vpnRefused.right': '右侧的连接无法通过 VPN，所以运行没有开始。请为此任务选择“不使用 VPN”，或选择一个可以通过 VPN 的目标。',
   'failure.noVpn': '此任务通过 VPN，而 ArrowLoop 在这台设备上没有内置 VPN。请关闭“通过 VPN”，改用系统的 VPN。',

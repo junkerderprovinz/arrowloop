@@ -2211,6 +2211,7 @@ const lt: Translations = {
   'edit.vpnGone': 'VPN, per kurį eina ši užduotis, nebenustatytas, todėl jos paleidimai nepavyksta. Pasirink kitą arba „Be VPN“.',
   'edit.vpnNotHere': 'Šiame įrenginyje ArrowLoop neturi integruoto VPN, todėl šios užduoties paleidimai nepavyksta. Pasirink „Be VPN“ ir naudok sistemos VPN.',
   'failure.vpnDown': 'VPN neprisijungė, todėl per tavo nuosavą ryšį niekas nebuvo sinchronizuota. Patikrink jį skiltyje Nustatymai, Integracijos.',
+  'failure.vpnUnreached': 'VPN neprisijungė, todėl šios užduoties pusės buvo nepasiekiamos. Patikrink jį skiltyje Nustatymai, Integracijos.',
   'failure.vpnRefused.left': 'Kairiosios pusės ryšiai negali eiti per VPN, todėl paleidimas neprasidėjo. Šiai užduočiai pasirink „Be VPN“ arba paskirtį, kuri gali eiti per jį.',
   'failure.vpnRefused.right': 'Dešiniosios pusės ryšiai negali eiti per VPN, todėl paleidimas neprasidėjo. Šiai užduočiai pasirink „Be VPN“ arba paskirtį, kuri gali eiti per jį.',
   'failure.noVpn': 'Ši užduotis eina per VPN, o šiame įrenginyje ArrowLoop neturi integruoto VPN. Išjunk „Per VPN“ ir naudok sistemos VPN.',

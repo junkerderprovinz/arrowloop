@@ -2211,6 +2211,7 @@ const fi: Translations = {
   'edit.vpnGone': 'VPN, jonka kautta tämä työ kulkee, ei ole enää määritettynä, joten työn ajot epäonnistuvat. Valitse toinen tai ”Ei VPN:ää”.',
   'edit.vpnNotHere': 'ArrowLoopissa ei ole tällä laitteella sisäänrakennettua VPN:ää, joten tämän työn ajot epäonnistuvat. Valitse ”Ei VPN:ää” ja käytä sen sijaan järjestelmän VPN:ää.',
   'failure.vpnDown': 'VPN ei auennut, joten mitään ei synkronoitu oman yhteytesi kautta. Testaa se Asetuksissa, kohdassa Integraatiot.',
+  'failure.vpnUnreached': 'VPN ei käynnistynyt, joten tämän työn puoliin ei saatu yhteyttä. Testaa se Asetuksissa, kohdassa Integraatiot.',
   'failure.vpnRefused.left': 'Vasemman puolen yhteydet eivät voi kulkea VPN:n kautta, joten ajo ei alkanut. Valitse tälle työlle ”Ei VPN:ää” tai kohde, joka voi kulkea sen kautta.',
   'failure.vpnRefused.right': 'Oikean puolen yhteydet eivät voi kulkea VPN:n kautta, joten ajo ei alkanut. Valitse tälle työlle ”Ei VPN:ää” tai kohde, joka voi kulkea sen kautta.',
   'failure.noVpn': 'Tämä työ kulkee VPN:n kautta, eikä ArrowLoopissa ole tällä laitteella sisäänrakennettua VPN:ää. Kytke ”VPN:n kautta” pois päältä ja käytä sen sijaan järjestelmän VPN:ää.',

@@ -2211,6 +2211,7 @@ const hr: Translations = {
   'edit.vpnGone': 'VPN preko kojeg ide ovaj zadatak više nije postavljen, pa njegova izvođenja ne uspijevaju. Odaberi drugi ili „Bez VPN-a”.',
   'edit.vpnNotHere': 'ArrowLoop na ovom uređaju nema ugrađeni VPN, pa izvođenja ovog zadatka ne uspijevaju. Odaberi „Bez VPN-a” i umjesto toga koristi VPN sustava.',
   'failure.vpnDown': 'VPN se nije podigao, pa se ništa nije sinkroniziralo preko tvoje vlastite veze. Testiraj ga u Postavkama, pod Integracije.',
+  'failure.vpnUnreached': 'VPN se nije spojio, pa strane ovog posla nisu bile dostupne. Testiraj ga u Postavkama, pod Integracije.',
   'failure.vpnRefused.left': 'Veze lijeve strane ne mogu ići preko VPN-a, pa izvođenje nije počelo. Odaberi „Bez VPN-a” za ovaj zadatak ili odredište koje može ići preko njega.',
   'failure.vpnRefused.right': 'Veze desne strane ne mogu ići preko VPN-a, pa izvođenje nije počelo. Odaberi „Bez VPN-a” za ovaj zadatak ili odredište koje može ići preko njega.',
   'failure.noVpn': 'Ovaj zadatak ide preko VPN-a, a ArrowLoop na ovom uređaju nema ugrađeni VPN. Isključi „Preko VPN-a” i umjesto toga koristi VPN sustava.',

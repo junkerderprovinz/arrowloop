@@ -2211,6 +2211,7 @@ const tr: Translations = {
   'edit.vpnGone': 'Bu işin üzerinden gittiği VPN artık kurulu değil, bu yüzden çalıştırmaları başarısız oluyor. Başka bir VPN ya da “VPN yok” seç.',
   'edit.vpnNotHere': 'ArrowLoop\'un bu cihazda yerleşik bir VPN\'i yok, bu yüzden bu işin çalıştırmaları başarısız olur. “VPN yok” seçeneğini seç ve onun yerine sistemin VPN\'ini kullan.',
   'failure.vpnDown': 'VPN açılamadı, bu yüzden kendi bağlantın üzerinden hiçbir şey eşitlenmedi. Ayarlar, Entegrasyonlar altında test et.',
+  'failure.vpnUnreached': 'VPN bağlanmadı, bu yüzden bu işin taraflarına ulaşılamadı. Ayarlar, Entegrasyonlar altında test et.',
   'failure.vpnRefused.left': 'Sol tarafın bağlantıları VPN üzerinden gidemiyor, bu yüzden çalıştırma başlamadı. Bu iş için “VPN yok” seçeneğini seç ya da VPN üzerinden gidebilen bir hedef seç.',
   'failure.vpnRefused.right': 'Sağ tarafın bağlantıları VPN üzerinden gidemiyor, bu yüzden çalıştırma başlamadı. Bu iş için “VPN yok” seçeneğini seç ya da VPN üzerinden gidebilen bir hedef seç.',
   'failure.noVpn': 'Bu iş VPN üzerinden gidiyor, ama ArrowLoop\'un bu cihazda yerleşik bir VPN\'i yok. “VPN üzerinden” seçeneğini kapat ve onun yerine sistemin VPN\'ini kullan.',

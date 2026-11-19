@@ -2211,6 +2211,7 @@ const gl: Translations = {
   'edit.vpnGone': 'A VPN pola que vai esta tarefa xa non está configurada, así que as súas execucións fallan. Escolle outra ou «Sen VPN».',
   'edit.vpnNotHere': 'ArrowLoop non ten VPN integrada neste dispositivo, así que as execucións desta tarefa fallan. Escolle «Sen VPN» e usa a VPN do sistema no seu lugar.',
   'failure.vpnDown': 'A VPN non se activou, así que non se sincronizou nada pola túa propia conexión. Próbaa en Axustes, en Integracións.',
+  'failure.vpnUnreached': 'A VPN non se conectou, así que non se puido chegar aos lados desta tarefa. Próbaa en Axustes, en Integracións.',
   'failure.vpnRefused.left': 'As conexións do lado esquerdo non poden ir pola VPN, así que a execución non comezou. Escolle «Sen VPN» para esta tarefa ou un destino que poida ir por ela.',
   'failure.vpnRefused.right': 'As conexións do lado dereito non poden ir pola VPN, así que a execución non comezou. Escolle «Sen VPN» para esta tarefa ou un destino que poida ir por ela.',
   'failure.noVpn': 'Esta tarefa vai pola VPN, e ArrowLoop non ten VPN integrada neste dispositivo. Desactiva «A través da VPN» e usa a VPN do sistema no seu lugar.',

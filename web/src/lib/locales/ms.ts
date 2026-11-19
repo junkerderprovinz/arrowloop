@@ -2211,6 +2211,7 @@ const ms: Translations = {
   'edit.vpnGone': 'VPN yang dilalui tugas ini tidak lagi disediakan, jadi lariannya gagal. Pilih VPN lain, atau "Tanpa VPN".',
   'edit.vpnNotHere': 'ArrowLoop tiada VPN terbina dalam pada peranti ini, jadi larian tugas ini gagal. Pilih "Tanpa VPN" dan gunakan VPN sistem.',
   'failure.vpnDown': 'VPN tidak dapat dihidupkan, jadi tiada apa-apa disegerakkan melalui sambungan anda sendiri. Ujinya di Tetapan, Integrasi.',
+  'failure.vpnUnreached': 'VPN tidak bersambung, jadi sisi tugas ini tidak dapat dicapai. Ujinya di Tetapan, Integrasi.',
   'failure.vpnRefused.left': 'Sambungan sebelah kiri tidak boleh melalui VPN, jadi larian tidak bermula. Pilih "Tanpa VPN" untuk tugas ini, atau destinasi yang boleh melaluinya.',
   'failure.vpnRefused.right': 'Sambungan sebelah kanan tidak boleh melalui VPN, jadi larian tidak bermula. Pilih "Tanpa VPN" untuk tugas ini, atau destinasi yang boleh melaluinya.',
   'failure.noVpn': 'Tugas ini melalui VPN, dan ArrowLoop tiada VPN terbina dalam pada peranti ini. Matikan "Melalui VPN" dan gunakan VPN sistem.',

@@ -2211,6 +2211,7 @@ const pl: Translations = {
   'edit.vpnGone': 'VPN, przez który przechodzi to zadanie, nie jest już skonfigurowany, więc jego uruchomienia kończą się błędem. Wybierz inny albo „Bez VPN”.',
   'edit.vpnNotHere': 'ArrowLoop nie ma na tym urządzeniu wbudowanego VPN, więc uruchomienia tego zadania kończą się błędem. Wybierz „Bez VPN” i użyj VPN systemu.',
   'failure.vpnDown': 'VPN się nie włączył, więc nic nie zostało zsynchronizowane przez twoje własne połączenie. Przetestuj go w Ustawieniach, Integracje.',
+  'failure.vpnUnreached': 'VPN się nie połączył, więc strony tego zadania były niedostępne. Przetestuj go w Ustawieniach, Integracje.',
   'failure.vpnRefused.left': 'Połączenia lewej strony nie mogą przechodzić przez VPN, więc uruchomienie się nie zaczęło. Wybierz dla tego zadania „Bez VPN” albo cel, który może przez niego przechodzić.',
   'failure.vpnRefused.right': 'Połączenia prawej strony nie mogą przechodzić przez VPN, więc uruchomienie się nie zaczęło. Wybierz dla tego zadania „Bez VPN” albo cel, który może przez niego przechodzić.',
   'failure.noVpn': 'To zadanie przechodzi przez VPN, a ArrowLoop nie ma na tym urządzeniu wbudowanego VPN. Wyłącz „Przez VPN” i użyj VPN systemu.',

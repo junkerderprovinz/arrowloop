@@ -2211,6 +2211,7 @@ const ko: Translations = {
   'edit.vpnGone': '이 작업이 거치는 VPN이 더 이상 설정되어 있지 않아 실행이 실패합니다. 다른 VPN이나 "VPN 사용 안 함"을 고르세요.',
   'edit.vpnNotHere': '이 기기의 ArrowLoop에는 내장 VPN이 없어서 이 작업의 실행은 실패합니다. "VPN 사용 안 함"을 고르고 시스템의 VPN을 사용하세요.',
   'failure.vpnDown': 'VPN이 연결되지 않아 내 연결로는 아무것도 동기화하지 않았습니다. 설정, 연동에서 테스트해 보세요.',
+  'failure.vpnUnreached': 'VPN이 연결되지 않아 이 작업의 양쪽에 접근할 수 없었습니다. 설정, 연동에서 테스트해 보세요.',
   'failure.vpnRefused.left': '왼쪽의 연결은 VPN을 거칠 수 없어서 실행이 시작되지 않았습니다. 이 작업에서 "VPN 사용 안 함"을 고르거나, VPN을 거칠 수 있는 대상을 고르세요.',
   'failure.vpnRefused.right': '오른쪽의 연결은 VPN을 거칠 수 없어서 실행이 시작되지 않았습니다. 이 작업에서 "VPN 사용 안 함"을 고르거나, VPN을 거칠 수 있는 대상을 고르세요.',
   'failure.noVpn': '이 작업은 VPN을 거치는데, 이 기기의 ArrowLoop에는 내장 VPN이 없습니다. "VPN 경유"를 끄고 시스템의 VPN을 사용하세요.',

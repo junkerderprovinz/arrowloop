@@ -348,7 +348,7 @@ func (r *Runner) runAnswering(ctx context.Context, name string, auto bool, ans a
 	if err == nil {
 		// Held from here, once the job has its turn and its drive, so a job
 		// waiting for either keeps no tunnel up.
-		runCtx, done, verr := r.ThroughVPN(ctx, j)
+		runCtx, done, verr := r.through(ctx, j, ErrVPNDown)
 		if err = verr; err == nil {
 			res, p, err = do(runCtx, j, live)
 			done()

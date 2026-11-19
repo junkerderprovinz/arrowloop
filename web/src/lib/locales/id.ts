@@ -2211,6 +2211,7 @@ const id: Translations = {
   'edit.vpnGone': 'VPN yang dilewati tugas ini sudah tidak disiapkan lagi, jadi prosesnya gagal. Pilih VPN lain, atau "Tanpa VPN".',
   'edit.vpnNotHere': 'ArrowLoop tidak punya VPN bawaan di perangkat ini, jadi proses tugas ini gagal. Pilih "Tanpa VPN" dan pakai VPN sistem sebagai gantinya.',
   'failure.vpnDown': 'VPN tidak menyala, jadi tidak ada yang disinkronkan lewat koneksi Anda sendiri. Uji di Pengaturan, bagian Integrasi.',
+  'failure.vpnUnreached': 'VPN tidak tersambung, jadi sisi-sisi tugas ini tidak bisa dijangkau. Uji di Pengaturan, bagian Integrasi.',
   'failure.vpnRefused.left': 'Koneksi sisi kiri tidak bisa lewat VPN, jadi proses tidak dimulai. Pilih "Tanpa VPN" untuk tugas ini, atau tujuan yang bisa lewat VPN.',
   'failure.vpnRefused.right': 'Koneksi sisi kanan tidak bisa lewat VPN, jadi proses tidak dimulai. Pilih "Tanpa VPN" untuk tugas ini, atau tujuan yang bisa lewat VPN.',
   'failure.noVpn': 'Tugas ini lewat VPN, dan ArrowLoop tidak punya VPN bawaan di perangkat ini. Matikan "Melalui VPN" dan pakai VPN sistem sebagai gantinya.',

@@ -2211,6 +2211,7 @@ const da: Translations = {
   'edit.vpnGone': 'Den VPN, dette job går via, er ikke længere sat op, så jobbets kørsler mislykkes. Vælg en anden eller „Ingen VPN“.',
   'edit.vpnNotHere': 'ArrowLoop har ingen indbygget VPN på denne enhed, så dette jobs kørsler mislykkes. Vælg „Ingen VPN“, og brug systemets VPN i stedet.',
   'failure.vpnDown': 'VPN\'en kunne ikke startes, så intet blev synkroniseret over din egen forbindelse. Test den i Indstillinger, under Integrationer.',
+  'failure.vpnUnreached': 'VPN’en kom ikke op, så denne opgaves sider kunne ikke nås. Test den i Indstillinger, under Integrationer.',
   'failure.vpnRefused.left': 'Forbindelserne på venstre side kan ikke gå via VPN\'en, så kørslen startede ikke. Vælg „Ingen VPN“ for dette job, eller et mål, der kan gå via den.',
   'failure.vpnRefused.right': 'Forbindelserne på højre side kan ikke gå via VPN\'en, så kørslen startede ikke. Vælg „Ingen VPN“ for dette job, eller et mål, der kan gå via den.',
   'failure.noVpn': 'Dette job går via VPN\'en, og ArrowLoop har ingen indbygget VPN på denne enhed. Slå „Via VPN\'en“ fra, og brug systemets VPN i stedet.',

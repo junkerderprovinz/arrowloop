@@ -2211,6 +2211,7 @@ const hu: Translations = {
   'edit.vpnGone': 'A VPN, amelyen ez a feladat keresztülmegy, már nincs beállítva, ezért a futásai sikertelenek. Válassz egy másikat, vagy a „VPN nélkül” lehetőséget.',
   'edit.vpnNotHere': 'Az ArrowLoopnak ezen az eszközön nincs beépített VPN-je, ezért a feladat futásai sikertelenek. Válaszd a „VPN nélkül” lehetőséget, és használd helyette a rendszer VPN-jét.',
   'failure.vpnDown': 'A VPN nem épült fel, ezért a saját kapcsolatodon semmi sem szinkronizálódott. Teszteld a Beállításokban, az Integrációk résznél.',
+  'failure.vpnUnreached': 'A VPN nem jött létre, ezért a feladat oldalai nem voltak elérhetők. Teszteld a Beállításokban, az Integrációk résznél.',
   'failure.vpnRefused.left': 'A bal oldal kapcsolatai nem mehetnek a VPN-en keresztül, ezért a futás nem indult el. Válaszd ennél a feladatnál a „VPN nélkül” lehetőséget, vagy egy olyan célt, amely mehet rajta keresztül.',
   'failure.vpnRefused.right': 'A jobb oldal kapcsolatai nem mehetnek a VPN-en keresztül, ezért a futás nem indult el. Válaszd ennél a feladatnál a „VPN nélkül” lehetőséget, vagy egy olyan célt, amely mehet rajta keresztül.',
   'failure.noVpn': 'Ez a feladat a VPN-en keresztül fut, és az ArrowLoopnak ezen az eszközön nincs beépített VPN-je. Kapcsold ki a „VPN-en keresztül” kapcsolót, és használd helyette a rendszer VPN-jét.',

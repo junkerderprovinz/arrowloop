@@ -2211,6 +2211,7 @@ const nl: Translations = {
   'edit.vpnGone': 'De VPN waar deze taak via loopt, is niet meer ingesteld, dus de runs mislukken. Kies een andere, of "Geen VPN".',
   'edit.vpnNotHere': 'ArrowLoop heeft op dit apparaat geen ingebouwde VPN, dus runs van deze taak mislukken. Kies "Geen VPN" en gebruik de VPN van het systeem.',
   'failure.vpnDown': 'De VPN kwam niet tot stand, dus er is niets via je eigen verbinding gesynchroniseerd. Test hem onder Instellingen, Integraties.',
+  'failure.vpnUnreached': 'De VPN kwam niet op, dus de kanten van deze taak waren niet bereikbaar. Test hem onder Instellingen, Integraties.',
   'failure.vpnRefused.left': 'De verbindingen van de linkerkant kunnen niet via de VPN, dus de run is niet begonnen. Kies "Geen VPN" voor deze taak, of een doel dat wel via de VPN kan.',
   'failure.vpnRefused.right': 'De verbindingen van de rechterkant kunnen niet via de VPN, dus de run is niet begonnen. Kies "Geen VPN" voor deze taak, of een doel dat wel via de VPN kan.',
   'failure.noVpn': 'Deze taak loopt via de VPN, en ArrowLoop heeft op dit apparaat geen ingebouwde VPN. Zet "Via de VPN" uit en gebruik de VPN van het systeem.',

@@ -2211,6 +2211,7 @@ const sl: Translations = {
   'edit.vpnGone': 'VPN, prek katerega gre to opravilo, ni več nastavljen, zato njegovi zagoni ne uspejo. Izberi drugega ali »Brez VPN«.',
   'edit.vpnNotHere': 'ArrowLoop v tej napravi nima vgrajenega VPN, zato zagoni tega opravila ne uspejo. Izberi »Brez VPN« in uporabi VPN sistema.',
   'failure.vpnDown': 'VPN se ni vzpostavil, zato se prek tvoje lastne povezave ni nič sinhroniziralo. Preizkusi ga v Nastavitvah, Integracije.',
+  'failure.vpnUnreached': 'VPN se ni vzpostavil, zato strani tega opravila nista bili dosegljivi. Preizkusi ga v Nastavitvah, Integracije.',
   'failure.vpnRefused.left': 'Povezave leve strani ne morejo iti prek VPN, zato se zagon ni začel. Za to opravilo izberi »Brez VPN« ali cilj, ki lahko gre prek njega.',
   'failure.vpnRefused.right': 'Povezave desne strani ne morejo iti prek VPN, zato se zagon ni začel. Za to opravilo izberi »Brez VPN« ali cilj, ki lahko gre prek njega.',
   'failure.noVpn': 'To opravilo gre prek VPN, ArrowLoop pa v tej napravi nima vgrajenega VPN. Izklopi »Prek VPN« in uporabi VPN sistema.',

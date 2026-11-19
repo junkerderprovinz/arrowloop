@@ -2211,6 +2211,7 @@ const ja: Translations = {
   'edit.vpnGone': 'このジョブが経由する VPN はもう設定されていないため、このジョブの実行は失敗します。別の VPN か「VPN なし」を選んでください。',
   'edit.vpnNotHere': 'このデバイスの ArrowLoop には VPN が内蔵されていないため、このジョブの実行は失敗します。「VPN なし」を選んで、システムの VPN を使ってください。',
   'failure.vpnDown': 'VPN に接続できなかったため、お使いの回線では何も同期しませんでした。「設定」の「連携」でテストしてください。',
+  'failure.vpnUnreached': 'VPN が接続できなかったため、このジョブの両側に到達できませんでした。「設定」の「連携」でテストしてください。',
   'failure.vpnRefused.left': '左側の接続は VPN を経由できないため、実行は始まりませんでした。このジョブで「VPN なし」を選ぶか、VPN を経由できる接続先を選んでください。',
   'failure.vpnRefused.right': '右側の接続は VPN を経由できないため、実行は始まりませんでした。このジョブで「VPN なし」を選ぶか、VPN を経由できる接続先を選んでください。',
   'failure.noVpn': 'このジョブは VPN を経由しますが、このデバイスの ArrowLoop には VPN が内蔵されていません。「VPN 経由」をオフにして、システムの VPN を使ってください。',

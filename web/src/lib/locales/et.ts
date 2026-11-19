@@ -2211,6 +2211,7 @@ const et: Translations = {
   'edit.vpnGone': 'VPN-i, mille kaudu see töö käib, pole enam seadistatud, seega selle käivitused ebaõnnestuvad. Vali mõni teine või „Ilma VPN-ita“.',
   'edit.vpnNotHere': 'ArrowLoopil pole selles seadmes sisseehitatud VPN-i, seega selle töö käivitused ebaõnnestuvad. Vali „Ilma VPN-ita“ ja kasuta selle asemel süsteemi VPN-i.',
   'failure.vpnDown': 'VPN ei lülitunud sisse, seega sinu enda ühenduse kaudu ei sünkroonitud midagi. Testi seda Seadetes, jaotises Integratsioonid.',
+  'failure.vpnUnreached': 'VPN ei käivitunud, seega selle töö pooltele ei pääsetud ligi. Testi seda Seadetes, jaotises Integratsioonid.',
   'failure.vpnRefused.left': 'Vasaku poole ühendused ei saa käia läbi VPN-i, seega käivitus ei alanud. Vali selle töö jaoks „Ilma VPN-ita“ või sihtkoht, mis saab VPN-i kaudu käia.',
   'failure.vpnRefused.right': 'Parema poole ühendused ei saa käia läbi VPN-i, seega käivitus ei alanud. Vali selle töö jaoks „Ilma VPN-ita“ või sihtkoht, mis saab VPN-i kaudu käia.',
   'failure.noVpn': 'See töö käib läbi VPN-i, aga ArrowLoopil pole selles seadmes sisseehitatud VPN-i. Lülita „VPN-i kaudu“ välja ja kasuta selle asemel süsteemi VPN-i.',

@@ -2211,6 +2211,7 @@ const cs: Translations = {
   'edit.vpnGone': 'VPN, přes kterou tahle úloha jde, už není nastavená, takže její běhy selžou. Vyber jinou, nebo „Bez VPN“.',
   'edit.vpnNotHere': 'ArrowLoop nemá na tomto zařízení vestavěnou VPN, takže běhy této úlohy selžou. Vyber „Bez VPN“ a použij místo toho VPN systému.',
   'failure.vpnDown': 'VPN se nezapnula, takže se přes tvoje vlastní připojení nic nesynchronizovalo. Otestuj ji v Nastavení, v části Integrace.',
+  'failure.vpnUnreached': 'VPN se nespojila, a tak strany této úlohy nebyly dostupné. Otestuj ji v Nastavení, v části Integrace.',
   'failure.vpnRefused.left': 'Připojení levé strany nemůžou jít přes VPN, takže běh nezačal. Vyber pro tuto úlohu „Bez VPN“, nebo cíl, který přes ni jít umí.',
   'failure.vpnRefused.right': 'Připojení pravé strany nemůžou jít přes VPN, takže běh nezačal. Vyber pro tuto úlohu „Bez VPN“, nebo cíl, který přes ni jít umí.',
   'failure.noVpn': 'Tato úloha jde přes VPN a ArrowLoop nemá na tomto zařízení vestavěnou VPN. Vypni „Přes VPN“ a použij místo toho VPN systému.',

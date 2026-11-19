@@ -2211,6 +2211,7 @@ const ro: Translations = {
   'edit.vpnGone': 'VPN-ul prin care trece această sarcină nu mai este configurat, așa că rulările ei eșuează. Alege altul sau „Fără VPN”.',
   'edit.vpnNotHere': 'ArrowLoop nu are VPN integrat pe acest dispozitiv, așa că rulările acestei sarcini eșuează. Alege „Fără VPN” și folosește VPN-ul sistemului.',
   'failure.vpnDown': 'VPN-ul nu a pornit, așa că nimic nu s-a sincronizat prin propria ta conexiune. Testează-l în Setări, Integrări.',
+  'failure.vpnUnreached': 'VPN-ul nu s-a conectat, așa că părțile acestei sarcini nu au putut fi accesate. Testează-l în Setări, Integrări.',
   'failure.vpnRefused.left': 'Conexiunile părții stângi nu pot trece prin VPN, așa că rularea nu a început. Alege „Fără VPN” pentru această sarcină sau o destinație care poate trece prin el.',
   'failure.vpnRefused.right': 'Conexiunile părții drepte nu pot trece prin VPN, așa că rularea nu a început. Alege „Fără VPN” pentru această sarcină sau o destinație care poate trece prin el.',
   'failure.noVpn': 'Această sarcină trece prin VPN, iar ArrowLoop nu are VPN integrat pe acest dispozitiv. Dezactivează „Prin VPN” și folosește VPN-ul sistemului.',

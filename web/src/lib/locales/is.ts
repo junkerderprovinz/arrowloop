@@ -2211,6 +2211,7 @@ const is: Translations = {
   'edit.vpnGone': 'VPN-ið sem þetta verk fer um er ekki lengur sett upp, svo keyrslur þess mistakast. Veldu annað, eða „Ekkert VPN“.',
   'edit.vpnNotHere': 'ArrowLoop er ekki með innbyggt VPN í þessu tæki, svo keyrslur þessa verks mistakast. Veldu „Ekkert VPN“ og notaðu VPN kerfisins í staðinn.',
   'failure.vpnDown': 'VPN-ið tengdist ekki, svo ekkert var samstillt um þína eigin tengingu. Prófaðu það í Stillingum, undir Tengingar.',
+  'failure.vpnUnreached': 'VPN tengdist ekki, svo ekki náðist í hliðar þessa verks. Prófaðu það í Stillingum, undir Tengingar.',
   'failure.vpnRefused.left': 'Tengingar vinstri hliðarinnar geta ekki farið um VPN, svo keyrslan hófst ekki. Veldu „Ekkert VPN“ fyrir þetta verk, eða áfangastað sem getur farið um það.',
   'failure.vpnRefused.right': 'Tengingar hægri hliðarinnar geta ekki farið um VPN, svo keyrslan hófst ekki. Veldu „Ekkert VPN“ fyrir þetta verk, eða áfangastað sem getur farið um það.',
   'failure.noVpn': 'Þetta verk fer um VPN, og ArrowLoop er ekki með innbyggt VPN í þessu tæki. Slökktu á „Í gegnum VPN“ og notaðu VPN kerfisins í staðinn.',

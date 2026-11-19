@@ -47,6 +47,13 @@ describe('a failed run in words', () => {
     expect(failureLine(raw, failure, tIn(de), 'de')).toBe(de['failure.vpnDown'])
   })
 
+  it('says a VPN that did not come up for a look at the sides without calling it a run', () => {
+    const failure = { code: 'vpnUnreached', params: { output: 'WireGuard: no handshake with 203.0.113.9:51820 within 45s' } }
+    const raw = `the VPN did not come up, so the job's sides could not be reached: ${failure.params.output}`
+    expect(failureLine(raw, failure, tIn(en), 'en')).toBe(en['failure.vpnUnreached'])
+    expect(en['failure.vpnUnreached']).not.toMatch(/run/)
+  })
+
   it('names the files left for later twice under its sentence', () => {
     const failure = { code: 'leftTwice', params: { output: 'photo.jpg (copy failed)' } }
     expect(sayFailure('left for later in two runs in a row: photo.jpg (copy failed)', failure, tIn(de), 'de')).toEqual({

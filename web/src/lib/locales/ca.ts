@@ -2211,6 +2211,7 @@ const ca: Translations = {
   'edit.vpnGone': 'La VPN per on passa aquesta tasca ja no està configurada, així que les seves execucions fallen. Tria\'n una altra o «Sense VPN».',
   'edit.vpnNotHere': 'ArrowLoop no té VPN integrada en aquest dispositiu, així que les execucions d\'aquesta tasca fallen. Tria «Sense VPN» i fes servir la VPN del sistema.',
   'failure.vpnDown': 'La VPN no s\'ha activat, així que no s\'ha sincronitzat res per la teva pròpia connexió. Prova-la a Configuració, dins d\'Integracions.',
+  'failure.vpnUnreached': 'La VPN no s\'ha connectat, així que no s\'han pogut abastar els costats d\'aquesta tasca. Prova-la a Configuració, dins d\'Integracions.',
   'failure.vpnRefused.left': 'Les connexions de la banda esquerra no poden passar per la VPN, així que l\'execució no ha començat. Tria «Sense VPN» per a aquesta tasca o una destinació que hi pugui passar.',
   'failure.vpnRefused.right': 'Les connexions de la banda dreta no poden passar per la VPN, així que l\'execució no ha començat. Tria «Sense VPN» per a aquesta tasca o una destinació que hi pugui passar.',
   'failure.noVpn': 'Aquesta tasca passa per la VPN, i ArrowLoop no té VPN integrada en aquest dispositiu. Desactiva «A través de la VPN» i fes servir la VPN del sistema.',

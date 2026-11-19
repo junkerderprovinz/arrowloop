@@ -2211,6 +2211,7 @@ const sk: Translations = {
   'edit.vpnGone': 'VPN, cez ktoré táto úloha ide, už nie je nastavené, takže jej behy zlyhajú. Vyber iné alebo „Bez VPN“.',
   'edit.vpnNotHere': 'ArrowLoop nemá v tomto zariadení vstavané VPN, takže behy tejto úlohy zlyhajú. Vyber „Bez VPN“ a použi VPN systému.',
   'failure.vpnDown': 'VPN sa nepripojilo, takže cez tvoje vlastné pripojenie sa nič nesynchronizovalo. Otestuj ho v Nastaveniach, Integrácie.',
+  'failure.vpnUnreached': 'VPN sa nespojila, a tak strany tejto úlohy neboli dostupné. Otestuj ho v Nastaveniach, Integrácie.',
   'failure.vpnRefused.left': 'Pripojenia ľavej strany nemôžu ísť cez VPN, takže beh sa nezačal. Vyber pre túto úlohu „Bez VPN“ alebo cieľ, ktorý cez neho ísť môže.',
   'failure.vpnRefused.right': 'Pripojenia pravej strany nemôžu ísť cez VPN, takže beh sa nezačal. Vyber pre túto úlohu „Bez VPN“ alebo cieľ, ktorý cez neho ísť môže.',
   'failure.noVpn': 'Táto úloha ide cez VPN a ArrowLoop nemá v tomto zariadení vstavané VPN. Vypni „Cez VPN“ a použi VPN systému.',
