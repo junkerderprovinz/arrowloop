@@ -11,8 +11,8 @@ import { SettingsRow } from './rows'
 
 /**
  * What concerns the app as a whole: this computer's window and start where
- * there is a desktop app, the settings backups, how hard the engine may
- * work on this machine, and the VPN the jobs that ask for it go through.
+ * there is a desktop app, the settings backups and how hard the engine may
+ * work on this machine.
  */
 export function GeneralPage({
   window: windowSettings,
