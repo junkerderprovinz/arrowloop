@@ -221,7 +221,8 @@ from wherever you put it.
 Linux gets the program as a single file, `linux-amd64` for an Intel or AMD
 processor and `linux-arm64` for a 64-bit ARM one, and an installer for each.
 It needs WebKitGTK 4.1 (`libwebkit2gtk-4.1-0` on Debian and Ubuntu) for its
-window. The installer is for you alone and asks for no password. It puts
+window; the [AppImage](#as-an-appimage) and the [Flatpak](#as-a-flatpak) bring
+their own. The installer is for you alone and asks for no password. It puts
 ArrowLoop in `~/.local/share/com.junkerderprovinz.arrowloop` and adds it to the
 application menu, with a desktop icon if you want one. Right-clicking the menu
 entry offers to uninstall it. That copy updates itself like the single file.
@@ -268,6 +269,24 @@ flatpak override --user --filesystem=/srv/data io.github.junkerderprovinz.arrowl
 [Commands before and after a run](configuration.md#commands-before-and-after-a-run)
 run inside the sandbox too, so they find the tools the Flatpak ships rather than
 the ones on your system.
+
+### As an AppImage
+
+Each release also carries `arrowloop-linux-amd64.AppImage` and
+`arrowloop-linux-arm64.AppImage`. An AppImage packs the program together with
+GTK and WebKitGTK into one file, so it does not depend on the WebKitGTK your
+distribution ships. It starts on Ubuntu 22.04 and on newer distributions. Make
+it executable and start it:
+
+```sh
+chmod +x arrowloop-linux-amd64.AppImage
+./arrowloop-linux-amd64.AppImage
+```
+
+It runs from wherever you keep it and updates itself like the single file: the
+new version takes the AppImage's place in its folder and starts next time.
+Settings and jobs live in `~/.config/ArrowLoop`, the same as the single file's,
+so you can move between the two.
 
 ### On Arch Linux and NixOS
 
@@ -383,7 +402,7 @@ until a later run removes it.
 **A portable copy**, such as the `arrowloop-windows-amd64-portable.exe` from the
 releases page, updates itself while it runs: a minute after it starts and once
 a day after that, in its own folder, and it stays portable. The app on macOS
-and Linux does the same. A folder it cannot write to, or a macOS app your
+and Linux does the same, and an AppImage replaces its own file. A folder it cannot write to, or a macOS app your
 account cannot change, stays as it is. Its log is `update.log` beside the
 configuration file.
 

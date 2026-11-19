@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/desktop/update"
+	"github.com/junkerderprovinz/arrowloop/internal/appimage"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
@@ -46,21 +47,20 @@ type updater struct {
 }
 
 func newUpdater(settings *deskset.Store, logger *log.Logger, announce func(version string)) *updater {
-	return &updater{
-		settings: settings,
-		log:      logger,
-		announce: announce,
-		u: &update.Updater{
-			Repo:    update.Repo,
-			Version: boot.Version,
-			Assets:  update.Assets,
-			API:     updateAPI,
-			// Long enough for the program on a slow line, short enough that a
-			// connection that stalls does not hold up every later check.
-			Client: &http.Client{Timeout: 30 * time.Minute},
-			Logf:   logger.Printf,
-		},
+	u := &update.Updater{
+		Repo:    update.Repo,
+		Version: boot.Version,
+		Assets:  update.Assets,
+		API:     updateAPI,
+		// Long enough for the program on a slow line, short enough that a
+		// connection that stalls does not hold up every later check.
+		Client: &http.Client{Timeout: 30 * time.Minute},
+		Logf:   logger.Printf,
 	}
+	if image := appimage.Path(); image != "" {
+		u.ForAppImage(image)
+	}
+	return &updater{settings: settings, log: logger, announce: announce, u: u}
 }
 
 // openUpdateLog appends to the log at path, since a windowed program on

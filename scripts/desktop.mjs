@@ -1,11 +1,12 @@
 // Builds the desktop app for the platform it runs on, the way CI does.
 //
-//     node scripts/desktop.mjs [--arch amd64|arm64] [--installer] [--updatetest]
+//     node scripts/desktop.mjs [--arch amd64|arm64] [--installer] [--appimage] [--updatetest]
 //
 // Windows gets ArrowLoop.exe, macOS ArrowLoop.app holding one binary for both
 // architectures, and Linux the bare binary, all in desktop/build/bin. With
 // --installer, Windows and Linux also get their installer in
-// desktop/build/installer, built from desktop/installer.
+// desktop/build/installer, built from desktop/installer. With --appimage, Linux
+// gets an AppImage in desktop/build/bin in place of the bare binary.
 //
 // --updatetest builds with the updatetest tag (desktop/updatetest.go). Its
 // installer puts "ArrowLoop Test" beside a real installation, so the updates
@@ -17,7 +18,7 @@
 // build leaves the tree as it found it.
 
 import { spawnSync } from 'node:child_process'
-import { cpSync, mkdirSync, rmSync } from 'node:fs'
+import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -35,6 +36,7 @@ const option = (name) => {
 const hostArch = process.arch === 'arm64' ? 'arm64' : 'amd64'
 const arch = option('--arch') ?? hostArch
 const installer = args.includes('--installer')
+const appimage = args.includes('--appimage')
 const updatetest = args.includes('--updatetest')
 const tags = (extra = '') => (updatetest ? 'production,updatetest' : 'production') + extra
 
@@ -76,6 +78,38 @@ function buildInstaller(exe, name, { goos, cgo, tags, ldflags = '' }) {
   } finally {
     rmSync(payload, { recursive: true, force: true })
   }
+}
+
+// buildAppImage packs the program at exe with the GTK and WebKitGTK it links
+// against into desktop/build/bin, through Wails and linuxdeploy, and removes the
+// bare program so the artifact holds the AppImage alone.
+function buildAppImage(exe) {
+  const dir = join(desktop, 'build', 'appimage')
+  rmSync(dir, { recursive: true, force: true })
+  mkdirSync(dir, { recursive: true })
+  const icon = join(dir, 'ArrowLoop.png')
+  cpSync(join(desktop, 'build', 'appicon.png'), icon)
+  const entry = join(dir, 'ArrowLoop.desktop')
+  writeFileSync(entry, [
+    '[Desktop Entry]',
+    'Type=Application',
+    'Name=ArrowLoop',
+    'GenericName=File Synchronisation',
+    'Comment=Two-way sync that shows you the plan before it moves anything',
+    'Exec=ArrowLoop',
+    'Icon=ArrowLoop',
+    'Terminal=false',
+    'Categories=Network;FileTransfer;',
+    'Keywords=sync;synchronisation;backup;rclone;cloud;sftp;smb;webdav;nextcloud;s3;',
+    'StartupNotify=true',
+    '',
+  ].join('\n'))
+  run('wails3', [
+    'generate', 'appimage', '-binary', exe, '-icon', icon, '-desktopfile', entry,
+    '-outputdir', bin, '-builddir', join(dir, 'build'),
+  ])
+  rmSync(exe)
+  rmSync(dir, { recursive: true, force: true })
 }
 
 console.log(`building ArrowLoop ${stamp}`)
@@ -158,6 +192,9 @@ if (process.platform === 'win32') {
   goBuild(join(bin, 'ArrowLoop'), { goos: 'linux', goarch: arch, cgo: '1', tags: tags(',gtk3') })
   if (installer) {
     buildInstaller(join(bin, 'ArrowLoop'), `ArrowLoop-${arch}-installer`, { goos: 'linux', cgo: '1', tags: 'gtk3' })
+  }
+  if (appimage) {
+    buildAppImage(join(bin, 'ArrowLoop'))
   }
 }
 

@@ -43,6 +43,12 @@ var Assets = map[string]string{
 	"linux/arm64":   "arrowloop-linux-arm64",
 }
 
+// AppImages names the AppImage release.yml publishes for each Linux machine.
+var AppImages = map[string]string{
+	"linux/amd64": "arrowloop-linux-amd64.AppImage",
+	"linux/arm64": "arrowloop-linux-arm64.AppImage",
+}
+
 // Updater holds what an update needs to know about the program. API, Client
 // and Path fall back to GitHub, http.DefaultClient and the running program.
 type Updater struct {
@@ -68,6 +74,15 @@ type Updater struct {
 	// staged is the version Swap put in place during this run, so a later
 	// Check does not fetch it again.
 	staged string
+}
+
+// ForAppImage points u at the AppImage at path, the file the AppImage runtime
+// names in APPIMAGE. The program itself runs from a read-only mount of that
+// file, so an update downloads the release's AppImage and puts it in place of
+// the file.
+func (u *Updater) ForAppImage(path string) {
+	u.Path = path
+	u.Assets = AppImages
 }
 
 // Release is a newer release with a file for this platform.

@@ -195,6 +195,15 @@ function DesktopCard({ version }: { version: string }) {
           onLinkClick={followExternal}
         />
         <ReadmeButton
+          brand="linux"
+          parts={[
+            { name: t('apps.appimage'), sub: 'x64', href: DOWNLOADS.appimage },
+            { name: 'ARM64', label: `${t('apps.appimage')} ARM64`, href: DOWNLOADS.appimageArm },
+          ]}
+          mark={<BrandMark svg={LINUX_SVG} />}
+          onLinkClick={followExternal}
+        />
+        <ReadmeButton
           brand="flatpak"
           parts={[
             { name: t('apps.flatpak'), sub: 'x64', href: DOWNLOADS.flatpak },

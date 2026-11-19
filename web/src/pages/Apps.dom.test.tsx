@@ -19,6 +19,14 @@ function download(name: string) {
 }
 
 describe('the desktop downloads', () => {
+  it('come in the README order, with the Flatpak last', () => {
+    render(<Apps version="v1.8.0" desktop={false} />)
+    const hrefs = screen.getAllByRole('link').map((a) => a.getAttribute('href'))
+    const at = [DOWNLOADS.windows, DOWNLOADS.macos, DOWNLOADS.linux, DOWNLOADS.appimage, DOWNLOADS.flatpak].map((href) => hrefs.indexOf(href))
+    expect(at).not.toContain(-1)
+    expect(at).toEqual([...at].sort((a, b) => a - b))
+  })
+
   it('name the system once and the ARM build in a segment beside it, as the README does', () => {
     render(<Apps version="v1.8.0" desktop={false} />)
     expect(download('Windows x64')).toEqual({ href: DOWNLOADS.windows, words: 'Windowsx64' })
@@ -36,6 +44,18 @@ describe('the desktop downloads', () => {
     expect(download('Flatpak ARM')).toEqual({
       href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.flatpak',
       words: 'ARM',
+    })
+  })
+
+  it('offer the AppImage for both architectures', () => {
+    render(<Apps version="v1.8.0" desktop={false} />)
+    expect(download('AppImage x64')).toEqual({
+      href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.AppImage',
+      words: 'AppImagex64',
+    })
+    expect(download('AppImage ARM64')).toEqual({
+      href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.AppImage',
+      words: 'ARM64',
     })
   })
 })

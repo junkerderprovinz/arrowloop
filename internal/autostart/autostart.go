@@ -7,7 +7,11 @@
 // removes the entry with the operating system's own tools.
 package autostart
 
-import "os"
+import (
+	"os"
+
+	"github.com/junkerderprovinz/arrowloop/internal/appimage"
+)
 
 // Name is the entry's name on every platform. Writing and looking up under the
 // same name keeps repeated toggles from piling up duplicates. The desktop app's
@@ -31,7 +35,7 @@ func Supported() bool { return supported }
 func Enabled() (bool, error) { return enabled() }
 
 // Set registers or unregisters the running executable. The path comes from
-// os.Executable because a caller-supplied path goes stale. Unregistering a
+// executable because a caller-supplied path goes stale. Unregistering a
 // missing entry is not an error.
 func Set(on bool) error {
 	if !supported {
@@ -40,7 +44,7 @@ func Set(on bool) error {
 	if !on {
 		return disable()
 	}
-	exe, err := os.Executable()
+	exe, err := executable()
 	if err != nil {
 		return err
 	}
@@ -59,7 +63,7 @@ func Refresh() error {
 	if err != nil || !on {
 		return err
 	}
-	exe, err := os.Executable()
+	exe, err := executable()
 	if err != nil {
 		return err
 	}
@@ -68,4 +72,13 @@ func Refresh() error {
 		return err
 	}
 	return enable(exe)
+}
+
+// executable is the file the session starts: the AppImage when the program runs
+// from one, since the path inside its mount does not survive the run.
+func executable() (string, error) {
+	if image := appimage.Path(); image != "" {
+		return image, nil
+	}
+	return os.Executable()
 }
