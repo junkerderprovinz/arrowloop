@@ -1,10 +1,15 @@
 package web
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
+	"github.com/junkerderprovinz/arrowloop/internal/daemon"
+	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/precheck"
+	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // checkJob answers whether one job could run right now, catching a read-only
@@ -23,9 +28,19 @@ func (s *Server) checkJob(w http.ResponseWriter, r *http.Request) {
 	// went unmeasured.
 	opt := precheck.Opts{NoEstimate: r.URL.Query().Get("estimate") == "false"}
 
-	// The request's context, so navigating away stops the listing.
+	// The request's context, so navigating away stops the listing. A tunnel
+	// that does not come up leaves the sides that need it unreached, and a
+	// folder on this machine is still checked.
 	ctx, err := s.throughVPN(r.Context(), j)
-	if err != nil {
+	switch {
+	case errors.Is(err, daemon.ErrVPNUnreached):
+		ctx, opt.Unreached = r.Context(), map[plan.Side]error{}
+		for side, spec := range map[plan.Side]string{plan.Left: j.Left, plan.Right: j.Right} {
+			if path, rerr := volume.Resolve(spec); rerr == nil && !vpnconn.Offline(path) {
+				opt.Unreached[side] = err
+			}
+		}
+	case err != nil:
 		writeError(w, http.StatusBadGateway, err)
 		return
 	}

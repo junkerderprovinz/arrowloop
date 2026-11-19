@@ -291,3 +291,81 @@ func TestTheConflictsOfEveryJobLeaveATunnelThatIsDownAlone(t *testing.T) {
 		t.Errorf("the list brought the tunnel up: %s", st)
 	}
 }
+
+func TestAFolderOnThisDeviceIsReadWhenItsJobsTunnelFails(t *testing.T) {
+	h := engineFor(t, trashOfVPNJob)
+	m, base := withVPN(t, h)
+	if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range []string{"/api/jobs/photos/trash/left", "/api/jobs/photos/duplicates/left"} {
+		resp, err := http.Get(base + path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			t.Errorf("%s answered %s", path, resp.Status)
+		}
+	}
+	if st := tunnelStatus(t, m); st != vpnconn.Down {
+		t.Errorf("a folder on this device brought the tunnel up: %s", st)
+	}
+
+	resp, err := http.Get(base + "/api/trash?job=photos&connect=1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out struct {
+		Sides []struct {
+			Side  string `json:"side"`
+			Error string `json:"error"`
+		} `json:"sides"`
+	}
+	json.NewDecoder(resp.Body).Decode(&out)
+	resp.Body.Close()
+	errs := map[string]string{}
+	for _, s := range out.Sides {
+		errs[s.Side] = s.Error
+	}
+	if errs["left"] != "" || !strings.Contains(errs["right"], "the VPN did not come up") {
+		t.Errorf("with the tunnel failing: %q", errs)
+	}
+}
+
+func TestAPrecheckStillChecksTheFolderOnThisDeviceWhenTheTunnelFails(t *testing.T) {
+	h := engineFor(t, trashOfVPNJob)
+	m, base := withVPN(t, h)
+	if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
+		t.Fatal(err)
+	}
+	resp, err := http.Post(base+"/api/jobs/photos/check?estimate=false", "application/json", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	var rep struct {
+		Left     struct{ Free *int64 } `json:"left"`
+		Findings []struct {
+			Code string            `json:"code"`
+			Side string            `json:"side"`
+			Vars map[string]string `json:"vars"`
+		} `json:"findings"`
+	}
+	json.NewDecoder(resp.Body).Decode(&rep)
+	if resp.StatusCode != http.StatusOK || rep.Left.Free == nil {
+		t.Fatalf("answered %s, left %+v", resp.Status, rep.Left)
+	}
+	var right string
+	for _, f := range rep.Findings {
+		if f.Code == "sideUnreachable" && f.Side == "left" {
+			t.Errorf("the folder on this device is reported unreachable: %v", f.Vars)
+		}
+		if f.Code == "sideUnreachable" && f.Side == "right" {
+			right = f.Vars["error"]
+		}
+	}
+	if !strings.Contains(right, "the VPN did not come up") {
+		t.Errorf("the right side says %q", right)
+	}
+}

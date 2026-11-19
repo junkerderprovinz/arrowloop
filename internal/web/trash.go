@@ -429,15 +429,15 @@ func keptLimit(r *http.Request) int {
 // sideOf opens one end of one job, by the job's name and the word "left" or
 // "right". The path comes from the job's configuration, so a caller cannot
 // name a folder of its own. The volume is resolved first, as the runner does,
-// so a drive letter given to another disk is not opened. A job that goes
-// through the VPN holds the tunnel until ctx ends.
+// so a drive letter given to another disk is not opened. A side of a job that
+// goes through the VPN holds the tunnel until ctx ends, unless it is a folder
+// on this machine, which needs none.
 func (s *Server) sideOf(ctx context.Context, name, side string) (rclonefs.Fs, int, error) {
 	return s.openSide(ctx, name, side, true)
 }
 
 // openSide is sideOf, and without connect it brings no VPN up: a side that
-// needs its job's tunnel while that is down fails with vpnconn.ErrNotUp, and a
-// folder on this machine is read without one.
+// needs its job's tunnel while that is down fails with vpnconn.ErrNotUp.
 func (s *Server) openSide(ctx context.Context, name, side string, connect bool) (rclonefs.Fs, int, error) {
 	j, ok := s.Runner.Config().Find(name)
 	if !ok {
@@ -456,9 +456,10 @@ func (s *Server) openSide(ctx context.Context, name, side string, connect bool) 
 		return nil, http.StatusServiceUnavailable, fmt.Errorf("the drive the %s side lives on is not attached: %s", side, volume.Describe(spec))
 	}
 	switch {
+	case vpnconn.Offline(resolved):
 	case connect:
 		ctx, err = s.throughVPN(ctx, j)
-	case !vpnconn.Offline(resolved):
+	default:
 		ctx, err = s.joinVPN(ctx, j)
 	}
 	if err != nil {

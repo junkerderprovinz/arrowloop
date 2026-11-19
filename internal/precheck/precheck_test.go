@@ -708,3 +708,19 @@ func containsBrace(s string) bool {
 	}
 	return false
 }
+
+func TestASideThatCannotBeReachedIsReportedWithoutBeingOpened(t *testing.T) {
+	f := newFixture(t)
+	f.job.Right = ":webdav,url='http://10.2.0.1/',vendor=other:"
+	why := fmt.Errorf("the VPN did not come up")
+
+	rep := f.check(t, precheck.Opts{Unreached: map[plan.Side]error{plan.Right: why}})
+
+	found, ok := findingFor(rep, "sideUnreachable", "right")
+	if !ok || found.Vars["error"] != why.Error() {
+		t.Fatalf("the side out of reach is reported with its reason, got %+v", rep.Findings)
+	}
+	if _, ok := findingFor(rep, "sideUnreachable", "left"); ok || rep.Left.Free == nil {
+		t.Errorf("the folder on this device is still checked, got %+v", rep)
+	}
+}
