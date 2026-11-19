@@ -2393,6 +2393,11 @@
     flex: 1;
     width: auto;
   }
+  /* The tile picked before keeps a ring in the colour it lights up in. */
+  .glim-provider-pick .glim-readme-btn[aria-current="true"] {
+    outline: 2px solid var(--tile);
+    outline-offset: 2px;
+  }
 
   /* The picker window (PickerWindow): 48rem wide, the search at its top end
      from the moment it opens, and only the tiles scrolling under it, so the
@@ -2432,7 +2437,13 @@
     flex-direction: column;
     gap: var(--space-6);
   }
-  .glim-pick-section > .glim-eyebrow {
+  /* A group's badge and (i) stand in its eyebrow's line. */
+  .glim-pick-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .glim-pick-eyebrow > .glim-eyebrow {
     margin: 0;
     font-weight: inherit;
   }
@@ -4076,6 +4087,8 @@
   /* A brand mark's SVG stands in its parent's box as if it were the parent's
      own child. */
   .glim-brand-svg { display: contents; }
+  .glim-brand-svg > :is(.glim-mark-rest, .glim-mark-hover) { width: 100%; height: 100%; }
+  .glim-brand-svg > .glim-mark-rest { display: block; }
 
   .glim-readme-btn-hint { color: var(--carbon-text-sub); }
 
