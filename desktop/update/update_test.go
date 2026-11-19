@@ -322,8 +322,17 @@ func TestAssetsCoverEveryDesktopBuild(t *testing.T) {
 		t.Fatal("desktop.yml: no slug in the matrix")
 	}
 	covered := map[string]bool{}
+	images := map[string]bool{}
 	for _, m := range slugs {
 		slug := m[1]
+		if base, ok := strings.CutSuffix(slug, "-appimage"); ok {
+			target := strings.Replace(base, "-", "/", 1)
+			images[target] = true
+			if got := AppImages[target]; got != "arrowloop-"+base+".AppImage" {
+				t.Errorf("desktop.yml builds %s, but AppImages[%q] = %q", slug, target, got)
+			}
+			continue
+		}
 		system, arch, ok := strings.Cut(slug, "-")
 		if !ok {
 			t.Fatalf("desktop.yml: slug %q is not <system>-<arch>", slug)
@@ -348,6 +357,11 @@ func TestAssetsCoverEveryDesktopBuild(t *testing.T) {
 			t.Errorf("Assets has %s, which desktop.yml does not build", target)
 		}
 	}
+	for target := range AppImages {
+		if !images[target] {
+			t.Errorf("AppImages has %s, which desktop.yml does not build", target)
+		}
+	}
 }
 
 // The updater asks for each file by the name release.yml gives it, and checks
@@ -361,6 +375,11 @@ func TestTheReleasePublishesEveryAssetWithItsChecksum(t *testing.T) {
 	for target, name := range Assets {
 		if !published[name] {
 			t.Errorf("Assets[%q] = %s, which release.yml does not publish", target, name)
+		}
+	}
+	for target, name := range AppImages {
+		if !published[name] {
+			t.Errorf("AppImages[%q] = %s, which release.yml does not publish", target, name)
 		}
 	}
 	if !strings.Contains(yml, "(cd dist && sha256sum arrowloop-* > "+ChecksumsFile+")") {
