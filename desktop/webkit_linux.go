@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	"golang.org/x/sys/unix"
 )
 
 // networkProcessName is WebKitNetworkProcess as the kernel keeps it, cut to
@@ -22,7 +24,9 @@ const networkProcessName = "WebKitNetworkPr"
 // releaseWebKit hands back what WebKitGTK keeps once its last window has
 // gone. Its network process stays for the life of the program, and WebKit
 // starts a fresh one with the next window. The freed memory of the windows
-// stays with glibc until it is trimmed.
+// stays with glibc until it is trimmed. The code of WebKit, the GL driver and
+// the program itself stays resident too, though the tray copy runs little of
+// it, so it is paged out the way the kernel would under pressure.
 func releaseWebKit() {
 	for _, pid := range networkProcesses(os.DirFS("/proc"), os.Getpid()) {
 		if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
@@ -30,6 +34,40 @@ func releaseWebKit() {
 		}
 	}
 	C.malloc_trim(0)
+	if maps, err := os.ReadFile("/proc/self/maps"); err == nil {
+		for _, s := range fileSpans(string(maps)) {
+			// A kernel older than 5.4 does not know the advice and leaves the
+			// pages resident.
+			_, _, _ = unix.Syscall(unix.SYS_MADVISE, s.start, s.end-s.start, unix.MADV_PAGEOUT)
+		}
+	}
+}
+
+// span is a range of addresses.
+type span struct{ start, end uintptr }
+
+// fileSpans returns the mappings in a /proc/<pid>/maps listing that hold
+// files nobody writes through, the pages of which can be read in again.
+func fileSpans(maps string) []span {
+	var spans []span
+	for line := range strings.Lines(maps) {
+		f := strings.Fields(line)
+		if len(f) < 6 || f[1][1] == 'w' || f[4] == "0" {
+			continue
+		}
+		path := strings.Join(f[5:], " ")
+		if !strings.HasPrefix(path, "/") || strings.HasPrefix(path, "/memfd:") || strings.HasSuffix(path, "(deleted)") {
+			continue
+		}
+		start, end, _ := strings.Cut(f[0], "-")
+		from, err1 := strconv.ParseUint(start, 16, 64)
+		to, err2 := strconv.ParseUint(end, 16, 64)
+		if err1 != nil || err2 != nil {
+			continue
+		}
+		spans = append(spans, span{uintptr(from), uintptr(to)})
+	}
+	return spans
 }
 
 // networkProcesses returns the WebKit network processes that parent started,
