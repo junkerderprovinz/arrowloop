@@ -403,7 +403,8 @@ func (s *shell) startTray() *application.SystemTray {
 	tray.SetMenu(menu)
 	tray.SetIcon(s.live.set.Idle)
 	tray.SetTooltip("ArrowLoop")
-	tray.OnClick(func() { s.toggleActivity(tray) })
+	// Linux delivers the click on the D-Bus goroutine.
+	tray.OnClick(func() { application.InvokeSync(func() { s.toggleActivity(tray) }) })
 	// By the time a double click arrives, its first click has opened the small
 	// window and its second has closed it again.
 	tray.OnDoubleClick(s.showMain)
