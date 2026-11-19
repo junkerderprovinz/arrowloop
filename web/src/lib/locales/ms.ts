@@ -2189,6 +2189,7 @@ const ms: Translations = {
   'vpn.error.config': 'Ini bukan konfigurasi WireGuard yang boleh digunakan oleh ArrowLoop.',
   'vpn.error.login': '{name} menolak log masuk.',
   'vpn.error.timeout': 'Pelayan tidak menjawab. Semak titik akhir, atau cuba lokasi lain.',
+  'vpn.error.nameUnresolved': 'Nama pelayan tidak ditemui. Semak ejaan titik akhir, dan pastikan peranti ini dalam talian.',
   'vpn.error.deviceLimit': '{name} tidak membenarkan peranti lagi. Buang satu dalam akaun anda, kemudian cuba lagi.',
   'vpn.error.accountExpired': 'Akaun {name} anda sudah tamat tempoh. Perbaharuinya, kemudian cuba lagi.',
   'vpn.error.locationUnknown': '{name} tiada pelayan di lokasi ini. Cuba lokasi lain atau biarkan medan kosong.',

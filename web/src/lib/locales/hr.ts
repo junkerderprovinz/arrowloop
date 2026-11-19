@@ -2189,6 +2189,7 @@ const hr: Translations = {
   'vpn.error.config': 'Ovo nije WireGuard konfiguracija koju ArrowLoop može koristiti.',
   'vpn.error.login': '{name} je odbio prijavu.',
   'vpn.error.timeout': 'Poslužitelj nije odgovorio. Provjeri krajnju točku ili pokušaj drugu lokaciju.',
+  'vpn.error.nameUnresolved': 'Naziv poslužitelja nije pronađen. Provjeri kako je napisana krajnja točka i je li ovaj uređaj na mreži.',
   'vpn.error.deviceLimit': '{name} ne dopušta više uređaja. Ukloni jedan u svom računu pa pokušaj ponovno.',
   'vpn.error.accountExpired': 'Tvoj račun kod {name} je istekao. Obnovi ga pa pokušaj ponovno.',
   'vpn.error.locationUnknown': '{name} nema poslužitelj na ovoj lokaciji. Pokušaj drugu lokaciju ili ostavi polje prazno.',

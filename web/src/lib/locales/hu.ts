@@ -2189,6 +2189,7 @@ const hu: Translations = {
   'vpn.error.config': 'Ez nem olyan WireGuard-konfiguráció, amelyet az ArrowLoop használni tud.',
   'vpn.error.login': 'A(z) {name} elutasította a bejelentkezést.',
   'vpn.error.timeout': 'A szerver nem válaszolt. Ellenőrizd a végpontot, vagy próbálj egy másik helyet.',
+  'vpn.error.nameUnresolved': 'A szerver neve nem található. Ellenőrizd, hogyan van írva a végpont, és hogy ez az eszköz online van-e.',
   'vpn.error.deviceLimit': 'A(z) {name} nem enged több eszközt. Távolíts el egyet a fiókodban, aztán próbáld újra.',
   'vpn.error.accountExpired': 'A(z) {name}-fiókod lejárt. Hosszabbítsd meg, aztán próbáld újra.',
   'vpn.error.locationUnknown': 'A(z) {name} szolgáltatónak nincs szervere ezen a helyen. Próbálj másik helyet, vagy hagyd üresen a mezőt.',

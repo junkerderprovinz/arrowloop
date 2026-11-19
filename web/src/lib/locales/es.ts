@@ -2189,6 +2189,7 @@ const es: Translations = {
   'vpn.error.config': 'Esta no es una configuración de WireGuard que ArrowLoop pueda usar.',
   'vpn.error.login': '{name} rechazó el inicio de sesión.',
   'vpn.error.timeout': 'El servidor no respondió. Comprueba el endpoint o prueba otra ubicación.',
+  'vpn.error.nameUnresolved': 'No se encontró el nombre del servidor. Comprueba cómo está escrito el endpoint y que este dispositivo tenga conexión.',
   'vpn.error.deviceLimit': '{name} no admite más dispositivos. Quita uno en tu cuenta y vuelve a intentarlo.',
   'vpn.error.accountExpired': 'Tu cuenta de {name} ha caducado. Renuévala y vuelve a intentarlo.',
   'vpn.error.locationUnknown': '{name} no tiene ningún servidor en esa ubicación. Prueba otra ubicación o deja el campo vacío.',

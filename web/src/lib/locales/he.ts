@@ -2189,6 +2189,7 @@ const he: Translations = {
   'vpn.error.config': 'אלה לא הגדרות WireGuard ש־ArrowLoop יכול להשתמש בהן.',
   'vpn.error.login': '{name} דחה את ההתחברות.',
   'vpn.error.timeout': 'השרת לא ענה. בדוק את נקודת הקצה, או נסה מיקום אחר.',
+  'vpn.error.nameUnresolved': 'שם השרת לא נמצא. בדוק את האיות של נקודת הקצה ושהמכשיר הזה מחובר לרשת.',
   'vpn.error.deviceLimit': '{name} לא מאפשר מכשירים נוספים. הסר אחד בחשבון שלך ונסה שוב.',
   'vpn.error.accountExpired': 'תוקף החשבון שלך ב־{name} פג. חדש אותו ונסה שוב.',
   'vpn.error.locationUnknown': 'ל־{name} אין שרת במיקום הזה. נסה מיקום אחר או השאר את השדה ריק.',

@@ -2189,6 +2189,7 @@ const lv: Translations = {
   'vpn.error.config': 'Šī nav WireGuard konfigurācija, ko ArrowLoop var izmantot.',
   'vpn.error.login': '{name} noraidīja pieteikšanos.',
   'vpn.error.timeout': 'Serveris neatbildēja. Pārbaudi galapunktu vai mēģini citu atrašanās vietu.',
+  'vpn.error.nameUnresolved': 'Servera nosaukums netika atrasts. Pārbaudi, kā uzrakstīts galapunkts, un vai šī ierīce ir tiešsaistē.',
   'vpn.error.deviceLimit': '{name} vairāk ierīču neatļauj. Noņem vienu savā kontā un mēģini vēlreiz.',
   'vpn.error.accountExpired': 'Tava {name} konta derīgums ir beidzies. Atjauno to un mēģini vēlreiz.',
   'vpn.error.locationUnknown': '{name} šajā vietā nav servera. Mēģini citu atrašanās vietu vai atstāj lauku tukšu.',

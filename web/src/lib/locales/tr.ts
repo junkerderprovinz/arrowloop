@@ -2189,6 +2189,7 @@ const tr: Translations = {
   'vpn.error.config': 'Bu, ArrowLoop\'un kullanabileceği bir WireGuard yapılandırması değil.',
   'vpn.error.login': '{name} girişi reddetti.',
   'vpn.error.timeout': 'Sunucu yanıt vermedi. Uç noktayı kontrol et ya da başka bir konum dene.',
+  'vpn.error.nameUnresolved': 'Sunucunun adı bulunamadı. Uç noktanın nasıl yazıldığını ve bu cihazın çevrimiçi olduğunu kontrol et.',
   'vpn.error.deviceLimit': '{name} daha fazla cihaza izin vermiyor. Hesabında birini kaldır, sonra yeniden dene.',
   'vpn.error.accountExpired': '{name} hesabının süresi doldu. Yenile, sonra yeniden dene.',
   'vpn.error.locationUnknown': '{name} hizmetinin bu konumda sunucusu yok. Başka bir konum dene ya da alanı boş bırak.',

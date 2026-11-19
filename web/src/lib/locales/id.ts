@@ -2189,6 +2189,7 @@ const id: Translations = {
   'vpn.error.config': 'Ini bukan konfigurasi WireGuard yang bisa dipakai ArrowLoop.',
   'vpn.error.login': '{name} menolak login.',
   'vpn.error.timeout': 'Server tidak menjawab. Periksa endpoint, atau coba lokasi lain.',
+  'vpn.error.nameUnresolved': 'Nama server tidak ditemukan. Periksa ejaan endpoint, dan pastikan perangkat ini sedang online.',
   'vpn.error.deviceLimit': '{name} tidak mengizinkan perangkat lagi. Hapus satu di akun Anda, lalu coba lagi.',
   'vpn.error.accountExpired': 'Masa berlaku akun {name} Anda sudah habis. Perpanjang, lalu coba lagi.',
   'vpn.error.locationUnknown': '{name} tidak punya server di lokasi ini. Coba lokasi lain atau biarkan kolomnya kosong.',

@@ -2189,6 +2189,7 @@ const bg: Translations = {
   'vpn.error.config': 'Това не е WireGuard конфигурация, която ArrowLoop може да използва.',
   'vpn.error.login': '{name} отказа входа.',
   'vpn.error.timeout': 'Сървърът не отговори. Провери Endpoint или опитай друго местоположение.',
+  'vpn.error.nameUnresolved': 'Името на сървъра не беше намерено. Провери как е изписан Endpoint и дали това устройство е онлайн.',
   'vpn.error.deviceLimit': '{name} не позволява повече устройства. Премахни едно от акаунта си и опитай отново.',
   'vpn.error.accountExpired': 'Акаунтът ти в {name} е изтекъл. Поднови го и опитай отново.',
   'vpn.error.locationUnknown': '{name} няма сървър на това местоположение. Опитай друго местоположение или остави полето празно.',

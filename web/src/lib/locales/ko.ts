@@ -2189,6 +2189,7 @@ const ko: Translations = {
   'vpn.error.config': 'ArrowLoop이 사용할 수 있는 WireGuard 구성이 아닙니다.',
   'vpn.error.login': '{name}이(가) 로그인을 거부했습니다.',
   'vpn.error.timeout': '서버가 응답하지 않았습니다. 엔드포인트를 확인하거나 다른 위치를 시도하세요.',
+  'vpn.error.nameUnresolved': '서버 이름을 찾지 못했습니다. 엔드포인트의 철자와 이 기기가 온라인인지 확인하세요.',
   'vpn.error.deviceLimit': '{name}에서 더 이상 기기를 추가할 수 없습니다. 계정에서 기기 하나를 제거한 다음 다시 시도하세요.',
   'vpn.error.accountExpired': '{name} 계정이 만료되었습니다. 갱신한 다음 다시 시도하세요.',
   'vpn.error.locationUnknown': '{name}에는 이 위치에 서버가 없습니다. 다른 위치를 시도하거나 칸을 비워 두세요.',

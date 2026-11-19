@@ -2189,6 +2189,7 @@ const ar: Translations = {
   'vpn.error.config': 'هذه ليست إعدادات WireGuard يمكن لـ ArrowLoop استخدامها.',
   'vpn.error.login': 'رفض {name} تسجيل الدخول.',
   'vpn.error.timeout': 'لم يستجب الخادم. تحقّق من Endpoint أو جرّب موقعًا آخر.',
+  'vpn.error.nameUnresolved': 'لم يُعثر على اسم الخادم. تحقّق من كتابة Endpoint ومن أن هذا الجهاز متصل بالإنترنت.',
   'vpn.error.deviceLimit': 'لا يسمح {name} بمزيد من الأجهزة. أزل جهازًا من حسابك، ثم حاول مرة أخرى.',
   'vpn.error.accountExpired': 'انتهت صلاحية حسابك على {name}. جدّده، ثم حاول مرة أخرى.',
   'vpn.error.locationUnknown': 'ليس لدى {name} خادم في هذا الموقع. جرّب موقعًا آخر أو اترك الحقل فارغًا.',

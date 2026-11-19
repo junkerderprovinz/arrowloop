@@ -65,6 +65,7 @@ const FAILURES: Record<string, TranslationKey> = {
   'vpn-config-invalid': 'vpn.error.config',
   'vpn-login-refused': 'vpn.error.login',
   'vpn-timeout': 'vpn.error.timeout',
+  'vpn-name-unresolved': 'vpn.error.nameUnresolved',
   'vpn-device-limit': 'vpn.error.deviceLimit',
   'vpn-account-expired': 'vpn.error.accountExpired',
   'vpn-location-unknown': 'vpn.error.locationUnknown',

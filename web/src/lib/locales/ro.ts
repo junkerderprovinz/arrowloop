@@ -2189,6 +2189,7 @@ const ro: Translations = {
   'vpn.error.config': 'Aceasta nu este o configurație WireGuard pe care ArrowLoop o poate folosi.',
   'vpn.error.login': '{name} a refuzat autentificarea.',
   'vpn.error.timeout': 'Serverul nu a răspuns. Verifică endpointul sau încearcă altă locație.',
+  'vpn.error.nameUnresolved': 'Numele serverului nu a fost găsit. Verifică cum e scris endpointul și dacă acest dispozitiv e conectat la internet.',
   'vpn.error.deviceLimit': '{name} nu mai permite alte dispozitive. Elimină unul din contul tău, apoi încearcă din nou.',
   'vpn.error.accountExpired': 'Contul tău {name} a expirat. Reînnoiește-l, apoi încearcă din nou.',
   'vpn.error.locationUnknown': '{name} nu are server în această locație. Încearcă altă locație sau lasă câmpul gol.',

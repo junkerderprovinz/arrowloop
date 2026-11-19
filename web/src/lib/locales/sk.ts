@@ -2189,6 +2189,7 @@ const sk: Translations = {
   'vpn.error.config': 'Toto nie je konfigurácia WireGuard, s ktorou vie ArrowLoop pracovať.',
   'vpn.error.login': '{name} odmietol prihlásenie.',
   'vpn.error.timeout': 'Server neodpovedal. Skontroluj koncový bod alebo skús iné umiestnenie.',
+  'vpn.error.nameUnresolved': 'Názov servera sa nenašiel. Skontroluj, ako je napísaný koncový bod, a či je toto zariadenie online.',
   'vpn.error.deviceLimit': '{name} už nepovoľuje ďalšie zariadenia. Odstráň jedno vo svojom účte a skús to znova.',
   'vpn.error.accountExpired': 'Tvoj účet {name} vypršal. Predĺž ho a skús to znova.',
   'vpn.error.locationUnknown': '{name} nemá na tomto mieste žiadny server. Skús iné umiestnenie alebo nechaj pole prázdne.',

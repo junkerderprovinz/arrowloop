@@ -2189,6 +2189,7 @@ const ja: Translations = {
   'vpn.error.config': 'ArrowLoop が使える WireGuard 設定ではありません。',
   'vpn.error.login': '{name} がログインを拒否しました。',
   'vpn.error.timeout': 'サーバーから応答がありませんでした。エンドポイントを確認するか、別の場所を試してください。',
+  'vpn.error.nameUnresolved': 'サーバー名が見つかりませんでした。エンドポイントのつづりと、このデバイスがオンラインかどうかを確認してください。',
   'vpn.error.deviceLimit': '{name} ではこれ以上デバイスを追加できません。アカウントでデバイスを1台削除してから、もう一度試してください。',
   'vpn.error.accountExpired': '{name} アカウントの期限が切れています。更新してから、もう一度試してください。',
   'vpn.error.locationUnknown': '{name} にはこの場所のサーバーがありません。別の場所を試すか、欄を空のままにしてください。',

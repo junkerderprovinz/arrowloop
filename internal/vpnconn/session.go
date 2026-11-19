@@ -42,6 +42,9 @@ const (
 	CodeConfigInvalid = "vpn-config-invalid"
 	CodeLoginRefused  = "vpn-login-refused"
 	CodeTimeout       = "vpn-timeout"
+	// CodeNameUnresolved is an endpoint whose host name no name server
+	// answered for.
+	CodeNameUnresolved = "vpn-name-unresolved"
 	// CodeDeviceLimit is an account that has all the devices or keys it
 	// allows registered already.
 	CodeDeviceLimit = "vpn-device-limit"

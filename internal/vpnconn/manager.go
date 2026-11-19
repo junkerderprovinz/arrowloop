@@ -288,7 +288,7 @@ func (m *Manager) connect(ctx context.Context, b *bringUp) error {
 	if err := m.tun.Connect(octx, sess.cfg); err != nil {
 		endSoon(sess)
 		if errors.Is(err, vpn.ErrResolve) {
-			return &failure{CodeTimeout, fmt.Errorf("%s: %w", p.Name, err)}
+			return &failure{CodeNameUnresolved, fmt.Errorf("%s: %w", p.Name, err)}
 		}
 		return &failure{CodeConfigInvalid, fmt.Errorf("%s: %w", p.Name, err)}
 	}

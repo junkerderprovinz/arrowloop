@@ -2189,6 +2189,7 @@ const nl: Translations = {
   'vpn.error.config': 'Dit is geen WireGuard-configuratie waar ArrowLoop mee kan werken.',
   'vpn.error.login': '{name} heeft de aanmelding geweigerd.',
   'vpn.error.timeout': 'De server gaf geen antwoord. Controleer het endpoint, of probeer een andere locatie.',
+  'vpn.error.nameUnresolved': 'De naam van de server is niet gevonden. Controleer hoe het endpoint gespeld is, en of dit apparaat online is.',
   'vpn.error.deviceLimit': '{name} staat geen apparaten meer toe. Haal er een weg in je account en probeer het dan opnieuw.',
   'vpn.error.accountExpired': 'Je {name}-account is verlopen. Verleng het en probeer het dan opnieuw.',
   'vpn.error.locationUnknown': '{name} heeft geen server op deze locatie. Probeer een andere locatie of laat het veld leeg.',

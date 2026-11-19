@@ -2189,6 +2189,7 @@ const vi: Translations = {
   'vpn.error.config': 'Đây không phải cấu hình WireGuard mà ArrowLoop dùng được.',
   'vpn.error.login': '{name} đã từ chối đăng nhập.',
   'vpn.error.timeout': 'Máy chủ không trả lời. Hãy kiểm tra điểm cuối, hoặc thử vị trí khác.',
+  'vpn.error.nameUnresolved': 'Không tìm thấy tên máy chủ. Hãy kiểm tra cách viết điểm cuối, và thiết bị này có đang trực tuyến không.',
   'vpn.error.deviceLimit': '{name} không cho thêm thiết bị nữa. Hãy gỡ một thiết bị trong tài khoản của bạn rồi thử lại.',
   'vpn.error.accountExpired': 'Tài khoản {name} của bạn đã hết hạn. Hãy gia hạn rồi thử lại.',
   'vpn.error.locationUnknown': '{name} không có máy chủ ở vị trí này. Hãy thử vị trí khác hoặc để trống ô này.',

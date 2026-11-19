@@ -2189,6 +2189,7 @@ const et: Translations = {
   'vpn.error.config': 'See ei ole WireGuardi seadistus, mida ArrowLoop saab kasutada.',
   'vpn.error.login': '{name} lükkas sisselogimise tagasi.',
   'vpn.error.timeout': 'Server ei vastanud. Kontrolli otspunkti (Endpoint) või proovi muud asukohta.',
+  'vpn.error.nameUnresolved': 'Serveri nime ei leitud. Kontrolli, kuidas otspunkt (Endpoint) on kirjutatud ja et see seade on võrgus.',
   'vpn.error.deviceLimit': '{name} ei luba rohkem seadmeid. Eemalda oma kontolt üks seade ja proovi uuesti.',
   'vpn.error.accountExpired': 'Sinu teenuse {name} konto on aegunud. Pikenda seda ja proovi uuesti.',
   'vpn.error.locationUnknown': 'Teenusel {name} pole selles asukohas serverit. Proovi muud asukohta või jäta väli tühjaks.',

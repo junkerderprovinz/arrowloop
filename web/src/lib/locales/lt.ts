@@ -2189,6 +2189,7 @@ const lt: Translations = {
   'vpn.error.config': 'Tai ne WireGuard konfigūracija, kurią ArrowLoop galėtų naudoti.',
   'vpn.error.login': '{name} atmetė prisijungimą.',
   'vpn.error.timeout': 'Serveris neatsakė. Patikrink galinį tašką arba pabandyk kitą vietą.',
+  'vpn.error.nameUnresolved': 'Serverio pavadinimas nerastas. Patikrink, kaip parašytas galinis taškas, ir ar šis įrenginys prisijungęs prie interneto.',
   'vpn.error.deviceLimit': '{name} daugiau įrenginių neleidžia. Pašalink vieną savo paskyroje ir bandyk dar kartą.',
   'vpn.error.accountExpired': 'Tavo {name} paskyros galiojimas baigėsi. Pratęsk ją ir bandyk dar kartą.',
   'vpn.error.locationUnknown': '{name} šioje vietoje serverio neturi. Pabandyk kitą vietą arba palik lauką tuščią.',

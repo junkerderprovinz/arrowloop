@@ -2189,6 +2189,7 @@ const sl: Translations = {
   'vpn.error.config': 'To ni konfiguracija WireGuard, s katero lahko ArrowLoop dela.',
   'vpn.error.login': '{name} je zavrnil prijavo.',
   'vpn.error.timeout': 'Strežnik se ni odzval. Preveri končno točko ali poskusi drugo lokacijo.',
+  'vpn.error.nameUnresolved': 'Imena strežnika ni bilo mogoče najti. Preveri, kako je zapisana končna točka in ali je ta naprava povezana.',
   'vpn.error.deviceLimit': '{name} ne dovoli več naprav. V svojem računu odstrani eno in poskusi znova.',
   'vpn.error.accountExpired': 'Tvoj račun {name} je potekel. Podaljšaj ga in poskusi znova.',
   'vpn.error.locationUnknown': '{name} na tej lokaciji nima strežnika. Poskusi drugo lokacijo ali pusti polje prazno.',

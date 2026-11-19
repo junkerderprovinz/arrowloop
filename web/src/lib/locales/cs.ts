@@ -2189,6 +2189,7 @@ const cs: Translations = {
   'vpn.error.config': 'Tohle není konfigurace WireGuard, se kterou ArrowLoop umí pracovat.',
   'vpn.error.login': 'Přihlášení u {name} bylo odmítnuto.',
   'vpn.error.timeout': 'Server neodpověděl. Zkontroluj endpoint, nebo zkus jiné umístění.',
+  'vpn.error.nameUnresolved': 'Název serveru nebyl nalezen. Zkontroluj, jak je endpoint napsaný, a že je toto zařízení online.',
   'vpn.error.deviceLimit': '{name} nepovoluje další zařízení. Odeber jedno ve svém účtu a zkus to znovu.',
   'vpn.error.accountExpired': 'Tvůj účet {name} vypršel. Obnov ho a zkus to znovu.',
   'vpn.error.locationUnknown': '{name} nemá v tomto umístění žádný server. Zkus jiné umístění, nebo nech pole prázdné.',

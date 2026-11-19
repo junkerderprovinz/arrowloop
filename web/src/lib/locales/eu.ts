@@ -2189,6 +2189,7 @@ const eu: Translations = {
   'vpn.error.config': 'Hau ez da ArrowLoopek erabil dezakeen WireGuard konfigurazio bat.',
   'vpn.error.login': '{name} zerbitzuak saio-hasiera ukatu du.',
   'vpn.error.timeout': 'Zerbitzariak ez du erantzun. Egiaztatu endpointa edo saiatu beste kokapen batekin.',
+  'vpn.error.nameUnresolved': 'Ez da zerbitzariaren izena aurkitu. Egiaztatu nola dagoen idatzita endpointa eta gailu hau konektatuta dagoela.',
   'vpn.error.deviceLimit': '{name} zerbitzuak ez du gailu gehiago onartzen. Kendu bat zure kontuan, eta saiatu berriro.',
   'vpn.error.accountExpired': 'Zure {name} kontua iraungi da. Berritu, eta saiatu berriro.',
   'vpn.error.locationUnknown': '{name} zerbitzuak ez du zerbitzaririk kokapen horretan. Saiatu beste kokapen batekin edo utzi eremua hutsik.',

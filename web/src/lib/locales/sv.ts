@@ -2189,6 +2189,7 @@ const sv: Translations = {
   'vpn.error.config': 'Det här är ingen WireGuard-konfiguration som ArrowLoop kan använda.',
   'vpn.error.login': '{name} godtog inte inloggningen.',
   'vpn.error.timeout': 'Servern svarade inte. Kontrollera slutpunkten eller prova en annan plats.',
+  'vpn.error.nameUnresolved': 'Serverns namn hittades inte. Kontrollera hur slutpunkten är stavad och att den här enheten är uppkopplad.',
   'vpn.error.deviceLimit': '{name} tillåter inga fler enheter. Ta bort en i ditt konto och försök sedan igen.',
   'vpn.error.accountExpired': 'Ditt {name}-konto har gått ut. Förnya det och försök sedan igen.',
   'vpn.error.locationUnknown': '{name} har ingen server på den här platsen. Prova en annan plats eller lämna fältet tomt.',

@@ -2189,6 +2189,7 @@ const zh: Translations = {
   'vpn.error.config': '这不是 ArrowLoop 能使用的 WireGuard 配置。',
   'vpn.error.login': '{name} 拒绝了登录。',
   'vpn.error.timeout': '服务器没有响应。请检查端点，或换一个位置试试。',
+  'vpn.error.nameUnresolved': '找不到服务器的名称。请检查端点的拼写，并确认这台设备已联网。',
   'vpn.error.deviceLimit': '{name} 不允许再添加设备。请在你的账户中移除一台，然后重试。',
   'vpn.error.accountExpired': '你的 {name} 账户已到期。请续费后重试。',
   'vpn.error.locationUnknown': '{name} 在这个位置没有服务器。请换一个位置，或将该字段留空。',

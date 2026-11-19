@@ -2189,6 +2189,7 @@ const is: Translations = {
   'vpn.error.config': 'Þetta eru ekki WireGuard-stillingar sem ArrowLoop getur notað.',
   'vpn.error.login': '{name} hafnaði innskráningunni.',
   'vpn.error.timeout': 'Netþjónninn svaraði ekki. Athugaðu endapunktinn eða prófaðu aðra staðsetningu.',
+  'vpn.error.nameUnresolved': 'Nafn netþjónsins fannst ekki. Athugaðu hvernig endapunkturinn er stafaður og að þetta tæki sé nettengt.',
   'vpn.error.deviceLimit': '{name} leyfir ekki fleiri tæki. Fjarlægðu eitt á reikningnum þínum og reyndu svo aftur.',
   'vpn.error.accountExpired': 'Reikningurinn þinn hjá {name} er útrunninn. Endurnýjaðu hann og reyndu svo aftur.',
   'vpn.error.locationUnknown': '{name} er ekki með netþjón á þessum stað. Prófaðu aðra staðsetningu eða skildu reitinn eftir tóman.',

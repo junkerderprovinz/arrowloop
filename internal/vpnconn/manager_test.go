@@ -5,8 +5,10 @@ import (
 	"context"
 	"errors"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/netip"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -179,6 +181,26 @@ func TestATunnelThatDoesNotComeUpFailsTheRun(t *testing.T) {
 	}
 	if ts := m.tun.State(); ts.Status != vpn.Disconnected {
 		t.Errorf("the tunnel is left %s", ts.Status)
+	}
+}
+
+func TestAnEndpointWhoseNameDoesNotResolveSaysSo(t *testing.T) {
+	srv := vpntest.Start(t, insideOnly)
+	m := newManager(t, func(o *Options) {
+		o.Tunnel.LookupNetIP = func(context.Context, string, string) ([]netip.Addr, error) {
+			return nil, &net.DNSError{Err: "no such host", Name: "vpn.example.net", IsNotFound: true}
+		}
+	})
+	conf := strings.Replace(srv.Config(), "Endpoint = 127.0.0.1:", "Endpoint = vpn.example.net:", 1)
+	if _, err := m.Save(Custom, map[string]string{"config": conf}); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := m.Acquire(ctxFor(t), "photos"); err == nil {
+		t.Fatal("a run came up on an endpoint that does not resolve")
+	}
+	if st := m.State(); st.Status != Failed || st.ErrorCode != CodeNameUnresolved {
+		t.Errorf("state %s %q, want %q", st.Status, st.ErrorCode, CodeNameUnresolved)
 	}
 }
 

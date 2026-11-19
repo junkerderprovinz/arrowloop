@@ -2189,6 +2189,7 @@ const fi: Translations = {
   'vpn.error.config': 'Tämä ei ole WireGuard-määritys, jota ArrowLoop voi käyttää.',
   'vpn.error.login': '{name} hylkäsi kirjautumisen.',
   'vpn.error.timeout': 'Palvelin ei vastannut. Tarkista päätepiste tai kokeile toista sijaintia.',
+  'vpn.error.nameUnresolved': 'Palvelimen nimeä ei löytynyt. Tarkista, miten päätepiste on kirjoitettu ja että tämä laite on verkossa.',
   'vpn.error.deviceLimit': '{name} ei salli enempää laitteita. Poista yksi tililtäsi ja yritä sitten uudelleen.',
   'vpn.error.accountExpired': 'Palvelun {name} tilisi on vanhentunut. Uusi se ja yritä sitten uudelleen.',
   'vpn.error.locationUnknown': 'Palvelulla {name} ei ole palvelinta tässä sijainnissa. Kokeile toista sijaintia tai jätä kenttä tyhjäksi.',
