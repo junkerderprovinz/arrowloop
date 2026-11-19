@@ -124,6 +124,14 @@ describe('the VPN card', () => {
     expect(within(group).getByText('Mullvad VPN (at-vie)')).toBeTruthy()
   })
 
+  it("stands each VPN's logo on a tile in its brand's colours", async () => {
+    state = stateWith(tunnel('mullvad', 'mullvad', { place: 'at-vie' }))
+    render(<VpnCard hueIndex={0} />)
+    const tile = (await screen.findByRole('region', { name: 'Mullvad VPN (at-vie)' })).querySelector<HTMLElement>('[data-tile]')!
+    expect(tile.style.backgroundColor).toBe('rgb(25, 46, 69)')
+    expect(tile.style.color).toBe('rgb(255, 255, 255)')
+  })
+
   it('tests one VPN and tells where its traffic leaves', async () => {
     state = stateWith(tunnel('custom', 'custom'), tunnel('mullvad', 'mullvad'))
     render(<VpnCard hueIndex={0} />)

@@ -52,6 +52,26 @@ export function VpnMark({ id }: { id: string }) {
   return <span aria-hidden className="flex h-full w-full" dangerouslySetInnerHTML={{ __html: vpnTileMark(id).svg }} />
 }
 
+/**
+ * A provider's logo lit on its brand's tile, as the picker shows it under the
+ * pointer: the tile's colour with the logo in its ink. It is about as wide as
+ * a row at rest is high, so it stands square there and grows taller with a row
+ * that wraps; a width that followed the height would push the row taller still.
+ */
+function VpnTile({ id }: { id: string }) {
+  const mark = vpnTileMark(id)
+  return (
+    <span
+      aria-hidden
+      data-tile
+      className="flex w-20 shrink-0 items-center justify-center self-stretch sm:w-28"
+      style={{ backgroundColor: mark.tile, color: mark.ink }}
+    >
+      <span className="flex h-1/2 w-1/2" dangerouslySetInnerHTML={{ __html: mark.hover ?? mark.svg }} />
+    </span>
+  )
+}
+
 const STATUS: Record<VpnStatus, { word: TranslationKey; tone: 'ok' | 'warn' | 'fail' | 'neutral' }> = {
   down: { word: 'vpn.status.down', tone: 'neutral' },
   connecting: { word: 'vpn.status.connecting', tone: 'warn' },
@@ -192,8 +212,9 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
 }
 
 /**
- * One VPN as a dense row: its logo, name and status on one line, why it failed
- * and the jobs that name it in small text, and its three actions in one row.
+ * One VPN as a dense row: its logo as a tile the row's whole height, and
+ * beside it the name and status on one line, why it failed and the jobs that
+ * name it in small text, and its three actions in one row.
  */
 function TunnelCard({
   tunnel,
@@ -218,40 +239,38 @@ function TunnelCard({
   const narrow = useNarrow()
   const status = STATUS[tunnel.status]
   return (
-    <section aria-label={name} className="glim-well flex flex-col gap-2 rounded-card px-4 py-3">
-      <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1">
-        <span className="flex min-w-0 flex-[1_1_14rem] items-center gap-3">
-          <span className="flex h-6 w-8 shrink-0">
-            <VpnMark id={tunnel.provider} />
+    <section aria-label={name} className="glim-well flex overflow-hidden rounded-card">
+      <VpnTile id={tunnel.provider} />
+      <div className="flex min-w-0 flex-1 flex-col gap-2 px-4 py-3">
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1">
+          <span className="min-w-0 flex-[1_1_14rem] truncate text-body text-carbon-text">{name}</span>
+          <Badge tone={status.tone}>
+            {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
+          </Badge>
+        </div>
+        {tunnel.status === 'failed' && verdict?.ok !== false && (
+          <FailedBecause {...failureOf(t, tunnel, name)} role="status" className="text-meta" />
+        )}
+        {verdict?.said &&
+          (verdict.ok ? (
+            <p className="text-meta text-carbon-textSub">{verdict.said}</p>
+          ) : (
+            <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" className="text-meta" />
+          ))}
+        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+          <span className="flex min-w-0 flex-[1_1_12rem] items-center gap-1.5 text-meta">
+            <span data-glim-label={t('vpn.jobs')} className="shrink-0 text-carbon-textMuted">
+              {t('vpn.jobs')}
+            </span>
+            <InfoBubble tip={t('vpn.jobsHint')} />
+            <span className="min-w-0 truncate text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
           </span>
-          <span className="min-w-0 truncate text-body text-carbon-text">{name}</span>
-        </span>
-        <Badge tone={status.tone}>
-          {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
-        </Badge>
-      </div>
-      {tunnel.status === 'failed' && verdict?.ok !== false && (
-        <FailedBecause {...failureOf(t, tunnel, name)} role="status" className="text-meta" />
-      )}
-      {verdict?.said &&
-        (verdict.ok ? (
-          <p className="text-meta text-carbon-textSub">{verdict.said}</p>
-        ) : (
-          <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" className="text-meta" />
-        ))}
-      <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
-        <span className="flex min-w-0 flex-[1_1_12rem] items-center gap-1.5 text-meta">
-          <span data-glim-label={t('vpn.jobs')} className="shrink-0 text-carbon-textMuted">
-            {t('vpn.jobs')}
+          <span className="flex flex-wrap justify-end gap-2">
+            <TestButton tunnel={tunnel.id} name={name} compact={narrow} verdict={verdict} onVerdict={setVerdict} onState={onState} />
+            <Button label={t('vpn.edit')} labelKey="vpn.edit" compact={narrow} onClick={onEdit} />
+            <Button label={t('edit.remove')} labelKey="edit.remove" compact={narrow} onClick={onRemove} />
           </span>
-          <InfoBubble tip={t('vpn.jobsHint')} />
-          <span className="min-w-0 truncate text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
-        </span>
-        <span className="flex flex-wrap justify-end gap-2">
-          <TestButton tunnel={tunnel.id} name={name} compact={narrow} verdict={verdict} onVerdict={setVerdict} onState={onState} />
-          <Button label={t('vpn.edit')} labelKey="vpn.edit" compact={narrow} onClick={onEdit} />
-          <Button label={t('edit.remove')} labelKey="edit.remove" compact={narrow} onClick={onRemove} />
-        </span>
+        </div>
       </div>
     </section>
   )
