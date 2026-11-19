@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
@@ -90,8 +91,15 @@ func writeVPNError(w http.ResponseWriter, err error) {
 		return
 	}
 	out := map[string]any{"error": ref.Text, "code": ref.Code}
+	values := map[string]string{}
 	if ref.Field != "" {
-		out["values"] = map[string]string{"field": ref.Field}
+		values["field"] = ref.Field
+	}
+	if ref.Line > 0 {
+		values["line"], values["text"] = strconv.Itoa(ref.Line), ref.LineText
+	}
+	if len(values) > 0 {
+		out["values"] = values
 	}
 	writeJSON(w, ref.Status, out)
 }

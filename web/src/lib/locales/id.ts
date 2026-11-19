@@ -2193,6 +2193,7 @@ const id: Translations = {
   'vpn.note.pia': 'Nama pengguna PIA Anda diawali dengan p.',
   'vpn.note.torguard': 'Di sini TorGuard meminta kredensial VPN dari area klien Anda, bukan login situs web Anda.',
   'vpn.error.config': 'Ini bukan konfigurasi WireGuard yang bisa dipakai ArrowLoop.',
+  'vpn.error.configLine': 'Baris {line} pada konfigurasi tidak sesuai: {text}',
   'vpn.error.login': '{name} menolak login.',
   'vpn.error.timeout': 'Server tidak menjawab. Periksa endpoint, atau coba lokasi lain.',
   'vpn.error.nameUnresolved': 'Nama server tidak ditemukan. Periksa ejaan endpoint, dan pastikan perangkat ini sedang online.',

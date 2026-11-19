@@ -332,7 +332,7 @@ function VpnForm({
   const { t } = useT()
   const [values, setValues] = useState<Values>({})
   const [missing, setMissing] = useState<VpnField | ''>('')
-  const [refusal, setRefusal] = useState('')
+  const [refusal, setRefusal] = useState<{ said: string; detail?: string } | null>(null)
   const [busy, setBusy] = useState(false)
   const filled = !!tunnel || p.fields.every((f) => f === 'location' || values[f]?.trim())
   const note = NOTES[p.id]
@@ -344,7 +344,7 @@ function VpnForm({
   const set = (f: VpnField, v: string) => {
     setValues((was) => ({ ...was, [f]: v }))
     if (missing === f) setMissing('')
-    setRefusal('')
+    setRefusal(null)
   }
 
   async function save() {
@@ -354,8 +354,11 @@ function VpnForm({
     } catch (e) {
       const field = e instanceof ApiError ? (e.values?.field as VpnField | undefined) : undefined
       if (e instanceof ApiError && e.code === 'vpn-field-missing' && field) setMissing(field)
-      else if (e instanceof ApiError && e.code === 'vpn-config-invalid') setRefusal(`${t('vpn.error.config', { name })} ${e.message}`)
-      else setRefusal(errorText(t, e))
+      else if (e instanceof ApiError && e.code === 'vpn-config-invalid') {
+        const line = e.values?.line
+        const said = line ? t('vpn.error.configLine', { line, text: e.values?.text ?? '' }) : t('vpn.error.config', { name })
+        setRefusal({ said, detail: e.message })
+      } else setRefusal({ said: errorText(t, e) })
     } finally {
       setBusy(false)
     }
@@ -419,11 +422,7 @@ function VpnForm({
             {missing === f && <p className="text-meta text-statusFail">{t('vpn.field.missing')}</p>}
           </div>
         ))}
-        {refusal && (
-          <p role="alert" className="text-subline text-statusFail">
-            {refusal}
-          </p>
-        )}
+        {refusal && <FailedBecause {...refusal} role="alert" />}
       </div>
     </Dialog>
   )

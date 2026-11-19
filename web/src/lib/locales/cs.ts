@@ -2193,6 +2193,7 @@ const cs: Translations = {
   'vpn.note.pia': 'Tvoje uživatelské jméno PIA začíná na p.',
   'vpn.note.torguard': 'TorGuard tu chce přihlašovací údaje VPN z tvé klientské sekce, ne přihlášení na web.',
   'vpn.error.config': 'Tohle není konfigurace WireGuard, se kterou ArrowLoop umí pracovat.',
+  'vpn.error.configLine': 'Řádek {line} konfigurace nesedí: {text}',
   'vpn.error.login': 'Přihlášení u {name} bylo odmítnuto.',
   'vpn.error.timeout': 'Server neodpověděl. Zkontroluj endpoint, nebo zkus jiné umístění.',
   'vpn.error.nameUnresolved': 'Název serveru nebyl nalezen. Zkontroluj, jak je endpoint napsaný, a že je toto zařízení online.',

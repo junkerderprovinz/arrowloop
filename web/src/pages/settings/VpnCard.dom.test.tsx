@@ -252,14 +252,31 @@ describe('the VPN chooser', () => {
     expect(await screen.findByRole('region', { name: 'WireGuard (home.example)' })).toBeTruthy()
   })
 
-  it('says why a configuration was refused and keeps the form open', async () => {
+  it("says in the reader's words why a configuration was refused and keeps the form open", async () => {
     addAnswer = () => Promise.reject(new ApiError('vpn: the interface has no address', 400, 'vpn-config-invalid', { field: 'config' }))
     const chooser = await openChooser()
     fireEvent.click(within(chooser).getByRole('button', { name: 'WireGuard' }))
     const form = await screen.findByRole('dialog')
     fireEvent.change(within(form).getByRole('textbox', { name: 'WireGuard configuration' }), { target: { value: 'nope' } })
     fireEvent.click(within(form).getByRole('button', { name: 'Save' }))
-    expect((await within(form).findByRole('alert')).textContent).toContain('the interface has no address')
+    const alert = await within(form).findByRole('alert')
+    expect(alert.textContent).toBe('This is not a WireGuard configuration ArrowLoop can use.')
+    expect(alert.getAttribute('data-tip')).toContain('the interface has no address')
+  })
+
+  it('names the line of a configuration that does not fit', async () => {
+    addAnswer = () =>
+      Promise.reject(
+        new ApiError('vpn: line 4: not key = value', 400, 'vpn-config-invalid', { field: 'config', line: '4', text: 'Adress 10.0.0.2/32' }),
+      )
+    const chooser = await openChooser()
+    fireEvent.click(within(chooser).getByRole('button', { name: 'WireGuard' }))
+    const form = await screen.findByRole('dialog')
+    fireEvent.change(within(form).getByRole('textbox', { name: 'WireGuard configuration' }), { target: { value: 'nope' } })
+    fireEvent.click(within(form).getByRole('button', { name: 'Save' }))
+    const alert = await within(form).findByRole('alert')
+    expect(alert.textContent).toBe('Line 4 of the configuration does not fit: Adress 10.0.0.2/32')
+    expect(alert.getAttribute('data-tip')).toContain('not key = value')
   })
 
   it('asks a provider with a login for its fields and leads back to the tiles', async () => {

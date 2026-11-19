@@ -2193,6 +2193,7 @@ const ko: Translations = {
   'vpn.note.pia': 'PIA 사용자 이름은 p로 시작합니다.',
   'vpn.note.torguard': 'TorGuard는 여기에 웹사이트 로그인이 아니라 클라이언트 영역에 있는 VPN 자격 증명을 요구합니다.',
   'vpn.error.config': 'ArrowLoop이 사용할 수 있는 WireGuard 구성이 아닙니다.',
+  'vpn.error.configLine': '구성의 {line}번째 줄이 맞지 않습니다: {text}',
   'vpn.error.login': '{name}이(가) 로그인을 거부했습니다.',
   'vpn.error.timeout': '서버가 응답하지 않았습니다. 엔드포인트를 확인하거나 다른 위치를 시도하세요.',
   'vpn.error.nameUnresolved': '서버 이름을 찾지 못했습니다. 엔드포인트의 철자와 이 기기가 온라인인지 확인하세요.',

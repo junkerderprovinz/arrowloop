@@ -2193,6 +2193,7 @@ const no: Translations = {
   'vpn.note.pia': 'PIA-brukernavnet ditt begynner med p.',
   'vpn.note.torguard': 'TorGuard vil ha VPN-innloggingsdetaljene fra kundeområdet ditt her, ikke innloggingen til nettstedet.',
   'vpn.error.config': 'Dette er ikke en WireGuard-konfigurasjon ArrowLoop kan bruke.',
+  'vpn.error.configLine': 'Linje {line} i konfigurasjonen passer ikke: {text}',
   'vpn.error.login': '{name} avviste innloggingen.',
   'vpn.error.timeout': 'Serveren svarte ikke. Sjekk endepunktet, eller prøv en annen plassering.',
   'vpn.error.nameUnresolved': 'Navnet på serveren ble ikke funnet. Sjekk hvordan endepunktet er stavet, og at denne enheten er på nett.',

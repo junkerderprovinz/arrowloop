@@ -2193,6 +2193,7 @@ const he: Translations = {
   'vpn.note.pia': 'שם המשתמש שלך ב־PIA מתחיל ב־p.',
   'vpn.note.torguard': 'TorGuard מבקש כאן את פרטי ה־VPN מאזור הלקוח שלך, לא את פרטי ההתחברות לאתר.',
   'vpn.error.config': 'אלה לא הגדרות WireGuard ש־ArrowLoop יכול להשתמש בהן.',
+  'vpn.error.configLine': 'שורה {line} בתצורה אינה תקינה: {text}',
   'vpn.error.login': '{name} דחה את ההתחברות.',
   'vpn.error.timeout': 'השרת לא ענה. בדוק את נקודת הקצה, או נסה מיקום אחר.',
   'vpn.error.nameUnresolved': 'שם השרת לא נמצא. בדוק את האיות של נקודת הקצה ושהמכשיר הזה מחובר לרשת.',

@@ -46,12 +46,15 @@ type Options struct {
 var ErrNotSetUp = errors.New("the VPN this job goes through is not set up in the settings")
 
 // Refusal is a call the routes answer with an error status, a code the page
-// words and, for a field, the field.
+// words and, for a field, the field. A configuration that does not read names
+// the line and its text, which the page words too.
 type Refusal struct {
-	Status int
-	Code   string
-	Field  string
-	Text   string
+	Status   int
+	Code     string
+	Field    string
+	Line     int
+	LineText string
+	Text     string
 }
 
 func (r *Refusal) Error() string { return r.Text }
@@ -504,7 +507,12 @@ func fill(p *Provider, login Login, fields map[string]string) (bool, error) {
 	}
 	if slices.Contains(p.Fields, "config") {
 		if _, err := vpn.ParseConfig(login["config"]); err != nil {
-			return false, &Refusal{Status: http.StatusBadRequest, Code: CodeConfigInvalid, Field: "config", Text: err.Error()}
+			ref := &Refusal{Status: http.StatusBadRequest, Code: CodeConfigInvalid, Field: "config", Text: err.Error()}
+			var le *vpn.LineError
+			if errors.As(err, &le) {
+				ref.Line, ref.LineText = le.Line, le.Text
+			}
+			return false, ref
 		}
 	}
 	return changed, nil

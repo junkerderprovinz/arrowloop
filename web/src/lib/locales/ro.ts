@@ -2193,6 +2193,7 @@ const ro: Translations = {
   'vpn.note.pia': 'Numele tău de utilizator PIA începe cu p.',
   'vpn.note.torguard': 'TorGuard vrea aici datele de autentificare VPN din zona ta de client, nu autentificarea de pe site.',
   'vpn.error.config': 'Aceasta nu este o configurație WireGuard pe care ArrowLoop o poate folosi.',
+  'vpn.error.configLine': 'Rândul {line} din configurație nu se potrivește: {text}',
   'vpn.error.login': '{name} a refuzat autentificarea.',
   'vpn.error.timeout': 'Serverul nu a răspuns. Verifică endpointul sau încearcă altă locație.',
   'vpn.error.nameUnresolved': 'Numele serverului nu a fost găsit. Verifică cum e scris endpointul și dacă acest dispozitiv e conectat la internet.',

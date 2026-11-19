@@ -2193,6 +2193,7 @@ const hi: Translations = {
   'vpn.note.pia': 'आपका PIA उपयोगकर्ता नाम p से शुरू होता है।',
   'vpn.note.torguard': 'TorGuard को यहाँ आपके क्लाइंट एरिया के VPN क्रेडेंशियल चाहिए, वेबसाइट का लॉगिन नहीं।',
   'vpn.error.config': 'यह ऐसा WireGuard कॉन्फ़िगरेशन नहीं है जिसे ArrowLoop इस्तेमाल कर सके।',
+  'vpn.error.configLine': 'कॉन्फ़िगरेशन की पंक्ति {line} ठीक नहीं है: {text}',
   'vpn.error.login': '{name} ने लॉगिन अस्वीकार कर दिया।',
   'vpn.error.timeout': 'सर्वर ने जवाब नहीं दिया। एंडपॉइंट जाँचें, या कोई दूसरा स्थान आज़माएँ।',
   'vpn.error.nameUnresolved': 'सर्वर का नाम नहीं मिला। एंडपॉइंट की वर्तनी जाँचें, और यह भी कि यह डिवाइस ऑनलाइन है।',

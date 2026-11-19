@@ -2193,6 +2193,7 @@ const nl: Translations = {
   'vpn.note.pia': 'Je PIA-gebruikersnaam begint met p.',
   'vpn.note.torguard': 'TorGuard wil hier de VPN-inloggegevens uit je klantomgeving, niet je aanmelding voor de website.',
   'vpn.error.config': 'Dit is geen WireGuard-configuratie waar ArrowLoop mee kan werken.',
+  'vpn.error.configLine': 'Regel {line} van de configuratie klopt niet: {text}',
   'vpn.error.login': '{name} heeft de aanmelding geweigerd.',
   'vpn.error.timeout': 'De server gaf geen antwoord. Controleer het endpoint, of probeer een andere locatie.',
   'vpn.error.nameUnresolved': 'De naam van de server is niet gevonden. Controleer hoe het endpoint gespeld is, en of dit apparaat online is.',

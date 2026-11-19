@@ -2193,6 +2193,7 @@ const tr: Translations = {
   'vpn.note.pia': 'PIA kullanıcı adın p ile başlar.',
   'vpn.note.torguard': 'TorGuard burada web sitesi girişini değil, müşteri alanındaki VPN kimlik bilgilerini ister.',
   'vpn.error.config': 'Bu, ArrowLoop\'un kullanabileceği bir WireGuard yapılandırması değil.',
+  'vpn.error.configLine': 'Yapılandırmanın {line}. satırı uymuyor: {text}',
   'vpn.error.login': '{name} girişi reddetti.',
   'vpn.error.timeout': 'Sunucu yanıt vermedi. Uç noktayı kontrol et ya da başka bir konum dene.',
   'vpn.error.nameUnresolved': 'Sunucunun adı bulunamadı. Uç noktanın nasıl yazıldığını ve bu cihazın çevrimiçi olduğunu kontrol et.',

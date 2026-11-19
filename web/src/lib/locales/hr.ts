@@ -2193,6 +2193,7 @@ const hr: Translations = {
   'vpn.note.pia': 'Tvoje PIA korisničko ime počinje s p.',
   'vpn.note.torguard': 'TorGuard ovdje traži VPN podatke za prijavu iz tvog korisničkog područja, ne prijavu za web stranicu.',
   'vpn.error.config': 'Ovo nije WireGuard konfiguracija koju ArrowLoop može koristiti.',
+  'vpn.error.configLine': 'Redak {line} konfiguracije ne odgovara: {text}',
   'vpn.error.login': '{name} je odbio prijavu.',
   'vpn.error.timeout': 'Poslužitelj nije odgovorio. Provjeri krajnju točku ili pokušaj drugu lokaciju.',
   'vpn.error.nameUnresolved': 'Naziv poslužitelja nije pronađen. Provjeri kako je napisana krajnja točka i je li ovaj uređaj na mreži.',

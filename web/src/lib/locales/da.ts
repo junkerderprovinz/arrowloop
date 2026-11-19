@@ -2193,6 +2193,7 @@ const da: Translations = {
   'vpn.note.pia': 'Dit PIA-brugernavn begynder med p.',
   'vpn.note.torguard': 'TorGuard vil her have VPN-loginoplysningerne fra dit kundeområde, ikke dit login til hjemmesiden.',
   'vpn.error.config': 'Det er ikke en WireGuard-konfiguration, ArrowLoop kan bruge.',
+  'vpn.error.configLine': 'Linje {line} i konfigurationen passer ikke: {text}',
   'vpn.error.login': '{name} afviste login.',
   'vpn.error.timeout': 'Serveren svarede ikke. Tjek endpointet, eller prøv en anden placering.',
   'vpn.error.nameUnresolved': 'Serverens navn blev ikke fundet. Tjek, hvordan endpointet er stavet, og at denne enhed er online.',

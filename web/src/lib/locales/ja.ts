@@ -2193,6 +2193,7 @@ const ja: Translations = {
   'vpn.note.pia': 'PIA のユーザー名は p で始まります。',
   'vpn.note.torguard': 'ここには Web サイトのログイン情報ではなく、TorGuard のクライアントエリアにある VPN 用の認証情報を入力します。',
   'vpn.error.config': 'ArrowLoop が使える WireGuard 設定ではありません。',
+  'vpn.error.configLine': '設定の {line} 行目が正しくありません: {text}',
   'vpn.error.login': '{name} がログインを拒否しました。',
   'vpn.error.timeout': 'サーバーから応答がありませんでした。エンドポイントを確認するか、別の場所を試してください。',
   'vpn.error.nameUnresolved': 'サーバー名が見つかりませんでした。エンドポイントのつづりと、このデバイスがオンラインかどうかを確認してください。',

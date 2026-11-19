@@ -438,6 +438,9 @@ func TestSavingRefusesWhatCannotConnect(t *testing.T) {
 	if _, _, err := m.Add(Custom, map[string]string{"config": "[Interface]\nPrivateKey = nope\n"}); !errors.As(err, &ref) || ref.Code != CodeConfigInvalid || ref.Field != "config" {
 		t.Errorf("a broken config = %v", err)
 	}
+	if _, _, err := m.Add(Custom, map[string]string{"config": "[Interface]\nAdress 10.0.0.2/32\n"}); !errors.As(err, &ref) || ref.Line != 2 || ref.LineText != "Adress 10.0.0.2/32" {
+		t.Errorf("a line that does not fit = %+v", ref)
+	}
 	if _, _, err := m.Add(Custom, map[string]string{}); !errors.As(err, &ref) || ref.Code != "vpn-field-missing" {
 		t.Errorf("no config = %v", err)
 	}

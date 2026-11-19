@@ -2193,6 +2193,7 @@ const hu: Translations = {
   'vpn.note.pia': 'A PIA-felhasználóneved p betűvel kezdődik.',
   'vpn.note.torguard': 'A TorGuard itt az ügyfélterületedről származó VPN-belépési adatokat kéri, nem a weboldalas bejelentkezésedet.',
   'vpn.error.config': 'Ez nem olyan WireGuard-konfiguráció, amelyet az ArrowLoop használni tud.',
+  'vpn.error.configLine': 'A konfiguráció {line}. sora nem megfelelő: {text}',
   'vpn.error.login': 'A(z) {name} elutasította a bejelentkezést.',
   'vpn.error.timeout': 'A szerver nem válaszolt. Ellenőrizd a végpontot, vagy próbálj egy másik helyet.',
   'vpn.error.nameUnresolved': 'A szerver neve nem található. Ellenőrizd, hogyan van írva a végpont, és hogy ez az eszköz online van-e.',

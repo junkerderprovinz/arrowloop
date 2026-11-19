@@ -2193,6 +2193,7 @@ const ar: Translations = {
   'vpn.note.pia': 'يبدأ اسم المستخدم في PIA بالحرف p.',
   'vpn.note.torguard': 'يريد TorGuard هنا بيانات VPN من منطقة العملاء الخاصة بك، لا بيانات دخولك إلى الموقع.',
   'vpn.error.config': 'هذه ليست إعدادات WireGuard يمكن لـ ArrowLoop استخدامها.',
+  'vpn.error.configLine': 'السطر {line} من الإعداد غير صالح: {text}',
   'vpn.error.login': 'رفض {name} تسجيل الدخول.',
   'vpn.error.timeout': 'لم يستجب الخادم. تحقّق من Endpoint أو جرّب موقعًا آخر.',
   'vpn.error.nameUnresolved': 'لم يُعثر على اسم الخادم. تحقّق من كتابة Endpoint ومن أن هذا الجهاز متصل بالإنترنت.',

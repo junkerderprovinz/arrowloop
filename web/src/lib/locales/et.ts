@@ -2193,6 +2193,7 @@ const et: Translations = {
   'vpn.note.pia': 'Sinu PIA kasutajanimi algab tähega p.',
   'vpn.note.torguard': 'TorGuard tahab siia VPN-i kasutajaandmeid sinu kliendialalt, mitte veebisaidi sisselogimist.',
   'vpn.error.config': 'See ei ole WireGuardi seadistus, mida ArrowLoop saab kasutada.',
+  'vpn.error.configLine': 'Seadistuse rida {line} ei sobi: {text}',
   'vpn.error.login': '{name} lükkas sisselogimise tagasi.',
   'vpn.error.timeout': 'Server ei vastanud. Kontrolli otspunkti (Endpoint) või proovi muud asukohta.',
   'vpn.error.nameUnresolved': 'Serveri nime ei leitud. Kontrolli, kuidas otspunkt (Endpoint) on kirjutatud ja et see seade on võrgus.',

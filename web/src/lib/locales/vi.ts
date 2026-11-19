@@ -2193,6 +2193,7 @@ const vi: Translations = {
   'vpn.note.pia': 'Tên người dùng PIA của bạn bắt đầu bằng p.',
   'vpn.note.torguard': 'Ở đây TorGuard cần thông tin đăng nhập VPN từ khu vực khách hàng của bạn, không phải thông tin đăng nhập trang web.',
   'vpn.error.config': 'Đây không phải cấu hình WireGuard mà ArrowLoop dùng được.',
+  'vpn.error.configLine': 'Dòng {line} của cấu hình không hợp lệ: {text}',
   'vpn.error.login': '{name} đã từ chối đăng nhập.',
   'vpn.error.timeout': 'Máy chủ không trả lời. Hãy kiểm tra điểm cuối, hoặc thử vị trí khác.',
   'vpn.error.nameUnresolved': 'Không tìm thấy tên máy chủ. Hãy kiểm tra cách viết điểm cuối, và thiết bị này có đang trực tuyến không.',

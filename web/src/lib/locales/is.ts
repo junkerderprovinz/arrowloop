@@ -2193,6 +2193,7 @@ const is: Translations = {
   'vpn.note.pia': 'PIA-notandanafnið þitt byrjar á p.',
   'vpn.note.torguard': 'TorGuard vill hér VPN-innskráningarupplýsingarnar af þjónustusvæðinu þínu, ekki innskráninguna á vefsíðuna.',
   'vpn.error.config': 'Þetta eru ekki WireGuard-stillingar sem ArrowLoop getur notað.',
+  'vpn.error.configLine': 'Lína {line} í stillingunum passar ekki: {text}',
   'vpn.error.login': '{name} hafnaði innskráningunni.',
   'vpn.error.timeout': 'Netþjónninn svaraði ekki. Athugaðu endapunktinn eða prófaðu aðra staðsetningu.',
   'vpn.error.nameUnresolved': 'Nafn netþjónsins fannst ekki. Athugaðu hvernig endapunkturinn er stafaður og að þetta tæki sé nettengt.',

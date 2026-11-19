@@ -94,6 +94,27 @@ const DefaultMTU = 1420
 // is up, and keeps a NAT on the way open.
 const DefaultKeepalive = 25 * time.Second
 
+// LineError is a line of a configuration that does not read. Text is the
+// line as written, without its comment and, for a key, without the key's
+// value, so it can be shown back.
+type LineError struct {
+	Line int
+	Text string
+	Err  error
+}
+
+func (e *LineError) Error() string { return fmt.Sprintf("vpn: line %d: %v", e.Line, e.Err) }
+func (e *LineError) Unwrap() error { return e.Err }
+
+// shown is a line as LineError keeps it.
+func shown(s, key string) string {
+	if key == "privatekey" || key == "presharedkey" {
+		k, _, _ := strings.Cut(s, "=")
+		return strings.TrimSpace(k) + " = …"
+	}
+	return s
+}
+
 // ParseConfig reads a configuration file in wg-quick's format, the one VPN
 // providers hand out. Keys wg-quick uses to change the system, such as
 // PostUp or Table, are ignored, and so is a ListenPort: the tunnel sends from
@@ -121,7 +142,7 @@ func ParseConfig(text string) (Config, error) {
 		}
 		key, value, ok := strings.Cut(s, "=")
 		if !ok {
-			return c, fmt.Errorf("vpn: line %d is not key = value", line)
+			return c, &LineError{line, s, errors.New("not key = value")}
 		}
 		key = strings.ToLower(strings.TrimSpace(key))
 		value = strings.TrimSpace(value)
@@ -138,7 +159,7 @@ func ParseConfig(text string) (Config, error) {
 			err = fmt.Errorf("%s outside a section", key)
 		}
 		if err != nil {
-			return c, fmt.Errorf("vpn: line %d: %w", line, err)
+			return c, &LineError{line, shown(s, key), err}
 		}
 	}
 	if err := sc.Err(); err != nil {

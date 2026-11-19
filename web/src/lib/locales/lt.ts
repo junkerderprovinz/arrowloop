@@ -2193,6 +2193,7 @@ const lt: Translations = {
   'vpn.note.pia': 'Tavo PIA naudotojo vardas prasideda raide p.',
   'vpn.note.torguard': 'Čia TorGuard reikia VPN prisijungimo duomenų iš tavo klientų srities, o ne svetainės prisijungimo.',
   'vpn.error.config': 'Tai ne WireGuard konfigūracija, kurią ArrowLoop galėtų naudoti.',
+  'vpn.error.configLine': 'Konfigūracijos {line} eilutė netinka: {text}',
   'vpn.error.login': '{name} atmetė prisijungimą.',
   'vpn.error.timeout': 'Serveris neatsakė. Patikrink galinį tašką arba pabandyk kitą vietą.',
   'vpn.error.nameUnresolved': 'Serverio pavadinimas nerastas. Patikrink, kaip parašytas galinis taškas, ir ar šis įrenginys prisijungęs prie interneto.',

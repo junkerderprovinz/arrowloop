@@ -2193,6 +2193,7 @@ const fa: Translations = {
   'vpn.note.pia': 'نام کاربری PIA تو با p شروع می‌شود.',
   'vpn.note.torguard': 'TorGuard اینجا اطلاعات ورود VPN از بخش مشتری‌ات را می‌خواهد، نه اطلاعات ورود به وب‌سایت را.',
   'vpn.error.config': 'این پیکربندی WireGuardای نیست که ArrowLoop بتواند از آن استفاده کند.',
+  'vpn.error.configLine': 'خط {line} پیکربندی درست نیست: {text}',
   'vpn.error.login': '{name} ورود را رد کرد.',
   'vpn.error.timeout': 'سرور پاسخ نداد. Endpoint را بررسی کن یا مکان دیگری را امتحان کن.',
   'vpn.error.nameUnresolved': 'نام سرور پیدا نشد. نوشتار Endpoint را بررسی کن و مطمئن شو این دستگاه به اینترنت وصل است.',

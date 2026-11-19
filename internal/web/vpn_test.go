@@ -139,6 +139,24 @@ func TestABrokenConfigIsRefusedWithItsCode(t *testing.T) {
 	}
 }
 
+func TestARefusedConfigNamesTheLineThatDoesNotFit(t *testing.T) {
+	h := newHarness(t)
+	_, base := withVPN(t, h)
+	body := `{"provider":"custom","fields":{"config":"[Interface]\n\nAdress 10.0.0.2/32\n"}}`
+	resp, err := http.Post(base+"/api/vpn", "application/json", strings.NewReader(body))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	var out struct {
+		Values map[string]string `json:"values"`
+	}
+	json.NewDecoder(resp.Body).Decode(&out)
+	if out.Values["line"] != "3" || out.Values["text"] != "Adress 10.0.0.2/32" {
+		t.Errorf("answered %s %v", resp.Status, out.Values)
+	}
+}
+
 func TestOnlyAnEngineWithAVPNOffersIt(t *testing.T) {
 	h := newHarness(t)
 	_, base := withVPN(t, h)

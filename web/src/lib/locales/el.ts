@@ -2193,6 +2193,7 @@ const el: Translations = {
   'vpn.note.pia': 'Το όνομα χρήστη σου στο PIA αρχίζει από p.',
   'vpn.note.torguard': 'Το TorGuard θέλει εδώ τα στοιχεία VPN από την περιοχή πελάτη σου, όχι τη σύνδεσή σου στον ιστότοπο.',
   'vpn.error.config': 'Αυτή δεν είναι ρύθμιση WireGuard που μπορεί να χρησιμοποιήσει το ArrowLoop.',
+  'vpn.error.configLine': 'Η γραμμή {line} της ρύθμισης δεν ταιριάζει: {text}',
   'vpn.error.login': 'Το {name} απέρριψε τη σύνδεση.',
   'vpn.error.timeout': 'Ο διακομιστής δεν απάντησε. Έλεγξε το endpoint ή δοκίμασε άλλη τοποθεσία.',
   'vpn.error.nameUnresolved': 'Το όνομα του διακομιστή δεν βρέθηκε. Έλεγξε πώς είναι γραμμένο το endpoint και ότι αυτή η συσκευή είναι συνδεδεμένη.',

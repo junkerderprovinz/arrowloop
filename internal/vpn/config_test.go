@@ -1,6 +1,7 @@
 package vpn
 
 import (
+	"errors"
 	"net/netip"
 	"strings"
 	"testing"
@@ -108,5 +109,27 @@ func TestAConfigWithoutKeepaliveStillKeepsTheHandshakeFresh(t *testing.T) {
 	}
 	if !strings.Contains(c.uapi(netip.MustParseAddrPort("192.0.2.1:51820")), "persistent_keepalive_interval=25\n") {
 		t.Error("the device is not told to keep the handshake fresh")
+	}
+}
+
+func TestALineThatDoesNotFitNamesItselfWithoutItsKey(t *testing.T) {
+	cases := []struct {
+		conf string
+		line int
+		text string
+	}{
+		{"[Interface]\nAdress 10.0.0.2/32\n", 2, "Adress 10.0.0.2/32"},
+		{"[Interface]\n# home\nPrivateKey = not a key\n", 3, "PrivateKey = …"},
+		{"[Interface]\nAddress = 10.0.0.2/32\n\n[Peer]\nAllowedIPs = everything # all\n", 5, "AllowedIPs = everything"},
+	}
+	for _, c := range cases {
+		_, err := ParseConfig(c.conf)
+		var le *LineError
+		if !errors.As(err, &le) || le.Line != c.line || le.Text != c.text {
+			t.Errorf("%q: %v, want line %d %q", c.conf, err, c.line, c.text)
+		}
+	}
+	if _, err := ParseConfig("[Interface]\nAddress = 10.0.0.2/32\n"); errors.As(err, new(*LineError)) {
+		t.Errorf("a missing key names a line: %v", err)
 	}
 }

@@ -2193,6 +2193,7 @@ const zh: Translations = {
   'vpn.note.pia': '你的 PIA 用户名以 p 开头。',
   'vpn.note.torguard': '这里 TorGuard 需要的是你客户专区里的 VPN 凭据，而不是网站的登录信息。',
   'vpn.error.config': '这不是 ArrowLoop 能使用的 WireGuard 配置。',
+  'vpn.error.configLine': '配置的第 {line} 行不正确：{text}',
   'vpn.error.login': '{name} 拒绝了登录。',
   'vpn.error.timeout': '服务器没有响应。请检查端点，或换一个位置试试。',
   'vpn.error.nameUnresolved': '找不到服务器的名称。请检查端点的拼写，并确认这台设备已联网。',

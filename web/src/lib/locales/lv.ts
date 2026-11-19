@@ -2193,6 +2193,7 @@ const lv: Translations = {
   'vpn.note.pia': 'Tavs PIA lietotājvārds sākas ar p.',
   'vpn.note.torguard': 'TorGuard šeit prasa VPN piekļuves datus no tavas klienta zonas, nevis vietnes pieteikšanās datus.',
   'vpn.error.config': 'Šī nav WireGuard konfigurācija, ko ArrowLoop var izmantot.',
+  'vpn.error.configLine': 'Konfigurācijas {line}. rinda neder: {text}',
   'vpn.error.login': '{name} noraidīja pieteikšanos.',
   'vpn.error.timeout': 'Serveris neatbildēja. Pārbaudi galapunktu vai mēģini citu atrašanās vietu.',
   'vpn.error.nameUnresolved': 'Servera nosaukums netika atrasts. Pārbaudi, kā uzrakstīts galapunkts, un vai šī ierīce ir tiešsaistē.',

@@ -2193,6 +2193,7 @@ const ms: Translations = {
   'vpn.note.pia': 'Nama pengguna PIA anda bermula dengan p.',
   'vpn.note.torguard': 'Di sini TorGuard mahukan butiran log masuk VPN daripada kawasan pelanggan anda, bukan log masuk laman web anda.',
   'vpn.error.config': 'Ini bukan konfigurasi WireGuard yang boleh digunakan oleh ArrowLoop.',
+  'vpn.error.configLine': 'Baris {line} dalam konfigurasi tidak sesuai: {text}',
   'vpn.error.login': '{name} menolak log masuk.',
   'vpn.error.timeout': 'Pelayan tidak menjawab. Semak titik akhir, atau cuba lokasi lain.',
   'vpn.error.nameUnresolved': 'Nama pelayan tidak ditemui. Semak ejaan titik akhir, dan pastikan peranti ini dalam talian.',

@@ -2193,6 +2193,7 @@ const fi: Translations = {
   'vpn.note.pia': 'PIA-käyttäjänimesi alkaa kirjaimella p.',
   'vpn.note.torguard': 'TorGuard haluaa tähän asiakasalueesi VPN-tunnukset, ei verkkosivuston kirjautumistietojasi.',
   'vpn.error.config': 'Tämä ei ole WireGuard-määritys, jota ArrowLoop voi käyttää.',
+  'vpn.error.configLine': 'Määrityksen rivi {line} ei sovi: {text}',
   'vpn.error.login': '{name} hylkäsi kirjautumisen.',
   'vpn.error.timeout': 'Palvelin ei vastannut. Tarkista päätepiste tai kokeile toista sijaintia.',
   'vpn.error.nameUnresolved': 'Palvelimen nimeä ei löytynyt. Tarkista, miten päätepiste on kirjoitettu ja että tämä laite on verkossa.',

@@ -2193,6 +2193,7 @@ const bg: Translations = {
   'vpn.note.pia': 'Потребителското ти име в PIA започва с p.',
   'vpn.note.torguard': 'TorGuard иска тук данните за VPN от клиентската ти зона, а не входа ти за уебсайта.',
   'vpn.error.config': 'Това не е WireGuard конфигурация, която ArrowLoop може да използва.',
+  'vpn.error.configLine': 'Ред {line} от конфигурацията не пасва: {text}',
   'vpn.error.login': '{name} отказа входа.',
   'vpn.error.timeout': 'Сървърът не отговори. Провери Endpoint или опитай друго местоположение.',
   'vpn.error.nameUnresolved': 'Името на сървъра не беше намерено. Провери как е изписан Endpoint и дали това устройство е онлайн.',

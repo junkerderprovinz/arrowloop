@@ -2193,6 +2193,7 @@ const eu: Translations = {
   'vpn.note.pia': 'Zure PIA erabiltzaile-izena p letraz hasten da.',
   'vpn.note.torguard': 'TorGuard zerbitzuak zure bezero-eremuko VPN kredentzialak nahi ditu hemen, ez webgunerako saio-hasiera.',
   'vpn.error.config': 'Hau ez da ArrowLoopek erabil dezakeen WireGuard konfigurazio bat.',
+  'vpn.error.configLine': 'Konfigurazioaren {line}. lerroa ez da egokia: {text}',
   'vpn.error.login': '{name} zerbitzuak saio-hasiera ukatu du.',
   'vpn.error.timeout': 'Zerbitzariak ez du erantzun. Egiaztatu endpointa edo saiatu beste kokapen batekin.',
   'vpn.error.nameUnresolved': 'Ez da zerbitzariaren izena aurkitu. Egiaztatu nola dagoen idatzita endpointa eta gailu hau konektatuta dagoela.',

@@ -2193,6 +2193,7 @@ const gl: Translations = {
   'vpn.note.pia': 'O teu nome de usuario de PIA comeza por p.',
   'vpn.note.torguard': 'TorGuard quere aquí as credenciais VPN da túa área de cliente, non o teu acceso ao sitio web.',
   'vpn.error.config': 'Esta non é unha configuración WireGuard que ArrowLoop poida usar.',
+  'vpn.error.configLine': 'A liña {line} da configuración non encaixa: {text}',
   'vpn.error.login': '{name} rexeitou o inicio de sesión.',
   'vpn.error.timeout': 'O servidor non respondeu. Comproba o punto final ou proba outra localización.',
   'vpn.error.nameUnresolved': 'Non se atopou o nome do servidor. Comproba como está escrito o punto final e que este dispositivo ten conexión.',
