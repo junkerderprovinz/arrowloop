@@ -209,6 +209,8 @@ function TunnelCard({
   onRemove: () => void
 }) {
   const { t } = useT()
+  // A test that failed says why itself, so the status line steps back.
+  const [testFailed, setTestFailed] = useState(false)
   const status = STATUS[tunnel.status]
   return (
     <SubCard title={name}>
@@ -220,11 +222,11 @@ function TunnelCard({
           {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
         </Badge>
       </div>
-      {tunnel.status === 'failed' && <FailedBecause {...failureOf(t, tunnel, name)} role="status" />}
+      {tunnel.status === 'failed' && !testFailed && <FailedBecause {...failureOf(t, tunnel, name)} role="status" />}
       <SettingsRow label={t('vpn.jobs')} hint={t('vpn.jobsHint')}>
         <span className="text-subline text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
       </SettingsRow>
-      <TestButton tunnel={tunnel.id} name={name} onState={onState} />
+      <TestButton tunnel={tunnel.id} name={name} onState={onState} onFailed={setTestFailed} />
       <div className="flex flex-wrap justify-end gap-2">
         <Button label={t('edit.remove')} labelKey="edit.remove" onClick={onRemove} />
         <Button label={t('vpn.edit')} labelKey="vpn.edit" onClick={onEdit} />
@@ -484,10 +486,21 @@ function FailedBecause({
 }
 
 /** Brings a VPN up once, as a run would, and says where traffic leaves. */
-function TestButton({ tunnel, name, onState }: { tunnel: string; name: string; onState: (next: VpnState) => void }) {
+function TestButton({
+  tunnel,
+  name,
+  onState,
+  onFailed,
+}: {
+  tunnel: string
+  name: string
+  onState: (next: VpnState) => void
+  onFailed: (failed: boolean) => void
+}) {
   const { t } = useT()
   const [testing, setTesting] = useState(false)
   const [verdict, setVerdict] = useState<{ ok: boolean; said?: string; detail?: string } | null>(null)
+  useEffect(() => onFailed(verdict?.ok === false), [verdict, onFailed])
 
   async function test() {
     setTesting(true)

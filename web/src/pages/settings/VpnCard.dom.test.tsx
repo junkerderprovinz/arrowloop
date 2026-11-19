@@ -170,6 +170,20 @@ describe('the VPN card', () => {
     expect(verdict.textContent).not.toContain('vpn: resolve')
     expect(verdict.getAttribute('data-tip')).toContain(unresolved)
   })
+
+  it('says why a test failed once, not again in the status line', async () => {
+    state = stateWith(tunnel('custom', 'custom'))
+    testAnswer = () =>
+      Promise.resolve({
+        ok: false,
+        reason: unresolved,
+        state: stateWith(tunnel('custom', 'custom', { status: 'failed', error: unresolved, errorCode: 'vpn-name-unresolved' })),
+      })
+    render(<VpnCard hueIndex={0} />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Test' }))
+    await screen.findByTestId('vpn-verdict')
+    expect(screen.getAllByText(/^The server's name was not found\./)).toHaveLength(1)
+  })
 })
 
 describe('the VPN chooser', () => {
