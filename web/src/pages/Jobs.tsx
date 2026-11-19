@@ -360,6 +360,7 @@ function JobCard({
                 {job.nextRun && !job.disabled && (
                   <span>{t('jobs.fact.next', { when: dayTime(job.nextRun, locale, (p) => t('list.when', p)) })}</span>
                 )}
+                {job.minAgeDays ? <span>{t('jobs.fact.minAge', { days: job.minAgeDays })}</span> : null}
               </span>
               {status === 'failed' && <FailedBecause run={job.recent[0]} />}
             </span>

@@ -2136,6 +2136,15 @@ const tr: Translations = {
   'fortress.action.backupImport': 'Bir yedeği geri yüklemek',
   'fortress.action.uiOpen': 'Sayfalarını açmak',
   'fortress.openNeedsPassword': 'Önce Ayarlar, Güvenlik altında bir parola belirle, sonra diğer uygulamalar buradan açılır.',
+  'edit.minAge': 'Yalnızca şundan eskiyse aktar',
+  'edit.minAgeHint': 'Bir dosya ancak son değişikliğinden bu yana bu kadar zaman geçince karşıya geçer. O zamana kadar yerinde kalır, böylece yeni fotoğraflar bir süre telefonda durur.',
+  'edit.minAge.off': 'Kapalı',
+  'edit.minAge.days': '{days} gün',
+  'edit.minAge.custom': 'Özel',
+  'edit.minAgeUnit': 'gün',
+  'jobs.fact.minAge': 'yalnızca {days} günden eski dosyalar',
+  'preview.young': 'Henüz yeterince eski değil: {count}',
+  'new.change.minAge': '{option}, tek yönlü bir işte dosyayı yeterince eskiyene kadar kaynakta tutar, böylece yeni fotoğraflar bir süre telefonda durur.',
 }
 
 export default tr

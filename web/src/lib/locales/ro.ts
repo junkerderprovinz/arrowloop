@@ -2136,6 +2136,15 @@ const ro: Translations = {
   'fortress.action.backupImport': 'Să restaureze o copie de rezervă',
   'fortress.action.uiOpen': 'Să-i deschidă paginile',
   'fortress.openNeedsPassword': 'Setează mai întâi o parolă în Setări, Securitate, apoi celelalte aplicații se deschid de aici.',
+  'edit.minAge': 'Transferă doar când e mai vechi de',
+  'edit.minAgeHint': 'Un fișier trece dincolo doar când are această vechime, socotită de la ultima lui modificare. Până atunci rămâne unde este, așa că pozele recente mai stau o vreme pe telefon.',
+  'edit.minAge.off': 'Oprit',
+  'edit.minAge.days': '{days} zile',
+  'edit.minAge.custom': 'Personalizat',
+  'edit.minAgeUnit': 'zile',
+  'jobs.fact.minAge': 'doar fișiere mai vechi de {days} zile',
+  'preview.young': 'Încă prea noi: {count}',
+  'new.change.minAge': '{option} ține un fișier pe sursa unei sarcini într-un singur sens până devine destul de vechi, așa că pozele recente mai stau o vreme pe telefon.',
 }
 
 export default ro

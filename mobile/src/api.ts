@@ -47,6 +47,8 @@ export interface Job {
   away?: string;
   /** Its last runs, newest first. */
   recent: Run[];
+  /** How many days old a file has to be before a one-way job sends it. */
+  minAgeDays?: number;
 }
 
 /** The automatic backups as the engine lists them (internal/daemon/backups.go). */
@@ -169,6 +171,8 @@ export interface JobConfig {
   /** "sync", "mirror" or "move"; a two-way job only takes "sync". */
   mode?: string;
   quietPeriod?: string;
+  /** Keeps a file on the source of a one-way job until it is this many days old. */
+  minAgeDays?: number;
   modWindow?: string;
   transfers?: number;
   emptyDirs?: boolean;
@@ -272,6 +276,8 @@ export interface Plan {
   skipped?: Action[];
   unchanged: number;
   agreed: number;
+  /** Files a one-way job keeps until they are old enough. An older engine does not say. */
+  young?: number;
 }
 
 /** Whether a job can work at all; the engine's sentence travels beside the code. */

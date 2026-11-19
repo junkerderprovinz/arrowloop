@@ -44,6 +44,7 @@ const MIN_SEGMENT = 200
 export const HUE_OFFSET = {
   direction: 1,
   mode: 2,
+  minAge: 3,
 } as const
 
 /** The gaps between segments, in pixels: 0.2rem in the well, 0.25rem between chips. */

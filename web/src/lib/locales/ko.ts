@@ -2136,6 +2136,15 @@ const ko: Translations = {
   'fortress.action.backupImport': '백업 복원하기',
   'fortress.action.uiOpen': '페이지 열기',
   'fortress.openNeedsPassword': '먼저 설정, 보안에서 비밀번호를 정하면 다른 앱을 여기서 열 수 있습니다.',
+  'edit.minAge': '이보다 오래된 파일만 전송',
+  'edit.minAgeHint': '파일은 마지막으로 바뀐 때부터 이만큼 지나야 건너갑니다. 그때까지는 그 자리에 남으므로 최근 사진이 한동안 휴대전화에 남습니다.',
+  'edit.minAge.off': '꺼짐',
+  'edit.minAge.days': '{days}일',
+  'edit.minAge.custom': '직접 입력',
+  'edit.minAgeUnit': '일',
+  'jobs.fact.minAge': '{days}일보다 오래된 파일만',
+  'preview.young': '아직 충분히 오래되지 않음: {count}',
+  'new.change.minAge': '{option}을 켜면 한 방향 작업에서 파일이 충분히 오래될 때까지 원본 쪽에 남으므로 최근 사진이 한동안 휴대전화에 남습니다.',
 }
 
 export default ko

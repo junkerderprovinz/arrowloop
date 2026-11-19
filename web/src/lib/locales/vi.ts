@@ -2136,6 +2136,15 @@ const vi: Translations = {
   'fortress.action.backupImport': 'Khôi phục một bản sao lưu',
   'fortress.action.uiOpen': 'Mở các trang của nó',
   'fortress.openNeedsPassword': 'Hãy đặt mật khẩu trước trong Cài đặt, Bảo mật, rồi các ứng dụng khác sẽ mở được từ đây.',
+  'edit.minAge': 'Chỉ chuyển khi cũ hơn',
+  'edit.minAgeHint': 'Tệp chỉ sang bên kia khi đã cũ chừng này, tính từ lần thay đổi cuối. Trước đó tệp vẫn ở chỗ cũ, nên ảnh mới vẫn nằm trên điện thoại thêm một thời gian.',
+  'edit.minAge.off': 'Tắt',
+  'edit.minAge.days': '{days} ngày',
+  'edit.minAge.custom': 'Tùy chỉnh',
+  'edit.minAgeUnit': 'ngày',
+  'jobs.fact.minAge': 'chỉ các tệp cũ hơn {days} ngày',
+  'preview.young': 'Chưa đủ cũ: {count}',
+  'new.change.minAge': '{option} giữ tệp ở nguồn của công việc một chiều cho đến khi đủ cũ, nên ảnh mới vẫn nằm trên điện thoại thêm một thời gian.',
 }
 
 export default vi

@@ -59,6 +59,14 @@ import {
   type ScheduleState,
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
+import { capitalized } from "../../../web/src/lib/capitalized";
+import {
+  MAX_MIN_AGE,
+  MIN_AGE_PRESETS,
+  minAgeChoice,
+  minAgeDays,
+  type MinAgeChoice,
+} from "../../../web/src/lib/minAge.data";
 
 // Creates and edits a job. It edits the configuration file's own fields and
 // writes the whole file back through /api/config, as the desktop editor does.
@@ -376,8 +384,14 @@ export function JobEdit() {
           value={way}
           upper={upper}
           lower={lower}
+          // A two-way job neither mirrors, moves nor waits for a file to age.
           onChange={(direction) =>
-            set({ direction, mode: direction === "both" ? "sync" : (shown("direction").mode ?? "sync") }, true)
+            set(
+              direction === "both"
+                ? { direction, mode: "sync", minAgeDays: undefined }
+                : { direction, mode: shown("direction").mode ?? "sync" },
+              true,
+            )
           }
         />
       </FromGlobal>
@@ -432,21 +446,24 @@ export function JobEdit() {
             onChange={(newerWins) => set({ newerWins }, true)}
           />
         ) : (
-          <FromGlobal {...global("direction")}>
-            {/* Each mode explains itself in its segment. */}
-            <ChoiceRow
-              label={t("mode.label")}
-              bar
-              hue={1}
-              value={shown("direction").mode ?? "sync"}
-              onChange={(mode) => set({ mode }, true)}
-              options={[
-                { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
-                { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
-                { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
-              ]}
-            />
-          </FromGlobal>
+          <>
+            <FromGlobal {...global("direction")}>
+              {/* Each mode explains itself in its segment. */}
+              <ChoiceRow
+                label={t("mode.label")}
+                bar
+                hue={1}
+                value={shown("direction").mode ?? "sync"}
+                onChange={(mode) => set({ mode }, true)}
+                options={[
+                  { value: "sync", label: t("mode.sync"), hint: t("mode.syncHint") },
+                  { value: "mirror", label: t("mode.mirror"), hint: t("mode.mirrorHint") },
+                  { value: "move", label: t("mode.move"), hint: t("mode.moveHint") },
+                ]}
+              />
+            </FromGlobal>
+            <MinAgeField value={job.minAgeDays} onChange={(days, now) => set({ minAgeDays: days }, now)} />
+          </>
         )}
         <FromGlobal {...global("emptyDirs")}>
           <Toggle
@@ -777,6 +794,56 @@ function QuietField({
       placeholder="30s"
       error={error}
     />
+  );
+}
+
+/**
+ * How old a file has to be before a one-way job sends it. Six choices do not
+ * fit beside the name on a phone, so the row falls back to its dropdown, and a
+ * typed age gets a field of its own under it.
+ */
+function MinAgeField({
+  value,
+  onChange,
+}: {
+  value?: number;
+  /** `now` for a choice, as every choice on this screen writes at once. A typed number waits. */
+  onChange: (days: number | undefined, now: boolean) => void;
+}) {
+  const { t, lang } = useT();
+  const [custom, setCustom] = useState(() => minAgeChoice(value, false) === "custom");
+  const choice = minAgeChoice(value, custom);
+  return (
+    <View style={styles.stack}>
+      <ChoiceRow<MinAgeChoice>
+        label={t("edit.minAge")}
+        hint={t("edit.minAgeHint")}
+        hue={2}
+        value={choice}
+        onChange={(next) => {
+          setCustom(next === "custom");
+          onChange(minAgeDays(next, value ?? 0), true);
+        }}
+        options={[
+          { value: "off", label: t("edit.minAge.off") },
+          ...MIN_AGE_PRESETS.map((days) => ({
+            value: String(days) as MinAgeChoice,
+            label: t("edit.minAge.days", { days }),
+          })),
+          { value: "custom", label: t("edit.minAge.custom") },
+        ]}
+      />
+      {choice === "custom" ? (
+        <NumberField
+          label={capitalized(t("edit.minAgeUnit"), lang)}
+          value={String(value ?? "")}
+          onChange={(typed) => {
+            const days = Math.min(MAX_MIN_AGE, Number(typed.replace(/[^\d]/g, "")));
+            if (days > 0) onChange(days, false);
+          }}
+        />
+      ) : null}
+    </View>
   );
 }
 

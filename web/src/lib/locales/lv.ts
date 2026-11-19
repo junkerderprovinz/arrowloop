@@ -2136,6 +2136,15 @@ const lv: Translations = {
   'fortress.action.backupImport': 'Atjaunot rezerves kopiju',
   'fortress.action.uiOpen': 'Atvērt tās lapas',
   'fortress.openNeedsPassword': 'Vispirms iestati paroli sadaļā Iestatījumi, Drošība, tad citas lietotnes atvērsies no šejienes.',
+  'edit.minAge': 'Pārsūtīt tikai, ja vecāks par',
+  'edit.minAgeHint': 'Fails pāriet uz otru pusi tikai tad, kad tas ir tik vecs, skaitot no tā pēdējām izmaiņām. Līdz tam tas paliek savā vietā, tāpēc jaunās fotogrāfijas vēl kādu laiku paliek tālrunī.',
+  'edit.minAge.off': 'Izslēgts',
+  'edit.minAge.days': '{days} d.',
+  'edit.minAge.custom': 'Sava vērtība',
+  'edit.minAgeUnit': 'd.',
+  'jobs.fact.minAge': 'tikai faili, kas vecāki par {days} d.',
+  'preview.young': 'Vēl nav pietiekami veci: {count}',
+  'new.change.minAge': '{option} vienvirziena uzdevumā patur failu avotā, līdz tas ir pietiekami vecs, tāpēc jaunās fotogrāfijas vēl kādu laiku paliek tālrunī.',
 }
 
 export default lv

@@ -152,6 +152,33 @@ func enforce(ctx context.Context, p *Plan, dir Direction, mode Mode) {
 	p.Actions = kept
 }
 
+// holdYoung drops every copy off the source of a file younger than MinAge,
+// and counts it. The record is left alone, so the file is new or changed
+// again on the next run and goes once it is old enough. In ModeMove that
+// includes a file both sides already hold, which would otherwise be recorded
+// as agreed and never taken off.
+func holdYoung(p *Plan, opt Options) {
+	if opt.Direction == Both || opt.MinAge <= 0 {
+		return
+	}
+	src := opt.Direction.source()
+	cutoff := opt.now().Add(-opt.MinAge)
+	kept := p.Actions[:0]
+	for _, a := range p.Actions {
+		have := a.LeftNow
+		if src == Right {
+			have = a.RightNow
+		}
+		sends := (a.Kind == Copy || a.Kind == Relocate) && a.Src == src
+		if sends && have != nil && have.Mod.After(cutoff) {
+			p.Young++
+			continue
+		}
+		kept = append(kept, a)
+	}
+	p.Actions = kept
+}
+
 // takeOff rebuilds a pair both sides already hold as a Relocate from the
 // source. Only checksums that match qualify it: size and time alone could pair
 // two different files, and the copy before the removal would then overwrite

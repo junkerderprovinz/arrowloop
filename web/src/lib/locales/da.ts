@@ -2136,6 +2136,15 @@ const da: Translations = {
   'fortress.action.backupImport': 'Gendanne en sikkerhedskopi',
   'fortress.action.uiOpen': 'Åbne dens sider',
   'fortress.openNeedsPassword': 'Angiv først en adgangskode under Indstillinger, Sikkerhed, så åbner de andre apps herfra.',
+  'edit.minAge': 'Overfør først, når ældre end',
+  'edit.minAgeHint': 'En fil går først over, når den er så gammel, regnet fra dens seneste ændring. Indtil da bliver den, hvor den er, så nye billeder bliver på telefonen et stykke tid.',
+  'edit.minAge.off': 'Fra',
+  'edit.minAge.days': '{days} dage',
+  'edit.minAge.custom': 'Egen værdi',
+  'edit.minAgeUnit': 'dage',
+  'jobs.fact.minAge': 'kun filer ældre end {days} dage',
+  'preview.young': 'Endnu ikke gamle nok: {count}',
+  'new.change.minAge': '{option} lader en fil blive på kilden i et ensrettet job, til den er gammel nok, så nye billeder bliver på telefonen et stykke tid.',
 }
 
 export default da

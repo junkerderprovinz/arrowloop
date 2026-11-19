@@ -2136,6 +2136,15 @@ const sl: Translations = {
   'fortress.action.backupImport': 'Obnoviti varnostno kopijo',
   'fortress.action.uiOpen': 'Odpreti njegove strani',
   'fortress.openNeedsPassword': 'Najprej nastavi geslo v Nastavitvah, Varnost, nato se bodo druge aplikacije odpirale od tu.',
+  'edit.minAge': 'Prenesi šele, ko je starejše od',
+  'edit.minAgeHint': 'Datoteka gre na drugo stran šele, ko je tako stara, šteto od njene zadnje spremembe. Do takrat ostane, kjer je, zato nove fotografije še nekaj časa ostanejo na telefonu.',
+  'edit.minAge.off': 'Izklopljeno',
+  'edit.minAge.days': '{days} dni',
+  'edit.minAge.custom': 'Lastna vrednost',
+  'edit.minAgeUnit': 'dni',
+  'jobs.fact.minAge': 'samo datoteke, starejše od {days} dni',
+  'preview.young': 'Še niso dovolj stare: {count}',
+  'new.change.minAge': '{option} pusti datoteko na viru enosmernega opravila, dokler ni dovolj stara, zato nove fotografije še nekaj časa ostanejo na telefonu.',
 }
 
 export default sl

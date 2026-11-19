@@ -6,6 +6,7 @@ import { Field, FieldRow, Lines, Text } from '../components/Field'
 import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
 import { SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
+import { MinAge } from '../components/MinAge'
 import { QuietPeriod } from '../components/QuietPeriod'
 import { ExcludeSetPicker } from '../components/ExcludeSets'
 import { placeOffers, type Known } from '../components/FolderPicker'
@@ -342,9 +343,11 @@ export function JobForm({
         direction={direction}
         onLeft={(v) => patch({ left: v })}
         onRight={(v) => patch({ right: v })}
-        // Mirror and move need a source side. A two-way job says sync
-        // rather than nothing, or it would take a default mirror.
-        onDirection={(v) => patch({ direction: v, mode: v === 'both' ? 'sync' : (job.mode ?? 'sync') })}
+        // Mirror, move and a minimum age need a source side. A two-way job
+        // says sync rather than nothing, or it would take a default mirror.
+        onDirection={(v) =>
+          patch(v === 'both' ? { direction: v, mode: 'sync', minAgeDays: undefined } : { direction: v, mode: job.mode ?? 'sync' })
+        }
         known={known}
         remotes={remotes}
         {...held}
@@ -385,6 +388,15 @@ export function JobForm({
               />
             </span>
           </SettingRow>
+        )}
+        {/* A file kept back on one side of a two-way job would look deleted
+            there, so only a job with a source waits for a file to age. */}
+        {direction !== 'both' && (
+          <div data-new="min-age">
+            <SettingRow label={t('edit.minAge')} hint={t('edit.minAgeHint')}>
+              <MinAge value={job.minAgeDays} onChange={(days) => patch({ minAgeDays: days })} />
+            </SettingRow>
+          </div>
         )}
         {direction === 'both' && (
           <div data-new="newer-wins">

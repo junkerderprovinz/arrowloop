@@ -2136,6 +2136,15 @@ const ms: Translations = {
   'fortress.action.backupImport': 'Pulihkan sandaran',
   'fortress.action.uiOpen': 'Buka halamannya',
   'fortress.openNeedsPassword': 'Tetapkan kata laluan dahulu di Tetapan, Keselamatan, kemudian apl lain dibuka dari sini.',
+  'edit.minAge': 'Hantar hanya jika lebih lama daripada',
+  'edit.minAgeHint': 'Fail hanya berpindah ke seberang apabila sudah berumur sebegini, dikira dari perubahan terakhirnya. Sehingga itu fail kekal di tempatnya, jadi foto terbaharu kekal di telefon buat seketika.',
+  'edit.minAge.off': 'Mati',
+  'edit.minAge.days': '{days} hari',
+  'edit.minAge.custom': 'Tersuai',
+  'edit.minAgeUnit': 'hari',
+  'jobs.fact.minAge': 'hanya fail lebih lama daripada {days} hari',
+  'preview.young': 'Belum cukup lama: {count}',
+  'new.change.minAge': '{option} menyimpan fail di sumber tugas sehala sehingga ia cukup lama, jadi foto terbaharu kekal di telefon buat seketika.',
 }
 
 export default ms

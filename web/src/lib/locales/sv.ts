@@ -2136,6 +2136,15 @@ const sv: Translations = {
   'fortress.action.backupImport': 'Återställa en säkerhetskopia',
   'fortress.action.uiOpen': 'Öppna dess sidor',
   'fortress.openNeedsPassword': 'Ange först ett lösenord under Inställningar, Säkerhet, så öppnas de andra apparna härifrån.',
+  'edit.minAge': 'Överför först när äldre än',
+  'edit.minAgeHint': 'En fil går över först när den är så gammal, räknat från dess senaste ändring. Fram till dess stannar den där den är, så nya bilder blir kvar i telefonen en tid.',
+  'edit.minAge.off': 'Av',
+  'edit.minAge.days': '{days} dagar',
+  'edit.minAge.custom': 'Eget värde',
+  'edit.minAgeUnit': 'dagar',
+  'jobs.fact.minAge': 'bara filer äldre än {days} dagar',
+  'preview.young': 'Inte gamla nog än: {count}',
+  'new.change.minAge': '{option} låter en fil stanna på källan i ett enkelriktat jobb tills den är gammal nog, så nya bilder blir kvar i telefonen en tid.',
 }
 
 export default sv

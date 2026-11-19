@@ -408,3 +408,45 @@ describe('Run now on a job page', () => {
     await waitFor(() => expect(saved).toHaveBeenCalled())
   })
 })
+
+describe('the minimum age in the job editor', () => {
+  async function editor(own: Partial<RawJob>) {
+    config.mockImplementation(() => Promise.resolve({ jobs: [{ ...pair()[0]!, ...own }, pair()[1]!] }))
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    return screen.findByRole('dialog')
+  }
+
+  async function written() {
+    fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveConfig).toHaveBeenCalled())
+    return saveConfig.mock.calls[0][0].find((j) => j.name === 'photos')
+  }
+
+  it('writes the days picked for a one-way job', async () => {
+    const dialog = await editor({ direction: 'leftToRight', mode: 'move' })
+    const ages = within(dialog).getByRole('tablist', { name: en['edit.minAge'] })
+    fireEvent.click(within(ages).getByRole('tab', { name: en['edit.minAge.days'].replace('{days}', '30') }))
+    expect((await written())?.minAgeDays).toBe(30)
+  })
+
+  it('takes any number of days as a custom age', async () => {
+    const dialog = await editor({ direction: 'leftToRight', minAgeDays: 45 })
+    const ages = within(dialog).getByRole('tablist', { name: en['edit.minAge'] })
+    expect(within(ages).getByRole('tab', { name: en['edit.minAge.custom'] }).getAttribute('aria-selected')).toBe('true')
+    fireEvent.change(within(dialog).getByRole('spinbutton', { name: en['edit.minAgeUnit'] }), { target: { value: '90' } })
+    expect((await written())?.minAgeDays).toBe(90)
+  })
+
+  it('is not offered to a job that runs both ways', async () => {
+    const dialog = await editor({ direction: 'both' })
+    expect(within(dialog).queryByRole('tablist', { name: en['edit.minAge'] })).toBeNull()
+  })
+
+  it('goes when the job is turned to run both ways', async () => {
+    const dialog = await editor({ direction: 'rightToLeft', minAgeDays: 30 })
+    fireEvent.click(within(dialog).getByRole('button', { name: new RegExp(`^${en['direction.label']}:`) }))
+    expect(within(dialog).queryByRole('tablist', { name: en['edit.minAge'] })).toBeNull()
+    expect((await written())?.minAgeDays).toBeUndefined()
+  })
+})

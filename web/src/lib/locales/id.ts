@@ -2136,6 +2136,15 @@ const id: Translations = {
   'fortress.action.backupImport': 'Memulihkan cadangan',
   'fortress.action.uiOpen': 'Membuka halamannya',
   'fortress.openNeedsPassword': 'Atur dulu kata sandi di Pengaturan, Keamanan, lalu aplikasi lain bisa dibuka dari sini.',
+  'edit.minAge': 'Kirim hanya jika lebih lama dari',
+  'edit.minAgeHint': 'Sebuah file baru pindah ke seberang setelah berumur sepanjang ini, dihitung dari perubahan terakhirnya. Sampai saat itu file tetap di tempatnya, jadi foto terbaru tetap di ponsel untuk sementara.',
+  'edit.minAge.off': 'Mati',
+  'edit.minAge.days': '{days} hari',
+  'edit.minAge.custom': 'Kustom',
+  'edit.minAgeUnit': 'hari',
+  'jobs.fact.minAge': 'hanya file yang lebih lama dari {days} hari',
+  'preview.young': 'Belum cukup lama: {count}',
+  'new.change.minAge': '{option} menahan file di sumber tugas satu arah sampai cukup lama, jadi foto terbaru tetap di ponsel untuk sementara.',
 }
 
 export default id

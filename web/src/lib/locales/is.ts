@@ -2136,6 +2136,15 @@ const is: Translations = {
   'fortress.action.backupImport': 'Endurheimta afrit',
   'fortress.action.uiOpen': 'Opna síðurnar þess',
   'fortress.openNeedsPassword': 'Settu fyrst lykilorð undir Stillingar, Öryggi, þá opnast hin forritin héðan.',
+  'edit.minAge': 'Flytja aðeins þegar eldra en',
+  'edit.minAgeHint': 'Skrá fer aðeins yfir þegar hún hefur náð þessum aldri, talið frá síðustu breytingu hennar. Þangað til er hún kyrr, svo nýjar myndir verða áfram í símanum um stund.',
+  'edit.minAge.off': 'Slökkt',
+  'edit.minAge.days': '{days} dagar',
+  'edit.minAge.custom': 'Eigið gildi',
+  'edit.minAgeUnit': 'dagar',
+  'jobs.fact.minAge': 'aðeins skrár eldri en {days} daga',
+  'preview.young': 'Ekki nógu gamlar enn: {count}',
+  'new.change.minAge': '{option} heldur skrá á upprunanum í einstefnuverki þar til hún er nógu gömul, svo nýjar myndir verða áfram í símanum um stund.',
 }
 
 export default is

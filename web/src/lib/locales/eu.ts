@@ -2136,6 +2136,15 @@ const eu: Translations = {
   'fortress.action.backupImport': 'Babeskopia bat leheneratzea',
   'fortress.action.uiOpen': 'Bere orriak irekitzea',
   'fortress.openNeedsPassword': 'Ezarri lehenik pasahitz bat Ezarpenak, Segurtasuna atalean, eta gero beste aplikazioak hemendik irekiko dira.',
+  'edit.minAge': 'Transferitu soilik zaharragoa denean',
+  'edit.minAgeHint': 'Fitxategi bat beste aldera pasatzen da adin hori duenean bakarrik, azken aldaketatik zenbatuta. Ordura arte dagoen lekuan geratzen da, eta argazki berriak telefonoan geratzen dira denbora batez.',
+  'edit.minAge.off': 'Desaktibatuta',
+  'edit.minAge.days': '{days} egun',
+  'edit.minAge.custom': 'Pertsonalizatua',
+  'edit.minAgeUnit': 'egun',
+  'jobs.fact.minAge': '{days} egun baino zaharragoak diren fitxategiak soilik',
+  'preview.young': 'Oraindik ez dira nahikoa zaharrak: {count}',
+  'new.change.minAge': '{option} aukerak norabide bakarreko lan baten iturburuan uzten du fitxategia nahikoa zaharra izan arte, eta argazki berriak telefonoan geratzen dira denbora batez.',
 }
 
 export default eu
