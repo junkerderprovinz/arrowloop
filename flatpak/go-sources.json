@@ -1905,17 +1905,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.23.0.mod",
-        "sha256": "f94f313fd50b24ef73297a46677cf53e63c90a83a24349686c081329f13ad114",
+        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.25.0.mod",
+        "sha256": "25eb087bf1f6c94d4d1a9012108571e786690d99d20f997af340c36b3e6929d1",
         "dest": "gomod/github.com/nicholas-fedor/shoutrrr/@v",
-        "dest-filename": "v0.23.0.mod"
+        "dest-filename": "v0.25.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.23.0.zip",
-        "sha256": "b45c29ff77630bb4b8f5acf46045a7bc5404a049fb53297fe7d74e6a68a2f2ed",
+        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.25.0.zip",
+        "sha256": "18737eb4847c88509efefac9fe15015fdb01d8d0c9fe8ea304c9c62d0ea6bd4f",
         "dest": "gomod/github.com/nicholas-fedor/shoutrrr/@v",
-        "dest-filename": "v0.23.0.zip"
+        "dest-filename": "v0.25.0.zip"
     },
     {
         "type": "file",
@@ -2367,17 +2367,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/spf13/pflag/@v/v1.0.10.mod",
+        "url": "https://proxy.golang.org/github.com/spf13/pflag/@v/v1.1.0.mod",
         "sha256": "16c6dfc0eb58eb3c9113ce197d460c6725c647e4688ac26d31c8ed69f1ebbc68",
         "dest": "gomod/github.com/spf13/pflag/@v",
-        "dest-filename": "v1.0.10.mod"
+        "dest-filename": "v1.1.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/spf13/pflag/@v/v1.0.10.zip",
-        "sha256": "a246b8c9d3daa87d6c634cdfee1bdf7fa53d5817eeef4fa0c6da43edd12de4ca",
+        "url": "https://proxy.golang.org/github.com/spf13/pflag/@v/v1.1.0.zip",
+        "sha256": "041f4b3813dc90681ef0d976b607a6f40a360acdd00e5dfe4111fd85f82bae46",
         "dest": "gomod/github.com/spf13/pflag/@v",
-        "dest-filename": "v1.0.10.zip"
+        "dest-filename": "v1.1.0.zip"
     },
     {
         "type": "file",
@@ -2759,17 +2759,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/golang.org/x/oauth2/@v/v0.37.0.mod",
+        "url": "https://proxy.golang.org/golang.org/x/oauth2/@v/v0.38.0.mod",
         "sha256": "90facdcd7c6602d3a28dbaa32354a0398d22bbaea3b48ca94aa2235fb427358b",
         "dest": "gomod/golang.org/x/oauth2/@v",
-        "dest-filename": "v0.37.0.mod"
+        "dest-filename": "v0.38.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/golang.org/x/oauth2/@v/v0.37.0.zip",
-        "sha256": "82b0472ff31d57867bfb95e28c2906acd54764949a215b6a01bda40f4ae4c3bd",
+        "url": "https://proxy.golang.org/golang.org/x/oauth2/@v/v0.38.0.zip",
+        "sha256": "d5a749d3b9bc1ccaaa21642643771f3164f2f56b0fa024b4fa2fce1ddfa28c90",
         "dest": "gomod/golang.org/x/oauth2/@v",
-        "dest-filename": "v0.37.0.zip"
+        "dest-filename": "v0.38.0.zip"
     },
     {
         "type": "file",
@@ -3011,17 +3011,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.81.2.mod",
-        "sha256": "c9dff2a21cbfc0c4dc15d949ca884fafced92144810dcdb7cf96e79607db4ee3",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.0.mod",
+        "sha256": "e588ccfeba51fa27730d74c8d4f61bbaac2461c3eee3da36c9ae40137c9ab444",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.81.2.mod"
+        "dest-filename": "v1.82.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.81.2.zip",
-        "sha256": "fdacc281f4896de4738f70b2e9bb8369d0ff4838a3ed7be3481a87c0a23cce13",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.0.zip",
+        "sha256": "fcc5fd1eb63044b7fea37ee8599dfc71a72401b1ff1827e3cf38aba604c3e9a9",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.81.2.zip"
+        "dest-filename": "v1.82.0.zip"
     },
     {
         "type": "file",
@@ -3039,17 +3039,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/memory/@v/v1.12.1.mod",
+        "url": "https://proxy.golang.org/modernc.org/memory/@v/v1.13.0.mod",
         "sha256": "e9890d3b9794d40a3703aa9809edc4e131cbb55a2831b602314076e91c5ace97",
         "dest": "gomod/modernc.org/memory/@v",
-        "dest-filename": "v1.12.1.mod"
+        "dest-filename": "v1.13.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/memory/@v/v1.12.1.zip",
-        "sha256": "e25588f100d976fb75ff91edb8b4ea6ed837d67ff5aa5d42e6a8893fb30790ac",
+        "url": "https://proxy.golang.org/modernc.org/memory/@v/v1.13.0.zip",
+        "sha256": "2d14123b3034a96d53f59ad420fa1cfd0009e65a6e8e3e017f28fe2d5a6bdead",
         "dest": "gomod/modernc.org/memory/@v",
-        "dest-filename": "v1.12.1.zip"
+        "dest-filename": "v1.13.0.zip"
     },
     {
         "type": "file",
