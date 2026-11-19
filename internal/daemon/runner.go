@@ -183,7 +183,11 @@ func (r *Runner) preview(ctx context.Context, j job.Job) (*plan.Plan, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctx = engine.Configure(ctx, opt)
+	ctx, done, err := r.ThroughVPN(engine.Configure(ctx, opt), j)
+	if err != nil {
+		return nil, err
+	}
+	defer done()
 
 	ends, db, err := r.open(ctx, j)
 	if err != nil {

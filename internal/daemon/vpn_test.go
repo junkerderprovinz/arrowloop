@@ -269,3 +269,14 @@ func sealedLogin(t *testing.T, config string) string {
 	}
 	return sealed
 }
+
+func TestAPreviewOfAJobThroughTheVPNGoesThroughItsTunnel(t *testing.T) {
+	quickConnect(t)
+	s := newVPNRunner(t)
+	if _, err := s.r.Preview(context.Background(), "through"); err != nil {
+		t.Fatalf("the preview did not reach what only the tunnel reaches: %v", err)
+	}
+	if st := s.tunnel(t); st.Status != vpnconn.Down {
+		t.Errorf("after the preview the VPN is %s", st.Status)
+	}
+}
