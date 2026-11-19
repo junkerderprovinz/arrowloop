@@ -13,7 +13,7 @@ import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT, type TranslationKey } from '../../lib/i18n'
-import { SubCard } from '../../lib/glimstone/SubCard'
+import { useNarrow } from '../../lib/narrow'
 import {
   CUSTOM,
   tunnelName,
@@ -24,7 +24,6 @@ import {
   type VpnStatus,
   type VpnTunnelState,
 } from '../../lib/vpn'
-import { SettingsRow } from './rows'
 
 type T = ReturnType<typeof useT>['t']
 
@@ -192,7 +191,10 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
   )
 }
 
-/** One VPN: its logo and where it stands, the jobs that name it, and what can be done with it. */
+/**
+ * One VPN as a dense row: its logo, name and status on one line, why it failed
+ * and the jobs that name it in small text, and its three actions in one row.
+ */
 function TunnelCard({
   tunnel,
   name,
@@ -212,27 +214,46 @@ function TunnelCard({
   // Kept here rather than in the button, so a failed test hides the status
   // line in the same render that shows why the test failed.
   const [verdict, setVerdict] = useState<Verdict | null>(null)
+  // On a phone the three buttons show their glyphs alone, so they keep to one row.
+  const narrow = useNarrow()
   const status = STATUS[tunnel.status]
   return (
-    <SubCard title={name}>
-      <div className="flex items-center justify-between gap-3">
-        <span className="flex h-9 w-11 shrink-0">
-          <VpnMark id={tunnel.provider} />
+    <section aria-label={name} className="glim-well flex flex-col gap-2 rounded-card px-4 py-3">
+      <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1">
+        <span className="flex min-w-0 flex-[1_1_14rem] items-center gap-3">
+          <span className="flex h-6 w-8 shrink-0">
+            <VpnMark id={tunnel.provider} />
+          </span>
+          <span className="min-w-0 truncate text-body text-carbon-text">{name}</span>
         </span>
         <Badge tone={status.tone}>
           {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
         </Badge>
       </div>
-      {tunnel.status === 'failed' && verdict?.ok !== false && <FailedBecause {...failureOf(t, tunnel, name)} role="status" />}
-      <SettingsRow label={t('vpn.jobs')} hint={t('vpn.jobsHint')}>
-        <span className="text-subline text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
-      </SettingsRow>
-      <TestButton tunnel={tunnel.id} name={name} verdict={verdict} onVerdict={setVerdict} onState={onState} />
-      <div className="flex flex-wrap justify-end gap-2">
-        <Button label={t('edit.remove')} labelKey="edit.remove" onClick={onRemove} />
-        <Button label={t('vpn.edit')} labelKey="vpn.edit" onClick={onEdit} />
+      {tunnel.status === 'failed' && verdict?.ok !== false && (
+        <FailedBecause {...failureOf(t, tunnel, name)} role="status" className="text-meta" />
+      )}
+      {verdict?.said &&
+        (verdict.ok ? (
+          <p className="text-meta text-carbon-textSub">{verdict.said}</p>
+        ) : (
+          <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" className="text-meta" />
+        ))}
+      <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+        <span className="flex min-w-0 flex-[1_1_12rem] items-center gap-1.5 text-meta">
+          <span data-glim-label={t('vpn.jobs')} className="shrink-0 text-carbon-textMuted">
+            {t('vpn.jobs')}
+          </span>
+          <InfoBubble tip={t('vpn.jobsHint')} />
+          <span className="min-w-0 truncate text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
+        </span>
+        <span className="flex flex-wrap justify-end gap-2">
+          <TestButton tunnel={tunnel.id} name={name} compact={narrow} verdict={verdict} onVerdict={setVerdict} onState={onState} />
+          <Button label={t('vpn.edit')} labelKey="vpn.edit" compact={narrow} onClick={onEdit} />
+          <Button label={t('edit.remove')} labelKey="edit.remove" compact={narrow} onClick={onRemove} />
+        </span>
       </div>
-    </SubCard>
+    </section>
   )
 }
 
@@ -475,11 +496,11 @@ function ConfigField({ hint, value, onValue }: { hint: string; value: string; on
 function FailedBecause({
   said,
   detail,
-  className = '',
+  className = 'text-subline',
   ...rest
 }: { said: string; detail?: string } & HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p {...rest} data-tip={detail ? `${said} ${detail}` : undefined} className={`text-subline text-statusFail ${className}`}>
+    <p {...rest} data-tip={detail ? `${said} ${detail}` : undefined} className={`text-statusFail ${className}`}>
       {said}
     </p>
   )
@@ -488,16 +509,18 @@ function FailedBecause({
 /** What the last test of a VPN found. */
 type Verdict = { ok: boolean; said?: string; detail?: string }
 
-/** Brings a VPN up once, as a run would, and says where traffic leaves. */
+/** Brings a VPN up once, as a run would. Its card says where traffic leaves. */
 function TestButton({
   tunnel,
   name,
+  compact,
   verdict,
   onVerdict: setVerdict,
   onState,
 }: {
   tunnel: string
   name: string
+  compact: boolean
   verdict: Verdict | null
   onVerdict: (next: Verdict | null) => void
   onState: (next: VpnState) => void
@@ -525,24 +548,17 @@ function TestButton({
   }
 
   return (
-    <div className="flex flex-col items-end gap-2">
-      <Button
-        label={testing ? t('vpn.testing') : !verdict ? t('vpn.test') : verdict.ok ? t('vpn.testOk') : t('vpn.testFailed')}
-        labelKey="vpn.test"
-        glyph={testing || !verdict ? undefined : verdict.ok ? <IconCheck /> : <IconClose />}
-        tone={testing || !verdict ? 'neutral' : verdict.ok ? 'ok' : 'danger'}
-        className={verdict && !verdict.ok && !testing ? 'glim-shake' : ''}
-        busy={testing}
-        stage={groupStage([t('vpn.test'), t('vpn.testing'), t('vpn.testOk'), t('vpn.testFailed')])}
-        onClick={() => void test()}
-        disabled={testing}
-      />
-      {verdict?.said &&
-        (verdict.ok ? (
-          <p className="self-stretch text-end text-subline text-carbon-textSub">{verdict.said}</p>
-        ) : (
-          <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" className="self-stretch text-end" />
-        ))}
-    </div>
+    <Button
+      label={testing ? t('vpn.testing') : !verdict ? t('vpn.test') : verdict.ok ? t('vpn.testOk') : t('vpn.testFailed')}
+      labelKey="vpn.test"
+      glyph={testing || !verdict ? undefined : verdict.ok ? <IconCheck /> : <IconClose />}
+      tone={testing || !verdict ? 'neutral' : verdict.ok ? 'ok' : 'danger'}
+      className={verdict && !verdict.ok && !testing ? 'glim-shake' : ''}
+      busy={testing}
+      compact={compact}
+      stage={compact ? undefined : groupStage([t('vpn.test'), t('vpn.testing'), t('vpn.testOk'), t('vpn.testFailed')])}
+      onClick={() => void test()}
+      disabled={testing}
+    />
   )
 }

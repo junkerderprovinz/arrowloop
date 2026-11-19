@@ -116,6 +116,14 @@ describe('the VPN card', () => {
     expect(within(row('Mullvad VPN (se-got)')).getByText('music', { selector: 'span' })).toBeTruthy()
   })
 
+  it('names each VPN inside its group rather than in a badge on its edge', async () => {
+    state = stateWith(tunnel('mullvad', 'mullvad', { place: 'at-vie' }))
+    render(<VpnCard hueIndex={0} />)
+    const group = await screen.findByRole('region', { name: 'Mullvad VPN (at-vie)' })
+    expect(group.querySelector('.glim-panel-heading, .glim-badge--heading, [data-glim="SubCard"]')).toBeNull()
+    expect(within(group).getByText('Mullvad VPN (at-vie)')).toBeTruthy()
+  })
+
   it('tests one VPN and tells where its traffic leaves', async () => {
     state = stateWith(tunnel('custom', 'custom'), tunnel('mullvad', 'mullvad'))
     render(<VpnCard hueIndex={0} />)
