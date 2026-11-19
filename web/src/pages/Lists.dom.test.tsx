@@ -216,7 +216,7 @@ describe('the anomalies', () => {
     expect(screen.queryByRole('tab', { name: 'Closed' })).toBeNull()
     expect(document.getElementById('finding-x')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Closed ones in History' }))
-    expect(localStorage.getItem('arrowloop.history.view')).toBe('"findings"')
+    expect(localStorage.getItem('arrowloop.history.lastView')).toBe('"findings"')
     expect(window.location.pathname).toBe('/history')
     localStorage.clear()
   })
@@ -261,7 +261,7 @@ describe('the history', () => {
   })
 
   it('has no buttons over its list, and filters from the heads', async () => {
-    localStorage.setItem('arrowloop.history.view', JSON.stringify('files'))
+    localStorage.setItem('arrowloop.history.lastView', JSON.stringify('files'))
     wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     expect(await screen.findByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Filter by Job' })).toBeTruthy()
@@ -304,8 +304,17 @@ describe('the history', () => {
     localStorage.clear()
   })
 
-  it('opens on the view it was asked for', async () => {
+  it('opens on the runs once after an update, whatever view was left open before', async () => {
     localStorage.setItem('arrowloop.history.view', JSON.stringify('files'))
+    history.mockImplementation(() => Promise.resolve([run('')]))
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
+    expect(await screen.findByRole('button', { name: 'docs' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Runs' }).getAttribute('aria-selected')).toBe('true')
+    localStorage.clear()
+  })
+
+  it('opens on the view it was asked for', async () => {
+    localStorage.setItem('arrowloop.history.lastView', JSON.stringify('files'))
     wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     expect(await screen.findByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
     expect(screen.getByRole('tab', { name: 'Files' }).getAttribute('aria-selected')).toBe('true')
@@ -334,7 +343,7 @@ describe('the history', () => {
   })
 
   it('keeps a run that worked quiet and opens a run in a window', async () => {
-    localStorage.setItem('arrowloop.history.view', JSON.stringify('runs'))
+    localStorage.setItem('arrowloop.history.lastView', JSON.stringify('runs'))
     history.mockImplementation(() => Promise.resolve([run(''), run('boom')]))
     wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     await screen.findAllByRole('button', { name: 'docs' })

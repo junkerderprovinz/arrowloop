@@ -25,7 +25,9 @@ import { FindingCard } from '../components/FindingCard'
 import { useColumns, type ColumnDef, type Columns } from '../lib/columns'
 import { jobNamesInOrder } from '../lib/jobOrder'
 
-const VIEW_KEY = 'arrowloop.history.view'
+// Not arrowloop.history.view, which most browsers had left on the files, so
+// everyone starts on the runs once (#249).
+const VIEW_KEY = 'arrowloop.history.lastView'
 const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs' || v === 'findings'
 
 /** Opens History on one view, for a way there that leads to the runs or to the findings closed lately. */
