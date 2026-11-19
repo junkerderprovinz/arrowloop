@@ -19,6 +19,14 @@ function download(name: string) {
 }
 
 describe('the desktop downloads', () => {
+  it('come in the README order, with the Flatpak last', () => {
+    render(<Apps version="v1.8.0" desktop={false} />)
+    const hrefs = screen.getAllByRole('link').map((a) => a.getAttribute('href'))
+    const at = [DOWNLOADS.windows, DOWNLOADS.macos, DOWNLOADS.linux, DOWNLOADS.appimage, DOWNLOADS.flatpak].map((href) => hrefs.indexOf(href))
+    expect(at).not.toContain(-1)
+    expect(at).toEqual([...at].sort((a, b) => a - b))
+  })
+
   it('name the system once and the ARM build in a segment beside it, as the README does', () => {
     render(<Apps version="v1.8.0" desktop={false} />)
     expect(download('Windows x64')).toEqual({ href: DOWNLOADS.windows, words: 'Windowsx64' })
