@@ -25,7 +25,6 @@ import (
 	// Holds uxtheme.dll across the initialisation of Wails; see the package.
 	_ "github.com/junkerderprovinz/arrowloop/desktop/uxtheme"
 
-	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/config/configfile"
 
 	"github.com/junkerderprovinz/arrowloop/desktop/accent"
@@ -49,6 +48,10 @@ import (
 var appIcon []byte
 
 func main() {
+	if isCommand(os.Args[1:]) {
+		useParentConsole()
+		os.Exit(command(os.Args[1:], os.Stdout, os.Stderr))
+	}
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
@@ -131,10 +134,8 @@ func run() error {
 	inTray := window.Get().Tray && (*startInTray || window.InTray())
 	sh = newShell(ctx, app, window, trayIcons(), inTray, installerLanguage())
 
-	if path := rcloneConfig(configPath); path != "" {
-		if err := config.SetConfigPath(path); err != nil {
-			return err
-		}
+	if err := useRcloneConfig(configPath); err != nil {
+		return err
 	}
 	configfile.Install()
 
