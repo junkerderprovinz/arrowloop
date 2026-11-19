@@ -12,14 +12,11 @@ The full notes for each release are in
 
 ArrowLoop in the tray needs a tenth of the memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.
 
-## ✨ Added
-
-- **The documentation's home page has the download links.** A Download section lists every build, from the Windows installer and the Flatpak to the APK, the Docker image and the Unraid template, and each link fetches the newest release. Thanks to @danpeig for the idea ([#239](https://github.com/junkerderprovinz/arrowloop/issues/239)).
-- **The Docker Hub page has an overview.** It says what ArrowLoop does, how to start the container with `docker run` or Compose and which folders it uses, and every image that goes out brings the page up to date. Thanks to @danpeig for asking ([#242](https://github.com/junkerderprovinz/arrowloop/issues/242)).
-
 ## ⚡ Improved
 
 - **ArrowLoop in the tray uses far less memory.** Sending the window to the tray closes it along with the browser engine that draws it, so a copy waiting for its next schedule holds about 50 MB on Windows instead of close to 500 MB. The icon builds a fresh window in under a second. Thanks to @danpeig for the report ([#241](https://github.com/junkerderprovinz/arrowloop/issues/241)).
+- **The documentation's home page has the download links.** A Download section lists every build, from the Windows installer and the Flatpak to the APK, the Docker image and the Unraid template, and each link fetches the newest release. Thanks to @danpeig for the idea ([#239](https://github.com/junkerderprovinz/arrowloop/issues/239)).
+- **The Docker Hub page has an overview.** It says what ArrowLoop does, how to start the container with `docker run` or Compose and which folders it uses, and every image that goes out brings the page up to date. Thanks to @danpeig for asking ([#242](https://github.com/junkerderprovinz/arrowloop/issues/242)).
 
 ## 🐛 Fixed
 
