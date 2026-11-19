@@ -18,6 +18,7 @@ import { CONFLICT_KINDS, conflictKey, conflictKind, decisionsByJob, newerSide, t
 import { matchesQuery } from '../lib/fold'
 import { sideName } from '../lib/entryLabel'
 import { failureLine } from '../lib/failure'
+import { Unchecked } from './Trash'
 import { useT, type TranslationKey } from '../lib/i18n'
 import { jobNamesInOrder } from '../lib/jobOrder'
 import { useLive } from '../lib/live'
@@ -59,6 +60,7 @@ export function Conflicts({
   job,
   onJob,
   onChanged,
+  onCheck,
 }: {
   /** Null until the first answer arrives. */
   listing: ConflictListing | null
@@ -68,6 +70,8 @@ export function Conflicts({
   onJob: (job: string) => void
   /** Asks for a job's conflicts and trash again after something was decided. */
   onChanged: (job: string) => void
+  /** Reads a job's conflicts with its VPN brought up, for a job left unchecked. */
+  onCheck: (job: string) => void
 }) {
   const { t, lang } = useT()
   const push = useToast()
@@ -219,7 +223,13 @@ export function Conflicts({
 
       {unread.map((u, i) => (
         <Card key={u.job} title={u.job} hueIndex={groups.length + 1 + i}>
-          <p className="text-subline text-statusFail [overflow-wrap:anywhere]">{t('conflicts.unread', { job: u.job, error: failureLine(u.error, u.failure, t, lang) })}</p>
+          {u.unchecked ? (
+            <Unchecked onCheck={() => onCheck(u.job)} />
+          ) : (
+            <p className="text-subline text-statusFail [overflow-wrap:anywhere]">
+              {t('conflicts.unread', { job: u.job, error: failureLine(u.error, u.failure, t, lang) })}
+            </p>
+          )}
         </Card>
       ))}
 

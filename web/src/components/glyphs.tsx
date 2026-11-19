@@ -998,6 +998,18 @@ export function IconWallet(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Integrations, the services ArrowLoop is plugged into. KnightLoader's drawing. */
+export function IconPlug(props: SVGProps<SVGSVGElement>) {
+  return (
+    <G box="2 2 16 16" {...props}>
+      <rect x="6.6" y="2" width="1.8" height="4.6" rx=".9" />
+      <rect x="11.6" y="2" width="1.8" height="4.6" rx=".9" />
+      <path d="M5.3 6.1h9.4a.8.8 0 0 1 .8.8v1.6a4.4 4.4 0 0 1-4.4 4.4H8.9a4.4 4.4 0 0 1-4.4-4.4V6.9a.8.8 0 0 1 .8-.8Z" />
+      <rect x="9.1" y="12.4" width="1.8" height="5.6" rx=".9" />
+    </G>
+  )
+}
+
 /** A tick that draws itself in where a copy or a check has just worked. Drawn for ArrowLoop. */
 export function IconCheckDraw(props: SVGProps<SVGSVGElement>) {
   return (

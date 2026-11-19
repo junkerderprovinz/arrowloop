@@ -6,10 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/url"
 	"strings"
 
 	"github.com/rclone/rclone/fs/config"
+	"github.com/rclone/rclone/lib/proxy"
 	"golang.org/x/crypto/ssh"
+
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // hostKeysKey is rclone's sftp setting that pins the server's host key.
@@ -27,6 +31,24 @@ type HostKey struct {
 
 var errGotHostKey = errors.New("host key read")
 
+// dialServer connects to addr the way rclone's SFTP backend would with ctx:
+// through the run's VPN proxy when it has one.
+func dialServer(ctx context.Context, addr string) (net.Conn, error) {
+	via := vpnconn.ProxyOf(ctx)
+	if via == "" {
+		return new(net.Dialer).DialContext(ctx, "tcp", addr)
+	}
+	u, err := url.Parse(via)
+	if err != nil {
+		return nil, err
+	}
+	d := &net.Dialer{}
+	if deadline, ok := ctx.Deadline(); ok {
+		d.Deadline = deadline
+	}
+	return proxy.HTTPConnectDial("tcp", addr, u, d)
+}
+
 // readHostKey asks an SSH server for its host key and hangs up before signing
 // in. rclone negotiates only the algorithms of the keys pinned, so the one
 // key read here is all a target needs. Certificates are not asked for, since
@@ -38,7 +60,7 @@ func readHostKey(ctx context.Context, host, port string) (HostKey, error) {
 	ctx, cancel := context.WithTimeout(ctx, CheckWait)
 	defer cancel()
 	addr := net.JoinHostPort(host, port)
-	conn, err := new(net.Dialer).DialContext(ctx, "tcp", addr)
+	conn, err := dialServer(ctx, addr)
 	if err != nil {
 		return HostKey{}, fmt.Errorf("read the host key of %s: %w", addr, err)
 	}

@@ -6,5 +6,10 @@
 useDefault = true
 
 [allowlist]
-description = "Public member keys in the group files of the migration test"
+description = "Public member keys in the group files of the migration test, and the example keys from the wg(8) manual page that the VPN tests parse"
 paths = ['''internal/pairing/testdata/before-kit/[a-z]+/group\.json''']
+regexes = [
+  '''yAnz5TF\+lXXJte14tji3zlMNq\+hd2rYUIgJBgB3fBmk=''',
+  '''xTIBA5rboUvnH4htodjb6e697QjLERt1NAB4mZqp8Dg=''',
+  '''4ff3SshWJvhM3cdqXk4ws3pPN7QJgBXZXEx4pMm8kVY=''',
+]

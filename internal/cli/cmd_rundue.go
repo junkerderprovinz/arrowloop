@@ -52,7 +52,13 @@ func (o Options) runDue(ctx context.Context, args []string) error {
 	}
 	defer hist.Close()
 
-	due := daemon.New(cfg, hist, o.progress).RunDue(ctx)
+	runner := daemon.New(cfg, hist, o.progress)
+	closeVPN, err := withVPN(runner, *configPath, o.progress)
+	if err != nil {
+		return err
+	}
+	defer closeVPN()
+	due := runner.RunDue(ctx)
 	failed := 0
 	for _, j := range due.Jobs {
 		switch {

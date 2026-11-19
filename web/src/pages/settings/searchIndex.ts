@@ -179,6 +179,14 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
     },
   ],
   targets: [{ title: 'targets.pageCard', rows: [SIDEBAR_ROW, { key: 'nav.targets' }, { key: 'targets.drives' }] }],
+  integrations: [
+    {
+      title: 'vpn.title',
+      hint: 'vpn.hint',
+      rows: [{ key: 'vpn.jobs', hint: 'vpn.jobsHint' }],
+      body: ['vpn.setUp', 'vpn.customHint', 'vpn.test'],
+    },
+  ],
   security: [
     { title: 'login.password', hint: 'password.hint', rows: [] },
     { title: 'twoFactor.title', hint: 'twoFactor.hint', rows: [] },

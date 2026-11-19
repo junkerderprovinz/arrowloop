@@ -22,6 +22,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
 )
@@ -90,6 +91,17 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		return err
 	}
 
+	// A phone leaves the VPN to the system's own, which covers every app.
+	deployed := deployment()
+	var tunnel *vpnconn.Manager
+	if deployed != "phone" {
+		if tunnel, err = vpnconn.New(vpnconn.Options{Dir: filepath.Dir(*configPath), Key: key, Logf: logf}); err != nil {
+			return err
+		}
+		defer tunnel.Close()
+		runner.SetVPN(tunnel)
+	}
+
 	server := &web.Server{
 		History:     hist,
 		Runner:      runner,
@@ -100,7 +112,8 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		Key:         key,
 		Log:         logf,
 		Pairing:     paired,
-		Deployment:  deployment(),
+		VPN:         tunnel,
+		Deployment:  deployed,
 	}
 
 	listener, err := net.Listen("tcp", *addr)

@@ -75,7 +75,7 @@ func TestConflictsAreListedAcrossEveryJob(t *testing.T) {
 	clash(t, r, "docs", sides[0][0], sides[0][1], "plan.txt")
 	clash(t, r, "photos", sides[1][0], sides[1][1], "album.txt")
 
-	all, unread := r.Conflicts(context.Background(), "")
+	all, unread := r.Conflicts(context.Background(), "", false)
 	if len(unread) != 0 {
 		t.Fatalf("a job could not be read: %+v", unread)
 	}
@@ -87,7 +87,7 @@ func TestConflictsAreListedAcrossEveryJob(t *testing.T) {
 		t.Fatalf("expected one conflict in each job, got %+v", all)
 	}
 
-	one, _ := r.Conflicts(context.Background(), "photos")
+	one, _ := r.Conflicts(context.Background(), "photos", false)
 	if len(one) != 1 || one[0].Job != "photos" {
 		t.Fatalf("asking for one job answered %+v", one)
 	}
@@ -96,7 +96,7 @@ func TestConflictsAreListedAcrossEveryJob(t *testing.T) {
 func TestADecisionIsARunInTheHistory(t *testing.T) {
 	r, hist, sides := twoJobs(t, false)
 	clash(t, r, "docs", sides[0][0], sides[0][1], "plan.txt")
-	all, _ := r.Conflicts(context.Background(), "docs")
+	all, _ := r.Conflicts(context.Background(), "docs", false)
 
 	rec, err := r.Decide(context.Background(), "docs", []apply.Decision{{Copy: all[0].Copy, Keep: plan.KeepRight}})
 	if err != nil {
@@ -125,7 +125,7 @@ func TestADecisionIsARunInTheHistory(t *testing.T) {
 	if !said {
 		t.Errorf("the run does not say how the conflict was decided: %+v", entries)
 	}
-	if left, _ := r.Conflicts(context.Background(), ""); len(left) != 0 {
+	if left, _ := r.Conflicts(context.Background(), "", false); len(left) != 0 {
 		t.Errorf("the decided conflict is still listed: %+v", left)
 	}
 }

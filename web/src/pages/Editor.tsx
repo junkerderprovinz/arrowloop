@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react'
 import { jobCopy, uniqueName } from '../lib/jobCopy.data'
 import { byJobOrder } from '../lib/jobOrder'
 
-import { Field, FieldRow, Lines, Text } from '../components/Field'
+import { Choice, Field, FieldRow, Lines, Text } from '../components/Field'
 import { api, type Direction, type Mode, type RawJob, type Remote, type Settings } from '../lib/api'
 import { SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
@@ -18,7 +18,9 @@ import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
-import { useT } from '../lib/i18n'
+import { overNetwork } from '../lib/localTarget'
+import { tunnelName, type VpnState } from '../lib/vpn'
+import { useT, type TranslationKey } from '../lib/i18n'
 
 /**
  * What a new job starts out ignoring: files the operating system or a tool
@@ -353,6 +355,16 @@ export function JobForm({
         {...held}
       />
 
+      {/* Another instance has VPNs of its own or none, and keeps the
+          choice as its owner made it. */}
+      {!host.name && (
+        <VpnChoice
+          value={typeof job.vpn === 'string' ? job.vpn : ''}
+          network={overNetwork(job.left ?? '', remotes) || overNetwork(job.right ?? '', remotes)}
+          onChange={(vpn) => patch({ vpn: vpn || undefined })}
+        />
+      )}
+
       <SubCard title={t('edit.schedule')}>
         <SettingRow label={t('edit.when')} {...held}>
           <span data-new="schedule-hs" className="flex max-w-full">
@@ -492,5 +504,53 @@ export function JobForm({
         </section>
       )}
     </div>
+  )
+}
+
+/**
+ * The VPN of the settings the job's runs go through, or none, on an engine
+ * that has VPNs and for a job with a side across the network, since folders
+ * on this device never touch one. A job that names a VPN where it does
+ * nothing, or one that is gone, as a job brought over from another machine,
+ * keeps the choice, so it can be set to none.
+ */
+export function VpnChoice({ value, network, onChange }: { value: string; network: boolean; onChange: (next: string) => void }) {
+  const { t } = useT()
+  const [vpn, setVpn] = useState<{ offered: boolean; state?: VpnState } | null>(null)
+  useEffect(() => {
+    api
+      .capabilities()
+      .then(async (c) => setVpn(c.vpn ? { offered: true, state: await api.vpn() } : { offered: false }))
+      .catch(() => setVpn(null))
+  }, [])
+  if (!vpn || (!value && (!vpn.offered || !network))) return null
+  const tunnels = vpn.state?.tunnels ?? []
+  const options = [
+    { value: '', label: t('edit.vpnOff') },
+    ...tunnels.map((x) => ({ value: x.id, label: tunnelName(x, vpn.state!.providers) })),
+  ]
+  const warning: TranslationKey | null = !vpn.offered
+    ? 'edit.vpnNotHere'
+    : tunnels.length === 0
+      ? 'edit.vpnNone'
+      : value && !tunnels.some((x) => x.id === value)
+        ? 'edit.vpnGone'
+        : null
+  return (
+    <SubCard title={t('edit.connection')}>
+      <div data-new="vpn">
+        <SettingRow label={t('edit.vpn')} hint={t('edit.vpnHint')}>
+          {/* The width of the editor's text fields, so a name and its place show in full. */}
+          <span className="grid w-72 max-w-full">
+            <Choice value={value} onChange={onChange} options={options} label={t('edit.vpn')} />
+          </span>
+        </SettingRow>
+      </div>
+      {warning && (
+        <p role="status" className="text-subline text-statusWarn">
+          {t(warning)}
+        </p>
+      )}
+    </SubCard>
   )
 }

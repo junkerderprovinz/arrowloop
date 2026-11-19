@@ -34,6 +34,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // ErrAlreadyRunning is returned when a job is asked for while the same job is
@@ -104,6 +105,9 @@ type Runner struct {
 	// cfg and note change together on a reload.
 	cfg  *job.Config
 	note *alnotify.Dispatcher
+	// vpn brings the tunnel up for the jobs that go through it; nil where the
+	// engine has none.
+	vpn *vpnconn.Manager
 	// inflight holds, per running job, the way to stop it. This map and the
 	// others below are keyed by the job's Key, so a job renamed while it runs
 	// is still the job that runs.
@@ -230,7 +234,11 @@ func (r *Runner) preview(ctx context.Context, j job.Job) (*plan.Plan, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctx = engine.Configure(ctx, opt)
+	ctx, done, err := r.ThroughVPN(engine.Configure(ctx, opt), j)
+	if err != nil {
+		return nil, err
+	}
+	defer done()
 
 	ends, db, err := r.open(ctx, j)
 	if err != nil {
@@ -405,8 +413,14 @@ func (r *Runner) runAnswering(ctx context.Context, ref string, auto bool, ans an
 		checkOut = r.checkIn(ctx, name)
 	}
 	if err == nil {
-		res, p, err = do(ctx, j, live)
-		err = awayFrom(err)
+		// Held from here, once the job has its turn and its drive, so a job
+		// waiting for either keeps no tunnel up.
+		runCtx, done, verr := r.through(ctx, j, ErrVPNDown)
+		if err = verr; err == nil {
+			res, p, err = do(runCtx, j, live)
+			done()
+			err = awayFrom(err)
+		}
 	}
 
 	// A plan a brake refused holds the job. It is not a failure, or the retries

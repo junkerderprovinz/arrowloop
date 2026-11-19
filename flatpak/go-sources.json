@@ -2703,6 +2703,13 @@
     },
     {
         "type": "file",
+        "url": "https://proxy.golang.org/golang.org/toolchain/@v/v0.0.1-go1.27.4.windows-amd64.zip",
+        "sha256": "f9a896604cbef34e9d4340233922fc4f849d6804f29e9b01b9257439ff569d38",
+        "dest": "gomod/golang.org/toolchain/@v",
+        "dest-filename": "v0.0.1-go1.27.4.windows-amd64.zip"
+    },
+    {
+        "type": "file",
         "url": "https://proxy.golang.org/golang.org/x/crypto/@v/v0.59.0.mod",
         "sha256": "56b5c7e9254d137bc34876aa0d910f78fb0620f7302baa3ca278465a074ca94e",
         "dest": "gomod/golang.org/x/crypto/@v",
@@ -2843,6 +2850,20 @@
     },
     {
         "type": "file",
+        "url": "https://proxy.golang.org/golang.zx2c4.com/wireguard/@v/v0.0.0-20261024220952-b3bc704ef0ee.mod",
+        "sha256": "87e5574c17f1c8d3badd9195d933237c289c07b5813f4e60ceae36c7b270e288",
+        "dest": "gomod/golang.zx2c4.com/wireguard/@v",
+        "dest-filename": "v0.0.0-20261024220952-b3bc704ef0ee.mod"
+    },
+    {
+        "type": "file",
+        "url": "https://proxy.golang.org/golang.zx2c4.com/wireguard/@v/v0.0.0-20261024220952-b3bc704ef0ee.zip",
+        "sha256": "e370e340c37f7b35d35f56d06c8a489613f2b02bf52146bbda6a55336c8b05f6",
+        "dest": "gomod/golang.zx2c4.com/wireguard/@v",
+        "dest-filename": "v0.0.0-20261024220952-b3bc704ef0ee.zip"
+    },
+    {
+        "type": "file",
         "url": "https://proxy.golang.org/google.golang.org/api/@v/v0.304.0.mod",
         "sha256": "4f4b815d46e1f7916681b1d85c5a0350feaec45d84ba6279b936ee10a43c3e4d",
         "dest": "gomod/google.golang.org/api/@v",
@@ -2952,6 +2973,20 @@
         "sha256": "aab8fbc4e6300ea08e6afe1caea18a21c90c79f489f52c53e2f20431f1a9a015",
         "dest": "gomod/gopkg.in/yaml.v3/@v",
         "dest-filename": "v3.0.1.zip"
+    },
+    {
+        "type": "file",
+        "url": "https://proxy.golang.org/gvisor.dev/gvisor/@v/v0.0.0-20250503011706-39ed1f5ac29c.mod",
+        "sha256": "f5b790d00657ce9be811d116ac1ea0cd99518e21da38d29c5659b1d4777d6e82",
+        "dest": "gomod/gvisor.dev/gvisor/@v",
+        "dest-filename": "v0.0.0-20250503011706-39ed1f5ac29c.mod"
+    },
+    {
+        "type": "file",
+        "url": "https://proxy.golang.org/gvisor.dev/gvisor/@v/v0.0.0-20250503011706-39ed1f5ac29c.zip",
+        "sha256": "f325eeae7ec217a3379d2845999344533562ffe4f4ca204cc18a1f78037eb43b",
+        "dest": "gomod/gvisor.dev/gvisor/@v",
+        "dest-filename": "v0.0.0-20250503011706-39ed1f5ac29c.zip"
     },
     {
         "type": "file",

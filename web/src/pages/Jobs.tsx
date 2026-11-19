@@ -21,7 +21,7 @@ import { describeCadence, readCadence } from '../lib/cadence'
 import { dayTime } from '../lib/dayTime'
 import { useReorder } from '../lib/dragLift'
 import { sideName } from '../lib/entryLabel'
-import { failureLine } from '../lib/failure'
+import { failureLine, sayFailure } from '../lib/failure'
 import { useGoTo } from '../lib/goTo'
 import { useT } from '../lib/i18n'
 import { jobCardPlace, type JobPageCard } from '../lib/jobCards'
@@ -491,12 +491,16 @@ function JobRow({
   )
 }
 
-/** Why the job's last run failed, cut to one line, with the whole sentence on hover. */
+/**
+ * Why the job's last run failed, cut to one line, with the whole sentence and
+ * the engine's words after it on hover.
+ */
 function FailedBecause({ run }: { run: Run }) {
   const { t, lang } = useT()
   const why = failureLine(run.Err, run.Failure, t, lang)
+  const { said, engine } = sayFailure(run.Err, run.Failure, t, lang)
   return (
-    <span data-testid="job-failure" data-tip={why} className="min-w-0 truncate text-subline text-statusFail">
+    <span data-testid="job-failure" data-tip={engine ? `${said} ${engine}` : said} className="min-w-0 truncate text-subline text-statusFail">
       {why}
     </span>
   )

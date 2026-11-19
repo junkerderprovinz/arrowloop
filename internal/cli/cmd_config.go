@@ -94,7 +94,13 @@ func (o Options) cmdRun(ctx context.Context, args []string) error {
 
 	ctx, stop := stopOnSignal(ctx)
 	defer stop()
-	rec, err := daemon.New(cfg, hist, o.progress).Run(ctx, fset.Arg(0))
+	runner := daemon.New(cfg, hist, o.progress)
+	closeVPN, err := withVPN(runner, *configPath, o.progress)
+	if err != nil {
+		return err
+	}
+	defer closeVPN()
+	rec, err := runner.Run(ctx, fset.Arg(0))
 	if cause := context.Cause(ctx); errors.As(cause, new(interrupted)) {
 		return cause
 	}
@@ -144,6 +150,11 @@ func (o Options) cmdDaemon(ctx context.Context, args []string) error {
 	defer stop()
 
 	runner := daemon.New(cfg, hist, logf)
+	closeVPN, err := withVPN(runner, *configPath, logf)
+	if err != nil {
+		return err
+	}
+	defer closeVPN()
 	if ready, _ := daemon.Reporting(cfg); len(ready) > 0 {
 		names := make([]string, len(ready))
 		for i, c := range ready {

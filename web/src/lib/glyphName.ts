@@ -38,6 +38,11 @@ const RULES: Rule[] = [
   [/^targets\.certificate\.trust$/i, 'IconShieldOn'],
   [/^targets\.certificate\.remove$/i, 'IconShieldOff'],
   [/^notify\.test$/i, 'IconSendTest'],
+  // The VPN card: setting one up, moving to another provider, and the test,
+  // which brings the tunnel up once as a run would.
+  [/^vpn\.setUp$/i, 'IconAdd'],
+  [/^vpn\.other$/i, 'IconTransfer'],
+  [/^vpn\.test$/i, 'IconSendTest'],
 
   // Pairing: the words shown, entered and pasted, and the answers to an
   // instance that waits for approval.

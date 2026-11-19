@@ -46,6 +46,26 @@ func TestTheEnginesOwnSentencesCarryTheirFigures(t *testing.T) {
 			fmt.Sprintf("%s: exit status 1", hook.AfterFailed),
 			failure.Failure{Code: failure.AfterFailed, Params: map[string]string{"output": "exit status 1"}},
 		},
+		{
+			fmt.Errorf("%w: %w", daemon.ErrVPNDown, errors.New("WireGuard: no handshake with 203.0.113.9:51820 within 45s")).Error(),
+			failure.Failure{Code: failure.VPNDown, Params: map[string]string{"output": "WireGuard: no handshake with 203.0.113.9:51820 within 45s"}},
+		},
+		{
+			fmt.Errorf("%w: %w", daemon.ErrVPNDown, errors.New("no VPN is set up in the settings")).Error(),
+			failure.Failure{Code: failure.VPNDown, Params: map[string]string{"output": "no VPN is set up in the settings"}},
+		},
+		{
+			fmt.Errorf("%w: the right side: %w", daemon.ErrVPNRefused, errors.New("a smb target cannot go through the VPN")).Error(),
+			failure.Failure{Code: failure.VPNRefused, Params: map[string]string{"side": "right", "output": "a smb target cannot go through the VPN"}},
+		},
+		{
+			fmt.Errorf("%w: %w", daemon.ErrVPNUnreached, errors.New("WireGuard: no handshake with 203.0.113.9:51820 within 45s")).Error(),
+			failure.Failure{Code: failure.VPNUnreached, Params: map[string]string{"output": "WireGuard: no handshake with 203.0.113.9:51820 within 45s"}},
+		},
+		{
+			daemon.ErrNoVPN.Error(),
+			failure.Failure{Code: failure.NoVPN},
+		},
 	}
 	for _, c := range cases {
 		got := failure.Of(c.text)

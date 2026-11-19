@@ -15,6 +15,7 @@ const PAGES: Partial<Record<TileId, string>> = {
   look: 'LookPage.tsx',
   sync: 'SyncPage.tsx',
   safety: 'SafetyPage.tsx',
+  integrations: 'IntegrationsPage.tsx',
   info: 'InfoPage.tsx',
 }
 
@@ -46,6 +47,11 @@ describe('the settings search', () => {
   it('finds a setting by a word that only its explanation holds', () => {
     const hits = search(buildItems(t, settingsTiles(true)), 'megabyte')
     expect(hits[0]).toMatchObject({ inHint: true, item: { name: 'Bandwidth limit', tile: 'general' } })
+  })
+
+  it('finds the VPN under Integrations', () => {
+    const [first] = search(buildItems(t, settingsTiles(true, true, true)), 'WireGuard')
+    expect(first?.item).toMatchObject({ tile: 'integrations', name: 'VPN' })
   })
 
   it('leaves out the tiles this build does not offer', () => {

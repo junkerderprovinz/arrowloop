@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **A built-in VPN for the jobs that want one, or several.** Pick your provider from tiles with their logos under Settings, Integrations, or paste the WireGuard configuration of a server of your own, then choose that **VPN** in a job. Two servers of your own or one provider at two locations stand side by side, and each job only ever goes through its own. A tunnel runs inside ArrowLoop, so it needs no WireGuard on the machine and no extra rights in a container. It comes up for that job's runs and goes down after, and a run whose tunnel does not come up fails, with nothing synced over your own connection. The choice is only offered on a job with a side across the network. Before this, a `before` and `after` command around `wg-quick` was the only way, and not one that worked in the container.
+
 ## 2.7.7 - 2026-11-19
 
 ArrowLoop in the tray needs far less memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.

@@ -30,7 +30,7 @@ const listing: ConflictListing = { conflicts: ['a.txt', 'b.txt', 'c.txt', 'd.txt
 function page() {
   render(
     <ToastProvider>
-      <Conflicts listing={listing} job="" onJob={() => undefined} onChanged={() => undefined} />
+      <Conflicts listing={listing} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
     </ToastProvider>,
   )
 }
@@ -47,7 +47,7 @@ describe('the conflicts list', () => {
     const both: ConflictListing = { conflicts: [conflict('a.txt'), conflict('song.mp3', 'music')], unread: [] }
     const at = (job: string) => (
       <ToastProvider>
-        <Conflicts listing={both} job={job} onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={both} job={job} onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>
     )
     const { rerender } = render(at('docs'))
@@ -60,7 +60,7 @@ describe('the conflicts list', () => {
     const changed = { ...conflict('a.txt'), why: 'changedBoth' }
     render(
       <ToastProvider>
-        <Conflicts listing={{ conflicts: [changed], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={{ conflicts: [changed], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     const a = card('a.txt')
@@ -81,7 +81,7 @@ describe('the conflicts list', () => {
     }
     render(
       <ToastProvider>
-        <Conflicts listing={{ conflicts: [newer], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={{ conflicts: [newer], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     expect(screen.getByText('a.conflict-left-20270301-030000.txt')).toBeTruthy()
@@ -106,7 +106,7 @@ describe('the conflicts list', () => {
   it('offers no answer for all while one conflict waits', () => {
     render(
       <ToastProvider>
-        <Conflicts listing={{ conflicts: [conflict('a.txt')], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={{ conflicts: [conflict('a.txt')], unread: [] }} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
@@ -119,7 +119,7 @@ describe('the conflicts list', () => {
     }
     render(
       <ToastProvider>
-        <Conflicts listing={mixed} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={mixed} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     const tiles = within(screen.getByRole('group', { name: 'Conflicts' })).getAllByRole('button')
@@ -140,7 +140,7 @@ describe('the conflicts list', () => {
     const both: ConflictListing = { conflicts: [conflict('a.txt'), conflict('b.txt', 'music'), conflict('c.txt', 'photos')], unread: [] }
     render(
       <ToastProvider>
-        <Conflicts listing={both} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Conflicts listing={both} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     expect(screen.getAllByRole('button', { name: 'Filter by Job' })).toHaveLength(1)

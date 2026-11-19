@@ -1,6 +1,7 @@
 package job
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -322,5 +323,30 @@ func TestAJobWithIncludePatternsTakesOnlyTheFilesTheyMatch(t *testing.T) {
 		if got := opt.Exclude.Excluded(path); got != hidden {
 			t.Errorf("%s hidden = %v, want %v", path, got, hidden)
 		}
+	}
+}
+
+func TestAJobNamesTheTunnelItGoesThrough(t *testing.T) {
+	cfg, err := Load(writeConfig(t, `{"jobs":[
+		{"name":"a","left":"/a","right":"/b","state":"a.db","vpn":"mullvad-2"},
+		{"name":"b","left":"/a","right":"/b","state":"b.db","vpn":true},
+		{"name":"c","left":"/a","right":"/b","state":"c.db","vpn":false},
+		{"name":"d","left":"/a","right":"/b","state":"d.db"}
+	]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []VPNTunnel{"mullvad-2", FormerVPN, "", ""}
+	for i, j := range cfg.Jobs {
+		if j.VPN != want[i] {
+			t.Errorf("%s goes through %q, want %q", j.Name, j.VPN, want[i])
+		}
+	}
+	b, err := json.Marshal(cfg.Jobs[1])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(b), `"vpn":true`) {
+		t.Errorf("a job of an older file is not written back as it was: %s", b)
 	}
 }

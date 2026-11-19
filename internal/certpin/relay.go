@@ -17,10 +17,13 @@ import (
 	"math/big"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/rclone/rclone/lib/proxy"
 )
 
 // The relay is how a pin reaches rclone, which builds the TLS settings of its
@@ -43,6 +46,9 @@ type relay struct {
 // session is what the relay holds the servers of one proxy user to.
 type session struct {
 	pin string
+	// via is the proxy the server is reached through, nil for a direct
+	// connection.
+	via *url.URL
 	// roots are the authorities a certificate may also come from, nil for the
 	// system's.
 	roots *x509.CertPool
@@ -62,13 +68,13 @@ var shared struct {
 // file with the authority the connection then has to trust in place of any
 // other. A certificate from one of the authorities in the roots files, or the
 // system's where there are none, still passes as it would without a pin.
-func Relay(pin string, roots []string) (proxy, authority string, err error) {
+func Relay(pin string, roots []string, via string) (proxy, authority string, err error) {
 	shared.once.Do(func() { shared.relay, shared.err = start() })
 	if shared.err != nil {
 		return "", "", fmt.Errorf("start the relay for trusted certificates: %w", shared.err)
 	}
 	r := shared.relay
-	user, err := r.session(pin, roots)
+	user, err := r.session(pin, roots, via)
 	if err != nil {
 		return "", "", err
 	}
@@ -133,10 +139,10 @@ func serial() *big.Int {
 	return n
 }
 
-func (r *relay) session(pin string, roots []string) (string, error) {
+func (r *relay) session(pin string, roots []string, via string) (string, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	key := pin + "\x00" + strings.Join(roots, "\x00")
+	key := pin + "\x00" + via + "\x00" + strings.Join(roots, "\x00")
 	if user, ok := r.users[key]; ok {
 		return user, nil
 	}
@@ -147,8 +153,14 @@ func (r *relay) session(pin string, roots []string) (string, error) {
 	raw := make([]byte, 16)
 	_, _ = rand.Read(raw)
 	user := hex.EncodeToString(raw)
+	s := &session{pin: pin, roots: pool}
+	if via != "" {
+		if s.via, err = url.Parse(via); err != nil {
+			return "", err
+		}
+	}
 	r.users[key] = user
-	r.sessions[user] = &session{pin: pin, roots: pool}
+	r.sessions[user] = s
 	return user, nil
 }
 
@@ -297,7 +309,11 @@ func (r *relay) leaf(host string) (*tls.Certificate, error) {
 }
 
 func (s *session) dial(ctx context.Context, addr, host string) (*tls.Conn, error) {
-	d := &tls.Dialer{Config: &tls.Config{
+	raw, err := s.reach(ctx, addr)
+	if err != nil {
+		return nil, err
+	}
+	conn := tls.Client(raw, &tls.Config{
 		ServerName: host,
 		NextProtos: []string{"http/1.1"},
 		// The usual check would refuse the certificate the pin is for, so
@@ -306,12 +322,26 @@ func (s *session) dial(ctx context.Context, addr, host string) (*tls.Conn, error
 		VerifyConnection: func(state tls.ConnectionState) error {
 			return s.verify(host, state.PeerCertificates)
 		},
-	}}
-	conn, err := d.DialContext(ctx, "tcp", addr)
-	if err != nil {
+	})
+	if err := conn.HandshakeContext(ctx); err != nil {
+		raw.Close()
 		return nil, err
 	}
-	return conn.(*tls.Conn), nil
+	return conn, nil
+}
+
+// reach connects to addr, through the session's proxy where it has one, the
+// way the connection would have gone without a pin.
+func (s *session) reach(ctx context.Context, addr string) (net.Conn, error) {
+	var d net.Dialer
+	if s.via == nil {
+		return d.DialContext(ctx, "tcp", addr)
+	}
+	d.Timeout = connectWait
+	if deadline, ok := ctx.Deadline(); ok {
+		d.Deadline = deadline
+	}
+	return proxy.HTTPConnectDial("tcp", addr, s.via, &d)
 }
 
 // verify passes a certificate an authority vouches for, as the usual check

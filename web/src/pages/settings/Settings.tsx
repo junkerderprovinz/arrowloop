@@ -6,6 +6,7 @@ import { Apps } from '../Apps'
 import { Security } from '../Security'
 import { GeneralPage } from './GeneralPage'
 import { InfoPage } from './InfoPage'
+import { IntegrationsPage } from './IntegrationsPage'
 import { LookPage, type LookProps } from './LookPage'
 import { PairingPage } from './PairingPage'
 import { SafetyPage } from './SafetyPage'
@@ -127,6 +128,8 @@ function TilePage({ tile, tiles, look, version, window, onWindow, targets, whats
       return <SafetyPage />
     case 'targets':
       return <TargetsTile page={targets} />
+    case 'integrations':
+      return <IntegrationsPage />
     case 'security':
       return <Security />
     case 'pairing':

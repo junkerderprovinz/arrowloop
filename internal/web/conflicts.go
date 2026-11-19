@@ -12,6 +12,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // conflictView is one open conflict as the screen shows it.
@@ -31,11 +32,14 @@ type conflictView struct {
 	Why string `json:"why,omitempty"`
 }
 
+// unreadView is a job whose conflicts could not be read. Unchecked is one
+// whose VPN is off, which the list does not bring up unless asked for the job.
 type unreadView struct {
-	Job     string           `json:"job"`
-	JobID   string           `json:"jobId,omitempty"`
-	Error   string           `json:"error"`
-	Failure *failure.Failure `json:"failure,omitempty"`
+	Job       string           `json:"job"`
+	JobID     string           `json:"jobId,omitempty"`
+	Error     string           `json:"error"`
+	Failure   *failure.Failure `json:"failure,omitempty"`
+	Unchecked bool             `json:"unchecked,omitempty"`
 }
 
 func versionView(v apply.Version) sideView {
@@ -45,7 +49,8 @@ func versionView(v apply.Version) sideView {
 // listConflicts answers with every open conflict, or those of the one job asked
 // for, and the jobs that could not be read.
 func (s *Server) listConflicts(w http.ResponseWriter, r *http.Request) {
-	found, unread := s.Runner.Conflicts(r.Context(), r.URL.Query().Get("job"))
+	only := r.URL.Query().Get("job")
+	found, unread := s.Runner.Conflicts(r.Context(), only, only != "" && r.URL.Query().Get("connect") != "")
 	out := struct {
 		Conflicts []conflictView `json:"conflicts"`
 		Unread    []unreadView   `json:"unread"`
@@ -59,6 +64,10 @@ func (s *Server) listConflicts(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	for _, u := range unread {
+		if errors.Is(u.Err, vpnconn.ErrNotUp) {
+			out.Unread = append(out.Unread, unreadView{Job: u.Job, JobID: u.JobID, Unchecked: true})
+			continue
+		}
 		out.Unread = append(out.Unread, unreadView{Job: u.Job, JobID: u.JobID, Error: u.Err.Error(), Failure: failure.Of(u.Err.Error())})
 	}
 	writeJSON(w, http.StatusOK, out)

@@ -28,6 +28,8 @@ require (
 	golang.org/x/sys v0.50.0
 	golang.org/x/term v0.48.0
 	golang.org/x/text v0.44.0
+	golang.zx2c4.com/wireguard v0.0.0-20261024220952-b3bc704ef0ee
+	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c
 	modernc.org/libc v1.82.0
 	modernc.org/sqlite v1.62.0
 )
@@ -241,6 +243,7 @@ require (
 	golang.org/x/sync v0.25.0 // indirect
 	golang.org/x/time v0.16.0 // indirect
 	golang.org/x/tools v0.52.0 // indirect
+	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	google.golang.org/api v0.304.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261005182115-fad411399dd8 // indirect
 	google.golang.org/grpc v1.85.0-dev.0.20260825072537-93e31b48545e // indirect

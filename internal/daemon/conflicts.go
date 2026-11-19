@@ -42,8 +42,10 @@ var conflictWait = time.Minute
 // Conflicts lists the open conflicts of every job that writes both ways, or of
 // the one job named, oldest first, then by job and path. A job whose sides
 // cannot be opened right now is reported rather than failing the whole list.
-// The jobs are read at once, since each can wait on a remote.
-func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unread) {
+// The jobs are read at once, since each can wait on a remote. A job whose VPN
+// is down is reported unread with vpnconn.ErrNotUp unless connect brings its
+// tunnel up.
+func (r *Runner) Conflicts(ctx context.Context, only string, connect bool) ([]Conflict, []Unread) {
 	var jobs []job.Job
 	cfg := r.config()
 	asked, _ := cfg.Find(only)
@@ -64,7 +66,7 @@ func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unre
 		wg.Go(func() {
 			ctx, cancel := context.WithTimeout(ctx, conflictWait)
 			defer cancel()
-			opens[i], errs[i] = r.conflictsOf(ctx, j)
+			opens[i], errs[i] = r.conflictsOf(ctx, j, connect)
 			if errs[i] != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) {
 				errs[i] = fmt.Errorf("no answer within %s: %w", conflictWait, errs[i])
 			}
@@ -96,12 +98,20 @@ func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unre
 	return out, unread
 }
 
-func (r *Runner) conflictsOf(ctx context.Context, j job.Job) ([]apply.Open, error) {
+func (r *Runner) conflictsOf(ctx context.Context, j job.Job, connect bool) ([]apply.Open, error) {
 	opt, err := j.Options()
 	if err != nil {
 		return nil, err
 	}
-	ctx = engine.Configure(ctx, opt)
+	through := r.JoinVPN
+	if connect {
+		through = r.ThroughVPN
+	}
+	ctx, done, err := through(engine.Configure(ctx, opt), j)
+	if err != nil {
+		return nil, err
+	}
+	defer done()
 	ends, db, err := r.open(ctx, j)
 	if err != nil {
 		return nil, err

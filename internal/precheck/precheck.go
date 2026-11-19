@@ -110,6 +110,11 @@ type Opts struct {
 	// ForceFree overrides what a side reports as its remaining room, in bytes,
 	// for tests.
 	ForceFree map[plan.Side]int64
+
+	// Unreached are sides the caller could not reach, such as one behind a
+	// VPN that did not come up. They are reported with the reason and never
+	// opened, and the other side is still checked.
+	Unreached map[plan.Side]error
 }
 
 // sides is the order every loop here goes in, so reports list findings in a
@@ -150,6 +155,10 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 
 	opened := map[plan.Side]rclonefs.Fs{}
 	for _, side := range sides {
+		if why := opt.Unreached[side]; why != nil {
+			rep.noteSide("sideUnreachable", side, true, "error", why.Error())
+			continue
+		}
 		f, err := rclonefs.NewFs(ctx, job.Narrow(paths[side]))
 		if err != nil {
 			rep.noteSide("sideUnreachable", side, true, "error", err.Error())

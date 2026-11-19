@@ -75,6 +75,13 @@ export const RELEASES: Release[] = [
         text: 'new.change.minAge',
         names: { option: 'edit.minAge' },
       },
+      {
+        id: 'vpn',
+        at: ['/settings/integrations'],
+        where: ['nav.settings', 'settings.integrations'],
+        text: 'new.change.vpn',
+        names: { integrations: 'settings.integrations' },
+      },
     ],
   },
   {

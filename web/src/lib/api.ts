@@ -7,6 +7,7 @@ import type { RefusedCertificate } from './certificate'
 import type { Failure } from './failure'
 import type { ImportPlan } from './importPlan'
 import type { Channel, Notify } from './notify'
+import type { VpnField, VpnState } from './vpn'
 
 export type Direction = 'both' | 'leftToRight' | 'rightToLeft'
 
@@ -41,6 +42,8 @@ export type Job = {
   recent: Run[]
   /** How many days old a file has to be before a one-way job sends it. */
   minAgeDays?: number
+  /** The VPN of the settings the job's runs go through. */
+  vpn?: string
 }
 
 export type { Reason } from './i18n'
@@ -327,6 +330,11 @@ export type RawJob = {
    */
   brakePercent?: number
   changePercent?: number
+  /**
+   * The VPN of the settings every connection of the job's runs goes through,
+   * by its id. A file from before there could be several says true.
+   */
+  vpn?: string | true
   /** Shell commands around every run. Only the file sets them; a save keeps them. */
   before?: string
   after?: string
@@ -545,6 +553,8 @@ export type TrashSide = TrashListing & {
   error?: string
   /** The kind of failure the engine read from `error`, where it knows one. */
   failure?: Failure
+  /** Only the job's VPN reaches the side, and it is off, so nobody looked. */
+  unchecked?: boolean
 }
 
 /**
@@ -567,8 +577,8 @@ export type OpenConflict = {
 
 export type ConflictListing = {
   conflicts: OpenConflict[]
-  /** Jobs whose conflicts could not be read right now, and why. */
-  unread: { job: string; error: string; failure?: Failure }[]
+  /** Jobs whose conflicts could not be read right now, and why, or that were left unchecked while their VPN is off. */
+  unread: { job: string; error: string; failure?: Failure; unchecked?: boolean }[]
 }
 
 export type RunEvent = {
@@ -981,6 +991,19 @@ export const api = {
    * fills in the secrets the page holds placeholders for, and a refusal comes
    * back as ok:false with a code to translate and the HTTP status, if any.
    */
+  /** The VPN settings: the providers and the VPNs set up with them, and where each stands. A login never comes back. */
+  vpn: () => request<VpnState>('/api/vpn'),
+  /** Sets a new VPN up with a provider, beside those there are. */
+  addVpn: (provider: string, fields: Partial<Record<VpnField, string>>) =>
+    request<{ id: string; state: VpnState }>('/api/vpn', { method: 'POST', body: JSON.stringify({ provider, fields }) }),
+  /** Changes a VPN's login. An empty field keeps what is stored. */
+  saveVpn: (id: string, fields: Partial<Record<VpnField, string>>) =>
+    request<VpnState>(`/api/vpn/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify({ fields }) }),
+  forgetVpn: (id: string) => request<VpnState>(`/api/vpn/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+  /** Brings a VPN up as a run would, asks which address traffic leaves by, and takes it down. */
+  testVpn: (id: string) =>
+    request<{ ok: boolean; reason?: string; state: VpnState }>(`/api/vpn/${encodeURIComponent(id)}/test`, { method: 'POST' }),
+
   testNotify: (channel: Channel) =>
     request<{ ok: boolean; code?: string; status?: number; reason?: string }>('/api/notify/test', {
       method: 'POST',
@@ -1164,9 +1187,13 @@ export const api = {
       body: JSON.stringify({ path, runId }),
     }),
 
-  /** The trash of every job's two sides, or of the one job named. */
-  trashAll: (job?: string) =>
-    request<{ sides: TrashSide[] }>(`/api/trash${job ? `?job=${encodeURIComponent(job)}` : ''}`),
+  /**
+   * The trash of every job's two sides, or of the one job named. A side only
+   * its job's VPN reaches comes back unchecked while that VPN is off, unless
+   * `connect` brings it up for the job named.
+   */
+  trashAll: (job?: string, connect = false) =>
+    request<{ sides: TrashSide[] }>(`/api/trash${job ? `?job=${encodeURIComponent(job)}${connect ? '&connect=1' : ''}` : ''}`),
 
   /** Removes one trashed file for good. */
   deleteTrash: (job: string, side: string, path: string, runId: string) =>
@@ -1191,8 +1218,9 @@ export const api = {
   acknowledgeAnomaly: (id: string) =>
     post<{ acknowledged: boolean }>(`/api/anomalies/${encodeURIComponent(id)}/acknowledge`),
 
-  conflicts: (job?: string) =>
-    request<ConflictListing>(`/api/conflicts${job ? `?job=${encodeURIComponent(job)}` : ''}`),
+  /** Open conflicts, with a job whose VPN is off left unchecked unless `connect` brings it up for the job named. */
+  conflicts: (job?: string, connect = false) =>
+    request<ConflictListing>(`/api/conflicts${job ? `?job=${encodeURIComponent(job)}${connect ? '&connect=1' : ''}` : ''}`),
 
   /**
    * Carries out choices on one job's open conflicts and answers once they are
@@ -1246,7 +1274,7 @@ export const api = {
 
   /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () =>
-    request<{ window: boolean; security?: boolean; pairing?: boolean; version: string }>('/api/capabilities'),
+    request<{ window: boolean; security?: boolean; pairing?: boolean; vpn?: boolean; version: string }>('/api/capabilities'),
 
   /** The versions this build is made of, for the Info tile. */
   /** `newRelease` is the newer release a container's daily check found. */

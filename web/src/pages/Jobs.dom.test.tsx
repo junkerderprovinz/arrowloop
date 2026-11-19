@@ -25,6 +25,7 @@ const orderJobs = vi.fn((names: string[]) => Promise.resolve({ jobs: names.lengt
 
 vi.mock('../lib/api', () => ({
   api: {
+    capabilities: () => Promise.resolve({ window: false, version: 'test' }),
     config: () => config(),
     saveConfig: (jobs: RawJob[]) => saveConfig(jobs),
     settings: () => Promise.resolve({}),
@@ -407,6 +408,18 @@ describe('a job card', () => {
     expect(why.getAttribute('data-tip')).toBe(en['failure.certificateUntrusted'])
     expect(why.className).toContain('text-statusFail')
     expect(within(row('music')).queryByTestId('job-failure')).toBeNull()
+  })
+
+  it("says a VPN that did not come up in the reader's words, with the provider's own on hover", async () => {
+    const output = 'WireGuard: vpn: resolve vpn.example.net: no such host'
+    const down = {
+      ...ran('photos', `the VPN did not come up, so the run did not start: ${output}`),
+      Failure: { code: 'vpnDown', params: { output } },
+    }
+    page({ jobs: [job('photos', { recent: [down] })] })
+    const why = within(row('photos')).getByTestId('job-failure')
+    expect(why.textContent).toBe(en['failure.vpnDown'])
+    expect(why.getAttribute('data-tip')).toBe(`${en['failure.vpnDown']} ${output}`)
   })
 
   it('says nothing of a failure the last run put right', async () => {

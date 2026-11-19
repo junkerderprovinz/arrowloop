@@ -35,6 +35,10 @@ const (
 	TooManyLogins        = "tooManyLogins"
 	LeftTwice            = "leftTwice"
 	CertificateUntrusted = "certificateUntrusted"
+	VPNDown              = "vpnDown"
+	VPNUnreached         = "vpnUnreached"
+	VPNRefused           = "vpnRefused"
+	NoVPN                = "noVpn"
 )
 
 // The sentences the engine composes itself, in internal/daemon,
@@ -48,6 +52,10 @@ var (
 	side   = regexp.MustCompile(`(?:^|: )(?:the )?(left|right) side (?:"(?:[^"\\]|\\.)*"|could not be opened): `)
 	hook   = regexp.MustCompile(`(?:^|: )the command (before|after) the run failed(?:, so the run did not start)?: `)
 	twice  = regexp.MustCompile(`(?:^|: )left for later in two runs in a row: `)
+	vpn    = regexp.MustCompile(`(?:^|: )the VPN did not come up, so the run did not start: `)
+	away   = regexp.MustCompile(`(?:^|: )the VPN did not come up, so the job's sides could not be reached: `)
+	unfit  = regexp.MustCompile(`(?:^|: )this job goes through the VPN, but one of its sides cannot: the (left|right) side: `)
+	novpn  = regexp.MustCompile(`(?:^|: )this job goes through the VPN, and ArrowLoop has no built-in VPN here`)
 )
 
 // rule is a family of messages from rclone, the network or the system, matched
@@ -114,6 +122,20 @@ func Of(text string) *Failure {
 	}
 	if m := volume.FindStringSubmatch(text); m != nil {
 		return &Failure{Code: VolumeMissing, Params: map[string]string{"side": m[1] + m[2]}}
+	}
+	// Ahead of the rules too: the provider's reason after them may read like
+	// a network failure, when the trouble is the VPN's.
+	if m := vpn.FindStringIndex(text); m != nil {
+		return &Failure{Code: VPNDown, Params: map[string]string{"output": text[m[1]:]}}
+	}
+	if m := away.FindStringIndex(text); m != nil {
+		return &Failure{Code: VPNUnreached, Params: map[string]string{"output": text[m[1]:]}}
+	}
+	if m := unfit.FindStringSubmatchIndex(text); m != nil {
+		return &Failure{Code: VPNRefused, Params: map[string]string{"side": text[m[2]:m[3]], "output": text[m[1]:]}}
+	}
+	if novpn.MatchString(text) {
+		return &Failure{Code: NoVPN}
 	}
 	if m := hook.FindStringSubmatchIndex(text); m != nil {
 		code := BeforeFailed

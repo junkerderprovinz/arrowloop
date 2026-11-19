@@ -131,6 +131,15 @@ func TestRunDueExitsOneWhenAJobFails(t *testing.T) {
 	}
 }
 
+func TestRunDueTakesAVPNJobToItsTunnel(t *testing.T) {
+	o, out := setup(t, map[string]any{"name": "photos", "schedule": "0 3 * * *", "vpn": "a1b2c3d4"})
+
+	Main([]string{"run-due"}, o)
+	if strings.Contains(out.String(), "no built-in VPN") || !strings.Contains(out.String(), "the VPN did not come up") {
+		t.Errorf("printed %q, want the run to fail on the tunnel that is not set up", out)
+	}
+}
+
 func TestRunDueLeavesAJobAnotherProcessRunsAlone(t *testing.T) {
 	o, out := setup(t, map[string]any{"name": "photos", "schedule": "0 3 * * *"})
 	cfg, err := job.Load(o.Config)

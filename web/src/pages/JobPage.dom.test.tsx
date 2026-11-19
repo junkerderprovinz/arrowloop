@@ -24,6 +24,7 @@ const log = vi.fn(() => Promise.resolve([] as unknown[]))
 
 vi.mock('../lib/api', () => ({
   api: {
+    capabilities: () => Promise.resolve({ window: false, version: 'test' }),
     config: () => config(),
     saveConfig: (jobs: RawJob[]) => saveConfig(jobs),
     settings: () => Promise.resolve({}),

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/certpin"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 	_ "github.com/rclone/rclone/backend/webdav"
 	rclonefs "github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/config/configmap"
@@ -37,14 +38,15 @@ func init() {
 }
 
 // throughPin sends the connections of a target made with ctx through the
-// relay that holds them to pin.
+// relay that holds them to pin. A run that goes through the VPN has the relay
+// reach the server through the tunnel's proxy.
 func throughPin(ctx context.Context, pin string) (context.Context, error) {
 	ci := rclonefs.GetConfig(ctx)
 	// With every check off already, a pin would only check more.
 	if pin == "" || ci.InsecureSkipVerify {
 		return ctx, nil
 	}
-	proxy, authority, err := certpin.Relay(pin, ci.CaCert)
+	proxy, authority, err := certpin.Relay(pin, ci.CaCert, vpnconn.ProxyOf(ctx))
 	if err != nil {
 		return nil, err
 	}
