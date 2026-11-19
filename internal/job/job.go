@@ -19,6 +19,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 	"github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
@@ -92,6 +93,10 @@ type Config struct {
 	// retired lists field names in the file that this program no longer
 	// understands, so a caller can say what was ignored.
 	retired []string
+
+	// unsettled is set when a job in the file had no id of its own, or one
+	// an earlier job had, so Load writes the ids it gave them back.
+	unsettled bool
 }
 
 // Retry is what a scheduled run does after it fails: a few more tries, each
@@ -386,6 +391,10 @@ func (n Notify) check() error {
 
 // Job is one pairing of two ends.
 type Job struct {
+	// ID stays with the job through every rename, and the job's runs and
+	// findings are kept under it. Load gives a job without one an id and
+	// writes it back.
+	ID    string `json:"id,omitempty"`
 	Name  string `json:"name"`
 	Left  string `json:"left"`
 	Right string `json:"right"`
@@ -492,6 +501,9 @@ type Job struct {
 // is loaded with the others, so one bad job does not stop all of them, and
 // every run of it fails with this reason.
 func (j Job) Refused() error { return j.refused }
+
+// Key is what the job's runs and findings are kept under.
+func (j Job) Key() string { return jobid.Key(j.ID, j.Name) }
 
 // Defaults fill in the per-job settings a job does not set for itself, so a
 // job carries only what makes it different. The pointer fields let a job
@@ -661,10 +673,14 @@ func (c *Config) Retired() []string { return c.retired }
 // as channels.
 func Load(path string) (*Config, error) {
 	cfg, err := load(path)
-	if err != nil || !cfg.Notify.older {
+	if err != nil || !cfg.Notify.older && !cfg.unsettled {
 		return cfg, err
 	}
+	// save writes every job's id on the way.
 	saved, err := cfg.save(func(doc map[string]any) {
+		if !cfg.Notify.older {
+			return
+		}
 		for k, v := range doc {
 			if block, ok := v.(map[string]any); ok && strings.EqualFold(k, "notify") {
 				block["channels"] = cfg.Notify.Channels
@@ -672,8 +688,9 @@ func Load(path string) (*Config, error) {
 		}
 	})
 	if err != nil {
-		// The older shape reads the same way every time, so a file that
-		// cannot be written loses nothing and is converted on a later start.
+		// The older shape and the ids load derives read the same way every
+		// time, so a file that cannot be written loses nothing and is
+		// converted on a later start.
 		return cfg, nil
 	}
 	return saved, nil
@@ -723,6 +740,7 @@ func load(path string) (*Config, error) {
 	// and after the last one is deleted.
 	seen := map[string]bool{}
 	onRequest := unscheduled(cleaned)
+	cfg.unsettled = cfg.giveIDs()
 	for i := range cfg.Jobs {
 		j := &cfg.Jobs[i]
 		// Defaults are applied before validation, so a value from the defaults
@@ -735,7 +753,7 @@ func load(path string) (*Config, error) {
 			return nil, fmt.Errorf("job %d has no name", i+1)
 		}
 		if seen[j.Name] {
-			return nil, fmt.Errorf("two jobs are both called %q; names are how a job is asked for by hand and how its history is kept apart", j.Name)
+			return nil, fmt.Errorf("two jobs are both called %q; a name is how a job is asked for by hand and told apart in every list", j.Name)
 		}
 		seen[j.Name] = true
 		// Two of the modes delete, so an unknown spelling is refused rather
@@ -870,14 +888,43 @@ func (c *Config) RunsOnItsOwn(j Job) bool {
 	return !j.Disabled && !c.PauseAutomatic
 }
 
-// Find returns the job with this name.
-func (c *Config) Find(name string) (Job, bool) {
+// Find returns the job with this id or, failing that, this name. A caller
+// holding the id finds the job through a rename, and one that only knows
+// names, such as an older paired instance, still finds it.
+func (c *Config) Find(ref string) (Job, bool) {
+	for _, j := range c.Jobs {
+		if j.ID != "" && j.ID == ref {
+			return j, true
+		}
+	}
+	return c.named(ref)
+}
+
+func (c *Config) named(name string) (Job, bool) {
 	for _, j := range c.Jobs {
 		if j.Name == name {
 			return j, true
 		}
 	}
 	return Job{}, false
+}
+
+// giveIDs gives every job without an id, or with one an earlier job in the
+// file has, the id derived from its name, and reports whether it gave any.
+// Derived rather than drawn, so a file that cannot be written gets the same
+// ids on every start.
+func (c *Config) giveIDs() bool {
+	taken := map[string]bool{}
+	gave := false
+	for i := range c.Jobs {
+		j := &c.Jobs[i]
+		if j.ID == "" || taken[j.ID] {
+			j.ID = jobid.Legacy(j.Name)
+			gave = true
+		}
+		taken[j.ID] = true
+	}
+	return gave
 }
 
 // ParseSchedule accepts standard five-field cron and the @every and @daily
@@ -987,23 +1034,25 @@ func (c *Config) AddJobs(add ...map[string]any) (*Config, error) {
 	})
 }
 
-// SaveOrder writes the jobs in the order names gives and keeps that order from
-// then on. A job missing from names stays, after the ordered ones, since the
-// list names came from may be older than the file.
-func (c *Config) SaveOrder(names []string) (*Config, error) {
+// SaveOrder writes the jobs in the order refs gives, each an id or a name, and
+// keeps that order from then on. A job missing from refs stays, after the
+// ordered ones, since the list refs came from may be older than the file.
+func (c *Config) SaveOrder(refs []string) (*Config, error) {
+	place := make(map[string]int, len(refs))
+	for i, ref := range refs {
+		if j, ok := c.Find(ref); ok {
+			place[j.ID] = i
+		}
+	}
 	return c.save(func(doc map[string]any) {
 		key := jobsKey(doc)
 		jobs, _ := doc[key].([]any)
-		place := make(map[string]int, len(names))
-		for i, name := range names {
-			place[name] = i
-		}
 		at := func(j any) int {
-			name, _ := j.(map[string]any)["name"].(string)
-			if i, ok := place[name]; ok {
+			m, _ := j.(map[string]any)
+			if i, ok := place[c.idIn(m)]; ok {
 				return i
 			}
-			return len(names)
+			return len(refs)
 		}
 		sort.SliceStable(jobs, func(a, b int) bool { return at(jobs[a]) < at(jobs[b]) })
 		doc[key] = jobs
@@ -1107,7 +1156,9 @@ func (c *Config) save(edit func(map[string]any)) (*Config, error) {
 		doc = map[string]any{}
 	}
 	edit(doc)
-	keepCommands(c.raw, doc)
+	c.settleIDs(doc)
+	c.followRenames(doc)
+	keepCommands(c, doc)
 
 	next, err := json.MarshalIndent(doc, "", "  ")
 	if err != nil {
@@ -1157,41 +1208,180 @@ func (c *Config) JobsAsMaps() ([]map[string]any, error) {
 // disk may set.
 var commandKeys = []string{"before", "after"}
 
-// keepCommands gives every job in doc the commands its namesake has in the
-// file on disk, and none if it has no namesake, whatever the edit put there.
-// A job renamed in the interface therefore loses its commands. Keys are
-// compared without regard to case, because Load's decoder matches them that
-// way.
-func keepCommands(onDisk []byte, doc map[string]any) {
+// keepCommands gives every job in doc the commands the job with its id has in
+// the file on disk, and none if there is no such job, whatever the edit put
+// there. A renamed job keeps its commands, and a job given another's name
+// does not take that job's. Keys are compared without regard to case, because
+// Load's decoder matches them that way.
+func keepCommands(onDisk *Config, doc map[string]any) {
 	var prev struct {
 		Jobs []map[string]any `json:"jobs"`
 	}
 	// save has parsed the same bytes a moment ago.
-	_ = json.Unmarshal(onDisk, &prev)
+	_ = json.Unmarshal(onDisk.raw, &prev)
 	kept := map[string]map[string]any{}
 	for _, j := range prev.Jobs {
-		if name, ok := j["name"].(string); ok {
-			kept[name] = j
+		kept[onDisk.idIn(j)] = j
+	}
+	for _, j := range docJobs(doc) {
+		for key := range j {
+			if IsCommandKey(key) {
+				delete(j, key)
+			}
+		}
+		for _, key := range commandKeys {
+			if v, ok := kept[idOf(j)][key]; ok {
+				j[key] = v
+			}
 		}
 	}
-	for top, list := range doc {
-		if !strings.EqualFold(top, "jobs") {
+}
+
+// settleIDs gives every job in doc an id of its own. A job keeps the id it
+// carries unless another job carries it too; of those the one still called
+// what the file on disk calls that job keeps it, or else the first. A job
+// left without one takes the id of its namesake on disk if no other job holds
+// it, so a list from a client that drops ids, or a backup from before them,
+// still meets its history, and otherwise gets a new id.
+func (c *Config) settleIDs(doc map[string]any) {
+	jobs := docJobs(doc)
+	owner := map[string]int{}
+	for i, j := range jobs {
+		id := idOf(j)
+		if id == "" {
 			continue
 		}
-		for _, j := range jobMaps(list) {
-			name, _ := j["name"].(string)
-			for key := range j {
-				if IsCommandKey(key) {
-					delete(j, key)
-				}
+		at, seen := owner[id]
+		if !seen {
+			owner[id] = i
+			continue
+		}
+		if was, ok := c.Find(id); ok && was.ID == id && nameOf(j) == was.Name && nameOf(jobs[at]) != was.Name {
+			owner[id] = i
+		}
+	}
+	for i, j := range jobs {
+		id := idOf(j)
+		if id != "" && owner[id] == i {
+			setID(j, id)
+			continue
+		}
+		id = jobid.New()
+		if was, ok := c.named(nameOf(j)); ok {
+			if _, held := owner[was.ID]; !held {
+				id = was.ID
 			}
-			for _, key := range commandKeys {
-				if v, ok := kept[name][key]; ok {
-					j[key] = v
+		}
+		owner[id] = i
+		setID(j, id)
+	}
+}
+
+// followRenames moves what the notification settings keep for a job by its
+// name, its own Healthchecks check, to the job's new name.
+func (c *Config) followRenames(doc map[string]any) {
+	renamed := map[string]string{}
+	for _, j := range docJobs(doc) {
+		if was, ok := c.Find(idOf(j)); ok && was.ID == idOf(j) && was.Name != nameOf(j) {
+			renamed[was.Name] = nameOf(j)
+		}
+	}
+	if len(renamed) == 0 {
+		return
+	}
+	for _, block := range objectsIn(doc, "notify") {
+		for _, channels := range listsIn(block, "channels") {
+			for _, raw := range channels {
+				ch, _ := raw.(map[string]any)
+				for _, hc := range objectsIn(ch, "healthchecks") {
+					for _, byKey := range objectsIn(hc, "byKey") {
+						moved := map[string]any{}
+						for name, check := range byKey {
+							if to, ok := renamed[name]; ok {
+								delete(byKey, name)
+								moved[to] = check
+							}
+						}
+						for name, check := range moved {
+							byKey[name] = check
+						}
+					}
 				}
 			}
 		}
 	}
+}
+
+// objectsIn returns the objects m holds under key in any case, as Load reads
+// them.
+func objectsIn(m map[string]any, key string) []map[string]any {
+	var out []map[string]any
+	for k, v := range m {
+		if o, ok := v.(map[string]any); ok && strings.EqualFold(k, key) {
+			out = append(out, o)
+		}
+	}
+	return out
+}
+
+func listsIn(m map[string]any, key string) [][]any {
+	var out [][]any
+	for k, v := range m {
+		if l, ok := v.([]any); ok && strings.EqualFold(k, key) {
+			out = append(out, l)
+		}
+	}
+	return out
+}
+
+// idIn is the id of a job as the file holds it, or for a file written before
+// ids, the one load gave the job.
+func (c *Config) idIn(j map[string]any) string {
+	if id := idOf(j); id != "" {
+		return id
+	}
+	was, _ := c.named(nameOf(j))
+	return was.ID
+}
+
+// idOf reads a job's id in whatever case its key is spelt.
+func idOf(j map[string]any) string {
+	for k, v := range j {
+		if s, ok := v.(string); ok && strings.EqualFold(k, "id") {
+			return s
+		}
+	}
+	return ""
+}
+
+// setID writes id under the one spelling of the key.
+func setID(j map[string]any, id string) {
+	for k := range j {
+		if strings.EqualFold(k, "id") {
+			delete(j, k)
+		}
+	}
+	j["id"] = id
+}
+
+func nameOf(j map[string]any) string {
+	for k, v := range j {
+		if s, ok := v.(string); ok && strings.EqualFold(k, "name") {
+			return s
+		}
+	}
+	return ""
+}
+
+// docJobs is the job list of a document as save edits it.
+func docJobs(doc map[string]any) []map[string]any {
+	var out []map[string]any
+	for top, list := range doc {
+		if strings.EqualFold(top, "jobs") {
+			out = append(out, jobMaps(list)...)
+		}
+	}
+	return out
 }
 
 // jobMaps returns the jobs in a list as SaveJobs hands it over, typed, or as a

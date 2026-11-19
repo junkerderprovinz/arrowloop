@@ -69,6 +69,7 @@
   },
   "jobs": [
     {
+      "id": "0d1a7dbba78f",
       "name": "photos",
       "left": "D:/Photos",
       "right": "sftp:backup/photos",
@@ -86,6 +87,7 @@
       "watchSettle": "2s"
     },
     {
+      "id": "92f968e31f9b",
       "name": "documents",
       "left": "D:/Documents",
       "right": "s3:my-bucket/documents",
@@ -96,6 +98,7 @@
       "keepVersions": 5
     },
     {
+      "id": "1c17182e260a",
       "name": "scratch",
       "left": "D:/Scratch",
       "right": "E:/ScratchMirror",
@@ -103,6 +106,7 @@
       "brakePercent": 0
     },
     {
+      "id": "40eebdf960a3",
       "name": "server-share",
       "left": "D:/Share",
       "right": "//nas/share",
