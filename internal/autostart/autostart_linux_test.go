@@ -190,3 +190,28 @@ func TestThePortalHearsTheWholeRequest(t *testing.T) {
 		t.Error("switching off sends a command line the portal has no use for")
 	}
 }
+
+// An AppImage's program runs from a mount that is gone once it quits, so the
+// entry has to start the AppImage itself.
+func TestAnAppImageStartsWithTheSessionFromItsFile(t *testing.T) {
+	const image = "/home/jane doe/Apps/ArrowLoop.AppImage"
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	t.Setenv("APPIMAGE", image)
+
+	if err := Set(true); err != nil {
+		t.Fatalf("register: %v", err)
+	}
+	if same, err := pointsAt(image); err != nil || !same {
+		t.Fatalf("the entry does not start the AppImage (%v, %v)", same, err)
+	}
+
+	if err := enable("/tmp/.mount_ArrowLxyz/usr/bin/ArrowLoop"); err != nil {
+		t.Fatalf("write the stale entry: %v", err)
+	}
+	if err := Refresh(); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if same, err := pointsAt(image); err != nil || !same {
+		t.Fatalf("a refresh left the entry on the mount (%v, %v)", same, err)
+	}
+}
