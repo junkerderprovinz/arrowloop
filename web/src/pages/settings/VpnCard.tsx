@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type HTMLAttributes } from 'react'
 import { PickerWindow, type PickerItem, type TileMark } from '@glimstone/react/PickerWindow'
 
 import { Dialog } from '../../components/Dialog'
-import { FieldRow, Secret, Text } from '../../components/Field'
+import { FIELD_FOCUS, FieldRow, Secret, Text } from '../../components/Field'
 import { IconAdd, IconCheck, IconClose } from '../../components/glyphs'
 import { api, ApiError } from '../../lib/api'
 import { at } from '../../lib/base'
@@ -450,7 +450,7 @@ function ConfigField({ hint, value, onValue }: { hint: string; value: string; on
         value={value}
         placeholder={'[Interface]\nPrivateKey = …\nAddress = 10.0.0.2/32\n\n[Peer]\nPublicKey = …\nEndpoint = vpn.example.net:51820'}
         onChange={(e) => onValue(e.target.value)}
-        className="w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-(--field-placeholder) focus:brightness-125"
+        className={`w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-(--field-placeholder) ${FIELD_FOCUS}`}
         style={{ borderRadius: 'var(--radius-control)' }}
       />
       <input
