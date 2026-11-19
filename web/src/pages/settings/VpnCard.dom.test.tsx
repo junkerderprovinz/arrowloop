@@ -154,6 +154,28 @@ describe('the VPN chooser', () => {
     expect(item.style.getPropertyValue('--provider-tile')).toBe('#4580ff')
   })
 
+  it('opens in the picker window the channels and targets use', async () => {
+    const chooser = await openChooser()
+    expect(chooser.getAttribute('data-glim')).toBe('PickerWindow')
+  })
+
+  it('empties the search on Escape before it lets the window close', async () => {
+    const chooser = await openChooser()
+    const search = within(chooser).getByRole('searchbox') as HTMLInputElement
+    fireEvent.change(search, { target: { value: 'mull' } })
+    fireEvent.keyDown(search, { key: 'Escape' })
+    expect(search.value).toBe('')
+    expect(screen.getByRole('dialog')).toBeTruthy()
+  })
+
+  it('draws a logo once at rest and once lit, with no class that keeps the rest one showing', async () => {
+    const chooser = await openChooser()
+    const mark = within(chooser).getByRole('button', { name: 'NordVPN' }).querySelector('.glim-brand-svg')!
+    expect(mark.querySelectorAll(':scope > .glim-mark-rest')).toHaveLength(1)
+    expect(mark.querySelectorAll(':scope > .glim-mark-hover')).toHaveLength(1)
+    expect(mark.querySelector('.block')).toBeNull()
+  })
+
   it('finds a provider by name', async () => {
     const chooser = await openChooser()
     fireEvent.change(within(chooser).getByRole('searchbox'), { target: { value: 'mull' } })

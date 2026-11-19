@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState, type CSSProperties, type HTMLAttributes } from 'react'
+import { useEffect, useRef, useState, type HTMLAttributes } from 'react'
+import { PickerWindow, type PickerItem, type TileMark } from '@glimstone/react/PickerWindow'
 
 import { Dialog } from '../../components/Dialog'
 import { FieldRow, Secret, Text } from '../../components/Field'
 import { IconAdd, IconCheck, IconClose } from '../../components/glyphs'
-import { PickTiles } from '../../components/PickTiles'
-import { PickerWindow } from '../../components/PickerWindow'
 import { api, ApiError } from '../../lib/api'
 import { at } from '../../lib/base'
 import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
-import { matchesQuery } from '../../lib/fold'
 import { Badge } from '../../lib/glimstone/Badge'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
@@ -22,31 +20,27 @@ type T = ReturnType<typeof useT>['t']
 
 const LOGOS = new Map(VPN_PROVIDERS.map((p) => [p.id, p.logo]))
 
+const masked = (url: string) =>
+  `<span style="display:block;width:100%;height:100%;background-color:currentColor;mask:url(&quot;${url}&quot;) center / contain no-repeat"></span>`
+
 /**
- * A provider's logo from public/vpn. Under the pointer its tile fills with the
- * brand's colour and the logo turns that colour's ink, drawn from the logo's
- * own shape or, where the shape has holes, from a mask cut for it. A logo too
- * dark for the page at rest is drawn in the text's colour.
+ * A provider's logo from public/vpn as the picker's tiles take it. Under the
+ * pointer the tile fills with the brand's colour and the logo turns that
+ * colour's ink, drawn from the logo's own shape or, where the shape has holes,
+ * from a mask cut for it. A logo too dark for the page at rest is drawn in the
+ * text's colour.
  */
-export function VpnMark({ id }: { id: string }) {
+export function vpnTileMark(id: string): TileMark {
   const logo = LOGOS.get(id)
   const src = at(`/vpn/${id}.png`)
-  const mask = (url: string, colour: string): CSSProperties => ({
-    width: '100%',
-    height: '100%',
-    backgroundColor: colour,
-    mask: `url("${url}") center / contain no-repeat`,
-  })
-  return (
-    <>
-      {logo?.rest === 'ink' ? (
-        <span aria-hidden className="glim-mark-rest block" style={mask(src, 'currentColor')} />
-      ) : (
-        <img alt="" src={src} className="glim-mark-rest block h-full w-full object-contain" />
-      )}
-      <span aria-hidden className="glim-mark-hover" style={mask(logo?.lit ? at(`/vpn/${id}.lit.png`) : src, 'var(--tile-ink)')} />
-    </>
-  )
+  const rest =
+    logo?.rest === 'ink' ? masked(src) : `<img alt="" src="${src}" style="display:block;width:100%;height:100%;object-fit:contain">`
+  return { svg: rest, hover: masked(logo?.lit ? at(`/vpn/${id}.lit.png`) : src), tile: logo?.tile, ink: logo?.ink }
+}
+
+/** A provider's logo as it stands at rest, outside the picker. */
+export function VpnMark({ id }: { id: string }) {
+  return <span aria-hidden className="flex h-full w-full" dangerouslySetInnerHTML={{ __html: vpnTileMark(id).svg }} />
 }
 
 /** The own config is no brand, so its name is the interface's words. */
@@ -175,7 +169,6 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
       {picking && (
         <VpnPicker
           vpn={vpn}
-          hueIndex={hueIndex}
           onPick={(id) => {
             setPicking(false)
             setEditing(id)
@@ -208,50 +201,40 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
 }
 
 /**
- * The providers as tiles with their logos, the way a target's product is
- * picked, and a WireGuard server of one's own after them.
+ * The providers as tiles with their logos, in the window a target's product
+ * and a notification channel are picked in, and a WireGuard server of one's
+ * own after them.
  */
-function VpnPicker({
-  vpn,
-  hueIndex,
-  onPick,
-  onClose,
-}: {
-  vpn: VpnState
-  hueIndex: number
-  onPick: (id: string) => void
-  onClose: () => void
-}) {
+function VpnPicker({ vpn, onPick, onClose }: { vpn: VpnState; onPick: (id: string) => void; onClose: () => void }) {
   const { t } = useT()
-  const [query, setQuery] = useState('')
-  const tiles = (own: boolean) =>
-    vpn.providers
-      .filter((p) => (p.id === CUSTOM) === own && matchesQuery(query, [nameOf(t, p), p.id]))
-      .map((p) => {
-        const logo = LOGOS.get(p.id)
-        return {
-          id: p.id,
-          name: nameOf(t, p),
-          mark: <VpnMark id={p.id} />,
-          lit: logo && { tile: logo.tile, ink: logo.ink },
-          ...(own ? { hint: t('vpn.customHint'), bubble: true } : p.configured ? { hint: t('vpn.saved') } : {}),
-        }
-      })
-  const sections = [
-    { id: 'providers', title: t('vpn.pickProviders'), tiles: tiles(false) },
-    { id: 'own', title: t('vpn.pickOwn'), tiles: tiles(true) },
-  ].filter((s) => s.tiles.length > 0)
+  const items: PickerItem[] = vpn.providers.map((p) => ({
+    id: p.id,
+    label: nameOf(t, p),
+    mark: vpnTileMark(p.id),
+    group: p.id === CUSTOM ? 'own' : 'providers',
+    hint: p.id === CUSTOM ? t('vpn.customHint') : undefined,
+    sub: p.configured ? t('vpn.saved') : undefined,
+  }))
 
   return (
     <PickerWindow
       title={t('vpn.pick')}
       hint={t('vpn.pickHint')}
-      hueIndex={hueIndex}
-      query={query}
-      onQuery={setQuery}
-      searchLabel={t('vpn.search')}
-      none={t('vpn.searchNone', { query: query.trim() })}
-      sections={sections.map((s) => ({ id: s.id, title: s.title, body: <PickTiles tiles={s.tiles} onPick={onPick} /> }))}
+      items={items}
+      groups={[
+        { id: 'providers', title: t('vpn.pickProviders') },
+        { id: 'own', title: t('vpn.pickOwn') },
+      ]}
+      text={{
+        search: t('vpn.search'),
+        clear: t('settings.searchClear'),
+        none: t('vpn.searchNone'),
+        close: t('common.close'),
+        cancel: t('vpn.cancel'),
+        back: t('preview.back'),
+      }}
+      selected={vpn.provider || undefined}
+      onPick={onPick}
       onClose={onClose}
     />
   )
