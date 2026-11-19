@@ -2223,6 +2223,10 @@ const nl: Translations = {
   'failure.vpnRefused.right': 'De verbindingen van de rechterkant kunnen niet via de VPN, dus de run is niet begonnen. Kies "Geen VPN" voor deze taak, of een doel dat wel via de VPN kan.',
   'failure.noVpn': 'Deze taak loopt via de VPN, en ArrowLoop heeft op dit apparaat geen ingebouwde VPN. Zet "Via de VPN" uit en gebruik de VPN van het systeem.',
   'new.change.vpn': 'Een ingebouwde VPN, of meerdere: stel ze in onder {integrations} door je provider te kiezen of een WireGuard-configuratie te plakken, en kies er dan een in een taak. Die wordt voor de runs van die taak opgebouwd en daarna weer verbroken. Komt hij niet tot stand, dan mislukt de run en wordt er niets via je eigen verbinding gesynchroniseerd.',
+  'new.change.appimage': 'ArrowLoop is er ook als AppImage voor Linux: één bestand met een eigen WebKitGTK dat zichzelf bijwerkt. De tegel {apps} biedt het aan voor x64 en ARM64, vlak voor de Flatpak.',
+  'new.change.downloadButtons': 'Wijs een downloadknop op de tegel {apps} aan en een tweede regel vertelt je welke build het is, bijvoorbeeld x64, of Apple en Intel voor de Mac.',
+  'new.change.jobRename': 'Een hernoemde taak houdt zijn runs, zijn statistieken en alles wat het vangnet erover heeft geleerd.',
+  'new.change.connectionRows': 'Doelen, VPN\'s en meldingskanalen staan allemaal in hetzelfde soort rij, met de knoppen voor testen, bewerken en verwijderen altijd op dezelfde plek. Mislukt de automatische controle van een doel, dan toont de rij {notConnected} en de reden. De instellingen van een kanaal openen in een eigen venster en worden meteen opgeslagen.',
 }
 
 export default nl

@@ -169,16 +169,18 @@ function DesktopCard({ version }: { version: string }) {
     <Card title={t('apps.desktopTitle')} hint={t('apps.desktopHint')} hueIndex={0}>
       <ReleaseVersion version={version} />
       <div className="glim-readme-btn-rows">
-        <ReadmeButton
-          brand="windows"
-          parts={[
-            { name: t('apps.windows'), sub: 'x64', href: DOWNLOADS.windows },
-            { name: 'ARM64', label: `${t('apps.windows')} ARM64`, href: DOWNLOADS.windowsArm },
-          ]}
-          mark={<BrandMark svg={WINDOWS_SVG} />}
-          markClass="glim-windows-mark"
-          onLinkClick={followExternal}
-        />
+        <span data-new="download-buttons" className="inline-flex">
+          <ReadmeButton
+            brand="windows"
+            parts={[
+              { name: t('apps.windows'), sub: 'x64', href: DOWNLOADS.windows },
+              { name: 'ARM64', label: `${t('apps.windows')} ARM64`, href: DOWNLOADS.windowsArm },
+            ]}
+            mark={<BrandMark svg={WINDOWS_SVG} />}
+            markClass="glim-windows-mark"
+            onLinkClick={followExternal}
+          />
+        </span>
         <ReadmeButton
           brand="apple"
           parts={[
@@ -203,7 +205,11 @@ function DesktopCard({ version }: { version: string }) {
             { name: t('apps.appimage'), sub: 'x64', href: DOWNLOADS.appimage },
             { name: 'ARM64', label: `${t('apps.appimage')} ARM64`, href: DOWNLOADS.appimageArm },
           ]}
-          mark={<BrandMark svg={LINUX_SVG} />}
+          mark={
+            <span data-new="appimage" className="inline-flex">
+              <BrandMark svg={LINUX_SVG} />
+            </span>
+          }
           onLinkClick={followExternal}
         />
         <ReadmeButton

@@ -2223,6 +2223,10 @@ const fi: Translations = {
   'failure.vpnRefused.right': 'Oikean puolen yhteydet eivät voi kulkea VPN:n kautta, joten ajo ei alkanut. Valitse tälle työlle ”Ei VPN:ää” tai kohde, joka voi kulkea sen kautta.',
   'failure.noVpn': 'Tämä työ kulkee VPN:n kautta, eikä ArrowLoopissa ole tällä laitteella sisäänrakennettua VPN:ää. Kytke ”VPN:n kautta” pois päältä ja käytä sen sijaan järjestelmän VPN:ää.',
   'new.change.vpn': 'Sisäänrakennettu VPN, tai useampi: määritä ne kohdassa {integrations} valitsemalla palveluntarjoajasi tai liittämällä WireGuard-määritys, ja valitse sitten yksi niistä työhön. VPN avataan kyseisen työn ajoja varten ja suljetaan niiden jälkeen. Jos sitä ei saada auki, ajo epäonnistuu eikä mitään synkronoida oman yhteytesi kautta.',
+  'new.change.appimage': 'ArrowLoop on saatavilla myös AppImagena Linuxille: yksi tiedosto, jossa on oma WebKitGTK ja joka päivittää itse itsensä. {apps}-ruutu tarjoaa sen x64:lle ja ARM64:lle, heti ennen Flatpakia.',
+  'new.change.downloadButtons': 'Vie osoitin {apps}-ruudun latauspainikkeen päälle, niin toinen rivi kertoo, mikä versio on kyseessä, esimerkiksi x64 tai Macille Apple ja Intel.',
+  'new.change.jobRename': 'Uudelleen nimetty työ säilyttää ajonsa, tilastonsa ja kaiken, mitä turvaverkko on siitä oppinut.',
+  'new.change.connectionRows': 'Kohteet, VPN:t ja ilmoituskanavat näkyvät kaikki samanlaisina riveinä, ja testaus-, muokkaus- ja poistopainikkeet ovat aina samassa kohdassa. Jos kohteen automaattinen tarkistus epäonnistuu, sen rivillä lukee {notConnected} ja syy. Kanavan asetukset avautuvat omaan ikkunaansa ja tallentuvat sitä mukaa kuin muutat niitä.',
 }
 
 export default fi

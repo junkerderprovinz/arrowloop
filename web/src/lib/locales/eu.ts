@@ -2223,6 +2223,10 @@ const eu: Translations = {
   'failure.vpnRefused.right': 'Eskuineko aldearen konexioak ezin dira VPNaren bidez joan, beraz exekuzioa ez da hasi. Aukeratu «VPNrik gabe» lan honetarako, edo haren bidez joan daitekeen helburu bat.',
   'failure.noVpn': 'Lan hau VPNaren bidez doa, eta ArrowLoopek ez du VPN integraturik gailu honetan. Desaktibatu «VPNaren bidez» eta erabili sistemaren VPNa.',
   'new.change.vpn': 'VPN integratu bat, edo batzuk: konfiguratu {integrations} atalean zure hornitzailea aukeratuta edo WireGuard konfigurazio bat itsatsita, eta gero aukeratu bat lan batean. Lan horren exekuzioetarako pizten da eta gero itzali. Ezin bada piztu, exekuzioak huts egiten du eta ez da ezer sinkronizatzen zure konexioaren bidez.',
+  'new.change.appimage': 'ArrowLoop AppImage gisa ere badago Linuxerako: fitxategi bakarra, bere WebKitGTK propioarekin eta bere kabuz eguneratzen dena. {apps} lauzak x64 eta ARM64rako eskaintzen du, Flatpak-en aurretik.',
+  'new.change.downloadButtons': 'Jarri erakuslea {apps} lauzako deskarga-botoi baten gainean, eta bigarren lerro batek zein bertsio den esango dizu, adibidez x64, edo Apple eta Intel Mac-erako.',
+  'new.change.jobRename': 'Izena aldatzen diozun lan batek bere exekuzioak, estatistikak eta segurtasun sareak hari buruz ikasitako guztia gordetzen ditu.',
+  'new.change.connectionRows': 'Helburuak, VPNak eta jakinarazpen kanalak errenkada mota berean agertzen dira denak, eta probatu, editatu eta kendu botoiak beti leku berean daude. Helburu baten egiaztapen automatikoak huts egiten duenean, haren errenkadak {notConnected} eta arrazoia erakusten ditu. Kanal baten ezarpenak bere leihoan irekitzen dira eta berehala gordetzen dira.',
 }
 
 export default eu

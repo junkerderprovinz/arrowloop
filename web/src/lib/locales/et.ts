@@ -2223,6 +2223,10 @@ const et: Translations = {
   'failure.vpnRefused.right': 'Parema poole ühendused ei saa käia läbi VPN-i, seega käivitus ei alanud. Vali selle töö jaoks „Ilma VPN-ita“ või sihtkoht, mis saab VPN-i kaudu käia.',
   'failure.noVpn': 'See töö käib läbi VPN-i, aga ArrowLoopil pole selles seadmes sisseehitatud VPN-i. Lülita „VPN-i kaudu“ välja ja kasuta selle asemel süsteemi VPN-i.',
   'new.change.vpn': 'Sisseehitatud VPN, ka mitu: seadista need jaotises {integrations}, valides oma teenusepakkuja või kleepides WireGuardi seadistuse, ja vali siis üks neist mõnes töös. See lülitub selle töö käivitusteks sisse ja pärast välja. Kui see ei saa sisse lülituda, käivitus ebaõnnestub ja sinu enda ühenduse kaudu ei sünkroonita midagi.',
+  'new.change.appimage': 'ArrowLoop on Linuxile saadaval ka AppImage\'ina: üks fail oma WebKitGTK-ga, mis uuendab end ise. Paan {apps} pakub seda x64 ja ARM64 jaoks, kohe enne Flatpaki.',
+  'new.change.downloadButtons': 'Vii kursor paani {apps} allalaadimisnupule ja teine rida ütleb sulle, mis versioon see on, näiteks x64 või Maci puhul Apple ja Intel.',
+  'new.change.jobRename': 'Ümbernimetatud töö jätab alles oma käivitused, statistika ja kõik, mida turvavõrk on sellest õppinud.',
+  'new.change.connectionRows': 'Sihtkohad, VPN-id ja teavituskanalid on kõik ühesugused read ning testimise, muutmise ja eemaldamise nupud on alati samas kohas. Kui sihtkoha automaatne kontroll ebaõnnestub, näitab selle rida {notConnected} ja põhjust. Kanali seaded avanevad omaette aknas ja salvestuvad kohe.',
 }
 
 export default et

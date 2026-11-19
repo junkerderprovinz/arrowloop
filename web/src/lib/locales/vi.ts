@@ -2223,6 +2223,10 @@ const vi: Translations = {
   'failure.vpnRefused.right': 'Các kết nối của bên phải không thể đi qua VPN, nên lần chạy không bắt đầu. Hãy chọn "Không dùng VPN" cho công việc này, hoặc một đích có thể đi qua VPN.',
   'failure.noVpn': 'Công việc này đi qua VPN, nhưng ArrowLoop không có VPN tích hợp trên thiết bị này. Hãy tắt "Qua VPN" và dùng VPN của hệ thống.',
   'new.change.vpn': 'VPN tích hợp, có thể nhiều cái: thiết lập chúng trong {integrations} bằng cách chọn nhà cung cấp của bạn hoặc dán một cấu hình WireGuard, rồi chọn một cái trong công việc. VPN được bật lên cho các lần chạy của công việc đó và tắt đi sau đó. Nếu không bật được, lần chạy thất bại và không có gì được đồng bộ qua kết nối riêng của bạn.',
+  'new.change.appimage': 'ArrowLoop cũng có dạng AppImage cho Linux: một tệp duy nhất mang theo WebKitGTK riêng và tự cập nhật. Ô {apps} cung cấp bản này cho x64 và ARM64, ngay trước Flatpak.',
+  'new.change.downloadButtons': 'Trỏ vào một nút tải xuống trên ô {apps}, dòng thứ hai sẽ cho bạn biết đó là bản dựng nào, ví dụ x64, hoặc Apple và Intel cho Mac.',
+  'new.change.jobRename': 'Công việc được đổi tên vẫn giữ các lần chạy, số liệu thống kê và mọi thứ lưới an toàn đã học được về nó.',
+  'new.change.connectionRows': 'Đích, VPN và kênh thông báo đều hiển thị cùng một kiểu hàng, với các nút kiểm tra, sửa và xóa luôn ở cùng một chỗ. Khi lần kiểm tra tự động của một đích thất bại, hàng của nó hiện {notConnected} kèm lý do. Cài đặt của một kênh mở trong cửa sổ riêng và được lưu ngay.',
 }
 
 export default vi

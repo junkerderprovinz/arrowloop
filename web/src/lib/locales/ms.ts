@@ -2223,6 +2223,10 @@ const ms: Translations = {
   'failure.vpnRefused.right': 'Sambungan sebelah kanan tidak boleh melalui VPN, jadi larian tidak bermula. Pilih "Tanpa VPN" untuk tugas ini, atau destinasi yang boleh melaluinya.',
   'failure.noVpn': 'Tugas ini melalui VPN, dan ArrowLoop tiada VPN terbina dalam pada peranti ini. Matikan "Melalui VPN" dan gunakan VPN sistem.',
   'new.change.vpn': 'VPN terbina dalam, malah beberapa: sediakannya di {integrations} dengan memilih penyedia anda atau menampal konfigurasi WireGuard, kemudian pilih satu dalam tugas. VPN dihidupkan untuk larian tugas itu dan dimatikan selepasnya. Jika ia tidak dapat dihidupkan, larian gagal dan tiada apa-apa disegerakkan melalui sambungan anda sendiri.',
+  'new.change.appimage': 'ArrowLoop juga tersedia sebagai AppImage untuk Linux: satu fail dengan WebKitGTK sendiri yang mengemas kini dirinya sendiri. Jubin {apps} menawarkannya untuk x64 dan ARM64, betul-betul sebelum Flatpak.',
+  'new.change.downloadButtons': 'Halakan penuding ke butang muat turun pada jubin {apps}, dan baris kedua memberitahu anda binaan yang mana, contohnya x64, atau Apple dan Intel untuk Mac.',
+  'new.change.jobRename': 'Tugas yang dinamakan semula mengekalkan lariannya, statistiknya dan semua yang telah dipelajari oleh jaring keselamatan tentangnya.',
+  'new.change.connectionRows': 'Destinasi, VPN dan saluran pemberitahuan semuanya dipaparkan sebagai jenis baris yang sama, dengan butang uji, sunting dan buang sentiasa di tempat yang sama. Apabila semakan automatik sesuatu destinasi gagal, barisnya menunjukkan {notConnected} beserta sebabnya. Tetapan sesuatu saluran dibuka dalam tetingkapnya sendiri dan disimpan serta-merta.',
 }
 
 export default ms

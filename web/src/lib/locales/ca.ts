@@ -2223,6 +2223,10 @@ const ca: Translations = {
   'failure.vpnRefused.right': 'Les connexions de la banda dreta no poden passar per la VPN, així que l\'execució no ha començat. Tria «Sense VPN» per a aquesta tasca o una destinació que hi pugui passar.',
   'failure.noVpn': 'Aquesta tasca passa per la VPN, i ArrowLoop no té VPN integrada en aquest dispositiu. Desactiva «A través de la VPN» i fes servir la VPN del sistema.',
   'new.change.vpn': 'Una VPN integrada, o diverses: configura-les a {integrations} triant el teu proveïdor o enganxant una configuració de WireGuard, i després tria\'n una en una tasca. S\'activa per a les execucions d\'aquesta tasca i després es desactiva. Si no es pot activar, l\'execució falla i no se sincronitza res per la teva pròpia connexió.',
+  'new.change.appimage': 'ArrowLoop també es pot baixar com a AppImage per a Linux: un sol fitxer amb el seu propi WebKitGTK que s\'actualitza tot sol. La rajola {apps} l\'ofereix per a x64 i ARM64, just abans del Flatpak.',
+  'new.change.downloadButtons': 'Passa el punter per sobre d\'un botó de baixada de la rajola {apps} i una segona línia et diu quina versió és, per exemple x64, o Apple i Intel per al Mac.',
+  'new.change.jobRename': 'Una tasca a la qual canvies el nom conserva les seves execucions, les seves estadístiques i tot el que n\'ha après la xarxa de seguretat.',
+  'new.change.connectionRows': 'Les destinacions, les VPN i els canals de notificació es mostren tots amb el mateix tipus de fila, amb els botons de provar, editar i eliminar sempre al mateix lloc. Quan la comprovació automàtica d\'una destinació falla, la seva fila mostra {notConnected} i el motiu. La configuració d\'un canal s\'obre en una finestra pròpia i es desa a mesura que l\'edites.',
 }
 
 export default ca

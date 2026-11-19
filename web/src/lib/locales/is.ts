@@ -2223,6 +2223,10 @@ const is: Translations = {
   'failure.vpnRefused.right': 'Tengingar hægri hliðarinnar geta ekki farið um VPN, svo keyrslan hófst ekki. Veldu „Ekkert VPN“ fyrir þetta verk, eða áfangastað sem getur farið um það.',
   'failure.noVpn': 'Þetta verk fer um VPN, og ArrowLoop er ekki með innbyggt VPN í þessu tæki. Slökktu á „Í gegnum VPN“ og notaðu VPN kerfisins í staðinn.',
   'new.change.vpn': 'Innbyggt VPN, eða fleiri: settu þau upp undir {integrations} með því að velja þjónustuveituna þína eða líma inn WireGuard-stillingar, og veldu svo eitt þeirra í verki. Það tengist fyrir keyrslur þess verks og aftengist á eftir. Ef það nær ekki að tengjast mistekst keyrslan og ekkert er samstillt um þína eigin tengingu.',
+  'new.change.appimage': 'ArrowLoop fæst líka sem AppImage fyrir Linux: ein skrá með eigið WebKitGTK sem uppfærir sig sjálf. Reiturinn {apps} býður hana fyrir x64 og ARM64, rétt á undan Flatpak.',
+  'new.change.downloadButtons': 'Færðu bendilinn yfir niðurhalshnapp í reitnum {apps} og önnur lína segir þér hvaða útgáfa það er, til dæmis x64, eða Apple og Intel fyrir Mac.',
+  'new.change.jobRename': 'Verk sem þú endurnefnir heldur keyrslunum sínum, tölfræðinni og öllu sem öryggisnetið hefur lært um það.',
+  'new.change.connectionRows': 'Áfangastaðir, VPN og tilkynningarásir birtast allir sem sams konar lína, og hnapparnir til að prófa, breyta og fjarlægja eru alltaf á sama stað. Þegar sjálfvirk athugun áfangastaðar mistekst sýnir lína hans {notConnected} og ástæðuna. Stillingar rásar opnast í eigin glugga og vistast jafnóðum.',
 }
 
 export default is

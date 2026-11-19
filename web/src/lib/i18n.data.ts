@@ -2267,6 +2267,10 @@ export const en = {
   'failure.vpnRefused.right': 'The right side\'s connections cannot go through the VPN, so the run did not start. Choose No VPN for this job, or a target that can go through it.',
   'failure.noVpn': 'This job goes through the VPN, and ArrowLoop has no built-in VPN on this device. Switch Through the VPN off and use the system\'s VPN instead.',
   'new.change.vpn': 'A built-in VPN, or several: set them up under {integrations} by picking your provider or pasting a WireGuard configuration, then choose one in a job. It comes up for that job\'s runs and goes down after. When it cannot come up, the run fails and nothing is synced over your own connection.',
+  'new.change.appimage': 'ArrowLoop also comes as an AppImage for Linux: one file with its own WebKitGTK that updates itself. The {apps} tile offers it for x64 and ARM64, just before the Flatpak.',
+  'new.change.downloadButtons': 'Point at a download button on the {apps} tile and a second line tells you which build it is, such as x64, or Apple and Intel for the Mac.',
+  'new.change.jobRename': 'A renamed job keeps its runs, its statistics and everything the safety net has learned about it.',
+  'new.change.connectionRows': 'Targets, VPNs and notification channels all show as the same kind of row, with their test, edit and remove buttons in the same place. When a target\'s automatic check fails, its row says {notConnected} and why. A channel\'s settings open in a window of their own and save as you go.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -4524,6 +4528,10 @@ export const de: Translations = {
   'failure.vpnRefused.right': 'Die Verbindungen der rechten Seite können nicht über das VPN laufen, deshalb hat der Lauf nicht begonnen. Wähl für diesen Auftrag „Kein VPN“ oder ein Ziel, das darüber laufen kann.',
   'failure.noVpn': 'Dieser Auftrag läuft über das VPN, und ArrowLoop hat auf diesem Gerät kein eingebautes VPN. Schalte „Über das VPN“ aus und nimm das VPN des Systems.',
   'new.change.vpn': 'Ein eingebautes VPN, auch mehrere: Richte sie unter {integrations} ein, indem du deinen Anbieter wählst oder eine WireGuard-Konfiguration einfügst, und wähl dann eines in einem Auftrag. Es baut sich für die Läufe dieses Auftrags auf und danach wieder ab. Kommt es nicht zustande, schlägt der Lauf fehl, und über deine eigene Verbindung wird nichts übertragen.',
+  'new.change.appimage': 'ArrowLoop gibt es für Linux auch als AppImage: eine einzige Datei mit eigenem WebKitGTK, die sich selbst aktualisiert. Die Kachel {apps} bietet es für x64 und ARM64 an, gleich vor dem Flatpak.',
+  'new.change.downloadButtons': 'Zeig auf einen Download-Knopf auf der Kachel {apps}, dann nennt dir eine zweite Zeile den Build, etwa x64 oder beim Mac Apple und Intel.',
+  'new.change.jobRename': 'Ein umbenannter Auftrag behält seine Läufe, seine Statistik und alles, was das Sicherheitsnetz über ihn gelernt hat.',
+  'new.change.connectionRows': 'Ziele, VPNs und Benachrichtigungskanäle stehen alle in derselben Art Zeile, mit Testen, Bearbeiten und Entfernen immer an derselben Stelle. Schlägt die automatische Prüfung eines Ziels fehl, zeigt seine Zeile {notConnected} und den Grund. Die Einstellungen eines Kanals öffnen sich in einem eigenen Fenster und speichern sofort.',
 }
 
 export interface Language {

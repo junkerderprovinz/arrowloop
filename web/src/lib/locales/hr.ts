@@ -2223,6 +2223,10 @@ const hr: Translations = {
   'failure.vpnRefused.right': 'Veze desne strane ne mogu ići preko VPN-a, pa izvođenje nije počelo. Odaberi „Bez VPN-a” za ovaj zadatak ili odredište koje može ići preko njega.',
   'failure.noVpn': 'Ovaj zadatak ide preko VPN-a, a ArrowLoop na ovom uređaju nema ugrađeni VPN. Isključi „Preko VPN-a” i umjesto toga koristi VPN sustava.',
   'new.change.vpn': 'Ugrađeni VPN, može i više njih: postavi ih pod {integrations} tako da odabereš svog pružatelja usluge ili zalijepiš WireGuard konfiguraciju, pa jedan od njih odaberi u zadatku. Podiže se za izvođenja tog zadatka i nakon njih spušta. Ako se ne može podići, izvođenje ne uspijeva i ništa se ne sinkronizira preko tvoje vlastite veze.',
+  'new.change.appimage': 'ArrowLoop postoji i kao AppImage za Linux: jedna datoteka s vlastitim WebKitGTK-om koja se sama ažurira. Pločica {apps} nudi ga za x64 i ARM64, odmah ispred Flatpaka.',
+  'new.change.downloadButtons': 'Postavi pokazivač na gumb za preuzimanje na pločici {apps} i drugi redak reći će ti o kojoj je verziji riječ, recimo x64 ili Apple i Intel za Mac.',
+  'new.change.jobRename': 'Preimenovani zadatak zadržava svoja pokretanja, statistiku i sve što je sigurnosna mreža o njemu naučila.',
+  'new.change.connectionRows': 'Odredišta, VPN-ovi i kanali obavijesti prikazuju se kao ista vrsta retka, s gumbima za testiranje, uređivanje i uklanjanje uvijek na istom mjestu. Kad automatska provjera odredišta ne uspije, njegov redak pokazuje {notConnected} i razlog. Postavke kanala otvaraju se u vlastitom prozoru i spremaju se odmah.',
 }
 
 export default hr

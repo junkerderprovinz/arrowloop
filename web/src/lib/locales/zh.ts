@@ -2223,6 +2223,10 @@ const zh: Translations = {
   'failure.vpnRefused.right': '右侧的连接无法通过 VPN，所以运行没有开始。请为此任务选择“不使用 VPN”，或选择一个可以通过 VPN 的目标。',
   'failure.noVpn': '此任务通过 VPN，而 ArrowLoop 在这台设备上没有内置 VPN。请关闭“通过 VPN”，改用系统的 VPN。',
   'new.change.vpn': '内置 VPN，也可以有多个：在 {integrations} 中选择你的服务商或粘贴 WireGuard 配置来设置，然后在任务中选择其中一个。VPN 会为该任务的运行建立，之后断开。如果无法建立，运行会失败，也不会通过你自己的连接同步任何内容。',
+  'new.change.appimage': 'ArrowLoop 也提供 Linux 版 AppImage：一个自带 WebKitGTK 的文件，能自己更新。{apps}磁贴提供 x64 和 ARM64 版本，就排在 Flatpak 前面。',
+  'new.change.downloadButtons': '把指针移到{apps}磁贴上的下载按钮上，第二行会告诉你是哪个版本，比如 x64，或者 Mac 的 Apple 和 Intel。',
+  'new.change.jobRename': '重命名后的任务会保留它的运行记录、统计数据，以及安全网对它学到的一切。',
+  'new.change.connectionRows': '目标、VPN 和通知渠道都显示为同一种行，测试、编辑和删除按钮总在同一位置。目标的自动检查失败时，它那一行会显示{notConnected}和原因。渠道的设置在单独的窗口中打开，改动会立即保存。',
 }
 
 export default zh

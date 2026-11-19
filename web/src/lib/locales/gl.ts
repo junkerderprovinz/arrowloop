@@ -2223,6 +2223,10 @@ const gl: Translations = {
   'failure.vpnRefused.right': 'As conexións do lado dereito non poden ir pola VPN, así que a execución non comezou. Escolle «Sen VPN» para esta tarefa ou un destino que poida ir por ela.',
   'failure.noVpn': 'Esta tarefa vai pola VPN, e ArrowLoop non ten VPN integrada neste dispositivo. Desactiva «A través da VPN» e usa a VPN do sistema no seu lugar.',
   'new.change.vpn': 'Unha VPN integrada, ou varias: configúraas en {integrations} escollendo o teu provedor ou pegando unha configuración WireGuard, e despois escolle unha nunha tarefa. Actívase para as execucións desa tarefa e desactívase despois. Se non pode activarse, a execución falla e non se sincroniza nada pola túa propia conexión.',
+  'new.change.appimage': 'ArrowLoop tamén está dispoñible como AppImage para Linux: un só ficheiro co seu propio WebKitGTK que se actualiza só. A tesela {apps} ofréceo para x64 e ARM64, xusto antes do Flatpak.',
+  'new.change.downloadButtons': 'Pasa o punteiro por riba dun botón de descarga da tesela {apps} e unha segunda liña dite que versión é, por exemplo x64, ou Apple e Intel para o Mac.',
+  'new.change.jobRename': 'Unha tarefa á que lle cambias o nome conserva as súas execucións, as súas estatísticas e todo o que a rede de seguridade aprendeu dela.',
+  'new.change.connectionRows': 'Os destinos, as VPN e as canles de notificación móstranse todos co mesmo tipo de fila, cos botóns de probar, editar e quitar sempre no mesmo sitio. Cando falla a comprobación automática dun destino, a súa fila amosa {notConnected} e o motivo. A configuración dunha canle ábrese nunha xanela propia e gárdase sobre a marcha.',
 }
 
 export default gl

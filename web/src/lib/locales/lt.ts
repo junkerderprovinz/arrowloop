@@ -2223,6 +2223,10 @@ const lt: Translations = {
   'failure.vpnRefused.right': 'Dešiniosios pusės ryšiai negali eiti per VPN, todėl paleidimas neprasidėjo. Šiai užduočiai pasirink „Be VPN“ arba paskirtį, kuri gali eiti per jį.',
   'failure.noVpn': 'Ši užduotis eina per VPN, o šiame įrenginyje ArrowLoop neturi integruoto VPN. Išjunk „Per VPN“ ir naudok sistemos VPN.',
   'new.change.vpn': 'Integruotas VPN, net keli: nustatyk juos skiltyje {integrations} pasirinkęs paslaugų teikėją arba įklijavęs WireGuard konfigūraciją, tada vieną iš jų pasirink užduotyje. Jis įsijungia tos užduoties paleidimams ir paskui išsijungia. Jei jis neprisijungia, paleidimas nepavyksta ir per tavo nuosavą ryšį niekas nesinchronizuojama.',
+  'new.change.appimage': 'ArrowLoop taip pat yra kaip AppImage Linux sistemai: vienas failas su savo WebKitGTK, kuris pats save atnaujina. Plytelė {apps} jį siūlo x64 ir ARM64, iškart prieš Flatpak.',
+  'new.change.downloadButtons': 'Užvesk žymeklį ant atsisiuntimo mygtuko plytelėje {apps}, ir antra eilutė tau pasakys, kuri tai versija, pavyzdžiui, x64 arba Mac kompiuteriui Apple ir Intel.',
+  'new.change.jobRename': 'Pervadinta užduotis išlaiko savo paleidimus, statistiką ir viską, ką apie ją išmoko apsauginis tinklas.',
+  'new.change.connectionRows': 'Paskirtys, VPN ir pranešimų kanalai rodomi kaip tos pačios rūšies eilutės, o tikrinimo, redagavimo ir šalinimo mygtukai visada toje pačioje vietoje. Kai automatinis paskirties tikrinimas nepavyksta, jos eilutėje rodoma {notConnected} ir priežastis. Kanalo nustatymai atsidaro atskirame lange ir išsaugomi iš karto.',
 }
 
 export default lt

@@ -82,6 +82,23 @@ export const RELEASES: Release[] = [
         text: 'new.change.vpn',
         names: { integrations: 'settings.integrations' },
       },
+      {
+        id: 'appimage',
+        at: ['/settings/apps'],
+        where: ['nav.settings', 'settings.apps'],
+        text: 'new.change.appimage',
+        names: { apps: 'settings.apps' },
+      },
+      {
+        id: 'download-buttons',
+        at: ['/settings/apps'],
+        where: ['nav.settings', 'settings.apps'],
+        text: 'new.change.downloadButtons',
+        names: { apps: 'settings.apps' },
+      },
+      { id: 'job-rename', text: 'new.change.jobRename' },
+      // The rows stand on three pages, the targets, Integrations and the safety net.
+      { id: 'connection-rows', text: 'new.change.connectionRows', names: { notConnected: 'targets.checkFailed' } },
     ],
   },
   {

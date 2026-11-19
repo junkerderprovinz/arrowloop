@@ -2223,6 +2223,10 @@ const sv: Translations = {
   'failure.vpnRefused.right': 'Höger sidas anslutningar kan inte gå via VPN, så körningen startade inte. Välj ”Ingen VPN” för det här jobbet, eller ett mål som kan gå via den.',
   'failure.noVpn': 'Det här jobbet går via VPN, och ArrowLoop har ingen inbyggd VPN på den här enheten. Slå av ”Via VPN” och använd systemets VPN i stället.',
   'new.change.vpn': 'En inbyggd VPN, eller flera: ställ in dem under {integrations} genom att välja din leverantör eller klistra in en WireGuard-konfiguration, och välj sedan en av dem i ett jobb. Den kopplas upp för det jobbets körningar och ner igen efteråt. Om den inte kan kopplas upp misslyckas körningen, och ingenting synkroniseras över din egen anslutning.',
+  'new.change.appimage': 'ArrowLoop finns också som AppImage för Linux: en enda fil med sin egen WebKitGTK som uppdaterar sig själv. Rutan {apps} erbjuder den för x64 och ARM64, precis före Flatpak.',
+  'new.change.downloadButtons': 'Peka på en nedladdningsknapp i rutan {apps} så berättar en andra rad vilket bygge det är, till exempel x64, eller Apple och Intel för Mac.',
+  'new.change.jobRename': 'Ett jobb som får nytt namn behåller sina körningar, sin statistik och allt som skyddsnätet har lärt sig om det.',
+  'new.change.connectionRows': 'Mål, VPN:er och aviseringskanaler visas alla som samma slags rad, med knapparna för att testa, redigera och ta bort alltid på samma ställe. När den automatiska kontrollen av ett mål misslyckas visar raden {notConnected} och orsaken. En kanals inställningar öppnas i ett eget fönster och sparas medan du skriver.',
 }
 
 export default sv

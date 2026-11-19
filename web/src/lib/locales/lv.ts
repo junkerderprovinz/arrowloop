@@ -2223,6 +2223,10 @@ const lv: Translations = {
   'failure.vpnRefused.right': 'Labās puses savienojumi nevar iet caur VPN, tāpēc palaišana nesākās. Izvēlies šim uzdevumam “Bez VPN” vai galamērķi, kas var iet caur to.',
   'failure.noVpn': 'Šis uzdevums iet caur VPN, bet šajā ierīcē ArrowLoop nav iebūvēta VPN. Izslēdz “Caur VPN” un izmanto sistēmas VPN.',
   'new.change.vpn': 'Iebūvēts VPN, arī vairāki: iestati tos sadaļā {integrations}, izvēloties pakalpojumu sniedzēju vai ielīmējot WireGuard konfigurāciju, tad uzdevumā izvēlies vienu no tiem. Tas ieslēdzas šī uzdevuma palaišanām un pēc tam izslēdzas. Ja tas nevar ieslēgties, palaišana neizdodas un caur tavu paša savienojumu nekas netiek sinhronizēts.',
+  'new.change.appimage': 'ArrowLoop ir pieejams arī kā AppImage Linux sistēmai: viens fails ar savu WebKitGTK, kas pats sevi atjaunina. Flīze {apps} to piedāvā x64 un ARM64, tieši pirms Flatpak.',
+  'new.change.downloadButtons': 'Novieto rādītāju uz lejupielādes pogas flīzē {apps}, un otrā rinda tev pateiks, kura versija tā ir, piemēram, x64 vai Mac datoram Apple un Intel.',
+  'new.change.jobRename': 'Pārdēvēts uzdevums saglabā savas palaišanas, statistiku un visu, ko drošības tīkls par to ir iemācījies.',
+  'new.change.connectionRows': 'Galamērķi, VPN un paziņojumu kanāli visi tiek rādīti kā viena veida rindas, un pārbaudes, rediģēšanas un noņemšanas pogas vienmēr ir tajā pašā vietā. Ja galamērķa automātiskā pārbaude neizdodas, tā rindā redzams {notConnected} un iemesls. Kanāla iestatījumi atveras atsevišķā logā un saglabājas uzreiz.',
 }
 
 export default lv

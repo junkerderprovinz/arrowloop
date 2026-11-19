@@ -2223,6 +2223,10 @@ const tr: Translations = {
   'failure.vpnRefused.right': 'Sağ tarafın bağlantıları VPN üzerinden gidemiyor, bu yüzden çalıştırma başlamadı. Bu iş için “VPN yok” seçeneğini seç ya da VPN üzerinden gidebilen bir hedef seç.',
   'failure.noVpn': 'Bu iş VPN üzerinden gidiyor, ama ArrowLoop\'un bu cihazda yerleşik bir VPN\'i yok. “VPN üzerinden” seçeneğini kapat ve onun yerine sistemin VPN\'ini kullan.',
   'new.change.vpn': 'Yerleşik bir VPN, istersen birkaç tane: sağlayıcını seçerek ya da bir WireGuard yapılandırması yapıştırarak bunları {integrations} altında kur, sonra bir işte birini seç. VPN o işin çalıştırmaları için açılır, sonra kapanır. Açılamazsa çalıştırma başarısız olur ve kendi bağlantın üzerinden hiçbir şey eşitlenmez.',
+  'new.change.appimage': 'ArrowLoop, Linux için AppImage olarak da sunuluyor: kendi WebKitGTK\'sini taşıyan ve kendini güncelleyen tek bir dosya. {apps} kutucuğu onu x64 ve ARM64 için, Flatpak\'ın hemen önünde sunar.',
+  'new.change.downloadButtons': '{apps} kutucuğundaki bir indirme düğmesinin üzerine gel, ikinci bir satır sana hangi derleme olduğunu söyler, örneğin x64 ya da Mac için Apple ve Intel.',
+  'new.change.jobRename': 'Adını değiştirdiğin bir iş, çalışmalarını, istatistiklerini ve güvenlik ağının onun hakkında öğrendiği her şeyi korur.',
+  'new.change.connectionRows': 'Hedefler, VPN\'ler ve bildirim kanallarının hepsi aynı tür satır olarak görünür, test, düzenleme ve kaldırma düğmeleri hep aynı yerdedir. Bir hedefin otomatik denetimi başarısız olursa satırı {notConnected} durumunu ve nedenini gösterir. Bir kanalın ayarları kendi penceresinde açılır ve anında kaydedilir.',
 }
 
 export default tr

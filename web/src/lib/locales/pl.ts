@@ -2223,6 +2223,10 @@ const pl: Translations = {
   'failure.vpnRefused.right': 'Połączenia prawej strony nie mogą przechodzić przez VPN, więc uruchomienie się nie zaczęło. Wybierz dla tego zadania „Bez VPN” albo cel, który może przez niego przechodzić.',
   'failure.noVpn': 'To zadanie przechodzi przez VPN, a ArrowLoop nie ma na tym urządzeniu wbudowanego VPN. Wyłącz „Przez VPN” i użyj VPN systemu.',
   'new.change.vpn': 'Wbudowany VPN, a nawet kilka: skonfiguruj je w sekcji {integrations}, wybierając dostawcę albo wklejając konfigurację WireGuard, a potem wybierz jeden z nich w zadaniu. Włącza się na czas uruchomień tego zadania i potem się wyłącza. Jeśli nie da się go włączyć, uruchomienie kończy się błędem i nic nie jest synchronizowane przez twoje własne połączenie.',
+  'new.change.appimage': 'ArrowLoop jest też dostępny jako AppImage dla Linuksa: jeden plik z własnym WebKitGTK, który sam się aktualizuje. Kafelek {apps} oferuje go dla x64 i ARM64, tuż przed Flatpakiem.',
+  'new.change.downloadButtons': 'Najedź kursorem na przycisk pobierania na kafelku {apps}, a drugi wiersz powie ci, która to wersja, na przykład x64 albo Apple i Intel dla Maca.',
+  'new.change.jobRename': 'Zadanie, któremu zmienisz nazwę, zachowuje swoje przebiegi, statystyki i wszystko, czego nauczyła się o nim siatka bezpieczeństwa.',
+  'new.change.connectionRows': 'Cele, VPN-y i kanały powiadomień wyświetlają się jako ten sam rodzaj wiersza, a przyciski testu, edycji i usuwania są zawsze w tym samym miejscu. Gdy automatyczne sprawdzenie celu się nie powiedzie, jego wiersz pokazuje {notConnected} i powód. Ustawienia kanału otwierają się we własnym oknie i zapisują się na bieżąco.',
 }
 
 export default pl

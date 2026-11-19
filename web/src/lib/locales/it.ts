@@ -2223,6 +2223,10 @@ const it: Translations = {
   'failure.vpnRefused.right': 'Le connessioni del lato destro non possono passare dalla VPN, quindi l\'esecuzione non è partita. Scegli «Nessuna VPN» per questo lavoro, oppure una destinazione che possa passarci.',
   'failure.noVpn': 'Questo lavoro passa dalla VPN, e su questo dispositivo ArrowLoop non ha una VPN integrata. Disattiva «Tramite VPN» e usa invece la VPN del sistema.',
   'new.change.vpn': 'Una VPN integrata, o anche più di una: configurale sotto {integrations} scegliendo il tuo fornitore o incollando una configurazione WireGuard, poi scegline una in un lavoro. Si attiva per le esecuzioni di quel lavoro e si spegne dopo. Se non riesce ad attivarsi, l\'esecuzione fallisce e niente viene sincronizzato attraverso la tua connessione.',
+  'new.change.appimage': 'ArrowLoop è disponibile anche come AppImage per Linux: un unico file con il proprio WebKitGTK che si aggiorna da solo. Il riquadro {apps} lo offre per x64 e ARM64, subito prima del Flatpak.',
+  'new.change.downloadButtons': 'Passa il puntatore su un pulsante di download nel riquadro {apps} e una seconda riga ti dice di quale build si tratta, per esempio x64, oppure Apple e Intel per il Mac.',
+  'new.change.jobRename': 'Un lavoro rinominato conserva le sue esecuzioni, le sue statistiche e tutto ciò che la rete di sicurezza ha imparato su di esso.',
+  'new.change.connectionRows': 'Destinazioni, VPN e canali di notifica appaiono tutti come lo stesso tipo di riga, con i pulsanti per provare, modificare e rimuovere sempre nello stesso punto. Quando il controllo automatico di una destinazione fallisce, la sua riga mostra {notConnected} e il motivo. Le impostazioni di un canale si aprono in una finestra tutta loro e si salvano mentre le modifichi.',
 }
 
 export default it

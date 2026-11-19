@@ -2223,6 +2223,10 @@ const hu: Translations = {
   'failure.vpnRefused.right': 'A jobb oldal kapcsolatai nem mehetnek a VPN-en keresztül, ezért a futás nem indult el. Válaszd ennél a feladatnál a „VPN nélkül” lehetőséget, vagy egy olyan célt, amely mehet rajta keresztül.',
   'failure.noVpn': 'Ez a feladat a VPN-en keresztül fut, és az ArrowLoopnak ezen az eszközön nincs beépített VPN-je. Kapcsold ki a „VPN-en keresztül” kapcsolót, és használd helyette a rendszer VPN-jét.',
   'new.change.vpn': 'Beépített VPN, akár több is: állítsd be őket a(z) {integrations} résznél úgy, hogy kiválasztod a szolgáltatódat, vagy beillesztesz egy WireGuard-konfigurációt, aztán válassz ki egyet egy feladatban. A feladat futásaihoz felépül, utána lebomlik. Ha nem tud felépülni, a futás sikertelen, és a saját kapcsolatodon semmi sem szinkronizálódik.',
+  'new.change.appimage': 'Az ArrowLoop AppImage-ként is elérhető Linuxra: egyetlen fájl saját WebKitGTK-val, amely magától frissül. A(z) {apps} csempe x64-re és ARM64-re kínálja, közvetlenül a Flatpak előtt.',
+  'new.change.downloadButtons': 'Vidd az egeret egy letöltőgomb fölé a(z) {apps} csempén, és egy második sor megmondja, melyik változatról van szó, például x64, vagy Machez Apple és Intel.',
+  'new.change.jobRename': 'Egy átnevezett feladat megtartja a futásait, a statisztikáit és mindent, amit a biztonsági háló megtanult róla.',
+  'new.change.connectionRows': 'A célok, a VPN-ek és az értesítési csatornák mind ugyanolyan sorként jelennek meg, a tesztelés, a szerkesztés és az eltávolítás gombja mindig ugyanott van. Ha egy cél automatikus ellenőrzése nem sikerül, a sora a(z) {notConnected} feliratot és az okot mutatja. Egy csatorna beállításai saját ablakban nyílnak meg, és azonnal mentődnek.',
 }
 
 export default hu

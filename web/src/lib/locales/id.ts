@@ -2223,6 +2223,10 @@ const id: Translations = {
   'failure.vpnRefused.right': 'Koneksi sisi kanan tidak bisa lewat VPN, jadi proses tidak dimulai. Pilih "Tanpa VPN" untuk tugas ini, atau tujuan yang bisa lewat VPN.',
   'failure.noVpn': 'Tugas ini lewat VPN, dan ArrowLoop tidak punya VPN bawaan di perangkat ini. Matikan "Melalui VPN" dan pakai VPN sistem sebagai gantinya.',
   'new.change.vpn': 'VPN bawaan, bahkan beberapa: siapkan di {integrations} dengan memilih penyedia Anda atau menempel konfigurasi WireGuard, lalu pilih salah satunya di sebuah tugas. VPN menyala untuk proses tugas itu dan mati sesudahnya. Jika tidak bisa menyala, proses gagal dan tidak ada yang disinkronkan lewat koneksi Anda sendiri.',
+  'new.change.appimage': 'ArrowLoop juga tersedia sebagai AppImage untuk Linux: satu file dengan WebKitGTK sendiri yang memperbarui dirinya sendiri. Ubin {apps} menawarkannya untuk x64 dan ARM64, tepat sebelum Flatpak.',
+  'new.change.downloadButtons': 'Arahkan penunjuk ke tombol unduh di ubin {apps}, dan baris kedua memberi tahu Anda build mana itu, misalnya x64, atau Apple dan Intel untuk Mac.',
+  'new.change.jobRename': 'Tugas yang diganti namanya tetap menyimpan jalannya, statistiknya, dan semua yang telah dipelajari jaring pengaman tentangnya.',
+  'new.change.connectionRows': 'Tujuan, VPN, dan saluran notifikasi semuanya tampil sebagai jenis baris yang sama, dengan tombol uji, ubah, dan hapus selalu di tempat yang sama. Jika pemeriksaan otomatis sebuah tujuan gagal, barisnya menampilkan {notConnected} beserta alasannya. Pengaturan sebuah saluran terbuka di jendelanya sendiri dan langsung tersimpan.',
 }
 
 export default id

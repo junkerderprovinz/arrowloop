@@ -2223,6 +2223,10 @@ const sl: Translations = {
   'failure.vpnRefused.right': 'Povezave desne strani ne morejo iti prek VPN, zato se zagon ni začel. Za to opravilo izberi »Brez VPN« ali cilj, ki lahko gre prek njega.',
   'failure.noVpn': 'To opravilo gre prek VPN, ArrowLoop pa v tej napravi nima vgrajenega VPN. Izklopi »Prek VPN« in uporabi VPN sistema.',
   'new.change.vpn': 'Vgrajeni VPN, lahko tudi več: nastavi jih pod {integrations} tako, da izbereš ponudnika ali prilepiš konfiguracijo WireGuard, nato v opravilu izberi enega od njih. VPN se vzpostavi za zagone tega opravila in se nato prekine. Če se ne more vzpostaviti, zagon ne uspe in prek tvoje lastne povezave se nič ne sinhronizira.',
+  'new.change.appimage': 'ArrowLoop je za Linux na voljo tudi kot AppImage: ena sama datoteka z lastnim WebKitGTK, ki se posodablja sama. Ploščica {apps} ga ponuja za x64 in ARM64, tik pred Flatpakom.',
+  'new.change.downloadButtons': 'Pomakni kazalec na gumb za prenos na ploščici {apps} in druga vrstica ti pove, za katero različico gre, na primer x64 ali Apple in Intel za Mac.',
+  'new.change.jobRename': 'Preimenovano opravilo obdrži svoje zagone, statistiko in vse, kar se je varnostna mreža naučila o njem.',
+  'new.change.connectionRows': 'Cilji, VPN-ji in kanali za obvestila so vsi prikazani kot enaka vrsta vrstice, gumbi za preizkus, urejanje in odstranitev pa so vedno na istem mestu. Ko samodejno preverjanje cilja ne uspe, njegova vrstica pokaže {notConnected} in razlog. Nastavitve kanala se odprejo v lastnem oknu in se sproti shranjujejo.',
 }
 
 export default sl

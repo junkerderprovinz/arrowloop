@@ -2223,6 +2223,10 @@ const cs: Translations = {
   'failure.vpnRefused.right': 'Připojení pravé strany nemůžou jít přes VPN, takže běh nezačal. Vyber pro tuto úlohu „Bez VPN“, nebo cíl, který přes ni jít umí.',
   'failure.noVpn': 'Tato úloha jde přes VPN a ArrowLoop nemá na tomto zařízení vestavěnou VPN. Vypni „Přes VPN“ a použij místo toho VPN systému.',
   'new.change.vpn': 'Vestavěná VPN, klidně i několik: nastav je v části {integrations} tak, že vybereš svého poskytovatele, nebo vložíš konfiguraci WireGuard, a pak jednu vyber v úloze. Zapne se pro běhy této úlohy a potom se zase vypne. Když se zapnout nepodaří, běh selže a přes tvoje vlastní připojení se nic nesynchronizuje.',
+  'new.change.appimage': 'ArrowLoop je pro Linux k dispozici i jako AppImage: jeden soubor s vlastním WebKitGTK, který se sám aktualizuje. Dlaždice {apps} ho nabízí pro x64 a ARM64, hned před Flatpakem.',
+  'new.change.downloadButtons': 'Najeď myší na tlačítko ke stažení na dlaždici {apps} a druhý řádek ti řekne, o jaké sestavení jde, třeba x64, nebo Apple a Intel u Macu.',
+  'new.change.jobRename': 'Přejmenovaná úloha si nechá své běhy, statistiky i všechno, co se o ní naučila záchranná síť.',
+  'new.change.connectionRows': 'Cíle, VPN a kanály oznámení se zobrazují jako stejný druh řádku a tlačítka pro test, úpravu a odebrání jsou vždy na stejném místě. Když automatická kontrola cíle selže, jeho řádek ukáže {notConnected} a důvod. Nastavení kanálu se otevře ve vlastním okně a ukládá se průběžně.',
 }
 
 export default cs

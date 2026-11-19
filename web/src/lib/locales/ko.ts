@@ -2223,6 +2223,10 @@ const ko: Translations = {
   'failure.vpnRefused.right': '오른쪽의 연결은 VPN을 거칠 수 없어서 실행이 시작되지 않았습니다. 이 작업에서 "VPN 사용 안 함"을 고르거나, VPN을 거칠 수 있는 대상을 고르세요.',
   'failure.noVpn': '이 작업은 VPN을 거치는데, 이 기기의 ArrowLoop에는 내장 VPN이 없습니다. "VPN 경유"를 끄고 시스템의 VPN을 사용하세요.',
   'new.change.vpn': '내장 VPN, 여러 개도 됩니다. {integrations}에서 제공업체를 고르거나 WireGuard 구성을 붙여 넣어 설정한 다음, 작업에서 하나를 고릅니다. VPN은 그 작업의 실행을 위해 연결되고 끝나면 끊깁니다. 연결할 수 없으면 실행이 실패하고 내 연결로는 아무것도 동기화되지 않습니다.',
+  'new.change.appimage': 'ArrowLoop는 Linux용 AppImage로도 제공됩니다. 자체 WebKitGTK를 담은 파일 하나로, 스스로 업데이트합니다. {apps} 타일에서 x64와 ARM64용으로, Flatpak 바로 앞에 있습니다.',
+  'new.change.downloadButtons': '{apps} 타일의 다운로드 버튼에 포인터를 올리면 두 번째 줄에 어떤 빌드인지 나옵니다. 예를 들어 x64, Mac이면 Apple과 Intel입니다.',
+  'new.change.jobRename': '작업 이름을 바꿔도 실행 기록, 통계, 안전망이 그 작업에 대해 배운 내용이 모두 그대로 남습니다.',
+  'new.change.connectionRows': '대상, VPN, 알림 채널이 모두 같은 형태의 행으로 표시되고, 테스트, 편집, 삭제 버튼은 늘 같은 자리에 있습니다. 대상의 자동 확인이 실패하면 그 행에 {notConnected}과 이유가 표시됩니다. 채널 설정은 별도의 창에서 열리고 바꾸는 즉시 저장됩니다.',
 }
 
 export default ko

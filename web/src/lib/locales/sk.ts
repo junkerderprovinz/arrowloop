@@ -2223,6 +2223,10 @@ const sk: Translations = {
   'failure.vpnRefused.right': 'Pripojenia pravej strany nemôžu ísť cez VPN, takže beh sa nezačal. Vyber pre túto úlohu „Bez VPN“ alebo cieľ, ktorý cez neho ísť môže.',
   'failure.noVpn': 'Táto úloha ide cez VPN a ArrowLoop nemá v tomto zariadení vstavané VPN. Vypni „Cez VPN“ a použi VPN systému.',
   'new.change.vpn': 'Vstavané VPN, pokojne aj viac: nastav ich v časti {integrations} tak, že vyberieš poskytovateľa alebo vložíš konfiguráciu WireGuard, a potom jedno z nich vyber v úlohe. Zapne sa pre behy tejto úlohy a potom sa zase vypne. Ak sa nepodarí pripojiť, beh zlyhá a cez tvoje vlastné pripojenie sa nič nesynchronizuje.',
+  'new.change.appimage': 'ArrowLoop je pre Linux k dispozícii aj ako AppImage: jeden súbor s vlastným WebKitGTK, ktorý sa sám aktualizuje. Dlaždica {apps} ho ponúka pre x64 a ARM64, hneď pred Flatpakom.',
+  'new.change.downloadButtons': 'Prejdi myšou na tlačidlo na stiahnutie na dlaždici {apps} a druhý riadok ti povie, o ktoré zostavenie ide, napríklad x64, alebo Apple a Intel pre Mac.',
+  'new.change.jobRename': 'Premenovaná úloha si nechá svoje behy, štatistiky aj všetko, čo sa o nej naučila záchranná sieť.',
+  'new.change.connectionRows': 'Ciele, VPN a kanály oznámení sa zobrazujú ako rovnaký druh riadku a tlačidlá na test, úpravu a odstránenie sú vždy na tom istom mieste. Keď automatická kontrola cieľa zlyhá, jeho riadok ukáže {notConnected} a dôvod. Nastavenia kanála sa otvoria vo vlastnom okne a ukladajú sa priebežne.',
 }
 
 export default sk

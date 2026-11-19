@@ -2223,6 +2223,10 @@ const ja: Translations = {
   'failure.vpnRefused.right': '右側の接続は VPN を経由できないため、実行は始まりませんでした。このジョブで「VPN なし」を選ぶか、VPN を経由できる接続先を選んでください。',
   'failure.noVpn': 'このジョブは VPN を経由しますが、このデバイスの ArrowLoop には VPN が内蔵されていません。「VPN 経由」をオフにして、システムの VPN を使ってください。',
   'new.change.vpn': '内蔵 VPN。複数持つこともできます。{integrations} でプロバイダーを選ぶか WireGuard 設定を貼り付けて設定し、ジョブでそのうちの 1 つを選びます。VPN はそのジョブの実行のために接続し、終わると切断します。接続できないときは実行が失敗し、お使いの回線では何も同期されません。',
+  'new.change.appimage': 'ArrowLoop は Linux 向けに AppImage でも提供されます。独自の WebKitGTK を同梱した 1 つのファイルで、自分で更新します。{apps} のタイルで x64 と ARM64 向けに、Flatpak のすぐ前に並んでいます。',
+  'new.change.downloadButtons': '{apps} のタイルでダウンロードボタンにポインターを合わせると、2 行目にどのビルドかが表示されます。たとえば x64、Mac なら Apple と Intel です。',
+  'new.change.jobRename': 'ジョブの名前を変えても、実行履歴、統計、安全網がそのジョブについて学んだことはすべてそのまま残ります。',
+  'new.change.connectionRows': '接続先、VPN、通知チャンネルはすべて同じ形の行で表示され、テスト、編集、削除のボタンはいつも同じ位置にあります。接続先の自動チェックが失敗すると、その行に {notConnected} と理由が表示されます。チャンネルの設定は専用のウィンドウで開き、変更はその場で保存されます。',
 }
 
 export default ja
