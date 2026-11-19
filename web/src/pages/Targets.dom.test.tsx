@@ -87,23 +87,38 @@ describe('Targets', () => {
     expect(screen.getAllByText(/^(Connected|Not connected)$/)).toHaveLength(2)
   })
 
-  it('carries the verdict on the test button itself', async () => {
+  it('shows each target as a connection row', async () => {
     show()
 
-    const ok = (await screen.findByText('Connected')).closest('button')!
-    const fail = (await screen.findByText('Not connected')).closest('button')!
-    expect(ok.className).toContain('glim-btn--ok')
-    expect(fail.className).toContain('glim-btn--danger')
-    expect(screen.queryByText('dial tcp', { exact: false })).toBeNull()
-    expect(screen.getByText('The server could not be reached.')).toBeTruthy()
+    const row = await screen.findByRole('group', { name: 'home:' })
+    expect(row.getAttribute('data-glim')).toBe('ConnectionRow')
+    expect(within(row).getByRole('button', { name: 'Test connection' })).toBeTruthy()
   })
 
-  it('tests again when the verdict is pressed', async () => {
+  it('says an automatic test that failed in a badge and leaves the button still', async () => {
     show()
-    const fail = (await screen.findByText('Not connected')).closest('button')!
+
+    const ok = within(await screen.findByRole('group', { name: 'home:' })).getByRole('button', { name: 'Test connection' })
+    await waitFor(() => expect(ok.className).toContain('glim-btn--ok'))
+    const away = await screen.findByRole('group', { name: 'away:' })
+    await within(away).findByText('Not connected')
+    const fail = within(away).getByRole('button', { name: 'Test connection' })
+    expect(fail.className).not.toContain('glim-btn--danger')
+    expect(fail.className).not.toContain('glim-shake')
+    expect(screen.queryByText('dial tcp', { exact: false })).toBeNull()
+    expect(within(away).getByText('The server could not be reached.')).toBeTruthy()
+  })
+
+  it('answers a test somebody pressed on the button itself', async () => {
+    show()
+    const away = await screen.findByRole('group', { name: 'away:' })
+    await within(away).findByText('Not connected')
     checked.mockClear()
-    fireEvent.click(fail)
+    fireEvent.click(within(away).getByRole('button', { name: 'Test connection' }))
     await waitFor(() => expect(checked).toHaveBeenCalledWith('away'))
+    const fail = within(away).getByRole('button', { name: 'Test connection' })
+    await waitFor(() => expect(fail.className).toContain('glim-btn--danger'))
+    expect(fail.className).toContain('glim-shake')
   })
 
   it('drops the unreachable banner once both lists load again', async () => {
@@ -126,7 +141,7 @@ describe('Targets', () => {
     deleteRemote.mockImplementationOnce(() => Promise.reject(new Error('set a password under Settings, Security first')))
     show()
     await deleteFirst()
-    const row = (await screen.findByText('home:')).closest('li') as HTMLElement
+    const row = await screen.findByRole('group', { name: 'home:' })
     expect(await within(row).findByText('set a password under Settings, Security first')).toBeTruthy()
   })
 

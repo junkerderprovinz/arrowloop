@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ConnectionRow } from '@glimstone/react/ConnectionRow'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
 import { Empty, Rows, Stack } from '../components/Shell'
@@ -19,14 +20,13 @@ import {
   IconClose,
   IconCopy,
   IconFolder,
-  IconPencil,
   IconSave,
   IconShieldOff,
   IconShieldOn,
   IconTabStorage,
   IconTrash,
 } from '../components/glyphs'
-import { brandMark } from '../components/brandMarks'
+import { pickMark } from '../components/brandMarks'
 import { Choice, FieldRow, Text } from '../components/Field'
 import { replay } from '../lib/animate'
 import { DropdownListbox } from '../lib/glimstone/DropdownListbox'
@@ -215,17 +215,15 @@ function Storage({
       {rows.length === 0 ? (
         <Empty>{t(TEXT[group].empty)}</Empty>
       ) : (
-        <Rows className="-mx-2 flex flex-col">
-          {rows.map((r, i) => (
-            <RemoteRow
-              key={r.name}
-              remote={r}
-              newId={marked && i === 0 ? 'target-rows' : undefined}
-              onEdit={() => setEditing(r)}
-              onChanged={onChanged}
-            />
-          ))}
-        </Rows>
+        rows.map((r, i) => (
+          <RemoteRow
+            key={r.name}
+            remote={r}
+            newId={marked && i === 0 ? 'target-rows' : undefined}
+            onEdit={() => setEditing(r)}
+            onChanged={onChanged}
+          />
+        ))
       )}
       {editing && (
         <RemoteForm
@@ -322,10 +320,11 @@ function AddTarget({
 }
 
 /**
- * One target as one row: its brand in the tile, its name, and what else it
- * could say in the bubble beside the name. Edit and Delete come in under the
- * pointer; the test button stays once it has a verdict, which it carries in
- * its colour, word and glyph, with the reason on a line under the name.
+ * One target as a connection row: its brand on the tile, its name, whether it
+ * is connected and where it leads, and its test, edit and delete. A test it
+ * runs on its own as it shows is said in a badge, so an unreachable row does
+ * not shake its button as the page appears; one somebody pressed answers on
+ * the button too.
  */
 function RemoteRow({
   remote,
@@ -341,13 +340,7 @@ function RemoteRow({
   const { t, lang } = useT()
   const [checking, setChecking] = useState(false)
   const [result, setResult] = useState<CheckAnswer | null>(null)
-  // A failed test somebody pressed shakes the button; the one on opening does
-  // not, or every unreachable row would shake as the page appears.
-  const [refused, setRefused] = useState(0)
-  const checkButton = useRef<HTMLButtonElement>(null)
-  useEffect(() => {
-    if (refused) replay(checkButton.current, 'glim-shake')
-  }, [refused])
+  const [asked, setAsked] = useState(false)
   // How full the target is, fetched on the same press once the check has
   // succeeded.
   const [usage, setUsage] = useState<Usage | null>(null)
@@ -357,14 +350,14 @@ function RemoteRow({
   // the target it was about stays in the list.
   const [notDeleted, setNotDeleted] = useState('')
 
-  async function check(asked = false) {
+  async function check(pressed = false) {
     setChecking(true)
+    setAsked(pressed)
     setResult(null)
     setUsage(null)
     try {
       const answer = await api.checkRemote(remote.name)
       setResult(answer)
-      if (!answer.ok && asked) setRefused((n) => n + 1)
       if (answer.ok) {
         // Many targets cannot report their space; that is no failure.
         try {
@@ -375,7 +368,6 @@ function RemoteRow({
       }
     } catch (e) {
       setResult({ ok: false, reason: (e as Error).message })
-      if (asked) setRefused((n) => n + 1)
     } finally {
       setChecking(false)
     }
@@ -395,52 +387,40 @@ function RemoteRow({
     .slice(0, 3)
     .map((s) => `${s.key}=${s.value}`)
     .join(', ')
-  const facts = [remote.mark ? '' : remote.type, summary, usage ? space(usage, t) : ''].filter(Boolean)
-  const why = result && !result.ok && result.reason ? failureLine(result.reason, result.failure, t, lang) : ''
+  const facts = [remote.mark ? '' : remote.type, summary].filter(Boolean)
+  const failed = !!result && !result.ok
+  const why = failed && result.reason ? failureLine(result.reason, result.failure, t, lang) : ''
 
   return (
-    <li className="glim-row flex min-h-14 items-center gap-3 rounded-control px-2 py-2 hover:bg-hover">
-      {/* The engine identifies the product and its mark from the saved
-          settings (internal/remotes/identify.go). */}
-      <span className="glim-row-glyph flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[20px]">
-        {(remote.mark && brandMark(remote.mark)) || <IconTabStorage />}
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="flex min-w-0 items-center gap-2">
-          <span className="truncate text-body font-medium">{remote.name}:</span>
-          {facts.length > 0 && <InfoBubble tip={facts.join(' · ')} />}
-        </span>
-        {why && <span className="text-subline text-statusFail [overflow-wrap:anywhere]">{why}</span>}
-        {notDeleted && (
-          <span data-new="target-in-use" className="text-subline text-statusFail [overflow-wrap:anywhere]" role="alert">
-            {notDeleted}
-          </span>
-        )}
-        {usage && <UsageBar usage={usage} label={space(usage, t)} />}
-      </span>
-      <span className="glim-row-actions flex shrink-0 items-center gap-1.5">
-        <IconAction onClick={onEdit} title={t('action.edit')} labelKey="action.edit">
-          <IconPencil />
-        </IconAction>
-        <IconAction title={t('action.delete')} labelKey="action.delete" onClick={() => setConfirming(true)}>
-          <IconTrash />
-        </IconAction>
-      </span>
-      <span data-new={newId} className={`${result || checking ? '' : 'glim-row-actions '}glim-row-verdict flex shrink-0`}>
-        <Button
-          ref={checkButton}
-          label={
-            checking ? t('targets.checking') : !result ? t('targets.check') : result.ok ? t('targets.checkOk') : t('targets.checkFailed')
-          }
-          labelKey="targets.check"
-          glyph={checking || !result ? undefined : result.ok ? <IconCheck /> : <IconClose />}
-          tone={checking || !result ? 'neutral' : result.ok ? 'ok' : 'danger'}
-          title={why || t('targets.checkHint')}
-          busy={checking}
-          onClick={() => void check(true)}
-          disabled={checking}
-        />
-      </span>
+    <ConnectionRow
+      data-new={newId}
+      name={`${remote.name}:`}
+      // The engine identifies the product and its mark from the saved
+      // settings (internal/remotes/identify.go).
+      mark={pickMark(remote.mark) ?? <IconTabStorage />}
+      status={result?.ok ? t('targets.checkOk') : undefined}
+      badges={failed && <Badge tone="fail">{t('targets.checkFailed')}</Badge>}
+      test={{
+        busy: checking,
+        tone: checking || !result ? undefined : result.ok ? 'ok' : asked ? 'danger' : undefined,
+        title: why || (result?.ok ? t('targets.checkOk') : t('targets.checkHint')),
+      }}
+      text={{ test: t('targets.check'), edit: t('action.edit'), remove: t('action.delete') }}
+      labelKeys={{ test: 'targets.check', edit: 'action.edit', remove: 'action.delete' }}
+      onTest={() => {
+        if (!checking) void check(true)
+      }}
+      onEdit={onEdit}
+      onRemove={() => setConfirming(true)}
+    >
+      {why && <p className="glim-connection-status">{why}</p>}
+      {facts.length > 0 && <p className="glim-connection-status">{facts.join(' · ')}</p>}
+      {notDeleted && (
+        <p data-new="target-in-use" className="glim-connection-status" role="alert">
+          {notDeleted}
+        </p>
+      )}
+      {usage && <UsageBar usage={usage} label={space(usage, t)} />}
 
       {confirming && (
         <ConfirmWindow
@@ -460,7 +440,7 @@ function RemoteRow({
           }}
         />
       )}
-    </li>
+    </ConnectionRow>
   )
 }
 
