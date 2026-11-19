@@ -2227,6 +2227,7 @@ const ja: Translations = {
   'new.change.downloadButtons': '{apps} のタイルでダウンロードボタンにポインターを合わせると、2 行目にどのビルドかが表示されます。たとえば x64、Mac なら Apple と Intel です。',
   'new.change.jobRename': 'ジョブの名前を変えても、実行履歴、統計、安全網がそのジョブについて学んだことはすべてそのまま残ります。',
   'new.change.connectionRows': '接続先、VPN、通知チャンネルはすべて同じ形の行で表示され、テスト、編集、削除のボタンはいつも同じ位置にあります。接続先の自動チェックが失敗すると、その行に {notConnected} と理由が表示されます。チャンネルの設定は専用のウィンドウで開き、変更はその場で保存されます。',
+  'new.change.runLength': '{history}は{runs}から開き、各実行の所要時間が一覧とその実行のウィンドウに表示されます。',
 }
 
 export default ja

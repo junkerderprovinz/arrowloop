@@ -12,6 +12,7 @@ import { Empty, Stack } from '../components/Shell'
 import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { useJobConfig } from './Editor'
+import { openHistory } from './History'
 import { useEngineSettings } from './settings/engineSettings'
 import type { Finding } from '../lib/anomalies'
 import { api, type Job, type OpenConflict, type Run, type RunEvent } from '../lib/api'
@@ -23,7 +24,7 @@ import { jobStatus } from '../lib/jobList'
 import type { NavCounts } from '../lib/navModel'
 import { useOpenJob } from '../lib/openJob'
 import { failing, headOf, lastAndNext, type Headline } from '../lib/overviewHead'
-import { Link, navigate } from '../lib/router'
+import { Link } from '../lib/router'
 import { useStartStop } from '../lib/startStop'
 import { useToast } from '../lib/toast'
 
@@ -170,7 +171,7 @@ export function Overview({
                   ))}
                 </ul>
                 <div className="flex justify-end">
-                  <Button label={t('history.showAll')} labelKey="history.showAll" onClick={() => navigate('/history')} />
+                  <Button label={t('history.showAll')} labelKey="history.showAll" onClick={() => openHistory('runs')} />
                 </div>
               </div>
             )}

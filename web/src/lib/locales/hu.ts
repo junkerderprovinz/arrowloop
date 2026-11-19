@@ -2227,6 +2227,7 @@ const hu: Translations = {
   'new.change.downloadButtons': 'Vidd az egeret egy letöltőgomb fölé a(z) {apps} csempén, és egy második sor megmondja, melyik változatról van szó, például x64, vagy Machez Apple és Intel.',
   'new.change.jobRename': 'Egy átnevezett feladat megtartja a futásait, a statisztikáit és mindent, amit a biztonsági háló megtanult róla.',
   'new.change.connectionRows': 'A célok, a VPN-ek és az értesítési csatornák mind ugyanolyan sorként jelennek meg, a tesztelés, a szerkesztés és az eltávolítás gombja mindig ugyanott van. Ha egy cél automatikus ellenőrzése nem sikerül, a sora a(z) {notConnected} feliratot és az okot mutatja. Egy csatorna beállításai saját ablakban nyílnak meg, és azonnal mentődnek.',
+  'new.change.runLength': 'Az {history} a {runs} nézettel nyílik meg, és minden futás mutatja, mennyi ideig tartott, a listában és a saját ablakában is.',
 }
 
 export default hu

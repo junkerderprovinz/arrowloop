@@ -2227,6 +2227,7 @@ const sv: Translations = {
   'new.change.downloadButtons': 'Peka på en nedladdningsknapp i rutan {apps} så berättar en andra rad vilket bygge det är, till exempel x64, eller Apple och Intel för Mac.',
   'new.change.jobRename': 'Ett jobb som får nytt namn behåller sina körningar, sin statistik och allt som skyddsnätet har lärt sig om det.',
   'new.change.connectionRows': 'Mål, VPN:er och aviseringskanaler visas alla som samma slags rad, med knapparna för att testa, redigera och ta bort alltid på samma ställe. När den automatiska kontrollen av ett mål misslyckas visar raden {notConnected} och orsaken. En kanals inställningar öppnas i ett eget fönster och sparas medan du skriver.',
+  'new.change.runLength': '{history} öppnas på {runs}, och varje körning visar hur lång tid den tog, i listan och i sitt eget fönster.',
 }
 
 export default sv

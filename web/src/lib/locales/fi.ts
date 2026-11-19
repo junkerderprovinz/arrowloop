@@ -2227,6 +2227,7 @@ const fi: Translations = {
   'new.change.downloadButtons': 'Vie osoitin {apps}-ruudun latauspainikkeen päälle, niin toinen rivi kertoo, mikä versio on kyseessä, esimerkiksi x64 tai Macille Apple ja Intel.',
   'new.change.jobRename': 'Uudelleen nimetty työ säilyttää ajonsa, tilastonsa ja kaiken, mitä turvaverkko on siitä oppinut.',
   'new.change.connectionRows': 'Kohteet, VPN:t ja ilmoituskanavat näkyvät kaikki samanlaisina riveinä, ja testaus-, muokkaus- ja poistopainikkeet ovat aina samassa kohdassa. Jos kohteen automaattinen tarkistus epäonnistuu, sen rivillä lukee {notConnected} ja syy. Kanavan asetukset avautuvat omaan ikkunaansa ja tallentuvat sitä mukaa kuin muutat niitä.',
+  'new.change.runLength': '{history} avautuu näkymään {runs}, ja jokainen ajo näyttää, kauanko se kesti, sekä listassa että omassa ikkunassaan.',
 }
 
 export default fi

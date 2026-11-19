@@ -2227,6 +2227,7 @@ const nl: Translations = {
   'new.change.downloadButtons': 'Wijs een downloadknop op de tegel {apps} aan en een tweede regel vertelt je welke build het is, bijvoorbeeld x64, of Apple en Intel voor de Mac.',
   'new.change.jobRename': 'Een hernoemde taak houdt zijn runs, zijn statistieken en alles wat het vangnet erover heeft geleerd.',
   'new.change.connectionRows': 'Doelen, VPN\'s en meldingskanalen staan allemaal in hetzelfde soort rij, met de knoppen voor testen, bewerken en verwijderen altijd op dezelfde plek. Mislukt de automatische controle van een doel, dan toont de rij {notConnected} en de reden. De instellingen van een kanaal openen in een eigen venster en worden meteen opgeslagen.',
+  'new.change.runLength': '{history} opent op {runs}, en elke run laat zien hoe lang hij duurde, in de lijst en in zijn venster.',
 }
 
 export default nl

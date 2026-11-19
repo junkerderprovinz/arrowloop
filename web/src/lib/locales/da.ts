@@ -2227,6 +2227,7 @@ const da: Translations = {
   'new.change.downloadButtons': 'Peg på en downloadknap på flisen {apps}, så fortæller en ekstra linje dig, hvilken build det er, for eksempel x64 eller Apple og Intel til Mac.',
   'new.change.jobRename': 'Et omdøbt job beholder sine kørsler, sin statistik og alt, hvad sikkerhedsnettet har lært om det.',
   'new.change.connectionRows': 'Mål, VPN\'er og notifikationskanaler vises alle som den samme slags række, med knapperne til test, redigering og fjernelse samme sted. Når den automatiske kontrol af et mål fejler, viser dets række {notConnected} og årsagen. En kanals indstillinger åbner i deres eget vindue og gemmes, mens du skriver.',
+  'new.change.runLength': '{history} åbner på {runs}, og hver kørsel viser, hvor længe den tog, i listen og i sit vindue.',
 }
 
 export default da

@@ -20,6 +20,7 @@ import { useRemembered } from '../lib/remember'
 import { navigate } from '../lib/router'
 import { SEVERITIES, findingOrder, type Finding, type Severity } from '../lib/anomalies'
 import { matchesQuery } from '../lib/fold'
+import { runLength } from '../lib/runLength'
 import { FindingCard } from '../components/FindingCard'
 import { useColumns, type ColumnDef, type Columns } from '../lib/columns'
 import { jobNamesInOrder } from '../lib/jobOrder'
@@ -27,10 +28,10 @@ import { jobNamesInOrder } from '../lib/jobOrder'
 const VIEW_KEY = 'arrowloop.history.view'
 const isLogView = (v: unknown): v is LogView => v === 'files' || v === 'runs' || v === 'findings'
 
-/** Opens History on the findings closed in the last thirty days, for the way there from Anomalies. */
-export function openClosedFindings() {
+/** Opens History on one view, for a way there that leads to the runs or to the findings closed lately. */
+export function openHistory(view: LogView) {
   try {
-    localStorage.setItem(VIEW_KEY, JSON.stringify('findings'))
+    localStorage.setItem(VIEW_KEY, JSON.stringify(view))
   } catch {
     // Without storage History opens on its usual view.
   }
@@ -51,7 +52,12 @@ export const FILE_COLUMNS: ColumnDef[] = [
   { id: 'size', width: 56, min: 48 },
   { id: 'path' },
 ]
-const RUN_COLUMNS: ColumnDef[] = [{ id: 'job' }, { id: 'state', width: 240, min: 96 }, { id: 'when', width: 180, min: 120 }]
+const RUN_COLUMNS: ColumnDef[] = [
+  { id: 'job' },
+  { id: 'state', width: 240, min: 96 },
+  { id: 'took', width: 96, min: 64 },
+  { id: 'when', width: 180, min: 120 },
+]
 
 const SHOW_LABEL: Record<HistoryShow, TranslationKey> = {
   all: 'history.showAll',
@@ -87,9 +93,9 @@ export function History({
   onFindingChanged: () => void
 }) {
   const { t } = useT()
-  // Files first: where a file went is the usual question.
-  const [stored, setView] = useRemembered<LogView>(VIEW_KEY, 'files', isLogView)
-  const view = stored === 'findings' && !closed ? 'files' : stored
+  // Runs first: whether a job went through comes before which files it touched.
+  const [stored, setView] = useRemembered<LogView>(VIEW_KEY, 'runs', isLogView)
+  const view = stored === 'findings' && !closed ? 'runs' : stored
   const [level, setLevel] = useState<Severity | ''>('')
   const [order, setOrder] = useState<ListSort>({ by: 'since', dir: 'desc' })
   const tick = useLiveTick(jobs.some((j) => j.running))
@@ -206,6 +212,7 @@ export function History({
             ),
           },
         },
+        { id: 'took', label: t('overview.duration'), className: 'shrink-0' },
         {
           id: 'when',
           label: t('list.head.when'),
@@ -475,7 +482,8 @@ function RunList({
 
 /**
  * One run as one row: the job, a badge for anything that went otherwise than
- * planned, and its time. A run that worked carries only the green dot.
+ * planned, how long it took and its time. A run that worked carries only the
+ * green dot.
  */
 export function RunRow({
   run: r,
@@ -492,6 +500,7 @@ export function RunRow({
   const { t, lang, locale } = useT()
   // Only a run with nothing to report wears the green dot; the others say what went otherwise.
   const fine = !r.Running && !r.Err && !r.Stopped && r.Conflicts === 0
+  const length = runLength(r, t)
   return (
     <li
       onClick={onOpen}
@@ -529,6 +538,16 @@ export function RunRow({
         {r.Conflicts > 0 && <Badge tone="warn">{capitalized(t('history.conflicts', { count: r.Conflicts }), lang)}</Badge>}
         {r.Skipped > 0 && <Badge>{capitalized(t('history.left', { count: r.Skipped }), lang)}</Badge>}
       </span>
+      {/* The grid needs the cell even while the run goes, or the time would slide into its column. */}
+      {(length || columns) && (
+        <span
+          data-new={length ? 'run-length' : undefined}
+          style={columns?.cell('took')}
+          className="glim-num shrink-0 whitespace-nowrap text-subline text-carbon-textSub"
+        >
+          {length}
+        </span>
+      )}
       {withJob && (
         <span
           style={columns?.cell('when')}

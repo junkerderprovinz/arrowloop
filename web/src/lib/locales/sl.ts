@@ -2227,6 +2227,7 @@ const sl: Translations = {
   'new.change.downloadButtons': 'Pomakni kazalec na gumb za prenos na ploščici {apps} in druga vrstica ti pove, za katero različico gre, na primer x64 ali Apple in Intel za Mac.',
   'new.change.jobRename': 'Preimenovano opravilo obdrži svoje zagone, statistiko in vse, kar se je varnostna mreža naučila o njem.',
   'new.change.connectionRows': 'Cilji, VPN-ji in kanali za obvestila so vsi prikazani kot enaka vrsta vrstice, gumbi za preizkus, urejanje in odstranitev pa so vedno na istem mestu. Ko samodejno preverjanje cilja ne uspe, njegova vrstica pokaže {notConnected} in razlog. Nastavitve kanala se odprejo v lastnem oknu in se sproti shranjujejo.',
+  'new.change.runLength': '{history} se odpre na {runs}, vsak zagon pa pokaže, koliko časa je trajal, na seznamu in v svojem oknu.',
 }
 
 export default sl

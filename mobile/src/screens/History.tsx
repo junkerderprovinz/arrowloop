@@ -9,6 +9,7 @@ import { useWaiting } from "../waiting";
 import { entryLabel, entryNote, groupWord, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { jobNamesInOrder } from "../../../web/src/lib/jobOrder";
+import { runLength } from "../../../web/src/lib/runLength";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
 import { useT, type T } from "../i18n";
@@ -28,6 +29,7 @@ import {
   ListTop,
   Mono,
   MovingList,
+  Pair,
   Press,
   Sheet,
   useTheme,
@@ -38,15 +40,16 @@ import { useFrame } from "../frame";
 import { bytes } from "../usage";
 
 /**
- * The history tab: a log of every file touched, and a list of runs behind a
- * selector. The runs stay because a run that fails before touching anything
+ * The history tab: a list of runs, and a log of every file touched behind a
+ * selector. The runs lead because a run that fails before touching anything
  * writes no file lines. The list is one card named after what it shows; its
  * head sorts and filters, the magnifier at its end opens the search, and a
  * row opens its run in a sheet.
  */
 export function History() {
   const route = useRoute<RouteProp<HistoryStack, "RunList">>();
-  const [mode, setMode] = useState<Mode>("files");
+  // Runs first: whether a job went through comes before which files it touched.
+  const [mode, setMode] = useState<Mode>("runs");
   const asked = route.params?.mode;
   useEffect(() => {
     if (asked) setMode(asked);
@@ -431,7 +434,12 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
               grow: wide,
               filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
             },
-            ...(wide ? [{ id: "state", label: t("list.head.state"), width: RUN_COLUMNS.state }] : []),
+            ...(wide
+              ? [
+                  { id: "state", label: t("list.head.state"), width: RUN_COLUMNS.state },
+                  { id: "took", label: t("overview.duration"), width: RUN_COLUMNS.took },
+                ]
+              : []),
             { id: "when", label: t("list.head.when"), sorts: true, width: wide ? RUN_COLUMNS.when : undefined },
           ]}
         />
@@ -483,7 +491,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
                 ) : (
                   <View style={[styles.dot, { backgroundColor: p.okSolid }]} />
                 )}
-                <Caption>{clock(item.Started, lang)}</Caption>
+                <Caption>{[clock(item.Started, lang), runLength(item, t)].filter(Boolean).join(" · ")}</Caption>
               </Press>
             )}
           </ListPiece>
@@ -697,12 +705,14 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
     groups.set(entry.Kind, list);
   }
   const run = opened?.run;
+  const length = run ? runLength(run, t) : null;
 
   return (
     <Sheet open={opened !== null} title={opened?.job ?? ""} onClose={onClose} centred>
       {run ? (
         <>
           <Caption>{clock(run.Started, lang)}</Caption>
+          {length ? <Pair label={t("overview.duration")} value={length} /> : null}
           <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
           {run.Stopped ? <Caption>{t("history.stopped")}</Caption> : null}
         </>
@@ -738,12 +748,12 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
 /** The fixed columns of the file log beside the side bar, the web's widths. */
 const FILE_COLUMNS = { what: 200, when: 150, job: 128, size: 72 };
 
-const RUN_COLUMNS = { state: 240, when: 170 };
+const RUN_COLUMNS = { state: 240, took: 80, when: 170 };
 
 /**
  * One run on one row beside the side bar, as the web's run list draws it:
- * the job, a badge for whatever went otherwise than planned, and the time
- * with the green dot of a run that went through.
+ * the job, a badge for whatever went otherwise than planned, how long it took,
+ * and the time with the green dot of a run that went through.
  */
 function RunRowAcross({ run, onPress }: { run: Run; onPress: () => void }) {
   const { t, lang } = useT();
@@ -757,6 +767,9 @@ function RunRowAcross({ run, onPress }: { run: Run; onPress: () => void }) {
         {run.Stopped ? <Badge label={t("status.stopped")} /> : null}
         {run.Conflicts > 0 ? <Badge label={capitalized(t("history.conflicts", { count: run.Conflicts }), lang)} tone="warn" /> : null}
         {run.Skipped > 0 ? <Badge label={capitalized(t("history.left", { count: run.Skipped }), lang)} /> : null}
+      </View>
+      <View style={{ width: RUN_COLUMNS.took }}>
+        <Caption>{runLength(run, t) ?? ""}</Caption>
       </View>
       <View style={[styles.when, { width: RUN_COLUMNS.when }]}>
         {fine ? <View style={[styles.dot, { backgroundColor: p.okSolid }]} /> : null}

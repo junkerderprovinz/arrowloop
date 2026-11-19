@@ -2227,6 +2227,7 @@ const eu: Translations = {
   'new.change.downloadButtons': 'Jarri erakuslea {apps} lauzako deskarga-botoi baten gainean, eta bigarren lerro batek zein bertsio den esango dizu, adibidez x64, edo Apple eta Intel Mac-erako.',
   'new.change.jobRename': 'Izena aldatzen diozun lan batek bere exekuzioak, estatistikak eta segurtasun sareak hari buruz ikasitako guztia gordetzen ditu.',
   'new.change.connectionRows': 'Helburuak, VPNak eta jakinarazpen kanalak errenkada mota berean agertzen dira denak, eta probatu, editatu eta kendu botoiak beti leku berean daude. Helburu baten egiaztapen automatikoak huts egiten duenean, haren errenkadak {notConnected} eta arrazoia erakusten ditu. Kanal baten ezarpenak bere leihoan irekitzen dira eta berehala gordetzen dira.',
+  'new.change.runLength': '{history} {runs} ikuspegian irekitzen da, eta exekuzio bakoitzak zenbat iraun duen erakusten du, zerrendan eta bere leihoan.',
 }
 
 export default eu

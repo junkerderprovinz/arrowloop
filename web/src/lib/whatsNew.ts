@@ -99,6 +99,13 @@ export const RELEASES: Release[] = [
       { id: 'job-rename', text: 'new.change.jobRename' },
       // The rows stand on three pages, the targets, Integrations and the safety net.
       { id: 'connection-rows', text: 'new.change.connectionRows', names: { notConnected: 'targets.checkFailed' } },
+      {
+        id: 'run-length',
+        at: ['/history'],
+        where: ['nav.history'],
+        text: 'new.change.runLength',
+        names: { history: 'nav.history', runs: 'history.runs' },
+      },
     ],
   },
   {

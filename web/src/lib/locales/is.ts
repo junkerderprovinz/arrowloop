@@ -2227,6 +2227,7 @@ const is: Translations = {
   'new.change.downloadButtons': 'Færðu bendilinn yfir niðurhalshnapp í reitnum {apps} og önnur lína segir þér hvaða útgáfa það er, til dæmis x64, eða Apple og Intel fyrir Mac.',
   'new.change.jobRename': 'Verk sem þú endurnefnir heldur keyrslunum sínum, tölfræðinni og öllu sem öryggisnetið hefur lært um það.',
   'new.change.connectionRows': 'Áfangastaðir, VPN og tilkynningarásir birtast allir sem sams konar lína, og hnapparnir til að prófa, breyta og fjarlægja eru alltaf á sama stað. Þegar sjálfvirk athugun áfangastaðar mistekst sýnir lína hans {notConnected} og ástæðuna. Stillingar rásar opnast í eigin glugga og vistast jafnóðum.',
+  'new.change.runLength': '{history} opnast á {runs}, og hver keyrsla sýnir hve lengi hún stóð, bæði í listanum og í eigin glugga.',
 }
 
 export default is

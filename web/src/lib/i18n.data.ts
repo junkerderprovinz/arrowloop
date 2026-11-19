@@ -2271,6 +2271,7 @@ export const en = {
   'new.change.downloadButtons': 'Point at a download button on the {apps} tile and a second line tells you which build it is, such as x64, or Apple and Intel for the Mac.',
   'new.change.jobRename': 'A renamed job keeps its runs, its statistics and everything the safety net has learned about it.',
   'new.change.connectionRows': 'Targets, VPNs and notification channels all show as the same kind of row, with their test, edit and remove buttons in the same place. When a target\'s automatic check fails, its row says {notConnected} and why. A channel\'s settings open in a window of their own and save as you go.',
+  'new.change.runLength': '{history} opens on {runs}, and every run shows how long it took, in the list and in its window.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -4532,6 +4533,7 @@ export const de: Translations = {
   'new.change.downloadButtons': 'Zeig auf einen Download-Knopf auf der Kachel {apps}, dann nennt dir eine zweite Zeile den Build, etwa x64 oder beim Mac Apple und Intel.',
   'new.change.jobRename': 'Ein umbenannter Auftrag behält seine Läufe, seine Statistik und alles, was das Sicherheitsnetz über ihn gelernt hat.',
   'new.change.connectionRows': 'Ziele, VPNs und Benachrichtigungskanäle stehen alle in derselben Art Zeile, mit Testen, Bearbeiten und Entfernen immer an derselben Stelle. Schlägt die automatische Prüfung eines Ziels fehl, zeigt seine Zeile {notConnected} und den Grund. Die Einstellungen eines Kanals öffnen sich in einem eigenen Fenster und speichern sofort.',
+  'new.change.runLength': '{history} öffnet mit {runs}, und bei jedem Lauf steht, wie lange er gedauert hat, in der Liste und in seinem Fenster.',
 }
 
 export interface Language {

@@ -2227,6 +2227,7 @@ const sk: Translations = {
   'new.change.downloadButtons': 'Prejdi myšou na tlačidlo na stiahnutie na dlaždici {apps} a druhý riadok ti povie, o ktoré zostavenie ide, napríklad x64, alebo Apple a Intel pre Mac.',
   'new.change.jobRename': 'Premenovaná úloha si nechá svoje behy, štatistiky aj všetko, čo sa o nej naučila záchranná sieť.',
   'new.change.connectionRows': 'Ciele, VPN a kanály oznámení sa zobrazujú ako rovnaký druh riadku a tlačidlá na test, úpravu a odstránenie sú vždy na tom istom mieste. Keď automatická kontrola cieľa zlyhá, jeho riadok ukáže {notConnected} a dôvod. Nastavenia kanála sa otvoria vo vlastnom okne a ukladajú sa priebežne.',
+  'new.change.runLength': '{history} sa otvára na {runs} a každý beh ukazuje, ako dlho trval, v zozname aj vo svojom okne.',
 }
 
 export default sk

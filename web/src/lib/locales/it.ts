@@ -2227,6 +2227,7 @@ const it: Translations = {
   'new.change.downloadButtons': 'Passa il puntatore su un pulsante di download nel riquadro {apps} e una seconda riga ti dice di quale build si tratta, per esempio x64, oppure Apple e Intel per il Mac.',
   'new.change.jobRename': 'Un lavoro rinominato conserva le sue esecuzioni, le sue statistiche e tutto ciò che la rete di sicurezza ha imparato su di esso.',
   'new.change.connectionRows': 'Destinazioni, VPN e canali di notifica appaiono tutti come lo stesso tipo di riga, con i pulsanti per provare, modificare e rimuovere sempre nello stesso punto. Quando il controllo automatico di una destinazione fallisce, la sua riga mostra {notConnected} e il motivo. Le impostazioni di un canale si aprono in una finestra tutta loro e si salvano mentre le modifichi.',
+  'new.change.runLength': '{history} si apre su {runs}, e ogni esecuzione mostra quanto è durata, nell\'elenco e nella sua finestra.',
 }
 
 export default it

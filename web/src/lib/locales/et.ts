@@ -2227,6 +2227,7 @@ const et: Translations = {
   'new.change.downloadButtons': 'Vii kursor paani {apps} allalaadimisnupule ja teine rida ütleb sulle, mis versioon see on, näiteks x64 või Maci puhul Apple ja Intel.',
   'new.change.jobRename': 'Ümbernimetatud töö jätab alles oma käivitused, statistika ja kõik, mida turvavõrk on sellest õppinud.',
   'new.change.connectionRows': 'Sihtkohad, VPN-id ja teavituskanalid on kõik ühesugused read ning testimise, muutmise ja eemaldamise nupud on alati samas kohas. Kui sihtkoha automaatne kontroll ebaõnnestub, näitab selle rida {notConnected} ja põhjust. Kanali seaded avanevad omaette aknas ja salvestuvad kohe.',
+  'new.change.runLength': '{history} avaneb vaatega {runs} ning iga käivitus näitab, kui kaua see kestis, nii loendis kui ka oma aknas.',
 }
 
 export default et

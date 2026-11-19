@@ -11,7 +11,6 @@ import { animateNext, useMotion } from "../motion";
 import type { Nav, OverviewStack } from "../nav";
 import { OtherInstances } from "../otherInstances";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
-import { runLength } from "../runLength";
 import { useEngineSettings } from "../settings";
 import { SideRow, sideMark } from "../sideRow";
 import { useFrame } from "../frame";
@@ -23,6 +22,7 @@ import { useEngineEvents, useEngineStream } from "../useEngine";
 import { useWaiting } from "../waiting";
 import { WayGlyph, wayLabel, wayOf } from "../way";
 import { headOf, lastAndNext, type Headline } from "../../../web/src/lib/overviewHead";
+import { runLength } from "../../../web/src/lib/runLength";
 import {
   AxisLabel,
   Badge,
@@ -377,7 +377,7 @@ function LastRun({ run, tally, jobs }: { run: Run | null | "none"; tally: Tally 
   if (run === null) return <Caption>{t("history.working")}</Caption>;
   if (run === "none") return <Body>{t("history.empty")}</Body>;
 
-  const length = runLength(run.Started, run.Finished, t);
+  const length = runLength(run, t);
 
   return (
     <>

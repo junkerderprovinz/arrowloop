@@ -261,6 +261,7 @@ describe('the history', () => {
   })
 
   it('has no buttons over its list, and filters from the heads', async () => {
+    localStorage.setItem('arrowloop.history.view', JSON.stringify('files'))
     wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     expect(await screen.findByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Filter by Job' })).toBeTruthy()
@@ -292,6 +293,43 @@ describe('the history', () => {
   it('offers no findings view while Anomalies is switched off', () => {
     wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
     expect(screen.queryByRole('tab', { name: 'Findings' })).toBeNull()
+    localStorage.clear()
+  })
+
+  it('opens on the runs', async () => {
+    history.mockImplementation(() => Promise.resolve([run('')]))
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
+    expect(await screen.findByRole('button', { name: 'docs' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Runs' }).getAttribute('aria-selected')).toBe('true')
+    localStorage.clear()
+  })
+
+  it('opens on the view it was asked for', async () => {
+    localStorage.setItem('arrowloop.history.view', JSON.stringify('files'))
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
+    expect(await screen.findByRole('button', { name: 'Filter by What happened' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Files' }).getAttribute('aria-selected')).toBe('true')
+    localStorage.clear()
+  })
+
+  it('shows how long a run took, in its row and in its window', async () => {
+    history.mockImplementation(() => Promise.resolve([{ ...run(''), Finished: '2027-03-01T03:12:20Z' }]))
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
+    const row = (await screen.findByRole('button', { name: 'docs' })).closest('li') as HTMLElement
+    expect(within(row).getByText('12 min')).toBeTruthy()
+    fireEvent.click(within(row).getByRole('button', { name: 'docs' }))
+    const window = await screen.findByRole('dialog')
+    expect(within(window).getByText('Run time')).toBeTruthy()
+    expect(within(window).getByText('12 min')).toBeTruthy()
+    localStorage.clear()
+  })
+
+  it('gives a run still going no length', async () => {
+    history.mockImplementation(() => Promise.resolve([{ ...run(''), ID: -1, Finished: '0001-01-01T00:00:00Z', Running: true }]))
+    wrap(<History runs={[]} jobs={[]} closed={null} onFindingChanged={() => undefined} />)
+    const row = (await screen.findByRole('button', { name: 'docs' })).closest('li') as HTMLElement
+    expect(within(row).getByText('Running')).toBeTruthy()
+    expect(within(row).queryByText(/\d+ (s|min|h)$/)).toBeNull()
     localStorage.clear()
   })
 

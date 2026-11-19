@@ -2227,6 +2227,7 @@ const hr: Translations = {
   'new.change.downloadButtons': 'Postavi pokazivač na gumb za preuzimanje na pločici {apps} i drugi redak reći će ti o kojoj je verziji riječ, recimo x64 ili Apple i Intel za Mac.',
   'new.change.jobRename': 'Preimenovani zadatak zadržava svoja pokretanja, statistiku i sve što je sigurnosna mreža o njemu naučila.',
   'new.change.connectionRows': 'Odredišta, VPN-ovi i kanali obavijesti prikazuju se kao ista vrsta retka, s gumbima za testiranje, uređivanje i uklanjanje uvijek na istom mjestu. Kad automatska provjera odredišta ne uspije, njegov redak pokazuje {notConnected} i razlog. Postavke kanala otvaraju se u vlastitom prozoru i spremaju se odmah.',
+  'new.change.runLength': '{history} se otvara na {runs}, a svako pokretanje pokazuje koliko je trajalo, na popisu i u svom prozoru.',
 }
 
 export default hr

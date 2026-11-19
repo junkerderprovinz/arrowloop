@@ -2227,6 +2227,7 @@ const pl: Translations = {
   'new.change.downloadButtons': 'Najedź kursorem na przycisk pobierania na kafelku {apps}, a drugi wiersz powie ci, która to wersja, na przykład x64 albo Apple i Intel dla Maca.',
   'new.change.jobRename': 'Zadanie, któremu zmienisz nazwę, zachowuje swoje przebiegi, statystyki i wszystko, czego nauczyła się o nim siatka bezpieczeństwa.',
   'new.change.connectionRows': 'Cele, VPN-y i kanały powiadomień wyświetlają się jako ten sam rodzaj wiersza, a przyciski testu, edycji i usuwania są zawsze w tym samym miejscu. Gdy automatyczne sprawdzenie celu się nie powiedzie, jego wiersz pokazuje {notConnected} i powód. Ustawienia kanału otwierają się we własnym oknie i zapisują się na bieżąco.',
+  'new.change.runLength': '{history} otwiera się na widoku {runs}, a każdy przebieg pokazuje, jak długo trwał, na liście i we własnym oknie.',
 }
 
 export default pl

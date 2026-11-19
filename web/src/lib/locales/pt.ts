@@ -2227,6 +2227,7 @@ const pt: Translations = {
   'new.change.downloadButtons': 'Passa o ponteiro sobre um botão de transferência no mosaico {apps} e uma segunda linha diz-te que versão é, por exemplo x64, ou Apple e Intel para o Mac.',
   'new.change.jobRename': 'Uma tarefa a que mudas o nome mantém as suas execuções, as suas estatísticas e tudo o que a rede de segurança aprendeu sobre ela.',
   'new.change.connectionRows': 'Os destinos, as VPN e os canais de notificação aparecem todos com o mesmo tipo de linha, com os botões de testar, editar e remover sempre no mesmo sítio. Quando a verificação automática de um destino falha, a sua linha mostra {notConnected} e o motivo. As definições de um canal abrem numa janela própria e guardam-se à medida que as alteras.',
+  'new.change.runLength': '{history} abre em {runs}, e cada execução mostra quanto tempo levou, na lista e na sua janela.',
 }
 
 export default pt

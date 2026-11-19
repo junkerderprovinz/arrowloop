@@ -2227,6 +2227,7 @@ const ko: Translations = {
   'new.change.downloadButtons': '{apps} 타일의 다운로드 버튼에 포인터를 올리면 두 번째 줄에 어떤 빌드인지 나옵니다. 예를 들어 x64, Mac이면 Apple과 Intel입니다.',
   'new.change.jobRename': '작업 이름을 바꿔도 실행 기록, 통계, 안전망이 그 작업에 대해 배운 내용이 모두 그대로 남습니다.',
   'new.change.connectionRows': '대상, VPN, 알림 채널이 모두 같은 형태의 행으로 표시되고, 테스트, 편집, 삭제 버튼은 늘 같은 자리에 있습니다. 대상의 자동 확인이 실패하면 그 행에 {notConnected}과 이유가 표시됩니다. 채널 설정은 별도의 창에서 열리고 바꾸는 즉시 저장됩니다.',
+  'new.change.runLength': '{history}는 {runs}부터 열리며, 각 실행에 걸린 시간이 목록과 실행 창에 표시됩니다.',
 }
 
 export default ko

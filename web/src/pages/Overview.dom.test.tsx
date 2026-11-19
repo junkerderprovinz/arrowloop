@@ -161,6 +161,7 @@ describe('the overview', () => {
     expect(screen.getByText('copied: 3 · trashed: 1', { exact: false })).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Every run' }))
     expect(window.location.pathname).toBe('/history')
+    expect(localStorage.getItem('arrowloop.history.view')).toBe('"runs"')
   })
 
   it('says what to do when there is no job yet, and offers to add one', async () => {

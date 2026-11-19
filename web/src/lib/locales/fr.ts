@@ -2227,6 +2227,7 @@ const fr: Translations = {
   'new.change.downloadButtons': 'Survolez un bouton de téléchargement de la tuile {apps} et une seconde ligne vous indique de quelle version il s\'agit, par exemple x64, ou Apple et Intel pour le Mac.',
   'new.change.jobRename': 'Une tâche renommée garde ses exécutions, ses statistiques et tout ce que le filet de sécurité a appris d\'elle.',
   'new.change.connectionRows': 'Les cibles, les VPN et les canaux de notification s\'affichent tous sous la même forme de ligne, avec les boutons pour tester, modifier et supprimer toujours au même endroit. Quand la vérification automatique d\'une cible échoue, sa ligne affiche {notConnected} et la raison. Les réglages d\'un canal s\'ouvrent dans leur propre fenêtre et s\'enregistrent au fil de la saisie.',
+  'new.change.runLength': '{history} s\'ouvre sur {runs}, et chaque exécution indique combien de temps elle a duré, dans la liste comme dans sa fenêtre.',
 }
 
 export default fr

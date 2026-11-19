@@ -2227,6 +2227,7 @@ const id: Translations = {
   'new.change.downloadButtons': 'Arahkan penunjuk ke tombol unduh di ubin {apps}, dan baris kedua memberi tahu Anda build mana itu, misalnya x64, atau Apple dan Intel untuk Mac.',
   'new.change.jobRename': 'Tugas yang diganti namanya tetap menyimpan jalannya, statistiknya, dan semua yang telah dipelajari jaring pengaman tentangnya.',
   'new.change.connectionRows': 'Tujuan, VPN, dan saluran notifikasi semuanya tampil sebagai jenis baris yang sama, dengan tombol uji, ubah, dan hapus selalu di tempat yang sama. Jika pemeriksaan otomatis sebuah tujuan gagal, barisnya menampilkan {notConnected} beserta alasannya. Pengaturan sebuah saluran terbuka di jendelanya sendiri dan langsung tersimpan.',
+  'new.change.runLength': '{history} terbuka di {runs}, dan setiap jalan menampilkan berapa lama berlangsung, di daftar maupun di jendelanya.',
 }
 
 export default id

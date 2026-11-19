@@ -2227,6 +2227,7 @@ const gl: Translations = {
   'new.change.downloadButtons': 'Pasa o punteiro por riba dun botón de descarga da tesela {apps} e unha segunda liña dite que versión é, por exemplo x64, ou Apple e Intel para o Mac.',
   'new.change.jobRename': 'Unha tarefa á que lle cambias o nome conserva as súas execucións, as súas estatísticas e todo o que a rede de seguridade aprendeu dela.',
   'new.change.connectionRows': 'Os destinos, as VPN e as canles de notificación móstranse todos co mesmo tipo de fila, cos botóns de probar, editar e quitar sempre no mesmo sitio. Cando falla a comprobación automática dun destino, a súa fila amosa {notConnected} e o motivo. A configuración dunha canle ábrese nunha xanela propia e gárdase sobre a marcha.',
+  'new.change.runLength': '{history} ábrese en {runs}, e cada execución mostra canto durou, na lista e na súa xanela.',
 }
 
 export default gl

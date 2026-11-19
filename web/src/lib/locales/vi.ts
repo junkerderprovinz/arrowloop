@@ -2227,6 +2227,7 @@ const vi: Translations = {
   'new.change.downloadButtons': 'Trỏ vào một nút tải xuống trên ô {apps}, dòng thứ hai sẽ cho bạn biết đó là bản dựng nào, ví dụ x64, hoặc Apple và Intel cho Mac.',
   'new.change.jobRename': 'Công việc được đổi tên vẫn giữ các lần chạy, số liệu thống kê và mọi thứ lưới an toàn đã học được về nó.',
   'new.change.connectionRows': 'Đích, VPN và kênh thông báo đều hiển thị cùng một kiểu hàng, với các nút kiểm tra, sửa và xóa luôn ở cùng một chỗ. Khi lần kiểm tra tự động của một đích thất bại, hàng của nó hiện {notConnected} kèm lý do. Cài đặt của một kênh mở trong cửa sổ riêng và được lưu ngay.',
+  'new.change.runLength': '{history} mở ở {runs}, và mỗi lần chạy cho biết đã mất bao lâu, cả trong danh sách lẫn trong cửa sổ của nó.',
 }
 
 export default vi

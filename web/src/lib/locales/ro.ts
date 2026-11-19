@@ -2227,6 +2227,7 @@ const ro: Translations = {
   'new.change.downloadButtons': 'Ține cursorul pe un buton de descărcare din placa {apps} și un al doilea rând îți spune ce versiune este, de exemplu x64, sau Apple și Intel pentru Mac.',
   'new.change.jobRename': 'O sarcină redenumită își păstrează rulările, statisticile și tot ce a învățat plasa de siguranță despre ea.',
   'new.change.connectionRows': 'Destinațiile, VPN-urile și canalele de notificare apar toate ca același fel de rând, cu butoanele de testare, editare și eliminare mereu în același loc. Când verificarea automată a unei destinații eșuează, rândul ei arată {notConnected} și motivul. Setările unui canal se deschid într-o fereastră proprie și se salvează pe loc.',
+  'new.change.runLength': '{history} se deschide pe {runs}, iar fiecare rulare arată cât a durat, în listă și în fereastra ei.',
 }
 
 export default ro

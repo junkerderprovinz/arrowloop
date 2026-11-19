@@ -2227,6 +2227,7 @@ const zh: Translations = {
   'new.change.downloadButtons': '把指针移到{apps}磁贴上的下载按钮上，第二行会告诉你是哪个版本，比如 x64，或者 Mac 的 Apple 和 Intel。',
   'new.change.jobRename': '重命名后的任务会保留它的运行记录、统计数据，以及安全网对它学到的一切。',
   'new.change.connectionRows': '目标、VPN 和通知渠道都显示为同一种行，测试、编辑和删除按钮总在同一位置。目标的自动检查失败时，它那一行会显示{notConnected}和原因。渠道的设置在单独的窗口中打开，改动会立即保存。',
+  'new.change.runLength': '{history}默认打开{runs}，每次运行都会在列表和其窗口中显示耗时。',
 }
 
 export default zh

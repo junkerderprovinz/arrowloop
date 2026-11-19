@@ -2227,6 +2227,7 @@ const lv: Translations = {
   'new.change.downloadButtons': 'Novieto rādītāju uz lejupielādes pogas flīzē {apps}, un otrā rinda tev pateiks, kura versija tā ir, piemēram, x64 vai Mac datoram Apple un Intel.',
   'new.change.jobRename': 'Pārdēvēts uzdevums saglabā savas palaišanas, statistiku un visu, ko drošības tīkls par to ir iemācījies.',
   'new.change.connectionRows': 'Galamērķi, VPN un paziņojumu kanāli visi tiek rādīti kā viena veida rindas, un pārbaudes, rediģēšanas un noņemšanas pogas vienmēr ir tajā pašā vietā. Ja galamērķa automātiskā pārbaude neizdodas, tā rindā redzams {notConnected} un iemesls. Kanāla iestatījumi atveras atsevišķā logā un saglabājas uzreiz.',
+  'new.change.runLength': '{history} atveras skatā {runs}, un katra palaišana rāda, cik ilgi tā ilga, gan sarakstā, gan savā logā.',
 }
 
 export default lv

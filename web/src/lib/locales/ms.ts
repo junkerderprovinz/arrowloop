@@ -2227,6 +2227,7 @@ const ms: Translations = {
   'new.change.downloadButtons': 'Halakan penuding ke butang muat turun pada jubin {apps}, dan baris kedua memberitahu anda binaan yang mana, contohnya x64, atau Apple dan Intel untuk Mac.',
   'new.change.jobRename': 'Tugas yang dinamakan semula mengekalkan lariannya, statistiknya dan semua yang telah dipelajari oleh jaring keselamatan tentangnya.',
   'new.change.connectionRows': 'Destinasi, VPN dan saluran pemberitahuan semuanya dipaparkan sebagai jenis baris yang sama, dengan butang uji, sunting dan buang sentiasa di tempat yang sama. Apabila semakan automatik sesuatu destinasi gagal, barisnya menunjukkan {notConnected} beserta sebabnya. Tetapan sesuatu saluran dibuka dalam tetingkapnya sendiri dan disimpan serta-merta.',
+  'new.change.runLength': '{history} dibuka pada {runs}, dan setiap larian menunjukkan berapa lama masa yang diambil, dalam senarai dan dalam tetingkapnya.',
 }
 
 export default ms

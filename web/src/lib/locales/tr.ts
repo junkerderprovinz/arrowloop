@@ -2227,6 +2227,7 @@ const tr: Translations = {
   'new.change.downloadButtons': '{apps} kutucuğundaki bir indirme düğmesinin üzerine gel, ikinci bir satır sana hangi derleme olduğunu söyler, örneğin x64 ya da Mac için Apple ve Intel.',
   'new.change.jobRename': 'Adını değiştirdiğin bir iş, çalışmalarını, istatistiklerini ve güvenlik ağının onun hakkında öğrendiği her şeyi korur.',
   'new.change.connectionRows': 'Hedefler, VPN\'ler ve bildirim kanallarının hepsi aynı tür satır olarak görünür, test, düzenleme ve kaldırma düğmeleri hep aynı yerdedir. Bir hedefin otomatik denetimi başarısız olursa satırı {notConnected} durumunu ve nedenini gösterir. Bir kanalın ayarları kendi penceresinde açılır ve anında kaydedilir.',
+  'new.change.runLength': '{history}, {runs} görünümüyle açılır ve her çalışma ne kadar sürdüğünü hem listede hem de kendi penceresinde gösterir.',
 }
 
 export default tr

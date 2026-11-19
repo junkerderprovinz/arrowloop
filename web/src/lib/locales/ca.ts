@@ -2227,6 +2227,7 @@ const ca: Translations = {
   'new.change.downloadButtons': 'Passa el punter per sobre d\'un botó de baixada de la rajola {apps} i una segona línia et diu quina versió és, per exemple x64, o Apple i Intel per al Mac.',
   'new.change.jobRename': 'Una tasca a la qual canvies el nom conserva les seves execucions, les seves estadístiques i tot el que n\'ha après la xarxa de seguretat.',
   'new.change.connectionRows': 'Les destinacions, les VPN i els canals de notificació es mostren tots amb el mateix tipus de fila, amb els botons de provar, editar i eliminar sempre al mateix lloc. Quan la comprovació automàtica d\'una destinació falla, la seva fila mostra {notConnected} i el motiu. La configuració d\'un canal s\'obre en una finestra pròpia i es desa a mesura que l\'edites.',
+  'new.change.runLength': '{history} s\'obre a {runs}, i cada execució mostra quant ha durat, a la llista i a la seva finestra.',
 }
 
 export default ca

@@ -9,7 +9,7 @@ import { IconAnomalies } from '../components/glyphs'
 import { JobChip } from '../components/JobChip'
 import { LearningRings } from '../components/LearningRings'
 import { ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
-import { openClosedFindings } from './History'
+import { openHistory } from './History'
 import { IconHistory } from '../components/glyphs'
 import { Button } from '../lib/glimstone/Button'
 import { Empty, Stack } from '../components/Shell'
@@ -144,7 +144,7 @@ export function Anomalies({
                 labelKey="anomalies.closedInHistory"
                 glyph={<IconHistory />}
                 tone="subtle"
-                onClick={openClosedFindings}
+                onClick={() => openHistory('findings')}
               />
             </div>
           )}

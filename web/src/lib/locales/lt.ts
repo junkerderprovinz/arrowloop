@@ -2227,6 +2227,7 @@ const lt: Translations = {
   'new.change.downloadButtons': 'Užvesk žymeklį ant atsisiuntimo mygtuko plytelėje {apps}, ir antra eilutė tau pasakys, kuri tai versija, pavyzdžiui, x64 arba Mac kompiuteriui Apple ir Intel.',
   'new.change.jobRename': 'Pervadinta užduotis išlaiko savo paleidimus, statistiką ir viską, ką apie ją išmoko apsauginis tinklas.',
   'new.change.connectionRows': 'Paskirtys, VPN ir pranešimų kanalai rodomi kaip tos pačios rūšies eilutės, o tikrinimo, redagavimo ir šalinimo mygtukai visada toje pačioje vietoje. Kai automatinis paskirties tikrinimas nepavyksta, jos eilutėje rodoma {notConnected} ir priežastis. Kanalo nustatymai atsidaro atskirame lange ir išsaugomi iš karto.',
+  'new.change.runLength': '{history} atsidaro rodinyje {runs}, o kiekvienas paleidimas rodo, kiek truko, sąraše ir savo lange.',
 }
 
 export default lt

@@ -2227,6 +2227,7 @@ const no: Translations = {
   'new.change.downloadButtons': 'Pek på en nedlastingsknapp på flisen {apps}, så forteller en ekstra linje deg hvilket bygg det er, for eksempel x64, eller Apple og Intel for Mac.',
   'new.change.jobRename': 'En jobb som får nytt navn, beholder kjøringene, statistikken og alt sikkerhetsnettet har lært om den.',
   'new.change.connectionRows': 'Mål, VPN-er og varselkanaler vises alle som samme slags rad, med knappene for testing, redigering og fjerning alltid på samme sted. Når den automatiske sjekken av et mål mislykkes, viser raden {notConnected} og årsaken. Innstillingene for en kanal åpnes i et eget vindu og lagres fortløpende.',
+  'new.change.runLength': '{history} åpner på {runs}, og hver kjøring viser hvor lenge den tok, i listen og i sitt eget vindu.',
 }
 
 export default no
