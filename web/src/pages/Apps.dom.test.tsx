@@ -38,4 +38,16 @@ describe('the desktop downloads', () => {
       words: 'ARM',
     })
   })
+
+  it('offer the AppImage for both architectures', () => {
+    render(<Apps version="v1.8.0" desktop={false} />)
+    expect(download('AppImage x64')).toEqual({
+      href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.AppImage',
+      words: 'AppImagex64',
+    })
+    expect(download('AppImage ARM')).toEqual({
+      href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.AppImage',
+      words: 'ARM',
+    })
+  })
 })

@@ -208,6 +208,15 @@ function DesktopCard({ version }: { version: string }) {
           markClass="glim-flatpak-mark"
           onLinkClick={followExternal}
         />
+        <ReadmeButton
+          brand="linux"
+          parts={[
+            { name: t('apps.appimage'), sub: 'x64', href: DOWNLOADS.appimage },
+            { name: 'ARM', label: `${t('apps.appimage')} ARM`, href: DOWNLOADS.appimageArm },
+          ]}
+          mark={<BrandMark svg={LINUX_SVG} />}
+          onLinkClick={followExternal}
+        />
       </div>
     </Card>
   )

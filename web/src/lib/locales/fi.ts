@@ -966,6 +966,7 @@ const fi: Translations = {
   'apps.macos': 'macOS',
   'apps.linux': 'Linux',
   'apps.flatpak': 'Flatpak',
+  'apps.appimage': 'AppImage',
   'apps.playStore': 'Google Play',
   'apps.android': 'Android',
   'apps.apk': 'APK',

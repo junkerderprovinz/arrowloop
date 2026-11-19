@@ -17,6 +17,8 @@ BUTTONS = {
     "linux-arm": RELEASE + "arrowloop-linux-arm64-installer",
     "flatpak": RELEASE + "arrowloop-linux-amd64.flatpak",
     "flatpak-arm": RELEASE + "arrowloop-linux-arm64.flatpak",
+    "appimage": RELEASE + "arrowloop-linux-amd64.AppImage",
+    "appimage-arm": RELEASE + "arrowloop-linux-arm64.AppImage",
     "unraid": "https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1",
     "mos": "https://mos-official.net/apps.html?search=ArrowLoop",
     "zimaos": "https://github.com/junkerderprovinz/zimaos-apps#install",
