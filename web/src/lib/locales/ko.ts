@@ -979,6 +979,7 @@ const ko: Translations = {
   'apps.copied': '복사됨',
   'apps.source': '소스 코드',
   'apps.zipSub': 'ZIP 압축 파일',
+  'apps.macosSub': 'Apple 및 Intel',
   'apps.dockerSub': '명령 복사',
   'apps.unraidSub': '템플릿',
   'password.hint': '이 주소에 닿는 사람은 누구나 파일을 삭제하는 작업을 시작할 수 있습니다. 비밀번호는 구성 파일 옆의 security.json에 해시로 보관되므로 설정 백업에는 절대 들어가지 않습니다. ARROWLOOP_PASSWORD_HASH가 설정되어 있으면 이 비밀번호보다 우선하며, 비밀번호를 잊었을 때 다시 들어오는 길이 됩니다.',

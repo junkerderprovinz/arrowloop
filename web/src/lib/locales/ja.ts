@@ -979,6 +979,7 @@ const ja: Translations = {
   'apps.copied': 'コピーしました',
   'apps.source': 'ソースコード',
   'apps.zipSub': 'ZIPアーカイブ',
+  'apps.macosSub': 'Apple と Intel',
   'apps.dockerSub': 'コマンドをコピー',
   'apps.unraidSub': 'テンプレート',
   'password.hint': 'このアドレスに届く人は誰でも、ファイルを削除するジョブを開始できます。パスワードは設定ファイルの隣の security.json にハッシュとして保存されるため、設定のバックアップに含まれることはありません。ARROWLOOP_PASSWORD_HASH が設定されている場合はこのパスワードより優先され、パスワードを忘れたときに再び入る手段になります。',

@@ -979,6 +979,7 @@ const is: Translations = {
   'apps.copied': 'Afritað',
   'apps.source': 'Frumkóði',
   'apps.zipSub': 'ZIP-safn',
+  'apps.macosSub': 'Apple og Intel',
   'apps.dockerSub': 'Afrita skipun',
   'apps.unraidSub': 'Sniðmát',
   'password.hint': 'Hver sem nær í þetta vistfang getur ræst verk sem eyða skrám. Lykilorðið er geymt sem tætigildi í security.json við hlið grunnstillinganna, svo engin afritun stillinganna inniheldur það. Ef ARROWLOOP_PASSWORD_HASH er stillt gengur það fyrir þessu lykilorði og er leiðin aftur inn ef þú gleymir því.',

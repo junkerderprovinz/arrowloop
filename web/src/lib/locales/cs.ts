@@ -979,6 +979,7 @@ const cs: Translations = {
   'apps.copied': 'Zkopírováno',
   'apps.source': 'Zdrojový kód',
   'apps.zipSub': 'Archiv ZIP',
+  'apps.macosSub': 'Apple a Intel',
   'apps.dockerSub': 'Kopírovat příkaz',
   'apps.unraidSub': 'Šablona',
   'password.hint': 'Kdo se dostane na tuto adresu, může spouštět úlohy, které mažou soubory. Heslo se ukládá jako hash do security.json vedle konfigurace, takže ho žádná záloha nastavení neobsahuje. Pokud je nastavena proměnná ARROWLOOP_PASSWORD_HASH, má přednost před tímto heslem a je cestou zpět, když ho zapomeneš.',

@@ -979,6 +979,7 @@ const hi: Translations = {
   'apps.copied': 'कॉपी हो गया',
   'apps.source': 'सोर्स कोड',
   'apps.zipSub': 'ZIP आर्काइव',
+  'apps.macosSub': 'Apple और Intel',
   'apps.dockerSub': 'कमांड कॉपी करें',
   'apps.unraidSub': 'टेम्पलेट',
   'password.hint': 'जो भी इस पते तक पहुँचता है, वह ऐसे काम चला सकता है जो फ़ाइलें मिटाते हैं। पासवर्ड हैश के रूप में कॉन्फ़िगरेशन के पास security.json में रखा जाता है, इसलिए सेटिंग्स के किसी बैकअप में वह कभी नहीं होता। अगर ARROWLOOP_PASSWORD_HASH सेट है, तो वह इस पासवर्ड से ऊपर चलता है और इसे भूल जाने पर वापस अंदर आने का रास्ता है।',

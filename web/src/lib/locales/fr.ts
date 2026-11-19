@@ -979,6 +979,7 @@ const fr: Translations = {
   'apps.copied': 'Copié',
   'apps.source': 'Code source',
   'apps.zipSub': 'Archive ZIP',
+  'apps.macosSub': 'Apple et Intel',
   'apps.dockerSub': 'Copier la commande',
   'apps.unraidSub': 'Modèle',
   'password.hint': 'Toute personne qui atteint cette adresse peut lancer des tâches qui suppriment des fichiers. Le mot de passe est conservé sous forme de hachage dans security.json, à côté de la configuration, si bien qu\'aucune sauvegarde des réglages ne le contient. Si ARROWLOOP_PASSWORD_HASH est définie, elle l\'emporte sur ce mot de passe et permet de rentrer si vous l\'oubliez.',

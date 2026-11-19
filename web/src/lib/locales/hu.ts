@@ -979,6 +979,7 @@ const hu: Translations = {
   'apps.copied': 'Másolva',
   'apps.source': 'Forráskód',
   'apps.zipSub': 'ZIP-archívum',
+  'apps.macosSub': 'Apple és Intel',
   'apps.dockerSub': 'Parancs másolása',
   'apps.unraidSub': 'Sablon',
   'password.hint': 'Aki eléri ezt a címet, fájlokat törlő feladatokat indíthat. A jelszó hash-ként a konfiguráció melletti security.json fájlban van, így a beállítások egyetlen biztonsági mentése sem tartalmazza. Ha az ARROWLOOP_PASSWORD_HASH be van állítva, az elsőbbséget élvez ezzel a jelszóval szemben, és azzal jutsz vissza, ha elfelejted.',

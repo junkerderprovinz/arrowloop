@@ -979,6 +979,7 @@ const fa: Translations = {
   'apps.copied': 'کپی شد',
   'apps.source': 'کد منبع',
   'apps.zipSub': 'بایگانی ZIP',
+  'apps.macosSub': 'Apple و Intel',
   'apps.dockerSub': 'کپی فرمان',
   'apps.unraidSub': 'قالب',
   'password.hint': 'هر کس به این نشانی برسد می‌تواند کارهایی را اجرا کند که پرونده‌ها را پاک می‌کنند. گذرواژه به صورت هش در security.json کنار پیکربندی نگه داشته می‌شود، پس هیچ پشتیبانی از تنظیمات آن را در بر ندارد. اگر ARROWLOOP_PASSWORD_HASH تعیین شده باشد، بر این گذرواژه مقدم است و اگر آن را فراموش کنید، راه بازگشت شماست.',

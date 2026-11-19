@@ -13,6 +13,7 @@ export const DOWNLOADS = {
   windows: `${RELEASE}/arrowloop-windows-amd64-installer.exe`,
   windowsArm: `${RELEASE}/arrowloop-windows-arm64-installer.exe`,
   macos: `${RELEASE}/arrowloop-macos-universal.dmg`,
+  macosZip: `${RELEASE}/arrowloop-macos-universal.zip`,
   linux: `${RELEASE}/arrowloop-linux-amd64`,
   linuxArm: `${RELEASE}/arrowloop-linux-arm64`,
   flatpak: `${RELEASE}/arrowloop-linux-amd64.flatpak`,

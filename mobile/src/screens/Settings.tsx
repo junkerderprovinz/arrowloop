@@ -112,6 +112,7 @@ export function Settings() {
   const linuxMark = (lit: boolean, ink: string) => (
     <AppMark svg={LINUX_SVG} ink={lit ? ink : p.text} cut={lit ? TILE.linux.color : undefined} />
   );
+  const appleMark = (lit: boolean, ink: string) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />;
   const flatpakMark = (lit: boolean, ink: string) => (
     <AppMark svg={FLATPAK_SVG} ink={lit ? ink : PLATFORM[scheme].flatpak} />
   );
@@ -1020,7 +1021,7 @@ export function Settings() {
               />
               <ReadmeButton
                 label={t("apps.windows")}
-                sub="ARM"
+                sub="ARM64"
                 tile={TILE.windows}
                 mark={windowsMark}
                 onPress={() => Linking.openURL(DOWNLOADS.windowsArm)}
@@ -1029,10 +1030,17 @@ export function Settings() {
             <ReadmeRow>
               <ReadmeButton
                 label={t("apps.macos")}
-                sub="Universal"
+                sub={t("apps.macosSub")}
                 tile={TILE.apple}
-                mark={(lit, ink) => <AppMark svg={APPLE_SVG} ink={lit ? ink : p.text} />}
+                mark={appleMark}
                 onPress={() => Linking.openURL(DOWNLOADS.macos)}
+              />
+              <ReadmeButton
+                label={t("apps.macos")}
+                sub="Zip"
+                tile={TILE.apple}
+                mark={appleMark}
+                onPress={() => Linking.openURL(DOWNLOADS.macosZip)}
               />
             </ReadmeRow>
             <ReadmeRow>
@@ -1045,7 +1053,7 @@ export function Settings() {
               />
               <ReadmeButton
                 label={t("apps.linux")}
-                sub="ARM"
+                sub="ARM64"
                 tile={TILE.linux}
                 mark={linuxMark}
                 onPress={() => Linking.openURL(DOWNLOADS.linuxArm)}
@@ -1061,7 +1069,7 @@ export function Settings() {
               />
               <ReadmeButton
                 label={t("apps.flatpak")}
-                sub="ARM"
+                sub="ARM64"
                 tile={TILE.flatpak}
                 mark={flatpakMark}
                 onPress={() => Linking.openURL(DOWNLOADS.flatpakArm)}

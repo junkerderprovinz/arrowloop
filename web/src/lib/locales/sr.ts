@@ -979,6 +979,7 @@ const sr: Translations = {
   'apps.copied': 'Копирано',
   'apps.source': 'Изворни код',
   'apps.zipSub': 'ZIP архива',
+  'apps.macosSub': 'Apple и Intel',
   'apps.dockerSub': 'Копирај команду',
   'apps.unraidSub': 'Шаблон',
   'password.hint': 'Свако ко дође до ове адресе може да покреће послове који бришу датотеке. Лозинка се чува као хеш у security.json поред конфигурације, па је ниједна резервна копија подешавања не садржи. Ако је постављен ARROWLOOP_PASSWORD_HASH, он има предност над овом лозинком и пут је назад ако је заборавиш.',

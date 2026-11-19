@@ -979,6 +979,7 @@ const tr: Translations = {
   'apps.copied': 'Kopyalandı',
   'apps.source': 'Kaynak kod',
   'apps.zipSub': 'ZIP arşivi',
+  'apps.macosSub': 'Apple ve Intel',
   'apps.dockerSub': 'Komutu kopyala',
   'apps.unraidSub': 'Şablon',
   'password.hint': 'Bu adrese ulaşabilen herkes dosya silen işler başlatabilir. Parola, yapılandırmanın yanındaki security.json dosyasında özet (hash) olarak tutulur, bu yüzden ayarların hiçbir yedeği onu içermez. ARROWLOOP_PASSWORD_HASH ayarlıysa bu paroladan önce gelir ve parolayı unutursan içeri geri dönme yolun olur.',

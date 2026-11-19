@@ -979,6 +979,7 @@ const lv: Translations = {
   'apps.copied': 'Nokopēts',
   'apps.source': 'Pirmkods',
   'apps.zipSub': 'ZIP arhīvs',
+  'apps.macosSub': 'Apple un Intel',
   'apps.dockerSub': 'Kopēt komandu',
   'apps.unraidSub': 'Veidne',
   'password.hint': 'Ikviens, kas sasniedz šo adresi, var palaist uzdevumus, kas dzēš failus. Parole tiek glabāta kā jaucējvērtība failā security.json blakus konfigurācijai, tāpēc neviena iestatījumu dublējumkopija to nesatur. Ja ir iestatīts ARROWLOOP_PASSWORD_HASH, tam ir priekšroka pār šo paroli, un tas ir ceļš atpakaļ, ja to aizmirsti.',

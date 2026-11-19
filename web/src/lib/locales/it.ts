@@ -979,6 +979,7 @@ const it: Translations = {
   'apps.copied': 'Copiato',
   'apps.source': 'Codice sorgente',
   'apps.zipSub': 'Archivio ZIP',
+  'apps.macosSub': 'Apple e Intel',
   'apps.dockerSub': 'Copia il comando',
   'apps.unraidSub': 'Modello',
   'password.hint': 'Chiunque raggiunga questo indirizzo può avviare lavori che cancellano file. La password è conservata come hash in security.json accanto alla configurazione, quindi nessun backup delle impostazioni la contiene. Se ARROWLOOP_PASSWORD_HASH è impostata, prevale su questa password ed è la via per rientrare se la dimentichi.',

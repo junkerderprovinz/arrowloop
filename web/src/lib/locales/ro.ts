@@ -979,6 +979,7 @@ const ro: Translations = {
   'apps.copied': 'Copiat',
   'apps.source': 'Cod sursă',
   'apps.zipSub': 'Arhivă ZIP',
+  'apps.macosSub': 'Apple și Intel',
   'apps.dockerSub': 'Copiază comanda',
   'apps.unraidSub': 'Șablon',
   'password.hint': 'Oricine ajunge la această adresă poate porni sarcini care șterg fișiere. Parola este păstrată ca hash în security.json, lângă configurație, așa că nicio copie de rezervă a setărilor nu o conține. Dacă ARROWLOOP_PASSWORD_HASH este setată, are întâietate față de această parolă și e calea înapoi dacă o uiți.',

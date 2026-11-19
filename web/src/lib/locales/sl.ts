@@ -979,6 +979,7 @@ const sl: Translations = {
   'apps.copied': 'Kopirano',
   'apps.source': 'Izvorna koda',
   'apps.zipSub': 'Arhiv ZIP',
+  'apps.macosSub': 'Apple in Intel',
   'apps.dockerSub': 'Kopiraj ukaz',
   'apps.unraidSub': 'Predloga',
   'password.hint': 'Kdor pride do tega naslova, lahko zaganja opravila, ki brišejo datoteke. Geslo je shranjeno kot zgoščena vrednost v security.json poleg konfiguracije, zato ga nobena varnostna kopija nastavitev ne vsebuje. Če je nastavljen ARROWLOOP_PASSWORD_HASH, ima prednost pred tem geslom in je pot nazaj, če ga pozabiš.',

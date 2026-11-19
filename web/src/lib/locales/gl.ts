@@ -979,6 +979,7 @@ const gl: Translations = {
   'apps.copied': 'Copiado',
   'apps.source': 'Código fonte',
   'apps.zipSub': 'Arquivo ZIP',
+  'apps.macosSub': 'Apple e Intel',
   'apps.dockerSub': 'Copiar a orde',
   'apps.unraidSub': 'Modelo',
   'password.hint': 'Calquera que chegue a este enderezo pode iniciar tarefas que borran ficheiros. O contrasinal gárdase como hash en security.json, á beira da configuración, así que ningunha copia de seguranza dos axustes o contén. Se ARROWLOOP_PASSWORD_HASH está definida, ten prioridade sobre este contrasinal e é o xeito de volver entrar se o esqueces.',

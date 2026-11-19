@@ -979,6 +979,7 @@ const ms: Translations = {
   'apps.copied': 'Disalin',
   'apps.source': 'Kod sumber',
   'apps.zipSub': 'Arkib ZIP',
+  'apps.macosSub': 'Apple dan Intel',
   'apps.dockerSub': 'Salin arahan',
   'apps.unraidSub': 'Templat',
   'password.hint': 'Sesiapa yang dapat mencapai alamat ini boleh memulakan tugas yang memadam fail. Kata laluan disimpan sebagai cincangan dalam security.json di sebelah konfigurasi, jadi sandaran tetapan tidak pernah memuatkannya. Jika ARROWLOOP_PASSWORD_HASH ditetapkan, ia didahulukan daripada kata laluan ini dan menjadi jalan masuk semula jika anda terlupa.',

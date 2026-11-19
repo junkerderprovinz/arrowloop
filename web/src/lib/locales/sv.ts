@@ -979,6 +979,7 @@ const sv: Translations = {
   'apps.copied': 'Kopierat',
   'apps.source': 'Källkod',
   'apps.zipSub': 'ZIP-arkiv',
+  'apps.macosSub': 'Apple och Intel',
   'apps.dockerSub': 'Kopiera kommandot',
   'apps.unraidSub': 'Mall',
   'password.hint': 'Alla som når den här adressen kan starta jobb som raderar filer. Lösenordet sparas som hash i security.json bredvid konfigurationen, så ingen säkerhetskopia av inställningarna innehåller det. Är ARROWLOOP_PASSWORD_HASH satt går den före det här lösenordet och är vägen in igen om du glömmer det.',

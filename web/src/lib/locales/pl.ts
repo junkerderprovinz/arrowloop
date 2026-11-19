@@ -979,6 +979,7 @@ const pl: Translations = {
   'apps.copied': 'Skopiowano',
   'apps.source': 'Kod źródłowy',
   'apps.zipSub': 'Archiwum ZIP',
+  'apps.macosSub': 'Apple i Intel',
   'apps.dockerSub': 'Kopiuj polecenie',
   'apps.unraidSub': 'Szablon',
   'password.hint': 'Każdy, kto dotrze do tego adresu, może uruchamiać zadania, które usuwają pliki. Hasło jest przechowywane jako skrót w security.json obok konfiguracji, więc żadna kopia zapasowa ustawień go nie zawiera. Jeśli ustawiono ARROWLOOP_PASSWORD_HASH, ma ono pierwszeństwo przed tym hasłem i jest drogą z powrotem, gdy je zapomnisz.',

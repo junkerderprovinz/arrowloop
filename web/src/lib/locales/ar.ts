@@ -979,6 +979,7 @@ const ar: Translations = {
   'apps.copied': 'تم النسخ',
   'apps.source': 'الشيفرة المصدرية',
   'apps.zipSub': 'أرشيف ZIP',
+  'apps.macosSub': 'Apple وIntel',
   'apps.dockerSub': 'نسخ الأمر',
   'apps.unraidSub': 'قالب',
   'password.hint': 'كل من يصل إلى هذا العنوان يستطيع تشغيل مهام تحذف ملفات. تُحفظ كلمة المرور مجزّأة (hash) في security.json بجانب ملف الإعدادات، لذلك لا تحملها أي نسخة احتياطية من الإعدادات. وإذا كان ARROWLOOP_PASSWORD_HASH مضبوطًا فهو يتقدّم على كلمة المرور هذه، وبه تعود إلى الدخول إن نسيتها.',

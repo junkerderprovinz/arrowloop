@@ -173,7 +173,7 @@ function DesktopCard({ version }: { version: string }) {
           brand="windows"
           parts={[
             { name: t('apps.windows'), sub: 'x64', href: DOWNLOADS.windows },
-            { name: 'ARM', label: `${t('apps.windows')} ARM`, href: DOWNLOADS.windowsArm },
+            { name: 'ARM64', label: `${t('apps.windows')} ARM64`, href: DOWNLOADS.windowsArm },
           ]}
           mark={<BrandMark svg={WINDOWS_SVG} />}
           markClass="glim-windows-mark"
@@ -181,7 +181,10 @@ function DesktopCard({ version }: { version: string }) {
         />
         <ReadmeButton
           brand="apple"
-          parts={[{ name: t('apps.macos'), sub: 'Universal', href: DOWNLOADS.macos }]}
+          parts={[
+            { name: t('apps.macos'), sub: t('apps.macosSub'), href: DOWNLOADS.macos },
+            { name: 'Zip', label: `${t('apps.macos')} Zip`, href: DOWNLOADS.macosZip },
+          ]}
           mark={<BrandMark svg={APPLE_SVG} />}
           onLinkClick={followExternal}
         />
@@ -189,7 +192,7 @@ function DesktopCard({ version }: { version: string }) {
           brand="linux"
           parts={[
             { name: t('apps.linux'), sub: 'x64', href: DOWNLOADS.linux },
-            { name: 'ARM', label: `${t('apps.linux')} ARM`, href: DOWNLOADS.linuxArm },
+            { name: 'ARM64', label: `${t('apps.linux')} ARM64`, href: DOWNLOADS.linuxArm },
           ]}
           mark={<BrandMark svg={LINUX_SVG} />}
           onLinkClick={followExternal}
@@ -198,7 +201,7 @@ function DesktopCard({ version }: { version: string }) {
           brand="flatpak"
           parts={[
             { name: t('apps.flatpak'), sub: 'x64', href: DOWNLOADS.flatpak },
-            { name: 'ARM', label: `${t('apps.flatpak')} ARM`, href: DOWNLOADS.flatpakArm },
+            { name: 'ARM64', label: `${t('apps.flatpak')} ARM64`, href: DOWNLOADS.flatpakArm },
           ]}
           mark={
             <span data-new="apps-flatpak" className="inline-flex">
