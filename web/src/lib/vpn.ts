@@ -1,53 +1,54 @@
 // The VPN providers of the settings, in the engine's order
-// (internal/vpnconn/catalog.go, which a test holds to this list), and the
-// colours of each one's logo in public/vpn: the tile it lights up in, the
-// ink of its name there, whether a mask of its own draws it in that ink, and
-// whether it is too dark to show in its own colours at rest.
+// (internal/vpnconn/catalog.go, which a test holds to this list). Their marks
+// are GlimStone's; a provider the catalog draws only as a glyph has a logo in
+// public/vpn instead, with its colours: the tile it lights up in, the ink of
+// its name there, whether a mask of its own draws it in that ink, and whether
+// it is too dark to show in its own colours at rest.
 
 export type VpnField = 'config' | 'accountNumber' | 'token' | 'username' | 'password' | 'location'
 
 export type VpnLogo = { tile: string; ink: string; lit?: boolean; rest?: 'ink' }
 
-export type VpnCatalogEntry = { id: string; name: string; fields: VpnField[]; logo: VpnLogo }
+export type VpnCatalogEntry = { id: string; name: string; fields: VpnField[]; logo?: VpnLogo }
 
 /** The tile of a WireGuard configuration of one's own. */
 export const CUSTOM = 'custom'
 
 export const VPN_PROVIDERS: readonly VpnCatalogEntry[] = [
-  { id: 'nordvpn', name: 'NordVPN', fields: ['token', 'location'], logo: { tile: '#4580ff', ink: '#ffffff' } },
-  { id: 'protonvpn', name: 'Proton VPN', fields: ['config'], logo: { tile: '#6458fa', ink: '#ffffff' } },
-  { id: 'surfshark', name: 'Surfshark', fields: ['config'], logo: { tile: '#1ebfbf', ink: '#ffffff', lit: true } },
-  { id: 'pia', name: 'Private Internet Access', fields: ['username', 'password', 'location'], logo: { tile: '#50a747', ink: '#ffffff', lit: true } },
-  { id: 'mullvad', name: 'Mullvad VPN', fields: ['accountNumber', 'location'], logo: { tile: '#192e45', ink: '#ffffff', lit: true } },
-  { id: 'windscribe', name: 'Windscribe', fields: ['config'], logo: { tile: '#000000', ink: '#ffffff', rest: 'ink' } },
-  { id: 'ipvanish', name: 'IPVanish', fields: ['config'], logo: { tile: '#6fbb44', ink: '#ffffff' } },
-  { id: 'purevpn', name: 'PureVPN', fields: ['config'], logo: { tile: '#3c1190', ink: '#ffffff', lit: true } },
-  { id: 'hideme', name: 'hide.me', fields: ['username', 'password', 'location'], logo: { tile: '#0acbf8', ink: '#161616', lit: true } },
-  { id: 'airvpn', name: 'AirVPN', fields: ['config'], logo: { tile: '#2266cc', ink: '#ffffff', lit: true } },
-  { id: 'ivpn', name: 'IVPN', fields: ['config'], logo: { tile: '#fb3841', ink: '#ffffff' } },
+  { id: 'nordvpn', name: 'NordVPN', fields: ['token', 'location'] },
+  { id: 'protonvpn', name: 'Proton VPN', fields: ['config'] },
+  { id: 'surfshark', name: 'Surfshark', fields: ['config'] },
+  { id: 'pia', name: 'Private Internet Access', fields: ['username', 'password', 'location'] },
+  { id: 'mullvad', name: 'Mullvad VPN', fields: ['accountNumber', 'location'] },
+  { id: 'windscribe', name: 'Windscribe', fields: ['config'] },
+  { id: 'ipvanish', name: 'IPVanish', fields: ['config'] },
+  { id: 'purevpn', name: 'PureVPN', fields: ['config'] },
+  { id: 'hideme', name: 'hide.me', fields: ['username', 'password', 'location'] },
+  { id: 'airvpn', name: 'AirVPN', fields: ['config'] },
+  { id: 'ivpn', name: 'IVPN', fields: ['config'] },
   { id: 'torguard', name: 'TorGuard', fields: ['username', 'password', 'location'], logo: { tile: '#000000', ink: '#ffffff', rest: 'ink' } },
-  { id: 'privadovpn', name: 'PrivadoVPN', fields: ['config'], logo: { tile: '#4f58c8', ink: '#ffffff' } },
-  { id: 'ovpn', name: 'OVPN', fields: ['config'], logo: { tile: '#006bed', ink: '#ffffff' } },
-  { id: 'azirevpn', name: 'AzireVPN', fields: ['username', 'password', 'location'], logo: { tile: '#8229ef', ink: '#ffffff', lit: true } },
+  { id: 'privadovpn', name: 'PrivadoVPN', fields: ['config'] },
+  { id: 'ovpn', name: 'OVPN', fields: ['config'] },
+  { id: 'azirevpn', name: 'AzireVPN', fields: ['username', 'password', 'location'] },
   { id: 'fastestvpn', name: 'FastestVPN', fields: ['config'], logo: { tile: '#f9c02a', ink: '#161616' } },
   { id: 'ivacy', name: 'Ivacy VPN', fields: ['config'], logo: { tile: '#24aaf6', ink: '#ffffff' } },
-  { id: 'privatevpn', name: 'PrivateVPN', fields: ['config'], logo: { tile: '#9d56b9', ink: '#ffffff', lit: true } },
+  { id: 'privatevpn', name: 'PrivateVPN', fields: ['config'] },
   { id: 'astrill', name: 'Astrill VPN', fields: ['config'], logo: { tile: '#000000', ink: '#ffffff', rest: 'ink' } },
-  { id: 'zoogvpn', name: 'ZoogVPN', fields: ['config'], logo: { tile: '#5fae01', ink: '#ffffff', lit: true } },
+  { id: 'zoogvpn', name: 'ZoogVPN', fields: ['config'] },
   { id: 'cryptostorm', name: 'cryptostorm', fields: ['config'], logo: { tile: '#286666', ink: '#ffffff', lit: true } },
-  { id: 'strongvpn', name: 'StrongVPN', fields: ['config'], logo: { tile: '#fcd568', ink: '#161616' } },
-  { id: 'vpnunlimited', name: 'VPN Unlimited', fields: ['config'], logo: { tile: '#07b2fa', ink: '#ffffff', lit: true } },
-  { id: 'kaspersky', name: 'Kaspersky VPN', fields: ['config'], logo: { tile: '#4be576', ink: '#161616', lit: true } },
+  { id: 'strongvpn', name: 'StrongVPN', fields: ['config'] },
+  { id: 'vpnunlimited', name: 'VPN Unlimited', fields: ['config'] },
+  { id: 'kaspersky', name: 'Kaspersky VPN', fields: ['config'] },
   { id: 'anonine', name: 'Anonine', fields: ['config'], logo: { tile: '#000000', ink: '#ffffff', rest: 'ink' } },
-  { id: 'njalla', name: 'Njalla VPN', fields: ['config'], logo: { tile: '#213843', ink: '#ffffff', rest: 'ink' } },
-  { id: 'trustzone', name: 'Trust.Zone', fields: ['config'], logo: { tile: '#fcc801', ink: '#161616', lit: true } },
-  { id: 'obscura', name: 'Obscura VPN', fields: ['accountNumber', 'location'], logo: { tile: '#ff6025', ink: '#ffffff', rest: 'ink', lit: true } },
-  { id: 'levpn', name: 'Le VPN', fields: ['config'], logo: { tile: '#59ce97', ink: '#161616', lit: true } },
+  { id: 'njalla', name: 'Njalla VPN', fields: ['config'] },
+  { id: 'trustzone', name: 'Trust.Zone', fields: ['config'] },
+  { id: 'obscura', name: 'Obscura VPN', fields: ['accountNumber', 'location'] },
+  { id: 'levpn', name: 'Le VPN', fields: ['config'] },
   { id: 'xeovo', name: 'Xeovo', fields: ['config'], logo: { tile: '#06da69', ink: '#161616' } },
-  { id: 'cactusvpn', name: 'CactusVPN', fields: ['config'], logo: { tile: '#98c000', ink: '#ffffff' } },
+  { id: 'cactusvpn', name: 'CactusVPN', fields: ['config'] },
   { id: 'vpnac', name: 'VPN.ac', fields: ['config'], logo: { tile: '#13314c', ink: '#ffffff', lit: true } },
-  { id: 'unlocator', name: 'Unlocator VPN', fields: ['config'], logo: { tile: '#668efe', ink: '#ffffff', lit: true } },
-  { id: 'custom', name: 'WireGuard', fields: ['config'], logo: { tile: '#88181b', ink: '#ffffff' } },
+  { id: 'unlocator', name: 'Unlocator VPN', fields: ['config'] },
+  { id: 'custom', name: 'WireGuard', fields: ['config'] },
 ]
 
 /** Where a VPN stands: down while no run needs it. */

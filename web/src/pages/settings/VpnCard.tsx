@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState, type HTMLAttributes } from 'react'
-import { PickerWindow, type PickerItem, type TileMark } from '@glimstone/react/PickerWindow'
+import type { TileMark } from '@glimstone/core'
+import { VPN_PROVIDERS as CATALOG } from '@glimstone/core/vpnProviders'
+import { ConnectionRow } from '@glimstone/react/ConnectionRow'
+import { PickerWindow, type PickerItem } from '@glimstone/react/PickerWindow'
 
 import { Dialog } from '../../components/Dialog'
 import { FIELD_FOCUS, FieldRow, Secret, Text } from '../../components/Field'
-import { IconAdd, IconCheck, IconClose } from '../../components/glyphs'
+import { IconAdd } from '../../components/glyphs'
 import { api, ApiError } from '../../lib/api'
 import { at } from '../../lib/base'
-import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
 import { Badge } from '../../lib/glimstone/Badge'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
 import { useT, type TranslationKey } from '../../lib/i18n'
-import { useNarrow } from '../../lib/narrow'
 import {
   CUSTOM,
   tunnelName,
@@ -27,19 +28,23 @@ import {
 
 type T = ReturnType<typeof useT>['t']
 
+const MARKS = new Map<string, TileMark>(CATALOG.entries.flatMap((e) => (e.mark ? [[e.id, e.mark] as const] : [])))
 const LOGOS = new Map(VPN_PROVIDERS.map((p) => [p.id, p.logo]))
 
 const masked = (url: string) =>
   `<span style="display:block;width:100%;height:100%;background-color:currentColor;mask:url(&quot;${url}&quot;) center / contain no-repeat"></span>`
 
 /**
- * A provider's logo from public/vpn as the picker's tiles take it. Under the
- * pointer the tile fills with the brand's colour and the logo turns that
- * colour's ink, drawn from the logo's own shape or, where the shape has holes,
- * from a mask cut for it. A logo too dark for the page at rest is drawn in the
- * text's colour.
+ * A provider's mark from GlimStone's catalog or, for one the catalog draws
+ * only as a glyph, its logo from public/vpn as the picker's tiles take it.
+ * Under the pointer the tile fills with the brand's colour and the logo turns
+ * that colour's ink, drawn from the logo's own shape or, where the shape has
+ * holes, from a mask cut for it. A logo too dark for the page at rest is drawn
+ * in the text's colour.
  */
 export function vpnTileMark(id: string): TileMark {
+  const mark = MARKS.get(id)
+  if (mark) return mark
   const logo = LOGOS.get(id)
   const src = at(`/vpn/${id}.png`)
   const rest =
@@ -53,31 +58,15 @@ export function VpnMark({ id }: { id: string }) {
 }
 
 /**
- * A provider's logo lit on its brand's tile, as the picker shows it under the
- * pointer: the tile's colour with the logo in its ink. It is about as wide as
- * a row at rest is high, so it stands square there and grows taller with a row
- * that wraps; a width that followed the height would push the row taller still.
+ * How a VPN stands. Off and connected are its normal states and are only said
+ * in the status line; the others are a badge after its name as well.
  */
-function VpnTile({ id }: { id: string }) {
-  const mark = vpnTileMark(id)
-  return (
-    <span
-      aria-hidden
-      data-tile
-      className="flex w-20 shrink-0 items-center justify-center self-stretch sm:w-28"
-      style={{ backgroundColor: mark.tile, color: mark.ink }}
-    >
-      <span className="flex h-1/2 w-1/2" dangerouslySetInnerHTML={{ __html: mark.hover ?? mark.svg }} />
-    </span>
-  )
-}
-
-const STATUS: Record<VpnStatus, { word: TranslationKey; tone: 'ok' | 'warn' | 'fail' | 'neutral' }> = {
-  down: { word: 'vpn.status.down', tone: 'neutral' },
-  connecting: { word: 'vpn.status.connecting', tone: 'warn' },
-  connected: { word: 'vpn.status.connected', tone: 'ok' },
-  reconnecting: { word: 'vpn.status.reconnecting', tone: 'warn' },
-  failed: { word: 'vpn.status.failed', tone: 'fail' },
+const STATUS: Record<VpnStatus, { word: TranslationKey; badge?: 'warn' | 'fail' }> = {
+  down: { word: 'vpn.status.down' },
+  connecting: { word: 'vpn.status.connecting', badge: 'warn' },
+  connected: { word: 'vpn.status.connected' },
+  reconnecting: { word: 'vpn.status.reconnecting', badge: 'warn' },
+  failed: { word: 'vpn.status.failed', badge: 'fail' },
 }
 
 /** Why a connection failed, by the code the engine gives (internal/vpnconn). */
@@ -160,7 +149,7 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
         <p className="text-subline text-carbon-textSub">{t('vpn.none')}</p>
       ) : (
         vpn.tunnels.map((tunnel) => (
-          <TunnelCard
+          <TunnelRow
             key={tunnel.id}
             tunnel={tunnel}
             name={tunnelName(tunnel, vpn.providers)}
@@ -212,11 +201,11 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
 }
 
 /**
- * One VPN as a dense row: its logo as a tile the row's whole height, and
- * beside it the name and status on one line, why it failed and the jobs that
- * name it in small text, and its three actions in one row.
+ * One VPN as a connection row: its mark on its brand's tile, how it stands or
+ * what its last test found, the jobs that name it, and its test, edit and
+ * remove.
  */
-function TunnelCard({
+function TunnelRow({
   tunnel,
   name,
   jobs,
@@ -232,47 +221,69 @@ function TunnelCard({
   onRemove: () => void
 }) {
   const { t } = useT()
-  // Kept here rather than in the button, so a failed test hides the status
-  // line in the same render that shows why the test failed.
   const [verdict, setVerdict] = useState<Verdict | null>(null)
-  // On a phone the three buttons show their glyphs alone, so they keep to one row.
-  const narrow = useNarrow()
+  const [testing, setTesting] = useState(false)
   const status = STATUS[tunnel.status]
+
+  async function test() {
+    setTesting(true)
+    setVerdict(null)
+    try {
+      const answer = await api.testVpn(tunnel.id)
+      onState(answer.state)
+      const st = answer.state.tunnels.find((x) => x.id === tunnel.id)
+      if (answer.ok) {
+        setVerdict({ ok: true, said: st?.exitIp ? t('vpn.exit', { address: st.exitIp }) : undefined })
+      } else {
+        setVerdict({ ok: false, ...failureOf(t, { errorCode: st?.errorCode, error: answer.reason ?? st?.error }, name) })
+      }
+    } catch (e) {
+      setVerdict({ ok: false, said: errorText(t, e) })
+    } finally {
+      setTesting(false)
+    }
+  }
+
+  let line
+  if (verdict?.said) {
+    line = verdict.ok ? (
+      <p className="glim-connection-status">{verdict.said}</p>
+    ) : (
+      <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" />
+    )
+  } else if (tunnel.status === 'failed' && verdict?.ok !== false) {
+    line = <FailedBecause {...failureOf(t, tunnel, name)} role="status" />
+  } else {
+    line = (
+      <p className="glim-connection-status">
+        {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
+      </p>
+    )
+  }
+
   return (
-    <section aria-label={name} className="glim-well flex overflow-hidden rounded-card">
-      <VpnTile id={tunnel.provider} />
-      <div className="flex min-w-0 flex-1 flex-col gap-2 px-4 py-3">
-        <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1">
-          <span className="min-w-0 flex-[1_1_14rem] truncate text-body text-carbon-text">{name}</span>
-          <Badge tone={status.tone}>
-            {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
-          </Badge>
-        </div>
-        {tunnel.status === 'failed' && verdict?.ok !== false && (
-          <FailedBecause {...failureOf(t, tunnel, name)} role="status" className="text-meta" />
-        )}
-        {verdict?.said &&
-          (verdict.ok ? (
-            <p className="text-meta text-carbon-textSub">{verdict.said}</p>
-          ) : (
-            <FailedBecause said={verdict.said} detail={verdict.detail} data-testid="vpn-verdict" className="text-meta" />
-          ))}
-        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
-          <span className="flex min-w-0 flex-[1_1_12rem] items-center gap-1.5 text-meta">
-            <span data-glim-label={t('vpn.jobs')} className="shrink-0 text-carbon-textMuted">
-              {t('vpn.jobs')}
-            </span>
-            <InfoBubble tip={t('vpn.jobsHint')} />
-            <span className="min-w-0 truncate text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
-          </span>
-          <span className="flex flex-wrap justify-end gap-2">
-            <TestButton tunnel={tunnel.id} name={name} compact={narrow} verdict={verdict} onVerdict={setVerdict} onState={onState} />
-            <Button label={t('vpn.edit')} labelKey="vpn.edit" compact={narrow} onClick={onEdit} />
-            <Button label={t('edit.remove')} labelKey="edit.remove" compact={narrow} onClick={onRemove} />
-          </span>
-        </div>
-      </div>
-    </section>
+    <ConnectionRow
+      name={name}
+      mark={vpnTileMark(tunnel.provider)}
+      badges={status.badge && <Badge tone={status.badge}>{t(status.word)}</Badge>}
+      test={{ busy: testing, tone: testing || !verdict ? undefined : verdict.ok ? 'ok' : 'danger', title: verdict?.said }}
+      text={{ test: t('vpn.test'), edit: t('vpn.edit'), remove: t('edit.remove') }}
+      labelKeys={{ test: 'vpn.test', edit: 'vpn.edit', remove: 'edit.remove' }}
+      onTest={() => {
+        if (!testing) void test()
+      }}
+      onEdit={onEdit}
+      onRemove={onRemove}
+    >
+      {line}
+      <span className="flex min-w-0 items-center gap-1.5 text-meta">
+        <span data-glim-label={t('vpn.jobs')} className="shrink-0 text-carbon-textMuted">
+          {t('vpn.jobs')}
+        </span>
+        <InfoBubble tip={t('vpn.jobsHint')} />
+        <span className="min-w-0 truncate">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
+      </span>
+    </ConnectionRow>
   )
 }
 
@@ -463,7 +474,7 @@ function VpnForm({
             {missing === f && <p className="text-meta text-statusFail">{t('vpn.field.missing')}</p>}
           </div>
         ))}
-        {refusal && <FailedBecause {...refusal} role="alert" />}
+        {refusal && <FailedBecause {...refusal} role="alert" className="text-subline text-statusFail" />}
       </div>
     </Dialog>
   )
@@ -511,15 +522,18 @@ function ConfigField({ hint, value, onValue }: { hint: string; value: string; on
   )
 }
 
-/** A failure in the reader's words, with the engine's own on hover. */
+/**
+ * A failure in the reader's words, with the engine's own on hover. In a row it
+ * is the quiet status line, since the badge after the name carries the state.
+ */
 function FailedBecause({
   said,
   detail,
-  className = 'text-subline',
+  className = 'glim-connection-status',
   ...rest
 }: { said: string; detail?: string } & HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p {...rest} data-tip={detail ? `${said} ${detail}` : undefined} className={`text-statusFail ${className}`}>
+    <p {...rest} data-tip={detail ? `${said} ${detail}` : undefined} className={className}>
       {said}
     </p>
   )
@@ -527,57 +541,3 @@ function FailedBecause({
 
 /** What the last test of a VPN found. */
 type Verdict = { ok: boolean; said?: string; detail?: string }
-
-/** Brings a VPN up once, as a run would. Its card says where traffic leaves. */
-function TestButton({
-  tunnel,
-  name,
-  compact,
-  verdict,
-  onVerdict: setVerdict,
-  onState,
-}: {
-  tunnel: string
-  name: string
-  compact: boolean
-  verdict: Verdict | null
-  onVerdict: (next: Verdict | null) => void
-  onState: (next: VpnState) => void
-}) {
-  const { t } = useT()
-  const [testing, setTesting] = useState(false)
-
-  async function test() {
-    setTesting(true)
-    setVerdict(null)
-    try {
-      const answer = await api.testVpn(tunnel)
-      onState(answer.state)
-      const st = answer.state.tunnels.find((x) => x.id === tunnel)
-      if (answer.ok) {
-        setVerdict({ ok: true, said: st?.exitIp ? t('vpn.exit', { address: st.exitIp }) : undefined })
-      } else {
-        setVerdict({ ok: false, ...failureOf(t, { errorCode: st?.errorCode, error: answer.reason ?? st?.error }, name) })
-      }
-    } catch (e) {
-      setVerdict({ ok: false, said: errorText(t, e) })
-    } finally {
-      setTesting(false)
-    }
-  }
-
-  return (
-    <Button
-      label={testing ? t('vpn.testing') : !verdict ? t('vpn.test') : verdict.ok ? t('vpn.testOk') : t('vpn.testFailed')}
-      labelKey="vpn.test"
-      glyph={testing || !verdict ? undefined : verdict.ok ? <IconCheck /> : <IconClose />}
-      tone={testing || !verdict ? 'neutral' : verdict.ok ? 'ok' : 'danger'}
-      className={verdict && !verdict.ok && !testing ? 'glim-shake' : ''}
-      busy={testing}
-      compact={compact}
-      stage={compact ? undefined : groupStage([t('vpn.test'), t('vpn.testing'), t('vpn.testOk'), t('vpn.testFailed')])}
-      onClick={() => void test()}
-      disabled={testing}
-    />
-  )
-}
