@@ -45,9 +45,9 @@ describe('the desktop downloads', () => {
       href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.AppImage',
       words: 'AppImagex64',
     })
-    expect(download('AppImage ARM')).toEqual({
+    expect(download('AppImage ARM64')).toEqual({
       href: 'https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.AppImage',
-      words: 'ARM',
+      words: 'ARM64',
     })
   })
 })

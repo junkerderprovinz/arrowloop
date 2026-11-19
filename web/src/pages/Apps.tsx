@@ -212,7 +212,7 @@ function DesktopCard({ version }: { version: string }) {
           brand="linux"
           parts={[
             { name: t('apps.appimage'), sub: 'x64', href: DOWNLOADS.appimage },
-            { name: 'ARM', label: `${t('apps.appimage')} ARM`, href: DOWNLOADS.appimageArm },
+            { name: 'ARM64', label: `${t('apps.appimage')} ARM64`, href: DOWNLOADS.appimageArm },
           ]}
           mark={<BrandMark svg={LINUX_SVG} />}
           onLinkClick={followExternal}
