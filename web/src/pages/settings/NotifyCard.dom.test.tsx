@@ -85,7 +85,7 @@ describe('the channel chooser', () => {
   it('adds the channel whose tile is chosen and closes', () => {
     const chooser = openChooser()
     fireEvent.click(within(chooser).getByRole('button', { name: 'Gotify' }))
-    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getByRole('dialog').getAttribute('data-glim')).not.toBe('PickerWindow')
     expect(screen.getByTestId('kinds').textContent).toBe('gotify')
   })
 
@@ -155,7 +155,7 @@ describe('the channel chooser', () => {
     const search = within(chooser).getByRole('searchbox', { name: 'Search services' })
     fireEvent.change(search, { target: { value: 'pushover' } })
     fireEvent.keyDown(search, { key: 'Enter' })
-    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getByRole('dialog').getAttribute('data-glim')).not.toBe('PickerWindow')
     expect(screen.getByTestId('kinds').textContent).toBe('shoutrrr')
   })
 
@@ -183,6 +183,36 @@ describe('the channel chooser', () => {
     fireEvent.keyDown(search, { key: 'Escape' })
     expect((search as HTMLInputElement).value).toBe('')
     expect(screen.queryByRole('dialog')).not.toBeNull()
+  })
+})
+
+describe('a channel', () => {
+  it('stands as a connection row that says when it sends', () => {
+    render(<Card start={{ channels: [{ id: 'phone', kind: 'ntfy', enabled: true, on: 'always', ntfy: { url: '********' } }] }} />)
+    const row = screen.getByRole('group', { name: 'ntfy' })
+    expect(row.getAttribute('data-glim')).toBe('ConnectionRow')
+    expect(within(row).getByText('After every run')).toBeTruthy()
+    for (const name of ['Send a test', 'Edit', 'Remove']) expect(within(row).getByRole('button', { name })).toBeTruthy()
+  })
+
+  it('offers no test while it is switched off', () => {
+    render(<Card start={{ channels: [{ id: 'phone', kind: 'ntfy', enabled: false, ntfy: { url: '********' } }] }} />)
+    const row = screen.getByRole('group', { name: 'ntfy' })
+    expect(within(row).getByText('Never')).toBeTruthy()
+    expect(within(row).queryByRole('button', { name: 'Send a test' })).toBeNull()
+  })
+
+  it('opens its settings as soon as it is added', () => {
+    render(<Card />)
+    fireEvent.click(screen.getByRole('button', { name: 'Add a channel' }))
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'ntfy' }))
+    expect(within(screen.getByRole('dialog')).getByRole('switch', { name: 'Send here' })).toBeTruthy()
+  })
+
+  it('goes with its Remove button', () => {
+    render(<Card start={{ channels: [{ id: 'phone', kind: 'ntfy', enabled: true, ntfy: { url: '********' } }] }} />)
+    fireEvent.click(within(screen.getByRole('group', { name: 'ntfy' })).getByRole('button', { name: 'Remove' }))
+    expect(screen.getByTestId('kinds').textContent).toBe('')
   })
 })
 
@@ -214,6 +244,7 @@ describe('a Shoutrrr channel', () => {
 
   it('shows addresses the engine keeps as saved', () => {
     render(<Card start={{ channels: [{ id: 'shoutrrr', kind: 'shoutrrr', enabled: true, shoutrrr: { urls: ['********'] } }] }} />)
+    fireEvent.click(within(screen.getByRole('group', { name: 'Shoutrrr' })).getByRole('button', { name: 'Edit' }))
     expect(screen.getByText('Saved')).toBeTruthy()
     expect(screen.queryByLabelText('Address')).toBeNull()
   })

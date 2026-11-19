@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
 import { SERVICE_MARKS } from '@glimstone/core/serviceMarks'
+import { ConnectionRow } from '@glimstone/react/ConnectionRow'
 import { PickerWindow, type PickerItem } from '@glimstone/react/PickerWindow'
 
 import { BRAND_TILES, IconShoutrrr } from '../../components/brandGlyphs'
 import { newOnMark, tileMark } from '../../components/brandMarks'
+import { Dialog } from '../../components/Dialog'
 import { Choice, FieldRow, Lines, NumberField, Text } from '../../components/Field'
-import { IconAdd, IconCheck, IconClose, IconLink, IconMail } from '../../components/glyphs'
+import { IconAdd, IconLink, IconMail } from '../../components/glyphs'
 import { Selector } from '../../components/Selector'
 import { ToggleRow } from '../../components/ToggleRow'
 import { api } from '../../lib/api'
-import { groupStage } from '../../lib/controls'
 import { errorText } from '../../lib/errorText'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
-import { SubCard } from '../../lib/glimstone/SubCard'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { KINDS, newChannel, sends, type Channel, type Kind, type Notify, type When } from '../../lib/notify'
 import { SecretRow, SettingsRow } from './rows'
@@ -103,10 +103,19 @@ const FAILURES: Record<string, TranslationKey> = {
   off: 'notify.fail.off',
 }
 
+/** When a channel sends, as its row says it. */
+const WHEN: Record<When, TranslationKey> = {
+  never: 'notify.whenNever',
+  failure: 'notify.whenFailure',
+  always: 'notify.whenAlways',
+}
+
 /**
- * Where messages go: one sub-card per channel, as many as somebody wants, each
- * with its own switch, its own "when" and a test button. A channel's fields
- * fold away while it is off. The secrets stay on the server and show as Saved.
+ * Where messages go: one connection row per channel, as many as somebody
+ * wants, each saying when it sends, with a test and its settings in a window
+ * of their own: its switch, its "when" and its fields, which fold away while
+ * it is off. A channel just added opens there. The secrets stay on the server
+ * and show as Saved.
  */
 export function NotifyCard({
   notify,
@@ -120,6 +129,7 @@ export function NotifyCard({
   const { t } = useT()
   const [jobs, setJobs] = useState<string[]>([])
   const [choosing, setChoosing] = useState(false)
+  const [editing, setEditing] = useState<string | null>(null)
   useEffect(() => {
     api
       .jobs()
@@ -136,12 +146,16 @@ export function NotifyCard({
       {channels.length === 0 && <p className="text-subline text-carbon-textSub">{t('notify.empty')}</p>}
 
       {channels.map((c, i) => (
-        <ChannelCard
+        <ChannelRow
           key={c.id}
           channel={c}
           label={c.name?.trim() || kindLabel(c.kind)}
           hue={i}
+          hueIndex={hueIndex}
           jobs={jobs}
+          editing={editing === c.id}
+          onEdit={() => setEditing(c.id)}
+          onClose={() => setEditing(null)}
           onChange={(next) => setChannels(channels.map((other) => (other.id === c.id ? next : other)))}
           onRemove={() => setChannels(channels.filter((other) => other.id !== c.id))}
         />
@@ -154,8 +168,10 @@ export function NotifyCard({
         <ChannelPicker
           kindLabel={kindLabel}
           onPick={(kind) => {
+            const added = newChannel(kind, channels)
             setChoosing(false)
-            setChannels([...channels, newChannel(kind, channels)])
+            setChannels([...channels, added])
+            setEditing(added.id)
           }}
           onClose={() => setChoosing(false)}
         />
@@ -210,18 +226,26 @@ function ChannelPicker({
   )
 }
 
-function ChannelCard({
+function ChannelRow({
   channel: c,
   label,
   hue,
+  hueIndex,
   jobs,
+  editing,
+  onEdit,
+  onClose,
   onChange,
   onRemove,
 }: {
   channel: Channel
   label: string
   hue: number
+  hueIndex: number
   jobs: string[]
+  editing: boolean
+  onEdit: () => void
+  onClose: () => void
   onChange: (next: Channel) => void
   onRemove: () => void
 }) {
@@ -230,45 +254,59 @@ function ChannelCard({
   const check = c.kind === 'healthchecks'
   // A check has no "when" of its own beyond never, so its switch is both.
   const on = check ? sends(c) : c.enabled
+  const test = useChannelTest(c)
 
   return (
-    <SubCard title={label} hint={t(HINTS[c.kind])}>
-      <ToggleRow
-        label={t('notify.use')}
-        checked={on}
-        onChange={(next) => set(check ? { enabled: next, on: next ? 'always' : c.on } : { enabled: next })}
-        hueIndex={hue}
-      />
-      {on && (
-        <>
-          <FieldRow label={t('notify.name')} hint={t('notify.nameHint')}>
-            <Text value={c.name ?? ''} onChange={(name) => set({ name })} placeholder={label} label={t('notify.name')} />
-          </FieldRow>
-          {!check && (
-            <SettingsRow label={t('notify.when')} hint={t('notify.onHint')}>
-              <Selector<When>
-                scale="small"
-                low
-                hug
-                label={t('notify.when')}
-                value={c.on ?? 'failure'}
-                onChange={(on) => set({ on })}
-                options={[
-                  { value: 'never', label: t('notify.whenNever') },
-                  { value: 'failure', label: t('notify.whenFailure') },
-                  { value: 'always', label: t('notify.whenAlways') },
-                ]}
-              />
-            </SettingsRow>
-          )}
-          <Fields channel={c} set={set} jobs={jobs} />
-          <TestButton channel={c} />
-        </>
+    <ConnectionRow
+      name={label}
+      mark={MARKS[c.kind]}
+      status={t(sends(c) ? WHEN[c.on ?? 'failure'] : 'notify.whenNever')}
+      test={test.state}
+      text={{ test: t('notify.test'), edit: t('action.edit'), remove: t('edit.remove') }}
+      labelKeys={{ test: 'notify.test', edit: 'action.edit', remove: 'edit.remove' }}
+      onTest={on ? test.send : undefined}
+      onEdit={onEdit}
+      onRemove={onRemove}
+    >
+      {test.reason && <p className="glim-connection-status">{test.reason}</p>}
+      {editing && (
+        <Dialog title={label} hint={t(HINTS[c.kind])} hueIndex={hueIndex} width="wide" onClose={onClose}>
+          <div className="flex flex-col gap-4">
+            <ToggleRow
+              label={t('notify.use')}
+              checked={on}
+              onChange={(next) => set(check ? { enabled: next, on: next ? 'always' : c.on } : { enabled: next })}
+              hueIndex={hue}
+            />
+            {on && (
+              <>
+                <FieldRow label={t('notify.name')} hint={t('notify.nameHint')}>
+                  <Text value={c.name ?? ''} onChange={(name) => set({ name })} placeholder={label} label={t('notify.name')} />
+                </FieldRow>
+                {!check && (
+                  <SettingsRow label={t('notify.when')} hint={t('notify.onHint')}>
+                    <Selector<When>
+                      scale="small"
+                      low
+                      hug
+                      label={t('notify.when')}
+                      value={c.on ?? 'failure'}
+                      onChange={(on) => set({ on })}
+                      options={[
+                        { value: 'never', label: t('notify.whenNever') },
+                        { value: 'failure', label: t('notify.whenFailure') },
+                        { value: 'always', label: t('notify.whenAlways') },
+                      ]}
+                    />
+                  </SettingsRow>
+                )}
+                <Fields channel={c} set={set} jobs={jobs} />
+              </>
+            )}
+          </div>
+        </Dialog>
       )}
-      <div className="flex justify-end">
-        <Button label={t('edit.remove')} labelKey="edit.remove" onClick={onRemove} />
-      </div>
-    </SubCard>
+    </ConnectionRow>
   )
 }
 
@@ -562,19 +600,19 @@ function CheckFields({ channel: c, set, jobs }: { channel: Channel; set: (next: 
 }
 
 /**
- * Sends a test through one channel as the card shows it, saved or not. Colour,
- * word and glyph all carry the verdict, and a refusal says why under it.
+ * Sends a test through one channel as its settings stand, saved or not. The
+ * row's button carries the verdict, and a refusal says why under the name.
  */
-function TestButton({ channel }: { channel: Channel }) {
+function useChannelTest(channel: Channel) {
   const { t } = useT()
   const [sending, setSending] = useState(false)
   const [verdict, setVerdict] = useState<{ ok: boolean; reason?: string } | null>(null)
-  const [refused, setRefused] = useState(0)
 
   // An edit makes the last verdict about settings that are no longer shown.
   useEffect(() => setVerdict(null), [channel])
 
   async function send() {
+    if (sending) return
     setSending(true)
     setVerdict(null)
     try {
@@ -582,34 +620,16 @@ function TestButton({ channel }: { channel: Channel }) {
       const known = answer.code ? FAILURES[answer.code] : undefined
       const why = known ? t(known) : answer.reason
       setVerdict({ ok: answer.ok, reason: why && answer.status ? `${why} (HTTP ${answer.status})` : why })
-      if (!answer.ok) setRefused((n) => n + 1)
     } catch (e) {
       setVerdict({ ok: false, reason: errorText(t, e) })
-      setRefused((n) => n + 1)
     } finally {
       setSending(false)
     }
   }
 
-  return (
-    <div className="flex flex-col items-end gap-2">
-      <Button
-        key={`test-${refused}`}
-        label={
-          sending ? t('notify.testing') : !verdict ? t('notify.test') : verdict.ok ? t('notify.testOk') : t('notify.testFailed')
-        }
-        labelKey="notify.test"
-        glyph={sending || !verdict ? undefined : verdict.ok ? <IconCheck /> : <IconClose />}
-        tone={sending || !verdict ? 'neutral' : verdict.ok ? 'ok' : 'danger'}
-        className={verdict && !verdict.ok && !sending ? 'glim-shake' : ''}
-        busy={sending}
-        stage={groupStage([t('notify.test'), t('notify.testing'), t('notify.testOk'), t('notify.testFailed')])}
-        onClick={() => void send()}
-        disabled={sending}
-      />
-      {verdict && !verdict.ok && verdict.reason && (
-        <p className="self-stretch text-subline text-statusFail">{verdict.reason}</p>
-      )}
-    </div>
-  )
+  return {
+    state: { busy: sending, tone: sending || !verdict ? undefined : verdict.ok ? ('ok' as const) : ('danger' as const), title: verdict?.reason },
+    reason: verdict && !verdict.ok ? verdict.reason : undefined,
+    send: () => void send(),
+  }
 }

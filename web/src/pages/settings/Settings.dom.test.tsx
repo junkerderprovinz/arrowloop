@@ -106,6 +106,7 @@ describe('a stored secret', () => {
   it('shows as saved and keeps the saved one until something new is typed', async () => {
     stored = { notify: { channels: [{ id: 'd', kind: 'discord', enabled: true, discord: { url: '********' } }] } }
     const { unmount } = render(<SafetyPage />)
+    fireEvent.click(within(await screen.findByRole('group', { name: 'Discord' })).getByRole('button', { name: 'Edit' }))
     expect(await screen.findByText('Saved')).toBeTruthy()
     expect(screen.queryByLabelText('Address')).toBeNull()
 
@@ -177,6 +178,7 @@ describe('the notification channels', () => {
       },
     }
     const { unmount } = render(<SafetyPage />)
+    fireEvent.click(within(await screen.findByRole('group', { name: 'Email' })).getByRole('button', { name: 'Edit' }))
     expect(await screen.findByDisplayValue('mail.example.org')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('switch', { name: 'Send here' }))
@@ -187,7 +189,7 @@ describe('the notification channels', () => {
     expect(mail).toMatchObject({ enabled: false, smtp: { host: 'mail.example.org', password: '********' } })
   })
 
-  it("send a test of what the card shows and say why it failed in the reader's own words", async () => {
+  it("send a test of what the channel holds and say why it failed in the reader's own words", async () => {
     stored = { notify: { channels: [{ id: 'phone', kind: 'ntfy', enabled: true, ntfy: { url: '********' } }] } }
     testNotify.mockResolvedValueOnce({ ok: false, code: 'rejected', status: 403, reason: 'the server answered 403 Forbidden' })
     render(<SafetyPage />)
@@ -219,9 +221,12 @@ describe('the notification channels', () => {
       },
     }
     const { unmount } = render(<SafetyPage />)
-    const selected = () => screen.getAllByRole('tab', { name: 'After every run' }).map((tab) => tab.getAttribute('aria-selected'))
-    await waitFor(() => expect(selected()).toEqual(['false', 'true']))
-    fireEvent.click(screen.getAllByRole('tab', { name: 'After every run' })[0]!)
+    const rows = await screen.findAllByRole('group', { name: 'Slack' })
+    expect(rows.map((row) => row.querySelector('.glim-connection-status')?.textContent)).toEqual(['When a run fails', 'After every run'])
+    fireEvent.click(within(rows[0]!).getByRole('button', { name: 'Edit' }))
+    const tab = within(await screen.findByRole('dialog')).getByRole('tab', { name: 'After every run' })
+    expect(tab.getAttribute('aria-selected')).toBe('false')
+    fireEvent.click(tab)
     unmount()
 
     const channels = saveSettings.mock.calls.at(-1)?.[0].notify?.channels
