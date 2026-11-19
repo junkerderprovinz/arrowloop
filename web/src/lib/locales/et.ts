@@ -1731,6 +1731,7 @@ const et: Translations = {
   'new.change.hiddenFolders': 'Kaustavalijas näitab lüliti {show} ka peidetud kaustu.',
   'new.change.tabletLandscape': 'Tahvelarvutis pöördub telefonirakendus koos seadmega ning selle lehed, alumine riba ja alt üles libisevad paneelid jäävad ekraani keskele ühte veergu.',
   'new.change.tabletShell': 'Rõhtsalt hoitud tahvelarvutis näitab telefonirakendus töölaua- ja konteineriversiooni külgriba, seadeid paanidena ja loendeid kogu laiuses.',
+  'new.change.desktopCli': 'Töölauarakendus mõistab samu käske kui käsurida. Selle käsk run-due käivitab kõik, mille aeg on käes, ja sulgub, nii saavad cron, Windowsi tööplaanur või systemd taimer hoida su töid graafikus, ilma et rakendus peaks lahti olema.',
   'new.change.notifyTiles': '{add} näitab iga teenust oma logoga paanina ja otsing leiab selle nime järgi.',
   'new.change.notifyShoutrrr': 'Shoutrrr-kanal saadab otse ArrowLoopist Telegrami, Pushoveri, Teamsi ja üle kahekümne muu teenuseni ega vaja omaette serverit.',
   'welcome.title': 'Tere tulemast ArrowLoopi',

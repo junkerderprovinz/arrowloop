@@ -1731,6 +1731,7 @@ const pl: Translations = {
   'new.change.hiddenFolders': 'W wyborze folderu przełącznik {show} pokazuje też ukryte foldery.',
   'new.change.tabletLandscape': 'Na tablecie aplikacja na telefon obraca się razem z urządzeniem, a jej strony, dolny pasek i panele wysuwane od dołu pozostają w kolumnie na środku ekranu.',
   'new.change.tabletShell': 'Na tablecie ustawionym poziomo aplikacja na telefon pokazuje pasek boczny wersji na komputer i kontener, ustawienia jako kafelki i listy na całą szerokość.',
+  'new.change.desktopCli': 'Aplikacja na komputer przyjmuje te same polecenia co wiersz poleceń. Jej polecenie run-due uruchamia wszystko, na co przyszła pora, i kończy działanie, więc cron, Harmonogram zadań Windows albo licznik systemd utrzymają twoje zadania zgodnie z planem bez otwartej aplikacji.',
   'new.change.notifyTiles': '{add} pokazuje każdą usługę jako kafelek z jej logo, a wyszukiwanie znajduje ją po nazwie.',
   'new.change.notifyShoutrrr': 'Kanał Shoutrrr wysyła prosto z ArrowLoop do Telegrama, Pushovera, Teams i ponad dwudziestu innych usług i nie potrzebuje własnego serwera.',
   'welcome.title': 'Witamy w ArrowLoop',

@@ -1731,6 +1731,7 @@ const zh: Translations = {
   'new.change.hiddenFolders': '在文件夹选择器中，开关 {show} 也会显示隐藏的文件夹。',
   'new.change.tabletLandscape': '在平板电脑上，手机应用会随设备旋转，其页面、底部栏和从下方滑出的面板都保持在屏幕中间的一列中。',
   'new.change.tabletShell': '平板电脑横放时，手机应用会显示桌面版和容器版的侧边栏，设置以磁贴呈现，列表铺满整个宽度。',
+  'new.change.desktopCli': '桌面版应用接受与命令行相同的命令。它的 run-due 命令会运行所有到期的任务然后退出，因此 cron、Windows 任务计划程序或 systemd 定时器可以按计划运行你的任务，而无需让应用一直开着。',
   'new.change.notifyTiles': '{add} 将每个服务显示为带有标志的磁贴，还能按名称搜索。',
   'new.change.notifyShoutrrr': 'Shoutrrr 渠道直接从 ArrowLoop 发送到 Telegram、Pushover、Teams 以及二十多个其他服务，不需要单独的服务器。',
   'welcome.title': '欢迎使用 ArrowLoop',

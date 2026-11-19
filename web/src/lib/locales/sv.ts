@@ -1731,6 +1731,7 @@ const sv: Translations = {
   'new.change.hiddenFolders': 'I mappväljaren visar reglaget {show} även dolda mappar.',
   'new.change.tabletLandscape': 'På en surfplatta vrider sig telefonappen med enheten, och dess sidor, den nedre raden och panelerna som glider upp håller sig i en kolumn mitt på skärmen.',
   'new.change.tabletShell': 'På en surfplatta som ligger ner visar telefonappen sidofältet från skrivbords- och containerversionen, inställningarna som rutor och listorna i hela bredden.',
+  'new.change.desktopCli': 'Skrivbordsappen förstår samma kommandon som kommandoraden. Dess kommando run-due kör allt som står på tur och avslutas, så cron, Schemaläggaren i Windows eller en systemd-timer kan hålla dina jobb i tid utan att appen behöver vara öppen.',
   'new.change.notifyTiles': '{add} visar varje tjänst som en ruta med sin logga, och sökningen hittar den på namnet.',
   'new.change.notifyShoutrrr': 'En Shoutrrr-kanal skickar direkt från ArrowLoop till Telegram, Pushover, Teams och över tjugo andra tjänster och behöver ingen egen server.',
   'welcome.title': 'Välkommen till ArrowLoop',

@@ -63,6 +63,10 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.7.6',
+    changes: [{ id: 'desktop-cli', text: 'new.change.desktopCli' }],
+  },
+  {
     after: '2.7.5',
     changes: [{ id: 'tablet-shell', text: 'new.change.tabletShell' }],
   },
