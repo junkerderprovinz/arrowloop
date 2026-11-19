@@ -981,6 +981,7 @@ const zh: Translations = {
   'apps.copied': '已复制',
   'apps.source': '源代码',
   'apps.zipSub': 'ZIP 压缩包',
+  'apps.macosSub': 'Apple 和 Intel',
   'apps.dockerSub': '复制命令',
   'apps.unraidSub': '模板',
   'password.hint': '能访问这个地址的任何人都可以启动会删除文件的任务。密码以哈希形式保存在配置文件旁边的 security.json 中，因此设置的备份里从来不包含它。如果设置了 ARROWLOOP_PASSWORD_HASH，它优先于这个密码，也是忘记密码后重新进入的办法。',

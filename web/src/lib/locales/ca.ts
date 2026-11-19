@@ -981,6 +981,7 @@ const ca: Translations = {
   'apps.copied': 'Copiat',
   'apps.source': 'Codi font',
   'apps.zipSub': 'Arxiu ZIP',
+  'apps.macosSub': 'Apple i Intel',
   'apps.dockerSub': 'Copia l\'ordre',
   'apps.unraidSub': 'Plantilla',
   'password.hint': 'Qualsevol que arribi a aquesta adreça pot iniciar tasques que esborren fitxers. La contrasenya es desa com a hash a security.json, al costat de la configuració, de manera que cap còpia de seguretat dels paràmetres no la conté. Si ARROWLOOP_PASSWORD_HASH està definida, té prioritat sobre aquesta contrasenya i és la manera de tornar a entrar si l\'oblides.',

@@ -981,6 +981,7 @@ const eu: Translations = {
   'apps.copied': 'Kopiatuta',
   'apps.source': 'Iturburu-kodea',
   'apps.zipSub': 'ZIP artxiboa',
+  'apps.macosSub': 'Apple eta Intel',
   'apps.dockerSub': 'Kopiatu komandoa',
   'apps.unraidSub': 'Txantiloia',
   'password.hint': 'Helbide honetara iristen den edonork abiarazi ditzake fitxategiak ezabatzen dituzten lanak. Pasahitza hash gisa gordetzen da security.json fitxategian, konfigurazioaren ondoan, beraz ezarpenen babeskopiek ez dute inoiz jasotzen. ARROWLOOP_PASSWORD_HASH ezarrita badago, pasahitz honen gainetik dago, eta hura ahazten baduzu berriro sartzeko bidea da.',

@@ -981,6 +981,7 @@ const da: Translations = {
   'apps.copied': 'Kopieret',
   'apps.source': 'Kildekode',
   'apps.zipSub': 'ZIP-arkiv',
+  'apps.macosSub': 'Apple og Intel',
   'apps.dockerSub': 'Kopiér kommando',
   'apps.unraidSub': 'Skabelon',
   'password.hint': 'Alle, der kan nå denne adresse, kan starte job, der sletter filer. Adgangskoden gemmes som hash i security.json ved siden af konfigurationen, så en sikkerhedskopi af indstillingerne indeholder den aldrig. Er ARROWLOOP_PASSWORD_HASH sat, går den forud for denne adgangskode og er vejen ind igen, hvis du glemmer den.',

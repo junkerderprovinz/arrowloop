@@ -981,6 +981,7 @@ const nl: Translations = {
   'apps.copied': 'Gekopieerd',
   'apps.source': 'Broncode',
   'apps.zipSub': 'ZIP-archief',
+  'apps.macosSub': 'Apple en Intel',
   'apps.dockerSub': 'Opdracht kopiëren',
   'apps.unraidSub': 'Sjabloon',
   'password.hint': 'Iedereen die dit adres bereikt, kan taken starten die bestanden verwijderen. Het wachtwoord wordt als hash bewaard in security.json naast de configuratie, dus geen enkele back-up van de instellingen bevat het. Is ARROWLOOP_PASSWORD_HASH ingesteld, dan gaat die voor dit wachtwoord en is het de weg terug naar binnen als je het vergeet.',

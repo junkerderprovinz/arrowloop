@@ -981,6 +981,7 @@ const id: Translations = {
   'apps.copied': 'Disalin',
   'apps.source': 'Kode sumber',
   'apps.zipSub': 'Arsip ZIP',
+  'apps.macosSub': 'Apple dan Intel',
   'apps.dockerSub': 'Salin perintah',
   'apps.unraidSub': 'Templat',
   'password.hint': 'Siapa pun yang bisa menjangkau alamat ini dapat menjalankan tugas yang menghapus berkas. Kata sandi disimpan sebagai hash di security.json di samping konfigurasi, jadi cadangan pengaturan tidak pernah memuatnya. Jika ARROWLOOP_PASSWORD_HASH diatur, nilainya didahulukan dari kata sandi ini dan menjadi jalan masuk kembali kalau kamu lupa.',

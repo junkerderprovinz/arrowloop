@@ -981,6 +981,7 @@ const lt: Translations = {
   'apps.copied': 'Nukopijuota',
   'apps.source': 'Pradinis kodas',
   'apps.zipSub': 'ZIP archyvas',
+  'apps.macosSub': 'Apple ir Intel',
   'apps.dockerSub': 'Kopijuoti komandą',
   'apps.unraidSub': 'Šablonas',
   'password.hint': 'Kiekvienas, pasiekiantis šį adresą, gali paleisti užduotis, kurios trina failus. Slaptažodis saugomas kaip maiša faile security.json šalia konfigūracijos, todėl jokia nustatymų atsarginė kopija jo neturi. Jei nustatytas ARROWLOOP_PASSWORD_HASH, jis turi pirmenybę prieš šį slaptažodį ir yra kelias atgal, jei jį pamirši.',

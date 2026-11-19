@@ -981,6 +981,7 @@ const he: Translations = {
   'apps.copied': 'הועתק',
   'apps.source': 'קוד מקור',
   'apps.zipSub': 'ארכיון ZIP',
+  'apps.macosSub': 'Apple ו-Intel',
   'apps.dockerSub': 'העתקת הפקודה',
   'apps.unraidSub': 'תבנית',
   'password.hint': 'כל מי שמגיע לכתובת הזו יכול להפעיל משימות שמוחקות קבצים. הסיסמה נשמרת כגיבוב (hash) בקובץ security.json לצד התצורה, ולכן אף גיבוי של ההגדרות אינו מכיל אותה. אם ARROWLOOP_PASSWORD_HASH מוגדר, הוא גובר על הסיסמה הזו והוא הדרך חזרה פנימה אם תשכח אותה.',

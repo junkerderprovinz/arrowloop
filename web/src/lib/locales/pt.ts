@@ -981,6 +981,7 @@ const pt: Translations = {
   'apps.copied': 'Copiado',
   'apps.source': 'Código-fonte',
   'apps.zipSub': 'Arquivo ZIP',
+  'apps.macosSub': 'Apple e Intel',
   'apps.dockerSub': 'Copiar comando',
   'apps.unraidSub': 'Modelo',
   'password.hint': 'Quem chegar a este endereço pode iniciar tarefas que apagam ficheiros. A palavra-passe fica guardada como hash em security.json, ao lado da configuração, por isso nenhuma cópia de segurança das definições a contém. Se ARROWLOOP_PASSWORD_HASH estiver definida, tem prioridade sobre esta palavra-passe e é o caminho de volta se a esqueceres.',

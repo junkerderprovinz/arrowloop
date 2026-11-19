@@ -981,6 +981,7 @@ const et: Translations = {
   'apps.copied': 'Kopeeritud',
   'apps.source': 'Lähtekood',
   'apps.zipSub': 'ZIP-arhiiv',
+  'apps.macosSub': 'Apple ja Intel',
   'apps.dockerSub': 'Kopeeri käsk',
   'apps.unraidSub': 'Mall',
   'password.hint': 'Igaüks, kes selle aadressini jõuab, saab käivitada töid, mis kustutavad faile. Parool hoitakse räsina failis security.json seadistuse kõrval, nii et ükski seadete varukoopia seda ei sisalda. Kui ARROWLOOP_PASSWORD_HASH on määratud, on see selle parooli ees ülimuslik ja on tee tagasi, kui parool ununeb.',

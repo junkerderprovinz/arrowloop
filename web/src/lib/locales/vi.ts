@@ -981,6 +981,7 @@ const vi: Translations = {
   'apps.copied': 'Đã sao chép',
   'apps.source': 'Mã nguồn',
   'apps.zipSub': 'Tệp nén ZIP',
+  'apps.macosSub': 'Apple và Intel',
   'apps.dockerSub': 'Sao chép lệnh',
   'apps.unraidSub': 'Mẫu',
   'password.hint': 'Bất kỳ ai truy cập được địa chỉ này đều có thể chạy các công việc xóa tệp. Mật khẩu được lưu dưới dạng băm trong security.json cạnh tệp cấu hình, nên không bản sao lưu cài đặt nào chứa nó. Nếu ARROWLOOP_PASSWORD_HASH được đặt, nó được ưu tiên hơn mật khẩu này và là lối quay lại nếu bạn quên mật khẩu.',

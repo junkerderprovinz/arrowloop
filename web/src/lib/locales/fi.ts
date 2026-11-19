@@ -981,6 +981,7 @@ const fi: Translations = {
   'apps.copied': 'Kopioitu',
   'apps.source': 'Lähdekoodi',
   'apps.zipSub': 'ZIP-arkisto',
+  'apps.macosSub': 'Apple ja Intel',
   'apps.dockerSub': 'Kopioi komento',
   'apps.unraidSub': 'Malli',
   'password.hint': 'Kuka tahansa tähän osoitteeseen pääsevä voi käynnistää töitä, jotka poistavat tiedostoja. Salasana säilytetään tiivisteenä tiedostossa security.json asetustiedoston vieressä, joten mikään asetusten varmuuskopio ei sisällä sitä. Jos ARROWLOOP_PASSWORD_HASH on asetettu, se ohittaa tämän salasanan ja on tie takaisin sisään, jos unohdat sen.',
