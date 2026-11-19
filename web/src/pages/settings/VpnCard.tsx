@@ -209,8 +209,9 @@ function TunnelCard({
   onRemove: () => void
 }) {
   const { t } = useT()
-  // A test that failed says why itself, so the status line steps back.
-  const [testFailed, setTestFailed] = useState(false)
+  // Kept here rather than in the button, so a failed test hides the status
+  // line in the same render that shows why the test failed.
+  const [verdict, setVerdict] = useState<Verdict | null>(null)
   const status = STATUS[tunnel.status]
   return (
     <SubCard title={name}>
@@ -222,11 +223,11 @@ function TunnelCard({
           {tunnel.status === 'connected' && tunnel.jobs.length > 0 ? t('vpn.carrying', { jobs: tunnel.jobs.join(', ') }) : t(status.word)}
         </Badge>
       </div>
-      {tunnel.status === 'failed' && !testFailed && <FailedBecause {...failureOf(t, tunnel, name)} role="status" />}
+      {tunnel.status === 'failed' && verdict?.ok !== false && <FailedBecause {...failureOf(t, tunnel, name)} role="status" />}
       <SettingsRow label={t('vpn.jobs')} hint={t('vpn.jobsHint')}>
         <span className="text-subline text-carbon-textSub">{jobs.length > 0 ? jobs.join(', ') : t('vpn.jobsNone')}</span>
       </SettingsRow>
-      <TestButton tunnel={tunnel.id} name={name} onState={onState} onFailed={setTestFailed} />
+      <TestButton tunnel={tunnel.id} name={name} verdict={verdict} onVerdict={setVerdict} onState={onState} />
       <div className="flex flex-wrap justify-end gap-2">
         <Button label={t('edit.remove')} labelKey="edit.remove" onClick={onRemove} />
         <Button label={t('vpn.edit')} labelKey="vpn.edit" onClick={onEdit} />
@@ -484,22 +485,25 @@ function FailedBecause({
   )
 }
 
+/** What the last test of a VPN found. */
+type Verdict = { ok: boolean; said?: string; detail?: string }
+
 /** Brings a VPN up once, as a run would, and says where traffic leaves. */
 function TestButton({
   tunnel,
   name,
+  verdict,
+  onVerdict: setVerdict,
   onState,
-  onFailed,
 }: {
   tunnel: string
   name: string
+  verdict: Verdict | null
+  onVerdict: (next: Verdict | null) => void
   onState: (next: VpnState) => void
-  onFailed: (failed: boolean) => void
 }) {
   const { t } = useT()
   const [testing, setTesting] = useState(false)
-  const [verdict, setVerdict] = useState<{ ok: boolean; said?: string; detail?: string } | null>(null)
-  useEffect(() => onFailed(verdict?.ok === false), [verdict, onFailed])
 
   async function test() {
     setTesting(true)
