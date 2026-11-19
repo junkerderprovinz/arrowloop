@@ -111,10 +111,10 @@ func TestAJobThatIsRunningIsNotCheckedForSpaceAgain(t *testing.T) {
 		checked.Add(1)
 		return report()
 	})
-	if !r.claim("x", func() {}) {
+	if !r.claim(r.keyOf("x"), func() {}) {
 		t.Fatal("could not claim the job")
 	}
-	defer r.release("x")
+	defer r.release(r.keyOf("x"))
 
 	if _, err := r.RunAutomatically(context.Background(), "x"); !errors.Is(err, ErrAlreadyRunning) {
 		t.Fatalf("a second run of a running job reported %v", err)
@@ -132,7 +132,7 @@ func TestARunRefusedForSpaceIsAFailureTheRetryWaitsOn(t *testing.T) {
 	if _, err := r.RunAutomatically(context.Background(), "x"); !errors.Is(err, ErrNotEnoughSpace) {
 		t.Fatalf("a run that would not fit reported %v", err)
 	}
-	runs, err := r.hist.Recent(context.Background(), "x", history.ShowAll, 10)
+	runs, err := r.hist.Recent(context.Background(), r.keyOf("x"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}

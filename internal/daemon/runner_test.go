@@ -21,6 +21,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
@@ -76,7 +77,7 @@ func TestRunSyncsAndRecords(t *testing.T) {
 		t.Fatalf("the file did not arrive: %v", err)
 	}
 
-	runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
+	runs, err := hist.Recent(context.Background(), jobid.Legacy("photos"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -97,14 +98,14 @@ func TestAFailedRunIsStillRecorded(t *testing.T) {
 		t.Log("the run did not fail, which is fine as long as it was recorded")
 	}
 
-	runs, err := hist.Recent(context.Background(), "broken", history.ShowAll, 10)
+	runs, err := hist.Recent(context.Background(), jobid.Legacy("broken"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
 	if len(runs) != 1 {
 		t.Fatalf("a failing run left no record at all: %+v", runs)
 	}
-	if when, ok, err := hist.LastSuccess(context.Background(), "broken"); err != nil {
+	if when, ok, err := hist.LastSuccess(context.Background(), jobid.Legacy("broken")); err != nil {
 		t.Fatalf("last success: %v", err)
 	} else if ok {
 		t.Errorf("a job that never worked reports a last success of %s", when)
@@ -466,7 +467,7 @@ func TestAHalfWrittenJobIsRefusedByName(t *testing.T) {
 		t.Fatalf("previewing a job with no sides reported %v", err)
 	}
 
-	runs, err := hist.Recent(t.Context(), "unfinished", history.ShowAll, 10)
+	runs, err := hist.Recent(t.Context(), jobid.Legacy("unfinished"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -497,7 +498,7 @@ func TestASnakeJobFailsEveryRunAndTouchesNothing(t *testing.T) {
 	if _, err := r.Preview(t.Context(), "snake"); err == nil || !strings.Contains(err.Error(), "snake eating its own tail") {
 		t.Errorf("previewing a job with one place on both sides reported %v", err)
 	}
-	runs, err := hist.Recent(t.Context(), "snake", history.ShowAll, 10)
+	runs, err := hist.Recent(t.Context(), jobid.Legacy("snake"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -534,14 +535,14 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	// Wait for the record rather than the file: the file lands before the run
 	// finishes and the record after.
 	waitFor(t, func() bool {
-		runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
+		runs, err := hist.Recent(context.Background(), jobid.Legacy("photos"), history.ShowAll, 10)
 		return err == nil && len(runs) >= 1
 	}, "the start-up run never recorded anything")
 
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); err != nil {
 		t.Fatalf("the start-up run recorded a run but did not copy the file: %v", err)
 	}
-	runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
+	runs, err := hist.Recent(context.Background(), jobid.Legacy("photos"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -554,7 +555,7 @@ func TestRunAtStartFiresOnceAndNotOnReload(t *testing.T) {
 	// Long enough for a second start-up run to be recorded.
 	time.Sleep(2 * time.Second)
 
-	runs, err = hist.Recent(context.Background(), "photos", history.ShowAll, 10)
+	runs, err = hist.Recent(context.Background(), jobid.Legacy("photos"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -643,7 +644,7 @@ func TestADisabledJobDoesNotRunAtStart(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); err == nil {
 		t.Fatal("a disabled job synced at start")
 	}
-	runs, err := hist.Recent(context.Background(), "photos", history.ShowAll, 10)
+	runs, err := hist.Recent(context.Background(), jobid.Legacy("photos"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
@@ -782,7 +783,7 @@ func TestAReportOnlyJobPlansOnTheClockAndMovesNothing(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(right, "a.txt")); !os.IsNotExist(err) {
 		t.Fatalf("a report-only job copied the file: %v", err)
 	}
-	runs, err := hist.Recent(context.Background(), "watchonly", history.ShowAll, 10)
+	runs, err := hist.Recent(context.Background(), jobid.Legacy("watchonly"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}

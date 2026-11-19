@@ -10,6 +10,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 )
 
 // retrySandbox is a job with a nightly schedule and a history that failures
@@ -49,6 +50,7 @@ func retrySandbox(t *testing.T, attempts int, wait string) (*daemon.Runner, *his
 func record(t *testing.T, hist *history.DB, at time.Time, err string) {
 	t.Helper()
 	if writeErr := hist.Record(context.Background(), history.Run{
+		JobID:    jobid.Legacy("x"),
 		Job:      "x",
 		Started:  at,
 		Finished: at,
@@ -60,8 +62,8 @@ func record(t *testing.T, hist *history.DB, at time.Time, err string) {
 
 func isDue(t *testing.T, r *daemon.Runner, now time.Time) bool {
 	t.Helper()
-	for _, name := range r.Due(context.Background(), now) {
-		if name == "x" {
+	for _, key := range r.Due(context.Background(), now) {
+		if key == jobid.Legacy("x") {
 			return true
 		}
 	}
@@ -144,8 +146,8 @@ func TestASuccessClearsTheFailures(t *testing.T) {
 
 func isRetrying(t *testing.T, r *daemon.Runner, now time.Time) bool {
 	t.Helper()
-	for _, name := range r.Retrying(context.Background(), now) {
-		if name == "x" {
+	for _, key := range r.Retrying(context.Background(), now) {
+		if key == jobid.Legacy("x") {
 			return true
 		}
 	}
@@ -192,7 +194,7 @@ func TestAComputerDoesNotRetryAJobThatWorked(t *testing.T) {
 func TestAStoppedRunWaitsForTheNextTurn(t *testing.T) {
 	r, hist := retrySandbox(t, 3, "5m")
 	stopped := time.Date(2026, 9, 12, 3, 0, 0, 0, time.Local)
-	if err := hist.Record(context.Background(), history.Run{Job: "x", Started: stopped, Finished: stopped, Stopped: true}, nil); err != nil {
+	if err := hist.Record(context.Background(), history.Run{JobID: jobid.Legacy("x"), Job: "x", Started: stopped, Finished: stopped, Stopped: true}, nil); err != nil {
 		t.Fatalf("record: %v", err)
 	}
 

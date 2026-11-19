@@ -12,6 +12,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/history"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
 
@@ -104,7 +105,7 @@ func TestADecisionIsARunInTheHistory(t *testing.T) {
 	if rec.Trashed != 2 || rec.Failed() {
 		t.Fatalf("the decision should bin the copy on both sides: %+v", rec)
 	}
-	runs, err := hist.Recent(context.Background(), "docs", history.ShowAll, 10)
+	runs, err := hist.Recent(context.Background(), jobid.Legacy("docs"), history.ShowAll, 10)
 	if err != nil {
 		t.Fatalf("history: %v", err)
 	}
