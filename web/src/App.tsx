@@ -549,8 +549,8 @@ export function App({ signOut = false }: { signOut?: boolean }) {
 
 /**
  * Says once that the desktop app has downloaded a newer version for its next
- * start. A window waiting in the notification area says it when it comes back
- * rather than to nobody.
+ * start. A minimised window says it when it comes back rather than to nobody;
+ * while there is no window, the app keeps the news for the next one.
  */
 function useUpdateReadyToast() {
   const { t } = useT()

@@ -119,7 +119,7 @@ func run() error {
 	ctx, stop := context.WithCancel(context.Background())
 	defer stop()
 	// Before the engine starts, which takes a moment, so a second launch in
-	// that moment finds a window to bring back.
+	// that moment finds the shell that opens the window.
 	window := deskset.Open(configPath)
 	installed := isInstalled()
 	if installed {
@@ -175,9 +175,11 @@ func run() error {
 	}
 	server := &web.Server{
 		History: hist, Runner: runner, UI: ui,
-		Placeholder:  webui.Placeholder,
-		Window:       window,
-		OpenWindow:   sh.showMain,
+		Placeholder: webui.Placeholder,
+		Window:      window,
+		// After the answer, since opening the main window closes the small
+		// one that asked.
+		OpenWindow:   func() { go sh.showMain() },
 		SystemAccent: accent.Read,
 		Key:          key,
 		Log:          desktopLog,
@@ -212,15 +214,12 @@ func run() error {
 	// A newer release is downloaded in the background and starts next time;
 	// see updates.go. The installed copy leaves that to the installer's
 	// scheduled task and only passes on the news.
-	announce := func(version string) {
-		app.Event.Emit(updateReadyEvent, version)
-	}
 	var up *updater
 	if installed {
-		up = newUpdater(window, log.Default(), announce)
+		up = newUpdater(window, log.Default(), sh.announce)
 		go up.follow(ctx)
 	} else {
-		up = newUpdater(window, openUpdateLog(filepath.Join(filepath.Dir(configPath), "update.log")), announce)
+		up = newUpdater(window, openUpdateLog(filepath.Join(filepath.Dir(configPath), "update.log")), sh.announce)
 		go up.run(ctx)
 	}
 

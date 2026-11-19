@@ -86,3 +86,23 @@ func TestTheAutostartFlagKeepsASecondStartInTheTray(t *testing.T) {
 		t.Error("a second start by hand stayed in the tray")
 	}
 }
+
+func TestClosingTheMainWindow(t *testing.T) {
+	tray := deskset.Settings{Tray: true, CloseToTray: true}
+	for _, c := range []struct {
+		name  string
+		shown bool
+		set   deskset.Settings
+		want  closeOutcome
+	}{
+		{"goes to the tray when asked to", true, tray, closeToTray},
+		{"quits without close to tray", true, deskset.Settings{Tray: true}, quitProgram},
+		{"quits without a tray", true, deskset.Settings{CloseToTray: true}, quitProgram},
+		{"lets a window the shell put away close", false, deskset.Settings{Tray: true}, letClose},
+		{"lets a window the shell put away close with close to tray on", false, tray, letClose},
+	} {
+		if got := onClose(c.shown, c.set); got != c.want {
+			t.Errorf("a close that %s gave %d, expected %d", c.name, got, c.want)
+		}
+	}
+}
