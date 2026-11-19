@@ -62,7 +62,7 @@ func (s *Server) groupReadJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	at := jobAt(jobs, r.PathValue("name"))
+	at := jobAt(cfg, jobs, r.PathValue("name"))
 	if at < 0 {
 		writeError(w, http.StatusNotFound, fmt.Errorf("no job called %q", r.PathValue("name")))
 		return
@@ -87,11 +87,13 @@ func (s *Server) groupSaveJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	at := jobAt(jobs, name)
+	at := jobAt(cfg, jobs, name)
 	if at < 0 {
 		writeError(w, http.StatusNotFound, fmt.Errorf("no job called %q", name))
 		return
 	}
+	was, _ := cfg.Find(name)
+	name = was.Name
 	saved, err := fitForOwner(entry, jobs[at], s.groupReach(jobs))
 	if err == nil {
 		jobs[at] = entry
@@ -113,7 +115,7 @@ func (s *Server) groupSaveJob(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jobs, err = cfg.JobsAsMaps()
-	if at = jobAt(jobs, saved); err != nil || at < 0 {
+	if at = jobAt(cfg, jobs, saved); err != nil || at < 0 {
 		writeError(w, http.StatusInternalServerError, errors.New("the job was saved but cannot be read back"))
 		return
 	}
@@ -210,11 +212,15 @@ func (s *Server) callerName(r *http.Request) string {
 	return "the instance " + c.ID
 }
 
-// jobAt is the place of the job called name in jobs as the file holds them,
-// or -1.
-func jobAt(jobs []map[string]any, name string) int {
+// jobAt is the place in jobs, as the file holds them, of the job asked for by
+// id or by name, or -1.
+func jobAt(cfg *job.Config, jobs []map[string]any, ref string) int {
+	want, ok := cfg.Find(ref)
+	if !ok {
+		return -1
+	}
 	for i, j := range jobs {
-		if j["name"] == name {
+		if j["id"] == want.ID || j["id"] == nil && j["name"] == want.Name {
 			return i
 		}
 	}
@@ -234,10 +240,11 @@ func withoutCommands(entry map[string]any) map[string]any {
 }
 
 // ownerKeys are the job's settings that stay as the owner set them, whatever
-// the group sends: the state database, which would otherwise be written
-// wherever the group says, and the trash and the brakes, which keep a
-// mirror the group sets up from deleting outright and unchecked.
-var ownerKeys = []string{"state", "noTrash", "brakePercent", "changePercent", "brakeFloor"}
+// the group sends: the id, which the job's history is kept under, the state
+// database, which would otherwise be written wherever the group says, and the
+// trash and the brakes, which keep a mirror the group sets up from deleting
+// outright and unchecked.
+var ownerKeys = []string{"id", "state", "noTrash", "brakePercent", "changePercent", "brakeFloor"}
 
 // fitForOwner makes entry what another member may save over stored, and
 // returns the name it saves under. Keys are compared in any case, as Load

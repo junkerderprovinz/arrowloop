@@ -52,14 +52,14 @@ func (b *bridge) add(ev daemon.Event) {
 	b.mu.Lock()
 	switch ev.Phase {
 	case "progress":
-		b.latest[ev.Job] = ev
+		b.latest[ev.Key()] = ev
 	case "moving":
-		b.moving[ev.Job] = ev
+		b.moving[ev.Key()] = ev
 	default:
 		// Whatever the run reported before it finished is out of date.
 		if ev.Phase == "finished" {
-			delete(b.latest, ev.Job)
-			delete(b.moving, ev.Job)
+			delete(b.latest, ev.Key())
+			delete(b.moving, ev.Key())
 		}
 		b.queue = append(b.queue, ev)
 	}

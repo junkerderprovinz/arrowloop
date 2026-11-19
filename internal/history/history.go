@@ -15,12 +15,16 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/dbfile"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 )
 
 // Run is one execution of one job.
 type Run struct {
-	ID          int64
-	Job         string
+	ID  int64
+	Job string
+	// JobID is the id of the job, which its runs are kept under. Job is the
+	// name it goes by.
+	JobID       string `json:",omitempty"`
 	Started     time.Time
 	Finished    time.Time
 	Copied      int
@@ -46,6 +50,9 @@ type Run struct {
 	// what it left undone is still owed.
 	Stopped bool `json:",omitempty"`
 }
+
+// Key is what the run is filed under: its job's id.
+func (r Run) Key() string { return jobid.Key(r.JobID, r.Job) }
 
 // Failed reports whether the run ended badly.
 func (r Run) Failed() bool { return r.Err != "" }
@@ -92,6 +99,7 @@ const schema = `
 CREATE TABLE IF NOT EXISTS runs (
 	id           INTEGER PRIMARY KEY AUTOINCREMENT,
 	job          TEXT    NOT NULL,
+	job_id       TEXT    NOT NULL DEFAULT '',
 	started      INTEGER NOT NULL,
 	finished     INTEGER NOT NULL,
 	copied       INTEGER NOT NULL,
@@ -107,7 +115,6 @@ CREATE TABLE IF NOT EXISTS runs (
 	no_trash     INTEGER NOT NULL DEFAULT 0,
 	stopped      INTEGER NOT NULL DEFAULT 0
 );
-CREATE INDEX IF NOT EXISTS runs_job_started ON runs (job, started DESC);
 
 CREATE TABLE IF NOT EXISTS entries (
 	run  INTEGER NOT NULL,
@@ -131,6 +138,7 @@ CREATE TABLE IF NOT EXISTS openings (
 CREATE TABLE IF NOT EXISTS going (
 	key          TEXT    PRIMARY KEY,
 	job          TEXT    NOT NULL,
+	job_id       TEXT    NOT NULL DEFAULT '',
 	started      INTEGER NOT NULL,
 	beat         INTEGER NOT NULL,
 	copied       INTEGER NOT NULL,
@@ -164,6 +172,10 @@ var migrations = []string{
 	`ALTER TABLE runs ADD COLUMN no_trash INTEGER NOT NULL DEFAULT 0`,
 	`ALTER TABLE going ADD COLUMN no_trash INTEGER NOT NULL DEFAULT 0`,
 	`ALTER TABLE runs ADD COLUMN stopped INTEGER NOT NULL DEFAULT 0`,
+	`ALTER TABLE runs ADD COLUMN job_id TEXT NOT NULL DEFAULT ''`,
+	`ALTER TABLE going ADD COLUMN job_id TEXT NOT NULL DEFAULT ''`,
+	`DROP INDEX IF EXISTS runs_job_started`,
+	`CREATE INDEX IF NOT EXISTS runs_job_id_started ON runs (job_id, started DESC)`,
 }
 
 // version is the history's layout. It goes up when a newer layout would be
@@ -193,12 +205,67 @@ func Open(ctx context.Context, path string) (*DB, error) {
 		// already run. A real failure shows up on the next read.
 		_, _ = handle.ExecContext(ctx, m)
 	}
+	if err := adopt(ctx, handle); err != nil {
+		handle.Close()
+		return nil, err
+	}
 	d := &DB{sql: handle, beat: beat{owner: newOwner(), stop: make(chan struct{}), done: make(chan struct{})}}
 	// A failure here is retried on every beat, and must not keep the program
 	// from starting.
 	_ = d.recordAbandoned(ctx, time.Now())
 	go d.keepBeat()
 	return d, nil
+}
+
+// adopt files the runs recorded before jobs had ids under the id a job of
+// that name is given, jobid.Legacy. The job keeps that id through every
+// rename, so its old runs stay with it.
+func adopt(ctx context.Context, handle *sql.DB) error {
+	for _, table := range []string{"runs", "going"} {
+		rows, err := handle.QueryContext(ctx, `SELECT DISTINCT job FROM `+table+` WHERE job_id = ''`)
+		if err != nil {
+			return fmt.Errorf("file the older runs under their jobs: %w", err)
+		}
+		var names []string
+		for rows.Next() {
+			var name string
+			if err := rows.Scan(&name); err != nil {
+				rows.Close()
+				return fmt.Errorf("file the older runs under their jobs: %w", err)
+			}
+			names = append(names, name)
+		}
+		rows.Close()
+		for _, name := range names {
+			if _, err := handle.ExecContext(ctx,
+				`UPDATE `+table+` SET job_id = ? WHERE job_id = '' AND job = ?`, jobid.Legacy(name), name); err != nil {
+				return fmt.Errorf("file the older runs of %q: %w", name, err)
+			}
+		}
+	}
+	return nil
+}
+
+// Relabel gives the runs of each job the name it goes by now, from a map of
+// job ids to names, so a renamed job's older runs are listed under its new
+// name. A job that is gone keeps the last name it had.
+func (d *DB) Relabel(ctx context.Context, names map[string]string) error {
+	for key, name := range names {
+		for _, table := range []string{"runs", "going"} {
+			if _, err := d.sql.ExecContext(ctx,
+				`UPDATE `+table+` SET job = ? WHERE job_id = ? AND job <> ?`, name, key, name); err != nil {
+				return fmt.Errorf("give the runs of %q their new name: %w", name, err)
+			}
+		}
+	}
+	d.liveMu.Lock()
+	for _, l := range d.runs {
+		if name, ok := names[l.run.Key()]; ok {
+			l.run.Job = name
+		}
+	}
+	d.liveMu.Unlock()
+	return nil
 }
 
 // Close writes down the runs still going, which the next start records as
@@ -228,9 +295,9 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 	defer tx.Rollback() //nolint:errcheck // a committed transaction rolls back to nothing
 
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		r.Job, r.Started.UnixNano(), r.Finished.UnixNano(),
+		`INSERT INTO runs (job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		r.Job, r.Key(), r.Started.UnixNano(), r.Finished.UnixNano(),
 		r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Unchanged, r.Skipped, r.Err, r.Answered, r.NoTrash, r.Stopped)
 	if err != nil {
 		return fmt.Errorf("record run for %q: %w", r.Job, err)
@@ -248,7 +315,7 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 		}
 	}
 	if key != "" {
-		if err := dropInterrupted(ctx, tx, r.Job, r.Started.UnixNano()); err != nil {
+		if err := dropInterrupted(ctx, tx, r.Key(), r.Started.UnixNano()); err != nil {
 			return fmt.Errorf("record run for %q: %w", r.Job, err)
 		}
 		if err := forget(ctx, tx, key); err != nil {
@@ -286,16 +353,17 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 // belongs to, so lines from different runs can be told apart.
 type Touch struct {
 	Entry
-	Run  int64
-	Job  string
-	When time.Time
+	Run   int64
+	Job   string
+	JobID string `json:",omitempty"`
+	When  time.Time
 	// Seq is the line's place in its run, which with Job and When names it
 	// the same way while the run goes and once it is stored.
 	Seq int
 }
 
 // Touches returns what one job did to files, newest first, across all of its
-// runs.
+// runs. Here and in every other method that takes a job, the job is its id.
 func (d *DB) Touches(ctx context.Context, job string, limit int) ([]Touch, error) {
 	return d.TouchesLike(ctx, job, "", limit)
 }
@@ -308,7 +376,7 @@ func (d *DB) TouchesLike(ctx context.Context, job, contains string, limit int) (
 // Filter narrows the per-file log. An empty field does not narrow, so the
 // whole log is Filter{}, and a zero Limit takes the default.
 type Filter struct {
-	// Job narrows to one job. Empty means every job.
+	// Job narrows to one job, by its id. Empty means every job.
 	Job string
 	// Contains is a fragment of a path, matched case-insensitively.
 	Contains string
@@ -333,7 +401,7 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	// which is nothing done to it; Entries leaves those out too.
 	where, args := "e.kind <> 'record'", []any{}
 	if f.Job != "" {
-		where += " AND r.job = ?"
+		where += " AND r.job_id = ?"
 		args = append(args, f.Job)
 	}
 	if len(f.Kinds) > 0 {
@@ -351,7 +419,7 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	}
 	args = append(args, limit)
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT e.run, r.job, r.started, e.seq, e.kind, e.side, e.path, e.note, e.size
+		`SELECT e.run, r.job, r.job_id, r.started, e.seq, e.kind, e.side, e.path, e.note, e.size
 		 FROM entries e JOIN runs r ON r.id = e.run
 		 WHERE `+where+`
 		 ORDER BY r.started DESC, e.seq DESC
@@ -365,7 +433,7 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	for rows.Next() {
 		var t Touch
 		var started int64
-		if err := rows.Scan(&t.Run, &t.Job, &started, &t.Seq, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
+		if err := rows.Scan(&t.Run, &t.Job, &t.JobID, &started, &t.Seq, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
 			return nil, fmt.Errorf("scan touch: %w", err)
 		}
 		t.When = time.Unix(0, started)
@@ -414,7 +482,7 @@ func (s Show) where() string {
 	}
 }
 
-// Recent returns the newest runs first. An empty job name means every job, and
+// Recent returns the newest runs first. An empty job means every job, and
 // ShowAll means every run.
 func (d *DB) Recent(ctx context.Context, job string, show Show, limit int) ([]Run, error) {
 	return d.Between(ctx, job, show, time.Time{}, time.Time{}, limit)
@@ -446,12 +514,12 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	if limit <= 0 {
 		limit = 20
 	}
-	query := `SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped
+	query := `SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped
 	          FROM runs`
 	args := []any{}
 	var conds []string
 	if job != "" {
-		conds = append(conds, `job = ?`)
+		conds = append(conds, `job_id = ?`)
 		args = append(args, job)
 	}
 	if w := show.where(); w != "" {
@@ -481,7 +549,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	for rows.Next() {
 		var r Run
 		var started, finished int64
-		if err := rows.Scan(&r.ID, &r.Job, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
+		if err := rows.Scan(&r.ID, &r.Job, &r.JobID, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
 			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.NoTrash, &r.Stopped); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
@@ -497,7 +565,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 // page through the log with the last id it saw.
 func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
 	rows, err := d.sql.QueryContext(ctx, `
-		SELECT id, job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, stopped
+		SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, stopped
 		FROM runs WHERE id > ? ORDER BY id LIMIT ?`, after, limit)
 	if err != nil {
 		return nil, fmt.Errorf("read the runs after %d: %w", after, err)
@@ -508,7 +576,7 @@ func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
 	for rows.Next() {
 		var r Run
 		var started, finished int64
-		if err := rows.Scan(&r.ID, &r.Job, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
+		if err := rows.Scan(&r.ID, &r.Job, &r.JobID, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
 			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.Stopped); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
@@ -531,11 +599,11 @@ type Latest struct {
 // start of the viewer's day.
 func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 	rows, err := d.sql.QueryContext(ctx, `
-		SELECT r.id, r.job, r.started, r.finished, r.copied, r.moved, r.trashed, r.conflicts,
+		SELECT r.id, r.job, r.job_id, r.started, r.finished, r.copied, r.moved, r.trashed, r.conflicts,
 		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err, r.no_trash, r.stopped,
-		       (SELECT COUNT(*) FROM runs c WHERE c.job = r.job AND c.started >= ?)
+		       (SELECT COUNT(*) FROM runs c WHERE c.job_id = r.job_id AND c.started >= ?)
 		FROM runs r
-		WHERE r.id = (SELECT m.id FROM runs m WHERE m.job = r.job ORDER BY m.started DESC LIMIT 1)
+		WHERE r.id = (SELECT m.id FROM runs m WHERE m.job_id = r.job_id ORDER BY m.started DESC LIMIT 1)
 		ORDER BY r.started DESC`, since.UnixNano())
 	if err != nil {
 		return nil, fmt.Errorf("read the latest runs: %w", err)
@@ -546,7 +614,7 @@ func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 	for rows.Next() {
 		var l Latest
 		var started, finished int64
-		if err := rows.Scan(&l.ID, &l.Job, &started, &finished, &l.Copied, &l.Moved, &l.Trashed,
+		if err := rows.Scan(&l.ID, &l.Job, &l.JobID, &started, &finished, &l.Copied, &l.Moved, &l.Trashed,
 			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.NoTrash, &l.Stopped, &l.Since); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
@@ -589,7 +657,7 @@ func (d *DB) LastStopped(ctx context.Context, job string) (time.Time, bool, erro
 func (d *DB) lastFinished(ctx context.Context, job, where string) (time.Time, bool, error) {
 	var finished int64
 	err := d.sql.QueryRowContext(ctx,
-		`SELECT finished FROM runs WHERE job = ? AND `+where+` ORDER BY started DESC LIMIT 1`, job).Scan(&finished)
+		`SELECT finished FROM runs WHERE job_id = ? AND `+where+` ORDER BY started DESC LIMIT 1`, job).Scan(&finished)
 	if err == sql.ErrNoRows {
 		return time.Time{}, false, nil
 	}
@@ -611,7 +679,7 @@ func (d *DB) FailuresSince(ctx context.Context, job string, since time.Time) (in
 	var count int
 	var last sql.NullInt64
 	err := d.sql.QueryRowContext(ctx,
-		`SELECT COUNT(*), MAX(finished) FROM runs WHERE job = ? AND err != '' AND started > ?`,
+		`SELECT COUNT(*), MAX(finished) FROM runs WHERE job_id = ? AND err != '' AND started > ?`,
 		job, cut).Scan(&count, &last)
 	if err != nil {
 		return 0, time.Time{}, fmt.Errorf("failures for %q: %w", job, err)
@@ -626,7 +694,7 @@ func (d *DB) FailuresSince(ctx context.Context, job string, since time.Time) (in
 func (d *DB) LeftLastTime(ctx context.Context, job string) (map[string]bool, error) {
 	rows, err := d.sql.QueryContext(ctx,
 		`SELECT path FROM entries WHERE kind = 'skip' AND run =
-		   (SELECT id FROM runs WHERE job = ? ORDER BY started DESC LIMIT 1)`, job)
+		   (SELECT id FROM runs WHERE job_id = ? ORDER BY started DESC LIMIT 1)`, job)
 	if err != nil {
 		return nil, fmt.Errorf("left last time for %q: %w", job, err)
 	}
@@ -640,6 +708,14 @@ func (d *DB) LeftLastTime(ctx context.Context, job string) (map[string]bool, err
 		out[p] = true
 	}
 	return out, rows.Err()
+}
+
+// Named is the id of the job whose newest run went by this name, for a job
+// that is gone and is asked for by the name it had last.
+func (d *DB) Named(ctx context.Context, name string) (string, bool) {
+	var key string
+	err := d.sql.QueryRowContext(ctx, `SELECT job_id FROM runs WHERE job = ? ORDER BY started DESC LIMIT 1`, name).Scan(&key)
+	return key, err == nil
 }
 
 // Prune drops runs and openings older than the given age, so the log does

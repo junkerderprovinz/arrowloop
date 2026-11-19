@@ -91,12 +91,12 @@ func (d *DB) checkpoint(ctx context.Context, now time.Time) error {
 	for _, p := range parts {
 		r := p.run
 		if _, err := tx.ExecContext(ctx,
-			`INSERT INTO going (key, job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped, no_trash)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-			 ON CONFLICT (key) DO UPDATE SET beat = excluded.beat, copied = excluded.copied, moved = excluded.moved,
+			`INSERT INTO going (key, job, job_id, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped, no_trash)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			 ON CONFLICT (key) DO UPDATE SET job = excluded.job, beat = excluded.beat, copied = excluded.copied, moved = excluded.moved,
 			   trashed = excluded.trashed, conflicts = excluded.conflicts, dirs_made = excluded.dirs_made,
 			   dirs_removed = excluded.dirs_removed, skipped = excluded.skipped`,
-			p.l.key, r.Job, r.Started.UnixNano(), now.UnixNano(),
+			p.l.key, r.Job, r.Key(), r.Started.UnixNano(), now.UnixNano(),
 			r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped, r.NoTrash); err != nil {
 			return err
 		}
@@ -162,21 +162,21 @@ func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 	var r Run
 	var started, last int64
 	err = tx.QueryRowContext(ctx,
-		`SELECT job, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped, no_trash FROM going WHERE key = ? AND beat < ?`, key, cut).
-		Scan(&r.Job, &started, &last, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Skipped, &r.NoTrash)
+		`SELECT job, job_id, started, beat, copied, moved, trashed, conflicts, dirs_made, dirs_removed, skipped, no_trash FROM going WHERE key = ? AND beat < ?`, key, cut).
+		Scan(&r.Job, &r.JobID, &started, &last, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Skipped, &r.NoTrash)
 	if err == sql.ErrNoRows {
 		return nil
 	}
 	if err != nil {
 		return err
 	}
-	if err := dropInterrupted(ctx, tx, r.Job, started); err != nil {
+	if err := dropInterrupted(ctx, tx, r.Key(), started); err != nil {
 		return err
 	}
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, no_trash)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
-		r.Job, started, last, r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped, Interrupted, r.NoTrash)
+		`INSERT INTO runs (job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, no_trash)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
+		r.Job, r.Key(), started, last, r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Skipped, Interrupted, r.NoTrash)
 	if err != nil {
 		return err
 	}
@@ -208,7 +208,7 @@ func forget(ctx context.Context, tx *sql.Tx, key string) error {
 // program was only asleep, so the run it goes on to record is the only one.
 // A job and a start to the nanosecond name one run.
 func dropInterrupted(ctx context.Context, tx *sql.Tx, job string, started int64) error {
-	const which = `SELECT id FROM runs WHERE job = ? AND started = ? AND err = ?`
+	const which = `SELECT id FROM runs WHERE job_id = ? AND started = ? AND err = ?`
 	if _, err := tx.ExecContext(ctx, `DELETE FROM entries WHERE run IN (`+which+`)`, job, started, Interrupted); err != nil {
 		return err
 	}

@@ -1,6 +1,7 @@
 package history
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"slices"
@@ -73,7 +74,7 @@ type DailyStat struct {
 
 // StatsQuery asks for one summary.
 type StatsQuery struct {
-	// Job narrows the summary to one job. Empty means every job.
+	// Job narrows the summary to one job, by its id. Empty means every job.
 	Job string
 
 	// Days is how many calendar days the window covers, counting back from and
@@ -173,11 +174,11 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 
 	// Both ends of the window go into the query, so every row has a bucket
 	// and the totals add up to the chart.
-	query := `SELECT job, started, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, no_trash
+	query := `SELECT job, job_id, started, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, no_trash
 	          FROM runs WHERE started >= ? AND started < ?`
 	args := []any{first.UnixNano(), end.UnixNano()}
 	if q.Job != "" {
-		query += ` AND job = ?`
+		query += ` AND job_id = ?`
 		args = append(args, q.Job)
 	}
 
@@ -188,11 +189,13 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 	defer rows.Close()
 
 	buckets := map[bucket]*Counts{}
-	seen := map[string]bool{}
+	// seen names each job by its id, so a job is one line however often it
+	// was renamed, and the line takes the name it goes by now.
+	seen := map[string]string{}
 	for rows.Next() {
 		var r Run
 		var started int64
-		if err := rows.Scan(&r.Job, &started, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts,
+		if err := rows.Scan(&r.Job, &r.JobID, &started, &r.Copied, &r.Moved, &r.Trashed, &r.Conflicts,
 			&r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.NoTrash); err != nil {
 			return Stats{}, fmt.Errorf("scan run for summary: %w", err)
 		}
@@ -200,7 +203,7 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 		// happened.
 		key := bucket{day: time.Unix(0, started).In(loc).Format(dayLayout)}
 		if splitByJob {
-			key.job = r.Job
+			key.job = r.JobID
 		}
 		into := buckets[key]
 		if into == nil {
@@ -209,7 +212,7 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 		}
 		into.add(r)
 		out.Totals.add(r)
-		seen[r.Job] = true
+		seen[r.JobID] = r.Job
 	}
 	if err := rows.Err(); err != nil {
 		return Stats{}, fmt.Errorf("read history for summary: %w", err)
@@ -220,11 +223,11 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 	series := []string{q.Job}
 	if splitByJob {
 		series = make([]string, 0, len(seen))
-		for job := range seen {
-			series = append(series, job)
+		for id := range seen {
+			series = append(series, id)
 		}
 		// Sorted so the lines keep their colours between refreshes.
-		slices.Sort(series)
+		slices.SortFunc(series, func(a, b string) int { return cmp.Or(cmp.Compare(seen[a], seen[b]), cmp.Compare(a, b)) })
 	}
 
 	// A nil slice would encode as null and break the chart on a fresh install.
@@ -234,7 +237,7 @@ func (d *DB) Summary(ctx context.Context, q StatsQuery) (Stats, error) {
 			row := DailyStat{Day: day, Job: job}
 			key := bucket{day: day}
 			if splitByJob {
-				key.job = job
+				row.Job, key.job = seen[job], job
 			}
 			if c := buckets[key]; c != nil {
 				row.Counts = *c

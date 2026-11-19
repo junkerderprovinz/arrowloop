@@ -16,7 +16,8 @@ import (
 
 // conflictView is one open conflict as the screen shows it.
 type conflictView struct {
-	Job string `json:"job"`
+	Job   string `json:"job"`
+	JobID string `json:"jobId,omitempty"`
 	// Copy names the conflict when deciding it: the set-aside version's path.
 	Copy  string `json:"copy"`
 	Plain string `json:"plain"`
@@ -32,6 +33,7 @@ type conflictView struct {
 
 type unreadView struct {
 	Job     string           `json:"job"`
+	JobID   string           `json:"jobId,omitempty"`
 	Error   string           `json:"error"`
 	Failure *failure.Failure `json:"failure,omitempty"`
 }
@@ -50,14 +52,14 @@ func (s *Server) listConflicts(w http.ResponseWriter, r *http.Request) {
 	}{Conflicts: make([]conflictView, 0, len(found)), Unread: make([]unreadView, 0, len(unread))}
 	for _, c := range found {
 		out.Conflicts = append(out.Conflicts, conflictView{
-			Job: c.Job, Copy: c.Copy, Plain: c.Plain, Side: c.Side.String(),
+			Job: c.Job, JobID: c.JobID, Copy: c.Copy, Plain: c.Plain, Side: c.Side.String(),
 			At:   c.At.UTC().Format(time.RFC3339),
 			Left: versionView(c.Left), Right: versionView(c.Right),
 			Why: c.Why,
 		})
 	}
 	for _, u := range unread {
-		out.Unread = append(out.Unread, unreadView{Job: u.Job, Error: u.Err.Error(), Failure: failure.Of(u.Err.Error())})
+		out.Unread = append(out.Unread, unreadView{Job: u.Job, JobID: u.JobID, Error: u.Err.Error(), Failure: failure.Of(u.Err.Error())})
 	}
 	writeJSON(w, http.StatusOK, out)
 }

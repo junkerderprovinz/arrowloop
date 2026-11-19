@@ -107,7 +107,7 @@ func (d *onDrive) plug(in bool) {
 // workedAt writes a successful run of x into the log.
 func (d *onDrive) workedAt(t *testing.T, at time.Time) {
 	t.Helper()
-	if err := d.r.hist.Record(context.Background(), history.Run{Job: "x", Started: at, Finished: at}, nil); err != nil {
+	if err := d.r.hist.Record(context.Background(), history.Run{JobID: d.r.keyOf("x"), Job: "x", Started: at, Finished: at}, nil); err != nil {
 		t.Fatalf("record: %v", err)
 	}
 }

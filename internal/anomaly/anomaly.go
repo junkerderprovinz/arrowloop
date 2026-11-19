@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
+	"github.com/junkerderprovinz/arrowloop/internal/jobid"
 )
 
 // Kind is what was found.
@@ -68,7 +69,10 @@ const PathLimit = 500
 
 // Finding is one thing found about one job.
 type Finding struct {
-	ID       string `json:"id"`
+	ID string `json:"id"`
+	// JobID is the id of the job, which the finding is kept under. Job is the
+	// name the job goes by.
+	JobID    string `json:"jobId,omitempty"`
 	Job      string `json:"job"`
 	Kind     Kind   `json:"kind"`
 	Severity string `json:"severity"`
@@ -120,6 +124,9 @@ type Finding struct {
 	Quiet bool `json:"quiet,omitempty"`
 }
 
+// Key is what the finding is kept under: its job's id.
+func (f Finding) Key() string { return jobid.Key(f.JobID, f.Job) }
+
 // ErrUnknown is returned for an id no open finding carries.
 var ErrUnknown = errors.New("no open finding with that id")
 
@@ -154,7 +161,32 @@ func Open(path string) (*Store, error) {
 		s.list = nil
 		return s, fmt.Errorf("the findings in %s cannot be read and start afresh: %w", path, err)
 	}
+	// Findings from before jobs had ids go to the id a job of that name is
+	// given, as the run log's do.
+	for i := range s.list {
+		if s.list[i].JobID == "" {
+			s.list[i].JobID = jobid.Legacy(s.list[i].Job)
+		}
+	}
 	return s, nil
+}
+
+// Relabel gives the findings of each job the name it goes by now, from a map
+// of job ids to names.
+func (s *Store) Relabel(names map[string]string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	changed := false
+	for i := range s.list {
+		f := &s.list[i]
+		if name, ok := names[f.JobID]; ok && f.Job != name {
+			f.Job = name
+			changed = true
+		}
+	}
+	if changed {
+		s.save()
+	}
 }
 
 func (s *Store) clock() time.Time {
@@ -186,12 +218,13 @@ func (s *Store) Raise(f Finding) (Finding, Raised) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.clock()
+	f.JobID = f.Key()
 	if len(f.Paths) > PathLimit {
 		f.Paths = f.Paths[:PathLimit]
 	}
 	for i := range s.list {
 		old := &s.list[i]
-		if old.Job != f.Job || old.Kind != f.Kind {
+		if old.JobID != f.JobID || old.Kind != f.Kind {
 			continue
 		}
 		if old.Open {
@@ -222,14 +255,15 @@ func (s *Store) Raise(f Finding) (Finding, Raised) {
 
 // Settle closes the open findings of a job among the given kinds, because
 // their cause is gone, and lets an acknowledged note of those kinds be raised
-// again. It reports whether anything changed.
+// again. It reports whether anything changed. Here and in every other method
+// that takes a job, the job is its id.
 func (s *Store) Settle(job, outcome string, kinds ...Kind) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	changed := false
 	for i := range s.list {
 		f := &s.list[i]
-		if f.Job != job || !slices.Contains(kinds, f.Kind) {
+		if f.JobID != job || !slices.Contains(kinds, f.Kind) {
 			continue
 		}
 		if f.Open {
@@ -278,7 +312,7 @@ func (s *Store) Allow(id string) ([]string, error) {
 		f := &s.list[i]
 		if f.ID == id && f.Open && f.Held {
 			f.Allowed = true
-			job = f.Job
+			job = f.JobID
 		}
 	}
 	if job == "" {
@@ -287,7 +321,7 @@ func (s *Store) Allow(id string) ([]string, error) {
 	s.save()
 	var marks []string
 	for _, f := range s.list {
-		if f.Job == job && f.Open && f.Allowed {
+		if f.JobID == job && f.Open && f.Allowed {
 			marks = append(marks, f.Mark)
 		}
 	}
@@ -311,7 +345,7 @@ func (s *Store) Holding(job string) (Finding, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, f := range s.list {
-		if f.Job == job && f.Open && f.Held {
+		if f.JobID == job && f.Open && f.Held {
 			return f, true
 		}
 	}
@@ -323,7 +357,7 @@ func (s *Store) Has(job string, kind Kind) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, f := range s.list {
-		if f.Job == job && f.Open && f.Kind == kind {
+		if f.JobID == job && f.Open && f.Kind == kind {
 			return true
 		}
 	}
@@ -339,7 +373,7 @@ func (s *Store) List(known func(job string) bool) (open, closed []Finding) {
 	cut := s.clock().Add(-Kept)
 	kept := s.list[:0]
 	for _, f := range s.list {
-		if !known(f.Job) || !f.Open && f.Closed.Before(cut) {
+		if !known(f.JobID) || !f.Open && f.Closed.Before(cut) {
 			continue
 		}
 		kept = append(kept, f)

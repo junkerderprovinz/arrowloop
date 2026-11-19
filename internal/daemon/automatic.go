@@ -28,15 +28,15 @@ func (r *Runner) RunAutomatically(ctx context.Context, name string) (history.Run
 	// mounts it, so such a job finds out from the run.
 	if j.Before == "" {
 		if err := r.away(j); err != nil {
-			r.waitForDrive(name, err)
+			r.waitForDrive(j.Key(), err)
 			return history.Run{}, err
 		}
 	}
-	r.waiting.clear(name)
+	r.waiting.clear(j.Key())
 
 	// The space check lists both sides, so it waits for the job's claim, and
 	// a refusal is recorded like any failure so the retry policy sees it.
-	rec, err := r.runAs(ctx, name, true, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
+	rec, err := r.runAs(ctx, j.Key(), true, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 		if err := r.roomFor(ctx, j); err != nil {
 			return apply.Result{}, nil, err
 		}

@@ -36,11 +36,11 @@ type answer struct {
 var passed = answer{outcome: anomaly.Resolved, kinds: brakes}
 
 // refusal turns a brake's refusal into the finding it makes.
-func refusal(name string, err error) (anomaly.Finding, bool) {
+func refusal(j job.Job, err error) (anomaly.Finding, bool) {
 	var brake *plan.BrakeError
 	if errors.As(err, &brake) {
 		return anomaly.Finding{
-			Job: name, Kind: anomaly.Kind(brake.Kind),
+			JobID: j.Key(), Job: j.Name, Kind: anomaly.Kind(brake.Kind),
 			Count: brake.Count, Known: brake.Known, Limit: brake.Percent,
 			OnLeft: brake.OnLeft, OnRight: brake.OnRight,
 			Paths: brake.Paths, Mark: brake.Mark, Detail: brake.Error(),
@@ -49,7 +49,7 @@ func refusal(name string, err error) (anomaly.Finding, bool) {
 	var empty *plan.EmptySideError
 	if errors.As(err, &empty) {
 		return anomaly.Finding{
-			Job: name, Kind: anomaly.Empty, Side: empty.Side.String(),
+			JobID: j.Key(), Job: j.Name, Kind: anomaly.Empty, Side: empty.Side.String(),
 			Known: max(empty.Known, empty.Held), Mark: empty.Mark(), Detail: empty.Error(),
 		}, true
 	}
@@ -70,16 +70,16 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, change anomaly.Ra
 	case anomaly.Unchanged:
 		return
 	case anomaly.Updated:
-		r.publish(Event{Job: f.Job, Phase: "anomaly"})
+		r.publish(Event{Job: f.Job, JobID: f.JobID, Phase: "anomaly"})
 		return
 	}
 	r.log("%s: %s", f.Job, f.Detail)
 	cfg := r.config()
 	tells := cfg.Anomalies.Tells(f.Held)
-	ev := Event{Job: f.Job, Phase: "anomaly"}
+	ev := Event{Job: f.Job, JobID: f.JobID, Phase: "anomaly"}
 	if tells {
 		ev.Told = f.ID
-		found := Found{Job: f.Job, Kind: string(f.Kind), Held: f.Held}
+		found := Found{Job: f.Job, JobID: f.JobID, Kind: string(f.Kind), Held: f.Held}
 		r.mu.Lock()
 		r.told = append(slices.DeleteFunc(r.told, func(o Found) bool { return o == found }), found)
 		r.mu.Unlock()
@@ -102,9 +102,10 @@ func (r *Runner) noted(ctx context.Context, f anomaly.Finding, change anomaly.Ra
 
 // Found is a new finding somebody should hear of.
 type Found struct {
-	Job  string `json:"job"`
-	Kind string `json:"kind"`
-	Held bool   `json:"held"`
+	Job   string `json:"job"`
+	JobID string `json:"jobId,omitempty"`
+	Kind  string `json:"kind"`
+	Held  bool   `json:"held"`
 }
 
 // drainTold hands over the findings made since the last call that are still
@@ -115,14 +116,14 @@ func (r *Runner) drainTold() []Found {
 	r.told = nil
 	r.mu.Unlock()
 	return slices.DeleteFunc(told, func(f Found) bool {
-		return !r.anomalies.Has(f.Job, anomaly.Kind(f.Kind))
+		return !r.anomalies.Has(f.JobID, anomaly.Kind(f.Kind))
 	})
 }
 
 // settle closes a job's findings of the given kinds and says so.
-func (r *Runner) settle(name, outcome string, kinds ...anomaly.Kind) {
-	if r.anomalies.Settle(name, outcome, kinds...) {
-		r.publish(Event{Job: name, Phase: "anomaly"})
+func (r *Runner) settle(key, outcome string, kinds ...anomaly.Kind) {
+	if r.anomalies.Settle(key, outcome, kinds...) {
+		r.publish(Event{Job: r.nameOf(key), JobID: key, Phase: "anomaly"})
 	}
 }
 
@@ -133,8 +134,9 @@ func (r *Runner) review(ctx context.Context, rec history.Run) {
 	if rec.Stopped {
 		return
 	}
+	key := rec.Key()
 	if !rec.Failed() {
-		r.settle(rec.Job, anomaly.Resolved, anomaly.Failing, anomaly.Overdue)
+		r.settle(key, anomaly.Resolved, anomaly.Failing, anomaly.Overdue)
 		// An answered run did what somebody just allowed, however far that is
 		// from the usual.
 		if !rec.Answered {
@@ -146,16 +148,16 @@ func (r *Runner) review(ctx context.Context, rec history.Run) {
 	if after == 0 || r.hist == nil {
 		return
 	}
-	last, _, err := r.lastSuccess(ctx, rec.Job)
+	last, _, err := r.lastSuccess(ctx, key)
 	if err != nil {
 		return
 	}
-	fails, _, err := r.hist.FailuresSince(ctx, rec.Job, last)
+	fails, _, err := r.hist.FailuresSince(ctx, key, last)
 	if err != nil || fails < after {
 		return
 	}
 	stored, change := r.anomalies.Raise(anomaly.Finding{
-		Job: rec.Job, Kind: anomaly.Failing, Count: fails,
+		JobID: key, Job: rec.Job, Kind: anomaly.Failing, Count: fails,
 		Detail: fmt.Sprintf("the last %d runs failed: %s", fails, rec.Err),
 	})
 	r.noted(ctx, stored, change)
@@ -168,13 +170,13 @@ func (r *Runner) judge(ctx context.Context, rec history.Run) {
 	if !r.config().Anomalies.ReportsUnusual() || r.hist == nil {
 		return
 	}
-	learned, err := r.learn(ctx, rec.Job, rec.Started)
+	learned, err := r.learn(ctx, rec.Key(), rec.Started)
 	if err != nil || !learned.Learned() {
 		return
 	}
 	odd := learned.Unusual(sample(rec))
 	if len(odd) == 0 {
-		r.settle(rec.Job, anomaly.Resolved, anomaly.Unusual)
+		r.settle(rec.Key(), anomaly.Resolved, anomaly.Unusual)
 		return
 	}
 	said := make([]string, len(odd))
@@ -182,7 +184,7 @@ func (r *Runner) judge(ctx context.Context, rec history.Run) {
 		said[i] = m.Say()
 	}
 	stored, change := r.anomalies.Raise(anomaly.Finding{
-		Job: rec.Job, Kind: anomaly.Unusual, Figures: odd,
+		JobID: rec.Key(), Job: rec.Job, Kind: anomaly.Unusual, Figures: odd,
 		Detail: "an unusual run: " + strings.Join(said, ", "),
 	})
 	r.noted(ctx, stored, change)
@@ -190,8 +192,8 @@ func (r *Runner) judge(ctx context.Context, rec history.Run) {
 
 // learn learns a job's habits from its latest successful runs that nobody
 // answered, leaving out the run started at skip, which is the one being judged.
-func (r *Runner) learn(ctx context.Context, name string, skip time.Time) (anomaly.Learning, error) {
-	runs, err := r.hist.Recent(ctx, name, history.ShowUsual, anomaly.LearnFrom+1)
+func (r *Runner) learn(ctx context.Context, key string, skip time.Time) (anomaly.Learning, error) {
+	runs, err := r.hist.Recent(ctx, key, history.ShowUsual, anomaly.LearnFrom+1)
 	if err != nil {
 		return anomaly.Learning{}, err
 	}
@@ -210,7 +212,8 @@ func sample(run history.Run) anomaly.Sample {
 
 // JobLearning is how far the engine has learned one job's habits.
 type JobLearning struct {
-	Job string `json:"job"`
+	Job   string `json:"job"`
+	JobID string `json:"jobId,omitempty"`
 	anomaly.Learning
 }
 
@@ -221,9 +224,9 @@ func (r *Runner) Learning(ctx context.Context) []JobLearning {
 	for _, j := range r.config().Jobs {
 		var l anomaly.Learning
 		if r.hist != nil {
-			l, _ = r.learn(ctx, j.Name, time.Time{})
+			l, _ = r.learn(ctx, j.Key(), time.Time{})
 		}
-		out = append(out, JobLearning{Job: j.Name, Learning: l})
+		out = append(out, JobLearning{Job: j.Name, JobID: j.Key(), Learning: l})
 	}
 	return out
 }
@@ -239,21 +242,22 @@ func (r *Runner) overdue(ctx context.Context, now time.Time) {
 	}
 	running := r.Running()
 	for _, j := range cfg.Jobs {
+		key := j.Key()
 		if !cfg.RunsOnItsOwn(j) || j.Schedule == "" {
-			r.settle(j.Name, anomaly.Resolved, anomaly.Overdue)
+			r.settle(key, anomaly.Resolved, anomaly.Overdue)
 			continue
 		}
-		if running[j.Name] || r.anomalies.Has(j.Name, anomaly.Failing) {
+		if running[j.Name] || r.anomalies.Has(key, anomaly.Failing) {
 			continue
 		}
-		if _, held := r.anomalies.Holding(j.Name); held {
+		if _, held := r.anomalies.Holding(key); held {
 			continue
 		}
 		parsed, err := job.ParseSchedule(j.Schedule)
 		if err != nil {
 			continue
 		}
-		last, ok, err := r.lastSuccess(ctx, j.Name)
+		last, ok, err := r.lastSuccess(ctx, key)
 		if err != nil || !ok {
 			continue
 		}
@@ -262,7 +266,7 @@ func (r *Runner) overdue(ctx context.Context, now time.Time) {
 			continue
 		}
 		stored, change := r.anomalies.Raise(anomaly.Finding{
-			Job: j.Name, Kind: anomaly.Overdue, Count: int(now.Sub(last).Hours() / 24),
+			JobID: key, Job: j.Name, Kind: anomaly.Overdue, Count: int(now.Sub(last).Hours() / 24),
 			Detail: fmt.Sprintf("has not run since %s, though its schedule is %s", last.Format("2006-01-02 15:04"), j.Schedule),
 		})
 		r.noted(ctx, stored, change)
@@ -275,8 +279,8 @@ func (r *Runner) overdue(ctx context.Context, now time.Time) {
 func (r *Runner) Findings(ctx context.Context) (open, closed []anomaly.Finding) {
 	r.overdue(ctx, time.Now())
 	cfg := r.config()
-	open, closed = r.anomalies.List(func(name string) bool {
-		_, ok := cfg.Find(name)
+	open, closed = r.anomalies.List(func(key string) bool {
+		_, ok := cfg.Find(key)
 		return ok
 	})
 	if cfg.Anomalies.Off {
@@ -292,8 +296,8 @@ func (r *Runner) Finding(id string) (anomaly.Finding, bool) { return r.anomalies
 
 // Held reports whether a brake holds this job, and since when its finding was
 // last confirmed.
-func (r *Runner) Held(name string) (time.Time, bool) {
-	f, ok := r.anomalies.Holding(name)
+func (r *Runner) Held(ref string) (time.Time, bool) {
+	f, ok := r.anomalies.Holding(r.keyOf(ref))
 	return f.Seen, ok
 }
 
@@ -310,8 +314,8 @@ func (r *Runner) Approve(ctx context.Context, id string) (history.Run, error) {
 	if err != nil {
 		return history.Run{}, err
 	}
-	how := decided{approved: marks, keepOne: true, passed: func() { r.settle(f.Job, anomaly.Ran, brakes...) }}
-	return r.runAnswering(ctx, f.Job, false, answer{outcome: anomaly.Ran, kinds: brakes},
+	how := decided{approved: marks, keepOne: true, passed: func() { r.settle(f.JobID, anomaly.Ran, brakes...) }}
+	return r.runAnswering(ctx, f.JobID, false, answer{outcome: anomaly.Ran, kinds: brakes},
 		func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 			return r.executeAs(ctx, j, nil, nil, nil, how, live)
 		})
@@ -326,8 +330,8 @@ func (r *Runner) TakeBack(ctx context.Context, id string) (history.Run, error) {
 	if !ok || !f.Held {
 		return history.Run{}, anomaly.ErrUnknown
 	}
-	how := decided{back: plan.Brake(f.Kind), keepOne: true, passed: func() { r.settle(f.Job, anomaly.TakenBack, f.Kind) }}
-	return r.runAnswering(ctx, f.Job, false, answer{outcome: anomaly.TakenBack, kinds: []anomaly.Kind{f.Kind}},
+	how := decided{back: plan.Brake(f.Kind), keepOne: true, passed: func() { r.settle(f.JobID, anomaly.TakenBack, f.Kind) }}
+	return r.runAnswering(ctx, f.JobID, false, answer{outcome: anomaly.TakenBack, kinds: []anomaly.Kind{f.Kind}},
 		func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 			return r.executeAs(ctx, j, nil, nil, nil, how, live)
 		})
@@ -342,6 +346,6 @@ func (r *Runner) Acknowledge(id string) error {
 	if err := r.anomalies.Acknowledge(id); err != nil {
 		return err
 	}
-	r.publish(Event{Job: f.Job, Phase: "anomaly"})
+	r.publish(Event{Job: f.Job, JobID: f.JobID, Phase: "anomaly"})
 	return nil
 }

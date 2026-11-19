@@ -33,6 +33,7 @@ type TrayLive struct {
 
 // activity is how far one job has got, as the tooltip tells it.
 type activity struct {
+	job   string
 	done  int
 	total int
 }
@@ -103,11 +104,11 @@ func (l *TrayLive) tooltip() string {
 			return "ArrowLoop - " + l.last.job + ": " + l.words.Done
 		}
 	case 1:
-		for job, a := range l.working {
+		for _, a := range l.working {
 			if a.total > 0 {
-				return fmt.Sprintf("ArrowLoop - %s: %d/%d", job, a.done, a.total)
+				return fmt.Sprintf("ArrowLoop - %s: %d/%d", a.job, a.done, a.total)
 			}
-			return "ArrowLoop - " + job
+			return "ArrowLoop - " + a.job
 		}
 	}
 	// Several jobs get a count, since a tooltip is one line.
@@ -152,11 +153,11 @@ func (l *TrayLive) Watch(ctx context.Context, runner *daemon.Runner) {
 func (l *TrayLive) follow(ev daemon.Event) {
 	switch ev.Phase {
 	case "started":
-		l.working[ev.Job] = activity{}
+		l.working[ev.Key()] = activity{job: ev.Job}
 	case "progress":
-		l.working[ev.Job] = activity{done: ev.Done, total: ev.Total}
+		l.working[ev.Key()] = activity{job: ev.Job, done: ev.Done, total: ev.Total}
 	case "finished":
-		delete(l.working, ev.Job)
+		delete(l.working, ev.Key())
 		// A failure outranks a success that arrives after it while other
 		// jobs are still running. A job a brake holds has not failed: its
 		// finding is told on its own.

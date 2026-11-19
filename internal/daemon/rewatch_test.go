@@ -215,8 +215,9 @@ func TestAFolderMadeAgainBetweenTwoTicksIsWatchedAgain(t *testing.T) {
 	mkdir(t, f.right)
 	// The old watch learns of its end from its own goroutine, which a real
 	// tick a minute later always finds done.
+	x := f.r.keyOf("x")
 	f.r.mu.Lock()
-	old := f.r.watchers["x"].w
+	old := f.r.watchers[x].w
 	f.r.mu.Unlock()
 	for !old.Lost() {
 		if time.Now().After(deadline) {

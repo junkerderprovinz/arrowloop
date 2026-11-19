@@ -20,16 +20,19 @@ import (
 // touch.
 var ErrOneWay = errors.New("this job only writes one way, so it has no conflicts to decide")
 
-// Conflict is an open conflict with the job it belongs to.
+// Conflict is an open conflict with the job it belongs to, by its name and
+// its id.
 type Conflict struct {
-	Job string
+	Job   string
+	JobID string
 	apply.Open
 }
 
 // Unread is a job whose conflicts could not be read, and why.
 type Unread struct {
-	Job string
-	Err error
+	Job   string
+	JobID string
+	Err   error
 }
 
 // conflictWait bounds reading one job's conflicts, since rclone waits minutes
@@ -42,8 +45,10 @@ var conflictWait = time.Minute
 // The jobs are read at once, since each can wait on a remote.
 func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unread) {
 	var jobs []job.Job
-	for _, j := range r.config().Jobs {
-		if only != "" && j.Name != only {
+	cfg := r.config()
+	asked, _ := cfg.Find(only)
+	for _, j := range cfg.Jobs {
+		if only != "" && j.Key() != asked.Key() {
 			continue
 		}
 		if j.Left == "" || j.Right == "" || plan.ParseDirection(j.Direction) != plan.Both {
@@ -71,11 +76,11 @@ func (r *Runner) Conflicts(ctx context.Context, only string) ([]Conflict, []Unre
 	var unread []Unread
 	for i, j := range jobs {
 		if errs[i] != nil {
-			unread = append(unread, Unread{Job: j.Name, Err: errs[i]})
+			unread = append(unread, Unread{Job: j.Name, JobID: j.Key(), Err: errs[i]})
 			continue
 		}
 		for _, o := range opens[i] {
-			out = append(out, Conflict{Job: j.Name, Open: o})
+			out = append(out, Conflict{Job: j.Name, JobID: j.Key(), Open: o})
 		}
 	}
 	sort.Slice(out, func(a, b int) bool {
@@ -110,7 +115,7 @@ func (r *Runner) conflictsOf(ctx context.Context, j job.Job) ([]apply.Open, erro
 // the job, so it cannot overlap another run and lands in the history.
 func (r *Runner) Decide(ctx context.Context, name string, decisions []apply.Decision) (history.Run, error) {
 	if j, ok := r.config().Find(name); ok && plan.ParseDirection(j.Direction) != plan.Both {
-		return history.Run{}, fmt.Errorf("%w: %s", ErrOneWay, name)
+		return history.Run{}, fmt.Errorf("%w: %s", ErrOneWay, j.Name)
 	}
 	return r.runAs(ctx, name, false, func(ctx context.Context, j job.Job, live *history.Live) (apply.Result, *plan.Plan, error) {
 		res, err := r.decide(ctx, j, decisions, live)
@@ -132,5 +137,5 @@ func (r *Runner) decide(ctx context.Context, j job.Job, decisions []apply.Decisi
 	defer ends.Close(context.WithoutCancel(ctx))
 	defer db.Close()
 	r.log("%s: deciding %d conflicts as chosen", j.Name, len(decisions))
-	return engine.Decide(ctx, ends, db, decisions, opt, progressFor{runner: r, job: j.Name, live: live})
+	return engine.Decide(ctx, ends, db, decisions, opt, progressFor{runner: r, job: j, live: live})
 }

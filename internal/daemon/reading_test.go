@@ -3,15 +3,16 @@ package daemon
 import (
 	"testing"
 
+	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
 func TestReadingSendsEachNewStageAndThinsOutTheCounts(t *testing.T) {
-	r := &Runner{}
+	r := &Runner{cfg: &job.Config{}}
 	events, stop := r.Subscribe()
 	defer stop()
 
-	w := &readingFor{runner: r, job: "music"}
+	w := &readingFor{runner: r, job: job.Job{Name: "music"}}
 	for i := range 1000 {
 		w.report(scan.Reading{Stage: scan.StageList, Side: "left", Done: i, Total: 900, Guess: true})
 	}

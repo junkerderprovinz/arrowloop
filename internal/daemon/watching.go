@@ -150,7 +150,7 @@ func (w *watched) look(seen []spot) (gone, back []spot) {
 // this one replaces, so the log does not repeat what it said about it. The
 // watcher lives as long as round; the runs it starts live under ctx.
 func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watched, now time.Time) {
-	name := j.Name
+	key, name := j.Key(), j.Name
 	sides := localSides(j)
 	if len(sides) == 0 {
 		r.log("%s asks to be watched but has no local side; the schedule alone will have to do", name)
@@ -167,7 +167,7 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watch
 		}
 	}
 	if len(roots) == 0 {
-		r.setWatcher(name, next)
+		r.setWatcher(key, next)
 		return
 	}
 	opt, err := j.Options()
@@ -183,7 +183,7 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watch
 		Cooldown: 5 * time.Second,
 		Log:      func(format string, args ...any) { r.log(name+": "+format, args...) },
 	}, func() {
-		rec, err := r.RunAutomatically(ctx, name)
+		rec, err := r.RunAutomatically(ctx, key)
 		switch {
 		case errors.Is(err, ErrAlreadyRunning):
 			// The change arrived while the job was already working on it.
@@ -205,7 +205,7 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watch
 		if prev == nil || prev.failed != next.failed {
 			r.log("%s: could not start watching, trying again later: %v", name, err)
 		}
-		r.setWatcher(name, next)
+		r.setWatcher(key, next)
 		return
 	}
 
@@ -213,7 +213,7 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watch
 	// replace it.
 	live, stop := context.WithCancel(round)
 	next.w, next.stop = w, stop
-	r.setWatcher(name, next)
+	r.setWatcher(key, next)
 
 	r.log("%s: watching %d folder(s) across %d local side(s)", name, w.Watching(), len(roots))
 	go func() {
@@ -224,13 +224,13 @@ func (r *Runner) startWatcher(ctx, round context.Context, j job.Job, prev *watch
 	}()
 }
 
-func (r *Runner) setWatcher(name string, w *watched) {
+func (r *Runner) setWatcher(key string, w *watched) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if r.watchers == nil {
 		r.watchers = map[string]*watched{}
 	}
-	r.watchers[name] = w
+	r.watchers[key] = w
 }
 
 // rewatch is the minute tick's look at the watchers: a side that went away is
@@ -238,26 +238,27 @@ func (r *Runner) setWatcher(name string, w *watched) {
 // that would not start is tried again when its wait is over.
 func (r *Runner) rewatch(ctx, round context.Context, now time.Time) {
 	r.mu.Lock()
-	names := make([]string, 0, len(r.watchers))
-	for name := range r.watchers {
-		names = append(names, name)
+	keys := make([]string, 0, len(r.watchers))
+	for key := range r.watchers {
+		keys = append(keys, key)
 	}
 	r.mu.Unlock()
-	sort.Strings(names)
+	sort.Strings(keys)
 
-	for _, name := range names {
+	for _, key := range keys {
 		if round.Err() != nil {
 			return
 		}
 		cfg := r.config()
-		j, ok := cfg.Find(name)
+		j, ok := cfg.Find(key)
 		if !ok || !cfg.RunsOnItsOwn(j) || !j.Watch {
 			continue
 		}
+		name := j.Name
 		seen := localSides(j)
 
 		r.mu.Lock()
-		old := r.watchers[name]
+		old := r.watchers[key]
 		var gone, back []spot
 		due, lost := false, false
 		if old != nil {
@@ -272,7 +273,7 @@ func (r *Runner) rewatch(ctx, round context.Context, now time.Time) {
 		}
 		again := due || lost || len(back) > 0
 		if again {
-			delete(r.watchers, name)
+			delete(r.watchers, key)
 		}
 		r.mu.Unlock()
 
@@ -301,9 +302,9 @@ func (r *Runner) rewatch(ctx, round context.Context, now time.Time) {
 
 // muteWatcher stops a job's own writes coming back as a change that runs the
 // job again.
-func (r *Runner) muteWatcher(name string) {
+func (r *Runner) muteWatcher(key string) {
 	r.mu.Lock()
-	w := r.watchers[name]
+	w := r.watchers[key]
 	r.mu.Unlock()
 	if w != nil && w.w != nil {
 		w.w.Mute()

@@ -4,6 +4,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
 func TestTheCounterEmptiesWhenItIsRead(t *testing.T) {
@@ -89,7 +91,7 @@ func TestTheCounterSurvivesEveryWorkerAtOnce(t *testing.T) {
 
 func TestAProgressWatcherWithoutACounterStillWorks(t *testing.T) {
 	// Built directly, since New wants a configuration on disk.
-	watcher := progressFor{runner: &Runner{}, job: "Fotos"}
+	watcher := progressFor{runner: &Runner{cfg: &job.Config{}}, job: job.Job{Name: "Fotos"}}
 	watcher.Starting(3)
 	watcher.Did("copy", "a.jpg", "right", "", 1, 3)
 }

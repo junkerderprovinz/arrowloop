@@ -29,7 +29,7 @@ func statusServer(t *testing.T, mounts func() (hostpath.Table, error)) (http.Han
 	base := time.Now().Add(-time.Hour)
 	for i, skipped := range []int{0, 2} {
 		at := base.Add(time.Duration(i) * time.Minute)
-		if err := h.history.Record(ctx, history.Run{Job: "photos", Started: at, Finished: at.Add(time.Second), Copied: 1, Skipped: skipped}, nil); err != nil {
+		if err := h.history.Record(ctx, history.Run{JobID: jobID(t, h, "photos"), Job: "photos", Started: at, Finished: at.Add(time.Second), Copied: 1, Skipped: skipped}, nil); err != nil {
 			t.Fatal(err)
 		}
 	}

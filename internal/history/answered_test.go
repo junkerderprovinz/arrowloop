@@ -25,8 +25,8 @@ func TestAnsweredRunsAreLeftOutOfTheUsualOnes(t *testing.T) {
 	old := time.Date(2026, 3, 1, 9, 0, 0, 0, time.Local)
 	for _, q := range []string{
 		`ALTER TABLE runs DROP COLUMN answered`,
-		`INSERT INTO runs (job, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err)
-		 VALUES ('test', ?, ?, 3, 0, 0, 0, 0, 0, 0, 0, '')`,
+		`INSERT INTO runs (job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err)
+		 VALUES ('test', 'test', ?, ?, 3, 0, 0, 0, 0, 0, 0, 0, '')`,
 	} {
 		if _, err := raw.ExecContext(ctx, q, old.UnixNano(), old.Add(time.Minute).UnixNano()); err != nil {
 			t.Fatalf("%s: %v", q, err)

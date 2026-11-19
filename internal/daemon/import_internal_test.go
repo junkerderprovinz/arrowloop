@@ -43,13 +43,14 @@ func TestAnImportWaitsUntilNoJobRuns(t *testing.T) {
 	raw, _ := io.ReadAll(backup)
 	backup.Close()
 
-	if !r.claim("photos", func() {}) {
+	photos := cfg.Jobs[0].Key()
+	if !r.claim(photos, func() {}) {
 		t.Fatal("photos was already claimed")
 	}
 	if err := r.Import(context.Background(), bytes.NewReader(raw), n, "the vault"); !errors.Is(err, ErrBusy) {
 		t.Fatalf("an import while photos runs: %v, want ErrBusy", err)
 	}
-	r.release("photos")
+	r.release(photos)
 	if err := r.Import(context.Background(), bytes.NewReader(raw), n, "the vault"); err != nil {
 		t.Fatalf("an import once photos is done: %v", err)
 	}
