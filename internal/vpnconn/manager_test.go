@@ -3,6 +3,7 @@ package vpnconn
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"net"
@@ -18,6 +19,7 @@ import (
 
 	"github.com/rclone/rclone/fs/fshttp"
 
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/vpn"
 	"github.com/junkerderprovinz/arrowloop/internal/vpn/vpntest"
 )
@@ -49,15 +51,31 @@ func newManager(t *testing.T, tune ...func(*Options)) *Manager {
 	return m
 }
 
-// withOwnConfig is a manager whose own WireGuard config reaches srv.
+// withOwnConfig is a manager with one tunnel, an own WireGuard config that
+// reaches srv, under the id Custom.
 func withOwnConfig(t *testing.T, srv *vpntest.Server, tune ...func(*Options)) *Manager {
 	t.Helper()
 	m := newManager(t, tune...)
-	if _, err := m.Save(Custom, map[string]string{"config": srv.Config()}); err != nil {
+	if _, _, err := m.Add(Custom, map[string]string{"config": srv.Config()}); err != nil {
 		t.Fatal(err)
 	}
 	return m
 }
+
+// tunnelState is the state of tunnel id, or a failure of the test.
+func tunnelState(t *testing.T, m *Manager, id string) TunnelState {
+	t.Helper()
+	for _, ts := range m.State().Tunnels {
+		if ts.ID == id {
+			return ts
+		}
+	}
+	t.Fatalf("no tunnel %q", id)
+	return TunnelState{}
+}
+
+// tunOf is the WireGuard tunnel of id, up or not.
+func tunOf(m *Manager, id string) *vpn.Tunnel { return m.wire(id).tun }
 
 func ctxFor(t *testing.T) context.Context {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
@@ -90,15 +108,15 @@ func fetch(t *testing.T, proxy, address string) (string, error) {
 func TestARunReachesWhatOnlyTheTunnelReaches(t *testing.T) {
 	srv := vpntest.Start(t, insideOnly)
 	m := withOwnConfig(t, srv)
-	if st := m.State(); st.Status != Down || st.Provider != Custom {
+	if st := tunnelState(t, m, Custom); st.Status != Down || st.Provider != Custom {
 		t.Fatalf("before any run: %s, provider %q", st.Status, st.Provider)
 	}
 
-	lease, err := m.Acquire(ctxFor(t), "photos")
+	lease, err := m.Acquire(ctxFor(t), Custom, "photos")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if st := m.State(); st.Status != Connected || len(st.Jobs) != 1 || st.Jobs[0] != "photos" {
+	if st := tunnelState(t, m, Custom); st.Status != Connected || len(st.Jobs) != 1 || st.Jobs[0] != "photos" {
 		t.Errorf("during the run: %s, jobs %v", st.Status, st.Jobs)
 	}
 	got, err := fetch(t, lease.Proxy(), "http://10.2.0.1/report")
@@ -118,10 +136,10 @@ func TestARunReachesWhatOnlyTheTunnelReaches(t *testing.T) {
 	}
 
 	lease.Release()
-	if st := m.State(); st.Status != Down || len(st.Jobs) != 0 {
+	if st := tunnelState(t, m, Custom); st.Status != Down || len(st.Jobs) != 0 {
 		t.Errorf("after the run: %s, jobs %v", st.Status, st.Jobs)
 	}
-	if ts := m.tun.State(); ts.Status != vpn.Disconnected {
+	if ts := tunOf(m, Custom).State(); ts.Status != vpn.Disconnected {
 		t.Errorf("the tunnel is %s with no run left", ts.Status)
 	}
 	if _, err := fetch(t, lease.Proxy(), "http://10.2.0.1/late"); err == nil {
@@ -132,11 +150,11 @@ func TestARunReachesWhatOnlyTheTunnelReaches(t *testing.T) {
 func TestTheTunnelStaysUpUntilTheLastRunLetsGo(t *testing.T) {
 	srv := vpntest.Start(t, insideOnly)
 	m := withOwnConfig(t, srv)
-	photos, err := m.Acquire(ctxFor(t), "photos")
+	photos, err := m.Acquire(ctxFor(t), Custom, "photos")
 	if err != nil {
 		t.Fatal(err)
 	}
-	music, err := m.Acquire(ctxFor(t), "music")
+	music, err := m.Acquire(ctxFor(t), Custom, "music")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -145,18 +163,18 @@ func TestTheTunnelStaysUpUntilTheLastRunLetsGo(t *testing.T) {
 	}
 	photos.Release()
 	photos.Release()
-	if st := m.State(); st.Status != Connected || strings.Join(st.Jobs, ",") != "music" {
+	if st := tunnelState(t, m, Custom); st.Status != Connected || strings.Join(st.Jobs, ",") != "music" {
 		t.Fatalf("with one run left: %s, jobs %v", st.Status, st.Jobs)
 	}
 	if got, err := fetch(t, music.Proxy(), "http://10.2.0.1/still"); err != nil || got != "inside /still" {
 		t.Errorf("the remaining run lost its tunnel: %q, %v", got, err)
 	}
 	music.Release()
-	if st := m.State(); st.Status != Down {
+	if st := tunnelState(t, m, Custom); st.Status != Down {
 		t.Errorf("after both runs: %s", st.Status)
 	}
 
-	again, err := m.Acquire(ctxFor(t), "photos")
+	again, err := m.Acquire(ctxFor(t), Custom, "photos")
 	if err != nil {
 		t.Fatalf("the next run cannot bring the tunnel up again: %v", err)
 	}
@@ -171,15 +189,15 @@ func TestATunnelThatDoesNotComeUpFailsTheRun(t *testing.T) {
 	m := withOwnConfig(t, srv, func(o *Options) { o.ConnectTimeout = 700 * time.Millisecond })
 	srv.Close()
 
-	_, err := m.Acquire(ctxFor(t), "photos")
+	_, err := m.Acquire(ctxFor(t), Custom, "photos")
 	if err == nil || !strings.Contains(err.Error(), "no handshake") {
 		t.Fatalf("acquire = %v, want no handshake", err)
 	}
-	st := m.State()
+	st := tunnelState(t, m, Custom)
 	if st.Status != Failed || st.ErrorCode != CodeTimeout || len(st.Jobs) != 0 {
 		t.Errorf("state %s %q, jobs %v", st.Status, st.ErrorCode, st.Jobs)
 	}
-	if ts := m.tun.State(); ts.Status != vpn.Disconnected {
+	if ts := tunOf(m, Custom).State(); ts.Status != vpn.Disconnected {
 		t.Errorf("the tunnel is left %s", ts.Status)
 	}
 }
@@ -192,29 +210,124 @@ func TestAnEndpointWhoseNameDoesNotResolveSaysSo(t *testing.T) {
 		}
 	})
 	conf := strings.Replace(srv.Config(), "Endpoint = 127.0.0.1:", "Endpoint = vpn.example.net:", 1)
-	if _, err := m.Save(Custom, map[string]string{"config": conf}); err != nil {
+	if _, _, err := m.Add(Custom, map[string]string{"config": conf}); err != nil {
 		t.Fatal(err)
 	}
 
-	if _, err := m.Acquire(ctxFor(t), "photos"); err == nil {
+	if _, err := m.Acquire(ctxFor(t), Custom, "photos"); err == nil {
 		t.Fatal("a run came up on an endpoint that does not resolve")
 	}
-	if st := m.State(); st.Status != Failed || st.ErrorCode != CodeNameUnresolved {
+	if st := tunnelState(t, m, Custom); st.Status != Failed || st.ErrorCode != CodeNameUnresolved {
 		t.Errorf("state %s %q, want %q", st.Status, st.ErrorCode, CodeNameUnresolved)
 	}
 }
 
-func TestARunWithoutAVPNSetUpIsRefused(t *testing.T) {
+func TestARunThroughATunnelThatIsNotSetUpIsRefused(t *testing.T) {
 	m := newManager(t)
-	if _, err := m.Acquire(ctxFor(t), "photos"); !errors.Is(err, ErrNotSetUp) {
+	if _, err := m.Acquire(ctxFor(t), Custom, "photos"); !errors.Is(err, ErrNotSetUp) {
 		t.Errorf("acquire = %v, want ErrNotSetUp", err)
+	}
+}
+
+func TestTwoTunnelsKeepTheirRunsApart(t *testing.T) {
+	home := vpntest.Start(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "home") }))
+	office := vpntest.Start(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "office") }))
+	m := newManager(t)
+	first, _, err := m.Add(Custom, map[string]string{"config": home.Config()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, _, err := m.Add(Custom, map[string]string{"config": office.Config()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first != Custom || second != Custom+"-2" {
+		t.Fatalf("tunnels %q and %q", first, second)
+	}
+
+	photos, err := m.Acquire(ctxFor(t), first, "photos")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer photos.Release()
+	music, err := m.Acquire(ctxFor(t), second, "music")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer music.Release()
+	if got, err := fetch(t, photos.Proxy(), "http://10.2.0.1/"); err != nil || got != "home" {
+		t.Errorf("photos reached %q, %v", got, err)
+	}
+	if got, err := fetch(t, music.Proxy(), "http://10.2.0.1/"); err != nil || got != "office" {
+		t.Errorf("music reached %q, %v", got, err)
+	}
+	if st := tunnelState(t, m, first); strings.Join(st.Jobs, ",") != "photos" {
+		t.Errorf("%s carries %v", first, st.Jobs)
+	}
+	if st := tunnelState(t, m, second); strings.Join(st.Jobs, ",") != "music" {
+		t.Errorf("%s carries %v", second, st.Jobs)
+	}
+
+	music.Release()
+	if got, err := fetch(t, photos.Proxy(), "http://10.2.0.1/"); err != nil || got != "home" {
+		t.Errorf("the other tunnel going down took photos' with it: %q, %v", got, err)
+	}
+}
+
+func TestTheSingleVPNOfAnOlderFileBecomesTunnels(t *testing.T) {
+	srv := vpntest.Start(t, insideOnly)
+	dir := t.TempDir()
+	key := bytes.Repeat([]byte{7}, 32)
+	seal := func(login Login) string {
+		b, _ := json.Marshal(login)
+		sealed, err := security.Seal(key, string(b))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return sealed
+	}
+	older, _ := json.Marshal(map[string]any{
+		"provider": Custom,
+		"logins": map[string]string{
+			"mullvad": seal(Login{"accountNumber": "1234123412341234", "location": "se-got"}),
+			Custom:    seal(Login{"config": srv.Config()}),
+		},
+	})
+	if err := os.WriteFile(filepath.Join(dir, FileName), older, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	m := newManager(t, func(o *Options) { o.Dir, o.Key = dir, key })
+	var got []string
+	for _, ts := range m.State().Tunnels {
+		got = append(got, ts.ID+" "+ts.Provider+" "+ts.Place)
+	}
+	if want := []string{"custom custom 127.0.0.1", "mullvad mullvad se-got"}; strings.Join(got, ",") != strings.Join(want, ",") {
+		t.Errorf("tunnels %q, want %q", got, want)
+	}
+	if m.Former() != Custom {
+		t.Errorf("former %q, want the provider that was in use", m.Former())
+	}
+	lease, err := m.Acquire(ctxFor(t), m.Former(), "photos")
+	if err != nil {
+		t.Fatalf("the tunnel that was in use does not come up: %v", err)
+	}
+	lease.Release()
+
+	raw, _ := os.ReadFile(filepath.Join(dir, FileName))
+	if bytes.Contains(raw, []byte(`"logins"`)) || !bytes.Contains(raw, []byte(`"tunnels"`)) {
+		t.Errorf("%s is not written as tunnels:\n%s", FileName, raw)
+	}
+	again := newManager(t, func(o *Options) { o.Dir, o.Key = dir, key })
+	if len(again.State().Tunnels) != 2 || again.Former() != Custom {
+		t.Errorf("after a restart: %d tunnels, former %q", len(again.State().Tunnels), again.Former())
 	}
 }
 
 func TestTheProxyCarriesNothingPastTheTunnel(t *testing.T) {
 	srv := vpntest.Start(t, insideOnly)
 	m := withOwnConfig(t, srv)
-	lease, err := m.Acquire(ctxFor(t), "photos")
+	lease, err := m.Acquire(ctxFor(t), Custom, "photos")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -236,7 +349,7 @@ func TestTheProxyCarriesNothingPastTheTunnel(t *testing.T) {
 	// With the tunnel gone in the middle of the run, connections wait for it
 	// and then fail.
 	srv.Close()
-	m.tun.Disconnect()
+	tunOf(m, Custom).Disconnect()
 	if _, err := fetch(t, lease.Proxy(), "http://10.2.0.1/down"); err == nil {
 		t.Error("a request went through with the tunnel down")
 	}
@@ -245,7 +358,7 @@ func TestTheProxyCarriesNothingPastTheTunnel(t *testing.T) {
 func TestTheProxyTakesOnlyItsOwnRuns(t *testing.T) {
 	srv := vpntest.Start(t, insideOnly)
 	m := withOwnConfig(t, srv)
-	lease, err := m.Acquire(ctxFor(t), "photos")
+	lease, err := m.Acquire(ctxFor(t), Custom, "photos")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -270,11 +383,11 @@ func TestAStoppedRunLetsGoOfATunnelStillComingUp(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 		cancel()
 	}()
-	if _, err := m.Acquire(ctx, "photos"); !errors.Is(err, context.Canceled) {
+	if _, err := m.Acquire(ctx, Custom, "photos"); !errors.Is(err, context.Canceled) {
 		t.Fatalf("acquire = %v, want the stop", err)
 	}
 	deadline := time.Now().Add(3 * time.Second)
-	for m.tun.State().Status != vpn.Disconnected {
+	for tunOf(m, Custom).State().Status != vpn.Disconnected {
 		if time.Now().After(deadline) {
 			t.Fatal("the tunnel of a stopped run stays")
 		}
@@ -296,19 +409,12 @@ func TestALoginIsSealedAndNeverShown(t *testing.T) {
 	if info, _ := os.Stat(filepath.Join(m.opts.Dir, FileName)); info != nil && info.Mode().Perm()&0o077 != 0 && os.PathSeparator == '/' {
 		t.Errorf("%s is readable by others: %v", FileName, info.Mode())
 	}
-	st := m.State()
-	for _, p := range st.Providers {
-		if p.ID == Custom && !p.Configured {
-			t.Error("the own config does not show as saved")
-		}
-	}
-
 	reopened, err := New(m.opts)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer reopened.Close()
-	lease, err := reopened.Acquire(ctxFor(t), "photos")
+	lease, err := reopened.Acquire(ctxFor(t), Custom, "photos")
 	if err != nil {
 		t.Fatalf("the sealed login does not open after a restart: %v", err)
 	}
@@ -321,7 +427,7 @@ func TestALoginIsSealedAndNeverShown(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer wrong.Close()
-	if _, err := wrong.Acquire(ctxFor(t), "photos"); err == nil {
+	if _, err := wrong.Acquire(ctxFor(t), Custom, "photos"); err == nil {
 		t.Error("a login sealed under another key connected")
 	}
 }
@@ -329,34 +435,50 @@ func TestALoginIsSealedAndNeverShown(t *testing.T) {
 func TestSavingRefusesWhatCannotConnect(t *testing.T) {
 	m := newManager(t)
 	var ref *Refusal
-	if _, err := m.Save(Custom, map[string]string{"config": "[Interface]\nPrivateKey = nope\n"}); !errors.As(err, &ref) || ref.Code != CodeConfigInvalid || ref.Field != "config" {
+	if _, _, err := m.Add(Custom, map[string]string{"config": "[Interface]\nPrivateKey = nope\n"}); !errors.As(err, &ref) || ref.Code != CodeConfigInvalid || ref.Field != "config" {
 		t.Errorf("a broken config = %v", err)
 	}
-	if _, err := m.Save(Custom, map[string]string{}); !errors.As(err, &ref) || ref.Code != "vpn-field-missing" {
+	if _, _, err := m.Add(Custom, map[string]string{}); !errors.As(err, &ref) || ref.Code != "vpn-field-missing" {
 		t.Errorf("no config = %v", err)
 	}
-	if _, err := m.Save("nordvpn", map[string]string{"password": "x"}); !errors.As(err, &ref) || ref.Code != "vpn-field-unknown" {
+	if _, _, err := m.Add("nordvpn", map[string]string{"password": "x"}); !errors.As(err, &ref) || ref.Code != "vpn-field-unknown" {
 		t.Errorf("a field the provider has none of = %v", err)
 	}
-	if _, err := m.Save("elsewhere", nil); !errors.As(err, &ref) || ref.Status != http.StatusNotFound {
+	if _, _, err := m.Add("elsewhere", nil); !errors.As(err, &ref) || ref.Status != http.StatusNotFound {
 		t.Errorf("an unknown provider = %v", err)
 	}
-	if st := m.State(); st.Provider != "" {
-		t.Errorf("a refused save chose %q", st.Provider)
+	if _, err := m.Save("elsewhere", nil); !errors.As(err, &ref) || ref.Status != http.StatusNotFound {
+		t.Errorf("an unknown tunnel = %v", err)
+	}
+	if st := m.State(); len(st.Tunnels) != 0 {
+		t.Errorf("a refused save added %v", st.Tunnels)
 	}
 }
 
-func TestForgettingTheProviderInUseLeavesNoneSetUp(t *testing.T) {
+func TestChangingATunnelsLoginKeepsWhatWasLeftEmpty(t *testing.T) {
+	srv := vpntest.Start(t, insideOnly)
+	m := withOwnConfig(t, srv)
+	if _, err := m.Save(Custom, map[string]string{"config": ""}); err != nil {
+		t.Fatal(err)
+	}
+	lease, err := m.Acquire(ctxFor(t), Custom, "photos")
+	if err != nil {
+		t.Fatalf("the kept config does not connect: %v", err)
+	}
+	lease.Release()
+}
+
+func TestARemovedTunnelIsNotSetUpAnyMore(t *testing.T) {
 	srv := vpntest.Start(t, insideOnly)
 	m := withOwnConfig(t, srv)
 	st, err := m.Forget(Custom)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if st.Provider != "" {
-		t.Errorf("provider %q after forgetting it", st.Provider)
+	if len(st.Tunnels) != 0 {
+		t.Errorf("tunnels %v after removing the only one", st.Tunnels)
 	}
-	if _, err := m.Acquire(ctxFor(t), "photos"); !errors.Is(err, ErrNotSetUp) {
+	if _, err := m.Acquire(ctxFor(t), Custom, "photos"); !errors.Is(err, ErrNotSetUp) {
 		t.Errorf("acquire after forgetting = %v", err)
 	}
 }
@@ -366,11 +488,10 @@ func TestTheTestFindsTheExitAddress(t *testing.T) {
 		io.WriteString(w, "203.0.113.7")
 	}))
 	m := withOwnConfig(t, srv, func(o *Options) { o.ExitIPURL = "http://10.2.0.1/ip" })
-	st, err := m.Test(ctxFor(t))
-	if err != nil {
+	if _, err := m.Test(ctxFor(t), Custom); err != nil {
 		t.Fatal(err)
 	}
-	if st.ExitIP != "203.0.113.7" || st.Status != Down {
+	if st := tunnelState(t, m, Custom); st.ExitIP != "203.0.113.7" || st.Status != Down {
 		t.Errorf("after the test: exit %q, %s", st.ExitIP, st.Status)
 	}
 }

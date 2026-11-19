@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -24,11 +25,41 @@ var ErrNoVPN = errors.New("this job goes through the VPN, and ArrowLoop has no b
 var ErrVPNRefused = errors.New("this job goes through the VPN, but one of its sides cannot")
 
 // SetVPN gives the runner the built-in VPN for the jobs that go through it.
-// Without one, every run of such a job fails with ErrNoVPN.
+// Without one, every run of such a job fails with ErrNoVPN. A job of a file
+// from before there could be several tunnels is written back with the one
+// that was in use then.
 func (r *Runner) SetVPN(m *vpnconn.Manager) {
 	r.mu.Lock()
 	r.vpn = m
 	r.mu.Unlock()
+	if m != nil {
+		r.adoptFormerVPN(m.Former())
+	}
+}
+
+func (r *Runner) adoptFormerVPN(tunnel string) {
+	cfg := r.config()
+	if tunnel == "" || !slices.ContainsFunc(cfg.Jobs, func(j job.Job) bool { return j.VPN == job.FormerVPN }) {
+		return
+	}
+	jobs, err := cfg.JobsAsMaps()
+	if err != nil {
+		r.log("the jobs that go through the VPN keep it as they had it: %v", err)
+		return
+	}
+	for _, j := range jobs {
+		if on, _ := j["vpn"].(bool); on {
+			j["vpn"] = tunnel
+		}
+	}
+	next, err := cfg.SaveJobs(jobs)
+	if err != nil {
+		// ThroughVPN reads the older switch the same way, so nothing is lost
+		// until a later start writes it.
+		r.log("the jobs that go through the VPN keep it as they had it: %v", err)
+		return
+	}
+	r.Reload(next)
 }
 
 // ThroughVPN returns the context a job's connections are made with: for a job
@@ -36,7 +67,7 @@ func (r *Runner) SetVPN(m *vpnconn.Manager) {
 // holds up until done is called. It fails rather than hand back a context
 // whose connections would leave past the tunnel.
 func (r *Runner) ThroughVPN(ctx context.Context, j job.Job) (_ context.Context, done func(), err error) {
-	if !j.VPN {
+	if j.VPN == "" {
 		return ctx, func() {}, nil
 	}
 	r.mu.Lock()
@@ -56,7 +87,11 @@ func (r *Runner) ThroughVPN(ctx context.Context, j job.Job) (_ context.Context, 
 			return nil, nil, fmt.Errorf("%w: the %s side: %w", ErrVPNRefused, side.name, err)
 		}
 	}
-	lease, err := m.Acquire(ctx, j.Name)
+	tunnel := string(j.VPN)
+	if j.VPN == job.FormerVPN {
+		tunnel = m.Former()
+	}
+	lease, err := m.Acquire(ctx, tunnel, j.Name)
 	if err != nil {
 		return nil, nil, fmt.Errorf("%w: %w", ErrVPNDown, err)
 	}

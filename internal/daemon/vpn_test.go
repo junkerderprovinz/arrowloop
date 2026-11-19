@@ -3,6 +3,7 @@ package daemon
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/vpn"
 	"github.com/junkerderprovinz/arrowloop/internal/vpn/vpntest"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
@@ -57,7 +59,7 @@ func newVPNRunner(t *testing.T, tune ...func(*vpnconn.Options)) *vpnSetup {
 
 	opts := vpnconn.Options{
 		Dir:            root,
-		Key:            bytes.Repeat([]byte{3}, 32),
+		Key:            setupKey,
 		Logf:           t.Logf,
 		ConnectTimeout: 5 * time.Second,
 		HoldFor:        time.Second,
@@ -71,7 +73,7 @@ func newVPNRunner(t *testing.T, tune ...func(*vpnconn.Options)) *vpnSetup {
 		t.Fatal(err)
 	}
 	t.Cleanup(m.Close)
-	if _, err := m.Save(vpnconn.Custom, map[string]string{"config": s.srv.Config()}); err != nil {
+	if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": s.srv.Config()}); err != nil {
 		t.Fatal(err)
 	}
 	s.vpn = m
@@ -83,7 +85,7 @@ func newVPNRunner(t *testing.T, tune ...func(*vpnconn.Options)) *vpnSetup {
 	t.Cleanup(func() { hist.Close() })
 	cfg := &job.Config{
 		Jobs: []job.Job{
-			{Name: "through", Left: s.left, Right: insideOnly, State: filepath.Join(root, "through.db"), VPN: true},
+			{Name: "through", Left: s.left, Right: insideOnly, State: filepath.Join(root, "through.db"), VPN: vpnconn.Custom},
 			{Name: "direct", Left: s.left, Right: insideOnly, State: filepath.Join(root, "direct.db")},
 		},
 		ParallelJobs: 2,
@@ -91,6 +93,16 @@ func newVPNRunner(t *testing.T, tune ...func(*vpnconn.Options)) *vpnSetup {
 	s.r = New(cfg, hist, t.Logf)
 	s.r.SetVPN(m)
 	return s
+}
+
+// tunnel is where the setup's tunnel stands.
+func (s *vpnSetup) tunnel(t *testing.T) vpnconn.TunnelState {
+	t.Helper()
+	st := s.vpn.State()
+	if len(st.Tunnels) != 1 {
+		t.Fatalf("%d tunnels", len(st.Tunnels))
+	}
+	return st.Tunnels[0]
 }
 
 // quickConnect keeps a run that dials an address nothing answers from
@@ -112,12 +124,12 @@ func TestAJobThroughTheVPNSyncsWhatOnlyTheTunnelReaches(t *testing.T) {
 	if err != nil || string(got) != "paid" {
 		t.Fatalf("the share holds %q, %v", got, err)
 	}
-	if st := s.vpn.State(); st.Status != vpnconn.Down || len(st.Jobs) != 0 {
+	if st := s.tunnel(t); st.Status != vpnconn.Down || len(st.Jobs) != 0 {
 		t.Errorf("after the run the VPN is %s for %v", st.Status, st.Jobs)
 	}
 }
 
-func TestAJobWithoutTheSwitchStaysOffTheTunnel(t *testing.T) {
+func TestAJobWithoutAVPNStaysOffTheTunnel(t *testing.T) {
 	quickConnect(t)
 	s := newVPNRunner(t)
 	done := make(chan error, 1)
@@ -127,13 +139,13 @@ func TestAJobWithoutTheSwitchStaysOffTheTunnel(t *testing.T) {
 	}()
 	deadline := time.After(time.Minute)
 	for {
-		if st := s.vpn.State(); st.Status != vpnconn.Down {
-			t.Fatalf("a job without the switch brought the VPN %s", st.Status)
+		if st := s.tunnel(t); st.Status != vpnconn.Down {
+			t.Fatalf("a job without a VPN brought the VPN %s", st.Status)
 		}
 		select {
 		case err := <-done:
 			if err == nil {
-				t.Fatal("a job without the switch reached what only the tunnel reaches")
+				t.Fatal("a job without a VPN reached what only the tunnel reaches")
 			}
 			if _, err := os.Stat(filepath.Join(s.shared, "invoice.pdf")); err == nil {
 				t.Error("the file arrived without the tunnel")
@@ -177,7 +189,83 @@ func TestASideTheVPNCannotCarryRefusesTheRun(t *testing.T) {
 	if !errors.Is(err, ErrVPNRefused) || !strings.Contains(err.Error(), "right side") || !strings.Contains(err.Error(), "smb") {
 		t.Fatalf("the run ended with %v", err)
 	}
-	if st := s.vpn.State(); st.Status != vpnconn.Down {
+	if st := s.tunnel(t); st.Status != vpnconn.Down {
 		t.Errorf("a refused run brought the VPN %s", st.Status)
 	}
+}
+
+func TestAJobWhoseTunnelWasRemovedFailsRatherThanGoingDirect(t *testing.T) {
+	s := newVPNRunner(t)
+	if _, err := s.vpn.Forget(vpnconn.Custom); err != nil {
+		t.Fatal(err)
+	}
+	rec, err := s.r.Run(context.Background(), "through")
+	if !errors.Is(err, ErrVPNDown) || !errors.Is(err, vpnconn.ErrNotSetUp) {
+		t.Fatalf("the run ended with %v (%s)", err, rec.Err)
+	}
+	if entries, _ := os.ReadDir(s.shared); len(entries) != 0 {
+		t.Errorf("the share got %d entries", len(entries))
+	}
+}
+
+func TestJobsOfTheSingleVPNMoveToItsTunnel(t *testing.T) {
+	s := newVPNRunner(t)
+	dir := t.TempDir()
+	path := filepath.Join(dir, "arrowloop.json")
+	body := `{"jobs":[
+		{"name":"through","left":` + quote(s.left) + `,"right":` + quote(insideOnly) + `,"state":"through.db","vpn":true},
+		{"name":"direct","left":` + quote(s.left) + `,"right":` + quote(insideOnly) + `,"state":"direct.db"}
+	]}`
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := job.Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if j, _ := cfg.Find("through"); j.VPN != job.FormerVPN {
+		t.Fatalf("the older switch reads as %q", j.VPN)
+	}
+	older, _ := json.Marshal(map[string]any{"provider": vpnconn.Custom, "logins": map[string]string{vpnconn.Custom: sealedLogin(t, s.srv.Config())}})
+	if err := os.WriteFile(filepath.Join(dir, vpnconn.FileName), older, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	m, err := vpnconn.New(vpnconn.Options{Dir: dir, Key: setupKey, Logf: t.Logf, ConnectTimeout: 5 * time.Second})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(m.Close)
+
+	s.r.Reload(cfg)
+	s.r.SetVPN(m)
+	if j, _ := s.r.Config().Find("through"); j.VPN != vpnconn.Custom {
+		t.Errorf("the job goes through %q, want the tunnel that was in use", j.VPN)
+	}
+	if j, _ := s.r.Config().Find("direct"); j.VPN != "" {
+		t.Errorf("a job without the switch goes through %q", j.VPN)
+	}
+	saved, err := job.Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if j, _ := saved.Find("through"); j.VPN != vpnconn.Custom {
+		t.Errorf("the file says %q", j.VPN)
+	}
+}
+
+func quote(s string) string {
+	b, _ := json.Marshal(s)
+	return string(b)
+}
+
+var setupKey = bytes.Repeat([]byte{3}, 32)
+
+func sealedLogin(t *testing.T, config string) string {
+	t.Helper()
+	b, _ := json.Marshal(map[string]string{"config": config})
+	sealed, err := security.Seal(setupKey, string(b))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return sealed
 }

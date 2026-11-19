@@ -332,6 +332,40 @@ func (c *Config) KeepHistoryFor() (time.Duration, bool) {
 	return d, true
 }
 
+// VPNTunnel is the id of a tunnel of the VPN settings. A file from before
+// there could be several says true, which reads as FormerVPN until the engine
+// puts in the tunnel that was in use then.
+type VPNTunnel string
+
+// FormerVPN is the tunnel a job of such a file goes through.
+const FormerVPN VPNTunnel = "true"
+
+// UnmarshalJSON reads an id, and true or false from an older file.
+func (v *VPNTunnel) UnmarshalJSON(data []byte) error {
+	var on bool
+	if err := json.Unmarshal(data, &on); err == nil {
+		*v = ""
+		if on {
+			*v = FormerVPN
+		}
+		return nil
+	}
+	var id string
+	if err := json.Unmarshal(data, &id); err != nil {
+		return fmt.Errorf("vpn: %w", err)
+	}
+	*v = VPNTunnel(id)
+	return nil
+}
+
+// MarshalJSON writes FormerVPN back as the file had it.
+func (v VPNTunnel) MarshalJSON() ([]byte, error) {
+	if v == FormerVPN {
+		return []byte("true"), nil
+	}
+	return json.Marshal(string(v))
+}
+
 // Notify says where messages go: one channel per destination, in the format
 // of the kit's notify package, Shoutrrr's beside the kit's kinds. A file from
 // before the list holds one block per service instead, which is read into
@@ -477,11 +511,11 @@ type Job struct {
 	// job. See Defaults.FoldCase.
 	FoldCase *bool `json:"foldCase,omitempty"`
 
-	// VPN sends every connection the job's runs make through the built-in
-	// VPN set up in the settings, which comes up for the run and goes down
-	// after the last run that needs it. A run whose tunnel does not come up
-	// fails rather than syncing over the machine's own network.
-	VPN bool `json:"vpn,omitempty"`
+	// VPN names the tunnel of the VPN settings every connection the job's
+	// runs make goes through, "" for none. The tunnel comes up for the run
+	// and goes down after the last run that needs it. A run whose tunnel does
+	// not come up fails rather than syncing over the machine's own network.
+	VPN VPNTunnel `json:"vpn,omitempty"`
 
 	// Before and After are shell commands run around every run of the job.
 	// Before failing cancels the run. They can only be written in the file

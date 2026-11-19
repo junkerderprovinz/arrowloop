@@ -380,8 +380,8 @@ type jobView struct {
 	// Recent is the job's last stored runs, newest first, for the strip a job
 	// list draws beside each name.
 	Recent []history.Run `json:"recent"`
-	// VPN says the job's runs go through the built-in VPN.
-	VPN bool `json:"vpn,omitempty"`
+	// VPN is the tunnel of the built-in VPN the job's runs go through.
+	VPN job.VPNTunnel `json:"vpn,omitempty"`
 }
 
 // recentRuns is how many runs a job list shows per job.

@@ -36,21 +36,32 @@ AllowedIPs = 0.0.0.0/0
 Endpoint = 203.0.113.9:51820
 `
 
-func TestTheVPNSettingsNeverShowALogin(t *testing.T) {
-	h := newHarness(t)
-	_, base := withVPN(t, h)
-	body, _ := json.Marshal(map[string]any{"fields": map[string]string{"config": ownConfig}})
-	req, _ := http.NewRequest(http.MethodPut, base+"/api/vpn/custom", bytes.NewReader(body))
-	resp, err := http.DefaultClient.Do(req)
+// addTunnel sets a tunnel of provider up through the API and returns its id.
+func addTunnel(t *testing.T, base, provider string, fields map[string]string) string {
+	t.Helper()
+	body, _ := json.Marshal(map[string]any{"provider": provider, "fields": fields})
+	resp, err := http.Post(base+"/api/vpn", "application/json", bytes.NewReader(body))
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("saving the own config answered %s", resp.Status)
+	defer resp.Body.Close()
+	var out struct {
+		ID    string        `json:"id"`
+		State vpnconn.State `json:"state"`
 	}
+	json.NewDecoder(resp.Body).Decode(&out)
+	if resp.StatusCode != http.StatusOK || out.ID == "" {
+		t.Fatalf("adding a %s tunnel answered %s %+v", provider, resp.Status, out)
+	}
+	return out.ID
+}
 
-	resp, err = http.Get(base + "/api/vpn")
+func TestTheVPNSettingsNeverShowALogin(t *testing.T) {
+	h := newHarness(t)
+	_, base := withVPN(t, h)
+	addTunnel(t, base, vpnconn.Custom, map[string]string{"config": ownConfig})
+
+	resp, err := http.Get(base + "/api/vpn")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,17 +75,56 @@ func TestTheVPNSettingsNeverShowALogin(t *testing.T) {
 	if err := json.Unmarshal(raw.Bytes(), &st); err != nil {
 		t.Fatal(err)
 	}
-	if st.Provider != vpnconn.Custom || st.Status != vpnconn.Down {
-		t.Errorf("provider %q, status %s", st.Provider, st.Status)
+	if len(st.Tunnels) != 1 || st.Tunnels[0].Provider != vpnconn.Custom || st.Tunnels[0].Status != vpnconn.Down || st.Tunnels[0].Place != "203.0.113.9" {
+		t.Errorf("tunnels %+v", st.Tunnels)
+	}
+}
+
+func TestASecondTunnelIsChangedTestedAndRemovedOnItsOwn(t *testing.T) {
+	h := newHarness(t)
+	_, base := withVPN(t, h)
+	first := addTunnel(t, base, vpnconn.Custom, map[string]string{"config": ownConfig})
+	second := addTunnel(t, base, vpnconn.Custom, map[string]string{"config": strings.Replace(ownConfig, "203.0.113.9", "203.0.113.10", 1)})
+	if first == second {
+		t.Fatalf("both tunnels are %q", first)
+	}
+
+	resp, err := http.Post(base+"/api/vpn/"+second+"/test", "application/json", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var tested struct {
+		OK    bool          `json:"ok"`
+		State vpnconn.State `json:"state"`
+	}
+	json.NewDecoder(resp.Body).Decode(&tested)
+	resp.Body.Close()
+	failed := map[string]vpnconn.Status{}
+	for _, ts := range tested.State.Tunnels {
+		failed[ts.ID] = ts.Status
+	}
+	if tested.OK || failed[second] != vpnconn.Failed || failed[first] != vpnconn.Down {
+		t.Errorf("after testing %s: ok %v, %v", second, tested.OK, failed)
+	}
+
+	req, _ := http.NewRequest(http.MethodDelete, base+"/api/vpn/"+first, nil)
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var left vpnconn.State
+	json.NewDecoder(resp.Body).Decode(&left)
+	resp.Body.Close()
+	if len(left.Tunnels) != 1 || left.Tunnels[0].ID != second {
+		t.Errorf("after removing %s: %+v", first, left.Tunnels)
 	}
 }
 
 func TestABrokenConfigIsRefusedWithItsCode(t *testing.T) {
 	h := newHarness(t)
 	_, base := withVPN(t, h)
-	body := `{"fields":{"config":"[Interface]\nPrivateKey = nope\n"}}`
-	req, _ := http.NewRequest(http.MethodPut, base+"/api/vpn/custom", strings.NewReader(body))
-	resp, err := http.DefaultClient.Do(req)
+	body := `{"provider":"custom","fields":{"config":"[Interface]\nPrivateKey = nope\n"}}`
+	resp, err := http.Post(base+"/api/vpn", "application/json", strings.NewReader(body))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -115,9 +165,9 @@ func TestOnlyAnEngineWithAVPNOffersIt(t *testing.T) {
 }
 
 func TestAJobsCheckFailsWhenItsTunnelDoesNotComeUp(t *testing.T) {
-	h := engineFor(t, `{"jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","vpn":true}]}`)
+	h := engineFor(t, `{"jobs":[{"name":"photos","left":"%[1]s/left","right":"%[1]s/right","state":"%[1]s/photos.db","vpn":"custom"}]}`)
 	m, base := withVPN(t, h)
-	if _, err := m.Save(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
+	if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
 		t.Fatal(err)
 	}
 	resp, err := http.Get(base + "/api/jobs/photos/verify")

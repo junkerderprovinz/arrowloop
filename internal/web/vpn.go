@@ -1,8 +1,7 @@
 package web
 
-// The VPN settings: the providers, the one runs go through and where its
-// tunnel stands (internal/vpnconn). A login never comes back to the page, only
-// whether one is stored.
+// The VPN settings: the providers, the tunnels set up with them and where
+// each stands (internal/vpnconn). A login never comes back to the page.
 
 import (
 	"context"
@@ -19,8 +18,24 @@ func (s *Server) vpnRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/vpn", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, s.VPN.State())
 	})
-	// Saving makes the provider the one runs go through. Empty fields keep
-	// what is stored.
+	// Adding sets a new tunnel up with a provider, beside those there are.
+	mux.HandleFunc("POST /api/vpn", func(w http.ResponseWriter, r *http.Request) {
+		var body struct {
+			Provider string            `json:"provider"`
+			Fields   map[string]string `json:"fields"`
+		}
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&body); err != nil {
+			writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+			return
+		}
+		id, st, err := s.VPN.Add(body.Provider, body.Fields)
+		if err != nil {
+			writeVPNError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"id": id, "state": st})
+	})
+	// Saving changes a tunnel's login. Empty fields keep what is stored.
 	mux.HandleFunc("PUT /api/vpn/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var body struct {
 			Fields map[string]string `json:"fields"`
@@ -46,8 +61,8 @@ func (s *Server) vpnRoutes(mux *http.ServeMux) {
 	})
 	// The test brings the tunnel up as a run would and takes it down again.
 	// A tunnel that does not come up is an answer, as a target's check is.
-	mux.HandleFunc("POST /api/vpn/test", func(w http.ResponseWriter, r *http.Request) {
-		st, err := s.VPN.Test(r.Context())
+	mux.HandleFunc("POST /api/vpn/{id}/test", func(w http.ResponseWriter, r *http.Request) {
+		st, err := s.VPN.Test(r.Context(), r.PathValue("id"))
 		out := map[string]any{"ok": err == nil, "state": st}
 		if err != nil {
 			out["reason"] = err.Error()

@@ -187,11 +187,12 @@ func TestMullvadConnectsThroughTheManagerAndForgetFreesTheDevice(t *testing.T) {
 	login := owned(Login{"accountNumber": mullvadAccount}, mullvadAccount)
 	login[keyField], login[deviceField] = srv.ClientKey.String(), "kept"
 	m := newManager(t)
-	if err := m.store.save("mullvad", login); err != nil {
+	id, err := m.store.add("mullvad", "", login)
+	if err != nil {
 		t.Fatal(err)
 	}
 
-	lease, err := m.Acquire(context.Background(), "photos")
+	lease, err := m.Acquire(context.Background(), id, "photos")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -199,7 +200,7 @@ func TestMullvadConnectsThroughTheManagerAndForgetFreesTheDevice(t *testing.T) {
 	if f.added != 0 {
 		t.Errorf("%d devices added while one was kept", f.added)
 	}
-	if _, err := m.Forget("mullvad"); err != nil {
+	if _, err := m.Forget(id); err != nil {
 		t.Fatal(err)
 	}
 	deadline := time.Now().Add(5 * time.Second)
@@ -219,14 +220,15 @@ func TestAFullDeviceListStopsTheConnect(t *testing.T) {
 	f := newFakeMullvad(t)
 	f.max = 0
 	m := newManager(t)
-	if _, err := m.Save("mullvad", map[string]string{"accountNumber": mullvadAccount}); err != nil {
+	id, _, err := m.Add("mullvad", map[string]string{"accountNumber": mullvadAccount})
+	if err != nil {
 		t.Fatal(err)
 	}
-	_, err := m.Acquire(context.Background(), "photos")
+	_, err = m.Acquire(context.Background(), id, "photos")
 	if code := codeOf(err); code != CodeDeviceLimit {
 		t.Errorf("failed with %q: %v", code, err)
 	}
-	if st := m.State(); st.Status != Failed || st.ErrorCode != CodeDeviceLimit {
+	if st := tunnelState(t, m, id); st.Status != Failed || st.ErrorCode != CodeDeviceLimit {
 		t.Errorf("state %s %q", st.Status, st.ErrorCode)
 	}
 }
