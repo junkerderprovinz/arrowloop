@@ -528,7 +528,10 @@ export function VpnChoice({ value, network, onChange }: { value: string; network
     <SubCard title={t('edit.connection')}>
       <div data-new="vpn">
         <SettingRow label={t('edit.vpn')} hint={t('edit.vpnHint')}>
-          <Choice value={value} onChange={onChange} options={options} label={t('edit.vpn')} />
+          {/* The width of the editor's text fields, so a name and its place show in full. */}
+          <span className="grid w-72 max-w-full">
+            <Choice value={value} onChange={onChange} options={options} label={t('edit.vpn')} />
+          </span>
         </SettingRow>
       </div>
       {warning && (
