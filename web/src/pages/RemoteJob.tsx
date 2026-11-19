@@ -135,9 +135,9 @@ function RunOnInstance({ instance, job, onChanged }: { instance: OtherInstance; 
     setBusy(true)
     try {
       if (job.running) {
-        await api.stopOnInstance(instance.id, job.name)
+        await api.stopOnInstance(instance.id, job.id ?? job.name)
       } else {
-        await api.runOnInstance(instance.id, job.name)
+        await api.runOnInstance(instance.id, job.id ?? job.name)
         push(t('instances.started', { job: job.name, name: instance.name }), 'success')
       }
       onChanged()

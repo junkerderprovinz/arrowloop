@@ -27,6 +27,12 @@ describe('jobCopy', () => {
     expect(jobCopy(unsaid, [], 'Kopie', 'x').disabled).toBe(true)
   })
 
+  // The id carries the original's history, which the copy has none of.
+  it('leaves the id behind for the engine to give the copy its own', () => {
+    const copy = jobCopy({ id: 'aaaaaaaaaaaa', name: 'Fotos' }, ['Fotos'], 'Kopie', 'x')
+    expect(copy.id).toBeUndefined()
+  })
+
   it('falls back to the translated name when the original has none', () => {
     const nameless: CopyableJob = {}
     expect(jobCopy(nameless, [], 'Kopie', 'Neuer Auftrag').name).toBe('Neuer Auftrag-Kopie')
