@@ -163,3 +163,16 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: true
           sbom: true
+      # A refused update leaves the old text up, which is no reason to fail a
+      # release whose image is already out. dockerhub-description.yml reports
+      # the same failure loudly.
+      - name: Sync the Docker Hub overview
+        if: ${{ github.event_name == 'push' && vars.DOCKERHUB_USERNAME != '' }}
+        continue-on-error: true
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ vars.DOCKERHUB_USERNAME }}/arrowloop
+          short-description: "Two-way file sync that shows you the plan before it moves anything."
+          readme-filepath: .github/dockerhub/README.md
