@@ -10,7 +10,7 @@ The full notes for each release are in
 
 ## 2.7.7 - 2026-11-19
 
-ArrowLoop in the tray needs a tenth of the memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.
+ArrowLoop in the tray needs far less memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.
 
 ## ⚡ Improved
 
