@@ -3,6 +3,7 @@ package web_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -197,5 +198,96 @@ func TestAJobsCheckFailsWhenItsTunnelDoesNotComeUp(t *testing.T) {
 	json.NewDecoder(resp.Body).Decode(&out)
 	if resp.StatusCode != http.StatusBadGateway || !strings.Contains(out["error"], "the VPN did not come up") {
 		t.Errorf("answered %s %v", resp.Status, out)
+	}
+}
+
+// trashOfVPNJob is a job whose right side only the tunnel would reach, behind
+// an own config whose server answers nobody, so a tunnel that is brought up
+// fails and shows as failed.
+const trashOfVPNJob = `{"jobs":[{"name":"photos","left":"%[1]s/left","right":":webdav,url='http://10.2.0.1/',vendor=other:","state":"%[1]s/photos.db","vpn":"custom"}]}`
+
+func tunnelStatus(t *testing.T, m *vpnconn.Manager) vpnconn.Status {
+	t.Helper()
+	st := m.State()
+	if len(st.Tunnels) != 1 {
+		t.Fatalf("%d tunnels", len(st.Tunnels))
+	}
+	return st.Tunnels[0].Status
+}
+
+func TestTheTrashOfEveryJobLeavesATunnelThatIsDownAlone(t *testing.T) {
+	h := engineFor(t, trashOfVPNJob)
+	m, base := withVPN(t, h)
+	if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range []string{"/api/trash", "/api/trash?job=photos"} {
+		resp, err := http.Get(base + path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var out struct {
+			Sides []struct {
+				Side      string `json:"side"`
+				Error     string `json:"error"`
+				Unchecked bool   `json:"unchecked"`
+			} `json:"sides"`
+		}
+		json.NewDecoder(resp.Body).Decode(&out)
+		resp.Body.Close()
+		got := map[string]string{}
+		for _, s := range out.Sides {
+			got[s.Side] = fmt.Sprintf("unchecked=%v error=%q", s.Unchecked, s.Error)
+		}
+		if got["left"] != `unchecked=false error=""` || got["right"] != `unchecked=true error=""` {
+			t.Errorf("%s: %v", path, got)
+		}
+	}
+	if st := tunnelStatus(t, m); st != vpnconn.Down {
+		t.Errorf("the listing brought the tunnel up: %s", st)
+	}
+}
+
+func TestAJobsOwnTrashBringsItsTunnelUp(t *testing.T) {
+	for _, path := range []string{"/api/jobs/photos/trash/right", "/api/trash?job=photos&connect=1"} {
+		h := engineFor(t, trashOfVPNJob)
+		m, base := withVPN(t, h)
+		if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
+			t.Fatal(err)
+		}
+		resp, err := http.Get(base + path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		if st := tunnelStatus(t, m); st != vpnconn.Failed {
+			t.Errorf("%s left the tunnel %s, want it tried", path, st)
+		}
+	}
+}
+
+func TestTheConflictsOfEveryJobLeaveATunnelThatIsDownAlone(t *testing.T) {
+	h := engineFor(t, trashOfVPNJob)
+	m, base := withVPN(t, h)
+	if _, _, err := m.Add(vpnconn.Custom, map[string]string{"config": ownConfig}); err != nil {
+		t.Fatal(err)
+	}
+	resp, err := http.Get(base + "/api/conflicts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out struct {
+		Unread []struct {
+			Job       string `json:"job"`
+			Unchecked bool   `json:"unchecked"`
+		} `json:"unread"`
+	}
+	json.NewDecoder(resp.Body).Decode(&out)
+	resp.Body.Close()
+	if len(out.Unread) != 1 || out.Unread[0].Job != "photos" || !out.Unread[0].Unchecked {
+		t.Errorf("unread %+v", out.Unread)
+	}
+	if st := tunnelStatus(t, m); st != vpnconn.Down {
+		t.Errorf("the list brought the tunnel up: %s", st)
 	}
 }

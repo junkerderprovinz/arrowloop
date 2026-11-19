@@ -61,7 +61,7 @@ describe('the trash', () => {
   } as TrashSide
 
   it('asks the age in the window of the action that needs it', async () => {
-    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />)
     expect(screen.queryByRole('spinbutton')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Delete old entries' }))
     const window = await screen.findByRole('dialog')
@@ -79,27 +79,27 @@ describe('the trash', () => {
   it('follows the job the address names', () => {
     const { rerender } = render(
       <ToastProvider>
-        <Trash sides={[side, music]} job="docs" onJob={() => undefined} onChanged={() => undefined} />
+        <Trash sides={[side, music]} job="docs" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     expect(screen.queryByText('song.mp3')).toBeNull()
     rerender(
       <ToastProvider>
-        <Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />
+        <Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />
       </ToastProvider>,
     )
     expect(screen.getByText('song.mp3')).toBeTruthy()
   })
 
   it('makes emptying the trash the filled button in the corner', () => {
-    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />)
     const empty = screen.getByRole('button', { name: 'Empty the trash' })
     expect(empty.closest('[data-testid="page-actions"]')).toBeTruthy()
     expect(empty.className.split(' ')).toContain('glim-btn--accent')
   })
 
   it('puts its two actions side by side rather than one in a menu', () => {
-    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />)
     expect(screen.queryByRole('button', { name: 'More' })).toBeNull()
     const prune = screen.getByRole('button', { name: 'Delete old entries' })
     expect(prune.closest('[data-testid="page-actions"]')).toBeTruthy()
@@ -108,7 +108,7 @@ describe('the trash', () => {
 
   it('has no Search button, and names the job a link narrowed it to in a chip that undoes it', () => {
     const onJob = vi.fn()
-    wrap(<Trash sides={[side, music]} job="docs" onJob={onJob} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side, music]} job="docs" onJob={onJob} onChanged={() => undefined} onCheck={() => undefined} />)
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
     expect(screen.getByText('Only docs')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Show every job' }))
@@ -127,7 +127,7 @@ describe('the trash list', () => {
   const paths = () => screen.getAllByText(/^[ab]\.txt$/).map((e) => e.textContent)
 
   it('sorts its entries from the heads', () => {
-    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />)
     expect(paths()).toEqual(['a.txt', 'b.txt'])
     fireEvent.click(screen.getByRole('button', { name: 'Size' }))
     fireEvent.click(screen.getByRole('button', { name: 'Size' }))
@@ -137,7 +137,7 @@ describe('the trash list', () => {
 
   it('has three tiles that pick a side, and filters the job from the head', () => {
     const music = { ...side, job: 'music', side: 'right', entries: [{ ...side.entries[0], path: 'song.mp3', remote: 'song.mp3' }], total: 1 } as TrashSide
-    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side, music]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />)
     const tiles = within(screen.getByRole('group', { name: 'Trash' })).getAllByRole('button')
     expect(tiles.map((b) => b.textContent?.replace(/\d.*$/, '').trim())).toEqual(['All entries', 'Left side', 'Right side'])
     fireEvent.click(screen.getByRole('button', { name: /^Right side/ }))
@@ -153,7 +153,7 @@ describe('the trash list', () => {
   })
 
   it('keeps its answers on the rows and in the corner, with no menu on a right-click', () => {
-    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} />)
+    wrap(<Trash sides={[side]} job="" onJob={() => undefined} onChanged={() => undefined} onCheck={() => undefined} />)
     fireEvent.contextMenu(screen.getByText('b.txt'))
     expect(screen.queryByRole('menu')).toBeNull()
     expect(screen.getAllByRole('button', { name: 'Put this file back' })).toHaveLength(2)

@@ -84,6 +84,17 @@ func (s *Server) throughVPN(ctx context.Context, j job.Job) (context.Context, er
 	return ctx, nil
 }
 
+// joinVPN is the runner's JoinVPN for as long as ctx lasts: it joins the job's
+// tunnel only while a run holds it up, for a look nobody asked for.
+func (s *Server) joinVPN(ctx context.Context, j job.Job) (context.Context, error) {
+	ctx, done, err := s.Runner.JoinVPN(ctx, j)
+	if err != nil {
+		return nil, err
+	}
+	context.AfterFunc(ctx, done)
+	return ctx, nil
+}
+
 func writeVPNError(w http.ResponseWriter, err error) {
 	var ref *vpnconn.Refusal
 	if !errors.As(err, &ref) {

@@ -270,6 +270,49 @@ func sealedLogin(t *testing.T, config string) string {
 	return sealed
 }
 
+func TestALookNobodyAskedForLeavesTheTunnelDown(t *testing.T) {
+	s := newVPNRunner(t)
+	j, _ := s.r.Config().Find("through")
+	if _, _, err := s.r.JoinVPN(context.Background(), j); !errors.Is(err, vpnconn.ErrNotUp) {
+		t.Fatalf("join = %v, want ErrNotUp", err)
+	}
+	if st := s.tunnel(t); st.Status != vpnconn.Down {
+		t.Errorf("the look brought the VPN %s", st.Status)
+	}
+	direct, _ := s.r.Config().Find("direct")
+	if _, done, err := s.r.JoinVPN(context.Background(), direct); err != nil {
+		t.Errorf("a job without a VPN = %v", err)
+	} else {
+		done()
+	}
+}
+
+func TestTheConflictListLeavesAVPNJobUncheckedUnlessAsked(t *testing.T) {
+	quickConnect(t)
+	s := newVPNRunner(t)
+	for i := range s.r.Config().Jobs {
+		s.r.Config().Jobs[i].Direction = "both"
+	}
+	_, unread := s.r.Conflicts(context.Background(), "", false)
+	var through error
+	for _, u := range unread {
+		if u.Job == "through" {
+			through = u.Err
+		}
+	}
+	if !errors.Is(through, vpnconn.ErrNotUp) {
+		t.Errorf("the job through the VPN = %v, want ErrNotUp", through)
+	}
+	if st := s.tunnel(t); st.Status != vpnconn.Down {
+		t.Errorf("the list brought the VPN %s", st.Status)
+	}
+
+	_, unread = s.r.Conflicts(context.Background(), "through", true)
+	if len(unread) != 0 {
+		t.Errorf("asked for, the job is unread: %v", unread[0].Err)
+	}
+}
+
 func TestAPreviewOfAJobThroughTheVPNGoesThroughItsTunnel(t *testing.T) {
 	quickConnect(t)
 	s := newVPNRunner(t)

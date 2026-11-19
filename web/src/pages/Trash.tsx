@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Empty, Num, Rows, Stack } from '../components/Shell'
 import { Field, NumberField } from '../components/Field'
@@ -9,6 +9,7 @@ import { PageAction, PageActions } from '../components/PageActions'
 import { Since } from '../components/Since'
 import { IconEmpty, IconPrune, IconTrash } from '../components/glyphs'
 import { Tiles } from '../components/Tiles'
+import { Button } from '../lib/glimstone/Button'
 import { Card } from '../lib/glimstone/Card'
 import { ConfirmWindow } from '../components/ConfirmWindow'
 import { api, type TrashEntry, type TrashSide } from '../lib/api'
@@ -61,6 +62,7 @@ export function Trash({
   job,
   onJob,
   onChanged,
+  onCheck,
 }: {
   /** Null until the first answer arrives. */
   sides: TrashSide[] | null
@@ -70,6 +72,8 @@ export function Trash({
   onJob: (job: string) => void
   /** Asks for a job's trash again after something in it changed. */
   onChanged: (job: string) => void
+  /** Reads a job's trash with its VPN brought up, for a side left unchecked. */
+  onCheck: (job: string) => void
 }) {
   const { t } = useT()
   const push = useToast()
@@ -87,6 +91,11 @@ export function Trash({
   const all = sides ?? []
   const shown = job ? all.filter((s) => s.job === job) : all
   const readable = shown.filter((s) => !s.error)
+  // Opening one job's trash is asking for it, so its VPN comes up.
+  const unchecked = job !== '' && shown.some((s) => s.unchecked)
+  useEffect(() => {
+    if (unchecked) onCheck(job)
+  }, [unchecked, job, onCheck])
   const totals = trashTotals(readable)
 
   // Runs one change after another and asks for each touched job again. The
@@ -164,7 +173,7 @@ export function Trash({
     .filter((group) => !picked || group.job === picked)
     .map((group) => ({
       ...group,
-      sides: group.sides.filter((s) => (!tile || s.side === tile) && (s.error || (s.total > 0 && matching(s).length > 0))),
+      sides: group.sides.filter((s) => (!tile || s.side === tile) && (s.error || s.unchecked || (s.total > 0 && matching(s).length > 0))),
     }))
     .filter((group) => group.sides.length > 0)
   const holding = (sides: TrashSide[]) => {
@@ -196,7 +205,7 @@ export function Trash({
     <Stack>
       <JobChip job={job} onClear={() => onJob('')} />
 
-      {sides === null || (totals.entries === 0 && shown.every((s) => !s.error)) ? (
+      {sides === null || (totals.entries === 0 && shown.every((s) => !s.error && !s.unchecked)) ? (
         <div data-new="trash-bin">
           <Card title={t('nav.trash')} hueIndex={0} hint={t('trash.hint')}>
             <Empty>{sides === null ? t('history.working') : job ? t('trash.nothingInJob') : t('trash.nothing')}</Empty>
@@ -250,6 +259,7 @@ export function Trash({
                       onRestore={(entry) => restore(s, entry)}
                       onDelete={(entry) => setPending({ kind: 'entry', side: s, entry })}
                       onEmpty={() => setPending({ kind: 'side', side: s })}
+                      onCheck={() => onCheck(s.job)}
                     />
                   ))}
                 </div>
@@ -343,6 +353,7 @@ function SideList({
   onRestore,
   onDelete,
   onEmpty,
+  onCheck,
 }: {
   side: TrashSide
   /** The side's entries the search leaves, in the order the heads ask for. */
@@ -357,6 +368,7 @@ function SideList({
   onRestore: (entry: TrashEntry) => void
   onDelete: (entry: TrashEntry) => void
   onEmpty: () => void
+  onCheck: () => void
 }) {
   const { t, lang } = useT()
   const heads: Head[] = [
@@ -369,19 +381,21 @@ function SideList({
     <section className="flex flex-col gap-1">
       <div className="glim-row flex min-h-9 items-center gap-3">
         <h3 className="glim-eyebrow">{t(side.side === 'left' ? 'edit.left' : 'edit.right')}</h3>
-        {!side.error && (
+        {!side.error && !side.unchecked && (
           <span className="glim-num text-meta text-carbon-textMuted">
             {t('trash.holding', { count: side.total, size: bytes(side.bytes) })}
           </span>
         )}
-        {!side.error && (
+        {!side.error && !side.unchecked && (
           <span className="glim-row-actions ms-auto">
             <IconAction title={t('trash.emptySide')} labelKey="trash.emptySide" disabled={busy} onClick={onEmpty} />
           </span>
         )}
       </div>
 
-      {side.error ? (
+      {side.unchecked ? (
+        <Unchecked onCheck={onCheck} />
+      ) : side.error ? (
         <p className="text-subline text-statusFail">{t('trash.unread', { error: failureLine(side.error, side.failure, t, lang) })}</p>
       ) : (
         <>
@@ -429,5 +443,16 @@ function SideList({
         <p className="text-subline text-carbon-textMuted">{t('trash.more', { total: side.total, shown: side.entries.length })}</p>
       )}
     </section>
+  )
+}
+
+/** A side or a job nobody looked at, since only its VPN reaches it and that is off, and the way to look. */
+export function Unchecked({ onCheck }: { onCheck: () => void }) {
+  const { t } = useT()
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <p className="text-subline text-carbon-textSub">{t('vpn.unchecked')}</p>
+      <Button label={t('vpn.checkNow')} labelKey="vpn.checkNow" onClick={onCheck} />
+    </div>
   )
 }

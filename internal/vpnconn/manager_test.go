@@ -514,3 +514,31 @@ func TestTheCatalogueIsTheTilesList(t *testing.T) {
 		at += i
 	}
 }
+
+func TestJoiningLeavesATunnelThatIsDownAlone(t *testing.T) {
+	srv := vpntest.Start(t, insideOnly)
+	m := withOwnConfig(t, srv)
+	if _, err := m.Join(Custom, "listing"); !errors.Is(err, ErrNotUp) {
+		t.Fatalf("join with the tunnel down = %v, want ErrNotUp", err)
+	}
+	if st := tunnelState(t, m, Custom); st.Status != Down {
+		t.Fatalf("a join brought the tunnel %s", st.Status)
+	}
+
+	run, err := m.Acquire(ctxFor(t), Custom, "photos")
+	if err != nil {
+		t.Fatal(err)
+	}
+	joined, err := m.Join(Custom, "listing")
+	if err != nil {
+		t.Fatalf("join while a run holds the tunnel = %v", err)
+	}
+	run.Release()
+	if got, err := fetch(t, joined.Proxy(), "http://10.2.0.1/still"); err != nil || got != "inside /still" {
+		t.Errorf("the run letting go took the joined tunnel with it: %q, %v", got, err)
+	}
+	joined.Release()
+	if st := tunnelState(t, m, Custom); st.Status != Down {
+		t.Errorf("after both let go: %s", st.Status)
+	}
+}

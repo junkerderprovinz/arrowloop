@@ -20,6 +20,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/trash"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // The trash and versions handlers only translate between requests and
@@ -119,11 +120,13 @@ func answerOf(name, side string, store trash.Store, entries []trash.Entry, limit
 
 // sideTrash is one side of one job in the listing across every job. A side
 // that cannot be read carries the reason instead of failing the rest, with the
-// kind of failure where the reason names one.
+// kind of failure where the reason names one. Unchecked is a side only its
+// job's VPN reaches while that VPN is off, which the listing leaves alone.
 type sideTrash struct {
 	keptAnswer
-	Error   string           `json:"error,omitempty"`
-	Failure *failure.Failure `json:"failure,omitempty"`
+	Error     string           `json:"error,omitempty"`
+	Failure   *failure.Failure `json:"failure,omitempty"`
+	Unchecked bool             `json:"unchecked,omitempty"`
 }
 
 // trashWait bounds listing one side, since rclone waits minutes on a server
@@ -132,9 +135,11 @@ var trashWait = time.Minute
 
 // listAllTrash reads the trash of every job's two sides, or of the one job
 // asked for. The sides are read at once, since each can be a remote that takes
-// its time to list.
+// its time to list. The page asks for it on every load and after every run, so
+// it brings no VPN up unless connect says somebody asked for that job.
 func (s *Server) listAllTrash(w http.ResponseWriter, r *http.Request) {
 	only, limit := r.URL.Query().Get("job"), keptLimit(r)
+	connect := only != "" && r.URL.Query().Get("connect") != ""
 	var out []sideTrash
 	for _, j := range s.Runner.Config().Jobs {
 		if only != "" && j.Name != only {
@@ -154,7 +159,11 @@ func (s *Server) listAllTrash(w http.ResponseWriter, r *http.Request) {
 			defer wg.Done()
 			ctx, cancel := context.WithTimeout(r.Context(), trashWait)
 			defer cancel()
-			f, _, err := s.sideOf(ctx, at.Job, at.Side)
+			f, _, err := s.openSide(ctx, at.Job, at.Side, connect)
+			if errors.Is(err, vpnconn.ErrNotUp) {
+				at.Unchecked = true
+				return
+			}
 			var entries []trash.Entry
 			if err == nil {
 				entries, err = trash.List(ctx, f, trash.Trash)
@@ -423,6 +432,13 @@ func keptLimit(r *http.Request) int {
 // so a drive letter given to another disk is not opened. A job that goes
 // through the VPN holds the tunnel until ctx ends.
 func (s *Server) sideOf(ctx context.Context, name, side string) (rclonefs.Fs, int, error) {
+	return s.openSide(ctx, name, side, true)
+}
+
+// openSide is sideOf, and without connect it brings no VPN up: a side that
+// needs its job's tunnel while that is down fails with vpnconn.ErrNotUp, and a
+// folder on this machine is read without one.
+func (s *Server) openSide(ctx context.Context, name, side string, connect bool) (rclonefs.Fs, int, error) {
 	j, ok := s.Runner.Config().Find(name)
 	if !ok {
 		return nil, http.StatusNotFound, fmt.Errorf("no job called %q", name)
@@ -439,7 +455,12 @@ func (s *Server) sideOf(ctx context.Context, name, side string) (rclonefs.Fs, in
 	if err != nil {
 		return nil, http.StatusServiceUnavailable, fmt.Errorf("the drive the %s side lives on is not attached: %s", side, volume.Describe(spec))
 	}
-	ctx, err = s.throughVPN(ctx, j)
+	switch {
+	case connect:
+		ctx, err = s.throughVPN(ctx, j)
+	case !vpnconn.Offline(resolved):
+		ctx, err = s.joinVPN(ctx, j)
+	}
 	if err != nil {
 		return nil, http.StatusBadGateway, err
 	}

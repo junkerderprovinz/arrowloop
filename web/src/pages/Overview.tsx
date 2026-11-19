@@ -59,6 +59,7 @@ export function Overview({
   conflicts = [],
   counts,
   anomalies,
+  trashUnchecked = false,
   progress,
   onSaved,
 }: {
@@ -71,6 +72,8 @@ export function Overview({
   counts: NavCounts
   /** Whether the anomaly notes are switched on. */
   anomalies: boolean
+  /** Some trash was left uncounted, since only its job's VPN reaches it and that is off. */
+  trashUnchecked?: boolean
   progress: Record<string, RunEvent>
   onSaved: () => void
 }) {
@@ -123,7 +126,7 @@ export function Overview({
               <Tile to="/jobs" label={t('status.failed')} value={jobs.filter(failing).length} tone="fail" />
               <Tile to="/conflicts" label={t('nav.conflicts')} value={counts.conflicts} tone="warn" />
               {anomalies && <Tile to="/anomalies" label={t('nav.anomalies')} value={counts.findings} tone={held.length > 0 ? 'warn' : undefined} />}
-              <Tile to="/trash" label={t('nav.trash')} value={counts.trash} />
+              <Tile to="/trash" label={t('nav.trash')} value={counts.trash} note={trashUnchecked ? t('overview.trashUnchecked') : undefined} />
             </div>
           </div>
         </Card>
@@ -243,7 +246,8 @@ const TONE = {
 } as const
 
 /** A count that leads to the page listing what it counts. Its colour only shows while there is something to count. */
-function Tile({ to, label, value, tone }: { to: string; label: string; value: number; tone?: keyof typeof TONE }) {
+/** A count and what it counts. `note` says what the count leaves out. */
+function Tile({ to, label, value, tone, note }: { to: string; label: string; value: number; tone?: keyof typeof TONE; note?: string }) {
   const { lang } = useT()
   return (
     <Link
@@ -254,6 +258,7 @@ function Tile({ to, label, value, tone }: { to: string; label: string; value: nu
         {new Intl.NumberFormat(lang).format(value)}
       </span>
       <span className="text-subline leading-tight text-carbon-textSub [overflow-wrap:anywhere]">{label}</span>
+      {note && <span className="text-meta leading-tight text-carbon-textMuted [overflow-wrap:anywhere]">{note}</span>}
     </Link>
   )
 }

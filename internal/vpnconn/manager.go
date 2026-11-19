@@ -42,6 +42,9 @@ type Options struct {
 	Tunnel vpn.Options
 }
 
+// ErrNotUp is a Join on a tunnel that no run holds up.
+var ErrNotUp = errors.New("the VPN is off until a run of its job needs it")
+
 // ErrNotSetUp is a run of a job whose tunnel is not set up in the settings.
 var ErrNotSetUp = errors.New("the VPN this job goes through is not set up in the settings")
 
@@ -264,6 +267,28 @@ func (m *Manager) Acquire(ctx context.Context, tunnel, holder string) (*Lease, e
 		m.release(holder, b)
 		return nil, b.err
 	}
+	return &Lease{m: m, b: b, holder: holder}, nil
+}
+
+// Join holds tunnel for holder only when a run holds it up already, and
+// otherwise fails with ErrNotUp without logging in at the provider.
+func (m *Manager) Join(tunnel, holder string) (*Lease, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	w := m.wires[tunnel]
+	if w == nil || w.up == nil {
+		return nil, ErrNotUp
+	}
+	b := w.up
+	select {
+	case <-b.done:
+		if b.err != nil {
+			return nil, ErrNotUp
+		}
+	default:
+		return nil, ErrNotUp
+	}
+	b.holders[holder]++
 	return &Lease{m: m, b: b, holder: holder}, nil
 }
 

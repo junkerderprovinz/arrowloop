@@ -79,7 +79,7 @@ func TestJobsOnASilentServerGiveUpTogetherAndLeaveTheOthersRead(t *testing.T) {
 	got := make(chan answer, 1)
 	go func() {
 		started := time.Now()
-		_, unread := r.Conflicts(context.Background(), "")
+		_, unread := r.Conflicts(context.Background(), "", false)
 		got <- answer{unread, time.Since(started)}
 	}()
 

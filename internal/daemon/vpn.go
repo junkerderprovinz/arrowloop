@@ -87,13 +87,36 @@ func (r *Runner) ThroughVPN(ctx context.Context, j job.Job) (_ context.Context, 
 			return nil, nil, fmt.Errorf("%w: the %s side: %w", ErrVPNRefused, side.name, err)
 		}
 	}
-	tunnel := string(j.VPN)
-	if j.VPN == job.FormerVPN {
-		tunnel = m.Former()
-	}
-	lease, err := m.Acquire(ctx, tunnel, j.Name)
+	lease, err := m.Acquire(ctx, r.tunnelOf(m, j), j.Name)
 	if err != nil {
 		return nil, nil, fmt.Errorf("%w: %w", ErrVPNDown, err)
 	}
 	return lease.Context(ctx), lease.Release, nil
+}
+
+// JoinVPN is ThroughVPN for a look at the job nobody asked for, such as a
+// count on every page: it joins the job's tunnel only while a run holds it up,
+// and otherwise fails with vpnconn.ErrNotUp rather than log in at the provider.
+func (r *Runner) JoinVPN(ctx context.Context, j job.Job) (_ context.Context, done func(), err error) {
+	if j.VPN == "" {
+		return ctx, func() {}, nil
+	}
+	r.mu.Lock()
+	m := r.vpn
+	r.mu.Unlock()
+	if m == nil {
+		return nil, nil, ErrNoVPN
+	}
+	lease, err := m.Join(r.tunnelOf(m, j), j.Name)
+	if err != nil {
+		return nil, nil, err
+	}
+	return lease.Context(ctx), lease.Release, nil
+}
+
+func (r *Runner) tunnelOf(m *vpnconn.Manager, j job.Job) string {
+	if j.VPN == job.FormerVPN {
+		return m.Former()
+	}
+	return string(j.VPN)
 }

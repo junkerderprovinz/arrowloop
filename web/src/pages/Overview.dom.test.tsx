@@ -65,7 +65,8 @@ function page({
   findings = [] as Finding[],
   counts = none,
   anomalies = true,
-}: { jobs?: Job[]; runs?: Run[]; findings?: Finding[]; counts?: NavCounts; anomalies?: boolean } = {}) {
+  trashUnchecked = false,
+}: { jobs?: Job[]; runs?: Run[]; findings?: Finding[]; counts?: NavCounts; anomalies?: boolean; trashUnchecked?: boolean } = {}) {
   render(
     <ToastProvider>
       <OpenJob.Provider value={opened}>
@@ -75,6 +76,7 @@ function page({
           findings={findings}
           counts={counts}
           anomalies={anomalies}
+          trashUnchecked={trashUnchecked}
           progress={{}}
           onSaved={() => undefined}
         />
@@ -119,6 +121,12 @@ describe('the overview', () => {
     expect(counted('Conflicts')).toEqual(['4', '/conflicts'])
     expect(counted('Anomalies')).toEqual(['2', '/anomalies'])
     expect(counted('Trash')).toEqual(['7', '/trash'])
+  })
+
+  it('says the trash count leaves out the jobs whose VPN is off', () => {
+    page({ counts: { ...none, trash: 3 }, trashUnchecked: true })
+    expect(tile('Trash').textContent).toContain('3')
+    expect(tile('Trash').textContent).toContain('Not counting the jobs whose VPN is off')
   })
 
   it('leaves the Anomalies tile out while the notes are off', () => {

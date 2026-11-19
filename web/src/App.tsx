@@ -223,6 +223,17 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       .then((got) => setTrashSides((prev) => mergeTrash(prev, job, got.sides)))
       .catch(() => {})
   }, [])
+  // The same for one job, with its VPN brought up, once somebody asks for it.
+  const checkWaiting = useCallback((job: string) => {
+    api
+      .conflicts(job, true)
+      .then((got) => setConflicts((prev) => mergeConflicts(prev, job, got)))
+      .catch(() => {})
+    api
+      .trashAll(job, true)
+      .then((got) => setTrashSides((prev) => mergeTrash(prev, job, got.sides)))
+      .catch(() => {})
+  }, [])
   // What the engine found about the jobs, asked for again whenever it says the
   // findings changed. `refused` counts the runs a brake refused, so the page
   // can tell a change that grew after it was let through.
@@ -449,6 +460,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       conflicts={conflicts?.conflicts}
       counts={counts}
       anomalies={anomaliesOn === true}
+      trashUnchecked={!!orderedTrash?.some((s) => s.unchecked)}
       progress={progress}
       onSaved={saved}
     />
@@ -463,7 +475,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   ) : view.page === 'instances' ? (
     <Instances />
   ) : view.page === 'conflicts' ? (
-    <Conflicts listing={conflicts} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
+    <Conflicts listing={conflicts} job={focus} onJob={focusOn} onChanged={reloadWaiting} onCheck={checkWaiting} />
   ) : view.page === 'anomalies' ? (
     <Anomalies
       listing={findings}
@@ -474,7 +486,7 @@ export function App({ signOut = false }: { signOut?: boolean }) {
       onChanged={() => void reloadFindings()}
     />
   ) : view.page === 'trash' ? (
-    <Trash sides={orderedTrash} job={focus} onJob={focusOn} onChanged={reloadWaiting} />
+    <Trash sides={orderedTrash} job={focus} onJob={focusOn} onChanged={reloadWaiting} onCheck={checkWaiting} />
   ) : view.page === 'history' ? (
     // The log is the whole page, so its card reaches the bottom of the
     // window however few lines it has.

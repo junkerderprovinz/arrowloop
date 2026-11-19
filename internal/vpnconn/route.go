@@ -51,6 +51,13 @@ var routable = []string{
 // offline are the backends that make no connection of their own.
 var offline = []string{"local", "memory"}
 
+// Offline reports whether a side makes no connection of its own, such as a
+// folder on this machine, so it needs no tunnel to be read.
+func Offline(remote string) bool {
+	info, _, _, _, err := rclonefs.ParseRemote(remote)
+	return err == nil && slices.Contains(offline, info.Name)
+}
+
 // Unroutable says why a side cannot go through the VPN, nil when it can. Each
 // case is a way a connection would leave past the tunnel.
 func Unroutable(remote string) error {
