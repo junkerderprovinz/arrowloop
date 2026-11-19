@@ -17,6 +17,7 @@ import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
+import { overNetwork } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
 
 /**
@@ -352,7 +353,13 @@ export function JobForm({
 
       {/* Another instance has a VPN of its own or none, and keeps the
           switch as its owner set it. */}
-      {!host.name && <VpnSwitch on={!!job.vpn} onChange={(vpn) => patch({ vpn: vpn || undefined })} />}
+      {!host.name && (
+        <VpnSwitch
+          on={!!job.vpn}
+          network={overNetwork(job.left ?? '', remotes) || overNetwork(job.right ?? '', remotes)}
+          onChange={(vpn) => patch({ vpn: vpn || undefined })}
+        />
+      )}
 
       <SubCard title={t('edit.schedule')}>
         <SettingRow label={t('edit.when')} {...held}>
@@ -489,10 +496,12 @@ export function JobForm({
 
 /**
  * Whether the job's runs go through the built-in VPN, on an engine that has
- * one. A job switched to it on an engine that has none, as one brought over
- * from another machine, keeps the switch, so it can be switched off.
+ * one and for a job with a side across the network, since folders on this
+ * device never touch it. A job switched to it where it does nothing, as one
+ * brought over from another machine, keeps the switch, so it can be switched
+ * off.
  */
-export function VpnSwitch({ on, onChange }: { on: boolean; onChange: (next: boolean) => void }) {
+export function VpnSwitch({ on, network, onChange }: { on: boolean; network: boolean; onChange: (next: boolean) => void }) {
   const { t } = useT()
   const [vpn, setVpn] = useState<{ offered: boolean; setUp: boolean } | null>(null)
   useEffect(() => {
@@ -501,7 +510,7 @@ export function VpnSwitch({ on, onChange }: { on: boolean; onChange: (next: bool
       .then(async (c) => setVpn(c.vpn ? { offered: true, setUp: (await api.vpn()).provider !== '' } : { offered: false, setUp: false }))
       .catch(() => setVpn(null))
   }, [])
-  if (!on && !vpn?.offered) return null
+  if (!on && (!vpn?.offered || !network)) return null
   return (
     <SubCard title={t('edit.connection')}>
       <div data-new="vpn">

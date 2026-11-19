@@ -22,11 +22,11 @@ afterEach(() => {
   provider = 'custom'
 })
 
-function Job({ start = false }: { start?: boolean }) {
+function Job({ start = false, network = true }: { start?: boolean; network?: boolean }) {
   const [on, setOn] = useState(start)
   return (
     <>
-      <VpnSwitch on={on} onChange={setOn} />
+      <VpnSwitch on={on} network={network} onChange={setOn} />
       <output data-testid="vpn">{String(on)}</output>
     </>
   )
@@ -49,6 +49,17 @@ describe('the job switch Through the VPN', () => {
     offered = false
     render(<Job />)
     await waitFor(() => expect(screen.queryByRole('switch')).toBeNull())
+  })
+
+  it('is left out on a job between two folders on this device', async () => {
+    render(<Job network={false} />)
+    await new Promise((r) => setTimeout(r, 20))
+    expect(screen.queryByRole('switch')).toBeNull()
+  })
+
+  it('stays, so it can be switched off, on a job between two folders that was switched on', async () => {
+    render(<Job start network={false} />)
+    expect(await screen.findByRole('switch', { name: 'Through the VPN' })).toBeTruthy()
   })
 
   it('stays, so it can be switched off, on a job switched on where there is no VPN', async () => {

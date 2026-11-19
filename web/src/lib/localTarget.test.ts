@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { isLocalTarget } from './localTarget'
+import { isLocalTarget, overNetwork } from './localTarget'
 
 const alias = (remote: string) => ({ type: 'alias', settings: [{ key: 'remote', value: remote }] })
 
@@ -17,5 +17,24 @@ describe('isLocalTarget', () => {
     expect(isLocalTarget({ type: 'sftp', settings: [] })).toBe(false)
     expect(isLocalTarget(alias('OpenCloud:dokumente'))).toBe(false)
     expect(isLocalTarget(alias(''))).toBe(false)
+  })
+})
+
+describe('overNetwork', () => {
+  const remotes = [
+    { name: 'nas', type: 'sftp', settings: [] },
+    { name: 'stick', type: 'alias', settings: [{ key: 'remote', value: 'E:\\Backups' }] },
+  ]
+
+  it('counts a folder, a drive and a target that is a folder here as this device', () => {
+    expect(overNetwork('/srv/photos', remotes)).toBe(false)
+    expect(overNetwork('C:\\Users\\me\\Photos', remotes)).toBe(false)
+    expect(overNetwork('volume:usb1/photos', remotes)).toBe(false)
+    expect(overNetwork('stick:photos', remotes)).toBe(false)
+  })
+
+  it('counts a server and a target it does not know as the network', () => {
+    expect(overNetwork('nas:photos', remotes)).toBe(true)
+    expect(overNetwork('gone:photos', remotes)).toBe(true)
   })
 })
