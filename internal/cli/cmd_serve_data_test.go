@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"bytes"
@@ -13,8 +13,7 @@ import (
 // command from outside as the phone app does.
 func TestMain(m *testing.M) {
 	if os.Getenv("ARROWLOOP_TEST_RUN_MAIN") == "1" {
-		main()
-		os.Exit(0)
+		os.Exit(Main(os.Args[1:], Engine()))
 	}
 	os.Exit(m.Run())
 }

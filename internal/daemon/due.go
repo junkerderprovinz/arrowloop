@@ -9,6 +9,7 @@ import (
 
 	"github.com/robfig/cron/v3"
 
+	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 )
 
@@ -184,13 +185,13 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 		}
 		rec, err := r.runAndReport(ctx, name)
 		out.Ran++
+		o := Outcome{Job: name, Run: rec, Err: err}
+		out.Jobs = append(out.Jobs, o)
 		switch {
-		case errors.Is(err, ErrHeldBack), errors.Is(err, ErrVolumeMissing),
-			errors.Is(err, ErrAlreadyRunning), errors.Is(err, ErrHeld):
-			// None of these is a failure.
-			out.Held++
 		case errors.Is(err, ErrWithdrawn):
 			// Removed or paused while it waited, so nothing ran.
+		case o.Skipped():
+			out.Held++
 		case err != nil:
 			out.Failed++
 			if out.Reason == "" {
@@ -230,6 +231,28 @@ type Due struct {
 	// Found is what the wake-up found that somebody should hear of: a job a
 	// brake holds, or a note where notes are reported.
 	Found []Found `json:"found,omitempty"`
+	// Jobs is what each job came to, in the order they ran.
+	Jobs []Outcome `json:"-"`
+}
+
+// Outcome is what one job of a wake-up came to. Err is the reason a run
+// failed or never started.
+type Outcome struct {
+	Job string
+	Run history.Run
+	Err error
+}
+
+// Skipped reports whether the job did not run for a reason that is not a
+// failure: its drive is away, something holds it, it is already running, or it
+// was paused or removed while it waited.
+func (o Outcome) Skipped() bool {
+	for _, reason := range []error{ErrHeldBack, ErrVolumeMissing, ErrAlreadyRunning, ErrHeld, ErrWithdrawn} {
+		if errors.Is(o.Err, reason) {
+			return true
+		}
+	}
+	return false
 }
 
 // Changed says whether anything moved, and so whether a notification is worth

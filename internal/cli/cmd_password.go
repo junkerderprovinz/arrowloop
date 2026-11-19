@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"bufio"
@@ -19,9 +19,9 @@ import (
 // comes from standard input rather than a flag, so it never lands in a shell
 // history or a process list. The hash is peppered with the key of the install
 // whose configuration -config names, so it is made where that install runs.
-func cmdHashPassword(args []string) error {
+func (o Options) cmdHashPassword(args []string) error {
 	fset := flag.NewFlagSet("hash-password", flag.ExitOnError)
-	configPath := fset.String("config", defaultConfig, "the configuration file of the install the password is for")
+	configPath := fset.String("config", o.Config, "the configuration file of the install the password is for")
 	fset.Usage = func() {
 		fmt.Fprintln(fset.Output(), "usage: arrowloop hash-password [-config file], then type the password, or pipe it in on one line")
 	}
