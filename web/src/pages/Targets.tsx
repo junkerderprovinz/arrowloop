@@ -403,7 +403,8 @@ function RemoteRow({
       test={{
         busy: checking,
         tone: checking || !result ? undefined : result.ok ? 'ok' : asked ? 'danger' : undefined,
-        title: why || (result?.ok ? t('targets.checkOk') : t('targets.checkHint')),
+        title: t('targets.checkHint'),
+        ...(result && { title: why || t('targets.checkOk') }),
       }}
       text={{ test: t('targets.check'), edit: t('action.edit'), remove: t('action.delete') }}
       labelKeys={{ test: 'targets.check', edit: 'action.edit', remove: 'action.delete' }}
