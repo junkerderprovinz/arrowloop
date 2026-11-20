@@ -8,7 +8,6 @@ import { Dialog } from '../../components/Dialog'
 import { FIELD_FOCUS, FieldRow, Secret, Text } from '../../components/Field'
 import { IconAdd } from '../../components/glyphs'
 import { api, ApiError } from '../../lib/api'
-import { at } from '../../lib/base'
 import { errorText } from '../../lib/errorText'
 import { Badge } from '../../lib/glimstone/Badge'
 import { Button } from '../../lib/glimstone/Button'
@@ -18,7 +17,6 @@ import { useT, type TranslationKey } from '../../lib/i18n'
 import {
   CUSTOM,
   tunnelName,
-  VPN_PROVIDERS,
   type VpnField,
   type VpnProviderState,
   type VpnState,
@@ -29,27 +27,10 @@ import {
 type T = ReturnType<typeof useT>['t']
 
 const MARKS = new Map<string, TileMark>(CATALOG.entries.flatMap((e) => (e.mark ? [[e.id, e.mark] as const] : [])))
-const LOGOS = new Map(VPN_PROVIDERS.map((p) => [p.id, p.logo]))
 
-const masked = (url: string) =>
-  `<span style="display:block;width:100%;height:100%;background-color:currentColor;mask:url(&quot;${url}&quot;) center / contain no-repeat"></span>`
-
-/**
- * A provider's mark from GlimStone's catalog or, for one the catalog draws
- * only as a glyph, its logo from public/vpn as the picker's tiles take it.
- * Under the pointer the tile fills with the brand's colour and the logo turns
- * that colour's ink, drawn from the logo's own shape or, where the shape has
- * holes, from a mask cut for it. A logo too dark for the page at rest is drawn
- * in the text's colour.
- */
+/** A provider's mark from GlimStone's catalog. An engine newer than the catalog can offer a provider it has no mark for. */
 export function vpnTileMark(id: string): TileMark {
-  const mark = MARKS.get(id)
-  if (mark) return mark
-  const logo = LOGOS.get(id)
-  const src = at(`/vpn/${id}.png`)
-  const rest =
-    logo?.rest === 'ink' ? masked(src) : `<img alt="" src="${src}" style="display:block;width:100%;height:100%;object-fit:contain">`
-  return { svg: rest, hover: masked(logo?.lit ? at(`/vpn/${id}.lit.png`) : src), tile: logo?.tile, ink: logo?.ink }
+  return MARKS.get(id) ?? { svg: '' }
 }
 
 /** A provider's logo as it stands at rest, outside the picker. */

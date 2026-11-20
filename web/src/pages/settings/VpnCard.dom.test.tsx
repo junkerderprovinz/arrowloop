@@ -245,12 +245,12 @@ describe('the VPN chooser', () => {
     expect(screen.getByRole('dialog')).toBeTruthy()
   })
 
-  it('draws a logo of its own once at rest and once lit, with no class that keeps the rest one showing', async () => {
+  it("draws every provider with GlimStone's mark rather than a picture of its own", async () => {
     const chooser = await openChooser()
-    const mark = within(chooser).getByRole('button', { name: 'cryptostorm' }).querySelector('.glim-brand-svg')!
-    expect(mark.querySelectorAll(':scope > .glim-mark-rest')).toHaveLength(1)
-    expect(mark.querySelectorAll(':scope > .glim-mark-hover')).toHaveLength(1)
-    expect(mark.querySelector('.block')).toBeNull()
+    for (const tile of tiles(chooser)) {
+      expect(tile.querySelector('img')).toBeNull()
+      expect(tile.innerHTML).not.toContain('mask:url')
+    }
   })
 
   it("lights a provider's tile in its brand colour", async () => {
