@@ -64,6 +64,9 @@ SOMETIMES = {
     # An instance that answered has jobs and no error. Only one that is away
     # carries lastSeen, and an address only where its announce named one.
     "OtherInstance": {"address", "jobs", "lastSeen", "error"},
+    # Only a skip carries its reason's code and values, and the check's runs
+    # skip nothing.
+    "Entry": {"Code", "Vars"},
 }
 
 # Every entry is (interface, path, into) with an optional fourth element: a
