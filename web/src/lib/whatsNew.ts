@@ -63,7 +63,7 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
-    after: '2.7.7',
+    after: '2.7.0',
     changes: [
       { id: 'desktop-cli', text: 'new.change.desktopCli' },
       {
@@ -106,19 +106,8 @@ export const RELEASES: Release[] = [
         text: 'new.change.runLength',
         names: { history: 'nav.history', runs: 'history.runs' },
       },
-    ],
-  },
-  {
-    after: '2.7.6',
-    changes: [{ id: 'tray-memory', text: 'new.change.trayMemory' }],
-  },
-  {
-    after: '2.7.5',
-    changes: [{ id: 'tablet-shell', text: 'new.change.tabletShell' }],
-  },
-  {
-    after: '2.7.4',
-    changes: [
+      { id: 'tray-memory', text: 'new.change.trayMemory' },
+      { id: 'tablet-shell', text: 'new.change.tabletShell' },
       {
         id: 'notify-tiles',
         at: ['/settings/safety'],
@@ -133,19 +122,8 @@ export const RELEASES: Release[] = [
         where: ['nav.settings', 'settings.safetyNet'],
         text: 'new.change.notifyShoutrrr',
       },
-    ],
-  },
-  {
-    after: '2.7.3',
-    changes: [{ id: 'tablet-landscape', text: 'new.change.tabletLandscape' }],
-  },
-  {
-    after: '2.7.2',
-    changes: [{ id: 'hidden-folders', text: 'new.change.hiddenFolders', names: { show: 'pick.hidden' } }],
-  },
-  {
-    after: '2.7.1',
-    changes: [
+      { id: 'tablet-landscape', text: 'new.change.tabletLandscape' },
+      { id: 'hidden-folders', text: 'new.change.hiddenFolders', names: { show: 'pick.hidden' } },
       { id: 'only-files', text: 'new.change.onlyFiles', names: { only: 'edit.inclusions' } },
       {
         id: 'pause-automatic',
