@@ -150,7 +150,7 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	if question != nil {
 		// A test asks the same question, which is where the form shows it.
 		writeJSON(w, http.StatusUnprocessableEntity, map[string]any{
-			"error": "test the target first and choose which " + question.Name + " to use", "code": setupQuestion, "question": question,
+			"error": "test the target first and answer " + question.Name, "code": setupQuestion, "question": question,
 		})
 		return
 	}
@@ -200,8 +200,8 @@ func (s *Server) jobsOn(target string) []string {
 	return out
 }
 
-// setupQuestion is the code of a save that waits for a choice rclone's setup
-// leaves open, such as which of several drives to use.
+// setupQuestion is the code of a save that waits for an answer rclone's setup
+// leaves open, such as which of several drives to use or a two-factor code.
 const setupQuestion = "setup-question"
 
 // checkRemote proves the settings work, which saving them does not.
@@ -242,7 +242,7 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 	}
 	got, err := remotes.Try(r.Context(), body.Name, body.Type, body.Settings)
 	if got.Question != nil {
-		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": "choose which " + got.Question.Name + " to use", "question": got.Question})
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": "answer " + got.Question.Name + " and test again", "question": got.Question})
 		return
 	}
 	answer := map[string]any{"ok": true}

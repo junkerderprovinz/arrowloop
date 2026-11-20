@@ -23,6 +23,8 @@ const (
 	VolumeMissing        = "volumeMissing"
 	Unreachable          = "unreachable"
 	SignInFailed         = "signInFailed"
+	SignInAgain          = "signInAgain"
+	TwoFactorRefused     = "twoFactorRefused"
 	PermissionDenied     = "permissionDenied"
 	NoFileAccess         = "noFileAccess"
 	NotFound             = "notFound"
@@ -85,10 +87,15 @@ var rules = []rule{
 		"maximum number of clients", "maximum number of allowed clients",
 		"maximum number of hosts", "maximum number of connections",
 	}},
+	// A sign-in rclone cannot make by itself, such as one that wants a
+	// two-factor code, and a code the provider refused.
+	{SignInAgain, []string{"please run: rclone config reconnect"}},
+	{TwoFactorRefused, []string{"wrong 2-factor auth code"}},
 	{SignInFailed, []string{
 		"unable to authenticate", "authentication failed", "auth failed", "invalid credentials",
 		"ssh-agent", "permission denied (publickey", "logon failure", "401 unauthorized",
 		"invalid_grant", "token expired", "signaturedoesnotmatch", "invalidaccesskeyid",
+		"wrong login credentials",
 	}},
 	{QuotaExceeded, []string{"quota exceeded", "over quota", "storage quota", "insufficient storage", "quotaexceeded"}},
 	{RateLimited, []string{"rate limit", "too many requests", "slowdown", "ratelimitexceeded"}},

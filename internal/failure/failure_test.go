@@ -199,6 +199,28 @@ func TestOtherRefusalsAreNotTakenForTooManyLogins(t *testing.T) {
 	}
 }
 
+// Internxt's server words its refusals in drive-server-wip's user.usecase.ts,
+// and rclone's Internxt backend asks for a sign-in it cannot make by itself
+// with the command that makes one at a terminal.
+func TestAnInternxtSignInIsNamedByWhatItLacks(t *testing.T) {
+	cases := map[string]failure.Failure{
+		"login failed: failed to access: access: Wrong login credentials (status 401)":  {Code: failure.SignInFailed},
+		"login failed: failed to access: access: Wrong 2-factor auth code (status 401)": {Code: failure.TwoFactorRefused},
+		"mnemonic is required - please run: rclone config reconnect :internxt,email=me@example.invalid,pass=x:": {
+			Code: failure.SignInAgain,
+		},
+		`right side "drive:": failed to fetch user info (re-auth failed: re-login fallback failed: account requires 2FA - please run: rclone config reconnect drive:): refresh token: Unauthorized (status 401)`: {
+			Code: failure.SignInAgain, Params: map[string]string{"side": "right"},
+		},
+	}
+	for text, want := range cases {
+		got := failure.Of(text)
+		if got == nil || !reflect.DeepEqual(*got, want) {
+			t.Errorf("Of(%q) = %+v, want %+v", text, got, want)
+		}
+	}
+}
+
 func TestAFailureAfterAJobsNameIsStillNamed(t *testing.T) {
 	text := "photos: " + fmt.Errorf("%w: %s", daemon.ErrNotEnoughSpace, tooFull).Error()
 	if got := failure.Of(text); got == nil || got.Code != failure.NotEnoughSpace {
