@@ -25,6 +25,11 @@ const refocusGrace = 400 * time.Millisecond
 // trayGap is the room between the small window and the taskbar or the icon.
 const trayGap = 8
 
+// settleAfter is how long the last window has to be gone before the webview's
+// leftovers are released. WebKit takes a moment to take the page down, and
+// its network process may still be writing what the page stored.
+const settleAfter = time.Minute
+
 // shell is everything the desktop adds around the engine: the main window, the
 // small window at the tray icon, and the icon with its menu.
 //
@@ -58,6 +63,8 @@ type shell struct {
 	// keep writes the small window's size once a drag on its edge stops, since
 	// the drag sends a stream of resizes.
 	keep *time.Timer
+	// settle releases the webview's leftovers once no window is open.
+	settle *time.Timer
 
 	mu         sync.Mutex
 	resized    deskset.Size
@@ -95,6 +102,18 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 	})
 	s.keep.Stop()
 
+	s.settle = time.AfterFunc(time.Hour, func() {
+		if s.ending() {
+			return
+		}
+		application.InvokeSync(func() {
+			if s.main == nil && s.activity == nil {
+				releaseWebKit()
+			}
+		})
+	})
+	s.settle.Stop()
+
 	store.Watch(s.follow)
 	app.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(*application.ApplicationEvent) {
 		s.follow()
@@ -120,6 +139,7 @@ func (s *shell) openMain() *application.WebviewWindow {
 		Frameless: runtime.GOOS != "darwin" && !s.systemFrame,
 	})
 	w.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) { s.closing(w, e) })
+	w.OnWindowEvent(events.Common.WindowClosing, s.closed)
 	w.OnWindowEvent(events.Common.WindowMinimise, func(*application.WindowEvent) {
 		if set := s.store.Get(); set.Tray && set.MinimiseToTray {
 			s.toTray()
@@ -165,6 +185,7 @@ func (s *shell) openActivity() *application.WebviewWindow {
 		s.mu.Unlock()
 		s.keep.Reset(time.Second)
 	})
+	w.OnWindowEvent(events.Common.WindowClosing, s.closed)
 	// Alt+F4 closes it the way a click elsewhere does.
 	w.RegisterHook(events.Common.WindowClosing, func(*application.WindowEvent) {
 		if s.ending() {
@@ -204,6 +225,10 @@ func (s *shell) closeActivity() {
 		w.Close()
 	}
 }
+
+// closed runs once a window has really closed, rather than been kept open by
+// a hook.
+func (s *shell) closed(*application.WindowEvent) { s.settle.Reset(settleAfter) }
 
 // ending reports whether the program is on its way out, when every window
 // closes for real.
@@ -403,7 +428,8 @@ func (s *shell) startTray() *application.SystemTray {
 	tray.SetMenu(menu)
 	tray.SetIcon(s.live.set.Idle)
 	tray.SetTooltip("ArrowLoop")
-	tray.OnClick(func() { s.toggleActivity(tray) })
+	// Linux delivers the click on the D-Bus goroutine.
+	tray.OnClick(func() { application.InvokeSync(func() { s.toggleActivity(tray) }) })
 	// By the time a double click arrives, its first click has opened the small
 	// window and its second has closed it again.
 	tray.OnDoubleClick(s.showMain)
