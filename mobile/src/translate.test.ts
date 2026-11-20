@@ -28,7 +28,7 @@ test("a file written to while it was copied says how it grew, in the app's langu
   };
   assert.equal(
     entryNote(t, line, spell),
-    "wurde links beschrieben, während sie kopiert wurde, und das 4 Läufe hintereinander, bleibt für den nächsten Lauf liegen. Beim Lesen änderte sich die Größe von 2.048 auf 4.096 Byte.",
+    "wurde links während des Kopierens beschrieben, 4 Läufe hintereinander, und bleibt für den nächsten Lauf liegen. Beim Lesen änderte sich die Größe von 2.048 auf 4.096 Byte.",
   );
 });
 

@@ -64,7 +64,7 @@ describe('a file written to while it was copied', () => {
       'was being written on the left while it was copied, in 3 runs in a row, leaving it for the next run. While it was read its size changed from 4 to 9 bytes.',
     )
     expect(reasonText(german, grew, spell('de'))).toBe(
-      'wurde links beschrieben, während sie kopiert wurde, und das 3 Läufe hintereinander, bleibt für den nächsten Lauf liegen. Beim Lesen änderte sich die Größe von 4 auf 9 Byte.',
+      'wurde links während des Kopierens beschrieben, 3 Läufe hintereinander, und bleibt für den nächsten Lauf liegen. Beim Lesen änderte sich die Größe von 4 auf 9 Byte.',
     )
   })
 
@@ -75,7 +75,7 @@ describe('a file written to while it was copied', () => {
         'After the copy the modification time is [2026-11-19T10:00:00Z] on the left and [2026-11-20T08:16:40Z] on the right.',
     )
     expect(reasonText(german, differs, spell('de'))).toBe(
-      'wurde rechts beschrieben, während sie kopiert wurde, und das 12 Läufe hintereinander, bleibt für den nächsten Lauf liegen. ' +
+      'wurde rechts während des Kopierens beschrieben, 12 Läufe hintereinander, und bleibt für den nächsten Lauf liegen. ' +
         'Nach dem Kopieren ist die Datei links 1.048.576 Byte groß und rechts 1.040.000. ' +
         'Nach dem Kopieren ist die Änderungszeit links [2026-11-19T10:00:00Z] und rechts [2026-11-20T08:16:40Z].',
     )
