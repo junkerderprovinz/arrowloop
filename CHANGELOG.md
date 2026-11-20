@@ -10,153 +10,55 @@ The full notes for each release are in
 
 ## 2.8.0 - 2026-11-20
 
-ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler, a one-way job can leave new files on the source for a while, Linux gets an AppImage and a much lighter tray, and a renamed job keeps everything it learned.
+ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler and needs far less memory in the tray, a job can take only the files you name or leave new ones on the source for a while, Linux gets an AppImage, tablets get the desktop layout, Shoutrrr joins the notification channels, and a renamed job keeps everything it learned.
 
 ## ✨ Added
 
 - **A built-in VPN for the jobs that want one, or several.** Pick your provider from tiles with their logos under Settings, Integrations, or paste the WireGuard configuration of a server of your own, then choose that VPN in a job. Each job only ever goes through its own tunnel, which runs inside ArrowLoop, so it needs no WireGuard on the machine and no extra rights in a container. A run whose tunnel does not come up fails, with nothing synced over your own connection.
 - **The desktop app takes commands.** It understands the same commands as the command line, and `run-due` runs whatever is due and exits, so cron, a systemd timer or the Windows Task Scheduler can keep your jobs on schedule without the app staying open. Two copies never run the same job at once. Thanks to @danpeig for the idea ([#241](https://github.com/junkerderprovinz/arrowloop/issues/241)).
+- **A job can take only some of the files.** Write patterns under Own inclusions, such as `*.tar.gz`, and the job syncs just the files that match. Every other file stays where it is on both sides, and your exclusions still apply. An import from FolderSync brings its include filters along. Thanks to @danpeig ([#159](https://github.com/junkerderprovinz/arrowloop/issues/159)).
 - **Leave new files on the source for a while.** A one-way job can wait until a file is old enough before it moves it, so this week's photos stay on the phone while older ones go to the server. Thanks to @gplaza for the idea ([#238](https://github.com/junkerderprovinz/arrowloop/issues/238)).
+- **One switch pauses every automatic run.** Pick "Pause automatic runs" on the Jobs page, on the phone as well, or switch it on at the top of Settings › Sync. No job then starts on its own, whether by schedule, a watched folder, a retry or a request from another app, until you resume. A run already going finishes, and you can still start any job by hand. Thanks to @danpeig ([#161](https://github.com/junkerderprovinz/arrowloop/issues/161)).
+- **Shoutrrr as a notification channel.** One address such as `telegram://...` or `pushover://...` reaches Telegram, Pushover, Teams and more than twenty other services. It works on the server, the desktop and the portable version, and needs no Apprise server. Thanks to @danpeig for the idea ([#225](https://github.com/junkerderprovinz/arrowloop/issues/225)).
+- **A WebDAV target can trust the certificate its own server made.** When a test fails because no known authority vouches for the certificate of a self-hosted Nextcloud, ArrowLoop shows the certificate's SHA-256 fingerprint and offers to trust it. From then on it accepts exactly that certificate for the target and refuses any other, so a swapped certificate stops the next run and the test asks again with the new fingerprint.
+- **A kDrive target can start in the shared folder.** Under Other settings, an Infomaniak kDrive target takes a root folder: your private folder, the shared Common documents folder, or any other folder by its ID. Thanks to @DonEstefan ([#219](https://github.com/junkerderprovinz/arrowloop/issues/219)).
+- **Hidden folders can be picked.** The folder picker has a switch "Show hidden folders", so a folder like .backup/arrowloop works for the settings backup, the automatic backup or a job. Thanks to @kdqic3 ([#221](https://github.com/junkerderprovinz/arrowloop/issues/221)).
 - **An AppImage for Linux.** Next to the zip and the Flatpak there is one file for x64 and one for ARM64 that runs without installing, and the updater replaces that file itself. Thanks to @danpeig for asking ([#245](https://github.com/junkerderprovinz/arrowloop/issues/245)).
+- **ArrowLoop has its own Discord server.** The Help card on the Info tile and on the phone sends questions and ideas there, right after GitHub.
 
 ## 🎨 Design
 
-- **VPNs, targets and notification channels share one row.** Each connected service sits in a row with its logo, status and buttons. A target whose automatic check fails shows "Not connected" with the reason, and a channel's settings open in their own window that saves as you type.
+- **A tablet gets the desktop layout.** The app turns with a tablet, and held sideways from 840 dp of width it shows the side bar, the settings tiles and the wide lists of the desktop and container versions, with filters as a side panel and runs in a dialog. Phones stay upright. Thanks to @leonp5 ([#223](https://github.com/junkerderprovinz/arrowloop/issues/223)).
+- **VPNs, targets and notification channels share one row.** Each connected service sits in a row with its logo, status and buttons, and a new channel is picked from tiles with their logos, like a target. A target whose automatic check fails shows "Not connected" with the reason, and a channel's settings open in their own window that saves as you type.
+- **Every setting of a target has a proper name.** All of rclone's options carry a readable name in the target form, such as "Authentication URL", in all 42 languages. An empty field shows rclone's name in grey, and its default value is in its (i) bubble.
+- **Inclusions and Exclusions read as a pair.** The job editor names its cards Inclusions and Exclusions, with Own inclusions and Own exclusions beside each other, on the phone too.
+- **Whatever the pointer is over lights up in your accent colour.** Buttons, rows, menus and tiles take a soft tint of the accent under the pointer, a held button on the phone does the same, and placeholders and the focus ring are easier to see on every background.
+- **The Jobs tab on the phone has its three actions side by side.** Pause automatic runs, Run all and Add stand as equal buttons at the foot of the list, and Stop all takes the place of Run all while a job runs.
 - **The download buttons name the architecture.** The README and the Apps page say x64 or ARM64 under each button, the macOS button says it runs on Apple and Intel, and the AppImage stands before the Flatpak. Thanks to @danpeig for the idea ([#246](https://github.com/junkerderprovinz/arrowloop/issues/246)).
 
 ## ⚡ Improved
 
-- **ArrowLoop in the tray on Linux holds far less memory.** A minute after the last window closes, it stops WebKit's network process, trims its heap and hands the code it no longer runs back to the system. A Flatpak installed for your user drops from about 440 MB to about 70 MB, and the single binary from about 335 MB to about 180 MB. Thanks to @danpeig for measuring ([#241](https://github.com/junkerderprovinz/arrowloop/issues/241)).
+- **ArrowLoop in the tray needs far less memory.** Sending the window to the tray closes it along with the browser engine that draws it, so a copy waiting for its next schedule holds about 50 MB on Windows instead of close to 500 MB. On Linux it also stops WebKit's network process a minute later and hands back the code it no longer runs, so a Flatpak installed for your user drops from about 440 MB to about 70 MB. The icon builds a fresh window in under a second. Thanks to @danpeig for the report and the measurements ([#241](https://github.com/junkerderprovinz/arrowloop/issues/241)).
 - **History opens on the runs and shows how long each one took.** You see first whether something failed, then the findings, then the files, and every run has its duration in the list and in its window. Thanks to @danpeig for both ideas ([#248](https://github.com/junkerderprovinz/arrowloop/issues/248), [#249](https://github.com/junkerderprovinz/arrowloop/issues/249)).
+- **A failed job says why.** The job list shows the reason under the job's name, and the job's page shows it above its runs, on the phone as well.
+- **The pickers for channels and targets answer to the keyboard.** The arrow keys move across the tiles, Enter picks the one tile a search leaves, and Escape first empties the search before it closes the window.
+- **The documentation's home page has the download links,** and each link fetches the newest release. Thanks to @danpeig for the idea ([#239](https://github.com/junkerderprovinz/arrowloop/issues/239)).
+- **The Docker Hub page has an overview** of what ArrowLoop does, how to start it and which folders it uses, kept up to date with every image. Thanks to @danpeig for asking ([#242](https://github.com/junkerderprovinz/arrowloop/issues/242)).
 
 ## 🐛 Fixed
 
 - **A renamed job keeps its history.** Every job has a fixed id, so its runs, its statistics and what the safety net has learned about it stay with it through a rename, even one made while it runs. Its before and after commands and its own Healthchecks check follow the new name as well. Thanks to @danpeig for the report ([#247](https://github.com/junkerderprovinz/arrowloop/issues/247)).
-
-## 2.7.7 - 2026-11-19
-
-ArrowLoop in the tray needs far less memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.
-
-## ⚡ Improved
-
-- **ArrowLoop in the tray uses far less memory.** Sending the window to the tray closes it along with the browser engine that draws it, so a copy waiting for its next schedule holds about 50 MB on Windows instead of close to 500 MB. The icon builds a fresh window in under a second. Thanks to @danpeig for the report ([#241](https://github.com/junkerderprovinz/arrowloop/issues/241)).
-- **The documentation's home page has the download links.** A Download section lists every build, from the Windows installer and the Flatpak to the APK, the Docker image and the Unraid template, and each link fetches the newest release. Thanks to @danpeig for the idea ([#239](https://github.com/junkerderprovinz/arrowloop/issues/239)).
-- **The Docker Hub page has an overview.** It says what ArrowLoop does, how to start the container with `docker run` or Compose and which folders it uses, and every image that goes out brings the page up to date. Thanks to @danpeig for asking ([#242](https://github.com/junkerderprovinz/arrowloop/issues/242)).
-
-## 🐛 Fixed
-
-- **On KDE Plasma the window has one set of buttons.** KWin drew its own title bar above ArrowLoop's, so the window showed two rows of controls. ArrowLoop asks the compositor at start whether it draws title bars itself and leaves its own out where it does, while GNOME keeps ArrowLoop's. Thanks to @danpeig for the report ([#240](https://github.com/junkerderprovinz/arrowloop/issues/240)).
-
-## 2.7.6 - 2026-11-18
-
-A tablet held sideways gets the side bar, the settings tiles and the wide lists of the desktop and container versions.
-
-## 🎨 Design
-
-- **A tablet held sideways shows the desktop layout.** From 840 dp of width the bottom bar gives way to the side bar of the desktop and container versions, in the same order and look, with Settings at its foot and no page titles above the pages. Phones and tablets held upright keep the phone layout, and turning the tablet keeps the page you are on. Thanks to @leonp5 for the idea ([#223](https://github.com/junkerderprovinz/arrowloop/issues/223)).
-- **The lists on a tablet use the width.** A job card shows what the job joins beside its status and buttons, the history lists files and runs in columns, the overview stands in two columns and a conflict shows both sides next to each other.
-- **Settings on a tablet are tiles beside their page.** General, Look, Sync, Targets, Pairing, Apps and Info stand in a column as on the desktop, and the picked one opens beside it.
-- **Filters and runs open as on the desktop.** A filter slides in as a panel at the edge of the screen, and a run opens in a dialog in the middle.
-
-## ⚡ Improved
-
-- **The pickers for channels and targets answer to the keyboard.** The arrow keys move across the tiles, Enter picks the one tile a search leaves, and Escape first empties the search before it closes the window.
-
-## 🐛 Fixed
-
-- **A field you type in keeps its box.** In the light theme a focused field turned white and lost its outline. It now keeps its grey box and gets a ring in the accent colour.
-- **An empty Targets page says how to connect the first target.** It used to stay blank, on the phone as on the tablet.
-
-## 2.7.5 - 2026-11-17
-
-Shoutrrr joins the notification channels, every channel is picked from a tile with its logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.
-
-## ✨ Added
-
-- **Shoutrrr as a notification channel.** One address such as `telegram://...` or `pushover://...` reaches Telegram, Pushover, Teams and more than twenty other services. It works on the server, the desktop and the portable version, and needs no Apprise server. Thanks to @danpeig for the idea ([#225](https://github.com/junkerderprovinz/arrowloop/issues/225)).
-
-## 🎨 Design
-
-- **Notification channels are picked from tiles.** "Add a channel" shows every service as a tile with its logo, in the same window the target picker uses, and a search finds a service by name.
-- **The Jobs tab on the phone has its three actions side by side.** Pause automatic runs, Run all and Add stand as three equal buttons at the foot of the list, where two of them used to hide behind More. While a job runs, Stop all takes the place of Run all, and where the words do not fit, the row shows its symbols.
-- **The overview's status sits below the title.** "All is well" is one size smaller than "Overview". Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
-
-## 🐛 Fixed
-
-- **Paired instances in a container find each other on the local network.** On a host with a single network interface, such as a container in a bridge network, the local discovery closed right after it started, so the instances only reached each other through the relay.
-- **The Apprise address list takes a space as you type it.** A second address no longer has to be pasted in.
-- **The More menu on the phone shows its whole text.** Menus and dropdowns grow as wide as their longest entry. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
-- **The run time no longer looks like a clock time.** The overview shows "31 s" instead of 0:31. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
-- **A target that does not say how full it is shows no figure.** That goes for the web and the phone, where Nextcloud used to claim 0 B in use. Thanks to @danpeig ([#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
-
-## 2.7.4 - 2026-11-17
-
-On a tablet the phone app turns into landscape with the device, and phones stay upright.
-
-## ✨ Added
-
-- **The app turns with a tablet.** On a tablet it follows the device into landscape, and the pages, the bottom bar and the sheets keep to a column in the middle of the screen. Phones stay upright as before. Thanks to @leonp5 ([#223](https://github.com/junkerderprovinz/arrowloop/issues/223)).
-
-## 🎨 Design
-
-- **The installer follows PommelPorter 1.2.2.** Its buttons and the folder picker light up in a soft shade of ArrowLoop's colour under the pointer, like the app itself.
-
-## 2.7.3 - 2026-11-16
-
-Every setting of a target has a proper name, hidden folders can be picked, Inclusions and Exclusions read as a pair, and whatever the pointer is over lights up in your accent colour.
-
-## ✨ Added
-
-- **Hidden folders can be picked.** The folder picker has a switch "Show hidden folders", so a folder like .backup/arrowloop works for the settings backup, the automatic backup or a job. The picker remembers the switch, on the phone as well. Thanks to @kdqic3 ([#221](https://github.com/junkerderprovinz/arrowloop/issues/221)).
-
-## 🎨 Design
-
-- **Every setting of a target has a proper name.** All of rclone's options carry a readable name in the target form, such as "Authentication URL" or "Minimum pause between requests", in place of names like auth_url or pacer_min_sleep. The names come in all 42 languages.
-- **An empty field shows rclone's name for it.** The name stands in grey inside the field and goes away as soon as you click into it. A field's default value has moved into its (i) bubble, on the phone as well.
-- **Inclusions and Exclusions read as a pair.** The job editor's card "Only these files" is called Inclusions, and its patterns field Own inclusions, beside Exclusions and Own exclusions. On the phone too.
-- **Whatever the pointer is over lights up in your accent colour.** Buttons, rows, menus and tiles take the same soft tint of the accent under the pointer, where they turned grey before, and a held button on the phone does the same. Accent text in the light theme is a shade darker, so it reads well on every card. This comes with GlimStone 4.5.4.
+- **Bringing settings back checks every file name the way Windows reads it.** A name with backslashes could write a file outside the import folder before the backup was checked, so ArrowLoop refuses such a backup as a whole. Only an app of your fortress could send one, and only once you had allowed it to put settings back.
+- **ArrowLoop's direct call to another app always goes where it belongs.** An app holding the fortress phrase could announce an address that sent it to another page of a host on your network.
+- **A job against a Samba share with a connection limit no longer fails with "Insufficient system resources".** When the share turns a connection away, ArrowLoop tries again with half the transfers, down to one, and remembers the number for that server. Thanks to @aegidius77 ([#160](https://github.com/junkerderprovinz/arrowloop/issues/160)).
+- **On KDE Plasma the window has one set of buttons.** ArrowLoop asks the compositor at start whether it draws title bars itself and leaves its own out where it does. Thanks to @danpeig for the report ([#240](https://github.com/junkerderprovinz/arrowloop/issues/240)).
+- **Paired instances in a container find each other on the local network,** where the local discovery used to close right after it started.
+- **Dates, times and figures read right.** Dates follow the region of your phone or browser, times on the phone follow a new clock setting straight away, a run time reads "31 s" instead of 0:31, and a target that does not say how full it is shows no figure. Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218), [#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
+- **Smaller things on the phone and the web.** Every status badge starts with a capital, the folder picker says when it is still listing, the More menu shows its whole text, the Apprise address list takes a space as you type, a focused field keeps its box in the light theme, and an empty Targets page says how to connect the first target. Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218), [#224](https://github.com/junkerderprovinz/arrowloop/issues/224)).
 
 ## 🌐 Translations
 
 - **Two Icelandic help sentences about signing in read properly again.** They had lost the word for password.
-
-## 2.7.2 - 2026-11-16
-
-A job can take only the files you name, one switch pauses every automatic run, a WebDAV target can trust the certificate your own server made, and a kDrive target can start in the shared folder. A failed job says why, dates follow your region, a Samba share with a connection limit no longer stops a job, and questions go to ArrowLoop's own Discord server.
-
-## ✨ Added
-
-- **A job can take only some of the files.** Write patterns under "Only these files", such as `*.tar.gz`, and the job syncs just the files that match. Every other file stays where it is on both sides, and your exclusions still apply. An import from FolderSync brings its include filters along. Thanks to @danpeig ([#159](https://github.com/junkerderprovinz/arrowloop/issues/159)).
-- **One switch pauses every automatic run.** Pick "Pause automatic runs" under More on the Jobs page, on the phone as well, or switch it on at the top of Settings › Sync. No job then starts on its own, whether by schedule, a watched folder, a retry or a request from another app, until you resume. A run already going finishes, and you can still start any job by hand. Thanks to @danpeig ([#161](https://github.com/junkerderprovinz/arrowloop/issues/161)).
-- **ArrowLoop has its own Discord server.** The Help card on the Info tile and on the phone sends questions and ideas there, right after GitHub, in place of the email button.
-- **A WebDAV target can trust the certificate its own server made.** When a test fails because no known authority vouches for the certificate of a self-hosted Nextcloud, ArrowLoop shows the certificate's SHA-256 fingerprint and offers to trust it. From then on it accepts exactly that certificate for the target and refuses any other, so a swapped certificate stops the next run and the test asks again with the new fingerprint. The target's settings show the trusted certificate and let you stop trusting it, in the browser and on the phone.
-- **A kDrive target can start in the shared folder.** Under Other settings, an Infomaniak kDrive target takes a root folder: your private folder, the shared Common documents folder, or any other folder by its ID. Jobs and the folder picker then start there. The phone's target editor has Other settings too, folded away until you open them or one of them is set. Thanks to @DonEstefan ([#219](https://github.com/junkerderprovinz/arrowloop/issues/219)).
-
-## 🎨 Design
-
-- **ArrowLoop follows GlimStone 4.5.3.** Placeholder text is easier to read in every field, the focus ring stands out on every background, and a dropdown jumps to the option whose first letter you type. The GlimStone version on the Info tile opens the newest release. On the phone the info colour of the light theme is a shade darker, as it is on the web.
-- **The picker finds kDrive under K.** It shows kDrive with Infomaniak underneath and its own logo, dosya.dev has its logo too, and the targets built on another target, such as Encrypted or Split into pieces, sit in a section of their own at the end, each with a line on what it does. In the target form, Other settings stay folded until you open them or one of them is set.
-
-## ⚡ Improved
-
-- **A failed job says why.** The job list shows the reason under the job's name, with the whole sentence on hover, and the job's page shows it above its runs. The phone does the same.
-
-## 🐛 Fixed
-
-- **Times on the phone follow a new clock or region setting straight away.** A list already on screen kept the old 12- or 24-hour format until you changed tabs.
-- **Dates follow the region of your phone or browser.** With English on a British phone a date reads 03/11, the way the UK writes the 3rd of November. Weekdays and month names stay in the language you picked in ArrowLoop, and in the browser the region also decides between 14:05 and 2:05 PM. Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218)).
-- **Every status badge starts with a capital.** The phone wrote "running" and "disabled" next to "Stopped". A paused job now says "Paused" there as well, the same as on the web. Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218)).
-- **The folder picker says when it is still listing.** A folder on a target can take a moment. Until it answers, the picker names the folder it is opening and shows "Listing the folders…" in place of the folder you just left. "Use this folder" and "New folder" wait for the listing, and an empty folder says "No folders in here." Thanks to @danpeig ([#218](https://github.com/junkerderprovinz/arrowloop/issues/218)).
-- **A job against a Samba share with a connection limit no longer fails with "Insufficient system resources".** DietPi, for one, lets a share take twice as many connections as the machine has cores, and each transfer opens one. When the share turns a connection away, ArrowLoop tries again with half the transfers, down to one, and remembers the number for that server. Thanks to @aegidius77 ([#160](https://github.com/junkerderprovinz/arrowloop/issues/160)).
-
-## 2.7.1 - 2026-11-14
-
-On Windows, ArrowLoop refuses a settings backup with a file name that would land outside the import folder, and the fortress kit goes to 1.0.1.
-
-## 🐛 Fixed
-
-- **Bringing settings back checks every file name the way Windows reads it.** A name with backslashes could write a file outside the import folder before the backup was checked. ArrowLoop now refuses such a backup as a whole. Only an app of your fortress could send one, and only once you had switched on putting settings back for it. Linux, the phone and the container were not affected.
-- **The fortress kit is at 1.0.1.** An app holding the phrase could announce an address that sent ArrowLoop's direct call to another page of a host on your network. The call now always goes where it belongs.
 
 ## 2.7.0 - 2026-11-14
 

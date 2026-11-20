@@ -1,1 +1,0 @@
-Every knob on a target finally has a real name instead of rclone shorthand, and an empty field still whispers the original in grey. Hidden folders come out of hiding with one switch in the folder picker. Inclusions and Exclusions sound like the pair they are, and whatever your finger or pointer lands on glows in your accent colour.

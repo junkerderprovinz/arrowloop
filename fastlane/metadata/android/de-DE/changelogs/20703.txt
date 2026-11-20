@@ -1,1 +1,0 @@
-Jeder Regler an einem Ziel hat endlich einen richtigen Namen statt rclone-Kürzel, und ein leeres Feld flüstert das Original noch in Grau. Versteckte Ordner kommen mit einem Schalter in der Ordnerauswahl aus ihrem Versteck. Einschlüsse und Ausschlüsse klingen wie das Paar, das sie sind, und was Finger oder Zeiger berührt, leuchtet in deiner Akzentfarbe.

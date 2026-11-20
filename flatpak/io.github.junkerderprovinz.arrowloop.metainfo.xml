@@ -81,72 +81,9 @@
   <releases>
     <release version="2.8.0" date="2026-11-20">
       <description>
-        <p>ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler, a one-way job can leave new files on the source for a while, Linux gets an AppImage and a much lighter tray, and a renamed job keeps everything it learned.</p>
+        <p>ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler and needs far less memory in the tray, a job can take only the files you name or leave new ones on the source for a while, Linux gets an AppImage, tablets get the desktop layout, Shoutrrr joins the notification channels, and a renamed job keeps everything it learned.</p>
       </description>
       <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.0</url>
-    </release>
-    <release version="2.7.7" date="2026-11-19">
-      <description>
-        <p>ArrowLoop in the tray needs a tenth of the memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.7</url>
-    </release>
-    <release version="2.7.6" date="2026-11-18">
-      <description>
-        <p>A tablet held sideways gets the side bar, the settings tiles and the wide lists of the desktop and container versions.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.6</url>
-    </release>
-    <release version="2.7.5" date="2026-11-17">
-      <description>
-        <p>Shoutrrr joins the notification channels, every channel is picked from a tile with its logo, the phone's Jobs tab puts its three actions side by side, and run times and storage figures read right.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.5</url>
-    </release>
-    <release version="2.7.4" date="2026-11-17">
-      <description>
-        <p>On a tablet the phone app turns into landscape with the device, and phones stay upright.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.4</url>
-    </release>
-    <release version="2.7.3" date="2026-11-16">
-      <description>
-        <p>A proper name for every setting of a target, hidden folders in the picker, and hovers in your accent colour.</p>
-        <ul>
-          <li>Every rclone option in the target form has a readable name, in all 42 languages</li>
-          <li>An empty field shows rclone's name for it, and its default sits in the (i) bubble</li>
-          <li>The folder picker can show hidden folders</li>
-          <li>The job editor's cards are called Inclusions and Exclusions</li>
-          <li>Whatever the pointer is over lights up in the accent colour</li>
-        </ul>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.3</url>
-    </release>
-    <release version="2.7.2" date="2026-11-16">
-      <description>
-        <p>Only the files you name, a pause for every automatic run, and trust for your own server's certificate.</p>
-        <ul>
-          <li>A job can take only the files that match its patterns</li>
-          <li>One switch pauses every automatic run until you resume</li>
-          <li>A WebDAV target can trust the certificate its own server made</li>
-          <li>A kDrive target can start in the shared folder or any folder by its ID</li>
-          <li>A failed job says why on its card and its page</li>
-          <li>Dates follow the region of your device</li>
-          <li>A Samba share with a connection limit no longer stops a job</li>
-          <li>The Help card sends questions to ArrowLoop's Discord server</li>
-        </ul>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.2</url>
-    </release>
-    <release version="2.7.1" date="2026-11-14">
-      <description>
-        <p>Security fixes for bringing settings back and for the fortress.</p>
-        <ul>
-          <li>A settings backup with a file name outside the import folder is refused (only Windows was affected)</li>
-          <li>The fortress kit 1.0.1 keeps direct calls on their own path</li>
-        </ul>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.7.1</url>
     </release>
     <release version="2.7.0" date="2026-11-14">
       <description>
