@@ -51,7 +51,7 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	if at == "" {
 		roots, err := browseRoots()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			writeError(w, http.StatusInternalServerError, err)
 			return
 		}
 		writeJSON(w, http.StatusOK, browseAnswer{Entries: roots})
@@ -59,7 +59,7 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 	}
 	answer, err := folderListing(r.Context(), at, wantsHidden(r))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, answer)
@@ -180,11 +180,38 @@ var androidRoots = []struct{ name, path string }{
 	{"Documents", "/storage/emulated/0/Documents"},
 }
 
+// volumesVar names the file in which the Android app lists the mounted cards
+// and USB drives, one "path<TAB>label" per line. Android refuses to list "/"
+// to an app, so they are found only through it. It is set only on a phone.
+const volumesVar = "ARROWLOOP_VOLUMES_FILE"
+
+// phoneVolumes reads the app's list and keeps the volumes that can be opened,
+// since a card can be pulled after the app wrote the list.
+func phoneVolumes(file string) []browseEntry {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return nil
+	}
+	var out []browseEntry
+	for _, line := range strings.Split(string(data), "\n") {
+		dir, label, _ := strings.Cut(strings.TrimSpace(line), "\t")
+		if dir == "" {
+			continue
+		}
+		if info, err := os.Stat(dir); err != nil || !info.IsDir() {
+			continue
+		}
+		out = append(out, browseEntry{Name: label, Path: dir})
+	}
+	return out
+}
+
 // browseRoots is the top of the tree: the phone folders that exist followed by
-// "/", or on Windows one entry per drive letter that can be opened, followed
-// by the network shares connected without a letter. The letters are probed,
-// because a mapped drive whose server is asleep exists but cannot be opened.
-// A mapped letter carries its share's address, which is how Explorer names it.
+// its cards, or "/" off a phone, or on Windows one entry per drive letter that
+// can be opened, followed by the network shares connected without a letter.
+// The letters are probed, because a mapped drive whose server is asleep exists
+// but cannot be opened. A mapped letter carries its share's address, which is
+// how Explorer names it.
 func browseRoots() ([]browseEntry, error) {
 	if runtime.GOOS != "windows" {
 		out := []browseEntry{}
@@ -192,6 +219,9 @@ func browseRoots() ([]browseEntry, error) {
 			if info, err := os.Stat(root.path); err == nil && info.IsDir() {
 				out = append(out, browseEntry{Name: root.name, Path: root.path})
 			}
+		}
+		if file := os.Getenv(volumesVar); file != "" {
+			return append(out, phoneVolumes(file)...), nil
 		}
 		return append(out, browseEntry{Name: "/", Path: "/"}), nil
 	}

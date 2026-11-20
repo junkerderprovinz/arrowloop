@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { api } from "./api";
+import { engine } from "./engine";
 import { useT } from "./i18n";
 import { Glyph } from "./glyphs";
 import { appearance, setAppearance, useAppearance } from "./settings";
@@ -53,6 +54,9 @@ export function FolderPicker({
     setOpening(path);
     setError("");
     try {
+      // The top lists the cards, and the app tells the engine which are in
+      // only when it looks.
+      if (!path) await engine.storageGranted();
       // Read from the store rather than the render, so a listing asked for
       // right after the switch flips already follows it.
       const answer = await api.browse(path || undefined, appearance().hiddenFolders);

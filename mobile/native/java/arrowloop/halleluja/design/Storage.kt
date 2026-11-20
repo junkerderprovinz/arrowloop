@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
 import android.provider.Settings
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -50,20 +52,45 @@ object Storage {
     fun accessFile(context: Context): File = File(Engine.home(context), "file-access")
 
     /**
-     * Reads the permission and passes it on to the engine. It is given on a
-     * settings page that reports back to nobody, so the app passes it on
+     * Reads the permission and passes it on to the engine, with the cards that
+     * are mounted. The permission is given on a settings page that reports back
+     * to nobody and a card can be pulled at any time, so the app passes both on
      * whenever it looks, and before every wake-up.
      */
     fun check(context: Context): Boolean {
         val granted = granted(context)
         try {
             accessFile(context).writeText(if (granted) "granted" else "denied")
+            volumesFile(context).writeText(removable(context))
         } catch (e: Exception) {
             // The engine then runs as it did before it was told anything.
             Log.w("ArrowLoop", "could not pass on the file access: ${e.javaClass.simpleName}")
         }
         return granted
     }
+
+    /**
+     * The file in which the engine finds the cards and USB drives that are
+     * mounted. Android does not list "/" to an app, so the engine's folder
+     * picker has no other way to find them.
+     */
+    fun volumesFile(context: Context): File = File(Engine.home(context), "volumes")
+
+    /** One "path<TAB>name" line per mounted removable volume, named as Android names it. */
+    private fun removable(context: Context): String {
+        val manager = context.getSystemService(StorageManager::class.java) ?: return ""
+        return manager.storageVolumes
+            .filter { it.isRemovable && it.state == Environment.MEDIA_MOUNTED }
+            .mapNotNull { volume ->
+                directory(volume)?.let { "${it.absolutePath}\t${volume.getDescription(context)}" }
+            }
+            .joinToString("\n")
+    }
+
+    /** Where the volume is mounted. Before Android 11 it is only known by its id. */
+    private fun directory(volume: StorageVolume): File? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) volume.directory
+        else volume.uuid?.let { File("/storage/$it") }
 
     /**
      * The system page that grants the permission to this app. Without the

@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"testing"
 
@@ -241,5 +242,65 @@ func TestANewFolderLandsOnTheDrive(t *testing.T) {
 	}
 	if info, err := os.Stat(filepath.Join(mount, "Music")); err != nil || !info.IsDir() {
 		t.Errorf("no folder arrived on the drive: %v", err)
+	}
+}
+
+func TestAnUnreadableFolderIsExplained(t *testing.T) {
+	h := newHarness(t)
+	missing := filepath.Join(t.TempDir(), "gone")
+
+	resp, err := h.srv.Client().Get(h.srv.URL + "/api/browse?path=" + url.QueryEscape(missing))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	var got struct {
+		Error string `json:"error"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
+		t.Fatalf("the refusal was not JSON, so the app can only show its status: %v", err)
+	}
+	if resp.StatusCode != http.StatusBadRequest || got.Error == "" {
+		t.Errorf("got %d %q, want 400 with the reason", resp.StatusCode, got.Error)
+	}
+}
+
+// phoneVolumes writes the list of removable storage the app passes on and
+// points the engine at it.
+func phoneVolumes(t *testing.T, lines string) {
+	t.Helper()
+	file := filepath.Join(t.TempDir(), "volumes")
+	if err := os.WriteFile(file, []byte(lines), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("ARROWLOOP_VOLUMES_FILE", file)
+}
+
+func TestTheTopOffersTheCardsThePhoneReports(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("the top of a Windows tree lists drive letters")
+	}
+	h := newHarness(t)
+	card := t.TempDir()
+	phoneVolumes(t, card+"\tSanDisk SD card\n"+filepath.Join(card, "ejected")+"\tUSB drive\n")
+
+	var top browseAnswer
+	h.get(t, "/api/browse", &top)
+	var cards, roots int
+	for _, e := range top.Entries {
+		switch {
+		case e.Name == "SanDisk SD card" && e.Path == card:
+			cards++
+		case e.Name == "USB drive":
+			t.Error("a volume that is not mounted was offered")
+		case e.Path == "/":
+			roots++
+		}
+	}
+	if cards != 1 {
+		t.Errorf("the card is missing from the top: %+v", top.Entries)
+	}
+	if roots != 0 {
+		t.Error(`"/" was offered on a phone, where Android refuses to list it`)
 	}
 }

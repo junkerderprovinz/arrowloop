@@ -283,6 +283,7 @@ object Engine {
         builder.environment()["TZ"] = TimeZone.getDefault().id
         builder.environment()["ARROWLOOP_DNS_FILE"] = nameserverFile(context).absolutePath
         builder.environment()["ARROWLOOP_FILE_ACCESS"] = Storage.accessFile(context).absolutePath
+        builder.environment()["ARROWLOOP_VOLUMES_FILE"] = Storage.volumesFile(context).absolutePath
         builder.environment()["ARROWLOOP_DEVICE_NAME"] = deviceName(context)
         // The phone reports runs through Android's notifications alone, so the
         // engine skips the message channels and Healthchecks checks its
