@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.8.0" date="2026-11-20">
+      <description>
+        <p>ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler, a one-way job can leave new files on the source for a while, Linux gets an AppImage and a much lighter tray, and a renamed job keeps everything it learned.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.0</url>
+    </release>
     <release version="2.7.7" date="2026-11-19">
       <description>
         <p>ArrowLoop in the tray needs a tenth of the memory, KDE Plasma shows one title bar, the documentation's home page lists every download and the Docker Hub page finally has an overview.</p>

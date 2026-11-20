@@ -1,0 +1,1 @@
+ArrowLoop now packs its own VPN: pick your provider or paste a WireGuard config, choose it in a job, and the sync slips through the tunnel while your own connection stays out of it. One-way jobs can leave this week's photos on the phone until they are old enough to move. And a renamed job keeps everything it learned about itself, history included.
