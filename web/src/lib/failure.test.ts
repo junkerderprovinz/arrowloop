@@ -34,6 +34,17 @@ describe('a failed run in words', () => {
     expect(sayFailure('421 "Maximum login limit has been reached."', failure, tIn(en), 'en').said).toContain('lower concurrency')
   })
 
+  it('says a sign-in rclone cannot make by itself needs the password again', () => {
+    const raw = 'mnemonic is required - please run: rclone config reconnect :internxt,email=me@example.invalid:'
+    expect(failureLine(raw, { code: 'signInAgain' }, tIn(en), 'en')).toBe(en['failure.signInAgain'])
+    expect(failureLine(raw, { code: 'signInAgain', params: { side: 'right' } }, tIn(de), 'de')).toBe(de['failure.signInAgain'])
+  })
+
+  it('tells a refused two-factor code from a wrong password', () => {
+    const raw = 'login failed: failed to access: access: Wrong 2-factor auth code (status 401)'
+    expect(sayFailure(raw, { code: 'twoFactorRefused' }, tIn(en), 'en').said).toMatch(/two-factor code was not accepted/)
+  })
+
   it('keeps what a command printed under its sentence', () => {
     const failure = { code: 'beforeFailed', params: { output: 'exit status 2' } }
     expect(failureLine('the command before the run failed, so the run did not start: exit status 2', failure, tIn(en), 'en')).toBe(

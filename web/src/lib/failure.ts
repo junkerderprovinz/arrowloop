@@ -16,6 +16,8 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
   volumeMissing: { left: 'failure.volumeMissing.left', right: 'failure.volumeMissing.right' },
   unreachable: { either: 'failure.unreachable', left: 'failure.unreachable.left', right: 'failure.unreachable.right' },
   signInFailed: { either: 'failure.signInFailed', left: 'failure.signInFailed.left', right: 'failure.signInFailed.right' },
+  signInAgain: { either: 'failure.signInAgain' },
+  twoFactorRefused: { either: 'failure.twoFactorRefused' },
   permissionDenied: {
     either: 'failure.permissionDenied',
     left: 'failure.permissionDenied.left',

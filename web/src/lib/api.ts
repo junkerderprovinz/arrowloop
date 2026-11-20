@@ -115,8 +115,9 @@ export type CheckAnswer = {
 
 /**
  * A choice rclone's own setup leaves to the person adding a target, such as
- * which of several drives a sign-in opens (internal/remotes/setup.go). The
- * answer goes back as the setting `name`.
+ * which of several drives a sign-in opens (internal/remotes/setup.go). One
+ * without choices, such as a two-factor code, is typed in. The answer goes
+ * back as the setting `name`.
  */
 export type SetupQuestion = { name: string; choices: { value: string; help: string }[] }
 
