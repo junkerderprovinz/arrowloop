@@ -1725,6 +1725,7 @@ const nl: Translations = {
   'new.change.infoTile': '{info} toont alle versies en controleert ze op updates. De kaart {help} voegt de handleiding en een foutrapport toe.',
   'new.change.loginReset': 'Een vergeten wachtwoord kun je op de inlogpagina opnieuw instellen met een code uit het containerlog.',
   'new.change.notifyChannels': '{notifications} onder {safety} stuurt nu ook per e-mail, naar Discord, Slack, Gotify, ntfy, een Apprise-server en Healthchecks.io, elk met een eigen schakelaar en een testknop.',
+  'new.change.notifyTile': '{notifications} heeft een eigen tegel in de instellingen.',
   'new.change.onlyFiles': 'Met de kaart {only} synchroniseert een taak alleen de bestanden die bij haar patronen passen.',
   'new.change.pauseAutomatic': '{pause} onder {more} bij {jobs} stopt elke automatische run tot je verdergaat.',
   'new.change.discordHelp': 'De kaart {help} bij {info} leidt naar de eigen Discord-server van ArrowLoop.',

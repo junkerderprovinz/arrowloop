@@ -1725,6 +1725,7 @@ const hu: Translations = {
   'new.change.infoTile': 'A(z) {info} felsorolja az összes verziót, és frissítéseket keres hozzájuk. A(z) {help} kártya a kézikönyvet és a hibajelentést adja hozzá.',
   'new.change.loginReset': 'Az elfelejtett jelszót a bejelentkező oldalon lehet visszaállítani a konténer naplójából vett kóddal.',
   'new.change.notifyChannels': 'A {safety} alatti {notifications} most már e-mailben, Discordra, Slackre, Gotifyra, ntfy-ra, Apprise kiszolgálóra és Healthchecks.io-ra is küld, mindegyik saját kapcsolóval és tesztgombbal.',
+  'new.change.notifyTile': 'A(z) {notifications} saját csempét kapott a beállításokban.',
   'new.change.onlyFiles': 'A {only} kártyával egy feladat csak a mintáinak megfelelő fájlokat szinkronizálja.',
   'new.change.pauseAutomatic': 'A {jobs} oldalon a {more} alatti {pause} minden automatikus futást leállít, amíg nem folytatod.',
   'new.change.discordHelp': 'Az {info} {help} kártyája az ArrowLoop saját Discord-szerverére visz.',

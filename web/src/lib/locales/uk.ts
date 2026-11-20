@@ -1725,6 +1725,7 @@ const uk: Translations = {
   'new.change.infoTile': '{info} перелічує всі версії й перевіряє оновлення. Картка {help} додає посібник і звіт про помилку.',
   'new.change.loginReset': 'Забутий пароль можна скинути на сторінці входу кодом із журналу контейнера.',
   'new.change.notifyChannels': '{notifications} у розділі {safety} тепер надсилає й поштою, у Discord, Slack, Gotify, ntfy, на сервер Apprise і в Healthchecks.io, кожен канал із власним перемикачем і кнопкою тесту.',
+  'new.change.notifyTile': '{notifications} тепер має власну плитку в налаштуваннях.',
   'new.change.onlyFiles': 'З карткою {only} завдання синхронізує лише файли, що відповідають його шаблонам.',
   'new.change.pauseAutomatic': '{pause} у меню {more} на сторінці {jobs} зупиняє кожен автоматичний запуск, доки ви не продовжите.',
   'new.change.discordHelp': 'Картка {help} у розділі {info} веде на власний Discord-сервер ArrowLoop.',

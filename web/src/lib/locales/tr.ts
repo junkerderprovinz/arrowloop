@@ -1725,6 +1725,7 @@ const tr: Translations = {
   'new.change.infoTile': '{info} tüm sürümleri listeler ve güncellemeleri denetler. {help} kartı kılavuzu ve hata raporunu ekler.',
   'new.change.loginReset': 'Unutulan parola, giriş sayfasından kapsayıcı günlüğündeki bir kodla sıfırlanabilir.',
   'new.change.notifyChannels': '{safety} altındaki {notifications} artık e-postayla, Discord, Slack, Gotify, ntfy, bir Apprise sunucusu ve Healthchecks.io\'ya da gönderiyor; her biri kendi anahtarı ve test düğmesiyle.',
+  'new.change.notifyTile': '{notifications} ayarlarda kendi kutucuğuna sahip.',
   'new.change.onlyFiles': '{only} ile bir iş yalnızca desenlerine uyan dosyaları eşitler.',
   'new.change.pauseAutomatic': '{jobs} sayfasında {more} altındaki {pause}, sen devam edene kadar her otomatik çalıştırmayı durdurur.',
   'new.change.discordHelp': "{info} içindeki {help} kartı ArrowLoop'un kendi Discord sunucusuna götürür.",

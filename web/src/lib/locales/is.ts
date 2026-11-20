@@ -1725,6 +1725,7 @@ const is: Translations = {
   'new.change.infoTile': '{info} sýnir allar útgáfur og athugar hvort uppfærslur séu til. Spjaldið {help} bætir við handbókinni og villuskýrslu.',
   'new.change.loginReset': 'Gleymt lykilorð má endurstilla á innskráningarsíðunni með kóða úr annál gámsins.',
   'new.change.notifyChannels': '{notifications} undir {safety} sendir nú líka með tölvupósti, á Discord, Slack, Gotify, ntfy, Apprise þjón og Healthchecks.io, hver með eigin rofa og prófunarhnapp.',
+  'new.change.notifyTile': '{notifications} er með sína eigin flís í stillingunum.',
   'new.change.onlyFiles': 'Með spjaldinu {only} samstillir verk aðeins skrár sem passa við mynstur þess.',
   'new.change.pauseAutomatic': '{pause} undir {more} á {jobs} stöðvar allar sjálfvirkar keyrslur þar til þú heldur áfram.',
   'new.change.discordHelp': 'Spjaldið {help} undir {info} leiðir á eigin Discord-þjón ArrowLoop.',

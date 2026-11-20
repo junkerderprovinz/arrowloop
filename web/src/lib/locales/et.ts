@@ -1725,6 +1725,7 @@ const et: Translations = {
   'new.change.infoTile': '{info} loetleb kõik versioonid ja kontrollib neile uuendusi. Kaart {help} lisab käsiraamatu ja veaaruande.',
   'new.change.loginReset': 'Unustatud parooli saab sisselogimislehel lähtestada koodiga konteineri logist.',
   'new.change.notifyChannels': '{safety} all olev {notifications} saadab nüüd ka e-postiga, Discordi, Slacki, Gotifysse, ntfy-sse, Apprise serverisse ja Healthchecks.io-sse, igaühel oma lüliti ja testinupp.',
+  'new.change.notifyTile': '{notifications} on seadetes oma paanil.',
   'new.change.onlyFiles': 'Kaardiga {only} sünkroonib töö ainult need failid, mis vastavad selle mustritele.',
   'new.change.pauseAutomatic': '{pause} menüüs {more} lehel {jobs} peatab iga automaatse käivituse, kuni jätkad.',
   'new.change.discordHelp': 'Kaart {help} lehel {info} viib ArrowLoopi enda Discordi serverisse.',

@@ -1725,6 +1725,7 @@ const ko: Translations = {
   'new.change.infoTile': '{info}에는 모든 버전이 나열되고 업데이트 여부를 확인합니다. {help} 카드에는 설명서와 버그 보고서가 있습니다.',
   'new.change.loginReset': '비밀번호를 잊었다면 로그인 페이지에서 컨테이너 로그의 코드로 재설정할 수 있습니다.',
   'new.change.notifyChannels': '{safety}의 {notifications}이 이제 이메일, Discord, Slack, Gotify, ntfy, Apprise 서버, Healthchecks.io로도 보냅니다. 채널마다 스위치와 테스트 버튼이 있습니다.',
+  'new.change.notifyTile': '{notifications}에 설정의 전용 타일이 생겼습니다.',
   'new.change.onlyFiles': '{only}을 쓰면 작업이 패턴에 맞는 파일만 동기화합니다.',
   'new.change.pauseAutomatic': '{jobs}의 {more}에 있는 {pause}은(는) 다시 시작할 때까지 모든 자동 실행을 멈춥니다.',
   'new.change.discordHelp': '{info}의 {help} 카드에서 ArrowLoop의 Discord 서버로 갈 수 있습니다.',

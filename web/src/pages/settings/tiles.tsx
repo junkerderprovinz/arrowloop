@@ -3,6 +3,7 @@ import { useMemo, useSyncExternalStore, type ComponentType } from 'react'
 import {
   IconInfo,
   IconLink,
+  IconNotifications,
   IconPlug,
   IconShieldOn,
   IconSync,
@@ -26,6 +27,7 @@ const TILES: Record<TileId, Tile> = {
   look: { id: 'look', labelKey: 'settings.look', icon: IconTabLook },
   sync: { id: 'sync', labelKey: 'settings.sync', icon: IconSync },
   safety: { id: 'safety', labelKey: 'settings.safetyNet', icon: IconShieldOn },
+  notifications: { id: 'notifications', labelKey: 'settings.notifications', icon: IconNotifications },
   targets: { id: 'targets', labelKey: 'nav.targets', icon: IconTabStorage },
   integrations: { id: 'integrations', labelKey: 'settings.integrations', icon: IconPlug },
   security: { id: 'security', labelKey: 'settings.security', icon: IconTabSecurity },

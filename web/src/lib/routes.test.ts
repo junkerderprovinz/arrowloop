@@ -103,9 +103,12 @@ describe('the addresses', () => {
     expect(go('/settings/engine')).toEqual({ redirect: '/settings/sync' })
     expect(go('/settings/workload')).toEqual({ redirect: '/settings/general' })
     expect(go('/settings/exclude')).toEqual({ redirect: '/settings/sync' })
-    expect(go('/settings/notifications')).toEqual({ redirect: '/settings/safety' })
     expect(go('/settings/anomalies?job=photos')).toEqual({ redirect: '/settings/safety?job=photos' })
     expect(go('/settings/app')).toEqual({ redirect: '/settings/apps' })
+  })
+
+  it('open the notification channels on a tile of their own', () => {
+    expect(go('/settings/notifications')).toEqual({ view: { page: 'settings', tile: 'notifications' } })
   })
 
   it('send a tile nobody made to the first one', () => {

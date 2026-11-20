@@ -1725,6 +1725,7 @@ const eu: Translations = {
   'new.change.infoTile': '{info} atalak bertsio guztiak zerrendatzen ditu eta eguneratzeak bilatzen ditu. {help} txartelak eskuliburua eta akats-txostena gehitzen ditu.',
   'new.change.loginReset': 'Ahaztutako pasahitza saio-hasierako orritik berrezar daiteke, edukiontziaren egunkariko kode batekin.',
   'new.change.notifyChannels': '{safety} ataleko {notifications} posta elektronikoz, Discord, Slack, Gotify, ntfy, Apprise zerbitzari batera eta Healthchecks.io-ra ere bidaltzen du, bakoitza bere etengailuarekin eta proba-botoiarekin.',
+  'new.change.notifyTile': '{notifications} atalak bere lauza du ezarpenetan.',
   'new.change.onlyFiles': '{only} erabiliz, lan batek bere ereduekin bat datozen fitxategiak soilik sinkronizatzen ditu.',
   'new.change.pauseAutomatic': '{jobs} orriko {more} barruko {pause} aukerak exekuzio automatiko oro gelditzen du berriz hasi arte.',
   'new.change.discordHelp': '{info} ataleko {help} txartelak ArrowLoop-en Discord zerbitzarira eramaten du.',

@@ -7,14 +7,12 @@ import { BRAKE_SETTINGS } from '../../lib/follows'
 import { Card } from '../../lib/glimstone/Card'
 import { useT } from '../../lib/i18n'
 import { Reading, useEngineSettings } from './engineSettings'
-import { NotifyCard } from './NotifyCard'
 import { counter, SettingsRow } from './rows'
 
 /**
- * What keeps a job from doing harm and who hears of it: the brakes, which
- * hold a run that would remove or overwrite more than a share of what the job
- * knows about, the jobs with brakes of their own, the anomaly notes, and when
- * and where the engine reports.
+ * What keeps a job from doing harm: the brakes, which hold a run that would
+ * remove or overwrite more than a share of what the job knows about, the jobs
+ * with brakes of their own, and the anomaly notes.
  */
 export function SafetyPage() {
   const { t } = useT()
@@ -26,7 +24,6 @@ export function SafetyPage() {
   const setDefault = (next: Partial<NonNullable<Settings['defaults']>>) => patch({ defaults: { ...defaults, ...next } })
   const anomalies = draft.anomalies ?? {}
   const setAnomalies = (next: Partial<NonNullable<Settings['anomalies']>>) => patch({ anomalies: { ...anomalies, ...next } })
-  const notify = draft.notify ?? {}
   const on = !anomalies.off
   const cardHue = counter()
 
@@ -121,10 +118,6 @@ export function SafetyPage() {
             />
           )}
         </Card>
-      </div>
-
-      <div data-new="notify-channels">
-        <NotifyCard notify={notify} setNotify={(next) => patch({ notify: next })} hueIndex={cardHue()} />
       </div>
     </Stack>
   )

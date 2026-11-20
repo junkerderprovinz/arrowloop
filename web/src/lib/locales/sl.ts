@@ -1725,6 +1725,7 @@ const sl: Translations = {
   'new.change.infoTile': '{info} našteje vse različice in preveri, ali so na voljo posodobitve. Kartica {help} doda priročnik in poročilo o napaki.',
   'new.change.loginReset': 'Pozabljeno geslo lahko ponastaviš na strani za prijavo s kodo iz dnevnika vsebnika.',
   'new.change.notifyChannels': '{notifications} pod {safety} zdaj pošilja tudi po e-pošti, v Discord, Slack, Gotify, ntfy, na strežnik Apprise in v Healthchecks.io, vsak kanal s svojim stikalom in gumbom za preizkus.',
+  'new.change.notifyTile': '{notifications} ima v nastavitvah svojo ploščico.',
   'new.change.onlyFiles': 'S kartico {only} opravilo sinhronizira le datoteke, ki ustrezajo njegovim vzorcem.',
   'new.change.pauseAutomatic': '{pause} pod {more} na strani {jobs} ustavi vsak samodejni zagon, dokler ne nadaljuješ.',
   'new.change.discordHelp': 'Kartica {help} pod {info} vodi na ArrowLoopov lastni strežnik Discord.',

@@ -1725,6 +1725,7 @@ const bg: Translations = {
   'new.change.infoTile': '{info} изброява всяка версия и проверява за актуализации. Картата {help} добавя ръководството и доклад за грешка.',
   'new.change.loginReset': 'Забравена парола може да се нулира от страницата за вход с код от дневника на контейнера.',
   'new.change.notifyChannels': '{notifications} в {safety} вече изпраща и по имейл, към Discord, Slack, Gotify, ntfy, Apprise сървър и Healthchecks.io, всеки канал със свой превключвател и бутон за тест.',
+  'new.change.notifyTile': '{notifications} има собствена плочка в настройките.',
   'new.change.onlyFiles': 'С картата {only} задачата синхронизира само файловете, които отговарят на шаблоните ѝ.',
   'new.change.pauseAutomatic': '{pause} под {more} в {jobs} спира всяко автоматично изпълнение, докато не продължиш.',
   'new.change.discordHelp': 'Картата {help} в {info} води до собствения Discord сървър на ArrowLoop.',

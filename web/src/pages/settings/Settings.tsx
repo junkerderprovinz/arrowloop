@@ -8,6 +8,7 @@ import { GeneralPage } from './GeneralPage'
 import { InfoPage } from './InfoPage'
 import { IntegrationsPage } from './IntegrationsPage'
 import { LookPage, type LookProps } from './LookPage'
+import { NotificationsPage } from './NotificationsPage'
 import { PairingPage } from './PairingPage'
 import { SafetyPage } from './SafetyPage'
 import { ACROSS, SettingsRail, useMatch } from './SettingsRail'
@@ -126,6 +127,8 @@ function TilePage({ tile, tiles, look, version, window, onWindow, targets, whats
       return <SyncPage />
     case 'safety':
       return <SafetyPage />
+    case 'notifications':
+      return <NotificationsPage />
     case 'targets':
       return <TargetsTile page={targets} />
     case 'integrations':

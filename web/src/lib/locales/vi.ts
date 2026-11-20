@@ -1725,6 +1725,7 @@ const vi: Translations = {
   'new.change.infoTile': '{info} liệt kê mọi phiên bản và kiểm tra bản cập nhật. Thẻ {help} thêm hướng dẫn và báo cáo lỗi.',
   'new.change.loginReset': 'Mật khẩu bị quên có thể đặt lại từ trang đăng nhập bằng mã trong nhật ký của container.',
   'new.change.notifyChannels': '{notifications} trong {safety} giờ cũng gửi qua email, tới Discord, Slack, Gotify, ntfy, máy chủ Apprise và Healthchecks.io, mỗi kênh có công tắc và nút gửi thử riêng.',
+  'new.change.notifyTile': '{notifications} có ô riêng trong phần cài đặt.',
   'new.change.onlyFiles': 'Với {only}, một công việc chỉ đồng bộ các tệp khớp với mẫu của nó.',
   'new.change.pauseAutomatic': '{pause} trong {more} ở {jobs} dừng mọi lần chạy tự động cho đến khi bạn tiếp tục.',
   'new.change.discordHelp': 'Thẻ {help} trong {info} dẫn đến máy chủ Discord riêng của ArrowLoop.',

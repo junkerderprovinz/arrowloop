@@ -1725,6 +1725,7 @@ const lv: Translations = {
   'new.change.infoTile': '{info} uzskaita visas versijas un pārbauda, vai ir atjauninājumi. Kartīte {help} pievieno rokasgrāmatu un kļūdu pārskatu.',
   'new.change.loginReset': 'Aizmirstu paroli var atiestatīt pieteikšanās lapā ar kodu no konteinera žurnāla.',
   'new.change.notifyChannels': '{notifications} sadaļā {safety} tagad sūta arī pa e-pastu, uz Discord, Slack, Gotify, ntfy, Apprise serveri un Healthchecks.io, katram savs slēdzis un pārbaudes poga.',
+  'new.change.notifyTile': '{notifications} iestatījumos ir sava flīze.',
   'new.change.onlyFiles': 'Ar kartīti {only} uzdevums sinhronizē tikai failus, kas atbilst tā šabloniem.',
   'new.change.pauseAutomatic': '{pause} sadaļā {more} lapā {jobs} aptur katru automātisko palaišanu, līdz turpināsi.',
   'new.change.discordHelp': 'Kartīte {help} sadaļā {info} ved uz ArrowLoop paša Discord serveri.',

@@ -1725,6 +1725,7 @@ const gl: Translations = {
   'new.change.infoTile': '{info} lista todas as versións e comproba se hai actualizacións. A tarxeta {help} engade o manual e un informe de erros.',
   'new.change.loginReset': 'Un contrasinal esquecido pódese restablecer desde a páxina de inicio de sesión cun código do rexistro do contedor.',
   'new.change.notifyChannels': '{notifications} en {safety} tamén envía por correo, a Discord, Slack, Gotify, ntfy, un servidor Apprise e Healthchecks.io, cada un co seu interruptor e un botón de proba.',
+  'new.change.notifyTile': '{notifications} ten a súa propia tella na configuración.',
   'new.change.onlyFiles': 'Con {only}, unha tarefa sincroniza só os ficheiros que coinciden cos seus padróns.',
   'new.change.pauseAutomatic': '{pause} en {more} de {jobs} detén cada execución automática ata que a retomes.',
   'new.change.discordHelp': 'A tarxeta {help} en {info} leva ao servidor de Discord propio de ArrowLoop.',

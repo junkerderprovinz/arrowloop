@@ -1725,6 +1725,7 @@ const sr: Translations = {
   'new.change.infoTile': '{info} набраја све верзије и проверава да ли имају ажурирања. Картица {help} додаје приручник и извештај о грешци.',
   'new.change.loginReset': 'Заборављену лозинку можеш ресетовати на страници за пријаву кодом из дневника контејнера.',
   'new.change.notifyChannels': '{notifications} у делу {safety} сада шаље и е-поштом, на Discord, Slack, Gotify, ntfy, Apprise сервер и Healthchecks.io, сваки канал са сопственим прекидачем и дугметом за тест.',
+  'new.change.notifyTile': '{notifications} има сопствену плочицу у подешавањима.',
   'new.change.onlyFiles': 'Са картицом {only} посао синхронизује само датотеке које одговарају његовим обрасцима.',
   'new.change.pauseAutomatic': '{pause} под {more} на страници {jobs} зауставља свако аутоматско покретање док не наставиш.',
   'new.change.discordHelp': 'Картица {help} под {info} води на ArrowLoop-ов сопствени Discord сервер.',

@@ -1725,6 +1725,7 @@ const ro: Translations = {
   'new.change.infoTile': '{info} listează fiecare versiune și caută actualizări pentru ele. Cardul {help} adaugă manualul și un raport de eroare.',
   'new.change.loginReset': 'O parolă uitată poate fi resetată de pe pagina de autentificare, cu un cod din jurnalul containerului.',
   'new.change.notifyChannels': '{notifications} din {safety} trimite acum și prin e-mail, la Discord, Slack, Gotify, ntfy, un server Apprise și Healthchecks.io, fiecare cu propriul comutator și un buton de test.',
+  'new.change.notifyTile': '{notifications} are o dală proprie în setări.',
   'new.change.onlyFiles': 'Cu {only}, o sarcină sincronizează doar fișierele care se potrivesc cu tiparele ei.',
   'new.change.pauseAutomatic': '{pause} din {more} pe pagina {jobs} oprește fiecare rulare automată până când reiei.',
   'new.change.discordHelp': 'Cardul {help} din {info} duce la serverul Discord propriu al ArrowLoop.',

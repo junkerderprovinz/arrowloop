@@ -1725,6 +1725,7 @@ const ja: Translations = {
   'new.change.infoTile': '{info}にはすべてのバージョンが並び、更新を確認できます。{help}カードにはマニュアルとバグレポートがあります。',
   'new.change.loginReset': 'パスワードを忘れたときは、ログイン画面からコンテナのログのコードでリセットできます。',
   'new.change.notifyChannels': '{safety} の {notifications} は、メール、Discord、Slack、Gotify、ntfy、Apprise サーバー、Healthchecks.io にも送れるようになりました。それぞれにスイッチとテストボタンがあります。',
+  'new.change.notifyTile': '{notifications} は設定に専用のタイルを持つようになりました。',
   'new.change.onlyFiles': '{only} を使うと、ジョブはパターンに合うファイルだけを同期します。',
   'new.change.pauseAutomatic': '{jobs} の {more} にある {pause} で、再開するまですべての自動実行が止まります。',
   'new.change.discordHelp': '{info} の {help} カードから ArrowLoop の Discord サーバーへ行けます。',

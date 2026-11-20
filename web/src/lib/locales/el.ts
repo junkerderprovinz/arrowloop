@@ -1725,6 +1725,7 @@ const el: Translations = {
   'new.change.infoTile': 'Η ενότητα {info} απαριθμεί όλες τις εκδόσεις και τις ελέγχει για ενημερώσεις. Η κάρτα {help} προσθέτει το εγχειρίδιο και μια αναφορά σφάλματος.',
   'new.change.loginReset': 'Έναν ξεχασμένο κωδικό πρόσβασης μπορείς να τον επαναφέρεις από τη σελίδα σύνδεσης με έναν κωδικό από το αρχείο καταγραφής του κοντέινερ.',
   'new.change.notifyChannels': 'Οι {notifications} στο {safety} στέλνουν πλέον και με email, σε Discord, Slack, Gotify, ntfy, διακομιστή Apprise και Healthchecks.io, το καθένα με δικό του διακόπτη και κουμπί δοκιμής.',
+  'new.change.notifyTile': 'Το {notifications} έχει δικό του πλακίδιο στις ρυθμίσεις.',
   'new.change.onlyFiles': 'Με τις {only}, μια εργασία συγχρονίζει μόνο τα αρχεία που ταιριάζουν στα μοτίβα της.',
   'new.change.pauseAutomatic': 'Το {pause} στο {more} των {jobs} σταματά κάθε αυτόματη εκτέλεση μέχρι να συνεχίσεις.',
   'new.change.discordHelp': 'Η κάρτα {help} στο {info} οδηγεί στον δικό του διακομιστή Discord του ArrowLoop.',

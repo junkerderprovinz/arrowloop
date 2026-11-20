@@ -1725,6 +1725,7 @@ const hi: Translations = {
   'new.change.infoTile': '{info} सारे संस्करण सूचीबद्ध करता है और उनके अपडेट जाँचता है। {help} कार्ड मैनुअल और बग रिपोर्ट जोड़ता है।',
   'new.change.loginReset': 'भूला हुआ पासवर्ड लॉगिन पेज से, कंटेनर लॉग के कोड की मदद से रीसेट किया जा सकता है।',
   'new.change.notifyChannels': '{safety} में {notifications} अब ईमेल से और Discord, Slack, Gotify, ntfy, एक Apprise सर्वर और Healthchecks.io पर भी भेजता है, हर एक का अपना स्विच और टेस्ट बटन है।',
+  'new.change.notifyTile': '{notifications} की सेटिंग्स में अपनी अलग टाइल है।',
   'new.change.onlyFiles': '{only} के साथ, कोई काम सिर्फ़ वे फ़ाइलें सिंक करता है जो उसके पैटर्न से मेल खाती हैं।',
   'new.change.pauseAutomatic': '{jobs} पर {more} के अंदर {pause} हर स्वचालित रन को तब तक रोक देता है जब तक आप फिर से शुरू न करें।',
   'new.change.discordHelp': '{info} पर {help} कार्ड ArrowLoop के अपने Discord सर्वर तक ले जाता है।',

@@ -1725,6 +1725,7 @@ const id: Translations = {
   'new.change.infoTile': '{info} mencantumkan setiap versi dan memeriksa pembaruannya. Kartu {help} menambahkan panduan dan laporan bug.',
   'new.change.loginReset': 'Kata sandi yang terlupa bisa diatur ulang dari halaman masuk dengan kode dari log kontainer.',
   'new.change.notifyChannels': '{notifications} di {safety} kini juga mengirim lewat email, ke Discord, Slack, Gotify, ntfy, server Apprise, dan Healthchecks.io, masing-masing dengan sakelar dan tombol uji sendiri.',
+  'new.change.notifyTile': '{notifications} punya ubin sendiri di pengaturan.',
   'new.change.onlyFiles': 'Dengan kartu {only}, tugas hanya menyinkronkan file yang cocok dengan polanya.',
   'new.change.pauseAutomatic': '{pause} di {more} pada {jobs} menghentikan setiap jalankan otomatis sampai kamu melanjutkan.',
   'new.change.discordHelp': 'Kartu {help} di {info} mengarah ke server Discord milik ArrowLoop.',

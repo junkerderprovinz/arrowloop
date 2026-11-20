@@ -1725,6 +1725,7 @@ const ru: Translations = {
   'new.change.infoTile': '{info} перечисляет все версии и проверяет их обновления. Карточка {help} добавляет руководство и отчёт об ошибке.',
   'new.change.loginReset': 'Забытый пароль можно сбросить на странице входа с помощью кода из журнала контейнера.',
   'new.change.notifyChannels': '{notifications} в разделе {safety} теперь отправляет и по почте, в Discord, Slack, Gotify, ntfy, на сервер Apprise и в Healthchecks.io, у каждого канала свой переключатель и кнопка теста.',
+  'new.change.notifyTile': 'У раздела {notifications} теперь своя плитка в настройках.',
   'new.change.onlyFiles': 'С карточкой {only} задание синхронизирует только файлы, подходящие под его шаблоны.',
   'new.change.pauseAutomatic': '{pause} в меню {more} на странице {jobs} останавливает каждый автоматический запуск, пока вы не продолжите.',
   'new.change.discordHelp': 'Карточка {help} в разделе {info} ведёт на собственный Discord-сервер ArrowLoop.',

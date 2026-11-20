@@ -3,7 +3,7 @@
 import type { NavPins } from './navPins'
 
 /** The settings tiles in their column's order, Info last. */
-export const TILE_IDS = ['general', 'look', 'sync', 'safety', 'targets', 'integrations', 'security', 'pairing', 'apps', 'info'] as const
+export const TILE_IDS = ['general', 'look', 'sync', 'safety', 'notifications', 'targets', 'integrations', 'security', 'pairing', 'apps', 'info'] as const
 
 export type TileId = (typeof TILE_IDS)[number]
 
@@ -12,7 +12,6 @@ export const FORMER_TILES: Record<string, TileId> = {
   engine: 'sync',
   workload: 'general',
   exclude: 'sync',
-  notifications: 'safety',
   anomalies: 'safety',
   app: 'apps',
 }

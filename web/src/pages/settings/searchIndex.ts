@@ -161,6 +161,8 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
         { key: 'anomaly.notifyNotes', hint: 'anomaly.notifyNotesHint' },
       ],
     },
+  ],
+  notifications: [
     {
       title: 'settings.notifications',
       rows: [

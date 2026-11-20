@@ -1725,6 +1725,7 @@ const zh: Translations = {
   'new.change.infoTile': '{info}列出所有版本并检查更新。{help}卡片还提供手册和错误报告。',
   'new.change.loginReset': '忘记密码时，可在登录页面使用容器日志中的代码重置。',
   'new.change.notifyChannels': '{safety} 中的 {notifications} 现在也能发送到电子邮件、Discord、Slack、Gotify、ntfy、Apprise 服务器和 Healthchecks.io，每个渠道都有自己的开关和测试按钮。',
+  'new.change.notifyTile': '{notifications} 在设置中有了自己的磁贴。',
   'new.change.onlyFiles': '有了{only}，任务只同步与其模式匹配的文件。',
   'new.change.pauseAutomatic': '{jobs} 中 {more} 下的 {pause} 会停止所有自动运行，直到你恢复。',
   'new.change.discordHelp': '{info} 中的 {help} 卡片可以前往 ArrowLoop 自己的 Discord 服务器。',

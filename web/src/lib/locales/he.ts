@@ -1725,6 +1725,7 @@ const he: Translations = {
   'new.change.infoTile': '{info} מפרט את כל הגרסאות ובודק אם יש להן עדכונים. הכרטיס {help} מוסיף את המדריך ודוח תקלה.',
   'new.change.loginReset': 'אפשר לאפס סיסמה שנשכחה מעמוד ההתחברות, עם קוד מיומן הקונטיינר.',
   'new.change.notifyChannels': '{notifications} תחת {safety} שולח עכשיו גם בדוא"ל, ל-Discord, Slack, Gotify, ntfy, לשרת Apprise ול-Healthchecks.io, כל אחד עם מתג משלו וכפתור בדיקה.',
+  'new.change.notifyTile': 'ל-{notifications} יש אריח משלו בהגדרות.',
   'new.change.onlyFiles': 'עם {only}, משימה מסנכרנת רק את הקבצים שתואמים לתבניות שלה.',
   'new.change.pauseAutomatic': '{pause} תחת {more} בדף {jobs} עוצר כל הרצה אוטומטית עד שתמשיכו.',
   'new.change.discordHelp': 'הכרטיס {help} תחת {info} מוביל לשרת ה-Discord של ArrowLoop.',

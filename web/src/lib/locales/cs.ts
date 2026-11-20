@@ -1725,6 +1725,7 @@ const cs: Translations = {
   'new.change.infoTile': '{info} uvádí všechny verze a kontroluje jejich aktualizace. Karta {help} přidává příručku a hlášení chyby.',
   'new.change.loginReset': 'Zapomenuté heslo lze obnovit na přihlašovací stránce pomocí kódu z logu kontejneru.',
   'new.change.notifyChannels': '{notifications} v sekci {safety} nyní posílá i e-mailem, do Discordu, Slacku, Gotify, ntfy, na server Apprise a do Healthchecks.io, každý kanál s vlastním přepínačem a tlačítkem testu.',
+  'new.change.notifyTile': '{notifications} má v nastavení vlastní dlaždici.',
   'new.change.onlyFiles': 'Pomocí karty {only} úloha synchronizuje jen soubory, které odpovídají jejím vzorům.',
   'new.change.pauseAutomatic': '{pause} v nabídce {more} u {jobs} zastaví každý automatický běh, dokud nebudeš pokračovat.',
   'new.change.discordHelp': 'Karta {help} v {info} vede na vlastní Discord server ArrowLoopu.',

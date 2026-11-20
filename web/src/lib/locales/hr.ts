@@ -1725,6 +1725,7 @@ const hr: Translations = {
   'new.change.infoTile': '{info} navodi sve verzije i provjerava njihova ažuriranja. Kartica {help} dodaje priručnik i izvješće o grešci.',
   'new.change.loginReset': 'Zaboravljena lozinka može se vratiti na početnu sa stranice za prijavu, uz kod iz zapisnika spremnika.',
   'new.change.notifyChannels': '{notifications} pod {safety} sada šalje i e-poštom, na Discord, Slack, Gotify, ntfy, Apprise poslužitelj i Healthchecks.io, svaki kanal s vlastitim prekidačem i gumbom za test.',
+  'new.change.notifyTile': '{notifications} ima vlastitu pločicu u postavkama.',
   'new.change.onlyFiles': 'S karticom {only} zadatak sinkronizira samo datoteke koje odgovaraju njegovim uzorcima.',
   'new.change.pauseAutomatic': '{pause} pod {more} na stranici {jobs} zaustavlja svako automatsko pokretanje dok ne nastaviš.',
   'new.change.discordHelp': 'Kartica {help} pod {info} vodi na ArrowLoopov vlastiti Discord poslužitelj.',

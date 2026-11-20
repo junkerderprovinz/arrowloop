@@ -1725,6 +1725,7 @@ const pt: Translations = {
   'new.change.infoTile': '{info} lista todas as versões e verifica se há atualizações. O cartão {help} acrescenta o manual e um relatório de erros.',
   'new.change.loginReset': 'Uma palavra-passe esquecida pode ser reposta na página de início de sessão, com um código do registo do contentor.',
   'new.change.notifyChannels': '{notifications} em {safety} também envia por e-mail, para Discord, Slack, Gotify, ntfy, um servidor Apprise e Healthchecks.io, cada um com o seu interruptor e um botão de teste.',
+  'new.change.notifyTile': '{notifications} tem um bloco próprio nas definições.',
   'new.change.onlyFiles': 'Com {only}, uma tarefa sincroniza só os ficheiros que correspondem aos seus padrões.',
   'new.change.pauseAutomatic': '{pause} em {more} nas {jobs} para cada execução automática até retomares.',
   'new.change.discordHelp': 'O cartão {help} em {info} leva ao servidor de Discord do ArrowLoop.',

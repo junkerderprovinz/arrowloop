@@ -1725,6 +1725,7 @@ const ca: Translations = {
   'new.change.infoTile': '{info} llista totes les versions i comprova si tenen actualitzacions. La targeta {help} afegeix el manual i un informe d\'error.',
   'new.change.loginReset': 'Una contrasenya oblidada es pot restablir des de la pàgina d\'inici de sessió amb un codi del registre del contenidor.',
   'new.change.notifyChannels': '{notifications} a {safety} també envia per correu, a Discord, Slack, Gotify, ntfy, un servidor Apprise i Healthchecks.io, cadascun amb el seu interruptor i un botó de prova.',
+  'new.change.notifyTile': '{notifications} té una rajola pròpia a la configuració.',
   'new.change.onlyFiles': 'Amb {only}, una tasca sincronitza només els fitxers que coincideixen amb els seus patrons.',
   'new.change.pauseAutomatic': '{pause} a {more} de {jobs} atura cada execució automàtica fins que la reprens.',
   'new.change.discordHelp': "La targeta {help} a {info} porta al servidor de Discord propi d'ArrowLoop.",

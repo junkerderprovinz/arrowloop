@@ -1725,6 +1725,7 @@ const pl: Translations = {
   'new.change.infoTile': '{info} wylicza wszystkie wersje i sprawdza dla nich aktualizacje. Karta {help} dodaje podręcznik i raport o błędzie.',
   'new.change.loginReset': 'Zapomniane hasło można zresetować na stronie logowania, podając kod z dziennika kontenera.',
   'new.change.notifyChannels': '{notifications} w {safety} wysyła teraz także e-mailem, do Discorda, Slacka, Gotify, ntfy, serwera Apprise i Healthchecks.io, każdy kanał z własnym przełącznikiem i przyciskiem testu.',
+  'new.change.notifyTile': '{notifications} mają własny kafelek w ustawieniach.',
   'new.change.onlyFiles': 'Dzięki karcie {only} zadanie synchronizuje tylko pliki pasujące do jego wzorców.',
   'new.change.pauseAutomatic': '{pause} w menu {more} na stronie {jobs} zatrzymuje każde automatyczne uruchomienie, dopóki nie wznowisz.',
   'new.change.discordHelp': 'Karta {help} w {info} prowadzi na własny serwer Discord ArrowLoop.',

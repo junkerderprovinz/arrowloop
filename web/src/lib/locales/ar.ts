@@ -1725,6 +1725,7 @@ const ar: Translations = {
   'new.change.infoTile': 'تعرض {info} كل الإصدارات وتفحص تحديثاتها. وتضيف بطاقة {help} الدليل وتقرير الخطأ.',
   'new.change.loginReset': 'يمكن إعادة تعيين كلمة المرور المنسية من صفحة تسجيل الدخول برمز من سجل الحاوية.',
   'new.change.notifyChannels': 'أصبحت {notifications} في {safety} ترسل أيضًا بالبريد الإلكتروني وإلى Discord وSlack وGotify وntfy وخادم Apprise وHealthchecks.io، ولكل منها مفتاحه وزر تجربة.',
+  'new.change.notifyTile': 'أصبح لـ {notifications} مربع خاص به في الإعدادات.',
   'new.change.onlyFiles': 'مع {only}، تزامن المهمة الملفات المطابقة لأنماطها فقط.',
   'new.change.pauseAutomatic': 'يوقف {pause} ضمن {more} في {jobs} كل تشغيل تلقائي حتى تستأنف.',
   'new.change.discordHelp': 'تقود بطاقة {help} في {info} إلى خادم Discord الخاص بـ ArrowLoop.',

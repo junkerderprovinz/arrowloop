@@ -15,6 +15,7 @@ const PAGES: Partial<Record<TileId, string>> = {
   look: 'LookPage.tsx',
   sync: 'SyncPage.tsx',
   safety: 'SafetyPage.tsx',
+  notifications: 'NotificationsPage.tsx',
   integrations: 'IntegrationsPage.tsx',
   info: 'InfoPage.tsx',
 }

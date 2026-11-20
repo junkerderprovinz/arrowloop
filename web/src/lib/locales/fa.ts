@@ -1725,6 +1725,7 @@ const fa: Translations = {
   'new.change.infoTile': '{info} همهٔ نسخه‌ها را فهرست می‌کند و به‌روزرسانی‌هایشان را بررسی می‌کند. کارت {help} راهنمای کاربر و گزارش خطا را اضافه می‌کند.',
   'new.change.loginReset': 'گذرواژهٔ فراموش‌شده را می‌توان از صفحهٔ ورود با کدی از گزارش کانتینر بازنشانی کرد.',
   'new.change.notifyChannels': '{notifications} در {safety} اکنون با ایمیل و به Discord، Slack، Gotify، ntfy، یک سرور Apprise و Healthchecks.io هم می‌فرستد، هر کدام با کلید خود و یک دکمهٔ آزمایش.',
+  'new.change.notifyTile': '{notifications} در تنظیمات کاشی خودش را دارد.',
   'new.change.onlyFiles': 'با {only}، یک کار فقط فایل‌هایی را همگام می‌کند که با الگوهایش جور درمی‌آیند.',
   'new.change.pauseAutomatic': '{pause} در {more} صفحه {jobs} هر اجرای خودکار را تا وقتی ادامه دهید متوقف می‌کند.',
   'new.change.discordHelp': 'کارت {help} در {info} به سرور Discord خود ArrowLoop می‌رود.',

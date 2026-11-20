@@ -1725,6 +1725,7 @@ const fi: Translations = {
   'new.change.infoTile': '{info} listaa kaikki versiot ja tarkistaa niiden päivitykset. {help}-kortti lisää käyttöohjeen ja virheraportin.',
   'new.change.loginReset': 'Unohtuneen salasanan voi nollata kirjautumissivulla kontin lokista saatavalla koodilla.',
   'new.change.notifyChannels': '{safety}-kohdan {notifications} lähettää nyt myös sähköpostilla, Discordiin, Slackiin, Gotifyyn, ntfy:hin, Apprise-palvelimelle ja Healthchecks.io:hon, kullakin oma kytkin ja testipainike.',
+  'new.change.notifyTile': '{notifications} on nyt omana ruutunaan asetuksissa.',
   'new.change.onlyFiles': 'Kortin {only} avulla työ synkronoi vain ne tiedostot, jotka vastaavat sen kuvioita.',
   'new.change.pauseAutomatic': '{pause} kohdassa {more} sivulla {jobs} pysäyttää kaikki automaattiset ajot, kunnes jatkat.',
   'new.change.discordHelp': 'Kortti {help} sivulla {info} vie ArrowLoopin omalle Discord-palvelimelle.',

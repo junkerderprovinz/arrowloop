@@ -1725,6 +1725,7 @@ const lt: Translations = {
   'new.change.infoTile': '{info} išvardija visas versijas ir tikrina, ar yra naujinių. Kortelė {help} prideda vadovą ir klaidos ataskaitą.',
   'new.change.loginReset': 'Pamirštą slaptažodį galima atkurti prisijungimo puslapyje su kodu iš konteinerio žurnalo.',
   'new.change.notifyChannels': '{notifications} skiltyje {safety} dabar siunčia ir el. paštu, į Discord, Slack, Gotify, ntfy, Apprise serverį ir Healthchecks.io, kiekvienas su savo jungikliu ir bandymo mygtuku.',
+  'new.change.notifyTile': '{notifications} turi savo plytelę nustatymuose.',
   'new.change.onlyFiles': 'Su kortele {only} užduotis sinchronizuoja tik failus, atitinkančius jos šablonus.',
   'new.change.pauseAutomatic': '{pause} meniu {more} puslapyje {jobs} sustabdo kiekvieną automatinį paleidimą, kol pratęsi.',
   'new.change.discordHelp': 'Kortelė {help} skiltyje {info} veda į paties ArrowLoop Discord serverį.',

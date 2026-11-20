@@ -1725,6 +1725,7 @@ const ms: Translations = {
   'new.change.infoTile': '{info} menyenaraikan setiap versi dan menyemaknya untuk kemas kini. Kad {help} menambah manual dan laporan pepijat.',
   'new.change.loginReset': 'Kata laluan yang terlupa boleh disetkan semula dari halaman log masuk dengan kod daripada log kontener.',
   'new.change.notifyChannels': '{notifications} dalam {safety} kini juga menghantar melalui e-mel, ke Discord, Slack, Gotify, ntfy, pelayan Apprise dan Healthchecks.io, setiap satu dengan suis dan butang ujian sendiri.',
+  'new.change.notifyTile': '{notifications} mempunyai jubin sendiri dalam tetapan.',
   'new.change.onlyFiles': 'Dengan {only}, tugas hanya menyegerakkan fail yang sepadan dengan coraknya.',
   'new.change.pauseAutomatic': '{pause} di bawah {more} pada {jobs} menghentikan setiap larian automatik sehingga anda menyambung semula.',
   'new.change.discordHelp': 'Kad {help} pada {info} membawa ke pelayan Discord ArrowLoop sendiri.',

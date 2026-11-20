@@ -1725,6 +1725,7 @@ const fr: Translations = {
   'new.change.infoTile': '{info} liste toutes les versions et cherche leurs mises à jour. La carte {help} ajoute le manuel et un rapport de bogue.',
   'new.change.loginReset': 'Un mot de passe oublié peut être réinitialisé depuis la page de connexion avec un code tiré du journal du conteneur.',
   'new.change.notifyChannels': '{notifications} dans {safety} envoie aussi par e-mail, vers Discord, Slack, Gotify, ntfy, un serveur Apprise et Healthchecks.io, chacun avec son interrupteur et un bouton de test.',
+  'new.change.notifyTile': '{notifications} a sa propre tuile dans les réglages.',
   'new.change.onlyFiles': 'Avec {only}, une tâche ne synchronise que les fichiers qui correspondent à ses motifs.',
   'new.change.pauseAutomatic': "{pause} dans {more} de {jobs} arrête toute exécution automatique jusqu'à ce que vous repreniez.",
   'new.change.discordHelp': "La carte {help} dans {info} mène au serveur Discord d'ArrowLoop.",

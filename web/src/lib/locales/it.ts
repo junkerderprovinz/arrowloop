@@ -1725,6 +1725,7 @@ const it: Translations = {
   'new.change.infoTile': '{info} elenca tutte le versioni e controlla se ci sono aggiornamenti. La scheda {help} aggiunge il manuale e il report del bug.',
   'new.change.loginReset': 'Una password dimenticata si reimposta dalla pagina di accesso con un codice dal log del container.',
   'new.change.notifyChannels': '{notifications} in {safety} invia anche per email, a Discord, Slack, Gotify, ntfy, un server Apprise e Healthchecks.io, ognuno con il suo interruttore e un pulsante di prova.',
+  'new.change.notifyTile': '{notifications} ha un riquadro tutto suo nelle impostazioni.',
   'new.change.onlyFiles': 'Con {only}, un lavoro sincronizza solo i file che corrispondono ai suoi modelli.',
   'new.change.pauseAutomatic': '{pause} in {more} su {jobs} ferma ogni esecuzione automatica finché non riprendi.',
   'new.change.discordHelp': 'La scheda {help} in {info} porta al server Discord di ArrowLoop.',

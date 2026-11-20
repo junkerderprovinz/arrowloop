@@ -63,6 +63,18 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.8.1',
+    changes: [
+      {
+        id: 'notify-tile',
+        at: ['/settings/notifications'],
+        where: ['nav.settings', 'settings.notifications'],
+        text: 'new.change.notifyTile',
+        names: { notifications: 'settings.notifications' },
+      },
+    ],
+  },
+  {
     after: '2.7.0',
     changes: [
       { id: 'desktop-cli', text: 'new.change.desktopCli' },
@@ -620,8 +632,8 @@ export const RELEASES: Release[] = [
       },
       {
         id: 'notify-channels',
-        at: ['/settings/safety'],
-        where: ['nav.settings', 'settings.safetyNet'],
+        at: ['/settings/notifications'],
+        where: ['nav.settings', 'settings.notifications'],
         text: 'new.change.notifyChannels',
         names: { notifications: 'settings.notifications', safety: 'settings.safetyNet' },
       },

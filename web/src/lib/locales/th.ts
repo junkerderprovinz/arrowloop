@@ -1725,6 +1725,7 @@ const th: Translations = {
   'new.change.infoTile': '{info} แสดงทุกเวอร์ชันและตรวจสอบการอัปเดต การ์ด {help} เพิ่มคู่มือและรายงานข้อบกพร่อง',
   'new.change.loginReset': 'หากลืมรหัสผ่าน สามารถรีเซ็ตได้จากหน้าเข้าสู่ระบบด้วยรหัสจากบันทึกของคอนเทนเนอร์',
   'new.change.notifyChannels': '{notifications} ใน {safety} ส่งทางอีเมล และไปยัง Discord, Slack, Gotify, ntfy, เซิร์ฟเวอร์ Apprise และ Healthchecks.io ได้ด้วย แต่ละช่องทางมีสวิตช์และปุ่มทดสอบของตัวเอง',
+  'new.change.notifyTile': '{notifications} มีไทล์ของตัวเองในการตั้งค่าแล้ว',
   'new.change.onlyFiles': 'เมื่อใช้ {only} งานจะซิงค์เฉพาะไฟล์ที่ตรงกับรูปแบบของงาน',
   'new.change.pauseAutomatic': '{pause} ใน {more} ของ {jobs} หยุดการทำงานอัตโนมัติทุกครั้งจนกว่าคุณจะดำเนินการต่อ',
   'new.change.discordHelp': 'การ์ด {help} ใน {info} พาไปยังเซิร์ฟเวอร์ Discord ของ ArrowLoop',

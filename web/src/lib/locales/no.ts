@@ -1725,6 +1725,7 @@ const no: Translations = {
   'new.change.infoTile': '{info} lister alle versjoner og ser etter oppdateringer til dem. Kortet {help} legger til håndboken og en feilrapport.',
   'new.change.loginReset': 'Et glemt passord kan tilbakestilles fra innloggingssiden med en kode fra containerloggen.',
   'new.change.notifyChannels': '{notifications} under {safety} sender nå også med e-post, til Discord, Slack, Gotify, ntfy, en Apprise-server og Healthchecks.io, hver med sin egen bryter og en testknapp.',
+  'new.change.notifyTile': '{notifications} har sin egen flis i innstillingene.',
   'new.change.onlyFiles': 'Med {only} synkroniserer en jobb bare filene som passer til mønstrene.',
   'new.change.pauseAutomatic': '{pause} under {more} på {jobs} stopper alle automatiske kjøringer til du fortsetter.',
   'new.change.discordHelp': 'Kortet {help} under {info} leder til ArrowLoops egen Discord-server.',
