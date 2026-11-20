@@ -188,7 +188,9 @@ const styles = StyleSheet.create({
   tile: { width: TILE, alignItems: "center", justifyContent: "center" },
   main: { flex: 1, minWidth: 0, gap: space.xs, padding: space.md },
   head: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.sm },
-  name: { flexGrow: 1, flexShrink: 1, fontSize: text.body, fontWeight: "500" },
+  // The name keeps its width and the badge moves under it, as GlimStone's
+  // connection row does; only a name wider than the row is cut.
+  name: { flexGrow: 1, flexShrink: 0, maxWidth: "100%", fontSize: text.body, fontWeight: "500" },
   status: { fontSize: text.meta },
   jobs: { flexDirection: "row", alignItems: "center", gap: space.xs },
   jobsLabel: { fontSize: text.meta, flexShrink: 0 },
