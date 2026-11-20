@@ -46,10 +46,10 @@ import { bytes } from '../lib/bytes'
 import { groupStage } from '../lib/controls'
 import { isLocalTarget } from '../lib/localTarget'
 import { useT } from '../lib/i18n'
-import type { TranslationKey } from '../lib/i18n.data'
 import { useToast } from '../lib/toast'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
+import { oneTimeCode, questionHint, questionLabel, typedAnswer } from '../lib/setupQuestion'
 import { suggestTargetName } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
@@ -751,17 +751,27 @@ function useRemoteForm({
       </FieldRow>
       {first.map(field)}
       {question && (
-        <FieldRow label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')} hint={t('targets.question.hint')}>
+        <FieldRow label={t(questionLabel(question))} hint={t(questionHint(question))}>
           <span data-new="target-setup-choice" className="flex w-full">
-            <Choice
-              value={values[question.name] ?? ''}
-              onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
-              label={t(QUESTION_LABELS[question.name] ?? 'targets.question.other')}
-              options={[
-                { value: '', label: t('targets.question.pick') },
-                ...question.choices.map((c) => ({ value: c.value, label: c.help || c.value })),
-              ]}
-            />
+            {typedAnswer(question) ? (
+              <Text
+                value={values[question.name] ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
+                label={t(questionLabel(question))}
+                code={oneTimeCode(question)}
+                mono
+              />
+            ) : (
+              <Choice
+                value={values[question.name] ?? ''}
+                onChange={(next) => setValues((prev) => ({ ...prev, [question.name]: next }))}
+                label={t(questionLabel(question))}
+                options={[
+                  { value: '', label: t('targets.question.pick') },
+                  ...question.choices.map((c) => ({ value: c.value, label: c.help || c.value })),
+                ]}
+              />
+            )}
           </span>
         </FieldRow>
       )}
@@ -967,13 +977,6 @@ function KdriveRootField({ value, onChange }: { value: string; onChange: (next: 
 
 /** The fields a What's new entry points at, by backend and option. */
 const NEW_FIELDS: Record<string, string> = { 's3.bucket': 'target-bucket' }
-
-/** The questions rclone's setups ask, by the setting that answers them. */
-const QUESTION_LABELS: Record<string, TranslationKey> = {
-  config_driveid: 'targets.question.drive',
-  config_workspace: 'targets.question.workspace',
-  config_team_drive_id: 'targets.question.team',
-}
 
 /**
  * The server field of a share, with a button that lists the shares this

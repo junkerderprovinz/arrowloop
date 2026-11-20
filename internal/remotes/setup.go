@@ -17,8 +17,9 @@ import (
 )
 
 // Question is a choice rclone's own setup of a backend leaves to the person
-// setting it up, such as which of several drives a sign-in opens. The answer
-// goes back as the setting Name.
+// setting it up, such as which of several drives a sign-in opens. A question
+// without choices, such as a two-factor code, is answered by typing. The
+// answer goes back as the setting Name.
 type Question struct {
 	Name    string    `json:"name"`
 	Choices []Example `json:"choices"`
@@ -37,11 +38,11 @@ type setupStep struct {
 	asked map[string]string
 }
 
-// newToken is a token typed into the form rather than one kept from a saved
+// typedIn is a value typed into the form rather than one kept from a saved
 // target, which comes back as the placeholder and has had its setup.
-func newToken(s map[string]string) bool {
-	token := strings.TrimSpace(s["token"])
-	return token != "" && token != Placeholder
+func typedIn(value string) bool {
+	value = strings.TrimSpace(value)
+	return value != "" && value != Placeholder
 }
 
 var setupSteps = map[string]setupStep{
@@ -50,7 +51,7 @@ var setupSteps = map[string]setupStep{
 	// belongs to. The login token works once.
 	"jottacloud": {
 		due: func(s map[string]string) bool {
-			return newToken(s) && !strings.HasPrefix(strings.TrimSpace(s["token"]), "{")
+			return typedIn(s["token"]) && !strings.HasPrefix(strings.TrimSpace(s["token"]), "{")
 		},
 		answers: map[string]string{"config_type": "standard", "config_non_standard": "false"},
 		asked:   map[string]string{"config_login_token": "token"},
@@ -58,14 +59,21 @@ var setupSteps = map[string]setupStep{
 	// OneDrive needs the drive a token opens, which only the setup looks up.
 	"onedrive": {
 		due: func(s map[string]string) bool {
-			return newToken(s) && (s["drive_id"] == "" || s["drive_type"] == "")
+			return typedIn(s["token"]) && (s["drive_id"] == "" || s["drive_type"] == "")
 		},
 		answers: map[string]string{"config_refresh_token": "false", "config_type": "onedrive", "config_drive_ok": "true"},
 	},
 	// Zoho WorkDrive needs the workspace to work in.
 	"zoho": {
-		due:     func(s map[string]string) bool { return newToken(s) && s["root_folder_id"] == "" },
+		due:     func(s map[string]string) bool { return typedIn(s["token"]) && s["root_folder_id"] == "" },
 		answers: map[string]string{"config_refresh_token": "false"},
+	},
+	// Internxt hands out the mnemonic that decrypts the files, and a token,
+	// only to a sign-in through its setup, which asks for a two-factor code
+	// where the account has one. A saved password left alone keeps the
+	// sign-in it had.
+	"internxt": {
+		due: func(s map[string]string) bool { return typedIn(s["pass"]) },
 	},
 }
 
@@ -81,7 +89,8 @@ const setupName = "arrowloop-setup"
 // what `rclone authorize` printed with a config blob and runs the part of the
 // backend's own setup the settings still need. Answers to an earlier Question
 // come in as settings named after it and do not come out. Where the setup
-// needs a choice with more than one way to go, it returns that as a Question.
+// needs a choice with more than one way to go, or something only the person
+// can type, such as a two-factor code, it returns that as a Question.
 func Setup(ctx context.Context, backend string, settings map[string]string) (map[string]string, *Question, error) {
 	out := make(map[string]string, len(settings))
 	picked := map[string]string{}
@@ -111,7 +120,8 @@ func Setup(ctx context.Context, backend string, settings map[string]string) (map
 		return nil, nil, fmt.Errorf("this build does not include the %q backend: %w", backend, err)
 	}
 
-	choices := configmap.Simple(maps.Clone(step.answers))
+	choices := configmap.Simple{}
+	maps.Copy(choices, step.answers)
 	m := configmap.Simple{}
 	for k, v := range out {
 		m[k] = forConnection(backend, k, v)
@@ -143,10 +153,9 @@ func Setup(ctx context.Context, backend string, settings map[string]string) (map
 			return nil, nil, fmt.Errorf("rclone's setup of %s stopped at %q", backend, next.State)
 		case len(next.Option.Examples) == 1:
 			in = rclonefs.ConfigIn{State: next.State, Result: next.Option.Examples[0].Value}
-		case len(next.Option.Examples) == 0:
-			return nil, nil, fmt.Errorf("rclone's setup asks for %s, which this form cannot answer: %s", next.Option.Name, firstLine(next.Option.Help))
 		default:
-			q := &Question{Name: next.Option.Name}
+			// Empty rather than nil, so the page reads no choices as a field.
+			q := &Question{Name: next.Option.Name, Choices: []Example{}}
 			for _, e := range next.Option.Examples {
 				q.Choices = append(q.Choices, Example{Value: e.Value, Help: firstLine(e.Help)})
 			}

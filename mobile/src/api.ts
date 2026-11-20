@@ -375,7 +375,6 @@ export interface Provider {
   [key: string]: unknown;
 }
 
-/** A choice rclone's setup leaves open, answered as the setting `name` (internal/remotes/setup.go). */
 /** A test's verdict, as the engine answers a test of unsaved settings. */
 export interface TryAnswer {
   ok: boolean;
@@ -386,6 +385,11 @@ export interface TryAnswer {
   certificate?: RefusedCertificate;
 }
 
+/**
+ * A choice rclone's setup leaves open, answered as the setting `name`
+ * (internal/remotes/setup.go). One without choices, such as a two-factor
+ * code, is typed in.
+ */
 export interface SetupQuestion {
   name: string;
   choices: { value: string; help: string }[];

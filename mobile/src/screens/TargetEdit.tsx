@@ -12,10 +12,10 @@ import { optionLabel } from "../../../web/src/lib/optionNames";
 import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from "../../../web/src/lib/kdriveRoot";
 import { anySaved, settingsToSave } from "../../../web/src/lib/savedSettings";
+import { oneTimeCode, questionHint, questionLabel, typedAnswer } from "../../../web/src/lib/setupQuestion";
 import { suggestTargetName } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Choice, Empty, Page, Pair, PickRow, Row, Section, Title, Toggle } from "../ui";
-import type { TranslationKey } from "../../../web/src/lib/i18n.data";
 
 type Option = NonNullable<Backend["options"]>[number];
 
@@ -115,7 +115,7 @@ export function TargetEdit() {
 
   const answered = (answer: TryAnswer) => {
     if (answer.question) setQuestion(answer.question);
-    setTried(answer.question ? { ok: false, reason: t("targets.question.hint") } : answer);
+    setTried(answer.question ? { ok: false, reason: t(questionHint(answer.question)) } : answer);
     if (!answer.ok) setRefused((n) => n + 1);
   };
 
@@ -270,16 +270,25 @@ export function TargetEdit() {
       ) : null}
 
       {question ? (
-        <Section title={t(QUESTION_LABELS[question.name] ?? "targets.question.other")} hint={t("targets.question.hint")}>
-          {question.choices.map((choice) => (
-            <PickRow
-              key={choice.value}
-              on={values[question.name] === choice.value}
-              onPress={() => setValues((old) => ({ ...old, [question.name]: choice.value }))}
-            >
-              <Body>{choice.help || choice.value}</Body>
-            </PickRow>
-          ))}
+        <Section title={t(questionLabel(question))} hint={t(questionHint(question))}>
+          {typedAnswer(question) ? (
+            <Field
+              label={t(questionLabel(question))}
+              value={values[question.name] ?? ""}
+              onChange={(next) => setValues((old) => ({ ...old, [question.name]: next }))}
+              keyboard={oneTimeCode(question) ? "numeric" : "default"}
+            />
+          ) : (
+            question.choices.map((choice) => (
+              <PickRow
+                key={choice.value}
+                on={values[question.name] === choice.value}
+                onPress={() => setValues((old) => ({ ...old, [question.name]: choice.value }))}
+              >
+                <Body>{choice.help || choice.value}</Body>
+              </PickRow>
+            ))
+          )}
         </Section>
       ) : null}
 
@@ -389,13 +398,6 @@ function KdriveRootField({ value, onChange }: { value: string; onChange: (next: 
     </View>
   );
 }
-
-/** The questions rclone's setups ask, by the setting that answers them. */
-const QUESTION_LABELS: Record<string, TranslationKey> = {
-  config_driveid: "targets.question.drive",
-  config_workspace: "targets.question.workspace",
-  config_team_drive_id: "targets.question.team",
-};
 
 /** Drops empty values, since a secret left empty while changing it means "keep the saved one". */
 function prune(values: Record<string, string>): Record<string, string> {

@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { Backend, Provider, Remote } from '../lib/api'
+import type { Backend, CheckAnswer, Provider, Remote } from '../lib/api'
 import { ToastProvider } from '../lib/toast'
 
 globalThis.ResizeObserver ??= class {
@@ -48,10 +48,17 @@ const kdrive: Backend = {
   ],
 }
 
+const internxt: Backend = {
+  name: 'internxt',
+  description: '',
+  options: [option('email', { required: true }), option('pass', { required: true, secret: true })],
+}
+
 const providers: Provider[] = [
   { id: 'ftp', name: 'FTP', backend: 'ftp', group: 'protocol', mark: 'IconTransfer' },
   { id: 'onedrive', name: 'OneDrive', backend: 'onedrive', group: 'cloud', mark: 'IconOnedrive' },
   { id: 'kdrive', name: 'Infomaniak kDrive', backend: 'kdrive', group: 'cloud', mark: 'IconTabStorage' },
+  { id: 'internxt', name: 'Internxt', backend: 'internxt', group: 'cloud', mark: 'IconInternxt' },
 ]
 
 let savedTargets: Remote[] = []
@@ -60,13 +67,13 @@ const saveRemote = vi.fn((name: string, _type: string, _settings: Record<string,
   Promise.resolve({ saved: name }),
 )
 const drives = { name: 'config_driveid', choices: [{ value: 'me', help: 'OneDrive (personal)' }, { value: 'team', help: 'Team files' }] }
-const tryRemote = vi.fn((_type: string, settings: Record<string, string>) =>
-  Promise.resolve(settings.config_driveid ? { ok: true } : { ok: false, reason: 'choose', question: drives }),
-)
+const drivesAnswer = (_type: string, settings: Record<string, string>): Promise<CheckAnswer> =>
+  Promise.resolve(settings.config_driveid ? { ok: true } : { ok: false, reason: 'choose', question: drives })
+const tryRemote = vi.fn(drivesAnswer)
 
 vi.mock('../lib/api', () => ({
   api: {
-    remotes: () => Promise.resolve({ remotes: savedTargets, backends: [ftp, onedrive, kdrive], providers, unlisted: [] }),
+    remotes: () => Promise.resolve({ remotes: savedTargets, backends: [ftp, onedrive, kdrive, internxt], providers, unlisted: [] }),
     tryRemote: (type: string, settings: Record<string, string>) => tryRemote(type, settings),
     volumes: () => Promise.resolve({ volumes: [] }),
     checkRemote: () => Promise.resolve({ ok: true }),
@@ -82,7 +89,8 @@ afterEach(() => {
   savedTargets = []
   saveRemote.mockReset()
   saveRemote.mockImplementation((name: string) => Promise.resolve({ saved: name }))
-  tryRemote.mockClear()
+  tryRemote.mockReset()
+  tryRemote.mockImplementation(drivesAnswer)
 })
 
 async function add(name: string) {
@@ -168,6 +176,36 @@ describe('a sign-in that opens more than one drive', () => {
     const dialog = await add('OneDrive')
     fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
     expect(await within(dialog).findByRole('button', { name: 'Drive' })).toBeTruthy()
+  })
+})
+
+describe('an account that signs in with a two-factor code', () => {
+  const code = { name: 'config_2fa', choices: [] }
+
+  it('asks for the code at the test and sends what was typed', async () => {
+    tryRemote.mockImplementation((_type, settings) =>
+      Promise.resolve(settings.config_2fa ? { ok: true } : { ok: false, reason: 'answer', question: code }),
+    )
+    const dialog = await add('Internxt')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Test connection' }))
+    const field = await within(dialog).findByRole('textbox', { name: 'Two-factor code' })
+    expect(field.getAttribute('inputmode')).toBe('numeric')
+    fireEvent.change(field, { target: { value: '123456' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: /Test connection|Not connected/ }))
+    await waitFor(() => expect(tryRemote).toHaveBeenCalledTimes(2))
+    expect(tryRemote.mock.calls[1][1]).toMatchObject({ config_2fa: '123456' })
+  })
+
+  it('says a refused code in plain words', async () => {
+    tryRemote.mockImplementation(() =>
+      Promise.resolve({ ok: false, reason: 'Wrong 2-factor auth code (status 401)', failure: { code: 'twoFactorRefused' } }),
+    )
+    const dialog = await add('Internxt')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Test connection' }))
+    const verdict = within(dialog).getByRole('button', { name: 'Test connection' })
+    await waitFor(() => expect(verdict.className).toMatch(/glim-shake/))
+    fireEvent.focus(verdict)
+    expect(await screen.findByText(/two-factor code was not accepted/)).toBeTruthy()
   })
 })
 
