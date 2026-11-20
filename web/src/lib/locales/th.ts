@@ -2213,6 +2213,8 @@ const th: Translations = {
   'vpn.error.deviceLimit': '{name} ไม่อนุญาตให้เพิ่มอุปกรณ์อีกแล้ว เอาอุปกรณ์ออกหนึ่งเครื่องในบัญชีของคุณ แล้วลองอีกครั้ง',
   'vpn.error.accountExpired': 'บัญชี {name} ของคุณหมดอายุแล้ว ต่ออายุบัญชี แล้วลองอีกครั้ง',
   'vpn.error.locationUnknown': '{name} ไม่มีเซิร์ฟเวอร์ที่ตำแหน่งนี้ ลองตำแหน่งอื่นหรือเว้นช่องนี้ว่างไว้',
+  'vpn.removeAsk': 'ลบ {name} ไหม',
+  'vpn.removeStakes': 'ArrowLoop จะลืมข้อมูลเข้าสู่ระบบของมัน งานที่ผ่าน VPN นี้จะล้มเหลวจนกว่าคุณจะเลือก VPN อื่นให้',
   'edit.connection': 'การเชื่อมต่อ',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'ไม่ใช้ VPN',

@@ -2,7 +2,7 @@ import type { TranslationKey } from "./i18n";
 import { WIDE_ROOM } from "./layout.ts";
 import type { MoreStack } from "./nav";
 
-export type TileId = "general" | "look" | "sync" | "targets" | "pairing" | "apps" | "info";
+export type TileId = "general" | "look" | "sync" | "targets" | "integrations" | "pairing" | "apps" | "info";
 
 /**
  * A page of the settings as the web's tiles divide them. A tile whose web page
@@ -20,6 +20,7 @@ const TILES: SettingsTile[] = [
   { id: "look", label: "settings.look", glyph: "IconTabLook" },
   { id: "sync", label: "settings.sync", glyph: "IconSync", screen: "Sync" },
   { id: "targets", label: "nav.targets", glyph: "IconTabStorage", screen: "TargetList" },
+  { id: "integrations", label: "settings.integrations", glyph: "IconPlug" },
   { id: "pairing", label: "settings.pairing", glyph: "IconLink", screen: "Pairing" },
   { id: "apps", label: "settings.apps", glyph: "IconTabApp" },
   { id: "info", label: "settings.info", glyph: "IconInfo" },
@@ -30,14 +31,15 @@ const TILES: SettingsTile[] = [
  * web's Safety and Security have no phone counterpart: the phone's lock sits
  * with the phone's other permissions under General.
  */
-export function settingsTiles(can: { pairable: boolean }): SettingsTile[] {
-  return TILES.filter((tile) => tile.id !== "pairing" || can.pairable);
+export function settingsTiles(can: { pairable: boolean; vpn: boolean }): SettingsTile[] {
+  return TILES.filter((tile) => (tile.id !== "pairing" || can.pairable) && (tile.id !== "integrations" || can.vpn));
 }
 
 /** The cards of the phone's settings page, in the order a phone shows them. */
 export type SectionId =
   | "language"
   | "sync"
+  | "integrations"
   | "pairing"
   | "thisPhone"
   | "appearance"
@@ -59,6 +61,7 @@ export type SectionId =
 export const SECTION_TILE: Record<SectionId, TileId> = {
   language: "look",
   sync: "sync",
+  integrations: "integrations",
   pairing: "pairing",
   thisPhone: "general",
   appearance: "look",

@@ -2213,6 +2213,8 @@ const cs: Translations = {
   'vpn.error.deviceLimit': '{name} nepovoluje další zařízení. Odeber jedno ve svém účtu a zkus to znovu.',
   'vpn.error.accountExpired': 'Tvůj účet {name} vypršel. Obnov ho a zkus to znovu.',
   'vpn.error.locationUnknown': '{name} nemá v tomto umístění žádný server. Zkus jiné umístění, nebo nech pole prázdné.',
+  'vpn.removeAsk': 'Odebrat {name}?',
+  'vpn.removeStakes': 'ArrowLoop zapomene přihlášení. Úlohy, které přes něj vedou, budou selhávat, dokud jim nevybereš jinou VPN.',
   'edit.connection': 'Připojení',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Bez VPN',

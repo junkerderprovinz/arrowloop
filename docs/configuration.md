@@ -498,8 +498,8 @@ the install's key from `ARROWLOOP_APP_KEY` or `app.key` (see
 and they never come back to the interface. The file is not part of `arrowloop.json`, so a settings backup does
 not carry a VPN login.
 
-On the phone there is no built-in VPN, since Android's own VPN covers every
-app. A job with `vpn` set fails there with a sentence that says so.
+The phone has the same VPN. It runs inside ArrowLoop and needs no root, so
+Android's own VPN slot stays free, and only the job's connections go through it.
 
 !!! tip "Before this, a command did it"
     Bringing `wg-quick` up in `before` and down in `after` works on a machine

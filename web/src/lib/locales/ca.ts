@@ -2213,6 +2213,8 @@ const ca: Translations = {
   'vpn.error.deviceLimit': '{name} no admet més dispositius. Treu-ne un al teu compte i torna-ho a provar.',
   'vpn.error.accountExpired': 'El teu compte de {name} ha caducat. Renova\'l i torna-ho a provar.',
   'vpn.error.locationUnknown': '{name} no té cap servidor en aquesta ubicació. Prova una altra ubicació o deixa el camp buit.',
+  'vpn.removeAsk': 'Vols eliminar {name}?',
+  'vpn.removeStakes': 'ArrowLoop n\'oblida les dades d\'accés. Les tasques que hi passen fallaran fins que en triïs una altra VPN.',
   'edit.connection': 'Connexió',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Sense VPN',

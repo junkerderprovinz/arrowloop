@@ -2213,6 +2213,8 @@ const sl: Translations = {
   'vpn.error.deviceLimit': '{name} ne dovoli več naprav. V svojem računu odstrani eno in poskusi znova.',
   'vpn.error.accountExpired': 'Tvoj račun {name} je potekel. Podaljšaj ga in poskusi znova.',
   'vpn.error.locationUnknown': '{name} na tej lokaciji nima strežnika. Poskusi drugo lokacijo ali pusti polje prazno.',
+  'vpn.removeAsk': 'Odstranim {name}?',
+  'vpn.removeStakes': 'ArrowLoop pozabi prijavo. Opravila, ki gredo prek njega, ne bodo uspela, dokler jim ne izbereš drugega VPN.',
   'edit.connection': 'Povezava',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Brez VPN',

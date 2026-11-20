@@ -2213,6 +2213,8 @@ const pl: Translations = {
   'vpn.error.deviceLimit': '{name} nie pozwala na więcej urządzeń. Usuń jedno na swoim koncie i spróbuj ponownie.',
   'vpn.error.accountExpired': 'Twoje konto {name} wygasło. Odnów je i spróbuj ponownie.',
   'vpn.error.locationUnknown': '{name} nie ma serwera w tej lokalizacji. Spróbuj innej lokalizacji albo zostaw pole puste.',
+  'vpn.removeAsk': 'Usunąć {name}?',
+  'vpn.removeStakes': 'ArrowLoop zapomni dane logowania. Zadania, które przez nią przechodzą, będą kończyć się błędem, dopóki nie wybierzesz dla nich innej sieci VPN.',
   'edit.connection': 'Połączenie',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Bez VPN',

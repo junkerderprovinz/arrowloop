@@ -2213,6 +2213,8 @@ const fr: Translations = {
   'vpn.error.deviceLimit': '{name} n\'accepte plus d\'appareils. Retirez-en un dans votre compte, puis réessayez.',
   'vpn.error.accountExpired': 'Votre compte {name} a expiré. Renouvelez-le, puis réessayez.',
   'vpn.error.locationUnknown': '{name} n\'a pas de serveur à cet emplacement. Essayez un autre emplacement ou laissez le champ vide.',
+  'vpn.removeAsk': 'Supprimer {name} ?',
+  'vpn.removeStakes': 'ArrowLoop oublie ses identifiants. Les tâches qui passent par lui échouent tant que vous ne leur choisissez pas un autre VPN.',
   'edit.connection': 'Connexion',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Aucun VPN',

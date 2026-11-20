@@ -57,6 +57,8 @@ import { Settings } from "./src/screens/Settings";
 import { SyncSettings } from "./src/screens/SyncSettings";
 import { TargetEdit } from "./src/screens/TargetEdit";
 import { TargetPick } from "./src/screens/TargetPick";
+import { VpnEdit } from "./src/screens/VpnEdit";
+import { VpnPick } from "./src/screens/VpnPick";
 import { Targets } from "./src/screens/Targets";
 import { Trash } from "./src/screens/Trash";
 import { TrashAll } from "./src/screens/TrashAll";
@@ -317,6 +319,8 @@ function Shell() {
                   <MoreNav.Screen name="Language" component={Language} options={{ title: t("look.language") }} />
                   <MoreNav.Screen name="Sync" component={SyncSettings} options={{ title: t("settings.sync") }} />
                   <MoreNav.Screen name="Pairing" component={Pairing} options={{ title: t("settings.pairing") }} />
+                  <MoreNav.Screen name="VpnPick" component={VpnPick} options={{ title: t("vpn.pick") }} />
+                  <MoreNav.Screen name="VpnEdit" component={VpnEdit} options={{ title: t("vpn.setUp") }} />
                 </MoreNav.Navigator>
               )}
             </Tabs.Screen>

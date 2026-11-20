@@ -2213,6 +2213,8 @@ const hi: Translations = {
   'vpn.error.deviceLimit': '{name} और डिवाइस की अनुमति नहीं देता। अपने खाते में से एक हटाएँ, फिर दोबारा कोशिश करें।',
   'vpn.error.accountExpired': 'आपका {name} खाता समाप्त हो गया है। इसे रिन्यू करें, फिर दोबारा कोशिश करें।',
   'vpn.error.locationUnknown': '{name} का इस स्थान पर कोई सर्वर नहीं है। कोई दूसरा स्थान आज़माएँ या फ़ील्ड खाली छोड़ दें।',
+  'vpn.removeAsk': '{name} हटाएँ?',
+  'vpn.removeStakes': 'ArrowLoop इसका लॉगिन भूल जाता है। इससे होकर जाने वाले काम तब तक विफल होंगे जब तक आप उनके लिए कोई दूसरा VPN नहीं चुनते।',
   'edit.connection': 'कनेक्शन',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'कोई VPN नहीं',

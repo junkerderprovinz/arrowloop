@@ -4,7 +4,8 @@ import { TILE_IDS } from "../../web/src/lib/routes.ts";
 import { SECTION_TILE, TILE_COLUMN, paneWidth, settingsTiles, shownTile, type SectionId } from "./settingsTiles.ts";
 import { WIDE_ROOM } from "./layout.ts";
 
-const ids = (pairable: boolean) => settingsTiles({ pairable }).map((tile) => tile.id);
+const ids = (pairable: boolean, vpn = true) => settingsTiles({ pairable, vpn }).map((tile) => tile.id);
+const every = { pairable: true, vpn: true };
 
 test("the tiles stand in the web's order, General first and Info last", () => {
   const tiles = ids(true);
@@ -17,7 +18,11 @@ test("the tiles stand in the web's order, General first and Info last", () => {
 });
 
 test("the phone offers every web tile it has something for", () => {
-  assert.deepEqual(ids(true), ["general", "look", "sync", "targets", "pairing", "apps", "info"]);
+  assert.deepEqual(ids(true), ["general", "look", "sync", "targets", "integrations", "pairing", "apps", "info"]);
+});
+
+test("an engine without the built-in VPN has no integrations tile", () => {
+  assert.ok(!ids(true, false).includes("integrations"));
 });
 
 test("an engine that cannot be paired has no pairing tile", () => {
@@ -25,7 +30,7 @@ test("an engine that cannot be paired has no pairing tile", () => {
 });
 
 test("the tiles carry the web's words and glyphs", () => {
-  const byId = Object.fromEntries(settingsTiles({ pairable: true }).map((tile) => [tile.id, tile]));
+  const byId = Object.fromEntries(settingsTiles(every).map((tile) => [tile.id, tile]));
   assert.equal(byId.general?.label, "settings.general");
   assert.equal(byId.general?.glyph, "IconTabGeneral");
   assert.equal(byId.look?.label, "settings.look");
@@ -34,15 +39,18 @@ test("the tiles carry the web's words and glyphs", () => {
   assert.equal(byId.apps?.glyph, "IconTabApp");
   assert.equal(byId.info?.label, "settings.info");
   assert.equal(byId.info?.glyph, "IconInfo");
+  assert.equal(byId.integrations?.label, "settings.integrations");
+  assert.equal(byId.integrations?.glyph, "IconPlug");
 });
 
 test("sync, targets and pairing show their own screens beside the tiles", () => {
-  const byId = Object.fromEntries(settingsTiles({ pairable: true }).map((tile) => [tile.id, tile.screen]));
+  const byId = Object.fromEntries(settingsTiles(every).map((tile) => [tile.id, tile.screen]));
   assert.deepEqual(byId, {
     general: undefined,
     look: undefined,
     sync: "Sync",
     targets: "TargetList",
+    integrations: undefined,
     pairing: "Pairing",
     apps: undefined,
     info: undefined,
@@ -56,25 +64,26 @@ test("each card of the phone's settings page lands on the tile the web keeps it 
   assert.deepEqual(on("look"), ["language", "appearance", "motion"]);
   assert.deepEqual(on("apps"), ["server", "desktop"]);
   assert.deepEqual(on("info"), ["problems", "about"]);
+  assert.deepEqual(on("integrations"), ["integrations"]);
 });
 
 test("a tile without a screen of its own always has cards to show", () => {
-  for (const tile of settingsTiles({ pairable: true })) {
+  for (const tile of settingsTiles(every)) {
     if (tile.screen) continue;
     assert.ok(Object.values(SECTION_TILE).includes(tile.id), tile.id);
   }
 });
 
 test("the settings open on General", () => {
-  assert.equal(shownTile(settingsTiles({ pairable: true }), null), "general");
+  assert.equal(shownTile(settingsTiles(every), null), "general");
 });
 
 test("a picked tile stays shown", () => {
-  assert.equal(shownTile(settingsTiles({ pairable: true }), "apps"), "apps");
+  assert.equal(shownTile(settingsTiles(every), "apps"), "apps");
 });
 
 test("a tile that went away gives way to General", () => {
-  assert.equal(shownTile(settingsTiles({ pairable: false }), "pairing"), "general");
+  assert.equal(shownTile(settingsTiles({ pairable: false, vpn: true }), "pairing"), "general");
 });
 
 test("the page beside the tiles gets what the tile column and its gutter leave", () => {

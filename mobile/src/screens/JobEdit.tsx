@@ -1,9 +1,9 @@
-import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
 import { api, type JobConfig, type Remote } from "../api";
 import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
-import { ChoiceRow } from "../choiceRow";
+import { ChoiceRow, Dropdown } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { brandTile, Glyph, ProviderMark } from "../glyphs";
@@ -16,6 +16,8 @@ import { DEVICE, sideMark } from "../sideRow";
 import { remoteOf, sideName, sidePair } from "../sides";
 import { isAccount } from "../space";
 import { animateNext, useMotion } from "../motion";
+import { durationWritten, spotOf, type Spot } from "../jobSpot";
+import { vpnChoiceShown, vpnOptions } from "../vpn";
 import {
   AxisLabel,
   Body,
@@ -59,6 +61,8 @@ import {
   type ScheduleState,
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
+import { overNetwork } from "../../../web/src/lib/localTarget";
+import { vpnChoiceWarning, type VpnState } from "../../../web/src/lib/vpn";
 import { capitalized } from "../../../web/src/lib/capitalized";
 import {
   MAX_MIN_AGE,
@@ -82,7 +86,7 @@ const WRITE_AFTER = 700;
 const INHERITED: Inherited[] = [...SYNC_SETTINGS, ...BRAKE_SETTINGS];
 
 /** The inherited settings this screen shows, which turning the switch off fills in. */
-const SHOWN: Inherited[] = ["direction", "schedule", "quietPeriod", "emptyDirs", "metadata"];
+const SHOWN: Inherited[] = ["direction", "schedule", "quietPeriod", "modWindow", "emptyDirs", "metadata"];
 
 export function JobEdit() {
   // Opening and editing a job share this screen; see App.tsx.
@@ -219,6 +223,7 @@ export function JobEdit() {
   const rightRef = useRef<View>(null);
   const scheduleRef = useRef<View>(null);
   const quietRef = useRef<View>(null);
+  const modWindowRef = useRef<View>(null);
   const excludeRef = useRef<View>(null);
   const refs: Record<Spot, RefObject<View | null>> = {
     name: nameRef,
@@ -226,6 +231,7 @@ export function JobEdit() {
     right: rightRef,
     schedule: scheduleRef,
     quiet: quietRef,
+    modWindow: modWindowRef,
     exclude: excludeRef,
   };
 
@@ -406,6 +412,12 @@ export function JobEdit() {
         />
       </View>
 
+      <ConnectionSection
+        value={typeof job.vpn === "string" ? job.vpn : ""}
+        network={acrossNetwork(job.left, remotes) || acrossNetwork(job.right, remotes)}
+        onChange={(vpn) => set({ vpn: vpn || undefined }, true)}
+      />
+
       {/* A watching job owns its schedule, so Live follows the global
           settings with it. No "run at start" switch: the engine restarts with
           the app and after every eviction, so it would run a job several
@@ -426,9 +438,12 @@ export function JobEdit() {
         </View>
         <View ref={quietRef} collapsable={false}>
           <FromGlobal {...global("quietPeriod")}>
-            <QuietField
+            <DurationField
+              label={t("edit.quietPeriod")}
+              hint={t("edit.quietHint")}
               value={shown("quietPeriod").quietPeriod ?? ""}
               onChange={(quietPeriod) => set({ quietPeriod })}
+              placeholder="30s"
               error={reason("quiet")}
             />
           </FromGlobal>
@@ -465,6 +480,18 @@ export function JobEdit() {
             <MinAgeField value={job.minAgeDays} onChange={(days, now) => set({ minAgeDays: days }, now)} />
           </>
         )}
+        <View ref={modWindowRef} collapsable={false}>
+          <FromGlobal {...global("modWindow")}>
+            <DurationField
+              label={t("engine.modWindow")}
+              hint={t("engine.modWindowHint")}
+              value={shown("modWindow").modWindow ?? ""}
+              onChange={(modWindow) => set({ modWindow })}
+              placeholder="1s"
+              error={reason("modWindow")}
+            />
+          </FromGlobal>
+        </View>
         <FromGlobal {...global("emptyDirs")}>
           <Toggle
             label={t("edit.emptyDirs")}
@@ -747,7 +774,65 @@ function placeOf(side: string): string | undefined {
 
 /** Whether a target leads off the phone. Apps and Android/data are served on the phone's own loopback. */
 function offPhone(remote: Remote): boolean {
-  return isAccount(remote) && remote.settings.find((s) => s.key === "host")?.value !== "127.0.0.1";
+  return isAccount(remote) && !onLoopback(remote);
+}
+
+function onLoopback(remote: Remote): boolean {
+  return remote.settings.find((s) => s.key === "host")?.value === "127.0.0.1";
+}
+
+/**
+ * Whether a side reaches across the network, as the web decides it for the
+ * choice of VPN, leaving out what the phone serves itself on loopback.
+ */
+function acrossNetwork(side: string, remotes: Remote[]): boolean {
+  if (!overNetwork(side, remotes)) return false;
+  const target = remotes.find((r) => r.name === remoteOf(side));
+  return !target || !onLoopback(target);
+}
+
+/**
+ * The VPN of the settings the job's runs go through, or none, on an engine
+ * that has VPNs and for a job with a side across the network, since folders
+ * on the phone never touch one. A job that names a VPN where it does nothing,
+ * or one that is gone, as a job brought over from another machine, keeps the
+ * choice, so it can be set to none. The list stands under its name across the
+ * card, so a provider's name and its place show in full.
+ */
+function ConnectionSection({
+  value,
+  network,
+  onChange,
+}: {
+  value: string;
+  network: boolean;
+  onChange: (next: string) => void;
+}) {
+  const { t } = useT();
+  const { p } = useTheme();
+  const [vpn, setVpn] = useState<{ offered: boolean; state: VpnState | null } | null>(null);
+  // Read on every visit, so a VPN just set up in Settings is there to choose.
+  useFocusEffect(
+    useCallback(() => {
+      api
+        .capabilities()
+        .then(async (c) => setVpn(c.vpn ? { offered: true, state: await api.vpn() } : { offered: false, state: null }))
+        .catch(() => setVpn(null));
+    }, []),
+  );
+  if (!vpn || !vpnChoiceShown(vpn.offered, value, network)) return null;
+  const warning = vpnChoiceWarning(vpn.offered, vpn.state?.tunnels ?? [], value);
+  return (
+    <Section title={t("edit.connection")} hue={5}>
+      <AxisLabel hint={t("edit.vpnHint")}>{t("edit.vpn")}</AxisLabel>
+      <Dropdown wide label={t("edit.vpn")} value={value} options={vpnOptions(vpn.state, t)} onChange={onChange} />
+      {warning ? (
+        <View accessibilityLiveRegion="polite">
+          <Text style={[styles.warning, { color: p.warnInk }]}>{t(warning)}</Text>
+        </View>
+      ) : null}
+    </Section>
+  );
 }
 
 /** The README's mark box, as the target picker draws it. */
@@ -758,20 +843,25 @@ const MARK_H = 25;
 const MARK = 28;
 
 /**
- * The quiet period as the engine spells it, "30s". The text is kept as typed,
- * since an empty field gives the job back to the global value and would
- * replace what is being typed with it; a job that waits for nothing says 0s.
+ * A duration of the job's own as the engine spells it, "30s", such as the
+ * quiet period. The text is kept as typed, since what is written for an empty
+ * field differs from it (see durationWritten).
  */
-function QuietField({
+function DurationField({
+  label,
+  hint,
   value,
   onChange,
+  placeholder,
   error,
 }: {
+  label: string;
+  hint: string;
   value: string;
   onChange: (next: string) => void;
+  placeholder: string;
   error?: string;
 }) {
-  const { t } = useT();
   const [typed, setTyped] = useState(value);
   const seen = useRef(value);
   useEffect(() => {
@@ -782,16 +872,16 @@ function QuietField({
   }, [value]);
   return (
     <Field
-      label={t("edit.quietPeriod")}
-      hint={t("edit.quietHint")}
+      label={label}
+      hint={hint}
       value={typed}
       onChange={(next) => {
         setTyped(next);
-        const written = next.trim() || "0s";
+        const written = durationWritten(next);
         seen.current = written;
         onChange(written);
       }}
-      placeholder="30s"
+      placeholder={placeholder}
       error={error}
     />
   );
@@ -875,9 +965,6 @@ function UsualSection({ job }: { job: string }) {
   );
 }
 
-/** The parts of the form a refusal can point at. */
-type Spot = "name" | "left" | "right" | "schedule" | "quiet" | "exclude";
-
 /** What the form itself refuses before anything is sent, and where it says so. */
 function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
   if (!job.name.trim()) return { spot: "name", text: t("phone.needName") };
@@ -887,19 +974,6 @@ function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
   // backup.
   if (bothSidesOnePlace(job.left, job.right)) return { spot: "right", text: t("edit.sameSides") };
   return null;
-}
-
-/**
- * The part of the form an engine refusal is about, read from what it names.
- * Most name a place, so the target side is where the rest is said.
- */
-function spotOf(message: string): Spot {
-  if (/schedule|watch/i.test(message)) return "schedule";
-  if (/quietPeriod/i.test(message)) return "quiet";
-  if (/exclude/i.test(message)) return "exclude";
-  if (/no name/i.test(message)) return "name";
-  if (/\bleft\b/i.test(message)) return "left";
-  return "right";
 }
 
 /** The fields a schedule writes on a job. A default schedule writes only the expression. */
@@ -1103,6 +1177,7 @@ const styles = StyleSheet.create({
   sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },
+  warning: { fontSize: text.meta },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
   dayText: { fontSize: text.meta, fontWeight: "500" },

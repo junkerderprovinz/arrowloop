@@ -690,7 +690,20 @@ export type Tone = "accent" | "neutral" | "ok" | "fail" | "warn";
  * A status word on a faint wash of its colour; a fully filled fail badge
  * would read as an alarm.
  */
-export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone }) {
+export function Badge({
+  label,
+  tone = "neutral",
+  inRow = false,
+}: {
+  label: string;
+  tone?: Tone;
+  /**
+   * In a connection row, a size below its buttons so it reads as a state, and
+   * washed over the card's surface, since the row's darker ground would take
+   * its text under 4.5:1.
+   */
+  inRow?: boolean;
+}) {
   const { p, corners, accentInk } = useTheme();
   const ink = {
     accent: accentInk,
@@ -699,11 +712,13 @@ export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone 
     fail: p.failInk,
     warn: p.warnInk,
   }[tone];
-  return (
-    <View style={[styles.badge, { backgroundColor: softOn(ink, 0.15), ...corners.pill }]}>
+  const badge = (
+    <View style={[styles.badge, inRow ? styles.badgeInRow : null, { backgroundColor: softOn(ink, 0.15), ...corners.pill }]}>
       <Text style={[styles.badgeText, { color: ink }]}>{label}</Text>
     </View>
   );
+  if (!inRow) return badge;
+  return <View style={[styles.badgeGround, { backgroundColor: p.surface, ...corners.pill }]}>{badge}</View>;
 }
 
 /**
@@ -905,6 +920,7 @@ export function Button({
   glyphOnly,
   hint,
   spoken,
+  inWell = false,
 }: {
   label: string;
   /** The translation key behind `label`, which picks the glyph. */
@@ -935,6 +951,8 @@ export function Button({
   hint?: string;
   /** What a screen reader says in place of the label, where the label is too short. */
   spoken?: string;
+  /** Stands in a well such as a connection row, whose surface a quiet button would vanish into. */
+  inWell?: boolean;
 }) {
   const { p, corners, labels, accent, hueAt, scheme } = useTheme();
   const { ms } = useMotion();
@@ -954,7 +972,9 @@ export function Button({
         ? p.okSolid
         : tone === "fail"
           ? p.failSolid
-          : p.surface2;
+          : inWell
+            ? p.surface3
+            : p.surface2;
   const ink =
     tone === "accent" || tone === "ok" || tone === "fail"
       ? contrastOn(ground)
@@ -1051,6 +1071,13 @@ export const README_W = 160;
 
 export const README_GAP = 13;
 
+/** A wordmark's height on a README button, 1.625rem, and on the name's line above a second line, scaled to 0.53. */
+export const WORDMARK = 26;
+export const WORDMARK_ON_SUB = 14;
+
+/** The longest a wordmark grows on a README button, 7rem, which keeps its letters near the size of a name. */
+export const WORDMARK_MOST = 112;
+
 const ReadmeWidth = createContext<number | undefined>(undefined);
 
 /**
@@ -1085,6 +1112,7 @@ export function ReadmeButton({
   soon,
   confirm,
   chosen = false,
+  wordmark = false,
 }: {
   label: string;
   /** A second, smaller line under the name. */
@@ -1105,6 +1133,12 @@ export function ReadmeButton({
   confirm?: number;
   /** Stays lit, for the option of a choice that is picked. */
   chosen?: boolean;
+  /**
+   * The mark is the name written out, so it takes the name's place from where
+   * a symbol starts, shrunk onto the name's line above a second line. The name
+   * stays for the screen reader.
+   */
+  wordmark?: boolean;
 }) {
   const { p, corners } = useTheme();
   const width = useContext(ReadmeWidth) ?? README_W;
@@ -1147,9 +1181,21 @@ export function ReadmeButton({
         mark(lit, ink)
       ) : (
         <>
-          <View style={[styles.readmeMark, shut ? styles.readmeMarkShut : null]}>{mark(lit, ink)}</View>
-          <View style={[styles.readmeName, hint ? styles.readmeNameHint : null]}>
-            <Text style={[styles.readmeNameText, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+          <View
+            style={[
+              wordmark ? (shut || sub ? styles.readmeWordmarkOnSub : styles.readmeWordmark) : styles.readmeMark,
+              wordmark && hint ? styles.readmeWordmarkHint : null,
+              shut ? styles.readmeMarkShut : null,
+            ]}
+          >
+            {mark(lit, ink)}
+          </View>
+          <View style={[styles.readmeName, wordmark ? styles.readmeNameAfterWordmark : null, hint ? styles.readmeNameHint : null]}>
+            <Text
+              style={[styles.readmeNameText, { color: ink }, wordmark ? styles.readmeNameUnderWordmark : null]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
               {label}
             </Text>
             {(shut ? soon : sub) ? (
@@ -1829,6 +1875,9 @@ const styles = StyleSheet.create({
   // `center` keeps a badge from stretching without overriding the row's
   // vertical centring.
   badge: { paddingHorizontal: 7, paddingVertical: 2, alignSelf: "center", flexShrink: 0 },
+  // GlimStone's 1.5rem row badge.
+  badgeInRow: { height: 24, paddingHorizontal: 10, paddingVertical: 0, justifyContent: "center" },
+  badgeGround: { alignSelf: "center", flexShrink: 0 },
   badgeText: { fontSize: text.meta, fontWeight: "600", letterSpacing: 0.2 },
   // The fill is a share of the track's width, so the track has to take the
   // full width even in a column that packs its children to the start.
@@ -1885,6 +1934,21 @@ const styles = StyleSheet.create({
   readmeNameText: { fontSize: text.body, fontWeight: "700" },
   readmeNameHint: { marginEnd: 28 },
   readmeMarkShut: { opacity: 0.45 },
+  // GlimStone's wordmark box: 0.875rem in, and centred on the button or, with
+  // a second line, on the name's line, 0.4375rem above the middle.
+  readmeWordmark: { position: "absolute", start: 14, end: 14, top: (46.6 - WORDMARK) / 2, height: WORDMARK, alignItems: "flex-start", justifyContent: "center" },
+  readmeWordmarkOnSub: {
+    position: "absolute",
+    start: 14,
+    end: 14,
+    top: 46.6 / 2 - 7 - WORDMARK_ON_SUB / 2,
+    height: WORDMARK_ON_SUB,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  readmeWordmarkHint: { end: 28 },
+  readmeNameAfterWordmark: { marginStart: 14 },
+  readmeNameUnderWordmark: { opacity: 0 },
   readmeHint: { position: "absolute", top: 0, bottom: 0, end: 10, justifyContent: "center" },
 
   track: { width: 36, height: 20, padding: 2, justifyContent: "center" },

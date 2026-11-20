@@ -2213,6 +2213,8 @@ const el: Translations = {
   'vpn.error.deviceLimit': 'Το {name} δεν επιτρέπει άλλες συσκευές. Αφαίρεσε μία από τον λογαριασμό σου και δοκίμασε ξανά.',
   'vpn.error.accountExpired': 'Ο λογαριασμός σου στο {name} έληξε. Ανανέωσέ τον και δοκίμασε ξανά.',
   'vpn.error.locationUnknown': 'Το {name} δεν έχει διακομιστή σε αυτή την τοποθεσία. Δοκίμασε άλλη τοποθεσία ή άφησε το πεδίο κενό.',
+  'vpn.removeAsk': 'Αφαίρεση του {name};',
+  'vpn.removeStakes': 'Το ArrowLoop ξεχνά τα στοιχεία σύνδεσης. Οι εργασίες που περνούν από αυτό αποτυγχάνουν, μέχρι να τους διαλέξεις άλλο VPN.',
   'edit.connection': 'Σύνδεση',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Χωρίς VPN',

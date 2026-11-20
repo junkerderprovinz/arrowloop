@@ -92,17 +92,16 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		return err
 	}
 
-	// A phone leaves the VPN to the system's own, which covers every app.
-	deployed := deployment()
-	var tunnel *vpnconn.Manager
-	if deployed != "phone" {
-		if tunnel, err = vpnconn.New(vpnconn.Options{Dir: filepath.Dir(*configPath), Key: key, Logf: logf}); err != nil {
-			return err
-		}
-		defer tunnel.Close()
-		runner.SetVPN(tunnel)
+	// The tunnel lives in this process, so the phone gets it as well: it needs
+	// no tun device, and the system's own VPN would carry every other app too.
+	tunnel, err := vpnconn.New(vpnconn.Options{Dir: filepath.Dir(*configPath), Key: key, Logf: logf})
+	if err != nil {
+		return err
 	}
+	defer tunnel.Close()
+	runner.SetVPN(tunnel)
 
+	deployed := deployment()
 	server := &web.Server{
 		History:     hist,
 		Runner:      runner,

@@ -2213,6 +2213,8 @@ const sv: Translations = {
   'vpn.error.deviceLimit': '{name} tillåter inga fler enheter. Ta bort en i ditt konto och försök sedan igen.',
   'vpn.error.accountExpired': 'Ditt {name}-konto har gått ut. Förnya det och försök sedan igen.',
   'vpn.error.locationUnknown': '{name} har ingen server på den här platsen. Prova en annan plats eller lämna fältet tomt.',
+  'vpn.removeAsk': 'Ta bort {name}?',
+  'vpn.removeStakes': 'ArrowLoop glömmer inloggningen. Jobb som går genom den misslyckas tills du väljer ett annat VPN åt dem.',
   'edit.connection': 'Anslutning',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Ingen VPN',

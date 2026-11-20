@@ -13,18 +13,22 @@ import { Badge } from '../../lib/glimstone/Badge'
 import { Button } from '../../lib/glimstone/Button'
 import { Card } from '../../lib/glimstone/Card'
 import { InfoBubble } from '../../lib/glimstone/InfoBubble'
-import { useT, type TranslationKey } from '../../lib/i18n'
+import { useT } from '../../lib/i18n'
 import {
   CUSTOM,
   tunnelName,
+  VPN_FIELDS as FIELDS,
+  VPN_NOTES as NOTES,
+  VPN_STATUS as STATUS,
+  vpnFailure as failureOf,
+  vpnFieldHint,
+  vpnFilled,
+  vpnRefusal,
   type VpnField,
   type VpnProviderState,
   type VpnState,
-  type VpnStatus,
   type VpnTunnelState,
 } from '../../lib/vpn'
-
-type T = ReturnType<typeof useT>['t']
 
 const MARKS = new Map<string, TileMark>(CATALOG.entries.flatMap((e) => (e.mark ? [[e.id, e.mark] as const] : [])))
 
@@ -36,38 +40,6 @@ export function vpnTileMark(id: string): TileMark {
 /** A provider's logo as it stands at rest, outside the picker. */
 export function VpnMark({ id }: { id: string }) {
   return <span aria-hidden className="flex h-full w-full" dangerouslySetInnerHTML={{ __html: vpnTileMark(id).svg }} />
-}
-
-/**
- * How a VPN stands. Off and connected are its normal states and are only said
- * in the status line; the others are a badge after its name as well.
- */
-const STATUS: Record<VpnStatus, { word: TranslationKey; badge?: 'warn' | 'fail' }> = {
-  down: { word: 'vpn.status.down' },
-  connecting: { word: 'vpn.status.connecting', badge: 'warn' },
-  connected: { word: 'vpn.status.connected' },
-  reconnecting: { word: 'vpn.status.reconnecting', badge: 'warn' },
-  failed: { word: 'vpn.status.failed', badge: 'fail' },
-}
-
-/** Why a connection failed, by the code the engine gives (internal/vpnconn). */
-const FAILURES: Record<string, TranslationKey> = {
-  'vpn-config-invalid': 'vpn.error.config',
-  'vpn-login-refused': 'vpn.error.login',
-  'vpn-timeout': 'vpn.error.timeout',
-  'vpn-name-unresolved': 'vpn.error.nameUnresolved',
-  'vpn-device-limit': 'vpn.error.deviceLimit',
-  'vpn-account-expired': 'vpn.error.accountExpired',
-  'vpn-location-unknown': 'vpn.error.locationUnknown',
-}
-
-/**
- * Why a VPN did not come up, in the reader's words where the engine gave a
- * code, and the engine's own English for the tooltip.
- */
-function failureOf(t: T, st: Pick<VpnTunnelState, 'error' | 'errorCode'>, name: string): { said: string; detail?: string } {
-  const key = st.errorCode ? FAILURES[st.errorCode] : undefined
-  return key ? { said: t(key, { name }), detail: st.error } : { said: st.error ?? '' }
 }
 
 /** What the form is open for: a new VPN of a provider, or the login of one set up. */
@@ -112,7 +84,6 @@ export function VpnCard({ hueIndex }: { hueIndex: number }) {
     return () => window.clearInterval(every)
   }, [offered, t])
 
-  // A phone leaves the VPN to the system's own.
   if (!offered) return null
   if (!vpn) {
     return (
@@ -307,35 +278,6 @@ function VpnPicker({ vpn, onPick, onClose }: { vpn: VpnState; onPick: (id: strin
   )
 }
 
-const FIELDS: Record<VpnField, { label: TranslationKey; hint?: TranslationKey; secret?: boolean }> = {
-  config: { label: 'vpn.field.config' },
-  accountNumber: { label: 'vpn.field.accountNumber', hint: 'vpn.field.accountNumberHint', secret: true },
-  token: { label: 'vpn.field.token', hint: 'vpn.field.tokenHint', secret: true },
-  username: { label: 'vpn.field.username', hint: 'vpn.field.usernameHint' },
-  password: { label: 'vpn.field.password', secret: true },
-  location: { label: 'vpn.field.location', hint: 'vpn.field.locationHint' },
-}
-
-/** What each provider takes as a location, and what an empty field means there. */
-const LOCATION_HINTS: Partial<Record<string, TranslationKey>> = {
-  nordvpn: 'vpn.field.locationHint.nordvpn',
-  pia: 'vpn.field.locationHint.pia',
-  mullvad: 'vpn.field.locationHint.mullvad',
-  hideme: 'vpn.field.locationHint.hideme',
-  torguard: 'vpn.field.locationHint.torguard',
-  azirevpn: 'vpn.field.locationHint.azirevpn',
-  obscura: 'vpn.field.locationHint.obscura',
-}
-
-/** What a provider's login needs said before it is entered. */
-const NOTES: Partial<Record<string, TranslationKey>> = {
-  kaspersky: 'vpn.note.kaspersky',
-  anonine: 'vpn.note.anonine',
-  nordvpn: 'vpn.note.nordvpn',
-  pia: 'vpn.note.pia',
-  torguard: 'vpn.note.torguard',
-}
-
 type Values = Partial<Record<VpnField, string>>
 
 /**
@@ -367,12 +309,8 @@ function VpnForm({
   const [missing, setMissing] = useState<VpnField | ''>('')
   const [refusal, setRefusal] = useState<{ said: string; detail?: string } | null>(null)
   const [busy, setBusy] = useState(false)
-  const filled = !!tunnel || p.fields.every((f) => f === 'location' || values[f]?.trim())
+  const filled = vpnFilled(p.fields, values, !!tunnel)
   const note = NOTES[p.id]
-  const hintOf = (f: VpnField) => {
-    const key = (f === 'location' && LOCATION_HINTS[p.id]) || FIELDS[f].hint
-    return key && t(key, { name })
-  }
 
   const set = (f: VpnField, v: string) => {
     setValues((was) => ({ ...was, [f]: v }))
@@ -385,13 +323,9 @@ function VpnForm({
     try {
       onSaved(tunnel ? await api.saveVpn(tunnel.id, values) : (await api.addVpn(p.id, values)).state)
     } catch (e) {
-      const field = e instanceof ApiError ? (e.values?.field as VpnField | undefined) : undefined
-      if (e instanceof ApiError && e.code === 'vpn-field-missing' && field) setMissing(field)
-      else if (e instanceof ApiError && e.code === 'vpn-config-invalid') {
-        const line = e.values?.line
-        const said = line ? t('vpn.error.configLine', { line, text: e.values?.text ?? '' }) : t('vpn.error.config', { name })
-        setRefusal({ said, detail: e.message })
-      } else setRefusal({ said: errorText(t, e) })
+      const read = e instanceof ApiError ? vpnRefusal(t, e, name) : null
+      if (read && 'missing' in read) setMissing(read.missing)
+      else setRefusal(read ?? { said: errorText(t, e) })
     } finally {
       setBusy(false)
     }
@@ -434,12 +368,12 @@ function VpnForm({
           <div key={f} className="flex flex-col gap-1.5">
             {f === 'config' ? (
               <ConfigField
-                hint={t(p.id === CUSTOM ? 'vpn.field.configHintOwn' : 'vpn.field.configHint', { name })}
+                hint={vpnFieldHint(t, p.id, 'config', name) ?? ''}
                 value={values.config ?? ''}
                 onValue={(v) => set('config', v)}
               />
             ) : (
-              <FieldRow label={t(FIELDS[f].label)} hint={hintOf(f)}>
+              <FieldRow label={t(FIELDS[f].label)} hint={vpnFieldHint(t, p.id, f, name)}>
                 {FIELDS[f].secret ? (
                   <Secret value={values[f] ?? ''} onChange={(v) => set(f, v)} autoComplete="off" label={t(FIELDS[f].label)} />
                 ) : (
