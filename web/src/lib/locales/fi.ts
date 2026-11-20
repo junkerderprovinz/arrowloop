@@ -262,6 +262,8 @@ const fi: Translations = {
   'entry.relocate': 'Siirretty kohteeseen {place}',
   'entry.binLocal': 'Siirretty roskakoriin paikallisesti',
   'entry.binIn': 'Siirretty roskakoriin: {place}',
+  'entry.inPlace': 'sijainti: {place}',
+  'entry.fromTo': 'lähde: {from}, kohde: {to}',
   'entry.was': 'aiemmin {path}',
   'entry.copied': 'Kopioitu',
   'entry.replaced': 'Korvattu',

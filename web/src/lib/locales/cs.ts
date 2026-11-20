@@ -262,6 +262,8 @@ const cs: Translations = {
   'entry.relocate': 'Přesunuto do {place}',
   'entry.binLocal': 'Přesunuto do koše místně',
   'entry.binIn': 'Přesunuto do koše v {place}',
+  'entry.inPlace': 'v {place}',
+  'entry.fromTo': 'z {from} do {to}',
   'entry.was': 'dříve {path}',
   'entry.copied': 'Zkopírováno',
   'entry.replaced': 'Nahrazeno',

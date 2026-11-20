@@ -262,6 +262,8 @@ const fa: Translations = {
   'entry.relocate': 'به {place} جابه‌جا شد',
   'entry.binLocal': 'به‌صورت محلی به سطل زباله جابه‌جا شد',
   'entry.binIn': 'در {place} به سطل زباله جابه‌جا شد',
+  'entry.inPlace': 'در {place}',
+  'entry.fromTo': 'از {from} به {to}',
   'entry.was': 'پیش‌تر {path}',
   'entry.copied': 'کپی شد',
   'entry.replaced': 'جایگزین شد',

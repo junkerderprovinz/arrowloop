@@ -262,6 +262,8 @@ const id: Translations = {
   'entry.relocate': 'Dipindah ke {place}',
   'entry.binLocal': 'Dipindah ke tempat sampah secara lokal',
   'entry.binIn': 'Dipindah ke tempat sampah di {place}',
+  'entry.inPlace': 'di {place}',
+  'entry.fromTo': 'dari {from} ke {to}',
   'entry.was': 'sebelumnya {path}',
   'entry.copied': 'Disalin',
   'entry.replaced': 'Diganti',

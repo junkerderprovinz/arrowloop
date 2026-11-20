@@ -1,4 +1,4 @@
-import { remoteOf } from "../../web/src/lib/side.data";
+import { remoteOf } from "../../web/src/lib/side.data.ts";
 import type { T } from "./i18n";
 
 export { remoteOf };

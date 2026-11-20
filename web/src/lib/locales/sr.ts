@@ -262,6 +262,8 @@ const sr: Translations = {
   'entry.relocate': 'Премештено на {place}',
   'entry.binLocal': 'Премештено у корпу локално',
   'entry.binIn': 'Премештено у корпу у {place}',
+  'entry.inPlace': 'у {place}',
+  'entry.fromTo': 'из {from} у {to}',
   'entry.was': 'раније {path}',
   'entry.copied': 'Копирано',
   'entry.replaced': 'Замењено',

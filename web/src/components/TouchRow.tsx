@@ -4,7 +4,7 @@ import { IconToLeft, IconToRight } from './glyphs'
 import type { Touch } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { dayTime } from '../lib/dayTime'
-import { entryAction, entryNote, sideName, unreadFolder } from '../lib/entryLabel'
+import { entryAction, entryNote, entryWay, sideName, unreadFolder } from '../lib/entryLabel'
 import { translateSide, useT } from '../lib/i18n'
 import { usePlaces } from '../lib/places'
 
@@ -40,6 +40,11 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
   const job = jobs.find((j) => j.name === e.Job)
   const label = entryAction(t, e, job, drives)
   const sides = job && (e.Side === 'left' || e.Side === 'right') ? [sideName(job.left, drives), sideName(job.right, drives)] : null
+  // A deletion or a rename happened on one side, so it names that side and
+  // draws no arrow. A failed step still points at the side it was writing to.
+  const way = entryWay(e)
+  const on = sides && way && 'on' in way ? sides[way.on === 'right' ? 1 : 0] : null
+  const toward = way && 'to' in way ? way.to : e.Side
   const note = entryNote(t, e)
   // In the column grid every cell keeps to one line and its column, cut at the
   // end, so the rows read down their columns; the narrow flex row wraps instead.
@@ -62,7 +67,7 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
         style={columns?.cell('what')}
         className={`flex w-[35rem] min-w-0 shrink-0 items-center gap-2 max-md:w-72 max-sm:w-auto max-sm:max-w-full${grid}`}
       >
-        {sides && (
+        {sides && !on && (
           <span className="min-w-0 shrink truncate text-carbon-textSub" title={sides[0]}>
             {sides[0]}
           </span>
@@ -71,16 +76,21 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
           <Badge tone={touchTone(e)} wrap={!columns} className={columns ? 'min-w-0 max-w-full' : ''}>
             {columns ? <span className="truncate">{label}</span> : label}
           </Badge>
-          {sides && (
-            <span className="flex shrink-0 text-carbon-textMuted" title={translateSide(t, e.Side)}>
-              {e.Side === 'right' ? <IconToRight /> : <IconToLeft />}
-              <span className="sr-only">{translateSide(t, e.Side)}</span>
+          {sides && !on && (
+            <span className="flex shrink-0 text-carbon-textMuted" title={translateSide(t, toward)}>
+              {toward === 'right' ? <IconToRight /> : <IconToLeft />}
+              <span className="sr-only">{translateSide(t, toward)}</span>
             </span>
           )}
         </span>
-        {sides && (
+        {sides && !on && (
           <span className="min-w-0 shrink truncate text-carbon-textSub" title={sides[1]}>
             {sides[1]}
+          </span>
+        )}
+        {on && (
+          <span className="min-w-0 shrink truncate text-carbon-textSub" title={on}>
+            {t('entry.inPlace', { place: on })}
           </span>
         )}
       </span>

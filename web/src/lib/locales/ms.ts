@@ -262,6 +262,8 @@ const ms: Translations = {
   'entry.relocate': 'Dialihkan ke {place}',
   'entry.binLocal': 'Dialihkan ke tong sampah secara setempat',
   'entry.binIn': 'Dialihkan ke tong sampah dalam {place}',
+  'entry.inPlace': 'dalam {place}',
+  'entry.fromTo': 'dari {from} ke {to}',
   'entry.was': 'asalnya {path}',
   'entry.copied': 'Disalin',
   'entry.replaced': 'Digantikan',

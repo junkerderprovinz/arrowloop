@@ -262,6 +262,8 @@ const th: Translations = {
   'entry.relocate': 'ย้ายไปที่ {place}',
   'entry.binLocal': 'ย้ายไปถังขยะในเครื่อง',
   'entry.binIn': 'ย้ายไปถังขยะใน {place}',
+  'entry.inPlace': 'ใน {place}',
+  'entry.fromTo': 'จาก {from} ไปยัง {to}',
   'entry.was': 'เดิมคือ {path}',
   'entry.copied': 'คัดลอกแล้ว',
   'entry.replaced': 'แทนที่แล้ว',

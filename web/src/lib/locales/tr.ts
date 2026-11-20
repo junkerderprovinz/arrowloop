@@ -262,6 +262,8 @@ const tr: Translations = {
   'entry.relocate': '{place} konumuna taşındı',
   'entry.binLocal': 'Yerelde çöp kutusuna taşındı',
   'entry.binIn': '{place} içinde çöp kutusuna taşındı',
+  'entry.inPlace': '{place} içinde',
+  'entry.fromTo': '{from} konumundan {to} konumuna',
   'entry.was': 'önceden {path}',
   'entry.copied': 'Kopyalandı',
   'entry.replaced': 'Değiştirildi',

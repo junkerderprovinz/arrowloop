@@ -262,6 +262,8 @@ const ja: Translations = {
   'entry.relocate': '{place} に移動',
   'entry.binLocal': 'ローカルでごみ箱に移動',
   'entry.binIn': '{place} のごみ箱に移動',
+  'entry.inPlace': '{place} で',
+  'entry.fromTo': '{from} から {to} へ',
   'entry.was': '以前は {path}',
   'entry.copied': 'コピー',
   'entry.replaced': '置換',

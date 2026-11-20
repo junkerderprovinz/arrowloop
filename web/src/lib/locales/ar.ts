@@ -262,6 +262,8 @@ const ar: Translations = {
   'entry.relocate': 'نُقل إلى {place}',
   'entry.binLocal': 'نُقل إلى سلة المهملات محليًا',
   'entry.binIn': 'نُقل إلى سلة المهملات في {place}',
+  'entry.inPlace': 'في {place}',
+  'entry.fromTo': 'من {from} إلى {to}',
   'entry.was': 'سابقًا {path}',
   'entry.copied': 'نُسخ',
   'entry.replaced': 'استُبدل',

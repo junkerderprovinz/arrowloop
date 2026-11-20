@@ -262,6 +262,8 @@ const gl: Translations = {
   'entry.relocate': 'Movido a {place}',
   'entry.binLocal': 'Movido ao lixo en local',
   'entry.binIn': 'Movido ao lixo en {place}',
+  'entry.inPlace': 'en {place}',
+  'entry.fromTo': 'de {from} a {to}',
   'entry.was': 'antes {path}',
   'entry.copied': 'Copiado',
   'entry.replaced': 'Substituído',

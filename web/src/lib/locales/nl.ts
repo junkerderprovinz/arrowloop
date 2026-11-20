@@ -262,6 +262,8 @@ const nl: Translations = {
   'entry.relocate': 'Verplaatst naar {place}',
   'entry.binLocal': 'Lokaal naar de prullenbak verplaatst',
   'entry.binIn': 'Naar de prullenbak verplaatst in {place}',
+  'entry.inPlace': 'in {place}',
+  'entry.fromTo': 'van {from} naar {to}',
   'entry.was': 'was {path}',
   'entry.copied': 'Gekopieerd',
   'entry.replaced': 'Vervangen',

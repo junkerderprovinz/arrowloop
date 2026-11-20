@@ -262,6 +262,8 @@ const eu: Translations = {
   'entry.relocate': '{place}(e)ra mugituta',
   'entry.binLocal': 'Lokalki zakarrontzira mugituta',
   'entry.binIn': '{place}(e)n zakarrontzira mugituta',
+  'entry.inPlace': '{place}(e)n',
+  'entry.fromTo': '{from}(e)tik {to}(e)ra',
   'entry.was': 'lehen {path}',
   'entry.copied': 'Kopiatuta',
   'entry.replaced': 'Ordeztuta',

@@ -262,6 +262,8 @@ const lv: Translations = {
   'entry.relocate': 'Pārvietots uz: {place}',
   'entry.binLocal': 'Pārvietots uz miskasti lokāli',
   'entry.binIn': 'Pārvietots uz miskasti: {place}',
+  'entry.inPlace': 'vieta: {place}',
+  'entry.fromTo': 'no {from} uz {to}',
   'entry.was': 'bija {path}',
   'entry.copied': 'Kopēts',
   'entry.replaced': 'Aizstāts',

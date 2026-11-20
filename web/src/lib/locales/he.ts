@@ -262,6 +262,8 @@ const he: Translations = {
   'entry.relocate': 'הועבר אל {place}',
   'entry.binLocal': 'הועבר לסל האשפה מקומית',
   'entry.binIn': 'הועבר לסל האשפה ב-{place}',
+  'entry.inPlace': 'ב-{place}',
+  'entry.fromTo': 'מ-{from} אל {to}',
   'entry.was': 'קודם {path}',
   'entry.copied': 'הועתק',
   'entry.replaced': 'הוחלף',

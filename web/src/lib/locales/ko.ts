@@ -262,6 +262,8 @@ const ko: Translations = {
   'entry.relocate': '{place}에 이동함',
   'entry.binLocal': '로컬에서 휴지통으로 이동함',
   'entry.binIn': '{place}의 휴지통으로 이동함',
+  'entry.inPlace': '{place}에서',
+  'entry.fromTo': '{from}에서 {to}(으)로',
   'entry.was': '이전에는 {path}',
   'entry.copied': '복사함',
   'entry.replaced': '교체함',

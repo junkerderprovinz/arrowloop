@@ -262,6 +262,8 @@ const uk: Translations = {
   'entry.relocate': 'Перенесено до {place}',
   'entry.binLocal': 'Переміщено до кошика локально',
   'entry.binIn': 'Переміщено до кошика в {place}',
+  'entry.inPlace': 'в {place}',
+  'entry.fromTo': 'з {from} до {to}',
   'entry.was': 'раніше {path}',
   'entry.copied': 'Скопійовано',
   'entry.replaced': 'Замінено',

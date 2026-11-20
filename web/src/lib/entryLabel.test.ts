@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Job, RunEntry, Volume } from './api'
 import { de } from './i18n'
-import { entryAction, entryLabel, groupWord, entryNote, placeOf, placesOf, sideName, transferLabel, unreadFolder } from './entryLabel'
+import { entryAction, entryLabel, entryWay, groupWord, entryNote, placeOf, placesOf, sideName, transferLabel, unreadFolder } from './entryLabel'
 
 // The German table, so the test reads the phrases somebody asked for.
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -228,5 +228,35 @@ describe('the heading over the files of one kind', () => {
 
   it('keeps the plain word for every other kind', () => {
     expect(groupWord(t, 'copy', [entry('copy', 'right')])).toBe(t('entry.copy'))
+  })
+})
+
+describe('which way a file went', () => {
+  const noted = (Kind: string, Side: string, Note: string): RunEntry => ({ Kind, Side, Path: 'a.jpg', Note, Size: 0 })
+
+  it('goes from the other side to the one a copy landed on', () => {
+    expect(entryWay(entry('copy', 'right'))).toEqual({ from: 'left', to: 'right' })
+    expect(entryWay(noted('copy', 'left', 'replaced'))).toEqual({ from: 'right', to: 'left' })
+  })
+
+  it('leaves the side a relocated file was on', () => {
+    expect(entryWay(noted('move', 'left', 'relocated'))).toEqual({ from: 'left', to: 'right' })
+  })
+
+  it('crosses over for a folder made to match the other side', () => {
+    expect(entryWay(entry('mkdir', 'left'))).toEqual({ from: 'right', to: 'left' })
+  })
+
+  it('stays on the side a deletion, a rename or a removed folder happened on', () => {
+    expect(entryWay(noted('trash', 'right', 'bin'))).toEqual({ on: 'right' })
+    expect(entryWay(entry('delete', 'left'))).toEqual({ on: 'left' })
+    expect(entryWay(noted('move', 'right', 'old/a.jpg'))).toEqual({ on: 'right' })
+    expect(entryWay(entry('rmdir', 'left'))).toEqual({ on: 'left' })
+  })
+
+  it('has none for a skip, a conflict or an entry without a side', () => {
+    expect(entryWay(entry('skip', 'right'))).toBeNull()
+    expect(entryWay(entry('conflict', ''))).toBeNull()
+    expect(entryWay(entry('copy', ''))).toBeNull()
   })
 })

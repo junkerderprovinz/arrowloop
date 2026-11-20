@@ -262,6 +262,8 @@ const ca: Translations = {
   'entry.relocate': 'Mogut a {place}',
   'entry.binLocal': 'Mogut a la paperera localment',
   'entry.binIn': 'Mogut a la paperera a {place}',
+  'entry.inPlace': 'a {place}',
+  'entry.fromTo': 'de {from} a {to}',
   'entry.was': 'abans {path}',
   'entry.copied': 'Copiat',
   'entry.replaced': 'Reemplaçat',

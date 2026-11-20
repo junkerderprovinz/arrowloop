@@ -262,6 +262,8 @@ const hi: Translations = {
   'entry.relocate': '{place} की ओर स्थानांतरित किया गया',
   'entry.binLocal': 'स्थानीय रूप से रद्दी में डाला',
   'entry.binIn': '{place} की रद्दी में डाला',
+  'entry.inPlace': '{place} में',
+  'entry.fromTo': '{from} से {to} तक',
   'entry.was': 'पहले {path}',
   'entry.copied': 'कॉपी किया',
   'entry.replaced': 'बदला',

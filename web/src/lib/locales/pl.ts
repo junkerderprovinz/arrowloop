@@ -262,6 +262,8 @@ const pl: Translations = {
   'entry.relocate': 'Przeniesiono do {place}',
   'entry.binLocal': 'Przeniesiono do kosza lokalnie',
   'entry.binIn': 'Przeniesiono do kosza w {place}',
+  'entry.inPlace': 'w {place}',
+  'entry.fromTo': 'z {from} do {to}',
   'entry.was': 'było {path}',
   'entry.copied': 'Skopiowano',
   'entry.replaced': 'Zastąpiono',

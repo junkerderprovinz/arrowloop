@@ -282,6 +282,34 @@ export function entryRoute(
   return { to: at(side, path) }
 }
 
+type Hand = 'left' | 'right'
+
+/**
+ * Which way an entry took its file between the job's sides: across for a
+ * copy, a file that left for the other side and a folder made to match, and
+ * on one side for a deletion, a rename and a removed folder. Null for a skip,
+ * a conflict and any entry without a side, whose label says all there is.
+ */
+export function entryWay(e: Entry): { from: Hand; to: Hand } | { on: Hand } | null {
+  if (e.Side !== 'left' && e.Side !== 'right') return null
+  const side: Hand = e.Side
+  const other: Hand = side === 'left' ? 'right' : 'left'
+  switch (e.Kind) {
+    case 'copy':
+    case 'mkdir':
+      return { from: other, to: side }
+    case 'move':
+      // The side of a relocation is where the file left, as in entryLabel.
+      return e.Note === RELOCATED ? { from: side, to: other } : { on: side }
+    case 'trash':
+    case 'delete':
+    case 'rmdir':
+      return { on: side }
+    default:
+      return null
+  }
+}
+
 /**
  * A side as a person reads it: a drive by its label and the folder on it, as
  * "Backup/Photos", since its stored form starts with an identity nobody can

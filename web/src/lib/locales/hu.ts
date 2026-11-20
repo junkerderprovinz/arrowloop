@@ -262,6 +262,8 @@ const hu: Translations = {
   'entry.relocate': 'Áthelyezve ide: {place}',
   'entry.binLocal': 'A kukába került helyben',
   'entry.binIn': 'A kukába került itt: {place}',
+  'entry.inPlace': 'itt: {place}',
+  'entry.fromTo': 'innen: {from}, ide: {to}',
   'entry.was': 'korábban: {path}',
   'entry.copied': 'Másolva',
   'entry.replaced': 'Cserélve',

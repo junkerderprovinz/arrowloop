@@ -262,6 +262,8 @@ const et: Translations = {
   'entry.relocate': 'Teisaldatud: {place}',
   'entry.binLocal': 'Kohalikult prügikasti teisaldatud',
   'entry.binIn': 'Prügikasti teisaldatud: {place}',
+  'entry.inPlace': 'asukohas {place}',
+  'entry.fromTo': 'asukohast {from} asukohta {to}',
   'entry.was': 'varem {path}',
   'entry.copied': 'Kopeeritud',
   'entry.replaced': 'Asendatud',

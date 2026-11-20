@@ -262,6 +262,8 @@ const sv: Translations = {
   'entry.relocate': 'Flyttad till {place}',
   'entry.binLocal': 'Flyttad till papperskorgen lokalt',
   'entry.binIn': 'Flyttad till papperskorgen i {place}',
+  'entry.inPlace': 'i {place}',
+  'entry.fromTo': 'från {from} till {to}',
   'entry.was': 'tidigare {path}',
   'entry.copied': 'Kopierad',
   'entry.replaced': 'Ersatt',

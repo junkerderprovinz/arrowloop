@@ -262,6 +262,8 @@ const sl: Translations = {
   'entry.relocate': 'Prestavljeno v {place}',
   'entry.binLocal': 'Premaknjeno v koš lokalno',
   'entry.binIn': 'Premaknjeno v koš v {place}',
+  'entry.inPlace': 'v {place}',
+  'entry.fromTo': 'iz {from} v {to}',
   'entry.was': 'prej {path}',
   'entry.copied': 'Kopirano',
   'entry.replaced': 'Zamenjano',

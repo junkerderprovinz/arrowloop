@@ -262,6 +262,8 @@ const bg: Translations = {
   'entry.relocate': 'Преместено в {place}',
   'entry.binLocal': 'Преместено в кошчето локално',
   'entry.binIn': 'Преместено в кошчето в {place}',
+  'entry.inPlace': 'в {place}',
+  'entry.fromTo': 'от {from} към {to}',
   'entry.was': 'преди {path}',
   'entry.copied': 'Копирано',
   'entry.replaced': 'Заменено',

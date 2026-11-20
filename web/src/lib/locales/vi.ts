@@ -262,6 +262,8 @@ const vi: Translations = {
   'entry.relocate': 'Đã chuyển sang {place}',
   'entry.binLocal': 'Đã chuyển vào thùng rác trên máy',
   'entry.binIn': 'Đã chuyển vào thùng rác trong {place}',
+  'entry.inPlace': 'trong {place}',
+  'entry.fromTo': 'từ {from} đến {to}',
   'entry.was': 'trước đó là {path}',
   'entry.copied': 'Đã sao chép',
   'entry.replaced': 'Đã thay thế',

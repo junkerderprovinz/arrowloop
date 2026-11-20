@@ -239,6 +239,8 @@ export interface Tally {
 export interface Touch extends Entry {
   Run: number;
   Job: string;
+  /** The job's id, which outlasts a rename. An older engine sends none. */
+  JobID?: string;
   When: string;
 }
 

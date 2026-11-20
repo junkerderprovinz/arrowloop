@@ -262,6 +262,8 @@ const is: Translations = {
   'entry.relocate': 'Flutt til {place}',
   'entry.binLocal': 'Fært í ruslið staðbundið',
   'entry.binIn': 'Fært í ruslið á {place}',
+  'entry.inPlace': 'á {place}',
+  'entry.fromTo': 'frá {from} til {to}',
   'entry.was': 'áður {path}',
   'entry.copied': 'Afritað',
   'entry.replaced': 'Skipt út',

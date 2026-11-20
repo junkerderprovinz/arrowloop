@@ -6,12 +6,14 @@ import { matchesQuery } from "../../../web/src/lib/fold";
 import type { HistoryStack } from "../nav";
 import { jobSides } from "../sides";
 import { useWaiting } from "../waiting";
-import { entryLabel, entryNote, groupWord, unreadFolder } from "../../../web/src/lib/entryLabel";
+import { entryAction, entryLabel, entryNote, groupWord, unreadFolder } from "../../../web/src/lib/entryLabel";
 import { failureLine } from "../../../web/src/lib/failure";
 import { jobNamesInOrder } from "../../../web/src/lib/jobOrder";
 import { runLength } from "../../../web/src/lib/runLength";
 import { api, failed, touched, type Entry, type Job, type Run, type Touch } from "../api";
 import { isPerfectlyIdle } from "../eggs";
+import { fileWay, lineJob } from "../fileWay";
+import { Glyph } from "../glyphs";
 import { useT, type T } from "../i18n";
 import { JobChips } from "../jobChips";
 import { ListHead, ListSearch, Narrowed, type SortDir } from "../listHead";
@@ -145,9 +147,19 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
   // Back to one screenful whenever the question changes.
   useEffect(() => setLimit(60), [query, job, show]);
 
+  // The jobs come with every load, so a list the engine could not give at
+  // first, or a job made or renamed since, still names the sides.
   const load = useCallback(async () => {
     try {
-      setRows(await api.log({ job, contains: query, kinds: SHOWS[show], limit }));
+      const [got, list] = await Promise.all([
+        api.log({ job, contains: query, kinds: SHOWS[show], limit }),
+        api.jobs().catch(() => null),
+      ]);
+      setRows(got);
+      if (list) {
+        setJobs(list.map((j) => j.name));
+        setConfigs(list);
+      }
       setError("");
     } catch (e) {
       setError((e as Error).message);
@@ -158,22 +170,15 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
     void load();
   }, [load]);
 
-  // Job names from both the configuration and the log: a deleted job still has
-  // lines, and a job that never ran has none.
   useEffect(() => {
-    api.jobs().then(
-      (list) => {
-        setJobs(list.map((j) => j.name));
-        setConfigs(list);
-      },
-      () => setJobs([]),
-    );
     // Only for a drive's name in a badge; without it the badge shows the id.
     api.volumes().then(
       (v) => setDrives(v.volumes),
       () => {},
     );
   }, []);
+  // Job names from both the configuration and the log: a deleted job still has
+  // lines, and a job that never ran has none.
   const names = useMemo(
     () => jobNamesInOrder([...jobs, ...(rows ?? []).map((r) => r.Job)], jobs).filter((name) => name !== ""),
     [jobs, rows],
@@ -282,14 +287,13 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
           if (rows && rows.length >= limit) setLimit((n) => n * 2);
         }}
         renderItem={({ item }) => {
+          const labelled = { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path };
+          const owner = lineJob(item, configs);
+          // With the way beside it the badge only says what happened.
+          const way = fileWay(item, configs, t);
           const badge = (
             <Badge
-              label={entryLabel(
-                t,
-                { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path },
-                configs.find((c) => c.name === item.Job),
-                drives,
-              )}
+              label={way ? entryAction(t, labelled, owner, drives) : entryLabel(t, labelled, owner, drives)}
               tone={tone(item)}
             />
           );
@@ -303,7 +307,10 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
                   accessibilityRole="button"
                   style={[styles.row, styles.across]}
                 >
-                  <View style={{ width: FILE_COLUMNS.what }}>{badge}</View>
+                  <View style={[styles.what, { width: FILE_COLUMNS.what }]}>
+                    {badge}
+                    {way ? <FileWay way={way} /> : null}
+                  </View>
                   <View style={{ width: FILE_COLUMNS.when }}>
                     <Caption>{clock(item.When, lang)}</Caption>
                   </View>
@@ -317,8 +324,14 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
               ) : (
                 <Press onPress={() => setOpened({ id: item.Run, job: item.Job })} accessibilityRole="button" style={styles.row}>
                   <Mono>{item.Path}</Mono>
+                  {way ? (
+                    <View style={styles.wayLine}>
+                      {badge}
+                      <FileWay way={way} />
+                    </View>
+                  ) : null}
                   <View style={styles.meta}>
-                    {badge}
+                    {way ? null : badge}
                     {item.Job ? <Caption>{item.Job}</Caption> : null}
                     <Caption>{clock(item.When, lang)}</Caption>
                     {item.Size ? <Caption>{bytes(item.Size)}</Caption> : null}
@@ -340,7 +353,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
         />
         <JobChips names={names} job={job} onJob={setJob} />
       </Sheet>
-      <RunSheet opened={opened} onClose={() => setOpened(null)} />
+      <RunSheet opened={opened} jobs={configs} onClose={() => setOpened(null)} />
     </>
   );
 }
@@ -365,12 +378,14 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   const [opened, setOpened] = useState<Opened | null>(null);
   // The job list's order, which the filter offers the jobs in.
   const [order, setOrder] = useState<string[]>([]);
+  const [configs, setConfigs] = useState<Job[]>([]);
 
   const load = useCallback(async () => {
     try {
       const [got, jobs] = await Promise.all([api.history(100), api.jobs()]);
       setRuns(got);
       setOrder(jobs.map((j) => j.name));
+      setConfigs(jobs);
       setError("");
     } catch (e) {
       setError((e as Error).message);
@@ -513,7 +528,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
         />
         <JobChips names={names} job={job} onJob={setJob} />
       </Sheet>
-      <RunSheet opened={opened} onClose={() => setOpened(null)} />
+      <RunSheet opened={opened} jobs={configs} onClose={() => setOpened(null)} />
     </>
   );
 }
@@ -686,7 +701,7 @@ function Top({ mode, onMode, children }: { mode: Mode; onMode: (next: Mode) => v
  * What one run did, path by path, in a sheet over the list. The entries are
  * fetched only when it opens, since the list needs nothing but the summaries.
  */
-function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => void }) {
+function RunSheet({ opened, jobs, onClose }: { opened: Opened | null; jobs: Job[]; onClose: () => void }) {
   const { t, lang } = useT();
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [error, setError] = useState("");
@@ -725,9 +740,11 @@ function RunSheet({ opened, onClose }: { opened: Opened | null; onClose: () => v
           <AxisLabel>{`${groupWord(t, kind, list)} · ${list.length}`}</AxisLabel>
           {list.slice(0, 50).map((entry, i) => {
             const labelled = { Kind: entry.Kind, Side: entry.Side ?? "", Note: entry.Note, Path: entry.Path };
+            const way = opened ? fileWay({ ...labelled, Job: opened.job }, jobs, t) : null;
             return (
               <View key={`${entry.Path}-${i}`}>
                 <Mono>{entry.Path}</Mono>
+                {way ? <FileWay way={way} /> : null}
                 {/* Among the paths left alone, a folder nobody could read says why. */}
                 {unreadFolder(labelled) ? (
                   <>
@@ -776,6 +793,36 @@ function RunRowAcross({ run, onPress }: { run: Run; onPress: () => void }) {
         <Caption>{clock(run.Started, lang)}</Caption>
       </View>
     </Press>
+  );
+}
+
+/**
+ * Where a file went, in the names the job's card gives its sides: both with
+ * the arrow between them, as the job's way line draws it, or the one side a
+ * deletion or a rename happened on. A long name is cut at its end so the line
+ * keeps to one row.
+ */
+function FileWay({ way }: { way: { from: string; to: string } | { on: string } }) {
+  const { t, rtl } = useT();
+  const { p } = useTheme();
+  const name = [styles.place, { color: p.textSub }];
+  if ("on" in way) {
+    return (
+      <Text style={name} numberOfLines={1}>
+        {t("entry.inPlace", { place: way.on })}
+      </Text>
+    );
+  }
+  return (
+    <View style={styles.way} accessible accessibilityLabel={t("entry.fromTo", { from: way.from, to: way.to })}>
+      <Text style={name} numberOfLines={1}>
+        {way.from}
+      </Text>
+      <Glyph name={rtl ? "IconToLeft" : "IconToRight"} color={p.textMuted} size={14} />
+      <Text style={name} numberOfLines={1}>
+        {way.to}
+      </Text>
+    </View>
   );
 }
 
@@ -862,6 +909,12 @@ const styles = StyleSheet.create({
   runRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   runName: { flex: 1, fontSize: text.body, fontWeight: "600" },
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: space.sm },
+  wayLine: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  way: { flexDirection: "row", alignItems: "center", gap: space.xs, flexShrink: 1, minWidth: 0 },
+  place: { fontSize: text.subline, lineHeight: 18, flexShrink: 1 },
+  // A row that wraps, so the badge starts under the column's head and the
+  // way goes beside it or, when the names are long, on a line of its own.
+  what: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.xs },
   // The list head's gap, so the cells stand under their heads.
   across: { flexDirection: "row", alignItems: "center", gap: space.md },
   grow: { flex: 1, minWidth: 0, gap: space.xs },

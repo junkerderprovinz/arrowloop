@@ -262,6 +262,8 @@ const fr: Translations = {
   'entry.relocate': 'Déplacé vers {place}',
   'entry.binLocal': 'Mis à la corbeille en local',
   'entry.binIn': 'Mis à la corbeille dans {place}',
+  'entry.inPlace': 'dans {place}',
+  'entry.fromTo': 'de {from} vers {to}',
   'entry.was': 'précédemment {path}',
   'entry.copied': 'Copié',
   'entry.replaced': 'Remplacé',

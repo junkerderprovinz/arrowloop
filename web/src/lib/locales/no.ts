@@ -262,6 +262,8 @@ const no: Translations = {
   'entry.relocate': 'Flyttet til {place}',
   'entry.binLocal': 'Flyttet til papirkurven lokalt',
   'entry.binIn': 'Flyttet til papirkurven i {place}',
+  'entry.inPlace': 'i {place}',
+  'entry.fromTo': 'fra {from} til {to}',
   'entry.was': 'var {path}',
   'entry.copied': 'Kopiert',
   'entry.replaced': 'Erstattet',

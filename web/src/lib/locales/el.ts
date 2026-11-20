@@ -262,6 +262,8 @@ const el: Translations = {
   'entry.relocate': 'Μετακινήθηκε στο {place}',
   'entry.binLocal': 'Μετακινήθηκε στον κάδο τοπικά',
   'entry.binIn': 'Μετακινήθηκε στον κάδο στο {place}',
+  'entry.inPlace': 'στο {place}',
+  'entry.fromTo': 'από {from} προς {to}',
   'entry.was': 'πριν {path}',
   'entry.copied': 'Αντιγράφηκε',
   'entry.replaced': 'Αντικαταστάθηκε',

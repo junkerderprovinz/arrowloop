@@ -47,4 +47,29 @@ describe('a line of the file log', () => {
     const way = screen.getByTestId('touch-way')
     expect(way.textContent).toBe('/data/HandyCopiedrightnas:Fotos')
   })
+
+  const job = { name: 'photos', left: '/data/Handy', right: 'nas:Fotos' } as Job
+  const way = (touch: Partial<Touch>, jobs: Job[] = [job]) => {
+    const line = { Job: 'photos', When: new Date().toISOString(), Seq: 1, Path: 'a.jpg', Size: 10, Note: '', ...touch } as Touch
+    render(
+      <Places.Provider value={{ jobs, drives: [] }}>
+        <ul>
+          <TouchRow touch={line} />
+        </ul>
+      </Places.Provider>,
+    )
+    return screen.getByTestId('touch-way').textContent
+  }
+
+  it('names the side a file went to the trash on, without an arrow', () => {
+    expect(way({ Kind: 'trash', Side: 'right', Note: 'bin' })).toBe('To the trashin nas:Fotos')
+  })
+
+  it('points a relocated file away from the side it left', () => {
+    expect(way({ Kind: 'move', Side: 'left', Note: 'relocated' })).toBe('/data/HandyMovedrightnas:Fotos')
+  })
+
+  it('shows only what happened once the job is gone', () => {
+    expect(way({ Kind: 'copy', Side: 'right' }, [])).toBe('Copied')
+  })
 })

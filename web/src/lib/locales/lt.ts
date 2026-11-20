@@ -262,6 +262,8 @@ const lt: Translations = {
   'entry.relocate': 'Perkelta į {place}',
   'entry.binLocal': 'Perkelta į šiukšlinę vietoje',
   'entry.binIn': 'Perkelta į šiukšlinę: {place}',
+  'entry.inPlace': 'vieta: {place}',
+  'entry.fromTo': 'iš {from} į {to}',
   'entry.was': 'buvo {path}',
   'entry.copied': 'Nukopijuota',
   'entry.replaced': 'Pakeista',

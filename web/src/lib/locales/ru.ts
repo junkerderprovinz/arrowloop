@@ -262,6 +262,8 @@ const ru: Translations = {
   'entry.relocate': 'Перенесено в {place}',
   'entry.binLocal': 'Перемещено в корзину локально',
   'entry.binIn': 'Перемещено в корзину в {place}',
+  'entry.inPlace': 'в {place}',
+  'entry.fromTo': 'из {from} в {to}',
   'entry.was': 'раньше {path}',
   'entry.copied': 'Скопировано',
   'entry.replaced': 'Заменено',

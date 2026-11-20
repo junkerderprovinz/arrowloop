@@ -262,6 +262,8 @@ const sk: Translations = {
   'entry.relocate': 'Presunuté do {place}',
   'entry.binLocal': 'Presunuté do koša miestne',
   'entry.binIn': 'Presunuté do koša v {place}',
+  'entry.inPlace': 'v {place}',
+  'entry.fromTo': 'z {from} do {to}',
   'entry.was': 'predtým {path}',
   'entry.copied': 'Skopírované',
   'entry.replaced': 'Nahradené',

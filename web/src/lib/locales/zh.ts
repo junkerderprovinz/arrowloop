@@ -262,6 +262,8 @@ const zh: Translations = {
   'entry.relocate': '已移动到 {place}',
   'entry.binLocal': '已在本地移入回收站',
   'entry.binIn': '已在 {place} 中移入回收站',
+  'entry.inPlace': '在 {place}',
+  'entry.fromTo': '从 {from} 到 {to}',
   'entry.was': '曾用名 {path}',
   'entry.copied': '已复制',
   'entry.replaced': '已替换',

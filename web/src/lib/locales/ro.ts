@@ -262,6 +262,8 @@ const ro: Translations = {
   'entry.relocate': 'Mutat spre {place}',
   'entry.binLocal': 'Mutat la coș local',
   'entry.binIn': 'Mutat la coș în {place}',
+  'entry.inPlace': 'în {place}',
+  'entry.fromTo': 'din {from} în {to}',
   'entry.was': 'era {path}',
   'entry.copied': 'Copiat',
   'entry.replaced': 'Înlocuit',

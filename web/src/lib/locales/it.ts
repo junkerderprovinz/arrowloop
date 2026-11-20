@@ -262,6 +262,8 @@ const it: Translations = {
   'entry.relocate': 'Spostato su {place}',
   'entry.binLocal': 'Spostato nel cestino in locale',
   'entry.binIn': 'Spostato nel cestino in {place}',
+  'entry.inPlace': 'in {place}',
+  'entry.fromTo': 'da {from} a {to}',
   'entry.was': 'prima {path}',
   'entry.copied': 'Copiato',
   'entry.replaced': 'Sostituito',

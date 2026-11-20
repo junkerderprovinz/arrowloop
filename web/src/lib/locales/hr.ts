@@ -262,6 +262,8 @@ const hr: Translations = {
   'entry.relocate': 'Premješteno na {place}',
   'entry.binLocal': 'Premješteno u smeće lokalno',
   'entry.binIn': 'Premješteno u smeće na {place}',
+  'entry.inPlace': 'na {place}',
+  'entry.fromTo': 'iz {from} u {to}',
   'entry.was': 'prije {path}',
   'entry.copied': 'Kopirano',
   'entry.replaced': 'Zamijenjeno',
