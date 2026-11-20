@@ -2212,6 +2212,8 @@ const da: Translations = {
   'vpn.error.deviceLimit': '{name} tillader ikke flere enheder. Fjern en på din konto, og prøv så igen.',
   'vpn.error.accountExpired': 'Din {name}-konto er udløbet. Forny den, og prøv så igen.',
   'vpn.error.locationUnknown': '{name} har ingen server på denne placering. Prøv en anden placering, eller lad feltet stå tomt.',
+  'vpn.removeAsk': 'Fjern {name}?',
+  'vpn.removeStakes': 'ArrowLoop glemmer dens login. Job, der går gennem den, fejler, indtil du vælger en anden VPN til dem.',
   'edit.connection': 'Forbindelse',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Ingen VPN',

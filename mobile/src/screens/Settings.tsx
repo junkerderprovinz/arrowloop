@@ -15,6 +15,7 @@ import {
 import Constants from "expo-constants";
 import { api } from "../api";
 import { AutoBackupSection } from "../autoBackup";
+import { IntegrationsSection } from "../vpnSection";
 import { engine, type AppData, type AppDataState, type AppDataWay, type PickedFile, type SharedFolder } from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
@@ -135,6 +136,7 @@ export function Settings() {
   const [running, setRunning] = useState<boolean | null>(null);
   const [version, setVersion] = useState<string | null>(null);
   const [pairable, setPairable] = useState(false);
+  const [vpnOffered, setVpnOffered] = useState(false);
   // Null until read, so the card never shows the built-in values for a moment.
   const [defaults, setDefaults] = useState<Defaults | null>(null);
   const [lockable, setLockable] = useState(false);
@@ -321,6 +323,7 @@ export function Settings() {
       (c) => {
         setVersion(c.version);
         setPairable(c.pairing === true);
+        setVpnOffered(c.vpn === true);
       },
       () => setVersion(null),
     );
@@ -463,6 +466,9 @@ export function Settings() {
           <Button label={t("engine.defaults")} glyph="IconSync" onPress={() => nav.navigate("Sync")} />
         </Section>
       </OnTile>
+
+      {/* An older engine has no built-in VPN, and then no such card. */}
+      <OnTile section="integrations">{vpnOffered ? <IntegrationsSection hue={8} /> : null}</OnTile>
 
       {/* An engine built without pairing has no such page. */}
       <OnTile section="pairing">
@@ -1256,7 +1262,7 @@ export function Settings() {
   // page of the one picked beside them. Sync, Targets and Pairing are screens
   // of their own on the phone and show whole. The page keeps its place in the
   // tree either way, so turning the tablet keeps where it was scrolled to.
-  const tiles = settingsTiles({ pairable });
+  const tiles = settingsTiles({ pairable, vpn: vpnOffered });
   const shown = shownTile(tiles, picked);
   const screen = frame.wide ? tiles.find((tile) => tile.id === shown)?.screen : undefined;
   const pane = useMemo(() => (frame.wide ? { wide: true, width: paneWidth(frame.width), fill: true } : frame), [frame]);

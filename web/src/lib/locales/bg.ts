@@ -2212,6 +2212,8 @@ const bg: Translations = {
   'vpn.error.deviceLimit': '{name} не позволява повече устройства. Премахни едно от акаунта си и опитай отново.',
   'vpn.error.accountExpired': 'Акаунтът ти в {name} е изтекъл. Поднови го и опитай отново.',
   'vpn.error.locationUnknown': '{name} няма сървър на това местоположение. Опитай друго местоположение или остави полето празно.',
+  'vpn.removeAsk': 'Да се премахне ли {name}?',
+  'vpn.removeStakes': 'ArrowLoop забравя данните за вход. Задачите, които минават през него, ще се провалят, докато не им избереш друг VPN.',
   'edit.connection': 'Връзка',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Без VPN',

@@ -10,6 +10,7 @@ import {
 import { COFFEE_BUTTON_SVG, MANUAL_SVG } from "../../web/src/lib/appMarks";
 import { glyphNameFor } from "../../web/src/lib/glyphName";
 import { BRAND } from "./theme";
+import { markXml, vpnMark } from "./vpn";
 
 // The web app's icon set and brand marks, drawn from the generated
 // web/src/lib/glyphs.data.ts so both apps share one set. Text symbols such as
@@ -356,4 +357,35 @@ export function ProviderMark({
 
 export function hasMark(name: string | undefined): boolean {
   return !!name && (name in BRANDS || name in GLYPHS);
+}
+
+/**
+ * A VPN provider's mark from GlimStone, in its own colours at rest or lit for
+ * its tile. A provider the catalog has no mark for wears the shield.
+ */
+export function VpnMark({
+  provider,
+  width,
+  height,
+  scheme,
+  lit,
+  color,
+}: {
+  provider: string;
+  width: number;
+  height: number;
+  scheme: "dark" | "light";
+  lit: boolean;
+  /** The ink of the shield. */
+  color: string;
+}) {
+  const mark = vpnMark(provider);
+  if (!mark) return <Glyph name="IconShieldOn" color={color} width={width} height={height} />;
+  return <SvgXml xml={markXml(mark, scheme, lit)} width={width} height={height} />;
+}
+
+/** The colour a provider's tile lights up in and the ink on it, or none for one without a mark. */
+export function vpnTile(provider: string): { color: string; ink: string } | undefined {
+  const mark = vpnMark(provider);
+  return mark?.tile && mark.ink ? { color: mark.tile, ink: mark.ink } : undefined;
 }

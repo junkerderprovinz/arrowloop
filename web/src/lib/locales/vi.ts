@@ -2212,6 +2212,8 @@ const vi: Translations = {
   'vpn.error.deviceLimit': '{name} không cho thêm thiết bị nữa. Hãy gỡ một thiết bị trong tài khoản của bạn rồi thử lại.',
   'vpn.error.accountExpired': 'Tài khoản {name} của bạn đã hết hạn. Hãy gia hạn rồi thử lại.',
   'vpn.error.locationUnknown': '{name} không có máy chủ ở vị trí này. Hãy thử vị trí khác hoặc để trống ô này.',
+  'vpn.removeAsk': 'Gỡ {name}?',
+  'vpn.removeStakes': 'ArrowLoop sẽ quên thông tin đăng nhập. Các tác vụ đi qua VPN này sẽ thất bại cho đến khi bạn chọn VPN khác cho chúng.',
   'edit.connection': 'Kết nối',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Không dùng VPN',

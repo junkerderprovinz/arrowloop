@@ -2212,6 +2212,8 @@ const ko: Translations = {
   'vpn.error.deviceLimit': '{name}에서 더 이상 기기를 추가할 수 없습니다. 계정에서 기기 하나를 제거한 다음 다시 시도하세요.',
   'vpn.error.accountExpired': '{name} 계정이 만료되었습니다. 갱신한 다음 다시 시도하세요.',
   'vpn.error.locationUnknown': '{name}에는 이 위치에 서버가 없습니다. 다른 위치를 시도하거나 칸을 비워 두세요.',
+  'vpn.removeAsk': '{name}을(를) 제거할까요?',
+  'vpn.removeStakes': 'ArrowLoop가 로그인 정보를 잊습니다. 이 VPN을 거치는 작업은 다른 VPN을 고를 때까지 실패합니다.',
   'edit.connection': '연결',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'VPN 사용 안 함',

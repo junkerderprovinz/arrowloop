@@ -2212,6 +2212,8 @@ const is: Translations = {
   'vpn.error.deviceLimit': '{name} leyfir ekki fleiri tæki. Fjarlægðu eitt á reikningnum þínum og reyndu svo aftur.',
   'vpn.error.accountExpired': 'Reikningurinn þinn hjá {name} er útrunninn. Endurnýjaðu hann og reyndu svo aftur.',
   'vpn.error.locationUnknown': '{name} er ekki með netþjón á þessum stað. Prófaðu aðra staðsetningu eða skildu reitinn eftir tóman.',
+  'vpn.removeAsk': 'Fjarlægja {name}?',
+  'vpn.removeStakes': 'ArrowLoop gleymir innskráningunni. Verk sem fara í gegnum það mistakast þar til þú velur annað VPN fyrir þau.',
   'edit.connection': 'Tenging',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Ekkert VPN',

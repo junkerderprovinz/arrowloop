@@ -2212,6 +2212,8 @@ const ja: Translations = {
   'vpn.error.deviceLimit': '{name} ではこれ以上デバイスを追加できません。アカウントでデバイスを1台削除してから、もう一度試してください。',
   'vpn.error.accountExpired': '{name} アカウントの期限が切れています。更新してから、もう一度試してください。',
   'vpn.error.locationUnknown': '{name} にはこの場所のサーバーがありません。別の場所を試すか、欄を空のままにしてください。',
+  'vpn.removeAsk': '{name} を削除しますか?',
+  'vpn.removeStakes': 'ArrowLoop はそのログイン情報を消去します。これを経由するジョブは、別の VPN を選ぶまで失敗します。',
   'edit.connection': '接続',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'VPN なし',

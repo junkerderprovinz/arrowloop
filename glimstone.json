@@ -17,6 +17,12 @@
       "mode": "port",
       "version": "4.8.0",
       "versionFile": "mobile/src/glimstone/version.ts"
+    },
+    {
+      "name": "phone packages",
+      "mode": "npm",
+      "version": "4.8.0",
+      "package": "mobile/package.json"
     }
   ]
 }

@@ -2212,6 +2212,8 @@ const lv: Translations = {
   'vpn.error.deviceLimit': '{name} vairāk ierīču neatļauj. Noņem vienu savā kontā un mēģini vēlreiz.',
   'vpn.error.accountExpired': 'Tava {name} konta derīgums ir beidzies. Atjauno to un mēģini vēlreiz.',
   'vpn.error.locationUnknown': '{name} šajā vietā nav servera. Mēģini citu atrašanās vietu vai atstāj lauku tukšu.',
+  'vpn.removeAsk': 'Noņemt {name}?',
+  'vpn.removeStakes': 'ArrowLoop aizmirst tā pieteikšanās datus. Darbi, kas iet caur to, neizdosies, kamēr neizvēlēsies tiem citu VPN.',
   'edit.connection': 'Savienojums',
   'edit.vpn': 'VPN',
   'edit.vpnOff': 'Bez VPN',

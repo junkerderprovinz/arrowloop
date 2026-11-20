@@ -49,6 +49,9 @@ export type MoreStack = SettingsStack & {
   Instances: undefined;
   TargetPick: undefined;
   TargetEdit: { name?: string; provider?: string };
+  VpnPick: undefined;
+  /** A new VPN of `provider`, or the login of the one set up as `id`. */
+  VpnEdit: { provider: string; id?: string };
   Anomalies: { job?: string } | undefined;
 };
 

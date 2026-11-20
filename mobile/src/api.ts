@@ -10,6 +10,7 @@ import type { RefusedCertificate } from "../../web/src/lib/certificate";
 import type { Failure } from "../../web/src/lib/failure";
 import type { FortressInfo, FortressLeft, FortressPermission } from "../../web/src/lib/fortress";
 import type { ImportPlan } from "../../web/src/lib/importPlan";
+import type { VpnField, VpnState } from "../../web/src/lib/vpn";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
 export const ORIGIN = `http://127.0.0.1:${Constants.expoConfig?.extra?.enginePort}`;
@@ -180,6 +181,11 @@ export interface JobConfig {
   /** The job's own brakes; left out, it follows the global ones. */
   brakePercent?: number;
   changePercent?: number;
+  /**
+   * The VPN of the settings every connection of the job's runs goes through,
+   * by its id. A file from before there could be several says true.
+   */
+  vpn?: string | true;
 }
 
 export interface Config {
@@ -661,8 +667,21 @@ export const api = {
     call<{ ok: boolean; reason?: string; failure?: Failure }>(`/api/remotes/${name(remote)}/check`, { method: "POST" }),
   aboutRemote: (remote: string) => call<Usage>(`/api/remotes/${name(remote)}/about`),
 
-  /** The engine build's version, whether it has a window and whether it can pair. */
-  capabilities: () => call<{ version: string; window: boolean; pairing?: boolean }>("/api/capabilities"),
+  /** The engine build's version, whether it has a window, whether it can pair and whether it has the built-in VPN. */
+  capabilities: () =>
+    call<{ version: string; window: boolean; pairing?: boolean; vpn?: boolean }>("/api/capabilities"),
+
+  /** The providers and the VPNs set up with them, and where each stands. A login never comes back. */
+  vpn: () => call<VpnState>("/api/vpn"),
+  addVpn: (provider: string, fields: Partial<Record<VpnField, string>>) =>
+    call<{ id: string; state: VpnState }>("/api/vpn", { method: "POST", body: JSON.stringify({ provider, fields }) }),
+  /** Changes a VPN's login. An empty field keeps what is stored. */
+  saveVpn: (id: string, fields: Partial<Record<VpnField, string>>) =>
+    call<VpnState>(`/api/vpn/${name(id)}`, { method: "PUT", body: JSON.stringify({ fields }) }),
+  forgetVpn: (id: string) => call<VpnState>(`/api/vpn/${name(id)}`, { method: "DELETE" }),
+  /** Brings a VPN up as a run would, asks which address traffic leaves by, and takes it down. */
+  testVpn: (id: string) =>
+    call<{ ok: boolean; reason?: string; state: VpnState }>(`/api/vpn/${name(id)}/test`, { method: "POST" }),
 
   /** Where this engine stands in its group. Asking also greets the others, which is how two instances meet. */
   connect: () => call<ConnectInfo>("/api/connect"),
