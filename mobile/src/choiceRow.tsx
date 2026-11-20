@@ -129,15 +129,17 @@ export function ChoiceRow<T extends string>({
 /**
  * The chosen option on a button that opens the list under it. The list is a
  * Modal, as the card menu is, because nothing else floats above a scrolling
- * page in React Native.
+ * page in React Native. A `wide` one stands under its name across the card,
+ * for options too long to share a row with it.
  */
-function Dropdown<T extends string>({
+export function Dropdown<T extends string>({
   label,
   options,
   value,
   onChange,
   hue,
   disabled,
+  wide = false,
 }: {
   label: string;
   options: Option<T>[];
@@ -145,6 +147,7 @@ function Dropdown<T extends string>({
   onChange: (next: T) => void;
   hue?: number;
   disabled?: boolean;
+  wide?: boolean;
 }) {
   const { p, corners, accent, hueAt } = useTheme();
   const screen = useWindowDimensions();
@@ -168,7 +171,7 @@ function Dropdown<T extends string>({
 
   return (
     <>
-      <View ref={button} collapsable={false} style={styles.slot}>
+      <View ref={button} collapsable={false} style={wide ? null : styles.slot}>
         <DropButton
           onPress={open}
           disabled={disabled}

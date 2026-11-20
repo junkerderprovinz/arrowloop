@@ -1,9 +1,9 @@
-import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
 import { api, type JobConfig, type Remote } from "../api";
 import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
-import { ChoiceRow } from "../choiceRow";
+import { ChoiceRow, Dropdown } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
 import { brandTile, Glyph, ProviderMark } from "../glyphs";
@@ -17,6 +17,7 @@ import { remoteOf, sideName, sidePair } from "../sides";
 import { isAccount } from "../space";
 import { animateNext, useMotion } from "../motion";
 import { durationWritten, spotOf, type Spot } from "../jobSpot";
+import { vpnChoiceShown, vpnOptions } from "../vpn";
 import {
   AxisLabel,
   Body,
@@ -60,6 +61,8 @@ import {
   type ScheduleState,
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
+import { overNetwork } from "../../../web/src/lib/localTarget";
+import { vpnChoiceWarning, type VpnState } from "../../../web/src/lib/vpn";
 import { capitalized } from "../../../web/src/lib/capitalized";
 import {
   MAX_MIN_AGE,
@@ -408,6 +411,12 @@ export function JobEdit() {
           onChange={(right) => set({ right })}
         />
       </View>
+
+      <ConnectionSection
+        value={typeof job.vpn === "string" ? job.vpn : ""}
+        network={acrossNetwork(job.left, remotes) || acrossNetwork(job.right, remotes)}
+        onChange={(vpn) => set({ vpn: vpn || undefined }, true)}
+      />
 
       {/* A watching job owns its schedule, so Live follows the global
           settings with it. No "run at start" switch: the engine restarts with
@@ -765,7 +774,65 @@ function placeOf(side: string): string | undefined {
 
 /** Whether a target leads off the phone. Apps and Android/data are served on the phone's own loopback. */
 function offPhone(remote: Remote): boolean {
-  return isAccount(remote) && remote.settings.find((s) => s.key === "host")?.value !== "127.0.0.1";
+  return isAccount(remote) && !onLoopback(remote);
+}
+
+function onLoopback(remote: Remote): boolean {
+  return remote.settings.find((s) => s.key === "host")?.value === "127.0.0.1";
+}
+
+/**
+ * Whether a side reaches across the network, as the web decides it for the
+ * choice of VPN, leaving out what the phone serves itself on loopback.
+ */
+function acrossNetwork(side: string, remotes: Remote[]): boolean {
+  if (!overNetwork(side, remotes)) return false;
+  const target = remotes.find((r) => r.name === remoteOf(side));
+  return !target || !onLoopback(target);
+}
+
+/**
+ * The VPN of the settings the job's runs go through, or none, on an engine
+ * that has VPNs and for a job with a side across the network, since folders
+ * on the phone never touch one. A job that names a VPN where it does nothing,
+ * or one that is gone, as a job brought over from another machine, keeps the
+ * choice, so it can be set to none. The list stands under its name across the
+ * card, so a provider's name and its place show in full.
+ */
+function ConnectionSection({
+  value,
+  network,
+  onChange,
+}: {
+  value: string;
+  network: boolean;
+  onChange: (next: string) => void;
+}) {
+  const { t } = useT();
+  const { p } = useTheme();
+  const [vpn, setVpn] = useState<{ offered: boolean; state: VpnState | null } | null>(null);
+  // Read on every visit, so a VPN just set up in Settings is there to choose.
+  useFocusEffect(
+    useCallback(() => {
+      api
+        .capabilities()
+        .then(async (c) => setVpn(c.vpn ? { offered: true, state: await api.vpn() } : { offered: false, state: null }))
+        .catch(() => setVpn(null));
+    }, []),
+  );
+  if (!vpn || !vpnChoiceShown(vpn.offered, value, network)) return null;
+  const warning = vpnChoiceWarning(vpn.offered, vpn.state?.tunnels ?? [], value);
+  return (
+    <Section title={t("edit.connection")} hue={5}>
+      <AxisLabel hint={t("edit.vpnHint")}>{t("edit.vpn")}</AxisLabel>
+      <Dropdown wide label={t("edit.vpn")} value={value} options={vpnOptions(vpn.state, t)} onChange={onChange} />
+      {warning ? (
+        <View accessibilityLiveRegion="polite">
+          <Text style={[styles.warning, { color: p.warnInk }]}>{t(warning)}</Text>
+        </View>
+      ) : null}
+    </Section>
+  );
 }
 
 /** The README's mark box, as the target picker draws it. */
@@ -1110,6 +1177,7 @@ const styles = StyleSheet.create({
   sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },
+  warning: { fontSize: text.meta },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
   dayText: { fontSize: text.meta, fontWeight: "500" },

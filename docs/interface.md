@@ -699,12 +699,14 @@ list. A long press on the headings shows the line that explains them. A job's ow
 and what its runs usually do are on the job's screen. A More menu that would
 hold a single action is that action's button instead.
 
-The phone has no built-in VPN, since Android's own VPN covers every app, so a
-job there offers no choice of **VPN**.
+The phone sets up **VPN**s on its Integrations card under Settings, as the
+web does: **Set up a VPN** opens the providers as tiles, and each VPN set up
+stands as a row with its test, edit and remove. A job with a side on a target
+then chooses one under **Connection**.
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync
-engine, Pairing, Settings backup, On a server, Desktop app, Problems?,
+engine, Integrations, Pairing, Settings backup, On a server, Desktop app, Problems?,
 About this app and Danger zone. Pairing opens the same cards as on the web,
 and **Instances under More**, under Appearance, adds Instances to the More
 sheet. Until then its cards follow on the Pairing screen. Appearance has the **Overview on the bar** switch and the **OLED** switch under
