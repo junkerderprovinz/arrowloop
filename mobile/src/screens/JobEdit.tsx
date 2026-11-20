@@ -16,6 +16,7 @@ import { DEVICE, sideMark } from "../sideRow";
 import { remoteOf, sideName, sidePair } from "../sides";
 import { isAccount } from "../space";
 import { animateNext, useMotion } from "../motion";
+import { durationWritten, spotOf, type Spot } from "../jobSpot";
 import {
   AxisLabel,
   Body,
@@ -82,7 +83,7 @@ const WRITE_AFTER = 700;
 const INHERITED: Inherited[] = [...SYNC_SETTINGS, ...BRAKE_SETTINGS];
 
 /** The inherited settings this screen shows, which turning the switch off fills in. */
-const SHOWN: Inherited[] = ["direction", "schedule", "quietPeriod", "emptyDirs", "metadata"];
+const SHOWN: Inherited[] = ["direction", "schedule", "quietPeriod", "modWindow", "emptyDirs", "metadata"];
 
 export function JobEdit() {
   // Opening and editing a job share this screen; see App.tsx.
@@ -219,6 +220,7 @@ export function JobEdit() {
   const rightRef = useRef<View>(null);
   const scheduleRef = useRef<View>(null);
   const quietRef = useRef<View>(null);
+  const modWindowRef = useRef<View>(null);
   const excludeRef = useRef<View>(null);
   const refs: Record<Spot, RefObject<View | null>> = {
     name: nameRef,
@@ -226,6 +228,7 @@ export function JobEdit() {
     right: rightRef,
     schedule: scheduleRef,
     quiet: quietRef,
+    modWindow: modWindowRef,
     exclude: excludeRef,
   };
 
@@ -426,9 +429,12 @@ export function JobEdit() {
         </View>
         <View ref={quietRef} collapsable={false}>
           <FromGlobal {...global("quietPeriod")}>
-            <QuietField
+            <DurationField
+              label={t("edit.quietPeriod")}
+              hint={t("edit.quietHint")}
               value={shown("quietPeriod").quietPeriod ?? ""}
               onChange={(quietPeriod) => set({ quietPeriod })}
+              placeholder="30s"
               error={reason("quiet")}
             />
           </FromGlobal>
@@ -465,6 +471,18 @@ export function JobEdit() {
             <MinAgeField value={job.minAgeDays} onChange={(days, now) => set({ minAgeDays: days }, now)} />
           </>
         )}
+        <View ref={modWindowRef} collapsable={false}>
+          <FromGlobal {...global("modWindow")}>
+            <DurationField
+              label={t("engine.modWindow")}
+              hint={t("engine.modWindowHint")}
+              value={shown("modWindow").modWindow ?? ""}
+              onChange={(modWindow) => set({ modWindow })}
+              placeholder="1s"
+              error={reason("modWindow")}
+            />
+          </FromGlobal>
+        </View>
         <FromGlobal {...global("emptyDirs")}>
           <Toggle
             label={t("edit.emptyDirs")}
@@ -758,20 +776,25 @@ const MARK_H = 25;
 const MARK = 28;
 
 /**
- * The quiet period as the engine spells it, "30s". The text is kept as typed,
- * since an empty field gives the job back to the global value and would
- * replace what is being typed with it; a job that waits for nothing says 0s.
+ * A duration of the job's own as the engine spells it, "30s", such as the
+ * quiet period. The text is kept as typed, since what is written for an empty
+ * field differs from it (see durationWritten).
  */
-function QuietField({
+function DurationField({
+  label,
+  hint,
   value,
   onChange,
+  placeholder,
   error,
 }: {
+  label: string;
+  hint: string;
   value: string;
   onChange: (next: string) => void;
+  placeholder: string;
   error?: string;
 }) {
-  const { t } = useT();
   const [typed, setTyped] = useState(value);
   const seen = useRef(value);
   useEffect(() => {
@@ -782,16 +805,16 @@ function QuietField({
   }, [value]);
   return (
     <Field
-      label={t("edit.quietPeriod")}
-      hint={t("edit.quietHint")}
+      label={label}
+      hint={hint}
       value={typed}
       onChange={(next) => {
         setTyped(next);
-        const written = next.trim() || "0s";
+        const written = durationWritten(next);
         seen.current = written;
         onChange(written);
       }}
-      placeholder="30s"
+      placeholder={placeholder}
       error={error}
     />
   );
@@ -875,9 +898,6 @@ function UsualSection({ job }: { job: string }) {
   );
 }
 
-/** The parts of the form a refusal can point at. */
-type Spot = "name" | "left" | "right" | "schedule" | "quiet" | "exclude";
-
 /** What the form itself refuses before anything is sent, and where it says so. */
 function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
   if (!job.name.trim()) return { spot: "name", text: t("phone.needName") };
@@ -887,19 +907,6 @@ function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
   // backup.
   if (bothSidesOnePlace(job.left, job.right)) return { spot: "right", text: t("edit.sameSides") };
   return null;
-}
-
-/**
- * The part of the form an engine refusal is about, read from what it names.
- * Most name a place, so the target side is where the rest is said.
- */
-function spotOf(message: string): Spot {
-  if (/schedule|watch/i.test(message)) return "schedule";
-  if (/quietPeriod/i.test(message)) return "quiet";
-  if (/exclude/i.test(message)) return "exclude";
-  if (/no name/i.test(message)) return "name";
-  if (/\bleft\b/i.test(message)) return "left";
-  return "right";
 }
 
 /** The fields a schedule writes on a job. A default schedule writes only the expression. */
