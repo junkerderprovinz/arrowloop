@@ -177,24 +177,24 @@ describe('the tile order', () => {
 
   it('puts a tile the stored order does not know after the one before it in the app', () => {
     expect(ids(['info', 'general', 'look', 'sync', 'safety', 'targets', 'apps'])).toEqual([
-      'info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'apps',
+      'info', 'general', 'look', 'sync', 'safety', 'notifications', 'targets', 'security', 'apps',
     ])
   })
 
   it('puts Pairing after Security for an order stored before it existed', () => {
     expect(ids(['info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'apps'], true, true)).toEqual([
-      'info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'pairing', 'apps',
+      'info', 'general', 'look', 'sync', 'safety', 'notifications', 'targets', 'security', 'pairing', 'apps',
     ])
   })
 
   it('puts Integrations after Targets for an order stored before it existed', () => {
     expect(ids(['info', 'general', 'look', 'sync', 'safety', 'targets', 'security', 'apps'], true, false, true)).toEqual([
-      'info', 'general', 'look', 'sync', 'safety', 'targets', 'integrations', 'security', 'apps',
+      'info', 'general', 'look', 'sync', 'safety', 'notifications', 'targets', 'integrations', 'security', 'apps',
     ])
   })
 
   it('forgets a stored tile this build does not offer', () => {
-    expect(ids(['security', 'apps', 'general'], false)).toEqual(['apps', 'info', 'general', 'look', 'sync', 'safety', 'targets'])
+    expect(ids(['security', 'apps', 'general'], false)).toEqual(['apps', 'info', 'general', 'look', 'sync', 'safety', 'notifications', 'targets'])
   })
 
   it("counts an order as the app's own when only missing tiles differ", () => {

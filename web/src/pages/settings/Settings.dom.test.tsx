@@ -28,6 +28,7 @@ vi.mock('../../lib/api', async (actual) => ({
 }))
 
 const { SyncPage } = await import('./SyncPage')
+const { NotificationsPage } = await import('./NotificationsPage')
 const { SafetyPage } = await import('./SafetyPage')
 const { TargetsTile } = await import('./TargetsTile')
 const { setNavPin } = await import('../../lib/navPins')
@@ -105,7 +106,7 @@ describe('two tiles', () => {
 describe('a stored secret', () => {
   it('shows as saved and keeps the saved one until something new is typed', async () => {
     stored = { notify: { channels: [{ id: 'd', kind: 'discord', enabled: true, discord: { url: '********' } }] } }
-    const { unmount } = render(<SafetyPage />)
+    const { unmount } = render(<NotificationsPage />)
     fireEvent.click(within(await screen.findByRole('group', { name: 'Discord' })).getByRole('button', { name: 'Edit' }))
     expect(await screen.findByText('Saved')).toBeTruthy()
     expect(screen.queryByLabelText('Address')).toBeNull()
@@ -177,7 +178,7 @@ describe('the notification channels', () => {
         ],
       },
     }
-    const { unmount } = render(<SafetyPage />)
+    const { unmount } = render(<NotificationsPage />)
     fireEvent.click(within(await screen.findByRole('group', { name: 'Email' })).getByRole('button', { name: 'Edit' }))
     expect(await screen.findByDisplayValue('mail.example.org')).toBeTruthy()
 
@@ -192,7 +193,7 @@ describe('the notification channels', () => {
   it("send a test of what the channel holds and say why it failed in the reader's own words", async () => {
     stored = { notify: { channels: [{ id: 'phone', kind: 'ntfy', enabled: true, ntfy: { url: '********' } }] } }
     testNotify.mockResolvedValueOnce({ ok: false, code: 'rejected', status: 403, reason: 'the server answered 403 Forbidden' })
-    render(<SafetyPage />)
+    render(<NotificationsPage />)
     fireEvent.click(await screen.findByRole('button', { name: 'Send a test' }))
 
     expect(await screen.findByText('The server turned the message down. (HTTP 403)')).toBeTruthy()
@@ -201,7 +202,7 @@ describe('the notification channels', () => {
 
   it('add a channel of the chosen service under an id of its own', async () => {
     stored = { notify: { channels: [{ id: 'discord', kind: 'discord', enabled: true, discord: { url: '********' } }] } }
-    const { unmount } = render(<SafetyPage />)
+    const { unmount } = render(<NotificationsPage />)
     fireEvent.click(await screen.findByRole('button', { name: 'Add a channel' }))
     fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Discord' }))
     unmount()
@@ -220,7 +221,7 @@ describe('the notification channels', () => {
         ],
       },
     }
-    const { unmount } = render(<SafetyPage />)
+    const { unmount } = render(<NotificationsPage />)
     const rows = await screen.findAllByRole('group', { name: 'Slack' })
     expect(rows.map((row) => row.querySelector('.glim-connection-status')?.textContent)).toEqual(['When a run fails', 'After every run'])
     fireEvent.click(within(rows[0]!).getByRole('button', { name: 'Edit' }))
