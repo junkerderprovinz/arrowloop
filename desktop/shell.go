@@ -110,7 +110,7 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 		application.InvokeSync(func() {
 			if s.main == nil && s.activity == nil {
 				debug.FreeOSMemory()
-				releaseWebKit()
+				releaseWebview()
 			}
 		})
 	})

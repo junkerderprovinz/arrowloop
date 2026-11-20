@@ -21,13 +21,13 @@ import (
 // 15 bytes.
 const networkProcessName = "WebKitNetworkPr"
 
-// releaseWebKit hands back what WebKitGTK keeps once its last window has
+// releaseWebview hands back what WebKitGTK keeps once its last window has
 // gone. Its network process stays for the life of the program, and WebKit
 // starts a fresh one with the next window. The freed memory of the windows
 // stays with glibc until it is trimmed. The code of WebKit, the GL driver and
 // the program itself stays resident too, though the tray copy runs little of
 // it, so it is paged out the way the kernel would under pressure.
-func releaseWebKit() {
+func releaseWebview() {
 	for _, pid := range networkProcesses(os.DirFS("/proc"), os.Getpid()) {
 		if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
 			log.Printf("could not stop WebKit's network process: %v", err)
