@@ -225,6 +225,9 @@ export interface Entry {
   Side?: string;
   Note?: string;
   Size?: number;
+  /** A skip's reason as a code with its values, which entryNote words. An older engine sends only the Note. */
+  Code?: string;
+  Vars?: Record<string, string>;
 }
 
 /**

@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 
@@ -46,7 +47,7 @@ func TestARunAndWhatItDidArriveTogether(t *testing.T) {
 		t.Fatalf("wrote %d entries and read back %d", len(entries), len(got))
 	}
 	for i := range entries {
-		if got[i] != entries[i] {
+		if !reflect.DeepEqual(got[i], entries[i]) {
 			t.Errorf("entry %d came back as %+v, wrote %+v", i, got[i], entries[i])
 		}
 	}

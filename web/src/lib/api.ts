@@ -358,6 +358,12 @@ export type RunEntry = {
   Note: string
   /** How big the file was. Zero for a folder, a skip and an error. */
   Size: number
+  /**
+   * A skip's reason as a code with its values, which entryNote words in the
+   * reader's language. An entry from an older engine has only the Note.
+   */
+  Code?: string
+  Vars?: Record<string, string>
 }
 
 /** One thing that happened to one file, with the run it belonged to. */

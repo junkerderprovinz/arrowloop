@@ -41,8 +41,8 @@ const CORPUS = [...sourceFiles(SRC), ...sourceFiles(MOBILE)]
   .join('\n')
 
 /**
- * The dynamic scan also reads i18n.ts, whose reason renderer builds
- * `reason.${code}`. That is safe because a template has to contain `${`, and
+ * The dynamic scan also reads i18n.ts, whose finding renderer builds
+ * `finding.${code}`. That is safe because a template has to contain `${`, and
  * no table entry does.
  */
 const TEMPLATE_SOURCE = CORPUS + '\n' + readFileSync(join(SRC, 'lib', 'i18n.ts'), 'utf8')
@@ -72,8 +72,9 @@ describe('translation keys', () => {
     expect(DYNAMIC.length).toBeGreaterThan(0)
     expect(DYNAMIC.some((r) => r.test('schedule.unit.hour'))).toBe(true)
     expect(DYNAMIC.some((r) => r.test('jobs.cadence.everyOne.week'))).toBe(true)
-    // The reason renderer's cast, in the file the usage scan skips.
+    // The renderers' casts, one of them in the file the usage scan skips.
     expect(DYNAMIC.some((r) => r.test('reason.heldOpen'))).toBe(true)
+    expect(DYNAMIC.some((r) => r.test('finding.halfWritten'))).toBe(true)
     // A pattern matches the whole key, so a template's prefix is not excused by it.
     expect(DYNAMIC.some((r) => r.test('jobs.cadence.everyOne'))).toBe(false)
   })

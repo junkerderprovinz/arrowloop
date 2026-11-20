@@ -10,8 +10,10 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"math"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -79,6 +81,7 @@ var reasonText = map[string]string{
 	"vanished":        "disappeared from the {side} side while it was being read, so this run leaves the folder alone on both sides",
 	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
 	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
+	"mirror":          "not on the {side}, which this job mirrors",
 	"conflictGone":    "one of the two versions is gone, so there is nothing left to decide",
 	"takenBack":       "taken back from the {side}, after a safety brake refused the change",
 }
@@ -674,7 +677,10 @@ func settling(l, r *scan.Entry, opt Options) (Reason, bool) {
 		if e == nil || !e.Mod.After(cutoff) || e.Mod.After(horizon) {
 			continue
 		}
-		return because("settling", "side", side.String(), "period", opt.QuietPeriod.String()), true
+		// The seconds are for an interface, which says the period in its own
+		// units rather than as Go writes a duration.
+		seconds := strconv.Itoa(int(math.Ceil(opt.QuietPeriod.Seconds())))
+		return because("settling", "side", side.String(), "period", opt.QuietPeriod.String(), "seconds", seconds), true
 	}
 	return Reason{}, false
 }

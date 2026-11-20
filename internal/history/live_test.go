@@ -2,6 +2,7 @@ package history_test
 
 import (
 	"context"
+	"reflect"
 	"testing"
 	"time"
 
@@ -70,7 +71,7 @@ func TestARecordedRunReplacesItsLiveLines(t *testing.T) {
 		t.Fatalf("the log had %d lines while the run went and %d after", len(before), len(after))
 	}
 	for i := range after {
-		if after[i].Entry != before[i].Entry || !after[i].When.Equal(before[i].When) || after[i].Seq != before[i].Seq {
+		if !reflect.DeepEqual(after[i].Entry, before[i].Entry) || !after[i].When.Equal(before[i].When) || after[i].Seq != before[i].Seq {
 			t.Errorf("line %d read %+v while the run went and %+v after", i, before[i], after[i])
 		}
 		if after[i].Run <= 0 {

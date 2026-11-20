@@ -122,6 +122,10 @@ type Entry struct {
 	// Size is how big the file was, in bytes. Zero for a folder, a skip and an
 	// error, where it does not apply.
 	Size int64
+	// Code and Vars are a skip's reason for an interface to word in its
+	// reader's language. Note keeps the English sentence.
+	Code string
+	Vars map[string]string
 }
 
 // The notes an ordinary piece of work can carry; see Entry.Note.
@@ -171,6 +175,8 @@ func (e *vanishedError) Error() string {
 type inFluxError struct {
 	Path    string
 	Details string
+	// Facts are the values Details is made of; see afterCopy and whileRead.
+	Facts []string
 	// Sent says the copy itself finished, so its step is already counted.
 	Sent bool
 	// Left and Right are both sides as read after the copy, the destination's
@@ -354,7 +360,7 @@ func (t *tally) skip(path, side string, reason plan.Reason) {
 	t.res.Skipped = append(t.res.Skipped, plan.Skip{Path: path, Reason: reason})
 	// Not through note: a skip is not finished work and must not move the
 	// progress bar.
-	t.record(Entry{Kind: "skip", Side: side, Path: path, Note: reason.String()})
+	t.record(Entry{Kind: "skip", Side: side, Path: path, Note: reason.String(), Code: reason.Code, Vars: reason.Vars})
 }
 
 func (t *tally) setFatal(err error) {
@@ -402,7 +408,7 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	// The plan's own skips belong in the log, or the run counts them as left
 	// for later without naming a single path.
 	for _, s := range p.Skipped {
-		e := Entry{Kind: "skip", Path: s.Path, Note: s.Reason.String()}
+		e := Entry{Kind: "skip", Path: s.Path, Note: s.Reason.String(), Code: s.Reason.Code, Vars: s.Reason.Vars}
 		if s.Reason.Code == NoteUnreadable || s.Reason.Code == NoteVanished {
 			e.Side, e.Note = s.Reason.Vars["side"], s.Reason.Code
 		}
@@ -622,7 +628,8 @@ func (t *tally) leftForNext(ctx context.Context, act plan.Action, err error) boo
 		}
 		return true
 	}
-	t.skip(act.Path, "", plan.Because("inFlux", "side", act.Src.String(), "runs", strconv.Itoa(runs), "details", flux.Details))
+	said := append([]string{"side", act.Src.String(), "runs", strconv.Itoa(runs), "details", flux.Details}, flux.Facts...)
+	t.skip(act.Path, "", plan.Because("inFlux", said...))
 	return true
 }
 
@@ -1016,7 +1023,8 @@ func sourceTrouble(ctx context.Context, src fs.Fs, act plan.Action, err error) e
 	}
 	// The local backend says so in words only; see local.go's Update.
 	if strings.Contains(err.Error(), "source file is being updated") {
-		return &inFluxError{Path: act.Path, Details: whileRead(err)}
+		details, facts := whileRead(err)
+		return &inFluxError{Path: act.Path, Details: details, Facts: facts}
 	}
 	return err
 }
@@ -1283,8 +1291,9 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 		// A file this step just sent that already reads differently was
 		// written to while it was copied. The row is withheld all the same.
 		if sent {
+			details, facts := afterCopy(leftFacts, rightFacts, window)
 			return &inFluxError{
-				Path: key, Details: afterCopy(leftFacts, rightFacts, window), Sent: true,
+				Path: key, Details: details, Facts: facts, Sent: true,
 				Left:  state.Sent{LeftPath: leftPath, RightPath: rightPath, Size: leftFacts.Size, Mod: leftFacts.Mod, Hash: leftFacts.Hash},
 				Right: state.Sent{LeftPath: leftPath, RightPath: rightPath, Size: rightFacts.Size, Mod: rightFacts.Mod, Hash: rightFacts.Hash},
 			}

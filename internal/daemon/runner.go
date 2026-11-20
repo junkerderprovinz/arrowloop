@@ -1325,7 +1325,7 @@ func (p progressFor) Did(kind, path, side, note string, done, total int) {
 // Logged hands one line of the run's list to the log of runs still going.
 func (p progressFor) Logged(e apply.Entry) {
 	if p.live != nil {
-		p.live.Add(history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note, Size: e.Size})
+		p.live.Add(history.Entry{Kind: e.Kind, Side: e.Side, Path: e.Path, Note: e.Note, Size: e.Size, Code: e.Code, Vars: e.Vars})
 	}
 }
 
