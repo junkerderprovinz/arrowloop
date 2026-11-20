@@ -20,8 +20,7 @@ var ErrVPNDown = errors.New("the VPN did not come up, so the run did not start")
 // for outside a run, such as its trash or a preview.
 var ErrVPNUnreached = errors.New("the VPN did not come up, so the job's sides could not be reached")
 
-// ErrNoVPN is a job that goes through the VPN on an engine that has none, as
-// on a phone, where the system's own VPN covers every app.
+// ErrNoVPN is a job that goes through the VPN on an engine that has none.
 var ErrNoVPN = errors.New("this job goes through the VPN, and ArrowLoop has no built-in VPN here")
 
 // ErrVPNRefused is a job that goes through the VPN with a side whose

@@ -172,8 +172,8 @@ func TestOnlyAnEngineWithAVPNOffersIt(t *testing.T) {
 		t.Errorf("capabilities %v, want vpn", caps)
 	}
 
-	phone := newServer(t, &web.Server{History: h.history, Runner: h.runner})
-	resp, err = http.Get(phone.URL + "/api/vpn")
+	bare := newServer(t, &web.Server{History: h.history, Runner: h.runner})
+	resp, err = http.Get(bare.URL + "/api/vpn")
 	if err != nil {
 		t.Fatal(err)
 	}

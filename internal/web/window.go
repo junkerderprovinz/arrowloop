@@ -25,8 +25,7 @@ func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 		"security": s.Security != nil,
 		// Whether this instance can be paired with others.
 		"pairing": s.Pairing != nil,
-		// Whether jobs can go through the built-in VPN. A phone has the
-		// system's own.
+		// Whether jobs can go through the built-in VPN.
 		"vpn":     s.VPN != nil,
 		"version": boot.Version,
 	})

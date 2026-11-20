@@ -37,9 +37,9 @@ const TILES: Record<TileId, Tile> = {
 /**
  * The tiles this build offers. Security is left out where the interface cannot
  * keep a password of its own, the desktop window, Pairing where the engine
- * cannot be paired and Integrations where it has no built-in VPN, as on a
- * phone; each is null while nobody has asked yet, which keeps the tile so its
- * address does not bounce.
+ * cannot be paired and Integrations where it has no built-in VPN; each is null
+ * while nobody has asked yet, which keeps the tile so its address does not
+ * bounce.
  */
 export function settingsTiles(security: boolean | null, pairing: boolean | null = null, vpn: boolean | null = null): Tile[] {
   const offered: Partial<Record<TileId, boolean | null>> = { security, pairing, integrations: vpn }
