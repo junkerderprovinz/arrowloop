@@ -85,17 +85,17 @@
     },
     {
         "type": "file",
-        "url": "https://registry.npmjs.org/@glimstone/core/-/core-4.7.0.tgz",
-        "sha512": "368a5ab8d189c08253f044f444b12a5bafc0a196de2d2d0e767cb18565fca9edd05fe17b19806dbbedc02827f43efd5d49f39d312ac1e99c2f1bd0ceeb0f20b9",
-        "dest-filename": "5ab8d189c08253f044f444b12a5bafc0a196de2d2d0e767cb18565fca9edd05fe17b19806dbbedc02827f43efd5d49f39d312ac1e99c2f1bd0ceeb0f20b9",
-        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/36/8a"
+        "url": "https://registry.npmjs.org/@glimstone/core/-/core-4.8.0.tgz",
+        "sha512": "15bacb6221ead855612618fec7d080e6a8bff60ae86e77889bffe02c60093d9730887b44afd3407a25ca8911975eddbcad6e8fffdf8af84306e96884f6a7c28c",
+        "dest-filename": "cb6221ead855612618fec7d080e6a8bff60ae86e77889bffe02c60093d9730887b44afd3407a25ca8911975eddbcad6e8fffdf8af84306e96884f6a7c28c",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/15/ba"
     },
     {
         "type": "file",
-        "url": "https://registry.npmjs.org/@glimstone/react/-/react-4.7.0.tgz",
-        "sha512": "7eb8286b2a01284d24e8cc4c9080ce79156dc9b17f73e80a434111f745d7408dd5a43e556121e0803e0f1c55b56e278adc03ea0af931110d8d98f8828923640c",
-        "dest-filename": "286b2a01284d24e8cc4c9080ce79156dc9b17f73e80a434111f745d7408dd5a43e556121e0803e0f1c55b56e278adc03ea0af931110d8d98f8828923640c",
-        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/7e/b8"
+        "url": "https://registry.npmjs.org/@glimstone/react/-/react-4.8.0.tgz",
+        "sha512": "c4dd79ee501ac65fb9d765a7c5c88ace0598a5406483827e397bef43339d8a8306eaa10499fab7f53483b30751e58da7e566d199a6e73d592aa93fe422a28358",
+        "dest-filename": "79ee501ac65fb9d765a7c5c88ace0598a5406483827e397bef43339d8a8306eaa10499fab7f53483b30751e58da7e566d199a6e73d592aa93fe422a28358",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/c4/dd"
     },
     {
         "type": "file",

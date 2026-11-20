@@ -2231,17 +2231,17 @@
   .glim-btn-lg { min-width: var(--btn-w-lg); }
   /* A foot holds several answers in one row, so they hug their words down to the
      smallest floor. An explicit stage is a width of its own and stays. */
-  .glim-modal-foot > :is(.glim-btn-sm, .glim-btn-md, .glim-btn-lg),
-  .glim-modal-foot > .glim-tip-wrap > :is(.glim-btn-sm, .glim-btn-md, .glim-btn-lg) { min-width: var(--btn-w-xs); }
+  :is(.glim-modal-foot, .glim-window-actions) > :is(.glim-btn-sm, .glim-btn-md, .glim-btn-lg),
+  :is(.glim-modal-foot, .glim-window-actions) > .glim-tip-wrap > :is(.glim-btn-sm, .glim-btn-md, .glim-btn-lg) { min-width: var(--btn-w-xs); }
   /* A button wider than the whole foot, as on a phone, runs its words onto a
      second line and grows with them instead of ending in an ellipsis. */
-  :is(.glim-modal-foot, .glim-modal-foot > .glim-tip-wrap) > .glim-btn {
+  :is(.glim-modal-foot, .glim-window-actions, :is(.glim-modal-foot, .glim-window-actions) > .glim-tip-wrap) > .glim-btn {
     height: auto;
     min-height: var(--btn-h);
     padding-block: var(--space-3);
   }
-  :is(.glim-modal-foot, .glim-modal-foot > .glim-tip-wrap) > .glim-btn-key { min-height: var(--btn-h-key); }
-  :is(.glim-modal-foot, .glim-modal-foot > .glim-tip-wrap) > .glim-btn > .glim-btn-label {
+  :is(.glim-modal-foot, .glim-window-actions, :is(.glim-modal-foot, .glim-window-actions) > .glim-tip-wrap) > .glim-btn-key { min-height: var(--btn-h-key); }
+  :is(.glim-modal-foot, .glim-window-actions, :is(.glim-modal-foot, .glim-window-actions) > .glim-tip-wrap) > .glim-btn > .glim-btn-label {
     white-space: normal;
     text-wrap: balance;
     text-align: center;
@@ -2292,8 +2292,10 @@
      mark take that colour's ink (--tile-ink). A mark paints each part with
      var(--mark-ink, <own colour>), or var(--mark-cut, <own colour>) where the
      part lies on another part of the mark, so it keeps its own colours at rest
-     and turns ink with its cut-outs in the tile colour under the pointer. The
-     variables work through inline fills, which a plain fill rule does not reach.
+     and turns ink with its cut-outs in the tile colour under the pointer. A
+     detail that only reads in its own colour paints with var(--mark-kept, ...),
+     which nothing sets. The variables work through inline fills, which a plain
+     fill rule does not reach.
      No transition: a mark of many parts would trail its tile. Only under a real
      pointer, or a tap on a touch screen would leave a resting tile lit. */
   @media (hover: hover) {
@@ -2616,6 +2618,56 @@
     opacity: 0.45;
   }
 
+  /* A wordmark already says the name, so it spans the button in the name's
+     place, and the SVG centres it on its own aspect. A long one is held to a
+     width that keeps its letters near the size of a name, and a short one
+     grows to the full height. The hidden name still holds the second line
+     where it stands on every tile, and when that line comes in the wordmark
+     rises and shrinks onto the name's line. */
+  .glim-readme-btn-mark--wordmark {
+    inset-inline: 0.875rem;
+    width: auto;
+    height: 1.625rem;
+    justify-content: center;
+    transition:
+      translate calc(var(--motion-page-dur, 0ms) / 2) var(--motion-page-ease, ease),
+      scale calc(var(--motion-page-dur, 0ms) / 2) var(--motion-page-ease, ease);
+  }
+
+  .glim-readme-btn-mark--wordmark svg {
+    max-width: 6rem;
+  }
+
+  .glim-readme-btn-mark--wordmark ~ .glim-readme-btn-text {
+    inset-inline: 0.875rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .glim-readme-btn-mark--wordmark ~ .glim-readme-btn-text > .glim-readme-btn-name {
+    visibility: hidden;
+  }
+
+  /* The (i) at the end takes the same room off both sides, so the wordmark
+     stays in the middle of the tile. */
+  .glim-readme-btn-unit:has(.glim-readme-btn-hint) :is(.glim-readme-btn-mark--wordmark, .glim-readme-btn-mark--wordmark ~ .glim-readme-btn-text) {
+    inset-inline: 1.75rem;
+  }
+
+  .glim-readme-btn-unit:is(:hover, :focus-within, .glim-readme-btn-unit--note, .glim-readme-btn-soon)
+    > .glim-readme-btn:has(.glim-readme-btn-sub)
+    > .glim-readme-btn-mark--wordmark {
+    translate: 0 calc(-50% - 0.4375rem);
+    scale: 0.53;
+  }
+
+  @media (hover: none) {
+    .glim-readme-btn:has(.glim-readme-btn-sub) > .glim-readme-btn-mark--wordmark {
+      translate: 0 calc(-50% - 0.4375rem);
+      scale: 0.53;
+    }
+  }
+
   /* Without a pointer there is no hover to bring the second line in. */
   @media (hover: none) {
     .glim-readme-btn-name:not(:only-child) {
@@ -2763,12 +2815,15 @@
      line height: `.glim-btn`'s `line-height: 1` gives a 14px line box where
      Segoe UI needs about 18.6px, and a box that hides its overflow cuts off the
      descenders of p, g, y and j. 1.4 clears the tallest face in the stack, and
-     the button keeps its height. */
+     the button keeps its height. Arabic hangs its tails and dots lower still,
+     so the box reaches a little past the line and gives that room back. */
   .glim-btn-label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 1.4;
+    padding-block: 0.15em;
+    margin-block: -0.15em;
   }
 
   /* The collapsed reactive label is still a flex item, and the gap beside it
@@ -2793,6 +2848,8 @@
     transform-origin: left center;
     /* This box hides its overflow too; see `.glim-btn-label`. */
     line-height: 1.4;
+    padding-block: 0.15em;
+    margin-block: -0.15em;
   }
 
   /* Keep these states in step with the motion block below, which restores the
@@ -3364,7 +3421,7 @@
     flex-shrink: 0;
     max-width: 100%;
   }
-  .glim-modal-foot > .glim-tip-wrap { flex: none; }
+  :is(.glim-modal-foot, .glim-window-actions) > .glim-tip-wrap { flex: none; }
 
   /* The fills a button can take (ButtonTone). `ok`, `danger` and `warn` put the
      solid status tokens under the ground's ink: in both themes the solid values
@@ -4579,14 +4636,21 @@
     gap: var(--space-8);
     padding-top: var(--space-11);
   }
-  /* The start text gives way first and wraps, so a button does not drop to the
-     next line for a few pixels. */
+  /* A window's buttons wrap as one group, so a start line too long to stand
+     beside all of them takes a line of its own above them, and none of them
+     drops below the others for it. */
   .glim-window-start {
-    flex: 1 1 0;
-    min-width: min(4rem, 100%);
+    flex: 1 1 auto;
     overflow-wrap: anywhere;
     font-size: var(--text-meta);
     color: var(--carbon-text-muted);
+  }
+  .glim-window-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: inherit;
   }
 
   /* The context menu and the menus of the bar (ContextMenu, MenuBar). Both sit
@@ -5194,7 +5258,9 @@
      colour pair from the tile's own style or the accent for one of the app's
      glyphs. The tile is about as wide as a row at rest is high, so it stands
      square there and grows taller with a row that wraps; a width that followed
-     the height would push the row taller still. */
+     the height would push the row taller still. Its other edges are the row's,
+     so the edge that lifts a near-black tile off the card stands only toward
+     the name, where a ring all round would draw a frame the card shows through. */
   .glim-connection {
     display: flex;
     min-width: 0;
@@ -5213,7 +5279,10 @@
     width: 5.5rem;
     background-color: var(--tile);
     color: var(--tile-ink);
-    box-shadow: inset 0 0 0 1px var(--tile-edge, transparent);
+    box-shadow: inset -1px 0 0 var(--tile-edge, transparent);
+  }
+  [dir="rtl"] .glim-connection-tile {
+    box-shadow: inset 1px 0 0 var(--tile-edge, transparent);
   }
   .glim-connection-mark {
     display: flex;
@@ -5357,6 +5426,28 @@
     width: 0.95rem;
     height: 0.95rem;
   }
+
+  /* The second field of a PasswordField with confirm, drawn as a row of its
+     own under the first: its label at the start, the field at the end with
+     the first one's width, and the mismatch line under the field. The line's
+     live region holds no room while it is empty. */
+  .glim-secret-confirm {
+    display: flex;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2) var(--space-6);
+    min-width: 0;
+  }
+  .glim-secret-confirm-label { margin-inline-end: auto; }
+  .glim-secret-confirm-box {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .glim-secret-confirm-live { display: block; }
+  .glim-field-row-controls:has(> .glim-secret-confirm) { flex-wrap: wrap; }
 
   /* A value to copy (CopyField): the value in monospace, read-only so it can
      still be selected and scrolled, and its button beside it. */
