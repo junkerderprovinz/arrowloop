@@ -71,7 +71,7 @@ var reasonText = map[string]string{
 	"snapshotFailed":  "held open by another program on the {side} side, and no shadow copy could be taken to read it from: {error}",
 	"unverified":      "{what} finished, but the {side} side could not produce a checksum and this job insists on one; leaving it for the next run",
 	"changedDuring":   "changed on the {side} side while this run was going, leaving it for the next run",
-	"inFlux":          "was being written on the {side} side while it was copied, in {runs} runs in a row, leaving it for the next run",
+	"inFlux":          "was being written on the {side} side while it was copied, in {runs} runs in a row, leaving it for the next run. {details}",
 	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
 	"cloudOnly":       "{what} failed because the file is only a placeholder of a cloud client, which could not download it. Keep it on this device in the cloud client. Leaving it for the next run: {error}",
 	"sealed":          "locked on the {side} side: OneDrive hands its Personal Vault to no app, so this folder is left out",

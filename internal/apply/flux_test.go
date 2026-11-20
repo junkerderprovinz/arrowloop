@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -72,6 +73,95 @@ func TestAFileBeingWrittenIsQuietForTwoRunsAndReportedOnTheThird(t *testing.T) {
 		if run == fluxPatience && (len(res.Skipped) != 1 || res.Skipped[0].Reason.Code != "inFlux") {
 			t.Errorf("after %d runs in a row the file is still not reported: %+v", run, res.Skipped)
 		}
+	}
+}
+
+// The report on a file that kept growing says how it grew, which the reader
+// can hold against the file itself.
+func TestAReportedFileBeingWrittenSaysHowItChanged(t *testing.T) {
+	j := newCopyJob(t)
+	writeAt(t, filepath.Join(j.left, "app.log"), "AAAA", j.stamp)
+	j.ends.Left = growing{j.ends.Left}
+
+	var res Result
+	for range fluxPatience {
+		var err error
+		if res, err = j.run(context.Background(), j.copy("app.log", 4)); err != nil {
+			t.Fatalf("run: %v", err)
+		}
+	}
+	if len(res.Skipped) != 1 {
+		t.Fatalf("the file is not reported: %+v", res.Skipped)
+	}
+	want := "While it was read its size changed from 4 to 9 bytes."
+	if got := res.Skipped[0].Reason; got.Vars["details"] != want || !strings.HasSuffix(got.Text, want) {
+		t.Errorf("the report reads %q with details %q, want it to end in %q", got.Text, got.Vars["details"], want)
+	}
+}
+
+// A copy that already reads differently is reported by what differs between
+// the two sides, not by every fact of both.
+func TestACopyThatReadsDifferentlyNamesTheChecksumsThatDiffer(t *testing.T) {
+	f := newFixture(t, nil)
+	f.rec.verify.RequireChecksum = true
+	writeAt(t, filepath.Join(f.right, "notes.txt"), "BBBB", f.stamp)
+
+	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", true)
+	var flux *inFluxError
+	if !errors.As(err, &flux) {
+		t.Fatalf("a copy that reads differently was not taken for one in flux: %v", err)
+	}
+	if !strings.HasPrefix(flux.Details, "After the copy the checksum is ") || strings.Contains(flux.Details, "size") || strings.Contains(flux.Details, "modification") {
+		t.Errorf("the details read %q, want the checksums alone", flux.Details)
+	}
+}
+
+func TestTheDetailsAfterACopyNameOnlyWhatTheComparisonLooksAt(t *testing.T) {
+	at := time.Date(2026, 11, 19, 10, 0, 0, 0, time.UTC)
+	later := time.Date(2026, 11, 20, 8, 16, 40, 0, time.UTC)
+	cases := []struct {
+		name        string
+		left, right plan.Facts
+		window      time.Duration
+		want        string
+	}{
+		{
+			name:   "size and time",
+			left:   plan.Facts{Size: 1048576, Mod: at},
+			right:  plan.Facts{Size: 1040000, Mod: later},
+			window: 2 * time.Second,
+			want:   "After the copy the size is 1048576 bytes on the left and 1040000 on the right, the modification time is 2026-11-19 10:00:00 UTC on the left and 2026-11-20 08:16:40 UTC on the right.",
+		},
+		{
+			// MEGA gives a file the moment it was uploaded, so its time says nothing.
+			name:   "a side that keeps no times",
+			left:   plan.Facts{Size: 1048576, Mod: at},
+			right:  plan.Facts{Size: 1040000, Mod: later},
+			window: rclonefs.ModTimeNotSupported,
+			want:   "After the copy the size is 1048576 bytes on the left and 1040000 on the right.",
+		},
+		{
+			name:   "checksums decide",
+			left:   plan.Facts{Size: 4, Mod: at, Hash: "3f2a1b9c0d12aa77"},
+			right:  plan.Facts{Size: 4, Mod: later, Hash: "9c0d3f2a1b77bb88"},
+			window: 2 * time.Second,
+			want:   "After the copy the checksum is 3f2a1b9c0d12 on the left and 9c0d3f2a1b77 on the right.",
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := afterCopy(c.left, c.right, c.window); got != c.want {
+				t.Errorf("got %q, want %q", got, c.want)
+			}
+		})
+	}
+}
+
+func TestATimeChangedWhileReadIsGivenInUTC(t *testing.T) {
+	err := errors.New("can't copy - source file is being updated (mod time changed from 2026-11-20 09:15:02.5 +0100 CET to 2026-11-20 09:15:07 +0100 CET)")
+	want := "While it was read its modification time changed from 2026-11-20 08:15:02.5 UTC to 2026-11-20 08:15:07 UTC."
+	if got := whileRead(err); got != want {
+		t.Errorf("got %q, want %q", got, want)
 	}
 }
 

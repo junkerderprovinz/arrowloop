@@ -622,7 +622,7 @@ func (t *tally) leftForNext(ctx context.Context, act plan.Action, err error) boo
 		}
 		return true
 	}
-	t.skip(act.Path, "", plan.Because("inFlux", "side", act.Src.String(), "runs", strconv.Itoa(runs)))
+	t.skip(act.Path, "", plan.Because("inFlux", "side", act.Src.String(), "runs", strconv.Itoa(runs), "details", flux.Details))
 	return true
 }
 
@@ -1016,7 +1016,7 @@ func sourceTrouble(ctx context.Context, src fs.Fs, act plan.Action, err error) e
 	}
 	// The local backend says so in words only; see local.go's Update.
 	if strings.Contains(err.Error(), "source file is being updated") {
-		return &inFluxError{Path: act.Path, Details: err.Error()}
+		return &inFluxError{Path: act.Path, Details: whileRead(err)}
 	}
 	return err
 }
@@ -1280,19 +1280,19 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 		leftFacts.Hash, rightFacts.Hash = leftSum, rightSum
 	}
 	if !plan.Same(leftFacts, rightFacts, window) {
-		// The checksums belong in the message: when they decide, the sizes and
-		// times match and would describe a disagreement that looks like
-		// agreement.
-		details := fmt.Sprintf("left %s, right %s", describeSide(leftPath, leftFacts), describeSide(rightPath, rightFacts))
 		// A file this step just sent that already reads differently was
 		// written to while it was copied. The row is withheld all the same.
 		if sent {
 			return &inFluxError{
-				Path: key, Details: details, Sent: true,
+				Path: key, Details: afterCopy(leftFacts, rightFacts, window), Sent: true,
 				Left:  state.Sent{LeftPath: leftPath, RightPath: rightPath, Size: leftFacts.Size, Mod: leftFacts.Mod, Hash: leftFacts.Hash},
 				Right: state.Sent{LeftPath: leftPath, RightPath: rightPath, Size: rightFacts.Size, Mod: rightFacts.Mod, Hash: rightFacts.Hash},
 			}
 		}
+		// The checksums belong in the message: when they decide, the sizes and
+		// times match and would describe a disagreement that looks like
+		// agreement.
+		details := fmt.Sprintf("left %s, right %s", describeSide(leftPath, leftFacts), describeSide(rightPath, rightFacts))
 		return &DisagreementError{Path: key, Details: details}
 	}
 
