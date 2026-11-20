@@ -11,6 +11,8 @@ import {
   vpnChoiceShown,
   vpnMark,
   vpnOptions,
+  vpnWordmark,
+  wordmarkWidth,
 } from "./vpn.ts";
 
 const t = (key: string, vars?: Record<string, string | number>) =>
@@ -138,4 +140,15 @@ test("a connected VPN names the jobs it carries", () => {
 test("the jobs of a VPN are those that name it", () => {
   const jobs = [{ name: "Photos", vpn: "custom" }, { name: "Music" }, { name: "Old", vpn: true as const }];
   assert.deepEqual(jobsThrough(jobs, "custom"), ["Photos"]);
+});
+
+test("a provider whose mark spells its name is known as a wordmark", () => {
+  assert.equal(vpnWordmark("astrill"), true);
+  assert.equal(vpnWordmark("nordvpn"), false);
+});
+
+test("a wordmark keeps its aspect at a height and is held to the most it may take", () => {
+  const mark = { svg: '<svg viewBox="0 0 100 20"></svg>' };
+  assert.equal(wordmarkWidth(mark, 10, 112), 50);
+  assert.equal(wordmarkWidth(mark, 26, 112), 112);
 });

@@ -6,8 +6,8 @@ import { Glyph, VpnMark, vpnTile } from "../glyphs";
 import { useT } from "../i18n";
 import type { MoreStack, Nav } from "../nav";
 import { space, text, TOUCH } from "../theme";
-import { Body, Caption, Empty, Page, Press, ReadmeButton, ReadmeRow, Title, useTheme } from "../ui";
-import { pickGroups } from "../vpn";
+import { Body, Caption, Empty, Page, Press, ReadmeButton, ReadmeRow, Title, useTheme, WORDMARK, WORDMARK_MOST, WORDMARK_ON_SUB } from "../ui";
+import { pickGroups, vpnMark, wordmarkWidth } from "../vpn";
 import { errorText } from "../../../web/src/lib/errorText";
 import type { VpnState } from "../../../web/src/lib/vpn";
 
@@ -67,6 +67,12 @@ export function VpnPick() {
             <ReadmeRow>
               {g.tiles.map((x) => {
                 const tile = vpnTile(x.id) ?? { color: accent, ink: accentContrast };
+                const mark = vpnMark(x.id);
+                // A wordmark keeps its own aspect, shrunk onto the name's line above a second line.
+                const high = x.sub ? WORDMARK_ON_SUB : WORDMARK;
+                const box = mark?.wordmark
+                  ? { width: wordmarkWidth(mark, high, (WORDMARK_MOST * high) / WORDMARK), height: high }
+                  : { width: MARK_W, height: MARK_H };
                 return (
                   <ReadmeButton
                     key={x.id}
@@ -74,11 +80,11 @@ export function VpnPick() {
                     sub={x.sub}
                     hint={x.hint}
                     tile={tile}
+                    wordmark={mark?.wordmark}
                     mark={(lit, ink) => (
                       <VpnMark
                         provider={x.id}
-                        width={MARK_W}
-                        height={MARK_H}
+                        {...box}
                         scheme={scheme}
                         lit={lit}
                         color={lit ? ink : p.textSub}

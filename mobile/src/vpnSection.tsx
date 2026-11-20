@@ -7,7 +7,7 @@ import { useT } from "./i18n";
 import type { MoreStack, Nav } from "./nav";
 import { space, text } from "./theme";
 import { Badge, Body, Button, InfoBubble, Section, useTheme } from "./ui";
-import { jobsThrough, testVerdict, tunnelLine, type Verdict } from "./vpn";
+import { jobsThrough, testVerdict, tunnelLine, vpnWordmark, type Verdict } from "./vpn";
 import { errorText } from "../../web/src/lib/errorText";
 import { tunnelName, VPN_STATUS, type VpnState, type VpnTunnelState } from "../../web/src/lib/vpn";
 
@@ -129,14 +129,22 @@ function TunnelRow({
   return (
     <View style={[styles.row, { backgroundColor: p.surface2, ...corners.card }]}>
       <View style={[styles.tile, { backgroundColor: tile.color }]}>
-        <VpnMark provider={tunnel.provider} width={MARK} height={MARK} scheme={scheme} lit color={tile.ink} />
+        {/* A name written out takes the tile's width less a symbol's margin, at a name's height. */}
+        <VpnMark
+          provider={tunnel.provider}
+          width={vpnWordmark(tunnel.provider) ? TILE - 16 : MARK}
+          height={vpnWordmark(tunnel.provider) ? 24 : MARK}
+          scheme={scheme}
+          lit
+          color={tile.ink}
+        />
       </View>
       <View style={styles.main}>
         <View style={styles.head}>
           <Text style={[styles.name, { color: p.text }]} numberOfLines={1}>
             {name}
           </Text>
-          {status.badge ? <Badge label={t(status.word)} tone={status.badge} /> : null}
+          {status.badge ? <Badge label={t(status.word)} tone={status.badge} inRow /> : null}
         </View>
         {/* Kept mounted, since TalkBack announces a live region when its text changes. */}
         <View accessibilityLiveRegion="polite">
@@ -154,6 +162,7 @@ function TunnelRow({
             label={t("vpn.test")}
             labelKey="vpn.test"
             glyphOnly
+            inWell
             wide={false}
             glyph={testing || !verdict ? undefined : verdict.ok ? "IconCheck" : "IconClose"}
             tone={testing || !verdict ? "neutral" : verdict.ok ? "ok" : "fail"}
@@ -162,21 +171,21 @@ function TunnelRow({
             spoken={verdict?.said ? `${t("vpn.test")}: ${verdict.said}` : undefined}
             onPress={() => void test()}
           />
-          <Button label={t("vpn.edit")} labelKey="vpn.edit" glyphOnly wide={false} onPress={onEdit} />
-          <Button label={t("edit.remove")} labelKey="edit.remove" glyphOnly wide={false} onPress={onRemove} />
+          <Button label={t("vpn.edit")} labelKey="vpn.edit" glyphOnly inWell wide={false} onPress={onEdit} />
+          <Button label={t("edit.remove")} labelKey="edit.remove" glyphOnly inWell wide={false} onPress={onRemove} />
         </View>
       </View>
     </View>
   );
 }
 
-/** GlimStone's mark on a narrow row, 2rem. */
+/** GlimStone's tile and mark on a narrow row, 4.5rem and 2rem. */
+const TILE = 72;
 const MARK = 32;
 
 const styles = StyleSheet.create({
   row: { flexDirection: "row", overflow: "hidden" },
-  // 4.5rem, as GlimStone's tile on a narrow row.
-  tile: { width: 72, alignItems: "center", justifyContent: "center" },
+  tile: { width: TILE, alignItems: "center", justifyContent: "center" },
   main: { flex: 1, minWidth: 0, gap: space.xs, padding: space.md },
   head: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.sm },
   name: { flexGrow: 1, flexShrink: 1, fontSize: text.body, fontWeight: "500" },

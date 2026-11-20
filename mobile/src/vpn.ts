@@ -22,6 +22,17 @@ export function vpnMark(id: string): TileMark | undefined {
   return MARKS.get(id);
 }
 
+/** Whether a provider's mark is its name written out, which takes a name's place rather than a symbol's. */
+export function vpnWordmark(id: string): boolean {
+  return MARKS.get(id)?.wordmark === true;
+}
+
+/** How wide a wordmark stands at a height, by its own aspect, held to `most`. */
+export function wordmarkWidth(mark: TileMark, height: number, most: number): number {
+  const [, , w = height, h = height] = /viewBox="([^"]+)"/.exec(mark.svg)?.[1]?.split(/[\s,]+/).map(Number) ?? [];
+  return Math.min(most, (height * w) / h);
+}
+
 /**
  * A mark as react-native-svg can draw it. GlimStone paints a lit tile through
  * the --mark-ink and --mark-cut variables and a mark's two themes through
