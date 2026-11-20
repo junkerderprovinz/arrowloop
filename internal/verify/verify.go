@@ -255,10 +255,11 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 	sort.Strings(ordered)
 
 	window := settings.Compare.ModWindow
+	across := plan.Across(window, ends[plan.Left], ends[plan.Right])
 	for _, key := range ordered {
 		rep.Checked++
 		row, hasRow := visible[key]
-		found, ok := judge(ctx, key, left.Files[key], right.Files[key], row, hasRow, opt.Checksums, window)
+		found, ok := judge(ctx, key, left.Files[key], right.Files[key], row, hasRow, opt.Checksums, window, across)
 		if !ok {
 			continue
 		}
@@ -274,8 +275,9 @@ func Check(ctx context.Context, j job.Job, opt Opts) (Report, error) {
 }
 
 // judge decides what one path has to say. It returns at most one finding, so
-// the totals count paths.
-func judge(ctx context.Context, key string, l, r *scan.Entry, row state.Entry, hasRow, checksums bool, window time.Duration) (Finding, bool) {
+// the totals count paths. window holds a side to its own row, across one side
+// to the other.
+func judge(ctx context.Context, key string, l, r *scan.Entry, row state.Entry, hasRow, checksums bool, window, across time.Duration) (Finding, bool) {
 	onLeft, onRight := l != nil, r != nil
 
 	switch {
@@ -309,13 +311,13 @@ func judge(ctx context.Context, key string, l, r *scan.Entry, row state.Entry, h
 
 	// Each side matches its half of the row, so the engine calls both
 	// unchanged, yet the sides differ.
-	if plan.Same(leftNow, rowLeft, window) && plan.Same(rightNow, rowRight, window) && !plan.Same(leftNow, rightNow, window) {
+	if plan.Same(leftNow, rowLeft, window) && plan.Same(rightNow, rowRight, window) && !plan.Same(leftNow, rightNow, across) {
 		return finding("agreedButDiffer", key, "", true, describe(leftNow, rightNow)...), true
 	}
 
 	// The row's halves describe different files, which the apply stage would
 	// never have written.
-	if !plan.Same(rowLeft, rowRight, window) {
+	if !plan.Same(rowLeft, rowRight, across) {
 		return finding("recordDisagreesWithItself", key, "", false, describe(rowLeft, rowRight)...), true
 	}
 

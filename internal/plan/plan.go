@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rclone/rclone/fs"
+
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
 )
@@ -459,11 +461,24 @@ func Same(a, b Facts, window time.Duration) bool {
 	if a.Size != b.Size && a.Size >= 0 && b.Size >= 0 {
 		return false
 	}
+	if window == fs.ModTimeNotSupported {
+		return true
+	}
 	diff := a.Mod.Sub(b.Mod)
 	if diff < 0 {
 		diff = -diff
 	}
 	return diff <= window
+}
+
+// Across is the window for comparing a file on one backend with its copy on
+// another. Where either keeps no modification times, as MEGA gives a file the
+// moment it was uploaded, only the size is left to compare, as in rclone.
+func Across(window time.Duration, a, b fs.Info) time.Duration {
+	if a.Precision() == fs.ModTimeNotSupported || b.Precision() == fs.ModTimeNotSupported {
+		return fs.ModTimeNotSupported
+	}
+	return window
 }
 
 // Build compares both sides against the last agreed state. For a one-way job it

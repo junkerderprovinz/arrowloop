@@ -70,7 +70,7 @@ manager happened to start the process in.
 | `include` | none | Globs of the only files the job takes; see [Include patterns](#include-patterns). |
 | `noDefaultExcludes` | `false` | Also sync half-written files such as `*.part` and Office owner files. |
 | `quietPeriod` | `5s` | How long a file must sit unchanged before it is touched. |
-| `modWindow` | `2s` | How far modification times may differ and still count as equal. Only applies where a side cannot produce a hash. |
+| `modWindow` | `2s` | How far modification times may differ and still count as equal. Only applies where a side cannot produce a hash. Where a side keeps no modification times at all, as MEGA, a copy there is checked by its size. |
 | `transfers` | `4` | How many files may be copied at once. |
 | `emptyDirs` | `false` | Carry folders that hold no files. |
 | `metadata` | `false` | Carry permissions, ownership and extended attributes where both sides can. |

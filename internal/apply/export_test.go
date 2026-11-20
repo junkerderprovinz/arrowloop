@@ -2,6 +2,9 @@ package apply
 
 import (
 	"context"
+	"time"
+
+	"github.com/rclone/rclone/fs"
 
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
@@ -27,3 +30,9 @@ func RunConflictPrefix(ctx context.Context, ends Ends, act plan.Action, runID st
 // ConflictStepCount reports how many steps a resolution takes, so a test can
 // cover every crash point without hard-coding the number.
 func ConflictStepCount() int { return 3 }
+
+// UploadStamped makes f a destination like MEGA, which keeps no times and no
+// checksums and reports uploaded as every file's time.
+func UploadStamped(f fs.Fs, uploaded time.Time) fs.Fs {
+	return uploadStamped{Fs: f, uploaded: uploaded}
+}

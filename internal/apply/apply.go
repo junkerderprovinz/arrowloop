@@ -1265,6 +1265,7 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 		return fmt.Errorf("re-read %q on the right: %w", rightPath, rErr)
 	}
 
+	window := plan.Across(r.window, r.ends.Left, r.ends.Right)
 	// A checksum that means reading the whole file is fetched for a file that
 	// was just written, when the job insists on one, or when size and time
 	// alone disagree; on a pair nothing touched it would read a disk per run.
@@ -1273,12 +1274,12 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 	rightSum, rightHashErr := hashOf(ctx, right, full)
 	leftFacts := plan.Facts{Size: left.Size(), Mod: left.ModTime(ctx), Hash: leftSum}
 	rightFacts := plan.Facts{Size: right.Size(), Mod: right.ModTime(ctx), Hash: rightSum}
-	if !full && !plan.Same(leftFacts, rightFacts, r.window) {
+	if !full && !plan.Same(leftFacts, rightFacts, window) {
 		leftSum, leftHashErr = hashOf(ctx, left, true)
 		rightSum, rightHashErr = hashOf(ctx, right, true)
 		leftFacts.Hash, rightFacts.Hash = leftSum, rightSum
 	}
-	if !plan.Same(leftFacts, rightFacts, r.window) {
+	if !plan.Same(leftFacts, rightFacts, window) {
 		// The checksums belong in the message: when they decide, the sizes and
 		// times match and would describe a disagreement that looks like
 		// agreement.
