@@ -102,7 +102,7 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 	})
 	s.keep.Stop()
 
-	s.settle = time.AfterFunc(time.Hour, func() {
+	s.settle = settleTimer(settleAfter, inTray, func() {
 		if s.ending() {
 			return
 		}
@@ -112,7 +112,6 @@ func newShell(ctx context.Context, app *application.App, store *deskset.Store, i
 			}
 		})
 	})
-	s.settle.Stop()
 
 	store.Watch(s.follow)
 	app.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(*application.ApplicationEvent) {
@@ -229,6 +228,17 @@ func (s *shell) closeActivity() {
 // closed runs once a window has really closed, rather than been kept open by
 // a hook.
 func (s *shell) closed(*application.WindowEvent) { s.settle.Reset(settleAfter) }
+
+// settleTimer returns the timer that runs release once no window has been open
+// for after. A program that starts without a window has none to wait for, so
+// its timer runs from the start.
+func settleTimer(after time.Duration, windowless bool, release func()) *time.Timer {
+	t := time.AfterFunc(after, release)
+	if !windowless {
+		t.Stop()
+	}
+	return t
+}
 
 // ending reports whether the program is on its way out, when every window
 // closes for real.

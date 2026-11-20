@@ -3,6 +3,7 @@ package main
 import (
 	"slices"
 	"testing"
+	"time"
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
@@ -107,5 +108,31 @@ func TestClosingTheMainWindow(t *testing.T) {
 		if got := onClose(c.shown, c.set); got != c.want {
 			t.Errorf("a close that %s gave %d, expected %d", c.name, got, c.want)
 		}
+	}
+}
+
+func TestAStartInTheTrayReleasesTheWebviewWithNoWindowToClose(t *testing.T) {
+	released := make(chan struct{})
+	settleTimer(time.Millisecond, true, func() { close(released) })
+	select {
+	case <-released:
+	case <-time.After(5 * time.Second):
+		t.Fatal("a start in the tray kept what loading the webview left behind")
+	}
+}
+
+func TestAStartWithTheWindowReleasesOnceItCloses(t *testing.T) {
+	released := make(chan struct{}, 1)
+	settle := settleTimer(time.Millisecond, false, func() { released <- struct{}{} })
+	select {
+	case <-released:
+		t.Fatal("released while the window was open")
+	case <-time.After(50 * time.Millisecond):
+	}
+	settle.Reset(time.Millisecond)
+	select {
+	case <-released:
+	case <-time.After(5 * time.Second):
+		t.Fatal("closing the window released nothing")
 	}
 }
