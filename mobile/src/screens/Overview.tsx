@@ -27,7 +27,6 @@ import {
   AxisLabel,
   Badge,
   Body,
-  Button,
   Caption,
   CardHead,
   Empty,
@@ -115,7 +114,6 @@ export function Overview() {
   // The job's own screen sits in the jobs tab.
   const openJob = (name: string) => nav.getParent()?.navigate("JobsTab", { screen: "JobDetail", params: { name } });
   // Over the job list, so saving the new job lands there.
-  const addJob = () => nav.getParent()?.navigate("JobsTab", { screen: "JobEdit", params: {}, initial: false });
 
   const doing = (
     <>
@@ -139,15 +137,7 @@ export function Overview() {
       </Section>
 
       <Section title={t("overview.running")} hint={t("overview.idleHint")} hue={1}>
-        {empty ? (
-          <>
-            <Body>{t("phone.noJobs")}</Body>
-            <View style={styles.actions}>
-              <Button label={t("edit.add")} labelKey="edit.add" tone="accent" wide={false} onPress={addJob} />
-            </View>
-          </>
-        ) : null}
-        {!empty && running.length === 0 ? <Body>{t("overview.idle")}</Body> : null}
+        {running.length === 0 ? <Body>{t("overview.idle")}</Body> : null}
         {running.map((job) => (
           <RunningJob
             key={job.name}
@@ -518,7 +508,6 @@ const styles = StyleSheet.create({
   columns: { flexDirection: "row", alignItems: "flex-start", gap: space.xl },
   major: { flex: 3, minWidth: 0, gap: space.md },
   minor: { flex: 2, minWidth: 0, gap: space.md },
-  actions: { flexDirection: "row" },
   tiles: { flexDirection: "row", gap: space.sm },
   tile: { flex: 1, minWidth: 0, padding: space.md, gap: 2 },
   tileValue: { fontSize: text.status, fontWeight: "600", fontVariant: ["tabular-nums", "lining-nums"] },
