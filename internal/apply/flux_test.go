@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -94,8 +95,12 @@ func TestAReportedFileBeingWrittenSaysHowItChanged(t *testing.T) {
 		t.Fatalf("the file is not reported: %+v", res.Skipped)
 	}
 	want := "While it was read its size changed from 4 to 9 bytes."
-	if got := res.Skipped[0].Reason; got.Vars["details"] != want || !strings.HasSuffix(got.Text, want) {
+	got := res.Skipped[0].Reason
+	if got.Vars["details"] != want || !strings.HasSuffix(got.Text, want) {
 		t.Errorf("the report reads %q with details %q, want it to end in %q", got.Text, got.Vars["details"], want)
+	}
+	if got.Vars["sizeFrom"] != "4" || got.Vars["sizeTo"] != "9" || got.Vars["side"] != "left" || got.Vars["runs"] != "3" {
+		t.Errorf("the report carries %v, want the sizes, the side and the runs as values of their own", got.Vars)
 	}
 }
 
@@ -124,6 +129,7 @@ func TestTheDetailsAfterACopyNameOnlyWhatTheComparisonLooksAt(t *testing.T) {
 		left, right plan.Facts
 		window      time.Duration
 		want        string
+		facts       []string
 	}{
 		{
 			name:   "size and time",
@@ -131,6 +137,7 @@ func TestTheDetailsAfterACopyNameOnlyWhatTheComparisonLooksAt(t *testing.T) {
 			right:  plan.Facts{Size: 1040000, Mod: later},
 			window: 2 * time.Second,
 			want:   "After the copy the size is 1048576 bytes on the left and 1040000 on the right, the modification time is 2026-11-19 10:00:00 UTC on the left and 2026-11-20 08:16:40 UTC on the right.",
+			facts:  []string{"leftSize", "1048576", "rightSize", "1040000", "leftTime", "2026-11-19T10:00:00Z", "rightTime", "2026-11-20T08:16:40Z"},
 		},
 		{
 			// MEGA gives a file the moment it was uploaded, so its time says nothing.
@@ -139,6 +146,7 @@ func TestTheDetailsAfterACopyNameOnlyWhatTheComparisonLooksAt(t *testing.T) {
 			right:  plan.Facts{Size: 1040000, Mod: later},
 			window: rclonefs.ModTimeNotSupported,
 			want:   "After the copy the size is 1048576 bytes on the left and 1040000 on the right.",
+			facts:  []string{"leftSize", "1048576", "rightSize", "1040000"},
 		},
 		{
 			name:   "checksums decide",
@@ -146,12 +154,17 @@ func TestTheDetailsAfterACopyNameOnlyWhatTheComparisonLooksAt(t *testing.T) {
 			right:  plan.Facts{Size: 4, Mod: later, Hash: "9c0d3f2a1b77bb88"},
 			window: 2 * time.Second,
 			want:   "After the copy the checksum is 3f2a1b9c0d12 on the left and 9c0d3f2a1b77 on the right.",
+			facts:  []string{"leftSum", "3f2a1b9c0d12", "rightSum", "9c0d3f2a1b77"},
 		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := afterCopy(c.left, c.right, c.window); got != c.want {
+			got, facts := afterCopy(c.left, c.right, c.window)
+			if got != c.want {
 				t.Errorf("got %q, want %q", got, c.want)
+			}
+			if !slices.Equal(facts, c.facts) {
+				t.Errorf("the values are %q, want %q", facts, c.facts)
 			}
 		})
 	}
@@ -160,8 +173,19 @@ func TestTheDetailsAfterACopyNameOnlyWhatTheComparisonLooksAt(t *testing.T) {
 func TestATimeChangedWhileReadIsGivenInUTC(t *testing.T) {
 	err := errors.New("can't copy - source file is being updated (mod time changed from 2026-11-20 09:15:02.5 +0100 CET to 2026-11-20 09:15:07 +0100 CET)")
 	want := "While it was read its modification time changed from 2026-11-20 08:15:02.5 UTC to 2026-11-20 08:15:07 UTC."
-	if got := whileRead(err); got != want {
+	got, facts := whileRead(err)
+	if got != want {
 		t.Errorf("got %q, want %q", got, want)
+	}
+	if want := []string{"timeFrom", "2026-11-20T08:15:02.5Z", "timeTo", "2026-11-20T08:15:07Z"}; !slices.Equal(facts, want) {
+		t.Errorf("the values are %q, want %q", facts, want)
+	}
+}
+
+func TestErrorWordsThatNameNoChangeCarryNoValues(t *testing.T) {
+	err := errors.New("can't copy - source file is being updated")
+	if got, facts := whileRead(err); got != err.Error() || facts != nil {
+		t.Errorf("got %q with %q, want the error's own words alone", got, facts)
 	}
 }
 

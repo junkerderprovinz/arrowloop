@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sync"
 	"testing"
 	"time"
@@ -62,7 +63,7 @@ func TestALoggerHearsEveryLineInTheRecordsOrder(t *testing.T) {
 		t.Fatalf("the logger heard %d lines and the result holds %d", len(lines), len(res.Entries))
 	}
 	for i := range lines {
-		if lines[i] != res.Entries[i] {
+		if !reflect.DeepEqual(lines[i], res.Entries[i]) {
 			t.Errorf("line %d was heard as %+v and recorded as %+v", i, lines[i], res.Entries[i])
 		}
 	}

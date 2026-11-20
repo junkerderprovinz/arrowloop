@@ -86,6 +86,32 @@ type Entry struct {
 	// Size is how big the file was. Zero for a folder, a skip and an error,
 	// where it does not apply.
 	Size int64
+	// Code and Vars are a skip's reason for an interface to word in its
+	// reader's language, beside the English Note. An entry recorded before
+	// they were kept has neither.
+	Code string            `json:",omitempty"`
+	Vars map[string]string `json:",omitempty"`
+}
+
+// storedVars is how an entry's values are kept: as JSON, or empty for none.
+func storedVars(vars map[string]string) string {
+	if len(vars) == 0 {
+		return ""
+	}
+	// A map of strings always marshals.
+	text, _ := json.Marshal(vars)
+	return string(text)
+}
+
+// varsColumn reads stored values back into an entry's map.
+type varsColumn struct{ to *map[string]string }
+
+func (c varsColumn) Scan(src any) error {
+	text, _ := src.(string)
+	if text == "" {
+		return nil
+	}
+	return json.Unmarshal([]byte(text), c.to)
 }
 
 // DB is the run log.
@@ -124,6 +150,8 @@ CREATE TABLE IF NOT EXISTS entries (
 	path TEXT    NOT NULL,
 	note TEXT    NOT NULL,
 	size INTEGER NOT NULL DEFAULT 0,
+	code TEXT    NOT NULL DEFAULT '',
+	vars TEXT    NOT NULL DEFAULT '',
 	PRIMARY KEY (run, seq)
 );
 
@@ -159,6 +187,8 @@ CREATE TABLE IF NOT EXISTS going_entries (
 	path TEXT    NOT NULL,
 	note TEXT    NOT NULL,
 	size INTEGER NOT NULL,
+	code TEXT    NOT NULL DEFAULT '',
+	vars TEXT    NOT NULL DEFAULT '',
 	PRIMARY KEY (key, seq)
 );
 `
@@ -176,6 +206,10 @@ var migrations = []string{
 	`ALTER TABLE going ADD COLUMN job_id TEXT NOT NULL DEFAULT ''`,
 	`DROP INDEX IF EXISTS runs_job_started`,
 	`CREATE INDEX IF NOT EXISTS runs_job_id_started ON runs (job_id, started DESC)`,
+	`ALTER TABLE entries ADD COLUMN code TEXT NOT NULL DEFAULT ''`,
+	`ALTER TABLE entries ADD COLUMN vars TEXT NOT NULL DEFAULT ''`,
+	`ALTER TABLE going_entries ADD COLUMN code TEXT NOT NULL DEFAULT ''`,
+	`ALTER TABLE going_entries ADD COLUMN vars TEXT NOT NULL DEFAULT ''`,
 }
 
 // version is the history's layout. It goes up when a newer layout would be
@@ -309,8 +343,8 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 
 	for i, e := range entries {
 		if _, err := tx.ExecContext(ctx,
-			`INSERT INTO entries (run, seq, kind, side, path, note, size) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-			id, i, e.Kind, e.Side, e.Path, e.Note, e.Size); err != nil {
+			`INSERT INTO entries (run, seq, kind, side, path, note, size, code, vars) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			id, i, e.Kind, e.Side, e.Path, e.Note, e.Size, e.Code, storedVars(e.Vars)); err != nil {
 			return fmt.Errorf("record entry %d for %q: %w", i, r.Job, err)
 		}
 	}
@@ -332,7 +366,7 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 		return d.liveEntries(run), nil
 	}
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT kind, side, path, note, size FROM entries WHERE run = ? AND kind <> 'record' ORDER BY seq`, run)
+		`SELECT kind, side, path, note, size, code, vars FROM entries WHERE run = ? AND kind <> 'record' ORDER BY seq`, run)
 	if err != nil {
 		return nil, fmt.Errorf("read entries for run %d: %w", run, err)
 	}
@@ -341,7 +375,7 @@ func (d *DB) Entries(ctx context.Context, run int64) ([]Entry, error) {
 	var out []Entry
 	for rows.Next() {
 		var e Entry
-		if err := rows.Scan(&e.Kind, &e.Side, &e.Path, &e.Note, &e.Size); err != nil {
+		if err := rows.Scan(&e.Kind, &e.Side, &e.Path, &e.Note, &e.Size, &e.Code, varsColumn{&e.Vars}); err != nil {
 			return nil, fmt.Errorf("scan entry: %w", err)
 		}
 		out = append(out, e)
@@ -419,7 +453,7 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	}
 	args = append(args, limit)
 	rows, err := d.sql.QueryContext(ctx,
-		`SELECT e.run, r.job, r.job_id, r.started, e.seq, e.kind, e.side, e.path, e.note, e.size
+		`SELECT e.run, r.job, r.job_id, r.started, e.seq, e.kind, e.side, e.path, e.note, e.size, e.code, e.vars
 		 FROM entries e JOIN runs r ON r.id = e.run
 		 WHERE `+where+`
 		 ORDER BY r.started DESC, e.seq DESC
@@ -433,7 +467,7 @@ func (d *DB) Log(ctx context.Context, f Filter) ([]Touch, error) {
 	for rows.Next() {
 		var t Touch
 		var started int64
-		if err := rows.Scan(&t.Run, &t.Job, &t.JobID, &started, &t.Seq, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size); err != nil {
+		if err := rows.Scan(&t.Run, &t.Job, &t.JobID, &started, &t.Seq, &t.Kind, &t.Side, &t.Path, &t.Note, &t.Size, &t.Code, varsColumn{&t.Vars}); err != nil {
 			return nil, fmt.Errorf("scan touch: %w", err)
 		}
 		t.When = time.Unix(0, started)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -87,7 +88,7 @@ func leftAlone(t *testing.T, j *directed, res apply.Result, code string) {
 	if len(res.Skipped) != 1 || res.Skipped[0].Path != "tmp" || res.Skipped[0].Reason.Code != code {
 		t.Fatalf("skipped %v, want tmp as %s", res.Skipped, code)
 	}
-	want := apply.Entry{Kind: "skip", Side: "left", Path: "tmp", Note: code}
+	want := apply.Entry{Kind: "skip", Side: "left", Path: "tmp", Note: code, Code: code, Vars: map[string]string{"side": "left"}}
 	if !hasEntry(res.Entries, want) {
 		t.Errorf("the run log %v does not name the folder as %+v", res.Entries, want)
 	}
@@ -100,7 +101,7 @@ func leftAlone(t *testing.T, j *directed, res apply.Result, code string) {
 
 func hasEntry(entries []apply.Entry, want apply.Entry) bool {
 	for _, e := range entries {
-		if e == want {
+		if reflect.DeepEqual(e, want) {
 			return true
 		}
 	}

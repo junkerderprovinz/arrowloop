@@ -102,8 +102,8 @@ func (d *DB) checkpoint(ctx context.Context, now time.Time) error {
 		}
 		for i, e := range p.fresh {
 			if _, err := tx.ExecContext(ctx,
-				`INSERT INTO going_entries (key, seq, kind, side, path, note, size) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-				p.l.key, p.from+i, e.Kind, e.Side, e.Path, e.Note, e.Size); err != nil {
+				`INSERT INTO going_entries (key, seq, kind, side, path, note, size, code, vars) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				p.l.key, p.from+i, e.Kind, e.Side, e.Path, e.Note, e.Size, e.Code, storedVars(e.Vars)); err != nil {
 				return err
 			}
 		}
@@ -185,8 +185,8 @@ func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 		return err
 	}
 	if _, err := tx.ExecContext(ctx,
-		`INSERT INTO entries (run, seq, kind, side, path, note, size)
-		 SELECT ?, seq, kind, side, path, note, size FROM going_entries WHERE key = ?`, id, key); err != nil {
+		`INSERT INTO entries (run, seq, kind, side, path, note, size, code, vars)
+		 SELECT ?, seq, kind, side, path, note, size, code, vars FROM going_entries WHERE key = ?`, id, key); err != nil {
 		return err
 	}
 	if err := forget(ctx, tx, key); err != nil {
