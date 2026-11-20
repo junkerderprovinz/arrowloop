@@ -5,7 +5,7 @@ import type { Touch } from '../lib/api'
 import { bytes } from '../lib/bytes'
 import { dayTime } from '../lib/dayTime'
 import { entryAction, entryNote, entryWay, sideName, unreadFolder } from '../lib/entryLabel'
-import { translateSide, useT } from '../lib/i18n'
+import { translateSide, useSpelling, useT } from '../lib/i18n'
 import { usePlaces } from '../lib/places'
 
 /**
@@ -35,6 +35,7 @@ function touchTone(e: Touch): 'warn' | 'fail' | 'neutral' {
  */
 export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob?: boolean; columns?: Columns }) {
   const { t, locale } = useT()
+  const spell = useSpelling()
   const { jobs, drives } = usePlaces()
   // The sides around it and the arrow say where, so the badge only says what.
   const job = jobs.find((j) => j.name === e.Job)
@@ -45,7 +46,7 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
   const way = entryWay(e)
   const on = sides && way && 'on' in way ? sides[way.on === 'right' ? 1 : 0] : null
   const toward = way && 'to' in way ? way.to : e.Side
-  const note = entryNote(t, e)
+  const note = entryNote(t, e, spell)
   // In the column grid every cell keeps to one line and its column, cut at the
   // end, so the rows read down their columns; the narrow flex row wraps instead.
   const grid = columns ? ' md:w-auto md:overflow-hidden md:whitespace-nowrap' : ''

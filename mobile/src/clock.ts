@@ -4,6 +4,7 @@ import { AppState } from "react-native";
 
 import { dateLocale } from "../../web/src/lib/dateLocale";
 import { hourCycle } from "../../web/src/lib/hourCycle";
+import { exactMoment } from "../../web/src/lib/reasonText";
 
 /** Whether Android's clock is set to 24-hour time, or null where it does not say. */
 function phoneClock(): boolean | null {
@@ -86,6 +87,11 @@ export function fullClock(iso: string, lang: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+/** A moment to the second, for a reason that compares two times a file had. */
+export function exactly(iso: string, lang: string): string {
+  return exactMoment(iso, dateLocale(lang, region), hourCycle(uses24));
 }
 
 /** A time of day such as a schedule's, which has no date. */

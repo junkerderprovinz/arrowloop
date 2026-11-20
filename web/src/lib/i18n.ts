@@ -38,6 +38,7 @@ import {
   type Translations,
 } from './i18n.data'
 import { dateLocale, regionOf } from './dateLocale'
+import { exactMoment, reasonText, sideWord, type Reason, type Spelling } from './reasonText'
 
 // The tables live in i18n.data.ts, which the Android app shares.
 export { en, de, LANGUAGES, SUPPORTED, isRtl }
@@ -187,48 +188,41 @@ export function useT(): I18nContextValue {
   return useContext(I18nContext)
 }
 
-/** One reason from the engine: a code with its values, and the English sentence. */
-export interface Reason {
-  code: string
-  vars?: Record<string, string>
-  text: string
+export type { Reason }
+export { sideWord as translateSide }
+
+/**
+ * Render a reason in the reader's language. The engine sends a code with its
+ * values and the English sentence, which a code this build does not know
+ * falls back to.
+ */
+export function useReason(): (reason?: Reason | null) => string {
+  const { t } = useT()
+  const spell = useSpelling()
+  return (reason) => (reason ? reasonText(t, reason, spell) : '')
+}
+
+/** How this page writes the numbers and moments a reason holds. */
+export function useSpelling(): Spelling {
+  const { lang, locale } = useT()
+  return { lang, moment: (iso) => exactMoment(iso, locale) }
 }
 
 /**
- * Render a reason in the reader's language. The engine sends a code and its
- * English sentence; a code this build does not know falls back to that
- * sentence. Side names in the values are translated too.
+ * Render a finding of a job's check or comparison the same way, under
+ * `finding.`, with its sides translated.
  */
-export function useReason(): (reason?: Reason | null) => string {
-  return useCoded((code) => `reason.${code}` as TranslationKey)
-}
-
-/** Render a finding of a job's check or comparison the same way, under `finding.`. */
 export function useFinding(): (finding?: Reason | null) => string {
-  return useCoded((code) => `finding.${code}` as TranslationKey)
-}
-
-function useCoded(keyOf: (code: string) => TranslationKey): (reason?: Reason | null) => string {
   const { t } = useT()
-  return (reason) => {
-    if (!reason) return ''
-    const key = keyOf(reason.code)
+  return (finding) => {
+    if (!finding) return ''
+    const key = `finding.${finding.code}` as TranslationKey
     const vars: Record<string, string> = {}
-    for (const [name, value] of Object.entries(reason.vars ?? {})) {
-      vars[name] = name === 'side' || name === 'other' ? translateSide(t, value) : value
+    for (const [name, value] of Object.entries(finding.vars ?? {})) {
+      vars[name] = name === 'side' || name === 'other' ? sideWord(t, value) : value
     }
     // A code missing from en comes from a newer engine.
-    if (!(key in en)) return reason.text
+    if (!(key in en)) return finding.text
     return t(key, vars)
   }
-}
-
-/** A side named by the engine, in the reader's language. */
-export function translateSide(
-  t: (key: TranslationKey, vars?: Record<string, string | number>) => string,
-  side: string,
-): string {
-  if (side === 'left') return t('side.left')
-  if (side === 'right') return t('side.right')
-  return side
 }

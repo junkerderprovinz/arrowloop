@@ -6,7 +6,7 @@ import { api, type RunEntry } from '../lib/api'
 import { entryLabel, entryNote, unreadFolder } from '../lib/entryLabel'
 import { useGoTo } from '../lib/goTo'
 import { usePlaces } from '../lib/places'
-import { useT } from '../lib/i18n'
+import { useSpelling, useT } from '../lib/i18n'
 import { Button } from '../lib/glimstone/Button'
 import { IconConflict } from './glyphs'
 
@@ -45,6 +45,7 @@ export function RunDetail({
   onEntries?: (entries: RunEntry[]) => void
 }) {
   const { t } = useT()
+  const spell = useSpelling()
   const goTo = useGoTo()
   const { jobs, drives } = usePlaces()
   const config = jobs.find((j) => j.name === job)
@@ -85,7 +86,7 @@ export function RunDetail({
     <div className="glim-content-fade flex flex-col gap-2 pb-3">
       <ul className="flex flex-col gap-1">
         {entries.map((e, i) => {
-          const note = entryNote(t, e)
+          const note = entryNote(t, e, spell)
           return (
             <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-subline">
               <Badge tone={tone(e)}>{entryLabel(t, e, config, drives)}</Badge>

@@ -27,6 +27,8 @@ function job(left: string, right: string): Job {
   }
 }
 
+const spell = { lang: 'de', moment: (iso: string) => iso }
+
 const entry = (Kind: string, Side: string): RunEntry => ({ Kind, Side, Path: 'a.jpg', Note: '', Size: 0 })
 
 describe('where a side is', () => {
@@ -144,10 +146,10 @@ describe('what the note adds', () => {
   })
 
   it('shows what the label cannot say and nothing it already does', () => {
-    expect(entryNote(t, noted('copy', 'right', 'replaced'))).toBeNull()
-    expect(entryNote(t, noted('conflict', '', 'keep both'))).toBeNull()
-    expect(entryNote(t, noted('move', 'left', 'fotos/alt.jpg'))).toBe('vorher fotos/alt.jpg')
-    expect(entryNote(t, noted('skip', '', 'the file was busy'))).toBe('the file was busy')
+    expect(entryNote(t, noted('copy', 'right', 'replaced'), spell)).toBeNull()
+    expect(entryNote(t, noted('conflict', '', 'keep both'), spell)).toBeNull()
+    expect(entryNote(t, noted('move', 'left', 'fotos/alt.jpg'), spell)).toBe('vorher fotos/alt.jpg')
+    expect(entryNote(t, noted('skip', '', 'the file was busy'), spell)).toBe('the file was busy')
   })
 })
 
@@ -165,7 +167,7 @@ describe('a folder a side could not read', () => {
   })
 
   it('says that nothing in it was touched rather than show the code', () => {
-    expect(entryNote(t, folder('left', 'unreadable'))).toBe(
+    expect(entryNote(t, folder('left', 'unreadable'), spell)).toBe(
       'Darin wurde auf keiner Seite etwas kopiert oder gelöscht. Der nächste Lauf versucht es wieder.',
     )
   })

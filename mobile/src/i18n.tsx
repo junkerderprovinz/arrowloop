@@ -10,11 +10,12 @@ import {
   SUPPORTED,
   type Language,
   type TranslationKey,
-  type Translations,
 } from "../../web/src/lib/i18n.data";
-import { useClockLayout } from "./clock";
+import type { Spelling } from "../../web/src/lib/reasonText";
+import { exactly, useClockLayout } from "./clock";
 import { locales } from "./locales";
 import { settings } from "./settings";
+import { translator } from "./translate";
 
 export type { Language, TranslationKey };
 export { LANGUAGES, isRtl };
@@ -31,6 +32,8 @@ interface I18n {
   lang: string;
   setLang: (code: string) => void;
   rtl: boolean;
+  /** How the numbers and moments a reason holds are written, for reasonText and entryNote. */
+  spell: Spelling;
   /** Whether the stored language has been asked for, so the screens can wait for it. */
   settled: boolean;
   /** Asks the engine for the stored language, once it answers. */
@@ -72,12 +75,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     void settings.write({ language: code }).catch(() => {});
   }, []);
 
-  const table = useMemo(() => {
-    // A key missing from an unfinished table falls back to English.
-    const chosen: Partial<Translations> =
-      lang === "en" ? en : lang === "de" ? de : (locales[lang] ?? {});
-    return { ...en, ...chosen } as Translations;
-  }, [lang]);
+  const t = useMemo(() => translator(lang === "en" ? en : lang === "de" ? de : (locales[lang] ?? {})), [lang]);
+  const spell = useMemo<Spelling>(() => ({ lang, moment: (iso) => exactly(iso, lang) }), [lang]);
 
   const rtl = isRtl(lang);
 
@@ -88,20 +87,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     if (I18nManager.isRTL !== rtl) I18nManager.forceRTL(rtl);
   }, [rtl]);
 
-  const t = useCallback(
-    (key: TranslationKey, vars?: Record<string, string | number>) => {
-      let text = table[key] ?? key;
-      if (vars) {
-        for (const [name, value] of Object.entries(vars)) {
-          text = text.split(`{${name}}`).join(String(value));
-        }
-      }
-      return text;
-    },
-    [table],
-  );
-
-  return <Ctx.Provider value={{ t, lang, setLang, rtl, settled, load }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ t, lang, setLang, rtl, settled, load, spell }}>{children}</Ctx.Provider>;
 }
 
 export function useT(): I18n {

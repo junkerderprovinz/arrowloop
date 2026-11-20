@@ -117,7 +117,7 @@ type Opened = { id: number; job: string; run?: Run };
  * order is applied to that page.
  */
 function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) {
-  const { t, lang } = useT();
+  const { t, lang, spell } = useT();
   const { p, accent } = useTheme();
   const { wide } = useFrame();
 
@@ -287,7 +287,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
           if (rows && rows.length >= limit) setLimit((n) => n * 2);
         }}
         renderItem={({ item }) => {
-          const labelled = { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path };
+          const labelled = { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note, Path: item.Path, Code: item.Code, Vars: item.Vars };
           const owner = lineJob(item, configs);
           // With the way beside it the badge only says what happened.
           const way = fileWay(item, configs, t);
@@ -298,7 +298,8 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
             />
           );
           // Why a path was skipped, or the name a renamed file had.
-          const note = shownNote(t, item) ? <Caption>{shownNote(t, item)}</Caption> : null;
+          const said = entryNote(t, labelled, spell);
+          const note = said ? <Caption>{said}</Caption> : null;
           return (
             <ListPiece>
               {wide ? (
@@ -702,7 +703,7 @@ function Top({ mode, onMode, children }: { mode: Mode; onMode: (next: Mode) => v
  * fetched only when it opens, since the list needs nothing but the summaries.
  */
 function RunSheet({ opened, jobs, onClose }: { opened: Opened | null; jobs: Job[]; onClose: () => void }) {
-  const { t, lang } = useT();
+  const { t, lang, spell } = useT();
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [error, setError] = useState("");
 
@@ -739,19 +740,16 @@ function RunSheet({ opened, jobs, onClose }: { opened: Opened | null; jobs: Job[
         <View key={kind} style={styles.group}>
           <AxisLabel>{`${groupWord(t, kind, list)} · ${list.length}`}</AxisLabel>
           {list.slice(0, 50).map((entry, i) => {
-            const labelled = { Kind: entry.Kind, Side: entry.Side ?? "", Note: entry.Note, Path: entry.Path };
+            const labelled = { Kind: entry.Kind, Side: entry.Side ?? "", Note: entry.Note, Path: entry.Path, Code: entry.Code, Vars: entry.Vars };
             const way = opened ? fileWay({ ...labelled, Job: opened.job }, jobs, t) : null;
+            const note = entryNote(t, labelled, spell);
             return (
               <View key={`${entry.Path}-${i}`}>
                 <Mono>{entry.Path}</Mono>
                 {way ? <FileWay way={way} /> : null}
-                {/* Among the paths left alone, a folder nobody could read says why. */}
-                {unreadFolder(labelled) ? (
-                  <>
-                    <Caption>{entryLabel(t, labelled, undefined, [])}</Caption>
-                    <Caption>{entryNote(t, labelled)}</Caption>
-                  </>
-                ) : null}
+                {/* Among the paths left alone, a folder nobody could read is named as one. */}
+                {unreadFolder(labelled) ? <Caption>{entryLabel(t, labelled, undefined, [])}</Caption> : null}
+                {note ? <Caption>{note}</Caption> : null}
               </View>
             );
           })}
@@ -877,10 +875,6 @@ function tone(item: Touch): "ok" | "warn" | "fail" | "neutral" {
   return "neutral";
 }
 
-/** The note beside a file log line, or null when its label already says it. */
-function shownNote(t: T, item: Touch): string | null {
-  return entryNote(t, { Kind: item.Kind, Side: item.Side ?? "", Note: item.Note });
-}
 
 export function counters(run: Run, t: T): string {
   const parts: string[] = [];

@@ -1,11 +1,12 @@
 import type { TranslationKey } from './i18n.data'
+import { reasonText, type Spelling } from './reasonText.ts'
 
 // Only the fields read here, and not the api module's types or React, so the
 // phone app can share this file: its build installs neither the web's
 // packages nor the web's Vite-only i18n loader.
 export type Job = { name: string; left: string; right: string }
 export type Drive = { id: string; label: string }
-type Entry = { Kind: string; Side: string; Note?: string; Path?: string }
+type Entry = { Kind: string; Side: string; Note?: string; Path?: string; Code?: string; Vars?: Record<string, string> }
 
 /**
  * What one side of a job is: a folder on this device, a registered drive, or
@@ -242,15 +243,17 @@ export function entryAction(t: T, e: Entry, job: Job | undefined, drives: Drive[
 }
 
 /**
- * The note to show beside an entry, or null when the label has said it: an
- * error's words and a skip's reason as the engine wrote them, and the name a
- * renamed file had before.
+ * The note to show beside an entry, or null when the label has said it: a
+ * skip's reason in the reader's language, and the name a renamed file had
+ * before. An entry recorded before the engine kept a reason's code shows the
+ * English sentence it was written with.
  */
-export function entryNote(t: T, e: Entry): string | null {
+export function entryNote(t: T, e: Entry, spell: Spelling): string | null {
   const note = e.Note ?? ''
   if (!note || SAID.has(note)) return null
   if (unreadFolder(e)) return t('entry.leftAlone')
   if (e.Kind === 'move') return t('entry.was', { path: note })
+  if (e.Code) return reasonText(t, { code: e.Code, vars: e.Vars, text: note }, spell)
   return note
 }
 
