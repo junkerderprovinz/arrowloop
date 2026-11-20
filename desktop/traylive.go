@@ -121,19 +121,18 @@ func (l *TrayLive) Watch(ctx context.Context, runner *daemon.Runner) {
 	events, stop := runner.Subscribe()
 	go func() {
 		defer stop()
-		spin := time.NewTicker(80 * time.Millisecond)
-		defer spin.Stop()
+		var spin spinner
+		defer spin.ticks(false)
+		var frames <-chan time.Time
 		for {
 			select {
 			case <-ctx.Done():
 				return
 
-			case <-spin.C:
+			case <-frames:
 				l.mu.Lock()
-				if len(l.working) > 0 {
-					l.frame++
-					l.apply()
-				}
+				l.frame++
+				l.apply()
 				l.mu.Unlock()
 
 			case ev, ok := <-events:
@@ -143,10 +142,32 @@ func (l *TrayLive) Watch(ctx context.Context, runner *daemon.Runner) {
 				l.mu.Lock()
 				l.follow(ev)
 				l.apply()
+				busy := len(l.working) > 0
 				l.mu.Unlock()
+				frames = spin.ticks(busy)
 			}
 		}
 	}()
+}
+
+// spinner turns the working icon. It ticks only while a job runs, so a program
+// waiting in the tray is not woken a dozen times a second.
+type spinner struct{ ticker *time.Ticker }
+
+// ticks returns the channel the next frame arrives on while busy, and nil,
+// which never delivers, otherwise.
+func (s *spinner) ticks(busy bool) <-chan time.Time {
+	switch {
+	case busy && s.ticker == nil:
+		s.ticker = time.NewTicker(80 * time.Millisecond)
+	case !busy && s.ticker != nil:
+		s.ticker.Stop()
+		s.ticker = nil
+	}
+	if s.ticker == nil {
+		return nil
+	}
+	return s.ticker.C
 }
 
 // follow records one event. The caller holds the lock.

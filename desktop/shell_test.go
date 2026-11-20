@@ -136,3 +136,18 @@ func TestAStartWithTheWindowReleasesOnceItCloses(t *testing.T) {
 		t.Fatal("closing the window released nothing")
 	}
 }
+
+func TestTheIconSpinsOnlyWhileAJobRuns(t *testing.T) {
+	var spin spinner
+	if spin.ticks(false) != nil {
+		t.Fatal("an idle program is woken to turn the icon")
+	}
+	select {
+	case <-spin.ticks(true):
+	case <-time.After(5 * time.Second):
+		t.Fatal("a running job does not turn the icon")
+	}
+	if spin.ticks(false) != nil {
+		t.Error("the icon kept turning after the last job finished")
+	}
+}
