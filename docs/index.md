@@ -43,11 +43,13 @@ the older versions.
     <p class="al-downloads__platform">Linux</p>
     <div class="al-downloads__links">
       <a class="md-button md-button--primary" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64-installer" aria-label="Linux installer">Installer</a>
+      <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.AppImage" aria-label="Linux AppImage">AppImage</a>
       <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.flatpak" aria-label="Linux Flatpak">Flatpak</a>
       <a class="md-button" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64" aria-label="Linux single file">Single file</a>
     </div>
     <p class="al-downloads__note">ARM:
       <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64-installer" aria-label="Linux on ARM installer">installer</a>,
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.AppImage" aria-label="Linux on ARM AppImage">AppImage</a>,
       <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.flatpak" aria-label="Linux on ARM Flatpak">Flatpak</a>,
       <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64" aria-label="Linux on ARM single file">single file</a></p>
   </div>
