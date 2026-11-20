@@ -6,21 +6,6 @@
   ],
   "packageRules": [
     {
-      "description": "Docker: auto-merge digest pins and digest refreshes (same tag, new build). Major and minor stay open for review.",
-      "matchManagers": [
-        "dockerfile"
-      ],
-      "matchUpdateTypes": [
-        "pinDigest",
-        "digest"
-      ],
-      "automerge": true,
-      "commitMessagePrefix": "ci:",
-      "labels": [
-        "docker"
-      ]
-    },
-    {
       "description": "The Expo SDK decides React, React Native and the native modules in mobile/; npx expo install --fix moves them with an SDK upgrade",
       "matchFileNames": [
         "mobile/package.json"
