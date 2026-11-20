@@ -8,6 +8,18 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.8.1 - 2026-11-20
+
+History tells you which way each file went, and every VPN provider shows its own logo.
+
+## 🎨 Design
+
+- **Every VPN provider has its logo.** The tiles under Settings, Integrations and the rows of your VPNs draw each provider's own mark, including the last few that showed a plain symbol, and the Test, Edit and Remove buttons of a connected service use the same glyphs everywhere.
+
+## 🐛 Fixed
+
+- **History says which way a file went.** On the phone a copied file reads "Phone/Photos → NAS/Photos" with the names the job card uses, a file sent to the trash says on which side, and the run a row opens shows the same. The rows also find their job by its id, so a renamed job no longer turns them into a bare "copied". On the web a deleted or renamed file names only its side, and a moved file's arrow points the right way. Thanks to @danpeig for the report ([#250](https://github.com/junkerderprovinz/arrowloop/issues/250)).
+
 ## 2.8.0 - 2026-11-20
 
 ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler and needs far less memory in the tray, a job can take only the files you name or leave new ones on the source for a while, Linux gets an AppImage, tablets get the desktop layout, Shoutrrr joins the notification channels, and a renamed job keeps everything it learned.

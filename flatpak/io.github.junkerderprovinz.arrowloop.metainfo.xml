@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.8.1" date="2026-11-20">
+      <description>
+        <p>History tells you which way each file went, and every VPN provider shows its own logo.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.1</url>
+    </release>
     <release version="2.8.0" date="2026-11-20">
       <description>
         <p>ArrowLoop brings its own VPN, the desktop app takes commands for cron and the Task Scheduler and needs far less memory in the tray, a job can take only the files you name or leave new ones on the source for a while, Linux gets an AppImage, tablets get the desktop layout, Shoutrrr joins the notification channels, and a renamed job keeps everything it learned.</p>
