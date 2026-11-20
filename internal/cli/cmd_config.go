@@ -126,6 +126,7 @@ func (o Options) cmdDaemon(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
+	cfg = cfg.StateByID(logf)
 	hist, err := history.Open(ctx, cfg.History)
 	if err != nil {
 		return err

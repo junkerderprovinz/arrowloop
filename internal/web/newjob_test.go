@@ -35,8 +35,8 @@ func TestANewJobIsAddedBesideTheOthers(t *testing.T) {
 	if code != http.StatusCreated {
 		t.Fatalf("adding a job answered %d: %v", code, got)
 	}
-	if got["state"] != "state/filme nach backup.db" {
-		t.Errorf("the job got no state database of its own: %v", got["state"])
+	if id, _ := got["id"].(string); id == "" || got["state"] != "state/"+id+".db" {
+		t.Errorf("the job keeps its record in %v, want a database named after its id %v", got["state"], got["id"])
 	}
 
 	cfg, err := job.Load(h.configPath)
@@ -67,7 +67,7 @@ func TestATakenNameIsNotOverwritten(t *testing.T) {
 	}
 }
 
-func TestANameThatWouldLeaveTheStateFolderIsRefused(t *testing.T) {
+func TestANameTheJobsAddressCannotCarryIsRefused(t *testing.T) {
 	h := newHarness(t)
 	for _, name := range []string{"", "../escape", `a\b`, "..", "tab\there"} {
 		body := jobBody(map[string]any{"name": name, "left": h.left, "right": h.right})

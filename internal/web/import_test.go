@@ -144,8 +144,11 @@ func TestAnImportAddsPausedJobsAndTargets(t *testing.T) {
 		t.Error("the job that was there got paused")
 	}
 	music := found["Music"]
-	if music["disabled"] != true || music["right"] != "nas.example.lan:/srv/music" || music["state"] != "state/Music.db" {
+	if music["disabled"] != true || music["right"] != "nas.example.lan:/srv/music" {
 		t.Errorf("the imported job reads %v", music)
+	}
+	if id, _ := music["id"].(string); id == "" || music["state"] != "state/"+id+".db" {
+		t.Errorf("the imported job keeps its record in %v, want a database named after its id %v", music["state"], music["id"])
 	}
 	if _, set := music["after"]; set {
 		t.Error("an imported job carries a command")

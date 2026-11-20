@@ -41,8 +41,8 @@ var errNameTaken = errors.New("there is a job by that name already")
 // badJob is a job the configuration refuses.
 type badJob struct{ error }
 
-// addJob saves j as a new job and returns it as stored. It gets a state
-// database named after it unless j names one.
+// addJob saves j as a new job and returns it as stored. Unless j names a
+// state database of its own, the job gets one named after its id.
 func (s *Server) addJob(j map[string]any) (map[string]any, error) {
 	name, _ := j["name"].(string)
 	name = strings.TrimSpace(name)
@@ -50,9 +50,6 @@ func (s *Server) addJob(j map[string]any) (map[string]any, error) {
 		return nil, badJob{err}
 	}
 	j["name"] = name
-	if state, _ := j["state"].(string); strings.TrimSpace(state) == "" {
-		j["state"] = "state/" + name + ".db"
-	}
 
 	s.saving.Lock()
 	defer s.saving.Unlock()
@@ -78,8 +75,8 @@ func (s *Server) addJob(j map[string]any) (map[string]any, error) {
 	return nil, errors.New("the job was saved but cannot be read back")
 }
 
-// checkJobName refuses names that cannot stand in the state database's file
-// name, which createJob makes from the name when the caller gives none.
+// checkJobName refuses names the job's address under /api/jobs cannot carry:
+// a slash would split it and a dot would be cleaned out of it.
 func checkJobName(name string) error {
 	switch {
 	case name == "":

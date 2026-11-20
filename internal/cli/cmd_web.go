@@ -51,6 +51,7 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
+	cfg = cfg.StateByID(logf)
 	linkAppData(filepath.Dir(*configPath))
 	linkAppDocs(filepath.Dir(*configPath))
 	// Read before anything listens, so a damaged file stops the start instead

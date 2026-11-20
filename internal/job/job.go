@@ -1075,13 +1075,19 @@ func (c *Config) Path() string { return c.path }
 
 // SaveJobs writes a new set of jobs back over the configuration file. The
 // result goes through Load before it replaces anything, so the editor cannot
-// save a file the daemon would refuse.
+// save a file the daemon would refuse. A job new to the file gets a database
+// named after its id.
 func (c *Config) SaveJobs(jobs []map[string]any) (*Config, error) {
-	return c.save(func(doc map[string]any) { doc["jobs"] = jobs })
+	return c.save(func(doc map[string]any) {
+		doc["jobs"] = jobs
+		c.settleIDs(doc)
+		c.nameNewDatabases(doc)
+	})
 }
 
 // AddJobs appends jobs to the file and leaves the others as they are. It goes
-// through the same validation as SaveJobs, so either all of them land or none.
+// through the same validation as SaveJobs, so either all of them land or none,
+// and names their databases the same way.
 func (c *Config) AddJobs(add ...map[string]any) (*Config, error) {
 	return c.save(func(doc map[string]any) {
 		key := jobsKey(doc)
@@ -1090,6 +1096,8 @@ func (c *Config) AddJobs(add ...map[string]any) (*Config, error) {
 			jobs = append(jobs, j)
 		}
 		doc[key] = jobs
+		c.settleIDs(doc)
+		c.nameNewDatabases(doc)
 	})
 }
 

@@ -324,19 +324,10 @@ export function JobForm({
     onChange: patch,
   })
 
-  // The state path follows the name while it still has the generated
-  // `state/<name>.db` form; a path somebody typed is left alone.
-  function rename(next: string): Partial<RawJob> {
-    const generated = (n: string) => `state/${n}.db`
-    const current = job.state ?? ''
-    if (current !== '' && current !== generated(job.name ?? '')) return { name: next }
-    return { name: next, state: generated(next) }
-  }
-
   return (
     <div className="flex flex-col gap-4 pb-2">
       <FieldRow label={t('edit.name')}>
-        <Text value={job.name ?? ''} onChange={(v) => patch(rename(v))} label={t('edit.name')} />
+        <Text value={job.name ?? ''} onChange={(v) => patch({ name: v })} label={t('edit.name')} />
       </FieldRow>
 
       <JobWay

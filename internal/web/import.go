@@ -102,8 +102,5 @@ func (s *Server) importPlan(r *http.Request) (importer.Plan, error) {
 	importer.Settle(&p,
 		func(name string) bool { _, ok := cfg.Find(name); return ok },
 		func(name string) bool { return targets[name] })
-	for _, j := range p.Jobs {
-		j["state"] = "state/" + j["name"].(string) + ".db"
-	}
 	return p, nil
 }

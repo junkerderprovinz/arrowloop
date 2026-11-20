@@ -147,6 +147,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	cfg = cfg.StateByID(log.Printf)
 	// Checks a password that ARROWLOOP_PASSWORD_HASH sets for this window.
 	key, err := security.LoadKey(configPath)
 	if err != nil {
