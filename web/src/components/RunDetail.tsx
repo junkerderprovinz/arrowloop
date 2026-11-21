@@ -84,17 +84,21 @@ export function RunDetail({
 
   return (
     <div className="glim-content-fade flex flex-col gap-2 pb-3">
-      <ul className="flex flex-col gap-1">
+      {/* The path takes what it needs up to 40 per cent and the note the rest,
+          so in a wide window the notes start right after the paths and line up. */}
+      <ul className="grid grid-cols-[auto_fit-content(40%)_minmax(0,1fr)] gap-x-3 gap-y-1">
         {entries.map((e, i) => {
           const note = entryNote(t, e, spell)
           return (
-            <li key={`${e.Path}-${i}`} className="flex items-start gap-2 text-subline">
-              <Badge tone={tone(e)}>{entryLabel(t, e, config, drives)}</Badge>
-              <span className="min-w-0 flex-1 break-all font-mono text-carbon-text" title={e.Path}>
+            <li key={`${e.Path}-${i}`} className="col-span-3 grid grid-cols-subgrid items-start text-subline">
+              <Badge tone={tone(e)} className="justify-self-start">
+                {entryLabel(t, e, config, drives)}
+              </Badge>
+              <span className="min-w-0 break-all font-mono text-carbon-text" title={e.Path}>
                 {e.Path}
               </span>
               {note && (
-                <span className="min-w-0 max-w-[45%] shrink-0 text-carbon-textMuted" title={note}>
+                <span className="min-w-0 text-carbon-textMuted" title={note}>
                   {note}
                 </span>
               )}
