@@ -378,19 +378,21 @@ release's `checksums.txt`. The new version starts the next time you start
 ArrowLoop, so a sync that is running is never cut off, and a note in the corner
 of the window says when it is ready. Pre-releases are never installed.
 **Update automatically**, in the Version card on the Info tile under Settings,
-turns this off; it is on from the start.
+turns this off; it is on from the start. Once **Check for updates** has found a
+newer release, **Update now** fetches it at once, and **Restart** starts it.
 
 A container cannot replace itself and is updated the way it was deployed. There
-the same switch is off from the start and only reports: switched on, the
-container asks GitHub once a day for a newer release, names it under ArrowLoop
-in the Version card and writes it to its log. The phone updates through its
-store or a new APK, and the Flatpak through Flatpak (see
+the switch reads **Check for updates automatically**, is off from the start and
+only reports: switched on, the container asks GitHub once a day for a newer
+release, names it in the Version card and writes it to its log. The phone
+updates through its store or a new APK, and the Flatpak through Flatpak (see
 [As a Flatpak](#as-a-flatpak)). Neither shows the switch.
 
 **The installed copy** on Windows cannot replace itself, since no user may
 write to its folder. A scheduled task named **ArrowLoop Update** does it instead,
 once a day and five minutes after the computer starts, whether ArrowLoop is
-open or not. It replaces `ArrowLoop.exe`, sets the version shown under Apps and
+open or not. **Update now** runs the same update at once and asks Windows for
+administrator rights first. It replaces `ArrowLoop.exe`, sets the version shown under Apps and
 writes what it did, or why it did not, to `%ProgramData%\ArrowLoop\update.log`.
 There is one installation, so the switch applies to everyone on the computer:
 it lives in `%ProgramData%\ArrowLoop\settings.json`, which every user may

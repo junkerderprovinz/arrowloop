@@ -30,6 +30,10 @@ func installerChoices() (string, error) {
 	return filepath.Join(data, installID, "install.json"), nil
 }
 
-func updateInstalled() error {
+func updateInstalled(bool) error {
 	return errors.New("--update is what the Windows installer's scheduled task runs")
+}
+
+func updateElevated() error {
+	return errors.New("only the Windows installer puts a copy in place for all users")
 }

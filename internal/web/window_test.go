@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"testing"
 	"testing/fstest"
 
@@ -262,5 +263,66 @@ func TestAFlatpakLeavesUpdatesToTheSoftwareCenter(t *testing.T) {
 	getJSON(t, srv, "/api/window", &view)
 	if view.UpdatesFromStore == nil || !*view.UpdatesFromStore {
 		t.Errorf("inside a Flatpak updatesFromStore is %v", view.UpdatesFromStore)
+	}
+}
+
+type fakeUpdates struct {
+	mu        sync.Mutex
+	status    web.UpdateStatus
+	started   int
+	restarted chan struct{}
+}
+
+func (f *fakeUpdates) Status() web.UpdateStatus {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return f.status
+}
+
+func (f *fakeUpdates) Start() {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.started++
+	f.status.Busy = true
+}
+
+func (f *fakeUpdates) Restart() { close(f.restarted) }
+
+func TestTheVersionCardDrivesTheDesktopsOwnUpdate(t *testing.T) {
+	h := newHarness(t)
+	up := &fakeUpdates{status: web.UpdateStatus{Percent: -1}, restarted: make(chan struct{})}
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Updates: up})
+
+	var got web.UpdateStatus
+	getJSON(t, srv, "/api/window/update", &got)
+	if got.Busy || got.Percent != -1 {
+		t.Errorf("before anything started: %+v", got)
+	}
+
+	resp, said := doJSON(t, srv, http.MethodPost, "/api/window/update", "")
+	up.mu.Lock()
+	started := up.started
+	up.mu.Unlock()
+	if resp.StatusCode != http.StatusAccepted || started != 1 {
+		t.Fatalf("starting: %s %s, started %d times", resp.Status, said, started)
+	}
+	getJSON(t, srv, "/api/window/update", &got)
+	if !got.Busy {
+		t.Error("the update started by hand does not show as running")
+	}
+
+	if resp, said := doJSON(t, srv, http.MethodPost, "/api/window/restart", ""); resp.StatusCode != http.StatusAccepted {
+		t.Fatalf("restarting: %s %s", resp.Status, said)
+	}
+	<-up.restarted
+}
+
+func TestAContainerCannotUpdateItself(t *testing.T) {
+	h := newHarness(t)
+	for _, path := range []string{"/api/window/update", "/api/window/restart"} {
+		resp, _ := doJSON(t, h.srv, http.MethodPost, path, "")
+		if resp.StatusCode < 400 {
+			t.Errorf("%s answered %s on a container", path, resp.Status)
+		}
 	}
 }

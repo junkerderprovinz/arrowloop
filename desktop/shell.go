@@ -60,6 +60,8 @@ type shell struct {
 	// quitChosen is set when somebody quits from the menu or the close button,
 	// rather than the installer or the session ending the program.
 	quitChosen atomic.Bool
+	// restarting is set when the Version card asks for the version in place.
+	restarting atomic.Bool
 
 	// keep writes the small window's size once a drag on its edge stops, since
 	// the drag sends a stream of resizes.
@@ -309,6 +311,12 @@ func pageURL(view, lang string, systemFrame bool) string {
 func (s *shell) quit() {
 	s.quitChosen.Store(true)
 	s.app.Quit()
+}
+
+// restart ends the program, which then starts itself again; see startAgain.
+func (s *shell) restart() {
+	s.restarting.Store(true)
+	s.quit()
 }
 
 // ended records the window's place for the next start. A quit somebody chose

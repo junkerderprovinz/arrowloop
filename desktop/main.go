@@ -61,11 +61,16 @@ func main() {
 func run() error {
 	custom := flag.String("config", "", "the configuration file to use instead of the one in the user's configuration directory")
 	scheduled := flag.Bool("update", false, "update the copy installed for all users and exit, as the installer's scheduled task does")
+	now := flag.Bool("now", false, "with --update, update even while Update automatically is off, as Update now does")
+	after := flag.Int("after", 0, "wait for the process with this id to end first, as a restart does")
 	startInTray := flag.Bool(autostart.Flag, false, "start in the notification area, as the program does when it starts with the session")
 	flag.Parse()
 
 	if *scheduled {
-		return updateInstalled()
+		return updateInstalled(*now)
+	}
+	if *after > 0 {
+		waitGone(*after, 30*time.Second)
 	}
 
 	configPath, err := configLocation(*custom)
@@ -195,6 +200,7 @@ func run() error {
 		Pairing:      paired,
 		VPN:          tunnel,
 		Deployment:   "desktop",
+		Installer:    pommelPorter,
 	}
 	api = server.Handler()
 	server.StartPairing()
@@ -232,6 +238,12 @@ func run() error {
 		up = newUpdater(window, openUpdateLog(filepath.Join(filepath.Dir(configPath), "update.log")), sh.announce)
 		go up.run(ctx)
 	}
+	up.installed = installed
+	up.restart = sh.restart
+	// A Flatpak gets its new versions from the software centre.
+	if flatpak.ID() == "" {
+		server.Updates = up
+	}
 
 	app.OnShutdown(func() {
 		stop()
@@ -242,6 +254,9 @@ func run() error {
 	stopping, cancel := context.WithTimeout(context.Background(), shutdownGrace)
 	defer cancel()
 	runner.StopAll(stopping)
+	if err == nil && sh.restarting.Load() {
+		return startAgain()
+	}
 	return err
 }
 

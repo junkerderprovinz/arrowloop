@@ -52,8 +52,9 @@ func installerChoices() (string, error) {
 
 // updateInstalled is what the scheduled task runs as the system account, which
 // may write to Program Files: one update of the installed copy, without a
-// window, logged beside the switch it obeys.
-func updateInstalled() error {
+// window, logged beside the switch it obeys. "Update now" runs it with now,
+// which updates whatever the switch says.
+func updateInstalled(now bool) error {
 	dir, err := machineData()
 	if err != nil {
 		return err
@@ -71,12 +72,28 @@ func updateInstalled() error {
 		logger.Printf("update: %s is not a release build, so it does not update itself", boot.Version)
 		return nil
 	}
-	if !deskset.ReadAutoUpdate(filepath.Join(dir, machineSettingsFile)) {
+	if !now && !deskset.ReadAutoUpdate(filepath.Join(dir, machineSettingsFile)) {
 		logger.Printf("update: Update automatically is off, so this run does nothing")
 		return nil
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
-	up.once(ctx)
+	if err := up.once(ctx); err != nil {
+		logger.Printf("update: %v", err)
+	}
 	return nil
+}
+
+// updateElevated runs the installed copy's update as an administrator, which
+// is what "Update now" needs from a program under Program Files. Windows asks
+// first.
+func updateElevated() error {
+	exe, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	verb, _ := windows.UTF16PtrFromString("runas")
+	file, _ := windows.UTF16PtrFromString(exe)
+	args, _ := windows.UTF16PtrFromString("--update --now")
+	return windows.ShellExecute(0, verb, file, args, nil, windows.SW_HIDE)
 }

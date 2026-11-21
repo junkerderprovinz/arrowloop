@@ -41,8 +41,12 @@ type versions struct {
 	Go        string `json:"go"`
 	// Deployment is what kind of instance answers, as in Server.Deployment.
 	Deployment string `json:"deployment,omitempty"`
-	// NewRelease is the newer release the daily check found, if any.
+	// NewRelease is the newer release the last check found, if any.
 	NewRelease string `json:"newRelease,omitempty"`
+	// CheckedAt is when the last check asked GitHub, for "Last checked".
+	CheckedAt *time.Time `json:"checkedAt,omitempty"`
+	// Installer is the installer the desktop build ships with.
+	Installer string `json:"installer,omitempty"`
 }
 
 func currentVersions() versions {
@@ -54,8 +58,13 @@ func currentVersions() versions {
 func (s *Server) versions(w http.ResponseWriter, _ *http.Request) {
 	v := currentVersions()
 	v.Deployment = s.Deployment
+	v.Installer = s.Installer
 	s.newReleaseMu.Lock()
 	v.NewRelease = s.newRelease
+	if !s.checkedAt.IsZero() {
+		at := s.checkedAt
+		v.CheckedAt = &at
+	}
 	s.newReleaseMu.Unlock()
 	writeJSON(w, http.StatusOK, v)
 }
@@ -81,6 +90,7 @@ func (s *Server) checkUpdate(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadGateway, map[string]string{"code": code, "error": err.Error()})
 		return
 	}
+	s.found(got)
 	writeJSON(w, http.StatusOK, got)
 }
 
@@ -124,13 +134,21 @@ func (s *Server) lookForRelease(ctx context.Context) {
 		s.logf("daily update check: %v", err)
 		return
 	}
+	if got.UpdateAvailable {
+		s.logf("ArrowLoop %s is out: %s", got.Latest, got.ReleaseURL)
+	}
+	s.found(got)
+}
+
+// found keeps what a check found, so the Version card still knows after a reload.
+func (s *Server) found(got updateCheck) {
 	newer := ""
 	if got.UpdateAvailable {
 		newer = got.Latest
-		s.logf("ArrowLoop %s is out: %s", got.Latest, got.ReleaseURL)
 	}
 	s.newReleaseMu.Lock()
 	s.newRelease = newer
+	s.checkedAt = time.Now()
 	s.newReleaseMu.Unlock()
 }
 

@@ -22,7 +22,7 @@ import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { installerVersion, version, writeWindowsVersion } from './stamp.mjs'
+import { installerVersion, pommelPorterVersion, version, writeWindowsVersion } from './stamp.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const desktop = join(root, 'desktop')
@@ -112,6 +112,10 @@ function buildAppImage(exe) {
   rmSync(dir, { recursive: true, force: true })
 }
 
+// The Components card names the installer on Windows and Linux; a Mac gets a
+// disk image.
+const shipsInstaller = `-X main.pommelPorter=${pommelPorterVersion()}`
+
 console.log(`building ArrowLoop ${stamp}`)
 
 // One fixed string through a shell: Node refuses to spawn npm's .cmd without a
@@ -147,7 +151,7 @@ if (process.platform === 'win32') {
   ])
   const exe = join(bin, 'ArrowLoop.exe')
   try {
-    goBuild(exe, { goos: 'windows', goarch: arch, cgo: '0', tags: tags(), ldflags: '-H windowsgui' })
+    goBuild(exe, { goos: 'windows', goarch: arch, cgo: '0', tags: tags(), ldflags: `-H windowsgui ${shipsInstaller}` })
   } finally {
     // Go links every .syso in the package, and one left behind would end up in
     // the next build for the other architecture.
@@ -189,7 +193,7 @@ if (process.platform === 'win32') {
 } else {
   // GTK 3 and WebKitGTK 4.1, which every current distribution ships and which
   // the builds before this one already needed.
-  goBuild(join(bin, 'ArrowLoop'), { goos: 'linux', goarch: arch, cgo: '1', tags: tags(',gtk3') })
+  goBuild(join(bin, 'ArrowLoop'), { goos: 'linux', goarch: arch, cgo: '1', tags: tags(',gtk3'), ldflags: shipsInstaller })
   if (installer) {
     buildInstaller(join(bin, 'ArrowLoop'), `ArrowLoop-${arch}-installer`, { goos: 'linux', cgo: '1', tags: 'gtk3' })
   }

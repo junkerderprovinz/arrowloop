@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
 	"github.com/junkerderprovinz/arrowloop/internal/deskset"
 	"github.com/junkerderprovinz/arrowloop/internal/flatpak"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // The first check waits for the window and the schedules to settle; one a day
@@ -44,6 +46,14 @@ type updater struct {
 	// swapping is held while the program is being replaced, and by stop for
 	// good, so the process never exits halfway through a swap.
 	swapping sync.Mutex
+	// installed is the copy the installer put in place for all users, which
+	// only an elevated run can replace.
+	installed bool
+	// restart ends the program and starts it again; set by the shell.
+	restart func()
+
+	mu     sync.Mutex
+	status web.UpdateStatus
 }
 
 func newUpdater(settings *deskset.Store, logger *log.Logger, announce func(version string)) *updater {
@@ -60,7 +70,9 @@ func newUpdater(settings *deskset.Store, logger *log.Logger, announce func(versi
 	if image := appimage.Path(); image != "" {
 		u.ForAppImage(image)
 	}
-	return &updater{settings: settings, log: logger, announce: announce, u: u}
+	up := &updater{settings: settings, log: logger, announce: announce, u: u, status: web.UpdateStatus{Percent: -1}}
+	u.Progress = up.progress
+	return up
 }
 
 // openUpdateLog appends to the log at path, since a windowed program on
@@ -104,7 +116,9 @@ func (up *updater) run(ctx context.Context) {
 		case <-timer.C:
 		}
 		if up.settings.Get().AutoUpdate {
-			up.once(ctx)
+			if err := up.once(ctx); err != nil {
+				up.log.Printf("update: %v", err)
+			}
 		}
 		timer.Reset(checkEvery)
 	}
@@ -123,26 +137,25 @@ func (up *updater) follow(ctx context.Context) {
 		case <-tick.C:
 		}
 		if v := update.InstalledVersion(product); update.Newer(v, boot.Version) {
-			up.announce(v)
+			up.ready(v)
 			return
 		}
 	}
 }
 
-func (up *updater) once(ctx context.Context) {
+// once updates to the newest release, if there is a newer one.
+func (up *updater) once(ctx context.Context) error {
 	rel, err := up.u.Check(ctx)
 	if err != nil {
-		up.log.Printf("update: %v", err)
-		return
+		return err
 	}
 	if rel == nil {
 		up.log.Printf("update: no newer release")
-		return
+		return nil
 	}
 	download, err := up.u.Fetch(ctx, rel)
 	if err != nil {
-		up.log.Printf("update: not updating to %s: %v", rel.Version, err)
-		return
+		return fmt.Errorf("not updating to %s: %w", rel.Version, err)
 	}
 	defer os.Remove(download)
 
@@ -150,12 +163,90 @@ func (up *updater) once(ctx context.Context) {
 	err = up.u.Swap(download, rel)
 	up.swapping.Unlock()
 	if err != nil {
-		up.log.Printf("update: not updating to %s: %v", rel.Version, err)
-		return
+		return fmt.Errorf("not updating to %s: %w", rel.Version, err)
 	}
 	up.log.Printf("update: %s is in place and starts next time", rel.Version)
-	up.announce(rel.Version)
+	up.ready(rel.Version)
+	return nil
 }
+
+// ready records the version in place for the next start and tells the windows.
+func (up *updater) ready(version string) {
+	up.mu.Lock()
+	up.status.Ready = version
+	up.mu.Unlock()
+	up.announce(version)
+}
+
+func (up *updater) progress(done, total int64) {
+	percent := -1
+	if total > 0 {
+		percent = int(done * 100 / total)
+	}
+	up.mu.Lock()
+	up.status.Percent = percent
+	up.mu.Unlock()
+}
+
+func (up *updater) Status() web.UpdateStatus {
+	up.mu.Lock()
+	defer up.mu.Unlock()
+	return up.status
+}
+
+// Start is "Update now". The installed copy cannot write to its own folder, so
+// it asks for an elevated run of the scheduled task's update and waits for the
+// new version to show up in the uninstall entry.
+func (up *updater) Start() {
+	up.mu.Lock()
+	if up.status.Busy {
+		up.mu.Unlock()
+		return
+	}
+	up.status = web.UpdateStatus{Ready: up.status.Ready, Busy: true, Percent: -1}
+	up.mu.Unlock()
+
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
+		defer cancel()
+		var err error
+		if up.installed {
+			err = up.elevated(ctx)
+		} else {
+			err = up.once(ctx)
+		}
+		if err != nil {
+			up.log.Printf("update: %v", err)
+		}
+		up.mu.Lock()
+		up.status.Busy = false
+		if err != nil {
+			up.status.Failed = err.Error()
+		}
+		up.mu.Unlock()
+	}()
+}
+
+func (up *updater) elevated(ctx context.Context) error {
+	if err := updateElevated(); err != nil {
+		return err
+	}
+	tick := time.NewTicker(2 * time.Second)
+	defer tick.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-tick.C:
+		}
+		if v := update.InstalledVersion(product); update.Newer(v, boot.Version) {
+			up.ready(v)
+			return nil
+		}
+	}
+}
+
+func (up *updater) Restart() { up.restart() }
 
 // stop takes the swap lock and keeps it, so a swap under way finishes and none
 // starts while the program exits.

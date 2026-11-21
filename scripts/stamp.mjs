@@ -5,7 +5,7 @@
 // generated and ignored by git, so stamping it leaves the tree clean.
 
 import { execFileSync } from 'node:child_process'
-import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -97,4 +97,12 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '
     appendFileSync(process.env.GITHUB_ENV, `ARROWLOOP_VERSION=${stamp}\n`)
   }
   console.log(stamp)
+}
+
+/** The PommelPorter release the installer is built with, for the Components card. */
+export function pommelPorterVersion() {
+  const mod = readFileSync(join(root, 'desktop', 'installer', 'go.mod'), 'utf8')
+  const found = /github\.com\/junkerderprovinz\/pommelporter (v\S+)/.exec(mod)
+  if (!found) throw new Error('desktop/installer/go.mod names no PommelPorter release')
+  return found[1]
 }

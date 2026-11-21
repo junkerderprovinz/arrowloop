@@ -217,6 +217,22 @@ func TestFetchVerifiesTheChecksum(t *testing.T) {
 	}
 }
 
+func TestFetchTellsHowFarTheDownloadIs(t *testing.T) {
+	u := newUpdater(t, serve(t, release("v1.4.0").withSums(keep)), "v1.3.0")
+	var done, total int64
+	u.Progress = func(d, t int64) { done, total = d, t }
+	rel, err := u.Check(context.Background())
+	if err != nil || rel == nil {
+		t.Fatalf("check: %+v, %v", rel, err)
+	}
+	if _, err := u.Fetch(context.Background(), rel); err != nil {
+		t.Fatal(err)
+	}
+	if want := int64(len("new program v1.4.0")); done != want || total != want {
+		t.Errorf("heard %d of %d, want %d of %d", done, total, want, want)
+	}
+}
+
 func TestAnUpdateReplacesTheProgramAndIsNotFetchedTwice(t *testing.T) {
 	u := newUpdater(t, serve(t, release("v1.4.0").withSums(keep)), "v1.3.0")
 	ctx := context.Background()

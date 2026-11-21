@@ -143,3 +143,40 @@ func (s *Server) openWindow(w http.ResponseWriter, r *http.Request) {
 	s.OpenWindow()
 	writeJSON(w, http.StatusOK, map[string]bool{"opened": true})
 }
+
+// Updates is what the desktop app does about a new version of itself.
+type Updates interface {
+	Status() UpdateStatus
+	// Start fetches the newest release now and puts it in place for the next
+	// start. It returns at once; Status follows the download.
+	Start()
+	// Restart ends the program and starts the version in place.
+	Restart()
+}
+
+// UpdateStatus is where the desktop app's own update stands.
+type UpdateStatus struct {
+	// Ready is the version in place for the next start.
+	Ready string `json:"ready,omitempty"`
+	// Busy is true while an update started by hand runs.
+	Busy bool `json:"busy"`
+	// Percent is how much of the download is in, or -1 while that is unknown.
+	Percent int `json:"percent"`
+	// Failed says why the last update started by hand did not happen.
+	Failed string `json:"failed,omitempty"`
+}
+
+func (s *Server) readUpdate(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, s.Updates.Status())
+}
+
+func (s *Server) startUpdate(w http.ResponseWriter, r *http.Request) {
+	s.Updates.Start()
+	writeJSON(w, http.StatusAccepted, s.Updates.Status())
+}
+
+// restart answers before it ends the program, so the page hears it.
+func (s *Server) restart(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusAccepted, map[string]bool{"restarting": true})
+	go s.Updates.Restart()
+}
