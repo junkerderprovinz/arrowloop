@@ -1,4 +1,5 @@
 import { amount } from './anomalies.ts'
+import { capitalized } from './capitalized.ts'
 import type { TranslationKey } from './i18n.data'
 
 // Shared by the browser and the phone, so it imports nothing that needs React
@@ -40,8 +41,9 @@ const KIND: Record<string, TranslationKey> = {
 
 /**
  * A reason in the reader's language, with the values the engine wrote in
- * English worded too. A code this build has no sentence for comes from a
- * newer engine and keeps the engine's own.
+ * English worded too. A sentence may open with one of them, such as the side
+ * in German, and still starts with a capital. A code this build has no
+ * sentence for comes from a newer engine and keeps the engine's own.
  */
 export function reasonText(t: T, reason: Reason, spell: Spelling): string {
   const key = `reason.${reason.code}` as TranslationKey
@@ -60,7 +62,7 @@ export function reasonText(t: T, reason: Reason, spell: Spelling): string {
   if (reason.code === 'inFlux') vars.details = fluxDetails(t, given, spell, count) ?? given.details ?? ''
   const said = t(key, vars)
   // Both surfaces hand back the key itself for a sentence they do not have.
-  return said === key ? reason.text : said
+  return said === key ? reason.text : capitalized(said, spell.lang)
 }
 
 /** A side named by the engine, in the reader's language. */

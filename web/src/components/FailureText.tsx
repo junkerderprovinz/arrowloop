@@ -1,5 +1,5 @@
 import { sayFailure, type Failure } from '../lib/failure'
-import { useT } from '../lib/i18n'
+import { useSpelling, useT } from '../lib/i18n'
 
 /**
  * Why a run failed: the sentence in the reader's language, and under it the
@@ -7,10 +7,16 @@ import { useT } from '../lib/i18n'
  */
 export function FailureText({ raw, failure, className = '' }: { raw: string; failure?: Failure; className?: string }) {
   const { t, lang } = useT()
-  const { said, engine } = sayFailure(raw, failure, t, lang)
+  const spell = useSpelling()
+  const { said, engine, files } = sayFailure(raw, failure, t, lang, spell)
   return (
     <div className={`flex flex-col gap-1 text-subline ${className}`}>
       <p className="break-words">{said}</p>
+      {files?.map((line) => (
+        <p key={line} className="break-words">
+          {line}
+        </p>
+      ))}
       {engine && (
         <p dir="ltr" className="text-start font-mono text-carbon-textMuted [overflow-wrap:anywhere]">
           {engine}

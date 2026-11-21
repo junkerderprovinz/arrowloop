@@ -341,14 +341,14 @@ func TestCollisionsAreSkippedNotSynced(t *testing.T) {
 // The command line prints reasons with %s.
 func TestAReasonPrintsItsSentence(t *testing.T) {
 	r := because("newOnSide", "side", "left")
-	if got := fmt.Sprintf("%s", r); got != "new on the left" {
+	if got := fmt.Sprintf("%s", r); got != "The file is new on the left." {
 		t.Errorf("printed as %q", got)
 	}
-	if got := fmt.Sprintf("%v", r); got != "new on the left" {
+	if got := fmt.Sprintf("%v", r); got != "The file is new on the left." {
 		t.Errorf("printed with %%v as %q", got)
 	}
 	s := Skip{Path: "a.txt", Reason: because("changedBoth")}
-	if got := fmt.Sprintf("%s", s.Reason); got != "changed on both sides" {
+	if got := fmt.Sprintf("%s", s.Reason); got != "The file changed on both sides." {
 		t.Errorf("a skip's reason printed as %q", got)
 	}
 }

@@ -171,11 +171,11 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
 
 /** Why the last run failed, first on the screen, so it is read before Run now is pressed again. */
 function FailedBecause({ run }: { run: Run }) {
-  const { t, lang } = useT();
+  const { t, lang, spell } = useT();
   const { p, corners } = useTheme();
   return (
     <View style={[styles.failure, { backgroundColor: softOn(p.failInk, 0.15), ...corners.control }]}>
-      <Text style={[styles.failureText, { color: p.failInk }]}>{failureLine(run.Err, run.Failure, t, lang)}</Text>
+      <Text style={[styles.failureText, { color: p.failInk }]}>{failureLine(run.Err, run.Failure, t, lang, spell)}</Text>
     </View>
   );
 }

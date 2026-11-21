@@ -16,6 +16,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/rclone/rclone/fs"
 
@@ -46,44 +48,44 @@ type Reason struct {
 // reasonText is the English wording of every reason the engine gives. An
 // interface carries the same set keyed by the same codes.
 var reasonText = map[string]string{
-	"newOnSide":        "new on the {side}",
-	"changedOnSide":    "changed on the {side}",
-	"changedBothSame":  "changed on both sides to the same content",
-	"changedBoth":      "changed on both sides",
-	"deletedOnSide":    "deleted on the {side}",
-	"restoredOnSide":   "edited on the {side} after being deleted on the {other}, restoring it",
-	"renamedOnSide":    "renamed on the {side} side",
-	"collision":        "the {side} side holds {names}, which the other side may not be able to tell apart; rename one of them",
-	"settling":         "changed on the {side} side less than {period} ago, waiting for it to settle",
-	"goneBoth":         "gone on both sides, dropping the record",
-	"appearedSame":     "appeared on both sides with identical content",
-	"appearedDiffer":   "appeared on both sides with different content",
-	"dirBoth":          "on both sides",
-	"dirNewOnSide":     "new folder on the {side}",
-	"dirRemovedOnSide": "folder removed on the {side}",
-	"dirGoneBoth":      "folder gone on both sides, dropping the record",
+	"newOnSide":        "The file is new on the {side}.",
+	"changedOnSide":    "The file changed on the {side}.",
+	"changedBothSame":  "The file changed on both sides to the same content.",
+	"changedBoth":      "The file changed on both sides.",
+	"deletedOnSide":    "The file was deleted on the {side}.",
+	"restoredOnSide":   "The file was deleted on the {other} and then edited on the {side}, so it comes back.",
+	"renamedOnSide":    "The file was renamed on the {side}.",
+	"collision":        "The {side} side holds {names}, which the other side may not be able to tell apart. Rename one of them.",
+	"settling":         "The file changed on the {side} less than {period} ago. It waits until the file settles.",
+	"goneBoth":         "The file is gone on both sides, so its record is dropped.",
+	"appearedSame":     "The file appeared on both sides with the same content.",
+	"appearedDiffer":   "The file appeared on both sides with different content.",
+	"dirBoth":          "The folder is on both sides.",
+	"dirNewOnSide":     "The folder is new on the {side}.",
+	"dirRemovedOnSide": "The folder was removed on the {side}.",
+	"dirGoneBoth":      "The folder is gone on both sides, so its record is dropped.",
 
 	// Reasons found while running rather than while deciding. They carry the
 	// backend's own error as a value.
-	"stepFailed":      "{what} failed, leaving it for the next run: {error}",
-	"removeDirFailed": "could not remove the folder, leaving it: {error}",
-	"heldOpen":        "held open by another program on the {side} side, waiting for it to be closed",
-	"heldOpenDuring":  "held open by another program while {what} was running, leaving it for the next run: {error}",
-	"heldOpenAdmin":   "held open by another program on the {side} side; running with administrator rights, as a service, ArrowLoop would copy it from a shadow copy",
-	"snapshotFailed":  "held open by another program on the {side} side, and no shadow copy could be taken to read it from: {error}",
-	"unverified":      "{what} finished, but the {side} side could not produce a checksum and this job insists on one; leaving it for the next run",
-	"changedDuring":   "changed on the {side} side while this run was going, leaving it for the next run",
-	"inFlux":          "was being written on the {side} side while it was copied, in {runs} runs in a row, leaving it for the next run. {details}",
-	"unsupported":     "{kind} on the {side} side, which this engine does not carry",
-	"cloudOnly":       "{what} failed because the file is only a placeholder of a cloud client, which could not download it. Keep it on this device in the cloud client. Leaving it for the next run: {error}",
-	"sealed":          "locked on the {side} side: OneDrive hands its Personal Vault to no app, so this folder is left out",
-	"unreadable":      "could not be read on the {side} side, so this run leaves the folder alone on both sides",
-	"vanished":        "disappeared from the {side} side while it was being read, so this run leaves the folder alone on both sides",
-	"recordFailed":    "the record could not be written, leaving it for the next run: {error}",
-	"oneWay":          "this job only writes away from the {side}, so the {side} version is the one that stands",
-	"mirror":          "not on the {side}, which this job mirrors",
-	"conflictGone":    "one of the two versions is gone, so there is nothing left to decide",
-	"takenBack":       "taken back from the {side}, after a safety brake refused the change",
+	"stepFailed":      "{what} failed: {error}. The next run tries again.",
+	"removeDirFailed": "The folder could not be removed: {error}. It stays where it is.",
+	"heldOpen":        "Another program holds the file open on the {side}. It waits until the file is closed.",
+	"heldOpenDuring":  "{what} failed because another program held the file open: {error}. The next run tries again.",
+	"heldOpenAdmin":   "Another program holds the file open on the {side}. Running as a service with administrator rights, ArrowLoop would copy it from a shadow copy.",
+	"snapshotFailed":  "Another program holds the file open on the {side}, and no shadow copy could be made to read it from: {error}.",
+	"unverified":      "{what} finished, but there is no checksum on the {side}, and this job insists on one. The next run tries again.",
+	"changedDuring":   "The file changed on the {side} while this run was going. The next run tries again.",
+	"inFlux":          "The file was being written on the {side} while it was copied, in {runs} runs in a row. It waits for the next run. {details}",
+	"unsupported":     "On the {side} there is {kind}, which this engine does not carry.",
+	"cloudOnly":       "{what} failed because the file is only a placeholder of a cloud client, which could not download it: {error}. Keep the file on this device in the cloud client. The next run tries again.",
+	"sealed":          "The folder is locked on the {side}. OneDrive hands its Personal Vault to no app, so the folder is left out.",
+	"unreadable":      "The folder could not be read on the {side}, so this run leaves it alone on both sides.",
+	"vanished":        "The folder disappeared from the {side} while it was being read, so this run leaves it alone on both sides.",
+	"recordFailed":    "The record could not be written: {error}. The next run tries again.",
+	"oneWay":          "This job only copies what is on the {side} to the other side, so the version on the {side} stands.",
+	"mirror":          "The file is not on the {side}, which this job mirrors.",
+	"conflictGone":    "One of the two versions is gone, so there is nothing left to decide.",
+	"takenBack":       "The version on the {side} is copied back, since a safety brake refused the change.",
 }
 
 // String is the English sentence, so %s and %v print the sentence rather than
@@ -96,7 +98,8 @@ func Because(code string, pairs ...string) Reason { return because(code, pairs..
 
 // because builds a reason from a code and alternating keys and values. A code
 // without wording falls back to the code itself, so a missing sentence shows
-// instead of printing nothing.
+// instead of printing nothing. A sentence that opens with a value, such as
+// the step that failed, starts with a capital all the same.
 func because(code string, pairs ...string) Reason {
 	vars := make(map[string]string, len(pairs)/2)
 	for i := 0; i+1 < len(pairs); i += 2 {
@@ -104,9 +107,14 @@ func because(code string, pairs ...string) Reason {
 	}
 	template, worded := reasonText[code]
 	if !worded || template == "" {
-		template = code
+		return Reason{Code: code, Vars: vars, Text: code}
 	}
-	return Reason{Code: code, Vars: vars, Text: fill(template, vars)}
+	return Reason{Code: code, Vars: vars, Text: capitalized(fill(template, vars))}
+}
+
+func capitalized(text string) string {
+	first, size := utf8.DecodeRuneInString(text)
+	return string(unicode.ToUpper(first)) + text[size:]
 }
 
 // fill substitutes {name} for the value of name.

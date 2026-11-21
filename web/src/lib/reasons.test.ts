@@ -83,3 +83,54 @@ describe('the words the engine writes into a reason', () => {
     }
   })
 })
+
+describe('the sentences the reasons are written in', () => {
+  const sample: Record<string, string> = {
+    side: 'left',
+    other: 'right',
+    names: 'a.txt, A.txt',
+    period: '5s',
+    seconds: '5',
+    what: 'copy',
+    kind: 'named pipe',
+    error: 'E',
+    runs: '3',
+    details: '',
+  }
+  const codes = Object.keys(reasons)
+
+  it.each(codes)('%s is a whole English sentence in the engine and in the table', (code) => {
+    const key = `reason.${code}` as TranslationKey
+    for (const text of [reasons[code], en[key]]) {
+      expect(text, text).toMatch(/^(\{\w+\}|[A-Z])/)
+      expect(text, text).toMatch(/(\.|\{details\})$/)
+    }
+  })
+
+  // A sentence may open with a word the engine puts in, which then has to
+  // stand with a capital like any other start.
+  it.each(Object.entries(allLocales))('starts every reason with a capital in %s', (lang, table) => {
+    const t = translator(table)
+    for (const code of codes) {
+      const said = reasonText(t, { code, vars: sample, text: '' }, spell(lang))
+      const first = said.charAt(0)
+      expect(first, `${lang} ${code}: ${said}`).toBe(first.toLocaleUpperCase(lang))
+    }
+  })
+
+  // Japanese and Chinese run words together, so a space beside an inserted
+  // value shows as a gap in the middle of the sentence.
+  it.each(['ja', 'zh'])('joins every inserted value without a space in %s', (lang) => {
+    for (const [key, text] of Object.entries(allLocales[lang]!)) {
+      if (!key.startsWith('reason.') && !key.startsWith('failure.left')) continue
+      expect(text, `${lang} ${key}`).not.toMatch(/ \{\w+\}|\{\w+\} /)
+    }
+  })
+
+  it('attaches the particle to an inserted value in Korean', () => {
+    for (const [key, text] of Object.entries(allLocales.ko!)) {
+      if (!key.startsWith('reason.')) continue
+      expect(text, key).not.toMatch(/\{\w+\} (은|는|이|가|을|를|에|에서|의|와|과|로|으로)/)
+    }
+  })
+})

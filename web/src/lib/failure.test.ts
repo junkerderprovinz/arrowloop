@@ -73,6 +73,36 @@ describe('a failed run in words', () => {
     })
   })
 
+  const pipe = {
+    path: 'status.fifo',
+    code: 'unsupported',
+    vars: { kind: 'named pipe', side: 'left' },
+    text: 'On the left there is named pipe, which this engine does not carry.',
+  }
+  const twiceRaw = `left for later in two runs in a row: status.fifo (${pipe.text}); and 2 more`
+
+  it('says the files left for later twice in the language, from their codes', () => {
+    const failure = { code: 'leftTwice', params: { output: `status.fifo (${pipe.text}); and 2 more` }, twice: { files: [pipe], more: 2 } }
+    expect(sayFailure(twiceRaw, failure, tIn(de), 'de')).toEqual({
+      said: de['failure.leftTwice'],
+      files: [
+        'status.fifo: Links liegt eine benannte Pipe. So etwas nimmt dieser Dienst nicht mit.',
+        'Weitere liegen gelassene Dateien: 2.',
+      ],
+    })
+    expect(failureLine(twiceRaw, failure, tIn(de), 'de')).toBe(
+      `${de['failure.leftTwice']} status.fifo: Links liegt eine benannte Pipe. So etwas nimmt dieser Dienst nicht mit. Weitere liegen gelassene Dateien: 2.`,
+    )
+  })
+
+  it("keeps the engine's English for a file whose reason this build has no words for", () => {
+    const newer = { path: 'odd.bin', code: 'fromTheFuture', text: 'A reason from a newer engine.' }
+    const failure = { code: 'leftTwice', twice: { files: [newer] } }
+    // Both surfaces hand back the key itself for a sentence they do not have.
+    const t: Translate = (key, vars) => (key in de ? tIn(de)(key, vars) : key)
+    expect(sayFailure(twiceRaw, failure, t, 'de').files).toEqual(['odd.bin: A reason from a newer engine.'])
+  })
+
   it("shows an error it has no words for as the engine's own, under a lead", () => {
     expect(sayFailure('something nobody planned for', undefined, tIn(de), 'de')).toEqual({
       said: 'Meldung des Motors:',
