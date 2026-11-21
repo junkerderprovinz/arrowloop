@@ -139,6 +139,14 @@ export function vpnFieldHint(t: Translate, provider: string, field: VpnField, na
   return key && t(key, { name })
 }
 
+/**
+ * What the form of a VPN set up says about the login it keeps. A stored .conf
+ * never comes back into its field, which would otherwise read as lost.
+ */
+export function vpnKeepHint(t: Translate, fields: readonly VpnField[]): string {
+  return t(fields.includes('config') ? 'vpn.keepSavedConfig' : 'vpn.keepSaved')
+}
+
 /** What a provider's login needs said before it is entered. */
 export const VPN_NOTES: Partial<Record<string, TranslationKey>> = {
   kaspersky: 'vpn.note.kaspersky',

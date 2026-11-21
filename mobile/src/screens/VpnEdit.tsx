@@ -16,6 +16,7 @@ import {
   VPN_NOTES,
   vpnFieldHint,
   vpnFilled,
+  vpnKeepHint,
   vpnRefusal,
   type VpnField,
   type VpnState,
@@ -99,7 +100,7 @@ export function VpnEdit() {
       </View>
       <Caption>{t("vpn.formHint", { name })}</Caption>
       {note ? <Body>{t(note, { name })}</Body> : null}
-      {tunnel ? <Body muted>{t("vpn.keepSaved")}</Body> : null}
+      {tunnel ? <Body muted>{vpnKeepHint(t, provider.fields)}</Body> : null}
 
       <Section title={provider.name}>
         {provider.fields.map((f) => (
@@ -111,7 +112,7 @@ export function VpnEdit() {
               onChange={(v) => set(f, v)}
               secret={VPN_FIELDS[f].secret}
               multiline={f === "config"}
-              placeholder={f === "config" ? CONFIG_EXAMPLE : undefined}
+              placeholder={f !== "config" ? undefined : tunnel ? t("vpn.field.configSaved") : CONFIG_EXAMPLE}
               hidePlaceholderOnFocus={f === "config"}
               error={missing === f ? t("vpn.field.missing") : undefined}
             />

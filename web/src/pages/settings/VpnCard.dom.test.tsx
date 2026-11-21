@@ -174,6 +174,17 @@ describe('the VPN card', () => {
     await waitFor(() => expect(calls.save).toEqual([['mullvad-2', { accountNumber: '1234' }]]))
   })
 
+  it('shows that a WireGuard configuration is saved, which an empty field would hide', async () => {
+    state = stateWith(tunnel('custom', 'custom', { place: 'home.example' }))
+    render(<VpnCard hueIndex={0} />)
+    fireEvent.click(within(await screen.findByRole('group', { name: 'WireGuard (home.example)' })).getByRole('button', { name: 'Change login' }))
+    const form = await screen.findByRole('dialog')
+    expect(within(form).getByText('Your WireGuard configuration is saved. It stays until you choose or paste a new one.')).toBeTruthy()
+    const conf = within(form).getByLabelText('WireGuard configuration') as HTMLTextAreaElement
+    expect(conf.value).toBe('')
+    expect(conf.placeholder).toBe('Saved')
+  })
+
   it("says a server name that was not found in the reader's words and keeps the engine's on hover", async () => {
     state = stateWith(tunnel('custom', 'custom', { status: 'failed', error: unresolved, errorCode: 'vpn-name-unresolved' }))
     render(<VpnCard hueIndex={0} />)

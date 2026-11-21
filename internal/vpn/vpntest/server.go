@@ -2,10 +2,14 @@ package vpntest
 
 import (
 	"fmt"
+	"io"
+	"net"
 	"net/http"
 	"net/netip"
 	"strings"
+	"sync"
 	"testing"
+	"time"
 
 	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
@@ -28,7 +32,8 @@ type Server struct {
 	ClientKey vpn.Key
 	Port      uint16
 
-	dev *device.Device
+	dev  *device.Device
+	tnet *netstack.Net
 }
 
 // Start runs a server on a free UDP port of loopback that serves h inside the
@@ -48,6 +53,7 @@ func Start(t testing.TB, h http.Handler) *Server {
 	if err != nil {
 		t.Fatal(err)
 	}
+	s.tnet = tnet
 	s.dev = device.NewDevice(tdev, conn.NewDefaultBind(), device.NewLogger(device.LogLevelSilent, ""))
 	pub := ck.PublicKey()
 	uapi := fmt.Sprintf("private_key=%x\nlisten_port=0\npublic_key=%x\nallowed_ip=%s/32\n", sk[:], pub[:], ClientAddr)
@@ -82,3 +88,60 @@ func (s *Server) Config() string {
 
 // Close stops the server, as a provider's server that goes away.
 func (s *Server) Close() { s.dev.Close() }
+
+// Listen takes TCP connections on port of the server's tunnel address, for a
+// server other than the HTTP one.
+func (s *Server) Listen(t testing.TB, port uint16) net.Listener {
+	t.Helper()
+	ln, err := s.tnet.ListenTCPAddrPort(netip.AddrPortFrom(ServerAddr, port))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { ln.Close() })
+	return ln
+}
+
+// Hangup stands in for a server whose protocol a test does not speak: it
+// keeps the first bytes of every connection and hangs up.
+type Hangup struct {
+	mu    sync.Mutex
+	heard [][]byte
+}
+
+// HangUp answers every connection on ln until ln is closed.
+func HangUp(ln net.Listener) *Hangup {
+	h := &Hangup{}
+	go func() {
+		for {
+			c, err := ln.Accept()
+			if err != nil {
+				return
+			}
+			go h.take(c)
+		}
+	}()
+	return h
+}
+
+func (h *Hangup) take(c net.Conn) {
+	defer c.Close()
+	_ = c.SetReadDeadline(time.Now().Add(5 * time.Second))
+	got := make([]byte, 8)
+	n, _ := io.ReadFull(c, got)
+	h.mu.Lock()
+	h.heard = append(h.heard, got[:n])
+	h.mu.Unlock()
+}
+
+// Heard is what each connection began with, in the order they came.
+func (h *Hangup) Heard() [][]byte {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	return append([][]byte(nil), h.heard...)
+}
+
+// SMB reports whether a connection began with an SMB request, which comes
+// behind the four bytes that frame it on TCP.
+func SMB(first []byte) bool {
+	return len(first) == 8 && (first[4] == 0xfe || first[4] == 0xff) && string(first[5:8]) == "SMB"
+}

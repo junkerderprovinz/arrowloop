@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { en } from "../../web/src/lib/i18n.data.ts";
-import { VPN_PROVIDERS, type VpnState, type VpnTunnelState } from "../../web/src/lib/vpn.ts";
+import { VPN_PROVIDERS, vpnKeepHint, type VpnState, type VpnTunnelState } from "../../web/src/lib/vpn.ts";
 import {
   jobsThrough,
   markXml,
@@ -151,4 +151,9 @@ test("a wordmark keeps its aspect at a height and is held to the most it may tak
   const mark = { svg: '<svg viewBox="0 0 100 20"></svg>' };
   assert.equal(wordmarkWidth(mark, 10, 112), 50);
   assert.equal(wordmarkWidth(mark, 26, 112), 112);
+});
+
+test("a VPN set up from a .conf says its configuration stays until another replaces it", () => {
+  assert.equal(vpnKeepHint(t, ["config"]), en["vpn.keepSavedConfig"]);
+  assert.equal(vpnKeepHint(t, ["accountNumber", "location"]), en["vpn.keepSaved"]);
 });

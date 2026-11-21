@@ -23,6 +23,7 @@ import {
   vpnFailure as failureOf,
   vpnFieldHint,
   vpnFilled,
+  vpnKeepHint,
   vpnRefusal,
   type VpnField,
   type VpnProviderState,
@@ -363,12 +364,13 @@ function VpnForm({
           <VpnMark id={p.id} />
         </span>
         {note && <p className="text-subline text-carbon-textSub">{t(note, { name })}</p>}
-        {tunnel && <p className="text-meta text-carbon-textSub">{t('vpn.keepSaved')}</p>}
+        {tunnel && <p className="text-meta text-carbon-textSub">{vpnKeepHint(t, p.fields)}</p>}
         {p.fields.map((f) => (
           <div key={f} className="flex flex-col gap-1.5">
             {f === 'config' ? (
               <ConfigField
                 hint={vpnFieldHint(t, p.id, 'config', name) ?? ''}
+                saved={!!tunnel}
                 value={values.config ?? ''}
                 onValue={(v) => set('config', v)}
               />
@@ -395,8 +397,8 @@ function VpnForm({
   )
 }
 
-/** A .conf file, picked or pasted. */
-function ConfigField({ hint, value, onValue }: { hint: string; value: string; onValue: (v: string) => void }) {
+/** A .conf file, picked or pasted. One saved already never comes back into the field. */
+function ConfigField({ hint, saved, value, onValue }: { hint: string; saved: boolean; value: string; onValue: (v: string) => void }) {
   const { t } = useT()
   const file = useRef<HTMLInputElement>(null)
   const label = t('vpn.field.config')
@@ -415,7 +417,7 @@ function ConfigField({ hint, value, onValue }: { hint: string; value: string; on
         spellCheck={false}
         aria-label={label}
         value={value}
-        placeholder={'[Interface]\nPrivateKey = …\nAddress = 10.0.0.2/32\n\n[Peer]\nPublicKey = …\nEndpoint = vpn.example.net:51820'}
+        placeholder={saved ? t('vpn.field.configSaved') : '[Interface]\nPrivateKey = …\nAddress = 10.0.0.2/32\n\n[Peer]\nPublicKey = …\nEndpoint = vpn.example.net:51820'}
         onChange={(e) => onValue(e.target.value)}
         className={`w-full resize-y bg-carbon-surface2 px-3 py-2 font-mono text-meta text-carbon-text outline-none transition placeholder:text-(--field-placeholder) ${FIELD_FOCUS}`}
         style={{ borderRadius: 'var(--radius-control)' }}
