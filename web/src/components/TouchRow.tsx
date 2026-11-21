@@ -74,8 +74,11 @@ export function TouchRow({ touch: e, withJob, columns }: { touch: Touch; withJob
           </span>
         )}
         <span className="flex min-w-0 shrink-0 items-center gap-1">
+          {/* The badge sets its words at line-height 1, and a label cut at its
+              end clips to that line, so it takes a taller one for the
+              descenders. */}
           <Badge tone={touchTone(e)} wrap={!columns} className={columns ? 'min-w-0 max-w-full' : ''}>
-            {columns ? <span className="truncate">{label}</span> : label}
+            {columns ? <span className="truncate leading-tight">{label}</span> : label}
           </Badge>
           {sides && !on && (
             <span className="flex shrink-0 text-carbon-textMuted" title={translateSide(t, toward)}>
