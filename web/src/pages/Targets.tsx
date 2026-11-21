@@ -57,7 +57,7 @@ import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
 import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from '../lib/kdriveRoot'
 import { ToggleRow } from '../components/ToggleRow'
 import { SecretRow } from './settings/rows'
-import { failureLine } from '../lib/failure'
+import { failureLine, type Failure } from '../lib/failure'
 import { CERTIFICATE_KEY, type RefusedCertificate } from '../lib/certificate'
 import { anySaved } from '../lib/savedSettings'
 
@@ -521,7 +521,7 @@ function useRemoteForm({
   existing?: Remote
   onDone: (saved: boolean) => void
 }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const push = useToast()
   const provider = existing ? edited : (picked?.provider ?? null)
   const preset = provider?.preset
@@ -610,7 +610,8 @@ function useRemoteForm({
       setChecking(true)
       try {
         const answer = await api.checkRemote(saved)
-        if (!answer.ok) push(t('targets.savedButUnreachable', { reason: answer.reason ?? '' }), 'fail')
+        if (!answer.ok)
+          push(t('targets.savedButUnreachable', { reason: failureLine(answer.reason ?? '', answer.failure, t, lang) }), 'fail')
       } catch {
         // A check that could not run says nothing about the target.
       } finally {
@@ -620,8 +621,9 @@ function useRemoteForm({
     } catch (e) {
       setUnsaved((n) => n + 1)
       // The test is where the form asks the question the save is waiting for.
-      if ((e as { code?: string }).code === 'setup-question') void tryIt()
-      else push((e as Error).message, 'fail')
+      const { code, failure } = e as { code?: string; failure?: Failure }
+      if (code === 'setup-question') void tryIt()
+      else push(failure ? failureLine((e as Error).message, failure, t, lang) : (e as Error).message, 'fail')
     } finally {
       setBusy(false)
     }

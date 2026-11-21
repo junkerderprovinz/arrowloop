@@ -1,6 +1,7 @@
 package web_test
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -9,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	_ "github.com/rclone/rclone/backend/jottacloud"
 	_ "github.com/rclone/rclone/backend/s3"
 	_ "github.com/rclone/rclone/backend/sftp"
 	_ "github.com/rclone/rclone/backend/smb"
@@ -362,6 +364,39 @@ func TestACheckThatFailsNamesTheKindOfFailure(t *testing.T) {
 		if got.Failure == nil || got.Failure.Code != failure.Unreachable {
 			t.Errorf("%s: failure = %+v for %q, want %s", path, got.Failure, got.Reason, failure.Unreachable)
 		}
+	}
+}
+
+// A save signs in where the backend's setup does, and a sign-in that is
+// refused says so as the test of the same settings would.
+func TestASaveWhoseSignInIsRefusedNamesTheKindOfFailure(t *testing.T) {
+	h := newHarness(t)
+	withRcloneConfig(t)
+
+	jotta := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			json.NewEncoder(w).Encode(map[string]string{"token_endpoint": "http://" + r.Host + "/token"})
+			return
+		}
+		http.Error(w, `{"error":"invalid_grant"}`, http.StatusUnauthorized)
+	}))
+	defer jotta.Close()
+	login, _ := json.Marshal(map[string]string{"username": "me", "auth_token": "wrong", "well_known_link": jotta.URL})
+	token := base64.RawURLEncoding.EncodeToString(login)
+
+	resp, said := h.put(t, "/api/remotes/jotta?new=1", `{"type":"jottacloud","settings":{"token":`+quote(token)+`}}`)
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("a refused sign-in saved with %s %s", resp.Status, said)
+	}
+	var got struct {
+		Error   string           `json:"error"`
+		Failure *failure.Failure `json:"failure"`
+	}
+	if err := json.Unmarshal([]byte(said), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.Error == "" || got.Failure == nil || got.Failure.Code != failure.SignInFailed {
+		t.Errorf("the save answered %s, want the error with the failure %s", said, failure.SignInFailed)
 	}
 }
 

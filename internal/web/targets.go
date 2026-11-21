@@ -142,9 +142,11 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Has("new") {
 		save = remotes.Create
 	}
+	// A setup that signs in fails the way a test of the same settings does,
+	// and says so in the same terms.
 	settings, question, err := remotes.Setup(r.Context(), body.Type, body.Settings)
 	if err != nil {
-		writeError(w, http.StatusBadRequest, err)
+		writeJSON(w, http.StatusBadRequest, map[string]any{"error": err.Error(), "failure": failure.Of(err.Error())})
 		return
 	}
 	if question != nil {

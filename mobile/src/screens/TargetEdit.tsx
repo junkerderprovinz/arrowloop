@@ -217,6 +217,7 @@ export function TargetEdit() {
     } catch (e) {
       // The test is where the form asks the question the save is waiting for.
       if (e instanceof EngineError && e.status === 422) void tryIt();
+      else if (e instanceof EngineError && e.failure) setError(failureLine(e.message, e.failure, t, lang));
       else setError((e as Error).message);
     } finally {
       setSaving(false);

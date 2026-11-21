@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { Backend, CheckAnswer, Provider, Remote } from '../lib/api'
+import { en } from '../lib/i18n.data'
 import { ToastProvider } from '../lib/toast'
 
 globalThis.ResizeObserver ??= class {
@@ -206,6 +207,17 @@ describe('an account that signs in with a two-factor code', () => {
     await waitFor(() => expect(verdict.className).toMatch(/glim-shake/))
     fireEvent.focus(verdict)
     expect(await screen.findByText(/two-factor code was not accepted/)).toBeTruthy()
+  })
+})
+
+describe('a save whose sign-in is refused', () => {
+  it("says so once in the reader's words instead of rclone's", async () => {
+    const said = 'login failed: failed to access: access: Wrong login credentials (status 401)'
+    saveRemote.mockImplementation(() => Promise.reject(Object.assign(new Error(said), { failure: { code: 'signInFailed' } })))
+    const dialog = await add('Internxt')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    expect(await screen.findAllByText(en['failure.signInFailed'], { selector: '.glim-toast-message' })).toHaveLength(1)
+    expect(screen.queryByText(said, { selector: '.glim-toast-message' })).toBeNull()
   })
 })
 
