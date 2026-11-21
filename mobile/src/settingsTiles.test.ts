@@ -63,7 +63,7 @@ test("each card of the phone's settings page lands on the tile the web keeps it 
   assert.deepEqual(on("general"), ["thisPhone", "engine", "backup", "autoBackup", "danger"]);
   assert.deepEqual(on("look"), ["language", "appearance", "motion"]);
   assert.deepEqual(on("apps"), ["server", "desktop"]);
-  assert.deepEqual(on("info"), ["problems", "about"]);
+  assert.deepEqual(on("info"), ["version", "components", "help", "about"]);
   assert.deepEqual(on("integrations"), ["integrations"]);
 });
 

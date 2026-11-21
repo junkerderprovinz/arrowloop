@@ -34,6 +34,7 @@ export const PAYPAL_GIVING = {
 export const REPO = "https://github.com/junkerderprovinz/arrowloop";
 export const GLIMSTONE_REPO = "https://github.com/junkerderprovinz/glimstone";
 export const RCLONE_REPO = "https://github.com/rclone/rclone";
+export const POMMELPORTER_REPO = "https://github.com/junkerderprovinz/pommelporter";
 /** The handbook, built from docs/ by mkdocs. */
 export const MANUAL = "https://junkerderprovinz.github.io/arrowloop/";
 export const DISCORD = "https://discord.gg/XpMW5dgVRa";

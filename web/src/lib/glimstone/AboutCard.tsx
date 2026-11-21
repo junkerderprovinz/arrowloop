@@ -1,18 +1,37 @@
-import { Fragment, useState, type ReactNode } from "react";
-import { mailHref, offersDiscord, offersMail, openInBrowser, runUpdateCheck, updateFace, updateStage, versionLink, type OpenUrl, type UpdateCheck, type UpdateVerdict, type VersionRow } from "../infoTile.ts";
+import type { ReactNode } from "react";
+import {
+  autoSwitch,
+  checkButton,
+  componentRows,
+  designRow,
+  numberLink,
+  updateAction,
+  updateLine,
+  whatsNewLabel,
+  withApp,
+  type ComponentRow,
+  type ComponentsCardText,
+  type UpdateRoute,
+  type UpdateState,
+  type VersionCardText,
+} from "@glimstone/core";
+import { mailHref, offersDiscord, offersMail, openInBrowser, versionLink, type OpenUrl, type VersionRow } from "../infoTile.ts";
 import { Button } from "./Button.tsx";
 import { Card } from "./Card.tsx";
 import { InfoBubble } from "./InfoBubble.tsx";
 import { ReadmeButton } from "./ReadmeButton.tsx";
+import { Toggle } from "./Toggle.tsx";
+import { GLIMSTONE_VERSION } from "./version.ts";
 
 // The Info tile, the last tile in Settings ("The Info tile and the About card"
-// in design-language.md): the Version card with every version the app is made
-// of and one button to its release notes and changes, the Help card with the
-// ways to report something, and the About card with the maker's sentence and
-// the give row. Each sentence sits directly above the buttons it asks for, and
-// no card names a route no control on it can reach. Every string is passed in.
+// in design-language.md): the Version card with the app, where its updates
+// stand and what this version brought, the Components card with everything
+// else that carries a number, the Help card with the ways to report something,
+// and the About card with the maker's sentence and the give row. Every string
+// is passed in, and a sentence that names the app takes it from `name`.
 
-export type { UpdateCheck, VersionRow } from "../infoTile.ts";
+export type { ComponentRow, ComponentsCardText, UpdateRoute, UpdateState, VersionCardText } from "@glimstone/core";
+export type { VersionRow } from "../infoTile.ts";
 
 export interface InfoAboutCardProps {
   text: {
@@ -93,111 +112,189 @@ export function InfoAboutCard({
 }
 
 export interface InfoVersionCardProps {
-  text: {
-    title: string;
-    /** The card's "(i)", such as what a click on a number opens. */
-    hint?: string;
-    unreleased: (version: string) => string;
-    /** "Release notes". Only drawn with `onReleaseNotes` and without `whatsNew`. */
-    releaseNotes?: string;
-  };
-  /** The app first, then the design language, then every component it ships.
-   *  `hint` is what the component is, behind an (i) beside the name. */
-  rows: (VersionRow & { hint?: string })[];
-  /** "Check for updates" at the bottom of the card. Omit it and the card
-   *  offers no check. */
-  updateCheck?: UpdateCheck;
-  /** How the app updates itself, such as a switch for automatic updates,
-   *  drawn under the app's own row, the first. */
-  settings?: ReactNode;
-  /** Opens the app's window on the running version's release notes, for an
-   *  app that marks no changes. */
-  onReleaseNotes?: () => void;
-  /** The app's own "New · n" button, wearing `IconWhatsNew` with the dot in
-   *  front. It takes the place of "Release notes", so the card has one button there. */
-  whatsNew?: ReactNode;
+  /** `componentText(lang).versionCard`, or the app's own words in its shape. */
+  text: VersionCardText;
+  /** The app's name, which fills "{app}" in the card's sentences. */
+  name: string;
+  /** Read from the build, never typed in. */
+  version: string;
+  /** The repository whose newest release the number opens. */
+  repoUrl?: string;
+  /** How the app gets a new version, which decides the one action. */
+  route: UpdateRoute;
+  /** Where the updates stand. The app finds out; the card shows it. */
+  state: UpdateState;
+  /** "Check for updates". A store app passes none. */
+  onCheck?: () => void;
+  /** Fetches and installs the new version, or leads to the host's plugin page. */
+  onUpdate?: () => void;
+  /** Starts the downloaded version. */
+  onRestart?: () => void;
+  /** Where a container's update instructions live. */
+  guideUrl?: string;
+  /** Opens the app's window of what changed, a card per release with its notes. */
+  onWhatsNew: () => void;
+  /** How many marked changes are still unseen. */
+  unseen?: number;
+  /** The switch under the state. Left out, the card draws none. */
+  autoUpdate?: boolean;
+  onAutoUpdateChange?: (on: boolean) => void;
   openUrl?: OpenUrl;
   hueIndex?: number;
 }
 
-/** The first card: every version as a row, and the New or Release notes button and the update check under them. */
+/**
+ * The first card: the app's name and version, the switch, and a last row with
+ * where the updates stand at its start and the buttons at its end: "What's
+ * new", "Check for updates" while there is something to look for, and the one
+ * action once there is something to do.
+ */
 export function InfoVersionCard({
   text,
-  rows,
-  updateCheck,
-  settings,
-  onReleaseNotes,
-  whatsNew,
+  name,
+  version,
+  repoUrl,
+  route,
+  state,
+  onCheck,
+  onUpdate,
+  onRestart,
+  guideUrl,
+  onWhatsNew,
+  unseen = 0,
+  autoUpdate,
+  onAutoUpdateChange,
   openUrl = openInBrowser,
   hueIndex,
 }: InfoVersionCardProps) {
-  const notes = !whatsNew && onReleaseNotes && text.releaseNotes;
+  const face = updateLine(state, text);
+  const action = updateAction(route, state, text);
+  const toggle = autoSwitch(route, text);
+  const check = checkButton(route, state);
+  const press = () => {
+    if (action?.kind === "restart") onRestart?.();
+    else if (action?.kind === "guide") guideUrl && openUrl(guideUrl);
+    else onUpdate?.();
+  };
   return (
-    <Card data-glim="InfoVersionCard" title={text.title} hint={text.hint} hueIndex={hueIndex}>
+    <Card data-glim="InfoVersionCard" title={text.title} hint={withApp(text.hint, name)} hueIndex={hueIndex}>
+      <div className="glim-version-head">
+        <span className="glim-version-app">{name}</span>
+        <VersionNumber row={{ name, version, repoUrl }} unreleased={text.unreleased} openUrl={openUrl} />
+      </div>
+      {toggle && autoUpdate !== undefined && (
+        <SwitchRow label={toggle.label} hint={withApp(toggle.hint, name)} checked={autoUpdate} onChange={(on) => onAutoUpdateChange?.(on)} />
+      )}
+      {state.kind === "downloading" && (
+        <div className="glim-version-progress" role="progressbar" aria-label={face.line} aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.percent}>
+          <span style={{ width: `${state.percent}%` }} />
+        </div>
+      )}
+      <div className="glim-version-foot">
+        <p className="glim-version-state" data-tone={face.tone} role="status">
+          <span className="glim-version-line">{face.line}</span>
+          {face.note && <span className="glim-version-note">{face.note}</span>}
+        </p>
+        <div className="glim-version-actions">
+          <Button
+            label={whatsNewLabel(text, unseen)}
+            labelKey="version.whatsNew"
+            before={<span className="glim-version-dot" data-unseen={unseen > 0 ? "" : undefined} aria-hidden="true" />}
+            onClick={onWhatsNew}
+          />
+          {check && onCheck && <Button label={text.check} labelKey="version.check" busy={check.busy} disabled={check.busy} onClick={onCheck} />}
+          {action && <Button label={action.label} labelKey={action.labelKey} tone={action.kind === "guide" ? "neutral" : "accent"} onClick={press} />}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export interface InfoComponentsCardProps {
+  /** `componentText(lang).componentsCard`, or the app's own words in its shape. */
+  text: ComponentsCardText;
+  /** The app's name, which fills "{app}" in the card's sentences. */
+  name: string;
+  /** The app's own parts, the programs it brings along and, for a desktop
+   *  build, its installer. The card adds the design language and sorts them. */
+  rows: ComponentRow[];
+  /** The switch for updating the components. Left out, the card draws none. */
+  autoUpdate?: boolean;
+  onAutoUpdateChange?: (on: boolean) => void;
+  /** "Update components" at the foot of the card. Omit it where the app updates none. */
+  onUpdate?: () => void;
+  updating?: boolean;
+  openUrl?: OpenUrl;
+  hueIndex?: number;
+}
+
+/**
+ * The second card: every version the app is made of or brings along, as plain
+ * numbers in a fixed order, with a status and one action on a row that needs one.
+ */
+export function InfoComponentsCard({
+  text,
+  name,
+  rows,
+  autoUpdate,
+  onAutoUpdateChange,
+  onUpdate,
+  updating = false,
+  openUrl = openInBrowser,
+  hueIndex,
+}: InfoComponentsCardProps) {
+  // The design language's number is the one these copied files carry.
+  const design = { ...designRow(text), version: GLIMSTONE_VERSION };
+  return (
+    <Card data-glim="InfoComponentsCard" title={text.title} hint={withApp(text.hint, name)} hueIndex={hueIndex}>
       <ul className="glim-version-rows">
-        {rows.map((row, i) => (
-          <Fragment key={row.name}>
-            <li className="glim-version-row">
-              <span className="glim-version-name">
-                <span className="glim-version-part flex items-center gap-1.5">
-                  {row.name}
-                  {row.hint && <InfoBubble tip={row.hint} />}
-                </span>
-                {row.sub && <span className="glim-version-sub">{row.sub}</span>}
+        {componentRows([...rows, design]).map((row) => (
+          <li key={row.name} className="glim-version-row">
+            <span className="glim-version-name">
+              <span className="glim-version-part">{row.name}</span>
+              {row.hint && <InfoBubble tip={row.hint} />}
+            </span>
+            {row.status && (
+              <span className="glim-version-status" data-tone={row.tone}>
+                {row.status}
               </span>
-              <VersionNumber row={row} unreleased={text.unreleased} openUrl={openUrl} />
-            </li>
-            {i === 0 && settings && <li>{settings}</li>}
-          </Fragment>
+            )}
+            {row.action && <Button label={row.action.label} labelKey={row.action.labelKey} onClick={row.action.onClick} />}
+            <VersionNumber row={row} unreleased={text.unreleased} openUrl={openUrl} />
+          </li>
         ))}
       </ul>
-      {(notes || whatsNew || updateCheck) && (
+      {autoUpdate !== undefined && (
+        <SwitchRow label={text.auto} hint={withApp(text.autoHint, name)} checked={autoUpdate} onChange={(on) => onAutoUpdateChange?.(on)} />
+      )}
+      {onUpdate && (
         <div className="glim-version-actions">
-          {notes && <Button label={notes} labelKey="about.releaseNotes" onClick={onReleaseNotes} />}
-          {whatsNew}
-          {updateCheck && <UpdateCheckButton {...updateCheck} />}
+          <Button label={text.update} labelKey="components.update" busy={updating} onClick={onUpdate} />
         </div>
       )}
     </Card>
   );
 }
 
-/** The update check shows its verdict on itself, like a test button. */
-function UpdateCheckButton(check: UpdateCheck) {
-  const [verdict, setVerdict] = useState<UpdateVerdict>({ kind: "idle" });
-  const [shake, setShake] = useState(0);
-  const face = updateFace(verdict, check.text);
-
+/** A switch on a row of its own, its name and (i) at the start and the switch at the end. */
+function SwitchRow({ label, hint, checked, onChange }: { label: string; hint: string; checked: boolean; onChange: (on: boolean) => void }) {
   return (
-    <>
-      <Button
-        key={shake}
-        label={face.label}
-        labelKey={face.labelKey}
-        tone={face.tone}
-        stage={updateStage(check.text, face.label)}
-        busy={verdict.kind === "busy"}
-        onClick={() =>
-          void runUpdateCheck(check, verdict, (v) => {
-            setVerdict(v);
-            if (v.kind === "failed") setShake((n) => n + 1);
-          })
-        }
-        className={shake > 0 ? "glim-shake" : ""}
-      />
-      <span role="status" className="glim-sr-only">
-        {face.announced}
+    <div className="flex items-start justify-between gap-4">
+      <span data-glim-label={label} className="flex items-center gap-1.5 text-body text-carbon-text">
+        {label}
+        <InfoBubble tip={hint} />
       </span>
-    </>
+      <Toggle checked={checked} onChange={onChange} label={label} hideLabel />
+    </div>
   );
 }
 
 /**
- * The number at a row's end, a link to its release page when it is a published
- * release. It has no underline; the ink lifts on hover.
+ * A number that reads as plain text and opens the newest release of its
+ * project. It takes the accent's ink under the pointer, never an underline.
  */
-function VersionNumber({ row, unreleased, openUrl }: { row: VersionRow; unreleased: (version: string) => string; openUrl: OpenUrl }) {
-  const { shown, released, href } = versionLink(row);
+function VersionNumber({ row, unreleased, openUrl }: { row: ComponentRow; unreleased: (version: string) => string; openUrl: OpenUrl }) {
+  const { shown, released, href } = numberLink(row);
   if (!href) return <span className="glim-num glim-version-number">{released ? shown : unreleased(shown)}</span>;
   return (
     <a
@@ -338,6 +435,7 @@ export function InfoHelpCard({
 
 export interface InfoTileProps {
   version: Omit<InfoVersionCardProps, "hueIndex">;
+  components: Omit<InfoComponentsCardProps, "hueIndex">;
   help: Omit<InfoHelpCardProps, "hueIndex">;
   about: Omit<InfoAboutCardProps, "hueIndex">;
   /** The Version card's rainbow position; the cards after it take the next ones. */
@@ -346,14 +444,15 @@ export interface InfoTileProps {
   [data: `data-${string}`]: string | undefined;
 }
 
-/** The Info tile's cards in their fixed order, for the page that stacks them. */
-export function InfoTile({ version, help, about, hueIndex, ...data }: InfoTileProps) {
+/** The Info tile's cards in their fixed order, Version, Components, Help and About, for the page that stacks them. */
+export function InfoTile({ version, components, help, about, hueIndex, ...data }: InfoTileProps) {
   const at = (offset: number) => (hueIndex === undefined ? undefined : hueIndex + offset);
   return (
     <div data-glim="InfoTile" {...data} style={{ display: "contents" }}>
       <InfoVersionCard {...version} hueIndex={at(0)} />
-      <InfoHelpCard {...help} hueIndex={at(1)} />
-      <InfoAboutCard {...about} hueIndex={at(2)} />
+      <InfoComponentsCard {...components} hueIndex={at(1)} />
+      <InfoHelpCard {...help} hueIndex={at(2)} />
+      <InfoAboutCard {...about} hueIndex={at(3)} />
     </div>
   );
 }
@@ -425,29 +524,49 @@ export function AboutCard({
     ...(version ? [{ name: text.version, version, repoUrl }] : []),
     { name: "GlimStone", version: glimstoneVersion, repoUrl: glimstoneRepoUrl },
   ];
+  const at = (offset: number) => (hueIndex === undefined ? undefined : hueIndex + offset);
   return (
-    <InfoTile
-      data-glim="AboutCard"
-      hueIndex={hueIndex}
-      about={{ text, onCoffee, coffeeArt, onPaypal, paypalGlyph, onCrypto, cryptoGlyph }}
-      version={{ text: { title: text.version, unreleased: text.unreleased }, rows, openUrl }}
-      help={{
-        text: {
+    <div data-glim="AboutCard" style={{ display: "contents" }}>
+      <Card title={text.version} hueIndex={at(0)}>
+        <ul className="glim-version-rows">
+          {rows.map((row) => {
+            const { shown, released, href } = versionLink(row);
+            return (
+              <li key={row.name} className="glim-version-row">
+                <span className="glim-version-name">
+                  <span className="glim-version-part">{row.name}</span>
+                </span>
+                {href ? (
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="glim-num glim-version-number">
+                    {shown}
+                  </a>
+                ) : (
+                  <span className="glim-num glim-version-number">{released ? shown : text.unreleased(shown)}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </Card>
+      <InfoHelpCard
+        hueIndex={at(1)}
+        text={{
           title: text.helpTitle,
           report: text.report,
           repoButton: text.repoButton,
           discordButton: text.discordButton,
           mailButton: text.mailButton,
           mailSubject: text.mailSubject,
-        },
-        repoUrl,
-        repoGlyph,
-        discordUrl,
-        discordGlyph,
-        mailAddress,
-        mailGlyph,
-        openUrl,
-      }}
-    />
+        }}
+        repoUrl={repoUrl}
+        repoGlyph={repoGlyph}
+        discordUrl={discordUrl}
+        discordGlyph={discordGlyph}
+        mailAddress={mailAddress}
+        mailGlyph={mailGlyph}
+        openUrl={openUrl}
+      />
+      <InfoAboutCard hueIndex={at(2)} text={text} onCoffee={onCoffee} coffeeArt={coffeeArt} onPaypal={onPaypal} paypalGlyph={paypalGlyph} onCrypto={onCrypto} cryptoGlyph={cryptoGlyph} />
+    </div>
   );
 }

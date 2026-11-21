@@ -49,7 +49,9 @@ export type SectionId =
   | "autoBackup"
   | "server"
   | "desktop"
-  | "problems"
+  | "version"
+  | "components"
+  | "help"
   | "about"
   | "danger";
 
@@ -71,7 +73,9 @@ export const SECTION_TILE: Record<SectionId, TileId> = {
   autoBackup: "general",
   server: "apps",
   desktop: "apps",
-  problems: "info",
+  version: "info",
+  components: "info",
+  help: "info",
   about: "info",
   danger: "general",
 };

@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { en } from '../../lib/i18n.data'
 import { CHANGES, placed } from '../../lib/whatsNew'
 import { closeNewsWindow, markSeen, openNewsWindow, startWhatsNew } from '../../lib/whatsNewStore'
-import { WhatsNewButton, WhatsNewHost } from './WhatsNew'
+import { WhatsNewHost } from './WhatsNew'
 
 const KEY = 'arrowloop.whatsNew'
 const RUNNING = 'v2.3.0'
@@ -53,12 +53,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-const Card = () => (
-  <>
-    <WhatsNewButton />
-    <WhatsNewHost />
-  </>
-)
+const Card = () => <WhatsNewHost />
 const line = (id: string) => document.querySelector<HTMLElement>(`[data-change="${id}"]`)!
 const card = (name: string) => document.querySelector<HTMLElement>(`[data-release="${name}"]`)!
 const cards = () => [...document.querySelectorAll<HTMLElement>('[data-release]')].map((el) => el.dataset.release)
@@ -69,28 +64,12 @@ async function openWindow() {
   await screen.findByText('Notes of v2.3.0.')
 }
 
-describe('the New button', () => {
-  it('counts only the changes nobody has clicked away', () => {
+describe('the window', () => {
+  it('opens on what came since the release before', () => {
     render(<Card />)
-    expect(screen.getByRole('button', { name: `New · ${all}` })).toBeTruthy()
-    act(() => markSeen(['navigation']))
-    expect(screen.getByRole('button', { name: `New · ${all - 1}` })).toBeTruthy()
-  })
-
-  it('drops the number once everything was seen', () => {
-    act(() => markSeen(CHANGES.map((c) => c.id)))
-    render(<Card />)
-    expect(screen.getByRole('button', { name: 'New' })).toBeTruthy()
-  })
-
-  it('opens the window on what came since the release before', () => {
-    render(<Card />)
-    fireEvent.click(screen.getByRole('button', { name: /^New/ }))
+    act(() => openNewsWindow())
     expect(screen.getByRole('dialog', { name: 'New since 1.9.0' })).toBeTruthy()
   })
-})
-
-describe('the window', () => {
   it('opens by itself after an update', () => {
     localStorage.setItem(KEY, JSON.stringify({ version: 'v2.2.0', from: '', seen: [] }))
     render(<WhatsNewHost />)

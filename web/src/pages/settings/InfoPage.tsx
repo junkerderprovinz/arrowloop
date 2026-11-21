@@ -1,25 +1,24 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { componentText, type ComponentRow, type UpdateRoute, type UpdateState } from '@glimstone/core'
+import { useEffect, useMemo, useState } from 'react'
 
 import { About } from '../../components/About'
 import { IconDiscord, IconGithub } from '../../components/brandGlyphs'
 import { IconDiagnostics } from '../../components/glyphs'
 import { Stack } from '../../components/Shell'
-import { ToggleRow } from '../../components/ToggleRow'
-import { api, ApiError, type WindowSettings } from '../../lib/api'
+import { api, ApiError, type DeskUpdate, type Deployment, type WindowSettings } from '../../lib/api'
 import { MANUAL_SVG } from '../../lib/appMarks'
+import { onUpdateReady } from '../../lib/desk'
 import { download } from '../../lib/download'
-import { DISCORD, GLIMSTONE_REPO, MANUAL, RCLONE_REPO, REPO } from '../../lib/donate'
+import { DISCORD, MANUAL, POMMELPORTER_REPO, RCLONE_REPO, REPO } from '../../lib/donate'
 import { openExternal } from '../../lib/external'
-import { InfoVersionCard } from '../../lib/glimstone/AboutCard'
+import { InfoComponentsCard, InfoVersionCard } from '../../lib/glimstone/AboutCard'
 import { Card } from '../../lib/glimstone/Card'
 import { BrandMark, ReadmeButton } from '../../lib/glimstone/ReadmeButton'
-import { GLIMSTONE_VERSION } from '../../lib/glimstone/version'
 import { useT, type TranslationKey } from '../../lib/i18n'
 import { shownVersion } from '../../lib/infoTile'
 import { useToast } from '../../lib/toast'
 import { openNewsWindow, useWhatsNew } from '../../lib/whatsNewStore'
 import { useEngineSettings } from './engineSettings'
-import { SettingsRow } from './rows'
 
 const REFUSED: Record<string, TranslationKey> = {
   'dev-build': 'info.refusedDevBuild',
@@ -28,53 +27,147 @@ const REFUSED: Record<string, TranslationKey> = {
   'bad-response': 'info.refusedBadResponse',
 }
 
+/** Where a container learns how to update, which it cannot do from inside. */
+const GUIDE = `${MANUAL}installing/#updates`
+
+type Versions = Awaited<ReturnType<typeof api.versions>>
+
 /**
- * The last tile: every version this build is made of with how the desktop app
- * updates and the one way to the release notes and to what the last update
- * changed, the ways to report a problem, and the maker's card.
+ * How this copy gets a new version: the desktop app installs its own, a
+ * Flatpak and the phone leave it to their store, and a container or a server
+ * is updated the way it was deployed.
+ */
+export function routeOf(deployment: Deployment | undefined, windowSettings: WindowSettings | null): { route: UpdateRoute; store?: string } {
+  if (windowSettings) return windowSettings.updatesFromStore ? { route: 'store', store: 'Flathub' } : { route: 'install' }
+  if (deployment === 'phone' || deployment === 'android') return { route: 'store', store: 'F-Droid' }
+  return { route: 'guide' }
+}
+
+/**
+ * What the Version card shows: the desktop app's own update while it has one
+ * under way or in place, otherwise what the last check found.
+ */
+export function stateOf(route: UpdateRoute, store: string | undefined, checked: UpdateState, desk: DeskUpdate | null): UpdateState {
+  if (route === 'store') return { kind: 'store', store: store ?? '' }
+  if (desk?.ready) return { kind: 'ready', version: shownVersion(desk.ready) }
+  if (desk?.busy) return desk.percent >= 0 ? { kind: 'downloading', percent: desk.percent } : { kind: 'checking' }
+  if (desk?.failed) return { kind: 'failed', reason: desk.failed }
+  return checked
+}
+
+/** What the server remembers of its last check. */
+function lastCheck(v: Versions): UpdateState {
+  if (v.newRelease) return { kind: 'available', version: shownVersion(v.newRelease) }
+  return { kind: 'current', checkedAt: v.checkedAt ? new Date(v.checkedAt) : undefined }
+}
+
+/**
+ * The last tile: the Version card with how this copy updates, the Components
+ * card with what it brings along, the ways to report a problem, and the
+ * maker's card.
  */
 export function InfoPage({
   version,
-  whatsNew,
   window: windowSettings,
   onWindow,
 }: {
   version: string
-  whatsNew?: ReactNode
   /** Null on a build with no window of its own. */
   window: WindowSettings | null
   onWindow: (next: WindowSettings) => void
 }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const push = useToast()
-  const [versions, setVersions] = useState<{ arrowloop: string; rclone: string; deployment?: string; newRelease?: string } | null>(null)
-  // A release that marks no changes has no list for New to count, so the card
-  // offers its notes instead.
+  const words = useMemo(() => componentText(lang), [lang])
+  const [versions, setVersions] = useState<Versions | null>(null)
+  const [checked, setChecked] = useState<UpdateState>({ kind: 'current' })
+  const [desk, setDesk] = useState<DeskUpdate | null>(null)
   const news = useWhatsNew()
-  const listed = !!news && news.changes.length > 0
+  const engine = useEngineSettings()
+
+  const { route, store } = routeOf(versions?.deployment, windowSettings)
+  const selfUpdating = route === 'install'
 
   useEffect(() => {
     let live = true
     api
       .versions()
-      .then((got) => live && setVersions(got))
+      .then((got) => {
+        if (!live) return
+        setVersions(got)
+        setChecked(lastCheck(got))
+      })
       .catch(() => {})
     return () => {
       live = false
     }
   }, [])
 
-  const updateCheck = async (): Promise<number> => {
+  // The desktop app's own update: where it stands when the tile opens, every
+  // second while a download runs, and the moment the shell has it in place.
+  const following = selfUpdating && desk?.busy === true
+  useEffect(() => {
+    if (!selfUpdating) return
+    let live = true
+    const read = () =>
+      api
+        .windowUpdate()
+        .then((got) => live && setDesk(got))
+        .catch(() => {})
+    void read()
+    const poll = following ? window.setInterval(read, 1000) : undefined
+    const stop = onUpdateReady((ready) => live && setDesk((d) => ({ percent: -1, ...d, busy: false, ready })))
+    return () => {
+      live = false
+      window.clearInterval(poll)
+      stop()
+    }
+  }, [selfUpdating, following])
+
+  const check = async () => {
+    setChecked({ kind: 'checking' })
+    setDesk((d) => d && { ...d, failed: undefined })
     try {
       const got = await api.updateCheck()
-      if (got.updateAvailable) push(t('info.available', { version: shownVersion(got.latest) }))
-      return got.updateAvailable ? 1 : 0
+      setChecked(got.updateAvailable ? { kind: 'available', version: shownVersion(got.latest) } : { kind: 'current', checkedAt: new Date() })
     } catch (e) {
       const code = e instanceof ApiError ? e.code : undefined
-      push(code && REFUSED[code] ? t(REFUSED[code]) : (e as Error).message, 'fail')
-      throw e
+      setChecked({ kind: 'failed', reason: code && REFUSED[code] ? t(REFUSED[code]) : (e as Error).message })
     }
   }
+
+  const update = () =>
+    api
+      .startUpdate()
+      .then(setDesk)
+      .catch((e: Error) => push(e.message, 'fail'))
+
+  const restart = () => api.restart().catch((e: Error) => push(e.message, 'fail'))
+
+  const state = stateOf(route, store, checked, desk)
+  // A new version's notes are not in this build, so they open on its release page.
+  const coming = state.kind === 'available' || state.kind === 'ready' ? state.version : null
+  const whatsNew = () => (coming ? openExternal(`${REPO}/releases/tag/v${coming}`) : openNewsWindow())
+
+  const autoUpdate =
+    route === 'install' && windowSettings
+      ? windowSettings.autoUpdate
+      : route === 'guide' && engine.loaded
+        ? engine.draft.updateCheck === true
+        : undefined
+  const setAutoUpdate = (on: boolean) => {
+    if (route === 'install' && windowSettings) onWindow({ ...windowSettings, autoUpdate: on })
+    else engine.patch({ updateCheck: on })
+  }
+
+  const rows: ComponentRow[] = versions
+    ? [
+        { name: 'rclone', kind: 'tool', hint: t('info.rcloneHint'), version: versions.rclone, repoUrl: RCLONE_REPO },
+        ...(versions.installer
+          ? [{ name: 'PommelPorter', kind: 'installer' as const, hint: words.componentsCard.installer, version: versions.installer, repoUrl: POMMELPORTER_REPO }]
+          : []),
+      ]
+    : []
 
   const bugReport = () => {
     api
@@ -85,52 +178,30 @@ export function InfoPage({
 
   return (
     <Stack>
-      <div data-new="info-tile">
-        <div data-new="version-card">
-          <InfoVersionCard
-            hueIndex={0}
-            openUrl={openExternal}
-            text={{
-              title: t('about.version'),
-              hint: t('info.versionHint'),
-              unreleased: (v) => t('about.unreleased', { version: v }),
-              releaseNotes: t('about.releaseNotes'),
-            }}
-            rows={[
-              {
-                name: 'ArrowLoop',
-                sub: versions?.newRelease && t('info.available', { version: shownVersion(versions.newRelease) }),
-                version: versions?.arrowloop ?? version,
-                repoUrl: REPO,
-              },
-              { name: 'GlimStone', hint: t('info.glimstoneHint'), version: GLIMSTONE_VERSION, repoUrl: GLIMSTONE_REPO, latest: true },
-              ...(versions ? [{ name: 'rclone', hint: t('info.rcloneHint'), version: versions.rclone, repoUrl: RCLONE_REPO }] : []),
-            ]}
-            updateCheck={{
-              run: updateCheck,
-              text: {
-                check: t('info.check'),
-                upToDate: t('info.upToDate'),
-                updatesFound: () => t('info.updateFound'),
-                checkFailed: t('info.checkFailed'),
-              },
-            }}
-            settings={
-              (windowSettings || versions?.deployment === 'container') && (
-                <div data-new="auto-update">
-                  {windowSettings ? <UpdateSetting window={windowSettings} onWindow={onWindow} /> : <ContainerUpdateSetting />}
-                </div>
-              )
-            }
-            onReleaseNotes={openNewsWindow}
-            whatsNew={listed ? whatsNew : undefined}
-          />
-        </div>
-      </div>
+      <InfoVersionCard
+        hueIndex={0}
+        openUrl={openExternal}
+        text={words.versionCard}
+        name="ArrowLoop"
+        version={versions?.arrowloop ?? version}
+        repoUrl={REPO}
+        route={route}
+        state={state}
+        onCheck={() => void check()}
+        onUpdate={() => void update()}
+        onRestart={() => void restart()}
+        guideUrl={GUIDE}
+        onWhatsNew={whatsNew}
+        unseen={news?.unseen.length ?? 0}
+        autoUpdate={autoUpdate}
+        onAutoUpdateChange={setAutoUpdate}
+      />
+
+      <InfoComponentsCard hueIndex={1} openUrl={openExternal} text={words.componentsCard} name="ArrowLoop" rows={rows} />
 
       {/* Built here rather than with the reference Help card so the bug
           report's mark takes GitHub's colour beside the issue button. */}
-      <Card title={t('info.help')} hint={t('info.helpHint')} hueIndex={1}>
+      <Card title={t('info.help')} hint={t('info.helpHint')} hueIndex={2}>
         <p className="text-body text-carbon-textSub">{t('about.report')}</p>
         <div className="glim-readme-btn-rows">
           <ReadmeButton
@@ -162,49 +233,7 @@ export function InfoPage({
         </div>
       </Card>
 
-      <About hueIndex={2} />
+      <About hueIndex={3} />
     </Stack>
-  )
-}
-
-/**
- * Only the desktop app replaces itself. A container is updated the way it was
- * deployed, the phone and a Flatpak through their store.
- */
-function UpdateSetting({ window: windowSettings, onWindow }: { window: WindowSettings; onWindow: (next: WindowSettings) => void }) {
-  const { t } = useT()
-  if (windowSettings.updatesFromStore) {
-    return (
-      <SettingsRow label={t('update.fromStore')} hint={t('update.fromStoreHint')}>
-        {null}
-      </SettingsRow>
-    )
-  }
-  return (
-    <ToggleRow
-      label={t('update.auto')}
-      hint={t('update.autoHint')}
-      checked={windowSettings.autoUpdate}
-      onChange={(autoUpdate) => onWindow({ ...windowSettings, autoUpdate })}
-    />
-  )
-}
-
-/**
- * The desktop app's switch as a container has it. A container cannot replace
- * itself, so there the engine only looks for a new version once a day and the
- * Version card names it.
- */
-function ContainerUpdateSetting() {
-  const { t } = useT()
-  const { loaded, draft, patch } = useEngineSettings()
-  if (!loaded) return null
-  return (
-    <ToggleRow
-      label={t('update.auto')}
-      hint={t('update.autoContainerHint')}
-      checked={draft.updateCheck === true}
-      onChange={(updateCheck) => patch({ updateCheck })}
-    />
   )
 }

@@ -614,18 +614,26 @@ takes ArrowLoop out of the fortress and out of the pairing with it.
 
 ## Info
 
-The last tile has three cards. **Version** lists ArrowLoop, GlimStone and
-rclone, each linked to its release notes, with **Update automatically** right
-under ArrowLoop in the desktop app and in a container, where it asks GitHub
-once a day and names a newer release under ArrowLoop. Under them stand **New**
-and **Check for updates**, which wears the sync symbol and asks GitHub for a
-newer release. **New** opens the window
-with the release notes and the changes (see below); while it lists no change it
-reads **Release notes** and opens the same window. **Help** leads to GitHub, to the ArrowLoop Discord server and to this
-manual, and **Bug report** downloads one file with the versions, the settings
-and jobs without passwords or keys, the last 100 runs and the open anomalies.
-Nothing is sent: you attach the file to an issue yourself. Then comes
-**About**.
+The last tile has four cards. **Version** shows ArrowLoop and its number,
+which opens the newest release. Under it stands **Update automatically** in the
+desktop app, or **Check for updates automatically** in a container, which asks
+GitHub once a day. The last line says where the updates stand, such as **Up to
+date** with when ArrowLoop last looked, and ends in **What's new**, **Check for
+updates** and, once a newer release is out, the one thing to do about it: **Update
+now** and then **Restart** in the desktop app, **How to update** in a container,
+which opens [Updates](installing.md#updates). The Flatpak and the phone say that
+their store brings new versions and check nothing. **What's new** opens the
+window with the release notes and the changes (see below), and while a newer
+release waits, its notes on GitHub.
+
+**Components** lists what ArrowLoop brings along: rclone, GlimStone and, in the
+desktop app on Windows and Linux, its installer PommelPorter. The (i) beside a
+name says what it is, and each number opens that project's newest release.
+**Help** leads to GitHub, to the ArrowLoop Discord server and to this manual,
+and **Bug report** downloads one file with the versions, the settings and jobs
+without passwords or keys, the last 100 runs and the open anomalies. Nothing is
+sent: you attach the file to an issue yourself. On the phone it copies the
+report instead. Then comes **About**.
 
 ## What's new
 
@@ -633,8 +641,8 @@ After an update a glowing green dot marks each change that came with a
 release newer than the one you had open before. It sits on the change's page,
 and a dot on a link says something behind it changed. A click on a dot hides it, and a link's dot goes once
 everything behind it has been seen. What you had already seen of older
-releases stays seen. **New** in the Version card on the Info tile shows how
-many changes you have not seen yet. A browser that never had an older version
+releases stays seen. **What's new** in the Version card on the Info tile shows
+how many changes you have not seen yet. A browser that never had an older version
 open starts with every change seen.
 
 The window it opens is called **New since** the release you had before. It

@@ -219,6 +219,17 @@ export type WindowSettings = {
   updatesFromStore: boolean
 }
 
+/** Where the desktop app's own update stands; UpdateStatus in internal/web/window.go. */
+export type DeskUpdate = {
+  /** The version in place for the next start. */
+  ready?: string
+  busy: boolean
+  /** How much of the download is in, -1 while that is unknown. */
+  percent: number
+  /** Why the last update started by hand did not happen. */
+  failed?: string
+}
+
 /** One registered drive, attached or not. */
 /** A drive that could be marked, with the name the system shows for it. */
 export type DriveCandidate = { mount: string; name?: string; marked: boolean }
@@ -1283,10 +1294,21 @@ export const api = {
   capabilities: () =>
     request<{ window: boolean; security?: boolean; pairing?: boolean; vpn?: boolean; version: string }>('/api/capabilities'),
 
-  /** The versions this build is made of, for the Info tile. */
-  /** `newRelease` is the newer release a container's daily check found. */
+  /**
+   * The versions this build is made of, for the Info tile. `newRelease` is the
+   * newer release the last check found and `checkedAt` when it ran;
+   * `installer` is the installer a desktop build ships with.
+   */
   versions: () =>
-    request<{ arrowloop: string; rclone: string; go: string; deployment?: Deployment; newRelease?: string }>('/api/versions'),
+    request<{
+      arrowloop: string
+      rclone: string
+      go: string
+      deployment?: Deployment
+      newRelease?: string
+      checkedAt?: string
+      installer?: string
+    }>('/api/versions'),
 
   /** The notes of this release and every one before it, newest first, in Markdown. */
   releaseNotes: () => request<{ notes: { version: string; body: string }[] }>('/api/release-notes'),
@@ -1335,6 +1357,15 @@ export const api = {
     if (!can.window) return null
     return request<WindowSettings>('/api/window')
   },
+
+  /** Where the desktop app's own update stands. */
+  windowUpdate: () => request<DeskUpdate>('/api/window/update'),
+
+  /** "Update now": the desktop app fetches the newest release in the background. */
+  startUpdate: () => request<DeskUpdate>('/api/window/update', { method: 'POST' }),
+
+  /** Ends the desktop app, which starts again on the version in place. */
+  restart: () => request<{ restarting: boolean }>('/api/window/restart', { method: 'POST' }),
 
   saveWindow: (settings: WindowSettings) =>
     request<WindowSettings>('/api/window', {
