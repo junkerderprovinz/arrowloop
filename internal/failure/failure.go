@@ -15,6 +15,25 @@ import (
 type Failure struct {
 	Code   string            `json:"code"`
 	Params map[string]string `json:"params,omitempty"`
+	// Twice is what a LeftTwice failure names, which only the run that found
+	// it knows: the text has the reasons in English alone.
+	Twice *Twice `json:"twice,omitempty"`
+}
+
+// Twice is the first few files a run left for later in two runs in a row,
+// and how many more there were.
+type Twice struct {
+	Files []Left `json:"files"`
+	More  int    `json:"more,omitempty"`
+}
+
+// Left is one file left for later, with its reason as a code and values for
+// an interface to word, and in English.
+type Left struct {
+	Path string            `json:"path"`
+	Code string            `json:"code"`
+	Vars map[string]string `json:"vars,omitempty"`
+	Text string            `json:"text"`
 }
 
 // The codes the interface has a sentence for.

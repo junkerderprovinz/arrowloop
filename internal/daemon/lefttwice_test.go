@@ -64,3 +64,18 @@ func TestAFileLeftForLaterTwiceInARowFailsTheSecondRun(t *testing.T) {
 		t.Fatalf("failure %+v from %q, want %s", f, rec.Err, failure.LeftTwice)
 	}
 }
+
+func TestTheSecondRunNamesTheFileWithItsReasonsCode(t *testing.T) {
+	r := runnerWithALink(t)
+	if _, err := r.Run(context.Background(), "test"); err != nil {
+		t.Fatalf("first run: %v", err)
+	}
+	rec, _ := r.Run(context.Background(), "test")
+	if rec.Twice == nil || len(rec.Twice.Files) != 1 || rec.Twice.More != 0 {
+		t.Fatalf("the run names %+v, want the one link", rec.Twice)
+	}
+	got := rec.Twice.Files[0]
+	if got.Path != "link.txt" || got.Code != "unsupported" || got.Vars["kind"] != "symbolic link" || got.Vars["side"] != "left" {
+		t.Errorf("the link is named as %+v, want its reason's code and values", got)
+	}
+}

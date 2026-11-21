@@ -291,8 +291,10 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 			Direction: j.Direction, Mode: j.Mode, Schedule: j.Schedule, Watch: j.Watch, Disabled: j.Disabled,
 		})
 	}
+	// The failure is read again from the scrubbed text, without the paths the
+	// run kept beside it.
 	for _, run := range runs {
-		run.Err = clean(run.Err)
+		run.Err, run.Twice = clean(run.Err), nil
 		out.Runs = append(out.Runs, run)
 	}
 	for _, f := range open {

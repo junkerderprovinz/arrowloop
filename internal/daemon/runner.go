@@ -474,8 +474,8 @@ func (r *Runner) runAnswering(ctx context.Context, ref string, auto bool, ans an
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved
 	rec.Skipped = len(res.Skipped)
 	if rec.Err == "" && !rec.Stopped {
-		if again := r.leftAgain(ctx, j, res.Skipped); again != "" {
-			rec.Err = again
+		if again, twice := r.leftAgain(ctx, j, res.Skipped); again != "" {
+			rec.Err, rec.Twice = again, twice
 			err = errors.New(again)
 		}
 	}
