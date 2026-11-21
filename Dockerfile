@@ -51,6 +51,14 @@ LABEL org.opencontainers.image.title="arrowloop" \
       org.opencontainers.image.source="https://github.com/junkerderprovinz/arrowloop" \
       org.opencontainers.image.licenses="AGPL-3.0-only"
 
+LABEL homepage.group="Backup" \
+      homepage.name="ArrowLoop" \
+      homepage.icon="https://raw.githubusercontent.com/junkerderprovinz/unraid-apps/main/arrowloop/icon.png" \
+      homepage.description="Two-way file sync that shows its plan first" \
+      glance.name="ArrowLoop" \
+      glance.icon="https://raw.githubusercontent.com/junkerderprovinz/unraid-apps/main/arrowloop/icon.png" \
+      glance.description="Two-way file sync that shows its plan first"
+
 # ca-certificates for TLS to the cloud backends, tini so a stop signal reaches
 # the process rather than being swallowed by PID 1, tzdata so a cron schedule
 # means local time.

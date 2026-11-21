@@ -52,7 +52,7 @@ func (c *Config) nameNewDatabases(doc map[string]any) {
 // held by this many jobs, names a database in the state folder that is not
 // there yet and that no other job points at.
 func (c *Config) freshInStateFolder(p string, holders int) bool {
-	if holders > 1 || filepath.IsAbs(p) || filepath.Dir(filepath.Clean(p)) != stateFolder {
+	if holders > 1 || !filepath.IsLocal(p) || filepath.Dir(filepath.Clean(p)) != stateFolder {
 		return false
 	}
 	_, err := os.Lstat(c.resolve(p))
