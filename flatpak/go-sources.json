@@ -1317,17 +1317,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/gofrs/flock/@v/v0.13.1.mod",
-        "sha256": "2b10bf7b1de11439065e56e9533ecf9c3d29b3d17b0a30a6a8c33d6dbc22a994",
+        "url": "https://proxy.golang.org/github.com/gofrs/flock/@v/v0.13.2.mod",
+        "sha256": "aca8a3165aa5829b9146c3b05969590de832b192f04b6ed6b4d6775d7a0263eb",
         "dest": "gomod/github.com/gofrs/flock/@v",
-        "dest-filename": "v0.13.1.mod"
+        "dest-filename": "v0.13.2.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/gofrs/flock/@v/v0.13.1.zip",
-        "sha256": "2d8bab9666100e0b92ff6dfa9054be287feb295fababc4eb2daeef94cb7c033c",
+        "url": "https://proxy.golang.org/github.com/gofrs/flock/@v/v0.13.2.zip",
+        "sha256": "63f0ea744f8ee1a6a1ab41f10f4a6fb69a9944b65c325baae7fe3434b1493e4e",
         "dest": "gomod/github.com/gofrs/flock/@v",
-        "dest-filename": "v0.13.1.zip"
+        "dest-filename": "v0.13.2.zip"
     },
     {
         "type": "file",
@@ -1653,17 +1653,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/junkerderprovinz/parleyport/kit/@v/v1.0.3.mod",
+        "url": "https://proxy.golang.org/github.com/junkerderprovinz/parleyport/kit/@v/v1.0.5.mod",
         "sha256": "6eb38486d8ba476c40fba7eeaf6c81834c657c0327519e25066a298a1de25b6c",
         "dest": "gomod/github.com/junkerderprovinz/parleyport/kit/@v",
-        "dest-filename": "v1.0.3.mod"
+        "dest-filename": "v1.0.5.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/junkerderprovinz/parleyport/kit/@v/v1.0.3.zip",
-        "sha256": "bc0006761537cb41760821472dd1dd1df04a295cd2da9cc456a9b2083af4588d",
+        "url": "https://proxy.golang.org/github.com/junkerderprovinz/parleyport/kit/@v/v1.0.5.zip",
+        "sha256": "2b93080d2d4d0e902aa298095e77f8f85b53693620a3549c020d285ee0083701",
         "dest": "gomod/github.com/junkerderprovinz/parleyport/kit/@v",
-        "dest-filename": "v1.0.3.zip"
+        "dest-filename": "v1.0.5.zip"
     },
     {
         "type": "file",
@@ -3046,17 +3046,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.0.mod",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.7.mod",
         "sha256": "e588ccfeba51fa27730d74c8d4f61bbaac2461c3eee3da36c9ae40137c9ab444",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.82.0.mod"
+        "dest-filename": "v1.82.7.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.0.zip",
-        "sha256": "fcc5fd1eb63044b7fea37ee8599dfc71a72401b1ff1827e3cf38aba604c3e9a9",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.7.zip",
+        "sha256": "79a4f09c9fdae21ba7f16b4bec554ddc2171ea04eee94c76f5fc1d34508f31a8",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.82.0.zip"
+        "dest-filename": "v1.82.7.zip"
     },
     {
         "type": "file",

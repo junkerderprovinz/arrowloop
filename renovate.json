@@ -57,6 +57,16 @@
         "junkerderprovinz/arrowloop"
       ],
       "enabled": false
+    },
+    {
+      "description": "gVisor's master branch is laid out for Bazel and go build rejects it (two packages in one directory); only its go branch builds, so gvisor stays on the last commit that does",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchPackageNames": [
+        "gvisor.dev/gvisor"
+      ],
+      "enabled": false
     }
   ]
 }
