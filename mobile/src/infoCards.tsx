@@ -8,16 +8,14 @@ import { space, text } from "./theme";
 import { Button, InfoBubble, Section, useTheme } from "./ui";
 
 // GlimStone's Version and Components cards for the phone. The phone gets its
-// new versions from its store, so the Version card checks nothing and offers
-// no switch and no action, only the way to what this version brought.
+// new versions from the store it came from, so the Version card checks nothing
+// and offers no switch and no action, only the way to what this version brought.
 
-const STORE = "F-Droid";
-
-/** The first card of the Info tile: the app with its number, and where its updates come from. */
-export function VersionSection({ words, version, hue }: { words: ComponentText; version: string; hue: number }) {
+/** The first card of the Info tile: the app with its number, and the store its updates come from. */
+export function VersionSection({ words, version, store, hue }: { words: ComponentText; version: string; store: string; hue: number }) {
   const { p } = useTheme();
   const w = words.versionCard;
-  const face = updateLine({ kind: "store", store: STORE }, w);
+  const face = updateLine({ kind: "store", store }, w);
   const shown = numberLink({ name: "ArrowLoop", version, repoUrl: REPO });
   return (
     <Section title={w.title} hint={withApp(w.hint, "ArrowLoop")} hue={hue}>
