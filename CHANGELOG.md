@@ -8,6 +8,19 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.8.3 - 2026-11-21
+
+A job no longer stops over a file whose times drifted apart on a target without checksums, and dashboards that read container labels list ArrowLoop on their own.
+
+## ⚡ Improved
+
+- **Dashboard labels.** Dashboards that read container labels list ArrowLoop with its name, logo and description on their own. Put the address in the template's Dashboard Link field to make the entry a link. The Unraid template and compose.yaml carry the same labels and the API token field.
+- **Tighter checks on paths and addresses.** A state path in the configuration is held to the state folder, and the Linux desktop app reads memory map addresses at the width of the platform.
+
+## 🐛 Fixed
+
+- **A share that keeps old times no longer stops a job.** When one side has no checksum, as on an SMB share, and a file's times are far apart while its size matches, ArrowLoop compares both files byte by byte before refusing the pair. The same content is recorded and the job runs on, different content still stops the run. Thanks to @maxtesterr for the detailed report ([#260](https://github.com/junkerderprovinz/arrowloop/issues/260)).
+
 ## 2.8.2 - 2026-11-21
 
 The Android app gets the built-in VPN and finds your microSD card, run notes speak your language, and copies to MEGA are recorded again.
