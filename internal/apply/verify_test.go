@@ -297,3 +297,31 @@ func writeAt(t *testing.T, path, content string, stamp time.Time) {
 		t.Fatalf("stamp %s: %v", path, err)
 	}
 }
+
+// A pair whose times drifted apart, with no checksum on one side, is read
+// byte by byte before the run gives up on it.
+func TestAPairWithDriftedTimesAndTheSameBytesIsRecorded(t *testing.T) {
+	f := newFixture(t, hash.ErrUnsupported)
+	writeAt(t, filepath.Join(f.right, "notes.txt"), "AAAA", f.stamp.Add(-50*24*time.Hour))
+
+	if err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", false); err != nil {
+		t.Fatalf("a pair with the same bytes was refused over its times: %v", err)
+	}
+	if !f.recorded(t, "notes.txt") {
+		t.Error("the pair was not written down, so every run stops on it again")
+	}
+}
+
+func TestAPairWithDriftedTimesAndOtherBytesStillDisagrees(t *testing.T) {
+	f := newFixture(t, hash.ErrUnsupported)
+	writeAt(t, filepath.Join(f.right, "notes.txt"), "AAAB", f.stamp.Add(-50*24*time.Hour))
+
+	err := f.rec.settle(context.Background(), "notes.txt", "notes.txt", "notes.txt", false)
+	var dis *DisagreementError
+	if !errors.As(err, &dis) {
+		t.Fatalf("two files of the same size with different bytes were accepted: %v", err)
+	}
+	if f.recorded(t, "notes.txt") {
+		t.Error("a row was written for two files that differ")
+	}
+}
