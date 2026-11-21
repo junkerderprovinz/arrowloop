@@ -1,6 +1,6 @@
 module github.com/junkerderprovinz/arrowloop
 
-go 1.27.2
+go 1.27.3
 
 toolchain go1.27.4
 
@@ -16,8 +16,8 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/godbus/dbus/v5 v5.2.4
-	github.com/gofrs/flock v0.13.1
-	github.com/junkerderprovinz/parleyport/kit v1.0.3
+	github.com/gofrs/flock v0.13.2
+	github.com/junkerderprovinz/parleyport/kit v1.0.5
 	github.com/nicholas-fedor/shoutrrr v0.25.0
 	github.com/pkg/sftp v1.13.12
 	github.com/rclone/gofakes3 v0.0.12
@@ -30,7 +30,7 @@ require (
 	golang.org/x/text v0.44.0
 	golang.zx2c4.com/wireguard v0.0.0-20261024220952-b3bc704ef0ee
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c
-	modernc.org/libc v1.82.0
+	modernc.org/libc v1.82.7
 	modernc.org/sqlite v1.62.0
 )
 
