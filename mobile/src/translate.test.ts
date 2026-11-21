@@ -52,7 +52,7 @@ test("files left for later twice read in the app's language on the failure line"
           path: "status.fifo",
           code: "unsupported",
           vars: { kind: "named pipe", side: "left" },
-          text: "On the left there is named pipe, which this engine does not carry.",
+          text: "The named pipe on the left is something this engine does not carry.",
         },
       ],
     },

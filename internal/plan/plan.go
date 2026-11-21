@@ -76,7 +76,7 @@ var reasonText = map[string]string{
 	"unverified":      "{what} finished, but there is no checksum on the {side}, and this job insists on one. The next run tries again.",
 	"changedDuring":   "The file changed on the {side} while this run was going. The next run tries again.",
 	"inFlux":          "The file was being written on the {side} while it was copied, in {runs} runs in a row. It waits for the next run. {details}",
-	"unsupported":     "On the {side} there is {kind}, which this engine does not carry.",
+	"unsupported":     "The {kind} on the {side} is something this engine does not carry.",
 	"cloudOnly":       "{what} failed because the file is only a placeholder of a cloud client, which could not download it: {error}. Keep the file on this device in the cloud client. The next run tries again.",
 	"sealed":          "The folder is locked on the {side}. OneDrive hands its Personal Vault to no app, so the folder is left out.",
 	"unreadable":      "The folder could not be read on the {side}, so this run leaves it alone on both sides.",
