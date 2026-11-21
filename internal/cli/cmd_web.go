@@ -82,6 +82,12 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	// Receives the phone's reports about battery and metered connections. The
 	// container never gets one, which costs nothing.
 	held := hold.New()
+	deployed := deployment()
+	// A container on an internal network has no route to the internet and
+	// still reaches its servers, so only the phone asks for one.
+	if deployed == "phone" {
+		held.CheckRoutes(hold.Routed)
+	}
 	runner.SetCondition(held.Condition())
 	if file := os.Getenv(accessVar); file != "" {
 		runner.SetAccess(fileAccess(file))
@@ -101,7 +107,6 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	defer tunnel.Close()
 	runner.SetVPN(tunnel)
 
-	deployed := deployment()
 	server := &web.Server{
 		History:     hist,
 		Runner:      runner,
