@@ -72,6 +72,16 @@ export const RELEASES: Release[] = [
         text: 'new.change.notifyTile',
         names: { notifications: 'settings.notifications' },
       },
+      { id: 'phone-vpn', text: 'new.change.phoneVpn' },
+      { id: 'phone-tolerance', text: 'new.change.phoneTolerance' },
+      {
+        id: 'internxt-two-factor',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.internxtTwoFactor',
+        names: { code: 'opt.twoFactor', test: 'targets.check' },
+      },
     ],
   },
   {

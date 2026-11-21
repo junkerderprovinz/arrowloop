@@ -60,7 +60,7 @@ describe('the dots of what is new', () => {
       expect(found).not.toBeNull()
       return found!
     })
-    expect(way.getAttribute('aria-label')).toMatch(/^This way to 36 changes: /)
+    expect(way.getAttribute('aria-label')).toMatch(/^This way to 37 changes: /)
     fireEvent.click(way)
     expect(window.location.pathname).toBe('/settings')
   })
@@ -68,7 +68,7 @@ describe('the dots of what is new', () => {
   it('take the dot off a link once everything behind it was seen', async () => {
     render(<Page />)
     await waitFor(() => expect(dot('way')).not.toBeNull())
-    act(() => markSeen(['vpn', 'appimage', 'download-buttons', 'notify-shoutrrr', 'notify-tiles', 'settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'notify-tile', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks', 'label-glyphs', 'version-card', 'fdroid-logo', 'jobs-view', 'oled', 'system-accent', 'auto-backup', 'import-others', 'pairing', 'apps-flatpak', 'auto-update']))
+    act(() => markSeen(['vpn', 'appimage', 'download-buttons', 'notify-shoutrrr', 'notify-tiles', 'settings-tiles', 'settings-search', 'anomalies-module', 'info-tile', 'login-reset', 'provider-names', 'target-rows', 'notify-channels', 'notify-tile', 'tile-order', 'schedule-hs', 'exceptions', 'two-factor-once', 'internxt-two-factor', 'target-in-use', 'smb-share', 'sftp-host-key', 'target-switches', 'target-setup-choice', 'target-bucket', 'provider-marks', 'label-glyphs', 'version-card', 'fdroid-logo', 'jobs-view', 'oled', 'system-accent', 'auto-backup', 'import-others', 'pairing', 'apps-flatpak', 'auto-update']))
     await waitFor(() => expect(dot('way')).toBeNull())
   })
 
