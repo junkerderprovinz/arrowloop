@@ -1301,7 +1301,7 @@ func (r recorder) settle(ctx context.Context, key, leftPath, rightPath string, s
 		rightSum, rightHashErr = hashOf(ctx, right, true)
 		leftFacts.Hash, rightFacts.Hash = leftSum, rightSum
 	}
-	if !plan.Same(leftFacts, rightFacts, window) {
+	if !plan.Same(leftFacts, rightFacts, window) && !sameBytes(ctx, left, right, leftSum, rightSum) {
 		// A file this step just sent that already reads differently was
 		// written to while it was copied. The row is withheld all the same.
 		if sent {
@@ -1366,6 +1366,17 @@ func hashOf(ctx context.Context, obj fs.Object, slowToo bool) (string, error) {
 		return "", hash.ErrUnsupported
 	}
 	return sum, nil
+}
+
+// sameBytes settles a pair that size and time leave open because a side has no
+// checksum, by reading both files as rclone check --download does. A share that
+// keeps an old time on a file would otherwise stop every run over times alone.
+func sameBytes(ctx context.Context, left, right fs.Object, leftSum, rightSum string) bool {
+	if left.Size() != right.Size() || left.Size() < 0 || (leftSum != "" && rightSum != "") {
+		return false
+	}
+	equal, err := operations.CheckIdenticalDownload(ctx, left, right)
+	return err == nil && equal
 }
 
 // errNotRead stands for a checksum left unread because the backend would have
