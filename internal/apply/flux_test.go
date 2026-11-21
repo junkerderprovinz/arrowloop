@@ -12,6 +12,7 @@ import (
 	"time"
 
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/hash"
 
 	_ "github.com/rclone/rclone/backend/local"
 
@@ -213,6 +214,61 @@ func TestAFileThatChangedWhileItWasSentDoesNotStopTheRun(t *testing.T) {
 	}
 }
 
+// A file appended to after rclone's last read reaches the end of the copy
+// with a checksum the copy does not have. Its source changed, so it is in
+// flux like a file rclone caught growing, with what changed as values.
+func TestAFileAppendedToAfterItsLastReadIsInFlux(t *testing.T) {
+	j := newCopyJob(t)
+	path := filepath.Join(j.left, "app.log")
+	writeAt(t, path, "AAAA", j.stamp)
+	later := j.stamp.Add(time.Minute)
+	j.ends.Left = appending{Fs: j.ends.Left, path: path, at: later}
+
+	var res Result
+	for run := 1; run <= fluxPatience; run++ {
+		writeAt(t, path, "AAAA", j.stamp)
+		var err error
+		if res, err = j.run(context.Background(), j.copy("app.log", 4)); err != nil {
+			t.Fatalf("run %d: %v", run, err)
+		}
+		if run < fluxPatience && len(res.Skipped) != 0 {
+			t.Fatalf("run %d counts the file against the run: %+v", run, res.Skipped)
+		}
+	}
+	if len(res.Skipped) != 1 || res.Skipped[0].Reason.Code != "inFlux" {
+		t.Fatalf("a file written to during its copy was recorded as %+v, wanted it in flux", res.Skipped)
+	}
+	got := res.Skipped[0].Reason.Vars
+	want := map[string]string{"sizeFrom": "4", "sizeTo": "9", "timeFrom": moment(j.stamp), "timeTo": moment(later)}
+	for name, value := range want {
+		if got[name] != value {
+			t.Errorf("%s is %q, want %q (all values: %v)", name, got[name], value, got)
+		}
+	}
+	if j.recorded(t, "app.log") {
+		t.Error("a row was written for a copy of a file that was still being written")
+	}
+}
+
+// A copy whose checksum differs from a source nobody touched is a real
+// corruption and stays a failure.
+func TestACorruptedCopyOfAnUnchangedFileIsAFailure(t *testing.T) {
+	j := newCopyJob(t)
+	writeAt(t, filepath.Join(j.left, "notes.txt"), "AAAA", j.stamp)
+	j.ends.Left = misreporting{j.ends.Left}
+
+	res, err := j.run(context.Background(), j.copy("notes.txt", 4))
+	if err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	if len(res.Skipped) != 1 || res.Skipped[0].Reason.Code != "stepFailed" {
+		t.Fatalf("a corrupted copy was recorded as %+v, wanted one stepFailed", res.Skipped)
+	}
+	if said := res.Skipped[0].Reason.Vars["error"]; !strings.Contains(said, "corrupted on transfer") {
+		t.Errorf("the failure says %q, want rclone's own words", said)
+	}
+}
+
 // A pair nothing touched that still disagrees means the engine's picture is
 // wrong, and that stays fatal.
 func TestADisagreementOnAPairNothingTouchedStillStopsTheRun(t *testing.T) {
@@ -356,6 +412,76 @@ type failingReader struct{}
 
 func (failingReader) Read([]byte) (int, error) {
 	return 0, errors.New("can't copy - source file is being updated (size changed from 4 to 9)")
+}
+
+// appending is a source whose file gets five more bytes and a later time just
+// after rclone has read it to the end, before rclone compares the checksums.
+type appending struct {
+	rclonefs.Fs
+	path string
+	at   time.Time
+}
+
+func (f appending) NewObject(ctx context.Context, remote string) (rclonefs.Object, error) {
+	o, err := f.Fs.NewObject(ctx, remote)
+	if err != nil {
+		return nil, err
+	}
+	return appendingObject{Object: o, f: f}, nil
+}
+
+type appendingObject struct {
+	rclonefs.Object
+	f appending
+}
+
+func (o appendingObject) Open(context.Context, ...rclonefs.OpenOption) (io.ReadCloser, error) {
+	content, err := os.ReadFile(o.f.path)
+	if err != nil {
+		return nil, err
+	}
+	return io.NopCloser(io.MultiReader(strings.NewReader(string(content)), appendAtEnd{o.f})), nil
+}
+
+type appendAtEnd struct{ f appending }
+
+func (a appendAtEnd) Read([]byte) (int, error) {
+	file, err := os.OpenFile(a.f.path, os.O_APPEND|os.O_WRONLY, 0)
+	if err != nil {
+		return 0, err
+	}
+	if _, err := file.WriteString("BBBBB"); err != nil {
+		file.Close()
+		return 0, err
+	}
+	if err := file.Close(); err != nil {
+		return 0, err
+	}
+	if err := os.Chtimes(a.f.path, a.f.at, a.f.at); err != nil {
+		return 0, err
+	}
+	return 0, io.EOF
+}
+
+// misreporting is a source that gives a checksum its file does not have, so
+// rclone finds the copy corrupted although the file never changed.
+type misreporting struct{ rclonefs.Fs }
+
+func (f misreporting) NewObject(ctx context.Context, remote string) (rclonefs.Object, error) {
+	o, err := f.Fs.NewObject(ctx, remote)
+	if err != nil {
+		return nil, err
+	}
+	return misreportingObject{o}, nil
+}
+
+type misreportingObject struct{ rclonefs.Object }
+
+func (misreportingObject) Hash(_ context.Context, ty hash.Type) (string, error) {
+	if ty == hash.None {
+		return "", nil
+	}
+	return strings.Repeat("0", hash.Width(ty, false)), nil
 }
 
 // rewritten is a source whose file is written to once it has been copied, at

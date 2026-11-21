@@ -1018,13 +1018,27 @@ func again(ctx context.Context, act plan.Action) context.Context {
 // failed for any other reason. Only a source that is really gone counts as
 // vanished, so a destination that refused the file stays a failure.
 func sourceTrouble(ctx context.Context, src fs.Fs, act plan.Action, err error) error {
-	if _, statErr := src.NewObject(ctx, act.SrcPath); errors.Is(statErr, fs.ErrorObjectNotFound) {
+	now, statErr := src.NewObject(ctx, act.SrcPath)
+	if errors.Is(statErr, fs.ErrorObjectNotFound) {
 		return &vanishedError{Path: act.SrcPath, Side: act.Src}
 	}
 	// The local backend says so in words only; see local.go's Update.
 	if strings.Contains(err.Error(), "source file is being updated") {
 		details, facts := whileRead(err)
 		return &inFluxError{Path: act.Path, Details: details, Facts: facts}
+	}
+	// rclone compares the copy with its source once the bytes are across, and
+	// a source written to after its last read no longer matches the copy.
+	// Only a source that changed since the scan is in flux: one that did not
+	// was corrupted on the way.
+	if statErr == nil && strings.Contains(err.Error(), "corrupted on transfer") {
+		seen := act.LeftNow
+		if act.Src == plan.Right {
+			seen = act.RightNow
+		}
+		if details, facts := sinceScan(ctx, seen, now, src.Precision()); details != "" {
+			return &inFluxError{Path: act.Path, Details: details, Facts: facts}
+		}
 	}
 	return err
 }

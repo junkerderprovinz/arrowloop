@@ -1,6 +1,7 @@
 package apply
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -10,6 +11,7 @@ import (
 	"github.com/rclone/rclone/fs"
 
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
+	"github.com/junkerderprovinz/arrowloop/internal/scan"
 )
 
 // afterCopy says what the two sides read differently once a copy was done, in
@@ -62,6 +64,24 @@ func whileRead(err error) (string, []string) {
 		return text, []string{"timeFrom", moment(from), "timeTo", moment(to)}
 	}
 	return said, nil
+}
+
+// sinceScan says how a source differs from what the scan saw, in the words
+// and values whileRead gives, or returns "" for one that is as it was.
+func sinceScan(ctx context.Context, seen *scan.Entry, now fs.Object, window time.Duration) (string, []string) {
+	if seen == nil {
+		return "", nil
+	}
+	var said, facts []string
+	if size := now.Size(); size != seen.Size {
+		said = append(said, fmt.Sprintf("While it was read its size changed from %d to %d bytes.", seen.Size, size))
+		facts = append(facts, "sizeFrom", strconv.FormatInt(seen.Size, 10), "sizeTo", strconv.FormatInt(size, 10))
+	}
+	if mod := now.ModTime(ctx); window != fs.ModTimeNotSupported && mod.Sub(seen.Mod).Abs() > window {
+		said = append(said, fmt.Sprintf("While it was read its modification time changed from %s to %s.", stamp(seen.Mod), stamp(mod)))
+		facts = append(facts, "timeFrom", moment(seen.Mod), "timeTo", moment(mod))
+	}
+	return strings.Join(said, " "), facts
 }
 
 func rcloneStamp(s string) string {
