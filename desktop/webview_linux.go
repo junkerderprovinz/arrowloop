@@ -60,8 +60,8 @@ func fileSpans(maps string) []span {
 			continue
 		}
 		start, end, _ := strings.Cut(f[0], "-")
-		from, err1 := strconv.ParseUint(start, 16, 64)
-		to, err2 := strconv.ParseUint(end, 16, 64)
+		from, err1 := strconv.ParseUint(start, 16, strconv.IntSize)
+		to, err2 := strconv.ParseUint(end, 16, strconv.IntSize)
 		if err1 != nil || err2 != nil {
 			continue
 		}
