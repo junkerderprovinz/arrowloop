@@ -6,7 +6,6 @@ import type { Translate } from './i18n.data'
  */
 export function errorText(t: Translate, e: unknown): string {
   const { code, values } = (e ?? {}) as { code?: string; values?: Record<string, string> }
-  if (code === 'password-not-set') return t('error.passwordNotSet')
   if (code === 'target-in-use') return t('targets.inUse', values)
   if (code === 'import-unknown') return t('import.unknown')
   if (code === 'import-old-profile') return t('import.oldProfile')

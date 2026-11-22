@@ -6,59 +6,30 @@ import (
 	"crypto/subtle"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"mime"
-	"net"
 	"net/http"
-	"net/netip"
 	"os"
-	"path"
-	"regexp"
-	"strings"
 
 	"github.com/junkerderprovinz/parleyport/kit/group"
 )
 
 // Guard wraps the handler of a server that listens on a network port. A page
 // on any web site can make the browser send a request to that port, so Guard
-// refuses a change another site's page started or sent as anything but JSON,
-// and on an install with no password it answers only to names nobody outside
-// can point at this machine.
-// The desktop window needs neither, since nothing but its own page reaches it.
-// On a phone, see AppTokenEnv.
+// refuses a change another site's page started or sent as anything but JSON.
+// The desktop window does not need it, since nothing but its own page reaches
+// it. On a phone, see AppTokenEnv.
 func (s *Server) Guard(next http.Handler) http.Handler {
 	crossOrigin := http.NewCrossOriginProtection()
 	crossOrigin.SetDenyHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusForbidden, errors.New("a page from another site cannot change anything here"))
 	}))
-	allowed := hostList(os.Getenv(HostsEnv))
 	token := os.Getenv(AppTokenEnv)
 	guarded := crossOrigin.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// A page on attacker.example whose name is re-pointed at this machine
-		// is same-origin to the browser. With a password that page has no
-		// cookie; without one the host name is all there is to check.
-		if len(s.passwordHash()) == 0 && !localName(r.Host, allowed) {
-			name := hostOnly(r.Host)
-			writeError(w, http.StatusMisdirectedRequest, fmt.Errorf(
-				"ArrowLoop has no password yet, so it does not answer on %s, only on an IP address, localhost or a local name such as tower or nas.local. "+
-					"Open it on one of those and set a password under Settings, Security, or add %s to the %s environment variable",
-				name, name, HostsEnv))
-			return
-		}
 		// A browser sends a form or text/plain to any site without asking, but
 		// asks the server first before sending JSON there, and this server never
 		// says yes.
 		if changes(r.Method) && !isJSON(r.Header.Get("Content-Type")) && !groupUpload(r) {
 			writeError(w, http.StatusUnsupportedMediaType, errors.New("a change has to be sent as JSON, with Content-Type: application/json"))
-			return
-		}
-		// With a token only the phone app that started this engine gets this
-		// far, and it needs no password to keep a stranger out.
-		if token == "" && len(s.passwordHash()) == 0 && needsPassword(r.Method, r.URL.Path) {
-			writeJSON(w, http.StatusForbidden, map[string]string{
-				"code":  passwordNotSet,
-				"error": "set a password under Settings, Security first: without one, anybody who reaches this port could read the saved settings or delete for good",
-			})
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -86,43 +57,6 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		}
 		guarded.ServeHTTP(w, r)
 	})
-}
-
-// passwordNotSet is the code a route answers with that needs a password set
-// on this install before it does anything.
-const passwordNotSet = "password-not-set"
-
-// guardedWithoutPassword are the routes a server on a network port refuses
-// while no password is set, since the open port is then all that stands
-// between a stranger on the network and them: the backup carries the
-// notification secrets and the hook commands, a restore replaces every job,
-// a test message goes to any address the caller names and tells what came
-// back, and the rest deletes for good. The phone and the desktop window are
-// not asked, as no stranger reaches them.
-var guardedWithoutPassword = []struct {
-	method  string
-	pattern *regexp.Regexp
-}{
-	{http.MethodGet, regexp.MustCompile(`^/api/config/raw$`)},
-	{http.MethodPut, regexp.MustCompile(`^/api/config/raw$`)},
-	{http.MethodGet, regexp.MustCompile(`^/api/config/backups/[^/]+$`)},
-	{http.MethodPost, regexp.MustCompile(`^/api/notify/test$`)},
-	{http.MethodDelete, regexp.MustCompile(`^/api/jobs/[^/]+/state$`)},
-	{http.MethodDelete, regexp.MustCompile(`^/api/remotes/[^/]+$`)},
-	{http.MethodPost, regexp.MustCompile(`^/api/jobs/[^/]+/trash/[^/]+/(delete|empty|prune)$`)},
-}
-
-// needsPassword reports whether a request goes to one of those routes. The
-// path is cleaned first, as needsSession does, so a detour through ".." does
-// not slip past.
-func needsPassword(method, rawPath string) bool {
-	p := path.Clean("/" + rawPath)
-	for _, g := range guardedWithoutPassword {
-		if g.method == method && g.pattern.MatchString(p) {
-			return true
-		}
-	}
-	return false
 }
 
 // kitUpload is the type the kit sends a backup under to the call route of
@@ -167,61 +101,4 @@ func proof(token, challenge string) string {
 	mac := hmac.New(sha256.New, []byte(token))
 	mac.Write([]byte(challenge))
 	return hex.EncodeToString(mac.Sum(nil))
-}
-
-// HostsEnv names the environment variable that lists further host names to
-// answer on without a password, separated by commas. An entry starting with a
-// dot stands for every name under it.
-const HostsEnv = "ARROWLOOP_HOSTS"
-
-// localSuffixes are domains no public DNS server answers for, so nobody
-// outside the network can point one at this machine. fritz.box is the domain
-// AVM's routers give the machines behind them, and only its owner could point
-// a name under it anywhere else.
-var localSuffixes = []string{".localhost", ".local", ".lan", ".home.arpa", ".internal", ".localdomain", ".home", ".fritz.box"}
-
-// hostList reads the names HostsEnv lists.
-func hostList(raw string) []string {
-	var out []string
-	for _, entry := range strings.Split(raw, ",") {
-		if entry = hostOnly(entry); entry != "" {
-			out = append(out, entry)
-		}
-	}
-	return out
-}
-
-// hostOnly lowers a Host header to the bare name, without port, brackets or a
-// trailing dot.
-func hostOnly(host string) string {
-	host = strings.TrimSpace(host)
-	if h, _, err := net.SplitHostPort(host); err == nil {
-		host = h
-	}
-	return strings.ToLower(strings.TrimSuffix(strings.Trim(host, "[]"), "."))
-}
-
-// localName reports whether a Host header names this machine in a way an
-// outsider cannot: an IP address, localhost, a name without a dot, a name
-// under one of localSuffixes, or one the owner listed in extra. An entry in
-// extra that starts with a dot covers the names under it.
-func localName(host string, extra []string) bool {
-	host = hostOnly(host)
-	if host == "" || host == "localhost" || !strings.Contains(host, ".") {
-		return true
-	}
-	if _, err := netip.ParseAddr(host); err == nil {
-		return true
-	}
-	for _, suffix := range localSuffixes {
-		if strings.HasSuffix(host, suffix) {
-			return true
-		}
-	}
-	for _, name := range extra {
-		if host == name || strings.HasPrefix(name, ".") && strings.HasSuffix(host, name) {
-			return true
-		}
-	}
-	return false
 }

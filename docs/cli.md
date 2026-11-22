@@ -66,10 +66,11 @@ to run the same job.
 It listens on loopback unless told otherwise. The interface can start a job that
 deletes files and asks for no password until one is set under Settings,
 Security, or through `ARROWLOOP_PASSWORD_HASH`, so making it reachable has to be
-a decision somebody took on purpose. What the interface sets is kept in
-`security.json` beside the configuration file. Until there is a password it
-answers only on an IP address or a local name, so a web page elsewhere cannot
-point a name of its own at it; [installing](installing.md) lists the names.
+a decision somebody took on purpose. The password is optional. Without it
+anyone who reaches the port can do everything, and
+[installing](installing.md#a-password-for-the-interface) says what one
+protects. What the interface sets is kept in `security.json` beside the
+configuration file.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is
 looking. It trims the run log once as it starts, keeping what `historyKeep` in
@@ -232,7 +233,8 @@ What it tells you that is otherwise found out the hard way:
 Prints the value `ARROWLOOP_PASSWORD_HASH` wants. The interface sets its own
 password without it; the variable is for a password managed from outside, such
 as in a container template, and it wins over the one set in the interface,
-which makes it the way back in after that one is forgotten.
+which makes it the way back in after that one is forgotten. Like the
+interface, it takes a password of any length.
 
 The hash is made under the key of the install whose configuration `-config`
 names, so run it where that install runs; in the container that is

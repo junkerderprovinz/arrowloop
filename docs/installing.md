@@ -24,34 +24,28 @@ crash-looping on a missing file.
 
 ### A password for the interface
 
-The container listens on every address, so anyone on the network who reaches
-port 8422 can start a job. Set a password under **Settings**, **Security**, and
-from then on every page but the login asks for it. Over plain HTTP the session
-cookie crosses the wire in clear, so a machine reachable from outside wants TLS
-in front of it either way; see [The interface](interface.md#who-can-reach-it).
+A password is optional, and ArrowLoop works the same with or without one.
+Without it, anyone who reaches port 8422 can do everything the interface
+offers: start a job that deletes files, download or restore the settings
+backup, empty the trash for good. That is fine on a network where you trust
+everybody who can get to the port, and the interface says so on the
+**Security** tile.
 
-Until a password is set, the interface only answers when it is opened on an IP
-address, `localhost`, a name without a dot such as `tower`, or a name ending in
-`.local`, `.lan`, `.home`, `.home.arpa`, `.internal`, `.localdomain` or
-`.fritz.box`. Otherwise a web page anywhere could point a name of its own at
-this machine and use your browser to drive the interface. Any other name needs
-the password, or has to be listed in `ARROWLOOP_HOSTS`, separated by commas; an
-entry that starts with a dot, such as `.example.com`, covers every name under
-it. Behind a reverse proxy, the name that counts is the one the proxy passes on.
-Caddy and Traefik pass on the name the browser asked for. nginx passes on the
-name in its `proxy_pass` line unless it is told `proxy_set_header Host $host`,
-so behind a plain `proxy_pass http://arrowloop:8422` every request through the
-proxy gets in without a password; set one there. With or without a password,
-the interface refuses a change that a page from another site started, and any
-change not sent as JSON, which is what a page elsewhere could send without the
-browser asking first.
+A password puts every page but the login behind it. Set one under
+**Settings**, **Security**, or from outside with `ARROWLOOP_PASSWORD_HASH`
+(see [The environment variable](#the-environment-variable)). Any length is
+accepted, and below twelve characters the form suggests a longer one, since
+five guesses a minute get through a four-digit PIN in under two days. With a
+password the session cookie also belongs to the name it was set on, so a web
+page elsewhere that points a name of its own at this machine gets nothing. Over
+plain HTTP that cookie crosses the wire in clear, so a machine reachable from
+outside wants TLS in front of it either way; see
+[The interface](interface.md#who-can-reach-it).
 
-Without a password, the interface also refuses to download or restore the
-settings backup or hand out an automatic one, to delete from the trash for good, to forget a job's state and
-to delete a target, since anybody who reaches the port could otherwise do it.
-The settings never hand out a notification token, password or secret
-address, with or without a password. The phone app and the desktop window, which nobody else
-reaches, are not asked.
+With or without a password, the interface refuses a change that a page from
+another site started, and any change not sent as JSON, which is what a page
+elsewhere could send without the browser asking first. The settings never hand
+out a notification token, password or secret address.
 
 The same section sets up a second factor: six digits from an authenticator app
 on top of the password. Setting it up shows eight recovery codes once, and each

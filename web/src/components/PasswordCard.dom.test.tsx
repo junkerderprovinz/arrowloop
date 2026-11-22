@@ -19,7 +19,7 @@ vi.mock('../lib/api', async (original) => ({
 import { ApiError, type SecurityStatus } from '../lib/api'
 import { PasswordCard } from './PasswordCard'
 
-const none: SecurityStatus = { available: true, password: 'none', minPasswordLen: 12, twoFactor: false, recoveryCodesLeft: 0 }
+const none: SecurityStatus = { available: true, password: 'none', recommendedPasswordLen: 12, twoFactor: false, recoveryCodesLeft: 0 }
 const file: SecurityStatus = { ...none, password: 'file' }
 
 beforeEach(() => {
@@ -63,13 +63,27 @@ describe('PasswordCard', () => {
     expect(setPassword).not.toHaveBeenCalled()
   })
 
-  it('refuses a short password before asking the server', async () => {
+  it('takes a short password and only suggests a longer one', async () => {
+    setPassword.mockResolvedValue(file)
     render(<PasswordCard status={none} onChanged={vi.fn()} />)
     fill('input[autocomplete="new-password"]', 'short', 0)
+    expect(screen.getByText(/harder to guess/i).textContent).toMatch(/12/)
     fill('input[autocomplete="new-password"]', 'short', 1)
     await click(/set password/i)
-    expect(screen.getByRole('alert').textContent).toMatch(/12/)
-    expect(setPassword).not.toHaveBeenCalled()
+    expect(screen.queryByRole('alert')).toBeNull()
+    await waitFor(() => expect(setPassword).toHaveBeenCalledWith('short', ''))
+  })
+
+  it('says nothing about the length of a long password', () => {
+    render(<PasswordCard status={none} onChanged={vi.fn()} />)
+    expect(screen.queryByText(/harder to guess/i)).toBeNull()
+    fill('input[autocomplete="new-password"]', 'a long enough one', 0)
+    expect(screen.queryByText(/harder to guess/i)).toBeNull()
+  })
+
+  it('tells whoever sets no password that anyone who reaches it may do everything', () => {
+    render(<PasswordCard status={none} onChanged={vi.fn()} />)
+    expect(screen.getByText(/anyone who can reach/i)).toBeTruthy()
   })
 
   it('wants the current password for a change, and says so when it is wrong', async () => {

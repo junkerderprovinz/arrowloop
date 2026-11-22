@@ -2,6 +2,7 @@ package web
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -92,34 +93,66 @@ func (s *Server) noteOpened(from kitfortress.Caller) {
 }
 
 // serveOpened answers at the fortress's path: the bar and the pages of
-// another member a signed-in user opened from here.
+// another member a user opened from here.
 func (s *Server) serveOpened(w http.ResponseWriter, r *http.Request) {
 	f := s.fortressNow()
 	if f == nil {
 		http.NotFound(w, r)
 		return
 	}
-	f.OpenHandler(s.passwordSession, nil).ServeHTTP(w, r)
+	f.OpenHandler(s.openerSession, nil).ServeHTTP(w, r)
 }
 
-// passwordSession names the session a request was signed in with, without
-// the token itself, or reports that it carries none.
-func (s *Server) passwordSession(r *http.Request) (string, bool) {
-	token := cookieToken(r)
-	if r.Header.Get(tokenHeader) != "" || len(s.passwordHash()) == 0 || !s.gate().accepts(token) {
+// visitorCookieName holds a random name a browser gets on an install without
+// a password, so that a tab opened there belongs to that browser alone, as
+// it belongs to a sign-in where there is a password.
+const visitorCookieName = "arrowloop_visitor"
+
+// openerSession names the browser session a request comes from, without the
+// secret it carries, or reports that it carries none. With a password that
+// is the sign-in, without one the visitor cookie. The phone app and the API
+// token are no browser and open nothing.
+func (s *Server) openerSession(r *http.Request) (string, bool) {
+	if r.Header.Get(tokenHeader) != "" {
 		return "", false
 	}
-	sum := sha256.Sum256([]byte(token))
-	return hex.EncodeToString(sum[:]), true
+	if len(s.passwordHash()) == 0 {
+		c, err := r.Cookie(visitorCookieName)
+		if err != nil || c.Value == "" {
+			return "", false
+		}
+		return sessionName(c.Value), true
+	}
+	token := cookieToken(r)
+	if !s.gate().accepts(token) {
+		return "", false
+	}
+	return sessionName(token), true
 }
 
-// openMember opens another member's interface for the signed-in user and
-// answers the path of the tab that shows it. Only a session signed in with
-// the password opens one.
+// sessionName names a session by its secret without revealing it.
+func sessionName(secret string) string {
+	sum := sha256.Sum256([]byte(secret))
+	return hex.EncodeToString(sum[:])
+}
+
+// openMember opens another member's interface for the user and answers the
+// path of the tab that shows it. Without a password here the browser gets a
+// visitor cookie for it, and setting a password closes the tab.
 func (s *Server) openMember(w http.ResponseWriter, r *http.Request) {
-	session, ok := s.passwordSession(r)
+	session, ok := s.openerSession(r)
+	valid := func() bool { return len(s.passwordHash()) == 0 }
+	if len(s.passwordHash()) > 0 {
+		token, gate := cookieToken(r), s.gate()
+		valid = func() bool { return gate.accepts(token) }
+	} else if !ok && r.Header.Get(tokenHeader) == "" {
+		c := sessionCookie(r, rand.Text())
+		c.Name = visitorCookieName
+		http.SetCookie(w, c)
+		session, ok = sessionName(c.Value), true
+	}
 	if !ok {
-		writeJSON(w, http.StatusForbidden, map[string]string{"code": "no_session", "error": "only a session signed in with the password opens another app"})
+		writeJSON(w, http.StatusForbidden, map[string]string{"code": "no_session", "error": "only a browser session opens another app"})
 		return
 	}
 	f := s.fortressNow()
@@ -127,13 +160,12 @@ func (s *Server) openMember(w http.ResponseWriter, r *http.Request) {
 		writeFortressError(w, errNoFortress)
 		return
 	}
-	token, gate := cookieToken(r), s.gate()
 	ctx, cancel := context.WithTimeout(r.Context(), relayTimeout)
 	defer cancel()
 	opened, err := f.Open(ctx, kitfortress.Visit{
 		Member:  r.PathValue("id"),
 		Session: session,
-		Valid:   func() bool { return gate.accepts(token) },
+		Valid:   valid,
 		Back:    basePrefix(r) + "settings/pairing",
 	})
 	if err != nil {

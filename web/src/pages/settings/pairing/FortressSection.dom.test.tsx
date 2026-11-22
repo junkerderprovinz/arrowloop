@@ -340,12 +340,15 @@ describe('the fortress on the Pairing tile', () => {
       opened.mockRestore()
     })
 
-    it('asks for a password here before it opens anything', async () => {
+    it('opens another app without a password here too', async () => {
       passwordSet = false
+      const opened = vi.spyOn(window, 'open').mockReturnValue(null)
       render(<Page start={joined({ members: [vault] })} />)
       await openOn('bombvault')
-      expect(calls).toEqual([])
-      expect(toasts).toEqual([en['fortress.openNeedsPassword']])
+      expect(calls).toEqual(['open b1'])
+      expect(opened).toHaveBeenCalledWith('/fortress/open/ticket-of-b1', '_blank', 'noopener')
+      expect(toasts).toEqual([])
+      opened.mockRestore()
     })
 
     it('shows how an app without pages is doing', async () => {

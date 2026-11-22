@@ -4,10 +4,8 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"io"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/junkerderprovinz/arrowloop/internal/web"
@@ -71,65 +69,18 @@ func TestAnotherSitesPageCannotChangeAnything(t *testing.T) {
 	}
 }
 
-// A page whose host name the attacker re-points at 127.0.0.1 is same-origin to
-// the browser, so with no password only names nobody outside can own work.
-func TestWithoutAPasswordOnlyLocalNamesAreServed(t *testing.T) {
+// Whoever runs the install decides whether it wants a password, so without
+// one it answers on whatever name it is reached by, a reverse proxy's too.
+func TestWithoutAPasswordAnyNameIsServed(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
 	srv := newGuardedServer(t)
 
-	for _, host := range []string{"attacker.example:8422", "arrowloop.example.com"} {
-		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusMisdirectedRequest {
-			t.Errorf("host %s answered %d", host, code)
-		}
-	}
 	for _, host := range []string{
-		"127.0.0.1:8422", "[::1]:8422", "192.168.1.5:8422", "localhost:8422",
-		"tower:8422", "nas.local", "arrowloop.home.arpa", "box.lan", "wails.localhost",
-		"nas.fritz.box", "tower.localdomain", "nas.home",
+		"arrowloop.example.com", "sync.example.com:443", "127.0.0.1:8422", "[::1]:8422",
+		"192.168.1.5:8422", "localhost:8422", "tower:8422", "nas.local",
 	} {
 		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusOK {
 			t.Errorf("host %s answered %d", host, code)
-		}
-	}
-}
-
-// A reverse proxy with a public name can be let in without a password, by
-// whoever runs it.
-func TestNamesListedInTheEnvironmentAreServed(t *testing.T) {
-	t.Setenv(web.PasswordHashEnv, "")
-	t.Setenv(web.HostsEnv, "Sync.Example.com, .mine.example")
-	srv := newGuardedServer(t)
-
-	for _, host := range []string{"sync.example.com", "sync.example.com:443", "nas.mine.example"} {
-		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusOK {
-			t.Errorf("listed host %s answered %d", host, code)
-		}
-	}
-	for _, host := range []string{"example.com", "other.example.com", "mine.example.attacker.example"} {
-		if code := send(t, srv, http.MethodGet, "/api/jobs", nil, host); code != http.StatusMisdirectedRequest {
-			t.Errorf("unlisted host %s answered %d", host, code)
-		}
-	}
-}
-
-func TestARefusedNameIsToldHowToGetIn(t *testing.T) {
-	t.Setenv(web.PasswordHashEnv, "")
-	srv := newGuardedServer(t)
-
-	req, err := http.NewRequest(http.MethodGet, srv.URL+"/api/jobs", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Host = "arrowloop.example.com"
-	resp, err := srv.Client().Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	for _, want := range []string{"arrowloop.example.com", web.HostsEnv} {
-		if !strings.Contains(string(body), want) {
-			t.Errorf("the refusal %s does not mention %s", body, want)
 		}
 	}
 }
@@ -226,14 +177,14 @@ func TestAChangeHasToBeSentAsJSON(t *testing.T) {
 	}
 }
 
-// Without a password the open port is all that stands between a stranger on
-// the network and the saved secrets or a lasting deletion.
-func TestWithoutAPasswordTheSecretsAndLastingDeletionsAreRefused(t *testing.T) {
+// A password is optional, so an install without one may do everything,
+// reading and restoring the backup and deleting for good included.
+func TestWithoutAPasswordEveryRouteIsOpen(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
 	srv := newGuardedServer(t)
 	json := map[string]string{"Content-Type": "application/json"}
 
-	refused := []struct{ method, path string }{
+	for _, c := range []struct{ method, path string }{
 		{http.MethodGet, "/api/config/raw"},
 		{http.MethodPut, "/api/config/raw"},
 		{http.MethodGet, "/api/config/backups/arrowloop-auto-20261107-120000.json"},
@@ -243,26 +194,13 @@ func TestWithoutAPasswordTheSecretsAndLastingDeletionsAreRefused(t *testing.T) {
 		{http.MethodPost, "/api/jobs/photos/trash/left/empty"},
 		{http.MethodPost, "/api/jobs/photos/trash/right/delete"},
 		{http.MethodPost, "/api/jobs/photos/trash/left/prune"},
-		{http.MethodPost, "/api/jobs/x/../photos/trash/left/empty"},
-	}
-	for _, c := range refused {
-		if code := send(t, srv, c.method, c.path, json, ""); code != http.StatusForbidden {
+	} {
+		if code := send(t, srv, c.method, c.path, json, "arrowloop.example.com"); code == http.StatusForbidden || code == http.StatusMisdirectedRequest {
 			t.Errorf("%s %s answered %d without a password", c.method, c.path, code)
 		}
 	}
-	if code := send(t, srv, http.MethodPost, "/api/jobs/photos/trash/left/restore", json, ""); code == http.StatusForbidden {
-		t.Error("putting a file back out of the trash was refused, though it deletes nothing")
-	}
-
-	// The interface picks its own sentence by this code.
-	resp, err := srv.Client().Get(srv.URL + "/api/config/raw")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	if !strings.Contains(string(body), `"code":"password-not-set"`) {
-		t.Errorf("the refusal carries no password-not-set code: %s", body)
+	if code := send(t, srv, http.MethodGet, "/api/config/raw", nil, ""); code != http.StatusOK {
+		t.Errorf("the settings backup answered %d without a password", code)
 	}
 }
 

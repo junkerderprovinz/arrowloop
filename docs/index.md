@@ -132,7 +132,7 @@ sign in through a browser take a token made once with `rclone authorize`; see
 - [When something goes wrong](troubleshooting.md).
 
 !!! warning "Without a password, anyone who reaches the interface can drive it"
-    It asks for a password once one is set under Settings, Security, or through
-    `ARROWLOOP_PASSWORD_HASH`. Until then keep it on your own network, or put it
-    behind something that asks who the visitor is. It can start a job that
-    deletes files.
+    A password is optional. Once one is set under Settings, Security, or
+    through `ARROWLOOP_PASSWORD_HASH`, the interface asks for it. Until then
+    keep it on your own network, or put it behind something that asks who the
+    visitor is. It can start a job that deletes files.

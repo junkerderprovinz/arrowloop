@@ -108,30 +108,43 @@ func TestSettingTheFirstPasswordSignsTheCallerIn(t *testing.T) {
 	}
 }
 
-func TestAShortPasswordIsRefused(t *testing.T) {
-	_, srv, store := newSecured(t)
-	// Eleven characters of three bytes each: long in bytes, short in characters.
-	for _, pw := range []string{"1234", strings.Repeat("ä", MinPasswordLen-1)} {
-		resp, _ := postAs(t, browser(t), srv.URL+"/api/security/password", map[string]string{"password": pw})
-		if resp.StatusCode != http.StatusBadRequest {
-			t.Errorf("%d characters answered %s", len([]rune(pw)), resp.Status)
-		}
+// Whoever runs the install decides how long its password is, so a short one
+// is kept and the form only suggests a longer one.
+func TestAShortPasswordIsAccepted(t *testing.T) {
+	s, srv, store := newSecured(t)
+	resp, said := postAs(t, browser(t), srv.URL+"/api/security/password", map[string]string{"password": "1234"})
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("a four-character password answered %s: %v", resp.Status, said)
 	}
-	if store.Get().PasswordHash != "" {
-		t.Fatal("a refused password was stored")
+	if !security.VerifyPassword(s.key(), "1234", store.Get().PasswordHash) {
+		t.Fatal("the short password was not stored")
+	}
+	if said["recommendedPasswordLen"] != float64(RecommendedPasswordLen) {
+		t.Errorf("the answer suggests %v characters, want %d", said["recommendedPasswordLen"], RecommendedPasswordLen)
 	}
 }
 
-// Raising the minimum must not lock out somebody who chose a password under
-// an older one.
-func TestAShorterPasswordFromBeforeStillSignsIn(t *testing.T) {
+// Removing the password is a button of its own, which asks for the current
+// one.
+func TestAnEmptyPasswordIsRefused(t *testing.T) {
+	_, srv, store := newSecured(t)
+	resp, _ := postAs(t, browser(t), srv.URL+"/api/security/password", map[string]string{"password": ""})
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("an empty password answered %s", resp.Status)
+	}
+	if store.Get().PasswordHash != "" {
+		t.Fatal("an empty password was stored")
+	}
+}
+
+func TestAShortPasswordSignsIn(t *testing.T) {
 	_, srv, store := newSecured(t)
 	hash := testHash(t, "eight ch")
 	if err := store.Update(func(st *security.State) error { st.PasswordHash = hash; return nil }); err != nil {
 		t.Fatal(err)
 	}
 	if resp, said := attemptLogin(t, srv, browser(t), "eight ch"); resp.StatusCode != http.StatusOK {
-		t.Errorf("a password shorter than the minimum was refused at sign-in: %s %s", resp.Status, said)
+		t.Errorf("a short password was refused at sign-in: %s %s", resp.Status, said)
 	}
 }
 

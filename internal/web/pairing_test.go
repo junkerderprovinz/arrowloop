@@ -83,6 +83,9 @@ type setup struct {
 	lan        *lan.Service
 	from       string
 	guard      bool
+	// password is set in the instance's own security file, which the
+	// environment does not reach.
+	password string
 }
 
 func nodeWith(t *testing.T, su setup, h *harness) *node {
@@ -114,6 +117,10 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 	}
 	log := &lockedLog{}
 	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf}
+	if su.password != "" {
+		s.Key = testKey
+		s.Security = securedStore(t, h.dir, su.password)
+	}
 	handler := s.Handler()
 	if su.guard {
 		handler = s.Guard(handler)

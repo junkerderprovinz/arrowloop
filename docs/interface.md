@@ -605,6 +605,10 @@ switch it on. A backup is the settings file and a copy of each job's state
 database. Before one is put back, ArrowLoop keeps what it had as
 `before-import.tar` beside its settings, and no job runs while it goes back.
 
+**Open** on an app with pages of its own shows them in a new tab, behind that
+app's own sign-in. It works from an ArrowLoop without a password too, and the
+tab belongs to the browser that opened it. Setting a password here closes it.
+
 **Show phrase** asks for the password and shows the twelve words with a QR
 code. **Change phrase** moves every app it can reach to new words, so a removed
 device stays out, and names the ones still on the old phrase. Those follow on
