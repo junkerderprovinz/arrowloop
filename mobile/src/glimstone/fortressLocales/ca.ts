@@ -26,7 +26,7 @@ export const ca: FortressText = {
     unreachable: "Ara mateix no es pot accedir a l'app. Torna-ho a provar d'aquí a un moment.",
     permission_off: "Obrir aquesta app està desactivat als permisos de la fortalesa.",
     no_ui: "Aquesta app no té pàgines per obrir.",
-    ui_no_login: "Aquesta app només es pot obrir des d'un altre lloc quan té una contrasenya.",
+    ui_no_login: "Aquesta app necessita una actualització abans que es pugui obrir des d'aquí.",
     busy: "L'app està ocupada. Torna-ho a provar d'aquí a un moment.",
     removed: "Aquesta app s'ha tret de la teva fortalesa.",
     closed: "Aquesta pàgina s'ha tancat. Torna-la a obrir des de la targeta de l'app.",

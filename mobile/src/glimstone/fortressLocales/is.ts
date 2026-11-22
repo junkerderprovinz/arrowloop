@@ -26,7 +26,7 @@ export const is: FortressText = {
     unreachable: "Ekki næst í forritið núna. Reyndu aftur eftir smástund.",
     permission_off: "Slökkt er á opnun þessa forrits í heimildum vígisins.",
     no_ui: "Þetta forrit hefur engar síður til að opna.",
-    ui_no_login: "Þetta forrit opnast annars staðar frá aðeins þegar það er með lykilorð.",
+    ui_no_login: "Þetta forrit þarf uppfærslu áður en hægt er að opna það héðan.",
     busy: "Forritið er upptekið. Reyndu aftur eftir smástund.",
     removed: "Þetta forrit var tekið úr víginu þínu.",
     closed: "Þessari síðu var lokað. Opnaðu hana aftur af korti forritsins.",

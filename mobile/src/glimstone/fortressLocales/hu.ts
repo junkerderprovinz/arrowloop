@@ -26,7 +26,7 @@ export const hu: FortressText = {
     unreachable: "Az alkalmazás most nem érhető el. Próbáld újra egy kicsit később.",
     permission_off: "Ennek az alkalmazásnak a megnyitása ki van kapcsolva az erőd engedélyeiben.",
     no_ui: "Ennek az alkalmazásnak nincsenek megnyitható oldalai.",
-    ui_no_login: "Ez az alkalmazás csak akkor nyitható meg máshonnan, ha van jelszava.",
+    ui_no_login: "Ez az alkalmazás frissítésre szorul, mielőtt innen megnyitható.",
     busy: "Az alkalmazás most foglalt. Próbáld újra egy kicsit később.",
     removed: "Ezt az alkalmazást kivették az erődödből.",
     closed: "Ez az oldal bezárult. Nyisd meg újra az alkalmazás kártyájáról.",

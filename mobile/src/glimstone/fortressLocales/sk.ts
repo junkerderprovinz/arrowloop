@@ -41,7 +41,7 @@ export const sk: FortressText = {
     unreachable: "Aplikácia teraz nie je dostupná. Skús to znova o chvíľu.",
     permission_off: "Otváranie tejto aplikácie je v povoleniach pevnosti vypnuté.",
     no_ui: "Táto aplikácia nemá žiadne stránky na otvorenie.",
-    ui_no_login: "Táto aplikácia sa dá otvoriť odinakiaľ, až keď má heslo.",
+    ui_no_login: "Táto aplikácia potrebuje aktualizáciu, kým sa dá otvoriť odtiaľto.",
     busy: "Aplikácia je zaneprázdnená. Skús to znova o chvíľu.",
     removed: "Táto aplikácia bola vybratá z tvojej pevnosti.",
     closed: "Táto stránka sa zavrela. Otvor ju znova z karty aplikácie.",

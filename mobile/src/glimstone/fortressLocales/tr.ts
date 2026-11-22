@@ -26,7 +26,7 @@ export const tr: FortressText = {
     unreachable: "Uygulamaya şu anda ulaşılamıyor. Birazdan yeniden dene.",
     permission_off: "Bu uygulamayı açmak kale izinlerinde kapalı.",
     no_ui: "Bu uygulamanın açılacak sayfası yok.",
-    ui_no_login: "Bu uygulama ancak bir parolası olduğunda başka yerden açılabilir.",
+    ui_no_login: "Bu uygulamanın buradan açılabilmesi için önce güncellenmesi gerekiyor.",
     busy: "Uygulama şu anda meşgul. Birazdan yeniden dene.",
     removed: "Bu uygulama kalenden çıkarıldı.",
     closed: "Bu sayfa kapandı. Uygulamanın kartından yeniden aç.",

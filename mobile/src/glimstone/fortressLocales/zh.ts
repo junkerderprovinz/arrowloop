@@ -26,7 +26,7 @@ export const zh: FortressText = {
     unreachable: "暂时无法连接到应用。请稍后再试。",
     permission_off: "在堡垒的许可里，打开这个应用已被关闭。",
     no_ui: "这个应用没有可以打开的页面。",
-    ui_no_login: "这个应用设置密码后才能从别处打开。",
+    ui_no_login: "这个应用需要更新后才能从这里打开。",
     busy: "应用正忙。请稍后再试。",
     removed: "这个应用已从你的堡垒中移出。",
     closed: "这个页面已关闭。请从应用的卡片重新打开。",

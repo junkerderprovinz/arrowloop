@@ -41,7 +41,7 @@ export const lt: FortressText = {
     unreachable: "Programėlė dabar nepasiekiama. Pabandyk dar kartą po akimirkos.",
     permission_off: "Šios programėlės atidarymas išjungtas tvirtovės leidimuose.",
     no_ui: "Ši programėlė neturi puslapių, kuriuos būtų galima atidaryti.",
-    ui_no_login: "Šią programėlę iš kitur galima atidaryti tik tada, kai ji turi slaptažodį.",
+    ui_no_login: "Šią programėlę reikia atnaujinti, kad ją būtų galima atidaryti iš čia.",
     busy: "Programėlė užimta. Pabandyk dar kartą po akimirkos.",
     removed: "Ši programėlė buvo išimta iš tavo tvirtovės.",
     closed: "Šis puslapis užsidarė. Atidaryk jį iš naujo iš programėlės kortelės.",

@@ -26,7 +26,7 @@ export const vi: FortressText = {
     unreachable: "Hiện không kết nối được với ứng dụng. Hãy thử lại sau giây lát.",
     permission_off: "Việc mở ứng dụng này đang tắt trong quyền của pháo đài.",
     no_ui: "Ứng dụng này không có trang nào để mở.",
-    ui_no_login: "Ứng dụng này chỉ mở được từ nơi khác khi đã có mật khẩu.",
+    ui_no_login: "Ứng dụng này cần cập nhật trước khi mở được từ đây.",
     busy: "Ứng dụng đang bận. Hãy thử lại sau giây lát.",
     removed: "Ứng dụng này đã được đưa ra khỏi pháo đài của bạn.",
     closed: "Trang này đã đóng. Hãy mở lại từ thẻ của ứng dụng.",

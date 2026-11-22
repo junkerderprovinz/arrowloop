@@ -26,7 +26,7 @@ export const nl: FortressText = {
     unreachable: "De app is nu niet bereikbaar. Probeer het zo nog eens.",
     permission_off: "Het openen van deze app staat uit in de toestemmingen van de vesting.",
     no_ui: "Deze app heeft geen pagina's om te openen.",
-    ui_no_login: "Deze app is pas van elders te openen als hij een wachtwoord heeft.",
+    ui_no_login: "Deze app heeft een update nodig voordat hij hiervandaan te openen is.",
     busy: "De app is bezig. Probeer het zo nog eens.",
     removed: "Deze app is uit je vesting gehaald.",
     closed: "Deze pagina is gesloten. Open hem opnieuw via de kaart van de app.",

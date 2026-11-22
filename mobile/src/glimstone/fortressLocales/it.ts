@@ -26,7 +26,7 @@ export const it: FortressText = {
     unreachable: "L'app non è raggiungibile in questo momento. Riprova tra poco.",
     permission_off: "L'apertura di questa app è disattivata nei permessi della fortezza.",
     no_ui: "Questa app non ha pagine da aprire.",
-    ui_no_login: "Questa app si apre da un altro posto solo quando ha una password.",
+    ui_no_login: "Questa app ha bisogno di un aggiornamento prima di potersi aprire da qui.",
     busy: "L'app è occupata. Riprova tra poco.",
     removed: "Questa app è stata tolta dalla tua fortezza.",
     closed: "Questa pagina si è chiusa. Riaprila dalla scheda dell'app.",

@@ -26,7 +26,7 @@ export const gl: FortressText = {
     unreachable: "Agora mesmo non se pode acceder á app. Téntao de novo nun momento.",
     permission_off: "Abrir esta app está desactivado nos permisos da fortaleza.",
     no_ui: "Esta app non ten páxinas que abrir.",
-    ui_no_login: "Esta app só se pode abrir desde outro sitio cando ten un contrasinal.",
+    ui_no_login: "Esta app necesita unha actualización para poder abrirse desde aquí.",
     busy: "A app está ocupada. Téntao de novo nun momento.",
     removed: "Esta app foi retirada da túa fortaleza.",
     closed: "Esta páxina pechouse. Ábrea de novo desde a tarxeta da app.",

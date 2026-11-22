@@ -26,7 +26,7 @@ export const fi: FortressText = {
     unreachable: "Sovellukseen ei saada nyt yhteyttä. Yritä hetken päästä uudelleen.",
     permission_off: "Tämän sovelluksen avaaminen on pois päältä linnoituksen luvissa.",
     no_ui: "Tällä sovelluksella ei ole avattavia sivuja.",
-    ui_no_login: "Tämän sovelluksen voi avata muualta vasta, kun sillä on salasana.",
+    ui_no_login: "Tämä sovellus tarvitsee päivityksen, ennen kuin sen voi avata täältä.",
     busy: "Sovellus on varattu. Yritä hetken päästä uudelleen.",
     removed: "Tämä sovellus otettiin pois linnoituksestasi.",
     closed: "Tämä sivu sulkeutui. Avaa se uudelleen sovelluksen kortista.",

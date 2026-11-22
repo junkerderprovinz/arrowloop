@@ -26,7 +26,7 @@ export const no: FortressText = {
     unreachable: "Appen kan ikke nås akkurat nå. Prøv igjen om litt.",
     permission_off: "Å åpne denne appen er slått av i tillatelsene til festningen.",
     no_ui: "Denne appen har ingen sider å åpne.",
-    ui_no_login: "Denne appen kan først åpnes fra andre steder når den har et passord.",
+    ui_no_login: "Denne appen trenger en oppdatering før den kan åpnes herfra.",
     busy: "Appen er opptatt. Prøv igjen om litt.",
     removed: "Denne appen ble tatt ut av festningen din.",
     closed: "Denne siden ble lukket. Åpne den igjen fra kortet til appen.",

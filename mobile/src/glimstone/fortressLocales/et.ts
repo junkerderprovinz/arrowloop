@@ -26,7 +26,7 @@ export const et: FortressText = {
     unreachable: "Rakendusega ei saa praegu ühendust. Proovi kohe uuesti.",
     permission_off: "Selle rakenduse avamine on kindluse lubades välja lülitatud.",
     no_ui: "Sellel rakendusel pole lehti, mida avada.",
-    ui_no_login: "Seda rakendust saab mujalt avada alles siis, kui sel on parool.",
+    ui_no_login: "See rakendus vajab uuendust, enne kui seda saab siit avada.",
     busy: "Rakendus on hõivatud. Proovi kohe uuesti.",
     removed: "See rakendus võeti sinu kindlusest välja.",
     closed: "See leht on suletud. Ava see uuesti rakenduse kaardilt.",

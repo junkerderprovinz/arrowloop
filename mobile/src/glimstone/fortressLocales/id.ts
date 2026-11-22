@@ -26,7 +26,7 @@ export const id: FortressText = {
     unreachable: "Aplikasi tidak bisa dijangkau sekarang. Coba lagi sebentar lagi.",
     permission_off: "Membuka aplikasi ini dimatikan di izin benteng.",
     no_ui: "Aplikasi ini tidak punya halaman untuk dibuka.",
-    ui_no_login: "Aplikasi ini baru bisa dibuka dari tempat lain kalau sudah punya kata sandi.",
+    ui_no_login: "Aplikasi ini perlu pembaruan sebelum bisa dibuka dari sini.",
     busy: "Aplikasi sedang sibuk. Coba lagi sebentar lagi.",
     removed: "Aplikasi ini sudah dikeluarkan dari benteng kamu.",
     closed: "Halaman ini sudah ditutup. Buka lagi dari kartu aplikasinya.",

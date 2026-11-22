@@ -26,7 +26,7 @@ export const ms: FortressText = {
     unreachable: "Apl tidak dapat dicapai sekarang. Cuba lagi sebentar nanti.",
     permission_off: "Membuka apl ini dimatikan dalam kebenaran kubu.",
     no_ui: "Apl ini tiada halaman untuk dibuka.",
-    ui_no_login: "Apl ini hanya boleh dibuka dari tempat lain selepas ia ada kata laluan.",
+    ui_no_login: "Apl ini perlu kemas kini sebelum boleh dibuka dari sini.",
     busy: "Apl sedang sibuk. Cuba lagi sebentar nanti.",
     removed: "Apl ini sudah dikeluarkan dari kubu kamu.",
     closed: "Halaman ini sudah ditutup. Buka semula dari kad apl.",

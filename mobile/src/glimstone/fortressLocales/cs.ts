@@ -41,7 +41,7 @@ export const cs: FortressText = {
     unreachable: "Aplikace teď není dostupná. Zkus to za chvíli znovu.",
     permission_off: "Otevírání této aplikace je v oprávněních pevnosti vypnuté.",
     no_ui: "Tahle aplikace nemá žádné stránky k otevření.",
-    ui_no_login: "Tahle aplikace se dá otevřít odjinud, až když má heslo.",
+    ui_no_login: "Tahle aplikace potřebuje aktualizaci, než se dá otevřít odsud.",
     busy: "Aplikace je zaneprázdněná. Zkus to za chvíli znovu.",
     removed: "Tahle aplikace byla vyjmuta z tvé pevnosti.",
     closed: "Tahle stránka se zavřela. Otevři ji znovu z karty aplikace.",

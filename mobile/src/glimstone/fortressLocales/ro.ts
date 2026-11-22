@@ -26,7 +26,7 @@ export const ro: FortressText = {
     unreachable: "Aplicația nu poate fi accesată acum. Încearcă din nou peste puțin timp.",
     permission_off: "Deschiderea acestei aplicații este oprită în permisiunile fortăreței.",
     no_ui: "Această aplicație nu are pagini de deschis.",
-    ui_no_login: "Această aplicație se deschide din altă parte doar după ce are o parolă.",
+    ui_no_login: "Această aplicație are nevoie de o actualizare înainte să se poată deschide de aici.",
     busy: "Aplicația este ocupată. Încearcă din nou peste puțin timp.",
     removed: "Această aplicație a fost scoasă din fortăreața ta.",
     closed: "Această pagină s-a închis. Deschide-o din nou de pe cardul aplicației.",

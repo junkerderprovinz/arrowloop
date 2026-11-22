@@ -26,7 +26,7 @@ export const eu: FortressText = {
     unreachable: "Ezin da aplikaziora iritsi oraintxe. Saiatu berriro une batean.",
     permission_off: "Aplikazio hau irekitzea desaktibatuta dago gotorlekuko baimenetan.",
     no_ui: "Aplikazio honek ez du irekitzeko orririk.",
-    ui_no_login: "Aplikazio hau beste leku batetik pasahitza duenean bakarrik ireki daiteke.",
+    ui_no_login: "Aplikazio honek eguneratze bat behar du hemendik ireki ahal izateko.",
     busy: "Aplikazioa lanpetuta dago. Saiatu berriro une batean.",
     removed: "Aplikazio hau zure gotorlekutik atera da.",
     closed: "Orri hau itxi egin da. Ireki berriro aplikazioaren txarteletik.",

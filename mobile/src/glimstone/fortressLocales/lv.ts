@@ -26,7 +26,7 @@ export const lv: FortressText = {
     unreachable: "Lietotne šobrīd nav sasniedzama. Mēģini vēlreiz pēc brīža.",
     permission_off: "Šīs lietotnes atvēršana ir izslēgta cietokšņa atļaujās.",
     no_ui: "Šai lietotnei nav lapu, ko atvērt.",
-    ui_no_login: "Šo lietotni no citurienes var atvērt tikai tad, kad tai ir parole.",
+    ui_no_login: "Šai lietotnei vajag atjauninājumu, pirms to var atvērt no šejienes.",
     busy: "Lietotne ir aizņemta. Mēģini vēlreiz pēc brīža.",
     removed: "Šī lietotne tika izņemta no tava cietokšņa.",
     closed: "Šī lapa tika aizvērta. Atver to vēlreiz no lietotnes kartītes.",

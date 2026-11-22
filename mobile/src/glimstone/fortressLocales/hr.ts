@@ -38,7 +38,7 @@ export const hr: FortressText = {
     unreachable: "Aplikacija trenutačno nije dostupna. Pokušaj ponovno za trenutak.",
     permission_off: "Otvaranje ove aplikacije isključeno je u dopuštenjima utvrde.",
     no_ui: "Ova aplikacija nema stranica za otvaranje.",
-    ui_no_login: "Ova se aplikacija može otvoriti s drugog mjesta tek kad ima lozinku.",
+    ui_no_login: "Ova aplikacija treba ažuriranje prije nego što se može otvoriti odavde.",
     busy: "Aplikacija je zauzeta. Pokušaj ponovno za trenutak.",
     removed: "Ova je aplikacija izvađena iz tvoje utvrde.",
     closed: "Ova se stranica zatvorila. Otvori je ponovno s kartice aplikacije.",

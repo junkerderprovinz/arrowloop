@@ -336,7 +336,7 @@ describe('the fortress on the Pairing tile', () => {
       render(<Page start={joined({ members: [vault] })} />)
       await openOn('bombvault')
       expect(opened).not.toHaveBeenCalled()
-      expect(toasts).toEqual(['This app opens from elsewhere only once it has a password.'])
+      expect(toasts).toEqual(['This app needs an update before you can open it from here.'])
       opened.mockRestore()
     })
 

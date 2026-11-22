@@ -41,7 +41,7 @@ export const pl: FortressText = {
     unreachable: "Aplikacja jest teraz nieosiągalna. Spróbuj ponownie za chwilę.",
     permission_off: "Otwieranie tej aplikacji jest wyłączone w uprawnieniach twierdzy.",
     no_ui: "Ta aplikacja nie ma stron do otwarcia.",
-    ui_no_login: "Tę aplikację można otworzyć z innego miejsca dopiero wtedy, gdy ma hasło.",
+    ui_no_login: "Ta aplikacja potrzebuje aktualizacji, zanim da się ją otworzyć stąd.",
     busy: "Aplikacja jest zajęta. Spróbuj ponownie za chwilę.",
     removed: "Ta aplikacja została wyjęta z twojej twierdzy.",
     closed: "Ta strona została zamknięta. Otwórz ją ponownie z karty aplikacji.",
