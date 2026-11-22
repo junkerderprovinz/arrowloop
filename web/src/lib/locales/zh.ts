@@ -580,7 +580,6 @@ const zh: Translations = {
   'overview.idle': '当前没有任何任务在运行。',
   'nav.overview': '概览',
   'overview.idleHint': '任务按各自的计划运行，或在你手动启动时运行。',
-  'overview.accounts': '已连接的账户',
   'overview.status': '同步状态',
   'overview.lastSync': '最近同步',
   'overview.changes': '最近变更',

@@ -580,7 +580,6 @@ const lt: Translations = {
   'overview.idle': 'Šiuo metu niekas nevykdoma.',
   'nav.overview': 'Apžvalga',
   'overview.idleHint': 'Užduotys vykdomos pagal savo tvarkaraštį arba kai paleidi vieną ranka.',
-  'overview.accounts': 'Prijungtos paskyros',
   'overview.status': 'Sinchronizavimo būsena',
   'overview.lastSync': 'Paskutinis sinchronizavimas',
   'overview.changes': 'Paskutiniai pakeitimai',

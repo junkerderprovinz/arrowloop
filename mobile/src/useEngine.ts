@@ -1,8 +1,10 @@
+import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { api, events, type RunEvent } from "./api";
 import { engine } from "./engine";
 import type { T } from "./i18n";
+import { follow } from "./readAgain";
 
 export type EngineState = "starting" | "ready" | "trouble";
 
@@ -137,34 +139,70 @@ export function useEngineStream(ready: boolean, onEvent: (event: RunEvent) => vo
 
   useEffect(() => {
     if (!ready) return;
-    const control = new AbortController();
-    let stopped = false;
-
-    (async () => {
-      while (!stopped) {
-        try {
-          for await (const line of events(control.signal, () => opened.current?.())) {
-            if (stopped) return;
-            let event: RunEvent;
-            try {
-              event = JSON.parse(line) as RunEvent;
-            } catch {
-              continue;
-            }
-            latest.current(event);
-          }
-        } catch {
-          // Dropped connections are ordinary on a phone; the pause below
-          // keeps an unreachable engine from turning this into a busy loop.
-        }
-        if (stopped) return;
-        await new Promise((r) => setTimeout(r, 2000));
-      }
-    })();
-
-    return () => {
-      stopped = true;
-      control.abort();
-    };
+    return streamEngine(
+      (event) => latest.current(event),
+      () => opened.current?.(),
+    );
   }, [ready]);
+}
+
+/** The loop of useEngineStream, until the function it returns is called. */
+function streamEngine(onEvent: (event: RunEvent) => void, onOpen: () => void): () => void {
+  const control = new AbortController();
+  let stopped = false;
+
+  (async () => {
+    while (!stopped) {
+      try {
+        for await (const line of events(control.signal, onOpen)) {
+          if (stopped) return;
+          let event: RunEvent;
+          try {
+            event = JSON.parse(line) as RunEvent;
+          } catch {
+            continue;
+          }
+          onEvent(event);
+        }
+      } catch {
+        // Dropped connections are ordinary on a phone; the pause below
+        // keeps an unreachable engine from turning this into a busy loop.
+      }
+      if (stopped) return;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  })();
+
+  return () => {
+    stopped = true;
+    control.abort();
+  };
+}
+
+/**
+ * Calls `read` whenever what a screen shows may be old: when the screen comes
+ * into view, when the app comes back to the front and, with `runs`, on the
+ * engine's events and whenever its stream connects. A screen that only hears
+ * events misses whatever happened while Android had the app frozen.
+ */
+export function useReadAgain(read: () => void, runs = true) {
+  const navigation = useNavigation();
+  const latest = useRef(read);
+  latest.current = read;
+
+  useEffect(
+    () =>
+      follow(
+        {
+          focus: (cue) => navigation.addListener("focus", cue),
+          front: (cue) => {
+            const sub = AppState.addEventListener("change", (next) => next === "active" && cue());
+            return () => sub.remove();
+          },
+          stream: runs ? streamEngine : undefined,
+        },
+        () => latest.current(),
+      ),
+    [navigation, runs],
+  );
 }

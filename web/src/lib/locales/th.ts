@@ -580,7 +580,6 @@ const th: Translations = {
   'overview.idle': 'ตอนนี้ยังไม่มีอะไรทำงานอยู่',
   'nav.overview': 'ภาพรวม',
   'overview.idleHint': 'งานจะทำงานตามกำหนดการ หรือเมื่อคุณเริ่มเองด้วยมือ',
-  'overview.accounts': 'บัญชีที่เชื่อมต่อ',
   'overview.status': 'สถานะการซิงค์',
   'overview.lastSync': 'ซิงค์ล่าสุด',
   'overview.changes': 'การเปลี่ยนแปลงล่าสุด',

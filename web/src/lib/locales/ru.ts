@@ -580,7 +580,6 @@ const ru: Translations = {
   'overview.idle': 'Сейчас ничего не работает.',
   'nav.overview': 'Обзор',
   'overview.idleHint': 'Задания идут по своему расписанию или когда ты запускаешь одно вручную.',
-  'overview.accounts': 'Подключённые учётные записи',
   'overview.status': 'Состояние синхронизации',
   'overview.lastSync': 'Последняя синхронизация',
   'overview.changes': 'Последние изменения',

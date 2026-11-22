@@ -580,7 +580,6 @@ const gl: Translations = {
   'overview.idle': 'Agora mesmo non se executa nada.',
   'nav.overview': 'Resumo',
   'overview.idleHint': 'As tarefas execútanse segundo a súa programación, ou cando inicias unha a man.',
-  'overview.accounts': 'Contas conectadas',
   'overview.status': 'Estado da sincronización',
   'overview.lastSync': 'Última sincronización',
   'overview.changes': 'Últimos cambios',

@@ -580,7 +580,6 @@ const he: Translations = {
   'overview.idle': 'כרגע לא פועל דבר.',
   'nav.overview': 'סקירה',
   'overview.idleHint': 'משימות פועלות לפי התזמון שלהן, או כשמפעילים אחת ידנית.',
-  'overview.accounts': 'חשבונות מחוברים',
   'overview.status': 'מצב הסנכרון',
   'overview.lastSync': 'סנכרון אחרון',
   'overview.changes': 'שינויים אחרונים',

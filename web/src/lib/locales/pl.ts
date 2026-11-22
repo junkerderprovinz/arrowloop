@@ -580,7 +580,6 @@ const pl: Translations = {
   'overview.idle': 'W tej chwili nic nie działa.',
   'nav.overview': 'Przegląd',
   'overview.idleHint': 'Zadania działają według swojego harmonogramu albo gdy uruchomisz jedno ręcznie.',
-  'overview.accounts': 'Połączone konta',
   'overview.status': 'Stan synchronizacji',
   'overview.lastSync': 'Ostatnia synchronizacja',
   'overview.changes': 'Ostatnie zmiany',

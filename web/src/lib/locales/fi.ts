@@ -580,7 +580,6 @@ const fi: Translations = {
   'overview.idle': 'Mitään ei ole juuri nyt käynnissä.',
   'nav.overview': 'Yleiskatsaus',
   'overview.idleHint': 'Työt käyvät aikataulunsa mukaan tai kun käynnistät jonkin itse.',
-  'overview.accounts': 'Liitetyt tilit',
   'overview.status': 'Synkronoinnin tila',
   'overview.lastSync': 'Viimeisin synkronointi',
   'overview.changes': 'Viimeisimmät muutokset',

@@ -580,7 +580,6 @@ const et: Translations = {
   'overview.idle': 'Praegu ei tööta midagi.',
   'nav.overview': 'Ülevaade',
   'overview.idleHint': 'Tööd käivituvad ajakava järgi või kui sa ise ühe käivitad.',
-  'overview.accounts': 'Ühendatud kontod',
   'overview.status': 'Sünkroonimise olek',
   'overview.lastSync': 'Viimane sünkroonimine',
   'overview.changes': 'Viimased muudatused',

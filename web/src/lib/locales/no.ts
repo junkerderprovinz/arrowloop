@@ -580,7 +580,6 @@ const no: Translations = {
   'overview.idle': 'Ingenting kjører akkurat nå.',
   'nav.overview': 'Oversikt',
   'overview.idleHint': 'Jobber kjører etter planen sin, eller når du starter en selv.',
-  'overview.accounts': 'Tilkoblede kontoer',
   'overview.status': 'Synkroniseringsstatus',
   'overview.lastSync': 'Siste synkronisering',
   'overview.changes': 'Siste endringer',

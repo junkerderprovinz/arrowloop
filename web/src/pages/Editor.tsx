@@ -19,8 +19,8 @@ import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
 import { useHost } from '../lib/host'
 import { overNetwork } from '../lib/localTarget'
-import { tunnelName, type VpnState } from '../lib/vpn'
-import { useT, type TranslationKey } from '../lib/i18n'
+import { tunnelName, vpnChoiceNote, type VpnState } from '../lib/vpn'
+import { useT } from '../lib/i18n'
 
 /**
  * What a new job starts out ignoring: files the operating system or a tool
@@ -520,13 +520,7 @@ export function VpnChoice({ value, network, onChange }: { value: string; network
     { value: '', label: t('edit.vpnOff') },
     ...tunnels.map((x) => ({ value: x.id, label: tunnelName(x, vpn.state!.providers) })),
   ]
-  const warning: TranslationKey | null = !vpn.offered
-    ? 'edit.vpnNotHere'
-    : tunnels.length === 0
-      ? 'edit.vpnNone'
-      : value && !tunnels.some((x) => x.id === value)
-        ? 'edit.vpnGone'
-        : null
+  const note = vpnChoiceNote(vpn.offered, tunnels, value)
   return (
     <SubCard title={t('edit.connection')}>
       <div data-new="vpn">
@@ -537,9 +531,9 @@ export function VpnChoice({ value, network, onChange }: { value: string; network
           </span>
         </SettingRow>
       </div>
-      {warning && (
-        <p role="status" className="text-subline text-statusWarn">
-          {t(warning)}
+      {note && (
+        <p role="status" className={`text-subline ${note.fails ? 'text-statusWarn' : 'text-carbon-textSub'}`}>
+          {t(note.said)}
         </p>
       )}
     </SubCard>

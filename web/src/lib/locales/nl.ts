@@ -580,7 +580,6 @@ const nl: Translations = {
   'overview.idle': 'Er loopt op dit moment niets.',
   'nav.overview': 'Overzicht',
   'overview.idleHint': 'Taken lopen volgens hun planning, of wanneer je er zelf een start.',
-  'overview.accounts': 'Verbonden accounts',
   'overview.status': 'Synchronisatiestatus',
   'overview.lastSync': 'Laatste synchronisatie',
   'overview.changes': 'Laatste wijzigingen',

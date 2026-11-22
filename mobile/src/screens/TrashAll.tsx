@@ -101,7 +101,11 @@ export function TrashAll() {
           picked={side}
           onPick={(which) => setSide((old) => (old === which ? null : which))}
         />
-        <Caption>{t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}</Caption>
+        <Caption>
+          {totals.entries === 0
+            ? t(side ? "trash.empty" : "trash.nothing")
+            : t("trash.holding", { count: totals.entries, size: bytes(totals.bytes) })}
+        </Caption>
         {/* The job chips need two jobs to choose between. */}
         {names.length > 1 ? (
           <ListHead

@@ -580,7 +580,6 @@ const sl: Translations = {
   'overview.idle': 'Trenutno ne teče nič.',
   'nav.overview': 'Pregled',
   'overview.idleHint': 'Opravila tečejo po svojem urniku ali ko katero zaženeš ročno.',
-  'overview.accounts': 'Povezani računi',
   'overview.status': 'Stanje sinhronizacije',
   'overview.lastSync': 'Zadnja sinhronizacija',
   'overview.changes': 'Zadnje spremembe',

@@ -580,7 +580,6 @@ const bg: Translations = {
   'overview.idle': 'В момента не тече нищо.',
   'nav.overview': 'Преглед',
   'overview.idleHint': 'Задачите се изпълняват по график или когато стартираш някоя на ръка.',
-  'overview.accounts': 'Свързани профили',
   'overview.status': 'Състояние на синхронизацията',
   'overview.lastSync': 'Последна синхронизация',
   'overview.changes': 'Последни промени',

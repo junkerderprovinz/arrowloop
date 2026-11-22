@@ -580,7 +580,6 @@ const ar: Translations = {
   'overview.idle': 'لا شيء قيد التشغيل الآن.',
   'nav.overview': 'نظرة عامة',
   'overview.idleHint': 'تعمل المهام حسب جدولها، أو عندما تبدأ واحدة بنفسك.',
-  'overview.accounts': 'الحسابات المتصلة',
   'overview.status': 'حالة المزامنة',
   'overview.lastSync': 'آخر مزامنة',
   'overview.changes': 'آخر التغييرات',

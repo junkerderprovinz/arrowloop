@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useRoute, type RouteProp } from "@react-navigation/native";
 import { findingOrder, sentence, type Finding, type Severity, SEVERITIES } from "../../../web/src/lib/anomalies";
@@ -18,7 +18,7 @@ import { useT, type T } from "../i18n";
 import { JobChips } from "../jobChips";
 import { ListHead, ListSearch, Narrowed, type SortDir } from "../listHead";
 import { space, text } from "../theme";
-import { useEngineEvents } from "../useEngine";
+import { useReadAgain } from "../useEngine";
 import {
   AxisLabel,
   Badge,
@@ -169,6 +169,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
   useEffect(() => {
     void load();
   }, [load]);
+  useReadAgain(load);
 
   useEffect(() => {
     // Only for a drive's name in a badge; without it the badge shows the id.
@@ -183,8 +184,6 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
     () => jobNamesInOrder([...jobs, ...(rows ?? []).map((r) => r.Job)], jobs).filter((name) => name !== ""),
     [jobs, rows],
   );
-
-  useThrottledEvents(load);
 
   const shown = useMemo(
     () => ordered(rows ?? [], sort, (r) => r.When, (r) => r.Path),
@@ -396,7 +395,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
   useEffect(() => {
     void load();
   }, [load]);
-  useThrottledEvents(load);
+  useReadAgain(load);
 
   const names = useMemo(() => jobNamesInOrder((runs ?? []).map((r) => r.Job), order), [runs, order]);
 
@@ -832,39 +831,6 @@ function Separator() {
       <View style={[styles.separator, { backgroundColor: p.border }]} />
     </ListPiece>
   );
-}
-
-/**
- * Reloads on engine events at most once a second, since a run sends an event
- * per file.
- */
-function useThrottledEvents(load: () => void) {
-  const latest = useRef(load);
-  latest.current = load;
-  const last = useRef(0);
-  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (pending.current) clearTimeout(pending.current);
-    };
-  }, []);
-
-  useEngineEvents(true, () => {
-    const now = Date.now();
-    if (now - last.current >= 1000) {
-      last.current = now;
-      latest.current();
-      return;
-    }
-    // A trailing call, so the last event of a burst is not dropped.
-    if (pending.current) return;
-    pending.current = setTimeout(() => {
-      pending.current = null;
-      last.current = Date.now();
-      latest.current();
-    }, 1000);
-  });
 }
 
 // A folder that could not be read is a warning: nothing in it was touched.

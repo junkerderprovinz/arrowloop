@@ -580,7 +580,6 @@ const sk: Translations = {
   'overview.idle': 'Práve nič nebeží.',
   'nav.overview': 'Prehľad',
   'overview.idleHint': 'Úlohy bežia podľa svojho plánu, alebo keď niektorú spustíš ručne.',
-  'overview.accounts': 'Pripojené účty',
   'overview.status': 'Stav synchronizácie',
   'overview.lastSync': 'Posledná synchronizácia',
   'overview.changes': 'Posledné zmeny',

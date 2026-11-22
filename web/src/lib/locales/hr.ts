@@ -580,7 +580,6 @@ const hr: Translations = {
   'overview.idle': 'Trenutno ništa ne radi.',
   'nav.overview': 'Pregled',
   'overview.idleHint': 'Zadaci se pokreću po svom rasporedu ili kad ih sam pokreneš.',
-  'overview.accounts': 'Povezani računi',
   'overview.status': 'Stanje sinkronizacije',
   'overview.lastSync': 'Zadnja sinkronizacija',
   'overview.changes': 'Zadnje promjene',

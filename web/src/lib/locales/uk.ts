@@ -580,7 +580,6 @@ const uk: Translations = {
   'overview.idle': 'Зараз нічого не виконується.',
   'nav.overview': 'Огляд',
   'overview.idleHint': 'Завдання виконуються за своїм розкладом або коли ти запускаєш одне вручну.',
-  'overview.accounts': 'Підключені облікові записи',
   'overview.status': 'Стан синхронізації',
   'overview.lastSync': 'Остання синхронізація',
   'overview.changes': 'Останні зміни',

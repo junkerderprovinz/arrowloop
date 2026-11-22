@@ -178,7 +178,7 @@ export function Trash({
     .filter((group) => group.sides.length > 0)
   const holding = (sides: TrashSide[]) => {
     const { entries, bytes: size } = trashTotals(sides)
-    return { count: entries, detail: t('trash.holding', { count: entries, size: bytes(size) }) }
+    return { count: entries, detail: entries === 0 ? t('trash.nothing') : t('trash.holding', { count: entries, size: bytes(size) }) }
   }
   const jobHead: Head = {
     id: 'job',

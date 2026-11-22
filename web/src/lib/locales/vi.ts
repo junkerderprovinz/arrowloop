@@ -580,7 +580,6 @@ const vi: Translations = {
   'overview.idle': 'Hiện không có gì đang chạy.',
   'nav.overview': 'Tổng quan',
   'overview.idleHint': 'Các công việc chạy theo lịch của chúng, hoặc khi bạn tự khởi động một công việc.',
-  'overview.accounts': 'Tài khoản đã kết nối',
   'overview.status': 'Trạng thái đồng bộ',
   'overview.lastSync': 'Lần đồng bộ cuối',
   'overview.changes': 'Thay đổi gần đây',

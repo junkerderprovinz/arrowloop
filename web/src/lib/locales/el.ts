@@ -580,7 +580,6 @@ const el: Translations = {
   'overview.idle': 'Δεν εκτελείται τίποτα αυτή τη στιγμή.',
   'nav.overview': 'Επισκόπηση',
   'overview.idleHint': 'Οι εργασίες τρέχουν με το πρόγραμμά τους ή όταν ξεκινήσεις μία με το χέρι.',
-  'overview.accounts': 'Συνδεδεμένοι λογαριασμοί',
   'overview.status': 'Κατάσταση συγχρονισμού',
   'overview.lastSync': 'Τελευταίος συγχρονισμός',
   'overview.changes': 'Τελευταίες αλλαγές',

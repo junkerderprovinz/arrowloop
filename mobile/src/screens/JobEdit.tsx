@@ -12,6 +12,7 @@ import { useT, type T } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
+import { useReadAgain } from "../useEngine";
 import { DEVICE, sideMark } from "../sideRow";
 import { remoteOf, sideName, sidePair } from "../sides";
 import { isAccount } from "../space";
@@ -62,7 +63,7 @@ import {
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
 import { overNetwork } from "../../../web/src/lib/localTarget";
-import { vpnChoiceWarning, type VpnState } from "../../../web/src/lib/vpn";
+import { vpnChoiceNote, type VpnState } from "../../../web/src/lib/vpn";
 import { capitalized } from "../../../web/src/lib/capitalized";
 import {
   MAX_MIN_AGE,
@@ -125,14 +126,18 @@ export function JobEdit() {
   const defaults = engineSettings?.defaults as Defaults | undefined;
   const sets = Object.keys((engineSettings?.excludeSets as Record<string, string[]> | undefined) ?? {}).sort();
 
+  // Read again on every visit, so a target connected under More while the
+  // form stayed open is there to choose. Without targets a side can still be
+  // a folder on the phone.
   const [remotes, setRemotes] = useState<Remote[]>([]);
-  useEffect(() => {
+  const readTargets = useCallback(() => {
     api.storage().then(
       (list) => setRemotes(list.remotes),
-      // Without targets a side can still be a folder on the phone.
-      () => setRemotes([]),
+      () => {},
     );
   }, []);
+  useEffect(readTargets, [readTargets]);
+  useReadAgain(readTargets, false);
 
   /**
    * The name the job is saved under, which a rename looks up and replaces.
@@ -821,14 +826,14 @@ function ConnectionSection({
     }, []),
   );
   if (!vpn || !vpnChoiceShown(vpn.offered, value, network)) return null;
-  const warning = vpnChoiceWarning(vpn.offered, vpn.state?.tunnels ?? [], value);
+  const note = vpnChoiceNote(vpn.offered, vpn.state?.tunnels ?? [], value);
   return (
     <Section title={t("edit.connection")} hue={5}>
       <AxisLabel hint={t("edit.vpnHint")}>{t("edit.vpn")}</AxisLabel>
       <Dropdown wide label={t("edit.vpn")} value={value} options={vpnOptions(vpn.state, t)} onChange={onChange} />
-      {warning ? (
+      {note ? (
         <View accessibilityLiveRegion="polite">
-          <Text style={[styles.warning, { color: p.warnInk }]}>{t(warning)}</Text>
+          <Text style={[styles.note, { color: note.fails ? p.warnInk : p.textSub }]}>{t(note.said)}</Text>
         </View>
       ) : null}
     </Section>
@@ -1177,7 +1182,7 @@ const styles = StyleSheet.create({
   sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },
-  warning: { fontSize: text.meta },
+  note: { fontSize: text.subline },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
   dayText: { fontSize: text.meta, fontWeight: "500" },

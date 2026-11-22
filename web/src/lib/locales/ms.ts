@@ -580,7 +580,6 @@ const ms: Translations = {
   'overview.idle': 'Tiada apa-apa sedang berjalan.',
   'nav.overview': 'Gambaran',
   'overview.idleHint': 'Tugas berjalan mengikut jadualnya, atau apabila anda memulakan satu sendiri.',
-  'overview.accounts': 'Akaun bersambung',
   'overview.status': 'Status penyegerakan',
   'overview.lastSync': 'Penyegerakan terakhir',
   'overview.changes': 'Perubahan terkini',
