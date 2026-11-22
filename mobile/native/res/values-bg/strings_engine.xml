@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Стартирай задача</string>
+    <string name="plugin_intro">Избери какво да стартира автоматизацията ти. Това се брои като изпълнение, което стартираш сам, затова условията за батерия и мрежа в настройките не го спират.</string>
+    <string name="plugin_empty">Още няма задачи за стартиране. Създай една в ArrowLoop и се върни тук.</string>
+    <string name="plugin_all">Всички задачи</string>
+    <string name="plugin_all_detail">Всяка задача, която не е на пауза</string>
+    <string name="plugin_paused">На пауза, но пак се стартира</string>
+    <string name="plugin_blurb_one">Изпълни %1$s</string>
+    <string name="plugin_blurb_all">Изпълни всички задачи</string>
+    <string name="notify_failed">Синхронизацията се провали</string>
+    <string name="notify_failed_no_engine">Двигателят не стартира. Отвори ArrowLoop веднъж и провери картата „Двигател за синхронизация“.</string>
+    <string name="notify_start_refused">Двигателят отказа стартирането, което поиска автоматизацията ти (HTTP %1$d). Стартирай задачата в ArrowLoop, за да видиш защо.</string>
+    <string name="notify_start_unreachable">Двигателят не отговори, когато автоматизацията ти поиска стартиране. Отвори ArrowLoop веднъж и провери картата „Двигател за синхронизация“.</string>
+</resources>

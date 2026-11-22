@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">ジョブを開始</string>
+    <string name="plugin_intro">オートメーションで開始するものを選んでください。自分で開始した実行として扱われるため、設定のバッテリーとネットワークの条件では止まりません。</string>
+    <string name="plugin_empty">開始できるジョブはまだありません。ArrowLoop でジョブを作成してから、ここに戻ってください。</string>
+    <string name="plugin_all">すべてのジョブ</string>
+    <string name="plugin_all_detail">一時停止していないすべてのジョブ</string>
+    <string name="plugin_paused">一時停止中ですが、開始されます</string>
+    <string name="plugin_blurb_one">%1$s を実行</string>
+    <string name="plugin_blurb_all">すべてのジョブを実行</string>
+    <string name="notify_failed">同期に失敗しました</string>
+    <string name="notify_failed_no_engine">エンジンが起動しませんでした。ArrowLoop を一度開いて、同期エンジンのカードを確認してください。</string>
+    <string name="notify_start_refused">オートメーションが求めた開始をエンジンが拒否しました (HTTP %1$d)。理由を確かめるには ArrowLoop でジョブを開始してください。</string>
+    <string name="notify_start_unreachable">オートメーションが開始を求めたとき、エンジンが応答しませんでした。ArrowLoop を一度開いて、同期エンジンのカードを確認してください。</string>
+</resources>

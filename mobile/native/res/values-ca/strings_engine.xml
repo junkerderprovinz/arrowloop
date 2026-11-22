@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Inicia una tasca</string>
+    <string name="plugin_intro">Tria què inicia la teva automatització. Compta com una execució que inicies tu, així que les condicions de bateria i xarxa de la configuració no l\'aturen.</string>
+    <string name="plugin_empty">Encara no hi ha cap tasca per iniciar. Crea\'n una a ArrowLoop i torna aquí.</string>
+    <string name="plugin_all">Totes les tasques</string>
+    <string name="plugin_all_detail">Cada tasca que no està en pausa</string>
+    <string name="plugin_paused">En pausa, però s\'inicia igualment</string>
+    <string name="plugin_blurb_one">Executa %1$s</string>
+    <string name="plugin_blurb_all">Executa totes les tasques</string>
+    <string name="notify_failed">La sincronització ha fallat</string>
+    <string name="notify_failed_no_engine">El motor no s\'ha iniciat. Obre ArrowLoop un cop i revisa la targeta del motor de sincronització.</string>
+    <string name="notify_start_refused">El motor ha rebutjat l\'inici que ha demanat la teva automatització (HTTP %1$d). Inicia la tasca a ArrowLoop per veure per què.</string>
+    <string name="notify_start_unreachable">El motor no ha respost quan la teva automatització ha demanat un inici. Obre ArrowLoop un cop i revisa la targeta del motor de sincronització.</string>
+</resources>

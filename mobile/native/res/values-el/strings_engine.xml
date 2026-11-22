@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Εκκίνηση εργασίας</string>
+    <string name="plugin_intro">Επιλέξτε τι ξεκινά ο αυτοματισμός σας. Μετράει ως εκτέλεση που ξεκινάτε εσείς, οπότε οι συνθήκες για μπαταρία και δίκτυο στις ρυθμίσεις δεν την καθυστερούν.</string>
+    <string name="plugin_empty">Δεν υπάρχουν ακόμη εργασίες για εκκίνηση. Δημιουργήστε μία στο ArrowLoop και επιστρέψτε εδώ.</string>
+    <string name="plugin_all">Όλες οι εργασίες</string>
+    <string name="plugin_all_detail">Κάθε εργασία που δεν είναι σε παύση</string>
+    <string name="plugin_paused">Σε παύση, αλλά ξεκινά κανονικά</string>
+    <string name="plugin_blurb_one">Εκτέλεση %1$s</string>
+    <string name="plugin_blurb_all">Εκτέλεση όλων των εργασιών</string>
+    <string name="notify_failed">Ο συγχρονισμός απέτυχε</string>
+    <string name="notify_failed_no_engine">Η μηχανή δεν ξεκίνησε. Ανοίξτε μία φορά το ArrowLoop και ελέγξτε την κάρτα Μηχανή συγχρονισμού.</string>
+    <string name="notify_start_refused">Η μηχανή απέρριψε την εκκίνηση που ζήτησε ο αυτοματισμός σας (HTTP %1$d). Ξεκινήστε την εργασία στο ArrowLoop για να δείτε γιατί.</string>
+    <string name="notify_start_unreachable">Η μηχανή δεν απάντησε όταν ο αυτοματισμός σας ζήτησε εκκίνηση. Ανοίξτε μία φορά το ArrowLoop και ελέγξτε την κάρτα Μηχανή συγχρονισμού.</string>
+</resources>

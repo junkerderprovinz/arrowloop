@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Palaist uzdevumu</string>
+    <string name="plugin_intro">Izvēlieties, ko palaiž jūsu automatizācija. Tas skaitās kā palaišana, ko sākat paši, tāpēc iestatījumu akumulatora un tīkla nosacījumi to neaiztur.</string>
+    <string name="plugin_empty">Vēl nav neviena uzdevuma, ko palaist. Izveidojiet to ArrowLoop un atgriezieties šeit.</string>
+    <string name="plugin_all">Visi uzdevumi</string>
+    <string name="plugin_all_detail">Katrs uzdevums, kas nav pauzēts</string>
+    <string name="plugin_paused">Pauzēts, bet tik un tā sākas</string>
+    <string name="plugin_blurb_one">Palaist %1$s</string>
+    <string name="plugin_blurb_all">Palaist visus uzdevumus</string>
+    <string name="notify_failed">Sinhronizācija neizdevās</string>
+    <string name="notify_failed_no_engine">Dzinējs nepalaidās. Atveriet ArrowLoop vienreiz un apskatiet sinhronizācijas dzinēja karti.</string>
+    <string name="notify_start_refused">Dzinējs noraidīja palaišanu, ko lūdza jūsu automatizācija (HTTP %1$d). Palaidiet uzdevumu ArrowLoop, lai redzētu, kāpēc.</string>
+    <string name="notify_start_unreachable">Dzinējs neatbildēja, kad jūsu automatizācija lūdza palaišanu. Atveriet ArrowLoop vienreiz un apskatiet sinhronizācijas dzinēja karti.</string>
+</resources>

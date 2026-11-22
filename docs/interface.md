@@ -725,6 +725,47 @@ sheet. Until then its cards follow on the Pairing screen. Appearance has the **O
 Design, and from Android 12 on the accent row starts with the wand swatch,
 which takes Material You's colour from the wallpaper.
 
+### Tasker and MacroDroid
+
+ArrowLoop is a Locale plug-in, so Tasker, MacroDroid and other automation apps
+that take Locale plug-ins can start a job when something on the phone happens:
+the home wifi connects, the charger goes in, the battery passes 80 percent.
+
+- In **MacroDroid**, add the action **Tasker/Locale Plugin** and pick ArrowLoop.
+- In **Tasker**, add the action **Plugin**, pick ArrowLoop and tap the pencil
+  beside Configuration.
+
+ArrowLoop opens a list in its own look: **All jobs** and every job with both
+sides set. A tap picks one and takes you back, and the action then reads
+**Start Photos** or **Start all jobs**. All jobs starts what **Run all**
+starts: every job that is not paused or already running. A single job starts
+even while paused, as **Run now** does.
+
+A start from an automation app counts as one you made yourself, so **Only
+while charging**, **Only over wifi** and the other conditions under This phone
+do not hold it back. The automation's own triggers and constraints decide
+instead. A macro that runs a large two-way sync only at home on the charger
+could look like this in MacroDroid:
+
+```text
+Trigger      Wifi SSID transition: connected to "Home"
+Constraints  Power connected, Battery level above 80 %
+Action       Tasker/Locale Plugin: ArrowLoop, Start Photos
+```
+
+With the app closed, the run shows the same notification as a timed run and
+reports how it went, and it lands in History like any other. From Android 12
+on, Android only lets ArrowLoop start straight away from the background when
+battery optimisation is off for it (**Background activity** under This phone).
+With it on, the start goes to a background job, which Android may delay and
+cut short.
+
+An action only works on the phone and the install it was set up on: what it
+keeps is signed with a key ArrowLoop draws on first use, so no other app can
+make it start a job of its choosing. After ArrowLoop's data is cleared or the
+app is installed afresh, open each action once and pick the job again. An
+action whose job was deleted does nothing.
+
 ## Who can reach it
 
 `arrowloop web` listens on loopback unless `-addr` or `ARROWLOOP_ADDR` says

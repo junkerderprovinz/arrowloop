@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Iniciar una tarea</string>
+    <string name="plugin_intro">Elige qué inicia tu automatización. Cuenta como una ejecución que inicias tú, así que las condiciones de batería y red de los ajustes no la frenan.</string>
+    <string name="plugin_empty">Todavía no hay tareas que iniciar. Crea una en ArrowLoop y vuelve aquí.</string>
+    <string name="plugin_all">Todas las tareas</string>
+    <string name="plugin_all_detail">Cada tarea que no está en pausa</string>
+    <string name="plugin_paused">En pausa, pero se inicia igualmente</string>
+    <string name="plugin_blurb_one">Ejecutar %1$s</string>
+    <string name="plugin_blurb_all">Ejecutar todas las tareas</string>
+    <string name="notify_failed">La sincronización ha fallado</string>
+    <string name="notify_failed_no_engine">El motor no se ha iniciado. Abre ArrowLoop una vez y revisa la tarjeta del motor de sincronización.</string>
+    <string name="notify_start_refused">El motor ha rechazado el inicio que pidió tu automatización (HTTP %1$d). Inicia la tarea en ArrowLoop para ver por qué.</string>
+    <string name="notify_start_unreachable">El motor no respondió cuando tu automatización pidió un inicio. Abre ArrowLoop una vez y revisa la tarjeta del motor de sincronización.</string>
+</resources>

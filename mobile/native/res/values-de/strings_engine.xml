@@ -52,4 +52,16 @@
     <string name="failure_stopped">Der Lauf wurde angehalten, bevor er fertig war.</string>
     <string name="failure_before">Der Befehl vor dem Lauf ist fehlgeschlagen, also hat der Lauf nicht begonnen.</string>
     <string name="failure_after">Der Befehl nach dem Lauf ist fehlgeschlagen.</string>
+
+    <!-- The automation picker, StartJobActivity. -->
+    <string name="plugin_title">Einen Auftrag starten</string>
+    <string name="plugin_intro">Wähl, was deine Automatisierung startet. Das zählt wie ein Lauf, den du selbst startest. Die Bedingungen für Akku und Netz in den Einstellungen halten ihn deshalb nicht auf.</string>
+    <string name="plugin_empty">Es gibt noch keinen Auftrag zum Starten. Leg einen in ArrowLoop an und komm dann hierher zurück.</string>
+    <string name="plugin_all">Alle Aufträge</string>
+    <string name="plugin_all_detail">Jeder Auftrag, der nicht pausiert ist</string>
+    <string name="plugin_paused">Pausiert, startet trotzdem</string>
+    <string name="plugin_blurb_one">%1$s starten</string>
+    <string name="plugin_blurb_all">Alle Aufträge starten</string>
+    <string name="notify_start_refused">Der Motor hat den Start abgelehnt, den deine Automatisierung wollte (HTTP %1$d). Starte den Auftrag in ArrowLoop, dann siehst du, warum.</string>
+    <string name="notify_start_unreachable">Der Motor hat nicht geantwortet, als deine Automatisierung einen Start wollte. Öffne ArrowLoop einmal und sieh auf der Motor-Karte nach.</string>
 </resources>

@@ -49,11 +49,15 @@ function subscribe(fn: () => void): () => void {
   return () => listeners.delete(fn);
 }
 
+/** The system's colour for both looks, or undefined where the phone has none. */
+export function useSystemTones(): { light: string; dark: string } | undefined {
+  return useSyncExternalStore(subscribe, () => tones);
+}
+
 /**
  * The system's colour for the look that shows, as Material 3 takes its
  * primary for it, or undefined where the phone has none.
  */
 export function useSystemAccent(scheme: Scheme): string | undefined {
-  const now = useSyncExternalStore(subscribe, () => tones);
-  return now?.[scheme];
+  return useSystemTones()?.[scheme];
 }

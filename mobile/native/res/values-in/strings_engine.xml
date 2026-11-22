@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Mulai tugas</string>
+    <string name="plugin_intro">Pilih apa yang dimulai otomatisasimu. Ini dihitung sebagai proses yang kamu mulai sendiri, jadi syarat baterai dan jaringan di Pengaturan tidak menahannya.</string>
+    <string name="plugin_empty">Belum ada tugas untuk dimulai. Buat satu di ArrowLoop, lalu kembali ke sini.</string>
+    <string name="plugin_all">Semua tugas</string>
+    <string name="plugin_all_detail">Setiap tugas yang tidak dijeda</string>
+    <string name="plugin_paused">Dijeda, tetapi tetap dimulai</string>
+    <string name="plugin_blurb_one">Jalankan %1$s</string>
+    <string name="plugin_blurb_all">Jalankan semua tugas</string>
+    <string name="notify_failed">Sinkronisasi gagal</string>
+    <string name="notify_failed_no_engine">Mesin tidak menyala. Buka ArrowLoop sekali dan periksa kartu Mesin sinkronisasi.</string>
+    <string name="notify_start_refused">Mesin menolak permintaan mulai dari otomatisasimu (HTTP %1$d). Mulai tugas itu di ArrowLoop untuk melihat sebabnya.</string>
+    <string name="notify_start_unreachable">Mesin tidak menjawab saat otomatisasimu meminta mulai. Buka ArrowLoop sekali dan periksa kartu Mesin sinkronisasi.</string>
+</resources>

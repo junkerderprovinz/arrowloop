@@ -4,6 +4,8 @@ import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
+import android.os.Build
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.util.Log
 
@@ -21,6 +23,12 @@ object Waker {
     /** Fixed ids, so re-arming replaces the jobs rather than adding more. */
     private const val TIMER = 1
     const val WATCH = 2
+
+    /** The first of a range of ids, one per job an automation app asked to start. */
+    private const val START = 0x1000
+
+    /** The extra naming the job to start, by id or StartJob.ALL. */
+    const val START_JOB = "job"
 
     /** Android's minimum period; a shorter one is rounded up to this. */
     private const val EVERY_MS = 15L * 60L * 1000L
@@ -76,6 +84,34 @@ object Waker {
                 // BootReceiver arms it again after a reboot.
                 .build(),
         )
+    }
+
+    /**
+     * Schedules a start an automation app asked for when Android refused the
+     * foreground service. Expedited from Android 12 on, so it goes as soon as
+     * Android allows, and one id per job, so asking twice starts it once.
+     */
+    fun startJob(context: Context, job: String) {
+        val scheduler = context.getSystemService(JobScheduler::class.java) ?: return
+        val service = ComponentName(context, SyncJobService::class.java)
+        val extras = PersistableBundle().apply { putString(START_JOB, job) }
+        val id = START + (job.hashCode() and 0xfff)
+        fun builder() = JobInfo.Builder(id, service).setExtras(extras)
+        // Android refuses an expedited job once the app's quota for them is
+        // spent, and some versions one without any condition. The plain job
+        // then needs a deadline, which an expedited one may not have.
+        val fast = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && try {
+            scheduler.schedule(builder().setExpedited(true).build()) == JobScheduler.RESULT_SUCCESS
+        } catch (_: IllegalArgumentException) {
+            false
+        }
+        if (fast) return
+        try {
+            scheduler.schedule(builder().setOverrideDeadline(0).build())
+        } catch (e: RuntimeException) {
+            // Android limits how many jobs an app may schedule; the start is lost.
+            Log.w(TAG, "could not schedule the start of $job: ${e.message}")
+        }
     }
 
     fun disarm(context: Context) {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Pornește o sarcină</string>
+    <string name="plugin_intro">Alege ce pornește automatizarea ta. Contează ca o rulare pornită de tine, așa că condițiile de baterie și rețea din setări nu o opresc.</string>
+    <string name="plugin_empty">Încă nu există sarcini de pornit. Creează una în ArrowLoop, apoi revino aici.</string>
+    <string name="plugin_all">Toate sarcinile</string>
+    <string name="plugin_all_detail">Fiecare sarcină care nu e în pauză</string>
+    <string name="plugin_paused">În pauză, dar pornește oricum</string>
+    <string name="plugin_blurb_one">Rulează %1$s</string>
+    <string name="plugin_blurb_all">Rulează toate sarcinile</string>
+    <string name="notify_failed">Sincronizarea a eșuat</string>
+    <string name="notify_failed_no_engine">Motorul nu a pornit. Deschide ArrowLoop o dată și verifică cardul Motor de sincronizare.</string>
+    <string name="notify_start_refused">Motorul a refuzat pornirea cerută de automatizarea ta (HTTP %1$d). Pornește sarcina în ArrowLoop ca să vezi de ce.</string>
+    <string name="notify_start_unreachable">Motorul nu a răspuns când automatizarea ta a cerut o pornire. Deschide ArrowLoop o dată și verifică cardul Motor de sincronizare.</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">شروع یک کار</string>
+    <string name="plugin_intro">انتخاب کن اتوماسیونت چه چیزی را شروع کند. این مثل اجرایی حساب می‌شود که خودت شروع می‌کنی، پس شرایط باتری و شبکه در تنظیمات جلویش را نمی‌گیرد.</string>
+    <string name="plugin_empty">هنوز کاری برای شروع نیست. یکی در ArrowLoop بساز و بعد به اینجا برگرد.</string>
+    <string name="plugin_all">همه کارها</string>
+    <string name="plugin_all_detail">هر کاری که متوقف نیست</string>
+    <string name="plugin_paused">متوقف، ولی باز هم شروع می‌شود</string>
+    <string name="plugin_blurb_one">اجرای %1$s</string>
+    <string name="plugin_blurb_all">اجرای همه کارها</string>
+    <string name="notify_failed">همگام‌سازی ناموفق بود</string>
+    <string name="notify_failed_no_engine">موتور شروع نشد. یک بار ArrowLoop را باز کن و کارت موتور همگام‌سازی را ببین.</string>
+    <string name="notify_start_refused">موتور شروعی را که اتوماسیونت خواسته بود رد کرد (HTTP %1$d). کار را در ArrowLoop شروع کن تا علتش را ببینی.</string>
+    <string name="notify_start_unreachable">وقتی اتوماسیونت شروعی خواست، موتور پاسخ نداد. یک بار ArrowLoop را باز کن و کارت موتور همگام‌سازی را ببین.</string>
+</resources>

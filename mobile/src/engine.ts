@@ -47,6 +47,8 @@ interface EngineNativeModule {
   copy(value: string): Promise<void>;
   /** Material You's primary for each look, or null below Android 12. */
   systemAccent(): Promise<AccentTones | null>;
+  /** Hands the look to the automation picker, which draws it without React Native; see pluginLook.ts. */
+  setLook(json: string): Promise<void>;
 
   /** How Android/data stands, after starting its server if it is switched on. */
   appData(): Promise<AppData>;
@@ -211,6 +213,7 @@ export const engine = {
   installer: () => (native ? native.installer() : Promise.resolve("")),
   copy: (value: string) => (native ? native.copy(value) : missing()),
   systemAccent: (): Promise<AccentTones | null> => (native ? native.systemAccent() : Promise.resolve(null)),
+  setLook: (json: string) => (native ? native.setLook(json) : Promise.resolve()),
   appData: (): Promise<AppData> => (native ? native.appData() : Promise.resolve(NO_APP_DATA)),
   setAppData: (on: boolean) => (native ? native.setAppData(on) : missing()),
   setAppDataWay: (way: AppDataWay) => (native ? native.setAppDataWay(way) : missing()),

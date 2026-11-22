@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Запустити завдання</string>
+    <string name="plugin_intro">Виберіть, що запускає ваша автоматизація. Це вважається запуском вручну, тому умови батареї та мережі в налаштуваннях його не затримують.</string>
+    <string name="plugin_empty">Поки немає завдань для запуску. Створіть завдання в ArrowLoop і поверніться сюди.</string>
+    <string name="plugin_all">Усі завдання</string>
+    <string name="plugin_all_detail">Кожне завдання не на паузі</string>
+    <string name="plugin_paused">На паузі, але все одно запуститься</string>
+    <string name="plugin_blurb_one">Запустити %1$s</string>
+    <string name="plugin_blurb_all">Запустити всі завдання</string>
+    <string name="notify_failed">Синхронізація не вдалася</string>
+    <string name="notify_failed_no_engine">Рушій не запустився. Відкрийте ArrowLoop один раз і перегляньте картку «Рушій синхронізації».</string>
+    <string name="notify_start_refused">Рушій відхилив запуск, який запросила ваша автоматизація (HTTP %1$d). Запустіть завдання в ArrowLoop, щоб побачити причину.</string>
+    <string name="notify_start_unreachable">Рушій не відповів, коли ваша автоматизація запросила запуск. Відкрийте ArrowLoop один раз і перегляньте картку «Рушій синхронізації».</string>
+</resources>

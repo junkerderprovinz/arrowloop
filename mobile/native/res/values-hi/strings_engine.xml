@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">कोई काम शुरू करें</string>
+    <string name="plugin_intro">चुनें कि आपका ऑटोमेशन क्या शुरू करे। यह ऐसे गिना जाता है जैसे आपने खुद चलाया हो, इसलिए सेटिंग्स की बैटरी और नेटवर्क वाली शर्तें इसे नहीं रोकतीं।</string>
+    <string name="plugin_empty">अभी शुरू करने के लिए कोई काम नहीं है। ArrowLoop में एक काम बनाएँ और फिर यहाँ लौटें।</string>
+    <string name="plugin_all">सभी काम</string>
+    <string name="plugin_all_detail">हर वह काम जो रुका हुआ नहीं है</string>
+    <string name="plugin_paused">रुका हुआ, फिर भी शुरू होगा</string>
+    <string name="plugin_blurb_one">%1$s चलाएँ</string>
+    <string name="plugin_blurb_all">सभी काम चलाएँ</string>
+    <string name="notify_failed">सिंक विफल रहा</string>
+    <string name="notify_failed_no_engine">इंजन शुरू नहीं हुआ। ArrowLoop एक बार खोलें और सिंक इंजन कार्ड देखें।</string>
+    <string name="notify_start_refused">आपके ऑटोमेशन ने जो शुरुआत माँगी थी, इंजन ने उसे मना कर दिया (HTTP %1$d)। कारण देखने के लिए ArrowLoop में काम शुरू करें।</string>
+    <string name="notify_start_unreachable">जब आपके ऑटोमेशन ने शुरुआत माँगी, तब इंजन ने जवाब नहीं दिया। ArrowLoop एक बार खोलें और सिंक इंजन कार्ड देखें।</string>
+</resources>

@@ -14,14 +14,18 @@ import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import androidx.core.app.NotificationCompat
+import java.io.IOException
 import java.io.OutputStreamWriter
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Runs the engine for one scheduled wake-up and stops when the run is over, so
- * its required foreground notification lasts only as long as the copying. While
+ * Runs the engine for one scheduled wake-up, or for a start an automation app
+ * asked for (see StartJob), and stops when the run is over, so its required
+ * foreground notification lasts only as long as the copying. While
  * the app is visible the engine runs as its plain child process (see
  * EngineModule.start), and the screens use this service only to keep a run they
  * started going after they are left. The service type is dataSync, which
@@ -43,6 +47,9 @@ class EngineService : Service() {
     /** Whether the service is up to keep a run the screens started on the network. */
     private val guarding = AtomicBoolean(false)
 
+    /** What automation apps asked to start, by job id or StartJob.ALL, for the run to take on. */
+    private val asked = ConcurrentLinkedQueue<String>()
+
     override fun onBind(intent: Intent?): IBinder = Run()
 
     override fun onCreate() {
@@ -61,8 +68,10 @@ class EngineService : Service() {
                 unguard()
                 return START_NOT_STICKY
             }
+            ACTION_START -> intent?.getStringExtra(EXTRA_JOB)?.let(asked::add)
         }
         val forScreens = intent?.action == ACTION_GUARD
+        val wake = intent?.action == null
 
         // Before any work: a foreground service that does not call
         // startForeground within a few seconds is killed.
@@ -79,6 +88,8 @@ class EngineService : Service() {
             // up, until the app is opened again. The wake-up is skipped; the
             // next one after that runs whatever is due.
             Log.w(TAG, "woke and could not start: ${e.message}")
+            // A start an automation app asked for goes the way of the wake-up.
+            intent?.getStringExtra(EXTRA_JOB)?.let(asked::remove)
             stopSelf()
             return START_NOT_STICKY
         }
@@ -88,7 +99,9 @@ class EngineService : Service() {
             return START_NOT_STICKY
         }
 
-        if (!begin()) Log.i(TAG, "woke during a run, leaving it to finish")
+        if (!begin(wake)) {
+            Log.i(TAG, if (wake) "woke during a run, leaving it to finish" else "asked to start a job during a run, which takes it on")
+        }
 
         // Waker brings the service back; restarting itself would only bring
         // back the notification.
@@ -101,7 +114,7 @@ class EngineService : Service() {
      * firing while a long run copies, and a second run would only find every
      * job claimed and stop the service under the first.
      */
-    private fun begin(then: () -> Unit = {}): Boolean {
+    private fun begin(wake: Boolean, then: () -> Unit = {}): Boolean {
         if (!running.compareAndSet(false, true)) return false
 
         // The run conditions matter most when no screen is open.
@@ -113,7 +126,7 @@ class EngineService : Service() {
             // open the engine belongs to the screens, and stopping it would
             // blank them.
             if (Engine.start(this)) ours = true
-            work()
+            work(wake)
             then()
         }.start()
         return true
@@ -150,7 +163,13 @@ class EngineService : Service() {
     inner class Run : Binder() {
         /** Calls done when the run is over, or at once while another is under way. */
         fun start(done: () -> Unit) {
-            if (!begin(done)) done()
+            if (!begin(wake = true, then = done)) done()
+        }
+
+        /** Starts a job an automation app asked for, which a run under way takes on. */
+        fun startJob(job: String, done: () -> Unit) {
+            asked.add(job)
+            if (!begin(wake = false, then = done)) done()
         }
 
         /** Ends the run because Android is stopping the job. */
@@ -161,26 +180,34 @@ class EngineService : Service() {
     }
 
     /**
-     * Asks the engine to run whatever its cron expressions say is due. The call
-     * blocks until the copying is done, hence the thread.
+     * Asks the engine to run whatever its cron expressions say is due after a
+     * wake-up, then starts what automation apps asked for. Both block until the
+     * copying is done, hence the thread.
      */
-    private fun work() {
+    private fun work(wake: Boolean) {
         try {
             waitForEngine()
             Device.awaitUnblocked(this)
             // An engine this wake-up started holds nothing yet, and every
-            // report sent while it was starting found nobody listening.
-            check(Device.reportNow(this)) { "the engine did not take the run conditions" }
-            val due = runDueNow()
-            Log.i(TAG, "woke, ran ${due.ran} job(s), ${due.failed} failed")
-            report(due)
+            // report sent while it was starting found nobody listening. Only
+            // what is due needs them: a start asked for is not held.
+            check(Device.reportNow(this) || !wake) { "the engine did not take the run conditions" }
+            if (wake) {
+                val due = runDueNow()
+                Log.i(TAG, "woke, ran ${due.ran} job(s), ${due.failed} failed")
+                report(due)
+            }
+            startAsked()?.let {
+                Log.i(TAG, "started on request, ran ${it.ran} job(s), ${it.failed} failed")
+                report(it)
+            }
         } catch (e: Exception) {
             Log.w(TAG, "woke and could not run: ${e.javaClass.simpleName} ${e.message}")
             // A reason this app authored is shown translated, anything else as
             // the raw message.
             val why = when {
                 cut -> getString(R.string.notify_failed_cut)
-                e is Silent -> getString(e.said)
+                e is Silent -> getString(e.said, *e.args)
                 else -> e.message ?: ""
             }
             tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), why)
@@ -263,7 +290,7 @@ class EngineService : Service() {
             if (Engine.answers(this, 1000)) return
             Thread.sleep(500)
         }
-        throw Silent(R.string.notify_failed_no_engine)
+        throw Silent(R.string.notify_failed_no_engine, "the engine did not answer within thirty seconds")
     }
 
     /**
@@ -271,7 +298,7 @@ class EngineService : Service() {
      * notification is in the phone's language. The English message is for the
      * log.
      */
-    private class Silent(val said: Int) : IllegalStateException("the engine did not answer within thirty seconds")
+    private class Silent(val said: Int, log: String, vararg val args: Any) : IllegalStateException(log)
 
     /** The summary of one wake-up, as the engine reports it. */
     private data class Due(
@@ -288,6 +315,8 @@ class EngineService : Service() {
         val failure: String = "",
         val params: Map<String, String> = emptyMap(),
         val found: List<Found> = emptyList(),
+        /** The HTTP status of a start the engine turned down, counted in failed. */
+        val refused: Int = 0,
     ) {
         fun changed() = copied + moved + trashed + deleted + conflicts > 0
     }
@@ -330,11 +359,132 @@ class EngineService : Service() {
         )
     }
 
+    /** A job as /api/jobs lists it, with its recent runs. */
+    private class Seen(json: JSONObject) {
+        val job = StartJob.Listed(
+            id = json.optString("id"),
+            ready = json.optString("left").isNotEmpty() && json.optString("right").isNotEmpty(),
+            paused = json.optBoolean("disabled"),
+            running = json.optBoolean("running"),
+        )
+        val name: String = json.optString("name")
+        val busy = job.running || json.optBoolean("queued")
+        val runs: List<JSONObject> = json.optJSONArray("recent").let { a ->
+            (0 until (a?.length() ?: 0)).mapNotNull { a!!.optJSONObject(it) }
+        }
+        val newest = runs.maxOfOrNull { it.optLong("ID") } ?: 0L
+    }
+
+    private fun seen(): List<Seen> {
+        val call = Engine.connect(this, "/api/jobs")
+        call.connectTimeout = 5000
+        call.readTimeout = 30000
+        val jobs = JSONArray(call.inputStream.bufferedReader().readText())
+        call.disconnect()
+        return (0 until jobs.length()).map { Seen(jobs.getJSONObject(it)) }
+    }
+
+    /**
+     * Starts what automation apps asked for and waits until those runs are
+     * over, taking on what is asked meanwhile. Each goes through the same call
+     * as Run now on the screens, so the run conditions do not hold it back
+     * and it lands in History like any other run. Returns null when nothing
+     * was there to start.
+     */
+    private fun startAsked(): Due? = try {
+        follow()
+    } catch (e: IOException) {
+        throw Silent(R.string.notify_start_unreachable, "the engine did not answer a start: ${e.message}")
+    } catch (e: JSONException) {
+        throw Silent(R.string.notify_start_unreachable, "the engine answered a start with no job list: ${e.message}")
+    }
+
+    private fun follow(): Due? {
+        // By job, its newest run before the start, which tells this start's
+        // runs from earlier ones.
+        val before = HashMap<String, Long>()
+        var refused = 0
+        var jobs = seen()
+        while (true) {
+            while (true) {
+                val job = asked.poll() ?: break
+                val ids = StartJob.toStart(job, jobs.map { it.job })
+                if (ids.isEmpty()) {
+                    Log.w(
+                        TAG,
+                        if (job == StartJob.ALL) "asked to start every job, and none is ready"
+                        else "asked to start job $job, which is gone or not ready, ignoring it",
+                    )
+                }
+                for (id in ids) {
+                    if (id in before) continue
+                    val code = StartJob.post(Engine.connect(this, "/api/jobs/$id/run"))
+                    if (code !in 200..299) {
+                        Log.w(TAG, "the engine would not start job $id: HTTP $code")
+                        refused = code
+                        continue
+                    }
+                    before[id] = jobs.first { it.job.id == id }.newest
+                }
+            }
+            if (before.isEmpty()) break
+            Thread.sleep(GUARD_EVERY_MS)
+            jobs = seen()
+            if (asked.isEmpty() && jobs.none { it.job.id in before && it.busy }) break
+        }
+        if (before.isEmpty() && refused == 0) return null
+        val due = outcome(jobs, before)
+        return if (refused == 0) due else due.copy(failed = due.failed + 1, refused = refused)
+    }
+
+    /** Sums the runs a start made into a wake-up's summary, so both are told of alike. */
+    private fun outcome(jobs: List<Seen>, before: Map<String, Long>): Due {
+        var due = Due()
+        for (seen in jobs) {
+            val since = before[seen.job.id] ?: continue
+            for (run in seen.runs.filter { it.optLong("ID") > since && !it.optBoolean("Running") }) {
+                val err = run.optString("Err")
+                if (err.isNotEmpty()) {
+                    due = if (due.failed > 0) {
+                        due.copy(ran = due.ran + 1, failed = due.failed + 1)
+                    } else {
+                        val failure = run.optJSONObject("Failure")
+                        due.copy(
+                            ran = due.ran + 1,
+                            failed = 1,
+                            reason = "${seen.name}: $err",
+                            failedJob = seen.name,
+                            failure = failure?.optString("code") ?: "",
+                            params = failure?.optJSONObject("params")?.let { p ->
+                                p.keys().asSequence().associateWith { p.optString(it) }
+                            } ?: emptyMap(),
+                        )
+                    }
+                    continue
+                }
+                // What a job without a trash counts as trashed is gone for good.
+                val gone = run.optInt("Trashed")
+                val noTrash = run.optBoolean("NoTrash")
+                due = due.copy(
+                    ran = due.ran + 1,
+                    copied = due.copied + run.optInt("Copied"),
+                    moved = due.moved + run.optInt("Moved"),
+                    trashed = due.trashed + if (noTrash) 0 else gone,
+                    deleted = due.deleted + if (noTrash) gone else 0,
+                    conflicts = due.conflicts + run.optInt("Conflicts"),
+                )
+            }
+        }
+        return due
+    }
+
     /**
      * The first failure in the phone's language where the engine named its
      * kind, and its own English under a lead otherwise.
      */
     private fun whyFailed(due: Due): String {
+        // A run's own failure says more than a start the engine turned down.
+        if (due.refused != 0 && due.reason.isEmpty()) return getString(R.string.notify_start_refused, due.refused)
         val left = due.params["side"] == "left"
         val said = when (due.failure) {
             "notEnoughSpace" -> getString(
@@ -469,6 +619,8 @@ class EngineService : Service() {
         /** The first of a range of ids, one per job with a finding. */
         const val ANOMALY_ID = 0x10000
         const val ACTION_STOP = "arrowloop.halleluja.design.STOP"
+        private const val ACTION_START = "arrowloop.halleluja.design.START"
+        private const val EXTRA_JOB = "arrowloop.halleluja.design.JOB"
         private const val ACTION_GUARD = "arrowloop.halleluja.design.GUARD"
         private const val ACTION_RELEASE = "arrowloop.halleluja.design.RELEASE"
 
@@ -491,6 +643,17 @@ class EngineService : Service() {
             } else {
                 context.startService(intent)
             }
+        }
+
+        /**
+         * Starts the service to start a job, or all of them, for an automation
+         * app. Throws IllegalStateException where Android refuses a foreground
+         * service from the background, as runDue does.
+         */
+        fun startJob(context: Context, job: String) {
+            context.startForegroundService(
+                Intent(context, EngineService::class.java).setAction(ACTION_START).putExtra(EXTRA_JOB, job),
+            )
         }
 
         /**

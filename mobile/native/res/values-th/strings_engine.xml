@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">เริ่มงาน</string>
+    <string name="plugin_intro">เลือกสิ่งที่ระบบอัตโนมัติของคุณจะเริ่ม การเริ่มนี้นับเหมือนคุณเริ่มเอง เงื่อนไขแบตเตอรี่และเครือข่ายในการตั้งค่าจึงไม่รั้งไว้</string>
+    <string name="plugin_empty">ยังไม่มีงานให้เริ่ม สร้างงานใน ArrowLoop ก่อน แล้วกลับมาที่นี่</string>
+    <string name="plugin_all">งานทั้งหมด</string>
+    <string name="plugin_all_detail">ทุกงานที่ไม่ได้หยุดชั่วคราว</string>
+    <string name="plugin_paused">หยุดชั่วคราว แต่ยังเริ่มได้</string>
+    <string name="plugin_blurb_one">เรียกใช้ %1$s</string>
+    <string name="plugin_blurb_all">เรียกใช้งานทั้งหมด</string>
+    <string name="notify_failed">ซิงก์ไม่สำเร็จ</string>
+    <string name="notify_failed_no_engine">เอนจินไม่ได้เริ่มทำงาน เปิด ArrowLoop หนึ่งครั้งแล้วดูการ์ดเอนจินซิงก์</string>
+    <string name="notify_start_refused">เอนจินปฏิเสธการเริ่มที่ระบบอัตโนมัติของคุณขอ (HTTP %1$d) เริ่มงานใน ArrowLoop เพื่อดูสาเหตุ</string>
+    <string name="notify_start_unreachable">เอนจินไม่ตอบเมื่อระบบอัตโนมัติของคุณขอให้เริ่ม เปิด ArrowLoop หนึ่งครั้งแล้วดูการ์ดเอนจินซิงก์</string>
+</resources>

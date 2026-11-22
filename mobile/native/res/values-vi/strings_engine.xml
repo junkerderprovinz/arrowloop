@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
+-->
+<resources>
+    <string name="plugin_title">Bắt đầu một công việc</string>
+    <string name="plugin_intro">Chọn thứ mà quy trình tự động của bạn sẽ bắt đầu. Việc này được tính như một lần chạy bạn tự bắt đầu, nên các điều kiện về pin và mạng trong Cài đặt không chặn nó.</string>
+    <string name="plugin_empty">Chưa có công việc nào để bắt đầu. Hãy tạo một công việc trong ArrowLoop rồi quay lại đây.</string>
+    <string name="plugin_all">Tất cả công việc</string>
+    <string name="plugin_all_detail">Mọi công việc không bị tạm dừng</string>
+    <string name="plugin_paused">Tạm dừng, nhưng vẫn bắt đầu</string>
+    <string name="plugin_blurb_one">Chạy %1$s</string>
+    <string name="plugin_blurb_all">Chạy tất cả công việc</string>
+    <string name="notify_failed">Đồng bộ thất bại</string>
+    <string name="notify_failed_no_engine">Bộ máy chưa khởi động. Hãy mở ArrowLoop một lần và xem thẻ Bộ máy đồng bộ.</string>
+    <string name="notify_start_refused">Bộ máy đã từ chối lần bắt đầu mà quy trình tự động của bạn yêu cầu (HTTP %1$d). Hãy bắt đầu công việc trong ArrowLoop để xem lý do.</string>
+    <string name="notify_start_unreachable">Bộ máy không trả lời khi quy trình tự động của bạn yêu cầu bắt đầu. Hãy mở ArrowLoop một lần và xem thẻ Bộ máy đồng bộ.</string>
+</resources>
