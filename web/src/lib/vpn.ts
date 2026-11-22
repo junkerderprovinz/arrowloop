@@ -173,12 +173,17 @@ export function vpnRefusal(
 }
 
 /**
- * The warning under a job's choice of VPN: an engine without one, none set
- * up, or the one the job names gone.
+ * The line under a job's choice of VPN: an engine without one, the one the job
+ * names gone, or none set up yet. `fails` marks the two that make its runs
+ * fail, which alone are drawn as a warning.
  */
-export function vpnChoiceWarning(offered: boolean, tunnels: readonly { id: string }[], value: string): TranslationKey | null {
-  if (!offered) return 'edit.vpnNotHere'
-  if (tunnels.length === 0) return 'edit.vpnNone'
-  if (value && !tunnels.some((x) => x.id === value)) return 'edit.vpnGone'
+export function vpnChoiceNote(
+  offered: boolean,
+  tunnels: readonly { id: string }[],
+  value: string,
+): { said: TranslationKey; fails: boolean } | null {
+  if (!offered) return { said: 'edit.vpnNotHere', fails: true }
+  if (value && !tunnels.some((x) => x.id === value)) return { said: 'edit.vpnGone', fails: true }
+  if (tunnels.length === 0) return { said: 'edit.vpnNone', fails: false }
   return null
 }

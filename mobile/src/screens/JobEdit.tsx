@@ -62,7 +62,7 @@ import {
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
 import { overNetwork } from "../../../web/src/lib/localTarget";
-import { vpnChoiceWarning, type VpnState } from "../../../web/src/lib/vpn";
+import { vpnChoiceNote, type VpnState } from "../../../web/src/lib/vpn";
 import { capitalized } from "../../../web/src/lib/capitalized";
 import {
   MAX_MIN_AGE,
@@ -821,14 +821,14 @@ function ConnectionSection({
     }, []),
   );
   if (!vpn || !vpnChoiceShown(vpn.offered, value, network)) return null;
-  const warning = vpnChoiceWarning(vpn.offered, vpn.state?.tunnels ?? [], value);
+  const note = vpnChoiceNote(vpn.offered, vpn.state?.tunnels ?? [], value);
   return (
     <Section title={t("edit.connection")} hue={5}>
       <AxisLabel hint={t("edit.vpnHint")}>{t("edit.vpn")}</AxisLabel>
       <Dropdown wide label={t("edit.vpn")} value={value} options={vpnOptions(vpn.state, t)} onChange={onChange} />
-      {warning ? (
+      {note ? (
         <View accessibilityLiveRegion="polite">
-          <Text style={[styles.warning, { color: p.warnInk }]}>{t(warning)}</Text>
+          <Text style={[styles.note, { color: note.fails ? p.warnInk : p.textSub }]}>{t(note.said)}</Text>
         </View>
       ) : null}
     </Section>
@@ -1177,7 +1177,7 @@ const styles = StyleSheet.create({
   sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },
-  warning: { fontSize: text.meta },
+  note: { fontSize: text.subline },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },
   dayText: { fontSize: text.meta, fontWeight: "500" },

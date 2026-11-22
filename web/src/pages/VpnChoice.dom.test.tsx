@@ -52,15 +52,22 @@ describe('the VPN a job goes through', () => {
     expect(screen.getByTestId('vpn').textContent).toBe('mullvad')
   })
 
-  it('says where to set one up while none is', async () => {
+  it('says where to set one up while none is, in the colour of any other description', async () => {
     render(<Job />)
-    expect(await screen.findByText(/No VPN is set up yet/)).toBeTruthy()
+    const line = await screen.findByText(/No VPN is set up yet/)
+    expect(line.className).toContain('text-carbon-textSub')
+    expect(line.className).not.toContain('text-statusWarn')
   })
 
-  it('says the runs fail while the VPN it names is gone', async () => {
+  it('warns that the runs fail while the VPN it names is gone', async () => {
     tunnels = two
     render(<Job start="custom-2" />)
-    expect(await screen.findByText(/no longer set up/)).toBeTruthy()
+    expect((await screen.findByText(/no longer set up/)).className).toContain('text-statusWarn')
+  })
+
+  it('warns that the runs fail when the VPN it names was the last one set up', async () => {
+    render(<Job start="custom" />)
+    expect((await screen.findByText(/no longer set up/)).className).toContain('text-statusWarn')
   })
 
   it('is left out on an engine without a VPN', async () => {
