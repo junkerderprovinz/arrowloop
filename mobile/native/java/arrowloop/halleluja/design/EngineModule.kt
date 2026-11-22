@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentCallbacks
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -278,6 +279,26 @@ class EngineModule(private val context: ReactApplicationContext) :
      * Reports whether the app is exempt from battery optimisation. Without it
      * Doze delays a night-time job until the phone next wakes.
      */
+    /**
+     * The package of the store that installed the app, such as
+     * com.android.vending, or "" for an APK installed by hand.
+     */
+    @ReactMethod
+    fun installer(promise: Promise) {
+        val pm = context.packageManager
+        val name = try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                pm.getInstallSourceInfo(context.packageName).installingPackageName
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getInstallerPackageName(context.packageName)
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
+        }
+        promise.resolve(name ?: "")
+    }
+
     @ReactMethod
     fun batteryExempt(promise: Promise) {
         val manager = context.getSystemService(PowerManager::class.java)

@@ -39,7 +39,10 @@ import {
   type ThemeChoice,
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
-import { COFFEE, DISCORD, GLIMSTONE_RELEASE_URL, PAYPAL, REPO } from "../../../web/src/lib/donate";
+import { COFFEE, DISCORD, PAYPAL, RCLONE_REPO, REPO } from "../../../web/src/lib/donate";
+import { componentText } from "@glimstone/core/componentTexts";
+import { ComponentsSection, VersionSection } from "../infoCards";
+import { updatesFrom } from "../store";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
@@ -70,7 +73,6 @@ import {
   Choice,
   Page,
   InfoBubble,
-  Mono,
   Pair,
   Press,
   README_GAP,
@@ -152,6 +154,9 @@ export function Settings() {
   const [crypto, setCrypto] = useState(false);
   const [dockerCopied, setDockerCopied] = useState(false);
   const [reportCopied, setReportCopied] = useState(false);
+  const [rclone, setRclone] = useState<string | null>(null);
+  const [updates, setUpdates] = useState(updatesFrom(""));
+  const words = useMemo(() => componentText(lang), [lang]);
   const [removing, setRemoving] = useState(false);
   // Counts refusals, so each one shakes the button that was pressed.
   const [removeFailed, setRemoveFailed] = useState(0);
@@ -326,6 +331,14 @@ export function Settings() {
         setVpnOffered(c.vpn === true);
       },
       () => setVersion(null),
+    );
+    api.buildVersions().then(
+      (v) => setRclone(v.rclone),
+      () => {},
+    );
+    engine.installer().then(
+      (installer) => setUpdates(updatesFrom(installer)),
+      () => {},
     );
   }, []);
 
@@ -1102,66 +1115,22 @@ export function Settings() {
         </Section>
       </OnTile>
 
-      <OnTile section="problems">
-        <Section title={t("problems.title")} hint={t("problems.hint")} hue={2}>
-          <View style={[styles.report, { backgroundColor: p.surface2, ...corners.control }]}>
-            <Mono>{report}</Mono>
-          </View>
-          <View style={styles.actions}>
-            <Button
-              label={reportCopied ? t("problems.copied") : t("problems.copy")}
-              labelKey="problems.copy"
-              confirm={reported}
-              onPress={() =>
-                // The label changes only once the copy has landed.
-                void engine.copy(report).then(
-                  () => {
-                    setReportCopied(true);
-                    setReported((n) => n + 1);
-                  },
-                  () => {},
-                )
-              }
-            />
-          </View>
-        </Section>
+      {/* GlimStone's Info tile: Version, Components, Help and About. The
+          versions stand in the first two cards and nowhere else. */}
+      <OnTile section="version">
+        <VersionSection words={words} version={version ?? appVersion} state={updates} hue={0} />
       </OnTile>
 
-      {/* GlimStone's About card: who made it, the ways to give, the ways to
-          report, then the versions and the privacy policy. The title counts
-          the taps for the loop egg, being the only part of the card with no
-          other action. */}
-      <OnTile section="about">
-        <Section title={t("phone.aboutTitle")} hue={3} onTitlePress={loop.tap}>
-          {loop.mark}
-          <Body>{t("about.body")}</Body>
+      <OnTile section="components">
+        <ComponentsSection
+          words={words}
+          rows={rclone ? [{ name: "rclone", kind: "tool", hint: t("info.rcloneHint"), version: rclone, repoUrl: RCLONE_REPO }] : []}
+          hue={1}
+        />
+      </OnTile>
 
-          <Body>{t("about.coffee")}</Body>
-          {/* The README's give buttons, a blank line below the sentence above,
-              since they are the loudest row on the card. Brand marks are passed
-              explicitly, never matched from the label key. */}
-          <ReadmeRow style={styles.give}>
-            <ReadmeButton
-              label={t("about.coffeeButton")}
-              art
-              tile={TILE.coffee}
-              mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
-              onPress={() => Linking.openURL(COFFEE)}
-            />
-            <ReadmeButton
-              label={t("about.paypal")}
-              tile={TILE.paypal}
-              mark={(lit, ink) => <DonateMark name="paypal" scheme={scheme} ink={lit ? ink : undefined} />}
-              onPress={() => Linking.openURL(PAYPAL)}
-            />
-            <ReadmeButton
-              label={t("about.crypto")}
-              tile={TILE.bitcoin}
-              mark={(lit, ink) => <DonateMark name="bitcoin" scheme={scheme} ink={lit ? ink : undefined} />}
-              onPress={() => setCrypto(true)}
-            />
-          </ReadmeRow>
-
+      <OnTile section="help">
+        <Section title={t("info.help")} hint={t("problems.hint")} hue={2}>
           <Body>{t("about.report")}</Body>
           <ReadmeRow>
             <ReadmeButton
@@ -1193,30 +1162,68 @@ export function Settings() {
               mark={(lit, ink) => <ManualMark open={lit} ink={lit ? ink : BRAND[scheme].docs} />}
               onPress={() => Linking.openURL(MANUAL)}
             />
+            {/* The report goes with an issue on GitHub, so it lights up beside
+                it. It is copied rather than downloaded, ready to paste. */}
+            <ReadmeButton
+              label={t("info.bugReport")}
+              sub={reportCopied ? t("problems.copied") : t("problems.copy")}
+              tile={TILE.github}
+              mark={(lit, ink) => <Glyph name="IconDiagnostics" color={lit ? ink : p.text} />}
+              confirm={reported}
+              onPress={() =>
+                // The line changes only once the copy has landed.
+                void engine.copy(report).then(
+                  () => {
+                    setReportCopied(true);
+                    setReported((n) => n + 1);
+                  },
+                  () => {},
+                )
+              }
+            />
+          </ReadmeRow>
+        </Section>
+      </OnTile>
+
+      {/* GlimStone's About card: who made it and the ways to give, then the
+          privacy policy. The title counts the taps for the loop egg, being the
+          only part of the card with no other action. */}
+      <OnTile section="about">
+        <Section title={t("about.title")} hue={3} onTitlePress={loop.tap}>
+          {loop.mark}
+          <Body>{t("about.body")}</Body>
+
+          <Body>{t("about.coffee")}</Body>
+          {/* The README's give buttons, a blank line below the sentence above,
+              since they are the loudest row on the card. Brand marks are passed
+              explicitly, never matched from the label key. */}
+          <ReadmeRow style={styles.give}>
+            <ReadmeButton
+              label={t("about.coffeeButton")}
+              art
+              tile={TILE.coffee}
+              mark={(lit, ink) => <CoffeeArt cup={lit ? ink : BRAND[scheme].coffee} ink={ink} />}
+              onPress={() => Linking.openURL(COFFEE)}
+            />
+            <ReadmeButton
+              label={t("about.paypal")}
+              tile={TILE.paypal}
+              mark={(lit, ink) => <DonateMark name="paypal" scheme={scheme} ink={lit ? ink : undefined} />}
+              onPress={() => Linking.openURL(PAYPAL)}
+            />
+            <ReadmeButton
+              label={t("about.crypto")}
+              tile={TILE.bitcoin}
+              mark={(lit, ink) => <DonateMark name="bitcoin" scheme={scheme} ink={lit ? ink : undefined} />}
+              onPress={() => setCrypto(true)}
+            />
           </ReadmeRow>
 
-          {/* The engine reports its own version; the app manifest's is only the
-              fallback when there is no engine to ask. Every number links to its
-              release. A line after a row of buttons takes a step of space. */}
-          <View style={styles.afterControls}>
-            <Caption>
-              <Text onPress={() => Linking.openURL(releaseUrl(version))} style={[styles.link, { color: accentInk }]}>
-                {`ArrowLoop ${(version ?? appVersion).replace(/^v/, "")}`}
-              </Text>
-              {"  ·  "}
-              <Text
-                onPress={() => Linking.openURL(GLIMSTONE_RELEASE_URL)}
-                style={[styles.link, { color: accentInk }]}
-              >
-                {`GlimStone ${GLIMSTONE_VERSION}`}
-              </Text>
-            </Caption>
-            <Caption>
-              <Text accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY)} style={{ color: accentInk }}>
-                {t("phone.privacy")}
-              </Text>
-            </Caption>
-          </View>
+          <Caption>
+            <Text accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY)} style={{ color: accentInk }}>
+              {t("phone.privacy")}
+            </Text>
+          </Caption>
         </Section>
       </OnTile>
 
@@ -1502,8 +1509,6 @@ const styles = StyleSheet.create({
   languageName: { flex: 1, fontSize: text.body },
   flag: { fontSize: text.title },
   link: { fontVariant: ["tabular-nums"] },
-  report: { padding: space.md },
-  afterControls: { marginTop: text.body, gap: space.xs },
   // The README buttons' own gap, 13 on the README's 16.
   readmeRows: { gap: README_GAP },
   // A blank line of the card's text above and below.

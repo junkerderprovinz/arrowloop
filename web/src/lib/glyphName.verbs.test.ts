@@ -63,9 +63,10 @@ describe('a meaning with a glyph of its own in GlimStone', () => {
     ['login.submit', 'IconSignIn'],
     ['login.passkeyUnlock', 'IconKey'],
     ['reset.link', 'IconForgotPassword'],
-    ['about.checkUpdates', 'IconSync'],
-    ['about.upToDate', 'IconUpToDate'],
-    ['about.updatesFound', 'IconUpdateAvailable'],
+    ['version.whatsNew', 'IconWhatsNew'],
+    ['version.check', 'IconSync'],
+    ['version.update', 'IconDownload'],
+    ['version.restart', 'IconRefresh'],
     ['tray.open', 'IconApp'],
   ])('wears it on %s', (key, glyph) => {
     expect(glyphNameFor(key)).toBe(glyph)

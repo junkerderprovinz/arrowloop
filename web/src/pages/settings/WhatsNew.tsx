@@ -2,7 +2,7 @@ import { useEffect, useId, useState, type CSSProperties } from 'react'
 
 import { IconGithub } from '../../components/brandGlyphs'
 import { Dialog } from '../../components/Dialog'
-import { IconCheck, IconClose, IconEye, IconLink, IconWhatsNew } from '../../components/glyphs'
+import { IconCheck, IconClose, IconEye, IconLink } from '../../components/glyphs'
 import { ReleaseNotes } from '../../components/ReleaseNotes'
 import { api } from '../../lib/api'
 import { hueVars } from '../../lib/appearance'
@@ -23,7 +23,7 @@ import {
   sentenceOf,
   type Change,
 } from '../../lib/whatsNew'
-import { closeNewsWindow, markSeen, openNewsWindow, useNewsWindow, useWhatsNew, type WhatsNew } from '../../lib/whatsNewStore'
+import { closeNewsWindow, markSeen, useNewsWindow, useWhatsNew, type WhatsNew } from '../../lib/whatsNewStore'
 
 type Note = { version: string; body: string }
 
@@ -236,30 +236,4 @@ export function WhatsNewHost() {
   const news = useWhatsNew()
   if (!open || !news) return null
   return <WhatsNewWindow news={news} onClose={closeNewsWindow} />
-}
-
-/**
- * "New · 5" in the Version card, the number being what is still unseen. The
- * dot in front of the gift turns grey once nothing is left, and the number goes.
- */
-export function WhatsNewButton() {
-  const { t } = useT()
-  const news = useWhatsNew()
-  if (!news || news.changes.length === 0) return null
-  const left = news.unseen.length
-
-  return (
-    <Button
-      label={left > 0 ? `${t('new.button')} · ${left}` : t('new.button')}
-      labelKey={null}
-      glyph={
-        <span className="flex items-center gap-1.5">
-          <i aria-hidden className={`glim-new-dot glim-new-dot-still${left > 0 ? '' : ' glim-new-dot-seen'}`} />
-          <IconWhatsNew />
-        </span>
-      }
-      keepLabel
-      onClick={openNewsWindow}
-    />
-  )
 }

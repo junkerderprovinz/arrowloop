@@ -41,6 +41,8 @@ interface EngineNativeModule {
   /** The secret every request to the engine carries, so no other app can drive it. */
   token(): Promise<string>;
   batteryExempt(): Promise<boolean>;
+  /** The package of the store that installed the app, "" for an APK installed by hand. */
+  installer(): Promise<string>;
   /** Copies to the clipboard; React Native's own Clipboard is deprecated. */
   copy(value: string): Promise<void>;
   /** Material You's primary for each look, or null below Android 12. */
@@ -206,6 +208,7 @@ export const engine = {
   setDevicePolicy: (policy: Partial<DeviceConditions>) =>
     native ? native.setDevicePolicy(policy) : missing(),
   batteryExempt: () => (native ? native.batteryExempt() : Promise.resolve(true)),
+  installer: () => (native ? native.installer() : Promise.resolve("")),
   copy: (value: string) => (native ? native.copy(value) : missing()),
   systemAccent: (): Promise<AccentTones | null> => (native ? native.systemAccent() : Promise.resolve(null)),
   appData: (): Promise<AppData> => (native ? native.appData() : Promise.resolve(NO_APP_DATA)),

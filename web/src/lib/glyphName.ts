@@ -17,12 +17,14 @@ const RULES: Rule[] = [
   [/^about\.repo$/i, 'IconLink'],
   [/^about\.paypal$/i, 'IconLink'],
   [/^about\.mail$/i, 'IconMail'],
-  [/^about\.releaseNotes$/i, 'IconInfo'],
-  // The update check and its answers. After a failure the same button tries again.
-  [/^about\.checkUpdates$/i, 'IconSync'],
-  [/^about\.upToDate$/i, 'IconUpToDate'],
-  [/^about\.updatesFound$/i, 'IconUpdateAvailable'],
-  [/^about\.checkFailed$/i, 'IconRetry'],
+  // The Version card's buttons and the Components card's.
+  [/^version\.whatsNew$/i, 'IconWhatsNew'],
+  [/^version\.check$/i, 'IconSync'],
+  [/^version\.update$/i, 'IconDownload'],
+  [/^version\.restart$/i, 'IconRefresh'],
+  [/^version\.guide$/i, 'IconManual'],
+  [/^version\.plugins$/i, 'IconPlug'],
+  [/^components\.update$/i, 'IconDownload'],
 
   // The way in. These sit above the reset rule, which would claim the
   // password reset's link and its last button.

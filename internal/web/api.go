@@ -65,6 +65,14 @@ type Server struct {
 	// it, for the small window at the tray icon.
 	OpenWindow func()
 
+	// Updates is the desktop app's own update, which the Version card shows
+	// and starts. Only the desktop shell sets it.
+	Updates Updates
+
+	// Installer is the version of the installer this build ships with, for
+	// the Components card. Empty where the build has none.
+	Installer string
+
 	// SystemAccent reads the desktop's accent colour as "#RRGGBB", or "" where
 	// the system names none. Only the desktop shell sets it, and the window's
 	// page asks again whenever the window comes to the front.
@@ -105,9 +113,11 @@ type Server struct {
 	// an hour.
 	ReleaseLook time.Duration
 
-	// newRelease is the newer release the daily check found.
+	// newRelease is the newer release the last check found, and checkedAt
+	// when that check ran.
 	newReleaseMu sync.Mutex
 	newRelease   string
+	checkedAt    time.Time
 
 	// Pairing keeps the phrase's secret, this instance's member key, the relay
 	// it dials and who is in its group. Without it the pairing routes are
@@ -294,6 +304,11 @@ func (s *Server) Handler() http.Handler {
 	}
 	if s.SystemAccent != nil {
 		mux.HandleFunc("GET /api/window/accent", s.readAccent)
+	}
+	if s.Updates != nil {
+		mux.HandleFunc("GET /api/window/update", s.readUpdate)
+		mux.HandleFunc("POST /api/window/update", s.startUpdate)
+		mux.HandleFunc("POST /api/window/restart", s.restart)
 	}
 
 	if s.Hold != nil {

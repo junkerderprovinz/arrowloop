@@ -676,6 +676,9 @@ export const api = {
     }),
   aboutRemote: (remote: string) => call<Usage>(`/api/remotes/${name(remote)}/about`),
 
+  /** The versions the engine is made of, for the Components card. */
+  buildVersions: () => call<{ arrowloop: string; rclone: string }>("/api/versions"),
+
   /** The engine build's version, whether it has a window, whether it can pair and whether it has the built-in VPN. */
   capabilities: () =>
     call<{ version: string; window: boolean; pairing?: boolean; vpn?: boolean }>("/api/capabilities"),

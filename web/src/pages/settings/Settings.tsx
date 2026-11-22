@@ -26,8 +26,6 @@ export interface SettingsProps {
   onWindow: (next: WindowSettings) => void
   /** The Targets page, which its tile draws whole. */
   targets: ReactNode
-  /** The button that opens what the last update changed, for the Version card. */
-  whatsNew?: ReactNode
 }
 
 /** How long a search result waits for its tile's cards, which may still be reading the settings. */
@@ -117,7 +115,7 @@ export function Settings(props: SettingsProps) {
   )
 }
 
-function TilePage({ tile, tiles, look, version, window, onWindow, targets, whatsNew }: SettingsProps) {
+function TilePage({ tile, tiles, look, version, window, onWindow, targets }: SettingsProps) {
   switch (tile) {
     case 'general':
       return <GeneralPage window={window} onWindow={onWindow} />
@@ -140,6 +138,6 @@ function TilePage({ tile, tiles, look, version, window, onWindow, targets, whats
     case 'apps':
       return <Apps version={version} desktop={window !== null} />
     case 'info':
-      return <InfoPage version={version} whatsNew={whatsNew} window={window} onWindow={onWindow} />
+      return <InfoPage version={version} window={window} onWindow={onWindow} />
   }
 }

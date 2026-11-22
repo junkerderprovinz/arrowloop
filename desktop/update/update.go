@@ -70,6 +70,9 @@ type Updater struct {
 	Path string
 	// Logf receives what Cleanup and Swap could not do but did not fail on.
 	Logf func(format string, args ...any)
+	// Progress hears how much of the release's file Fetch has, and of how
+	// much; total is -1 when the server does not say.
+	Progress func(done, total int64)
 
 	// staged is the version Swap put in place during this run, so a later
 	// Check does not fetch it again.
@@ -204,7 +207,11 @@ func (u *Updater) Fetch(ctx context.Context, rel *Release) (string, error) {
 	}
 	defer resp.Body.Close()
 	h := sha256.New()
-	if _, err := io.Copy(io.MultiWriter(f, h), resp.Body); err != nil {
+	var body io.Reader = resp.Body
+	if u.Progress != nil {
+		body = &counting{r: resp.Body, total: resp.ContentLength, tell: u.Progress}
+	}
+	if _, err := io.Copy(io.MultiWriter(f, h), body); err != nil {
 		return "", fmt.Errorf("downloading %s: %w", rel.asset, err)
 	}
 	if got := hex.EncodeToString(h.Sum(nil)); got != want {
@@ -215,6 +222,23 @@ func (u *Updater) Fetch(ctx context.Context, rel *Release) (string, error) {
 	}
 	keep = true
 	return f.Name(), nil
+}
+
+// counting passes on how much of a download has been read.
+type counting struct {
+	r     io.Reader
+	done  int64
+	total int64
+	tell  func(done, total int64)
+}
+
+func (c *counting) Read(p []byte) (int, error) {
+	n, err := c.r.Read(p)
+	if n > 0 {
+		c.done += int64(n)
+		c.tell(c.done, c.total)
+	}
+	return n, err
 }
 
 func (u *Updater) api() string {
