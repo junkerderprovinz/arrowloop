@@ -2,22 +2,20 @@ package web
 
 import (
 	"errors"
-	"fmt"
 	"net"
 	"net/http"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
 
-// MinPasswordLen is the shortest password the interface stores. Five tries a
-// minute is about 7200 a day, which works through a four-digit PIN in under two
-// days; twelve characters put guessing out of reach whatever the limit. It
-// applies when a password is set, never when one is checked, and the
-// hash-password command leaves the choice to whoever runs it.
-const MinPasswordLen = 12
+// RecommendedPasswordLen is the length from which the interface stops
+// suggesting a longer password. Five tries a minute is about 7200 a day, which
+// works through a four-digit PIN in under two days; twelve characters put
+// guessing out of reach whatever the limit. A shorter one is still stored,
+// since how strong the password has to be is for whoever runs the install.
+const RecommendedPasswordLen = 12
 
 // securityView is what the security settings draw from. It never carries a
 // hash, a secret or a recovery code.
@@ -30,16 +28,16 @@ type securityView struct {
 	// interface cannot change.
 	Password string `json:"password"`
 
-	MinPasswordLen    int  `json:"minPasswordLen"`
-	TwoFactor         bool `json:"twoFactor"`
-	RecoveryCodesLeft int  `json:"recoveryCodesLeft"`
+	RecommendedPasswordLen int  `json:"recommendedPasswordLen"`
+	TwoFactor              bool `json:"twoFactor"`
+	RecoveryCodesLeft      int  `json:"recoveryCodesLeft"`
 }
 
 func (s *Server) securityView() securityView {
 	v := securityView{
-		Available:      s.Security != nil,
-		Password:       s.passwordSource(),
-		MinPasswordLen: MinPasswordLen,
+		Available:              s.Security != nil,
+		Password:               s.passwordSource(),
+		RecommendedPasswordLen: RecommendedPasswordLen,
 	}
 	if s.Security != nil {
 		st := s.Security.Get()
@@ -54,6 +52,8 @@ func (s *Server) securityView() securityView {
 func (s *Server) securityStatus(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, s.securityView())
 }
+
+var errNoPassword = errors.New("type a password first")
 
 var errPasswordFromEnv = errors.New("the password comes from " + PasswordHashEnv + ", so it is changed where the container or service is configured")
 
@@ -145,10 +145,10 @@ func (s *Server) setPassword(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Counted in characters, since a passphrase in a script that spends three
-	// bytes a character is not longer for it.
-	if utf8.RuneCountInString(body.Password) < MinPasswordLen {
-		writeError(w, http.StatusBadRequest, fmt.Errorf("the password needs at least %d characters", MinPasswordLen))
+	// Removing the password has a route of its own, which asks for the
+	// current one.
+	if body.Password == "" {
+		writeError(w, http.StatusBadRequest, errNoPassword)
 		return
 	}
 	hash, err := HashPassword(s.key(), body.Password)

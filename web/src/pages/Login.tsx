@@ -19,7 +19,7 @@ import { followDevice, storedTheme } from '../lib/themeSetting'
  */
 export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?: boolean }) {
   const { t } = useT()
-  const [reset, setReset] = useState<{ minutes: number; minLength: number } | null>(null)
+  const [reset, setReset] = useState<{ minutes: number } | null>(null)
   const [removed, setRemoved] = useState<ResetRemoved | null>(null)
 
   // App repaints on a switch of the system's look, and it is not mounted yet.
@@ -75,7 +75,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
   async function askCode(): Promise<ResetAnswer> {
     try {
       const res = await api.resetBegin()
-      setReset({ minutes: res.minutes, minLength: res.minPasswordLen })
+      setReset({ minutes: res.minutes })
       return { ok: true }
     } catch (e) {
       return { error: locked(e) ? t('login.locked') : (e as Error).message || undefined }
@@ -92,7 +92,6 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
     }
   }
 
-  const minLength = reset?.minLength ?? 12
   const text: SignInText = {
     password: t('login.password'),
     signIn: t('login.submit'),
@@ -110,7 +109,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
     setPassword: t('password.saveFirst'),
     saving: t('reset.saving'),
     mismatch: t('password.mismatch'),
-    tooShort: t('password.minLength', { count: minLength }),
+    tooShort: t('password.newNeeded'),
     resetRejected: t('reset.invalid'),
     failed: t('login.failed'),
     show: t('secret.show'),
@@ -124,7 +123,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
       text={text}
       passkey={passkeyOffer}
       reset={canReset}
-      minPassword={minLength}
+      minPassword={1}
       idPrefix="login"
       labelKeys={{
         signIn: 'login.submit',

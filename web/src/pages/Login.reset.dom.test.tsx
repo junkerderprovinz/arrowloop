@@ -23,7 +23,7 @@ import { Login } from './Login'
 beforeEach(() => {
   resetBegin.mockReset()
   resetFinish.mockReset()
-  resetBegin.mockResolvedValue({ minutes: 10, minPasswordLen: 12 })
+  resetBegin.mockResolvedValue({ minutes: 10 })
 })
 afterEach(cleanup)
 
@@ -65,7 +65,7 @@ describe('Login, a forgotten password', () => {
     resetBegin.mockReturnValue(new Promise((done) => (written = done)))
     await openReset()
     expect(codeBox()).toBeNull()
-    await act(async () => written({ minutes: 10, minPasswordLen: 12 }))
+    await act(async () => written({ minutes: 10 }))
     expect(resetBegin).toHaveBeenCalledTimes(1)
     expect(codeBox()).toBeTruthy()
   })
@@ -94,7 +94,7 @@ describe('Login, a forgotten password', () => {
   })
 
   it('says in the code tip where the log is, how long the code lasts and what goes', async () => {
-    resetBegin.mockResolvedValue({ minutes: 10, minPasswordLen: 12 })
+    resetBegin.mockResolvedValue({ minutes: 10 })
     await openReset()
     const tip = screen.getByLabelText(/container log/i, { selector: 'span' }).getAttribute('aria-label')!
     for (const part of [/Unraid/, /10 minutes/, /Dozzle/, /two-factor/i, /passkey/i, /session/i]) {
@@ -102,21 +102,21 @@ describe('Login, a forgotten password', () => {
     }
   })
 
-  it('catches a short password and a mismatch before sending anything', async () => {
-    resetBegin.mockResolvedValue({ minutes: 10, minPasswordLen: 16 })
+  it('takes a short password and catches a mismatch before sending anything', async () => {
+    resetFinish.mockResolvedValue({ removed: { secondFactor: false, passkeys: 0 } })
     await openReset()
     type(codeBox()!, 'ABCD-EFGH-JKLM')
     const [password, confirm] = newBoxes()
-    type(password!, 'fourteen chars')
-    type(confirm!, 'fourteen chars')
-    await click(/set password/i)
-    expect(screen.getByRole('alert').textContent).toMatch(/16/)
-
     type(password!, 'a brand new passphrase')
     type(confirm!, 'a brand new passphrasf')
     await click(/set password/i)
     expect(screen.getByRole('alert').textContent).toBe('Passwords do not match')
     expect(resetFinish).not.toHaveBeenCalled()
+
+    type(password!, '1234')
+    type(confirm!, '1234')
+    await click(/set password/i)
+    await waitFor(() => expect(resetFinish).toHaveBeenCalledWith('ABCD-EFGH-JKLM', '1234'))
   })
 
   it('answers a refused code with the one sentence and asks for a new code', async () => {

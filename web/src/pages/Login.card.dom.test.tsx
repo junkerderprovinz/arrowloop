@@ -27,7 +27,7 @@ beforeEach(() => {
   login.mockReset()
   resetBegin.mockReset()
   resetFinish.mockReset()
-  resetBegin.mockResolvedValue({ minutes: 10, minPasswordLen: 12 })
+  resetBegin.mockResolvedValue({ minutes: 10 })
 })
 afterEach(() => {
   cleanup()

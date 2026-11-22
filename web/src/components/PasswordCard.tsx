@@ -37,7 +37,8 @@ export function PasswordCard({
 
   const source = status.password
   const set = source !== 'none'
-  const min = status.minPasswordLen
+  // Counted in characters, not in UTF-16 units.
+  const short = next !== '' && [...next].length < status.recommendedPasswordLen
 
   function refusal(e: unknown): string {
     if (e instanceof ApiError && e.status === 403) return t('login.wrong')
@@ -55,11 +56,6 @@ export function PasswordCard({
     setDone(null)
     if (next !== repeat) {
       setError(t('password.mismatch'))
-      return
-    }
-    // Counted in characters, as the server counts.
-    if ([...next].length < min) {
-      setError(t('password.minLength', { count: min }))
       return
     }
     if (source === 'file' && current === '') {
@@ -121,8 +117,11 @@ export function PasswordCard({
           <FieldRow label={t('password.repeat')}>
             <Secret value={repeat} onChange={setRepeat} autoComplete="new-password" label={t('password.repeat')} />
           </FieldRow>
-          {/* The rule, stated before it is broken. */}
-          <p className="text-subline text-carbon-textMuted">{t('password.minLength', { count: min })}</p>
+          {short && (
+            <p className="text-subline text-carbon-textMuted">
+              {t('password.longerIsSafer', { count: status.recommendedPasswordLen })}
+            </p>
+          )}
 
           {error && <p className="text-subline text-statusFail" role="alert">{error}</p>}
           {done && <p className="text-subline text-statusOk" role="status">{done}</p>}

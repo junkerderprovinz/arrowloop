@@ -173,20 +173,46 @@ func TestTheCodeStandsInTheLogAsABlockOfItsOwn(t *testing.T) {
 	}
 }
 
-// The form checks the length before it sends anything, and it learns the
-// minimum here rather than repeating the number.
-func TestAskingForACodeSaysHowLongItLastsAndTheMinimum(t *testing.T) {
+func TestAskingForACodeSaysHowLongItLasts(t *testing.T) {
 	_, srv, _, _ := resettable(t)
 	_, said := post(t, browser(t), srv.URL+"/api/security/reset", map[string]any{})
 	var got struct {
-		Minutes        int `json:"minutes"`
-		MinPasswordLen int `json:"minPasswordLen"`
+		Minutes int `json:"minutes"`
 	}
 	if err := json.Unmarshal([]byte(said), &got); err != nil {
 		t.Fatal(err)
 	}
-	if got.Minutes != 10 || got.MinPasswordLen != 12 {
-		t.Errorf("the answer says %d minutes and %d characters, want 10 and 12: %s", got.Minutes, got.MinPasswordLen, said)
+	if got.Minutes != 10 {
+		t.Errorf("the answer says %d minutes, want 10: %s", got.Minutes, said)
+	}
+}
+
+// How long the password is, is the owner's call.
+func TestAResetTakesAShortPassword(t *testing.T) {
+	s, srv, store, _ := resettable(t)
+	post(t, browser(t), srv.URL+"/api/security/reset", map[string]any{})
+	if code, said := post(t, browser(t), srv.URL+"/api/security/reset/finish", map[string]any{"code": liveCode(s), "password": "1234"}); code != http.StatusOK {
+		t.Fatalf("a reset to a four-character password answered %d: %s", code, said)
+	}
+	if !security.VerifyPassword(s.key(), "1234", store.Get().PasswordHash) {
+		t.Error("the short password was not stored")
+	}
+}
+
+// An empty password would switch the login off, which the reset form is not
+// for, and it is refused before it costs a guess.
+func TestAResetRefusesAnEmptyPassword(t *testing.T) {
+	s, srv, store, _ := resettable(t)
+	before := store.Get().PasswordHash
+	post(t, browser(t), srv.URL+"/api/security/reset", map[string]any{})
+	if code, said := post(t, browser(t), srv.URL+"/api/security/reset/finish", map[string]any{"code": liveCode(s), "password": ""}); code != http.StatusBadRequest {
+		t.Fatalf("a reset to an empty password answered %d: %s", code, said)
+	}
+	if store.Get().PasswordHash != before {
+		t.Error("the empty password replaced the one in force")
+	}
+	if liveCode(s) == "" {
+		t.Error("the refused reset spent the code")
 	}
 }
 

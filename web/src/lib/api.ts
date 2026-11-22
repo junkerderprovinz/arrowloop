@@ -827,7 +827,7 @@ export type SecurityStatus = {
   available: boolean
   /** Where the password comes from: none, set here, or ARROWLOOP_PASSWORD_HASH. */
   password: 'none' | 'file' | 'env'
-  minPasswordLen: number
+  recommendedPasswordLen: number
   twoFactor: boolean
   recoveryCodesLeft: number
 }
@@ -1055,7 +1055,7 @@ export const api = {
 
   /** Has the server write a reset code to its log, unless one is still
    *  valid. The answer never carries the code. */
-  resetBegin: () => post<{ minutes: number; minPasswordLen: number }>('/api/security/reset'),
+  resetBegin: () => post<{ minutes: number }>('/api/security/reset'),
 
   /** Sets a new password with the code from the log, and signs the caller in. */
   resetFinish: (code: string, password: string) =>

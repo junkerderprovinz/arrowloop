@@ -11,7 +11,6 @@ import (
 	"os"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 )
@@ -79,10 +78,7 @@ func (s *Server) resetBegin(w http.ResponseWriter, _ *http.Request) {
 	if fresh != "" {
 		printResetCode(s.codeLog(), fresh)
 	}
-	writeJSON(w, http.StatusAccepted, map[string]any{
-		"minutes":        int(resetCodeLife.Minutes()),
-		"minPasswordLen": MinPasswordLen,
-	})
+	writeJSON(w, http.StatusAccepted, map[string]any{"minutes": int(resetCodeLife.Minutes())})
 }
 
 func (s *Server) codeLog() io.Writer {
@@ -122,10 +118,9 @@ func (s *Server) resetFinish(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, errResetCode)
 		return
 	}
-	// Checked before the code, so a password that is too short does not cost
-	// a guess.
-	if utf8.RuneCountInString(body.Password) < MinPasswordLen {
-		writeError(w, http.StatusBadRequest, fmt.Errorf("the password needs at least %d characters", MinPasswordLen))
+	// Checked before the code, so an empty password does not cost a guess.
+	if body.Password == "" {
+		writeError(w, http.StatusBadRequest, errNoPassword)
 		return
 	}
 
