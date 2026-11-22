@@ -2176,7 +2176,6 @@ const et: Translations = {
   'fortress.action.backupExport': 'Tuua varukoopia',
   'fortress.action.backupImport': 'Taastada varukoopia',
   'fortress.action.uiOpen': 'Avada selle lehti',
-  'fortress.openNeedsPassword': 'Määra kõigepealt parool jaotises Seaded, Turvalisus, siis avanevad teised rakendused siit.',
   'edit.minAge': 'Kanna üle alles siis, kui vanem kui',
   'edit.minAgeHint': 'Fail läheb teisele poole alles siis, kui ta on nii vana, arvestatuna viimasest muudatusest. Seni jääb ta sinna, kus on, nii jäävad uued fotod mõneks ajaks telefoni.',
   'edit.minAge.off': 'Väljas',

@@ -2176,7 +2176,6 @@ const ms: Translations = {
   'fortress.action.backupExport': 'Ambil sandaran',
   'fortress.action.backupImport': 'Pulihkan sandaran',
   'fortress.action.uiOpen': 'Buka halamannya',
-  'fortress.openNeedsPassword': 'Tetapkan kata laluan dahulu di Tetapan, Keselamatan, kemudian apl lain dibuka dari sini.',
   'edit.minAge': 'Hantar hanya jika lebih lama daripada',
   'edit.minAgeHint': 'Fail hanya berpindah ke seberang apabila sudah berumur sebegini, dikira dari perubahan terakhirnya. Sehingga itu fail kekal di tempatnya, jadi foto terbaharu kekal di telefon buat seketika.',
   'edit.minAge.off': 'Mati',

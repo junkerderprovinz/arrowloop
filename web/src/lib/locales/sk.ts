@@ -2176,7 +2176,6 @@ const sk: Translations = {
   'fortress.action.backupExport': 'Stiahnuť zálohu',
   'fortress.action.backupImport': 'Obnoviť zálohu',
   'fortress.action.uiOpen': 'Otvoriť jeho stránky',
-  'fortress.openNeedsPassword': 'Najprv nastav heslo v Nastaveniach, Zabezpečenie a potom sa odtiaľto otvoria aj ostatné aplikácie.',
   'edit.minAge': 'Preniesť, až bude starší než',
   'edit.minAgeHint': 'Súbor ide na druhú stranu, až keď je takto starý, počítané od jeho poslednej zmeny. Dovtedy zostane, kde je, takže nové fotky zostanú chvíľu v telefóne.',
   'edit.minAge.off': 'Vypnuté',

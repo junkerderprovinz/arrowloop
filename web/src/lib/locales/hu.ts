@@ -2176,7 +2176,6 @@ const hu: Translations = {
   'fortress.action.backupExport': 'Lekérni egy mentést',
   'fortress.action.backupImport': 'Visszaállítani egy mentést',
   'fortress.action.uiOpen': 'Megnyitni az oldalait',
-  'fortress.openNeedsPassword': 'Előbb állíts be jelszót a Beállítások, Biztonság alatt, utána a többi app innen is megnyílik.',
   'edit.minAge': 'Átvitel csak, ha régebbi, mint',
   'edit.minAgeHint': 'Egy fájl csak akkor megy át, ha már ilyen régi, az utolsó módosításától számítva. Addig ott marad, ahol van, így a friss fotók még egy ideig a telefonon maradnak.',
   'edit.minAge.off': 'Ki',

@@ -2176,7 +2176,6 @@ const fa: Translations = {
   'fortress.action.backupExport': 'گرفتن یک پشتیبان',
   'fortress.action.backupImport': 'بازگرداندن یک پشتیبان',
   'fortress.action.uiOpen': 'باز کردن صفحه‌هایش',
-  'fortress.openNeedsPassword': 'اول در تنظیمات، امنیت یک گذرواژه بگذار، بعد برنامه‌های دیگر از همین‌جا باز می‌شوند.',
   'edit.minAge': 'انتقال فقط وقتی قدیمی‌تر از',
   'edit.minAgeHint': 'فایل فقط وقتی به سمت دیگر می‌رود که به این سن برسد، از آخرین تغییرش حساب می‌شود. تا آن موقع همان جا می‌ماند، پس عکس‌های تازه مدتی روی گوشی می‌مانند.',
   'edit.minAge.off': 'خاموش',

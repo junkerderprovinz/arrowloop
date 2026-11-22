@@ -2176,7 +2176,6 @@ const sl: Translations = {
   'fortress.action.backupExport': 'Prenesti varnostno kopijo',
   'fortress.action.backupImport': 'Obnoviti varnostno kopijo',
   'fortress.action.uiOpen': 'Odpreti njegove strani',
-  'fortress.openNeedsPassword': 'Najprej nastavi geslo v Nastavitvah, Varnost, nato se bodo druge aplikacije odpirale od tu.',
   'edit.minAge': 'Prenesi šele, ko je starejše od',
   'edit.minAgeHint': 'Datoteka gre na drugo stran šele, ko je tako stara, šteto od njene zadnje spremembe. Do takrat ostane, kjer je, zato nove fotografije še nekaj časa ostanejo na telefonu.',
   'edit.minAge.off': 'Izklopljeno',

@@ -2176,7 +2176,6 @@ const pl: Translations = {
   'fortress.action.backupExport': 'Pobierać kopię zapasową',
   'fortress.action.backupImport': 'Przywracać kopię zapasową',
   'fortress.action.uiOpen': 'Otwierać jego strony',
-  'fortress.openNeedsPassword': 'Najpierw ustaw hasło w Ustawieniach, Bezpieczeństwo, a wtedy inne aplikacje otworzą się stąd.',
   'edit.minAge': 'Przenoś dopiero, gdy starszy niż',
   'edit.minAgeHint': 'Plik przechodzi na drugą stronę dopiero, gdy jest tak stary, licząc od jego ostatniej zmiany. Do tego czasu zostaje na miejscu, więc nowe zdjęcia zostają jeszcze przez jakiś czas w telefonie.',
   'edit.minAge.off': 'Wyłączone',

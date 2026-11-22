@@ -148,10 +148,6 @@ export function FortressSection({
       showStatus(app, instance)
       return
     }
-    if (!fortress.passwordSet) {
-      push(t('fortress.openNeedsPassword'), 'warn')
-      return
-    }
     // Asked at once, since the browser lets a tab open only shortly after the click.
     api.openFortressMember(instance.id).then(
       ({ path }) => {

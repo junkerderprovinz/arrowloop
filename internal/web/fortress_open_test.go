@@ -6,11 +6,13 @@ import (
 	"io"
 	"net/http"
 	"net/http/cookiejar"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
@@ -185,7 +187,7 @@ func TestASignedInUserOpensAnotherInstanceBehindItsOwnSignIn(t *testing.T) {
 	}
 }
 
-func TestOnlyAPasswordSessionOpensAnotherInstance(t *testing.T) {
+func TestWithAPasswordOnlyASignedInBrowserOpensAnotherInstance(t *testing.T) {
 	setOpenPassword(t)
 	a, _, bID := fortressOfTwo(t, true)
 	stranger := &http.Client{}
@@ -240,14 +242,88 @@ func TestTheStatusWindowGetsTheReportAndTheEndOfTheLog(t *testing.T) {
 	}
 }
 
-// An instance that asks for no password of its own opens to nobody, since
-// everybody with the phrase could use it then.
-func TestAnInstanceWithoutAPasswordDoesNotOpen(t *testing.T) {
+// securedStore keeps password in a security file of its own under dir.
+func securedStore(t *testing.T, dir, password string) *security.Store {
+	t.Helper()
+	store, err := security.Open(filepath.Join(dir, "arrowloop.json"), testKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash, err := web.HashPassword(testKey, password)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Update(func(st *security.State) error { st.PasswordHash = hash; return nil }); err != nil {
+		t.Fatal(err)
+	}
+	return store
+}
+
+// A password is optional here, so an instance without one opens another
+// member too, which still asks for its own sign-in.
+func TestAnInstanceWithoutAPasswordOpensAnotherOne(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
-	a, _, bID := fortressOfTwo(t, false)
+	url := testRelay(t)
+	a := nodeWith(t, setup{relay: url, guard: true}, newHarness(t))
+	b := nodeWith(t, setup{relay: url, guard: true, password: openPassword}, newHarness(t))
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a.srv.Client().Jar = jar
+	b.signIn(t)
+	words := newWords(t)
+	a.join(t, words)
+	b.join(t, words)
+	var bID string
+	eventually(t, "the first to see that the second's pages open", func() bool {
+		for _, m := range a.openMembers(t) {
+			if m.App == "arrowloop" && m.Online && m.Pages {
+				bID = m.ID
+				return true
+			}
+		}
+		return false
+	})
+
 	status, body := a.send(t, http.MethodPost, "/api/fortress/open/"+bID, "")
-	if status != http.StatusForbidden || !strings.Contains(string(body), "no_session") {
-		t.Errorf("open without a password here = %d %s", status, body)
+	if status != http.StatusOK {
+		t.Fatalf("open without a password here = %d %s", status, body)
+	}
+	var tab struct{ Path string }
+	if err := json.Unmarshal(body, &tab); err != nil || !strings.HasPrefix(tab.Path, "/fortress/open/") {
+		t.Fatalf("open answered %s", body)
+	}
+	resp, err := a.srv.Client().Get(a.srv.URL + tab.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	shell, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK || !strings.Contains(string(shell), "<iframe") {
+		t.Fatalf("the tab answered %d %s", resp.StatusCode, shell)
+	}
+
+	inside := tab.Path + "/"
+	if status, _ := opened(t, a, http.MethodGet, inside+"api/jobs", ""); status != http.StatusUnauthorized {
+		t.Errorf("the other instance's jobs before signing in there = %d", status)
+	}
+	if status, body := opened(t, a, http.MethodPost, inside+"api/login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
+		t.Fatalf("signing in on the opened page = %d %s", status, body)
+	}
+	if status, body := opened(t, a, http.MethodGet, inside+"api/jobs", ""); status != http.StatusOK {
+		t.Errorf("the jobs after signing in there = %d %s", status, body)
+	}
+
+	// The tab belongs to the browser that opened it.
+	noFollow := &http.Client{CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	other, err := noFollow.Get(a.srv.URL + tab.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	other.Body.Close()
+	if other.StatusCode != http.StatusSeeOther {
+		t.Errorf("another browser at the tab = %d", other.StatusCode)
 	}
 }
 

@@ -2176,7 +2176,6 @@ const ja: Translations = {
   'fortress.action.backupExport': 'バックアップを取ってくる',
   'fortress.action.backupImport': 'バックアップを戻す',
   'fortress.action.uiOpen': 'ページを開く',
-  'fortress.openNeedsPassword': '先に「設定」の「セキュリティ」でパスワードを設定すると、ほかのアプリをここから開けます。',
   'edit.minAge': 'この期間を過ぎてから転送',
   'edit.minAgeHint': 'ファイルは最後の変更からこの日数が経ってから向こうへ渡ります。それまでは元の場所に残るので、最近の写真はしばらく携帯に残ります。',
   'edit.minAge.off': 'オフ',

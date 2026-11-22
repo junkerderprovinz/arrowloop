@@ -2176,7 +2176,6 @@ const eu: Translations = {
   'fortress.action.backupExport': 'Babeskopia bat ekartzea',
   'fortress.action.backupImport': 'Babeskopia bat leheneratzea',
   'fortress.action.uiOpen': 'Bere orriak irekitzea',
-  'fortress.openNeedsPassword': 'Ezarri lehenik pasahitz bat Ezarpenak, Segurtasuna atalean, eta gero beste aplikazioak hemendik irekiko dira.',
   'edit.minAge': 'Transferitu soilik zaharragoa denean',
   'edit.minAgeHint': 'Fitxategi bat beste aldera pasatzen da adin hori duenean bakarrik, azken aldaketatik zenbatuta. Ordura arte dagoen lekuan geratzen da, eta argazki berriak telefonoan geratzen dira denbora batez.',
   'edit.minAge.off': 'Desaktibatuta',

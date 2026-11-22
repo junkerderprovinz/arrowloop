@@ -2176,7 +2176,6 @@ const lt: Translations = {
   'fortress.action.backupExport': 'Parsisiųsti atsarginę kopiją',
   'fortress.action.backupImport': 'Atkurti atsarginę kopiją',
   'fortress.action.uiOpen': 'Atverti jo puslapius',
-  'fortress.openNeedsPassword': 'Pirmiausia nustatyk slaptažodį skiltyje Nustatymai, Saugumas, tada kitos programos atsidarys iš čia.',
   'edit.minAge': 'Perkelti tik kai senesnis nei',
   'edit.minAgeHint': 'Failas pereina į kitą pusę tik tada, kai yra tokio amžiaus, skaičiuojant nuo paskutinio jo pakeitimo. Iki tol jis lieka vietoje, todėl naujos nuotraukos dar kurį laiką lieka telefone.',
   'edit.minAge.off': 'Išjungta',

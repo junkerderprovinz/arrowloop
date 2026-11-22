@@ -2176,7 +2176,6 @@ const nl: Translations = {
   'fortress.action.backupExport': 'Een back-up ophalen',
   'fortress.action.backupImport': 'Een back-up terugzetten',
   'fortress.action.uiOpen': 'De pagina\'s openen',
-  'fortress.openNeedsPassword': 'Stel eerst een wachtwoord in onder Instellingen, Beveiliging, dan openen de andere apps vanaf hier.',
   'edit.minAge': 'Pas overzetten als ouder dan',
   'edit.minAgeHint': 'Een bestand gaat pas over als het zo oud is, gerekend vanaf de laatste wijziging. Tot dan blijft het waar het is, zodat recente foto\'s nog een tijdje op de telefoon blijven.',
   'edit.minAge.off': 'Uit',

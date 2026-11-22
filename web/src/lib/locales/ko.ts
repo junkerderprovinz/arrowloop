@@ -2176,7 +2176,6 @@ const ko: Translations = {
   'fortress.action.backupExport': '백업 가져오기',
   'fortress.action.backupImport': '백업 복원하기',
   'fortress.action.uiOpen': '페이지 열기',
-  'fortress.openNeedsPassword': '먼저 설정, 보안에서 비밀번호를 정하면 다른 앱을 여기서 열 수 있습니다.',
   'edit.minAge': '이보다 오래된 파일만 전송',
   'edit.minAgeHint': '파일은 마지막으로 바뀐 때부터 이만큼 지나야 건너갑니다. 그때까지는 그 자리에 남으므로 최근 사진이 한동안 휴대전화에 남습니다.',
   'edit.minAge.off': '꺼짐',

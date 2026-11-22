@@ -2176,7 +2176,6 @@ const ca: Translations = {
   'fortress.action.backupExport': 'Obtenir una còpia de seguretat',
   'fortress.action.backupImport': 'Restaurar una còpia de seguretat',
   'fortress.action.uiOpen': 'Obrir les seves pàgines',
-  'fortress.openNeedsPassword': 'Primer posa una contrasenya a Configuració, Seguretat, i després les altres apps s\'obriran des d\'aquí.',
   'edit.minAge': 'Transferir només si té més de',
   'edit.minAgeHint': 'Un fitxer només passa a l\'altra banda quan té aquesta antiguitat, comptada des del seu darrer canvi. Fins aleshores es queda on és, així les fotos recents es queden una estona al telèfon.',
   'edit.minAge.off': 'Desactivat',

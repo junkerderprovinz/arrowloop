@@ -2176,7 +2176,6 @@ const tr: Translations = {
   'fortress.action.backupExport': 'Bir yedek almak',
   'fortress.action.backupImport': 'Bir yedeği geri yüklemek',
   'fortress.action.uiOpen': 'Sayfalarını açmak',
-  'fortress.openNeedsPassword': 'Önce Ayarlar, Güvenlik altında bir parola belirle, sonra diğer uygulamalar buradan açılır.',
   'edit.minAge': 'Yalnızca şundan eskiyse aktar',
   'edit.minAgeHint': 'Bir dosya ancak son değişikliğinden bu yana bu kadar zaman geçince karşıya geçer. O zamana kadar yerinde kalır, böylece yeni fotoğraflar bir süre telefonda durur.',
   'edit.minAge.off': 'Kapalı',

@@ -2176,7 +2176,6 @@ const lv: Translations = {
   'fortress.action.backupExport': 'Iegūt rezerves kopiju',
   'fortress.action.backupImport': 'Atjaunot rezerves kopiju',
   'fortress.action.uiOpen': 'Atvērt tās lapas',
-  'fortress.openNeedsPassword': 'Vispirms iestati paroli sadaļā Iestatījumi, Drošība, tad citas lietotnes atvērsies no šejienes.',
   'edit.minAge': 'Pārsūtīt tikai, ja vecāks par',
   'edit.minAgeHint': 'Fails pāriet uz otru pusi tikai tad, kad tas ir tik vecs, skaitot no tā pēdējām izmaiņām. Līdz tam tas paliek savā vietā, tāpēc jaunās fotogrāfijas vēl kādu laiku paliek tālrunī.',
   'edit.minAge.off': 'Izslēgts',

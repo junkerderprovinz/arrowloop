@@ -2176,7 +2176,6 @@ const pt: Translations = {
   'fortress.action.backupExport': 'Obter uma cópia de segurança',
   'fortress.action.backupImport': 'Repor uma cópia de segurança',
   'fortress.action.uiOpen': 'Abrir as suas páginas',
-  'fortress.openNeedsPassword': 'Define primeiro uma palavra-passe em Definições, Segurança e depois as outras apps abrem-se a partir daqui.',
   'edit.minAge': 'Transferir só quando tiver mais de',
   'edit.minAgeHint': 'Um ficheiro só passa para o outro lado quando tem esta idade, contada a partir da última alteração. Até lá fica onde está, e as fotos recentes ficam algum tempo no telemóvel.',
   'edit.minAge.off': 'Desligado',

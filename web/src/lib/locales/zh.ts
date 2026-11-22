@@ -2176,7 +2176,6 @@ const zh: Translations = {
   'fortress.action.backupExport': '获取备份',
   'fortress.action.backupImport': '恢复备份',
   'fortress.action.uiOpen': '打开它的页面',
-  'fortress.openNeedsPassword': '请先在“设置”的“安全”中设置密码，之后就能从这里打开其他应用。',
   'edit.minAge': '仅传输早于此时间的文件',
   'edit.minAgeHint': '文件要从最后一次修改起满这么多天才会传过去。在那之前它留在原处，所以最近的照片会在手机上多留一段时间。',
   'edit.minAge.off': '关',

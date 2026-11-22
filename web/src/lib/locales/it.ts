@@ -2176,7 +2176,6 @@ const it: Translations = {
   'fortress.action.backupExport': 'Prendere un backup',
   'fortress.action.backupImport': 'Ripristinare un backup',
   'fortress.action.uiOpen': 'Aprire le sue pagine',
-  'fortress.openNeedsPassword': 'Imposta prima una password in Impostazioni, Sicurezza, poi le altre app si apriranno da qui.',
   'edit.minAge': 'Trasferisci solo se più vecchio di',
   'edit.minAgeHint': 'Un file passa dall\'altra parte solo quando ha raggiunto questa età, contata dalla sua ultima modifica. Fino ad allora resta dov\'è, così le foto recenti restano per un po\' sul telefono.',
   'edit.minAge.off': 'Disattivo',

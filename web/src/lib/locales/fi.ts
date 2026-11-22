@@ -2176,7 +2176,6 @@ const fi: Translations = {
   'fortress.action.backupExport': 'Hakea varmuuskopio',
   'fortress.action.backupImport': 'Palauttaa varmuuskopio',
   'fortress.action.uiOpen': 'Avata sen sivut',
-  'fortress.openNeedsPassword': 'Aseta ensin salasana kohdassa Asetukset, Turvallisuus, niin muut sovellukset aukeavat täältä.',
   'edit.minAge': 'Siirrä vasta, kun vanhempi kuin',
   'edit.minAgeHint': 'Tiedosto siirtyy toiselle puolelle vasta, kun se on näin vanha, laskettuna sen viimeisestä muutoksesta. Siihen asti se pysyy paikallaan, joten uudet kuvat jäävät hetkeksi puhelimeen.',
   'edit.minAge.off': 'Pois',

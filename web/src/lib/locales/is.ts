@@ -2176,7 +2176,6 @@ const is: Translations = {
   'fortress.action.backupExport': 'Sækja afrit',
   'fortress.action.backupImport': 'Endurheimta afrit',
   'fortress.action.uiOpen': 'Opna síðurnar þess',
-  'fortress.openNeedsPassword': 'Settu fyrst lykilorð undir Stillingar, Öryggi, þá opnast hin forritin héðan.',
   'edit.minAge': 'Flytja aðeins þegar eldra en',
   'edit.minAgeHint': 'Skrá fer aðeins yfir þegar hún hefur náð þessum aldri, talið frá síðustu breytingu hennar. Þangað til er hún kyrr, svo nýjar myndir verða áfram í símanum um stund.',
   'edit.minAge.off': 'Slökkt',

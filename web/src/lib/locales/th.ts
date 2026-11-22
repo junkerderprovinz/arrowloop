@@ -2176,7 +2176,6 @@ const th: Translations = {
   'fortress.action.backupExport': 'ดึงข้อมูลสำรอง',
   'fortress.action.backupImport': 'กู้คืนข้อมูลสำรอง',
   'fortress.action.uiOpen': 'เปิดหน้าของแอป',
-  'fortress.openNeedsPassword': 'ตั้งรหัสผ่านก่อนที่การตั้งค่า ความปลอดภัย แล้วแอปอื่นจะเปิดจากที่นี่ได้',
   'edit.minAge': 'ส่งเมื่อเก่ากว่า',
   'edit.minAgeHint': 'ไฟล์จะข้ามไปอีกฝั่งก็ต่อเมื่อมีอายุถึงเท่านี้ นับจากการเปลี่ยนแปลงครั้งล่าสุด ก่อนหน้านั้นไฟล์จะอยู่ที่เดิม รูปใหม่ๆ จึงอยู่ในโทรศัพท์ต่ออีกสักพัก',
   'edit.minAge.off': 'ปิด',

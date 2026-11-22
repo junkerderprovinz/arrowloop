@@ -2176,7 +2176,6 @@ const he: Translations = {
   'fortress.action.backupExport': 'להביא גיבוי',
   'fortress.action.backupImport': 'לשחזר גיבוי',
   'fortress.action.uiOpen': 'לפתוח את הדפים שלו',
-  'fortress.openNeedsPassword': 'קודם הגדר סיסמה בהגדרות, אבטחה, ואז האפליקציות האחרות ייפתחו מכאן.',
   'edit.minAge': 'להעביר רק כשהוא ישן מ־',
   'edit.minAgeHint': 'קובץ עובר לצד השני רק כשהוא בגיל הזה, מחושב מהשינוי האחרון שלו. עד אז הוא נשאר במקומו, כך שתמונות חדשות נשארות בטלפון עוד זמן מה.',
   'edit.minAge.off': 'כבוי',

@@ -2176,7 +2176,6 @@ const ar: Translations = {
   'fortress.action.backupExport': 'جلب نسخة احتياطية',
   'fortress.action.backupImport': 'استعادة نسخة احتياطية',
   'fortress.action.uiOpen': 'فتح صفحاته',
-  'fortress.openNeedsPassword': 'عيّن أولاً كلمة مرور في الإعدادات، الأمان، وبعدها تُفتح التطبيقات الأخرى من هنا.',
   'edit.minAge': 'النقل فقط عندما يكون أقدم من',
   'edit.minAgeHint': 'لا ينتقل الملف إلى الجهة الأخرى إلا حين يبلغ هذا العمر، محسوبًا من آخر تغيير له. وحتى ذلك الحين يبقى مكانه، فتبقى الصور الحديثة على الهاتف لبعض الوقت.',
   'edit.minAge.off': 'إيقاف',

@@ -2176,7 +2176,6 @@ const hr: Translations = {
   'fortress.action.backupExport': 'Dohvatiti sigurnosnu kopiju',
   'fortress.action.backupImport': 'Vratiti sigurnosnu kopiju',
   'fortress.action.uiOpen': 'Otvoriti njegove stranice',
-  'fortress.openNeedsPassword': 'Najprije postavi lozinku u Postavkama, Sigurnost, pa će se ostale aplikacije otvarati odavde.',
   'edit.minAge': 'Prenesi tek kad je starije od',
   'edit.minAgeHint': 'Datoteka prelazi na drugu stranu tek kad je ovoliko stara, računajući od njezine zadnje promjene. Do tada ostaje gdje jest, pa nove fotografije još neko vrijeme ostaju na telefonu.',
   'edit.minAge.off': 'Isključeno',
