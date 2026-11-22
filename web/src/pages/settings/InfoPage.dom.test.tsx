@@ -151,6 +151,13 @@ describe('the Info tile', () => {
     expect(screen.queryByRole('button', { name: /^New/ })).toBeNull()
   })
 
+  it('says it has not looked yet before the first check, and offers the check', async () => {
+    render(<InfoPage version="v1.8.0" {...server} />)
+    expect(await screen.findByText('Not checked yet')).toBeTruthy()
+    expect(screen.queryByText('Up to date')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Check for updates' })).toBeTruthy()
+  })
+
   it('says where the updates stand and when the server last looked', async () => {
     versions.mockResolvedValueOnce({ arrowloop: 'v1.8.0', rclone: 'v1.75.2', go: 'go1.27.1', checkedAt: new Date(Date.now() - 3 * 60_000).toISOString() })
     render(<InfoPage version="v1.8.0" {...server} />)

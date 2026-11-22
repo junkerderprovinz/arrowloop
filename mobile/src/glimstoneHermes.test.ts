@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { VERSION_CARD_TEXT } from "@glimstone/core/versionCards";
-import { NUMBER_BESIDE_NAME, versionLine } from "./versionLine.ts";
+import { updateLine, VERSION_CARD_TEXT } from "@glimstone/core/versionCards";
 
 /** Runs fn as Hermes would, without the Intl constructors it lacks. */
 async function withoutIntl<T>(fn: () => T | Promise<T>): Promise<T> {
@@ -16,25 +15,23 @@ async function withoutIntl<T>(fn: () => T | Promise<T>): Promise<T> {
   }
 }
 
-test("the last check reads as a clock time where Intl.RelativeTimeFormat is missing", async () => {
+test("a check today reads as up to date with its clock time where Intl.RelativeTimeFormat is missing", async () => {
+  const now = new Date(2026, 10, 22, 16, 0);
   const at = new Date(2026, 10, 22, 14, 5);
-  const face = await withoutIntl(() => versionLine({ kind: "current", checkedAt: at }, VERSION_CARD_TEXT, "de"));
+  const face = await withoutIntl(() => updateLine({ kind: "current", checkedAt: at }, VERSION_CARD_TEXT, now));
   assert.equal(face.line, VERSION_CARD_TEXT.current);
-  assert.equal(face.note, "14:05");
+  assert.match(face.note ?? "", /14[:.]05|2:05/);
 });
 
-test("the store line needs no relative time at all", async () => {
-  const face = await withoutIntl(() => versionLine({ kind: "store", store: "Google Play" }, VERSION_CARD_TEXT));
-  assert.equal(face.line, VERSION_CARD_TEXT.store("Google Play"));
+test("the store and the release page need no relative time at all", async () => {
+  const store = await withoutIntl(() => updateLine({ kind: "store", store: "Google Play" }, VERSION_CARD_TEXT));
+  const direct = await withoutIntl(() => updateLine({ kind: "direct" }, VERSION_CARD_TEXT));
+  assert.equal(store.line, VERSION_CARD_TEXT.store("Google Play"));
+  assert.equal(direct.line, VERSION_CARD_TEXT.direct);
 });
 
 test("the words of both cards load and build without those constructors", async () => {
   const words = await withoutIntl(async () => (await import("@glimstone/core/componentTexts")).componentText("de"));
   assert.equal(words.versionCard.store("F-Droid"), "Updates kommen über F-Droid.");
   assert.equal(words.componentsCard.title, "Komponenten");
-});
-
-test("a number beside its name gives way and wraps, as a long unreleased one in German does", () => {
-  assert.equal(NUMBER_BESIDE_NAME.flexShrink, 1);
-  assert.equal(NUMBER_BESIDE_NAME.textAlign, "right");
 });

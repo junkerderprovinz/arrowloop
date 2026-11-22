@@ -42,7 +42,7 @@ import { GLIMSTONE_VERSION } from "../glimstone/version";
 import { COFFEE, DISCORD, PAYPAL, RCLONE_REPO, REPO } from "../../../web/src/lib/donate";
 import { componentText } from "@glimstone/core/componentTexts";
 import { ComponentsSection, VersionSection } from "../infoCards";
-import { storeOf } from "../store";
+import { updatesFrom } from "../store";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";
 import { nearestPreset } from "../../../web/src/lib/colorMath";
 import { stopEvery } from "../../../web/src/lib/stopEvery";
@@ -155,7 +155,7 @@ export function Settings() {
   const [dockerCopied, setDockerCopied] = useState(false);
   const [reportCopied, setReportCopied] = useState(false);
   const [rclone, setRclone] = useState<string | null>(null);
-  const [store, setStore] = useState(storeOf(""));
+  const [updates, setUpdates] = useState(updatesFrom(""));
   const words = useMemo(() => componentText(lang), [lang]);
   const [removing, setRemoving] = useState(false);
   // Counts refusals, so each one shakes the button that was pressed.
@@ -337,7 +337,7 @@ export function Settings() {
       () => {},
     );
     engine.installer().then(
-      (installer) => setStore(storeOf(installer)),
+      (installer) => setUpdates(updatesFrom(installer)),
       () => {},
     );
   }, []);
@@ -1118,7 +1118,7 @@ export function Settings() {
       {/* GlimStone's Info tile: Version, Components, Help and About. The
           versions stand in the first two cards and nowhere else. */}
       <OnTile section="version">
-        <VersionSection words={words} version={version ?? appVersion} store={store} hue={0} />
+        <VersionSection words={words} version={version ?? appVersion} state={updates} hue={0} />
       </OnTile>
 
       <OnTile section="components">

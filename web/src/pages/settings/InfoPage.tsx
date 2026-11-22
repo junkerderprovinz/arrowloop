@@ -48,7 +48,7 @@ export function routeOf(deployment: Deployment | undefined, windowSettings: Wind
  * under way or in place, otherwise what the last check found.
  */
 export function stateOf(route: UpdateRoute, store: string | undefined, checked: UpdateState, desk: DeskUpdate | null): UpdateState {
-  if (route === 'store') return { kind: 'store', store: store ?? '' }
+  if (route === 'store') return { kind: 'store', store }
   if (desk?.ready) return { kind: 'ready', version: shownVersion(desk.ready) }
   if (desk?.busy) return desk.percent >= 0 ? { kind: 'downloading', percent: desk.percent } : { kind: 'checking' }
   if (desk?.failed) return { kind: 'failed', reason: desk.failed }
@@ -58,7 +58,7 @@ export function stateOf(route: UpdateRoute, store: string | undefined, checked: 
 /** What the server remembers of its last check. */
 function lastCheck(v: Versions): UpdateState {
   if (v.newRelease) return { kind: 'available', version: shownVersion(v.newRelease) }
-  return { kind: 'current', checkedAt: v.checkedAt ? new Date(v.checkedAt) : undefined }
+  return v.checkedAt ? { kind: 'current', checkedAt: new Date(v.checkedAt) } : { kind: 'unchecked' }
 }
 
 /**
@@ -80,7 +80,7 @@ export function InfoPage({
   const push = useToast()
   const words = useMemo(() => componentText(lang), [lang])
   const [versions, setVersions] = useState<Versions | null>(null)
-  const [checked, setChecked] = useState<UpdateState>({ kind: 'current' })
+  const [checked, setChecked] = useState<UpdateState>({ kind: 'unchecked' })
   const [desk, setDesk] = useState<DeskUpdate | null>(null)
   const news = useWhatsNew()
   const engine = useEngineSettings()

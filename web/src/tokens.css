@@ -4113,11 +4113,28 @@
     padding: 0;
     list-style: none;
   }
+  /* On a narrow card a row breaks before its end, which moves under the name
+     whole. Inside it the button and the number keep one line, and a status
+     that leaves them no room takes a line of its own above them. */
   .glim-version-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-8);
+    gap: var(--space-2) var(--space-8);
+  }
+  .glim-version-end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2) var(--space-6);
+    margin-inline-start: auto;
+  }
+  .glim-version-tail {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
   }
   .glim-version-name {
     display: flex;
@@ -4141,6 +4158,11 @@
      accent's ink under the pointer: no frame, no fill and no underline, so it
      never reads as a button. */
   a.glim-version-number:focus-visible { color: var(--accent-ink); }
+  /* A 24px target for a finger, given back by the margin so the line keeps its height. */
+  a.glim-version-number {
+    padding-block: 2px;
+    margin-block: -2px;
+  }
   @media (hover: hover) {
     a.glim-version-number:hover { color: var(--accent-ink); }
   }
@@ -4151,11 +4173,13 @@
     justify-content: flex-end;
     gap: var(--space-6);
   }
+  /* A long build number, such as a branch build's, drops under the name on a phone. */
   .glim-version-head {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: var(--space-8);
+    gap: var(--space-2) var(--space-8);
   }
   .glim-version-app {
     min-width: 0;
@@ -4164,6 +4188,9 @@
     color: var(--carbon-text);
   }
   .glim-version-head .glim-version-number {
+    min-width: 0;
+    margin-inline-start: auto;
+    overflow-wrap: anywhere;
     font-size: var(--text-body);
     color: var(--carbon-text);
   }
@@ -4204,7 +4231,7 @@
     background: var(--accent);
     transition: width var(--motion-control-dur) ease-out;
   }
-  .glim-version-status { margin-inline-start: auto; font-size: var(--text-meta); }
+  .glim-version-status { font-size: var(--text-meta); white-space: nowrap; }
   .glim-version-status[data-tone="ok"] { color: var(--status-ok-text); }
   .glim-version-status[data-tone="warn"] { color: var(--status-warn-text); }
   .glim-version-status[data-tone="fail"] { color: var(--status-fail-text); }

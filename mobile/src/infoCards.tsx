@@ -1,5 +1,5 @@
 import type { ComponentText } from "@glimstone/core/componentTexts";
-import { componentRows, numberLink, whatsNewLabel, withApp, type ComponentRow } from "@glimstone/core/versionCards";
+import { componentRows, numberLink, updateLine, whatsNewLabel, withApp, type ComponentRow, type UpdateState } from "@glimstone/core/versionCards";
 import { Linking, StyleSheet, Text, View } from "react-native";
 
 import { GLIMSTONE_REPO, REPO } from "../../web/src/lib/donate";
@@ -7,17 +7,18 @@ import { GLIMSTONE_VERSION } from "./glimstone/version";
 import { Glyph } from "./glyphs";
 import { space, text } from "./theme";
 import { Button, InfoBubble, Section, useTheme } from "./ui";
-import { NUMBER_BESIDE_NAME, versionLine } from "./versionLine";
+import { NUMBER_BESIDE_NAME } from "./versionNumber";
 
 // GlimStone's Version and Components cards for the phone. The phone gets its
-// new versions from the store it came from, so the Version card checks nothing
-// and offers no switch and no action, only the way to what this version brought.
+// new versions from the store it came from or the release page, so the Version
+// card checks nothing and offers no switch and no action, only the way to what
+// this version brought.
 
-/** The first card of the Info tile: the app with its number, and the store its updates come from. */
-export function VersionSection({ words, version, store, hue }: { words: ComponentText; version: string; store: string; hue: number }) {
+/** The first card of the Info tile: the app with its number, and where its updates come from. */
+export function VersionSection({ words, version, state, hue }: { words: ComponentText; version: string; state: UpdateState; hue: number }) {
   const { p } = useTheme();
   const w = words.versionCard;
-  const face = versionLine({ kind: "store", store }, w);
+  const face = updateLine(state, w);
   const shown = numberLink({ name: "ArrowLoop", version, repoUrl: REPO });
   return (
     <Section title={w.title} hint={withApp(w.hint, "ArrowLoop")} hue={hue}>
