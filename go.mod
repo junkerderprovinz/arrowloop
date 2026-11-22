@@ -17,7 +17,7 @@ require (
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/godbus/dbus/v5 v5.2.4
 	github.com/gofrs/flock v0.13.2
-	github.com/junkerderprovinz/parleyport/kit v1.0.6
+	github.com/junkerderprovinz/parleyport/kit v1.0.7
 	github.com/nicholas-fedor/shoutrrr v0.25.0
 	github.com/pkg/sftp v1.13.12
 	github.com/rclone/gofakes3 v0.0.12
