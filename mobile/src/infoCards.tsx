@@ -7,7 +7,7 @@ import { GLIMSTONE_VERSION } from "./glimstone/version";
 import { Glyph } from "./glyphs";
 import { space, text } from "./theme";
 import { Button, InfoBubble, Section, useTheme } from "./ui";
-import { versionLine } from "./versionLine";
+import { NUMBER_BESIDE_NAME, versionLine } from "./versionLine";
 
 // GlimStone's Version and Components cards for the phone. The phone gets its
 // new versions from the store it came from, so the Version card checks nothing
@@ -85,7 +85,7 @@ function Number({
   big?: boolean;
 }) {
   const { p } = useTheme();
-  const style = [big ? styles.bigNumber : styles.number, { color: big ? p.text : p.textSub }];
+  const style = [NUMBER_BESIDE_NAME, big ? styles.bigNumber : styles.number, { color: big ? p.text : p.textSub }];
   if (!shown.href) return <Text style={style}>{shown.released ? shown.shown : unreleased(shown.shown)}</Text>;
   const href = shown.href;
   return (

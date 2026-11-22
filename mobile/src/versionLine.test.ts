@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { VERSION_CARD_TEXT } from "@glimstone/core/versionCards";
-import { versionLine } from "./versionLine.ts";
+import { NUMBER_BESIDE_NAME, versionLine } from "./versionLine.ts";
 
 /** Runs fn as Hermes would, without the Intl constructors it lacks. */
 async function withoutIntl<T>(fn: () => T | Promise<T>): Promise<T> {
@@ -32,4 +32,9 @@ test("the words of both cards load and build without those constructors", async 
   const words = await withoutIntl(async () => (await import("@glimstone/core/componentTexts")).componentText("de"));
   assert.equal(words.versionCard.store("F-Droid"), "Updates kommen über F-Droid.");
   assert.equal(words.componentsCard.title, "Komponenten");
+});
+
+test("a number beside its name gives way and wraps, as a long unreleased one in German does", () => {
+  assert.equal(NUMBER_BESIDE_NAME.flexShrink, 1);
+  assert.equal(NUMBER_BESIDE_NAME.textAlign, "right");
 });
