@@ -1745,6 +1745,8 @@ const da: Translations = {
   'new.change.loginReset': 'En glemt adgangskode kan nulstilles fra loginsiden med en kode fra containerens log.',
   'new.change.notifyChannels': '{notifications} under {safety} sender nu også med e-mail, til Discord, Slack, Gotify, ntfy, en Apprise-server og Healthchecks.io, hver med sin egen kontakt og en testknap.',
   'new.change.notifyTile': '{notifications} har sin egen flise i indstillingerne.',
+  'new.change.automationStart': 'Tasker, MacroDroid og andre automatiseringsapps kan starte et job på telefonen, eller alle job på én gang.',
+  'new.change.updateNow': 'Når et tjek har fundet en nyere udgivelse, opdaterer skrivebordsappen sig med det samme fra kortet Version og genstarter i den nye version.',
   'new.change.phoneVpn': 'Telefonappen opsætter også en VPN, og et job vælger den tunnel, det går igennem, som på en server eller i skrivebordsappen.',
   'new.change.phoneTolerance': 'Et job i telefonappen kan sætte sin egen tolerance for tidsstempler.',
   'new.change.internxtTwoFactor': 'Når du tilføjer et Internxt-mål, kører dets eget login, og {test} beder om {code}, når kontoen har totrinslogin slået til.',

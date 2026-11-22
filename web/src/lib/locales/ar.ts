@@ -1745,6 +1745,8 @@ const ar: Translations = {
   'new.change.loginReset': 'يمكن إعادة تعيين كلمة المرور المنسية من صفحة تسجيل الدخول برمز من سجل الحاوية.',
   'new.change.notifyChannels': 'أصبحت {notifications} في {safety} ترسل أيضًا بالبريد الإلكتروني وإلى Discord وSlack وGotify وntfy وخادم Apprise وHealthchecks.io، ولكل منها مفتاحه وزر تجربة.',
   'new.change.notifyTile': 'أصبح لـ {notifications} مربع خاص به في الإعدادات.',
+  'new.change.automationStart': 'يمكن لـ Tasker وMacroDroid وتطبيقات الأتمتة الأخرى بدء عمل على الهاتف، أو كل الأعمال دفعة واحدة.',
+  'new.change.updateNow': 'بعد أن يجد الفحص إصدارًا أحدث، يُحدِّث تطبيق سطح المكتب نفسه فورًا من بطاقة الإصدار ويُعيد التشغيل بالإصدار الجديد.',
   'new.change.phoneVpn': 'يُعِدّ تطبيق الهاتف شبكة VPN أيضًا، ويختار كل عمل النفق الذي يمر عبره، كما على الخادم أو في تطبيق سطح المكتب.',
   'new.change.phoneTolerance': 'يمكن لعمل في تطبيق الهاتف أن يضبط هامش الطوابع الزمنية الخاص به.',
   'new.change.internxtTwoFactor': 'عند إضافة هدف Internxt يجري تسجيل الدخول الخاص به، ويطلب {test} إدخال {code} إذا كان الحساب يستخدم التحقق بخطوتين.',

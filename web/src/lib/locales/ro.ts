@@ -1745,6 +1745,8 @@ const ro: Translations = {
   'new.change.loginReset': 'O parolă uitată poate fi resetată de pe pagina de autentificare, cu un cod din jurnalul containerului.',
   'new.change.notifyChannels': '{notifications} din {safety} trimite acum și prin e-mail, la Discord, Slack, Gotify, ntfy, un server Apprise și Healthchecks.io, fiecare cu propriul comutator și un buton de test.',
   'new.change.notifyTile': '{notifications} are o dală proprie în setări.',
+  'new.change.automationStart': 'Tasker, MacroDroid și alte aplicații de automatizare pot porni o sarcină pe telefon sau pe toate odată.',
+  'new.change.updateNow': 'Când o verificare găsește o versiune mai nouă, aplicația desktop se actualizează imediat din cardul Versiune și repornește în noua versiune.',
   'new.change.phoneVpn': 'Și aplicația de telefon configurează un VPN, iar fiecare sarcină alege tunelul prin care trece, ca pe un server sau în aplicația desktop.',
   'new.change.phoneTolerance': 'O sarcină din aplicația de telefon își poate stabili propria toleranță pentru marcajele de timp.',
   'new.change.internxtTwoFactor': 'La adăugarea unei destinații Internxt rulează autentificarea ei proprie, iar {test} cere {code} când contul are autentificarea în doi pași activă.',

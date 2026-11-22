@@ -1745,6 +1745,8 @@ const he: Translations = {
   'new.change.loginReset': 'אפשר לאפס סיסמה שנשכחה מעמוד ההתחברות, עם קוד מיומן הקונטיינר.',
   'new.change.notifyChannels': '{notifications} תחת {safety} שולח עכשיו גם בדוא"ל, ל-Discord, Slack, Gotify, ntfy, לשרת Apprise ול-Healthchecks.io, כל אחד עם מתג משלו וכפתור בדיקה.',
   'new.change.notifyTile': 'ל-{notifications} יש אריח משלו בהגדרות.',
+  'new.change.automationStart': 'Tasker, MacroDroid ואפליקציות אוטומציה אחרות יכולות להפעיל משימה בטלפון, או את כל המשימות בבת אחת.',
+  'new.change.updateNow': 'כשבדיקה מוצאת גרסה חדשה יותר, אפליקציית המחשב מתעדכנת מיד מכרטיס הגרסה ומופעלת מחדש בגרסה החדשה.',
   'new.change.phoneVpn': 'גם אפליקציית הטלפון מגדירה VPN, וכל משימה בוחרת את המנהרה שדרכה היא עוברת, כמו בשרת או באפליקציית המחשב.',
   'new.change.phoneTolerance': 'משימה באפליקציית הטלפון יכולה לקבוע סבילות משלה לחותמות זמן.',
   'new.change.internxtTwoFactor': 'הוספת יעד Internxt מריצה את ההתחברות שלו, ו-{test} מבקש את ה{code} כשבחשבון מופעלת התחברות דו-שלבית.',

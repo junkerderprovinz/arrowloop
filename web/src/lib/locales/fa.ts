@@ -1745,6 +1745,8 @@ const fa: Translations = {
   'new.change.loginReset': 'گذرواژهٔ فراموش‌شده را می‌توان از صفحهٔ ورود با کدی از گزارش کانتینر بازنشانی کرد.',
   'new.change.notifyChannels': '{notifications} در {safety} اکنون با ایمیل و به Discord، Slack، Gotify، ntfy، یک سرور Apprise و Healthchecks.io هم می‌فرستد، هر کدام با کلید خود و یک دکمهٔ آزمایش.',
   'new.change.notifyTile': '{notifications} در تنظیمات کاشی خودش را دارد.',
+  'new.change.automationStart': 'Tasker، MacroDroid و دیگر برنامه‌های خودکارسازی می‌توانند یک کار را روی گوشی شروع کنند، یا همهٔ کارها را با هم.',
+  'new.change.updateNow': 'وقتی بررسی نسخهٔ تازه‌تری پیدا کند، برنامهٔ دسکتاپ همان‌جا از کارت نسخه به‌روز می‌شود و با نسخهٔ تازه دوباره راه می‌افتد.',
   'new.change.phoneVpn': 'برنامهٔ گوشی هم VPN راه می‌اندازد و هر کار تونلی را که از آن می‌گذرد انتخاب می‌کند، مانند سرور یا برنامهٔ دسکتاپ.',
   'new.change.phoneTolerance': 'یک کار در برنامهٔ گوشی می‌تواند تلورانس مهر زمانی خودش را تعیین کند.',
   'new.change.internxtTwoFactor': 'افزودن مقصد Internxt ورود مخصوص خودش را اجرا می‌کند و {test} در صورت فعال بودن ورود دومرحله‌ای حساب، {code} را می‌خواهد.',

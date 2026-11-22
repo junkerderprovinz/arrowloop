@@ -1745,6 +1745,8 @@ const sk: Translations = {
   'new.change.loginReset': 'Zabudnuté heslo sa dá obnoviť na prihlasovacej stránke kódom z denníka kontajnera.',
   'new.change.notifyChannels': '{notifications} v sekcii {safety} teraz posiela aj e-mailom, do Discordu, Slacku, Gotify, ntfy, na server Apprise a do Healthchecks.io, každý kanál s vlastným prepínačom a tlačidlom testu.',
   'new.change.notifyTile': '{notifications} má v nastaveniach vlastnú dlaždicu.',
+  'new.change.automationStart': 'Tasker, MacroDroid a ďalšie automatizačné aplikácie môžu v telefóne spustiť úlohu alebo všetky naraz.',
+  'new.change.updateNow': 'Keď kontrola nájde novšiu verziu, desktopová aplikácia sa hneď aktualizuje z karty Verzia a reštartuje sa do novej verzie.',
   'new.change.phoneVpn': 'Aj aplikácia v telefóne nastaví VPN a úloha si vyberie tunel, ktorým pôjde, rovnako ako na serveri alebo v desktopovej aplikácii.',
   'new.change.phoneTolerance': 'Úloha v aplikácii v telefóne môže mať vlastnú toleranciu časových pečiatok.',
   'new.change.internxtTwoFactor': 'Pri pridaní cieľa Internxt prebehne jeho vlastné prihlásenie a {test} si vyžiada {code}, ak má účet zapnuté dvojfázové prihlásenie.',

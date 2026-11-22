@@ -1745,6 +1745,8 @@ const ko: Translations = {
   'new.change.loginReset': '비밀번호를 잊었다면 로그인 페이지에서 컨테이너 로그의 코드로 재설정할 수 있습니다.',
   'new.change.notifyChannels': '{safety}의 {notifications}이 이제 이메일, Discord, Slack, Gotify, ntfy, Apprise 서버, Healthchecks.io로도 보냅니다. 채널마다 스위치와 테스트 버튼이 있습니다.',
   'new.change.notifyTile': '{notifications}에 설정의 전용 타일이 생겼습니다.',
+  'new.change.automationStart': 'Tasker, MacroDroid 같은 자동화 앱이 휴대폰에서 작업 하나 또는 모든 작업을 한 번에 시작할 수 있습니다.',
+  'new.change.updateNow': '확인에서 새 릴리스를 찾으면 데스크톱 앱이 버전 카드에서 바로 업데이트하고 새 버전으로 다시 시작합니다.',
   'new.change.phoneVpn': '휴대폰 앱에서도 VPN을 설정할 수 있고, 작업은 서버나 데스크톱 앱처럼 지나갈 터널을 고릅니다.',
   'new.change.phoneTolerance': '휴대폰 앱의 작업은 자체 타임스탬프 허용 오차를 설정할 수 있습니다.',
   'new.change.internxtTwoFactor': 'Internxt 대상을 추가하면 자체 로그인이 실행되고, 계정에 2단계 로그인이 켜져 있으면 {test}에서 {code}를 요청합니다.',

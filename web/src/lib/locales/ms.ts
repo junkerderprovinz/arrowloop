@@ -1745,6 +1745,8 @@ const ms: Translations = {
   'new.change.loginReset': 'Kata laluan yang terlupa boleh disetkan semula dari halaman log masuk dengan kod daripada log kontener.',
   'new.change.notifyChannels': '{notifications} dalam {safety} kini juga menghantar melalui e-mel, ke Discord, Slack, Gotify, ntfy, pelayan Apprise dan Healthchecks.io, setiap satu dengan suis dan butang ujian sendiri.',
   'new.change.notifyTile': '{notifications} mempunyai jubin sendiri dalam tetapan.',
+  'new.change.automationStart': 'Tasker, MacroDroid dan aplikasi automasi lain boleh memulakan tugas pada telefon, atau semua tugas sekali gus.',
+  'new.change.updateNow': 'Sebaik sahaja semakan menemui keluaran yang lebih baharu, aplikasi desktop dikemas kini serta-merta dari kad Versi dan dimulakan semula ke versi baharu.',
   'new.change.phoneVpn': 'Aplikasi telefon juga menyediakan VPN, dan setiap tugas memilih terowong yang dilaluinya, seperti pada pelayan atau aplikasi desktop.',
   'new.change.phoneTolerance': 'Tugas dalam aplikasi telefon boleh menetapkan toleransi cap masanya sendiri.',
   'new.change.internxtTwoFactor': 'Menambah sasaran Internxt menjalankan log masuknya sendiri, dan {test} meminta {code} apabila akaun menghidupkan log masuk dua faktor.',

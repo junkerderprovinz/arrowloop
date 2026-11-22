@@ -1745,6 +1745,8 @@ const gl: Translations = {
   'new.change.loginReset': 'Un contrasinal esquecido pódese restablecer desde a páxina de inicio de sesión cun código do rexistro do contedor.',
   'new.change.notifyChannels': '{notifications} en {safety} tamén envía por correo, a Discord, Slack, Gotify, ntfy, un servidor Apprise e Healthchecks.io, cada un co seu interruptor e un botón de proba.',
   'new.change.notifyTile': '{notifications} ten a súa propia tella na configuración.',
+  'new.change.automationStart': 'Tasker, MacroDroid e outras aplicacións de automatización poden iniciar unha tarefa no teléfono, ou todas á vez.',
+  'new.change.updateNow': 'Cando unha comprobación atopa unha versión máis nova, a aplicación de escritorio actualízase de inmediato desde a tarxeta Versión e reiníciase coa nova versión.',
   'new.change.phoneVpn': 'A aplicación do teléfono tamén configura unha VPN, e cada tarefa escolle o túnel polo que pasa, como nun servidor ou na aplicación de escritorio.',
   'new.change.phoneTolerance': 'Unha tarefa na aplicación do teléfono pode fixar a súa propia tolerancia de marcas de tempo.',
   'new.change.internxtTwoFactor': 'Ao engadir un destino Internxt execútase o seu propio inicio de sesión, e {test} pide o {code} cando a conta ten activado o inicio en dous pasos.',

@@ -1745,6 +1745,8 @@ const hr: Translations = {
   'new.change.loginReset': 'Zaboravljena lozinka može se vratiti na početnu sa stranice za prijavu, uz kod iz zapisnika spremnika.',
   'new.change.notifyChannels': '{notifications} pod {safety} sada šalje i e-poštom, na Discord, Slack, Gotify, ntfy, Apprise poslužitelj i Healthchecks.io, svaki kanal s vlastitim prekidačem i gumbom za test.',
   'new.change.notifyTile': '{notifications} ima vlastitu pločicu u postavkama.',
+  'new.change.automationStart': 'Tasker, MacroDroid i druge aplikacije za automatizaciju mogu na telefonu pokrenuti posao ili sve poslove odjednom.',
+  'new.change.updateNow': 'Čim provjera pronađe noviju verziju, desktop aplikacija se odmah ažurira s kartice Verzija i ponovno pokreće u novoj verziji.',
   'new.change.phoneVpn': 'I aplikacija na telefonu postavlja VPN, a svaki posao bira tunel kroz koji ide, kao na poslužitelju ili u desktop aplikaciji.',
   'new.change.phoneTolerance': 'Posao u aplikaciji na telefonu može postaviti vlastitu toleranciju vremenskih oznaka.',
   'new.change.internxtTwoFactor': 'Dodavanje cilja Internxt pokreće njegovu vlastitu prijavu, a {test} traži {code} kada račun ima uključenu dvofaktorsku prijavu.',

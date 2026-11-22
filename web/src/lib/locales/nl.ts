@@ -1745,6 +1745,8 @@ const nl: Translations = {
   'new.change.loginReset': 'Een vergeten wachtwoord kun je op de inlogpagina opnieuw instellen met een code uit het containerlog.',
   'new.change.notifyChannels': '{notifications} onder {safety} stuurt nu ook per e-mail, naar Discord, Slack, Gotify, ntfy, een Apprise-server en Healthchecks.io, elk met een eigen schakelaar en een testknop.',
   'new.change.notifyTile': '{notifications} heeft een eigen tegel in de instellingen.',
+  'new.change.automationStart': 'Tasker, MacroDroid en andere automatiseringsapps kunnen op de telefoon een taak starten, of alle taken tegelijk.',
+  'new.change.updateNow': 'Zodra een controle een nieuwere release vindt, werkt de desktopapp zich meteen bij vanuit de kaart Versie en start hij opnieuw in de nieuwe versie.',
   'new.change.phoneVpn': 'Ook de telefoonapp stelt een VPN in, en een taak kiest de tunnel waar hij doorheen gaat, net als op een server of in de desktopapp.',
   'new.change.phoneTolerance': 'Een taak in de telefoonapp kan een eigen tolerantie voor tijdstempels instellen.',
   'new.change.internxtTwoFactor': 'Bij het toevoegen van een Internxt-doel loopt de eigen aanmelding, en {test} vraagt om de {code} als het account tweestapsaanmelding aan heeft.',

@@ -1745,6 +1745,8 @@ const id: Translations = {
   'new.change.loginReset': 'Kata sandi yang terlupa bisa diatur ulang dari halaman masuk dengan kode dari log kontainer.',
   'new.change.notifyChannels': '{notifications} di {safety} kini juga mengirim lewat email, ke Discord, Slack, Gotify, ntfy, server Apprise, dan Healthchecks.io, masing-masing dengan sakelar dan tombol uji sendiri.',
   'new.change.notifyTile': '{notifications} punya ubin sendiri di pengaturan.',
+  'new.change.automationStart': 'Tasker, MacroDroid, dan aplikasi otomatisasi lain bisa memulai tugas di ponsel, atau semua tugas sekaligus.',
+  'new.change.updateNow': 'Begitu pemeriksaan menemukan rilis yang lebih baru, aplikasi desktop langsung diperbarui dari kartu Versi dan dimulai ulang ke versi baru.',
   'new.change.phoneVpn': 'Aplikasi ponsel juga menyiapkan VPN, dan setiap tugas memilih terowongan yang dilaluinya, seperti di server atau aplikasi desktop.',
   'new.change.phoneTolerance': 'Tugas di aplikasi ponsel dapat menetapkan toleransi stempel waktunya sendiri.',
   'new.change.internxtTwoFactor': 'Menambahkan target Internxt menjalankan proses masuknya sendiri, dan {test} meminta {code} jika akun mengaktifkan login dua langkah.',

@@ -1745,6 +1745,8 @@ const lv: Translations = {
   'new.change.loginReset': 'Aizmirstu paroli var atiestatīt pieteikšanās lapā ar kodu no konteinera žurnāla.',
   'new.change.notifyChannels': '{notifications} sadaļā {safety} tagad sūta arī pa e-pastu, uz Discord, Slack, Gotify, ntfy, Apprise serveri un Healthchecks.io, katram savs slēdzis un pārbaudes poga.',
   'new.change.notifyTile': '{notifications} iestatījumos ir sava flīze.',
+  'new.change.automationStart': 'Tasker, MacroDroid un citas automatizācijas lietotnes var tālrunī palaist uzdevumu vai visus uzreiz.',
+  'new.change.updateNow': 'Kad pārbaude atrod jaunāku laidienu, darbvirsmas lietotne uzreiz atjauninās no kartītes Versija un restartējas jaunajā versijā.',
   'new.change.phoneVpn': 'Arī tālruņa lietotne iestata VPN, un uzdevums izvēlas tuneli, pa kuru tas iet, kā serverī vai darbvirsmas lietotnē.',
   'new.change.phoneTolerance': 'Uzdevums tālruņa lietotnē var iestatīt savu laikspiedolu pielaidi.',
   'new.change.internxtTwoFactor': 'Pievienojot Internxt mērķi, notiek tā paša pierakstīšanās, un {test} pieprasa {code}, ja kontā ir ieslēgta divu faktoru pierakstīšanās.',

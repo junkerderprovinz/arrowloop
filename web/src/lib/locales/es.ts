@@ -1745,6 +1745,8 @@ const es: Translations = {
   'new.change.loginReset': 'Una contraseña olvidada se puede restablecer desde la página de inicio de sesión con un código del registro del contenedor.',
   'new.change.notifyChannels': '{notifications} en {safety} también envía por correo, a Discord, Slack, Gotify, ntfy, un servidor Apprise y Healthchecks.io, cada uno con su interruptor y un botón de prueba.',
   'new.change.notifyTile': '{notifications} tiene su propio mosaico en los ajustes.',
+  'new.change.automationStart': 'Tasker, MacroDroid y otras aplicaciones de automatización pueden iniciar una tarea en el teléfono, o todas a la vez.',
+  'new.change.updateNow': 'Cuando una comprobación encuentra una versión más nueva, la aplicación de escritorio se actualiza al momento desde la tarjeta Versión y se reinicia con la nueva versión.',
   'new.change.phoneVpn': 'La aplicación del teléfono también configura una VPN, y cada tarea elige el túnel por el que pasa, como en un servidor o en la aplicación de escritorio.',
   'new.change.phoneTolerance': 'Una tarea en la aplicación del teléfono puede fijar su propia tolerancia de marcas de tiempo.',
   'new.change.internxtTwoFactor': 'Al añadir un destino Internxt se ejecuta su propio inicio de sesión, y {test} pide el {code} cuando la cuenta tiene activado el inicio en dos pasos.',

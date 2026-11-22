@@ -1745,6 +1745,8 @@ const et: Translations = {
   'new.change.loginReset': 'Unustatud parooli saab sisselogimislehel lähtestada koodiga konteineri logist.',
   'new.change.notifyChannels': '{safety} all olev {notifications} saadab nüüd ka e-postiga, Discordi, Slacki, Gotifysse, ntfy-sse, Apprise serverisse ja Healthchecks.io-sse, igaühel oma lüliti ja testinupp.',
   'new.change.notifyTile': '{notifications} on seadetes oma paanil.',
+  'new.change.automationStart': 'Tasker, MacroDroid ja teised automatiseerimisrakendused saavad telefonis käivitada ühe töö või kõik korraga.',
+  'new.change.updateNow': 'Kui kontroll leiab uuema väljalaske, uueneb töölauarakendus kohe kaardilt Versioon ja käivitub uue versioonina uuesti.',
   'new.change.phoneVpn': 'Ka telefonirakendus seadistab VPN-i ja töö valib tunneli, mida mööda see käib, nagu serveris või töölauarakenduses.',
   'new.change.phoneTolerance': 'Telefonirakenduse töö saab määrata oma ajatemplite tolerantsi.',
   'new.change.internxtTwoFactor': 'Internxti sihtkoha lisamisel käivitub selle oma sisselogimine ja {test} küsib {code}, kui kontol on kaheastmeline sisselogimine sees.',

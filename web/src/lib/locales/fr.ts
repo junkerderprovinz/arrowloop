@@ -1745,6 +1745,8 @@ const fr: Translations = {
   'new.change.loginReset': 'Un mot de passe oublié peut être réinitialisé depuis la page de connexion avec un code tiré du journal du conteneur.',
   'new.change.notifyChannels': '{notifications} dans {safety} envoie aussi par e-mail, vers Discord, Slack, Gotify, ntfy, un serveur Apprise et Healthchecks.io, chacun avec son interrupteur et un bouton de test.',
   'new.change.notifyTile': '{notifications} a sa propre tuile dans les réglages.',
+  'new.change.automationStart': 'Tasker, MacroDroid et d’autres applications d’automatisation peuvent lancer une tâche sur le téléphone, ou toutes à la fois.',
+  'new.change.updateNow': 'Dès qu’une vérification trouve une version plus récente, l’application de bureau se met à jour tout de suite depuis la carte Version et redémarre dans la nouvelle version.',
   'new.change.phoneVpn': 'L’application du téléphone configure aussi un VPN, et chaque tâche choisit le tunnel par lequel elle passe, comme sur un serveur ou dans l’application de bureau.',
   'new.change.phoneTolerance': 'Une tâche de l’application du téléphone peut fixer sa propre tolérance d’horodatage.',
   'new.change.internxtTwoFactor': 'L’ajout d’une cible Internxt lance sa propre connexion, et {test} demande le {code} quand le compte a la connexion à deux facteurs activée.',

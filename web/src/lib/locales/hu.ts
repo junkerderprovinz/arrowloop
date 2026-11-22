@@ -1745,6 +1745,8 @@ const hu: Translations = {
   'new.change.loginReset': 'Az elfelejtett jelszót a bejelentkező oldalon lehet visszaállítani a konténer naplójából vett kóddal.',
   'new.change.notifyChannels': 'A {safety} alatti {notifications} most már e-mailben, Discordra, Slackre, Gotifyra, ntfy-ra, Apprise kiszolgálóra és Healthchecks.io-ra is küld, mindegyik saját kapcsolóval és tesztgombbal.',
   'new.change.notifyTile': 'A(z) {notifications} saját csempét kapott a beállításokban.',
+  'new.change.automationStart': 'A Tasker, a MacroDroid és más automatizáló alkalmazások elindíthatnak egy feladatot a telefonon, vagy mindet egyszerre.',
+  'new.change.updateNow': 'Ha egy ellenőrzés újabb kiadást talál, az asztali alkalmazás a Verzió kártyáról azonnal frissül, és az új verzióval indul újra.',
   'new.change.phoneVpn': 'A telefonos alkalmazás is beállít VPN-t, és minden feladat kiválasztja az alagutat, amelyen át megy, mint a szerveren vagy az asztali alkalmazásban.',
   'new.change.phoneTolerance': 'A telefonos alkalmazásban egy feladat saját időbélyeg-tűrést állíthat be.',
   'new.change.internxtTwoFactor': 'Internxt cél hozzáadásakor lefut a saját bejelentkezése, és a(z) {test} kéri a(z) {code} mezőt, ha a fiókban be van kapcsolva a kétlépcsős bejelentkezés.',

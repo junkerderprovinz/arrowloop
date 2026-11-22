@@ -1745,6 +1745,8 @@ const vi: Translations = {
   'new.change.loginReset': 'Mật khẩu bị quên có thể đặt lại từ trang đăng nhập bằng mã trong nhật ký của container.',
   'new.change.notifyChannels': '{notifications} trong {safety} giờ cũng gửi qua email, tới Discord, Slack, Gotify, ntfy, máy chủ Apprise và Healthchecks.io, mỗi kênh có công tắc và nút gửi thử riêng.',
   'new.change.notifyTile': '{notifications} có ô riêng trong phần cài đặt.',
+  'new.change.automationStart': 'Tasker, MacroDroid và các ứng dụng tự động hóa khác có thể bắt đầu một tác vụ trên điện thoại, hoặc tất cả cùng lúc.',
+  'new.change.updateNow': 'Khi lần kiểm tra tìm thấy bản phát hành mới hơn, ứng dụng máy tính cập nhật ngay từ thẻ Phiên bản và khởi động lại vào phiên bản mới.',
   'new.change.phoneVpn': 'Ứng dụng điện thoại cũng thiết lập VPN, và mỗi tác vụ chọn đường hầm mà nó đi qua, như trên máy chủ hay ứng dụng máy tính.',
   'new.change.phoneTolerance': 'Một tác vụ trong ứng dụng điện thoại có thể đặt dung sai dấu thời gian riêng.',
   'new.change.internxtTwoFactor': 'Khi thêm đích Internxt, quá trình đăng nhập riêng của nó sẽ chạy, và {test} yêu cầu {code} khi tài khoản bật đăng nhập hai bước.',

@@ -1745,6 +1745,8 @@ const hi: Translations = {
   'new.change.loginReset': 'भूला हुआ पासवर्ड लॉगिन पेज से, कंटेनर लॉग के कोड की मदद से रीसेट किया जा सकता है।',
   'new.change.notifyChannels': '{safety} में {notifications} अब ईमेल से और Discord, Slack, Gotify, ntfy, एक Apprise सर्वर और Healthchecks.io पर भी भेजता है, हर एक का अपना स्विच और टेस्ट बटन है।',
   'new.change.notifyTile': '{notifications} की सेटिंग्स में अपनी अलग टाइल है।',
+  'new.change.automationStart': 'Tasker, MacroDroid और दूसरे ऑटोमेशन ऐप फ़ोन पर एक जॉब शुरू कर सकते हैं, या सभी जॉब एक साथ।',
+  'new.change.updateNow': 'जाँच में नया रिलीज़ मिलते ही डेस्कटॉप ऐप वर्ज़न कार्ड से तुरंत अपडेट होता है और नए वर्ज़न में दोबारा शुरू होता है।',
   'new.change.phoneVpn': 'फ़ोन ऐप भी VPN सेट करता है, और हर जॉब वह टनल चुनता है जिससे वह जाता है, जैसे सर्वर या डेस्कटॉप ऐप पर।',
   'new.change.phoneTolerance': 'फ़ोन ऐप में एक जॉब अपनी टाइमस्टैम्प सहनशीलता ख़ुद तय कर सकता है।',
   'new.change.internxtTwoFactor': 'Internxt लक्ष्य जोड़ने पर उसका अपना साइन-इन चलता है, और खाते में दो-चरणीय लॉगिन चालू हो तो {test} {code} माँगता है।',

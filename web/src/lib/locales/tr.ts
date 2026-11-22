@@ -1745,6 +1745,8 @@ const tr: Translations = {
   'new.change.loginReset': 'Unutulan parola, giriş sayfasından kapsayıcı günlüğündeki bir kodla sıfırlanabilir.',
   'new.change.notifyChannels': '{safety} altındaki {notifications} artık e-postayla, Discord, Slack, Gotify, ntfy, bir Apprise sunucusu ve Healthchecks.io\'ya da gönderiyor; her biri kendi anahtarı ve test düğmesiyle.',
   'new.change.notifyTile': '{notifications} ayarlarda kendi kutucuğuna sahip.',
+  'new.change.automationStart': 'Tasker, MacroDroid ve diğer otomasyon uygulamaları telefonda bir işi ya da tüm işleri birden başlatabilir.',
+  'new.change.updateNow': 'Bir denetim daha yeni bir sürüm bulduğunda masaüstü uygulaması Sürüm kartından hemen güncellenir ve yeni sürümle yeniden başlar.',
   'new.change.phoneVpn': 'Telefon uygulaması da VPN kurar ve her iş, sunucuda ya da masaüstü uygulamasında olduğu gibi geçeceği tüneli seçer.',
   'new.change.phoneTolerance': 'Telefon uygulamasındaki bir iş kendi zaman damgası toleransını belirleyebilir.',
   'new.change.internxtTwoFactor': 'Internxt hedefi eklemek kendi oturum açmasını çalıştırır ve hesapta iki adımlı giriş açıksa {test} {code} ister.',

@@ -1745,6 +1745,8 @@ const fi: Translations = {
   'new.change.loginReset': 'Unohtuneen salasanan voi nollata kirjautumissivulla kontin lokista saatavalla koodilla.',
   'new.change.notifyChannels': '{safety}-kohdan {notifications} lähettää nyt myös sähköpostilla, Discordiin, Slackiin, Gotifyyn, ntfy:hin, Apprise-palvelimelle ja Healthchecks.io:hon, kullakin oma kytkin ja testipainike.',
   'new.change.notifyTile': '{notifications} on nyt omana ruutunaan asetuksissa.',
+  'new.change.automationStart': 'Tasker, MacroDroid ja muut automaatiosovellukset voivat käynnistää puhelimessa tehtävän tai kaikki kerralla.',
+  'new.change.updateNow': 'Kun tarkistus löytää uudemman julkaisun, työpöytäsovellus päivittyy heti Versio-kortilta ja käynnistyy uudelleen uuteen versioon.',
   'new.change.phoneVpn': 'Myös puhelinsovellus määrittää VPN:n, ja tehtävä valitsee tunnelin, jonka kautta se kulkee, kuten palvelimella tai työpöytäsovelluksessa.',
   'new.change.phoneTolerance': 'Puhelinsovelluksen tehtävä voi asettaa oman aikaleimojen toleranssinsa.',
   'new.change.internxtTwoFactor': 'Internxt-kohteen lisääminen suorittaa sen oman kirjautumisen, ja {test} kysyy {code}, kun tilillä on kaksivaiheinen kirjautuminen käytössä.',

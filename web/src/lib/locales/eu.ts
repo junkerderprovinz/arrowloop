@@ -1745,6 +1745,8 @@ const eu: Translations = {
   'new.change.loginReset': 'Ahaztutako pasahitza saio-hasierako orritik berrezar daiteke, edukiontziaren egunkariko kode batekin.',
   'new.change.notifyChannels': '{safety} ataleko {notifications} posta elektronikoz, Discord, Slack, Gotify, ntfy, Apprise zerbitzari batera eta Healthchecks.io-ra ere bidaltzen du, bakoitza bere etengailuarekin eta proba-botoiarekin.',
   'new.change.notifyTile': '{notifications} atalak bere lauza du ezarpenetan.',
+  'new.change.automationStart': 'Tasker, MacroDroid eta beste automatizazio-aplikazio batzuek lan bat abiarazi dezakete telefonoan, edo guztiak batera.',
+  'new.change.updateNow': 'Egiaztapen batek bertsio berriago bat aurkitzen duenean, mahaigaineko aplikazioa berehala eguneratzen da Bertsioa txarteletik eta bertsio berrian berrabiarazten da.',
   'new.change.phoneVpn': 'Telefonoko aplikazioak ere VPN bat konfiguratzen du, eta lan bakoitzak bere tunela aukeratzen du, zerbitzarian edo mahaigaineko aplikazioan bezala.',
   'new.change.phoneTolerance': 'Telefonoko aplikazioko lan batek bere denbora-zigiluen tolerantzia ezar dezake.',
   'new.change.internxtTwoFactor': 'Internxt helburu bat gehitzean bere saio-hasiera exekutatzen da, eta {test} ekintzak {code} eskatzen du kontuak bi urratseko saio-hasiera aktibatuta duenean.',

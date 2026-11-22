@@ -1745,6 +1745,8 @@ const ja: Translations = {
   'new.change.loginReset': 'パスワードを忘れたときは、ログイン画面からコンテナのログのコードでリセットできます。',
   'new.change.notifyChannels': '{safety} の {notifications} は、メール、Discord、Slack、Gotify、ntfy、Apprise サーバー、Healthchecks.io にも送れるようになりました。それぞれにスイッチとテストボタンがあります。',
   'new.change.notifyTile': '{notifications} は設定に専用のタイルを持つようになりました。',
+  'new.change.automationStart': 'Tasker や MacroDroid などの自動化アプリから、スマホのジョブを1つ、またはすべてまとめて開始できます。',
+  'new.change.updateNow': 'チェックで新しいリリースが見つかると、デスクトップアプリはバージョンカードからすぐに更新し、新しいバージョンで再起動します。',
   'new.change.phoneVpn': 'スマホアプリでもVPNを設定でき、ジョブはサーバーやデスクトップアプリと同じように通るトンネルを選べます。',
   'new.change.phoneTolerance': 'スマホアプリのジョブは独自のタイムスタンプ許容差を設定できます。',
   'new.change.internxtTwoFactor': 'Internxtの保存先を追加すると独自のサインインが行われ、アカウントで二段階ログインが有効な場合は{test}が{code}を求めます。',

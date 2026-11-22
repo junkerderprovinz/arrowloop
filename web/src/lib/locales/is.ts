@@ -1745,6 +1745,8 @@ const is: Translations = {
   'new.change.loginReset': 'Gleymt lykilorð má endurstilla á innskráningarsíðunni með kóða úr annál gámsins.',
   'new.change.notifyChannels': '{notifications} undir {safety} sendir nú líka með tölvupósti, á Discord, Slack, Gotify, ntfy, Apprise þjón og Healthchecks.io, hver með eigin rofa og prófunarhnapp.',
   'new.change.notifyTile': '{notifications} er með sína eigin flís í stillingunum.',
+  'new.change.automationStart': 'Tasker, MacroDroid og önnur sjálfvirkniforrit geta ræst verk í símanum, eða öll verk í einu.',
+  'new.change.updateNow': 'Þegar athugun finnur nýrri útgáfu uppfærist skjáborðsforritið strax af spjaldinu Útgáfa og ræsist aftur í nýju útgáfunni.',
   'new.change.phoneVpn': 'Símaforritið setur líka upp VPN, og hvert verk velur göngin sem það fer um, eins og á netþjóni eða í skjáborðsforritinu.',
   'new.change.phoneTolerance': 'Verk í símaforritinu getur stillt sín eigin vikmörk fyrir tímastimpla.',
   'new.change.internxtTwoFactor': 'Þegar Internxt-markmiði er bætt við keyrir eigin innskráning þess, og {test} biður um {code} þegar tveggja þátta innskráning er virk á reikningnum.',

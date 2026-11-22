@@ -1745,6 +1745,8 @@ const lt: Translations = {
   'new.change.loginReset': 'Pamirštą slaptažodį galima atkurti prisijungimo puslapyje su kodu iš konteinerio žurnalo.',
   'new.change.notifyChannels': '{notifications} skiltyje {safety} dabar siunčia ir el. paštu, į Discord, Slack, Gotify, ntfy, Apprise serverį ir Healthchecks.io, kiekvienas su savo jungikliu ir bandymo mygtuku.',
   'new.change.notifyTile': '{notifications} turi savo plytelę nustatymuose.',
+  'new.change.automationStart': 'Tasker, MacroDroid ir kitos automatizavimo programėlės gali telefone paleisti užduotį arba visas iš karto.',
+  'new.change.updateNow': 'Kai patikra randa naujesnę laidą, darbalaukio programėlė iškart atsinaujina iš kortelės Versija ir pasileidžia iš naujo su nauja versija.',
   'new.change.phoneVpn': 'Telefono programėlė taip pat nustato VPN, o kiekviena užduotis pasirenka tunelį, kuriuo eina, kaip serveryje ar darbalaukio programėlėje.',
   'new.change.phoneTolerance': 'Telefono programėlės užduotis gali nustatyti savo laiko žymų toleranciją.',
   'new.change.internxtTwoFactor': 'Pridedant Internxt paskirtį vykdomas jos pačios prisijungimas, o {test} paprašo {code}, kai paskyroje įjungtas dviejų veiksnių prisijungimas.',

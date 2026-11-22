@@ -1745,6 +1745,8 @@ const zh: Translations = {
   'new.change.loginReset': '忘记密码时，可在登录页面使用容器日志中的代码重置。',
   'new.change.notifyChannels': '{safety} 中的 {notifications} 现在也能发送到电子邮件、Discord、Slack、Gotify、ntfy、Apprise 服务器和 Healthchecks.io，每个渠道都有自己的开关和测试按钮。',
   'new.change.notifyTile': '{notifications} 在设置中有了自己的磁贴。',
+  'new.change.automationStart': 'Tasker、MacroDroid 等自动化应用可以在手机上启动一个任务，或一次启动全部任务。',
+  'new.change.updateNow': '检查到更新的版本后，桌面应用可以直接从“版本”卡片更新，并重启进入新版本。',
   'new.change.phoneVpn': '手机应用也能设置VPN，任务可以像在服务器或桌面应用上一样选择要经过的隧道。',
   'new.change.phoneTolerance': '手机应用中的任务可以设置自己的时间戳容差。',
   'new.change.internxtTwoFactor': '添加Internxt目标时会运行它自己的登录，如果账户开启了两步登录，{test}会要求输入{code}。',

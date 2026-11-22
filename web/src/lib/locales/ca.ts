@@ -1745,6 +1745,8 @@ const ca: Translations = {
   'new.change.loginReset': 'Una contrasenya oblidada es pot restablir des de la pàgina d\'inici de sessió amb un codi del registre del contenidor.',
   'new.change.notifyChannels': '{notifications} a {safety} també envia per correu, a Discord, Slack, Gotify, ntfy, un servidor Apprise i Healthchecks.io, cadascun amb el seu interruptor i un botó de prova.',
   'new.change.notifyTile': '{notifications} té una rajola pròpia a la configuració.',
+  'new.change.automationStart': 'Tasker, MacroDroid i altres aplicacions d’automatització poden iniciar una tasca al telèfon, o totes alhora.',
+  'new.change.updateNow': 'Quan una comprovació troba una versió més nova, l’aplicació d’escriptori s’actualitza de seguida des de la targeta Versió i es reinicia amb la nova versió.',
   'new.change.phoneVpn': 'L’aplicació del telèfon també configura una VPN, i cada tasca tria el túnel per on passa, com en un servidor o a l’aplicació d’escriptori.',
   'new.change.phoneTolerance': 'Una tasca a l’aplicació del telèfon pot fixar la seva pròpia tolerància de marques de temps.',
   'new.change.internxtTwoFactor': 'En afegir un destí Internxt s’executa el seu propi inici de sessió, i {test} demana el {code} quan el compte té activat l’inici en dos passos.',

@@ -1745,6 +1745,8 @@ const sv: Translations = {
   'new.change.loginReset': 'Ett glömt lösenord kan återställas från inloggningssidan med en kod från containerns logg.',
   'new.change.notifyChannels': '{notifications} under {safety} skickar nu även med e-post, till Discord, Slack, Gotify, ntfy, en Apprise-server och Healthchecks.io, var och en med eget reglage och en testknapp.',
   'new.change.notifyTile': '{notifications} har en egen ruta i inställningarna.',
+  'new.change.automationStart': 'Tasker, MacroDroid och andra automatiseringsappar kan starta ett jobb på telefonen, eller alla jobb på en gång.',
+  'new.change.updateNow': 'När en kontroll hittar en nyare version uppdateras skrivbordsappen direkt från kortet Version och startar om i den nya versionen.',
   'new.change.phoneVpn': 'Även telefonappen ställer in ett VPN, och ett jobb väljer tunneln det går genom, som på en server eller i skrivbordsappen.',
   'new.change.phoneTolerance': 'Ett jobb i telefonappen kan ställa in sin egen tolerans för tidsstämplar.',
   'new.change.internxtTwoFactor': 'När du lägger till ett Internxt-mål körs dess egen inloggning, och {test} ber om {code} när kontot har tvåstegsinloggning påslagen.',

@@ -1745,6 +1745,8 @@ const pt: Translations = {
   'new.change.loginReset': 'Uma palavra-passe esquecida pode ser reposta na página de início de sessão, com um código do registo do contentor.',
   'new.change.notifyChannels': '{notifications} em {safety} também envia por e-mail, para Discord, Slack, Gotify, ntfy, um servidor Apprise e Healthchecks.io, cada um com o seu interruptor e um botão de teste.',
   'new.change.notifyTile': '{notifications} tem um bloco próprio nas definições.',
+  'new.change.automationStart': 'O Tasker, o MacroDroid e outras aplicações de automação podem iniciar uma tarefa no telemóvel, ou todas de uma vez.',
+  'new.change.updateNow': 'Assim que uma verificação encontra uma versão mais recente, a aplicação de computador atualiza-se logo a partir do cartão Versão e reinicia na nova versão.',
   'new.change.phoneVpn': 'A aplicação do telemóvel também configura uma VPN, e cada tarefa escolhe o túnel por onde passa, como num servidor ou na aplicação de computador.',
   'new.change.phoneTolerance': 'Uma tarefa na aplicação do telemóvel pode definir a sua própria tolerância de carimbos de hora.',
   'new.change.internxtTwoFactor': 'Ao adicionar um destino Internxt corre o seu próprio início de sessão, e {test} pede o {code} quando a conta tem o início de sessão em dois passos ativo.',
