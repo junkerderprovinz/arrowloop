@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">启动任务</string>
+    <string name="plugin_intro">选择自动化要启动的内容。这算作你亲自启动的运行，所以设置里的电池和网络条件不会拦住它。</string>
+    <string name="plugin_empty">还没有可启动的任务。先在 ArrowLoop 里创建一个，再回到这里。</string>
+    <string name="plugin_all">全部任务</string>
+    <string name="plugin_all_detail">所有未暂停的任务</string>
+    <string name="plugin_paused">已暂停，但仍会启动</string>
+    <string name="plugin_blurb_one">运行 %1$s</string>
+    <string name="plugin_blurb_all">运行全部任务</string>
+</resources>

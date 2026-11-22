@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Bắt đầu một công việc</string>
+    <string name="plugin_intro">Chọn thứ mà quy trình tự động của bạn sẽ bắt đầu. Việc này được tính như một lần chạy bạn tự bắt đầu, nên các điều kiện về pin và mạng trong Cài đặt không chặn nó.</string>
+    <string name="plugin_empty">Chưa có công việc nào để bắt đầu. Hãy tạo một công việc trong ArrowLoop rồi quay lại đây.</string>
+    <string name="plugin_all">Tất cả công việc</string>
+    <string name="plugin_all_detail">Mọi công việc không bị tạm dừng</string>
+    <string name="plugin_paused">Tạm dừng, nhưng vẫn bắt đầu</string>
+    <string name="plugin_blurb_one">Chạy %1$s</string>
+    <string name="plugin_blurb_all">Chạy tất cả công việc</string>
+</resources>

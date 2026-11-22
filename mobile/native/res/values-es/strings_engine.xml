@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Iniciar una tarea</string>
+    <string name="plugin_intro">Elige qué inicia tu automatización. Cuenta como una ejecución que inicias tú, así que las condiciones de batería y red de los ajustes no la frenan.</string>
+    <string name="plugin_empty">Todavía no hay tareas que iniciar. Crea una en ArrowLoop y vuelve aquí.</string>
+    <string name="plugin_all">Todas las tareas</string>
+    <string name="plugin_all_detail">Cada tarea que no está en pausa</string>
+    <string name="plugin_paused">En pausa, pero se inicia igualmente</string>
+    <string name="plugin_blurb_one">Ejecutar %1$s</string>
+    <string name="plugin_blurb_all">Ejecutar todas las tareas</string>
+</resources>

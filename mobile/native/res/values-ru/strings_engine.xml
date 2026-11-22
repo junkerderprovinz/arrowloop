@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Запустить задание</string>
+    <string name="plugin_intro">Выберите, что запускает ваша автоматизация. Это считается запуском вручную, поэтому условия батареи и сети в настройках его не задерживают.</string>
+    <string name="plugin_empty">Пока нет заданий для запуска. Создайте задание в ArrowLoop и вернитесь сюда.</string>
+    <string name="plugin_all">Все задания</string>
+    <string name="plugin_all_detail">Каждое задание не на паузе</string>
+    <string name="plugin_paused">На паузе, но всё равно запустится</string>
+    <string name="plugin_blurb_one">Запустить %1$s</string>
+    <string name="plugin_blurb_all">Запустить все задания</string>
+</resources>

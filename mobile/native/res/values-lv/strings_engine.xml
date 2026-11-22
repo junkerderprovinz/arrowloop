@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Palaist uzdevumu</string>
+    <string name="plugin_intro">Izvēlieties, ko palaiž jūsu automatizācija. Tas skaitās kā palaišana, ko sākat paši, tāpēc iestatījumu akumulatora un tīkla nosacījumi to neaiztur.</string>
+    <string name="plugin_empty">Vēl nav neviena uzdevuma, ko palaist. Izveidojiet to ArrowLoop un atgriezieties šeit.</string>
+    <string name="plugin_all">Visi uzdevumi</string>
+    <string name="plugin_all_detail">Katrs uzdevums, kas nav pauzēts</string>
+    <string name="plugin_paused">Pauzēts, bet tik un tā sākas</string>
+    <string name="plugin_blurb_one">Palaist %1$s</string>
+    <string name="plugin_blurb_all">Palaist visus uzdevumus</string>
+</resources>

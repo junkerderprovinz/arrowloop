@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Een taak starten</string>
+    <string name="plugin_intro">Kies wat je automatisering start. Dat telt als een run die je zelf start, dus de voorwaarden voor batterij en netwerk in de instellingen houden hem niet tegen.</string>
+    <string name="plugin_empty">Er zijn nog geen taken om te starten. Maak er een aan in ArrowLoop en kom dan hier terug.</string>
+    <string name="plugin_all">Alle taken</string>
+    <string name="plugin_all_detail">Elke taak die niet gepauzeerd is</string>
+    <string name="plugin_paused">Gepauzeerd, start toch</string>
+    <string name="plugin_blurb_one">%1$s uitvoeren</string>
+    <string name="plugin_blurb_all">Alle taken uitvoeren</string>
+</resources>

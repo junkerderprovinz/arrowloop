@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Pornește o sarcină</string>
+    <string name="plugin_intro">Alege ce pornește automatizarea ta. Contează ca o rulare pornită de tine, așa că condițiile de baterie și rețea din setări nu o opresc.</string>
+    <string name="plugin_empty">Încă nu există sarcini de pornit. Creează una în ArrowLoop, apoi revino aici.</string>
+    <string name="plugin_all">Toate sarcinile</string>
+    <string name="plugin_all_detail">Fiecare sarcină care nu e în pauză</string>
+    <string name="plugin_paused">În pauză, dar pornește oricum</string>
+    <string name="plugin_blurb_one">Rulează %1$s</string>
+    <string name="plugin_blurb_all">Rulează toate sarcinile</string>
+</resources>

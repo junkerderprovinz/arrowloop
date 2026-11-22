@@ -15,7 +15,8 @@ import android.util.Log
  * a window of minutes, which a sync over a mobile connection can outlast; the
  * foreground service owns its own lifetime and its notification lasts only as
  * long as the run. Only when Android refuses that service does the run go on
- * inside the job.
+ * inside the job. A start an automation app asked for arrives here the same way
+ * when Android refused the service to StartJobReceiver.
  */
 class SyncJobService : JobService() {
 
@@ -25,9 +26,10 @@ class SyncJobService : JobService() {
     private val main = Handler(Looper.getMainLooper())
 
     override fun onStartJob(params: JobParameters): Boolean {
-        Log.i(TAG, "woken by Android, handing over to the engine")
+        val job = params.extras.getString(Waker.START_JOB)
+        Log.i(TAG, if (job == null) "woken by Android, handing over to the engine" else "starting job $job for an automation app")
         try {
-            EngineService.runDue(this)
+            if (job == null) EngineService.runDue(this) else EngineService.startJob(this, job)
             // No retry: the periodic job comes round again, and the content
             // trigger is scheduled anew.
             rearm(params)
@@ -39,7 +41,7 @@ class SyncJobService : JobService() {
             // as Android gives it.
             Log.i(TAG, "running inside the job, since Android refused the service: ${e.message}")
         }
-        val run = Inside(params)
+        val run = Inside(params, job)
         if (!bindService(Intent(this, EngineService::class.java), run, BIND_AUTO_CREATE)) {
             unbindService(run)
             rearm(params)
@@ -64,8 +66,11 @@ class SyncJobService : JobService() {
         if (params.jobId == Waker.WATCH) Waker.watch(this)
     }
 
-    /** A run inside a job, which holds EngineService bound until it is over. */
-    private inner class Inside(private val params: JobParameters) : ServiceConnection {
+    /**
+     * A run inside a job, which holds EngineService bound until it is over: a
+     * wake-up's, or the start of job when an automation app asked for one.
+     */
+    private inner class Inside(private val params: JobParameters, private val job: String?) : ServiceConnection {
 
         private var binder: EngineService.Run? = null
 
@@ -73,7 +78,7 @@ class SyncJobService : JobService() {
             val run = service as EngineService.Run
             binder = run
             // The run ends on its own thread.
-            run.start { main.post { done() } }
+            if (job == null) run.start { main.post { done() } } else run.startJob(job) { main.post { done() } }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {}

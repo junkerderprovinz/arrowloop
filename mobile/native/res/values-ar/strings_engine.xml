@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">ابدأ مهمة</string>
+    <string name="plugin_intro">اختر ما تشغّله أتمتتك. يُحسب هذا تشغيلًا تبدؤه بنفسك، لذلك لا توقفه شروط البطارية والشبكة في الإعدادات.</string>
+    <string name="plugin_empty">لا توجد مهام لتشغيلها بعد. أنشئ مهمة في ArrowLoop ثم عد إلى هنا.</string>
+    <string name="plugin_all">كل المهام</string>
+    <string name="plugin_all_detail">كل مهمة غير متوقفة مؤقتًا</string>
+    <string name="plugin_paused">متوقفة مؤقتًا، لكنها تبدأ رغم ذلك</string>
+    <string name="plugin_blurb_one">شغّل %1$s</string>
+    <string name="plugin_blurb_all">شغّل كل المهام</string>
+</resources>

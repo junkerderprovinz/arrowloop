@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Spustit úlohu</string>
+    <string name="plugin_intro">Vyber, co tvoje automatizace spustí. Počítá se to jako běh, který spouštíš sám, takže ho podmínky pro baterii a síť v nastavení nezdrží.</string>
+    <string name="plugin_empty">Zatím tu není žádná úloha ke spuštění. Vytvoř ji v ArrowLoopu a vrať se sem.</string>
+    <string name="plugin_all">Všechny úlohy</string>
+    <string name="plugin_all_detail">Každá úloha, která není pozastavená</string>
+    <string name="plugin_paused">Pozastavená, ale i tak se spustí</string>
+    <string name="plugin_blurb_one">Spustit %1$s</string>
+    <string name="plugin_blurb_all">Spustit všechny úlohy</string>
+</resources>

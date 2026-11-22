@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Mulakan tugas</string>
+    <string name="plugin_intro">Pilih apa yang dimulakan oleh automasi anda. Ia dikira sebagai larian yang anda mulakan sendiri, jadi syarat bateri dan rangkaian dalam Tetapan tidak menahannya.</string>
+    <string name="plugin_empty">Belum ada tugas untuk dimulakan. Cipta satu dalam ArrowLoop, kemudian kembali ke sini.</string>
+    <string name="plugin_all">Semua tugas</string>
+    <string name="plugin_all_detail">Setiap tugas yang tidak dijeda</string>
+    <string name="plugin_paused">Dijeda, tetapi tetap bermula</string>
+    <string name="plugin_blurb_one">Jalankan %1$s</string>
+    <string name="plugin_blurb_all">Jalankan semua tugas</string>
+</resources>

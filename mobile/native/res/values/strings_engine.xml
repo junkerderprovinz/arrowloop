@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Only what Android itself shows: the notification and its channels.
-  Everything read inside the app comes from React Native.
+  Only what Android itself shows: the notification and its channels, and the
+  picker automation apps open (StartJobActivity). Everything read inside the
+  app comes from React Native.
 
   Not strings.xml, because `expo prebuild` generates one of that name for the
   app name and the scheme, and two files of one name in a folder overwrite
@@ -93,4 +94,14 @@
     <string name="failure_stopped">The run was stopped before it finished.</string>
     <string name="failure_before">The command before the run failed, so the run did not start.</string>
     <string name="failure_after">The command after the run failed.</string>
+
+    <!-- The automation picker, StartJobActivity. -->
+    <string name="plugin_title">Start a job</string>
+    <string name="plugin_intro">Pick what your automation starts. It counts as a run you start yourself, so the battery and network conditions in Settings do not hold it back.</string>
+    <string name="plugin_empty">There are no jobs to start yet. Set one up in ArrowLoop, then come back here.</string>
+    <string name="plugin_all">All jobs</string>
+    <string name="plugin_all_detail">Every job that is not paused</string>
+    <string name="plugin_paused">Paused, starts all the same</string>
+    <string name="plugin_blurb_one">Start %1$s</string>
+    <string name="plugin_blurb_all">Start all jobs</string>
 </resources>

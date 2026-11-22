@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Käivita töö</string>
+    <string name="plugin_intro">Vali, mida sinu automatiseering käivitab. See loeb nagu käivitus, mille teed ise, nii et seadete aku- ja võrgutingimused seda kinni ei pea.</string>
+    <string name="plugin_empty">Käivitamiseks pole veel ühtegi tööd. Loo üks ArrowLoopis ja tule siis siia tagasi.</string>
+    <string name="plugin_all">Kõik tööd</string>
+    <string name="plugin_all_detail">Iga töö, mis pole pausil</string>
+    <string name="plugin_paused">Pausil, aga käivitub ikkagi</string>
+    <string name="plugin_blurb_one">Käivita %1$s</string>
+    <string name="plugin_blurb_all">Käivita kõik tööd</string>
+</resources>

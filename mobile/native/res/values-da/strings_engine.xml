@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Start et job</string>
+    <string name="plugin_intro">Vælg, hvad din automatisering starter. Det tæller som en kørsel, du selv starter, så betingelserne for batteri og netværk i indstillingerne holder den ikke tilbage.</string>
+    <string name="plugin_empty">Der er ingen job at starte endnu. Opret et i ArrowLoop, og kom så tilbage hertil.</string>
+    <string name="plugin_all">Alle job</string>
+    <string name="plugin_all_detail">Hvert job, der ikke er sat på pause</string>
+    <string name="plugin_paused">På pause, men starter alligevel</string>
+    <string name="plugin_blurb_one">Kør %1$s</string>
+    <string name="plugin_blurb_all">Kør alle job</string>
+</resources>

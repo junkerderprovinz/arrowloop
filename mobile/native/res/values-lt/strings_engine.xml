@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Paleisti užduotį</string>
+    <string name="plugin_intro">Pasirinkite, ką paleis jūsų automatizavimas. Tai laikoma paleidimu, kurį pradedate patys, todėl nustatymų baterijos ir tinklo sąlygos jo nesulaiko.</string>
+    <string name="plugin_empty">Paleisti dar nėra jokių užduočių. Sukurkite vieną ArrowLoop ir grįžkite čia.</string>
+    <string name="plugin_all">Visos užduotys</string>
+    <string name="plugin_all_detail">Kiekviena nepristabdyta užduotis</string>
+    <string name="plugin_paused">Pristabdyta, bet vis tiek paleidžiama</string>
+    <string name="plugin_blurb_one">Paleisti %1$s</string>
+    <string name="plugin_blurb_all">Paleisti visas užduotis</string>
+</resources>

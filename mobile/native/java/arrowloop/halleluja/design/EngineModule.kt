@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentCallbacks
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -23,6 +24,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 
@@ -538,6 +541,23 @@ class EngineModule(private val context: ReactApplicationContext) :
 
     @ReactMethod
     fun systemAccent(promise: Promise) = promise.resolve(accentTones())
+
+    /**
+     * Keeps the look the screens show for StartJobActivity, which draws it
+     * without React Native. The appearance itself lives in AsyncStorage, out of
+     * Kotlin's reach.
+     */
+    @ReactMethod
+    fun setLook(json: String, promise: Promise) {
+        try {
+            JSONObject(json)
+            context.getSharedPreferences(StartJobActivity.PREFS, Context.MODE_PRIVATE)
+                .edit().putString(StartJobActivity.KEY, json).apply()
+            promise.resolve(null)
+        } catch (e: JSONException) {
+            promise.reject("look", e.message ?: "not a JSON object")
+        }
+    }
 
     // Non-null parameters, as React Native's interface declares them; nullable
     // ones would override nothing.

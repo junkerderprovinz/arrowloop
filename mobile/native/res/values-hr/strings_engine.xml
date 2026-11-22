@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Pokreni zadatak</string>
+    <string name="plugin_intro">Odaberi što tvoja automatizacija pokreće. To se računa kao pokretanje koje si sam pokrenuo, pa ga uvjeti za bateriju i mrežu u postavkama ne zadržavaju.</string>
+    <string name="plugin_empty">Još nema zadataka za pokretanje. Napravi jedan u ArrowLoopu i vrati se ovamo.</string>
+    <string name="plugin_all">Svi zadaci</string>
+    <string name="plugin_all_detail">Svaki zadatak koji nije pauziran</string>
+    <string name="plugin_paused">Pauziran, ali se ipak pokreće</string>
+    <string name="plugin_blurb_one">Pokreni %1$s</string>
+    <string name="plugin_blurb_all">Pokreni sve zadatke</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Käynnistä työ</string>
+    <string name="plugin_intro">Valitse, mitä automaatiosi käynnistää. Se lasketaan ajoksi, jonka käynnistät itse, joten asetusten akku- ja verkkoehdot eivät pidättele sitä.</string>
+    <string name="plugin_empty">Käynnistettäviä töitä ei vielä ole. Luo sellainen ArrowLoopissa ja palaa sitten tänne.</string>
+    <string name="plugin_all">Kaikki työt</string>
+    <string name="plugin_all_detail">Jokainen työ, jota ei ole keskeytetty</string>
+    <string name="plugin_paused">Keskeytetty, mutta käynnistyy silti</string>
+    <string name="plugin_blurb_one">Suorita %1$s</string>
+    <string name="plugin_blurb_all">Suorita kaikki työt</string>
+</resources>

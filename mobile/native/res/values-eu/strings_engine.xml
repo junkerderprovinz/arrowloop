@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Abiarazi lan bat</string>
+    <string name="plugin_intro">Aukeratu zure automatizazioak zer abiarazten duen. Zuk zeuk abiarazitako exekuzio gisa hartzen da, beraz ezarpenetako bateria eta sare baldintzek ez dute geldiarazten.</string>
+    <string name="plugin_empty">Oraindik ez dago abiarazteko lanik. Sortu bat ArrowLoop-en eta itzuli hona.</string>
+    <string name="plugin_all">Lan guztiak</string>
+    <string name="plugin_all_detail">Pausatuta ez dagoen lan oro</string>
+    <string name="plugin_paused">Pausatuta, baina hala ere abiarazten da</string>
+    <string name="plugin_blurb_one">Exekutatu %1$s</string>
+    <string name="plugin_blurb_all">Exekutatu lan guztiak</string>
+</resources>

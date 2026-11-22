@@ -68,8 +68,9 @@ import { askNotifications, notificationsGranted } from "./src/screens/Settings";
 import { useDiscoWalk } from "./src/disco";
 import { useMotion } from "./src/motion";
 import { loadAppearance, useAppearance } from "./src/settings";
-import { watchSystemAccent } from "./src/systemAccent";
-import { contrastOn, raised, space, text, TOUCH } from "./src/theme";
+import { pluginLook } from "./src/pluginLook";
+import { useSystemTones, watchSystemAccent } from "./src/systemAccent";
+import { contrastOn, radiusFor, raised, space, text, TOUCH } from "./src/theme";
 import { Glyph } from "./src/glyphs";
 import { Badge, Body, Button, Heading, Press, Screen, usePress, useSideRoom, useTheme } from "./src/ui";
 import { engine } from "./src/engine";
@@ -117,6 +118,11 @@ function Shell() {
   const look = useAppearance();
   useDiscoWalk();
   useEffect(() => watchSystemAccent(), []);
+  const tones = useSystemTones();
+  const handed = JSON.stringify(pluginLook(look, tones, radiusFor(look.shape).card));
+  useEffect(() => {
+    engine.setLook(handed).catch(() => {});
+  }, [handed]);
 
   // The optional lock gates the whole app, since the job list alone shows
   // every synced path. It closes again after AWAY_MS in the background.

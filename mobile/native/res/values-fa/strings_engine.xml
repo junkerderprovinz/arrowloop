@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">شروع یک کار</string>
+    <string name="plugin_intro">انتخاب کن اتوماسیونت چه چیزی را شروع کند. این مثل اجرایی حساب می‌شود که خودت شروع می‌کنی، پس شرایط باتری و شبکه در تنظیمات جلویش را نمی‌گیرد.</string>
+    <string name="plugin_empty">هنوز کاری برای شروع نیست. یکی در ArrowLoop بساز و بعد به اینجا برگرد.</string>
+    <string name="plugin_all">همه کارها</string>
+    <string name="plugin_all_detail">هر کاری که متوقف نیست</string>
+    <string name="plugin_paused">متوقف، ولی باز هم شروع می‌شود</string>
+    <string name="plugin_blurb_one">اجرای %1$s</string>
+    <string name="plugin_blurb_all">اجرای همه کارها</string>
+</resources>

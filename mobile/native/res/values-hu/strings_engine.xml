@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Feladat indítása</string>
+    <string name="plugin_intro">Válaszd ki, mit indítson az automatizálásod. Ez saját kezű indításnak számít, így a beállítások akkumulátor- és hálózati feltételei nem tartják vissza.</string>
+    <string name="plugin_empty">Még nincs indítható feladat. Hozz létre egyet az ArrowLoopban, aztán gyere vissza ide.</string>
+    <string name="plugin_all">Összes feladat</string>
+    <string name="plugin_all_detail">Minden feladat, amely nincs szüneteltetve</string>
+    <string name="plugin_paused">Szüneteltetve, de így is elindul</string>
+    <string name="plugin_blurb_one">%1$s futtatása</string>
+    <string name="plugin_blurb_all">Összes feladat futtatása</string>
+</resources>

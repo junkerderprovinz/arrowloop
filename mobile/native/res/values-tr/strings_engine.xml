@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Bir iş başlat</string>
+    <string name="plugin_intro">Otomasyonunun neyi başlatacağını seç. Bu, kendin başlattığın bir çalıştırma sayılır, bu yüzden ayarlardaki pil ve ağ koşulları onu bekletmez.</string>
+    <string name="plugin_empty">Henüz başlatılacak bir iş yok. ArrowLoop\'ta bir tane oluştur, sonra buraya dön.</string>
+    <string name="plugin_all">Tüm işler</string>
+    <string name="plugin_all_detail">Duraklatılmamış her iş</string>
+    <string name="plugin_paused">Duraklatıldı, yine de başlar</string>
+    <string name="plugin_blurb_one">%1$s çalıştır</string>
+    <string name="plugin_blurb_all">Tüm işleri çalıştır</string>
+</resources>

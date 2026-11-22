@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">Uruchom zadanie</string>
+    <string name="plugin_intro">Wybierz, co uruchamia twoja automatyzacja. Liczy się to jak uruchomienie przez ciebie, więc warunki baterii i sieci z ustawień go nie wstrzymują.</string>
+    <string name="plugin_empty">Nie ma jeszcze zadań do uruchomienia. Utwórz jedno w ArrowLoop i wróć tutaj.</string>
+    <string name="plugin_all">Wszystkie zadania</string>
+    <string name="plugin_all_detail">Każde zadanie, które nie jest zapauzowane</string>
+    <string name="plugin_paused">Zapauzowane, ale i tak się uruchomi</string>
+    <string name="plugin_blurb_one">Uruchom %1$s</string>
+    <string name="plugin_blurb_all">Uruchom wszystkie zadania</string>
+</resources>

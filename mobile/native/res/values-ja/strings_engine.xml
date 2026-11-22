@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">ジョブを開始</string>
+    <string name="plugin_intro">オートメーションで開始するものを選んでください。自分で開始した実行として扱われるため、設定のバッテリーとネットワークの条件では止まりません。</string>
+    <string name="plugin_empty">開始できるジョブはまだありません。ArrowLoop でジョブを作成してから、ここに戻ってください。</string>
+    <string name="plugin_all">すべてのジョブ</string>
+    <string name="plugin_all_detail">一時停止していないすべてのジョブ</string>
+    <string name="plugin_paused">一時停止中ですが、開始されます</string>
+    <string name="plugin_blurb_one">%1$s を実行</string>
+    <string name="plugin_blurb_all">すべてのジョブを実行</string>
+</resources>

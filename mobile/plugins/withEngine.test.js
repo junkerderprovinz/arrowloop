@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const app = require("../app.json");
-const { addRotation } = require("./withEngine.js");
+const { addRotation, addStartJob } = require("./withEngine.js");
 
 // The part of Expo's MainActivity template the plugin edits.
 const TEMPLATE = `package arrowloop.halleluja.design
@@ -48,4 +48,40 @@ test("a second prebuild over the same file changes nothing", () => {
 
 test("a template of another shape fails the build", () => {
   assert.throws(() => addRotation("class MainActivity : ReactActivity() {}"), /MainActivity/);
+});
+
+const EDIT = "com.twofortyfouram.locale.intent.action.EDIT_SETTING";
+const FIRE = "com.twofortyfouram.locale.intent.action.FIRE_SETTING";
+
+function actionsOf(entry) {
+  return entry["intent-filter"].flatMap((f) => f.action.map((a) => a.$["android:name"]));
+}
+
+test("automation apps find the picker and the receiver", () => {
+  const app = {};
+  addStartJob(app);
+  const picker = app.activity.find((a) => a.$["android:name"] === ".StartJobActivity");
+  const receiver = app.receiver.find((r) => r.$["android:name"] === ".StartJobReceiver");
+  // The plug-in API ignores a plug-in whose two parts are not both exported.
+  assert.equal(picker.$["android:exported"], "true");
+  assert.equal(receiver.$["android:exported"], "true");
+  assert.deepEqual(actionsOf(picker), [EDIT]);
+  assert.deepEqual(actionsOf(receiver), [FIRE]);
+  assert.ok(picker.$["android:label"]);
+  assert.ok(picker.$["android:icon"]);
+});
+
+test("the receiver asks for no permission the automation apps would lack", () => {
+  const app = {};
+  addStartJob(app);
+  const receiver = app.receiver.find((r) => r.$["android:name"] === ".StartJobReceiver");
+  assert.equal(receiver.$["android:permission"], undefined);
+});
+
+test("a second prebuild adds the plug-in once", () => {
+  const app = { activity: [{ $: { "android:name": ".MainActivity" } }] };
+  addStartJob(app);
+  addStartJob(app);
+  assert.equal(app.activity.length, 2);
+  assert.equal(app.receiver.length, 1);
 });

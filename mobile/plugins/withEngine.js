@@ -241,6 +241,8 @@ function withEngineManifest(config) {
       });
     }
 
+    addStartJob(app);
+
     // Shizuku hands the app its binder through this provider. The permission
     // is one the shell holds and apps do not, so only Shizuku can call it.
     app.provider = app.provider ?? [];
@@ -274,6 +276,38 @@ function withEngineManifest(config) {
     app.$["android:networkSecurityConfig"] = "@xml/network_security_config";
     return cfg;
   });
+}
+
+/**
+ * Adds the Locale plug-in that Tasker, MacroDroid and their kind list as an
+ * action: StartJobActivity picks the job, StartJobReceiver starts it. A host
+ * ignores a plug-in unless both are exported, and holds no permission the
+ * receiver could ask for, so StartJob.kt checks every bundle instead.
+ */
+function addStartJob(app) {
+  app.activity = app.activity ?? [];
+  if (!app.activity.some((a) => a.$["android:name"] === ".StartJobActivity")) {
+    app.activity.push({
+      $: {
+        "android:name": ".StartJobActivity",
+        "android:exported": "true",
+        // The name and icon the host shows in its list of plug-ins.
+        "android:label": "@string/app_name",
+        "android:icon": "@mipmap/ic_launcher",
+        "android:theme": "@android:style/Theme.DeviceDefault.NoActionBar",
+        "android:excludeFromRecents": "true",
+      },
+      "intent-filter": [{ action: [{ $: { "android:name": "com.twofortyfouram.locale.intent.action.EDIT_SETTING" } }] }],
+    });
+  }
+  app.receiver = app.receiver ?? [];
+  if (!app.receiver.some((r) => r.$["android:name"] === ".StartJobReceiver")) {
+    app.receiver.push({
+      $: { "android:name": ".StartJobReceiver", "android:exported": "true", "android:enabled": "true" },
+      "intent-filter": [{ action: [{ $: { "android:name": "com.twofortyfouram.locale.intent.action.FIRE_SETTING" } }] }],
+    });
+  }
+  return app;
 }
 
 function withNetworkConfig(config) {
@@ -358,11 +392,16 @@ copy {
     from rootProject.file('../native/jniLibs')
     into file('src/main/jniLibs')
 }
+copy {
+    from rootProject.file('../native/test')
+    into file('src/test/java')
+}
 
 // Shizuku starts the Android/data server as the adb shell user; see AppData.kt.
 dependencies {
     implementation 'dev.rikka.shizuku:api:13.1.5'
     implementation 'dev.rikka.shizuku:provider:13.1.5'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 // Fails on an engine older than the Go sources. The prebuild step checks the
@@ -612,3 +651,4 @@ module.exports = function withEngine(config) {
 };
 
 module.exports.addRotation = addRotation;
+module.exports.addStartJob = addStartJob;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The automation picker's lines, StartJobActivity. The notification's lines
+  are in values/ and values-de/ only, so Android falls back to English for
+  them here.
+-->
+<resources>
+    <string name="plugin_title">הפעלת משימה</string>
+    <string name="plugin_intro">אפשר לבחור מה האוטומציה תפעיל. זה נחשב להרצה שהפעלת בעצמך, ולכן תנאי הסוללה והרשת בהגדרות לא מעכבים אותה.</string>
+    <string name="plugin_empty">אין עדיין משימות להפעלה. אפשר ליצור משימה ב־ArrowLoop ולחזור לכאן.</string>
+    <string name="plugin_all">כל המשימות</string>
+    <string name="plugin_all_detail">כל משימה שאינה מושהית</string>
+    <string name="plugin_paused">מושהית, אבל מופעלת בכל זאת</string>
+    <string name="plugin_blurb_one">הרצת %1$s</string>
+    <string name="plugin_blurb_all">הרצת כל המשימות</string>
+</resources>
