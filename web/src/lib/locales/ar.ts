@@ -2253,6 +2253,7 @@ const ar: Translations = {
   'vpn.error.deviceLimit': 'لا يسمح {name} بمزيد من الأجهزة. أزل جهازًا من حسابك، ثم حاول مرة أخرى.',
   'vpn.error.accountExpired': 'انتهت صلاحية حسابك على {name}. جدّده، ثم حاول مرة أخرى.',
   'vpn.error.locationUnknown': 'ليس لدى {name} خادم في هذا الموقع. جرّب موقعًا آخر أو اترك الحقل فارغًا.',
+  'vpn.error.start': 'تعذّر تشغيل WireGuard على هذا الجهاز: {reason}',
   'vpn.removeAsk': 'هل تريد إزالة {name}؟',
   'vpn.removeStakes': 'سينسى ArrowLoop بيانات الدخول. ستفشل المهام التي تمر عبره إلى أن تختار لها VPN آخر.',
   'edit.connection': 'الاتصال',

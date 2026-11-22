@@ -2253,6 +2253,7 @@ const et: Translations = {
   'vpn.error.deviceLimit': '{name} ei luba rohkem seadmeid. Eemalda oma kontolt üks seade ja proovi uuesti.',
   'vpn.error.accountExpired': 'Sinu teenuse {name} konto on aegunud. Pikenda seda ja proovi uuesti.',
   'vpn.error.locationUnknown': 'Teenusel {name} pole selles asukohas serverit. Proovi muud asukohta või jäta väli tühjaks.',
+  'vpn.error.start': 'WireGuard ei saanud selles seadmes käivituda: {reason}',
   'vpn.removeAsk': 'Kas eemaldada {name}?',
   'vpn.removeStakes': 'ArrowLoop unustab selle sisselogimisandmed. Selle kaudu käivad tööd ebaõnnestuvad, kuni valid neile teise VPN-i.',
   'edit.connection': 'Ühendus',

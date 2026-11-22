@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"golang.org/x/net/dns/dnsmessage"
-	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
 	"gvisor.dev/gvisor/pkg/tcpip/adapters/gonet"
 	"gvisor.dev/gvisor/pkg/tcpip/stack"
@@ -60,7 +59,7 @@ func startServer(opts serverOptions) (*testServer, error) {
 	if opts.exit {
 		s.forward()
 	}
-	s.dev = device.NewDevice(ns, conn.NewDefaultBind(), &device.Logger{
+	s.dev = device.NewDevice(ns, openBind(), &device.Logger{
 		Verbosef: func(string, ...any) {},
 		Errorf:   func(f string, a ...any) { logf("server wireguard: "+f, a...) },
 	})

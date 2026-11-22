@@ -97,6 +97,7 @@ const FAILURES: Record<string, TranslationKey> = {
   'vpn-device-limit': 'vpn.error.deviceLimit',
   'vpn-account-expired': 'vpn.error.accountExpired',
   'vpn-location-unknown': 'vpn.error.locationUnknown',
+  'vpn-start-failed': 'vpn.error.start',
 }
 
 /**
@@ -109,7 +110,7 @@ export function vpnFailure(
   name: string,
 ): { said: string; detail?: string } {
   const key = st.errorCode ? FAILURES[st.errorCode] : undefined
-  return key ? { said: t(key, { name }), detail: st.error } : { said: st.error ?? '' }
+  return key ? { said: t(key, { name, reason: st.error ?? '' }), detail: st.error } : { said: st.error ?? '' }
 }
 
 export const VPN_FIELDS: Record<VpnField, { label: TranslationKey; hint?: TranslationKey; secret?: boolean }> = {

@@ -2253,6 +2253,7 @@ const ms: Translations = {
   'vpn.error.deviceLimit': '{name} tidak membenarkan peranti lagi. Buang satu dalam akaun anda, kemudian cuba lagi.',
   'vpn.error.accountExpired': 'Akaun {name} anda sudah tamat tempoh. Perbaharuinya, kemudian cuba lagi.',
   'vpn.error.locationUnknown': '{name} tiada pelayan di lokasi ini. Cuba lokasi lain atau biarkan medan kosong.',
+  'vpn.error.start': 'WireGuard tidak dapat dimulakan pada peranti ini: {reason}',
   'vpn.removeAsk': 'Buang {name}?',
   'vpn.removeStakes': 'ArrowLoop melupakan log masuknya. Tugas yang melaluinya akan gagal sehingga anda memilih VPN lain untuknya.',
   'edit.connection': 'Sambungan',

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -14,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -219,6 +221,23 @@ func TestAnEndpointWhoseNameDoesNotResolveSaysSo(t *testing.T) {
 	}
 	if st := tunnelState(t, m, Custom); st.Status != Failed || st.ErrorCode != CodeNameUnresolved {
 		t.Errorf("state %s %q, want %q", st.Status, st.ErrorCode, CodeNameUnresolved)
+	}
+}
+
+func TestATunnelTheSystemDoesNotLetStartIsNotBlamedOnItsConfig(t *testing.T) {
+	cases := []struct {
+		err        error
+		code, says string
+	}{
+		{&vpn.StartError{Err: syscall.EACCES}, CodeStartFailed, "permission denied"},
+		{fmt.Errorf("%w vpn.example.net: no address", vpn.ErrResolve), CodeNameUnresolved, "WireGuard: vpn: resolve"},
+		{errors.New("vpn: the peer has no endpoint"), CodeConfigInvalid, "WireGuard: vpn: the peer has no endpoint"},
+	}
+	for _, c := range cases {
+		f := connectFailure("WireGuard", c.err)
+		if f.code != c.code || !strings.HasPrefix(f.Error(), c.says) {
+			t.Errorf("%v: code %q, says %q; want %q, %q", c.err, f.code, f.Error(), c.code, c.says)
+		}
 	}
 }
 

@@ -2253,6 +2253,7 @@ const fa: Translations = {
   'vpn.error.deviceLimit': '{name} دستگاه بیشتری را نمی‌پذیرد. یکی را در حسابت بردار و دوباره امتحان کن.',
   'vpn.error.accountExpired': 'حساب {name} تو منقضی شده است. تمدیدش کن و دوباره امتحان کن.',
   'vpn.error.locationUnknown': '{name} در این مکان سروری ندارد. مکان دیگری را امتحان کن یا فیلد را خالی بگذار.',
+  'vpn.error.start': 'WireGuard روی این دستگاه اجرا نشد: {reason}',
   'vpn.removeAsk': '{name} حذف شود؟',
   'vpn.removeStakes': 'ArrowLoop اطلاعات ورود آن را فراموش می‌کند. کارهایی که از آن عبور می‌کنند تا وقتی VPN دیگری برایشان انتخاب کنی ناموفق می‌شوند.',
   'edit.connection': 'اتصال',

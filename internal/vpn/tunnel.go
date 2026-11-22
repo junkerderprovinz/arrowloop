@@ -13,7 +13,6 @@ import (
 	"sync"
 	"time"
 
-	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
 )
 
@@ -103,6 +102,13 @@ var ErrDown = errors.New("vpn: the tunnel is down")
 // that is not reachable yet causes as often as a wrong name.
 var ErrResolve = errors.New("vpn: resolve")
 
+// StartError is a tunnel whose configuration reads but that the system did
+// not let WireGuard bring up, such as a socket it refused.
+type StartError struct{ Err error }
+
+func (e *StartError) Error() string { return "vpn: start WireGuard: " + e.Err.Error() }
+func (e *StartError) Unwrap() error { return e.Err }
+
 // Tunnel is one WireGuard connection inside the process. It carries what is
 // dialled through it and nothing else.
 type Tunnel struct {
@@ -142,6 +148,7 @@ func (t *Tunnel) Connect(ctx context.Context, cfg Config) error {
 	t.mu.Lock()
 	err = t.build(cfg, endpoint)
 	if err != nil {
+		err = &StartError{err}
 		t.mu.Unlock()
 		t.fail(err)
 		return err
@@ -166,17 +173,17 @@ func (t *Tunnel) build(cfg Config, endpoint netip.AddrPort) error {
 		return err
 	}
 	logf := t.opts.Logf
-	dev := device.NewDevice(ns, conn.NewDefaultBind(), &device.Logger{
+	dev := device.NewDevice(ns, openBind(), &device.Logger{
 		Verbosef: func(string, ...any) {},
 		Errorf:   func(format string, args ...any) { logf("wireguard: "+format, args...) },
 	})
 	if err := dev.IpcSet(cfg.uapi(endpoint)); err != nil {
 		dev.Close()
-		return fmt.Errorf("vpn: configure WireGuard: %w", err)
+		return fmt.Errorf("configure: %w", err)
 	}
 	if err := dev.Up(); err != nil {
 		dev.Close()
-		return fmt.Errorf("vpn: bring WireGuard up: %w", err)
+		return fmt.Errorf("bring up: %w", err)
 	}
 	if t.dev != nil {
 		t.dev.Close()

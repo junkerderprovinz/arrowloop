@@ -123,7 +123,8 @@ func ParseConfig(text string) (Config, error) {
 	var c Config
 	section := ""
 	peers := 0
-	sc := bufio.NewScanner(strings.NewReader(text))
+	// A file saved in a Windows editor can start with a byte order mark.
+	sc := bufio.NewScanner(strings.NewReader(strings.TrimPrefix(text, "\ufeff")))
 	for line := 1; sc.Scan(); line++ {
 		s := sc.Text()
 		if i := strings.IndexAny(s, "#;"); i >= 0 {

@@ -133,3 +133,18 @@ func TestALineThatDoesNotFitNamesItselfWithoutItsKey(t *testing.T) {
 		t.Errorf("a missing key names a line: %v", err)
 	}
 }
+
+// linuxserver/wireguard writes a peer's file in this shape; opened and saved
+// again in a Windows editor it gains a byte order mark and CRLF line ends.
+const containerPeerConf = "[Interface]\nAddress = 10.13.13.2\nPrivateKey = yAnz5TF+lXXJte14tji3zlMNq+hd2rYUIgJBgB3fBmk=\nListenPort = 51820\nDNS = 10.13.13.1\n\n[Peer]\nPublicKey = xTIBA5rboUvnH4htodjb6e697QjLERt1NAB4mZqp8Dg=\nPresharedKey = 4ff3SshWJvhM3cdqXk4ws3pPN7QJgBXZXEx4pMm8kVY=\nEndpoint = home.example.duckdns.org:51820\nAllowedIPs = 0.0.0.0/0, ::/0\n"
+
+func TestAConfigSavedByAWindowsEditorReads(t *testing.T) {
+	text := "\ufeff" + strings.ReplaceAll(containerPeerConf, "\n", "\r\n")
+	c, err := ParseConfig(text)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(c.Addresses) != 1 || c.Peer.Endpoint != "home.example.duckdns.org:51820" || c.Peer.PresharedKey.IsZero() {
+		t.Errorf("read %+v", c)
+	}
+}

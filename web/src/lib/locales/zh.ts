@@ -2253,6 +2253,7 @@ const zh: Translations = {
   'vpn.error.deviceLimit': '{name} 不允许再添加设备。请在你的账户中移除一台，然后重试。',
   'vpn.error.accountExpired': '你的 {name} 账户已到期。请续费后重试。',
   'vpn.error.locationUnknown': '{name} 在这个位置没有服务器。请换一个位置，或将该字段留空。',
+  'vpn.error.start': '无法在此设备上启动 WireGuard：{reason}',
   'vpn.removeAsk': '要移除 {name} 吗?',
   'vpn.removeStakes': 'ArrowLoop 会忘掉它的登录信息。经过它的任务会失败,直到你为它们选择另一个 VPN。',
   'edit.connection': '连接',
