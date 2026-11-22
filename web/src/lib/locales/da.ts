@@ -582,7 +582,6 @@ const da: Translations = {
   'overview.idle': 'Der kører ikke noget lige nu.',
   'nav.overview': 'Oversigt',
   'overview.idleHint': 'Job kører efter deres tidsplan, eller når du selv starter et.',
-  'overview.accounts': 'Tilsluttede konti',
   'overview.status': 'Synkroniseringsstatus',
   'overview.lastSync': 'Seneste synkronisering',
   'overview.changes': 'Seneste ændringer',

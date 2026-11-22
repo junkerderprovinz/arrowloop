@@ -582,7 +582,6 @@ const id: Translations = {
   'overview.idle': 'Saat ini tidak ada yang berjalan.',
   'nav.overview': 'Ringkasan',
   'overview.idleHint': 'Tugas berjalan sesuai jadwalnya, atau saat kamu menjalankan satu secara manual.',
-  'overview.accounts': 'Akun terhubung',
   'overview.status': 'Status sinkronisasi',
   'overview.lastSync': 'Sinkronisasi terakhir',
   'overview.changes': 'Perubahan terakhir',

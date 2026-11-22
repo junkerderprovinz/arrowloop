@@ -582,7 +582,6 @@ const sv: Translations = {
   'overview.idle': 'Inget körs just nu.',
   'nav.overview': 'Översikt',
   'overview.idleHint': 'Jobb körs enligt sitt schema, eller när du startar ett för hand.',
-  'overview.accounts': 'Anslutna konton',
   'overview.status': 'Synkroniseringsstatus',
   'overview.lastSync': 'Senaste synkronisering',
   'overview.changes': 'Senaste ändringar',

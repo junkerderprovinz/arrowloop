@@ -582,7 +582,6 @@ const sr: Translations = {
   'overview.idle': 'Тренутно ништа не ради.',
   'nav.overview': 'Преглед',
   'overview.idleHint': 'Послови се покрећу по свом распореду или када неки покренеш ручно.',
-  'overview.accounts': 'Повезани налози',
   'overview.status': 'Стање синхронизације',
   'overview.lastSync': 'Последња синхронизација',
   'overview.changes': 'Последње промене',

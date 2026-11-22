@@ -582,7 +582,6 @@ const ja: Translations = {
   'overview.idle': 'いま動いているものはありません。',
   'nav.overview': '概要',
   'overview.idleHint': 'ジョブは予定どおりに、または手動で開始したときに動きます。',
-  'overview.accounts': '接続中のアカウント',
   'overview.status': '同期の状態',
   'overview.lastSync': '最後の同期',
   'overview.changes': '最近の変更',

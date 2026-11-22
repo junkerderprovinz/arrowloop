@@ -582,7 +582,6 @@ const hi: Translations = {
   'overview.idle': 'अभी कुछ नहीं चल रहा।',
   'nav.overview': 'अवलोकन',
   'overview.idleHint': 'काम अपने शेड्यूल पर चलते हैं, या जब आप खुद कोई शुरू करते हैं।',
-  'overview.accounts': 'जुड़े हुए खाते',
   'overview.status': 'सिंक स्थिति',
   'overview.lastSync': 'पिछला सिंक',
   'overview.changes': 'हालिया बदलाव',

@@ -582,7 +582,6 @@ const ko: Translations = {
   'overview.idle': '지금은 아무것도 실행되지 않습니다.',
   'nav.overview': '개요',
   'overview.idleHint': '작업은 일정에 따라, 또는 직접 시작할 때 실행됩니다.',
-  'overview.accounts': '연결된 계정',
   'overview.status': '동기화 상태',
   'overview.lastSync': '마지막 동기화',
   'overview.changes': '최근 변경',

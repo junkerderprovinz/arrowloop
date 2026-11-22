@@ -582,7 +582,6 @@ const is: Translations = {
   'overview.idle': 'Ekkert er í gangi núna.',
   'nav.overview': 'Yfirlit',
   'overview.idleHint': 'Verk keyra eftir áætlun sinni, eða þegar þú ræsir eitt sjálfur.',
-  'overview.accounts': 'Tengdir reikningar',
   'overview.status': 'Staða samstillingar',
   'overview.lastSync': 'Síðasta samstilling',
   'overview.changes': 'Nýjustu breytingar',

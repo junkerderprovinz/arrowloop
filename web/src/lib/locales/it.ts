@@ -582,7 +582,6 @@ const it: Translations = {
   'overview.idle': 'Al momento non è in esecuzione nulla.',
   'nav.overview': 'Panoramica',
   'overview.idleHint': 'I lavori partono secondo la loro pianificazione, o quando ne avvii uno a mano.',
-  'overview.accounts': 'Account collegati',
   'overview.status': 'Stato della sincronizzazione',
   'overview.lastSync': 'Ultima sincronizzazione',
   'overview.changes': 'Ultime modifiche',

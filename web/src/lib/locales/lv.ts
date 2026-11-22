@@ -582,7 +582,6 @@ const lv: Translations = {
   'overview.idle': 'Pašlaik nekas nedarbojas.',
   'nav.overview': 'Pārskats',
   'overview.idleHint': 'Uzdevumi darbojas pēc sava grafika vai kad tu kādu palaid pats.',
-  'overview.accounts': 'Pievienotie konti',
   'overview.status': 'Sinhronizācijas statuss',
   'overview.lastSync': 'Pēdējā sinhronizācija',
   'overview.changes': 'Pēdējās izmaiņas',

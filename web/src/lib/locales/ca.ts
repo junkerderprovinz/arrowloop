@@ -582,7 +582,6 @@ const ca: Translations = {
   'overview.idle': 'Ara mateix no s\'executa res.',
   'nav.overview': 'Resum',
   'overview.idleHint': 'Les tasques s\'executen segons la seva programació, o quan en engegues una a mà.',
-  'overview.accounts': 'Comptes connectats',
   'overview.status': 'Estat de sincronització',
   'overview.lastSync': 'Darrera sincronització',
   'overview.changes': 'Darrers canvis',

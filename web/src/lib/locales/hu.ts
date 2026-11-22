@@ -582,7 +582,6 @@ const hu: Translations = {
   'overview.idle': 'Éppen semmi sem fut.',
   'nav.overview': 'Áttekintés',
   'overview.idleHint': 'A feladatok az ütemezésük szerint futnak, vagy amikor kézzel indítasz egyet.',
-  'overview.accounts': 'Csatlakoztatott fiókok',
   'overview.status': 'Szinkronizálás állapota',
   'overview.lastSync': 'Legutóbbi szinkronizálás',
   'overview.changes': 'Utolsó változások',

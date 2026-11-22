@@ -582,7 +582,6 @@ const fa: Translations = {
   'overview.idle': 'همین حالا چیزی در حال اجرا نیست.',
   'nav.overview': 'نمای کلی',
   'overview.idleHint': 'کارها طبق زمان‌بندی خود اجرا می‌شوند، یا وقتی خودت یکی را شروع کنی.',
-  'overview.accounts': 'حساب‌های متصل',
   'overview.status': 'وضعیت همگام‌سازی',
   'overview.lastSync': 'آخرین همگام‌سازی',
   'overview.changes': 'آخرین تغییرات',

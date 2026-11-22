@@ -582,7 +582,6 @@ const es: Translations = {
   'overview.idle': 'Ahora mismo no se ejecuta nada.',
   'nav.overview': 'Resumen',
   'overview.idleHint': 'Las tareas se ejecutan según su programación, o cuando inicias una a mano.',
-  'overview.accounts': 'Cuentas conectadas',
   'overview.status': 'Estado de sincronización',
   'overview.lastSync': 'Última sincronización',
   'overview.changes': 'Últimos cambios',

@@ -162,7 +162,7 @@ export function Overview() {
 
       {/* Left out without a target elsewhere; adding one is the targets page's work. */}
       {accounts === null || accounts.length > 0 ? (
-        <Section title={t("overview.accounts")} hue={3}>
+        <Section title={t("nav.targets")} hue={3}>
           <Accounts accounts={accounts} />
         </Section>
       ) : null}

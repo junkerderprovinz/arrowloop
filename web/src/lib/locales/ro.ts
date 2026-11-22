@@ -582,7 +582,6 @@ const ro: Translations = {
   'overview.idle': 'Momentan nu rulează nimic.',
   'nav.overview': 'Privire de ansamblu',
   'overview.idleHint': 'Sarcinile rulează după programarea lor, sau când pornești una manual.',
-  'overview.accounts': 'Conturi conectate',
   'overview.status': 'Starea sincronizării',
   'overview.lastSync': 'Ultima sincronizare',
   'overview.changes': 'Ultimele modificări',

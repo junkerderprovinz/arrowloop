@@ -582,7 +582,6 @@ const tr: Translations = {
   'overview.idle': 'Şu anda hiçbir şey çalışmıyor.',
   'nav.overview': 'Genel bakış',
   'overview.idleHint': 'İşler kendi planlarına göre, ya da birini elle başlattığında çalışır.',
-  'overview.accounts': 'Bağlı hesaplar',
   'overview.status': 'Eşitleme durumu',
   'overview.lastSync': 'Son eşitleme',
   'overview.changes': 'Son değişiklikler',

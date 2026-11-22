@@ -582,7 +582,6 @@ const fr: Translations = {
   'overview.idle': 'Rien ne tourne en ce moment.',
   'nav.overview': 'Aperçu',
   'overview.idleHint': 'Les tâches tournent selon leur planification, ou quand vous en lancez une à la main.',
-  'overview.accounts': 'Comptes connectés',
   'overview.status': 'État de la synchronisation',
   'overview.lastSync': 'Dernière synchronisation',
   'overview.changes': 'Derniers changements',

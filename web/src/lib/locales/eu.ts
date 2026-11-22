@@ -582,7 +582,6 @@ const eu: Translations = {
   'overview.idle': 'Une honetan ez dabil ezer.',
   'nav.overview': 'Ikuspegia',
   'overview.idleHint': 'Lanak beren programazioaren arabera abiatzen dira, edo eskuz abiarazten duzunean.',
-  'overview.accounts': 'Konektatutako kontuak',
   'overview.status': 'Sinkronizazio egoera',
   'overview.lastSync': 'Azken sinkronizazioa',
   'overview.changes': 'Azken aldaketak',
