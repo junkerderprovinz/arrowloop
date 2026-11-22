@@ -57,7 +57,7 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, browseAnswer{Entries: roots})
 		return
 	}
-	answer, err := folderListing(r.Context(), at, wantsHidden(r))
+	answer, err := s.folderListing(r.Context(), at, wantsHidden(r))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return
@@ -71,13 +71,17 @@ func wantsHidden(r *http.Request) bool {
 
 // folderListing lists the folders in at, a folder on this machine, on a
 // marked drive or on a target. A target lists its hidden folders either way,
-// as rclone lists them.
-func folderListing(ctx context.Context, at string, hidden bool) (browseAnswer, error) {
+// as rclone lists them, and is read through the VPN of a job on it.
+func (s *Server) folderListing(ctx context.Context, at string, hidden bool) (browseAnswer, error) {
 	if strings.HasPrefix(at, volume.Prefix) {
 		return volumeListing(at, hidden)
 	}
 
 	if name, dir, ok := remotes.Split(at); ok {
+		ctx, err := s.targetVPN(ctx, name, true)
+		if err != nil {
+			return browseAnswer{}, fmt.Errorf("cannot read %s: %w", at, err)
+		}
 		if dir == "" {
 			dir = remotes.Root(name)
 		}
@@ -298,7 +302,12 @@ func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if target, dir, ok := remotes.Split(body.Parent); ok {
-		made, err := remotes.MakeFolder(r.Context(), target, dir, name)
+		ctx, err := s.targetVPN(r.Context(), target, true)
+		if err != nil {
+			writeError(w, http.StatusBadGateway, err)
+			return
+		}
+		made, err := remotes.MakeFolder(ctx, target, dir, name)
 		if err != nil {
 			writeError(w, http.StatusBadRequest, fmt.Errorf("create %s: %w", remotes.Join(target, path.Join(dir, name)), err))
 			return

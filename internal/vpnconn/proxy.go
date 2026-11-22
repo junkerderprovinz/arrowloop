@@ -28,6 +28,8 @@ type proxy struct {
 	// rather than as a pipe.
 	forward *http.Transport
 
+	gone chan struct{}
+
 	mu     sync.Mutex
 	closed bool
 	conns  map[net.Conn]struct{}
@@ -58,6 +60,7 @@ func startProxy(dial func(ctx context.Context, network, address string) (net.Con
 			IdleConnTimeout:     90 * time.Second,
 			TLSHandshakeTimeout: 30 * time.Second,
 		},
+		gone:  make(chan struct{}),
 		conns: map[net.Conn]struct{}{},
 	}
 	go p.serve()
@@ -73,10 +76,15 @@ func (p *proxy) URL() string {
 // close stops the proxy and ends every connection that came through it.
 func (p *proxy) close() {
 	p.mu.Lock()
+	if p.closed {
+		p.mu.Unlock()
+		return
+	}
 	p.closed = true
 	conns := p.conns
 	p.conns = nil
 	p.mu.Unlock()
+	close(p.gone)
 	p.ln.Close()
 	for c := range conns {
 		c.Close()

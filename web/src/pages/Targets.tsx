@@ -60,6 +60,7 @@ import { SecretRow } from './settings/rows'
 import { failureLine, type Failure } from '../lib/failure'
 import { CERTIFICATE_KEY, type RefusedCertificate } from '../lib/certificate'
 import { anySaved } from '../lib/savedSettings'
+import { checkWord } from '../lib/targetCheck'
 
 /**
  * The storage targets and registered drives a job's sides can point at, one
@@ -356,12 +357,12 @@ function RemoteRow({
     setResult(null)
     setUsage(null)
     try {
-      const answer = await api.checkRemote(remote.name)
+      const answer = await api.checkRemote(remote.name, pressed)
       setResult(answer)
       if (answer.ok) {
         // Many targets cannot report their space; that is no failure.
         try {
-          setUsage(await api.aboutRemote(remote.name))
+          setUsage(await api.aboutRemote(remote.name, pressed))
         } catch {
           setUsage(null)
         }
@@ -388,7 +389,7 @@ function RemoteRow({
     .map((s) => `${s.key}=${s.value}`)
     .join(', ')
   const facts = [remote.mark ? '' : remote.type, summary].filter(Boolean)
-  const failed = !!result && !result.ok
+  const failed = !!result && !result.ok && !result.unchecked
   const why = failed && result.reason ? failureLine(result.reason, result.failure, t, lang) : ''
 
   return (
@@ -398,13 +399,13 @@ function RemoteRow({
       // The engine identifies the product and its mark from the saved
       // settings (internal/remotes/identify.go).
       mark={pickMark(remote.mark) ?? <IconTabStorage />}
-      status={result?.ok ? t('targets.checkOk') : undefined}
+      status={result && !failed ? t(checkWord(result)) : undefined}
       badges={failed && <Badge tone="fail">{t('targets.checkFailed')}</Badge>}
       test={{
         busy: checking,
         tone: checking || !result ? undefined : result.ok ? 'ok' : asked ? 'danger' : undefined,
         title: t('targets.checkHint'),
-        ...(result && { title: why || t('targets.checkOk') }),
+        ...(result && { title: why || t(checkWord(result)) }),
       }}
       text={{ test: t('targets.check'), edit: t('action.edit'), remove: t('action.delete') }}
       labelKeys={{ test: 'targets.check', edit: 'action.edit', remove: 'action.delete' }}

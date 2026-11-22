@@ -106,6 +106,8 @@ export type Duplicates = {
  */
 export type CheckAnswer = {
   ok: boolean
+  /** A target a job reaches through its VPN, left unchecked while that VPN is off. */
+  unchecked?: boolean
   reason?: string
   failure?: Failure
   question?: SetupQuestion
@@ -1269,15 +1271,19 @@ export const api = {
   deleteRemote: (name: string) =>
     request<{ deleted: string }>(`/api/remotes/${encodeURIComponent(name)}`, { method: 'DELETE' }),
 
-  /** Open a target and list it. A refusal comes back as ok:false, not an error status. */
-  checkRemote: (name: string) =>
-    request<CheckAnswer>(`/api/remotes/${encodeURIComponent(name)}/check`, {
+  /**
+   * Open a target and list it. A refusal comes back as ok:false, not an error
+   * status. `connect` brings up the VPN of a job on the target, for a check
+   * somebody asked for.
+   */
+  checkRemote: (name: string, connect = false) =>
+    request<CheckAnswer>(`/api/remotes/${encodeURIComponent(name)}/check${connect ? '?connect=1' : ''}`, {
       method: 'POST',
     }),
 
   /** How full a target is. A request of its own because it goes over the network. */
-  aboutRemote: (name: string) =>
-    request<Usage>(`/api/remotes/${encodeURIComponent(name)}/about`),
+  aboutRemote: (name: string, connect = false) =>
+    request<Usage>(`/api/remotes/${encodeURIComponent(name)}/about${connect ? '?connect=1' : ''}`),
 
   /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () =>

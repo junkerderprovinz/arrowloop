@@ -11,11 +11,15 @@ import (
 	"testing"
 	"time"
 
+	_ "github.com/rclone/rclone/backend/azureblob"
 	rclonefs "github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/config/obscure"
 	"golang.org/x/net/webdav"
 
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 	"github.com/junkerderprovinz/arrowloop/internal/job"
+	// Opens SMB targets of a run through the VPN, as the engine does.
+	_ "github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/vpn"
 	"github.com/junkerderprovinz/arrowloop/internal/vpn/vpntest"
@@ -184,13 +188,29 @@ func TestAJobThroughTheVPNFailsWhereThereIsNone(t *testing.T) {
 func TestASideTheVPNCannotCarryRefusesTheRun(t *testing.T) {
 	s := newVPNRunner(t)
 	cfg := s.r.Config()
-	cfg.Jobs[0].Right = ":smb,host=192.0.2.20:share"
+	cfg.Jobs[0].Right = ":azureblob,account=someone:box"
 	_, err := s.r.Run(context.Background(), "through")
-	if !errors.Is(err, ErrVPNRefused) || !strings.Contains(err.Error(), "right side") || !strings.Contains(err.Error(), "smb") {
+	if !errors.Is(err, ErrVPNRefused) || !strings.Contains(err.Error(), "right side") || !strings.Contains(err.Error(), "azureblob") {
 		t.Fatalf("the run ended with %v", err)
 	}
 	if st := s.tunnel(t); st.Status != vpnconn.Down {
 		t.Errorf("a refused run brought the VPN %s", st.Status)
+	}
+}
+
+func TestAJobThroughTheVPNReachesAnSMBShareOnlyTheTunnelReaches(t *testing.T) {
+	quickConnect(t)
+	s := newVPNRunner(t)
+	nas := vpntest.HangUp(s.srv.Listen(t, 445))
+	cfg := s.r.Config()
+	cfg.Jobs[0].Right = ":smb,host=" + vpntest.ServerAddr.String() + ",user=someone,pass=" + obscure.MustObscure("letmein") + ":share/backup"
+	rec, err := s.r.Run(context.Background(), "through")
+	if errors.Is(err, ErrVPNRefused) {
+		t.Fatalf("the SMB side was refused: %v", err)
+	}
+	heard := nas.Heard()
+	if len(heard) == 0 || !vpntest.SMB(heard[0]) {
+		t.Fatalf("the share inside the tunnel heard %q (run: %v, %s)", heard, err, rec.Err)
 	}
 }
 

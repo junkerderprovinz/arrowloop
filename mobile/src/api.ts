@@ -671,7 +671,9 @@ export const api = {
     call<void>(`/api/remotes/${name(remote)}`, { method: "DELETE" }),
   /** Reports whether the target answers; the explanation is in `reason`. */
   checkRemote: (remote: string) =>
-    call<{ ok: boolean; reason?: string; failure?: Failure }>(`/api/remotes/${name(remote)}/check`, { method: "POST" }),
+    call<{ ok: boolean; unchecked?: boolean; reason?: string; failure?: Failure }>(`/api/remotes/${name(remote)}/check`, {
+      method: "POST",
+    }),
   aboutRemote: (remote: string) => call<Usage>(`/api/remotes/${name(remote)}/about`),
 
   /** The engine build's version, whether it has a window, whether it can pair and whether it has the built-in VPN. */
