@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">הפעלת משימה</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">מושהית, אבל מופעלת בכל זאת</string>
     <string name="plugin_blurb_one">הרצת %1$s</string>
     <string name="plugin_blurb_all">הרצת כל המשימות</string>
+    <string name="notify_failed">הסנכרון נכשל</string>
+    <string name="notify_failed_no_engine">המנוע לא הופעל. אפשר לפתוח את ArrowLoop פעם אחת ולבדוק את כרטיס מנוע הסנכרון.</string>
+    <string name="notify_start_refused">המנוע דחה את ההפעלה שהאוטומציה ביקשה (HTTP %1$d). אפשר להפעיל את המשימה ב־ArrowLoop כדי לראות למה.</string>
+    <string name="notify_start_unreachable">המנוע לא ענה כשהאוטומציה ביקשה הפעלה. אפשר לפתוח את ArrowLoop פעם אחת ולבדוק את כרטיס מנוע הסנכרון.</string>
 </resources>

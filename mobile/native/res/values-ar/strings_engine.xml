@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">ابدأ مهمة</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">متوقفة مؤقتًا، لكنها تبدأ رغم ذلك</string>
     <string name="plugin_blurb_one">شغّل %1$s</string>
     <string name="plugin_blurb_all">شغّل كل المهام</string>
+    <string name="notify_failed">فشلت المزامنة</string>
+    <string name="notify_failed_no_engine">لم يبدأ المحرك. افتح ArrowLoop مرة وتحقق من بطاقة محرك المزامنة.</string>
+    <string name="notify_start_refused">رفض المحرك التشغيل الذي طلبته أتمتتك (HTTP %1$d). شغّل المهمة في ArrowLoop لترى السبب.</string>
+    <string name="notify_start_unreachable">لم يستجب المحرك عندما طلبت أتمتتك تشغيلًا. افتح ArrowLoop مرة وتحقق من بطاقة محرك المزامنة.</string>
 </resources>

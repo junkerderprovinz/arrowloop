@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Een taak starten</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Gepauzeerd, start toch</string>
     <string name="plugin_blurb_one">%1$s uitvoeren</string>
     <string name="plugin_blurb_all">Alle taken uitvoeren</string>
+    <string name="notify_failed">Synchronisatie mislukt</string>
+    <string name="notify_failed_no_engine">De motor is niet gestart. Open ArrowLoop één keer en kijk op de kaart Synchronisatiemotor.</string>
+    <string name="notify_start_refused">De motor weigerde de start die je automatisering vroeg (HTTP %1$d). Start de taak in ArrowLoop om te zien waarom.</string>
+    <string name="notify_start_unreachable">De motor antwoordde niet toen je automatisering om een start vroeg. Open ArrowLoop één keer en kijk op de kaart Synchronisatiemotor.</string>
 </resources>

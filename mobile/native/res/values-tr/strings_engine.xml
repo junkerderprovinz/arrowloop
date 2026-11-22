@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Bir iş başlat</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Duraklatıldı, yine de başlar</string>
     <string name="plugin_blurb_one">%1$s çalıştır</string>
     <string name="plugin_blurb_all">Tüm işleri çalıştır</string>
+    <string name="notify_failed">Eşitleme başarısız oldu</string>
+    <string name="notify_failed_no_engine">Motor başlamadı. ArrowLoop\'u bir kez aç ve Eşitleme motoru kartına bak.</string>
+    <string name="notify_start_refused">Motor, otomasyonunun istediği başlatmayı reddetti (HTTP %1$d). Nedenini görmek için işi ArrowLoop\'ta başlat.</string>
+    <string name="notify_start_unreachable">Otomasyonun başlatma istediğinde motor yanıt vermedi. ArrowLoop\'u bir kez aç ve Eşitleme motoru kartına bak.</string>
 </resources>

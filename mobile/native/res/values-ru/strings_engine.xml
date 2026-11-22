@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Запустить задание</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">На паузе, но всё равно запустится</string>
     <string name="plugin_blurb_one">Запустить %1$s</string>
     <string name="plugin_blurb_all">Запустить все задания</string>
+    <string name="notify_failed">Синхронизация не удалась</string>
+    <string name="notify_failed_no_engine">Движок не запустился. Откройте ArrowLoop один раз и проверьте карточку «Движок синхронизации».</string>
+    <string name="notify_start_refused">Движок отклонил запуск, который запросила ваша автоматизация (HTTP %1$d). Запустите задание в ArrowLoop, чтобы увидеть причину.</string>
+    <string name="notify_start_unreachable">Движок не ответил, когда ваша автоматизация запросила запуск. Откройте ArrowLoop один раз и проверьте карточку «Движок синхронизации».</string>
 </resources>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Abiarazi lan bat</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Pausatuta, baina hala ere abiarazten da</string>
     <string name="plugin_blurb_one">Exekutatu %1$s</string>
     <string name="plugin_blurb_all">Exekutatu lan guztiak</string>
+    <string name="notify_failed">Sinkronizazioak huts egin du</string>
+    <string name="notify_failed_no_engine">Motorra ez da abiarazi. Ireki ArrowLoop behin eta begiratu sinkronizazio-motorraren txartela.</string>
+    <string name="notify_start_refused">Motorrak ukatu egin du zure automatizazioak eskatutako abiaraztea (HTTP %1$d). Abiarazi lana ArrowLoop-en zergatik ikusteko.</string>
+    <string name="notify_start_unreachable">Motorrak ez du erantzun zure automatizazioak abiarazte bat eskatu duenean. Ireki ArrowLoop behin eta begiratu sinkronizazio-motorraren txartela.</string>
 </resources>

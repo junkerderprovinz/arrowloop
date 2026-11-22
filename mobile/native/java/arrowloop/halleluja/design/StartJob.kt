@@ -1,5 +1,6 @@
 package arrowloop.halleluja.design
 
+import java.net.HttpURLConnection
 import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -101,4 +102,24 @@ object StartJob {
         } else {
             listed.filter { it.id == job && it.ready }.map { it.id }
         }
+
+    /**
+     * Asks the engine to start one job over call, opened on its
+     * /api/jobs/{id}/run, and returns the engine's HTTP status. It answers at
+     * once and runs the job on its own. The engine's guard refuses a change
+     * not sent as JSON with 415, see internal/web/guard.go.
+     */
+    fun post(call: HttpURLConnection): Int {
+        call.requestMethod = "POST"
+        call.setRequestProperty("Content-Type", "application/json")
+        call.doOutput = true
+        call.connectTimeout = 5000
+        call.readTimeout = 30000
+        try {
+            call.outputStream.use { it.write("{}".toByteArray()) }
+            return call.responseCode
+        } finally {
+            call.disconnect()
+        }
+    }
 }

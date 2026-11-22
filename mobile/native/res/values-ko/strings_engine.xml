@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">작업 시작</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">일시 정지됨, 그래도 시작됩니다</string>
     <string name="plugin_blurb_one">%1$s 실행</string>
     <string name="plugin_blurb_all">모든 작업 실행</string>
+    <string name="notify_failed">동기화 실패</string>
+    <string name="notify_failed_no_engine">엔진이 시작되지 않았습니다. ArrowLoop를 한 번 열고 동기화 엔진 카드를 확인하세요.</string>
+    <string name="notify_start_refused">자동화가 요청한 시작을 엔진이 거부했습니다 (HTTP %1$d). 이유를 보려면 ArrowLoop에서 작업을 시작하세요.</string>
+    <string name="notify_start_unreachable">자동화가 시작을 요청했을 때 엔진이 응답하지 않았습니다. ArrowLoop를 한 번 열고 동기화 엔진 카드를 확인하세요.</string>
 </resources>

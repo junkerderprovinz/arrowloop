@@ -318,3 +318,34 @@ func TestTheFortressAnswersTheRequestsOfAnOpenedPage(t *testing.T) {
 		}
 	}
 }
+
+// StartJob.post in the phone app sends exactly this when Tasker or MacroDroid
+// starts a job, and StartJobPostTest holds the app's side of it.
+func TestThePhoneStartsAJobAsItsPluginDoes(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, "")
+	t.Setenv(web.AppTokenEnv, "the-apps-secret")
+	srv := newGuardedServer(t)
+
+	start := func(kind string) int {
+		req, err := http.NewRequest(http.MethodPost, srv.URL+"/api/jobs/e617ca282194/run", strings.NewReader("{}"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		req.Header.Set("X-ArrowLoop-Token", "the-apps-secret")
+		if kind != "" {
+			req.Header.Set("Content-Type", kind)
+		}
+		resp, err := srv.Client().Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		return resp.StatusCode
+	}
+	if code := start("application/json"); code != http.StatusAccepted {
+		t.Errorf("the plug-in's start answered %d, want %d", code, http.StatusAccepted)
+	}
+	if code := start(""); code != http.StatusUnsupportedMediaType {
+		t.Errorf("a start without a type answered %d, want %d", code, http.StatusUnsupportedMediaType)
+	}
+}

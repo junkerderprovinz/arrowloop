@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Ræsa verk</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Í hléi, en ræsist samt</string>
     <string name="plugin_blurb_one">Keyra %1$s</string>
     <string name="plugin_blurb_all">Keyra öll verk</string>
+    <string name="notify_failed">Samstilling mistókst</string>
+    <string name="notify_failed_no_engine">Vélin ræstist ekki. Opnaðu ArrowLoop einu sinni og skoðaðu spjaldið Samstillingarvél.</string>
+    <string name="notify_start_refused">Vélin hafnaði ræsingunni sem sjálfvirknin þín bað um (HTTP %1$d). Ræstu verkið í ArrowLoop til að sjá af hverju.</string>
+    <string name="notify_start_unreachable">Vélin svaraði ekki þegar sjálfvirknin þín bað um ræsingu. Opnaðu ArrowLoop einu sinni og skoðaðu spjaldið Samstillingarvél.</string>
 </resources>

@@ -14,8 +14,10 @@ import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import androidx.core.app.NotificationCompat
+import java.io.IOException
 import java.io.OutputStreamWriter
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
@@ -187,8 +189,9 @@ class EngineService : Service() {
             waitForEngine()
             Device.awaitUnblocked(this)
             // An engine this wake-up started holds nothing yet, and every
-            // report sent while it was starting found nobody listening.
-            check(Device.reportNow(this)) { "the engine did not take the run conditions" }
+            // report sent while it was starting found nobody listening. Only
+            // what is due needs them: a start asked for is not held.
+            check(Device.reportNow(this) || !wake) { "the engine did not take the run conditions" }
             if (wake) {
                 val due = runDueNow()
                 Log.i(TAG, "woke, ran ${due.ran} job(s), ${due.failed} failed")
@@ -204,7 +207,7 @@ class EngineService : Service() {
             // the raw message.
             val why = when {
                 cut -> getString(R.string.notify_failed_cut)
-                e is Silent -> getString(e.said)
+                e is Silent -> getString(e.said, *e.args)
                 else -> e.message ?: ""
             }
             tell(CHANNEL_FAILED, FAILED_ID, getString(R.string.notify_failed), why)
@@ -287,7 +290,7 @@ class EngineService : Service() {
             if (Engine.answers(this, 1000)) return
             Thread.sleep(500)
         }
-        throw Silent(R.string.notify_failed_no_engine)
+        throw Silent(R.string.notify_failed_no_engine, "the engine did not answer within thirty seconds")
     }
 
     /**
@@ -295,7 +298,7 @@ class EngineService : Service() {
      * notification is in the phone's language. The English message is for the
      * log.
      */
-    private class Silent(val said: Int) : IllegalStateException("the engine did not answer within thirty seconds")
+    private class Silent(val said: Int, log: String, vararg val args: Any) : IllegalStateException(log)
 
     /** The summary of one wake-up, as the engine reports it. */
     private data class Due(
@@ -312,6 +315,8 @@ class EngineService : Service() {
         val failure: String = "",
         val params: Map<String, String> = emptyMap(),
         val found: List<Found> = emptyList(),
+        /** The HTTP status of a start the engine turned down, counted in failed. */
+        val refused: Int = 0,
     ) {
         fun changed() = copied + moved + trashed + deleted + conflicts > 0
     }
@@ -384,12 +389,21 @@ class EngineService : Service() {
      * over, taking on what is asked meanwhile. Each goes through the same call
      * as Run now on the screens, so the run conditions do not hold it back
      * and it lands in History like any other run. Returns null when nothing
-     * could start.
+     * was there to start.
      */
-    private fun startAsked(): Due? {
+    private fun startAsked(): Due? = try {
+        follow()
+    } catch (e: IOException) {
+        throw Silent(R.string.notify_start_unreachable, "the engine did not answer a start: ${e.message}")
+    } catch (e: JSONException) {
+        throw Silent(R.string.notify_start_unreachable, "the engine answered a start with no job list: ${e.message}")
+    }
+
+    private fun follow(): Due? {
         // By job, its newest run before the start, which tells this start's
         // runs from earlier ones.
         val before = HashMap<String, Long>()
+        var refused = 0
         var jobs = seen()
         while (true) {
             while (true) {
@@ -404,27 +418,23 @@ class EngineService : Service() {
                 }
                 for (id in ids) {
                     if (id in before) continue
+                    val code = StartJob.post(Engine.connect(this, "/api/jobs/$id/run"))
+                    if (code !in 200..299) {
+                        Log.w(TAG, "the engine would not start job $id: HTTP $code")
+                        refused = code
+                        continue
+                    }
                     before[id] = jobs.first { it.job.id == id }.newest
-                    post(id)
                 }
             }
-            if (before.isEmpty()) return null
+            if (before.isEmpty()) break
             Thread.sleep(GUARD_EVERY_MS)
             jobs = seen()
             if (asked.isEmpty() && jobs.none { it.job.id in before && it.busy }) break
         }
-        return outcome(jobs, before)
-    }
-
-    /** Starts one job as Run now does. The engine answers at once and runs it on its own. */
-    private fun post(id: String) {
-        val call = Engine.connect(this, "/api/jobs/$id/run")
-        call.requestMethod = "POST"
-        call.connectTimeout = 5000
-        call.readTimeout = 30000
-        val code = call.responseCode
-        call.disconnect()
-        if (code !in 200..299) Log.w(TAG, "the engine would not start job $id: HTTP $code")
+        if (before.isEmpty() && refused == 0) return null
+        val due = outcome(jobs, before)
+        return if (refused == 0) due else due.copy(failed = due.failed + 1, refused = refused)
     }
 
     /** Sums the runs a start made into a wake-up's summary, so both are told of alike. */
@@ -473,6 +483,8 @@ class EngineService : Service() {
      * kind, and its own English under a lead otherwise.
      */
     private fun whyFailed(due: Due): String {
+        // A run's own failure says more than a start the engine turned down.
+        if (due.refused != 0 && due.reason.isEmpty()) return getString(R.string.notify_start_refused, due.refused)
         val left = due.params["side"] == "left"
         val said = when (due.failure) {
             "notEnoughSpace" -> getString(

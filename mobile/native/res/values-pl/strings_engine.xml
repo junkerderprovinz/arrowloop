@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Uruchom zadanie</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Zapauzowane, ale i tak się uruchomi</string>
     <string name="plugin_blurb_one">Uruchom %1$s</string>
     <string name="plugin_blurb_all">Uruchom wszystkie zadania</string>
+    <string name="notify_failed">Synchronizacja nie powiodła się</string>
+    <string name="notify_failed_no_engine">Silnik się nie uruchomił. Otwórz raz ArrowLoop i sprawdź kartę Silnik synchronizacji.</string>
+    <string name="notify_start_refused">Silnik odrzucił uruchomienie, o które prosiła twoja automatyzacja (HTTP %1$d). Uruchom zadanie w ArrowLoop, żeby zobaczyć dlaczego.</string>
+    <string name="notify_start_unreachable">Silnik nie odpowiedział, gdy twoja automatyzacja prosiła o uruchomienie. Otwórz raz ArrowLoop i sprawdź kartę Silnik synchronizacji.</string>
 </resources>

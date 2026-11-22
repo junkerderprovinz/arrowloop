@@ -104,4 +104,6 @@
     <string name="plugin_paused">Paused, starts all the same</string>
     <string name="plugin_blurb_one">Start %1$s</string>
     <string name="plugin_blurb_all">Start all jobs</string>
+    <string name="notify_start_refused">The engine turned down the start your automation asked for (HTTP %1$d). Start the job in ArrowLoop to see why.</string>
+    <string name="notify_start_unreachable">The engine did not answer when your automation asked for a start. Open ArrowLoop once and check the engine card.</string>
 </resources>

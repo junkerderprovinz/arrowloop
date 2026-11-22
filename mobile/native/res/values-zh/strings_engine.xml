@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">启动任务</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">已暂停，但仍会启动</string>
     <string name="plugin_blurb_one">运行 %1$s</string>
     <string name="plugin_blurb_all">运行全部任务</string>
+    <string name="notify_failed">同步失败</string>
+    <string name="notify_failed_no_engine">引擎没有启动。打开一次 ArrowLoop，查看同步引擎卡片。</string>
+    <string name="notify_start_refused">引擎拒绝了自动化请求的启动 (HTTP %1$d)。在 ArrowLoop 里启动这个任务，就能看到原因。</string>
+    <string name="notify_start_unreachable">自动化请求启动时，引擎没有响应。打开一次 ArrowLoop，查看同步引擎卡片。</string>
 </resources>

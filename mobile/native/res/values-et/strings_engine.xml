@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Käivita töö</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Pausil, aga käivitub ikkagi</string>
     <string name="plugin_blurb_one">Käivita %1$s</string>
     <string name="plugin_blurb_all">Käivita kõik tööd</string>
+    <string name="notify_failed">Sünkroonimine ebaõnnestus</string>
+    <string name="notify_failed_no_engine">Mootor ei käivitunud. Ava ArrowLoop korra ja vaata sünkroonimismootori kaarti.</string>
+    <string name="notify_start_refused">Mootor keeldus käivitusest, mida su automatiseering palus (HTTP %1$d). Käivita töö ArrowLoopis, siis näed, miks.</string>
+    <string name="notify_start_unreachable">Mootor ei vastanud, kui su automatiseering käivitust palus. Ava ArrowLoop korra ja vaata sünkroonimismootori kaarti.</string>
 </resources>

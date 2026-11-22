@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Mulakan tugas</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Dijeda, tetapi tetap bermula</string>
     <string name="plugin_blurb_one">Jalankan %1$s</string>
     <string name="plugin_blurb_all">Jalankan semua tugas</string>
+    <string name="notify_failed">Penyegerakan gagal</string>
+    <string name="notify_failed_no_engine">Enjin tidak bermula. Buka ArrowLoop sekali dan semak kad Enjin penyegerakan.</string>
+    <string name="notify_start_refused">Enjin menolak permintaan mula daripada automasi anda (HTTP %1$d). Mulakan tugas itu dalam ArrowLoop untuk melihat sebabnya.</string>
+    <string name="notify_start_unreachable">Enjin tidak menjawab apabila automasi anda meminta untuk bermula. Buka ArrowLoop sekali dan semak kad Enjin penyegerakan.</string>
 </resources>

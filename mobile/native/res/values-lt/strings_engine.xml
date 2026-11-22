@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Paleisti užduotį</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">Pristabdyta, bet vis tiek paleidžiama</string>
     <string name="plugin_blurb_one">Paleisti %1$s</string>
     <string name="plugin_blurb_all">Paleisti visas užduotis</string>
+    <string name="notify_failed">Sinchronizuoti nepavyko</string>
+    <string name="notify_failed_no_engine">Variklis nepasileido. Atidarykite ArrowLoop vieną kartą ir pažiūrėkite sinchronizavimo variklio kortelę.</string>
+    <string name="notify_start_refused">Variklis atmetė paleidimą, kurio paprašė jūsų automatizavimas (HTTP %1$d). Paleiskite užduotį ArrowLoop ir pamatysite kodėl.</string>
+    <string name="notify_start_unreachable">Variklis neatsakė, kai jūsų automatizavimas paprašė paleidimo. Atidarykite ArrowLoop vieną kartą ir pažiūrėkite sinchronizavimo variklio kortelę.</string>
 </resources>

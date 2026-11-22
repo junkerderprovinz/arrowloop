@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Покрени посао</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">На паузи, али се ипак покреће</string>
     <string name="plugin_blurb_one">Покрени %1$s</string>
     <string name="plugin_blurb_all">Покрени све послове</string>
+    <string name="notify_failed">Синхронизација није успела</string>
+    <string name="notify_failed_no_engine">Погон се није покренуо. Отвори ArrowLoop једном и погледај картицу Погон за синхронизацију.</string>
+    <string name="notify_start_refused">Погон је одбио покретање које је тражила твоја аутоматизација (HTTP %1$d). Покрени посао у ArrowLoop-у да видиш зашто.</string>
+    <string name="notify_start_unreachable">Погон није одговорио када је твоја аутоматизација тражила покретање. Отвори ArrowLoop једном и погледај картицу Погон за синхронизацију.</string>
 </resources>

@@ -62,4 +62,6 @@
     <string name="plugin_paused">Pausiert, startet trotzdem</string>
     <string name="plugin_blurb_one">%1$s starten</string>
     <string name="plugin_blurb_all">Alle Aufträge starten</string>
+    <string name="notify_start_refused">Der Motor hat den Start abgelehnt, den deine Automatisierung wollte (HTTP %1$d). Starte den Auftrag in ArrowLoop, dann siehst du, warum.</string>
+    <string name="notify_start_unreachable">Der Motor hat nicht geantwortet, als deine Automatisierung einen Start wollte. Öffne ArrowLoop einmal und sieh auf der Motor-Karte nach.</string>
 </resources>

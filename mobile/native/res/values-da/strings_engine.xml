@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The automation picker's lines, StartJobActivity. The notification's lines
-  are in values/ and values-de/ only, so Android falls back to English for
-  them here.
+  The automation picker's lines, StartJobActivity, and the failure a start
+  from it can end in. The other notification lines are in values/ and
+  values-de/ only, so Android falls back to English for them here.
 -->
 <resources>
     <string name="plugin_title">Start et job</string>
@@ -13,4 +13,8 @@
     <string name="plugin_paused">På pause, men starter alligevel</string>
     <string name="plugin_blurb_one">Kør %1$s</string>
     <string name="plugin_blurb_all">Kør alle job</string>
+    <string name="notify_failed">Synkronisering mislykkedes</string>
+    <string name="notify_failed_no_engine">Motoren startede ikke. Åbn ArrowLoop én gang, og se på kortet Synkroniseringsmotor.</string>
+    <string name="notify_start_refused">Motoren afviste den start, din automatisering bad om (HTTP %1$d). Start jobbet i ArrowLoop for at se hvorfor.</string>
+    <string name="notify_start_unreachable">Motoren svarede ikke, da din automatisering bad om en start. Åbn ArrowLoop én gang, og se på kortet Synkroniseringsmotor.</string>
 </resources>
