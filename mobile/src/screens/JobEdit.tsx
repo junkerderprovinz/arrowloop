@@ -12,6 +12,7 @@ import { useT, type T } from "../i18n";
 import type { JobsStack, Nav } from "../nav";
 import { contrastOn, space, text } from "../theme";
 import { useEngineSettings } from "../settings";
+import { useReadAgain } from "../useEngine";
 import { DEVICE, sideMark } from "../sideRow";
 import { remoteOf, sideName, sidePair } from "../sides";
 import { isAccount } from "../space";
@@ -125,14 +126,18 @@ export function JobEdit() {
   const defaults = engineSettings?.defaults as Defaults | undefined;
   const sets = Object.keys((engineSettings?.excludeSets as Record<string, string[]> | undefined) ?? {}).sort();
 
+  // Read again on every visit, so a target connected under More while the
+  // form stayed open is there to choose. Without targets a side can still be
+  // a folder on the phone.
   const [remotes, setRemotes] = useState<Remote[]>([]);
-  useEffect(() => {
+  const readTargets = useCallback(() => {
     api.storage().then(
       (list) => setRemotes(list.remotes),
-      // Without targets a side can still be a folder on the phone.
-      () => setRemotes([]),
+      () => {},
     );
   }, []);
+  useEffect(readTargets, [readTargets]);
+  useReadAgain(readTargets, false);
 
   /**
    * The name the job is saved under, which a rename looks up and replaces.
