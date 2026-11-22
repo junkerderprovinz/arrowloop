@@ -2250,6 +2250,7 @@ const hu: Translations = {
   'vpn.error.deviceLimit': 'A(z) {name} nem enged több eszközt. Távolíts el egyet a fiókodban, aztán próbáld újra.',
   'vpn.error.accountExpired': 'A(z) {name}-fiókod lejárt. Hosszabbítsd meg, aztán próbáld újra.',
   'vpn.error.locationUnknown': 'A(z) {name} szolgáltatónak nincs szervere ezen a helyen. Próbálj másik helyet, vagy hagyd üresen a mezőt.',
+  'vpn.error.start': 'A WireGuard nem tudott elindulni ezen az eszközön: {reason}',
   'vpn.removeAsk': 'Eltávolítod: {name}?',
   'vpn.removeStakes': 'Az ArrowLoop elfelejti a bejelentkezést. A rajta át futó feladatok sikertelenek lesznek, amíg nem választasz nekik másik VPN-t.',
   'edit.connection': 'Kapcsolat',

@@ -2250,6 +2250,7 @@ const fi: Translations = {
   'vpn.error.deviceLimit': '{name} ei salli enempää laitteita. Poista yksi tililtäsi ja yritä sitten uudelleen.',
   'vpn.error.accountExpired': 'Palvelun {name} tilisi on vanhentunut. Uusi se ja yritä sitten uudelleen.',
   'vpn.error.locationUnknown': 'Palvelulla {name} ei ole palvelinta tässä sijainnissa. Kokeile toista sijaintia tai jätä kenttä tyhjäksi.',
+  'vpn.error.start': 'WireGuard ei voinut käynnistyä tällä laitteella: {reason}',
   'vpn.removeAsk': 'Poistetaanko {name}?',
   'vpn.removeStakes': 'ArrowLoop unohtaa sen kirjautumistiedot. Sen kautta kulkevat työt epäonnistuvat, kunnes valitset niille toisen VPN:n.',
   'edit.connection': 'Yhteys',

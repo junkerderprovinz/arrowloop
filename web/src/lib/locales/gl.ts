@@ -2250,6 +2250,7 @@ const gl: Translations = {
   'vpn.error.deviceLimit': '{name} non admite máis dispositivos. Quita un na túa conta e despois téntao de novo.',
   'vpn.error.accountExpired': 'A túa conta de {name} caducou. Renóvaa e despois téntao de novo.',
   'vpn.error.locationUnknown': '{name} non ten ningún servidor nesta localización. Proba outra localización ou deixa o campo baleiro.',
+  'vpn.error.start': 'WireGuard non puido iniciarse neste dispositivo: {reason}',
   'vpn.removeAsk': 'Quitar {name}?',
   'vpn.removeStakes': 'ArrowLoop esquece as súas credenciais. As tarefas que pasan por ela fallarán ata que lles escollas outra VPN.',
   'edit.connection': 'Conexión',

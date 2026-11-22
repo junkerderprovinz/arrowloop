@@ -2250,6 +2250,7 @@ const pt: Translations = {
   'vpn.error.deviceLimit': '{name} não permite mais dispositivos. Remove um na tua conta e tenta de novo.',
   'vpn.error.accountExpired': 'A tua conta {name} expirou. Renova-a e tenta de novo.',
   'vpn.error.locationUnknown': '{name} não tem servidor nesta localização. Experimenta outra localização ou deixa o campo vazio.',
+  'vpn.error.start': 'Não foi possível iniciar o WireGuard neste dispositivo: {reason}',
   'vpn.removeAsk': 'Remover {name}?',
   'vpn.removeStakes': 'O ArrowLoop esquece o início de sessão. As tarefas que passam por ela falham até lhes escolheres outra VPN.',
   'edit.connection': 'Ligação',

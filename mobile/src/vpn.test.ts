@@ -115,6 +115,13 @@ test("a test that fails to connect says why in the reader's words", () => {
   assert.deepEqual(tunnelLine(failed, verdict, "WireGuard", t), { said: en["vpn.error.timeout"], failed: true });
 });
 
+test("a VPN the device does not let start says the device's reason, not the configuration's", () => {
+  const failed = { ...home, status: "failed" as const, errorCode: "vpn-start-failed", error: "permission denied" };
+  const verdict = testVerdict({ ok: false, reason: "permission denied", state: state([failed]) }, "custom", "WireGuard", t);
+  assert.equal(verdict.said, "WireGuard could not start on this device: permission denied");
+  assert.equal(tunnelLine(failed, null, "WireGuard", t).said, "WireGuard could not start on this device: permission denied");
+});
+
 test("a failure without a known code shows the engine's own words", () => {
   const verdict = testVerdict({ ok: false, reason: "dial udp: no route", state: state([home]) }, "custom", "WireGuard", t);
   assert.deepEqual(verdict, { ok: false, said: "dial udp: no route" });

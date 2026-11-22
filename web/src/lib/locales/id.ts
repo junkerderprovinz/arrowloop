@@ -2250,6 +2250,7 @@ const id: Translations = {
   'vpn.error.deviceLimit': '{name} tidak mengizinkan perangkat lagi. Hapus satu di akun Anda, lalu coba lagi.',
   'vpn.error.accountExpired': 'Masa berlaku akun {name} Anda sudah habis. Perpanjang, lalu coba lagi.',
   'vpn.error.locationUnknown': '{name} tidak punya server di lokasi ini. Coba lokasi lain atau biarkan kolomnya kosong.',
+  'vpn.error.start': 'WireGuard tidak dapat dimulai di perangkat ini: {reason}',
   'vpn.removeAsk': 'Hapus {name}?',
   'vpn.removeStakes': 'ArrowLoop melupakan login-nya. Tugas yang lewat VPN ini akan gagal sampai Anda memilih VPN lain untuknya.',
   'edit.connection': 'Koneksi',

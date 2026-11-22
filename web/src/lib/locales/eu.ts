@@ -2250,6 +2250,7 @@ const eu: Translations = {
   'vpn.error.deviceLimit': '{name} zerbitzuak ez du gailu gehiago onartzen. Kendu bat zure kontuan, eta saiatu berriro.',
   'vpn.error.accountExpired': 'Zure {name} kontua iraungi da. Berritu, eta saiatu berriro.',
   'vpn.error.locationUnknown': '{name} zerbitzuak ez du zerbitzaririk kokapen horretan. Saiatu beste kokapen batekin edo utzi eremua hutsik.',
+  'vpn.error.start': 'WireGuard ezin izan da gailu honetan abiarazi: {reason}',
   'vpn.removeAsk': '{name} kendu?',
   'vpn.removeStakes': 'ArrowLoop-ek saio-hasierako datuak ahaztuko ditu. Bertatik doazen lanek huts egingo dute, beste VPN bat aukeratu arte.',
   'edit.connection': 'Konexioa',

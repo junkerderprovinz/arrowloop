@@ -52,6 +52,9 @@ const (
 	CodeAccountExpired = "vpn-account-expired"
 	// CodeLocationUnknown is a location the provider has no server at.
 	CodeLocationUnknown = "vpn-location-unknown"
+	// CodeStartFailed is a configuration that reads on a system that did
+	// not let WireGuard come up.
+	CodeStartFailed = "vpn-start-failed"
 )
 
 // failure is a connect that did not work, with the code the page words it by.

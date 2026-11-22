@@ -2250,6 +2250,7 @@ const he: Translations = {
   'vpn.error.deviceLimit': '{name} לא מאפשר מכשירים נוספים. הסר אחד בחשבון שלך ונסה שוב.',
   'vpn.error.accountExpired': 'תוקף החשבון שלך ב־{name} פג. חדש אותו ונסה שוב.',
   'vpn.error.locationUnknown': 'ל־{name} אין שרת במיקום הזה. נסה מיקום אחר או השאר את השדה ריק.',
+  'vpn.error.start': 'לא ניתן היה להפעיל את WireGuard במכשיר הזה: {reason}',
   'vpn.removeAsk': 'להסיר את {name}?',
   'vpn.removeStakes': 'ArrowLoop שוכח את פרטי ההתחברות. משימות שעוברות דרכו ייכשלו עד שתבחר עבורן VPN אחר.',
   'edit.connection': 'חיבור',

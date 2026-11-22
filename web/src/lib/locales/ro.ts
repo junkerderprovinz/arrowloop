@@ -2250,6 +2250,7 @@ const ro: Translations = {
   'vpn.error.deviceLimit': '{name} nu mai permite alte dispozitive. Elimină unul din contul tău, apoi încearcă din nou.',
   'vpn.error.accountExpired': 'Contul tău {name} a expirat. Reînnoiește-l, apoi încearcă din nou.',
   'vpn.error.locationUnknown': '{name} nu are server în această locație. Încearcă altă locație sau lasă câmpul gol.',
+  'vpn.error.start': 'WireGuard nu a putut porni pe acest dispozitiv: {reason}',
   'vpn.removeAsk': 'Elimini {name}?',
   'vpn.removeStakes': 'ArrowLoop uită autentificarea. Sarcinile care trec prin el eșuează până când le alegi alt VPN.',
   'edit.connection': 'Conexiune',

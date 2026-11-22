@@ -2250,6 +2250,7 @@ const nl: Translations = {
   'vpn.error.deviceLimit': '{name} staat geen apparaten meer toe. Haal er een weg in je account en probeer het dan opnieuw.',
   'vpn.error.accountExpired': 'Je {name}-account is verlopen. Verleng het en probeer het dan opnieuw.',
   'vpn.error.locationUnknown': '{name} heeft geen server op deze locatie. Probeer een andere locatie of laat het veld leeg.',
+  'vpn.error.start': 'WireGuard kon op dit apparaat niet starten: {reason}',
   'vpn.removeAsk': '{name} verwijderen?',
   'vpn.removeStakes': 'ArrowLoop vergeet de aanmelding. Taken die erdoor gaan mislukken tot je er een andere VPN voor kiest.',
   'edit.connection': 'Verbinding',

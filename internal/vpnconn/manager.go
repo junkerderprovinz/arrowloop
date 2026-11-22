@@ -369,10 +369,7 @@ func (m *Manager) connect(ctx context.Context, b *bringUp) error {
 	w := b.w
 	if err := w.tun.Connect(octx, sess.cfg); err != nil {
 		endSoon(sess)
-		if errors.Is(err, vpn.ErrResolve) {
-			return &failure{CodeNameUnresolved, fmt.Errorf("%s: %w", p.Name, err)}
-		}
-		return &failure{CodeConfigInvalid, fmt.Errorf("%s: %w", p.Name, err)}
+		return connectFailure(p.Name, err)
 	}
 	w.current = b
 	if err := w.tun.WaitConnected(octx); err != nil {
@@ -564,6 +561,20 @@ func fill(p *Provider, login Login, fields map[string]string) (bool, error) {
 		}
 	}
 	return changed, nil
+}
+
+// connectFailure is a tunnel that did not come up on a configuration that
+// reads. One the system did not let start says the system's reason alone,
+// which the page puts in its own sentence.
+func connectFailure(provider string, err error) *failure {
+	var se *vpn.StartError
+	if errors.As(err, &se) {
+		return &failure{CodeStartFailed, se.Err}
+	}
+	if errors.Is(err, vpn.ErrResolve) {
+		return &failure{CodeNameUnresolved, fmt.Errorf("%s: %w", provider, err)}
+	}
+	return &failure{CodeConfigInvalid, fmt.Errorf("%s: %w", provider, err)}
 }
 
 // Add sets up a new tunnel with provider and returns its id. A provider may

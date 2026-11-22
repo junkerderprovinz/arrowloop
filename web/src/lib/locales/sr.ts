@@ -2250,6 +2250,7 @@ const sr: Translations = {
   'vpn.error.deviceLimit': '{name} не дозвољава више уређаја. Уклони један на свом налогу, па пробај поново.',
   'vpn.error.accountExpired': 'Твој {name} налог је истекао. Обнови га, па пробај поново.',
   'vpn.error.locationUnknown': '{name} нема сервер на овој локацији. Пробај другу локацију или остави поље празно.',
+  'vpn.error.start': 'WireGuard није могао да се покрене на овом уређају: {reason}',
   'vpn.removeAsk': 'Уклонити {name}?',
   'vpn.removeStakes': 'ArrowLoop заборавља пријаву. Задаци који иду преко њега неће успети док им не изабереш други VPN.',
   'edit.connection': 'Веза',

@@ -2250,6 +2250,7 @@ const lt: Translations = {
   'vpn.error.deviceLimit': '{name} daugiau įrenginių neleidžia. Pašalink vieną savo paskyroje ir bandyk dar kartą.',
   'vpn.error.accountExpired': 'Tavo {name} paskyros galiojimas baigėsi. Pratęsk ją ir bandyk dar kartą.',
   'vpn.error.locationUnknown': '{name} šioje vietoje serverio neturi. Pabandyk kitą vietą arba palik lauką tuščią.',
+  'vpn.error.start': 'WireGuard nepavyko paleisti šiame įrenginyje: {reason}',
   'vpn.removeAsk': 'Pašalinti {name}?',
   'vpn.removeStakes': 'ArrowLoop pamirš prisijungimą. Per jį einančios užduotys nepavyks, kol joms nepasirinksi kito VPN.',
   'edit.connection': 'Ryšys',
