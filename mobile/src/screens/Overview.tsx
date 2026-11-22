@@ -130,7 +130,7 @@ export function Overview() {
           <Tile
             value={waiting.trash}
             label={t("nav.trash")}
-            detail={waiting.trashBytes === null ? undefined : bytes(waiting.trashBytes)}
+            detail={waiting.trash && waiting.trashBytes !== null ? bytes(waiting.trashBytes) : undefined}
             onPress={() => nav.navigate("TrashAll")}
           />
         </View>
