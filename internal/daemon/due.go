@@ -212,6 +212,9 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 				out.Reason = fmt.Sprintf("%s: %v", name, err)
 			}
 		default:
+			if rec.Offline {
+				out.Held++
+			}
 			out.Copied += rec.Copied
 			out.Moved += rec.Moved
 			if rec.NoTrash {
