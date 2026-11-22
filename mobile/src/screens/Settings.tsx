@@ -40,7 +40,7 @@ import {
 } from "../settings";
 import { GLIMSTONE_VERSION } from "../glimstone/version";
 import { COFFEE, DISCORD, PAYPAL, RCLONE_REPO, REPO } from "../../../web/src/lib/donate";
-import { componentText } from "@glimstone/core";
+import { componentText } from "@glimstone/core/componentTexts";
 import { ComponentsSection, VersionSection } from "../infoCards";
 import { storeOf } from "../store";
 import { MANUAL, PRIVACY } from "../../../web/src/lib/handbook";

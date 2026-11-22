@@ -1,4 +1,5 @@
-import { componentRows, numberLink, updateLine, whatsNewLabel, withApp, type ComponentRow, type ComponentText } from "@glimstone/core";
+import type { ComponentText } from "@glimstone/core/componentTexts";
+import { componentRows, numberLink, whatsNewLabel, withApp, type ComponentRow } from "@glimstone/core/versionCards";
 import { Linking, StyleSheet, Text, View } from "react-native";
 
 import { GLIMSTONE_REPO, REPO } from "../../web/src/lib/donate";
@@ -6,6 +7,7 @@ import { GLIMSTONE_VERSION } from "./glimstone/version";
 import { Glyph } from "./glyphs";
 import { space, text } from "./theme";
 import { Button, InfoBubble, Section, useTheme } from "./ui";
+import { versionLine } from "./versionLine";
 
 // GlimStone's Version and Components cards for the phone. The phone gets its
 // new versions from the store it came from, so the Version card checks nothing
@@ -15,7 +17,7 @@ import { Button, InfoBubble, Section, useTheme } from "./ui";
 export function VersionSection({ words, version, store, hue }: { words: ComponentText; version: string; store: string; hue: number }) {
   const { p } = useTheme();
   const w = words.versionCard;
-  const face = updateLine({ kind: "store", store }, w);
+  const face = versionLine({ kind: "store", store }, w);
   const shown = numberLink({ name: "ArrowLoop", version, repoUrl: REPO });
   return (
     <Section title={w.title} hint={withApp(w.hint, "ArrowLoop")} hue={hue}>
