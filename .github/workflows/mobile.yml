@@ -298,10 +298,11 @@ jobs:
           fi
 
       # mobile/native/test, which withEngine.js copies into the generated
-      # project. After the build, so the app's own Kotlin is compiled once.
+      # project. Only the app's, since the libraries bring test sources of
+      # their own, and after the build, so its Kotlin is compiled once.
       - name: The native code's own tests pass
         working-directory: mobile/android
-        run: ./gradlew testReleaseUnitTest --no-daemon
+        run: ./gradlew :app:testReleaseUnitTest --no-daemon
 
       - name: Name the outputs
         working-directory: mobile
