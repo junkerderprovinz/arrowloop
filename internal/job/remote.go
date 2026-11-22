@@ -76,6 +76,10 @@ type place struct {
 	ownConnections bool
 }
 
+// ErrNoNetwork is what a run condition holds a job with when the job is
+// OnNetwork and the machine has no network.
+var ErrNoNetwork = errors.New("there is no network")
+
 // OnNetwork reports whether a side of the job lies off this machine, so that
 // the job cannot run without a network. A side that cannot be placed counts as
 // off it.

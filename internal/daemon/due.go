@@ -201,12 +201,20 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 			// Removed or paused while it waited, so nothing ran.
 		case o.Skipped():
 			out.Held++
+		case err != nil && r.noNetwork(ctx, key):
+			// The network went while the job ran, as on a phone switched to
+			// flight mode for the night. Nobody has anything to fix, and the
+			// job stays owed until a run works.
+			out.Held++
 		case err != nil:
 			out.Failed++
 			if out.Reason == "" {
 				out.Reason = fmt.Sprintf("%s: %v", name, err)
 			}
 		default:
+			if rec.Offline {
+				out.Held++
+			}
 			out.Copied += rec.Copied
 			out.Moved += rec.Moved
 			if rec.NoTrash {
@@ -221,9 +229,17 @@ func (r *Runner) RunDue(ctx context.Context) Due {
 	return out
 }
 
+// noNetwork reports whether the run conditions would now hold a job for want of
+// a network.
+func (r *Runner) noNetwork(ctx context.Context, key string) bool {
+	cond := r.condition()
+	j, ok := r.config().Find(key)
+	return cond != nil && ok && errors.Is(cond(ctx, j), job.ErrNoNetwork)
+}
+
 // Due is what a wake-up can tell somebody once it is over. Held counts jobs
-// waiting for a drive, the charger or their own previous run, which are not
-// failures.
+// waiting for a drive, the charger, a network or their own previous run, which
+// are not failures.
 type Due struct {
 	Ran     int `json:"ran"`
 	Failed  int `json:"failed"`

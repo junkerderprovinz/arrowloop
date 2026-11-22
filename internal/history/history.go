@@ -49,6 +49,10 @@ type Run struct {
 	// It has no Err, since nothing went wrong, and it is no success either:
 	// what it left undone is still owed.
 	Stopped bool `json:",omitempty"`
+	// Offline marks a run that left files for later because the network went
+	// while it ran. It has no Err either and is no success: the job is owed
+	// again as soon as there is a network, not at its next turn.
+	Offline bool `json:",omitempty"`
 	// Twice is what Err names when the run failed over files left for later
 	// twice, which goes out as part of the failure.
 	Twice *failure.Twice `json:"-"`
@@ -168,7 +172,8 @@ CREATE TABLE IF NOT EXISTS runs (
 	answered     INTEGER NOT NULL DEFAULT 0,
 	no_trash     INTEGER NOT NULL DEFAULT 0,
 	stopped      INTEGER NOT NULL DEFAULT 0,
-	twice        TEXT    NOT NULL DEFAULT ''
+	twice        TEXT    NOT NULL DEFAULT '',
+	offline      INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS entries (
@@ -240,6 +245,7 @@ var migrations = []string{
 	`ALTER TABLE going_entries ADD COLUMN code TEXT NOT NULL DEFAULT ''`,
 	`ALTER TABLE going_entries ADD COLUMN vars TEXT NOT NULL DEFAULT ''`,
 	`ALTER TABLE runs ADD COLUMN twice TEXT NOT NULL DEFAULT ''`,
+	`ALTER TABLE runs ADD COLUMN offline INTEGER NOT NULL DEFAULT 0`,
 }
 
 // version is the history's layout. It goes up when a newer layout would be
@@ -359,11 +365,11 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 	defer tx.Rollback() //nolint:errcheck // a committed transaction rolls back to nothing
 
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped, twice)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		`INSERT INTO runs (job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped, twice, offline)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		r.Job, r.Key(), r.Started.UnixNano(), r.Finished.UnixNano(),
 		r.Copied, r.Moved, r.Trashed, r.Conflicts, r.DirsMade, r.DirsRemoved, r.Unchanged, r.Skipped, r.Err, r.Answered, r.NoTrash, r.Stopped,
-		storedTwice(r.Twice))
+		storedTwice(r.Twice), r.Offline)
 	if err != nil {
 		return fmt.Errorf("record run for %q: %w", r.Job, err)
 	}
@@ -579,7 +585,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	if limit <= 0 {
 		limit = 20
 	}
-	query := `SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped, twice
+	query := `SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped, twice, offline
 	          FROM runs`
 	args := []any{}
 	var conds []string
@@ -615,7 +621,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 		var r Run
 		var started, finished int64
 		if err := rows.Scan(&r.ID, &r.Job, &r.JobID, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.NoTrash, &r.Stopped, twiceColumn{&r.Twice}); err != nil {
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.NoTrash, &r.Stopped, twiceColumn{&r.Twice}, &r.Offline); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		r.Started = time.Unix(0, started)
@@ -630,7 +636,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 // page through the log with the last id it saw.
 func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
 	rows, err := d.sql.QueryContext(ctx, `
-		SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, stopped, twice
+		SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, stopped, twice, offline
 		FROM runs WHERE id > ? ORDER BY id LIMIT ?`, after, limit)
 	if err != nil {
 		return nil, fmt.Errorf("read the runs after %d: %w", after, err)
@@ -642,7 +648,7 @@ func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
 		var r Run
 		var started, finished int64
 		if err := rows.Scan(&r.ID, &r.Job, &r.JobID, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.Stopped, twiceColumn{&r.Twice}); err != nil {
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.Stopped, twiceColumn{&r.Twice}, &r.Offline); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		r.Started = time.Unix(0, started)
@@ -665,7 +671,7 @@ type Latest struct {
 func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 	rows, err := d.sql.QueryContext(ctx, `
 		SELECT r.id, r.job, r.job_id, r.started, r.finished, r.copied, r.moved, r.trashed, r.conflicts,
-		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err, r.no_trash, r.stopped, r.twice,
+		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err, r.no_trash, r.stopped, r.twice, r.offline,
 		       (SELECT COUNT(*) FROM runs c WHERE c.job_id = r.job_id AND c.started >= ?)
 		FROM runs r
 		WHERE r.id = (SELECT m.id FROM runs m WHERE m.job_id = r.job_id ORDER BY m.started DESC LIMIT 1)
@@ -680,7 +686,7 @@ func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 		var l Latest
 		var started, finished int64
 		if err := rows.Scan(&l.ID, &l.Job, &l.JobID, &started, &finished, &l.Copied, &l.Moved, &l.Trashed,
-			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.NoTrash, &l.Stopped, twiceColumn{&l.Twice}, &l.Since); err != nil {
+			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.NoTrash, &l.Stopped, twiceColumn{&l.Twice}, &l.Offline, &l.Since); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		l.Started = time.Unix(0, started)
@@ -708,9 +714,10 @@ func (d *DB) EachRecent(ctx context.Context, jobs []string, n int) (map[string][
 }
 
 // LastSuccess returns when a job last finished its work without an error, and
-// whether it ever has. A stopped run did not finish it.
+// whether it ever has. A stopped run did not finish it, nor did one the
+// network left.
 func (d *DB) LastSuccess(ctx context.Context, job string) (time.Time, bool, error) {
-	return d.lastFinished(ctx, job, `err = '' AND stopped = 0`)
+	return d.lastFinished(ctx, job, `err = '' AND stopped = 0 AND offline = 0`)
 }
 
 // LastStopped returns when a run of the job was last stopped, and whether one

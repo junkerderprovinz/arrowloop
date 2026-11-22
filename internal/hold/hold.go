@@ -18,9 +18,9 @@ import (
 
 // Stale is how long a report is believed. The app sending reports can be
 // killed, and a hold that never expired would block every scheduled run from
-// then on. Android reports a change the moment it happens, so ten minutes is
-// generous. An expired report lets runs through, like a failing power API on
-// the desktop.
+// then on. The app reports a change as it happens and renews its report every
+// few minutes, so ten minutes is generous. An expired report lets runs
+// through, like a failing power API on the desktop.
 const Stale = 10 * time.Minute
 
 // State is what was last reported, and when.
@@ -51,6 +51,9 @@ type Store struct {
 
 	// now is the clock, swapped in tests. Nil means time.Now.
 	now func() time.Time
+
+	// routed, when set, is asked before a job that needs a network.
+	routed func() bool
 }
 
 // New returns an empty store that holds nothing.
@@ -61,6 +64,17 @@ func (s *Store) clock() time.Time {
 		return s.now()
 	}
 	return time.Now()
+}
+
+// CheckRoutes has the condition ask routed as well before a job that needs a
+// network, and hold the job when there is no route. A report can be older than
+// the network it describes: Android freezes a cached app together with its
+// engine, and the engine's clock, thawed, can start a run before the app has
+// said that the network went in the meantime.
+func (s *Store) CheckRoutes(routed func() bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.routed = routed
 }
 
 // Report records a reason and whether the device is offline. An empty reason
@@ -98,15 +112,16 @@ func (s *Store) stale() bool {
 func (s *Store) Condition() func(context.Context, job.Job) error {
 	return func(_ context.Context, j job.Job) error {
 		s.mu.RLock()
-		defer s.mu.RUnlock()
+		reason, offline, routed := s.reason, s.offline, s.routed
 		if s.stale() {
-			return nil
+			reason, offline = "", false
 		}
-		if s.reason != "" {
-			return errors.New(s.reason)
+		s.mu.RUnlock()
+		if reason != "" {
+			return errors.New(reason)
 		}
-		if s.offline && j.OnNetwork() {
-			return errors.New("there is no network")
+		if j.OnNetwork() && (offline || routed != nil && !routed()) {
+			return job.ErrNoNetwork
 		}
 		return nil
 	}

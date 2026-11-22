@@ -473,7 +473,10 @@ func (r *Runner) runAnswering(ctx context.Context, ref string, auto bool, ans an
 	rec.Copied, rec.Moved, rec.Trashed = res.Copied, res.Moved, res.Trashed
 	rec.Conflicts, rec.DirsMade, rec.DirsRemoved = res.Conflicts, res.DirsMade, res.DirsRemoved
 	rec.Skipped = len(res.Skipped)
-	if rec.Err == "" && !rec.Stopped {
+	// Files the network took with it say nothing about the files, so they
+	// do not count as left twice either.
+	rec.Offline = rec.Err == "" && !rec.Stopped && rec.Skipped > 0 && r.noNetwork(ctx, key)
+	if rec.Err == "" && !rec.Stopped && !rec.Offline {
 		if again, twice := r.leftAgain(ctx, j, res.Skipped); again != "" {
 			rec.Err, rec.Twice = again, twice
 			err = errors.New(again)

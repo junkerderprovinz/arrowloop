@@ -2,6 +2,7 @@ package hold
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -82,8 +83,8 @@ func TestNoNetworkHoldsOnlyJobsThatNeedOne(t *testing.T) {
 	s.Report("", true)
 
 	remote := job.Job{Left: t.TempDir(), Right: "cloud:photos"}
-	if err := s.Condition()(context.Background(), remote); err == nil {
-		t.Error("a job with a server side ran with no network, and its failure uses up a retry")
+	if err := s.Condition()(context.Background(), remote); !errors.Is(err, job.ErrNoNetwork) {
+		t.Errorf("a job with a server side came to %v with no network, want ErrNoNetwork", err)
 	}
 	local := job.Job{Left: t.TempDir(), Right: t.TempDir()}
 	if err := s.Condition()(context.Background(), local); err != nil {
@@ -93,5 +94,50 @@ func TestNoNetworkHoldsOnlyJobsThatNeedOne(t *testing.T) {
 	s.Report("", false)
 	if err := s.Condition()(context.Background(), remote); err != nil {
 		t.Errorf("the network came back and the job was still held: %v", err)
+	}
+}
+
+// Android can freeze the app together with its engine. The app's last report
+// then predates the network going away, and on thawing the engine's clock
+// starts a run before the app has caught up, so the engine looks for a route
+// itself.
+func TestNoRouteHoldsJobsThatNeedANetworkWhateverWasReported(t *testing.T) {
+	s, now := at(time.Now())
+	routed := false
+	s.CheckRoutes(func() bool { return routed })
+	remote := job.Job{Left: t.TempDir(), Right: "cloud:photos"}
+	local := job.Job{Left: t.TempDir(), Right: t.TempDir()}
+	held := func(j job.Job) error { return s.Condition()(context.Background(), j) }
+
+	if err := held(remote); !errors.Is(err, job.ErrNoNetwork) {
+		t.Errorf("before any report, a job with a server side came to %v, want ErrNoNetwork", err)
+	}
+	s.Report("", false)
+	if err := held(remote); !errors.Is(err, job.ErrNoNetwork) {
+		t.Errorf("a report of a network that is gone let the job through: %v", err)
+	}
+	*now = now.Add(Stale + time.Minute)
+	if err := held(remote); !errors.Is(err, job.ErrNoNetwork) {
+		t.Errorf("a stale report let the job through with no route: %v", err)
+	}
+	if err := held(local); err != nil {
+		t.Errorf("a job between two folders on the phone was held for want of a route: %v", err)
+	}
+
+	routed = true
+	if err := held(remote); err != nil {
+		t.Errorf("the route came back and the job was still held: %v", err)
+	}
+}
+
+// A route says nothing about the charger or a metered connection, so the
+// reported reason still holds.
+func TestARouteDoesNotLiftAReportedReason(t *testing.T) {
+	s, _ := at(time.Now())
+	s.CheckRoutes(func() bool { return true })
+	s.Report("this phone is not charging", false)
+
+	if err := s.Condition()(context.Background(), job.Job{Left: t.TempDir(), Right: "cloud:photos"}); err == nil {
+		t.Error("having a route lifted the reported reason")
 	}
 }
