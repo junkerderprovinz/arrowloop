@@ -170,7 +170,7 @@ func (s *Server) groupBrowse(w http.ResponseWriter, r *http.Request) {
 		s.writeRefusal(w, err)
 		return
 	}
-	answer, err := folderListing(r.Context(), at, wantsHidden(r))
+	answer, err := s.folderListing(r.Context(), at, wantsHidden(r))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
 		return

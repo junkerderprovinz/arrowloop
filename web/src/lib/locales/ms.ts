@@ -364,6 +364,7 @@ const ms: Translations = {
   'targets.spaceUsed': '{used} digunakan',
   'targets.spaceFree': '{free} kosong daripada {total}',
   'targets.checkFailed': 'Tidak bersambung',
+  'targets.throughVpn': 'Melalui VPN, disemak apabila tugas berjalan',
   'targets.checkHint': 'Kata laluan yang tersimpan tidak membuktikan apa-apa. Ini membuka destinasi dan menyenaraikan isinya, dan itu sahaja cara untuk tahu sama ada tetapannya betul.',
   'action.delete': 'Padam',
   'action.edit': 'Sunting',

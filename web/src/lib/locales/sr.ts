@@ -364,6 +364,7 @@ const sr: Translations = {
   'targets.spaceUsed': '{used} заузето',
   'targets.spaceFree': '{free} слободно од {total}',
   'targets.checkFailed': 'Није повезано',
+  'targets.throughVpn': 'Преко VPN-а, проверава се када се задатак покрене',
   'targets.checkHint': 'Сачувана лозинка ништа не доказује. Ово отвара одредиште и исписује га, што је једини начин да се сазна да ли су подешавања тачна.',
   'action.delete': 'Обриши',
   'action.edit': 'Уреди',

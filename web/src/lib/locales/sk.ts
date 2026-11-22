@@ -364,6 +364,7 @@ const sk: Translations = {
   'targets.spaceUsed': '{used} obsadených',
   'targets.spaceFree': '{free} voľných z {total}',
   'targets.checkFailed': 'Nepripojené',
+  'targets.throughVpn': 'Cez VPN, overí sa pri behu úlohy',
   'targets.checkHint': 'Uložené heslo nič nedokazuje. Toto cieľ otvorí a vypíše, čo je jediný spôsob, ako zistiť, či sú nastavenia správne.',
   'action.delete': 'Zmazať',
   'action.edit': 'Upraviť',

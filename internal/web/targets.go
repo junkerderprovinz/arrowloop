@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
 // volumeView is one drive, attached or not.
@@ -206,9 +208,41 @@ func (s *Server) jobsOn(target string) []string {
 // leaves open, such as which of several drives to use or a two-factor code.
 const setupQuestion = "setup-question"
 
-// checkRemote proves the settings work, which saving them does not.
+// targetVPN is the context a target is opened with outside a run: through the
+// VPN of a job on it, the first one that has a VPN, so the target is reached
+// the way its runs reach it and never past their tunnel. Without connect a
+// tunnel no run holds up stays down, and opening the target fails with
+// vpnconn.ErrNotUp.
+func (s *Server) targetVPN(ctx context.Context, target string, connect bool) (context.Context, error) {
+	for _, j := range s.Runner.Config().Jobs {
+		if j.VPN == "" || !(remotes.Reaches(j.Left, target) || remotes.Reaches(j.Right, target)) {
+			continue
+		}
+		if connect {
+			return s.throughVPN(ctx, j)
+		}
+		return s.joinVPN(ctx, j)
+	}
+	return ctx, nil
+}
+
+// asked reports whether somebody asked for the request, which may then bring a
+// job's VPN up; a page that looks on its own leaves it down.
+func asked(r *http.Request) bool { return r.URL.Query().Get("connect") != "" }
+
+// checkRemote proves the settings work, which saving them does not. A target
+// behind a VPN that is down answers unchecked unless the check was asked for.
 func (s *Server) checkRemote(w http.ResponseWriter, r *http.Request) {
-	if err := remotes.Check(r.Context(), r.PathValue("name")); err != nil {
+	name := r.PathValue("name")
+	ctx, err := s.targetVPN(r.Context(), name, asked(r))
+	if errors.Is(err, vpnconn.ErrNotUp) {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "unchecked": true, "reason": err.Error()})
+		return
+	}
+	if err == nil {
+		err = remotes.Check(ctx, name)
+	}
+	if err != nil {
 		// 200 with a reason: a credential that does not work answers the
 		// question rather than failing the request.
 		writeJSON(w, http.StatusOK, refused(err))
@@ -242,7 +276,15 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	got, err := remotes.Try(r.Context(), body.Name, body.Type, body.Settings)
+	ctx := r.Context()
+	if body.Name != "" {
+		var err error
+		if ctx, err = s.targetVPN(ctx, body.Name, true); err != nil {
+			writeJSON(w, http.StatusOK, refused(err))
+			return
+		}
+	}
+	got, err := remotes.Try(ctx, body.Name, body.Type, body.Settings)
 	if got.Question != nil {
 		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "reason": "answer " + got.Question.Name + " and test again", "question": got.Question})
 		return
@@ -262,7 +304,12 @@ func (s *Server) tryRemote(w http.ResponseWriter, r *http.Request) {
 // field on the listing, which would ask every target over the network whenever
 // the page opens.
 func (s *Server) aboutRemote(w http.ResponseWriter, r *http.Request) {
-	usage, err := remotes.About(r.Context(), r.PathValue("name"))
+	name := r.PathValue("name")
+	ctx, err := s.targetVPN(r.Context(), name, asked(r))
+	var usage remotes.Usage
+	if err == nil {
+		usage, err = remotes.About(ctx, name)
+	}
 	if err != nil {
 		// The reason tells an unreachable target from one that keeps no
 		// total; both are unsupported.

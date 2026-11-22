@@ -364,6 +364,7 @@ const hi: Translations = {
   'targets.spaceUsed': '{used} उपयोग में',
   'targets.spaceFree': '{total} में से {free} खाली',
   'targets.checkFailed': 'कनेक्ट नहीं',
+  'targets.throughVpn': 'VPN के ज़रिए, किसी काम के चलने पर जाँचा जाता है',
   'targets.checkHint': 'सहेजा हुआ पासवर्ड कुछ सिद्ध नहीं करता। यह गंतव्य को खोलकर उसकी सूची लेता है, और यही एकमात्र तरीका है यह जानने का कि सेटिंग सही है या नहीं।',
   'action.delete': 'मिटाएँ',
   'action.edit': 'संपादित करें',

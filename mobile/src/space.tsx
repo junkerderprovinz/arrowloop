@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { failureLine, type Failure } from "../../web/src/lib/failure";
 import { isLocalTarget } from "../../web/src/lib/localTarget";
+import { checkWord } from "../../web/src/lib/targetCheck";
 import { api, type Remote, type Usage } from "./api";
 import { useT } from "./i18n";
 import { Badge, Caption, Meter, Press, Tip } from "./ui";
@@ -74,6 +75,8 @@ export function useRoom(remotes: Remote[] | null): Record<string, Room> {
 /** What a target's check answered, with the reason when it failed. */
 export interface Reach {
   ok: boolean;
+  /** A target a job reaches through its VPN, left unchecked while that VPN is off. */
+  unchecked?: boolean;
   reason?: string;
   failure?: Failure;
 }
@@ -107,14 +110,16 @@ export function useReach(remotes: Remote[] | null): Record<string, Reach> {
 }
 
 /**
- * Connected or Not connected, once the check has answered. Not connected
- * opens the reason on a tap, since a badge has no room for it.
+ * Connected or Not connected, once the check has answered, or that the target
+ * goes through a VPN that is off. Not connected opens the reason on a tap,
+ * since a badge has no room for it.
  */
 export function ReachBadge({ reach }: { reach: Reach | undefined }) {
   const { t, lang } = useT();
   const [open, setOpen] = useState(false);
   if (reach === undefined) return null;
   if (reach.ok) return <Badge label={t("targets.checkOk")} tone="ok" />;
+  if (reach.unchecked) return <Badge label={t(checkWord(reach))} />;
   const label = t("targets.checkFailed");
   if (!reach.reason) return <Badge label={label} tone="fail" />;
   const reason = failureLine(reach.reason, reach.failure, t, lang);

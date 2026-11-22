@@ -364,6 +364,7 @@ const ca: Translations = {
   'targets.spaceUsed': '{used} en ús',
   'targets.spaceFree': '{free} lliures de {total}',
   'targets.checkFailed': 'No connectat',
+  'targets.throughVpn': 'A través de la VPN, es comprova quan s\'executa una tasca',
   'targets.checkHint': 'Desar una contrasenya no demostra res. Això obre la destinació i en llista el contingut, que és l\'única manera de saber si els paràmetres són correctes.',
   'action.delete': 'Esborra',
   'action.edit': 'Edita',

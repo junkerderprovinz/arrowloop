@@ -364,6 +364,7 @@ const el: Translations = {
   'targets.spaceUsed': '{used} σε χρήση',
   'targets.spaceFree': '{free} ελεύθερα από {total}',
   'targets.checkFailed': 'Μη συνδεδεμένο',
+  'targets.throughVpn': 'Μέσω VPN, ελέγχεται όταν εκτελείται μια εργασία',
   'targets.checkHint': 'Ένα αποθηκευμένο συνθηματικό δεν αποδεικνύει τίποτα. Αυτό ανοίγει τον προορισμό και τον απαριθμεί, που είναι ο μόνος τρόπος να ξέρετε αν οι ρυθμίσεις είναι σωστές.',
   'action.delete': 'Διαγραφή',
   'action.edit': 'Επεξεργασία',

@@ -364,6 +364,7 @@ const ko: Translations = {
   'targets.spaceUsed': '{used} 사용 중',
   'targets.spaceFree': '{total} 중 {free} 여유',
   'targets.checkFailed': '연결 안 됨',
+  'targets.throughVpn': 'VPN을 통해 연결, 작업이 실행될 때 확인됩니다',
   'targets.checkHint': '비밀번호를 저장했다고 해서 증명되는 것은 없습니다. 여기서는 대상을 열어 목록을 가져오며, 설정이 맞는지 아는 방법은 그것뿐입니다.',
   'action.delete': '삭제',
   'action.edit': '편집',

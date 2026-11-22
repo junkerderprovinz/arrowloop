@@ -586,6 +586,7 @@ export const en = {
   'targets.spaceUsed': '{used} in use',
   'targets.spaceFree': '{free} of {total} free',
   'targets.checkFailed': 'Not connected',
+  'targets.throughVpn': 'Through the VPN, checked when a job runs',
   'targets.checkHint':
     'Saving a credential proves nothing. This opens the target and lists it, which is the only way to know the settings are right.',
   'action.delete': 'Delete',
@@ -2898,6 +2899,7 @@ export const de: Translations = {
   'targets.spaceUsed': '{used} belegt',
   'targets.spaceFree': '{free} von {total} frei',
   'targets.checkFailed': 'Nicht verbunden',
+  'targets.throughVpn': 'Über das VPN, wird beim Lauf geprüft',
   'targets.checkHint':
     'Ein gespeichertes Kennwort beweist nichts. Hier wird das Ziel geöffnet und aufgelistet, und nur das zeigt, ob die Angaben stimmen.',
   'action.delete': 'Löschen',

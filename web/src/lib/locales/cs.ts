@@ -364,6 +364,7 @@ const cs: Translations = {
   'targets.spaceUsed': '{used} obsazeno',
   'targets.spaceFree': '{free} volných z {total}',
   'targets.checkFailed': 'Nepřipojeno',
+  'targets.throughVpn': 'Přes VPN, ověří se při běhu úlohy',
   'targets.checkHint': 'Uložené heslo nic nedokazuje. Toto cíl otevře a vypíše, což je jediný způsob, jak zjistit, zda jsou nastavení správná.',
   'action.delete': 'Smazat',
   'action.edit': 'Upravit',

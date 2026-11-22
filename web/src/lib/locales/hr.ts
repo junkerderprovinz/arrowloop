@@ -364,6 +364,7 @@ const hr: Translations = {
   'targets.spaceUsed': '{used} zauzeto',
   'targets.spaceFree': '{free} slobodno od {total}',
   'targets.checkFailed': 'Nije povezano',
+  'targets.throughVpn': 'Preko VPN-a, provjerava se kad se zadatak pokrene',
   'targets.checkHint': 'Spremljena lozinka ne dokazuje ništa. Ovo otvara odredište i ispisuje ga, što je jedini način da se sazna jesu li postavke točne.',
   'action.delete': 'Izbriši',
   'action.edit': 'Uredi',

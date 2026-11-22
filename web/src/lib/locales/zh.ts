@@ -364,6 +364,7 @@ const zh: Translations = {
   'targets.spaceUsed': '已使用 {used}',
   'targets.spaceFree': '{total} 中剩余 {free}',
   'targets.checkFailed': '未连接',
+  'targets.throughVpn': '通过 VPN，在任务运行时检查',
   'targets.checkHint': '保存凭据本身什么都证明不了。这里会打开目标并列出内容，这是唯一能确认设置是否正确的办法。',
   'action.delete': '删除',
   'action.edit': '编辑',

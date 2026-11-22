@@ -364,6 +364,7 @@ const ar: Translations = {
   'targets.spaceUsed': '{used} مستخدمة',
   'targets.spaceFree': '{free} حرّ من أصل {total}',
   'targets.checkFailed': 'غير متصل',
+  'targets.throughVpn': 'عبر الـ VPN، يُفحص عند تشغيل مهمة',
   'targets.checkHint': 'حفظ كلمة السر لا يثبت شيئاً. هذا يفتح الوجهة ويسرد محتواها، وهي الطريقة الوحيدة لمعرفة صحة الإعدادات.',
   'action.delete': 'حذف',
   'action.edit': 'تحرير',

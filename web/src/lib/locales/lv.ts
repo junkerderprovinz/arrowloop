@@ -364,6 +364,7 @@ const lv: Translations = {
   'targets.spaceUsed': '{used} aizņemts',
   'targets.spaceFree': '{free} brīvi no {total}',
   'targets.checkFailed': 'Nav savienots',
+  'targets.throughVpn': 'Caur VPN, tiek pārbaudīts, kad darbojas uzdevums',
   'targets.checkHint': 'Saglabāta parole neko nepierāda. Šeit galamērķis tiek atvērts un uzskaitīts, un tas ir vienīgais veids, kā uzzināt, vai iestatījumi ir pareizi.',
   'action.delete': 'Dzēst',
   'action.edit': 'Rediģēt',

@@ -364,6 +364,7 @@ const fa: Translations = {
   'targets.spaceUsed': '{used} اشغال‌شده',
   'targets.spaceFree': '{free} آزاد از {total}',
   'targets.checkFailed': 'متصل نیست',
+  'targets.throughVpn': 'از طریق VPN، هنگام اجرای یک کار بررسی می‌شود',
   'targets.checkHint': 'ذخیرهٔ گذرواژه چیزی را ثابت نمی‌کند. اینجا مقصد باز و فهرست می‌شود و تنها راه دانستن درستی تنظیمات همین است.',
   'action.delete': 'حذف',
   'action.edit': 'ویرایش',

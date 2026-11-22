@@ -15,9 +15,12 @@ const checked = vi.fn((name: string) =>
   Promise.resolve(
     name === 'home'
       ? { ok: true }
-      : { ok: false, reason: 'dial tcp 10.0.0.9:443: connect: connection refused', failure: { code: 'unreachable' } },
+      : name === 'nas'
+        ? { ok: false, unchecked: true, reason: 'the VPN is off until a run of its job needs it' }
+        : { ok: false, reason: 'dial tcp 10.0.0.9:443: connect: connection refused', failure: { code: 'unreachable' } },
   ),
 )
+const connected = vi.fn((_name: string) => {})
 const volumes = vi.fn(() => Promise.resolve({ volumes: [] as Volume[] }))
 const deleteRemote = vi.fn((name: string) => Promise.resolve({ deleted: name }))
 const forgetVolume = vi.fn((id: string) => Promise.resolve({ forgotten: id }))
@@ -29,6 +32,7 @@ vi.mock('../lib/api', () => ({
         remotes: [
           target('home'),
           target('away'),
+          target('nas'),
           { name: 'here', type: 'alias', settings: [{ key: 'remote', value: 'D:/Backups', secret: false }] },
         ],
         backends: [],
@@ -36,7 +40,10 @@ vi.mock('../lib/api', () => ({
         unlisted: [],
       }),
     volumes: () => volumes(),
-    checkRemote: (name: string) => checked(name),
+    checkRemote: (name: string, connect?: boolean) => {
+      if (connect) connected(name)
+      return checked(name)
+    },
     aboutRemote: () => Promise.resolve({ supported: false }),
     deleteRemote: (name: string) => deleteRemote(name),
     forgetVolume: (id: string) => forgetVolume(id),
@@ -119,6 +126,22 @@ describe('Targets', () => {
     const fail = within(away).getByRole('button', { name: 'Test connection' })
     await waitFor(() => expect(fail.className).toContain('glim-btn--danger'))
     expect(fail.className).toContain('glim-shake')
+  })
+
+  it('says a target behind a VPN that is off goes through it rather than calling it not connected', async () => {
+    show()
+    const nas = await screen.findByRole('group', { name: 'nas:' })
+    expect(await within(nas).findByText('Through the VPN, checked when a job runs')).toBeTruthy()
+    expect(within(nas).queryByText('Not connected')).toBeNull()
+  })
+
+  it('brings the VPN up for a test somebody pressed', async () => {
+    show()
+    const nas = await screen.findByRole('group', { name: 'nas:' })
+    await within(nas).findByText('Through the VPN, checked when a job runs')
+    expect(connected).not.toHaveBeenCalled()
+    fireEvent.click(within(nas).getByRole('button', { name: 'Test connection' }))
+    await waitFor(() => expect(connected).toHaveBeenCalledWith('nas'))
   })
 
   it('drops the unreachable banner once both lists load again', async () => {

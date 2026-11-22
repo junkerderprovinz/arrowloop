@@ -364,6 +364,7 @@ const sv: Translations = {
   'targets.spaceUsed': '{used} används',
   'targets.spaceFree': '{free} ledigt av {total}',
   'targets.checkFailed': 'Inte ansluten',
+  'targets.throughVpn': 'Via VPN, kontrolleras när ett jobb körs',
   'targets.checkHint': 'Ett sparat lösenord bevisar ingenting. Det här öppnar målet och listar det, vilket är enda sättet att veta om inställningarna stämmer.',
   'action.delete': 'Ta bort',
   'action.edit': 'Redigera',

@@ -364,6 +364,7 @@ const ro: Translations = {
   'targets.spaceUsed': '{used} ocupați',
   'targets.spaceFree': '{free} liberi din {total}',
   'targets.checkFailed': 'Neconectat',
+  'targets.throughVpn': 'Prin VPN, verificat când rulează o sarcină',
   'targets.checkHint': 'O parolă salvată nu dovedește nimic. Aceasta deschide destinația și o listează, singurul mod de a ști dacă setările sunt corecte.',
   'action.delete': 'Șterge',
   'action.edit': 'Editează',

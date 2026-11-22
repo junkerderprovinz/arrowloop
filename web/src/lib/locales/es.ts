@@ -364,6 +364,7 @@ const es: Translations = {
   'targets.spaceUsed': '{used} en uso',
   'targets.spaceFree': '{free} libres de {total}',
   'targets.checkFailed': 'Sin conexión',
+  'targets.throughVpn': 'A través de la VPN, se comprueba cuando se ejecuta una tarea',
   'targets.checkHint': 'Guardar una credencial no demuestra nada. Esto abre el destino y lo lista, que es la única manera de saber si los ajustes son correctos.',
   'action.delete': 'Borrar',
   'action.edit': 'Editar',

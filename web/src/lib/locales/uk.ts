@@ -364,6 +364,7 @@ const uk: Translations = {
   'targets.spaceUsed': '{used} зайнято',
   'targets.spaceFree': '{free} вільно з {total}',
   'targets.checkFailed': 'Не підключено',
+  'targets.throughVpn': 'Через VPN, перевіряється під час запуску завдання',
   'targets.checkHint': 'Збережений пароль нічого не доводить. Тут призначення відкривається і перелічується, і лише так видно, чи налаштування правильні.',
   'action.delete': 'Вилучити',
   'action.edit': 'Змінити',

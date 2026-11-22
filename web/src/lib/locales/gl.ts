@@ -364,6 +364,7 @@ const gl: Translations = {
   'targets.spaceUsed': '{used} en uso',
   'targets.spaceFree': '{free} libres de {total}',
   'targets.checkFailed': 'Sen conexión',
+  'targets.throughVpn': 'A través da VPN, compróbase cando se executa unha tarefa',
   'targets.checkHint': 'Gardar un contrasinal non demostra nada. Isto abre o destino e lista o seu contido, que é o único xeito de saber se os axustes son correctos.',
   'action.delete': 'Borrar',
   'action.edit': 'Editar',

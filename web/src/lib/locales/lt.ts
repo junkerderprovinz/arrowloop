@@ -364,6 +364,7 @@ const lt: Translations = {
   'targets.spaceUsed': '{used} užimta',
   'targets.spaceFree': '{free} laisva iš {total}',
   'targets.checkFailed': 'Neprijungta',
+  'targets.throughVpn': 'Per VPN, patikrinama, kai vykdoma užduotis',
   'targets.checkHint': 'Įrašytas slaptažodis nieko neįrodo. Čia paskirtis atidaroma ir išvardijama, o tai vienintelis būdas sužinoti, ar nustatymai teisingi.',
   'action.delete': 'Ištrinti',
   'action.edit': 'Redaguoti',

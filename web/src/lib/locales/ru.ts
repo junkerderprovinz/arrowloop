@@ -364,6 +364,7 @@ const ru: Translations = {
   'targets.spaceUsed': '{used} занято',
   'targets.spaceFree': '{free} свободно из {total}',
   'targets.checkFailed': 'Не подключено',
+  'targets.throughVpn': 'Через VPN, проверяется при запуске задачи',
   'targets.checkHint': 'Сохранённый пароль ничего не доказывает. Здесь назначение открывается и перечисляется, и только так видно, верны ли настройки.',
   'action.delete': 'Удалить',
   'action.edit': 'Изменить',

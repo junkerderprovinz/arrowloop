@@ -364,6 +364,7 @@ const vi: Translations = {
   'targets.spaceUsed': 'Đã dùng {used}',
   'targets.spaceFree': 'Còn trống {free} trên {total}',
   'targets.checkFailed': 'Chưa kết nối',
+  'targets.throughVpn': 'Qua VPN, được kiểm tra khi một tác vụ chạy',
   'targets.checkHint': 'Mật khẩu đã lưu chẳng chứng minh điều gì. Việc này mở đích và liệt kê nó, đó là cách duy nhất để biết các thiết lập có đúng hay không.',
   'action.delete': 'Xóa',
   'action.edit': 'Sửa',

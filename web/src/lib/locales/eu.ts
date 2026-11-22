@@ -364,6 +364,7 @@ const eu: Translations = {
   'targets.spaceUsed': '{used} erabilita',
   'targets.spaceFree': '{free} libre {total}-tik',
   'targets.checkFailed': 'Konektatu gabe',
+  'targets.throughVpn': 'VPNaren bidez, lan bat exekutatzean egiaztatzen da',
   'targets.checkHint': 'Pasahitz bat gordetzeak ez du ezer frogatzen. Honek helburua ireki eta zerrendatzen du, eta hori da ezarpenak zuzenak diren jakiteko modu bakarra.',
   'action.delete': 'Ezabatu',
   'action.edit': 'Editatu',

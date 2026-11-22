@@ -364,6 +364,7 @@ const id: Translations = {
   'targets.spaceUsed': '{used} terpakai',
   'targets.spaceFree': '{free} kosong dari {total}',
   'targets.checkFailed': 'Tidak terhubung',
+  'targets.throughVpn': 'Melalui VPN, diperiksa saat tugas berjalan',
   'targets.checkHint': 'Kata sandi yang tersimpan tidak membuktikan apa pun. Ini membuka tujuannya dan mendaftar isinya, dan hanya itu cara mengetahui apakah pengaturannya benar.',
   'action.delete': 'Hapus',
   'action.edit': 'Sunting',

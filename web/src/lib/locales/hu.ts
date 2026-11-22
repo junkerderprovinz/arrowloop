@@ -364,6 +364,7 @@ const hu: Translations = {
   'targets.spaceUsed': '{used} használatban',
   'targets.spaceFree': '{free} szabad ebből: {total}',
   'targets.checkFailed': 'Nincs kapcsolat',
+  'targets.throughVpn': 'VPN-en keresztül, egy feladat futásakor ellenőrizzük',
   'targets.checkHint': 'Egy elmentett jelszó semmit nem bizonyít. Ez megnyitja a célt és kilistázza, és csak így derül ki, jók-e a beállítások.',
   'action.delete': 'Törlés',
   'action.edit': 'Szerkesztés',

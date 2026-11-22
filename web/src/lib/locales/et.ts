@@ -364,6 +364,7 @@ const et: Translations = {
   'targets.spaceUsed': '{used} kasutusel',
   'targets.spaceFree': '{free} vaba {total}-st',
   'targets.checkFailed': 'Pole ühendatud',
+  'targets.throughVpn': 'VPN-i kaudu, kontrollitakse töö käivitamisel',
   'targets.checkHint': 'Salvestatud parool ei tõesta midagi. See avab sihtkoha ja loetleb selle, mis on ainus viis teada saada, kas seaded on õiged.',
   'action.delete': 'Kustuta',
   'action.edit': 'Muuda',

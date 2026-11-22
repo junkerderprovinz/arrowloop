@@ -364,6 +364,7 @@ const bg: Translations = {
   'targets.spaceUsed': '{used} заети',
   'targets.spaceFree': '{free} свободни от {total}',
   'targets.checkFailed': 'Няма връзка',
+  'targets.throughVpn': 'През VPN, проверява се при изпълнение на задача',
   'targets.checkHint': 'Запазена парола не доказва нищо. Това отваря целта и изброява съдържанието ѝ, а само така се разбира дали настройките са верни.',
   'action.delete': 'Изтриване',
   'action.edit': 'Редактиране',

@@ -364,6 +364,7 @@ const da: Translations = {
   'targets.spaceUsed': '{used} i brug',
   'targets.spaceFree': '{free} ledige af {total}',
   'targets.checkFailed': 'Ikke forbundet',
+  'targets.throughVpn': 'Via VPN, tjekkes når en opgave kører',
   'targets.checkHint': 'En gemt adgangskode beviser intet. Dette åbner målet og lister det, hvilket er den eneste måde at vide, om indstillingerne er rigtige.',
   'action.delete': 'Slet',
   'action.edit': 'Rediger',

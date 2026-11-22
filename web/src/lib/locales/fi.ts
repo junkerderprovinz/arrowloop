@@ -364,6 +364,7 @@ const fi: Translations = {
   'targets.spaceUsed': '{used} käytössä',
   'targets.spaceFree': '{free} vapaana {total} tilasta',
   'targets.checkFailed': 'Ei yhteyttä',
+  'targets.throughVpn': 'VPN:n kautta, tarkistetaan kun tehtävä ajetaan',
   'targets.checkHint': 'Tallennettu salasana ei todista mitään. Tämä avaa kohteen ja luetteloi sen, mikä on ainoa tapa tietää, ovatko asetukset oikein.',
   'action.delete': 'Poista',
   'action.edit': 'Muokkaa',

@@ -364,6 +364,7 @@ const th: Translations = {
   'targets.spaceUsed': 'ใช้ไป {used}',
   'targets.spaceFree': 'ว่าง {free} จาก {total}',
   'targets.checkFailed': 'ไม่ได้เชื่อมต่อ',
+  'targets.throughVpn': 'ผ่าน VPN จะตรวจสอบเมื่องานทำงาน',
   'targets.checkHint': 'รหัสผ่านที่บันทึกไว้ไม่ได้พิสูจน์อะไร ตรงนี้จะเปิดปลายทางและไล่รายการ ซึ่งเป็นทางเดียวที่จะรู้ว่าการตั้งค่าถูกต้องไหม',
   'action.delete': 'ลบ',
   'action.edit': 'แก้ไข',

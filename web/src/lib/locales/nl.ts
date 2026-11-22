@@ -364,6 +364,7 @@ const nl: Translations = {
   'targets.spaceUsed': '{used} in gebruik',
   'targets.spaceFree': '{free} vrij van {total}',
   'targets.checkFailed': 'Niet verbonden',
+  'targets.throughVpn': 'Via de VPN, gecontroleerd wanneer een taak draait',
   'targets.checkHint': 'Een opgeslagen wachtwoord bewijst niets. Dit opent het doel en somt het op, en dat is de enige manier om te weten of de instellingen kloppen.',
   'action.delete': 'Verwijderen',
   'action.edit': 'Bewerken',

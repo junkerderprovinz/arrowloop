@@ -364,6 +364,7 @@ const sl: Translations = {
   'targets.spaceUsed': '{used} zasedeno',
   'targets.spaceFree': '{free} prostega od {total}',
   'targets.checkFailed': 'Ni povezano',
+  'targets.throughVpn': 'Prek VPN, preveri se, ko se opravilo zažene',
   'targets.checkHint': 'Shranjeno geslo ne dokazuje ničesar. To odpre cilj in ga našteje, kar je edini način, da izveste, ali so nastavitve prave.',
   'action.delete': 'Izbriši',
   'action.edit': 'Uredi',

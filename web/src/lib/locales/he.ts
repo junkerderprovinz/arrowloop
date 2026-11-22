@@ -364,6 +364,7 @@ const he: Translations = {
   'targets.spaceUsed': '{used} בשימוש',
   'targets.spaceFree': '{free} פנויים מתוך {total}',
   'targets.checkFailed': 'לא מחובר',
+  'targets.throughVpn': 'דרך ה-VPN, נבדק כשמשימה רצה',
   'targets.checkHint': 'סיסמה שמורה אינה מוכיחה דבר. כאן היעד נפתח ותוכנו נסרק, וזו הדרך היחידה לדעת אם ההגדרות נכונות.',
   'action.delete': 'מחיקה',
   'action.edit': 'עריכה',

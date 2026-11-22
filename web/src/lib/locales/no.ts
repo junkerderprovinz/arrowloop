@@ -364,6 +364,7 @@ const no: Translations = {
   'targets.spaceUsed': '{used} i bruk',
   'targets.spaceFree': '{free} ledig av {total}',
   'targets.checkFailed': 'Ikke tilkoblet',
+  'targets.throughVpn': 'Via VPN, sjekkes når en jobb kjører',
   'targets.checkHint': 'Et lagret passord beviser ingenting. Dette åpner målet og lister det, som er den eneste måten å vite om innstillingene stemmer.',
   'action.delete': 'Slett',
   'action.edit': 'Rediger',

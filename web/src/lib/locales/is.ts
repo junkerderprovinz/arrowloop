@@ -364,6 +364,7 @@ const is: Translations = {
   'targets.spaceUsed': '{used} í notkun',
   'targets.spaceFree': '{free} laus af {total}',
   'targets.checkFailed': 'Ekki tengt',
+  'targets.throughVpn': 'Um VPN, athugað þegar verk keyrir',
   'targets.checkHint': 'Vistað lykilorð sannar ekkert. Þetta opnar áfangastaðinn og telur upp innihald hans, sem er eina leiðin til að vita hvort stillingarnar séu réttar.',
   'action.delete': 'Eyða',
   'action.edit': 'Breyta',

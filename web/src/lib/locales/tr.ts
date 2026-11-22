@@ -364,6 +364,7 @@ const tr: Translations = {
   'targets.spaceUsed': '{used} kullanımda',
   'targets.spaceFree': '{total} içinde {free} boş',
   'targets.checkFailed': 'Bağlı değil',
+  'targets.throughVpn': 'VPN üzerinden, bir görev çalıştığında denetlenir',
   'targets.checkHint': 'Kaydedilmiş bir parola hiçbir şey kanıtlamaz. Bu, hedefi açıp listeler ve ayarların doğru olup olmadığını anlamanın tek yolu budur.',
   'action.delete': 'Sil',
   'action.edit': 'Düzenle',

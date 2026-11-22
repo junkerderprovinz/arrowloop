@@ -364,6 +364,7 @@ const pl: Translations = {
   'targets.spaceUsed': '{used} zajęte',
   'targets.spaceFree': '{free} wolne z {total}',
   'targets.checkFailed': 'Brak połączenia',
+  'targets.throughVpn': 'Przez VPN, sprawdzane, gdy zadanie się uruchamia',
   'targets.checkHint': 'Zapisane hasło niczego nie dowodzi. To otwiera cel i wypisuje jego zawartość, a tylko tak można się przekonać, czy ustawienia są poprawne.',
   'action.delete': 'Usuń',
   'action.edit': 'Edytuj',

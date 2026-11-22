@@ -364,6 +364,7 @@ const ja: Translations = {
   'targets.spaceUsed': '{used} 使用中',
   'targets.spaceFree': '{total} 中 {free} 空き',
   'targets.checkFailed': '未接続',
+  'targets.throughVpn': 'VPN 経由、ジョブの実行時に確認されます',
   'targets.checkHint': '資格情報を保存しただけでは何も証明できません。ここでは接続先を開いて一覧を取得します。設定が正しいかを知る方法はそれだけです。',
   'action.delete': '削除',
   'action.edit': '編集',
