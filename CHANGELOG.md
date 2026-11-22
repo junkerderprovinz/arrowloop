@@ -20,7 +20,7 @@ Automation apps such as Tasker can start a job, ArrowLoop works fully without a 
 ## 🎨 Design
 
 - **Version, Components, Help and About.** The Info tile shows the app with its number, the update switch and where the updates stand in the Version card, and rclone, GlimStone and the installer move to the Components card. The card says "Not checked yet" until the first check, and the phone names the store it came from.
-- **Small touches.** The card on the phone's overview is called Targets, as in the menus, an empty trash shows no size, and the VPN line under a job turns into a warning only where its runs would fail. Thanks to @danpeig for the list ([#264](https://github.com/junkerderprovinz/arrowloop/issues/264)).
+- **Small touches.** On the phone, the screen of your targets and the overview's card are called Targets, as in the menus, an empty trash shows no size, and the VPN line under a job turns into a warning only where its runs would fail. Thanks to @danpeig for the list ([#264](https://github.com/junkerderprovinz/arrowloop/issues/264)).
 
 ## ⚡ Improved
 

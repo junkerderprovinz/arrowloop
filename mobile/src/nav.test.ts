@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { BAR, MORE, railCurrent, railPlaces } from "./nav.ts";
 
@@ -45,6 +46,14 @@ test("the side bar draws each place with the glyph and the words the phone uses"
     const same = rail.find((r) => r.key === place.key);
     assert.equal(same?.glyph, place.glyph);
     assert.equal(same?.label, place.label);
+  }
+});
+
+test("a screen behind More carries the name its menu entry gives it", () => {
+  const app = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+  for (const place of MORE) {
+    const title = new RegExp(`name="${place.screen}"[^>]*title: t\\("([^"]+)"\\)`).exec(app)?.[1];
+    assert.equal(title, place.label, place.screen);
   }
 });
 

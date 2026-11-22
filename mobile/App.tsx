@@ -316,7 +316,7 @@ function Shell() {
               {() => (
                 <MoreNav.Navigator screenOptions={header}>
                   <MoreNav.Screen name="TrashAll" component={TrashAll} options={{ title: t("nav.trash") }} />
-                  <MoreNav.Screen name="TargetList" component={Targets} options={{ title: t("targets.title") }} />
+                  <MoreNav.Screen name="TargetList" component={Targets} options={{ title: t("nav.targets") }} />
                   <MoreNav.Screen name="TargetPick" component={TargetPick} options={{ title: t("targets.addStorage") }} />
                   <MoreNav.Screen name="TargetEdit" component={TargetEdit} options={{ title: t("action.edit") }} />
                   <MoreNav.Screen name="Instances" component={Instances} options={{ title: t("nav.instances") }} />
