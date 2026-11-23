@@ -2256,6 +2256,7 @@ const sv: Translations = {
   'vpn.wifi.nowNone': 'Telefonen är inte på wifi just nu.',
   'vpn.wifi.askTitle': 'Platsåtkomst för wifi-namnet',
   'vpn.wifi.ask': 'Android berättar bara för appar med platsåtkomst vilket wifi du är på. ArrowLoop läser bara namnet på wifit, aldrig var du är.',
+  'vpn.wifi.askAlways': 'ArrowLoop använder platsåtkomst även i bakgrunden, också när appen är stängd eller inte används, för att se vilket wifi telefonen är på. Då ansluter schemalagda körningar direkt på de här nätverken. Den läser aldrig var du är, och wifi-namnet stannar på telefonen.',
   'vpn.wifi.askGo': 'Fortsätt',
   'vpn.wifi.noAccess': 'Utan platsåtkomst ser ArrowLoop inte wifi-namnet, så varje körning går genom VPN:en.',
   'vpn.wifi.grant': 'Ge åtkomst',

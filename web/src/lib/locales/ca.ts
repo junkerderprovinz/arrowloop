@@ -2256,6 +2256,7 @@ const ca: Translations = {
   'vpn.wifi.nowNone': 'Ara mateix el telèfon no és a cap wifi.',
   'vpn.wifi.askTitle': 'Accés a la ubicació per al nom de la wifi',
   'vpn.wifi.ask': 'Android només diu a quina wifi ets a les aplicacions amb accés a la ubicació. ArrowLoop només en llegeix el nom, mai on ets.',
+  'vpn.wifi.askAlways': 'ArrowLoop fa servir l\'accés a la ubicació en segon pla, fins i tot quan l\'aplicació està tancada o no s\'utilitza, per saber a quina wifi és el telèfon. Així les execucions programades es connecten directament en aquestes xarxes. Mai no llegeix on ets, i el nom de la wifi es queda en aquest telèfon.',
   'vpn.wifi.askGo': 'Continua',
   'vpn.wifi.noAccess': 'Sense accés a la ubicació, ArrowLoop no veu el nom de la wifi i per això cada execució passa per la VPN.',
   'vpn.wifi.grant': 'Permet l\'accés',

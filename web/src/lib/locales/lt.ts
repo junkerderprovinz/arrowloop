@@ -2256,6 +2256,7 @@ const lt: Translations = {
   'vpn.wifi.nowNone': 'Telefonas dabar nėra wifi tinkle.',
   'vpn.wifi.askTitle': 'Prieiga prie vietos dėl wifi pavadinimo',
   'vpn.wifi.ask': 'Android pasako, kuriame wifi tinkle esi, tik programėlėms su prieiga prie vietos. ArrowLoop skaito tik wifi pavadinimą, niekada ne tai, kur esi.',
+  'vpn.wifi.askAlways': 'ArrowLoop naudoja prieigą prie vietos ir fone, net kai programėlė uždaryta ar nenaudojama, kad žinotų, kuriame wifi tinkle yra telefonas. Taip suplanuoti vykdymai šiuose tinkluose jungiasi tiesiogiai. Ji niekada neskaito, kur esi, o wifi pavadinimas lieka šiame telefone.',
   'vpn.wifi.askGo': 'Tęsti',
   'vpn.wifi.noAccess': 'Be prieigos prie vietos ArrowLoop nemato wifi pavadinimo, todėl kiekvienas vykdymas eina per VPN.',
   'vpn.wifi.grant': 'Leisti prieigą',

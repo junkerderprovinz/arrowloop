@@ -2256,6 +2256,7 @@ const sk: Translations = {
   'vpn.wifi.nowNone': 'Telefón teraz nie je na wifi.',
   'vpn.wifi.askTitle': 'Prístup k polohe kvôli názvu wifi',
   'vpn.wifi.ask': 'Android prezradí, v ktorej wifi si, len aplikáciám s prístupom k polohe. ArrowLoop z toho číta len názov wifi, nikdy nie to, kde si.',
+  'vpn.wifi.askAlways': 'ArrowLoop používa prístup k polohe aj na pozadí, aj keď je aplikácia zatvorená alebo sa nepoužíva, aby vedel, v ktorej wifi je telefón. Naplánované behy sa tak v týchto sieťach pripoja priamo. Kde si, nikdy nečíta, a názov wifi zostáva v tomto telefóne.',
   'vpn.wifi.askGo': 'Pokračovať',
   'vpn.wifi.noAccess': 'Bez prístupu k polohe ArrowLoop názov wifi nevidí, a tak ide každý beh cez VPN.',
   'vpn.wifi.grant': 'Povoliť prístup',

@@ -2256,6 +2256,7 @@ const sl: Translations = {
   'vpn.wifi.nowNone': 'Telefon zdaj ni na wifiju.',
   'vpn.wifi.askTitle': 'Dostop do lokacije za ime wifija',
   'vpn.wifi.ask': 'Android pove, v katerem wifiju si, le aplikacijam z dostopom do lokacije. ArrowLoop prebere le ime wifija, nikoli tega, kje si.',
+  'vpn.wifi.askAlways': 'ArrowLoop uporablja dostop do lokacije tudi v ozadju, tudi ko je aplikacija zaprta ali se ne uporablja, da ve, v katerem wifiju je telefon. Tako se načrtovani zagoni v teh omrežjih povežejo neposredno. Nikoli ne prebere, kje si, ime wifija pa ostane na tem telefonu.',
   'vpn.wifi.askGo': 'Naprej',
   'vpn.wifi.noAccess': 'Brez dostopa do lokacije ArrowLoop ne vidi imena wifija, zato gre vsak zagon prek VPN.',
   'vpn.wifi.grant': 'Dovoli dostop',

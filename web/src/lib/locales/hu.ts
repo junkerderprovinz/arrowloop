@@ -2256,6 +2256,7 @@ const hu: Translations = {
   'vpn.wifi.nowNone': 'A telefon most nincs wifin.',
   'vpn.wifi.askTitle': 'Helyhozzáférés a wifi nevéhez',
   'vpn.wifi.ask': 'Az Android csak helyhozzáféréssel rendelkező alkalmazásoknak mondja meg, melyik wifin vagy. Az ArrowLoop csak a wifi nevét olvassa ki, azt soha, hogy hol vagy.',
+  'vpn.wifi.askAlways': 'Az ArrowLoop a helyhozzáférést a háttérben is használja, akkor is, ha az alkalmazás be van zárva vagy nincs használatban, hogy tudja, melyik wifin van a telefon. Így az időzített futások ezeken a hálózatokon közvetlenül kapcsolódnak. Azt soha nem olvassa ki, hol vagy, és a wifi neve ezen a telefonon marad.',
   'vpn.wifi.askGo': 'Tovább',
   'vpn.wifi.noAccess': 'Helyhozzáférés nélkül az ArrowLoop nem látja a wifi nevét, ezért minden futás a VPN-en megy át.',
   'vpn.wifi.grant': 'Hozzáférés engedélyezése',

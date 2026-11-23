@@ -4,7 +4,7 @@ import { Alert, AppState, PermissionsAndroid, StyleSheet, Text, View } from "rea
 import { api } from "../api";
 import { engine, type WifiReading } from "../engine";
 import { Field, Refusal } from "../fields";
-import { useT } from "../i18n";
+import { useT, type TranslationKey } from "../i18n";
 import type { MoreStack } from "../nav";
 import { space, text } from "../theme";
 import { Body, Button, Caption, Empty, Page, Section, useTheme } from "../ui";
@@ -57,26 +57,25 @@ export function VpnWifi() {
     }
   };
 
-  // Android shows its own dialog only after ours has said why.
-  const askForAccess = (): Promise<boolean> =>
+  // Android shows its own dialog only after ours has said why, and Google Play
+  // asks for that before access in the background.
+  const explained = (why: TranslationKey): Promise<boolean> =>
     new Promise((answer) =>
       Alert.alert(
         t("vpn.wifi.askTitle"),
-        t("vpn.wifi.ask"),
+        t(why),
         [
           { text: t("confirm.cancel"), style: "cancel", onPress: () => answer(false) },
-          {
-            text: t("vpn.wifi.askGo"),
-            onPress: () =>
-              void PermissionsAndroid.requestMultiple([FINE, COARSE]).then(
-                (got) => answer(got[FINE] === PermissionsAndroid.RESULTS.GRANTED),
-                () => answer(false),
-              ),
-          },
+          { text: t("vpn.wifi.askGo"), onPress: () => answer(true) },
         ],
         { cancelable: true, onDismiss: () => answer(false) },
       ),
     );
+
+  const requestAccess = async () => (await PermissionsAndroid.requestMultiple([FINE, COARSE]))[FINE];
+
+  const askForAccess = async () =>
+    (await explained("vpn.wifi.ask")) && (await requestAccess()) === PermissionsAndroid.RESULTS.GRANTED;
 
   const add = async (wifi: string) => {
     await save(withWifi(list, wifi));
@@ -98,10 +97,9 @@ export function VpnWifi() {
       await engine.openLocationSettings().catch(() => {});
       return;
     }
-    const answer =
-      step.act === "grant"
-        ? (await PermissionsAndroid.requestMultiple([FINE, COARSE]))[FINE]
-        : await PermissionsAndroid.request(BACKGROUND);
+    const always = step.act === "always";
+    if (!(await explained(always ? "vpn.wifi.askAlways" : "vpn.wifi.ask"))) return;
+    const answer = always ? await PermissionsAndroid.request(BACKGROUND) : await requestAccess();
     if (answer === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) await engine.openAppSettings().catch(() => {});
     await read();
   };

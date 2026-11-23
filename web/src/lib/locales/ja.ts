@@ -2256,6 +2256,7 @@ const ja: Translations = {
   'vpn.wifi.nowNone': 'この端末は今 wifi につながっていません。',
   'vpn.wifi.askTitle': 'wifi の名前を知るための位置情報へのアクセス',
   'vpn.wifi.ask': 'Android は、位置情報へのアクセスを持つアプリにだけ、どの wifi につながっているかを伝えます。ArrowLoop が読むのは wifi の名前だけで、あなたの居場所は読みません。',
+  'vpn.wifi.askAlways': 'ArrowLoop は、アプリを閉じているときや使っていないときも含めてバックグラウンドで位置情報へのアクセスを使い、端末がどの wifi につながっているかを読み取ります。これにより、時刻指定の実行はこれらのネットワークで直接接続します。あなたの居場所は読まず、wifi の名前はこの端末から出ません。',
   'vpn.wifi.askGo': '続ける',
   'vpn.wifi.noAccess': '位置情報へのアクセスがないと ArrowLoop は wifi の名前が分からないため、すべての実行が VPN を経由します。',
   'vpn.wifi.grant': 'アクセスを許可',

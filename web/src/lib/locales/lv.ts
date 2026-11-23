@@ -2256,6 +2256,7 @@ const lv: Translations = {
   'vpn.wifi.nowNone': 'Tālrunis pašlaik nav wifi tīklā.',
   'vpn.wifi.askTitle': 'Piekļuve atrašanās vietai wifi nosaukuma dēļ',
   'vpn.wifi.ask': 'Android pasaka, kurā wifi tīklā tu esi, tikai lietotnēm ar piekļuvi atrašanās vietai. ArrowLoop nolasa tikai wifi nosaukumu, nekad ne to, kur tu esi.',
+  'vpn.wifi.askAlways': 'ArrowLoop izmanto piekļuvi atrašanās vietai arī fonā, pat ja lietotne ir aizvērta vai netiek lietota, lai zinātu, kurā wifi tīklā ir tālrunis. Tā ieplānotās darbības šajos tīklos savienojas tieši. Tā nekad nenolasa, kur tu esi, un wifi nosaukums paliek šajā tālrunī.',
   'vpn.wifi.askGo': 'Turpināt',
   'vpn.wifi.noAccess': 'Bez piekļuves atrašanās vietai ArrowLoop neredz wifi nosaukumu, tāpēc katra darbība iet caur VPN.',
   'vpn.wifi.grant': 'Atļaut piekļuvi',

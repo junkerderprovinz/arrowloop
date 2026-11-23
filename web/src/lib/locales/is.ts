@@ -2256,6 +2256,7 @@ const is: Translations = {
   'vpn.wifi.nowNone': 'Síminn er ekki á wifi núna.',
   'vpn.wifi.askTitle': 'Aðgangur að staðsetningu fyrir heiti wifi-netsins',
   'vpn.wifi.ask': 'Android segir aðeins forritum með aðgang að staðsetningu á hvaða wifi þú ert. ArrowLoop les aðeins heiti netsins, aldrei hvar þú ert.',
+  'vpn.wifi.askAlways': 'ArrowLoop notar aðgang að staðsetningu líka í bakgrunni, jafnvel þegar forritið er lokað eða ekki í notkun, til að vita á hvaða wifi síminn er. Þannig tengjast tímasettar keyrslur beint á þessum netum. Það les aldrei hvar þú ert, og heiti netsins verður eftir í þessum síma.',
   'vpn.wifi.askGo': 'Áfram',
   'vpn.wifi.noAccess': 'Án aðgangs að staðsetningu sér ArrowLoop ekki heiti wifi-netsins, svo hver keyrsla fer um VPN-ið.',
   'vpn.wifi.grant': 'Leyfa aðgang',

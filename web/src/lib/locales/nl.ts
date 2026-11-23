@@ -2256,6 +2256,7 @@ const nl: Translations = {
   'vpn.wifi.nowNone': 'Deze telefoon zit nu niet op wifi.',
   'vpn.wifi.askTitle': 'Locatietoegang voor de wifinaam',
   'vpn.wifi.ask': 'Android vertelt alleen apps met locatietoegang op welke wifi je zit. ArrowLoop leest alleen de naam van de wifi, nooit waar je bent.',
+  'vpn.wifi.askAlways': 'ArrowLoop gebruikt locatietoegang ook op de achtergrond, zelfs als de app dicht is of niet wordt gebruikt, om te zien op welke wifi de telefoon zit. Zo maken geplande runs op deze netwerken direct verbinding. Waar je bent leest ArrowLoop nooit, en de wifinaam blijft op deze telefoon.',
   'vpn.wifi.askGo': 'Doorgaan',
   'vpn.wifi.noAccess': 'Zonder locatietoegang ziet ArrowLoop de wifinaam niet, dus elke run loopt via de VPN.',
   'vpn.wifi.grant': 'Toegang geven',

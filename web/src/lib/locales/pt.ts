@@ -2256,6 +2256,7 @@ const pt: Translations = {
   'vpn.wifi.nowNone': 'Neste momento o telemóvel não está em nenhum wi-fi.',
   'vpn.wifi.askTitle': 'Acesso à localização para o nome do wi-fi',
   'vpn.wifi.ask': 'O Android só diz em que wi-fi estás às apps com acesso à localização. O ArrowLoop só lê o nome do wi-fi, nunca onde estás.',
+  'vpn.wifi.askAlways': 'O ArrowLoop usa o acesso à localização em segundo plano, mesmo com a app fechada ou sem uso, para saber em que wi-fi está o telemóvel. Assim, as execuções agendadas ligam-se diretamente nestas redes. Nunca lê onde estás, e o nome do wi-fi fica neste telemóvel.',
   'vpn.wifi.askGo': 'Continuar',
   'vpn.wifi.noAccess': 'Sem acesso à localização, o ArrowLoop não vê o nome do wi-fi, por isso cada execução passa pela VPN.',
   'vpn.wifi.grant': 'Permitir acesso',

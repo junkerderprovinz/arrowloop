@@ -2256,6 +2256,7 @@ const ko: Translations = {
   'vpn.wifi.nowNone': '이 기기는 지금 wifi에 연결되어 있지 않습니다.',
   'vpn.wifi.askTitle': 'wifi 이름을 위한 위치 접근 권한',
   'vpn.wifi.ask': 'Android는 위치 접근 권한이 있는 앱에만 어떤 wifi에 연결되어 있는지 알려 줍니다. ArrowLoop는 wifi 이름만 읽고, 사용자의 위치는 절대 읽지 않습니다.',
+  'vpn.wifi.askAlways': 'ArrowLoop는 앱이 닫혀 있거나 사용 중이 아닐 때도 백그라운드에서 위치 접근 권한을 사용해 기기가 어떤 wifi에 연결되어 있는지 읽습니다. 그래서 예약된 실행이 이 네트워크에서 바로 연결됩니다. 사용자의 위치는 절대 읽지 않으며, wifi 이름은 이 기기에만 남습니다.',
   'vpn.wifi.askGo': '계속',
   'vpn.wifi.noAccess': '위치 접근 권한이 없으면 ArrowLoop가 wifi 이름을 볼 수 없어서 모든 실행이 VPN을 거칩니다.',
   'vpn.wifi.grant': '접근 허용',

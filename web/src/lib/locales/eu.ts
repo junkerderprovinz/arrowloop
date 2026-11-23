@@ -2256,6 +2256,7 @@ const eu: Translations = {
   'vpn.wifi.nowNone': 'Telefonoa ez dago orain wifi batean.',
   'vpn.wifi.askTitle': 'Kokapenerako sarbidea wifiaren izenerako',
   'vpn.wifi.ask': 'Androidek kokapenerako sarbidea duten aplikazioei bakarrik esaten die zein wifitan zauden. ArrowLoopek wifiaren izena baino ez du irakurtzen, inoiz ez non zauden.',
+  'vpn.wifi.askAlways': 'ArrowLoopek kokapenerako sarbidea atzeko planoan ere erabiltzen du, aplikazioa itxita edo erabili gabe dagoenean ere, telefonoa zein wifitan dagoen jakiteko. Horrela, programatutako exekuzioak zuzenean konektatzen dira sare hauetan. Ez du inoiz irakurtzen non zauden, eta wifiaren izena telefono honetan geratzen da.',
   'vpn.wifi.askGo': 'Jarraitu',
   'vpn.wifi.noAccess': 'Kokapenerako sarbiderik gabe ArrowLoopek ez du wifiaren izena ikusten, eta exekuzio guztiak VPNtik igarotzen dira.',
   'vpn.wifi.grant': 'Eman sarbidea',

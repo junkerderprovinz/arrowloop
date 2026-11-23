@@ -2256,6 +2256,7 @@ const tr: Translations = {
   'vpn.wifi.nowNone': 'Bu telefon şu anda wifi\'de değil.',
   'vpn.wifi.askTitle': 'Wifi adı için konum erişimi',
   'vpn.wifi.ask': 'Android hangi wifi\'de olduğunu yalnızca konum erişimi olan uygulamalara söyler. ArrowLoop yalnızca wifi\'nin adını okur, nerede olduğunu asla.',
+  'vpn.wifi.askAlways': 'ArrowLoop, uygulama kapalıyken veya kullanılmıyorken bile arka planda konum erişimini kullanır ve telefonun hangi wifi\'de olduğunu okur. Böylece zamanlanmış çalışmalar bu ağlarda doğrudan bağlanır. Nerede olduğunu asla okumaz ve wifi adı bu telefonda kalır.',
   'vpn.wifi.askGo': 'Devam',
   'vpn.wifi.noAccess': 'Konum erişimi olmadan ArrowLoop wifi adını göremez, bu yüzden her çalışma VPN üzerinden gider.',
   'vpn.wifi.grant': 'Erişime izin ver',

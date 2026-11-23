@@ -2256,6 +2256,7 @@ const vi: Translations = {
   'vpn.wifi.nowNone': 'Máy này hiện không ở trên wifi.',
   'vpn.wifi.askTitle': 'Quyền truy cập vị trí để đọc tên wifi',
   'vpn.wifi.ask': 'Android chỉ cho các ứng dụng có quyền truy cập vị trí biết bạn đang ở wifi nào. ArrowLoop chỉ đọc tên wifi, không bao giờ đọc bạn đang ở đâu.',
+  'vpn.wifi.askAlways': 'ArrowLoop dùng quyền truy cập vị trí cả ở chế độ nền, kể cả khi ứng dụng đóng hoặc không được dùng, để biết máy đang ở wifi nào. Nhờ vậy các lần chạy theo lịch kết nối trực tiếp trên các mạng này. Ứng dụng không bao giờ đọc bạn đang ở đâu, và tên wifi chỉ ở trên máy này.',
   'vpn.wifi.askGo': 'Tiếp tục',
   'vpn.wifi.noAccess': 'Không có quyền truy cập vị trí, ArrowLoop không thấy tên wifi, nên mọi lần chạy đều đi qua VPN.',
   'vpn.wifi.grant': 'Cho phép truy cập',

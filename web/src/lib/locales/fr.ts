@@ -2256,6 +2256,7 @@ const fr: Translations = {
   'vpn.wifi.nowNone': 'Ce téléphone n\'est sur aucun wifi en ce moment.',
   'vpn.wifi.askTitle': 'Accès à la position pour le nom du wifi',
   'vpn.wifi.ask': 'Android n\'indique le wifi sur lequel vous êtes qu\'aux applis ayant accès à la position. ArrowLoop ne lit que le nom du wifi, jamais l\'endroit où vous êtes.',
+  'vpn.wifi.askAlways': 'ArrowLoop utilise l\'accès à la position en arrière-plan, même quand l\'appli est fermée ou inutilisée, pour savoir sur quel wifi est le téléphone. Ainsi, les exécutions programmées se connectent directement sur ces réseaux. Il ne lit jamais l\'endroit où vous êtes, et le nom du wifi reste sur ce téléphone.',
   'vpn.wifi.askGo': 'Continuer',
   'vpn.wifi.noAccess': 'Sans accès à la position, ArrowLoop ne voit pas le nom du wifi, donc chaque exécution passe par le VPN.',
   'vpn.wifi.grant': 'Autoriser l\'accès',

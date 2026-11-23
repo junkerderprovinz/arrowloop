@@ -2256,6 +2256,7 @@ const he: Translations = {
   'vpn.wifi.nowNone': 'הטלפון לא מחובר עכשיו ל-wifi.',
   'vpn.wifi.askTitle': 'גישה למיקום בשביל שם ה-wifi',
   'vpn.wifi.ask': 'Android מגלה באיזו רשת wifi אתה נמצא רק לאפליקציות עם גישה למיקום. ArrowLoop קורא רק את שם ה-wifi, אף פעם לא איפה אתה.',
+  'vpn.wifi.askAlways': 'ArrowLoop משתמש בגישה למיקום גם ברקע, גם כשהאפליקציה סגורה או לא בשימוש, כדי לדעת לאיזו רשת wifi הטלפון מחובר. כך הרצות מתוזמנות מתחברות ישירות ברשתות האלה. הוא אף פעם לא קורא איפה אתה, ושם ה-wifi נשאר בטלפון הזה.',
   'vpn.wifi.askGo': 'המשך',
   'vpn.wifi.noAccess': 'בלי גישה למיקום ArrowLoop לא רואה את שם ה-wifi, ולכן כל הרצה עוברת דרך ה־VPN.',
   'vpn.wifi.grant': 'מתן גישה',

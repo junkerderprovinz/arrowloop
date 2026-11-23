@@ -2256,6 +2256,7 @@ const zh: Translations = {
   'vpn.wifi.nowNone': '这台手机现在没有连接 wifi。',
   'vpn.wifi.askTitle': '为读取 wifi 名称而访问位置信息',
   'vpn.wifi.ask': 'Android 只会告诉有位置信息权限的应用你连着哪个 wifi。ArrowLoop 只读取 wifi 的名称，从不读取你在哪里。',
+  'vpn.wifi.askAlways': 'ArrowLoop 会在后台使用位置信息权限，即使应用已关闭或未在使用，以读取手机连接的是哪个 wifi。这样定时运行就能在这些网络中直接连接。它从不读取你在哪里，wifi 名称也只留在这台手机上。',
   'vpn.wifi.askGo': '继续',
   'vpn.wifi.noAccess': '没有位置信息权限，ArrowLoop 看不到 wifi 名称，因此每次运行都经由 VPN。',
   'vpn.wifi.grant': '允许访问',

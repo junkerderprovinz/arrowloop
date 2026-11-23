@@ -2256,6 +2256,7 @@ const da: Translations = {
   'vpn.wifi.nowNone': 'Telefonen er ikke på wifi lige nu.',
   'vpn.wifi.askTitle': 'Adgang til placering for wifi-navnet',
   'vpn.wifi.ask': 'Android fortæller kun apps med adgang til placering, hvilket wifi du er på. ArrowLoop læser kun navnet på wifi\'et, aldrig hvor du er.',
+  'vpn.wifi.askAlways': 'ArrowLoop bruger adgang til placering i baggrunden, også når appen er lukket eller ikke er i brug, til at se, hvilket wifi telefonen er på. Så forbinder planlagte kørsler direkte på disse netværk. Den læser aldrig, hvor du er, og wifi-navnet bliver på telefonen.',
   'vpn.wifi.askGo': 'Fortsæt',
   'vpn.wifi.noAccess': 'Uden adgang til placering kan ArrowLoop ikke se wifi-navnet, så hver kørsel går gennem VPN\'en.',
   'vpn.wifi.grant': 'Giv adgang',

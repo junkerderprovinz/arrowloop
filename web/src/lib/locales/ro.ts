@@ -2256,6 +2256,7 @@ const ro: Translations = {
   'vpn.wifi.nowNone': 'Telefonul nu este acum în nicio rețea wifi.',
   'vpn.wifi.askTitle': 'Acces la locație pentru numele rețelei wifi',
   'vpn.wifi.ask': 'Android spune în ce wifi ești doar aplicațiilor cu acces la locație. ArrowLoop citește doar numele rețelei, niciodată unde ești.',
+  'vpn.wifi.askAlways': 'ArrowLoop folosește accesul la locație și în fundal, chiar și când aplicația este închisă sau nefolosită, ca să știe în ce wifi este telefonul. Astfel, rulările programate se conectează direct în aceste rețele. Nu citește niciodată unde ești, iar numele rețelei rămâne pe acest telefon.',
   'vpn.wifi.askGo': 'Continuă',
   'vpn.wifi.noAccess': 'Fără acces la locație, ArrowLoop nu vede numele rețelei wifi, așa că fiecare rulare trece prin VPN.',
   'vpn.wifi.grant': 'Permite accesul',

@@ -2256,6 +2256,7 @@ const id: Translations = {
   'vpn.wifi.nowNone': 'Ponsel ini sedang tidak di wifi.',
   'vpn.wifi.askTitle': 'Akses lokasi untuk nama wifi',
   'vpn.wifi.ask': 'Android hanya memberi tahu aplikasi dengan akses lokasi di wifi mana kamu berada. ArrowLoop hanya membaca nama wifi, tidak pernah di mana kamu berada.',
+  'vpn.wifi.askAlways': 'ArrowLoop memakai akses lokasi di latar belakang, bahkan saat aplikasi ditutup atau tidak dipakai, untuk tahu ponsel sedang di wifi mana. Dengan begitu tugas terjadwal tersambung langsung di jaringan ini. ArrowLoop tidak pernah membaca di mana kamu berada, dan nama wifi tetap di ponsel ini.',
   'vpn.wifi.askGo': 'Lanjut',
   'vpn.wifi.noAccess': 'Tanpa akses lokasi, ArrowLoop tidak bisa melihat nama wifi, jadi semua tugas berjalan lewat VPN.',
   'vpn.wifi.grant': 'Izinkan akses',

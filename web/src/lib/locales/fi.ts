@@ -2256,6 +2256,7 @@ const fi: Translations = {
   'vpn.wifi.nowNone': 'Puhelin ei ole nyt wifissä.',
   'vpn.wifi.askTitle': 'Sijaintilupa wifin nimeä varten',
   'vpn.wifi.ask': 'Android kertoo, missä wifissä olet, vain sovelluksille, joilla on sijaintilupa. ArrowLoop lukee vain wifin nimen, ei koskaan sitä, missä olet.',
+  'vpn.wifi.askAlways': 'ArrowLoop käyttää sijaintilupaa myös taustalla, vaikka sovellus olisi kiinni tai käyttämättä, nähdäkseen, missä wifissä puhelin on. Näin ajastetut ajot yhdistävät näissä verkoissa suoraan. Se ei koskaan lue, missä olet, ja wifin nimi pysyy tässä puhelimessa.',
   'vpn.wifi.askGo': 'Jatka',
   'vpn.wifi.noAccess': 'Ilman sijaintilupaa ArrowLoop ei näe wifin nimeä, joten jokainen ajo kulkee VPN:n kautta.',
   'vpn.wifi.grant': 'Salli pääsy',
