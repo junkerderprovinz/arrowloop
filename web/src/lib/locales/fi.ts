@@ -35,7 +35,7 @@ const fi: Translations = {
   'signin.error.confirmOff': 'Tämä muutos vaatii tuoreen kirjautumisen. Kirjaudu ulos ja takaisin sisään ja yritä sitten uudelleen.',
   'signin.error.crossSite': 'Pyyntö ei tullut ArrowLoopin omalta sivulta, joten se hylättiin.',
   'signin.error.forbidden': 'Tilisi ei saa tehdä sitä.',
-  'signin.error.fromConfig': 'Tämä kirjautumispalvelu tulee arrowloop.json-tiedostosta, joten muutat sitä siellä.',
+  'signin.error.fromConfig': 'Tämä kirjautumispalvelu on määritetty käyttöliittymän ulkopuolella, joten muutat sitä siellä.',
   'signin.error.internal': 'ArrowLoopissa meni jotain vikaan. Kontin loki kertoo lisää.',
   'signin.error.issuerInvalid': 'Osoite ei näytä kirjautumispalvelulta.',
   'signin.error.lastWayIn': 'Se on viimeinen tie sisään, joten se jää, ellei omistaja juuri kirjautuneena poista sitä.',

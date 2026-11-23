@@ -35,7 +35,7 @@ const hi: Translations = {
   'signin.error.confirmOff': 'इस बदलाव के लिए नया साइन इन चाहिए। साइन आउट करें, फिर से साइन इन करें और दोबारा कोशिश करें।',
   'signin.error.crossSite': 'यह अनुरोध ArrowLoop के अपने पेज से नहीं आया, इसलिए इसे मना कर दिया गया।',
   'signin.error.forbidden': 'आपके खाते को इसकी अनुमति नहीं है।',
-  'signin.error.fromConfig': 'यह साइन इन सेवा arrowloop.json से आती है, इसलिए इसे वहीं बदलें।',
+  'signin.error.fromConfig': 'यह साइन-इन सेवा इंटरफ़ेस के बाहर सेट की गई है, इसलिए इसे वहीं बदलें।',
   'signin.error.internal': 'ArrowLoop के अंदर कुछ गड़बड़ हो गई। कंटेनर का लॉग ज़्यादा बताता है।',
   'signin.error.issuerInvalid': 'यह पता साइन इन सेवा जैसा नहीं लगता।',
   'signin.error.lastWayIn': 'यह अंदर आने का आखिरी रास्ता है, इसलिए यह रहता है, जब तक मालिक ताज़ा साइन इन करके इसे न हटाए।',

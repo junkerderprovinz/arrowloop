@@ -35,7 +35,7 @@ const lt: Translations = {
   'signin.error.confirmOff': 'Šiam pakeitimui reikia naujo prisijungimo. Atsijunk, vėl prisijunk ir bandyk dar kartą.',
   'signin.error.crossSite': 'Ši užklausa atėjo ne iš ArrowLoop puslapio, todėl buvo atmesta.',
   'signin.error.forbidden': 'Tavo paskyrai to daryti negalima.',
-  'signin.error.fromConfig': 'Ši prisijungimo paslauga ateina iš arrowloop.json, todėl ją keiti ten.',
+  'signin.error.fromConfig': 'Ši prisijungimo paslauga nustatyta už sąsajos ribų, todėl ją keičiate ten.',
   'signin.error.internal': 'ArrowLoop kažkas nepavyko. Konteinerio žurnalas pasakys daugiau.',
   'signin.error.issuerInvalid': 'Šis adresas neatrodo kaip prisijungimo paslauga.',
   'signin.error.lastWayIn': 'Tai paskutinis būdas patekti, todėl jis lieka, nebent savininkas, ką tik prisijungęs, jį pašalina.',

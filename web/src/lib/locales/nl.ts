@@ -35,7 +35,7 @@ const nl: Translations = {
   'signin.error.confirmOff': 'Deze wijziging heeft een verse login nodig. Log uit en weer in, en probeer het dan opnieuw.',
   'signin.error.crossSite': 'Dat verzoek kwam niet van de pagina van ArrowLoop, dus het is geweigerd.',
   'signin.error.forbidden': 'Je account mag dat niet.',
-  'signin.error.fromConfig': 'Deze inlogdienst komt uit arrowloop.json, dus je wijzigt hem daar.',
+  'signin.error.fromConfig': 'Deze aanmelddienst is buiten de interface ingesteld, dus je wijzigt hem daar.',
   'signin.error.internal': 'Er ging iets mis in ArrowLoop. De log van de container zegt meer.',
   'signin.error.issuerInvalid': 'Dat adres lijkt geen inlogdienst.',
   'signin.error.lastWayIn': 'Dat is de laatste weg naar binnen, dus die blijft, tenzij de eigenaar, net ingelogd, hem weghaalt.',

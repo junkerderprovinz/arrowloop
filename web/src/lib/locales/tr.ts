@@ -35,7 +35,7 @@ const tr: Translations = {
   'signin.error.confirmOff': 'Bu değişiklik yeni bir giriş ister. Çıkış yap, yeniden giriş yap ve tekrar dene.',
   'signin.error.crossSite': 'Bu istek ArrowLoop\'un kendi sayfasından gelmedi, bu yüzden reddedildi.',
   'signin.error.forbidden': 'Hesabının buna izni yok.',
-  'signin.error.fromConfig': 'Bu giriş hizmeti arrowloop.json dosyasından geliyor, bu yüzden onu orada değiştirirsin.',
+  'signin.error.fromConfig': 'Bu oturum açma hizmeti arayüzün dışında ayarlanmış, bu yüzden onu orada değiştirirsiniz.',
   'signin.error.internal': 'ArrowLoop\'ta bir şeyler ters gitti. Kapsayıcı günlüğü daha fazlasını söyler.',
   'signin.error.issuerInvalid': 'Bu adres bir giriş hizmetine benzemiyor.',
   'signin.error.lastWayIn': 'Bu son giriş yolu, bu yüzden yeni giriş yapmış sahip kaldırmadıkça kalır.',

@@ -35,7 +35,7 @@ const ro: Translations = {
   'signin.error.confirmOff': 'Această modificare are nevoie de o conectare recentă. Deconectează-te, conectează-te din nou și încearcă iar.',
   'signin.error.crossSite': 'Cererea nu a venit de pe pagina ArrowLoop, așa că a fost refuzată.',
   'signin.error.forbidden': 'Contul tău nu are voie să facă asta.',
-  'signin.error.fromConfig': 'Acest serviciu de conectare vine din arrowloop.json, așa că îl schimbi acolo.',
+  'signin.error.fromConfig': 'Acest serviciu de conectare este configurat în afara interfeței, așa că îl schimbi acolo.',
   'signin.error.internal': 'Ceva n-a mers în ArrowLoop. Jurnalul containerului spune mai multe.',
   'signin.error.issuerInvalid': 'Adresa nu arată ca un serviciu de conectare.',
   'signin.error.lastWayIn': 'E ultima cale de intrare, așa că rămâne, dacă nu o elimină proprietarul, proaspăt conectat.',

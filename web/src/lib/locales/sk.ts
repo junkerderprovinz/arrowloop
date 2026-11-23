@@ -35,7 +35,7 @@ const sk: Translations = {
   'signin.error.confirmOff': 'Táto zmena vyžaduje čerstvé prihlásenie. Odhláste sa, znova sa prihláste a skúste to znova.',
   'signin.error.crossSite': 'Táto požiadavka neprišla zo stránky ArrowLoopu, preto bola odmietnutá.',
   'signin.error.forbidden': 'Váš účet to nesmie.',
-  'signin.error.fromConfig': 'Táto prihlasovacia služba pochádza z arrowloop.json, takže ju meníte tam.',
+  'signin.error.fromConfig': 'Táto prihlasovacia služba je nastavená mimo rozhrania, takže ju zmeníte tam.',
   'signin.error.internal': 'V ArrowLoope sa niečo pokazilo. Viac povie log kontajnera.',
   'signin.error.issuerInvalid': 'Táto adresa nevyzerá ako prihlasovacia služba.',
   'signin.error.lastWayIn': 'To je posledná cesta dnu, preto zostáva, pokiaľ ju neodstráni vlastník po čerstvom prihlásení.',

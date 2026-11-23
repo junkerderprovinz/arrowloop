@@ -35,7 +35,7 @@ const fa: Translations = {
   'signin.error.confirmOff': 'این تغییر به ورود تازه نیاز دارد. خارج شوید، دوباره وارد شوید و باز امتحان کنید.',
   'signin.error.crossSite': 'این درخواست از صفحهٔ خود ArrowLoop نیامد، بنابراین رد شد.',
   'signin.error.forbidden': 'حساب شما اجازهٔ این کار را ندارد.',
-  'signin.error.fromConfig': 'این سرویس ورود از arrowloop.json می‌آید، پس آن را همان‌جا تغییر دهید.',
+  'signin.error.fromConfig': 'این سرویس ورود بیرون از رابط برپا شده است، پس آن را همان‌جا تغییر می‌دهید.',
   'signin.error.internal': 'چیزی درون ArrowLoop اشتباه پیش رفت. گزارش کانتینر بیشتر می‌گوید.',
   'signin.error.issuerInvalid': 'این نشانی شبیه سرویس ورود نیست.',
   'signin.error.lastWayIn': 'این آخرین راه ورود است، پس می‌ماند مگر مالک با ورودی تازه آن را بردارد.',

@@ -35,7 +35,7 @@ const he: Translations = {
   'signin.error.confirmOff': 'השינוי הזה דורש התחברות חדשה. התנתק, התחבר שוב ונסה שוב.',
   'signin.error.crossSite': 'הבקשה הזו לא הגיעה מהדף של ArrowLoop, ולכן נדחתה.',
   'signin.error.forbidden': 'החשבון שלך לא מורשה לעשות זאת.',
-  'signin.error.fromConfig': 'שירות ההתחברות הזה מגיע מ-arrowloop.json, לכן משנים אותו שם.',
+  'signin.error.fromConfig': 'שירות הכניסה הזה מוגדר מחוץ לממשק, ולכן משנים אותו שם.',
   'signin.error.internal': 'משהו השתבש בתוך ArrowLoop. יומן המכולה מספר יותר.',
   'signin.error.issuerInvalid': 'הכתובת הזו לא נראית כמו שירות התחברות.',
   'signin.error.lastWayIn': 'זו הדרך האחרונה להיכנס, ולכן היא נשארת, אלא אם הבעלים, אחרי התחברות טרייה, מסיר אותה.',

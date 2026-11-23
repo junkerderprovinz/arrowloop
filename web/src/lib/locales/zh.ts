@@ -35,7 +35,7 @@ const zh: Translations = {
   'signin.error.confirmOff': '这项更改需要重新登录。请退出后再登录，然后重试。',
   'signin.error.crossSite': '这个请求不是来自 ArrowLoop 自己的页面，因此被拒绝了。',
   'signin.error.forbidden': '你的账户无权这样做。',
-  'signin.error.fromConfig': '这个登录服务来自 arrowloop.json，所以请在那里修改。',
+  'signin.error.fromConfig': '此登录服务在界面之外设置，请在那里更改。',
   'signin.error.internal': 'ArrowLoop 内部出了问题。容器日志里有更多信息。',
   'signin.error.issuerInvalid': '这个地址看起来不像登录服务。',
   'signin.error.lastWayIn': '这是最后一种登录方式，所以会保留，除非刚刚登录的所有者将它移除。',

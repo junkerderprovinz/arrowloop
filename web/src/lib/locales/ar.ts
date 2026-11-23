@@ -35,7 +35,7 @@ const ar: Translations = {
   'signin.error.confirmOff': 'هذا التغيير يحتاج إلى تسجيل دخول جديد. سجّل الخروج ثم الدخول، وحاول مرة أخرى.',
   'signin.error.crossSite': 'لم يأتِ هذا الطلب من صفحة ArrowLoop نفسها، لذلك رُفض.',
   'signin.error.forbidden': 'لا يُسمح لحسابك بذلك.',
-  'signin.error.fromConfig': 'تأتي خدمة تسجيل الدخول هذه من arrowloop.json، لذا تغيّرها هناك.',
+  'signin.error.fromConfig': 'خدمة تسجيل الدخول هذه مُعدّة خارج الواجهة، لذا تغيّرها هناك.',
   'signin.error.internal': 'حدث خطأ داخل ArrowLoop. سجل الحاوية يخبرك بالمزيد.',
   'signin.error.issuerInvalid': 'لا يبدو هذا العنوان خدمة تسجيل دخول.',
   'signin.error.lastWayIn': 'هذه آخر طريقة للدخول، لذا تبقى ما لم يُزلها المالك بعد تسجيل دخول حديث.',

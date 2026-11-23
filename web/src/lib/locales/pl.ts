@@ -35,7 +35,7 @@ const pl: Translations = {
   'signin.error.confirmOff': 'Ta zmiana wymaga świeżego logowania. Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.',
   'signin.error.crossSite': 'To żądanie nie pochodziło ze strony ArrowLoop, więc zostało odrzucone.',
   'signin.error.forbidden': 'Twoje konto nie może tego zrobić.',
-  'signin.error.fromConfig': 'Ta usługa logowania pochodzi z arrowloop.json, więc zmieniasz ją tam.',
+  'signin.error.fromConfig': 'Ta usługa logowania jest skonfigurowana poza interfejsem, więc zmienisz ją tam.',
   'signin.error.internal': 'W ArrowLoop coś poszło nie tak. Log kontenera powie więcej.',
   'signin.error.issuerInvalid': 'Ten adres nie wygląda na usługę logowania.',
   'signin.error.lastWayIn': 'To ostatnia droga do środka, więc zostaje, chyba że właściciel, świeżo zalogowany, ją usunie.',

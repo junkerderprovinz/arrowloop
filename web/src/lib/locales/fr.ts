@@ -35,7 +35,7 @@ const fr: Translations = {
   'signin.error.confirmOff': 'Cette modification exige une connexion récente. Déconnectez-vous et reconnectez-vous, puis réessayez.',
   'signin.error.crossSite': 'Cette requête ne venait pas de la page de ArrowLoop, elle a donc été refusée.',
   'signin.error.forbidden': 'Votre compte n\'a pas le droit de faire cela.',
-  'signin.error.fromConfig': 'Ce service de connexion vient de arrowloop.json, vous le modifiez donc là.',
+  'signin.error.fromConfig': 'Ce service de connexion est configuré en dehors de l\'interface, c\'est donc là que vous le modifiez.',
   'signin.error.internal': 'Un problème est survenu dans ArrowLoop. Le journal du conteneur en dit plus.',
   'signin.error.issuerInvalid': 'Cette adresse ne ressemble pas à un service de connexion.',
   'signin.error.lastWayIn': 'C\'est le dernier moyen d\'entrer, il reste donc, sauf si le propriétaire, fraîchement connecté, le retire.',

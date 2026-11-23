@@ -35,7 +35,7 @@ const is: Translations = {
   'signin.error.confirmOff': 'Þessi breyting krefst nýrrar innskráningar. Skráðu þig út og aftur inn og reyndu svo aftur.',
   'signin.error.crossSite': 'Þessi beiðni kom ekki frá síðu ArrowLoop, svo henni var hafnað.',
   'signin.error.forbidden': 'Aðgangurinn þinn má ekki gera þetta.',
-  'signin.error.fromConfig': 'Þessi innskráningarþjónusta kemur úr arrowloop.json, svo þú breytir henni þar.',
+  'signin.error.fromConfig': 'Þessi innskráningarþjónusta er sett upp utan viðmótsins, svo þú breytir henni þar.',
   'signin.error.internal': 'Eitthvað fór úrskeiðis í ArrowLoop. Annáll gámsins segir meira.',
   'signin.error.issuerInvalid': 'Þetta vistfang lítur ekki út eins og innskráningarþjónusta.',
   'signin.error.lastWayIn': 'Þetta er síðasta leiðin inn, svo hún stendur nema eigandinn, nýinnskráður, fjarlægi hana.',

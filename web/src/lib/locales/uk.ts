@@ -35,7 +35,7 @@ const uk: Translations = {
   'signin.error.confirmOff': 'Для цієї зміни потрібен свіжий вхід. Вийдіть, увійдіть знову і спробуйте ще раз.',
   'signin.error.crossSite': 'Цей запит надійшов не зі сторінки ArrowLoop, тому його відхилено.',
   'signin.error.forbidden': 'Вашому обліковому запису це не дозволено.',
-  'signin.error.fromConfig': 'Ця служба входу задана в arrowloop.json, тому її змінюють там.',
+  'signin.error.fromConfig': 'Цю службу входу налаштовано поза інтерфейсом, тож змінюйте її там.',
   'signin.error.internal': 'У ArrowLoop щось пішло не так. Докладніше в журналі контейнера.',
   'signin.error.issuerInvalid': 'Ця адреса не схожа на службу входу.',
   'signin.error.lastWayIn': 'Це останній спосіб увійти, тож він лишається, якщо тільки власник, щойно ввійшовши, не прибере його.',

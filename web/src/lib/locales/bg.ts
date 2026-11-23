@@ -35,7 +35,7 @@ const bg: Translations = {
   'signin.error.confirmOff': 'Тази промяна изисква нов вход. Излезте, влезте отново и опитайте пак.',
   'signin.error.crossSite': 'Тази заявка не дойде от страницата на ArrowLoop, затова беше отхвърлена.',
   'signin.error.forbidden': 'Акаунтът ви няма право на това.',
-  'signin.error.fromConfig': 'Тази услуга за вход идва от arrowloop.json, затова я променяте там.',
+  'signin.error.fromConfig': 'Тази услуга за вход е настроена извън интерфейса, затова я променяте там.',
   'signin.error.internal': 'Нещо се обърка в ArrowLoop. Дневникът на контейнера казва повече.',
   'signin.error.issuerInvalid': 'Този адрес не прилича на услуга за вход.',
   'signin.error.lastWayIn': 'Това е последният начин за вход, затова остава, освен ако собственикът, току-що влязъл, не го премахне.',

@@ -35,7 +35,7 @@ const eu: Translations = {
   'signin.error.confirmOff': 'Aldaketa honek saio-hasiera berri bat behar du. Amaitu saioa, hasi berriro eta saiatu berriro.',
   'signin.error.crossSite': 'Eskaera hori ez zen ArrowLoop-en orritik etorri, beraz baztertu egin da.',
   'signin.error.forbidden': 'Zure kontuak ezin du hori egin.',
-  'signin.error.fromConfig': 'Saio-hasierako zerbitzu hau arrowloop.json fitxategitik dator, beraz han aldatzen duzu.',
+  'signin.error.fromConfig': 'Saioa hasteko zerbitzu hau interfazetik kanpo konfiguratuta dago, beraz, han aldatzen duzu.',
   'signin.error.internal': 'Zerbait gaizki atera da ArrowLoop barruan. Edukiontziaren erregistroak gehiago dio.',
   'signin.error.issuerInvalid': 'Helbide horrek ez dirudi saio-hasierako zerbitzu bat.',
   'signin.error.lastWayIn': 'Sartzeko azken bidea da, beraz geratu egiten da, jabeak, saioa berriki hasita, kentzen ez badu.',

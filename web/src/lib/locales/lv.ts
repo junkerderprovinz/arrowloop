@@ -35,7 +35,7 @@ const lv: Translations = {
   'signin.error.confirmOff': 'Šai izmaiņai vajadzīga svaiga pierakstīšanās. Izraksties un pieraksties no jauna, tad mēģini vēlreiz.',
   'signin.error.crossSite': 'Šis pieprasījums nenāca no ArrowLoop lapas, tāpēc tas tika noraidīts.',
   'signin.error.forbidden': 'Tavs konts to nedrīkst.',
-  'signin.error.fromConfig': 'Šis pierakstīšanās pakalpojums nāk no arrowloop.json, tāpēc to maini tur.',
+  'signin.error.fromConfig': 'Šis pierakstīšanās pakalpojums ir iestatīts ārpus saskarnes, tāpēc to maini tur.',
   'signin.error.internal': 'ArrowLoop kaut kas nogāja greizi. Konteinera žurnāls pastāstīs vairāk.',
   'signin.error.issuerInvalid': 'Šī adrese neizskatās pēc pierakstīšanās pakalpojuma.',
   'signin.error.lastWayIn': 'Tas ir pēdējais ceļš iekšā, tāpēc tas paliek, ja vien īpašnieks, tikko pierakstījies, to nenoņem.',

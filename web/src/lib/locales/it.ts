@@ -35,7 +35,7 @@ const it: Translations = {
   'signin.error.confirmOff': 'Questa modifica richiede un accesso recente. Esci e rientra, poi riprova.',
   'signin.error.crossSite': 'Questa richiesta non veniva dalla pagina di ArrowLoop, quindi è stata rifiutata.',
   'signin.error.forbidden': 'Il tuo account non può farlo.',
-  'signin.error.fromConfig': 'Questo servizio di accesso viene da arrowloop.json, quindi lo modifichi lì.',
+  'signin.error.fromConfig': 'Questo servizio di accesso è configurato fuori dall\'interfaccia, quindi lo modifichi lì.',
   'signin.error.internal': 'Qualcosa è andato storto in ArrowLoop. Il log del container dice di più.',
   'signin.error.issuerInvalid': 'Questo indirizzo non sembra un servizio di accesso.',
   'signin.error.lastWayIn': 'È l\'ultimo modo per entrare, quindi resta, a meno che il proprietario, con un accesso appena fatto, lo tolga.',

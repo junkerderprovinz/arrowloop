@@ -35,7 +35,7 @@ const ja: Translations = {
   'signin.error.confirmOff': 'この変更には新しいログインが必要です。ログアウトしてログインし直してから、もう一度お試しください。',
   'signin.error.crossSite': 'そのリクエストは ArrowLoop 自身のページから来たものではないため、拒否されました。',
   'signin.error.forbidden': 'あなたのアカウントにはその操作が許可されていません。',
-  'signin.error.fromConfig': 'このログインサービスは arrowloop.json から来ているので、そちらで変更してください。',
+  'signin.error.fromConfig': 'このサインインサービスはインターフェースの外で設定されているため、そちらで変更してください。',
   'signin.error.internal': 'ArrowLoop の内部で問題が起きました。詳しくはコンテナのログを確認してください。',
   'signin.error.issuerInvalid': 'そのアドレスはログインサービスではないようです。',
   'signin.error.lastWayIn': '最後のログイン方法なので残ります。外せるのは、ログインしたばかりの所有者だけです。',

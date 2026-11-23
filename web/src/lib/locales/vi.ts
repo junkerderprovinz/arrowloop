@@ -35,7 +35,7 @@ const vi: Translations = {
   'signin.error.confirmOff': 'Thay đổi này cần một lần đăng nhập mới. Đăng xuất rồi đăng nhập lại, sau đó thử lại.',
   'signin.error.crossSite': 'Yêu cầu đó không đến từ trang của ArrowLoop, nên đã bị từ chối.',
   'signin.error.forbidden': 'Tài khoản của bạn không được làm điều đó.',
-  'signin.error.fromConfig': 'Dịch vụ đăng nhập này đến từ arrowloop.json, nên bạn thay đổi nó ở đó.',
+  'signin.error.fromConfig': 'Dịch vụ đăng nhập này được thiết lập bên ngoài giao diện, nên bạn thay đổi nó ở đó.',
   'signin.error.internal': 'Có lỗi bên trong ArrowLoop. Nhật ký của container cho biết thêm.',
   'signin.error.issuerInvalid': 'Địa chỉ đó không giống một dịch vụ đăng nhập.',
   'signin.error.lastWayIn': 'Đây là cách vào cuối cùng nên vẫn được giữ, trừ khi chủ sở hữu vừa đăng nhập gỡ nó đi.',

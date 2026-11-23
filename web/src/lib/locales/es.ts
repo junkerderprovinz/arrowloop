@@ -35,7 +35,7 @@ const es: Translations = {
   'signin.error.confirmOff': 'Este cambio necesita un inicio de sesión reciente. Cierra sesión, vuelve a entrar e inténtalo de nuevo.',
   'signin.error.crossSite': 'Esa petición no venía de la página de ArrowLoop, así que se ha rechazado.',
   'signin.error.forbidden': 'Tu cuenta no puede hacer eso.',
-  'signin.error.fromConfig': 'Este servicio de inicio de sesión viene de arrowloop.json, así que lo cambias allí.',
+  'signin.error.fromConfig': 'Este servicio de inicio de sesión está configurado fuera de la interfaz, así que lo cambias allí.',
   'signin.error.internal': 'Algo ha fallado dentro de ArrowLoop. El registro del contenedor dice más.',
   'signin.error.issuerInvalid': 'Esa dirección no parece un servicio de inicio de sesión.',
   'signin.error.lastWayIn': 'Es la última forma de entrar, así que se queda, salvo que la quite el propietario con un inicio de sesión reciente.',

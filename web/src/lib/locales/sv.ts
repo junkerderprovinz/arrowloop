@@ -35,7 +35,7 @@ const sv: Translations = {
   'signin.error.confirmOff': 'Den här ändringen kräver en ny inloggning. Logga ut och in igen och försök sedan igen.',
   'signin.error.crossSite': 'Den begäran kom inte från ArrowLoops egen sida, så den avvisades.',
   'signin.error.forbidden': 'Ditt konto får inte göra det.',
-  'signin.error.fromConfig': 'Den här inloggningstjänsten kommer från arrowloop.json, så du ändrar den där.',
+  'signin.error.fromConfig': 'Den här inloggningstjänsten är inställd utanför gränssnittet, så du ändrar den där.',
   'signin.error.internal': 'Något gick fel i ArrowLoop. Containerns logg säger mer.',
   'signin.error.issuerInvalid': 'Den adressen ser inte ut som en inloggningstjänst.',
   'signin.error.lastWayIn': 'Det är den sista vägen in, så den finns kvar, om inte ägaren, nyss inloggad, tar bort den.',

@@ -35,7 +35,7 @@ const sr: Translations = {
   'signin.error.confirmOff': 'Ова промена тражи свежу пријаву. Одјавите се, поново се пријавите и покушајте опет.',
   'signin.error.crossSite': 'Тај захтев није дошао са странице ArrowLoop-а, па је одбијен.',
   'signin.error.forbidden': 'Ваш налог то не сме.',
-  'signin.error.fromConfig': 'Ова услуга за пријаву долази из arrowloop.json, па је мењате тамо.',
+  'signin.error.fromConfig': 'Ova usluga za prijavu podešena je van interfejsa, pa je menjate tamo.',
   'signin.error.internal': 'У ArrowLoop-у је нешто пошло наопако. Дневник контејнера каже више.',
   'signin.error.issuerInvalid': 'Та адреса не изгледа као услуга за пријаву.',
   'signin.error.lastWayIn': 'То је последњи пут унутра, па остаје, осим ако га власник, тек пријављен, не уклони.',

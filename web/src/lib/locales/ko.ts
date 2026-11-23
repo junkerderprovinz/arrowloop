@@ -35,7 +35,7 @@ const ko: Translations = {
   'signin.error.confirmOff': '이 변경에는 새로운 로그인이 필요합니다. 로그아웃했다가 다시 로그인한 다음 다시 시도해 주세요.',
   'signin.error.crossSite': '그 요청은 ArrowLoop 자체 페이지에서 온 것이 아니어서 거부되었습니다.',
   'signin.error.forbidden': '계정에 그 작업 권한이 없습니다.',
-  'signin.error.fromConfig': '이 로그인 서비스는 arrowloop.json에서 오므로 그곳에서 변경하세요.',
+  'signin.error.fromConfig': '이 로그인 서비스는 인터페이스 밖에서 설정되어 있으니 그곳에서 바꾸세요.',
   'signin.error.internal': 'ArrowLoop 내부에서 문제가 생겼습니다. 자세한 내용은 컨테이너 로그를 확인하세요.',
   'signin.error.issuerInvalid': '그 주소는 로그인 서비스가 아닌 것 같습니다.',
   'signin.error.lastWayIn': '마지막 로그인 방법이라 남겨 둡니다. 방금 로그인한 소유자만 없앨 수 있습니다.',

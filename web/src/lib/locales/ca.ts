@@ -35,7 +35,7 @@ const ca: Translations = {
   'signin.error.confirmOff': 'Aquest canvi necessita un inici de sessió recent. Tanqueu la sessió, torneu a entrar i proveu-ho de nou.',
   'signin.error.crossSite': 'Aquesta sol·licitud no venia de la pàgina de ArrowLoop, així que s\'ha rebutjat.',
   'signin.error.forbidden': 'El vostre compte no pot fer això.',
-  'signin.error.fromConfig': 'Aquest servei d\'inici de sessió ve de arrowloop.json, així que el canvieu allà.',
+  'signin.error.fromConfig': 'Aquest servei d\'inici de sessió està configurat fora de la interfície, així que el canvieu allà.',
   'signin.error.internal': 'Alguna cosa ha fallat dins de ArrowLoop. El registre del contenidor en diu més.',
   'signin.error.issuerInvalid': 'Aquesta adreça no sembla un servei d\'inici de sessió.',
   'signin.error.lastWayIn': 'És l\'última manera d\'entrar, així que es queda, tret que el propietari, amb la sessió acabada d\'iniciar, la tregui.',

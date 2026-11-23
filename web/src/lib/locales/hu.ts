@@ -35,7 +35,7 @@ const hu: Translations = {
   'signin.error.confirmOff': 'Ehhez a módosításhoz friss bejelentkezés kell. Jelentkezzen ki és újra be, majd próbálja újra.',
   'signin.error.crossSite': 'Ez a kérés nem a ArrowLoop saját oldaláról jött, ezért elutasítottuk.',
   'signin.error.forbidden': 'A fiókja ezt nem teheti.',
-  'signin.error.fromConfig': 'Ez a bejelentkezési szolgáltatás a arrowloop.json fájlból jön, ezért ott módosítja.',
+  'signin.error.fromConfig': 'Ez a bejelentkezési szolgáltatás a felületen kívül van beállítva, ezért ott módosíthatod.',
   'signin.error.internal': 'Valami hiba történt a ArrowLoopban. A konténer naplója többet mond.',
   'signin.error.issuerInvalid': 'Ez a cím nem tűnik bejelentkezési szolgáltatásnak.',
   'signin.error.lastWayIn': 'Ez az utolsó út befelé, ezért megmarad, hacsak a tulajdonos frissen bejelentkezve el nem távolítja.',

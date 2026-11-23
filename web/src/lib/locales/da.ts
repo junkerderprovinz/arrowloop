@@ -35,7 +35,7 @@ const da: Translations = {
   'signin.error.confirmOff': 'Denne ændring kræver et nyt login. Log ud og ind igen, og prøv så igen.',
   'signin.error.crossSite': 'Den anmodning kom ikke fra ArrowLoops egen side, så den blev afvist.',
   'signin.error.forbidden': 'Din konto må ikke gøre det.',
-  'signin.error.fromConfig': 'Denne logintjeneste kommer fra arrowloop.json, så du ændrer den der.',
+  'signin.error.fromConfig': 'Denne login-tjeneste er sat op uden for brugerfladen, så du ændrer den dér.',
   'signin.error.internal': 'Noget gik galt i ArrowLoop. Containerens log siger mere.',
   'signin.error.issuerInvalid': 'Den adresse ligner ikke en logintjeneste.',
   'signin.error.lastWayIn': 'Det er den sidste vej ind, så den bliver, medmindre ejeren, nyligt logget ind, fjerner den.',

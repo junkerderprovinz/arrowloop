@@ -35,7 +35,7 @@ const ms: Translations = {
   'signin.error.confirmOff': 'Perubahan ini memerlukan log masuk yang baharu. Log keluar dan log masuk semula, kemudian cuba lagi.',
   'signin.error.crossSite': 'Permintaan itu tidak datang dari halaman ArrowLoop sendiri, jadi ia ditolak.',
   'signin.error.forbidden': 'Akaun anda tidak dibenarkan berbuat begitu.',
-  'signin.error.fromConfig': 'Perkhidmatan log masuk ini datang daripada arrowloop.json, jadi anda menukarnya di sana.',
+  'signin.error.fromConfig': 'Perkhidmatan log masuk ini disediakan di luar antara muka, jadi ubahnya di sana.',
   'signin.error.internal': 'Ada yang tidak kena dalam ArrowLoop. Log bekas memberitahu lebih lanjut.',
   'signin.error.issuerInvalid': 'Alamat itu tidak kelihatan seperti perkhidmatan log masuk.',
   'signin.error.lastWayIn': 'Itu jalan masuk terakhir, jadi ia kekal, melainkan pemilik yang baru log masuk membuangnya.',

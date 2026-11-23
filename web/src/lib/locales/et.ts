@@ -35,7 +35,7 @@ const et: Translations = {
   'signin.error.confirmOff': 'See muudatus vajab värsket sisselogimist. Logi välja ja uuesti sisse ning proovi siis uuesti.',
   'signin.error.crossSite': 'See päring ei tulnud ArrowLoopi enda lehelt, seega lükati see tagasi.',
   'signin.error.forbidden': 'Sinu konto ei tohi seda teha.',
-  'signin.error.fromConfig': 'See sisselogimisteenus tuleb arrowloop.json-ist, seega muudad seda seal.',
+  'signin.error.fromConfig': 'See sisselogimisteenus on seadistatud väljaspool liidest, nii et muudad seda seal.',
   'signin.error.internal': 'ArrowLoopis läks midagi valesti. Konteineri logi ütleb rohkem.',
   'signin.error.issuerInvalid': 'See aadress ei näe välja nagu sisselogimisteenus.',
   'signin.error.lastWayIn': 'See on viimane sissepääs, seega see jääb, kui omanik värske sisselogimisega seda ei eemalda.',
