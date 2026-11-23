@@ -44,6 +44,7 @@ func guarded(t *testing.T, password string) (*Server, *httptest.Server) {
 	}}
 	mux := http.NewServeMux()
 	s.signInRoutes(mux)
+	mux.HandleFunc("GET "+passwordSourcePath, s.passwordSource)
 	ok := func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusOK) }
 	mux.HandleFunc("GET /api/jobs", ok)
 	mux.HandleFunc("POST /api/jobs", ok)
@@ -161,6 +162,10 @@ func TestThePasswordFromTheEnvironmentIsNeitherChangedNorResetHere(t *testing.T)
 	v := newVisitor(t, srv)
 	if code, _ := v.send("GET", "/api/jobs", nil); code != http.StatusUnauthorized {
 		t.Fatalf("the hash from the environment left the job list open with %d", code)
+	}
+	// The sign-in page reads this before anyone signed in, to leave out the reset.
+	if code, out := v.send("GET", passwordSourcePath, nil); code != http.StatusOK || out["fromEnv"] != true {
+		t.Fatalf("the password's source answered %d %v", code, out)
 	}
 	v.signIn(guardedPassword)
 	for _, c := range []struct {

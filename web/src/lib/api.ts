@@ -1121,6 +1121,8 @@ export const api = {
   /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () =>
     request<{ window: boolean; security?: boolean; passwordFromEnv?: boolean; pairing?: boolean; vpn?: boolean; version: string }>('/api/capabilities'),
+  /** Open before the sign-in: whether ARROWLOOP_PASSWORD_HASH sets the password. */
+  passwordSource: () => request<{ fromEnv: boolean }>('/api/password-source'),
 
   /**
    * The versions this build is made of, for the Info tile. `newRelease` is the

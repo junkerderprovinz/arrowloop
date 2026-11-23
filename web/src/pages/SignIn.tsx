@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
 import { IconConfirm } from '../components/glyphs'
 import { Button } from '../lib/glimstone/Button'
+import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { signIn } from '../lib/signIn'
 import { arrivedText, cardText, errorWords } from '../lib/signInWords'
@@ -26,9 +27,8 @@ const LABEL_KEYS = {
  * service that is on stands under Sign in. Passkeys come through the
  * browser's offer in the password field.
  *
- * Forgot password? stands even while ARROWLOOP_PASSWORD_HASH sets the
- * password, since nothing tells a visitor so before the sign-in. Asking for a
- * code then says where the password comes from.
+ * Forgot password? stays away while ARROWLOOP_PASSWORD_HASH sets the
+ * password, since no code from the log replaces that one.
  *
  * @param note    the line above the form, such as why the page came back.
  * @param arrived the code a sign-in service sent the browser back with.
@@ -46,6 +46,13 @@ export function SignIn({
 }) {
   const { t, lang } = useT()
   const [removed, setRemoved] = useState<SignInRemoved | null>(null)
+  const [fromEnv, setFromEnv] = useState(false)
+  useEffect(() => {
+    api
+      .passwordSource()
+      .then((s) => setFromEnv(s.fromEnv))
+      .catch(() => {})
+  }, [])
 
   // App repaints on a switch of the system's look, and it is not mounted yet.
   useEffect(() => followDevice(storedTheme()), [])
@@ -72,7 +79,7 @@ export function SignIn({
       logo={<LogoMark size={64} style={{ color: LOGO_GOLD }} />}
       appName="ArrowLoop"
       text={cardText(t, lang)}
-      reset
+      reset={!fromEnv}
       minPassword={offer.minPassword}
       note={note}
       error={arrived ? arrivedText(t, arrived) : undefined}

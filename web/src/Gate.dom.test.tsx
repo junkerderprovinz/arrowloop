@@ -8,11 +8,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Job, Run, RunEvent, TrashSide } from './lib/api'
 
 const jobs = vi.fn(() => Promise.resolve([] as Job[]))
+const passwordSource = vi.fn(() => Promise.resolve({ fromEnv: false }))
 
 vi.mock('./lib/api', async (actual) => ({
   ...(await actual<typeof import('./lib/api')>()),
   api: {
     jobs: () => jobs(),
+    passwordSource: () => passwordSource(),
     history: () => Promise.resolve([] as Run[]),
     volumes: () => Promise.resolve({ volumes: [] }),
     capabilities: () => Promise.resolve({ window: false, security: true, version: 'test' }),
@@ -65,6 +67,7 @@ beforeEach(() => {
   sessionStorage.clear()
   jobs.mockReset()
   jobs.mockImplementation(() => Promise.resolve([]))
+  passwordSource.mockImplementation(() => Promise.resolve({ fromEnv: false }))
   sent.length = 0
   script = {}
   vi.stubGlobal('fetch', async (url: string, init: RequestInit = {}) => {
@@ -123,6 +126,15 @@ describe('the gate', () => {
     expect(await screen.findByRole('heading', { name: 'Welcome to ArrowLoop' })).toBeTruthy()
     expect(sent).toContain('POST login')
     expect(screen.getAllByText('Sign out').length).toBeGreaterThan(0)
+  })
+
+  it('offers no reset while the password comes from ARROWLOOP_PASSWORD_HASH', async () => {
+    passwordSource.mockImplementation(() => Promise.resolve({ fromEnv: true }))
+    script['GET options'] = { body: offer() }
+    render(<Gate />)
+    await waitFor(() => expect(signInPage()).not.toBeNull())
+    await waitFor(() => expect(screen.queryByText('Forgot password?')).toBeNull())
+    expect(buttons()).toEqual(['submit'])
   })
 
   it('puts the sign-in service that is on under Sign in as the one other button', async () => {

@@ -66,9 +66,18 @@ func needsSession(rawPath string) bool {
 // fortress status and log check a token of their own, and a call from
 // another instance of the group the phrase's keys.
 var openRoutes = map[string]bool{
-	status.StatusPath: true,
-	group.DirectPath:  true,
-	status.LogPath:    true,
+	status.StatusPath:  true,
+	group.DirectPath:   true,
+	status.LogPath:     true,
+	passwordSourcePath: true,
+}
+
+// passwordSourcePath tells the sign-in page whether PasswordHashEnv sets the
+// password, so it offers no reset that would be refused.
+const passwordSourcePath = "/api/password-source"
+
+func (s *Server) passwordSource(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]bool{"fromEnv": os.Getenv(PasswordHashEnv) != ""})
 }
 
 // Protect wraps a handler so the API needs a visitor once anyone can sign
