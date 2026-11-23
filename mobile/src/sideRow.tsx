@@ -3,13 +3,14 @@ import { StyleSheet, View } from "react-native";
 import type { Remote } from "./api";
 import { Glyph, ProviderMark } from "./glyphs";
 import { markForSide } from "./jobMark";
+import { labelledSide } from "../../web/src/lib/targetLabels";
 import { space } from "./theme";
 import { Body, useTheme } from "./ui";
 
 /**
  * One side of a job, its path behind a mark: the phone glyph for a path on
  * this device, the provider's mark for a target, and an empty slot when the
- * product is unknown.
+ * product is unknown. A target goes by its name, never its id.
  */
 export function SideRow({ path, mark }: { path: string; mark?: string }) {
   const { p, scheme } = useTheme();
@@ -24,7 +25,7 @@ export function SideRow({ path, mark }: { path: string; mark?: string }) {
         // Keeps the two paths aligned.
         <View style={styles.blank} />
       )}
-      <Body>{path}</Body>
+      <Body>{labelledSide(path)}</Body>
     </View>
   );
 }

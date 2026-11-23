@@ -1,6 +1,6 @@
 import type { TranslationKey } from './i18n.data'
 import { reasonText, type Spelling } from './reasonText.ts'
-import { targetLabel } from './targetLabels.ts'
+import { labelledSide, targetLabel } from './targetLabels.ts'
 
 // Only the fields read here, and not the api module's types or React, so the
 // phone app can share this file: its build installs neither the web's
@@ -321,10 +321,7 @@ export function entryWay(e: Entry): { from: Hand; to: Hand } | { on: Hand } | nu
  * as written.
  */
 export function sideName(path: string, drives: Drive[]): string {
-  if (!path.startsWith(DRIVE)) {
-    const target = TARGET.exec(path)
-    return target ? targetLabel(target[1]!) + path.slice(target[1]!.length) : path
-  }
+  if (!path.startsWith(DRIVE)) return labelledSide(path)
   const [id = '', ...rest] = path.slice(DRIVE.length).split('/')
   const label = drives.find((d) => d.id === id)?.label || id
   return [label, ...rest.filter(Boolean)].join('/')
@@ -337,8 +334,8 @@ export function sideName(path: string, drives: Drive[]): string {
  */
 function within(root: string, path: string, drives: Drive[]): string {
   if (root.startsWith(DRIVE)) return `${sideName(root, drives)}/${path}`
-  if (root.endsWith(':')) return sideName(root, drives) + path
-  if (TARGET.test(root)) return `${sideName(root, drives).replace(/\/+$/, '')}/${path}`
+  if (root.endsWith(':')) return labelledSide(root + path)
+  if (TARGET.test(root)) return labelledSide(`${root.replace(/\/+$/, '')}/${path}`)
   if (/^[A-Za-z]:\\/.test(root) || (root.includes('\\') && !root.includes('/'))) {
     return `${root.replace(/\\+$/, '')}\\${path.replaceAll('/', '\\')}`
   }

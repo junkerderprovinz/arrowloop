@@ -97,7 +97,10 @@ func (s *Server) folderListing(ctx context.Context, at string, hidden bool) (bro
 		answer := browseAnswer{Path: here, Parent: remotes.Parent(name, dir), Entries: out}
 		// The path keeps the id, which the side stores; a person reads the label.
 		if label := remotes.LabelOf(name); label != name {
-			answer.Shown = label + strings.TrimPrefix(here, name)
+			answer.Shown = label
+			if folder := strings.TrimPrefix(here, name+":"); folder != "" {
+				answer.Shown += ": " + folder
+			}
 		}
 		return answer, nil
 	}

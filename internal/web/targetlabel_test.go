@@ -189,7 +189,7 @@ func TestATargetWithAFreeNameCarriesAJobThroughARename(t *testing.T) {
 	}
 	var shown browseAnswer
 	h.get(t, "/api/browse?path="+url.QueryEscape(at.Path), &shown)
-	if shown.Shown != "SFTP Home Lab:home/user/folder" {
+	if shown.Shown != "SFTP Home Lab: home/user/folder" {
 		t.Errorf("the picker reads the folder as %q", shown.Shown)
 	}
 

@@ -13,6 +13,7 @@ import { useHost } from '../lib/host'
 import { useT, type Translate } from '../lib/i18n'
 import { useModal } from '../lib/modal'
 import { useRemembered } from '../lib/remember'
+import { labelledSide } from '../lib/targetLabels'
 
 /**
  * A place the picker offers above the folders. A registered drive is taken as
@@ -136,7 +137,7 @@ export function FolderPicker({
 
   if (!open) return null
 
-  const place = opening ?? (shown || at)
+  const place = opening ? labelledSide(opening) : shown || labelledSide(at)
 
   // Portalled, since a card that animates in is a transformed ancestor and
   // would pin the fixed backdrop to itself instead of the window.

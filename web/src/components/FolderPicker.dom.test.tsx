@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import type { FolderListing } from '../lib/api'
 import { HostContext, type Host } from '../lib/host'
+import { learnTargets } from '../lib/targetLabels'
 import { FolderPicker } from './FolderPicker'
 
 afterEach(cleanup)
@@ -66,7 +67,7 @@ describe('the folder picker', () => {
   it('names the target it opens before the target answers', () => {
     const { host } = slowHost()
     open(host)
-    expect(screen.getByText('nas:photos')).toBeTruthy()
+    expect(screen.getByText('nas: photos')).toBeTruthy()
     expect(screen.queryByText('Drives and roots')).toBeNull()
   })
 
@@ -75,7 +76,7 @@ describe('the folder picker', () => {
     open(host)
     await answer('nas:photos', ['2026'])
     fireEvent.click(screen.getByText('2026'))
-    expect(screen.getByText('nas:photos/2026')).toBeTruthy()
+    expect(screen.getByText('nas: photos/2026')).toBeTruthy()
   })
 
   it('offers the folder buttons only once the folder being opened has answered', async () => {
@@ -124,5 +125,19 @@ describe('the folder picker', () => {
     expect(hidden().getAttribute('aria-checked')).toBe('true')
     expect(asked).toEqual([{ path: 'nas:photos', hidden: true }])
     localStorage.clear()
+  })
+})
+
+describe('the folder picker on a renamed target', () => {
+  afterEach(() => learnTargets([]))
+
+  it("heads the folder with the target's name, not its id", async () => {
+    learnTargets([{ name: 'nas', label: 'Home Lab - Keller' }])
+    const { host, answer } = slowHost()
+    open(host)
+    expect(screen.getByText('Home Lab - Keller: photos')).toBeTruthy()
+    await answer('nas:photos', ['2026'])
+    expect(screen.getByText('Home Lab - Keller: photos')).toBeTruthy()
+    expect(screen.queryByText('nas:photos')).toBeNull()
   })
 })

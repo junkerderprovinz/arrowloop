@@ -224,9 +224,9 @@ describe('a side as it reads', () => {
     expect(sideName('volume:a1b2', drives)).toBe('Backup-Platte')
   })
 
-  it('leaves a folder or a target as written', () => {
+  it('leaves a folder as written and puts a space after a target', () => {
     expect(sideName('D:\opencloud', drives)).toBe('D:\opencloud')
-    expect(sideName('OpenCloud:Fotos', drives)).toBe('OpenCloud:Fotos')
+    expect(sideName('OpenCloud:Fotos', drives)).toBe('OpenCloud: Fotos')
   })
 })
 
@@ -235,9 +235,9 @@ describe('a renamed target', () => {
     learnTargets([{ name: 'SFTP-1', label: 'SFTP Home Lab' }])
     try {
       expect(placeOf('SFTP-1:/home/user/folder', drives)).toEqual({ kind: 'target', name: 'SFTP Home Lab' })
-      expect(sideName('SFTP-1:/home/user/folder', drives)).toBe('SFTP Home Lab:/home/user/folder')
+      expect(sideName('SFTP-1:/home/user/folder', drives)).toBe('SFTP Home Lab: /home/user/folder')
       expect(entryLabel(t, entry('copy', 'right'), job('/home/jdp/Fotos', 'SFTP-1:/home'), drives)).toBe('Nach SFTP Home Lab hochgeladen')
-      expect(entryRoute(entry('copy', 'right'), job('/home/jdp/Fotos', 'SFTP-1:/home'), drives)?.to).toBe('SFTP Home Lab:/home/a.jpg')
+      expect(entryRoute(entry('copy', 'right'), job('/home/jdp/Fotos', 'SFTP-1:/home'), drives)?.to).toBe('SFTP Home Lab: /home/a.jpg')
     } finally {
       learnTargets([])
     }
