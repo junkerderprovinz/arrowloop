@@ -1,6 +1,6 @@
 # Privacy policy: ArrowLoop
 
-Last updated: 12 November 2026. Applies to the ArrowLoop Android app, the
+Last updated: 22 November 2026. Applies to the ArrowLoop Android app, the
 desktop app and the container, from version 1.1.0, until this date changes.
 
 ## The short version
@@ -86,6 +86,12 @@ your network can reach it.
 - **Run at startup**, so scheduled jobs resume after the phone restarts.
 - **Network access and network state**, to reach your storage targets and to
   hold a job until the phone is on Wi-Fi when you ask for that.
+- **Location**, only once you list a Wi-Fi network under a VPN's "Wifi
+  without VPN". Android tells only apps with location access which Wi-Fi the
+  phone is on. ArrowLoop reads the name of that Wi-Fi and the phone's addresses
+  on it, hands them to its own engine on the phone and sends them nowhere else.
+  It never asks where you are. Access all the time lets timed runs see the
+  Wi-Fi while the app is closed.
 
 ## What ArrowLoop does not do
 

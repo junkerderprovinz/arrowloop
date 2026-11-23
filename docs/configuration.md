@@ -501,6 +501,27 @@ not carry a VPN login.
 The phone has the same VPN. It runs inside ArrowLoop and needs no root, so
 Android's own VPN slot stays free, and only the job's connections go through it.
 
+### Wifi without VPN
+
+On the phone a VPN can let its jobs connect directly on wifi networks you
+trust, such as the one at home. The shield button in its row opens **Wifi
+without VPN**, where you type a name or tap **Add the current wifi**. A run on
+one of those networks connects directly. Anywhere else, on mobile data, and
+whenever the phone cannot tell which wifi it is on, it goes through the VPN as
+before.
+
+Android names the wifi only to an app with location access while the location
+is on. ArrowLoop asks for it when you add the first network, and timed runs
+while the app is closed need location all the time. Without it the page says
+so, and every run goes through the VPN. Names count exactly, capitals
+included, so **Add the current wifi** is the safest way to enter one.
+
+Before a run goes direct, the engine checks that its own traffic leaves from an
+address the phone reported for that wifi. A report from before the phone left
+home therefore cannot let a run out without its VPN. The list is kept with the
+VPN in `vpn.json`. A server, a container or the desktop app cannot tell the
+wifi, so their runs always go through the VPN.
+
 !!! tip "Before this, a command did it"
     Bringing `wg-quick` up in `before` and down in `after` works on a machine
     where ArrowLoop may change the network, and it moves the whole machine onto
