@@ -30,8 +30,8 @@ require (
 	golang.org/x/text v0.44.0
 	golang.zx2c4.com/wireguard v0.0.0-20261024220952-b3bc704ef0ee
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c
-	modernc.org/libc v1.82.7
-	modernc.org/sqlite v1.62.0
+	modernc.org/libc v1.82.12
+	modernc.org/sqlite v1.63.0
 )
 
 require (
