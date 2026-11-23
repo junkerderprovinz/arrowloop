@@ -34,3 +34,15 @@ func TestEveryOptionHasAReadableName(t *testing.T) {
 		}
 	}
 }
+
+// The label sits in a target's section beside rclone's own settings, so no
+// backend may have a setting of that name.
+func TestNoBackendHasASettingCalledLabel(t *testing.T) {
+	for _, b := range remotes.Backends() {
+		for _, o := range b.Options {
+			if o.Name == remotes.LabelKey {
+				t.Errorf("%s has its own %s setting, which the target's name would overwrite", b.Name, o.Name)
+			}
+		}
+	}
+}

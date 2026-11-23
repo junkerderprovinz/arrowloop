@@ -85,10 +85,12 @@ type Setting struct {
 	Secret bool   `json:"secret"`
 }
 
-// Remote is one configured storage target.
+// Remote is one configured storage target. Name is its id, which a job's
+// side writes before the colon, and Label what it is called on screen.
 type Remote struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Name  string `json:"name"`
+	Label string `json:"label"`
+	Type  string `json:"type"`
 
 	// Provider is the product behind the target, where the saved settings name
 	// one, and Mark is its logo. Both are derived; see identify.go.
@@ -98,21 +100,20 @@ type Remote struct {
 	Settings []Setting `json:"settings"`
 }
 
-// List returns every remote rclone knows about, with the secrets withheld. A
-// secret that is set still reports that it is there.
+// List returns every remote rclone knows about in the order of their labels,
+// with the secrets withheld. A secret that is set still reports that it is there.
 func List() []Remote {
 	data := config.LoadedData()
 	names := data.GetSectionList()
-	sort.Strings(names)
 
 	out := make([]Remote, 0, len(names))
 	for _, name := range names {
 		// Not nil: a remote with nothing but a type would marshal its settings
 		// as null and break the page.
-		r := Remote{Name: name, Settings: []Setting{}}
+		r := Remote{Name: name, Label: labelOf(data, name), Settings: []Setting{}}
 		r.Type, _ = data.GetValue(name, "type")
 		for _, key := range data.GetKeyList(name) {
-			if key == "type" {
+			if key == "type" || key == LabelKey {
 				continue
 			}
 			value, _ := data.GetValue(name, key)
@@ -128,6 +129,13 @@ func List() []Remote {
 		r.Mark = MarkFor(r)
 		out = append(out, r)
 	}
+	sort.Slice(out, func(i, j int) bool {
+		a, b := strings.ToLower(out[i].Label), strings.ToLower(out[j].Label)
+		if a != b {
+			return a < b
+		}
+		return out[i].Name < out[j].Name
+	})
 	return out
 }
 
@@ -146,7 +154,8 @@ func placeholderFor(value string) string {
 
 // Save writes a remote, obscuring anything that needs it. A secret submitted as
 // the placeholder is left as it was, so editing another field in a form does
-// not overwrite the password with asterisks.
+// not overwrite the password with asterisks. The label is written only when
+// settings carry one under LabelKey.
 func Save(name, backend string, settings map[string]string) error {
 	if err := validName(name); err != nil {
 		return err
@@ -159,11 +168,21 @@ func Save(name, backend string, settings map[string]string) error {
 	}
 
 	data := config.LoadedData()
+	label, relabel := settings[LabelKey]
+	label = strings.TrimSpace(label)
+	if relabel {
+		if err := checkLabel(data, name, label); err != nil {
+			return err
+		}
+	}
 	existed := data.HasSection(name)
 	data.SetValue(name, "type", backend)
+	if relabel {
+		setLabel(data, name, label)
+	}
 
 	for key, value := range settings {
-		if key == "type" {
+		if key == "type" || key == LabelKey {
 			continue
 		}
 		// Withholding and obscuring are separate questions: a value is obscured

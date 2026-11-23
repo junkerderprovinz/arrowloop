@@ -43,6 +43,7 @@ type placesView struct {
 
 type placeTarget struct {
 	Name     string `json:"name"`
+	Label    string `json:"label"`
 	Type     string `json:"type"`
 	Provider string `json:"provider,omitempty"`
 	Mark     string `json:"mark,omitempty"`
@@ -125,7 +126,7 @@ func (s *Server) groupSaveJob(w http.ResponseWriter, r *http.Request) {
 func (s *Server) groupPlaces(w http.ResponseWriter, _ *http.Request) {
 	out := placesView{Targets: []placeTarget{}, Drives: []placeDrive{}, ExcludeSets: []string{}}
 	for _, t := range remotes.List() {
-		out.Targets = append(out.Targets, placeTarget{Name: t.Name, Type: t.Type, Provider: t.Provider, Mark: t.Mark})
+		out.Targets = append(out.Targets, placeTarget{Name: t.Name, Label: t.Label, Type: t.Type, Provider: t.Provider, Mark: t.Mark})
 	}
 	for _, d := range volume.Remembered() {
 		out.Drives = append(out.Drives, placeDrive{ID: d.ID, Label: d.Label, Path: volume.Prefix + d.ID, Attached: d.Attached})
