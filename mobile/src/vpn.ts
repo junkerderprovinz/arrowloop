@@ -1,6 +1,6 @@
 import type { TileMark } from "@glimstone/core";
 import { VPN_PROVIDERS as CATALOG } from "@glimstone/core/vpnProviders";
-import type { Translate } from "../../web/src/lib/i18n.data.ts";
+import type { Translate, TranslationKey } from "../../web/src/lib/i18n.data.ts";
 import { matchesQuery } from "../../web/src/lib/fold.ts";
 import {
   CUSTOM,
@@ -10,6 +10,7 @@ import {
   type VpnState,
   type VpnTunnelState,
 } from "../../web/src/lib/vpn.ts";
+import type { WifiReading } from "./engine.ts";
 
 // The phone's side of the VPN settings. The tables and the words are
 // web/src/lib/vpn.ts, which the browser reads too; the marks are GlimStone's.
@@ -158,4 +159,34 @@ export function tunnelLine(
 /** The jobs that name a VPN, by their names. */
 export function jobsThrough(jobs: readonly { name: string; vpn?: string | true }[], id: string): string[] {
   return jobs.filter((j) => j.vpn === id).map((j) => j.name);
+}
+
+/** A list of wifi names with one more, as the engine keeps it: trimmed, once each, in the order added. */
+export function withWifi(list: readonly string[], name: string): string[] {
+  const n = name.trim();
+  return n === "" || list.includes(n) ? [...list] : [...list, n];
+}
+
+/** What a VPN row says about the wifi networks its jobs connect directly on, or "" for none. */
+export function directOn(tunnel: VpnTunnelState, t: Translate): string {
+  const names = tunnel.trustedWifi ?? [];
+  return names.length > 0 ? t("vpn.wifi.direct", { names: names.join(", ") }) : "";
+}
+
+/** The step that lets the phone name the wifi: the permission, access all the time, or the location. */
+export type WifiStep = { label: TranslationKey; act: "grant" | "always" | "location" };
+
+/**
+ * The line over a VPN's wifi list: what keeps the phone from naming the wifi,
+ * with the step that helps, or else the wifi it is on. While the phone cannot
+ * name it, every run goes through the VPN, and the line says so. Before a
+ * wifi is listed there is nothing to say, since the access is only asked for
+ * once someone fills the list.
+ */
+export function wifiAccessNote(r: WifiReading, listed: boolean, t: Translate): { said: string; step?: WifiStep } | null {
+  if (!listed) return null;
+  if (r.access === "none") return { said: t("vpn.wifi.noAccess"), step: { label: "vpn.wifi.grant", act: "grant" } };
+  if (!r.locationOn) return { said: t("vpn.wifi.locationOff"), step: { label: "vpn.wifi.locationOpen", act: "location" } };
+  if (r.access === "foreground") return { said: t("vpn.wifi.foreground"), step: { label: "vpn.wifi.always", act: "always" } };
+  return { said: r.name ? t("vpn.wifi.now", { wifi: r.name }) : t("vpn.wifi.nowNone") };
 }

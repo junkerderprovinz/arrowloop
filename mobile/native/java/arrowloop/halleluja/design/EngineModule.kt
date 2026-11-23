@@ -269,6 +269,35 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
+     * Returns the wifi the phone is on and how far Android lets ArrowLoop see
+     * it, for the list of wifi networks a VPN lets its jobs go direct on. The
+     * screen asks again after a permission changed, so the engine hears of it
+     * as well.
+     */
+    @ReactMethod
+    fun wifi(promise: Promise) {
+        val map = Arguments.createMap()
+        map.putString("name", Device.wifi(context)?.name ?: "")
+        map.putString("access", Device.wifiAccess(context))
+        map.putBoolean("locationOn", Device.locationOn(context))
+        Device.wifiChanged(context)
+        promise.resolve(map)
+    }
+
+    /** Opens Android's location settings, where the location is switched on. */
+    @ReactMethod
+    fun openLocationSettings(promise: Promise) {
+        try {
+            context.startActivity(
+                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+            promise.resolve(null)
+        } catch (_: ActivityNotFoundException) {
+            promise.reject("location", "this phone has no location settings page")
+        }
+    }
+
+    /**
      * Takes a map rather than positional booleans, so swapped arguments cannot
      * compile. Keys the map leaves out keep their stored value.
      */

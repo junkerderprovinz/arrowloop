@@ -21,6 +21,9 @@ interface EngineNativeModule {
   openNotificationSettings(): Promise<void>;
   /** Opens the battery optimisation list, where OEMs decide whether background jobs run. */
   openBatterySettings(): Promise<void>;
+  /** The wifi the phone is on and how far Android lets ArrowLoop see it; tells the engine too. */
+  wifi(): Promise<WifiReading>;
+  openLocationSettings(): Promise<void>;
   /** Writes a settings backup and returns its path; an empty path means Downloads. */
   exportSettings(json: string, path: string): Promise<string>;
   /** Reads a backup; an empty path means the default place. */
@@ -154,6 +157,18 @@ export interface DevicePolicy extends DeviceConditions {
   holding: string;
 }
 
+/**
+ * The wifi the phone is on, as far as Android lets ArrowLoop see it. Android
+ * names it only to an app with location access while the location is on, and
+ * to one in the background only with access all the time.
+ */
+export interface WifiReading {
+  /** Empty off wifi, and whenever Android keeps the name back. */
+  name: string;
+  access: "none" | "foreground" | "always";
+  locationOn: boolean;
+}
+
 /** What a build without the native module reports: nothing held. */
 const NOTHING_HELD: DevicePolicy = {
   onlyCharging: false,
@@ -168,6 +183,9 @@ const NOTHING_HELD: DevicePolicy = {
   metered: false,
   holding: "",
 };
+
+/** What a build without the native module reports: no wifi it could name. */
+const NO_WIFI: WifiReading = { name: "", access: "none", locationOn: false };
 
 /** What a build without the native module reports: switched off. */
 const NO_APP_DATA: AppData = { state: "off", way: "root", root: true, shizuku: false, su: "su" };
@@ -199,6 +217,8 @@ export const engine = {
   token: () => (native ? native.token() : Promise.resolve("")),
   openNotificationSettings: () => (native ? native.openNotificationSettings() : missing()),
   openBatterySettings: () => (native ? native.openBatterySettings() : missing()),
+  wifi: (): Promise<WifiReading> => (native ? native.wifi() : Promise.resolve(NO_WIFI)),
+  openLocationSettings: () => (native ? native.openLocationSettings() : missing()),
   exportSettings: (json: string, path: string) => (native ? native.exportSettings(json, path) : missing()),
   importSettings: (path: string) => (native ? native.importSettings(path) : missing()),
   backupPath: () => (native ? native.backupPath() : missing()),

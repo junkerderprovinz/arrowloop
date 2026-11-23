@@ -1,17 +1,24 @@
 package arrowloop.halleluja.design
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.net.NetworkRequest
+import android.net.wifi.WifiManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 
 /**
  * Watches power and network and tells the engine whether a condition holds
@@ -36,6 +43,14 @@ object Device {
 
     /** The verdict being sent, so a burst of broadcasts sends it once. */
     private var inFlight: String? = null
+
+    /**
+     * The wifi last read and whether a network change has made it old since.
+     * Android counts every read of its name as a use of the location, and the
+     * battery broadcasts come every few seconds.
+     */
+    private var wifiSeen: Wifi? = null
+    private var wifiOld = true
 
     private var power: BroadcastReceiver? = null
     private var network: ConnectivityManager.NetworkCallback? = null
@@ -180,6 +195,81 @@ object Device {
         return manager.activeNetwork == null
     }
 
+    /** The wifi the phone's traffic leaves by: its name and the phone's addresses on it. */
+    data class Wifi(val name: String, val addresses: List<String>)
+
+    /**
+     * Returns the wifi the phone's traffic leaves by, or null when it leaves
+     * by another network or Android does not say which wifi it is. Android
+     * names it only to an app with location access while the location is on,
+     * and in the background only with access all the time. The engine checks
+     * the addresses against its own way out before it lets a job go without
+     * its VPN.
+     */
+    @Suppress("DEPRECATION")
+    fun wifi(context: Context): Wifi? {
+        if (wifiAccess(context) == "none" || !locationOn(context)) return null
+        val manager = context.getSystemService(ConnectivityManager::class.java) ?: return null
+        val active = manager.activeNetwork ?: return null
+        val caps = manager.getNetworkCapabilities(active) ?: return null
+        // Behind another app's VPN the traffic leaves by that VPN, wherever
+        // the phone is.
+        if (!caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+            caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+        ) {
+            return null
+        }
+        val wifi = context.applicationContext.getSystemService(WifiManager::class.java) ?: return null
+        val name = ssidOf(wifi.connectionInfo?.ssid ?: return null) ?: return null
+        val addresses = manager.getLinkProperties(active)?.let(::addressesOf).orEmpty()
+        return if (addresses.isEmpty()) null else Wifi(name, addresses)
+    }
+
+    private fun addressesOf(link: LinkProperties): List<String> =
+        link.linkAddresses.mapNotNull { it.address?.hostAddress?.substringBefore('%') }
+
+    /**
+     * How far the location access goes that naming the wifi needs: "none",
+     * "foreground" while the app shows, or "always". Before Android 10 there
+     * is no separate access for the background.
+     */
+    fun wifiAccess(context: Context): String {
+        fun granted(p: String) = context.checkSelfPermission(p) == PackageManager.PERMISSION_GRANTED
+        return when {
+            !granted(Manifest.permission.ACCESS_FINE_LOCATION) -> "none"
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q -> "always"
+            granted(Manifest.permission.ACCESS_BACKGROUND_LOCATION) -> "always"
+            else -> "foreground"
+        }
+    }
+
+    /** Reports whether the location is switched on, without which Android names no wifi. */
+    @Suppress("DEPRECATION")
+    fun locationOn(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return context.getSystemService(LocationManager::class.java)?.isLocationEnabled ?: false
+        }
+        return Settings.Secure.getInt(
+            context.contentResolver,
+            Settings.Secure.LOCATION_MODE,
+            Settings.Secure.LOCATION_MODE_OFF,
+        ) != Settings.Secure.LOCATION_MODE_OFF
+    }
+
+    /** Has the next report read the wifi again, after a network or the access changed. */
+    fun wifiChanged(context: Context) {
+        synchronized(Device) { wifiOld = true }
+        report(context)
+    }
+
+    private fun wifiNow(context: Context, fresh: Boolean): Wifi? = synchronized(Device) {
+        if (fresh || wifiOld) {
+            wifiSeen = wifi(context)
+            wifiOld = false
+        }
+        wifiSeen
+    }
+
     /**
      * Waits up to three seconds for Android to let the app onto the network. A
      * wake-up lifts the block as it starts, and the news can arrive a moment
@@ -235,7 +325,7 @@ object Device {
     @Synchronized
     fun report(context: Context) {
         val why = reason(context)
-        val now = verdict(why, offline(context))
+        val now = verdict(why, offline(context), wifiNow(context, fresh = false))
         if (now == sent || now == inFlight) return
         // Claimed before the thread starts, since a cable going in fires
         // several broadcasts a second.
@@ -245,13 +335,21 @@ object Device {
     }
 
     /** The body the engine gets, which is also what tells a new verdict from the last. */
-    private fun verdict(reason: String, offline: Boolean) = """{"reason":${quote(reason)},"offline":$offline}"""
+    private fun verdict(reason: String, offline: Boolean, wifi: Wifi?): String {
+        val on = wifi?.let { w ->
+            val addresses = w.addresses.joinToString(",") { quote(it) }
+            ""","wifi":{"name":${quote(w.name)},"addresses":[$addresses]}"""
+        }.orEmpty()
+        return """{"reason":${quote(reason)},"offline":$offline$on}"""
+    }
 
     /**
      * Sends the verdict on the calling thread and reports whether the engine
-     * took it, for a caller that must not go on before it has.
+     * took it, for a caller that must not go on before it has. The wifi is
+     * read again, since a wake-up can come long after the last network change.
      */
-    fun reportNow(context: Context): Boolean = send(context, verdict(reason(context), offline(context)))
+    fun reportNow(context: Context): Boolean =
+        send(context, verdict(reason(context), offline(context), wifiNow(context, fresh = true)))
 
     private fun send(context: Context, now: String): Boolean {
         return try {
@@ -302,10 +400,12 @@ object Device {
             val manager = context.getSystemService(ConnectivityManager::class.java)
             if (manager != null) {
                 val callback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onAvailable(n: Network) = report(context)
-                    override fun onLost(n: Network) = report(context)
+                    override fun onAvailable(n: Network) = wifiChanged(context)
+                    override fun onLost(n: Network) = wifiChanged(context)
                     override fun onCapabilitiesChanged(n: Network, c: NetworkCapabilities) =
-                        report(context)
+                        wifiChanged(context)
+                    override fun onLinkPropertiesChanged(n: Network, l: LinkProperties) =
+                        wifiChanged(context)
                     override fun onBlockedStatusChanged(n: Network, blocked: Boolean) =
                         report(context)
                 }
@@ -316,7 +416,10 @@ object Device {
         if (renew == null) {
             renew = object : Runnable {
                 override fun run() {
-                    synchronized(Device) { sent = null }
+                    synchronized(Device) {
+                        sent = null
+                        wifiOld = true
+                    }
                     report(context)
                     main.postDelayed(this, RENEW_MS)
                 }
@@ -347,22 +450,38 @@ object Device {
         renew = null
         sent = null
         inFlight = null
+        wifiSeen = null
+        wifiOld = true
     }
 
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+}
 
-    /** Encodes a string as a JSON string literal. */
-    private fun quote(s: String): String {
-        val out = StringBuilder("\"")
-        for (c in s) {
-            when (c) {
-                '"' -> out.append("\\\"")
-                '\\' -> out.append("\\\\")
-                '\n' -> out.append("\\n")
-                else -> out.append(c)
-            }
+/**
+ * The wifi's name from WifiInfo's form of it: in quotes when it reads as text,
+ * as hex digits when it does not, and "<unknown ssid>" when Android keeps it
+ * back. Outside Device, which a unit test cannot load.
+ */
+internal fun ssidOf(raw: String): String? = when {
+    raw == WifiManager.UNKNOWN_SSID || raw.isEmpty() -> null
+    raw.length >= 2 && raw.startsWith('"') && raw.endsWith('"') -> raw.substring(1, raw.length - 1).ifEmpty { null }
+    else -> raw
+}
+
+/**
+ * Encodes a string as a JSON string literal. A wifi's name can hold any
+ * character, and one the engine cannot read would lose the whole report.
+ */
+internal fun quote(s: String): String {
+    val out = StringBuilder("\"")
+    for (c in s) {
+        when {
+            c == '"' -> out.append("\\\"")
+            c == '\\' -> out.append("\\\\")
+            c < ' ' -> out.append("\\u%04x".format(c.code))
+            else -> out.append(c)
         }
-        return out.append('"').toString()
     }
+    return out.append('"').toString()
 }

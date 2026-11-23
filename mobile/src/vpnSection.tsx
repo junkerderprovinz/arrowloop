@@ -7,7 +7,7 @@ import { useT } from "./i18n";
 import type { MoreStack, Nav } from "./nav";
 import { space, text } from "./theme";
 import { Badge, Body, Button, InfoBubble, Section, useTheme } from "./ui";
-import { jobsThrough, testVerdict, tunnelLine, vpnWordmark, type Verdict } from "./vpn";
+import { directOn, jobsThrough, testVerdict, tunnelLine, vpnWordmark, type Verdict } from "./vpn";
 import { errorText } from "../../web/src/lib/errorText";
 import { tunnelName, VPN_STATUS, type VpnState, type VpnTunnelState } from "../../web/src/lib/vpn";
 
@@ -68,6 +68,7 @@ export function IntegrationsSection({ hue }: { hue: number }) {
             jobs={jobsThrough(jobs, tunnel.id)}
             onState={setVpn}
             onEdit={() => nav.navigate("VpnEdit", { provider: tunnel.provider, id: tunnel.id })}
+            onWifi={() => nav.navigate("VpnWifi", { id: tunnel.id })}
             onRemove={() => remove(tunnel, name)}
           />
         );
@@ -90,6 +91,7 @@ function TunnelRow({
   jobs,
   onState,
   onEdit,
+  onWifi,
   onRemove,
 }: {
   tunnel: VpnTunnelState;
@@ -97,6 +99,7 @@ function TunnelRow({
   jobs: string[];
   onState: (next: VpnState) => void;
   onEdit: () => void;
+  onWifi: () => void;
   onRemove: () => void;
 }) {
   const { t } = useT();
@@ -108,6 +111,7 @@ function TunnelRow({
   const status = VPN_STATUS[tunnel.status];
   const tile = vpnTile(tunnel.provider) ?? { color: accent, ink: accentContrast };
   const line = tunnelLine(tunnel, verdict, name, t);
+  const direct = directOn(tunnel, t);
 
   const test = async () => {
     setTesting(true);
@@ -157,6 +161,11 @@ function TunnelRow({
             {jobs.length > 0 ? jobs.join(", ") : t("vpn.jobsNone")}
           </Text>
         </View>
+        {direct ? (
+          <Text style={[styles.status, { color: p.textSub }]} numberOfLines={2}>
+            {direct}
+          </Text>
+        ) : null}
         <View style={styles.actions}>
           <Button
             label={t("vpn.test")}
@@ -172,6 +181,7 @@ function TunnelRow({
             onPress={() => void test()}
           />
           <Button label={t("vpn.edit")} labelKey="vpn.edit" glyphOnly inWell wide={false} onPress={onEdit} />
+          <Button label={t("vpn.wifi.title")} labelKey="vpn.wifi.title" glyphOnly inWell wide={false} onPress={onWifi} />
           <Button label={t("edit.remove")} labelKey="edit.remove" glyphOnly inWell wide={false} onPress={onRemove} />
         </View>
       </View>
