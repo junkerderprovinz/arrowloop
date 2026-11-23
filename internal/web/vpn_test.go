@@ -369,3 +369,35 @@ func TestAPrecheckStillChecksTheFolderOnThisDeviceWhenTheTunnelFails(t *testing.
 		t.Errorf("the right side says %q", right)
 	}
 }
+
+func TestTheWifiAVPNTrustsIsSavedAndListed(t *testing.T) {
+	h := newHarness(t)
+	m, base := withVPN(t, h)
+	id := addTunnel(t, base, vpnconn.Custom, map[string]string{"config": ownConfig})
+
+	put := func(path, body string) *http.Response {
+		req, _ := http.NewRequest(http.MethodPut, base+path, strings.NewReader(body))
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+	resp := put("/api/vpn/"+id+"/wifi", `{"names":["Home","Office"]}`)
+	var st vpnconn.State
+	json.NewDecoder(resp.Body).Decode(&st)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK || len(st.Tunnels) != 1 || fmt.Sprint(st.Tunnels[0].TrustedWifi) != "[Home Office]" {
+		t.Fatalf("saving the wifi answered %s %+v", resp.Status, st.Tunnels)
+	}
+	if !m.Trusts(id, "Office") {
+		t.Error("the saved wifi does not reach the runs")
+	}
+
+	resp = put("/api/vpn/elsewhere/wifi", `{"names":["Home"]}`)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("an unknown VPN answered %s", resp.Status)
+	}
+}

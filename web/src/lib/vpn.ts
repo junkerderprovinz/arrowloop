@@ -66,6 +66,8 @@ export type VpnTunnelState = {
   exitIp?: string
   error?: string
   errorCode?: string
+  /** The wifi networks on which its jobs connect directly. */
+  trustedWifi?: string[]
 }
 
 export type VpnState = { tunnels: VpnTunnelState[]; providers: VpnProviderState[] }

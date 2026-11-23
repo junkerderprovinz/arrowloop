@@ -702,6 +702,9 @@ export const api = {
   saveVpn: (id: string, fields: Partial<Record<VpnField, string>>) =>
     call<VpnState>(`/api/vpn/${name(id)}`, { method: "PUT", body: JSON.stringify({ fields }) }),
   forgetVpn: (id: string) => call<VpnState>(`/api/vpn/${name(id)}`, { method: "DELETE" }),
+  /** Sets the wifi networks on which the VPN's jobs connect directly. */
+  trustVpnWifi: (id: string, names: string[]) =>
+    call<VpnState>(`/api/vpn/${name(id)}/wifi`, { method: "PUT", body: JSON.stringify({ names }) }),
   /** Brings a VPN up as a run would, asks which address traffic leaves by, and takes it down. */
   testVpn: (id: string) =>
     call<{ ok: boolean; reason?: string; state: VpnState }>(`/api/vpn/${name(id)}/test`, { method: "POST" }),

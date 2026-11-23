@@ -52,6 +52,23 @@ func (s *Server) vpnRoutes(mux *http.ServeMux) {
 		}
 		writeJSON(w, http.StatusOK, st)
 	})
+	// The wifi networks on which the tunnel's jobs go direct, saved as the
+	// list changes.
+	mux.HandleFunc("PUT /api/vpn/{id}/wifi", func(w http.ResponseWriter, r *http.Request) {
+		var body struct {
+			Names []string `json:"names"`
+		}
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&body); err != nil {
+			writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+			return
+		}
+		st, err := s.VPN.TrustWifi(r.PathValue("id"), body.Names)
+		if err != nil {
+			writeVPNError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, st)
+	})
 	mux.HandleFunc("DELETE /api/vpn/{id}", func(w http.ResponseWriter, r *http.Request) {
 		st, err := s.VPN.Forget(r.PathValue("id"))
 		if err != nil {

@@ -41,6 +41,30 @@ func (r *Runner) SetVPN(m *vpnconn.Manager) {
 	}
 }
 
+// SetWifi tells the runner which wifi the machine is on, for the VPNs that
+// let their jobs go direct on some, such as the one at home. wifi returns ""
+// when that is not certain, and a job then goes through its VPN.
+func (r *Runner) SetWifi(wifi func() string) {
+	r.mu.Lock()
+	r.wifi = wifi
+	r.mu.Unlock()
+}
+
+// trustedWifi is the wifi the machine is on when j's VPN lets the job go
+// direct there, and "" otherwise.
+func (r *Runner) trustedWifi(m *vpnconn.Manager, j job.Job) string {
+	r.mu.Lock()
+	wifi := r.wifi
+	r.mu.Unlock()
+	if wifi == nil {
+		return ""
+	}
+	if name := wifi(); m.Trusts(r.tunnelOf(m, j), name) {
+		return name
+	}
+	return ""
+}
+
 func (r *Runner) adoptFormerVPN(tunnel string) {
 	cfg := r.config()
 	if tunnel == "" || !slices.ContainsFunc(cfg.Jobs, func(j job.Job) bool { return j.VPN == job.FormerVPN }) {
@@ -69,7 +93,8 @@ func (r *Runner) adoptFormerVPN(tunnel string) {
 // ThroughVPN returns the context a job's connections are made with: for a job
 // that goes through the VPN, one that sends them all into the tunnel, which it
 // holds up until done is called. It fails rather than hand back a context
-// whose connections would leave past the tunnel. It is for a look at the
+// whose connections would leave past the tunnel, unless the machine is on a
+// wifi the job's VPN trusts, where they go direct. It is for a look at the
 // job's sides, so a tunnel that does not come up is ErrVPNUnreached.
 func (r *Runner) ThroughVPN(ctx context.Context, j job.Job) (_ context.Context, done func(), err error) {
 	return r.through(ctx, j, ErrVPNUnreached)
@@ -96,6 +121,10 @@ func (r *Runner) through(ctx context.Context, j job.Job, down error) (_ context.
 			return nil, nil, fmt.Errorf("%w: the %s side: %w", ErrVPNRefused, side.name, err)
 		}
 	}
+	if wifi := r.trustedWifi(m, j); wifi != "" {
+		r.log("%s: on the wifi %s, which its VPN trusts, so it connects directly", j.Name, wifi)
+		return ctx, func() {}, nil
+	}
 	lease, err := m.Acquire(ctx, r.tunnelOf(m, j), j.Key())
 	if err != nil {
 		return nil, nil, fmt.Errorf("%w: %w", down, err)
@@ -115,6 +144,9 @@ func (r *Runner) JoinVPN(ctx context.Context, j job.Job) (_ context.Context, don
 	r.mu.Unlock()
 	if m == nil {
 		return nil, nil, ErrNoVPN
+	}
+	if r.trustedWifi(m, j) != "" {
+		return ctx, func() {}, nil
 	}
 	lease, err := m.Join(r.tunnelOf(m, j), j.Key())
 	if err != nil {

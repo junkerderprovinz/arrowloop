@@ -1,6 +1,6 @@
 # Privacy policy: ArrowLoop
 
-Last updated: 12 November 2026. Applies to the ArrowLoop Android app, the
+Last updated: 23 November 2026. Applies to the ArrowLoop Android app, the
 desktop app and the container, from version 1.1.0, until this date changes.
 
 ## The short version
@@ -29,6 +29,13 @@ Android's cloud backup. Uninstalling the app removes all of it.
 - Settings: language, appearance, notifications and the phone conditions a job
   waits for (Wi-Fi, no roaming, an unmetered network, charging, battery level).
 - An interface password, if you set one, kept only as a hash.
+- The VPNs you set up, in `vpn.json` beside the configuration: each VPN's
+  provider, its location, the Wi-Fi networks where its jobs go direct, and its
+  login. The login is what you entered (a WireGuard configuration with its
+  private key and the server's address, or a user name, password, account
+  number or token) plus any key ArrowLoop registered with the provider. It is
+  encrypted with this install's key, and the interface never shows it again. A
+  settings backup leaves the file out.
 - If you pair your instances: the secret behind the twelve words and this
   instance's own key, both encrypted, and the instances approved in the group
   with when they were last seen.
@@ -69,6 +76,16 @@ Only what you set up, and only to where you point it:
   from the fortress's phrase.
 - **Dashboards**, if you make a read token: whatever holds the token can read
   how ArrowLoop is doing and its run log, and nothing else.
+- **The built-in VPN**, if a job names one. While that job runs, its
+  connections go through a WireGuard tunnel to your provider's server or your
+  own, and the rest of ArrowLoop keeps to your normal connection. With
+  NordVPN, Private Internet Access, Mullvad, hide.me, TorGuard, AzireVPN and
+  Obscura, ArrowLoop signs in with your login to pick a server and to fetch or
+  register the WireGuard key. Mullvad, AzireVPN and Obscura get their key back
+  when you remove the VPN. If you leave the location empty, ArrowLoop asks
+  Mullvad where the request comes from, to find the nearest server. **Test**
+  asks api.ipify.org through the tunnel which address your traffic leaves at.
+  We receive none of it.
 - **Links you tap**, such as the source code or a donation page, open in your
   browser, which then connects to that site.
 
@@ -86,6 +103,12 @@ your network can reach it.
 - **Run at startup**, so scheduled jobs resume after the phone restarts.
 - **Network access and network state**, to reach your storage targets and to
   hold a job until the phone is on Wi-Fi when you ask for that.
+- **Location**, only once you list a Wi-Fi network under a VPN's "Wifi
+  without VPN". Android tells only apps with location access which Wi-Fi the
+  phone is on. ArrowLoop reads the name of that Wi-Fi and the phone's addresses
+  on it, hands them to its own engine on the phone and sends them nowhere else.
+  It never asks where you are. Access all the time lets timed runs see the
+  Wi-Fi while the app is closed.
 
 ## What ArrowLoop does not do
 

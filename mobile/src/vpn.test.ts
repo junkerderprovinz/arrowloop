@@ -8,10 +8,13 @@ import {
   pickGroups,
   testVerdict,
   tunnelLine,
+  directOn,
   vpnChoiceShown,
   vpnMark,
   vpnOptions,
   vpnWordmark,
+  wifiAccessNote,
+  withWifi,
   wordmarkWidth,
 } from "./vpn.ts";
 
@@ -163,4 +166,37 @@ test("a wordmark keeps its aspect at a height and is held to the most it may tak
 test("a VPN set up from a .conf says its configuration stays until another replaces it", () => {
   assert.equal(vpnKeepHint(t, ["config"]), en["vpn.keepSavedConfig"]);
   assert.equal(vpnKeepHint(t, ["accountNumber", "location"]), en["vpn.keepSaved"]);
+});
+
+test("a wifi joins the list once, trimmed, after those there are", () => {
+  assert.deepEqual(withWifi(["Home"], "  Office "), ["Home", "Office"]);
+  assert.deepEqual(withWifi(["Home"], "Home"), ["Home"]);
+  assert.deepEqual(withWifi(["Home"], "   "), ["Home"]);
+  // A name differs by its case, as the phone reports it.
+  assert.deepEqual(withWifi(["Home"], "home"), ["Home", "home"]);
+});
+
+test("the list says what keeps the phone from naming the wifi, and the step that helps", () => {
+  const reading = { name: "", access: "always", locationOn: true } as const;
+  assert.equal(wifiAccessNote({ ...reading, access: "none" }, false, t), null, "nothing to say before a wifi is listed");
+  assert.deepEqual(wifiAccessNote({ ...reading, access: "none" }, true, t), {
+    said: en["vpn.wifi.noAccess"],
+    step: { label: "vpn.wifi.grant", act: "grant" },
+  });
+  assert.deepEqual(wifiAccessNote({ ...reading, locationOn: false }, true, t), {
+    said: en["vpn.wifi.locationOff"],
+    step: { label: "vpn.wifi.locationOpen", act: "location" },
+  });
+  assert.deepEqual(wifiAccessNote({ ...reading, access: "foreground" }, true, t), {
+    said: en["vpn.wifi.foreground"],
+    step: { label: "vpn.wifi.always", act: "always" },
+  });
+  assert.deepEqual(wifiAccessNote({ ...reading, name: "Home" }, true, t), { said: t("vpn.wifi.now", { wifi: "Home" }) });
+  assert.deepEqual(wifiAccessNote(reading, true, t), { said: en["vpn.wifi.nowNone"] });
+});
+
+test("a VPN row names the wifi networks its jobs connect directly on", () => {
+  assert.equal(directOn({ ...home, trustedWifi: ["Home", "Office"] }, t), t("vpn.wifi.direct", { names: "Home, Office" }));
+  assert.equal(directOn(home, t), "");
+  assert.equal(directOn({ ...home, trustedWifi: [] }, t), "");
 });

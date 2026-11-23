@@ -10,6 +10,8 @@ package hold
 import (
 	"context"
 	"errors"
+	"net/netip"
+	"slices"
 	"sync"
 	"time"
 
@@ -41,12 +43,21 @@ type State struct {
 	Stale bool `json:"stale"`
 }
 
+// Wifi is the wireless network a device says its traffic leaves by: its name
+// and the addresses the device has on it. A device that cannot tell, such as a
+// phone without location access, reports none.
+type Wifi struct {
+	Name      string       `json:"name"`
+	Addresses []netip.Addr `json:"addresses"`
+}
+
 // Store is the last report. The HTTP handler and the runner use it from
 // different goroutines.
 type Store struct {
 	mu      sync.RWMutex
 	reason  string
 	offline bool
+	wifi    Wifi
 	at      time.Time
 
 	// now is the clock, swapped in tests. Nil means time.Now.
@@ -54,6 +65,10 @@ type Store struct {
 
 	// routed, when set, is asked before a job that needs a network.
 	routed func() bool
+
+	// leaves is where this machine's traffic leaves from, swapped in tests.
+	// Nil means Leaves.
+	leaves func() []netip.Addr
 }
 
 // New returns an empty store that holds nothing.
@@ -77,15 +92,47 @@ func (s *Store) CheckRoutes(routed func() bool) {
 	s.routed = routed
 }
 
-// Report records a reason and whether the device is offline. An empty reason
-// on a device with a network clears the hold.
-func (s *Store) Report(reason string, offline bool) {
+// Report records a reason, whether the device is offline and the wifi it is
+// on. An empty reason on a device with a network clears the hold.
+func (s *Store) Report(reason string, offline bool, wifi Wifi) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.reason = reason
 	s.offline = offline
+	s.wifi = wifi
 	s.at = s.clock()
 }
+
+// Wifi returns the name of the wifi this machine's traffic leaves by, or ""
+// when that is not certain: no wifi was reported, the report is stale, or the
+// traffic leaves from an address the device did not report for that wifi. The
+// last is looked up on every call, since a report can be older than the
+// network it describes, as CheckRoutes explains.
+func (s *Store) Wifi() string {
+	s.mu.RLock()
+	wifi, stale, leaves := s.wifi, s.stale(), s.leaves
+	s.mu.RUnlock()
+	if wifi.Name == "" || stale {
+		return ""
+	}
+	if leaves == nil {
+		leaves = Leaves
+	}
+	from := leaves()
+	if len(from) == 0 {
+		return ""
+	}
+	for _, a := range from {
+		if !slices.ContainsFunc(wifi.Addresses, func(b netip.Addr) bool { return bare(b) == bare(a) }) {
+			return ""
+		}
+	}
+	return wifi.Name
+}
+
+// bare is an address without its zone, and an IPv4 address in IPv6 form as
+// IPv4.
+func bare(a netip.Addr) netip.Addr { return a.Unmap().WithZone("") }
 
 // State returns the last report with its staleness worked out.
 func (s *Store) State() State {

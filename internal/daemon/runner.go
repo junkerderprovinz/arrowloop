@@ -108,6 +108,9 @@ type Runner struct {
 	// vpn brings the tunnel up for the jobs that go through it; nil where the
 	// engine has none.
 	vpn *vpnconn.Manager
+	// wifi names the wifi this machine is on, or "" when that is not known;
+	// nil where nothing can tell.
+	wifi func() string
 	// inflight holds, per running job, the way to stop it. This map and the
 	// others below are keyed by the job's Key, so a job renamed while it runs
 	// is still the job that runs.

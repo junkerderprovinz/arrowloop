@@ -63,6 +63,10 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.8.4',
+    changes: [{ id: 'trusted-wifi', text: 'new.change.trustedWifi' }],
+  },
+  {
     after: '2.8.3',
     changes: [
       { id: 'automation-start', text: 'new.change.automationStart' },

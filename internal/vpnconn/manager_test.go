@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"syscall"
 	"testing"
@@ -559,5 +560,58 @@ func TestJoiningLeavesATunnelThatIsDownAlone(t *testing.T) {
 	joined.Release()
 	if st := tunnelState(t, m, Custom); st.Status != Down {
 		t.Errorf("after both let go: %s", st.Status)
+	}
+}
+
+func TestATunnelTrustsTheWifiNamedForItAndNoOther(t *testing.T) {
+	srv := vpntest.Start(t, insideOnly)
+	m := withOwnConfig(t, srv)
+	if m.Trusts(Custom, "Home") {
+		t.Error("a tunnel with no wifi named trusts Home")
+	}
+	st, err := m.TrustWifi(Custom, []string{" Home ", "", "Office", "Home"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := st.Tunnels[0].TrustedWifi; !slices.Equal(got, []string{"Home", "Office"}) {
+		t.Errorf("the state lists %q", got)
+	}
+	for name, want := range map[string]bool{"Home": true, "Office": true, "home": false, "Café": false, "": false} {
+		if got := m.Trusts(Custom, name); got != want {
+			t.Errorf("trusts %q = %v, want %v", name, got, want)
+		}
+	}
+	if m.Trusts("elsewhere", "Home") {
+		t.Error("a tunnel that is not set up trusts Home")
+	}
+}
+
+func TestTheTrustedWifiOutlastsANewLoginAndARestart(t *testing.T) {
+	srv := vpntest.Start(t, insideOnly)
+	m := withOwnConfig(t, srv)
+	if _, err := m.TrustWifi(Custom, []string{"Home"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := m.Save(Custom, map[string]string{"config": srv.Config()}); err != nil {
+		t.Fatal(err)
+	}
+	reopened, err := New(m.opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer reopened.Close()
+	if !reopened.Trusts(Custom, "Home") {
+		t.Error("after a new login and a restart the tunnel does not trust Home")
+	}
+	if got := tunnelState(t, reopened, Custom).TrustedWifi; !slices.Equal(got, []string{"Home"}) {
+		t.Errorf("the state lists %q", got)
+	}
+}
+
+func TestTrustingWifiOnATunnelThatIsNotSetUpIsRefused(t *testing.T) {
+	m := newManager(t)
+	var ref *Refusal
+	if _, err := m.TrustWifi("elsewhere", []string{"Home"}); !errors.As(err, &ref) || ref.Status != http.StatusNotFound {
+		t.Errorf("trusting wifi on an unknown tunnel = %v", err)
 	}
 }

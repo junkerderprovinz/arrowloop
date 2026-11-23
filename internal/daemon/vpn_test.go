@@ -371,3 +371,102 @@ func TestATunnelListsAJobRenamedWhileItHoldsItByItsNewName(t *testing.T) {
 		t.Errorf("the tunnel is held for %v, want the job's new name", st.Jobs)
 	}
 }
+
+// onWifi has the runner's machine on the wifi called name, the way the
+// phone's report tells it.
+func (s *vpnSetup) onWifi(name string) { s.r.SetWifi(func() string { return name }) }
+
+// localOnly points the job through the VPN at a folder on the machine, which
+// a run that goes direct reaches, and has the VPN's tunnel never come up.
+func (s *vpnSetup) localOnly(t *testing.T) {
+	t.Helper()
+	s.r.Config().Jobs[0].Right = s.shared
+	s.srv.Close()
+}
+
+func TestAJobOnAWifiItsVPNTrustsGoesDirect(t *testing.T) {
+	s := newVPNRunner(t, func(o *vpnconn.Options) { o.ConnectTimeout = 700 * time.Millisecond })
+	s.localOnly(t)
+	if _, err := s.vpn.TrustWifi(vpnconn.Custom, []string{"Home"}); err != nil {
+		t.Fatal(err)
+	}
+	s.onWifi("Home")
+	rec, err := s.r.Run(context.Background(), "through")
+	if err != nil {
+		t.Fatalf("on the wifi at home the run failed: %v (%s)", err, rec.Err)
+	}
+	if got, err := os.ReadFile(filepath.Join(s.shared, "invoice.pdf")); err != nil || string(got) != "paid" {
+		t.Fatalf("the folder holds %q, %v", got, err)
+	}
+	if st := s.tunnel(t); st.Status != vpnconn.Down {
+		t.Errorf("a run that went direct brought the VPN %s", st.Status)
+	}
+}
+
+func TestAJobOffTheWifiItsVPNTrustsStillGoesThroughIt(t *testing.T) {
+	for _, wifi := range []string{"Café", ""} {
+		s := newVPNRunner(t, func(o *vpnconn.Options) { o.ConnectTimeout = 700 * time.Millisecond })
+		s.localOnly(t)
+		if _, err := s.vpn.TrustWifi(vpnconn.Custom, []string{"Home"}); err != nil {
+			t.Fatal(err)
+		}
+		s.onWifi(wifi)
+		if _, err := s.r.Run(context.Background(), "through"); !errors.Is(err, ErrVPNDown) {
+			t.Errorf("on the wifi %q the run ended with %v, want ErrVPNDown", wifi, err)
+		}
+		if entries, _ := os.ReadDir(s.shared); len(entries) != 0 {
+			t.Errorf("on the wifi %q the folder got %d entries", wifi, len(entries))
+		}
+	}
+}
+
+func TestAWifiOnlyAnotherVPNTrustsKeepsTheJobOnItsOwn(t *testing.T) {
+	s := newVPNRunner(t, func(o *vpnconn.Options) { o.ConnectTimeout = 700 * time.Millisecond })
+	s.localOnly(t)
+	other, _, err := s.vpn.Add(vpnconn.Custom, map[string]string{"config": s.srv.Config()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.vpn.TrustWifi(other, []string{"Home"}); err != nil {
+		t.Fatal(err)
+	}
+	s.onWifi("Home")
+	if _, err := s.r.Run(context.Background(), "through"); !errors.Is(err, ErrVPNDown) {
+		t.Errorf("the run ended with %v, want ErrVPNDown", err)
+	}
+}
+
+func TestALookAtAJobOnATrustedWifiNeedsNoTunnel(t *testing.T) {
+	s := newVPNRunner(t)
+	if _, err := s.vpn.TrustWifi(vpnconn.Custom, []string{"Home"}); err != nil {
+		t.Fatal(err)
+	}
+	s.onWifi("Home")
+	j, _ := s.r.Config().Find("through")
+	ctx := context.Background()
+	if got, done, err := s.r.JoinVPN(ctx, j); err != nil || got != ctx {
+		t.Errorf("joining on the wifi at home = %v", err)
+	} else {
+		done()
+	}
+	if got, done, err := s.r.ThroughVPN(ctx, j); err != nil || got != ctx {
+		t.Errorf("a look on the wifi at home = %v", err)
+	} else {
+		done()
+	}
+	if st := s.tunnel(t); st.Status != vpnconn.Down {
+		t.Errorf("the look brought the VPN %s", st.Status)
+	}
+}
+
+func TestASideTheVPNCannotCarryIsRefusedOnATrustedWifiToo(t *testing.T) {
+	s := newVPNRunner(t)
+	if _, err := s.vpn.TrustWifi(vpnconn.Custom, []string{"Home"}); err != nil {
+		t.Fatal(err)
+	}
+	s.onWifi("Home")
+	s.r.Config().Jobs[0].Right = ":azureblob,account=someone:box"
+	if _, err := s.r.Run(context.Background(), "through"); !errors.Is(err, ErrVPNRefused) {
+		t.Fatalf("the run ended with %v, want ErrVPNRefused", err)
+	}
+}

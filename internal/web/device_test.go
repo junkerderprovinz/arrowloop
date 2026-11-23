@@ -1,6 +1,7 @@
 package web_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -92,5 +93,27 @@ func TestCapabilitiesSayWhetherAnythingCanReport(t *testing.T) {
 	}
 	if phone["device"] != true {
 		t.Fatalf("a build with a hold store denied it: %v", phone["device"])
+	}
+}
+
+func TestAReportedWifiReachesTheRunner(t *testing.T) {
+	from := hold.Leaves()
+	if len(from) == 0 {
+		t.Skip("this machine has no route to leave by")
+	}
+	srv, held := deviceServer(t)
+	body, _ := json.Marshal(map[string]any{"reason": "", "wifi": hold.Wifi{Name: "Home", Addresses: from}})
+	req, _ := http.NewRequest(http.MethodPut, srv.URL+"/api/device", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := srv.Client().Do(req)
+	if err != nil {
+		t.Fatalf("PUT: %v", err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("PUT /api/device: %s", resp.Status)
+	}
+	if got := held.Wifi(); got != "Home" {
+		t.Fatalf("the runner hears of the wifi %q, want Home", got)
 	}
 }

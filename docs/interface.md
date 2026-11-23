@@ -713,8 +713,10 @@ hold a single action is that action's button instead.
 
 The phone sets up **VPN**s on its Integrations card under Settings, as the
 web does: **Set up a VPN** opens the providers as tiles, and each VPN set up
-stands as a row with its test, edit and remove. A job with a side on a target
-then chooses one under **Connection**.
+stands as a row with its test, edit, **Wifi without VPN** and remove. A job
+with a side on a target then chooses one under **Connection**. **Wifi without
+VPN** lists the wifi networks on which the VPN's jobs connect directly; see
+[Wifi without VPN](configuration.md#wifi-without-vpn).
 
 Settings on the phone is one column of cards: Language, This phone (file
 access, notifications, background activity, lock), Appearance, Motion, Sync

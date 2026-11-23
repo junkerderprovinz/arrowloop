@@ -42,6 +42,11 @@ const RULES: Rule[] = [
   // The VPN card: setting one up and moving to another provider.
   [/^vpn\.setUp$/i, 'IconAdd'],
   [/^vpn\.other$/i, 'IconTransfer'],
+  // The wifi networks a VPN lets its jobs go direct on, and the location
+  // access the phone needs to name them.
+  [/^vpn\.wifi\.title$/i, 'IconShieldOff'],
+  [/^vpn\.wifi\.(grant|always)$/i, 'IconUnlock'],
+  [/^vpn\.wifi\.locationOpen$/i, 'IconGear'],
 
   // Pairing: the words shown, entered and pasted, and the answers to an
   // instance that waits for approval.
