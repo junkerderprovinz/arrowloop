@@ -21,6 +21,7 @@ export function Field({
   error,
   short,
   hidePlaceholderOnFocus,
+  maxLength,
 }: {
   label: string;
   hint?: string;
@@ -38,6 +39,7 @@ export function Field({
   error?: string;
   /** A box for a few characters, which fits beside its name on a phone. */
   short?: boolean;
+  maxLength?: number;
 }) {
   const { p, corners } = useTheme();
   const [hidden, setHidden] = useState(Boolean(secret));
@@ -63,6 +65,7 @@ export function Field({
             placeholder={hidePlaceholderOnFocus && focused ? undefined : placeholder}
             placeholderTextColor={p.textSub}
             secureTextEntry={hidden}
+            maxLength={maxLength}
             multiline={multiline}
             keyboardType={keyboard === "numeric" ? "number-pad" : "default"}
             // Paths, patterns and cron expressions are not prose, and

@@ -54,6 +54,7 @@ vi.mock('../lib/api', () => ({
     tryRemote: () => tried(),
     aboutRemote: () => Promise.resolve({ supported: false }),
     saveRemote: (name: string, type: string, settings: Record<string, string>) => saveRemote(name, type, settings),
+    addRemote: (label: string, type: string, settings: Record<string, string>) => saveRemote(label, type, settings),
   },
 }))
 
@@ -70,7 +71,7 @@ async function openPicker() {
       <Targets />
     </ToastProvider>,
   )
-  await screen.findByText('nas:')
+  await screen.findByText('nas')
   fireEvent.click(screen.getByRole('button', { name: 'Connect storage and clouds' }))
   const dialog = await screen.findByRole('dialog')
   return { dialog, search: within(dialog).getByRole('searchbox', { name: 'Search storage and clouds' }) }
@@ -138,7 +139,7 @@ describe('the form after a pick', () => {
     expect((within(dialog).getByLabelText('Name') as HTMLInputElement).value).toBe('WebDAV')
     fireEvent.click(within(dialog).getByRole('button', { name: 'Back' }))
     fireEvent.click(within(dialog).getByRole('button', { name: 'Google Drive' }))
-    expect((within(dialog).getByLabelText('Name') as HTMLInputElement).value).toBe('Google-Drive')
+    expect((within(dialog).getByLabelText('Name') as HTMLInputElement).value).toBe('Google Drive')
   })
 
   it('saves the new target from the foot and closes', async () => {
@@ -212,7 +213,7 @@ describe('a stored secret in the target form', () => {
         <Targets />
       </ToastProvider>,
     )
-    await screen.findByText('nas:')
+    await screen.findByText('nas')
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
     return screen.findByRole('dialog')
   }

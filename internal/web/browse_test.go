@@ -19,6 +19,7 @@ import (
 type browseAnswer struct {
 	Path    string `json:"path"`
 	Parent  string `json:"parent"`
+	Shown   string `json:"shown"`
 	Entries []struct {
 		Name string `json:"name"`
 		Path string `json:"path"`
@@ -192,10 +193,7 @@ func TestThePickerWalksADriveByItsIdentity(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var top struct {
-		browseAnswer
-		Shown string `json:"shown"`
-	}
+	var top browseAnswer
 	h.get(t, "/api/browse?path="+url.QueryEscape(at+"/"), &top)
 	if top.Shown != "Backup" || top.Parent != "" {
 		t.Errorf("the top of the drive reads %q with parent %q", top.Shown, top.Parent)

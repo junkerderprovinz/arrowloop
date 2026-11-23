@@ -13,6 +13,7 @@ import { useHost } from '../lib/host'
 import { useT, type Translate } from '../lib/i18n'
 import { useModal } from '../lib/modal'
 import { useRemembered } from '../lib/remember'
+import { labelledSide } from '../lib/targetLabels'
 
 /**
  * A place the picker offers above the folders. A registered drive is taken as
@@ -28,12 +29,13 @@ const isBoolean = (value: unknown): value is boolean => typeof value === 'boolea
  */
 export function placeOffers(
   drives: { path: string; label: string; attached: boolean }[],
-  targets: { name: string }[],
+  targets: { name: string; label?: string }[],
   t: Translate,
 ): Known[] {
   return [
     ...drives.map((d) => ({ value: `${d.path}/`, label: `${t('edit.pickDrive')}: ${d.label}`, browse: d.attached })),
-    ...targets.map((r) => ({ value: `${r.name}:`, label: `${t('edit.pickRemote')}: ${r.name}`, browse: true })),
+    // Offered by label and opened by id, which is what the side keeps.
+    ...targets.map((r) => ({ value: `${r.name}:`, label: `${t('edit.pickRemote')}: ${r.label || r.name}`, browse: true })),
   ]
 }
 
@@ -135,7 +137,7 @@ export function FolderPicker({
 
   if (!open) return null
 
-  const place = opening ?? (shown || at)
+  const place = opening ? labelledSide(opening) : shown || labelledSide(at)
 
   // Portalled, since a card that animates in is a transformed ancestor and
   // would pin the fixed backdrop to itself instead of the window.

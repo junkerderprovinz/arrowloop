@@ -484,7 +484,7 @@ function Account({
   // Only the name and the space; the account details are on the targets page.
   return (
     <View style={[styles.well, { backgroundColor: p.surface2, ...corners.card }]}>
-      <CardHead mark={remote.mark} title={remote.name}>
+      <CardHead mark={remote.mark} title={remote.label || remote.name}>
         <View style={styles.badgeSlot}>
           <ReachBadge reach={reach} />
         </View>

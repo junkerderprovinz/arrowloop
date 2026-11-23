@@ -38,8 +38,8 @@ type browseAnswer struct {
 	// server gives it because the answer differs between systems.
 	Parent  string        `json:"parent"`
 	Entries []browseEntry `json:"entries"`
-	// Shown is how Path reads for a person, where the two differ: a drive is
-	// stored by an identity nobody can read.
+	// Shown is how Path reads for a person, where the two differ: a drive and
+	// a renamed target are stored by an id, not by the name a person reads.
 	Shown string `json:"shown,omitempty"`
 }
 
@@ -93,7 +93,16 @@ func (s *Server) folderListing(ctx context.Context, at string, hidden bool) (bro
 		for _, f := range folders {
 			out = append(out, browseEntry{Name: f, Path: remotes.Join(name, path.Join(dir, f))})
 		}
-		return browseAnswer{Path: remotes.Join(name, dir), Parent: remotes.Parent(name, dir), Entries: out}, nil
+		here := remotes.Join(name, dir)
+		answer := browseAnswer{Path: here, Parent: remotes.Parent(name, dir), Entries: out}
+		// The path keeps the id, which the side stores; a person reads the label.
+		if label := remotes.LabelOf(name); label != name {
+			answer.Shown = label
+			if folder := strings.TrimPrefix(here, name+":"); folder != "" {
+				answer.Shown += ": " + folder
+			}
+		}
+		return answer, nil
 	}
 
 	// Cleaned, so a stray "..\" cannot make the path mean something other

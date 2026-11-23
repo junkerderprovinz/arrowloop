@@ -50,7 +50,7 @@ import { useToast } from '../lib/toast'
 import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { oneTimeCode, questionHint, questionLabel, typedAnswer } from '../lib/setupQuestion'
-import { suggestTargetName } from '../lib/targetName'
+import { suggestTargetName, TARGET_LABEL_MAX } from '../lib/targetName'
 import { setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
 import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
@@ -142,7 +142,7 @@ export function Targets() {
           backends={backends}
           providers={providers}
           unlisted={unlisted}
-          taken={remotes.map((r) => r.name)}
+          taken={remotes.map((r) => r.label || r.name)}
           onDone={(saved) => {
             setAdding(false)
             if (saved) refresh()
@@ -228,7 +228,7 @@ function Storage({
       )}
       {editing && (
         <RemoteForm
-          title={t('targets.editTitle', { name: editing.name })}
+          title={t('targets.editTitle', { name: editing.label || editing.name })}
           backends={backends}
           existing={editing}
           // The engine identifies the product from the target's settings
@@ -388,14 +388,17 @@ function RemoteRow({
     .slice(0, 3)
     .map((s) => `${s.key}=${s.value}`)
     .join(', ')
-  const facts = [remote.mark ? '' : remote.type, summary].filter(Boolean)
+  // The id is what a job's side writes before the colon, so it is shown once
+  // the label says something else.
+  const label = remote.label || remote.name
+  const facts = [label === remote.name ? '' : `${remote.name}:`, remote.mark ? '' : remote.type, summary].filter(Boolean)
   const failed = !!result && !result.ok && !result.unchecked
   const why = failed && result.reason ? failureLine(result.reason, result.failure, t, lang) : ''
 
   return (
     <ConnectionRow
       data-new={newId}
-      name={`${remote.name}:`}
+      name={label}
       // The engine identifies the product and its mark from the saved
       // settings (internal/remotes/identify.go).
       mark={pickMark(remote.mark) ?? <IconTabStorage />}
@@ -427,7 +430,7 @@ function RemoteRow({
       {confirming && (
         <ConfirmWindow
           title={t('confirm.deleteRemote')}
-          message={t('confirm.deleteRemoteStakes', { name: remote.name })}
+          message={t('confirm.deleteRemoteStakes', { name: label })}
           confirmLabel={t('confirm.delete')}
           confirmGlyph={<IconTrash />}
           cancelLabel={t('confirm.cancel')}
@@ -517,7 +520,7 @@ function useRemoteForm({
   picked?: Picked | null
   /** The product a saved target was made from, null when the engine cannot tell. */
   edited?: Provider | null
-  /** The names already in use, so a suggested one does not collide. */
+  /** The labels already in use, so a suggested one does not collide. */
   taken?: string[]
   existing?: Remote
   onDone: (saved: boolean) => void
@@ -528,7 +531,7 @@ function useRemoteForm({
   const preset = provider?.preset
   // The name is suggested from the product's own, numbered when taken (`OpenCloud-2`).
   const start = () => ({
-    name: existing?.name ?? (provider ? suggestTargetName(provider.name, taken ?? []) : ''),
+    name: existing ? existing.label || existing.name : provider ? suggestTargetName(provider.name, taken ?? []) : '',
     values: { ...(preset ?? {}), ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])) },
   })
   const [name, setName] = useState(() => start().name)
@@ -544,6 +547,8 @@ function useRemoteForm({
   // Count failed tests and saves, so each one remounts its button and shakes it again.
   const [refused, setRefused] = useState(0)
   const [unsaved, setUnsaved] = useState(0)
+  /** Why the engine refused the name, said under the field. */
+  const [nameRefused, setNameRefused] = useState('')
 
   const backend = useMemo(() => backends.find((b) => b.name === kind), [backends, kind])
   // rclone's required and essential options first; s3 alone has fourteen
@@ -603,8 +608,11 @@ function useRemoteForm({
       const filled = Object.fromEntries(
         Object.entries(values).filter(([key, value]) => value !== '' || existing?.settings.some((s) => s.key === key)),
       )
-      const saved = name.trim()
-      await api.saveRemote(saved, kind, filled, !existing)
+      const label = name.trim()
+      // A rename keeps the id, so the jobs on the target keep their sides.
+      const { saved } = existing
+        ? await api.saveRemote(existing.name, kind, filled, label)
+        : await api.addRemote(label, kind, filled)
       // Checked after saving, so a typo shows at once rather than as a failed
       // run. The answer never blocks, since the server may simply be off.
       setBusy(false)
@@ -624,6 +632,7 @@ function useRemoteForm({
       // The test is where the form asks the question the save is waiting for.
       const { code, failure } = e as { code?: string; failure?: Failure }
       if (code === 'setup-question') void tryIt()
+      else if (code === 'target-name-taken') setNameRefused(errorText(t, e))
       else push(failure ? failureLine((e as Error).message, failure, t, lang) : (e as Error).message, 'fail')
     } finally {
       setBusy(false)
@@ -728,6 +737,7 @@ function useRemoteForm({
   if (shown !== picked) {
     setShown(picked)
     setName(start().name)
+    setNameRefused('')
     setValues(start().values)
     setTried(null)
     setQuestion(null)
@@ -748,10 +758,22 @@ function useRemoteForm({
       {/* No backend type on screen: the picker already chose it in terms of
           products. */}
       <FieldRow label={t('targets.remoteName')} hint={t('targets.remoteNameHint')}>
-        {/* Fixed once saved: the jobs that use the target name it, and its
-            secrets never reach this form to be written under a new name. */}
-        <Text value={name} onChange={setName} placeholder="backup" label={t('targets.remoteName')} mono readOnly={!!existing} />
+        <Text
+          value={name}
+          onChange={(next) => {
+            setName(next)
+            setNameRefused('')
+          }}
+          placeholder="Backup"
+          label={t('targets.remoteName')}
+          maxLength={TARGET_LABEL_MAX}
+        />
       </FieldRow>
+      {nameRefused && (
+        <p role="alert" className="text-subline text-statusFail">
+          {nameRefused}
+        </p>
+      )}
       {first.map(field)}
       {question && (
         <FieldRow label={t(questionLabel(question))} hint={t(questionHint(question))}>

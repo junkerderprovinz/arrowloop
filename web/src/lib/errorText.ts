@@ -7,6 +7,7 @@ import type { Translate } from './i18n.data'
 export function errorText(t: Translate, e: unknown): string {
   const { code, values } = (e ?? {}) as { code?: string; values?: Record<string, string> }
   if (code === 'target-in-use') return t('targets.inUse', values)
+  if (code === 'target-name-taken') return t('targets.nameTaken', values)
   if (code === 'import-unknown') return t('import.unknown')
   if (code === 'import-old-profile') return t('import.oldProfile')
   if (code === 'group-side-outside') return t('job.sideOutside', values)

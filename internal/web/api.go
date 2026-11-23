@@ -334,6 +334,7 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("/api/fortress/v1/log", fortress)
 
 	mux.HandleFunc("GET /api/remotes", s.listRemotes)
+	mux.HandleFunc("POST /api/remotes", s.addRemote)
 	mux.HandleFunc("PUT /api/remotes/{name}", s.saveRemote)
 	mux.HandleFunc("DELETE /api/remotes/{name}", s.deleteRemote)
 	mux.HandleFunc("POST /api/remotes/{name}/check", s.checkRemote)

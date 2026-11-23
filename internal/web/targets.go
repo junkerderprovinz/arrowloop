@@ -128,12 +128,10 @@ func (s *Server) listRemotes(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// saveRemote writes one storage target.
+// saveRemote writes one storage target under the id in the path. A label in
+// the body renames it; the id stays, and with it every job on the target.
 func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		Type     string            `json:"type"`
-		Settings map[string]string `json:"settings"`
-	}
+	var body targetBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
@@ -144,29 +142,81 @@ func (s *Server) saveRemote(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Has("new") {
 		save = remotes.Create
 	}
-	// A setup that signs in fails the way a test of the same settings does,
-	// and says so in the same terms.
+	settings, ok := setUp(w, r, body)
+	if !ok {
+		return
+	}
+	if body.Label != "" {
+		settings[remotes.LabelKey] = body.Label
+	}
+	if err := save(r.PathValue("name"), body.Type, settings); err != nil {
+		refuseTarget(w, err, body.Label)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"saved": r.PathValue("name")})
+}
+
+// addRemote writes a new target called what somebody typed, under an id the
+// engine makes from it, and answers the id.
+func (s *Server) addRemote(w http.ResponseWriter, r *http.Request) {
+	var body targetBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
+		return
+	}
+	settings, ok := setUp(w, r, body)
+	if !ok {
+		return
+	}
+	id, err := remotes.Add(body.Label, body.Type, settings)
+	if err != nil {
+		refuseTarget(w, err, body.Label)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"saved": id})
+}
+
+type targetBody struct {
+	Type     string            `json:"type"`
+	Settings map[string]string `json:"settings"`
+	Label    string            `json:"label"`
+}
+
+// setUp runs rclone's setup over the settings. A setup that signs in fails
+// the way a test of the same settings does, and says so in the same terms.
+func setUp(w http.ResponseWriter, r *http.Request, body targetBody) (map[string]string, bool) {
 	settings, question, err := remotes.Setup(r.Context(), body.Type, body.Settings)
 	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]any{"error": err.Error(), "failure": failure.Of(err.Error())})
-		return
+		return nil, false
 	}
 	if question != nil {
 		// A test asks the same question, which is where the form shows it.
 		writeJSON(w, http.StatusUnprocessableEntity, map[string]any{
 			"error": "test the target first and answer " + question.Name, "code": setupQuestion, "question": question,
 		})
-		return
+		return nil, false
 	}
-	if err := save(r.PathValue("name"), body.Type, settings); err != nil {
-		status := http.StatusBadRequest
-		if errors.Is(err, remotes.ErrExists) {
-			status = http.StatusConflict
-		}
-		writeError(w, status, err)
-		return
+	if settings == nil {
+		settings = map[string]string{}
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"saved": r.PathValue("name")})
+	return settings, true
+}
+
+// targetNameTaken is the code a label another target goes by is refused with.
+const targetNameTaken = "target-name-taken"
+
+func refuseTarget(w http.ResponseWriter, err error, label string) {
+	switch {
+	case errors.Is(err, remotes.ErrLabelTaken):
+		writeJSON(w, http.StatusConflict, map[string]any{
+			"error": err.Error(), "code": targetNameTaken, "values": map[string]string{"name": strings.TrimSpace(label)},
+		})
+	case errors.Is(err, remotes.ErrExists):
+		writeError(w, http.StatusConflict, err)
+	default:
+		writeError(w, http.StatusBadRequest, err)
+	}
 }
 
 // targetInUse is the code a refused delete answers with, so the page can name
@@ -180,7 +230,7 @@ func (s *Server) deleteRemote(w http.ResponseWriter, r *http.Request) {
 	if jobs := s.jobsOn(name); len(jobs) > 0 {
 		list := strings.Join(jobs, ", ")
 		writeJSON(w, http.StatusConflict, map[string]any{
-			"error":  fmt.Sprintf("jobs still use %s: %s; point them at another target or delete them first", name, list),
+			"error":  fmt.Sprintf("jobs still use %s: %s; point them at another target or delete them first", remotes.LabelOf(name), list),
 			"code":   targetInUse,
 			"values": map[string]string{"jobs": list},
 		})

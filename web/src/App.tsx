@@ -30,6 +30,7 @@ import {
   type Run,
   type RunEvent,
   type TrashSide,
+  type Remote,
   type Volume,
   type WindowSettings,
 } from './lib/api'
@@ -149,7 +150,9 @@ export function App({ signOut = false }: { signOut?: boolean }) {
   )
   // Only for naming a drive in the file log, so a failed fetch leaves the id.
   const [drives, setDrives] = useState<Volume[]>([])
-  const places = useMemo(() => ({ jobs, drives }), [jobs, drives])
+  // Only for naming a target by its label, so a failed fetch leaves the id.
+  const [targets, setTargets] = useState<Remote[]>([])
+  const places = useMemo(() => ({ jobs, drives, targets }), [jobs, drives, targets])
   // Null until asked, and always on a build with no window of its own.
   const [window_, setWindow] = useState<WindowSettings | null>(null)
   const [version, setVersion] = useState('dev')
@@ -185,6 +188,10 @@ export function App({ signOut = false }: { signOut?: boolean }) {
     void api
       .volumes()
       .then((v) => setDrives(v.volumes))
+      .catch(() => {})
+    void api
+      .remotes()
+      .then((r) => setTargets(r.remotes))
       .catch(() => {})
     void api
       .capabilities()

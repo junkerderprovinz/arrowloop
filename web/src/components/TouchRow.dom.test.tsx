@@ -38,21 +38,21 @@ describe('a line of the file log', () => {
     const job = { name: 'photos', left: '/data/Handy', right: 'nas:Fotos' } as Job
     const touch = { Job: 'photos', When: new Date().toISOString(), Seq: 1, Kind: 'copy', Side: 'right', Path: 'a.jpg', Size: 10, Note: '' } as Touch
     render(
-      <Places.Provider value={{ jobs: [job], drives: [] }}>
+      <Places.Provider value={{ jobs: [job], drives: [], targets: [] }}>
         <ul>
           <TouchRow touch={touch} />
         </ul>
       </Places.Provider>,
     )
     const way = screen.getByTestId('touch-way')
-    expect(way.textContent).toBe('/data/HandyCopiedrightnas:Fotos')
+    expect(way.textContent).toBe('/data/HandyCopiedrightnas: Fotos')
   })
 
   const job = { name: 'photos', left: '/data/Handy', right: 'nas:Fotos' } as Job
   const way = (touch: Partial<Touch>, jobs: Job[] = [job]) => {
     const line = { Job: 'photos', When: new Date().toISOString(), Seq: 1, Path: 'a.jpg', Size: 10, Note: '', ...touch } as Touch
     render(
-      <Places.Provider value={{ jobs, drives: [] }}>
+      <Places.Provider value={{ jobs, drives: [], targets: [] }}>
         <ul>
           <TouchRow touch={line} />
         </ul>
@@ -62,11 +62,11 @@ describe('a line of the file log', () => {
   }
 
   it('names the side a file went to the trash on, without an arrow', () => {
-    expect(way({ Kind: 'trash', Side: 'right', Note: 'bin' })).toBe('To the trashin nas:Fotos')
+    expect(way({ Kind: 'trash', Side: 'right', Note: 'bin' })).toBe('To the trashin nas: Fotos')
   })
 
   it('points a relocated file away from the side it left', () => {
-    expect(way({ Kind: 'move', Side: 'left', Note: 'relocated' })).toBe('/data/HandyMovedrightnas:Fotos')
+    expect(way({ Kind: 'move', Side: 'left', Note: 'relocated' })).toBe('/data/HandyMovedrightnas: Fotos')
   })
 
   it('shows only what happened once the job is gone', () => {

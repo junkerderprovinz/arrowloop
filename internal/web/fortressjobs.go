@@ -71,7 +71,7 @@ func (s *Server) targets(tab hostpath.Table) []fortressTarget {
 		}
 		remote := r.Name
 		out = append(out, fortressTarget{
-			ID: "remote:" + remote, Name: remote, Kind: "remote", Where: where,
+			ID: "remote:" + remote, Name: r.Label, Kind: "remote", Where: where,
 			side: func(name string) string { return remote + ":" + name },
 		})
 	}

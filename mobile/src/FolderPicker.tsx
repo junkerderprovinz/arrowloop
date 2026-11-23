@@ -9,6 +9,7 @@ import { appearance, setAppearance, useAppearance } from "./settings";
 import { DIALOG } from "./layout";
 import { space, text, TOUCH } from "./theme";
 import { Body, Button, Caption, Press, Toggle, useKeyboardOverlap, useTheme } from "./ui";
+import { labelledSide, targetLabel } from "../../web/src/lib/targetLabels";
 
 /**
  * A dialog for choosing a folder on the phone or on a target instead of typing
@@ -139,7 +140,7 @@ export function FolderPicker({
           onPress={() => {}}
         >
           <Body>{t("pick.title")}</Body>
-          <Caption>{(opening ?? at) || t("pick.roots")}</Caption>
+          <Caption>{labelledSide(opening ?? at) || t("pick.roots")}</Caption>
 
           <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
             {/* A target can take a while to answer, and the folder just left
@@ -152,7 +153,7 @@ export function FolderPicker({
                 {/* Targets at the top level only, where they cannot pass for a subfolder. */}
                 {!at
                   ? targets.map((name) =>
-                      row(name, () => void go(`${name}:`), "IconTabStorage"),
+                      row(targetLabel(name), () => void go(`${name}:`), "IconTabStorage"),
                     )
                   : null}
                 {entries.map((entry) => row(entry.name, () => void go(entry.path), "IconFolder"))}

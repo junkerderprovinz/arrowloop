@@ -100,12 +100,14 @@ export function Text({
   code,
   readOnly,
   hidePlaceholderOnFocus,
+  maxLength,
 }: {
   value: string
   onChange: (next: string) => void
   placeholder?: string
   mono?: boolean
   readOnly?: boolean
+  maxLength?: number
   /** The accessible name for a box that stands outside a Field. */
   label?: string
   /** A one-time code: a number pad on a phone, and the browser may fill in a
@@ -123,6 +125,7 @@ export function Text({
       placeholder={hidePlaceholderOnFocus && focused ? undefined : placeholder}
       aria-label={label}
       readOnly={readOnly}
+      maxLength={maxLength}
       inputMode={code ? 'numeric' : undefined}
       autoComplete={code ? 'one-time-code' : undefined}
       onChange={(e) => onChange(e.target.value)}

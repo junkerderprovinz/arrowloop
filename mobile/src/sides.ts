@@ -1,16 +1,17 @@
 import { remoteOf } from "../../web/src/lib/side.data.ts";
+import { targetLabel } from "../../web/src/lib/targetLabels.ts";
 import type { T } from "./i18n";
 
 export { remoteOf };
 
 /**
- * Names a side after what it is: a plain path is on the device, `target:path`
- * is that target. "Local" and "cloud" would be wrong whenever both sides are
- * folders or both are remotes.
+ * Names a side after what it is: a plain path is on the device, `id:path` is
+ * the target with that id, by its label. "Local" and "cloud" would be wrong
+ * whenever both sides are folders or both are remotes.
  */
 export function sideName(side: string | undefined, t: T, expect: "device" | "target" = "device"): string {
   const remote = remoteOf(side);
-  if (remote) return remote;
+  if (remote) return targetLabel(remote);
   // An empty field is named after what it is for, so two empty fields do not
   // carry the same label.
   if (!side) return expect === "target" ? t("side.target") : t("side.onDevice");

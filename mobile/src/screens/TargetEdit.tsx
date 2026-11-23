@@ -5,6 +5,7 @@ import { api, EngineError, type Backend, type Provider, type Remote, type SetupQ
 import { Field, SecretField } from "../fields";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
+import { saveTarget } from "../targetSave";
 import { CERTIFICATE_KEY } from "../../../web/src/lib/certificate";
 import { failureLine } from "../../../web/src/lib/failure";
 import { optionHint, providerHint, providerName } from "../../../web/src/lib/optionHint";
@@ -13,7 +14,7 @@ import { FTP_TLS, ftpTls, withFtpTls } from "../../../web/src/lib/ftpTls";
 import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from "../../../web/src/lib/kdriveRoot";
 import { anySaved, settingsToSave } from "../../../web/src/lib/savedSettings";
 import { oneTimeCode, questionHint, questionLabel, typedAnswer } from "../../../web/src/lib/setupQuestion";
-import { suggestTargetName } from "../../../web/src/lib/targetName";
+import { suggestTargetName, TARGET_LABEL_MAX } from "../../../web/src/lib/targetName";
 import { space } from "../theme";
 import { Body, Button, Caption, Choice, Empty, Page, Pair, PickRow, Row, Section, Title, Toggle } from "../ui";
 
@@ -37,6 +38,8 @@ export function TargetEdit() {
   const [name, setName] = useState(editing ?? "");
   const [values, setValues] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  /** Why the name cannot be saved. */
+  const [nameError, setNameError] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -48,13 +51,14 @@ export function TargetEdit() {
         // survives.
         const picked = s.providers.find((x) => x.id === providerId);
         if (!editing && picked) {
-          setName((old) => (old ? old : suggestTargetName(picked.name, s.remotes.map((r) => r.name))));
+          setName((old) => (old ? old : suggestTargetName(picked.name, s.remotes.map((r) => r.label || r.name))));
         }
         // Backends no provider entry covers still have to be editable.
         setBackends([...s.backends, ...s.unlisted]);
         const found = s.remotes.find((r) => r.name === editing) ?? null;
         setExisting(found);
         if (found) {
+          setName(found.label || found.name);
           const start: Record<string, string> = {};
           // A stored secret arrives as the placeholder, which saving sends
           // back untouched so the engine keeps it.
@@ -203,16 +207,22 @@ export function TargetEdit() {
   const refusedCert = backend?.trustsCertificate && tried && !tried.ok ? tried.certificate : undefined;
 
   const save = async () => {
-    if (!name.trim()) {
-      setError(t("targets.remoteNameHint"));
-      return;
-    }
     setSaving(true);
+    setError("");
+    setNameError("");
     try {
-      await api.saveRemote(name.trim(), {
+      const done = await saveTarget(api, existing?.name, name, {
         type: backendName,
         settings: { ...(provider?.preset ?? {}), ...settingsToSave(values, existing?.settings ?? []) },
       });
+      if ("refused" in done) {
+        // Said under the field and beside the buttons, which is where the
+        // finger is when Save was pressed.
+        const why = t(done.refused.key, done.refused.vars);
+        setNameError(why);
+        setError(why);
+        return;
+      }
       nav.popToTop();
     } catch (e) {
       // The test is where the form asks the question the save is waiting for.
@@ -233,8 +243,13 @@ export function TargetEdit() {
         <Field
           label={t("targets.remoteName")}
           value={name}
-          onChange={setName}
-          placeholder={provider?.id ?? backendName}
+          onChange={(next) => {
+            setName(next);
+            setNameError("");
+          }}
+          placeholder={provider?.name ?? backendName}
+          maxLength={TARGET_LABEL_MAX}
+          error={nameError || undefined}
         />
       </Section>
 
