@@ -1,6 +1,6 @@
 import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
-import { api } from '../lib/api'
+import { signOutHere } from '../lib/signIn'
 import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { useT } from '../lib/i18n'
@@ -95,7 +95,7 @@ function SignOut({ hue, mode }: { hue: number; mode: LabelMode }) {
   return (
     <button
       type="button"
-      onClick={() => void api.logout().finally(() => window.location.reload())}
+      onClick={signOutHere}
       style={hueVars(hue) as CSSProperties}
       title={hidesLabel(mode) ? label : undefined}
       aria-label={mode === 'glyph' ? label : undefined}
@@ -118,7 +118,7 @@ export function Sidebar({
   counts: NavCounts
   pathname: string
   mode: LabelMode
-  /** Whether a password is set, the one case where signing out means anything. */
+  /** Whether anyone can sign in here, the one case where signing out means anything. */
   signOut: boolean
 }) {
   // Re-rendered on palette changes, so an edited swatch shows here at once.

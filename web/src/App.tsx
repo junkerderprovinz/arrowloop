@@ -1,3 +1,5 @@
+import type { SignInOffer } from '@glimstone/core'
+import { SignInReauthWindow } from '@glimstone/react/SignInReauthWindow'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
 import { BottomBar } from './components/BottomBar'
@@ -5,7 +7,7 @@ import { Sidebar } from './components/Sidebar'
 import { WhatsNewDots } from './components/WhatsNewDots'
 import { Card } from './lib/glimstone/Card'
 import { shownVersion } from './lib/infoTile'
-import { Login } from './pages/Login'
+import { SignIn } from './pages/SignIn'
 import { Activity } from './pages/Activity'
 import { Anomalies } from './pages/Anomalies'
 import { Conflicts } from './pages/Conflicts'
@@ -47,6 +49,9 @@ import { applyDisco } from './lib/disco'
 import { getDisco, setDisco } from './lib/discoSetting'
 import { BOTTOM_BAR_AXIS, CONTROL_AXES, getLabelMode, labelModeChanged, setLabelMode, type LabelAxis, type LabelMode } from './lib/controls'
 import { useT } from './lib/i18n'
+import type { TranslationKey } from './lib/i18n.data'
+import { arrivalCode, dropArrival, reauthClient, signIn, takeNote, type SignInNote } from './lib/signIn'
+import { reauthText } from './lib/signInWords'
 import { getMotion, setMotion, type MotionIntensity } from './lib/motion'
 import type { NavCounts } from './lib/navModel'
 import { useNavPins } from './lib/navPins'
@@ -61,42 +66,67 @@ import { ToastProvider, useToast } from './lib/toast'
 import { startWhatsNew, useWhatsNew } from './lib/whatsNewStore'
 
 /**
- * The login gate. App mounts only once there is a session, since its fetches
- * and event stream would all answer 401 on a protected install.
+ * The sign-in gate. App mounts only once there is a session, since its
+ * fetches and event stream would all answer 401 where anyone can sign in.
+ * While nobody can, the app is open and shows no sign-in page.
  */
 export function Gate() {
+  const { t } = useT()
+  const [offer, setOffer] = useState<SignInOffer | null>(null)
   const [state, setState] = useState<'asking' | 'in' | 'out'>('asking')
-  const [canReset, setCanReset] = useState(false)
-  const [password, setPassword] = useState(false)
+  const [note, setNote] = useState<SignInNote | null>(takeNote)
 
   const ask = useCallback(() => {
-    api
-      .session()
-      .then((s) => {
-        setCanReset(!!s.reset)
-        setPassword(s.required)
-        setState(s.required && !s.authenticated ? 'out' : 'in')
-      })
-      .catch(() => {
-        // An unreachable engine is no password problem; App shows its own
+    signIn.options().then(
+      (r) => {
+        // An unreachable engine is no sign-in problem; App shows its own
         // banner for it.
-        setState('in')
-      })
+        if (!r.ok) return setState('in')
+        setOffer(r.value)
+        setState(r.value.open || r.value.signedIn ? 'in' : 'out')
+      },
+      () => setState('in'),
+    )
   }, [])
 
   useEffect(ask, [ask])
-  useEffect(() => whenSignedOut(() => setState('out')), [])
+  // A first password or the last one removed on the Security tile opens or
+  // closes the app, and with it the way to sign out.
+  useEffect(() => signIn.subscribe(ask), [ask])
+  useEffect(
+    () =>
+      whenSignedOut((why) => {
+        dropArrival()
+        setNote(why)
+        ask()
+      }),
+    [ask],
+  )
 
   if (state === 'asking') return null
-  if (state === 'out') return <Login onIn={ask} canReset={canReset} />
+  if (state === 'out' && offer) {
+    const signedIn = () => {
+      dropArrival()
+      setNote(null)
+      ask()
+    }
+    return <SignIn offer={offer} onIn={signedIn} note={note ? t(NOTES[note]) : undefined} arrived={arrivalCode()} />
+  }
   // The desktop app's tray window loads the same page.
   return isActivityView() ? (
     <Activity />
   ) : (
     <ToastProvider>
-      <App signOut={password} />
+      <App signOut={offer !== null && !offer.open} />
+      <SignInReauthWindow api={reauthClient} text={reauthText(t)} />
     </ToastProvider>
   )
+}
+
+const NOTES: Record<SignInNote, TranslationKey> = {
+  bye: 'signin.bye',
+  ended: 'signin.again',
+  again: 'signin.fresh',
 }
 
 /** The width below which the rail gives way to the bar along the bottom. */
@@ -120,7 +150,7 @@ const LABEL_AXES: LabelAxis[] = [...CONTROL_AXES, BOTTOM_BAR_AXIS]
 const FINDINGS_GAP_MS = 1000
 
 /**
- * @param signOut whether a password is set, the one case where the rail
+ * @param signOut whether anyone can sign in here, the one case where the rail
  *                offers to sign out.
  */
 export function App({ signOut = false }: { signOut?: boolean }) {

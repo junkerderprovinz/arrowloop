@@ -37,6 +37,7 @@ export type FortressInfo = {
   phrase: boolean
   device: string
   defaultDevice: string
+  /** Anyone can sign in here, so showing the phrase wants a fresh sign-in. */
   passwordSet: boolean
   members: FortressMember[]
   /** The permissions that involve ArrowLoop. */

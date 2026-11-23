@@ -652,6 +652,8 @@ export class ApiError extends Error {
   values?: Record<string, string>
   /** The kind of failure the engine named in its message (internal/failure). */
   failure?: Failure
+  /** With `signInAgain`: the password may stand in for a new sign-in. */
+  askPassword?: boolean
   constructor(message: string, status: number, code?: string, values?: Record<string, string>, failure?: Failure) {
     super(message)
     this.status = status
@@ -661,24 +663,30 @@ export class ApiError extends Error {
   }
 }
 
-const signedOut = new Set<() => void>()
+/** Why the sign-in page comes back: the session ended, or a change wants a fresh sign-in. */
+export type SignedOutWhy = 'ended' | 'again'
+
+const signedOut = new Set<(why: SignedOutWhy) => void>()
 
 /**
  * Calls `fn` whenever the engine turns this browser away for want of a
  * session, which happens when the session runs out or the password changes
  * elsewhere. Returns the function that stops the calls.
  */
-export function whenSignedOut(fn: () => void): () => void {
+export function whenSignedOut(fn: (why: SignedOutWhy) => void): () => void {
   signedOut.add(fn)
   return () => {
     signedOut.delete(fn)
   }
 }
 
-// A refused login is a wrong password or code, not an ended session.
-function endsSession(path: string, status: number): boolean {
-  return status === 401 && !path.startsWith('/api/login') && !path.startsWith('/api/passkeys/login')
+export function endSession(why: SignedOutWhy) {
+  signedOut.forEach((fn) => fn(why))
 }
+
+// Only the guard's own refusal ends the session. The sign-in answers a wrong
+// password or code with a code of its own.
+const endsSession = (e: ApiError) => e.status === 401 && e.code === 'signInFirst'
 
 // Checks the status before parsing, so a 500 with an HTML page does not turn
 // into a JSON error somewhere else.
@@ -690,11 +698,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     init = { ...init, headers: { 'Content-Type': 'application/json', ...init?.headers } }
   }
   const res = await fetch(at(path), init)
-  if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
-  if (!res.ok) {
-    throw await failure(res)
-  }
+  if (!res.ok) throw await refusal(res)
   return (await res.json()) as T
+}
+
+async function refusal(res: Response): Promise<ApiError> {
+  const e = await failure(res)
+  if (endsSession(e)) endSession('ended')
+  return e
 }
 
 /**
@@ -704,6 +715,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 async function failure(res: Response): Promise<ApiError> {
   try {
     const body = await res.json()
+    // A change that wants a fresh sign-in answers as the kit's own routes do,
+    // with the code where the message would be.
+    if (body?.error === 'signInAgain') return Object.assign(new ApiError(body.error, res.status, body.error), { askPassword: body.askPassword === true })
     if (body?.error || body?.code) return new ApiError(body.error ?? res.statusText, res.status, body.code, body.values, body.failure ?? undefined)
   } catch {
     // The body was not the JSON error shape; the status line has to do.
@@ -718,11 +732,9 @@ async function send(path: string, method: string, body?: unknown): Promise<void>
     headers: { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),
   })
-  if (endsSession(path, res.status)) signedOut.forEach((fn) => fn())
-  if (!res.ok) throw await failure(res)
+  if (!res.ok) throw await refusal(res)
 }
 
-/** A JSON POST, the shape every security route takes. */
 function post<T>(path: string, body: unknown = {}): Promise<T> {
   return request<T>(path, {
     method: 'POST',
@@ -753,6 +765,7 @@ export type AwayMember = { id: string; name: string; deployment: Deployment; add
 export type ConnectInfo = {
   active: boolean
   connected: boolean
+  /** Anyone can sign in here, so showing the phrase wants a fresh sign-in. */
   passwordSet: boolean
   relayMode: RelayMode
   /** The relay dialled now, empty when none is. */
@@ -835,102 +848,6 @@ export type FolderListing = { path: string; parent: string; shown?: string; entr
  * word and its place for an unknown one.
  */
 export type PhraseProblem = 'word_count' | 'unknown_word' | 'checksum'
-
-/** What the security settings draw from. Never a hash, a secret or a code. */
-export type SecurityStatus = {
-  /** False on a build that keeps no login settings of its own, the desktop window. */
-  available: boolean
-  /** Where the password comes from: none, set here, or ARROWLOOP_PASSWORD_HASH. */
-  password: 'none' | 'file' | 'env'
-  recommendedPasswordLen: number
-  twoFactor: boolean
-  recoveryCodesLeft: number
-}
-
-/** A dashboard's read token, as the list shows it. createdAt is in seconds. */
-export type ReadToken = { id: string; name: string; createdAt: number }
-
-/** One registered passkey, as the list shows it. */
-export type PasskeyView = {
-  id: string
-  name: string
-  /** The address the key belongs to. A key registered through a proxy does not
-   *  exist under another name, which is why the list shows it. */
-  rpId: string
-  usableHere: boolean
-  /** Synced to a cloud keychain. One that is not dies with the device. */
-  backedUp: boolean
-  createdAt: number
-  lastUsedAt: number
-}
-
-export type PasskeyStatus = {
-  /** Whether this address can carry a passkey at all. */
-  supported: boolean
-  reason?: string
-  rpId: string
-  total: number
-  here: number
-  /** Only for somebody signed in, or while there is no password. */
-  passkeys?: PasskeyView[]
-}
-
-type Ceremony = { ceremonyId: string; options: Record<string, unknown> }
-
-// WebAuthn wants ArrayBuffers for the challenge, the user handle and every
-// credential id, and JSON has none, so the server sends base64url and these
-// convert at the boundary. A wrong encoding surfaces only as an unhelpful
-// NotAllowedError, so it lives in one place.
-function fromB64url(s: string): Uint8Array<ArrayBuffer> {
-  const pad = s.length % 4 === 0 ? '' : '='.repeat(4 - (s.length % 4))
-  const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + pad)
-  const out = new Uint8Array(bin.length)
-  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i)
-  return out
-}
-
-function toB64url(buf: ArrayBuffer): string {
-  let bin = ''
-  for (const b of new Uint8Array(buf)) bin += String.fromCharCode(b)
-  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-}
-
-/** Whether this browser can do WebAuthn at all. A page the browser does not
- *  consider secure, such as plain HTTP on anything but localhost, has none. */
-export function passkeysAvailableInBrowser(): boolean {
-  return typeof window !== 'undefined' && 'PublicKeyCredential' in window
-}
-
-/** Whether the browser counts this page as secure: HTTPS with a certificate it
- *  trusts, or localhost. Without that it offers no passkeys whatever it can do. */
-export function pageIsSecure(): boolean {
-  return typeof window === 'undefined' || window.isSecureContext !== false
-}
-
-/** What a password reset took away, for the page after it. */
-export type ResetRemoved = { secondFactor: boolean; passkeys: number }
-
-// Only the known binary fields are converted, so an extension the server adds
-// later rides through untouched.
-function creationOptions(o: Record<string, unknown>): PublicKeyCredentialCreationOptions {
-  const user = o.user as { id: string; name: string; displayName: string }
-  const exclude = o.excludeCredentials as { id: string }[] | undefined
-  return {
-    ...o,
-    challenge: fromB64url(o.challenge as string),
-    user: { ...user, id: fromB64url(user.id) },
-    ...(exclude ? { excludeCredentials: exclude.map((c) => ({ ...c, id: fromB64url(c.id) })) } : {}),
-  } as unknown as PublicKeyCredentialCreationOptions
-}
-
-function requestOptions(o: Record<string, unknown>): PublicKeyCredentialRequestOptions {
-  const allow = o.allowCredentials as { id: string }[] | undefined
-  return {
-    ...o,
-    challenge: fromB64url(o.challenge as string),
-    ...(allow ? { allowCredentials: allow.map((c) => ({ ...c, id: fromB64url(c.id) })) } : {}),
-  } as unknown as PublicKeyCredentialRequestOptions
-}
 
 /**
  * Which runs a history listing asks for. Mirrors internal/history's Show, with
@@ -1051,114 +968,6 @@ export const api = {
     request<HistoryStats>(
       `/api/history/stats?days=${days}${job ? `&job=${encodeURIComponent(job)}` : ''}`,
     ),
-
-  /**
-   * Whether this install wants a password, and whether this browser has given
-   * one. Asked before anything else is drawn, so a page load does not start
-   * with a 401.
-   */
-  session: () => request<{ required: boolean; authenticated: boolean; reset?: boolean }>('/api/session'),
-
-  /**
-   * Sign in. With a second factor on, a right password alone answers
-   * `needCode`, and the code goes with the password on the next try.
-   */
-  login: (password: string, code?: string) =>
-    post<{ authenticated: boolean; needCode?: boolean }>('/api/login', code ? { password, code } : { password }),
-
-  logout: () => request<{ ok: boolean }>('/api/logout', { method: 'POST' }),
-
-  /** Has the server write a reset code to its log, unless one is still
-   *  valid. The answer never carries the code. */
-  resetBegin: () => post<{ minutes: number }>('/api/security/reset'),
-
-  /** Sets a new password with the code from the log, and signs the caller in. */
-  resetFinish: (code: string, password: string) =>
-    post<{ removed: ResetRemoved }>('/api/security/reset/finish', { code, password }),
-
-  security: () => request<SecurityStatus>('/api/security'),
-
-  /** Set the first password, or replace one with the current one. The caller
-   *  comes back signed in; every other session ends. */
-  setPassword: (password: string, current = '') =>
-    post<SecurityStatus>('/api/security/password', { current, password }),
-
-  /** Remove the password, and the second factor with it. */
-  removePassword: (current: string) => post<SecurityStatus>('/api/security/password/remove', { current }),
-
-  /** Draw a secret. The factor stays off until totpConfirm accepts a code. */
-  totpSetup: () => post<{ secret: string; uri: string }>('/api/security/totp/setup'),
-
-  /** Arm the factor. The recovery codes in the answer are never shown again. */
-  totpConfirm: (code: string) => post<{ recoveryCodes: string[] }>('/api/security/totp/confirm', { code }),
-
-  totpDisable: (code: string) => post<SecurityStatus>('/api/security/totp/disable', { code }),
-
-  /** Open like the session probe, so the login screen knows whether to offer
-   *  a passkey. */
-  passkeys: () => request<PasskeyStatus>('/api/passkeys'),
-
-  /** Begin, ask the authenticator, finish: one operation from the owner's side.
-   *  The code is needed only while the second factor is on. */
-  registerPasskey: async (name: string, current: string, code = ''): Promise<PasskeyView> => {
-    const begin = await post<Ceremony>('/api/passkeys/register/begin', code ? { current, code } : { current })
-    const cred = (await navigator.credentials.create({
-      publicKey: creationOptions(begin.options),
-    })) as PublicKeyCredential | null
-    if (!cred) throw new Error('no passkey was created')
-    const att = cred.response as AuthenticatorAttestationResponse
-    return post<PasskeyView>('/api/passkeys/register/finish', {
-      ceremonyId: begin.ceremonyId,
-      name,
-      credential: {
-        id: cred.id,
-        rawId: toB64url(cred.rawId),
-        type: cred.type,
-        // Handed back at login, so the browser raises the right prompt, a
-        // phone over Bluetooth rather than a USB key.
-        transports: att.getTransports ? att.getTransports() : [],
-        response: {
-          clientDataJSON: toB64url(att.clientDataJSON),
-          attestationObject: toB64url(att.attestationObject),
-        },
-      },
-    })
-  },
-
-  /** Sign in with a passkey. Sets the session cookie as the password login does. */
-  loginWithPasskey: async (): Promise<void> => {
-    const begin = await post<Ceremony>('/api/passkeys/login/begin')
-    const cred = (await navigator.credentials.get({
-      publicKey: requestOptions(begin.options),
-    })) as PublicKeyCredential | null
-    if (!cred) throw new Error('no passkey was used')
-    const asr = cred.response as AuthenticatorAssertionResponse
-    await post('/api/passkeys/login/finish', {
-      ceremonyId: begin.ceremonyId,
-      credential: {
-        id: cred.id,
-        rawId: toB64url(cred.rawId),
-        type: cred.type,
-        response: {
-          clientDataJSON: toB64url(asr.clientDataJSON),
-          authenticatorData: toB64url(asr.authenticatorData),
-          signature: toB64url(asr.signature),
-          userHandle: asr.userHandle ? toB64url(asr.userHandle) : null,
-        },
-      },
-    })
-  },
-
-  deletePasskey: (id: string) =>
-    request<{ deleted: string }>(`/api/passkeys/${encodeURIComponent(id)}`, { method: 'DELETE' }),
-
-  readTokens: () => request<ReadToken[]>('/api/security/read-tokens'),
-
-  /** The token in the answer is shown once; the engine keeps only its fingerprint. */
-  addReadToken: (name: string) => post<ReadToken & { token: string }>('/api/security/read-tokens', { name }),
-
-  deleteReadToken: (id: string) =>
-    request<{ deleted: boolean }>(`/api/security/read-tokens/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 
   settings: () => request<Settings>('/api/settings'),
 
@@ -1311,7 +1120,7 @@ export const api = {
 
   /** What this build can do. Every build answers, so asking never fails. */
   capabilities: () =>
-    request<{ window: boolean; security?: boolean; pairing?: boolean; vpn?: boolean; version: string }>('/api/capabilities'),
+    request<{ window: boolean; security?: boolean; passwordFromEnv?: boolean; pairing?: boolean; vpn?: boolean; version: string }>('/api/capabilities'),
 
   /**
    * The versions this build is made of, for the Info tile. `newRelease` is the
@@ -1421,14 +1230,14 @@ export const api = {
   /** Where this instance stands in its group. Asking also greets the others, which is how two instances meet. */
   connect: () => request<ConnectInfo>('/api/connect'),
 
-  /** Starts a group with a new phrase. The only answer that carries the words without a password. */
+  /** Starts a group with a new phrase. The only answer that carries the words without a fresh sign-in. */
   makePhrase: () => post<Phrase & { info: ConnectInfo }>('/api/connect/activate'),
 
   /** Joins the group of another instance's words, or of the text its QR code holds. */
   joinGroup: (phrase: string) => post<ConnectInfo>('/api/connect/join', { phrase }),
 
-  /** Shows the phrase again, which asks for the password where one is set. */
-  revealPhrase: (password = '') => post<Phrase>('/api/connect/reveal', { password }),
+  /** Shows the phrase again, which wants a fresh sign-in where anyone can sign in. */
+  revealPhrase: () => post<Phrase>('/api/connect/reveal'),
 
   leaveGroup: () => send('/api/connect', 'DELETE'),
 
@@ -1452,11 +1261,11 @@ export const api = {
   /** Joins the fortress of a phrase. The paired instances follow by themselves. */
   joinFortress: (phrase: string) => post<FortressInfo>('/api/fortress/join', { phrase }),
 
-  /** Shows the fortress phrase again, which asks for the password where one is set. */
-  showFortressPhrase: (password = '') => post<Phrase>('/api/fortress/phrase/show', { password }),
+  /** Shows the fortress phrase again, behind a fresh sign-in as the group's phrase is. */
+  showFortressPhrase: () => post<Phrase>('/api/fortress/phrase/show'),
 
-  /** Gives the fortress a new phrase, behind the password as showing it is. */
-  changeFortressPhrase: (password = '') => post<Phrase & { left: FortressLeft[] }>('/api/fortress/phrase', { password }),
+  /** Gives the fortress a new phrase, behind a fresh sign-in as showing it is. */
+  changeFortressPhrase: () => post<Phrase & { left: FortressLeft[] }>('/api/fortress/phrase'),
 
   /** What the other apps of the fortress call this instance; empty for the computer's name. */
   nameInFortress: (device: string) =>
@@ -1535,15 +1344,11 @@ export const api = {
     if (inDesktopWindow()) return watchDesktop((data) => onEvent(data as RunEvent))
     const source = new EventSource(at('/api/events'))
     // A browser gives up on a stream that is refused rather than dropped, and
-    // the refusal it saw says nothing, so the session is asked.
+    // the refusal it saw says nothing, so another call asks, whose refusal
+    // ends the session where there is none.
     source.onerror = () => {
       if (source.readyState !== EventSource.CLOSED) return
-      api
-        .session()
-        .then((s) => {
-          if (s.required && !s.authenticated) signedOut.forEach((fn) => fn())
-        })
-        .catch(() => {})
+      api.capabilities().catch(() => {})
     }
     source.onmessage = (e) => {
       try {

@@ -29,14 +29,23 @@ const RULES: Rule[] = [
   // The way in. These sit above the reset rule, which would claim the
   // password reset's link and its last button.
   [/^login\.submit$/i, 'IconSignIn'],
-  // A passkey is a key, whatever the label says it unlocks.
-  [/^login\.passkeyUnlock$/i, 'IconKey'],
   [/^reset\.link$/i, 'IconForgotPassword'],
-  [/^reset\.done$|^twoFactor\.(confirm|recoverySaved)$/i, 'IconConfirm'],
-  [/^password\.save(First|Change)$/i, 'IconKey'],
-  [/^(password|passkey)\.remove$/i, 'IconKeyRevoke'],
-  [/^twoFactor\.add$/i, 'IconShieldOn'],
-  [/^twoFactor\.remove$/i, 'IconShieldOff'],
+  [/^reset\.done$/i, 'IconConfirm'],
+  [/^password\.saveFirst$/i, 'IconKey'],
+  [/^password\.remove$/i, 'IconKeyRevoke'],
+  // The buttons of GlimStone's sign-in, by the keys Security.tsx and
+  // SignIn.tsx hand them. A passkey and a token are keys, whatever the
+  // label says they unlock.
+  [/^signIn\.(passkey|token)$/, 'IconKey'],
+  [/^signIn\.revoke$/, 'IconKeyRevoke'],
+  [/^signIn\.setUp$/, 'IconShieldOn'],
+  [/^signIn\.turnOff$/, 'IconShieldOff'],
+  [/^signIn\.newCodes$/, 'IconRefresh'],
+  [/^signIn\.end$/, 'IconSignOut'],
+  [/^signIn\.service$/, 'IconSignIn'],
+  [/^signIn\.test$/, 'IconSendTest'],
+  [/^signIn\.forward$/, 'IconLink'],
+  [/^signIn\.account$/, 'IconTabSecurity'],
   [/^targets\.certificate\.trust$/i, 'IconShieldOn'],
   [/^targets\.certificate\.remove$/i, 'IconShieldOff'],
   // The VPN card: setting one up and moving to another provider.

@@ -55,13 +55,13 @@ describe('a meaning with a glyph of its own in GlimStone', () => {
     ['backup.import', 'IconImport'],
     ['backup.export', 'IconExport'],
     ['reset.done', 'IconConfirm'],
-    ['twoFactor.confirm', 'IconConfirm'],
+    ['signIn.confirm', 'IconConfirm'],
     ['pick.choose', 'IconCheck'],
     ['conflict.answerBoth', 'IconKeepBoth'],
     ['conflicts.allLeft', 'IconKeepLeft'],
     ['conflict.answerRight', 'IconKeepRight'],
     ['login.submit', 'IconSignIn'],
-    ['login.passkeyUnlock', 'IconKey'],
+    ['signIn.passkey', 'IconKey'],
     ['reset.link', 'IconForgotPassword'],
     ['version.whatsNew', 'IconWhatsNew'],
     ['version.check', 'IconSync'],
@@ -69,6 +69,30 @@ describe('a meaning with a glyph of its own in GlimStone', () => {
     ['version.restart', 'IconRefresh'],
     ['tray.open', 'IconApp'],
   ])('wears it on %s', (key, glyph) => {
+    expect(glyphNameFor(key)).toBe(glyph)
+  })
+})
+
+describe("the buttons of GlimStone's sign-in", () => {
+  it.each([
+    ['signIn.edit', 'IconPencil'],
+    ['signIn.setUp', 'IconShieldOn'],
+    ['signIn.turnOff', 'IconShieldOff'],
+    ['signIn.newCodes', 'IconRefresh'],
+    ['signIn.copy', 'IconCopy'],
+    ['signIn.add', 'IconAdd'],
+    ['signIn.remove', 'IconTrash'],
+    ['signIn.end', 'IconSignOut'],
+    ['signIn.revoke', 'IconKeyRevoke'],
+    ['signIn.test', 'IconSendTest'],
+    ['signIn.save', 'IconSave'],
+    ['signIn.token', 'IconKey'],
+    ['signIn.service', 'IconSignIn'],
+    ['signIn.forward', 'IconLink'],
+    ['signIn.account', 'IconTabSecurity'],
+    ['password.saveFirst', 'IconKey'],
+    ['password.remove', 'IconKeyRevoke'],
+  ])('wear a glyph that says what %s does', (key, glyph) => {
     expect(glyphNameFor(key)).toBe(glyph)
   })
 })

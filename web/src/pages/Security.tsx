@@ -1,60 +1,95 @@
-import { useCallback, useEffect, useState } from 'react'
+import type { SignInTileCard } from '@glimstone/core'
+import { IDENTITY_PROVIDERS } from '@glimstone/core/identityProviders'
+import { Card } from '@glimstone/react/Card'
+import { SignInTile } from '@glimstone/react/SignInTile'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Card } from '../lib/glimstone/Card'
-import { PasskeyCard } from '../components/PasskeyCard'
-import { PasswordCard } from '../components/PasswordCard'
-import { ReadTokenCard } from '../components/ReadTokenCard'
-import { Stack } from '../components/Shell'
-import { TwoFactorCard } from '../components/TwoFactorCard'
-import { api, type SecurityStatus } from '../lib/api'
+import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
+import { arrivalCode, dropArrival, signIn } from '../lib/signIn'
+import { tileText } from '../lib/signInWords'
+import { useToast } from '../lib/toast'
+
+// One account with one role, so the accounts card stays out.
+const CARDS: SignInTileCard[] = ['password', 'askPassword', 'twoFactor', 'passkeys', 'sessions', 'tokens', 'services']
+
+// Keys the glyph rules know, by what each of the tile's buttons does.
+const LABEL_KEYS = {
+  change: 'signIn.edit',
+  setPassword: 'password.saveFirst',
+  removePassword: 'password.remove',
+  savePassword: 'password.saveFirst',
+  setUp: 'signIn.setUp',
+  newCodes: 'signIn.newCodes',
+  turnOff: 'signIn.turnOff',
+  copy: 'signIn.copy',
+  confirm: 'signIn.confirm',
+  add: 'signIn.add',
+  rename: 'signIn.edit',
+  remove: 'signIn.remove',
+  end: 'signIn.end',
+  endOthers: 'signIn.end',
+  createToken: 'signIn.add',
+  revoke: 'signIn.revoke',
+  addService: 'signIn.add',
+  test: 'signIn.test',
+  edit: 'signIn.edit',
+  turnOn: 'signIn.service',
+  save: 'signIn.save',
+  block: 'signIn.turnOff',
+  unblock: 'signIn.setUp',
+  passkey: 'signIn.passkey',
+  token: 'signIn.token',
+  account: 'signIn.account',
+  laptop: 'deviceLaptop',
+  phone: 'devicePhone',
+  service: 'signIn.service',
+  forward: 'signIn.forward',
+}
 
 /**
- * The password, the second factor, the passkeys and the read tokens. Four
- * cards, because they are four decisions: whether there is a lock at all,
- * whether the password needs a code beside it, whether a key may stand in for
- * typing it, and which dashboards may read how ArrowLoop is doing.
+ * The ways in, as GlimStone's sign-in tile draws them on the kit's sign-in.
+ * While ARROWLOOP_PASSWORD_HASH sets the password, the interface neither
+ * changes nor removes it, so its card says where it comes from instead.
  */
 export function Security() {
-  const { t } = useT()
-  const [status, setStatus] = useState<SecurityStatus | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { t, lang } = useT()
+  const push = useToast()
+  const text = useMemo(() => tileText(t, lang), [t, lang])
+  const [fromEnv, setFromEnv] = useState<boolean | null>(null)
+  // What a test sign-in came back with, which lands on this tile.
+  const [arrived] = useState(arrivalCode)
 
-  const reload = useCallback(() => {
-    api
-      .security()
-      .then(setStatus)
-      .catch((e: Error) => setError(e.message))
+  useEffect(dropArrival, [])
+  useEffect(() => {
+    api.capabilities().then(
+      (can) => setFromEnv(can.passwordFromEnv === true),
+      () => setFromEnv(false),
+    )
   }, [])
 
-  useEffect(reload, [reload])
-
-  if (status === null) {
-    return (
-      <Card title={t('settings.security')} hueIndex={0}>
-        <p className="text-subline text-carbon-textMuted">{error ?? t('engine.loading')}</p>
-      </Card>
-    )
-  }
-
-  const passwordSet = status.password !== 'none'
+  if (fromEnv === null) return null
   return (
-    <Stack>
-      <div data-new="login-reset">
-        <PasswordCard status={status} onChanged={setStatus} hueIndex={0} />
+    <div className="glim-signin-tile" data-new="login-reset">
+      {fromEnv && (
+        <Card title={text.password.title} hueIndex={0} data-signin-card="password">
+          <p className="glim-signin-tile-text">{t('password.env')}</p>
+        </Card>
+      )}
+      <div data-new="sign-in">
+        <SignInTile
+          api={signIn}
+          text={text}
+          lang={lang}
+          providers={IDENTITY_PROVIDERS}
+          cards={fromEnv ? CARDS.filter((c) => c !== 'password') : CARDS}
+          scopes={['read', 'all']}
+          notify={push}
+          arrived={arrived}
+          labelKeys={LABEL_KEYS}
+          hueStart={fromEnv ? 1 : 0}
+        />
       </div>
-      {/* Keyed on the password, so a removed password also drops a setup
-          that was half done under it. */}
-      <TwoFactorCard
-        key={String(passwordSet)}
-        passwordSet={passwordSet}
-        enabled={status.twoFactor}
-        recoveryLeft={status.twoFactor ? status.recoveryCodesLeft : undefined}
-        onChanged={reload}
-        hueIndex={1}
-      />
-      <PasskeyCard passwordSet={passwordSet} twoFactor={status.twoFactor} hueIndex={2} />
-      <ReadTokenCard hueIndex={3} />
-    </Stack>
+    </div>
   )
 }

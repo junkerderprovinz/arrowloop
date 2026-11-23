@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 // The fortress on the Pairing tile: outside one, the twelve words join it;
-// inside, the Fortress card on top shows the phrase behind the password with
-// its QR code, changes it and lets ArrowLoop leave, and every permission
-// saves as it is switched.
+// inside, the Fortress card on top shows the phrase behind a fresh sign-in
+// with its QR code, changes it and lets ArrowLoop leave, and every
+// permission saves as it is switched. Where the last sign-in is a while ago,
+// the password question stands in for a new one.
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { fortressText } from '@glimstone/core'
 import { useState } from 'react'
@@ -18,11 +19,16 @@ const toasts: string[] = []
 let joinRefusal: Error | null = null
 let openRefusal: Error | null = null
 let passwordSet = true
+// Whether the last sign-in is recent enough for the phrase, and whether the
+// kit may ask for the password instead of a new one.
+let fresh = false
+let askPassword = true
 let left = [{ app: '', device: 'Cellar' }]
 
 vi.mock('../../../lib/api', async (original) => {
   const actual = await original<typeof import('../../../lib/api')>()
-  const wrong = () => Promise.reject(new actual.ApiError('the current password is not right', 403))
+  const again = () => Promise.reject(Object.assign(new actual.ApiError('signInAgain', 403, 'signInAgain'), { askPassword }))
+  const stale = () => passwordSet && !fresh
   return {
     ...actual,
     api: {
@@ -30,11 +36,10 @@ vi.mock('../../../lib/api', async (original) => {
         calls.push(`join ${phrase}`)
         return joinRefusal ? Promise.reject(joinRefusal) : Promise.resolve(joined())
       },
-      showFortressPhrase: (password: string) =>
-        passwordSet && password !== 'hunter2' ? wrong() : Promise.resolve({ phrase: PHRASE, code: PHRASE }),
-      changeFortressPhrase: (password: string) => {
-        calls.push(`change ${password}`)
-        return passwordSet && password !== 'hunter2' ? wrong() : Promise.resolve({ phrase: NEW_PHRASE, code: NEW_PHRASE, left })
+      showFortressPhrase: () => (stale() ? again() : Promise.resolve({ phrase: PHRASE, code: PHRASE })),
+      changeFortressPhrase: () => {
+        calls.push('change')
+        return stale() ? again() : Promise.resolve({ phrase: NEW_PHRASE, code: NEW_PHRASE, left })
       },
       setFortressPermission: (p: FortressPermission) => {
         calls.push(`permission ${p.from} ${p.to} ${p.action} ${p.on}`)
@@ -65,8 +70,12 @@ vi.mock('../../../lib/api', async (original) => {
 
 vi.mock('../../../lib/toast', () => ({ useToast: () => (message: string) => toasts.push(message) }))
 
-import { ApiError } from '../../../lib/api'
-import { en } from '../../../lib/i18n'
+import { SignInReauthWindow } from '@glimstone/react/SignInReauthWindow'
+
+import { ApiError, whenSignedOut } from '../../../lib/api'
+import { en, useT } from '../../../lib/i18n'
+import { reauthClient } from '../../../lib/signIn'
+import { reauthText } from '../../../lib/signInWords'
 import { FortressSection } from './FortressSection'
 
 function outside(over: Partial<FortressInfo> = {}): FortressInfo {
@@ -89,8 +98,21 @@ const joined = (over: Partial<FortressInfo> = {}) => outside({ joined: true, phr
 const refreshed = vi.fn()
 
 function Page({ start, pairedWith = [] }: { start: FortressInfo; pairedWith?: string[] }) {
+  const { t } = useT()
   const [fortress, setFortress] = useState(start)
-  return <FortressSection fortress={fortress} pairedWith={pairedWith} hueStart={7} onFortress={setFortress} onRefresh={refreshed} />
+  return (
+    <>
+      <FortressSection fortress={fortress} pairedWith={pairedWith} hueStart={7} onFortress={setFortress} onRefresh={refreshed} />
+      <SignInReauthWindow api={reauthClient} text={reauthText(t)} />
+    </>
+  )
+}
+
+/** Answers the password question in its window. */
+async function confirmPassword(password: string) {
+  const window = await screen.findByRole('dialog', { name: 'Your password, please' })
+  fireEvent.change(within(window).getByLabelText('Password'), { target: { value: password } })
+  await act(async () => fireEvent.click(document.querySelector('[data-signin-reauth="confirm"]')!))
 }
 
 const button = (hook: string) => document.querySelector<HTMLButtonElement>(`[data-fortress="${hook}"]`)!
@@ -112,10 +134,26 @@ beforeEach(() => {
   joinRefusal = null
   openRefusal = null
   passwordSet = true
+  fresh = false
+  askPassword = true
   left = [{ app: '', device: 'Cellar' }]
   refreshed.mockReset()
+  vi.stubGlobal('fetch', async (url: string, init: RequestInit = {}) => {
+    calls.push(url.replace(/^.*\/api\/signin\/v1\//, 'kit '))
+    const right = url.endsWith('me/confirm') && JSON.parse(String(init.body)).password === 'hunter2'
+    if (right) fresh = true
+    return new Response(JSON.stringify(right || url.endsWith('logout') ? {} : { error: 'wrongPassword' }), {
+      status: right || url.endsWith('logout') ? 200 : 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  })
 })
-afterEach(cleanup)
+afterEach(() => {
+  // A question left open would still wait in the next test.
+  reauthClient.reauth.cancel()
+  cleanup()
+  vi.unstubAllGlobals()
+})
 
 describe('the fortress on the Pairing tile', () => {
   it('joins with the twelve words pasted into the first field', async () => {
@@ -181,26 +219,43 @@ describe('the fortress on the Pairing tile', () => {
   it('shows the phrase with its QR code only after the password', async () => {
     render(<Page start={joined()} />)
     await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'Show phrase' })))
-    const field = screen.getByLabelText('Password of ArrowLoop')
-    fireEvent.change(field, { target: { value: 'wrong' } })
-    await act(async () => fireEvent.click(button('unlock')))
-    expect((await screen.findByRole('alert')).textContent).toBe('That password is not right.')
+    await confirmPassword('wrong')
+    expect(await screen.findByText('That password is not right.')).toBeTruthy()
     expect(document.querySelector('[data-fortress="words"]')).toBeNull()
-    fireEvent.change(field, { target: { value: 'hunter2' } })
-    await act(async () => fireEvent.click(button('unlock')))
-    expect(button('words').querySelectorAll('li')).toHaveLength(12)
+    await confirmPassword('hunter2')
+    await waitFor(() => expect(button('words').querySelectorAll('li')).toHaveLength(12))
     expect(document.querySelector('[data-fortress="qr"]')).toBeTruthy()
+    expect(screen.queryByLabelText('Password of ArrowLoop')).toBeNull()
+  })
+
+  it('shows the phrase at once after a recent sign-in', async () => {
+    fresh = true
+    render(<Page start={joined()} />)
+    await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'Show phrase' })))
+    await waitFor(() => expect(button('words').querySelectorAll('li')).toHaveLength(12))
+    expect(screen.queryByRole('dialog', { name: 'Your password, please' })).toBeNull()
+  })
+
+  it('sends the person to sign in again where the password may not stand in', async () => {
+    askPassword = false
+    const out = vi.fn()
+    const stop = whenSignedOut(out)
+    render(<Page start={joined()} />)
+    await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'Show phrase' })))
+    await waitFor(() => expect(out).toHaveBeenCalledWith('again'))
+    stop()
+    expect(calls).toContain('kit logout')
+    expect(screen.queryByRole('dialog', { name: 'Your password, please' })).toBeNull()
   })
 
   it('asks for the password before the phrase changes, and a wrong one changes nothing', async () => {
     render(<Page start={joined()} />)
     fireEvent.click(await waitFor(() => button('open-change')))
     await act(async () => fireEvent.click(button('change')))
-    expect(calls).toEqual([])
-    fireEvent.change(screen.getByLabelText('Password of ArrowLoop'), { target: { value: 'wrong' } })
-    await act(async () => fireEvent.click(button('change-unlock')))
-    expect(calls).toEqual(['change wrong'])
-    expect((await screen.findByRole('alert')).textContent).toBe('That password is not right.')
+    expect(calls).toEqual(['change'])
+    await confirmPassword('wrong')
+    expect(calls).toEqual(['change', 'kit me/confirm'])
+    expect(await screen.findByText('That password is not right.')).toBeTruthy()
     expect(document.querySelector('[data-fortress="words"]')).toBeNull()
   })
 
@@ -208,9 +263,11 @@ describe('the fortress on the Pairing tile', () => {
     render(<Page start={joined()} />)
     fireEvent.click(await waitFor(() => button('open-change')))
     await act(async () => fireEvent.click(button('change')))
-    await act(async () => fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' }))
-    expect(calls).toEqual([])
-    expect((await screen.findByRole('alert')).textContent).toBe(en['fortress.changeKept'])
+    await screen.findByRole('dialog', { name: 'Your password, please' })
+    const window = screen.getByRole('dialog', { name: 'Your password, please' })
+    await act(async () => fireEvent.click(within(window).getByRole('button', { name: 'Cancel' })))
+    expect(calls).toEqual(['change'])
+    await waitFor(() => expect(document.body.textContent).toContain(en['fortress.changeKept']))
   })
 
   it('changes the phrase without asking where ArrowLoop has no password', async () => {
@@ -218,7 +275,7 @@ describe('the fortress on the Pairing tile', () => {
     render(<Page start={joined()} />)
     fireEvent.click(await waitFor(() => button('open-change')))
     await act(async () => fireEvent.click(button('change')))
-    expect(calls).toEqual(['change '])
+    expect(calls).toEqual(['change'])
     expect(button('words').textContent).toContain('wrong')
   })
 
@@ -228,16 +285,15 @@ describe('the fortress on the Pairing tile', () => {
     fireEvent.click(button('open-change'))
     expect(screen.getByText(en['fortress.changeAway'])).toBeTruthy()
     await act(async () => fireEvent.click(button('change')))
-    fireEvent.change(screen.getByLabelText('Password of ArrowLoop'), { target: { value: 'hunter2' } })
-    await act(async () => fireEvent.click(button('change-unlock')))
-    expect(calls).toEqual(['change hunter2'])
-    expect(button('words').textContent).toContain('wrong')
+    await confirmPassword('hunter2')
+    expect(calls).toEqual(['change', 'kit me/confirm', 'change'])
+    await waitFor(() => expect(button('words').textContent).toContain('wrong'))
     expect(screen.getByText(en['fortress.changedLeft'].replace('{devices}', 'Cellar'))).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Close' }))
 
     fireEvent.click(button('open-leave'))
     await act(async () => fireEvent.click(button('leave')))
-    expect(calls).toEqual(['change hunter2', 'leave'])
+    expect(calls).toEqual(['change', 'kit me/confirm', 'change', 'leave'])
     expect(await screen.findByText('Not in a fortress yet')).toBeTruthy()
     expect(refreshed).toHaveBeenCalled()
   })
@@ -363,7 +419,7 @@ describe('the fortress on the Pairing tile', () => {
   describe('Remove on another app', () => {
     const squire = { id: 'fs1', app: 'firesquire', name: 'FireSquire', version: '1.3.1', device: 'Tower', deployment: 'plugin', kind: 'instance', online: true, relay: false, pages: false }
 
-    it('asks first, then offers the new phrase behind the password', async () => {
+    it('asks first, then offers the new phrase behind a fresh sign-in', async () => {
       render(<Page start={joined({ members: [squire] })} />)
       fireEvent.click(await waitFor(() => button('others')))
       const card = await waitFor(() => document.querySelector('[data-fortress-app="firesquire"]')!)
@@ -374,10 +430,9 @@ describe('the fortress on the Pairing tile', () => {
       expect(calls).toEqual(['remove fs1'])
       expect(screen.getByRole('dialog', { name: 'Change the phrase now?' })).toBeTruthy()
       await act(async () => fireEvent.click(button('change')))
-      fireEvent.change(screen.getByLabelText('Password of ArrowLoop'), { target: { value: 'hunter2' } })
-      await act(async () => fireEvent.click(button('change-unlock')))
-      expect(calls).toEqual(['remove fs1', 'change hunter2'])
-      expect(button('words').textContent).toContain('wrong')
+      await confirmPassword('hunter2')
+      expect(calls).toEqual(['remove fs1', 'change', 'kit me/confirm', 'change'])
+      await waitFor(() => expect(button('words').textContent).toContain('wrong'))
       expect(refreshed).toHaveBeenCalled()
     })
 

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { ConfirmWindow } from '../../../components/ConfirmWindow'
 import { Dialog } from '../../../components/Dialog'
-import { FieldRow, Secret } from '../../../components/Field'
 import { IconCheck, IconClose, IconCopy, IconEye, IconSignOut } from '../../../components/glyphs'
 import { api, type ConnectInfo } from '../../../lib/api'
 import { inDesktopWindow } from '../../../lib/desk'
@@ -10,6 +9,7 @@ import { Button } from '../../../lib/glimstone/Button'
 import { Card } from '../../../lib/glimstone/Card'
 import { useT } from '../../../lib/i18n'
 import { refusalText, type PairStage } from '../../../lib/pairing'
+import { wantsSignIn, withPassword } from '../../../lib/signIn'
 import { navigate } from '../../../lib/router'
 import { useToast } from '../../../lib/toast'
 import { PhraseGlyph } from './pairingArt'
@@ -44,7 +44,6 @@ export function PhraseCard({
   const [phrase, setPhrase] = useState<{ phrase: string; code: string } | null>(null)
   // The window over the card: the words to read out, or the field for the words of a first instance.
   const [shown, setShown] = useState<'words' | 'enter' | null>(null)
-  const [password, setPassword] = useState('')
   const [leaving, setLeaving] = useState(false)
   const [busy, setBusy] = useState(false)
   const [shake, setShake] = useState(0)
@@ -69,6 +68,8 @@ export function PhraseCard({
     try {
       await action()
     } catch (e) {
+      // The password question was closed, or the page went to the sign-in.
+      if (wantsSignIn(e)) return
       push(refusalText(t, e), 'fail')
       setShake((n) => n + 1)
     } finally {
@@ -83,12 +84,6 @@ export function PhraseCard({
       onCreatedHere(true)
       onGroup(made.info)
       setShown('words')
-    })
-
-  const show = () =>
-    run(async () => {
-      setPhrase(await api.revealPhrase(password))
-      setPassword('')
     })
 
   /** Takes this instance out of its group, then runs `then` to set up what the card shows next. */
@@ -121,15 +116,14 @@ export function PhraseCard({
     setCopied(true)
   }
 
-  const openWords = () => {
-    setShown('words')
-    // Without a password there is nothing to enter before the words show.
-    if (!phrase && !group.passwordSet) void show()
-  }
-  const close = () => {
-    setShown(null)
-    setPassword('')
-  }
+  // Where anyone can sign in, the words want a fresh sign-in, and the
+  // password question comes up first when the last one is a while ago.
+  const openWords = () =>
+    run(async () => {
+      if (!phrase) setPhrase(await withPassword(() => api.revealPhrase()))
+      setShown('words')
+    })
+  const close = () => setShown(null)
 
   // Pairing works without a password, but then whoever opens this page holds
   // the words and, through the group, every instance in it.
@@ -212,7 +206,7 @@ export function PhraseCard({
       </div>
       {foot && <CardFoot>{foot}</CardFoot>}
 
-      {shown === 'words' && (
+      {shown === 'words' && phrase && (
         <Dialog
           title={t('pairing.wordsLabel')}
           hint={t('pairing.wordsTip')}
@@ -222,46 +216,19 @@ export function PhraseCard({
           footer={
             <>
               <Button label={t('common.close')} labelKey="common.close" glyph={<IconClose />} onClick={close} />
-              {phrase ? (
-                <Button
-                  label={copied ? t('common.copied') : t('common.copy')}
-                  labelKey={copied ? 'common.copied' : 'common.copy'}
-                  glyph={copied ? <IconCheck /> : <IconCopy />}
-                  onClick={() => void copy()}
-                />
-              ) : (
-                <Button
-                  key={`show-${shake}`}
-                  label={t('pairing.show')}
-                  labelKey="pairing.show"
-                  glyph={<IconEye />}
-                  tone="accent"
-                  busy={busy}
-                  disabled={busy || password === ''}
-                  className={shake ? 'glim-shake' : undefined}
-                  onClick={() => void show()}
-                />
-              )}
+              <Button
+                label={copied ? t('common.copied') : t('common.copy')}
+                labelKey={copied ? 'common.copied' : 'common.copy'}
+                glyph={copied ? <IconCheck /> : <IconCopy />}
+                onClick={() => void copy()}
+              />
             </>
           }
         >
-          {phrase ? (
-            <div className="flex flex-col gap-2">
-              <WordSlots words={phrase.phrase.split(/\s+/)} label={t('pairing.wordsLabel')} code={phrase.code} />
-              <p className="text-center text-meta text-carbon-textMuted sm:text-end">{t('pairing.qrCaption')}</p>
-            </div>
-          ) : (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                if (password !== '') void show()
-              }}
-            >
-              <FieldRow label={t('pairing.passwordLabel')} hint={t('pairing.passwordTip')}>
-                <Secret value={password} onChange={setPassword} autoComplete="current-password" label={t('pairing.passwordLabel')} />
-              </FieldRow>
-            </form>
-          )}
+          <div className="flex flex-col gap-2">
+            <WordSlots words={phrase.phrase.split(/\s+/)} label={t('pairing.wordsLabel')} code={phrase.code} />
+            <p className="text-center text-meta text-carbon-textMuted sm:text-end">{t('pairing.qrCaption')}</p>
+          </div>
         </Dialog>
       )}
       {shown === 'enter' && <JoinWindow hint={`${t('pairing.enterSub')} ${tip}`} hueIndex={hueIndex} busy={busy} onPair={join} onClose={close} />}

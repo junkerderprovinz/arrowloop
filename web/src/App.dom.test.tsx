@@ -19,7 +19,6 @@ const settled: WindowSettings = {
   autoUpdate: false,
   updatesFromStore: false,
 }
-const session = vi.fn(() => Promise.resolve({ required: false, authenticated: false }))
 const saveWindow = vi.fn((_next: WindowSettings) => Promise.resolve(settled))
 const trashAll = vi.fn(() => Promise.resolve({ sides: [] as TrashSide[] }))
 const anomalies = vi.fn(() => Promise.resolve({ open: [], closed: [] }))
@@ -34,8 +33,6 @@ vi.mock('./lib/api', async (actual) => ({
     capabilities: () => Promise.resolve({ window: desktop(), version: 'test' }),
     window: () => Promise.resolve(settled),
     saveWindow: (next: WindowSettings) => saveWindow(next),
-    session: () => session(),
-    passkeys: () => Promise.resolve({ supported: false, rpId: '', total: 0, here: 0 }),
     conflicts: () => Promise.resolve({ conflicts: [], unread: [] }),
     anomalies: () => anomalies(),
     learning: () => Promise.resolve([]),
@@ -53,8 +50,7 @@ vi.mock('./lib/api', async (actual) => ({
   },
 }))
 
-const { App, Gate } = await import('./App')
-const real = await vi.importActual<typeof import('./lib/api')>('./lib/api')
+const { App } = await import('./App')
 
 // jsdom has neither media queries nor element measuring.
 window.matchMedia ??= ((query: string) => ({
@@ -76,8 +72,6 @@ beforeEach(() => {
   jobs.mockImplementation(() => Promise.resolve([]))
   history.mockReset()
   history.mockImplementation(() => Promise.resolve([]))
-  session.mockReset()
-  session.mockImplementation(() => Promise.resolve({ required: false, authenticated: false }))
   desktop.mockReset()
   desktop.mockImplementation(() => false)
   trashAll.mockReset()
@@ -179,16 +173,6 @@ describe('the app', () => {
     expect(screen.getAllByTestId('job-row')).toHaveLength(2)
   })
 
-  it('goes back to the login once the session has ended', async () => {
-    session.mockImplementation(() => Promise.resolve({ required: true, authenticated: true }))
-    vi.stubGlobal('fetch', () =>
-      Promise.resolve(new Response(JSON.stringify({ error: 'this interface is password protected, log in first' }), { status: 401 })),
-    )
-    jobs.mockImplementation(() => real.api.jobs())
-    render(<Gate />)
-
-    expect(await screen.findByRole('heading', { level: 1, name: 'ArrowLoop' })).toBeTruthy()
-  })
 })
 
 describe('the findings', () => {

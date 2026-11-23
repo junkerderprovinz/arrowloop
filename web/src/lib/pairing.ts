@@ -50,6 +50,8 @@ export function refusalText(t: Translate, e: unknown): string {
         return t('pairing.errChecksum')
       case 'phraseExists':
         return t('pairing.errExists')
+      case 'signInAgain':
+        return t('signin.error.signInAgain')
     }
     if (e.status === 403) return t('login.wrong')
     if (e.status === 429) return t('login.locked')

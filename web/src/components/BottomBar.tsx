@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 
-import { api } from '../lib/api'
+import { signOutHere } from '../lib/signIn'
 import { hueVars } from '../lib/appearance'
 import { hidesLabel, type LabelMode } from '../lib/controls'
 import { useLabelMode } from '../lib/glimstone/useLabelMode'
@@ -227,7 +227,7 @@ function MoreSheet({
         {signOut && (
           <button
             type="button"
-            onClick={() => void api.logout().finally(() => window.location.reload())}
+            onClick={signOutHere}
             className={`${row} mt-2 text-carbon-textMuted`}
           >
             <span className="flex h-5 w-5 items-center justify-center [&_svg]:h-5 [&_svg]:w-5">

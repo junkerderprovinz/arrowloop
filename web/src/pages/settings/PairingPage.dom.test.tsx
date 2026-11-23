@@ -24,7 +24,7 @@ vi.mock('../../lib/api', async (original) => ({
     makePhrase: () => makePhrase(),
     joinGroup: (phrase: string) => joinGroup(phrase),
     approveMember: (id: string) => approveMember(id),
-    revealPhrase: (password: string) => revealPhrase(password),
+    revealPhrase: () => revealPhrase(),
     fortress: () => fortress(),
     leaveGroup: vi.fn(),
     refuseMember: vi.fn(),
@@ -41,9 +41,24 @@ vi.mock('../../lib/api', async (original) => ({
   },
 }))
 
+import { SignInReauthWindow } from '@glimstone/react/SignInReauthWindow'
+
 import { ApiError } from '../../lib/api'
-import { en } from '../../lib/i18n'
+import { en, useT } from '../../lib/i18n'
+import { reauthClient } from '../../lib/signIn'
+import { reauthText } from '../../lib/signInWords'
 import { PairingPage } from './PairingPage'
+
+/** The tile with the password question the app draws over every page. */
+function WithQuestion() {
+  const { t } = useT()
+  return (
+    <>
+      <PairingPage />
+      <SignInReauthWindow api={reauthClient} text={reauthText(t)} />
+    </>
+  )
+}
 
 // jsdom has no ResizeObserver, which the relay selector measures its room with.
 globalThis.ResizeObserver ??= class {
@@ -90,7 +105,11 @@ beforeEach(() => {
   relay.mockResolvedValue(relayConfig)
   fortress.mockResolvedValue(noFortress)
 })
-afterEach(cleanup)
+afterEach(() => {
+  reauthClient.reauth.cancel()
+  cleanup()
+  vi.unstubAllGlobals()
+})
 
 describe('the Pairing tile', () => {
   it('shows the twelve words it made, with the code for a phone', async () => {
@@ -138,18 +157,35 @@ describe('the Pairing tile', () => {
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/don't fit together/))
   })
 
-  it('asks for the password before it shows the words again', async () => {
+  it('asks for the password before it shows the words again where the last sign-in is a while ago', async () => {
+    connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
+    revealPhrase
+      .mockRejectedValueOnce(Object.assign(new ApiError('signInAgain', 403, 'signInAgain'), { askPassword: true }))
+      .mockResolvedValue({ phrase: WORDS, code: WORDS })
+    const confirmed: unknown[] = []
+    vi.stubGlobal('fetch', async (_: string, init: RequestInit = {}) => {
+      confirmed.push(JSON.parse(String(init.body)))
+      return new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } })
+    })
+    render(<WithQuestion />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Show phrase' }))
+
+    const dialog = await screen.findByRole('dialog', { name: 'Your password, please' })
+    expect(screen.queryByRole('list', { name: 'The twelve words' })).toBeNull()
+    fireEvent.change(within(dialog).getByLabelText('Password'), { target: { value: 'secret' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
+    expect(await screen.findByRole('list', { name: 'The twelve words' })).toBeTruthy()
+    expect(confirmed).toEqual([{ password: 'secret' }])
+    expect(revealPhrase).toHaveBeenCalledTimes(2)
+  })
+
+  it('shows the words again at once after a recent sign-in', async () => {
     connect.mockResolvedValue({ ...outside, active: true, joinedAgo: 600, memberSeen: true })
     revealPhrase.mockResolvedValue({ phrase: WORDS, code: WORDS })
-    render(<PairingPage />)
+    render(<WithQuestion />)
     fireEvent.click(await screen.findByRole('button', { name: 'Show phrase' }))
-    expect(revealPhrase).not.toHaveBeenCalled()
-
-    const dialog = screen.getByRole('dialog')
-    fireEvent.change(within(dialog).getByLabelText('Password'), { target: { value: 'secret' } })
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Show phrase' }))
-    await waitFor(() => expect(revealPhrase).toHaveBeenCalledWith('secret'))
     expect(await screen.findByRole('list', { name: 'The twelve words' })).toBeTruthy()
+    expect(screen.queryByLabelText('Password')).toBeNull()
   })
 
   it('lists an instance waiting for approval with its key and approves it', async () => {
