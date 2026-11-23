@@ -280,9 +280,8 @@ jobs:
       # only the release build packages the bundle into the APK. Unless SIGNED,
       # it is signed with the stable, public mobile/debug.keystore. A signed
       # build also makes the app bundle Google Play takes, signed with the same
-      # key as its upload key. The bundle is arm64 only: on x86_64 Android
-      # the engine's SQLite calls lstat, which the app sandbox kills with
-      # SIGSYS, and Play would hand that build to x86 Chromebooks.
+      # key as its upload key, with arm64 for phones and x86_64 for
+      # Chromebooks.
       - name: Assemble
         working-directory: mobile/android
         env:
@@ -294,7 +293,7 @@ jobs:
           ./gradlew assembleRelease --no-daemon
           if [ "$SIGNED" = true ]; then
             # React Native adds its own architecture list to the same filter.
-            ./gradlew bundleRelease -ParrowloopBundleAbi=arm64-v8a -PreactNativeArchitectures=arm64-v8a --no-daemon
+            ./gradlew bundleRelease -ParrowloopBundleAbis=arm64-v8a,x86_64 -PreactNativeArchitectures=arm64-v8a,x86_64 --no-daemon
           fi
 
       # mobile/native/test, which withEngine.js copies into the generated
@@ -347,10 +346,19 @@ jobs:
           # keytool prints the digest in upper case with colons.
           digest=$(keytool -printcert -jarfile out/arrowloop-play.aab | grep -m1 'SHA256:' | awk '{print $2}' | tr -d ':' | tr 'A-F' 'a-f')
           echo "out/arrowloop-play.aab $digest"
-          if unzip -l out/arrowloop-play.aab | grep -q 'lib/x86_64/'; then
-            echo "::error::the app bundle carries an x86_64 build."
+          # Play serves each device the libraries of its own architecture, so
+          # one without an engine gets an app that only shows its error screen.
+          abis=$(unzip -l out/arrowloop-play.aab | grep -oE 'base/lib/[^/]+/' | cut -d/ -f3 | sort -u | xargs)
+          if [ "$abis" != "arm64-v8a x86_64" ]; then
+            echo "::error::the app bundle carries libraries for $abis, not for arm64-v8a and x86_64 alone."
             exit 1
           fi
+          for abi in arm64-v8a x86_64; do
+            if ! unzip -l out/arrowloop-play.aab | grep -q "base/lib/$abi/libarrowloop.so"; then
+              echo "::error::the app bundle has no engine for $abi."
+              exit 1
+            fi
+          done
           if [ "$digest" != "$RELEASE_CERT_SHA256" ]; then
             echo "::error::the app bundle is signed by $digest, not by the release certificate $RELEASE_CERT_SHA256."
             exit 1
