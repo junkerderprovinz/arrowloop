@@ -95,8 +95,8 @@ jobs:
       # `arrowloop version` and Android's app info. The portable exe, the
       # macOS zip, the Linux program and the AppImage are what the desktop app
       # updates itself from (desktop/update, whose tests hold it to these
-      # names). The x86_64 APK stays a CI artifact, since only an emulator
-      # runs it.
+      # names). The x86_64 APK is for Chromebooks with an Intel or AMD
+      # processor.
       - name: Package
         run: |
           set -eu
@@ -117,6 +117,7 @@ jobs:
           cp bundles/arrowloop-linux-arm64-appimage/*.AppImage dist/arrowloop-linux-arm64.AppImage
           chmod +x dist/arrowloop-linux-amd64 dist/arrowloop-linux-arm64 dist/arrowloop-linux-*-installer dist/*.AppImage
           cp bundles/arrowloop-mobile/arrowloop-app-arm64-v8a-release.apk dist/arrowloop-android-arm64.apk
+          cp bundles/arrowloop-mobile/arrowloop-app-x86_64-release.apk dist/arrowloop-android-x86_64.apk
           ls -lh dist
 
       # The desktop app checks the file it updates to against this list. Run

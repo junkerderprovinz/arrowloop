@@ -461,8 +461,9 @@ the computer can change where an update comes from.
 The Android app runs the engine on the phone itself, so the phone's own files
 can take part in a job. Every release carries the `arm64` APK,
 [`arrowloop-android-arm64.apk`](https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk),
-which is what phones run; an `x86_64` build for the Android emulator is in the
-artifacts of each CI run.
+which is what phones run, and the `x86_64` APK,
+[`arrowloop-android-x86_64.apk`](https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-x86_64.apk),
+for Chromebooks with an Intel or AMD processor and the Android emulator.
 
 The APK is signed with the project's own key, so a later release installs over
 an earlier one. An APK from an ordinary CI run carries the public debug key

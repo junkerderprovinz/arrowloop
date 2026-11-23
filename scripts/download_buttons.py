@@ -33,6 +33,7 @@ BUTTONS = {
     # marks the listing "soon". The listing's address goes here once it exists.
     "google-play": None,
     "f-droid": "https://f-droid.org/packages/arrowloop.halleluja.design/",
-    # arm64 only; the x86_64 APK is for emulators and stays on the release page.
+    # arm64 only; the x86_64 APK for Chromebooks stays on the release page and
+    # in the docs.
     "apk": RELEASE + "arrowloop-android-arm64.apk",
 }

@@ -59,7 +59,9 @@ the older versions.
       <a class="md-button md-button--primary" href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk" aria-label="Android APK">APK</a>
       <a class="md-button" href="https://f-droid.org/packages/arrowloop.halleluja.design/">F-Droid</a>
     </div>
-    <p class="al-downloads__note">Google Play is coming soon</p>
+    <p class="al-downloads__note">Chromebooks with Intel or AMD:
+      <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-x86_64.apk" aria-label="Android APK for x86_64">x86_64 APK</a>.
+      Google Play is coming soon</p>
   </div>
   <div class="al-downloads__row">
     <p class="al-downloads__platform">Docker</p>
