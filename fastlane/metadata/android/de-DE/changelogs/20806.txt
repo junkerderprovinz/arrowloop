@@ -1,0 +1,1 @@
+Der Abgleich mit einer WebDAV-Freigabe wie Stalwart will nicht mehr bei jedem Lauf alles neu senden, und die MQTT-Benachrichtigungen nutzen eine reparierte WebSocket-Bibliothek.

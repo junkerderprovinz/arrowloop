@@ -8,6 +8,15 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.8.6 - 2026-11-24
+
+Two-way jobs onto a WebDAV share that keeps no file times, such as Stalwart's, settle after one run, and the WebSocket library for MQTT notifications is the fixed version.
+
+## 🐛 Fixed
+
+- **Two-way jobs onto a WebDAV share that keeps no file times.** Stalwart and similar servers give every file its upload time and keep no checksum. ArrowLoop 2.7 took that time for a change and never recorded the files as synced, so each later run wanted to overwrite all of them and the change brake held the job. ArrowLoop now ignores the time where a side keeps none and compares the bytes instead. A job that 2.7 left stuck settles on its next run without sending anything, and a first run onto a share with the same files no longer turns each into a conflict. Thanks to @speed47 for the report and the exact steps ([#274](https://github.com/junkerderprovinz/arrowloop/issues/274)).
+- **A safer WebSocket library.** The notification channel for MQTT brings in gorilla/websocket, which made the mask of each outgoing WebSocket frame with a weak random generator (GO-2026-6278). ArrowLoop now ships the fixed version in the container, the desktop app and the phone's engine.
+
 ## 2.8.5 - 2026-11-23
 
 On the phone a VPN can leave out the wifi you trust, targets take any name and keep their jobs through a rename, and the Play version runs on Chromebooks.
