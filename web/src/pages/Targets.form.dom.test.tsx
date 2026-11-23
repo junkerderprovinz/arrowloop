@@ -80,6 +80,7 @@ vi.mock('../lib/api', () => ({
     checkRemote: () => Promise.resolve({ ok: true }),
     aboutRemote: () => Promise.resolve({ supported: false }),
     saveRemote: (name: string, type: string, settings: Record<string, string>) => saveRemote(name, type, settings),
+    addRemote: (label: string, type: string, settings: Record<string, string>) => saveRemote(label, type, settings),
   },
 }))
 

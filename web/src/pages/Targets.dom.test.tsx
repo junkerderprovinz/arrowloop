@@ -69,7 +69,7 @@ function show() {
 }
 
 async function deleteFirst() {
-  await screen.findByText('home:')
+  await screen.findByText('home')
   fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0])
   const dialog = await screen.findByRole('dialog')
   fireEvent.click(within(dialog).getByRole('button', { name: 'Delete it' }))
@@ -88,7 +88,7 @@ describe('Targets', () => {
   it('leaves a folder on this device without a connection to report', async () => {
     show()
 
-    await screen.findByText('here:')
+    await screen.findByText('here')
     await screen.findByText('Not connected')
     expect(checked).not.toHaveBeenCalledWith('here')
     expect(screen.getAllByText(/^(Connected|Not connected)$/)).toHaveLength(2)
@@ -97,7 +97,7 @@ describe('Targets', () => {
   it('shows each target as a connection row', async () => {
     show()
 
-    const row = await screen.findByRole('group', { name: 'home:' })
+    const row = await screen.findByRole('group', { name: 'home' })
     expect(row.getAttribute('data-glim')).toBe('ConnectionRow')
     expect(within(row).getByRole('button', { name: 'Test connection' })).toBeTruthy()
   })
@@ -105,9 +105,9 @@ describe('Targets', () => {
   it('says an automatic test that failed in a badge and leaves the button still', async () => {
     show()
 
-    const ok = within(await screen.findByRole('group', { name: 'home:' })).getByRole('button', { name: 'Test connection' })
+    const ok = within(await screen.findByRole('group', { name: 'home' })).getByRole('button', { name: 'Test connection' })
     await waitFor(() => expect(ok.className).toContain('glim-btn--ok'))
-    const away = await screen.findByRole('group', { name: 'away:' })
+    const away = await screen.findByRole('group', { name: 'away' })
     await within(away).findByText('Not connected')
     const fail = within(away).getByRole('button', { name: 'Test connection' })
     expect(fail.className).not.toContain('glim-btn--danger')
@@ -118,7 +118,7 @@ describe('Targets', () => {
 
   it('answers a test somebody pressed on the button itself', async () => {
     show()
-    const away = await screen.findByRole('group', { name: 'away:' })
+    const away = await screen.findByRole('group', { name: 'away' })
     await within(away).findByText('Not connected')
     checked.mockClear()
     fireEvent.click(within(away).getByRole('button', { name: 'Test connection' }))
@@ -130,14 +130,14 @@ describe('Targets', () => {
 
   it('says a target behind a VPN that is off goes through it rather than calling it not connected', async () => {
     show()
-    const nas = await screen.findByRole('group', { name: 'nas:' })
+    const nas = await screen.findByRole('group', { name: 'nas' })
     expect(await within(nas).findByText('Through the VPN, checked when a job runs')).toBeTruthy()
     expect(within(nas).queryByText('Not connected')).toBeNull()
   })
 
   it('brings the VPN up for a test somebody pressed', async () => {
     show()
-    const nas = await screen.findByRole('group', { name: 'nas:' })
+    const nas = await screen.findByRole('group', { name: 'nas' })
     await within(nas).findByText('Through the VPN, checked when a job runs')
     expect(connected).not.toHaveBeenCalled()
     fireEvent.click(within(nas).getByRole('button', { name: 'Test connection' }))
@@ -164,7 +164,7 @@ describe('Targets', () => {
     deleteRemote.mockImplementationOnce(() => Promise.reject(new Error('set a password under Settings, Security first')))
     show()
     await deleteFirst()
-    const row = await screen.findByRole('group', { name: 'home:' })
+    const row = await screen.findByRole('group', { name: 'home' })
     expect(await within(row).findByText('set a password under Settings, Security first')).toBeTruthy()
   })
 
@@ -181,11 +181,11 @@ describe('Targets', () => {
     expect(await screen.findByText('Failed to fetch')).toBeTruthy()
   })
 
-  it('keeps the name of a target being edited', async () => {
+  it('opens a target being edited with its name ready to change', async () => {
     show()
-    await screen.findByText('home:')
+    await screen.findByText('home')
     fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0])
     const name = (await screen.findByDisplayValue('home')) as HTMLInputElement
-    expect(name.readOnly).toBe(true)
+    expect(name.readOnly).toBe(false)
   })
 })

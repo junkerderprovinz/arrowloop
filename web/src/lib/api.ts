@@ -51,6 +51,7 @@ import type { Reason } from './i18n'
 import { inDesktopWindow, watchDesktop } from './desk'
 import type { FortressInfo, FortressLeft, FortressPermission, MemberStatus } from './fortress'
 import { at } from './base'
+import { learnTargets } from './targetLabels'
 
 /** What one side holds: its name there, its size and when it changed. */
 export type SideVersion = { path: string; size: number; mod: string }
@@ -73,9 +74,10 @@ export type Shown = Pick<Action, 'kind' | 'from' | 'to'>
 /** What to do with two versions of a file that disagree. */
 export type Resolution = 'both' | 'left' | 'right'
 
-/** One configured storage target. */
+/** One configured storage target. `name` is its id, which a job's side writes before the colon; `label` is what it is called. */
 export type Remote = {
   name: string
+  label?: string
   type: string
   /** The product behind the target and its logo, named by the engine from the
    *  target's settings (internal/remotes/identify.go). */
@@ -820,7 +822,7 @@ export type OpenedJob = { job: RawJob; defaults?: Settings['defaults'] }
  * marked drives and the names of its exclude sets.
  */
 export type InstancePlaces = {
-  targets: { name: string; type: string; provider?: string; mark?: string }[]
+  targets: { name: string; label?: string; type: string; provider?: string; mark?: string }[]
   drives: { id: string; label: string; path: string; attached: boolean }[]
   excludeSets: string[]
 }
@@ -1266,17 +1268,28 @@ export const api = {
       providers: Provider[]
       /** Compiled-in backends no provider entry covers. */
       unlisted: Backend[] | null
-    }>('/api/remotes'),
+    }>('/api/remotes').then((got) => {
+      learnTargets(got.remotes)
+      return got
+    }),
 
   /**
-   * Writes one target. `create` makes the engine refuse a name that is
-   * already a target with a 409, where an edit would merge into it.
+   * Writes the target with this id. A label renames it, and the id stays, so
+   * the jobs on it keep their sides.
    */
-  saveRemote: (name: string, type: string, settings: Record<string, string>, create = false) =>
-    request<{ saved: string }>(`/api/remotes/${encodeURIComponent(name)}${create ? '?new=1' : ''}`, {
+  saveRemote: (name: string, type: string, settings: Record<string, string>, label?: string) =>
+    request<{ saved: string }>(`/api/remotes/${encodeURIComponent(name)}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, settings }),
+      body: JSON.stringify({ type, settings, label }),
+    }),
+
+  /** Adds a target called `label`. The engine makes its id and answers it as `saved`. */
+  addRemote: (label: string, type: string, settings: Record<string, string>) =>
+    request<{ saved: string }>('/api/remotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label, type, settings }),
     }),
 
   deleteRemote: (name: string) =>

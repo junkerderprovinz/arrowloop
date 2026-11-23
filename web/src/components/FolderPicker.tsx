@@ -28,12 +28,13 @@ const isBoolean = (value: unknown): value is boolean => typeof value === 'boolea
  */
 export function placeOffers(
   drives: { path: string; label: string; attached: boolean }[],
-  targets: { name: string }[],
+  targets: { name: string; label?: string }[],
   t: Translate,
 ): Known[] {
   return [
     ...drives.map((d) => ({ value: `${d.path}/`, label: `${t('edit.pickDrive')}: ${d.label}`, browse: d.attached })),
-    ...targets.map((r) => ({ value: `${r.name}:`, label: `${t('edit.pickRemote')}: ${r.name}`, browse: true })),
+    // Offered by label and opened by id, which is what the side keeps.
+    ...targets.map((r) => ({ value: `${r.name}:`, label: `${t('edit.pickRemote')}: ${r.label || r.name}`, browse: true })),
   ]
 }
 

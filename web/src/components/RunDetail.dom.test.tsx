@@ -25,7 +25,7 @@ describe('a run that met a folder it could not read', () => {
       { Kind: 'copy', Side: 'right', Path: 'notes.md', Note: '', Size: 12 },
     ])
     render(
-      <Places.Provider value={{ jobs: [code], drives: [] }}>
+      <Places.Provider value={{ jobs: [code], drives: [], targets: [] }}>
         <RunDetail run={7} job="code" />
       </Places.Provider>,
     )

@@ -13,6 +13,7 @@ import { SubCard } from '../lib/glimstone/SubCard'
 import { useHost } from '../lib/host'
 import { useT } from '../lib/i18n'
 import { isLocalTarget } from '../lib/localTarget'
+import { remoteOf } from '../lib/side.data'
 import { usePlaces } from '../lib/places'
 
 /**
@@ -129,6 +130,11 @@ function SideCard({
   // A folder of another instance is not on this device.
   const here = host.name ? t('job.onInstance', { name: host.name }) : t('side.onDevice')
   const name = face.name ?? (path ? here : t('edit.sideUnset'))
+  // On a target the card names it and the field holds the folder there, so a
+  // rename of the target never reaches the side, which keeps the target's id.
+  const id = remoteOf(path)
+  const target = id !== undefined && remotes.some((r) => r.name === id) ? id : undefined
+  const folder = target === undefined ? path : path.slice(target.length + 1)
 
   return (
     <div className="flex min-w-0 flex-1 flex-col *:flex-1">
@@ -141,7 +147,7 @@ function SideCard({
             {name}
           </span>
         </div>
-        <Text value={path} onChange={onChange} label={label} mono />
+        <Text value={folder} onChange={(next) => onChange(target === undefined ? next : `${target}:${next}`)} label={label} mono />
         <div className="flex justify-end">
           <Button label={t('pick.open')} labelKey="pick.open" glyph={<IconFolder />} onClick={() => setPicking(true)} />
         </div>

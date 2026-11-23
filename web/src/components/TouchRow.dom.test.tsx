@@ -38,7 +38,7 @@ describe('a line of the file log', () => {
     const job = { name: 'photos', left: '/data/Handy', right: 'nas:Fotos' } as Job
     const touch = { Job: 'photos', When: new Date().toISOString(), Seq: 1, Kind: 'copy', Side: 'right', Path: 'a.jpg', Size: 10, Note: '' } as Touch
     render(
-      <Places.Provider value={{ jobs: [job], drives: [] }}>
+      <Places.Provider value={{ jobs: [job], drives: [], targets: [] }}>
         <ul>
           <TouchRow touch={touch} />
         </ul>
@@ -52,7 +52,7 @@ describe('a line of the file log', () => {
   const way = (touch: Partial<Touch>, jobs: Job[] = [job]) => {
     const line = { Job: 'photos', When: new Date().toISOString(), Seq: 1, Path: 'a.jpg', Size: 10, Note: '', ...touch } as Touch
     render(
-      <Places.Provider value={{ jobs, drives: [] }}>
+      <Places.Provider value={{ jobs, drives: [], targets: [] }}>
         <ul>
           <TouchRow touch={line} />
         </ul>

@@ -62,6 +62,7 @@ vi.mock('../lib/api', () => ({
     checkRemote: () => Promise.resolve({ ok: true }),
     aboutRemote: () => Promise.resolve({ supported: false }),
     saveRemote: (name: string, type: string, settings: Record<string, string>) => saveRemote(name, type, settings),
+    addRemote: (label: string, type: string, settings: Record<string, string>) => saveRemote(label, type, settings),
   },
 }))
 
@@ -142,7 +143,7 @@ describe('a server certificate no authority vouches for', () => {
       ],
     })
     show()
-    await screen.findByText('cloud:')
+    await screen.findByText('cloud')
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
     const dialog = await screen.findByRole('dialog')
 

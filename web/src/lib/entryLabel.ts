@@ -1,5 +1,6 @@
 import type { TranslationKey } from './i18n.data'
 import { reasonText, type Spelling } from './reasonText.ts'
+import { targetLabel } from './targetLabels.ts'
 
 // Only the fields read here, and not the api module's types or React, so the
 // phone app can share this file: its build installs neither the web's
@@ -27,7 +28,7 @@ export function placeOf(path: string, drives: Drive[]): Place {
     return { kind: 'drive', name: drives.find((d) => d.id === id)?.label || id }
   }
   const target = TARGET.exec(path)
-  if (target) return { kind: 'target', name: target[1]! }
+  if (target) return { kind: 'target', name: targetLabel(target[1]!) }
   const trimmed = path.replace(/[\\/]+$/, '')
   return { kind: 'device', name: trimmed.split(/[\\/]/).pop() || trimmed }
 }
@@ -316,10 +317,14 @@ export function entryWay(e: Entry): { from: Hand; to: Hand } | { on: Hand } | nu
 /**
  * A side as a person reads it: a drive by its label and the folder on it, as
  * "Backup/Photos", since its stored form starts with an identity nobody can
- * read. Any other side is shown as written.
+ * read, and a target by its label before the colon. Any other side is shown
+ * as written.
  */
 export function sideName(path: string, drives: Drive[]): string {
-  if (!path.startsWith(DRIVE)) return path
+  if (!path.startsWith(DRIVE)) {
+    const target = TARGET.exec(path)
+    return target ? targetLabel(target[1]!) + path.slice(target[1]!.length) : path
+  }
   const [id = '', ...rest] = path.slice(DRIVE.length).split('/')
   const label = drives.find((d) => d.id === id)?.label || id
   return [label, ...rest.filter(Boolean)].join('/')
@@ -332,7 +337,8 @@ export function sideName(path: string, drives: Drive[]): string {
  */
 function within(root: string, path: string, drives: Drive[]): string {
   if (root.startsWith(DRIVE)) return `${sideName(root, drives)}/${path}`
-  if (root.endsWith(':')) return root + path
+  if (root.endsWith(':')) return sideName(root, drives) + path
+  if (TARGET.test(root)) return `${sideName(root, drives).replace(/\/+$/, '')}/${path}`
   if (/^[A-Za-z]:\\/.test(root) || (root.includes('\\') && !root.includes('/'))) {
     return `${root.replace(/\\+$/, '')}\\${path.replaceAll('/', '\\')}`
   }

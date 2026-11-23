@@ -43,7 +43,10 @@ export function RemoteJob({ instance, name, back }: { instance: string; name: st
   useConfigErrors(edited)
   const [editing, setEditing] = useState(false)
   const host = useMemo(() => otherHost(instance, owner, edited.places?.excludeSets ?? []), [instance, owner, edited.places])
-  const places = useMemo(() => ({ jobs: [], drives: edited.places?.drives ?? [] }), [edited.places])
+  const places = useMemo(
+    () => ({ jobs: [], drives: edited.places?.drives ?? [], targets: edited.places?.targets ?? [] }),
+    [edited.places],
+  )
 
   if (other === undefined) {
     return (
