@@ -11,6 +11,7 @@ import type { Failure } from "../../web/src/lib/failure";
 import type { FortressInfo, FortressLeft, FortressPermission } from "../../web/src/lib/fortress";
 import type { ImportPlan } from "../../web/src/lib/importPlan";
 import type { VpnField, VpnState } from "../../web/src/lib/vpn";
+import { learnTargets } from "../../web/src/lib/targetLabels";
 
 // app.config.js sets the port, and Engine.kt starts the engine on the same one.
 export const ORIGIN = `http://127.0.0.1:${Constants.expoConfig?.extra?.enginePort}`;
@@ -355,8 +356,10 @@ export interface OpenConflict {
 
 export type Keep = "left" | "right" | "both";
 
+/** One target. `name` is its id, which a job's side writes before the colon; `label` is what it is called. */
 export interface Remote {
   name: string;
+  label?: string;
   type: string;
   /** The product behind the target and its logo, as the engine identifies
    *  them (internal/remotes/identify.go); absent when unknown. */
@@ -650,7 +653,11 @@ export const api = {
   orderJobs: (names: string[]) =>
     call<{ jobs: number }>("/api/jobs/order", { method: "PUT", body: JSON.stringify({ jobs: names }) }),
 
-  storage: () => call<Storage>("/api/remotes"),
+  storage: () =>
+    call<Storage>("/api/remotes").then((got) => {
+      learnTargets(got.remotes);
+      return got;
+    }),
   /**
    * Tests unsaved settings without writing anything
    * (internal/remotes/trycheck.go). `remote` names the target being edited, so
@@ -665,8 +672,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ type, settings, name: remote ?? "" }),
     }),
-  saveRemote: (remote: string, body: { type: string; settings: Record<string, string> }) =>
-    call<void>(`/api/remotes/${name(remote)}`, { method: "PUT", body: JSON.stringify(body) }),
+  /** Writes the target with this id. A label renames it and keeps the id, so its jobs keep their sides. */
+  saveRemote: (remote: string, body: { type: string; settings: Record<string, string>; label?: string }) =>
+    call<{ saved: string }>(`/api/remotes/${name(remote)}`, { method: "PUT", body: JSON.stringify(body) }),
+  /** Adds a target called `label`; the engine makes its id and answers it as `saved`. */
+  addRemote: (body: { label: string; type: string; settings: Record<string, string> }) =>
+    call<{ saved: string }>("/api/remotes", { method: "POST", body: JSON.stringify(body) }),
   deleteRemote: (remote: string) =>
     call<void>(`/api/remotes/${name(remote)}`, { method: "DELETE" }),
   /** Reports whether the target answers; the explanation is in `reason`. */

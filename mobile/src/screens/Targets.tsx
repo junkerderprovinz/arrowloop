@@ -94,7 +94,7 @@ function TargetCard({
   const { who, where } = account(remote);
 
   const remove = () => {
-    Alert.alert(t("confirm.deleteRemote"), t("confirm.deleteRemoteStakes", { name: remote.name }), [
+    Alert.alert(t("confirm.deleteRemote"), t("confirm.deleteRemoteStakes", { name: remote.label || remote.name }), [
       { text: t("confirm.cancel"), style: "cancel" },
       {
         text: t("confirm.delete"),
@@ -117,7 +117,7 @@ function TargetCard({
 
   return (
     <Card hue={hue}>
-      <CardHead mark={remote.mark} title={remote.name}>
+      <CardHead mark={remote.mark} title={remote.label || remote.name}>
         {/* The connection belongs in the head, since it is about the target
             and not its size. */}
         <ReachBadge reach={reach} />

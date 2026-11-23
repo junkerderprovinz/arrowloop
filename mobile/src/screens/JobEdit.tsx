@@ -72,6 +72,7 @@ import {
   minAgeDays,
   type MinAgeChoice,
 } from "../../../web/src/lib/minAge.data";
+import { targetLabel } from "../../../web/src/lib/targetLabels";
 
 // Creates and edits a job. It edits the configuration file's own fields and
 // writes the whole file back through /api/config, as the desktop editor does.
@@ -691,7 +692,7 @@ function SideCard({
     return (
       <ReadmeButton
         key={place}
-        label={place}
+        label={targetLabel(place)}
         tile={tile}
         chosen={where === place}
         mark={(lit, ink) =>
@@ -734,7 +735,7 @@ function SideCard({
         <>
           {where === PHONE && access === false ? <AccessNotice /> : null}
           <Field
-            label={inTarget ? t("side.inTarget", { name: where }) : t("edit.folderPath")}
+            label={inTarget ? t("side.inTarget", { name: targetLabel(where) }) : t("edit.folderPath")}
             value={stray?.typed ?? folder}
             onChange={(typed) => {
               if (inTarget) return onChange(`${where}:${typed}`);
