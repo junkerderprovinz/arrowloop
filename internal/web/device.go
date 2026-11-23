@@ -8,6 +8,7 @@ import (
 
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
+	"github.com/junkerderprovinz/arrowloop/internal/hold"
 )
 
 // The phone decides whether its state should hold scheduled runs and sends the
@@ -24,14 +25,15 @@ func (s *Server) readDevice(w http.ResponseWriter, r *http.Request) {
 // writeDevice records a report. An empty reason clears the hold.
 func (s *Server) writeDevice(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Reason  string `json:"reason"`
-		Offline bool   `json:"offline"`
+		Reason  string    `json:"reason"`
+		Offline bool      `json:"offline"`
+		Wifi    hold.Wifi `json:"wifi"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, fmt.Errorf("read the request: %w", err))
 		return
 	}
-	s.Hold.Report(body.Reason, body.Offline)
+	s.Hold.Report(body.Reason, body.Offline, body.Wifi)
 	writeJSON(w, http.StatusOK, s.Hold.State())
 }
 

@@ -3,6 +3,7 @@ package hold
 import (
 	"context"
 	"errors"
+	"net/netip"
 	"testing"
 	"time"
 
@@ -25,7 +26,7 @@ func TestNothingReportedHoldsNothing(t *testing.T) {
 
 func TestAReportedReasonHoldsARun(t *testing.T) {
 	s, _ := at(time.Now())
-	s.Report("this phone is on battery", false)
+	s.Report("this phone is on battery", false, Wifi{})
 
 	err := s.Condition()(context.Background(), job.Job{})
 	if err == nil {
@@ -39,8 +40,8 @@ func TestAReportedReasonHoldsARun(t *testing.T) {
 
 func TestAnEmptyReportClearsTheHold(t *testing.T) {
 	s, _ := at(time.Now())
-	s.Report("this phone is on battery", false)
-	s.Report("", false)
+	s.Report("this phone is on battery", false, Wifi{})
+	s.Report("", false, Wifi{})
 
 	if err := s.Condition()(context.Background(), job.Job{}); err != nil {
 		t.Fatalf("the hold survived being cleared: %v", err)
@@ -50,7 +51,7 @@ func TestAnEmptyReportClearsTheHold(t *testing.T) {
 // A killed app stops reporting, so its last hold must expire.
 func TestAStaleReportStopsHolding(t *testing.T) {
 	s, now := at(time.Now())
-	s.Report("this phone is on battery", false)
+	s.Report("this phone is on battery", false, Wifi{})
 
 	*now = now.Add(Stale - time.Minute)
 	if err := s.Condition()(context.Background(), job.Job{}); err == nil {
@@ -65,7 +66,7 @@ func TestAStaleReportStopsHolding(t *testing.T) {
 
 func TestTheStateSaysWhatTheConditionDoes(t *testing.T) {
 	s, now := at(time.Now())
-	s.Report("this connection is metered", false)
+	s.Report("this connection is metered", false, Wifi{})
 
 	if got := s.State(); got.Reason != "this connection is metered" || got.Stale {
 		t.Fatalf("a fresh report read back wrong: %+v", got)
@@ -80,7 +81,7 @@ func TestTheStateSaysWhatTheConditionDoes(t *testing.T) {
 // A phone without a network holds the jobs that reach a server, and only them.
 func TestNoNetworkHoldsOnlyJobsThatNeedOne(t *testing.T) {
 	s, _ := at(time.Now())
-	s.Report("", true)
+	s.Report("", true, Wifi{})
 
 	remote := job.Job{Left: t.TempDir(), Right: "cloud:photos"}
 	if err := s.Condition()(context.Background(), remote); !errors.Is(err, job.ErrNoNetwork) {
@@ -91,7 +92,7 @@ func TestNoNetworkHoldsOnlyJobsThatNeedOne(t *testing.T) {
 		t.Errorf("a job between two folders on the phone was held for want of a network: %v", err)
 	}
 
-	s.Report("", false)
+	s.Report("", false, Wifi{})
 	if err := s.Condition()(context.Background(), remote); err != nil {
 		t.Errorf("the network came back and the job was still held: %v", err)
 	}
@@ -112,7 +113,7 @@ func TestNoRouteHoldsJobsThatNeedANetworkWhateverWasReported(t *testing.T) {
 	if err := held(remote); !errors.Is(err, job.ErrNoNetwork) {
 		t.Errorf("before any report, a job with a server side came to %v, want ErrNoNetwork", err)
 	}
-	s.Report("", false)
+	s.Report("", false, Wifi{})
 	if err := held(remote); !errors.Is(err, job.ErrNoNetwork) {
 		t.Errorf("a report of a network that is gone let the job through: %v", err)
 	}
@@ -135,9 +136,85 @@ func TestNoRouteHoldsJobsThatNeedANetworkWhateverWasReported(t *testing.T) {
 func TestARouteDoesNotLiftAReportedReason(t *testing.T) {
 	s, _ := at(time.Now())
 	s.CheckRoutes(func() bool { return true })
-	s.Report("this phone is not charging", false)
+	s.Report("this phone is not charging", false, Wifi{})
 
 	if err := s.Condition()(context.Background(), job.Job{Left: t.TempDir(), Right: "cloud:photos"}); err == nil {
 		t.Error("having a route lifted the reported reason")
+	}
+}
+
+// home is a report from a phone on the wifi called Home.
+func home(s *Store) {
+	s.Report("", false, Wifi{Name: "Home", Addresses: []netip.Addr{netip.MustParseAddr("192.168.1.23"), netip.MustParseAddr("fe80::1%wlan0")}})
+}
+
+func leavingFrom(s *Store, addrs ...string) {
+	s.leaves = func() []netip.Addr {
+		out := []netip.Addr{}
+		for _, a := range addrs {
+			out = append(out, netip.MustParseAddr(a))
+		}
+		return out
+	}
+}
+
+func TestAReportedWifiIsTheOneTrafficLeavesBy(t *testing.T) {
+	s, _ := at(time.Now())
+	leavingFrom(s, "192.168.1.23")
+	home(s)
+	if got := s.Wifi(); got != "Home" {
+		t.Fatalf("the wifi is %q, want Home", got)
+	}
+}
+
+func TestNoWifiIsKnownBeforeAReport(t *testing.T) {
+	s, _ := at(time.Now())
+	leavingFrom(s, "192.168.1.23")
+	if got := s.Wifi(); got != "" {
+		t.Fatalf("with nothing reported the wifi is %q", got)
+	}
+	s.Report("", false, Wifi{})
+	if got := s.Wifi(); got != "" {
+		t.Fatalf("after a report without a wifi it is %q", got)
+	}
+}
+
+func TestAStaleWifiIsNotBelieved(t *testing.T) {
+	s, now := at(time.Now())
+	leavingFrom(s, "192.168.1.23")
+	home(s)
+	*now = now.Add(Stale + time.Second)
+	if got := s.Wifi(); got != "" {
+		t.Fatalf("a report older than %v still says %q", Stale, got)
+	}
+}
+
+// Android can freeze the app with its engine, so the report may still name the
+// wifi at home while the phone is out on mobile data. The engine then sees its
+// traffic leave from an address the phone did not report for that wifi.
+func TestAWifiTheTrafficNoLongerLeavesByIsNotBelieved(t *testing.T) {
+	s, _ := at(time.Now())
+	home(s)
+
+	leavingFrom(s, "10.64.12.7")
+	if got := s.Wifi(); got != "" {
+		t.Errorf("leaving from a mobile address, the wifi is %q", got)
+	}
+	leavingFrom(s, "192.168.1.23", "2a02:8070::5")
+	if got := s.Wifi(); got != "" {
+		t.Errorf("with IPv6 leaving elsewhere, the wifi is %q", got)
+	}
+	leavingFrom(s)
+	if got := s.Wifi(); got != "" {
+		t.Errorf("with no way out at all, the wifi is %q", got)
+	}
+}
+
+func TestAnAddressInIPv6FormStillMatches(t *testing.T) {
+	s, _ := at(time.Now())
+	leavingFrom(s, "::ffff:192.168.1.23")
+	home(s)
+	if got := s.Wifi(); got != "Home" {
+		t.Fatalf("the wifi is %q, want Home", got)
 	}
 }

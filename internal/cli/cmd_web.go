@@ -106,6 +106,7 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	}
 	defer tunnel.Close()
 	runner.SetVPN(tunnel)
+	runner.SetWifi(held.Wifi)
 
 	server := &web.Server{
 		History:     hist,

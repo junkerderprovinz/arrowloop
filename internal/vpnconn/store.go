@@ -42,6 +42,8 @@ type keptTunnel struct {
 	Place    string `json:"place,omitempty"`
 	// Login is sealed with the install's key.
 	Login string `json:"login"`
+	// TrustedWifi are the wifi networks on which the tunnel's jobs go direct.
+	TrustedWifi []string `json:"trustedWifi,omitempty"`
 }
 
 // store reads FileName once and writes it through.
@@ -186,6 +188,17 @@ func (s *store) keep(id string, login Login) error {
 		for i := range k.Tunnels {
 			if k.Tunnels[i].ID == id {
 				k.Tunnels[i].Login = sealed
+			}
+		}
+	})
+}
+
+// trust sets the wifi networks tunnel id lets its jobs go direct on.
+func (s *store) trust(id string, wifi []string) error {
+	return s.update(func(k *kept) {
+		for i := range k.Tunnels {
+			if k.Tunnels[i].ID == id {
+				k.Tunnels[i].TrustedWifi = wifi
 			}
 		}
 	})

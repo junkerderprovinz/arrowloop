@@ -99,6 +99,9 @@ type TunnelState struct {
 	ExitIP    string   `json:"exitIp,omitempty"`
 	Error     string   `json:"error,omitempty"`
 	ErrorCode string   `json:"errorCode,omitempty"`
+
+	// TrustedWifi are the wifi networks on which its jobs go direct.
+	TrustedWifi []string `json:"trustedWifi"`
 }
 
 // State is the VPN settings' whole state.
@@ -477,7 +480,7 @@ func (m *Manager) NameJobs(name func(job string) string) {
 }
 
 func (m *Manager) tunnelState(t keptTunnel) TunnelState {
-	out := TunnelState{ID: t.ID, Provider: t.Provider, Place: t.Place, Status: Down, Jobs: []string{}}
+	out := TunnelState{ID: t.ID, Provider: t.Provider, Place: t.Place, Status: Down, Jobs: []string{}, TrustedWifi: append([]string{}, t.TrustedWifi...)}
 	m.mu.Lock()
 	w := m.wires[t.ID]
 	m.mu.Unlock()
@@ -625,6 +628,34 @@ func (m *Manager) Save(id string, fields map[string]string) (State, error) {
 	w.fail = nil
 	m.mu.Unlock()
 	return m.State(), nil
+}
+
+// TrustWifi sets the wifi networks on which the jobs that go through tunnel id
+// go direct instead, such as the one at home. Names are matched exactly, as
+// the device reports them, so one typed with another case does not match and
+// the run goes through the tunnel.
+func (m *Manager) TrustWifi(id string, names []string) (State, error) {
+	if _, ok := m.store.tunnel(id); !ok {
+		return State{}, &Refusal{Status: http.StatusNotFound, Code: "vpn-unknown", Text: fmt.Sprintf("no VPN %q", id)}
+	}
+	var wifi []string
+	for _, n := range names {
+		if n = strings.TrimSpace(n); n != "" && !slices.Contains(wifi, n) {
+			wifi = append(wifi, n)
+		}
+	}
+	if err := m.store.trust(id, wifi); err != nil {
+		return State{}, err
+	}
+	return m.State(), nil
+}
+
+// Trusts reports whether tunnel lets its jobs go direct on the wifi called
+// name.
+func (m *Manager) Trusts(tunnel, name string) bool {
+	t, ok := m.store.tunnel(tunnel)
+	name = strings.TrimSpace(name)
+	return ok && name != "" && slices.Contains(t.TrustedWifi, name)
 }
 
 // Forget removes tunnel id and its login. Runs of the jobs that went through
