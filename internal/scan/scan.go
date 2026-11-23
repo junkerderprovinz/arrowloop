@@ -19,6 +19,7 @@ import (
 	"github.com/rclone/rclone/fs"
 	"github.com/rclone/rclone/fs/accounting"
 	"github.com/rclone/rclone/fs/hash"
+	"github.com/rclone/rclone/fs/operations"
 	"github.com/rclone/rclone/fs/rc"
 	"github.com/rclone/rclone/fs/walk"
 
@@ -371,6 +372,25 @@ func (e *Entry) TimePrecision() (time.Duration, bool) {
 		return 0, false
 	}
 	return f.Precision(), true
+}
+
+// KeepsTimes reports whether this side keeps the modification time it is
+// given. A WebDAV share such as Stalwart's lists the moment of upload instead.
+func (e *Entry) KeepsTimes() bool {
+	return e.obj == nil || e.obj.Fs().Precision() != fs.ModTimeNotSupported
+}
+
+// SameBytes reads this file and other to the end and reports whether they hold
+// the same bytes, for a pair that neither a checksum nor a time can settle.
+func (e *Entry) SameBytes(ctx context.Context, other *Entry) bool {
+	same, err := detach.Until(ctx, func() (bool, error) {
+		return operations.CheckIdenticalDownload(ctx, e.obj, other.obj)
+	})
+	if err != nil {
+		fs.Debugf(e.obj, "comparing the bytes failed: %v", err)
+		return false
+	}
+	return same
 }
 
 // CheapHash is Hash where the backend keeps the checksum with the file, and an

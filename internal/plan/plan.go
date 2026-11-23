@@ -570,6 +570,14 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 			continue
 		}
 
+		// A record left by a copy that seemed to change on the way matches
+		// no source, so the source reads as changed. Where both sides now
+		// hold the same file, the copy arrived whole and only needs its row.
+		if s.InFlux && hasL && hasR && sameLive(ctx, l, r, opt, true) {
+			out.Agreed = append(out.Agreed, alike(base, l, r, because("changedBothSame")))
+			continue
+		}
+
 		switch {
 		// Both sides forgot about it. Drop the row.
 		case lState == deleted && rState == deleted:
@@ -589,12 +597,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		// Both sides produced the file independently.
 		case lState == created && rState == created:
 			if sameLive(ctx, l, r, opt, false) {
-				act := base
-				act.Kind = Copy
-				act.Src, act.Dst = Left, Right
-				act.SrcPath, act.DstPath = l.Path, r.Path
-				act.Reason = because("appearedSame")
-				out.Agreed = append(out.Agreed, act)
+				out.Agreed = append(out.Agreed, alike(base, l, r, because("appearedSame")))
 			} else {
 				out.Actions = append(out.Actions, conflictAction(base, because("appearedDiffer"), opt))
 			}
@@ -608,12 +611,7 @@ func Build(ctx context.Context, left, right *scan.Listing, prev map[string]state
 		// Both edited.
 		case lState == modified && rState == modified:
 			if sameLive(ctx, l, r, opt, true) {
-				act := base
-				act.Kind = Copy
-				act.Src, act.Dst = Left, Right
-				act.SrcPath, act.DstPath = l.Path, r.Path
-				act.Reason = because("changedBothSame")
-				out.Agreed = append(out.Agreed, act)
+				out.Agreed = append(out.Agreed, alike(base, l, r, because("changedBothSame")))
 			} else {
 				out.Actions = append(out.Actions, conflictAction(base, because("changedBoth"), opt))
 			}
@@ -722,20 +720,36 @@ func classify(ctx context.Context, cur *scan.Entry, present, hasPrev bool, prev 
 // sameLive compares the two sides as they are now. Careful is for two edits
 // since the last run, where a wrong "same" would lose one of them, so equal
 // sizes are always settled by checksum; the first meeting of two trees is
-// settled by size and time, or matching a full disk would read it twice.
+// settled by size and time, or matching a full disk would read it twice. Where
+// a side keeps no times, its listed time says nothing about the content.
 func sameLive(ctx context.Context, l, r *scan.Entry, opt Options, careful bool) bool {
 	if l.Size != r.Size {
 		return false
 	}
-	if !careful && Same(Facts{l.Size, l.Mod, l.CheapHash(ctx)}, Facts{r.Size, r.Mod, r.CheapHash(ctx)}, opt.ModWindow) {
+	timed := l.KeepsTimes() && r.KeepsTimes()
+	if !careful && timed && Same(Facts{l.Size, l.Mod, l.CheapHash(ctx)}, Facts{r.Size, r.Mod, r.CheapHash(ctx)}, opt.ModWindow) {
 		return true
 	}
 	lsum, rsum := l.Hash(ctx), r.Hash(ctx)
 	if lsum == "" || rsum == "" {
-		// A backend without checksums leaves only size and time.
+		// A backend without checksums leaves only size and time, and one that
+		// keeps no times leaves the bytes themselves.
+		if !timed {
+			return l.SameBytes(ctx, r)
+		}
 		return Same(Facts{Size: l.Size, Mod: l.Mod}, Facts{Size: r.Size, Mod: r.Mod}, opt.ModWindow)
 	}
 	return lsum == rsum
+}
+
+// alike is a pair both sides already hold the same, which needs only its row.
+func alike(base Action, l, r *scan.Entry, reason Reason) Action {
+	act := base
+	act.Kind = Copy
+	act.Src, act.Dst = Left, Right
+	act.SrcPath, act.DstPath = l.Path, r.Path
+	act.Reason = reason
+	return act
 }
 
 func copyAction(base Action, from Side, reason Reason) Action {
