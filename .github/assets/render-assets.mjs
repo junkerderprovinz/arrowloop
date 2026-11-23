@@ -17,12 +17,13 @@
  * at x=165 and its centre at y=250, name 132, claim 44, logo-to-text gap 70,
  * name-to-claim gap 8.
  *
- * Fonts (OFL) are fetched to the OS temp dir at runtime.
+ * The name is set in Bree Serif Light and the claim in Bree Light, read as TTF from
+ * HOUSE_FONTS (default %LOCALAPPDATA%\halleluja-fonts).
  * Deps (global): @resvg/resvg-js, opentype.js.
  *
  * Run: node .github/assets/render-assets.mjs
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -64,17 +65,10 @@ const embed = (x, y, w, h) => master.replace(/<svg\b[^>]*>/,
 const png = (svg, size, bg) =>
   new Resvg(Buffer.from(svg), { fitTo: { mode: 'width', value: size }, background: bg || 'rgba(0,0,0,0)' }).render().asPng();
 
-async function getFont(file, url) {
-  const p = join(tmpdir(), file);
-  if (!existsSync(p)) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`font fetch ${res.status} ${url}`);
-    const buf = Buffer.from(await res.arrayBuffer());
-    const want = Number(res.headers.get('content-length') || 0);
-    if (want && buf.length !== want) throw new Error(`short font download: ${buf.length}/${want}`);
-    writeFileSync(p, buf);
-  }
-  const b = readFileSync(p);
+// The house typeface is licensed, so it is read from a local folder and never committed.
+const fonts = process.env.HOUSE_FONTS ?? join(process.env.LOCALAPPDATA ?? tmpdir(), 'halleluja-fonts');
+function houseFont(file) {
+  const b = readFileSync(join(fonts, file));
   return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
 }
 
@@ -83,20 +77,18 @@ for (const [file, size] of [['icon.png', 512], ['favicon.png', 256], ['appicon.p
   writeFileSync(here('./' + file), png(master, size));
 }
 
-const bree = await getFont('ArrowLoop-BreeSerif-Regular.ttf',
-  'https://github.com/google/fonts/raw/main/ofl/breeserif/BreeSerif-Regular.ttf');
-const lato = await getFont('ArrowLoop-Lato-Regular.ttf',
-  'https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf');
+const bree = houseFont('bree-serif-light.ttf');
+const claimFont = houseFont('bree-light.ttf');
 
 const nameAsc = bree.ascender * (nameSize / bree.unitsPerEm);
 const nameDesc = -bree.descender * (nameSize / bree.unitsPerEm);
-const claimAsc = lato.ascender * (claimSize / lato.unitsPerEm);
+const claimAsc = claimFont.ascender * (claimSize / claimFont.unitsPerEm);
 const blockH = nameAsc + nameDesc + lineGap + claimAsc;
 const nameBaseline = H / 2 - blockH / 2 + nameAsc;
 const claimBaseline = nameBaseline + nameDesc + lineGap + claimAsc;
 
 // opentype.js emits a NaN control point for some glyphs at a large absolute x
-// (Lato's "e" far along a line), so every glyph is built at x=0 and moved into place by
+// (an "e" far along a line), so every glyph is built at x=0 and moved into place by
 // a transform, with advance plus kerning stepped by hand as getPath would. This
 // also avoids resvg dropping the tail of a long merged path.
 function glyphs(font, text, size) {
@@ -114,10 +106,10 @@ function glyphs(font, text, size) {
   return out;
 }
 const nameGlyphs = glyphs(bree, NAME, nameSize);
-const claimGlyphs = glyphs(lato, CLAIM, claimSize);
+const claimGlyphs = glyphs(claimFont, CLAIM, claimSize);
 const paint = (gl, y, fill) =>
   gl.map((g) => `<path transform="translate(${g.x.toFixed(2)},${y.toFixed(2)})" d="${g.d}" fill="${fill}"/>`).join('\n    ');
-const rightEdge = textX + Math.max(bree.getAdvanceWidth(NAME, nameSize), lato.getAdvanceWidth(CLAIM, claimSize));
+const rightEdge = textX + Math.max(bree.getAdvanceWidth(NAME, nameSize), claimFont.getAdvanceWidth(CLAIM, claimSize));
 if (W - rightEdge < 120) throw new Error(`right margin ${(W - rightEdge).toFixed(0)}px, house minimum is 120`);
 
 for (const t of THEMES) {
