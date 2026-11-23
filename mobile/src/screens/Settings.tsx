@@ -59,7 +59,6 @@ import { Field } from "../fields";
 import { FolderPicker } from "../FolderPicker";
 import { DropButton } from "../choiceRow";
 import { wayLabel, wayOf } from "../way";
-import { isAccount } from "../space";
 import { useWaiting } from "../waiting";
 import { useSystemAccent } from "../systemAccent";
 import { AppMark, BrandMark, CoffeeArt, DonateMark, ManualMark } from "../glyphs";
@@ -414,7 +413,7 @@ export function Settings() {
   const removeAll = async () => {
     try {
       const [config, storage] = await Promise.all([api.config(), api.storage()]);
-      const targets = storage.remotes.filter(isAccount);
+      const targets = storage.remotes;
       Alert.alert(
         t("danger.removeAll"),
         t("danger.confirm", { jobs: config.jobs.length, targets: targets.length }),

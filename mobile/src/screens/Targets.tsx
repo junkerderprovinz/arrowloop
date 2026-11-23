@@ -4,7 +4,8 @@ import { Alert, StyleSheet, View } from "react-native";
 import { api, EngineError, type Remote, type Usage } from "../api";
 import { useT } from "../i18n";
 import type { Nav, MoreStack } from "../nav";
-import { account, isAccount, ReachBadge, Room, useReach, type Reach, useRoom, type Room as Space } from "../space";
+import { account, ReachBadge, Room, useReach, type Reach, useRoom, type Room as Space } from "../space";
+import { targetRows, type TargetRow } from "../targetList";
 import { space } from "../theme";
 import { Body, Button, Caption, Card, CardHead, Empty, Fab, Floating, Page, useHue, useTheme } from "../ui";
 import { CardMenu } from "../CardMenu";
@@ -16,13 +17,12 @@ import { CardMenu } from "../CardMenu";
 export function Targets() {
   const nav = useNavigation<Nav<MoreStack>>();
   const { t } = useT();
-  const [remotes, setRemotes] = useState<Remote[] | null>(null);
+  const [rows, setRows] = useState<TargetRow[] | null>(null);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
     try {
-      // The phone itself is not a connected target; see isAccount in space.tsx.
-      setRemotes((await api.storage()).remotes.filter(isAccount));
+      setRows(targetRows((await api.storage()).remotes));
       setError("");
     } catch (e) {
       setError((e as Error).message);
@@ -39,15 +39,16 @@ export function Targets() {
 
   // Each card fills in its size as its own answer lands, so the slowest
   // service does not hold up the list.
-  const room = useRoom(remotes);
-  const reach = useReach(remotes);
+  const elsewhere = rows ? rows.filter((r) => r.elsewhere).map((r) => r.remote) : null;
+  const room = useRoom(elsewhere);
+  const reach = useReach(elsewhere);
 
   return (
     <Floating>
       <Page fab spread>
-      {!remotes ? <Empty title={t("history.working")} detail={error || undefined} /> : null}
-      {remotes?.length === 0 ? <Empty title={t("phone.targetsNone")} /> : null}
-      {(remotes ?? []).map((remote, index) => (
+      {!rows ? <Empty title={t("history.working")} detail={error || undefined} /> : null}
+      {rows?.length === 0 ? <Empty title={t("phone.targetsNone")} /> : null}
+      {(rows ?? []).map(({ remote }, index) => (
         <TargetCard
           key={remote.name}
           remote={remote}

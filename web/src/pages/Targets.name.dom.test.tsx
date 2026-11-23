@@ -98,6 +98,20 @@ describe('the name of a target', () => {
     expect(addRemote).not.toHaveBeenCalled()
   })
 
+  it('lists a target that is a folder on this device and renames it like any other', async () => {
+    savedTargets = [{ name: 'Phone-Store', type: 'alias', settings: [{ key: 'remote', value: '/storage/emulated/0/ALTest', secret: false }] }]
+    page()
+    expect(await screen.findByText('Phone-Store')).toBeTruthy()
+    fireEvent.click((await screen.findAllByRole('button', { name: 'Edit' }))[0]!)
+    const dialog = await screen.findByRole('dialog')
+    name(dialog, 'Phone Store - Lab')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(saveRemote).toHaveBeenCalled())
+    expect(saveRemote.mock.calls[0]![0]).toBe('Phone-Store')
+    expect(saveRemote.mock.calls[0]![3]).toBe('Phone Store - Lab')
+    expect(addRemote).not.toHaveBeenCalled()
+  })
+
   it('says under the field when another target has the name', async () => {
     savedTargets = [{ name: 'SFTP-1', type: 'sftp', settings: [] }]
     saveRemote.mockImplementationOnce(() =>

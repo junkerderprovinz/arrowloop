@@ -1,4 +1,4 @@
-import { placeOf } from './entryLabel'
+import { placeOf } from './entryLabel.ts'
 
 /** The part of a target this needs, so the phone's own type fits as well. */
 type Target = { type: string; settings: { key: string; value: string }[] }

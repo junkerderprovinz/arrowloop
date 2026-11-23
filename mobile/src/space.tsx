@@ -11,8 +11,8 @@ import { usageShown } from "./usage";
 // targets list.
 
 /**
- * Reports whether a target is storage elsewhere rather than the phone itself,
- * which the target lists leave out.
+ * Reports whether a target is storage elsewhere rather than a folder on the
+ * phone, which the overview's card of targets leaves out.
  */
 export function isAccount(remote: Remote): boolean {
   return !isLocalTarget(remote);
