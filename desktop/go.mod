@@ -252,10 +252,10 @@ require (
 	mellium.im/sasl v0.3.2 // indirect
 	mellium.im/xmlstream v0.15.4 // indirect
 	mellium.im/xmpp v0.23.0 // indirect
-	modernc.org/libc v1.82.7 // indirect
+	modernc.org/libc v1.82.12 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.13.0 // indirect
-	modernc.org/sqlite v1.62.0 // indirect
+	modernc.org/sqlite v1.63.0 // indirect
 	moul.io/http2curl/v2 v2.3.0 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 	storj.io/common v0.0.0-20260818140313-d38275a3768b // indirect
