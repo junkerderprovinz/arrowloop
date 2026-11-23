@@ -3046,17 +3046,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.7.mod",
-        "sha256": "e588ccfeba51fa27730d74c8d4f61bbaac2461c3eee3da36c9ae40137c9ab444",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.12.mod",
+        "sha256": "c53d2eba645ae371b539dbce6d046cec637f3f933800e535579a8fb1c653d13b",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.82.7.mod"
+        "dest-filename": "v1.82.12.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.7.zip",
-        "sha256": "79a4f09c9fdae21ba7f16b4bec554ddc2171ea04eee94c76f5fc1d34508f31a8",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.12.zip",
+        "sha256": "b446cf34bc6d6b07635473d132d81fd4f37d339dd251a870c45cecd47b7dc137",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.82.7.zip"
+        "dest-filename": "v1.82.12.zip"
     },
     {
         "type": "file",
@@ -3088,17 +3088,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/sqlite/@v/v1.62.0.mod",
+        "url": "https://proxy.golang.org/modernc.org/sqlite/@v/v1.63.0.mod",
         "sha256": "5cf7829e7f99853166f87a3d69aa2a2e57828dd8ae98352f00fcbab9bed70ad7",
         "dest": "gomod/modernc.org/sqlite/@v",
-        "dest-filename": "v1.62.0.mod"
+        "dest-filename": "v1.63.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/sqlite/@v/v1.62.0.zip",
-        "sha256": "6cbc7a2a7713bac4ca9c02acea551ea20d07f0d7b6062ef448b086622889e3a4",
+        "url": "https://proxy.golang.org/modernc.org/sqlite/@v/v1.63.0.zip",
+        "sha256": "b94554cfb561da5f52102028c8589d5e75483cd0deaa75ee2195a119b825d412",
         "dest": "gomod/modernc.org/sqlite/@v",
-        "dest-filename": "v1.62.0.zip"
+        "dest-filename": "v1.63.0.zip"
     },
     {
         "type": "file",
