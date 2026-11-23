@@ -679,11 +679,14 @@ way.
 
 A dashboard such as Homepage or Homarr reads how ArrowLoop is doing from
 `/api/fortress/v1/status` and what its runs did from `/api/fortress/v1/log`,
-the same two addresses every app of the family answers on. Both need a read
-token, made under **Settings**, **Security**, **Read tokens** and sent as
-`Authorization: Bearer <token>`. A read token opens these two addresses and
-nothing else, whether a password is set or not. It is shown once when it is
-made; ArrowLoop keeps only a fingerprint of it in `security.json`.
+the same two addresses every app of the family answers on. Once a password is
+set, both need an API token that reads the status and log, made under
+**Settings**, **Security**, **API tokens** and sent as
+`Authorization: Bearer <token>`. Such a token opens these two addresses and
+nothing else. It is shown once when it is made; ArrowLoop keeps only a
+fingerprint of it in `signin.json`. Read tokens from older versions keep
+working as tokens of this kind. Without a password the whole interface is
+open, these two addresses with it.
 
 The status names the jobs that need you (a job a brake holds, the notes, a last
 run that failed or left files for later), the runs in progress with how far
@@ -748,8 +751,9 @@ question, because the one thing nobody can do afterwards is get the old setup
 back. The imported file is checked like every other write, so a file the
 program would refuse leaves the old setup in place. Like every save from the
 interface, it keeps the `before` and `after` commands the file on disk has for a
-job of the same name and gives every other job none. The password, the second
-factor and the passkeys live in `security.json` and are not part of the backup.
+job of the same name and gives every other job none. The password, two-factor
+authentication, the passkeys and the API tokens live in `signin.json` and are
+not part of the backup.
 
 ### Automatic backups
 

@@ -488,8 +488,10 @@ row on **Look** brings back the original one.
   says where traffic leaves, **Change login** and **Remove**; see
   [Through a VPN](configuration.md#through-a-vpn). A tunnel is off whenever no
   job on it runs, which is how it should be.
-- **Security**: password, two-factor authentication and passkeys. The desktop
-  app has no such tile, since nobody else reaches its window.
+- **Security**: password, the password check on changes, two-factor
+  authentication, passkeys, sessions, API tokens and sign-in services such as
+  Pocket ID. The desktop app has no such tile, since nobody else reaches its
+  window.
 - **Pairing**: the twelve words that pair this instance with your others, who
   is in the group, and the relay; see [Pairing](#pairing).
 - **Apps**: the other ways to run ArrowLoop, each with its version, and the
@@ -773,7 +775,8 @@ action whose job was deleted does nothing.
 `arrowloop web` listens on loopback unless `-addr` or `ARROWLOOP_ADDR` says
 otherwise, and the container listens on every address. This interface starts
 jobs that delete files, so anybody on the network who can reach it can drive
-it. A password, a second factor and passkeys are set on the **Security** tile;
+it. A password, two-factor authentication, passkeys, API tokens and sign-in
+services are set on the **Security** tile;
 [Installing](installing.md#a-password-for-the-interface) has the details.
 
 Over plain HTTP the session cookie crosses the wire in clear, so a machine

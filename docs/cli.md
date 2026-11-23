@@ -69,7 +69,7 @@ Security, or through `ARROWLOOP_PASSWORD_HASH`, so making it reachable has to be
 a decision somebody took on purpose. The password is optional. Without it
 anyone who reaches the port can do everything, and
 [installing](installing.md#a-password-for-the-interface) says what one
-protects. What the interface sets is kept in `security.json` beside the
+protects. What the interface sets is kept in `signin.json` beside the
 configuration file.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is

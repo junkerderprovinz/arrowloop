@@ -74,8 +74,8 @@ VOLUME ["/config"]
 EXPOSE 8422
 
 # Inside a container the binary's loopback default would be unreachable. The
-# interface has no login of its own, so the exposure decision belongs to
-# whoever publishes the port.
+# interface asks for no password until one is set, so the exposure decision
+# belongs to whoever publishes the port.
 #
 # The image runs as root and writes into someone else's share. With umask 022
 # every file would land as 0644 root:root, readable but not changeable by the

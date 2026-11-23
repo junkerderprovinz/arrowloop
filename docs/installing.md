@@ -31,50 +31,63 @@ backup, empty the trash for good. That is fine on a network where you trust
 everybody who can get to the port, and the interface says so on the
 **Security** tile.
 
-A password puts every page but the login behind it. Set one under
+A password puts every page but the sign-in behind it. Set one under
 **Settings**, **Security**, or from outside with `ARROWLOOP_PASSWORD_HASH`
 (see [The environment variable](#the-environment-variable)). Any length is
-accepted, and below twelve characters the form suggests a longer one, since
-five guesses a minute get through a four-digit PIN in under two days. With a
-password the session cookie also belongs to the name it was set on, so a web
-page elsewhere that points a name of its own at this machine gets nothing. Over
-plain HTTP that cookie crosses the wire in clear, so a machine reachable from
-outside wants TLS in front of it either way; see
-[The interface](interface.md#who-can-reach-it).
+accepted, and below twelve characters the form suggests a longer one. A
+sign-in lasts 30 days, or 7 days without a visit, and it survives a restart
+of the container. The **Sessions** card lists every browser that is signed in
+and signs any of them out. Over plain HTTP the session cookie crosses the wire
+in clear, so a machine reachable from outside wants TLS in front of it either
+way; see [The interface](interface.md#who-can-reach-it).
 
 With or without a password, the interface refuses a change that a page from
 another site started, and any change not sent as JSON, which is what a page
 elsewhere could send without the browser asking first. The settings never hand
 out a notification token, password or secret address.
 
-The same section sets up a second factor: six digits from an authenticator app
-on top of the password. Setting it up shows eight recovery codes once, and each
-of them signs in a single time in place of a code.
+The **Security** tile holds the rest of the sign-in, one card each:
 
-It also registers passkeys, a key on a phone, a laptop or a security stick used
-instead of typing the password. A browser offers one only on a host name over
-HTTPS with a certificate it trusts, or on `localhost`, so on
-`http://192.168.1.5:8422` the section explains why it cannot. Behind a reverse
-proxy with a real name they work, and each key belongs to the address it was
-registered on. A key signs in by itself, so adding one asks for the password,
-and for a code when the second factor is on. Changing or removing the password
-removes every passkey, and so does a container that comes back with another
-`ARROWLOOP_PASSWORD_HASH`.
+- **Two-factor authentication**: six digits from an authenticator app on top
+  of the password. Setting it up shows ten recovery codes once, and each of
+  them signs in a single time in place of a code.
+- **Passkeys**: a key on a phone, a laptop or a security stick. The browser
+  offers it right in the password field. A passkey belongs to one address, so
+  ArrowLoop needs to know its own: set `ARROWLOOP_PUBLIC_URL` to the address
+  you open it at through your reverse proxy, such as
+  `https://arrowloop.example.com`. Browsers offer passkeys only over HTTPS
+  with a certificate they trust, so on `http://192.168.1.5:8422` the card
+  explains why it cannot.
+- **API tokens**: for a dashboard or a script. A token that reads the status
+  and log opens only what a dashboard asks for (see
+  [Status for dashboards](configuration.md#status-for-dashboards)), a token
+  for everything opens the whole API. A token is shown once and lasts 90 days
+  unless you choose otherwise.
+- **Sign-in services**: sign in through Pocket ID, authentik, Authelia,
+  Keycloak, Kanidm, Zitadel or any other OpenID Connect service. It also needs
+  `ARROWLOOP_PUBLIC_URL`, and the form shows the address to enter at the
+  service. A service goes on once a test sign-in through it worked. Who may
+  sign in is decided at the service, so keep self-registration off there.
+- **Password check on changes**: a new passkey, token or sign-in service, and
+  showing the pairing phrase, want a sign-in from the last ten minutes. With
+  the check on, ArrowLoop asks for your password instead of signing you out.
 
-All three are kept in `/config/security.json`, readable by its owner only, and
-never in `arrowloop.json`. That file is downloaded whole as a settings backup and
-replaced whole by a restore, so a hash in it would leave with every backup and
-restoring an old one would switch the password off.
+All of it is kept in `/config/signin.json`, readable by its owner only and
+sealed with the install's key, and never in `arrowloop.json`. That file is
+downloaded whole as a settings backup and replaced whole by a restore, so a
+hash in it would leave with every backup and restoring an old one would switch
+the password off. On the first start of this version, ArrowLoop takes over
+what older versions kept in `/config/security.json`: the password, two-factor
+authentication with its recovery codes, the passkeys and the read tokens,
+which become API tokens that read the status and log. Nobody has to sign in
+again for it, apart from the sign-in a restart always cost before.
 
-The password is stored as Argon2id over a value keyed with the install's key,
-and the second factor's secret is sealed with it, so `security.json` on its own
-is no use to whoever copies it. The key comes from `ARROWLOOP_APP_KEY`, 64
-hexadecimal characters such as `openssl rand -hex 32` prints, or without it from
-`/config/app.key`, drawn on the first start. A copy of all of `/config` carries
-that file too, so setting the variable keeps the key out of it. Keep the key:
-under another one the password and the second factor no longer open, and the
-container refuses to start until the old key is back or `security.json` is
-deleted.
+The key comes from `ARROWLOOP_APP_KEY`, 64 hexadecimal characters such as
+`openssl rand -hex 32` prints, or without it from `/config/app.key`, drawn on
+the first start. A copy of all of `/config` carries that file too, so setting
+the variable keeps the key out of it. Keep the key: under another one
+`signin.json` does not open, and the container refuses to start until the old
+key is back or the file is deleted.
 
 #### A forgotten password
 
@@ -82,13 +95,12 @@ At the foot of the sign-in form, **Forgot password?** has ArrowLoop write a
 one-time code into its log: on Unraid under Docker, ArrowLoop, Logs, elsewhere
 with `docker logs arrowloop`. The code stands on its own between the other
 lines, in yellow. Type it and a new password on the same page. The code is
-valid for ten minutes, and a wrong code does not spend the right one. After
-five wrong codes from one address, that address waits a minute before any
-code is checked again, the right one included. Asking again while it is valid
-writes nothing, so the log does not fill up and the code you are typing stays
-good. The new password takes the second factor, every passkey and every other
-session with it, since any of them could belong to whoever made the reset
-necessary, and the page says what went.
+valid for ten minutes, and asking again within a minute writes nothing new, so
+the code you are typing stays good. Wrong codes from anywhere make the next
+try wait a little longer. The reset ends every session and token and takes
+two-factor authentication and every passkey with it, since any of them could
+belong to whoever made the reset necessary, and the page says what went. A
+sign-in service waits until a new test sign-in works.
 
 Whoever can read that log can reset the password this way: root on the host,
 but also a log viewer such as Dozzle, any container given the Docker socket,
@@ -99,9 +111,10 @@ instead, which a code from the log cannot replace.
 #### The environment variable
 
 `ARROWLOOP_PASSWORD_HASH` still works, and it wins over the password set in the
-interface, which then shows the password as set from outside and offers no form
-for it. The hash is made under the install's key, so make it in the running
-container and hand the result back:
+interface, which then shows where the password comes from and offers neither a
+form for it nor **Forgot password?**. A new hash signs out every browser at
+the next start. The hash is made under the install's key, so make it in the
+running container and hand the result back:
 
 ```bash
 docker exec -it arrowloop arrowloop hash-password -config /config/arrowloop.json
@@ -117,14 +130,14 @@ as older versions printed and many other tools make, is still accepted.
 
 #### Behind a reverse proxy
 
-Five wrong passwords or reset codes from one address lock that address out for
-a minute.
-Behind a reverse proxy every request comes from the proxy, so one stranger
-guessing would lock out everybody, you included. Set
-`ARROWLOOP_TRUSTED_PROXIES` to the proxy's address, and the count goes against
-the address the proxy reports in `X-Forwarded-For` instead. Several entries are
-separated by commas. List only proxies you run: a machine on that list could
-claim a new address for every guess.
+Wrong passwords slow down the next try, counted for the address they come
+from and for the password itself, so a stranger guessing makes you wait a
+little but never locks you out. Behind a reverse proxy every request comes
+from the proxy. Set `ARROWLOOP_TRUSTED_PROXIES` to the proxy's address, and
+the count goes against the address the proxy reports in `X-Forwarded-For`
+instead. Several entries are separated by commas. List only proxies you run:
+a machine on that list could claim a new address for every guess. No header
+from a proxy ever signs anyone in.
 
 When the proxy runs in another container, put the two on a Docker network of
 their own, give the proxy a fixed address there, and list that one address.
@@ -133,11 +146,13 @@ includes the bridge's gateway, `172.17.0.1`, and connections that Docker's own
 proxy relays to a published port arrive from that address, so anybody reaching
 the port that way could choose the address their guesses count against.
 
-If the authenticator app and the recovery codes are both gone, stop the
-container and delete `/config/security.json`. That removes the password, the
-second factor and the passkeys together. A damaged `security.json` stops the
-container from starting rather than letting it come up without a password; the
-log names the file, and deleting it has the same effect.
+If the authenticator app and the recovery codes are both gone and the log is
+out of reach, stop the container and delete `/config/signin.json` and
+`/config/security.json`. That removes the password, two-factor
+authentication, the passkeys, the tokens and the sign-in services together. A
+damaged `signin.json` stops the container from starting rather than letting it
+come up without a password; the log names the file, and deleting both files
+has the same effect.
 
 ### Jobs from other programs
 

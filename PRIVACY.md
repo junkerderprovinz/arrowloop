@@ -1,6 +1,6 @@
 # Privacy policy: ArrowLoop
 
-Last updated: 23 November 2026. Applies to the ArrowLoop Android app, the
+Last updated: 24 November 2026. Applies to the ArrowLoop Android app, the
 desktop app and the container, from version 1.1.0, until this date changes.
 
 ## The short version
@@ -74,8 +74,14 @@ Only what you set up, and only to where you point it:
   fetch a backup of the settings with each job's state, or put one back.
   These travel the same way as pairing, encrypted end to end with a key made
   from the fortress's phrase.
-- **Dashboards**, if you make a read token: whatever holds the token can read
-  how ArrowLoop is doing and its run log, and nothing else.
+- **Dashboards and scripts**, if you make an API token: whatever holds a token
+  that reads the status and log can read how ArrowLoop is doing and its run
+  log, and nothing else. A token for everything opens the whole interface.
+- **A sign-in service**, if you set one up, such as Pocket ID or authentik.
+  When you sign in through it, your browser goes there and back, and
+  ArrowLoop asks the service who you are: your name there, your email
+  address if it sends one, and its groups for you. ArrowLoop keeps the name,
+  the groups and the service's ID for you with your account in `signin.json`.
 - **The built-in VPN**, if a job names one. While that job runs, its
   connections go through a WireGuard tunnel to your provider's server or your
   own, and the rest of ArrowLoop keeps to your normal connection. With
