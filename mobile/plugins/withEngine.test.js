@@ -21,6 +21,13 @@ class MainActivity : ReactActivity() {
 }
 `;
 
+test("the manifest lets the app read the wifi's name", () => {
+  // WifiManager refuses getConnectionInfo without ACCESS_WIFI_STATE, location or not.
+  for (const permission of ["ACCESS_WIFI_STATE", "ACCESS_FINE_LOCATION"]) {
+    assert.ok(app.expo.android.permissions.includes(`android.permission.${permission}`), permission);
+  }
+});
+
 test("the manifest leaves the orientation to the activity", () => {
   assert.equal(app.expo.orientation, "default");
 });
