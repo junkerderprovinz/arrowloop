@@ -16,3 +16,16 @@ export function fieldErrorView(error: string | undefined, id: string, describedB
   const errorId = `${id}-error`;
   return { invalid: true, describedBy: describedBy ? `${describedBy} ${errorId}` : errorId, errorId };
 }
+
+export interface FieldNoteView {
+  /** The id of the quiet line under the field, while there is one. */
+  noteId: string | undefined;
+  describedBy: string | undefined;
+}
+
+/** What a field with `note` carries: the quiet line as one of its descriptions, unless an error stands in its place. */
+export function fieldNoteView(note: string | undefined, error: string | undefined, id: string, describedBy?: string): FieldNoteView {
+  if (!note || error) return { noteId: undefined, describedBy };
+  const noteId = `${id}-note`;
+  return { noteId, describedBy: describedBy ? `${describedBy} ${noteId}` : noteId };
+}

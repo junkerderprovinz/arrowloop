@@ -1021,7 +1021,6 @@ const lv: Translations = {
   'password.longerIsSafer': 'Der, taču garāku ir grūtāk uzminēt. Ieteicamais garums rakstzīmēs: {count}',
   'password.mismatch': 'Paroles nesakrīt',
   'password.currentNeeded': 'Vispirms ievadi pašreizējo paroli.',
-  'password.newNeeded': 'Vispirms ievadi jauno paroli.',
   'password.saveFirst': 'Iestatīt paroli',
   'password.saveChange': 'Mainīt paroli',
   'password.saved': 'Parole saglabāta',

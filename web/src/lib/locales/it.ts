@@ -1021,7 +1021,6 @@ const it: Translations = {
   'password.longerIsSafer': 'Va bene, ma una più lunga è più difficile da indovinare. Lunghezza consigliata in caratteri: {count}',
   'password.mismatch': 'Le password non corrispondono',
   'password.currentNeeded': 'Prima inserisci la password attuale.',
-  'password.newNeeded': 'Prima inserisci la nuova password.',
   'password.saveFirst': 'Imposta password',
   'password.saveChange': 'Cambia password',
   'password.saved': 'Password salvata',

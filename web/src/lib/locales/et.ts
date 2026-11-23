@@ -1021,7 +1021,6 @@ const et: Translations = {
   'password.longerIsSafer': 'See sobib, aga pikemat on raskem ära arvata. Soovitatav pikkus märkides: {count}',
   'password.mismatch': 'Paroolid ei kattu',
   'password.currentNeeded': 'Sisesta kõigepealt praegune parool.',
-  'password.newNeeded': 'Sisesta kõigepealt uus parool.',
   'password.saveFirst': 'Määra parool',
   'password.saveChange': 'Muuda parooli',
   'password.saved': 'Parool salvestatud',

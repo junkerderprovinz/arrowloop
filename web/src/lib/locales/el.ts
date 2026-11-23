@@ -1021,7 +1021,6 @@ const el: Translations = {
   'password.longerIsSafer': 'Γίνεται, αλλά ένας μακρύτερος μαντεύεται πιο δύσκολα. Προτεινόμενο μήκος σε χαρακτήρες: {count}',
   'password.mismatch': 'Οι κωδικοί δεν ταιριάζουν',
   'password.currentNeeded': 'Δώσε πρώτα τον τρέχοντα κωδικό πρόσβασης.',
-  'password.newNeeded': 'Δώσε πρώτα τον νέο κωδικό πρόσβασης.',
   'password.saveFirst': 'Ορισμός κωδικού',
   'password.saveChange': 'Αλλαγή κωδικού',
   'password.saved': 'Ο κωδικός αποθηκεύτηκε',

@@ -1021,7 +1021,6 @@ const da: Translations = {
   'password.longerIsSafer': 'Det går fint, men en længere er sværere at gætte. Anbefalet længde i tegn: {count}',
   'password.mismatch': 'Adgangskoderne stemmer ikke overens',
   'password.currentNeeded': 'Indtast først den nuværende adgangskode.',
-  'password.newNeeded': 'Indtast først den nye adgangskode.',
   'password.saveFirst': 'Angiv adgangskode',
   'password.saveChange': 'Skift adgangskode',
   'password.saved': 'Adgangskode gemt',

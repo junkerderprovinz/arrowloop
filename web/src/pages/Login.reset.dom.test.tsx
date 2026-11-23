@@ -51,13 +51,13 @@ describe('Login, a forgotten password', () => {
     expect(screen.queryByRole('button', { name: /forgot password/i })).toBeNull()
   })
 
-  it('puts a quiet Forgot password? last in the form', () => {
+  it('puts Forgot password? last in the form, as a plain link', () => {
     render(<Login onIn={vi.fn()} canReset />)
     const buttons = [...document.querySelectorAll('form [data-signin]')]
     const forgot = screen.getByRole('button', { name: /forgot password/i })
     expect(buttons[buttons.length - 1]).toBe(forgot)
     expect(forgot.getAttribute('data-signin')).toBe('forgot')
-    expect(forgot.className).not.toContain('glim-btn--accent')
+    expect(forgot.className).toBe('glim-signin-forgot')
   })
 
   it('shows the form only once the code is in the log', async () => {
@@ -102,7 +102,7 @@ describe('Login, a forgotten password', () => {
     }
   })
 
-  it('takes a short password and catches a mismatch before sending anything', async () => {
+  it('takes a short password with a quiet hint and catches a mismatch before sending anything', async () => {
     resetFinish.mockResolvedValue({ removed: { secondFactor: false, passkeys: 0 } })
     await openReset()
     type(codeBox()!, 'ABCD-EFGH-JKLM')
@@ -115,6 +115,8 @@ describe('Login, a forgotten password', () => {
 
     type(password!, '1234')
     type(confirm!, '1234')
+    expect(document.querySelector('.glim-field-note')?.textContent).toMatch(/longer one is harder to guess.*12/)
+    expect(password!.getAttribute('aria-describedby')).toContain('-note')
     await click(/set password/i)
     await waitFor(() => expect(resetFinish).toHaveBeenCalledWith('ABCD-EFGH-JKLM', '1234'))
   })

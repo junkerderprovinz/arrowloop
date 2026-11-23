@@ -1021,7 +1021,6 @@ const fi: Translations = {
   'password.longerIsSafer': 'Käy, mutta pidempää on vaikeampi arvata. Suositeltu pituus merkkeinä: {count}',
   'password.mismatch': 'Salasanat eivät täsmää',
   'password.currentNeeded': 'Anna ensin nykyinen salasana.',
-  'password.newNeeded': 'Anna ensin uusi salasana.',
   'password.saveFirst': 'Aseta salasana',
   'password.saveChange': 'Vaihda salasana',
   'password.saved': 'Salasana tallennettu',

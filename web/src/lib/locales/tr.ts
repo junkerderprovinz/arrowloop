@@ -1021,7 +1021,6 @@ const tr: Translations = {
   'password.longerIsSafer': 'Bu olur, ama daha uzun bir parolayı tahmin etmek daha zordur. Karakter olarak önerilen uzunluk: {count}',
   'password.mismatch': 'Parolalar eşleşmiyor',
   'password.currentNeeded': 'Önce geçerli parolayı gir.',
-  'password.newNeeded': 'Önce yeni parolayı gir.',
   'password.saveFirst': 'Parola belirle',
   'password.saveChange': 'Parolayı değiştir',
   'password.saved': 'Parola kaydedildi',

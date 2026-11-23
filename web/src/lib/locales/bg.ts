@@ -1021,7 +1021,6 @@ const bg: Translations = {
   'password.longerIsSafer': 'Става, но по-дългата парола се отгатва по-трудно. Препоръчителна дължина в знаци: {count}',
   'password.mismatch': 'Паролите не съвпадат',
   'password.currentNeeded': 'Първо въведи текущата парола.',
-  'password.newNeeded': 'Първо въведи новата парола.',
   'password.saveFirst': 'Задай парола',
   'password.saveChange': 'Смени паролата',
   'password.saved': 'Паролата е запазена',

@@ -1021,7 +1021,6 @@ const vi: Translations = {
   'password.longerIsSafer': 'Vẫn được, nhưng mật khẩu dài hơn sẽ khó đoán hơn. Độ dài gợi ý tính bằng ký tự: {count}',
   'password.mismatch': 'Mật khẩu không khớp',
   'password.currentNeeded': 'Hãy nhập mật khẩu hiện tại trước.',
-  'password.newNeeded': 'Hãy nhập mật khẩu mới trước.',
   'password.saveFirst': 'Đặt mật khẩu',
   'password.saveChange': 'Đổi mật khẩu',
   'password.saved': 'Đã lưu mật khẩu',

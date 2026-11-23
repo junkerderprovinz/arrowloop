@@ -1021,7 +1021,6 @@ const ca: Translations = {
   'password.longerIsSafer': 'Funciona, però una de més llarga és més difícil d\'endevinar. Longitud suggerida en caràcters: {count}',
   'password.mismatch': 'Les contrasenyes no coincideixen',
   'password.currentNeeded': 'Primer introdueix la contrasenya actual.',
-  'password.newNeeded': 'Primer introdueix la contrasenya nova.',
   'password.saveFirst': 'Configura contrasenya',
   'password.saveChange': 'Canvia la contrasenya',
   'password.saved': 'Contrasenya desada',

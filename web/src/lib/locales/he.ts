@@ -1021,7 +1021,6 @@ const he: Translations = {
   'password.longerIsSafer': 'זה עובד, אבל סיסמה ארוכה יותר קשה יותר לניחוש. אורך מומלץ בתווים: {count}',
   'password.mismatch': 'הסיסמאות אינן תואמות',
   'password.currentNeeded': 'הזן תחילה את הסיסמה הנוכחית.',
-  'password.newNeeded': 'הזן תחילה את הסיסמה החדשה.',
   'password.saveFirst': 'הגדר סיסמה',
   'password.saveChange': 'שנה סיסמה',
   'password.saved': 'הסיסמה נשמרה',

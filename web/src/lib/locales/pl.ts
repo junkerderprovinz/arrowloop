@@ -1021,7 +1021,6 @@ const pl: Translations = {
   'password.longerIsSafer': 'Może być, ale dłuższe trudniej odgadnąć. Zalecana długość w znakach: {count}',
   'password.mismatch': 'Hasła nie są zgodne',
   'password.currentNeeded': 'Najpierw wpisz obecne hasło.',
-  'password.newNeeded': 'Najpierw wpisz nowe hasło.',
   'password.saveFirst': 'Ustaw hasło',
   'password.saveChange': 'Zmień hasło',
   'password.saved': 'Hasło zapisane',

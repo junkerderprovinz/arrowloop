@@ -1021,7 +1021,6 @@ const sl: Translations = {
   'password.longerIsSafer': 'To gre, a daljše je težje uganiti. Priporočena dolžina v znakih: {count}',
   'password.mismatch': 'Gesli se ne ujemata',
   'password.currentNeeded': 'Najprej vpiši trenutno geslo.',
-  'password.newNeeded': 'Najprej vpiši novo geslo.',
   'password.saveFirst': 'Nastavi geslo',
   'password.saveChange': 'Spremeni geslo',
   'password.saved': 'Geslo shranjeno',

@@ -1021,7 +1021,6 @@ const ar: Translations = {
   'password.longerIsSafer': 'هذا يعمل، لكن كلمة مرور أطول أصعب في التخمين. الطول المقترح بالأحرف: {count}',
   'password.mismatch': 'كلمتا المرور غير متطابقتين',
   'password.currentNeeded': 'أدخل كلمة المرور الحالية أولًا.',
-  'password.newNeeded': 'أدخل كلمة المرور الجديدة أولًا.',
   'password.saveFirst': 'تعيين كلمة مرور',
   'password.saveChange': 'تغيير كلمة المرور',
   'password.saved': 'تم حفظ كلمة المرور',

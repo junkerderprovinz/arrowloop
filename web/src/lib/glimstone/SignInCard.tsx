@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
-import { createSignInFlow, focusFirstField, labelInside, resetBlocked, showRefusal, signInBlocked, signInStage, type SignInHandlers, type SignInText } from "../signIn.ts";
+import { createSignInFlow, focusFirstField, labelInside, resetBlocked, showRefusal, signInBlocked, signInShortHint, signInStage, type SignInHandlers, type SignInText } from "../signIn.ts";
 import { Button } from "./Button.tsx";
 import { InfoBubble } from "./InfoBubble.tsx";
 import { PasswordField } from "./PasswordField.tsx";
@@ -38,7 +38,7 @@ export interface SignInCardProps extends SignInHandlers {
   passkey?: boolean;
   /** Offers Forgot password? and the reset form. */
   reset?: boolean;
-  /** The shortest new password the reset form takes, as the server says. */
+  /** The length, as the server says, under which the reset form suggests a longer password. It never refuses a shorter one. */
   minPassword?: number;
   /** One line at the top of the sign-in form, such as "You are signed out". */
   note?: string;
@@ -154,7 +154,15 @@ export function SignInCard({
                 />
               </SignInField>
               <SignInField label={text.newPassword} htmlFor={id("new")}>
-                <PasswordField id={id("new")} data-signin-field="newPassword" value={s.newPassword} onChange={(e) => flow.set("newPassword", e.target.value)} autoComplete="new-password" text={eye} />
+                <PasswordField
+                  id={id("new")}
+                  data-signin-field="newPassword"
+                  value={s.newPassword}
+                  onChange={(e) => flow.set("newPassword", e.target.value)}
+                  autoComplete="new-password"
+                  text={eye}
+                  note={signInShortHint(text.shortHint, s.newPassword, minPassword)}
+                />
               </SignInField>
               <SignInField label={text.confirmPassword} htmlFor={id("confirm")}>
                 <PasswordField id={id("confirm")} data-signin-field="confirm" value={s.confirm} onChange={(e) => flow.set("confirm", e.target.value)} autoComplete="new-password" text={eye} />
@@ -231,15 +239,16 @@ export function SignInCard({
               {s.needCode
                 ? back
                 : reset && (
-                    <Button
-                      label={text.forgot}
-                      labelKey={keys.forgot}
-                      tone="subtle"
+                    <button
+                      type="button"
+                      className="glim-signin-forgot"
                       data-signin="forgot"
                       disabled={!!s.busy}
-                      busy={s.busy === "askCode"}
+                      aria-busy={s.busy === "askCode" || undefined}
                       onClick={() => void flow.forgot()}
-                    />
+                    >
+                      {text.forgot}
+                    </button>
                   )}
             </form>
           ))}

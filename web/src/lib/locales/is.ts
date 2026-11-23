@@ -1021,7 +1021,6 @@ const is: Translations = {
   'password.longerIsSafer': 'Það gengur, en lengra lykilorð er erfiðara að giska á. Ráðlögð lengd í stöfum: {count}',
   'password.mismatch': 'Lykilorð stemma ekki',
   'password.currentNeeded': 'Sláðu fyrst inn núverandi lykilorð.',
-  'password.newNeeded': 'Sláðu fyrst inn nýja lykilorðið.',
   'password.saveFirst': 'Setja lykilorð',
   'password.saveChange': 'Breyta lykilorði',
   'password.saved': 'Lykilorð vistað',

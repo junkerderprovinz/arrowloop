@@ -1021,7 +1021,6 @@ const fr: Translations = {
   'password.longerIsSafer': 'Ça marche, mais un mot de passe plus long est plus difficile à deviner. Longueur conseillée en caractères : {count}',
   'password.mismatch': 'Les mots de passe ne correspondent pas',
   'password.currentNeeded': 'Saisissez d\'abord le mot de passe actuel.',
-  'password.newNeeded': 'Saisissez d\'abord le nouveau mot de passe.',
   'password.saveFirst': 'Définir un mot de passe',
   'password.saveChange': 'Changer le mot de passe',
   'password.saved': 'Mot de passe enregistré',

@@ -1021,7 +1021,6 @@ const sk: Translations = {
   'password.longerIsSafer': 'To ide, ale dlhšie heslo sa ťažšie uhádne. Odporúčaná dĺžka v znakoch: {count}',
   'password.mismatch': 'Heslá sa nezhodujú',
   'password.currentNeeded': 'Najprv zadaj súčasné heslo.',
-  'password.newNeeded': 'Najprv zadaj nové heslo.',
   'password.saveFirst': 'Nastaviť heslo',
   'password.saveChange': 'Zmeniť heslo',
   'password.saved': 'Heslo uložené',

@@ -1021,7 +1021,6 @@ const hi: Translations = {
   'password.longerIsSafer': 'यह चलेगा, पर लंबे पासवर्ड का अंदाज़ा लगाना कठिन होता है। अक्षरों में सुझाई गई लंबाई: {count}',
   'password.mismatch': 'पासवर्ड मेल नहीं खाते',
   'password.currentNeeded': 'पहले मौजूदा पासवर्ड डालें।',
-  'password.newNeeded': 'पहले नया पासवर्ड डालें।',
   'password.saveFirst': 'पासवर्ड सेट करें',
   'password.saveChange': 'पासवर्ड बदलें',
   'password.saved': 'पासवर्ड सहेजा गया',

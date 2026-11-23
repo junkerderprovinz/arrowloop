@@ -1021,7 +1021,6 @@ const th: Translations = {
   'password.longerIsSafer': 'ใช้ได้ แต่รหัสผ่านที่ยาวกว่าจะเดายากกว่า ความยาวที่แนะนำเป็นตัวอักษร: {count}',
   'password.mismatch': 'รหัสผ่านไม่ตรงกัน',
   'password.currentNeeded': 'ป้อนรหัสผ่านปัจจุบันก่อน',
-  'password.newNeeded': 'ป้อนรหัสผ่านใหม่ก่อน',
   'password.saveFirst': 'ตั้งรหัสผ่าน',
   'password.saveChange': 'เปลี่ยนรหัสผ่าน',
   'password.saved': 'บันทึกรหัสผ่านแล้ว',

@@ -1021,7 +1021,6 @@ const zh: Translations = {
   'password.longerIsSafer': '这样可以，不过更长的密码更难被猜到。建议长度（字符数）：{count}',
   'password.mismatch': '密码不匹配',
   'password.currentNeeded': '请先输入当前密码。',
-  'password.newNeeded': '请先输入新密码。',
   'password.saveFirst': '设置密码',
   'password.saveChange': '更改密码',
   'password.saved': '密码已保存',

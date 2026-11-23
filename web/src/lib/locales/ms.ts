@@ -1021,7 +1021,6 @@ const ms: Translations = {
   'password.longerIsSafer': 'Boleh, tetapi yang lebih panjang lebih sukar diteka. Panjang yang dicadangkan dalam aksara: {count}',
   'password.mismatch': 'Kata laluan tidak sepadan',
   'password.currentNeeded': 'Masukkan kata laluan semasa dahulu.',
-  'password.newNeeded': 'Masukkan kata laluan baharu dahulu.',
   'password.saveFirst': 'Tetapkan kata laluan',
   'password.saveChange': 'Tukar kata laluan',
   'password.saved': 'Kata laluan disimpan',

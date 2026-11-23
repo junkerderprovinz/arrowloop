@@ -2817,6 +2817,13 @@
     height: 0.875rem;
     flex: none;
   }
+  /* A brand's mark beside a button's words, such as a sign-in service's, is
+     as tall as a glyph and as wide as its shape asks. */
+  .glim-btn-glyph > .glim-brand-svg > svg {
+    width: auto;
+    height: 0.875rem;
+    flex: none;
+  }
 
   /* Long text ellipsises rather than breaking the row. The label sets its own
      line height: `.glim-btn`'s `line-height: 1` gives a 14px line box where
@@ -3740,6 +3747,95 @@
   .glim-signin-log-code::placeholder {
     text-transform: uppercase;
     letter-spacing: 0.2em;
+  }
+  /* Forgot password? is the card's last line and a plain link: only its colour
+     moves under the pointer and the focus, the focus ring stays, and nothing
+     underlines it. */
+  .glim-signin-forgot {
+    align-self: center;
+    padding: var(--space-1) var(--space-3);
+    border: 0;
+    border-radius: var(--radius-control);
+    background: none;
+    color: var(--carbon-text-sub);
+    font: inherit;
+    font-size: var(--text-subline);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .glim-signin-forgot:is(:hover, :focus-visible, :active) {
+    color: var(--accent-ink);
+    text-decoration: none;
+  }
+  .glim-signin-forgot:disabled {
+    color: var(--carbon-text-muted);
+    cursor: default;
+  }
+  .glim-signin-forgot[aria-busy="true"] { cursor: progress; }
+
+  /* The settings tile "Sign-in" (SignInTile): a column of cards, each with its
+     rows, a quiet line where it needs one and its buttons at the end of its foot. */
+  .glim-signin-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-13);
+  }
+  .glim-signin-tile-body,
+  .glim-signin-tile-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    min-width: 0;
+  }
+  .glim-signin-tile-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-4);
+  }
+  .glim-signin-tile-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .glim-signin-tile-text,
+  .glim-signin-tile-quiet,
+  .glim-signin-tile-said {
+    margin: 0;
+    font-size: var(--text-subline);
+    color: var(--carbon-text-sub);
+  }
+  .glim-signin-tile-quiet { font-size: var(--text-meta); }
+  .glim-signin-tile-said--fail { color: var(--status-fail-text); }
+  .glim-signin-tile-goes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding-inline-start: var(--space-9);
+    font-size: var(--text-subline);
+  }
+  /* A QR code stays dark on white in every theme, since a camera reads it so. */
+  .glim-signin-tile-qr {
+    align-self: center;
+    width: 11rem;
+    height: 11rem;
+    padding: var(--space-4);
+    border-radius: var(--radius-control);
+    background-color: #ffffff;
+    fill: #161616;
+  }
+  .glim-signin-tile-codes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-8);
+    margin: 0;
+    padding: var(--space-6) var(--space-8);
+    border-radius: var(--radius-card);
+    background-color: var(--carbon-surface2);
+    list-style: none;
+    font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
   }
 
   /* What stands in place of a control the environment forbids
@@ -5316,6 +5412,14 @@
     background-color: var(--accent);
     color: var(--accent-contrast);
   }
+  /* A glyph tile in the row's tile takes the lit tile's ink, which its own accent would vanish into. */
+  .glim-list-row:is(:hover, :focus-within) > .glim-list-row-tile > .glim-tile { color: inherit; }
+  /* A brand's mark on a tile is as tall as a glyph there and as wide as its shape asks. */
+  .glim-tile > .glim-brand-svg > svg {
+    width: auto;
+    height: 1.125rem;
+    max-width: 100%;
+  }
   .glim-list-row-name {
     display: flex;
     flex: 1 1 0;
@@ -5349,6 +5453,36 @@
     opacity: 0;
   }
   .glim-list-row:is(:hover, :focus-within) > .glim-list-row-actions { opacity: 1; }
+  /* Buttons that always show take room the name needs on a phone, so they drop
+     under it, still at the end, before the name is squeezed. */
+  .glim-list-row--steady { flex-wrap: wrap; }
+  .glim-list-row--steady > .glim-list-row-text { flex: 1 1 12rem; }
+  .glim-list-row--steady > .glim-list-row-actions {
+    opacity: 1;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 100%;
+    margin-inline-start: auto;
+  }
+  /* A row with a quiet line under its name: two lines in one column, so every
+     such row in a card is as tall as the next and its buttons stand in line. */
+  .glim-list-row:has(> .glim-list-row-text) {
+    min-height: calc(var(--row-h) + var(--space-8));
+    padding-block: var(--space-3);
+  }
+  .glim-list-row-text {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+  .glim-list-row-text > .glim-list-row-name { flex: none; }
+  .glim-list-row-meta {
+    color: var(--carbon-text-sub);
+    font-size: var(--text-meta);
+    overflow-wrap: anywhere;
+  }
   @media (hover: none) {
     .glim-list-row-actions { opacity: 1; }
   }
@@ -6668,6 +6802,14 @@
   .glim-field-row > .glim-field-error {
     justify-content: flex-end;
     margin-top: 0;
+  }
+  /* A line that only informs (fieldNoteView) sits where an error would, in the quiet ink. */
+  .glim-field-note {
+    display: block;
+    flex-basis: 100%;
+    margin-top: var(--space-2);
+    color: var(--carbon-text-sub);
+    font-size: var(--text-subline);
   }
 }
 

@@ -1021,7 +1021,6 @@ const fa: Translations = {
   'password.longerIsSafer': 'این هم کار می‌کند، ولی حدس زدن گذرواژهٔ بلندتر سخت‌تر است. طول پیشنهادی به نویسه: {count}',
   'password.mismatch': 'گذرواژه‌ها یکسان نیستند',
   'password.currentNeeded': 'نخست گذرواژه کنونی را وارد کنید.',
-  'password.newNeeded': 'نخست گذرواژهٔ تازه را وارد کنید.',
   'password.saveFirst': 'تنظیم گذرواژه',
   'password.saveChange': 'تغییر گذرواژه',
   'password.saved': 'گذرواژه ذخیره شد',

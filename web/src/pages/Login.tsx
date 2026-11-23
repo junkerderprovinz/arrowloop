@@ -109,7 +109,7 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
     setPassword: t('password.saveFirst'),
     saving: t('reset.saving'),
     mismatch: t('password.mismatch'),
-    tooShort: t('password.newNeeded'),
+    shortHint: t('password.longerIsSafer', { count: '{min}' }),
     resetRejected: t('reset.invalid'),
     failed: t('login.failed'),
     show: t('secret.show'),
@@ -123,7 +123,6 @@ export function Login({ onIn, canReset = false }: { onIn: () => void; canReset?:
       text={text}
       passkey={passkeyOffer}
       reset={canReset}
-      minPassword={1}
       idPrefix="login"
       labelKeys={{
         signIn: 'login.submit',

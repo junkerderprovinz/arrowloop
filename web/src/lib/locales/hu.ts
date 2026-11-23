@@ -1021,7 +1021,6 @@ const hu: Translations = {
   'password.longerIsSafer': 'Ez is jó, de egy hosszabbat nehezebb kitalálni. Javasolt hossz karakterben: {count}',
   'password.mismatch': 'A jelszavak nem egyeznek',
   'password.currentNeeded': 'Előbb írd be a jelenlegi jelszót.',
-  'password.newNeeded': 'Előbb írd be az új jelszót.',
   'password.saveFirst': 'Jelszó beállítása',
   'password.saveChange': 'Jelszó módosítása',
   'password.saved': 'Jelszó mentve',

@@ -1021,7 +1021,6 @@ const ja: Translations = {
   'password.longerIsSafer': 'このままでも使えますが、長いほど推測されにくくなります。おすすめの文字数: {count}',
   'password.mismatch': 'パスワードが一致しません',
   'password.currentNeeded': '先に現在のパスワードを入力してください。',
-  'password.newNeeded': '先に新しいパスワードを入力してください。',
   'password.saveFirst': 'パスワードを設定',
   'password.saveChange': 'パスワードを変更',
   'password.saved': 'パスワードを保存しました',

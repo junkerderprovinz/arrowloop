@@ -1021,7 +1021,6 @@ const ru: Translations = {
   'password.longerIsSafer': 'Так можно, но более длинный пароль сложнее угадать. Рекомендуемая длина в символах: {count}',
   'password.mismatch': 'Пароли не совпадают',
   'password.currentNeeded': 'Сначала введите текущий пароль.',
-  'password.newNeeded': 'Сначала введите новый пароль.',
   'password.saveFirst': 'Установить пароль',
   'password.saveChange': 'Изменить пароль',
   'password.saved': 'Пароль сохранён',

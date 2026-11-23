@@ -1021,7 +1021,6 @@ const sr: Translations = {
   'password.longerIsSafer': 'Може, али дужу је теже погодити. Препоручена дужина у знаковима: {count}',
   'password.mismatch': 'Лозинке се не поклапају',
   'password.currentNeeded': 'Прво унеси тренутну лозинку.',
-  'password.newNeeded': 'Прво унеси нову лозинку.',
   'password.saveFirst': 'Подеси лозинку',
   'password.saveChange': 'Промени лозинку',
   'password.saved': 'Лозинка сачувана',

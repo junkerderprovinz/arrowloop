@@ -1021,7 +1021,6 @@ const hr: Translations = {
   'password.longerIsSafer': 'To može, ali dulju je teže pogoditi. Preporučena duljina u znakovima: {count}',
   'password.mismatch': 'Lozinke se ne podudaraju',
   'password.currentNeeded': 'Najprije upiši trenutačnu lozinku.',
-  'password.newNeeded': 'Najprije upiši novu lozinku.',
   'password.saveFirst': 'Postavi lozinku',
   'password.saveChange': 'Promijeni lozinku',
   'password.saved': 'Lozinka spremljena',

@@ -1021,7 +1021,6 @@ const nl: Translations = {
   'password.longerIsSafer': 'Dat kan, al is een langer wachtwoord moeilijker te raden. Aanbevolen lengte in tekens: {count}',
   'password.mismatch': 'Wachtwoorden komen niet overeen',
   'password.currentNeeded': 'Vul eerst het huidige wachtwoord in.',
-  'password.newNeeded': 'Vul eerst het nieuwe wachtwoord in.',
   'password.saveFirst': 'Wachtwoord instellen',
   'password.saveChange': 'Wachtwoord wijzigen',
   'password.saved': 'Wachtwoord opgeslagen',

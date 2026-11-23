@@ -1021,7 +1021,6 @@ const ro: Translations = {
   'password.longerIsSafer': 'Merge, dar una mai lungă e mai greu de ghicit. Lungime recomandată în caractere: {count}',
   'password.mismatch': 'Parolele nu coincid',
   'password.currentNeeded': 'Introdu mai întâi parola actuală.',
-  'password.newNeeded': 'Introdu mai întâi parola nouă.',
   'password.saveFirst': 'Setare parolă',
   'password.saveChange': 'Schimbare parolă',
   'password.saved': 'Parolă salvată',

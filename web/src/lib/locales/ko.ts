@@ -1021,7 +1021,6 @@ const ko: Translations = {
   'password.longerIsSafer': '이대로도 되지만, 더 긴 비밀번호가 추측하기 어렵습니다. 권장 길이(문자 수): {count}',
   'password.mismatch': '비밀번호가 일치하지 않습니다',
   'password.currentNeeded': '먼저 현재 비밀번호를 입력하세요.',
-  'password.newNeeded': '먼저 새 비밀번호를 입력하세요.',
   'password.saveFirst': '비밀번호 설정',
   'password.saveChange': '비밀번호 변경',
   'password.saved': '비밀번호가 저장되었습니다',

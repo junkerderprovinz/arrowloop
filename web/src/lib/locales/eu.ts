@@ -1021,7 +1021,6 @@ const eu: Translations = {
   'password.longerIsSafer': 'Balio du, baina luzeagoa asmatzen zailagoa da. Gomendatutako luzera karakteretan: {count}',
   'password.mismatch': 'Pasahitzak ez datoz bat',
   'password.currentNeeded': 'Idatzi lehenik uneko pasahitza.',
-  'password.newNeeded': 'Idatzi lehenik pasahitz berria.',
   'password.saveFirst': 'Ezarri pasahitza',
   'password.saveChange': 'Aldatu pasahitza',
   'password.saved': 'Pasahitza gordeta',

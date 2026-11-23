@@ -1021,7 +1021,6 @@ const gl: Translations = {
   'password.longerIsSafer': 'Vale, aínda que un máis longo é máis difícil de adiviñar. Lonxitude suxerida en caracteres: {count}',
   'password.mismatch': 'Os contrasinais non coinciden',
   'password.currentNeeded': 'Escribe primeiro o contrasinal actual.',
-  'password.newNeeded': 'Escribe primeiro o contrasinal novo.',
   'password.saveFirst': 'Configurar contrasinal',
   'password.saveChange': 'Cambiar contrasinal',
   'password.saved': 'Contrasinal gardado',

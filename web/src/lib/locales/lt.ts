@@ -1021,7 +1021,6 @@ const lt: Translations = {
   'password.longerIsSafer': 'Tinka, bet ilgesnį sunkiau atspėti. Siūlomas ilgis simboliais: {count}',
   'password.mismatch': 'Slaptažodžiai nesutampa',
   'password.currentNeeded': 'Pirmiausia įvesk dabartinį slaptažodį.',
-  'password.newNeeded': 'Pirmiausia įvesk naują slaptažodį.',
   'password.saveFirst': 'Nustatyti slaptažodį',
   'password.saveChange': 'Keisti slaptažodį',
   'password.saved': 'Slaptažodis išsaugotas',

@@ -1021,7 +1021,6 @@ const uk: Translations = {
   'password.longerIsSafer': 'Так можна, але довший пароль важче вгадати. Рекомендована довжина в символах: {count}',
   'password.mismatch': 'Паролі не збігаються',
   'password.currentNeeded': 'Спершу введіть поточний пароль.',
-  'password.newNeeded': 'Спершу введіть новий пароль.',
   'password.saveFirst': 'Встановити пароль',
   'password.saveChange': 'Змінити пароль',
   'password.saved': 'Пароль збережено',

@@ -1021,7 +1021,6 @@ const sv: Translations = {
   'password.longerIsSafer': 'Det går bra, men ett längre är svårare att gissa. Föreslagen längd i tecken: {count}',
   'password.mismatch': 'Lösenorden matchar inte',
   'password.currentNeeded': 'Skriv först det nuvarande lösenordet.',
-  'password.newNeeded': 'Skriv först det nya lösenordet.',
   'password.saveFirst': 'Ange lösenord',
   'password.saveChange': 'Byt lösenord',
   'password.saved': 'Lösenord sparat',

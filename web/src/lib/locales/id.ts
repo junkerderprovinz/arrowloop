@@ -1021,7 +1021,6 @@ const id: Translations = {
   'password.longerIsSafer': 'Bisa, tetapi yang lebih panjang lebih sulit ditebak. Panjang yang disarankan dalam karakter: {count}',
   'password.mismatch': 'Kata sandi tidak cocok',
   'password.currentNeeded': 'Masukkan kata sandi saat ini dulu.',
-  'password.newNeeded': 'Masukkan kata sandi baru dulu.',
   'password.saveFirst': 'Atur kata sandi',
   'password.saveChange': 'Ubah kata sandi',
   'password.saved': 'Kata sandi tersimpan',
