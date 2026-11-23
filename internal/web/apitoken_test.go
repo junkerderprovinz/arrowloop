@@ -13,13 +13,13 @@ const testAPIToken = "a-long-random-token-for-castlecommander"
 // adding a job and the settings backup.
 func tokenServer(t *testing.T) *httptest.Server {
 	t.Helper()
-	s := &Server{}
+	s := &Server{SignIn: OpenSignIn(t, t.TempDir(), guardKey, "")}
 	mux := http.NewServeMux()
 	ok := func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusOK) }
 	mux.HandleFunc("GET /api/jobs", ok)
 	mux.HandleFunc("POST /api/jobs", ok)
 	mux.HandleFunc("GET /api/config/raw", ok)
-	srv := httptest.NewServer(s.Protect(mux))
+	srv := httptest.NewServer(s.SignIn.Guard(s.Protect(mux)))
 	t.Cleanup(srv.Close)
 	return srv
 }

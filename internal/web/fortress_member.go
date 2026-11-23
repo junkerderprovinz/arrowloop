@@ -688,7 +688,7 @@ func (s *Server) fortressView() fortressView {
 	v := fortressView{
 		Joined: st.Fortress, Phrase: st.Fortress,
 		Device: st.Name, DefaultDevice: s.instanceName(pairing.State{}),
-		PasswordSet: len(s.passwordHash()) > 0,
+		PasswordSet: s.SignIn != nil && !s.SignIn.Anyone(),
 		Members:     []fortressMemberView{}, Permissions: []fortressPermissionView{},
 		Removed: append([]pairing.Removed{}, st.Removed...), RemovedHere: st.RemovedHere,
 	}
@@ -793,16 +793,10 @@ func (s *Server) joinFortressRoute(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, s.fortressView())
 }
 
-// showFortressPhrase shows the phrase again, behind the password as the
-// group's phrase is.
+// showFortressPhrase shows the phrase again, to a visitor who signed in
+// moments ago, as the group's phrase is.
 func (s *Server) showFortressPhrase(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Password string `json:"password"`
-	}
-	if r.ContentLength != 0 && !readBody(w, r, &req) {
-		return
-	}
-	if len(s.passwordHash()) > 0 && !s.checkCurrentPassword(w, r, req.Password) {
+	if !s.signedInMoments(w, r) {
 		return
 	}
 	st := s.Pairing.Get()
@@ -819,15 +813,9 @@ func (s *Server) showFortressPhrase(w http.ResponseWriter, r *http.Request) {
 }
 
 // changeFortressRoute gives the fortress a new phrase. The answer shows it,
-// so it asks for the password as showing it does.
+// so it wants a fresh sign-in as showing it does.
 func (s *Server) changeFortressRoute(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Password string `json:"password"`
-	}
-	if r.ContentLength != 0 && !readBody(w, r, &req) {
-		return
-	}
-	if len(s.passwordHash()) > 0 && !s.checkCurrentPassword(w, r, req.Password) {
+	if !s.signedInMoments(w, r) {
 		return
 	}
 	words, left, err := s.changeFortressPhrase(r.Context())

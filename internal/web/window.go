@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autostart"
 	"github.com/junkerderprovinz/arrowloop/internal/boot"
@@ -20,9 +21,12 @@ func (s *Server) capabilities(w http.ResponseWriter, r *http.Request) {
 		// Whether the device can report that now is a bad moment, as a phone
 		// on battery can.
 		"device": s.Hold != nil,
-		// Whether the interface can set a password, a second factor and
-		// passkeys here. The desktop window cannot, since nobody else reaches it.
-		"security": s.Security != nil,
+		// Whether anyone can sign in here. The desktop window has no sign-in,
+		// since nobody else reaches it.
+		"security": s.SignIn != nil,
+		// Whether ARROWLOOP_PASSWORD_HASH sets the password, which the
+		// interface then neither changes nor resets.
+		"passwordFromEnv": s.SignIn != nil && os.Getenv(PasswordHashEnv) != "",
 		// Whether this instance can be paired with others.
 		"pairing": s.Pairing != nil,
 		// Whether jobs can go through the built-in VPN.

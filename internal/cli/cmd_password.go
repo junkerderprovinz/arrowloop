@@ -12,7 +12,6 @@ import (
 	"golang.org/x/term"
 
 	"github.com/junkerderprovinz/arrowloop/internal/security"
-	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // cmdHashPassword prints the value ARROWLOOP_PASSWORD_HASH wants. The password
@@ -44,7 +43,10 @@ func (o Options) cmdHashPassword(args []string) error {
 	if err != nil {
 		return err
 	}
-	hash, err := web.HashPassword(key, plain)
+	if strings.TrimSpace(plain) == "" {
+		return errors.New("an empty password is the same as no password, which is what leaving the hash unset already does")
+	}
+	hash, err := security.HashPassword(key, plain)
 	if err != nil {
 		return err
 	}

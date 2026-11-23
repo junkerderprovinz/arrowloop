@@ -15,7 +15,7 @@ import (
 func newGuardedServer(t *testing.T) *httptest.Server {
 	t.Helper()
 	h := newHarness(t)
-	s := &web.Server{History: h.history, Runner: h.runner, Key: testKey}
+	s := &web.Server{History: h.history, Runner: h.runner, Key: testKey, SignIn: web.OpenSignIn(t, h.dir, testKey, "")}
 	srv := httptest.NewServer(s.Guard(s.Handler()))
 	t.Cleanup(srv.Close)
 	return srv
@@ -89,14 +89,10 @@ func TestWithoutAPasswordAnyNameIsServed(t *testing.T) {
 // With a password the cookie belongs to the name it was set on, so a
 // re-pointed name gets nothing, and a reverse proxy's name has to work.
 func TestWithAPasswordAnyNameIsServed(t *testing.T) {
-	hash, err := web.HashPassword(testKey, "correct horse battery staple")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Setenv(web.PasswordHashEnv, hash)
+	t.Setenv(web.PasswordHashEnv, testHash(t, "correct horse battery staple"))
 	srv := newGuardedServer(t)
 
-	if code := send(t, srv, http.MethodGet, "/api/session", nil, "arrowloop.example.com"); code != http.StatusOK {
+	if code := send(t, srv, http.MethodGet, "/api/signin/v1/options", nil, "arrowloop.example.com"); code != http.StatusOK {
 		t.Errorf("a proxy's host name answered %d", code)
 	}
 }

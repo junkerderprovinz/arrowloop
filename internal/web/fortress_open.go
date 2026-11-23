@@ -14,6 +14,7 @@ import (
 
 	kitfortress "github.com/junkerderprovinz/parleyport/kit/fortress"
 	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 
 	"github.com/junkerderprovinz/arrowloop/internal/history"
@@ -34,11 +35,14 @@ func openedPath(p string) bool {
 // try, so nothing there resets or replaces the way in, mints a key or a
 // token, feeds a dashboard, or opens a page in turn.
 var closedPrefixes = []string{
-	"/api/security/reset",
-	"/api/security/password",
-	"/api/security/totp",
-	"/api/security/read-tokens",
-	"/api/passkeys/register",
+	signin.APIPrefix + "reset",
+	signin.APIPrefix + "reset-code",
+	signin.APIPrefix + "me",
+	signin.APIPrefix + "accounts",
+	signin.APIPrefix + "methods",
+	signin.APIPrefix + "settings",
+	signin.APIPrefix + "log",
+	strings.TrimSuffix(signin.BrowserPrefix, "/"),
 	status.StatusPath,
 	status.LogPath,
 	"/api/fortress/open",
@@ -47,11 +51,12 @@ var closedPrefixes = []string{
 }
 
 // closedToOpened reports whether a request of an opened page goes through a
-// closed door. The path is cleaned as in needsSession.
+// closed door. The path is cleaned as in needsSession. Who signed in there
+// still reads who they are and signs out.
 func closedToOpened(method, rawPath string) bool {
 	p := path.Clean("/" + rawPath)
-	if method == http.MethodDelete && strings.HasPrefix(p, "/api/passkeys/") {
-		return true
+	if p == signin.APIPrefix+"me" && method == http.MethodGet {
+		return false
 	}
 	return slices.ContainsFunc(closedPrefixes, func(c string) bool { return p == c || strings.HasPrefix(p, c+"/") })
 }
@@ -65,7 +70,6 @@ func (s *Server) fortressUI() *kitfortress.UI {
 	s.browserOnce.Do(func() { s.browser = s.Guard(s.Handler()) })
 	return &kitfortress.UI{
 		Handler: s.browser,
-		SignIn:  func() bool { return len(s.passwordHash()) > 0 },
 		Opened:  s.noteOpened,
 	}
 }
@@ -108,26 +112,43 @@ func (s *Server) serveOpened(w http.ResponseWriter, r *http.Request) {
 // it belongs to a sign-in where there is a password.
 const visitorCookieName = "arrowloop_visitor"
 
+// visitorLife is how long a visitor cookie names its browser, as long as a
+// tab opened through the fortress lives at most.
+const visitorLife = 12 * time.Hour
+
 // openerSession names the browser session a request comes from, without the
-// secret it carries, or reports that it carries none. With a password that
-// is the sign-in, without one the visitor cookie. The phone app and the API
-// token are no browser and open nothing.
+// secret it carries, or reports that it carries none. Where anyone can sign
+// in that is the sign-in's session, otherwise the visitor cookie. The phone
+// app and the API tokens are no browser and open nothing.
 func (s *Server) openerSession(r *http.Request) (string, bool) {
 	if r.Header.Get(tokenHeader) != "" {
 		return "", false
 	}
-	if len(s.passwordHash()) == 0 {
+	if s.open() {
 		c, err := r.Cookie(visitorCookieName)
 		if err != nil || c.Value == "" {
 			return "", false
 		}
 		return sessionName(c.Value), true
 	}
-	token := cookieToken(r)
-	if !s.gate().accepts(token) {
+	v, ok := s.visitor(r)
+	if !ok || v.Session() == "" {
 		return "", false
 	}
-	return sessionName(token), true
+	return sessionName(v.Session()), true
+}
+
+// open reports whether nobody can sign in here, so every visitor is admin.
+func (s *Server) open() bool {
+	return s.SignIn == nil || s.SignIn.Anyone()
+}
+
+// visitor is who the sign-in found behind r.
+func (s *Server) visitor(r *http.Request) (signin.Visitor, bool) {
+	if s.SignIn == nil {
+		return signin.Visitor{}, false
+	}
+	return signin.From(r.Context())
 }
 
 // sessionName names a session by its secret without revealing it.
@@ -141,13 +162,16 @@ func sessionName(secret string) string {
 // visitor cookie for it, and setting a password closes the tab.
 func (s *Server) openMember(w http.ResponseWriter, r *http.Request) {
 	session, ok := s.openerSession(r)
-	valid := func() bool { return len(s.passwordHash()) == 0 }
-	if len(s.passwordHash()) > 0 {
-		token, gate := cookieToken(r), s.gate()
-		valid = func() bool { return gate.accepts(token) }
+	valid := s.open
+	if !s.open() {
+		v, _ := s.visitor(r)
+		id := v.Session()
+		valid = func() bool { return s.SignIn.Alive(context.Background(), id) }
 	} else if !ok && r.Header.Get(tokenHeader) == "" {
-		c := sessionCookie(r, rand.Text())
-		c.Name = visitorCookieName
+		c := &http.Cookie{
+			Name: visitorCookieName, Value: rand.Text(), Path: "/", HttpOnly: true,
+			SameSite: http.SameSiteLaxMode, Secure: r.TLS != nil, MaxAge: int(visitorLife / time.Second),
+		}
 		http.SetCookie(w, c)
 		session, ok = sessionName(c.Value), true
 	}

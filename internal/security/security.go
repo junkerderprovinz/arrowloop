@@ -1,16 +1,15 @@
-// Package security keeps what the interface sets up about signing in: the
-// password hash, the second factor, the registered passkeys and the read
-// tokens of dashboards.
+// Package security keeps the install's key and the sign-in: signin.json
+// through the kit's sign-in package, and security.json, where the versions
+// before it kept the password hash, the second factor, the passkeys and the
+// read tokens of dashboards. The sign-in takes those over once.
 //
-// They live in security.json beside the configuration file and never in it.
-// The API serves arrowloop.json whole as a backup and replaces it whole on a
-// restore, so a hash in there would be handed out over the routes it guards,
-// and restoring an older backup would quietly switch the protection off.
+// Neither lives in the configuration file. The API serves arrowloop.json
+// whole as a backup and replaces it whole on a restore, so a hash in there
+// would be handed out over the routes it guards, and restoring an older
+// backup would quietly switch the protection off.
 package security
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -215,127 +214,4 @@ func (s *Store) write(st State) error {
 		return fmt.Errorf("replace %s: %w", s.path, err)
 	}
 	return nil
-}
-
-// ErrPasskeyExists is returned when the same authenticator is registered twice.
-var ErrPasskeyExists = errors.New("this passkey is already registered")
-
-// PasskeysFor returns the keys bound to one host name, the only ones a browser
-// on that address will offer.
-func (s State) PasskeysFor(rpID string) []Passkey {
-	var out []Passkey
-	for _, p := range s.Passkeys {
-		if p.RPID == rpID {
-			out = append(out, p)
-		}
-	}
-	return out
-}
-
-// ErrPasswordMoved refuses a key whose registration checked a password that
-// has been changed or reset since.
-var ErrPasswordMoved = errors.New("the password was changed or reset during the registration; start it again")
-
-// AddPasskey stores a freshly registered key under the fingerprint of the
-// password in force, and returns it with its id filled in. epoch is the
-// epoch the registration checked the password under; the key is stored only
-// while it still holds.
-func (s *Store) AddPasskey(p Passkey, under string, epoch uint64) (Passkey, error) {
-	if len(p.CredentialID) == 0 || len(p.PublicKey) == 0 {
-		return Passkey{}, errors.New("a passkey needs a credential id and a public key")
-	}
-	id, err := randomHex(16)
-	if err != nil {
-		return Passkey{}, err
-	}
-	p.ID = id
-	err = s.Update(func(st *State) error {
-		if st.Epoch != epoch {
-			return ErrPasswordMoved
-		}
-		for _, have := range st.Passkeys {
-			if string(have.CredentialID) == string(p.CredentialID) {
-				return ErrPasskeyExists
-			}
-		}
-		st.Passkeys = append(st.Passkeys, p)
-		st.PasskeysUnder = under
-		return nil
-	})
-	if err != nil {
-		return Passkey{}, err
-	}
-	return p, nil
-}
-
-// KeepPasskeysUnder drops the passkeys when they were registered under
-// another password than the one fingerprinted, since a key would otherwise let
-// in whoever held the old password. Keys from a file without a fingerprint are
-// taken to belong to the password in force.
-func (s *Store) KeepPasskeysUnder(fingerprint string) error {
-	if st := s.Get(); len(st.Passkeys) == 0 || st.PasskeysUnder == fingerprint {
-		return nil
-	}
-	return s.Update(func(st *State) error {
-		if st.PasskeysUnder != "" && st.PasskeysUnder != fingerprint {
-			st.Passkeys = nil
-		}
-		st.PasskeysUnder = fingerprint
-		return nil
-	})
-}
-
-// TouchPasskey records a successful login with a key: its new counter and when.
-// A key removed meanwhile answers ErrUnknownPasskey.
-func (s *Store) TouchPasskey(id string, signCount uint32, at int64) error {
-	return s.Update(func(st *State) error {
-		for i := range st.Passkeys {
-			if st.Passkeys[i].ID == id {
-				st.Passkeys[i].SignCount = signCount
-				st.Passkeys[i].LastUsedAt = at
-				return nil
-			}
-		}
-		return ErrUnknownPasskey
-	})
-}
-
-// ErrUnknownPasskey is returned for a key that is not there.
-var ErrUnknownPasskey = errors.New("no passkey with that id")
-
-// DeletePasskey removes a key. Removing one that is not there is not an error.
-func (s *Store) DeletePasskey(id string) error {
-	return s.Update(func(st *State) error {
-		st.Passkeys = slices.DeleteFunc(st.Passkeys, func(p Passkey) bool { return p.ID == id })
-		return nil
-	})
-}
-
-// PasskeyUser returns the account id passkeys are registered under, drawing
-// it on first use.
-func (s *Store) PasskeyUser() ([]byte, error) {
-	if id := s.Get().PasskeyUser; len(id) > 0 {
-		return id, nil
-	}
-	var id []byte
-	err := s.Update(func(st *State) error {
-		if len(st.PasskeyUser) == 0 {
-			fresh := make([]byte, 32)
-			if _, err := rand.Read(fresh); err != nil {
-				return fmt.Errorf("draw a passkey account id: %w", err)
-			}
-			st.PasskeyUser = fresh
-		}
-		id = slices.Clone(st.PasskeyUser)
-		return nil
-	})
-	return id, err
-}
-
-func randomHex(n int) (string, error) {
-	raw := make([]byte, n)
-	if _, err := rand.Read(raw); err != nil {
-		return "", fmt.Errorf("draw an id: %w", err)
-	}
-	return hex.EncodeToString(raw), nil
 }

@@ -1,33 +1,30 @@
 package web
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"os"
 	"regexp"
 	"strings"
-	"sync"
 	"testing"
 	"testing/fstest"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
+	"github.com/junkerderprovinz/parleyport/kit/signin/signintest"
 )
 
-// These tests are in the package so they can shorten the session lifetime and
-// test the routing guard on its own.
-
-// guardedPassword is what every test here logs in with.
+// guardedPassword is what every test here signs in with.
 const guardedPassword = "correct horse battery staple"
 
+var guardKey = []byte("0123456789abcdef0123456789abcdef")
+
 // testHash hashes at the cheapest cost bcrypt allows. The cost is part of the
-// hash string, so verification takes the same path as on a real install.
+// hash string, so checking it takes the same path as on a real install.
 func testHash(t *testing.T, password string) string {
 	t.Helper()
 	h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
@@ -37,556 +34,194 @@ func testHash(t *testing.T, password string) string {
 	return string(h)
 }
 
-// newGuarded stands up a server behind Protect, with the interface present and
-// the three open routes registered as api.go registers them.
-func newGuarded(t *testing.T) (*Server, *httptest.Server) {
+// guarded stands up the sign-in, Protect and a stand-in for the job list and
+// the interface, wired as Handler wires them, with password set in the
+// interface unless it is empty.
+func guarded(t *testing.T, password string) (*Server, *httptest.Server) {
 	t.Helper()
-	s := &Server{UI: fstest.MapFS{
+	s := &Server{SignIn: OpenSignIn(t, t.TempDir(), guardKey, password), UI: fstest.MapFS{
 		"index.html": &fstest.MapFile{Data: []byte("<html>the arrowloop interface</html>")},
 	}}
-
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /api/login", s.login)
-	mux.HandleFunc("POST /api/logout", s.logout)
-	mux.HandleFunc("GET /api/session", s.session)
-	mux.Handle("/", s.Handler())
-
-	srv := httptest.NewServer(s.Protect(mux))
+	s.signInRoutes(mux)
+	ok := func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusOK) }
+	mux.HandleFunc("GET /api/jobs", ok)
+	mux.HandleFunc("POST /api/jobs", ok)
+	mux.HandleFunc("GET /api/config/raw", ok)
+	mux.Handle("/", spa{fs: s.UI, assets: &assets{}})
+	srv := httptest.NewServer(s.SignIn.Guard(s.Protect(mux)))
 	t.Cleanup(srv.Close)
 	return s, srv
 }
 
-// browser is a client that keeps cookies.
-func browser(t *testing.T) *http.Client {
-	t.Helper()
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		t.Fatalf("cookie jar: %v", err)
-	}
-	return &http.Client{Jar: jar}
+// visitor is a browser on the interface's own page.
+type visitor struct {
+	t   *testing.T
+	srv *httptest.Server
+	c   *http.Client
 }
 
-func attemptLogin(t *testing.T, srv *httptest.Server, c *http.Client, password string) (*http.Response, string) {
-	t.Helper()
-	body, _ := json.Marshal(loginRequest{Password: password})
-	resp, err := c.Post(srv.URL+"/api/login", "application/json", strings.NewReader(string(body)))
+func newVisitor(t *testing.T, srv *httptest.Server) *visitor {
+	jar, _ := cookiejar.New(nil)
+	return &visitor{t: t, srv: srv, c: &http.Client{Jar: jar}}
+}
+
+func (v *visitor) send(method, path string, body any, header ...string) (int, map[string]any) {
+	v.t.Helper()
+	raw, _ := json.Marshal(body)
+	if body == nil {
+		raw = nil
+	}
+	req, err := http.NewRequest(method, v.srv.URL+path, bytes.NewReader(raw))
 	if err != nil {
-		t.Fatalf("POST /api/login: %v", err)
+		v.t.Fatal(err)
+	}
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	for i := 0; i+1 < len(header); i += 2 {
+		req.Header.Set(header[i], header[i+1])
+	}
+	resp, err := v.c.Do(req)
+	if err != nil {
+		v.t.Fatal(err)
 	}
 	defer resp.Body.Close()
-	said, _ := io.ReadAll(resp.Body)
-	return resp, string(said)
+	out := map[string]any{}
+	_ = json.NewDecoder(resp.Body).Decode(&out)
+	return resp.StatusCode, out
 }
 
-func fetch(t *testing.T, c *http.Client, url string) (*http.Response, string) {
-	t.Helper()
-	resp, err := c.Get(url)
-	if err != nil {
-		t.Fatalf("GET %s: %v", url, err)
+func (v *visitor) signIn(password string) {
+	v.t.Helper()
+	if code, out := v.send("POST", signin.APIPrefix+"login", map[string]string{"password": password}); code != http.StatusOK {
+		v.t.Fatalf("signing in answered %d %v", code, out)
 	}
-	defer resp.Body.Close()
-	said, _ := io.ReadAll(resp.Body)
-	return resp, string(said)
 }
 
-// sessionTokenOf digs the token out of a login response.
-func sessionTokenOf(t *testing.T, resp *http.Response) string {
-	t.Helper()
-	for _, c := range resp.Cookies() {
-		if c.Name == sessionCookieName {
-			return c.Value
+func TestWithoutAPasswordEverythingIsOpen(t *testing.T) {
+	_, srv := guarded(t, "")
+	v := newVisitor(t, srv)
+	if code, _ := v.send("GET", "/api/jobs", nil); code != http.StatusOK {
+		t.Fatalf("an install without a password answered %d", code)
+	}
+}
+
+func TestWithAPasswordTheAPIWaitsForASignIn(t *testing.T) {
+	_, srv := guarded(t, guardedPassword)
+	v := newVisitor(t, srv)
+	if code, out := v.send("GET", "/api/jobs", nil); code != http.StatusUnauthorized || out["code"] != "signInFirst" {
+		t.Fatalf("the job list answered %d %v before anyone signed in", code, out)
+	}
+	// A browser refused index.html would have nowhere to type a password.
+	if resp, err := v.c.Get(srv.URL + "/"); err != nil || resp.StatusCode != http.StatusOK {
+		t.Fatalf("the interface itself is shut: %v %v", resp, err)
+	}
+	if code, _ := v.send("POST", signin.APIPrefix+"login", map[string]string{"password": "wrong"}); code != http.StatusUnauthorized {
+		t.Fatalf("a wrong password answered %d", code)
+	}
+	v.signIn(guardedPassword)
+	if code, _ := v.send("GET", "/api/jobs", nil); code != http.StatusOK {
+		t.Fatalf("signed in, the job list answered %d", code)
+	}
+	v.send("POST", signin.APIPrefix+"logout", nil)
+	if code, _ := v.send("GET", "/api/jobs", nil); code != http.StatusUnauthorized {
+		t.Fatalf("signed out, the job list answered %d", code)
+	}
+}
+
+func TestAnAPITokenOpensWhatItsScopesAllow(t *testing.T) {
+	_, srv := guarded(t, guardedPassword)
+	v := newVisitor(t, srv)
+	v.signIn(guardedPassword)
+	tokenOf := func(scope string) string {
+		code, out := v.send("POST", signin.APIPrefix+"me/tokens", map[string]any{"name": scope, "scopes": []string{scope}})
+		if code != http.StatusOK {
+			t.Fatalf("making a %s token answered %d %v", scope, code, out)
+		}
+		return out["value"].(string)
+	}
+	read, all := tokenOf("read"), tokenOf("all")
+	stranger := newVisitor(t, srv)
+	if code, _ := stranger.send("GET", "/api/jobs", nil, "Authorization", "Bearer "+read); code != http.StatusForbidden {
+		t.Errorf("a token that reads the status opened the job list with %d", code)
+	}
+	if code, _ := stranger.send("GET", "/api/jobs", nil, "Authorization", "Bearer "+all); code != http.StatusOK {
+		t.Errorf("a token for everything was refused the job list with %d", code)
+	}
+	if code, _ := stranger.send("GET", "/api/jobs", nil, "Authorization", "Bearer "+all+"x"); code != http.StatusUnauthorized {
+		t.Errorf("a token one character off answered %d", code)
+	}
+}
+
+func TestThePasswordFromTheEnvironmentIsNeitherChangedNorResetHere(t *testing.T) {
+	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
+	_, srv := guarded(t, "")
+	v := newVisitor(t, srv)
+	if code, _ := v.send("GET", "/api/jobs", nil); code != http.StatusUnauthorized {
+		t.Fatalf("the hash from the environment left the job list open with %d", code)
+	}
+	v.signIn(guardedPassword)
+	for _, c := range []struct {
+		method, path string
+		body         any
+	}{
+		{"PUT", "me/password", map[string]string{"current": guardedPassword, "next": "another one"}},
+		{"DELETE", "me/password", map[string]string{"current": guardedPassword}},
+		{"POST", "reset-code", nil},
+		{"POST", "reset", map[string]string{"code": "AAAA-BBBB-CCCC", "password": "another one"}},
+	} {
+		if code, out := v.send(c.method, signin.APIPrefix+c.path, c.body); code != http.StatusConflict || out["error"] != passwordFromEnv {
+			t.Errorf("%s %s answered %d %v", c.method, c.path, code, out)
 		}
 	}
-	t.Fatal("the login set no session cookie")
-	return ""
+	v.signIn(guardedPassword)
 }
 
-// An upgrade must never lock anybody out: with no hash set the API answers,
-// the interface is served, no cookie appears and the login route lets through.
-func TestWithNoPasswordNothingChangesAtAll(t *testing.T) {
-	t.Setenv(PasswordHashEnv, "")
-	_, srv := newGuarded(t)
-	c := browser(t)
-
-	resp, said := fetch(t, c, srv.URL+"/api/capabilities")
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("the API answered %s on an install with no password: %s", resp.Status, said)
-	}
-	if !strings.Contains(said, "window") {
-		t.Errorf("the API answered something other than itself: %s", said)
-	}
-	if len(resp.Cookies()) != 0 {
-		t.Errorf("an install with no password was handed a cookie: %v", resp.Cookies())
-	}
-
-	page, body := fetch(t, c, srv.URL+"/")
-	if page.StatusCode != http.StatusOK || !strings.Contains(body, "arrowloop interface") {
-		t.Errorf("the interface is not being served: %s %q", page.Status, body)
-	}
-
-	var view sessionView
-	probe, probed := fetch(t, c, srv.URL+"/api/session")
-	if probe.StatusCode != http.StatusOK {
-		t.Fatalf("the session probe answered %s", probe.Status)
-	}
-	if err := json.Unmarshal([]byte(probed), &view); err != nil {
-		t.Fatalf("decode the probe: %v", err)
-	}
-	if view.Required {
-		t.Error("an install with no password says a password is required")
-	}
-	if !view.Authenticated {
-		t.Error("an install with no password says the caller is not allowed in")
-	}
-
-	if got, said := attemptLogin(t, srv, c, "anything at all"); got.StatusCode != http.StatusOK {
-		t.Errorf("logging in on an install with no password answered %s: %s", got.Status, said)
-	}
-}
-
-func TestAWrongPasswordIsRefusedAndOpensNothing(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	_, srv := newGuarded(t)
-	c := browser(t)
-
-	resp, said := attemptLogin(t, srv, c, "not the password")
-	if resp.StatusCode != http.StatusUnauthorized {
-		t.Fatalf("a wrong password answered %s: %s", resp.Status, said)
-	}
-	for _, cookie := range resp.Cookies() {
-		if cookie.Name == sessionCookieName && cookie.Value != "" {
-			t.Error("a wrong password was handed a session anyway")
-		}
-	}
-	if !strings.Contains(said, "wrong password") {
-		t.Errorf("the refusal does not say what happened: %s", said)
-	}
-
-	after, _ := fetch(t, c, srv.URL+"/api/capabilities")
-	if after.StatusCode != http.StatusUnauthorized {
-		t.Errorf("the API answered %s after a wrong password", after.Status)
-	}
-}
-
-// The cookie's attributes are checked too, since a leaking session shows up in
-// no status code.
-func TestTheRightPasswordLetsTheNextRequestThrough(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	_, srv := newGuarded(t)
-	c := browser(t)
-
-	shut, _ := fetch(t, c, srv.URL+"/api/capabilities")
-	if shut.StatusCode != http.StatusUnauthorized {
-		t.Fatalf("the API was open before anybody logged in: %s", shut.Status)
-	}
-
-	resp, said := attemptLogin(t, srv, c, guardedPassword)
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("the right password answered %s: %s", resp.Status, said)
-	}
-
-	var cookie *http.Cookie
-	for _, got := range resp.Cookies() {
-		if got.Name == sessionCookieName {
-			cookie = got
-		}
-	}
-	if cookie == nil {
-		t.Fatal("the login handed out no session cookie")
-	}
-	if !cookie.HttpOnly {
-		t.Error("the session cookie can be read by a script on the page")
-	}
-	if cookie.SameSite != http.SameSiteLaxMode {
-		t.Errorf("the session cookie is SameSite=%v, so another site can post with it attached", cookie.SameSite)
-	}
-	if cookie.Secure {
-		t.Error("the session cookie is Secure over plain HTTP, so a browser will never send it back on a home network")
-	}
-	if len(cookie.Value) < 32 {
-		t.Errorf("the session token is only %d characters, which is guessable", len(cookie.Value))
-	}
-
-	open, body := fetch(t, c, srv.URL+"/api/capabilities")
-	if open.StatusCode != http.StatusOK {
-		t.Fatalf("the API is still shut after a correct login: %s %s", open.Status, body)
-	}
-}
-
-// Both servers have a live session, so a check that accepted any token while
-// any session was live, or handed out predictable tokens, would fail.
-func TestATokenFromOneServerIsNotAcceptedByAnother(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	_, first := newGuarded(t)
-	_, second := newGuarded(t)
-
-	resp, said := attemptLogin(t, first, browser(t), guardedPassword)
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("logging in to the first server: %s %s", resp.Status, said)
-	}
-	token := sessionTokenOf(t, resp)
-
-	elsewhere, said := attemptLogin(t, second, browser(t), guardedPassword)
-	if elsewhere.StatusCode != http.StatusOK {
-		t.Fatalf("logging in to the second server: %s %s", elsewhere.Status, said)
-	}
-	if other := sessionTokenOf(t, elsewhere); other == token {
-		t.Fatal("two logins were handed the same token, so it is not being drawn at random")
-	}
-
-	// Both directions, so this cannot pass by refusing everything.
-	if code := replay(t, first, token); code != http.StatusOK {
-		t.Errorf("the server that minted the token answered %d", code)
-	}
-	if code := replay(t, second, token); code != http.StatusUnauthorized {
-		t.Errorf("a second server accepted a token it never issued, answering %d", code)
-	}
-}
-
-// replay presents a raw token to a server without a cookie jar in the way.
-func replay(t *testing.T, srv *httptest.Server, token string) int {
-	t.Helper()
-	req, err := http.NewRequest(http.MethodGet, srv.URL+"/api/capabilities", nil)
-	if err != nil {
-		t.Fatalf("build the request: %v", err)
-	}
-	req.AddCookie(&http.Cookie{Name: sessionCookieName, Value: token})
-	resp, err := srv.Client().Do(req)
-	if err != nil {
-		t.Fatalf("replay the token: %v", err)
-	}
-	defer resp.Body.Close()
-	io.Copy(io.Discard, resp.Body)
-	return resp.StatusCode
-}
-
-// Clearing the cookie is not enough, so the raw token is replayed afterwards,
-// as somebody who copied it would.
-func TestLoggingOutInvalidatesTheTokenOnTheServer(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	_, srv := newGuarded(t)
-	c := browser(t)
-
-	resp, said := attemptLogin(t, srv, c, guardedPassword)
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("logging in: %s %s", resp.Status, said)
-	}
-	token := sessionTokenOf(t, resp)
-	if code := replay(t, srv, token); code != http.StatusOK {
-		t.Fatalf("the token did not work before the logout, answering %d", code)
-	}
-
-	out, err := c.Post(srv.URL+"/api/logout", "application/json", strings.NewReader(""))
-	if err != nil {
-		t.Fatalf("POST /api/logout: %v", err)
-	}
-	out.Body.Close()
-	if out.StatusCode != http.StatusOK {
-		t.Fatalf("logging out answered %s", out.Status)
-	}
-
-	if code := replay(t, srv, token); code != http.StatusUnauthorized {
-		t.Errorf("the token still works after a logout, answering %d", code)
-	}
-	if after, _ := fetch(t, c, srv.URL+"/api/capabilities"); after.StatusCode != http.StatusUnauthorized {
-		t.Errorf("the browser is still logged in after a logout, answering %s", after.Status)
-	}
-}
-
-// A browser that cannot fetch index.html has nowhere to type a password.
-func TestTheInterfaceIsServedWhileTheApiIsShut(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	_, srv := newGuarded(t)
-	c := browser(t)
-
-	page, body := fetch(t, c, srv.URL+"/")
-	if page.StatusCode != http.StatusOK || !strings.Contains(body, "arrowloop interface") {
-		t.Errorf("the login screen cannot be reached: %s %q", page.Status, body)
-	}
-	if api, _ := fetch(t, c, srv.URL+"/api/capabilities"); api.StatusCode != http.StatusUnauthorized {
-		t.Errorf("the API is open to a caller with no session, answering %s", api.Status)
-	}
-	// The probe tells the interface whether there is a login at all.
-	if probe, _ := fetch(t, c, srv.URL+"/api/session"); probe.StatusCode != http.StatusOK {
-		t.Errorf("the session probe is behind the lock it exists to describe, answering %s", probe.Status)
-	}
-}
-
-func TestAnExpiredSessionIsRefused(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	restore := sessionLifetime
-	t.Cleanup(func() { sessionLifetime = restore })
-
-	// Still valid, which catches a guard that refuses everything.
-	sessionLifetime = 10 * time.Second
-	_, live := newGuarded(t)
-	resp, _ := attemptLogin(t, live, browser(t), guardedPassword)
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("logging in with a long lifetime: %s", resp.Status)
-	}
-	if code := replay(t, live, sessionTokenOf(t, resp)); code != http.StatusOK {
-		t.Errorf("a session well inside its lifetime was refused, answering %d", code)
-	}
-
-	sessionLifetime = 40 * time.Millisecond
-	_, brief := newGuarded(t)
-	short, _ := attemptLogin(t, brief, browser(t), guardedPassword)
-	if short.StatusCode != http.StatusOK {
-		t.Fatalf("logging in with a short lifetime: %s", short.Status)
-	}
-	token := sessionTokenOf(t, short)
-	if code := replay(t, brief, token); code != http.StatusOK {
-		t.Fatalf("a fresh session was refused, answering %d", code)
-	}
-	time.Sleep(80 * time.Millisecond)
-	if code := replay(t, brief, token); code != http.StatusUnauthorized {
-		t.Errorf("an expired session is still accepted, answering %d", code)
-	}
-}
-
-// A limit that let the right password through would never stop an attacker,
-// since getting it right is the last thing he does.
-func TestTooManyWrongPasswordsStopEvenTheRightOne(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-
-	// First catch a limiter that refuses everybody.
-	_, calm := newGuarded(t)
-	if resp, said := attemptLogin(t, calm, browser(t), guardedPassword); resp.StatusCode != http.StatusOK {
-		t.Fatalf("the first correct password was refused: %s %s", resp.Status, said)
-	}
-
-	_, hammered := newGuarded(t)
-	c := browser(t)
-	for i := 0; i < maxFailedLogins; i++ {
-		resp, said := attemptLogin(t, hammered, c, "not the password")
-		if resp.StatusCode != http.StatusUnauthorized {
-			t.Fatalf("wrong password %d answered %s: %s", i+1, resp.Status, said)
-		}
-	}
-
-	resp, said := attemptLogin(t, hammered, c, guardedPassword)
-	if resp.StatusCode != http.StatusTooManyRequests {
-		t.Fatalf("the login still looked at a password after %d failures, answering %s: %s", maxFailedLogins, resp.Status, said)
-	}
-	if resp.Header.Get("Retry-After") == "" {
-		t.Error("the refusal does not say how long to wait")
-	}
-
-	// Another server is untouched.
-	_, other := newGuarded(t)
-	if fresh, _ := attemptLogin(t, other, browser(t), guardedPassword); fresh.StatusCode != http.StatusOK {
-		t.Errorf("a lockout on one server refused a correct password on another, answering %s", fresh.Status)
-	}
+func TestTheSignInKeepsTheContract(t *testing.T) {
+	_, srv := guarded(t, "")
+	signintest.Run(t, srv.Config.Handler, signintest.Options{Password: guardedPassword})
 }
 
 // Includes paths dressed up to look like an open route or unlike an API path.
-func TestOnlyTheLoginRoutesAreOpen(t *testing.T) {
+func TestOnlyTheSignInRoutesAreOpen(t *testing.T) {
 	protected := []string{
 		"/api/jobs",
 		"/api/jobs/photos/plan",
 		"/api/config",
 		"/api/",
 		"/api",
-		"/api/login/../jobs",
-		"/api/session/../config",
+		"/api/signin/v1/../../jobs",
+		"/api/signin/../config",
 		"//api/jobs",
 		"/api/./jobs",
 		"/api/jobs/../../api/config",
-
-		// The open routes are matched exactly, never as prefixes.
-		"/api/logins",
-		"/api/logout-everyone",
-		"/api/session/all",
-		"/api/passkeys/abc",
-		"/api/passkeys/login",
-		"/api/passkeys/login/begin/../../register/begin",
-
-		// Changing what signs somebody in is for somebody signed in.
-		"/api/security",
-		"/api/security/password",
-		"/api/security/totp/disable",
-		"/api/passkeys/register/begin",
-		"/api/passkeys/register/finish",
+		"/api/signin",
+		"/api/signin/v2/login",
+		"/api/fortress/v1/statuses",
+		"/api/login",
+		"/api/session",
 	}
 	for _, p := range protected {
 		if !needsSession(p) {
-			t.Errorf("%q reaches the API without a session", p)
+			t.Errorf("%q reaches the API without a visitor", p)
 		}
 	}
-
 	open := []string{
 		"/",
 		"/index.html",
 		"/assets/index-abc123.js",
 		"/jobs",
-		"/api/login",
-		"/api/logout",
-		"/api/session",
-		"/api/passkeys",
-		"/api/passkeys/login/begin",
-		"/api/passkeys/login/finish",
+		"/signin/oidc/callback",
+		"/api/signin/v1/options",
+		"/api/signin/v1/login",
+		"/api/fortress/v1/status",
 	}
 	for _, p := range open {
 		if needsSession(p) {
 			t.Errorf("%q is behind the lock, so nobody can get past it", p)
 		}
-	}
-}
-
-func TestHashPasswordRoundTrips(t *testing.T) {
-	key := []byte("0123456789abcdef0123456789abcdef")
-	hash, err := HashPassword(key, guardedPassword)
-	if err != nil {
-		t.Fatalf("hash a password: %v", err)
-	}
-	if strings.Contains(hash, guardedPassword) {
-		t.Fatal("the hash contains the password itself")
-	}
-	if !security.VerifyPassword(key, guardedPassword, hash) {
-		t.Error("the hash does not verify its own password")
-	}
-	if security.VerifyPassword(key, "something else", hash) {
-		t.Error("the hash verifies a password it was not made from")
-	}
-
-	if _, err := HashPassword(key, "   "); err == nil {
-		t.Error("an empty password was accepted, which would look like protection and be none")
-	}
-}
-
-// Believing a forwarded-for header would let any caller pick a fresh lockout
-// bucket for every request.
-func TestTheLockoutKeyIgnoresForwardedHeaders(t *testing.T) {
-	r := httptest.NewRequest(http.MethodPost, "/api/login", nil)
-	r.RemoteAddr = "203.0.113.9:5555"
-	r.Header.Set("X-Forwarded-For", "10.9.9.9")
-	r.Header.Set("X-Real-IP", "10.9.9.8")
-	if got := clientKey(r, nil); got != "203.0.113.9" {
-		t.Fatalf("key = %q, want the real peer 203.0.113.9", got)
-	}
-}
-
-// Requests sent at once all pass a check that only reads the count, so each
-// try is counted before the password is looked at.
-func TestABurstOfLoginsGetsNoMoreTriesThanTheLimit(t *testing.T) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(guardedPassword), bcrypt.DefaultCost)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Setenv(PasswordHashEnv, string(hash))
-	_, srv := newGuarded(t)
-
-	const burst = 30
-	start := make(chan struct{})
-	codes := make(chan int, burst)
-	var wg sync.WaitGroup
-	for range burst {
-		wg.Go(func() {
-			<-start
-			resp, err := http.Post(srv.URL+"/api/login", "application/json", strings.NewReader(`{"password":"not the password"}`))
-			if err != nil {
-				t.Error(err)
-				return
-			}
-			resp.Body.Close()
-			codes <- resp.StatusCode
-		})
-	}
-	close(start)
-	wg.Wait()
-	close(codes)
-
-	checked := 0
-	for code := range codes {
-		if code == http.StatusUnauthorized {
-			checked++
-		}
-	}
-	if checked > maxFailedLogins {
-		t.Errorf("%d of %d parallel wrong passwords were checked, the limit is %d", checked, burst, maxFailedLogins)
-	}
-}
-
-// loginVia sends one login as a reverse proxy forwards it.
-func loginVia(t *testing.T, srv *httptest.Server, forwardedFor, password string) int {
-	t.Helper()
-	body, _ := json.Marshal(loginRequest{Password: password})
-	req, err := http.NewRequest(http.MethodPost, srv.URL+"/api/login", strings.NewReader(string(body)))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Forwarded-For", forwardedFor)
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	resp.Body.Close()
-	return resp.StatusCode
-}
-
-// Behind a reverse proxy every request comes from the proxy, so without
-// knowing it a stranger's wrong passwords would lock out the owner as well.
-func TestBehindATrustedProxyAStrangerLocksOutOnlyHimself(t *testing.T) {
-	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
-	t.Setenv(TrustedProxiesEnv, "127.0.0.1, ::1")
-	_, srv := newGuarded(t)
-
-	for range maxFailedLogins {
-		loginVia(t, srv, "203.0.113.9", "not the password")
-	}
-	if code := loginVia(t, srv, "203.0.113.9", guardedPassword); code != http.StatusTooManyRequests {
-		t.Errorf("the stranger was not locked out, answering %d", code)
-	}
-	// What a client writes in front of the proxy's own entry is not believed.
-	if code := loginVia(t, srv, "198.51.100.7, 203.0.113.9", guardedPassword); code != http.StatusTooManyRequests {
-		t.Errorf("a made-up first entry gave the stranger a fresh count, answering %d", code)
-	}
-	if code := loginVia(t, srv, "198.51.100.7", guardedPassword); code != http.StatusOK {
-		t.Errorf("the owner was locked out by somebody else's failures, answering %d", code)
-	}
-}
-
-func TestTheLockoutKeyFollowsOnlyTrustedProxies(t *testing.T) {
-	proxies, _ := parseTrustedProxies("10.0.0.0/8, 192.0.2.1")
-	cases := []struct {
-		peer, forwarded, want string
-	}{
-		{"203.0.113.9:5555", "10.9.9.9", "203.0.113.9"},
-		{"192.0.2.1:5555", "198.51.100.7", "198.51.100.7"},
-		{"192.0.2.1:5555", "6.6.6.6, 198.51.100.7, 10.1.1.1", "198.51.100.7"},
-		{"192.0.2.1:5555", "", "192.0.2.1"},
-		{"192.0.2.1:5555", "not an address", "192.0.2.1"},
-	}
-	for _, c := range cases {
-		r := httptest.NewRequest(http.MethodPost, "/api/login", nil)
-		r.RemoteAddr = c.peer
-		if c.forwarded != "" {
-			r.Header.Set("X-Forwarded-For", c.forwarded)
-		}
-		if got := clientKey(r, proxies); got != c.want {
-			t.Errorf("peer %s forwarding %q: key = %q, want %q", c.peer, c.forwarded, got, c.want)
-		}
-	}
-}
-
-// The failure table is bounded, but a flood of fresh addresses must not lift a
-// lockout that is in force.
-func TestAFloodOfAddressesDoesNotLiftALockout(t *testing.T) {
-	g := &authGate{}
-	g.mu.Lock()
-	defer g.mu.Unlock()
-	for range maxFailedLogins {
-		g.recordFailure("203.0.113.9")
-	}
-	for i := range maxTrackedClients + 10 {
-		g.recordFailure(fmt.Sprintf("198.51.%d.%d", i/256, i%256))
-	}
-	if _, locked := g.lockedOut("203.0.113.9"); !locked {
-		t.Fatal("the locked-out address was let in again after a flood of others")
-	}
-	if len(g.failures) > maxTrackedClients {
-		t.Errorf("the table holds %d addresses, more than %d", len(g.failures), maxTrackedClients)
 	}
 }
 
@@ -608,13 +243,13 @@ func registered(t *testing.T) map[string][]string {
 	return routes
 }
 
-// The open list is the only way past the login, so it must name routes that
+// The open list is the only way past the sign-in, so it must name routes that
 // exist, and nothing registered under /api may be open by accident.
 func TestEveryOpenRouteIsARegisteredOne(t *testing.T) {
 	routes := registered(t)
 	for p := range openRoutes {
 		if _, ok := routes[p]; !ok {
-			t.Errorf("%s is open without a session, but no such route is registered", p)
+			t.Errorf("%s is open without a visitor, but no such route is registered", p)
 		}
 	}
 	for p := range routes {
@@ -623,7 +258,7 @@ func TestEveryOpenRouteIsARegisteredOne(t *testing.T) {
 		}
 		concrete := regexp.MustCompile(`\{[^}]*\}`).ReplaceAllString(p, "x")
 		if !needsSession(concrete) && !openRoutes[p] {
-			t.Errorf("%s answers without a session, though it is not on the open list", p)
+			t.Errorf("%s answers without a visitor, though it is not on the open list", p)
 		}
 	}
 }

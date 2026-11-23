@@ -115,141 +115,13 @@ func TestGetHandsOutACopy(t *testing.T) {
 	}
 }
 
-func TestPasskeyRoundTrip(t *testing.T) {
-	dir := t.TempDir()
-	s := openIn(t, dir)
-
-	saved, err := s.AddPasskey(Passkey{
-		Name:         "Phone",
-		CredentialID: []byte{1, 2, 3},
-		PublicKey:    []byte{9, 9},
-		Transports:   "internal,hybrid",
-		RPID:         "arrowloop.example.com",
-		BackedUp:     true,
-		CreatedAt:    1700000000,
-	}, "", 0)
-	if err != nil {
-		t.Fatalf("AddPasskey: %v", err)
-	}
-	if saved.ID == "" {
-		t.Fatal("the saved key carries no id")
-	}
-
-	if err := s.TouchPasskey(saved.ID, 42, 1700000100); err != nil {
-		t.Fatal(err)
-	}
-	got := openIn(t, dir).Get().Passkeys
-	if len(got) != 1 || got[0].SignCount != 42 || got[0].LastUsedAt != 1700000100 || got[0].Name != "Phone" {
-		t.Fatalf("the key came back changed: %+v", got)
-	}
-
-	if err := s.DeletePasskey(saved.ID); err != nil {
-		t.Fatal(err)
-	}
-	if n := len(s.Get().Passkeys); n != 0 {
-		t.Errorf("%d keys left after the delete", n)
-	}
-	if err := s.DeletePasskey(saved.ID); err != nil {
-		t.Errorf("deleting an absent key: %v", err)
-	}
-}
-
 // Two rows for one credential would make the clone check compare the counter
 // against whichever row it met first.
-func TestTheSameCredentialIsRegisteredOnce(t *testing.T) {
-	s := openIn(t, t.TempDir())
-	p := Passkey{Name: "A", CredentialID: []byte{5}, PublicKey: []byte{1}, RPID: "a.example.com"}
-	if _, err := s.AddPasskey(p, "", 0); err != nil {
-		t.Fatal(err)
-	}
-	p.Name = "B"
-	if _, err := s.AddPasskey(p, "", 0); !errors.Is(err, ErrPasskeyExists) {
-		t.Errorf("the second registration gave %v, want ErrPasskeyExists", err)
-	}
-}
-
 // A reset or a change between the password check and the browser's answer
 // removed every key, so the key that answer brings is refused too.
-func TestAPasskeyCheckedUnderAnEarlierPasswordIsRefused(t *testing.T) {
-	s := openIn(t, t.TempDir())
-	checked := s.Get().Epoch
-	if err := s.Update(func(st *State) error { st.PasswordHash = "new"; st.Epoch++; return nil }); err != nil {
-		t.Fatal(err)
-	}
-	_, err := s.AddPasskey(Passkey{Name: "Late", CredentialID: []byte{7}, PublicKey: []byte{1}, RPID: "localhost"}, "", checked)
-	if !errors.Is(err, ErrPasswordMoved) {
-		t.Errorf("a key checked under the old password gave %v, want ErrPasswordMoved", err)
-	}
-	if n := len(s.Get().Passkeys); n != 0 {
-		t.Errorf("%d keys were stored under the new password", n)
-	}
-}
-
 // A browser refuses a key whose host name does not match the page.
-func TestPasskeysForFiltersByAddress(t *testing.T) {
-	s := openIn(t, t.TempDir())
-	for i, rp := range []string{"al.example.com", "localhost"} {
-		if _, err := s.AddPasskey(Passkey{Name: rp, CredentialID: []byte{byte(i + 1)}, PublicKey: []byte{1}, RPID: rp}, "", 0); err != nil {
-			t.Fatal(err)
-		}
-	}
-	here := s.Get().PasskeysFor("al.example.com")
-	if len(here) != 1 || here[0].Name != "al.example.com" {
-		t.Errorf("PasskeysFor returned %v, want only the key bound to that address", here)
-	}
-	if n := len(s.Get().Passkeys); n != 2 {
-		t.Errorf("the full list has %d keys, want both", n)
-	}
-}
-
 // Every registered key is bound to this id, so drawing a new one would strand
 // them all.
-func TestThePasskeyAccountStaysTheSame(t *testing.T) {
-	dir := t.TempDir()
-	first, err := openIn(t, dir).PasskeyUser()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(first) < 16 {
-		t.Fatalf("the account id is %d bytes", len(first))
-	}
-	again, err := openIn(t, dir).PasskeyUser()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(first) != string(again) {
-		t.Error("the passkey account id changed between two opens")
-	}
-}
-
-func TestPasskeysGoWithThePasswordTheyWereAddedUnder(t *testing.T) {
-	dir := t.TempDir()
-	s := openIn(t, dir)
-	if _, err := s.AddPasskey(Passkey{Name: "Phone", CredentialID: []byte{1}, PublicKey: []byte{1}, RPID: "localhost"}, "first", 0); err != nil {
-		t.Fatal(err)
-	}
-
-	s = openIn(t, dir)
-	if err := s.KeepPasskeysUnder("first"); err != nil {
-		t.Fatal(err)
-	}
-	if n := len(s.Get().Passkeys); n != 1 {
-		t.Fatalf("the same password left %d passkeys, want 1", n)
-	}
-	if err := s.KeepPasskeysUnder("second"); err != nil {
-		t.Fatal(err)
-	}
-	if n := len(openIn(t, dir).Get().Passkeys); n != 0 {
-		t.Errorf("another password left %d passkeys in the file", n)
-	}
-}
-
-// testKey stands in for an install's key.
-var testKey = []byte("0123456789abcdef0123456789abcdef")
-
-// sampleSecret is the RFC 6238 test secret, nobody's real one.
-const sampleSecret = "GEZDGNBVGY3TQOJQ" // gitleaks:allow
-
 // The second factor's secret is what a stolen file would need to make codes.
 func TestTheSecondFactorIsSealedOnDisk(t *testing.T) {
 	dir := t.TempDir()
@@ -310,19 +182,8 @@ func TestAFileFromANewerBuildIsRefused(t *testing.T) {
 	}
 }
 
-func TestTouchingARemovedPasskeySaysItIsGone(t *testing.T) {
-	s := openIn(t, t.TempDir())
-	p, err := s.AddPasskey(Passkey{Name: "Phone", CredentialID: []byte{7}, PublicKey: []byte{1}, RPID: "localhost"}, "", s.Get().Epoch)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := s.TouchPasskey(p.ID, 3, 100); err != nil {
-		t.Fatalf("touching a present key: %v", err)
-	}
-	if err := s.DeletePasskey(p.ID); err != nil {
-		t.Fatal(err)
-	}
-	if err := s.TouchPasskey(p.ID, 4, 200); !errors.Is(err, ErrUnknownPasskey) {
-		t.Errorf("touching a removed key gave %v, want ErrUnknownPasskey", err)
-	}
-}
+// testKey stands in for an install's key.
+var testKey = []byte("0123456789abcdef0123456789abcdef")
+
+// sampleSecret is the RFC 6238 test secret, nobody's real one.
+const sampleSecret = "GEZDGNBVGY3TQOJQ" // gitleaks:allow

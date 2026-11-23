@@ -117,9 +117,9 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 	}
 	log := &lockedLog{}
 	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf}
+	s.SignIn = web.OpenSignIn(t, h.dir, testKey, su.password)
 	if su.password != "" {
 		s.Key = testKey
-		s.Security = securedStore(t, h.dir, su.password)
 	}
 	handler := s.Handler()
 	if su.guard {
@@ -153,6 +153,7 @@ func (n *node) send(t *testing.T, method, path, body string) (int, []byte) {
 		t.Fatal(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
 	resp, err := n.srv.Client().Do(req)
 	if err != nil {
 		t.Fatalf("%s %s: %v", method, path, err)

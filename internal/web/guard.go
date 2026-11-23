@@ -9,8 +9,11 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/junkerderprovinz/parleyport/kit/group"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
 )
 
 // Guard wraps the handler of a server that listens on a network port. A page
@@ -28,7 +31,7 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		// A browser sends a form or text/plain to any site without asking, but
 		// asks the server first before sending JSON there, and this server never
 		// says yes.
-		if changes(r.Method) && !isJSON(r.Header.Get("Content-Type")) && !groupUpload(r) {
+		if changes(r.Method) && !isJSON(r.Header.Get("Content-Type")) && !groupUpload(r) && !signInPath(r.URL.Path) {
 			writeError(w, http.StatusUnsupportedMediaType, errors.New("a change has to be sent as JSON, with Content-Type: application/json"))
 			return
 		}
@@ -57,6 +60,13 @@ func (s *Server) Guard(next http.Handler) http.Handler {
 		}
 		guarded.ServeHTTP(w, r)
 	})
+}
+
+// signInPath reports whether a request goes to the sign-in, which sends a
+// sign-out or a removal without a body and checks the rest itself.
+func signInPath(p string) bool {
+	p = path.Clean("/" + p)
+	return strings.HasPrefix(p, strings.TrimSuffix(signin.APIPrefix, "/")) || strings.HasPrefix(p, strings.TrimSuffix(signin.BrowserPrefix, "/"))
 }
 
 // kitUpload is the type the kit sends a backup under to the call route of

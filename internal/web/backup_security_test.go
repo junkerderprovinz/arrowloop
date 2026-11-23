@@ -9,9 +9,26 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
+
+// sameSite is the interface's own page: a browser with cookies whose
+// requests say they come from this site, as a browser's do.
+func sameSite() *http.Client {
+	jar, _ := cookiejar.New(nil)
+	return &http.Client{Jar: jar, Transport: sameSiteTransport{}}
+}
+
+type sameSiteTransport struct{}
+
+func (sameSiteTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	r = r.Clone(r.Context())
+	r.Header.Set("Sec-Fetch-Site", "same-origin")
+	return http.DefaultTransport.RoundTrip(r)
+}
 
 // The configuration file is downloaded whole as a backup and replaced whole by
 // a restore. A password kept in it would be handed out by the routes it guards,
@@ -19,19 +36,17 @@ import (
 func TestTheBackupNeitherCarriesNorRemovesThePassword(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
 	h := newHarness(t)
-	store, err := security.Open(h.configPath, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Security: store})
+	auth := web.OpenSignIn(t, h.dir, testKey, "")
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, SignIn: auth, Key: testKey})
 	before, err := os.ReadFile(h.configPath)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jar, _ := cookiejar.New(nil)
-	c := &http.Client{Jar: jar}
-	resp, err := c.Post(srv.URL+"/api/security/password", "application/json", strings.NewReader(`{"password":"a long enough passphrase"}`))
+	c := sameSite()
+	req, _ := http.NewRequest(http.MethodPut, srv.URL+signin.APIPrefix+"me/password", strings.NewReader(`{"next":"a long enough passphrase"}`))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := c.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +54,6 @@ func TestTheBackupNeitherCarriesNorRemovesThePassword(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("setting the password answered %s", resp.Status)
 	}
-	hash := store.Get().PasswordHash
 
 	resp, err = c.Get(srv.URL + "/api/config/raw")
 	if err != nil {
@@ -47,12 +61,13 @@ func TestTheBackupNeitherCarriesNorRemovesThePassword(t *testing.T) {
 	}
 	backup, _ := io.ReadAll(resp.Body)
 	resp.Body.Close()
-	if bytes.Contains(backup, []byte(hash)) || bytes.Contains(backup, []byte("$2a$")) {
-		t.Fatalf("the backup carries the password hash: %s", backup)
+	if resp.StatusCode != http.StatusOK || bytes.Contains(backup, []byte("argon2id")) || bytes.Contains(backup, []byte("passphrase")) {
+		t.Fatalf("the backup answered %s and carries the password: %s", resp.Status, backup)
 	}
 
 	// The file from before the password existed, put back.
-	req, _ := http.NewRequest(http.MethodPut, srv.URL+"/api/config/raw", bytes.NewReader(before))
+	req, _ = http.NewRequest(http.MethodPut, srv.URL+"/api/config/raw", bytes.NewReader(before))
+	req.Header.Set("Content-Type", "application/json")
 	resp, err = c.Do(req)
 	if err != nil {
 		t.Fatal(err)
@@ -70,4 +85,15 @@ func TestTheBackupNeitherCarriesNorRemovesThePassword(t *testing.T) {
 	if stranger.StatusCode != http.StatusUnauthorized {
 		t.Errorf("after restoring an old backup a stranger gets %s, so the password is gone", stranger.Status)
 	}
+}
+
+// testHash hashes at the cheapest cost bcrypt allows, as a hash someone put
+// into ARROWLOOP_PASSWORD_HASH may be.
+func testHash(t *testing.T, password string) string {
+	t.Helper()
+	h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(h)
 }

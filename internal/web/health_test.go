@@ -11,16 +11,12 @@ import (
 // The container's healthcheck carries no cookie, so its route has to stay open
 // once a password is set, or the container turns unhealthy.
 func TestTheRouteTheHealthcheckAsksForStaysOpen(t *testing.T) {
-	hash, err := web.HashPassword(testKey, "a password")
-	if err != nil {
-		t.Fatalf("hash: %v", err)
-	}
-	t.Setenv(web.PasswordHashEnv, hash)
+	t.Setenv(web.PasswordHashEnv, testHash(t, "a password"))
 
 	h := newHarness(t)
-	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Key: testKey})
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Key: testKey, SignIn: web.OpenSignIn(t, h.dir, testKey, "")})
 
-	resp, err := srv.Client().Get(srv.URL + "/api/session")
+	resp, err := srv.Client().Get(srv.URL + web.HealthPath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,9 +41,9 @@ func TestWithoutAPasswordTheHealthcheckRouteStillAnswers(t *testing.T) {
 		t.Skipf("a password hash is set in this environment: %q", got)
 	}
 	h := newHarness(t)
-	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Key: testKey})
+	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Key: testKey, SignIn: web.OpenSignIn(t, h.dir, testKey, "")})
 
-	resp, err := srv.Client().Get(srv.URL + "/api/session")
+	resp, err := srv.Client().Get(srv.URL + web.HealthPath)
 	if err != nil {
 		t.Fatal(err)
 	}

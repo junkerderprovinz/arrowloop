@@ -8,9 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
-	"net/http"
 	"regexp"
 	"strings"
 	"time"
@@ -25,20 +23,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 )
-
-// readTokenOpens lets a request with a read token through to the status and
-// the log, password or not, since a dashboard polling them has no session and
-// must not get one.
-func (s *Server) readTokenOpens(r *http.Request) error {
-	plain, ok := strings.CutPrefix(r.Header.Get("Authorization"), "Bearer ")
-	if !ok || s.Security == nil {
-		return status.ErrUnauthenticated
-	}
-	if _, ok := s.Security.MatchReadToken(strings.TrimSpace(plain)); !ok {
-		return status.ErrUnauthenticated
-	}
-	return nil
-}
 
 // logoSVG is the ArrowLoop mark the other apps of the fortress show.
 //
@@ -241,53 +225,4 @@ func (s *Server) ownName() string {
 		return name
 	}
 	return "ArrowLoop"
-}
-
-// readTokenView is a token as the settings list it, without its hash.
-type readTokenView struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt int64  `json:"createdAt"`
-}
-
-func (s *Server) listReadTokens(w http.ResponseWriter, _ *http.Request) {
-	out := []readTokenView{}
-	for _, t := range s.Security.Get().ReadTokens {
-		out = append(out, readTokenView{ID: t.ID, Name: t.Name, CreatedAt: t.CreatedAt})
-	}
-	writeJSON(w, http.StatusOK, out)
-}
-
-// maxReadTokenName keeps a name to what fits a row of the list.
-const maxReadTokenName = 64
-
-func (s *Server) addReadToken(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Name string `json:"name"`
-	}
-	if !readBody(w, r, &req) {
-		return
-	}
-	name := strings.TrimSpace(req.Name)
-	if name == "" || len(name) > maxReadTokenName {
-		writeError(w, http.StatusBadRequest, fmt.Errorf("a read token needs a name of 1 to %d characters", maxReadTokenName))
-		return
-	}
-	plain, t, err := s.Security.AddReadToken(name, time.Now().Unix())
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	writeJSON(w, http.StatusOK, struct {
-		readTokenView
-		Token string `json:"token"`
-	}{readTokenView{ID: t.ID, Name: t.Name, CreatedAt: t.CreatedAt}, plain})
-}
-
-func (s *Server) deleteReadToken(w http.ResponseWriter, r *http.Request) {
-	if err := s.Security.DeleteReadToken(r.PathValue("id")); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	writeJSON(w, http.StatusOK, map[string]bool{"deleted": true})
 }

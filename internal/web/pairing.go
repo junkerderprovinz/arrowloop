@@ -403,7 +403,7 @@ func (s *Server) connectInfo() connectInfo {
 	info := connectInfo{
 		Active:          st.Secret != nil,
 		Connected:       s.relayConnected(),
-		PasswordSet:     len(s.passwordHash()) > 0,
+		PasswordSet:     s.SignIn != nil && !s.SignIn.Anyone(),
 		RelayMode:       st.Mode(),
 		RelayURL:        relayTarget(st),
 		ProjectRelayURL: relay.DefaultURL,
@@ -558,18 +558,12 @@ func (s *Server) joinGroup(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, s.connectInfo())
 }
 
-// revealPhrase shows the phrase again. A session is not enough when a password
-// is set: it may have been left open on a screen nobody watches, and the
-// phrase reaches every instance of the group. A wrong password counts against
-// the address like a wrong sign-in.
+// revealPhrase shows the phrase again. Any session is not enough once anyone
+// can sign in: it may have been left open on a screen nobody watches, and the
+// phrase reaches every instance of the group. So it wants a sign-in from
+// moments ago, and the interface asks for the password once more.
 func (s *Server) revealPhrase(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Password string `json:"password"`
-	}
-	if r.ContentLength != 0 && !readBody(w, r, &req) {
-		return
-	}
-	if len(s.passwordHash()) > 0 && !s.checkCurrentPassword(w, r, req.Password) {
+	if !s.signedInMoments(w, r) {
 		return
 	}
 	secret := s.Pairing.Get().Secret

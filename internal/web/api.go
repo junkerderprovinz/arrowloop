@@ -22,6 +22,7 @@ import (
 	"github.com/junkerderprovinz/parleyport/kit/hostpath"
 	"github.com/junkerderprovinz/parleyport/kit/lan"
 	"github.com/junkerderprovinz/parleyport/kit/relay"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
@@ -36,7 +37,6 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
-	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
@@ -84,15 +84,14 @@ type Server struct {
 	// unregistered.
 	Hold *hold.Store
 
-	// Security keeps the password, the second factor and the passkeys set up
-	// in the interface. A nil store leaves those routes unregistered and the
-	// password to ARROWLOOP_PASSWORD_HASH alone, which is how the desktop
-	// window runs: nobody else can reach it.
-	Security *security.Store
+	// SignIn is the kit's sign-in on signin.json: password, two-factor,
+	// passkeys, sessions, API tokens and sign-in services. Without it nobody
+	// signs in and everything is open, which is how the desktop window runs:
+	// nobody else can reach it.
+	SignIn *signin.Auth
 
-	// Key is the install's key from security.LoadKey, which peppers the
-	// password hash. A server without one draws a key for its own lifetime,
-	// so a password it hashes does not outlive it.
+	// Key is the install's key from security.LoadKey. A server without one
+	// draws a key for its own lifetime.
 	Key []byte
 
 	// Log reports what a status code cannot, such as a setting that saved but
@@ -185,10 +184,6 @@ type Server struct {
 	tailsMu     sync.Mutex
 	tails       map[string]*logTail
 
-	// checked runs once a sign-in's credentials have held and before its
-	// session is handed out, which is where a test lands a reset.
-	checked func()
-
 	// saving keeps two writes to the configuration apart. Each one reads the
 	// file, edits it and writes it back, so two at once would lose one edit.
 	saving sync.Mutex
@@ -266,31 +261,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/diagnostics", s.diagnostics)
 
 	// The routes an unauthenticated caller may reach are listed in
-	// needsSession.
-	mux.HandleFunc("POST /api/login", s.login)
-	mux.HandleFunc("POST /api/logout", s.logout)
-	mux.HandleFunc("GET /api/session", s.session)
-	mux.HandleFunc("GET /api/security", s.securityStatus)
-
-	if s.Security != nil {
-		mux.HandleFunc("POST /api/security/password", s.setPassword)
-		mux.HandleFunc("POST /api/security/password/remove", s.removePassword)
-		mux.HandleFunc("POST /api/security/totp/setup", s.totpSetup)
-		mux.HandleFunc("POST /api/security/totp/confirm", s.totpConfirm)
-		mux.HandleFunc("POST /api/security/totp/disable", s.totpDisable)
-		mux.HandleFunc("POST /api/security/reset", s.resetBegin)
-		mux.HandleFunc("POST /api/security/reset/finish", s.resetFinish)
-
-		mux.HandleFunc("GET /api/passkeys", s.passkeyStatus)
-		mux.HandleFunc("POST /api/passkeys/login/begin", s.passkeyLoginBegin)
-		mux.HandleFunc("POST /api/passkeys/login/finish", s.passkeyLoginFinish)
-		mux.HandleFunc("POST /api/passkeys/register/begin", s.passkeyRegisterBegin)
-		mux.HandleFunc("POST /api/passkeys/register/finish", s.passkeyRegisterFinish)
-		mux.HandleFunc("DELETE /api/passkeys/{id}", s.deletePasskey)
-
-		mux.HandleFunc("GET /api/security/read-tokens", s.listReadTokens)
-		mux.HandleFunc("POST /api/security/read-tokens", s.addReadToken)
-		mux.HandleFunc("DELETE /api/security/read-tokens/{id}", s.deleteReadToken)
+	// needsSession; the sign-in's own decide for themselves.
+	if s.SignIn != nil {
+		s.signInRoutes(mux)
 	}
 
 	if s.Window != nil {
@@ -328,8 +301,8 @@ func (s *Server) Handler() http.Handler {
 	}
 
 	// The status and the log every app of a fortress answers with. A
-	// dashboard reads them with a read token; see fortress.go.
-	fortress := status.Handler(fortressSource{s}, s.readTokenOpens)
+	// dashboard reads them with an API token; see statusOpens.
+	fortress := status.Handler(fortressSource{s}, s.statusOpens)
 	mux.Handle("/api/fortress/v1/status", fortress)
 	mux.Handle("/api/fortress/v1/log", fortress)
 
@@ -352,19 +325,30 @@ func (s *Server) Handler() http.Handler {
 	if s.UI != nil {
 		mux.Handle("/", spa{fs: s.UI, placeholder: s.Placeholder, assets: &assets{}})
 	}
-	// Protect passes everything straight through when no password is set.
+	// Protect passes everything straight through while nobody can sign in.
 	// The pages the fortress opens check their ticket, outside it.
-	protected := s.Protect(mux)
+	var protected http.Handler = s.Protect(mux)
+	var opened http.Handler = http.HandlerFunc(s.serveOpened)
+	if s.SignIn != nil {
+		protected, opened = s.SignIn.Guard(protected), s.SignIn.Guard(opened)
+	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if _, ok := kitfortress.Opened(r); ok && closedToOpened(r.Method, r.URL.Path) {
-			writeJSON(w, http.StatusForbidden, map[string]string{
-				"code":  closedThroughFortress,
-				"error": "this is not done through the fortress; open ArrowLoop on its own address for it",
-			})
-			return
+		if _, ok := kitfortress.Opened(r); ok {
+			if closedToOpened(r.Method, r.URL.Path) {
+				writeJSON(w, http.StatusForbidden, map[string]string{
+					"code":  closedThroughFortress,
+					"error": "this is not done through the fortress; open ArrowLoop on its own address for it",
+				})
+				return
+			}
+			// The fortress hands an opened page's requests over without the
+			// browser's headers, from a jar of their own, after checking the
+			// page's ticket. The sign-in would take one for another site's.
+			r = r.Clone(r.Context())
+			r.Header.Set("Sec-Fetch-Site", "same-origin")
 		}
 		if openedPath(r.URL.Path) {
-			s.serveOpened(w, r)
+			opened.ServeHTTP(w, r)
 			return
 		}
 		protected.ServeHTTP(w, r)

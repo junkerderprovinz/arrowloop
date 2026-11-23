@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 // defaultAddr is where the interface listens. It defaults to loopback because
@@ -38,9 +40,7 @@ func cmdHealth(ctx context.Context, args []string) error {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	// /api/session answers 200 without a session cookie even when a password
-	// is set, which most routes do not.
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+target+"/api/session", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+target+web.HealthPath, nil)
 	if err != nil {
 		return err
 	}

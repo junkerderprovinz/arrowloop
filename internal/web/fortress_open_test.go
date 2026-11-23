@@ -6,14 +6,13 @@ import (
 	"io"
 	"net/http"
 	"net/http/cookiejar"
-	"path/filepath"
 	"strings"
 	"testing"
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/junkerderprovinz/arrowloop/internal/security"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
 )
 
 const openPassword = "correct horse battery staple"
@@ -35,7 +34,7 @@ func (n *node) signIn(t *testing.T) {
 		t.Fatal(err)
 	}
 	n.srv.Client().Jar = jar
-	if status, body := n.send(t, http.MethodPost, "/api/login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
+	if status, body := n.send(t, http.MethodPost, signin.APIPrefix+"login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
 		t.Fatalf("sign in = %d %s", status, body)
 	}
 }
@@ -130,27 +129,34 @@ func TestASignedInUserOpensAnotherInstanceBehindItsOwnSignIn(t *testing.T) {
 	}
 
 	inside := tab.Path + "/"
-	if status, body := opened(t, a, http.MethodGet, inside+"api/session", ""); status != http.StatusOK || !strings.Contains(string(body), `"authenticated":false`) {
+	if status, body := opened(t, a, http.MethodGet, inside+"api/signin/v1/options", ""); status != http.StatusOK || !strings.Contains(string(body), `"signedIn":false`) {
 		t.Fatalf("the opened page's session = %d %s, want a sign-in of its own", status, body)
 	}
 	if status, _ := opened(t, a, http.MethodGet, inside+"api/jobs", ""); status != http.StatusUnauthorized {
 		t.Errorf("the jobs before signing in there = %d", status)
 	}
-	if status, body := opened(t, a, http.MethodPost, inside+"api/login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
+	if status, body := opened(t, a, http.MethodPost, inside+"api/signin/v1/login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
 		t.Fatalf("signing in on the opened page = %d %s", status, body)
 	}
 	if status, body := opened(t, a, http.MethodGet, inside+"api/jobs", ""); status != http.StatusOK {
 		t.Errorf("the jobs after signing in there = %d %s", status, body)
 	}
+	if status, body := opened(t, a, http.MethodGet, inside+"api/signin/v1/me", ""); status != http.StatusOK {
+		t.Errorf("who signed in on the opened page = %d %s", status, body)
+	}
 
 	for _, door := range []struct{ method, path string }{
-		{http.MethodPost, "api/security/reset"},
-		{http.MethodPost, "api/security/password"},
-		{http.MethodPost, "api/security/read-tokens"},
+		{http.MethodPost, "api/signin/v1/reset-code"},
+		{http.MethodPost, "api/signin/v1/reset"},
+		{http.MethodPut, "api/signin/v1/me/password"},
+		{http.MethodPost, "api/signin/v1/me/tokens"},
+		{http.MethodPost, "api/signin/v1/me/passkeys/options"},
+		{http.MethodDelete, "api/signin/v1/me/passkeys/x"},
+		{http.MethodPost, "api/signin/v1/methods/oidc"},
+		{http.MethodGet, "signin/oidc/x"},
 		{http.MethodPost, "api/fortress/open/" + bID},
 		{http.MethodDelete, "api/fortress/members/" + bID},
 		{http.MethodGet, "api/fortress/v1/status"},
-		{http.MethodDelete, "api/passkeys/x"},
 		{http.MethodGet, "fortress/open/0123456789abcdef0123456789abcdef/"},
 	} {
 		status, body := opened(t, a, door.method, inside+door.path, `{}`)
@@ -242,23 +248,6 @@ func TestTheStatusWindowGetsTheReportAndTheEndOfTheLog(t *testing.T) {
 	}
 }
 
-// securedStore keeps password in a security file of its own under dir.
-func securedStore(t *testing.T, dir, password string) *security.Store {
-	t.Helper()
-	store, err := security.Open(filepath.Join(dir, "arrowloop.json"), testKey)
-	if err != nil {
-		t.Fatal(err)
-	}
-	hash, err := web.HashPassword(testKey, password)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := store.Update(func(st *security.State) error { st.PasswordHash = hash; return nil }); err != nil {
-		t.Fatal(err)
-	}
-	return store
-}
-
 // A password is optional here, so an instance without one opens another
 // member too, which still asks for its own sign-in.
 func TestAnInstanceWithoutAPasswordOpensAnotherOne(t *testing.T) {
@@ -308,7 +297,7 @@ func TestAnInstanceWithoutAPasswordOpensAnotherOne(t *testing.T) {
 	if status, _ := opened(t, a, http.MethodGet, inside+"api/jobs", ""); status != http.StatusUnauthorized {
 		t.Errorf("the other instance's jobs before signing in there = %d", status)
 	}
-	if status, body := opened(t, a, http.MethodPost, inside+"api/login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
+	if status, body := opened(t, a, http.MethodPost, inside+"api/signin/v1/login", `{"password":"`+openPassword+`"}`); status != http.StatusOK {
 		t.Fatalf("signing in on the opened page = %d %s", status, body)
 	}
 	if status, body := opened(t, a, http.MethodGet, inside+"api/jobs", ""); status != http.StatusOK {
@@ -337,7 +326,8 @@ func TestTheInterfaceOpensOnlyBehindAPassword(t *testing.T) {
 		t.Errorf("without a password the interface is offered %v and asks for a sign-in %v", offered, signIn)
 	}
 	setOpenPassword(t)
-	if offered, signIn := (&web.Server{History: h.history, Runner: h.runner, Deployment: "container"}).OpensWithSignIn(); !offered || !signIn {
+	closed := &web.Server{History: h.history, Runner: h.runner, Deployment: "container", SignIn: web.OpenSignIn(t, t.TempDir(), testKey, "")}
+	if offered, signIn := closed.OpensWithSignIn(); !offered || !signIn {
 		t.Errorf("with a password the interface is offered %v and asks for a sign-in %v", offered, signIn)
 	}
 	for _, d := range []string{"phone", "desktop"} {

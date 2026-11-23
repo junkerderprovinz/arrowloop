@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/junkerderprovinz/parleyport/kit/hostpath"
+	"github.com/junkerderprovinz/parleyport/kit/signin"
 	"github.com/junkerderprovinz/parleyport/kit/status"
 	"github.com/junkerderprovinz/parleyport/kit/statustest"
 
@@ -20,9 +20,10 @@ import (
 )
 
 // statusServer is the real API on an engine with two runs of photos behind
-// it, the second of which left files for later, and a read token. mounts is
-// the engine's mount table, nil for the test machine's own.
-func statusServer(t *testing.T, mounts func() (hostpath.Table, error)) (http.Handler, string, *security.Store) {
+// it, the second of which left files for later, and a read token the version
+// before the sign-in made. mounts is the engine's mount table, nil for the
+// test machine's own.
+func statusServer(t *testing.T, mounts func() (hostpath.Table, error)) (http.Handler, string) {
 	t.Helper()
 	h := newHarness(t)
 	ctx := context.Background()
@@ -33,21 +34,26 @@ func statusServer(t *testing.T, mounts func() (hostpath.Table, error)) (http.Han
 			t.Fatal(err)
 		}
 	}
-	store, err := security.Open(h.configPath, testKey)
+	old, err := security.Open(h.configPath, testKey)
 	if err != nil {
 		t.Fatal(err)
 	}
-	token, _, err := store.AddReadToken("Homepage", time.Now().Unix())
-	if err != nil {
+	token := "alr_a-token-the-version-before-made"
+	if err := old.Update(func(st *security.State) error {
+		st.ReadTokens = []security.ReadToken{{ID: "1", Name: "Homepage", Hash: security.ReadTokenDigest(testKey, token), CreatedAt: 1700000000}}
+		return nil
+	}); err != nil {
 		t.Fatal(err)
 	}
-	s := &web.Server{History: h.history, Runner: h.runner, Security: store, Key: testKey, Mounts: mounts}
-	return s.Handler(), token, store
+	s := &web.Server{History: h.history, Runner: h.runner, SignIn: web.OpenSignIn(t, h.dir, testKey, ""), Key: testKey, Mounts: mounts}
+	return s.Handler(), token
 }
 
+// While nobody can sign in, the whole API is open, the status with it, so the
+// contract is checked where a password is set.
 func TestTheStatusAnswersTheFortressContract(t *testing.T) {
-	t.Setenv(web.PasswordHashEnv, "")
-	handler, token, _ := statusServer(t, nil)
+	t.Setenv(web.PasswordHashEnv, testHash(t, "correct horse battery staple"))
+	handler, token := statusServer(t, nil)
 	statustest.Run(t, handler, statustest.Options{Authenticate: func(r *http.Request) {
 		r.Header.Set("Authorization", "Bearer "+token)
 	}})
@@ -79,7 +85,7 @@ func TestTheStatusNamesTheContainerTheEngineRunsIn(t *testing.T) {
 		{"on a desktop", hostpath.Table{}, ""},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			handler, token, _ := statusServer(t, func() (hostpath.Table, error) { return c.tab, nil })
+			handler, token := statusServer(t, func() (hostpath.Table, error) { return c.tab, nil })
 			req := httptest.NewRequest(http.MethodGet, status.StatusPath, nil)
 			req.Header.Set("Authorization", "Bearer "+token)
 			rec := httptest.NewRecorder()
@@ -96,16 +102,12 @@ func TestTheStatusNamesTheContainerTheEngineRunsIn(t *testing.T) {
 }
 
 func TestAReadTokenGetsPastThePasswordToTheStatusOnly(t *testing.T) {
-	hash, err := web.HashPassword(testKey, "correct horse battery staple")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Setenv(web.PasswordHashEnv, hash)
-	handler, token, _ := statusServer(t, nil)
+	t.Setenv(web.PasswordHashEnv, testHash(t, "correct horse battery staple"))
+	handler, token := statusServer(t, nil)
 	srv := httptest.NewServer(handler)
 	t.Cleanup(srv.Close)
 
-	for path, want := range map[string]int{status.StatusPath: http.StatusOK, status.LogPath: http.StatusOK, "/api/jobs": http.StatusUnauthorized, "/api/config/raw": http.StatusUnauthorized} {
+	for path, want := range map[string]int{status.StatusPath: http.StatusOK, status.LogPath: http.StatusOK, "/api/jobs": http.StatusForbidden, "/api/config/raw": http.StatusForbidden} {
 		req, _ := http.NewRequest(http.MethodGet, srv.URL+path, nil)
 		req.Header.Set("Authorization", "Bearer "+token)
 		resp, err := srv.Client().Do(req)
@@ -117,54 +119,77 @@ func TestAReadTokenGetsPastThePasswordToTheStatusOnly(t *testing.T) {
 			t.Errorf("GET %s with the read token answered %d, want %d", path, resp.StatusCode, want)
 		}
 	}
+	resp, err := srv.Client().Get(srv.URL + status.StatusPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusUnauthorized {
+		t.Errorf("the status without a token answered %s", resp.Status)
+	}
 }
 
-func TestReadTokensAreMadeListedAndDeletedThroughTheAPI(t *testing.T) {
-	t.Setenv(web.PasswordHashEnv, "")
-	h := newHarness(t)
-	store, err := security.Open(h.configPath, testKey)
-	if err != nil {
-		t.Fatal(err)
+func TestATokenThatReadsIsMadeListedAndEndedThroughTheSignIn(t *testing.T) {
+	t.Setenv(web.PasswordHashEnv, testHash(t, "correct horse battery staple"))
+	handler, _ := statusServer(t, nil)
+	srv := httptest.NewServer(handler)
+	t.Cleanup(srv.Close)
+	c := sameSite()
+	send := func(method, path, body string, into any) int {
+		t.Helper()
+		req, _ := http.NewRequest(method, srv.URL+path, strings.NewReader(body))
+		if body != "" {
+			req.Header.Set("Content-Type", "application/json")
+		}
+		resp, err := c.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		if into != nil {
+			_ = json.NewDecoder(resp.Body).Decode(into)
+		}
+		return resp.StatusCode
 	}
-	srv := newServer(t, &web.Server{History: h.history, Runner: h.runner, Security: store, Key: testKey})
-	jar, _ := cookiejar.New(nil)
-	c := &http.Client{Jar: jar}
-
-	resp, err := c.Post(srv.URL+"/api/security/read-tokens", "application/json", strings.NewReader(`{"name":"Homarr"}`))
-	if err != nil {
-		t.Fatal(err)
+	if code := send("POST", signin.APIPrefix+"login", `{"password":"correct horse battery staple"}`, nil); code != http.StatusOK {
+		t.Fatalf("signing in answered %d", code)
 	}
 	var made struct {
-		ID, Name, Token string
+		Token struct{ ID string }
+		Value string
 	}
-	json.NewDecoder(resp.Body).Decode(&made)
-	resp.Body.Close()
-	if resp.StatusCode != http.StatusOK || made.Token == "" || made.Name != "Homarr" {
-		t.Fatalf("making a token answered %s with %+v", resp.Status, made)
+	if code := send("POST", signin.APIPrefix+"me/tokens", `{"name":"Homarr","scopes":["read"]}`, &made); code != http.StatusOK || made.Value == "" {
+		t.Fatalf("making a token answered %d %+v", code, made)
 	}
-
-	var list []map[string]any
-	getJSON(t, srv, "/api/security/read-tokens", &list)
-	if len(list) != 1 || list[0]["name"] != "Homarr" || list[0]["id"] != made.ID {
-		t.Fatalf("the list is %v", list)
+	var list struct{ Tokens []map[string]any }
+	send("GET", signin.APIPrefix+"me/tokens", "", &list)
+	if len(list.Tokens) != 2 {
+		t.Fatalf("the list holds %v, not the old token and the new one", list.Tokens)
 	}
-	for key := range list[0] {
-		if key == "hash" || key == "token" {
-			t.Errorf("the list hands out %q", key)
+	reads := func() int {
+		req, _ := http.NewRequest(http.MethodGet, srv.URL+status.StatusPath, nil)
+		req.Header.Set("Authorization", "Bearer "+made.Value)
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
 		}
+		resp.Body.Close()
+		return resp.StatusCode
 	}
-
-	if resp, _ := doJSON(t, srv, http.MethodDelete, "/api/security/read-tokens/"+made.ID, ""); resp.StatusCode != http.StatusOK {
-		t.Fatalf("deleting answered %s", resp.Status)
+	if code := reads(); code != http.StatusOK {
+		t.Fatalf("the new token reads the status with %d", code)
 	}
-	if _, ok := store.MatchReadToken(made.Token); ok {
-		t.Error("the deleted token still opens")
+	if code := send("DELETE", signin.APIPrefix+"me/tokens/"+made.Token.ID, "", nil); code != http.StatusOK {
+		t.Fatalf("ending the token answered %d", code)
+	}
+	if code := reads(); code != http.StatusUnauthorized {
+		t.Errorf("the ended token still reads the status with %d", code)
 	}
 }
 
 func TestTheStatusCarriesArrowLoopsLogo(t *testing.T) {
 	t.Setenv(web.PasswordHashEnv, "")
-	handler, token, _ := statusServer(t, nil)
+	handler, token := statusServer(t, nil)
 	req := httptest.NewRequest(http.MethodGet, status.StatusPath, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	rec := httptest.NewRecorder()

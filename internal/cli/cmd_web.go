@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"syscall"
 	"time"
 
@@ -60,10 +61,23 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
-	secured, err := security.Open(*configPath, key)
+	proxies, bad := web.TrustedProxies()
+	for _, entry := range bad {
+		logf("%s: %q is neither an address nor a range, so it is ignored", web.TrustedProxiesEnv, entry)
+	}
+	signIn, err := security.OpenSignIn(security.SignIn{
+		ConfigPath:   *configPath,
+		Key:          key,
+		PasswordHash: strings.TrimSpace(os.Getenv(web.PasswordHashEnv)),
+		Public:       os.Getenv(security.PublicEnv),
+		Proxies:      proxies,
+		Logf:         logf,
+		CodeLog:      os.Stdout,
+	})
 	if err != nil {
 		return err
 	}
+	defer signIn.Close()
 	hist, err := history.Open(ctx, cfg.History)
 	if err != nil {
 		return err
@@ -114,7 +128,7 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		UI:          ui,
 		Placeholder: webui.Placeholder,
 		Hold:        held,
-		Security:    secured,
+		SignIn:      signIn,
 		Key:         key,
 		Log:         logf,
 		Pairing:     paired,
