@@ -129,7 +129,7 @@ async function cached(file, url) {
 const dataUrl = (buf, type) => `data:${type};base64,${buf.toString('base64')}`
 // The house typeface is licensed, so it is read from a local folder and never committed.
 const fonts = process.env.HOUSE_FONTS ?? join(process.env.LOCALAPPDATA ?? tmpdir(), 'halleluja-fonts')
-const breeSerif = dataUrl(readFileSync(join(fonts, 'bree-serif-light.ttf')), 'font/ttf')
+const breeSerif = dataUrl(readFileSync(join(fonts, 'bree-serif-regular.ttf')), 'font/ttf')
 const bree = dataUrl(readFileSync(join(fonts, 'bree-light.ttf')), 'font/ttf')
 // The desktop window's and the browser's own face, for their bars.
 const lato = dataUrl(await cached('Lato-Regular.ttf', 'https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf'), 'font/ttf')
@@ -138,7 +138,7 @@ const roboto = dataUrl(await cached('Roboto.ttf', 'https://github.com/google/fon
 const logo = dataUrl(readFileSync(join(root, 'docs', 'assets', 'logo.svg')), 'image/svg+xml')
 
 const STYLE = `
-@font-face { font-family: "Bree Serif"; src: url(${breeSerif}); font-weight: 300; }
+@font-face { font-family: "Bree Serif"; src: url(${breeSerif}); font-weight: 400; }
 @font-face { font-family: Bree; src: url(${bree}); font-weight: 300; }
 @font-face { font-family: Lato; src: url(${lato}); }
 @font-face { font-family: Roboto; src: url(${roboto}); font-weight: 100 900; }
@@ -150,7 +150,7 @@ body { position: relative; overflow: hidden; font: 300 16px Bree, sans-serif; ba
 .mark { transform: rotate(-10deg); opacity: .32;
   filter: grayscale(1) brightness(.36) contrast(1.2) drop-shadow(-2px -2px 0 rgba(255,255,255,.16)) drop-shadow(12px 18px 26px rgba(0,0,0,.85)); }
 .vignette { inset: 0; box-shadow: inset 0 0 200px rgba(0,0,0,.6); }
-h1 { font-family: "Bree Serif", serif; font-weight: 300; color: #f4f4f4; text-wrap: balance; }
+h1 { font-family: "Bree Serif", serif; font-weight: 400; color: #f4f4f4; text-wrap: balance; }
 h1 em { font-style: normal; color: #FCC419; }
 .sub { color: #9d9481; }
 
@@ -314,7 +314,7 @@ function featureGraphic(back, front, tagline) {
 body { width: 1024px; height: 500px; }
 .copy { position: absolute; left: 70px; top: 0; bottom: 0; width: 470px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
 .copy img { width: 84px; }
-.name { font: 300 66px/1 "Bree Serif", serif; color: #f4f4f4; }
+.name { font: 400 66px/1 "Bree Serif", serif; color: #f4f4f4; }
 .sub { font-size: 25px; line-height: 1.35; }
 </style></head><body>
 ${backdrop('46%', '-9%', '-4%')}
@@ -457,6 +457,7 @@ ${phone(front, { x: 1530, y: 58, sw: 282 })}
 async function render(browser, html, width, height, file) {
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 2 })
   await page.setContent(html)
+  await page.evaluate(() => document.fonts.load('400 1em "Bree Serif"'))
   await page.evaluate(() => document.fonts.ready)
   // A name too long for its tile shrinks, as the phone's adjustsFontSizeToFit does.
   await page.evaluate(() => {

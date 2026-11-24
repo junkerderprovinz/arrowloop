@@ -17,7 +17,7 @@
  * at x=165 and its centre at y=250, name 132, claim 44, logo-to-text gap 70,
  * name-to-claim gap 8.
  *
- * The name is set in Bree Serif Light and the claim in Bree Light, read as TTF from
+ * The name is set in Bree Serif Regular and the claim in Bree Light, read as TTF from
  * HOUSE_FONTS (default %LOCALAPPDATA%\halleluja-fonts).
  * Deps (global): @resvg/resvg-js, opentype.js.
  *
@@ -77,7 +77,7 @@ for (const [file, size] of [['icon.png', 512], ['favicon.png', 256], ['appicon.p
   writeFileSync(here('./' + file), png(master, size));
 }
 
-const bree = houseFont('bree-serif-light.ttf');
+const bree = houseFont('bree-serif-regular.ttf');
 const claimFont = houseFont('bree-light.ttf');
 
 const nameAsc = bree.ascender * (nameSize / bree.unitsPerEm);
