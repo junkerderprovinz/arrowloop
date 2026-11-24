@@ -42,8 +42,12 @@ func Join(name, dir string) string {
 }
 
 // Parent is the folder above dir on the same target, or empty at the target's
-// root, where the picker goes back to its list of roots.
+// root, where the picker goes back to its list of roots. Above an SFTP or FTP
+// login's home comes the server's root, which the picker reaches no other way.
 func Parent(name, dir string) string {
+	if dir == "" && startsAtHome(name) {
+		return Join(name, "/")
+	}
 	if dir == "" || dir == Root(name) {
 		return ""
 	}
@@ -55,6 +59,13 @@ func Parent(name, dir string) string {
 		return Join(name, "")
 	}
 	return Join(name, up)
+}
+
+// startsAtHome reports whether a path on the target without a leading slash
+// starts in the login's home rather than at the server's root.
+func startsAtHome(name string) bool {
+	backend, _ := config.LoadedData().GetValue(name, "type")
+	return backend == "sftp" || backend == "ftp"
 }
 
 // Folders lists the folders directly inside dir on a target, sorted without
