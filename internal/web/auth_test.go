@@ -44,7 +44,6 @@ func guarded(t *testing.T, password string) (*Server, *httptest.Server) {
 	}}
 	mux := http.NewServeMux()
 	s.signInRoutes(mux)
-	mux.HandleFunc("GET "+passwordSourcePath, s.passwordSource)
 	ok := func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusOK) }
 	mux.HandleFunc("GET /api/jobs", ok)
 	mux.HandleFunc("POST /api/jobs", ok)
@@ -164,8 +163,8 @@ func TestThePasswordFromTheEnvironmentIsNeitherChangedNorResetHere(t *testing.T)
 		t.Fatalf("the hash from the environment left the job list open with %d", code)
 	}
 	// The sign-in page reads this before anyone signed in, to leave out the reset.
-	if code, out := v.send("GET", passwordSourcePath, nil); code != http.StatusOK || out["fromEnv"] != true {
-		t.Fatalf("the password's source answered %d %v", code, out)
+	if code, out := v.send("GET", signin.APIPrefix+"options", nil); code != http.StatusOK || out["pinned"] != true {
+		t.Fatalf("the options answered %d %v", code, out)
 	}
 	v.signIn(guardedPassword)
 	for _, c := range []struct {
@@ -177,7 +176,7 @@ func TestThePasswordFromTheEnvironmentIsNeitherChangedNorResetHere(t *testing.T)
 		{"POST", "reset-code", nil},
 		{"POST", "reset", map[string]string{"code": "AAAA-BBBB-CCCC", "password": "another one"}},
 	} {
-		if code, out := v.send(c.method, signin.APIPrefix+c.path, c.body); code != http.StatusConflict || out["error"] != passwordFromEnv {
+		if code, out := v.send(c.method, signin.APIPrefix+c.path, c.body); code != http.StatusConflict || out["error"] != "pinned" {
 			t.Errorf("%s %s answered %d %v", c.method, c.path, code, out)
 		}
 	}
@@ -187,6 +186,12 @@ func TestThePasswordFromTheEnvironmentIsNeitherChangedNorResetHere(t *testing.T)
 func TestTheSignInKeepsTheContract(t *testing.T) {
 	_, srv := guarded(t, "")
 	signintest.Run(t, srv.Config.Handler, signintest.Options{Password: guardedPassword})
+}
+
+func TestTheSignInKeepsTheContractWithThePasswordFromTheEnvironment(t *testing.T) {
+	t.Setenv(PasswordHashEnv, testHash(t, guardedPassword))
+	_, srv := guarded(t, "")
+	signintest.Run(t, srv.Config.Handler, signintest.Options{Password: guardedPassword, Pinned: true})
 }
 
 // Includes paths dressed up to look like an open route or unlike an API path.

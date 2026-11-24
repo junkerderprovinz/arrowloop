@@ -41,10 +41,6 @@ const PasswordHashEnv = "ARROWLOOP_PASSWORD_HASH"
 // well.
 const TrustedProxiesEnv = "ARROWLOOP_TRUSTED_PROXIES"
 
-// passwordFromEnv is the code a change to the password gets while
-// PasswordHashEnv sets it.
-const passwordFromEnv = "passwordFromEnv"
-
 // HealthPath is what the container's healthcheck asks for. It answers
 // without a visitor, password or not, so the check needs no cookie.
 const HealthPath = signin.APIPrefix + "options"
@@ -66,18 +62,9 @@ func needsSession(rawPath string) bool {
 // fortress status and log check a token of their own, and a call from
 // another instance of the group the phrase's keys.
 var openRoutes = map[string]bool{
-	status.StatusPath:  true,
-	group.DirectPath:   true,
-	status.LogPath:     true,
-	passwordSourcePath: true,
-}
-
-// passwordSourcePath tells the sign-in page whether PasswordHashEnv sets the
-// password, so it offers no reset that would be refused.
-const passwordSourcePath = "/api/password-source"
-
-func (s *Server) passwordSource(w http.ResponseWriter, _ *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]bool{"fromEnv": os.Getenv(PasswordHashEnv) != ""})
+	status.StatusPath: true,
+	group.DirectPath:  true,
+	status.LogPath:    true,
 }
 
 // Protect wraps a handler so the API needs a visitor once anyone can sign
@@ -148,36 +135,11 @@ func (s *Server) statusOpens(r *http.Request) error {
 }
 
 // signInRoutes serves the sign-in's contract and the pages a browser is sent
-// to. While PasswordHashEnv sets the password, nothing here changes or
-// resets it, and the routes that would answer passwordFromEnv.
+// to.
 func (s *Server) signInRoutes(mux *http.ServeMux) {
 	h := s.SignIn.Handler()
-	if os.Getenv(PasswordHashEnv) != "" {
-		inner := h
-		h = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if setsPassword(r.Method, r.URL.Path) {
-				w.Header().Set("Cache-Control", "no-store")
-				writeJSON(w, http.StatusConflict, map[string]string{"error": passwordFromEnv})
-				return
-			}
-			inner.ServeHTTP(w, r)
-		})
-	}
 	mux.Handle(signin.APIPrefix, h)
 	mux.Handle(signin.BrowserPrefix, h)
-}
-
-// setsPassword reports whether a request to the contract sets, removes or
-// resets the password.
-func setsPassword(method, rawPath string) bool {
-	p := strings.TrimPrefix(path.Clean("/"+rawPath), signin.APIPrefix)
-	switch {
-	case p == "me/password":
-		return method == http.MethodPut || method == http.MethodDelete
-	case p == "reset-code", p == "reset":
-		return method == http.MethodPost
-	}
-	return false
 }
 
 // signedInMoments reports whether the visitor of r signed in moments ago,

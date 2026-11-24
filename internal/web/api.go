@@ -264,7 +264,6 @@ func (s *Server) Handler() http.Handler {
 	// needsSession; the sign-in's own decide for themselves.
 	if s.SignIn != nil {
 		s.signInRoutes(mux)
-		mux.HandleFunc("GET /api/password-source", s.passwordSource)
 	}
 
 	if s.Window != nil {

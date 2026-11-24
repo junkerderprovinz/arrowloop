@@ -16,7 +16,7 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/godbus/dbus/v5 v5.2.4
 	github.com/gofrs/flock v0.13.2
-	github.com/junkerderprovinz/parleyport/kit v1.1.0
+	github.com/junkerderprovinz/parleyport v1.3.4-0.20261124004021-c0a434f74335
 	github.com/nicholas-fedor/shoutrrr v0.25.0
 	github.com/pkg/sftp v1.13.12
 	github.com/rclone/gofakes3 v0.0.12
@@ -118,7 +118,7 @@ require (
 	github.com/go-chi/chi/v5 v5.5.0 // indirect
 	github.com/go-darwin/apfs v0.0.0-20211011131704-f84b94dbf348 // indirect
 	github.com/go-git/go-billy/v5 v5.9.2 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.9 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect

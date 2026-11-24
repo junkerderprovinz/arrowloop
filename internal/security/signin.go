@@ -1,6 +1,7 @@
 package security
 
 import (
+	"cmp"
 	"context"
 	"crypto/sha256"
 	"encoding/base32"
@@ -72,15 +73,7 @@ func OpenSignIn(o SignIn) (*signin.Auth, error) {
 	if err != nil {
 		return nil, err
 	}
-	var store signin.Store = file
-	if o.PasswordHash != "" {
-		store = envOwner{Store: file, hash: o.PasswordHash, now: o.now}
-	}
-	ctx := context.Background()
-	if err := endSessionsOnNewHash(ctx, store, o.PasswordHash); err != nil {
-		return nil, err
-	}
-	public, err := o.publicURL(ctx, store, old.Get())
+	public, err := o.publicURL(context.Background(), file, old.Get())
 	if err != nil {
 		return nil, err
 	}
@@ -91,13 +84,17 @@ func OpenSignIn(o SignIn) (*signin.Auth, error) {
 	return signin.Open(signin.Config{
 		Domain:      "arrowloop",
 		Name:        "ArrowLoop",
-		Store:       store,
+		Store:       file,
 		Seal:        seal,
 		Owner:       true,
 		TokenPrefix: "al",
 		Public:      func() *url.URL { return public },
 		Proxies:     o.Proxies,
-		Import:      func(context.Context) ([]signin.Imported, error) { return imported(old.Get(), o.PasswordHash) },
+		PinnedPassword: signin.PinnedPassword{
+			Hash:  o.PasswordHash,
+			Check: func(hash, pw string) bool { return VerifyPassword(o.Key, pw, hash) },
+		},
+		Import: func(context.Context) ([]signin.Imported, error) { return imported(old.Get(), o.PasswordHash) },
 		Legacy: signin.Legacy{
 			Password: func(_ context.Context, hash, pw string) (bool, error) { return VerifyPassword(o.Key, pw, hash), nil },
 			Recovery: func(hash, code string) bool { return MatchRecoveryCode(code, []string{hash}) == 0 },
@@ -114,33 +111,25 @@ func OpenSignIn(o SignIn) (*signin.Auth, error) {
 	})
 }
 
-func (o SignIn) now() time.Time {
-	if o.Now != nil {
-		return o.Now()
-	}
-	return time.Now()
-}
-
 // imported is the owner as security.json kept it. An install that set
 // nothing there hands over nothing, and the package makes the owner when the
-// first password is set.
+// first password is set. The password from ARROWLOOP_PASSWORD_HASH stays
+// outside, as the pinned one, and the passkeys and the second factor came
+// under whichever password was in force.
 func imported(st State, envHash string) ([]signin.Imported, error) {
-	hash := st.PasswordHash
-	if envHash != "" {
-		hash = envHash
-	}
-	if hash == "" && len(st.ReadTokens) == 0 {
+	inForce := cmp.Or(envHash, st.PasswordHash)
+	if inForce == "" && len(st.ReadTokens) == 0 {
 		return nil, nil
 	}
-	acc := signin.Imported{ID: ownerID, Name: ownerName, Role: ownerName, Owner: true, Password: hash}
-	if hash != "" && st.TOTP.Enabled {
+	acc := signin.Imported{ID: ownerID, Name: ownerName, Role: ownerName, Owner: true, Password: st.PasswordHash}
+	if inForce != "" && st.TOTP.Enabled {
 		secret, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(strings.ToUpper(strings.TrimSpace(st.TOTP.Secret)))
 		if err != nil {
 			return nil, fmt.Errorf("the second factor in %s: %w", FileName, err)
 		}
 		acc.TOTP, acc.TOTPLast, acc.Recovery = secret, int64(st.TOTP.LastStep), st.TOTP.Recovery
 	}
-	if keys := passkeysUnder(st, hash); len(keys) > 0 {
+	if keys := passkeysUnder(st, inForce); len(keys) > 0 {
 		acc.Handle = st.PasskeyUser
 		for _, p := range keys {
 			acc.Passkeys = append(acc.Passkeys, signin.ImportedPasskey{
@@ -209,51 +198,11 @@ func (s *Store) Drop() error {
 // refuses every password.
 const droppedHash = "moved-to-signin.json"
 
-// The documents ArrowLoop keeps beside the package's in the same store.
+// The document ArrowLoop keeps beside the package's in the same store.
 const (
 	appKind  = "arrowloop"
-	envID    = "env"
 	publicID = "public"
 )
-
-// endSessionsOnNewHash ends every session when ARROWLOOP_PASSWORD_HASH
-// changed since the last start, since a new hash is how somebody locks out
-// whoever knew the old password.
-func endSessionsOnNewHash(ctx context.Context, store signin.Store, hash string) error {
-	now := ""
-	if hash != "" {
-		now = Fingerprint(hash)
-	}
-	var was struct {
-		Fingerprint string `json:"fingerprint"`
-	}
-	data, err := store.Get(ctx, appKind, envID)
-	switch {
-	case errors.Is(err, signin.ErrNotFound):
-		if now == "" {
-			return nil
-		}
-	case err != nil:
-		return err
-	default:
-		if err := json.Unmarshal(data, &was); err != nil {
-			return err
-		}
-		if was.Fingerprint == now {
-			return nil
-		}
-	}
-	sessions, err := store.List(ctx, "session")
-	if err != nil {
-		return err
-	}
-	docs := make([]signin.Doc, 0, len(sessions)+1)
-	for _, s := range sessions {
-		docs = append(docs, signin.Doc{Kind: s.Kind, ID: s.ID})
-	}
-	mark, _ := json.Marshal(map[string]string{"fingerprint": now})
-	return store.Apply(ctx, append(docs, signin.Doc{Kind: appKind, ID: envID, Data: mark})...)
-}
 
 // publicURL is PublicEnv, or else the address the passkeys of the version
 // before were registered at, which ArrowLoop then remembers. That version
@@ -310,100 +259,6 @@ func ParsePublic(raw string) (*url.URL, error) {
 		host = "[" + host + "]"
 	}
 	return &url.URL{Scheme: u.Scheme, Host: host}, nil
-}
-
-// envOwner is the store as the package sees it while ARROWLOOP_PASSWORD_HASH
-// is set: the owner's password is that hash, checked through Legacy.Password
-// on every sign-in, whatever the package last wrote. An install without an
-// owner yet gets one, so the hash closes an app that was open.
-type envOwner struct {
-	signin.Store
-	hash string
-	now  func() time.Time
-}
-
-func (s envOwner) Get(ctx context.Context, kind, id string) ([]byte, error) {
-	data, err := s.Store.Get(ctx, kind, id)
-	if kind != "account" {
-		return data, err
-	}
-	if errors.Is(err, signin.ErrNotFound) && id == ownerID {
-		if has, herr := s.hasOwner(ctx); herr != nil || has {
-			return data, err
-		}
-		return s.made()
-	}
-	if err != nil {
-		return data, err
-	}
-	return s.withHash(data)
-}
-
-func (s envOwner) List(ctx context.Context, kind string) ([]signin.Doc, error) {
-	docs, err := s.Store.List(ctx, kind)
-	if err != nil || kind != "account" {
-		return docs, err
-	}
-	owned := false
-	for i := range docs {
-		if isOwner(docs[i].Data) {
-			owned = true
-		}
-		if docs[i].Data, err = s.withHash(docs[i].Data); err != nil {
-			return nil, err
-		}
-	}
-	if !owned {
-		made, err := s.made()
-		if err != nil {
-			return nil, err
-		}
-		docs = append(docs, signin.Doc{Kind: kind, ID: ownerID, Data: made})
-	}
-	return docs, nil
-}
-
-func (s envOwner) hasOwner(ctx context.Context) (bool, error) {
-	docs, err := s.Store.List(ctx, "account")
-	if err != nil {
-		return false, err
-	}
-	for _, d := range docs {
-		if isOwner(d.Data) {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
-func isOwner(data []byte) bool {
-	var acc struct {
-		Owner bool `json:"owner"`
-	}
-	return json.Unmarshal(data, &acc) == nil && acc.Owner
-}
-
-// withHash puts the hash in place of the owner's password.
-func (s envOwner) withHash(data []byte) ([]byte, error) {
-	if !isOwner(data) {
-		return data, nil
-	}
-	var acc map[string]json.RawMessage
-	if err := json.Unmarshal(data, &acc); err != nil {
-		return nil, err
-	}
-	hash, _ := json.Marshal(s.hash)
-	delete(acc, "password")
-	acc["legacyPassword"] = hash
-	return json.Marshal(acc)
-}
-
-// made is the owner for an install that had none.
-func (s envOwner) made() ([]byte, error) {
-	return json.Marshal(map[string]any{
-		"id": ownerID, "name": ownerName, "role": ownerName, "owner": true, "via": signin.ViaPassword,
-		"created": s.now().UTC(), "epoch": 0, "legacyPassword": s.hash,
-	})
 }
 
 // logHandler writes the package's log through ArrowLoop's, and the reset
