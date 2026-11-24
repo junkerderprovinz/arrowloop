@@ -1,1 +1,0 @@
-History now spells out where every file went, from your phone to the server or the other way round, so nobody has to guess anymore. And every VPN provider finally shows up with its own logo.

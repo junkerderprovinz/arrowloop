@@ -63,7 +63,7 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
-    after: '2.8.6',
+    after: '2.8.0',
     changes: [
       {
         id: 'sign-in',
@@ -90,22 +90,9 @@ export const RELEASES: Release[] = [
         text: 'new.change.passwordQuestion',
       },
       { id: 'public-url', text: 'new.change.publicUrl' },
-    ],
-  },
-  {
-    after: '2.8.4',
-    changes: [{ id: 'trusted-wifi', text: 'new.change.trustedWifi' }],
-  },
-  {
-    after: '2.8.3',
-    changes: [
+      { id: 'trusted-wifi', text: 'new.change.trustedWifi' },
       { id: 'automation-start', text: 'new.change.automationStart' },
       { id: 'update-now', text: 'new.change.updateNow' },
-    ],
-  },
-  {
-    after: '2.8.1',
-    changes: [
       {
         id: 'notify-tile',
         at: ['/settings/notifications'],

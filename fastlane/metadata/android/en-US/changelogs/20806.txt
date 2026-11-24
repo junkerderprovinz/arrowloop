@@ -1,1 +1,0 @@
-Two-way sync with a WebDAV share like Stalwart no longer wants to send everything again on each run, and MQTT notifications use a fixed WebSocket library.

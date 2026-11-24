@@ -79,41 +79,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
-    <release version="2.8.6" date="2026-11-24">
+    <release version="2.9.0" date="2026-11-24">
       <description>
-        <p>Two-way jobs onto a WebDAV share that keeps no file times, such as Stalwart's, settle after one run, and the WebSocket library for MQTT notifications is the fixed version.</p>
+        <p>The sign-in is new, with sign-in services such as Pocket ID, sessions that last through restarts and API tokens for dashboards and scripts. The phone gets the built-in VPN, which can leave out the wifi you trust, automation apps can start a job, and targets take any name.</p>
       </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.6</url>
-    </release>
-    <release version="2.8.5" date="2026-11-23">
-      <description>
-        <p>On the phone a VPN can leave out the wifi you trust, targets take any name and keep their jobs through a rename, and the Play version runs on Chromebooks.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.5</url>
-    </release>
-    <release version="2.8.4" date="2026-11-22">
-      <description>
-        <p>Automation apps such as Tasker can start a job, ArrowLoop works fully without a password, and jobs through the VPN reach SMB shares and bring WireGuard up on Android.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.4</url>
-    </release>
-    <release version="2.8.3" date="2026-11-21">
-      <description>
-        <p>A job no longer stops over a file whose times drifted apart on a target without checksums, and dashboards that read container labels list ArrowLoop on their own.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.3</url>
-    </release>
-    <release version="2.8.2" date="2026-11-21">
-      <description>
-        <p>The Android app gets the built-in VPN and finds your microSD card, run notes speak your language, and copies to MEGA are recorded again.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.2</url>
-    </release>
-    <release version="2.8.1" date="2026-11-20">
-      <description>
-        <p>History tells you which way each file went, and every VPN provider shows its own logo.</p>
-      </description>
-      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.8.1</url>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.9.0</url>
     </release>
     <release version="2.8.0" date="2026-11-20">
       <description>
