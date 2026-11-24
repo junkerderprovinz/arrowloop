@@ -15,7 +15,7 @@ import {
 
 import type { Translate, TranslationKey } from './i18n.data'
 
-type ErrorCode = SignInErrorCode | SignInClientError | 'passwordFromEnv'
+type ErrorCode = SignInErrorCode | SignInClientError | 'pinned'
 
 // Typed by the kit's own lists, so a code it adds later fails the build until it has words.
 const ERRORS: Record<ErrorCode, TranslationKey> = {
@@ -44,10 +44,10 @@ const ERRORS: Record<ErrorCode, TranslationKey> = {
   passkeyRefused: 'signin.error.passkeyRefused',
   passkeysUnavailable: 'signin.error.passkeysUnavailable',
   passkeyUnknown: 'signin.error.passkeyUnknown',
-  passwordFromEnv: 'password.env',
   passwordLong: 'signin.error.passwordLong',
   passwordSet: 'signin.error.passwordSet',
   passwordShort: 'signin.error.passwordShort',
+  pinned: 'password.env',
   resetRefused: 'signin.error.resetRefused',
   roleUnknown: 'signin.error.roleUnknown',
   scopeUnknown: 'signin.error.scopeUnknown',

@@ -6,7 +6,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { LOGO_GOLD, LogoMark } from '../components/LogoMark'
 import { IconConfirm } from '../components/glyphs'
 import { Button } from '../lib/glimstone/Button'
-import { api } from '../lib/api'
 import { useT } from '../lib/i18n'
 import { signIn } from '../lib/signIn'
 import { arrivedText, cardText, errorWords } from '../lib/signInWords'
@@ -39,20 +38,13 @@ export function SignIn({
   note,
   arrived,
 }: {
-  offer: SignInOffer
+  offer: SignInOffer & { pinned?: boolean }
   onIn: () => void
   note?: string
   arrived?: string | null
 }) {
   const { t, lang } = useT()
   const [removed, setRemoved] = useState<SignInRemoved | null>(null)
-  const [fromEnv, setFromEnv] = useState(false)
-  useEffect(() => {
-    api
-      .passwordSource()
-      .then((s) => setFromEnv(s.fromEnv))
-      .catch(() => {})
-  }, [])
 
   // App repaints on a switch of the system's look, and it is not mounted yet.
   useEffect(() => followDevice(storedTheme()), [])
@@ -79,7 +71,7 @@ export function SignIn({
       logo={<LogoMark size={64} style={{ color: LOGO_GOLD }} />}
       appName="ArrowLoop"
       text={cardText(t, lang)}
-      reset={!fromEnv}
+      reset={!offer.pinned}
       minPassword={offer.minPassword}
       note={note}
       error={arrived ? arrivedText(t, arrived) : undefined}
