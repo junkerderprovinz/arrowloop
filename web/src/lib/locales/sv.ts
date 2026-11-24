@@ -605,6 +605,8 @@ const sv: Translations = {
   'targets.drives': 'Diskar',
   'targets.drivesEmpty': 'Ingen disk är anmäld. Anmäl en så att ett jobb hittar den igen även om den kommer tillbaka på en annan bokstav.',
   'targets.driveExplain': 'En enhetsbokstav är ingen identitet: disken som hade en bokstav förra veckan kan ha en annan i dag, och den gamla kan då tillhöra något helt annat. Vid anmälan skrivs en liten markering på själva disken, så att ett jobb följer disken och inte bokstaven. Detsamma gäller en nätverksutdelning.',
+  'targets.drivesEmptyMount': 'Ingen disk är anmäld. Anmäl en så att ett jobb hittar den igen även om den monteras någon annanstans.',
+  'targets.driveExplainMount': 'En disk kommer inte alltid tillbaka i samma mapp: en USB-disk som i dag finns i /media/usb kan nästa gång monteras i /media/usb1, och då kan en annan disk finnas i /media/usb. Vid anmälan skrivs en liten markering på själva disken, så att ett jobb hittar disken var den än är monterad. Detsamma gäller en monterad nätverksutdelning.',
   'targets.registerDrive': 'Anmäl en disk',
   'targets.driveLabel': 'Namn',
   'targets.driveLabelHint': 'Vad du kallar den här disken. Precis det ser du när den inte är ansluten.',

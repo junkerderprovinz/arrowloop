@@ -605,6 +605,8 @@ const ro: Translations = {
   'targets.drives': 'Discuri',
   'targets.drivesEmpty': 'Niciun disc înregistrat. Înregistrați unul ca o sarcină să îl regăsească chiar dacă revine cu altă literă.',
   'targets.driveExplain': 'Litera unității nu este o identitate: discul care avea o literă săptămâna trecută poate avea alta astăzi, iar cea veche poate aparține între timp cu totul altcuiva. La înregistrare se scrie un mic semn chiar pe disc, astfel încât o sarcină să urmeze discul, nu litera. Același lucru este valabil și pentru o partajare de rețea.',
+  'targets.drivesEmptyMount': 'Niciun disc înregistrat. Înregistrați unul ca o sarcină să îl regăsească chiar dacă este montat în altă parte.',
+  'targets.driveExplainMount': 'Un disc nu revine mereu în același dosar: un disc USB care azi este în /media/usb poate fi montat data viitoare în /media/usb1, iar în /media/usb poate exista atunci alt disc. La înregistrare se scrie un mic semn chiar pe disc, astfel încât o sarcină să găsească discul oriunde ar fi montat. Același lucru este valabil și pentru o partajare de rețea montată.',
   'targets.registerDrive': 'Înregistrează un disc',
   'targets.driveLabel': 'Nume',
   'targets.driveLabelHint': 'Cum numiți acest disc. Exact asta veți vedea când nu este conectat.',

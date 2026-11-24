@@ -21,7 +21,7 @@ const checked = vi.fn((name: string) =>
   ),
 )
 const connected = vi.fn((_name: string) => {})
-const volumes = vi.fn(() => Promise.resolve({ volumes: [] as Volume[] }))
+const volumes = vi.fn(() => Promise.resolve({ volumes: [] as Volume[], registering: true, letters: true }))
 const deleteRemote = vi.fn((name: string) => Promise.resolve({ deleted: name }))
 const forgetVolume = vi.fn((id: string) => Promise.resolve({ forgotten: id }))
 
@@ -54,7 +54,7 @@ const { Targets } = await import('./Targets')
 
 beforeEach(() => {
   volumes.mockReset()
-  volumes.mockImplementation(() => Promise.resolve({ volumes: [] as Volume[] }))
+  volumes.mockImplementation(() => Promise.resolve({ volumes: [] as Volume[], registering: true, letters: true }))
   deleteRemote.mockReset()
   deleteRemote.mockImplementation((name: string) => Promise.resolve({ deleted: name }))
 })
@@ -170,7 +170,7 @@ describe('Targets', () => {
 
   it('says why a drive could not be forgotten', async () => {
     const drive: Volume = { id: 'abc', label: 'Backup drive', mount: '/mnt/backup',attached: true, lastSeen: null, path: 'volume:abc' }
-    volumes.mockImplementation(() => Promise.resolve({ volumes: [drive] }))
+    volumes.mockImplementation(() => Promise.resolve({ volumes: [drive], registering: true, letters: true }))
     forgetVolume.mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
     show()
     await screen.findByText('Backup drive')
@@ -187,5 +187,37 @@ describe('Targets', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0])
     const name = (await screen.findByDisplayValue('home')) as HTMLInputElement
     expect(name.readOnly).toBe(false)
+  })
+})
+
+describe('Drives', () => {
+  const drive: Volume = { id: 'abc', label: 'Backup drive', mount: '/root/.config', attached: true, lastSeen: null, path: 'volume:abc' }
+
+  it('offers no drive to register inside a container', async () => {
+    volumes.mockImplementation(() => Promise.resolve({ volumes: [], registering: false, letters: false }))
+    show()
+    await screen.findByText('home')
+    expect(screen.queryByRole('button', { name: 'Register a drive' })).toBeNull()
+    expect(screen.queryByText('Drives')).toBeNull()
+  })
+
+  it('keeps a drive registered earlier in sight where no new one can be registered', async () => {
+    volumes.mockImplementation(() => Promise.resolve({ volumes: [drive], registering: false, letters: false }))
+    show()
+    expect(await screen.findByText('Backup drive')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Register a drive' })).toBeNull()
+  })
+
+  it('speaks of folders rather than letters where the system has none', async () => {
+    volumes.mockImplementation(() => Promise.resolve({ volumes: [], registering: true, letters: false }))
+    show()
+    expect(await screen.findByText(/after it is mounted somewhere else/)).toBeTruthy()
+    expect(screen.queryByText(/letter/)).toBeNull()
+  })
+
+  it('offers to register a drive where drives go by letter', async () => {
+    show()
+    expect(await screen.findByRole('button', { name: 'Register a drive' })).toBeTruthy()
+    expect(await screen.findByText(/another letter/)).toBeTruthy()
   })
 })

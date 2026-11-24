@@ -605,6 +605,8 @@ const hu: Translations = {
   'targets.drives': 'Lemezek',
   'targets.drivesEmpty': 'Nincs bejelentett lemez. Jelentsen be egyet, hogy egy feladat akkor is megtalálja, ha másik betűjellel tér vissza.',
   'targets.driveExplain': 'A meghajtóbetű nem azonosság: az a lemez, amely múlt héten egy betűt viselt, ma másikat kaphat, a régi pedig addigra már valami egészen máshoz tartozhat. A bejelentéskor egy kis jelölés kerül magára a lemezre, hogy a feladat a lemezt kövesse, ne a betűt. Ugyanez igaz egy hálózati megosztásra is.',
+  'targets.drivesEmptyMount': 'Nincs bejelentett lemez. Jelentsen be egyet, hogy egy feladat akkor is megtalálja, ha máshová csatolják.',
+  'targets.driveExplainMount': 'Egy lemez nem mindig ugyanabba a mappába tér vissza: a ma a /media/usb alatt lévő USB-lemezt legközelebb a /media/usb1 alá csatolhatják, a /media/usb alatt pedig addigra egy másik lemez lehet. A bejelentéskor egy kis jelölés kerül magára a lemezre, hogy a feladat megtalálja a lemezt, bárhová is csatolták. Ugyanez igaz egy csatolt hálózati megosztásra is.',
   'targets.registerDrive': 'Lemez bejelentése',
   'targets.driveLabel': 'Név',
   'targets.driveLabelHint': 'Ahogyan ezt a lemezt nevezi. Pontosan ezt látja majd, amikor nincs csatlakoztatva.',

@@ -605,6 +605,8 @@ const fi: Translations = {
   'targets.drives': 'Levyt',
   'targets.drivesEmpty': 'Yhtään levyä ei ole ilmoitettu. Ilmoita yksi, jotta työ löytää sen uudelleen, vaikka se palaisi toisella kirjaimella.',
   'targets.driveExplain': 'Asemakirjain ei ole tunniste: levyllä, jolla oli viime viikolla yksi kirjain, voi tänään olla toinen, ja vanha voi siihen mennessä kuulua jollekin aivan muulle. Ilmoittaminen kirjoittaa levylle itselleen pienen merkinnän, jotta työ seuraa levyä eikä kirjainta. Sama pätee verkkojakoon.',
+  'targets.drivesEmptyMount': 'Yhtään levyä ei ole ilmoitettu. Ilmoita yksi, jotta työ löytää sen uudelleen, vaikka se liitettäisiin muualle.',
+  'targets.driveExplainMount': 'Levy ei aina palaa samaan kansioon: tänään kansiossa /media/usb oleva USB-levy voidaan seuraavalla kerralla liittää kansioon /media/usb1, ja kansiossa /media/usb voi silloin olla toinen levy. Ilmoittaminen kirjoittaa levylle itselleen pienen merkinnän, jotta työ löytää levyn, mihin tahansa se on liitetty. Sama pätee liitettyyn verkkojakoon.',
   'targets.registerDrive': 'Ilmoita levy',
   'targets.driveLabel': 'Nimi',
   'targets.driveLabelHint': 'Miksi kutsut tätä levyä. Juuri sen näet, kun se ei ole liitettynä.',

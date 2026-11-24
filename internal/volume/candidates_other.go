@@ -1,4 +1,4 @@
-//go:build !windows
+//go:build !windows && !linux
 
 package volume
 
@@ -6,11 +6,13 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strings"
 )
 
 // platformCandidates lists the mount points a marked volume could be sitting
 // on: the folders in /Volumes (macOS), /media, /run/media/<user> and /mnt, and
-// in the user's home, where userspace tools often mount shares.
+// in the user's home, where userspace tools often mount shares. Hidden folders
+// hold settings and system mounts such as /Volumes/.timemachine, never a drive.
 func platformCandidates() []string {
 	var out []string
 	add := func(dir string) {
@@ -19,7 +21,7 @@ func platformCandidates() []string {
 			return
 		}
 		for _, e := range entries {
-			if e.IsDir() {
+			if e.IsDir() && !strings.HasPrefix(e.Name(), ".") {
 				out = append(out, filepath.Join(dir, e.Name()))
 			}
 		}

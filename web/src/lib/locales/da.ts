@@ -605,6 +605,8 @@ const da: Translations = {
   'targets.drives': 'Diske',
   'targets.drivesEmpty': 'Der er ikke anmeldt nogen disk. Anmeld en, så et job finder den igen, også hvis den kommer tilbage på et andet bogstav.',
   'targets.driveExplain': 'Et drevbogstav er ikke en identitet: disken, der havde ét bogstav i sidste uge, kan have et andet i dag, og det gamle tilhører måske allerede noget andet. Ved anmeldelse skrives en lille markering på selve disken, så et job følger disken og ikke bogstavet. Det samme gælder en netværksdeling.',
+  'targets.drivesEmptyMount': 'Der er ikke anmeldt nogen disk. Anmeld en, så et job finder den igen, også når den monteres et andet sted.',
+  'targets.driveExplainMount': 'En disk kommer ikke altid tilbage i den samme mappe: en USB-disk, der i dag ligger i /media/usb, kan næste gang blive monteret i /media/usb1, og til den tid kan der ligge en anden disk i /media/usb. Ved anmeldelse skrives en lille markering på selve disken, så et job finder disken, uanset hvor den er monteret. Det samme gælder en monteret netværksdeling.',
   'targets.registerDrive': 'Anmeld en disk',
   'targets.driveLabel': 'Navn',
   'targets.driveLabelHint': 'Hvad du kalder denne disk. Præcis det ser du, når den ikke er tilsluttet.',

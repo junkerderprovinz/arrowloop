@@ -886,6 +886,10 @@ export const en = {
     'No drives are registered. Register one so a job can find it again after it comes back on another letter.',
   'targets.driveExplain':
     'A drive letter is not an identity: the disk that was one letter last week can be another today, and that letter can by then belong to something else. Registering writes a small marker on the drive itself, so a job follows the disk rather than the letter. This works for a network share too.',
+  'targets.drivesEmptyMount':
+    'No drives are registered. Register one so a job can find it again after it is mounted somewhere else.',
+  'targets.driveExplainMount':
+    'A disk does not always come back at the same folder: a USB disk at /media/usb today can be mounted at /media/usb1 next time, and by then /media/usb may hold another disk. Registering writes a small marker on the disk itself, so a job finds the disk wherever it is mounted. This works for a mounted network share too.',
   'targets.registerDrive': 'Register a drive',
   'targets.driveLabel': 'Name',
   'targets.driveLabelHint': 'What you call this disk. It is what you will see when it is not plugged in.',
@@ -3390,6 +3394,10 @@ export const de: Translations = {
     'Es ist kein Datenträger angemeldet. Melde einen an, damit ein Auftrag ihn wiederfindet, auch wenn er unter einem anderen Buchstaben zurückkommt.',
   'targets.driveExplain':
     'Ein Laufwerksbuchstabe ist keine Kennung: Die Platte von letzter Woche kann heute einen anderen tragen, und der alte Buchstabe gehört dann womöglich etwas ganz anderem. Beim Anmelden wird eine kleine Markierung auf den Datenträger selbst geschrieben, damit ein Auftrag der Platte folgt und nicht dem Buchstaben. Für eine Netzwerkfreigabe gilt dasselbe.',
+  'targets.drivesEmptyMount':
+    'Es ist kein Datenträger angemeldet. Melde einen an, damit ein Auftrag ihn wiederfindet, auch wenn er woanders eingehängt wird.',
+  'targets.driveExplainMount':
+    'Eine Platte kommt nicht immer im selben Ordner zurück: Ein USB-Laufwerk unter /media/usb kann beim nächsten Mal unter /media/usb1 eingehängt werden, und unter /media/usb liegt dann womöglich eine andere Platte. Beim Anmelden wird eine kleine Markierung auf den Datenträger selbst geschrieben, damit ein Auftrag die Platte findet, wo immer sie eingehängt ist. Für eine eingehängte Netzwerkfreigabe gilt dasselbe.',
   'targets.registerDrive': 'Datenträger anmelden',
   'targets.driveLabel': 'Name',
   'targets.driveLabelHint':

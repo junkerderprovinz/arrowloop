@@ -605,6 +605,8 @@ const lt: Translations = {
   'targets.drives': 'Diskai',
   'targets.drivesEmpty': 'Neužregistruotas nė vienas diskas. Užregistruokite vieną, kad užduotis jį rastų net ir tada, kai jis grįš su kita raide.',
   'targets.driveExplain': 'Disko raidė nėra tapatybė: diskas, praėjusią savaitę turėjęs vieną raidę, šiandien gali turėti kitą, o senoji tuo metu jau gali priklausyti kam kitam. Registruojant ant paties disko įrašomas mažas ženklas, kad užduotis sektų diską, o ne raidę. Tas pats galioja ir tinklo bendriniam aplankui.',
+  'targets.drivesEmptyMount': 'Neužregistruotas nė vienas diskas. Užregistruokite vieną, kad užduotis jį rastų net ir tada, kai jis bus prijungtas kitur.',
+  'targets.driveExplainMount': 'Diskas ne visada grįžta į tą patį aplanką: USB diskas, kuris šiandien yra /media/usb, kitą kartą gali būti prijungtas prie /media/usb1, o /media/usb tuo metu gali būti kitas diskas. Registruojant ant paties disko įrašomas mažas ženklas, kad užduotis rastų diską, kad ir kur jis būtų prijungtas. Tas pats galioja ir prijungtam tinklo bendriniam aplankui.',
   'targets.registerDrive': 'Užregistruoti diską',
   'targets.driveLabel': 'Pavadinimas',
   'targets.driveLabelHint': 'Kaip vadinate šį diską. Būtent tai matysite, kai jis nebus prijungtas.',

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -14,6 +15,15 @@ func withCandidates(t *testing.T, dirs ...string) {
 	previous := Candidates
 	Candidates = func() []string { return dirs }
 	t.Cleanup(func() { Candidates = previous })
+}
+
+// unplug takes a drive away the way pulling it out does: its mount point no
+// longer holds the marker.
+func unplug(t *testing.T, mount string) {
+	t.Helper()
+	if err := os.Rename(mount, filepath.Join(t.TempDir(), "unplugged")); err != nil {
+		t.Fatalf("unplug: %v", err)
+	}
 }
 
 func TestAVolumeIsFoundAfterItMoves(t *testing.T) {
@@ -131,6 +141,7 @@ func TestALabelSurvivesTheDriveLeaving(t *testing.T) {
 	}
 
 	// Unplugged: only the register is left.
+	unplug(t, dir)
 	withCandidates(t)
 	if got := Describe(Prefix + m.ID + "/holiday"); got != "Backup drive/holiday" {
 		t.Errorf("an unplugged drive described itself as %q, which names nothing anybody owns", got)
@@ -238,5 +249,34 @@ func TestForgettingAnAttachedVolumeRemovesIt(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(mount, filepath.FromSlash(markerPath))); !os.IsNotExist(err) {
 		t.Errorf("the marker is still on the volume: %v", err)
+	}
+}
+
+// A drive registered on a place that is no longer offered keeps its jobs
+// running, because it is also looked for where it was last seen.
+func TestADriveIsFoundWhereItWasLastSeen(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("every drive letter is a candidate on Windows")
+	}
+	SetRegistry(filepath.Join(t.TempDir(), "volumes.json"))
+	t.Cleanup(func() { SetRegistry("") })
+
+	mount := t.TempDir()
+	withCandidates(t, mount)
+	m, err := Mark(mount, "Stick")
+	if err != nil {
+		t.Fatalf("mark: %v", err)
+	}
+	if _, err := Find(m.ID); err != nil {
+		t.Fatalf("find while offered: %v", err)
+	}
+
+	withCandidates(t)
+	v, err := Find(m.ID)
+	if err != nil {
+		t.Fatalf("a drive still where it was registered counts as not attached: %v", err)
+	}
+	if v.Mount != mount {
+		t.Errorf("found at %q, want %q", v.Mount, mount)
 	}
 }

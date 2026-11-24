@@ -605,6 +605,8 @@ const ko: Translations = {
   'targets.drives': '디스크',
   'targets.drivesEmpty': '등록된 디스크가 없습니다. 다른 문자로 돌아와도 작업이 다시 찾을 수 있도록 하나 등록하세요.',
   'targets.driveExplain': '드라이브 문자는 신원이 아닙니다. 지난주에 어떤 문자를 쓰던 디스크가 오늘은 다른 문자를 받을 수 있고, 그 옛 문자는 이미 다른 것에 속해 있을 수도 있습니다. 등록하면 디스크 자체에 작은 표시를 적어 두므로, 작업은 문자가 아니라 디스크를 따라갑니다. 네트워크 공유도 마찬가지입니다.',
+  'targets.drivesEmptyMount': '등록된 디스크가 없습니다. 다른 곳에 마운트되어도 작업이 다시 찾을 수 있도록 하나 등록하세요.',
+  'targets.driveExplainMount': '디스크가 항상 같은 폴더로 돌아오지는 않습니다. 오늘 /media/usb에 있는 USB 디스크가 다음에는 /media/usb1에 마운트될 수 있고, 그때 /media/usb에는 다른 디스크가 있을 수 있습니다. 등록하면 디스크 자체에 작은 표시를 적어 두므로, 작업은 디스크가 어디에 마운트되어 있든 찾아냅니다. 마운트된 네트워크 공유도 마찬가지입니다.',
   'targets.registerDrive': '디스크 등록',
   'targets.driveLabel': '이름',
   'targets.driveLabelHint': '이 디스크를 부르는 이름입니다. 연결되어 있지 않을 때 보이는 것이 바로 이것입니다.',

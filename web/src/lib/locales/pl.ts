@@ -605,6 +605,8 @@ const pl: Translations = {
   'targets.drives': 'Dyski',
   'targets.drivesEmpty': 'Nie zgłoszono żadnego dysku. Zgłoś jeden, aby zadanie odnalazło go także wtedy, gdy wróci pod inną literą.',
   'targets.driveExplain': 'Litera dysku nie jest tożsamością: dysk, który w zeszłym tygodniu miał jedną literę, dziś może mieć inną, a tamta może już należeć do czegoś innego. Zgłoszenie zapisuje mały znacznik na samym dysku, dzięki czemu zadanie podąża za dyskiem, a nie za literą. To samo dotyczy udziału sieciowego.',
+  'targets.drivesEmptyMount': 'Nie zgłoszono żadnego dysku. Zgłoś jeden, aby zadanie odnalazło go także wtedy, gdy zostanie zamontowany gdzie indziej.',
+  'targets.driveExplainMount': 'Dysk nie zawsze wraca do tego samego folderu: dysk USB, który dziś jest w /media/usb, następnym razem może zostać zamontowany w /media/usb1, a w /media/usb może wtedy być inny dysk. Zgłoszenie zapisuje mały znacznik na samym dysku, dzięki czemu zadanie znajdzie dysk, gdziekolwiek zostanie zamontowany. To samo dotyczy zamontowanego udziału sieciowego.',
   'targets.registerDrive': 'Zgłoś dysk',
   'targets.driveLabel': 'Nazwa',
   'targets.driveLabelHint': 'Jak nazywasz ten dysk. Dokładnie to zobaczysz, gdy nie będzie podłączony.',

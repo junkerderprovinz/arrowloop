@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/junkerderprovinz/arrowloop/internal/certpin"
@@ -41,7 +42,14 @@ func (s *Server) listVolumes(w http.ResponseWriter, r *http.Request) {
 		}
 		out = append(out, v)
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"volumes": out})
+	writeJSON(w, http.StatusOK, map[string]any{
+		"volumes": out,
+		// A container has its folders bound in at paths its owner chose, so
+		// there is no drive whose place could change.
+		"registering": s.Deployment != "container",
+		// Which words explain a drive: its letter, or the folder it is mounted on.
+		"letters": runtime.GOOS == "windows",
+	})
 }
 
 // markVolume writes an identity onto a drive so it can be recognised again

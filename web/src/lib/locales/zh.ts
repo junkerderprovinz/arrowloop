@@ -605,6 +605,8 @@ const zh: Translations = {
   'targets.drives': '磁盘',
   'targets.drivesEmpty': '没有登记任何磁盘。登记一个，这样即使它以另一个盘符回来，任务也能重新找到它。',
   'targets.driveExplain': '盘符不是身份：上周带着某个盘符的磁盘，今天可能换成另一个，而那个旧盘符届时也许已经属于别的东西。登记时会在磁盘本身写下一个小标记，让任务跟着磁盘走而不是跟着盘符走。网络共享同理。',
+  'targets.drivesEmptyMount': '没有登记任何磁盘。登记一个，这样即使它挂载到别处，任务也能重新找到它。',
+  'targets.driveExplainMount': '磁盘不一定总回到同一个文件夹：今天在 /media/usb 的 USB 磁盘，下次可能挂载到 /media/usb1，而那时 /media/usb 里也许已是另一块磁盘。登记时会在磁盘本身写下一个小标记，让任务无论磁盘挂载在哪里都能找到它。已挂载的网络共享同理。',
   'targets.registerDrive': '登记磁盘',
   'targets.driveLabel': '名称',
   'targets.driveLabelHint': '你给这块磁盘起的名字。它没有接上时，你看到的正是这个。',

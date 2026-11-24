@@ -605,6 +605,8 @@ const id: Translations = {
   'targets.drives': 'Cakram',
   'targets.drivesEmpty': 'Belum ada cakram yang terdaftar. Daftarkan satu supaya sebuah tugas menemukannya lagi walau ia kembali dengan huruf lain.',
   'targets.driveExplain': 'Huruf drive bukanlah jati diri: cakram yang minggu lalu memakai satu huruf hari ini bisa memakai huruf lain, dan huruf lamanya mungkin sudah menjadi milik sesuatu yang lain. Saat didaftarkan, sebuah tanda kecil ditulis pada cakramnya sendiri, sehingga tugas mengikuti cakram dan bukan hurufnya. Hal yang sama berlaku untuk berbagi jaringan.',
+  'targets.drivesEmptyMount': 'Belum ada cakram yang terdaftar. Daftarkan satu supaya sebuah tugas menemukannya lagi walau ia dipasang di tempat lain.',
+  'targets.driveExplainMount': 'Cakram tidak selalu kembali ke folder yang sama: cakram USB yang hari ini ada di /media/usb bisa dipasang di /media/usb1 lain kali, dan saat itu /media/usb mungkin berisi cakram lain. Saat didaftarkan, sebuah tanda kecil ditulis pada cakramnya sendiri, sehingga tugas menemukan cakram itu di mana pun ia dipasang. Hal yang sama berlaku untuk berbagi jaringan yang dipasang.',
   'targets.registerDrive': 'Daftarkan cakram',
   'targets.driveLabel': 'Nama',
   'targets.driveLabelHint': 'Sebutan Anda untuk cakram ini. Persis itulah yang akan Anda lihat ketika ia tidak terpasang.',
