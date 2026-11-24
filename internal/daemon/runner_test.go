@@ -244,6 +244,10 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 		t.Fatalf("history: %v", err)
 	}
 
+	unplugged := filepath.Join(t.TempDir(), "unplugged")
+	if err := os.Rename(drive, unplugged); err != nil {
+		t.Fatalf("unplug: %v", err)
+	}
 	attached()
 	if err := os.WriteFile(filepath.Join(left, "second.jpg"), []byte("another"), 0o644); err != nil {
 		t.Fatalf("write: %v", err)
@@ -277,11 +281,11 @@ func TestAnUnpluggedVolumeIsNotARun(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(moved, ".arrowloop"), 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}
-	body, err := os.ReadFile(filepath.Join(drive, ".arrowloop", "volume.json"))
+	body, err := os.ReadFile(filepath.Join(unplugged, ".arrowloop", "volume.json"))
 	if err != nil {
 		t.Fatalf("read the marker: %v", err)
 	}
-	if err := os.Rename(filepath.Join(drive, "photos"), filepath.Join(moved, "photos")); err != nil {
+	if err := os.Rename(filepath.Join(unplugged, "photos"), filepath.Join(moved, "photos")); err != nil {
 		t.Fatalf("move the contents: %v", err)
 	}
 	if err := os.WriteFile(filepath.Join(moved, ".arrowloop", "volume.json"), body, 0o644); err != nil {
