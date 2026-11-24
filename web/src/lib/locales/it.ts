@@ -1113,7 +1113,7 @@ const it: Translations = {
   'phone.rootTargetHint': 'Su un telefono con root, ArrowLoop può leggere ogni cartella tramite su, compresi i dati privati delle altre app. Lì si limita a leggere, quindi un lavoro può copiare da lì, ma mai verso lì. Non segue i collegamenti e lascia fuori le cartelle proprie del kernel come /proc e /sys. Con questo interruttore attivo, il file system compare come una destinazione chiamata Root.',
   'phone.rootTargetOn': 'Tramite root, ArrowLoop legge l\'intero file system senza cambiare nulla.',
   'phone.rootTargetFailed': 'L\'accesso al file system si è interrotto due volte di fila. Disattiva e riattiva questo interruttore per riprovare.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root e Shizuku',
   'phone.rootCardHint': 'Qui c\'è tutto ciò che richiede il root o Shizuku: le cartelle di Android/data e l\'intero file system. Il root arriva tramite su dal tuo gestore root, Shizuku dalla sua app.',
   'phone.rootGranted': 'Concesso',
   'phone.rootRefused': 'Negato',

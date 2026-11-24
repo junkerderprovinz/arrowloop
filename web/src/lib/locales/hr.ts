@@ -1113,7 +1113,7 @@ const hr: Translations = {
   'phone.rootTargetHint': 'Na rootanom telefonu ArrowLoop preko su može čitati svaku mapu, uključujući privatne podatke drugih aplikacija. Ondje samo čita, pa zadatak može kopirati odande, ali nikad onamo. Ne prati poveznice i izostavlja vlastite mape jezgre poput /proc i /sys. Kad je prekidač uključen, datotečni sustav pojavljuje se kao odredište imena Root.',
   'phone.rootTargetOn': 'Preko roota ArrowLoop čita cijeli datotečni sustav i ništa u njemu ne mijenja.',
   'phone.rootTargetFailed': 'Pristup datotečnom sustavu dvaput se zaredom prekinuo. Isključite i ponovno uključite ovaj prekidač da biste pokušali opet.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root i Shizuku',
   'phone.rootCardHint': 'Ovdje je sve što treba root ili Shizuku: mape u Android/data i cijeli datotečni sustav. Root dolazi kroz su iz tvog root upravitelja, a Shizuku iz vlastite aplikacije.',
   'phone.rootGranted': 'Odobreno',
   'phone.rootRefused': 'Odbijeno',

@@ -1113,7 +1113,7 @@ const id: Translations = {
   'phone.rootTargetHint': 'Di ponsel yang di-root, ArrowLoop bisa membaca setiap folder lewat su, termasuk data pribadi aplikasi lain. Di sana ia hanya membaca, jadi tugas bisa menyalin dari sana, tetapi tidak pernah ke sana. Tautan tidak diikuti, dan folder milik kernel sendiri seperti /proc dan /sys dilewati. Saat sakelar ini aktif, sistem berkas muncul sebagai tujuan bernama Root.',
   'phone.rootTargetOn': 'Lewat root, ArrowLoop membaca seluruh sistem berkas dan tidak mengubah apa pun di sana.',
   'phone.rootTargetFailed': 'Akses ke sistem berkas berhenti dua kali berturut-turut. Matikan lalu nyalakan lagi sakelar ini untuk mencoba lagi.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root dan Shizuku',
   'phone.rootCardHint': 'Semua yang butuh root atau Shizuku ada di sini: folder di Android/data dan seluruh sistem berkas. Root datang lewat su dari pengelola root kamu, Shizuku dari aplikasinya sendiri.',
   'phone.rootGranted': 'Diberikan',
   'phone.rootRefused': 'Ditolak',

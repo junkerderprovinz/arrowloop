@@ -1113,7 +1113,7 @@ const eu: Translations = {
   'phone.rootTargetHint': 'Root duen telefono batean, ArrowLoopek su bidez karpeta guztiak irakur ditzake, beste aplikazioen datu pribatuak barne. Bertan irakurri besterik ez du egiten, beraz lan batek handik kopia dezake, baina inoiz ez hara. Ez ditu estekak jarraitzen, eta nukleoaren beraren karpetak, /proc eta /sys adibidez, kanpoan uzten ditu. Etengailu hau piztuta, fitxategi-sistema Root izeneko helburu gisa agertzen da.',
   'phone.rootTargetOn': 'Root bidez, ArrowLoopek fitxategi-sistema osoa irakurtzen du eta ez du ezer aldatzen bertan.',
   'phone.rootTargetFailed': 'Fitxategi-sistemarako sarbidea bi aldiz jarraian gelditu da. Itzali eta piztu berriro etengailu hau berriro saiatzeko.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root eta Shizuku',
   'phone.rootCardHint': 'Hemen dago root edo Shizuku behar duen guztia: Android/data karpetak eta fitxategi-sistema osoa. Root-a su bidez dator zure root kudeatzailetik, eta Shizuku bere aplikaziotik.',
   'phone.rootGranted': 'Emanda',
   'phone.rootRefused': 'Ukatuta',

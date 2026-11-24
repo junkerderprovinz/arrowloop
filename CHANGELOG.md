@@ -12,11 +12,11 @@ The full notes for each release are in
 
 ## ✨ Added
 
-- **The whole file system of a rooted phone.** Switch on **Whole file system** under **Settings**, **Root**, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out, so a scan cannot run in circles. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
+- **The whole file system of a rooted phone.** Switch on **Whole file system** under **Settings**, **Root and Shizuku**, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out, so a scan cannot run in circles. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
 
 ## 🎨 Design
 
-- **Root and Shizuku get a card of their own.** **Settings**, **Root** shows how su and Shizuku answer, with the su command, **Request root**, **Ask Shizuku** and **Get Shizuku**, and holds the switches for Android/data and the whole file system. **This phone** keeps what works without either.
+- **Root and Shizuku get a card of their own.** **Settings**, **Root and Shizuku** shows how su and Shizuku answer, with the su command, **Request root**, **Ask Shizuku** and **Get Shizuku**, and holds the switches for Android/data and the whole file system. **This phone** keeps what works without either.
 
 ## 2.9.0 - 2026-11-24
 

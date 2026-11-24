@@ -1113,7 +1113,7 @@ const ko: Translations = {
   'phone.rootTargetHint': '루팅된 휴대폰에서 ArrowLoop는 su를 통해 모든 폴더를 읽을 수 있으며, 다른 앱의 비공개 데이터도 포함됩니다. 그곳에서는 읽기만 하므로 작업은 그곳에서 복사할 수는 있지만 그곳으로는 절대 복사하지 않습니다. 링크는 따라가지 않으며 /proc, /sys 같은 커널 자체의 폴더는 제외합니다. 이 스위치를 켜면 파일 시스템이 Root라는 이름의 대상으로 나타납니다.',
   'phone.rootTargetOn': '루트를 통해 ArrowLoop가 전체 파일 시스템을 읽으며, 그곳에서는 아무것도 바꾸지 않습니다.',
   'phone.rootTargetFailed': '파일 시스템 접근이 두 번 연속으로 멈췄습니다. 다시 시도하려면 이 스위치를 껐다가 다시 켜세요.',
-  'phone.rootCard': '루트',
+  'phone.rootCard': '루트와 Shizuku',
   'phone.rootCardHint': '루트나 Shizuku가 필요한 것은 모두 여기 있습니다. Android/data의 폴더와 파일 시스템 전체입니다. 루트는 루트 관리자에서 su를 통해, Shizuku는 자체 앱에서 받습니다.',
   'phone.rootGranted': '허용됨',
   'phone.rootRefused': '거부됨',

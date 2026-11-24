@@ -1113,7 +1113,7 @@ const sl: Translations = {
   'phone.rootTargetHint': 'Na telefonu z rootom lahko ArrowLoop prek su bere vsako mapo, tudi zasebne podatke drugih aplikacij. Tam samo bere, zato lahko opravilo kopira od tam, nikoli pa tja. Povezavam ne sledi in izpusti lastne mape jedra, kot sta /proc in /sys. Ko je stikalo vklopljeno, se datotečni sistem prikaže kot cilj z imenom Root.',
   'phone.rootTargetOn': 'Prek roota ArrowLoop bere celoten datotečni sistem in v njem ničesar ne spreminja.',
   'phone.rootTargetFailed': 'Dostop do datotečnega sistema se je dvakrat zapored ustavil. Izklopite in znova vklopite to stikalo, da poskusite znova.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root in Shizuku',
   'phone.rootCardHint': 'Tukaj je vse, kar potrebuje root ali Shizuku: mape v Android/data in celoten datotečni sistem. Root pride prek su iz tvojega upravitelja roota, Shizuku iz svoje aplikacije.',
   'phone.rootGranted': 'Odobreno',
   'phone.rootRefused': 'Zavrnjeno',

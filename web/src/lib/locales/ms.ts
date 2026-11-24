@@ -1113,7 +1113,7 @@ const ms: Translations = {
   'phone.rootTargetHint': 'Pada telefon yang di-root, ArrowLoop boleh membaca setiap folder melalui su, termasuk data peribadi aplikasi lain. Di situ ia hanya membaca, jadi tugas boleh menyalin dari situ, tetapi tidak sekali-kali ke situ. Pautan tidak diikuti, dan folder milik kernel sendiri seperti /proc dan /sys ditinggalkan. Apabila suis ini dihidupkan, sistem fail muncul sebagai destinasi bernama Root.',
   'phone.rootTargetOn': 'Melalui root, ArrowLoop membaca seluruh sistem fail dan tidak mengubah apa-apa di situ.',
   'phone.rootTargetFailed': 'Akses ke sistem fail berhenti dua kali berturut-turut. Matikan dan hidupkan semula suis ini untuk mencuba lagi.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root dan Shizuku',
   'phone.rootCardHint': 'Semua yang memerlukan root atau Shizuku ada di sini: folder dalam Android/data dan seluruh sistem fail. Root datang melalui su daripada pengurus root anda, Shizuku daripada aplikasinya sendiri.',
   'phone.rootGranted': 'Diberi',
   'phone.rootRefused': 'Ditolak',

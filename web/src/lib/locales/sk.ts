@@ -1113,7 +1113,7 @@ const sk: Translations = {
   'phone.rootTargetHint': 'Na telefóne s rootom môže ArrowLoop cez su čítať každý priečinok, vrátane súkromných údajov iných aplikácií. Tam len číta, takže úloha z neho môže kopírovať, ale nikdy doň. Odkazy nesleduje a vlastné priečinky jadra ako /proc a /sys vynecháva. Keď je prepínač zapnutý, súborový systém sa zobrazí ako cieľ s názvom Root.',
   'phone.rootTargetOn': 'Cez root ArrowLoop číta celý súborový systém a nič v ňom nemení.',
   'phone.rootTargetFailed': 'Prístup k súborovému systému sa dvakrát po sebe prerušil. Vypnite a znova zapnite tento prepínač a skúste to znova.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root a Shizuku',
   'phone.rootCardHint': 'Tu je všetko, čo potrebuje root alebo Shizuku: priečinky v Android/data a celý súborový systém. Root prichádza cez su z vášho správcu rootu, Shizuku z vlastnej aplikácie.',
   'phone.rootGranted': 'Udelené',
   'phone.rootRefused': 'Odmietnuté',

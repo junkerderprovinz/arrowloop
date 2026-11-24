@@ -1113,7 +1113,7 @@ const lv: Translations = {
   'phone.rootTargetHint': 'Tālrunī ar root ArrowLoop caur su var lasīt katru mapi, arī citu lietotņu privātos datus. Tur tā tikai lasa, tāpēc uzdevums var kopēt no turienes, bet nekad uz turieni. Saitēm tā neseko, un paša kodola mapes, piemēram, /proc un /sys, tiek izlaistas. Kad slēdzis ir ieslēgts, failu sistēma parādās kā galamērķis ar nosaukumu Root.',
   'phone.rootTargetOn': 'Ar root ArrowLoop lasa visu failu sistēmu un tajā neko nemaina.',
   'phone.rootTargetFailed': 'Piekļuve failu sistēmai divreiz pēc kārtas apstājās. Izslēdziet un atkal ieslēdziet šo slēdzi, lai mēģinātu vēlreiz.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root un Shizuku',
   'phone.rootCardHint': 'Šeit ir viss, kam vajag root vai Shizuku: Android/data mapes un visa failu sistēma. Root nāk caur su no tava root pārvaldnieka, Shizuku no savas lietotnes.',
   'phone.rootGranted': 'Piešķirts',
   'phone.rootRefused': 'Atteikts',

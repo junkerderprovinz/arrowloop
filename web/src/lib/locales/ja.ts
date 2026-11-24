@@ -1113,7 +1113,7 @@ const ja: Translations = {
   'phone.rootTargetHint': 'root 化したスマートフォンでは、ArrowLoop は su を通じてすべてのフォルダーを読めます。ほかのアプリの非公開データも含みます。そこでは読むだけなので、ジョブはそこからコピーできますが、そこへは決してコピーしません。リンクはたどらず、/proc や /sys のようなカーネル自身のフォルダーは除外します。このスイッチをオンにすると、ファイルシステムは Root という名前の接続先として表示されます。',
   'phone.rootTargetOn': 'root 経由で、ArrowLoop はファイルシステム全体を読み、そこでは何も変更しません。',
   'phone.rootTargetFailed': 'ファイルシステムへのアクセスが 2 回続けて止まりました。もう一度試すには、このスイッチをオフにしてからオンにしてください。',
-  'phone.rootCard': 'root',
+  'phone.rootCard': 'root と Shizuku',
   'phone.rootCardHint': 'root または Shizuku が必要なものはすべてここにあります。Android/data のフォルダーとファイルシステム全体です。root は root マネージャーから su を通じて、Shizuku はそのアプリから得られます。',
   'phone.rootGranted': '許可済み',
   'phone.rootRefused': '拒否',

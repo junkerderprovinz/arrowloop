@@ -1113,7 +1113,7 @@ const hu: Translations = {
   'phone.rootTargetHint': 'Rootolt telefonon az ArrowLoop su-n keresztül minden mappát olvashat, a többi alkalmazás privát adatait is. Ott csak olvas, így egy feladat onnan másolhat, oda viszont soha. A hivatkozásokat nem követi, és a kernel saját mappáit, például a /proc és a /sys mappát, kihagyja. Ha a kapcsoló be van kapcsolva, a fájlrendszer Root nevű célként jelenik meg.',
   'phone.rootTargetOn': 'Rooton keresztül az ArrowLoop a teljes fájlrendszert olvassa, és semmit nem változtat rajta.',
   'phone.rootTargetFailed': 'A fájlrendszerhez való hozzáférés kétszer egymás után leállt. Kapcsold ki és be ezt a kapcsolót az újrapróbáláshoz.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root és Shizuku',
   'phone.rootCardHint': 'Itt van minden, amihez root vagy Shizuku kell: az Android/data mappái és a teljes fájlrendszer. A root su-n keresztül jön a root-kezelődből, a Shizuku a saját alkalmazásából.',
   'phone.rootGranted': 'Megadva',
   'phone.rootRefused': 'Elutasítva',

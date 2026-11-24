@@ -1113,7 +1113,7 @@ const nl: Translations = {
   'phone.rootTargetHint': 'Op een geroote telefoon kan ArrowLoop via su elke map lezen, ook de privégegevens van andere apps. Daar leest het alleen, dus een taak kan ervandaan kopiëren, maar er nooit naartoe. Koppelingen worden niet gevolgd, en de eigen mappen van de kernel zoals /proc en /sys blijven buiten beschouwing. Met deze schakelaar aan verschijnt het bestandssysteem als een doel met de naam Root.',
   'phone.rootTargetOn': 'Via root leest ArrowLoop het hele bestandssysteem en verandert daar niets.',
   'phone.rootTargetFailed': 'De toegang tot het bestandssysteem stopte twee keer achter elkaar. Zet deze schakelaar uit en weer aan om het opnieuw te proberen.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root en Shizuku',
   'phone.rootCardHint': 'Hier staat alles wat root of Shizuku nodig heeft: de mappen in Android/data en het hele bestandssysteem. Root komt via su uit je rootbeheerder, Shizuku uit zijn eigen app.',
   'phone.rootGranted': 'Verleend',
   'phone.rootRefused': 'Geweigerd',

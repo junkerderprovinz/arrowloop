@@ -1113,7 +1113,7 @@ const lt: Translations = {
   'phone.rootTargetHint': 'Telefone su root ArrowLoop per su gali skaityti kiekvieną aplanką, taip pat ir privačius kitų programų duomenis. Ten jis tik skaito, tad užduotis gali kopijuoti iš ten, bet niekada į ten. Nuorodomis jis neseka, o paties branduolio aplankus, tokius kaip /proc ir /sys, praleidžia. Įjungus šį jungiklį, failų sistema rodoma kaip paskirtis pavadinimu Root.',
   'phone.rootTargetOn': 'Per root ArrowLoop skaito visą failų sistemą ir nieko joje nekeičia.',
   'phone.rootTargetFailed': 'Prieiga prie failų sistemos nutrūko du kartus iš eilės. Išjunkite ir vėl įjunkite šį jungiklį, kad bandytumėte dar kartą.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root ir Shizuku',
   'phone.rootCardHint': 'Čia yra viskas, kam reikia root arba Shizuku: Android/data aplankai ir visa failų sistema. Root gaunamas per su iš jūsų root tvarkyklės, o Shizuku iš savo programėlės.',
   'phone.rootGranted': 'Suteikta',
   'phone.rootRefused': 'Atmesta',

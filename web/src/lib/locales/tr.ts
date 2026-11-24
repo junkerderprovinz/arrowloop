@@ -1113,7 +1113,7 @@ const tr: Translations = {
   'phone.rootTargetHint': 'Rootlu bir telefonda ArrowLoop, su üzerinden diğer uygulamaların özel verileri de dahil her klasörü okuyabilir. Orada yalnızca okur, yani bir iş oradan kopyalayabilir ama oraya asla. Bağlantıları izlemez, /proc ve /sys gibi çekirdeğin kendi klasörlerini dışarıda bırakır. Bu anahtar açıkken dosya sistemi Root adlı bir hedef olarak görünür.',
   'phone.rootTargetOn': 'Root üzerinden ArrowLoop tüm dosya sistemini okur ve orada hiçbir şeyi değiştirmez.',
   'phone.rootTargetFailed': 'Dosya sistemine erişim üst üste iki kez durdu. Yeniden denemek için bu anahtarı kapatıp tekrar aç.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root ve Shizuku',
   'phone.rootCardHint': 'Root veya Shizuku gerektiren her şey burada: Android/data klasörleri ve tüm dosya sistemi. Root, root yöneticinden su üzerinden gelir, Shizuku ise kendi uygulamasından.',
   'phone.rootGranted': 'Verildi',
   'phone.rootRefused': 'Reddedildi',

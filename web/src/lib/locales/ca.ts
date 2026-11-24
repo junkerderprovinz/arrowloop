@@ -1113,7 +1113,7 @@ const ca: Translations = {
   'phone.rootTargetHint': 'En un telèfon amb root, ArrowLoop pot llegir totes les carpetes a través de su, incloses les dades privades d\'altres aplicacions. Només hi llegeix, així que una tasca en pot copiar però mai hi pot copiar res. No segueix els enllaços i deixa fora les carpetes pròpies del nucli, com /proc i /sys. Amb aquest interruptor activat, el sistema de fitxers apareix com una destinació anomenada Root.',
   'phone.rootTargetOn': 'Amb root, ArrowLoop llegeix tot el sistema de fitxers i no hi canvia res.',
   'phone.rootTargetFailed': 'L\'accés al sistema de fitxers s\'ha aturat dues vegades seguides. Desactiva i torna a activar aquest interruptor per tornar-ho a provar.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root i Shizuku',
   'phone.rootCardHint': 'Aquí hi ha tot el que necessita root o Shizuku: les carpetes d\'Android/data i tot el sistema de fitxers. El root arriba per su des del teu gestor de root, i Shizuku des de la seva pròpia aplicació.',
   'phone.rootGranted': 'Concedit',
   'phone.rootRefused': 'Denegat',

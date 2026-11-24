@@ -1113,7 +1113,7 @@ const zh: Translations = {
   'phone.rootTargetHint': '在已 root 的手机上，ArrowLoop 可以通过 su 读取每个文件夹，包括其他应用的私有数据。它在那里只读，所以任务可以从那里复制，但绝不会复制到那里。它不跟随链接，并跳过 /proc 和 /sys 这类内核自己的文件夹。打开此开关后，文件系统会显示为名为 Root 的目标。',
   'phone.rootTargetOn': '通过 root，ArrowLoop 读取整个文件系统，不在那里做任何更改。',
   'phone.rootTargetFailed': '对文件系统的访问连续两次中断。关闭此开关再重新打开即可重试。',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root 和 Shizuku',
   'phone.rootCardHint': '需要 root 或 Shizuku 的一切都在这里：Android/data 中的文件夹和整个文件系统。root 通过 su 来自你的 root 管理器，Shizuku 来自它自己的应用。',
   'phone.rootGranted': '已授予',
   'phone.rootRefused': '已拒绝',

@@ -1113,7 +1113,7 @@ const no: Translations = {
   'phone.rootTargetHint': 'På en rootet telefon kan ArrowLoop lese alle mapper via su, også andre apper sine private data. Der leser den bare, så en jobb kan kopiere derfra, men aldri dit. Lenker følges ikke, og kjernens egne mapper som /proc og /sys utelates. Når bryteren er på, vises filsystemet som et mål som heter Root.',
   'phone.rootTargetOn': 'Via root leser ArrowLoop hele filsystemet og endrer ingenting der.',
   'phone.rootTargetFailed': 'Tilgangen til filsystemet stoppet to ganger på rad. Slå denne bryteren av og på igjen for å prøve på nytt.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root og Shizuku',
   'phone.rootCardHint': 'Her er alt som trenger root eller Shizuku: mappene i Android/data og hele filsystemet. Root kommer gjennom su fra root-behandleren din, Shizuku fra sin egen app.',
   'phone.rootGranted': 'Gitt',
   'phone.rootRefused': 'Avvist',

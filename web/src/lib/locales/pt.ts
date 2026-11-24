@@ -1113,7 +1113,7 @@ const pt: Translations = {
   'phone.rootTargetHint': 'Num telefone com root, o ArrowLoop pode ler todas as pastas através do su, incluindo os dados privados de outras apps. Lá só lê, por isso uma tarefa pode copiar de lá, mas nunca para lá. Não segue ligações e deixa de fora as pastas do próprio kernel, como /proc e /sys. Com este interruptor ligado, o sistema de ficheiros aparece como um destino chamado Root.',
   'phone.rootTargetOn': 'Através do root, o ArrowLoop lê todo o sistema de ficheiros e não altera nada lá.',
   'phone.rootTargetFailed': 'O acesso ao sistema de ficheiros parou duas vezes seguidas. Desliga e volta a ligar este interruptor para tentar de novo.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root e Shizuku',
   'phone.rootCardHint': 'Aqui está tudo o que precisa de root ou Shizuku: as pastas de Android/data e todo o sistema de ficheiros. O root chega por su a partir do seu gestor de root, e o Shizuku a partir da sua própria app.',
   'phone.rootGranted': 'Concedido',
   'phone.rootRefused': 'Recusado',

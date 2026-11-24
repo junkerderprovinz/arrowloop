@@ -1113,7 +1113,7 @@ const vi: Translations = {
   'phone.rootTargetHint': 'Trên điện thoại đã root, ArrowLoop có thể đọc mọi thư mục qua su, kể cả dữ liệu riêng của các ứng dụng khác. Ở đó nó chỉ đọc, nên một công việc có thể sao chép từ đó nhưng không bao giờ vào đó. Nó không đi theo liên kết và bỏ qua các thư mục riêng của nhân như /proc và /sys. Khi bật công tắc này, hệ thống tệp hiện ra như một đích tên là Root.',
   'phone.rootTargetOn': 'Qua root, ArrowLoop đọc toàn bộ hệ thống tệp và không thay đổi gì ở đó.',
   'phone.rootTargetFailed': 'Quyền truy cập hệ thống tệp đã dừng hai lần liên tiếp. Tắt rồi bật lại công tắc này để thử lại.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root và Shizuku',
   'phone.rootCardHint': 'Mọi thứ cần root hoặc Shizuku đều ở đây: các thư mục trong Android/data và toàn bộ hệ thống tệp. Root đến qua su từ trình quản lý root của bạn, Shizuku từ ứng dụng riêng của nó.',
   'phone.rootGranted': 'Đã cấp',
   'phone.rootRefused': 'Bị từ chối',

@@ -1113,7 +1113,7 @@ const he: Translations = {
   'phone.rootTargetHint': 'בטלפון עם רוט ArrowLoop יכול לקרוא כל תיקייה דרך su, כולל המידע הפרטי של אפליקציות אחרות. שם הוא רק קורא, כך שמשימה יכולה להעתיק משם אבל אף פעם לא לשם. הוא לא עוקב אחרי קישורים ומשאיר בחוץ את התיקיות של הקרנל עצמו, כמו /proc ו־/sys. כשהמתג פועל, מערכת הקבצים מופיעה כיעד בשם Root.',
   'phone.rootTargetOn': 'דרך רוט, ArrowLoop קורא את כל מערכת הקבצים ולא משנה בה דבר.',
   'phone.rootTargetFailed': 'הגישה למערכת הקבצים נעצרה פעמיים ברציפות. כבה והדלק שוב את המתג הזה כדי לנסות שוב.',
-  'phone.rootCard': 'רוט',
+  'phone.rootCard': 'רוט ו־Shizuku',
   'phone.rootCardHint': 'כאן נמצא כל מה שדורש רוט או Shizuku: התיקיות ב־Android/data וכל מערכת הקבצים. הרוט מגיע דרך su ממנהל הרוט שלך, ו־Shizuku מהאפליקציה שלו.',
   'phone.rootGranted': 'ניתן',
   'phone.rootRefused': 'נדחה',

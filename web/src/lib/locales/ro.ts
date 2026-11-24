@@ -1113,7 +1113,7 @@ const ro: Translations = {
   'phone.rootTargetHint': 'Pe un telefon cu root, ArrowLoop poate citi prin su orice dosar, inclusiv datele private ale altor aplicații. Acolo doar citește, deci o sarcină poate copia de acolo, dar niciodată într-acolo. Nu urmează legăturile și lasă deoparte dosarele proprii ale nucleului, cum sunt /proc și /sys. Cu acest comutator activ, sistemul de fișiere apare ca o destinație numită Root.',
   'phone.rootTargetOn': 'Prin root, ArrowLoop citește întregul sistem de fișiere și nu schimbă nimic acolo.',
   'phone.rootTargetFailed': 'Accesul la sistemul de fișiere s-a oprit de două ori la rând. Dezactivează și reactivează acest comutator ca să încerci din nou.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root și Shizuku',
   'phone.rootCardHint': 'Aici e tot ce are nevoie de root sau Shizuku: folderele din Android/data și întregul sistem de fișiere. Root-ul vine prin su din managerul tău de root, iar Shizuku din propria aplicație.',
   'phone.rootGranted': 'Acordat',
   'phone.rootRefused': 'Refuzat',

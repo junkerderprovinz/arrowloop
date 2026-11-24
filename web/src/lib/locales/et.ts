@@ -1113,7 +1113,7 @@ const et: Translations = {
   'phone.rootTargetHint': 'Juurõigustega telefonis saab ArrowLoop su kaudu lugeda iga kausta, ka teiste rakenduste privaatseid andmeid. Seal ta ainult loeb, nii et töö saab sealt kopeerida, aga mitte kunagi sinna. Linke ta ei järgi ning kerneli enda kaustad nagu /proc ja /sys jäävad välja. Kui lüliti on sees, ilmub failisüsteem sihtkohana nimega Root.',
   'phone.rootTargetOn': 'Juurõiguste kaudu loeb ArrowLoop kogu failisüsteemi ega muuda seal midagi.',
   'phone.rootTargetFailed': 'Ligipääs failisüsteemile katkes kaks korda järjest. Lülita see lüliti välja ja uuesti sisse, et uuesti proovida.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root ja Shizuku',
   'phone.rootCardHint': 'Siin on kõik, mis vajab juurõigusi või Shizukut: Android/data kaustad ja kogu failisüsteem. Juurõigused tulevad su kaudu sinu juurõiguste haldurist, Shizuku oma rakendusest.',
   'phone.rootGranted': 'Antud',
   'phone.rootRefused': 'Keeldutud',

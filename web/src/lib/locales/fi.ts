@@ -1113,7 +1113,7 @@ const fi: Translations = {
   'phone.rootTargetHint': 'Rootatussa puhelimessa ArrowLoop voi lukea su:n kautta jokaisen kansion, myös muiden sovellusten yksityiset tiedot. Siellä se vain lukee, joten työ voi kopioida sieltä mutta ei koskaan sinne. Linkkejä se ei seuraa, ja ytimen omat kansiot kuten /proc ja /sys jäävät pois. Kun kytkin on päällä, tiedostojärjestelmä näkyy kohteena nimeltä Root.',
   'phone.rootTargetOn': 'Rootin kautta ArrowLoop lukee koko tiedostojärjestelmää eikä muuta siellä mitään.',
   'phone.rootTargetFailed': 'Pääsy tiedostojärjestelmään katkesi kahdesti peräkkäin. Kytke tämä kytkin pois ja takaisin päälle yrittääksesi uudelleen.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root ja Shizuku',
   'phone.rootCardHint': 'Täällä on kaikki, mikä tarvitsee rootin tai Shizukun: Android/datan kansiot ja koko tiedostojärjestelmä. Root tulee su:n kautta root-hallinnastasi, Shizuku omasta sovelluksestaan.',
   'phone.rootGranted': 'Myönnetty',
   'phone.rootRefused': 'Evätty',

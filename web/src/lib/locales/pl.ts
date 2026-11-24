@@ -1113,7 +1113,7 @@ const pl: Translations = {
   'phone.rootTargetHint': 'Na telefonie z rootem ArrowLoop może przez su czytać każdy folder, także prywatne dane innych aplikacji. Tam tylko czyta, więc zadanie może kopiować stamtąd, ale nigdy tam. Nie podąża za dowiązaniami i pomija własne foldery jądra, takie jak /proc i /sys. Gdy ten przełącznik jest włączony, system plików pojawia się jako cel o nazwie Root.',
   'phone.rootTargetOn': 'Przez root ArrowLoop czyta cały system plików i niczego w nim nie zmienia.',
   'phone.rootTargetFailed': 'Dostęp do systemu plików przerwał się dwa razy z rzędu. Wyłącz i włącz ponownie ten przełącznik, aby spróbować jeszcze raz.',
-  'phone.rootCard': 'Root',
+  'phone.rootCard': 'Root i Shizuku',
   'phone.rootCardHint': 'Tu jest wszystko, co wymaga roota lub Shizuku: foldery w Android/data i cały system plików. Root przychodzi przez su z twojego menedżera roota, a Shizuku z własnej aplikacji.',
   'phone.rootGranted': 'Przyznany',
   'phone.rootRefused': 'Odmówiono',

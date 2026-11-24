@@ -1113,7 +1113,7 @@ const is: Translations = {
   'phone.rootTargetHint': 'Á rótuðum síma getur ArrowLoop lesið hverja möppu í gegnum su, líka einkagögn annarra forrita. Þar les það aðeins, svo verk getur afritað þaðan en aldrei þangað. Tenglum er ekki fylgt og eigin möppum kjarnans, eins og /proc og /sys, er sleppt. Þegar rofinn er á birtist skráakerfið sem áfangastaður sem heitir Root.',
   'phone.rootTargetOn': 'Með rótaraðgangi les ArrowLoop allt skráakerfið og breytir engu þar.',
   'phone.rootTargetFailed': 'Aðgangur að skráakerfinu stöðvaðist tvisvar í röð. Slökktu á þessum rofa og kveiktu aftur til að reyna aftur.',
-  'phone.rootCard': 'Rótaraðgangur',
+  'phone.rootCard': 'Rótaraðgangur og Shizuku',
   'phone.rootCardHint': 'Hér er allt sem þarf rótaraðgang eða Shizuku: möppurnar í Android/data og allt skráakerfið. Rótaraðgangur kemur í gegnum su frá rótarstjóranum þínum, Shizuku úr eigin appi.',
   'phone.rootGranted': 'Veitt',
   'phone.rootRefused': 'Hafnað',
