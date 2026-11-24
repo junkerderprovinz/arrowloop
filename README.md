@@ -34,7 +34,7 @@ ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone an
 >
 > 1. Open the [tester group](https://groups.google.com/g/arrowloop-testers), sign in with the Google account your phone uses and click **Join group**.
 > 2. Open the [test page](https://play.google.com/apps/testing/arrowloop.halleluja.design) and tap **Become a tester**.
-> 3. Install ArrowLoop from Google Play and keep it for 14 days. Using it for real helps most, and anything that goes wrong is welcome as an [issue](https://github.com/junkerderprovinz/arrowloop/issues).
+> 3. Install ArrowLoop from Google Play and use it for 14 days, for example by setting up a sync job and letting it run. Tell me what goes wrong or what you would change, as an [issue](https://github.com/junkerderprovinz/arrowloop/issues) or in the group.
 
 <!-- docs-button: written by scripts/gen_download_buttons.py -->
 <p align="center">
