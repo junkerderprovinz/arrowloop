@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -24,6 +25,12 @@ func start(t *testing.T, readOnly bool) (string, []byte, string) {
 	if err := os.MkdirAll(filepath.Join(root, "com.example", "files"), 0o770); err != nil {
 		t.Fatal(err)
 	}
+	seed, addr := serveAt(t, root, readOnly)
+	return root, seed, addr
+}
+
+func serveAt(t *testing.T, root string, readOnly bool) ([]byte, string) {
+	t.Helper()
 	seed := make([]byte, 32)
 	if _, err := rand.Read(seed); err != nil {
 		t.Fatal(err)
@@ -36,7 +43,26 @@ func start(t *testing.T, readOnly bool) (string, []byte, string) {
 	go func() {
 		_ = serve(ln, Options{Root: root, Password: testPassword, HostKey: seed, ReadOnly: readOnly})
 	}()
-	return root, seed, ln.Addr().String()
+	return seed, ln.Addr().String()
+}
+
+// wholeDisk serves the root of the disk the test's temporary folder is on,
+// read only, and returns that folder on disk and as a client names it.
+func wholeDisk(t *testing.T) (dir, remote string, seed []byte, addr string) {
+	t.Helper()
+	dir, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	volume := filepath.VolumeName(dir)
+	seed, addr = serveAt(t, volume+string(filepath.Separator), true)
+	return dir, filepath.ToSlash(strings.TrimPrefix(dir, volume)), seed, addr
+}
+
+func serveWholeDisk(t *testing.T) (*sftp.Client, string, string) {
+	t.Helper()
+	dir, remote, seed, addr := wholeDisk(t)
+	return connect(t, addr, seed), dir, remote
 }
 
 func dial(t *testing.T, addr string, seed []byte, password string) (*sftp.Client, error) {
@@ -220,5 +246,94 @@ func TestMovingBetweenAppsIsRefused(t *testing.T) {
 	}
 	if err := client.Rename("/com.example/files/a.txt", "/com.example/files/b.txt"); err != nil {
 		t.Fatalf("rename within the app: %v", err)
+	}
+}
+
+func TestServesTheWholeDiskFromItsRoot(t *testing.T) {
+	client, dir, remote := serveWholeDisk(t)
+	if err := os.WriteFile(filepath.Join(dir, "notes.txt"), []byte("deep down"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	f, err := client.Open(remote + "/notes.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	data, _ := io.ReadAll(f)
+	if string(data) != "deep down" {
+		t.Fatalf("read %q", data)
+	}
+	entries, err := client.ReadDir(remote)
+	if err != nil || len(entries) != 1 {
+		t.Fatalf("%s lists %v, %v", remote, entries, err)
+	}
+}
+
+func TestTheWholeDiskRefusesEveryChange(t *testing.T) {
+	client, dir, remote := serveWholeDisk(t)
+	if err := os.WriteFile(filepath.Join(dir, "keep.txt"), []byte("kept"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Mkdir(filepath.Join(dir, "box"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	keep := remote + "/keep.txt"
+	changes := map[string]func() error{
+		"create": func() error {
+			f, err := client.Create(remote + "/new.txt")
+			if err == nil {
+				f.Close()
+			}
+			return err
+		},
+		"open for writing": func() error {
+			f, err := client.OpenFile(keep, os.O_RDWR)
+			if err == nil {
+				f.Close()
+			}
+			return err
+		},
+		"remove":   func() error { return client.Remove(keep) },
+		"rename":   func() error { return client.Rename(keep, remote+"/moved.txt") },
+		"mkdir":    func() error { return client.Mkdir(remote + "/sub") },
+		"rmdir":    func() error { return client.RemoveDirectory(remote + "/box") },
+		"truncate": func() error { return client.Truncate(keep, 0) },
+		"chtimes":  func() error { return client.Chtimes(keep, time.Unix(0, 0), time.Unix(0, 0)) },
+		"chmod":    func() error { return client.Chmod(keep, 0o777) },
+	}
+	for name, change := range changes {
+		if err := change(); err == nil {
+			t.Errorf("%s went through", name)
+		}
+	}
+	data, err := os.ReadFile(filepath.Join(dir, "keep.txt"))
+	if err != nil || string(data) != "kept" {
+		t.Fatalf("keep.txt now holds %q, %v", data, err)
+	}
+	names, _ := os.ReadDir(dir)
+	if len(names) != 2 {
+		t.Fatalf("the folder now holds %v", names)
+	}
+}
+
+func TestListingsLeaveLinksOut(t *testing.T) {
+	root, seed, addr := start(t, false)
+	files := filepath.Join(root, "com.example", "files")
+	if err := os.WriteFile(filepath.Join(files, "real.txt"), nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(files, filepath.Join(files, "loop")); err != nil {
+		t.Skipf("cannot make a link here: %v", err)
+	}
+	client := connect(t, addr, seed)
+	entries, err := client.ReadDir("/com.example/files")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 || entries[0].Name() != "real.txt" {
+		t.Fatalf("the folder lists %v", entries)
+	}
+	if listed, err := client.ReadDir("/com.example/files/loop"); err == nil {
+		t.Fatalf("listed through a link: %v", listed)
 	}
 }
