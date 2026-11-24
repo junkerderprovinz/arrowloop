@@ -65,6 +65,13 @@ describe('a failed run in words', () => {
     expect(en['failure.vpnUnreached']).not.toMatch(/run/)
   })
 
+  it("says which side refused the trash, without the backend's English", () => {
+    const raw = 'the trash cannot be kept on the right side: mkdir "/.arrowloop" failed: permission denied'
+    expect(sayFailure(raw, { code: 'trashRefused', params: { side: 'right' } }, tIn(de), 'de')).toEqual({
+      said: de['failure.trashRefused.right'],
+    })
+  })
+
   it('names the files left for later twice under its sentence', () => {
     const failure = { code: 'leftTwice', params: { output: 'photo.jpg (copy failed)' } }
     expect(sayFailure('left for later in two runs in a row: photo.jpg (copy failed)', failure, tIn(de), 'de')).toEqual({

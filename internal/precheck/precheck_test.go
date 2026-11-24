@@ -572,59 +572,101 @@ func TestASideThatIsNotAFolderIsReported(t *testing.T) {
 	}
 }
 
-// A read-only side lists fine and fails on the first transfer. A folder without
-// a write bit cannot be made on Windows, so a file blocking the reserved
-// directory produces the same refusal on every platform.
-func TestASideThatRefusesAWriteIsFatal(t *testing.T) {
-	t.Run("the reserved directory cannot be made", func(t *testing.T) {
+// A side whose top refuses the reserved folder may still take files in the
+// folders below it, as the root of a server does for a login that owns its
+// home, so the check names the trash rather than calling the side read-only.
+// A file in the reserved folder's place produces that refusal on every
+// platform.
+func TestASideThatRefusesTheReservedFolderCannotKeepATrash(t *testing.T) {
+	blocked := func(t *testing.T) *fixture {
 		f := newFixture(t)
 		write(t, f.left, "a.txt", "hello")
-		// A file where the reserved directory has to go.
 		if err := os.WriteFile(filepath.Join(f.right, ".arrowloop"), []byte("in the way"), 0o644); err != nil {
 			t.Fatalf("write: %v", err)
 		}
+		return f
+	}
+
+	t.Run("with the trash on", func(t *testing.T) {
+		f := blocked(t)
 
 		rep := f.check(t, precheck.Opts{})
 
-		found, ok := findingFor(rep, "sideReadOnly", "right")
+		found, ok := findingFor(rep, "trashRefused", "right")
 		if !ok {
-			t.Fatalf("a side that refuses a file has to be reported, got %+v", rep.Findings)
+			t.Fatalf("a side that refuses the trash has to be reported, got %+v", rep.Findings)
 		}
 		if !found.Fatal || rep.OK {
-			t.Error("a job that cannot write to its destination cannot run")
+			t.Error("a run would stop at its first deletion, so the job cannot run as it is")
 		}
 		if found.Vars["error"] == "" {
 			t.Error("the backend's own words are what makes this fixable")
 		}
+		if _, ok := findingFor(rep, "sideReadOnly", "right"); ok {
+			t.Error("the side was called read-only, though only its top refused a folder")
+		}
 	})
 
-	// Root in a container bypasses the permission, so the subtest skips there.
-	t.Run("a folder with no write bit", func(t *testing.T) {
-		if runtime.GOOS == "windows" {
-			t.Skip("a read-only folder is not something a Windows mode bit can make")
-		}
-		f := newFixture(t)
-		write(t, f.left, "a.txt", "hello")
-
-		if err := os.Chmod(f.right, 0o555); err != nil {
-			t.Fatalf("chmod: %v", err)
-		}
-		t.Cleanup(func() { _ = os.Chmod(f.right, 0o755) })
-		if err := os.WriteFile(filepath.Join(f.right, "probe"), []byte("x"), 0o644); err == nil {
-			_ = os.Remove(filepath.Join(f.right, "probe"))
-			t.Skip("this user can write into a folder with no write bit, so the state under test cannot be reached")
-		}
+	t.Run("with the trash and versions off", func(t *testing.T) {
+		f := blocked(t)
+		f.job.NoTrash = true
 
 		rep := f.check(t, precheck.Opts{})
 
-		found, ok := findingFor(rep, "sideReadOnly", "right")
+		found, ok := findingFor(rep, "folderRefused", "right")
 		if !ok {
-			t.Fatalf("a side that refuses a file has to be reported, got %+v", rep.Findings)
+			t.Fatalf("an untested side has to be reported, got %+v", rep.Findings)
 		}
-		if !found.Fatal || rep.OK {
-			t.Error("a job that cannot write to its destination cannot run")
+		if found.Fatal || !rep.OK {
+			t.Errorf("a job that needs no reserved folder was held up by it: %v", fatals(rep))
 		}
 	})
+
+	t.Run("with versions kept", func(t *testing.T) {
+		f := blocked(t)
+		f.job.NoTrash = true
+		f.job.KeepVersions = 2
+
+		rep := f.check(t, precheck.Opts{})
+
+		if found, ok := findingFor(rep, "trashRefused", "right"); !ok || !found.Fatal {
+			t.Errorf("old versions go in the reserved folder too, got %+v", rep.Findings)
+		}
+	})
+}
+
+// Root in a container bypasses the permission, and a read-only folder is not
+// something a Windows mode bit can make, so the test skips there.
+func TestASideThatRefusesAFileInItsReservedFolderIsReadOnly(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("a read-only folder is not something a Windows mode bit can make")
+	}
+	f := newFixture(t)
+	write(t, f.left, "a.txt", "hello")
+	meta := filepath.Join(f.right, ".arrowloop")
+	if err := os.Mkdir(meta, 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	for _, d := range []string{meta, f.right} {
+		if err := os.Chmod(d, 0o555); err != nil {
+			t.Fatalf("chmod: %v", err)
+		}
+		t.Cleanup(func() { _ = os.Chmod(d, 0o755) })
+	}
+	if err := os.WriteFile(filepath.Join(meta, "probe"), []byte("x"), 0o644); err == nil {
+		_ = os.Remove(filepath.Join(meta, "probe"))
+		t.Skip("this user can write into a folder with no write bit, so the state under test cannot be reached")
+	}
+
+	rep := f.check(t, precheck.Opts{})
+
+	found, ok := findingFor(rep, "sideReadOnly", "right")
+	if !ok {
+		t.Fatalf("a side that refuses a file has to be reported, got %+v", rep.Findings)
+	}
+	if !found.Fatal || rep.OK {
+		t.Error("a job that cannot write to its destination cannot run")
+	}
 }
 
 // The interface translates from the code and falls back to the sentence.

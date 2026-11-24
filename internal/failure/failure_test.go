@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/junkerderprovinz/arrowloop/internal/apply"
 	"github.com/junkerderprovinz/arrowloop/internal/certpin"
 	"github.com/junkerderprovinz/arrowloop/internal/daemon"
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
@@ -65,6 +66,10 @@ func TestTheEnginesOwnSentencesCarryTheirFigures(t *testing.T) {
 		{
 			daemon.ErrNoVPN.Error(),
 			failure.Failure{Code: failure.NoVPN},
+		},
+		{
+			(&apply.TrashRefusedError{Side: plan.Right, Err: errors.New(`mkdir "/.arrowloop" failed: permission denied`)}).Error(),
+			failure.Failure{Code: failure.TrashRefused, Params: map[string]string{"side": "right"}},
 		},
 	}
 	for _, c := range cases {

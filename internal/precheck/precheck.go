@@ -60,6 +60,8 @@ var findingText = map[string]string{
 	"stateNew":        "the state database at {path} has not been made yet, so this job has never run",
 	"stateUnreadable": "the state database at {path} cannot be read: {error}",
 	"sideReadOnly":    "the {side} side refused a test file, so this job cannot write to it: {error}",
+	"trashRefused":    "the {side} side does not let ArrowLoop create its .arrowloop folder at the top, where the trash and old versions go, so a run stops at its first deletion there. If this job may delete there outright, switch off its trash, and kept versions if it keeps any: {error}",
+	"folderRefused":   "the {side} side does not let ArrowLoop create its .arrowloop folder at the top, so writing there could not be tested. This job keeps no trash and no old versions, so it does not need that folder: {error}",
 	"probeLeftBehind": "a test file was written to the {side} side and could not be removed again: {path}",
 	"sideNotWritten":  "this job never writes to the {side} side, so nothing was written there to prove it could be",
 	"spaceUnknown":    "the {side} side cannot say how much room it has left",
@@ -223,8 +225,17 @@ func Check(ctx context.Context, j job.Job, opt Opts) Report {
 			// would create the mistyped folder.
 			continue
 		}
+		had := hasMetaDir(ctx, f)
 		name, wrote, err := probeWrite(ctx, f)
 		switch {
+		case err != nil && !wrote && !had && !hasMetaDir(ctx, f):
+			// Only the top refused, which may still let files in below it, as
+			// the root of a server does for a login that owns its home.
+			if !j.NoTrash || j.KeepVersions > 0 {
+				rep.noteSide("trashRefused", side, true, "error", err.Error())
+			} else {
+				rep.noteSide("folderRefused", side, false, "error", err.Error())
+			}
 		case err != nil && !wrote:
 			rep.noteSide("sideReadOnly", side, true, "error", err.Error())
 		case err != nil:
@@ -402,6 +413,13 @@ func probeWrite(ctx context.Context, f rclonefs.Fs) (name string, wrote bool, er
 		return name, false, err
 	}
 	return name, true, obj.Remove(ctx)
+}
+
+// hasMetaDir reports whether the reserved folder is on f. A probe can make the
+// folder and still have its file refused.
+func hasMetaDir(ctx context.Context, f rclonefs.Fs) bool {
+	_, err := f.List(ctx, scan.MetaDir)
+	return err == nil
 }
 
 // writtenSides says which ends this job may put bytes on. A one-way job never

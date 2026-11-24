@@ -20,6 +20,12 @@ A job can be configured with `noTrash` to delete outright, and then the folder
 is never created. That is a decision about one job's files, not a default: with
 it on, a deletion is final and so is the losing side of a conflict.
 
+Some sides take files in their folders but not at their top, such as the root
+of an SFTP server for a login that only owns its home. There the `.arrowloop`
+folder cannot be created, so a run that would delete or keep an old version
+stops before it changes anything and says so. The check on the job page names
+this too. Such a job either gets `noTrash` or a side one folder further down.
+
 ## The mass-delete brake
 
 A run that would delete more than half the known files stops and says so, naming

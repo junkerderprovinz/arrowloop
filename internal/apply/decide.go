@@ -193,6 +193,16 @@ func Decide(ctx context.Context, ends Ends, db *state.DB, decisions []Decision, 
 	if watcher != nil {
 		watcher.Starting(t.total)
 	}
+	// Every choice but keeping both puts a version into the trash on each side.
+	on := map[plan.Side]bool{}
+	for _, d := range decisions {
+		if d.Keep != plan.KeepBoth && trashKept(ctx) {
+			on[plan.Left], on[plan.Right] = true, true
+		}
+	}
+	if err := roomToSetAside(ctx, ends, on); err != nil {
+		return t.res, err
+	}
 	runID := time.Now().UTC().Format(runIDLayout)
 	rec := recorder{ends: ends, db: db, window: opt.ModWindow, observe: t.observe}
 
