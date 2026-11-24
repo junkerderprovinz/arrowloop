@@ -826,11 +826,18 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	// stream.
 	ping := time.NewTicker(20 * time.Second)
 	defer ping.Stop()
+	counts := s.stillCounts(r)
+	check := time.NewTicker(signInCheck)
+	defer check.Stop()
 
 	for {
 		select {
 		case <-r.Context().Done():
 			return
+		case <-check.C:
+			if !counts() {
+				return
+			}
 		case <-ping.C:
 			fmt.Fprint(w, ": ping\n\n")
 			flusher.Flush()

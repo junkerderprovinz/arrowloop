@@ -35,6 +35,14 @@ func ShortenTrashWait(t testing.TB, d time.Duration) {
 	t.Cleanup(func() { trashWait = was })
 }
 
+// ShortenSignInCheck has a stream look whether its visitor still counts
+// every d instead of every few seconds.
+func ShortenSignInCheck(t testing.TB, d time.Duration) {
+	was := signInCheck
+	signInCheck = d
+	t.Cleanup(func() { signInCheck = was })
+}
+
 // InFortress reports whether s has its fortress open.
 func (s *Server) InFortress() bool { return s.fortressNow() != nil }
 

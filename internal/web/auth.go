@@ -14,6 +14,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/junkerderprovinz/parleyport/kit/group"
 	"github.com/junkerderprovinz/parleyport/kit/signin"
@@ -140,6 +141,36 @@ func (s *Server) signInRoutes(mux *http.ServeMux) {
 	h := s.SignIn.Handler()
 	mux.Handle(signin.APIPrefix, h)
 	mux.Handle(signin.BrowserPrefix, h)
+}
+
+// signInCheck is how often a stream looks whether its visitor still counts.
+var signInCheck = 5 * time.Second
+
+// stillCounts reports, for a request that outlasts its start such as the
+// event stream, whether the visitor it began with may still see the app: the
+// session not ended, the token not revoked, or the app still open. Blocking,
+// removing or demoting an account ends its sessions and tokens, so a stream
+// ends with them.
+func (s *Server) stillCounts(r *http.Request) func() bool {
+	v, ok := s.visitor(r)
+	if !ok {
+		return func() bool { return true }
+	}
+	ctx := r.Context()
+	switch {
+	case v.Via == signin.ViaAnyone:
+		return s.SignIn.Anyone
+	case v.Session() != "":
+		id := v.Session()
+		return func() bool { return s.SignIn.Alive(ctx, id) }
+	case v.Via == signin.ViaToken:
+		raw := strings.TrimSpace(strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+		return func() bool {
+			_, ok := s.SignIn.TokenVisitor(ctx, raw)
+			return ok
+		}
+	}
+	return func() bool { return true }
 }
 
 // signedInMoments reports whether the visitor of r signed in moments ago,
