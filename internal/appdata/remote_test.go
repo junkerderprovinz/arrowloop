@@ -130,3 +130,58 @@ func TestATargetSomeoneNamedAndroidIsLeftAlone(t *testing.T) {
 		t.Fatalf("the person's remote changed: %+v", r)
 	}
 }
+
+func TestRcloneCopiesOutOfTheWholeDisk(t *testing.T) {
+	dir, remote, seed, addr := wholeDisk(t)
+	if err := os.MkdirAll(filepath.Join(dir, "DCIM"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "DCIM", "cat.jpg"), []byte("meow"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := Root.Link(addr, testPassword, seed, filepath.Join(t.TempDir(), "kh")); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = Root.Unlink() })
+
+	ctx := context.Background()
+	from, err := rclonefs.NewFs(ctx, Root.Name+":"+remote)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dest := t.TempDir()
+	to, err := rclonefs.NewFs(ctx, dest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := sync.CopyDir(ctx, to, from, false); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(filepath.Join(dest, "DCIM", "cat.jpg"))
+	if err != nil || string(data) != "meow" {
+		t.Fatalf("copied %q, %v", data, err)
+	}
+}
+
+func TestHoldsTellsItsOwnTargetFromOneNamedTheSame(t *testing.T) {
+	seed := make([]byte, 32)
+	if err := Root.Link("127.0.0.1:8425", "s3cret", seed, filepath.Join(t.TempDir(), "kh")); err != nil {
+		t.Fatal(err)
+	}
+	if !Root.Holds("Root:/storage/emulated/0/DCIM") || !Root.Holds("Root:") {
+		t.Error("a side on the target is not counted as its")
+	}
+	if Root.Holds("/storage/emulated/0") || Root.Holds("Android:com.example") {
+		t.Error("a side elsewhere is counted as the target's")
+	}
+	if err := Root.Unlink(); err != nil {
+		t.Fatal(err)
+	}
+	if err := remotes.Save(Root.Name, "local", map[string]string{}); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = remotes.Delete(Root.Name) })
+	if Root.Holds("Root:/data") {
+		t.Error("a target someone named Root is counted as ArrowLoop's")
+	}
+}

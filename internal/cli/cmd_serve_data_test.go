@@ -5,8 +5,14 @@ import (
 	"encoding/base64"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/rclone/rclone/fs/config"
+	"github.com/rclone/rclone/fs/config/configfile"
+
+	"github.com/junkerderprovinz/arrowloop/internal/appdata"
 )
 
 // TestMain lets the test binary stand in for arrowloop, so a test can watch a
@@ -53,5 +59,45 @@ func TestTheDataServerStopsOnceTheAppClosesItsInput(t *testing.T) {
 	case <-time.After(10 * time.Second):
 		_ = cmd.Process.Kill()
 		t.Fatal("the server kept running after the app closed its input")
+	}
+}
+
+// isolateRemotes points rclone at an empty configuration of the test's own.
+func isolateRemotes(t *testing.T) {
+	t.Helper()
+	conf := filepath.Join(t.TempDir(), "rclone.conf")
+	if err := os.WriteFile(conf, nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	was := config.GetConfigPath()
+	if err := config.SetConfigPath(conf); err != nil {
+		t.Fatal(err)
+	}
+	configfile.Install()
+	t.Cleanup(func() {
+		_ = config.SetConfigPath(was)
+		configfile.Install()
+	})
+}
+
+func TestTheRootTargetIsOfferedWhileThePhoneRunsItsServer(t *testing.T) {
+	isolateRemotes(t)
+	home := t.TempDir()
+	t.Setenv(envDataPass, "secret")
+	t.Setenv(envDataHostKey, base64.StdEncoding.EncodeToString(make([]byte, 32)))
+
+	t.Setenv(envRootAddr, "127.0.0.1:8425")
+	linkTargets(home)
+	if !appdata.Root.Holds("Root:/data") {
+		t.Fatal("the Root target is not offered")
+	}
+	if appdata.AndroidData.Holds("Android:com.example") {
+		t.Fatal("Android/data is offered without its server")
+	}
+
+	t.Setenv(envRootAddr, "")
+	linkTargets(home)
+	if appdata.Root.Holds("Root:/data") {
+		t.Fatal("the Root target outlived its server")
 	}
 }

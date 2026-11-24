@@ -16,12 +16,14 @@ import (
 // travel in the environment because a command line can be read by others.
 const (
 	envDataAddr    = "ARROWLOOP_DATA_ADDR"
+	envRootAddr    = "ARROWLOOP_ROOT_ADDR"
 	envDataPass    = "ARROWLOOP_DATA_PASS"
 	envDataHostKey = "ARROWLOOP_DATA_HOSTKEY"
 )
 
-// cmdServeData serves Android/data to the engine; see internal/appdata. The
-// phone app starts it as root or as the adb shell user.
+// cmdServeData serves a folder to the engine, Android/data unless told
+// otherwise; see internal/appdata. The phone app starts it as root or as the
+// adb shell user, and once more with -root / -read-only for the Root target.
 func cmdServeData(args []string) error {
 	fset := flag.NewFlagSet("serve-data", flag.ExitOnError)
 	addr := fset.String("addr", "127.0.0.1:8423", "address to listen on")
@@ -59,22 +61,27 @@ func cmdServeData(args []string) error {
 	return <-done
 }
 
-// linkAppData offers Android/data as a target when the phone app runs the
-// server, and takes it away again when it no longer does.
-func linkAppData(home string) {
-	addr := os.Getenv(envDataAddr)
+// linkTargets offers Android/data and the whole file system as targets while
+// the phone app runs their servers, and takes each away again when it no
+// longer does.
+func linkTargets(home string) {
+	linkServed(appdata.AndroidData, os.Getenv(envDataAddr), filepath.Join(home, "android-data.known_hosts"))
+	linkServed(appdata.Root, os.Getenv(envRootAddr), filepath.Join(home, "root.known_hosts"))
+}
+
+func linkServed(t appdata.Target, addr, knownHosts string) {
 	if addr == "" {
-		if err := appdata.AndroidData.Unlink(); err != nil {
-			logf("Android/data: %v", err)
+		if err := t.Unlink(); err != nil {
+			logf("%s: %v", t.Name, err)
 		}
 		return
 	}
 	seed, err := base64.StdEncoding.DecodeString(os.Getenv(envDataHostKey))
 	if err == nil {
-		err = appdata.AndroidData.Link(addr, os.Getenv(envDataPass), seed, filepath.Join(home, "android-data.known_hosts"))
+		err = t.Link(addr, os.Getenv(envDataPass), seed, knownHosts)
 	}
 	if err != nil {
-		logf("Android/data: %v", err)
+		logf("%s: %v", t.Name, err)
 	}
 }
 

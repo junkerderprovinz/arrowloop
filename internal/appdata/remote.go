@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/rclone/rclone/fs/config"
+	"github.com/rclone/rclone/fs/fspath"
 	"golang.org/x/crypto/ssh/knownhosts"
 
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
@@ -20,6 +21,21 @@ type Target struct {
 
 // AndroidData is the target the app folders show up as.
 var AndroidData = Target{Name: "Android", Marker: "Android/data on this phone, set up by ArrowLoop"}
+
+// Root is the target a rooted phone's whole file system shows up as. Its
+// server only reads.
+var Root = Target{Name: "Root", Marker: "The whole file system of this phone, read only, set up by ArrowLoop"}
+
+// Holds reports whether side lies on this target and not on one a person
+// named the same.
+func (t Target) Holds(side string) bool {
+	parsed, err := fspath.Parse(side)
+	if err != nil || parsed.Name != t.Name {
+		return false
+	}
+	v, _ := config.LoadedData().GetValue(t.Name, "description")
+	return v == t.Marker
+}
 
 // Link points the remote at a server on addr and pins its host key in
 // knownHosts.

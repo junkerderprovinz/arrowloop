@@ -48,13 +48,18 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		return err
 	}
 
+	// The phone's own targets are set up before the jobs are read, so a job
+	// that would write to the Root target is refused from the start.
+	if err := o.Remotes(*configPath); err != nil {
+		return fmt.Errorf("decide where the storage targets live: %w", err)
+	}
+	linkTargets(filepath.Dir(*configPath))
+	linkAppDocs(filepath.Dir(*configPath))
 	cfg, err := o.load(ctx, *configPath)
 	if err != nil {
 		return err
 	}
 	cfg = cfg.StateByID(logf)
-	linkAppData(filepath.Dir(*configPath))
-	linkAppDocs(filepath.Dir(*configPath))
 	// Read before anything listens, so a damaged file stops the start instead
 	// of serving an install whose password has gone missing.
 	key, err := security.LoadKey(*configPath)
