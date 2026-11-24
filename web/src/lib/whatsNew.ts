@@ -71,6 +71,25 @@ export const RELEASES: Release[] = [
         where: ['nav.settings', 'settings.security'],
         text: 'new.change.signIn',
       },
+      {
+        id: 'api-tokens',
+        at: ['/settings/security'],
+        where: ['nav.settings', 'settings.security'],
+        text: 'new.change.apiTokens',
+      },
+      {
+        id: 'sessions',
+        at: ['/settings/security'],
+        where: ['nav.settings', 'settings.security'],
+        text: 'new.change.sessions',
+      },
+      {
+        id: 'password-question',
+        at: ['/settings/security'],
+        where: ['nav.settings', 'settings.security'],
+        text: 'new.change.passwordQuestion',
+      },
+      { id: 'public-url', text: 'new.change.publicUrl' },
     ],
   },
   {
