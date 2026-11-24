@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from "react-native";
+import type { RootAnswer, ShizukuState } from "./rootCard";
 
 // Starts and stops the engine process through the native module; api.ts talks
 // to the running engine over HTTP.
@@ -138,6 +139,8 @@ export interface AppData {
   /** What runs as su: a command name or a path. */
   su: string;
   rootTarget: RootTargetState;
+  rootAnswer: RootAnswer;
+  shizukuState: ShizukuState;
 }
 
 /**
@@ -197,7 +200,16 @@ const NOTHING_HELD: DevicePolicy = {
 const NO_WIFI: WifiReading = { name: "", access: "none", locationOn: false };
 
 /** What a build without the native module reports: switched off. */
-const NO_APP_DATA: AppData = { state: "off", way: "root", root: true, shizuku: false, su: "su", rootTarget: "off" };
+const NO_APP_DATA: AppData = {
+  state: "off",
+  way: "root",
+  root: true,
+  shizuku: false,
+  su: "su",
+  rootTarget: "off",
+  rootAnswer: "unknown",
+  shizukuState: "missing",
+};
 
 const native = NativeModules.ArrowLoopEngine as EngineNativeModule | undefined;
 

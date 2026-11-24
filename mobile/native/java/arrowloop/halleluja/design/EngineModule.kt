@@ -192,6 +192,8 @@ class EngineModule(private val context: ReactApplicationContext) :
         putBoolean("shizuku", report.shizuku)
         putString("su", report.su)
         putString("rootTarget", report.rootTarget.js)
+        putString("rootAnswer", report.rootAnswer)
+        putString("shizukuState", report.shizukuState)
     }
 
     /** The folders other apps share with ArrowLoop, as src/engine.ts reads them. */

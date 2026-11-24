@@ -42,6 +42,7 @@ export type SectionId =
   | "integrations"
   | "pairing"
   | "thisPhone"
+  | "root"
   | "appearance"
   | "motion"
   | "engine"
@@ -66,6 +67,7 @@ export const SECTION_TILE: Record<SectionId, TileId> = {
   integrations: "integrations",
   pairing: "pairing",
   thisPhone: "general",
+  root: "general",
   appearance: "look",
   motion: "look",
   engine: "general",

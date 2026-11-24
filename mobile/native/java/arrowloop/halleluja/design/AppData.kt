@@ -58,8 +58,9 @@ object AppData {
 
     /**
      * What the screen shows: how things stand, the way it marks as chosen,
-     * which ways can work on this phone, the su in use, and how the Root
-     * target stands: off, root, or why su gave none.
+     * which ways can work on this phone, the su in use, how the Root target
+     * stands, and what su and Shizuku answer, under the names
+     * src/rootCard.ts uses.
      */
     class Report(
         val state: State,
@@ -68,10 +69,12 @@ object AppData {
         val shizuku: Boolean,
         val su: String,
         val rootTarget: State,
+        val rootAnswer: String,
+        val shizukuState: String,
     )
 
     /** What su answered when last asked for root. */
-    private enum class Root { GRANTED, DENIED, ABSENT }
+    private enum class Root(val js: String) { GRANTED("granted"), DENIED("denied"), ABSENT("absent") }
 
     private const val TAG = "ArrowLoop"
     private const val PREFS = "appdata"
@@ -163,7 +166,12 @@ object AppData {
      * Runs su again, which makes the root manager ask the person, unless it
      * was told to remember a refusal.
      */
-    fun requestRoot(context: Context) = again(context) { remove(ROOT) }
+    fun requestRoot(context: Context): Report {
+        again(context) { remove(ROOT) }
+        // Asked even when nothing uses root yet, so the screen can say how it stands.
+        rootRefusal(context)
+        return report(context)
+    }
 
     /**
      * Stops the servers, makes the change and starts the servers now wanted.
@@ -207,7 +215,17 @@ object AppData {
             shizuku = Shizuku.pingBinder() || installed(context),
             su = su(context),
             rootTarget = rootTarget,
+            rootAnswer = prefs(context).getString(ROOT, null)?.let { Root.valueOf(it).js } ?: "unknown",
+            shizukuState = shizukuState(context),
         )
+    }
+
+    private fun shizukuState(context: Context): String = when {
+        !Shizuku.pingBinder() -> if (installed(context)) "stopped" else "missing"
+        // Before version 11 Shizuku spoke a protocol this API cannot.
+        Shizuku.isPreV11() -> "missing"
+        Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> "ready"
+        else -> "denied"
     }
 
     /** The variables that make the engine offer the Android and Root targets; empty without a server. */
