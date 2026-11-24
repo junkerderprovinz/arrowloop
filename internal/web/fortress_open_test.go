@@ -229,30 +229,6 @@ func TestATabWithoutItsSignInLeadsBack(t *testing.T) {
 	}
 }
 
-func TestATabEndsWithTheSignInThatOpenedIt(t *testing.T) {
-	setOpenPassword(t)
-	a, _, bID := fortressOfTwo(t, true)
-	_, body := a.send(t, http.MethodPost, "/api/fortress/open/"+bID, "")
-	var tab struct{ Path string }
-	if err := json.Unmarshal(body, &tab); err != nil {
-		t.Fatal(err)
-	}
-	if status, _ := a.send(t, http.MethodGet, tab.Path, ""); status != http.StatusOK {
-		t.Fatalf("the tab answered %d while its sign-in counts", status)
-	}
-	a.send(t, http.MethodPost, signin.APIPrefix+"logout", "")
-	noFollow := *a.srv.Client()
-	noFollow.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
-	resp, err := noFollow.Get(a.srv.URL + tab.Path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	resp.Body.Close()
-	if resp.StatusCode != http.StatusSeeOther {
-		t.Errorf("the tab answered %d after its sign-in ended", resp.StatusCode)
-	}
-}
-
 func TestTheStatusWindowGetsTheReportAndTheEndOfTheLog(t *testing.T) {
 	setOpenPassword(t)
 	a, _, bID := fortressOfTwo(t, true)

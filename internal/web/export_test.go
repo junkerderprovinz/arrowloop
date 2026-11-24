@@ -102,6 +102,12 @@ func (s *Server) OpensWithSignIn() (offered, signIn bool) {
 // version before when it is not empty.
 func OpenSignIn(t testing.TB, dir string, key []byte, password string) *signin.Auth {
 	t.Helper()
+	return OpenSignInAt(t, dir, key, password, "")
+}
+
+// OpenSignInAt is OpenSignIn for an instance people reach at public.
+func OpenSignInAt(t testing.TB, dir string, key []byte, password, public string) *signin.Auth {
+	t.Helper()
 	config := filepath.Join(dir, "arrowloop.json")
 	if password != "" {
 		old, err := security.Open(config, key)
@@ -116,7 +122,7 @@ func OpenSignIn(t testing.TB, dir string, key []byte, password string) *signin.A
 			t.Fatal(err)
 		}
 	}
-	auth, err := security.OpenSignIn(security.SignIn{ConfigPath: config, Key: key, PasswordHash: os.Getenv(PasswordHashEnv)})
+	auth, err := security.OpenSignIn(security.SignIn{ConfigPath: config, Key: key, PasswordHash: os.Getenv(PasswordHashEnv), Public: public})
 	if err != nil {
 		t.Fatal(err)
 	}

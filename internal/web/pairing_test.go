@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -86,6 +87,9 @@ type setup struct {
 	// password is set in the instance's own security file, which the
 	// environment does not reach.
 	password string
+	// public serves the instance over TLS on an address of its own, which a
+	// sign-in service needs.
+	public bool
 }
 
 func nodeWith(t *testing.T, su setup, h *harness) *node {
@@ -117,7 +121,12 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 	}
 	log := &lockedLog{}
 	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf}
-	s.SignIn = web.OpenSignIn(t, h.dir, testKey, su.password)
+	h.srv = httptest.NewUnstartedServer(nil)
+	public := ""
+	if su.public {
+		public = "https://localhost:" + strconv.Itoa(h.srv.Listener.Addr().(*net.TCPAddr).Port)
+	}
+	s.SignIn = web.OpenSignInAt(t, h.dir, testKey, su.password, public)
 	if su.password != "" {
 		s.Key = testKey
 	}
@@ -125,11 +134,15 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 	if su.guard {
 		handler = s.Guard(handler)
 	}
-	h.srv = httptest.NewUnstartedServer(handler)
+	h.srv.Config.Handler = handler
 	if su.lan != nil {
 		s.DirectURL = "http://" + h.srv.Listener.Addr().String()
 	}
-	h.srv.Start()
+	if su.public {
+		h.srv.StartTLS()
+	} else {
+		h.srv.Start()
+	}
 	s.StartPairing()
 	t.Cleanup(func() {
 		s.StopPairing()
