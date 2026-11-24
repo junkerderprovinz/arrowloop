@@ -42,3 +42,23 @@ export function shizukuStatus(state: ShizukuState): TranslationKey {
       return "phone.shizukuMissing";
   }
 }
+
+/**
+ * Why each switch of the card is dimmed, or null where it can be used. A
+ * switch that is on stays usable, so it can always be switched off.
+ */
+export function switchesHeld({
+  rootAnswer,
+  shizukuState,
+  appDataOn,
+  rootTargetOn,
+}: Access & { appDataOn: boolean; rootTargetOn: boolean }): {
+  appData: TranslationKey | null;
+  rootTarget: TranslationKey | null;
+} {
+  const root = rootAnswer === "granted";
+  return {
+    appData: appDataOn || root || shizukuState === "ready" ? null : "phone.appDataNeedsAccess",
+    rootTarget: rootTargetOn || root ? null : "phone.rootTargetNeedsRoot",
+  };
+}

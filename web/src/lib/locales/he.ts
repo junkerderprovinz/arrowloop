@@ -1123,6 +1123,8 @@ const he: Translations = {
   'phone.shizukuWaiting': 'ממתין להרשאה',
   'phone.shizukuStopped': 'לא פועל',
   'phone.shizukuMissing': 'לא מותקן',
+  'phone.rootTargetNeedsRoot': 'צריך רוט. בקש רוט למעלה.',
+  'phone.appDataNeedsAccess': 'צריך רוט או Shizuku. בקש רוט או הגדר את Shizuku למעלה.',
   'phone.sharedAdd': 'הוספת תיקייה מאפליקציה',
   'phone.sharedAddHint': 'חלק מהאפליקציות, למשל מקלדות, מציעות תיקיות משלהן בבורר הקבצים של Android. בחר אחת משם, ו־ArrowLoop יוכל לסנכרן אותה בלי רוט ובלי Shizuku. התיקיות מופיעות ביעד בשם Apps. הסרה של תיקייה מכאן רק מבטלת את הגישה של ArrowLoop, והקבצים נשארים במקומם.',
   'phone.sharedRemove': 'הסרה',

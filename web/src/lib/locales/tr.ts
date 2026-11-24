@@ -1123,6 +1123,8 @@ const tr: Translations = {
   'phone.shizukuWaiting': 'İzin bekliyor',
   'phone.shizukuStopped': 'Çalışmıyor',
   'phone.shizukuMissing': 'Yüklü değil',
+  'phone.rootTargetNeedsRoot': 'Root gerekir. Yukarıdan root iste.',
+  'phone.appDataNeedsAccess': 'Root veya Shizuku gerekir. Yukarıdan root iste ya da Shizuku\'yu kur.',
   'phone.sharedAdd': 'Uygulamadan klasör ekle',
   'phone.sharedAddHint': 'Bazı uygulamalar, örneğin klavyeler, Android\'in dosya seçicisinde kendi klasörlerini sunar. Orada birini seç, ArrowLoop da onu root ve Shizuku olmadan eşitleyebilir. Klasörler Apps adlı bir hedefte görünür. Birini buradan kaldırırsan yalnızca ArrowLoop\'un erişimi geri alınır, dosyalar olduğu yerde kalır.',
   'phone.sharedRemove': 'Kaldır',

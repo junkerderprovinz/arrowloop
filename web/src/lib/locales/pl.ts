@@ -1123,6 +1123,8 @@ const pl: Translations = {
   'phone.shizukuWaiting': 'Czeka na zgodę',
   'phone.shizukuStopped': 'Nie działa',
   'phone.shizukuMissing': 'Nie zainstalowano',
+  'phone.rootTargetNeedsRoot': 'Wymaga roota. Poproś o roota powyżej.',
+  'phone.appDataNeedsAccess': 'Wymaga roota lub Shizuku. Poproś o roota albo skonfiguruj Shizuku powyżej.',
   'phone.sharedAdd': 'Dodaj folder z aplikacji',
   'phone.sharedAddHint': 'Niektóre aplikacje, na przykład klawiatury, udostępniają własne foldery w selektorze plików Androida. Wybierz tam jeden, a ArrowLoop zsynchronizuje go bez roota i bez Shizuku. Foldery pojawiają się w celu o nazwie Apps. Gdy usuniesz folder stąd, ArrowLoop traci tylko dostęp, a pliki zostają tam, gdzie są.',
   'phone.sharedRemove': 'Usuń',

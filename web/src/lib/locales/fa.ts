@@ -1123,6 +1123,8 @@ const fa: Translations = {
   'phone.shizukuWaiting': 'در انتظار اجازه',
   'phone.shizukuStopped': 'اجرا نمی‌شود',
   'phone.shizukuMissing': 'نصب نشده',
+  'phone.rootTargetNeedsRoot': 'به روت نیاز دارد. در بالا روت را درخواست کنید.',
+  'phone.appDataNeedsAccess': 'به روت یا Shizuku نیاز دارد. در بالا روت را درخواست کنید یا Shizuku را راه بیندازید.',
   'phone.sharedAdd': 'افزودن پوشه از یک برنامه',
   'phone.sharedAddHint': 'برخی برنامه‌ها، مثلاً صفحه‌کلیدها، پوشه‌های خودشان را در انتخابگر فایل Android نشان می‌دهند. یکی را از آنجا انتخاب کنید تا ArrowLoop بتواند آن را بدون روت و بدون Shizuku همگام‌سازی کند. این پوشه‌ها در مقصدی به نام Apps نمایش داده می‌شوند. برداشتن یک پوشه از اینجا فقط دسترسی ArrowLoop را پس می‌گیرد و فایل‌ها سر جایشان می‌مانند.',
   'phone.sharedRemove': 'برداشتن',

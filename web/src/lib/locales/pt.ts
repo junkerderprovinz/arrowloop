@@ -1123,6 +1123,8 @@ const pt: Translations = {
   'phone.shizukuWaiting': 'À espera de permissão',
   'phone.shizukuStopped': 'Não está a correr',
   'phone.shizukuMissing': 'Não instalado',
+  'phone.rootTargetNeedsRoot': 'Precisa de root. Peça root mais acima.',
+  'phone.appDataNeedsAccess': 'Precisa de root ou Shizuku. Peça root ou configure o Shizuku mais acima.',
   'phone.sharedAdd': 'Adicionar uma pasta de uma aplicação',
   'phone.sharedAddHint': 'Algumas aplicações, por exemplo os teclados, oferecem as suas próprias pastas no seletor de ficheiros do Android. Escolhe uma lá e o ArrowLoop poderá sincronizá-la sem root nem Shizuku. As pastas aparecem num destino chamado Apps. Se removeres uma aqui, só se retira o acesso do ArrowLoop, e os ficheiros ficam onde estão.',
   'phone.sharedRemove': 'Remover',

@@ -1123,6 +1123,8 @@ const is: Translations = {
   'phone.shizukuWaiting': 'Bíður eftir leyfi',
   'phone.shizukuStopped': 'Keyrir ekki',
   'phone.shizukuMissing': 'Ekki uppsett',
+  'phone.rootTargetNeedsRoot': 'Þarf rótaraðgang. Biddu um hann hér fyrir ofan.',
+  'phone.appDataNeedsAccess': 'Þarf rótaraðgang eða Shizuku. Biddu um rótaraðgang eða settu Shizuku upp hér fyrir ofan.',
   'phone.sharedAdd': 'Bæta við möppu úr forriti',
   'phone.sharedAddHint': 'Sum forrit, til dæmis lyklaborð, bjóða upp á eigin möppur í skráavali Android. Veldu eina þar, þá getur ArrowLoop samstillt hana án rótaraðgangs og án Shizuku. Möppurnar birtast í áfangastað sem heitir Apps. Ef þú fjarlægir möppu héðan tekur ArrowLoop aðeins aðganginn til baka og skrárnar haldast þar sem þær eru.',
   'phone.sharedRemove': 'Fjarlægja',

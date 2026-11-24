@@ -1123,6 +1123,8 @@ const ko: Translations = {
   'phone.shizukuWaiting': '권한 대기 중',
   'phone.shizukuStopped': '실행 중 아님',
   'phone.shizukuMissing': '설치 안 됨',
+  'phone.rootTargetNeedsRoot': '루트가 필요합니다. 위에서 루트를 요청하세요.',
+  'phone.appDataNeedsAccess': '루트나 Shizuku가 필요합니다. 위에서 루트를 요청하거나 Shizuku를 설정하세요.',
   'phone.sharedAdd': '앱의 폴더 추가',
   'phone.sharedAddHint': '키보드 같은 일부 앱은 Android 파일 선택기에서 자체 폴더를 제공합니다. 거기서 하나를 고르면 ArrowLoop가 루트나 Shizuku 없이 동기화할 수 있습니다. 폴더는 Apps라는 대상에 나타납니다. 여기서 폴더를 제거하면 ArrowLoop의 접근 권한만 회수되고 파일은 그대로 남습니다.',
   'phone.sharedRemove': '제거',

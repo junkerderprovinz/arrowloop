@@ -1123,6 +1123,8 @@ const uk: Translations = {
   'phone.shizukuWaiting': 'Чекає на дозвіл',
   'phone.shizukuStopped': 'Не працює',
   'phone.shizukuMissing': 'Не встановлено',
+  'phone.rootTargetNeedsRoot': 'Потрібен root. Запитайте root вище.',
+  'phone.appDataNeedsAccess': 'Потрібен root або Shizuku. Запитайте root або налаштуйте Shizuku вище.',
   'phone.sharedAdd': 'Додати папку із застосунку',
   'phone.sharedAddHint': 'Деякі застосунки, наприклад клавіатури, показують власні папки у вікні вибору файлів Android. Виберіть там одну, і ArrowLoop зможе синхронізувати її без root і без Shizuku. Папки з\'являються в призначенні з назвою Apps. Якщо прибрати папку тут, ArrowLoop лише втратить доступ, а файли залишаться на місці.',
   'phone.sharedRemove': 'Прибрати',

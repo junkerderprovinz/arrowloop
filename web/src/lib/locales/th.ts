@@ -1123,6 +1123,8 @@ const th: Translations = {
   'phone.shizukuWaiting': 'รอการอนุญาต',
   'phone.shizukuStopped': 'ไม่ได้ทำงาน',
   'phone.shizukuMissing': 'ยังไม่ได้ติดตั้ง',
+  'phone.rootTargetNeedsRoot': 'ต้องใช้รูท ขอรูทที่ด้านบน',
+  'phone.appDataNeedsAccess': 'ต้องใช้รูทหรือ Shizuku ขอรูทหรือตั้งค่า Shizuku ที่ด้านบน',
   'phone.sharedAdd': 'เพิ่มโฟลเดอร์จากแอป',
   'phone.sharedAddHint': 'แอปบางตัว เช่น แป้นพิมพ์ มีโฟลเดอร์ของตัวเองให้เลือกในตัวเลือกไฟล์ของ Android ลองเลือกสักโฟลเดอร์จากตรงนั้น แล้ว ArrowLoop จะซิงค์ได้โดยไม่ต้องใช้รูทหรือ Shizuku โฟลเดอร์จะแสดงในปลายทางชื่อ Apps การเอาออกจากตรงนี้จะเพียงเพิกถอนสิทธิ์เข้าถึงของ ArrowLoop ส่วนไฟล์ยังอยู่ที่เดิม',
   'phone.sharedRemove': 'เอาออก',

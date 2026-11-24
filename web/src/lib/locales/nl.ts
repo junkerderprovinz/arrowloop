@@ -1123,6 +1123,8 @@ const nl: Translations = {
   'phone.shizukuWaiting': 'Wacht op toestemming',
   'phone.shizukuStopped': 'Draait niet',
   'phone.shizukuMissing': 'Niet geïnstalleerd',
+  'phone.rootTargetNeedsRoot': 'Heeft root nodig. Vraag hierboven root aan.',
+  'phone.appDataNeedsAccess': 'Heeft root of Shizuku nodig. Vraag hierboven root aan of stel Shizuku in.',
   'phone.sharedAdd': 'Map uit een app toevoegen',
   'phone.sharedAddHint': 'Sommige apps, bijvoorbeeld toetsenborden, bieden hun eigen mappen aan in de bestandskiezer van Android. Kies daar een map, dan kan ArrowLoop hem synchroniseren zonder root of Shizuku. De mappen verschijnen in een doel met de naam Apps. Haal je er hier een weg, dan verliest alleen ArrowLoop de toegang en blijven de bestanden waar ze zijn.',
   'phone.sharedRemove': 'Weghalen',

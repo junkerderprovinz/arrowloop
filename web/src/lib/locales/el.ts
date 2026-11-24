@@ -1123,6 +1123,8 @@ const el: Translations = {
   'phone.shizukuWaiting': 'Περιμένει άδεια',
   'phone.shizukuStopped': 'Δεν τρέχει',
   'phone.shizukuMissing': 'Δεν είναι εγκατεστημένο',
+  'phone.rootTargetNeedsRoot': 'Χρειάζεται root. Ζήτησε root παραπάνω.',
+  'phone.appDataNeedsAccess': 'Χρειάζεται root ή Shizuku. Ζήτησε root ή ρύθμισε το Shizuku παραπάνω.',
   'phone.sharedAdd': 'Προσθήκη φακέλου από εφαρμογή',
   'phone.sharedAddHint': 'Μερικές εφαρμογές, για παράδειγμα τα πληκτρολόγια, προσφέρουν δικούς τους φακέλους στον επιλογέα αρχείων του Android. Διάλεξε έναν εκεί και το ArrowLoop μπορεί να τον συγχρονίσει χωρίς root και χωρίς Shizuku. Οι φάκελοι εμφανίζονται σε έναν προορισμό με όνομα Apps. Αν αφαιρέσεις έναν από εδώ, το ArrowLoop χάνει μόνο την πρόσβαση και τα αρχεία μένουν εκεί που είναι.',
   'phone.sharedRemove': 'Αφαίρεση',

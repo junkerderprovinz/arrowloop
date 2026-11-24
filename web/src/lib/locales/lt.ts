@@ -1123,6 +1123,8 @@ const lt: Translations = {
   'phone.shizukuWaiting': 'Laukia leidimo',
   'phone.shizukuStopped': 'Neveikia',
   'phone.shizukuMissing': 'Neįdiegta',
+  'phone.rootTargetNeedsRoot': 'Reikia root. Paprašykite root aukščiau.',
+  'phone.appDataNeedsAccess': 'Reikia root arba Shizuku. Paprašykite root arba nustatykite Shizuku aukščiau.',
   'phone.sharedAdd': 'Pridėti aplanką iš programos',
   'phone.sharedAddHint': 'Kai kurios programos, pavyzdžiui klaviatūros, siūlo savo aplankus Android failų parinkiklyje. Pasirinkite ten vieną, ir ArrowLoop galės jį sinchronizuoti be root ir be Shizuku. Aplankai rodomi paskirtyje pavadinimu Apps. Pašalinus aplanką čia, ArrowLoop tik netenka prieigos, o failai lieka savo vietoje.',
   'phone.sharedRemove': 'Pašalinti',

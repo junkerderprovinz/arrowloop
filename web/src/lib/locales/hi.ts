@@ -1123,6 +1123,8 @@ const hi: Translations = {
   'phone.shizukuWaiting': 'अनुमति का इंतज़ार',
   'phone.shizukuStopped': 'नहीं चल रहा',
   'phone.shizukuMissing': 'इंस्टॉल नहीं है',
+  'phone.rootTargetNeedsRoot': 'रूट चाहिए। ऊपर रूट माँगें।',
+  'phone.appDataNeedsAccess': 'रूट या Shizuku चाहिए। ऊपर रूट माँगें या Shizuku सेट करें।',
   'phone.sharedAdd': 'किसी ऐप का फ़ोल्डर जोड़ें',
   'phone.sharedAddHint': 'कुछ ऐप, जैसे कीबोर्ड, Android के फ़ाइल चयनकर्ता में अपने फ़ोल्डर दिखाते हैं। वहाँ से एक चुनें, तो ArrowLoop उसे रूट या Shizuku के बिना सिंक कर सकता है। ये फ़ोल्डर Apps नाम के गंतव्य में दिखते हैं। यहाँ से किसी को हटाने पर सिर्फ़ ArrowLoop की पहुँच वापस ली जाती है, फ़ाइलें अपनी जगह रहती हैं।',
   'phone.sharedRemove': 'हटाएँ',

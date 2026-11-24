@@ -1123,6 +1123,8 @@ const ca: Translations = {
   'phone.shizukuWaiting': 'Esperant permís',
   'phone.shizukuStopped': 'No s\'executa',
   'phone.shizukuMissing': 'No instal·lat',
+  'phone.rootTargetNeedsRoot': 'Cal root. Demana el root més amunt.',
+  'phone.appDataNeedsAccess': 'Cal root o Shizuku. Demana el root o configura Shizuku més amunt.',
   'phone.sharedAdd': 'Afegeix una carpeta d\'una aplicació',
   'phone.sharedAddHint': 'Algunes aplicacions, per exemple els teclats, ofereixen les seves pròpies carpetes al selector de fitxers d\'Android. Tria\'n una allà i ArrowLoop la podrà sincronitzar sense root ni Shizuku. Les carpetes apareixen en una destinació anomenada Apps. Si en treus una d\'aquí, només es retira l\'accés d\'ArrowLoop, i els fitxers es queden on són.',
   'phone.sharedRemove': 'Treu',

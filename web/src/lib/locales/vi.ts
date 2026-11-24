@@ -1123,6 +1123,8 @@ const vi: Translations = {
   'phone.shizukuWaiting': 'Đang chờ quyền',
   'phone.shizukuStopped': 'Không chạy',
   'phone.shizukuMissing': 'Chưa cài đặt',
+  'phone.rootTargetNeedsRoot': 'Cần root. Hãy yêu cầu root ở trên.',
+  'phone.appDataNeedsAccess': 'Cần root hoặc Shizuku. Hãy yêu cầu root hoặc thiết lập Shizuku ở trên.',
   'phone.sharedAdd': 'Thêm thư mục từ ứng dụng',
   'phone.sharedAddHint': 'Một số ứng dụng, chẳng hạn bàn phím, cung cấp thư mục riêng trong trình chọn tệp của Android. Hãy chọn một thư mục ở đó, rồi ArrowLoop có thể đồng bộ nó mà không cần root hay Shizuku. Các thư mục hiện ra trong đích tên là Apps. Bỏ một thư mục khỏi đây chỉ thu hồi quyền truy cập của ArrowLoop, còn tệp vẫn ở nguyên chỗ cũ.',
   'phone.sharedRemove': 'Bỏ',

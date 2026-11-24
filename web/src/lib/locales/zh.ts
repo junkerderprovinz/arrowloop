@@ -1123,6 +1123,8 @@ const zh: Translations = {
   'phone.shizukuWaiting': '等待授权',
   'phone.shizukuStopped': '未运行',
   'phone.shizukuMissing': '未安装',
+  'phone.rootTargetNeedsRoot': '需要 root。请在上方请求 root。',
+  'phone.appDataNeedsAccess': '需要 root 或 Shizuku。请在上方请求 root 或设置 Shizuku。',
   'phone.sharedAdd': '添加应用中的文件夹',
   'phone.sharedAddHint': '有些应用，例如键盘，会在 Android 的文件选择器中提供自己的文件夹。在那里选一个，ArrowLoop 就能在没有 root 和 Shizuku 的情况下同步它。这些文件夹会显示在名为 Apps 的目标中。在这里移除文件夹只会收回 ArrowLoop 的访问权限，文件仍留在原处。',
   'phone.sharedRemove': '移除',

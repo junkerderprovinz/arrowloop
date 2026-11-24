@@ -1123,6 +1123,8 @@ const fr: Translations = {
   'phone.shizukuWaiting': 'En attente d\'autorisation',
   'phone.shizukuStopped': 'Ne tourne pas',
   'phone.shizukuMissing': 'Non installé',
+  'phone.rootTargetNeedsRoot': 'Demande le root. Demandez le root plus haut.',
+  'phone.appDataNeedsAccess': 'Demande le root ou Shizuku. Demandez le root ou configurez Shizuku plus haut.',
   'phone.sharedAdd': 'Ajouter un dossier d\'une application',
   'phone.sharedAddHint': 'Certaines applications, des claviers par exemple, proposent leurs propres dossiers dans le sélecteur de fichiers d\'Android. Choisissez-en un à cet endroit, et ArrowLoop pourra le synchroniser sans root ni Shizuku. Les dossiers apparaissent dans une cible nommée Apps. Retirer un dossier ici ne fait que reprendre l\'accès d\'ArrowLoop, les fichiers restent où ils sont.',
   'phone.sharedRemove': 'Retirer',

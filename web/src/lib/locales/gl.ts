@@ -1123,6 +1123,8 @@ const gl: Translations = {
   'phone.shizukuWaiting': 'Agardando permiso',
   'phone.shizukuStopped': 'Non se está a executar',
   'phone.shizukuMissing': 'Non instalado',
+  'phone.rootTargetNeedsRoot': 'Precisa root. Solicita o root máis arriba.',
+  'phone.appDataNeedsAccess': 'Precisa root ou Shizuku. Solicita o root ou configura Shizuku máis arriba.',
   'phone.sharedAdd': 'Engadir un cartafol dunha aplicación',
   'phone.sharedAddHint': 'Algunhas aplicacións, por exemplo os teclados, ofrecen os seus propios cartafoles no selector de ficheiros de Android. Escolle un alí e ArrowLoop poderá sincronizalo sen root nin Shizuku. Os cartafoles aparecen nun destino chamado Apps. Se quitas un aquí, só se retira o acceso de ArrowLoop, e os ficheiros quedan onde están.',
   'phone.sharedRemove': 'Quitar',

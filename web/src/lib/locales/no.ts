@@ -1123,6 +1123,8 @@ const no: Translations = {
   'phone.shizukuWaiting': 'Venter på tillatelse',
   'phone.shizukuStopped': 'Kjører ikke',
   'phone.shizukuMissing': 'Ikke installert',
+  'phone.rootTargetNeedsRoot': 'Trenger root. Be om root ovenfor.',
+  'phone.appDataNeedsAccess': 'Trenger root eller Shizuku. Be om root eller sett opp Shizuku ovenfor.',
   'phone.sharedAdd': 'Legg til en mappe fra en app',
   'phone.sharedAddHint': 'Noen apper, for eksempel tastaturer, tilbyr egne mapper i Androids filvelger. Velg en der, så kan ArrowLoop synkronisere den uten root og uten Shizuku. Mappene vises i et mål som heter Apps. Fjerner du en her, mister bare ArrowLoop tilgangen, og filene blir der de er.',
   'phone.sharedRemove': 'Fjern',

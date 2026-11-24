@@ -1123,6 +1123,8 @@ const hu: Translations = {
   'phone.shizukuWaiting': 'Engedélyre vár',
   'phone.shizukuStopped': 'Nem fut',
   'phone.shizukuMissing': 'Nincs telepítve',
+  'phone.rootTargetNeedsRoot': 'Root kell hozzá. Fent kérj rootot.',
+  'phone.appDataNeedsAccess': 'Root vagy Shizuku kell hozzá. Fent kérj rootot, vagy állítsd be a Shizukut.',
   'phone.sharedAdd': 'Mappa hozzáadása egy alkalmazásból',
   'phone.sharedAddHint': 'Egyes alkalmazások, például a billentyűzetek, saját mappákat kínálnak az Android fájlválasztójában. Válassz ki ott egyet, és az ArrowLoop root és Shizuku nélkül szinkronizálni tudja. A mappák az Apps nevű célban jelennek meg. Ha itt eltávolítasz egyet, az ArrowLoop csak a hozzáférését veszíti el, a fájlok ott maradnak, ahol vannak.',
   'phone.sharedRemove': 'Eltávolítás',

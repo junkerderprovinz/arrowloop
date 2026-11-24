@@ -1123,6 +1123,8 @@ const cs: Translations = {
   'phone.shizukuWaiting': 'Čeká na oprávnění',
   'phone.shizukuStopped': 'Neběží',
   'phone.shizukuMissing': 'Není nainstalováno',
+  'phone.rootTargetNeedsRoot': 'Potřebuje root. Požádejte o root výše.',
+  'phone.appDataNeedsAccess': 'Potřebuje root nebo Shizuku. Požádejte o root nebo nastavte Shizuku výše.',
   'phone.sharedAdd': 'Přidat složku z aplikace',
   'phone.sharedAddHint': 'Některé aplikace, například klávesnice, nabízejí vlastní složky ve výběru souborů Androidu. Vyberte tam jednu a ArrowLoop ji bude moci synchronizovat bez rootu i bez Shizuku. Složky se objeví v cíli s názvem Apps. Odebráním složky tady ArrowLoop jen ztratí přístup, soubory zůstanou, kde jsou.',
   'phone.sharedRemove': 'Odebrat',

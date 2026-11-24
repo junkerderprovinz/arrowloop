@@ -1123,6 +1123,8 @@ const ja: Translations = {
   'phone.shizukuWaiting': '許可待ち',
   'phone.shizukuStopped': '実行されていません',
   'phone.shizukuMissing': '未インストール',
+  'phone.rootTargetNeedsRoot': 'root が必要です。上で root を求めてください。',
+  'phone.appDataNeedsAccess': 'root か Shizuku が必要です。上で root を求めるか Shizuku を準備してください。',
   'phone.sharedAdd': 'アプリのフォルダーを追加',
   'phone.sharedAddHint': 'キーボードなど一部のアプリは、Android のファイル選択画面で独自のフォルダーを公開しています。そこで選ぶと、ArrowLoop は root も Shizuku もなしで同期できます。フォルダーは Apps という接続先に表示されます。ここで外しても ArrowLoop のアクセス権がなくなるだけで、ファイルはそのまま残ります。',
   'phone.sharedRemove': '解除',

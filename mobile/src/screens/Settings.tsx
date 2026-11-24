@@ -16,7 +16,7 @@ import Constants from "expo-constants";
 import { api } from "../api";
 import { AutoBackupSection } from "../autoBackup";
 import { IntegrationsSection } from "../vpnSection";
-import { rootActions, rootStatus, shizukuStatus } from "../rootCard";
+import { rootActions, rootStatus, shizukuStatus, switchesHeld } from "../rootCard";
 import {
   engine,
   type AppData,
@@ -391,6 +391,7 @@ export function Settings() {
   const appDataOn = appDataWanted?.on ?? (appData !== null && appData.state !== "off");
   const rootTargetOn = appDataWanted?.rootTarget ?? (appData !== null && appData.rootTarget !== "off");
   const access = appData && rootActions(appData);
+  const held = appData && switchesHeld({ ...appData, appDataOn, rootTargetOn });
   const su = suDraft ?? appData?.su ?? "";
   const suValid = SU_COMMAND.test(su);
   const storeSu = () => {
@@ -615,7 +616,11 @@ export function Settings() {
                   />
                 </View>
               ) : null}
-              <Pair label="Shizuku" value={t(shizukuStatus(appData.shizukuState))} />
+              <Pair
+                label="Shizuku"
+                value={t(shizukuStatus(appData.shizukuState))}
+                hint={t("phone.appDataGetShizukuHint")}
+              />
               {access?.askShizuku ? (
                 <View style={styles.actions}>
                   <Button
@@ -629,7 +634,6 @@ export function Settings() {
                 <Button
                   label={t("phone.appDataGetShizuku")}
                   glyph="IconDownload"
-                  hint={t("phone.appDataGetShizukuHint")}
                   onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
                 />
               ) : null}
@@ -639,9 +643,10 @@ export function Settings() {
             label={t("phone.appData")}
             hint={t("phone.appDataHint")}
             value={appDataOn}
-            disabled={appData === null || appDataWanted !== null}
+            disabled={appData === null || appDataWanted !== null || held?.appData != null}
             onChange={(on) => changeAppData({ on }, () => engine.setAppData(on))}
           />
+          {held?.appData ? <Caption>{t(held.appData)}</Caption> : null}
           {appData && appDataOn ? (
             <>
               {/* The way that works is marked until one is picked; a way that
@@ -663,15 +668,14 @@ export function Settings() {
               ) : null}
             </>
           ) : null}
-          {/* Only su reads the whole file system, so the switch is dimmed
-              once su is found missing, unless it is on and has to come off. */}
           <Toggle
             label={t("phone.rootTarget")}
             hint={t("phone.rootTargetHint")}
             value={rootTargetOn}
-            disabled={appData === null || appDataWanted !== null || (!appData.root && !rootTargetOn)}
+            disabled={appData === null || appDataWanted !== null || held?.rootTarget != null}
             onChange={(on) => changeAppData({ rootTarget: on }, () => engine.setRootTarget(on))}
           />
+          {held?.rootTarget ? <Caption>{t(held.rootTarget)}</Caption> : null}
           {appData && appDataWanted === null && appData.rootTarget !== "off" ? (
             <Caption>{rootTargetSaid(appData.rootTarget, t)}</Caption>
           ) : null}

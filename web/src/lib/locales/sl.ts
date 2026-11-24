@@ -1123,6 +1123,8 @@ const sl: Translations = {
   'phone.shizukuWaiting': 'Čaka na dovoljenje',
   'phone.shizukuStopped': 'Ne teče',
   'phone.shizukuMissing': 'Ni nameščeno',
+  'phone.rootTargetNeedsRoot': 'Potrebuje root. Zahtevaj root zgoraj.',
+  'phone.appDataNeedsAccess': 'Potrebuje root ali Shizuku. Zahtevaj root ali nastavi Shizuku zgoraj.',
   'phone.sharedAdd': 'Dodaj mapo iz aplikacije',
   'phone.sharedAddHint': 'Nekatere aplikacije, na primer tipkovnice, ponujajo lastne mape v izbirniku datotek v Androidu. Izberi eno tam in ArrowLoop jo lahko sinhronizira brez roota in brez Shizuka. Mape se prikažejo v cilju z imenom Apps. Če mapo odstraniš tukaj, ArrowLoop izgubi le dostop, datoteke pa ostanejo, kjer so.',
   'phone.sharedRemove': 'Odstrani',

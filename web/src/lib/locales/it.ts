@@ -1123,6 +1123,8 @@ const it: Translations = {
   'phone.shizukuWaiting': 'In attesa del permesso',
   'phone.shizukuStopped': 'Non in esecuzione',
   'phone.shizukuMissing': 'Non installato',
+  'phone.rootTargetNeedsRoot': 'Serve il root. Richiedi il root qui sopra.',
+  'phone.appDataNeedsAccess': 'Serve il root o Shizuku. Richiedi il root o configura Shizuku qui sopra.',
   'phone.sharedAdd': 'Aggiungi una cartella da un\'app',
   'phone.sharedAddHint': 'Alcune app, per esempio le tastiere, offrono cartelle proprie nel selettore di file di Android. Scegline una lì e ArrowLoop potrà sincronizzarla senza root né Shizuku. Le cartelle compaiono in una destinazione chiamata Apps. Se ne rimuovi una da qui, ArrowLoop perde solo l\'accesso e i file restano dove sono.',
   'phone.sharedRemove': 'Rimuovi',

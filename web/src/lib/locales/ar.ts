@@ -1123,6 +1123,8 @@ const ar: Translations = {
   'phone.shizukuWaiting': 'بانتظار الإذن',
   'phone.shizukuStopped': 'لا يعمل',
   'phone.shizukuMissing': 'غير مثبّت',
+  'phone.rootTargetNeedsRoot': 'يحتاج إلى الروت. اطلب الروت في الأعلى.',
+  'phone.appDataNeedsAccess': 'يحتاج إلى الروت أو Shizuku. اطلب الروت أو جهّز Shizuku في الأعلى.',
   'phone.sharedAdd': 'إضافة مجلد من تطبيق',
   'phone.sharedAddHint': 'بعض التطبيقات، مثل لوحات المفاتيح، تعرض مجلداتها الخاصة في أداة اختيار الملفات في Android. اختر مجلدًا من هناك، فيستطيع ArrowLoop مزامنته دون الروت أو Shizuku. تظهر المجلدات في وجهة اسمها Apps. إزالة مجلد من هنا تسحب وصول ArrowLoop فقط، وتبقى الملفات في مكانها.',
   'phone.sharedRemove': 'إزالة',

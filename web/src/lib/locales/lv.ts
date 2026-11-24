@@ -1123,6 +1123,8 @@ const lv: Translations = {
   'phone.shizukuWaiting': 'Gaida atļauju',
   'phone.shizukuStopped': 'Nedarbojas',
   'phone.shizukuMissing': 'Nav instalēts',
+  'phone.rootTargetNeedsRoot': 'Vajag root. Pieprasi root augstāk.',
+  'phone.appDataNeedsAccess': 'Vajag root vai Shizuku. Pieprasi root vai iestati Shizuku augstāk.',
   'phone.sharedAdd': 'Pievienot mapi no lietotnes',
   'phone.sharedAddHint': 'Dažas lietotnes, piemēram, tastatūras, piedāvā savas mapes Android failu atlasītājā. Izvēlies tur vienu, un ArrowLoop varēs to sinhronizēt bez root un bez Shizuku. Mapes parādās galamērķī ar nosaukumu Apps. Ja šeit noņemsi mapi, ArrowLoop zaudē tikai piekļuvi, bet faili paliek savā vietā.',
   'phone.sharedRemove': 'Noņemt',

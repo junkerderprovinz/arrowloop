@@ -1123,6 +1123,8 @@ const ro: Translations = {
   'phone.shizukuWaiting': 'Așteaptă permisiunea',
   'phone.shizukuStopped': 'Nu rulează',
   'phone.shizukuMissing': 'Neinstalat',
+  'phone.rootTargetNeedsRoot': 'Are nevoie de root. Cere root mai sus.',
+  'phone.appDataNeedsAccess': 'Are nevoie de root sau Shizuku. Cere root sau configurează Shizuku mai sus.',
   'phone.sharedAdd': 'Adaugă un dosar dintr-o aplicație',
   'phone.sharedAddHint': 'Unele aplicații, de exemplu tastaturile, oferă dosare proprii în selectorul de fișiere din Android. Alege unul de acolo și ArrowLoop îl poate sincroniza fără root și fără Shizuku. Dosarele apar într-o destinație numită Apps. Dacă elimini unul de aici, ArrowLoop doar pierde accesul, iar fișierele rămân unde sunt.',
   'phone.sharedRemove': 'Elimină',

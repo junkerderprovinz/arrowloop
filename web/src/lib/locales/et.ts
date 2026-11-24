@@ -1123,6 +1123,8 @@ const et: Translations = {
   'phone.shizukuWaiting': 'Ootab luba',
   'phone.shizukuStopped': 'Ei tööta',
   'phone.shizukuMissing': 'Pole paigaldatud',
+  'phone.rootTargetNeedsRoot': 'Vajab juurõigusi. Küsi neid ülalt.',
+  'phone.appDataNeedsAccess': 'Vajab juurõigusi või Shizukut. Küsi ülalt juurõigusi või seadista Shizuku.',
   'phone.sharedAdd': 'Lisa kaust rakendusest',
   'phone.sharedAddHint': 'Mõned rakendused, näiteks klaviatuurid, pakuvad oma kaustu Androidi failivalijas. Vali seal üks ja ArrowLoop saab seda sünkroonida ilma juurõiguste ja Shizukuta. Kaustad ilmuvad sihtkohta nimega Apps. Kui eemaldad ühe siin, võetakse ära vaid ArrowLoopi ligipääs ja failid jäävad oma kohale.',
   'phone.sharedRemove': 'Eemalda',

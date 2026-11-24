@@ -1123,6 +1123,8 @@ const id: Translations = {
   'phone.shizukuWaiting': 'Menunggu izin',
   'phone.shizukuStopped': 'Tidak berjalan',
   'phone.shizukuMissing': 'Tidak terpasang',
+  'phone.rootTargetNeedsRoot': 'Butuh root. Minta root di atas.',
+  'phone.appDataNeedsAccess': 'Butuh root atau Shizuku. Minta root atau siapkan Shizuku di atas.',
   'phone.sharedAdd': 'Tambah folder dari aplikasi',
   'phone.sharedAddHint': 'Beberapa aplikasi, misalnya keyboard, menawarkan folder sendiri di pemilih file Android. Pilih satu di sana, lalu ArrowLoop bisa menyinkronkannya tanpa root atau Shizuku. Folder-folder itu muncul di tujuan bernama Apps. Membuang satu folder dari sini hanya mencabut akses ArrowLoop, dan file tetap di tempatnya.',
   'phone.sharedRemove': 'Lepas',

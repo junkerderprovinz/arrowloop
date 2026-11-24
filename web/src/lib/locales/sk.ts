@@ -1123,6 +1123,8 @@ const sk: Translations = {
   'phone.shizukuWaiting': 'Čaká na povolenie',
   'phone.shizukuStopped': 'Nebeží',
   'phone.shizukuMissing': 'Nie je nainštalované',
+  'phone.rootTargetNeedsRoot': 'Potrebuje root. Požiadajte o root vyššie.',
+  'phone.appDataNeedsAccess': 'Potrebuje root alebo Shizuku. Požiadajte o root alebo nastavte Shizuku vyššie.',
   'phone.sharedAdd': 'Pridať priečinok z aplikácie',
   'phone.sharedAddHint': 'Niektoré aplikácie, napríklad klávesnice, ponúkajú vlastné priečinky vo výbere súborov Androidu. Vyberte tam jeden a ArrowLoop ho bude môcť synchronizovať bez rootu a bez Shizuku. Priečinky sa zobrazia v cieli s názvom Apps. Keď tu priečinok odoberiete, ArrowLoop len stratí prístup a súbory zostanú, kde sú.',
   'phone.sharedRemove': 'Odobrať',

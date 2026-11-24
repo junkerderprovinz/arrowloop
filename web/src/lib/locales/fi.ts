@@ -1123,6 +1123,8 @@ const fi: Translations = {
   'phone.shizukuWaiting': 'Odottaa lupaa',
   'phone.shizukuStopped': 'Ei käynnissä',
   'phone.shizukuMissing': 'Ei asennettu',
+  'phone.rootTargetNeedsRoot': 'Tarvitsee rootin. Pyydä rootia yläpuolelta.',
+  'phone.appDataNeedsAccess': 'Tarvitsee rootin tai Shizukun. Pyydä rootia tai ota Shizuku käyttöön yläpuolelta.',
   'phone.sharedAdd': 'Lisää kansio sovelluksesta',
   'phone.sharedAddHint': 'Jotkin sovellukset, esimerkiksi näppäimistöt, tarjoavat omia kansioitaan Androidin tiedostovalitsimessa. Valitse sellainen sieltä, niin ArrowLoop voi synkronoida sen ilman rootia ja Shizukua. Kansiot näkyvät kohteessa nimeltä Apps. Kun poistat kansion täältä, ArrowLoop menettää vain pääsyn, ja tiedostot pysyvät paikoillaan.',
   'phone.sharedRemove': 'Poista',

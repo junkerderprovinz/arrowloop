@@ -1123,6 +1123,8 @@ const sr: Translations = {
   'phone.shizukuWaiting': 'Чека дозволу',
   'phone.shizukuStopped': 'Не ради',
   'phone.shizukuMissing': 'Није инсталирано',
+  'phone.rootTargetNeedsRoot': 'Треба root. Затражи root изнад.',
+  'phone.appDataNeedsAccess': 'Треба root или Shizuku. Затражи root или подеси Shizuku изнад.',
   'phone.sharedAdd': 'Додај фасциклу из апликације',
   'phone.sharedAddHint': 'Неке апликације, на пример тастатуре, нуде сопствене фасцикле у Android бирачу датотека. Изабери једну ту и ArrowLoop је може синхронизовати без root приступа и без Shizuku. Фасцикле се појављују у одредишту под именом Apps. Ако фасциклу овде уклониш, ArrowLoop губи само приступ, а датотеке остају где јесу.',
   'phone.sharedRemove': 'Уклони',

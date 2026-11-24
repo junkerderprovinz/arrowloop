@@ -1123,6 +1123,8 @@ const ms: Translations = {
   'phone.shizukuWaiting': 'Menunggu kebenaran',
   'phone.shizukuStopped': 'Tidak berjalan',
   'phone.shizukuMissing': 'Tidak dipasang',
+  'phone.rootTargetNeedsRoot': 'Memerlukan root. Minta root di atas.',
+  'phone.appDataNeedsAccess': 'Memerlukan root atau Shizuku. Minta root atau sediakan Shizuku di atas.',
   'phone.sharedAdd': 'Tambah folder daripada apl',
   'phone.sharedAddHint': 'Sesetengah apl, contohnya papan kekunci, menawarkan folder sendiri dalam pemilih fail Android. Pilih satu di situ, dan ArrowLoop boleh menyegerakkannya tanpa root atau Shizuku. Folder itu muncul dalam destinasi bernama Apps. Membuang satu folder dari sini hanya menarik balik akses ArrowLoop, dan fail kekal di tempatnya.',
   'phone.sharedRemove': 'Buang',

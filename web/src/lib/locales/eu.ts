@@ -1123,6 +1123,8 @@ const eu: Translations = {
   'phone.shizukuWaiting': 'Baimenaren zain',
   'phone.shizukuStopped': 'Ez dago martxan',
   'phone.shizukuMissing': 'Instalatu gabe',
+  'phone.rootTargetNeedsRoot': 'Root behar du. Eskatu root-a goian.',
+  'phone.appDataNeedsAccess': 'Root edo Shizuku behar du. Eskatu root-a edo konfiguratu Shizuku goian.',
   'phone.sharedAdd': 'Gehitu aplikazio bateko karpeta',
   'phone.sharedAddHint': 'Aplikazio batzuek, adibidez teklatuek, beren karpetak eskaintzen dituzte Androiden fitxategi-hautatzailean. Aukeratu bat han, eta ArrowLoopek root-ik eta Shizukurik gabe sinkroniza dezake. Karpetak Apps izeneko helburu batean agertzen dira. Hemen bat kentzen baduzu, ArrowLoopen sarbidea bakarrik kentzen da, eta fitxategiak dauden tokian geratzen dira.',
   'phone.sharedRemove': 'Kendu',
