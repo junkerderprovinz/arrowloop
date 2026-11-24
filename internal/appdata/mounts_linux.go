@@ -2,6 +2,7 @@ package appdata
 
 import (
 	"io/fs"
+	"path/filepath"
 	"syscall"
 
 	"golang.org/x/sys/unix"
@@ -42,10 +43,21 @@ var madeUpFS = map[int64]bool{
 	mqueueMagic:               true,
 }
 
-// madeUp reports whether p lies on one of those file systems.
+// madeUp reports whether p lies on one of those file systems or below one,
+// since a real file system can be mounted inside them, as binfmt_misc is in
+// /proc.
 func madeUp(p string) bool {
-	var st unix.Statfs_t
-	return unix.Statfs(p, &st) == nil && madeUpFS[int64(st.Type)]
+	for {
+		var st unix.Statfs_t
+		if unix.Statfs(p, &st) == nil && madeUpFS[int64(st.Type)] {
+			return true
+		}
+		up := filepath.Dir(p)
+		if up == p {
+			return false
+		}
+		p = up
+	}
 }
 
 // mountPoint reports whether entry, listed in the folder dir, has another
