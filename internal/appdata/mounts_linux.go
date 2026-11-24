@@ -9,15 +9,18 @@ import (
 
 const nonBlock = syscall.O_NONBLOCK
 
-// Neither has a name in x/sys/unix.
+// None of these has a name in x/sys/unix.
 const (
-	configfsMagic = 0x62656570
-	fusectlMagic  = 0x65735543
+	configfsMagic   = 0x62656570
+	fusectlMagic    = 0x65735543
+	functionfsMagic = 0xa647361
+	mqueueMagic     = 0x19800202
 )
 
 // madeUpFS is the file systems the kernel makes up as they are read. Their
 // trees are endless or change under a scan, their files claim no size, and
-// some of them act when opened.
+// some of them act when opened, such as the endpoints of a USB gadget that
+// adbd holds.
 var madeUpFS = map[int64]bool{
 	unix.PROC_SUPER_MAGIC:     true,
 	unix.SYSFS_MAGIC:          true,
@@ -35,6 +38,8 @@ var madeUpFS = map[int64]bool{
 	unix.NSFS_MAGIC:           true,
 	configfsMagic:             true,
 	fusectlMagic:              true,
+	functionfsMagic:           true,
+	mqueueMagic:               true,
 }
 
 // madeUp reports whether p lies on one of those file systems.

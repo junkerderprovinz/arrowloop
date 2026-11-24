@@ -1,5 +1,5 @@
-// Package appdata serves Android's per-app folders (Android/data) to the
-// engine over SFTP on loopback.
+// Package appdata serves Android's per-app folders (Android/data), and on a
+// rooted phone the whole file system, to the engine over SFTP on loopback.
 //
 // Android hides those folders from every app but their owner, so the engine
 // cannot open them itself. A second copy of the binary runs with more rights,
@@ -28,7 +28,8 @@ const User = "arrowloop"
 type Options struct {
 	// Addr is where to listen. It should be a loopback address.
 	Addr string
-	// Root is the folder served as "/", normally Android/data.
+	// Root is the folder served as "/": Android/data, or "/" itself for the
+	// Root target.
 	Root string
 	// Password is the one the engine has to give.
 	Password string

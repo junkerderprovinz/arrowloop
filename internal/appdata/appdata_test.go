@@ -300,6 +300,8 @@ func TestTheWholeDiskRefusesEveryChange(t *testing.T) {
 		"truncate": func() error { return client.Truncate(keep, 0) },
 		"chtimes":  func() error { return client.Chtimes(keep, time.Unix(0, 0), time.Unix(0, 0)) },
 		"chmod":    func() error { return client.Chmod(keep, 0o777) },
+		"symlink":  func() error { return client.Symlink(keep, remote+"/pointer") },
+		"link":     func() error { return client.Link(keep, remote+"/twin") },
 	}
 	for name, change := range changes {
 		if err := change(); err == nil {
