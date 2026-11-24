@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## ✨ Added
+
+- **The whole file system of a rooted phone.** Switch on **Whole file system** under **Settings**, **This phone**, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out, so a scan cannot run in circles. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
+
 ## 2.9.0 - 2026-11-24
 
 The sign-in is new, with sign-in services such as Pocket ID, sessions that last through restarts and API tokens for dashboards and scripts. The phone gets the built-in VPN, which can leave out the wifi you trust, automation apps can start a job, and targets take any name.

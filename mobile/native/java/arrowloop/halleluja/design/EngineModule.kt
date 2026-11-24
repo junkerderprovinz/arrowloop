@@ -145,14 +145,19 @@ class EngineModule(private val context: ReactApplicationContext) :
     }
 
     /**
-     * Reports how Android/data stands, under the names src/engine.ts uses,
-     * and starts its server first if it is switched on and not up yet.
+     * Reports how Android/data and the Root target stand, under the names
+     * src/engine.ts uses, and starts their servers first if they are switched
+     * on and not up yet.
      */
     @ReactMethod
     fun appData(promise: Promise) = slowly(promise) { AppData.settle(context) }
 
     @ReactMethod
     fun setAppData(on: Boolean, promise: Promise) = slowly(promise) { AppData.setEnabled(context, on) }
+
+    /** Switches the Root target, the whole file system read through su, on or off. */
+    @ReactMethod
+    fun setRootTarget(on: Boolean, promise: Promise) = slowly(promise) { AppData.setRootTarget(context, on) }
 
     @ReactMethod
     fun setAppDataWay(way: String, promise: Promise) =
@@ -186,6 +191,7 @@ class EngineModule(private val context: ReactApplicationContext) :
         putBoolean("root", report.root)
         putBoolean("shizuku", report.shizuku)
         putString("su", report.su)
+        putString("rootTarget", report.rootTarget.js)
     }
 
     /** The folders other apps share with ArrowLoop, as src/engine.ts reads them. */

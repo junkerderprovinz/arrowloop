@@ -16,7 +16,15 @@ import Constants from "expo-constants";
 import { api } from "../api";
 import { AutoBackupSection } from "../autoBackup";
 import { IntegrationsSection } from "../vpnSection";
-import { engine, type AppData, type AppDataState, type AppDataWay, type PickedFile, type SharedFolder } from "../engine";
+import {
+  engine,
+  type AppData,
+  type AppDataState,
+  type AppDataWay,
+  type PickedFile,
+  type RootTargetState,
+  type SharedFolder,
+} from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { FrameProvider, useFrame } from "../frame";
@@ -128,7 +136,9 @@ export function Settings() {
   // "add" while the file picker is open, or the grant being given back.
   const [sharedBusy, setSharedBusy] = useState<string | null>(null);
   // What the switch or the way was moved to, shown while su or Shizuku answer.
-  const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay } | null>(null);
+  const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay; rootTarget?: boolean } | null>(
+    null,
+  );
   // The su field's text once edited; it is stored when the field is left.
   const [suDraft, setSuDraft] = useState<string | null>(null);
   // Leaving the field can come before the render of the last keystroke, so
@@ -362,7 +372,10 @@ export function Settings() {
     return () => sub.remove();
   }, [refresh]);
 
-  const changeAppData = (wanted: { on?: boolean; way?: AppDataWay }, change: () => Promise<AppData>) => {
+  const changeAppData = (
+    wanted: { on?: boolean; way?: AppDataWay; rootTarget?: boolean },
+    change: () => Promise<AppData>,
+  ) => {
     setAppDataWanted(wanted);
     change()
       .then(setAppData, () => {})
@@ -375,6 +388,9 @@ export function Settings() {
       .finally(() => setSharedBusy(null));
   };
   const appDataOn = appDataWanted?.on ?? (appData !== null && appData.state !== "off");
+  const rootTargetOn = appDataWanted?.rootTarget ?? (appData !== null && appData.rootTarget !== "off");
+  // One field for both, shown under Android/data when its way needs su.
+  const suUnderAppData = appData !== null && appDataOn && (appData.way === "root" || !appData.root);
   const su = suDraft ?? appData?.su ?? "";
   const suValid = SU_COMMAND.test(su);
   const storeSu = () => {
@@ -541,7 +557,7 @@ export function Settings() {
               ) : null}
               {/* Also while root is dimmed, since a wrong name for su is one
                   reason it can be. */}
-              {appData.way === "root" || !appData.root ? (
+              {suUnderAppData ? (
                 <Field
                   label={t("phone.appDataSu")}
                   hint={t("phone.appDataSuHint")}
@@ -574,6 +590,44 @@ export function Settings() {
                 </View>
               ) : null}
             </>
+          ) : null}
+          {/* Only su reads the whole file system, so the switch is dimmed
+              once su is found missing, unless it is on and has to come off. */}
+          <Toggle
+            label={t("phone.rootTarget")}
+            hint={t("phone.rootTargetHint")}
+            value={rootTargetOn}
+            disabled={appData === null || appDataWanted !== null || (!appData.root && !rootTargetOn)}
+            onChange={(on) => changeAppData({ rootTarget: on }, () => engine.setRootTarget(on))}
+          />
+          {appData && appDataWanted === null && (rootTargetOn || !appData.root) ? (
+            <Caption>{rootTargetSaid(appData.rootTarget, t)}</Caption>
+          ) : null}
+          {appData && !suUnderAppData && (rootTargetOn || !appData.root) ? (
+            <Field
+              label={t("phone.appDataSu")}
+              hint={t("phone.appDataSuHint")}
+              value={su}
+              onChange={(next) => {
+                suTyped.current = next;
+                setSuDraft(next);
+              }}
+              onBlur={storeSu}
+              error={suValid ? undefined : t("phone.appDataSuBad")}
+            />
+          ) : null}
+          {appData &&
+          rootTargetOn &&
+          (appData.rootTarget === "rootDenied" || appData.rootTarget === "noSu") &&
+          !(appDataOn && appData.way === "root" && (appData.state === "rootDenied" || appData.state === "noSu")) ? (
+            <View style={styles.actions}>
+              <Button
+                label={t("phone.appDataRequestRoot")}
+                glyph="IconUnlock"
+                busy={appDataWanted !== null}
+                onPress={() => changeAppData({}, engine.requestRoot)}
+              />
+            </View>
           ) : null}
           {/* What an app offers in Android's file picker needs neither root
               nor Shizuku, so it stands apart from Android/data. */}
@@ -1419,6 +1473,23 @@ function appDataSaid(state: Exclude<AppDataState, "off">, ways: Pick<AppData, "r
   if (!ways.root && state !== "noSu" && state !== "noWay") said.push(t("phone.appDataNoSu"));
   if (!ways.shizuku && state !== "noShizuku" && state !== "noWay") said.push(t("phone.appDataNoShizuku"));
   return said.join(" ");
+}
+
+/**
+ * The line under the Root target's switch: what it does or why it cannot,
+ * and while it is off and dimmed, why.
+ */
+function rootTargetSaid(state: RootTargetState, t: T): string {
+  switch (state) {
+    case "off":
+      return t("phone.appDataNoSu");
+    case "root":
+      return t("phone.rootTargetOn");
+    case "failed":
+      return t("phone.rootTargetFailed");
+    default:
+      return stateSaid(state, t);
+  }
 }
 
 function stateSaid(state: Exclude<AppDataState, "off">, t: T): string {

@@ -57,6 +57,8 @@ interface EngineNativeModule {
   appData(): Promise<AppData>;
   /** Switches Android/data on or off and starts the engine over. */
   setAppData(on: boolean): Promise<AppData>;
+  /** Switches the Root target on or off and starts the engine over. */
+  setRootTarget(on: boolean): Promise<AppData>;
   /** Keeps to the given way and starts the server and the engine over. */
   setAppDataWay(way: AppDataWay): Promise<AppData>;
   /** Stores what runs as su, asks it for root again and starts over. */
@@ -119,6 +121,12 @@ export type AppDataState =
 
 export type AppDataWay = "root" | "shizuku";
 
+/**
+ * Whether the engine can read the whole file system as the Root target, and
+ * if not, why. Only su can give it, so only su's answers occur.
+ */
+export type RootTargetState = Extract<AppDataState, "off" | "root" | "noSu" | "rootDenied" | "failed">;
+
 export interface AppData {
   state: AppDataState;
   /** The way picked, or while none is, the way last tried. */
@@ -129,6 +137,7 @@ export interface AppData {
   shizuku: boolean;
   /** What runs as su: a command name or a path. */
   su: string;
+  rootTarget: RootTargetState;
 }
 
 /**
@@ -188,7 +197,7 @@ const NOTHING_HELD: DevicePolicy = {
 const NO_WIFI: WifiReading = { name: "", access: "none", locationOn: false };
 
 /** What a build without the native module reports: switched off. */
-const NO_APP_DATA: AppData = { state: "off", way: "root", root: true, shizuku: false, su: "su" };
+const NO_APP_DATA: AppData = { state: "off", way: "root", root: true, shizuku: false, su: "su", rootTarget: "off" };
 
 const native = NativeModules.ArrowLoopEngine as EngineNativeModule | undefined;
 
@@ -236,6 +245,7 @@ export const engine = {
   setLook: (json: string) => (native ? native.setLook(json) : Promise.resolve()),
   appData: (): Promise<AppData> => (native ? native.appData() : Promise.resolve(NO_APP_DATA)),
   setAppData: (on: boolean) => (native ? native.setAppData(on) : missing()),
+  setRootTarget: (on: boolean) => (native ? native.setRootTarget(on) : missing()),
   setAppDataWay: (way: AppDataWay) => (native ? native.setAppDataWay(way) : missing()),
   setAppDataSu: (su: string) => (native ? native.setAppDataSu(su) : missing()),
   requestRoot: () => (native ? native.requestRoot() : missing()),
