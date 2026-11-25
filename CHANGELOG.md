@@ -10,6 +10,15 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **How long runs are kept, on the General tile.** The new **History** card shows `historyKeep` in days, and the **Keep forever** switch keeps every run, as 0 days does. **Delete** beside it removes every older run at once instead of waiting for the daily trim, and the last run of every job stays.
+- **How much each run transferred.** ArrowLoop notes what the files a run copied hold together and shows it in History, on the job page and in the run window, such as 2.2 GB. Runs recorded before the update get the figure from their entries the first time the new version opens the log.
+
+## 🎨 Design
+
+- **A column for each figure of a run.** The runs in History and on a job's page have columns for copied, moved, removed, left for later, conflicts and transferred. Drag the edge of a heading to widen a column, and the browser keeps the widths and the order.
+
 ## 🐛 Fixed
 
 - **The run log is trimmed on the desktop, on the phone and in the container.** Only `arrowloop daemon` trimmed it as it started, and the daily trim started counting again with every saved setting. A container saved more than once a day, and a phone or laptop that was never on for a whole day, kept every record. ArrowLoop now trims as it starts and once a day after, counted from the last trim, and `-keep-history` holds for every trim of the daemon. Each job keeps its newest run however old it is, along with its newest success and its newest stopped run, so a job that has not run for months is not started again at once. A trim that leaves a quarter of the file empty gives the room back to the disk: in a test, a hundred days of runs took 5.5 MB, and the ten days kept took 0.3 MB.

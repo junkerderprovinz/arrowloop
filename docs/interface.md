@@ -120,8 +120,8 @@ each other where not. A filter that narrows the list marks its ▾ and shows
 above the list, in History at the end of the row with **Files** and **Runs**
 and elsewhere under the tiles on top, with **Show everything** to undo it. Typing while the list has the focus, or Ctrl+F, opens
 a search that floats over the top of the list and finds an entry by its path;
-Escape empties and closes it. In History and a job's **Files touched** the
-columns can be moved and widened: drag a heading to another place, and the
+Escape empties and closes it. In History and in a job's **Runs** and **Files
+touched** the columns can be moved and widened: drag a heading to another place, and the
 columns make room while it is carried, or drag the line at any column's edge,
 which shows while the pointer is over the headings; a double click on that
 line gives the column its width back. Every line keeps to its columns on one
@@ -378,8 +378,9 @@ failed run uses.
 **History** has three views, **Files**, **Runs** and, while Anomalies is on,
 **Findings**: what was closed in the last thirty days, each as its card with
 how it ended, filtered by severity and job from the headings. A line keeps all of its
-words: a long kind of entry or a long path wraps instead of being cut. A run says how many files it
-copied and how many were in conflict; a click opens it with the files, and for
+words: a long kind of entry or a long path wraps instead of being cut. A run
+has a column each for what it copied, moved and removed, what it left for later,
+its conflicts and how much it transferred, such as 2.2 GB. A click opens it with the files, and for
 a conflict what was decided. The decision is the part worth having: a scheduled
 run resolves a conflict by keeping both versions, because it has nobody to ask,
 so the decision was made on somebody's behalf while they were not watching.
@@ -464,7 +465,10 @@ row on **Look** brings back the original one.
   in its (i) what they cover and that Import also takes a FolderSync export
   or a luckyBackup profile ([Configuration](configuration.md#moving-over-from-foldersync-or-luckybackup)).
   Then the workload (bandwidth limit, jobs at once and the run log file), and
-  in the desktop app this computer: the window and starting with the system.
+  **History**: how many days a run is kept, **Keep forever**, and **Delete**,
+  which removes the older runs at once while the last run of every job stays.
+  In the desktop app this computer comes first: the window and starting with
+  the system.
 - **Look**: language, design (Dark, Light or System) with the **OLED** switch,
   corners, motion, the job list (Cards or Compact), the tile order, labels and
   colours.

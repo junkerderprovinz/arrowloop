@@ -707,7 +707,7 @@ the file, each on a tile under **Settings**. The bandwidth limit, how many jobs
 may run at once and where the run log lives are on **General**; the defaults
 below, what happens after a failure and the shared exclude lists are on
 **Sync**; the two brakes, the anomaly notes and who gets told are on **Safety
-net**. `historyKeep` has no control there and is set in the file.
+net**. How long a run is kept, `historyKeep`, is on **General** in days.
 
 What is usually the same for every job lives in `defaults`, and a job keeps only
 what makes it different, so the job form stays short:
