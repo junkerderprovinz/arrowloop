@@ -218,6 +218,8 @@ Then open port 8422 in a browser and add your first job. On Unraid, install it f
 [compose.yaml](compose.yaml) runs ArrowLoop on any Linux server with Docker. Put it in a folder of its own, point the folders under `volumes` at your files and start it with `docker compose up -d`. The folders are created next to the file.
 
 - **Synology:** in Container Manager, create a project from the file (DSM 7.2 or newer).
+- **Ugreen:** in the Docker app of UGOS Pro, create a project from the file.
+- **QNAP:** in Container Station, create an application from the file.
 - **Proxmox:** see [Proxmox VE](#proxmox-ve) below.
 - **MOS:** install ArrowLoop from the [MOS Hub](https://mos-official.net/apps.html?search=ArrowLoop).
 - **ZimaOS and CasaOS:** add the [community store](https://github.com/junkerderprovinz/zimaos-apps#install) and install ArrowLoop from it.
