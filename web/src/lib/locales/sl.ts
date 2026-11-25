@@ -537,6 +537,7 @@ const sl: Translations = {
   'history.failed': 'Napaka',
   'history.stopped': 'Ustavljeno, preden se je končalo.',
   'history.copied': 'kopirano: {count}',
+  'history.transferred': 'preneseno: {size}',
   'history.moved': 'premaknjeno: {count}',
   'history.trashed': 'v koš: {count}',
   'history.deleted': 'izbrisano: {count}',

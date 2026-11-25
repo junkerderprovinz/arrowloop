@@ -537,6 +537,7 @@ const id: Translations = {
   'history.failed': 'Galat',
   'history.stopped': 'Dihentikan sebelum selesai.',
   'history.copied': 'disalin: {count}',
+  'history.transferred': 'ditransfer: {size}',
   'history.moved': 'dipindahkan: {count}',
   'history.trashed': 'ke tempat sampah: {count}',
   'history.deleted': 'dihapus: {count}',

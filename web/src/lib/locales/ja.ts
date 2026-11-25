@@ -537,6 +537,7 @@ const ja: Translations = {
   'history.failed': 'エラー',
   'history.stopped': '完了する前に停止しました。',
   'history.copied': 'コピー: {count}',
+  'history.transferred': '転送量: {size}',
   'history.moved': '移動: {count}',
   'history.trashed': 'ごみ箱へ: {count}',
   'history.deleted': '削除: {count}',

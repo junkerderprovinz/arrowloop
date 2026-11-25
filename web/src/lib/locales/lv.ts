@@ -537,6 +537,7 @@ const lv: Translations = {
   'history.failed': 'Kļūda',
   'history.stopped': 'Apturēts, pirms bija pabeigts.',
   'history.copied': 'nokopēti: {count}',
+  'history.transferred': 'pārsūtīts: {size}',
   'history.moved': 'pārvietoti: {count}',
   'history.trashed': 'uz miskasti: {count}',
   'history.deleted': 'dzēsti: {count}',

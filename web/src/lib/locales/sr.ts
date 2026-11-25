@@ -537,6 +537,7 @@ const sr: Translations = {
   'history.failed': 'Грешка',
   'history.stopped': 'Заустављено пре него што је завршено.',
   'history.copied': 'копирано: {count}',
+  'history.transferred': 'пренето: {size}',
   'history.moved': 'премештено: {count}',
   'history.trashed': 'у корпу: {count}',
   'history.deleted': 'обрисано: {count}',

@@ -537,6 +537,7 @@ const hu: Translations = {
   'history.failed': 'Hiba',
   'history.stopped': 'Leállították, mielőtt befejeződött.',
   'history.copied': 'másolva: {count}',
+  'history.transferred': 'átvitt: {size}',
   'history.moved': 'áthelyezve: {count}',
   'history.trashed': 'kukába: {count}',
   'history.deleted': 'törölve: {count}',

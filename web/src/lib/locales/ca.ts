@@ -537,6 +537,7 @@ const ca: Translations = {
   'history.failed': 'Error',
   'history.stopped': 'Aturada abans d\'acabar.',
   'history.copied': 'copiats: {count}',
+  'history.transferred': 'transferit: {size}',
   'history.moved': 'moguts: {count}',
   'history.trashed': 'a la paperera: {count}',
   'history.deleted': 'suprimits: {count}',

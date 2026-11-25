@@ -537,6 +537,7 @@ const fi: Translations = {
   'history.failed': 'Virhe',
   'history.stopped': 'Pysäytettiin ennen kuin se valmistui.',
   'history.copied': 'kopioitu: {count}',
+  'history.transferred': 'siirretty: {size}',
   'history.moved': 'siirretty: {count}',
   'history.trashed': 'roskakoriin: {count}',
   'history.deleted': 'poistettu: {count}',

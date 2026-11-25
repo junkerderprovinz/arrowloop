@@ -537,6 +537,7 @@ const uk: Translations = {
   'history.failed': 'Помилка',
   'history.stopped': 'Зупинено до завершення.',
   'history.copied': 'скопійовано: {count}',
+  'history.transferred': 'передано: {size}',
   'history.moved': 'переміщено: {count}',
   'history.trashed': 'до кошика: {count}',
   'history.deleted': 'видалено: {count}',

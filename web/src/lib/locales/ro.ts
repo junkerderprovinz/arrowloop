@@ -537,6 +537,7 @@ const ro: Translations = {
   'history.failed': 'Eroare',
   'history.stopped': 'Oprită înainte să se termine.',
   'history.copied': 'copiate: {count}',
+  'history.transferred': 'transferat: {size}',
   'history.moved': 'mutate: {count}',
   'history.trashed': 'la coș: {count}',
   'history.deleted': 'șterse: {count}',

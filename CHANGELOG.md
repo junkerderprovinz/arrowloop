@@ -13,7 +13,7 @@ The full notes for each release are in
 ## ✨ Added
 
 - **How long runs are kept, on the General tile.** The new **History** card shows `historyKeep` in days, and the **Keep forever** switch keeps every run, as 0 days does. **Delete** beside it removes every older run at once instead of waiting for the daily trim, and the last run of every job stays.
-- **How much each run transferred.** ArrowLoop notes what the files a run copied hold together and shows it in History, on the job page and in the run window, such as 2.2 GB. Runs recorded before the update get the figure from their entries the first time the new version opens the log.
+- **How much each run transferred.** ArrowLoop notes what the files a run copied hold together and shows it in History, on the job page, in the run window and in the run lines of the phone app, such as 2.2 GB. Runs recorded before the update get the figure from their entries the first time the new version opens the log.
 
 ## 🎨 Design
 

@@ -537,6 +537,7 @@ const cs: Translations = {
   'history.failed': 'Chyba',
   'history.stopped': 'Běh byl zastaven, než doběhl.',
   'history.copied': 'zkopírováno: {count}',
+  'history.transferred': 'přeneseno: {size}',
   'history.moved': 'přesunuto: {count}',
   'history.trashed': 'do koše: {count}',
   'history.deleted': 'smazáno: {count}',

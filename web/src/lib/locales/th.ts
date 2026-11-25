@@ -537,6 +537,7 @@ const th: Translations = {
   'history.failed': 'ข้อผิดพลาด',
   'history.stopped': 'หยุดก่อนที่จะเสร็จ',
   'history.copied': 'คัดลอก: {count}',
+  'history.transferred': 'ส่งแล้ว: {size}',
   'history.moved': 'ย้าย: {count}',
   'history.trashed': 'ลงถังขยะ: {count}',
   'history.deleted': 'ลบ: {count}',

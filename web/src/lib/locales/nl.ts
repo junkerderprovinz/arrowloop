@@ -537,6 +537,7 @@ const nl: Translations = {
   'history.failed': 'Fout',
   'history.stopped': 'Gestopt voordat hij klaar was.',
   'history.copied': 'gekopieerd: {count}',
+  'history.transferred': 'overgezet: {size}',
   'history.moved': 'verplaatst: {count}',
   'history.trashed': 'naar de prullenbak: {count}',
   'history.deleted': 'verwijderd: {count}',

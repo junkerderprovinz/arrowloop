@@ -537,6 +537,7 @@ const da: Translations = {
   'history.failed': 'Fejl',
   'history.stopped': 'Stoppet, før den var færdig.',
   'history.copied': 'kopieret: {count}',
+  'history.transferred': 'overført: {size}',
   'history.moved': 'flyttet: {count}',
   'history.trashed': 'i papirkurven: {count}',
   'history.deleted': 'slettet: {count}',

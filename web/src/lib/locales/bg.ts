@@ -537,6 +537,7 @@ const bg: Translations = {
   'history.failed': 'Грешка',
   'history.stopped': 'Спряно, преди да завърши.',
   'history.copied': 'копирани: {count}',
+  'history.transferred': 'прехвърлено: {size}',
   'history.moved': 'преместени: {count}',
   'history.trashed': 'в кошчето: {count}',
   'history.deleted': 'изтрити: {count}',

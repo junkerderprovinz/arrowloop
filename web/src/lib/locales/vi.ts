@@ -537,6 +537,7 @@ const vi: Translations = {
   'history.failed': 'Lỗi',
   'history.stopped': 'Đã dừng trước khi xong.',
   'history.copied': 'đã sao chép: {count}',
+  'history.transferred': 'đã truyền: {size}',
   'history.moved': 'đã di chuyển: {count}',
   'history.trashed': 'vào thùng rác: {count}',
   'history.deleted': 'đã xóa: {count}',

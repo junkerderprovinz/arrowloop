@@ -537,6 +537,7 @@ const es: Translations = {
   'history.failed': 'Error',
   'history.stopped': 'Detenida antes de terminar.',
   'history.copied': 'copiados: {count}',
+  'history.transferred': 'transferido: {size}',
   'history.moved': 'movidos: {count}',
   'history.trashed': 'a la papelera: {count}',
   'history.deleted': 'borrados: {count}',

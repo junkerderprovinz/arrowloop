@@ -537,6 +537,7 @@ const el: Translations = {
   'history.failed': 'Σφάλμα',
   'history.stopped': 'Διακόπηκε πριν τελειώσει.',
   'history.copied': 'αντιγράφηκαν: {count}',
+  'history.transferred': 'μεταφέρθηκαν: {size}',
   'history.moved': 'μετακινήθηκαν: {count}',
   'history.trashed': 'στον κάδο: {count}',
   'history.deleted': 'διαγράφηκαν: {count}',

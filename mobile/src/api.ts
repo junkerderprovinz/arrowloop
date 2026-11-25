@@ -214,6 +214,8 @@ export interface Run {
   NoTrash?: boolean;
   /** Somebody stopped the run, or the engine ended with it. It has no Err and did not finish. */
   Stopped?: boolean;
+  /** What the files the run copied hold together. An older engine does not say. */
+  Bytes?: number;
 }
 
 /**

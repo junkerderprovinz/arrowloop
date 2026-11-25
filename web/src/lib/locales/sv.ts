@@ -537,6 +537,7 @@ const sv: Translations = {
   'history.failed': 'Fel',
   'history.stopped': 'Stoppades innan den var klar.',
   'history.copied': 'kopierade: {count}',
+  'history.transferred': 'överfört: {size}',
   'history.moved': 'flyttade: {count}',
   'history.trashed': 'till papperskorgen: {count}',
   'history.deleted': 'raderade: {count}',

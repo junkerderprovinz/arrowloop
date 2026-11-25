@@ -537,6 +537,7 @@ const eu: Translations = {
   'history.failed': 'Errorea',
   'history.stopped': 'Amaitu aurretik gelditu da.',
   'history.copied': 'kopiatuta: {count}',
+  'history.transferred': 'transferitua: {size}',
   'history.moved': 'mugituta: {count}',
   'history.trashed': 'zakarrontzira: {count}',
   'history.deleted': 'ezabatuta: {count}',

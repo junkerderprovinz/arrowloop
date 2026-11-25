@@ -537,6 +537,7 @@ const gl: Translations = {
   'history.failed': 'Erro',
   'history.stopped': 'Detida antes de rematar.',
   'history.copied': 'copiados: {count}',
+  'history.transferred': 'transferido: {size}',
   'history.moved': 'movidos: {count}',
   'history.trashed': 'ao lixo: {count}',
   'history.deleted': 'borrados: {count}',

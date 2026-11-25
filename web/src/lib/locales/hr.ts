@@ -537,6 +537,7 @@ const hr: Translations = {
   'history.failed': 'Greška',
   'history.stopped': 'Zaustavljeno prije nego što je završilo.',
   'history.copied': 'kopirano: {count}',
+  'history.transferred': 'preneseno: {size}',
   'history.moved': 'premješteno: {count}',
   'history.trashed': 'u smeće: {count}',
   'history.deleted': 'izbrisano: {count}',

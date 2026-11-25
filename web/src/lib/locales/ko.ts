@@ -537,6 +537,7 @@ const ko: Translations = {
   'history.failed': '오류',
   'history.stopped': '끝나기 전에 중지되었습니다.',
   'history.copied': '복사: {count}',
+  'history.transferred': '전송량: {size}',
   'history.moved': '이동: {count}',
   'history.trashed': '휴지통으로: {count}',
   'history.deleted': '삭제: {count}',

@@ -537,6 +537,7 @@ const sk: Translations = {
   'history.failed': 'Chyba',
   'history.stopped': 'Beh bol zastavený skôr, ako sa dokončil.',
   'history.copied': 'skopírované: {count}',
+  'history.transferred': 'prenesené: {size}',
   'history.moved': 'presunuté: {count}',
   'history.trashed': 'do koša: {count}',
   'history.deleted': 'zmazané: {count}',

@@ -537,6 +537,7 @@ const ru: Translations = {
   'history.failed': 'Ошибка',
   'history.stopped': 'Остановлен до завершения.',
   'history.copied': 'скопировано: {count}',
+  'history.transferred': 'передано: {size}',
   'history.moved': 'перемещено: {count}',
   'history.trashed': 'в корзину: {count}',
   'history.deleted': 'удалено: {count}',

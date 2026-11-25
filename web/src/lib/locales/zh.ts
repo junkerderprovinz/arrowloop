@@ -537,6 +537,7 @@ const zh: Translations = {
   'history.failed': '错误',
   'history.stopped': '在完成前停止了。',
   'history.copied': '已复制：{count}',
+  'history.transferred': '已传输：{size}',
   'history.moved': '已移动：{count}',
   'history.trashed': '进回收站：{count}',
   'history.deleted': '已删除：{count}',

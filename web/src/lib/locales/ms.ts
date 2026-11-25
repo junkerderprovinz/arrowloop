@@ -537,6 +537,7 @@ const ms: Translations = {
   'history.failed': 'Ralat',
   'history.stopped': 'Dihentikan sebelum selesai.',
   'history.copied': 'disalin: {count}',
+  'history.transferred': 'dipindahkan: {size}',
   'history.moved': 'dialihkan: {count}',
   'history.trashed': 'ke tong sampah: {count}',
   'history.deleted': 'dipadam: {count}',

@@ -537,6 +537,7 @@ const ar: Translations = {
   'history.failed': 'خطأ',
   'history.stopped': 'أُوقف قبل أن ينتهي.',
   'history.copied': 'منسوخة: {count}',
+  'history.transferred': 'المنقول: {size}',
   'history.moved': 'منقولة: {count}',
   'history.trashed': 'إلى سلة المهملات: {count}',
   'history.deleted': 'المحذوفة: {count}',

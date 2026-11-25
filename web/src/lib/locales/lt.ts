@@ -537,6 +537,7 @@ const lt: Translations = {
   'history.failed': 'Klaida',
   'history.stopped': 'Sustabdyta, kol dar nebuvo baigta.',
   'history.copied': 'nukopijuota: {count}',
+  'history.transferred': 'perduota: {size}',
   'history.moved': 'perkelta: {count}',
   'history.trashed': 'į šiukšlinę: {count}',
   'history.deleted': 'ištrinta: {count}',

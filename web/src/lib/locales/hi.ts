@@ -537,6 +537,7 @@ const hi: Translations = {
   'history.failed': 'त्रुटि',
   'history.stopped': 'पूरा होने से पहले रोका गया।',
   'history.copied': 'नकल की गई: {count}',
+  'history.transferred': 'भेजा गया: {size}',
   'history.moved': 'खिसकाई गई: {count}',
   'history.trashed': 'रद्दी में: {count}',
   'history.deleted': 'हटाए गए: {count}',

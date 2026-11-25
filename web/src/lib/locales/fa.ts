@@ -537,6 +537,7 @@ const fa: Translations = {
   'history.failed': 'خطا',
   'history.stopped': 'پیش از تمام شدن متوقف شد.',
   'history.copied': 'رونوشت‌شده: {count}',
+  'history.transferred': 'منتقل‌شده: {size}',
   'history.moved': 'جابه‌جاشده: {count}',
   'history.trashed': 'به سطل زباله: {count}',
   'history.deleted': 'حذف‌شده: {count}',

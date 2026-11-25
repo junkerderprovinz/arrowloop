@@ -537,6 +537,7 @@ const fr: Translations = {
   'history.failed': 'Erreur',
   'history.stopped': 'Arrêtée avant la fin.',
   'history.copied': 'copiés : {count}',
+  'history.transferred': 'transféré : {size}',
   'history.moved': 'déplacés : {count}',
   'history.trashed': 'mis à la corbeille : {count}',
   'history.deleted': 'supprimés : {count}',

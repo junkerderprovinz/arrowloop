@@ -537,6 +537,7 @@ const is: Translations = {
   'history.failed': 'Villa',
   'history.stopped': 'Stöðvuð áður en henni lauk.',
   'history.copied': 'afrituð: {count}',
+  'history.transferred': 'flutt: {size}',
   'history.moved': 'færð: {count}',
   'history.trashed': 'í ruslið: {count}',
   'history.deleted': 'eytt: {count}',

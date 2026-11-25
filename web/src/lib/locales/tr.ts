@@ -537,6 +537,7 @@ const tr: Translations = {
   'history.failed': 'Hata',
   'history.stopped': 'Bitmeden durduruldu.',
   'history.copied': 'kopyalanan: {count}',
+  'history.transferred': 'aktarılan: {size}',
   'history.moved': 'taşınan: {count}',
   'history.trashed': 'çöpe giden: {count}',
   'history.deleted': 'silinen: {count}',

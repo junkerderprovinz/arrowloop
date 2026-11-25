@@ -537,6 +537,7 @@ const et: Translations = {
   'history.failed': 'Viga',
   'history.stopped': 'Peatati enne, kui see lõppes.',
   'history.copied': 'kopeeritud: {count}',
+  'history.transferred': 'üle kantud: {size}',
   'history.moved': 'teisaldatud: {count}',
   'history.trashed': 'prügikasti: {count}',
   'history.deleted': 'kustutatud: {count}',

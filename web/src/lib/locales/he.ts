@@ -537,6 +537,7 @@ const he: Translations = {
   'history.failed': 'שגיאה',
   'history.stopped': 'נעצרה לפני שהסתיימה.',
   'history.copied': 'הועתקו: {count}',
+  'history.transferred': 'הועבר: {size}',
   'history.moved': 'הועברו: {count}',
   'history.trashed': 'לסל האשפה: {count}',
   'history.deleted': 'נמחקו: {count}',
