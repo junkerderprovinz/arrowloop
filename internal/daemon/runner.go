@@ -867,7 +867,8 @@ func (r *Runner) release(key string) {
 // Runs are started under ctx and not under the round, so a reload, which
 // every save in the interface causes, lets them finish.
 func (r *Runner) Serve(ctx context.Context) error {
-	r.pruneNow(ctx, time.Now())
+	// A phone or a laptop is seldom up for a whole day.
+	_, _ = r.PruneHistory(ctx)
 	first := true
 	for {
 		round, endRound := context.WithCancel(ctx)

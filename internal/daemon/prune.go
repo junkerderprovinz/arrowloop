@@ -46,27 +46,27 @@ func (r *Runner) pruneIfDue(ctx context.Context, now time.Time) {
 	if err == nil && ok && !last.After(now) && now.Sub(last) < pruneEvery {
 		return
 	}
-	r.prune(ctx, now)
+	_, _ = r.prune(ctx, now)
 }
 
-// pruneNow trims the run log whenever it was last trimmed. A phone or a laptop
-// is seldom up for a whole day, so the scheduler does this as it starts.
-func (r *Runner) pruneNow(ctx context.Context, now time.Time) {
+// PruneHistory trims the run log now and says how many runs went. The
+// scheduler does this as it starts and once a day after.
+func (r *Runner) PruneHistory(ctx context.Context) (int64, error) {
 	if r.hist == nil {
-		return
+		return 0, nil
 	}
 	r.pruning.mu.Lock()
 	defer r.pruning.mu.Unlock()
-	r.prune(ctx, now)
+	return r.prune(ctx, time.Now())
 }
 
-func (r *Runner) prune(ctx context.Context, now time.Time) {
+func (r *Runner) prune(ctx context.Context, now time.Time) (int64, error) {
 	keep, on := r.config().KeepHistoryFor()
 	if r.pruning.keep != nil {
 		keep, on = *r.pruning.keep, *r.pruning.keep > 0
 	}
 	if !on {
-		return
+		return 0, nil
 	}
 	n, err := r.hist.Prune(ctx, keep, now)
 	if n > 0 {
@@ -76,4 +76,5 @@ func (r *Runner) prune(ctx context.Context, now time.Time) {
 		r.pruning.retryAt = now.Add(pruneRetry)
 		r.log("could not trim the run log: %v", err)
 	}
+	return n, err
 }

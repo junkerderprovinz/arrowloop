@@ -228,6 +228,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/log", s.fileLog)
 	mux.HandleFunc("GET /api/jobs/{name}/touches", s.jobTouches)
 	mux.HandleFunc("GET /api/history/stats", s.historyStats)
+	mux.HandleFunc("POST /api/history/prune", s.pruneHistory)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)
