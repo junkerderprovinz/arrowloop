@@ -138,10 +138,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: bash .github/scripts/publish-release.sh dist/*
 
-  # Every released bundle goes to the closed test. Production stays a separate
-  # step, taken in the Play Console or by hand with the same script. The first
-  # bundle of a new Play entry has to go through the Console, since only its
-  # dialog takes over the release key, so the step waits for PLAY_UPLOAD.
+  # Every released bundle goes to production for everyone. The first bundle of
+  # a new Play entry has to go through the Console, since only its dialog takes
+  # over the release key, so the step waits for PLAY_UPLOAD.
   play:
     needs: publish
     if: github.event_name == 'push' && github.ref_type == 'tag' && vars.PLAY_UPLOAD == 'true'
@@ -157,10 +156,10 @@ jobs:
           name: arrowloop-play
           path: play
 
-      - name: Upload to the closed test
+      - name: Upload to production
         env:
           PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-        run: node .github/scripts/play-upload.mjs play/arrowloop-play.aab alpha
+        run: node .github/scripts/play-upload.mjs play/arrowloop-play.aab production
 
   # `latest` on the image means the newest released version. It follows the
   # answer publish-release.sh gave for the "Latest" badge, so a version whose
