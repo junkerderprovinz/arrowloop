@@ -16,8 +16,7 @@ const REPO = 'https://github.com/junkerderprovinz/arrowloop'
 
 const APK = DOWNLOADS.apk
 
-// Empty until the listing is live; the button then says it is coming.
-const PLAY_STORE = ''
+const PLAY_STORE = 'https://play.google.com/store/apps/details?id=arrowloop.halleluja.design'
 
 const F_DROID = 'https://f-droid.org/packages/arrowloop.halleluja.design/'
 

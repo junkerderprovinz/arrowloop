@@ -74,3 +74,12 @@ describe('the desktop downloads', () => {
     })
   })
 })
+
+describe('the phone downloads', () => {
+  it('link Google Play to the live listing', () => {
+    render(<Apps version="v2.9.1" desktop={false} />)
+    expect(screen.getByRole('link', { name: 'Google Play' }).getAttribute('href')).toBe(
+      'https://play.google.com/store/apps/details?id=arrowloop.halleluja.design',
+    )
+  })
+})
