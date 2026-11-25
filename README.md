@@ -38,7 +38,7 @@ ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone an
 
 <!-- docs-button: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://junkerderprovinz.github.io/arrowloop/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(0,0,1010.28,245.3))" alt="Read the documentation" width="192" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/arrowloop/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(0,0,1010.28,245.3))" alt="Read the documentation" width="192" height="46.618"></a>
 </p>
 <!-- /docs-button -->
 
@@ -64,45 +64,47 @@ ArrowLoop keeps two folders in step, say a NAS share and a laptop, or a phone an
   <picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/sections/group-server-dark.svg"><img src=".github/assets/sections/group-server.svg" alt="Server" width="100%"></picture>
 </p>
 <p align="center">
-  <a href="https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(1035,0,841.9,245.3))" alt="Install from Unraid&#x27;s Community Applications" width="160" height="46.618"></a>
+  <a href="https://ca.unraid.net/apps/arrowloop-04rvnbl1yv3wn1"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(1035,0,841.9,245.3))" alt="Install from Unraid&#x27;s Community Applications" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://mos-official.net/apps.html?search=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(1901,0,841.9,245.3))" alt="Install from the MOS Hub" width="160" height="46.618"></a>
+  <a href="https://mos-official.net/apps.html?search=ArrowLoop"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(1901,0,841.9,245.3))" alt="Install from the MOS Hub" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/zimaos-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(2767,0,841.9,245.3))" alt="Install from the ZimaOS and CasaOS store" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/zimaos-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(2767,0,841.9,245.3))" alt="Install from the ZimaOS and CasaOS store" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/umbrel-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(3633,0,841.9,245.3))" alt="Install from the umbrelOS community app store" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/umbrel-apps#install"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(3633,0,841.9,245.3))" alt="Install from the umbrelOS community app store" width="160" height="46.618"></a>
 </p>
 <p align="center">
-  <a href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(4499,0,841.9,245.3))" alt="Download the docker-compose file" width="160" height="46.618"></a>
+  <a href="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/compose.yaml"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(4499,0,841.9,245.3))" alt="Download the docker-compose file" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(5365,0,841.9,245.3))" alt="Download the source archive" width="160" height="46.618"></a>
+  <a href="#proxmox-ve"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(5365,0,841.9,245.3))" alt="Run it on Proxmox VE" width="160" height="46.618"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(6231,0,841.9,245.3))" alt="Download the source archive" width="160" height="46.618"></a>
 </p>
 <br>
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/sections/group-desktop-dark.svg"><img src=".github/assets/sections/group-desktop.svg" alt="Desktop" width="100%"></picture>
 </p>
 <p align="center">
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(6231,0,841.9,245.3))" alt="Download for Windows" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(7097,0,457.783,245.3))" alt="Download for Windows on ARM" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-amd64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(7097,0,841.9,245.3))" alt="Download for Windows" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-windows-arm64-installer.exe"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(7963,0,457.783,245.3))" alt="Download for Windows on ARM" width="87" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(7579,0,841.9,245.3))" alt="Download for macOS on Apple silicon or Intel" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.zip"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(8445,0,457.783,245.3))" alt="Download the macOS app as a zip" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.dmg"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(8445,0,841.9,245.3))" alt="Download for macOS on Apple silicon or Intel" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-macos-universal.zip"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(9311,0,457.783,245.3))" alt="Download the macOS app as a zip" width="87" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64-installer"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(8927,0,841.9,245.3))" alt="Download for Linux" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64-installer"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(9793,0,457.783,245.3))" alt="Download for Linux on ARM" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64-installer"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(9793,0,841.9,245.3))" alt="Download for Linux" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64-installer"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(10659,0,457.783,245.3))" alt="Download for Linux on ARM" width="87" height="46.618"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.AppImage"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(10275,0,841.9,245.3))" alt="Download the AppImage" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.AppImage"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(11141,0,457.783,245.3))" alt="Download the AppImage for ARM" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.AppImage"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(11141,0,841.9,245.3))" alt="Download the AppImage" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.AppImage"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(12007,0,457.783,245.3))" alt="Download the AppImage for ARM" width="87" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(11623,0,841.9,245.3))" alt="Download the Flatpak" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(12489,0,457.783,245.3))" alt="Download the Flatpak for ARM" width="87" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-amd64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(12489,0,841.9,245.3))" alt="Download the Flatpak" width="160" height="46.618"></a><a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-linux-arm64.flatpak"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(13355,0,457.783,245.3))" alt="Download the Flatpak for ARM" width="87" height="46.618"></a>
 </p>
 <br>
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/sections/group-android-dark.svg"><img src=".github/assets/sections/group-android.svg" alt="Android" width="100%"></picture>
 </p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(12971,0,841.9,245.3))" alt="On Google Play soon" width="160" height="46.618">
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(13837,0,841.9,245.3))" alt="On Google Play soon" width="160" height="46.618">
   &nbsp;
-  <a href="https://f-droid.org/packages/arrowloop.halleluja.design/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(13837,0,841.9,245.3))" alt="Get it on F-Droid" width="160" height="46.618"></a>
+  <a href="https://f-droid.org/packages/arrowloop.halleluja.design/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(14703,0,841.9,245.3))" alt="Get it on F-Droid" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(14703,0,841.9,245.3))" alt="Download the Android app" width="160" height="46.618"></a>
+  <a href="https://github.com/junkerderprovinz/arrowloop/releases/latest/download/arrowloop-android-arm64.apk"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(15569,0,841.9,245.3))" alt="Download the Android app" width="160" height="46.618"></a>
 </p>
 <!-- /download-buttons -->
 
@@ -120,11 +122,11 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 <!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(15569,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(16435,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(16435,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(17301,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d4745d3ec046#svgView(viewBox(17301,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/arrowloop/main/.github/assets/download-buttons/buttons.svg?v=d7a741d46508#svgView(viewBox(18167,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
 <!-- /give-buttons -->
 
@@ -216,10 +218,36 @@ Then open port 8422 in a browser and add your first job. On Unraid, install it f
 [compose.yaml](compose.yaml) runs ArrowLoop on any Linux server with Docker. Put it in a folder of its own, point the folders under `volumes` at your files and start it with `docker compose up -d`. The folders are created next to the file.
 
 - **Synology:** in Container Manager, create a project from the file (DSM 7.2 or newer).
-- **Proxmox:** run it in a VM or an LXC container that has Docker.
+- **Proxmox:** see [Proxmox VE](#proxmox-ve) below.
 - **MOS:** install ArrowLoop from the [MOS Hub](https://mos-official.net/apps.html?search=ArrowLoop).
 - **ZimaOS and CasaOS:** add the [community store](https://github.com/junkerderprovinz/zimaos-apps#install) and install ArrowLoop from it.
 - **umbrelOS:** add the [community app store](https://github.com/junkerderprovinz/umbrel-apps#install) and install ArrowLoop from it.
+
+### Proxmox VE
+
+ArrowLoop runs on Proxmox VE 9.2 in three ways, all tested there. The lightest is a script that installs ArrowLoop right in a Debian container. Without the Docker layer it needs less memory and disk, and Proxmox backs it up together with its container. Run it in the shell of the Proxmox host:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/junkerderprovinz/proxmox-apps/main/ct/arrowloop.sh)"
+```
+
+To update later, run `update` in the container's console.
+
+From the image, Proxmox 9.1 and newer turn the container image into a container of its own. Without the Docker layer, ArrowLoop needs less memory and disk, and Proxmox backs it up together with its container. Its data stays in folders under `/srv/arrowloop` on the host. Proxmox still calls this a technology preview.
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/junkerderprovinz/proxmox-apps/main/image.sh) install arrowloop
+```
+
+To update, run the same line with `update` in place of `install`. It replaces the container and keeps the folders and the address.
+
+Docker works just as well, nothing is wrong with it. Create a container with Docker using the Community Scripts and start the compose file in it, as under [Other Docker hosts](#other-docker-hosts):
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/docker.sh)"
+```
+
+For a virtual machine instead, take `vm/docker-vm.sh` from the same place.
 
 <br>
 
