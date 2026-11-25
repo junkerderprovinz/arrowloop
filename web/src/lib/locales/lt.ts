@@ -1268,7 +1268,6 @@ const lt: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR kodas',
-  'apps.soon': 'Netrukus',
   'apps.serverTitle': 'Serveryje',
   'apps.serverHint': 'ArrowLoop serveryje, kuris jį laiko veikiantį visą parą: iš Unraid Community Applications, kaip Docker atvaizdą arba sukompiliuotą iš pradinio kodo.',
   'apps.dockerHint': 'Paspaudus nukopijuojama jį paleidžianti komanda:',

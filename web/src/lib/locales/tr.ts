@@ -1268,7 +1268,6 @@ const tr: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR kodu',
-  'apps.soon': 'Yakında',
   'apps.serverTitle': 'Bir sunucuda',
   'apps.serverHint': 'ArrowLoop onu gece gündüz çalışır tutan bir sunucuda: Unraid\'in Community Applications bölümünden, Docker imajı olarak veya kaynak koddan derlenerek.',
   'apps.dockerHint': 'Bir tıklama onu başlatan komutu kopyalar:',

@@ -1268,7 +1268,6 @@ const uk: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-код',
-  'apps.soon': 'Незабаром',
   'apps.serverTitle': 'На сервері',
   'apps.serverHint': 'ArrowLoop на сервері, що тримає його увімкненим цілодобово: з Community Applications в Unraid, як образ Docker або зібраний з вихідного коду.',
   'apps.dockerHint': 'Клацання копіює команду, яка його запускає:',

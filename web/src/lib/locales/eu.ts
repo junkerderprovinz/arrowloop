@@ -1268,7 +1268,6 @@ const eu: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR kodea',
-  'apps.soon': 'Laster',
   'apps.serverTitle': 'Zerbitzari batean',
   'apps.serverHint': 'ArrowLoop egun osoan martxan mantentzen duen zerbitzari batean: Unraid-en Community Applications-etik, Docker irudi gisa edo iturburu-kodetik eraikita.',
   'apps.dockerHint': 'Klik batek abiarazten duen komandoa kopiatzen du:',

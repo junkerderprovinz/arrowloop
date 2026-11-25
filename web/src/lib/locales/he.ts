@@ -1268,7 +1268,6 @@ const he: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'קוד QR',
-  'apps.soon': 'בקרוב',
   'apps.serverTitle': 'על שרת',
   'apps.serverHint': 'ArrowLoop על שרת שמריץ אותו מסביב לשעון: מ־Community Applications של Unraid, כתמונת Docker או בנוי מקוד המקור.',
   'apps.dockerHint': 'לחיצה מעתיקה את הפקודה שמפעילה אותו:',

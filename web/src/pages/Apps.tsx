@@ -44,7 +44,6 @@ function PhoneCard({ version }: { version: string }) {
           brand="play"
           parts={[{ name: t('apps.playStore'), href: PLAY_STORE }]}
           mark={<BrandMark svg={PLAY_SVG} />}
-          soonLabel={t('apps.soon')}
           onLinkClick={followExternal}
         />
         <span data-new="fdroid-logo" className="inline-flex">

@@ -1268,7 +1268,6 @@ const ru: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-код',
-  'apps.soon': 'Скоро',
   'apps.serverTitle': 'На сервере',
   'apps.serverHint': 'ArrowLoop на сервере, который держит его запущенным круглые сутки: из Community Applications в Unraid, как образ Docker или собранный из исходного кода.',
   'apps.dockerHint': 'Щелчок копирует команду, которая его запускает:',

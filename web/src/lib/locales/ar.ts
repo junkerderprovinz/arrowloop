@@ -1268,7 +1268,6 @@ const ar: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'رمز QR',
-  'apps.soon': 'قريباً',
   'apps.serverTitle': 'على خادم',
   'apps.serverHint': 'ArrowLoop على خادم يبقيه يعمل على مدار الساعة: من Community Applications في Unraid، أو كصورة Docker، أو مبنياً من شيفرته المصدرية.',
   'apps.dockerHint': 'نقرة واحدة تنسخ الأمر الذي يشغّله:',

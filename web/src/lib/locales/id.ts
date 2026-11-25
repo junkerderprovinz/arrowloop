@@ -1268,7 +1268,6 @@ const id: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Kode QR',
-  'apps.soon': 'Segera',
   'apps.serverTitle': 'Di server',
   'apps.serverHint': 'ArrowLoop di server yang menjalankannya sepanjang waktu: dari Community Applications Unraid, sebagai image Docker, atau dibangun dari kode sumbernya.',
   'apps.dockerHint': 'Satu klik menyalin perintah yang menjalankannya:',

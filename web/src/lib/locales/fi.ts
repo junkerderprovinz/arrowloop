@@ -1268,7 +1268,6 @@ const fi: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-koodi',
-  'apps.soon': 'Pian',
   'apps.serverTitle': 'Palvelimella',
   'apps.serverHint': 'ArrowLoop palvelimella, joka pitää sen käynnissä ympäri vuorokauden: Unraidin Community Applicationsista, Docker-kuvana tai lähdekoodista käännettynä.',
   'apps.dockerHint': 'Napsautus kopioi komennon, joka käynnistää sen:',

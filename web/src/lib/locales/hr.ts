@@ -1268,7 +1268,6 @@ const hr: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR kod',
-  'apps.soon': 'Uskoro',
   'apps.serverTitle': 'Na poslužitelju',
   'apps.serverHint': 'ArrowLoop na poslužitelju koji ga drži uključenim danonoćno: iz Unraidovih Community Applications, kao Docker slika ili izgrađen iz izvornog koda.',
   'apps.dockerHint': 'Klik kopira naredbu koja ga pokreće:',

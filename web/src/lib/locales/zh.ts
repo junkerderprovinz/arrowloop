@@ -1268,7 +1268,6 @@ const zh: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': '二维码',
-  'apps.soon': '即将推出',
   'apps.serverTitle': '在服务器上',
   'apps.serverHint': '在全天运行的服务器上使用 ArrowLoop：来自 Unraid 的 Community Applications、作为 Docker 镜像，或从源代码构建。',
   'apps.dockerHint': '点击即可复制启动它的命令：',

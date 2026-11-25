@@ -1268,7 +1268,6 @@ const ja: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR コード',
-  'apps.soon': '近日公開',
   'apps.serverTitle': 'サーバーで',
   'apps.serverHint': '常時動かしておけるサーバーで ArrowLoop を使う方法: Unraid の Community Applications から、Docker イメージとして、またはソースコードからビルドして。',
   'apps.dockerHint': 'クリックすると起動コマンドをコピーします:',

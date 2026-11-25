@@ -1268,7 +1268,6 @@ const lv: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR kods',
-  'apps.soon': 'Drīzumā',
   'apps.serverTitle': 'Serverī',
   'apps.serverHint': 'ArrowLoop serverī, kas to darbina diennakts garumā: no Unraid Community Applications, kā Docker attēlu vai būvētu no pirmkoda.',
   'apps.dockerHint': 'Klikšķis nokopē komandu, kas to palaiž:',

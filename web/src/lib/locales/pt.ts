@@ -1268,7 +1268,6 @@ const pt: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Código QR',
-  'apps.soon': 'Em breve',
   'apps.serverTitle': 'Num servidor',
   'apps.serverHint': 'O ArrowLoop num servidor que o mantém a correr dia e noite: a partir das Community Applications do Unraid, como imagem Docker ou compilado a partir do código-fonte.',
   'apps.dockerHint': 'Um clique copia o comando que o arranca:',

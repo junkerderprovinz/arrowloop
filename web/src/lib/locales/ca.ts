@@ -1268,7 +1268,6 @@ const ca: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Codi QR',
-  'apps.soon': 'Aviat',
   'apps.serverTitle': 'En un servidor',
   'apps.serverHint': 'ArrowLoop en un servidor que el manté en marxa tot el dia: des de les Community Applications d\'Unraid, com a imatge de Docker o compilat des del codi font.',
   'apps.dockerHint': 'Un clic copia l\'ordre que l\'engega:',

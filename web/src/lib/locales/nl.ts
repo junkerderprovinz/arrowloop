@@ -1268,7 +1268,6 @@ const nl: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-code',
-  'apps.soon': 'Binnenkort',
   'apps.serverTitle': 'Op een server',
   'apps.serverHint': 'ArrowLoop op een server die het dag en nacht laat draaien: uit de Community Applications van Unraid, als Docker-image of gebouwd uit de broncode.',
   'apps.dockerHint': 'Eén klik kopieert de opdracht die het start:',

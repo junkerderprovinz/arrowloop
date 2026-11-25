@@ -1268,7 +1268,6 @@ const gl: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Código QR',
-  'apps.soon': 'Axiña',
   'apps.serverTitle': 'Nun servidor',
   'apps.serverHint': 'ArrowLoop nun servidor que o mantén en marcha todo o día: desde as Community Applications de Unraid, como imaxe de Docker ou compilado desde o código fonte.',
   'apps.dockerHint': 'Un clic copia a orde que o arrinca:',

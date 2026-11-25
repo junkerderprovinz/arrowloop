@@ -1268,7 +1268,6 @@ const hu: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-kód',
-  'apps.soon': 'Hamarosan',
   'apps.serverTitle': 'Szerveren',
   'apps.serverHint': 'ArrowLoop egy szerveren, amely éjjel-nappal futtatja: az Unraid Community Applications kínálatából, Docker-képként vagy a forráskódból fordítva.',
   'apps.dockerHint': 'Egy kattintás kimásolja az indító parancsot:',

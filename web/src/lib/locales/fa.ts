@@ -1268,7 +1268,6 @@ const fa: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'کد QR',
-  'apps.soon': 'به‌زودی',
   'apps.serverTitle': 'روی سرور',
   'apps.serverHint': 'ArrowLoop روی سروری که آن را شبانه‌روز روشن نگه می‌دارد: از Community Applications در Unraid، به‌صورت ایمیج Docker یا ساخته‌شده از کد منبع.',
   'apps.dockerHint': 'یک کلیک فرمانی را که آن را اجرا می‌کند کپی می‌کند:',

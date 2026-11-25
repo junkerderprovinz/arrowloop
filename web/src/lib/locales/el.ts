@@ -1268,7 +1268,6 @@ const el: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Κωδικός QR',
-  'apps.soon': 'Σύντομα',
   'apps.serverTitle': 'Σε διακομιστή',
   'apps.serverHint': 'Το ArrowLoop σε διακομιστή που το κρατά σε λειτουργία όλο το 24ωρο: από τα Community Applications του Unraid, ως εικόνα Docker ή χτισμένο από τον πηγαίο κώδικα.',
   'apps.dockerHint': 'Ένα κλικ αντιγράφει την εντολή που το ξεκινά:',

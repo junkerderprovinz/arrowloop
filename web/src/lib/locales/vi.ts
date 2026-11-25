@@ -1268,7 +1268,6 @@ const vi: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Mã QR',
-  'apps.soon': 'Sắp có',
   'apps.serverTitle': 'Trên máy chủ',
   'apps.serverHint': 'ArrowLoop trên một máy chủ chạy suốt ngày đêm: từ Community Applications của Unraid, dưới dạng image Docker hoặc dựng từ mã nguồn.',
   'apps.dockerHint': 'Một cú nhấp sao chép lệnh khởi động nó:',

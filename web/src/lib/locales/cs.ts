@@ -1268,7 +1268,6 @@ const cs: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR kód',
-  'apps.soon': 'Brzy',
   'apps.serverTitle': 'Na serveru',
   'apps.serverHint': 'ArrowLoop na serveru, který ho nechá běžet nepřetržitě: z Community Applications v Unraidu, jako obraz Dockeru nebo sestavený ze zdrojového kódu.',
   'apps.dockerHint': 'Kliknutím se zkopíruje příkaz, který ho spustí:',

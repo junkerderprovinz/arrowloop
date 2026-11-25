@@ -1268,7 +1268,6 @@ const th: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'คิวอาร์โค้ด',
-  'apps.soon': 'เร็ว ๆ นี้',
   'apps.serverTitle': 'บนเซิร์ฟเวอร์',
   'apps.serverHint': 'ArrowLoop บนเซิร์ฟเวอร์ที่เปิดไว้ตลอดเวลา: จาก Community Applications ของ Unraid, เป็นอิมเมจ Docker หรือบิลด์จากซอร์สโค้ด',
   'apps.dockerHint': 'คลิกครั้งเดียวเพื่อคัดลอกคำสั่งที่ใช้เริ่มทำงาน:',

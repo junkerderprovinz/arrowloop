@@ -1268,7 +1268,6 @@ const et: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-kood',
-  'apps.soon': 'Varsti',
   'apps.serverTitle': 'Serveris',
   'apps.serverHint': 'ArrowLoop serveris, mis hoiab seda ööpäev läbi töös: Unraidi Community Applicationsist, Dockeri tõmmisena või lähtekoodist ehitatuna.',
   'apps.dockerHint': 'Klõps kopeerib käsu, mis selle käivitab:',

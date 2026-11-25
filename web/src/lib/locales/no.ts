@@ -1268,7 +1268,6 @@ const no: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-kode',
-  'apps.soon': 'Snart',
   'apps.serverTitle': 'På en server',
   'apps.serverHint': 'ArrowLoop på en server som holder den i gang døgnet rundt: fra Community Applications i Unraid, som Docker-image eller bygd fra kildekoden.',
   'apps.dockerHint': 'Et klikk kopierer kommandoen som starter den:',

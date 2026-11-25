@@ -1268,7 +1268,6 @@ const is: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR-kóði',
-  'apps.soon': 'Bráðum',
   'apps.serverTitle': 'Á netþjóni',
   'apps.serverHint': 'ArrowLoop á netþjóni sem heldur því gangandi allan sólarhringinn: úr Community Applications í Unraid, sem Docker-mynd eða smíðað úr frumkóðanum.',
   'apps.dockerHint': 'Einn smellur afritar skipunina sem ræsir það:',

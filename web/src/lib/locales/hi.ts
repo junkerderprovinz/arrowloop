@@ -1268,7 +1268,6 @@ const hi: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'QR कोड',
-  'apps.soon': 'जल्द',
   'apps.serverTitle': 'सर्वर पर',
   'apps.serverHint': 'ArrowLoop ऐसे सर्वर पर जो इसे चौबीसों घंटे चलाए रखे: Unraid के Community Applications से, Docker इमेज के रूप में, या सोर्स कोड से बनाकर।',
   'apps.dockerHint': 'एक क्लिक इसे शुरू करने वाला कमांड कॉपी करता है:',

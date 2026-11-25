@@ -1268,7 +1268,6 @@ const sl: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Koda QR',
-  'apps.soon': 'Kmalu',
   'apps.serverTitle': 'Na strežniku',
   'apps.serverHint': 'ArrowLoop na strežniku, ki ga poganja noč in dan: iz Community Applications v Unraidu, kot sliko Docker ali zgrajen iz izvorne kode.',
   'apps.dockerHint': 'Klik kopira ukaz, ki ga zažene:',

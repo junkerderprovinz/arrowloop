@@ -1268,7 +1268,6 @@ const ro: Translations = {
   'apps.unraid': 'Unraid',
   'apps.docker': 'Docker',
   'apps.qr': 'Cod QR',
-  'apps.soon': 'În curând',
   'apps.serverTitle': 'Pe un server',
   'apps.serverHint': 'ArrowLoop pe un server care îl ține pornit zi și noapte: din Community Applications ale Unraid, ca imagine Docker sau compilat din codul sursă.',
   'apps.dockerHint': 'Un clic copiază comanda care îl pornește:',
