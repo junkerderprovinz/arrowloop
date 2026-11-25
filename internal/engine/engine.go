@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"maps"
 	"slices"
 	"strings"
 	"sync"
@@ -140,7 +139,12 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	compare := opt.Compare
 	compare.FoldCase = foldCase(ends, opt)
 
-	prev, err := db.All(ctx)
+	// The record is filtered exactly as the sides are, or a newly excluded
+	// path would read as a deletion.
+	shown := func(e state.Entry) bool {
+		return !opt.Exclude.Excluded(e.LeftPath) && !opt.Exclude.Excluded(e.RightPath)
+	}
+	visible, err := db.Matching(ctx, shown)
 	if err != nil {
 		return nil, compare, err
 	}
@@ -150,15 +154,12 @@ func Prepare(ctx context.Context, ends apply.Ends, db *state.DB, opt Options) (*
 	if err != nil {
 		return nil, compare, err
 	}
-	maps.Copy(prev, inFlux)
-	// The record is filtered exactly as the sides are, or a newly excluded
-	// path would read as a deletion.
-	visible := make(map[string]state.Entry, len(prev))
-	for key, entry := range prev {
-		if opt.Exclude.Excluded(entry.LeftPath) || opt.Exclude.Excluded(entry.RightPath) {
-			continue
+	for key, entry := range inFlux {
+		if shown(entry) {
+			visible[key] = entry
+		} else {
+			delete(visible, key)
 		}
-		visible[key] = entry
 	}
 
 	withDirs := opt.EmptyDirs && canHoldEmptyDirs(ends, opt)

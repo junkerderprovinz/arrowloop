@@ -124,7 +124,14 @@ func (d *DB) Close() error { return d.sql.Close() }
 
 // All returns the complete last-agreed state, keyed by relative path.
 func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
-	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_path, right_path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at FROM entries`)
+	return d.Matching(ctx, func(Entry) bool { return true })
+}
+
+// Matching returns the records keep accepts, keyed by relative path. The
+// others are never held, which matters for a job whose exclusions cover most
+// of its record.
+func (d *DB) Matching(ctx context.Context, keep func(Entry) bool) (map[string]Entry, error) {
+	rows, err := d.sql.QueryContext(ctx, `SELECT `+entryColumns+` FROM entries`)
 	if err != nil {
 		return nil, fmt.Errorf("read state: %w", err)
 	}
@@ -136,7 +143,9 @@ func (d *DB) All(ctx context.Context) (map[string]Entry, error) {
 		if err != nil {
 			return nil, err
 		}
-		out[e.Path] = e
+		if keep(e) {
+			out[e.Path] = e
+		}
 	}
 	return out, rows.Err()
 }
@@ -276,7 +285,7 @@ func (d *DB) Containing(ctx context.Context, fragment string) ([]Entry, error) {
 }
 
 func (d *DB) query(ctx context.Context, where string, args ...any) ([]Entry, error) {
-	rows, err := d.sql.QueryContext(ctx, `SELECT path, left_path, right_path, left_size, left_mod, left_hash, right_size, right_mod, right_hash, agreed_at FROM entries `+where, args...)
+	rows, err := d.sql.QueryContext(ctx, `SELECT `+entryColumns+` FROM entries `+where, args...)
 	if err != nil {
 		return nil, fmt.Errorf("read state: %w", err)
 	}
@@ -293,16 +302,36 @@ func (d *DB) query(ctx context.Context, where string, args ...any) ([]Entry, err
 	return out, rows.Err()
 }
 
+// entryColumns reads a name or hash that repeats the one before it as NULL.
+// The two sides nearly always agree on both, and a record read whole would
+// otherwise hold every one of them two or three times over.
+const entryColumns = `path,
+	NULLIF(left_path, path), NULLIF(right_path, left_path),
+	left_size, left_mod, left_hash,
+	right_size, right_mod, NULLIF(right_hash, left_hash),
+	agreed_at`
+
 func scanEntry(rows *sql.Rows) (Entry, error) {
 	var e Entry
+	var leftPath, rightPath, rightHash sql.NullString
 	var leftMod, rightMod, agreed int64
-	if err := rows.Scan(&e.Path, &e.LeftPath, &e.RightPath, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &e.RightHash, &agreed); err != nil {
+	if err := rows.Scan(&e.Path, &leftPath, &rightPath, &e.LeftSize, &leftMod, &e.LeftHash, &e.RightSize, &rightMod, &rightHash, &agreed); err != nil {
 		return Entry{}, fmt.Errorf("scan state row: %w", err)
 	}
+	e.LeftPath = orRepeat(leftPath, e.Path)
+	e.RightPath = orRepeat(rightPath, e.LeftPath)
+	e.RightHash = orRepeat(rightHash, e.LeftHash)
 	e.LeftMod = time.Unix(0, leftMod)
 	e.RightMod = time.Unix(0, rightMod)
 	e.AgreedAt = time.Unix(0, agreed)
 	return e, nil
+}
+
+func orRepeat(col sql.NullString, before string) string {
+	if col.Valid {
+		return col.String
+	}
+	return before
 }
 
 // Keep records that somebody looked at a file and chose to leave it where it
