@@ -37,6 +37,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/plan"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
+	"github.com/junkerderprovinz/arrowloop/internal/systemlog"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
 
@@ -97,6 +98,10 @@ type Server struct {
 	// Log reports what a status code cannot, such as a setting that saved but
 	// could not be applied to the running process. Nil means silence.
 	Log func(format string, args ...any)
+
+	// SystemLog is where the errors of the fortress and the group are noted;
+	// nil notes nothing.
+	SystemLog *systemlog.Log
 
 	// CodeLog is where a password reset code is written, apart from Log so it
 	// can stand as a block of its own between the timestamped lines. Nil means
@@ -229,6 +234,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/jobs/{name}/touches", s.jobTouches)
 	mux.HandleFunc("GET /api/history/stats", s.historyStats)
 	mux.HandleFunc("POST /api/history/prune", s.pruneHistory)
+	mux.HandleFunc("GET /api/system-log", s.systemLog)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/config", s.readConfig)
 	mux.HandleFunc("PUT /api/config", s.writeConfig)

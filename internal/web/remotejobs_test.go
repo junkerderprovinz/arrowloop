@@ -347,6 +347,24 @@ func TestASaveFromAPairedInstanceMeetsTheOwnersRules(t *testing.T) {
 	}
 }
 
+func TestASaveTheOwnerRefusesIsInItsSystemLog(t *testing.T) {
+	a, b, aID, bID := pairedPair(t, "")
+	got := openOn(t, a, bID, "photos")
+	got.Job["schedule"] = "every other tuesday"
+	if status, body := saveOn(t, a, bID, "photos", got.Job); status != http.StatusBadRequest {
+		t.Fatalf("a schedule the owner cannot read = %d %s, want 400", status, body)
+	}
+
+	var lines []struct{ Source, Text string }
+	eventually(t, "the refusal in the owner's system log", func() bool {
+		b.get(t, "/api/system-log", &lines)
+		return len(lines) > 0
+	})
+	if len(lines) != 1 || lines[0].Source != "integration" || !strings.Contains(lines[0].Text, aID) || !strings.Contains(lines[0].Text, "schedule") {
+		t.Errorf("the owner's system log holds %+v, want the refused save from %s", lines, aID)
+	}
+}
+
 func TestAJobFromAPairedInstanceNamesOnlyTargetsOfTheOwner(t *testing.T) {
 	withRcloneConfig(t)
 	config, _, right := apart(t)

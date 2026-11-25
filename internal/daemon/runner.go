@@ -33,6 +33,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/shadow"
 	"github.com/junkerderprovinz/arrowloop/internal/state"
+	"github.com/junkerderprovinz/arrowloop/internal/systemlog"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 )
@@ -109,6 +110,9 @@ type Runner struct {
 	// vpn brings the tunnel up for the jobs that go through it; nil where the
 	// engine has none.
 	vpn *vpnconn.Manager
+	// system is where errors outside a run's files are noted; nil notes
+	// nothing.
+	system *systemlog.Log
 	// wifi names the wifi this machine is on, or "" when that is not known;
 	// nil where nothing can tell.
 	wifi func() string
@@ -280,7 +284,7 @@ func (r *Runner) fewerLogins(j job.Job, err error) bool {
 		if n == 1 {
 			fewer = "one connection"
 		}
-		r.log("%s: the server on the %s side turned a connection away, trying again with %s", j.Name, s.name, fewer)
+		r.trouble(systemlog.Connection, "%s: the server on the %s side turned a connection away, trying again with %s", j.Name, s.name, fewer)
 		stepped = true
 	}
 	return stepped
@@ -509,6 +513,7 @@ func (r *Runner) runAnswering(ctx context.Context, ref string, auto bool, ans an
 			r.log("could not write the run record for %s: %v", name, hErr)
 		}
 	}
+	r.noteUnreached(rec)
 	said := summary(rec, res)
 	checkOut(ending(rec), said)
 	r.announce(ctx, rec, said)

@@ -105,7 +105,7 @@ func (s *Server) groupSaveJob(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if err != nil {
-		s.logf("pairing: refused the change %s sent for the job %q: %v", who, name, err)
+		s.trouble("pairing: refused the change %s sent for the job %q: %v", who, name, err)
 		s.writeRefusal(w, err)
 		return
 	}

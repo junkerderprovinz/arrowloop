@@ -64,6 +64,24 @@ func TestAConnectionStringInFreeTextLosesItsParameters(t *testing.T) {
 	}
 }
 
+func TestATokenOrPasswordInAnErrorIsLeftOut(t *testing.T) {
+	for in, want := range map[string]string{
+		"GET https://api.example.com/files?access_token=ya29.SECRET&page=2: 401":                   "GET https://api.example.com/files?access_token=***&page=2: 401",
+		"PUT https://host/blob?se=2027&sig=SECRET: 403":                                            "PUT https://host/blob?se=2027&sig=***: 403",
+		"login as bob with password=SECRET refused":                                                "login as bob with password=*** refused",
+		"Authorization: Bearer eyJhbGciOi.SECRET":                                                  "Authorization: Bearer ***",
+		"sent Bearer eyJhbGciOiJIUzI1NiJ9.SECRET and got 401":                                      "sent Bearer *** and got 401",
+		`token refresh: {"access_token":"SECRET","refresh_token": "SECRET","expiry":"2027-01-01"}`: `token refresh: {"access_token":"***","refresh_token": "***","expiry":"2027-01-01"}`,
+		"Failed to copy: key not found":                                                            "Failed to copy: key not found",
+		"token refresh failed: invalid_grant":                                                      "token refresh failed: invalid_grant",
+		"basic authentication failed":                                                              "basic authentication failed",
+	} {
+		if got := Text(in); got != want {
+			t.Errorf("Text(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
 func TestWhatAHookPrintedIsLeftOut(t *testing.T) {
 	got := Text("photos: the command before the run failed, so the run did not start: exit status 3: HOOKSECRET")
 	if strings.Contains(got, "HOOKSECRET") || !strings.Contains(got, "exit status 3") {

@@ -37,6 +37,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/arrowloop/internal/systemlog"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
@@ -166,11 +167,16 @@ func run() error {
 		return err
 	}
 	defer hist.Close()
+	// Closed ahead of the history, so the lines still waiting are written.
+	system := systemlog.New(hist)
+	defer system.Close()
+	system.CatchRclone()
 
 	desktopLog := func(format string, args ...any) {
 		log.Printf(format, args...)
 	}
 	runner := daemon.New(cfg, hist, desktopLog)
+	runner.SetSystemLog(system)
 	sh.runner = runner
 
 	ui, err := webui.Files()
@@ -197,6 +203,7 @@ func run() error {
 		SystemAccent: accent.Read,
 		Key:          key,
 		Log:          desktopLog,
+		SystemLog:    system,
 		Pairing:      paired,
 		VPN:          tunnel,
 		Deployment:   "desktop",

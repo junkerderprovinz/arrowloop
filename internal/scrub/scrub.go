@@ -29,8 +29,27 @@ func Text(text string) string {
 	// After the quoted ones, whose escaped quotes would read wrong here.
 	text = withoutParametersIn(text)
 	text = userinfo.ReplaceAllString(text, "$1:***@")
+	text = secretValue.ReplaceAllString(text, "$1=***")
+	text = secretField.ReplaceAllString(text, `$1"***"`)
+	text = authorization.ReplaceAllString(text, "$1***")
+	text = bearer.ReplaceAllString(text, "$1***")
 	return Home(withoutHookOutput(text))
 }
+
+// secretValue is a secret given as a value in an address or a form, as a
+// server's error may quote the request it turned away. A colon ends it only
+// where a wrapped error goes on after it.
+var secretValue = regexp.MustCompile(`(?i)\b((?:access_|refresh_|id_|auth_)?token|password|passwd|pass|secret|client_secret|api_?key|key|sig|signature)=(?:[^\s&;,"':]|:\S)+`)
+
+// secretField is the same in a JSON answer, such as a failed token refresh.
+var secretField = regexp.MustCompile(`(?i)("(?:(?:access_|refresh_|id_)?token|password|secret|client_secret|api_?key)"\s*:\s*)"(?:[^"\\]|\\.)*"`)
+
+// authorization is a request's Authorization header, with its scheme kept.
+var authorization = regexp.MustCompile(`(?i)(authorization:\s*(?:(?:bearer|basic|token)\s+)?)[^\s,;"']+`)
+
+// bearer is a bearer token outside a header. A short word after "Bearer" is
+// left alone, since it is prose rather than a token.
+var bearer = regexp.MustCompile(`\b(Bearer\s+)[A-Za-z0-9._~+/-]{12,}=*`)
 
 // Knowing returns a Text that also knows the sides of these jobs, so a side
 // is shown as Side shows it wherever an error quotes it, however it is quoted.

@@ -92,7 +92,7 @@ func (s *Server) noteOpened(from kitfortress.Caller) {
 	}
 	o := history.Opening{At: time.Now(), App: app, Device: from.Device, Member: from.ID}
 	if err := s.History.RecordOpening(context.Background(), o); err != nil {
-		s.logf("fortress: could not note that %s opened this interface: %v", app, err)
+		s.trouble("fortress: could not note that %s opened this interface: %v", app, err)
 	}
 }
 
@@ -218,7 +218,7 @@ func (s *Server) writeOpenRefusal(w http.ResponseWriter, err error) {
 	case errors.As(err, &no) && (no.Code == "busy" || no.Code == "jars_full"):
 		status, code = http.StatusServiceUnavailable, "busy"
 	default:
-		s.logf("fortress: another member did not open: %v", err)
+		s.trouble("fortress: another member did not open: %v", err)
 	}
 	writeJSON(w, status, map[string]string{"code": code, "error": err.Error()})
 }

@@ -57,7 +57,7 @@ func (s *Server) fortressNow() *kitfortress.Fortress {
 func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode group.RelayMode, relayURL string, gen uint64) {
 	if st.FortressPrevious != nil && time.Since(st.FortressChanged) >= previousKept {
 		if err := s.Pairing.ForgetFortressPrevious(); err != nil {
-			s.logf("fortress: could not forget the phrase before the last change: %v", err)
+			s.trouble("fortress: could not forget the phrase before the last change: %v", err)
 			st.FortressPrevious = nil
 		} else {
 			st = s.Pairing.Get()
@@ -88,7 +88,7 @@ func (s *Server) openFortressLocked(st pairing.State, id member.Identity, mode g
 		if network != nil {
 			_ = network.Close()
 		}
-		s.logf("fortress: could not join the fortress: %v", err)
+		s.trouble("fortress: could not join the fortress: %v", err)
 		return
 	}
 	s.liveMu.Lock()
@@ -163,7 +163,7 @@ func (s *Server) closeFortressLocked() bool {
 		return false
 	}
 	if err := f.Close(); err != nil {
-		s.logf("fortress: could not save the fortress on leaving it: %v", err)
+		s.trouble("fortress: could not save the fortress on leaving it: %v", err)
 	}
 	if network != nil {
 		_ = network.Close()
@@ -185,7 +185,7 @@ func (s *Server) removedFrom(gen uint64) {
 		s.logf("fortress: another member took this instance out, so it left the fortress")
 		_ = s.enterGroupLocked(nil)
 		if err := s.Pairing.Update(func(st *pairing.State) error { st.RemovedHere = true; return nil }); err != nil {
-			s.logf("fortress: could not note that another member took this instance out: %v", err)
+			s.trouble("fortress: could not note that another member took this instance out: %v", err)
 		}
 		s.groupChanged()
 	}()
@@ -234,7 +234,7 @@ func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity,
 		Kinds: []member.Kind{member.KindInstance},
 	}, s.moversHandler())
 	if err != nil {
-		s.logf("fortress: could not reach the instances of the group from before: %v", err)
+		s.trouble("fortress: could not reach the instances of the group from before: %v", err)
 		return
 	}
 	s.liveMu.Lock()
@@ -257,7 +257,7 @@ func (s *Server) move(ctx context.Context, st pairing.State, id member.Identity,
 					s.logf("fortress: the group from before closed with %d instances that never followed", behind)
 				}
 				if err := s.Pairing.MoveDone(); err != nil {
-					s.logf("fortress: could not note that the move into the fortress ended: %v", err)
+					s.trouble("fortress: could not note that the move into the fortress ended: %v", err)
 				}
 				s.groupChanged()
 				return
@@ -282,7 +282,7 @@ func (s *Server) forgetTakenOut(old *group.Group) {
 	}
 	r := g.Roster()
 	if err := old.Import(group.Roster{Removed: r.Removed, Revoked: r.Revoked}); err != nil {
-		s.logf("fortress: could not note who was taken out of the group from before: %v", err)
+		s.trouble("fortress: could not note who was taken out of the group from before: %v", err)
 	}
 }
 
@@ -403,7 +403,7 @@ func (s *Server) joinFortress(ctx context.Context, secret []byte) error {
 		return err
 	}
 	if !taken {
-		s.logf("fortress: the members turned the join away until the phrase changes, because one of them was removed")
+		s.trouble("fortress: the members turned the join away until the phrase changes, because one of them was removed")
 		return errClosedUntilNewPhrase
 	}
 	if old := s.joined(); old != nil {

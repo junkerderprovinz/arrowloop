@@ -117,7 +117,7 @@ func (s *Server) closeGroupLocked() {
 	}
 	defer s.groupChanged()
 	if err := g.Close(); err != nil {
-		s.logf("pairing: could not save the group on leaving it: %v", err)
+		s.trouble("pairing: could not save the group on leaving it: %v", err)
 	}
 }
 
@@ -168,11 +168,11 @@ func (s *Server) openGroupLocked() {
 		},
 	}, kitfortress.Moving(s.groupHandler(), movedKeeper{s}))
 	if err != nil {
-		s.logf("pairing: could not join the group: %v", err)
+		s.trouble("pairing: could not join the group: %v", err)
 		return
 	}
 	if err := s.Pairing.MoveLegacy(g); err != nil {
-		s.logf("pairing: could not take over the group from before: %v", err)
+		s.trouble("pairing: could not take over the group from before: %v", err)
 	}
 	s.liveMu.Lock()
 	s.live = g
@@ -258,7 +258,7 @@ func (s *Server) noteMemberSeen(gen uint64) {
 		if m.Online() {
 			now := time.Now()
 			if err := s.Pairing.Update(func(stored *pairing.State) error { stored.MemberSeenAt = now; return nil }); err != nil {
-				s.logf("pairing: could not record the first member of the group: %v", err)
+				s.trouble("pairing: could not record the first member of the group: %v", err)
 			}
 			return
 		}
@@ -284,7 +284,7 @@ func (s *Server) identity() (member.Identity, bool) {
 		err = s.Pairing.Update(func(st *pairing.State) error { st.Member = id.Seed(); return nil })
 	}
 	if err != nil {
-		s.logf("pairing: no member key, so the group refuses this instance's calls until one can be made: %v", err)
+		s.trouble("pairing: no member key, so the group refuses this instance's calls until one can be made: %v", err)
 		return member.Identity{}, false
 	}
 	return id, true
@@ -727,7 +727,7 @@ func (s *Server) passOn(g *group.Group, to []string, method, path string, body [
 	for _, id := range to {
 		status, _, err := g.Call(ctx, id, method, path, body)
 		if err != nil || (status >= 300 && status != http.StatusNotFound) {
-			s.logf("pairing: could not pass %s %s on to %s: status %d, %v", method, path, id, status, err)
+			s.trouble("pairing: could not pass %s %s on to %s: status %d, %v", method, path, id, status, err)
 		}
 	}
 }
@@ -1007,7 +1007,7 @@ func (s *Server) groupRemoveMember(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			if err := s.enterGroupLocked(nil); err != nil {
-				s.logf("pairing: did not leave the group after an instance of it took this one out: %v", err)
+				s.trouble("pairing: did not leave the group after an instance of it took this one out: %v", err)
 			}
 		}()
 		return

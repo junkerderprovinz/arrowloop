@@ -229,6 +229,14 @@ CREATE TABLE IF NOT EXISTS going_entries (
 	PRIMARY KEY (key, seq)
 );
 
+CREATE TABLE IF NOT EXISTS system_log (
+	id     INTEGER PRIMARY KEY AUTOINCREMENT,
+	at     INTEGER NOT NULL,
+	source TEXT    NOT NULL,
+	text   TEXT    NOT NULL,
+	count  INTEGER NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS pruned (
 	id INTEGER PRIMARY KEY CHECK (id = 1),
 	at INTEGER NOT NULL
@@ -819,9 +827,9 @@ func (d *DB) Named(ctx context.Context, name string) (string, bool) {
 	return key, err == nil
 }
 
-// Prune drops runs and openings older than the given age, so the log does
-// not grow without bound on a machine nobody looks at. Each job keeps the runs
-// its schedule is read from, however old; see kept.
+// Prune drops runs, openings and lines of the system log older than the given
+// age, so the log does not grow without bound on a machine nobody looks at.
+// Each job keeps the runs its schedule is read from, however old; see kept.
 func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int64, error) {
 	if keep <= 0 {
 		return 0, nil
@@ -840,6 +848,9 @@ func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int6
 	}
 	if _, err := d.sql.ExecContext(ctx, `DELETE FROM openings WHERE at < ?`, cut); err != nil {
 		return 0, fmt.Errorf("prune the openings: %w", err)
+	}
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM system_log WHERE at < ?`, cut); err != nil {
+		return 0, fmt.Errorf("prune the system log: %w", err)
 	}
 	res, err := d.sql.ExecContext(ctx, `DELETE FROM runs WHERE id IN (`+old+`)`, cut)
 	if err != nil {

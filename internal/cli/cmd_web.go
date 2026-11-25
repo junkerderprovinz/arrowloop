@@ -23,6 +23,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/hold"
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
 	"github.com/junkerderprovinz/arrowloop/internal/security"
+	"github.com/junkerderprovinz/arrowloop/internal/systemlog"
 	"github.com/junkerderprovinz/arrowloop/internal/vpnconn"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 	webui "github.com/junkerderprovinz/arrowloop/web"
@@ -88,11 +89,16 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		return err
 	}
 	defer hist.Close()
+	// Closed ahead of the history, so the lines still waiting are written.
+	system := systemlog.New(hist)
+	defer system.Close()
+	system.CatchRclone()
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	runner := daemon.New(cfg, hist, logf)
+	runner.SetSystemLog(system)
 
 	ui, err := webui.Files()
 	if err != nil {
@@ -136,6 +142,7 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		SignIn:      signIn,
 		Key:         key,
 		Log:         logf,
+		SystemLog:   system,
 		Pairing:     paired,
 		VPN:         tunnel,
 		Deployment:  deployed,

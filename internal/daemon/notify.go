@@ -15,6 +15,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/job"
 	alnotify "github.com/junkerderprovinz/arrowloop/internal/notify"
 	"github.com/junkerderprovinz/arrowloop/internal/scrub"
+	"github.com/junkerderprovinz/arrowloop/internal/systemlog"
 )
 
 // NoChannelsEnv names the environment variable that keeps every message
@@ -83,7 +84,7 @@ func (r *Runner) tell(ctx context.Context, name string, e notify.Event) {
 	e = r.scrubbed(e)
 	for _, res := range d.Send(context.WithoutCancel(ctx), e) {
 		if !res.OK() {
-			r.log("could not send the notification for %s through %s: %v", name, res.Channel, res.Err)
+			r.trouble(systemlog.Integration, "could not send the notification for %s through %s: %v", name, res.Channel, res.Err)
 		}
 	}
 }
@@ -117,7 +118,7 @@ func (r *Runner) checkIn(ctx context.Context, name string) func(end notify.Ping,
 		e.Key = name
 		for _, res := range d.Ping(ctx, r.scrubbed(e)) {
 			if !res.OK() {
-				r.log("could not tell the check for %s how the run went: %v", name, res.Err)
+				r.trouble(systemlog.Integration, "could not tell the check for %s how the run went: %v", name, res.Err)
 			}
 		}
 	}

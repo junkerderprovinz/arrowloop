@@ -28,6 +28,7 @@ import (
 	"github.com/junkerderprovinz/parleyport/kit/relay"
 
 	"github.com/junkerderprovinz/arrowloop/internal/pairing"
+	"github.com/junkerderprovinz/arrowloop/internal/systemlog"
 	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
@@ -120,7 +121,9 @@ func nodeWith(t *testing.T, su setup, h *harness) *node {
 		deployment = "server"
 	}
 	log := &lockedLog{}
-	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf}
+	system := systemlog.New(h.history)
+	t.Cleanup(system.Close)
+	s := &web.Server{History: h.history, Runner: h.runner, Pairing: store, LAN: su.lan, Deployment: deployment, Log: log.printf, SystemLog: system}
 	h.srv = httptest.NewUnstartedServer(nil)
 	public := ""
 	if su.public {
