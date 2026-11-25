@@ -190,6 +190,9 @@ func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 		 SELECT ?, seq, kind, side, path, note, size, code, vars FROM going_entries WHERE key = ?`, id, key); err != nil {
 		return err
 	}
+	if err := countBytes(ctx, tx, id); err != nil {
+		return err
+	}
 	if err := forget(ctx, tx, key); err != nil {
 		return err
 	}

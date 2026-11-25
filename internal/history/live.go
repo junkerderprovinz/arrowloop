@@ -56,6 +56,7 @@ func (l *Live) Add(e Entry) {
 	switch e.Kind {
 	case "copy":
 		l.run.Copied++
+		l.run.Bytes += e.Size
 	case "move":
 		l.run.Moved++
 	case "trash":
