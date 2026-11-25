@@ -158,7 +158,7 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
                 <Badge label={t("history.ok")} tone="ok" />
               )}
             </View>
-            <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
+            <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t, lang)}</Body>
             {run.Stopped ? <Caption>{t("history.stopped")}</Caption> : null}
           </Card>
         ))}

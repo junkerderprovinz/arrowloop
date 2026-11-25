@@ -287,6 +287,8 @@ export type Run = {
   Running?: boolean
   /** The job had no trash, so the files it counts as Trashed are deleted for good. */
   NoTrash?: boolean
+  /** What the files the run copied hold together. An older engine does not say. */
+  Bytes?: number
 }
 
 /** A job's newest run, with how many runs the job started since the time asked for. */
@@ -400,6 +402,8 @@ export type Settings = {
   /** Holds every job's automatic runs; a job still runs when started by hand. */
   pauseAutomatic?: boolean
   history?: string
+  /** How long a run is kept, as a Go duration such as "720h". Empty is ninety days, "0" keeps every run. */
+  historyKeep?: string
   /** Per-job settings that fill in what a job does not say for itself. */
   defaults?: {
     direction?: string
@@ -994,6 +998,9 @@ export const api = {
 
   /** Adds what checkImport showed. The engine reads the file again rather than trusting a plan. */
   applyImport: (file: string) => post<ImportPlan>('/api/import', { file }),
+
+  /** Deletes the runs older than historyKeep, apart from the ones each job's schedule is read from. */
+  pruneHistory: () => post<{ runs: number }>('/api/history/prune', {}),
 
   /** Save the settings. The server merges, so a key this build does not send stays. */
   saveSettings: (settings: Settings) =>

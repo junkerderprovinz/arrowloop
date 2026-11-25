@@ -39,6 +39,7 @@ import {
 import { capitalized } from "../../../web/src/lib/capitalized";
 import { clock } from "../clock";
 import { useFrame } from "../frame";
+import { runFigures } from "../runLine";
 import { bytes } from "../usage";
 
 /**
@@ -728,7 +729,7 @@ function RunSheet({ opened, jobs, onClose }: { opened: Opened | null; jobs: Job[
         <>
           <Caption>{clock(run.Started, lang)}</Caption>
           {length ? <Pair label={t("overview.duration")} value={length} /> : null}
-          <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t)}</Body>
+          <Body>{failed(run) ? failureLine(run.Err, run.Failure, t, lang) : counters(run, t, lang)}</Body>
           {run.Stopped ? <Caption>{t("history.stopped")}</Caption> : null}
         </>
       ) : null}
@@ -842,18 +843,8 @@ function tone(item: Touch): "ok" | "warn" | "fail" | "neutral" {
 }
 
 
-export function counters(run: Run, t: T): string {
-  const parts: string[] = [];
-  const add = (
-    n: number,
-    key: "history.copied" | "history.moved" | "history.trashed" | "history.deleted" | "history.conflicts",
-  ) => {
-    if (n > 0) parts.push(t(key, { count: n }));
-  };
-  add(run.Copied, "history.copied");
-  add(run.Moved, "history.moved");
-  add(run.Trashed, run.NoTrash ? "history.deleted" : "history.trashed");
-  add(run.Conflicts, "history.conflicts");
+export function counters(run: Run, t: T, lang: string): string {
+  const parts = runFigures(run, t, lang);
   if (parts.length === 0) {
     if (isPerfectlyIdle(run.ID, run.Unchanged)) return t("history.perfectlyIdle");
     return t("preview.identical", { count: run.Unchanged });

@@ -13,14 +13,19 @@ The full notes for each release are in
 ## ✨ Added
 
 - **The whole file system of a rooted phone.** Switch on **Whole file system** under **Settings**, **Root and Shizuku**, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out, so a scan cannot run in circles. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
+- **How long runs are kept, on the General tile.** The new **History** card shows `historyKeep` in days, and the **Keep forever** switch keeps every run, as 0 days does. **Delete** beside it removes every older run at once instead of waiting for the daily trim, and the last run of every job stays.
+- **How much each run transferred.** ArrowLoop notes what the files a run copied hold together and shows it in History, on the job page, in the run window and in the run lines of the phone app, such as 2.2 GB. Runs recorded before the update get the figure from their entries the first time the new version opens the log.
 
 ## 🎨 Design
 
 - **Root and Shizuku get a card of their own.** **Settings**, **Root and Shizuku** shows how su and Shizuku answer, with the su command, **Request root**, **Ask Shizuku** and **Get Shizuku**, and holds the switches for Android/data and the whole file system. **This phone** keeps what works without either.
+- **A column for each figure of a run.** The runs in History and on a job's page have columns for copied, moved, removed, left for later, conflicts and transferred. Drag the edge of a heading to widen a column, and the browser keeps the widths and the order.
 
 ## 🐛 Fixed
 
 - **A side whose top the login may not write in.** At the root of an SFTP server, for one, ArrowLoop cannot create its .arrowloop folder, where the trash and old versions go. A run that would delete there or keep an old version now stops before it changes anything and says why, instead of leaving the files for later and failing from the second run on. The check on the job page names the trash as well, instead of calling the side read-only. If such a job may delete there outright, switch off its trash ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
+- **The run log is trimmed on the desktop, on the phone and in the container.** Only `arrowloop daemon` trimmed it as it started, and the daily trim started counting again with every saved setting. A container saved more than once a day, and a phone or laptop that was never on for a whole day, kept every record. ArrowLoop now trims as it starts and once a day after, counted from the last trim, and `-keep-history` holds for every trim of the daemon. Each job keeps its newest run however old it is, along with its newest success and its newest stopped run, so a job that has not run for months is not started again at once. A trim that leaves a quarter of the file empty gives the room back to the disk: in a test, a hundred days of runs took 5.5 MB, and the ten days kept took 0.3 MB.
+- **The hint about shared lists names the Sync tile.** With no shared list yet, the job form sent you to Settings, under Engine, and that tile is called Sync now.
 
 ## 2.9.0 - 2026-11-24
 

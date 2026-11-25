@@ -29,7 +29,8 @@ var (
 type beat struct {
 	owner string
 	// flushMu keeps a write of the runs going from crossing a record or a
-	// drop, which would leave a finished run behind as an abandoned one.
+	// drop, which would leave a finished run behind as an abandoned one. Prune
+	// holds it too.
 	flushMu sync.Mutex
 	stop    chan struct{}
 	done    chan struct{}
@@ -187,6 +188,9 @@ func (d *DB) recordOne(ctx context.Context, key string, cut int64) error {
 	if _, err := tx.ExecContext(ctx,
 		`INSERT INTO entries (run, seq, kind, side, path, note, size, code, vars)
 		 SELECT ?, seq, kind, side, path, note, size, code, vars FROM going_entries WHERE key = ?`, id, key); err != nil {
+		return err
+	}
+	if err := countBytes(ctx, tx, id); err != nil {
 		return err
 	}
 	if err := forget(ctx, tx, key); err != nil {

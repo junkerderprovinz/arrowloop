@@ -12,6 +12,7 @@ import { ViewSwitch, type LogView } from '../components/ViewSwitch'
 import { Badge } from '../lib/glimstone/Badge'
 import { Card } from '../lib/glimstone/Card'
 import { api, type HistoryShow, type Job, type Run, type Touch } from '../lib/api'
+import { bytes } from '../lib/bytes'
 import { capitalized } from '../lib/capitalized'
 import { dayTime } from '../lib/dayTime'
 import { useT, type TranslationKey } from '../lib/i18n'
@@ -54,12 +55,35 @@ export const FILE_COLUMNS: ColumnDef[] = [
   { id: 'size', width: 56, min: 48 },
   { id: 'path' },
 ]
+/** What a run did, one column per figure, for History's runs and a job's own. */
+export const RUN_FIGURES: ColumnDef[] = [
+  { id: 'copied', width: 80, min: 48 },
+  { id: 'moved', width: 80, min: 48 },
+  { id: 'removed', width: 80, min: 48 },
+  { id: 'left', width: 96, min: 48 },
+  { id: 'conflicts', width: 88, min: 48 },
+  { id: 'bytes', width: 104, min: 64 },
+]
 const RUN_COLUMNS: ColumnDef[] = [
   { id: 'job' },
   { id: 'state', width: 240, min: 96 },
   { id: 'took', width: 96, min: 64 },
+  ...RUN_FIGURES,
   { id: 'when', width: 180, min: 120 },
 ]
+
+/** The heads over RUN_FIGURES. The columns stay off narrow screens, where a row wraps. */
+export function runFigureHeads(t: ReturnType<typeof useT>['t']): Head[] {
+  const at = 'shrink-0 max-md:hidden'
+  return [
+    { id: 'copied', label: t('history.fig.copied'), className: at },
+    { id: 'moved', label: t('history.fig.moved'), className: at },
+    { id: 'removed', label: t('list.head.removed'), className: at },
+    { id: 'left', label: t('history.fig.left'), className: at },
+    { id: 'conflicts', label: t('history.fig.conflicts'), className: at },
+    { id: 'bytes', label: t('history.fig.bytes'), className: at },
+  ]
+}
 
 const SHOW_LABEL: Record<HistoryShow, TranslationKey> = {
   all: 'history.showAll',
@@ -215,6 +239,7 @@ export function History({
           },
         },
         { id: 'took', label: t('overview.duration'), className: 'shrink-0' },
+        ...runFigureHeads(t),
         {
           id: 'when',
           label: t('list.head.when'),
@@ -550,6 +575,17 @@ export function RunRow({
           {length}
         </span>
       )}
+      {columns &&
+        figures(r, lang).map(([id, value]) => (
+          <span
+            key={id}
+            data-col={id}
+            style={columns.cell(id)}
+            className="glim-num shrink-0 whitespace-nowrap text-subline text-carbon-textSub max-md:hidden"
+          >
+            {value}
+          </span>
+        ))}
       {withJob && (
         <span
           style={columns?.cell('when')}
@@ -561,4 +597,17 @@ export function RunRow({
       )}
     </li>
   )
+}
+
+/** The cells under RUN_FIGURES, in their order there. */
+function figures(r: Run, lang: string): [string, string][] {
+  const count = new Intl.NumberFormat(lang)
+  return [
+    ['copied', count.format(r.Copied)],
+    ['moved', count.format(r.Moved)],
+    ['removed', count.format(r.Trashed)],
+    ['left', count.format(r.Skipped)],
+    ['conflicts', count.format(r.Conflicts)],
+    ['bytes', bytes(r.Bytes ?? 0, lang)],
+  ]
 }

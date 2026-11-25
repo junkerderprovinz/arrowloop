@@ -37,3 +37,11 @@ describe('the files a run removed', () => {
     expect(screen.queryByText('To the trash')).toBeNull()
   })
 })
+
+describe('what a run sent', () => {
+  it('is in the run window, in the units a person reads', () => {
+    render(<RunSheet run={run({ Bytes: 2.2 * 1024 ** 3 })} onClose={() => undefined} />)
+    expect(screen.getByText('Transferred')).toBeTruthy()
+    expect(screen.getByText('2.2 GB')).toBeTruthy()
+  })
+})

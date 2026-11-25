@@ -5,6 +5,7 @@ import { FailureText } from './FailureText'
 import { IconClose, IconExport } from './glyphs'
 import { RunDetail } from './RunDetail'
 import type { Run, RunEntry } from '../lib/api'
+import { bytes } from '../lib/bytes'
 import { dayTime } from '../lib/dayTime'
 import { download } from '../lib/download'
 import { Button } from '../lib/glimstone/Button'
@@ -23,7 +24,7 @@ const NEWLINE = String.fromCharCode(10)
  * goes. Every run's window shares one size, the last one dragged to.
  */
 export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
-  const { t, locale } = useT()
+  const { t, lang, locale } = useT()
   const tick = useLiveTick(!!run.Running)
   const [entries, setEntries] = useState<RunEntry[]>([])
   const when = dayTime(run.Started, locale, (p) => t('list.when', p))
@@ -33,6 +34,7 @@ export function RunSheet({ run, onClose }: { run: Run; onClose: () => void }) {
     [t(run.NoTrash ? 'history.fig.deleted' : 'history.fig.trashed'), run.Trashed],
     [t('history.fig.conflicts'), run.Conflicts],
     [t('history.fig.left'), run.Skipped],
+    [t('history.fig.bytes'), bytes(run.Bytes ?? 0, lang)],
   ]
   const length = runLength(run, t)
   if (length) figures.unshift([t('overview.duration'), length])

@@ -56,6 +56,8 @@ type Run struct {
 	// Twice is what Err names when the run failed over files left for later
 	// twice, which goes out as part of the failure.
 	Twice *failure.Twice `json:"-"`
+	// Bytes is how much the files the run copied hold together.
+	Bytes int64
 }
 
 // Key is what the run is filed under: its job's id.
@@ -173,7 +175,8 @@ CREATE TABLE IF NOT EXISTS runs (
 	no_trash     INTEGER NOT NULL DEFAULT 0,
 	stopped      INTEGER NOT NULL DEFAULT 0,
 	twice        TEXT    NOT NULL DEFAULT '',
-	offline      INTEGER NOT NULL DEFAULT 0
+	offline      INTEGER NOT NULL DEFAULT 0,
+	bytes        INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS entries (
@@ -225,6 +228,11 @@ CREATE TABLE IF NOT EXISTS going_entries (
 	vars TEXT    NOT NULL DEFAULT '',
 	PRIMARY KEY (key, seq)
 );
+
+CREATE TABLE IF NOT EXISTS pruned (
+	id INTEGER PRIMARY KEY CHECK (id = 1),
+	at INTEGER NOT NULL
+);
 `
 
 // migrations are the ALTERs an existing database needs, since the schema
@@ -246,6 +254,19 @@ var migrations = []string{
 	`ALTER TABLE going_entries ADD COLUMN vars TEXT NOT NULL DEFAULT ''`,
 	`ALTER TABLE runs ADD COLUMN twice TEXT NOT NULL DEFAULT ''`,
 	`ALTER TABLE runs ADD COLUMN offline INTEGER NOT NULL DEFAULT 0`,
+	// Left empty by a build that did not know it, and filled from the entries
+	// by the next one that does.
+	`ALTER TABLE runs ADD COLUMN bytes INTEGER`,
+	`UPDATE runs SET bytes = ` + transferred + ` WHERE bytes IS NULL`,
+}
+
+// transferred is what the files a run copied hold together. A file that left
+// for the other side has its copy counted and its removal not.
+const transferred = `(SELECT COALESCE(SUM(size), 0) FROM entries WHERE entries.run = runs.id AND kind = 'copy')`
+
+func countBytes(ctx context.Context, tx *sql.Tx, run int64) error {
+	_, err := tx.ExecContext(ctx, `UPDATE runs SET bytes = `+transferred+` WHERE id = ?`, run)
+	return err
 }
 
 // version is the history's layout. It goes up when a newer layout would be
@@ -384,6 +405,9 @@ func (d *DB) record(ctx context.Context, r Run, entries []Entry, key string) err
 			id, i, e.Kind, e.Side, e.Path, e.Note, e.Size, e.Code, storedVars(e.Vars)); err != nil {
 			return fmt.Errorf("record entry %d for %q: %w", i, r.Job, err)
 		}
+	}
+	if err := countBytes(ctx, tx, id); err != nil {
+		return fmt.Errorf("record run for %q: %w", r.Job, err)
 	}
 	if key != "" {
 		if err := dropInterrupted(ctx, tx, r.Key(), r.Started.UnixNano()); err != nil {
@@ -585,7 +609,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 	if limit <= 0 {
 		limit = 20
 	}
-	query := `SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped, twice, offline
+	query := `SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, no_trash, stopped, twice, offline, COALESCE(bytes, 0)
 	          FROM runs`
 	args := []any{}
 	var conds []string
@@ -621,7 +645,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 		var r Run
 		var started, finished int64
 		if err := rows.Scan(&r.ID, &r.Job, &r.JobID, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.NoTrash, &r.Stopped, twiceColumn{&r.Twice}, &r.Offline); err != nil {
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.NoTrash, &r.Stopped, twiceColumn{&r.Twice}, &r.Offline, &r.Bytes); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		r.Started = time.Unix(0, started)
@@ -636,7 +660,7 @@ func (d *DB) between(ctx context.Context, job string, show Show, since, until ti
 // page through the log with the last id it saw.
 func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
 	rows, err := d.sql.QueryContext(ctx, `
-		SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, stopped, twice, offline
+		SELECT id, job, job_id, started, finished, copied, moved, trashed, conflicts, dirs_made, dirs_removed, unchanged, skipped, err, answered, stopped, twice, offline, COALESCE(bytes, 0)
 		FROM runs WHERE id > ? ORDER BY id LIMIT ?`, after, limit)
 	if err != nil {
 		return nil, fmt.Errorf("read the runs after %d: %w", after, err)
@@ -648,7 +672,7 @@ func (d *DB) After(ctx context.Context, after int64, limit int) ([]Run, error) {
 		var r Run
 		var started, finished int64
 		if err := rows.Scan(&r.ID, &r.Job, &r.JobID, &started, &finished, &r.Copied, &r.Moved, &r.Trashed,
-			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.Stopped, twiceColumn{&r.Twice}, &r.Offline); err != nil {
+			&r.Conflicts, &r.DirsMade, &r.DirsRemoved, &r.Unchanged, &r.Skipped, &r.Err, &r.Answered, &r.Stopped, twiceColumn{&r.Twice}, &r.Offline, &r.Bytes); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		r.Started = time.Unix(0, started)
@@ -671,7 +695,7 @@ type Latest struct {
 func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 	rows, err := d.sql.QueryContext(ctx, `
 		SELECT r.id, r.job, r.job_id, r.started, r.finished, r.copied, r.moved, r.trashed, r.conflicts,
-		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err, r.no_trash, r.stopped, r.twice, r.offline,
+		       r.dirs_made, r.dirs_removed, r.unchanged, r.skipped, r.err, r.no_trash, r.stopped, r.twice, r.offline, COALESCE(r.bytes, 0),
 		       (SELECT COUNT(*) FROM runs c WHERE c.job_id = r.job_id AND c.started >= ?)
 		FROM runs r
 		WHERE r.id = (SELECT m.id FROM runs m WHERE m.job_id = r.job_id ORDER BY m.started DESC LIMIT 1)
@@ -686,7 +710,7 @@ func (d *DB) Latest(ctx context.Context, since time.Time) ([]Latest, error) {
 		var l Latest
 		var started, finished int64
 		if err := rows.Scan(&l.ID, &l.Job, &l.JobID, &started, &finished, &l.Copied, &l.Moved, &l.Trashed,
-			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.NoTrash, &l.Stopped, twiceColumn{&l.Twice}, &l.Offline, &l.Since); err != nil {
+			&l.Conflicts, &l.DirsMade, &l.DirsRemoved, &l.Unchanged, &l.Skipped, &l.Err, &l.NoTrash, &l.Stopped, twiceColumn{&l.Twice}, &l.Offline, &l.Bytes, &l.Since); err != nil {
 			return nil, fmt.Errorf("scan run: %w", err)
 		}
 		l.Started = time.Unix(0, started)
@@ -717,14 +741,19 @@ func (d *DB) EachRecent(ctx context.Context, jobs []string, n int) (map[string][
 // whether it ever has. A stopped run did not finish it, nor did one the
 // network left.
 func (d *DB) LastSuccess(ctx context.Context, job string) (time.Time, bool, error) {
-	return d.lastFinished(ctx, job, `err = '' AND stopped = 0 AND offline = 0`)
+	return d.lastFinished(ctx, job, succeeded)
 }
 
 // LastStopped returns when a run of the job was last stopped, and whether one
 // ever was.
 func (d *DB) LastStopped(ctx context.Context, job string) (time.Time, bool, error) {
-	return d.lastFinished(ctx, job, `stopped = 1`)
+	return d.lastFinished(ctx, job, wasStopped)
 }
+
+const (
+	succeeded  = `err = '' AND stopped = 0 AND offline = 0`
+	wasStopped = `stopped = 1`
+)
 
 func (d *DB) lastFinished(ctx context.Context, job, where string) (time.Time, bool, error) {
 	var finished int64
@@ -791,25 +820,84 @@ func (d *DB) Named(ctx context.Context, name string) (string, bool) {
 }
 
 // Prune drops runs and openings older than the given age, so the log does
-// not grow without bound on a machine nobody looks at.
+// not grow without bound on a machine nobody looks at. Each job keeps the runs
+// its schedule is read from, however old; see kept.
 func (d *DB) Prune(ctx context.Context, keep time.Duration, now time.Time) (int64, error) {
 	if keep <= 0 {
 		return 0, nil
 	}
+	// A run that ends meanwhile waits here for its record rather than on
+	// SQLite's lock, whose five seconds a rewrite of a large file can outlast.
+	d.flushMu.Lock()
+	defer d.flushMu.Unlock()
+
 	cut := now.Add(-keep).UnixNano()
+	old := `SELECT id FROM runs WHERE started < ? AND id NOT IN (` + kept + `)`
 	// Entries go first, while their runs can still be found. SQLite does not
 	// enforce the foreign key, so orphaned entries would stay for ever.
-	if _, err := d.sql.ExecContext(ctx,
-		`DELETE FROM entries WHERE run IN (SELECT id FROM runs WHERE started < ?)`, cut); err != nil {
+	if _, err := d.sql.ExecContext(ctx, `DELETE FROM entries WHERE run IN (`+old+`)`, cut); err != nil {
 		return 0, fmt.Errorf("prune history entries: %w", err)
 	}
 	if _, err := d.sql.ExecContext(ctx, `DELETE FROM openings WHERE at < ?`, cut); err != nil {
 		return 0, fmt.Errorf("prune the openings: %w", err)
 	}
-	res, err := d.sql.ExecContext(ctx, `DELETE FROM runs WHERE started < ?`, cut)
+	res, err := d.sql.ExecContext(ctx, `DELETE FROM runs WHERE id IN (`+old+`)`, cut)
 	if err != nil {
 		return 0, fmt.Errorf("prune history: %w", err)
 	}
 	n, _ := res.RowsAffected()
+	if _, err := d.sql.ExecContext(ctx,
+		`INSERT INTO pruned (id, at) VALUES (1, ?) ON CONFLICT (id) DO UPDATE SET at = excluded.at`, now.UnixNano()); err != nil {
+		return n, fmt.Errorf("note when history was pruned: %w", err)
+	}
+	if err := d.compact(ctx); err != nil {
+		return n, fmt.Errorf("give back the space the pruned runs took: %w", err)
+	}
 	return n, nil
+}
+
+// kept is the runs a prune leaves, whatever their age: each job's newest run,
+// newest success and newest stopped run, from which the scheduler reads when
+// the job is due, whether it is backing off and what it left for later.
+var kept = strings.Join([]string{newest(`TRUE`), newest(succeeded), newest(wasStopped)}, ` UNION `)
+
+func newest(where string) string {
+	return `SELECT id FROM (SELECT id, ROW_NUMBER() OVER (PARTITION BY job_id ORDER BY started DESC) AS n
+	        FROM runs WHERE ` + where + `) WHERE n = 1`
+}
+
+// compact gives the room deleted rows leave back to the disk once it is a
+// quarter of the file. SQLite fills free pages with new rows first, so a daily
+// prune seldom gets there and the rewrite stays rare.
+func (d *DB) compact(ctx context.Context) error {
+	var pages, free int64
+	if err := d.sql.QueryRowContext(ctx, `PRAGMA page_count`).Scan(&pages); err != nil {
+		return err
+	}
+	if err := d.sql.QueryRowContext(ctx, `PRAGMA freelist_count`).Scan(&free); err != nil {
+		return err
+	}
+	if free*4 < pages {
+		return nil
+	}
+	if _, err := d.sql.ExecContext(ctx, `VACUUM`); err != nil {
+		return err
+	}
+	// The rewrite went into the write-ahead log, and the file shrinks only
+	// once that has been copied back.
+	_, err := d.sql.ExecContext(ctx, `PRAGMA wal_checkpoint(TRUNCATE)`)
+	return err
+}
+
+// LastPruned returns when Prune last ran, and whether it ever has.
+func (d *DB) LastPruned(ctx context.Context) (time.Time, bool, error) {
+	var at int64
+	err := d.sql.QueryRowContext(ctx, `SELECT at FROM pruned`).Scan(&at)
+	if err == sql.ErrNoRows {
+		return time.Time{}, false, nil
+	}
+	if err != nil {
+		return time.Time{}, false, fmt.Errorf("read when history was last pruned: %w", err)
+	}
+	return time.Unix(0, at), true, nil
 }
