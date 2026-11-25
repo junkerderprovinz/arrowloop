@@ -33,9 +33,7 @@ BUTTONS = {
     # that lists it.
     "source": "https://github.com/junkerderprovinz/arrowloop/releases/latest",
     "docs": "https://junkerderprovinz.github.io/arrowloop/",
-    # No listing yet, so the button is drawn without a link, as the App tab
-    # marks the listing "soon". The listing's address goes here once it exists.
-    "google-play": None,
+    "google-play": "https://play.google.com/store/apps/details?id=arrowloop.halleluja.design",
     "f-droid": "https://f-droid.org/packages/arrowloop.halleluja.design/",
     # arm64 only; the x86_64 APK for Chromebooks stays on the release page and
     # in the docs.
