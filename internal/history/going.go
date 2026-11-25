@@ -29,7 +29,8 @@ var (
 type beat struct {
 	owner string
 	// flushMu keeps a write of the runs going from crossing a record or a
-	// drop, which would leave a finished run behind as an abandoned one.
+	// drop, which would leave a finished run behind as an abandoned one. Prune
+	// holds it too.
 	flushMu sync.Mutex
 	stop    chan struct{}
 	done    chan struct{}

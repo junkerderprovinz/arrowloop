@@ -536,12 +536,17 @@ last succeeded rather than when it last ran; see
 [the command line](cli.md#jobs).
 
 A machine nobody looks at keeps writing records, and a watching job writes one
-per change, so the program trims the log once a day while it runs. A record is
-kept for ninety days unless `historyKeep` says otherwise, as a duration in hours
-such as `"720h"` for thirty days, since there is no unit for days. `"0"` keeps
-every record. A value that cannot be read counts as ninety days, so a typo never
-switches trimming off. `arrowloop daemon` also trims once as it starts, by the
-same value unless its `-keep-history` flag gives another.
+per change, so the program trims the log as it starts and then once a day,
+counted from the last trim, so neither a restart nor a saved setting puts it
+off. A record is kept for ninety days unless `historyKeep` says otherwise, as a
+duration in hours such as `"720h"` for thirty days, since there is no unit for
+days. `"0"` keeps every record. A value that cannot be read counts as ninety
+days, so a typo never switches trimming off. Each job keeps its newest run
+however old it is, along with its newest success and its newest stopped run,
+since its schedule is worked out from them. When a trim leaves a quarter of the
+file empty, the file is rewritten to give that room back to the disk.
+`arrowloop daemon` keeps records as long as its `-keep-history` flag says, if
+it is given one.
 
 ## Whole file
 

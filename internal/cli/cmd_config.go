@@ -132,25 +132,17 @@ func (o Options) cmdDaemon(ctx context.Context, args []string) error {
 		return err
 	}
 	defer hist.Close()
-	keep, prune := cfg.KeepHistoryFor()
-	fset.Visit(func(f *flag.Flag) {
-		if f.Name == "keep-history" {
-			keep, prune = *keepFlag, *keepFlag > 0
-		}
-	})
-	if prune {
-		if n, err := hist.Prune(ctx, keep, time.Now()); err != nil {
-			logf("could not prune the run log: %v", err)
-		} else if n > 0 {
-			logf("dropped %d run records older than %s", n, keep)
-		}
-	}
 
 	// Stopping on a signal keeps a shutdown from killing a transfer halfway.
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	runner := daemon.New(cfg, hist, logf)
+	fset.Visit(func(f *flag.Flag) {
+		if f.Name == "keep-history" {
+			runner.SetHistoryKeep(*keepFlag)
+		}
+	})
 	closeVPN, err := withVPN(runner, *configPath, logf)
 	if err != nil {
 		return err

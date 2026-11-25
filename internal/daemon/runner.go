@@ -96,6 +96,7 @@ type Runner struct {
 	slots slots
 
 	backups backupState
+	pruning pruneState
 
 	// reload carries one pending rebuild. Buffered by one and dropped when
 	// full: two edits in quick succession need one rebuild, not two.
@@ -866,6 +867,7 @@ func (r *Runner) release(key string) {
 // Runs are started under ctx and not under the round, so a reload, which
 // every save in the interface causes, lets them finish.
 func (r *Runner) Serve(ctx context.Context) error {
+	r.pruneNow(ctx, time.Now())
 	first := true
 	for {
 		round, endRound := context.WithCancel(ctx)
@@ -938,22 +940,10 @@ func (r *Runner) schedule(ctx, round context.Context) *cron.Cron {
 		// already ended the job's wait.
 		r.catchUp(ctx)
 		r.backUpIfDue(time.Now())
+		// A container stays up for months while a watching job writes a
+		// record per change.
+		r.pruneIfDue(ctx, time.Now())
 	}))
-
-	// Pruned daily, since a container stays up for months while a watching
-	// job writes a record per change.
-	if keep, on := cfg.KeepHistoryFor(); on && r.hist != nil {
-		c.Schedule(cron.Every(24*time.Hour), cron.FuncJob(func() {
-			n, err := r.hist.Prune(ctx, keep, time.Now())
-			if err != nil {
-				r.log("could not trim the run log: %v", err)
-				return
-			}
-			if n > 0 {
-				r.log("trimmed %d run records older than %s from the log", n, keep)
-			}
-		}))
-	}
 
 	sort.Strings(scheduled)
 	if len(scheduled) == 0 {

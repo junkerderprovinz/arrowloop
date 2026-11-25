@@ -73,9 +73,9 @@ protects. What the interface sets is kept in `signin.json` beside the
 configuration file.
 
 `daemon` is the same scheduler with no interface, for a machine where nobody is
-looking. It trims the run log once as it starts, keeping what `historyKeep` in
-the configuration asks for; `-keep-history` sets another age for that start,
-and `0` keeps every record.
+looking. Like `web`, it trims the run log as it starts and once a day after,
+keeping what `historyKeep` in the configuration asks for. `-keep-history` sets
+another age for as long as it runs, and `0` keeps every record.
 
 ## run-due
 
