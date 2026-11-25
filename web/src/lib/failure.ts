@@ -57,6 +57,7 @@ const SAID: Record<string, Partial<Record<Side | 'either', TranslationKey>>> = {
   vpnUnreached: { either: 'failure.vpnUnreached' },
   vpnRefused: { left: 'failure.vpnRefused.left', right: 'failure.vpnRefused.right' },
   noVpn: { either: 'failure.noVpn' },
+  trashRefused: { left: 'failure.trashRefused.left', right: 'failure.trashRefused.right' },
 }
 
 /**

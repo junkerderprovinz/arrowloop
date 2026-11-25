@@ -418,6 +418,9 @@ func RunVerified(ctx context.Context, ends Ends, db *state.DB, p *plan.Plan, opt
 	if watcher != nil {
 		watcher.Starting(t.total)
 	}
+	if err := roomToSetAside(ctx, ends, settingAside(ctx, p)); err != nil {
+		return t.res, err
+	}
 	runID := time.Now().UTC().Format(runIDLayout)
 	rec := recorder{ends: ends, db: db, window: opt.ModWindow, verify: verify, observe: t.observe}
 

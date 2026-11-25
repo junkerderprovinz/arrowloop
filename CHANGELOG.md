@@ -8,6 +8,12 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **A side whose top the login may not write in.** At the root of an SFTP server, for one, ArrowLoop cannot create its .arrowloop folder, where the trash and old versions go. A run that would delete there or keep an old version now stops before it changes anything and says why, instead of leaving the files for later and failing from the second run on. The check on the job page names the trash as well, instead of calling the side read-only. If such a job may delete there outright, switch off its trash ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
+
 ## 2.9.0 - 2026-11-24
 
 The sign-in is new, with sign-in services such as Pocket ID, sessions that last through restarts and API tokens for dashboards and scripts. The phone gets the built-in VPN, which can leave out the wifi you trust, automation apps can start a job, and targets take any name.

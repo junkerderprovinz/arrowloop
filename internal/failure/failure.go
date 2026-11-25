@@ -60,9 +60,10 @@ const (
 	VPNUnreached         = "vpnUnreached"
 	VPNRefused           = "vpnRefused"
 	NoVPN                = "noVpn"
+	TrashRefused         = "trashRefused"
 )
 
-// The sentences the engine composes itself, in internal/daemon,
+// The sentences the engine composes itself, in internal/daemon, internal/apply,
 // internal/precheck and the trash listing of internal/web. Their tests build
 // them from there, so a change to one of them fails a test instead of turning
 // its failures back into English. Each may follow a job's name or a finding's
@@ -77,6 +78,7 @@ var (
 	away   = regexp.MustCompile(`(?:^|: )the VPN did not come up, so the job's sides could not be reached: `)
 	unfit  = regexp.MustCompile(`(?:^|: )this job goes through the VPN, but one of its sides cannot: the (left|right) side: `)
 	novpn  = regexp.MustCompile(`(?:^|: )this job goes through the VPN, and ArrowLoop has no built-in VPN here`)
+	binned = regexp.MustCompile(`(?:^|: )the trash cannot be kept on the (left|right) side: `)
 )
 
 // rule is a family of messages from rclone, the network or the system, matched
@@ -162,6 +164,10 @@ func Of(text string) *Failure {
 	}
 	if novpn.MatchString(text) {
 		return &Failure{Code: NoVPN}
+	}
+	// Ahead of the rules, since the backend's reason after it is a refusal.
+	if m := binned.FindStringSubmatch(text); m != nil {
+		return &Failure{Code: TrashRefused, Params: map[string]string{"side": m[1]}}
 	}
 	if m := hook.FindStringSubmatchIndex(text); m != nil {
 		code := BeforeFailed
