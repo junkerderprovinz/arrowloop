@@ -607,6 +607,8 @@ const no: Translations = {
   'targets.drives': 'Disker',
   'targets.drivesEmpty': 'Ingen disk er meldt inn. Meld inn en, slik at en jobb finner den igjen selv om den kommer tilbake på en annen bokstav.',
   'targets.driveExplain': 'En stasjonsbokstav er ingen identitet: disken som hadde én bokstav forrige uke, kan ha en annen i dag, og den gamle tilhører kanskje allerede noe annet. Ved innmelding skrives en liten markering på selve disken, slik at en jobb følger disken og ikke bokstaven. Det samme gjelder en nettverksdeling.',
+  'targets.drivesEmptyMount': 'Ingen disk er meldt inn. Meld inn en, slik at en jobb finner den igjen selv om den monteres et annet sted.',
+  'targets.driveExplainMount': 'En disk kommer ikke alltid tilbake i samme mappe: en USB-disk som ligger i /media/usb i dag, kan neste gang bli montert i /media/usb1, og da kan det ligge en annen disk i /media/usb. Ved innmelding skrives en liten markering på selve disken, slik at en jobb finner disken uansett hvor den er montert. Det samme gjelder en montert nettverksdeling.',
   'targets.registerDrive': 'Meld inn en disk',
   'targets.driveLabel': 'Navn',
   'targets.driveLabelHint': 'Hva du kaller denne disken. Nøyaktig det ser du når den ikke er tilkoblet.',

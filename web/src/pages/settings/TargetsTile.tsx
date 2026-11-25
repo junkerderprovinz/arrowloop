@@ -34,9 +34,11 @@ export function TargetsTile({ page }: { page: ReactNode }) {
             {pinned && <Button label={t('settings.open')} labelKey="settings.open" onClick={() => navigate('/targets')} />}
           </span>
         </SettingsRow>
-        <SettingsRow label={t('targets.drives')}>
-          <Count value={count?.drives} />
-        </SettingsRow>
+        {count?.drives !== null && (
+          <SettingsRow label={t('targets.drives')}>
+            <Count value={count?.drives} />
+          </SettingsRow>
+        )}
       </Card>
       {!pinned && page}
     </>

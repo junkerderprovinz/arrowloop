@@ -607,6 +607,8 @@ const lv: Translations = {
   'targets.drives': 'Diski',
   'targets.drivesEmpty': 'Neviens disks nav reģistrēts. Reģistrējiet vienu, lai uzdevums to atrastu atkal arī tad, ja tas atgriezīsies ar citu burtu.',
   'targets.driveExplain': 'Diska burts nav identitāte: disks, kuram pagājušajā nedēļā bija viens burts, šodien var būt ar citu, un vecais tobrīd, iespējams, jau pieder kaut kam citam. Reģistrējot uz paša diska tiek ierakstīta neliela atzīme, lai uzdevums sekotu diskam, nevis burtam. Tas pats attiecas uz tīkla koplietojumu.',
+  'targets.drivesEmptyMount': 'Neviens disks nav reģistrēts. Reģistrējiet vienu, lai uzdevums to atrastu atkal arī tad, ja tas tiks pievienots citur.',
+  'targets.driveExplainMount': 'Disks ne vienmēr atgriežas tajā pašā mapē: USB disks, kas šodien ir /media/usb, nākamreiz var tikt pievienots /media/usb1, un tad /media/usb var būt cits disks. Reģistrējot uz paša diska tiek ierakstīta neliela atzīme, lai uzdevums atrastu disku, lai kur tas būtu pievienots. Tas pats attiecas uz pievienotu tīkla koplietojumu.',
   'targets.registerDrive': 'Reģistrēt disku',
   'targets.driveLabel': 'Nosaukums',
   'targets.driveLabelHint': 'Kā jūs saucat šo disku. Tieši to jūs redzēsiet, kad tas nebūs pievienots.',

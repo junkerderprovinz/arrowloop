@@ -51,7 +51,7 @@ import { optionHint } from '../lib/optionHint'
 import { optionLabel } from '../lib/optionNames'
 import { oneTimeCode, questionHint, questionLabel, typedAnswer } from '../lib/setupQuestion'
 import { suggestTargetName, TARGET_LABEL_MAX } from '../lib/targetName'
-import { setTargetCount } from '../lib/targetCount'
+import { driveCount, setTargetCount } from '../lib/targetCount'
 import { errorText } from '../lib/errorText'
 import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
 import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from '../lib/kdriveRoot'
@@ -74,6 +74,7 @@ export function Targets() {
   const [providers, setProviders] = useState<Provider[]>([])
   const [unlisted, setUnlisted] = useState<Backend[]>([])
   const [volumes, setVolumes] = useState<Volume[]>([])
+  const [drives, setDrives] = useState({ registering: false, letters: false })
   const [error, setError] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
   const [registering, setRegistering] = useState(false)
@@ -86,14 +87,15 @@ export function Targets() {
       setUnlisted(r.unlisted ?? [])
       return r.remotes.length
     })
-    const drives = api.volumes().then((v) => {
+    const registered = api.volumes().then((v) => {
       setVolumes(v.volumes)
-      return v.volumes.length
+      setDrives({ registering: v.registering, letters: v.letters })
+      return driveCount(v)
     })
-    Promise.all([targets, drives])
-      .then(([saved, registered]) => {
+    Promise.all([targets, registered])
+      .then(([saved, drives]) => {
         setError(null)
-        setTargetCount({ targets: saved, drives: registered })
+        setTargetCount({ targets: saved, drives })
       })
       .catch((e: Error) => setError(e.message))
   }, [])
@@ -135,7 +137,11 @@ export function Targets() {
           onChanged={refresh}
         />
       ))}
-      <Drives volumes={volumes} onChanged={refresh} />
+      {/* A drive registered before stays in sight where no new one can be
+          registered, so it can still be deleted. */}
+      {(drives.registering || volumes.length > 0) && (
+        <Drives volumes={volumes} letters={drives.letters} onChanged={refresh} />
+      )}
 
       {adding && (
         <AddTarget
@@ -151,6 +157,7 @@ export function Targets() {
       )}
       {registering && (
         <DriveForm
+          letters={drives.letters}
           onDone={(saved) => {
             setRegistering(false)
             if (saved) refresh()
@@ -159,12 +166,14 @@ export function Targets() {
       )}
 
       <PageActions>
-        <PageAction
-          label={t('targets.registerDrive')}
-          labelKey="targets.registerDrive"
-          glyph={<IconAdd />}
-          onClick={() => setRegistering(true)}
-        />
+        {drives.registering && (
+          <PageAction
+            label={t('targets.registerDrive')}
+            labelKey="targets.registerDrive"
+            glyph={<IconAdd />}
+            onClick={() => setRegistering(true)}
+          />
+        )}
         <span data-new="provider-names" data-new-way="connect" className="flex">
           <PageAction
             primary
@@ -1085,12 +1094,12 @@ function ShareHost({
   )
 }
 
-function Drives({ volumes, onChanged }: { volumes: Volume[]; onChanged: () => void }) {
+function Drives({ volumes, letters, onChanged }: { volumes: Volume[]; letters: boolean; onChanged: () => void }) {
   const { t } = useT()
   return (
-    <Card title={t('targets.drives')} hint={t('targets.driveExplain')} hueIndex={3}>
+    <Card title={t('targets.drives')} hint={t(letters ? 'targets.driveExplain' : 'targets.driveExplainMount')} hueIndex={3}>
       {volumes.length === 0 ? (
-        <Empty>{t('targets.drivesEmpty')}</Empty>
+        <Empty>{t(letters ? 'targets.drivesEmpty' : 'targets.drivesEmptyMount')}</Empty>
       ) : (
         <Rows className="-mx-2 flex flex-col">
           {volumes.map((v) => (
@@ -1175,7 +1184,7 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
 }
 
 /** Registering a drive, in a window: which one, and what to call it. */
-function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
+function DriveForm({ letters, onDone }: { letters: boolean; onDone: (saved: boolean) => void }) {
   const { t } = useT()
   const push = useToast()
   const [candidates, setCandidates] = useState<DriveCandidate[] | null>(null)
@@ -1218,7 +1227,7 @@ function DriveForm({ onDone }: { onDone: (saved: boolean) => void }) {
   return (
     <Dialog
       title={t('targets.registerDrive')}
-      hint={t('targets.driveExplain')}
+      hint={t(letters ? 'targets.driveExplain' : 'targets.driveExplainMount')}
       onClose={() => onDone(false)}
       closeOnBackdrop={false}
       footer={

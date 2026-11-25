@@ -607,6 +607,8 @@ const ms: Translations = {
   'targets.drives': 'Cakera',
   'targets.drivesEmpty': 'Tiada cakera didaftarkan. Daftarkan satu supaya tugas menemuinya semula walaupun ia kembali dengan huruf lain.',
   'targets.driveExplain': 'Huruf pemacu bukan satu identiti: cakera yang minggu lalu membawa satu huruf boleh membawa huruf lain hari ini, dan huruf lama itu mungkin sudah menjadi milik sesuatu yang lain. Semasa didaftarkan, satu tanda kecil ditulis pada cakera itu sendiri, supaya tugas mengikut cakera dan bukan hurufnya. Perkara yang sama berlaku untuk perkongsian rangkaian.',
+  'targets.drivesEmptyMount': 'Tiada cakera didaftarkan. Daftarkan satu supaya tugas menemuinya semula walaupun ia dilekapkan di tempat lain.',
+  'targets.driveExplainMount': 'Cakera tidak selalu kembali ke folder yang sama: cakera USB yang hari ini berada di /media/usb mungkin dilekapkan di /media/usb1 pada kali seterusnya, dan ketika itu /media/usb mungkin berisi cakera lain. Semasa didaftarkan, satu tanda kecil ditulis pada cakera itu sendiri, supaya tugas menemui cakera itu di mana sahaja ia dilekapkan. Perkara yang sama berlaku untuk perkongsian rangkaian yang dilekapkan.',
   'targets.registerDrive': 'Daftarkan cakera',
   'targets.driveLabel': 'Nama',
   'targets.driveLabelHint': 'Panggilan anda bagi cakera ini. Itulah tepatnya yang anda akan lihat ketika ia tidak dipasang.',

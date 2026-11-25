@@ -607,6 +607,8 @@ const es: Translations = {
   'targets.drives': 'Discos',
   'targets.drivesEmpty': 'No hay ningún disco registrado. Registra uno para que una tarea lo encuentre de nuevo aunque vuelva con otra letra.',
   'targets.driveExplain': 'Una letra de unidad no es una identidad: el disco que la semana pasada llevaba una letra hoy puede llevar otra, y aquella letra quizá pertenezca ya a otra cosa. Al registrarlo se escribe una pequeña marca en el propio disco, para que una tarea siga al disco y no a la letra. Lo mismo vale para un recurso compartido de red.',
+  'targets.drivesEmptyMount': 'No hay ningún disco registrado. Registra uno para que una tarea lo encuentre de nuevo aunque se monte en otro sitio.',
+  'targets.driveExplainMount': 'Un disco no siempre vuelve a la misma carpeta: un disco USB que hoy está en /media/usb puede montarse la próxima vez en /media/usb1, y para entonces en /media/usb puede haber otro disco. Al registrarlo se escribe una pequeña marca en el propio disco, para que una tarea encuentre el disco esté donde esté montado. Lo mismo vale para un recurso compartido de red montado.',
   'targets.registerDrive': 'Registrar un disco',
   'targets.driveLabel': 'Nombre',
   'targets.driveLabelHint': 'Como llamas a este disco. Es exactamente lo que verás cuando no esté conectado.',

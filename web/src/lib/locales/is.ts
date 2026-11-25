@@ -607,6 +607,8 @@ const is: Translations = {
   'targets.drives': 'Diskar',
   'targets.drivesEmpty': 'Enginn diskur er skráður. Skráðu einn svo verk finni hann aftur þótt hann komi til baka undir öðrum bókstaf.',
   'targets.driveExplain': 'Drifbókstafur er ekki auðkenni: diskurinn sem bar einn bókstaf í síðustu viku getur borið annan í dag, og sá gamli tilheyrir kannski þá einhverju allt öðru. Við skráningu er lítið merki skrifað á diskinn sjálfan, svo verkið fylgi disknum en ekki bókstafnum. Sama gildir um netsameign.',
+  'targets.drivesEmptyMount': 'Enginn diskur er skráður. Skráðu einn svo verk finni hann aftur þótt hann sé tengdur annars staðar.',
+  'targets.driveExplainMount': 'Diskur kemur ekki alltaf aftur í sömu möppu: USB-diskur sem er í /media/usb í dag getur næst verið tengdur í /media/usb1, og þá getur annar diskur verið kominn í /media/usb. Við skráningu er lítið merki skrifað á diskinn sjálfan, svo verkið finni diskinn hvar sem hann er tengdur. Sama gildir um tengda netsameign.',
   'targets.registerDrive': 'Skrá disk',
   'targets.driveLabel': 'Heiti',
   'targets.driveLabelHint': 'Hvað þú kallar þennan disk. Nákvæmlega það sérðu þegar hann er ekki tengdur.',

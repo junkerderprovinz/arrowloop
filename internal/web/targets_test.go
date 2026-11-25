@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -21,6 +22,7 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/failure"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
+	"github.com/junkerderprovinz/arrowloop/internal/web"
 )
 
 type volumeList struct {
@@ -65,6 +67,10 @@ func TestMarkingADriveThroughTheScreen(t *testing.T) {
 	}
 
 	// Unplugged: still listed, still named, no longer attached.
+	unplugged := filepath.Join(t.TempDir(), "unplugged")
+	if err := os.Rename(drive, unplugged); err != nil {
+		t.Fatalf("unplug: %v", err)
+	}
 	volume.Candidates = func() []string { return nil }
 	h.get(t, "/api/volumes", &list)
 	if len(list.Volumes) != 1 {
@@ -92,8 +98,37 @@ func TestMarkingADriveThroughTheScreen(t *testing.T) {
 		t.Errorf("a forgotten drive is still listed: %+v", list.Volumes)
 	}
 	// The marker stays on the disk, so plugging it back in brings it back.
-	if _, err := os.Stat(filepath.Join(drive, ".arrowloop", "volume.json")); err != nil {
+	if _, err := os.Stat(filepath.Join(unplugged, ".arrowloop", "volume.json")); err != nil {
 		t.Errorf("forgetting a drive deleted the marker on it: %v", err)
+	}
+}
+
+// Inside a container every folder is bound in at a path its owner chose, so
+// there is no drive to follow and registering one is not offered.
+func TestAContainerOffersNoDriveToRegister(t *testing.T) {
+	for deployment, want := range map[string]bool{"container": false, "server": true, "desktop": true} {
+		h := newHarness(t)
+		srv := httptest.NewServer((&web.Server{History: h.history, Runner: h.runner, Deployment: deployment}).Handler())
+		t.Cleanup(srv.Close)
+		resp, err := srv.Client().Get(srv.URL + "/api/volumes")
+		if err != nil {
+			t.Fatalf("GET: %v", err)
+		}
+		var got struct {
+			Registering bool `json:"registering"`
+			Letters     bool `json:"letters"`
+		}
+		err = json.NewDecoder(resp.Body).Decode(&got)
+		resp.Body.Close()
+		if err != nil {
+			t.Fatalf("decode: %v", err)
+		}
+		if got.Registering != want {
+			t.Errorf("%s: registering = %v, want %v", deployment, got.Registering, want)
+		}
+		if got.Letters != (runtime.GOOS == "windows") {
+			t.Errorf("%s: letters = %v on %s", deployment, got.Letters, runtime.GOOS)
+		}
 	}
 }
 

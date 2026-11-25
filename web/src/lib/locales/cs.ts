@@ -607,6 +607,8 @@ const cs: Translations = {
   'targets.drives': 'Disky',
   'targets.drivesEmpty': 'Není zaregistrován žádný disk. Zaregistrujte jeden, aby ho úloha našla i tehdy, když se vrátí pod jiným písmenem.',
   'targets.driveExplain': 'Písmeno jednotky není totožnost: disk, který měl minulý týden jedno písmeno, může mít dnes jiné, a to původní mezitím může patřit něčemu jinému. Registrace zapíše na samotný disk malou značku, aby úloha sledovala disk, a ne písmeno. Totéž platí pro síťové sdílení.',
+  'targets.drivesEmptyMount': 'Není zaregistrován žádný disk. Zaregistrujte jeden, aby ho úloha našla i tehdy, když bude připojen jinde.',
+  'targets.driveExplainMount': 'Disk se nevrací vždy do stejné složky: USB disk, který je dnes v /media/usb, může být příště připojen do /media/usb1 a v /media/usb pak může být jiný disk. Registrace zapíše na samotný disk malou značku, aby úloha našla disk, ať je připojen kdekoli. Totéž platí pro připojené síťové sdílení.',
   'targets.registerDrive': 'Zaregistrovat disk',
   'targets.driveLabel': 'Název',
   'targets.driveLabelHint': 'Jak tomuto disku říkáte. Přesně to uvidíte, když nebude připojen.',

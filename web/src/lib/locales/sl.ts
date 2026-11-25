@@ -607,6 +607,8 @@ const sl: Translations = {
   'targets.drives': 'Diski',
   'targets.drivesEmpty': 'Noben disk ni prijavljen. Prijavite enega, da ga opravilo znova najde, tudi če se vrne z drugo črko.',
   'targets.driveExplain': 'Črka pogona ni istovetnost: disk, ki je imel prejšnji teden eno črko, ima danes lahko drugo, stara pa medtem morda pripada nečemu drugemu. Ob prijavi se na sam disk zapiše majhna oznaka, da opravilo sledi disku in ne črki. Isto velja za omrežno skupno rabo.',
+  'targets.drivesEmptyMount': 'Noben disk ni prijavljen. Prijavite enega, da ga opravilo znova najde, tudi če je priklopljen drugam.',
+  'targets.driveExplainMount': 'Disk se ne vrne vedno v isto mapo: disk USB, ki je danes v /media/usb, je lahko naslednjič priklopljen v /media/usb1, v /media/usb pa je takrat morda drug disk. Ob prijavi se na sam disk zapiše majhna oznaka, da opravilo najde disk, kamorkoli je priklopljen. Isto velja za priklopljeno omrežno skupno rabo.',
   'targets.registerDrive': 'Prijavi disk',
   'targets.driveLabel': 'Ime',
   'targets.driveLabelHint': 'Kako imenujete ta disk. Prav to boste videli, ko ne bo priklopljen.',

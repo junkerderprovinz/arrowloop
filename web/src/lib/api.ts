@@ -1202,7 +1202,12 @@ export const api = {
       body: JSON.stringify(settings),
     }),
 
-  volumes: () => request<{ volumes: Volume[] }>('/api/volumes'),
+  /**
+   * The registered drives. `registering` says whether a drive can be
+   * registered here at all, which a container cannot, and `letters` whether
+   * the system names its drives by letter rather than by folder.
+   */
+  volumes: () => request<{ volumes: Volume[]; registering: boolean; letters: boolean }>('/api/volumes'),
 
   volumeCandidates: () =>
     request<{ candidates: DriveCandidate[] }>('/api/volumes/candidates'),

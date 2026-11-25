@@ -607,6 +607,8 @@ const et: Translations = {
   'targets.drives': 'Kettad',
   'targets.drivesEmpty': 'Ühtegi ketast pole registreeritud. Registreerige üks, et töö leiaks selle uuesti ka siis, kui see naaseb teise tähega.',
   'targets.driveExplain': 'Kettatäht ei ole identiteet: ketas, millel eelmisel nädalal oli üks täht, võib täna kanda teist, ja vana täht võib selleks ajaks kuuluda hoopis millelegi muule. Registreerimisel kirjutatakse kettale endale väike märgis, et töö järgiks ketast, mitte tähte. Sama kehtib võrgu jagatud kausta kohta.',
+  'targets.drivesEmptyMount': 'Ühtegi ketast pole registreeritud. Registreerige üks, et töö leiaks selle uuesti ka siis, kui see ühendatakse mujale.',
+  'targets.driveExplainMount': 'Ketas ei naase alati samasse kausta: USB-ketas, mis on täna kaustas /media/usb, võidakse järgmisel korral ühendada kausta /media/usb1, ja kaustas /media/usb võib siis olla hoopis teine ketas. Registreerimisel kirjutatakse kettale endale väike märgis, et töö leiaks ketta, kuhu iganes see on ühendatud. Sama kehtib ühendatud võrgu jagatud kausta kohta.',
   'targets.registerDrive': 'Registreeri ketas',
   'targets.driveLabel': 'Nimi',
   'targets.driveLabelHint': 'Kuidas te seda ketast nimetate. Just seda näete siis, kui see pole ühendatud.',

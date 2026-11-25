@@ -96,11 +96,17 @@ func driveJob(t *testing.T, left, extra string) *onDrive {
 	return d
 }
 
+// plug attaches the drive or pulls it out. Pulled out, its mount point stays
+// but no longer holds the marker. Doing either twice changes nothing.
 func (d *onDrive) plug(in bool) {
+	marker := filepath.Join(d.drive, ".arrowloop")
+	away := d.drive + "-unplugged"
 	if in {
+		os.Rename(away, marker)
 		volume.Candidates = func() []string { return []string{d.drive} }
 		return
 	}
+	os.Rename(marker, away)
 	volume.Candidates = func() []string { return nil }
 }
 

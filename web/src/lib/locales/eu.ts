@@ -607,6 +607,8 @@ const eu: Translations = {
   'targets.drives': 'Diskoak',
   'targets.drivesEmpty': 'Ez dago diskorik erregistratuta. Erregistratu bat, lan batek berriz aurki dezan beste hizki batekin itzultzen bada ere.',
   'targets.driveExplain': 'Unitate-hizkia ez da nortasuna: joan den astean hizki bat zeukan diskoak beste bat izan dezake gaur, eta zaharra ordurako beste zerbaiti dagokio agian. Erregistratzean marka txiki bat idazten da diskoan bertan, lanak hizkiari jarraitu beharrean diskoari jarraitzeko. Gauza bera balio du sareko partekatze baterako.',
+  'targets.drivesEmptyMount': 'Ez dago diskorik erregistratuta. Erregistratu bat, lan batek berriz aurki dezan beste nonbait muntatzen bada ere.',
+  'targets.driveExplainMount': 'Disko bat ez da beti karpeta berera itzultzen: gaur /media/usb karpetan dagoen USB disko bat hurrengoan /media/usb1 karpetan munta daiteke, eta ordurako beste disko bat egon daiteke /media/usb karpetan. Erregistratzean marka txiki bat idazten da diskoan bertan, lanak diskoa aurki dezan, edonon muntatuta dagoela ere. Gauza bera balio du muntatutako sareko partekatze baterako.',
   'targets.registerDrive': 'Erregistratu disko bat',
   'targets.driveLabel': 'Izena',
   'targets.driveLabelHint': 'Disko honi ematen diozun izena. Hori bera ikusiko duzu konektatuta ez dagoenean.',

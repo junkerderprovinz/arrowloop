@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -142,7 +143,7 @@ var Candidates = platformCandidates
 func Attached() []Volume {
 	var out []Volume
 	seen := map[string]bool{}
-	for _, mount := range Candidates() {
+	for _, mount := range places() {
 		m, err := readMarker(mount)
 		if err != nil || seen[m.ID] {
 			continue
@@ -153,6 +154,26 @@ func Attached() []Volume {
 		out = append(out, v)
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Label < out[j].Label })
+	return out
+}
+
+// places lists where Attached looks: the candidates first, then where each
+// known volume was last seen. A drive registered on a folder that is no longer
+// offered is still found there, and the marker still decides what it is.
+func places() []string {
+	out := Candidates()
+	// Every drive letter is a candidate on Windows already, and reading one the
+	// scan left out, such as a card reader without a card, opens an error box.
+	if runtime.GOOS == "windows" {
+		return out
+	}
+	registryMu.Lock()
+	defer registryMu.Unlock()
+	for _, k := range readRegistry() {
+		if k.Mount != "" {
+			out = append(out, k.Mount)
+		}
+	}
 	return out
 }
 

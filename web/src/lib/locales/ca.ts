@@ -607,6 +607,8 @@ const ca: Translations = {
   'targets.drives': 'Discs',
   'targets.drivesEmpty': 'No hi ha cap disc registrat. Registreu-ne un perquè una tasca el torni a trobar encara que torni amb una altra lletra.',
   'targets.driveExplain': 'Una lletra d\'unitat no és una identitat: el disc que la setmana passada duia una lletra avui en pot dur una altra, i l\'antiga potser ja pertany a una altra cosa. En registrar-lo s\'escriu una petita marca al disc mateix, de manera que una tasca segueixi el disc i no la lletra. El mateix val per a una compartició de xarxa.',
+  'targets.drivesEmptyMount': 'No hi ha cap disc registrat. Registreu-ne un perquè una tasca el torni a trobar encara que es munti en un altre lloc.',
+  'targets.driveExplainMount': 'Un disc no sempre torna a la mateixa carpeta: un disc USB que avui és a /media/usb la propera vegada es pot muntar a /media/usb1, i llavors a /media/usb potser hi ha un altre disc. En registrar-lo s\'escriu una petita marca al disc mateix, de manera que una tasca trobi el disc allà on estigui muntat. El mateix val per a una compartició de xarxa muntada.',
   'targets.registerDrive': 'Registra un disc',
   'targets.driveLabel': 'Nom',
   'targets.driveLabelHint': 'Com anomeneu aquest disc. Exactament això és el que veureu quan no estigui connectat.',

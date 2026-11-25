@@ -607,6 +607,8 @@ const fr: Translations = {
   'targets.drives': 'Disques',
   'targets.drivesEmpty': 'Aucun disque enregistré. Enregistrez-en un pour qu\'une tâche le retrouve même s\'il revient sous une autre lettre.',
   'targets.driveExplain': 'Une lettre de lecteur n\'est pas une identité : le disque qui portait une lettre la semaine dernière peut en porter une autre aujourd\'hui, et l\'ancienne appartient peut-être déjà à autre chose. L\'enregistrement écrit un petit marqueur sur le disque lui-même, pour qu\'une tâche suive le disque et non la lettre. Cela vaut aussi pour un partage réseau.',
+  'targets.drivesEmptyMount': 'Aucun disque enregistré. Enregistrez-en un pour qu\'une tâche le retrouve même s\'il est monté ailleurs.',
+  'targets.driveExplainMount': 'Un disque ne revient pas toujours dans le même dossier : un disque USB monté aujourd\'hui sur /media/usb peut l\'être la prochaine fois sur /media/usb1, et /media/usb contient peut-être alors un autre disque. L\'enregistrement écrit un petit marqueur sur le disque lui-même, pour qu\'une tâche retrouve le disque où qu\'il soit monté. Cela vaut aussi pour un partage réseau monté.',
   'targets.registerDrive': 'Enregistrer un disque',
   'targets.driveLabel': 'Nom',
   'targets.driveLabelHint': 'Le nom que vous donnez à ce disque. C\'est exactement ce que vous verrez quand il ne sera pas branché.',

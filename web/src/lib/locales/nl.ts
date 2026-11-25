@@ -607,6 +607,8 @@ const nl: Translations = {
   'targets.drives': 'Schijven',
   'targets.drivesEmpty': 'Er is geen schijf aangemeld. Meld er een aan zodat een taak hem terugvindt, ook als hij op een andere letter terugkomt.',
   'targets.driveExplain': 'Een stationsletter is geen identiteit: de schijf die vorige week een letter had kan er vandaag een andere hebben, en die oude hoort dan misschien al bij iets anders. Bij het aanmelden wordt een klein merkteken op de schijf zelf geschreven, zodat een taak de schijf volgt en niet de letter. Voor een netwerkshare geldt hetzelfde.',
+  'targets.drivesEmptyMount': 'Er is geen schijf aangemeld. Meld er een aan zodat een taak hem terugvindt, ook als hij ergens anders wordt gekoppeld.',
+  'targets.driveExplainMount': 'Een schijf komt niet altijd terug in dezelfde map: een USB-schijf die vandaag op /media/usb staat, kan de volgende keer op /media/usb1 worden gekoppeld, en op /media/usb staat dan misschien een andere schijf. Bij het aanmelden wordt een klein merkteken op de schijf zelf geschreven, zodat een taak de schijf vindt, waar hij ook is gekoppeld. Voor een gekoppelde netwerkshare geldt hetzelfde.',
   'targets.registerDrive': 'Een schijf aanmelden',
   'targets.driveLabel': 'Naam',
   'targets.driveLabelHint': 'Hoe je deze schijf noemt. Precies dat zie je wanneer hij niet is aangesloten.',

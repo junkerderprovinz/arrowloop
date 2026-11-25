@@ -607,6 +607,8 @@ const vi: Translations = {
   'targets.drives': 'Ổ đĩa',
   'targets.drivesEmpty': 'Chưa đăng ký ổ đĩa nào. Hãy đăng ký một cái để công việc tìm lại được nó ngay cả khi nó quay lại với ký tự khác.',
   'targets.driveExplain': 'Ký tự ổ đĩa không phải là danh tính: chiếc đĩa tuần trước mang một ký tự hôm nay có thể mang ký tự khác, còn ký tự cũ khi đó có khi đã thuộc về thứ khác. Khi đăng ký, một dấu nhỏ được ghi lên chính chiếc đĩa, để công việc bám theo đĩa chứ không bám theo ký tự. Với thư mục chia sẻ trên mạng cũng vậy.',
+  'targets.drivesEmptyMount': 'Chưa đăng ký ổ đĩa nào. Hãy đăng ký một cái để công việc tìm lại được nó ngay cả khi nó được gắn ở chỗ khác.',
+  'targets.driveExplainMount': 'Ổ đĩa không phải lúc nào cũng quay lại cùng một thư mục: ổ USB hôm nay ở /media/usb lần sau có thể được gắn vào /media/usb1, và khi đó /media/usb có thể đã chứa một ổ đĩa khác. Khi đăng ký, một dấu nhỏ được ghi lên chính chiếc đĩa, để công việc tìm thấy đĩa dù nó được gắn ở đâu. Với thư mục chia sẻ trên mạng được gắn vào cũng vậy.',
   'targets.registerDrive': 'Đăng ký một ổ đĩa',
   'targets.driveLabel': 'Tên',
   'targets.driveLabelHint': 'Cách bạn gọi chiếc đĩa này. Đó chính là thứ bạn thấy khi nó chưa được gắn vào.',

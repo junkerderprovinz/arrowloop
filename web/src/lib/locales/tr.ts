@@ -607,6 +607,8 @@ const tr: Translations = {
   'targets.drives': 'Diskler',
   'targets.drivesEmpty': 'Kaydedilmiş bir disk yok. Bir tane kaydet ki bir iş, disk başka bir harfle dönse bile onu yeniden bulsun.',
   'targets.driveExplain': 'Sürücü harfi bir kimlik değildir: geçen hafta bir harfi olan disk bugün başka bir harf taşıyabilir ve eski harf o sırada bambaşka bir şeye ait olabilir. Kayıt sırasında diskin kendisine küçük bir işaret yazılır, böylece iş harfi değil diski izler. Aynısı bir ağ paylaşımı için de geçerlidir.',
+  'targets.drivesEmptyMount': 'Kaydedilmiş bir disk yok. Bir tane kaydet ki bir iş, disk başka bir yere bağlansa bile onu yeniden bulsun.',
+  'targets.driveExplainMount': 'Bir disk her zaman aynı klasöre geri gelmez: bugün /media/usb konumundaki bir USB disk bir dahaki sefere /media/usb1 konumuna bağlanabilir ve o zamana kadar /media/usb konumunda başka bir disk olabilir. Kayıt sırasında diskin kendisine küçük bir işaret yazılır, böylece iş diski nereye bağlanmış olursa olsun bulur. Aynısı bağlanmış bir ağ paylaşımı için de geçerlidir.',
   'targets.registerDrive': 'Disk kaydet',
   'targets.driveLabel': 'Ad',
   'targets.driveLabelHint': 'Bu diske verdiğin ad. Disk takılı değilken tam olarak bunu görürsün.',

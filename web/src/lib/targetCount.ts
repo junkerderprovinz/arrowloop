@@ -8,7 +8,7 @@ import { api } from './api'
 
 export interface TargetCount {
   targets: number
-  drives: number
+  drives: number | null
 }
 
 let current: TargetCount | null = null
@@ -17,6 +17,11 @@ const listeners = new Set<() => void>()
 function subscribe(listener: () => void) {
   listeners.add(listener)
   return () => listeners.delete(listener)
+}
+
+/** How many drives are registered, or null where none can be and none was. */
+export function driveCount(v: { volumes: unknown[]; registering: boolean }): number | null {
+  return v.registering || v.volumes.length > 0 ? v.volumes.length : null
 }
 
 export function setTargetCount(next: TargetCount) {
@@ -32,7 +37,7 @@ export function setTargetCount(next: TargetCount) {
 export function useTargetCount(): TargetCount | null {
   useEffect(() => {
     Promise.all([api.remotes(), api.volumes()])
-      .then(([r, v]) => setTargetCount({ targets: r.remotes.length, drives: v.volumes.length }))
+      .then(([r, v]) => setTargetCount({ targets: r.remotes.length, drives: driveCount(v) }))
       .catch(() => {})
   }, [])
   return useSyncExternalStore(subscribe, () => current)

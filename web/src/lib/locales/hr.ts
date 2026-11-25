@@ -607,6 +607,8 @@ const hr: Translations = {
   'targets.drives': 'Diskovi',
   'targets.drivesEmpty': 'Nijedan disk nije prijavljen. Prijavite jedan kako bi ga zadatak ponovno našao i ako se vrati s drugim slovom.',
   'targets.driveExplain': 'Slovo pogona nije identitet: disk koji je prošli tjedan imao jedno slovo danas može imati drugo, a ono staro dotad možda pripada nečemu drugom. Pri prijavi se na sam disk upisuje mala oznaka kako bi zadatak slijedio disk, a ne slovo. Isto vrijedi za mrežno dijeljenje.',
+  'targets.drivesEmptyMount': 'Nijedan disk nije prijavljen. Prijavite jedan kako bi ga zadatak ponovno našao i ako se montira negdje drugdje.',
+  'targets.driveExplainMount': 'Disk se ne vraća uvijek u istu mapu: USB disk koji je danas u /media/usb idući put može biti montiran u /media/usb1, a u /media/usb tada može biti neki drugi disk. Pri prijavi se na sam disk upisuje mala oznaka kako bi zadatak pronašao disk, gdje god bio montiran. Isto vrijedi za montirano mrežno dijeljenje.',
   'targets.registerDrive': 'Prijavi disk',
   'targets.driveLabel': 'Naziv',
   'targets.driveLabelHint': 'Kako zovete ovaj disk. Upravo to vidjet ćete kad ne bude priključen.',
