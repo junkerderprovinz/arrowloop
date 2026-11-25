@@ -263,6 +263,16 @@ export type Plan = {
   young?: number
 }
 
+/** One error from outside a run's files, with its secrets already left out by the engine. */
+export type SystemLine = {
+  ID: number
+  /** The last time it came, for a line that came several times in a row. */
+  At: string
+  Source: 'rclone' | 'connection' | 'integration'
+  Text: string
+  Count: number
+}
+
 export type Run = {
   /** The row's own id, which is how its per-file entries are asked for. */
   ID: number
@@ -1005,6 +1015,9 @@ export const api = {
 
   /** Deletes the runs older than historyKeep, apart from the ones each job's schedule is read from. */
   pruneHistory: () => post<{ runs: number }>('/api/history/prune', {}),
+
+  /** The newest lines of the system log, newest first. */
+  systemLog: () => request<SystemLine[]>('/api/system-log'),
 
   /** Save the settings. The server merges, so a key this build does not send stays. */
   saveSettings: (settings: Settings) =>

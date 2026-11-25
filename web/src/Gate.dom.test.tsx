@@ -26,6 +26,7 @@ vi.mock('./lib/api', async (actual) => ({
     remotes: () => Promise.resolve({ remotes: [], backends: [], providers: [], unlisted: [] }),
     instances: () => Promise.resolve([]),
     autoBackups: () => Promise.resolve({ on: false, folder: '', files: [], last: null }),
+    systemLog: () => Promise.resolve([]),
     watch: (_: (ev: RunEvent) => void) => () => undefined,
   },
 }))

@@ -66,6 +66,7 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
         { key: 'history.deleteOld', hint: 'history.deleteOldHint' },
       ],
     },
+    { title: 'systemLog.title', hint: 'systemLog.hint', rows: [] },
   ],
   look: [
     {

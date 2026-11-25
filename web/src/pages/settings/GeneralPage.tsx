@@ -9,11 +9,13 @@ import { BackupCard } from './BackupCard'
 import { Reading, useEngineSettings } from './engineSettings'
 import { HistoryCard } from './HistoryCard'
 import { SettingsRow } from './rows'
+import { SystemLogCard } from './SystemLogCard'
 
 /**
  * What concerns the app as a whole: this computer's window and start where
  * there is a desktop app, the settings backups, how hard the engine may work
- * on this machine and how long its history keeps a run.
+ * on this machine, how long its history keeps a run and what went wrong
+ * outside the runs.
  */
 export function GeneralPage({
   window: windowSettings,
@@ -65,6 +67,7 @@ export function GeneralPage({
       <AutoBackupCard hueIndex={windowSettings ? 2 : 1} />
       <WorkloadCard hueIndex={windowSettings ? 3 : 2} />
       <HistoryCard hueIndex={windowSettings ? 4 : 3} />
+      <SystemLogCard hueIndex={windowSettings ? 5 : 4} />
     </Stack>
   )
 }
