@@ -296,6 +296,24 @@ jobs:
             ./gradlew bundleRelease -ParrowloopBundleAbis=arm64-v8a,x86_64 -PreactNativeArchitectures=arm64-v8a,x86_64 --no-daemon
           fi
 
+      # Play hides the app from every device that lacks a required feature, and
+      # a permission quietly implies one: ACCESS_WIFI_STATE needs Wi-Fi,
+      # ACCESS_FINE_LOCATION a location provider. faketouch is the default
+      # every app requires.
+      - name: The app requires no hardware but a touchscreen
+        working-directory: mobile/android
+        run: |
+          set -eu
+          aapt2=$(ls -d "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+          for apk in app/build/outputs/apk/release/*.apk; do
+            required=$("$aapt2" dump badging "$apk" | sed -n "s/^ *uses-feature: name='\([^']*\)'.*/\1/p" | sort -u | xargs)
+            echo "$apk requires: $required"
+            if [ "$required" != "android.hardware.faketouch" ]; then
+              echo "::error::$apk requires $required. Declare the new ones with android:required=\"false\" in mobile/plugins/withEngine.js, or Play drops every device without them."
+              exit 1
+            fi
+          done
+
       # mobile/native/test, which withEngine.js copies into the generated
       # project. Only the app's, since the libraries bring test sources of
       # their own, and after the build, so its Kotlin is compiled once.
