@@ -14,16 +14,25 @@ import (
 	"github.com/junkerderprovinz/arrowloop/internal/history"
 )
 
-// store keeps what it is given, and can hold the first write until let go,
-// as a disk that is slow to answer would.
+// store keeps what it is given, and can hold every write until let go, as a
+// disk that is slow to answer would. writing hears of each write as it starts.
 type store struct {
-	mu    sync.Mutex
-	lines []history.SystemLine
-	hold  chan struct{}
+	mu      sync.Mutex
+	lines   []history.SystemLine
+	hold    chan struct{}
+	writing chan struct{}
+}
+
+func holding() *store {
+	return &store{hold: make(chan struct{}), writing: make(chan struct{}, 1)}
 }
 
 func (s *store) AddSystemLog(_ context.Context, lines []history.SystemLine) error {
 	if s.hold != nil {
+		select {
+		case s.writing <- struct{}{}:
+		default:
+		}
 		<-s.hold
 	}
 	s.mu.Lock()
@@ -84,9 +93,10 @@ func TestALongErrorIsCut(t *testing.T) {
 // disk that answers slowly meanwhile must not let the waiting lines grow
 // without end.
 func TestABurstWaitsInABoundedQueue(t *testing.T) {
-	s := &store{hold: make(chan struct{})}
+	s := holding()
 	l := New(s)
 	l.Note(Rclone, "first")
+	<-s.writing
 	for i := range 3 * history.SystemLogKeep {
 		l.Note(Rclone, "Failed to copy file %d", i)
 	}
@@ -94,8 +104,8 @@ func TestABurstWaitsInABoundedQueue(t *testing.T) {
 	l.Close()
 
 	got := s.got()
-	if len(got) > history.SystemLogKeep+1 {
-		t.Fatalf("stored %d lines, want at most %d", len(got), history.SystemLogKeep+1)
+	if len(got) != history.SystemLogKeep+1 {
+		t.Fatalf("stored %d lines, want the first and the newest %d", len(got), history.SystemLogKeep)
 	}
 	if last := got[len(got)-1].Text; last != fmt.Sprintf("Failed to copy file %d", 3*history.SystemLogKeep-1) {
 		t.Errorf("the newest line stored is %q, want the newest one noted", last)
@@ -103,9 +113,10 @@ func TestABurstWaitsInABoundedQueue(t *testing.T) {
 }
 
 func TestTheSameErrorInARowIsCounted(t *testing.T) {
-	s := &store{hold: make(chan struct{})}
+	s := holding()
 	l := New(s)
 	l.Note(Connection, "first")
+	<-s.writing
 	for range 5 {
 		l.Note(Connection, "nas: no route to host")
 	}
