@@ -8,6 +8,13 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## Unreleased
+
+## 🐛 Fixed
+
+- **The run log is trimmed on the desktop, on the phone and in the container.** Only `arrowloop daemon` trimmed it as it started, and the daily trim started counting again with every saved setting. A container saved more than once a day, and a phone or laptop that was never on for a whole day, kept every record. ArrowLoop now trims as it starts and once a day after, counted from the last trim, and `-keep-history` holds for every trim of the daemon. Each job keeps its newest run however old it is, along with its newest success and its newest stopped run, so a job that has not run for months is not started again at once. A trim that leaves a quarter of the file empty gives the room back to the disk: in a test, a hundred days of runs took 5.5 MB, and the ten days kept took 0.3 MB.
+- **The hint about shared lists names the Sync tile.** With no shared list yet, the job form sent you to Settings, under Engine, and that tile is called Sync now.
+
 ## 2.9.0 - 2026-11-24
 
 The sign-in is new, with sign-in services such as Pocket ID, sessions that last through restarts and API tokens for dashboards and scripts. The phone gets the built-in VPN, which can leave out the wifi you trust, automation apps can start a job, and targets take any name.
