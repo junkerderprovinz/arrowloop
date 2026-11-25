@@ -223,6 +223,16 @@ export interface Run {
   Bytes?: number;
 }
 
+/** One error from outside a run's files, with its secrets already left out by the engine. */
+export interface SystemLine {
+  ID: number;
+  /** The last time it came, for a line that came several times in a row. */
+  At: string;
+  Source: "rclone" | "connection" | "integration";
+  Text: string;
+  Count: number;
+}
+
 /**
  * One path a run touched. Capitalised, since the engine sends this struct
  * without json tags.
@@ -632,6 +642,12 @@ export const api = {
 
   /** Counts what one run did; `runEntries` returns only a page. */
   runSummary: (id: number) => call<Tally>(`/api/history/${id}/summary`),
+
+  /** Deletes the runs older than historyKeep, apart from each job's last run. */
+  pruneHistory: () => call<{ runs: number }>("/api/history/prune", { method: "POST", body: "{}" }),
+
+  /** The newest lines of the system log, newest first. */
+  systemLog: (limit = 100) => call<SystemLine[]>(`/api/system-log?limit=${limit}`),
 
   /** Every file the engine has touched, newest first, filtered by the engine. */
   log: (q: { job?: string; contains?: string; kinds?: string[]; limit?: number } = {}) => {

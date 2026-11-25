@@ -15,6 +15,8 @@ import {
 import Constants from "expo-constants";
 import { api } from "../api";
 import { AutoBackupSection } from "../autoBackup";
+import { HistorySection } from "../historySection";
+import { SystemLogSection } from "../systemLogSection";
 import { IntegrationsSection } from "../vpnSection";
 import { rootActions, rootStatus, shizukuStatus, switchesHeld } from "../rootCard";
 import {
@@ -1022,6 +1024,14 @@ export function Settings() {
 
       <OnTile section="autoBackup">
         <AutoBackupSection hue={11} />
+      </OnTile>
+
+      <OnTile section="history">
+        <HistorySection hue={12} />
+      </OnTile>
+
+      <OnTile section="systemLog">
+        <SystemLogSection hue={13} />
       </OnTile>
 
       {/* The forms of ArrowLoop a phone is not, in the README's order: the

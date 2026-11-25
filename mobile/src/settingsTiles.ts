@@ -48,6 +48,8 @@ export type SectionId =
   | "engine"
   | "backup"
   | "autoBackup"
+  | "history"
+  | "systemLog"
   | "server"
   | "desktop"
   | "version"
@@ -73,6 +75,8 @@ export const SECTION_TILE: Record<SectionId, TileId> = {
   engine: "general",
   backup: "general",
   autoBackup: "general",
+  history: "general",
+  systemLog: "general",
   server: "apps",
   desktop: "apps",
   version: "info",
