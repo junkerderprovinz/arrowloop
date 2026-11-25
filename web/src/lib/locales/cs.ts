@@ -553,7 +553,7 @@ const cs: Translations = {
   'edit.exclude': 'Výjimky',
   'edit.includeHint': 'Jeden vzor na řádek, třeba *.tar.gz. Úloha pak bere jen soubory, které odpovídají, a všechny ostatní nechá na obou stranách, kde jsou. Výjimky platí dál. Bez vzorů bere všechny soubory.',
   'sets.none': 'Zatím žádné sdílené seznamy.',
-  'sets.noneYet': 'Zatím není určen žádný sdílený seznam. Zakládají se v Nastavení, v části Jádro.',
+  'sets.noneYet': 'Zatím není určen žádný sdílený seznam. Zakládají se v Nastavení, v části Synchronizace.',
   'sets.add': 'Přidat tento seznam',
   'sets.remove': 'Odebrat tento seznam',
   'sets.newName': 'Název nového seznamu',

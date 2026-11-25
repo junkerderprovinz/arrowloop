@@ -553,7 +553,7 @@ const fi: Translations = {
   'edit.exclude': 'Poikkeukset',
   'edit.includeHint': 'Yksi kuvio riviä kohti, esimerkiksi *.tar.gz. Työ ottaa silloin vain sopivat tiedostot ja jättää kaikki muut paikoilleen molemmilla puolilla. Poikkeukset ovat yhä voimassa. Ilman kuvioita se ottaa kaikki tiedostot.',
   'sets.none': 'Ei vielä jaettuja listoja.',
-  'sets.noneYet': 'Jaettuja listoja ei ole vielä määritelty. Ne luodaan Asetuksissa, kohdassa Moottori.',
+  'sets.noneYet': 'Jaettuja listoja ei ole vielä määritelty. Ne luodaan Asetuksissa, kohdassa Synkronointi.',
   'sets.add': 'Lisää tämä lista',
   'sets.remove': 'Poista tämä lista',
   'sets.newName': 'Uuden listan nimi',

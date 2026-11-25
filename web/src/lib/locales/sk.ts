@@ -553,7 +553,7 @@ const sk: Translations = {
   'edit.exclude': 'Výnimky',
   'edit.includeHint': 'Jeden vzor na riadok, napríklad *.tar.gz. Úloha potom berie len súbory, ktoré zodpovedajú, a všetky ostatné nechá na oboch stranách tam, kde sú. Výnimky platia ďalej. Bez vzorov berie všetky súbory.',
   'sets.none': 'Zatiaľ žiadne zdieľané zoznamy.',
-  'sets.noneYet': 'Zatiaľ nie je určený žiadny zdieľaný zoznam. Zakladajú sa v Nastaveniach, v časti Jadro.',
+  'sets.noneYet': 'Zatiaľ nie je určený žiadny zdieľaný zoznam. Zakladajú sa v Nastaveniach, v časti Synchronizácia.',
   'sets.add': 'Pridať tento zoznam',
   'sets.remove': 'Odobrať tento zoznam',
   'sets.newName': 'Názov nového zoznamu',

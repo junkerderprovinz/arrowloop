@@ -553,7 +553,7 @@ const pl: Translations = {
   'edit.exclude': 'Wykluczenia',
   'edit.includeHint': 'Jeden wzorzec na wiersz, np. *.tar.gz. Zadanie bierze wtedy tylko pasujące pliki, a wszystkie inne zostawia tam, gdzie są, po obu stronach. Wykluczenia nadal obowiązują. Bez wzorców bierze wszystkie pliki.',
   'sets.none': 'Nie ma jeszcze wspólnych list.',
-  'sets.noneYet': 'Nie określono jeszcze żadnej wspólnej listy. Tworzy się je w Ustawieniach, w części Silnik.',
+  'sets.noneYet': 'Nie określono jeszcze żadnej wspólnej listy. Tworzy się je w Ustawieniach, w części Synchronizacja.',
   'sets.add': 'Dodaj tę listę',
   'sets.remove': 'Usuń tę listę',
   'sets.newName': 'Nazwa nowej listy',

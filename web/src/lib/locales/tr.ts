@@ -553,7 +553,7 @@ const tr: Translations = {
   'edit.exclude': 'Hariç tutulanlar',
   'edit.includeHint': 'Her satıra bir desen, örneğin *.tar.gz. İş o zaman yalnızca eşleşen dosyaları alır, diğer tüm dosyaları iki tarafta da oldukları yerde bırakır. Hariç tutulanlar geçerli olmaya devam eder. Desen yoksa tüm dosyaları alır.',
   'sets.none': 'Henüz ortak liste yok.',
-  'sets.noneYet': 'Henüz tanımlı ortak liste yok. Ayarlar bölümünde, Motor altında oluşturulurlar.',
+  'sets.noneYet': 'Henüz tanımlı ortak liste yok. Ayarlar bölümünde, Eşitleme altında oluşturulurlar.',
   'sets.add': 'Bu listeyi ekle',
   'sets.remove': 'Bu listeyi kaldır',
   'sets.newName': 'Yeni listenin adı',

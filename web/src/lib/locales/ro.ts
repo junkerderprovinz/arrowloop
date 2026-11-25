@@ -553,7 +553,7 @@ const ro: Translations = {
   'edit.exclude': 'Excluderi',
   'edit.includeHint': 'Un tipar pe linie, de exemplu *.tar.gz. Sarcina ia atunci doar fișierele care se potrivesc și le lasă pe toate celelalte unde sunt, pe ambele părți. Excluderile rămân valabile. Fără tipare, ia toate fișierele.',
   'sets.none': 'Încă nu există liste comune.',
-  'sets.noneYet': 'Nu este definită încă nicio listă comună. Se creează în Setări, la Motor.',
+  'sets.noneYet': 'Nu este definită încă nicio listă comună. Se creează în Setări, la Sincronizare.',
   'sets.add': 'Adaugă această listă',
   'sets.remove': 'Elimină această listă',
   'sets.newName': 'Numele unei liste noi',

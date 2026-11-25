@@ -553,7 +553,7 @@ const lv: Translations = {
   'edit.exclude': 'Izņēmumi',
   'edit.includeHint': 'Viens šablons rindā, piemēram, *.tar.gz. Tad uzdevums ņem tikai atbilstošos failus un visus pārējos abās pusēs atstāj, kur tie ir. Izņēmumi joprojām ir spēkā. Bez šabloniem tas ņem visus failus.',
   'sets.none': 'Kopīgu sarakstu vēl nav.',
-  'sets.noneYet': 'Kopīgi saraksti vēl nav noteikti. Tos izveido Iestatījumos, sadaļā Dzinējs.',
+  'sets.noneYet': 'Kopīgi saraksti vēl nav noteikti. Tos izveido Iestatījumos, sadaļā Sinhronizācija.',
   'sets.add': 'Pievienot šo sarakstu',
   'sets.remove': 'Noņemt šo sarakstu',
   'sets.newName': 'Jauna saraksta nosaukums',

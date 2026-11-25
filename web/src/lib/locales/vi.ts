@@ -553,7 +553,7 @@ const vi: Translations = {
   'edit.exclude': 'Loại trừ',
   'edit.includeHint': 'Mỗi dòng một mẫu, ví dụ *.tar.gz. Khi đó công việc chỉ lấy các tệp khớp và để mọi tệp khác ở nguyên chỗ, ở cả hai phía. Các loại trừ vẫn áp dụng. Không có mẫu thì lấy mọi tệp.',
   'sets.none': 'Chưa có danh sách dùng chung nào.',
-  'sets.noneYet': 'Chưa có danh sách dùng chung nào được định nghĩa. Bạn tạo chúng trong Cài đặt, mục Bộ máy.',
+  'sets.noneYet': 'Chưa có danh sách dùng chung nào được định nghĩa. Bạn tạo chúng trong Cài đặt, mục Đồng bộ.',
   'sets.add': 'Thêm danh sách này',
   'sets.remove': 'Bỏ danh sách này',
   'sets.newName': 'Tên cho danh sách mới',

@@ -553,7 +553,7 @@ const eu: Translations = {
   'edit.exclude': 'Salbuespenak',
   'edit.includeHint': 'Eredu bat lerroko, adibidez *.tar.gz. Lanak bat datozen fitxategiak bakarrik hartzen ditu orduan, eta beste guztiak dauden lekuan uzten ditu bi aldeetan. Salbuespenek balio dute oraindik. Eredurik gabe, fitxategi guztiak hartzen ditu.',
   'sets.none': 'Oraindik ez dago zerrenda partekaturik.',
-  'sets.noneYet': 'Oraindik ez da zerrenda partekaturik definitu. Ezarpenetan sortzen dira, Motorra atalean.',
+  'sets.noneYet': 'Oraindik ez da zerrenda partekaturik definitu. Ezarpenetan sortzen dira, Sinkronizazioa atalean.',
   'sets.add': 'Gehitu zerrenda hau',
   'sets.remove': 'Kendu zerrenda hau',
   'sets.newName': 'Zerrenda berriaren izena',

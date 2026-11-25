@@ -553,7 +553,7 @@ const gl: Translations = {
   'edit.exclude': 'Exclusións',
   'edit.includeHint': 'Un patrón por liña, como *.tar.gz. A tarefa colle entón só os ficheiros que coinciden e deixa todos os demais onde están, nos dous lados. As exclusións seguen valendo. Sen patróns, colle todos os ficheiros.',
   'sets.none': 'Aínda non hai listas compartidas.',
-  'sets.noneYet': 'Aínda non hai ningunha lista compartida definida. Créanse en Axustes, en Motor.',
+  'sets.noneYet': 'Aínda non hai ningunha lista compartida definida. Créanse en Axustes, en Sincronización.',
   'sets.add': 'Engadir esta lista',
   'sets.remove': 'Quitar esta lista',
   'sets.newName': 'Nome dunha lista nova',

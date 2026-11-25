@@ -553,7 +553,7 @@ const hu: Translations = {
   'edit.exclude': 'Kivételek',
   'edit.includeHint': 'Soronként egy minta, például *.tar.gz. A feladat ekkor csak az illeszkedő fájlokat veszi, a többit mindkét oldalon a helyén hagyja. A kivételek továbbra is érvényesek. Minta nélkül minden fájlt vesz.',
   'sets.none': 'Még nincsenek közös listák.',
-  'sets.noneYet': 'Még nincs meghatározva közös lista. A Beállításokban, a Motor résznél lehet őket létrehozni.',
+  'sets.noneYet': 'Még nincs meghatározva közös lista. A Beállításokban, a Szinkronizálás résznél lehet őket létrehozni.',
   'sets.add': 'Lista hozzáadása',
   'sets.remove': 'Lista eltávolítása',
   'sets.newName': 'Új lista neve',

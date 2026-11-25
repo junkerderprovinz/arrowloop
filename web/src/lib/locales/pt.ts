@@ -553,7 +553,7 @@ const pt: Translations = {
   'edit.exclude': 'Exclusões',
   'edit.includeHint': 'Um padrão por linha, por exemplo *.tar.gz. A tarefa leva então só os ficheiros que correspondem e deixa todos os outros onde estão, nos dois lados. As exclusões continuam a valer. Sem padrões, leva todos os ficheiros.',
   'sets.none': 'Ainda não há listas partilhadas.',
-  'sets.noneYet': 'Ainda não está definida nenhuma lista partilhada. Criam-se nas Definições, em Motor.',
+  'sets.noneYet': 'Ainda não está definida nenhuma lista partilhada. Criam-se nas Definições, em Sincronização.',
   'sets.add': 'Adicionar esta lista',
   'sets.remove': 'Remover esta lista',
   'sets.newName': 'Nome de uma lista nova',

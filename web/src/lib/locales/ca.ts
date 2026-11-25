@@ -553,7 +553,7 @@ const ca: Translations = {
   'edit.exclude': 'Exclusions',
   'edit.includeHint': 'Un patró per línia, com ara *.tar.gz. Llavors la tasca només agafa els fitxers que hi coincideixen i deixa tots els altres on són, als dos costats. Les exclusions continuen valent. Sense patrons, agafa tots els fitxers.',
   'sets.none': 'Encara no hi ha llistes compartides.',
-  'sets.noneYet': 'Encara no hi ha cap llista compartida definida. Es creen a Configuració, dins de Motor.',
+  'sets.noneYet': 'Encara no hi ha cap llista compartida definida. Es creen a Configuració, dins de Sincronització.',
   'sets.add': 'Afegeix aquesta llista',
   'sets.remove': 'Treu aquesta llista',
   'sets.newName': 'Nom d\'una llista nova',

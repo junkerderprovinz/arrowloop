@@ -553,7 +553,7 @@ const da: Translations = {
   'edit.exclude': 'Undtagelser',
   'edit.includeHint': 'Ét mønster pr. linje, fx *.tar.gz. Jobbet tager så kun de filer, der passer, og lader alle andre ligge, hvor de er, på begge sider. Undtagelserne gælder stadig. Uden mønstre tager det alle filer.',
   'sets.none': 'Ingen delte lister endnu.',
-  'sets.noneYet': 'Der er endnu ikke defineret nogen delte lister. De oprettes i Indstillinger, under Motor.',
+  'sets.noneYet': 'Der er endnu ikke defineret nogen delte lister. De oprettes i Indstillinger, under Synkronisering.',
   'sets.add': 'Tilføj denne liste',
   'sets.remove': 'Fjern denne liste',
   'sets.newName': 'Navn på en ny liste',

@@ -553,7 +553,7 @@ const nl: Translations = {
   'edit.exclude': 'Uitsluitingen',
   'edit.includeHint': 'Eén patroon per regel, bijvoorbeeld *.tar.gz. De taak neemt dan alleen de bestanden die passen en laat alle andere aan beide kanten staan waar ze staan. Uitsluitingen gelden nog steeds. Zonder patronen neemt hij alle bestanden.',
   'sets.none': 'Nog geen gedeelde lijsten.',
-  'sets.noneYet': 'Er zijn nog geen gedeelde lijsten vastgelegd. Je maakt ze in Instellingen, onder Motor.',
+  'sets.noneYet': 'Er zijn nog geen gedeelde lijsten vastgelegd. Je maakt ze in Instellingen, onder Synchronisatie.',
   'sets.add': 'Deze lijst toevoegen',
   'sets.remove': 'Deze lijst weghalen',
   'sets.newName': 'Naam voor een nieuwe lijst',

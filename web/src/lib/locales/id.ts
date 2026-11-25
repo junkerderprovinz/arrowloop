@@ -553,7 +553,7 @@ const id: Translations = {
   'edit.exclude': 'Pengecualian',
   'edit.includeHint': 'Satu pola per baris, misalnya *.tar.gz. Tugas lalu hanya mengambil berkas yang cocok dan membiarkan berkas lain di tempatnya, di kedua sisi. Pengecualian tetap berlaku. Tanpa pola, semua berkas diambil.',
   'sets.none': 'Belum ada daftar bersama.',
-  'sets.noneYet': 'Belum ada daftar bersama yang ditetapkan. Daftar dibuat di Pengaturan, bagian Mesin.',
+  'sets.noneYet': 'Belum ada daftar bersama yang ditetapkan. Daftar dibuat di Pengaturan, bagian Sinkronisasi.',
   'sets.add': 'Tambah daftar ini',
   'sets.remove': 'Buang daftar ini',
   'sets.newName': 'Nama untuk daftar baru',

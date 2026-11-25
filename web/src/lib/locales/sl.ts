@@ -553,7 +553,7 @@ const sl: Translations = {
   'edit.exclude': 'Izjeme',
   'edit.includeHint': 'En vzorec na vrstico, na primer *.tar.gz. Opravilo potem vzame samo datoteke, ki se ujemajo, vse druge pa pusti, kjer so, na obeh straneh. Izjeme še vedno veljajo. Brez vzorcev vzame vse datoteke.',
   'sets.none': 'Deljenih seznamov še ni.',
-  'sets.noneYet': 'Deljeni seznami še niso določeni. Ustvariš jih v Nastavitvah, pod Pogon.',
+  'sets.noneYet': 'Deljeni seznami še niso določeni. Ustvariš jih v Nastavitvah, pod Sinhronizacija.',
   'sets.add': 'Dodaj ta seznam',
   'sets.remove': 'Odstrani ta seznam',
   'sets.newName': 'Ime novega seznama',

@@ -553,7 +553,7 @@ const it: Translations = {
   'edit.exclude': 'Esclusioni',
   'edit.includeHint': 'Un modello per riga, ad esempio *.tar.gz. Il lavoro prende allora solo i file che corrispondono e lascia tutti gli altri dove sono, su entrambi i lati. Le esclusioni valgono ancora. Senza modelli prende tutti i file.',
   'sets.none': 'Ancora nessun elenco condiviso.',
-  'sets.noneYet': 'Non è ancora definito nessun elenco condiviso. Si creano nelle Impostazioni, sotto Motore.',
+  'sets.noneYet': 'Non è ancora definito nessun elenco condiviso. Si creano nelle Impostazioni, sotto Sincronizzazione.',
   'sets.add': 'Aggiungi questo elenco',
   'sets.remove': 'Rimuovi questo elenco',
   'sets.newName': 'Nome di un nuovo elenco',

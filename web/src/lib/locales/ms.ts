@@ -553,7 +553,7 @@ const ms: Translations = {
   'edit.exclude': 'Pengecualian',
   'edit.includeHint': 'Satu corak setiap baris, contohnya *.tar.gz. Tugas itu kemudian hanya mengambil fail yang sepadan dan membiarkan fail lain di tempatnya, di kedua-dua belah. Pengecualian masih terpakai. Tanpa corak, semua fail diambil.',
   'sets.none': 'Belum ada senarai dikongsi.',
-  'sets.noneYet': 'Belum ada senarai dikongsi yang ditakrifkan. Ia disediakan dalam Tetapan, di bahagian Enjin.',
+  'sets.noneYet': 'Belum ada senarai dikongsi yang ditakrifkan. Ia disediakan dalam Tetapan, di bahagian Penyegerakan.',
   'sets.add': 'Tambah senarai ini',
   'sets.remove': 'Buang senarai ini',
   'sets.newName': 'Nama untuk senarai baharu',

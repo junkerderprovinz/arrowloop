@@ -553,7 +553,7 @@ const zh: Translations = {
   'edit.exclude': '排除',
   'edit.includeHint': '每行一个模式，例如 *.tar.gz。这样任务只处理匹配的文件，其他文件在两侧都原地不动。排除规则仍然有效。没有模式时处理所有文件。',
   'sets.none': '还没有共享列表。',
-  'sets.noneYet': '还没有定义任何共享列表。它们在设置的引擎里建立。',
+  'sets.noneYet': '还没有定义任何共享列表。它们在设置的同步里建立。',
   'sets.add': '添加这个列表',
   'sets.remove': '移除这个列表',
   'sets.newName': '新列表的名字',

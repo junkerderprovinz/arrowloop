@@ -553,7 +553,7 @@ const hr: Translations = {
   'edit.exclude': 'Iznimke',
   'edit.includeHint': 'Jedan uzorak po retku, npr. *.tar.gz. Zadatak tada uzima samo datoteke koje odgovaraju, a sve ostale ostavlja gdje jesu, na obje strane. Iznimke i dalje vrijede. Bez uzoraka uzima sve datoteke.',
   'sets.none': 'Još nema zajedničkih lista.',
-  'sets.noneYet': 'Još nije određena nijedna zajednička lista. Stvaraju se u Postavkama, pod Pogon.',
+  'sets.noneYet': 'Još nije određena nijedna zajednička lista. Stvaraju se u Postavkama, pod Sinkronizacija.',
   'sets.add': 'Dodaj ovu listu',
   'sets.remove': 'Ukloni ovu listu',
   'sets.newName': 'Naziv nove liste',

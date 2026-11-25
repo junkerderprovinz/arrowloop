@@ -553,7 +553,7 @@ const lt: Translations = {
   'edit.exclude': 'Išimtys',
   'edit.includeHint': 'Po vieną šabloną eilutėje, pvz., *.tar.gz. Tada užduotis ima tik atitinkančius failus, o visus kitus abiejose pusėse palieka ten, kur jie yra. Išimtys vis dar galioja. Be šablonų ji ima visus failus.',
   'sets.none': 'Bendrų sąrašų dar nėra.',
-  'sets.noneYet': 'Bendrų sąrašų dar neapibrėžta. Jie kuriami Nustatymuose, dalyje Variklis.',
+  'sets.noneYet': 'Bendrų sąrašų dar neapibrėžta. Jie kuriami Nustatymuose, dalyje Sinchronizavimas.',
   'sets.add': 'Pridėti šį sąrašą',
   'sets.remove': 'Pašalinti šį sąrašą',
   'sets.newName': 'Naujo sąrašo pavadinimas',

@@ -553,7 +553,7 @@ const sv: Translations = {
   'edit.exclude': 'Undantag',
   'edit.includeHint': 'Ett mönster per rad, till exempel *.tar.gz. Jobbet tar då bara filerna som matchar och låter alla andra ligga kvar där de är, på båda sidor. Undantagen gäller fortfarande. Utan mönster tar det alla filer.',
   'sets.none': 'Inga delade listor ännu.',
-  'sets.noneYet': 'Inga delade listor är angivna ännu. De läggs upp i Inställningar, under Motor.',
+  'sets.noneYet': 'Inga delade listor är angivna ännu. De läggs upp i Inställningar, under Synkronisering.',
   'sets.add': 'Lägg till den här listan',
   'sets.remove': 'Ta bort den här listan',
   'sets.newName': 'Namn på en ny lista',

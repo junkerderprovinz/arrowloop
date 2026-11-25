@@ -553,7 +553,7 @@ const ko: Translations = {
   'edit.exclude': '제외',
   'edit.includeHint': '한 줄에 한 패턴, 예: *.tar.gz. 그러면 작업은 일치하는 파일만 다루고 다른 파일은 양쪽 모두 그대로 둡니다. 제외 규칙은 계속 적용됩니다. 패턴이 없으면 모든 파일을 다룹니다.',
   'sets.none': '아직 공용 목록이 없습니다.',
-  'sets.noneYet': '아직 정의된 공용 목록이 없습니다. 설정의 엔진에서 만듭니다.',
+  'sets.noneYet': '아직 정의된 공용 목록이 없습니다. 설정의 동기화에서 만듭니다.',
   'sets.add': '이 목록 추가',
   'sets.remove': '이 목록 제거',
   'sets.newName': '새 목록의 이름',

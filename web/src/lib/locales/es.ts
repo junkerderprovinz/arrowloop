@@ -553,7 +553,7 @@ const es: Translations = {
   'edit.exclude': 'Exclusiones',
   'edit.includeHint': 'Un patrón por línea, como *.tar.gz. La tarea toma entonces solo los archivos que coinciden y deja todos los demás donde están, en ambos lados. Las exclusiones siguen valiendo. Sin patrones, toma todos los archivos.',
   'sets.none': 'Todavía no hay listas compartidas.',
-  'sets.noneYet': 'Todavía no hay ninguna lista compartida definida. Se crean en Ajustes, en Motor.',
+  'sets.noneYet': 'Todavía no hay ninguna lista compartida definida. Se crean en Ajustes, en Sincronización.',
   'sets.add': 'Añadir esta lista',
   'sets.remove': 'Quitar esta lista',
   'sets.newName': 'Nombre de una lista nueva',

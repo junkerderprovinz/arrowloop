@@ -553,7 +553,7 @@ const is: Translations = {
   'edit.exclude': 'Undanþágur',
   'edit.includeHint': 'Eitt mynstur í hverja línu, t.d. *.tar.gz. Verkið tekur þá aðeins skrárnar sem passa og lætur allar aðrar vera þar sem þær eru, báðum megin. Undanþágur gilda áfram. Án mynstra tekur það allar skrár.',
   'sets.none': 'Engir sameiginlegir listar enn.',
-  'sets.noneYet': 'Engir sameiginlegir listar hafa enn verið skilgreindir. Þeir eru búnir til í Stillingum, undir Vél.',
+  'sets.noneYet': 'Engir sameiginlegir listar hafa enn verið skilgreindir. Þeir eru búnir til í Stillingum, undir Samstilling.',
   'sets.add': 'Bæta við þessum lista',
   'sets.remove': 'Fjarlægja þennan lista',
   'sets.newName': 'Nafn á nýjum lista',
