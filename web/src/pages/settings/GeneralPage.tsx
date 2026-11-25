@@ -7,12 +7,13 @@ import { useT } from '../../lib/i18n'
 import { AutoBackupCard } from './AutoBackupCard'
 import { BackupCard } from './BackupCard'
 import { Reading, useEngineSettings } from './engineSettings'
+import { HistoryCard } from './HistoryCard'
 import { SettingsRow } from './rows'
 
 /**
  * What concerns the app as a whole: this computer's window and start where
- * there is a desktop app, the settings backups and how hard the engine may
- * work on this machine.
+ * there is a desktop app, the settings backups, how hard the engine may work
+ * on this machine and how long its history keeps a run.
  */
 export function GeneralPage({
   window: windowSettings,
@@ -63,6 +64,7 @@ export function GeneralPage({
       <BackupCard hueIndex={windowSettings ? 1 : 0} />
       <AutoBackupCard hueIndex={windowSettings ? 2 : 1} />
       <WorkloadCard hueIndex={windowSettings ? 3 : 2} />
+      <HistoryCard hueIndex={windowSettings ? 4 : 3} />
     </Stack>
   )
 }

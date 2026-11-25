@@ -38,11 +38,18 @@ import { navigate, useLocation } from '../lib/router'
 import { useStartStop } from '../lib/startStop'
 import { useJobConfig } from './Editor'
 import { PreviewPlan } from './Preview'
-import { FILE_COLUMNS, RunRow } from './History'
-import { useColumns } from '../lib/columns'
+import { FILE_COLUMNS, RUN_FIGURES, RunRow, runFigureHeads } from './History'
+import { useColumns, type ColumnDef } from '../lib/columns'
 
 /** A job's own file log has no job column. */
 const JOB_FILE_COLUMNS = FILE_COLUMNS.filter((c) => c.id !== 'job')
+// The first cell of a job's own run holds its time, since the job is known.
+const JOB_RUN_COLUMNS: ColumnDef[] = [
+  { id: 'job' },
+  { id: 'state', width: 200, min: 96 },
+  { id: 'took', width: 96, min: 64 },
+  ...RUN_FIGURES,
+]
 
 /** How long a card a link asked for is kept in view while the page fills in. */
 const HOLD_CARD_MS = 1500
@@ -362,6 +369,7 @@ function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: n
   const [runs, setRuns] = useState<Run[] | null>(null)
   const [limit, setLimit] = useState(20)
   const [open, setOpen] = useState<Run | null>(null)
+  const columns = useColumns('job-runs', JOB_RUN_COLUMNS)
 
   useEffect(() => {
     let live = true
@@ -388,11 +396,28 @@ function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: n
       ) : runs.length === 0 ? (
         <Empty>{t('jobs.historyEmpty')}</Empty>
       ) : (
-        <Rows className="-mx-2 flex flex-col">
-          {runs.map((r) => (
-            <RunRow key={`${r.Started}`} run={r} withJob={false} onOpen={() => setOpen(r)} />
-          ))}
-        </Rows>
+        <div
+          ref={(el) => {
+            columns.host.current = el
+          }}
+          style={columns.style}
+          className="flex flex-col gap-2"
+        >
+          <ListHead
+            heads={[
+              { id: 'job', label: t('list.head.when'), className: 'min-w-0 flex-1' },
+              { id: 'state', label: t('list.head.state'), className: 'shrink-0' },
+              { id: 'took', label: t('overview.duration'), className: 'shrink-0' },
+              ...runFigureHeads(t),
+            ]}
+            columns={columns}
+          />
+          <Rows className="-mx-2 flex flex-col">
+            {runs.map((r) => (
+              <RunRow key={`${r.Started}`} run={r} withJob={false} columns={columns} onOpen={() => setOpen(r)} />
+            ))}
+          </Rows>
+        </div>
       )}
       {runs !== null && runs.length >= limit && (
         <div className="flex justify-center">

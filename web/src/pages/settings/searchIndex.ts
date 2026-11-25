@@ -58,6 +58,14 @@ export const SETTINGS_INDEX: Record<TileId, SearchCard[]> = {
         { key: 'engine.history', hint: 'engine.historyHint' },
       ],
     },
+    {
+      title: 'nav.history',
+      rows: [
+        { key: 'history.keepForever', hint: 'history.keepForeverHint' },
+        { key: 'history.keep', hint: 'history.keepHint' },
+        { key: 'history.deleteOld', hint: 'history.deleteOldHint' },
+      ],
+    },
   ],
   look: [
     {
