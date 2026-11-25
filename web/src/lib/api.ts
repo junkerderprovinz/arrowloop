@@ -42,6 +42,8 @@ export type Job = {
   recent: Run[]
   /** How many days old a file has to be before a one-way job sends it. */
   minAgeDays?: number
+  /** Its shared include lists are all empty, so it takes no files. An older engine does not say. */
+  includesNothing?: boolean
   /** The VPN of the settings the job's runs go through. */
   vpn?: string
 }
@@ -328,8 +330,10 @@ export type RawJob = {
   minAgeDays?: number
   emptyDirs?: boolean
   metadata?: boolean
-  /** Names of shared pattern lists this job asks for. */
+  /** Names of shared lists whose patterns this job keeps out. */
   excludeSets?: string[]
+  /** Names of shared lists whose patterns this job takes. */
+  includeSets?: string[]
   /** Runs the whole comparison on the schedule and applies nothing. */
   reportOnly?: boolean
   /**
@@ -465,7 +469,7 @@ export type Settings = {
     /** Empty means the backups folder beside the configuration file. */
     folder?: string
   }
-  /** Reusable pattern lists, by name. A job asks for them by name. */
+  /** Shared lists, by name. A job includes or excludes each by name. */
   excludeSets?: Record<string, string[]>
   notify?: Notify
   [key: string]: unknown
@@ -836,7 +840,7 @@ export type OpenedJob = { job: RawJob; defaults?: Settings['defaults'] }
 
 /**
  * What a side on another instance can name: its targets by name alone, its
- * marked drives and the names of its exclude sets.
+ * marked drives and the names of its shared lists.
  */
 export type InstancePlaces = {
   targets: { name: string; label?: string; type: string; provider?: string; mark?: string }[]

@@ -46,6 +46,13 @@ const conflict = { ...quiet, conflict: true }
 const noted = { ...quiet, notes: true }
 
 describe('jobStatus', () => {
+  it('never reads a job that takes no files as synced', () => {
+    expect(jobStatus(job('a', { includesNothing: true }), quiet)).toBe('empty')
+    expect(jobStatus(job('a', { includesNothing: true, recent: [failed], disabled: true }), quiet)).toBe('empty')
+    expect(jobStatus(job('a', { includesNothing: true, running: true }), quiet)).toBe('running')
+    expect(jobStatus(job('a', { includesNothing: true }), held)).toBe('held')
+  })
+
   it('says the loudest thing that applies', () => {
     expect(jobStatus(job('a', { running: true, recent: [failed] }), held)).toBe('running')
     expect(jobStatus(job('a', { recent: [failed] }), held)).toBe('held')

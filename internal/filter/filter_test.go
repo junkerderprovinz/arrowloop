@@ -224,3 +224,25 @@ func TestOnlyExcludePatternsHideAFolder(t *testing.T) {
 		t.Error("an excluded folder was not hidden")
 	}
 }
+
+func TestNothingHidesEveryPathAndTree(t *testing.T) {
+	s, err := New(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	none := s.Nothing()
+	for _, rel := range []string{"a.jpg", "deep/b.txt", "folder"} {
+		if !none.Excluded(rel) {
+			t.Errorf("%s is let through by a set that takes nothing", rel)
+		}
+	}
+	if !none.ExcludesTree("DCIM") {
+		t.Error("a set that takes nothing still opens folders")
+	}
+	if !none.Narrows() {
+		t.Error("a set that takes nothing does not say it narrows the job")
+	}
+	if s.Excluded("a.jpg") {
+		t.Error("Nothing changed the set it was called on")
+	}
+}

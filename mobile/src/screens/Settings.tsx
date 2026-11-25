@@ -1346,6 +1346,7 @@ function SettingsTiles({ tiles, shown, onPick }: { tiles: SettingsTile[]; shown:
   return (
     <ScrollView
       style={styles.tiles}
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.tilesInside}
       accessibilityRole="tablist"
     >

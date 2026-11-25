@@ -517,6 +517,7 @@ function JobCard({
         hue={hue}
       />
       {jobStatus(job, { held, conflict, notes: noted }) === "failed" ? <FailedBecause run={job.recent[0]!} lines={2} /> : null}
+      {jobStatus(job, { held, conflict, notes: noted }) === "empty" ? <TakesNothing lines={3} /> : null}
 
       {/* Two buttons, since a held job can still be started by hand. A
           running job's button cancels the run rather than pausing, which is
@@ -626,6 +627,7 @@ function JobRow({
         {job.name}
       </Text>
       {status === "failed" ? <FailedBecause run={last!} lines={1} /> : null}
+      {status === "empty" ? <TakesNothing lines={1} /> : null}
     </>
   );
   const statusLine = (
@@ -726,6 +728,8 @@ function JobStatus({
       ) : (
         <Badge label={t("status.warned")} tone="warn" />
       );
+    case "empty":
+      return <Badge label={t("status.empty")} tone="warn" />;
     case "away":
       return <Badge label={t("status.away")} />;
     case "failed":
@@ -753,6 +757,17 @@ function FailedBecause({ run, lines }: { run: Run; lines: number }) {
   return (
     <Text style={[styles.failure, { color: p.failInk }]} numberOfLines={lines}>
       {failureLine(run.Err, run.Failure, t, lang)}
+    </Text>
+  );
+}
+
+/** Why the job takes no files, under its badge, as a failed job says why it failed. */
+function TakesNothing({ lines }: { lines: number }) {
+  const { t } = useT();
+  const { p } = useTheme();
+  return (
+    <Text style={[styles.failure, { color: p.warnInk }]} numberOfLines={lines}>
+      {t("status.emptyHint")}
     </Text>
   );
 }

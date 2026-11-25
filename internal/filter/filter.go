@@ -48,6 +48,9 @@ type Set struct {
 
 	only    []string
 	onlyRes []*regexp.Regexp
+	// none hides every file, for a job whose include patterns all came from
+	// lists that are empty.
+	none bool
 }
 
 // New compiles a set of glob patterns.
@@ -99,10 +102,19 @@ func (s *Set) Only(patterns []string) (*Set, error) {
 	return &n, nil
 }
 
+// Nothing returns a copy of the set that hides every file. An empty list of
+// include patterns means every file to Only, which is the wrong answer when
+// the job asked for lists that turned out empty.
+func (s *Set) Nothing() *Set {
+	n := *s
+	n.none = true
+	return &n
+}
+
 // Narrows reports whether the set takes only the files its include patterns
 // match.
 func (s *Set) Narrows() bool {
-	return s != nil && len(s.only) > 0
+	return s != nil && (len(s.only) > 0 || s.none)
 }
 
 // Patterns returns the patterns this set was built from, for reporting.
@@ -122,7 +134,7 @@ func (s *Set) Excluded(rel string) bool {
 	if matchesAny(s.patterns, s.res, rel) {
 		return true
 	}
-	return s.Narrows() && !matchesAny(s.only, s.onlyRes, rel)
+	return s.none || s.Narrows() && !matchesAny(s.only, s.onlyRes, rel)
 }
 
 // HidesFolder reports whether the exclude patterns hide a folder and all it
@@ -157,6 +169,9 @@ func matchesAny(patterns []string, res []*regexp.Regexp, rel string) bool {
 func (s *Set) ExcludesTree(dir string) bool {
 	if s == nil {
 		return false
+	}
+	if s.none {
+		return true
 	}
 	dir = norm.NFC.String(dir)
 	for i, p := range s.patterns {

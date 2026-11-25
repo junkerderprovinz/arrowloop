@@ -51,6 +51,8 @@ export interface Job {
   recent: Run[];
   /** How many days old a file has to be before a one-way job sends it. */
   minAgeDays?: number;
+  /** Its shared include lists are all empty, so it takes no files. */
+  includesNothing?: boolean;
 }
 
 /** The automatic backups as the engine lists them (internal/daemon/backups.go). */
@@ -168,7 +170,10 @@ export interface JobConfig {
   exclude?: string[];
   include?: string[];
   noDefaultExcludes?: boolean;
+  /** Shared lists whose patterns the job keeps out. */
   excludeSets?: string[];
+  /** Shared lists whose patterns the job takes. */
+  includeSets?: string[];
   direction?: string;
   /** "sync", "mirror" or "move"; a two-way job only takes "sync". */
   mode?: string;
@@ -639,6 +644,9 @@ export const api = {
   },
 
   config: () => call<Config>("/api/config"),
+  /** Merges the patch into the engine's settings, with the engine's reason when it refuses. */
+  writeSettings: (patch: Record<string, unknown>) =>
+    call<void>("/api/settings", { method: "PUT", body: JSON.stringify(patch) }),
   writeConfig: (config: Config) =>
     call<void>("/api/config", { method: "PUT", body: JSON.stringify(config) }),
   /** Puts a whole saved configuration back, such as an automatic backup. */

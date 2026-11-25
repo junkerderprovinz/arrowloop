@@ -511,6 +511,7 @@ function SideBar({ state, navigation }: MaterialTopTabBarProps) {
       }}
     >
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         style={[styles.rail, { width: railWidth(barLabels), backgroundColor: p.surface, ...corners.card }]}
         contentContainerStyle={styles.railInside}
       >
@@ -807,7 +808,7 @@ function Waiting({ state, log, onRetry }: { state: string; log: string; onRetry:
   }
   return (
     <Screen>
-      <ScrollView contentContainerStyle={[styles.trouble, { paddingTop: inset.top + space.lg, paddingHorizontal: room }]}>
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.trouble, { paddingTop: inset.top + space.lg, paddingHorizontal: room }]}>
         <Heading>{t("error.unreachable")}</Heading>
         <Text
           style={[

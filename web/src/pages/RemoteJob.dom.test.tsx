@@ -139,9 +139,13 @@ describe('a job of another instance', () => {
     expect(within(within(dialog).getByRole('region', { name: 'Exclusions' })).getByText('Own exclusions')).toBeTruthy()
   })
 
-  it('offers the exclude sets of the instance it belongs to', async () => {
+  it('offers the shared lists of the instance it belongs to, to include and to exclude', async () => {
     const dialog = await openEditor()
-    expect(await within(dialog).findByText('media')).toBeTruthy()
+    for (const side of ['Inclusions', 'Exclusions']) {
+      fireEvent.click(await within(dialog).findByRole('combobox', { name: side }))
+      expect(await screen.findByRole('option', { name: 'media' })).toBeTruthy()
+      fireEvent.keyDown(within(dialog).getByRole('combobox', { name: side }), { key: 'Escape' })
+    }
     expect(settings).not.toHaveBeenCalled()
   })
 

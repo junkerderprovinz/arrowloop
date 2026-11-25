@@ -334,7 +334,7 @@ func (s *Server) diagnostics(w http.ResponseWriter, r *http.Request) {
 }
 
 // withoutHomeInSettings takes the home folder out of the settings that hold
-// paths: where the run log is kept and the shared exclude lists.
+// paths: where the run log is kept and the shared lists.
 func withoutHomeInSettings(settings map[string]any) map[string]any {
 	for key, value := range settings {
 		switch {

@@ -10,7 +10,7 @@ export function JobChips({ names, job, onJob }: { names: string[]; job: string; 
   return (
     <>
       <AxisLabel>{t("nav.jobs")}</AxisLabel>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.chips}>
         <Chip label={t("history.allJobs")} on={job === ""} onPress={() => onJob("")} />
         {names.map((n) => (
           <Chip key={n} label={n} on={job === n} onPress={() => onJob(n)} />

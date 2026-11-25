@@ -58,9 +58,10 @@ SOMETIMES = {
     # The check's jobs all have a trash, so NoTrash never comes up, and
     # nobody stops one of their runs.
     "Run": {"Failure", "NoTrash", "Stopped"},
-    # Only a job whose drive or folder is gone carries since when, and only a
-    # one-way job told to wait for older files carries the age.
-    "Job": {"away", "minAgeDays"},
+    # Only a job whose drive or folder is gone carries since when, only a
+    # one-way job told to wait for older files carries the age, and only one
+    # whose shared include lists are empty says it takes nothing.
+    "Job": {"away", "minAgeDays", "includesNothing"},
     # An instance that answered has jobs and no error. Only one that is away
     # carries lastSeen, and an address only where its announce named one.
     "OtherInstance": {"address", "jobs", "lastSeen", "error"},

@@ -383,6 +383,9 @@ type jobView struct {
 	Away *string `json:"away,omitempty"`
 	// MinAgeDays is how old a file has to be before a one-way job sends it.
 	MinAgeDays int `json:"minAgeDays,omitempty"`
+	// IncludesNothing is a job whose shared include lists are all empty, so
+	// it takes no files until one of them gets a pattern.
+	IncludesNothing bool `json:"includesNothing,omitempty"`
 	// Recent is the job's last stored runs, newest first, for the strip a job
 	// list draws beside each name.
 	Recent []history.Run `json:"recent"`
@@ -441,6 +444,7 @@ func (s *Server) listJobs(w http.ResponseWriter, r *http.Request) {
 			Direction: directionName(plan.ParseDirection(j.Direction)),
 			Schedule:  j.Schedule, Disabled: j.Disabled, Running: running[j.Name], Queued: queued[j.Name],
 			Recent: recent[key], MinAgeDays: j.MinAgeDays, VPN: j.VPN,
+			IncludesNothing: j.IncludesNothing(),
 		}
 		if v.Recent == nil {
 			v.Recent = []history.Run{}

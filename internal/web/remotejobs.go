@@ -34,7 +34,7 @@ type openedJob struct {
 
 // placesView is what a side on this instance can name, for the folder picker
 // of another member: the targets by name, the marked drives and the names of
-// the exclude sets. No target's settings travel, its secrets least of all.
+// the shared lists. No target's settings travel, its secrets least of all.
 type placesView struct {
 	Targets     []placeTarget `json:"targets"`
 	Drives      []placeDrive  `json:"drives"`

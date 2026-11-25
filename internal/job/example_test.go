@@ -66,7 +66,7 @@ func TestTheExampleShowsTheSettingsItIsPointedAtFor(t *testing.T) {
 			seen[k] = true
 		}
 	}
-	for _, key := range []string{"excludeSets", "keepVersions", "watch", "foldCase"} {
+	for _, key := range []string{"excludeSets", "includeSets", "keepVersions", "watch", "foldCase"} {
 		if !seen[key] {
 			t.Errorf("no job in the example shows %q", key)
 		}

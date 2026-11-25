@@ -22,16 +22,20 @@ import { rootWritten } from "../rootTarget";
 import { vpnChoiceShown, vpnOptions } from "../vpn";
 import {
   AxisLabel,
+  Badge,
+  Caption,
   Body,
   Button,
   Card,
   Choice,
   Empty,
   Page,
+  PickRow,
   Press,
   ReadmeButton,
   ReadmeRow,
   Section,
+  Sheet,
   Toggle,
   usePageScroll,
   useTheme,
@@ -39,6 +43,7 @@ import {
 import { WayButton } from "../way";
 import { FromGlobal, GlobalSwitch } from "../inherit";
 import { amount, type JobLearning } from "../../../web/src/lib/anomalies";
+import { addList, jobsUsing, offered, pickSet, takesNothing, type Way } from "../../../web/src/lib/sharedLists";
 import {
   BRAKE_SETTINGS,
   SETTING_LABEL,
@@ -100,11 +105,13 @@ export function JobEdit() {
   const editing = route.params?.name;
 
   const [job, setJob] = useState<JobConfig | null>(null);
+  const [jobs, setJobs] = useState<JobConfig[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     api.config().then(
       (c) => {
+        setJobs(c.jobs);
         const found = editing ? c.jobs.find((j) => j.name === editing) : undefined;
         setJob(
           found
@@ -124,9 +131,11 @@ export function JobEdit() {
   }, [editing, t]);
 
   // What a job runs with where it follows the global settings.
-  const { settings: engineSettings } = useEngineSettings(true);
+  const { settings: engineSettings, reload: reloadSettings } = useEngineSettings(true);
   const defaults = engineSettings?.defaults as Defaults | undefined;
-  const sets = Object.keys((engineSettings?.excludeSets as Record<string, string[]> | undefined) ?? {}).sort();
+  const lists = (engineSettings?.excludeSets as Record<string, string[]> | undefined) ?? {};
+  const emptySets = Object.keys(lists).filter((name) => lists[name]!.length === 0);
+  const manageLists = () => nav.getParent()?.navigate("MoreTab", { screen: "Sync" });
 
   // Read again on every visit, so a target connected under More while the
   // form stayed open is there to choose. Without targets a side can still be
@@ -202,11 +211,33 @@ export function JobEdit() {
         if (!editing) return next;
         if (pending.current) clearTimeout(pending.current);
         if (now) void persist(next);
-        else pending.current = setTimeout(() => void persist(next), WRITE_AFTER);
+        else
+          pending.current = setTimeout(() => {
+            pending.current = null;
+            void persist(next);
+          }, WRITE_AFTER);
         return next;
       });
     },
     [persist, editing],
+  );
+
+  // A shared list may have been edited or removed behind Manage lists, so a
+  // saved job reads itself and the lists again when it comes back into view.
+  // An edit still waiting to be written is kept.
+  useFocusEffect(
+    useCallback(() => {
+      reloadSettings();
+      if (!editing) return;
+      api.config().then(
+        (c) => {
+          setJobs(c.jobs);
+          const found = c.jobs.find((j) => j.name === (savedAs.current ?? editing));
+          if (found && !pending.current) setJob({ ...found });
+        },
+        () => {},
+      );
+    }, [editing, reloadSettings]),
   );
 
   const [saving, setSaving] = useState(false);
@@ -538,6 +569,9 @@ export function JobEdit() {
       </Section>
 
       <Section title={t("edit.inclusions")} hue={3}>
+        <AxisLabel hint={t("edit.includeSetsHint")}>{t("edit.excludeSets")}</AxisLabel>
+        <SharedListPicker job={job} lists={lists} jobs={jobs} way="include" set={set} onLists={reloadSettings} onManage={manageLists} />
+        {takesNothing(job, emptySets) ? <TakesNothing /> : null}
         <LinesField
           label={t("edit.ownInclude")}
           hint={t("edit.includeHint")}
@@ -550,20 +584,7 @@ export function JobEdit() {
       {/* A shared list adds its patterns to the job's own. */}
       <Section title={t("edit.exclude")} hue={3}>
         <AxisLabel hint={t("edit.excludeSetsHint")}>{t("edit.excludeSets")}</AxisLabel>
-        {sets.length === 0 ? <Body muted>{t("sets.none")}</Body> : null}
-        {sets.map((name) => {
-          const chosen = job.excludeSets ?? [];
-          return (
-            <Toggle
-              key={name}
-              label={name}
-              value={chosen.includes(name)}
-              onChange={(on) =>
-                set({ excludeSets: on ? [...chosen, name] : chosen.filter((each) => each !== name) }, true)
-              }
-            />
-          );
-        })}
+        <SharedListPicker job={job} lists={lists} jobs={jobs} way="exclude" set={set} onLists={reloadSettings} onManage={manageLists} />
         <View ref={excludeRef} collapsable={false}>
           <LinesField
             label={t("edit.ownExclude")}
@@ -839,6 +860,158 @@ function ConnectionSection({
         </View>
       ) : null}
     </Section>
+  );
+}
+
+/**
+ * The shared lists for one side of a job: the picked ones as tags and a sheet
+ * to pick them in, so twenty lists still fit. A list the other side holds is
+ * not offered, since a list both included and excluded takes nothing it matches.
+ */
+function SharedListPicker({
+  job,
+  lists,
+  jobs,
+  way,
+  set,
+  onLists,
+  onManage,
+}: {
+  job: JobConfig;
+  lists: Record<string, string[]>;
+  /** Every job, for how many an edit to a list changes. */
+  jobs: JobConfig[];
+  way: Way;
+  set: (patch: Partial<JobConfig>, now?: boolean) => void;
+  onLists: () => void;
+  onManage: () => void;
+}) {
+  const { t } = useT();
+  const [open, setOpen] = useState(false);
+  const [naming, setNaming] = useState<string | null>(null);
+  const [refused, setRefused] = useState<string | null>(null);
+  const chosen = (way === "include" ? job.includeSets : job.excludeSets) ?? [];
+  const save = async (next: Record<string, string[]>) => {
+    try {
+      await api.writeSettings({ excludeSets: next });
+      setRefused(null);
+      onLists();
+      return true;
+    } catch (e) {
+      setRefused((e as Error).message);
+      return false;
+    }
+  };
+  const create = async () => {
+    const next = addList(lists, naming ?? "");
+    if (!next) return;
+    const name = (naming ?? "").trim();
+    if (await save(next)) {
+      setNaming(null);
+      set(pickSet(job, name, way, true), true);
+    }
+  };
+  return (
+    <>
+      {chosen.length > 0 ? (
+        <View style={styles.tags}>
+          {chosen.map((name) => (
+            <Badge key={name} label={name} />
+          ))}
+        </View>
+      ) : null}
+      {chosen.map((name) => (
+        <ListPatterns
+          key={name}
+          name={name}
+          patterns={lists[name] ?? []}
+          jobs={jobsUsing(jobs, name, job)}
+          onSave={(patterns) => save({ ...lists, [name]: patterns })}
+        />
+      ))}
+      {refused ? <Refusal text={refused} /> : null}
+      <View style={[styles.end, styles.buttons]}>
+        <Button label={t("sets.manage")} labelKey="sets.manage" glyph="IconGear" wide={false} onPress={onManage} />
+        <Button label={t("edit.pickLists")} glyph="IconPencil" wide={false} onPress={() => setOpen(true)} />
+      </View>
+      <Sheet open={open} title={way === "include" ? t("edit.inclusions") : t("edit.exclude")} onClose={() => setOpen(false)}>
+        {offered(Object.keys(lists).sort(), job, way).map((name) => {
+          const on = chosen.includes(name);
+          return (
+            <PickRow key={name} on={on} label={name} onPress={() => set(pickSet(job, name, way, !on), true)}>
+              <Body>{name}</Body>
+            </PickRow>
+          );
+        })}
+        {naming === null ? (
+          <Button label={t("sets.newList")} labelKey="sets.newList" glyph="IconAdd" onPress={() => setNaming("")} />
+        ) : (
+          <View style={styles.stack}>
+            <Field label={t("sets.newName")} value={naming} onChange={setNaming} />
+            <View style={styles.end}>
+              <Button
+                label={t("sets.add")}
+                labelKey="sets.add"
+                glyph="IconAdd"
+                wide={false}
+                disabled={!addList(lists, naming)}
+                onPress={() => void create()}
+              />
+            </View>
+          </View>
+        )}
+      </Sheet>
+    </>
+  );
+}
+
+/**
+ * A picked list's patterns, editable where the job is edited. Saving changes
+ * the shared list, so every job that uses it changes too, and the line above
+ * Save says how many before it happens.
+ */
+function ListPatterns({
+  name,
+  patterns,
+  jobs,
+  onSave,
+}: {
+  name: string;
+  patterns: string[];
+  jobs: number;
+  onSave: (patterns: string[]) => Promise<boolean>;
+}) {
+  const { t } = useT();
+  const [draft, setDraft] = useState<string[] | null>(null);
+  const edited = draft !== null && draft.join("\n") !== patterns.join("\n");
+  return (
+    <View style={styles.stack}>
+      <LinesField label={name} value={draft ?? patterns} onChange={setDraft} />
+      {edited ? (
+        <>
+          <Caption>{t("sets.usedBy", { count: jobs })}</Caption>
+          <View style={styles.end}>
+            <Button
+              label={t("sets.saveList")}
+              labelKey="sets.saveList"
+              wide={false}
+              onPress={() => void onSave(draft!).then((ok) => ok && setDraft(null))}
+            />
+          </View>
+        </>
+      ) : null}
+    </View>
+  );
+}
+
+/** Under the included lists when all of them are empty, so the job takes nothing. */
+function TakesNothing() {
+  const { t } = useT();
+  const { p } = useTheme();
+  return (
+    <View accessibilityLiveRegion="polite">
+      <Text style={[styles.note, { color: p.warnInk }]}>{t("edit.includesNothing")}</Text>
+    </View>
   );
 }
 
@@ -1186,6 +1359,9 @@ const styles = StyleSheet.create({
   sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },
+  tags: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
+  buttons: { gap: space.sm, flexWrap: "wrap" },
+  end: { flexDirection: "row", justifyContent: "flex-end" },
   note: { fontSize: text.subline },
   days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
   day: { flexGrow: 1, minWidth: 40, paddingVertical: 7, paddingHorizontal: space.sm, alignItems: "center" },

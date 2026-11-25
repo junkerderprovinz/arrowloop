@@ -1,6 +1,6 @@
 import { DirectionGlyph } from '../../components/Direction'
 import { ExceptionsCard, useExceptions } from '../../components/Exceptions'
-import { ExcludeSetEditor, type Sets } from '../../components/ExcludeSets'
+import { SharedListEditor, type Sets } from '../../components/SharedLists'
 import { NumberField, Text } from '../../components/Field'
 import { QuietPeriod } from '../../components/QuietPeriod'
 import { ScheduleDetails, ScheduleKinds, useSchedule } from '../../components/Schedule'
@@ -180,7 +180,7 @@ export function SyncPage() {
       </Card>
 
       <Card title={t('engine.sets')} hint={t('engine.setsHint')} hueIndex={cardHue()}>
-        <ExcludeSetEditor
+        <SharedListEditor
           sets={(draft.excludeSets as Sets | undefined) ?? {}}
           onChange={(next) => patch({ excludeSets: next })}
         />

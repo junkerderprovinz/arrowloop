@@ -57,6 +57,9 @@ const RULES: Rule[] = [
   [/^vpn\.wifi\.(grant|always)$/i, 'IconUnlock'],
   [/^vpn\.wifi\.locationOpen$/i, 'IconGear'],
 
+  // The way from a job's shared lists to the card that manages them.
+  [/^sets\.manage$/i, 'IconGear'],
+
   // Pairing: the words shown, entered and pasted, and the answers to an
   // instance that waits for approval.
   [/^pairing\.show$/i, 'IconEye'],

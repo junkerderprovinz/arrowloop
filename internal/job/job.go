@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -488,11 +489,17 @@ type Job struct {
 	// every file, and an exclusion still wins over it.
 	Include []string `json:"include,omitempty"`
 
-	// ExcludeSets names reusable pattern lists defined at the top of the file.
-	// Their patterns are added to Exclude rather than replacing it. An
-	// undefined name is an error at load, because a filter that silently
-	// matches nothing syncs what it was meant to keep out.
+	// ExcludeSets names shared lists, defined under excludeSets at the top of
+	// the file, whose patterns this job keeps out. They are added to Exclude
+	// rather than replacing it. An undefined name is an error at load, because
+	// a filter that silently matches nothing syncs what it was meant to keep
+	// out.
 	ExcludeSets []string `json:"excludeSets,omitempty"`
+
+	// IncludeSets names shared lists from the same place whose patterns this
+	// job takes, added to Include. A job whose inclusions all come from lists
+	// that are empty takes no files, never every file.
+	IncludeSets []string `json:"includeSets,omitempty"`
 
 	// Direction says which way this job may write: "both" (the default),
 	// "leftToRight" or "rightToLeft". A one-way job still compares both sides
@@ -552,6 +559,12 @@ type Job struct {
 // is loaded with the others, so one bad job does not stop all of them, and
 // every run of it fails with this reason.
 func (j Job) Refused() error { return j.refused }
+
+// IncludesNothing reports whether the job asks for shared lists to include and
+// they, with its own inclusions, came out empty, so it takes no files.
+func (j Job) IncludesNothing() bool {
+	return len(j.IncludeSets) > 0 && len(j.Include) == 0
+}
 
 // Key is what the job's runs and findings are kept under.
 func (j Job) Key() string { return jobid.Key(j.ID, j.Name) }
@@ -834,9 +847,21 @@ func load(path string) (*Config, error) {
 		for _, name := range j.ExcludeSets {
 			patterns, ok := cfg.ExcludeSets[name]
 			if !ok {
-				return nil, fmt.Errorf("job %q asks for the exclude set %q, and no set of that name is defined", j.Name, name)
+				return nil, fmt.Errorf("job %q excludes the shared list %q, and no list of that name is defined", j.Name, name)
 			}
 			j.Exclude = append(j.Exclude, patterns...)
+		}
+		for _, name := range j.IncludeSets {
+			patterns, ok := cfg.ExcludeSets[name]
+			if !ok {
+				return nil, fmt.Errorf("job %q includes the shared list %q, and no list of that name is defined", j.Name, name)
+			}
+			if slices.Contains(j.ExcludeSets, name) {
+				j.refused = fmt.Errorf(
+					"job %q both includes and excludes the shared list %q, so every file the list matches would be taken and kept out at once; pick it on one side only",
+					j.Name, name)
+			}
+			j.Include = append(j.Include, patterns...)
 		}
 		// A disabled job may be half written, and a job with no sides at all
 		// is a draft, which is what the editor's "add a job" button creates.
@@ -1054,8 +1079,8 @@ func (j Job) Options() (engine.Options, error) {
 		compare.BrakeFloor = *j.BrakeFloor
 	}
 
-	// Named sets were merged into Exclude at load, so this also works on a Job
-	// built without a Config.
+	// Shared lists were merged into Exclude and Include at load, so this also
+	// works on a Job built without a Config.
 	patterns := append([]string(nil), j.Exclude...)
 	if !j.NoDefaultExcludes {
 		patterns = append(patterns, filter.InProgress...)
@@ -1067,6 +1092,9 @@ func (j Job) Options() (engine.Options, error) {
 	}
 	if excl, err = excl.Only(j.Include); err != nil {
 		return engine.Options{}, err
+	}
+	if j.IncludesNothing() {
+		excl = excl.Nothing()
 	}
 
 	return engine.Options{

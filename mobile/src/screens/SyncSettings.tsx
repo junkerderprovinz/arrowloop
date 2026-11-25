@@ -4,10 +4,10 @@ import { Alert, StyleSheet, View } from "react-native";
 import { heldKey } from "../deviceConditions";
 import { engine, type DeviceConditions, type DevicePolicy } from "../engine";
 import { useT } from "../i18n";
-import { useEngineSettings } from "../settings";
+import { settings as engineSettings, useEngineSettings } from "../settings";
 import { useWaiting } from "../waiting";
 import { ChoiceRow } from "../choiceRow";
-import { Field, NumberField, Refusal } from "../fields";
+import { Field, LinesField, NumberField, Refusal } from "../fields";
 import { Schedule } from "./JobEdit";
 import { api, type JobConfig } from "../api";
 import { space } from "../theme";
@@ -22,6 +22,7 @@ import {
   inheritAll,
   type Exception,
 } from "../../../web/src/lib/follows";
+import { addList, handOver, jobsUsing, stranded } from "../../../web/src/lib/sharedLists";
 
 /**
  * The defaults every job starts from, and the phone's run conditions. A job
@@ -258,7 +259,119 @@ export function SyncSettings() {
         />
       </Section>
 
+      <SharedListsSection hue={7} />
     </Page>
+  );
+}
+
+type Sets = Record<string, string[]>;
+
+/**
+ * The shared lists, which a job includes or excludes by name. A list's
+ * patterns are written when its box is left, so a reload between two keys
+ * cannot take back what was just typed.
+ */
+function SharedListsSection({ hue }: { hue: number }) {
+  const { t } = useT();
+  const [sets, setSets] = useState<Sets | null>(null);
+  const [drafts, setDrafts] = useState<Sets>({});
+  const [adding, setAdding] = useState("");
+  const [refused, setRefused] = useState<string | null>(null);
+
+  const read = useCallback(() => {
+    engineSettings.read().then(
+      (s) => setSets((s.excludeSets as Sets | undefined) ?? {}),
+      () => setSets({}),
+    );
+  }, []);
+  useEffect(read, [read]);
+
+  // When the engine refuses the lists, its reason shows and the stored lists
+  // come back, so the screen never claims what was not saved.
+  const save = async (next: Sets) => {
+    setSets(next);
+    try {
+      await api.writeSettings({ excludeSets: next });
+      setRefused(null);
+    } catch (e) {
+      setRefused((e as Error).message);
+      read();
+    }
+  };
+
+  if (!sets) return null;
+  const names = Object.keys(sets).sort();
+  // A list still named by a job would make the engine refuse the settings,
+  // so the jobs take over its patterns first, once somebody has seen how many
+  // there are. An empty list a job takes all its files from cannot go: the
+  // job would be left taking every file.
+  const remove = async (name: string) => {
+    const { [name]: _, ...rest } = sets;
+    const config = await api.config();
+    const blocked = stranded(config.jobs, name, sets[name] ?? []);
+    if (blocked.length > 0) return setRefused(t("sets.removeStranded", { name: blocked.join(", ") }));
+    const count = jobsUsing(config.jobs, name);
+    if (count === 0) return void save(rest);
+    Alert.alert(`${t("sets.remove")}: ${name}`, t("sets.removeUsed", { count }), [
+      { text: t("confirm.cancel"), style: "cancel" },
+      {
+        text: t("sets.remove"),
+        style: "destructive",
+        onPress: () =>
+          void api.writeConfig({ ...config, jobs: handOver(config.jobs, name, sets[name] ?? []) }).then(
+            () => save(rest),
+            (e: Error) => setRefused(e.message),
+          ),
+      },
+    ]);
+  };
+  const add = () => {
+    const next = addList(sets, adding);
+    if (!next) return;
+    setAdding("");
+    void save(next);
+  };
+
+  return (
+    <Section title={t("engine.sets")} hint={t("engine.setsHint")} hue={hue}>
+      {names.length === 0 ? <Body muted>{t("sets.none")}</Body> : null}
+      {names.map((name) => (
+        <View key={name} style={styles.list}>
+          <LinesField
+            label={name}
+            value={drafts[name] ?? sets[name]!}
+            onChange={(list) => setDrafts((was) => ({ ...was, [name]: list }))}
+            onBlur={() => {
+              const draft = drafts[name];
+              if (!draft) return;
+              setDrafts(({ [name]: _, ...rest }) => rest);
+              void save({ ...sets, [name]: draft });
+            }}
+          />
+          <View style={styles.end}>
+            <Button
+              label={t("sets.remove")}
+              labelKey="sets.remove"
+              glyph="IconTrash"
+              wide={false}
+              onPress={() => void remove(name)}
+            />
+          </View>
+        </View>
+      ))}
+      {refused ? <Refusal text={refused} /> : null}
+      <Field label={t("sets.newName")} value={adding} onChange={setAdding} hidePlaceholderOnFocus />
+      <View style={styles.end}>
+        <Button
+          label={t("sets.add")}
+          labelKey="sets.add"
+          glyph="IconAdd"
+          wide={false}
+          disabled={!addList(sets, adding)}
+          onPress={add}
+        />
+      </View>
+    </Section>
   );
 }
 
@@ -358,5 +471,6 @@ function clamp(text: string, low: number, high: number): number | undefined {
 
 const styles = StyleSheet.create({
   exception: { gap: space.xs },
+  list: { gap: space.xs },
   end: { flexDirection: "row", justifyContent: "flex-end" },
 });

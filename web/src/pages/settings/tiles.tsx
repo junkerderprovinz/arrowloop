@@ -68,6 +68,7 @@ export const FORMER_NAMES: FormerName[] = [
   { labelKey: 'engine.telling', tile: 'safety' },
   { labelKey: 'former.backup', tile: 'general', card: 'backup.title' },
   { labelKey: 'former.contents', tile: 'sync', card: 'settings.contents' },
+  { labelKey: 'former.sets', tile: 'sync', card: 'engine.sets' },
 ]
 
 const REMEMBERED = 'arrowloop.settingsTile'

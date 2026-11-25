@@ -66,8 +66,9 @@ manager happened to start the process in.
 | `runAtStart` | `false` | Run once as soon as the program starts, before waiting for the schedule. Fires once per start and never on a configuration reload. |
 | `disabled` | `false` | Keeps the job in the file without running it on its own. It can still be started by hand. |
 | `exclude` | none | Globs of paths to leave alone entirely; see [Exclude patterns](#exclude-patterns). |
-| `excludeSets` | none | Names of [shared exclude lists](#shared-exclude-lists). Their patterns are added to `exclude`. |
+| `excludeSets` | none | Names of [shared lists](#shared-lists) whose patterns the job keeps out. They are added to `exclude`. |
 | `include` | none | Globs of the only files the job takes; see [Include patterns](#include-patterns). |
+| `includeSets` | none | Names of [shared lists](#shared-lists) whose patterns the job takes. They are added to `include`. |
 | `noDefaultExcludes` | `false` | Also sync half-written files such as `*.part` and Office owner files. |
 | `quietPeriod` | `5s` | How long a file must sit unchanged before it is touched. |
 | `modWindow` | `2s` | How far modification times may differ and still count as equal. Only applies where a side cannot produce a hash. Where a side keeps no modification times at all, as MEGA, a copy there is checked by its size. |
@@ -210,36 +211,60 @@ where it is on both sides and never counts as deleted, so narrowing a job later
 is safe. With `emptyDirs` on, only the folders a pattern names are carried as
 folders of their own. The others appear wherever a file needs them.
 
-## Shared exclude lists
+## Shared lists
 
 A list of patterns that several jobs need is written once, at the top of the
 file under `excludeSets`, and asked for by name. The alternative is the same
 twenty lines pasted into every job, drifting apart until two jobs that were
-meant to ignore the same things quietly stop doing so.
+meant to take or ignore the same things quietly stop doing so.
+
+Each job picks a list either to keep its files out, under `excludeSets`, or to
+take only its files, under `includeSets`. So one list of photo patterns serves
+a job that takes only the photos and another that takes everything else:
 
 ```json
 {
   "excludeSets": {
-    "junk": ["Thumbs.db", ".DS_Store", "**/.thumbnails/**"]
+    "junk": ["Thumbs.db", ".DS_Store", "**/.thumbnails/**"],
+    "photos": ["*.jpg", "*.heic", "*.dng"]
   },
   "jobs": [
     {
-      "name": "photos",
-      "left": "/data/Photos",
+      "name": "camera",
+      "left": "/data/Camera",
       "right": "sftp:backup/photos",
-      "state": "state/photos.db",
-      "exclude": ["*.xmp"],
+      "state": "state/camera.db",
+      "includeSets": ["photos"],
       "excludeSets": ["junk"]
+    },
+    {
+      "name": "everything else",
+      "left": "/data/Camera",
+      "right": "sftp:backup/other",
+      "state": "state/other.db",
+      "excludeSets": ["junk", "photos"]
     }
   ]
 }
 ```
 
-A list's patterns are added to the job's own `exclude` rather than replacing
-it. A job asking for a list that does not exist is refused when the file is
-read, because a filter that silently matches nothing breaks nothing anybody
-would notice; it syncs the thing somebody asked it to leave alone. In the
-interface the lists are kept on the **Sync** tile under **Settings**.
+The key at the top is still called `excludeSets`, although its lists serve
+both ways, so a file written before `includeSets` existed reads the same as
+ever, and an older version still reads a file that uses no include lists.
+
+A list's patterns are added to the job's own `exclude` or `include` rather than
+replacing them. A job asking for a list that does not exist is refused when the
+file is read, because a filter that silently matches nothing breaks nothing
+anybody would notice; it syncs the thing somebody asked it to leave alone. A
+job that includes and excludes the same list is refused when it runs.
+
+An empty list never widens a job. A job whose inclusions all come from lists
+that are empty takes no files at all, rather than every file as a job without
+any include patterns would, and the interface shows a warning on the job until
+one of its lists gets a pattern. Without that, emptying a list would turn a job
+that moves the photos out of a camera folder into one that moves the whole
+folder. In the interface the lists are kept on the **Sync** tile under
+**Settings**, on the desktop, in the browser and on the phone.
 
 ## Keeping old versions
 
@@ -567,7 +592,7 @@ it is given one.
 | `anomalies.notifyHeld` | `true` | Report a job a brake holds where runs report to. |
 | `anomalies.notifyNotes` | `false` | Report the notes there as well. |
 | `defaults` | none | Values for every job that does not set its own; see [below](#defaults-and-the-settings-tiles). |
-| `excludeSets` | none | Named lists of exclude patterns; see [Shared exclude lists](#shared-exclude-lists). |
+| `excludeSets` | none | Named lists of patterns that jobs include or exclude; see [Shared lists](#shared-lists). |
 | `keepJobOrder` | `false` | List the jobs in the order they stand in `jobs` rather than by name. The interface sets it the first time a job is moved, and a new job goes to the end. |
 | `autoBackup.off` | `false` | Switch the automatic backups off; see [Automatic backups](#automatic-backups). |
 | `autoBackup.everyDays` | `1` | How many days pass between two automatic backups, up to 365. |
@@ -705,7 +730,7 @@ the language `lang` or the `Accept-Language` header asks for.
 The settings at the top of the file have a place in the interface as well as in
 the file, each on a tile under **Settings**. The bandwidth limit, how many jobs
 may run at once and where the run log lives are on **General**; the defaults
-below, what happens after a failure and the shared exclude lists are on
+below, what happens after a failure and the shared lists are on
 **Sync**; the two brakes, the anomaly notes and who gets told are on **Safety
 net**. How long a run is kept, `historyKeep`, is on **General** in days.
 

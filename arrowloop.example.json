@@ -65,6 +65,12 @@
       "node_modules/**",
       "target/**",
       "dist/**"
+    ],
+    "pictures": [
+      "*.jpg",
+      "*.jpeg",
+      "*.heic",
+      "*.png"
     ]
   },
   "jobs": [
@@ -77,6 +83,9 @@
       "schedule": "*/15 * * * *",
       "exclude": [
         "*.xmp"
+      ],
+      "includeSets": [
+        "pictures"
       ],
       "excludeSets": [
         "junk"

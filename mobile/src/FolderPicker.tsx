@@ -199,8 +199,8 @@ export function FolderPicker({
                 ]}
               />
               <Button
-                label={t("pick.choose")}
-                labelKey="pick.choose"
+                label={t("pick.create")}
+                labelKey="pick.create"
                 tone="accent"
                 wide={false}
                 disabled={!naming.trim() || busy}

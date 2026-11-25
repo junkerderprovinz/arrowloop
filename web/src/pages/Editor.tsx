@@ -8,7 +8,7 @@ import { SettingRow } from '../components/GlobalValues'
 import { JobWay } from '../components/JobWay'
 import { MinAge } from '../components/MinAge'
 import { QuietPeriod } from '../components/QuietPeriod'
-import { ExcludeSetPicker } from '../components/ExcludeSets'
+import { SharedListField } from '../components/SharedLists'
 import { placeOffers, type Known } from '../components/FolderPicker'
 import { ScheduleDetails, ScheduleKinds, useSchedule } from '../components/Schedule'
 import { HUE_OFFSET, Selector } from '../components/Selector'
@@ -17,7 +17,8 @@ import { Toggle } from '../lib/glimstone/Toggle'
 import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
 import { errorText } from '../lib/errorText'
-import { useHost } from '../lib/host'
+import { useHost, type SharedLists } from '../lib/host'
+import { takesNothing } from '../lib/sharedLists'
 import { overNetwork } from '../lib/localTarget'
 import { tunnelName, vpnChoiceNote, type VpnState } from '../lib/vpn'
 import { useT } from '../lib/i18n'
@@ -310,6 +311,14 @@ export function JobForm({
   const { t } = useT()
   const host = useHost()
   const [advanced, setAdvanced] = useState(false)
+  const [lists, setLists] = useState<SharedLists | null>(null)
+  useEffect(() => {
+    host
+      .sharedLists?.()
+      .then(setLists)
+      .catch(() => setLists(null))
+  }, [host])
+  const emptySets = lists ? Object.keys(lists.sets).filter((name) => lists.sets[name]!.length === 0) : []
   // What the job runs with. A job written by hand can hold some settings and
   // leave others to the defaults, and those show the default's value too.
   const unset = JOB_WINDOW_SETTINGS.filter((s) => !owns(job, s))
@@ -425,14 +434,18 @@ export function JobForm({
       </SubCard>
 
       <SubCard title={t('edit.inclusions')}>
+        <Field label={t('edit.excludeSets')} hint={t('edit.includeSetsHint')} plain>
+          <SharedListField label={t('edit.inclusions')} job={job} way="include" lists={lists} onLists={setLists} onChange={patch} />
+          {takesNothing(job, emptySets) && <p className="text-subline text-statusWarn">{t('edit.includesNothing')}</p>}
+        </Field>
         <Field label={t('edit.ownInclude')} hint={t('edit.includeHint')}>
           <Lines value={job.include ?? []} onChange={(v) => patch({ include: v })} placeholder={'*.tar.gz\nsrc/**'} />
         </Field>
       </SubCard>
 
       <SubCard title={t('edit.exclude')}>
-        <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')}>
-          <ExcludeSetPicker chosen={job.excludeSets ?? []} onChange={(v) => patch({ excludeSets: v })} />
+        <Field label={t('edit.excludeSets')} hint={t('edit.excludeSetsHint')} plain>
+          <SharedListField label={t('edit.exclude')} job={job} way="exclude" lists={lists} onLists={setLists} onChange={patch} />
         </Field>
         <Field label={t('edit.ownExclude')} hint={t('edit.excludeHint')}>
           <Lines value={job.exclude ?? []} onChange={(v) => patch({ exclude: v })} placeholder={'*.tmp\n**/node_modules/**'} />

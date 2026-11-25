@@ -106,6 +106,10 @@ func TestEveryPackageTheWebLocksIsInTheFlatpakSources(t *testing.T) {
 	}
 	urls := flatpakURLs(t, "node-sources.json")
 	for name, p := range lock.Packages {
+		// A tarball in the repository travels with the source the Flatpak builds from.
+		if strings.HasPrefix(p.Resolved, "file:") {
+			continue
+		}
 		if p.Resolved != "" && !urls[p.Resolved] {
 			t.Errorf("%s (%s) is not in flatpak/node-sources.json; run node flatpak/update-sources.mjs", name, p.Resolved)
 		}

@@ -298,6 +298,10 @@ func TestASetNobodyDefinedIsRefused(t *testing.T) {
 	if !strings.Contains(err.Error(), "typo") {
 		t.Errorf("the refusal does not name the set that is missing: %v", err)
 	}
+	// The interface calls them shared lists, and the refusal is shown there.
+	if !strings.Contains(err.Error(), "shared list") {
+		t.Errorf("the refusal does not call it a shared list: %v", err)
+	}
 }
 
 func TestThePhonesLanguageIsKeptWithTheSettings(t *testing.T) {

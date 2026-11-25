@@ -55,6 +55,7 @@ import { useWalkedPalette } from "./disco";
 import { springOf, useConfirm, useMotion, useSystemReduced, type MotionIntensity } from "./motion";
 import { arrivalDelay, arrivalSide, edgeReach } from "./motionNative";
 import { COLUMN, floatingInset, GUTTER, pageRoom, pageTop, panelWidth, titleRow } from "./layout";
+import { revealScroll } from "./reveal";
 import { useFrame } from "./frame";
 
 // GlimStone's controls for React Native, with the design language's shapes
@@ -295,6 +296,7 @@ export function MovingList<T>(props: FlatListProps<T>) {
     <Arrival.Provider value={motion.line}>
       <Animated.View style={motion.style}>
         <FlatList
+          keyboardShouldPersistTaps="handled"
           {...props}
           {...motion.scroll}
           contentContainerStyle={[props.contentContainerStyle, { paddingHorizontal: room }]}
@@ -540,7 +542,11 @@ export function Sheet({
               </Text>
             </View>
           </View>
-          <ScrollView style={wide && !centred ? styles.panelScroll : styles.sheetScroll} contentContainerStyle={styles.sheetBody}>
+          <ScrollView
+            style={wide && !centred ? styles.panelScroll : styles.sheetScroll}
+            contentContainerStyle={styles.sheetBody}
+            keyboardShouldPersistTaps="handled"
+          >
             {children}
           </ScrollView>
           <View style={styles.sheetFoot}>
@@ -1643,9 +1649,10 @@ function useTitled(): boolean {
 
 /**
  * Gives up the part of a page the keyboard covers and scrolls the focused
- * field into what is left. An app targeting API 35 or later is drawn edge to
- * edge, so Android no longer shrinks the window for the keyboard. Only the
- * page on screen answers, since a tab keeps its pages mounted.
+ * field, with the control under it, into what is left. An app targeting API
+ * 35 or later is drawn edge to edge, so Android no longer shrinks the window
+ * for the keyboard. Only the page on screen answers, since a tab keeps its
+ * pages mounted.
  */
 function useKeyboardCover(scroller: RefObject<ScrollView | null>, inner: RefObject<View | null>) {
   const nav = useContext(NavigationContext);
@@ -1658,7 +1665,7 @@ function useKeyboardCover(scroller: RefObject<ScrollView | null>, inner: RefObje
   // since before that it cannot scroll far enough for a field near the end.
   const pending = useRef(false);
 
-  /** Scrolls the focused field up into the visible height, and leaves one already in sight. */
+  /** Scrolls the focused field and the room under it into the visible height, and leaves them if they are in sight. */
   const reveal = useCallback(
     (visible: number) => {
       const field = TextInput.State.currentlyFocusedInput();
@@ -1667,11 +1674,8 @@ function useKeyboardCover(scroller: RefObject<ScrollView | null>, inner: RefObje
         inner.current,
         (_x, y, _w, h) =>
           field.measureInWindow((_wx, onScreen) => {
-            const offset = top.current + y - onScreen;
-            const bottom = y + h + space.xl;
-            if (bottom > offset + visible) {
-              scroller.current?.scrollTo({ y: bottom - visible, animated: ms.layout > 0 });
-            }
+            const to = revealScroll(y, h, top.current + y - onScreen, visible, TOUCH + space.xl);
+            if (to !== null) scroller.current?.scrollTo({ y: to, animated: ms.layout > 0 });
           }),
         () => {},
       );
