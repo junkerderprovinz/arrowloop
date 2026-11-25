@@ -242,6 +242,7 @@ function withEngineManifest(config) {
     }
 
     addStartJob(app);
+    addOptionalHardware(cfg.modResults.manifest);
 
     // Shizuku hands the app its binder through this provider. The permission
     // is one the shell holds and apps do not, so only Shizuku can call it.
@@ -308,6 +309,31 @@ function addStartJob(app) {
     });
   }
   return app;
+}
+
+/**
+ * The location and Wi-Fi permissions make Play require the hardware behind
+ * them and hide the app from devices without it. The location only serves to
+ * read the Wi-Fi's name, and the app syncs over mobile data as well.
+ */
+const OPTIONAL_HARDWARE = [
+  "android.hardware.location",
+  "android.hardware.location.gps",
+  "android.hardware.location.network",
+  "android.hardware.wifi",
+];
+
+function addOptionalHardware(manifest) {
+  manifest["uses-feature"] = manifest["uses-feature"] ?? [];
+  for (const name of OPTIONAL_HARDWARE) {
+    const declared = manifest["uses-feature"].find((f) => f.$["android:name"] === name);
+    if (declared) {
+      declared.$["android:required"] = "false";
+    } else {
+      manifest["uses-feature"].push({ $: { "android:name": name, "android:required": "false" } });
+    }
+  }
+  return manifest;
 }
 
 function withNetworkConfig(config) {
@@ -654,3 +680,4 @@ module.exports = function withEngine(config) {
 
 module.exports.addRotation = addRotation;
 module.exports.addStartJob = addStartJob;
+module.exports.addOptionalHardware = addOptionalHardware;

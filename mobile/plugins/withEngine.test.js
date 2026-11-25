@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const app = require("../app.json");
-const { addRotation, addStartJob } = require("./withEngine.js");
+const { addOptionalHardware, addRotation, addStartJob } = require("./withEngine.js");
 
 // The part of Expo's MainActivity template the plugin edits.
 const TEMPLATE = `package arrowloop.halleluja.design
@@ -91,4 +91,23 @@ test("a second prebuild adds the plug-in once", () => {
   addStartJob(app);
   assert.equal(app.activity.length, 2);
   assert.equal(app.receiver.length, 1);
+});
+
+function requiredOf(manifest) {
+  return Object.fromEntries(manifest["uses-feature"].map((f) => [f.$["android:name"], f.$["android:required"]]));
+}
+
+test("devices without GPS or Wi-Fi can still install the app", () => {
+  const required = requiredOf(addOptionalHardware({}));
+  for (const name of ["android.hardware.location", "android.hardware.location.gps", "android.hardware.wifi"]) {
+    assert.equal(required[name], "false", name);
+  }
+});
+
+test("a feature something else declared as required becomes optional", () => {
+  const manifest = { "uses-feature": [{ $: { "android:name": "android.hardware.wifi", "android:required": "true" } }] };
+  addOptionalHardware(manifest);
+  addOptionalHardware(manifest);
+  assert.equal(manifest["uses-feature"].filter((f) => f.$["android:name"] === "android.hardware.wifi").length, 1);
+  assert.equal(requiredOf(manifest)["android.hardware.wifi"], "false");
 });
