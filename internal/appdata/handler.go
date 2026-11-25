@@ -58,7 +58,9 @@ func (h *handler) resolve(p string) (string, error) {
 }
 
 func (h *handler) inside(p string) bool {
-	return p == h.root || strings.HasPrefix(p, h.root+string(filepath.Separator))
+	// The root of a disk already ends in a separator.
+	below := strings.TrimSuffix(h.root, string(filepath.Separator)) + string(filepath.Separator)
+	return p == h.root || strings.HasPrefix(p, below)
 }
 
 // appFolder is the folder of the app that p belongs to, the first level below
@@ -94,17 +96,26 @@ func (h *handler) Fileread(r *sftp.Request) (io.ReaderAt, error) {
 	if err != nil {
 		return nil, err
 	}
-	if isLink(p) {
+	// Only a plain file is read. Opening a pipe waits for a writer, and opening
+	// a device can make it act, as a watchdog does by arming itself.
+	info, err := os.Lstat(p)
+	if err != nil {
+		return nil, err
+	}
+	if !info.Mode().IsRegular() || madeUp(p) {
 		return nil, errDenied
 	}
-	return os.OpenFile(p, os.O_RDONLY|noFollow, 0)
-}
-
-// isLink reports whether p is a symlink. noFollow closes the gap between this
-// check and the open where the system has O_NOFOLLOW; Windows does not.
-func isLink(p string) bool {
-	info, err := os.Lstat(p)
-	return err == nil && info.Mode()&fs.ModeSymlink != 0
+	f, err := os.OpenFile(p, os.O_RDONLY|noFollow|nonBlock, 0)
+	if err != nil {
+		return nil, err
+	}
+	// The path may have been swapped since the check. noFollow already
+	// refuses a link where the system has O_NOFOLLOW, which Windows does not.
+	if info, err := f.Stat(); err != nil || !info.Mode().IsRegular() {
+		f.Close()
+		return nil, errDenied
+	}
+	return f, nil
 }
 
 func (h *handler) Filewrite(r *sftp.Request) (io.WriterAt, error) {
@@ -235,14 +246,27 @@ func (h *handler) Filelist(r *sftp.Request) (sftp.ListerAt, error) {
 	}
 	switch r.Method {
 	case "List":
+		here, err := os.Lstat(p)
+		if err != nil {
+			return nil, err
+		}
+		if here.Mode()&fs.ModeSymlink != 0 || madeUp(p) {
+			return nil, errDenied
+		}
 		entries, err := os.ReadDir(p)
 		if err != nil {
 			return nil, err
 		}
+		// Links are left out, since reading through one is refused anyway and
+		// following one can lead in circles. So are devices, pipes and
+		// sockets, which hold no file to copy.
 		infos := make([]fs.FileInfo, 0, len(entries))
 		for _, e := range entries {
 			info, err := e.Info()
-			if err != nil {
+			if err != nil || !info.Mode().IsRegular() && !info.IsDir() {
+				continue
+			}
+			if info.IsDir() && mountPoint(here, info) && madeUp(filepath.Join(p, info.Name())) {
 				continue
 			}
 			infos = append(infos, info)

@@ -8,10 +8,12 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strings"
 	"testing"
 
 	_ "github.com/rclone/rclone/backend/alias"
 
+	"github.com/junkerderprovinz/arrowloop/internal/appdata"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
 )
@@ -84,6 +86,28 @@ func TestANewFolderLandsOnTheTarget(t *testing.T) {
 	}
 	if info, err := os.Stat(filepath.Join(root, "Holiday")); err != nil || !info.IsDir() {
 		t.Errorf("no folder arrived on the target: %v", err)
+	}
+}
+
+func TestNoFolderIsMadeOnTheRootTarget(t *testing.T) {
+	h := newHarness(t)
+	withRcloneConfig(t)
+	root := t.TempDir()
+	if err := remotes.Save(appdata.Root.Name, "alias", map[string]string{"remote": root, "description": appdata.Root.Marker}); err != nil {
+		t.Fatal(err)
+	}
+
+	resp := h.post(t, "/api/browse/mkdir", `{"parent":"Root:/","name":"Holiday"}`)
+	defer resp.Body.Close()
+	var said struct {
+		Error string `json:"error"`
+	}
+	_ = json.NewDecoder(resp.Body).Decode(&said)
+	if resp.StatusCode != http.StatusBadRequest || !strings.Contains(said.Error, "only reads") {
+		t.Errorf("making a folder on Root answered %s: %q", resp.Status, said.Error)
+	}
+	if _, err := os.Stat(filepath.Join(root, "Holiday")); err == nil {
+		t.Error("a folder was made on Root")
 	}
 }
 

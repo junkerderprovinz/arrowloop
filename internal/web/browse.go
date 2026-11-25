@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/junkerderprovinz/arrowloop/internal/appdata"
 	"github.com/junkerderprovinz/arrowloop/internal/remotes"
 	"github.com/junkerderprovinz/arrowloop/internal/scan"
 	"github.com/junkerderprovinz/arrowloop/internal/volume"
@@ -311,6 +312,10 @@ func (s *Server) makeDir(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if target, dir, ok := remotes.Split(body.Parent); ok {
+		if appdata.Root.Holds(body.Parent) {
+			writeError(w, http.StatusBadRequest, errors.New("the phone's Root target only reads, so no folder can be made there"))
+			return
+		}
 		ctx, err := s.targetVPN(r.Context(), target, true)
 		if err != nil {
 			writeError(w, http.StatusBadGateway, err)

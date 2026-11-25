@@ -10,6 +10,14 @@ The full notes for each release are in
 
 ## Unreleased
 
+## ✨ Added
+
+- **The whole file system of a rooted phone.** Switch on **Whole file system** under **Settings**, **Root and Shizuku**, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out, so a scan cannot run in circles. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
+
+## 🎨 Design
+
+- **Root and Shizuku get a card of their own.** **Settings**, **Root and Shizuku** shows how su and Shizuku answer, with the su command, **Request root**, **Ask Shizuku** and **Get Shizuku**, and holds the switches for Android/data and the whole file system. **This phone** keeps what works without either.
+
 ## 🐛 Fixed
 
 - **A side whose top the login may not write in.** At the root of an SFTP server, for one, ArrowLoop cannot create its .arrowloop folder, where the trash and old versions go. A run that would delete there or keep an old version now stops before it changes anything and says why, instead of leaving the files for later and failing from the second run on. The check on the job page names the trash as well, instead of calling the side read-only. If such a job may delete there outright, switch off its trash ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).

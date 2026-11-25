@@ -16,7 +16,16 @@ import Constants from "expo-constants";
 import { api } from "../api";
 import { AutoBackupSection } from "../autoBackup";
 import { IntegrationsSection } from "../vpnSection";
-import { engine, type AppData, type AppDataState, type AppDataWay, type PickedFile, type SharedFolder } from "../engine";
+import { rootActions, rootStatus, shizukuStatus, switchesHeld } from "../rootCard";
+import {
+  engine,
+  type AppData,
+  type AppDataState,
+  type AppDataWay,
+  type PickedFile,
+  type RootTargetState,
+  type SharedFolder,
+} from "../engine";
 import { useT, type T } from "../i18n";
 import type { Nav, SettingsStack } from "../nav";
 import { FrameProvider, useFrame } from "../frame";
@@ -128,7 +137,9 @@ export function Settings() {
   // "add" while the file picker is open, or the grant being given back.
   const [sharedBusy, setSharedBusy] = useState<string | null>(null);
   // What the switch or the way was moved to, shown while su or Shizuku answer.
-  const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay } | null>(null);
+  const [appDataWanted, setAppDataWanted] = useState<{ on?: boolean; way?: AppDataWay; rootTarget?: boolean } | null>(
+    null,
+  );
   // The su field's text once edited; it is stored when the field is left.
   const [suDraft, setSuDraft] = useState<string | null>(null);
   // Leaving the field can come before the render of the last keystroke, so
@@ -362,7 +373,10 @@ export function Settings() {
     return () => sub.remove();
   }, [refresh]);
 
-  const changeAppData = (wanted: { on?: boolean; way?: AppDataWay }, change: () => Promise<AppData>) => {
+  const changeAppData = (
+    wanted: { on?: boolean; way?: AppDataWay; rootTarget?: boolean },
+    change: () => Promise<AppData>,
+  ) => {
     setAppDataWanted(wanted);
     change()
       .then(setAppData, () => {})
@@ -375,6 +389,9 @@ export function Settings() {
       .finally(() => setSharedBusy(null));
   };
   const appDataOn = appDataWanted?.on ?? (appData !== null && appData.state !== "off");
+  const rootTargetOn = appDataWanted?.rootTarget ?? (appData !== null && appData.rootTarget !== "off");
+  const access = appData && rootActions(appData);
+  const held = appData && switchesHeld({ ...appData, appDataOn, rootTargetOn });
   const su = suDraft ?? appData?.su ?? "";
   const suValid = SU_COMMAND.test(su);
   const storeSu = () => {
@@ -505,76 +522,6 @@ export function Settings() {
             disabled={!possible}
             onChange={() => engine.openStorageSettings()}
           />
-          <Toggle
-            label={t("phone.appData")}
-            hint={t("phone.appDataHint")}
-            value={appDataOn}
-            disabled={appData === null || appDataWanted !== null}
-            onChange={(on) => changeAppData({ on }, () => engine.setAppData(on))}
-          />
-          {appData && appDataOn ? (
-            <>
-              {/* The way that works is marked until one is picked; a way that
-                  cannot work here is dimmed, and the line below says why. */}
-              <Choice<AppDataWay>
-                hue={0}
-                value={appDataWanted?.way ?? appData.way}
-                disabled={appDataWanted !== null}
-                onChange={(way) => {
-                  if (way !== appData.way) changeAppData({ way }, () => engine.setAppDataWay(way));
-                }}
-                options={[
-                  { value: "root", label: t("phone.appDataWayRoot"), disabled: !appData.root },
-                  { value: "shizuku", label: "Shizuku", disabled: !appData.shizuku },
-                ]}
-              />
-              {appDataWanted === null && appData.state !== "off" ? (
-                <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
-              ) : null}
-              {!appData.shizuku || appData.state === "noShizuku" ? (
-                <Button
-                  label={t("phone.appDataGetShizuku")}
-                  glyph="IconDownload"
-                  hint={t("phone.appDataGetShizukuHint")}
-                  onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
-                />
-              ) : null}
-              {/* Also while root is dimmed, since a wrong name for su is one
-                  reason it can be. */}
-              {appData.way === "root" || !appData.root ? (
-                <Field
-                  label={t("phone.appDataSu")}
-                  hint={t("phone.appDataSuHint")}
-                  value={su}
-                  onChange={(next) => {
-                    suTyped.current = next;
-                    setSuDraft(next);
-                  }}
-                  onBlur={storeSu}
-                  error={suValid ? undefined : t("phone.appDataSuBad")}
-                />
-              ) : null}
-              {appData.way === "root" && (appData.state === "rootDenied" || appData.state === "noSu") ? (
-                <View style={styles.actions}>
-                  <Button
-                    label={t("phone.appDataRequestRoot")}
-                    glyph="IconUnlock"
-                    busy={appDataWanted !== null}
-                    onPress={() => changeAppData({}, engine.requestRoot)}
-                  />
-                </View>
-              ) : null}
-              {appData.state === "shizukuDenied" ? (
-                <View style={styles.actions}>
-                  <Button
-                    label={t("phone.appDataAsk")}
-                    glyph="IconUnlock"
-                    onPress={() => engine.askShizuku().then(setAppData, () => {})}
-                  />
-                </View>
-              ) : null}
-            </>
-          ) : null}
           {/* What an app offers in Android's file picker needs neither root
               nor Shizuku, so it stands apart from Android/data. */}
           <Button
@@ -638,6 +585,100 @@ export function Settings() {
                 .catch(() => {});
             }}
           />
+        </Section>
+      </OnTile>
+
+      {/* Everything that needs root or Shizuku: first how su and Shizuku
+          answer, then what uses them. */}
+      <OnTile section="root">
+        <Section title={t("phone.rootCard")} hint={t("phone.rootCardHint")} hue={2}>
+          {appData ? (
+            <>
+              <Pair label={t("phone.appDataWayRoot")} value={t(rootStatus(appData.rootAnswer))} />
+              <Field
+                label={t("phone.appDataSu")}
+                hint={t("phone.appDataSuHint")}
+                value={su}
+                onChange={(next) => {
+                  suTyped.current = next;
+                  setSuDraft(next);
+                }}
+                onBlur={storeSu}
+                error={suValid ? undefined : t("phone.appDataSuBad")}
+              />
+              {access?.requestRoot ? (
+                <View style={styles.actions}>
+                  <Button
+                    label={t("phone.appDataRequestRoot")}
+                    glyph="IconUnlock"
+                    busy={appDataWanted !== null}
+                    onPress={() => changeAppData({}, engine.requestRoot)}
+                  />
+                </View>
+              ) : null}
+              <Pair
+                label="Shizuku"
+                value={t(shizukuStatus(appData.shizukuState))}
+                hint={t("phone.appDataGetShizukuHint")}
+              />
+              {access?.askShizuku ? (
+                <View style={styles.actions}>
+                  <Button
+                    label={t("phone.appDataAsk")}
+                    glyph="IconUnlock"
+                    onPress={() => engine.askShizuku().then(setAppData, () => {})}
+                  />
+                </View>
+              ) : null}
+              {access?.getShizuku ? (
+                <Button
+                  label={t("phone.appDataGetShizuku")}
+                  glyph="IconDownload"
+                  onPress={() => Linking.openURL(SHIZUKU_DOWNLOAD)}
+                />
+              ) : null}
+            </>
+          ) : null}
+          <Toggle
+            label={t("phone.appData")}
+            hint={t("phone.appDataHint")}
+            value={appDataOn}
+            disabled={appData === null || appDataWanted !== null || held?.appData != null}
+            onChange={(on) => changeAppData({ on }, () => engine.setAppData(on))}
+          />
+          {held?.appData ? <Caption>{t(held.appData)}</Caption> : null}
+          {appData && appDataOn ? (
+            <>
+              {/* The way that works is marked until one is picked; a way that
+                  cannot work here is dimmed, and the line below says why. */}
+              <Choice<AppDataWay>
+                hue={0}
+                value={appDataWanted?.way ?? appData.way}
+                disabled={appDataWanted !== null}
+                onChange={(way) => {
+                  if (way !== appData.way) changeAppData({ way }, () => engine.setAppDataWay(way));
+                }}
+                options={[
+                  { value: "root", label: t("phone.appDataWayRoot"), disabled: !appData.root },
+                  { value: "shizuku", label: "Shizuku", disabled: !appData.shizuku },
+                ]}
+              />
+              {appDataWanted === null && appData.state !== "off" ? (
+                <Caption>{appDataSaid(appData.state, appData, t)}</Caption>
+              ) : null}
+            </>
+          ) : null}
+          <Toggle
+            label={t("phone.rootTarget")}
+            hint={t("phone.rootTargetHint")}
+            value={rootTargetOn}
+            disabled={appData === null || appDataWanted !== null || held?.rootTarget != null}
+            onChange={(on) => changeAppData({ rootTarget: on }, () => engine.setRootTarget(on))}
+          />
+          {held?.rootTarget ? <Caption>{t(held.rootTarget)}</Caption> : null}
+          {appData && appDataWanted === null && appData.rootTarget !== "off" ? (
+            <Caption>{rootTargetSaid(appData.rootTarget, t)}</Caption>
+          ) : null}
         </Section>
       </OnTile>
 
@@ -1419,6 +1460,18 @@ function appDataSaid(state: Exclude<AppDataState, "off">, ways: Pick<AppData, "r
   if (!ways.root && state !== "noSu" && state !== "noWay") said.push(t("phone.appDataNoSu"));
   if (!ways.shizuku && state !== "noShizuku" && state !== "noWay") said.push(t("phone.appDataNoShizuku"));
   return said.join(" ");
+}
+
+/** The line under the Root target's switch: what it does or why it cannot. */
+function rootTargetSaid(state: Exclude<RootTargetState, "off">, t: T): string {
+  switch (state) {
+    case "root":
+      return t("phone.rootTargetOn");
+    case "failed":
+      return t("phone.rootTargetFailed");
+    default:
+      return stateSaid(state, t);
+  }
 }
 
 function stateSaid(state: Exclude<AppDataState, "off">, t: T): string {

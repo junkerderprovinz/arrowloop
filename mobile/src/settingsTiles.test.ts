@@ -60,7 +60,7 @@ test("sync, targets and pairing show their own screens beside the tiles", () => 
 test("each card of the phone's settings page lands on the tile the web keeps it on", () => {
   const on = (tile: string) =>
     (Object.keys(SECTION_TILE) as SectionId[]).filter((section) => SECTION_TILE[section] === tile);
-  assert.deepEqual(on("general"), ["thisPhone", "engine", "backup", "autoBackup", "danger"]);
+  assert.deepEqual(on("general"), ["thisPhone", "root", "engine", "backup", "autoBackup", "danger"]);
   assert.deepEqual(on("look"), ["language", "appearance", "motion"]);
   assert.deepEqual(on("apps"), ["server", "desktop"]);
   assert.deepEqual(on("info"), ["version", "components", "help", "about"]);

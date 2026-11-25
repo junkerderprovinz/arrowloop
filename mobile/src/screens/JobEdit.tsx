@@ -18,6 +18,7 @@ import { remoteOf, sideName, sidePair } from "../sides";
 import { isAccount } from "../space";
 import { animateNext, useMotion } from "../motion";
 import { durationWritten, spotOf, type Spot } from "../jobSpot";
+import { rootWritten } from "../rootTarget";
 import { vpnChoiceShown, vpnOptions } from "../vpn";
 import {
   AxisLabel,
@@ -159,7 +160,7 @@ export function JobEdit() {
   const persist = useCallback(
     async (next: JobConfig): Promise<boolean> => {
       const name = next.name.trim();
-      if (problemOf(next, t)) {
+      if (problemOf(next, remotes, t)) {
         setError("");
         return false;
       }
@@ -184,7 +185,7 @@ export function JobEdit() {
         return false;
       }
     },
-    [t],
+    [t, remotes],
   );
 
   /**
@@ -331,7 +332,7 @@ export function JobEdit() {
   // there, since the field may be far above the button.
   const create = async () => {
     setTried(true);
-    const found = problemOf(job, t);
+    const found = problemOf(job, remotes, t);
     if (found) {
       setRefused((n) => n + 1);
       scroll.reveal(refs[found.spot]);
@@ -351,7 +352,7 @@ export function JobEdit() {
 
   // Where the reason for a refusal stands: the form's own check first, then
   // the engine's answer, placed by what it names.
-  const problem = problemOf(job, t);
+  const problem = problemOf(job, remotes, t);
   const said: { spot: Spot; text: string } | null =
     problem && (editing || tried) ? problem : !problem && error ? { spot: spotOf(error), text: error } : null;
   const reason = (spot: Spot) => (said?.spot === spot ? said.text : undefined);
@@ -972,13 +973,15 @@ function UsualSection({ job }: { job: string }) {
 }
 
 /** What the form itself refuses before anything is sent, and where it says so. */
-function problemOf(job: JobConfig, t: T): { spot: Spot; text: string } | null {
+function problemOf(job: JobConfig, remotes: Remote[], t: T): { spot: Spot; text: string } | null {
   if (!job.name.trim()) return { spot: "name", text: t("phone.needName") };
   if (!job.left.trim()) return { spot: "left", text: t("phone.needSide") };
   if (!job.right.trim()) return { spot: "right", text: t("phone.needSide") };
-  // The engine refuses this too, since a configuration can also arrive by
+  // The engine refuses these too, since a configuration can also arrive by
   // backup.
   if (bothSidesOnePlace(job.left, job.right)) return { spot: "right", text: t("edit.sameSides") };
+  const readOnly = rootWritten(job, remotes);
+  if (readOnly) return { spot: readOnly, text: t("edit.rootReadOnly") };
   return null;
 }
 

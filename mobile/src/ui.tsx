@@ -657,11 +657,19 @@ export function Caption({ children }: { children: ReactNode }) {
  * A label and a value on one line, for reading rather than changing, unlike
  * Row. The value is the brighter ink and wraps instead of squeezing the label.
  */
-export function Pair({ label, value }: { label: string; value: ReactNode }) {
+export function Pair({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   const { p } = useTheme();
+  const named = <Text style={[styles.pairLabel, { color: p.textMuted }]}>{label}</Text>;
   return (
     <View style={styles.pair}>
-      <Text style={[styles.pairLabel, { color: p.textMuted }]}>{label}</Text>
+      {hint ? (
+        <View style={styles.axisRow}>
+          {named}
+          <InfoBubble tip={hint} />
+        </View>
+      ) : (
+        named
+      )}
       <Text style={[styles.pairValue, { color: p.text }]}>{value}</Text>
     </View>
   );

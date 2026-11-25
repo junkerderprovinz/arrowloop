@@ -16,6 +16,7 @@ import (
 	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
 
+	"github.com/junkerderprovinz/arrowloop/internal/appdata"
 	"github.com/junkerderprovinz/arrowloop/internal/autobackup"
 	"github.com/junkerderprovinz/arrowloop/internal/engine"
 	"github.com/junkerderprovinz/arrowloop/internal/filter"
@@ -863,6 +864,13 @@ func load(path string) (*Config, error) {
 				"job %q has both sides pointing at %s, so it would be a snake eating its own tail: every file would be its own copy, and in mirror or move mode the job would act on the very place it read from",
 				j.Name, j.Left)
 		}
+		for _, side := range j.written() {
+			if appdata.Root.Holds(side) {
+				j.refused = fmt.Errorf(
+					"job %q would write to %s, and the phone's Root target only reads; it can be the source of a one-way job that does not move files",
+					j.Name, side)
+			}
+		}
 		if j.State == "" {
 			return nil, fmt.Errorf("job %q needs a state database path; without one it can never tell a new file from a deleted one", j.Name)
 		}
@@ -896,6 +904,23 @@ func load(path string) (*Config, error) {
 		})
 	}
 	return &cfg, nil
+}
+
+// written is the sides a run of the job may change.
+func (j Job) written() []string {
+	switch plan.ParseDirection(j.Direction) {
+	case plan.LeftToRight:
+		if j.Mode == "move" {
+			return []string{j.Left, j.Right}
+		}
+		return []string{j.Right}
+	case plan.RightToLeft:
+		if j.Mode == "move" {
+			return []string{j.Left, j.Right}
+		}
+		return []string{j.Left}
+	}
+	return []string{j.Left, j.Right}
 }
 
 // sameSide reports whether two sides are known to be one place, by the same
