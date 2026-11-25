@@ -109,6 +109,27 @@ func TestADriveLetterIsNeverATarget(t *testing.T) {
 	}
 }
 
+// An SFTP or FTP target opens at the login's home, which is not the server's
+// root, so the root has to be one step up from it or it can only be typed.
+func TestGoingUpFromALoginsHomeReachesTheServersRoot(t *testing.T) {
+	for _, backend := range []string{"sftp", "ftp"} {
+		t.Run(backend, func(t *testing.T) {
+			configured(t, "nas", backend, map[string]string{"host": "nas.example"})
+			cases := map[string]string{
+				"":       "nas:/",
+				"Photos": "nas:",
+				"/":      "",
+				"/srv":   "nas:/",
+			}
+			for dir, want := range cases {
+				if got := Parent("nas", dir); got != want {
+					t.Errorf("Parent(nas, %q) = %q, want %q", dir, got, want)
+				}
+			}
+		})
+	}
+}
+
 func TestGoingUpATargetEndsAtTheRoots(t *testing.T) {
 	cases := map[string]string{
 		"Photos/2024": "box:Photos",
