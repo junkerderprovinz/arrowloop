@@ -24,3 +24,8 @@ test("a run that sent nothing says nothing about bytes", () => {
   assert.deepEqual(runFigures(run({ Trashed: 2, NoTrash: true }), translator(en), "en"), ["deleted: 2"]);
   assert.deepEqual(runFigures(run({ Moved: 1, Bytes: 0 }), translator(en), "en"), ["moved: 1"]);
 });
+
+test("a run's line names what it left for later, between what it removed and its conflicts, as the web's columns do", () => {
+  const line = runFigures(run({ Copied: 2, Trashed: 1, Skipped: 4, Conflicts: 1 }), translator(en), "en");
+  assert.deepEqual(line, ["copied: 2", "trashed: 1", "left for later: 4", "conflicts: 1"]);
+});
