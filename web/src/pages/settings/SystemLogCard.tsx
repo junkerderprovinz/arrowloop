@@ -39,13 +39,13 @@ export function SystemLogCard({ hueIndex }: { hueIndex: number }) {
         <p className="text-subline text-carbon-textMuted">{t('systemLog.empty')}</p>
       ) : (
         <ul
-          className="flex max-h-96 flex-col gap-2 overflow-y-auto"
+          className="flex max-h-96 flex-col divide-y divide-carbon-border/60 overflow-y-auto"
           aria-label={t('systemLog.title')}
           // A list that scrolls on its own has to be reachable without a mouse.
           tabIndex={0}
         >
           {lines.map((line) => (
-            <li key={line.ID} className="flex flex-col gap-1 rounded-control bg-carbon-surface2 px-3 py-2">
+            <li key={line.ID} className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0">
               <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <Badge tone="neutral">{t(SOURCE[line.Source])}</Badge>
                 <span className="glim-num text-subline text-carbon-textSub" title={new Date(line.At).toLocaleString(locale)}>
