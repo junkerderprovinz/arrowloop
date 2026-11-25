@@ -1,0 +1,1 @@
+Jobs can include shared lists as well as exclude them, and you pick them right in the job form. History keeps runs as long as you like and shows how much each run transferred, and a rooted phone can copy from its whole file system.

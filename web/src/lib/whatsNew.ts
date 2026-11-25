@@ -63,6 +63,28 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.9.0',
+    changes: [
+      { id: 'shared-lists-include', text: 'new.change.sharedListsInclude' },
+      {
+        id: 'shared-lists-form',
+        text: 'new.change.sharedListsForm',
+        names: { newList: 'sets.newList', manage: 'sets.manage' },
+      },
+      {
+        id: 'history-keep',
+        text: 'new.change.historyKeep',
+        names: { history: 'nav.history', general: 'settings.general' },
+      },
+      { id: 'run-transferred', text: 'new.change.runTransferred', names: { history: 'nav.history' } },
+      {
+        id: 'root-target',
+        text: 'new.change.rootTarget',
+        names: { wholeDisk: 'phone.rootTarget', rootCard: 'phone.rootCard' },
+      },
+    ],
+  },
+  {
     after: '2.8.0',
     changes: [
       {

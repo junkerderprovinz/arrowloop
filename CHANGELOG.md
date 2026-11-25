@@ -8,25 +8,44 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
-## Unreleased
+## 2.9.1 - 2026-11-25
+
+A job can include a shared list as well as exclude one, the History card keeps runs as long as you like and shows how much each run transferred, and a rooted phone can copy from its whole file system.
 
 ## ✨ Added
 
-- **The whole file system of a rooted phone.** Switch on **Whole file system** under **Settings**, **Root and Shizuku**, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out, so a scan cannot run in circles. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
-- **How long runs are kept, on the General tile.** The new **History** card shows `historyKeep` in days, and the **Keep forever** switch keeps every run, as 0 days does. **Delete** beside it removes every older run at once instead of waiting for the daily trim, and the last run of every job stays.
-- **How much each run transferred.** ArrowLoop notes what the files a run copied hold together and shows it in History, on the job page, in the run window and in the run lines of the phone app, such as 2.2 GB. Runs recorded before the update get the figure from their entries the first time the new version opens the log.
+- **Shared lists to include.** A job can take the files a shared list names as well as keep them out, so one list of photo types can feed the photos job and stay out of every other job. A job whose included lists are all empty takes no files instead of all of them, and its badge says "Takes no files" and why. A settings file in which a job includes a list does not load in 2.9.0 or older. Thanks to @danpeig for the idea ([#280](https://github.com/junkerderprovinz/arrowloop/issues/280)).
+- **Shared lists right in the job form.** Pick the lists to include or exclude from a dropdown, where each pick stands as a tag, or from a sheet on the phone. Each picked list shows its patterns under the dropdown, and an edit is saved to the list once the form has said how many jobs it changes. New list starts one from the dropdown, and Manage lists opens the lists in a window over the form, so the picks you haven't saved stay.
+- **How long runs are kept.** The History card on the General tile keeps runs for a number of days or for ever, and Delete removes the older ones at once instead of waiting for the daily trim. Each job keeps its last run. Thanks to @danpeig for the list of wishes ([#279](https://github.com/junkerderprovinz/arrowloop/issues/279)).
+- **How much each run transferred.** History, the job page, the run window and the phone's run lines show what a run copied, such as 2.2 GB. Older runs get the figure from their entries the first time the new version opens the log.
+- **The whole file system of a rooted phone.** Switch on Whole file system under Settings › Root and Shizuku, and every folder shows up as a target called Root, read through su. ArrowLoop only reads there: a job can copy from Root to a folder of your choice, and a job or a new folder that would write to Root is refused with the reason. Links are not followed, and /proc, /sys and the kernel's other folders are left out. Thanks to @AliNouhpisheh for the request ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
 
 ## 🎨 Design
 
-- **Root and Shizuku get a card of their own.** **Settings**, **Root and Shizuku** shows how su and Shizuku answer, with the su command, **Request root**, **Ask Shizuku** and **Get Shizuku**, and holds the switches for Android/data and the whole file system. **This phone** keeps what works without either.
-- **A column for each figure of a run.** The runs in History and on a job's page have columns for copied, moved, removed, left for later, conflicts and transferred. Drag the edge of a heading to widen a column, and the browser keeps the widths and the order.
+- **A column for each figure of a run.** History and a job's page show copied, moved, removed, left for later, conflicts and transferred in columns of their own. Drag the edge of a heading to widen a column, and the browser keeps the widths and the order.
+- **Root and Shizuku get a card of their own.** It shows how su and Shizuku answer and holds the switches for Android/data and the whole file system, and a dimmed switch says why. This phone keeps what works without either.
+- **The phone's new-folder button says Create,** as the web picker does.
+- **Built on GlimStone 4.9.2,** which brings the dropdown for the shared lists.
+
+## ⚡ Improved
+
+- **Removing a shared list changes nothing for its jobs.** A list that jobs still use asks first, and the jobs keep its patterns as their own. An empty list that is the only one a job takes files from can't be removed until that job gets another list or patterns of its own.
+- **The settings search finds the shared lists under their old name,** Shared exclude lists, in every language.
+- **A large job needs less memory while it runs.** Each run held the job's whole record in memory, the files its exclude patterns leave out as well. ArrowLoop now drops those as it reads the record and keeps a name or hash that both sides share only once. For a job of 780,000 files, the record takes 103 MB instead of 431 MB, and the run peaks at about 0.9 GB instead of 1.2 GB.
 
 ## 🐛 Fixed
 
-- **A side whose top the login may not write in.** At the root of an SFTP server, for one, ArrowLoop cannot create its .arrowloop folder, where the trash and old versions go. A run that would delete there or keep an old version now stops before it changes anything and says why, instead of leaving the files for later and failing from the second run on. The check on the job page names the trash as well, instead of calling the side read-only. If such a job may delete there outright, switch off its trash ([#276](https://github.com/junkerderprovinz/arrowloop/issues/276)).
-- **The run log is trimmed on the desktop, on the phone and in the container.** Only `arrowloop daemon` trimmed it as it started, and the daily trim started counting again with every saved setting. A container saved more than once a day, and a phone or laptop that was never on for a whole day, kept every record. ArrowLoop now trims as it starts and once a day after, counted from the last trim, and `-keep-history` holds for every trim of the daemon. Each job keeps its newest run however old it is, along with its newest success and its newest stopped run, so a job that has not run for months is not started again at once. A trim that leaves a quarter of the file empty gives the room back to the disk: in a test, a hundred days of runs took 5.5 MB, and the ten days kept took 0.3 MB.
-- **Less memory for a job with many files.** Every run read a job's whole record of files, including the ones its exclusions leave out, and held each file's name up to three times. A code folder with 780,000 recorded files, 300,000 of them not excluded, took 430 MB for the record alone during a run. ArrowLoop now keeps only the files the run works with, and a name both sides agree on only once, which brings the record down to 100 MB and a run's peak from about 1.2 GB to between 0.86 and 1 GB. Between runs ArrowLoop gives the memory back within a few minutes, as before.
-- **The hint about shared lists names the Sync tile.** With no shared list yet, the job form sent you to Settings, under Engine, and that tile is called Sync now.
+- **One tap is enough while the phone's keyboard is open.** A button right under a focused field, such as Save list or a VPN's Save, sat as a thin strip along the keyboard's edge, and the first tap only closed the keyboard. The page keeps the button above the keyboard, and the first tap goes through.
+- **No drive dialog in a container.** The Docker image offered folders such as /root/.config as drives. A container binds its folders at fixed paths, so it no longer offers to register a drive, and one registered before can still be removed. Elsewhere on Linux the list holds only what is mounted under /media, /run/media, /mnt or your home folder. Thanks to @danpeig for the report ([#278](https://github.com/junkerderprovinz/arrowloop/issues/278)).
+- **A side whose top the login may not write in.** At the root of an SFTP server, for one, ArrowLoop can't create the .arrowloop folder that holds the trash and old versions. A run that would delete there or keep an old version stops before it changes anything and says why, instead of leaving the files for later and failing from the second run on. If the job may delete there outright, switch off its trash.
+- **Up from an SFTP or FTP home.** The folder picker opens at the login's home, and going up led back to the list of targets. It climbs on to the server's root.
+- **The run log is trimmed everywhere.** Only `arrowloop daemon` trimmed it, so the desktop app, the phone and the container kept every run. ArrowLoop trims as it starts and once a day after, counted from the last trim, and gives the room back to the disk.
+- **Google Play no longer leaves out phones without GPS or wifi.** The location and wifi permissions of the last release made Play hide ArrowLoop from devices without that hardware, and both are optional now.
+- **The hint about shared lists names the Sync tile.** With no shared list yet, the job form sent you to a tile that is called Sync now.
+
+## 🌐 Translations
+
+- **New words in all 42 languages.** The History card and the run columns, shared lists to include with their dropdown and window, the Root and Shizuku card, and the drive texts for systems without drive letters.
 
 ## 2.9.0 - 2026-11-24
 
