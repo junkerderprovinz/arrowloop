@@ -3047,9 +3047,9 @@
     width: 100%;
     height: var(--btn-h);
     padding: 0 var(--space-6);
-    border: 1px solid var(--carbon-border);
+    border: 0;
     border-radius: var(--radius-control);
-    background: var(--carbon-surface);
+    background: var(--carbon-surface2);
     color: var(--carbon-text);
     font: inherit;
     font-size: var(--text-body);
@@ -3058,18 +3058,23 @@
   }
   .glim-combobox-control { padding-inline-end: var(--space-2); cursor: text; }
   .glim-select-trigger:hover { background: var(--hover); }
+  /* A field, so the focus is the text field's step up the ramp, not a ring
+     (rule 14). It comes after the hover, so a focused trigger under the
+     pointer still shows it has the keys. */
   .glim-select-trigger:focus-visible,
   .glim-combobox-control:focus-within {
-    outline: var(--focus-ring-width) solid var(--focus-ring);
-    outline-offset: 1px;
+    outline: none;
+    background: var(--carbon-surface3);
   }
   /* In a well or a sub-card the trigger stands among fields, so it takes their
      ground and hovers up the ramp (rule 21). */
   :is(.glim-well, .glim-subcard) :is(.glim-select-trigger:not(.glim-select-trigger--inset), .glim-combobox-control) {
-    border-color: transparent;
     background: var(--carbon-surface3);
   }
   :is(.glim-well, .glim-subcard) .glim-select-trigger:not(.glim-select-trigger--inset):hover { background: var(--hover); }
+  :is(.glim-well, .glim-subcard) :is(.glim-select-trigger:not(.glim-select-trigger--inset):focus-visible, .glim-combobox-control:focus-within) {
+    background: var(--carbon-hover-raised);
+  }
   .glim-select-trigger[data-disabled] { opacity: 0.5; cursor: default; }
   /* Busy: the trigger keeps its focus and takes no input until the answer is back. */
   .glim-select-trigger[data-readonly] { opacity: 0.5; cursor: progress; }
@@ -3136,6 +3141,10 @@
   }
   .glim-select-trigger--inset:hover {
     background: var(--hover);
+    color: var(--carbon-text);
+  }
+  .glim-select-trigger--inset:focus-visible {
+    background: var(--carbon-hover-raised);
     color: var(--carbon-text);
   }
   .glim-select-trigger--row .glim-select-indicator svg,
@@ -3798,6 +3807,12 @@
     flex-direction: column;
     gap: var(--space-2);
   }
+  /* A person's passkeys and devices often start alike, "iPhone von ...", so
+     their names wrap rather than end in an ellipsis. */
+  .glim-signin-tile-rows .glim-connection-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   .glim-signin-tile-text,
   .glim-signin-tile-quiet,
   .glim-signin-tile-said {
@@ -3837,6 +3852,54 @@
     font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
     font-variant-numeric: tabular-nums;
   }
+
+  /* The notification card (NotifyCard): the channels as rows over the card's
+     foot, and each channel's form in a window. */
+  .glim-notify-body,
+  .glim-notify-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    min-width: 0;
+  }
+  .glim-notify-rows,
+  .glim-notify-checks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .glim-notify-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-4);
+  }
+  .glim-notify-text,
+  .glim-notify-said,
+  .glim-notify-problem {
+    margin: 0;
+    font-size: var(--text-subline);
+    color: var(--carbon-text-sub);
+  }
+  .glim-notify-said--fail,
+  .glim-notify-problem { color: var(--status-fail-text); }
+  .glim-notify-headers {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+  .glim-notify-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .glim-notify-header > * {
+    flex: 1 1 9rem;
+    min-width: 0;
+  }
+  .glim-notify-header > .glim-btn { flex: none; }
 
   /* What stands in place of a control the environment forbids
      (UnavailableNotice). A paragraph, because there is no control to hang an
@@ -4111,9 +4174,16 @@
       max-width: none;
     }
   }
+  /* The cross is centred in its box rather than set on a line of text, whose
+     height an app's own font and line height would decide. The 22px box sits
+     centred on the message's first 20px line. */
   .glim-toast-dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
-    margin: calc(-1 * var(--space-2));
+    margin-block: calc(var(--space-1) / -2);
+    margin-inline: calc(-1 * var(--space-2));
     padding: var(--space-2);
     border-radius: var(--radius-pill);
     color: var(--carbon-text-muted);
@@ -5453,6 +5523,19 @@
     opacity: 0;
   }
   .glim-list-row:is(:hover, :focus-within) > .glim-list-row-actions { opacity: 1; }
+  /* A switch among the buttons is a setting, not one more button, so it keeps
+     its distance from them. */
+  .glim-list-row-actions > .glim-toggle:not(:last-child) { margin-inline-end: var(--space-6); }
+  /* The lit row already wears --hover, which a quiet button would hover to and
+     vanish into, so under the pointer it fills with the accent, as the row's
+     tile does. */
+  .glim-list-row:is(:hover, :focus-within) > .glim-list-row-actions .glim-btn-subtle:not(:disabled):is(:hover, :focus-visible) {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .glim-list-row:is(:hover, :focus-within) > .glim-list-row-actions .glim-btn-subtle:not(:disabled):is(:hover, :focus-visible) > .glim-btn-glyph {
+    color: var(--accent-contrast);
+  }
   /* Buttons that always show take room the name needs on a phone, so they drop
      under it, still at the end, before the name is squeezed. */
   .glim-list-row--steady { flex-wrap: wrap; }
@@ -6667,8 +6750,8 @@
 /* The list of a list page (ListTable; listModel.ts). A row reads as a ListRow:
    the same height, a hover a step up the ramp, and a picked row filled with the
    accent wash (rule 5). The header's words are buttons that sort, with a ▾
-   beside a column that filters, and a line under the header explains both
-   while the pointer is on it. */
+   beside a column that filters, and an (i) at the header's end explains both
+   (rule 8). */
 @layer components {
   .glim-list {
     position: relative;
@@ -6745,20 +6828,20 @@
     outline-offset: -2px;
   }
   .glim-list-tr > td.glim-table-end { text-align: end; }
-  .glim-list-hint {
+  /* The (i) stands in room the last column keeps free at the header's end,
+     outside the table, so it adds nothing to that column's name. */
+  .glim-list-info {
     position: absolute;
-    top: 2.25rem;
-    inset-inline: 0.25rem;
-    z-index: var(--z-raised);
-    margin: 0;
-    padding: var(--space-2) var(--space-5);
-    border-radius: var(--radius-control);
-    background-color: var(--carbon-surface2);
-    color: var(--carbon-text-sub);
-    font-size: var(--text-subline);
-    visibility: hidden;
+    top: 0;
+    inset-inline-end: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--space-11);
+    height: 2.25rem;
   }
-  .glim-list:has(thead:hover) .glim-list-hint { visibility: visible; }
+  .glim-list-th:last-child { padding-inline-end: calc(var(--space-2) + var(--space-11)); }
+  .glim-list-tr > td:last-child { padding-inline-end: calc(var(--space-5) + var(--space-11)); }
   .glim-list-search {
     position: absolute;
     top: 0.25rem;
@@ -6939,12 +7022,28 @@
 
 /* Pagination: every page is a quiet badge at the field height, and the one in
    force is filled with the accent, as anything chosen is (rule 3). The steps
-   are ordinary buttons; under a right-to-left language their arrows turn. */
+   are ordinary buttons; under a right-to-left language their arrows turn.
+   Where the row does not fit, watchPaginationFit sets `data-short` and the
+   steps stand as glyphs around "3 / 20". The row may be narrower than its
+   pages, or a flex parent would grow to hold them and the overflow would never
+   show. */
 @layer components {
   .glim-pagination {
     display: flex;
     align-items: center;
     gap: var(--space-2);
+    min-width: 0;
+    max-width: 100%;
+  }
+  .glim-pagination:not([data-short]) :is(.glim-page-step-short, .glim-tip-wrap:has(> .glim-page-step-short), .glim-page-status),
+  .glim-pagination[data-short] :is(.glim-page-step, .glim-tip-wrap:has(> .glim-page-step), .glim-page, .glim-page-gap) {
+    display: none;
+  }
+  .glim-page-status {
+    padding-inline: var(--space-4);
+    color: var(--carbon-text);
+    font-size: var(--text-body);
+    white-space: nowrap;
   }
   .glim-page {
     min-width: var(--btn-h);
@@ -6976,7 +7075,7 @@
     color: var(--carbon-text-muted);
     text-align: center;
   }
-  .glim-pagination > .glim-btn svg:dir(rtl) { scale: -1 1; }
+  .glim-pagination .glim-btn svg:dir(rtl) { scale: -1 1; }
 }
 
 /* PinInput: a row of text fields, one character each, at the key height so a
@@ -7094,6 +7193,11 @@
     outline: none;
   }
   .glim-tags-input::placeholder { color: var(--field-placeholder); }
+  /* A MultiSelect over a short list takes no typing, so it opens like a
+     select wherever the field is pressed and shows no caret. */
+  .glim-tags-control--pick,
+  .glim-tags-control--pick .glim-tags-input { cursor: pointer; }
+  .glim-tags-control--pick .glim-tags-input { caret-color: transparent; }
 }
 
 /* Steps: the row of named steps, the step in force and its foot. The step in
