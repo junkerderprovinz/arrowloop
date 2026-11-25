@@ -8,7 +8,7 @@ name: Container
 # know about, so release.yml moves it once the release exists.
 on:
   push:
-    branches: [main]
+    branches: ["**", "!renovate/**"]
     paths-ignore: ["**.md", "LICENSE", ".github/assets/**", "store/**"]
   pull_request:
     branches: [main]
@@ -109,7 +109,8 @@ jobs:
   push:
     name: Build and push
     needs: smoke
-    if: github.event_name != 'pull_request'
+    # Other branches stop after the smoke test, like a pull request.
+    if: github.ref_type == 'tag' || github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
