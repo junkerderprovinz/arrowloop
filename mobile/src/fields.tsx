@@ -48,7 +48,7 @@ export function Field({
     <View style={styles.field}>
       <View style={short ? styles.beside : styles.field}>
         <View style={[styles.labelRow, short ? styles.besideLabel : null]}>
-          <Text style={[styles.label, { color: p.text, flexShrink: 1 }]}>{label}</Text>
+          <Text style={[short ? styles.besideName : styles.label, { color: p.text, flexShrink: 1 }]}>{label}</Text>
           {hint ? <InfoBubble tip={hint} /> : null}
         </View>
         <View style={[styles.row, short ? styles.shortBox : null]}>
@@ -259,7 +259,7 @@ export function TimeField({
   return (
     <View style={styles.beside}>
       <View style={[styles.labelRow, styles.besideLabel]}>
-        <Text style={[styles.label, { color: p.text, flexShrink: 1 }]}>{label}</Text>
+        <Text style={[styles.besideName, { color: p.text, flexShrink: 1 }]}>{label}</Text>
         {hint ? <InfoBubble tip={hint} /> : null}
       </View>
       <Press
@@ -317,6 +317,8 @@ const styles = StyleSheet.create({
   labelRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   row: { flexDirection: "row", gap: space.sm, alignItems: "stretch" },
   label: { fontSize: text.body, fontWeight: "600" },
+  // Beside its box the name is a row's, which the web sets in the body weight.
+  besideName: { fontSize: text.body },
   error: { fontSize: text.subline, lineHeight: 18 },
   input: {
     flex: 1,
