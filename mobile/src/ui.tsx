@@ -1051,6 +1051,9 @@ export function Button({
           opacity: disabled || busy ? 0.45 : press.dim,
           flexGrow: wide === false ? 0 : 1,
           paddingHorizontal: snug ? space.sm : space.lg,
+          // Room for the (i) over the end, which would cover the word of a
+          // button as wide as its word.
+          ...(hint ? { paddingEnd: HINT_ROOM } : null),
           transform: [
             { translateX: wobbleShift(wobble) },
             { scale: press.scale },
@@ -1079,6 +1082,9 @@ export function Button({
     </View>
   );
 }
+
+/** A button's end with its (i): the bubble's offset and width and a gap before the word. */
+const HINT_ROOM = 10 + 18 + space.sm;
 
 /** The width of the README's own buttons. */
 export const README_W = 160;
