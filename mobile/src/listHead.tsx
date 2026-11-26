@@ -75,6 +75,8 @@ export function ListHead({
   const { p, accent } = useTheme();
   const [tip, closeTip] = useFirstVisit(page);
   const [held, setHeld] = useState(false);
+  // Heads laid over the columns of the rows below, as beside the side bar.
+  const columns = heads.some((h) => h.width !== undefined || h.grow);
   const used = () => {
     closeTip();
     setHeld(false);
@@ -136,7 +138,7 @@ export function ListHead({
               used();
             }}
             hitSlop={8}
-            style={styles.find}
+            style={[styles.find, columns ? styles.findOver : null]}
           >
             <Glyph name="IconSearch" color={p.textMuted} size={16} />
           </Press>
@@ -227,6 +229,9 @@ const styles = StyleSheet.create({
   label: { fontSize: text.meta, fontWeight: "600" },
   caret: { width: 20, height: 20, alignItems: "center", justifyContent: "center" },
   find: { marginLeft: "auto", minWidth: TOUCH, minHeight: TOUCH, alignItems: "center", justifyContent: "center" },
+  // Over the end of the row, since room taken in the row would move every
+  // head off the column under it.
+  findOver: { position: "absolute", end: 0, top: 0 },
   dot: { position: "absolute", top: 0, right: 0, width: 7, height: 7, borderRadius: 4 },
   tip: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingVertical: space.xs },
   tipText: { flex: 1, fontSize: text.meta },
