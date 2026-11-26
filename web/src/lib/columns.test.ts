@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { gridTemplate, mergeOrder, moveColumn, stepColumn, type ColumnDef } from './columns'
+import { gridTemplate, listWidth, mergeOrder, moveColumn, stepColumn, type ColumnDef } from './columns'
 
 const defs: ColumnDef[] = [{ id: 'what', width: 200 }, { id: 'when', width: 160 }, { id: 'side', width: 24, fixed: true }, { id: 'path' }]
 
@@ -21,6 +21,11 @@ describe('a list column layout', () => {
 
   it('draws stored widths, the flexible column taking the rest', () => {
     expect(gridTemplate(defs, { order: [], widths: { when: 220 } })).toBe('200px 220px 24px minmax(120px, 1fr)')
+  })
+
+  it('needs the room of every column and the gaps between them, the flexible one at its least', () => {
+    expect(listWidth(defs, { order: [], widths: { when: 220 } })).toBe(200 + 220 + 24 + 120 + 3 * 12)
+    expect(listWidth(defs, { order: [], widths: {} }, { id: 'what', width: 300 })).toBe(300 + 160 + 24 + 120 + 3 * 12)
   })
 
   it('never draws a column narrower than its floor', () => {

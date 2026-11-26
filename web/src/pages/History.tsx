@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Empty, Rows } from '../components/Shell'
 import { Day, Field } from '../components/Field'
 import { IconAction } from '../components/IconAction'
-import { FilterChoice, ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
+import { ColumnScroll, FilterChoice, ListHead, ListSearch, Narrowed, type Head, type ListSort } from '../components/ListHead'
 import { RunSheet } from '../components/RunSheet'
 import { Stats } from '../components/Stats'
 import { TOUCH_KINDS, TouchKindChoice, touchKindLabel, type TouchKind } from '../components/TouchKinds'
@@ -50,26 +50,33 @@ const SEVERITY_LABEL: Record<Severity, TranslationKey> = {
 /** The file log's columns at their built-in widths; the path takes the rest. */
 export const FILE_COLUMNS: ColumnDef[] = [
   { id: 'what', width: 560, min: 200 },
-  { id: 'when', width: 160, min: 96 },
+  { id: 'when', width: 128, min: 96 },
   { id: 'job', width: 128, min: 64 },
   { id: 'size', width: 56, min: 48 },
   { id: 'path' },
 ]
-/** What a run did, one column per figure, for History's runs and a job's own. */
+/**
+ * What a run did, one column per figure, for History's runs and a job's own.
+ * The widths fit the heads in most languages; a longer one is cut and its
+ * column can be widened.
+ */
 export const RUN_FIGURES: ColumnDef[] = [
-  { id: 'copied', width: 80, min: 48 },
-  { id: 'moved', width: 80, min: 48 },
-  { id: 'removed', width: 80, min: 48 },
-  { id: 'left', width: 96, min: 48 },
-  { id: 'conflicts', width: 88, min: 48 },
-  { id: 'bytes', width: 104, min: 64 },
+  { id: 'copied', width: 64, min: 40 },
+  { id: 'moved', width: 64, min: 40 },
+  { id: 'removed', width: 64, min: 40 },
+  { id: 'left', width: 88, min: 48 },
+  { id: 'conflicts', width: 64, min: 40 },
+  { id: 'bytes', width: 80, min: 48 },
 ]
+/** State holds one badge, Running, Failed or Stopped, at most. */
+export const STATE_COLUMN: ColumnDef = { id: 'state', width: 112, min: 72 }
+export const TOOK_COLUMN: ColumnDef = { id: 'took', width: 72, min: 48 }
 const RUN_COLUMNS: ColumnDef[] = [
   { id: 'job' },
-  { id: 'state', width: 240, min: 96 },
-  { id: 'took', width: 96, min: 64 },
+  STATE_COLUMN,
+  TOOK_COLUMN,
   ...RUN_FIGURES,
-  { id: 'when', width: 180, min: 120 },
+  { id: 'when', width: 128, min: 96 },
 ]
 
 /** The heads over RUN_FIGURES. The columns stay off narrow screens, where a row wraps. */
@@ -305,23 +312,26 @@ export function History({
             area={area}
           />
           {findings ? (
-            <ListHead heads={heads} sort={order} onSort={setOrder} page="history" search />
+            <>
+              <ListHead heads={heads} sort={order} onSort={setOrder} page="history" search />
+              <ClosedFindings
+                findings={(closed ?? [])
+                  .filter((f) => (!job || f.job === job) && (!level || f.severity === level))
+                  .filter((f) => !query || matchesQuery(query, [f.job, f.detail ?? '', ...(f.paths ?? [])]))
+                  .sort(findingOrder(order))}
+                narrowed={narrowing.length > 0}
+                onChanged={onFindingChanged}
+              />
+            </>
           ) : (
-            <ListHead heads={heads} page="history" search columns={files ? fileColumns : runColumns} />
-          )}
-          {findings ? (
-            <ClosedFindings
-              findings={(closed ?? [])
-                .filter((f) => (!job || f.job === job) && (!level || f.severity === level))
-                .filter((f) => !query || matchesQuery(query, [f.job, f.detail ?? '', ...(f.paths ?? [])]))
-                .sort(findingOrder(order))}
-              narrowed={narrowing.length > 0}
-              onChanged={onFindingChanged}
-            />
-          ) : files ? (
-            <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} columns={fileColumns} />
-          ) : (
-            <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} columns={runColumns} />
+            <ColumnScroll>
+              <ListHead heads={heads} page="history" search columns={files ? fileColumns : runColumns} />
+              {files ? (
+                <Touches job={job} kinds={TOUCH_KINDS[kind]} query={query} tick={tick} columns={fileColumns} />
+              ) : (
+                <RunList runs={runs} job={job} show={show} since={since} until={until} query={query} tick={tick} columns={runColumns} />
+              )}
+            </ColumnScroll>
           )}
         </div>
       </Card>
@@ -402,7 +412,7 @@ function Touches({
   if (touches.length === 0) return <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('history.logEmpty')}</Empty>
 
   return (
-    <Rows className="flex flex-col">
+    <Rows className="flex flex-col md:min-w-(--list-min)">
       {touches.map((e) => (
         <TouchRow key={touchKey(e)} touch={e} withJob={!job} columns={columns} />
       ))}
@@ -483,7 +493,8 @@ function RunList({
       {list.length === 0 ? (
         <Empty>{loading ? t('history.working') : narrowed ? t('history.noMatch') : t('history.empty')}</Empty>
       ) : (
-        <Rows className="-mx-2 flex flex-col">
+        // -mx-2 lets a row's hover reach past the head, so the list is that much wider.
+        <Rows className="-mx-2 flex flex-col md:min-w-[calc(var(--list-min)+1rem)]">
           {list.map((r) => (
             <RunRow
               key={`${r.Job}\n${r.Started}`}
@@ -562,8 +573,15 @@ export function RunRow({
         )}
         {r.Err && <Badge tone="fail">{t('status.failed')}</Badge>}
         {r.Stopped && <Badge tone="neutral">{t('status.stopped')}</Badge>}
-        {r.Conflicts > 0 && <Badge tone="warn">{capitalized(t('history.conflicts', { count: r.Conflicts }), lang)}</Badge>}
-        {r.Skipped > 0 && <Badge>{capitalized(t('history.left', { count: r.Skipped }), lang)}</Badge>}
+        {/* Where the figures have their columns these two would only repeat them. */}
+        {r.Conflicts > 0 && (
+          <Badge tone="warn" className={columns ? 'md:hidden' : undefined}>
+            {capitalized(t('history.conflicts', { count: r.Conflicts }), lang)}
+          </Badge>
+        )}
+        {r.Skipped > 0 && (
+          <Badge className={columns ? 'md:hidden' : undefined}>{capitalized(t('history.left', { count: r.Skipped }), lang)}</Badge>
+        )}
       </span>
       {/* The grid needs the cell even while the run goes, or the time would slide into its column. */}
       {(length || columns) && (

@@ -10,7 +10,7 @@ import { IconBack, IconPause, IconPencil, IconPlay, IconPreview } from '../compo
 import { BrakesCard } from '../components/JobBrakes'
 import { JobEditor, RemoveJobDialog, useConfigErrors } from '../components/JobEditor'
 import { JobStatusLine } from '../components/JobStatusLine'
-import { ListHead, ListSearch, type Head } from '../components/ListHead'
+import { ColumnScroll, ListHead, ListSearch, type Head } from '../components/ListHead'
 import { Menu } from '../components/Menu'
 import { Pace } from '../components/Pace'
 import { RunSheet } from '../components/RunSheet'
@@ -38,7 +38,7 @@ import { navigate, useLocation } from '../lib/router'
 import { useStartStop } from '../lib/startStop'
 import { useJobConfig } from './Editor'
 import { PreviewPlan } from './Preview'
-import { FILE_COLUMNS, RUN_FIGURES, RunRow, runFigureHeads } from './History'
+import { FILE_COLUMNS, RUN_FIGURES, RunRow, runFigureHeads, STATE_COLUMN, TOOK_COLUMN } from './History'
 import { useColumns, type ColumnDef } from '../lib/columns'
 
 /** A job's own file log has no job column. */
@@ -46,8 +46,8 @@ const JOB_FILE_COLUMNS = FILE_COLUMNS.filter((c) => c.id !== 'job')
 // The first cell of a job's own run holds its time, since the job is known.
 const JOB_RUN_COLUMNS: ColumnDef[] = [
   { id: 'job' },
-  { id: 'state', width: 200, min: 96 },
-  { id: 'took', width: 96, min: 64 },
+  STATE_COLUMN,
+  TOOK_COLUMN,
   ...RUN_FIGURES,
 ]
 
@@ -403,20 +403,23 @@ function RunsCard({ job, event, speed }: { job: Job; event?: RunEvent; speed?: n
           style={columns.style}
           className="flex flex-col gap-2"
         >
-          <ListHead
-            heads={[
-              { id: 'job', label: t('list.head.when'), className: 'min-w-0 flex-1' },
-              { id: 'state', label: t('list.head.state'), className: 'shrink-0' },
-              { id: 'took', label: t('overview.duration'), className: 'shrink-0' },
-              ...runFigureHeads(t),
-            ]}
-            columns={columns}
-          />
-          <Rows className="-mx-2 flex flex-col">
-            {runs.map((r) => (
-              <RunRow key={`${r.Started}`} run={r} withJob={false} columns={columns} onOpen={() => setOpen(r)} />
-            ))}
-          </Rows>
+          <ColumnScroll>
+            <ListHead
+              heads={[
+                { id: 'job', label: t('list.head.when'), className: 'min-w-0 flex-1' },
+                { id: 'state', label: t('list.head.state'), className: 'shrink-0' },
+                { id: 'took', label: t('overview.duration'), className: 'shrink-0' },
+                ...runFigureHeads(t),
+              ]}
+              columns={columns}
+            />
+            {/* -mx-2 lets a row's hover reach past the head, so the list is that much wider. */}
+            <Rows className="-mx-2 flex flex-col md:min-w-[calc(var(--list-min)+1rem)]">
+              {runs.map((r) => (
+                <RunRow key={`${r.Started}`} run={r} withJob={false} columns={columns} onOpen={() => setOpen(r)} />
+              ))}
+            </Rows>
+          </ColumnScroll>
         </div>
       )}
       {runs !== null && runs.length >= limit && (
@@ -543,30 +546,32 @@ function FilesCard({ job }: { job: Job }) {
         className="relative flex flex-col gap-2 outline-none"
       >
         <ListSearch value={typed} onChange={setTyped} placeholder={t('history.pathHint')} area={area} />
-        <ListHead heads={heads} page="job-files" search columns={columns} />
-        {error ? (
-          <p className="text-subline text-statusFail">{error}</p>
-        ) : !touches ? (
-          <Empty>{t('jobs.historyLoading')}</Empty>
-        ) : touches.length === 0 ? (
-          <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
-        ) : (
-          // Loads more near the bottom; 40px rather than the exact end, which a
-          // trackpad stops a pixel or two short of.
-          <ul
-            className="flex max-h-96 flex-col overflow-y-auto"
-            onScroll={(e) => {
-              const el = e.currentTarget
-              if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
-              // A list shorter than the limit is the whole list.
-              if (touches.length >= limit) setLimit((n) => n * 2)
-            }}
-          >
-            {touches.map((e) => (
-              <TouchRow key={touchKey(e)} touch={e} columns={columns} />
-            ))}
-          </ul>
-        )}
+        <ColumnScroll>
+          <ListHead heads={heads} page="job-files" search columns={columns} />
+          {error ? (
+            <p className="text-subline text-statusFail">{error}</p>
+          ) : !touches ? (
+            <Empty>{t('jobs.historyLoading')}</Empty>
+          ) : touches.length === 0 ? (
+            <Empty>{query ? t('jobs.historyNoMatch', { q: query }) : t('jobs.historyEmpty')}</Empty>
+          ) : (
+            // Loads more near the bottom; 40px rather than the exact end, which a
+            // trackpad stops a pixel or two short of.
+            <ul
+              className="flex max-h-96 flex-col overflow-y-auto md:min-w-(--list-min)"
+              onScroll={(e) => {
+                const el = e.currentTarget
+                if (el.scrollHeight - el.scrollTop - el.clientHeight > 40) return
+                // A list shorter than the limit is the whole list.
+                if (touches.length >= limit) setLimit((n) => n * 2)
+              }}
+            >
+              {touches.map((e) => (
+                <TouchRow key={touchKey(e)} touch={e} columns={columns} />
+              ))}
+            </ul>
+          )}
+        </ColumnScroll>
       </div>
     </Card>
   )

@@ -23,6 +23,10 @@ export interface ColumnLayout {
 /** The narrowest the flexible column gets before the list scrolls. */
 const FLEX_MIN = 120
 const MIN = 48
+/** The room between two columns, gap-x-3 in the head and in every row. */
+const GAP = 12
+
+type Drag = { id: string; width: number }
 
 /** moveColumn puts `id` immediately before or after `target`. */
 export function moveColumn(order: string[], id: string, target: string, after: boolean): string[] {
@@ -66,16 +70,30 @@ export function minWidth(def: ColumnDef): number {
  * drawn as if it were stored. The flexible column takes what the others leave
  * until somebody gives it a width, which then stays like any other.
  */
-export function gridTemplate(defs: ColumnDef[], layout: ColumnLayout, drag?: { id: string; width: number }): string {
-  const byId = new Map(defs.map((d) => [d.id, d]))
-  return mergeOrder(defs, layout.order)
-    .map((id) => {
-      const def = byId.get(id)!
-      const set = drag?.id === id ? drag.width : layout.widths[id]
-      if (def.width === undefined && set === undefined) return `minmax(${minWidth(def)}px, 1fr)`
-      return `${Math.max(minWidth(def), Math.round(set ?? def.width!))}px`
-    })
+export function gridTemplate(defs: ColumnDef[], layout: ColumnLayout, drag?: Drag): string {
+  return tracks(defs, layout, drag)
+    .map(({ def, width }) => (width === undefined ? `minmax(${minWidth(def)}px, 1fr)` : `${width}px`))
     .join(' ')
+}
+
+/**
+ * The width the columns need side by side, the flexible one at its least, for
+ * --list-min: a list narrower than that scrolls sideways inside its card.
+ */
+export function listWidth(defs: ColumnDef[], layout: ColumnLayout, drag?: Drag): number {
+  const all = tracks(defs, layout, drag)
+  return all.reduce((sum, { def, width }) => sum + (width ?? minWidth(def)), 0) + GAP * Math.max(0, all.length - 1)
+}
+
+/** Each column in its order with its width in pixels, none for the flexible one nobody widened. */
+function tracks(defs: ColumnDef[], layout: ColumnLayout, drag?: Drag): { def: ColumnDef; width?: number }[] {
+  const byId = new Map(defs.map((d) => [d.id, d]))
+  return mergeOrder(defs, layout.order).map((id) => {
+    const def = byId.get(id)!
+    const set = drag?.id === id ? drag.width : layout.widths[id]
+    if (def.width === undefined && set === undefined) return { def }
+    return { def, width: Math.max(minWidth(def), Math.round(set ?? def.width!)) }
+  })
 }
 
 function read(key: string): ColumnLayout {
@@ -130,7 +148,7 @@ export function useColumns(list: string, defs: ColumnDef[]) {
 
   return {
     order,
-    style: { '--list-cols': template } as CSSProperties,
+    style: { '--list-cols': template, '--list-min': `${listWidth(defs, shown)}px` } as CSSProperties,
     host,
     cell: (id: string): CSSProperties => ({ order: order.indexOf(id) }),
     resizable: (id: string) => {
@@ -168,6 +186,7 @@ export function useColumns(list: string, defs: ColumnDef[]) {
       now.width = Math.max(minWidth(d), Math.round(now.startWidth + (x - now.startX) * rtl))
       if (phase === 'move') {
         host.current?.style.setProperty('--list-cols', gridTemplate(defs, shown, now))
+        host.current?.style.setProperty('--list-min', `${listWidth(defs, shown, now)}px`)
         return
       }
       drag.current = null

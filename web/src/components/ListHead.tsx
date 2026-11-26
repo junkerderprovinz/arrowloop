@@ -205,7 +205,7 @@ export function ListHead({
   const openHead = filterOpen ? heads.find((h) => h.id === filterOpen) : undefined
 
   return (
-    <div className={`group/head relative ${className}`}>
+    <div className={`group/head relative ${columns ? 'md:min-w-(--list-min)' : ''} ${className}`}>
       <div
         role="row"
         onPointerDown={(e) => {
@@ -334,28 +334,32 @@ export function ListHead({
         })}
       </div>
 
-      {tipShown || pressed ? (
-        <div role="note" className="flex items-center gap-2 py-1.5 text-meta text-carbon-textSub">
-          <span className="min-w-0 flex-1">{tip}</span>
-          <button
-            type="button"
-            aria-label={t('common.close')}
-            data-tip={t('common.close')}
-            onClick={used}
-            className="glim-btn-bare grid h-5 w-5 shrink-0 place-items-center rounded-control"
+      {/* Over columns that scroll sideways the tip holds still at the box's
+          width, where it can still be read and closed. */}
+      <div className={columns ? 'sticky start-0 w-[100cqw]' : undefined}>
+        {tipShown || pressed ? (
+          <div role="note" className="flex items-center gap-2 py-1.5 text-meta text-carbon-textSub">
+            <span className="min-w-0 flex-1">{tip}</span>
+            <button
+              type="button"
+              aria-label={t('common.close')}
+              data-tip={t('common.close')}
+              onClick={used}
+              className="glim-btn-bare grid h-5 w-5 shrink-0 place-items-center rounded-control"
+            >
+              <IconClose width={10} height={10} />
+            </button>
+          </div>
+        ) : (
+          // Under the pointer only; a touch screen has the long press instead.
+          <div
+            role="note"
+            className="pointer-events-none absolute start-0 top-full z-10 mt-1 hidden rounded-control bg-carbon-surface2 px-2.5 py-1 text-meta text-carbon-textSub shadow-sm [@media(hover:hover)]:group-hover/head:block"
           >
-            <IconClose width={10} height={10} />
-          </button>
-        </div>
-      ) : (
-        // Under the pointer only; a touch screen has the long press instead.
-        <div
-          role="note"
-          className="pointer-events-none absolute start-0 top-full z-10 mt-1 hidden rounded-control bg-carbon-surface2 px-2.5 py-1 text-meta text-carbon-textSub shadow-sm [@media(hover:hover)]:group-hover/head:block"
-        >
-          {tip}
-        </div>
-      )}
+            {tip}
+          </div>
+        )}
+      </div>
 
       {openHead?.filter && (
         <FilterPanel
@@ -525,6 +529,16 @@ function startsTyping(e: KeyboardEvent): boolean {
   const at = e.target
   if (!(at instanceof HTMLElement)) return true
   return !at.closest('input, textarea, select, [contenteditable="true"], [role="menu"], [role="dialog"], [role="listbox"]')
+}
+
+/**
+ * Scrolls a list's head and rows sideways where the columns need more room than
+ * the card has. The head and the list take --list-min themselves, so a message
+ * in place of the rows keeps the card's width. The list search stays outside,
+ * where it can stick to the window.
+ */
+export function ColumnScroll({ children }: { children: ReactNode }) {
+  return <div className="@container -mx-2 flex flex-col gap-2 overflow-x-auto px-2">{children}</div>
 }
 
 /**

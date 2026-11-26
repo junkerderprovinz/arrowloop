@@ -51,4 +51,14 @@ describe('the runs in History', () => {
       ['bytes', '2.2 GB'],
     ])
   })
+
+  it('scroll sideways inside their card when the columns need more room than it has', async () => {
+    render(<History runs={[run]} jobs={[]} closed={null} onFindingChanged={() => {}} />)
+    const row = (await screen.findByRole('button', { name: 'photos' })).closest('li') as HTMLElement
+    const scroller = row.closest('.overflow-x-auto') as HTMLElement
+    expect(scroller).not.toBeNull()
+    expect(scroller.contains(screen.getAllByText('Transferred')[0])).toBe(true)
+    expect(scroller.closest('[data-glim="Card"]')).not.toBeNull()
+    expect((scroller.parentElement as HTMLElement).style.getPropertyValue('--list-min')).toMatch(/^\d+px$/)
+  })
 })
