@@ -39,6 +39,7 @@ import {
 import { capitalized } from "../../../web/src/lib/capitalized";
 import { clock } from "../clock";
 import { useFrame } from "../frame";
+import { FILE_COLUMNS, filesFit, RUN_COLUMNS, runsFit } from "../historyColumns";
 import { runFigures } from "../runLine";
 import { bytes } from "../usage";
 
@@ -120,7 +121,7 @@ type Opened = { id: number; job: string; run?: Run };
 function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) {
   const { t, lang, spell } = useT();
   const { p, accent } = useTheme();
-  const { wide } = useFrame();
+  const across = filesFit(useFrame());
 
   const [rows, setRows] = useState<Touch[] | null>(null);
   const [jobs, setJobs] = useState<string[]>([]);
@@ -223,7 +224,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
           onSort={(by, dir) => setSort({ by, dir })}
           onSearch={() => setSearching(true)}
           heads={
-            wide
+            across
               ? [
                   {
                     id: "what",
@@ -302,7 +303,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
           const note = said ? <Caption>{said}</Caption> : null;
           return (
             <ListPiece>
-              {wide ? (
+              {across ? (
                 <Press
                   onPress={() => setOpened({ id: item.Run, job: item.Job })}
                   accessibilityRole="button"
@@ -367,7 +368,7 @@ function FileLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void })
 function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) {
   const { t, lang } = useT();
   const { p, accent } = useTheme();
-  const { wide } = useFrame();
+  const across = runsFit(useFrame());
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [show, setShow] = useState<RunShow>("all");
   const [job, setJob] = useState("");
@@ -447,16 +448,16 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
               id: "job",
               label: t("history.filterJob"),
               sorts: true,
-              grow: wide,
+              grow: across,
               filter: { active: show !== "all" || job !== "", open: () => setFiltering(true) },
             },
-            ...(wide
+            ...(across
               ? [
                   { id: "state", label: t("list.head.state"), width: RUN_COLUMNS.state },
                   { id: "took", label: t("overview.duration"), width: RUN_COLUMNS.took },
                 ]
               : []),
-            { id: "when", label: t("list.head.when"), sorts: true, width: wide ? RUN_COLUMNS.when : undefined },
+            { id: "when", label: t("list.head.when"), sorts: true, width: across ? RUN_COLUMNS.when : undefined },
           ]}
         />
       </ListPiece>
@@ -489,7 +490,7 @@ function RunLog({ mode, onMode }: { mode: Mode; onMode: (next: Mode) => void }) 
         }
         renderItem={({ item }) => (
           <ListPiece>
-            {wide ? (
+            {across ? (
               <RunRowAcross run={item} onPress={() => setOpened({ id: item.ID, job: item.Job, run: item })} />
             ) : (
               <Press
@@ -759,11 +760,6 @@ function RunSheet({ opened, jobs, onClose }: { opened: Opened | null; jobs: Job[
     </Sheet>
   );
 }
-
-/** The fixed columns of the file log beside the side bar, the web's widths. */
-const FILE_COLUMNS = { what: 200, when: 150, job: 128, size: 72 };
-
-const RUN_COLUMNS = { state: 240, took: 80, when: 170 };
 
 /**
  * One run on one row beside the side bar, as the web's run list draws it:
