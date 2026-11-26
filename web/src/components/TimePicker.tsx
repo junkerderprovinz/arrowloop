@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { createPortal } from 'react-dom'
 
+import { usePortalHue } from '../lib/glimstone/portalHue'
+import { placeMenu } from '../lib/menuPlace'
+import { portalTarget } from '../lib/overlay'
 import { FIELD_FOCUS } from './Field'
 
 // An hour and a minute picked from two lists rather than a native time input,
@@ -51,25 +55,54 @@ export function TimePicker({
   label: string
 }) {
   const [open, setOpen] = useState(false)
-  const box = useRef<HTMLDivElement>(null)
+  const [at, setAt] = useState<{ left: number; top: number } | null>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const panel = useRef<HTMLDivElement>(null)
+  const hue = usePortalHue(open, trigger)
   const { hour, minute } = parseTime(value)
   const steps = minutes()
   const shownMinute = nearestStep(steps, minute)
 
-  // Bound only while open, so a page full of these costs one listener.
+  // The panel is portalled because every card on a staggered page is its own
+  // stacking context, and the card below would paint over it.
+  useLayoutEffect(() => {
+    if (!open) {
+      setAt(null)
+      return
+    }
+    const box = trigger.current?.getBoundingClientRect()
+    const list = panel.current
+    if (!box || !list) return
+    const size = { width: list.offsetWidth, height: list.offsetHeight }
+    const viewport = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight }
+    setAt(placeMenu(box, size, viewport, document.documentElement.dir === 'rtl'))
+  }, [open])
+
+  // Bound only while open, so a page full of these costs one listener. A scroll
+  // outside the panel would leave it standing apart from its button.
   useEffect(() => {
     if (!open) return
+    const inside = (target: EventTarget | null) =>
+      target instanceof Node && (!!panel.current?.contains(target) || !!trigger.current?.contains(target))
+    const close = () => setOpen(false)
     function away(e: MouseEvent) {
-      if (box.current && !box.current.contains(e.target as Node)) setOpen(false)
+      if (!inside(e.target)) close()
     }
     function key(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') close()
+    }
+    function scroll(e: Event) {
+      if (!(e.target instanceof Node && panel.current?.contains(e.target))) close()
     }
     document.addEventListener('mousedown', away)
     document.addEventListener('keydown', key)
+    window.addEventListener('scroll', scroll, true)
+    window.addEventListener('resize', close)
     return () => {
       document.removeEventListener('mousedown', away)
       document.removeEventListener('keydown', key)
+      window.removeEventListener('scroll', scroll, true)
+      window.removeEventListener('resize', close)
     }
   }, [open])
 
@@ -86,8 +119,9 @@ export function TimePicker({
   }
 
   return (
-    <div className="relative inline-block" ref={box}>
+    <>
       <button
+        ref={trigger}
         type="button"
         onClick={() => setOpen((was) => !was)}
         aria-haspopup="dialog"
@@ -103,12 +137,19 @@ export function TimePicker({
         {formatTime(hour, shownMinute)}
       </button>
 
-      {open && (
+      {open && createPortal(
         <div
+          ref={panel}
           role="dialog"
           aria-label={label}
-          className="glim-fade absolute left-0 top-full z-30 mt-1 flex bg-carbon-surface3 p-1 shadow-lg"
-          style={{ borderRadius: 'var(--radius-card)' }}
+          className={`glim-fade fixed z-(--z-menu) flex bg-carbon-surface3 p-1 shadow-lg${hue.className ? ` ${hue.className}` : ''}`}
+          style={{
+            borderRadius: 'var(--radius-card)',
+            // Parked off screen until measured, since it needs its real size first.
+            left: at?.left ?? -9999,
+            top: at?.top ?? -9999,
+            ...(hue.style ?? {}),
+          } as CSSProperties}
         >
           <ul role="listbox" aria-label={label} className={column}>
             {hours.map((h) => (
@@ -148,8 +189,9 @@ export function TimePicker({
               </li>
             ))}
           </ul>
-        </div>
+        </div>,
+        portalTarget(),
       )}
-    </div>
+    </>
   )
 }
