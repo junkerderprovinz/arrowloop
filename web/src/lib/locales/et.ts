@@ -2004,6 +2004,8 @@ const et: Translations = {
   'list.search': 'Otsi',
   'list.more': 'Veel',
   'list.when': '{day}, {time}',
+  'list.today': 'Täna',
+  'list.yesterday': 'Eile',
   'status.running': 'Käib',
   'status.held': 'Peatatud',
   'status.conflict': 'Vastuolu ootab',

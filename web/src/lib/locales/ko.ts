@@ -2004,6 +2004,8 @@ const ko: Translations = {
   'list.search': '검색',
   'list.more': '더 보기',
   'list.when': '{day} {time}',
+  'list.today': '오늘',
+  'list.yesterday': '어제',
   'status.running': '실행 중',
   'status.held': '보류됨',
   'status.conflict': '충돌 대기 중',

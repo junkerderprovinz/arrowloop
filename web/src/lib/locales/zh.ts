@@ -2004,6 +2004,8 @@ const zh: Translations = {
   'list.search': '搜索',
   'list.more': '更多',
   'list.when': '{day} {time}',
+  'list.today': '今天',
+  'list.yesterday': '昨天',
   'status.running': '运行中',
   'status.held': '已暂扣',
   'status.conflict': '冲突待处理',

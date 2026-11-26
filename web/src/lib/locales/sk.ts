@@ -2004,6 +2004,8 @@ const sk: Translations = {
   'list.search': 'Hľadať',
   'list.more': 'Viac',
   'list.when': '{day}, {time}',
+  'list.today': 'Dnes',
+  'list.yesterday': 'Včera',
   'status.running': 'Beží',
   'status.held': 'Pozastavená',
   'status.conflict': 'Čaká konflikt',

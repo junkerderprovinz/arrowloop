@@ -2004,6 +2004,8 @@ const fa: Translations = {
   'list.search': 'جستجو',
   'list.more': 'بیشتر',
   'list.when': '{day}، {time}',
+  'list.today': 'امروز',
+  'list.yesterday': 'دیروز',
   'status.running': 'در حال اجرا',
   'status.held': 'نگه داشته‌شده',
   'status.conflict': 'تعارض در انتظار',

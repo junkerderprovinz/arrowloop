@@ -2004,6 +2004,8 @@ const vi: Translations = {
   'list.search': 'Tìm kiếm',
   'list.more': 'Thêm',
   'list.when': '{day}, {time}',
+  'list.today': 'Hôm nay',
+  'list.yesterday': 'Hôm qua',
   'status.running': 'Đang chạy',
   'status.held': 'Bị giữ',
   'status.conflict': 'Xung đột đang chờ',

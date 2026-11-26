@@ -2004,6 +2004,8 @@ const is: Translations = {
   'list.search': 'Leita',
   'list.more': 'Meira',
   'list.when': '{day}, {time}',
+  'list.today': 'Í dag',
+  'list.yesterday': 'Í gær',
   'status.running': 'Í gangi',
   'status.held': 'Stöðvað',
   'status.conflict': 'Árekstur bíður',

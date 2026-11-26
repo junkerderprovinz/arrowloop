@@ -2004,6 +2004,8 @@ const ru: Translations = {
   'list.search': 'Поиск',
   'list.more': 'Ещё',
   'list.when': '{day}, {time}',
+  'list.today': 'Сегодня',
+  'list.yesterday': 'Вчера',
   'status.running': 'Выполняется',
   'status.held': 'Приостановлено',
   'status.conflict': 'Конфликт ждёт',

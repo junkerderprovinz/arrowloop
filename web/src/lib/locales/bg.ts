@@ -2004,6 +2004,8 @@ const bg: Translations = {
   'list.search': 'Търсене',
   'list.more': 'Още',
   'list.when': '{day}, {time} ч.',
+  'list.today': 'Днес',
+  'list.yesterday': 'Вчера',
   'status.running': 'Върви',
   'status.held': 'Спряна',
   'status.conflict': 'Чака конфликт',

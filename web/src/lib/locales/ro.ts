@@ -2004,6 +2004,8 @@ const ro: Translations = {
   'list.search': 'Caută',
   'list.more': 'Mai multe',
   'list.when': '{day}, ora {time}',
+  'list.today': 'Astăzi',
+  'list.yesterday': 'Ieri',
   'status.running': 'În desfășurare',
   'status.held': 'Oprită',
   'status.conflict': 'Conflict în așteptare',

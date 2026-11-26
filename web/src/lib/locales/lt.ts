@@ -2004,6 +2004,8 @@ const lt: Translations = {
   'list.search': 'Ieškoti',
   'list.more': 'Daugiau',
   'list.when': '{day}, {time}',
+  'list.today': 'Šiandien',
+  'list.yesterday': 'Vakar',
   'status.running': 'Vykdoma',
   'status.held': 'Sustabdyta',
   'status.conflict': 'Laukia konfliktas',

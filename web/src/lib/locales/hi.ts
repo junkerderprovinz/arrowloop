@@ -2004,6 +2004,8 @@ const hi: Translations = {
   'list.search': 'खोजें',
   'list.more': 'और',
   'list.when': '{day}, {time}',
+  'list.today': 'आज',
+  'list.yesterday': 'कल',
   'status.running': 'चल रहा है',
   'status.held': 'रोका गया',
   'status.conflict': 'टकराव बाकी है',

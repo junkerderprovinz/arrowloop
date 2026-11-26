@@ -2004,6 +2004,8 @@ const fi: Translations = {
   'list.search': 'Hae',
   'list.more': 'Lisää',
   'list.when': '{day}, {time}',
+  'list.today': 'Tänään',
+  'list.yesterday': 'Eilen',
   'status.running': 'Käynnissä',
   'status.held': 'Pysäytetty',
   'status.conflict': 'Ristiriita odottaa',

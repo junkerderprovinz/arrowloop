@@ -2004,6 +2004,8 @@ const ja: Translations = {
   'list.search': '検索',
   'list.more': 'その他',
   'list.when': '{day} {time}',
+  'list.today': '今日',
+  'list.yesterday': '昨日',
   'status.running': '実行中',
   'status.held': '保留中',
   'status.conflict': '競合が未解決',

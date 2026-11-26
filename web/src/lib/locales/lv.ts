@@ -2004,6 +2004,8 @@ const lv: Translations = {
   'list.search': 'Meklēt',
   'list.more': 'Vairāk',
   'list.when': '{day}, {time}',
+  'list.today': 'Šodien',
+  'list.yesterday': 'Vakar',
   'status.running': 'Darbojas',
   'status.held': 'Apturēts',
   'status.conflict': 'Gaida konflikts',

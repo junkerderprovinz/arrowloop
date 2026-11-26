@@ -2004,6 +2004,8 @@ const ar: Translations = {
   'list.search': 'بحث',
   'list.more': 'المزيد',
   'list.when': '{day}، {time}',
+  'list.today': 'اليوم',
+  'list.yesterday': 'أمس',
   'status.running': 'قيد التشغيل',
   'status.held': 'موقوفة',
   'status.conflict': 'تعارض بانتظارك',

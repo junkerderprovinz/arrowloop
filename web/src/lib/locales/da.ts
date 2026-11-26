@@ -2004,6 +2004,8 @@ const da: Translations = {
   'list.search': 'Søg',
   'list.more': 'Mere',
   'list.when': '{day} kl. {time}',
+  'list.today': 'I dag',
+  'list.yesterday': 'I går',
   'status.running': 'I gang',
   'status.held': 'Stoppet',
   'status.conflict': 'Konflikt venter',

@@ -2004,6 +2004,8 @@ const hu: Translations = {
   'list.search': 'Keresés',
   'list.more': 'Továbbiak',
   'list.when': '{day}, {time}',
+  'list.today': 'Ma',
+  'list.yesterday': 'Tegnap',
   'status.running': 'Fut',
   'status.held': 'Felfüggesztve',
   'status.conflict': 'Ütközés vár',

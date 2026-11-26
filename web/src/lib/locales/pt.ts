@@ -2004,6 +2004,8 @@ const pt: Translations = {
   'list.search': 'Pesquisar',
   'list.more': 'Mais',
   'list.when': '{day}, {time}',
+  'list.today': 'Hoje',
+  'list.yesterday': 'Ontem',
   'status.running': 'A decorrer',
   'status.held': 'Retida',
   'status.conflict': 'Conflito pendente',

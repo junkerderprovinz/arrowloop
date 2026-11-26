@@ -2004,6 +2004,8 @@ const cs: Translations = {
   'list.search': 'Hledat',
   'list.more': 'Více',
   'list.when': '{day}, {time}',
+  'list.today': 'Dnes',
+  'list.yesterday': 'Včera',
   'status.running': 'Běží',
   'status.held': 'Zastavená',
   'status.conflict': 'Čeká konflikt',

@@ -2004,6 +2004,8 @@ const uk: Translations = {
   'list.search': 'Пошук',
   'list.more': 'Ще',
   'list.when': '{day}, {time}',
+  'list.today': 'Сьогодні',
+  'list.yesterday': 'Учора',
   'status.running': 'Виконується',
   'status.held': 'Призупинено',
   'status.conflict': 'Конфлікт чекає',

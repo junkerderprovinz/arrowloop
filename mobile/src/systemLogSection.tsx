@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { api, type SystemLine } from "./api";
-import { clock } from "./clock";
+import { dayClock } from "./clock";
 import { useT } from "./i18n";
 import { logRows } from "./systemLog";
 import { space, text } from "./theme";
@@ -43,7 +43,7 @@ export function SystemLogSection({ hue }: { hue: number }) {
           <View key={row.id} style={[styles.line, i > 0 ? { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: p.border } : null]}>
             <View style={styles.head}>
               <Badge label={row.source} />
-              <Caption>{clock(row.at, lang)}</Caption>
+              <Caption>{dayClock(row.at, lang, t)}</Caption>
               {row.repeat ? <Badge label={row.repeat} tone="warn" /> : null}
             </View>
             <Text selectable style={[styles.text, { color: p.text }]}>

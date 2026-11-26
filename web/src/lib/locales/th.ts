@@ -2004,6 +2004,8 @@ const th: Translations = {
   'list.search': 'ค้นหา',
   'list.more': 'เพิ่มเติม',
   'list.when': '{day} {time} น.',
+  'list.today': 'วันนี้',
+  'list.yesterday': 'เมื่อวาน',
   'status.running': 'กำลังทำงาน',
   'status.held': 'ถูกพักไว้',
   'status.conflict': 'มีความขัดแย้งรออยู่',

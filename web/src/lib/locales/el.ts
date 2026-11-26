@@ -2004,6 +2004,8 @@ const el: Translations = {
   'list.search': 'Αναζήτηση',
   'list.more': 'Περισσότερα',
   'list.when': '{day}, {time}',
+  'list.today': 'Σήμερα',
+  'list.yesterday': 'Χθες',
   'status.running': 'Σε εξέλιξη',
   'status.held': 'Σταματημένη',
   'status.conflict': 'Διένεξη σε αναμονή',

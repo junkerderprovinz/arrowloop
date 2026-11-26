@@ -2004,6 +2004,8 @@ const ca: Translations = {
   'list.search': 'Cerca',
   'list.more': 'Més',
   'list.when': '{day}, {time}',
+  'list.today': 'Avui',
+  'list.yesterday': 'Ahir',
   'status.running': 'En marxa',
   'status.held': 'Aturada',
   'status.conflict': 'Conflicte pendent',

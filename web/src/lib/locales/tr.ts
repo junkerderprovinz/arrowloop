@@ -2004,6 +2004,8 @@ const tr: Translations = {
   'list.search': 'Ara',
   'list.more': 'Daha fazla',
   'list.when': '{day}, {time}',
+  'list.today': 'Bugün',
+  'list.yesterday': 'Dün',
   'status.running': 'Çalışıyor',
   'status.held': 'Durduruldu',
   'status.conflict': 'Çakışma bekliyor',

@@ -2004,6 +2004,8 @@ const eu: Translations = {
   'list.search': 'Bilatu',
   'list.more': 'Gehiago',
   'list.when': '{day}, {time}',
+  'list.today': 'Gaur',
+  'list.yesterday': 'Atzo',
   'status.running': 'Martxan',
   'status.held': 'Geldituta',
   'status.conflict': 'Gatazka zain',

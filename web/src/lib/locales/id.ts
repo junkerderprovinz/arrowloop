@@ -2004,6 +2004,8 @@ const id: Translations = {
   'list.search': 'Cari',
   'list.more': 'Lainnya',
   'list.when': '{day}, {time}',
+  'list.today': 'Hari ini',
+  'list.yesterday': 'Kemarin',
   'status.running': 'Berjalan',
   'status.held': 'Ditahan',
   'status.conflict': 'Konflik menunggu',

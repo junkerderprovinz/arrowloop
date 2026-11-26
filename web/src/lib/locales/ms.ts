@@ -2004,6 +2004,8 @@ const ms: Translations = {
   'list.search': 'Cari',
   'list.more': 'Lagi',
   'list.when': '{day}, {time}',
+  'list.today': 'Hari ini',
+  'list.yesterday': 'Semalam',
   'status.running': 'Sedang berjalan',
   'status.held': 'Ditahan',
   'status.conflict': 'Percanggahan menunggu',

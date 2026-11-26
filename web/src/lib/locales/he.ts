@@ -2004,6 +2004,8 @@ const he: Translations = {
   'list.search': 'חיפוש',
   'list.more': 'עוד',
   'list.when': '{day}, {time}',
+  'list.today': 'היום',
+  'list.yesterday': 'אתמול',
   'status.running': 'פועלת',
   'status.held': 'מוחזקת',
   'status.conflict': 'התנגשות ממתינה',

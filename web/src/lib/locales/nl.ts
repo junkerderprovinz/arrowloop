@@ -2004,6 +2004,8 @@ const nl: Translations = {
   'list.search': 'Zoeken',
   'list.more': 'Meer',
   'list.when': '{day}, {time}',
+  'list.today': 'Vandaag',
+  'list.yesterday': 'Gisteren',
   'status.running': 'Bezig',
   'status.held': 'Vastgehouden',
   'status.conflict': 'Conflict wacht',

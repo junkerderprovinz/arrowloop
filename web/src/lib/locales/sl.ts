@@ -2004,6 +2004,8 @@ const sl: Translations = {
   'list.search': 'Išči',
   'list.more': 'Več',
   'list.when': '{day}, {time}',
+  'list.today': 'Danes',
+  'list.yesterday': 'Včeraj',
   'status.running': 'Teče',
   'status.held': 'Zadržano',
   'status.conflict': 'Spor čaka',

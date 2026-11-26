@@ -2004,6 +2004,8 @@ const sr: Translations = {
   'list.search': 'Тражи',
   'list.more': 'Више',
   'list.when': '{day}, {time}',
+  'list.today': 'Данас',
+  'list.yesterday': 'Јуче',
   'status.running': 'У току',
   'status.held': 'Заустављено',
   'status.conflict': 'Сукоб чека',

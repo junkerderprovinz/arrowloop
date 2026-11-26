@@ -2,9 +2,12 @@ import { getCalendars, getLocales } from "expo-localization";
 import { useSyncExternalStore } from "react";
 import { AppState } from "react-native";
 
+import { capitalized } from "../../web/src/lib/capitalized";
 import { dateLocale } from "../../web/src/lib/dateLocale";
 import { hourCycle } from "../../web/src/lib/hourCycle";
 import { exactMoment } from "../../web/src/lib/reasonText";
+import { dayWord } from "./dayWord";
+import type { T } from "./i18n";
 
 /** Whether Android's clock is set to 24-hour time, or null where it does not say. */
 function phoneClock(): boolean | null {
@@ -67,6 +70,24 @@ function spelled(iso: string, lang: string, parts: Intl.DateTimeFormatOptions): 
  */
 export function clock(iso: string, lang: string): string {
   return spelled(iso, lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+/**
+ * A moment as the web's lists show it: "Today, 03:51", "Yesterday, 23:10",
+ * "Sunday, 04:10", and an older one with its digits. Today and yesterday are
+ * words from the table, since Hermes has no Intl.RelativeTimeFormat.
+ */
+export function dayClock(iso: string, lang: string, t: T, now: Date = new Date()): string {
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return "-";
+  const word = dayWord(at, now);
+  const day =
+    word === "today"
+      ? t("list.today")
+      : word === "yesterday"
+        ? t("list.yesterday")
+        : capitalized(spelled(iso, lang, word === "weekday" ? { weekday: "long" } : { day: "2-digit", month: "2-digit" }), lang);
+  return t("list.when", { day, time: spelled(iso, lang, { hour: "2-digit", minute: "2-digit" }) });
 }
 
 /** A moment with its year, for what is kept long enough to be from another one. */

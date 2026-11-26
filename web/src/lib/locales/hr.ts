@@ -2004,6 +2004,8 @@ const hr: Translations = {
   'list.search': 'Traži',
   'list.more': 'Više',
   'list.when': '{day}, {time}',
+  'list.today': 'Danas',
+  'list.yesterday': 'Jučer',
   'status.running': 'Radi',
   'status.held': 'Zadržan',
   'status.conflict': 'Sukob čeka',

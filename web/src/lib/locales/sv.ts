@@ -2004,6 +2004,8 @@ const sv: Translations = {
   'list.search': 'Sök',
   'list.more': 'Mer',
   'list.when': '{day} kl. {time}',
+  'list.today': 'I dag',
+  'list.yesterday': 'I går',
   'status.running': 'Pågår',
   'status.held': 'Stoppat',
   'status.conflict': 'Konflikt väntar',

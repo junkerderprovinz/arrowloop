@@ -2004,6 +2004,8 @@ const gl: Translations = {
   'list.search': 'Buscar',
   'list.more': 'Máis',
   'list.when': '{day}, {time}',
+  'list.today': 'Hoxe',
+  'list.yesterday': 'Onte',
   'status.running': 'Executándose',
   'status.held': 'Retida',
   'status.conflict': 'Conflito pendente',
