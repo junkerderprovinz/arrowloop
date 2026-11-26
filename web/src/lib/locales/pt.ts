@@ -1971,6 +1971,7 @@ const pt: Translations = {
   'new.change.internxtTwoFactor': 'Ao adicionar um destino Internxt corre o seu próprio início de sessão, e {test} pede o {code} quando a conta tem o início de sessão em dois passos ativo.',
   'new.change.sharedListsInclude': 'Uma tarefa pode incluir os ficheiros que uma lista partilhada indica, e não só excluí-los. Assim, uma lista de tipos de fotos dá as fotos a uma tarefa e mantém-nas fora das outras.',
   'new.change.sharedListsForm': 'No formulário da tarefa escolhes as listas partilhadas num menu pendente, ou no telemóvel num painel que sobe de baixo. {newList} cria uma nova ali, e {manage} abre as listas numa janela por cima do formulário.',
+  'new.change.systemLog': 'O cartão {systemLog} no mosaico {general} e nas definições do telemóvel mostra o que correu mal fora das execuções, como os erros do rclone e os servidores que o ArrowLoop não conseguiu alcançar.',
   'new.change.historyKeep': 'O cartão {history} no mosaico {general} mantém as execuções durante os dias que quiseres, ou para sempre, e cada tarefa mantém a sua última execução.',
   'new.change.runTransferred': '{history}, a página de uma tarefa e as linhas de execução no telemóvel mostram quanto cada execução transferiu, por exemplo 2,2 GB.',
   'new.change.rootTarget': 'Num telemóvel com root, {wholeDisk} em {rootCard} mostra todas as pastas como um destino chamado Root, e uma tarefa só pode ler a partir dele.',

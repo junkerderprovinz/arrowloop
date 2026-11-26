@@ -1971,6 +1971,7 @@ const pl: Translations = {
   'new.change.internxtTwoFactor': 'Dodanie celu Internxt uruchamia jego własne logowanie, a {test} prosi o {code}, gdy konto ma włączone logowanie dwuetapowe.',
   'new.change.sharedListsInclude': 'Zadanie może nie tylko wykluczać pliki wskazane przez wspólną listę, ale też je uwzględniać, więc jedna lista typów zdjęć może dostarczać zdjęcia jednemu zadaniu i trzymać je z dala od pozostałych.',
   'new.change.sharedListsForm': 'W formularzu zadania wybierasz wspólne listy z menu rozwijanego, a na telefonie z panelu wysuwanego od dołu. {newList} tworzy tam nową, a {manage} otwiera listy w oknie nad formularzem.',
+  'new.change.systemLog': 'Karta {systemLog} na kafelku {general} i w ustawieniach telefonu pokazuje, co poszło nie tak poza przebiegami, na przykład błędy rclone i serwery, do których ArrowLoop nie dotarł.',
   'new.change.historyKeep': 'Karta {history} na kafelku {general} zachowuje przebiegi przez tyle dni, ile chcesz, albo na zawsze, a każde zadanie zachowuje swój ostatni przebieg.',
   'new.change.runTransferred': '{history}, strona zadania i wiersze przebiegów na telefonie pokazują, ile przesłał każdy przebieg, na przykład 2,2 GB.',
   'new.change.rootTarget': 'Na telefonie z rootem {wholeDisk} na karcie {rootCard} pokazuje każdy folder jako cel o nazwie Root, a zadanie może z niego tylko czytać.',

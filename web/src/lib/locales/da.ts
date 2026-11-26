@@ -1971,6 +1971,7 @@ const da: Translations = {
   'new.change.internxtTwoFactor': 'Når du tilføjer et Internxt-mål, kører dets eget login, og {test} beder om {code}, når kontoen har totrinslogin slået til.',
   'new.change.sharedListsInclude': 'Et job kan tage de filer med, som en delt liste nævner, og ikke kun holde dem ude. Så kan én liste med fototyper levere billederne til ét job og holde dem ude af de andre.',
   'new.change.sharedListsForm': 'I jobformularen vælger du delte lister i en rullemenu, eller på telefonen i et ark nedefra. {newList} opretter en der, og {manage} åbner listerne i et vindue over formularen.',
+  'new.change.systemLog': 'Kortet {systemLog} på flisen {general} og i telefonens indstillinger viser, hvad der gik galt uden for kørslerne, for eksempel fejl fra rclone og servere, som ArrowLoop ikke kunne nå.',
   'new.change.historyKeep': 'Kortet {history} på flisen {general} beholder kørsler i så mange dage, du vil, eller for altid, og hvert job beholder sin seneste kørsel.',
   'new.change.runTransferred': '{history}, et jobs side og kørselslinjerne på telefonen viser, hvor meget hver kørsel overførte, fx 2,2 GB.',
   'new.change.rootTarget': 'På en rootet telefon viser {wholeDisk} under {rootCard} alle mapper som et mål ved navn Root, og et job kan kun læse fra det.',

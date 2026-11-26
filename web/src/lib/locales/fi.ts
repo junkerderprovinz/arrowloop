@@ -1971,6 +1971,7 @@ const fi: Translations = {
   'new.change.internxtTwoFactor': 'Internxt-kohteen lisääminen suorittaa sen oman kirjautumisen, ja {test} kysyy {code}, kun tilillä on kaksivaiheinen kirjautuminen käytössä.',
   'new.change.sharedListsInclude': 'Työ voi ottaa jaetun listan nimeämät tiedostot mukaan yhtä hyvin kuin jättää ne pois, joten yksi kuvatyyppien lista voi tuoda kuvat yhteen työhön ja pitää ne poissa muista.',
   'new.change.sharedListsForm': 'Työn lomakkeessa valitset jaetut listat pudotusvalikosta, puhelimessa alhaalta nousevasta paneelista. {newList} luo sinne uuden listan, ja {manage} avaa listat ikkunaan lomakkeen päälle.',
+  'new.change.systemLog': 'Ruudun {general} ja puhelimen asetusten kortti {systemLog} näyttää, mikä meni pieleen ajojen ulkopuolella, kuten rclonen virheet ja palvelimet, joita ArrowLoop ei tavoittanut.',
   'new.change.historyKeep': 'Ruudun {general} kortti {history} säilyttää ajot niin monta päivää kuin haluat tai ikuisesti, ja jokainen työ pitää viimeisimmän ajonsa.',
   'new.change.runTransferred': '{history}, työn sivu ja puhelimen ajorivit näyttävät, paljonko kukin ajo siirsi, esimerkiksi 2,2 GB.',
   'new.change.rootTarget': 'Rootatussa puhelimessa kortin {rootCard} kytkin {wholeDisk} näyttää jokaisen kansion kohteena nimeltä Root, ja työ voi vain lukea sieltä.',

@@ -1971,6 +1971,7 @@ const ro: Translations = {
   'new.change.internxtTwoFactor': 'La adăugarea unei destinații Internxt rulează autentificarea ei proprie, iar {test} cere {code} când contul are autentificarea în doi pași activă.',
   'new.change.sharedListsInclude': 'O sarcină poate să includă fișierele numite într-o listă comună, nu doar să le excludă. Astfel o singură listă de tipuri de poze dă pozele unei sarcini și le ține departe de celelalte.',
   'new.change.sharedListsForm': 'În formularul sarcinii alegi listele comune dintr-un meniu derulant, iar pe telefon dintr-un panou care urcă de jos. {newList} creează acolo una nouă, iar {manage} deschide listele într-o fereastră deasupra formularului.',
+  'new.change.systemLog': 'Cardul {systemLog} de pe dala {general} și din setările telefonului arată ce n-a mers în afara rulărilor, de pildă erorile rclone și serverele la care ArrowLoop n-a ajuns.',
   'new.change.historyKeep': 'Cardul {history} de pe dala {general} păstrează rulările atâtea zile câte vrei, sau pentru totdeauna, iar fiecare sarcină își păstrează ultima rulare.',
   'new.change.runTransferred': '{history}, pagina unei sarcini și rândurile de rulare de pe telefon arată cât a transferat fiecare rulare, de exemplu 2,2 GB.',
   'new.change.rootTarget': 'Pe un telefon cu root, {wholeDisk} din {rootCard} arată fiecare dosar ca o destinație numită Root, iar o sarcină poate doar să citească din ea.',

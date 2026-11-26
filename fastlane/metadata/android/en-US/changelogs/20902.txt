@@ -1,0 +1,1 @@
+A system log lists rclone's errors, servers ArrowLoop couldn't reach and integration trouble, and the phone gets the History settings with Delete.

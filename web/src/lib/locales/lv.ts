@@ -1971,6 +1971,7 @@ const lv: Translations = {
   'new.change.internxtTwoFactor': 'Pievienojot Internxt mērķi, notiek tā paša pierakstīšanās, un {test} pieprasa {code}, ja kontā ir ieslēgta divu faktoru pierakstīšanās.',
   'new.change.sharedListsInclude': 'Uzdevums kopīgajā sarakstā norādītos failus var ne tikai izslēgt, bet arī iekļaut, tāpēc viens fotogrāfiju tipu saraksts var tās iekļaut vienā uzdevumā un izslēgt no visiem pārējiem.',
   'new.change.sharedListsForm': 'Uzdevuma veidlapā kopīgos sarakstus izvēlies no nolaižamās izvēlnes, bet tālrunī no paneļa, kas izslīd no apakšas. Tur {newList} izveido jaunu, un {manage} atver sarakstus logā virs veidlapas.',
+  'new.change.systemLog': 'Kartīte {systemLog} flīzē {general} un tālruņa iestatījumos rāda, kas nogāja greizi ārpus palaišanām, piemēram, rclone kļūdas un serverus, kurus ArrowLoop nesasniedza.',
   'new.change.historyKeep': 'Kartīte {history} flīzē {general} glabā palaišanas tik dienu, cik vēlies, vai mūžīgi, un katrs uzdevums patur savu pēdējo palaišanu.',
   'new.change.runTransferred': '{history}, uzdevuma lapa un tālruņa palaišanu rindas rāda, cik daudz katra palaišana pārsūtīja, piemēram, 2,2 GB.',
   'new.change.rootTarget': 'Tālrunī ar root slēdzis {wholeDisk} kartītē {rootCard} rāda katru mapi kā galamērķi ar nosaukumu Root, un uzdevums no tā var tikai lasīt.',

@@ -1971,6 +1971,7 @@ const lt: Translations = {
   'new.change.internxtTwoFactor': 'Pridedant Internxt paskirtį vykdomas jos pačios prisijungimas, o {test} paprašo {code}, kai paskyroje įjungtas dviejų veiksnių prisijungimas.',
   'new.change.sharedListsInclude': 'Užduotis bendrame sąraše nurodytus failus gali ne tik atmesti, bet ir įtraukti, tad vienas nuotraukų tipų sąrašas gali juos įtraukti vienai užduočiai ir atmesti visoms kitoms.',
   'new.change.sharedListsForm': 'Užduoties formoje bendrus sąrašus pasirenki iš išskleidžiamojo meniu, o telefone iš apačios iškylančio skydelio. Ten {newList} sukuria naują, o {manage} atidaro sąrašus lange virš formos.',
+  'new.change.systemLog': 'Kortelė {systemLog} plytelėje {general} ir telefono nustatymuose rodo, kas nepavyko ne paleidimuose, pavyzdžiui, rclone klaidas ir serverius, kurių ArrowLoop nepasiekė.',
   'new.change.historyKeep': 'Kortelė {history} plytelėje {general} saugo paleidimus tiek dienų, kiek nori, arba visam laikui, o kiekviena užduotis pasilieka savo paskutinį paleidimą.',
   'new.change.runTransferred': '{history}, užduoties puslapis ir telefono paleidimų eilutės rodo, kiek perdavė kiekvienas paleidimas, pavyzdžiui, 2,2 GB.',
   'new.change.rootTarget': 'Telefone su root jungiklis {wholeDisk} kortelėje {rootCard} rodo kiekvieną aplanką kaip paskirtį pavadinimu Root, o užduotis iš jos gali tik skaityti.',

@@ -1971,6 +1971,7 @@ const ca: Translations = {
   'new.change.internxtTwoFactor': 'En afegir un destí Internxt s’executa el seu propi inici de sessió, i {test} demana el {code} quan el compte té activat l’inici en dos passos.',
   'new.change.sharedListsInclude': 'Una tasca pot incloure els fitxers que anomena una llista compartida, no només excloure\'ls. Així, una llista de tipus de foto pot portar les fotos a una tasca i deixar-les fora de les altres.',
   'new.change.sharedListsForm': 'Al formulari d\'una tasca tries les llistes compartides en un desplegable, o al telèfon en un full inferior. {newList} en crea una des d\'allà, i {manage} obre les llistes en una finestra sobre el formulari.',
+  'new.change.systemLog': 'La targeta {systemLog} de la rajola {general} i de la configuració del telèfon mostra què ha fallat fora de les execucions, com ara els errors de rclone i els servidors que ArrowLoop no ha pogut assolir.',
   'new.change.historyKeep': 'La targeta {history} de la rajola {general} conserva les execucions tants dies com vulguis, o per sempre, i cada tasca conserva la seva última execució.',
   'new.change.runTransferred': '{history}, la pàgina d\'una tasca i les línies d\'execució del telèfon mostren quant ha transferit cada execució, per exemple 2,2 GB.',
   'new.change.rootTarget': 'En un telèfon amb root, {wholeDisk} a la targeta {rootCard} mostra totes les carpetes com una destinació anomenada Root, i una tasca només en pot llegir.',

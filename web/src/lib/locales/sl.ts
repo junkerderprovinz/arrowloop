@@ -1971,6 +1971,7 @@ const sl: Translations = {
   'new.change.internxtTwoFactor': 'Pri dodajanju cilja Internxt se zažene njegova lastna prijava, {test} pa zahteva {code}, ko ima račun vklopljeno dvostopenjsko prijavo.',
   'new.change.sharedListsInclude': 'Opravilo lahko datoteke iz deljenega seznama ne le izključi, ampak tudi vključi. Tako en seznam vrst fotografij pošlje fotografije enemu opravilu in jih drži stran od drugih.',
   'new.change.sharedListsForm': 'V obrazcu opravila deljene sezname izbereš iz spustnega menija, na telefonu pa iz izbirnega okna. {newList} tam ustvari nov seznam, {manage} pa odpre sezname v oknu nad obrazcem.',
+  'new.change.systemLog': 'Kartica {systemLog} na ploščici {general} in v nastavitvah telefona pokaže, kaj je šlo narobe zunaj zagonov, na primer napake rclone in strežnike, ki jih ArrowLoop ni dosegel.',
   'new.change.historyKeep': 'Kartica {history} na ploščici {general} hrani zagone toliko dni, kot želiš, ali za vedno, vsako opravilo pa obdrži svoj zadnji zagon.',
   'new.change.runTransferred': '{history}, stran opravila in vrstice zagonov na telefonu pokažejo, koliko je prenesel vsak zagon, na primer 2,2 GB.',
   'new.change.rootTarget': 'Na telefonu z rootom stikalo {wholeDisk} na kartici {rootCard} pokaže vsako mapo kot cilj z imenom Root, opravilo pa lahko iz njega samo bere.',

@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.9.2" date="2026-11-26">
+      <description>
+        <p>ArrowLoop 2.9.2 adds a system log, brings the History settings to the phone and points the App tab at the Google Play listing.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.9.2</url>
+    </release>
     <release version="2.9.1" date="2026-11-25">
       <description>
         <p>A job can include a shared list as well as exclude one, the History card keeps runs as long as you like and shows how much each run transferred, and a rooted phone can copy from its whole file system.</p>

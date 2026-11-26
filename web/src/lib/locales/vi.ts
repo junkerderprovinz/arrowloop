@@ -1971,6 +1971,7 @@ const vi: Translations = {
   'new.change.internxtTwoFactor': 'Khi thêm đích Internxt, quá trình đăng nhập riêng của nó sẽ chạy, và {test} yêu cầu {code} khi tài khoản bật đăng nhập hai bước.',
   'new.change.sharedListsInclude': 'Một công việc có thể lấy cả các tệp mà một danh sách dùng chung nêu ra, không chỉ loại chúng ra. Nhờ vậy, một danh sách loại ảnh có thể đưa ảnh vào một công việc và giữ chúng ngoài các công việc khác.',
   'new.change.sharedListsForm': 'Trong biểu mẫu công việc, bạn chọn danh sách dùng chung từ một menu thả xuống, hoặc từ một bảng trượt lên trên điện thoại. {newList} tạo một danh sách mới ngay tại đó, và {manage} mở các danh sách trong một cửa sổ phía trên biểu mẫu.',
+  'new.change.systemLog': 'Thẻ {systemLog} trong ô {general} và trong cài đặt của điện thoại cho thấy những gì trục trặc bên ngoài các lần chạy, như lỗi của rclone và máy chủ mà ArrowLoop không tới được.',
   'new.change.historyKeep': 'Thẻ {history} trong ô {general} giữ các lần chạy bao nhiêu ngày tùy bạn, hoặc mãi mãi, và mỗi công việc luôn giữ lần chạy gần nhất của nó.',
   'new.change.runTransferred': '{history}, trang của công việc và các dòng lần chạy trên điện thoại cho biết mỗi lần chạy đã truyền bao nhiêu, chẳng hạn 2,2 GB.',
   'new.change.rootTarget': 'Trên điện thoại đã root, {wholeDisk} trong {rootCard} hiện mọi thư mục thành một đích tên là Root, và công việc chỉ có thể đọc từ đó.',

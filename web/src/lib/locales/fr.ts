@@ -1971,6 +1971,7 @@ const fr: Translations = {
   'new.change.internxtTwoFactor': 'L’ajout d’une cible Internxt lance sa propre connexion, et {test} demande le {code} quand le compte a la connexion à deux facteurs activée.',
   'new.change.sharedListsInclude': 'Une tâche peut inclure les fichiers que désigne une liste partagée, et pas seulement les exclure. Une seule liste de types de photos peut ainsi alimenter une tâche et tenir ces photos à l\'écart des autres.',
   'new.change.sharedListsForm': 'Dans le formulaire d\'une tâche, vous choisissez les listes partagées dans un menu déroulant, ou sur le téléphone dans un panneau qui monte d\'en bas. {newList} en crée une à cet endroit, et {manage} ouvre les listes dans une fenêtre au-dessus du formulaire.',
+  'new.change.systemLog': 'La carte {systemLog} de la tuile {general} et des réglages du téléphone montre ce qui a échoué en dehors des exécutions, comme les erreurs de rclone et les serveurs qu\'ArrowLoop n\'a pas pu joindre.',
   'new.change.historyKeep': 'La carte {history} de la tuile {general} conserve les exécutions autant de jours que vous voulez, ou pour toujours, et chaque tâche garde sa dernière exécution.',
   'new.change.runTransferred': '{history}, la page d\'une tâche et les lignes d\'exécution du téléphone indiquent combien chaque exécution a transféré, par exemple 2,2 GB.',
   'new.change.rootTarget': 'Sur un téléphone rooté, {wholeDisk} dans {rootCard} affiche chaque dossier comme une cible nommée Root, et une tâche ne peut qu\'y lire.',

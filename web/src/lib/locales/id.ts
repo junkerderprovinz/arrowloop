@@ -1971,6 +1971,7 @@ const id: Translations = {
   'new.change.internxtTwoFactor': 'Menambahkan target Internxt menjalankan proses masuknya sendiri, dan {test} meminta {code} jika akun mengaktifkan login dua langkah.',
   'new.change.sharedListsInclude': 'Tugas bisa mengambil file yang disebut daftar bersama, tidak hanya mengecualikannya. Jadi satu daftar jenis foto bisa mengisi satu tugas dan menjauhkan foto itu dari tugas lainnya.',
   'new.change.sharedListsForm': 'Di formulir tugas, kamu memilih daftar bersama dari dropdown, atau di ponsel dari panel yang muncul dari bawah. {newList} membuat daftar baru di sana, dan {manage} membuka daftar-daftar itu di jendela di atas formulir.',
+  'new.change.systemLog': 'Kartu {systemLog} di petak {general} dan di pengaturan ponsel menampilkan apa yang salah di luar proses, seperti galat rclone dan server yang tidak dapat dijangkau ArrowLoop.',
   'new.change.historyKeep': 'Kartu {history} di petak {general} menyimpan proses selama berapa hari pun yang kamu mau, atau selamanya, dan setiap tugas menyimpan proses terakhirnya.',
   'new.change.runTransferred': '{history}, halaman tugas, dan baris proses di ponsel menunjukkan berapa banyak yang ditransfer setiap proses, misalnya 2,2 GB.',
   'new.change.rootTarget': 'Di ponsel yang di-root, {wholeDisk} di {rootCard} menampilkan setiap folder sebagai tujuan bernama Root, dan tugas hanya bisa membaca dari sana.',

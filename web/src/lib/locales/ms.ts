@@ -1971,6 +1971,7 @@ const ms: Translations = {
   'new.change.internxtTwoFactor': 'Menambah sasaran Internxt menjalankan log masuknya sendiri, dan {test} meminta {code} apabila akaun menghidupkan log masuk dua faktor.',
   'new.change.sharedListsInclude': 'Selain mengecualikan fail yang dinamakan dalam senarai dikongsi, tugas boleh juga mengambilnya, jadi satu senarai jenis foto boleh memberikan foto kepada satu tugas dan menjauhkannya daripada tugas lain.',
   'new.change.sharedListsForm': 'Dalam borang tugas, anda memilih senarai dikongsi daripada menu lungsur, atau pada telefon daripada panel yang muncul dari bawah. {newList} memulakan senarai baharu di situ, dan {manage} membuka senarai dalam tetingkap di atas borang.',
+  'new.change.systemLog': 'Kad {systemLog} pada jubin {general} dan dalam tetapan telefon menunjukkan apa yang tidak kena di luar larian, seperti ralat rclone dan pelayan yang tidak dapat dicapai ArrowLoop.',
   'new.change.historyKeep': 'Kad {history} pada jubin {general} menyimpan larian selama berapa hari yang anda mahu, atau selama-lamanya, dan setiap tugas menyimpan larian terakhirnya.',
   'new.change.runTransferred': '{history}, halaman tugas dan baris larian pada telefon menunjukkan berapa banyak yang dipindahkan oleh setiap larian, contohnya 2.2 GB.',
   'new.change.rootTarget': 'Pada telefon yang di-root, {wholeDisk} di bawah {rootCard} memaparkan setiap folder sebagai destinasi bernama Root, dan tugas hanya boleh membaca daripadanya.',

@@ -1971,6 +1971,7 @@ const ja: Translations = {
   'new.change.internxtTwoFactor': 'Internxtの保存先を追加すると独自のサインインが行われ、アカウントで二段階ログインが有効な場合は{test}が{code}を求めます。',
   'new.change.sharedListsInclude': 'ジョブは共通のリストに挙がったファイルを除外するだけでなく、取り込むこともできます。写真の種類を並べたリスト一つで、あるジョブには写真を渡し、ほかのジョブからは外せます。',
   'new.change.sharedListsForm': 'ジョブの編集画面では、共通のリストをドロップダウンから、スマートフォンでは下から開くパネルから選びます。そこで{newList}を押すと新しいリストを作れ、{manage}を押すとリストが編集画面の上のウィンドウで開きます。',
+  'new.change.systemLog': '{general}タイルとスマートフォンの設定にある{systemLog}カードには、実行の外で起きた問題が並びます。rcloneのエラーや、ArrowLoopが届かなかったサーバーなどです。',
   'new.change.historyKeep': '{general}タイルの{history}カードでは、実行を好きな日数だけ、またはずっと残せます。どのジョブも最後の実行は残ります。',
   'new.change.runTransferred': '{history}、ジョブのページ、スマートフォンの実行の行に、各実行の転送量が 2.2 GB のように表示されます。',
   'new.change.rootTarget': 'root 化したスマートフォンでは、{rootCard}の{wholeDisk}をオンにすると、すべてのフォルダーが Root という名前の接続先として表示されます。ジョブはそこから読むことしかできません。',

@@ -1971,6 +1971,7 @@ const gl: Translations = {
   'new.change.internxtTwoFactor': 'Ao engadir un destino Internxt execútase o seu propio inicio de sesión, e {test} pide o {code} cando a conta ten activado o inicio en dous pasos.',
   'new.change.sharedListsInclude': 'Unha tarefa pode incluír os ficheiros que nomea unha lista compartida, ademais de deixalos fóra. Así, unha soa lista de tipos de foto pode alimentar unha tarefa e manter esas fotos fóra das demais.',
   'new.change.sharedListsForm': 'No formulario da tarefa escolles as listas compartidas nun despregable, ou no móbil nun panel que sobe desde abaixo. {newList} crea unha aí, e {manage} abre as listas nunha xanela sobre o formulario.',
+  'new.change.systemLog': 'A tarxeta {systemLog} do mosaico {general} e da configuración do teléfono mostra o que fallou fóra das execucións, como os erros de rclone e os servidores aos que ArrowLoop non puido chegar.',
   'new.change.historyKeep': 'A tarxeta {history} do mosaico {general} conserva as execucións os días que queiras, ou para sempre, e cada tarefa conserva a súa última execución.',
   'new.change.runTransferred': '{history}, a páxina dunha tarefa e as liñas de execución do móbil mostran canto transferiu cada execución, por exemplo 2,2 GB.',
   'new.change.rootTarget': 'Nun teléfono con root, {wholeDisk} en {rootCard} mostra cada cartafol como un destino chamado Root, e unha tarefa só pode ler del.',

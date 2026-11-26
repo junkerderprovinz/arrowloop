@@ -1971,6 +1971,7 @@ const ko: Translations = {
   'new.change.internxtTwoFactor': 'Internxt 대상을 추가하면 자체 로그인이 실행되고, 계정에 2단계 로그인이 켜져 있으면 {test}에서 {code}를 요청합니다.',
   'new.change.sharedListsInclude': '작업은 공용 목록에 적힌 파일을 제외할 뿐 아니라 가져올 수도 있습니다. 그래서 사진 형식 목록 하나로 한 작업에는 사진을 넘기고 다른 작업에서는 빼 둘 수 있습니다.',
   'new.change.sharedListsForm': '작업 편집 화면에서는 공용 목록을 드롭다운에서, 휴대폰에서는 아래에서 올라오는 패널에서 고릅니다. 그곳의 {newList} 항목으로 새 목록을 만들고, {manage} 버튼을 누르면 편집 화면 위의 창에 목록이 열립니다.',
+  'new.change.systemLog': '{general} 타일과 휴대폰 설정의 {systemLog} 카드에는 실행 밖에서 잘못된 일이 나옵니다. rclone 오류나 ArrowLoop가 닿지 못한 서버 같은 것입니다.',
   'new.change.historyKeep': '{general} 타일의 {history} 카드에서는 실행을 원하는 날수만큼 또는 계속 보관하며, 모든 작업은 마지막 실행을 남겨 둡니다.',
   'new.change.runTransferred': '{history}, 작업 페이지, 휴대폰의 실행 줄에 각 실행의 전송량이 2.2 GB처럼 표시됩니다.',
   'new.change.rootTarget': '루팅된 휴대폰에서는 {rootCard} 카드의 {wholeDisk} 스위치를 켜면 모든 폴더가 Root라는 이름의 대상으로 나타나며, 작업은 그곳에서 읽기만 할 수 있습니다.',

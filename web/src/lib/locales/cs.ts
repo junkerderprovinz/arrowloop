@@ -1971,6 +1971,7 @@ const cs: Translations = {
   'new.change.internxtTwoFactor': 'Při přidání cíle Internxt proběhne jeho vlastní přihlášení a {test} si vyžádá {code}, pokud má účet zapnuté dvoufázové přihlášení.',
   'new.change.sharedListsInclude': 'Úloha může soubory, které sdílený seznam uvádí, také zahrnout, nejen vyloučit. Jeden seznam typů fotek tak může dodávat fotky jedné úloze a držet je mimo všechny ostatní.',
   'new.change.sharedListsForm': 'Ve formuláři úlohy vybíráš sdílené seznamy z rozbalovací nabídky, v telefonu z vysouvacího panelu. {newList} tam založí nový a {manage} otevře seznamy v okně nad formulářem.',
+  'new.change.systemLog': 'Karta {systemLog} na dlaždici {general} a v nastavení telefonu ukazuje, co se pokazilo mimo běhy, třeba chyby rclone a servery, na které se ArrowLoop nedostal.',
   'new.change.historyKeep': 'Karta {history} na dlaždici {general} uchovává běhy tolik dní, kolik chceš, nebo navždy, a každá úloha si ponechá svůj poslední běh.',
   'new.change.runTransferred': '{history}, stránka úlohy a řádky běhů v telefonu ukazují, kolik každý běh přenesl, třeba 2,2 GB.',
   'new.change.rootTarget': 'Na telefonu s rootem ukazuje přepínač {wholeDisk} na kartě {rootCard} každou složku jako cíl s názvem Root a úloha z něj může jen číst.',

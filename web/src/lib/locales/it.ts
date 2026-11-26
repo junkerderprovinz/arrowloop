@@ -1971,6 +1971,7 @@ const it: Translations = {
   'new.change.internxtTwoFactor': 'Aggiungendo una destinazione Internxt parte il suo accesso, e {test} chiede il {code} quando l’account ha attivo l’accesso a due fattori.',
   'new.change.sharedListsInclude': 'Un lavoro può includere i file indicati da un elenco condiviso, oltre a escluderli, così un solo elenco di tipi di foto può alimentare un lavoro e tenere quelle foto fuori da tutti gli altri.',
   'new.change.sharedListsForm': 'Nel modulo del lavoro scegli gli elenchi condivisi da un menu a tendina, o sul telefono da un pannello che sale dal basso. {newList} ne crea uno lì, e {manage} apre gli elenchi in una finestra sopra il modulo.',
+  'new.change.systemLog': 'La scheda {systemLog} nel riquadro {general} e nelle impostazioni del telefono mostra cosa è andato storto al di fuori delle esecuzioni, come gli errori di rclone e i server che ArrowLoop non ha raggiunto.',
   'new.change.historyKeep': 'La scheda {history} nel riquadro {general} conserva le esecuzioni per quanti giorni vuoi, o per sempre, e ogni lavoro tiene la sua ultima esecuzione.',
   'new.change.runTransferred': '{history}, la pagina di un lavoro e le righe delle esecuzioni sul telefono mostrano quanto ha trasferito ogni esecuzione, per esempio 2,2 GB.',
   'new.change.rootTarget': 'Su un telefono con root, {wholeDisk} in {rootCard} mostra ogni cartella come una destinazione chiamata Root, e un lavoro può solo leggere da lì.',

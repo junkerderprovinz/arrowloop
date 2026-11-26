@@ -1971,6 +1971,7 @@ const tr: Translations = {
   'new.change.internxtTwoFactor': 'Internxt hedefi eklemek kendi oturum açmasını çalıştırır ve hesapta iki adımlı giriş açıksa {test} {code} ister.',
   'new.change.sharedListsInclude': 'Bir iş, ortak bir listenin belirttiği dosyaları dışarıda bırakmanın yanında dahil de edebilir. Böylece tek bir fotoğraf türleri listesi bir işe fotoğraf sağlar ve onları diğer işlerin dışında tutar.',
   'new.change.sharedListsForm': 'İş formunda ortak listeleri bir açılır menüden, telefonda ise alttan açılan bir panelden seçersin. {newList} orada yeni bir liste oluşturur, {manage} ise listeleri formun üstünde bir pencerede açar.',
+  'new.change.systemLog': '{general} kutucuğundaki ve telefonun ayarlarındaki {systemLog} kartı, çalışmaların dışında neyin ters gittiğini gösterir; örneğin rclone\'un hatalarını ve ArrowLoop\'un ulaşamadığı sunucuları.',
   'new.change.historyKeep': '{general} kutucuğundaki {history} kartı çalışmaları istediğin kadar gün ya da sonsuza dek saklar ve her iş son çalışmasını tutar.',
   'new.change.runTransferred': '{history}, bir işin sayfası ve telefondaki çalışma satırları her çalışmanın ne kadar aktardığını gösterir, örneğin 2,2 GB.',
   'new.change.rootTarget': 'Rootlu bir telefonda {rootCard} altındaki {wholeDisk}, her klasörü Root adlı bir hedef olarak gösterir ve bir iş oradan yalnızca okuyabilir.',

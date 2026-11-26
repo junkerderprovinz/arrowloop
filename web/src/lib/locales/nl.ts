@@ -1971,6 +1971,7 @@ const nl: Translations = {
   'new.change.internxtTwoFactor': 'Bij het toevoegen van een Internxt-doel loopt de eigen aanmelding, en {test} vraagt om de {code} als het account tweestapsaanmelding aan heeft.',
   'new.change.sharedListsInclude': 'Een taak kan de bestanden die een gedeelde lijst noemt ook insluiten, niet alleen uitsluiten. Zo levert één lijst met fototypes één taak zijn foto\'s en houdt ze buiten de andere.',
   'new.change.sharedListsForm': 'In het taakformulier kies je gedeelde lijsten uit een keuzelijst, of op de telefoon uit een paneel dat van onderen openschuift. {newList} maakt daar een nieuwe aan, en {manage} opent de lijsten in een venster boven het formulier.',
+  'new.change.systemLog': 'De kaart {systemLog} op de tegel {general} en in de instellingen van de telefoon toont wat er buiten de runs misging, zoals fouten van rclone en servers die ArrowLoop niet bereikte.',
   'new.change.historyKeep': 'De kaart {history} op de tegel {general} bewaart runs zoveel dagen als je wilt, of voor altijd, en elke taak houdt zijn laatste run.',
   'new.change.runTransferred': '{history}, de pagina van een taak en de runregels op de telefoon laten zien hoeveel elke run heeft overgezet, bijvoorbeeld 2,2 GB.',
   'new.change.rootTarget': 'Op een geroote telefoon toont {wholeDisk} onder {rootCard} elke map als een doel met de naam Root, en een taak kan er alleen uit lezen.',

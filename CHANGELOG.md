@@ -8,6 +8,28 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.9.2 - 2026-11-26
+
+ArrowLoop 2.9.2 adds a system log, brings the History settings to the phone and points the App tab at the Google Play listing.
+
+## ✨ Added
+
+- **A system log.** The System log card on the General tile, and in the phone's settings, lists errors from outside the runs, newest first: what rclone reported, servers ArrowLoop couldn't reach, and trouble with Fortress, Pairing and Notifications. An error that comes again right away counts up on its line, passwords and tokens are left out, and old lines go with old runs, 500 at most. Thanks to @danpeig for the idea ([#279](https://github.com/junkerderprovinz/arrowloop/issues/279)).
+
+## ⚡ Improved
+
+- **Notifications and the bug report leave out more secrets,** such as tokens, signatures and passwords that a server's error quotes.
+
+## 🐛 Fixed
+
+- **The phone has the History card too.** Keep runs for a number of days or for ever, and Delete removes the older ones at once. Each job keeps its last run. Thanks to @danpeig for the report ([#279](https://github.com/junkerderprovinz/arrowloop/issues/279)).
+- **The phone's run line names what a run left for later,** as the web's columns do.
+- **The App tab's Google Play button leads to the listing** instead of saying Soon.
+
+## 🌐 Translations
+
+- **The System log card in all 42 languages.**
+
 ## 2.9.1 - 2026-11-25
 
 A job can include a shared list as well as exclude one, the History card keeps runs as long as you like and shows how much each run transferred, and a rooted phone can copy from its whole file system.

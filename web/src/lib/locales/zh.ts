@@ -1971,6 +1971,7 @@ const zh: Translations = {
   'new.change.internxtTwoFactor': '添加Internxt目标时会运行它自己的登录，如果账户开启了两步登录，{test}会要求输入{code}。',
   'new.change.sharedListsInclude': '任务不仅可以排除共享列表中列出的文件，也可以纳入这些文件。这样一个照片类型列表就能把照片交给一个任务，同时让它们不进入其他任务。',
   'new.change.sharedListsForm': '在任务表单中，你可以从下拉菜单中选择共享列表，在手机上则从底部弹出的面板中选择。{newList}可以在那里新建一个，{manage}会在表单上方的窗口中打开这些列表。',
+  'new.change.systemLog': '{general}磁贴和手机设置里的{systemLog}卡片会列出运行之外出的问题，比如 rclone 的错误和 ArrowLoop 无法连接的服务器。',
   'new.change.historyKeep': '{general}磁贴上的{history}卡片可以按你想要的天数保留运行记录，也可以永久保留，而每个任务都会保留它的最后一次运行。',
   'new.change.runTransferred': '{history}、任务页面和手机上的运行条目都会显示每次运行传输了多少数据，例如 2.2 GB。',
   'new.change.rootTarget': '在已 root 的手机上，{rootCard}下的{wholeDisk}会把每个文件夹显示为名为 Root 的目标，任务只能从中读取。',

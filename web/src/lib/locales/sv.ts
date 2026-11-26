@@ -1971,6 +1971,7 @@ const sv: Translations = {
   'new.change.internxtTwoFactor': 'När du lägger till ett Internxt-mål körs dess egen inloggning, och {test} ber om {code} när kontot har tvåstegsinloggning påslagen.',
   'new.change.sharedListsInclude': 'Ett jobb kan både ta med och utesluta filerna som en delad lista anger, så en lista med fototyper kan förse ett jobb med bilder och hålla dem borta från de andra.',
   'new.change.sharedListsForm': 'I jobbformuläret väljer du delade listor i en rullgardinsmeny, eller i en panel nerifrån på telefonen. {newList} skapar en ny där, och {manage} öppnar listorna i ett fönster ovanpå formuläret.',
+  'new.change.systemLog': 'Kortet {systemLog} i rutan {general} och i telefonens inställningar visar vad som gick fel utanför körningarna, till exempel fel från rclone och servrar som ArrowLoop inte nådde.',
   'new.change.historyKeep': 'Kortet {history} i rutan {general} behåller körningar så många dagar du vill, eller för alltid, och varje jobb behåller sin senaste körning.',
   'new.change.runTransferred': '{history}, ett jobbs sida och telefonens körningsrader visar hur mycket varje körning överförde, till exempel 2,2 GB.',
   'new.change.rootTarget': 'På en rootad telefon visar {wholeDisk} under {rootCard} varje mapp som ett mål som heter Root, och ett jobb kan bara läsa därifrån.',

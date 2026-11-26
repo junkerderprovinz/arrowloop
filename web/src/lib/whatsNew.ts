@@ -63,6 +63,16 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.9.1',
+    changes: [
+      {
+        id: 'system-log',
+        text: 'new.change.systemLog',
+        names: { systemLog: 'systemLog.title', general: 'settings.general' },
+      },
+    ],
+  },
+  {
     after: '2.9.0',
     changes: [
       { id: 'shared-lists-include', text: 'new.change.sharedListsInclude' },

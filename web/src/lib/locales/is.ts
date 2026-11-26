@@ -1971,6 +1971,7 @@ const is: Translations = {
   'new.change.internxtTwoFactor': 'Þegar Internxt-markmiði er bætt við keyrir eigin innskráning þess, og {test} biður um {code} þegar tveggja þátta innskráning er virk á reikningnum.',
   'new.change.sharedListsInclude': 'Verk getur tekið með skrárnar sem sameiginlegur listi nefnir, ekki bara útilokað þær. Þannig getur einn listi yfir myndategundir fært einu verki myndirnar og haldið þeim frá öllum hinum.',
   'new.change.sharedListsForm': 'Á eyðublaði verksins velurðu sameiginlega lista úr fellilista, eða í símanum af spjaldi sem rennur upp. {newList} býr þar til nýjan lista og {manage} opnar listana í glugga yfir eyðublaðinu.',
+  'new.change.systemLog': 'Spjaldið {systemLog} á reitnum {general} og í stillingum símans sýnir hvað fór úrskeiðis utan keyrslnanna, til dæmis villur frá rclone og þjóna sem ArrowLoop náði ekki til.',
   'new.change.historyKeep': 'Spjaldið {history} á reitnum {general} geymir keyrslur eins marga daga og þú vilt, eða að eilífu, og hvert verk heldur síðustu keyrslu sinni.',
   'new.change.runTransferred': '{history}, síða verks og keyrslulínurnar í símanum sýna hve mikið hver keyrsla flutti, til dæmis 2,2 GB.',
   'new.change.rootTarget': 'Á rótuðum síma sýnir {wholeDisk} undir {rootCard} hverja möppu sem áfangastað sem heitir Root, og verk getur aðeins lesið þaðan.',

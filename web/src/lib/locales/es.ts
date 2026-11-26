@@ -1971,6 +1971,7 @@ const es: Translations = {
   'new.change.internxtTwoFactor': 'Al añadir un destino Internxt se ejecuta su propio inicio de sesión, y {test} pide el {code} cuando la cuenta tiene activado el inicio en dos pasos.',
   'new.change.sharedListsInclude': 'Una tarea puede incluir los archivos que nombra una lista compartida, no solo excluirlos. Así, una lista de tipos de foto puede llevar las fotos a una tarea y dejarlas fuera de las demás.',
   'new.change.sharedListsForm': 'En el formulario de una tarea eliges las listas compartidas en un desplegable, o en el teléfono en una hoja inferior. {newList} crea una desde ahí, y {manage} abre las listas en una ventana sobre el formulario.',
+  'new.change.systemLog': 'La tarjeta {systemLog} del mosaico {general} y de los ajustes del teléfono muestra lo que falló fuera de las ejecuciones, como los errores de rclone y los servidores a los que ArrowLoop no pudo llegar.',
   'new.change.historyKeep': 'La tarjeta {history} del mosaico {general} conserva las ejecuciones tantos días como quieras, o para siempre, y cada tarea conserva su última ejecución.',
   'new.change.runTransferred': '{history}, la página de una tarea y las líneas de ejecución del teléfono muestran cuánto transfirió cada ejecución, por ejemplo 2,2 GB.',
   'new.change.rootTarget': 'En un teléfono con root, {wholeDisk} en la tarjeta {rootCard} muestra todas las carpetas como un destino llamado Root, y una tarea solo puede leer de él.',

@@ -1,0 +1,1 @@
+Ein Systemprotokoll zeigt Fehler von rclone, nicht erreichbare Server und Probleme mit Integrationen, und das Handy bekommt die Verlaufseinstellungen mit Löschen.
