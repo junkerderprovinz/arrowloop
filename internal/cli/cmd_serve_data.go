@@ -34,6 +34,9 @@ func cmdServeData(args []string) error {
 	if err := fset.Parse(args); err != nil {
 		return err
 	}
+	if *root == "/" {
+		appdata.EnterInitNamespace(os.Args[1:])
+	}
 	seed, err := base64.StdEncoding.DecodeString(os.Getenv(envDataHostKey))
 	if err != nil {
 		return fmt.Errorf("%s: %w", envDataHostKey, err)
