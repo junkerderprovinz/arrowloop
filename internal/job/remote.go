@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"path"
 	"slices"
+	"strconv"
 	"strings"
 
 	rclonefs "github.com/rclone/rclone/fs"
@@ -74,6 +75,8 @@ type place struct {
 	connections int
 	// ownConnections is set where the target's settings name that number.
 	ownConnections bool
+	// listsHidden is set for an FTP target that lists with LIST -a.
+	listsHidden bool
 }
 
 // ErrNoNetwork is what a run condition holds a job with when the job is
@@ -137,6 +140,7 @@ func locate(side string) (place, error) {
 			case err != nil:
 			case info.Name == "ftp":
 				p.connections, p.ownConnections = connections(p, cfg)
+				p.listsHidden, _ = strconv.ParseBool(get("force_list_hidden"))
 			case info.Name == "smb":
 				p.connections = smbConnections(p)
 			}
