@@ -8,6 +8,14 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.9.5 - 2026-11-27
+
+ArrowLoop 2.9.5 makes Update now and the restart after an update work in the desktop app.
+
+## 🐛 Fixed
+
+- **Update now works in the desktop app.** "Update now" on the Version card and the restart button after an update answered "no such address" in every desktop build since 2.8.4, because the app set up its updater after the addresses they call. Copies with Update automatically on still updated in the background and get this version on their own. Close ArrowLoop from the tray and open it again afterwards. With it off, download this version once from the releases page. Thanks to @ckoul for the report ([#287](https://github.com/junkerderprovinz/arrowloop/issues/287)).
+
 ## 2.9.4 - 2026-11-27
 
 ArrowLoop 2.9.4 can run a job at start only when it is due, and a folder typed on the phone has to start with /.
