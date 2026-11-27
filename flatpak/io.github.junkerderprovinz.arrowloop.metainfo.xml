@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.9.6" date="2026-11-27">
+      <description>
+        <p>ArrowLoop 2.9.6 picks the target under an Encrypted or Compressed target from your saved targets, and fixes FTP targets that list hidden files and installs whose first start was cut off.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.9.6</url>
+    </release>
     <release version="2.9.5" date="2026-11-27">
       <description>
         <p>ArrowLoop 2.9.5 makes Update now and the restart after an update work in the desktop app.</p>
