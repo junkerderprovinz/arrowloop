@@ -30,7 +30,7 @@ ArrowLoop 2.9.6 picks the target under an Encrypted or Compressed target from yo
 
 ## 🌐 Translations
 
-- **The target picker in every language.** Its fields, the ID row and their hints are in all 42 languages of the app. Thanks to @danpeig for [#288](https://github.com/junkerderprovinz/arrowloop/issues/288) and [#290](https://github.com/junkerderprovinz/arrowloop/issues/290), which brought them.
+- **The target picker in every language.** Its fields, the ID row and their hints are in all 42 languages of the app.
 
 ## 2.9.5 - 2026-11-27
 
